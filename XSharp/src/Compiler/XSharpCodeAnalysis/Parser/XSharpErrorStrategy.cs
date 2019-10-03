@@ -204,5 +204,51 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 ttype = ((ITokenStream)recognizer.InputStream).La(1);
             }
         }
+        public override void Recover(Parser recognizer, RecognitionException e)
+        {
+            base.Recover(recognizer, e);
+            if (recognizer.Context is XSharpParser.StatementBlockContext ctx)
+            {
+                ConsumeToEos(recognizer);
+                ctx._Stmts.Add(new XSharpParser.NopStmtContext(new XSharpParser.StatementContext()));
+                var p = (recognizer as XSharpParser);
+                EndErrorCondition(recognizer);
+                {
+                    p.State = ctx.invokingState;
+                    var stmtBlk = p.statementBlock();
+                    if (stmtBlk?._Stmts?.Count > 0)
+                    {
+                        foreach (var s in stmtBlk._Stmts)
+                        {
+                            s.parent = ctx;
+                            ctx._Stmts.Add(s);
+                        }
+                    }
+                }
+            }
+        }
+        public override void Sync(Parser recognizer)
+        {
+            base.Sync(recognizer);
+        }
+        public override IToken RecoverInline(Parser recognizer)
+        {
+            return base.RecoverInline(recognizer);
+        }
+        void ConsumeToEos(Parser recognizer)
+        {
+            var inp = ((ITokenStream)recognizer.InputStream);
+            int ttype = inp.La(1);
+            while (ttype != TokenConstants.Eof && ttype != XSharpLexer.EOS)
+            {
+                var t = recognizer.Consume();
+                ttype = inp.La(1);
+            }
+            while (ttype == XSharpLexer.EOS)
+            {
+                var t = recognizer.Consume();
+                ttype = inp.La(1);
+            }
+        }
     }
 }

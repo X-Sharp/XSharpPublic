@@ -177,7 +177,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             if (context.T2 != null)
             {
-                XSharpToken endToken = (XSharpToken)context.T2;
+                var endToken = context.T2 as XSharpToken;
                 if (endToken != null && endToken.Type != context.T.Type)
                 {
                     _parseErrors.Add(new ParseErrorData(endToken, ErrorCode.ERR_UnexpectedToken, endToken.SourceSymbol.Text));
@@ -516,7 +516,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 			var hasbody = context.StmtBlk != null && context.StmtBlk._Stmts.Count > 0;
             if (context.T2 != null)
             {
-                XSharpToken endToken = (XSharpToken)context.T2.Token;
+                var endToken = context.T2.Token as XSharpToken;
                 if (endToken != null && endToken.Type != t.Type)
                 {
                     _parseErrors.Add(new ParseErrorData(endToken, ErrorCode.ERR_SyntaxError, t.Text));

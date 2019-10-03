@@ -81,17 +81,22 @@ BEGIN NAMESPACE XSharp
         MEMBER EpochYear     := 71		// Numeric
         MEMBER DateFormatNet := 72		// String
         MEMBER DateFormatEmpty := 73    // String
+        /// <sumary>Not used.</sumary>
         MEMBER OPTIONVO11	:= 74	// Logic
+        /// <sumary>Not used.</sumary>
         MEMBER OPTIONOVF	:= 75	// Logic
         MEMBER NOMETHOD		:= 76	// STRING
+        /// <sumary>Not used.</sumary>
         MEMBER APPMODULE	:= 77	// System.Reflection.Module
         MEMBER PATHARRAY    := 78	// String[]
         MEMBER NatDLL		:= 79   // string
         MEMBER CollationTable := 80  // byte[]
         MEMBER ErrorLevel   := 81  // DWORD
         MEMBER ErrorBlock   := 82  // Codeblock
+        /// <sumary>Not used.</sumary>
         MEMBER OPTIONVO13	:= 83	// Logic
         MEMBER LastRddError := 84   // Exception object
+        /// <sumary>Not used.</sumary>
         MEMBER Dialect      := 85   // XSharpDialect value
         // 86 - 97 unused
         MEMBER DICT        := 98	// LOGIC
@@ -102,8 +107,8 @@ BEGIN NAMESPACE XSharp
         MEMBER MEMOBLOCKSIZE:= 101		// INT
         MEMBER DEFAULTRDD	:= 102		// STRING
         MEMBER MEMOEXT	    := 103		// STRING
-        MEMBER AUTOOPEN     := 104		// LOGIC
-        MEMBER AUTOORDER    := 105		// LOGIC
+        MEMBER AutoOpen     := 104		// LOGIC
+        MEMBER AutoOrder    := 105		// LOGIC
         MEMBER HPLOCKING    := 106      // LOGIC 
         MEMBER NEWINDEXLOCK := 107      // LOGIC 
         MEMBER AUTOSHARE    := 108		// LOGIC
@@ -116,14 +121,17 @@ BEGIN NAMESPACE XSharp
         MEMBER COLLATIONMODE:= 115		// COLLATIONMODE (STRING)
 
         // FoxPro settings
-        MEMBER TextMerge    := 130      // Logic Is Textmerge enabled 
-        MEMBER FullPath     := 131      // Logic Should CDX() and similar functions return full paths
-        MEMBER Space        := 132      // Logic Space between ? and ?? field expressions
+        /// <summary>FoxPro: Is Textmerge enabled.</summary>
+        MEMBER TextMerge    := 130      // Logic 
+        /// <summary>FoxPro: Should CDX() and similar functions return full paths</summary>
+        MEMBER FullPath     := 131      // Logic 
+        /// <summary>FoxPro: Add Space between ? and ?? field expressions</summary>
+        MEMBER Space        := 132      // Logic 
         
         MEMBER FoxCollate   := 133
         MEMBER Near         := 134
         MEMBER MemoWidth    := 135
-	MEMBER SqlAnsi      := 136
+        MEMBER SqlAnsi      := 136
 
         // Xbase++ defines
         MEMBER CharSet          := 160

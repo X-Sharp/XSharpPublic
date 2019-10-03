@@ -154,7 +154,7 @@ FUNCTION Len(uValue AS USUAL) AS DWORD
 	ELSEIF uValue:IsString
 		RETURN (DWORD) ((STRING) uValue):Length
 	ELSE
-		THROW Error.DataTypeError(__ENTITY__, uValue, 1, uValue)
+		THROW Error.DataTypeError(__ENTITY__, nameof(uValue), 1, uValue)
 	ENDIF
 
 
@@ -186,7 +186,7 @@ FUNCTION EnforceNumeric(u REF USUAL) AS VOID
 	IF u:IsNil
 		u := 0
 	ELSEIF ! u:IsNumeric
-		THROW Error.DataTypeError(__ENTITY__, u, 1, u)
+		THROW Error.DataTypeError(__ENTITY__, nameof(u), 1, u)
 	ENDIF
 	RETURN  
 

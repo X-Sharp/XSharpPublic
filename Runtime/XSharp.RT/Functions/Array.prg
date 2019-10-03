@@ -179,7 +179,7 @@ INTERNAL STATIC CLASS ArrayHelpers
             RETURN aArray
         ENDIF
 		IF nStart == 0
-			THROW  Error.ArgumentError( __ENTITY__, "nStart", 3, __CavoStr( VOErrors.ArgCannotBeZero ), { nStart } )
+			THROW  Error.ArgumentError( __ENTITY__, nameof(nStart), 3, __CavoStr( VOErrors.ArgCannotBeZero ), { nStart } )
 		ENDIF
 		
 		IF nCount != 0

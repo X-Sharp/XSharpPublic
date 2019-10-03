@@ -31,6 +31,8 @@ CLASS XSharp.RuntimeState
 		RETURN currentState:Value
 
 	PRIVATE oSettings AS Dictionary<INT, OBJECT>
+    /// <summary>The dictionary that stores most of the settings in the runtime state. The key to the index is the number from the Set Enum</summary>
+    /// <seealso cref="T:XSharp.Set" >Set Enum</seealso>
     PUBLIC PROPERTY Settings AS Dictionary<INT, OBJECT> GET oSettings
 
 	PRIVATE CONSTRUCTOR(initialize AS LOGIC)       
@@ -81,6 +83,8 @@ CLASS XSharp.RuntimeState
 			oSettings:Clear()
 		ENDIF
 
+    /// <summary>This method closes all open workareas for all threads. It is automatically called ad shutdown.</summary>
+    /// <remarks>It is usually better to manage the lifetime of your workarea yourself in code, so don't trust on the runtime to close the workareas.</remarks>
     STATIC METHOD CloseWorkareasForAllThreads() as VOID
         TRY
             FOREACH var state in currentState:Values
@@ -103,10 +107,10 @@ CLASS XSharp.RuntimeState
 		RETURN oNew     
 		
 	/// <summary>Retrieve state name</summary>
-	/// <returns>String value, such as "State for Thread 123"</returns>
+	/// <returns>String value, such as "State for Thread 123"</returns>IDb
 	PUBLIC PROPERTY Name AS STRING AUTO
 	/// <summary>Current Break Level. Gets set by compiler generated code for BEGIN SEQUENCE .. END constructs.</summary>
-    /// <remarks><note>This value is 'per thread' </note></remarks>
+    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
 	PUBLIC PROPERTY BreakLevel AS INT AUTO
 	/// <summary>ToString() override</summary>
 	/// <returns>String value, such as "State for Thread 123"</returns>
@@ -137,7 +141,7 @@ CLASS XSharp.RuntimeState
 				RETURN (T) result
 			ENDIF
 		END LOCK
-		RETURN DEFAULT(T)
+		RETURN DEFAULT(T) 
     [MethodImpl(MethodImplOptions.AggressiveInlining)];
 	PRIVATE METHOD _SetThreadValue<T>(nSetting AS INT, oValue AS T) AS T
 		LOCAL result AS T
@@ -150,108 +154,89 @@ CLASS XSharp.RuntimeState
 			ENDIF
 			oSettings[nSetting] := oValue
 		END LOCK
-		RETURN	result		
+		RETURN	result		 
 
 	#region properties FROM the Vulcan RuntimeState that are emulated
 
-	/// <summary>The current compiler setting for the VO11 compiler option as defined when compiling the main application.</summary>
-	/// <remarks>This value gets assigned in the startup code for applications that are not in the Core dialect.<br/>
-    /// <note>This value is NOT 'per thread' but global for all threads.</note></remarks>
-    /// <seealso cref="P:XSharp.RuntimeState.CompilerOptionVO13" />
-    /// <seealso cref="P:XSharp.RuntimeState.CompilerOptionOVF" />
-    /// <seealso cref="P:XSharp.RuntimeState.CompilerOptionFOVF" />
-    /// <seealso cref="P:XSharp.RuntimeState.Dialect" />
+	/// <summary>The current compiler setting for the VO11 compiler option.</summary>
+    /// <include file="CoreComments.xml" path="Comments/CompilerOptions/*" />
+    /// <value>The default vale for this option is 'False'.</value>
 	STATIC PROPERTY CompilerOptionVO11 AS LOGIC AUTO
-
-	/// <summary>The current compiler setting for the VO13 compiler option as defined when compiling the main application.</summary>
-	/// <remarks>This value gets assigned in the startup code for applications that are not in the Core dialect.<br/>
-    /// <note>This value is NOT 'per thread' but global for all threads.</note></remarks>
-    /// <seealso cref="P:XSharp.RuntimeState.CompilerOptionVO11" />
-    /// <seealso cref="P:XSharp.RuntimeState.CompilerOptionOVF" />
-    /// <seealso cref="P:XSharp.RuntimeState.CompilerOptionFOVF" />
-    /// <seealso cref="P:XSharp.RuntimeState.Dialect" />
+ 
+	/// <summary>The current compiler setting for the VO13 compiler option.</summary>
+    /// <include file="CoreComments.xml" path="Comments/CompilerOptions/*" />
+    /// <value>The default vale for this option is 'False'.</value>
 	STATIC PROPERTY CompilerOptionVO13 AS LOGIC AUTO
 
-
-	/// <summary>Gets / Sets the current workarea number for the current thread</summary>
-    /// <remarks><note>This value is NOT 'per thread' but global for all threads.</note></remarks>
+	/// <summary>Gets / Sets the current workarea number.</summary>
+    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
     STATIC PROPERTY CurrentWorkArea AS DWORD ;
         GET Workareas:CurrentWorkAreaNO ;
         SET Workareas:CurrentWorkAreaNO  := VALUE
 
-    /// <summary>The current compiler setting for the OVF compiler option as defined when compiling the main application.</summary>
-	/// <remarks>This value gets assigned in the startup code for applications that are not in the Core dialect.<br/>
-    /// <note>This value is NOT 'per thread' but global for all threads.</note></remarks>
-    /// <seealso cref="P:XSharp.RuntimeState.CompilerOptionVO11" />
-    /// <seealso cref="P:XSharp.RuntimeState.CompilerOptionVO13" />
-    /// <seealso cref="P:XSharp.RuntimeState.CompilerOptionFOVF" />
-    /// <seealso cref="P:XSharp.RuntimeState.Dialect" />
+    /// <summary>The current compiler setting for the OVF compiler option.</summary>
+    /// <include file="CoreComments.xml" path="Comments/CompilerOptions/*" />
+    /// <value>The default vale for this option is 'False'.</value>
 	STATIC PROPERTY CompilerOptionOVF AS LOGIC AUTO
 
-    /// <summary>The current compiler setting for the X# Dialect as defined when compiling the main application.</summary>
-	/// <remarks>This value gets assigned in the startup code for applications that are not in the Core dialect.<br/>
-    /// <note>This value is NOT 'per thread' but global for all threads.</note></remarks>
-    /// <seealso cref="P:XSharp.RuntimeState.CompilerOptionVO11" />
-    /// <seealso cref="P:XSharp.RuntimeState.CompilerOptionVO13" />
-    /// <seealso cref="P:XSharp.RuntimeState.CompilerOptionFOVF" />
-    /// <seealso cref="P:XSharp.RuntimeState.CompilerOptionOVF" />
+    /// <summary>The current compiler setting for the X# Dialect.</summary>
+    /// <include file="CoreComments.xml" path="Comments/CompilerOptions/*" />
+    /// <value>The default vale for the Dialect is 'Core'.</value>
 	STATIC PROPERTY Dialect AS XSharpDialect AUTO
 
-	/// <summary>The current compiler setting for the FOVF compiler option as defined when compiling the main application.</summary>
-	/// <remarks>This value gets assigned in the startup code for applications that are not in the Core dialect.<br/>
-    /// <note>This value is NOT 'per thread' but global for all threads.</note></remarks>
-    /// <seealso cref="P:XSharp.RuntimeState.CompilerOptionVO11" />
-    /// <seealso cref="P:XSharp.RuntimeState.CompilerOptionVO13" />
-    /// <seealso cref="P:XSharp.RuntimeState.CompilerOptionOVF" />
-    /// <seealso cref="P:XSharp.RuntimeState.Dialect" />
+	/// <summary>The current compiler setting for the FOVF compiler option.</summary>
+    /// <include file="CoreComments.xml" path="Comments/CompilerOptions/*" />
+    /// <value>The default vale for this option is 'False'.</value>
 	STATIC PROPERTY CompilerOptionFOVF AS LOGIC AUTO
 
-	/// <summary>The System.Reflection.Module for the main application.
-	/// This value gets assigned in the startup code for applications that are not in the Core dialect.<br/>
-    /// This value is NOT 'per thread' but global for all threads.</summary>
+	/// <summary>The System.Reflection.Module for the main application.</summary>
+    /// <include file="CoreComments.xml" path="Comments/CompilerOptions/*" />
     STATIC PROPERTY AppModule AS  System.Reflection.Module AUTO
 	#endregion
 
 
 	/// <summary>The current ANSI setting</summary>
-    /// <remarks><note>This value is 'per thread' </note></remarks>
+    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
+    /// <seealso cref="F:XSharp.Set.Ansi" />
     STATIC PROPERTY Ansi AS LOGIC ;
         GET GetValue<LOGIC>(Set.Ansi);
         SET SetValue<LOGIC>(Set.Ansi, VALUE)
 
 	/// <summary>The current AutoOrder setting (used by the RDD system).</summary>
-    /// <remarks><note>This value is 'per thread' </note></remarks>
     /// <seealso cref="P:XSharp.RuntimeState.AutoOpen" />
     /// <seealso cref="P:XSharp.RuntimeState.AutoShareMode" />
+    /// <seealso cref="F:XSharp.Set.AutoOrder" />
+    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
     STATIC PROPERTY AutoOrder AS LOGIC ;
         GET GetValue<LOGIC>(Set.AutoOrder);
         SET SetValue<LOGIC>(Set.AutoOrder, VALUE)
 
 	/// <summary>The current AutoOpen setting (used by the RDD system).</summary>
-    /// <remarks><note>This value is 'per thread' </note></remarks>
     /// <seealso cref="P:XSharp.RuntimeState.AutoOrder" />
     /// <seealso cref="P:XSharp.RuntimeState.AutoShareMode" />
+    /// <seealso cref="F:XSharp.Set.AutoOpen" />
+    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
     STATIC PROPERTY AutoOpen AS LOGIC ;
         GET GetValue<LOGIC>(Set.AutoOpen);
         SET SetValue<LOGIC>(Set.AutoOpen, VALUE)
 
 	/// <summary>The current AutoShareMode setting (used by the RDD system).</summary>
-    /// <remarks><note>This value is 'per thread' </note></remarks>
     /// <seealso cref="P:XSharp.RuntimeState.AutoOpen" />
     /// <seealso cref="P:XSharp.RuntimeState.AutoOrder" />
+    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
     STATIC PROPERTY AutoShareMode AS AutoShareMode ;
         GET GetValue<AutoShareMode>(Set.AutoShare);
         SET SetValue<AutoShareMode>(Set.AutoShare, VALUE)
 
 
 	/// <summary>The current Century setting (used in DATE &lt;-&gt; STRING conversions).</summary>
-    /// <remarks><note>This value is 'per thread' </note></remarks>
+    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
    STATIC PROPERTY Century AS LOGIC ;
         GET GetValue<LOGIC>(Set.Century);
         SET SetValue<LOGIC>(Set.Century, VALUE)
 
 	/// <summary>The current Collation mode (used by the RDD system).</summary>
-    /// <remarks><note>This value is 'per thread' </note></remarks>
+    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
    STATIC PROPERTY CollationMode AS CollationMode 
         GET 
 			RETURN GetValue<CollationMode>(Set.CollationMode)
@@ -265,38 +250,37 @@ CLASS XSharp.RuntimeState
 	END PROPERTY
 
 	/// <summary>The current DateCountry setting mode (used in DATE &lt;-&gt; STRING conversions).</summary>
-    /// <remarks><note>This value is 'per thread' </note></remarks>
     /// <seealso cref="P:XSharp.RuntimeState.DateFormat" />
+    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
    STATIC PROPERTY DateCountry AS DWORD ;
         GET GetValue<DWORD>(Set.DateCountry);
         SET _SetDateCountry(VALUE)
 
-	/// <summary>The current Date format<br/>
-    /// This value is 'per thread' .</summary>
+	/// <summary>The current Date format</summary>
 	/// <remarks>This string should contain a combination of DD MM and either YY or YYYY characters.<br/>
 	/// For example DD-MM-YYYY for italian date format, MM/DD/YYYY for American date format or DD/MM/YYYY for British Date format.
 	/// Note that all other characters except the four groups mentioned above are copied to the output string verbatim.
     /// <note>This value is 'per thread' </note></remarks>
     /// <seealso cref="P:XSharp.RuntimeState.DateCountry" />
+    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
     STATIC PROPERTY DateFormat AS STRING ;
         GET GetValue<STRING>(Set.DateFormat);
         SET _SetDateFormat(VALUE)
 
     /// <summary>A cached copy of the string that is returned for empty dates, matching the current DateFormat</summary>
-    /// <remarks><note>This value is 'per thread' </note></remarks>
+    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
 	STATIC PROPERTY NullDateString AS STRING GET GetValue<STRING>(Set.DateFormatEmpty)
 
-	/// <summary>The default number of decimals for new FLOAT values that are created without explicit decimals.<br/>
-    /// <remarks><note>This value is 'per thread' </note></remarks>
-
+	/// <summary>The default number of decimals for new FLOAT values that are created without explicit decimals.</summary>
+    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
     STATIC PROPERTY Decimals AS DWORD ;
         GET GetValue<DWORD>(Set.DECIMALS);
         SET SetValue<DWORD>(Set.DECIMALS, VALUE)
 
 
 	/// <summary>The default number of decimals for new FLOAT values that are created without explicit decimals.</summary>
-    /// <remarks><note>This value is 'per thread' </note></remarks>
     /// <seealso cref="P:XSharp.RuntimeState.ThousandSep" />
+    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
     STATIC PROPERTY DecimalSep AS DWORD ;
         GET GetValue<DWORD>(Set.DecimalSep);
         SET SetValue<DWORD>(Set.DecimalSep, VALUE)
@@ -309,27 +293,27 @@ CLASS XSharp.RuntimeState
 
 
 	/// <summary>RDD Deleted Flag that determines whether to ignore or include records that are marked for deletion.</summary>
-    /// <remarks><note>This value is 'per thread' </note></remarks>
+    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
     STATIC PROPERTY Deleted AS LOGIC ;
         GET GetValue<LOGIC>(Set.DELETED);
         SET SetValue<LOGIC>(Set.DELETED, VALUE)
 
 	/// <summary>The default number of digits for new FLOAT values that are created without explicit decimals</summary>
-    /// <remarks><note>This value is 'per thread' </note></remarks>
+    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
     STATIC PROPERTY Digits AS DWORD ;
         GET GetValue<DWORD>(Set.DIGITS);
         SET SetValue<DWORD>(Set.DIGITS, VALUE)
 
     /// <summary>Logical setting that fixes the number of digits used to display numeric output.</summary>
-    /// <remarks><note>This value is 'per thread' </note></remarks>
+    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
     STATIC PROPERTY DigitsFixed AS LOGIC ;
         GET GetValue<LOGIC>(Set.DigitFixed);
         SET SetValue<LOGIC>(Set.DigitFixed, VALUE)
 
 
 	/// <summary>The DOS Codepage. This gets read at startup from the OS().</summary>
-    /// <remarks><note>This value is 'per thread' </note></remarks>
     /// <seealso cref="P:XSharp.RuntimeState.DosEncoding" />
+    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
     STATIC PROPERTY DosCodePage AS LONG 
         GET
             RETURN Convert.ToInt32(GetValue<OBJECT>(Set.DOSCODEPAGE))
@@ -343,30 +327,30 @@ CLASS XSharp.RuntimeState
 	END PROPERTY
 
 	/// <summary>Date Epoch value that determines how dates without century digits are interpreted.</summary>
-    /// <remarks><note>This value is 'per thread' </note></remarks>
+    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
     STATIC PROPERTY Epoch AS DWORD ;
         GET Convert.ToUInt32(GetValue<OBJECT>(Set.EPOCH));
         SET SetValue<DWORD>(Set.EPOCH, VALUE)
 
 	/// <summary>Date Epoch Year value. This gets set by the SetEpoch() function to the Epoch year % 100.</summary>
-    /// <remarks><note>This value is 'per thread' </note></remarks>
+    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
     STATIC PROPERTY EpochYear AS DWORD ;
         GET Convert.ToUInt32(GetValue<OBJECT>(Set.EPOCHYEAR));
 
 	/// <summary>Date Epoch Century value. This gets set by the SetEpoch() function to the century in which the Epoch year falls.</summary>
-    /// <remarks><note>This value is 'per thread' </note></remarks>
+    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
     STATIC PROPERTY EpochCent AS DWORD ;
         GET Convert.ToUInt32(GetValue<OBJECT>(Set.EPOCHCENT));
 
 
 	/// <summary>String comparison Exact flag that determines how comparisons with the single '=' characters should be done.</summary>
-    /// <remarks><note>This value is 'per thread' </note></remarks>
+    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
     STATIC PROPERTY Exact AS LOGIC ;
         GET GetValue<LOGIC>(Set.EXACT);
         SET SetValue<LOGIC>(Set.EXACT, VALUE)
 
     /// <summary>Logical setting that fixes the number of decimal digits used to display numbers.</summary>
-    /// <remarks><note>This value is 'per thread' </note></remarks>
+    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
     STATIC PROPERTY Fixed AS LOGIC ;
         GET GetValue<LOGIC>(Set.Fixed);
         SET SetValue<LOGIC>(Set.Fixed, VALUE)
@@ -374,84 +358,84 @@ CLASS XSharp.RuntimeState
 
 
 	/// <summary>Numeric value that controls the precision of Float comparisons.</summary>
-    /// <remarks><note>This value is 'per thread' </note></remarks>
+    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
    STATIC PROPERTY FloatDelta AS REAL8 ;
         GET GetValue<REAL8>(Set.FloatDelta);
         SET SetValue<REAL8>(Set.FloatDelta, VALUE)
 
 	/// <summary>Current SetInternational Setting.</summary>
-    /// <remarks><note>This value is 'per thread' </note></remarks>
+    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
      STATIC PROPERTY International AS CollationMode ;
         GET GetValue<CollationMode>(Set.Intl);
         SET SetValue<CollationMode>(Set.Intl, VALUE)
 
 	/// <summary>Last error that occurred in the RDD subsystem.</summary>
-    /// <remarks><note>This value is 'per thread' </note></remarks>
+    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
     STATIC PROPERTY LastRddError AS Exception ;
         GET GetValue<Exception>(Set.LastRddError);
         SET SetValue<Exception>(Set.LastRddError, VALUE)
 
 	/// <summary>Number of tries that were done when the last lock operation failed.</summary>
-    /// <remarks><note>This value is 'per thread' </note></remarks>
+    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
     STATIC PROPERTY LockTries AS DWORD ;
         GET Convert.ToUInt32(GetValue<OBJECT>(Set.LOCKTRIES));
         SET SetValue<DWORD>(Set.LOCKTRIES, VALUE)
 
     /// <summary>The setting that determines whether to use the High Performance (HP) locking schema for newly created .NTX files</summary>
-    /// <remarks><note>This value is 'per thread' </note></remarks>
+    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
     STATIC PROPERTY HPLocking AS LOGIC ;
         GET GetValue<LOGIC>(Set.HPLOCKING);
         SET SetValue<LOGIC>(Set.HPLOCKING, VALUE)
 
     /// <summary>The setting that determines whether to use the new locking offset of -1 (0xFFFFFFFF) for .NTX files.</summary>
-    /// <remarks><note>This value is 'per thread' </note></remarks>
+    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
     STATIC PROPERTY NewIndexLock AS LOGIC ;
         GET GetValue<LOGIC>(Set.NEWINDEXLOCK);
         SET SetValue<LOGIC>(Set.NEWINDEXLOCK, VALUE)
 
 
 	/// <summary>The current default MemoBlock size.</summary>
-    /// <remarks><note>This value is 'per thread' </note></remarks>
+    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
     STATIC PROPERTY MemoBlockSize AS WORD;
         GET Convert.ToUInt16(GetValue<OBJECT>(Set.MEMOBLOCKSIZE));
         SET SetValue<WORD>(Set.MEMOBLOCKSIZE, VALUE)
 
 
 	/// <summary>Did the last RDD operation cause a Network Error ?</summary>
-    /// <remarks><note>This value is 'per thread' </note></remarks>
+    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
     STATIC PROPERTY NetErr AS LOGIC;
         GET GetValue<LOGIC>(Set.NETERR);
         SET SetValue<LOGIC>(Set.NETERR, VALUE)
 
-	/// <summary>RDD Optimize Flag</summary>
-    /// <remarks><note>This value is 'per thread' </note></remarks>
+	/// <summary>RDD Optimize Flag  </summary>
+    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
     STATIC PROPERTY Optimize AS LOGIC ;
         GET GetValue<LOGIC>(Set.OPTIMIZE);
         SET SetValue<LOGIC>(Set.OPTIMIZE, VALUE)
 
 	/// <summary>The current SetSoftSeek flag.</summary>
-    /// <remarks><note>This value is 'per thread' </note></remarks>
+    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
     STATIC PROPERTY SoftSeek AS LOGIC ;
         GET GetValue<LOGIC>(Set.SOFTSEEK);
         SET SetValue<LOGIC>(Set.SOFTSEEK, VALUE)
 
 	/// <summary>The Thousand separator</summary>
-    /// <remarks><note>This value is 'per thread' </note></remarks>
     /// <seealso cref="P:XSharp.RuntimeState.DecimalSep" />
+    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
     STATIC PROPERTY ThousandSep AS DWORD ;
         GET Convert.ToUInt32(GetValue<OBJECT>(Set.THOUSANDSEP));
         SET SetValue<DWORD>(Set.THOUSANDSEP, VALUE)
 
 
 	/// <summary>Number of tries that were done when the last lock operation failed.</summary>
-    /// <remarks><note>This value is 'per thread' </note></remarks>
+    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
     STATIC PROPERTY Unique AS LOGIC ;
         GET GetValue<LOGIC>(Set.UNIQUE);
         SET SetValue<LOGIC>(Set.UNIQUE, VALUE)
 
 	/// <summary>The Windows Codepage. This gets read at startup from the OS().</summary>
-    /// <remarks><note>This value is 'per thread' </note></remarks>
     /// <seealso cref="P:XSharp.RuntimeState.WinEncoding" />
+    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
     STATIC PROPERTY WinCodePage AS LONG
 	GET
         RETURN Convert.ToInt32(GetValue<OBJECT>(Set.WINCODEPAGE))
@@ -465,20 +449,20 @@ CLASS XSharp.RuntimeState
 	END PROPERTY
 
     /// <summary>The DOS Encoding. This is based on the corrent Win Codepage.</summary>
-    /// <remarks><note>This value is 'per thread' </note></remarks>
     /// <seealso cref="P:XSharp.RuntimeState.WinCodePage" />
+    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
     STATIC PROPERTY WinEncoding AS System.Text.Encoding ;
         GET System.Text.Encoding.GetEncoding(WinCodePage)
 
     /// <summary>The DOS Encoding. This is based on the corrent DOS Codepage.</summary>
-    /// <remarks><note>This value is 'per thread' </note></remarks>
     /// <seealso cref="P:XSharp.RuntimeState.DosCodePage" />
+    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
     STATIC PROPERTY DosEncoding AS System.Text.Encoding ;
         GET System.Text.Encoding.GetEncoding(DosCodePage)
 
 
 	/// <summary>The name of the method that was called in the last late bound method call.</summary>
-    /// <remarks><note>This value is 'per thread' </note></remarks>
+    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
     STATIC PROPERTY NoMethod AS STRING ;
         GET GetValue<STRING>(Set.NoMethod);
         SET SetValue<STRING>(Set.NoMethod, VALUE)
@@ -617,7 +601,7 @@ CLASS XSharp.RuntimeState
 
 	private _workareas AS WorkAreas
 	/// <summary>The workarea information for the current Thread.</summary>
-    /// <remarks><note>This value is 'per thread' </note></remarks>
+    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
 	PUBLIC STATIC PROPERTY Workareas AS WorkAreas
 	GET
        LOCAL inst AS RuntimeState
@@ -637,6 +621,7 @@ CLASS XSharp.RuntimeState
 
 	PRIVATE _collationTable AS BYTE[]
     /// <summary>Current collation table.</summary>
+    
 	PUBLIC STATIC PROPERTY CollationTable AS BYTE[]
 	GET
 		LOCAL coll AS BYTE[]

@@ -280,11 +280,11 @@ FUNCTION Chr(dwCode AS DWORD) AS STRING
 /// <param name="dwChar"></param>
 /// <returns>
 /// </returns>
-FUNCTION ChrW(c AS DWORD) AS STRING
-   IF c > 0xFFFF
-      THROW Error.ArgumentError( __ENTITY__, "dwChar", "Number too High")
+FUNCTION ChrW(dwChar AS DWORD) AS STRING
+   IF dwChar > 0xFFFF
+      THROW Error.ArgumentError( __ENTITY__, nameof(dwChar), "Number too High")
    ENDIF
-   RETURN Convert.ToChar( (INT) ( c & 0xFFFF ) ):ToString()
+   RETURN Convert.ToChar( (INT) ( dwChar & 0xFFFF ) ):ToString()
 
 
 

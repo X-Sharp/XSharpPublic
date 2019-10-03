@@ -11,7 +11,12 @@ using System.Threading
 [STAThread];     
 FUNCTION Start() AS VOID
     TRY
-        testadsmemo()
+        TestNotifications()
+        //testFilter()
+        //testDbfNtxEmpty()
+        //testvfpFile()
+        //testAliasWhileCreate()
+        //testadsmemo()
         //TestAdvantageSeek()
         //TestTimeStamp()
         //TestSeek()    
@@ -125,14 +130,112 @@ FUNCTION Start() AS VOID
         //Start9()
         //Start10()
         //Start11()
+    WAIT
    CATCH e as Exception
         if ! (e is Error)
             e := Error{e}
         endif
         ErrorDialog(e)
     END TRY
-    WAIT
     RETURN
+
+FUNCTION NotifyRDDOperations(oRDD as XSharp.RDD.IRdd, oEvent as XSharp.DbNotifyEventArgs) AS VOID
+    ? oRDD:Alias, oEvent:Type:ToString(), oEvent:Data
+    RETURN
+
+CLASS Notifier IMPLEMENTS IDbnotify
+     METHOD Notify(oRDD as XSharp.RDD.IRdd, oEvent as XSharp.DbNotifyEventArgs) AS VOID
+        ? oRDD:Alias, oEvent:Type:ToString(), oEvent:Data
+        RETURN
+END CLASS
+
+#define USECLASS1
+Function TestNotifications as VOID
+    LOCAL cDbf1  AS STRING
+	cDbf1 := "C:\test\test"
+    #ifdef USECLASS
+        LOCAL oNot as Notifier
+        oNot := Notifier{}
+        DbRegisterClient(oNot)
+    #else
+        CoreDb.Notify += NotifyRDDOperations
+    #endif
+    ? DbCreate(cDbf1, {{"FLD1" , "C" , 10 , 0} })
+    ? DbUseArea(TRUE,"DBFNTX", cDbf1, "TEST",FALSE,FALSE)
+    ? DbCreateIndex("test","FLD1")
+    ? DbAppend()
+    ? FieldPutSym("FLD1","12345")
+    ? DbDelete()
+    ? DbRecall()
+    ? DbGoTop()
+    ? DbSkip(1)
+    ? DbGoBottom()
+    ? DbReindex()
+    ? DbPack()
+    ? DbZap()
+    ? DbCloseArea()
+    #ifdef USECLASS
+        DbUnRegisterClient(oNot)
+    #else
+        CoreDb.Notify -= NotifyRDDOperations
+    #endif
+    RETURN
+
+function testVfpFile() as void
+LOCAL cDbf AS STRING
+    //? ICase(False,"a",False,"b","c")
+	cDbf := "c:\download\vfp\wwbusinessobjects.dbf"
+	DbUseArea(TRUE,"DBFVFP",cDbf,"WWBusinessObjects")
+	? FieldGet(1)
+	DbCloseArea()
+RETURN
+
+
+function TestFilter() as VOID
+    LOCAL cDbf1  AS STRING
+	cDbf1 := "C:\test\test"
+	DbCreate(cDbf1, {{"FLD1" , "C" , 10 , 0} })
+    DbUseArea(TRUE,"DBFNTX", cDbf1, "TEST",TRUE)
+    VoDb.SetFilter(NIL, "FLD1='C'")
+    ? DbFilter()
+    WAIT
+    DbSetFilter(,TRUE)
+    ? DbSetFilter("FLD1='C'")
+    ? DbSetFilter(&("{||FLD1='C'}"))
+    ? DbSetFilter({||_FIELD->FLD1 = 'C'})
+    RETURN
+
+function testDbfNtxEmpty() as VOID
+    LOCAL cDbf1  AS STRING
+	cDbf1 := "C:\test\test"
+	DbCreate(cDbf1, {{"FLD1" , "C" , 10 , 0} })
+    DbUseArea(TRUE,"DBFNTX", cDbf1, "TEST",TRUE)
+    DbCreateIndex("Test","FLD1")
+    ? Eof()
+    DbCloseArea()
+    DbUseArea(TRUE,"DBFNTX", cDbf1, "TEST",TRUE)
+    DbSetIndex("test")
+    ? Eof()
+    DbGoTop()
+    ? Eof()
+    RETURN
+
+
+
+function testAliasWhileCreate() AS VOID
+    LOCAL cDbf1, cDbf2  AS STRING
+	cDbf1 := "C:\test\testA"
+	cDbf2 := "C:\test\test"
+	DbCreate(cDbf1, {{"FLD1" , "C" , 10 , 0} })
+    DbUseArea(TRUE,"DBFNTX", cDbf1, "TEST",TRUE)
+    DbUseArea(TRUE,"DBFNTX", cDbf1, "TEST_1",TRUE)
+    DbUseArea(TRUE,"DBFNTX", cDbf1, "TEST_2",TRUE)
+    DbUseArea(TRUE,"DBFNTX", cDbf1, "TEST_3",TRUE)
+	DbCreate(cDbf2, {{"FLD1" , "C" , 10 , 0} })
+    DbUseArea(TRUE,"DBFNTX", cDbf2,"TEST2")
+    DbCloseAll()
+
+
 
 function testadsmemo as void       
 LOCAL cDbf AS STRING

@@ -7,54 +7,29 @@
 USING System.Collections.Generic
 
 
-/// <summary>
-/// Perform an assignment to a variable whose name is stored in a specified string.
-/// </summary>
-/// <param name="cExp"></param>
-/// <param name="xValue"></param>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/massign/*" />
 /// <include file="RTComments.xml" path="Comments/Memvar/*" />
-FUNCTION MAssign(cExp AS STRING,xValue AS USUAL) AS USUAL
-    RETURN MemVarPutSym(cExp, xValue)
+FUNCTION MAssign(cExp AS STRING,uValue AS USUAL) AS USUAL
+    RETURN MemVarPutSym(cExp, uValue)
     
     
-/// <summary>
-/// Return a set-get code block for a given memory variable.
-/// </summary>
-/// <param name="cVar"></param>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/memvarblock/*" />
 /// <include file="RTComments.xml" path="Comments/Memvar/*" />
-FUNCTION MemVarBlock(cVar AS STRING) AS OBJECT
-    RETURN {| uValue| IIF (uValue == NIL, MemVarGet(cVar), MemVarPut(cVar, uValue))} 
+FUNCTION MemVarBlock(cMemvarName AS STRING) AS OBJECT
+    RETURN {| uValue| IIF (uValue == NIL, MemVarGet(cMemvarName), MemVarPut(cMemvarName, uValue))} 
     
     
-/// <summary>
-/// Return the contents of a memory variable.
-/// </summary>
-/// <param name="cVar">The name of the memory variable.</param>
-/// <returns>The value of the memory variable. When there is no memory variable with that name then a runtime error is thrown.</returns>
-/// <seealso cref='M:XSharp.RT.Functions.VarGet(System.String)' >VarGet</seealso>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/memvarget/*" />
 /// <include file="RTComments.xml" path="Comments/Memvar/*" />
-FUNCTION MemVarGet(cVar AS STRING) AS USUAL
-    RETURN XSharp.MemVar.Get(cVar)
+FUNCTION MemVarGet(cVarName AS STRING) AS USUAL
+    RETURN XSharp.MemVar.Get(cVarName)
     
     
     
-/// <summary>
-/// Assign a value to a memory variable of a given name.
-/// </summary>
-/// <param name="cVar">The name of the variable you want to create. </param>
-/// <param name="uValue">The value to assign to the variable. </param>
-/// <returns>The value assigned to the memvar.</returns>
-/// <remarks>
-/// If a memory variable with that name does not exits, a new memory variable is created.  Therefore, MemVarPut(), like VarPut() can be used to create undeclared memory variables.  It should be used instead of a macro.
-/// </remarks>
-/// <seealso cref='M:XSharp.RT.Functions.VarPut(System.String,XSharp.__Usual)' >VarPut</seealso>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/memvarput/*" />
 /// <include file="RTComments.xml" path="Comments/Memvar/*" />
-FUNCTION MemVarPut(cVar AS STRING,uValue AS USUAL) AS USUAL
-    RETURN XSharp.MemVar.Put(cVar, uValue) 
+FUNCTION MemVarPut(cVarName AS STRING,uValue AS USUAL) AS USUAL
+    RETURN XSharp.MemVar.Put(cVarName, uValue) 
     
 
 
@@ -83,32 +58,16 @@ FUNCTION MemVarRelease(symVar AS STRING) AS VOID
 
 
     
-/// <summary>Return the contents of a field or a memory variable.</summary>
-/// <param name="cVar">The name of the field or memory variable.</param>
-/// <returns>The value of the field or memory variable. When there is no field and also no memory variable then a runtime error is thrown.</returns>
-/// <remarks>
-/// This function is used instead of a macro when the name of the field or memory variable is in a string. 
-/// </remarks>
-/// <seealso cref='M:XSharp.RT.Functions.MemVarGet(System.String)' >MemVarGet</seealso>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/varget/*" />
 /// <include file="RTComments.xml" path="Comments/Memvar/*" />
-FUNCTION VarGet(cVar AS STRING) AS USUAL
-    RETURN __VarGet(cVar)
-    
-/// <summary>
-/// Assign a value to a field or a memory variable of a given name.
-/// </summary>
-/// <param name="cVar"> The name of the variable or field you want to Assign to </param>
-/// <param name="uValue">The value to assign to the variable</param>
-/// <returns>
-/// </returns>
-/// <remarks>
-/// If a field or memory variable with the specified name does not exist, then a new a memory variable is created.
-/// This function like MemVarPut(), can be used to create undeclared memory variables.  It should be used instead of a macro.
-/// </remarks>
-/// <seealso cref='M:XSharp.RT.Functions.MemVarPut(System.String,XSharp.__Usual)' >MemVarPut</seealso>
+FUNCTION VarGet(cVarName AS STRING) AS USUAL
+    RETURN __VarGet(cVarName)
+
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/varput/*" />    
 /// <include file="RTComments.xml" path="Comments/Memvar/*" />
-FUNCTION VarPut(cVar AS STRING,uValue AS USUAL) AS USUAL
-    RETURN __VarPut(cVar, uValue)
+FUNCTION VarPut(cVarName AS STRING,uValue AS USUAL) AS USUAL
+    RETURN __VarPut(cVarName, uValue)
     
 
 /// <inheritdoc cref='M:XSharp.RT.Functions.VarGet(System.String)' />
@@ -123,8 +82,8 @@ FUNCTION VarPutSym(symVar AS SYMBOL,uValue AS USUAL) AS USUAL
     
 /// <inheritdoc cref='M:XSharp.RT.Functions.MemVarBlock(System.String)' />
 /// <param name="symVar">The name of the variable .</param>
-FUNCTION MemVarBlockSym(symVar AS SYMBOL) AS OBJECT
-    RETURN {| uValue| IIF (uValue == NIL, MemVarGetSym(symVar), MemVarPutSym(symVar, uValue))} 
+FUNCTION MemVarBlockSym(symMemvarName AS SYMBOL) AS OBJECT
+    RETURN {| uValue| IIF (uValue == NIL, MemVarGetSym(symMemvarName), MemVarPutSym(symMemvarName, uValue))} 
     
 /// <inheritdoc cref='M:XSharp.RT.Functions.MemVarGet(System.String)' />
 /// <param name="symVar">The name of the variable .</param>

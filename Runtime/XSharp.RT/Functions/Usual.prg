@@ -6,25 +6,15 @@
 
 
 
-/// <summary>
-/// Determine if the result of an expression is empty.
-/// </summary>
-/// <param name="uVal"></param>
-/// <returns>
-/// </returns>
-FUNCTION Empty(uVal AS USUAL) AS LOGIC
-	RETURN uVal:IsEmpty
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/empty/*" />
+FUNCTION Empty(uValue AS USUAL) AS LOGIC
+	RETURN uValue:IsEmpty
 
 
-/// <summary>
-/// Return the empty value of a specified data type.
-/// </summary>
-/// <param name="dwType"></param>
-/// <returns>
-/// </returns>
-FUNCTION EmptyUsual(dwType AS DWORD) AS USUAL
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/emptyusual/*" />
+FUNCTION EmptyUsual(kType AS DWORD) AS USUAL
 	LOCAL result AS USUAL
-	SWITCH dwType
+	SWITCH kType
 	CASE ARRAY
 		result := USUAL{NULL_ARRAY}
 	CASE BYTE; CASE WORD; CASE DWORD; CASE SHORTINT;  CASE LONG; CASE INT64
@@ -32,7 +22,7 @@ FUNCTION EmptyUsual(dwType AS DWORD) AS USUAL
 	CASE FLOAT; CASE REAL4; CASE REAL8; CASE (DWORD) __UsualType.Decimal
 		result := USUAL{0.0}
 	CASE STRING
-		result := USUAL{NULL_STRING}
+		result := USUAL{""}
 	CASE DATE
 		result := USUAL{(DATE) 0}
 	CASE (DWORD) __UsualType.DateTime
@@ -50,17 +40,13 @@ FUNCTION EmptyUsual(dwType AS DWORD) AS USUAL
 	CASE CODEBLOCK
 		result := USUAL{NULL_CODEBLOCK}
 	OTHERWISE
-		THROW Error.ArgumentError(__ENTITY__, NAMEOF(dwType) , "Unknown type parameter")
+		THROW Error.ArgumentError(__ENTITY__, NAMEOF(kType) , "Unknown type parameter")
 	END SWITCH
 	RETURN result
 
-/// <summary>
-/// Determine if a value is an Array.
-/// </summary>
-/// <param name="uVal"></param>
-/// <returns>TRUE if the value is an ARRAY data type; otherwise, FALSE. </returns>
-FUNCTION IsArray(uVal AS USUAL) AS LOGIC
-	RETURN uVal:IsArray
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/isarray/*" />
+FUNCTION IsArray(uValue AS USUAL) AS LOGIC
+	RETURN uValue:IsArray
 
 /// <summary>
 /// Determine if a value is passed by reference
@@ -72,21 +58,13 @@ FUNCTION IsByRef(uVal AS USUAL) AS LOGIC
 	RETURN uVal:IsByRef
 
 
-/// <summary>
-/// Determine if a value is a code block.
-/// </summary>
-/// <param name="uVal">The value to examine.</param>
-/// <returns>TRUE if the value is a CODEBLOCK data type; otherwise, FALSE. </returns>
-FUNCTION IsCodeBlock(uVal AS USUAL) AS LOGIC
-	RETURN uVal:IsCodeBlock
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/iscodeblock/*" />
+FUNCTION IsCodeBlock(uValue AS USUAL) AS LOGIC
+	RETURN uValue:IsCodeBlock
 
-/// <summary>
-/// Determine if a value is a Date or a DateTime
-/// </summary>
-/// <param name="uVal">The value to examine.</param>
-/// <returns>TRUE if the value is a DATE or DATETIME data type; otherwise, FALSE. </returns>
-FUNCTION IsDate(uVal AS USUAL) AS LOGIC
-	RETURN uVal:IsDate .OR. uVal:IsDateTime
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/isdate/*" />
+FUNCTION IsDate(uValue AS USUAL) AS LOGIC
+	RETURN uValue:IsDate .OR. uValue:IsDateTime
 
 
 /// <summary>
@@ -113,13 +91,9 @@ FUNCTION IsDecimal(uVal AS USUAL) AS LOGIC
 FUNCTION IsFractional(uVal AS USUAL) AS LOGIC
 	RETURN uVal:IsFloat .OR. uVal:IsDecimal
 
-/// <summary>
-/// Determine if a value is a Float.
-/// </summary>
-/// <param name="uVal">The value to examine.</param>
-/// <returns>TRUE if the value is a FLOAT data type; otherwise, FALSE. </returns>
-FUNCTION IsFloat(uVal AS USUAL) AS LOGIC
-	RETURN uVal:IsFloat
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/isfloat/*" />
+FUNCTION IsFloat(uValue AS USUAL) AS LOGIC
+	RETURN uValue:IsFloat
 
 /// <summary>
 /// Determine if a value is a INT64.
@@ -137,86 +111,50 @@ FUNCTION IsInt64(uVal AS USUAL) AS LOGIC
 FUNCTION IsInteger(uVal AS USUAL) AS LOGIC
 	RETURN uVal:IsInteger
 
-/// <summary>
-/// Determine if a value is a Logic.
-/// </summary>
-/// <param name="uVal">The value to examine.</param>
-/// <returns>TRUE if the value is a LOGIC data type; otherwise, FALSE. </returns>
-FUNCTION IsLogic(uVal AS USUAL) AS LOGIC
-	RETURN uVal:IsLogic
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/islogic/*" />
+FUNCTION IsLogic(uValue AS USUAL) AS LOGIC
+	RETURN uValue:IsLogic
 
-/// <summary>
-/// Determine if a value is a LONGINT.
-/// </summary>
-/// <param name="uVal">The value to examine.</param>
-/// <returns>TRUE if the value is a LONG data type; otherwise, FALSE. </returns>
-FUNCTION IsLong(uVal AS USUAL) AS LOGIC
-	RETURN uVal:IsLong
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/islong/*" />
+FUNCTION IsLong(uValue AS USUAL) AS LOGIC
+	RETURN uValue:IsLong
 
 
-/// <summary>
-/// Determine if a value is __Usual._NIL.
-/// </summary>
-/// <param name="uVal">The value to examine.</param>
-/// <returns>TRUE if the value is NIL otherwise, FALSE. </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/isnil/*" />
+FUNCTION IsNil(uValue AS USUAL) AS LOGIC
+	RETURN uValue:IsNil
 
-FUNCTION IsNil(uVal AS USUAL) AS LOGIC
-	RETURN uVal:IsNil
-
-/// <summary>
-/// Determine if a value is a numeric.
-/// </summary>
-/// <param name="uVal">The value to examine.</param>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/isnumeric/*" />
 /// <returns>TRUE if the value is a LONG, FLOAT, IN64 or DECIMAL data type; otherwise, FALSE. </returns>
-FUNCTION IsNumeric(uVal AS USUAL) AS LOGIC
-	RETURN uVal:IsNumeric
+FUNCTION IsNumeric(uValue AS USUAL) AS LOGIC
+	RETURN uValue:IsNumeric
 
-/// <summary>
-/// Determine if a value is an object.
-/// </summary>
-/// <param name="uVal">The value to examine.</param>
-/// <returns>TRUE if the value is a OBJECT data type; otherwise, FALSE. </returns>
-FUNCTION IsObject(uVal AS USUAL) AS LOGIC
-	RETURN uVal:IsObject
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/isobject/*" />
+FUNCTION IsObject(uValue AS USUAL) AS LOGIC
+	RETURN uValue:IsObject
 
 
-/// <summary>
-/// Determine if a value is a pointer.
-/// </summary>
-/// <param name="uVal">The value to examine.</param>
-/// <returns>TRUE if the value is a PTR data type; otherwise, FALSE. </returns>
-FUNCTION IsPtr(uVal AS USUAL) AS LOGIC
-	RETURN uVal:IsPtr
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/isptr/*" />
+FUNCTION IsPtr(uValue AS USUAL) AS LOGIC
+	RETURN uValue:IsPtr
 
-/// <summary>
-/// Determine if a value is a string.
-/// </summary>
-/// <param name="uVal">The value to examine.</param>
-/// <returns>TRUE if the value is a STRING data type; otherwise, FALSE. </returns>
-FUNCTION IsString(uVal AS USUAL) AS LOGIC
-	RETURN uVal:IsString
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/isstring/*" />
+FUNCTION IsString(uValue AS USUAL) AS LOGIC
+	RETURN uValue:IsString
 
-/// <summary>
-/// Determine if a value is a Symbol.
-/// </summary>
-/// <param name="uVal">The value to examine.</param>
-/// <returns>TRUE if the value is a SYMBOL data type; otherwise, FALSE. </returns>
-FUNCTION IsSymbol(uVal AS USUAL) AS LOGIC
-	RETURN uVal:IsSymbol
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/issymbol/*" />
+FUNCTION IsSymbol(uValue AS USUAL) AS LOGIC
+	RETURN uValue:IsSymbol
 
 
-/// <summary>
-/// Return the length of a string or an Array.
-/// </summary>
-/// <param name="u">The string or array to measure.  In a string, each byte counts as 1, including an embedded null character (Chr(0)).  A NULL_STRING counts as 0.  In an array, each element counts as 1.</param>
-/// <returns>The length of the value.</returns>
-FUNCTION Len(u AS USUAL) AS DWORD
-	IF u:IsArray
-		RETURN (DWORD) ((ARRAY) u):Length
-	ELSEIF u:IsString
-		RETURN (DWORD) ((STRING) u):Length
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/len/*" />
+FUNCTION Len(uValue AS USUAL) AS DWORD
+	IF uValue:IsArray
+		RETURN (DWORD) ((ARRAY) uValue):Length
+	ELSEIF uValue:IsString
+		RETURN (DWORD) ((STRING) uValue):Length
 	ELSE
-		THROW Error.DataTypeError(__ENTITY__, u, 1, u)
+		THROW Error.DataTypeError(__ENTITY__, uValue, 1, uValue)
 	ENDIF
 
 

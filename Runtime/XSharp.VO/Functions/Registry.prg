@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -7,123 +7,109 @@ INTERNAL DEFINE VO_APPS			:= "Software\ComputerAssociates\CA-Visual Objects Appl
 INTERNAL DEFINE VO_LOCALMACHINE	:= "HKEY_LOCAL_MACHINE\"+VO_APPS 
 INTERNAL DEFINE VO_CURRENTUSER	:= "HKEY_CURRENT_USER\"+VO_APPS 
 USING Microsoft.Win32
-/// <summary>
-/// Save a numeric value to the Registry.
-/// </summary>
-/// <param name="cSubKey"></param>
-/// <param name="cKeyName"></param>
-/// <param name="nKeyVal"></param>
-/// <returns>
-/// </returns>
-FUNCTION SetRTRegInt(cSubKey AS STRING,cKeyName AS STRING,nKeyVal AS DWORD) AS LOGIC
-	LOCAL cKey AS STRING
-	cKey := VO_LOCALMACHINE
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setrtregint/*" />
+FUNCTION SetRTRegInt(cSubKey AS STRING,cKey AS STRING,dwKeyValue AS DWORD) AS LOGIC
+	LOCAL cFullKey AS STRING
+	cFullKey := VO_LOCALMACHINE
 	IF ! String.IsNullOrEmpty( cSubKey )
-		cKey += "\" + cSubKey
+		cFullKey += "\" + cSubKey
 	ENDIF
 	// try HKLM first
 	TRY
-		IF Registry.GetValue(cKey,cKeyName,NULL) != NULL
-			Registry.SetValue(cKey,cKeyName,nKeyVal)
+		IF Registry.GetValue(cFullKey,cKey,NULL) != NULL
+			Registry.SetValue(cFullKey,cKey,dwKeyValue)
 		ENDIF
+    CATCH
+        NOP
 	END TRY
 	// always write to HKCU
-	cKey := VO_CURRENTUSER
+	cFullKey := VO_CURRENTUSER
 	IF ! String.IsNullOrEmpty( cSubKey )
-		cKey += "\" + cSubKey
+		cFullKey += "\" + cSubKey
 	ENDIF
 	TRY    
-		Registry.SetValue(cKey,cKeyName,nKeyVal)
+		Registry.SetValue(cFullKey,cKey,dwKeyValue)
+    CATCH
+        NOP
 	END TRY
-	RETURN ! Registry.GetValue(cKey,cKeyName,NULL) == NULL
+	RETURN ! Registry.GetValue(cFullKey,cKey,NULL) == NULL
 	
 	
-	/// <summary>
-	/// Save a string value to the Registry.
-	/// </summary>
-	/// <param name="cSubKey"></param>
-	/// <param name="cKeyName"></param>
-	/// <param name="cKeyVal"></param>
-	/// <returns>
-	/// </returns>
-FUNCTION SetRTRegString(cSubKey AS STRING,cKeyName AS STRING,cKeyVal AS STRING) AS LOGIC
-	LOCAL cKey AS STRING
-	cKey := VO_LOCALMACHINE
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setrtregstring/*" />
+FUNCTION SetRTRegString(cSubKey AS STRING,cKey AS STRING,cValue AS STRING) AS LOGIC
+	LOCAL cFullKey AS STRING
+	cFullKey := VO_LOCALMACHINE
 	IF ! String.IsNullOrEmpty( cSubKey )
-		cKey += "\" + cSubKey
+		cFullKey += "\" + cSubKey
 	ENDIF
 	// try HKLM first
 	TRY    
-		IF Registry.GetValue(cKey,cKeyName,NULL) != NULL
-			Registry.SetValue(cKey,cKeyName,cKeyVal)
+		IF Registry.GetValue(cFullKey,cKey,NULL) != NULL
+			Registry.SetValue(cFullKey,cKey,cValue)
 		ENDIF
+    CATCH
+        NOP
 	END TRY
 	// always write to HKCU
-	cKey := VO_CURRENTUSER
+	cFullKey := VO_CURRENTUSER
 	IF ! String.IsNullOrEmpty( cSubKey )
-		cKey += "\" + cSubKey
+		cFullKey += "\" + cSubKey
 	ENDIF
 	TRY    
-		Registry.SetValue(cKey,cKeyName,cKeyVal)
+		Registry.SetValue(cFullKey,cKey,cValue)
+    CATCH
+        NOP
 	END TRY
-	RETURN ! Registry.GetValue(cKey,cKeyName,NULL) == NULL
+	RETURN ! Registry.GetValue(cFullKey,cKey,NULL) == NULL
 	
-	/// <summary>
-	/// Retrieve a numeric value from the Registry.
-	/// </summary>
-	/// <param name="cSubKey"></param>
-	/// <param name="cKeyName"></param>
-	/// <returns>
-	/// </returns>
-FUNCTION QueryRTRegInt(cSubKey AS STRING,cKeyName AS STRING) AS DWORD
-	LOCAL cKey AS STRING
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/queryrtregint/*" />
+FUNCTION QueryRTRegInt(cSubKey AS STRING,cKey AS STRING) AS DWORD
+	LOCAL cFullKey AS STRING
 	LOCAL o AS OBJECT
 	
 	// First try to read from HKCU
-	cKey := VO_CURRENTUSER
+	cFullKey := VO_CURRENTUSER
 	IF ! String.IsNullOrEmpty( cSubKey )
-		cKey += "\" + cSubKey
+		cFullKey += "\" + cSubKey
 	ENDIF
-	o := Registry.GetValue(cKey,cKeyName,NULL)
+	o := Registry.GetValue(cFullKey,cKey,NULL)
 	// If that fails then read from HKLM
 	IF o == NULL
-		cKey := VO_LOCALMACHINE
+		cFullKey := VO_LOCALMACHINE
 		IF ! String.IsNullOrEmpty( cSubKey )
-			cKey += "\" + cSubKey
+			cFullKey += "\" + cSubKey
 		ENDIF
 		TRY
-			o := Registry.GetValue(cKey,cKeyName,NULL)
+			o := Registry.GetValue(cFullKey,cKey,NULL)
+        CATCH
+            o := NULL
 		END TRY
 		IF o == NULL
-			o := 0
+		    o := 0
 		ENDIF
 	ENDIF
 	
 	RETURN Convert.ToUInt32(o)
-	/// <summary>
-	/// Retrieve a string value from the Registry.
-	/// </summary>
-	/// <param name="cSubKey"></param>
-	/// <param name="cKeyName"></param>
-	/// <returns>
-	/// </returns>
-FUNCTION QueryRTRegString(cSubKey AS STRING,cKeyName AS STRING) AS STRING
-	LOCAL cKey AS STRING
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/queryrtregstring/*" />
+FUNCTION QueryRTRegString(cSubKey AS STRING,cKey AS STRING) AS STRING
+	LOCAL cFullKey AS STRING
 	LOCAL o AS OBJECT
 	
-	cKey := VO_CURRENTUSER
+	cFullKey := VO_CURRENTUSER
 	IF ! String.IsNullOrEmpty( cSubKey )
-		cKey += "\" + cSubKey
+		cFullKey += "\" + cSubKey
 	ENDIF
 	
-	o := Registry.GetValue(cKey,cKeyName,NULL)
+	o := Registry.GetValue(cFullKey,cKey,NULL)
 	IF o == NULL
-		cKey := VO_LOCALMACHINE
+		cFullKey := VO_LOCALMACHINE
 		IF ! String.IsNullOrEmpty( cSubKey )
-			cKey += "\" + cSubKey
+			cFullKey += "\" + cSubKey
 		ENDIF
 		TRY
-			o := Registry.GetValue(cKey,cKeyName,NULL)
+			o := Registry.GetValue(cFullKey,cKey,NULL)
+        CATCH
+            o := NULL
 		END TRY
 		IF o == NULL
 			o := ""
@@ -133,23 +119,26 @@ FUNCTION QueryRTRegString(cSubKey AS STRING,cKeyName AS STRING) AS STRING
 	RETURN Convert.ToString(o)
 	
 	
-	/// <summary>
-	/// </summary>
-	/// <param name="cSubKey"></param>
-	/// <returns>
-	/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/deletertregkey/*" />
 FUNCTION DeleteRTRegKey(cSubKey AS STRING) AS LOGIC
-LOCAL oKey := NULL AS RegistryKey 
+    LOCAL oKey := NULL AS RegistryKey
+    lOCAL succeeded := FALSE AS LOGIC
 	TRY
-	oKey := Registry.LocalMachine:OpenSubKey(VO_APPS, TRUE)
-		IF (oKey != NULL)
-	oKey:DeleteSubKey(cSubKey)
-ENDIF
-END TRY
+	    oKey := Registry.LocalMachine:OpenSubKey(VO_APPS, TRUE)
+	    IF oKey != NULL
+	        oKey:DeleteSubKey(cSubKey)
+            succeeded := TRUE
+        ENDIF
+    CATCH
+        NOP
+    END TRY
 	TRY
-	oKey := Registry.CurrentUser:OpenSubKey(VO_APPS, TRUE)
-		IF (oKey != NULL)
-	oKey:DeleteSubKey(cSubKey)
-ENDIF
-END TRY
-RETURN oKey != NULL_OBJECT
+	    oKey := Registry.CurrentUser:OpenSubKey(VO_APPS, TRUE)
+	    IF oKey != NULL
+	        oKey:DeleteSubKey(cSubKey)
+            succeeded := TRUE
+        ENDIF
+    CATCH
+        NOP
+    END TRY
+RETURN succeeded

@@ -11,15 +11,15 @@ USING System.Runtime.CompilerServices
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 #ifdef DEBUG
-    [ASSEMBLY: AssemblyConfiguration("Debug")]
+    [Assembly: AssemblyConfiguration("Debug")]
 #else
-    [ASSEMBLY: AssemblyConfiguration("Release")]
+    [Assembly: AssemblyConfiguration("Release")]
 #endif
-[ASSEMBLY: AssemblyProduct(XSharp.Constants.Product)]
-[ASSEMBLY: AssemblyCompany(XSharp.Constants.Company)]
-[ASSEMBLY: AssemblyCopyright(XSharp.Constants.Copyright)]
-[ASSEMBLY: AssemblyCulture("")]
+[Assembly: AssemblyProduct(XSharp.Constants.Product)]
+[Assembly: AssemblyCompany(XSharp.Constants.Company)]
+[Assembly: AssemblyCopyright(XSharp.Constants.Copyright)]
+[Assembly: AssemblyCulture("")]
 
-[ASSEMBLY: AssemblyVersion(XSharp.Constants.Version)]
-[ASSEMBLY: AssemblyFileVersion(XSharp.Constants.FileVersion)]
-[ASSEMBLY: AssemblyInformationalVersion(XSharp.Constants.InformationalVersion)]
+[Assembly: AssemblyVersion(XSharp.Constants.Version)]
+[Assembly: AssemblyFileVersion(XSharp.Constants.FileVersion)]
+[Assembly: AssemblyInformationalVersion(XSharp.Constants.InformationalVersion)]

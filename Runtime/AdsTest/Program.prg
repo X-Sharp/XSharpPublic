@@ -6,16 +6,30 @@ using VO
 FUNCTION MyThrow(e as Exception)
     THROW e
 
-function Start as void
+function xStart as void
+    TRY
+    
     DbUseArea(TRUE,"AXDBFCDX","c:\download\test\adssql\TagMenu","TagMenu",TRUE,FALSE)
+    DbSetIndex("c:\download\test\adssql\TagMenu1")
+    DbSetIndex("c:\download\test\adssql\TagMenu2")
+    ? DbSetOrder(0)
+    ? DbGoTop()
+    ? "before", Recno()
+    ? DbSetOrder("DATUM")
+    ? "after",Recno()
+    ? DbSetOrder(1)
+    ? "after",Recno()
     ?  TagMenu->(DbOrderInfo(DBOI_ORDERCOUNT))
     ?  TagMenu->(DbOrderInfo(DBOI_NAME,,1))
     ?  TagMenu->(DbOrderInfo(DBOI_EXPRESSION,,1))
     ? TagMenu->(DbAppend())
     ? TagMenu->(Rlock())
     ? TagMenu->(DbUnlock())
-    WAIT
     DbCloseArea()
+    CATCH e AS Exception
+        ? e:ToString()
+    END TRY
+    WAIT
     RETURN
 function StartSql() as void
 	local cPath			as string      
@@ -146,3 +160,32 @@ METHOD Refresh( @@params )
 END CLASS
 
 
+
+
+function start as void       
+LOCAL cDbf AS STRING
+	cDbf := "C:\adstest\memodbf"
+	FErase(cDbf + ".cdx")
+	FErase(cDbf + ".fpt")
+	FErase(cDbf + ".dbf")
+	RDDINFO(SET.MEMOBLOCKSIZE, 512)
+
+	RddSetDefault("DBFCDX")
+	DbCreate(cDbf, {{"FLD1" , "C" , 10 , 0} , {"FLDM" , "M" , 10 , 0}})
+	DbUseArea(,,cDbf)
+	DbAppend()
+	FieldPut(1, "abc") 
+	DbAppend()
+	FieldPut(2, "this is a somewhat long text")
+	DbCloseArea()
+	 
+	
+	RddSetDefault("AXDBFCDX")
+	? XSharp.RDD.Functions.AX_SetServerType(FALSE,FALSE,TRUE)
+	? DbUseArea(,,cDbf)
+	? FieldGet(2)
+	DbSkip()
+	? FieldGet(2)
+	? DbCloseArea()
+    wait
+RETURN

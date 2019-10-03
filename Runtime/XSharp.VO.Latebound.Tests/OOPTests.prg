@@ -52,7 +52,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			uValue := oObject
 			Assert.Equal(TRUE, IsInstanceOfUsual(uValue, #Father))
 			// IVarLIst
-			VAR aVars := IVarList(oObject)
+			VAR aVars := IvarList(oObject)
 			Assert.Equal(3, (INT) ALen(aVars))
 			// MethodList
 			VAR aMethods := MethodList(oObject)
@@ -421,12 +421,15 @@ END CLASS
 
 
 CLASS ClassWithNoMethod
-	METHOD NoMethod(cMethodName, arg1, arg2, arg3)
+	METHOD NoMethod(arg1, arg2, arg3 , uNil)
+		LOCAL cMethodName AS STRING
+		cMethodName := NoMethod()
 		IF cMethodName = "ADD"
 			RETURN arg1+arg2+arg3
 		ELSEIF cMethodName = "MUL"
 			RETURN arg1*arg2*arg3
 		ENDIF
+		Assert.True(IsNil(uNil))
 		RETURN cMethodName
 END CLASS
 

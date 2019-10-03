@@ -6,9 +6,11 @@
 USING XSharp.RDD.Support
 USING XSharp.RDD.NTX
 USING XSharp.RDD.Enums
+USING System.Diagnostics
 
 BEGIN NAMESPACE XSharp.RDD
     /// <summary>DBFNTX RDD. For DBF/DBT/NTX.</summary>
+    [DebuggerDisplay("DBFNTX ({Alias,nq})")];
     CLASS DBFNTX INHERIT DBFDBT
         INTERNAL _indexList AS NtxOrderList
         INTERNAL PROPERTY CurrentOrder AS NtxOrder GET _indexList:CurrentOrder

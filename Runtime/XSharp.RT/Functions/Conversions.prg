@@ -190,20 +190,7 @@ INTERNAL STATIC CLASS ConversionHelpers
 
 END CLASS
 
-/// <summary>
-/// Convert a value to a hexadecimal string.
-/// </summary>
-/// <param name="uValue">A string or Numeric value.</param>
-/// <returns>A string with the hex representation of the value</returns>
-/// <example>
-/// LOCAL cAlpha AS STRING <br/>
-/// LOCAL siSum AS SHORTINT<br/>
-/// cAlpha := "ABCDEF"<br/>
-/// siSum := 100<br/>
-/// ? AsHexString(cAlpha)                  // 41 42 43 44 45 46<br/>
-/// ? AsHexString(siSum)                   // 00000064<br/>
-/// ? AsHexString("abcdef")                // 61 62 63 64 65 66<br/>
-/// </example>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ashexstring/*" /> 
 /// <seealso cref='M:XSharp.Core.Functions.C2Hex(System.String)' >C2Hex</seealso>
 /// <seealso cref='M:XSharp.Core.Functions._C2Hex(System.String,System.Boolean)' >_C2Hex</seealso>
 FUNCTION AsHexString(uValue AS USUAL) AS STRING
@@ -221,15 +208,9 @@ FUNCTION AsHexString(uValue AS USUAL) AS STRING
     ENDIF
     RETURN result
 
-    /// <summary>
-    /// Convert a value to a right-padded string.
-    /// </summary>
-    /// <param name="u">The value to be converted.</param>
-    /// <param name="dwLen">The length of the padded string.</param>
-    /// <returns>A right-padded string of length dwLen containing the converted value.
-    /// </returns>
-FUNCTION AsPadr(u AS USUAL,dwLen AS DWORD) AS STRING
-    RETURN PadR(AsString(u), dwLen)
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aspadr/*" />
+FUNCTION AsPadr(uValue AS USUAL,wLen AS DWORD) AS STRING
+    RETURN PadR(AsString(uValue), wLen)
 
 
 /// <exclude />
@@ -237,25 +218,20 @@ FUNCTION _AsString(u AS USUAL) AS STRING
     RETURN	 AsString(u)
 
 
-/// <summary>
-/// Convert a value to a string.
-/// </summary>
-/// <param name="u">The value to be converted.</param>
-/// <returns>A string containing the converted value.  Please note that this is NOT the same as the .Net ToString(). AsString() tries to emulate the VO Behaviour as correctly as possible.
-/// </returns>
-FUNCTION AsString(u AS USUAL) AS STRING
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/asstring/*" />
+FUNCTION AsString(uValue AS USUAL) AS STRING
     LOCAL result AS STRING
     DO CASE
-        CASE u:IsString
-            result := (STRING) u
-        CASE u:IsNumeric
-            result := NTrim(u)
-        CASE u:IsSymbol
-            result := Symbol2String( (SYMBOL) u)
-        CASE u:IsDate
-            result := DToC( (DATE) u)
-        CASE u:IsArray
-            VAR aValue := (ARRAY) u
+        CASE uValue:IsString
+            result := (STRING) uValue
+        CASE uValue:IsNumeric
+            result := NTrim(uValue)
+        CASE uValue:IsSymbol
+            result := Symbol2String( (SYMBOL) uValue)
+        CASE uValue:IsDate
+            result := DToC( (DATE) uValue)
+        CASE uValue:IsArray
+            VAR aValue := (ARRAY) uValue
             //  {[0000000003]0x025400FC}
             IF aValue == NULL_ARRAY
                 result := "{[0000000000]0x00000000}"
@@ -264,8 +240,8 @@ FUNCTION AsString(u AS USUAL) AS STRING
                 result := "{["+STRING.Format("{0:D10}",aValue:Length)+"]0x"+cHashCode+"}"
             ENDIF
 
-        CASE u:IsObject
-            LOCAL oValue := u AS OBJECT
+        CASE uValue:IsObject
+            LOCAL oValue := uValue AS OBJECT
             IF oValue == NULL_OBJECT
                 result := "{(0x0000)0x00000000} CLASS "
             ELSE
@@ -275,28 +251,17 @@ FUNCTION AsString(u AS USUAL) AS STRING
                 result := "{(0x"+String.Format("{0:X4}", nSize)+")0x"+cHashCode+"} CLASS " + oType:Name:ToUpperInvariant()
             ENDIF
         OTHERWISE
-            result := u:ToString()
+            result := uValue:ToString()
     ENDCASE
     RETURN result
 
 
-    /// <summary>
-    /// Convert a string or a Psz to a Symbol.
-    /// </summary>
-    /// <param name="u">The Usual holding a string or Psz</param>
-    /// <returns>
-    /// The Symbol representing the given string or Psz.
-    /// </returns>
-FUNCTION AsSymbol(u AS USUAL) AS SYMBOL
-    RETURN SYMBOL{(STRING)u, TRUE}
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/assymbol/*" />
+FUNCTION AsSymbol(uValue AS USUAL) AS SYMBOL
+    RETURN SYMBOL{(STRING)uValue, TRUE}
 
 
-    /// <summary>
-    /// Create a descending order key value.
-    /// </summary>
-    /// <param name="uValue"></param>
-    /// <returns>
-    /// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/descend/*" />
 FUNCTION Descend(uValue AS USUAL) AS USUAL
     IF uValue:isString
         RETURN _descendingString( (STRING) uValue)
@@ -325,72 +290,45 @@ INTERNAL FUNCTION _descendingString(s AS STRING) AS STRING
     RETURN sb:ToString()
 
 
-/// <summary>
-/// Create a descending order key value. The parameter is also changed
-/// </summary>
-/// <param name="uValue"></param>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/descend/*" />
 FUNCTION DescendA(uValue REF USUAL) AS USUAL
     uValue := Descend(uValue)
     RETURN uValue
 
 
 
-/// <summary>
-/// Convert a numeric expression to a left-trimmed string.
-/// </summary>
-/// <param name="n">A Usual with a numeric or date value</param>
-/// <returns>NTrim() returns the same value as LTrim(Str(nNum)).
-/// Thus, any conversion rules that apply to the Str() function also apply to the NTrim() function.</returns>
-/// <example>
-/// ? NTrim(234)                     // "234" <br/>
-/// ? LTrim(Str(234))                // "234"<br/>
-/// ? Str(234)                       // "       234"<br/>
-/// </example>
-/// <seealso cref='M:XSharp.Core.Functions.LTrim(System.String)'>LTrim</seealso>
-/// <seealso cref='M:XSharp.RT.Functions.Str(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)'>Str</seealso>
-FUNCTION NTrim(n AS USUAL) AS STRING
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ntrim/*" />
+FUNCTION NTrim(nNum AS USUAL) AS STRING
     LOCAL ret AS STRING
-    SWITCH n:_UsualType
+    SWITCH nNum:_UsualType
     CASE __usualType.Int64
     CASE __usualType.Long
-      ret := ConversionHelpers.FormatNumber( (INT64) n, (INT) RuntimeState.Digits, 0):Trim()
+      ret := ConversionHelpers.FormatNumber( (INT64) nNum, (INT) RuntimeState.Digits, 0):Trim()
     CASE __UsualType.Date
-      ret := AsString( n )
+      ret := AsString( nNum )
     CASE __UsualType.Float
     CASE __UsualType.Decimal
-      ret := ConversionHelpers.AdjustDecimalSeparator(_Str1(  (FLOAT) n )):Trim()
+      ret := ConversionHelpers.AdjustDecimalSeparator(_Str1(  (FLOAT) nNum )):Trim()
     OTHERWISE
-      THROW Error.DataTypeError( __FUNCTION__, NAMEOF(n), 1, n)
+      THROW Error.DataTypeError( __FUNCTION__, NAMEOF(nNum), 1, nNum)
    END SWITCH
    RETURN ret
 
 
-/// <summary>Pad values with fill characters on the right.</summary>
-/// <param name="uValue">Value to pad </param>
-/// <param name="nLength">Length of result string. </param>
-/// <param name="cPad">Pad character to use. Defaults to the space character.</param>
-/// <returns>The string padded to the requested length. When the value is longer than the requested length 
-/// then the string will be truncated to that length.</returns>
-/// <seealso cref="M:XSharp.RT.Functions.PadR(XSharp.__Usual,System.Int32,System.String)" />
-/// <seealso cref="M:XSharp.RT.Functions.PadC(XSharp.__Usual,System.Int32,System.String)" />
-/// <seealso cref="M:XSharp.RT.Functions.PadL(XSharp.__Usual,System.Int32,System.String)" />
-/// <seealso cref="M:XSharp.RT.Functions.Pad(XSharp.__Usual,System.Int32,System.String)" />
-FUNCTION Pad( uValue AS USUAL, nLength AS INT, cPad := " " AS STRING ) AS STRING
-    RETURN PadR( uValue, nLength, cPad )
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/pad/*" />
+FUNCTION Pad( uValue AS USUAL, nLength AS INT, cFillChar := " " AS STRING ) AS STRING
+    RETURN PadR( uValue, nLength, cFillChar )
 
 /// <inheritdoc cref="M:XSharp.RT.Functions.Pad(XSharp.__Usual,System.Int32,System.String)" />
-FUNCTION Pad( uValue AS USUAL, nLength AS DWORD, cPad := " " AS STRING ) AS STRING
-    RETURN PadR( uValue, (INT) nLength, cPad )
+FUNCTION Pad( uValue AS USUAL, nLength AS DWORD, cFillChar := " " AS STRING ) AS STRING
+    RETURN PadR( uValue, (INT) nLength, cFillChar )
 
 
-/// <summary>Pad values with fill characters on both the right and left.</summary>
-/// <inheritdoc cref="M:XSharp.RT.Functions.Pad(XSharp.__Usual,System.Int32,System.String)" />
-FUNCTION PadC( uValue AS USUAL, nLength AS INT, cPad := " " AS STRING ) AS STRING
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/padc/*" />
+FUNCTION PadC( uValue AS USUAL, nLength AS INT, cFillChar := " " AS STRING ) AS STRING
     // If they send in an empty string then change to " "
-    IF cPad == NULL .OR. cPad :Length == 0
-        cPad := " "
+    IF cFillChar == NULL .OR. cFillChar :Length == 0
+        cFillChar := " "
     ENDIF
 
     LOCAL ret     AS STRING
@@ -410,23 +348,21 @@ FUNCTION PadC( uValue AS USUAL, nLength AS INT, cPad := " " AS STRING ) AS STRIN
     ELSE
         VAR leftSpace := Space((DWORD) ( nLength - retlen ) / 2)
         ret := leftSpace+ret
-        ret := ret:PadRight( nLength, cPad[0] )
+        ret := ret:PadRight( nLength, cFillChar[0] )
     ENDIF
 
     RETURN ret
 
-/// <summary>Pad values with fill characters on both the right and left.</summary>
-/// <inheritdoc cref="M:XSharp.RT.Functions.Pad(XSharp.__Usual,System.Int32,System.String)" />
-FUNCTION PadC( uValue AS USUAL, nLength AS DWORD, cPad := " " AS STRING ) AS STRING
-    RETURN PadC( uValue, (INT) nLength, cPad )
+/// <inheritdoc cref="M:XSharp.RT.Functions.PadC(XSharp.__Usual,System.Int32,System.String)" />
+FUNCTION PadC( uValue AS USUAL, nLength AS DWORD, cFillChar := " " AS STRING ) AS STRING
+    RETURN PadC( uValue, (INT) nLength, cFillChar )
 
 
-/// <summary>Pad values with fill characters on the left.</summary>
-/// <inheritdoc cref="M:XSharp.RT.Functions.Pad(XSharp.__Usual,System.Int32,System.String)" />
-FUNCTION PadL( uValue AS USUAL, nLength AS INT, cPad := " " AS STRING ) AS STRING
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/padl/*" />
+FUNCTION PadL( uValue AS USUAL, nLength AS INT, cFillChar := " " AS STRING ) AS STRING
     // If they send in an empty string then change to " "
-    IF cPad == NULL .OR. cPad :Length == 0
-        cPad := " "
+    IF cFillChar == NULL .OR. cFillChar :Length == 0
+        cFillChar := " "
     ENDIF
     LOCAL ret AS STRING
     IF uValue:IsNil
@@ -436,23 +372,22 @@ FUNCTION PadL( uValue AS USUAL, nLength AS INT, cPad := " " AS STRING ) AS STRIN
     ELSE
         ret := uValue:ToString()
     ENDIF
-    RETURN IIF( ret:Length > nLength, ret:Remove( nLength ), ret:PadLeft( nLength, cPad[0] ) )
+    RETURN IIF( ret:Length > nLength, ret:Remove( nLength ), ret:PadLeft( nLength, cFillChar[0] ) )
 
-/// <summary>Pad values with fill characters on the left.</summary>
-/// <inheritdoc cref="M:XSharp.RT.Functions.Pad(XSharp.__Usual,System.Int32,System.String)" />
-FUNCTION PadL( uValue AS USUAL, nLength AS DWORD, cPad := " " AS STRING ) AS STRING
-    RETURN PadL( uValue, (INT) nLength, cPad )
+/// <inheritdoc cref="M:XSharp.RT.Functions.PadL(XSharp.__Usual,System.Int32,System.String)" />
+FUNCTION PadL( uValue AS USUAL, nLength AS DWORD, cFillChar := " " AS STRING ) AS STRING
+    RETURN PadL( uValue, (INT) nLength, cFillChar )
 
 
-/// <inheritdoc cref="M:XSharp.RT.Functions.Pad(XSharp.__Usual,System.Int32,System.String)" />
-FUNCTION PadR( uValue AS USUAL, nLength AS DWORD, cPad := " " AS STRING ) AS STRING
-    RETURN PadR( uValue, (INT) nLength, cPad )
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/padr/*" />
+FUNCTION PadR( uValue AS USUAL, nLength AS DWORD, cFillChar := " " AS STRING ) AS STRING
+    RETURN PadR( uValue, (INT) nLength, cFillChar )
 
-/// <inheritdoc cref="M:XSharp.RT.Functions.Pad(XSharp.__Usual,System.Int32,System.String)" />
-FUNCTION PadR( uValue AS USUAL, nLength AS INT, cPad := " " AS STRING ) AS STRING
+/// <inheritdoc cref="M:XSharp.RT.Functions.PadR(XSharp.__Usual,System.UInt32,System.String)" />
+FUNCTION PadR( uValue AS USUAL, nLength AS INT, cFillChar := " " AS STRING ) AS STRING
     // If they send in an empty string then change to " "
-    IF cPad == NULL .OR. cPad:Length == 0
-        cPad := " "
+    IF cFillChar == NULL .OR. cFillChar:Length == 0
+        cFillChar := " "
     ENDIF
     LOCAL ret AS STRING
     IF uValue:IsNil
@@ -462,71 +397,26 @@ FUNCTION PadR( uValue AS USUAL, nLength AS INT, cPad := " " AS STRING ) AS STRIN
     ELSE
         ret := uValue:ToString()
     ENDIF
-    RETURN IIF( ret:Length > nLength, ret:Remove( nLength ), ret:PadRight( nLength, cPad[0] ) )
+    RETURN IIF( ret:Length > nLength, ret:Remove( nLength ), ret:PadRight( nLength, cFillChar[0] ) )
 
-/// <summary>
-/// Convert a numeric expression to a string.
-/// </summary>
-/// <param name="n">The numeric expression to convert to a string. </param>
-/// <param name="uLen">The length of the string to return, including decimal digits, decimal point, and sign.<br/>
-/// A value of -1 specifies that any right padding is suppressed.  However, decimal places are still returned as specified in <paramref name="uLen"/>. <br/>
-/// If <paramref name="uLen" /> is not specified,  SetDigit() and SetDigitFixed() determine the number of digits that are returned. 
-/// </param>
-/// <param name="uDec">The number of decimal places in the return value.
-/// A value of -1 specifies that only the significant digits to the right of the decimal point are returned (see example below).
-/// The number of whole digits in the return value, however, are still determined by the <paramref name="uLen" /> argument. 
-/// If <paramref name="uDec" /> is not specified, SetDecimal() and SetFixed()  determine the number of decimals that are returned. <br/>
-/// The representation of the decimal point is determined by the current setting of SetDecimalSep().</param>
-
-/// <returns>The string with always a decimal separator that matches the current SetDecimalSep() setting. <br/>
-/// - If <paramref name="n" /> is an expression that yields a numeric overflow,
-/// a runtime error is generated that could be handled by the currently installed error handler.
-/// Either "+INF" or "-INF", which represent the biggest possible float number, is returned by the error handler. <br/>
-/// - If <paramref name="uLen"/> is less than the number of whole number digits in <paramref name="n"/>, the result will be in scientific notation.
-/// If the result of scientific notation does not fit, a series of asterisks is returned. <br/><br/>
-/// Rounding is determined as follows:<br/>
-/// - If <paramref name="uLen"/> is less than the number of decimal digits required for the decimal portion of the returned string, the return value is rounded to the available number of decimal places. <br/>
-/// - If <paramref name="uLen"/> is specified, but <paramref name="uDec"/> is omitted (no decimal places), the return value is rounded to an integer. <br/>
-/// - If <paramref name="uLen"/> and <paramref name="uDec"/> are not specified, they are taken out of the internal float format inside the FLOAT, or out of SetDigit() if the internal digit number is 0.
-/// If SetFixed() or SetDigitFixed() is TRUE, these values are overridden by the values of SetDecimal() or SetDigit().<br/>
-/// - If SetScience() is TRUE, the return will be in scientific notation. Moreover, If SetDigit() specifies a number that
-/// is less than the number of whole number digits in <paramref name="n" /> and SetDigitFixed() is set to TRUE, the result is in scientific notation.
-/// But if scientific notation does not fit, the result is a series of asterisks.<br/>
-/// </returns>
-/// <remarks>
-/// Str() is commonly used to concatenate numbers to strings.  Thus, it is useful for creating codes for items, such as part numbers, from numbers and for creating order keys that combine numeric and character data. <br/>
-/// Str() is like Transform(), which formats numbers as strings using a mask instead of length and decimal specifications.<br/>
-/// The inverse of Str() is Val() which converts numbers formatted as strings to numeric values.<br/>
-/// </remarks>
-/// <seealso cref="M:XSharp.RT.Functions.NTrim(XSharp.__Usual)" />
-/// <seealso cref="M:XSharp.RT.Functions.Str1(XSharp.__Usual)" />
-/// <seealso cref="M:XSharp.RT.Functions.Str2(XSharp.__Float,System.UInt32)" />
-/// <seealso cref="M:XSharp.RT.Functions.Str3(XSharp.__Float,System.UInt32,System.UInt32)" />
-/// <seealso cref="M:XSharp.RT.Functions.StrLong(System.Int32,System.UInt32,System.UInt32)" />
-/// <seealso cref="M:XSharp.RT.Functions.StrFloat(XSharp.__Float,System.UInt32,System.UInt32)" />
-/// <seealso cref="M:XSharp.Core.Functions.SetDigit(System.UInt32)" />
-/// <seealso cref="M:XSharp.Core.Functions.SetDigitFixed(System.Boolean)" />
-/// <seealso cref="M:XSharp.Core.Functions.SetDecimalSep(System.UInt32)" />
-/// <seealso cref="M:XSharp.Core.Functions.SetScience(System.Boolean)" />
-/// <seealso cref="M:XSharp.RT.Functions.Transform(XSharp.__Usual,System.String)" />
-/// <seealso cref="M:XSharp.RT.Functions.Val(System.String)" />
-FUNCTION Str(n ,uLen ,uDec ) AS STRING CLIPPER
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/str/*" />
+FUNCTION Str(nNumber ,nLength ,nDecimals ) AS STRING CLIPPER
     IF PCount() < 1 .OR. pCount() > 3
         RETURN ""
     ENDIF
 
     // Handle integer values
-    IF n:IsInteger .and. (PCount() <= 2 .or. (PCount() == 3 .and. uDec:IsNumeric .and. uDec == 0) )
+    IF nNumber:IsInteger .and. (PCount() <= 2 .or. (PCount() == 3 .and. nDecimals:IsNumeric .and. nDecimals == 0) )
     	LOCAL cRet AS STRING
     	LOCAL nDigits AS INT
 
-    	cRet := ((INT64)n):ToString()
+    	cRet := ((INT64)nNumber):ToString()
 
-    	IF uLen:IsNumeric
-    		IF uLen < 0
+    	IF nLength:IsNumeric
+    		IF nLength < 0
     			nDigits := cRet:Length
     		ELSE
-	    		nDigits := uLen
+	    		nDigits := nLength
     		END IF
     	ELSE
     		nDigits := (INT)RuntimeState.Digits
@@ -545,40 +435,34 @@ FUNCTION Str(n ,uLen ,uDec ) AS STRING CLIPPER
     LOCAL nLen AS DWORD
     LOCAL nDec AS DWORD
     LOCAL lTrimSpaces := FALSE AS LOGIC
-    IF uLen:IsNumeric
-        IF uLen < 0
+    IF nLength:IsNumeric
+        IF nLength < 0
             nLen := System.UInt32.MaxValue - 1
             lTrimSpaces := TRUE
         ELSE
-            nLen := (DWORD) uLen
+            nLen := (DWORD) nLength
         ENDIF
     ELSE
         nLen := System.UInt32.MaxValue
     ENDIF
-    IF ! uDec:IsNumeric
+    IF ! nDecimals:IsNumeric
         nDec := UInt32.MaxValue
     ELSE
-        IF uDec < 0
+        IF nDecimals < 0
             nDec := System.UInt32.MaxValue
         ELSE
-            nDec := (DWORD) uDec
+            nDec := (DWORD) nDecimals
         ENDIF
     ENDIF
-    result := _Str3(n, nLen, nDec)
+    result := _Str3(nNumber, nLen, nDec)
     IF lTrimSpaces
         result := result:TrimStart()
     END IF
     RETURN ConversionHelpers.AdjustDecimalSeparator(result)
 
 
-/// <summary>
-/// Convert a numeric expression to a string.
-/// </summary>
-/// <param name="nValue"></param>
-/// <param name="uLength"></param>
-/// <param name="uDec"></param>
-/// <returns>The string with always a DOT as decimal separator.</returns>
-
+/// <inheritdoc cref="M:XSharp.RT.Functions.Str(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)" />
+/// <returns>The returned string with always have a DOT as decimal separator.</returns>
 FUNCTION _Str(nValue ,uLen ,uDec ) AS STRING CLIPPER
     LOCAL nLen,  nDec AS LONG
     LOCAL dwLen, dwDec AS DWORD
@@ -670,87 +554,58 @@ INTERNAL FUNCTION _PadZero(cValue AS STRING) AS STRING
     RETURN cValue:TrimStart():PadLeft((INT) iLen, c'0')
 
 
-    /// <summary>
-    /// Convert a numeric expression to a string and pad it with leading zeroes instead of blanks.
-    /// </summary>
-    /// <param name="n"></param>
-    /// <param name="iLen"></param>
-    /// <param name="iDec"></param>
-    /// <returns>
-    /// </returns>
-FUNCTION StrZero(n AS USUAL,iLen AS INT,iDec AS INT) AS STRING
-    IF ! ( n:IsNumeric )
-      THROW Error.DataTypeError( __FUNCTION__, NAMEOF(n),1,n, iLen, iDec)
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/strzero/*" />
+FUNCTION StrZero(nNumber AS USUAL,nLength AS INT,nDecimals AS INT) AS STRING
+    IF ! ( nNumber:IsNumeric )
+      THROW Error.DataTypeError( __FUNCTION__, NAMEOF(nNumber),1,nNumber)
     ENDIF
-    LOCAL cValue := Str3(n, (DWORD) iLen, (DWORD) iDec) AS STRING
+    LOCAL cValue := Str3(nNumber, (DWORD) nLength, (DWORD) nDecimals) AS STRING
     RETURN _PadZero(cValue)
 
-/// <summary>
-/// Convert a numeric expression to a string and pad it with leading zeroes instead of blanks.
-/// </summary>
-/// <param name="n"></param>
-/// <param name="iLen"></param>
-/// <returns>
-/// </returns>
-FUNCTION StrZero(n AS USUAL,iLen AS INT) AS STRING
-    IF ! ( n:IsNumeric )
-      THROW Error.DataTypeError( __FUNCTION__, NAMEOF(n),1,n, iLen)
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/strzero/*" />
+FUNCTION StrZero(nNumber AS USUAL,nLength AS INT) AS STRING
+    IF ! ( nNumber:IsNumeric )
+      THROW Error.DataTypeError( __FUNCTION__, NAMEOF(nNumber),1,nNumber)
     ENDIF
-    LOCAL cValue := Str2(n, (DWORD) iLen) AS STRING
+    LOCAL cValue := Str2(nNumber, (DWORD) nLength) AS STRING
     RETURN _padZero(cValue)
 
 
-/// <summary>
-/// Convert a numeric expression to a string and pad it with leading zeroes instead of blanks.
-/// </summary>
-/// <param name="n"></param>
-/// <returns>
-/// </returns>
-FUNCTION StrZero(n AS USUAL) AS STRING
-    IF ! ( n:IsNumeric )
-      THROW Error.DataTypeError( __FUNCTION__, NAMEOF(n),1,n)
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/strzero/*" />
+FUNCTION StrZero(nNumber AS USUAL) AS STRING
+    IF ! ( nNumber:IsNumeric )
+      THROW Error.DataTypeError( __FUNCTION__, NAMEOF(nNumber),1,nNumber)
     ENDIF
-    LOCAL cValue := Str1(n) AS STRING
+    LOCAL cValue := Str1(nNumber) AS STRING
     RETURN _PadZero(cValue)
 
-    /// <summary>
-    /// Convert a number to a dword.
-    /// </summary>
-    /// <param name="n"></param>
-    /// <returns>
-    /// </returns>
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/toword/*" />
 FUNCTION ToWord(n AS USUAL) AS DWORD
     RETURN (DWORD) n
 
 
-/// <inheritdoc cref="M:XSharp.RT.Functions.StrLong(System.Int32,System.UInt32,System.UInt32)" />
-FUNCTION StrInt(l AS LONG,dwLen AS DWORD,dwDec AS DWORD) AS STRING
-    RETURN Str3( l, dwLen, dwDec)
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/strint/*" />
+FUNCTION StrInt(liNumber AS LONG,dwLength AS DWORD,dwDecimals AS DWORD) AS STRING
+    RETURN Str3( liNumber, dwLength, dwDecimals)
 
-/// <inheritdoc cref="M:XSharp.RT.Functions.Str3(XSharp.__Float,System.UInt32,System.UInt32)" />
-/// <param name="l">Number to format.</param>
-FUNCTION StrLong(l AS LONG,dwLen AS DWORD,dwDec AS DWORD) AS STRING
-    RETURN StrInt(l, dwLen, dwDec)
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/strlong/*" />
+FUNCTION StrLong(liNumber AS LONG,dwLength AS DWORD,dwDecimals AS DWORD) AS STRING
+    RETURN StrInt(liNumber, dwLength, dwDecimals)
 
-/// <inheritdoc cref="M:XSharp.RT.Functions.Str3(XSharp.__Float,System.UInt32,System.UInt32)" />
-FUNCTION StrFloat(f AS FLOAT,dwLen AS DWORD,dwDec AS DWORD) AS STRING
-    RETURN Str3( f, dwLen, dwDec )
-
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/strfloat/*" />
+FUNCTION StrFloat(flSource AS FLOAT,dwLength AS DWORD,dwDecimals AS DWORD) AS STRING
+    RETURN Str3( flSource, dwLength, dwDecimals )
 
 
 
-
-/// <summary>
-/// Convert a numeric expression to a string with an optional decimal separator based on the settings in the runtime state.
-/// </summary>
-/// <param name="f"></param>
-/// <returns>
-/// </returns>
-FUNCTION Str1(f AS USUAL) AS STRING
-    IF f:IsFloat
-        RETURN ConversionHelpers.AdjustDecimalSeparator(_Str1( (FLOAT) f))
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/str1/*" />
+FUNCTION Str1(fNumber AS USUAL) AS STRING
+    IF fNumber:IsFloat
+        RETURN ConversionHelpers.AdjustDecimalSeparator(_Str1( (FLOAT) fNumber))
     ELSE
-        RETURN ConversionHelpers.FormatNumber( (LONG) f, (INT) RuntimeState.Digits, 0):Trim()
+        RETURN ConversionHelpers.FormatNumber( (LONG) fNumber, (INT) RuntimeState.Digits, 0):Trim()
     ENDIF
 
 INTERNAL FUNCTION _Str1(f AS FLOAT) AS STRING
@@ -782,18 +637,13 @@ INTERNAL FUNCTION _Str1(f AS FLOAT) AS STRING
     RETURN result
 
 
-/// <summary>
-/// Convert a numeric expression to a string of a specified length.
-/// </summary>
-/// <param name="f">Number to format</param>
-/// <param name="dwLen">Total length of result string.</param>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/str2/*" />
 /// <returns>A string representation of the value.</returns>
 /// <seealso cref="M:XSharp.RT.Functions.Str(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)" />
 /// <seealso cref="M:XSharp.RT.Functions.Str1(XSharp.__Usual)" />
 /// <seealso cref="M:XSharp.RT.Functions.Str3(XSharp.__Float,System.UInt32,System.UInt32)" />
-
-FUNCTION Str2(f AS FLOAT,dwLen AS DWORD) AS STRING
-    RETURN ConversionHelpers.AdjustDecimalSeparator(_Str2(f, dwLen))
+FUNCTION Str2(fNumber AS FLOAT,dwLength AS DWORD) AS STRING
+    RETURN ConversionHelpers.AdjustDecimalSeparator(_Str2(fNumber, dwLength))
 
 
 INTERNAL FUNCTION _Str2(f AS FLOAT,dwLen AS DWORD) AS STRING
@@ -809,18 +659,12 @@ INTERNAL FUNCTION _Str2(f AS FLOAT,dwLen AS DWORD) AS STRING
    RETURN ConversionHelpers.FormatNumber(f, (INT) dwLen, nDecimals)
 
 
-/// <summary>
-/// Convert a numeric expression to a string of specific length and decimal places 
-/// </summary>
-/// <param name="f">Number to format</param>
-/// <param name="dwLen">Total length of result string.</param>
-/// <param name="dwDec">Number of decimals.</param>
-/// <returns>A string with decimal separator based on the runtime state.</returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/str3/*" />
 /// <seealso cref="M:XSharp.RT.Functions.Str(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)" />
 /// <seealso cref="M:XSharp.RT.Functions.Str1(XSharp.__Usual)" />
 /// <seealso cref="M:XSharp.RT.Functions.Str2(XSharp.__Float,System.UInt32)" />
-FUNCTION Str3(f AS FLOAT,dwLen AS DWORD,dwDec AS DWORD) AS STRING
-    RETURN ConversionHelpers.AdjustDecimalSeparator(_Str3(f, dwLen, dwDec))
+FUNCTION Str3(fNumber AS FLOAT,dwLength AS DWORD,dwDecimals AS DWORD) AS STRING
+    RETURN ConversionHelpers.AdjustDecimalSeparator(_Str3(fNumber, dwLength, dwDecimals))
 
 /// <inheritdoc cref="M:XSharp.RT.Functions.Str3(XSharp.__Float,System.UInt32,System.UInt32)" />
 /// <returns>A string with DOT as decimal separator.</returns>
@@ -875,11 +719,7 @@ FUNCTION StrToFloat(c AS STRING) AS FLOAT
 
 
 
-/// <summary>
-/// Convert a string containing a numeric value to a numeric data type.
-/// </summary>
-/// <param name="cNumber">Number to convert. This may contain decimal separator, Hex notation, U or L suffix or Exponential notation.</param>
-/// <returns>The numeric value as a USUAL.This may be a FLOAT, a LONG or an INT64.</returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/val/*" />
 FUNCTION Val(cNumber AS STRING) AS USUAL
     RETURN _VOVal(AllTrim(cNumber))
 
@@ -1088,19 +928,19 @@ FUNCTION Object2Float(oValue AS OBJECT) AS FLOAT
 
 
 
-
-FUNCTION Bin2F(c AS STRING) AS FLOAT
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/bin2f/*" />
+FUNCTION Bin2F(cFloat AS STRING) AS FLOAT
     LOCAL nDec AS WORD
     LOCAL val  AS REAL8
-    IF SLen(c) >= 12
-        nDec := Bin2W(SubStr3(c, 11,2))
-        val  := Bin2Real8(SubStr3(c, 1,8))
+    IF SLen(cFloat) >= 12
+        nDec := Bin2W(SubStr3(cFloat, 11,2))
+        val  := Bin2Real8(SubStr3(cFloat, 1,8))
         RETURN FLOAT{val, 0, nDec}
     ENDIF
     RETURN 0.0
     
 
-
-FUNCTION F2Bin(f AS FLOAT) AS STRING
-    RETURN Real82Bin(f:Value)+ e"\0\0" + W2Bin((WORD)f:Decimals)
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/f2bin/*" />
+FUNCTION F2Bin(fValue AS FLOAT) AS STRING
+    RETURN Real82Bin(fValue:Value)+ e"\0\0" + W2Bin((WORD)fValue:Decimals)
     

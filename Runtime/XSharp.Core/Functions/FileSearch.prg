@@ -154,70 +154,38 @@ INTERNAL STATIC CLASS XSharp.FileSearch
         RETURN  (DWORD)attributes
         
         END CLASS
-/// <summary>
-/// Return the number of files that match a given file specification and attribute.
-/// </summary>
-/// <param name="cFile"></param>
-/// <param name="nAttr"></param>
-/// <returns>The number of files that match a given file specification and attribute.
-/// </returns>
-FUNCTION FFCount(cFile AS STRING,nAttr AS DWORD) AS DWORD
-    RETURN XSharp.FileSearch.FFCount(cFile,nAttr)
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ffcount/*" />
+FUNCTION FFCount(pszFileSpec AS STRING,dwAttributes AS DWORD) AS DWORD
+    RETURN XSharp.FileSearch.FFCount(pszFileSpec,dwAttributes)
     
-    /// <summary>
-    /// Find the first file that matches a given file specification or attribute.
-    /// </summary>
-    /// <param name="cFile"></param>
-    /// <param name="nAttr"></param>
-    /// <returns>The first file that matches a given file specification or attribute.
-    /// </returns>
-FUNCTION FFirst(cFile AS STRING,nAttr AS DWORD) AS LOGIC
-    RETURN XSharp.FileSearch.FindFirst(cFile,nAttr)
-    /// <summary>
-    /// Determine the attributes of the file found after FFCount(), FFirst(), or FNext().
-    /// </summary>
-    /// <returns>The attributes of the file found after FFCount(), FFirst(), or FNext().
-    /// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ffirst/*" />
+FUNCTION FFirst(pszFileSpec AS STRING,kAttributes AS DWORD) AS LOGIC
+    RETURN XSharp.FileSearch.FindFirst(pszFileSpec,kAttributes)
+
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fattrib/*" />
 FUNCTION FAttrib() AS DWORD
     RETURN XSharp.FileSearch.FAttrib()
     
     
-    /// <summary>
-    /// Return the Date stamp of the file found by FFCount(), FFirst(), or FNext().
-    /// </summary>
-    /// <returns>The Date stamp of the file found by FFCount(), FFirst(), or FNext().
-    /// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fdate/*" />
 FUNCTION FDate() AS DateTime
     RETURN XSharp.FileSearch.FDate()
     
-    /// <summary>
-    /// Return the name of the file found by FFCount(), FFirst(), or FNext().
-    /// </summary>
-    /// <returns>
-    /// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fname/*" />
 FUNCTION FName() AS STRING
     RETURN XSharp.FileSearch.FName()
     
-    /// <summary>
-    /// Find the next file that matches the file previously found by FFirst().
-    /// </summary>
-    /// <returns>TRUE when a next file is found. Otherwise FALSE.
-    /// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fnext/*" />
 FUNCTION FNext() AS LOGIC
     RETURN XSharp.FileSearch.FindNext()
     
-    /// <summary>
-    /// Return the size of the file found by FFCount(), FFirst(), or FNext().
-    /// </summary>
-    /// <returns>The size of the file found by FFCount(), FFirst(), or FNext().
-    /// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fsize/*" />
 FUNCTION FSize() AS DWORD
     RETURN XSharp.FileSearch.FSize()
-    /// <summary>
-    /// Return the time stamp of the file found by FFCount(), FFirst(), or FNext().
-    /// </summary>
-    /// <returns>The time stamp of the file found by FFCount(), FFirst(), or FNext().
-    /// </returns>
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ftime/*" />
 FUNCTION FTime() AS STRING
     RETURN XSharp.FileSearch.FTime()
 
@@ -261,26 +229,20 @@ FUNCTION RegisterFileSearch(newWorker AS FileSearcher) AS FileSearcher
     ENDIF
     RETURN oldWorker
 
-    /// <summary>
-    /// Determine if any file matches a given file specification.
-    /// </summary>
-    /// <param name="cFile">The name oif the file</param>
-    /// <returns>
-    /// True if the file exists, otherwise false
-    /// </returns>
-FUNCTION File(cFile AS STRING) AS LOGIC
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/file/*" />
+FUNCTION File(cFileSpec AS STRING) AS LOGIC
     LOCAL lHasWildCards AS LOGIC
     LOCAL aPaths AS STRING[]
     LOCAL lFirst AS LOGIC
     TRY
-        cFile := cFile?:Trim()
-        IF String.IsNullOrEmpty(cFile)
+        cFileSpec := cFileSpec?:Trim()
+        IF String.IsNullOrEmpty(cFileSpec)
             RETURN FALSE
         ENDIF
-        lHasWildCards := cFile:IndexOfAny( <CHAR>{ '*', '?' } ) > 0
+        lHasWildCards := cFileSpec:IndexOfAny( <CHAR>{ '*', '?' } ) > 0
         XSharp.IO.File.LastFound := ""
         IF ! lHasWildCards
-            VAR cFound := XSharp.FileSearch.Worker(cFile)
+            VAR cFound := XSharp.FileSearch.Worker(cFileSpec)
             IF ! String.IsNullOrEmpty(cFound)
                 XSharp.IO.File.LastFound := cFound
                 RETURN TRUE
@@ -289,26 +251,26 @@ FUNCTION File(cFile AS STRING) AS LOGIC
             // wildcard, so use Directory.GetFiles()
             LOCAL files     AS STRING[]
         
-            IF Path.IsPathRooted(cFile)
-                files := Directory.GetFiles( Path.GetDirectoryName( cFile ), Path.GetFileName( cFile ) )
+            IF Path.IsPathRooted(cFileSpec)
+                files := Directory.GetFiles( Path.GetDirectoryName( cFileSpec ), Path.GetFileName( cFileSpec ) )
                 IF files:Length > 0
                     XSharp.IO.File.LastFound := files[1]
                     RETURN TRUE
                 ELSE
                     // store the first path that we looked in even when the file is not found
                     // to be compatible with VO
-                    XSharp.IO.File.LastFound := cFile
+                    XSharp.IO.File.LastFound := cFileSpec
                     RETURN FALSE
                 ENDIF
             ELSE
                 // Look in current directory first and if that fails through the whole normal search list
-                IF __FileHelper(Environment.CurrentDirectory, cFile, FALSE )
+                IF __FileHelper(Environment.CurrentDirectory, cFileSpec, FALSE )
                     RETURN TRUE
                 ENDIF
                 aPaths := __GetSearchPaths()
                 lFirst := TRUE
                 FOREACH cPath AS STRING IN aPaths
-                    IF __FileHelper(cPath, cFile, lFirst )
+                    IF __FileHelper(cPath, cFileSpec, lFirst )
                         RETURN TRUE
                     ENDIF
                     lFirst := FALSE
@@ -319,13 +281,10 @@ FUNCTION File(cFile AS STRING) AS LOGIC
         XSharp.IO.File.setErrorState(e)
     END TRY
     RETURN FALSE
-    /// <summary>
-    /// Return the name and path of the file that was used by FXOpen() or File().
-    /// </summary>
-    /// <returns>
-    /// </returns>
-FUNCTION FPathName() AS STRING
 
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/FPathName/*" />
+FUNCTION FPathName() AS STRING
     RETURN XSharp.IO.File.LastFound
     
     

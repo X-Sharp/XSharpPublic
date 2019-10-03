@@ -6,37 +6,18 @@
 
 
 
-/// <summary>
-/// Determine if a value is between two other values.
-/// </summary>
-/// <param name="x">Value which should be compared.</param>
-/// <param name="y">Lower value to compare against.</param>
-/// <param name="z">Upper value to compare against.</param>
-/// <returns>
-/// True if x is &gt;= y and &lt;= z otherwise false.
-/// </returns>
-FUNCTION Between(val AS USUAL,min AS USUAL,max AS USUAL) AS LOGIC
-	RETURN val >=min .AND.  val<=max
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/between/*" />
+FUNCTION Between(uValue AS USUAL,uMin AS USUAL,uMax AS USUAL) AS LOGIC
+	RETURN uValue >=uMin .AND.  uValue<=uMax
 
 
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/inlist/*" />
+FUNCTION InList(u AS USUAL, uValueList PARAMS USUAL[]) AS LOGIC
+	RETURN _InListWorker(u, uValueList, FALSE)
 
-
-/// <summary>
-/// Indicate whether the first expression in a series is repeated later in the series.
-/// </summary>
-/// <param name="u"></param>
-/// <returns>
-/// </returns>
-FUNCTION InList(u AS USUAL, args PARAMS USUAL[]) AS LOGIC
-	RETURN _InListWorker(u, args, FALSE)
-/// <summary>
-/// Indicate whether the first expression in a series is repeated in the exact same form later in the series.
-/// </summary>
-/// <param name="u"></param>
-/// <returns>
-/// </returns>
-FUNCTION InListExact(u AS USUAL, args PARAMS USUAL[]) AS LOGIC
-	RETURN _InListWorker(u, args, TRUE)
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/inlistexact/*" />
+FUNCTION InListExact(u AS USUAL, uValueList PARAMS USUAL[]) AS LOGIC
+	RETURN _InListWorker(u, uValueList, TRUE)
 
 
 INTERNAL FUNCTION _InListWorker( u AS USUAL, args AS CONST USUAL[], lExact AS LOGIC) AS LOGIC 
@@ -60,108 +41,83 @@ INTERNAL FUNCTION _InListWorker( u AS USUAL, args AS CONST USUAL[], lExact AS LO
 
 
 
-/// <summary>
-/// Return the larger of 2 values.
-/// </summary>
-/// <param name="u1"></param>
-/// <param name="u2"></param>
-/// <returns>
-/// </returns>
-FUNCTION Max(u1 AS USUAL,u2 AS USUAL) AS USUAL
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/max/*" />
+FUNCTION Max(uValue1 AS USUAL,uValue2 AS USUAL) AS USUAL
 
-	IF u1:IsNumeric .AND. u2:IsNumeric
+	IF uValue1:IsNumeric .AND. uValue2:IsNumeric
 
-		IF u1:IsFloat .OR. u2:IsFloat
-			RETURN (USUAL) Math.Max( (REAL8) u1, (REAL8) u2)
+		IF uValue1:IsFloat .OR. uValue2:IsFloat
+			RETURN (USUAL) Math.Max( (REAL8) uValue1, (REAL8) uValue2)
 
-		ELSEIF u1:IsDecimal .OR. u2:IsDecimal
-			RETURN (USUAL) Math.Max( (Decimal) u1, (Decimal) u2)
+		ELSEIF uValue1:IsDecimal .OR. uValue2:IsDecimal
+			RETURN (USUAL) Math.Max( (Decimal) uValue1, (Decimal) uValue2)
 
-		ELSEIF u1:IsInt64 .OR. u2:IsInt64
-			RETURN (USUAL) Math.Max( (INT64) u1, (INT64) u2)
+		ELSEIF uValue1:IsInt64 .OR. uValue2:IsInt64
+			RETURN (USUAL) Math.Max( (INT64) uValue1, (INT64) uValue2)
 		ENDIF
-		RETURN (USUAL) Math.Max( (LONG) u1, (LONG) u2)
+		RETURN (USUAL) Math.Max( (LONG) uValue1, (LONG) uValue2)
 
-	ELSEIF u1:IsDate .AND. u2:IsDate
-		RETURN IIF ((DATE) u1 > (DATE) u2, u1, u2)
+	ELSEIF uValue1:IsDate .AND. uValue2:IsDate
+		RETURN IIF ((DATE) uValue1 > (DATE) uValue2, uValue1, uValue2)
 
-	ELSEIF u1:IsDateTime .AND. u2:IsDateTime
-		RETURN IIF ((DateTime) u1 > (DateTime) u2, u1, u2)
+	ELSEIF uValue1:IsDateTime .AND. uValue2:IsDateTime
+		RETURN IIF ((DateTime) uValue1 > (DateTime) uValue2, uValue1, uValue2)
 
-	ELSEIF (u1:IsDateTime .OR. u1:IsDate) .AND. (u2:IsDateTime .OR. u2:IsDate)
-		RETURN IIF ((DateTime) u1 > (DateTime) u2, u1, u2)
+	ELSEIF (uValue1:IsDateTime .OR. uValue1:IsDate) .AND. (uValue2:IsDateTime .OR. uValue2:IsDate)
+		RETURN IIF ((DateTime) uValue1 > (DateTime) uValue2, uValue1, uValue2)
 
-	ELSEIF u1:IsString .AND. u2:IsString
-		RETURN IIF ((STRING) u1 > (STRING) u2, u1, u2)
+	ELSEIF uValue1:IsString .AND. uValue2:IsString
+		RETURN IIF ((STRING) uValue1 > (STRING) uValue2, uValue1, uValue2)
 
-	ELSEIF u1:IsSymbol .AND. u2:IsSymbol
-		RETURN IIF ((SYMBOL) u1 > (SYMBOL) u2, u1, u2)
+	ELSEIF uValue1:IsSymbol .AND. uValue2:IsSymbol
+		RETURN IIF ((SYMBOL) uValue1 > (SYMBOL) uValue2, uValue1, uValue2)
 
 	ELSE
-        THROW Error.ArgumentError( __FUNCTION__, NAMEOF(u2) , "Incompatible types")
+        THROW Error.ArgumentError( __FUNCTION__, NAMEOF(uValue2) , "Incompatible types")
 	ENDIF
 	
 
 
 
-/// <summary>
-/// Return the smaller of 2 values.
-/// </summary>
-/// <param name="u1"></param>
-/// <param name="u2"></param>
-/// <returns>
-/// </returns>
-FUNCTION Min(u1 AS USUAL,u2 AS USUAL) AS USUAL
-	IF u1:IsNumeric .AND. u2:IsNumeric
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/min/*" />
+FUNCTION Min(uValue1 AS USUAL,uValue2 AS USUAL) AS USUAL
+	IF uValue1:IsNumeric .AND. uValue2:IsNumeric
 
-		IF u1:IsFloat .OR. u2:IsFloat
+		IF uValue1:IsFloat .OR. uValue2:IsFloat
 			
-			RETURN (USUAL) Math.Min((REAL8) u1, (REAL8) u2)
+			RETURN (USUAL) Math.Min((REAL8) uValue1, (REAL8) uValue2)
 		
-		ELSEIF u1:IsDecimal .OR. u2:IsDecimal
-			RETURN (USUAL) Math.Min( (Decimal) u1, (Decimal) u2)
+		ELSEIF uValue1:IsDecimal .OR. uValue2:IsDecimal
+			RETURN (USUAL) Math.Min( (Decimal) uValue1, (Decimal) uValue2)
 		
-		ELSEIF u1:IsInt64 .OR. u2:IsInt64
-			RETURN (USUAL) Math.Min( (INT64) u1, (INT64) u2)
+		ELSEIF uValue1:IsInt64 .OR. uValue2:IsInt64
+			RETURN (USUAL) Math.Min( (INT64) uValue1, (INT64) uValue2)
 		ENDIF
-		RETURN (USUAL) Math.Min( (LONG) u1, (LONG) u2)
+		RETURN (USUAL) Math.Min( (LONG) uValue1, (LONG) uValue2)
 	
-	ELSEIF u1:IsDate .AND. u2:IsDate
-		RETURN IIF ((DATE) u1 <(DATE) u2, u1, u2)
+	ELSEIF uValue1:IsDate .AND. uValue2:IsDate
+		RETURN IIF ((DATE) uValue1 <(DATE) uValue2, uValue1, uValue2)
 	
-	ELSEIF u1:IsString .AND. u2:IsString
-		RETURN IIF ((STRING) u1 <(STRING) u2, u1, u2)
+	ELSEIF uValue1:IsString .AND. uValue2:IsString
+		RETURN IIF ((STRING) uValue1 <(STRING) uValue2, uValue1, uValue2)
 	ELSE
-        THROW Error.ArgumentError( __FUNCTION__, NAMEOF(u2) , "Incompatible types")
+        THROW Error.ArgumentError( __FUNCTION__, NAMEOF(uValue2) , "Incompatible types")
 	ENDIF
 	
 
 
-/// <summary>This function is not implemented yet</summary>
-// <summary>
-// Get a particular color from a user-defined palette.
-// </summary>
-/// <param name="bR"></param>
-/// <param name="bG"></param>
-/// <param name="bB"></param>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/palettergb/*" />
 FUNCTION PaletteRGB(bR AS USUAL,bG AS USUAL,bB AS BYTE) AS INT
-	THROW NotImplementedException{}
+	return (INT) RGB(bR, bG, bB)
 	
 
-/// <summary>This function is not implemented yet</summary>
-// <summary>
-// Display a system modal dialog box to pause the current application.
-// </summary>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/pause/*" />
 FUNCTION Pause() AS DWORD
-	THROW NotImplementedException{}
+    RETURN (DWORD) System.Windows.Forms.MessageBox.Show("Pause","Waiting")
 	
 
 
-
+     
 
 
 /// <summary>
@@ -175,15 +131,9 @@ FUNCTION SysObject(o AS USUAL) AS OBJECT
 	RETURN NULL_OBJECT   
 
 
-/// <summary>
-/// Sound a speaker tone for a specified frequency and duration.
-/// </summary>
-/// <param name="dwFreq"></param>
-/// <param name="dwDur"></param>
-/// <returns>
-/// </returns>
-FUNCTION Tone(dwFreq AS DWORD,dwDur AS DWORD) AS USUAL
-	Console.Beep( (INT)dwFreq, (INT)dwDur * 1000 / 18 )
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/tone/*" />
+FUNCTION Tone(wFrequency AS DWORD,wDuration AS DWORD) AS USUAL
+	Console.Beep( (INT)wFrequency, (INT)wDuration * 1000 / 18 )
 RETURN	 NIL   
 
 

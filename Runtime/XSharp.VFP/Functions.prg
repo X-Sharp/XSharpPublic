@@ -49,3 +49,25 @@ ELSE
     oError:Throw()
 ENDIF
 RETURN cOld
+
+
+function ICase(lCond1, uExp1, lCond2, uExp2) as usual
+    // loop through the actual parameters. The odd parameters should be logic
+    // the even parameters are return values for their siblings.
+    for var nI := 1 to PCount()-1 step 2
+        local cond := _GetFParam(nI) as logic
+        if cond
+            return _GetFParam(nI+1)
+        endif
+    next
+    // no conditions are met, if the # of parameters is odd then return the last value
+    if PCount() % 2 == 1
+        return _GetFParam(PCount())
+    endif
+    // the # of parameters is even. When >= 2 then get the type of parameter 2 and return an empty value
+    if PCount() >= 2
+        var type := UsualType(_GetFParam(2))
+        return EmptyUsual(type)
+    ENDIF
+    // when they call this function with < 2 parameters then we have no idea what return type they expect...
+    return NIL

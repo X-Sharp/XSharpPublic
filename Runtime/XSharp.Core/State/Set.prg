@@ -8,119 +8,56 @@
 
 USING XSharp
 
-/// <summary>
-/// Returns a string representing the morning extension for time strings in 12-hour format.
-/// </summary>
-/// <returns>
-/// </returns>
-FUNCTION GetAMExt() AS STRING
-	GETSTATE STRING Set.AmExt 
 
-/// <summary>
-/// Returns a string representing the morning extension for time strings in 12-hour format.
-/// </summary>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setamext/*" /> 
 FUNCTION SetAMExt() AS STRING
 	GETSTATE STRING Set.AmExt 
 
-/// <summary>
-/// Set the morning extension for time strings in 12-hour format.
-/// </summary>
-/// <param name="cExt"></param>
-/// <returns>
-/// </returns>
-FUNCTION SetAMExt(cExt AS STRING) AS STRING
-	SETSTATE STRING Set.AmExt cExt
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setamext/*" /> 
+FUNCTION SetAMExt(cAMExt AS STRING) AS STRING
+	SETSTATE STRING Set.AmExt cAMExt
 
 
-/// <summary>
-/// Returns the setting that determines whether time strings are in 12-hour or 24-hour format.
-/// </summary>
-/// <returns>
-/// </returns>
-FUNCTION GetAmPm() AS LOGIC
-	GETSTATE LOGIC Set.AmPm
-
-/// <summary>
-/// Returns the setting that determines whether time strings are in 12-hour or 24-hour format.
-/// </summary>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setampm/*" /> 
 FUNCTION SetAmPm() AS LOGIC
 	GETSTATE LOGIC Set.AmPm
 
-/// <summary>
-/// Change the setting that determines whether time strings are in 12-hour or 24-hour format.
-/// </summary>
-/// <param name="lSet"></param>
-/// <returns>
-/// </returns>
-FUNCTION SetAmPm(lSet AS LOGIC) AS LOGIC
-	SETSTATE LOGIC Set.AmPm lSet
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setampm/*" />
+FUNCTION SetAmPm(lNewSetting AS LOGIC) AS LOGIC
+	SETSTATE LOGIC Set.AmPm lNewSetting
 
-/// <summary>
-/// Return and the setting that determines whether database files are created using ANSI or OEM format and whether certain text file operations convert between the two character sets.
-/// </summary>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setansi/*" />
 FUNCTION SetAnsi() AS LOGIC
 	RETURN RuntimeState.Ansi
 
-/// <summary>
-/// Change the setting that determines whether database files are created using ANSI or OEM format and whether certain text file operations convert between the two character sets.
-/// </summary>
-/// <param name="lSet"></param>
-/// <returns>
-/// </returns>
-FUNCTION SetAnsi(lSet AS LOGIC) AS LOGIC
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setansi/*" />
+FUNCTION SetAnsi(lNewSetting AS LOGIC) AS LOGIC
 	LOCAL lOld := RuntimeState.Ansi AS LOGIC
-	RuntimeState.Ansi := lSet
+	RuntimeState.Ansi := lNewSetting
 	RETURN lOld
 
 
-
-/// <summary>
-/// Return the setting that determines whether a beep is sounded by the error system when an error occurs.
-/// </summary>
-/// <param name="lSet"></param>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setbeep/*" />
 FUNCTION SetBeep() AS LOGIC
 	GETSTATE LOGIC Set.BELL
 
-/// <summary>
-/// Change the setting that determines whether a beep is sounded by the error system when an error occurs.
-/// </summary>
-/// <param name="lSet"></param>
-/// <returns>
-/// </returns>
-FUNCTION SetBeep(lSet AS LOGIC) AS LOGIC
-	SETSTATE LOGIC Set.BELL lSet
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setbeep/*" />
+FUNCTION SetBeep(lNewSetting AS LOGIC) AS LOGIC
+	SETSTATE LOGIC Set.BELL lNewSetting
 
 
-/// <summary>
-/// Return the setting that determines whether to include or omit century digits in the date format.
-/// </summary>
-/// <param name="lSet"></param>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setcentury/*" />
 FUNCTION SetCentury() AS LOGIC
 	GETSTATE LOGIC Set.Century 
 
-/// <summary>
-/// Change the setting that determines whether to include or omit century digits in the date format.
-/// </summary>
-/// <param name="lSet"></param>
-/// <returns>
-/// </returns>
-FUNCTION SetCentury(lSet AS LOGIC) AS LOGIC
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setcentury/*" />
+FUNCTION SetCentury(lNewSetting AS LOGIC) AS LOGIC
 	LOCAL lOld AS LOGIC
     lOld := XSharp.RuntimeState.GetValue<LOGIC>(Set.CENTURY)
-    IF lOld != lSet
+    IF lOld != lNewSetting
       VAR cFormat := XSharp.RuntimeState.DateFormat
       
-      IF lSet
+      IF lNewSetting
         IF ! cFormat:Contains("YYYY")
             cFormat := cFormat:Replace( "YY", "YYYY" )
         ENDIF
@@ -136,312 +73,160 @@ FUNCTION SetCentury(lSet AS LOGIC) AS LOGIC
     RETURN lOld
 
 
-/// <summary>
-/// Return the setting that determines the type of central processor you have.
-/// </summary>
-/// <param name="nCpu"></param>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setcpu/*" />
 FUNCTION SetCpu() AS DWORD
 	GETSTATE DWORD Set.CPU
 
 
-/// <summary>
-/// Change the setting that determines the type of central processor you have.
-/// </summary>
-/// <param name="nCpu"></param>
-/// <returns>
-/// </returns>
-FUNCTION SetCpu(nCpu AS DWORD) AS DWORD
-	SETSTATE DWORD Set.CPU nCPU
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setcpu/*" />
+FUNCTION SetCpu(nNewSetting AS DWORD) AS DWORD
+	SETSTATE DWORD Set.CPU nNewSetting
 
 
-/// <summary>
-/// Return the setting that determines the X# date format by selecting from a list of constants with corresponding date formats.
-/// </summary>
-/// <param name="dwCountry"></param>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setdatecountry/*" />
 FUNCTION SetDateCountry() AS DWORD
 	GETSTATE DWORD Set.DATECOUNTRY
 
-/// <summary>
-/// Return and optionally change the setting that determines the X# date format by selecting from a list of constants with corresponding date formats.
-/// </summary>
-/// <param name="dwCountry"></param>
-/// <returns>
-/// </returns>
-FUNCTION SetDateCountry(dwCountry AS DWORD) AS DWORD
-//	setstate DWORD Set.DATECOUNTRY dwCountry
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setdatecountry/*" />
+FUNCTION SetDateCountry(dwNewSetting AS DWORD) AS DWORD
+//	setstate DWORD Set.DATECOUNTRY nNewSetting
 	LOCAL dwOld := RuntimeState.DateCountry AS DWORD
-	RuntimeState.DateCountry := dwCountry
+	RuntimeState.DateCountry := dwNewSetting
 	RETURN dwOld
 
 
-/// <summary>
-/// Return the current Date format.
-/// </summary>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/getdateformat/*" />
 FUNCTION GetDateFormat() AS STRING
 	GETSTATE STRING Set.DateFormat
 
-/// <summary>
-/// Change the setting that determines the X# date format.
-/// </summary>
-/// <param name="cDateFormat"></param>
-/// <returns>
-/// </returns>
-FUNCTION SetDateFormat(cDateFormat AS STRING) AS STRING
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setdateformat/*" />
+FUNCTION SetDateFormat(cNewSetting AS STRING) AS STRING
 	LOCAL cOld AS STRING
 	// Changing Dateformat also changes DateCountry and Century
 	cOld := RuntimeState.DateFormat
-	RuntimeState.DateFormat := cDateFormat
+	RuntimeState.DateFormat := cNewSetting
 	RETURN cOld
 
-/// <summary>
-/// Return the setting that determines the number of decimal places used to display numbers.
-/// </summary>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setdecimal/*" />
 FUNCTION SetDecimal() AS DWORD
 	GETSTATE DWORD Set.Decimals 
 
-/// <summary>
-/// Return and change the setting that determines the number of decimal places used to display numbers.
-/// </summary>
-/// <param name="nDec"></param>
-/// <returns>
-/// </returns>
-FUNCTION SetDecimal(nDec AS DWORD) AS DWORD
-	SETSTATE DWORD Set.Decimals nDec
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setdecimal/*" />
+FUNCTION SetDecimal(nNewSetting AS DWORD) AS DWORD
+	SETSTATE DWORD Set.Decimals nNewSetting
 
-/// <summary>
-/// Return the setting that determines the decimal separation character to be used in numeric-to-string conversion functions.
-/// </summary>
-/// <returns>
-/// </returns>
-
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setdecimalsep/*" />
 FUNCTION SetDecimalSep() AS DWORD
 	GETSTATE DWORD Set.DecimalSep 
 
-/// <summary>
-/// Return and change the setting that determines the decimal separation character to be used in numeric-to-string conversion functions.
-/// </summary>
-/// <param name="wSep"></param>
-/// <returns>
-/// </returns>
-FUNCTION SetDecimalSep(wSep AS DWORD) AS DWORD
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setdecimalsep/*" />
+FUNCTION SetDecimalSep(nNewSetting AS DWORD) AS DWORD
 	LOCAL oCulture AS System.Globalization.CultureInfo
 	oCulture := (System.Globalization.CultureInfo)System.Threading.Thread.CurrentThread:CurrentCulture:Clone()
-	oCulture:NumberFormat:NumberDecimalSeparator := ((CHAR)wSep):ToString()
+	oCulture:NumberFormat:NumberDecimalSeparator := ((CHAR)nNewSetting):ToString()
 	System.Threading.Thread.CurrentThread:CurrentCulture := oCulture
 
-	SETSTATE DWORD Set.DecimalSep wSep
+	SETSTATE DWORD Set.DecimalSep nNewSetting
 
-/// <summary>
-/// Return the setting that determines the default drive and directory.
-/// </summary>
-/// <param name="cDefault"></param>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setdefault/*" />
 FUNCTION SetDefault() AS STRING
 	GETSTATE STRING Set.Default 
 
-/// <summary>
-/// Change the setting that determines the default drive and directory.
-/// </summary>
-/// <param name="cDefault"></param>
-/// <returns>
-/// </returns>
-FUNCTION SetDefault(cDefault AS STRING) AS STRING
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setdefault/*" />
+FUNCTION SetDefault(cPathSpec AS STRING) AS STRING
 	SetPathArray(NULL)
-	SETSTATE STRING Set.Default cDefault
+	SETSTATE STRING Set.Default cPathSpec
 	
 
-/// <summary>
-/// Return the setting that determines whether to ignore or include records that are marked for deletion.
-/// </summary>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setdeleted/*" />
 FUNCTION SetDeleted() AS LOGIC
 	GETSTATE LOGIC Set.Deleted 
 
-/// <summary>
-/// Change the setting that determines whether to ignore or include records that are marked for deletion.
-/// </summary>
-/// <param name="lSet"></param>
-/// <returns>
-/// </returns>
-FUNCTION SetDeleted(lSet AS LOGIC) AS LOGIC
-	SETSTATE LOGIC Set.Deleted lSet
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setdeleted/*" />
+FUNCTION SetDeleted(lNewSetting AS LOGIC) AS LOGIC
+	SETSTATE LOGIC Set.Deleted lNewSetting
 
-/// <summary>
-/// Return the setting that determines the number of digits that will be shown to the left of the decimal point when a number is displayed.
-/// </summary>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setdigit/*" />
 FUNCTION SetDigit() AS DWORD
 	GETSTATE DWORD Set.DIGITS 
 
-/// <summary>
-/// Change the setting that determines the number of digits that will be shown to the left of the decimal point when a number is displayed.
-/// </summary>
-/// <param name="nDig"></param>
-/// <returns>
-/// </returns>
-FUNCTION SetDigit(nDig AS DWORD) AS DWORD
-	SETSTATE DWORD Set.DIGITS nDIg
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setdigit/*" />
+FUNCTION SetDigit(nNewSetting AS DWORD) AS DWORD
+	SETSTATE DWORD Set.DIGITS nNewSetting
 
-/// <summary>
-/// Return the setting that fixes the number of digits used to display numeric output.
-/// </summary>
-/// <param name="f"></param>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setdigitfixed/*" />
 FUNCTION SetDigitFixed() AS LOGIC
 	GETSTATE LOGIC Set.DigitFixed 
 
-/// <summary>
-/// Change the setting that fixes the number of digits used to display numeric output.
-/// </summary>
-/// <param name="f"></param>
-/// <returns>
-/// </returns>
-FUNCTION SetDigitFixed(f AS LOGIC) AS LOGIC
-	SETSTATE LOGIC Set.DigitFixed f
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setdigitfixed/*" />
+FUNCTION SetDigitFixed(lNewSetting AS LOGIC) AS LOGIC
+	SETSTATE LOGIC Set.DigitFixed lNewSetting
 
 
-/// <summary>
-/// Return the setting that determines how dates without century digits are interpreted.
-/// </summary>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setepoch/*" />
 FUNCTION SetEpoch() AS DWORD
 	GETSTATE DWORD Set.Epoch 
 
-/// <summary>
-/// Change the setting that determines how dates without century digits are interpreted.
-/// </summary>
-/// <param name="wYear"></param>
-/// <returns>
-/// </returns>
-FUNCTION SetEpoch(wEpoch AS DWORD) AS DWORD
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setepoch/*" />
+FUNCTION SetEpoch(nNewSetting AS DWORD) AS DWORD
 	LOCAL wYear AS DWORD
 	LOCAL wCent AS DWORD
-	wYear := wEpoch % 100
-	wCent := (( wEpoch / 100) +1) * 100
+	wYear := nNewSetting % 100
+	wCent := (( nNewSetting / 100) +1) * 100
 	XSharp.RuntimeState.SetValue<DWORD> (Set.EpochYear, wYear)
 	XSharp.RuntimeState.SetValue<DWORD> (Set.EpochCent, wCent)
-	SETSTATE DWORD Set.Epoch	 wEpoch
+	SETSTATE DWORD Set.Epoch	 nNewSetting
 
-/// <summary>
-/// Return the setting that determines whether error information is written to the error log file by the default runtime error handler.
-/// </summary>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/seterrorlog/*" />
 FUNCTION SetErrorLog() AS LOGIC
 	GETSTATE LOGIC Set.ERRRORLOG 
 
-/// <summary>
-/// Change the setting that determines whether error information is written to the error log file by the default runtime error handler.
-/// </summary>
-/// <param name="lSet"></param>
-/// <returns>
-/// </returns>
-FUNCTION SetErrorLog(lSet AS LOGIC) AS LOGIC
-	SETSTATE LOGIC Set.ERRRORLOG lSet
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/seterrorlog/*" />
+FUNCTION SetErrorLog(lNewSetting AS LOGIC) AS LOGIC
+	SETSTATE LOGIC Set.ERRRORLOG lNewSetting
 
-/// <summary>
-/// Return the setting for an exact match for character string comparisons.
-/// </summary>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setexact/*" />
 FUNCTION SetExact() AS LOGIC
 	GETSTATE LOGIC Set.Exact 
 
-/// <summary>
-/// Change the setting for an exact match for character string comparisons.
-/// </summary>
-/// <param name="fExact"></param>
-/// <returns>
-/// </returns>
-FUNCTION SetExact(fExact AS LOGIC) AS LOGIC
-	SETSTATE LOGIC Set.Exact fExact
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setexact/*" />
+FUNCTION SetExact(lNewSetting AS LOGIC) AS LOGIC
+	SETSTATE LOGIC Set.Exact lNewSetting
 
-/// <summary>
-/// Return the setting that determines whether to open database files in exclusive or shared mode.
-/// </summary>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setexclusive/*" />
 FUNCTION SetExclusive() AS LOGIC
 	GETSTATE LOGIC Set.Exclusive 
 
-/// <summary>
-/// Change the setting that determines whether to open database files in exclusive or shared mode.
-/// </summary>
-/// <param name="lSet"></param>
-/// <returns>
-/// </returns>
-FUNCTION SetExclusive(lSet AS LOGIC) AS LOGIC
-	SETSTATE LOGIC Set.Exclusive lSet
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setexclusive/*" />
+FUNCTION SetExclusive(lNewSetting AS LOGIC) AS LOGIC
+	SETSTATE LOGIC Set.Exclusive lNewSetting
 
-/// <summary>
-/// Return the setting that determines whether assignments are made to fields or to memory variables.
-/// </summary>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setfieldstore/*" />
 FUNCTION SetFieldStore() AS LOGIC
 	GETSTATE LOGIC Set.FieldStore
 
-/// <summary>
-/// Change the setting that determines whether assignments are made to fields or to memory variables.
-/// </summary>
-/// <param name="lSet"></param>
-/// <returns>
-/// </returns>
-FUNCTION SetFieldStore(lSet AS LOGIC) AS LOGIC
-	SETSTATE LOGIC Set.FieldStore lSet
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setfieldstore/*" />
+FUNCTION SetFieldStore(lNewSetting AS LOGIC) AS LOGIC
+	SETSTATE LOGIC Set.FieldStore lNewSetting
 
-/// <summary>
-/// Return the setting that fixes the number of decimal digits used to display numbers.
-/// </summary>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setfixed/*" />
 FUNCTION SetFixed() AS LOGIC
 	GETSTATE LOGIC Set.Fixed 
 
-/// <summary>
-/// Change the setting that fixes the number of decimal digits used to display numbers.
-/// </summary>
-/// <param name="fFixed"></param>
-/// <returns>
-/// </returns>
-FUNCTION SetFixed(fFixed AS LOGIC) AS LOGIC
-	SETSTATE LOGIC Set.Fixed fFixed
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setfixed/*" />
+FUNCTION SetFixed(lNewSetting AS LOGIC) AS LOGIC
+	SETSTATE LOGIC Set.Fixed lNewSetting
 
-/// <summary>
-/// Return the setting that determines the internal operational characteristics of the underlying floating-point system.
-/// </summary>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setmath/*" />
 FUNCTION SetMath() AS DWORD
 	GETSTATE DWORD Set.MATH
 
-/// <summary>
-/// Change the setting that determines the internal operational characteristics of the underlying floating-point system.
-/// </summary>
-/// <param name="nFPU"></param>
-/// <returns>
-/// </returns>
-FUNCTION SetMath(nFPU AS DWORD) AS DWORD
-	SETSTATE DWORD Set.MATH nFPU
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setmath/*" />
+FUNCTION SetMath(nNewSetting AS DWORD) AS DWORD
+	SETSTATE DWORD Set.MATH nNewSetting
 
-/// <summary>
-/// Activate a new DLL for nation-dependent operations and messages.
-/// </summary>
-/// <returns>
-/// </returns>
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setnatdll/*" />
 /// <remarks>
 /// In Visual Objects the nation DLL is an external DLL. For X# there are no separate
 /// nation DLL. The nation support code is integrated in XSharp.Core.DLL.
@@ -452,7 +237,7 @@ FUNCTION SetMath(nFPU AS DWORD) AS DWORD
 /// 	"FRENCH", "GENERIC", "GERMAN", "GERMAN2", "HUNG852", "HUNGCWI", "ITALIAN", 
 ///     "NORWEGN", "POL-ISO", "POL-MAZ", "POL852", "PORT850", "PORT860", "ROMANIA", 
 /// 	"RUSSIAN", "SERBIA", "SL-W-95", "SL-W-AS7", "SL-W-EE", "SLOV852", "SLOV895", 
-/// 	"SPANISH", "SWEDISH", "UK"
+/// 	"SPANISH", "SWEDISH", "TURKISH", "UK"
 /// <br/> You may specify a DLL name with full path. The Runtime will strip the path and extension
 /// from the file name and will look for one of the names listed above.<br/> 
 /// The nation DLL name is NOT case sensitive.
@@ -484,11 +269,7 @@ INTERNAL FUNCTION	_SetNatDLL(cNewDLL AS STRING) AS STRING
 	Messages.SetCurrentLanguage(cBase)
 	SETSTATE STRING Set.NatDLL cNewDLL
 
-/// <summary>
-/// Return the setting that determines the search path for opening files. This may be a semi colon separated list of folders.
-/// </summary>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setpath/*" />
 FUNCTION SetPath() AS STRING
 	GETSTATE STRING Set.Path 
 
@@ -500,15 +281,10 @@ FUNCTION _SetDict() AS LOGIC
 FUNCTION _SetDict(lNewSetting AS LOGIC) AS LOGIC
     SETSTATE LOGIC Set.DICT lNewSetting
 
-/// <summary>
-/// Change the setting that determines the search path for opening files.
-/// </summary>
-/// <param name="cPath">New path. This may be a semi colon separated list of folders.</param>
-/// <returns>
-/// </returns>
-FUNCTION SetPath(cPath AS STRING) AS STRING
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setpath/*" />
+FUNCTION SetPath(cPathList AS STRING) AS STRING
 	SetPathArray(NULL)
-	SETSTATE STRING Set.Path cPath
+	SETSTATE STRING Set.Path cPathList
 
 
 /// <summary>
@@ -534,56 +310,29 @@ FUNCTION SetPathArray() AS STRING[]
 FUNCTION SetPathArray(aPath AS STRING[]) AS STRING[]
 	SETSTATE STRING[] Set.PathArray aPath
 
-/// <summary>
-/// Returns a string representing the evening extension for time strings in 12-hour format.
-/// </summary>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setpmext/*" />
 FUNCTION SetPMExt() AS STRING
 	GETSTATE STRING Set.PmExt
 
-/// <summary>
-/// Set the evening extension for time strings in 12-hour format.
-/// </summary>
-/// <param name="cExt"></param>
-/// <returns>
-/// </returns>
-FUNCTION SetPMExt(cExt AS STRING) AS STRING
-	SETSTATE STRING Set.PmExt cExt
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setpmext/*" />
+FUNCTION SetPMExt(cPMExt AS STRING) AS STRING
+	SETSTATE STRING Set.PmExt cPMExt
 
-/// <summary>
-/// Return the setting that displays numbers in scientific notation.
-/// </summary>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setscience/*" />
 FUNCTION SetScience() AS LOGIC
 	GETSTATE LOGIC Set.Science 
 
-/// <summary>
-/// Change the setting that displays numbers in scientific notation.
-/// </summary>
-/// <param name="f"></param>
-/// <returns>
-/// </returns>
-FUNCTION SetScience(lSet AS LOGIC) AS LOGIC
-	SETSTATE LOGIC Set.Science lSet
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setscience/*" />
+FUNCTION SetScience(lNewSetting AS LOGIC) AS LOGIC
+	SETSTATE LOGIC Set.Science lNewSetting
 
-/// <summary>
-/// Return the setting that determines whether a seek operation will find a close match when no exact match is found.
-/// </summary>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setsoftseek/*" />
 FUNCTION SetSoftSeek() AS LOGIC
 	GETSTATE LOGIC Set.SoftSeek 
 
-/// <summary>
-/// Change the setting that determines whether a seek operation will find a close match when no exact match is found.
-/// </summary>
-/// <param name="lSet"></param>
-/// <returns>
-/// </returns>
-FUNCTION SetSoftSeek(lSet AS LOGIC) AS LOGIC
-	SETSTATE LOGIC Set.SoftSeek lSet
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setsoftseek/*" />
+FUNCTION SetSoftSeek(lNewSetting AS LOGIC) AS LOGIC
+	SETSTATE LOGIC Set.SoftSeek lNewSetting
 
 /// <summary>
 /// Return the setting that determines whether a space is displayed between fields or expressions when you use the ? or ?? command.
@@ -602,63 +351,34 @@ FUNCTION SetSpace() AS LOGIC
 FUNCTION SetSpace(lSet AS LOGIC) AS LOGIC
 	SETSTATE LOGIC Set.Space lSet
 
-/// <summary>
-/// Return the setting that determines the thousands separation character to be used in numeric-to-string conversion functions.
-/// </summary>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setthousandsep/*" />
 FUNCTION SetThousandSep() AS DWORD
 	GETSTATE DWORD Set.ThousandSep 
 
-/// <summary>
-/// Change the setting that determines the thousands separation character to be used in numeric-to-string conversion functions.
-/// </summary>
-/// <param name="wSep"></param>
-/// <returns>
-/// </returns>
-FUNCTION SetThousandSep(wSep AS DWORD) AS DWORD
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setthousandsep/*" />
+FUNCTION SetThousandSep(nNewSetting AS DWORD) AS DWORD
 	LOCAL oCulture AS System.Globalization.CultureInfo
 	oCulture := (System.Globalization.CultureInfo)System.Threading.Thread.CurrentThread:CurrentCulture:Clone()
-	oCulture:NumberFormat:NumberGroupSeparator := ((CHAR)wSep):ToString()
+	oCulture:NumberFormat:NumberGroupSeparator := ((CHAR)nNewSetting):ToString()
 	System.Threading.Thread.CurrentThread:CurrentCulture := oCulture
 
-	SETSTATE DWORD Set.ThousandSep wSep
+	SETSTATE DWORD Set.ThousandSep nNewSetting
 
-/// <summary>
-/// Return the setting that determines the separation character to be used in time strings.
-/// </summary>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/settimesep/*" />
 FUNCTION SetTimeSep() AS DWORD
 	GETSTATE DWORD Set.TimeSep 
 
-/// <summary>
-/// Change the setting that determines the separation character to be used in time strings.
-/// </summary>
-/// <param name="dwChar"></param>
-/// <returns>
-/// </returns>
-FUNCTION SetTimeSep(dwChar AS DWORD) AS DWORD
-	SETSTATE DWORD Set.TimeSep dwChar
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/settimesep/*" />
+FUNCTION SetTimeSep(dwNewSetting AS DWORD) AS DWORD
+	SETSTATE DWORD Set.TimeSep dwNewSetting
 
-/// <summary>
-/// Return the setting that determines whether to include unique record keys in an order.
-/// </summary>
-/// <returns>
-/// </returns>
-
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setunique/*" />
 FUNCTION SetUnique() AS LOGIC
 	GETSTATE LOGIC Set.Unique 
 
-/// <summary>
-/// Change the setting that determines whether to include unique record keys in an order.
-/// </summary>
-/// <param name="lSet"></param>
-/// <returns>
-/// </returns>
-
-FUNCTION SetUnique(lSet AS LOGIC) AS LOGIC
-	SETSTATE LOGIC Set.Unique lSet
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setunique/*" />
+FUNCTION SetUnique(lNewSetting AS LOGIC) AS LOGIC
+	SETSTATE LOGIC Set.Unique lNewSetting
 
 /// <summary>
 /// </summary>
@@ -676,39 +396,22 @@ FUNCTION SetYield(lSet AS LOGIC) AS LOGIC
 	SETSTATE LOGIC Set.Yield lSet
 
 
-/// <summary>
-/// Retrieve and set the X# return code.
-/// </summary>
-/// <param name="dw"></param>
-/// <returns>
-/// </returns>
-FUNCTION ErrorLevel(dw AS DWORD) AS DWORD 
-	SETSTATE DWORD Set.ErrorLevel dw
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/errorlevel/*" />
+FUNCTION ErrorLevel(dwNewSetting AS DWORD) AS DWORD 
+	SETSTATE DWORD Set.ErrorLevel dwNewSetting
 
 
-/// <summary>
-/// Retrieve the X# return code.
-/// </summary>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/errorlevel/*" />
 FUNCTION ErrorLevel() AS DWORD 
 	GETSTATE DWORD Set.ErrorLevel
 
 
-/// <summary>
-/// Return the setting that determines the international mode for the application
-/// </summary>
-/// <returns>The current setting, either "Windows" (the default) or  "Clipper"
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setinternational/*" />
 FUNCTION SetInternational() AS STRING
 	RETURN RuntimeState.International:ToString():ToUpper()
 
-/// <summary>
-/// Return and change the setting that determines the international mode for the application
-/// </summary>
-// <param name="cMode">The collation mode to use. The available modes are "Windows" (the default) and "Clipper". "Unicode" and "Ordinal" can be used as synonym for "Windows".</param>
-/// <returns>The current setting, either "Windows" (the default) or  "Clipper"
-/// </returns>
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setinternational/*" />
 /// <remarks>
 /// SetInternational() allows XSharp apps to operate in different international modes.  
 /// The "CLIPPER" mode is provided for compatibility with CA-Clipper applications and uses an 
@@ -731,10 +434,10 @@ FUNCTION SetInternational() AS STRING
 /// <item><term>SetTimeSep</term> <description>Colon(:)</description></item> 
 /// </list>
 /// </remarks>
-FUNCTION SetInternational(cMode AS STRING) AS STRING
+FUNCTION SetInternational(symNewSetting AS STRING) AS STRING
 	LOCAL cOld AS STRING
 	cOld := RuntimeState.International:ToString():ToUpper()
-	SWITCH cMode:ToUpper()
+	SWITCH symNewSetting:ToUpper()
 	CASE "CLIPPER"
 		RuntimeState.GetInstance()._SetInternationalClipper()
 	CASE "WINDOWS"
@@ -742,36 +445,29 @@ FUNCTION SetInternational(cMode AS STRING) AS STRING
 	CASE "ORDINAL"
 		RuntimeState.GetInstance()._SetInternationalWindows()
 	OTHERWISE
-		THROW Error.ArgumentError(__ENTITY__, NAMEOF(cMode), "Unsupported international mode: "+ cMode)
+		THROW Error.ArgumentError(__ENTITY__, NAMEOF(symNewSetting), "Unsupported international mode: "+ symNewSetting)
 	END SWITCH
 	RETURN cOld
 
 
-
-/// <summary>
-/// Return and change the setting that determines the internal collation routine used for string comparisons when running in the VO or Vulcan dialect.
-/// The Core dialect always compares according to the Unicode rules.
-/// The available modes are "Windows" (the default),  "Clipper", "Unicode" and "Ordinal".
-/// </summary>
-/// <returns>The current setting for SetCollation().</returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setcollation/*" />
 /// <remarks>
 /// <include file="CoreComments.xml" path="Comments/Collation/*" />
 /// </remarks>
 FUNCTION SetCollation() AS STRING 
 	RETURN RuntimeState.CollationMode:ToString():ToUpper()
 
-/// <summary>
-/// Return and change the setting that determines the internal collation routine used for string comparisons when running in the VO or Vulcan dialect.
-/// </summary>
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setcollation/*" />
 /// <remarks>
 /// <include file="CoreComments.xml" path="Comments/Collation/*" />
 /// </remarks>
 /// <returns>The current setting, either "Windows" (the default),  "Clipper", "Unicode" or "Ordinal" </returns>
 /// <param name="cCollation">The collation mode to use. The available modes are "Windows" (the default),  "Clipper", "Unicode" and "Ordinal". </param>
-FUNCTION SetCollation(cCollation AS STRING)  AS STRING
+FUNCTION SetCollation(symNewSetting AS STRING)  AS STRING
 	LOCAL cOld AS STRING
 	cOld := RuntimeState.CollationMode:ToString():ToUpper()
-	SWITCH cCollation:ToUpper()
+	SWITCH symNewSetting:ToUpper()
 	CASE "CLIPPER"
 		RuntimeState.CollationMode := CollationMode.Clipper
 	CASE "WINDOWS"
@@ -781,6 +477,6 @@ FUNCTION SetCollation(cCollation AS STRING)  AS STRING
 	CASE "ORDINAL"
 		RuntimeState.CollationMode := CollationMode.Ordinal
 	OTHERWISE
-		THROW Error.ArgumentError(__ENTITY__, NAMEOF(cCollation), "Unsupported collation mode: "+cCollation)
+		THROW Error.ArgumentError(__ENTITY__, NAMEOF(symNewSetting), "Unsupported collation mode: "+symNewSetting)
 	END SWITCH
 	RETURN cOld

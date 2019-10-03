@@ -12,10 +12,12 @@ USING System.Text
 USING XSharp.RDD
 USING XSharp.RDD.Enums
 USING XSharp.RDD.Support
-
+USING System.Diagnostics
+ 
 /// <summary>
 /// The AdsRDD class. 
 /// </summary>
+[DebuggerDisplay("AdsRDD ({Alias,nq})")];
 CLASS XSharp.ADS.AdsRDD INHERIT Workarea
   #region Fields
   //PRIVATE m_CallbackFn AS CallbackFn
@@ -83,7 +85,7 @@ INTERNAL METHOD ADSERROR(iSubCode AS DWORD, iGenCode AS DWORD, strFunction AS ST
 	LOCAL message AS CHAR[]
 	LOCAL wBufLen AS WORD
 	LOCAL oError AS RddError
-	IF strMessage == String.Empty
+	if String.IsNullOrEmpty(strMessage)
       //
 		message := CHAR[]{ACE.ADS_MAX_ERROR_LEN}
 		wBufLen := (WORD) message:Length
@@ -91,6 +93,9 @@ INTERNAL METHOD ADSERROR(iSubCode AS DWORD, iGenCode AS DWORD, strFunction AS ST
 			strMessage := STRING{message, 0, wBufLen}
 		ENDIF
 	ENDIF
+    if String.IsNullOrEmpty(strMessage) .and. iSubCode != 0
+        strMessage := ErrString(iGenCode)
+    ENDIF 
 	oError   := AdsError{strMessage, iGenCode, iSubcode,_Driver, iSeverity, strFunction, _FileName}
 	RuntimeState.LastRDDError := oError
 	THROW oError
@@ -322,25 +327,34 @@ VIRTUAL METHOD Open(info AS DbOpenInfo) AS LOGIC
 		fileName := Path.ChangeExtension(fileName, ".ADT")
 	ENDIF
 	LOCAL result AS DWORD
-	result := ACE.AdsOpenTable90(SELF:_Connection, fileName, alias, usTableType, charset, SELF:_LockType, SELF:_CheckRights, openmode,SELF:_Collation, OUT SELF:_Table)
-	IF result != 0 .AND. SELF:_Connection != IntPtr.Zero
-		usTableType := SELF:_TableType
-		IF fileName[0] != '#'
-			fileName := info:FileName + info:Extension
-			IF SELF:_TableType == ACE.ADS_ADT .AND. Path.GetExtension(fileName):ToUpper() == ".DBF"
-				fileName := Path.ChangeExtension(fileName, ".ADT")
-			ENDIF
-		ENDIF
-		result := ACE.AdsOpenTable90(SELF:_Connection, fileName, alias, usTableType, charset, SELF:_LockType, SELF:_CheckRights, openmode, SELF:_Collation, OUT SELF:_Table)
-	ENDIF
+    LOCAL tries := 0 as LONG
+    REPEAT
+        // wait 100 ms before retrying
+        IF tries > 0
+            System.Threading.Thread.Sleep(100)
+        ENDIF
+        tries += 1
+
+    	result := ACE.AdsOpenTable90(SELF:_Connection, fileName, alias, usTableType, charset, SELF:_LockType, SELF:_CheckRights, openmode,SELF:_Collation, OUT SELF:_Table)
+	    IF result != 0 .AND. SELF:_Connection != IntPtr.Zero
+		    usTableType := SELF:_TableType
+		    IF fileName[0] != '#'
+			    fileName := info:FileName + info:Extension
+			    IF SELF:_TableType == ACE.ADS_ADT .AND. Path.GetExtension(fileName):ToUpper() == ".DBF"
+				    fileName := Path.ChangeExtension(fileName, ".ADT")
+			    ENDIF
+		    ENDIF
+		    result := ACE.AdsOpenTable90(SELF:_Connection, fileName, alias, usTableType, charset, SELF:_LockType, SELF:_CheckRights, openmode, SELF:_Collation, OUT SELF:_Table)
+	    ENDIF
+    UNTIL tries == 10 .or. SELF:_Table != IntPtr.Zero
 	IF result != 0
 		NetErr(TRUE)
 		SELF:Close()
+        SELF:_FileName := fileName
 		SELF:ADSERROR(ERDD_OPEN_FILE, EG_OPEN, "Open")
 		RETURN FALSE
 	ENDIF
 	IF !SELF:_FieldSub()
-
 		SELF:Close()
 		RETURN FALSE
 	ENDIF

@@ -170,7 +170,7 @@ INTERNAL STATIC CLASS ArrayHelpers
 		
 		
 		
-	STATIC METHOD AEval(aArray AS ARRAY, cbBlock AS ICodeblock, nStart AS DWORD, nCount AS DWORD, bUpdateArray AS CONST LOGIC, bPassIndex AS CONST LOGIC )  AS ARRAY
+	STATIC METHOD AEval(aArray AS ARRAY, cbBlock AS ICodeblock, nStart AS DWORD, nCount AS DWORD, bUpdateArray AS CONST LOGIC )  AS ARRAY
 		LOCAL elements := ALen(aArray) AS DWORD
 		LOCAL last   AS DWORD
 		LOCAL result AS USUAL
@@ -193,11 +193,7 @@ INTERNAL STATIC CLASS ArrayHelpers
 				last := Math.Min( nStart + ( nCount - 1 ), elements )
 				
 				FOR x := nStart UPTO last
-					IF ( bPassIndex )
-						result := Eval( cbBlock, aArray[x], x )
-					ELSE
-						result := Eval( cbBlock, aArray[x] )
-					ENDIF
+    				result := Eval( cbBlock, aArray[x], x )
 					
 					IF ( bUpdateArray )
 						aArray[x] := result
@@ -208,11 +204,7 @@ INTERNAL STATIC CLASS ArrayHelpers
 				last := Math.Max( 1, nStart + nCount + 1 )
 				
 				FOR x := nStart DOWNTO last
-					IF ( bPassIndex )
-						result := Eval( cbBlock, aArray[x], x )
-					ELSE
-						result := Eval( cbBlock, aArray[x] )
-					ENDIF
+					result := Eval( cbBlock, aArray[x], x )
 					
 					IF ( bUpdateArray )
 						aArray[x] := result
@@ -280,41 +272,24 @@ INTERNAL STATIC CLASS ArrayHelpers
 	END CLASS
 		
 		
-/// <summary>
-/// Create an uninitialized, one-dimensional Array.
-/// </summary>
-/// <param name="dwDim">The number of elements in the new Array.</param>
-/// <returns>
-/// An uninitialized of the given length.
-/// </returns>
-FUNCTION ArrayCreate(dwDim AS DWORD) AS ARRAY 
-	RETURN __Array{dwDim, TRUE}
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/arraycreate/*" /> 
+FUNCTION ArrayCreate(dwElements AS DWORD) AS ARRAY 
+	RETURN __Array{dwElements, TRUE}
 	
 	
-/// <summary>
-/// Create an uninitialized, one-dimensional Array.
-/// </summary>
-/// <param name="dwDim">The number of elements in the new Array.</param>
-/// <returns>
-/// An uninitialized of the given length.
-/// </returns>
-FUNCTION ArrayCreate<T>(dwDim AS DWORD) AS __ArrayBase<T> WHERE T IS NEW()
-	RETURN __ArrayBase<T>{dwDim}
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/arraycreate/*" />
+/// <typeparam name="T">The type of the array elements</typeparam>
+FUNCTION ArrayCreate<T>(dwElements AS DWORD) AS __ArrayBase<T> WHERE T IS NEW()
+	RETURN __ArrayBase<T>{dwElements}
 	
 	
-/// <summary>
-/// Create an initialized Array.
-/// </summary>
-/// <param name="dwDim"></param>
-/// <param name="ptrBuff"></param>
-/// <returns>
-/// </returns>
-FUNCTION ArrayInit(dwDim AS DWORD, avalues REF USUAL[]) AS ARRAY 
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/arrayinit/*" /> 
+FUNCTION ArrayInit(wElements AS DWORD, avalues REF USUAL[]) AS ARRAY 
 	LOCAL aTemp AS ARRAY
 	LOCAL x AS DWORD
 	
-	IF dwDim > (DWORD) aValues:Length
-		THROW Error.ArgumentError( __ENTITY__, NAMEOF(dwDim), "Element too big")
+	IF wElements > (DWORD) aValues:Length
+		THROW Error.ArgumentError( __ENTITY__, NAMEOF(wElements), "Element too big")
 	ENDIF
 	
 	aTemp := ArrayNew(aValues:Length)
@@ -322,120 +297,70 @@ FUNCTION ArrayInit(dwDim AS DWORD, avalues REF USUAL[]) AS ARRAY
 		aTemp [x] := aValues[x] 
 	NEXT
 	RETURN aTemp
+
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aadd/*" /> 
+FUNCTION AAdd(aTarget AS ARRAY,uNewElement AS USUAL) AS USUAL  
+	RETURN AAdd<USUAL>(aTarget, uNewElement)
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aadd/*" />
+/// <typeparam name="T">The type of the array elements</typeparam>
+FUNCTION AAdd<T>(aTarget AS __ArrayBase<T>,uNewElement AS T) AS T WHERE T IS NEW() 
+	aTarget:Add(uNewElement) 
+	RETURN uNewElement 	
 	
-/// <summary>
-/// Add a new element to the end of an Array.
-/// </summary>
-/// <param name="a"></param>
-/// <param name="x"></param>
-/// <returns>
-/// </returns>
-FUNCTION AAdd(a AS ARRAY,x AS USUAL) AS USUAL
-	RETURN AAdd<USUAL>(a, x)
-	
-/// <summary>
-/// Add a new element to the end of an Array.
-/// </summary>
-/// <param name="a"></param>
-/// <param name="x"></param>
-/// <returns>
-/// </returns>
-FUNCTION AAdd<T>(a AS __ArrayBase<T>,x AS T) AS T WHERE T IS NEW()
-	a:Add(x)
-	RETURN x 	
-	
-/// <summary>
-/// Duplicate an array .
-/// </summary>
-/// <param name="a"></param>
-/// <returns>
-/// </returns>
-FUNCTION AClone(a AS ARRAY) AS ARRAY
-	IF a == NULL_ARRAY
-		RETURN a
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aclone/*" /> 
+FUNCTION AClone(aSource AS ARRAY) AS ARRAY
+	IF aSource == NULL_ARRAY
+		RETURN aSource
 	END IF
-	RETURN (ARRAY) a:Clone()
+	RETURN (ARRAY) aSource:Clone()
 	
-/// <summary>
-/// Duplicate a multidimensional Array.
-/// </summary>
-/// <param name="a"></param>
-/// <returns>
-/// </returns>
-FUNCTION AClone<T>(a AS __ArrayBase<T>) AS __ArrayBase<T> WHERE T IS NEW()
-	IF a == NULL
-		RETURN a
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aclone/*" />
+/// <typeparam name="T">The type of the array elements</typeparam>
+FUNCTION AClone<T>(aSource AS __ArrayBase<T>) AS __ArrayBase<T> WHERE T IS NEW()
+	IF aSource == NULL
+		RETURN aSource
 	END IF
-	RETURN  a:Clone()
+	RETURN  aSource:Clone()
 	
 	
-/// <summary>
-/// Duplicate an Array without its subArrays.
-/// </summary>
-/// <param name="a"></param>
-/// <returns>
-/// </returns>
-FUNCTION ACloneShallow(a AS ARRAY) AS ARRAY
-	IF a == NULL_ARRAY
-		RETURN a
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/acloneshallow/*" /> 
+FUNCTION ACloneShallow(aSource AS ARRAY) AS ARRAY
+	IF aSource == NULL_ARRAY
+		RETURN aSource
 	END IF
-	RETURN (ARRAY) a:CloneShallow()
+	RETURN (ARRAY) aSource:CloneShallow()
 	
-/// <summary>
-/// Duplicate a multidimensional Array.
-/// </summary>
-/// <param name="a"></param>
-/// <returns>
-/// </returns>
-FUNCTION ACloneShallow<T>(a AS __ArrayBase<T>) AS __ArrayBase<T> WHERE T IS NEW()
-	IF a == NULL
-		RETURN a
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/acloneshallow/*" />
+/// <typeparam name="T">The type of the array elements</typeparam>
+FUNCTION ACloneShallow<T>(aSource AS __ArrayBase<T>) AS __ArrayBase<T> WHERE T IS NEW()
+	IF aSource == NULL
+		RETURN aSource
 	END IF
-	RETURN a:Clone()
+	RETURN aSource:Clone()
 	
-/// <summary>
-/// Delete an Array element.
-/// </summary>
-/// <param name="a"></param>
-/// <param name="dwEl"></param>
-/// <returns>
-/// </returns>
-FUNCTION ADel(a AS ARRAY,dwEl AS DWORD) AS ARRAY
-	a:Delete((INT) dwEl)  
-	RETURN a
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/adel/*" /> 
+FUNCTION ADel(aTarget AS ARRAY,dwPosition AS DWORD) AS ARRAY
+	aTarget:Delete((INT) dwPosition)  
+	RETURN aTarget
 	
-/// <summary>
-/// Delete an Array element.
-/// </summary>
-/// <param name="a"></param>
-/// <param name="dwEl"></param>
-/// <returns>
-/// </returns>
-FUNCTION ADel<T>(a AS __ArrayBase<T>,dwEl AS DWORD) AS __ArrayBase<T> WHERE T IS NEW()
-	a:Delete((INT) dwEl)  
-	RETURN a
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/adel/*" />
+/// <typeparam name="T">The type of the array elements</typeparam>
+FUNCTION ADel<T>(aTarget AS __ArrayBase<T>,dwPosition AS DWORD) AS __ArrayBase<T> WHERE T IS NEW()
+	aTarget:Delete((INT) dwPosition)   
+	RETURN aTarget
 	
-/// <summary>
-/// Delete an Array element.
-/// </summary>
-/// <param name="a"></param>
-/// <param name="dwEl"></param>
-/// <returns>
-/// </returns>
-FUNCTION ATrueDel(a AS ARRAY,dwEl AS DWORD) AS ARRAY
-	a:RemoveAt((INT) dwEl)  
-	RETURN a
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/adel/*" /> 
+FUNCTION ATrueDel(aTarget AS ARRAY,dwPosition AS DWORD) AS ARRAY
+	aTarget:RemoveAt((INT) dwPosition)  
+	RETURN aTarget
 	
-/// <summary>
-/// Delete an Array element.
-/// </summary>
-/// <param name="a"></param>
-/// <param name="dwEl"></param>
-/// <returns>
-/// </returns>
-FUNCTION ATrueDel<T>(a AS __ArrayBase<T>,dwEl AS DWORD) AS __ArrayBase<T> WHERE T IS NEW()
-	a:RemoveAt((INT) dwEl)  
-	RETURN a
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/adel/*" />
+/// <typeparam name="T">The type of the array elements</typeparam>
+FUNCTION ATrueDel<T>(aTarget AS __ArrayBase<T>,dwPosition AS DWORD) AS __ArrayBase<T> WHERE T IS NEW()
+	aTarget:RemoveAt((INT) dwPosition)  
+	RETURN aTarget
 	
 /// <summary>Calculate the # of dimensions in an array</summary>
 /// <param name="a"></param>
@@ -443,10 +368,10 @@ FUNCTION ATrueDel<T>(a AS __ArrayBase<T>,dwEl AS DWORD) AS __ArrayBase<T> WHERE 
 FUNCTION ADim(a AS ARRAY) AS DWORD
 	LOCAL dwDims AS DWORD
 	dwDims := 1
-	DO WHILE a != NULL_ARRAY
+	DO WHILE a != NULL_ARRAY 
 		IF ALen(a) > 0 
 			IF IsArray(a[1])
-				dwDims += 1
+				dwDims += 1 
 				a := a[1]
 			ELSE
 				EXIT
@@ -464,196 +389,106 @@ FUNCTION ADimPic(a AS ARRAY) AS STRING
 	RETURN repl("[]", aDim(a))
 	
 	
-/// <summary>
-/// Insert an element into an Array and assign it a NIL value.
-/// </summary>
-/// <param name="a">The array into which the element will be inserted.</param>
-/// <param name="dwEl">The position at which the element will be inserted.</param>
-/// <returns>A reference to the original array</returns>
-FUNCTION AIns(a AS ARRAY,dwEl AS DWORD) AS ARRAY 
-	a:Insert((INT) dwEl) 
-	RETURN a
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ains/*" /> 
+FUNCTION AIns(aTarget AS ARRAY,dwPosition AS DWORD) AS ARRAY 
+	aTarget:Insert((INT) dwPosition) 
+	RETURN aTarget
 	
-/// <summary>
-/// Insert an element into an Array and assign it a NIL value.
-/// </summary>
-/// <param name="a">The array into which the element will be inserted.</param>
-/// <param name="dwEl">The position at which the element will be inserted.</param>
-/// <returns>A reference to the original array</returns>
-FUNCTION AIns<T>(a AS __ArrayBase<T>,dwEl AS DWORD) AS __ArrayBase<T> WHERE T IS NEW()
-	a:Insert((INT) dwEl) 
-	RETURN a
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ains/*" />
+/// <typeparam name="T">The type of the array elements</typeparam>
+FUNCTION AIns<T>(aTarget AS __ArrayBase<T>,dwPosition AS DWORD) AS __ArrayBase<T> WHERE T IS NEW()
+	aTarget:Insert((INT) dwPosition) 
+	RETURN aTarget
 	
-/// <summary>
-/// Return the number of elements in an Array.
-/// </summary>
-/// <param name="a">The array to count.</param>
-/// <returns>The number of elements in the array.  If the array is empty, ALen() returns 0.
-/// </returns>
-FUNCTION ALen<T>(a AS __ArrayBase<T>) AS DWORD WHERE T IS NEW()
-	IF a != NULL
-		RETURN a:Length
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/alen/*" />
+/// <typeparam name="T">The type of the array elements</typeparam>
+FUNCTION ALen<T>(aTarget AS __ArrayBase<T>) AS DWORD WHERE T IS NEW()
+	IF aTarget != NULL
+		RETURN aTarget:Length
 	ELSE
 		RETURN 0
 	ENDIF
 	
-/// <summary>
-/// Return the number of elements in an Array.
-/// </summary>
-/// <param name="a">The array to count.</param>
-/// <returns>The number of elements in the array.  If the array is empty, ALen() returns 0.
-/// </returns>
-FUNCTION ALen(a AS ARRAY) AS DWORD 
-	IF a != NULL
-		RETURN a:Length
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/alen/*" /> 
+FUNCTION ALen(aTarget AS ARRAY) AS DWORD 
+	IF aTarget != NULL
+		RETURN aTarget:Length
 	ELSE
 		RETURN 0
 	ENDIF
 	
-/// <summary>
-/// Removes write protection from an entire Array.
-/// </summary>
-/// <param name="a">The array to deprotect.</param>
-/// <returns>TRUE if the array was successfully deprotected; otherwise, FALSE.
-/// </returns>
-FUNCTION ArrayDeProtect<T>(a AS __ArrayBase<T>) AS LOGIC WHERE T IS NEW()
-	RETURN a:Lock(FALSE)
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/arraydeprotect/*" />
+/// <typeparam name="T">The type of the array elements</typeparam>
+FUNCTION ArrayDeProtect<T>(aTarget AS __ArrayBase<T>) AS LOGIC WHERE T IS NEW()
+	RETURN aTarget:Lock(FALSE)
 	
-/// <summary>
-/// Removes write protection from an entire Array.
-/// </summary>
-/// <param name="a">The array to deprotect.</param>
-/// <returns>TRUE if the array was successfully deprotected; otherwise, FALSE.
-/// </returns>
-FUNCTION ArrayDeProtect(a AS ARRAY) AS LOGIC 
-	RETURN a:Lock(FALSE)
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/arraydeprotect/*" /> 
+FUNCTION ArrayDeProtect(aTarget AS ARRAY) AS LOGIC 
+	RETURN aTarget:Lock(FALSE)
 	
-/// <summary>
-/// Read an Array element.
-/// </summary>
-/// <param name="a">The array to read.</param>
-/// <param name="dwEl">The number of the element to read.</param>
-/// <returns>The value held by the element.
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/arrayget/*" /> 
+FUNCTION ArrayGet(aTarget AS ARRAY,dwElement AS DWORD) AS USUAL
+	RETURN aTarget:__GetElement( (INT) dwElement-1)
 	
-FUNCTION ArrayGet(a AS ARRAY,dwEl AS DWORD) AS USUAL
-	RETURN a:__GetElement( (INT) dwEl-1)
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/arrayget/*" />
+/// <typeparam name="T">The type of the array elements</typeparam>
+FUNCTION ArrayGet<T>(aTarget AS __ArrayBase<T>,dwElement AS DWORD) AS T WHERE T IS NEW()
+	RETURN aTarget:__GetElement( (INT) dwElement-1)
 	
-/// <summary>
-/// Read an Array element.
-/// </summary>
-/// <param name="a">The array to read.</param>
-/// <param name="dwEl">The number of the element to read.</param>
-/// <returns>The value held by the element.
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/arrayprotect/*" /> 
+FUNCTION ArrayProtect(aTarget AS ARRAY) AS LOGIC
+	RETURN aTarget:Lock(TRUE)
 	
-FUNCTION ArrayGet<T>(a AS __ArrayBase<T>,dwEl AS DWORD) AS T WHERE T IS NEW()
-	RETURN a:__GetElement( (INT) dwEl-1)
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/arrayprotect/*" />
+/// <typeparam name="T">The type of the array elements</typeparam>
+FUNCTION ArrayProtect<T>(aTarget AS __ArrayBase<T>) AS LOGIC WHERE T IS NEW()
+	RETURN aTarget:Lock(TRUE)	
 	
-/// <summary>
-/// Protect an Array from change in all functions except the one in which it was declared.
-/// </summary>
-/// <param name="a">The array to protect.</param>
-/// <returns>TRUE if the array was successfully protected; otherwise, FALSE.
-/// </returns>
-FUNCTION ArrayProtect(a AS ARRAY) AS LOGIC
-	RETURN a:Lock(TRUE)
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/arrayput/*" />
+/// <typeparam name="T">The type of the array elements</typeparam>
+FUNCTION ArrayPut<T>(aTarget AS __ArrayBase<T>,dwElement AS DWORD,uValue AS T) AS T WHERE T IS NEW()
+	aTarget:__SetElement(uValue, (INT)dwElement -1)
+	RETURN uValue
 	
-/// <summary>
-/// Protect an Array from change in all functions except the one in which it was declared.
-/// </summary>
-/// <param name="a">The array to protect.</param>
-/// <returns>TRUE if the array was successfully protected; otherwise, FALSE.
-/// </returns>
-FUNCTION ArrayProtect<T>(a AS __ArrayBase<T>) AS LOGIC WHERE T IS NEW()
-	RETURN a:Lock(TRUE)	
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/arrayput/*" /> 
+FUNCTION ArrayPut(aTarget AS ARRAY,dwElement AS DWORD,uValue AS USUAL) AS USUAL
+	aTarget:__SetElement(uValue, (INT)dwElement -1)
+	RETURN uValue
 	
-/// <summary>
-/// Write a value to an Array element.
-/// </summary>
-/// <param name="a">The array to write to.</param>
-/// <param name="dwEl">The number of the array element to receive the value.</param>
-/// <param name="u">The value to write to the array element.</param>
-/// <returns>The value assigned.
-/// </returns>
-FUNCTION ArrayPut<T>(a AS __ArrayBase<T>,dwEl AS DWORD,u AS T) AS T WHERE T IS NEW()
-	a:__SetElement(u, (INT)dwEl -1)
-	RETURN u
-	
-/// <summary>
-/// Write a value to an Array element.
-/// </summary>
-/// <param name="a">The array to write to.</param>
-/// <param name="dwEl">The number of the array element to receive the value.</param>
-/// <param name="u">The value to write to the array element.</param>
-/// <returns>The value assigned.
-/// </returns>
-FUNCTION ArrayPut(a AS ARRAY,dwEl AS DWORD,u AS USUAL) AS USUAL
-	a:__SetElement(u, (INT)dwEl -1)
-	RETURN u
-	
-/// <summary>
-/// Store an Array to a buffer.
-/// </summary>
-/// <param name="a">The array to be stored to a buffer.</param>
-/// <param name="Buff">A pointer to the buffer.</param>
-/// <param name="dwLen">The length of the buffer</param>
-/// <returns>The number of values stored to the buffer.</returns>
-FUNCTION ArrayStore(a AS ARRAY,Buff AS USUAL PTR,dwLen AS DWORD) AS DWORD
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/arraystore/*" /> 
+FUNCTION ArrayStore(aSource AS ARRAY,Buff AS USUAL PTR,dwLen AS DWORD) AS DWORD
 	LOCAL i AS DWORD
 	LOCAL nLen AS DWORD
-	nLen := ALen(a)
+	nLen := ALen(aSource)
 	dwLen := Math.Min(dwLen, nLen)
 	FOR i := 1 TO dwLen
-		buff[i] := a[i]
+		buff[i] := aSource[i]
 	NEXT
 	RETURN dwLen
 	
-/// <summary>
-/// Store an Array to a buffer.
-/// </summary>
-/// <param name="a">The array to be stored to a buffer.</param>
-/// <param name="Buff">A pointer to the buffer.</param>
-/// <param name="dwLen">The length of the buffer</param>
-/// <returns>The number of values stored to the buffer.</returns>
-FUNCTION ArrayStore<T>(a AS __ArrayBase<T>,Buff AS T PTR,dwLen AS DWORD) AS DWORD WHERE T IS NEW()
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/arraystore/*" />
+/// <typeparam name="T">The type of the array elements</typeparam>
+FUNCTION ArrayStore<T>(aSource AS __ArrayBase<T>,Buff AS T PTR,dwLen AS DWORD) AS DWORD WHERE T IS NEW()
 	LOCAL i AS DWORD
 	LOCAL nLen AS DWORD
-	nLen := a:Length
+	nLen := aSource:Length
 	dwLen := Math.Min(dwLen, nLen)
 	FOR i := 1 TO (LONG) dwLen
-		buff[i] := a[(INT) i]
+		buff[i] := aSource[(INT) i]
 	NEXT
 	RETURN dwLen
 	
-/// <summary>
-/// Replace an Array element with a new value and return the old value.
-/// </summary>
-/// <param name="a">The array whose element will be replaced with a new value.</param>
-/// <param name="dwEl">The number of the element to be replaced.</param>
-/// <param name="u">The new value.</param>
-/// <returns>The original value that was replaced by u.</returns>
-FUNCTION ArraySwap(a AS ARRAY,dwEl AS DWORD,u AS USUAL) AS USUAL
-	RETURN a:Swap((INT) dwEl, u)
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/arrayswap/*" /> 
+FUNCTION ArraySwap(aTarget AS ARRAY,dwElement AS DWORD,uNewValue AS USUAL) AS USUAL
+	RETURN aTarget:Swap((INT) dwElement, uNewValue)
 	
-/// <summary>
-/// Replace an Array element with a new value and return the old value.
-/// </summary>
-/// <param name="a">The array whose element will be replaced with a new value.</param>
-/// <param name="dwEl">The number of the element to be replaced.</param>
-/// <param name="u">The new value.</param>
-/// <returns>The original value that was replaced by u.</returns>
-FUNCTION ArraySwap<T>(a AS __ArrayBase<T>,dwEl AS DWORD,u AS T) AS T  WHERE T IS NEW()
-	RETURN a:Swap((INT) dwEl, u)
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/arrayswap/*" />
+/// <typeparam name="T">The type of the array elements</typeparam>
+FUNCTION ArraySwap<T>(aTarget AS __ArrayBase<T>,dwElement AS DWORD,uNewValue AS T) AS T  WHERE T IS NEW()
+	RETURN aTarget:Swap((INT) dwElement, uNewValue)
 	
-/// <summary>
-/// Scan an array until a value is found or a code block returns TRUE.
-/// </summary>
-/// <param name="aTarget">The array whose element will be scanned.</param>
-/// <param name="uSearch">The value to search for.</param>
-/// <param name="nStart">The number of the element to start with.</param>
-/// <param name="nCount">The number fo elements the scan.</param>
-/// <returns>If uSearch is a code block then the functions returns the position of the first element for which the code block returns TRUE.  Otherwise it returns the position of the first matching element.  The function returns 0 if no match is found.</returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ascan/*" /> 
 FUNCTION AScan(aTarget AS ARRAY, uSearch AS USUAL,nStart := NIL AS USUAL,nCount := NIL AS USUAL) AS DWORD
 	RETURN ArrayHelpers.AScan( aTarget, uSearch, nStart, nCount, SetExact()) 
 
@@ -667,157 +502,97 @@ FUNCTION AScan(aTarget AS ARRAY, uSearch AS USUAL,nStart AS USUAL) AS DWORD
 FUNCTION AScan(aTarget AS ARRAY, uSearch AS USUAL) AS DWORD 
 	RETURN ArrayHelpers.Ascan( aTarget, uSearch, 1, NIL, SetExact()) 
 
-/// <summary>
-/// Scan an array until an exact match with a value is found or a code block returns TRUE.
-/// </summary>
-/// <inheritdoc cref='M:XSharp.RT.Functions.AScan(XSharp.__Array,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)'/>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ascanexact/*" /> 
 FUNCTION AScanExact( aTarget AS ARRAY, uSearch AS USUAL, nStart := NIL AS USUAL, nCount := NIL AS USUAL) AS DWORD
 	RETURN ArrayHelpers.Ascan( aTarget, uSearch, nStart, nCount, TRUE )
 
 
-/// <inheritdoc cref='M:XSharp.RT.Functions.AScanExact(XSharp.__Array,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)'/>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ascanexact/*" /> 
 FUNCTION AScanExact( aTarget AS ARRAY, uSearch AS USUAL, nStart AS USUAL) AS DWORD 
 	RETURN ArrayHelpers.Ascan( aTarget, uSearch, nStart, NIL, TRUE )
 
 
-/// <inheritdoc cref='M:XSharp.RT.Functions.AScanExact(XSharp.__Array,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)'/>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ascanexact/*" /> 
 FUNCTION AScanExact( aTarget AS ARRAY, uSearch AS USUAL) AS DWORD 
 	RETURN ArrayHelpers.Ascan( aTarget, uSearch, 1, NIL, TRUE )
 
 	
-/// <summary>
-/// Scan a sorted Array until a value is found or a code block returns 0.
-/// </summary>
-/// <param name="a"></param>
-/// <param name="x"></param>
-/// <returns>
-/// </returns>
-FUNCTION AScanBin(a AS ARRAY,x AS USUAL) AS DWORD
-	RETURN ArrayHelpers.AScanBin( "AscanBin" , a, x, FALSE )
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ascanbin/*" />
+FUNCTION AScanBin(aTarget AS ARRAY,uSearch AS USUAL) AS DWORD
+	RETURN ArrayHelpers.AScanBin( "AscanBin" , aTarget, uSearch, FALSE )
 
-/// <summary>
-/// Scan a sorted Array until there is an exact match or a code block returns 0.
-/// </summary>
-/// <inheritdoc cref='M:XSharp.RT.Functions.AScanBin(XSharp.__Array,XSharp.__Usual)'/>
-FUNCTION AScanBinExact(a AS ARRAY,x AS USUAL) AS DWORD
-	RETURN ArrayHelpers.AScanBin( "AscanBin" , a, x, TRUE )
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ascanbinexact/*" />
+FUNCTION AScanBinExact(aTarget AS ARRAY,uSearch AS USUAL) AS DWORD
+	RETURN ArrayHelpers.AScanBin( "AscanBin" , aTarget, uSearch, TRUE )
 
-/// <inheritdoc cref='M:XSharp.RT.Functions.AScan(XSharp.__Array,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)'/>
-FUNCTION AScan<T>(aTarget AS __ArrayBase<T>, element AS T) AS DWORD WHERE T IS NEW()
-	RETURN ArrayHelpers.Ascan( aTarget, element,1, (INT) aTarget:Length) 
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ascan/*" /> 
+/// <typeparam name="T">The type of the array elements</typeparam>
+FUNCTION AScan<T>(aTarget AS __ArrayBase<T>, uSearch AS T) AS DWORD WHERE T IS NEW()
+	RETURN ArrayHelpers.Ascan( aTarget, uSearch,1, (INT) aTarget:Length) 
 
-/// <summary>
-/// Scan an array until an expression returns TRUE.
-/// </summary>
-/// <inheritdoc cref='M:XSharp.RT.Functions.AScan(XSharp.__Array,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)'/>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ascan/*" /> 
+/// <typeparam name="T">The type of the array elements</typeparam>
+/// <param name="act">A lambda expression that will be evaluated for every element in the array.</param>
 FUNCTION AScan<T>(aTarget AS __ArrayBase<T>, act AS @@Func<T,LOGIC>) AS DWORD WHERE T IS NEW()
 	RETURN ArrayHelpers.Ascan( aTarget, act,1, (INT) aTarget:Length) 
 
 
-/// <summary>
-/// Scan an array until value is found.
-/// </summary>
-/// <inheritdoc cref='M:XSharp.RT.Functions.AScan(XSharp.__Array,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)'/>
-FUNCTION AScan<T>(aTarget AS __ArrayBase<T>, element AS T, nStart AS LONG) AS DWORD WHERE T IS NEW()
-	RETURN ArrayHelpers.Ascan( aTarget, element, nStart, (INT) aTarget:Length- nStart +1) 
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ascan/*" /> 
+/// <typeparam name="T">The type of the array elements</typeparam>
+FUNCTION AScan<T>(aTarget AS __ArrayBase<T>, uSearch AS T, nStart AS LONG) AS DWORD WHERE T IS NEW()
+	RETURN ArrayHelpers.Ascan( aTarget, uSearch, nStart, (INT) aTarget:Length- nStart +1) 
 
 
-/// <summary>
-/// Scan an array until an expression returns TRUE.
-/// </summary>
-/// <param name="act">The lambda expression to use for looking up the correct element.</param>
-/// <inheritdoc cref='M:XSharp.RT.Functions.AScan(XSharp.__Array,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)'/>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ascan/*" /> 
+/// <typeparam name="T">The type of the array elements</typeparam>
+/// <param name="act">A lambda expression that will be evaluated for every element in the array.</param>
 FUNCTION AScan<T>(aTarget AS __ArrayBase<T>, act AS @@Func<T,LOGIC>, nStart AS LONG) AS DWORD WHERE T IS NEW()
 	RETURN ArrayHelpers.Ascan( aTarget, act, nStart, (INT) aTarget:Length - nStart +1) 
 
 
 
-/// <summary>
-/// Scan an array until value is found.
-/// </summary>
-/// <param name="act">The lambda expression to use for looking up the correct element.</param>
-/// <inheritdoc cref='M:XSharp.RT.Functions.AScan(XSharp.__Array,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)'/>
-FUNCTION AScan<T>(aTarget AS __ArrayBase<T>, element AS T, nStart AS LONG, nCount AS LONG) AS DWORD WHERE T IS NEW()
-	RETURN ArrayHelpers.Ascan( aTarget, element, nStart, nCount) 
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ascan/*" /> 
+/// <typeparam name="T">The type of the array elements</typeparam>
+FUNCTION AScan<T>(aTarget AS __ArrayBase<T>, uSearch AS T, nStart AS LONG, nCount AS LONG) AS DWORD WHERE T IS NEW()
+	RETURN ArrayHelpers.Ascan( aTarget, uSearch, nStart, nCount) 
 
-/// <summary>
-/// Scan an array until an expression returns TRUE.
-/// </summary>
-/// <param name="act">The lambda expression to use for looking up the correct element.</param>
-/// <inheritdoc cref='M:XSharp.RT.Functions.AScan(XSharp.__Array,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)'/>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ascan/*" /> 
+/// <typeparam name="T">The type of the array elements</typeparam>
 FUNCTION AScan<T>(aTarget AS __ArrayBase<T>, act AS @@Func<T,LOGIC>, nStart AS LONG, nCount  AS LONG) AS DWORD WHERE T IS NEW()
 	RETURN ArrayHelpers.Ascan( aTarget, act, nStart, nCount) 
 
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/asize/*" /> 
+FUNCTION ASize(aTarget AS ARRAY,dwLength AS DWORD) AS ARRAY
+	aTarget:Resize((INT) dwLength) 
+	RETURN aTarget  
 	
-/// <summary>
-/// Grow or shrink an Array.
-/// </summary>
-/// <param name="a"></param>
-/// <param name="dwDim"></param>
-/// <returns>
-/// </returns>
-FUNCTION ASize(a AS ARRAY,dwDim AS DWORD) AS ARRAY
-	a:Resize((INT) dwDim) 
-	RETURN a  
-	
-/// <summary>
-/// Grow or shrink an Array.
-/// </summary>
-/// <param name="a"></param>
-/// <param name="dwDim"></param>
-/// <returns>
-/// </returns>
-FUNCTION ASize<T>(a AS __ArrayBase<T>,dwDim AS DWORD) AS __ArrayBase<T> WHERE T IS NEW()
-	a:Resize((INT) dwDim) 
-	RETURN a  
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/asize/*" /> 
+/// <typeparam name="T">The type of the array elements</typeparam>
+FUNCTION ASize<T>(aTarget AS __ArrayBase<T>,dwLength AS DWORD) AS __ArrayBase<T> WHERE T IS NEW()
+	aTarget:Resize((INT) dwLength) 
+	RETURN aTarget  
 	
 	
-/// <summary>
-/// Return the highest numbered element of an Array.
-/// </summary>
-/// <param name="a"></param>
-/// <returns>
-/// </returns>
-FUNCTION ATail(a AS ARRAY) AS USUAL
-	RETURN a:Tail()
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/atail/*" /> 
+FUNCTION ATail(aTarget AS ARRAY) AS USUAL
+	RETURN aTarget:Tail()
 	
-/// <summary>
-/// Return the highest numbered element of an Array.
-/// </summary>
-/// <param name="a"></param>
-/// <returns>
-/// </returns>
-FUNCTION ATail<T>(a AS __ArrayBase<T>) AS T WHERE T IS NEW()
-	RETURN a:Tail()
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/atail/*" /> 
+/// <typeparam name="T">The type of the array elements</typeparam>
+FUNCTION ATail<T>(aTarget AS __ArrayBase<T>) AS T WHERE T IS NEW()
+	RETURN aTarget:Tail()
 	
-	
-	
-/// <summary>
-/// Copy elements from one Array to another.
-/// </summary>
-/// <param name="uSource"></param>
-/// <param name="uTarget"></param>
-/// <param name="nStart"></param>
-/// <param name="nCount"></param>
-/// <param name="nStartDest"></param>
-/// <returns>
-/// </returns>
-FUNCTION ACopy(uSource ,uTarget ,nStart ,nCount ,nStartDest ) AS ARRAY CLIPPER
-	LOCAL aSource  AS ARRAY
-	LOCAL aTarget  AS ARRAY
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/acopy/*" /> 
+FUNCTION ACopy(aSource ,aTarget ,nStart ,nCount ,nTargetPos ) AS ARRAY CLIPPER
 	LOCAL sourceLen  AS DWORD
 	LOCAL start AS DWORD
 	LOCAL count AS DWORD
-	IF uSource:IsArray
-       aSource := uSource
-    ELSE
-      THROW Error.ArgumentError( __ENTITY__, NAMEOF(uSource), 1, <OBJECT>{ uSource } )
+	IF !aSource:IsArray
+      THROW Error.ArgumentError( __ENTITY__, NAMEOF(aSource), 1, <OBJECT>{ aSource } )
     ENDIF
    
-     IF uTarget:IsArray
-        aTarget := uTarget
-     ELSE
-        THROW Error.ArgumentError( __ENTITY__, NAMEOF(uTarget), 2, <OBJECT>{ uTarget } )
+     IF !aTarget:IsArray
+        THROW Error.ArgumentError( __ENTITY__, NAMEOF(aTarget), 2, <OBJECT>{ aTarget } )
      ENDIF
 	 start := 1
 	 sourceLen  := ALen(aSource)
@@ -848,12 +623,12 @@ FUNCTION ACopy(uSource ,uTarget ,nStart ,nCount ,nStartDest ) AS ARRAY CLIPPER
 	 LOCAL offSet		:= 1 AS DWORD
 	 LOCAL targetLen	:= ALen(aTarget) AS DWORD
 	 IF pCount() > 4
-		IF nStartDest:IsNumeric
-			offSet := nStartDest
+		IF nTargetPos:IsNumeric
+			offSet := nTargetPos
 			offSet := Math.Min( offSet, targetLen )
             offSet := Math.Max( 1, offSet )
 		ELSE
-			THROW Error.ArgumentError( __ENTITY__, NAMEOF(nStartDest), 5, <OBJECT>{ nStartDest } )
+			THROW Error.ArgumentError( __ENTITY__, NAMEOF(nTargetPos), 5, <OBJECT>{ nTargetPos } )
 		ENDIF
 	 ENDIF
 	 XSharp.__Array.Copy(aSource, aTarget, start, sourceLen, offSet, targetLen)
@@ -861,16 +636,8 @@ FUNCTION ACopy(uSource ,uTarget ,nStart ,nCount ,nStartDest ) AS ARRAY CLIPPER
 	 RETURN aTarget   
 	
 	
-/// <summary>
-/// Fill Array elements with a specified value.
-/// </summary>
-/// <param name="a"></param>
-/// <param name="x"></param>
-/// <param name="Start"></param>
-/// <param name="Stop"></param>
-/// <returns>
-/// </returns>
-FUNCTION AFill(a AS ARRAY,fill := NIL AS USUAL, start := NIL AS USUAL, count := NIL AS USUAL) AS ARRAY 
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/afill/*" /> 
+FUNCTION AFill(aTarget AS ARRAY,uValue := NIL AS USUAL, nStart := NIL AS USUAL, nCount := NIL AS USUAL) AS ARRAY 
 	// The behavior of AFill() in VO is different than what is descibed in the help file
 	// - if start <= 0 throws an error
 	// - if start == NIL, then start becomes 1
@@ -878,163 +645,128 @@ FUNCTION AFill(a AS ARRAY,fill := NIL AS USUAL, start := NIL AS USUAL, count := 
 	// - if count == nil, then it fills from start to lenght of array
 	
 	// warning, with the current definition of the function, it is not possible for the user to omit the start param
-	LOCAL nLen := ALen( a ) AS DWORD
+	LOCAL nLen := ALen( aTarget ) AS DWORD
 	IF nLen > 0
 
 		LOCAL lStartWasNil := FALSE AS LOGIC
-		IF start == NIL
-			start := 1
+		IF nStart == NIL
+			nStart := 1
 			lStartWasNil := TRUE
 		ENDIF
 
-		IF start > nLen .OR. start <= 0
-			THROW Error.BoundError( "AFill", "start", 3, <OBJECT>{ start } )
+		IF nStart > nLen .OR. nStart <= 0
+			THROW Error.BoundError( "AFill", nameof(nStart), 3, <OBJECT>{ nStart } )
 		ENDIF
-		IF count == NIL
-			count := (INT)nLen - start + 1
-		ELSEIF count > 0
+		IF nCount == NIL
+			nCount := (INT)nLen - nStart + 1
+		ELSEIF nCount > 0
 			// VO does not throw an error if count is longer than the array
-			IF start + count - 1 > nLen
-				count := (INT)nLen - start + 1
+			IF nStart + nCount - 1 > nLen
+				nCount := (INT)nLen - nStart + 1
 			END IF
 		ELSE
 			IF lStartWasNil
-				count := 1
+				nCount := 1
 			ELSE
-				RETURN a
+				RETURN aTarget
 			END IF
 		END IF
 
-		FOR LOCAL x := start AS INT UPTO start + count - 1
-			a[(DWORD) x] := fill
+		FOR LOCAL x := nStart AS INT UPTO nStart + nCount - 1
+			aTarget[(DWORD) x] := uValue
 		NEXT
 	ENDIF
-	RETURN a
+	RETURN aTarget
 	
 	
 	
-/// <summary>
-/// Create an empty Array.
-/// </summary>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/arraybuild/*" /> 
 FUNCTION ArrayBuild() AS ARRAY
 	RETURN ARRAY{}
 	
-/// <summary>
-/// Create an uninitialized Array with a single dimension and no elements.
-/// </summary>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/arraynew/*" /> 
 FUNCTION ArrayNew() AS ARRAY
 	RETURN ArrayNew(0)
 	
-/// <summary>
-/// Create an uninitialized Array with the specified number of elements and dimensions.
-/// </summary>
-/// <param name="aDims"></param>
-/// <returns>
-/// </returns>
-FUNCTION ArrayNew(aDims PARAMS USUAL[]) AS ARRAY
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/arraynew/*" />  
+FUNCTION ArrayNew(wElementList PARAMS USUAL[]) AS ARRAY
 	LOCAL aDimInt AS INT[]
 	LOCAL i AS INT
-	aDimInt := INT[]{aDims:Length}
-	FOR i := 1 TO aDims:Length
-		aDimInt[i] := (INT) aDims[i]
+	aDimInt := INT[]{wElementList:Length}
+	FOR i := 1 TO wElementList:Length
+		aDimInt[i] := (INT) wElementList[i]
 	NEXT
 	RETURN __Array.ArrayCreate(aDimInt)
 
 
 
-/// <summary>
-/// Create an uninitialized Array with the specified number of elements and dimensions.
-/// </summary>
-/// <param name="nDim"></param>
-/// <returns>
-/// </returns>
-FUNCTION ArrayNew<T>(nSize AS DWORD) AS __ArrayBase<T> WHERE T IS NEW()
-	RETURN __ArrayBase<T>{nSize}
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/arraynew/*" /> 
+/// <typeparam name="T">The type of the array elements</typeparam>
+FUNCTION ArrayNew<T>(wElementList AS DWORD) AS __ArrayBase<T> WHERE T IS NEW()
+	RETURN __ArrayBase<T>{wElementList}
 	
 	
-/// <summary>
-/// Create an uninitialized Array with the specified number of elements and dimensions.
-/// </summary>
-/// <param name="nDim"></param>
-/// <returns>
-/// </returns>
-FUNCTION ArrayNew<T>(nSize AS INT) AS __ArrayBase<T> WHERE T IS NEW()
-	RETURN __ArrayBase<T>{(DWORD) nSize}
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/arraynew/*" /> 
+/// <typeparam name="T">The type of the array elements</typeparam>
+FUNCTION ArrayNew<T>(wElementList AS INT) AS __ArrayBase<T> WHERE T IS NEW()
+	RETURN __ArrayBase<T>{(DWORD) wElementList}
 	
 
-/// <summary>
-/// To create an Array and fill its elements with a default value.
-/// </summary>
-/// <param name="x"></param>
-/// <param name="nCount"></param>
-/// <returns>
-/// </returns>
-FUNCTION AReplicate(x AS USUAL,nCount AS DWORD) AS ARRAY
-	VAR a:= __Array{nCount, TRUE}
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/areplicate/*" /> 
+FUNCTION AReplicate(xFill AS USUAL,nElements AS DWORD) AS ARRAY
+	VAR a:= __Array{nElements, TRUE}
 	LOCAL i AS DWORD
-	FOR i := 1 UPTO nCount
-		a[i] := x
+	FOR i := 1 UPTO nElements
+		a[i] := xFill
 	NEXT
 	RETURN a
 	
 	
-/// <summary>
-/// Sort an Array.
-/// </summary>
-/// <param name="uArray"></param>
-/// <param name="iStart"></param>
-/// <param name="iCount"></param>
-/// <param name="cb"></param>
-/// <returns>
-/// </returns>
-FUNCTION ASort(aArray AS ARRAY, startIndex := NIL AS USUAL,nCount := NIL AS USUAL,cbOrder := NIL AS USUAL) AS ARRAY 
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/asort/*" /> 
+FUNCTION ASort(aTarget AS ARRAY, nStart := NIL AS USUAL,nCount := NIL AS USUAL,cbOrder := NIL AS USUAL) AS ARRAY 
 	LOCAL nLen AS DWORD
-	Default( REF startIndex, 1 )
+	Default( REF nStart, 1 )
 	
-	nLen := ALen(aArray) 
+	nLen := ALen(aTarget) 
 	IF nLen == 0 // Let it execute if nLen == 1, maybe the codeblock is important to be executed in this case for some (user) reason
-		RETURN aArray
+		RETURN aTarget
 	END IF
 
-	EnforceNumeric( startIndex )
-	Default( REF nCount, nLen - startIndex + 1 )
+	EnforceNumeric( nStart )
+	Default( REF nCount, nLen - nStart + 1 )
 	EnforceNumeric( nCount )
 	
 	// Note: ASort() in VO accepts arguments out of bounds and translates them this way:
-	IF startIndex <= 0
-		startIndex := 1
-	ELSEIF startIndex > nLen
-		RETURN aArray
+	IF nStart <= 0
+		nStart := 1
+	ELSEIF nStart > nLen
+		RETURN aTarget
 	END IF
 	
-	IF nCount <= 0 .OR. startIndex + nCount - 1 > nLen
-		nCount := nLen - startIndex + 1
+	IF nCount <= 0 .OR. nStart + nCount - 1 > nLen
+		nCount := nLen - nStart + 1
 	ENDIF
 	
-/*	IF startIndex < 1 .or. startIndex > nLen
-		THROW Error.ArgumentError( __ENTITY__, NAMEOF(startIndex), 2, <OBJECT>{ startIndex } )
+/*	IF startIndex < 1 .or. nStart > nLen
+		THROW Error.ArgumentError( __ENTITY__, NAMEOF(nStart), 2, <OBJECT>{ nStart } )
 	ENDIF 
-	IF nCount + startIndex > ALen((ARRAY)aArray)+1
+	IF nCount + nStart > ALen((ARRAY)aArray)+1
 		THROW Error.ArgumentError( __ENTITY__, NAMEOF(nCount), 3, <OBJECT>{ nCount } )
 	ENDIF */
 	
 	
 	IF cbOrder != NIL .AND. ( ( ! cbOrder:IsCodeBlock ) || ((CODEBLOCK)cbOrder):PCount() != 2 )
-		THROW Error.ArgumentError( __ENTITY__, "cbOrder", 4, <OBJECT>{ cbOrder } )
+		THROW Error.ArgumentError( __ENTITY__, nameof(cbOrder), 4, <OBJECT>{ cbOrder } )
 	ENDIF
 	
 
 	IF cbOrder == NIL
-		aArray:Sort( startIndex, nCount, NULL ) // this uses __Usual.ICompareTo()
+		aTarget:Sort( nStart, nCount, NULL ) // this uses __Usual.ICompareTo()
 	ELSE
-		aArray:Sort( startIndex, nCount, ArraySortComparer{ cbOrder } )
+		aTarget:Sort( nStart, nCount, ArraySortComparer{ cbOrder } )
 	ENDIF   
 	
-	RETURN aArray
+	RETURN aTarget
 	
 	// This wraps a codeblock and provides an IComparer implementation so
 	// we can use ArrayList:Sort() with a codeblock.
@@ -1077,206 +809,122 @@ INTERNAL STRUCTURE ArraySortComparer<T, U>  IMPLEMENTS System.Collections.Generi
 		
 END STRUCTURE
 
-/// <summary>
-/// Sort an Array.
-/// </summary>
-/// <param name="a"></param>
-/// <param name="iStart"></param>
-/// <param name="iCount"></param>
-/// <param name="cb"></param>
-/// <returns>
-/// </returns>
-FUNCTION ASort<T>(aArray AS __ArrayBase<T> ,startIndex AS INT,nCount AS INT,cbOrder AS @@Func<T,T,LOGIC>) AS __ArrayBase<T> WHERE T IS NEW()
-	aArray:Sort( startIndex, nCount, ArraySortComparer<T, LOGIC> { cbOrder } )
-	RETURN aArray
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/asort/*" /> 
+/// <typeparam name="T">The type of the array elements</typeparam>
+FUNCTION ASort<T>(aTarget AS __ArrayBase<T> ,nStart AS INT,nCount AS INT,cbOrder AS @@Func<T,T,LOGIC>) AS __ArrayBase<T> WHERE T IS NEW()
+	aTarget:Sort( nStart, nCount, ArraySortComparer<T, LOGIC> { cbOrder } )
+	RETURN aTarget
+       
 
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/asort/*" /> 
+/// <typeparam name="T">The type of the array elements</typeparam>
+FUNCTION ASort<T>(aTarget AS __ArrayBase<T> ,cbOrder AS @@Func<T,T,LOGIC>) AS __ArrayBase<T> WHERE T IS NEW()
 
-/// <summary>
-/// Sort an Array.
-/// </summary>
-/// <param name="a"></param>
-/// <param name="iStart"></param>
-/// <param name="iCount"></param>
-/// <param name="cb"></param>
-/// <returns>
-/// </returns>
-FUNCTION ASort<T>(aArray AS __ArrayBase<T> ,cbOrder AS @@Func<T,T,LOGIC>) AS __ArrayBase<T> WHERE T IS NEW()
-
-	aArray:Sort( ArraySortComparer<T, LOGIC> { cbOrder } )
+	aTarget:Sort( ArraySortComparer<T, LOGIC> { cbOrder } )
 	
-	RETURN aArray
+	RETURN aTarget
 
 
-/// <summary>
-/// Execute a code block for each element in an Array.
-/// </summary>
-/// <param name="aArray"></param>
-/// <param name="cb"></param>
-/// <returns>
-/// </returns>
-FUNCTION AEval<T>(aArray AS __ArrayBase<T>, cb AS Action<T>) AS __ArrayBase<T> WHERE T IS NEW()
-	RETURN AEval(aArray, cb, 1, ALen(aArray) )
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aeval/*" /> 
+FUNCTION AEval<T>(aArray AS __ArrayBase<T>, cbBlock AS Action<T>) AS __ArrayBase<T> WHERE T IS NEW()
+	RETURN AEval(aArray, cbBlock, 1, ALen(aArray) )
 
 
-/// <summary>
-/// Execute a code block for each element in an Array.
-/// </summary>
-/// <param name="aArray"></param>
-/// <param name="cb"></param>
-/// <param name="iStart"></param>
-/// <returns>
-/// </returns>
-FUNCTION AEval<T>(aArray AS __ArrayBase<T>, cb AS Action<T>,iStart AS DWORD) AS __ArrayBase<T> WHERE T IS NEW()
-	RETURN AEval(aArray, cb, iStart, ALen(aArray) - iStart +1)
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aeval/*" /> 
+FUNCTION AEval<T>(aArray AS __ArrayBase<T>, cbBlock AS Action<T>,nStart AS DWORD) AS __ArrayBase<T> WHERE T IS NEW()
+	RETURN AEval(aArray, cbBlock, nStart, ALen(aArray) - nStart +1)
 	
 
-/// <summary>
-/// Execute a code block for each element in an Array.
-/// </summary>
-/// <param name="aArray"></param>
-/// <param name="cb"></param>
-/// <param name="iStart"></param>
-/// <param name="iCount"></param>
-/// <returns>
-/// </returns>
-FUNCTION AEval<T>(aArray AS __ArrayBase<T>, cb AS Action<T>,iStart AS DWORD,iCount  AS DWORD) AS __ArrayBase<T> WHERE T IS NEW()
-	LOCAL nX AS DWORD
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aeval/*" /> 
+/// <typeparam name="T">The type of the array elements</typeparam>
+FUNCTION AEval<T>(aArray AS __ArrayBase<T>, cbBlock AS Action<T>,nStart AS DWORD,nCount  AS DWORD) AS __ArrayBase<T> WHERE T IS NEW()
 	LOCAL nEnd AS DWORD
-	nEnd := iStart + iCount -1
-	FOR nX := iStart TO nEnd
-		cb(aArray[ (INT) nX])
+	nEnd := nStart + nCount -1
+	FOR VAR nX := nStart TO nEnd
+		cbBlock(aArray[ (INT) nX])
 	NEXT
 	RETURN aArray
 
-
-
-/// <inheritdoc cref='M:XSharp.RT.Functions.AEval(XSharp.__Array,XSharp.ICodeblock,XSharp.__Usual,XSharp.__Usual)'/>
-FUNCTION AEval(aArray AS ARRAY,cb AS ICodeblock ) AS ARRAY 
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aeval/*" />
+FUNCTION AEval(aArray AS ARRAY,cbBlock AS ICodeblock ) AS ARRAY 
 	LOCAL uCount    := NIL AS USUAL
 	LOCAL uStart	:= NIL AS USUAL
-	ArrayHelpers.AEvalCheckArgs(aArray, cb, REF uStart, REF uCount, "AEval")
-	RETURN ArrayHelpers.AEval( aArray, cb, uStart, uCount, FALSE, FALSE )
+	ArrayHelpers.AEvalCheckArgs(aArray, cbBlock, REF uStart, REF uCount, "AEval")
+	RETURN ArrayHelpers.AEval( aArray, cbBlock, uStart, uCount, FALSE)
 
-/// <inheritdoc cref='M:XSharp.RT.Functions.AEval(XSharp.__Array,XSharp.ICodeblock,XSharp.__Usual,XSharp.__Usual)'/>
-FUNCTION AEval(aArray AS ARRAY,cb AS ICodeblock ,uStart AS USUAL ) AS ARRAY 
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aeval/*" />
+FUNCTION AEval(aArray AS ARRAY,cbBlock AS ICodeblock ,nStart AS USUAL ) AS ARRAY 
 	LOCAL uCount    := NIL AS USUAL
-	ArrayHelpers.AEvalCheckArgs(aArray, cb, REF uStart, REF uCount, "AEval")
-	RETURN ArrayHelpers.AEval( aArray, cb, uStart, uCount, FALSE, FALSE )
+	ArrayHelpers.AEvalCheckArgs(aArray, cbBlock, REF nStart, REF uCount, "AEval")
+	RETURN ArrayHelpers.AEval( aArray, cbBlock, nStart, uCount, FALSE)
 
 
-/// <summary>
-/// Execute a code block for each element in an Array.
-/// </summary>
-/// <param name="aArray"></param>
-/// <param name="cb"></param>
-/// <param name="uStart"></param>
-/// <param name="uCount"></param>
-/// <returns>
-/// </returns>
-FUNCTION AEval(aArray AS ARRAY,cb AS ICodeblock ,uStart AS USUAL ,uCount AS USUAL) AS ARRAY 
-	ArrayHelpers.AEvalCheckArgs(aArray, cb, REF uStart, REF uCount, "AEval")
-	RETURN ArrayHelpers.AEval( aArray, cb, uStart, uCount , FALSE, FALSE )
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aeval/*" />
+FUNCTION AEval(aArray AS ARRAY,cbBlock AS ICodeblock ,nStart AS USUAL ,nCount AS USUAL) AS ARRAY 
+	ArrayHelpers.AEvalCheckArgs(aArray, cbBlock, REF nStart, REF nCount, "AEval")
+	RETURN ArrayHelpers.AEval( aArray, cbBlock, nStart, nCount , FALSE )
 
 
-/// <inheritdoc cref='M:XSharp.RT.Functions.AEvalA(XSharp.__Array,XSharp.ICodeblock,XSharp.__Usual,XSharp.__Usual)'/>
-FUNCTION AEvalA(aArray AS ARRAY ,cb AS ICodeblock) AS ARRAY
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aevala/*" />
+FUNCTION AEvalA(aArray AS ARRAY ,cbBlock AS ICodeblock) AS ARRAY
 	LOCAL uCount    := NIL AS USUAL
 	LOCAL uStart	:= NIL AS USUAL
-	ArrayHelpers.AEvalCheckArgs(aArray, cb, REF uStart, REF uCount, "AEvalA")
-	RETURN ArrayHelpers.AEval( aArray, cb, uStart,uCount , TRUE, FALSE )
+	ArrayHelpers.AEvalCheckArgs(aArray, cbBlock, REF uStart, REF uCount, "AEvalA")
+	RETURN ArrayHelpers.AEval( aArray, cbBlock, uStart,uCount , TRUE)
 	
 
-/// <inheritdoc cref='M:XSharp.RT.Functions.AEvalA(XSharp.__Array,XSharp.ICodeblock,XSharp.__Usual,XSharp.__Usual)'/>
-FUNCTION AEvalA(aArray AS ARRAY ,cb AS ICodeblock, uStart AS USUAL ) AS ARRAY
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aevala/*" />
+FUNCTION AEvalA(aArray AS ARRAY ,cbBlock AS ICodeblock, nStart AS USUAL ) AS ARRAY
 	LOCAL uCount    := NIL AS USUAL
-	ArrayHelpers.AEvalCheckArgs(aArray, cb, REF uStart, REF uCount, "AEvalA")
-	RETURN ArrayHelpers.AEval( aArray, cb, uStart,uCount , TRUE, FALSE )
+	ArrayHelpers.AEvalCheckArgs(aArray, cbBlock, REF nStart, REF uCount, "AEvalA")
+	RETURN ArrayHelpers.AEval( aArray, cbBlock, nStart,uCount , TRUE)
 	
-/// <summary>
-/// Execute a code block for each element in an Array and assign the return value to each element in the Array.
-/// </summary>
-/// <param name="a"></param>
-/// <param name="cb"></param>
-/// <param name="iStart"></param>
-/// <param name="iCount"></param>
-/// <returns>
-/// </returns>
-FUNCTION AEvalA(aArray AS ARRAY ,cb AS ICodeblock, uStart  AS USUAL ,uCount AS USUAL) AS ARRAY
-	ArrayHelpers.AEvalCheckArgs(aArray, cb, REF uStart, REF uCount, "AEvalA")
-	RETURN ArrayHelpers.AEval( aArray, cb, uStart,uCount , TRUE, FALSE )
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aevala/*" />
+FUNCTION AEvalA(aArray AS ARRAY ,cbBlock AS ICodeblock, nStart  AS USUAL ,nCount AS USUAL) AS ARRAY
+	ArrayHelpers.AEvalCheckArgs(aArray, cbBlock, REF nStart, REF nCount, "AEvalA")
+	RETURN ArrayHelpers.AEval( aArray, cbBlock, nStart,nCount , TRUE)
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aevala/*" /> 
+/// <typeparam name="T">The type of the array elements</typeparam>
+FUNCTION AEvalA<T>(aArray AS __ArrayBase<T>, cbBlock AS @@Func<T,T>) AS __ArrayBase<T> WHERE T IS NEW()
+	RETURN AEvalA(aArray, cbBlock, 1, ALen(aArray))
 
 
-/// <summary>
-/// Execute a code block for each element in an Array and assign the return value to each element in the Array.
-/// </summary>
-/// <param name="a"></param>
-/// <param name="cb"></param>
-/// <returns>
-/// </returns>
-FUNCTION AEvalA<T>(aArray AS __ArrayBase<T>, cb AS @@Func<T,T>) AS __ArrayBase<T> WHERE T IS NEW()
-	RETURN AEvalA(aArray, cb, 1, ALen(aArray))
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aevala/*" /> 
+/// <typeparam name="T">The type of the array elements</typeparam>
+FUNCTION AEvalA<T>(aArray AS __ArrayBase<T>, cbBlock AS @@Func<T,T>,nStart AS DWORD) AS __ArrayBase<T> WHERE T IS NEW()
+	RETURN AEvalA(aArray, cbBlock, nStart, ALen(aArray) - nStart +1)
 
 
-/// <summary>
-/// Execute a code block for each element in an Array and assign the return value to each element in the Array.
-/// </summary>
-/// <param name="a"></param>
-/// <param name="cb"></param>
-/// <param name="iStart"></param>
-/// <returns>
-/// </returns>
-FUNCTION AEvalA<T>(aArray AS __ArrayBase<T>, cb AS @@Func<T,T>,iStart AS DWORD) AS __ArrayBase<T> WHERE T IS NEW()
-	RETURN AEvalA(aArray, cb, iStart, ALen(aArray) - iStart +1)
-
-	
-
-/// <summary>
-/// Execute a code block for each element in an Array and assign the return value to each element in the Array.
-/// </summary>
-/// <param name="a"></param>
-/// <param name="cb"></param>
-/// <param name="iStart"></param>
-/// <param name="iCount"></param>
-/// <returns>
-/// </returns>
-FUNCTION AEvalA<T>(aArray AS __ArrayBase<T>, cb AS @@Func<T,T>,iStart AS DWORD,iCount AS DWORD) AS __ArrayBase<T> WHERE T IS NEW()
-	LOCAL nX AS DWORD
-	LOCAL nEnd AS DWORD
-	nEnd := iStart + iCount -1
-	FOR nX := iStart TO nEnd
-		aArray[ (INT) nX] := cb( aArray[(INT)  nX])
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aevala/*" /> 
+/// <typeparam name="T">The type of the array elements</typeparam>
+FUNCTION AEvalA<T>(aArray AS __ArrayBase<T>, cbBlock AS @@Func<T,T>,nStart AS DWORD, nCount AS DWORD) AS __ArrayBase<T> WHERE T IS NEW()
+	LOCAL nEnd  AS DWORD
+	nEnd := nStart + nCount -1
+	FOR VAR nX := nStart TO nEnd
+		aArray[ (INT) nX] := cbBlock( aArray[(INT)  nX])
 	NEXT
 	RETURN aArray
 
 	
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aevalold/*" />
+FUNCTION AEvalOld(aArray AS ARRAY ,cbBlock AS ICodeblock,nStart  AS USUAL ,nCount AS USUAL) AS ARRAY
+	ArrayHelpers.AEvalCheckArgs(aArray, cbBlock, REF nStart, REF nCount, "AEvalOld")
+	RETURN ArrayHelpers.AEval( aArray, cbBlock, nStart,nCount , FALSE)
 
 
-/// <summary>
-/// Execute a code block for each element in an Array and assign the return value to each element in the Array.
-/// </summary>
-/// <param name="aArray"></param>
-/// <param name="cb"></param>
-/// <param name="uStart"></param>
-/// <param name="uCount"></param>
-/// <returns>
-/// </returns>
-FUNCTION AEvalOld(aArray AS ARRAY ,cb AS ICodeblock,uStart  AS USUAL ,uCount AS USUAL) AS ARRAY
-	ArrayHelpers.AEvalCheckArgs(aArray, cb, REF uStart, REF uCount, "AEvalOld")
-	RETURN ArrayHelpers.AEval( aArray, cb, uStart,uCount , FALSE, TRUE)
-
-
-/// <inheritdoc cref='M:XSharp.RT.Functions.AEvalOld(XSharp.__Array,XSharp.ICodeblock,XSharp.__Usual,XSharp.__Usual)'/>
-FUNCTION AEvalOld(aArray AS ARRAY ,cb AS ICodeblock,uStart  AS USUAL ) AS ARRAY
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aevalold/*" />
+FUNCTION AEvalOld(aArray AS ARRAY ,cbBlock AS ICodeblock,nStart  AS USUAL ) AS ARRAY
 	LOCAL uCount	 := NIL AS USUAL
-    ArrayHelpers.AEvalCheckArgs(aArray, cb, REF uStart, REF uCount, "AEvalOld")
-	RETURN ArrayHelpers.AEval( aArray, cb, uStart,uCount , FALSE, TRUE)
+    ArrayHelpers.AEvalCheckArgs(aArray, cbBlock, REF nStart, REF uCount, "AEvalOld")
+	RETURN ArrayHelpers.AEval( aArray, cbBlock, nStart,uCount , FALSE)
 
-/// <inheritdoc cref='M:XSharp.RT.Functions.AEvalOld(XSharp.__Array,XSharp.ICodeblock,XSharp.__Usual,XSharp.__Usual)'/>
-FUNCTION AEvalOld(aArray AS ARRAY ,cb AS ICodeblock) AS ARRAY
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aevalold/*" />
+FUNCTION AEvalOld(aArray AS ARRAY ,cbBlock AS ICodeblock) AS ARRAY
 	LOCAL uStart	 := NIL AS USUAL
 	LOCAL uCount	 := NIL AS USUAL
-	ArrayHelpers.AEvalCheckArgs(aArray, cb, REF uStart, REF uCount, "AEvalOld")
-	RETURN ArrayHelpers.AEval( aArray, cb, uStart,uCount , FALSE, TRUE)
+	ArrayHelpers.AEvalCheckArgs(aArray, cbBlock, REF uStart, REF uCount, "AEvalOld")
+	RETURN ArrayHelpers.AEval( aArray, cbBlock, uStart,uCount , FALSE)
 
 
 

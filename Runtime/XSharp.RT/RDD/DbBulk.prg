@@ -80,8 +80,8 @@ FUNCTION __UniqueAlias   (cDbfName AS STRING)            AS STRING
 FUNCTION __DBFLEDIT(aStruct AS ARRAY, aFields AS ARRAY, aList AS ARRAY ) AS ARRAY
     RETURN VoDb.FieldList(aStruct, aFields, aList)
 
-/// <summary>Import records from a database file.</summary>
-FUNCTION DbApp(cFile, aFields, uCobFor, uCobWhile,nNext, nRec, lRest,cDriver, aHidden, aStruct)     AS LOGIC CLIPPER
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbapp/*" />
+FUNCTION DbApp(cSourceFile, acFields, cbForCondition, cbWhileCondition,nNext, nRecord, lRest,cDriver, acRDDs, aStruct)     AS LOGIC CLIPPER
 	LOCAL siFrom        AS DWORD
 	LOCAL siTo          AS DWORD
 	LOCAL n, i          AS DWORD
@@ -100,29 +100,29 @@ FUNCTION DbApp(cFile, aFields, uCobFor, uCobWhile,nNext, nRec, lRest,cDriver, aH
 		IF aStruct:IsNil
             aStruct := DbStruct()
         ENDIF
-        aStruct := VoDb.FieldList(aStruct, aFields, NULL_ARRAY) 
+        aStruct := VoDb.FieldList(aStruct, acFields, NULL_ARRAY) 
 		IF Empty( aStruct)
 			THROW VoDb.ParamError(__FUNCTION__, ARRAY, 2)
 		ENDIF
 		
-		DbUseArea(TRUE, cDriver, cFile, __UniqueAlias(cFile), TRUE, TRUE,/*aStru*/,/*cDelim*/, aHidden)
+		DbUseArea(TRUE, cDriver, cSourceFile, __UniqueAlias(cSourceFile), TRUE, TRUE,/*aStru*/,/*cDelim*/, acRDDs)
 		siFrom := VODBGetSelect()
 		
-		aFields := {}
+		acFields := {}
 		
 		n := FCount()
 		aMatch := DbStruct()
 		
 		FOR i := 1 TO n
-			AAdd(aFields, FieldName(i))
+			AAdd(acFields, FieldName(i))
 		NEXT
 		
 		IF ( !lAnsi ) .AND. ( DbInfo(DBI_ISANSI) )
 			SetAnsi(.T.)
 		ENDIF
-		aStruct := VoDb.FieldList(aStruct, aFields, aMatch)
+		aStruct := VoDb.FieldList(aStruct, acFields, aMatch)
 		IF !Empty(aStruct)
-			lRetCode := DbTrans(siTo, aStruct, uCobFor, uCobWhile, nNext, nRec, lRest)
+			lRetCode := DbTrans(siTo, aStruct, cbForCondition, cbWhileCondition, nNext, nRecord, lRest)
 		ENDIF
 		
 		IF (siFrom > 0)
@@ -147,8 +147,8 @@ FUNCTION DbApp(cFile, aFields, uCobFor, uCobWhile,nNext, nRec, lRest,cDriver, aH
 	RETURN (lRetCode)
 
 
-/// <summary>Import records from a delimited text file.</summary>
-FUNCTION DbAppDelim(cFile, cDelim, aFields, uCobFor, uCobWhile, nNext,nRec, lRest,aStruct)AS LOGIC CLIPPER
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbappdelim/*" />
+FUNCTION DbAppDelim(cSourceFile, cDelim, acFields, cbForCondition, cbWhileCondition, nNext,nRecord, lRest,aStruct)AS LOGIC CLIPPER
 	
 	LOCAL siTo          AS DWORD
 	LOCAL siPos         AS DWORD
@@ -164,29 +164,29 @@ FUNCTION DbAppDelim(cFile, cDelim, aFields, uCobFor, uCobWhile, nNext,nRec, lRes
         IF aStruct:IsNil
             aStruct := DbStruct()
         ENDIF
-        aStruct := VoDb.FieldList(aStruct, aFields, NULL_ARRAY) 
+        aStruct := VoDb.FieldList(aStruct, acFields, NULL_ARRAY) 
 		IF Empty( aStruct)
 			THROW VoDb.ParamError(__FUNCTION__, ARRAY, 3)
 		ENDIF
 		
-		IF Empty(cFile)
+		IF Empty(cSourceFile)
 			THROW VoDb.ParamError(__FUNCTION__, STRING, 1)
         ELSE
-            siPos := At(".", cFile ) 
+            siPos := At(".", cSourceFile ) 
 			IF siPos == 0
-				cFile := cFile + ".TXT"
+				cSourceFile := cSourceFile + ".TXT"
 			ENDIF
 		ENDIF
 		
 		lDbfAnsi := DbInfo(DBI_ISANSI)
 		
-		DbCreate(cFile, aStruct, "DELIM", .T., __UniqueAlias(cFile), cDelim, .T.)
+		DbCreate(cSourceFile, aStruct, "DELIM", .T., __UniqueAlias(cSourceFile), cDelim, .T.)
 		
 		IF ( !lAnsi .AND. lDbfAnsi)
 			SetAnsi(.T.)
 		ENDIF
 		
-		lRetCode := DbTrans(siTo, aStruct, uCobFor, uCobWhile, nNext, nRec, lRest)
+		lRetCode := DbTrans(siTo, aStruct, cbForCondition, cbWhileCondition, nNext, nRecord, lRest)
 		
 		VODBCloseArea()
 		
@@ -202,10 +202,8 @@ FUNCTION DbAppDelim(cFile, cDelim, aFields, uCobFor, uCobWhile, nNext,nRec, lRes
 
 
 
-/// <summary>Import records from an SDF file.</summary>
-FUNCTION DbAppSdf(cFile, aFields, uCobFor,;
-	uCobWhile, nNext, nRec, ;
-	lRest , aStruct                  )      AS LOGIC CLIPPER
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbappsdf/*" />
+FUNCTION DbAppSdf(cSourceFile, acFields, cbForCondition,cbWhileCondition, nNext, nRecord, lRest , aStruct  )      AS LOGIC CLIPPER
 	
 	LOCAL siTo          AS DWORD
 	LOCAL siPos         AS DWORD
@@ -220,29 +218,29 @@ FUNCTION DbAppSdf(cFile, aFields, uCobFor,;
         IF aStruct:IsNil
             aStruct := DbStruct()
         ENDIF
-		aStruct := VoDb.FieldList(aStruct, aFields, NULL_ARRAY) 
+		aStruct := VoDb.FieldList(aStruct, acFields, NULL_ARRAY) 
 		IF (Empty( aStruct ))
 			THROW VoDb.ParamError(__FUNCTION__, ARRAY, 2)
 		ENDIF
 		
-		IF Empty(cFile)
+		IF Empty(cSourceFile)
 			THROW VoDb.ParamError(__FUNCTION__, STRING, 1)
 		ELSE
-            siPos := At(".", cFile ) 
+            siPos := At(".", cSourceFile ) 
 			IF siPos == 0
-				cFile := cFile + ".TXT"
+				cSourceFile := cSourceFile + ".TXT"
 			ENDIF
 		ENDIF
 		
 		lDbfAnsi := DbInfo(DBI_ISANSI)
 		
-		DbCreate(cFile, aStruct, "SDF", .T., __UniqueAlias(cFile), ,.T.)
+		DbCreate(cSourceFile, aStruct, "SDF", .T., __UniqueAlias(cSourceFile), ,.T.)
 		
 		IF ( !lAnsi .AND. lDbfAnsi )
 			SetAnsi(.T.)
 		ENDIF
 		
-		lRetCode := DbTrans(siTo, aStruct, uCobFor, uCobWhile, nNext, nRec, lRest)
+		lRetCode := DbTrans(siTo, aStruct, cbForCondition, cbWhileCondition, nNext, nRecord, lRest)
 		
 		VODBCloseArea()
 		VODBSetSelect(INT(siTo))
@@ -256,8 +254,8 @@ FUNCTION DbAppSdf(cFile, aFields, uCobFor,;
 	RETURN (lRetCode)
 
 
-/// <summary>Export records to a new database file.</summary>
-FUNCTION DbCopy(cFile, aFields, uCobFor, uCobWhile, nNext, nRec, lRest, cDriver, aHidden, aStruct    )     AS LOGIC CLIPPER
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbcopy/*" />
+FUNCTION DbCopy(cTargetFile, acFields, cbForCondition, cbWhileCondition, nNext, nRecord, lRest, cDriver, acRDDs, aStruct    )     AS LOGIC CLIPPER
 	
 	LOCAL siFrom        AS DWORD
 	LOCAL siTo          AS DWORD
@@ -279,39 +277,39 @@ FUNCTION DbCopy(cFile, aFields, uCobFor, uCobWhile, nNext, nRec, lRest, cDriver,
 		
 		lDbfAnsi := DbInfo(DBI_ISANSI)
 		
-		IF  Empty(AFields)                      .AND. ;
-			uCobFor:IsNil                      .AND. ;
-			uCobWhile:IsNil                    .AND. ;
+		IF  Empty(acFields)                      .AND. ;
+			cbForCondition:IsNil                      .AND. ;
+			cbWhileCondition:IsNil                    .AND. ;
 			nNext:IsNil                        .AND. ;
-			nRec:IsNil                         .AND. ;
+			nRecord:IsNil                         .AND. ;
 			Empty(lRest)                        .AND. ;
 			cDriver:IsNil                      .AND. ;
-			aHidden:IsNil                      .AND. ;
+			acRDDs:IsNil                      .AND. ;
 			( lDbfAnsi == lAnsi )               .AND. ;
 			( DbInfo(DBI_MEMOHANDLE) == 0 )     .AND. ;
 			(DbOrderInfo(DBOI_ORDERCOUNT) = 0)
 			
-			lRetCode := DBFileCopy( DbInfo(DBI_FILEHANDLE), cFile, DbInfo(DBI_FULLPATH) )
+			lRetCode := DBFileCopy( DbInfo(DBI_FILEHANDLE), cTargetFile, DbInfo(DBI_FULLPATH) )
         ELSE
             IF aStruct:IsNil
                 aStruct := DbStruct()
             ENDIF
-            aStruct := VoDb.FieldList(aStruct, aFields, NULL_ARRAY)
+            aStruct := VoDb.FieldList(aStruct, acFields, NULL_ARRAY)
 			IF ( Empty(aStruct) )
 				THROW VoDb.ParamError(__FUNCTION__, ARRAY, 2)
 			ENDIF
 			
-			DbCreate( cFile, aStruct, cDriver,, __UniqueAlias(cFile),,,aHidden)
+			DbCreate( cTargetFile, aStruct, cDriver,, __UniqueAlias(cTargetFile),,,acRDDs)
 			
 			IF ( !lAnsi ) .AND. ( DbInfo(DBI_ISANSI) )
 				SetAnsi(.T.)
 			ENDIF
 			
-			DBUSEAREA(.T., cDriver, cFile, __UniqueAlias(cFile),,,,,aHidden)
+			DBUSEAREA(.T., cDriver, cTargetFile, __UniqueAlias(cTargetFile),,,,,acRDDs)
 			
 			VODBSelect(siFrom, REF siTo)
 			
-			lRetCode := DbTrans(siTo, aStruct, uCobFor, uCobWhile, nNext, nRec, lRest)
+			lRetCode := DbTrans(siTo, aStruct, cbForCondition, cbWhileCondition, nNext, nRecord, lRest)
 			
 			IF (siTo > 0)
 				VODBSetSelect(INT(siTo))
@@ -386,9 +384,8 @@ FUNCTION DBFileCopy( hfFrom AS IntPtr, cFile AS STRING, cFullPath AS STRING) AS 
 
 
 
-/// <summary>Export records to a new delimited text file.</summary>
-
-FUNCTION DbCopyDelim (cFile, cDelim, aFields, uCobFor, uCobWhile, nNext,nRec, lRest, aStruct)   AS LOGIC CLIPPER
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbcopydelim/*" />
+FUNCTION DbCopyDelim (cTargetFile, cDelim, acFields, cbForCondition, cbWhileCondition, nNext,nRecord, lRest, aStruct)   AS LOGIC CLIPPER
 	
 	LOCAL siFrom        AS DWORD
 	LOCAL siTo          AS DWORD
@@ -408,23 +405,23 @@ FUNCTION DbCopyDelim (cFile, cDelim, aFields, uCobFor, uCobWhile, nNext,nRec, lR
         IF aStruct:IsNil
             aStruct := DbStruct()
         ENDIF
-  		aStruct := VoDb.FieldList(aStruct, aFields, NULL_ARRAY)
+  		aStruct := VoDb.FieldList(aStruct, acFields, NULL_ARRAY)
 		IF Empty(aStruct )
 			THROW VoDb.ParamError(__FUNCTION__, ARRAY, 3)
 		ENDIF
 		
-		IF Empty(cFile)
+		IF Empty(cTargetFile)
 			THROW VoDb.ParamError(__FUNCTION__, STRING, 1)
 		ELSE
-            siPos := At(".", cFile ) 
+            siPos := At(".", cTargetFile ) 
 			IF siPos == 0
-				cFile := cFile + ".TXT"
+				cTargetFile := cTargetFile + ".TXT"
 			ENDIF
 		ENDIF
 		
 		lDbfAnsi := DbInfo(DBI_ISANSI)
 		
-		DbCreate(cFile, aStruct, "DELIM", .T., __UniqueAlias(cFile), cDelim)
+		DbCreate(cTargetFile, aStruct, "DELIM", .T., __UniqueAlias(cTargetFile), cDelim)
 		
 		IF ( !lAnsi .AND. lDbfAnsi)
 			SetAnsi(.T.)
@@ -432,7 +429,7 @@ FUNCTION DbCopyDelim (cFile, cDelim, aFields, uCobFor, uCobWhile, nNext,nRec, lR
 		
 		VODBSelect(siFrom, REF siTo)
 		
-		lRetCode := DbTrans(siTo, aStruct, uCobFor, uCobWhile, nNext, nRec, lRest)
+		lRetCode := DbTrans(siTo, aStruct, cbForCondition, cbWhileCondition, nNext, nRecord, lRest)
 		
 		VODBSetSelect(INT(siTo))
 		VODBCloseArea()
@@ -448,8 +445,8 @@ FUNCTION DbCopyDelim (cFile, cDelim, aFields, uCobFor, uCobWhile, nNext,nRec, lR
 	RETURN (lRetCode)
 
 
-/// <summary>Export records to a new SDF file.</summary>
-FUNCTION DbCopySDF(cFile, aFields, uCobFor, uCobWhile, nNext, nRec, lRest, aStruct )   AS LOGIC CLIPPER
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbcopysdf/*" />
+FUNCTION DbCopySDF(cTargetFile, acFields, cbForCondition, cbWhileCondition, nNext, nRecord, lRest, aStruct )   AS LOGIC CLIPPER
 	
 	LOCAL siFrom        AS DWORD
 	LOCAL siTo          AS DWORD
@@ -470,26 +467,26 @@ FUNCTION DbCopySDF(cFile, aFields, uCobFor, uCobWhile, nNext, nRec, lRest, aStru
         IF aStruct:IsNil
             aStruct := DbStruct()
         ENDIF
-		aStruct := VoDb.FieldList(aStruct, aFields, NULL_ARRAY)
+		aStruct := VoDb.FieldList(aStruct, acFields, NULL_ARRAY)
 		IF Empty(aStruct )
 			THROW VoDb.ParamError(__FUNCTION__, ARRAY, 2)
 		ENDIF
 		
-		IF Empty(cFile)
+		IF Empty(cTargetFile)
 			THROW VoDb.ParamError(__FUNCTION__, STRING, 1)
 		ELSE
-            siPos := At(".", cFile ) 
+            siPos := At(".", cTargetFile ) 
 			IF siPos == 0
-				cFile := cFile + ".TXT"
+				cTargetFile := cTargetFile + ".TXT"
 			ENDIF
 		ENDIF
 		
-		cAlias := __UniqueAlias(cFile)
+		cAlias := __UniqueAlias(cTargetFile)
 		
 		
 		lDbfAnsi := DbInfo(DBI_ISANSI)
 		
-		DbCreate(cFile, aStruct, "SDF", .T., cAlias)
+		DbCreate(cTargetFile, aStruct, "SDF", .T., cAlias)
 		
 		
 		IF ( !lAnsi .AND. lDbfAnsi)
@@ -498,7 +495,7 @@ FUNCTION DbCopySDF(cFile, aFields, uCobFor, uCobWhile, nNext, nRec, lRest, aStru
 		
 		VODBSelect(siFrom, REF siTo)
 		
-		lRetCode := DbTrans(siTo, aStruct, uCobFor, uCobWhile, nNext, nRec, lRest)
+		lRetCode := DbTrans(siTo, aStruct, cbForCondition, cbWhileCondition, nNext, nRecord, lRest)
 		
 		VODBSetSelect(INT(siTo))
 		VODBCloseArea()
@@ -518,8 +515,8 @@ FUNCTION DbCopySDF(cFile, aFields, uCobFor, uCobWhile, nNext, nRec, lRest, aStru
 
 
 
-/// <summary>Create a new database file by merging records/fields from two work areas.</summary>
-FUNCTION DbJoin(cAlias, cFile, aFields, uCobFor) AS LOGIC CLIPPER
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbjoin/*" />
+FUNCTION DbJoin(cAlias, cTargetFile, acFields, cbForCondition) AS LOGIC CLIPPER
 	LOCAL siFrom1       AS DWORD
 	LOCAL siFrom2       AS DWORD
 	LOCAL siTo          AS DWORD
@@ -528,8 +525,8 @@ FUNCTION DbJoin(cAlias, cFile, aFields, uCobFor) AS LOGIC CLIPPER
 	
 	LOCAL pJoinList     AS _JOINLIST
 	
-	IF uCobFor:IsNil
-		uCobFor := {|| .T.}
+	IF cbForCondition:IsNil
+		cbForCondition := {|| .T.}
 	ENDIF
 	siTo   := 0
     siFrom1 := 0
@@ -546,7 +543,7 @@ FUNCTION DbJoin(cAlias, cFile, aFields, uCobFor) AS LOGIC CLIPPER
 		
 		VODBSetSelect(INT(siFrom1))
 
-        aStruct := VoDb.TargetFields(cAlias, aFields, OUT pJoinList)
+        aStruct := VoDb.TargetFields(cAlias, acFields, OUT pJoinList)
 		IF Empty( aStruct )
 			VAR oError := VoDb.DbCmdError(__FUNCTION__)
 			oError:SubCode      := EDB_NOFIELDS
@@ -555,7 +552,7 @@ FUNCTION DbJoin(cAlias, cFile, aFields, uCobFor) AS LOGIC CLIPPER
 			oError:CanSubstitute := .F.
 			THROW oError
 		ENDIF
-		DbCreate( cFile, aStruct,"" , .T., "" )
+		DbCreate( cTargetFile, aStruct,"" , .T., "" )
 		VODBSelect(siFrom1, REF siTo)
 		
 		pJoinList:uiDestSel := siTo
@@ -572,7 +569,7 @@ FUNCTION DbJoin(cAlias, cFile, aFields, uCobFor) AS LOGIC CLIPPER
 				
 				VODBSetSelect(INT(siFrom1))
 				
-				IF ( Eval(uCobFor) )
+				IF ( Eval(cbForCondition) )
 					DbJoinAppend(siTo, pJoinList)
 				ENDIF
 				
@@ -608,9 +605,8 @@ FUNCTION DbJoin(cAlias, cFile, aFields, uCobFor) AS LOGIC CLIPPER
 FUNCTION DbJoinAppend(nSelect AS DWORD, list AS _JoinList)   AS LOGIC        
 	RETURN _DbThrowErrorOnFailure(__FUNCTION__, VODBJoinAppend(nSelect, list))
 
-/// <summary>Copy records to a database file in sorted order.
-/// </summary>
-FUNCTION DbSort(	cFile, aFields, uCobFor, uCobWhile, nNext, nRec, lRest )   AS LOGIC CLIPPER
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbsort/*" />
+FUNCTION DbSort(	cTargetFile, acFields, cbForCondition, cbWhileCondition, nNext, nRecord, lRest )   AS LOGIC CLIPPER
 	
 	LOCAL siFrom        AS DWORD
 	LOCAL siTo          AS DWORD
@@ -638,15 +634,15 @@ FUNCTION DbSort(	cFile, aFields, uCobFor, uCobWhile, nNext, nRec, lRest )   AS L
 		
 		fnFieldNames := VoDb.allocFieldNames(aStruct)
 		
-		IF Empty(AFields)
+		IF Empty(acFields)
 			THROW VoDb.ParamError(__FUNCTION__, ARRAY, 2)
 		ENDIF
 		
-		fnSortNames := VoDb.AllocFieldNames(AFields)
+		fnSortNames := VoDb.AllocFieldNames(acFields)
 		
-		DbCreate(cFile, aStruct, cRdd, .T.)
+		DbCreate(cTargetFile, aStruct, cRdd, .T.)
 		VODBSelect(siFrom, REF siTo)
-		lRetCode := VODBSort(siTo, fnFieldNames, uCobFor, uCobWhile, nNext, nRec, lRest, fnSortNames)
+		lRetCode := VODBSort(siTo, fnFieldNames, cbForCondition, cbWhileCondition, nNext, nRecord, lRest, fnSortNames)
 		
 		IF !lRetCode
 			THROW Error{RuntimeState.LastRDDError}
@@ -667,15 +663,12 @@ FUNCTION DbSort(	cFile, aFields, uCobFor, uCobWhile, nNext, nRec, lRest )   AS L
 	
 	RETURN lRetCode
 
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
-FUNCTION DbTrans(nTo, aStru, uCobFor, uCobWhile, nNext, nRecno, lRest) AS LOGIC CLIPPER
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbtrans/*" />
+FUNCTION DbTrans(wTarget, aStruct, cbForCondition, cbWhileCondition, nNext, nRecord, lRest) AS LOGIC CLIPPER
 	
 	LOCAL fldNames  AS _FieldNames
 	
-	IF !uCobWhile:IsNil
+	IF !cbWhileCondition:IsNil
 		lRest := .T.
 	ENDIF
 	
@@ -683,19 +676,14 @@ FUNCTION DbTrans(nTo, aStru, uCobFor, uCobWhile, nNext, nRecno, lRest) AS LOGIC 
 		lRest := .F.
 	ENDIF
 	
-	fldNames := VoDb.AllocFieldNames(aStru)
+	fldNames := VoDb.AllocFieldNames(aStruct)
 	
-	RETURN _DbThrowErrorOnFailure(__FUNCTION__, VODBTrans(nTo, fldNames, uCobFor, uCobWhile, nNext, nRecno, lRest))
+	RETURN _DbThrowErrorOnFailure(__FUNCTION__, VODBTrans(wTarget, fldNames, cbForCondition, cbWhileCondition, nNext, nRecord, lRest))
 
 
 
-/// <summary>
-/// </summary>
-/// <param name="uSelect"></param>
-/// <param name="symField"></param>
-/// <returns>
-/// </returns>
-FUNCTION DbTotal(cFile, bKey, aFields,  uCobFor, uCobWhile, nNext, nRec, lRest, xDriver ) 	AS LOGIC CLIPPER
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbtotal/*" />
+FUNCTION DbTotal(cTargetFile, cbKey, acFields,  cbForCondition, cbWhileCondition, nNext, nRecord, lRest, xDriver ) 	AS LOGIC CLIPPER
 	
 	LOCAL siFrom        AS DWORD
 	LOCAL siTo          AS DWORD
@@ -708,14 +696,14 @@ FUNCTION DbTotal(cFile, bKey, aFields,  uCobFor, uCobWhile, nNext, nRec, lRest, 
 	LOCAL lRetCode  := FALSE   AS LOGIC
 	LOCAL fldNames      AS _FieldNames
 	
-	IF uCobWhile:IsNil
-		uCobWhile := {|| .T.}
+	IF cbWhileCondition:IsNil
+		cbWhileCondition := {|| .T.}
 	ELSE
 		lRest := .T.
 	ENDIF
 	
-	IF uCobFor:IsNil
-		uCobFor := {|| .T.}
+	IF cbForCondition:IsNil
+		cbForCondition := {|| .T.}
 	ENDIF
 	
 	IF lRest:IsNil
@@ -723,8 +711,8 @@ FUNCTION DbTotal(cFile, bKey, aFields,  uCobFor, uCobWhile, nNext, nRec, lRest, 
 	ENDIF
 	siTo   := 0
 	
-	IF !nRec:IsNil
-		DbGoto(nRec)
+	IF !nRecord:IsNil
+		DbGoto(nRecord)
 		nNext := 1
 	ELSE
 		
@@ -742,10 +730,10 @@ FUNCTION DbTotal(cFile, bKey, aFields,  uCobFor, uCobWhile, nNext, nRec, lRest, 
 	
 	aFldNum := {}
 	
-	n := Len(AFields)
+	n := Len(acFields)
 	siTo   := 0
 	FOR i := 1 TO n
-		AAdd(aFldNum, FieldPos( AllTrim(AFields[i]) ) )
+		AAdd(aFldNum, FieldPos( AllTrim(acFields[i]) ) )
 	NEXT
 	
 	aNum  := ArrayNew(n)
@@ -776,26 +764,26 @@ FUNCTION DbTotal(cFile, bKey, aFields,  uCobFor, uCobWhile, nNext, nRec, lRest, 
 		
 		fldNames := VoDb.allocFieldNames(aStruct)
 		
-		//	DbCreate( cFile, aStruct, "", .T.)
+		//	DbCreate( cTargetFile, aStruct, "", .T.)
 		IF xDriver:IsNil
 			xDriver := RddSetDefault()
 		ENDIF
-		DbCreate( cFile, aStruct, xDriver, .T.)
+		DbCreate( cTargetFile, aStruct, xDriver, .T.)
 		
 		VODBSelect(siFrom, REF siTo)
 		
 		n := Len(aFldNum)
 		
-		DO WHILE ( (!EOF()) .AND. nNext != 0 .AND. Eval(uCobWhile) )
+		DO WHILE ( (!EOF()) .AND. nNext != 0 .AND. Eval(cbWhileCondition) )
 			
 			lSomething := .F.
 			
 			AFill(aNum, 0)
 			
-			kEval := Eval(bKey)
+			kEval := Eval(cbKey)
 			
-			DO WHILE ( nNext-- != 0 .AND. Eval(uCobWhile) .AND. kEval = Eval(bKey) )
-				IF ( Eval(uCobFor) )
+			DO WHILE ( nNext-- != 0 .AND. Eval(cbWhileCondition) .AND. kEval = Eval(cbKey) )
+				IF ( Eval(cbForCondition) )
 					IF ( !lSomething )
 						//	CollectForced()
 						lRetCode := VODBTransRec(siTo, fldNames)
@@ -841,13 +829,8 @@ FUNCTION DbTotal(cFile, bKey, aFields,  uCobFor, uCobWhile, nNext, nRec, lRest, 
 	
 	RETURN (lRetCode)
 
-/// <summary>
-/// </summary>
-/// <param name="uSelect"></param>
-/// <param name="symField"></param>
-/// <returns>
-/// </returns>
-FUNCTION DbUpdate(cAlias, uCobKey, lRand, bReplace) AS LOGIC CLIPPER
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbupdate/*" />
+FUNCTION DbUpdate(cAlias, cbKey, lRand, cbReplace) AS LOGIC CLIPPER
 	
 	LOCAL siTo, siFrom  AS DWORD
 	LOCAL kEval         AS USUAL
@@ -878,7 +861,7 @@ FUNCTION DbUpdate(cAlias, uCobKey, lRand, bReplace) AS LOGIC CLIPPER
 		
 		DO WHILE !EOF()
 			
-			kEval := Eval(uCobKey)
+			kEval := Eval(cbKey)
 			
 			VODBSetSelect(INT(siTo))
 			
@@ -887,17 +870,17 @@ FUNCTION DbUpdate(cAlias, uCobKey, lRand, bReplace) AS LOGIC CLIPPER
 				DbSeek(kEval)
 				
 				IF FOUND()
-					Eval(bReplace)
+					Eval(cbReplace)
 				ENDIF
 				
 			ELSE
 				
-				DO WHILE ( Eval(uCobKey) < kEval .AND. !EOF() )
+				DO WHILE ( Eval(cbKey) < kEval .AND. !EOF() )
 					DBSKIP(1)
 				ENDDO
 				
-				IF ( Eval(uCobKey) == kEval .AND. !EOF() )
-					Eval(bReplace)
+				IF ( Eval(cbKey) == kEval .AND. !EOF() )
+					Eval(cbReplace)
 				ENDIF
 				
 			ENDIF

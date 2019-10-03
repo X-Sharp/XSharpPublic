@@ -5,24 +5,15 @@
 //
 USING XSharp
 USING System.IO
-/// <summary>
-/// Return the last DOS error code  (Exit code) and set a new code.
-/// </summary>
-/// <param name="nSet">New value for the DOS eror code </param>
-/// <returns>
-/// </returns>
-FUNCTION DosError(nSet AS DWORD) AS DWORD
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/doserror/*" />
+FUNCTION DosError(nNewDosCode AS DWORD) AS DWORD
 	LOCAL nOld AS INT
 	nOld := System.Environment.ExitCode
-	System.Environment.ExitCode := UNCHECKED((INT) nSet)
+	System.Environment.ExitCode := UNCHECKED((INT) nNewDosCode)
 	RETURN UNCHECKED((DWORD) nOld)
 
-/// <summary>
-/// Return the last DOS error code  (Exit code). use GetDosError() to fetch the error from the Last Win32 call.
-/// </summary>
-/// <param name="nSet"></param>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/doserror/*" />
 FUNCTION DosError() AS DWORD
 	LOCAL nOld AS INT
 	nOld := System.Environment.ExitCode
@@ -30,41 +21,21 @@ FUNCTION DosError() AS DWORD
 
 
 
-/// <summary>
-/// Return the DOS error code from any application.
-/// </summary>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/getdoserror/*" />
 FUNCTION GetDosError() AS DWORD
 	RETURN UNCHECKED((DWORD) System.Runtime.InteropServices.Marshal.GetLastWin32Error())
 	
-/// <summary>
-/// Retrieve the contents of a DOS environment variable.
-/// </summary>
-/// <param name="c"></param>
-/// <returns>
-/// </returns>
-FUNCTION GetEnv(cVar AS STRING) AS STRING
-	RETURN System.Environment.GetEnvironmentVariable(cVar)
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/getenv/*" />
+FUNCTION GetEnv(cEnvVariable AS STRING) AS STRING
+	RETURN System.Environment.GetEnvironmentVariable(cEnvVariable)
 
 
-	/// <summary>
-/// Update or replace the contents of a DOS environment variable.
-/// </summary>
-/// <param name="cVar"></param>
-/// <param name="cValue"></param>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setenv/*" />
+
 FUNCTION SetEnv(cVar AS STRING,cValue AS STRING) AS LOGIC
 	RETURN SetEnv(cVar, cValue, FALSE)
-/// <summary>
-/// Update or replace the contents of a DOS environment variable.
-/// </summary>
-/// <param name="cVar"></param>
-/// <param name="cValue"></param>
-/// <param name="lAppend"></param>
-/// <returns>
-/// </returns>
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setenv/*" />
 FUNCTION SetEnv(cVar AS STRING,cValue AS STRING,lAppend AS LOGIC) AS LOGIC
 	LOCAL result AS LOGIC
 	TRY
@@ -88,28 +59,17 @@ FUNCTION SetEnv(cVar AS STRING,cValue AS STRING,lAppend AS LOGIC) AS LOGIC
 
 
 
-/// <summary>
-/// Identify the current workstation.
-/// </summary>
-/// <returns>The workstation ID as a string.</returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/netname/*" />
+
 FUNCTION NetName() AS STRING
 	RETURN System.Environment.MachineName
 
 
-/// <summary>
-/// Return the current Windows directory.
-/// </summary>
-/// <param name="cDisk"></param>
-/// <returns>
-/// </returns>
-FUNCTION CurDir (cDisk AS STRING) AS STRING
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/curdir/*" />
+FUNCTION CurDir (cDrive AS STRING) AS STRING
 	RETURN CurDir()
 
-/// <summary>
-/// Return the current Windows directory.
-/// </summary>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/curdir/*" />
 FUNCTION CurDir() AS STRING
 	LOCAL cDir AS STRING
 	LOCAL index AS INT
@@ -126,12 +86,7 @@ FUNCTION CurDir() AS STRING
 	ENDIF
 	RETURN cDir
 
-/// <summary>
-/// Return the current Windows drive.
-/// </summary>
-/// <returns>
-/// Return the letter of the current drive without colon
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/curdrive/*" />
 FUNCTION CurDrive() AS STRING
 	LOCAL currentDirectory := System.IO.Directory.GetCurrentDirectory() AS STRING
 	LOCAL drive := "" AS STRING
@@ -144,11 +99,7 @@ FUNCTION CurDrive() AS STRING
 	RETURN drive
 	
 
-/// <summary>
-/// Return the currently selected working directory.
-/// </summary>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/workdir/*" />
 FUNCTION WorkDir() AS STRING
 	LOCAL cPath AS STRING
 	LOCAL asm   AS System.Reflection.Assembly
@@ -160,12 +111,7 @@ FUNCTION WorkDir() AS STRING
 	ENDIF
 	RETURN cPath
 
-/// <summary>
-/// Return the space available on the current disk drive.
-/// </summary>
-/// <param name="cDisk"></param>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/diskfree/*" />
 FUNCTION DiskFree() AS INT64
 	RETURN DiskFree(CurDrive())
 
@@ -180,13 +126,7 @@ INTERNAL FUNCTION DiskNo2DiskName(nDisk AS INT) AS STRING
         RETURN CurDrive()
     ENDIF
 
-/// <summary>
-/// Return the space available on a specified disk.
-/// </summary>
-/// <param name="cDrive">The drivename to get the free space from.</param>
-/// <returns>
-/// The free space on the specified disk drive.
-/// </returns>	   
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/diskfree/*" />
 FUNCTION DiskFree(cDrive AS STRING) AS INT64
     LOCAL result AS INT64
     IF String.IsNullOrEmpty(cDrive) 
@@ -203,56 +143,30 @@ FUNCTION DiskFree(cDrive AS STRING) AS INT64
     END TRY
     RETURN result
 
-/// <summary>
-/// Return the space available on a specified disk.
-/// </summary>
-/// <param name="nDrive">The drive number (1 = A, 2 = B etc)</param>
-/// <returns>
-/// The free space on the specified disk drive.
-/// </returns>	   
+/// <inheritdoc cref="M:XSharp.Core.Functions.DiskFree(System.String)" />	
+/// <param name="nDrive">The number of the disk drive to query, where 1 is drive A, 2 is B, 3 is C, and so on. </param>
 FUNCTION DiskFree(nDrive AS INT) AS INT64
-	LOCAL cDrive AS STRING
-	cDrive := DiskNo2DiskName(nDrive)
-	RETURN DiskFree(cDrive)
+	RETURN DiskFree(DiskNo2DiskName(nDrive))
 
 
-/// <summary>
-/// Return the current Windows drive.
-/// </summary>
-/// <returns>
-/// Return the letter of the current drive without colon
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/diskname/*" />
 FUNCTION DiskName() AS STRING
 	RETURN CurDrive()
 
 
-/// <summary>
-/// Return the capacity of the current disk.
-/// </summary>
-/// <returns>
-/// The capacity of the current disk.
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/diskspace/*" />
 FUNCTION DiskSpace() AS INT64
 	RETURN DiskSpace(CurDrive())
 
 
-/// <summary>
-/// Return the capacity of the specified disk.
-/// </summary>
-/// <param name="nDisk"></param>
-/// <returns>
-/// </returns>
-FUNCTION DiskSpace(nDisk AS INT) AS INT64
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/diskspace/*" />
+FUNCTION DiskSpace(nDrive AS INT) AS INT64
 	LOCAL cDisk AS STRING
-	cDisk := DiskNo2DiskName(nDisk)
+	cDisk := DiskNo2DiskName(nDrive)
 	RETURN DiskSpace(cDisk)
 
-/// <summary>
-/// Return the capacity of the specified disk.
-/// </summary>
-/// <param name="cDrive"></param>
-/// <returns>
-/// </returns>
+/// <inheritdoc cref="M:XSharp.Core.Functions.DiskSpace(System.Int32)" />
+/// <param name="cDrive">The name of the drive as a string, for example "C:", "A:".   If you do not specify a drive, the Windows default is used.</param>
 FUNCTION DiskSpace(cDrive AS STRING) AS INT64
     LOCAL result AS INT64
     IF String.IsNullOrEmpty(cDrive) 
@@ -269,23 +183,14 @@ FUNCTION DiskSpace(cDrive AS STRING) AS INT64
     END TRY
     RETURN result
 
-/// <summary>
-/// Detect a concurrency conflict.
-/// </summary>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/neterr/*" />
 FUNCTION NetErr() AS LOGIC STRICT
     RETURN RuntimeState.NetErr
     
-/// <summary>
-/// Detect a concurrency conflict.
-/// </summary>
-/// <param name="lSet"></param>
-/// <returns>
-/// </returns>
-FUNCTION NetErr( lValue AS LOGIC ) AS LOGIC
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/neterr/*" />
+FUNCTION NetErr( lNewError AS LOGIC ) AS LOGIC
     LOCAL curvalue := RuntimeState.NetErr AS LOGIC
-    RuntimeState.NetErr := lValue
+    RuntimeState.NetErr := lNewError
     RETURN curvalue
 
 
@@ -312,18 +217,13 @@ FUNCTION LockTries(nValue AS DWORD) AS DWORD
 
 
 
-/// <summary>
-/// Change the current Windows directory.
-/// </summary>
-/// <param name="pszDir"></param>
-/// <returns>
-/// </returns>
-FUNCTION DirChange(cDir AS STRING) AS INT
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dirchange/*" />
+FUNCTION DirChange(pszDir AS STRING) AS INT
 	LOCAL result AS INT
 	TRY
        XSharp.IO.File.clearErrorState()
-		IF Directory.Exists(cDir)
-			Directory.SetCurrentDirectory(cDir)
+		IF Directory.Exists(pszDir)
+			Directory.SetCurrentDirectory(pszDir)
 			result := 0
 		ELSE
 			result := 3 // Path not found
@@ -334,18 +234,13 @@ FUNCTION DirChange(cDir AS STRING) AS INT
 	END TRY
 	RETURN result
 	
-/// <summary>
-/// Create a directory.
-/// </summary>
-/// <param name="pszDir"></param>
-/// <returns>
-/// </returns>
-FUNCTION DirMake(cDir AS STRING) AS INT
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dirmake/*" />
+FUNCTION DirMake(pszNewDir AS STRING) AS INT
 	LOCAL result AS INT
 	TRY
         XSharp.IO.File.clearErrorState()
-		IF !Directory.Exists(cDir)
-			Directory.CreateDirectory(cDir)
+		IF !Directory.Exists(pszNewDir)
+			Directory.CreateDirectory(pszNewDir)
 			result := 0
 		ELSE
 			result := 183 // ERROR_ALREADY_EXISTS 
@@ -356,18 +251,13 @@ FUNCTION DirMake(cDir AS STRING) AS INT
 	END TRY
 	RETURN result
 	
-/// <summary>
-/// Remove a directory.
-/// </summary>
-/// <param name="pszDir"></param>
-/// <returns>
-/// </returns>
-FUNCTION DirRemove(cDir AS STRING) AS INT
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dirremove/*" />
+FUNCTION DirRemove(pszDirName AS STRING) AS INT
 	LOCAL result AS INT
 	TRY
         XSharp.IO.File.clearErrorState()
-		IF Directory.Exists(cDir)
-			Directory.Delete(cDir,FALSE)
+		IF Directory.Exists(pszDirName)
+			Directory.Delete(pszDirName,FALSE)
 			result := 0
 		ELSE
 			result := 2 // Cannot find file 
@@ -379,31 +269,20 @@ FUNCTION DirRemove(cDir AS STRING) AS INT
 	RETURN result
 
 
-/// <summary>
-/// Change the current disk drive.
-/// </summary>
-/// <param name="pszDisk"></param>
-/// <returns>
-/// </returns>
-
-FUNCTION DiskChange(c AS STRING) AS LOGIC
-	IF String.IsNullOrEmpty(c)
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/diskchange/*" />
+FUNCTION DiskChange(pszDrive AS STRING) AS LOGIC
+	IF String.IsNullOrEmpty(pszDrive)
 		RETURN FALSE
 	ENDIF
-	c := c:Substring(0,1)+Path.VolumeSeparatorChar:ToString()+Path.DirectorySeparatorChar:ToString()
-	RETURN DirChange(c) == 0
+	pszDrive := pszDrive:Substring(0,1)+Path.VolumeSeparatorChar:ToString()+Path.DirectorySeparatorChar:ToString()
+	RETURN DirChange(pszDrive) == 0
 
 
-/// <summary>Return the operating system name.</summary>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/os/*" />
 FUNCTION OS() AS STRING
 	RETURN OS(FALSE)
 
-/// <summary>Return the operating system name.</summary>
-/// <param name="lExtended"></param>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/os/*" />
 FUNCTION OS(lExtended AS LOGIC) AS STRING
     LOCAL cOs AS STRING
     VAR o := Environment.OSVersion
@@ -481,11 +360,7 @@ FUNCTION GetMimeType(sFileName AS STRING) AS STRING
     RETURN Microsoft.Win32.Registry.GetValue("HKEY_CLASSES_ROOT\"+sExt,"Content Type",""):ToString()
 
 
-/// <summary>
-/// Returns the command line used to invoke the application.
-/// </summary>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/_getcmdline/*" />
 FUNCTION _GetCmdLine() AS STRING
 RETURN System.Environment.CommandLine
 

@@ -519,206 +519,127 @@ FUNCTION FException() AS Exception
 	RETURN XSharp.IO.File.lastException
 
 
-/// <summary>
-/// Change the size of a file opened with a low-level file function.
-/// </summary>
-/// <param name="pFile"><include file="CoreComments.xml" path="Comments/FileHandle/*" /></param> 
-/// <param name="nSize">The new length to which the file should be set. </param>
-/// <returns>The new length of the file if successful; otherwise, F_ERROR.  FError() can be used to determine the specific error.</returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fchsize/*" />
+/// <include file="CoreComments.xml" path="Comments/File/*" /> 
+FUNCTION FChSize(ptrHandle AS IntPtr,dwOffset AS DWORD) AS LOGIC
+	RETURN XSharp.IO.File.Chsize(ptrHandle, dwOffset)
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fclose/*" />
 /// <include file="CoreComments.xml" path="Comments/File/*" />
-FUNCTION FChSize(pFile AS IntPtr,nSize AS DWORD) AS LOGIC
-	RETURN XSharp.IO.File.Chsize(pFile, nSize)
+FUNCTION FClose(ptrHandle AS IntPtr) AS LOGIC
+	RETURN XSharp.IO.File.Close(ptrHandle)
 
-/// <summary>
-/// Close an open file and write the buffers to disk.
-/// </summary>
-/// <param name="pFile"><include file="CoreComments.xml" path="Comments/FileHandle/*" /></param>
-/// <returns>FALSE if an error occurs while writing; otherwise, TRUE.</returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fcommit/*" />
 /// <include file="CoreComments.xml" path="Comments/File/*" />
-FUNCTION FClose(pFile AS IntPtr) AS LOGIC
-	RETURN XSharp.IO.File.Close(pFile)
+FUNCTION FCommit(ptrHandle AS IntPtr) AS LOGIC
+	RETURN XSharp.IO.File.flush(ptrHandle, TRUE)
 
-/// <summary>
-/// Flush file buffers.
-/// </summary>
-/// <param name="pFile"><include file="CoreComments.xml" path="Comments/FileHandle/*" /></param> 
-/// <returns>TRUE if successful; otherwise, FALSE.</returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/feof/*" />
 /// <include file="CoreComments.xml" path="Comments/File/*" />
-FUNCTION FCommit(pFile AS IntPtr) AS LOGIC
-	RETURN XSharp.IO.File.flush(pFile, TRUE)
+FUNCTION FEof(ptrHandle AS IntPtr) AS LOGIC
+	RETURN XSharp.IO.File.eof(ptrHandle) 
 
-/// <summary>
-/// Determine if the file pointer is positioned at the end-of-file.
-/// </summary>
-/// <param name="pFile"><include file="CoreComments.xml" path="Comments/FileHandle/*" /></param> 
-/// <returns>TRUE if the file pointer is at end-of-file; otherwise, FALSE.</returns>
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fflock/*" />
 /// <include file="CoreComments.xml" path="Comments/File/*" />
-FUNCTION FEof(pFile AS IntPtr) AS LOGIC
-	RETURN XSharp.IO.File.eof(pFile) 
+FUNCTION FFLock(ptrHandle AS IntPtr,dwOffset AS DWORD,dwLength AS DWORD) AS LOGIC
+	RETURN XSharp.IO.File.lock(ptrHandle, (INT64) dwOffset, (INT64) dwLength, TRUE)
 
 
-/// <summary>
-/// Lock a portion of an open file.
-/// </summary>
-/// <param name="pFile"><include file="CoreComments.xml" path="Comments/FileHandle/*" /></param> 
-/// <param name="dwOffset">The file offset at which to start locking.  A value of zero corresponds to the first byte of the file. </param>
-/// <param name="dwLength">The number of bytes to lock. </param>
-/// <returns>TRUE if successful; otherwise, FALSE.</returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fflush/*" />
 /// <include file="CoreComments.xml" path="Comments/File/*" />
-FUNCTION FFLock(pFile AS IntPtr,dwOffset AS DWORD,dwLength AS DWORD) AS LOGIC
-	RETURN XSharp.IO.File.lock(pFile, (INT64) dwOffset, (INT64) dwLength, TRUE)
+FUNCTION FFlush(ptrHandle AS IntPtr) AS LOGIC
+	RETURN XSharp.IO.File.flush(ptrHandle, TRUE)
 
 
-/// <summary>
-/// Flush to disk a file opened with a low-level file function.
-/// </summary>
-/// <param name="pFile"><include file="CoreComments.xml" path="Comments/FileHandle/*" /></param> 
-/// <returns>TRUE if successful; otherwise, FALSE.</returns>
-/// <include file="CoreComments.xml" path="Comments/File/*" />
-FUNCTION FFlush(pFile AS IntPtr) AS LOGIC
-	RETURN XSharp.IO.File.flush(pFile, TRUE)
-
-
-/// <summary>
-/// UnLock a portion of an open file.
-/// </summary>
-/// <param name="dwOffset">The file offset at which to start unlocking.  A value of zero corresponds to the first byte of the file. </param>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ffunlock/*" />
 /// <inheritdoc cref="M:XSharp.Core.Functions.FFLock(System.IntPtr,System.UInt32,System.UInt32)" />"
-FUNCTION FFUnLock(pFile AS IntPtr,dwOffset AS DWORD,dwLength AS DWORD) AS LOGIC
-	RETURN XSharp.IO.File.lock(pFile, (INT64) dwOffset, (INT64) dwLength, FALSE)
+FUNCTION FFUnLock(ptrHandle AS IntPtr,dwOffset AS DWORD,dwLength AS DWORD) AS LOGIC
+	RETURN XSharp.IO.File.lock(ptrHandle, (INT64) dwOffset, (INT64) dwLength, FALSE)
 
 
-/// <inheritdoc cref="M:XSharp.Core.Functions.FReadLine(System.IntPtr,System.UInt32)" />"
-FUNCTION FGetS(pFile AS IntPtr) AS STRING
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fgets/*" />
+FUNCTION FGetS(ptrHandle AS IntPtr) AS STRING
 	// According to the VO docs the dedault value for the buffer length = 256
-	RETURN XSharp.IO.File.readLine(pFile,256)
+	RETURN XSharp.IO.File.readLine(ptrHandle,256)
 
 
-/// <inheritdoc cref="M:XSharp.Core.Functions.FReadLine(System.IntPtr,System.UInt32)" />"
-FUNCTION FGetS(pFile AS IntPtr,nLineLen AS DWORD) AS STRING
-	RETURN XSharp.IO.File.readLine(pFile, (INT) nLineLen)
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fgets/*" />
+FUNCTION FGetS(ptrHandle AS IntPtr,nMax AS DWORD) AS STRING
+	RETURN XSharp.IO.File.readLine(ptrHandle, (INT) nMax)
 
-/// <inheritdoc cref="M:XSharp.Core.Functions.FReadLine(System.IntPtr,System.UInt32)" />"
-FUNCTION FGetS2(pFile AS IntPtr,nLineLen AS DWORD) AS STRING
-	RETURN XSharp.IO.File.readLine(pFile, (INT) nLineLen)
-
-
-/// <inheritdoc cref="M:XSharp.Core.Functions.FWriteLine(System.IntPtr,System.String,System.UInt32)" /> 
-FUNCTION FPutS(pFile AS IntPtr,c AS STRING) AS DWORD
-	RETURN FWriteLine(pFile, c, (DWORD) c:Length)
-
-/// <inheritdoc cref="M:XSharp.Core.Functions.FWriteLine(System.IntPtr,System.String,System.UInt32)" /> 
-FUNCTION FPutS(pFile AS IntPtr,c AS STRING,nCount AS DWORD) AS DWORD
-	RETURN FWriteLine(pFile, c, nCount)
-
-/// <inheritdoc cref="M:XSharp.Core.Functions.FWriteLine(System.IntPtr,System.String,System.UInt32)" /> 
-FUNCTION FPutS3(pFile AS IntPtr,c AS STRING, nCount AS DWORD) AS DWORD
-	RETURN FWriteLine(pFile, c, nCount)
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fgets2/*" />
+FUNCTION FGetS2(ptrHandle AS IntPtr,dwMax AS DWORD) AS STRING
+	RETURN XSharp.IO.File.readLine(ptrHandle, (INT) dwMax)
 
 
-/// <summary>
-/// Read characters from a file into an allocated buffer.
-/// </summary>
-/// <param name="pFile"><include file="CoreComments.xml" path="Comments/FileHandle/*" /></param> 
-/// <param name="pBuffer">An array of bytes to store the data read from the specified file. The length of this variable must be greater than or equal to the number of bytes in the next parameter.</param>
-/// <param name="dwCount">The number of bytes to read into the buffer.</param>
-/// <returns>The number of bytes successfully read.  A return value less than the number of bytes requested indicates end-of-file or some other read error.  FError() can be used to determine the specific error.</returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fputs/*" />
+FUNCTION FPutS(ptrHandle AS IntPtr,cBuffer AS STRING) AS DWORD
+	RETURN FWriteLine(ptrHandle, cBuffer, (DWORD) cBuffer:Length)
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fputs/*" />
+FUNCTION FPutS(ptrHandle AS IntPtr,cBuffer AS STRING,nBytes AS DWORD) AS DWORD
+	RETURN FWriteLine(ptrHandle, cBuffer, nBytes)
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fputs3/*" /> 
+FUNCTION FPutS3(ptrHandle AS IntPtr,cBuffer AS STRING, dwBytes AS DWORD) AS DWORD
+	RETURN FWriteLine(ptrHandle, cBuffer, dwBytes)
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fread3/*" /> 
+/// <param name="ptrBufferVar">An array of bytes to store the data read from the specified file. The length of this variable must be greater than or equal to the number of bytes in the next parameter.</param>
 /// <include file="CoreComments.xml" path="Comments/File/*" />
-FUNCTION FRead3(pFile AS IntPtr,pBuffer AS BYTE[],dwCount AS DWORD) AS DWORD
-	RETURN (DWORD) XSharp.IO.File.readBuff(pFile, pBuffer, (INT) dwCount)
-      
-/// <summary>
-/// Read characters from a file into an allocated buffer with optional OEM to Ansi conversion.
-/// </summary>
-/// <inheritdoc cref="M:XSharp.Core.Functions.FRead3(System.IntPtr,System.Byte[],System.UInt32)" />
-/// <param name="lAnsi">If FALSE an OEM to ANSI conversion is made. </param>
+FUNCTION FRead3(ptrHandle AS IntPtr,ptrBufferVar AS BYTE[],dwBytes AS DWORD) AS DWORD
+	RETURN (DWORD) XSharp.IO.File.readBuff(ptrHandle, ptrBufferVar, (INT) dwBytes)
+
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fread4/*" />       
+/// <param name="ptrBufferVar">An array of bytes to store the data read from the specified file. The length of this variable must be greater than or equal to the number of bytes in the next parameter.</param>
 /// <remarks><include file="CoreComments.xml" path="Comments/Oem2AnsiFileIO/*" /></remarks>
-FUNCTION FRead4(pFile AS IntPtr,pBuffer AS BYTE[],dwCount AS DWORD,lAnsi AS LOGIC) AS DWORD
-	RETURN (DWORD) XSharp.IO.File.readBuff(pFile, pBuffer, (INT) dwCount, lAnsi)
+FUNCTION FRead4(ptrHandle AS IntPtr,ptrBufferVar AS BYTE[],dwBytes AS DWORD,lAnsi AS LOGIC) AS DWORD
+	RETURN (DWORD) XSharp.IO.File.readBuff(ptrHandle, ptrBufferVar, (INT) dwBytes, lAnsi)
 
 
-/// <summary>
-/// Read a line from an open file, specifying two strongly-typed arguments.
-/// </summary>
-/// <param name="pFile"><include file="CoreComments.xml" path="Comments/FileHandle/*" /></param> 
-/// <param name="nLineLen">The maximum number of characters to read per line.</param>
-/// <returns>The line read.  When the end-of-file is reached while attempting to read, the function returns a NULL_STRING and FError() is set to 257.</returns>
-/// <remarks>This function is assumed to handle raw binary data and are not dependent upon the status of SetAnsi().
-/// FReadText() and FRead4(), on the other hand, are dependent upon SetAnsi().
-/// </remarks>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/freadline/*" />   
 /// <include file="CoreComments.xml" path="Comments/File/*" />
-FUNCTION FReadLine(pFile AS IntPtr,nLineLen AS DWORD) AS STRING
-	RETURN XSharp.IO.File.readLine(pFile, (INT) nLineLen)
+FUNCTION FReadLine(ptrHandle AS IntPtr,nMax AS DWORD) AS STRING
+	RETURN XSharp.IO.File.readLine(ptrHandle, (INT) nMax)
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/freadline2/*" />   
+FUNCTION FReadLine2(ptrHandle AS IntPtr,dwMax AS DWORD) AS STRING	
+	RETURN XSharp.IO.File.readLine(ptrHandle, (INT) dwMax)
 
 
-/// <inheritdoc cref="M:XSharp.Core.Functions.FReadLine(System.IntPtr,System.UInt32)" />"
-FUNCTION FReadLine2(pFile AS IntPtr,nLineLen AS DWORD) AS STRING	
-	RETURN XSharp.IO.File.readLine(pFile, (INT) nLineLen)
 
-
-
-/// <summary>
-/// Read characters from a file.
-/// </summary>
-/// <param name="dwCount">The number of bytes to read, beginning at the current DOS file pointer position.  Characters are read up to this number or until end-of-file is encountered.
-/// The file pointer is then moved forward.  If the number is greater than the number of bytes from the pointer position to the end of the file, the file pointer is positioned at the last byte in the file.
-/// </param>
-/// <inheritdoc cref="M:XSharp.Core.Functions.FReadLine(System.IntPtr,System.UInt32)" />
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/freadstr/*" />  
 /// <include file="CoreComments.xml" path="Comments/File/*" />
-FUNCTION FReadStr(pFile AS IntPtr,iCount AS DWORD) AS STRING
+FUNCTION FReadStr(ptrHandle AS IntPtr,dwBytes AS DWORD) AS STRING
 	LOCAL cResult AS STRING
-	XSharp.IO.File.read(pFile, OUT cResult, (INT) iCount, XSharp.RuntimeState.Ansi)
+	XSharp.IO.File.read(ptrHandle, OUT cResult, (INT) dwBytes, XSharp.RuntimeState.Ansi)
 	RETURN cResult
 
 
-/// <summary>
-/// Read characters from a file into a buffer variable that is passed by reference.
-/// </summary>
-/// <param name="strValue">Reference to a variable that reseives the text read from the file.</param>
-/// <returns>The number of bytes successfully read.  A return value less than the number specified in <paramref name="dwCount" /> indicates
-/// end-of-file or some other read error.  FError() can be used to determine the specific error.</returns>
-/// <inheritdoc cref="M:XSharp.Core.Functions.FRead3(System.IntPtr,System.Byte[],System.UInt32)" />
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/freadtext/*" />  
 /// <include file="CoreComments.xml" path="Comments/File/*" />
-FUNCTION FReadText(pFile AS IntPtr,strValue REF STRING,dwCount AS DWORD) AS DWORD
-	RETURN (DWORD) XSharp.IO.File.read(pFile, OUT strValue, (INT) dwCount, XSharp.RuntimeState.Ansi)
+FUNCTION FReadText(ptrHandle AS IntPtr,cBufferVar REF STRING,dwBytes AS DWORD) AS DWORD
+	RETURN (DWORD) XSharp.IO.File.read(ptrHandle, OUT cBufferVar, (INT) dwBytes, XSharp.RuntimeState.Ansi)
 
 
-/// <inheritdoc cref="M:XSharp.Core.Functions.FReadText(System.IntPtr,System.String@,System.UInt32)" />
-FUNCTION FRead(pFile AS IntPtr,strValue REF STRING,dwCount AS DWORD) AS DWORD
-	RETURN (DWORD) XSharp.IO.File.read(pFile, OUT strValue, (INT) dwCount, XSharp.RuntimeState.Ansi)
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fread/*" />  
+FUNCTION FRead(ptrHandle AS IntPtr,cBufferVar REF STRING,dwBytes AS DWORD) AS DWORD
+	RETURN (DWORD) XSharp.IO.File.read(ptrHandle, OUT cBufferVar, (INT) dwBytes, XSharp.RuntimeState.Ansi)
 
 
-/// <summary>
-/// Read characters from a file into an allocated buffer, with possible OEM to ANSI conversion, based on the current SetAnsi() setting.
-/// </summary>
-/// <param name="pFile"><include file="CoreComments.xml" path="Comments/FileHandle/*" /></param> 
-/// <param name="pBuffer">Pointer to an array of bytes to store data read from the specified file.  The length of this variable must be greater than or equal to the number of bytes in the next parameter.</param>
-/// <param name="dwCount"></param>
-/// <inheritdoc cref="M:XSharp.Core.Functions.FRead3(System.IntPtr,System.Byte[],System.UInt32)" />
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/freadtext3/*" />  
 /// <include file="CoreComments.xml" path="Comments/File/*" />
-FUNCTION FReadText3(pFile AS IntPtr,pBuffer AS BYTE[],dwCount AS DWORD) AS DWORD
-	RETURN (DWORD) XSharp.IO.File.readBuff(pFile, pBuffer, (INT) dwCount, XSharp.RuntimeState.Ansi)	
+FUNCTION FReadText3(ptrHandle AS IntPtr,ptrBufferVar AS BYTE[],dwBytes AS DWORD) AS DWORD
+	RETURN (DWORD) XSharp.IO.File.readBuff(ptrHandle, ptrBufferVar, (INT) dwBytes, XSharp.RuntimeState.Ansi)	
 
-/// <summary>
-/// Set the file pointer at the top of an open file.
-/// </summary>
-/// <param name="pFile"><include file="CoreComments.xml" path="Comments/FileHandle/*" /></param> 
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/frewind/*" />
 /// <include file="CoreComments.xml" path="Comments/File/*" />
-FUNCTION FRewind(pFile AS IntPtr) AS LOGIC
-	RETURN XSharp.IO.File.Seek(pFile, 0, FS_SET) == 0
+FUNCTION FRewind(ptrHandle AS IntPtr) AS LOGIC
+	RETURN XSharp.IO.File.Seek(ptrHandle, 0, FS_SET) == 0
 
-
-/// <summary>
-/// Set the file pointer to a new position, specifying three strongly-typed arguments.
-/// </summary>
-/// <param name="pFile"><include file="CoreComments.xml" path="Comments/FileHandle/*" /></param> 
-/// <param name="lOffset">The number of bytes to move the file pointer, from the position defined in the next parameter.It can be a positive or negative number.
-/// A positive number moves the pointer forward in the file, and a negative number moves the pointer backward.
-/// If the origin is the end-of-file, then this must be 0 or negative.</param>
-/// <param name="dwOrigin">One of the following constants indicating the starting location of the file pointer, telling where to start searching the file:</param>
-/// <returns>The new position of the file pointer, relative to the beginning of the file (position 0).  (The original position of the file pointer does not matter.)</returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fseek3/*" />
 /// <remarks>
 /// The possible values for the origin are:
 /// <list type="table">
@@ -731,18 +652,13 @@ FUNCTION FRewind(pFile AS IntPtr) AS LOGIC
 /// </list>
 /// </remarks>
 /// <include file="CoreComments.xml" path="Comments/File/*" />
-FUNCTION FSeek3(pFile AS IntPtr,lOffset AS LONG, dwOrigin AS DWORD) AS LONG
-	RETURN (LONG) XSharp.IO.File.Seek(pFile, (INT64) lOffset, dwOrigin)
+FUNCTION FSeek3(ptrHandle AS IntPtr,liOffset AS LONG, dwOrigin AS DWORD) AS LONG
+	RETURN (LONG) XSharp.IO.File.Seek(ptrHandle, (INT64) liOffset, dwOrigin)
 
-/// <summary>
-/// Return the current position of the file pointer.
-/// </summary>
-/// <param name="pFile"><include file="CoreComments.xml" path="Comments/FileHandle/*" /></param> 
-/// <returns>The current position of the file pointer, relative to the beginning of the file.</returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ftell/*" />
 /// <include file="CoreComments.xml" path="Comments/File/*" />
-FUNCTION FTell(pFile AS IntPtr) AS DWORD
-	RETURN (DWORD) XSharp.IO.File.Tell(pFile)
-
+FUNCTION FTell(ptrHandle AS IntPtr) AS DWORD
+	RETURN (DWORD) XSharp.IO.File.Tell(ptrHandle)
 
 /// <inheritdoc cref="M:XSharp.Core.Functions.FTell(System.IntPtr)" />
 FUNCTION FTell64(pFile AS IntPtr) AS INT64
@@ -761,47 +677,33 @@ FUNCTION FWrite( pFile AS IntPtr, c AS STRING ) AS DWORD
 /// </summary>
 /// <include file="CoreComments.xml" path="Comments/File/*" />
 /// </overloads>
-/// <summary>
-/// Write a string to an open file
-/// </summary>
-/// <param name="pFile"><include file="CoreComments.xml" path="Comments/FileHandle/*" /></param> 
-/// <param name="c"> The string to write. </param>
-/// <param name="nCount">The number of characters from the string to write, beginning at the current file pointer position.</param>
-/// <returns>The number of bytes written.  If the value returned is equal to nCount, the operation was successful.
-/// If the return value is less than the nCount or 0, this means that the length of the buffer/string is less than number of bytes,
-/// or the disk is full, or another error has occurred.  FError() can be used to determine the specific error. </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fwrite/*" />
 /// <include file="CoreComments.xml" path="Comments/File/*" />
-FUNCTION FWrite( pFile AS IntPtr, c AS STRING, nCount AS DWORD ) AS DWORD
-	RETURN FWrite( pFile, c, nCount, TRUE)
+FUNCTION FWrite( ptrHandle AS IntPtr, cBuffer AS STRING, nBytes AS DWORD ) AS DWORD
+	RETURN FWrite( ptrHandle, cBuffer, nBytes, TRUE)
 
-/// <inheritdoc cref="M:XSharp.Core.Functions.FWrite(System.IntPtr,System.String,System.UInt32)" />
+/// <inheritdoc cref="M:XSharp.Core.Functions.FWrite(System.IntPtr,System.String,System.UInt32)" />	
 /// <param name="lAnsi">If FALSE an OEM to ANSI conversion is made. </param>
+FUNCTION FWrite( ptrHandle AS IntPtr, cBuffer AS STRING, nBytes AS DWORD, lAnsi AS LOGIC) AS DWORD
+	RETURN (DWORD) XSharp.IO.File.write(ptrHandle, cBuffer, (INT) nBytes, lAnsi)
+
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fwrite3/*" />
 /// <remarks><include file="CoreComments.xml" path="Comments/Oem2AnsiFileIO/*" /></remarks>
-FUNCTION FWrite( pFile AS IntPtr, c AS STRING, nCount AS DWORD, lAnsi AS LOGIC) AS DWORD
-	RETURN (DWORD) XSharp.IO.File.write(pFile, c, (INT) nCount, lAnsi)
+FUNCTION FWrite3(ptrHandle AS IntPtr,ptrBuffer AS BYTE[],dwBytes AS DWORD) AS DWORD
+	RETURN (DWORD) XSharp.IO.File.writeBuff(ptrHandle, ptrBuffer, (INT) dwBytes)
 
 
-/// <inheritdoc cref="M:XSharp.Core.Functions.FWrite(System.IntPtr,System.String,System.UInt32)" />
-/// <param name="pBuffer">Pointer to an array of bytes to store data read from the specified file.  The length of this variable must be greater than or equal to the number of bytes in the next parameter.</param>
-FUNCTION FWrite3(pFile AS IntPtr,pBuffer AS BYTE[],nCount AS DWORD) AS DWORD
-	RETURN (DWORD) XSharp.IO.File.writeBuff(pFile, pBuffer, (INT) nCount)
 
-
-/// <summary>
-/// Write the contents of a buffer to an open file, with an ANSI to OEM conversion option.
-/// </summary>
-/// <inheritdoc cref="M:XSharp.Core.Functions.FWrite3(System.IntPtr,System.Byte[],System.UInt32)" />
-/// <param name="lAnsi">If FALSE , an ANSI to OEM conversion is made.</param>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fwrite4/*" />
 /// <remarks><include file="CoreComments.xml" path="Comments/Oem2AnsiFileIO/*" /></remarks>
-FUNCTION FWrite4(pFile AS IntPtr,pBuffer AS BYTE[],nCount AS DWORD,lAnsi AS LOGIC) AS DWORD
-	RETURN (DWORD) XSharp.IO.File.writeBuff(pFile,pBuffer , (INT) nCount ,lAnsi )
+FUNCTION FWrite4(ptrHandle AS IntPtr,ptrBuffer AS BYTE[],dwBytes AS DWORD,lAnsi AS LOGIC) AS DWORD
+	RETURN (DWORD) XSharp.IO.File.writeBuff(ptrHandle,ptrBuffer , (INT) dwBytes ,lAnsi )
 
 
-/// <inheritdoc cref="M:XSharp.Core.Functions.FWriteLine(System.IntPtr,System.String,System.UInt32)" />
-/// <returns>The number of bytes written.  If the value returned is equal to the length of the string +2, the operation was successful.
-/// If the return value is less 0, this means the disk is full, or another error has occurred.</returns>
-FUNCTION FWriteLine(pFile AS IntPtr,c AS STRING) AS DWORD
-	RETURN (DWORD) XSharp.IO.File.write(pFile, c + e"\r\n",c:Length+2, TRUE)
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fwriteline/*" />
+FUNCTION FWriteLine(ptrHandle AS IntPtr,cBuffer AS STRING) AS DWORD
+	RETURN (DWORD) XSharp.IO.File.write(ptrHandle, cBuffer + e"\r\n",cBuffer:Length+2, TRUE)
 
 /// <overloads>
 /// <summary>
@@ -809,207 +711,100 @@ FUNCTION FWriteLine(pFile AS IntPtr,c AS STRING) AS DWORD
 /// </summary>
 /// <include file="CoreComments.xml" path="Comments/File/*" />
 /// </overloads>
-/// <summary>
-/// Write a string, a carriage-return character, and a linefeed character to an open file, specifying strongly-typed arguments.
-/// </summary>
-/// <param name="pFile"><include file="CoreComments.xml" path="Comments/FileHandle/*" /></param> 
-/// <param name="c">The string to write.</param>
-/// <param name="nCount">The number of bytes in the string to write, beginning at the current file pointer position.</param>
-/// <returns>The number of bytes written.  If the value returned is equal to the nCount + 2, the operation was successful.
-/// If the return value is less than nCount + 2 or 0, this means that the length of  the string was less than nCount,
-/// or the disk is full, or another error has occurred.</returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fwriteline/*" />
 /// <include file="CoreComments.xml" path="Comments/File/*" />
-FUNCTION FWriteLine(pFile AS IntPtr,c AS STRING,nCount AS DWORD) AS DWORD
-	RETURN (DWORD) XSharp.IO.File.writeLine(pFile, c, (INT) nCount)
+FUNCTION FWriteLine(ptrHandle AS IntPtr,cBuffer AS STRING,nBytes AS DWORD) AS DWORD
+	RETURN (DWORD) XSharp.IO.File.writeLine(ptrHandle, cBuffer, (INT) nBytes)
 
-/// <inheritdoc cref="M:XSharp.Core.Functions.FWriteLine(System.IntPtr,System.String,System.UInt32)" /> 
-FUNCTION FWriteLine3(pFile AS IntPtr,c AS STRING,nCount AS DWORD) AS DWORD
-	RETURN (DWORD) XSharp.IO.File.writeLine(pFile, c, (INT) nCount )
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fwriteline3/*" />
+FUNCTION FWriteLine3(ptrHandle AS IntPtr,cBuffer AS STRING,dwBytes AS DWORD) AS DWORD
+	RETURN (DWORD) XSharp.IO.File.writeLine(ptrHandle, cBuffer, (INT) dwBytes )
 
-/// <summary>
-/// Write the contents of a buffer to an open file, with SetAnsi() dependency.
-/// </summary>
-/// <inheritdoc cref="M:XSharp.Core.Functions.FWrite(System.IntPtr,System.String,System.UInt32)" /> 
-/// <param name="pBuffer">Pointer to an array of bytes to write to the specified file.  The length of this variable must be greater than or equal to the number of bytes in the next parameter.</param>
-FUNCTION FWriteText3(pFile AS IntPtr,pBuffer AS BYTE[],nCount AS DWORD) AS DWORD
-	RETURN (DWORD) XSharp.IO.File.writeBuff(pFile ,pBuffer ,(INT) nCount, XSharp.RuntimeState.Ansi) 
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fwritetext3/*" />
+FUNCTION FWriteText3(ptrHandle AS IntPtr,ptrBuffer AS BYTE[],dwBytes AS DWORD) AS DWORD
+	RETURN (DWORD) XSharp.IO.File.writeBuff(ptrHandle ,ptrBuffer ,(INT) dwBytes, XSharp.RuntimeState.Ansi) 
 
-/// <summary>
-/// Remove spaces from a file name specified as a string.
-/// </summary>
-/// <param name="cName"></param>
-/// <returns>
-/// </returns>
-FUNCTION AdjustFName(cName AS STRING) AS STRING
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/adjustfname/*" />
+FUNCTION AdjustFName(cFileName AS STRING) AS STRING
 	LOCAL adjusted := NULL AS STRING
-	IF ( !string.IsNullOrEmpty(cName) ) 
-		adjusted := System.IO.Path.GetFileNameWithoutExtension(cName):TrimEnd()
-		IF ( cName:IndexOf('.') > 0 ) 
-			adjusted += System.IO.Path.GetExtension(cName)
+	IF ( !string.IsNullOrEmpty(cFileName) ) 
+		adjusted := System.IO.Path.GetFileNameWithoutExtension(cFileName):TrimEnd()
+		IF ( cFileName:IndexOf('.') > 0 ) 
+			adjusted += System.IO.Path.GetExtension(cFileName)
 		ENDIF
 	ENDIF
 	RETURN adjusted   
 
 
 
-/// <summary>
-/// Remove spaces from a file name specified as a string, changing the contents of the original file name as well as the returned file name.
-/// </summary>
-/// <param name="cName"></param>
-/// <returns>
-/// </returns>
-FUNCTION AdjustFNameA(cName REF STRING) AS STRING
-	cName := AdjustFName(cName)
-	RETURN cName
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/adjustfnamea/*" />
+FUNCTION AdjustFNameA(cFileName REF STRING) AS STRING
+	cFileName := AdjustFName(cFileName)
+	RETURN cFileName
 
 
 
-
-/// <summary>
-/// Create a file or open and truncate an existing file, specifying two strongly typed arguments.
-/// </summary>
-/// <param name="cFile">The name of the file to create, including an optional drive, directory, and extension.
-/// SetDefault() and SetPath() settings are ignored; the Windows default is used unless you specify a drive and
-/// directory as part of the file name.  No extension is assumed.  If the file already exists, its length is truncated to 0 without warning.</param>
-/// <param name="kAttributes"> A number that indicates the attribute to be set when creating the file. See the remarks section for a list of possible values.</param>
-/// <remarks>
-/// The possible values for the file attributes are:
-/// <list type="table">
-/// <listheader>
-/// <term>Constant</term> <description>Description</description>
-/// </listheader>
-///	<item><term>FC_ARCHIVED</term><description>Archived file </description></item>  
-/// <item><term>FC_HIDDEN</term> <description>Hidden File</description></item>  
-/// <item><term>FC_NORMAL</term> <description>Normal Read/write file</description></item>   
-/// <item><term>FC_READONLY</term> <description>Readonly file</description></item>   
-/// <item><term>FC_SYSTEM</term> <description>System file</description></item> 
-/// </list>
-/// </remarks> 
-/// <returns>The file handle of the new file.  If an error occurs, the function returns  F_ERROR.  FError() can be used to determine the specific error.</returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fcreate2/*" />
 /// <include file="CoreComments.xml" path="Comments/File/*" />
-FUNCTION FCreate2(cFile AS STRING,kAttributes AS DWORD) AS IntPtr
+FUNCTION FCreate2(cFileName AS STRING,dwAttributes AS DWORD) AS IntPtr
 	LOCAL oFileMode AS VOFileMode
-	oFileMode := VOFileMode{ FO_CREATE, kAttributes }
-	RETURN XSharp.IO.File.CreateFile(cFile, oFileMode)
+	oFileMode := VOFileMode{ FO_CREATE, dwAttributes }
+	RETURN XSharp.IO.File.CreateFile(cFileName, oFileMode)
 
 
-/// <summary>
-/// Create a file or open and truncate an existing file
-/// </summary>
-/// <inheritdoc cref="M:XSharp.Core.Functions.FCreate2(System.String,System.UInt32)" /> 
-/// <remarks>This creates the file with a FC_NORMAL attribute </remarks>
-FUNCTION FCreate(cFile AS STRING ) AS IntPtr
-	RETURN FCreate2(cFile, _OR(FC_NORMAL, FO_EXCLUSIVE))
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fcreate/*" />
+FUNCTION FCreate(cFileName AS STRING ) AS IntPtr
+	RETURN FCreate2(cFileName, _OR(FC_NORMAL, FO_EXCLUSIVE))
 
-/// <inheritdoc cref="M:XSharp.Core.Functions.FCreate2(System.String,System.UInt32)" />
-FUNCTION FCreate(cFile AS STRING ,kAttributes AS DWORD) AS IntPtr
-	RETURN FCreate2(cFile, kAttributes)
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fcreate/*" />
+FUNCTION FCreate(cFileName AS STRING ,kAttributes AS DWORD) AS IntPtr
+	RETURN FCreate2(cFileName, kAttributes)
 
 
-/// <summary>
-/// Open a file.
-/// </summary>
-/// <inheritdoc cref="M:XSharp.Core.Functions.FOpen(System.String,System.UInt32)" />
-/// <remarks>This opens the file with FO_READ and FO_EXCLUSIVE mode.
-/// <inheritdoc cref="M:XSharp.Core.Functions.FOpen(System.String,System.UInt32)" />
-/// </remarks> 
-FUNCTION FOpen(cFile AS STRING) AS IntPtr
-	RETURN FOpen2(cFile, FC_NORMAL)
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fopen/*" />
+FUNCTION FOpen(cFileName AS STRING) AS IntPtr
+	RETURN FOpen2(cFileName, FC_NORMAL)
 
 /// <overloads>
 /// <summary>Open a file.</summary>
 /// <include file="CoreComments.xml" path="Comments/File/*" />
 /// </overloads>
-/// <summary>
-/// Open a file, specifying two strongly-typed arguments.
-/// </summary>
-/// <param name="cFile">The file name, including an optional drive, directory, and extension.
-/// SetDefault() and SetPath() settings are ignored; the Windows default is used unless you specify a drive and directory
-/// as part of the file name.  No extension is assumed</param>
-/// <param name="dwMode">The open mode, which determines the accessibility of the file.  The open mode is composed of elements from the two types of modes:
-/// Access mode + Sharing mode.  Specifying an access mode constant indicates how the opened file is to be accessed. The sharing mode determines how other
-/// processes can access the file. See the table in the remarks section for possible values.</param>
-/// <remarks>
-/// The possible values for the file open modes are:
-/// <list type="table">
-/// <listheader>
-/// <term>Access Modes</term>           <description>Operation</description>
-/// </listheader>
-///	<item><term>FO_READ</term>          <description>Open for reading (default)   </description></item>  
-/// <item><term>FO_READWRITE</term>     <description>Open for reading and/or writing </description></item>  
-/// <item><term>FO_WRITE</term>         <description>Open for writing </description></item>
-/// <item><term> </term>                <description> </description></item>
-/// </list>
-/// <list type="table">
-/// <listheader>
-/// <term>Sharing Modes</term>          <description>Operation</description>
-/// </listheader>  
-/// <item><term>FO_COMPAT</term>        <description>Compatibility mode (default) </description></item>   
-/// <item><term>FO_DENYNONE</term>      <description>Allow others to read or write </description></item>
-/// <item><term>FO_DENYREAD</term>      <description>Prevent others from reading </description></item>
-/// <item><term>FO_DENYWRITE</term>     <description>Prevent others from writing </description></item>
-/// <item><term>FO_EXCLUSIVE</term>     <description>Exclusive use </description></item>
-/// <item><term>FO_SHARED</term>        <description>Same as FO_DENYNONE </description></item> 
-/// </list>
-/// </remarks> 
-/// <returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fopen/*" />
 /// <include file="CoreComments.xml" path="Comments/FileHandle/*" /><br/>
-/// If an error occurs, the function returns F_ERROR.  <br/>
-/// FError() and FException() can be used to determine the specific error.
-/// </returns>
 /// <include file="CoreComments.xml" path="Comments/File/*" />
-/// <seealso cref="M:XSharp.Core.Functions.FError" />
-/// <seealso cref="M:XSharp.Core.Functions.FException" />
-FUNCTION FOpen(cFile AS STRING,dwMode AS DWORD) AS IntPtr
-	RETURN FOpen2(cFile, dwMode)
+FUNCTION FOpen(cFileName AS STRING,kMode AS DWORD) AS IntPtr
+	RETURN FOpen2(cFileName, kMode)
 
-/// <inheritdoc cref="M:XSharp.Core.Functions.FOpen(System.String,System.UInt32)" /> 
-FUNCTION FOpen2(cFile AS STRING,dwMode AS DWORD) AS IntPtr
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fopen2/*" />
+FUNCTION FOpen2(cFileName AS STRING,kMode AS DWORD) AS IntPtr
 	LOCAL oFileMode AS VOFileMode
-	oFileMode := VOFileMode{dwMode, 0}
-	RETURN XSharp.IO.File.CreateFile(cFile, oFileMode)
+	oFileMode := VOFileMode{kMode, 0}
+	RETURN XSharp.IO.File.CreateFile(cFileName, oFileMode)
 
 
 
-/// <summary>
-/// Convert file attributes to numbers.
-/// </summary>
-/// <param name="uxFileAttr"></param>
-/// <returns>
-/// </returns>
-FUNCTION GetFAttr(cAttributes AS STRING) AS DWORD
-	RETURN String2FAttr(cAttributes)
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/getfattr/*" />
+FUNCTION GetFAttr(uAttributes AS STRING) AS DWORD
+	RETURN String2FAttr(uAttributes)
 	
-	/// <summary>
-	/// Convert file attributes to numbers.
-	/// </summary>
-	/// <param name="dwAttributes"></param>
-	/// <returns>
-	/// Does not do anything. Returns the original value
-	/// </returns>
-FUNCTION GetFAttr(dwAttributes AS DWORD) AS DWORD
-	RETURN dwAttributes
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/getfattr/*" />
+FUNCTION GetFAttr(uAttributes AS DWORD) AS DWORD
+	RETURN uAttributes
 	
 	
-	/// <summary>
-	/// Prepare a file specification for wildcard searching.
-	/// </summary>
-	/// <param name="cFileMask"></param>
-	/// <returns>
-	/// When the source string ends with ":" or "\" then *.* is added
-	/// </returns>
-FUNCTION GetFMask(cFileMask AS STRING) AS STRING
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/getfmask/*" />
+FUNCTION GetFMask(cString AS STRING) AS STRING
 	LOCAL cResult AS STRING
-	IF String.IsNullOrEmpty(cFileMask)
+	IF String.IsNullOrEmpty(cString)
 		cResult := "*.*"
 	ELSE
-		VAR cChar := cFilemask[cFileMask:Length-1]
+		VAR cChar := cString[cString:Length-1]
 		SWITCH cChar
 		CASE ':'
 		CASE '\\'
-			cResult := cFileMask + "*.*"
+			cResult := cString + "*.*"
 		OTHERWISE
-			cResult := cFileMask
+			cResult := cString
 		END SWITCH
 	ENDIF
 	RETURN cResult
@@ -1043,12 +838,7 @@ FUNCTION String2FAttr(cAttr AS STRING) AS DWORD
 
 
 
-/// <summary>
-/// Display file attributes as a string.
-/// </summary>
-/// <param name="nAttrib"></param>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fattr2string/*" />
 FUNCTION FAttr2String(dwAttributes AS DWORD) AS STRING
 	LOCAL cAttribute := "" AS STRING
 	

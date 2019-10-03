@@ -202,6 +202,6 @@ FUNCTION EnforceType(u REF USUAL, dwType AS DWORD) AS VOID
 		u := EmptyUsual(dwType)
 	ELSEIF UsualType(u) != dwType
         VAR cMessage := "Expected type: " + ((__UsualType) dwType):ToString()+" actual type "+ ((__UsualType) UsualType(u)):ToString()
-		THROW Error.DataTypeError(ProcName(1), u, 1, u, cMessage)
+		THROW Error.DataTypeError(ProcName(1), nameof(u), 1, u, cMessage)
 	ENDIF
 	RETURN  

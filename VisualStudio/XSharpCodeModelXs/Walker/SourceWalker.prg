@@ -87,7 +87,7 @@ BEGIN NAMESPACE XSharpModel
 			BEGIN LOCK SELF
 				SELF:_tokenStream := stream
 			END LOCK
-            CATCH e as Exception
+            CATCH e AS Exception
                 WriteOutputMessage("Lex() Failed:")
                 WriteOutputMessage(e:Message)
             END TRY
@@ -121,7 +121,7 @@ BEGIN NAMESPACE XSharpModel
 			    BEGIN LOCK SELF
 				    SELF:_info := info
 			    END LOCK
-            CATCH e as Exception
+            CATCH e AS Exception
                 WriteOutputMessage("Parse() Failed:")
                 WriteOutputMessage(e:Message)
             END TRY

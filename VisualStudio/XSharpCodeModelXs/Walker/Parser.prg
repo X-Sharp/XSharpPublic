@@ -1342,7 +1342,7 @@ BEGIN NAMESPACE XSharpModel
 										oStatementLine:cArgument := "BEGIN"
 									END SWITCH
 							END IF
-						CASE state:lFirstWord
+						CASE state:lFirstWord .AND. ( (System.Array.IndexOf(SELF:aEndMarkers , cUpperWord) != -1 ) .OR. (System.Array.IndexOf(SELF:aSingleOptionnalEndMarkers , cUpperWord) != -1 ) )
 							IF (System.Array.IndexOf(SELF:aEndMarkers , cUpperWord) != -1 )
 								lInEnum := FALSE
 								eStep := ParseStep.AfterEnd

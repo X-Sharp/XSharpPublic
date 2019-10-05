@@ -53,6 +53,8 @@ BEGIN NAMESPACE XSharpModel
 		PRIVATE aSpecialEndMarkers AS STRING[]
 		PRIVATE aSpecialEndClassMarkers AS STRING[]
 		PRIVATE dictXPPVis AS Dictionary<STRING , STRING>
+		PRIVATE aOptionnalEndMarkers AS STRING[]
+		PRIVATE aSingleOptionnalEndMarkers AS STRING[]
 
 		CONSTRUCTOR()
 			SELF:aEntities				:= List<EntityObject>{}
@@ -80,8 +82,12 @@ BEGIN NAMESPACE XSharpModel
 		METHOD SetCoreDialect() AS VOID
 			currentDialect := XSharpDialect.Core
 			aEndMarkers :=  <STRING>{"END"}
+			// These are for structures
 			aSpecialEndMarkers := <STRING>{"IF", "DO", "WHILE", "WITH" }
+			// These are for Entities
+			aOptionnalEndMarkers := <STRING>{ "METHOD", "FUNCTION", "PROCEDURE", "ACCESS", "ASSIGN" }
 			aSpecialEndClassMarkers := <STRING>{}
+			aSingleOptionnalEndMarkers := <STRING>{}
 
 
 		STATIC CONSTRUCTOR()
@@ -93,10 +99,10 @@ BEGIN NAMESPACE XSharpModel
 			    oEntityVisibility := Dictionary<STRING , STRING>{}
 			    oDirectives := Dictionary<STRING , STRING>{}
 			    hBrk := Dictionary<CHAR,CHAR>{}
-			    aTokenIn := <STRING>{"IF", "DO", "WHILE", "FOR", "FOREACH", "TRY", "REPEAT", "SWITCH", "WITH"}
+			    aTokenIn := <STRING>{"IF", "DO", "WHILE", "FOR", "FOREACH", "TRY", "REPEAT", "SWITCH", "WITH", "BEGIN"}
 			    aTokenInOut := <STRING>{"ELSE", "ELSEIF", "CASE", "OTHERWISE", "CATCH", "FINALLY", "RECOVER" }
 			    aTokenOut := <STRING>{"ENDIF", "ENDDO", "ENDCASE", "NEXT", "ENDTRY", "UNTIL", "ENDWITH", "END" }
-			    aEntityWords := <STRING>{"EVENT" , "PROTECT" , "PROTECTED", "INSTANCE" , "EXPORT" , "PUBLIC" , "PRIVATE" , "HIDDEN" , "INTERNAL" , "MEMBER" , "GLOBAL"}
+			    aEntityWords := <STRING>{ "PROTECT" , "PROTECTED", "INSTANCE" , "EXPORT" , "PUBLIC" , "PRIVATE" , "HIDDEN" , "INTERNAL" , "MEMBER" , "GLOBAL"}
 			    aOperators := <CHAR>{'+','-','*','/','%','&','|','>','<','=','!','~'}
 			    aEndKeyWords := <STRING>{"CLASS","STRUCTURE","STRUCT","INTERFACE","ENUM"}
 			    aTypes := <STRING>{"CLASS","STRUCTURE","STRUCT","INTERFACE","DELEGATE","ENUM","VOSTRUCT","UNION"}
@@ -104,7 +110,7 @@ BEGIN NAMESPACE XSharpModel
 			    LOCAL aWords AS STRING[]
 			    aWords := <STRING>{;
 			    "CLASS","METHOD","FUNCTION","PROCEDURE","FUNC","PROC","ACCESS","ASSIGN","OPERATOR","DELEGATE",;
-			    "GLOBAL","CONSTRUCTOR","DESTRUCTOR","STRUCTURE","STRUCT","VOSTRUCT","UNION","ENUM","INTERFACE","PROPERTY","DEFINE"}
+			    "GLOBAL","CONSTRUCTOR","DESTRUCTOR","STRUCTURE","STRUCT","VOSTRUCT","UNION","ENUM","INTERFACE","PROPERTY","DEFINE", "EVENT"}
 			    FOREACH cWord AS STRING IN aWords
 				    oEntityMarkers:Add(cWord:ToUpper() , cWord)
 			    NEXT
@@ -178,7 +184,17 @@ BEGIN NAMESPACE XSharpModel
 							// Persistent Visibility
 							SELF:dictXPPVis := Dictionary<STRING , STRING>{}
 							SELF:dictXPPVis:Add( "EXPORTED", "PUBLIC" )
-
+						CASE XSharpDialect.FoxPro
+							VAR aTemp := aTokenOut
+							VAR aTokenOutVFP := <STRING>{"ENDFOR"}
+							//
+							aTokenOut := STRING[]{ aTemp:Length + aTokenOutVFP.Length }
+							System.Array.Copy( aTemp, aTokenOut, aTemp:Length )
+							System.Array.Copy( aTokenOutVFP, 0, aTokenOut, aTemp:Length, aTokenOutVFP:Length )
+							//
+							VAR aVFPEnd := <STRING>{"ENDFUNC", "ENDPROC", "ENDFOR" }
+							//
+							SELF:aSingleOptionnalEndMarkers := aVFPEnd
 					END
 				ENDIF
 			END SET
@@ -286,6 +302,7 @@ BEGIN NAMESPACE XSharpModel
 			LOCAL hVis , hEnt AS Dictionary<STRING,STRING>
 
 			LOCAL lInProperty AS LOGIC
+			LOCAL lInEvent AS LOGIC
 			LOCAL nAfterColonEquals AS INT
 			LOCAL context AS ParseContext
 			LOCAL xppVisibility AS STRING
@@ -293,6 +310,8 @@ BEGIN NAMESPACE XSharpModel
 
 			LOCAL lAttributeOnLine AS LOGIC
 			LOCAL nRealStartLine AS INT
+			LOCAL lFoundAlias AS LOGIC
+			LOCAL lWasAliased AS LOGIC
 			
 			aSourceLines := aLineCollection
 			aLineFields := List<EntityObject>{}
@@ -463,6 +482,15 @@ BEGIN NAMESPACE XSharpModel
 							state:lFirstChar := FALSE
 						END IF
 					END IF
+
+					IF ( cOldChar == '>' .AND. lFoundAlias )
+						lWasAliased := TRUE
+					ENDIF
+					IF ( cOldChar == '-' .AND. cRealChar = '>' )
+						lFoundAlias := TRUE
+					ELSE
+						lFoundAlias := FALSE
+					ENDIF
 
 					lBeforeLexerChange := FALSE
 					lMustLoop := FALSE
@@ -836,7 +864,7 @@ BEGIN NAMESPACE XSharpModel
 								END IF
 							END IF
 						CASE lAllowEntityParse .AND. .NOT. lEscapedWord .AND. cChar != '.' .AND. cCharBeforeWord != '.' .AND. ;
-						((hVis:ContainsKey(cUpperWord) .AND. eStep != ParseStep.AfterBegin) .OR. cUpperWord == "EVENT" .OR. ;
+						((hVis:ContainsKey(cUpperWord) .AND. eStep != ParseStep.AfterBegin) .OR. ;
 						((cUpperWord == "LOCAL" .OR. cUpperWord == "CATCH" .OR. cUpperWord == "FOREACH")) )
 							// Checking eStep beause UNSAFE could be UNSAFE FUNCTION or BEGIN UNSAFE
 							state:lVisFound := TRUE
@@ -846,9 +874,9 @@ BEGIN NAMESPACE XSharpModel
 							IF System.Array.IndexOf(aEntityWords , cUpperWord) != -1
 								// Allow multiple names in same line
 								state:lField := TRUE
-								IF cUpperWord == "EVENT"
-									state:lEvent := TRUE
-								END IF
+//								IF cUpperWord == "EVENT"
+//									state:lEvent := TRUE
+//								END IF
 							END IF
 							IF cUpperWord == "LOCAL" .OR. cUpperWord == "CATCH" .OR. cUpperWord == "FOREACH"
 								state:lLocal := TRUE
@@ -879,7 +907,11 @@ BEGIN NAMESPACE XSharpModel
 							_SetLineType(oStatementLine, LineType.Using)
 							eStep := ParseStep.AfterUsing
 							oStatementLine:cArgument := ""
-						CASE state:lVisFound .AND. lInProperty .AND. (cUpperWord == "SET" .OR. cUpperWord == "GET") .AND. .NOT. lEscapedWord
+						CASE state:lFirstWord .AND. lInProperty .AND. (cUpperWord == "SET" .OR. cUpperWord == "GET") .AND. .NOT. lEscapedWord .AND. oInfo == NULL
+							_SetLineType(oStatementLine, LineType.TokenIn)
+							oStatementLine:cArgument := cUpperWord
+							state:lIgnore := TRUE
+						CASE state:lFirstWord .AND. lInEvent .AND. (cUpperWord == "ADD" .OR. cUpperWord == "REMOVE") .AND. .NOT. lEscapedWord .AND. oInfo == NULL
 							_SetLineType(oStatementLine, LineType.TokenIn)
 							oStatementLine:cArgument := cUpperWord
 							state:lIgnore := TRUE
@@ -887,7 +919,7 @@ BEGIN NAMESPACE XSharpModel
 							lInEnum := FALSE
 							state:lField := FALSE
 							state:lLocal := FALSE
-							state:lEvent := FALSE
+							//state:lEvent := FALSE
 							IF state:lEntityFound
 								state:lIgnore := TRUE
 							ENDIF
@@ -910,26 +942,28 @@ BEGIN NAMESPACE XSharpModel
 								cClassNameSpace := ""
 								cClassType := ""
 								lInProperty := FALSE
+								lInEvent := FALSE
 							ELSEIF eStep == ParseStep.AfterEnd
 								VAR lValidEndEntity := FALSE
 								SWITCH cUpperWord
 									CASE "PROPERTY"
 										_SetLineType(oStatementLine, LineType.EndProperty)
 										lValidEndEntity := TRUE
-									CASE "METHOD"
-									CASE "FUNCTION"
-									CASE "PROCEDURE"
-									CASE "ACCESS"
-									CASE "ASSIGN"
-										_SetLineType(oStatementLine, LineType.OptionnalEnd)
-										//
-										LOCAL oCurrent AS EntityObject
-										IF aEntities:Count > 0
-											oCurrent := aEntities[aEntities:Count-1]
-											oCurrent:HasEnd := TRUE
-										ENDIF
-										//
+									CASE "EVENT"
+										_SetLineType(oStatementLine, LineType.EndEvent)
 										lValidEndEntity := TRUE
+									OTHERWISE
+										IF System.Array.IndexOf(aOptionnalEndMarkers , cUpperWord) != -1
+											_SetLineType(oStatementLine, LineType.OptionnalEnd)
+											//
+											LOCAL oCurrent AS EntityObject
+											IF aEntities:Count > 0
+												oCurrent := aEntities[aEntities:Count-1]
+												oCurrent:HasEnd := TRUE
+											ENDIF
+											//
+											lValidEndEntity := TRUE
+										END IF
 								END SWITCH
 								IF lValidEndEntity
 									state:lEntityFound := FALSE
@@ -937,6 +971,7 @@ BEGIN NAMESPACE XSharpModel
 									state:lIgnore := TRUE
 									lInEnum := FALSE
 									lInProperty := FALSE
+									lInEvent := FALSE
 								ENDIF
 							ELSE
 								lInEnum := cUpperWord == "ENUM"
@@ -974,6 +1009,7 @@ BEGIN NAMESPACE XSharpModel
 									oCurrentMethod := NULL_OBJECT
 								ENDIF
 								lInProperty := oInfo:eType == EntityType._Property
+								lInEvent := oInfo:eType == EntityType._Event
 								IF state:lEntityIsType
 									cClassType := cUpperWord
 									SWITCH cUpperWord
@@ -1238,9 +1274,15 @@ BEGIN NAMESPACE XSharpModel
 											IF oInfo:eType == EntityType._Class .AND. lPartial
 												oInfo:lPartial := TRUE
 											END IF
-											AddEntity(oInfo, oLine)
-											nRealStartLine := -1
-											lPartial := FALSE
+											//
+											IF ( oInfo:eType == EntityType._Event ) .AND. lWasAliased
+											ELSE
+												//
+												AddEntity(oInfo, oLine)
+												nRealStartLine := -1
+												lPartial := FALSE
+											ENDIF
+
 									END CASE
 
 							END CASE
@@ -1300,20 +1342,37 @@ BEGIN NAMESPACE XSharpModel
 										oStatementLine:cArgument := "BEGIN"
 									END SWITCH
 							END IF
-						CASE state:lFirstWord .AND. (System.Array.IndexOf(SELF:aEndMarkers , cUpperWord) != -1 )
-							lInEnum := FALSE
-							eStep := ParseStep.AfterEnd
-							_SetLineType(oStatementLine, LineType.TokenOut)
-							oStatementLine:cArgument := cUpperWord
-							// Is it a Single Keyword end Marker ??
-							IF (System.Array.IndexOf(SELF:aSpecialEndClassMarkers , cUpperWord) != -1 )
+						CASE state:lFirstWord .AND. ( (System.Array.IndexOf(SELF:aEndMarkers , cUpperWord) != -1 ) .OR. (System.Array.IndexOf(SELF:aSingleOptionnalEndMarkers , cUpperWord) != -1 ) )
+							IF (System.Array.IndexOf(SELF:aEndMarkers , cUpperWord) != -1 )
+								lInEnum := FALSE
+								eStep := ParseStep.AfterEnd
+								_SetLineType(oStatementLine, LineType.TokenOut)
+								oStatementLine:cArgument := cUpperWord
+								// Is it a Single Keyword end Marker ??
+								IF (System.Array.IndexOf(SELF:aSpecialEndClassMarkers , cUpperWord) != -1 )
+									state:lIgnore := TRUE
+									lInEnum := FALSE
+									_SetLineType(oStatementLine, LineType.EndClass)
+									cShortClassName := ""
+									cTypedClassName := ""
+									cClassNameSpace := ""
+									cClassType := ""
+								ENDIF
+							ELSEIF (System.Array.IndexOf(SELF:aSingleOptionnalEndMarkers , cUpperWord) != -1 )
+								_SetLineType(oStatementLine, LineType.OptionnalEnd)
+								//
+								LOCAL oCurrent AS EntityObject
+								IF aEntities:Count > 0
+									oCurrent := aEntities[aEntities:Count-1]
+									oCurrent:HasEnd := TRUE
+								ENDIF
+								//
+								state:lEntityFound := FALSE
+								state:lEntityIsType := FALSE
 								state:lIgnore := TRUE
 								lInEnum := FALSE
-								_SetLineType(oStatementLine, LineType.EndClass)
-								cShortClassName := ""
-								cTypedClassName := ""
-								cClassNameSpace := ""
-								cClassType := ""
+								lInProperty := FALSE
+								lInEvent := FALSE
 							ENDIF
 						CASE eStep == ParseStep.AfterEnd
 							state:lIgnore := TRUE
@@ -1403,8 +1462,8 @@ BEGIN NAMESPACE XSharpModel
 									oInfo:cRetType := XVariable.VarType
 								ENDIF
 								//
-							ELSEIF state:lEvent
-								oInfo:eType := EntityType._Event
+//							ELSEIF state:lEvent
+//								oInfo:eType := EntityType._Event
 							ELSE
 								IF lInEnum
 									oInfo:eType := EntityType._EnumMember
@@ -1461,6 +1520,11 @@ BEGIN NAMESPACE XSharpModel
 								oStatementLine:cArgument := cUpperWord
 							ELSEIF cUpperWord == "GET" .OR. cUpperWord == "SET"
 								IF lInProperty
+									_SetLineType(oStatementLine, LineType.TokenIn)
+									oStatementLine:cArgument := cUpperWord
+								ENDIF
+							ELSEIF cUpperWord == "ADD" .OR. cUpperWord == "REMOVE"
+								IF lInEvent
 									_SetLineType(oStatementLine, LineType.TokenIn)
 									oStatementLine:cArgument := cUpperWord
 								ENDIF
@@ -2025,6 +2089,7 @@ BEGIN NAMESPACE XSharpModel
 		MEMBER IfDefInOut
 		MEMBER IfdefOut
 		MEMBER EndProperty
+		MEMBER EndEvent
 		MEMBER OptionnalEnd
 		//	MEMBER BeginProperty
 		MEMBER OtherDirective

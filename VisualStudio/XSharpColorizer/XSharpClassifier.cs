@@ -62,6 +62,7 @@ namespace XSharpColorizer
         private ITokenStream _tokens;
         private ITextSnapshot _snapshot;
         private XFile _file;
+        private List<String> xtraKeywords;
         #endregion
 
         #region Properties
@@ -91,6 +92,8 @@ namespace XSharpColorizer
                 return;
             }
             _file = file;
+            // 
+            xtraKeywords = new List<string>();
             // Initialize our background workers
             this._buffer.Changed += Buffer_Changed;
             _bwClassify = new BackgroundWorker();
@@ -312,7 +315,13 @@ namespace XSharpColorizer
             var regions = new List<ClassificationSpan>();
             var classList = new List<EntityObject>();
             var propertyList = new List<EntityObject>();
+            var eventList = new List<EntityObject>();
             var optionnalEnd = new List<EntityObject>();
+            // TODO: Get theses from external config
+            string[] input = { "ENDFUNC", "ENDPROC", "ENDFOR", "ENDDEFINE" };
+            xtraKeywords.Clear();
+            xtraKeywords.AddRange( input );
+            //
             if (info != null && snapshot != null)
             {
 
@@ -348,6 +357,33 @@ namespace XSharpColorizer
                             if (!singleLine)
                             {
                                 propertyList.Add(oElement);
+                            }
+                        }
+                    }
+                    else if (oElement.eType == EntityType._Event)
+                    {
+                        if (oElement.oParent?.eType != EntityType._Interface)
+                        {
+                            // make sure we only push multi line properties
+                            var text = snapshot.GetLineFromPosition(oElement.nOffSet).GetText();
+                            var substatements = text.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+                            var words = substatements[0].Split(new char[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
+                            var singleLine = false;
+                            foreach (var word in words)
+                            {
+                                switch (word.ToLower())
+                                {
+                                    case "add":
+                                    case "remove":
+                                        singleLine = true;
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            }
+                            if (!singleLine)
+                            {
+                                eventList.Add(oElement);
                             }
                         }
                     }
@@ -463,6 +499,16 @@ namespace XSharpColorizer
                         {
                             var prop = propertyList[0];
                             propertyList.RemoveAt(0);
+                            nStart = prop.nOffSet;
+                            nEnd = oLine.OffSet;
+                            AddRegionSpan(regions, snapshot, nStart, nEnd);
+                        }
+                        break;
+                    case LineType.EndEvent:
+                        if (eventList.Count > 0)
+                        {
+                            var prop = eventList[0];
+                            eventList.RemoveAt(0);
                             nStart = prop.nOffSet;
                             nEnd = oLine.OffSet;
                             AddRegionSpan(regions, snapshot, nStart, nEnd);
@@ -655,7 +701,12 @@ namespace XSharpColorizer
                     IClassificationType type = null;
                     if (XSharpLexer.IsIdentifier(tokenType))
                     {
-                        type = xsharpIdentifierType;
+                        if (xtraKeywords.Find(kw => string.Compare(kw, token.Text, true) == 0) != null)
+                        {
+                            type = xsharpKeywordType;
+                        }
+                        else
+                            type = xsharpIdentifierType;
                     }
                     else if (XSharpLexer.IsConstant(tokenType))
                     {
@@ -916,6 +967,9 @@ namespace XSharpColorizer
                 int iLastDocComment = -1;
                 int iLastUsing = -1;
                 newtags = new XClassificationSpans();
+                ClassificationSpan postponeSpan=null;
+                IToken postponeToken = null;
+                bool prevWasEvent = false;
                 keywordContext = null;
                 for (var iToken = 0; iToken < tokenStream.Size; iToken++)
                 {
@@ -929,7 +983,29 @@ namespace XSharpColorizer
                     var span = ClassifyToken(token, regionTags, snapshot);
                     if (span != null)
                     {
-                        newtags.Add(span);
+                        // !!! Special case : looking for Event(Keyword) followed by ->(operator)
+                        if ( !prevWasEvent && (span.ClassificationType == xsharpKeywordType) && (String.Compare(token.Text, "event", true) == 0))
+                        {
+                            postponeSpan = span;
+                            postponeToken = token;
+                            prevWasEvent = true;
+                        }
+                        else
+                        {
+                            if (prevWasEvent)
+                            {
+                                if (token.Type == XSharpLexer.ALIAS) //&& (String.Compare(token.Text, "->") == 0))
+                                {
+                                    // Ok, add the previous one, but change the type to Identifier
+                                    postponeSpan = Token2ClassificationSpan(postponeToken, snapshot, xsharpIdentifierType);
+                                }
+                                // EVENT, add it the way it is Keyword or Identifier
+                                newtags.Add(postponeSpan);
+                            }
+                            // don't forget the current one
+                            newtags.Add(span);
+                            prevWasEvent = false;
+                        }
                         // We can have some Open/Close keyword ( FOR..NEXT; WHILE...ENDDO; IF...ENDIF)
                         if (span.ClassificationType == xsharpKeywordType)
                         {
@@ -1066,6 +1142,8 @@ namespace XSharpColorizer
             return ret;
         }
 
+
+
         #region IClassifier
 
 #pragma warning disable 67
@@ -1170,6 +1248,7 @@ namespace XSharpColorizer
                 }
             }
         }
+
         internal List<ClassificationSpan> GetItemsForLine(int line)
         {
             lock (gate)

@@ -2989,7 +2989,7 @@ namespace XSharpLanguage
                     if (!cType.IsEmpty())
                     {
                         // Now, search for a Method
-                        cTemp = SearchMethodTypeIn(cType, currentToken, visibility, false, out foundElement);
+                        cTemp = SearchMethodTypeIn(cType, currentToken, visibility, false, out foundElement, dialect);
                         if ((foundElement != null) && (foundElement.IsInitialized))
                         {
                             cType = cTemp;
@@ -3002,7 +3002,7 @@ namespace XSharpLanguage
                     if (cType.IsEmpty())
                     {
                         // check to see if this is a method from the Object Type, such as ToString().
-                        cTemp = SearchMethodTypeIn(new CompletionType(typeof(object)), currentToken, visibility, false, out foundElement);
+                        cTemp = SearchMethodTypeIn(new CompletionType(typeof(object)), currentToken, visibility, false, out foundElement, dialect);
                         if ((foundElement != null) && (foundElement.IsInitialized))
                         {
                             cType = cTemp;
@@ -3012,7 +3012,7 @@ namespace XSharpLanguage
                     {
                         // Could it be Static Method with "Using Static"
                         // Now, search for a Method
-                        cType = SearchMethodStaticIn(currentMember.File, currentToken, out foundElement);
+                        cType = SearchMethodStaticIn(currentMember.File, currentToken, out foundElement, dialect);
                     }
                     if (cType.IsEmpty())
                     {
@@ -3711,16 +3711,17 @@ namespace XSharpLanguage
         /// If not found, the CompletionType.IsInitialized is false
         /// and FoundElement is null
         /// </returns>
-        internal static CompletionType SearchMethodTypeIn(CompletionType cType, string currentToken, Modifiers minVisibility, bool staticOnly, out CompletionElement foundElement)
+        internal static CompletionType SearchMethodTypeIn(CompletionType cType, string currentToken, Modifiers minVisibility, bool staticOnly, out CompletionElement foundElement, XSharpDialect dialect)
         {
             WriteOutputMessage($" SearchMethodTypeIn {cType.FullName} , {currentToken}");
             foundElement = null;
             if (cType.XType != null)
             {
+                // .Kind.IsClassMember( dialect)
                 //
                 XTypeMember xMethod = cType.XType.Members.Where(x =>
                 {
-                    if ((x.Kind == Kind.Method))
+                    if ( x.Kind.IsClassMethod(dialect) )
                     {
                         return StringEquals(x.Name, currentToken);
                     }
@@ -3747,12 +3748,12 @@ namespace XSharpLanguage
                     if (cType.XType.Parent != null)
                     {
                         // Parent is a XElement, so one of our Types
-                        return SearchMethodTypeIn(new CompletionType(cType.XType.Parent), currentToken, minVisibility, staticOnly, out foundElement);
+                        return SearchMethodTypeIn(new CompletionType(cType.XType.Parent), currentToken, minVisibility, staticOnly, out foundElement, dialect);
                     }
                     else if (cType.XType.ParentName != null)
                     {
                         // Parent has just a Name, so one of the System Types
-                        return SearchMethodTypeIn(new CompletionType(cType.XType.ParentName, cType.File, cType.XType.FileUsings), currentToken, minVisibility, staticOnly, out foundElement);
+                        return SearchMethodTypeIn(new CompletionType(cType.XType.ParentName, cType.File, cType.XType.FileUsings), currentToken, minVisibility, staticOnly, out foundElement, dialect);
                     }
                 }
                 else
@@ -3798,13 +3799,13 @@ namespace XSharpLanguage
                     // In the parent ?
                     if (cType.SType.BaseType != null)
                     {
-                        SearchMethodTypeIn(new CompletionType(cType.SType.BaseType), currentToken, Modifiers.Public, staticOnly, out foundElement);
+                        SearchMethodTypeIn(new CompletionType(cType.SType.BaseType), currentToken, Modifiers.Public, staticOnly, out foundElement,dialect);
                     }
                     if (foundElement == null)
                     {
                         foreach (var type in cType.SType.GetInterfaces())
                         {
-                            SearchMethodTypeIn(new CompletionType(type), currentToken, Modifiers.Public, staticOnly, out foundElement);
+                            SearchMethodTypeIn(new CompletionType(type), currentToken, Modifiers.Public, staticOnly, out foundElement, dialect);
                             if (foundElement != null)
                                 break;
                         }
@@ -3813,7 +3814,7 @@ namespace XSharpLanguage
                     {
                         if (cType.SType.IsInterface)
                         {
-                            SearchMethodTypeIn(new CompletionType(typeof(object)), currentToken, Modifiers.Public, staticOnly, out foundElement);
+                            SearchMethodTypeIn(new CompletionType(typeof(object)), currentToken, Modifiers.Public, staticOnly, out foundElement, dialect);
                         }
                     }
                     // We may have found it, into BaseType or Interface, so cType is the right Type
@@ -3838,7 +3839,7 @@ namespace XSharpLanguage
         /// <param name="currentToken">The Toekn to look after</param>
         /// <param name="foundElement">The Found Element</param>
         /// <returns>The CompletionType that contains the Element</returns>
-        private static CompletionType SearchMethodStaticIn(XFile xFile, string currentToken, out CompletionElement foundElement)
+        private static CompletionType SearchMethodStaticIn(XFile xFile, string currentToken, out CompletionElement foundElement, XSharpDialect dialect )
         {
             WriteOutputMessage($" SearchMethodStaticIn {xFile.SourcePath}, {currentToken} ");
             foundElement = null;
@@ -3854,7 +3855,7 @@ namespace XSharpLanguage
                 // Provide an Empty Using list, so we are looking for FullyQualified-name only
                 CompletionType tempType = new CompletionType(staticUsing, xFile, emptyUsings);
                 //
-                cType = SearchMethodTypeIn(tempType, currentToken, Modifiers.Public, true, out foundElement);
+                cType = SearchMethodTypeIn(tempType, currentToken, Modifiers.Public, true, out foundElement, dialect);
                 if (foundElement != null)
                 {
 

@@ -940,32 +940,34 @@ namespace XSharp.Project
             // we can then simply lookup the method and that is it.
             // Also no need to filter on visibility since that has been done in the completionlist already !
             XSharpLanguage.CompletionElement gotoElement = null;
+            // First, where are we ?
+            int caretPos;
+            int lineNumber = startLineNumber;
+            //
+            do
+            {
+                if (ssp.Position == 0)
+                    break;
+                ssp = ssp - 1;
+                char leftCh = ssp.GetChar();
+                if ((leftCh == '(') || (leftCh == '{'))
+                    break;
+                lineNumber = ssp.GetContainingLine().LineNumber;
+            } while (startLineNumber == lineNumber);
+            //
+            caretPos = ssp.Position;
+            var snapshot = this.TextView.TextBuffer.CurrentSnapshot;
+            XSharpModel.XFile file = this.TextView.TextBuffer.GetFile();
+            if (file == null)
+                return false;
+            //
             if (cType != null && methodName != null)
             {
-                XSharpLanguage.XSharpTokenTools.SearchMethodTypeIn(cType, methodName, XSharpModel.Modifiers.Private, false, out gotoElement);
+                XSharpLanguage.XSharpTokenTools.SearchMethodTypeIn(cType, methodName, XSharpModel.Modifiers.Private, false, out gotoElement, file.Project.ProjectNode.ParseOptions.Dialect );
             }
             else
             {
-                // First, where are we ?
-                int caretPos;
-                int lineNumber = startLineNumber;
-                //
-                do
-                {
-                    if (ssp.Position == 0)
-                        break;
-                    ssp = ssp - 1;
-                    char leftCh = ssp.GetChar();
-                    if ((leftCh == '(') || (leftCh == '{'))
-                        break;
-                    lineNumber = ssp.GetContainingLine().LineNumber;
-                } while (startLineNumber == lineNumber);
-                //
-                caretPos = ssp.Position;
-                var snapshot = this.TextView.TextBuffer.CurrentSnapshot;
-                XSharpModel.XFile file = this.TextView.TextBuffer.GetFile();
-                if (file == null)
-                    return false;
+                
                 // Then, the corresponding Type/Element if possible
                 IToken stopToken;
                 // Check if we can get the member where we are
@@ -1003,11 +1005,11 @@ namespace XSharp.Project
                 //}
 
                 SnapshotPoint caret = TextView.Caret.Position.BufferPosition;
-                ITextSnapshot snapshot = caret.Snapshot;
+                ITextSnapshot caretsnapshot = caret.Snapshot;
                 //
                 if (!_signatureBroker.IsSignatureHelpActive(TextView))
                 {
-                    _signatureSession = _signatureBroker.CreateSignatureHelpSession(TextView, snapshot.CreateTrackingPoint(caret, PointTrackingMode.Positive), true);
+                    _signatureSession = _signatureBroker.CreateSignatureHelpSession(TextView, caretsnapshot.CreateTrackingPoint(caret, PointTrackingMode.Positive), true);
                 }
                 else
                 {

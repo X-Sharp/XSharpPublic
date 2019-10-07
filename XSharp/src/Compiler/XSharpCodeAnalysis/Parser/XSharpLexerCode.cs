@@ -92,7 +92,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         public bool MustBeProcessed => HasPPMessages || HasPPUDCs || HasPPIncludes || HasPPMacros || HasPPIfdefs;
 
         internal IList<ParseErrorData> LexErrors => _lexErrors;
-        int LastToken => _lastToken;
+        int LastToken => _lastToken.Type;
 
         bool _inDottedIdentifier = false;
         bool _currentLineIsPreprocessorDefinition = false;
@@ -100,7 +100,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         bool _nextLineTextMode = false;
         bool _foxTextMode = false;
         bool _foxTextLineMode = false;
-        int _lastToken = NL;
+        XSharpToken _lastToken = new XSharpToken(NL);
         IList<ParseErrorData> _lexErrors = new List<ParseErrorData>();
 
         System.Text.StringBuilder _textSb = new System.Text.StringBuilder();
@@ -1028,7 +1028,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 }
             }
             var type = t.Type;
-            if (findKeyWord(t, _lastToken))
+            if (findKeyWord(t, LastToken))
             {
                 type = t.Type;
                 // this happens in FoxPro dialect only, because only there the TEXT keyword is available
@@ -1134,7 +1134,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 {
                     if (type == SEMI)
                     {
-                        if (_lastToken != SEMI)
+                        if (LastToken != SEMI)
                         {
                             t.Channel = t.OriginalChannel = TokenConstants.HiddenChannel;
                         }
@@ -1159,9 +1159,16 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 t.Type = EOS;
                 _currentLineHasEos = true;
             }
+            if (t.Type == ALIAS )
+            {
+                if (IsKeyword(LastToken))
+                {
+                    _lastToken.Type = ID;
+                }
+            }
             if (t.Channel == TokenConstants.DefaultChannel)
             {
-                _lastToken = type; // nvk: Note that this is the type before any modifications!!!
+                _lastToken = t; // nvk: Note that this is the type before any modifications!!!
             }
 
             if (_currentLineIsPreprocessorDefinition)
@@ -1183,7 +1190,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     }
                 }
             }
-            return t;
+             return t;
         }
 
         private bool StartOfLine(int iToken)

@@ -3268,48 +3268,61 @@ namespace XSharpLanguage
                             }
                             else
                             {
+                                bool found = false;
                                 int triggerPoint = searchAt - 1; // xVar.Interval.Start + searchAt - xVar.Range.StartColumn;
                                 IToken _stopToken;
                                 List<String> tokenList = XSharpTokenTools.GetTokenList(triggerPoint, xVar.Range.StartLine, snapshot, out _stopToken, false, xVar.File, false, member);
-                                cType = XSharpTokenTools.RetrieveType(xVar.File, tokenList, member, currentNS, null, out foundElement, snapshot, currentLine, dialect );
-                                if (foundElement != null)
+                                if ( tokenList.Count == 1)
                                 {
-                                    // Let's set the Std Type for this VAR
-                                    xVar.TypeName = foundElement.ReturnType.FullName;
-                                    // and now, correct it
-                                    if (foundElement.IsGeneric)
+                                    string token = tokenList[0].ToLower();
+                                    if (( token =="true" ) || (token == "false"))
                                     {
-                                        if (xVar.VarDefinition.AfterIn)
+                                        xVar.TypeName = "LOGIC";
+                                        found = true;
+                                    }
+                                }
+                                if (!found)
+                                {
+                                    cType = XSharpTokenTools.RetrieveType(xVar.File, tokenList, member, currentNS, null, out foundElement, snapshot, currentLine, dialect);
+                                    if (foundElement != null)
+                                    {
+                                        // Let's set the Std Type for this VAR
+                                        xVar.TypeName = foundElement.ReturnType.FullName;
+                                        // and now, correct it
+                                        if (foundElement.IsGeneric)
                                         {
-                                            // Get the underlying Enumerated Type
-                                            CompletionType enumType = foundElement.EnumeratorType;
-                                            if (!enumType.IsEmpty())
+                                            if (xVar.VarDefinition.AfterIn)
                                             {
-                                                int numParam = 0;
-                                                string genName = enumType.FullName;
-                                                // Per default
-                                                xVar.TypeName = foundElement.GenericTypeName;
-                                                // Now, try to resolve T, or TKey, TValue, ...
-                                                int index = genName.IndexOf('<');
-                                                if (index != -1)
+                                                // Get the underlying Enumerated Type
+                                                CompletionType enumType = foundElement.EnumeratorType;
+                                                if (!enumType.IsEmpty())
                                                 {
-                                                    // Extract the Generic params
-                                                    genName = genName.Substring(index);
-                                                    String[] items = genName.Split(',');
-                                                    numParam = items.Length;
-                                                    // Compare with the value that we have
-                                                    items = foundElement.GenericTypeName.Split(',');
-                                                    if (numParam == items.Length)
+                                                    int numParam = 0;
+                                                    string genName = enumType.FullName;
+                                                    // Per default
+                                                    xVar.TypeName = foundElement.GenericTypeName;
+                                                    // Now, try to resolve T, or TKey, TValue, ...
+                                                    int index = genName.IndexOf('<');
+                                                    if (index != -1)
                                                     {
-                                                        xVar.TypeName = enumType.FullName.Substring(0, index) + "<" + foundElement.GenericTypeName + ">";
+                                                        // Extract the Generic params
+                                                        genName = genName.Substring(index);
+                                                        String[] items = genName.Split(',');
+                                                        numParam = items.Length;
+                                                        // Compare with the value that we have
+                                                        items = foundElement.GenericTypeName.Split(',');
+                                                        if (numParam == items.Length)
+                                                        {
+                                                            xVar.TypeName = enumType.FullName.Substring(0, index) + "<" + foundElement.GenericTypeName + ">";
+                                                        }
                                                     }
                                                 }
-                                            }
-                                            else
-                                            {
+                                                else
+                                                {
 
+                                                }
+                                                //   xVar.TypeName = foundElement.GenericTypeName;
                                             }
-                                            //   xVar.TypeName = foundElement.GenericTypeName;
                                         }
                                     }
                                 }

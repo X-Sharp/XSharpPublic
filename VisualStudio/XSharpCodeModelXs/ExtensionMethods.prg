@@ -96,7 +96,22 @@ BEGIN NAMESPACE XSharpModel
 						END SWITCH
 					ENDIF
 			END SWITCH
-			RETURN false
+			RETURN FALSE
+
+		STATIC METHOD IsClassMethod( SELF elementKind AS Kind, inDialect AS XSharpDialect ) AS LOGIC
+			SWITCH elementKind
+				CASE Kind.Method 
+					RETURN TRUE
+				OTHERWISE
+					IF ( inDialect == XSharpDialect.FoxPro )
+						SWITCH elementKind
+							CASE Kind.Function
+							CASE Kind.Procedure
+								RETURN TRUE
+						END SWITCH
+					ENDIF
+			END SWITCH
+			RETURN FALSE
 		
 		STATIC METHOD IsField( SELF elementKind AS Kind) AS LOGIC
 			SWITCH elementKind

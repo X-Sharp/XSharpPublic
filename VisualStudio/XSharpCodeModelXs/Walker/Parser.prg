@@ -1005,7 +1005,7 @@ BEGIN NAMESPACE XSharpModel
 									IF oInfo:eType:SupportNestedType()
 										iClassOrStruct ++
 									ENDIF
-								ELSEIF oInfo:eType:IsClassMember( SELF:Dialect )
+								ELSEIF (aTypeStack:Count > 0) .AND. oInfo:eType:IsClassMember( SELF:Dialect )
 									IF aTypeStack:Count > 0
 										VAR oParent := getParentType()
 										IF ( oParent != NULL )
@@ -1583,7 +1583,8 @@ BEGIN NAMESPACE XSharpModel
 				IF oEnt:eType:IsType()
 					aResult:Add(oEnt)
 				ELSEIF oEnt:oParent == NULL
-					aResult:Add(oEnt)
+					//aResult:Add(oEnt) // Doing so a FUNCTION will be stored as a Type...!?
+					oEnt:oParent := SELF:oGlobalObject
 				ENDIF
 			NEXT
 

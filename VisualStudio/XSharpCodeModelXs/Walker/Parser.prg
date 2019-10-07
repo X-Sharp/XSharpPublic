@@ -1005,7 +1005,7 @@ BEGIN NAMESPACE XSharpModel
 									IF oInfo:eType:SupportNestedType()
 										iClassOrStruct ++
 									ENDIF
-								ELSEIF oInfo:eType:IsClassMember()
+								ELSEIF oInfo:eType:IsClassMember( SELF:Dialect )
 									IF aTypeStack:Count > 0
 										VAR oParent := getParentType()
 										IF ( oParent != NULL )
@@ -1093,6 +1093,10 @@ BEGIN NAMESPACE XSharpModel
 									eStep := ParseStep.AfterAs
 									sFoundType:Length := 0
 									n1 := 0;n2 := 0
+									// In a CLASS definition in FoxPro, AS is an alias of INHERIT
+									IF ( oInfo != NULL .AND. SELF:Dialect == XSharpDialect.FoxPro .AND. oInfo:eType == EntityType._Class )
+										eStep := ParseStep.AfterInherit
+									ENDIF
 								CASE state:lInParams .AND. (cUpperWord == "REF" .OR. cUpperWord == "OUT" .OR. cUpperWord == "PARAMS") .AND. .NOT. lEscapedWord
 									eStep := ParseStep.AfterRef
 									SWITCH cUpperWord
@@ -1273,7 +1277,7 @@ BEGIN NAMESPACE XSharpModel
 											oInfo:nCol	:= nEntityStartCol
 											oInfo:nOffSet := nEntityStartOffSet //+ oInfo:nCol => Now, the Entyti starts at the beginning of line
 											oInfo:cName := cWord
-											IF oInfo:IsFuncProcGlobal
+											IF oInfo:IsGlobal .OR. ( oInfo:IsFuncProc .AND. !SELF:Dialect == XSharpDialect.FoxPro )
 												oInfo:cShortClassName := ""
 												oInfo:cTypedClassName := ""
 												oInfo:cClassNameSpace := ""
@@ -1754,7 +1758,7 @@ BEGIN NAMESPACE XSharpModel
 			END SWITCH
 			RETURN FALSE
 
-		STATIC METHOD IsClassMember(SELF e AS ENtityType) AS LOGIC
+		STATIC METHOD IsClassMember(SELF e AS ENtityType, inDialect AS XSharpDialect) AS LOGIC
 			SWITCH e
 			CASE EntityType._Field
 				CASE EntityType._Property
@@ -1767,8 +1771,18 @@ BEGIN NAMESPACE XSharpModel
 				CASE EntityType._Event
 				CASE EntityType._EnumMember
 					RETURN TRUE
+				OTHERWISE
+					IF ( inDialect == XSharpDialect.FoxPro )
+						SWITCH e
+							CASE EntityType._Function
+							CASE EntityType._Procedure
+								RETURN TRUE
+						END SWITCH
+					ENDIF
 				END SWITCH
 			RETURN FALSE
+
+
 		STATIC METHOD HasBody(SELF e AS EntityType) AS LOGIC
 			SWITCH e
 			CASE EntityType._Property
@@ -1882,8 +1896,11 @@ BEGIN NAMESPACE XSharpModel
 			oChild:oParent := SELF
 			RETURN
 
-		INTERNAL ACCESS IsFuncProcGlobal AS LOGIC
-			RETURN SELF:eType == EntityType._Function .OR. SELF:eType == EntityType._Procedure .OR. SELF:eType == EntityType._Global
+		INTERNAL ACCESS IsFuncProc AS LOGIC
+			RETURN SELF:eType == EntityType._Function .OR. SELF:eType == EntityType._Procedure
+
+		INTERNAL ACCESS IsGlobal AS LOGIC
+			RETURN SELF:eType == EntityType._Global
 
 		INTERNAL METHOD NamespacesEqual(_aNameSpaces AS List<STRING>) AS LOGIC
 			LOCAL n AS INT

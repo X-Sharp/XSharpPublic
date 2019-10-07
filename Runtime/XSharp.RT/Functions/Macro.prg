@@ -9,28 +9,16 @@ USING System.IO
 
 	
 		
-/// <summary>
-/// Evaluate an expression contained in a string.
-/// </summary>
-/// <param name="cExpression">The string containing the expression to evaluate.</param>
-/// <returns>The value of the expression.</returns>
-/// <remarks>Evaluate() invokes the macro compiler each time it evaluates an expression.  Alternatively, you could use MCompile() to compile an expression only once, then use MExec() to execute the compiled form as often as you want.</remarks>
-/// <seealso cref="M:XSharp.RT.Functions.MCompile(System.String)" />
-FUNCTION Evaluate(cExpression AS STRING) AS USUAL
-	RETURN Evaluate(cExpression, TRUE)
-	
-/// <summary>
-/// Evaluate an expression contained in a string.
-/// </summary>
-/// <param name="cExpression">The string containing the expression to evaluate.</param>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/evaluate/*" />
+FUNCTION Evaluate(cString AS STRING) AS USUAL
+	RETURN Evaluate(cString, TRUE)
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/evaluate/*" />	
 /// <param name="lAllowSingleQuotes">Should single quotes be allowed as string delimiters.</param>
-/// <returns>The value of the expression.</returns>
-/// <remarks>Evaluate() invokes the macro compiler each time it evaluates an expression.  Alternatively, you could use MCompile() to compile an expression only once, then use MExec() to execute the compiled form as often as you want.</remarks>
-/// <seealso cref="M:XSharp.RT.Functions.MCompile(System.String,System.Boolean)" />
-FUNCTION Evaluate(cExpression AS STRING, lAllowSingleQuotes AS LOGIC) AS USUAL
+FUNCTION Evaluate(cString AS STRING, lAllowSingleQuotes AS LOGIC) AS USUAL
 	LOCAL oMacro AS XSharp._Codeblock 
 	LOCAL uRes   AS USUAL
-	oMacro := MCompile(cExpression, lAllowSingleQuotes)
+	oMacro := MCompile(cString, lAllowSingleQuotes)
 	IF oMacro != NULL_OBJECT .AND. ! oMacro:IsBlock
 		uRes := oMacro:EvalBlock()
 	ELSE
@@ -39,32 +27,19 @@ FUNCTION Evaluate(cExpression AS STRING, lAllowSingleQuotes AS LOGIC) AS USUAL
 	ENDIF
 	RETURN uRes
 	
-	
-/// <summary>
-/// Macro compile a string.
-/// </summary>
-/// <param name="cMacro">The string to compile.</param>
-/// <returns>The string in a macro-compiled form.</returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mcompile/*" />	
 /// <remarks>MCompile() allows you to use the macro compiler to compile a string and store the compiled results for later execution.  Instead of invoking the macro compiler each time an expression is evaluated, you could speed up your application by compiling an expression only once and executing the compiled form as often as desired.</remarks>
 /// <note type="caution">MCompile returns a STRING in VO. It returns a XSharp._Codeblock in .Net.</note>
 /// <seealso cref="T:XSharp._Codeblock" />
 /// <seealso cref="M:XSharp.RT.Functions.MCompile(System.String,System.Boolean)" />
-/// <seealso cref="M:XSharp.RT.Functions.MExec(XSharp.Codeblock)" />
-FUNCTION MCompile(cMacro AS STRING) AS XSharp._Codeblock
-	RETURN MCompile(cMacro, TRUE)
-	
-/// <summary>
-/// Macro compile a string.
-/// </summary>
-/// <param name="cMacro">The string to compile.</param>
+FUNCTION MCompile(cString AS STRING) AS XSharp._Codeblock
+	RETURN MCompile(cString, TRUE)
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mcompile/*" />	
 /// <param name="lAllowSingleQuotes">Should single quotes be allowed as string delimiters</param>
-/// <returns>The string in a macro-compiled form.</returns>
-/// <remarks>MCompile() allows you to use the macro compiler to compile a string and store the compiled results for later execution.  Instead of invoking the macro compiler each time an expression is evaluated, you could speed up your application by compiling an expression only once and executing the compiled form as often as desired.</remarks>
-/// <note type="caution">MCompile returns a STRING in VO. It returns a XSharp._Codeblock in .Net.</note>
 /// <seealso cref="T:XSharp._Codeblock" />
 /// <seealso cref="M:XSharp.RT.Functions.MCompile(System.String)" />
-/// <seealso cref="M:XSharp.RT.Functions.MExec(XSharp.Codeblock)" />
-FUNCTION MCompile(cMacro AS STRING, lAllowSingleQuotes AS LOGIC) AS XSharp._Codeblock
+FUNCTION MCompile(cString AS STRING, lAllowSingleQuotes AS LOGIC) AS XSharp._Codeblock
 	
 	VAR oMC := XSharp.RuntimeState.MacroCompiler
 	IF oMC != NULL_OBJECT
@@ -76,61 +51,34 @@ FUNCTION MCompile(cMacro AS STRING, lAllowSingleQuotes AS LOGIC) AS XSharp._Code
 		LOCAL oResult AS XSharp._Codeblock
 		LOCAL lIsCodeblock  AS LOGIC
         LOCAL addsMemVars   AS LOGIC
-		iResult := oMC:Compile(cMacro, lAllowSingleQuotes, oMod, OUT lIsCodeBlock, OUT addsMemVars)
-		oResult := XSharp._Codeblock{iResult, cMacro, lIsCodeBlock, addsMemVars}
+		iResult := oMC:Compile(cString, lAllowSingleQuotes, oMod, OUT lIsCodeBlock, OUT addsMemVars)
+		oResult := XSharp._Codeblock{iResult, cString, lIsCodeBlock, addsMemVars}
 		RETURN oResult
 	ENDIF
 	RETURN NULL_OBJECT	
 	
 	
-	/// <summary>
-	/// Evaluate a macro-compiled codeblock.
-	/// </summary>
-	/// <param name="cb">The macro-compiled codeblock.</param>
-	/// <returns>The result of evalating the macro compiled expression.</returns>
-	/// <note type="caution">MCompile returns a STRING in VO. It returns a XSharp._Codeblock in .Net. Therefore the parameter of MExec is a Codeblock</note>
-	/// <seealso cref="T:XSharp._Codeblock" />
-	/// <seealso cref="M:XSharp.RT.Functions.MCompile(System.String)" />
-	/// <seealso cref="M:XSharp.RT.Functions.MCompile(System.String,System.Boolean)" />
-FUNCTION MExec(cb AS CODEBLOCK) AS USUAL
-	IF cb:PCount() != -1
-		RETURN cb:EvalBlock()
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mexec/*" />	
+/// <note type="caution">MCompile returns a STRING in VO. It returns a XSharp._Codeblock in .Net. Therefore the parameter of MExec is a Codeblock</note>
+/// <seealso cref="T:XSharp._Codeblock" />
+/// <seealso cref="M:XSharp.RT.Functions.MCompile(System.String,System.Boolean)" />
+FUNCTION MExec(cString AS CODEBLOCK) AS USUAL
+	IF cString:PCount() != -1
+		RETURN cString:EvalBlock()
 	ENDIF
-	RETURN cb
+	RETURN cString
 	
 	
 	
-	
-	/// <summary>
-	/// Determine the data type of an expression represented as a string.
-	/// </summary>
-	/// <param name="cExpression">A string that contains an expression whose type is to be determined.  It cannot contain undeclared variables or functions that are not intended for used with macros  If cExpression does not exist, "U" is returned. </param>
-	/// <returns>One of the following characters:
-	/// <list type="table">
-	/// <listheader>
-	/// <term>Returns</term> <description>Meaning</description>
-	/// </listheader>
-	///	<item><term>A</term> <description>Array</description></item>  
-	/// <item><term>B</term> <description>Block</description></item>  
-	/// <item><term>C</term> <description>String</description></item>   
-	/// <item><term>D</term> <description>Date</description></item> 
-	/// <item><term>L</term> <description>Logical</description></item>   
-	/// <item><term>M</term> <description>Memo </description></item>
-	/// <item><term>N</term> <description>Numeric</description></item>  
-	/// <item><term>O</term> <description>Object</description></item> 
-	/// <item><term>U</term> <description>NIL, local, or static</description></item>   
-	/// <item><term>UE</term> <description>Error syntactical </description></item>
-	/// <item><term>UI</term> <description>Error indeterminate</description></item>
-	/// </list>
-	/// </returns>
-FUNCTION Type(cExpression AS STRING) AS STRING
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/type/*" />	
+FUNCTION Type(cString AS STRING) AS STRING
 	LOCAL uValue AS USUAL
 	LOCAL cRet	 AS STRING
-	IF String.IsNullOrEmpty(cExpression)	
+	IF String.IsNullOrEmpty(cString)	
 		cRet := "UE"
 	ELSE
 		TRY
-			uValue := Evaluate(cExpression)
+			uValue := Evaluate(cString)
 			cRet   := ValType(uValue)
 		CATCH  AS Exception
 			cRet  := "UE" 

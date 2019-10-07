@@ -12,10 +12,11 @@ USING XSharp.RDD.Enums
 USING XSharp.RDD.Support
 USING System.Globalization
 USING System.Collections.Generic
-
+USING System.Diagnostics
 
 BEGIN NAMESPACE XSharp.RDD
     /// <summary>DBF RDD. Usually not used 'stand alone'</summary>
+[DebuggerDisplay("DBF ({Alias,nq})")];
 PARTIAL CLASS DBF INHERIT Workarea IMPLEMENTS IRddSortWriter
 #region STATIC properties and fields
         STATIC PROTECT _Extension := ".DBF" AS STRING
@@ -880,6 +881,7 @@ METHOD Create(info AS DbOpenInfo) AS LOGIC
 		SELF:_Header:RecordLen := (WORD) SELF:_RecordLength
         // This will fill the Date and RecCount
 		isOK := SELF:_writeHeader()
+        SELF:_wasChanged := TRUE
 		IF isOK 
 			SELF:_HeaderLength := SELF:_Header:HeaderLen
 			isOk := SELF:_writeFieldsHeader()
@@ -1774,7 +1776,11 @@ VIRTUAL METHOD Compile(sBlock AS STRING) AS ICodeblock
 	LOCAL result AS ICodeblock
 	result := SUPER:Compile(sBlock)
 	IF result == NULL
-		SELF:_dbfError( SubCodes.EDB_EXPRESSION, GenCode.EG_SYNTAX,"DBF.Compile")
+        var msg := "Could not compile epression '"+sBlock+"'"
+        if (runtimestate:LastRddError != NULL_OBJECT)
+            msg += "("+runtimestate:LastRddError:Message+")"
+        ENDIF
+		SELF:_dbfError( SubCodes.EDB_EXPRESSION, GenCode.EG_SYNTAX,"DBF.Compile", msg )
 	ENDIF
 RETURN result
 

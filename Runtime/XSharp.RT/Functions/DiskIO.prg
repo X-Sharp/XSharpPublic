@@ -5,23 +5,8 @@
 //
 
 USING System.IO
-/// <summary>
-/// Fill a series of Array with directory information.
-/// </summary>
-/// <param name="cFileSpec">The file specification for the directory search.
-/// Besides a file name, this specification may include an optional drive, directory, and extension.
-/// The file name and extension may include the standard wildcard characters (* and ?).
-/// If you do not specify a drive and directory, this function uses the SetDefault() setting.</param>
-/// <param name="aFName">The array to fill with the file names matching <paramref name="cFileSpec" />.  Each element will contain the file name and extension as a string, in all uppercase letters. </param>
-/// <param name="aFSize">The array to fill with the sizes of the corresponding files in <paramref name="aFName" />. </param>
-/// <param name="aFDate">The array to fill with the dates of the corresponding files in <paramref name="aFName" />.</param>
-/// <param name="aFTime">The array to fill with the times of the corresponding files in <paramref name="aFName" />, in the form hh:mm:ss. </param>
-/// <param name="aFAttr">The array to fill with attributes of the corresponding files in <paramref name="aFName" />.  If <paramref name="aFAttr" /> is specified, hidden, system, and
-/// directory files are included as well as normal files.  If <paramref name="aFAttr" /> is not specified, only normal files are included.</param>
-/// <returns>The number of files matching the directory skeleton described in <paramref name="cFileSpec" />./// </returns>
-/// <remarks>ADir() is a compatibility function and therefore not recommended.
-/// It is superseded by the Directory() function, which returns all file information in a multidimensional array.</remarks>
-FUNCTION ADir(cFileSpec ,aFName ,aFSize ,aFDate,aFTime,aFAttr) AS DWORD CLIPPER
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/adir/*" />
+FUNCTION ADir(cFileSpec ,acFileNames ,anSizes ,adDates,acTimes,acAttributes) AS DWORD CLIPPER
 	IF ! cFileSpec:IsString
 		THROW Error.ArgumentError(__FUNCTION__, NAMEOF(cFileSpec), 1,<OBJECT>{cFileSpec})
 	ENDIF
@@ -32,24 +17,24 @@ FUNCTION ADir(cFileSpec ,aFName ,aFSize ,aFDate,aFTime,aFAttr) AS DWORD CLIPPER
 	LOCAL aDates	:= NULL_ARRAY AS ARRAY
 	LOCAL aTimes    := NULL_ARRAY AS ARRAY
 	LOCAL aAttribs  := NULL_ARRAY AS ARRAY
-	IF aFName:IsArray
-		aNames  := aFName
+	IF acFileNames:IsArray
+		aNames  := acFileNames
 		lHasArg := TRUE
 	ENDIF
-	IF aFSize:IsArray
-		aSizes  := aFSize
+	IF anSizes:IsArray
+		aSizes  := anSizes
 		lHasArg := TRUE
 	ENDIF
-	IF aFDate:IsArray
-		aDates  := aFDate
+	IF adDates:IsArray
+		aDates  := adDates
 		lHasArg := TRUE
 	ENDIF
-	IF aFTIME:IsArray
-		aTimes  := aFTIME
+	IF acTimes:IsArray
+		aTimes  := acTimes
 		lHasArg := TRUE
 	ENDIF
-	IF aFAttr:IsArray
-		aAttribs  := aFAttr
+	IF acAttributes:IsArray
+		aAttribs  := acAttributes
 		lHasArg := TRUE
 	ENDIF
     if aAttribs != NULL_ARRAY
@@ -84,26 +69,21 @@ FUNCTION ADir(cFileSpec ,aFName ,aFSize ,aFDate,aFTime,aFAttr) AS DWORD CLIPPER
 	
 	
 	
-/// <summary>
-/// Create an Array of directory and file information.
-/// </summary>
-/// <param name="cFileSpec">The file specification for the search.  Besides a file name, this specification can include an optional drive, directory, and extension.  The file name and extension can include the standard wildcard characters (* and ?).  If you do not specify a drive and directory, the Windows defaults are used.</param>
-/// <param name="xAttr">Specifies inclusion of files with special attributes in the returned information.  uAttributes can be a string or a numeric.</param>
-/// <returns>An array of subarrays, with each subarray containing information about each file matching cFileSpec.  </returns>
-FUNCTION Directory(cFileSpec AS STRING, xAttr := NIL AS USUAL) AS ARRAY
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/directory/*" />
+FUNCTION Directory(cFileSpec AS STRING, uAttributes := NIL AS USUAL) AS ARRAY
 	LOCAL nAttr		AS DWORD
 	LOCAL aReturn	AS ARRAY
 	LOCAL cPath		AS STRING
 	LOCAL cFileMask AS STRING
     LOCAL lWild     AS LOGIC
-    IF xAttr:IsNil
+    IF uAttributes:IsNil
 		nAttr := 0
-	ELSEIF xAttr:IsNumeric
-		nAttr := (DWORD) xAttr
-	ELSEIF xAttr:IsString
-		nAttr := String2FAttr((STRING) xAttr)
+	ELSEIF uAttributes:IsNumeric
+		nAttr := (DWORD) uAttributes
+	ELSEIF uAttributes:IsString
+		nAttr := String2FAttr((STRING) uAttributes)
 	ELSE
-		THROW Error.ArgumentError(__FUNCTION__, NAMEOF(xAttr), 2,<OBJECT>{xAttr})
+		THROW Error.ArgumentError(__FUNCTION__, NAMEOF(uAttributes), 2,<OBJECT>{uAttributes})
 	ENDIF
 	aReturn := {}
 	IF (nAttr & FA_VOLUME ) != 0

@@ -184,17 +184,14 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             evalOk := TRUE
             TRY
                 SELF:_KeyCodeBlock := SELF:_oRdd:Compile(SELF:_KeyExpr)
-            CATCH ex AS Exception
-                SELF:_oRdd:_dbfError( ex, SubCodes.EDB_EXPRESSION, GenCode.EG_SYNTAX,"DBFCDX.Compile")
-                RETURN FALSE
+            CATCH AS Exception
+                THROW
             END TRY
 
             TRY
                 oKey := SELF:_oRdd:EvalBlock(SELF:_KeyCodeBlock)
-            CATCH ex AS Exception
-                SELF:_oRdd:_dbfError( ex, SubCodes.EDB_EXPRESSION, GenCode.EG_SYNTAX, "DBFCDX.Compile")
-                evalOk := FALSE
-                oKey := NULL
+            CATCH AS Exception
+                THROW
             END TRY
             IF !evalOk
                 RETURN FALSE

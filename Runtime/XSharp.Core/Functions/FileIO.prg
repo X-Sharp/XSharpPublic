@@ -17,13 +17,7 @@ USING System.Runtime
 USING System.Runtime.ConstrainedExecution
 
 
-	
-	/// <summary>
-	/// Change the name of a file.
-	/// </summary>
-	/// <param name="cOldFile">The original file name, including an optional drive, directory, and extension.  SetDefault() and SetPath() settings are ignored; the Windows default is used unless you specify a drive and directory as part of the file name.  No extension is assumed.</param>
-	/// <param name="cNewFile">The new file name, including an optional drive, directory, and extension.  SetDefault() and SetPath() settings are ignored; the Windows default is used unless you specify a drive and directory as part of the file name.  No extension is assumed.  If the source directory is different from the target directory, the file moves to the target directory.  If cNewFile exists or is currently open, FRename() fails and returns FALSE.</param>
-	/// <returns>TRUE if the operation succeeds; otherwise, FALSE.  In the case of a failure, FError() can be used to determine the specific error.</returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/frename/*" />	
 FUNCTION FRename( cOldFile AS STRING , cNewFile AS STRING) AS LOGIC
 	LOCAL renamed := FALSE AS LOGIC
 	TRY
@@ -40,45 +34,29 @@ FUNCTION FRename( cOldFile AS STRING , cNewFile AS STRING) AS LOGIC
 	RETURN renamed
 	
 	
-	/// <summary>
-	/// Delete a file from disk.
-	/// </summary>
-	/// <param name="cFile">The file name, including an optional drive, directory, and extension.  SetDefault() and SetPath() settings are ignored; the Windows default is used unless you specify a drive and directory as part of the file name.  No extension is assumed.</param>
-	/// <returns>TRUE if the operation succeeds; otherwise, FALSE.  In the case of a failure, FError() can be used to determine the specific error.</returns>
-FUNCTION FErase(fileName AS STRING) AS LOGIC
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ferase/*" />	
+FUNCTION FErase(cFileName AS STRING) AS LOGIC
 	LOCAL isDeleted := FALSE AS LOGIC
 	TRY
         XSharp.IO.File.clearErrorState()
-        IF System.IO.File.Exists(fileName)
-		    System.IO.File.Delete(fileName)
+        IF System.IO.File.Exists(cFileName)
+		    System.IO.File.Delete(cFileName)
 		    isDeleted := TRUE
         ELSE
-            THROW FileNotfoundException { fileName }
+            THROW FileNotfoundException { cFileName }
         ENDIF
 	CATCH e AS Exception
 		XSharp.IO.File.setErrorState(e)
 	END TRY
 	RETURN isDeleted
 	
-	/// <summary>Copy a file to a new file or to a device.</summary>
-	/// <param name="cSourceFile">The name of the source file to copy, including an optional drive, directory, and extension.</param>
-	/// <param name="cTargetFile">The name of the target file, including an optional drive, directory, and extension.</param>
-	/// <returns>TRUE if successful; otherwise, FALSE.</returns>
-	/// <remarks>
-	/// FCopy() is the functional form of the COPY FILE command.
-	/// If cSourceFile does not exist, a runtime error is raised.  
-	/// If cTargetFile does not exist, it is created.  
-	///</remarks>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fcopy/*" />	
 FUNCTION FCopy(cSourceFile AS STRING,cTargetFile AS STRING) AS LOGIC
 	RETURN FCopy(cSourceFile, cTargetFile, TRUE)
-	
-    /// <inheritdoc cref="M:XSharp.Core.Functions.FCopy(System.String,System.String)" />"
-	/// <param name="lOverWrite">Should the target file be overwritten.</param>
-	/// <remarks>
-	/// FCopy() is the functional form of the COPY FILE command.
-	/// If cSourceFile does not exist, a runtime error is raised.  
-	/// If cTargetFile does not exist, it is created.  If it exists it is only overwritten if lOverWrite = TRUE
-	///</remarks>
+
+
+/// <inheritdoc cref="M:XSharp.Core.Functions.FCopy(System.String,System.String)" />	
+/// <param name="lOverWrite">Should the target file be overwritten.</param>
 FUNCTION FCopy(cSourceFile AS STRING,cTargetFile AS STRING, lOverWrite AS LOGIC) AS LOGIC
 	LOCAL IsCopied := FALSE AS LOGIC
 	TRY
@@ -92,16 +70,14 @@ FUNCTION FCopy(cSourceFile AS STRING,cTargetFile AS STRING, lOverWrite AS LOGIC)
 	
 	
 	
-	/// <summary>
-	/// Break a path name into its components.
-	/// </summary>
-	/// <param name="cPath"></param>
-	/// <param name="cDrive"></param>
-	/// <param name="cDir"></param>
-	/// <param name="cName"></param>
-	/// <param name="cExt"></param>
-	/// <returns>
-	/// </returns>
+/// <summary><include file="VoFunctionDocs.xml" path="Runtimefunctions/splitpath/summary" /></summary>
+/// <returns><include file="VoFunctionDocs.xml" path="Runtimefunctions/splitpath/returns" /></returns>
+/// <remarks><include file="VoFunctionDocs.xml" path="Runtimefunctions/splitpath/remarks" /></remarks>
+/// <param name="cPath">The path name to break.</param>
+/// <param name="cDrive">The drive letter followed by a colon.  </param>
+/// <param name="cDir">The directories, including the trailing slash.  Forward slashes and backslashes both may be present in &lt;cPath&gt;.  Forward slashes (/) are converted to backslashes (\). </param>
+/// <param name="cName">The file name, without the extension.  </param>
+/// <param name="cExt">The extension, including the leading period.  </param>
 FUNCTION _SplitPath(cPath AS STRING, cDrive OUT STRING,cDir OUT STRING,cName OUT STRING,cExt OUT STRING) AS VOID
 	LOCAL nPos AS LONG
 	LOCAL cSep AS STRING

@@ -7,13 +7,7 @@ USING System.Globalization
 USING System.Text
 
 
-/// <summary>
-/// Encrypt or decrypt a string.
-/// </summary>
-/// <param name="cSource"></param>
-/// <param name="cKey"></param>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/crypt/*" />
 FUNCTION Crypt(cSource AS STRING,cKey AS STRING) AS STRING
 	LOCAL bSource AS BYTE[]
 	LOCAL bDest  AS BYTE[]
@@ -68,8 +62,6 @@ FUNCTION CryptRaw(cSource AS STRING,cKey AS STRING) AS STRING
 /// </summary>
 /// <param name="bSource"></param>
 /// <param name="cKey"></param>
-/// <returns>
-/// </returns>
 FUNCTION Crypt(bSource AS BYTE[],bKey AS BYTE[]) AS BYTE[]
 	LOCAL bDest   AS BYTE[]
     LOCAL keyLen  AS INT
@@ -121,7 +113,7 @@ FUNCTION Crypt(bSource AS BYTE[],bKey AS BYTE[]) AS BYTE[]
             bNibble := (BYTE)(uiCode2 & 0xFF)
 
             bNibble := (BYTE)( (bNibble << 1) | (bNibble >> 7) )
-            uiCode2 := (WORD)( (uiCode2 & 0xFF00) | bNibble )
+            uiCode2 := (WORD)( (uiCode2 & 0xFF00) | bNibble ) 
             uiCounter--
         ENDDO
         bDest[nPos] := bCurrent ~ bNibble
@@ -130,13 +122,7 @@ FUNCTION Crypt(bSource AS BYTE[],bKey AS BYTE[]) AS BYTE[]
     ENDDO
 	RETURN bDest
 
-/// <summary>
-/// Encrypt or decrypt a string, changing the contents of the original string as well as returning the encrypted string.
-/// </summary>
-/// <param name="cSource"></param>
-/// <param name="cKey"></param>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/crypta/*" />
 FUNCTION CryptA(cSource AS STRING,cKey AS STRING) AS STRING
 	cSource := Crypt(cSource, cKey)
 	RETURN cSource

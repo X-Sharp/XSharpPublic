@@ -5,21 +5,15 @@
 //
 
 
-/// <summary>
-/// Convert a 24-hour military time to a 12-hour clock time.
-/// </summary>
-/// <param name="cTime"> A valid military time in the form hh:mm:ss, where hh is hours in 24-hour format, mm is minutes, and ss is seconds.</param>
-/// <returns>
-/// An 11-character string in 12-hour format with either "am" or "pm."  If cTime does not represent a valid military time, a String.Empty is returned.
-/// </returns>
-FUNCTION AmPm(cTime AS STRING) AS STRING
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ampm/*" />
+FUNCTION AmPm(c24HrTime AS STRING) AS STRING
 	LOCAL nSeconds AS DWORD
 	LOCAL nHours AS DWORD
 	LOCAL nMinutes AS DWORD
-	IF String.IsNullOrEmpty(cTime)
+	IF String.IsNullOrEmpty(c24HrTime)
 		RETURN ""
 	ENDIF
-	nSeconds := Secs(cTime) 
+	nSeconds := Secs(c24HrTime) 
 	IF (nSeconds) > 86400
 		RETURN ""
 	ENDIF	
@@ -31,16 +25,7 @@ FUNCTION AmPm(cTime AS STRING) AS STRING
 	RETURN _TimeString(nHours, nMinutes, nSeconds, TRUE, GetAMExt(), GetPMExt())
 
 
-/// <summary>
-/// Return the difference between two time strings.
-/// </summary>
-/// <param name="cStartTime">The starting time in the form HH:mm:ss.</param>
-/// <param name="cEndTime">The ending time in the form HH:mm:ss.</param>
-/// <returns>
-/// The amount of time that has elapsed from cStartTime to cEndTime as a time string in the format hh:mm:ss.
-/// </returns>
-/// <remarks>
-/// </remarks>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/elaptime/*" />
 FUNCTION ElapTime(cStartTime AS STRING,cEndTime AS STRING) AS STRING
 	LOCAL nStart AS DWORD
 	LOCAL nEnd   AS DWORD
@@ -54,14 +39,7 @@ FUNCTION ElapTime(cStartTime AS STRING,cEndTime AS STRING) AS STRING
 	ENDIF
 	RETURN TString(nDiff)
 
-/// <summary>
-/// Format a set of numbers representing an hour, minute, and second as a time string.
-/// </summary>
-/// <param name="dwHour"></param>
-/// <param name="dwMinute"></param>
-/// <param name="dwSeconds"></param>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/contime/*" />
 FUNCTION ConTime(dwHour AS DWORD,dwMinute AS DWORD,dwSeconds AS DWORD) AS STRING
    RETURN _TimeString( dwHour, dwMinute, dwSeconds, FALSE, "", "" )
 
@@ -75,47 +53,33 @@ FUNCTION ConTime(dwHour AS DWORD,dwMinute AS DWORD,dwSeconds AS DWORD) AS STRING
 FUNCTION ConTime(dt AS DateTime) AS STRING
 	RETURN _TimeString((DWORD) dt:Hour,(DWORD) dt:Minute,(DWORD) dt:Second, FALSE, "","")   
 
-/// <summary>
-/// Convert the number that identifies a day into the name of the day.
-/// </summary>
-/// <param name="dwDay">A number from 1 to 7.</param>
-/// <returns>
-/// </returns>
-FUNCTION NToCDoW(dwDay AS DWORD) AS STRING
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ntocdow/*" />
+FUNCTION NToCDoW(dwDayNum AS DWORD) AS STRING
 	LOCAL result AS STRING
-	IF dwDay < 1 .OR. dwDay > 7
+	IF dwDayNum < 1 .OR. dwDayNum > 7
 		result := ""
 	ELSEIF RuntimeState.International == CollationMode.Clipper
-		result := __CavoStr(VOErrors.RT_MSG_DAY1 + dwDay -1)
+		result := __CavoStr(VOErrors.RT_MSG_DAY1 + dwDayNum -1)
 	ELSE
 		VAR culture := System.Globalization.CultureInfo.CurrentCulture 
-		result := culture:DateTimeFormat:GetDayName((DayOfWeek) (dwDay-1))   
-	ENDIF
-	RETURN result
-/// <summary>
-/// Convert the number that identifies a month into the name of the month.
-/// </summary>
-/// <param name="dwMonth"></param>
-/// <returns>
-/// </returns>
-FUNCTION NToCMonth(dwMonth AS DWORD) AS STRING
-	LOCAL result AS STRING
-	IF dwMonth < 1 .OR. dwMonth > 12
-		result := ""
-	ELSEIF RuntimeState.International == CollationMode.Clipper
-		result := __CavoStr(VOErrors.RT_MSG_MONTH1 + dwMonth -1)
-	ELSE
-		VAR culture := System.Globalization.CultureInfo.CurrentCulture 
-		result := culture:DateTimeFormat:GetMonthName((INT)dwMonth)   
+		result := culture:DateTimeFormat:GetDayName((DayOfWeek) (dwDayNum-1))   
 	ENDIF
 	RETURN result
 
-/// <summary>
-/// Return a time as the number of seconds that have elapsed since midnight.
-/// </summary>
-/// <param name="cTime">The time to convert to seconds, in the form hh:mm:ss.</param>
-/// <returns>The number of seconds from midnight to the time specified.  The return value cannot be greater than 86,400, the number of seconds in a day.
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ntocmonth/*" />
+FUNCTION NToCMonth(dwMonthNum AS DWORD) AS STRING
+	LOCAL result AS STRING
+	IF dwMonthNum < 1 .OR. dwMonthNum > 12
+		result := ""
+	ELSEIF RuntimeState.International == CollationMode.Clipper
+		result := __CavoStr(VOErrors.RT_MSG_MONTH1 + dwMonthNum -1)
+	ELSE
+		VAR culture := System.Globalization.CultureInfo.CurrentCulture 
+		result := culture:DateTimeFormat:GetMonthName((INT)dwMonthNum)   
+	ENDIF
+	RETURN result
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/secs/*" />
 FUNCTION Secs(cTime AS STRING) AS DWORD
 	LOCAL cSeparator AS STRING
 	LOCAL nHours AS INT
@@ -145,59 +109,43 @@ FUNCTION Secs(cTime AS STRING) AS DWORD
 	ENDIF
 	RETURN result
 
-
-/// <summary>
-/// Convert a specified number of seconds to days.
-/// </summary>
-// <param name="nSeconds">The number of seconds to convert to days.</param>
-/// <returns>The number of days to the nearest day.</returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/days/*" />
 FUNCTION Days(nSeconds AS REAL8) AS INT
    RETURN (INT) (nSeconds / 84600) // 24*60*60
 
-/// <summary>
-/// Return the number of seconds that have elapsed since midnight.
-/// </summary>
-/// <returns>The number of seconds that have elapsed since midnight in the form seconds.hundredths.  Numbers range from 0 to 86,399.</returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/seconds/*" />
 FUNCTION Seconds() AS REAL8
 	VAR dt := DateTime.Now
 	RETURN dt:Hour * 3600 + dt:Minute * 60 + dt:Second + Math.Round( (REAL8) dt:Millisecond/1000,2)
 
 
 
-/// <summary>
-/// Return the system time in a format determined by various international settings.
-/// </summary>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/time/*" />
 FUNCTION Time() AS STRING
    VAR d := DateTime.Now 
    RETURN _TimeString(d)
 
-/// <summary>
-/// Return the system time in 24-hour format.
-/// </summary>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/time24/*" />
 FUNCTION Time24() AS STRING
    LOCAL d := DateTime.Now AS DateTime
    RETURN _TimeString((DWORD) d:Hour,(DWORD) d:Minute,(DWORD) d:Second,FALSE,"","")
 
 
-/// <summary>Convert a specified number of seconds to a time string.</summary>
-FUNCTION TString(fSeconds AS REAL8) AS STRING
-   RETURN TString( (DWORD) Math.Round( fSeconds, MidpointRounding.ToEven ) )   
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/tstring/*" />
+FUNCTION TString(nSeconds AS REAL8) AS STRING
+   RETURN TString( (DWORD) Math.Round( nSeconds, MidpointRounding.ToEven ) )   
 
-/// <summary>Convert a specified number of seconds to a time string.</summary>
-FUNCTION TString(dwSeconds AS DWORD) AS STRING
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/tstring/*" />
+FUNCTION TString(nSeconds AS DWORD) AS STRING
    LOCAL dwHours AS DWORD
    LOCAL dwMinutes AS DWORD
    // truncate to one day
-   dwSeconds := dwSeconds % (24 * 60 * 60)
-   dwHours   := dwSeconds / (60 * 60)
-   dwSeconds := dwSeconds % (60 * 60)
-   dwMinutes := dwSeconds / 60 
-   dwSeconds := dwSeconds % 60 
-   RETURN _TimeString(dwHours, dwMinutes, dwSeconds, GetAmPm(), GetAMExt(), GetPMExt())
+   nSeconds := nSeconds % (24 * 60 * 60)
+   dwHours   := nSeconds / (60 * 60)
+   nSeconds := nSeconds % (60 * 60)
+   dwMinutes := nSeconds / 60 
+   nSeconds := nSeconds % 60 
+   RETURN _TimeString(dwHours, dwMinutes, nSeconds, GetAmPm(), GetAMExt(), GetPMExt())
 
 
 INTERNAL FUNCTION _TimeString( d AS DateTime ) AS STRING	

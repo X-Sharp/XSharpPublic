@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -6,12 +6,16 @@
 #include "GetSet.xh"
 USING XSharp
 
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/getamext/*" />
+FUNCTION GetAMExt() AS STRING
+	GETSTATE STRING Set.AmExt 
 
-/// <summary>
-/// Return and the setting that determines whether database files are created using ANSI or OEM format and whether certain text file operations convert between the two character sets.
-/// </summary>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setampm/*" />
+FUNCTION GetAmPm() AS LOGIC
+	GETSTATE LOGIC Set.AmPm
+
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setansi/*" />
 FUNCTION GetAnsi() AS LOGIC
 	RETURN RuntimeState.Ansi
 	
@@ -37,28 +41,16 @@ FUNCTION GetChunkBase64(b1 AS BYTE,b2 AS BYTE,b3 AS BYTE,nPad AS INT) AS STRING
 	THROW NotImplementedException{}
 	RETURN String.Empty   
 	
-	/// <summary>
-	/// Get the current X# search path for opening file.
-	/// </summary>
-	/// <returns>
-	/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/getcurpath/*" />
 FUNCTION GetCurPath() AS STRING
 	GETSTATE STRING Set.Path
 	
 	
-	/// <summary>
-	/// Return the X# default drive and directory.
-	/// </summary>
-	/// <returns>
-	/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/getdefault/*" />
 FUNCTION GetDefault() AS STRING
 	GETSTATE STRING Set.Default 
 	
-	/// <summary>
-	/// Return the current SetDefaultDir() setting.
-	/// </summary>
-	/// <returns>
-	/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/getdefaultdir/*" />
 FUNCTION GetDefaultDir() AS STRING
 	GETSTATE STRING Set.Default 
 	
@@ -68,32 +60,17 @@ FUNCTION GetMimType(c AS STRING) AS STRING
 	THROW NotImplementedException{}
 	RETURN String.Empty   
 	
-	/// <summary>
-	/// Get the current DLL for nation-dependent operations and messages.
-	/// </summary>
-	/// <returns>
-	/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/getnatdll/*" />
 FUNCTION GetNatDLL() AS STRING
 	GETSTATE STRING Set.NatDLL 
 	
 	
-	/// <summary>
-	/// Returns a string representing the evening extension for time strings in 12-hour format.
-	/// </summary>
-	/// <returns>
-	/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/getpmext/*" />
 FUNCTION GetPMExt() AS STRING
 	GETSTATE STRING Set.PmExt
 	
 	
-
-	
-	
-	/// <summary>
-	/// Return the current separation character used in time strings.
-	/// </summary>
-	/// <returns>
-	/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/gettimesep/*" />
 FUNCTION GetTimeSep() AS DWORD
 	GETSTATE DWORD Set.TimeSep
 	

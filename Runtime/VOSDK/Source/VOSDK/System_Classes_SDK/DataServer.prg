@@ -11,14 +11,14 @@ CLASS DataServer
 METHOD __ClearLocks( ) AS VOID STRICT 
 
 
-	DO CASE
-	CASE nCCMode == ccStable
+	SWITCH nCCMode
+	CASE ccStable
 		SELF:Unlock( nLastLock )
-	CASE nCCMode == ccRepeatable
+	CASE ccRepeatable
 		SELF:Unlock( )
-	CASE nCCMode == ccFile
+	CASE ccFile
 		SELF:Unlock( )
-	ENDCASE
+	END SWITCH
 
 	RETURN
 
@@ -32,25 +32,27 @@ METHOD __SetupLocks( ) AS VOID STRICT
 
 	nLastLock := 0
 
-	DO CASE
-	CASE nCCMode == ccNone .OR.  nCCMode == ccOptimistic
+	SWITCH nCCMode
+	CASE ccNone 
+	CASE ccOptimistic
 		//nothing to do
 		NOP
-	CASE nCCMode == ccStable .OR. nCCMode == ccRepeatable
+	CASE ccStable 
+	CASE ccRepeatable
 		nLastLock := SELF:Recno
 		// Do not free locks in case user has other locks
 		IF ! SELF:RLOCK( nLastLock )
 			nLastLock := 0
 			oHLStatus := SELF:Status
 		ENDIF
-	CASE nCCMode == ccFile
+	CASE ccFile
 		IF ! SELF:FLOCK( )
 			oHLStatus := SELF:Status
 		ENDIF
 	OTHERWISE
 		BREAK DbError{ SELF, #ConcurrencyControl, EG_ARG, ;
 			__CavoStr(__CAVOSTR_DBFCLASS_BADCONCURRENCYASSIGN), nCCMode, "nCCMode" }
-	ENDCASE
+	END SWITCH
 
 	RETURN
 
@@ -92,21 +94,21 @@ ASSIGN ConcurrencyControl( nMode)
 	ENDIF
 
 	IF UsualType( newMode ) == SYMBOL
-		DO CASE
-		CASE newMode == #ccNone
+		SWITCH newMode:ToString()
+		CASE "CCNONE"
 			newMode := ccNone
-		CASE newMode == #ccOptimistic
+		CASE "CCOPTIMISTIC"
 			newMode := ccOptimistic
-		CASE newMode == #ccStable
+		CASE "CCSTABLE"
 			newMode := ccStable
-		CASE newMode == #ccRepeatable
+		CASE "CCREPEATABLE"
 			newMode := ccRepeatable
-		CASE newMode == #ccFile
+		CASE "CCFILE"
 			newMode := ccFile
 		OTHERWISE
 			BREAK DbError{ SELF, #ConcurrencyControl, EG_ARG, ;
 				__CavoStr( __CAVOSTR_DBFCLASS_BADCONCURRENCYASSIGN ), nMode, "nMode" }
-		ENDCASE
+		END SWITCH
 	ENDIF
 
 	IF IsNumeric( newMode ) .AND. ( newMode != SELF:nCCMode )

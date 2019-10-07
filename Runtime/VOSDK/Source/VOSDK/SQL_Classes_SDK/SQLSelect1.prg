@@ -287,8 +287,8 @@ METHOD __GetColIndex( uCol AS USUAL, lAutoFetch AS LOGIC) AS DWORD STRICT
 		uCol := Upper( Symbol2String( uCol ) )
 		nType := STRING
 	ENDIF
-	DO CASE
-	CASE nType = STRING
+	SWITCH nType
+	CASE STRING
 		sCol := Upper( uCol )
 		FOR nIndex := 1 TO SELF:nNumCols
 			oCol := aSQLColumns[nIndex]
@@ -300,13 +300,13 @@ METHOD __GetColIndex( uCol AS USUAL, lAutoFetch AS LOGIC) AS DWORD STRICT
 			ENDIF
 		NEXT
 		
-	CASE nType = LONGINT
+	CASE LONGINT
 		dwCol := uCol
 		IF (dwCol > 0 .AND. dwCol <= SELF:nNumCols)
 			RETURN dwCol
 		ENDIF
 		
-	CASE nType = FLOAT
+	CASE FLOAT
 		dwCol := Integer( uCol )
 		IF (dwCol > 0 .AND. dwCol <= SELF:nNumCols)
 			RETURN dwCol
@@ -314,7 +314,7 @@ METHOD __GetColIndex( uCol AS USUAL, lAutoFetch AS LOGIC) AS DWORD STRICT
 		
 	OTHERWISE
 		// Return 0 below
-	ENDCASE
+	END SWITCH
 	RETURN 0
 	
 
@@ -568,20 +568,20 @@ METHOD __GetUpdateStmt( nIndex AS DWORD, lAppend AS LOGIC) AS SqlStatement STRIC
 	
 	nType := SELF:__FigureScrollUpdateType()
 	
-	DO CASE
-	CASE nType = SQL_SC_UPD_KEY
+	SWITCH nType
+	CASE SQL_SC_UPD_KEY
 		cRet += SELF:__GetUpdateKEY( lAppend )
 		
-	CASE nType = SQL_SC_UPD_CURSOR
+	CASE SQL_SC_UPD_CURSOR
 		cRet += SELF:__GetUpdateVAL( lAppend )
 		//  cRet += __CAVOSTR_SQLCLASS__WHERE
 		//  SELF:__GetCursorName()
 		//  cRet += __CAVOSTR_SQLCLASS__CURR_OF + SELF:cCursor
 		
-	CASE nType = SQL_SC_UPD_VALUE
+	CASE SQL_SC_UPD_VALUE
 		cRet += SELF:__GetUpdateVAL( lAppend )
 		
-	ENDCASE
+	END SWITCH
 	oRet := oConn:__GetExtraStmt(cRet)
 	//oRet := SQLStatement{ cRet, oConn }
 	//  UH 07/10/2000
@@ -803,22 +803,22 @@ METHOD __InitColumnDesc() AS LOGIC STRICT
 		nSize := ALen( aOldSQLColumns )                     
 		IF nSize = 0
 			cOldAlias := NULL_STRING
-		ELSEIF nSize >= nIndex .AND. SELF:__GetColumn(nIndex):ColName = cColName
-			cOldAlias := SELF:__GetColumn(nIndex):AliasName
+		ELSEIF nSize >= nIndex .AND. aOldSqlColumns[nIndex]:ColName = cColName
+			cOldAlias := aOldSqlColumns[nIndex]:AliasName
 		ENDIF
 		
 		nLength := nPrecision
 		//RvdH 050429 Change new ODBC types to Older types
-		DO CASE
-		CASE nODBCType == SQL_TYPE_DATE
+		SWITCH nODBCType
+		CASE SQL_TYPE_DATE
 			nODBCType := SQL_DATE
-		CASE nODBCType == SQL_TYPE_TIME
+		CASE SQL_TYPE_TIME
 			nODBCType := SQL_TIME
-		CASE nODBCType == SQL_TYPE_TIMESTAMP
+		CASE SQL_TYPE_TIMESTAMP
 			nODBCType := SQL_TIMESTAMP
 		OTHERWISE
 			// Do nothing
-		ENDCASE
+		END SWITCH
 		IF SELF:lTimeStampAsDate .AND. nODBCType = SQL_TIMESTAMP
 			nODBCType := SQL_DATE
 		ENDIF
@@ -871,40 +871,40 @@ METHOD __InitColumnDesc() AS LOGIC STRICT
 		#ENDIF
 		
 		//RvdH 050429 Take Length from ODBC
-		DO CASE
-		CASE nODBCType = SQL_TIME
+		SWITCH nODBCType
+		CASE SQL_TIME
 			//  UH 12/12/2001
 			//nLength := IIF( nLength == 12, nLength, 12 )
 			nLength	:= SQL_TIME_LEN +1     //RvdH 070501 1 byte extra for string delimiter
 			IF nPrecision > 0
 				nLength += nPrecision + 1
 			ENDIF
-		CASE nODBCType = SQL_DATE
+		CASE SQL_DATE
 			nLength	:= SQL_DATE_LEN  +1   //RvdH 070501 1 byte extra for string delimiter
-		CASE nODBCType = SQL_TIMESTAMP
+		CASE SQL_TIMESTAMP
 			//  UH 12/12/2001
 			//nLength := IIF( nLength == 23, nLength, 23 )
 			nLength := SQL_TIMESTAMP_LEN  +1 //RvdH 070501 1 byte extra for string delimiter
 			IF nPrecision > 0
 				nLength += nPrecision + 1
 			ENDIF
-		ENDCASE
+		END SWITCH
 		oFieldSpec := FieldSpec { oHlColumn, cType, nLength, nScale  }
 		oFieldSpec:Nullable := lNullable
-		DO CASE
-		CASE nODBCType = SQL_TIME
+		SWITCH nODBCType
+		CASE SQL_TIME
 			oFieldSpec:Picture := SubStr3( "99:99:99.999999", 1, nLength )
 			
-		CASE nODBCType = SQL_TIMESTAMP
+		CASE SQL_TIMESTAMP
 			oFieldSpec:Picture := SubStr3( "9999-99-99 99:99:99.999999", 1, nLength )
 			
-		CASE ( nODBCType = SQL_LONGVARCHAR )   .OR. ;
-				( nODBCType = SQL_LONGVARBINARY ) .OR. ;
-				( nODBCType = SQL_VARBINARY )     .OR. ;
-				( nODBCTYPE = SQL_WLONGVARCHAR)   .OR. ;
-				( nODBCType = SQL_BINARY )
+		CASE SQL_LONGVARCHAR 
+		CASE SQL_LONGVARBINARY 
+		CASE SQL_VARBINARY 
+		CASE SQL_WLONGVARCHAR
+		CASE SQL_BINARY 
 			lLong := TRUE
-		ENDCASE
+		END SWITCH
 		
 		oColumn := SQLColumn{   oHlColumn , ;
 			oFieldSpec, ;
@@ -1177,10 +1177,10 @@ METHOD __PutLongData( cValue AS STRING, nODBCType AS SHORTINT, nIndex AS DWORD, 
 //	LOCAL nScale        AS INT
 	LOCAL nLength       AS DWORD
 	LOCAL nDataAtExec   AS INT
-   //LOCAL nData         AS DWORD
-   //LOCAL nMax          AS DWORD
-   LOCAL pData         AS BYTE PTR
-   //LOCAL pEnd          AS BYTE PTR
+	//LOCAL nData         AS DWORD
+	//LOCAL nMax          AS DWORD
+	LOCAL pData         AS BYTE PTR
+	//LOCAL pEnd          AS BYTE PTR
 	LOCAL hStmt         AS PTR
 	LOCAL cStmt         AS STRING
 	LOCAL aData         AS ARRAY

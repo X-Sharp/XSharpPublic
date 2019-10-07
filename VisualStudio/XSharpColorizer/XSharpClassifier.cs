@@ -320,7 +320,7 @@ namespace XSharpColorizer
             // TODO: Get theses from external config
             string[] input = { "ENDFUNC", "ENDPROC", "ENDFOR", "ENDDEFINE" };
             xtraKeywords.Clear();
-            xtraKeywords.AddRange( input );
+            xtraKeywords.AddRange(input);
             //
             if (info != null && snapshot != null)
             {
@@ -466,7 +466,7 @@ namespace XSharpColorizer
             }
             var blockStack = new Stack<LineObject>();
             var nsStack = new Stack<LineObject>();
-            int nRealStart = -1;
+            int nrealStart = -1;
             foreach (var oLine in info.SpecialLines)
             {
                 int nStart = 0, nEnd = 0;
@@ -528,63 +528,34 @@ namespace XSharpColorizer
                         blockStack.Push(oLine);
                         break;
                     case LineType.TokenInOut:
-                        if (blockStack.Count > 0)
-                        {
-                            var blStart = blockStack.Peek();
-                            // remove previous ELSEIF but not the IF
-                            if (blStart.eType == LineType.TokenInOut)
-                            {
-                                blockStack.Pop();
-                                //}
-                                if (blStart.cArgument == "DO" || blStart.cArgument == "SWITCH")
-                                {
-                                    // no contents before the first case
-                                    ;
-                                }
-                                else
-                                {
-                                    nStart = blStart.OffSet;
-                                    // our lines are 1 based.
-                                    // we do not want to include the next case line in the block from the previous one
-                                    nEnd = snapshot.GetLineFromLineNumber(oLine.Line - 2).Start;
-                                    // Fallthrough CASEs ??
-                                    if ((nStart == nEnd) && (blStart.cArgument == "CASE"))
-                                    {
-                                        if (nRealStart == -1)
-                                            nRealStart = nStart;
-                                    }
-                                    else
-                                    {
-                                        if (nRealStart != -1)
-                                            nStart = nRealStart;
-                                        AddRegionSpan(regions, snapshot, nStart, nEnd);
-                                        nRealStart = -1;
-                                    }
-                                }
-                            }
-                        }
                         blockStack.Push(oLine);
                         break;
                     case LineType.TokenOut:
                         if (blockStack.Count > 0)
                         {
-                            // bop back to first token of the if .. endif or do case .. endcase
+                            LineObject blStart = null;
+                            LineObject blEnd = oLine;
+                            // pop back to first token of the if .. endif or do case .. endcase
                             while (blockStack.Count > 0 && blockStack.Peek().eType == LineType.TokenInOut)
                             {
-                                var blStart = blockStack.Pop();
-                                if ((nRealStart != -1) && (blStart.cArgument == "CASE"))
+                                blStart = blockStack.Pop();
+                                nStart = blStart.OffSet;
+                                nEnd = snapshot.GetLineFromLineNumber(blEnd.Line - 2).Start;
+                                // Fallthrough CASEs ??
+                                if ((nStart == nEnd) && (blStart.cArgument == "CASE"))
                                 {
-                                    nStart = nRealStart;
-                                    nRealStart = -1;
+
                                 }
                                 else
-                                    nStart = blStart.OffSet;
-                                nEnd = snapshot.GetLineFromLineNumber(oLine.Line - 2).Start;
-                                AddRegionSpan(regions, snapshot, nStart, nEnd);
+                                {
+                                    AddRegionSpan(regions, snapshot, nStart, nEnd);
+
+                                }
+                                blEnd = blStart;
                             }
                             if (blockStack.Count > 0)
                             {
-                                var blStart = blockStack.Pop();
+                                blStart = blockStack.Pop();
                                 nStart = blStart.OffSet;
                                 // get position of the line based on the line number
                                 nEnd = snapshot.GetLineFromLineNumber(oLine.Line - 1).Start;
@@ -967,7 +938,7 @@ namespace XSharpColorizer
                 int iLastDocComment = -1;
                 int iLastUsing = -1;
                 newtags = new XClassificationSpans();
-                ClassificationSpan postponeSpan=null;
+                ClassificationSpan postponeSpan = null;
                 IToken postponeToken = null;
                 bool prevWasEvent = false;
                 keywordContext = null;
@@ -984,7 +955,7 @@ namespace XSharpColorizer
                     if (span != null)
                     {
                         // !!! Special case : looking for Event(Keyword) followed by ->(operator)
-                        if ( !prevWasEvent && (span.ClassificationType == xsharpKeywordType) && (String.Compare(token.Text, "event", true) == 0))
+                        if (!prevWasEvent && (span.ClassificationType == xsharpKeywordType) && (String.Compare(token.Text, "event", true) == 0))
                         {
                             postponeSpan = span;
                             postponeToken = token;

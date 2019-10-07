@@ -168,7 +168,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 else
                 {
-                    if (context.ParamList?._Params.Count > 0)
+                    if (context.Sig.ParamList?._Params.Count > 0)
                     {
                         _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_InitProceduresCannotDefineParameters));
                     }
@@ -490,26 +490,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         } 
 
+        public override void ExitFoxmethod([NotNull] XSharpParser.FoxmethodContext context)
+        {
+            if (context.HelpString != null)
+            {
+                _parseErrors.Add(new ParseErrorData(context.HelpString, ErrorCode.WRN_FoxHelpStringClause));
+            }
+            if (context.ThisAccess != null)
+            {
+                _parseErrors.Add(new ParseErrorData(context.ThisAccess, ErrorCode.WRN_FoxThisAccessClause));
+            }
+		}
         public override void ExitMethod([NotNull] XSharpParser.MethodContext context)
         {
             var t = context.T.Token as XSharpToken;
-            bool unexpectedtoken = false;
-            switch (t.Type)
-            {
-                case XSharpParser.PROCEDURE:
-                case XSharpParser.FUNCTION:
-                    // FUNCTION and PROCEDURE only allowed in FoxPro Dialect
-                    unexpectedtoken = _options.Dialect != XSharpDialect.FoxPro;
-                    break;
-                default:
-                    // Only FUNCTION and PROCEDURE allowed in FoxPro Dialect
-                    unexpectedtoken = _options.Dialect == XSharpDialect.FoxPro;
-                    break;
-            }
-            if (unexpectedtoken)
-            {
-                _parseErrors.Add(new ParseErrorData(t, ErrorCode.ERR_UnexpectedToken, t.Text));
-            }
+
             var isInInterface = context.isInInterface();
             var isExtern = context.Modifiers?.EXTERN().Length > 0;
             var isAbstract = context.Modifiers?.ABSTRACT().Length > 0;
@@ -522,17 +517,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     _parseErrors.Add(new ParseErrorData(endToken, ErrorCode.ERR_SyntaxError, t.Text));
                 }
             }
-            if (context.HelpString != null)
+           if (isInInterface && hasbody)
             {
-                _parseErrors.Add(new ParseErrorData(context.HelpString, ErrorCode.WRN_FoxHelpStringClause));
-            }
-            if (context.ThisAccess != null)
-            {
-                _parseErrors.Add(new ParseErrorData(context.ThisAccess, ErrorCode.WRN_FoxThisAccessClause));
-            }
-            if (isInInterface && hasbody)
-            {
-                _parseErrors.Add(new ParseErrorData(context.Id, ErrorCode.ERR_InterfaceMemberHasBody));
+                _parseErrors.Add(new ParseErrorData(context.Sig.Id, ErrorCode.ERR_InterfaceMemberHasBody));
             }
             if (isInInterface && context.ClassId != null)
             {
@@ -540,7 +527,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             if (isInInterface && _options.VoInitAxitMethods)
             {
-                var name = context.Id.GetText().ToLower();
+                var name = context.Sig.Id.GetText().ToLower();
                 if (name == "init" || name == "axit")
                 {
                     _parseErrors.Add(new ParseErrorData(context.Start, ErrorCode.ERR_InterfacesCantContainConstructors));
@@ -568,13 +555,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (context.T.Token.Type == XSharpParser.ASSIGN || context.T.Token.Type == XSharpParser.ACCESS)
             {
                 // no type parameters on access and assign
-                if (context.TypeParameters != null || context._ConstraintsClauses.Count > 0)
+                if (context.Sig.TypeParameters != null || context.Sig._ConstraintsClauses.Count > 0)
                 {
                     context.AddError(new ParseErrorData(context, ErrorCode.Err_TypeParametersAccessAssign));
                 }
             }
 
         }
+
         public override void ExitXppclass([NotNull] XSharpParser.XppclassContext context)
         {
             if (_options.Dialect == XSharpDialect.XPP)

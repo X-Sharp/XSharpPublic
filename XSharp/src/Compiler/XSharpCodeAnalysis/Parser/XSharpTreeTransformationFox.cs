@@ -52,6 +52,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         public override void ExitFoxsource([NotNull] XP.FoxsourceContext context)
         {
+            
             if (context.StmtBlk != null && context.StmtBlk._Stmts.Count > 0)
             {
                 // Generate leading code for the file
@@ -62,29 +63,32 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var func = new XP.FuncprocContext(entity, 0);
                 var id = new XP.IdentifierContext(func, 0); 
                 var token = new XSharpToken(XP.FUNCTION, "FUNCTION");
+                var sig = new XP.SignatureContext(func, 0);
+                sig.Id = id;
                 token.line = 1;
                 token.charPositionInLine = 1;
                 func.T = token;
                 token = new XSharpToken(XP.ID, name);
                 token.line = 1;
                 token.charPositionInLine = 1;
-                 id.Start = id.Stop = token;
+                id.Start = id.Stop = token;
+                sig.AddChild(sig.Id);
                 ExitIdentifier(id);    // Generate SyntaxToken 
                 if (string.Equals(name, _entryPoint, StringComparison.OrdinalIgnoreCase))
                 {
-                    func.Type = new XP.DatatypeContext(func,0);
-                    func.Type.Start = new XSharpToken(XP.AS, "AS");
-                    func.Type.Stop = new XSharpToken(XP.VOID, "VOID");
-                    func.Type.Put(_voidType);
+                    sig.Type = new XP.DatatypeContext(func,0);
+                    sig.Type.Start = new XSharpToken(XP.AS, "AS");
+                    sig.Type.Stop = new XSharpToken(XP.VOID, "VOID");
+                    sig.Type.Put(_voidType);
+                    sig.AddChild(sig.Type);
                 }
                 func.Attributes = new XP.AttributesContext(func,0);
                 func.Attributes.PutList(MakeCompilerGeneratedAttribute());
-                func.Id = id;
                 func.StmtBlk = context.StmtBlk;
                 context.StmtBlk.parent = func;
                 func.Start = func.StmtBlk.Start;
                 func.Stop = func.StmtBlk.Stop;
-                func.AddChild(func.Id);
+                func.AddChild(func.Sig);
                 func.AddChild(func.StmtBlk); 
                 Entities.Push(func);
                 ExitFuncproc(func);     // Generate function
@@ -97,8 +101,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             var entities = new List<XSharpParserRuleContext>();
             entities.AddRange(context._Entities);
+
             _exitSource(context, entities);
         }
+       
         public override void ExitAccessMember([NotNull] XP.AccessMemberContext context)
         {
             CoreAccessMember(context);
@@ -146,7 +152,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.SetSequencePoint(context.Member.end);
             context.Put(context.Member.Get<MemberDeclarationSyntax>());
         }
-        public override void ExitFoxmethod([NotNull] XP.FoxmethodContext context)
+        public override void ExitFoxclsmethod([NotNull] XP.FoxclsmethodContext context)
         {
             context.SetSequencePoint(context.Member.end);
             context.Put(context.Member.Get<MemberDeclarationSyntax>());
@@ -200,16 +206,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
 
 
-        public override void ExitFoxclassvar([NotNull] XP.FoxclassvarContext context)
-        {
-            var classvars = context.Parent as XP.FoxclassvarsContext;
-            var dataType = classvars.DataType;
-            var varType = dataType?.Get<TypeSyntax>() ?? _getMissingType();
-            ExpressionSyntax initExpr = null;
-            if (dataType != null)
-                initExpr = GenerateInitializer(dataType);
-            context.Put(GenerateVariable(context.Id.GetText(), initExpr));
-        }
 
         public override void ExitFoxclassvars([NotNull] XP.FoxclassvarsContext context)
         {
@@ -234,6 +230,34 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                     semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
             }
             _pool.Free(varList);
+        }
+
+        public override void EnterFoxmethod([NotNull] XP.FoxmethodContext context)
+        {
+            Check4ClipperCC(context, context.Sig.ParamList?._Params, context.Sig.CallingConvention?.Convention, context.Sig.Type);
+            var name = context.Id.GetText().ToUpper();
+            if (name.EndsWith("_ASSIGN"))
+            {
+                context.Data.HasClipperCallingConvention = false;
+                context.Data.HasTypedParameter = true;          // this will set all missing types to USUAL
+                context.Data.MustBeVoid = true;
+                context.RealType = XP.ASSIGN;
+            }
+            else if (name.EndsWith("_ACCESS"))
+            {
+                context.Data.HasClipperCallingConvention = false;
+                context.Data.HasTypedParameter = true;          // this will set all missing types to USUAL
+                context.RealType = XP.ACCESS;
+            }
+            else
+            {
+                context.RealType = XP.METHOD;
+            }
+        }
+ 
+        public override void ExitFoxmethod([NotNull] XP.FoxmethodContext context)
+        {
+            // Copy / Share contents of ExitMethod()       
         }
         public override void ExitFoxclass([NotNull] XP.FoxclassContext context)
         {
@@ -274,7 +298,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     var mem = fcfc.Member;
                     foreach (var v in mem._Vars)
                     {
-                        fieldNames.Add(v.Id.GetText().ToLower());
+                        fieldNames.Add(v.GetText().ToLower());
                     }
                 }
             }
@@ -326,7 +350,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 GlobalEntities.NeedsProcessing = true;
             }
         } 
-
+        
         private ConstructorDeclarationSyntax createConstructor(XP.FoxclassContext context, SyntaxListBuilder<MemberDeclarationSyntax> members, List<String> fieldNames)
         {
             var stmts = new List<StatementSyntax>();
@@ -369,9 +393,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         stmts.Add(stmt);
                     }
                 }
-                else if (member is XP.FoxmethodContext fm)
+                else if (member is XP.FoxclsmethodContext fm)
                 {
-                    var method = fm.Member as XP.MethodContext;
+                    var method = fm.Member as XP.FoxmethodContext;
                     if (method.Id.GetText().ToLower() == "init")
                     {
                         var syntax = method.Get<MethodDeclarationSyntax>();
@@ -405,6 +429,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _pool.Free(attributeLists);
             return ctor;
         }
+        
         #region TextMergeSupport
         private bool checkTextMergeDelimiters(string sourceText)
         {

@@ -3568,29 +3568,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         }
                     }
                     break;
-                case XP.FUNCTION:           // FoxPro
-                case XP.PROCEDURE:          // FoxPro
-                    var name = context.Id.GetText().ToUpper();
-                    if (name.EndsWith("_ASSIGN") )
-                    {
-                        context.Data.HasClipperCallingConvention = false;
-                        context.Data.HasTypedParameter = true;          // this will set all missing types to USUAL
-                        context.Data.MustBeVoid = true;
-                        context.RealType = XP.ASSIGN;                    }
-                    else if (name.EndsWith("_ACCESS"))
-                    {
-                        context.Data.HasClipperCallingConvention = false;
-                        context.Data.HasTypedParameter = true;          // this will set all missing types to USUAL
-                        context.RealType = XP.ACCESS;
-                    }
-                    else
-                    {
-                        context.RealType = XP.METHOD;
-                    }
-                    break;
                 default:
                     break;
-            
             }
         }
         public override void EnterFuncproc([NotNull] XP.FuncprocContext context)
@@ -3598,7 +3577,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             base.EnterFuncproc(context);
             Check4ClipperCC(context, context.ParamList?._Params, context.CallingConvention?.Convention, context.Type);
         }
-
+ 
         public override void EnterConstructor([NotNull] XP.ConstructorContext context)
         {
             base.EnterConstructor(context);

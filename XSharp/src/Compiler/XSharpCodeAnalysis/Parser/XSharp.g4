@@ -81,20 +81,30 @@ entity              : namespace_
 eos                 : EOS+ 
                     ;
 
- 
+
+
+
 funcproc              : (Attributes=attributes)? (Modifiers=funcprocModifiers)?   
-                      T=(FUNCTION|PROCEDURE) Id=identifier                             
+                      T=(FUNCTION|PROCEDURE) Sig=signature
+                      InitExit=(INIT1|INIT2|INIT3|EXIT)?                        
+                      vodummyclauses
+                      end=eos   
+                      StmtBlk=statementBlock
+                      (END T2=(FUNCTION|PROCEDURE)   EOS )?
+                    ;
+
+signature             : Id=identifier                             
                       TypeParameters=typeparameters?                            
                       (ParamList=parameterList)?                                
                       (AS Type=datatype)?                                       
                       (ConstraintsClauses+=typeparameterconstraintsclause)*     
-                      (CallingConvention=callingconvention)?                    
-                      InitExit=(INIT1|INIT2|INIT3|EXIT)?                        
-                      (EXPORT LOCAL)?                                           // Optional (ignored)
-                      (DLLEXPORT STRING_CONST)?                                 // Optional (ignored)
-                      end=eos   
-                      StmtBlk=statementBlock
-                      (END T2=(FUNCTION|PROCEDURE)   EOS )?
+                      (CallingConvention=callingconvention)?
+                      ;
+
+
+
+vodummyclauses      :(EXPORT LOCAL)?                                       // Export Local exists in VO but is ignored in X#
+                    (DLLEXPORT STRING_CONST)?                             // The DLLEXPORT clause exists in VO but is ignored in X#
                     ;
 
 
@@ -116,11 +126,7 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
                     // 
 
 vodll               : (Attributes=attributes)? (Modifiers=funcprocModifiers)? // Optional
-                      D=DLL
-                      (
-                        T=FUNCTION  Id=identifier ParamList=parameterList (AS Type=datatype)? |
-                        T=PROCEDURE Id=identifier ParamList=parameterList
-                      )
+                      D=DLL T=(FUNCTION|PROCEDURE) Id=identifier ParamList=parameterList (AS Type=datatype)? 
                       (CallingConvention=dllcallconv)? COLON
                       Dll=identifierString (DOT Extension=identifierString)?
                       (	Ordinal=REAL_CONST 
@@ -174,28 +180,21 @@ voglobal            : (Attributes=attributes)? (Modifiers=funcprocModifiers)? Gl
                     ;
 
 
-// Separate method/access/assign with Class name -> convert to partial class with just one method
-// And when Class is outside of assembly, convert to Extension Method?
-// nvk: we have no knowledge of whether a class is outside of the assembly at the parser stage!
+
+// method rule used inside and outside class members rule 
 method              : (Attributes=attributes)? (Modifiers=memberModifiers)?
-                      T=methodtype (ExplicitIface=nameDot)? Id=identifier
-                      TypeParameters=typeparameters?                        // Optional Type parameters for generic method
-                      (ParamList=parameterList)?                            // Optional Parameters
-                      (AS Type=datatype)?                                   // Optional Return Type
-                      (ConstraintsClauses+=typeparameterconstraintsclause)* // Optional Type constraints for generic method
-                      (CallingConvention=callingconvention)?                // Optional Calling convention
-                      (CLASS (Namespace=nameDot)? ClassId=identifier)?      // CLass Clause will be allowed but should match class inside which we are defined
-                      (EXPORT LOCAL)?                                       // Export Local exists in VO but is ignored in X#
-                      (DLLEXPORT STRING_CONST)?                             // The DLLEXPORT clause exists in VO but is ignored in X#
-                      (HelpString=HELPSTRING HelpText=expression)?          // FoxPro only
-                      (ThisAccess=THISACCESS LPAREN MemberId=identifier RPAREN)?    // FoxPro only
+                      T=methodtype (ExplicitIface=nameDot)? Sig=signature
+                      (CLASS (Namespace=nameDot)? ClassId=identifier)?      // Class Clause needed when entity and allowed when class member
+                      vodummyclauses
                       end=eos
                       StmtBlk=statementBlock
                       (END T2=methodtype EOS)?
                     ;
 
-methodtype          : Token=(METHOD | ACCESS | ASSIGN | FUNCTION | PROCEDURE)
+
+methodtype          : Token=(METHOD | ACCESS | ASSIGN )
                     ;
+
 
 // Convert to constant on Globals class. Expression must be resolvable at compile time
 vodefine            : (Modifiers=funcprocModifiers)?
@@ -1222,12 +1221,12 @@ foxclass            : (Attributes=attributes)?
 
 foxclassmember      : Member=foxclassvars          #foxclsvars
                     | Member=foxfield              #foxclsvarinit
-                    | Member=method                #foxmethod
+                    | Member=foxmethod             #foxclsmethod
                     | Member=foximplementsclause   #foximplements
                     | Member=foxaddobjectclause    #foxaddobject
                     | Member=foxpemcomattrib       #foxpemcom
                     ;
-                    
+                    // do we also add support for events, operators, nested classes etc in the foxpro classes ?
                     //| Member=event_                #foxevent
                     //| Member=operator_             #foxoperator
                     //| Member=property              #foxproperty
@@ -1237,20 +1236,33 @@ foxclassmember      : Member=foxclassvars          #foxclsvars
                     //| Member=event_                #foxnestedEvent
                     //| Member=interface_            #foxnestedInterface
 
-foxclassvars        : (Attributes=attributes)? (Modifiers=classvarModifiers)? Vars += foxclassvar
-                      (COMMA Vars += foxclassvar )*  (AS DataType=datatype)? end=eos
+
+foxmethod           : (Attributes=attributes)? (Modifiers=memberModifiers)?
+                      T=foxmethodtype  Sig=signature
+                      (HelpString=HELPSTRING HelpText=expression)?          	
+                      (ThisAccess=THISACCESS LPAREN MemberId=identifier RPAREN)?
+                      end=eos
+                      StmtBlk=statementBlock
+                      (END T2=foxmethodtype  EOS)?
                     ;
 
-foxclassvar         : Id=identifier
+foxmethodtype       : Token=(FUNCTION | PROCEDURE)
                     ;
 
-foxfield            : F=foxfieldinitializer eos
+foxclassvars        : (Attributes=attributes)? (Modifiers=classvarModifiers)? 
+                      Vars += identifier (COMMA Vars += identifier )*  (AS DataType=datatype)? 
+                      end=eos
+                    ;
+
+
+foxfield            : F=foxfieldinitializer end=eos
                     ;
 
 foxfieldinitializer : Name=name assignoperator Expr=expression
                     ;
 
-foximplementsclause : IMPLEMENTS Type=datatype (Excl=EXCLUDE)? (IN Library=expression)? end=eos
+foximplementsclause : IMPLEMENTS Type=datatype (Excl=EXCLUDE)? (IN Library=expression)? 
+                      end=eos
                     ;
 
 foxaddobjectclause  : (Attributes=attributes)? ADD OBJECT (Modifiers=classvarModifiers)?
@@ -1259,6 +1271,6 @@ foxaddobjectclause  : (Attributes=attributes)? ADD OBJECT (Modifiers=classvarMod
                       end=eos
                     ;
 
-foxpemcomattrib     : DIMENSION Id=identifier LBRKT expression RBRKT eos
-                    | Id=identifier LBRKT expression RBRKT assignoperator expression eos
+foxpemcomattrib     : DIMENSION Id=identifier LBRKT expression RBRKT end=eos
+                    | Id=identifier LBRKT expression RBRKT assignoperator expression end=eos
                     ;

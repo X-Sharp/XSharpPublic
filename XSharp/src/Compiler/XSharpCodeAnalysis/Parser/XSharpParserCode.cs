@@ -123,6 +123,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
             StatementBlockContext Statements { get; }
         }
+   
         public interface IEntityContext : IRuleNode, IXParseTree
         {
             EntityData Data { get; }
@@ -352,6 +353,13 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
         public partial class FuncprocContext : IEntityWithBodyContext, IGlobalEntityContext
         {
+
+            public IdentifierContext Id => this.Sig.Id;
+            public TypeparametersContext TypeParameters => Sig.TypeParameters;
+            public IList<TypeparameterconstraintsclauseContext> _ConstraintsClauses => Sig._ConstraintsClauses;
+            public ParameterListContext ParamList => Sig.ParamList;
+            public DatatypeContext Type => Sig.Type;
+            public CallingconventionContext CallingConvention => Sig.CallingConvention;
             EntityData data = new EntityData();
             public EntityData Data => data;
             public ParameterListContext Params => this.ParamList;
@@ -360,16 +368,50 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public String ShortName => this.Id.GetText();
             public FuncprocModifiersContext FuncProcModifiers => Modifiers;
             public StatementBlockContext Statements => StmtBlk;
+            public int RealType { get; set; } // fox FoxPro Function and Procedure will be come method, access or assign
+
         }
 
-  
+
         public partial class MethodContext : IEntityWithBodyContext
         {
+            public IdentifierContext Id => Sig.Id; 
+            public TypeparametersContext TypeParameters => Sig.TypeParameters;
+            public IList<TypeparameterconstraintsclauseContext> _ConstraintsClauses => Sig._ConstraintsClauses;
+            public ParameterListContext ParamList => Sig.ParamList;
+            public DatatypeContext Type => Sig.Type;
+            public CallingconventionContext CallingConvention => Sig.CallingConvention;
             EntityData data = new EntityData();
             public EntityData Data => data;
             public ParameterListContext Params => this.ParamList;
             public DatatypeContext ReturnType => this.Type;
             public String ShortName => this.Id.GetText();
+            public String Name
+            {
+                get
+                {
+                    string name = this.Id.GetText();
+                    if (this.T.Token.Type == XSharpParser.ACCESS)
+                        name += ":Access";
+                    else if (this.T.Token.Type == XSharpParser.ASSIGN)
+                        name += ":Assign";
+                    else
+                        name += "()";
+                    return ParentName + name;
+                }
+            }
+            public StatementBlockContext Statements => StmtBlk;
+            public int RealType { get; set; } // fox FoxPro Function and Procedure will be come method, access or assign
+        }
+ 
+        public partial class FoxmethodContext : IEntityWithBodyContext
+        {
+            public IdentifierContext Id => this.Sig.Id;
+            EntityData data = new EntityData();
+            public EntityData Data => data;
+            public ParameterListContext Params => this.Sig.ParamList;
+            public DatatypeContext ReturnType => this.Sig.Type;
+            public String ShortName => this.Sig.Id.GetText();
             public String Name
             {
                 get

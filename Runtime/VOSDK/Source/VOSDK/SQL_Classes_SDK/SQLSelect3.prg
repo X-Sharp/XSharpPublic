@@ -45,20 +45,20 @@ METHOD FieldInfo( kFieldInfoType, uFieldPos, uFieldVal )
 	ELSE
 		oStmt:__ErrInfo:ErrorFlag := FALSE
 		oColumn := aSQLColumns[nIndex]
-		DO CASE
-		CASE kFieldInfoType = DBS_NAME
+		SWITCH kFieldInfoType
+		CASE DBS_NAME
 			xRet := oColumn:ColName
 
-		CASE kFieldInfoType = DBS_TYPE
+		CASE DBS_TYPE
 			xRet := oColumn:__FieldSpec:ValType
 
-		CASE kFieldInfoType = DBS_LEN
+		CASE DBS_LEN
 			xRet := oColumn:__FieldSpec:Length
 
-		CASE kFieldInfoType = DBS_DEC
+		CASE DBS_DEC
 			xRet := oColumn:__FieldSpec:Decimals
 
-		CASE kFieldInfoType = DBS_ALIAS
+		CASE DBS_ALIAS
 			IF IsSymbol( uFieldVal )
 				oColumn:AliasName := AsString( uFieldVal )
 			ELSEIF IsString( uFieldVal )
@@ -72,7 +72,7 @@ METHOD FieldInfo( kFieldInfoType, uFieldPos, uFieldVal )
 
 		OTHERWISE
 			oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__BADPAR ), #FieldInfo )
-		ENDCASE
+		END SWITCH
 	ENDIF
 
 	RETURN xRet
@@ -208,30 +208,32 @@ METHOD FIELDPUT( uFieldPos, uValue )
 		oData:Clear()
 		pTemp := oData:ptrValue
 	
-		DO CASE
-		CASE nODBCType = SQL_SMALLINT
+		SWITCH nODBCType
+		CASE SQL_SMALLINT
 			nVal   := uValue
 			SHORTINT( pTemp ) := SHORTINT( _CAST,nVal )
 	
-		CASE nODBCType = SQL_INTEGER
+		CASE SQL_INTEGER
 			liVal := uValue
 			LONGINT( pTemp ) := liVal
 	
-		CASE nODBCType = SQL_REAL
+		CASE SQL_REAL
 			fVal := uValue
 			REAL4( pTemp ) := fVal
 	
-		CASE nODBCType = SQL_FLOAT .OR. nODBCType = SQL_DOUBLE
+		CASE SQL_FLOAT 
+		CASE SQL_DOUBLE
 			dVal   := uValue
 			REAL8( pTemp ) := dVal
 	
-		CASE nODBCType = SQL_DECIMAL .OR. nODBCType = SQL_NUMERIC
+		CASE SQL_DECIMAL 
+		CASE SQL_NUMERIC
 			IF oFs <> NULL_OBJECT
 				nLen := oFs:Length
-	   	   nDec := oFs:Decimals
-	   	ELSE
-	   		nLen := nDec := -1
-	   	ENDIF
+		   	   nDec := oFs:Decimals
+		   	ELSE
+	   			nLen := nDec := -1
+		   	ENDIF
 	
 			cVal := __Str( uValue, nLen , nDec)
 	
@@ -239,7 +241,7 @@ METHOD FIELDPUT( uFieldPos, uValue )
 			//MemCopy( pTemp, PTR( _CAST, cVal ), nLen )
 			MemCopyString( pTemp, cVal , DWORD(nLen) )
 	
-		CASE nODBCType = SQL_BIT
+		CASE SQL_BIT
 			lVal := uValue
 	
 			IF lVal
@@ -250,11 +252,11 @@ METHOD FIELDPUT( uFieldPos, uValue )
 	
 			BYTE( pTemp ) := bVal
 	
-		CASE nODBCType = SQL_TINYINT
+		CASE SQL_TINYINT
 			bVal  := uValue
 			BYTE( pTemp ) := bVal
 	
-		CASE nODBCType = SQL_DATE
+		CASE SQL_DATE
 			IF IsDate( uValue )
 				dDate := uValue
 			ELSEIF IsString( uValue )
@@ -273,7 +275,7 @@ METHOD FIELDPUT( uFieldPos, uValue )
 			MemCopyString( pTemp, cVal , SQL_DATE_LEN )
 	
 	
-		CASE nODBCType = SQL_TIMESTAMP
+		CASE SQL_TIMESTAMP
 			nDataType := UsualType( uValue )
 	
 			IF nDataType == STRING        
@@ -307,7 +309,9 @@ METHOD FIELDPUT( uFieldPos, uValue )
 			MemCopyString( pTemp, cVal , nMax )
 	
 	
-		CASE nODBCType = SQL_LONGVARCHAR .OR. nODBCType = SQL_LONGVARBINARY .OR. nODBCType = SQL_WLONGVARCHAR
+		CASE SQL_LONGVARCHAR 
+		CASE SQL_LONGVARBINARY 
+		CASE SQL_WLONGVARCHAR
 			IF IsNil( uValue )
 				cVal := NULL_STRING // Space( 10 )
 			ELSE
@@ -320,7 +324,7 @@ METHOD FIELDPUT( uFieldPos, uValue )
 			uValue := cVal
 	
 	
-		CASE nODBCType = SQL_BIGINT
+		CASE SQL_BIGINT
 			fBigVal := uValue
 			nLow    := Integer( fBigVal % ( 2^32 ) )
 			nHigh   := Integer( fBigVal / ( 2^32 ) )
@@ -338,7 +342,7 @@ METHOD FIELDPUT( uFieldPos, uValue )
 			nMax := oData:Length
 			nMax := IIF(nMax > nLow, nLow, nMax)
 			MemCopyString( pTemp, cVal , nMax )
-		ENDCASE
+		END SWITCH
 	
 		oData:ValueChanged := TRUE
 		lRowModified       := TRUE
@@ -485,36 +489,38 @@ METHOD GetData( iCol )
 	ENDIF
 
 	pTemp := oData:ptrValue
-	DO CASE
-	CASE nODBCType = SQL_SMALLINT
+	SWITCH nODBCType
+	CASE SQL_SMALLINT
 		nVal  := SHORTINT( pTemp )
 		#IFDEF __DEBUG__
 			__SQLOutputDebug( "**          :GetData( si )="+AsString( nVal ) )
 		#ENDIF
 		RETURN nVal
 
-	CASE nODBCType = SQL_INTEGER
+	CASE SQL_INTEGER
 		liVal := LONGINT( pTemp )
 		#IFDEF __DEBUG__
 			__SQLOutputDebug( "**          :GetData( li )="+AsString( liVal ) )
 		#ENDIF
 		RETURN liVal
 
-	CASE nODBCType = SQL_REAL
+	CASE SQL_REAL
 		fVal  := REAL4( pTemp )
 		#IFDEF __DEBUG__
 			__SQLOutputDebug( "**          :GetData( fl )="+AsString( fVal ) )
 		#ENDIF
 		RETURN fVal
 
-	CASE nODBCType = SQL_FLOAT   .OR. nODBCType = SQL_DOUBLE
+	CASE SQL_FLOAT   
+	CASE SQL_DOUBLE
 		dVal  := REAL8( pTemp )
 		#IFDEF __DEBUG__
 			__SQLOutputDebug( "**          :GetData( db )="+AsString( dVal ) )
 		#ENDIF
 		RETURN dVal
 
-	CASE nODBCType = SQL_NUMERIC .OR. nODBCType = SQL_DECIMAL
+	CASE SQL_NUMERIC 
+	CASE SQL_DECIMAL
 		nLen  := oData:Length
 		cVal  := Mem2String( pTemp, nLen )
 		xVal  := Val( cVal )
@@ -525,7 +531,7 @@ METHOD GetData( iCol )
 		ENDIF
 		RETURN xVal
 
-	CASE nODBCType = SQL_BIT
+	CASE SQL_BIT
 		bVal  := BYTE( pTemp )
 		IF bVal = SQL_LOGICAL_TRUE .OR. bVal = 1
 			lVal := TRUE
@@ -538,14 +544,14 @@ METHOD GetData( iCol )
 		#ENDIF
 		RETURN lVal
 
-	CASE nODBCType = SQL_TINYINT
+	CASE SQL_TINYINT
 		bVal  := BYTE( pTemp )
 		#IFDEF __DEBUG__
 			__SQLOutputDebug( "**    :GetData( l )="+AsString( bVal ) )
 		#ENDIF
 		RETURN bVal
 
-	CASE nODBCType = SQL_DATE
+	CASE SQL_DATE
 		cVal  := Mem2String( pTemp, SQL_DATE_LEN+1 )
 		cVal  := __AdjustString( cVal )
 		dDate := CToDAnsi( cVal )
@@ -554,7 +560,7 @@ METHOD GetData( iCol )
 		#ENDIF
 		RETURN dDate
 
-	CASE nODBCType = SQL_TIMESTAMP
+	CASE SQL_TIMESTAMP
 		// UH: Map timestamp to vo string   
 		IF SELF:lTimeStampAsDate
 			dDate := SELF:GetdateVal(nIndex)
@@ -571,9 +577,9 @@ METHOD GetData( iCol )
 			RETURN cVal
 		ENDIF
 
-	CASE nODBCType = SQL_LONGVARCHAR  .OR.;
-		nODBCType = SQL_WLONGVARCHAR .OR. ;
-		nODBCType = SQL_LONGVARBINARY
+	CASE SQL_LONGVARCHAR  
+	CASE SQL_WLONGVARCHAR 
+	CASE SQL_LONGVARBINARY
 		cVal := oData:LongValue
 		RETURN cVal
 
@@ -587,7 +593,7 @@ METHOD GetData( iCol )
 		#ENDIF
 		RETURN cVal
 
-	ENDCASE
+	END SWITCH
 
 
 

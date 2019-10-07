@@ -50,28 +50,28 @@ CLASS SQLTable INHERIT SQLSelect
 			FOR wFieldNo := 1 UPTO wFieldCount
 				IF !IsNil( uRelation[wFieldNo] )
 					IF IsNumeric( uRelation[wFieldNo] )
-						DO CASE
-						CASE uRelation[wFieldNo] = SQL_RELOP_AND
+						SWITCH (LONG) uRelation[wFieldNo]
+						CASE  SQL_RELOP_AND
 							cRelationExpression += " AND "
 							AAdd( aParentRelationCols, uRelation[wFieldNo] )
 
-						CASE uRelation[wFieldNo] = SQL_RELOP_OR
+						CASE SQL_RELOP_OR
 							cRelationExpression += " OR "
 							AAdd( aParentRelationCols, uRelation[wFieldNo] )
 
-						CASE uRelation[wFieldNo] = SQL_RELOP_NOT
+						CASE SQL_RELOP_NOT
 							cRelationExpression += " NOT "
 							AAdd( aParentRelationCols, uRelation[wFieldNo] )
 
-						CASE uRelation[wFieldNo] = SQL_RELOP_OPENP
+						CASE SQL_RELOP_OPENP
 							cRelationExpression += " ( "
 							AAdd( aParentRelationCols, uRelation[wFieldNo] )
 
-						CASE uRelation[wFieldNo] = SQL_RELOP_CLOSEP
+						CASE SQL_RELOP_CLOSEP
 							cRelationExpression += " ) "
 							AAdd( aParentRelationCols, uRelation[wFieldNo] )
 
-						ENDCASE
+						END SWITCH
 					ELSE
 						IF wFieldNo = 1
 							cRelationExpression += AsString( uRelation[wFieldNo] )
@@ -190,28 +190,28 @@ METHOD __BuildSQLString() AS VOID STRICT
 
 		FOR nIndex := 1 UPTO nMax
 			IF IsNumeric( aParentRelationCols[nIndex] )
-				DO CASE
-				CASE aParentRelationCols[nIndex] = SQL_RELOP_AND
+				SWITCH (LONG) aParentRelationCols[nIndex]
+				CASE   SQL_RELOP_AND
 					cTblStmt += " AND "
 					lNeedOP := FALSE
 
-				CASE aParentRelationCols[nIndex] = SQL_RELOP_OR
+				CASE SQL_RELOP_OR
 					cTblStmt += " OR "
 					lNeedOP := FALSE
 
-				CASE aParentRelationCols[nIndex] = SQL_RELOP_NOT
+				CASE SQL_RELOP_NOT
 					cTblStmt += " NOT "
 					lNeedOP := FALSE
 
-				CASE aParentRelationCols[nIndex] = SQL_RELOP_OPENP
+				CASE SQL_RELOP_OPENP
 					cTblStmt += " ( "
 					lNeedOP := FALSE
 
-				CASE aParentRelationCols[nIndex] = SQL_RELOP_CLOSEP
+				CASE SQL_RELOP_CLOSEP
 					cTblStmt += " ) "
 					lNeedOP := FALSE
 
-				ENDCASE
+				END SWITCH
 			ELSE
 				IF lNeedOP
 					cTblStmt += " and "
@@ -258,12 +258,12 @@ METHOD __BuildSQLString() AS VOID STRICT
 								cQuote + __CAVOSTR_SQLCLASS__EQ_NULL
 				ELSE
 					IF ! IsNil( oFldSpec )
-						DO CASE
-						CASE oFldSpec:ValType = "N"
+						SWITCH oFldSpec:ValType
+						CASE  "N"
 							cTblStmt += cQuote + SELF:__GetFieldName( cChildField ) + ;
 										cQuote + " = " + AsString( uTempValue )
 
-						CASE oFldSpec:ValType = "L"
+						CASE "L"
 							IF uTempValue
 								cVal := "1"
 							ELSE
@@ -273,7 +273,7 @@ METHOD __BuildSQLString() AS VOID STRICT
 							cTblStmt += cQuote + SELF:__GetFieldName( cChildField ) + ;
 										cQuote + " = " +cVal
 
-						CASE oFldSpec:ValType = "D"
+						CASE "D"
 							cVal := DToS( uTempValue )
 							cVal := SubStr3( cVal, 1, 4 ) + "-" +        ;
 									SubStr3( cVal, 5, 2 ) + "-" +        ;
@@ -284,7 +284,7 @@ METHOD __BuildSQLString() AS VOID STRICT
 						OTHERWISE
 							cTblStmt += cQuote + SELF:__GetFieldName( cChildField ) + ;
 								cQuote + " = '"  + AsString( uTempValue ) + "'"
-						ENDCASE
+						END SWITCH
 					ELSE
 						cTblStmt += cQuote + SELF:__GetFieldName( cChildField ) + ;
 							cQuote + " ='" + AsString( uTempValue ) + "'"

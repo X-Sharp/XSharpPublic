@@ -68,6 +68,7 @@ namespace XSharpLanguage
         private bool _dotUniversal;
         private IBufferTagAggregatorFactoryService aggregator;
         private IntellisenseOptionsPage _optionsPage;
+        private XSharpDialect _dialect;
 
         internal static bool StringEquals(string lhs, string rhs)
         {
@@ -85,6 +86,7 @@ namespace XSharpLanguage
             // Retrieve from Project properties later: _file.Project.ProjectNode.ParseOptions.
             var prj = _file.Project.ProjectNode;
             var parseoptions = prj.ParseOptions;
+            _dialect = parseoptions.Dialect;
             _allowDot = parseoptions.Dialect == XSharpDialect.Core || parseoptions.Dialect == XSharpDialect.FoxPro;
             _settingIgnoreCase = true;
             _stopToken = null;
@@ -285,7 +287,7 @@ namespace XSharpLanguage
                     currentNS = currentNamespace.Name;
                 }
                 //
-                cType = XSharpTokenTools.RetrieveType(_file, tokenList, member, currentNS, null, out foundElement, snapshot, currentLine);
+                cType = XSharpTokenTools.RetrieveType(_file, tokenList, member, currentNS, null, out foundElement, snapshot, currentLine, _dialect);
                 if (!cType.IsEmpty())
                 {
                     session.Properties["Type"] = cType;
@@ -294,7 +296,7 @@ namespace XSharpLanguage
                 {
                     if (dotSelector && _dotUniversal)
                     {
-                        cType = XSharpTokenTools.RetrieveType(_file, altTokenList, member, currentNS, null, out foundElement, snapshot, currentLine);
+                        cType = XSharpTokenTools.RetrieveType(_file, altTokenList, member, currentNS, null, out foundElement, snapshot, currentLine, _dialect);
                         if (!cType.IsEmpty())
                         {
                             session.Properties["Type"] = cType;
@@ -788,7 +790,7 @@ namespace XSharpLanguage
                     break;
             }
             // Then, look for Locals
-            foreach (XVariable localVar in currentMember.GetLocals(_buffer.CurrentSnapshot, currentLine).Where(l => nameStartsWith(l.Name, startWith)))
+            foreach (XVariable localVar in currentMember.GetLocals(_buffer.CurrentSnapshot, currentLine, _dialect ).Where(l => nameStartsWith(l.Name, startWith)))
             {
                 //
                 ImageSource icon = _provider.GlyphService.GetGlyph(localVar.GlyphGroup, localVar.GlyphItem);
@@ -798,7 +800,7 @@ namespace XSharpLanguage
             // Ok, now look for Members of the Owner of the member... So, the class a Method
             //
 
-            if (currentMember.Kind.IsClassMember())
+            if (currentMember.Kind.IsClassMember( _dialect ))
             {
                 var classElement = currentMember.Parent;
                 foreach (var member in classElement.Members.Where(m => m.Kind == Kind.Field && nameStartsWith(m.Name, startWith)))
@@ -2480,6 +2482,11 @@ namespace XSharpLanguage
                 }
 
             }
+            // Hack to hanlde :: / COLONCOLON with something in front
+            if ( ( tokenList.Count > 1 ) && (tokenList[0] == "::"))
+            {
+                tokenList[0] = ":";
+            }
             //
             tokenList.Reverse();
             if (tokenList.Count > 0)
@@ -2775,7 +2782,7 @@ namespace XSharpLanguage
         /// <param name="foundElement"></param>
         /// <returns></returns>
         public static CompletionType RetrieveType(XFile file, List<string> tokenList, XTypeMember currentMember, String currentNS,
-            IToken stopToken, out CompletionElement foundElement, ITextSnapshot snapshot, int currentLine)
+            IToken stopToken, out CompletionElement foundElement, ITextSnapshot snapshot, int currentLine, XSharpDialect dialect )
         {
             //
 #if TRACE
@@ -3024,7 +3031,7 @@ namespace XSharpLanguage
                     if (startOfExpression)
                     {
                         // Search in Parameters, Locals, Field and Properties
-                        foundElement = FindIdentifier(currentMember, currentToken, ref cType, visibility, currentNS, snapshot, currentLine);
+                        foundElement = FindIdentifier(currentMember, currentToken, ref cType, visibility, currentNS, snapshot, currentLine, dialect );
                         if ((foundElement != null) && (foundElement.IsInitialized))
                         {
                             cType = foundElement.ReturnType;
@@ -3185,7 +3192,7 @@ namespace XSharpLanguage
 
 
         static public CompletionElement FindIdentifier(XTypeMember member, string name, ref CompletionType cType,
-            Modifiers visibility, string currentNS, ITextSnapshot snapshot, int currentLine)
+            Modifiers visibility, string currentNS, ITextSnapshot snapshot, int currentLine, XSharpDialect dialect )
         {
             XElement element;
             CompletionElement foundElement = null;
@@ -3198,7 +3205,7 @@ namespace XSharpLanguage
             if (element == null)
             {
                 // then Locals
-                element = member.GetLocals(snapshot, currentLine).Where(x => StringEquals(x.Name, name)).LastOrDefault();
+                element = member.GetLocals(snapshot, currentLine, dialect ).Where(x => StringEquals(x.Name, name)).LastOrDefault();
                 if (element == null)
                 {
                     // We can have a Property/Field of the current CompletionType
@@ -3264,7 +3271,7 @@ namespace XSharpLanguage
                                 int triggerPoint = searchAt - 1; // xVar.Interval.Start + searchAt - xVar.Range.StartColumn;
                                 IToken _stopToken;
                                 List<String> tokenList = XSharpTokenTools.GetTokenList(triggerPoint, xVar.Range.StartLine, snapshot, out _stopToken, false, xVar.File, false, member);
-                                cType = XSharpTokenTools.RetrieveType(xVar.File, tokenList, member, currentNS, null, out foundElement, snapshot, currentLine);
+                                cType = XSharpTokenTools.RetrieveType(xVar.File, tokenList, member, currentNS, null, out foundElement, snapshot, currentLine, dialect );
                                 if (foundElement != null)
                                 {
                                     // Let's set the Std Type for this VAR
@@ -4377,7 +4384,7 @@ namespace XSharpLanguage
         /// <param name="snapshot"></param>
         /// <param name="iCurrentLine"></param>
         /// <returns></returns>
-        internal static IList<XVariable> GetLocals(this XTypeMember member, ITextSnapshot snapshot, int iCurrentLine)
+        internal static IList<XVariable> GetLocals(this XTypeMember member, ITextSnapshot snapshot, int iCurrentLine, XSharpDialect dialect)
         {
             var sourceWalker = new SourceWalker(member.File);
             // get the text of the member
@@ -4394,7 +4401,7 @@ namespace XSharpLanguage
             var info = walker.Parse(lines, true);
             var locals = new List<XVariable>();
             // Add the normal locals for class members
-            if (member.Kind.IsClassMember() && !member.Modifiers.HasFlag(Modifiers.Static))
+            if (member.Kind.IsClassMember( dialect) && !member.Modifiers.HasFlag(Modifiers.Static))
             {
                 var XVar = new XVariable(member, "SELF", Kind.Local, member.Range, member.Interval, member.ParentName, false);
                 locals.Add(XVar);

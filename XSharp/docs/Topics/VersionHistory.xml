@@ -14,6 +14,11 @@
     <para styleclass="Heading2">Compiler</para>
     <list id="66" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List">The compiler had a problem with the &quot;return&quot; attribute target</li>
+      <li styleclass="List">Errors inside the &quot;statementblock&quot; rule are now better detected and the compiler will no longer report many errors after these for correct lines of code.</li>
+      <li styleclass="List">Fixed a problem with Casts to logic</li>
+      <li styleclass="List">Fixed a problem with undeclared variables used as counter for For Loops</li>
+      <li styleclass="List">Improved the code generation for FIELDs, MEMVARs and undeclared variables for prefix operation, postfix operations and assignments.</li>
+      <li styleclass="List"></li>
     </list>
     <para styleclass="Heading2">Runtime</para>
     <list id="66" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -24,10 +29,20 @@
       <li styleclass="List">XMLGetChildren() was throwing an exception</li>
       <li styleclass="List">Fixed a problem in 2 rules inside &quot;dbcmds.xh&quot;</li>
       <li styleclass="List">The XSharpDefs.xh &#160;file now automatically includes &quot;dbcmd.xh&quot;</li>
+      <li styleclass="List">Some datatype errors were reported incorrectly.</li>
+      <li styleclass="List">The &quot;NoMethod&quot; method for late bound code was called with incorrect parameters. This has been fixed.</li>
+      <li styleclass="List">Fixed some problems with translating usuals with a NIL value to string or object.</li>
+    </list>
+    <para styleclass="Heading2">VOSDK</para>
+    <list id="66" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="List">Fixed a problem in the SQLSelect class when re-opening a cursor.</li>
     </list>
     <para styleclass="Heading2">RDD System</para>
     <list id="66" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List">Fixed a problem reading Advantage MEMO fields</li>
+      <li styleclass="List">Improved the error messages when an index cannot be opened due to an index expression with an error (for example a missing function)</li>
+      <li styleclass="List">We have added the option to install an event handler in the RDD system. See ... for more information.</li>
+      <li styleclass="List">Skip, Gobottom and other workarea operations that change the current record will no longer set EOF to FALSE for workareas with 0 records.</li>
     </list>
     <para styleclass="Heading2">VS Integration</para>
     <list id="66" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -35,6 +50,7 @@
       <li styleclass="List">Added support for the Import and Export buttons in the DbServer Editor</li>
       <li styleclass="List">Improved entity parsing inside the editor in the Xbase++ dialect.</li>
       <li styleclass="List">The VS Parser was not colorizing the UDC tokens (including ENDFOR) unless the source file had preprocessor tokens itself. This has been fixed.</li>
+      <li styleclass="List">Improved block detection for new END keywords/</li>
     </list>
     <para styleclass="Heading1">Changes in 2.0.7 (Bandol GA 2.07)</para>
     <para styleclass="Heading2">Possible breaking change</para>

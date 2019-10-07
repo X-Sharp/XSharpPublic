@@ -178,7 +178,7 @@
     <value>Invalid record number argument</value>
   </data>
   <data name="EDB_EXPRESSION" xml:space="preserve">
-    <value>Expression for macro compiler left</value>
+    <value>Expression for macro compiler incorrect.</value>
   </data>
   <data name="EDB_EXPR_WIDTH" xml:space="preserve">
     <value>Expression for macro compiler too long</value>

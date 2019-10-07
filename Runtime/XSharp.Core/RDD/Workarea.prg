@@ -9,10 +9,12 @@ USING System.Collections.Generic
 USING XSharp.RDD.Enums
 USING XSharp.RDD.Support
 USING System.Text
+USING System.Diagnostics
 BEGIN NAMESPACE XSharp.RDD
 
 	/// <summary>Base class for DBF based RDDs. Holds common properties such as the Workarea number, Alias, Fields list and various flags.</summary> 
 	/// <seealso cref="T:XSharp.RDD.IRdd"/>
+    [DebuggerDisplay("Workarea ({Alias,nq})")];
 	CLASS Workarea IMPLEMENTS IRdd, IDisposable 
 		// This class does NOT implement file based (DBF stuff). 
 		// That is handled in the DBF class which inherits from RddBase

@@ -238,15 +238,21 @@ RETURN NULL_STRING
 /// specified with the second parameter. The XMLGetChildren() function can be used to obtain all child tags having a specific name. </remarks>
 
 FUNCTION XMLGetChild( nTagHandle AS INT64, cChildTagName AS STRING) AS INT64
-    RETURN XDocument.FindChildTag(nTagHandle, cChildTagName, TRUE)
+    LOCAL result as USUAL
+    result := XDocument.FindChildTag(nTagHandle, cChildTagName, TRUE)
+    IF IsArray(result)
+        RETURN 0
+    ELSE
+        RETURN result
+    ENDIF
   
 /// <summary>Get array of children of an XML tag. </summary>
 /// <param name="nTagHandle">Numeric handle for the XML tag. </param>
 /// <param name="cChildTagName">The tag name of the child tags to search.</param>
 /// <returns>Returns an array of child handles matching the name specified as second parameter, or 0 if no child with the given name exists.</returns>
 /// <remarks>This function is used to retrieve all child tags having the tag name specified with the second parameter.</remarks>
-FUNCTION XMLGetChildren( nTagHandle AS INT64, cChildTagName AS STRING) AS INT64
-RETURN XDocument.FindChildTag(nTagHandle, cChildTagName, FALSE)
+FUNCTION XMLGetChildren( nTagHandle AS INT64, cChildTagName AS STRING) AS ARRAY
+    RETURN XDocument.FindChildTag(nTagHandle, cChildTagName, FALSE)
 
 /// <summary>Get parent of XML tag.</summary>
 /// <param name="nTagHandle">Numeric handle for the XML tag.</param>

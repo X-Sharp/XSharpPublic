@@ -5,86 +5,68 @@
 //
 USING XSharp.Rdd.Support
 USING XSharp.Rdd
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbclearordercondition/*" />
 FUNCTION DBClearOrderCondition()  AS LOGIC
     
 	RETURN OrdCondSet("", NIL, .F., NIL, NIL, 0, 0, 0, 0, .F., .F.)
 	
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbreindex/*" />
 FUNCTION DbReindex() AS LOGIC
     // Don't call CoreDb because of error handling
 	RETURN OrdListRebuild()
 	
 
-/// <summary>Move to the record having the specified key value in the controlling order.
-/// </summary>
-FUNCTION DbSeek(xValue, lSoft, lLast) AS LOGIC CLIPPER
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbseek/*" />
+FUNCTION DbSeek(uKey, lSoftSeek, lLast) AS LOGIC CLIPPER
 	LOCAL dbsci     AS DBSCOPEINFO
 	LOCAL lRet      AS LOGIC
 	
-	DEFAULT(REF lSoft, SetSoftSeek())
+	DEFAULT(REF lSoftSeek, SetSoftSeek())
 	
 	dbsci := DbScopeInfo{}
 	IF lLast:IsNil
 		lLast := FALSE
 	ENDIF
 	VoDb.SetScope( dbsci)
-	DEFAULT(REF xValue, "")
-    IF lRet := _DbThrowErrorOnFailure(__FUNCTION__, VoDb.Seek(xValue, lSoft, lLast))
+	DEFAULT(REF uKey, "")
+    IF lRet := _DbThrowErrorOnFailure(__FUNCTION__, VoDb.Seek(uKey, lSoftSeek, lLast))
 	    lRet := VoDb.Found()
 	    VoDb.SetScope(dbsci)
     ENDIF
 	RETURN lRet
 	
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbsetfound/*" />
 FUNCTION DbSetFound(lFnd AS LOGIC) AS LOGIC 
 	RETURN VoDb.SetFound(lFnd)
 	
 	
 	
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
-FUNCTION DbSetOrderCondition(  cFor, uCobFor, lAll, uCobWhile, uCobEval, nStep, nStart, nNext, nRecno, lRest, lDescending, lAdditive, lCurrent, lCustom, lNoOptimize) AS LOGIC CLIPPER
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbsetordercondition/*" />
+FUNCTION DbSetOrderCondition(  cForCondition, cbForCondition, lAll, cbWhileCondition, cbEval, nInterval, nStart, nNext, nRecord, lRest, lDescend, lAdditive, lCurrent, lCustom, lNoOptimize) AS LOGIC CLIPPER
     // Don't call VoDb because of error handling
-	RETURN OrdCondSet( cFor, uCobFor, lAll, uCobWhile, uCobEval, ;
-		nStep, nStart, nNext, nRecno, lRest,      ;
-		lDescending, lAdditive, lCurrent, lCustom, lNoOptimize)
+	RETURN OrdCondSet( cForCondition, cbForCondition, lAll, cbWhileCondition, cbEval, ;
+		nInterval, nStart, nNext, nRecord, lRest,      ;
+		lDescend, lAdditive, lCurrent, lCustom, lNoOptimize)
 
 	
-/// <summary>Open an index file and add all its orders to the order list in a work area.
-/// </summary>
-/// <returns>TRUE if successful; otherwise, FALSE.</returns>
-FUNCTION DbSetIndex(cIndex, uOrder) AS LOGIC CLIPPER
+/// <param name="uOrder">Order in the index file to activate. When not specified then the first order in the file becomes active.</param>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbsetindex/*" />
+FUNCTION DbSetIndex(cIndexFile, uOrder) AS LOGIC CLIPPER
 	// Don't call VoDb because of error handling
-	IF cIndex:IsNil
+	IF cIndexFile:IsNil
 		RETURN OrdListClear()
 	ENDIF
-	RETURN OrdListAdd(cIndex, uOrder)
+	RETURN OrdListAdd(cIndexFile, uOrder)
 	
 	
 	
-/// <summary>Set the controlling order for a work area.</summary>
-/// <returns>TRUE if successful; otherwise, FALSE.</returns>
-FUNCTION DbSetOrder(uOrder, cBagName) AS LOGIC CLIPPER
-	DEFAULT( REF cBagName, "")
-	RETURN VoDb.OrdSetFocus(cBagName, uOrder)
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbsetorder/*" />
+FUNCTION DbSetOrder(uOrder, cIndexFile) AS LOGIC CLIPPER
+	DEFAULT( REF cIndexFile, "")
+	RETURN VoDb.OrdSetFocus(cIndexFile, uOrder)
 	
 
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/indexcount/*" />
 FUNCTION IndexCount() AS DWORD 
 	LOCAL nRet      AS DWORD
 	IF Used()
@@ -96,14 +78,11 @@ FUNCTION IndexCount() AS DWORD
 	RETURN nRet
 	
 
-/// <summary>Return the default index file extension for a work area as defined by its RDD.</summary>
-/// <returns>A string indicating the default index file extension for a work area as defined by its RDD</returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/indexext/*" />
 FUNCTION IndexExt       () AS STRING STRICT
 	RETURN VoDb.OrdBagExt()
 	
-/// <summary>Return the key expression of a specified order.</summary>
-/// <returns>The key expression of the specified order.  If there is no corresponding order or if no database file is open, IndexKey() returns a NULL_STRING.</returns>
-/// <param name='nPosition'>The position of the order in the order list of the work area.  A value of 0 specifies the controlling order, without regard to its actual position in the list.</param>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/indexkey/*" />
 FUNCTION IndexKey(nPosition) AS STRING CLIPPER
 	LOCAL uRetVal   AS USUAL
 	IF nPosition:IsNil
@@ -114,85 +93,73 @@ FUNCTION IndexKey(nPosition) AS STRING CLIPPER
 	
 	
 	
-/// <summary>Return the position of the controlling order within the order list.</summary>
-/// <returns>The position of the controlling order.  A value of 0 indicates either that no database file is open or that there is no
-/// controlling order and records are being accessed in natural order.</returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/indexord/*" />
 FUNCTION IndexOrd() AS INT STRICT
 	LOCAL uRetVal := NIL AS USUAL
 	uRetVal := DbOrderInfo(DBOI_NUMBER, "", NIL)
 	DEFAULT( REF uRetVal, 0)
     RETURN uRetVal
 	
-/// <summary>Relate a specified work area to the current work area.</summary>
-
-FUNCTION OrdSetRelation(cAlias, bKey, cKey) AS USUAL CLIPPER
-	DbSetRelation(cAlias, bKey, cKey)
-	(cAlias)->(OrdScope(0, bKey))
-	(cAlias)->(OrdScope(1, bKey))
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ordsetrelation/*" />
+FUNCTION OrdSetRelation(uArea, cbKey, cKey) AS USUAL CLIPPER
+	DbSetRelation(uArea, cbKey, cKey)
+	(uArea)->(OrdScope(0, cbKey))
+	(uArea)->(OrdScope(1, cbKey))
 	RETURN NIL
 	
 	
-/// <summary>Set or clear the boundaries for scoping key values in the controlling order.</summary>
-FUNCTION OrdScope(nScope, xVal) AS USUAL CLIPPER
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ordscope/*" />
+FUNCTION OrdScope(kScope, uNewValue) AS USUAL CLIPPER
 	LOCAL n     AS DWORD
-	nScope := VoDb.OrdScopeNum(nScope)
+	kScope := VoDb.OrdScopeNum(kScope)
 	n := DBOI_SCOPETOP
-	IF PCount() > 1 .AND. xVal:IsNil
+	IF PCount() > 1 .AND. uNewValue:IsNil
 		n := DBOI_SCOPETOPCLEAR
 	ENDIF
-	RETURN DbOrderInfo(n + nScope,,,xVal)
+	RETURN DbOrderInfo(n + kScope,,,uNewValue)
 	
-/// <summary>Move the record pointer to the next or previous unique key in the controlling order.</summary>	
-FUNCTION OrdSkipUnique(uCount) AS USUAL CLIPPER
-	RETURN VoDb.OrderInfo ( DBOI_SKIPUNIQUE, "", NIL, uCount )
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ordskipunique/*" />	
+FUNCTION OrdSkipUnique(nDirection) AS USUAL CLIPPER
+	RETURN VoDb.OrderInfo ( DBOI_SKIPUNIQUE, "", NIL, nDirection )
 	
-/// <summary>Return the status of the unique flag for a given order.</summary>	
-FUNCTION OrdIsUnique   (xOrder, cOrderBag) AS USUAL CLIPPER
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ordisunique/*" />		
+FUNCTION OrdIsUnique   (uOrder, cIndexFile) AS USUAL CLIPPER
     LOCAL result := NIL AS USUAL
-	VoDb.OrderInfo(DBOI_UNIQUE, cOrderBag, xOrder,REF result)
+	VoDb.OrderInfo(DBOI_UNIQUE, cIndexFile, uOrder,REF result)
     RETURN result
 	
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ordbagext/*" />
 FUNCTION OrdBagExt() AS STRING STRICT
 	RETURN VoDb.OrdBagExt()
 	
 	
 
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ordbagname/*" />
 FUNCTION OrdBagName(uOrder) AS STRING CLIPPER
 	RETURN DbOrderInfo(DBOI_BAGNAME, "", uOrder)
 	
 	
 	
-/// <summary>Set the condition and scope for an order.</summary>
-/// <remarks>OrdCondSet() is like VODBOrdCondSet() but untyped and the various parameters are passed individually.</remarks>
-/// <returns>TRUE if successful; otherwise, FALSE.</returns>
-/// <seealso cref='M:XSharp.CoreDb.OrdCondSet(XSharp.RDD.Support.DbOrderCondInfo)' />
-FUNCTION OrdCondSet(cFor, uCobFor, lAll, uCobWhile, uCobEval, nStep, nStart,     ;
-		nNext, nRecno,lRest,lDescending,lAdditive,lCurrent, lCustom, lNoOptimize     ) AS LOGIC CLIPPER
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ordcondset/*" />
+FUNCTION OrdCondSet(cForCondition, cbForCondition, lAll, cbWhileCondition, cbEval, nInterval, nStart,     ;
+		nNext, nRecord,lRest,lDescend,lAdditive,lCurrent, lCustom, lNoOptimize     ) AS LOGIC CLIPPER
 	
 	LOCAL dbOrdCondInfo     AS DbOrderCondInfo
 	
 	dbOrdCondInfo := DbOrderCondInfo{}
 
 	
-    dbOrdCondInfo:ForBlock := VoDb.ValidBlock(uCobFor)
-    dbOrdCondInfo:WhileBlock := VoDb.ValidBlock(uCobWhile)
-	dbOrdCondInfo:EvalBlock := VoDb.ValidBlock(uCobEval)
-	IF !cFor:IsNil
-        dbOrdCondInfo:ForExpression := cFor
+    dbOrdCondInfo:ForBlock := VoDb.ValidBlock(cbForCondition)
+    dbOrdCondInfo:WhileBlock := VoDb.ValidBlock(cbWhileCondition)
+	dbOrdCondInfo:EvalBlock := VoDb.ValidBlock(cbEval)
+	IF !cForCondition:IsNil
+        dbOrdCondInfo:ForExpression := cForCondition
         IF dbOrdCondInfo:ForBlock == NULL
             dbOrdCondInfo:ForBlock := MCompile(dbOrdCondInfo:ForExpression)
         ENDIF
 	ENDIF
-	IF nStep:IsNumeric
-		dbOrdCondInfo:StepSize := nStep
+	IF nInterval:IsNumeric
+		dbOrdCondInfo:StepSize := nInterval
 	ENDIF
 	IF nStart:IsNumeric
 		dbOrdCondInfo:StartRecNo := nStart
@@ -200,14 +167,14 @@ FUNCTION OrdCondSet(cFor, uCobFor, lAll, uCobWhile, uCobEval, nStep, nStart,    
 	IF nNext:IsNumeric
 		dbOrdCondInfo:NextCount := nNext
 	ENDIF
-	IF nRecno:IsNumeric
-		dbOrdCondInfo:RecNo := nRecno
+	IF nRecord:IsNumeric
+		dbOrdCondInfo:RecNo := nRecord
 	ENDIF
 	IF lRest:IsLogic
 		dbOrdCondInfo:Rest := lRest
 	ENDIF
-	IF lDescending:IsLogic
-		dbOrdCondInfo:Descending := lDescending
+	IF lDescend:IsLogic
+		dbOrdCondInfo:Descending := lDescend
 	ENDIF
 	IF lAll:IsLogic
 		dbOrdCondInfo:All := lAll
@@ -228,94 +195,81 @@ FUNCTION OrdCondSet(cFor, uCobFor, lAll, uCobWhile, uCobEval, nStep, nStart,    
 	
 	
 	
-/// <summary>
-/// </summary>
-/// <returns>TRUE if successful; otherwise, FALSE.</returns>
-FUNCTION OrdCreate(cName, cOrder, cExpr, cobExpr, lUnique) AS LOGIC CLIPPER
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbcreateorder/*" />
+FUNCTION OrdCreate(cIndexFile, cOrder, cKeyValue, cbKeyValue, lUnique) AS LOGIC CLIPPER
 	IF lUnique:IsNil
 		lUnique := SetUnique()
 	ENDIF
 	
-	IF cName:IsNil
+	IF cIndexFile:IsNil
 		IF cOrder:IsNil
-            RddError.PostArgumentError("OrdCreate", EDB_CREATEINDEX, nameof(cName), 1, {cName})
+            RddError.PostArgumentError("OrdCreate", EDB_CREATEINDEX, nameof(cIndexFile), 1, {cIndexFile})
 			DoError("OrdCreate")
 		ELSE
-			cName := ""
+			cIndexFile := ""
 		ENDIF
 	ENDIF
 	
-	IF cExpr:IsNil
-		cExpr := ""
-		IF cobExpr:IsNil
-            RddError.PostArgumentError("OrdCreate", EDB_EXPRESSION, nameof(cExpr), 3, {cExpr})
+	IF cKeyValue:IsNil
+		cKeyValue := ""
+		IF cbKeyValue:IsNil
+            RddError.PostArgumentError("OrdCreate", EDB_EXPRESSION, nameof(cKeyValue), 3, {cKeyValue})
   			DoError("OrdCreate")
 		ENDIF
 	ELSE
-		IF cobExpr:IsNil
-			cobExpr := &( "{||" + cExpr + "}" )
+		IF cbKeyValue:IsNil
+			cbKeyValue := &( "{||" + cKeyValue + "}" )
 		ENDIF
 	ENDIF
 	
-    RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.OrdCreate(cName, cOrder, cExpr, cobExpr, lUnique, NULL))
+    RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.OrdCreate(cIndexFile, cOrder, cKeyValue, cbKeyValue, lUnique, NULL))
 	
 	
-/// <summary>
-/// </summary>
-/// <returns>TRUE if successful; otherwise, FALSE.</returns>
-FUNCTION OrdDescend(xOrder, cOrdBag, lDescend) AS LOGIC CLIPPER
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/orddescend/*" />
+FUNCTION OrdDescend(uOrder, cIndexFile, lNewDescend) AS LOGIC CLIPPER
 	LOCAL oResult AS OBJECT	
-	IF ! lDescend:IsLogic
-		lDescend := NIL
+	IF ! lNewDescend:IsLogic
+		lNewDescend := NIL
 	ENDIF
-    oResult := lDescend
-    VoDb.OrderInfo(DBOI_ISDESC, cOrdBag, xOrder, REF oResult)
+    oResult := lNewDescend
+    VoDb.OrderInfo(DBOI_ISDESC, cIndexFile, uOrder, REF oResult)
     RETURN (LOGIC) oResult
 	
-/// <summary>
-/// </summary>
-/// <returns>TRUE if successful; otherwise, FALSE.</returns>
-FUNCTION OrdDestroy(uOrder, cOrdBag) AS LOGIC CLIPPER
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/orddestroy/*" />
+FUNCTION OrdDestroy(uOrder, cIndexFile) AS LOGIC CLIPPER
 	IF !uOrder:IsString
         RddError.PostArgumentError(__FUNCTION__, EDB_ORDDESTROY, nameof(uOrder), 1, {uOrder})
         RETURN FALSE
     ENDIF
-    RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.OrdDestroy(cOrdBag, uOrder))
+    RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.OrdDestroy(cIndexFile, uOrder))
 	
 	
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
-FUNCTION OrdFor(uOrder, cOrdBag, cFor) AS LOGIC CLIPPER
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ordfor/*" />
+FUNCTION OrdFor(uOrder, cIndexFile, cFor) AS LOGIC CLIPPER
 	IF !cFor:IsString
 		cFor := NIL
 	ENDIF
-	RETURN VoDb.OrderInfo(DBOI_CONDITION, cOrdBag, uOrder, cFor)
+	RETURN VoDb.OrderInfo(DBOI_CONDITION, cIndexFile, uOrder, cFor)
 	
 	
-	
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
-FUNCTION OrdKey(uOrder, cOrdBag) AS USUAL CLIPPER
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ordkey/*" />
+FUNCTION OrdKey(uOrder, cIndexFile) AS USUAL CLIPPER
 	LOCAL xKey  := NIL    AS USUAL
-	IF !VODBOrderInfo(DBOI_EXPRESSION, cOrdBag, uOrder, REF xKey)
+	IF !VODBOrderInfo(DBOI_EXPRESSION, cIndexFile, uOrder, REF xKey)
 		xKey := ""
 	ENDIF
 	RETURN xKey
     
-/// <summary>Add a key to a custom built order.</summary>	
-FUNCTION OrdKeyAdd(xOrder, cOrdBag, xVal) AS USUAL CLIPPER
-	RETURN VoDb.OrderInfo(DBOI_KEYADD, cOrdBag, xOrder, xVal)
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ordkeyadd/*" />	
+FUNCTION OrdKeyAdd(uOrder, cIndexFile, uKeyValue) AS USUAL CLIPPER
+	RETURN VoDb.OrderInfo(DBOI_KEYADD, cIndexFile, uOrder, uKeyValue)
 	
 
-/// <summary>Delete a key from a custom built order.</summary>	
-FUNCTION OrdKeyDel(xOrder, cOrdBag, xVal) AS USUAL CLIPPER
-	RETURN VoDb.OrderInfo( DBOI_KEYDELETE, cOrdBag, xOrder, NIL)
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ordkeydel/*" />	
+FUNCTION OrdKeyDel(uOrder, cIndexFile, xVal) AS USUAL CLIPPER
+	RETURN VoDb.OrderInfo( DBOI_KEYDELETE, cIndexFile, uOrder, NIL)
 	
-/// <summary>Move to a record specified by its logical record number in the controlling order.</summary>	
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ordkeygoto/*" />	
 FUNCTION OrdKeyGoto    (nKeyNo) AS LOGIC CLIPPER
 	LOCAL lRetCode  AS LOGIC
 	IF nKeyNo:IsNumeric
@@ -328,23 +282,23 @@ FUNCTION OrdKeyGoto    (nKeyNo) AS LOGIC CLIPPER
 	RETURN lRetCode
 	
 	
-/// <summary>Return the number of keys in an order.</summary>	
-FUNCTION OrdKeyCount(xOrder, cOrdBag) AS USUAL CLIPPER
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ordkeycount/*" />		
+FUNCTION OrdKeyCount(uOrder, cIndexFile) AS USUAL CLIPPER
     LOCAL result := NIL AS USUAL
-    VoDb.OrderInfo(DBOI_KEYCOUNT, cOrdBag, xOrder, REF result)
+    VoDb.OrderInfo(DBOI_KEYCOUNT, cIndexFile, uOrder, REF result)
     RETURN result
 	
 
-/// <summary>Get the logical record number of the current record.</summary>
-FUNCTION OrdKeyNo(xOrder, cOrdBag) 	AS USUAL CLIPPER
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ordkeyno/*" />	
+FUNCTION OrdKeyNo(uOrder, cIndexFile) 	AS USUAL CLIPPER
     LOCAL result := NIL AS USUAL
-    VoDb.OrderInfo(DBOI_POSITION, cOrdBag, xOrder, REF result)
+    VoDb.OrderInfo(DBOI_POSITION, cIndexFile, uOrder, REF result)
     RETURN result
 	
-/// <summary>Get the key value of the current record from the controlling order.</summary>	
-FUNCTION OrdKeyVal() AS USUAL STRICT
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ordkeyval/*" />	
+FUNCTION OrdKeyVal(uOrder,cIndexFile) AS USUAL CLIPPER
     LOCAL result := NIL AS USUAL
-    VoDb.OrderInfo(DBOI_KEYVAL, NIL, NIL, REF result)
+    VoDb.OrderInfo(DBOI_KEYVAL, cIndexFile, uOrder, REF result)
     RETURN result
 	
 /// <summary>Determines the number of orders for the current work area.  </summary>
@@ -366,21 +320,14 @@ FUNCTION OrdList() AS ARRAY STRICT
 	NEXT
 	RETURN aResult
 
-/// <summary>
-/// </summary>
-/// <returns>TRUE if successful; otherwise, FALSE.</returns>
-/// <param name="cOrdBag">A character string containing the file name of the index to open. The file name can be specified without a path or a file extension.</param>
-/// <param name="uOrder">The name or the numeric position of the the tag to become the controlling index. If uOrder is missing, then the first one becomes the controlling index. </param>
-FUNCTION OrdListAdd(cOrdBag, uOrder) AS LOGIC CLIPPER
-	RETURN VoDb.OrdListAdd(cOrdBag, uOrder)
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ordlistadd/*" />		
+FUNCTION OrdListAdd(cIndexFile, cOrder) AS LOGIC CLIPPER
+	RETURN VoDb.OrdListAdd(cIndexFile, cOrder)
 
 
-
-/// <summary>
-/// </summary>
-/// <returns>TRUE if successful; otherwise, FALSE.</returns>
-FUNCTION OrdListClear(cOrdBag, uOrder)  AS LOGIC CLIPPER
-	RETURN VoDb.OrdListClear(cOrdBag, uOrder)
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbclearindex/*" />		
+FUNCTION OrdListClear(cIndexFile, uOrder)  AS LOGIC CLIPPER
+	RETURN VoDb.OrdListClear(cIndexFile, uOrder)
 	
 	
 /// <exclude />
@@ -416,42 +363,30 @@ FUNCTION __OrdListClear()  AS LOGIC STRICT
 	
 	RETURN lRet
 	
-/// <summary>
-/// </summary>
-/// <returns>TRUE if successful; otherwise, FALSE.</returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ordlistrebuild/*" />	
 FUNCTION OrdListRebuild ()  AS LOGIC STRICT
     RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.OrdListRebuild())
 
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
-FUNCTION OrdName(uOrder, cOrdBag) AS USUAL CLIPPER
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ordname/*" />	
+FUNCTION OrdName(uOrder, cIndexFile) AS USUAL CLIPPER
 	LOCAL result := NIL AS USUAL
-    VoDb.OrderInfo(DBOI_NAME, cOrdBag, uOrder, REF result)
+    VoDb.OrderInfo(DBOI_NAME, cIndexFile, uOrder, REF result)
 	RETURN result
 	
 	
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
-FUNCTION OrdNumber(uOrder, cOrdBag) AS USUAL CLIPPER
-	
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ordnumber/*" />	
+FUNCTION OrdNumber(uOrder, cIndexFile) AS USUAL CLIPPER
 	LOCAL result := NIL AS USUAL
-    VoDb.OrderInfo(DBOI_NUMBER, cOrdBag, uOrder,REF result)
+    VoDb.OrderInfo(DBOI_NUMBER, cIndexFile, uOrder,REF result)
 	RETURN result
 	
 	
 	
-/// <summary>
-/// </summary>
-/// <returns>
-/// </returns>
-FUNCTION OrdSetFocus(uOrder, cOrdBag) AS USUAL CLIPPER
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbsetorder/*" />	
+FUNCTION OrdSetFocus(uOrder, cIndexFile) AS USUAL CLIPPER
 	LOCAL cOrder := ""   AS   STRING
-	DEFAULT( REF cOrdBag, "")
-	VoDb.OrdSetFocus(cOrdBag, uOrder, OUT cOrder)
+	DEFAULT( REF cIndexFile, "")
+	VoDb.OrdSetFocus(cIndexFile, uOrder, OUT cOrder)
 	RETURN cOrder
 	
 

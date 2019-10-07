@@ -1968,7 +1968,6 @@ BEGIN NAMESPACE XSharp.VO.Tests
         [Fact, Trait("Category", "DBF")];
         METHOD DbSeekFound_test() AS VOID
             LOCAL cPath, cDbf AS STRING
-            LOCAL cDefault AS STRING
             RddSetDefault("DBFNTX")
             
             cPath := System.IO.Path.GetTempPath()
@@ -2148,6 +2147,14 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		RETURN
 
 
+		[Fact, Trait("Category", "DBF")];
+		METHOD TestDBFSize() AS VOID
+			LOCAL cDbf AS STRING
+			cDbf := GetTempFileName()
+			CreateDatabase(cDbf, {{"TEST","C",10,0}})
+			Assert.Equal(67, (INT)FileInfo{cDbf + ".dbf"}:Length)
+		RETURN
+			
 
 		STATIC PRIVATE METHOD GetTempFileName() AS STRING
             STATIC nCounter AS LONG

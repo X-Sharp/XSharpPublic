@@ -3,7 +3,6 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 
- 
 
 //
 // subscripts for Directory() array
@@ -81,9 +80,7 @@ DEFINE ASC_BELL   :=     7    // Bell
 DEFINE ASC_TAB    :=     9    // Tab
 DEFINE ASC_SOFT_CR :=   141      // softCarriageReturn
 DEFINE ASC_EOF    :=    26    // EndOfFile
-#ifndef CRLF
 DEFINE	 CRLF       := e"\r\n"
-#endif
 
 DEFINE SE_ABORT := 0
 DEFINE SE_IGNORE := 1

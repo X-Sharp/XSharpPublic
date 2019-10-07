@@ -1,119 +1,70 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
 
-/// <summary>
-/// Return the absolute value of a strongly typed numeric expression, regardless of its sign.
-/// </summary>
-/// <param name="f"></param>
-/// <returns>
-/// </returns>
-FUNCTION AbsFloat(f AS FLOAT) AS FLOAT
-	RETURN FLOAT{Math.Abs(f:Value)}
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/absfloat/*" />
+FUNCTION AbsFloat(fValue AS FLOAT) AS FLOAT
+	RETURN FLOAT{Math.Abs(fValue:Value)}
 
 
-/// <summary>
-/// Calculate the factorial of a number.
-/// </summary>
-/// <param name="n"></param>
-/// <returns>
-/// </returns>
-FUNCTION Fact(n AS DWORD) AS FLOAT
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fact/*" />
+FUNCTION Fact(wValue AS DWORD) AS FLOAT
 	LOCAL result := 1 AS double
-	IF  n > 0
+	IF  wValue > 0
 		LOCAL i AS DWORD
-		FOR i := 1 UPTO n
+		FOR i := 1 UPTO wValue
 			result := result * i
 		NEXT
 	ENDIF
 RETURN FLOAT{result}
 
 
-/// <summary>
-/// </summary>
-/// <param name="o"></param>
-/// <returns>
-/// </returns>
+/// <exclude />
 FUNCTION FClone(o AS FLOAT) AS FLOAT
 	// no need to clone. Value type
 	RETURN o
 
-
-
-/// <summary>
-/// Set the display format for a Floating point numeric.
-/// </summary>
-/// <param name="f"></param>
-/// <param name="nLen"></param>
-/// <param name="nDec"></param>
-/// <returns>
-/// </returns>
-FUNCTION FloatFormat(f AS FLOAT,nLen AS INT,nDec AS INT) AS FLOAT
-	IF nDec < 0
-		nDec := f:Decimals
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/floatformat/*" />
+FUNCTION FloatFormat(fValue AS FLOAT,iLen AS INT,iDec AS INT) AS FLOAT
+	IF iDec < 0
+		iDec := fValue:Decimals
 	ENDIF
-	IF nLen < 0
+	IF iLen < 0
 		// determine length by creating new float and converting it to string
 		// not very efficient but this is what VO does
 		LOCAL nDigits AS INT
-		nDigits := f:Digits
+		nDigits := fValue:Digits
 		IF nDigits < 0 
 			nDigits := (SHORT) RuntimeState.Digits
 		ENDIF
 		LOCAL fTemp AS FLOAT
-		fTemp := FLOAT{f:value, nDigits, nDec}
+		fTemp := FLOAT{fValue:value, nDigits, iDec}
 		VAR cTemp := Ntrim(fTemp)
-		nLen := cTemp:Length
-	ELSEIF nDec != 0 .AND. nLen != 0 .AND. nLen < nDec +2
-		nLen := nDec + 2
+		iLen := cTemp:Length
+	ELSEIF iDec != 0 .AND. iLen != 0 .AND. iLen < iDec +2
+		iLen := iDec + 2
 	ENDIF
-	RETURN FLOAT{f:Value, nLen, nDec}  
+	RETURN FLOAT{fValue:Value, iLen, iDec}  
 
 
-/// <summary>
-/// Return the fractional portion of a number.
-/// </summary>
-/// <param name="f"></param>
-/// <returns>
-/// </returns>
-FUNCTION Frac(f AS FLOAT) AS FLOAT
-	RETURN f - Integer(f)
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/frac/*" />
+FUNCTION Frac(fValue AS FLOAT) AS FLOAT
+	RETURN fValue - Integer(fValue)
 
 
-
-/// <summary>
-/// </summary>
-/// <param name="xd"></param>
-/// <param name="wDec"></param>
-/// <returns>
-/// </returns>
+/// <exclude />
 FUNCTION MyDalFloatVal(xd AS REAL8,wDec AS WORD) AS FLOAT
 	RETURN FLOAT{xd, wDec}
 
-
-/// <summary>
-/// Return and change the setting that determines the point at which 2 floating point numbers would be considered equal even though they are different.
-/// </summary>
-/// <param name="fDelta"></param>
-/// <returns>
-/// </returns>
-FUNCTION SetFloatDelta(fDelta AS REAL8) AS REAL8
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setfloatdelta/*" />
+FUNCTION SetFloatDelta(nNewSetting AS REAL8) AS REAL8
 	VAR result := RuntimeState.FloatDelta
-	RuntimeState.FloatDelta := fDelta
+	RuntimeState.FloatDelta := nNewSetting
 	RETURN result
 
-/// <summary>
-/// Return the setting that determines the point at which 2 floating point numbers would be considered equal even though they are different.
-/// </summary>
-/// <returns>
-/// </returns>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setfloatdelta/*" />
 FUNCTION SetFloatDelta() AS REAL8
 	RETURN RuntimeState.FloatDelta
-
-
-
-
-
 

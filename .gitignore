@@ -225,3 +225,5 @@ Tools/Converter/PrjConvert.exe
 /Binaries
 /Help/Working
 *.chm
+/Runtime/XSharp.Core/VoFunctionDocs.xml
+/Runtime/XSharp.Vo/VoFunctionDocs.xml

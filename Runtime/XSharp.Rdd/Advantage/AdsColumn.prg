@@ -399,7 +399,7 @@ BEGIN NAMESPACE XSharp.ADS
 			    result := ACE.AdsGetMemoLength(SELF:_Table, SELF:FieldPos, OUT mlength )
 			    SWITCH result
 			    CASE 0
-				    IF length == 0
+				    IF mlength == 0
 					    RETURN string.Empty
 				    ENDIF
 			    CASE ACE.AE_NO_CURRENT_RECORD
@@ -413,12 +413,13 @@ BEGIN NAMESPACE XSharp.ADS
 			    END SWITCH
 			    SWITCH SELF:AdsType
 			    CASE AdsFieldType.MEMO
-				    chars := CHAR[] {mlength+1}
+				    chars := CHAR[] {++mlength}
 				    SELF:RDD:_CheckError(ACE.AdsGetString(SELF:_Table, SELF:FieldPos, chars, REF mlength ,0),EG_READ)
-				    RETURN SELF:RDD:_Ansi2Unicode(chars, (INT) length)
+				    RETURN SELF:RDD:_Ansi2Unicode(chars, (INT) mlength)
 			    CASE AdsFieldType.NMEMO
-				    chars := CHAR[] {++length}
+				    chars := CHAR[] {++mlength}
 				    SELF:RDD:_CheckError(ACE.AdsGetStringW(SELF:_Table, SELF:FieldPos, chars, REF mlength ,0),EG_READ)
+                    return String{chars,0, (int)mLength-1}
 			    CASE AdsFieldType.BINARY
 			    CASE AdsFieldType.IMAGE
 				    bytes := BYTE[] {mlength}

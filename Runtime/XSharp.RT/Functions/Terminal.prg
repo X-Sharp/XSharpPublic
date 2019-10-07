@@ -8,16 +8,16 @@
 
 #define MB_TOPMOST 0x40000
 
-/// <summary>Take input from the keyboard and return it.</summary>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/_accept/*" />
 FUNCTION _accept() AS STRING STRICT
    RETURN _accept( "" )
 
-/// <summary>Take input from the keyboard and return it.</summary>
-FUNCTION _accept( prompt AS STRING ) AS STRING
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/_accept/*" />
+FUNCTION _accept( uValuePrompt AS STRING ) AS STRING
    LOCAL retval AS STRING
 
    Console.WriteLine()
-   Console.Write( prompt )
+   Console.Write( uValuePrompt )
 
    TRY
       retval := Console.ReadLine()
@@ -27,77 +27,78 @@ FUNCTION _accept( prompt AS STRING ) AS STRING
 
    RETURN IIF( retval == NULL, "", retval )
 
-/// <summary>Clear the terminal window and position the cursor at row and column 0.</summary>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/cls/*" />
 FUNCTION cls() AS VOID STRICT
    Console.Clear()
    RETURN
     
-/// <summary>Return the screen column position of the cursor in the terminal window.</summary>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/col/*" />
 FUNCTION Col() AS SHORT STRICT
    RETURN (SHORT) Console.CursorLeft
 
-/// <summary>Display the results of one or more expressions in the terminal window to the console, preceded with a newline.</summary>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/qout/*" />
 FUNCTION QOut() AS VOID STRICT
    Console.WriteLine()
    RETURN
 
-/// <summary>Display the results of one or more expressions in the terminal window to the console, preceded with a newline.</summary>
-FUNCTION QOut( o AS USUAL ) AS VOID
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/qout/*" />
+FUNCTION QOut( uValueList AS USUAL ) AS VOID
    Console.WriteLine()
-   QQOut( o )
-   RETURN
-/// <summary>Display the results of one or more expressions in the terminal window to the console, preceded with a newline.</summary>
-FUNCTION QOut( o PARAMS USUAL[] ) AS VOID
-   Console.WriteLine()
-   QQOut( o )
+   QQOut( uValueList )
    RETURN
 
-/// <summary>Display the results of one or more expressions in the terminal window to the console.</summary>
-FUNCTION QQOut( o AS USUAL ) AS VOID
-   Console.Write( AsString( o ) )
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/qout/*" />
+FUNCTION QOut( uValueList PARAMS USUAL[] ) AS VOID
+   Console.WriteLine()
+   QQOut( uValueList )
    RETURN
 
-/// <summary>Display the results of one or more expressions in the terminal window to the console.</summary>
-FUNCTION QQOut( o PARAMS  USUAL[] ) AS VOID
-   LOCAL count := o:Length AS INT
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/qqout/*" />
+FUNCTION QQOut( uValueList AS USUAL ) AS VOID
+   Console.Write( AsString( uValueList ) )
+   RETURN
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/qqout/*" />
+FUNCTION QQOut( uValueList PARAMS  USUAL[] ) AS VOID
+   LOCAL count := uValueList:Length AS INT
    LOCAL x                 AS INT
    LOCAL lAddSpace         AS LOGIC
    lAddSpace := RuntimeState.GetValue<LOGIC>(Set.Space)
    FOR x := 1 UPTO count
-      QQOut( o[x] )
+      QQOut( uValueList[x] )
       IF x < count .and. lAddSpace
          Console.Write( " " )
       ENDIF
    NEXT
    RETURN
 
-/// <summary>Return the screen row position of the cursor in the terminal window.</summary>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/row/*" />
 FUNCTION Row() AS SHORT
    RETURN (SHORT) Console.CursorTop
 
-/// <summary>Move the cursor to a new position on the terminal window.</summary>
-FUNCTION SetPos( nRow AS INT, nCol AS INT ) AS VOID
-   Console.SetCursorPosition( nCol, nRow )
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setpos/*" />
+FUNCTION SetPos( iRow AS INT, iCol AS INT ) AS VOID
+   Console.SetCursorPosition( iCol, iRow )
    RETURN
 
 
-/// <summary>Display a prompt after sending a carriage return/linefeed to the terminal window, then wait for a key to be pressed.</summary>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/_wait/*" />
  FUNCTION _wait() AS STRING STRICT
    RETURN _wait( __CavoStr(VoErrors.TMSG_PRESSANYKEY))
 
-/// <summary>Display a prompt after sending a carriage return/linefeed to the terminal window, then wait for a key to be pressed.</summary>
-FUNCTION _wait( prompt AS STRING ) AS STRING
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/_wait/*" />
+FUNCTION _wait( uValuePrompt AS STRING ) AS STRING
    LOCAL info AS ConsoleKeyInfo
    LOCAL retval AS STRING
 
    Console.WriteLine()
-   Console.Write( prompt )
+   Console.Write( uValuePrompt )
 
    TRY
       info   := Console.ReadKey()
       retval := info:KeyChar:ToString()
    CATCH AS System.InvalidOperationException
-      MessageBox.Show( prompt + chr(10) + chr(10) + "Wait", "Wait", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1, (MessageBoxOptions)(INT) MB_TOPMOST )
+      MessageBox.Show( uValuePrompt + chr(10) + chr(10) + "Wait", "Wait", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1, (MessageBoxOptions)(INT) MB_TOPMOST )
       retval := ""
    END TRY
 

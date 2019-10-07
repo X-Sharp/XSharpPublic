@@ -370,7 +370,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         parseType(USING);
                     }
                 }
-                else if (LastToken == NL && text.Equals("PRAGMA", StringComparison.OrdinalIgnoreCase))
+                else if (StartOfLine(LastToken) && text.Equals("PRAGMA", StringComparison.OrdinalIgnoreCase))
                 {
                     parseType(PRAGMA);
                     parseToEol();
@@ -626,7 +626,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         break;
                     case '\\':       // used inside #command to escape '<'
                         parseOne(BACKSLASH);
-                        if (LastToken == NL && Options.Dialect == XSharpDialect.FoxPro)
+                        if (StartOfLine(LastToken) && Options.Dialect == XSharpDialect.FoxPro)
                         { 
                             if (La_1 == '\\')
                                 parseOne(BACKBACKSLASH);
@@ -740,7 +740,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         break;
                     case '*':
                         parseOne(MULT);
-                        if (LastToken == NL)
+                        if (StartOfLine(LastToken))
                             parseSlComment();
                         else if (La_1 == '=')
                             parseOne(ASSIGN_MUL);
@@ -1033,7 +1033,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 type = t.Type;
                 // this happens in FoxPro dialect only, because only there the TEXT keyword is available
                 // but should only happen when TEXT is the first non ws token on a line
-                if (type == TEXT && this.LastToken == NL)
+                if (type == TEXT && StartOfLine(LastToken))
                 {
                     _nextLineTextMode = true;
                 }
@@ -1042,7 +1042,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             {
                 t.Text = t.Text.Replace("_", "");
             }
-            else if (type == SYMBOL_CONST && (LastToken == NL || LastToken == UDCSEP))
+            else if (type == SYMBOL_CONST && (StartOfLine(LastToken) || LastToken == UDCSEP))
             {
                 int symtype;
                 if (SymPPIds.TryGetValue(t.Text, out symtype))
@@ -1185,7 +1185,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     t.Channel = t.OriginalChannel = PREPROCESSORCHANNEL;
                     if (type == NL || type == Eof)
                     {
-                        // end of line ends the preprocessor defintion
+                        // end of line ends the preprocessor definition
                         _currentLineIsPreprocessorDefinition = false;
                     }
                 }

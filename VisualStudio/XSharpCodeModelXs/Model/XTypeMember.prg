@@ -6,6 +6,8 @@
 USING System.Collections.Generic
 USING System.Diagnostics
 USING XSharpModel
+USING LanguageService.CodeAnalysis.XSharp
+
 BEGIN NAMESPACE XSharpModel
 	[DebuggerDisplay("{Prototype,nq}")];
 	CLASS XTypeMember INHERIT XElement
@@ -23,7 +25,7 @@ BEGIN NAMESPACE XSharpModel
 				SELF:_typeName := typeName
 				SELF:_isStatic := isStatic
 
-			STATIC METHOD create(oElement AS EntityObject, oInfo AS ParseResult, oFile AS XFile, oType AS XType) AS XTypeMember
+			STATIC METHOD create(oElement AS EntityObject, oInfo AS ParseResult, oFile AS XFile, oType AS XType, dialect AS XSharpDialect ) AS XTypeMember
 				LOCAL cName := oElement:cName AS STRING
 				LOCAL kind  := Etype2Kind(oElement:eType) AS Kind
 				LOCAL cType := oElement:cRetType AS STRING
@@ -36,6 +38,7 @@ BEGIN NAMESPACE XSharpModel
 				CalculateRange(oElement, oInfo, OUT span, OUT intv)
 				LOCAL result := XTypeMember{cName, kind, mods, vis, span, intv, cType, isStat} AS XTypeMember
 				result:File := oFile
+				result:Dialect := dialect
 				IF oElement:aParams != NULL
 					FOREACH oParam AS EntityParamsObject IN oElement:aParams
 						LOCAL oVar AS XVariable
@@ -168,8 +171,7 @@ BEGIN NAMESPACE XSharpModel
 					desc := SUPER:Name + vars
 				ENDIF 
 				// Maybe we should check the Dialect ?
-				// IF SELF:Kind:HasReturnType() .AND. ! String.IsNullOrEmpty(SELF:TypeName)
-				IF ! String.IsNullOrEmpty(SELF:TypeName)
+				IF SELF:Kind:HasReturnType( SELF:Dialect ) .AND. ! String.IsNullOrEmpty(SELF:TypeName)
 					desc := desc + AsKeyWord + SELF:TypeName
 				ENDIF
 				RETURN desc
@@ -193,8 +195,7 @@ BEGIN NAMESPACE XSharpModel
 					desc := SUPER:Name + vars
 				ENDIF
 				// Maybe we should check the Dialect ?
-				// IF SELF:Kind:HasReturnType() .AND. ! String.IsNullOrEmpty(SELF:TypeName)
-				IF ! String.IsNullOrEmpty(SELF:TypeName)
+			    IF SELF:Kind:HasReturnType( SELF:Dialect ) .AND. ! String.IsNullOrEmpty(SELF:TypeName)
 					desc := desc + AsKeyWord + SELF:TypeName
 				ENDIF
 				RETURN desc

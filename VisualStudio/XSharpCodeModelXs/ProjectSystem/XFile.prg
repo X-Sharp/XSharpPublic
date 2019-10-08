@@ -10,6 +10,7 @@ USING System.Linq
 USING System.Diagnostics
 USING XSharpModel
 USING System.Collections.Immutable
+USING LanguageService.CodeAnalysis.XSharp
 USING STATIC XSharpModel.XFileTypeHelpers
 BEGIN NAMESPACE XSharpModel
     DELEGATE FindMemberComparer (oElement AS XELement, nValue AS LONG ) AS LONG
@@ -39,8 +40,12 @@ BEGIN NAMESPACE XSharpModel
 			SELF:_parsed := ! SELF:HasCode
 			SELF:_lock := OBJECT{}
 			SELF:_lastWritten := System.DateTime.MinValue
+			SELF:Dialect := XSharpDialect.Core
 
 		PROPERTY EntityList AS 	List<XElement> GET _entityList
+		PROPERTY Dialect AS XSharpDialect AUTO
+
+
 		METHOD FirstMember() AS XTypeMember
 			IF (! SELF:HasCode)
 				RETURN NULL
@@ -190,7 +195,7 @@ BEGIN NAMESPACE XSharpModel
 			aUsings			:= List<STRING>{}
 			aUsingStatics	:= List<STRING>{}
 			FOREACH oElement AS EntityObject IN oInfo:Types
-				oType   := XType.create(SELF, oElement,oInfo)
+				oType   := XType.create(SELF, oElement,oInfo,SELF:Dialect)
 				IF !aTypes:ContainsKey(oType:FullName)
 					aTypes:Add( oType:FullName, oType)
 				ELSE
@@ -340,6 +345,9 @@ BEGIN NAMESPACE XSharpModel
 			END GET
 			SET
 				SELF:_project := VALUE
+				IF ( SELF:_project != NULL )
+					SELF:Dialect := SELF:_project:ParseOptions:Dialect
+				ENDIF
 			END SET
 		END PROPERTY
 

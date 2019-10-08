@@ -463,11 +463,16 @@ namespace XSharp.Project
                         case "//":
                         case "USING":
                         case "#USING":
-                        case "DEFINE":
                         case "#DEFINE":
                         case "#INCLUDE":
                         case "#REGION":
                             continue;
+                        case "DEFINE":
+                            // Warning !! It could DEFINE CLASS in FOXPRO
+                            openKeyword = getKeywordInLine(snapLine, region.Item1.Start, length, 2 );
+                            if (String.Compare(openKeyword, "class", true) != 0)
+                                continue;
+                            break;
                         default:
                             break;
                     }
@@ -518,11 +523,16 @@ namespace XSharp.Project
                         case "//":
                         case "USING":
                         case "#USING":
-                        case "DEFINE":
                         case "#DEFINE":
                         case "#INCLUDE":
                         case "#REGION":
                             continue;
+                        case "DEFINE":
+                            // Warning !! It could DEFINE CLASS in FOXPRO
+                            openKeyword = getKeywordInLine(snapLine, region.Item1.Start, length, 2);
+                            if (String.Compare(openKeyword, "class", true) != 0)
+                                continue;
+                            break;
                         default:
                             break;
                     }

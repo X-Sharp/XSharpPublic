@@ -8,6 +8,7 @@ USING System.Collections.Generic
 USING System.Diagnostics
 USING System
 USING System.Linq
+USING LanguageService.CodeAnalysis.XSharp
 
 BEGIN NAMESPACE XSharpModel
 	[DebuggerDisplay("Kind, {Name,nq}")];
@@ -38,6 +39,7 @@ BEGIN NAMESPACE XSharpModel
 			SELF:_range := range
 			SELF:_interval := interval
 			SELF:_isStatic := FALSE
+			SELF:Dialect := XSharpDialect.Core
 			
 			#region Simple Properties
 			PROPERTY File AS XFile GET SELF:_File SET SELF:_File := VALUE
@@ -55,6 +57,7 @@ BEGIN NAMESPACE XSharpModel
 			VIRTUAL PROPERTY ComboPrototype AS STRING GET SELF:Name
 			PROPERTY Range AS TextRange GET SELF:_range
 			PROPERTY Visibility AS Modifiers GET SELF:_Visibility
+			PROPERTY Dialect AS XSharpDialect AUTO
 			
 			
 		#endregion

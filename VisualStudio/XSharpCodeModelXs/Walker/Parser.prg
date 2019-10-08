@@ -1285,6 +1285,15 @@ BEGIN NAMESPACE XSharpModel
 											oInfo:nCol	:= nEntityStartCol
 											oInfo:nOffSet := nEntityStartOffSet //+ oInfo:nCol => Now, the Entyti starts at the beginning of line
 											oInfo:cName := cWord
+											IF SELF:Dialect == XSharpDialect.FoxPro .AND. oInfo:IsFuncProc
+												IF ( oInfo:cName:EndsWith( "_ACCESS" ) )
+													oInfo:eType := EntityType._Access
+													oInfo:cName := oInfo:cName:SubString(0,oInfo:cName:Length-7)
+												ELSEIF ( oInfo:cName:EndsWith( "_ASSIGN" ) )
+													oInfo:eType := EntityType._Assign
+													oInfo:cName := oInfo:cName:SubString(0,oInfo:cName:Length-7)
+												ENDIF
+											ENDIF
 											IF oInfo:IsGlobal .OR. ( oInfo:IsFuncProc .AND. !SELF:Dialect == XSharpDialect.FoxPro )
 												oInfo:cShortClassName := ""
 												oInfo:cTypedClassName := ""

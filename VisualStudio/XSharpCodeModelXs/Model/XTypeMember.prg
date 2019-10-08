@@ -167,8 +167,9 @@ BEGIN NAMESPACE XSharpModel
 				ELSE
 					desc := SUPER:Name + vars
 				ENDIF 
-				//
-				IF SELF:Kind:HasReturnType() .AND. ! String.IsNullOrEmpty(SELF:TypeName)
+				// Maybe we should check the Dialect ?
+				// IF SELF:Kind:HasReturnType() .AND. ! String.IsNullOrEmpty(SELF:TypeName)
+				IF ! String.IsNullOrEmpty(SELF:TypeName)
 					desc := desc + AsKeyWord + SELF:TypeName
 				ENDIF
 				RETURN desc
@@ -190,14 +191,18 @@ BEGIN NAMESPACE XSharpModel
 					desc := SELF:Parent:FullName + vars
 				ELSE
 					desc := SUPER:Name + vars
-				ENDIF 
-				IF SELF:Kind:HasReturnType() .AND. ! String.IsNullOrEmpty(SELF:TypeName)
+				ENDIF
+				// Maybe we should check the Dialect ?
+				// IF SELF:Kind:HasReturnType() .AND. ! String.IsNullOrEmpty(SELF:TypeName)
+				IF ! String.IsNullOrEmpty(SELF:TypeName)
 					desc := desc + AsKeyWord + SELF:TypeName
 				ENDIF
 				RETURN desc
 			END GET
 		END PROPERTY
+
 		PROPERTY TypeName AS STRING GET SELF:_typeName
+
 		#endregion
 	END CLASS
 

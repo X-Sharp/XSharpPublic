@@ -4167,18 +4167,22 @@ namespace XSharpLanguage
                 CompletionType cType = new CompletionType();
                 if (this.XSharpElement != null)
                 {
-                    if ((this.XSharpElement is XTypeMember) && (this.XSharpElement.Kind.HasReturnType()))
+                    // Would be better by checking Dialect...
+                    if ((this.XSharpElement is XTypeMember) )// && (this.XSharpElement.Kind.HasReturnType()))
                     {
                         XTypeMember xt = (XTypeMember)this.XSharpElement;
-                        string searchTypeName = xt.TypeName;
-                        if (searchTypeName.EndsWith("[]"))
+                        if ( !String.IsNullOrEmpty(xt.TypeName))
                         {
-                            searchTypeName = searchTypeName.Substring(0, searchTypeName.Length - 2);
-                            this.isArray = true;
+                            string searchTypeName = xt.TypeName;
+                            if (searchTypeName.EndsWith("[]"))
+                            {
+                                searchTypeName = searchTypeName.Substring(0, searchTypeName.Length - 2);
+                                this.isArray = true;
+                            }
+                            else if (searchTypeName.EndsWith(">"))
+                                this.isGeneric = true;
+                            cType = new CompletionType(searchTypeName, xt.File, xt.FileUsings);
                         }
-                        else if (searchTypeName.EndsWith(">"))
-                            this.isGeneric = true;
-                        cType = new CompletionType(searchTypeName, xt.File, xt.FileUsings);
                     }
                     else if (this.XSharpElement is XVariable)
                     {

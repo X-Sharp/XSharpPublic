@@ -173,7 +173,7 @@ namespace XSharp.Project
                 _parseoptions = _file.Project.ParseOptions;
                 if (_buffer.CheckEditAccess())
                 {
-                    formatCaseForWholeBuffer();
+                    //formatCaseForWholeBuffer();
                 }
             }
         }
@@ -328,7 +328,7 @@ namespace XSharp.Project
             if (spans.Count > 0)
             {
                 var type = spans[0].ClassificationType;
-                if (type.Classification == "comment")
+                if ( (type.Classification == "comment") || (type.Classification == "text") )
                 {
                     return;
                 }
@@ -393,11 +393,13 @@ namespace XSharp.Project
         {
             if (XSharpProjectPackage.Instance.DebuggerIsRunning)
                 return;
-            bool changed = false;
+            
             getEditorPreferences(TextView);
             if (_optionsPage.KeywordCase != 0)
             {
                 XSharpProjectPackage.Instance.DisplayOutPutMessage("--> CommandFilter.formatCaseForBuffer()");
+                /*
+                bool changed = false;
                 // wait until we can work
                 while (_buffer.EditInProgress)
                 {
@@ -426,6 +428,8 @@ namespace XSharp.Project
                     }
                 }
                 if (changed && _buffer.Properties.ContainsProperty(typeof(XSharpClassifier)))
+                */
+                if ( _buffer.Properties.ContainsProperty(typeof(XSharpClassifier)))
                 {
                     var classify = _buffer.Properties.GetProperty<XSharpClassifier>(typeof(XSharpClassifier));
                     classify.Classify();
@@ -1178,10 +1182,10 @@ namespace XSharp.Project
         DEFINE_GUID(GUID_VsSymbolScope_Solution, 0xb1ba9461, 0xfc54, 0x45b3, 0xa4, 0x84, 0xcb, 0x6d, 0xd0, 0xb9, 0x5c, 0x94);
         */
 
-        /// <summary>
-        ///     If Visual Studio's recognizes the given member and knows where its source code is, goes to the source code.
-        ///     Otherwise, opens the "Find Symbols" ToolWindow.
-        /// </summary>
+                /// <summary>
+                ///     If Visual Studio's recognizes the given member and knows where its source code is, goes to the source code.
+                ///     Otherwise, opens the "Find Symbols" ToolWindow.
+                /// </summary>
         public static void GotoMemberDefinition(string memberName, uint searchOptions = (uint)_VSOBSEARCHOPTIONS.VSOBSO_LOOKINREFS)
         {
             gotoDefinition(memberName, _LIB_LISTTYPE.LLT_MEMBERS, searchOptions);

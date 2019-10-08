@@ -41,6 +41,7 @@ namespace XSharpColorizer
         static private IClassificationType xsharpRegionStop;
         static private IClassificationType xsharpInactiveType;
         static private IClassificationType xsharpLiteralType;
+        static private IClassificationType xsharpTextType;
         static private IClassificationType xsharpKwOpenType;
         static private IClassificationType xsharpKwCloseType;
         #endregion
@@ -63,6 +64,7 @@ namespace XSharpColorizer
         private ITextSnapshot _snapshot;
         private XFile _file;
         private List<String> xtraKeywords;
+        private bool flagTextEndText;
         #endregion
 
         #region Properties
@@ -119,6 +121,7 @@ namespace XSharpColorizer
                 xsharpBraceOpenType = registry.GetClassificationType("punctuation");
                 xsharpBraceCloseType = registry.GetClassificationType("punctuation");
                 xsharpLiteralType = registry.GetClassificationType("literal");
+                xsharpTextType = registry.GetClassificationType("text");
                 xsharpRegionStart = registry.GetClassificationType(ColorizerConstants.XSharpRegionStartFormat);
                 xsharpRegionStop = registry.GetClassificationType(ColorizerConstants.XSharpRegionStopFormat);
                 xsharpKwOpenType = registry.GetClassificationType(ColorizerConstants.XSharpBraceOpenFormat);
@@ -317,6 +320,7 @@ namespace XSharpColorizer
             var propertyList = new List<EntityObject>();
             var eventList = new List<EntityObject>();
             var optionnalEnd = new List<EntityObject>();
+            bool flagInText = false;
             // TODO: Get theses from external config
             string[] input = { "ENDFUNC", "ENDPROC", "ENDFOR", "ENDDEFINE" };
             xtraKeywords.Clear();
@@ -466,7 +470,6 @@ namespace XSharpColorizer
             }
             var blockStack = new Stack<LineObject>();
             var nsStack = new Stack<LineObject>();
-            int nrealStart = -1;
             foreach (var oLine in info.SpecialLines)
             {
                 int nStart = 0, nEnd = 0;
@@ -525,10 +528,14 @@ namespace XSharpColorizer
                         }
                         break;
                     case LineType.TokenIn:
-                        blockStack.Push(oLine);
+                        if (!flagInText)
+                            blockStack.Push(oLine);
+                        if (oLine.cArgument == "TEXT")
+                            flagInText = true;
                         break;
                     case LineType.TokenInOut:
-                        blockStack.Push(oLine);
+                        if (!flagInText)
+                            blockStack.Push(oLine);
                         break;
                     case LineType.TokenOut:
                         if (blockStack.Count > 0)
@@ -555,10 +562,14 @@ namespace XSharpColorizer
                             }
                             if (blockStack.Count > 0)
                             {
+
                                 blStart = blockStack.Pop();
                                 nStart = blStart.OffSet;
                                 // get position of the line based on the line number
                                 nEnd = snapshot.GetLineFromLineNumber(oLine.Line - 1).Start;
+                                //
+                                if (flagInText && (oLine.cArgument == "ENDTEXT"))
+                                    flagInText = false;
                                 AddRegionSpan(regions, snapshot, nStart, nEnd);
                             }
                         }
@@ -717,6 +728,15 @@ namespace XSharpColorizer
                     else if (XSharpLexer.IsKeyword(tokenType))
                     {
                         type = xsharpKeywordType;
+                        // We should check the Dialect....
+                        if (tokenType == XSharpLexer.ENDTEXT)
+                        {
+                            flagTextEndText = false;
+                        }
+                        else if (tokenType == XSharpLexer.TEXT)
+                        {
+                            flagTextEndText = true;
+                        }
                     }
                     else if (XSharpLexer.IsOperator(tokenType))
                     {
@@ -927,7 +947,8 @@ namespace XSharpColorizer
         private void BuildColorClassifications(ITokenStream tokenStream, ITextSnapshot snapshot)
         {
             Debug("Start building Classifications at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
-            XClassificationSpans newtags;
+            XClassificationSpans newtags, texttags;
+            IToken startText, endText;
             var regionTags = new List<ClassificationSpan>();
             if (tokenStream != null)
             {
@@ -938,7 +959,11 @@ namespace XSharpColorizer
                 int iLastDocComment = -1;
                 int iLastUsing = -1;
                 newtags = new XClassificationSpans();
-                 keywordContext = null;
+                texttags = new XClassificationSpans();
+                startText = null;
+                endText = null;
+                keywordContext = null;
+                flagTextEndText = false;
                 for (var iToken = 0; iToken < tokenStream.Size; iToken++)
                 {
                     var token = tokenStream.Get(iToken);
@@ -948,8 +973,22 @@ namespace XSharpColorizer
                         newtags.Add(Token2ClassificationSpan(keywordContext, snapshot, xsharpKwCloseType));
                         keywordContext = null;
                     }
+                    bool prevflagTextEndText = flagTextEndText;
                     var span = ClassifyToken(token, regionTags, snapshot);
-                    if (span != null)
+                    if ((prevflagTextEndText == false) && (flagTextEndText == true) && (startText == null))
+                    {
+                        startText = token;
+                    }
+                    if ((prevflagTextEndText == true) && (flagTextEndText == false) && (startText != null))
+                    {
+                        endText = token;
+                        //
+                        newtags.Add(Token2ClassificationSpan(startText, endText, snapshot, xsharpTextType));
+                        //
+                        endText = null;
+                        startText = null;
+                    }
+                    if ((span != null) && ((prevflagTextEndText == false) || (flagTextEndText == false)))
                     {
                         // don't forget the current one
                         newtags.Add(span);

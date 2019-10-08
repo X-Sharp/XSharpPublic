@@ -265,7 +265,7 @@ namespace XSharp.Project
             }
             // Read Settings
             getEditorPreferences(TextView);
-            formatCaseForWholeBuffer();
+            
             // Try to retrieve an already parsed list of Tags
             if (_classifier != null)
             {
@@ -411,6 +411,8 @@ namespace XSharp.Project
                 XSharpProjectPackage.Instance.DisplayOutPutMessage("FormatDocument : Done in " + elapsedTime);
 #endif
             }
+            else
+                formatCaseForWholeBuffer();
         }
 
         /// <summary>

@@ -170,12 +170,9 @@ BEGIN NAMESPACE XSharpModel
 						CASE XSharpDialect.XPP
 							VAR aTemp := SELF:aEndMarkers
 							VAR aXPPEnd := <STRING>{"ENDCLASS"}
+							SELF:aEndMarkers := aTemp:Concat( aXPPEnd ):ToArray()
 							//
-							SELF:aEndMarkers := STRING[]{ aTemp:Length + aXPPEnd.Length }
-							System.Array.Copy( aTemp, SELF:aEndMarkers, aTemp:Length )
-							System.Array.Copy( aXPPEnd, 0, SELF:aEndMarkers, aTemp:Length, aXPPEnd:Length )
-							//
-							SELF:aSpecialEndClassMarkers := STRING[]{ aXPPEnd.Length }
+							SELF:aSpecialEndClassMarkers := STRING[]{ aXPPEnd:Length }
 							System.Array.Copy( aXPPEnd, SELF:aSpecialEndClassMarkers, aXPPEnd:Length )
 							// Add the INLINE keyword as a Visiblity
 							IF ! oEntityVisibility:ContainsKey("INLINE")
@@ -184,25 +181,24 @@ BEGIN NAMESPACE XSharpModel
 							// Persistent Visibility
 							SELF:dictXPPVis := Dictionary<STRING , STRING>{}
 							SELF:dictXPPVis:Add( "EXPORTED", "PUBLIC" )
+
 						CASE XSharpDialect.FoxPro
 							VAR aTemp := aTokenOut
-							VAR aTokenOutVFP := <STRING>{"ENDFOR"}
+							VAR aTokenOutVFP := <STRING>{"ENDFOR", "ENDTEXT"}
+							aTokenOut := aTemp:Concat( aTokenOutVFP ):ToArray()
 							//
-							aTokenOut := STRING[]{ aTemp:Length + aTokenOutVFP.Length }
-							System.Array.Copy( aTemp, aTokenOut, aTemp:Length )
-							System.Array.Copy( aTokenOutVFP, 0, aTokenOut, aTemp:Length, aTokenOutVFP:Length )
+							aTemp := aTokenIn
+							VAR aTokenInVFP := <STRING>{"TEXT"}
+							aTokenIn := aTemp:Concat( aTokenInVFP ):ToArray()
 							//
 							VAR aVFPEnd := <STRING>{"ENDFUNC", "ENDPROC" }
 							SELF:aSingleOptionnalEndMarkers := aVFPEnd
 							//
 							aTemp := SELF:aEndMarkers
 							aVFPEnd := <STRING>{"ENDDEFINE"}
+							SELF:aEndMarkers := aTemp:Concat( aVFPEnd ):ToArray()
 							//
-							SELF:aEndMarkers := STRING[]{ aTemp:Length + aVFPEnd.Length }
-							System.Array.Copy( aTemp, SELF:aEndMarkers, aTemp:Length )
-							System.Array.Copy( aVFPEnd, 0, SELF:aEndMarkers, aTemp:Length, aVFPEnd:Length )
-							//
-							SELF:aSpecialEndClassMarkers := STRING[]{ aVFPEnd.Length }
+							SELF:aSpecialEndClassMarkers := STRING[]{ aVFPEnd:Length }
 							System.Array.Copy( aVFPEnd, SELF:aSpecialEndClassMarkers, aVFPEnd:Length )
 					END
 				ENDIF

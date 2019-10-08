@@ -920,6 +920,18 @@ BEGIN NAMESPACE XSharpModel
 							_SetLineType(oStatementLine, LineType.TokenIn)
 							oStatementLine:cArgument := cUpperWord
 							state:lIgnore := TRUE
+						CASE eStep == ParseStep.AfterAddObject .AND. .NOT. lEscapedWord .AND. cChar != '.' .AND. cCharBeforeWord != '.' .AND. cUpperWord == "PROTECTED"
+							// We also have to set the Visibility....
+							SELF:SetAccessModifiers( cUpperWord, REF eAccessLevel, REF eModifiers, REF lStatic, REF lPartial )
+						CASE eStep == ParseStep.AfterAdd .AND. .NOT. lEscapedWord .AND. cChar != '.' .AND. cCharBeforeWord != '.' .AND. cUpperWord == "OBJECT"
+								//IF ( SELF:Dialect == XSharpDialect.FoxPro )
+									// ADD OBJECT is a Field
+									state:lField := TRUE
+									eStep := ParseStep.AfterAddObject
+								//ENDIF
+						CASE state:lFirstWord .AND. Dialect== XSharpDialect.FoxPro .AND. !lInEvent .AND. cUpperWord == "ADD" .AND. .NOT. lEscapedWord .AND. oInfo == NULL
+							// ADD ... and maybe OBJECT later
+							eStep := ParseStep.AfterAdd
 						CASE lAllowEntityParse .AND. .NOT. lEscapedWord .AND. cChar != '.' .AND. cCharBeforeWord != '.' .AND. hEnt:ContainsKey(cUpperWord)
 							lInEnum := FALSE
 							state:lField := FALSE
@@ -2002,6 +2014,11 @@ BEGIN NAMESPACE XSharpModel
 		//	MEMBER WaitClassClause
 		MEMBER AfterClassClause
 		MEMBER AfterExportClause
+
+		// for FOXPRO
+		MEMBER AfterAdd
+		MEMBER AfterAddObject
+
 	END ENUM
 
 	[Flags];

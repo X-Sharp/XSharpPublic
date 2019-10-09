@@ -258,7 +258,7 @@ METHOD __BuildSQLString() AS VOID STRICT
 								cQuote + __CAVOSTR_SQLCLASS__EQ_NULL
 				ELSE
 					IF ! IsNil( oFldSpec )
-						SWITCH oFldSpec:ValType
+						SWITCH (STRING) oFldSpec:ValType
 						CASE  "N"
 							cTblStmt += cQuote + SELF:__GetFieldName( cChildField ) + ;
 										cQuote + " = " + AsString( uTempValue )

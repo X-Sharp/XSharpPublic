@@ -45,7 +45,7 @@ METHOD FieldInfo( kFieldInfoType, uFieldPos, uFieldVal )
 	ELSE
 		oStmt:__ErrInfo:ErrorFlag := FALSE
 		oColumn := aSQLColumns[nIndex]
-		SWITCH kFieldInfoType
+		SWITCH (LONG) kFieldInfoType
 		CASE DBS_NAME
 			xRet := oColumn:ColName
 

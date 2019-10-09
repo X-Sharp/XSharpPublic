@@ -313,7 +313,7 @@ METHOD __GetColIndex( uCol AS USUAL, lAutoFetch AS LOGIC) AS DWORD STRICT
 		ENDIF
 		
 	OTHERWISE
-		// Return 0 below
+		NOP
 	END SWITCH
 	RETURN 0
 	
@@ -803,8 +803,8 @@ METHOD __InitColumnDesc() AS LOGIC STRICT
 		nSize := ALen( aOldSQLColumns )                     
 		IF nSize = 0
 			cOldAlias := NULL_STRING
-		ELSEIF nSize >= nIndex .AND. aOldSqlColumns[nIndex]:ColName = cColName
-			cOldAlias := aOldSqlColumns[nIndex]:AliasName
+		ELSEIF nSize >= nIndex .AND. ((SqlColumn)aOldSqlColumns[nIndex]):ColName = cColName
+			cOldAlias := ((SqlColumn)aOldSqlColumns[nIndex]):AliasName
 		ENDIF
 		
 		nLength := nPrecision
@@ -817,7 +817,7 @@ METHOD __InitColumnDesc() AS LOGIC STRICT
 		CASE SQL_TYPE_TIMESTAMP
 			nODBCType := SQL_TIMESTAMP
 		OTHERWISE
-			// Do nothing
+			NOP
 		END SWITCH
 		IF SELF:lTimeStampAsDate .AND. nODBCType = SQL_TIMESTAMP
 			nODBCType := SQL_DATE

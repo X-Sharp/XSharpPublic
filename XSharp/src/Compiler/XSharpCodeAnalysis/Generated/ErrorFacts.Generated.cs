@@ -251,13 +251,7 @@
                 case ErrorCode.WRN_XPPReadonlyClause:
                 case ErrorCode.WRN_XPPMethodNotImplemented:
                 case ErrorCode.WRN_XPPMethodNotDeclared:
-                case ErrorCode.WRN_FoxImplementsExcludeClause:
-                case ErrorCode.WRN_FoxImplementsLibraryClause:
-                case ErrorCode.WRN_FoxHelpStringClause:
-                case ErrorCode.WRN_FoxThisAccessClause:
-                case ErrorCode.WRN_FoxPEMName_COMATTRIBClause:
-                case ErrorCode.WRN_FoxOlePublicClause:
-                case ErrorCode.WRN_FoxOfClasslibClause:
+                case ErrorCode.WRN_FoxUnsupportedClause:
                     return true;
                 default:
                     return false;

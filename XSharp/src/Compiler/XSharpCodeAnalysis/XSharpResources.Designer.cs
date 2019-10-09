@@ -5120,6 +5120,24 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The &apos;AS BaseType&apos; clause is mandatory in the FoxPro dialect, unless you compile with /fox1-..
+        /// </summary>
+        internal static string ERR_FoxAsClauseMandatory {
+            get {
+                return ResourceManager.GetString("ERR_FoxAsClauseMandatory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CONSTRUCTOR and DESTRUCTOR are only allowed in the FoxPro dialect, when you compile with /fox1-..
+        /// </summary>
+        internal static string ERR_FoxCtorDtor {
+            get {
+                return ResourceManager.GetString("ERR_FoxCtorDtor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Friend assembly reference &apos;{0}&apos; is invalid. InternalsVisibleTo declarations cannot have a version, culture, public key token, or processor architecture specified..
         /// </summary>
         internal static string ERR_FriendAssemblyBadArgs {
@@ -14132,65 +14150,11 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The &apos;HELPSTRING&apos; clause for procedures and functions is not supported and ignored..
+        ///   Looks up a localized string similar to The &apos;{0}&apos; clause is not supported (yet) and ignored..
         /// </summary>
-        internal static string WRN_FoxHelpStringClause {
+        internal static string WRN_FoxUnsupporteClause {
             get {
-                return ResourceManager.GetString("WRN_FoxHelpStringClause", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The &apos;EXCLUDE&apos; clause for &apos;IMPLEMENTS&apos; is not supported (yet) and ignored..
-        /// </summary>
-        internal static string WRN_FoxImplementsExcludeClause {
-            get {
-                return ResourceManager.GetString("WRN_FoxImplementsExcludeClause", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The &apos;IN&apos; clause for &apos;IMPLEMENTS&apos; is not supported (yet) and ignored..
-        /// </summary>
-        internal static string WRN_FoxImplementsLibraryClause {
-            get {
-                return ResourceManager.GetString("WRN_FoxImplementsLibraryClause", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The &apos;OF ClassLibrary&apos; clause for classes is not supported and ignored..
-        /// </summary>
-        internal static string WRN_FoxOfClasslibClause {
-            get {
-                return ResourceManager.GetString("WRN_FoxOfClasslibClause", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The &apos;OLEPUBLIC&apos; clause for classes is not supported and ignored..
-        /// </summary>
-        internal static string WRN_FoxOlePublicClause {
-            get {
-                return ResourceManager.GetString("WRN_FoxOlePublicClause", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The &apos;PEMName_COMATTRIB&apos; clause is not supported and ignored..
-        /// </summary>
-        internal static string WRN_FoxPEMName_COMATTRIBClause {
-            get {
-                return ResourceManager.GetString("WRN_FoxPEMName_COMATTRIBClause", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The &apos;THIS_ACCESS&apos; clause for procedures and functions is not supported (yet) and ignored..
-        /// </summary>
-        internal static string WRN_FoxThisAccessClause {
-            get {
-                return ResourceManager.GetString("WRN_FoxThisAccessClause", resourceCulture);
+                return ResourceManager.GetString("WRN_FoxUnsupporteClause", resourceCulture);
             }
         }
         

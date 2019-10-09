@@ -1732,13 +1732,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         WRN_XPPMethodNotDeclared = 9208,
         ERR_XPPClassNotFound = 9209,
 
-        WRN_FoxImplementsExcludeClause = 9230,
-        WRN_FoxImplementsLibraryClause = 9231,
-        WRN_FoxHelpStringClause = 9232,
-        WRN_FoxThisAccessClause = 9233,
-        WRN_FoxPEMName_COMATTRIBClause = 9234,
-        WRN_FoxOlePublicClause = 9235,
-        WRN_FoxOfClasslibClause = 9236,
+        WRN_FoxUnsupportedClause = 9230,
+        ERR_FoxAsClauseMandatory = 9231,
+        ERR_FoxCtorDtor = 9232,
         ERR_Internal = 9999
         #endregion X#-only messages
     }

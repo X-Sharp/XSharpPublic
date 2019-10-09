@@ -293,13 +293,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             return;
         }
+        public override void ExitFoxdimensionStmt(XSharpParser.FoxdimensionStmtContext context)
+        {
+            // Should not happen, the DIMENSION keyword only exists in the FoxPro dialect
+            if (_options.Dialect != XSharpDialect.FoxPro)
+            {
+                NotInDialect(context, "DIMENSION statement");
+            }
+            return;
+        }
         public override void ExitFoxtextoutStmt(XSharpParser.FoxtextoutStmtContext context)
         {
             if (_options.Dialect != XSharpDialect.FoxPro)
             {
                 NotInDialect(context, "TextMerge output statement ('\\' or '\\\\')");
             }
-            // Not handled for other dialects. The rule will never be matched			
         }
 
         public override void ExitFielddecl(XSharpParser.FielddeclContext context)
@@ -308,58 +316,57 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         public override void EnterFoxfield([NotNull] XSharpParser.FoxfieldContext context)
         {
-            if (_options.Dialect == XSharpDialect.FoxPro)
+            string name = context.F.Name.GetText();
+            if (name.EndsWith("_COMATTRIB",System.StringComparison.OrdinalIgnoreCase))
             {
-                string name = context.F.Name.GetText().ToUpper();
-                if (name.EndsWith("_COMATTRIB"))
-                {
-                    _parseErrors.Add(new ParseErrorData(context, ErrorCode.WRN_FoxPEMName_COMATTRIBClause));
-                }
+                _parseErrors.Add(new ParseErrorData(context, ErrorCode.WRN_FoxUnsupportedClause, "PEMName_COMATTRIB"));
             }
-            // Not handled for other dialects. The rule will never be matched			
+        }
+
+        public override void ExitFoxclsctor([NotNull] XSharpParser.FoxclsctorContext context)
+        {
+            if (_options.fox1)
+            {
+                _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_FoxCtorDtor));
+            }
+        }
+        public override void ExitFoxclsdtor([NotNull] XSharpParser.FoxclsdtorContext context)
+        {
+            if (_options.fox1)
+            {
+                _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_FoxCtorDtor));
+            }
         }
         public override void ExitFoxclass([NotNull] XSharpParser.FoxclassContext context)
         {
-            if (_options.Dialect != XSharpDialect.FoxPro)
+            if (context.BaseType == null && _options.fox1)
             {
-                // Should not happen, the FoxPro Class syntax only exists in the FoxPro dialect
-                NotInDialect(context, "FoxPro Class syntax");
+                _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_FoxAsClauseMandatory));
             }
-            else
+            if (context.Classlib != null)
             {
-                if (context.Classlib != null)
-                {
-                    _parseErrors.Add(new ParseErrorData(context, ErrorCode.WRN_FoxOfClasslibClause));
-                }
-                if (context.OLEPUBLIC() != null)
-                {
-                    _parseErrors.Add(new ParseErrorData(context, ErrorCode.WRN_FoxOlePublicClause));
-                }
+                _parseErrors.Add(new ParseErrorData(context, ErrorCode.WRN_FoxUnsupportedClause, "OF ClassLib"));
+            }
+            if (context.OLEPUBLIC() != null)
+            {
+                _parseErrors.Add(new ParseErrorData(context, ErrorCode.WRN_FoxUnsupportedClause, "OLEPUBLIC" ));
             }
         }
 
         public override void ExitFoxpemcomattrib([NotNull] XSharpParser.FoxpemcomattribContext context)
         {
-            if (_options.Dialect == XSharpDialect.FoxPro)
-            {
-                _parseErrors.Add(new ParseErrorData(context, ErrorCode.WRN_FoxPEMName_COMATTRIBClause));
-            }
-            // Not handled for other dialects. The rule will never be matched
+            _parseErrors.Add(new ParseErrorData(context, ErrorCode.WRN_FoxUnsupportedClause, "PEMName_COMATTRIB"));
         }
         public override void ExitFoximplementsclause([NotNull] XSharpParser.FoximplementsclauseContext context)
         {
-            if (_options.Dialect == XSharpDialect.FoxPro)
+            if (context.Excl != null)
             {
-                if (context.Excl != null)
-                {
-                    _parseErrors.Add(new ParseErrorData(context.Excl, ErrorCode.WRN_FoxImplementsExcludeClause));
-                }
-                if (context.Library != null)
-                {
-                    _parseErrors.Add(new ParseErrorData(context.Library, ErrorCode.WRN_FoxImplementsLibraryClause));
-                }
+                _parseErrors.Add(new ParseErrorData(context.Excl, ErrorCode.WRN_FoxUnsupportedClause, "EXCLUDED"));
             }
-            // Not handled for other dialects. The rule will never be matched        
+            if (context.Library != null)
+            {
+                _parseErrors.Add(new ParseErrorData(context.Library, ErrorCode.WRN_FoxUnsupportedClause, "IN <classlibrary>"));
+            }
         }
 
         public override void ExitConstructor([NotNull] XSharpParser.ConstructorContext context)
@@ -494,11 +501,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             if (context.HelpString != null)
             {
-                _parseErrors.Add(new ParseErrorData(context.HelpString, ErrorCode.WRN_FoxHelpStringClause));
+                _parseErrors.Add(new ParseErrorData(context.HelpString, ErrorCode.WRN_FoxUnsupportedClause, "HELPSTRING"));
             }
             if (context.ThisAccess != null)
             {
-                _parseErrors.Add(new ParseErrorData(context.ThisAccess, ErrorCode.WRN_FoxThisAccessClause));
+                _parseErrors.Add(new ParseErrorData(context.ThisAccess, ErrorCode.WRN_FoxUnsupportedClause, "THISACCESS"));
             }
 		}
         public override void ExitMethod([NotNull] XSharpParser.MethodContext context)

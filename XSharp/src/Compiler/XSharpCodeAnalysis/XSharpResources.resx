@@ -5672,27 +5672,12 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="WRN_ASend" xml:space="preserve">
     <value>'ARRAY' does not have a method '{0}'. This code is converted to an 'ASend()' function call.</value>
   </data>
-  <data name="WRN_FoxImplementsExcludeClause" xml:space="preserve">
-    <value>The 'EXCLUDE' clause for 'IMPLEMENTS' is not supported (yet) and ignored.</value>
+  <data name="ERR_FoxAsClauseMandatory" xml:space="preserve">
+    <value>The 'AS BaseType' clause is mandatory in the FoxPro dialect, unless you compile with /fox1-.</value>
   </data>
-  <data name="WRN_FoxImplementsLibraryClause" xml:space="preserve">
-    <value>The 'IN' clause for 'IMPLEMENTS' is not supported (yet) and ignored.</value>
+  <data name="WRN_FoxUnsupporteClause" xml:space="preserve">
+    <value>The '{0}' clause is not supported (yet) and ignored.</value>
   </data>
-  <data name="WRN_FoxHelpStringClause" xml:space="preserve">
-    <value>The 'HELPSTRING' clause for procedures and functions is not supported and ignored.</value>
-  </data>
-  <data name="WRN_FoxThisAccessClause" xml:space="preserve">
-    <value>The 'THIS_ACCESS' clause for procedures and functions is not supported (yet) and ignored.</value>
-  </data>
-  <data name="WRN_FoxOlePublicClause" xml:space="preserve">
-    <value>The 'OLEPUBLIC' clause for classes is not supported and ignored.</value>
-  </data>
-  <data name="WRN_FoxOfClasslibClause" xml:space="preserve">
-    <value>The 'OF ClassLibrary' clause for classes is not supported and ignored.</value>
-  </data>
-  <data name="WRN_FoxPEMName_COMATTRIBClause" xml:space="preserve">
-    <value>The 'PEMName_COMATTRIB' clause is not supported and ignored.</value>
-  </data>  
   <data name="ERR_UnexpectedCommand" xml:space="preserve">
     <value>Unexpected Command or Statement.</value>
   </data>
@@ -5705,5 +5690,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="ERR_DynamicVariablesNotAllowed" xml:space="preserve">
     <value>To use Dynamic variables (PUBLIC, PRIVATE, MEMVAR) you will have to pass the /memvar commandline option.</value>
   </data>
-
+  <data name="ERR_FoxCtorDtor" xml:space="preserve">
+    <value>CONSTRUCTOR and DESTRUCTOR are only allowed in the FoxPro dialect, when you compile with /fox1-.</value>
+  </data>  
 </root>

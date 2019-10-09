@@ -1,7 +1,7 @@
-#using System.Windows.Forms
-#using System.Drawing
-//#using XSharp.VODesigners
-#using System.Collections.Generic
+using System.Windows.Forms
+using System.Drawing
+using XSharp.VODesigners
+using System.Collections.Generic
 
 
 [STAThread];
@@ -15,13 +15,13 @@ FUNCTION Start() AS VOID
 	LOCAL oForm AS TestForm
 	LOCAL oGrid AS DesignerGrid
 	LOCAL oToolBox AS ToolBox
-	
+
 	Application.EnableVisualStyles()
-	
+
 	oOptions := WindowDesignerOptions{}
 	oOptions:lUseGrid := FALSE
 	oOptions:lShowGrid := FALSE
-	
+
 	oSurface := Panel{}
 	oSurface:AutoScroll := TRUE
 	oSurface:Dock := DockStyle.Fill
@@ -40,7 +40,7 @@ FUNCTION Start() AS VOID
 	oEditor := VOWindowEditor{oSurface , oOptions , oGrid , oToolBox}
 	oEditor:StandAlone := TRUE
 //	oEditor:CreateNewWindow("DIALOGWINDOW" , "Window1")
-	
+
 	oMEditor := VOMenuEditor{oSurface , oGrid}
 	oMEditor:StandAlone := TRUE
 
@@ -191,7 +191,7 @@ CLASS TestForm INHERIT Form
 	METHOD MenuCodeDBServer(o AS OBJECT,e AS EventArgs) AS VOID
 		SELF:oDBEditor:ShowCode()
 	RETURN
-	
+
 END CLASS
 
 PROCEDURE CreateToolWindow(cCaption AS STRING , oParent AS Form , oPos AS Point , oSize AS Size , oPanel AS Panel)
@@ -207,7 +207,7 @@ PROCEDURE CreateToolWindow(cCaption AS STRING , oParent AS Form , oPos AS Point 
 	oForm:Controls:Add(oPanel)
 	oForm:Closing += System.ComponentModel.CancelEventHandler{ NULL , @ToolWindowClosing() }
 	oForm:Show()
-RETURN 
+RETURN
 
 PROCEDURE ToolWindowClosing(o AS OBJECT , e AS System.ComponentModel.CancelEventArgs)
 	e:Cancel := TRUE

@@ -34,6 +34,7 @@ namespace XSharp.Project
         private FrameworkName targetFrameworkMoniker;
         private Dialect dialect;
         private bool vulcanCompatibleResources;
+        private bool noWin32Manifest;
         #endregion Fields
 
         #region Constants
@@ -41,6 +42,8 @@ namespace XSharp.Project
         internal const string descVulcanCompatibleResouces = "Use Vulcan Compatible Managed Resources (when 'True' then resources files are included in the assembly without namespace prefix. When 'False' then the resource files are prefixed with the namespace of the app, just like in other .Net languages, such as C#))";
         internal const string captDialect = "Dialect";
         internal const string descDialect = "Select the compiler dialect to use when compiling this project. Changing the dialect may also change the 'Allow NamedArguments' setting on the Language page.";
+        internal const string captWin32Manifest = "Suppress default Win32 manifest";
+        internal const string descWin32Manifest = "Suppress default Win32 manifest. You will have to supply your own Win32 manifest if you suppress the default one. (/nowin32manifest)";
         #endregion
 
         #region Constructors
@@ -112,6 +115,15 @@ namespace XSharp.Project
         {
             get { return this.vulcanCompatibleResources; }
             set { this.vulcanCompatibleResources = value; this.IsDirty = true; }
+        }
+
+        [ResourcesCategory(Resources.Application)]
+        [DisplayName(captWin32Manifest)]
+        [Description(descWin32Manifest)]
+        public bool NoWin32Manifest
+        {
+            get { return this.noWin32Manifest; }
+            set { this.noWin32Manifest = value; this.IsDirty = true; }
         }
 
 
@@ -246,6 +258,7 @@ namespace XSharp.Project
             this.startupObject = this.ProjectMgr.GetProjectProperty(nameof(StartupObject), false);
             this.applicationIcon = this.ProjectMgr.GetProjectProperty(nameof(ApplicationIcon), false);
             this.vulcanCompatibleResources = getCfgLogic(nameof(VulcanCompatibleResources), false);
+            this.noWin32Manifest = getCfgLogic(nameof(NoWin32Manifest), false);
             if (outputType != null && outputType.Length > 0)
             {
                 try
@@ -306,6 +319,7 @@ namespace XSharp.Project
             this.ProjectMgr.SetProjectProperty(nameof(ApplicationIcon), this.applicationIcon);
             this.ProjectMgr.SetProjectProperty(nameof(Dialect), this.dialect.ToString());
             this.ProjectMgr.SetProjectProperty(nameof(VulcanCompatibleResources), this.vulcanCompatibleResources.ToString());
+            this.ProjectMgr.SetProjectProperty(nameof(NoWin32Manifest), this.noWin32Manifest.ToString());
             // reset properties for projectnode
             ((XSharpProjectNode)this.ProjectMgr).OutputFile = null;
             ((XSharpProjectNode)this.ProjectMgr).RootNameSpace = this.rootNamespace;

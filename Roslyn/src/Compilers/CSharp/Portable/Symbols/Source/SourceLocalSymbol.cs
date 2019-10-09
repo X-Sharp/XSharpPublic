@@ -279,7 +279,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
         }
 
-#if DEBUG
+#if DEBUG || XSHARP
         // We use this to detect infinite recursion in type inference.
         private int concurrentTypeResolutions = 0;
 #endif
@@ -290,7 +290,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             {
                 if ((object)_type == null)
                 {
-#if DEBUG
+#if XSHARP
+                    concurrentTypeResolutions++;
+                    if (concurrentTypeResolutions >= 50)
+                    {
+                        Binder typeBinder = this.TypeSyntaxBinder;
+                        var type = typeBinder.CreateErrorType("var");
+                        SetType(type);
+                        return type;
+                    }
+#elif DEBUG
                     concurrentTypeResolutions++;
                     Debug.Assert(concurrentTypeResolutions < 50);
 #endif

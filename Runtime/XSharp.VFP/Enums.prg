@@ -28,3 +28,9 @@ ENUM XSharp.FoxCollations
  MEMBER TURKISH
  MEMBER UNIQWT
 END ENUM
+
+ENUM PropertyVisibilty
+   MEMBER Public    := 1
+   MEMBER Protected := 2
+   MEMBER Hidden    := 3
+END ENUM

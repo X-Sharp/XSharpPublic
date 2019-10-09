@@ -85,6 +85,9 @@
     <Compile Include="..\..\Common\constants.prg">
       <Link>constants.prg</Link>
     </Compile>
+    <Compile Include="Classes\Collection.prg" />
+    <Compile Include="Classes\Abstract.prg" />
+    <Compile Include="Classes\Custom.prg" />
     <Compile Include="Enums.prg" />
     <Compile Include="Functions.prg" />
     <Compile Include="Properties\AssemblyInfo.prg">
@@ -94,6 +97,7 @@
     <Compile Include="TextOutPut.prg" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Classes" />
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>

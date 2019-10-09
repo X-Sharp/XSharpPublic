@@ -5,13 +5,14 @@
 USING XSharp.RDD
 using System.IO
 using System.Threading
-    
+using XSharp.Vfp
    
 
 [STAThread];     
 FUNCTION Start() AS VOID
     TRY
-        TestNotifications()
+        TestVfpClass()
+        //TestNotifications()
         //testFilter()
         //testDbfNtxEmpty()
         //testvfpFile()
@@ -137,6 +138,47 @@ FUNCTION Start() AS VOID
         endif
         ErrorDialog(e)
     END TRY
+    RETURN
+
+
+CLASS MyVfpClass inherit XSharp.Vfp.Custom
+    PROPERTY Test AS USUAL GET _GetProperty("Test") SET _SetProperty("Test", value)
+    METHOD Init(a,b,c) CLIPPER
+        ? a,b,c
+        RETURN TRUE
+    CONSTRUCTOR() CLIPPER
+       SUPER(_Args())
+        SELF:Test := 1
+END CLASS
+
+Function TestVfpClass as void
+//    local oC as MyVfpClass
+//    oC := MyVfpClass{1,2,3}
+//    ? oC:Name
+    local oColl as Collection
+    oColl := Collection{}
+    oColl:AddObject("item a", "a")
+    oColl:AddObject("item A", "A")
+    oColl:AddObject("item B", "B")
+    oColl:AddObject("item b", "b")
+    oColl:AddObject("item C", "C","A")
+    //oColl:AddObject(1)
+//    oColl:AddObject(2)
+//    oColl:AddObject(3)
+//    oColl:AddObject(4)
+//    
+//    oColl:AddObject(100,,2)
+//    oColl:AddObject(200,,,3)
+//    ? oColl:Count
+//    ? oColl:Item(1)
+//    ? oColl:Item(2)
+    oColl:KeySort := 3
+    foreach var o in oColl
+        ? o, oCOll:GetKey(o)
+    NEXT
+//    ? oColl:Item("a")
+//    ? oColl:Item("A")
+//    ? oColl:Item("b")
     RETURN
 
 FUNCTION NotifyRDDOperations(oRDD as XSharp.RDD.IRdd, oEvent as XSharp.DbNotifyEventArgs) AS VOID

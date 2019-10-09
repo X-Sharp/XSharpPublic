@@ -184,11 +184,11 @@ BEGIN NAMESPACE XSharpModel
 
 						CASE XSharpDialect.FoxPro
 							VAR aTemp := aTokenOut
-							VAR aTokenOutVFP := <STRING>{"ENDFOR", "ENDTEXT"}
+							VAR aTokenOutVFP := <STRING>{"ENDFOR", "ENDTEXT", "ENDSCAN" }
 							aTokenOut := aTemp:Concat( aTokenOutVFP ):ToArray()
 							//
 							aTemp := aTokenIn
-							VAR aTokenInVFP := <STRING>{"TEXT"}
+							VAR aTokenInVFP := <STRING>{"TEXT", "SCAN" }
 							aTokenIn := aTemp:Concat( aTokenInVFP ):ToArray()
 							//
 							VAR aVFPEnd := <STRING>{"ENDFUNC", "ENDPROC" }

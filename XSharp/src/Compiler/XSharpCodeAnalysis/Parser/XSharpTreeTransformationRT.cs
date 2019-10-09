@@ -1225,26 +1225,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             if (typeId == null)
             {
-                if (context.Parent is XP.ClsmethodContext |
-                    context.Parent is XP.ClsctorContext |
-                    context.Parent is XP.ClsdtorContext)
-                {
-                    {
-                        typeId = (context.Parent.Parent as XP.Class_Context)?.Id.Get<SyntaxToken>()
-                            ?? (context.Parent.Parent as XP.Structure_Context)?.Id.Get<SyntaxToken>()
-                            ?? (context.Parent.Parent as XP.Interface_Context)?.Id.Get<SyntaxToken>();
-                    }
-                }
-                else if (context.Parent is XP.XppclassMemberContext)
-                {
-                    typeId = (context.Parent.Parent as XP.XppclassContext)?.Id.Get<SyntaxToken>();
-                }
-                else
-                {
-                    typeId = (context.Parent as XP.Class_Context)?.Id.Get<SyntaxToken>()
-                        ?? (context.Parent as XP.Structure_Context)?.Id.Get<SyntaxToken>()
-                        ?? (context.Parent as XP.Interface_Context)?.Id.Get<SyntaxToken>();
-                }
+                typeId = getParentId(context as XSharpParserRuleContext);
             }
             if (typeId == null)
             {
@@ -1286,9 +1267,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             if (parentId == null)
             {
-                parentId = (context.Parent.Parent as XP.Class_Context)?.Id.Get<SyntaxToken>()
-                    ?? (context.Parent.Parent as XP.Structure_Context)?.Id.Get<SyntaxToken>()
-                    ?? (context.Parent.Parent as XP.Interface_Context)?.Id.Get<SyntaxToken>();
+                parentId = getParentId(context as XSharpParserRuleContext);
             }
             if (parentId == null)
                 return null;

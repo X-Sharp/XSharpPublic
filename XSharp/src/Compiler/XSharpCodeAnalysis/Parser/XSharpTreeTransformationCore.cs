@@ -87,10 +87,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             internal class VoPropertyInfo
             {
                 internal SyntaxToken idName;
-                internal XP.MethodContext AccessMethodCtx = null;
-                internal XP.MethodContext AssignMethodCtx = null;
-                internal XP.MethodContext DupAccess = null;
-                internal XP.MethodContext DupAssign = null;
+                internal XP.IMethodContext AccessMethodCtx = null;
+                internal XP.IMethodContext AssignMethodCtx = null;
+                internal XP.IMethodContext DupAccess = null;
+                internal XP.IMethodContext DupAssign = null;
             }
 
             internal SyntaxListPool _pool;
@@ -108,7 +108,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 _pool.Free(Members);
             }
 
-            internal void AddVoPropertyAccessor(XP.MethodContext accessor, SyntaxToken idName)
+            internal void AddVoPropertyAccessor(XP.IMethodContext accessor, int Type, SyntaxToken idName)
             {
                 if (VoProperties == null)
                     VoProperties = new Dictionary<string, VoPropertyInfo>(CaseInsensitiveComparison.Comparer);
@@ -120,7 +120,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     propertyInfo.idName = idName;
                     VoProperties.Add(name, propertyInfo);
                 }
-                switch (accessor.RealType)
+                switch (Type)
                 {
                     case XP.ACCESS:
                         if (propertyInfo.AccessMethodCtx != null)
@@ -350,7 +350,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             XP.ParameterListContext Params = null;
             XP.PropertyParameterListContext PParams = null;
             name = GetNestedName(context.Parent);
-            if (context is XP.FuncprocContext)
+            if (context is XP.FuncprocContext fc)
             {
                 string modName = _options.CommandLineArguments?.CompilationOptions.ModuleName;
                 if (modName == null)
@@ -359,7 +359,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     modName = PathUtilities.GetFileName(modName, false);
                 }
 
-                XP.FuncprocContext fc = (XP.FuncprocContext)context;
                 if (name.Length == 0)
                     name = GlobalClassName + "." + fc.Id.GetText();
                 else
@@ -373,22 +372,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 Params = fc.ParamList;
             }
             
-            else if (context is XP.ConstructorContext)
+            else if (context is XP.ConstructorContext cc)
             {
-                var cc = (XP.ConstructorContext)context;
                 if (name.Length > 0) // Remove the dot
                     name = name.Substring(0, name.Length - 1);
                 suffix = ".CTOR";
                 Params = cc.ParamList;
             }
-            else if (context is XP.DestructorContext)
+            else if (context is XP.DestructorContext dc)
             {
-                var dc = (XP.DestructorContext)context;
                 name += "Finalize()";
             }
-            else if (context is XP.MethodContext)
+            else if (context is XP.MethodContext mc)
             {
-                XP.MethodContext mc = (XP.MethodContext)context;
                 if (mc.ClassId != null)
                     name += mc.ClassId.GetText() + "." + mc.Id.GetText();
                 else
@@ -407,9 +403,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         break;
                 }
             }
-            else if (context is XP.PropertyContext)
+            else if (context is XP.PropertyContext pc)
             {
-                XP.PropertyContext pc = (XP.PropertyContext)context;
                 if (pc.Id != null)
                     name += pc.Id.GetText();
                 if (pc.SELF() != null)
@@ -419,50 +414,52 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 suffix = ":Property";
 
             }
-            else if (context is XP.Event_Context)
+            else if (context is XP.Event_Context ec)
             {
-                XP.Event_Context ec = (XP.Event_Context)context;
                 name += ec.Id.GetText();
                 RetType = ec.Type;
                 suffix = ":Event";
             }
-            else if (context is XP.VodllContext)
+            else if (context is XP.VodllContext vdc)
             {
-                XP.VodllContext vdc = (XP.VodllContext)context;
                 name += vdc.Id.GetText();
                 RetType = vdc.Type;
                 Params = vdc.ParamList;
                 suffix = ":VoDll";
             }
-            else if (context is XP.Delegate_Context)
+            else if (context is XP.Delegate_Context del)
             {
-                XP.Delegate_Context dc = (XP.Delegate_Context)context;
-                name += dc.Id.GetText();
-                RetType = dc.Type;
-                Params = dc.ParamList;
+                name += del.Id.GetText();
+                RetType = del.Type;
+                Params = del.ParamList;
                 suffix = ":Delegate";
             }
-            else if (context is XP.Class_Context)
+            else if (context is XP.Class_Context cls)
             {
-                XP.Class_Context cc = (XP.Class_Context)context;
-                name += cc.Id.GetText();
+                name += cls.Id.GetText();
                 suffix = ":Class";
             }
-            else if (context is XP.Structure_Context)
+            else if (context is XP.FoxclassContext fcls)
             {
-                XP.Structure_Context sc = (XP.Structure_Context)context;
+                name += fcls.Id.GetText();
+                suffix = ":Class";
+            }
+            else if (context is XP.FoxmethodContext fmc)
+            {
+                name += fmc.Id.GetText();
+            }
+            else if (context is XP.Structure_Context sc)
+            {
                 name += sc.Id.GetText();
                 suffix = ":Structure";
             }
-            else if (context is XP.EventAccessorContext)
+            else if (context is XP.EventAccessorContext evtc)
             {
-                XP.EventAccessorContext ec = (XP.EventAccessorContext)context;
-                name += ec.Key.Text;
+                name += evtc.Key.Text;
             }
-            else if (context is XP.PropertyAccessorContext)
+            else if (context is XP.PropertyAccessorContext pac)
             {
-                XP.PropertyAccessorContext pc = (XP.PropertyAccessorContext)context;
-                name += pc.Key.Text;
+                name += pac.Key.Text;
             }
             if (Full)
             {
@@ -1585,7 +1582,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return string.Compare(id1, id2, StringComparison.OrdinalIgnoreCase) == 0;
         }
 
-        internal MemberDeclarationSyntax GeneratePartialProperyMethod(XP.MethodContext context, bool Access, bool Static)
+        internal MemberDeclarationSyntax GeneratePartialProperyMethod(XP.IMethodContext context, bool Access, bool Static)
         {
             string suffix;
             TypeSyntax returntype;
@@ -1608,7 +1605,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 mods = TokenList(SyntaxKind.PrivateKeyword);
 
 
-            var body = context.StmtBlk.Get<BlockSyntax>();
+            var body = context.Statements.Get<BlockSyntax>();
             MemberDeclarationSyntax m = _syntaxFactory.MethodDeclaration(
                  attributeLists: null,
                  modifiers: mods,
@@ -1622,8 +1619,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                  expressionBody: null, // TODO: (grammar) expressionBody methods
                  semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)
                  );
-
-            context.Put(m);
+            var rule = context as XSharpParserRuleContext;
+            rule.Put(m);
             return m;
         }
 
@@ -1653,20 +1650,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     {
                         var cls = ent as XP.IPartialPropertyContext;
                         if (cls.PartialProperties == null)
-                            cls.PartialProperties = new List<XSharpParser.MethodContext>();
+                            cls.PartialProperties = new List<XP.IMethodContext>();
 
                         var met = AccMet ?? AssMet;
                         cls.PartialProperties.Add(met);
-                        if (met.Parent is XP.ClsmethodContext cmc)
+                        var rule = met as XSharpParserRuleContext;
+                        if (rule.Parent is XP.ClsmethodContext cmc)
                         {
-                            if (met.CsNode == null)
-                                met.CsNode = cmc.CsNode;
+                            if (rule.CsNode == null)
+                                rule.CsNode = cmc.CsNode;
                             cmc.CsNode = null;
                         }
-                        else if (met.Parent is XP.FoxmethodContext fmc)
+                        else if (rule.Parent is XP.FoxclsmethodContext fmc)
                         {
-                            if (met.CsNode == null)
-                                met.CsNode = fmc.CsNode;
+                            if (rule.CsNode == null)
+                                rule.CsNode = fmc.CsNode;
                             fmc.CsNode = null;
                         }
 
@@ -1674,18 +1672,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     if (AccMet != null)
                     {
                         bool bStatic = false;
-                        if (AccMet.Modifiers?._Tokens != null)
+                        if (AccMet.Mods?._Tokens != null)
                         {
-                            bStatic = AccMet.Modifiers._Tokens.Any(t => t.Type == XSharpLexer.STATIC);
+                            bStatic = AccMet.Mods._Tokens.Any(t => t.Type == XSharpLexer.STATIC);
                         }
                         result = GeneratePartialProperyMethod(AccMet, true, bStatic);
                     }
                     else
                     {
                         bool bStatic = false;
-                        if (AssMet.Modifiers?._Tokens != null)
+                        if (AssMet.Mods?._Tokens != null)
                         {
-                            bStatic = AssMet.Modifiers._Tokens.Any(t => t.Type == XSharpLexer.STATIC);
+                            bStatic = AssMet.Mods._Tokens.Any(t => t.Type == XSharpLexer.STATIC);
                         }
                         result = GeneratePartialProperyMethod(AssMet, false, bStatic);
                     }
@@ -1698,14 +1696,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             #region modifiers and visibility
             if (AccMet != null)
             {
-                if (AccMet.Modifiers != null)
+                if (AccMet.Mods != null)
                 {
-                    getMods.AddRange(AccMet.Modifiers.GetList<SyntaxToken>());
+                    getMods.AddRange(AccMet.Mods.GetList<SyntaxToken>());
                 }
-                else if (!AccMet.isInInterface())
+                else if (!  AccMet.IsInInterface)
                 {
                     getMods.FixDefaultVisibility();
-                    if (_options.VirtualInstanceMethods && !AccMet.isInStructure())
+                    if (_options.VirtualInstanceMethods && !AccMet.IsInStructure)
                     {
                         getMods.FixDefaultVirtual();
                     }
@@ -1720,14 +1718,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 getVisLvl = 15;
             if (AssMet != null)
             {
-                if (AssMet.Modifiers != null)
+                if (AssMet.Mods != null)
                 {
-                    setMods.AddRange(AssMet.Modifiers.GetList<SyntaxToken>());
+                    setMods.AddRange(AssMet.Mods.GetList<SyntaxToken>());
                 }
-                else if (!AssMet.isInInterface())
+                else if (!((XSharpParserRuleContext)AssMet).isInInterface())
                 {
                     setMods.FixDefaultVisibility();
-                    if (_options.VirtualInstanceMethods && !AssMet.isInStructure())
+                    if (_options.VirtualInstanceMethods && !((XSharpParserRuleContext)AssMet).isInStructure())
                     {
                         setMods.FixDefaultVirtual();
                     }
@@ -1845,7 +1843,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (AccMet != null)
             {
                 // Create the GET accessor.
-                bool isInInterfaceOrAbstract = AccMet.isInInterface() ||
+                bool isInInterfaceOrAbstract = AccMet.IsInInterface ||
                     outerMods.Any((int)SyntaxKind.AbstractKeyword) ||
                     outerMods.Any((int)SyntaxKind.ExternKeyword);
                 var m = AccMet.Get<MethodDeclarationSyntax>();
@@ -1947,7 +1945,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             bool missingParam = false;
             if (AssMet != null)
             {
-                bool isInInterfaceOrAbstract = AssMet.isInInterface() ||
+                bool isInInterfaceOrAbstract = AssMet.IsInInterface ||
                     outerMods.Any((int)SyntaxKind.AbstractKeyword) ||
                     outerMods.Any((int)SyntaxKind.ExternKeyword);
                 var m = AssMet.Get<MethodDeclarationSyntax>();
@@ -3513,6 +3511,29 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 
         }
 
+        protected SyntaxToken getParentId(XSharpParserRuleContext context)
+        {
+            // assumes we are in a member rule of a class, structure or type
+            if (context != null)
+            {
+                switch (context.Parent.Parent)
+                {
+                    case XP.Class_Context cls:
+                        return cls.Id.Get<SyntaxToken>();
+                    case XP.Structure_Context str:
+                        return str.Id.Get<SyntaxToken>();
+                    case XP.Interface_Context interf:
+                        return interf.Id.Get<SyntaxToken>();
+                    case XP.FoxclassContext fox:
+                        return fox.Id.Get<SyntaxToken>();
+                    case XP.XppclassContext xpp:
+                        return xpp.Id.Get<SyntaxToken>();
+                }
+            }
+            return null;
+
+        }
+
         public override void ExitConstructor([NotNull] XP.ConstructorContext context)
         {
             context.SetSequencePoint(context.end);
@@ -3524,21 +3545,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             ImplementClipperAndPSZ(context, ref attributes, ref parameters, ref body, ref returntype);
             // no return statement needed  in CONSTRUCTOR
             // body = AddMissingReturnStatement(body, context.StmtBlk, null);
-            SyntaxToken parentId;
             bool missingParent = false;
             bool genClass = false;
-            if (context.Parent is XP.ClassmemberContext)
-            {
-                parentId = (context.Parent.Parent as XP.Class_Context)?.Id.Get<SyntaxToken>()
-                    ?? (context.Parent.Parent as XP.Structure_Context)?.Id.Get<SyntaxToken>()
-                    ?? (context.Parent.Parent as XP.Interface_Context)?.Id.Get<SyntaxToken>();
-            }
-            else if (context.ClassId != null)
+            var parentId = getParentId(context);
+            if (parentId == null && context.ClassId != null)
             {
                 parentId = context.ClassId.Get<SyntaxToken>();
                 genClass = true;
             }
-            else
+            if (parentId == null)
             {
                 parentId = SyntaxFactory.MakeIdentifier("unknown");
                 missingParent = true;
@@ -3581,21 +3596,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.SetSequencePoint(context.end);
             // no return statement needed in DESTRUCTOR
             // body = AddMissingReturnStatement(body, context.StmtBlk, null);
-            SyntaxToken parentId;
             bool missingParent = false;
             bool genClass = false;
-            if (context.Parent is XP.ClassmemberContext)
-            {
-                parentId = (context.Parent.Parent as XP.Class_Context)?.Id.Get<SyntaxToken>()
-                    ?? (context.Parent.Parent as XP.Structure_Context)?.Id.Get<SyntaxToken>()
-                    ?? (context.Parent.Parent as XP.Interface_Context)?.Id.Get<SyntaxToken>();
-            }
-            else if (context.ClassId != null)
+            var parentId = getParentId(context);
+            if (parentId == null && context.ClassId != null)
             {
                 parentId = context.ClassId.Get<SyntaxToken>();
                 genClass = true;
             }
-            else
+            if (parentId == null)
             {
                 parentId = SyntaxFactory.MakeIdentifier("unknown");
                 missingParent = true;
@@ -3945,7 +3954,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         cls.AddChild(context);
                         cls.Data.Partial = true;
                         context.parent = cls;
-                        ce.AddVoPropertyAccessor(context,idName);
+                        ce.AddVoPropertyAccessor(context,context.RealType, idName);
                         context.Put(m); // this is needed by GenerateVOProperty
                         var vop = ce.VoProperties.Values.First();
                         var prop = GenerateVoProperty(vop, cls);
@@ -3980,7 +3989,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                     ErrorCode.ERR_NoClipperCallingConventionForAccessAssign));
                 }
                 context.Put(m);
-                ClassEntities.Peek().AddVoPropertyAccessor(context, idName);
+                ClassEntities.Peek().AddVoPropertyAccessor(context, context.RealType, idName);
             }
         }
 
@@ -4782,7 +4791,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
 
 
-        bool hasDllImport(SyntaxList<AttributeListSyntax> attributes)
+        protected bool hasDllImport(SyntaxList<AttributeListSyntax> attributes)
         {
             if (attributes != null && attributes.Count > 0)
             {
@@ -7452,6 +7461,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         #endregion
 
         #region Names and Identifiers
+
+
         public override void ExitQualifiedNameDot([NotNull] XP.QualifiedNameDotContext context)
         {
             context.Put(_syntaxFactory.QualifiedName(context.Left.Get<NameSyntax>(),

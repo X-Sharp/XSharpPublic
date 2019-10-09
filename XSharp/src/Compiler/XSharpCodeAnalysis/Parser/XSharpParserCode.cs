@@ -74,7 +74,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     case EOS:
                         // EOS so no valid typecast
                         return false;
-                  default:
+                    default:
                         break;
 
                 }
@@ -82,7 +82,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     break;
                 la += 1;
             }
-            if (InputStream.La(la) == RPAREN )
+            if (InputStream.La(la) == RPAREN)
             {
                 // if there is a DOT or COLON after the RPAREN then return false
                 var c = InputStream.La(la + 1);
@@ -107,7 +107,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 #if !VSPARSER
         public interface IPartialPropertyContext : IEntityContext
         {
-            List<MethodContext> PartialProperties { get; set; }
+            List<IMethodContext> PartialProperties { get; set; }
         }
 
         public interface IGlobalEntityContext : IEntityContext
@@ -123,7 +123,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
             StatementBlockContext Statements { get; }
         }
-   
+
         public interface IEntityContext : IRuleNode, IXParseTree
         {
             EntityData Data { get; }
@@ -132,7 +132,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             String Name { get; }
             String ShortName { get; }
         }
-        internal interface IXPPEntityContext: IEntityWithBodyContext
+        internal interface IXPPEntityContext : IEntityWithBodyContext
         {
             XppmemberModifiersContext Mods { get; }
             AttributesContext Atts { get; }
@@ -166,7 +166,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             HasYield = 1 << 17,         // Member property
             HasFormalParameters = 1 << 18,  // Member property
             HasInit = 1 << 19,         // class property
-            IsEntryPoint = 1 << 20 ,    // member property
+            IsEntryPoint = 1 << 20,    // member property
         }
 
 
@@ -303,7 +303,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             internal void AddField(string Name, string Alias, bool Field, XSharpParserRuleContext context)
             {
                 if (Fields == null)
-                { 
+                {
                     Fields = new List<MemVarFieldInfo>();
                 }
                 var info = new MemVarFieldInfo(Name, Alias, Field);
@@ -372,8 +372,20 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
         }
 
+        public interface IMethodContext : IEntityWithBodyContext
+        {
+            IdentifierContext Id { get; }
+            TypeparametersContext TypeParameters { get; }
+            IList<TypeparameterconstraintsclauseContext> _ConstraintsClauses { get; }
+            ParameterListContext ParamList { get; }
+            DatatypeContext Type  { get; }
+            MemberModifiersContext Mods { get; }
+            bool IsInInterface { get; }
+            bool IsInStructure { get; }
+            int RealType { get; }
 
-        public partial class MethodContext : IEntityWithBodyContext
+        }
+        public partial class MethodContext : IMethodContext
         {
             public IdentifierContext Id => Sig.Id; 
             public TypeparametersContext TypeParameters => Sig.TypeParameters;
@@ -381,10 +393,13 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public ParameterListContext ParamList => Sig.ParamList;
             public DatatypeContext Type => Sig.Type;
             public CallingconventionContext CallingConvention => Sig.CallingConvention;
+            public bool IsInInterface => this.isInInterface();
+            public bool IsInStructure => this.isInStructure();
             EntityData data = new EntityData();
             public EntityData Data => data;
             public ParameterListContext Params => this.ParamList;
             public DatatypeContext ReturnType => this.Type;
+            public MemberModifiersContext Mods => this.Modifiers;
             public String ShortName => this.Id.GetText();
             public String Name
             {
@@ -404,9 +419,18 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public int RealType { get; set; } // fox FoxPro Function and Procedure will be come method, access or assign
         }
  
-        public partial class FoxmethodContext : IEntityWithBodyContext
+        public partial class FoxmethodContext : IMethodContext
         {
-            public IdentifierContext Id => this.Sig.Id;
+            public IdentifierContext Id => Sig.Id;
+            public TypeparametersContext TypeParameters => Sig.TypeParameters;
+            public IList<TypeparameterconstraintsclauseContext> _ConstraintsClauses => Sig._ConstraintsClauses;
+            public ParameterListContext ParamList => Sig.ParamList;
+            public DatatypeContext Type => Sig.Type;
+            public CallingconventionContext CallingConvention => Sig.CallingConvention;
+            public MemberModifiersContext Mods => this.Modifiers;
+            public bool IsInInterface => false;
+            public bool IsInStructure => false;
+
             EntityData data = new EntityData();
             public EntityData Data => data;
             public ParameterListContext Params => this.Sig.ParamList;
@@ -537,8 +561,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         public partial class Interface_Context : IPartialPropertyContext, IEntityContext
         {
             EntityData data = new EntityData();
-            List<MethodContext> partialProperties = null;
-            public  List<MethodContext> PartialProperties
+            List<IMethodContext> partialProperties = null;
+            public  List<IMethodContext> PartialProperties
             {
                 get { return partialProperties; }
                 set { partialProperties = value; }
@@ -553,8 +577,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         public partial class Class_Context : IPartialPropertyContext, IEntityContext
         {
             EntityData data = new EntityData();
-            List<MethodContext> partialProperties = null;
-            public List<MethodContext> PartialProperties
+            List<IMethodContext> partialProperties = null;
+            public List<IMethodContext> PartialProperties
             {
                 get { return partialProperties; }
                 set { partialProperties = value; }
@@ -568,8 +592,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         public partial class Structure_Context : IPartialPropertyContext, IEntityContext
         {
             EntityData data = new EntityData();
-            List<MethodContext> partialProperties = null;
-            public List<MethodContext> PartialProperties
+            List<IMethodContext> partialProperties = null;
+            public List<IMethodContext> PartialProperties
             {
                 get { return partialProperties; }
                 set { partialProperties = value; }
@@ -712,9 +736,9 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         public partial class FoxclassContext : IPartialPropertyContext, IEntityContext
         {
             EntityData data = new EntityData();
-            List<MethodContext> partialProperties = null;
+            List<IMethodContext> partialProperties = null;
 
-            public List<MethodContext> PartialProperties
+            public List<IMethodContext> PartialProperties
             {
                 get { return partialProperties; }
                 set { partialProperties = value; }

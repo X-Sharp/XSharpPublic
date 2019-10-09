@@ -1827,6 +1827,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     {"LPARAMETERS",   LPARAMETERS },
                     {"EXCLUDE", EXCLUDE },
                     {"OLEPUBLIC", OLEPUBLIC },
+                    {"NOINIT", NOINIT },
                     // text end text
                     {"TEXT",      TEXT },           // TEXT .. ENDTEXT is declared here because the Lexer needs to do some special magic
                     {"ENDTEXT",   ENDTEXT },        // it could also be implemented as UDC but we need the lexer support

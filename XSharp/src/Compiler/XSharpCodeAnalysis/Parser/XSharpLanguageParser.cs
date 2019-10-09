@@ -950,7 +950,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // or where access and assign were not found in the same source file
             // the usingList will contain an unique list of using statements combined from the various
             // source files where the types were found.
-            var dict = new Dictionary<string, List<XP.MethodContext>>(StringComparer.OrdinalIgnoreCase);
+            var dict = new Dictionary<string, List<XP.IMethodContext>>(StringComparer.OrdinalIgnoreCase);
             var tmpUsings = new List<Syntax.UsingDirectiveSyntax>();
             foreach (var clsctx in classes)
             {
@@ -966,7 +966,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         }
                         else
                         {
-                            var list = new List<XP.MethodContext>() { m };
+                            var list = new List<XP.IMethodContext>() { m };
                             dict.Add(name, list);
                         }
                     }
@@ -991,7 +991,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 prop.idName = SyntaxFactory.Identifier(element.Key);
                 foreach (var m in element.Value)
                 {
-                    if (m.T.Token.Type == XSharpLexer.ACCESS)
+                    if (m.RealType == XSharpLexer.ACCESS)
                     {
                         if (prop.AccessMethodCtx == null)
                             prop.AccessMethodCtx = m;

@@ -101,7 +101,7 @@ BEGIN NAMESPACE XSharpModel
 			    hBrk := Dictionary<CHAR,CHAR>{}
 			    aTokenIn := <STRING>{"IF", "DO", "WHILE", "FOR", "FOREACH", "TRY", "REPEAT", "SWITCH", "WITH", "BEGIN"}
 			    aTokenInOut := <STRING>{"ELSE", "ELSEIF", "CASE", "OTHERWISE", "CATCH", "FINALLY", "RECOVER" }
-			    aTokenOut := <STRING>{"ENDIF", "ENDDO", "ENDCASE", "NEXT", "ENDTRY", "UNTIL", "ENDWITH", "END" }
+			    aTokenOut := <STRING>{"ENDIF", "ENDDO", "ENDCASE", "NEXT", "ENDTRY", "UNTIL", "ENDWITH" }
 			    aEntityWords := <STRING>{ "PROTECT" , "PROTECTED", "INSTANCE" , "EXPORT" , "PUBLIC" , "PRIVATE" , "HIDDEN" , "INTERNAL" , "MEMBER" , "GLOBAL"}
 			    aOperators := <CHAR>{'+','-','*','/','%','&','|','>','<','=','!','~'}
 			    aEndKeyWords := <STRING>{"CLASS","STRUCTURE","STRUCT","INTERFACE","ENUM"}
@@ -170,12 +170,9 @@ BEGIN NAMESPACE XSharpModel
 						CASE XSharpDialect.XPP
 							VAR aTemp := SELF:aEndMarkers
 							VAR aXPPEnd := <STRING>{"ENDCLASS"}
+							SELF:aEndMarkers := aTemp:Concat( aXPPEnd ):ToArray()
 							//
-							SELF:aEndMarkers := STRING[]{ aTemp:Length + aXPPEnd.Length }
-							System.Array.Copy( aTemp, SELF:aEndMarkers, aTemp:Length )
-							System.Array.Copy( aXPPEnd, 0, SELF:aEndMarkers, aTemp:Length, aXPPEnd:Length )
-							//
-							SELF:aSpecialEndClassMarkers := STRING[]{ aXPPEnd.Length }
+							SELF:aSpecialEndClassMarkers := STRING[]{ aXPPEnd:Length }
 							System.Array.Copy( aXPPEnd, SELF:aSpecialEndClassMarkers, aXPPEnd:Length )
 							// Add the INLINE keyword as a Visiblity
 							IF ! oEntityVisibility:ContainsKey("INLINE")
@@ -184,17 +181,25 @@ BEGIN NAMESPACE XSharpModel
 							// Persistent Visibility
 							SELF:dictXPPVis := Dictionary<STRING , STRING>{}
 							SELF:dictXPPVis:Add( "EXPORTED", "PUBLIC" )
+
 						CASE XSharpDialect.FoxPro
 							VAR aTemp := aTokenOut
-							VAR aTokenOutVFP := <STRING>{"ENDFOR"}
+							VAR aTokenOutVFP := <STRING>{"ENDFOR", "ENDTEXT"}
+							aTokenOut := aTemp:Concat( aTokenOutVFP ):ToArray()
 							//
-							aTokenOut := STRING[]{ aTemp:Length + aTokenOutVFP.Length }
-							System.Array.Copy( aTemp, aTokenOut, aTemp:Length )
-							System.Array.Copy( aTokenOutVFP, 0, aTokenOut, aTemp:Length, aTokenOutVFP:Length )
+							aTemp := aTokenIn
+							VAR aTokenInVFP := <STRING>{"TEXT"}
+							aTokenIn := aTemp:Concat( aTokenInVFP ):ToArray()
 							//
-							VAR aVFPEnd := <STRING>{"ENDFUNC", "ENDPROC", "ENDFOR" }
-							//
+							VAR aVFPEnd := <STRING>{"ENDFUNC", "ENDPROC" }
 							SELF:aSingleOptionnalEndMarkers := aVFPEnd
+							//
+							aTemp := SELF:aEndMarkers
+							aVFPEnd := <STRING>{"ENDDEFINE"}
+							SELF:aEndMarkers := aTemp:Concat( aVFPEnd ):ToArray()
+							//
+							SELF:aSpecialEndClassMarkers := STRING[]{ aVFPEnd:Length }
+							System.Array.Copy( aVFPEnd, SELF:aSpecialEndClassMarkers, aVFPEnd:Length )
 					END
 				ENDIF
 			END SET
@@ -915,13 +920,29 @@ BEGIN NAMESPACE XSharpModel
 							_SetLineType(oStatementLine, LineType.TokenIn)
 							oStatementLine:cArgument := cUpperWord
 							state:lIgnore := TRUE
+						CASE eStep == ParseStep.AfterAddObject .AND. .NOT. lEscapedWord .AND. cChar != '.' .AND. cCharBeforeWord != '.' .AND. cUpperWord == "PROTECTED"
+							// We also have to set the Visibility....
+							SELF:SetAccessModifiers( cUpperWord, REF eAccessLevel, REF eModifiers, REF lStatic, REF lPartial )
+						CASE eStep == ParseStep.AfterAdd .AND. .NOT. lEscapedWord .AND. cChar != '.' .AND. cCharBeforeWord != '.' .AND. cUpperWord == "OBJECT"
+								//IF ( SELF:Dialect == XSharpDialect.FoxPro )
+									// ADD OBJECT is a Field
+									state:lField := TRUE
+									eStep := ParseStep.AfterAddObject
+								//ENDIF
+						CASE state:lFirstWord .AND. Dialect== XSharpDialect.FoxPro .AND. !lInEvent .AND. cUpperWord == "ADD" .AND. .NOT. lEscapedWord .AND. oInfo == NULL
+							// ADD ... and maybe OBJECT later
+							eStep := ParseStep.AfterAdd
 						CASE lAllowEntityParse .AND. .NOT. lEscapedWord .AND. cChar != '.' .AND. cCharBeforeWord != '.' .AND. hEnt:ContainsKey(cUpperWord)
 							lInEnum := FALSE
 							state:lField := FALSE
 							state:lLocal := FALSE
 							//state:lEvent := FALSE
+							// We are already inside an Entity
 							IF state:lEntityFound
 								state:lIgnore := TRUE
+							ENDIF
+							IF  ( state:lIgnore == TRUE .AND. oInfo != NULL .AND. SELF:Dialect == XSharpDialect.FoxPro .AND. oInfo:eType == EntityType._Define .AND. cUpperWord == "CLASS" )
+								state:lIgnore := FALSE
 							ENDIF
 							state:lEntityFound := TRUE
 							state:lEntityIsType := System.Array.IndexOf(aTypes , cUpperWord) != -1
@@ -992,7 +1013,7 @@ BEGIN NAMESPACE XSharpModel
 									IF oInfo:eType:SupportNestedType()
 										iClassOrStruct ++
 									ENDIF
-								ELSEIF oInfo:eType:IsClassMember()
+								ELSEIF (aTypeStack:Count > 0) .AND. oInfo:eType:IsClassMember( SELF:Dialect )
 									IF aTypeStack:Count > 0
 										VAR oParent := getParentType()
 										IF ( oParent != NULL )
@@ -1080,6 +1101,10 @@ BEGIN NAMESPACE XSharpModel
 									eStep := ParseStep.AfterAs
 									sFoundType:Length := 0
 									n1 := 0;n2 := 0
+									// In a CLASS definition in FoxPro, AS is an alias of INHERIT
+									IF ( oInfo != NULL .AND. SELF:Dialect == XSharpDialect.FoxPro .AND. oInfo:eType == EntityType._Class )
+										eStep := ParseStep.AfterInherit
+									ENDIF
 								CASE state:lInParams .AND. (cUpperWord == "REF" .OR. cUpperWord == "OUT" .OR. cUpperWord == "PARAMS") .AND. .NOT. lEscapedWord
 									eStep := ParseStep.AfterRef
 									SWITCH cUpperWord
@@ -1260,7 +1285,16 @@ BEGIN NAMESPACE XSharpModel
 											oInfo:nCol	:= nEntityStartCol
 											oInfo:nOffSet := nEntityStartOffSet //+ oInfo:nCol => Now, the Entyti starts at the beginning of line
 											oInfo:cName := cWord
-											IF oInfo:IsFuncProcGlobal
+											IF SELF:Dialect == XSharpDialect.FoxPro .AND. oInfo:IsFuncProc
+												IF ( oInfo:cName:EndsWith( "_ACCESS" ) )
+													oInfo:eType := EntityType._Access
+													oInfo:cName := oInfo:cName:SubString(0,oInfo:cName:Length-7)
+												ELSEIF ( oInfo:cName:EndsWith( "_ASSIGN" ) )
+													oInfo:eType := EntityType._Assign
+													oInfo:cName := oInfo:cName:SubString(0,oInfo:cName:Length-7)
+												ENDIF
+											ENDIF
+											IF oInfo:IsGlobal .OR. ( oInfo:IsFuncProc .AND. !SELF:Dialect == XSharpDialect.FoxPro )
 												oInfo:cShortClassName := ""
 												oInfo:cTypedClassName := ""
 												oInfo:cClassNameSpace := ""
@@ -1342,38 +1376,36 @@ BEGIN NAMESPACE XSharpModel
 										oStatementLine:cArgument := "BEGIN"
 									END SWITCH
 							END IF
-						CASE state:lFirstWord .AND. ( (System.Array.IndexOf(SELF:aEndMarkers , cUpperWord) != -1 ) .OR. (System.Array.IndexOf(SELF:aSingleOptionnalEndMarkers , cUpperWord) != -1 ) )
-							IF (System.Array.IndexOf(SELF:aEndMarkers , cUpperWord) != -1 )
-								lInEnum := FALSE
-								eStep := ParseStep.AfterEnd
-								_SetLineType(oStatementLine, LineType.TokenOut)
-								oStatementLine:cArgument := cUpperWord
-								// Is it a Single Keyword end Marker ??
-								IF (System.Array.IndexOf(SELF:aSpecialEndClassMarkers , cUpperWord) != -1 )
-									state:lIgnore := TRUE
-									lInEnum := FALSE
-									_SetLineType(oStatementLine, LineType.EndClass)
-									cShortClassName := ""
-									cTypedClassName := ""
-									cClassNameSpace := ""
-									cClassType := ""
-								ENDIF
-							ELSEIF (System.Array.IndexOf(SELF:aSingleOptionnalEndMarkers , cUpperWord) != -1 )
-								_SetLineType(oStatementLine, LineType.OptionnalEnd)
-								//
-								LOCAL oCurrent AS EntityObject
-								IF aEntities:Count > 0
-									oCurrent := aEntities[aEntities:Count-1]
-									oCurrent:HasEnd := TRUE
-								ENDIF
-								//
-								state:lEntityFound := FALSE
-								state:lEntityIsType := FALSE
-								state:lIgnore := TRUE
-								lInEnum := FALSE
-								lInProperty := FALSE
-								lInEvent := FALSE
+						CASE state:lFirstWord .AND. System.Array.IndexOf(SELF:aSpecialEndClassMarkers , cUpperWord) != -1 
+							//
+							state:lIgnore := TRUE
+							lInEnum := FALSE
+							_SetLineType(oStatementLine, LineType.EndClass)
+							cShortClassName := ""
+							cTypedClassName := ""
+							cClassNameSpace := ""
+							cClassType := ""
+						CASE state:lFirstWord .AND. System.Array.IndexOf(SELF:aEndMarkers , cUpperWord) != -1
+							lInEnum := FALSE
+							eStep := ParseStep.AfterEnd
+							_SetLineType(oStatementLine, LineType.TokenOut)
+							oStatementLine:cArgument := cUpperWord
+						CASE state:lFirstWord .AND. System.Array.IndexOf(SELF:aSingleOptionnalEndMarkers , cUpperWord) != -1 
+							oStatementLine:cArgument := cUpperWord
+							_SetLineType(oStatementLine, LineType.OptionnalEnd)
+							//
+							LOCAL oCurrent AS EntityObject
+							IF aEntities:Count > 0
+								oCurrent := aEntities[aEntities:Count-1]
+								oCurrent:HasEnd := TRUE
 							ENDIF
+							//
+							state:lEntityFound := FALSE
+							state:lEntityIsType := FALSE
+							state:lIgnore := TRUE
+							lInEnum := FALSE
+							lInProperty := FALSE
+							lInEvent := FALSE
 						CASE eStep == ParseStep.AfterEnd
 							state:lIgnore := TRUE
 							lInEnum := FALSE
@@ -1551,6 +1583,9 @@ BEGIN NAMESPACE XSharpModel
 					// End of parsing
 
 				END DO
+				// End of Line
+
+				// Going back to read the next line
 			NEXT
 			// Check on exit
 			IF ( oInfo != NULL ) .AND. state:lImpliedLocal .AND. ( oInfo:eType == EntityType._Local )
@@ -1565,7 +1600,8 @@ BEGIN NAMESPACE XSharpModel
 				IF oEnt:eType:IsType()
 					aResult:Add(oEnt)
 				ELSEIF oEnt:oParent == NULL
-					aResult:Add(oEnt)
+					//aResult:Add(oEnt) // Doing so a FUNCTION will be stored as a Type...!?
+					oEnt:oParent := SELF:oGlobalObject
 				ENDIF
 			NEXT
 
@@ -1740,7 +1776,7 @@ BEGIN NAMESPACE XSharpModel
 			END SWITCH
 			RETURN FALSE
 
-		STATIC METHOD IsClassMember(SELF e AS ENtityType) AS LOGIC
+		STATIC METHOD IsClassMember(SELF e AS ENtityType, inDialect AS XSharpDialect) AS LOGIC
 			SWITCH e
 			CASE EntityType._Field
 				CASE EntityType._Property
@@ -1753,8 +1789,18 @@ BEGIN NAMESPACE XSharpModel
 				CASE EntityType._Event
 				CASE EntityType._EnumMember
 					RETURN TRUE
+				OTHERWISE
+					IF ( inDialect == XSharpDialect.FoxPro )
+						SWITCH e
+							CASE EntityType._Function
+							CASE EntityType._Procedure
+								RETURN TRUE
+						END SWITCH
+					ENDIF
 				END SWITCH
 			RETURN FALSE
+
+
 		STATIC METHOD HasBody(SELF e AS EntityType) AS LOGIC
 			SWITCH e
 			CASE EntityType._Property
@@ -1868,8 +1914,11 @@ BEGIN NAMESPACE XSharpModel
 			oChild:oParent := SELF
 			RETURN
 
-		INTERNAL ACCESS IsFuncProcGlobal AS LOGIC
-			RETURN SELF:eType == EntityType._Function .OR. SELF:eType == EntityType._Procedure .OR. SELF:eType == EntityType._Global
+		INTERNAL ACCESS IsFuncProc AS LOGIC
+			RETURN SELF:eType == EntityType._Function .OR. SELF:eType == EntityType._Procedure
+
+		INTERNAL ACCESS IsGlobal AS LOGIC
+			RETURN SELF:eType == EntityType._Global
 
 		INTERNAL METHOD NamespacesEqual(_aNameSpaces AS List<STRING>) AS LOGIC
 			LOCAL n AS INT
@@ -1974,6 +2023,11 @@ BEGIN NAMESPACE XSharpModel
 		//	MEMBER WaitClassClause
 		MEMBER AfterClassClause
 		MEMBER AfterExportClause
+
+		// for FOXPRO
+		MEMBER AfterAdd
+		MEMBER AfterAddObject
+
 	END ENUM
 
 	[Flags];

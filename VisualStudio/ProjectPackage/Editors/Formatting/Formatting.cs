@@ -265,7 +265,7 @@ namespace XSharp.Project
             }
             // Read Settings
             getEditorPreferences(TextView);
-            formatCaseForWholeBuffer();
+            
             // Try to retrieve an already parsed list of Tags
             if (_classifier != null)
             {
@@ -411,6 +411,8 @@ namespace XSharp.Project
                 XSharpProjectPackage.Instance.DisplayOutPutMessage("FormatDocument : Done in " + elapsedTime);
 #endif
             }
+            else
+                formatCaseForWholeBuffer();
         }
 
         /// <summary>
@@ -461,11 +463,16 @@ namespace XSharp.Project
                         case "//":
                         case "USING":
                         case "#USING":
-                        case "DEFINE":
                         case "#DEFINE":
                         case "#INCLUDE":
                         case "#REGION":
                             continue;
+                        case "DEFINE":
+                            // Warning !! It could DEFINE CLASS in FOXPRO
+                            openKeyword = getKeywordInLine(snapLine, region.Item1.Start, length, 2 );
+                            if (String.Compare(openKeyword, "class", true) != 0)
+                                continue;
+                            break;
                         default:
                             break;
                     }
@@ -516,11 +523,16 @@ namespace XSharp.Project
                         case "//":
                         case "USING":
                         case "#USING":
-                        case "DEFINE":
                         case "#DEFINE":
                         case "#INCLUDE":
                         case "#REGION":
                             continue;
+                        case "DEFINE":
+                            // Warning !! It could DEFINE CLASS in FOXPRO
+                            openKeyword = getKeywordInLine(snapLine, region.Item1.Start, length, 2);
+                            if (String.Compare(openKeyword, "class", true) != 0)
+                                continue;
+                            break;
                         default:
                             break;
                     }
@@ -545,20 +557,6 @@ namespace XSharp.Project
                         indentValue--;
                     }
                     //
-                    if (openKeyword == "CASE")
-                    {
-                        // Ok, Inside a CASE...do we have a fallthrough ?
-                        int currentLength;
-                        currentLength = getLineLength(snapLine.Snapshot, snapLine.Start.Position);
-                        if (currentLength <= 0)
-                            currentLength = 1;
-                        // Get the opening keyword, at the beginning of the currently processed region
-                        string insideKeyword = getFirstKeywordInLine(snapLine, snapLine.Start.Position, currentLength);
-                        if (insideKeyword == "CASE")
-                        {
-                            indentValue--;
-                        }
-                    }
                 }
                 else //if ((region.Item2.Start >= snapLine.Start.Position) && (region.Item2.End <= snapLine.End.Position))
                 {
@@ -568,6 +566,8 @@ namespace XSharp.Project
                         // normally, no closing keyword
                         if (_codeBlockKeywords.Contains<String>(openKeyword))
                         {
+                            // per Default
+                            indentValue++;
                             // Ok, CodeBlock, we can have an optionnal END as the last statement
                             int currentLength;
                             currentLength = getLineLength(snapLine.Snapshot, snapLine.Start.Position);
@@ -575,9 +575,18 @@ namespace XSharp.Project
                                 currentLength = 1;
                             // Get the opening keyword, at the beginning of the currently processed region
                             string insideKeyword = getFirstKeywordInLine(snapLine, snapLine.Start.Position, currentLength);
-                            if (Array.Find(_xtraKeywords, kw => string.Compare(kw, insideKeyword, true) == 0) == null)
+                            if (Array.Find(_xtraKeywords, kw => string.Compare(kw, insideKeyword, true) == 0) != null)
                             {
-                                indentValue++;
+                                indentValue--;
+                            }
+                            else if ( String.Compare( insideKeyword, "end",true)==0)
+                            {
+                                // We may have an optionnal closing keyword indication
+                                insideKeyword = getKeywordInLine(snapLine, snapLine.Start.Position, currentLength,2);
+                                if ( ( String.Compare( openKeyword, insideKeyword, true)==0) ) //|| (String.Compare(openKeyword, "class", true) == 0) )
+                                {
+                                    indentValue--;
+                                }
                             }
                         }
                     }
@@ -749,6 +758,94 @@ namespace XSharp.Project
                     }
                     break;
                 }
+            }
+            return keyword;
+        }
+
+        private String getKeywordInLine(ITextSnapshotLine line, int start, int length, int keywordPosition)
+        {
+            int keywordPos = 0;
+            String keyword = "";
+            var tokens = getTokensInLine(line.Snapshot, start, length);
+            bool inAttribute = false;
+            //
+            if (tokens.Count > 0)
+            {
+                int index = 0;
+                do
+                {
+                    keywordPos++;
+                    while (index < tokens.Count)
+                    {
+                        var token = tokens[index];
+                        // skip whitespace tokens
+                        if (token.Type == XSharpLexer.WS)
+                        {
+                            index++;
+                            continue;
+                        }
+
+                        keyword = "";
+                        if (XSharpLexer.IsKeyword(token.Type) || (token.Type >= XSharpLexer.PP_FIRST && token.Type <= XSharpLexer.PP_LAST)
+                            || (Array.Find(_xtraKeywords, kw => string.Compare(kw, token.Text, true) == 0) != null))
+                        {
+                            keyword = token.Text.ToUpper();
+                            // it could be modifier...
+                            if (keywordIsModifier(token.Type))
+                            {
+                                index++;
+                                continue;
+                            }
+                            else
+                            {
+                                // keyword found
+                                break;
+                            }
+                        }
+                        else if (XSharpLexer.IsComment(token.Type))
+                        {
+                            keyword = token.Text;
+                            if (keyword.Length >= 2)
+                            {
+                                keyword = keyword.Substring(0, 2);
+                            }
+                            break;
+                        }
+                        else if (XSharpLexer.IsOperator(token.Type))
+                        {
+                            keyword = token.Text;
+                            if (token.Type == XSharpLexer.LBRKT)
+                            {
+                                inAttribute = true;
+                                index++;
+                                continue;
+                            }
+                            else if (token.Type == XSharpLexer.RBRKT)
+                            {
+                                inAttribute = false;
+                                index++;
+                                continue;
+                            }
+                        }
+                        else
+                        {
+                            if (inAttribute)
+                            {
+                                // Skip All Content in
+                                index++;
+                                continue;
+                            }
+
+                        }
+                        break;
+                    }
+                    //
+                    if (keywordPos < keywordPosition)
+                    {
+                        keyword = "";
+                        index++;
+                    }
+                } while (keywordPos < keywordPosition);
             }
             return keyword;
         }

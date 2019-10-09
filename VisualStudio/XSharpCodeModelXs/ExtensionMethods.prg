@@ -9,15 +9,19 @@ USING System.Linq
 USING System.Collections.Generic
 USING System.Collections.Immutable
 USING LanguageService.CodeAnalysis.Text
+USING LanguageService.CodeAnalysis.XSharp
+
+
+
 BEGIN NAMESPACE XSharpModel
 	
 	STATIC CLASS ExtensionMethods
 		
 		STATIC METHOD IsEmpty( SELF cType AS CompletionType) AS LOGIC
-			RETURN cType == null .OR. ! cType:IsInitialized
+			RETURN cType == NULL .OR. ! cType:IsInitialized
 		
 		STATIC METHOD AddUnique<TKey, TValue>( SELF dict AS Dictionary<TKey, TValue>, key AS TKey, VALUE AS TValue) AS TValue 
-			IF dict != null .AND. key != null
+			IF dict != NULL .AND. key != NULL
 				IF ! dict:ContainsKey(key)
 					dict:Add(key, VALUE)
 					RETURN VALUE
@@ -51,11 +55,11 @@ BEGIN NAMESPACE XSharpModel
 				CASE Kind.Delegate 
 				CASE Kind.VODLL 
 					//
-					RETURN true
+					RETURN TRUE
 			END SWITCH
-			RETURN false
+			RETURN FALSE
 		
-		STATIC METHOD HasReturnType( SELF elementKind AS Kind) AS LOGIC
+		STATIC METHOD HasReturnType( SELF elementKind AS Kind ) AS LOGIC
 			SWITCH elementKind
 				CASE Kind.Method 
 				CASE Kind.Access 
@@ -68,11 +72,35 @@ BEGIN NAMESPACE XSharpModel
 				CASE Kind.Delegate 
 				CASE Kind.VOGlobal 
 				CASE Kind.VODefine 
-					RETURN true
+					RETURN TRUE
 			END SWITCH
-			RETURN false
+			RETURN FALSE
+
+		STATIC METHOD HasReturnType( SELF elementKind AS Kind, inDialect AS XSharpDialect) AS LOGIC
+			SWITCH elementKind
+				CASE Kind.Method 
+				CASE Kind.Access 
+				CASE Kind.Property 
+				CASE Kind.Function 
+				CASE Kind.Field 
+				CASE Kind.Local 
+				CASE Kind.Parameter 
+				CASE Kind.Operator 
+				CASE Kind.Delegate 
+				CASE Kind.VOGlobal 
+				CASE Kind.VODefine 
+					RETURN TRUE
+				OTHERWISE
+					IF ( inDialect == XSharpDialect.FoxPro )
+						SWITCH elementKind
+							CASE Kind.Procedure
+								RETURN TRUE
+						END SWITCH
+					ENDIF
+			END SWITCH
+			RETURN FALSE
 		
-		STATIC METHOD IsClassMember( SELF elementKind AS Kind) AS LOGIC
+		STATIC METHOD IsClassMember( SELF elementKind AS Kind, inDialect AS XSharpDialect ) AS LOGIC
 			SWITCH elementKind
 				CASE Kind.Constructor 
 				CASE Kind.Destructor 
@@ -82,9 +110,32 @@ BEGIN NAMESPACE XSharpModel
 				CASE Kind.Property 
 				CASE Kind.Event 
 				CASE Kind.Operator 
-					RETURN true
+					RETURN TRUE
+				OTHERWISE
+					IF ( inDialect == XSharpDialect.FoxPro )
+						SWITCH elementKind
+							CASE Kind.Function
+							CASE Kind.Procedure
+								RETURN TRUE
+						END SWITCH
+					ENDIF
 			END SWITCH
-			RETURN false
+			RETURN FALSE
+
+		STATIC METHOD IsClassMethod( SELF elementKind AS Kind, inDialect AS XSharpDialect ) AS LOGIC
+			SWITCH elementKind
+				CASE Kind.Method 
+					RETURN TRUE
+				OTHERWISE
+					IF ( inDialect == XSharpDialect.FoxPro )
+						SWITCH elementKind
+							CASE Kind.Function
+							CASE Kind.Procedure
+								RETURN TRUE
+						END SWITCH
+					ENDIF
+			END SWITCH
+			RETURN FALSE
 		
 		STATIC METHOD IsField( SELF elementKind AS Kind) AS LOGIC
 			SWITCH elementKind
@@ -92,9 +143,9 @@ BEGIN NAMESPACE XSharpModel
 				CASE Kind.VOGlobal 
 				CASE Kind.VODefine 
 				CASE Kind.EnumMember
-					RETURN true
+					RETURN TRUE
 			END SWITCH
-			RETURN false
+			RETURN FALSE
 		
 		STATIC METHOD IsType( SELF elementKind AS Kind) AS LOGIC
 			SWITCH elementKind
@@ -105,9 +156,9 @@ BEGIN NAMESPACE XSharpModel
 				CASE Kind.Enum 
 				CASE Kind.VOStruct 
 				CASE Kind.Union 
-					RETURN true
+					RETURN TRUE
 			END SWITCH
-			RETURN false
+			RETURN FALSE
 		STATIC METHOD HasBody( SELF elementKind AS Kind) AS LOGIC
 			SWITCH elementKind
 				CASE Kind.Function
@@ -120,9 +171,9 @@ BEGIN NAMESPACE XSharpModel
 				CASE Kind.Operator
 				CASE Kind.Constructor
 				CASE Kind.Destructor
-					RETURN true
+					RETURN TRUE
 			END SWITCH
-			RETURN false
+			RETURN FALSE
 		
 	// textspan extensions
 		//static method GetText( self snapshot as ITextSnapshot, span as TextSpan) as string

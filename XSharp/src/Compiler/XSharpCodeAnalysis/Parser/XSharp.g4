@@ -582,7 +582,9 @@ statement           : Decl=localdecl                        #declarationStmt
                        String=TEXT_STRING_CONST
                        ENDTEXT e=eos                                                  #foxtextStmt   
                     | Eq=EQ Exprs+=expression  end=eos		                            #foxexpressionStmt
-                    | B=(BACKSLASH | BACKBACKSLASH) String=TEXT_STRING_CONST end=EOS  #foxtextoutStmt    
+                    | B=(BACKSLASH | BACKBACKSLASH) String=TEXT_STRING_CONST end=EOS  #foxtextoutStmt
+                    | D=DIMENSION Id=identifier LPAREN Dimensions=dimensions RPAREN (AS Type=datatype)? #foxdimensionStmt
+
                       // NOTE: The ExpressionStmt rule MUST be last, even though it already existed in VO
                       // The first ExpressonStmt rule matches a single expression
                       // The second Rule matches a single expression with an extraneous RPAREN RCURLY or RBRKT
@@ -596,6 +598,8 @@ statement           : Decl=localdecl                        #declarationStmt
                       Exprs+=expression (COMMA Exprs+=expression)+  end=eos			              #expressionStmt
 	                ;
 
+dimensions          : ArrayIndex+=expression (COMMA ArrayIndex+=expression)+
+                    ;
 
 ifElseBlock         : Cond=expression end=eos StmtBlk=statementBlock
                       ( ELSEIF ElseIfBlock=ifElseBlock 
@@ -1198,7 +1202,7 @@ xppmemberModifiers  : ( Tokens+=( CLASS | STATIC) )+
 
 
 /// FoxPro Parser definities
-keywordfox          :  Token=( OLEPUBLIC| EXCLUDE| THISACCESS| HELPSTRING| FOX_AND| FOX_OR| FOX_NOT| FOX_XOR )
+keywordfox          :  Token=( OLEPUBLIC| EXCLUDE| THISACCESS| HELPSTRING| NOINIT | FOX_AND| FOX_OR| FOX_NOT| FOX_XOR )
                               // ENDDEFINE | TEXT| ENDTEXT | DIMENSION | LPARAMETERS | NOSHOW | TEXTMERGE | PRETEXT | FLAGS | ADDITIVE
                     ;
 // class declaration
@@ -1225,6 +1229,8 @@ foxclassmember      : Member=foxclassvars          #foxclsvars
                     | Member=foximplementsclause   #foximplements
                     | Member=foxaddobjectclause    #foxaddobject
                     | Member=foxpemcomattrib       #foxpemcom
+                    | Member=constructor           #foxclsctor
+                    | Member=destructor            #foxclsdtor
                     ;
                     // do we also add support for events, operators, nested classes etc in the foxpro classes ?
                     //| Member=event_                #foxevent
@@ -1250,12 +1256,12 @@ foxmethodtype       : Token=(FUNCTION | PROCEDURE)
                     ;
 
 foxclassvars        : (Attributes=attributes)? (Modifiers=classvarModifiers)? 
-                      Vars += identifier (COMMA Vars += identifier )*  (AS DataType=datatype)? 
+                      (Fld=FIELD)? Vars += identifier (COMMA Vars += identifier )*  (AS DataType=datatype)? 
                       end=eos
                     ;
 
 
-foxfield            : F=foxfieldinitializer end=eos
+foxfield            : (Fld=FIELD)? F=foxfieldinitializer end=eos
                     ;
 
 foxfieldinitializer : Name=name assignoperator Expr=expression
@@ -1266,7 +1272,7 @@ foximplementsclause : IMPLEMENTS Type=datatype (Excl=EXCLUDE)? (IN Library=expre
                     ;
 
 foxaddobjectclause  : (Attributes=attributes)? ADD OBJECT (Modifiers=classvarModifiers)?
-                      Id=identifier AS Type=datatype
+                      Id=identifier AS Type=datatype (NoInit=NOINIT)?
                       (WITH FieldsInits += foxfieldinitializer (COMMA FieldsInits += foxfieldinitializer)* )?
                       end=eos
                     ;

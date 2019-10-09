@@ -10,6 +10,7 @@ USING System.Linq
 USING System.Text
 USING System.Threading.Tasks
 USING LanguageService.CodeAnalysis.Text
+USING LanguageService.CodeAnalysis.XSharp
 USING System.Diagnostics
 USING System.Collections.Immutable
 
@@ -55,7 +56,7 @@ BEGIN NAMESPACE XSharpModel
 
 
 
-		STATIC METHOD create(oFile AS XFile, oElement AS EntityObject, oInfo AS ParseResult) AS XType
+		STATIC METHOD create(oFile AS XFile, oElement AS EntityObject, oInfo AS ParseResult, dialect AS XSharpDialect ) AS XType
 			LOCAL cName := oElement:cName AS STRING
 			LOCAL kind  := Etype2Kind(oElement:eType) AS Kind
 			LOCAL mods  := oElement:eModifiers:ToModifiers() AS Modifiers
@@ -67,6 +68,7 @@ BEGIN NAMESPACE XSharpModel
 
 			CalculateRange(oElement, oInfo, OUT span, OUT intv)
 			oXType := XType{cName, kind, mods, vis, span, intv, oFile}
+			oXType:Dialect := dialect
 			oXType:NameSpace := oElement:cClassNamespace
 			oXType:ParentName := oElement:cInherit
 			IF String.IsNullOrEmpty(oXType:ParentName) .AND. ! oXType:IsPartial
@@ -76,14 +78,14 @@ BEGIN NAMESPACE XSharpModel
 			IF oElement:eType:IsType()
 				FOREACH VAR oMember IN oElement:aChildren
 					LOCAL xMember AS XTypeMember
-					xMember := XTypeMember.create(oMember, oInfo, oFile, oXType)
+					xMember := XTypeMember.create(oMember, oInfo, oFile, oXType, dialect)
 					oMember:oCargo := xMember
 					oXType:AddMember(xMember)
 				NEXT
 				IF oXType.Kind == Kind.Delegate
 					// Add "pseudo method" for the delegate for the editor
 					LOCAL xMember AS XTypeMember
-					xMember := XTypeMember.Create(oElement, oInfo, oFile, oXType)
+					xMember := XTypeMember.Create(oElement, oInfo, oFile, oXType,dialect)
 					oXType:AddMember(xMember)
 				ENDIF
 			ENDIF

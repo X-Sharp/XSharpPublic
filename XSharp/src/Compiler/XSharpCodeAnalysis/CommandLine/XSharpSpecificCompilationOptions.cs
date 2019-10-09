@@ -13,6 +13,7 @@ without warranties or conditions of any kind, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+using System;
 using System.IO;
 namespace Microsoft.CodeAnalysis.CSharp
 {
@@ -28,7 +29,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         static string _defaultIncludeDir;
         static string _windir;
         static string _sysdir;
-        public static void SetDefaultIncludeDir (string dir)
+        public static void SetDefaultIncludeDir(string dir)
         {
             _defaultIncludeDir = dir;
         }
@@ -47,7 +48,6 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         public bool ArrayZero { get; internal set; } = false;
         public bool CaseSensitive { get; internal set; } = false;
-        public bool ClrVersionWasSet { get; internal set; } = false;
         public int ClrVersion { get; internal set; } = 4;
         public string DefaultIncludeDir { get; internal set; } = _defaultIncludeDir;
         public XSharpDialect Dialect { get; internal set; } = XSharpDialect.Core;
@@ -58,11 +58,10 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool InitLocals { get; internal set; } = false;
         public bool LateBinding { get; internal set; } = false;
         public bool AllowNamedArguments { get; internal set; } = false;
-        public bool NamedArgsHasBeenSet { get; internal set; } = false;
         public bool NoClipCall { get; internal set; } = false;
         public bool NoStdDef { get; internal set; } = false;
         public string NameSpace { get; set; } = "";
-        public ParseLevel ParseLevel { get;  set; } = ParseLevel.Complete;
+        public ParseLevel ParseLevel { get; set; } = ParseLevel.Complete;
         public bool PreProcessorOutput { get; internal set; } = false;
         public bool SaveAsCSharp { get; internal set; } = false;
         public bool DumpAST { get; internal set; } = false;
@@ -83,28 +82,55 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool Vo10 { get; internal set; } = false;
         public bool Vo11 { get; internal set; } = false;
         public bool Vo12 { get; internal set; } = false;
-        public bool Vo13{ get; internal set; } = false;
+        public bool Vo13 { get; internal set; } = false;
         public bool Vo14 { get; internal set; } = false;
         public bool Vo15 { get; internal set; } = false;
         public bool Vo16 { get; internal set; } = false;
         public bool Xpp1 { get; internal set; } = false;
         public bool Xpp2 { get; internal set; } = false;
+        public bool Fox1 { get; internal set; } = false;
         public bool VulcanRTFuncsIncluded => RuntimeAssemblies.HasFlag(RuntimeAssemblies.VulcanRTFuncs);
         public bool VulcanRTIncluded => RuntimeAssemblies.HasFlag(RuntimeAssemblies.VulcanRT);
         public bool XSharpRTIncluded => RuntimeAssemblies.HasFlag(RuntimeAssemblies.XSharpRT);
-        public bool XSharpVOIncluded=> RuntimeAssemblies.HasFlag(RuntimeAssemblies.XSharpVO);
+        public bool XSharpVOIncluded => RuntimeAssemblies.HasFlag(RuntimeAssemblies.XSharpVO);
         public bool XSharpCoreIncluded => RuntimeAssemblies.HasFlag(RuntimeAssemblies.XSharpCore);
         public bool XSharpXPPIncluded => RuntimeAssemblies.HasFlag(RuntimeAssemblies.XSharpXPP);
-        public bool ExplicitInitLocals { get; internal set; } = false;
-        public bool ExplicitVO15 { get; internal set; } = false;
-        public bool ExplicitVO9 { get; internal set; } = false;
         internal RuntimeAssemblies RuntimeAssemblies { get; set; } = RuntimeAssemblies.None;
         public bool Overflow { get; internal set; } = false;
-        public bool OverflowHasBeenSet { get; internal set; } = false;
         public bool MemVars { get; internal set; } = false;
         public bool UndeclaredLocalVars { get; internal set; } = false;
+        public ExplicitOptions ExplicitOptions { get ; internal set; } = ExplicitOptions.None;
 
         public string PreviousArgument { get; internal set; } = string.Empty;
         public TextWriter ConsoleOutput { get; internal set; }
+    }
+
+    [Flags]
+    public enum ExplicitOptions
+    {
+        None = 0,
+        Overflow = 1 << 0,
+        Vo1 = 1 << 1,
+        Vo2 = 1 << 2,
+        Vo3 = 1 << 3,
+        Vo4 = 1 << 4,
+        Vo5 = 1 << 5,
+        Vo6 = 1 << 6,
+        Vo7 = 1 << 7,
+        Vo8 = 1 << 8,
+        Vo9 = 1 << 9,
+        Vo10 = 1 << 10,
+        Vo11 = 1 << 11,
+        Vo12 = 1 << 12,
+        Vo13 = 1 << 13,
+        Vo14 = 1 << 14,
+        Vo15 = 1 << 15,
+        Vo16 = 1 << 16,
+        Xpp1 = 1 << 17,
+        Xpp2 = 1 << 18,
+        Fox1 = 1 << 19,
+        InitLocals = 1 << 20,
+        NamedArgs = 1 << 21,
+        ClrVersion = 1 << 22,
     }
 }

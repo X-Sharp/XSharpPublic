@@ -127,6 +127,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool VOUntypedAllowed { get; private set; } = true;
         public bool XPPInheritFromAbstract { get; private set; } = false;
         public bool XPPUntypedmain { get; private set; } = false;
+
+        public bool FoxInheritUnknown { get; private set; } = false;
         public RuntimeAssemblies RuntimeAssemblies { get; private set; } = RuntimeAssemblies.None;
         public bool Overflow { get; private set; }
         public CSharpCommandLineArguments CommandLineArguments { get; private set; }
@@ -150,6 +152,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool vo16 => VOClipperConstructors;
         public bool xpp1 => XPPInheritFromAbstract;
         public bool xpp2 => XPPUntypedmain;
+        public bool fox1 => FoxInheritUnknown;
         public void SetXSharpSpecificOptions(XSharpSpecificCompilationOptions opt)
         {
             if (opt != null)
@@ -194,6 +197,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 VOClipperConstructors = opt.Vo16;
                 XPPInheritFromAbstract = opt.Xpp1;
                 XPPUntypedmain = opt.Xpp2;
+                FoxInheritUnknown = opt.Fox1;
                 RuntimeAssemblies = opt.RuntimeAssemblies;
                 Overflow = opt.Overflow;
                 ConsoleOutput = opt.ConsoleOutput;
@@ -257,7 +261,8 @@ namespace Microsoft.CodeAnalysis.CSharp
             VOUntypedAllowed = opt.VOUntypedAllowed; // vo15
             VOClipperConstructors = opt.VOClipperConstructors; // vo16
             XPPInheritFromAbstract = opt.XPPInheritFromAbstract; // xpp1
-            XPPUntypedmain = opt.XPPUntypedmain;    // xpp2 
+            XPPUntypedmain = opt.XPPUntypedmain;    // xpp2
+            FoxInheritUnknown = opt.FoxInheritUnknown;  // fox1
 
             RuntimeAssemblies = opt.RuntimeAssemblies;
             Overflow = opt.Overflow;

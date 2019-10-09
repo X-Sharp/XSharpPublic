@@ -43,6 +43,11 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool VOSignedUnsignedConversion { get; private set; }
         public bool VOStringComparisons { get; private set; }
         //public bool VOUntypedAllowed { get; private set; }// Handled in the parser
+
+        //public bool XPPInheritFromAbstract { get; private set; } // Handled in the parser
+        //public bool XPPUntypedmain { get; private set; } // Handled in the parser
+        //public bool FoxInheritUnknown { get; private set; } // Handled in the parser
+
         public XSharpDialect Dialect { get; private set; }
         public bool ImplicitNameSpace { get; private set; }
         public bool InitLocals { get; private set; }
@@ -71,6 +76,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         //public bool vo14 => VOFloatConstants;
         //public bool vo15 => VOUntypedAllowed;
         //public bool vo16 => VOClipperConstructors;
+        //public bool xpp1 => XPPInheritFromAbstract;
+        //public bool xpp2 => XPPUntypedmain;
+        //public bool fox1 => FoxInheritUnknown;
 
         public ParseLevel ParseLevel { get; set; } = ParseLevel.Complete;
 
@@ -102,6 +110,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                 //VOFloatConstants = opt.Vo14;              // Handled in the parser
                 //VOUntypedAllowed = opt.Vo15;              // Handled in the parser
                 //VOClipperConstructors = opt.Vo16;         // Handled in the parser
+                //XPPInheritFromAbstract = opt.Xpp1;        // Handled in the parser
+                //XPPUntypedmain= opt.Xpp2;                 // Handled in the parser
+                //FoxInheritUnknown= opt.Fox1;              // Handled in the parser
+
                 Dialect = opt.Dialect;
                 ImplicitNameSpace = opt.ImplicitNameSpace;
                 LateBinding = opt.LateBinding;

@@ -790,7 +790,7 @@ namespace XSharpLanguage
                     break;
             }
             // Then, look for Locals
-            foreach (XVariable localVar in currentMember.GetLocals(_buffer.CurrentSnapshot, currentLine, _dialect ).Where(l => nameStartsWith(l.Name, startWith)))
+            foreach (XVariable localVar in currentMember.GetLocals(_buffer.CurrentSnapshot, currentLine, _dialect).Where(l => nameStartsWith(l.Name, startWith)))
             {
                 //
                 ImageSource icon = _provider.GlyphService.GetGlyph(localVar.GlyphGroup, localVar.GlyphItem);
@@ -800,7 +800,7 @@ namespace XSharpLanguage
             // Ok, now look for Members of the Owner of the member... So, the class a Method
             //
 
-            if (currentMember.Kind.IsClassMember( _dialect ))
+            if (currentMember.Kind.IsClassMember(_dialect))
             {
                 var classElement = currentMember.Parent;
                 foreach (var member in classElement.Members.Where(m => m.Kind == Kind.Field && nameStartsWith(m.Name, startWith)))
@@ -2483,7 +2483,7 @@ namespace XSharpLanguage
 
             }
             // Hack to hanlde :: / COLONCOLON with something in front
-            if ( ( tokenList.Count > 1 ) && (tokenList[0] == "::"))
+            if ((tokenList.Count > 1) && (tokenList[0] == "::"))
             {
                 tokenList[0] = ":";
             }
@@ -2508,7 +2508,7 @@ namespace XSharpLanguage
                     {
                         triggerToken = GetPreviousToken(tokens, triggerToken, false);
                         // We should check that we are not getting out of the current member.....
-                        if ( triggerToken.StartIndex < fromMember.Interval.Start)
+                        if (triggerToken.StartIndex < fromMember.Interval.Start)
                         {
                             triggerToken = null;
                             break;
@@ -2782,7 +2782,7 @@ namespace XSharpLanguage
         /// <param name="foundElement"></param>
         /// <returns></returns>
         public static CompletionType RetrieveType(XFile file, List<string> tokenList, XTypeMember currentMember, String currentNS,
-            IToken stopToken, out CompletionElement foundElement, ITextSnapshot snapshot, int currentLine, XSharpDialect dialect )
+            IToken stopToken, out CompletionElement foundElement, ITextSnapshot snapshot, int currentLine, XSharpDialect dialect)
         {
             //
 #if TRACE
@@ -3021,17 +3021,17 @@ namespace XSharpLanguage
                 }
                 else
                 {
-                    bool inArray = false;
+                    bool hasBracket = false;
                     if (currentToken.EndsWith("[]"))
                     {
                         currentToken = currentToken.Substring(0, currentToken.Length - 2);
-                        inArray = true;
+                        hasBracket = true;
                     }
                     // First token, so it could be a parameter or a local var
                     if (startOfExpression)
                     {
                         // Search in Parameters, Locals, Field and Properties
-                        foundElement = FindIdentifier(currentMember, currentToken, ref cType, visibility, currentNS, snapshot, currentLine, dialect );
+                        foundElement = FindIdentifier(currentMember, currentToken, ref cType, visibility, currentNS, snapshot, currentLine, dialect);
                         if ((foundElement != null) && (foundElement.IsInitialized))
                         {
                             cType = foundElement.ReturnType;
@@ -3053,7 +3053,7 @@ namespace XSharpLanguage
                     if ((foundElement != null) && (foundElement.IsInitialized))
                     {
                         // and we are in an Array, so we need the "other" type
-                        if (inArray)
+                        if (hasBracket)
                         {
                             if (foundElement.IsGeneric)
                             {
@@ -3156,11 +3156,11 @@ namespace XSharpLanguage
             var usings = xFile.Usings.ToList();
             if (!String.IsNullOrEmpty(currentNs))
                 usings.Add(currentNs);
-            var stype = xFile.Project.FindSystemType(currentToken, usings);
-            if (stype != null)
+            // Try to check Check System Types
+            cType = new CompletionType(currentToken, xFile, currentNs);
+            if ( cType.SType != null )
             {
-                cType = new CompletionType(stype);
-                foundElement = new CompletionElement(stype);
+                foundElement = new CompletionElement(cType.SType );
                 if (foundElement.IsGeneric)
                 {
                     // We may need to adapt...
@@ -3174,7 +3174,7 @@ namespace XSharpLanguage
                     }
                 }
             }
-            if (cType == null)
+            if (cType.IsEmpty())
             {
                 var type = xFile.Project.Lookup(currentToken, true);
                 if (type == null && !string.IsNullOrEmpty(currentNs))
@@ -3192,7 +3192,7 @@ namespace XSharpLanguage
 
 
         static public CompletionElement FindIdentifier(XTypeMember member, string name, ref CompletionType cType,
-            Modifiers visibility, string currentNS, ITextSnapshot snapshot, int currentLine, XSharpDialect dialect )
+            Modifiers visibility, string currentNS, ITextSnapshot snapshot, int currentLine, XSharpDialect dialect)
         {
             XElement element;
             CompletionElement foundElement = null;
@@ -3205,7 +3205,7 @@ namespace XSharpLanguage
             if (element == null)
             {
                 // then Locals
-                element = member.GetLocals(snapshot, currentLine, dialect ).Where(x => StringEquals(x.Name, name)).LastOrDefault();
+                element = member.GetLocals(snapshot, currentLine, dialect).Where(x => StringEquals(x.Name, name)).LastOrDefault();
                 if (element == null)
                 {
                     // We can have a Property/Field of the current CompletionType
@@ -3272,56 +3272,70 @@ namespace XSharpLanguage
                                 int triggerPoint = searchAt - 1; // xVar.Interval.Start + searchAt - xVar.Range.StartColumn;
                                 IToken _stopToken;
                                 List<String> tokenList = XSharpTokenTools.GetTokenList(triggerPoint, xVar.Range.StartLine, snapshot, out _stopToken, false, xVar.File, false, member);
-                                if ( tokenList.Count == 1)
+                                if (tokenList.Count > 0)
                                 {
-                                    string token = tokenList[0].ToLower();
-                                    if (( token =="true" ) || (token == "false"))
+                                    if (tokenList.Count == 1)
                                     {
-                                        xVar.TypeName = "LOGIC";
-                                        found = true;
-                                    }
-                                }
-                                if (!found)
-                                {
-                                    cType = XSharpTokenTools.RetrieveType(xVar.File, tokenList, member, currentNS, null, out foundElement, snapshot, currentLine, dialect);
-                                    if (foundElement != null)
-                                    {
-                                        // Let's set the Std Type for this VAR
-                                        xVar.TypeName = foundElement.ReturnType.FullName;
-                                        // and now, correct it
-                                        if (foundElement.IsGeneric)
+                                        string token = tokenList[0].ToLower();
+                                        if ((token == "true") || (token == "false"))
                                         {
-                                            if (xVar.VarDefinition.AfterIn)
+                                            xVar.TypeName = "LOGIC";
+                                            found = true;
+                                        }
+                                    }
+                                    if (!found)
+                                    {
+                                        // Try to Handle Inline Array initialization
+                                        if ((tokenList.Count == 3) && (tokenList[0] == "<") && (tokenList[2] == ">"))
+                                        {
+                                            // Remove the closing Chevron
+                                            tokenList.RemoveAt(2);
+                                            // Remove the opening Chevron
+                                            tokenList.RemoveAt(0);
+                                            // Add [] add the end of "what should be the type"
+                                            tokenList[0] += "[]";
+                                        }
+                                        //
+                                        cType = XSharpTokenTools.RetrieveType(xVar.File, tokenList, member, currentNS, null, out foundElement, snapshot, currentLine, dialect);
+                                        if (foundElement != null)
+                                        {
+                                            // Let's set the Std Type for this VAR
+                                            xVar.TypeName = foundElement.ReturnType.FullName;
+                                            // and now, correct it
+                                            if (foundElement.IsGeneric)
                                             {
-                                                // Get the underlying Enumerated Type
-                                                CompletionType enumType = foundElement.EnumeratorType;
-                                                if (!enumType.IsEmpty())
+                                                if (xVar.VarDefinition.AfterIn)
                                                 {
-                                                    int numParam = 0;
-                                                    string genName = enumType.FullName;
-                                                    // Per default
-                                                    xVar.TypeName = foundElement.GenericTypeName;
-                                                    // Now, try to resolve T, or TKey, TValue, ...
-                                                    int index = genName.IndexOf('<');
-                                                    if (index != -1)
+                                                    // Get the underlying Enumerated Type
+                                                    CompletionType enumType = foundElement.EnumeratorType;
+                                                    if (!enumType.IsEmpty())
                                                     {
-                                                        // Extract the Generic params
-                                                        genName = genName.Substring(index);
-                                                        String[] items = genName.Split(',');
-                                                        numParam = items.Length;
-                                                        // Compare with the value that we have
-                                                        items = foundElement.GenericTypeName.Split(',');
-                                                        if (numParam == items.Length)
+                                                        int numParam = 0;
+                                                        string genName = enumType.FullName;
+                                                        // Per default
+                                                        xVar.TypeName = foundElement.GenericTypeName;
+                                                        // Now, try to resolve T, or TKey, TValue, ...
+                                                        int index = genName.IndexOf('<');
+                                                        if (index != -1)
                                                         {
-                                                            xVar.TypeName = enumType.FullName.Substring(0, index) + "<" + foundElement.GenericTypeName + ">";
+                                                            // Extract the Generic params
+                                                            genName = genName.Substring(index);
+                                                            String[] items = genName.Split(',');
+                                                            numParam = items.Length;
+                                                            // Compare with the value that we have
+                                                            items = foundElement.GenericTypeName.Split(',');
+                                                            if (numParam == items.Length)
+                                                            {
+                                                                xVar.TypeName = enumType.FullName.Substring(0, index) + "<" + foundElement.GenericTypeName + ">";
+                                                            }
                                                         }
                                                     }
-                                                }
-                                                else
-                                                {
+                                                    else
+                                                    {
 
+                                                    }
+                                                    //   xVar.TypeName = foundElement.GenericTypeName;
                                                 }
-                                                //   xVar.TypeName = foundElement.GenericTypeName;
                                             }
                                         }
                                     }
@@ -3734,7 +3748,7 @@ namespace XSharpLanguage
                 //
                 XTypeMember xMethod = cType.XType.Members.Where(x =>
                 {
-                    if ( x.Kind.IsClassMethod(dialect) )
+                    if (x.Kind.IsClassMethod(dialect))
                     {
                         return StringEquals(x.Name, currentToken);
                     }
@@ -3812,7 +3826,7 @@ namespace XSharpLanguage
                     // In the parent ?
                     if (cType.SType.BaseType != null)
                     {
-                        SearchMethodTypeIn(new CompletionType(cType.SType.BaseType), currentToken, Modifiers.Public, staticOnly, out foundElement,dialect);
+                        SearchMethodTypeIn(new CompletionType(cType.SType.BaseType), currentToken, Modifiers.Public, staticOnly, out foundElement, dialect);
                     }
                     if (foundElement == null)
                     {
@@ -3852,7 +3866,7 @@ namespace XSharpLanguage
         /// <param name="currentToken">The Toekn to look after</param>
         /// <param name="foundElement">The Found Element</param>
         /// <returns>The CompletionType that contains the Element</returns>
-        private static CompletionType SearchMethodStaticIn(XFile xFile, string currentToken, out CompletionElement foundElement, XSharpDialect dialect )
+        private static CompletionType SearchMethodStaticIn(XFile xFile, string currentToken, out CompletionElement foundElement, XSharpDialect dialect)
         {
             WriteOutputMessage($" SearchMethodStaticIn {xFile.SourcePath}, {currentToken} ");
             foundElement = null;
@@ -4078,6 +4092,7 @@ namespace XSharpLanguage
         public CompletionElement(XElement XSharpElement)
         {
             this.foundElement = XSharpElement;
+            this.isArray = XSharpElement.IsArray;
         }
 
         public CompletionElement(MemberInfo SystemElement)
@@ -4168,10 +4183,10 @@ namespace XSharpLanguage
                 if (this.XSharpElement != null)
                 {
                     // Would be better by checking Dialect...
-                    if ((this.XSharpElement is XTypeMember) )// && (this.XSharpElement.Kind.HasReturnType()))
+                    if ((this.XSharpElement is XTypeMember))// && (this.XSharpElement.Kind.HasReturnType()))
                     {
                         XTypeMember xt = (XTypeMember)this.XSharpElement;
-                        if ( !String.IsNullOrEmpty(xt.TypeName))
+                        if (!String.IsNullOrEmpty(xt.TypeName))
                         {
                             string searchTypeName = xt.TypeName;
                             if (searchTypeName.EndsWith("[]"))
@@ -4182,6 +4197,7 @@ namespace XSharpLanguage
                             else if (searchTypeName.EndsWith(">"))
                                 this.isGeneric = true;
                             cType = new CompletionType(searchTypeName, xt.File, xt.FileUsings);
+                            cType.IsArray = this.isArray;
                         }
                     }
                     else if (this.XSharpElement is XVariable)
@@ -4196,6 +4212,7 @@ namespace XSharpLanguage
                         else if (searchTypeName.EndsWith(">"))
                             this.isGeneric = true;
                         cType = new CompletionType(searchTypeName, xv.File, xv.FileUsings);
+                        cType.IsArray = this.isArray;
                     }
                     else if (this.XSharpElement is XType)
                     {
@@ -4221,8 +4238,13 @@ namespace XSharpLanguage
                     {
                         cType = new CompletionType(((ConstructorInfo)this.SystemElement).DeclaringType);
                     }
-                    if (cType.FullName.EndsWith(">"))
-                        this.isGeneric = true;
+                    else if (this.SystemElement is System.Type)
+                    {
+                        cType = new CompletionType( (System.Type)this.SystemElement );
+                    }
+                    if ( !cType.IsEmpty())
+                        if (cType.FullName.EndsWith(">"))
+                            this.isGeneric = true;
                 }
                 return cType;
             }
@@ -4419,7 +4441,7 @@ namespace XSharpLanguage
             var info = walker.Parse(lines, true);
             var locals = new List<XVariable>();
             // Add the normal locals for class members
-            if (member.Kind.IsClassMember( dialect) && !member.Modifiers.HasFlag(Modifiers.Static))
+            if (member.Kind.IsClassMember(dialect) && !member.Modifiers.HasFlag(Modifiers.Static))
             {
                 var XVar = new XVariable(member, "SELF", Kind.Local, member.Range, member.Interval, member.ParentName, false);
                 locals.Add(XVar);

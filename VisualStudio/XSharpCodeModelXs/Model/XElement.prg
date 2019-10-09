@@ -17,6 +17,7 @@ BEGIN NAMESPACE XSharpModel
 		PRIVATE _File AS XFile
 		PRIVATE _interval AS TextInterval
 		PROTECTED _isStatic AS LOGIC
+		PROTECTED _isArray AS LOGIC
 		PRIVATE _Kind AS Kind
 		PRIVATE _Modifiers AS Modifiers
 		PRIVATE _Name AS STRING
@@ -39,6 +40,7 @@ BEGIN NAMESPACE XSharpModel
 			SELF:_range := range
 			SELF:_interval := interval
 			SELF:_isStatic := FALSE
+			SELF:_isArray := FALSE
 			SELF:Dialect := XSharpDialect.Core
 			
 			#region Simple Properties
@@ -58,6 +60,7 @@ BEGIN NAMESPACE XSharpModel
 			PROPERTY Range AS TextRange GET SELF:_range
 			PROPERTY Visibility AS Modifiers GET SELF:_Visibility
 			PROPERTY Dialect AS XSharpDialect AUTO
+			VIRTUAL PROPERTY IsArray AS LOGIC GET SELF:_isArray
 			
 			
 		#endregion

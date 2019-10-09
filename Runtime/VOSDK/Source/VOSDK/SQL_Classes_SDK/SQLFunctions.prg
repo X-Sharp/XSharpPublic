@@ -361,7 +361,7 @@ FUNCTION __GetDataValuePSZ( oSQLColumn AS SQLColumn, oSQLData AS SqlData, lEqual
          cTemp := Mem2String( pTemp, uiLen )
          sValue += AllTrim( __AdjustString( cTemp ) )
 
-      CASE QL_BINARY
+      CASE SQL_BINARY
          sVal  := Mem2String(pTemp, oSQLData:Length)
          sValue += "'" + sVal + "'"
 

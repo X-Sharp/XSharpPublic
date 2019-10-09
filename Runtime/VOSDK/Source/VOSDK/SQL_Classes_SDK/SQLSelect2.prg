@@ -767,7 +767,7 @@ METHOD ExtendedFetch( nFetchType, nRow )
 									@nRowStatus )
 
 	IF nRetCode = SQL_NO_DATA_FOUND
-		SWITCH nFetchType
+		SWITCH (LONG) nFetchType
 		CASE SQL_FETCH_NEXT
 			SELF:__SetRecordFlags( NIL, TRUE )
 			IF !SELF:lLastRecFound
@@ -932,7 +932,7 @@ METHOD ExtendedFetch( nFetchType, nRow )
 	SELF:lFetchFlag  := TRUE
 	SELF:lRowModified:= FALSE
 	SELF:nRowCount   := -1
-	SWITCH nFetchType
+	SWITCH (LONG) nFetchType
 	CASE SQL_FETCH_NEXT
 		++nRecNum
 		SELF:Notify( NOTIFYRECORDCHANGE, 1 )

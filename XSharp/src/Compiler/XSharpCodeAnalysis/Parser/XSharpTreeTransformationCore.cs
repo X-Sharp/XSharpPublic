@@ -7777,25 +7777,35 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var exprSyntax = new List<ExpressionSyntax>();
             int iparam = 0;
             string sMask = sbMask.ToString();
-            foreach (var expr in expressions)
+            ExpressionSyntax res;
+            foreach (var e in expressions)
             {
                 string extra;
-                var res = ParseSubExpression(expr, out extra);
-                if (!String.IsNullOrEmpty(extra))
+                string format = null;
+                string expr = e;
+                int pos = expr.IndexOf(":");
+                if (pos > 0)
                 {
-                    extra = extra.Trim();
-                    if (extra.Length > 1 && (extra[0] == ',' || extra[0] == ':'))
+                    format = expr.Substring(pos);
+                    expr = expr.Substring(0, pos);
+                }
+                res = ParseSubExpression(expr, out extra);
+                if (!String.IsNullOrEmpty(format))
+                {
+                    format = format.Trim();
+                    if (format.Length > 1 && (format[0] == ',' || format[0] == ':'))
                     {
-                        sMask = sMask.Replace("{" + iparam.ToString() + "}", "{" + iparam.ToString() + extra + "}");
+                        sMask = sMask.Replace("{" + iparam.ToString() + "}", "{" + iparam.ToString() + format + "}");
                     }
                     else
                     {
-                        res = res.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_UnexpectedCharacter, extra));
+                        res = res.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_UnexpectedCharacter, format));
                     }
                 }
                 exprSyntax.Add(res);
                 iparam++;
             }
+
             // now we have a list of expression syntax node and a mask, so we can call String.Format
             var args = new List<ArgumentSyntax>();
             args.Add(MakeArgument(GenerateLiteral(sMask)));

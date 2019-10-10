@@ -874,7 +874,7 @@ VIRTUAL METHOD Unlock(recordID AS OBJECT) AS LOGIC
 	ELSE
 		result := ACE.AdsUnlockRecord(SELF:_Table, dwRecno)
 	ENDIF
-	IF result != ACE.AE_TABLE_NOT_SHARED .AND. result != 0
+	IF result != ACE.AE_TABLE_NOT_SHARED .and. result != ACE.AE_TABLE_NOT_LOCKED .AND. result != 0
 		SELF:_CheckError(result)
 	ENDIF
 RETURN TRUE

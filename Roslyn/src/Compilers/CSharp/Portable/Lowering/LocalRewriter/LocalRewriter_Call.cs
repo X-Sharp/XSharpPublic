@@ -520,7 +520,11 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
 
             // Step three: Now fill in the optional arguments.
+#if XSHARP
+            XsInsertMissingOptionalArguments(syntax, optionalParametersMethod.Parameters, actualArguments, refKinds,  temporariesBuilder, enableCallerInfo);
+#else
             InsertMissingOptionalArguments(syntax, optionalParametersMethod.Parameters, actualArguments, refKinds, enableCallerInfo);
+#endif
 
             if (isComReceiver)
             {
@@ -1117,25 +1121,19 @@ namespace Microsoft.CodeAnalysis.CSharp
             ImmutableArray<ParameterSymbol> parameters,
             BoundExpression[] arguments,
             ArrayBuilder<RefKind> refKinds,
-            ThreeState enableCallerInfo = ThreeState.Unknown)
+            ThreeState enableCallerInfo = ThreeState.Unknown
+            )
         {
             Debug.Assert(refKinds.Count == arguments.Length);
-
             for (int p = 0; p < arguments.Length; ++p)
             {
-#if XSHARP
-                if (arguments[p] == null || arguments[p].Syntax.XIsMissingArgument)
-#else
                 if (arguments[p] == null)
-#endif
+
                 {
                     ParameterSymbol parameter = parameters[p];
-#if !XSHARP
+
                     Debug.Assert(parameter.IsOptional);
                     arguments[p] = GetDefaultParameterValue(syntax, parameter, enableCallerInfo);
-#else
-                    arguments[p] = GetDefaultParameterValue(syntax, parameter, enableCallerInfo) ?? arguments[p] ?? new BoundDefaultExpression(syntax, parameter.Type);
-#endif
                     Debug.Assert(arguments[p].Type == parameter.Type);
 
                     if (parameters[p].RefKind == RefKind.In)
@@ -1144,6 +1142,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         refKinds[p] = RefKind.In;
                     }
                 }
+
             }
         }
 
@@ -1310,39 +1309,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 #if XSHARP
             if (!parameter.IsOptional && (defaultConstantValue == null || defaultConstantValue.IsBad))
             {
-                defaultConstantValue = parameter.GetVODefaultParameter();
-                if (defaultConstantValue == null)
-                    return null;
-                if ( parameterType is NamedTypeSymbol &&
-                    ((NamedTypeSymbol) parameterType).ConstructedFrom == compilation.PszType())
-                {
-
-                    if (defaultConstantValue.StringValue != null)
-                    {
-                        // ToDo
-                        // when the parameter is of type PSZ and there was a literal default string
-                        // then Vulcan generates a special literal array in the calling code.
-                        // For example Foo(s := "abcë" AS PSZ) becomes a
-                        // Foo([DefaultParameterValue("abc\x00eb", 0)] __Psz s)
-                        //
-                        // and in the calling code the default parameter is stored as a field of the <Module> class
-                        //
-                        // .field assembly static valuetype $ArrayType$5 䌤㘲␵$PSZ$_15_1 = ((61 62 63 EB 00))
-                        //
-                        // and a type is declared for the array size of 5 bytes. This type is declared in the global namespace:
-                        //
-                        // [StructLayout(LayoutKind.Explicit, Size=5, Pack=1)]
-                        //    public struct $ArrayType$5
-                        //    {
-                        //    }
-                        //
-                        // The call to the function becomes
-                        // Foo((__Psz) &䌤㘲␵$PSZ$_15_1);
-                        // Nikos can you implement something like this ?
-                        //
-                        defaultConstantValue = ConstantValue.Null;
-                    }
-                }
+                defaultConstantValue = XsDefaultValue(parameter, compilation);
             }
 #endif
             // For compatibility with the native compiler we treat all bad imported constant

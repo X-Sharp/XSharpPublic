@@ -303,6 +303,7 @@ Copyright (c) XSharp B.V.  All Rights Reserved
 	    VO16="$(VO16)" 
 	    XPP1="$(XPP1)" 
 	    XPP2="$(XPP2)" 
+      FOX1="$(FOX1)" 
     />
 
     <ItemGroup>

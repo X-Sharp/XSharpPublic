@@ -3,8 +3,7 @@
 <topic template="Popup" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>__IncludeMethodModifiers</title>
   <body>
-    <para styleclass="List">Attributes<tab />An optional list of one or more attributes that describe meta information for am entity, such as for example the [TestMethod] attribute on a method containing tests in a MsTest class library. Please note that Attributes must be on the same line as the FUNCTION / PROCEDURE / METHOD / ACCESS / ASSIGN keyword, or suffixed with a semi colon when they are written on the line above that keyword.<tab /></para>
-    <para styleclass="List"></para>
+    <para styleclass="List"><snippet src="__IncludeAttributes" inline="false"/></para>
     <para styleclass="List">Modifiers<tab />An optional list of modifiers that specify the visibility or scope of the entity, such as PUBLIC, PROTECTED, HIDDEN, INTERNAL, SEALED, ABSTRACT or STATIC.</para>
     <para styleclass="List"></para>
   </body>

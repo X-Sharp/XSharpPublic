@@ -21,7 +21,7 @@
     <para styleclass="Normal">Move the pointer to the specified record.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>
-    <para styleclass="Normal">GO[TO] &lt;<text styleclass="Italic">uRecID</text>&gt; | TOP | BOTTOM &#160;[[IN|ALIAS] workarea] </para>
+    <para styleclass="Normal">GO[TO] &lt;<text styleclass="Italic">uRecID</text>&gt; | TOP | BOTTOM &#160;[[IN|ALIAS] &lt;workarea&gt;] </para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Heading1">Arguments</text></para>
     <para styleclass="List">&lt;uRecID&gt;<tab />The record to go to. &#160;The data type and interpretation of &lt;uRecID&gt; is determined by the RDD. &#160;For .DBF files, it is the record number. &#160;If &lt;uRecID&gt; does not exist, the work area is positioned to <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_LastRec.htm" domain="XsRuntime.chm" styleclass="Normal">LastRec()</link> + 1, and both <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_Eof.htm" domain="XsRuntime.chm" styleclass="Normal">EoF()</link> and <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_Bof.htm" domain="XsRuntime.chm" styleclass="Normal">BoF()</link> return TRUE.</para>

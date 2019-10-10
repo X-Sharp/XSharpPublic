@@ -238,7 +238,7 @@
       <config-value name="imageconversion">1</config-value>
       <config-value name="jpgquality">90</config-value>
       <config-value name="htmlpopup">3</config-value>
-      <config-value name="topiceditor">0</config-value>
+      <config-value name="topiceditor">1</config-value>
       <config-value name="topicsimpleheadercolor">#C0C0C0</config-value>
       <config-value name="topicsimpletextcolor">#FFFFFF</config-value>
       <config-value name="topicsimplebuttons">1</config-value>
@@ -262,8 +262,7 @@
    <meta name="generator" content="Help &amp; Manual" />
    <meta name="keywords" content="<%TOPIC_KEYWORDS%>" />
    <meta http-equiv="Content-Type" content="text/html; charset=<%DOCCHARSET%>" />
-   <IF_CHM><meta http-equiv="X-UA-Compatible" content="IE=10" /></IF_CHM>
-   <IF_HTML><meta http-equiv="X-UA-Compatible" content="IE=edge" /></IF_HTML>
+   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
    <meta name="description" content="<%TOPIC_DESCRIPTION%>" />
    <meta name="picture" content="<%TOPIC_PICTURE%>" />
    <link type="text/css" href="<%STYLESHEET%>" rel="stylesheet" />
@@ -721,6 +720,17 @@
       <file-mod href="__IncludeLibCore.xml"/>
       <file-mod href="cmd_cat_comment.xml"/>
       <file-mod href="command_NOTE.xml"/>
+      <file-mod href="__IncludeAttributes.xml"/>
+      <file-mod href="__ExitLoop.xml"/>
+      <file-mod href="__For.xml"/>
+      <file-mod href="__In.xml"/>
+      <file-mod href="__IncludeBody.xml"/>
+      <file-mod href="__IncludeExpression.xml"/>
+      <file-mod href="__IncludeFuncProcModifiers.xml"/>
+      <file-mod href="__includeIdClass.xml"/>
+      <file-mod href="__Scope.xml"/>
+      <file-mod href="__While.xml"/>
+      <file-mod href="__IncludeParameters.xml"/>
     </file>
     <file href="Baggage/*.*" build="ALL" filetype="baggage"/>
   </project-files>

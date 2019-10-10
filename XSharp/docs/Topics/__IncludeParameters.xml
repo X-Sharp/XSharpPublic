@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>__IncludeParameters</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">__IncludeParameters</para>
+    </header>
+    <para styleclass="List">&lt;idParam&gt;<tab />A &#160;parameter variable. &#160;A variable specified in this manner is automatically declared local. &#160;These variables, also called formal parameters, are used to receive arguments that you pass when you call the entity.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">AS | REF|OUT &lt;idType&gt;<tab />Specifies the data type of the parameter variable (called strong typing). &#160;AS indicates that the parameter must be passed by value, and REF indicates that it must be passed by reference with the @ operator. OUT is a special kind of REF parameter that does not have to be assigned before the call and must be assigned inside the body of the entity.</para>
+    <para styleclass="Body Text"></para>
+  </body>
+</topic>

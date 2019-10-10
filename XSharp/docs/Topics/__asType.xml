@@ -6,8 +6,8 @@
     <header>
       <para styleclass="Heading1">__asType</para>
     </header>
-    <para styleclass="List">AS &lt;idType&gt;<tab />Specifies the data type associated with the instance variables (called strong typing). &#160;If omitted, the instance variables will be polymorphic and will have an initial value of NIL.</para>
+    <para styleclass="List">AS &lt;idType&gt;<tab />Specifies the data type. &#160;If omitted, then depending on the compiler options the type will be either USUAL or determined by the compiler.</para>
     <para styleclass="List"></para>
-    <para styleclass="List"><snippet src="__typeList" inline="false"/></para>
+    <para styleclass="List"></para>
   </body>
 </topic>

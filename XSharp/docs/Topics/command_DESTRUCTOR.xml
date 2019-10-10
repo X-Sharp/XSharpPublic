@@ -16,11 +16,13 @@
     <para styleclass="Heading1">Purpose</para>
     <para styleclass="Normal">Declare a method to access a non-exported or virtual instance variable.</para>
     <para styleclass="Heading1">Syntax</para>
-    <para styleclass="Normal"><tab />[Attributes] </para>
-    <para styleclass="Normal"><tab />[Modifiers] </para>
-    <para styleclass="Normal"><tab /><text style="font-weight:bold;">DESTRUCTOR [()]</text></para>
-    <para styleclass="Normal"><tab />[CLASS &lt;<text styleclass="Italic">idClass</text>&gt;]</para>
-    <para styleclass="Normal"><tab />[&lt;<text styleclass="Italic">MethodBody</text>&gt;]</para>
+    <para styleclass="Normal"><tab />[Attributes] [Modifiers] <tab /><text style="font-weight:bold;">DESTRUCTOR [()]</text></para>
+    <para styleclass="Normal"><tab />[&lt;<text styleclass="Italic">Body</text>&gt;]</para>
+    <para styleclass="Normal"><tab />[END DESTRUCTOR]</para>
+    <para styleclass="Heading1"><snippet src="__IncludeAttributes" inline="false"/></para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><snippet src="__IncludeBody" inline="false"/></para>
+    <para styleclass="List">END <text styleclass="Normal">DESTRUCTOR</text><tab />Optional end class to indicate the end of the <text styleclass="Normal">DESTRUCTOR</text> entity</para>
     <para styleclass="Heading1">Arguments</para>
     <para styleclass="Heading1">See Also</para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_ASSIGN">ASSIGN</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_CLASS">CLASS</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_METHOD">METHOD</link></para>

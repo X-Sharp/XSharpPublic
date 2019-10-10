@@ -25,20 +25,34 @@
     <para styleclass="Normal">Declare a method to access a non-exported or virtual instance variable.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>
-    <para styleclass="Normal"><tab />[Attributes] </para>
-    <para styleclass="Normal"><tab />[Modifiers] </para>
-    <para styleclass="Normal"><tab /><text style="font-weight:bold;">PROPERTY</text>&lt;<text styleclass="Italic">idName</text>&gt;</para>
+    <para styleclass="Normal"><tab />[Attributes] [Modifiers] <text style="font-weight:bold;">PROPERTY</text>&lt;<text styleclass="Italic">idName</text>&gt;</para>
     <para styleclass="Normal"><tab />[([&lt;<text styleclass="Italic">idParam</text>&gt; [AS | REF &lt;<text styleclass="Italic">idType</text>&gt;] [, ...])] </para>
     <para styleclass="Normal"><tab />[AS &lt;<text styleclass="Italic">idType</text>&gt;] [&lt;<text styleclass="Italic">idConvention</text>&gt;]</para>
     <para styleclass="Normal"><tab />[</para>
     <para styleclass="Normal"> &#160;<tab /> AUTO [Attributes] [Modifiers] GET|SET </para>
-    <para styleclass="Normal"> &#160; &#160; &#160; &#160; &#160; &#160; &#160;| [ &#160;[Attributes] [Modifiers] GET &lt;getExpression&gt; ] &#160;[ [Attributes] [Modifiers] SET &lt;setExpression&gt;] </para>
-    <para styleclass="Normal"> &#160; &#160; &#160; &#160; &#160; &#160; &#160;| [ &#160;[Attributes] [Modifiers] GET &lt;propertygetbody &gt; END GET]</para>
-    <para styleclass="Normal"><tab /> &#160; [ [Attributes] [Modifiers] SET &lt;propertysetbody &gt; END SET] </para>
+    <para styleclass="Normal"> &#160; &#160; &#160; &#160; &#160; &#160; &#160;| [ &#160;[Attributes] [Modifiers] GET &lt;Expression&gt; ] &#160;[ [Attributes] [Modifiers] SET &lt;Expression&gt;] </para>
+    <para styleclass="Normal"> &#160; &#160; &#160; &#160; &#160; &#160; &#160;| [ &#160;[Attributes] [Modifiers] GET &lt;Body &gt; END GET]</para>
+    <para styleclass="Normal"><tab /> &#160; [ [Attributes] [Modifiers] SET &lt;Body &gt; END SET] </para>
     <para styleclass="Normal"><tab /> &#160;END PROPERTY</para>
     <para styleclass="Normal"> &#160; &#160; &#160; &#160; &#160; &#160; &#160;]</para>
-    <para styleclass="Normal"></para>
+    <para styleclass="Heading1"><snippet src="__IncludeAttributes" inline="false"/></para>
+    <para styleclass="List">&lt;<text styleclass="Italic" style="font-style:normal;">idName</text>&gt;<tab />A valid identifier name for the property that you are defining. &#160;Like other methods, properties are entities. Property names must be unique within a class, but can share the same name as other entities in your application.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><snippet src="__IncludeParameters" inline="false"/></para>
+    <para styleclass="List"><snippet src="__asType" inline="false"/></para>
+    <para styleclass="List"><snippet src="__IncludeExpression" inline="false"/></para>
+    <para styleclass="List"><snippet src="__IncludeBody" inline="false"/></para>
     <para styleclass="Normal"><text styleclass="Heading1">Arguments</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Description</text></para>
+    <para styleclass="Normal">There are 3 types of property declarations:</para>
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">Single line declaration without AUTO clause</li>
+      <li styleclass="Normal">Single line declaration with GET / SET accessors</li>
+      <li styleclass="Normal">Multi line declaration with GET accessor block and/or SET accessor bock</li>
+    </list>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Heading1">See Also</text></para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_ASSIGN">ASSIGN</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_CLASS">CLASS</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_METHOD">METHOD</link></para>
     <para styleclass="Normal"></para>

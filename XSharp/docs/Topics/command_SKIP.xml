@@ -18,7 +18,7 @@
     <para styleclass="Normal">Move the record pointer relative to the current record.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>
-    <para styleclass="Normal">SKIP [&lt;<text styleclass="Italic">nRecords</text>&gt;] &#160;[[IN|ALIAS] workarea] </para>
+    <para styleclass="Normal">SKIP [&lt;<text styleclass="Italic">nRecords</text>&gt;] &#160;[[IN|ALIAS] &lt;workarea&gt;] </para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Heading1">Arguments</text></para>
     <para styleclass="List">&lt;nRecords&gt;<tab />The number of logical records to move, relative to the current record. &#160;A positive value means to skip forward, and a negative value means to skip backward. &#160;If &lt;nRecords&gt; is omitted, a value of 1 is assumed.</para>

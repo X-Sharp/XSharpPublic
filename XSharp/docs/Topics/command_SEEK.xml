@@ -19,7 +19,7 @@
     <para styleclass="Normal">Search an order for the first key matching the specified expression, position the record pointer to the corresponding record, and set the <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_Found.htm" domain="XsRuntime.chm">Found()</link> flag.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>
-    <para styleclass="Normal">SEEK &lt;<text styleclass="Italic">uKeyValue</text>&gt; [SOFTSEEK] [LAST]</para>
+    <para styleclass="Normal">SEEK &lt;<text styleclass="Italic">uKeyValue</text>&gt; [SOFTSEEK] [LAST] &#160;[[IN|ALIAS] &lt;workarea&gt;] </para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Heading1">Arguments</text></para>
     <para styleclass="List">&lt;uKeyValue&gt;<tab />An expression to match with an order key value.</para>

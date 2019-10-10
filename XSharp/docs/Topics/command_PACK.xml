@@ -17,7 +17,7 @@
     <para styleclass="Heading1">Purpose</para>
     <para styleclass="Normal">Remove all records marked for deletion from the current database file, rebuild all active orders, and recover all physical space occupied by the deleted records. Note that this will not affect memo files. Unused space in memo files can only be recovered by using COPY.</para>
     <para styleclass="Heading1">Syntax</para>
-    <para styleclass="Normal">PACK &#160;[[IN|ALIAS] workarea] </para>
+    <para styleclass="Normal">PACK &#160;[[IN|ALIAS] &lt;workarea&gt;] </para>
     <para styleclass="Heading1">Arguments</para>
     <para styleclass="Normal"></para>
     <para styleclass="List"><snippet src="__In" inline="false"/></para>

@@ -25,7 +25,7 @@
     <para styleclass="Body Text">Declare a data structure and its member names.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>
-    <para styleclass="Normal">[STATIC] VOSTRUCT &lt;<text styleclass="Italic">idStructure</text>&gt; [ALIGN 1|2|4|8]</para>
+    <para styleclass="Normal">[Modifiers] VOSTRUCT &lt;<text styleclass="Italic">idStructure</text>&gt; [ALIGN 1|2|4|8]</para>
     <para styleclass="Normal"><tab />MEMBER &lt;<text styleclass="Italic">idVarList</text>&gt; AS | IS &lt;<text styleclass="Italic">idType</text>&gt; [, ...] </para>
     <para styleclass="Normal"><tab />MEMBER DIM &lt;<text styleclass="Italic">ArraySpec</text>&gt; [, ...] AS | IS &lt;<text styleclass="Italic">idType</text>&gt; [, ...] </para>
     <para styleclass="Normal">[END VOSTRUCT]</para>
@@ -33,7 +33,7 @@
     <para styleclass="Body Text"><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Note: &#160;</text>The MEMBER statement is shown using two syntax diagrams for convenience. &#160;You can declare variables and dimensioned arrays using a single MEMBER statement if each definition is separated by a comma.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Heading1">Arguments</text></para>
-    <para styleclass="List">STATIC<tab />Restricts the visibility of the structure to the module in which it is declared. &#160;If omitted, the structure has application-wide visibility.</para>
+    <para styleclass="List"><snippet src="__IncludeFuncProcModifiers" inline="false"/></para>
     <para styleclass="List"></para>
     <para styleclass="List">&lt;idStructure&gt;<tab />A valid identifier name for the structure. &#160;A structure is an entity and shares the same name space as other entities. &#160;This means that it is not possible to have a structure and a constant, for example, with the same name.</para>
     <para styleclass="List"></para>

@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>CLASS Statement (Xbase++ dialect)</title>
+  <keywords>
+    <keyword>Binding of instance variables</keyword>
+    <keyword>Class names<keyword>declaring</keyword></keyword>
+    <keyword>CLASS statement</keyword>
+    <keyword>Classes</keyword>
+    <keyword>Classes</keyword>
+    <keyword>Classes<keyword>declaring Class names</keyword><keyword>inheritance</keyword><keyword>object instantiation</keyword></keyword>
+    <keyword>Compile-time declaration</keyword>
+    <keyword>Declaration statements</keyword>
+    <keyword>Entity declaration</keyword>
+    <keyword>EXPORT INSTANCE statement</keyword>
+    <keyword>EXPORT statement</keyword>
+    <keyword>HIDDEN INSTANCE statement</keyword>
+    <keyword>HIDDEN statement</keyword>
+    <keyword>INHERIT statement</keyword>
+    <keyword>INSTANCE statement</keyword>
+    <keyword>Instance variables</keyword>
+    <keyword>Instance variables</keyword>
+    <keyword>Instance variables</keyword>
+    <keyword>Instance variables<keyword>binding</keyword><keyword>declaring</keyword><keyword>exporting</keyword><keyword>hiding</keyword></keyword>
+    <keyword>Object instantiation</keyword>
+    <keyword>PROTECT INSTANCE statement</keyword>
+    <keyword>PROTECT statement</keyword>
+    <keyword>Statements</keyword>
+    <keyword>STATIC CLASS statement</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">CLASS Statement (Xbase++ dialect)</para>
+    </header>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Normal">Declare a class name to the compiler.</para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Normal"><tab />[Attributes] [Modifiers] <tab /><text style="font-weight:bold;">CLASS</text> &lt;<text styleclass="Italic">idClass</text>&gt; [<text style="font-weight:bold;">FROM</text> &lt;<text styleclass="Italic">idParentClass</text>&gt;] <br/><tab />[<text style="font-weight:bold;">IMPLEMENTS</text> &lt;idInterface&gt;[, &lt;IdInterface2&gt;,..]</para>
+    <para styleclass="Normal"><tab />[ClassMembers]</para>
+    <para styleclass="Normal"><tab /><text style="font-weight:bold;">ENDCLASS</text></para>
+    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="List">Attributes<tab />An optional list of one or more attributes that describe meta information for am entity, such as for example the [TestMethod] attribute on a method containing tests in a MsTest class library. Please note that Attributes must be on the same line or suffixed with a semi colon when they are written on the line above that keyword.<tab /></para>
+    <para styleclass="List"></para>
+    <para styleclass="List">Modifiers<tab />An optional list of modifiers that specify the visibility or scope of the entity, allowed values are STATIC, FREEZE and FINAL</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><snippet src="__includeIdClass" inline="false"/></para>
+    <para styleclass="List">FROM &lt;idParentClass&gt;<tab />The name of an existing class (called a superclass) from which the new class inherits methods and instance variables (with the exception of HIDDEN). X# does NOT allow multiple inheritance.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">IMPLEMENTS <text styleclass="Normal">&lt;idInterface&gt;</text><tab /><text styleclass="Normal">The name(s) of the interface(s) that this class implements</text></para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><text styleclass="Normal">ClassMembers</text><tab /></para>
+    <para styleclass="Heading1">Description</para>
+    <para styleclass="Heading1">Examples</para>
+    <para styleclass="Normal">The following example defines two classes, one of which inherits values from the other, and demonstrates how to create a class instance with initial values for the instance variables:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"></para>
+    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

@@ -20,20 +20,18 @@
     <para styleclass="Body Text">Declare an entity defined in a DLL to the compiler.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>
-    <para styleclass="Normal"><tab />[Attributes] </para>
-    <para styleclass="Normal"><tab />[Modifiers] </para>
-    <para styleclass="Normal"><tab />_DLL FUNCTION | PROCEDURE</para>
+    <para styleclass="Normal"><tab />[Attributes] [Modifiers] <text style="font-weight:bold;">_DLL FUNCTION | PROCEDURE</text></para>
     <para styleclass="Normal"><tab />[([&lt;<text styleclass="Italic">idParam</text>&gt; [AS | REF &lt;<text styleclass="Italic">idType</text>&gt;] [, ...])] </para>
     <para styleclass="Normal"><tab />[AS &lt;<text styleclass="Italic">idType</text>&gt;]</para>
     <para styleclass="Normal"><tab />[&lt;<text styleclass="Italic">idConvention</text>&gt;]<br/><tab />:&lt;<text styleclass="Body Text" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">idDLL</text>&gt;.&lt;<text styleclass="Body Text" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">idEntity</text>&gt;</para>
     <para styleclass="Normal"><tab />[CharSet= AUTO|ANSI|UNICODE]</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Heading1">Arguments</text></para>
+    <para styleclass="List">&lt;idEntity&gt;<tab />The name or number of the entity as defined in the DLL. &#160;This is normally, but not necessarily, the same as the entity name defined in &lt;EntityDeclaration&gt;, which may define an alias by which the entity is called in your application. &#160;&lt;idEntity&gt; must be part of the public protocol of the DLL identified by &lt;idDLL&gt;.<br/>IdEntity may also be specified as a literal string. This should be done to specify names of exported functions in DLLs that contain characters that are not allowed as part of an identifier in X#.</para>
+    <para styleclass="List"><snippet src="__IncludeParameters" inline="false"/></para>
+    <para styleclass="Normal"><snippet src="__callingconvention" inline="false"/></para>
     <para styleclass="List">&lt;idDLL&gt;<tab />The name of the DLL file that contains the entity definition, specified without an extension or path name (that is, its base name). &#160;A .DLL extension is assumed (with some exceptions determined by Windows that may have an .EXE extension), and the rules used to search for the file at runtime are explained in the Description section below.</para>
     <para styleclass="List"></para>
-    <para styleclass="List">&lt;idEntity&gt;<tab />The name or number of the entity as defined in the DLL. &#160;This is normally, but not necessarily, the same as the entity name defined in &lt;EntityDeclaration&gt;, which may define an alias by which the entity is called in your application. &#160;&lt;idEntity&gt; must be part of the public protocol of the DLL identified by &lt;idDLL&gt;.<br/>IdEntity may also be specified as a literal string. This should be done to specify names of exported functions in DLLs that contain characters that are not allowed as part of an identifier in X#.</para>
-    <para styleclass="List"></para>
-    <para styleclass="Normal"><snippet src="__callingconvention" inline="false"/></para>
     <para styleclass="List"><text styleclass="Body Text">Charset</text><tab /><text styleclass="Body Text">Optionally specifies which character set string parameters have</text></para>
     <para styleclass="Heading1">Description</para>
     <para styleclass="Body Text">_DLL declares an entity that is used by your application but defined in a DLL. &#160;This statement tells the compiler not only the location and name (or number) of the DLL entity, but also its calling convention (that is, what parameters it expects and the type of value that it returns). &#160;When you declare an entity with the _DLL statement, it also indicates to the compiler that the entity has no additional source code following its declaration.</para>

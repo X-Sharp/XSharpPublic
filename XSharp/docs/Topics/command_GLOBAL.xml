@@ -19,12 +19,11 @@
     <para styleclass="Normal">Declare a variable or array that is available to the entire application or module.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>
-    <para styleclass="Normal">[STATIC] GLOBAL &lt;<text styleclass="Italic">idVar</text>&gt; [:= &lt;<text styleclass="Italic">uValue</text>&gt;] [AS | IS &lt;<text styleclass="Italic">idType</text>&gt;]</para>
-    <para styleclass="Normal">[STATIC] GLOBAL DIM &lt;<text styleclass="Italic">ArraySpec</text>&gt; AS | IS &lt;<text styleclass="Italic">idType</text>&gt;</para>
+    <para styleclass="Normal">[Modifiers] &#160;GLOBAL &lt;<text styleclass="Italic">idVar</text>&gt; [:= &lt;<text styleclass="Italic">uValue</text>&gt;] [AS | IS &lt;<text styleclass="Italic">idType</text>&gt;]</para>
+    <para styleclass="Normal">[Modifiers] &#160;GLOBAL DIM &lt;<text styleclass="Italic">ArraySpec</text>&gt; AS | IS &lt;<text styleclass="Italic">idType</text>&gt;</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Heading1">Arguments</text></para>
-    <para styleclass="List">STATIC<tab />Restricts the visibility of the global variable to the module in which it is declared. &#160;If omitted, the variable has application-wide visibility.</para>
-    <para styleclass="List"></para>
+    <para styleclass="List"><snippet src="__IncludeFuncProcModifiers" inline="false"/></para>
     <para styleclass="List">&lt;idVar&gt;<tab />A valid identifier name for the variable. &#160;A global variable is an entity and, as such, shares the same name space as other entities. &#160;This means that it is not possible to have a global variable and a function, for example, with the same name.</para>
     <para styleclass="List"></para>
     <para styleclass="List">&lt;uValue&gt;<tab />A constant value that is assigned to &lt;idVar&gt;. &#160;This value can be a literal representation of one of the data types listed below or a simple expression involving only operators, literals, and DEFINE constants; however, more complicated expressions (including class instantiation) are not allowed.</para>

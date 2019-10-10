@@ -19,14 +19,15 @@
     <para styleclass="Normal">Declare a union entity and its member names.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>
-    <para styleclass="Normal">[STATIC] UNION &lt;<text styleclass="Italic">idUnion</text>&gt; [ALIGN 1|2|4|8]</para>
-    <para styleclass="Normal">MEMBER &lt;<text styleclass="Italic">idVarList</text>&gt; AS | IS &lt;<text styleclass="Italic">idType</text>&gt; [ ,…]</para>
-    <para styleclass="Normal">MEMBER DIM &lt;<text styleclass="Italic">ArraySpec</text>&gt; [ ,…] AS | IS &lt;<text styleclass="Italic">idType</text>&gt; [ ,…]</para>
+    <para styleclass="Normal"><tab />[Modifiers] UNION &lt;<text styleclass="Italic">idUnion</text>&gt; [ALIGN 1|2|4|8]</para>
+    <para styleclass="Normal"><tab />MEMBER &lt;<text styleclass="Italic">idVarList</text>&gt; AS | IS &lt;<text styleclass="Italic">idType</text>&gt; [ ,…]</para>
+    <para styleclass="Normal"><tab />MEMBER DIM &lt;<text styleclass="Italic">ArraySpec</text>&gt; [ ,…] AS | IS &lt;<text styleclass="Italic">idType</text>&gt; [ ,…]</para>
+    <para styleclass="Normal"><tab />[END UNION]</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Note: &#160;</text>The MEMBER statement is shown using two syntax diagrams for convenience. &#160;You can declare variables and dimensioned arrays using a single MEMBER statement if each definition is separated by a comma.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Heading1">Arguments</text></para>
-    <para styleclass="List">STATIC<tab />Restricts the visibility of the union to the module in which it is declared. &#160;If omitted, the union has application-wide visibility.</para>
+    <para styleclass="List"><snippet src="__IncludeFuncProcModifiers" inline="false"/></para>
     <para styleclass="List"></para>
     <para styleclass="List">&lt;idUnion&gt;<tab />A valid identifier name for the union. &#160;A union is an entity and shares the same name space as other entities. &#160;This means that it is not possible to have a union and a constant, for example, with the same name.</para>
     <para styleclass="List"></para>

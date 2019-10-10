@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>__IncludeBody</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">__IncludeBody</para>
+    </header>
+    <para styleclass="List">&lt;Body&gt;<tab />Program statements that form the code of this entity.<br/>The &lt;Body&gt; can contain one or more RETURN statements to return control to the calling routine and to serve as the function return value. &#160;If no return statement is specified, control passes back to the calling routine when the function definition ends, and the function will return a default value depending on the return value data type specified (NIL if the return value is not strongly typed).</para>
+    <para styleclass="List"></para>
+  </body>
+</topic>

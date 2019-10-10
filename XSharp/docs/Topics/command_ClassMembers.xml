@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Other Classmembers</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">ClassMembers (All dialects)</para>
+    </header>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_ACCESS" styleclass="List">ACCESS</link><text styleclass="List">, </text></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_ASSIGN" styleclass="List">ASSIGN</link><text styleclass="List">,</text></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_CONSTRUCTOR" styleclass="List">CONSTRUCTOR</link><text styleclass="List">, </text></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DESTRUCTOR" styleclass="List">DESTRUCTOR</link><text styleclass="List">, </text></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_EVENT" styleclass="List">EVENT</link><text styleclass="List">, </text></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_METHOD" styleclass="List">METHOD</link><text styleclass="List">, </text></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_OPERATOR" styleclass="List">OPERATOR</link><text styleclass="List">, </text></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_PROPERTY" styleclass="List">PROPERTY</link></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="List"><tab />DECLARE &#160;( ACCESS | ASSIGN | METHOD ) &#160;&lt;message_identifier_list&gt;</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"></para>
+  </body>
+</topic>

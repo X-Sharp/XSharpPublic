@@ -18,7 +18,7 @@
     <para styleclass="Normal">Permanently remove all records from database file in the current work area.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>
-    <para styleclass="Normal">ZAP &#160;[[IN|ALIAS] workarea] </para>
+    <para styleclass="Normal">ZAP &#160;[[IN|ALIAS] &lt;workarea&gt;] </para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Heading1">Arguments</text></para>
     <para styleclass="List"></para>

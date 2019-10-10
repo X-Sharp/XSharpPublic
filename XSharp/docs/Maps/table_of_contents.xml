@@ -5,56 +5,74 @@
   </topicref>
   <topicref type="topic" id="436965854048353" modified="2019-08-27T15:20:43.693Z" icon="0" href="Embedded_topics">
     <caption translate="true">Embedded topics</caption>
-    <topicref type="topic" id="437327054001047" modified="2019-09-24T16:44:57.848Z" icon="0" href="__IncludeLibCore">
-      <caption translate="true">__IncludeLibCore</caption>
-    </topicref>
-    <topicref type="topic" id="437046261841966" modified="2019-09-03T15:19:40.116Z" icon="0" href="__isType">
-      <caption translate="true">__isType</caption>
-    </topicref>
-    <topicref type="topic" id="436995820458338" modified="2019-09-03T15:19:40.123Z" icon="0" href="__callingconvention">
-      <caption translate="true">__callingconvention</caption>
-    </topicref>
-    <topicref type="topic" id="436997313619587" modified="2019-09-03T15:19:40.130Z" icon="0" href="__CommandInclude">
-      <caption translate="true">__CommandInclude</caption>
-    </topicref>
-    <topicref type="topic" id="436997242569266" modified="2019-09-03T15:19:40.136Z" icon="0" href="__IncludeFunctionParameters">
-      <caption translate="true">__IncludeFunctionParameters</caption>
-    </topicref>
-    <topicref type="topic" id="436997825904631" modified="2019-09-03T15:19:40.142Z" icon="0" href="__IncludeLibRT">
-      <caption translate="true">__IncludeLibRT</caption>
-    </topicref>
-    <topicref type="topic" id="436997002587073" modified="2019-09-03T15:19:40.148Z" icon="0" href="__IncludeMethodModifiers">
-      <caption translate="true">__IncludeMethodModifiers</caption>
-    </topicref>
-    <topicref type="topic" id="385064317732631" modified="2019-09-03T15:19:40.154Z" icon="0" href="__IncludeMethodParameters">
-      <caption translate="true">__IncludeMethodParameters</caption>
-    </topicref>
-    <topicref type="topic" id="385066667365089" modified="2019-09-03T15:19:40.160Z" icon="0" href="__IncludeStrongTyping">
-      <caption translate="true">__IncludeStrongTyping</caption>
-    </topicref>
-    <topicref type="topic" id="436998848002267" modified="2019-09-03T15:19:40.167Z" icon="0" href="__asType">
+    <topicref type="topic" id="436998848002267" modified="2019-10-10T15:22:23.413Z" icon="0" href="__asType">
       <caption translate="true">__asType</caption>
     </topicref>
-    <topicref type="topic" id="436996450060440" modified="2019-09-03T15:19:40.173Z" icon="0" href="__typeList">
-      <caption translate="true">__typeList</caption>
+    <topicref type="topic" id="436995820458338" modified="2019-10-10T15:22:23.421Z" icon="0" href="__callingconvention">
+      <caption translate="true">__callingconvention</caption>
     </topicref>
-    <topicref type="topic" id="437116843107858" modified="2019-09-03T15:31:32.101Z" icon="0" href="Disclaimer">
+    <topicref type="topic" id="436997313619587" modified="2019-10-10T15:22:23.430Z" icon="0" href="__CommandInclude">
+      <caption translate="true">__CommandInclude</caption>
+    </topicref>
+    <topicref type="topic" id="437116843107858" modified="2019-10-10T15:22:23.438Z" icon="0" href="Disclaimer">
       <caption translate="true">__Disclaimer</caption>
     </topicref>
-    <topicref type="topic" id="437330441530835" build="ALL" modified="2019-09-24T20:50:10.122Z" icon="0" href="__In">
-      <caption translate="true">__In</caption>
+    <topicref type="topic" id="437330452404445" modified="2019-10-10T15:22:23.447Z" icon="0" href="__ExitLoop">
+      <caption translate="true">__ExitLoop</caption>
     </topicref>
-    <topicref type="topic" id="437326588013049" build="ALL" modified="2019-09-24T15:12:08.647Z" icon="0" href="__Scope">
-      <caption translate="true">__Scope</caption>
-    </topicref>
-    <topicref type="topic" id="437329182366536" build="ALL" modified="2019-09-24T20:55:10.596Z" icon="0" href="__For">
+    <topicref type="topic" id="437329182366536" modified="2019-10-10T15:22:23.456Z" icon="0" href="__For">
       <caption translate="true">__For</caption>
     </topicref>
-    <topicref type="topic" id="437327618609533" build="ALL" modified="2019-09-24T20:55:24.780Z" icon="0" href="__While">
+    <topicref type="topic" id="437330441530835" modified="2019-10-10T15:22:23.467Z" icon="0" href="__In">
+      <caption translate="true">__In</caption>
+    </topicref>
+    <topicref type="topic" id="437480443133570" modified="2019-10-10T15:22:23.476Z" icon="0" href="__IncludeAttributes">
+      <caption translate="true">__IncludeAttributes</caption>
+    </topicref>
+    <topicref type="topic" id="43748388810627" modified="2019-10-10T15:22:23.486Z" icon="0" href="__IncludeBody">
+      <caption translate="true">__IncludeBody</caption>
+    </topicref>
+    <topicref type="topic" id="437488283259296" modified="2019-10-10T15:22:23.494Z" icon="0" href="__IncludeExpression">
+      <caption translate="true">__IncludeExpression</caption>
+    </topicref>
+    <topicref type="topic" id="437480253472319" modified="2019-10-10T15:22:23.503Z" icon="0" href="__IncludeFuncProcModifiers">
+      <caption translate="true">__IncludeFuncProcModifiers</caption>
+    </topicref>
+    <topicref type="topic" id="436997242569266" modified="2019-10-10T15:22:23.512Z" icon="0" href="__IncludeFunctionParameters">
+      <caption translate="true">__IncludeFunctionParameters</caption>
+    </topicref>
+    <topicref type="topic" id="437481433228998" modified="2019-10-10T15:22:23.522Z" icon="0" href="__includeIdClass">
+      <caption translate="true">__includeIdClass</caption>
+    </topicref>
+    <topicref type="topic" id="437327054001047" modified="2019-10-10T15:22:23.531Z" icon="0" href="__IncludeLibCore">
+      <caption translate="true">__IncludeLibCore</caption>
+    </topicref>
+    <topicref type="topic" id="436997825904631" modified="2019-10-10T15:22:23.541Z" icon="0" href="__IncludeLibRT">
+      <caption translate="true">__IncludeLibRT</caption>
+    </topicref>
+    <topicref type="topic" id="436997002587073" modified="2019-10-10T15:22:23.549Z" icon="0" href="__IncludeMethodModifiers">
+      <caption translate="true">__IncludeMethodModifiers</caption>
+    </topicref>
+    <topicref type="topic" id="385064317732631" modified="2019-10-10T15:22:23.558Z" icon="0" href="__IncludeMethodParameters">
+      <caption translate="true">__IncludeMethodParameters</caption>
+    </topicref>
+    <topicref type="topic" id="385066667365089" modified="2019-10-10T15:22:23.566Z" icon="0" href="__IncludeStrongTyping">
+      <caption translate="true">__IncludeStrongTyping</caption>
+    </topicref>
+    <topicref type="topic" id="437046261841966" modified="2019-10-10T15:22:23.576Z" icon="0" href="__isType">
+      <caption translate="true">__isType</caption>
+    </topicref>
+    <topicref type="topic" id="437326588013049" modified="2019-10-10T15:22:23.584Z" icon="0" href="__Scope">
+      <caption translate="true">__Scope</caption>
+    </topicref>
+    <topicref type="topic" id="436996450060440" modified="2019-10-10T15:22:23.594Z" icon="0" href="__typeList">
+      <caption translate="true">__typeList</caption>
+    </topicref>
+    <topicref type="topic" id="437327618609533" modified="2019-10-10T15:22:23.604Z" icon="0" href="__While">
       <caption translate="true">__While</caption>
     </topicref>
-    <topicref type="topic" id="437330452404445" build="ALL" modified="2019-09-24T21:32:40.736Z" icon="0" href="__ExitLoop">
-      <caption translate="true">__ExitLoop</caption>
+    <topicref type="topic" id="437485976280362" modified="2019-10-10T15:22:23.614Z" icon="0" href="__IncludeParameters">
+      <caption translate="true">__IncludeParameters</caption>
     </topicref>
   </topicref>
   <topicref type="topic" id="423886812341331" build="ALL" modified="2019-06-14T18:30:32.542Z" icon="0" href="XSharp">
@@ -981,32 +999,71 @@
               <topicref type="topic" id="384613959523963" build="ALL" modified="2019-09-24T14:17:26.154Z" icon="0" href="command__DLL">
                 <caption translate="true">_DLL Statement</caption>
               </topicref>
-              <topicref type="topic" id="384615648750741" build="ALL" modified="2019-09-24T14:17:26.159Z" icon="0" href="command_ACCESS">
-                <caption translate="true">ACCESS Statement</caption>
+              <topicref type="topic" id="384613776896508" build="ALL" modified="2019-10-09T20:05:41.376Z" icon="0" href="command_CLASS">
+                <caption translate="true">CLASS Statement (All dialects)</caption>
+                <topicref type="topic" id="437479735698648" build="ALL" modified="2019-10-09T20:19:21.160Z" icon="0" href="command_Instance_Variable">
+                  <caption translate="true">Instance Variables</caption>
+                </topicref>
+                <topicref type="topic" id="437477572536812" build="ALL" modified="2019-10-09T20:11:57.391Z" icon="0" href="command_ClassMembers">
+                  <caption translate="true">Other Classmembers</caption>
+                </topicref>
               </topicref>
-              <topicref type="topic" id="384614387635292" build="ALL" modified="2019-09-24T14:17:26.165Z" icon="0" href="command_ASSIGN">
-                <caption translate="true">ASSIGN Statement</caption>
+              <topicref type="topic" id="437477445546098" build="ALL" modified="2019-10-09T20:06:40.463Z" icon="0" href="command_CLASS_Fox">
+                <caption translate="true">CLASS Statement (FoxPro dialect)</caption>
+                <topicref type="topic" id="437478995700105" build="ALL" modified="2019-10-09T20:19:28.293Z" icon="0" href="command_Properties_Fox">
+                  <caption translate="true">Properties and Fields</caption>
+                </topicref>
+                <topicref type="topic" id="437479355046292" build="ALL" modified="2019-10-09T20:13:14.809Z" icon="0" href="command_ClassMembers_Fox">
+                  <caption translate="true">Other Classmembers</caption>
+                </topicref>
               </topicref>
-              <topicref type="topic" id="384613776896508" build="ALL" modified="2019-09-24T14:17:26.170Z" icon="0" href="command_CLASS">
-                <caption translate="true">CLASS Statement</caption>
+              <topicref type="topic" id="437476375544384" build="ALL" modified="2019-10-09T20:06:45.951Z" icon="0" href="command_CLASS_Xpp">
+                <caption translate="true">CLASS Statement (Xbase++ dialect)</caption>
+                <topicref type="topic" id="437477277472577" build="ALL" modified="2019-10-09T20:19:23.583Z" icon="0" href="command_InstanceVariables_Xpp">
+                  <caption translate="true">Instance Variables</caption>
+                </topicref>
+                <topicref type="topic" id="43749586475796" build="ALL" modified="2019-10-09T20:12:46.526Z" icon="0" href="cmd_Classmembers_Xpp">
+                  <caption translate="true">Other Classmembers</caption>
+                </topicref>
               </topicref>
-              <topicref type="topic" id="436995949548839" build="ALL" modified="2019-09-24T14:17:26.175Z" icon="0" href="command_INTERFACE">
-                <caption translate="true">INTERFACE Statement</caption>
-              </topicref>
-              <topicref type="topic" id="436995536280198" build="ALL" modified="2019-09-24T14:17:26.181Z" icon="0" href="command_CONSTRUCTOR">
-                <caption translate="true">CONSTRUCTOR Statement</caption>
-              </topicref>
-              <topicref type="topic" id="384616246317208" build="ALL" modified="2019-09-24T14:17:26.188Z" icon="0" href="command_DECLARE_METHOD">
-                <caption translate="true">DECLARE METHOD Statement</caption>
+              <topicref type="topic" id="437476792465459" build="ALL" modified="2019-10-09T20:20:57.964Z" icon="0" href="Class-Members2">
+                <caption translate="true">CLASS Members</caption>
+                <topicref type="topic" id="384615648750741" build="ALL" modified="2019-09-24T14:17:26.159Z" icon="0" href="command_ACCESS">
+                  <caption translate="true">ACCESS Statement</caption>
+                </topicref>
+                <topicref type="topic" id="384614387635292" build="ALL" modified="2019-09-24T14:17:26.165Z" icon="0" href="command_ASSIGN">
+                  <caption translate="true">ASSIGN Statement</caption>
+                </topicref>
+                <topicref type="topic" id="436995536280198" build="ALL" modified="2019-09-24T14:17:26.181Z" icon="0" href="command_CONSTRUCTOR">
+                  <caption translate="true">CONSTRUCTOR Statement</caption>
+                </topicref>
+                <topicref type="topic" id="384616246317208" build="ALL" modified="2019-09-24T14:17:26.188Z" icon="0" href="command_DECLARE_METHOD">
+                  <caption translate="true">DECLARE METHOD Statement</caption>
+                </topicref>
+                <topicref type="topic" id="436998878760536" build="ALL" modified="2019-09-24T14:17:26.199Z" icon="0" href="command_DESTRUCTOR">
+                  <caption translate="true">DESTRUCTOR Statement</caption>
+                </topicref>
+                <topicref type="topic" id="436996135072412" build="ALL" modified="2019-09-24T14:17:26.205Z" icon="0" href="command_EVENT">
+                  <caption translate="true">EVENT Statement</caption>
+                </topicref>
+                <topicref type="topic" id="437477339534916" build="ALL" modified="2019-10-09T20:22:15.950Z" icon="0" href="command_FUNCTION">
+                  <caption translate="true">FUNCTION Statement</caption>
+                </topicref>
+                <topicref type="topic" id="38462307661086" build="ALL" modified="2019-09-24T14:17:26.223Z" icon="0" href="command_METHOD">
+                  <caption translate="true">METHOD Statement</caption>
+                </topicref>
+                <topicref type="topic" id="436998671179174" build="ALL" modified="2019-09-24T14:17:26.230Z" icon="0" href="command_OPERATOR">
+                  <caption translate="true">OPERATOR Statement</caption>
+                </topicref>
+                <topicref type="topic" id="437477867731321" build="ALL" modified="2019-10-09T20:22:32.561Z" icon="0" href="command_PROCEDURE">
+                  <caption translate="true">PROCEDURE Statement</caption>
+                </topicref>
+                <topicref type="topic" id="436996775134688" build="ALL" modified="2019-09-24T14:17:26.244Z" icon="0" href="command_PROPERTY">
+                  <caption translate="true">PROPERTY Statement</caption>
+                </topicref>
               </topicref>
               <topicref type="topic" id="384613569689846" build="ALL" modified="2019-09-24T14:17:26.193Z" icon="0" href="command_DEFINE">
                 <caption translate="true">DEFINE Statement</caption>
-              </topicref>
-              <topicref type="topic" id="436998878760536" build="ALL" modified="2019-09-24T14:17:26.199Z" icon="0" href="command_DESTRUCTOR">
-                <caption translate="true">DESTRUCTOR Statement</caption>
-              </topicref>
-              <topicref type="topic" id="436996135072412" build="ALL" modified="2019-09-24T14:17:26.205Z" icon="0" href="command_EVENT">
-                <caption translate="true">EVENT Statement</caption>
               </topicref>
               <topicref type="topic" id="384614238351044" build="ALL" modified="2019-09-24T14:17:26.210Z" icon="0" href="command_FUNCTION">
                 <caption translate="true">FUNCTION Statement</caption>
@@ -1014,20 +1071,11 @@
               <topicref type="topic" id="384615018311778" build="ALL" modified="2019-09-24T14:17:26.217Z" icon="0" href="command_GLOBAL">
                 <caption translate="true">GLOBAL Statement</caption>
               </topicref>
-              <topicref type="topic" id="38462307661086" build="ALL" modified="2019-09-24T14:17:26.223Z" icon="0" href="command_METHOD">
-                <caption translate="true">METHOD Statement</caption>
-              </topicref>
-              <topicref type="topic" id="436998671179174" build="ALL" modified="2019-09-24T14:17:26.230Z" icon="0" href="command_OPERATOR">
-                <caption translate="true">OPERATOR Statement</caption>
+              <topicref type="topic" id="436995949548839" build="ALL" modified="2019-09-24T14:17:26.175Z" icon="0" href="command_INTERFACE">
+                <caption translate="true">INTERFACE Statement</caption>
               </topicref>
               <topicref type="topic" id="384615026623733" build="ALL" modified="2019-09-24T14:17:26.236Z" icon="0" href="command_PROCEDURE">
                 <caption translate="true">PROCEDURE Statement</caption>
-              </topicref>
-              <topicref type="topic" id="436996775134688" build="ALL" modified="2019-09-24T14:17:26.244Z" icon="0" href="command_PROPERTY">
-                <caption translate="true">PROPERTY Statement</caption>
-              </topicref>
-              <topicref type="topic" id="385274846261235" build="ALL" modified="2019-09-24T14:17:26.251Z" icon="0" href="command_STATIC">
-                <caption translate="true">STATIC Statement</caption>
               </topicref>
               <topicref type="topic" id="436997490436234" build="ALL" modified="2019-09-24T14:17:26.257Z" icon="0" href="command_STRUCTURE">
                 <caption translate="true">STRUCTURE Statement</caption>

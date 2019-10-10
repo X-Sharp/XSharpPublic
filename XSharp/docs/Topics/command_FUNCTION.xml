@@ -17,12 +17,10 @@
     </header>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Heading1">Purpose</text></para>
-    <para styleclass="Normal">Declare a function name and an optional list of local variable names to the compiler.</para>
+    <para styleclass="Normal">Declare a function name and an optional list of local variable names to the compiler. When used inside a FoxPro DEFINE CLASS .. ENDDEFINE this declares a method.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>
-    <para styleclass="Normal"><tab />[Attributes]</para>
-    <para styleclass="Normal"><tab />[Modifiers]</para>
-    <para styleclass="Normal"><tab />FUNCTION &lt;<text styleclass="Italic">idFunction</text>&gt; </para>
+    <para styleclass="Normal"><tab />[Attributes] [Modifiers] <text style="font-weight:bold;">FUNCTION</text> &lt;<text styleclass="Italic">idFunction</text>&gt; </para>
     <para styleclass="Normal"><tab />[Typeparameters]</para>
     <para styleclass="Normal"><tab />[([&lt;<text styleclass="Italic">idParam</text>&gt; [AS | REF &lt;<text styleclass="Italic">idType</text>&gt;] [, ...])] </para>
     <para styleclass="Normal"><tab />[AS &lt;<text styleclass="Italic">idType</text>&gt;]</para>
@@ -30,17 +28,20 @@
     <para styleclass="Normal"><tab />[&lt;<text styleclass="Italic">idConvention</text>&gt;]</para>
     <para styleclass="Normal"><tab />[EXPORT LOCAL] </para>
     <para styleclass="Normal"><tab />[DLLEXPORT STRING_CONST]</para>
-    <para styleclass="Normal"><tab />[&lt;<text styleclass="Italic">FunctionBody</text>&gt;]</para>
+    <para styleclass="Normal"><tab />[&lt;<text styleclass="Italic">Body</text>&gt;]</para>
+    <para styleclass="Normal"><tab />[ENDFUNC | END FUNCTION]</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Heading1">Arguments</text></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="List"><snippet src="__IncludeMethodModifiers" inline="false"/></para>
+    <para styleclass="Heading1"><snippet src="__IncludeAttributes" inline="false"/></para>
+    <para styleclass="List"><snippet src="__IncludeFuncProcModifiers" inline="false"/></para>
+    <para styleclass="List"><tab />Please note that functions and procedures used as class members in FoxPro compatible classes can have more modifiers.</para>
+    <para styleclass="List"></para>
     <para styleclass="List">&lt;idFunction&gt;<tab />A valid identifier name for the function. &#160;A function is an entity and, as such, shares the same name space as other entities. &#160;This means that it is not possible to have a function and a class, for example, with the same name.</para>
     <para styleclass="List"><snippet src="__IncludeFunctionParameters" inline="false"/></para>
     <para styleclass="List"></para>
-    <para styleclass="List">&lt;FunctionBody&gt;<tab />Program statements to execute when you call this function.</para>
+    <para styleclass="List"><snippet src="__IncludeBody" inline="false"/></para>
     <para styleclass="List"></para>
-    <para styleclass="List"><tab />The &lt;FunctionBody&gt; can contain one or more RETURN statements to return control to the calling routine and to serve as the function return value. &#160;If no return statement is specified, control passes back to the calling routine when the function definition ends, and the function will return a default value depending on the return value data type specified (NIL if the return value is not strongly typed).</para>
+    <para styleclass="List"><text styleclass="Normal">ENDFUNC | END FUNCTION</text><tab /><text styleclass="Normal">These (optional)keywords indicate the logical end of the function.</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Heading1">Description</text></para>
     <para styleclass="Normal">A function is a subprogram comprised of a set of declarations and statements to be executed whenever you refer to &lt;<text styleclass="Italic">idFunction</text>&gt; followed by a pair of parentheses (see Notes section, below).</para>

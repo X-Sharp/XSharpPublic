@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>CLASS Statement (FoxPro dialect)</title>
+  <keywords>
+    <keyword>Binding of instance variables</keyword>
+    <keyword>Class names<keyword>declaring</keyword></keyword>
+    <keyword>CLASS statement</keyword>
+    <keyword>Classes</keyword>
+    <keyword>Classes</keyword>
+    <keyword>Classes<keyword>declaring Class names</keyword><keyword>inheritance</keyword><keyword>object instantiation</keyword></keyword>
+    <keyword>Compile-time declaration</keyword>
+    <keyword>Declaration statements</keyword>
+    <keyword>Entity declaration</keyword>
+    <keyword>EXPORT INSTANCE statement</keyword>
+    <keyword>EXPORT statement</keyword>
+    <keyword>HIDDEN INSTANCE statement</keyword>
+    <keyword>HIDDEN statement</keyword>
+    <keyword>INHERIT statement</keyword>
+    <keyword>INSTANCE statement</keyword>
+    <keyword>Instance variables</keyword>
+    <keyword>Instance variables</keyword>
+    <keyword>Instance variables</keyword>
+    <keyword>Instance variables<keyword>binding</keyword><keyword>declaring</keyword><keyword>exporting</keyword><keyword>hiding</keyword></keyword>
+    <keyword>Object instantiation</keyword>
+    <keyword>PROTECT INSTANCE statement</keyword>
+    <keyword>PROTECT statement</keyword>
+    <keyword>Statements</keyword>
+    <keyword>STATIC CLASS statement</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">CLASS Statement (FoxPro dialect)</para>
+    </header>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Normal">Declare a class name to the compiler.</para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Normal"><tab />[Attributes] <text style="font-weight:bold;">DEFINE </text>[Modifiers] <text style="font-weight:bold;">CLASS</text> &lt;<text styleclass="Italic">idClass</text>&gt; [<text style="font-weight:bold;">AS</text> &lt;<text styleclass="Italic">idParentClass</text>&gt;] &#160;[<text style="font-weight:bold;">OF</text> &lt;classLib&gt;] [<text style="font-weight:bold;">OLEPUBLIC]</text><br/><tab />[ClassMembers]</para>
+    <para styleclass="Normal"><tab />(<text style="font-weight:bold;">ENDDEFINE</text> | END DEFINE)</para>
+    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="List"><snippet src="__IncludeMethodModifiers" inline="false"/></para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><snippet src="__includeIdClass" inline="false"/></para>
+    <para styleclass="List">AS &lt;<text styleclass="Italic">idParentClass</text>&gt;<tab />The name of an existing class (called a superclass) from which the new class inherits methods and instance variables. <br/>The AS &lt;idParent&gt; clause is mandatory when compiled with /fox1+, and option when compiled with /fox1-.<br/>When compiled with /fox1+ the compiler assumes that the parent class is either the Custom class or a class derived from the Custom class.<br/></para>
+    <para styleclass="List">OF &lt;<text styleclass="Italic">classLib</text>&gt;<tab />This clause is parsed but ignored in X#.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">OLEPUBLIC<tab />This clause is parsed but ignored in X#.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><text styleclass="Normal">ClassMembers</text><tab /></para>
+    <para styleclass="Heading1"></para>
+    <para styleclass="Heading1">Examples</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

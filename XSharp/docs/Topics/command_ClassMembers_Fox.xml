@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
 <topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>__In</title>
+  <title>Class Members</title>
   <body>
     <header>
-      <para styleclass="Heading1">__In</para>
+      <para styleclass="Heading1">ClassMembers (FoxPro dialect)</para>
     </header>
-    <para styleclass="List">IN|ALIAS <text styleclass="Normal">&lt;workarea&gt;</text><tab />Specifies the work area for which the operation must be performed</para>
+    <para styleclass="Normal"></para>
   </body>
 </topic>

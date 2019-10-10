@@ -24,7 +24,7 @@
     <para styleclass="Normal"></para>
     <para styleclass="List"><text styleclass="Heading1">Arguments</text></para>
     <para styleclass="List">RECORD nRecordNumber<tab />Releases the record lock on record number nRecordNumber. Issuing UNLOCK RECORD nRecordNumber for a record in a table with a file lock releases the file lock. </para>
-    <para styleclass="List">IN|ALIAS workarea<tab />Releases a record lock (or locks) or a file lock from a table in a specific work area. You can use either IN or ALIAS.</para>
+    <para styleclass="List"><snippet src="__In" inline="false"/></para>
     <para styleclass="List">ALL<tab />Releases all record and file locks in all work areas. &#160;If not specified, only the lock in the current work area is released. ALL cannot be combined with the RECORD or IN|ALIAS clause.</para>
     <para styleclass="List"></para>
     <para styleclass="Normal"><text styleclass="Heading1">Description</text></para>

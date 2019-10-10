@@ -17,7 +17,7 @@
     <para styleclass="Heading1">Purpose</para>
     <para styleclass="Normal">Restore records marked for deletion in the current work area.</para>
     <para styleclass="Heading1">Syntax</para>
-    <para styleclass="Normal">RECALL [&lt;<text styleclass="Italic">Scope</text>&gt;] [WHILE &lt;<text styleclass="Italic">lCondition</text>&gt;] [FOR &lt;<text styleclass="Italic">lCondition</text>&gt;] &#160;[[IN|ALIAS] workarea</para>
+    <para styleclass="Normal">RECALL [&lt;<text styleclass="Italic">Scope</text>&gt;] [WHILE &lt;<text styleclass="Italic">lCondition</text>&gt;] [FOR &lt;<text styleclass="Italic">lCondition</text>&gt;] &#160;[[IN|ALIAS] &lt;workarea&gt;</para>
     <para styleclass="Heading1">Arguments</para>
     <para styleclass="List"><snippet src="__Scope" inline="false"/></para>
     <para styleclass="List"><snippet src="__While" inline="false"/></para>

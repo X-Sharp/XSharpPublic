@@ -18,7 +18,7 @@
     <para styleclass="Normal">Tag records so they can be filtered with SetDeleted(TRUE), queried with Deleted(), or physically removed from the database file with PACK.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>
-    <para styleclass="Normal">DELETE [&lt;<text styleclass="Italic">Scope</text>&gt;] [WHILE &lt;<text styleclass="Italic">lCondition</text>&gt;] [FOR &lt;<text styleclass="Italic">lCondition</text>&gt;] &#160;[[IN|ALIAS] workarea] </para>
+    <para styleclass="Normal">DELETE [&lt;<text styleclass="Italic">Scope</text>&gt;] [WHILE &lt;<text styleclass="Italic">lCondition</text>&gt;] [FOR &lt;<text styleclass="Italic">lCondition</text>&gt;] &#160;[[IN|ALIAS] &lt;workarea&gt;] </para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Heading1">Arguments</text></para>
     <para styleclass="List"><snippet src="__Scope" inline="false"/></para>

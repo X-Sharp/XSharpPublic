@@ -16,12 +16,10 @@
     </header>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Heading1">Purpose</text></para>
-    <para styleclass="Normal">Declare a procedure name and formal parameters.</para>
+    <para styleclass="Normal">Declare a procedure name and formal parameters. When used inside a FoxPro DEFINE CLASS .. ENDDEFINE this declares a method.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>
-    <para styleclass="Normal"><tab />[Attributes]</para>
-    <para styleclass="Normal"><tab />[Modifiers]</para>
-    <para styleclass="Normal"><tab />PROCEDURE &#160;&lt;<text styleclass="Italic">idFunction</text>&gt; </para>
+    <para styleclass="Normal"><tab />[Attributes] [Modifiers] <tab /><text style="font-weight:bold;">PROCEDURE</text> &#160;&lt;<text styleclass="Italic">idProcedure</text>&gt; </para>
     <para styleclass="Normal"><tab />[Typeparameters]</para>
     <para styleclass="Normal"><tab />[([&lt;<text styleclass="Italic">idParam</text>&gt; [AS | REF &lt;<text styleclass="Italic">idType</text>&gt;] [, ...])] </para>
     <para styleclass="Normal"><tab />[AS &lt;<text styleclass="Italic">idType</text>&gt;]</para>
@@ -30,11 +28,17 @@
     <para styleclass="Normal"><tab />[_INIT1 | _INIT2 | _INIT3 | EXIT]</para>
     <para styleclass="Normal"><tab />[EXPORT LOCAL] </para>
     <para styleclass="Normal"><tab />[DLLEXPORT STRING_CONST]</para>
-    <para styleclass="Normal"><tab />[&lt;<text styleclass="Italic">ProcedureBody</text>&gt;]</para>
-    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><tab />[&lt;<text styleclass="Italic">Body</text>&gt;]</para>
+    <para styleclass="Normal"><tab />[ENDPROC | END PROCEDURE]</para>
+    <para styleclass="Heading1"><snippet src="__IncludeAttributes" inline="false"/></para>
+    <para styleclass="List"><snippet src="__IncludeFuncProcModifiers" inline="false"/></para>
+    <para styleclass="List"><tab />Please note that functions and procedures used as class members in FoxPro compatible classes can have more modifiers.<br/></para>
+    <para styleclass="List">&lt;<text styleclass="Italic">idProcedure</text>&gt;<tab />A valid identifier name for the function. &#160;A function is an entity and, as such, shares the same name space as other entities. &#160;This means that it is not possible to have a function and a class, for example, with the same name.</para>
     <para styleclass="List"><snippet src="__IncludeFunctionParameters" inline="false"/></para>
     <para styleclass="Normal"></para>
     <para styleclass="List">_INITn, EXIT<tab />When an application is executed, all INIT procedures in all modules associated with the application (including libraries) are called automatically. &#160;There are three priority levels for INIT procedures indicated by the _INIT1, _INIT2, and _INIT3 keywords. &#160;_INIT1 procedures are called first, _INIT2 second, and _INIT3 third. &#160;All INIT procedures are called before the application Start() routine.<br/>EXIT procedures are called at application shutdown</para>
+    <para styleclass="List"><snippet src="__IncludeBody" inline="false"/></para>
+    <para styleclass="List"><text styleclass="Normal">ENDPROC | END PROCEDURE</text><tab /><text styleclass="Normal">These (optional)keywords indicate the logical end of the function.</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">You must follow the guidelines below when specifying an INIT procedure:</para>
     <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Indented" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none; font-family:Symbol; font-size:11pt; color:#000000;">

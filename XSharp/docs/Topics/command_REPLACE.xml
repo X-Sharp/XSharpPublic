@@ -18,7 +18,7 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>
     <para styleclass="Normal">REPLACE &lt;<text styleclass="Italic">idField</text>&gt; WITH &lt;<text styleclass="Italic">uValue</text>&gt; [, &lt;<text styleclass="Italic">idField</text>&gt; WITH &lt;<text styleclass="Italic">uValue</text>&gt;...] [&lt;<text styleclass="Italic">Scope</text>&gt;] [WHILE &lt;<text styleclass="Italic">lCondition</text>&gt;] </para>
-    <para styleclass="Normal"><tab />[FOR &lt;<text styleclass="Italic">lCondition</text>&gt;] &#160;[[IN|ALIAS] workarea] </para>
+    <para styleclass="Normal"><tab />[FOR &lt;<text styleclass="Italic">lCondition</text>&gt;] &#160;[[IN|ALIAS] &lt;workarea&gt;] </para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Heading1">Arguments</text></para>
     <para styleclass="List">&lt;idField&gt;<tab />The name of the field variable to assign a new value. &#160;If &lt;idField&gt; is prefaced with an alias or declared using FIELD &lt;idField&gt; IN &lt;idAlias&gt;, the assignment takes place in the designated work area. &#160;Otherwise, the current work area is assumed.</para>

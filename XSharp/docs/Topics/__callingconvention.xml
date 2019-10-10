@@ -16,7 +16,7 @@
         <li styleclass="List">THISCALL</li>
       </list>
     </list>
-    <para styleclass="List"><tab />Most calling conventions are for backward compatibility only. <br/>There are 2 exceptions:<br/>CLIPPER declares that a method has untyped parameters. This is usually only needed for methods without any declared parameters. Otherwise the CLIPPER calling convention will be derived from the existence of untyped parameters. <br/>Methods and Functions in external DLL may have STRICT, PASCAL, CALLBACK</para>
+    <para styleclass="List"><tab />Most calling conventions are for backward compatibility only. <br/>There are 2 exceptions:<br/>CLIPPER declares that a method has untyped parameters. This is usually only needed for methods without any declared parameters. Otherwise the compiler will assume CLIPPER calling convention when it detects untyped parameters. <br/>Methods and Functions in external DLL may have STRICT, PASCAL, CALLBACK</para>
     <para styleclass="List"></para>
   </body>
 </topic>

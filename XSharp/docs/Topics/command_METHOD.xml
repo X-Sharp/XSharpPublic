@@ -20,27 +20,23 @@
     <para styleclass="Normal">Declare a method name and an optional list of local variable names.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>
-    <para styleclass="Normal"><tab />[Attributes] </para>
-    <para styleclass="Normal"><tab />[Modifiers] </para>
-    <para styleclass="Normal"><tab /><text style="font-weight:bold;">METHOD </text>&lt;<text styleclass="Italic">idMethod</text>&gt; </para>
+    <para styleclass="Normal"><tab />[Attributes] [Modifiers] &#160;<text style="font-weight:bold;">METHOD </text>&lt;<text styleclass="Italic">idMethod</text>&gt; </para>
     <para styleclass="Normal"><tab />[Typeparameters]</para>
     <para styleclass="Normal"><tab />[([&lt;<text styleclass="Italic">idParam</text>&gt; [AS | REF &lt;<text styleclass="Italic">idType</text>&gt;] [, ...])] </para>
     <para styleclass="Normal"><tab />[AS &lt;<text styleclass="Italic">idType</text>&gt;]</para>
     <para styleclass="Normal"><tab />[TypeparameterConstraints]</para>
     <para styleclass="Normal"><tab />[&lt;<text styleclass="Italic">idConvention</text>&gt;]<br/><tab />[CLASS &lt;<text styleclass="Italic">idClass</text>&gt;]</para>
-    <para styleclass="Normal"><tab />[EXPORT LOCAL]</para>
-    <para styleclass="Normal"><tab />[DLLEXPORT STRING_CONST]</para>
-    <para styleclass="Normal"><tab />[&lt;<text styleclass="Italic">Declarations</text>&gt;]</para>
-    <para styleclass="Normal"><tab />[&lt;<text styleclass="Italic">MethodBody</text>&gt;]</para>
+    <para styleclass="Normal"><tab />[&lt;<text styleclass="Italic">Body</text>&gt;]</para>
+    <para styleclass="Normal"><tab />[END METHOD]</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Heading1">Arguments</text></para>
     <para styleclass="Normal"><snippet src="__IncludeMethodModifiers" inline="false"/></para>
     <para styleclass="List">&lt;idMethod&gt;<tab />A valid identifier name for the method. &#160;Methods are entities, but the system uses a unique naming scheme for them to prevent collisions with other entity names. &#160;Method names must be unique within a class, but can share the same name as other entities (including access and assign methods) in your application.</para>
     <para styleclass="List"></para>
     <para styleclass="List"><snippet src="__IncludeMethodParameters" inline="false"/></para>
-    <para styleclass="List">&lt;MethodBody&gt;<tab />Program statements to execute when you call this method. &#160;It is not necessary for the &lt;MethodBody&gt; to have a RETURN statement — by default, methods RETURN SELF.</para>
-    <para styleclass="List"></para>
-    <para styleclass="Normal"><text styleclass="Heading1">Description</text></para>
+    <para styleclass="Heading1"><snippet src="__IncludeBody" inline="false"/></para>
+    <para styleclass="List">END METHOD<tab />Optional end class to indicate the end of the METHOD entity</para>
+    <para styleclass="Heading1">Description</para>
     <para styleclass="Normal">A method is a subprogram comprised of a set of declarations and statements to be executed whenever you refer to the method using the message send operator, as in:</para>
     <para styleclass="Normal"></para>
     <para styleclass="Code Example">&lt;idObject&gt;:&lt;idMethod&gt;([&lt;uArgList&gt;])</para>

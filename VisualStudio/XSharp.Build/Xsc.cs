@@ -182,6 +182,12 @@ namespace XSharp.Build
             set { base.Bag[nameof(XPP2)] = value; }
             get { return base.GetBoolParameterWithDefault(nameof(XPP2), false); }
         }
+        public Boolean FOX1
+        {
+            set { base.Bag[nameof(FOX1)] = value; }
+            get { return base.GetBoolParameterWithDefault(nameof(FOX1), false); }
+        }
+
         public String CompilerPath
         {
             set { base.Bag[nameof(CompilerPath)] = value; }
@@ -672,8 +678,11 @@ namespace XSharp.Build
             commandline.AppendPlusOrMinusSwitch("/ins", base.Bag, nameof(INS));
             commandline.AppendPlusOrMinusSwitch("/lb", base.Bag, nameof(LB));
             commandline.AppendPlusOrMinusSwitch("/namedarguments", base.Bag, nameof(NamedArgs));
-            commandline.AppendPlusOrMinusSwitch("/memvar", base.Bag, nameof(MemVar));
-            commandline.AppendPlusOrMinusSwitch("/undeclared", base.Bag, nameof(Undeclared));
+            if (Dialect.ToLower() != "core" && Dialect.ToLower() != "vulcan")
+            {
+                commandline.AppendPlusOrMinusSwitch("/memvar", base.Bag, nameof(MemVar));
+                commandline.AppendPlusOrMinusSwitch("/undeclared", base.Bag, nameof(Undeclared));
+            }
             commandline.AppendPlusOrMinusSwitch("/ovf", base.Bag, nameof(OVF));
             commandline.AppendPlusOrMinusSwitch("/ppo", base.Bag, nameof(PPO));
             commandline.AppendPlusOrMinusSwitch("/vo1", base.Bag, nameof(VO1));
@@ -692,8 +701,15 @@ namespace XSharp.Build
             commandline.AppendPlusOrMinusSwitch("/vo14", base.Bag, nameof(VO14));
             commandline.AppendPlusOrMinusSwitch("/vo15", base.Bag, nameof(VO15));
             commandline.AppendPlusOrMinusSwitch("/vo16", base.Bag, nameof(VO16));
-            commandline.AppendPlusOrMinusSwitch("/xpp1", base.Bag, nameof(XPP1));
-            commandline.AppendPlusOrMinusSwitch("/xpp2", base.Bag, nameof(XPP2));
+            if (Dialect.ToLower() == "xpp")
+            {
+                commandline.AppendPlusOrMinusSwitch("/xpp1", base.Bag, nameof(XPP1));
+                commandline.AppendPlusOrMinusSwitch("/xpp2", base.Bag, nameof(XPP2));
+            }
+            if (Dialect.ToLower() == "foxpro")
+            {
+                commandline.AppendPlusOrMinusSwitch("/fox1", base.Bag, nameof(FOX1));
+            }
 
             // User-defined CommandLine Option (in order to support switches unknown at that time)
             // cannot use appendswitch because it will quote the string when there are embedded spaces

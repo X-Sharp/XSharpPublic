@@ -91,20 +91,20 @@ namespace XSharp.Project
         public Dialect Dialect
         {
             get { return this.dialect; }
-            set {
+            set
+            {
                 this.dialect = value;
                 this.IsDirty = true;
                 this.ProjectMgr.SetProjectProperty(nameof(Dialect), this.dialect.ToString());
-                this.ProjectMgr.SetProjectProperty("NamedArgs", "");
+                this.ProjectMgr.SetProjectProperty("NamedArgs", "False");
                 switch (dialect)
                 {
                     case Dialect.Core:
                     case Dialect.Vulcan:
-                        this.ProjectMgr.SetProjectProperty("Memvar", "");
-                        this.ProjectMgr.SetProjectProperty("Undeclared", "");
+                        this.ProjectMgr.SetProjectProperty("Memvar", "False");
+                        this.ProjectMgr.SetProjectProperty("Undeclared", "False");
                         break;
                 }
-            ;
             }
         }
 

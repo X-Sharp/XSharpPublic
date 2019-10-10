@@ -21,7 +21,7 @@ FUNCTION Start( ) AS VOID
 	(nArea2)->LastName := (nArea1)->LastName
 	XAssert(test2->LastName="Robert")	
 	XAssert((nArea2)->LastName == (nArea1)->LastName)	
-	wait	
+
 
 RETURN
 

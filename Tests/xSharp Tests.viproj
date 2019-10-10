@@ -73894,7 +73894,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C678 - Internal compielr error with __Usual.ToObject() and /lb+
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 7D1C4D98-F0BB-48B3-932B-B3AECEE395BA
 ; ************** APPLICATION C679 - Internal compiler error with STATIC LOCALS with no type clause and /vo2 *************
 Application = C679 - Internal compiler error with STATIC LOCALS with no type clause and /vo2
 IDEVersion = 1.06
@@ -74432,7 +74432,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = R683 FoxPro Text .. Endtext
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 7D1C4D98-F0BB-48B3-932B-B3AECEE395BA
 ; ************** APPLICATION C684 - Problem with (DWORD), (INT) conversion *************
 Application = C684 - Problem with (DWORD), (INT) conversion
 IDEVersion = 1.06
@@ -74540,7 +74540,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C684 - Problem with (DWORD), (INT) conversion
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 7D1C4D98-F0BB-48B3-932B-B3AECEE395BA
 ; ************** APPLICATION C685 - RETURN clause not accepted in attributes *************
 Application = C685 - RETURN clause not accepted in attributes
 IDEVersion = 1.06
@@ -74645,7 +74645,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C685 - RETURN clause not accepted in attributes
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 7D1C4D98-F0BB-48B3-932B-B3AECEE395BA
 ; ************** APPLICATION C686 - Problem with NIL arguments in FoxPro dialect *************
 Application = C686 - Problem with NIL arguments in FoxPro dialect
 IDEVersion = 1.06
@@ -74706,7 +74706,7 @@ VO5=0
 VO6=0
 VO7=0
 VO8=0
-VO9=0
+VO9=1
 VO10=0
 VO11=0
 VO12=0
@@ -74752,7 +74752,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C686 - Problem with NIL arguments in FoxPro dialect
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 7D1C4D98-F0BB-48B3-932B-B3AECEE395BA
 ; ************** APPLICATION C687 - Problems with undeclared vars/PUBLICs/PRIVATEs in VFP dialect *************
 Application = C687 - Problems with undeclared vars/PUBLICs/PRIVATEs in VFP dialect
 IDEVersion = 1.06
@@ -74972,7 +74972,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C688 - Another PUBLIC/PRIVATE FoxPro sample
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 7D1C4D98-F0BB-48B3-932B-B3AECEE395BA
 ; ************** APPLICATION C689 *************
 Application = C689
 IDEVersion = 1.06
@@ -75077,7 +75077,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C689
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 7D1C4D98-F0BB-48B3-932B-B3AECEE395BA
 ; ************** APPLICATION R690 Missing Out parameters and default values *************
 Application = R690 Missing Out parameters and default values
 IDEVersion = 1.06

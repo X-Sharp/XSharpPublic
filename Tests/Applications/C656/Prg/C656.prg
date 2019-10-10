@@ -13,7 +13,7 @@ FUNCTION Start( ) AS VOID
 	xAssert(o:aDim[3,3] == "")
   
 	#warning note that this does not report a compiler error, although in VO it does. The array length is known at compile time
-	IF TRUE
+	IF FALSE
 		? o:aDim[4,1]
 	END IF
 RETURN

@@ -108,10 +108,10 @@ BEGIN NAMESPACE XSharp
         MEMBER DEFAULTRDD	:= 102		// STRING
         MEMBER MEMOEXT	    := 103		// STRING
         MEMBER AutoOpen     := 104		// LOGIC
-        MEMBER AutoOrder    := 105		// LOGIC
+        MEMBER AutoOrder    := 105		// 0 or 1
         MEMBER HPLOCKING    := 106      // LOGIC 
         MEMBER NEWINDEXLOCK := 107      // LOGIC 
-        MEMBER AUTOSHARE    := 108		// LOGIC
+        MEMBER AUTOSHARE    := 108		// 0 or 1
         MEMBER STRICTREAD   := 109		// LOGIC
         MEMBER BLOBCIRCREF	:= 110		// LOGIC
         MEMBER OPTIMIZE     := 111		// LOGIC

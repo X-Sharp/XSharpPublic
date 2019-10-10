@@ -153,9 +153,9 @@ DEFINE DBI_OPTIMIZE    		:= DbInfo.DBI_OPTIMIZE    	// Flag for whether to use q
 /// <exclude />
 DEFINE DBI_AUTOOPEN    		:= DbInfo.DBI_AUTOOPEN    	// Flag for automatically opening structural indexes      
 /// <exclude />
-DEFINE DBI_AUTOORDER   		:= DbInfo.DBI_AUTOORDER   	// When a structural index is opened, the order to be set 
+DEFINE DBI_AUTOORDER   		:= DbInfo.DBI_AUTOORDER   	// When a structural index is opened, the order to be set 0 or 1
 /// <exclude />
-DEFINE DBI_AUTOSHARE   		:= DbInfo.DBI_AUTOSHARE   	// When a network is detected, open the index shared, otherwise open exclusively   
+DEFINE DBI_AUTOSHARE   		:= DbInfo.DBI_AUTOSHARE   	// When a network is detected, open the index shared, otherwise open exclusively   0 = shared, 1 = exclusive
 /// <exclude />
 DEFINE DBI_DB_VERSION 		:= DbInfo.DBI_DB_VERSION 		
 /// <exclude />

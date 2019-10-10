@@ -808,7 +808,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (string.IsNullOrEmpty(fieldInfo.Alias))
                     return GenerateSimpleName(XSharpSpecialNames.FieldPrefix + "->" + name);
                 else
-                    return GenerateSimpleName(fieldInfo.Alias + "->" + name);
+                {
+                    var alias = fieldInfo.Alias.ToLower();
+                    switch (alias)
+                    {
+                        case "field":
+                        case "_field":
+                            return GenerateSimpleName(XSharpSpecialNames.FieldPrefix + "->" + name);
+                        default:
+                            return GenerateSimpleName(fieldInfo.Alias + "->" + name);
+
+                    }
+                }
             }
             else
             {

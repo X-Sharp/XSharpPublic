@@ -154,7 +154,7 @@ RETURN	 NIL
 /// because there are some differences between the values in this header file and the values used inside X#. </remarks>
 FUNCTION Set(nDefine, newValue) AS USUAL CLIPPER
     LOCAL state AS XSharp.RuntimeState
-    LOCAL old  := NULL AS OBJECT
+    LOCAL oOld  := NULL AS OBJECT
     LOCAL nSetting AS LONG
     IF ! IsNumeric(nDefine)
         RETURN NIL
@@ -162,20 +162,26 @@ FUNCTION Set(nDefine, newValue) AS USUAL CLIPPER
     nSetting := nDefine
     state := XSharp.RuntimeState.GetInstance()
     IF state:Settings:ContainsKey(nSetting)
-        old := state:Settings[nSetting]
+        oOld := state:Settings[nSetting]
     ENDIF
     IF PCount() > 1
-        LOCAL oValue := newValue AS OBJECT
-        IF old != NULL_OBJECT
-            TRY
-                oValue := System.Convert.ChangeType( oValue, old:GetType())
-                state:Settings[nSetting] := oValue
-            CATCH
-                NOP // can't convert, so ignore assignment
-            END TRY
+        LOCAL oNew := newValue AS OBJECT
+        IF oOld != NULL_OBJECT
+            IF oOld IS LOGIC .and. oNew IS STRING VAR cNew
+                // XBase++ uses ON / OFF strings in stead of TRUE and FALSE
+                state:Settings[nSetting] := cNew:ToUpper() == "ON"
+            ELSE
+               TRY
+                    oNew := System.Convert.ChangeType( oNew, oOld:GetType())
+                    state:Settings[nSetting] := oNew
+                CATCH
+                    NOP // can't convert, so ignore assignment
+                END TRY
+            ENDIF
+     
         ENDIF
     ENDIF
-    RETURN old
+    RETURN oOld
             
     
 

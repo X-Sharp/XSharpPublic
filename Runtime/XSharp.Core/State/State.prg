@@ -49,11 +49,11 @@ CLASS XSharp.RuntimeState
 			// RDD Settings
 			SELF:_SetThreadValue(Set.Ansi , TRUE)
 			SELF:_SetThreadValue(Set.AutoOpen , TRUE)
-			SELF:_SetThreadValue(Set.AutoOrder , TRUE)
+			SELF:_SetThreadValue(Set.AutoOrder , 1)
 			SELF:_SetThreadValue(Set.Optimize , TRUE)
             SELF:_SetThreadValue(Set.Deleted , FALSE)
-			SELF:_SetThreadValue(Set.AutoShare, AutoShareMode.Auto)
-			SELF:_SetThreadValue(Set.LOCKTRIES , 1U)
+			SELF:_SetThreadValue(Set.AutoShare, (LONG) AutoShareMode.Auto)
+			SELF:_SetThreadValue(Set.LockTries , 1U)
 			SELF:_SetThreadValue(Set.MemoBlockSize , 32U)
 			SELF:_SetThreadValue(Set.DefaultRDD , "DBFNTX")
 			SELF:_SetThreadValue(Set.Exclusive , TRUE)
@@ -207,9 +207,9 @@ CLASS XSharp.RuntimeState
     /// <seealso cref="P:XSharp.RuntimeState.AutoShareMode" />
     /// <seealso cref="F:XSharp.Set.AutoOrder" />
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-    STATIC PROPERTY AutoOrder AS LOGIC ;
-        GET GetValue<LOGIC>(Set.AutoOrder);
-        SET SetValue<LOGIC>(Set.AutoOrder, VALUE)
+    STATIC PROPERTY AutoOrder AS LONG ;
+        GET GetValue<LONG>(Set.AutoOrder);
+        SET SetValue<LONG>(Set.AutoOrder, VALUE)
 
 	/// <summary>The current AutoOpen setting (used by the RDD system).</summary>
     /// <seealso cref="P:XSharp.RuntimeState.AutoOrder" />
@@ -224,9 +224,9 @@ CLASS XSharp.RuntimeState
     /// <seealso cref="P:XSharp.RuntimeState.AutoOpen" />
     /// <seealso cref="P:XSharp.RuntimeState.AutoOrder" />
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-    STATIC PROPERTY AutoShareMode AS AutoShareMode ;
-        GET GetValue<AutoShareMode>(Set.AutoShare);
-        SET SetValue<AutoShareMode>(Set.AutoShare, VALUE)
+    STATIC PROPERTY AutoShareMode AS LONG ;
+        GET (LONG) GetValue<AutoShareMode>(Set.AutoShare);
+        SET SetValue<AutoShareMode>(Set.AutoShare, (AutoShareMode)VALUE)
 
 
 	/// <summary>The current Century setting (used in DATE &lt;-&gt; STRING conversions).</summary>

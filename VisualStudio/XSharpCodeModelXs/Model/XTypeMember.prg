@@ -109,8 +109,11 @@ BEGIN NAMESPACE XSharpModel
 		PROPERTY HasParameters AS LOGIC GET SELF:Kind:HasParameters() .AND. SELF:_parameters:Count > 0
 		PROPERTY ParameterCount  AS INT GET SELF:_parameters:Count
 
-		PROPERTY IsArray AS LOGIC AUTO
-
+		PROPERTY IsArray AS LOGIC
+			GET
+				RETURN SELF:_typeName:EndsWith("[]")
+			END GET
+		END PROPERTY
 
 		NEW PROPERTY Parent AS XType GET (XType) SUPER:parent  SET SUPER:parent := VALUE
 

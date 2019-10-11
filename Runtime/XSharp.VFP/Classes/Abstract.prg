@@ -8,16 +8,18 @@
 USING System
 USING System.Collections.Generic
 USING System.Text
+USING System.Diagnostics
+
 #command VFPPROP <cName> <cType> => PROPERTY <cName> AS <cType> GET _GetProperty(<"cName">) SET _SetProperty(<"cName">, value)
 #command VFPPROP <cName> <cType> <cLit> => PROPERTY <cName> AS <cType> GET _GetProperty(<(cLit)>) SET _SetProperty(<(cLit)>, value)
 
 BEGIN NAMESPACE XSharp.VFP
 
 	CLASS Abstract
-        PROTECTED _aProperties AS Dictionary<String, VfpProperty>
+        PROTECTED _Properties AS Dictionary<STRING, VfpProperty>
  
     CONSTRUCTOR()
-        _aProperties :=  Dictionary<String, VfpProperty>{StringComparer.OrdinalIgnoreCase}
+        _Properties :=  Dictionary<STRING, VfpProperty>{StringComparer.OrdinalIgnoreCase}
         _InitCompileTimeProperties()
         SELF:Name := ""
         SELF:Class := ClassName(SELF)
@@ -26,16 +28,18 @@ BEGIN NAMESPACE XSharp.VFP
         SELF:Comment := ""
         SELF:BaseClass := ""
         RETURN
-    METHOD _InitCompileTimeProperties() as VOID
+        
+    METHOD _InitCompileTimeProperties() AS VOID
         VAR aProps := SELF:GetType():GetProperties()
         FOREACH VAR oProp IN aProps
-            var met := oProp:GetGetMethod(TRUE)
-            var nVis := IIF(met:IsPublic,1 ,iif(met:IsPrivate,3,2))
+            VAR met := oProp:GetGetMethod(TRUE)
+            VAR nVis := IIF(met:IsPublic,1 ,IIF(met:IsPrivate,3,2))
             
             VAR VfpProperty :=VfpProperty{oProp:Name, NIL, nVis}
-            _aProperties:Add(vfpProperty:Name, vfpProperty)
+            _Properties:Add(vfpProperty:Name, vfpProperty)
         NEXT
         RETURN
+        
     VFPPROP Name STRING 
     VFPPROP BaseClass STRING 
     VFPPROP @@Class STRING "Class"
@@ -46,7 +50,7 @@ BEGIN NAMESPACE XSharp.VFP
  
     #region Property related
     METHOD AddProperty(cPropertyName, uValue, nVisibility, cDescription) AS LOGIC
-        local oProp as VfpProperty
+        LOCAL oProp AS VfpProperty
         oProp := VfpProperty{cPropertyName, uValue}
         IF IsNumeric(nVisibility)
             oProp:Visibility := (PropertyVisibilty) nVisibility
@@ -54,7 +58,7 @@ BEGIN NAMESPACE XSharp.VFP
         IF IsString(cDescription)
             oProp:Description := cDescription
         ENDIF
-        _aProperties[cPropertyName] := oProp
+        _Properties[cPropertyName] := oProp
         RETURN FALSE
 
     [Obsolete("This method is not supported in X#")];
@@ -75,7 +79,7 @@ BEGIN NAMESPACE XSharp.VFP
        RETURN FALSE
 
     [Obsolete("This method is not supported in X#")];
-    VIRTUAL METHOD ReadMethod() as STRING STRICT
+    VIRTUAL METHOD ReadMethod() AS STRING STRICT
         RETURN ""
 
     [Obsolete("This method is not supported in X#")];
@@ -83,7 +87,7 @@ BEGIN NAMESPACE XSharp.VFP
         RETURN FALSE
 
     [Obsolete("This method is not supported in X#")];
-    VIRTUAL METHOD WriteMethod(cMethodName, cMethodText, lCreateMethod, nVisibility, cDescription) as STRING STRICT
+    VIRTUAL METHOD WriteMethod(cMethodName, cMethodText, lCreateMethod, nVisibility, cDescription) AS STRING STRICT
         RETURN ""
 
     #endregion
@@ -92,21 +96,22 @@ BEGIN NAMESPACE XSharp.VFP
 
     #region Implementations
     PROTECTED METHOD _GetProperty(cName AS STRING)
-        IF _aProperties:ContainsKey(cName)
-            RETURN _aProperties[cName]:Value
+        IF _Properties:ContainsKey(cName)
+            RETURN _Properties[cName]:Value
         ELSE
            THROW Exception{"Property "+cName+" not found"}
         ENDIF
 
-    PROTECTED METHOD _SetProperty(cName AS STRING, uValue as USUAL) AS VOID
-        IF _aProperties:ContainsKey(cName)
-            _aProperties[cName]:Value := uValue
+    PROTECTED METHOD _SetProperty(cName AS STRING, uValue AS USUAL) AS VOID
+        IF _Properties:ContainsKey(cName)
+            _Properties[cName]:Value := uValue
             
         ELSE
            THROW Exception{"Property "+cName+" not found"}
         ENDIF
     
     #endregion
+        [DebuggerDisplay("Property {Name,nq}")];
         CLASS VfpProperty
              PROPERTY Name AS STRING AUTO
              PROPERTY Value as USUAL AUTO

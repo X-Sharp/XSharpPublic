@@ -32,7 +32,7 @@ BEGIN NAMESPACE XSharp
 		CONSTRUCTOR(capacity AS DWORD, fill AS LOGIC)
 			_internalList := List<T>{ (INT) capacity}
 			IF fill
-				_internalList:AddRange(Enumerable.Repeat(DEFAULT(T),(INT) capacity))
+				_internalList:AddRange(Enumerable.Repeat(SELF:DefaultValue,(INT) capacity))
 			ENDIF
 			RETURN
 
@@ -49,7 +49,7 @@ BEGIN NAMESPACE XSharp
 			ENDIF
 			FOREACH element AS OBJECT IN elements
 				IF element == NULL
-					_internalList:add(DEFAULT(T))
+					_internalList:add(SELF:DefaultValue)
 				ELSEIF element IS T
 					_internalList:Add( (T) element)
 				ELSE
@@ -71,6 +71,9 @@ BEGIN NAMESPACE XSharp
 		PUBLIC PROPERTY Length AS DWORD GET (DWORD) _internalList:Count
         /// <summary>Length of the array as integer.</summary>
         PUBLIC PROPERTY Count AS INT GET _internalList:Count
+
+        /// <Summary>Returns the default value for array elements when arrays are resized or initialized.</summary>
+        PUBLIC VIRTUAL PROPERTY DefaultValue as T GET T{}
 		#endregion
 
 		#region Enumerators
@@ -283,7 +286,7 @@ BEGIN NAMESPACE XSharp
         /// <exclude />
 		PUBLIC METHOD Delete(position AS INT) AS __ArrayBase<T>
 			SELF:RemoveAt(position)
-			SELF:Add(T{})
+			SELF:Add(SELF:DefaultValue)
 			RETURN SELF
 
         /// <exclude />
@@ -296,7 +299,7 @@ BEGIN NAMESPACE XSharp
 
         /// <exclude />
 		PUBLIC METHOD Insert(position AS INT) AS __ArrayBase<T>
-			SELF:Insert( position, DEFAULT(T))
+			SELF:Insert( position, SELF:DefaultValue)
 			RETURN SELF
 
         /// <exclude />
@@ -318,8 +321,7 @@ BEGIN NAMESPACE XSharp
 					ELSE
 						count+=1
 						DO WHILE count <= newSize
-							LOCAL u := T{} AS T
-							_internalList:Add(u)
+							_internalList:Add(SELF:DefaultValue)
 							count++
 						ENDDO
 					ENDIF

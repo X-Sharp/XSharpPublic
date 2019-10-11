@@ -13,22 +13,32 @@ USING System.Diagnostics
 
 BEGIN NAMESPACE XSharp.VFP
 
-    [DebuggerDisplay("{Class}")];
 	CLASS Custom INHERIT Abstract
-        PROTECTED _oControls as Vfp.Collection
+        PROTECTED _Controls as Vfp.Collection
 
     VFPPROP Top    LONG
     VFPPROP Left   LONG
     VFPPROP Height LONG
     VFPPROP Width  LONG
- 
+
+    PROTECTED VIRTUAL METHOD _InitProperties AS VOID
+        SELF:Top := 0
+        SELF:Left := 0
+        SELF:Height := 0
+        SELF:Width := 0
+        RETURN
+        
     CONSTRUCTOR() CLIPPER
         SUPER()
-        SELF:Top := SELF:Left := SELF:Height := SELF:Width := 0
-        _oControls    := Vfp.Collection{}
+        _Controls    := Vfp.Collection{}
+        SELF:_InitProperties()
         SELF:Init(_Args())
         RETURN
 
+    DESTRUCTOR()
+        SELF:Destroy()
+        RETURN
+        
     // Events defined in FoxPro
     VIRTUAL METHOD Init() AS USUAL CLIPPER
        RETURN TRUE
@@ -41,8 +51,11 @@ BEGIN NAMESPACE XSharp.VFP
 
     #region Nested Items
 
-    METHOD AddObject(cName, cClass, cOLEClass, aParams) AS OBJECT
-        RETURN NULL_OBJECT
+    METHOD AddObject(cName as string , oObject as object) AS LOGIC
+        SELF:_SetProperty(cName, oObject)
+        SELF:_Controls:AddObject(oObject, cName)
+        RETURN TRUE
+        
 
 
     METHOD NewObject(cObjectName, cClassName, cModule, cInApplication, aParams) AS OBJECT

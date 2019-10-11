@@ -204,27 +204,34 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 ttype = ((ITokenStream)recognizer.InputStream).La(1);
             }
         }
+        bool inErrorHandler = false; 
         public override void Recover(Parser recognizer, RecognitionException e)
         {
             base.Recover(recognizer, e);
-            if (recognizer.Context is XSharpParser.StatementBlockContext ctx)
+            if (! inErrorHandler)
             {
-                ConsumeToEos(recognizer);
-                ctx._Stmts.Add(new XSharpParser.NopStmtContext(new XSharpParser.StatementContext()));
-                var p = (recognizer as XSharpParser);
-                EndErrorCondition(recognizer);
+                inErrorHandler = true;
+                if (recognizer.Context is XSharpParser.StatementBlockContext ctx)
                 {
-                    p.State = ctx.invokingState;
-                    var stmtBlk = p.statementBlock();
-                    if (stmtBlk?._Stmts?.Count > 0)
+                    ConsumeToEos(recognizer);
+                    ctx._Stmts.Add(new XSharpParser.NopStmtContext(new XSharpParser.StatementContext()));
+                    var p = (recognizer as XSharpParser);
+                    EndErrorCondition(recognizer);
                     {
-                        foreach (var s in stmtBlk._Stmts)
+                        p.State = ctx.invokingState;
+
+                        var stmtBlk = p.statementBlock();
+                        if (stmtBlk?._Stmts?.Count > 0)
                         {
-                            s.parent = ctx;
-                            ctx._Stmts.Add(s);
+                            foreach (var s in stmtBlk._Stmts)
+                            {
+                                s.parent = ctx;
+                                ctx._Stmts.Add(s);
+                            }
                         }
                     }
                 }
+                inErrorHandler = false;
             }
         }
         public override void Sync(Parser recognizer)

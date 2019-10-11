@@ -1116,7 +1116,7 @@ xppclassMember      : Member=xppmethodvis                           #xppclsvisib
 xppmethodvis        : Vis=xppvisibility COLON eos
                     ;
 
-xppvisibility       : Token=(HIDDEN | PROTECTED | EXPORTED)         
+xppvisibility       : Token=(HIDDEN | PROTECTED | EXPORTED | INTERNAL | PUBLIC | PRIVATE )         
                     ;
 
 xppdeclareMethod    : (Modifiers=xppdeclareModifiers)?                            // [DEFERRED |FINAL | INTRODUCE | OVERRIDE] [CLASS] 
@@ -1172,7 +1172,7 @@ xppproperty         : (Attributes=attributes)?                                  
 xppmethod           : (Attributes=attributes)?                              // NEW Optional Attributes
                       (MethodType=(ACCESS|ASSIGN))?                         // Optional Access or Assign
                       (Modifiers=xppmemberModifiers)?                       // [CLASS]
-                      M=METHOD (ClassId=identifier COLON)? Id=identifier      // [<ClassName>:] <MethodName>
+                      M=METHOD (ClassId=identifier COLON)? Id=identifier    // [<ClassName>:] <MethodName>
                       // no type parameters 
                       (ParamList=parameterList)?                            // Optional Parameters
                       (AS Type=datatype)?                                   // NEW Optional return type

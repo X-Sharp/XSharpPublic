@@ -156,10 +156,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             switch (vis)
             {
                 case XP.EXPORTED:
+                case XP.PUBLIC:
                     return SyntaxFactory.MakeToken(SyntaxKind.PublicKeyword, "EXPORTED");
                 case XP.PROTECTED:
                     return SyntaxFactory.MakeToken(SyntaxKind.ProtectedKeyword, "PROTECTED");
+                case XP.INTERNAL:
+                    return SyntaxFactory.MakeToken(SyntaxKind.InternalKeyword, "INTERNAL");
                 case XP.HIDDEN:
+                case XP.PRIVATE:
                 default:
                     return SyntaxFactory.MakeToken(SyntaxKind.PrivateKeyword, "HIDDEN");
             }

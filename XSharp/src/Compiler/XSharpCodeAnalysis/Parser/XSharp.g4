@@ -1263,7 +1263,7 @@ foxclassvars        : (Attributes=attributes)? (Modifiers=classvarModifiers)?
                     ;
 
 
-foxfield            : (Fld=FIELD)? F=foxfieldinitializer end=eos
+foxfield            : (Modifiers=classvarModifiers)? (Fld=FIELD)? F=foxfieldinitializer end=eos
                     ;
 
 foxfieldinitializer : Name=name assignoperator Expr=expression

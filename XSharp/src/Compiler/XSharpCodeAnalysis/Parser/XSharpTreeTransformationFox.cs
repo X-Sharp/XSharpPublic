@@ -534,7 +534,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             var list = MakeSeparatedList(GenerateVariable(fldName, null));
             var decl = _syntaxFactory.VariableDeclaration(type, list);
-            var mods = modifiers?.GetList<SyntaxToken>() ?? DefaultMethodModifiers(false, false, false);
+            var mods = modifiers?.GetList<SyntaxToken>() ?? DefaultMethodModifiers(false, false, true);
             var fdecl = _syntaxFactory.FieldDeclaration(
                                     attributeLists: EmptyList<AttributeListSyntax>(),
                                     modifiers: mods,
@@ -549,7 +549,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             BlockSyntax body = null;
             if (_options.fox1)
             {
-                var call = GenerateMethodCall("_GetProperty", MakeArgumentList(MakeArgument(GenerateLiteral(fldName))), true);
+                var call = GenerateMethodCall(XSharpSpecialNames.GetProperty, MakeArgumentList(MakeArgument(GenerateLiteral(fldName))), true);
                 body = MakeBlock(GenerateReturn(call, true));
                 body.XGenerated = true;
             }
@@ -564,7 +564,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             accessors.Add(accessor);
             if (_options.fox1)
             {
-                var call = GenerateMethodCall("_SetProperty", MakeArgumentList(MakeArgument(GenerateLiteral(fldName)), MakeArgument(GenerateSimpleName("value"))), true);
+                var call = GenerateMethodCall(XSharpSpecialNames.SetProperty, MakeArgumentList(MakeArgument(GenerateLiteral(fldName)), MakeArgument(GenerateSimpleName("value"))), true);
                 body = MakeBlock(GenerateExpressionStatement(call, true));
                 body.XGenerated = true;
             }
@@ -664,7 +664,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     // AddObject(SELF:Property)
                     var arg1 = MakeArgument(GenerateLiteral(name));
                     var arg2 = MakeArgument(prop);
-                    var mcall = GenerateMethodCall("AddObject", MakeArgumentList(arg1, arg2));
+                    var mcall = GenerateMethodCall(XSharpSpecialNames.AddObject, MakeArgumentList(arg1, arg2));
                     stmt = GenerateExpressionStatement(mcall);
                     stmt.XNode = addobject;
                     stmts.Add(stmt);
@@ -678,16 +678,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     // Generate Virtual Protected _InitProperties
                     // SUPER:_InitProperties()
                     // All Statements
-                    var mac = MakeSimpleMemberAccess(GenerateSuper(), GenerateSimpleName("_InitProperties"));
+                    var mac = MakeSimpleMemberAccess(GenerateSuper(), GenerateSimpleName(XSharpSpecialNames.InitProperties));
                     var superCall = _syntaxFactory.InvocationExpression(mac, EmptyArgumentList());
                     var stmt = GenerateExpressionStatement(superCall,true);
                     stmts.Insert(0, stmt);
                     var body = MakeBlock(stmts);
                     body.XGenerated = true;
-                    var atts = EmptyList<AttributeListSyntax>();
                     var mods = TokenList(SyntaxKind.ProtectedKeyword, SyntaxKind.OverrideKeyword);
-                    var id = SyntaxFactory.MakeIdentifier("_InitProperties");
-                    var mem = _syntaxFactory.MethodDeclaration(atts, mods, _voidType, null, id,
+                    var id = SyntaxFactory.MakeIdentifier(XSharpSpecialNames.InitProperties);
+                    var mem = _syntaxFactory.MethodDeclaration(MakeCompilerGeneratedAttribute(), mods, _voidType, null, id,
                         null, EmptyParameterList(), null, body, null, SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
                     members.Add(mem);
                     stmts.Clear();

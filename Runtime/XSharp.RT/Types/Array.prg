@@ -50,7 +50,7 @@ BEGIN NAMESPACE XSharp
             ENDIF
             FOREACH element AS OBJECT IN elements
                 IF element == NULL
-                    _internalList:add(DEFAULT(USUAL))
+                    _internalList:add(NIL)
                 ELSEIF element IS OBJECT[]
                     LOCAL objects AS OBJECT[]
                     objects := (OBJECT[]) element
@@ -144,6 +144,9 @@ BEGIN NAMESPACE XSharp
                 SELF:__SetElement(VALUE,index)
             END SET
         END PROPERTY
+
+        /// <Summary>Returns the default value for array elements when arrays are resized or initialized. This is NIL.</summary>
+        PUBLIC OVERRIDE PROPERTY DefaultValue as USUAL GET NIL
 
         NEW INTERNAL METHOD Swap(position AS INT, element AS USUAL) AS USUAL
             RETURN SUPER:Swap(position, element)

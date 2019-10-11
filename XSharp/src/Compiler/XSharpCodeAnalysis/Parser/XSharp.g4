@@ -583,7 +583,6 @@ statement           : Decl=localdecl                        #declarationStmt
                        ENDTEXT e=eos                                                  #foxtextStmt   
                     | Eq=EQ Exprs+=expression  end=eos		                            #foxexpressionStmt
                     | B=(BACKSLASH | BACKBACKSLASH) String=TEXT_STRING_CONST end=EOS  #foxtextoutStmt
-                    | D=DIMENSION Id=identifier LPAREN Dimensions=dimensions RPAREN (AS Type=datatype)? #foxdimensionStmt
 
                       // NOTE: The ExpressionStmt rule MUST be last, even though it already existed in VO
                       // The first ExpressonStmt rule matches a single expression
@@ -597,9 +596,6 @@ statement           : Decl=localdecl                        #declarationStmt
                     | {validExpressionStmt()}?
                       Exprs+=expression (COMMA Exprs+=expression)+  end=eos			              #expressionStmt
 	                ;
-
-dimensions          : ArrayIndex+=expression (COMMA ArrayIndex+=expression)+
-                    ;
 
 ifElseBlock         : Cond=expression end=eos StmtBlk=statementBlock
                       ( ELSEIF ElseIfBlock=ifElseBlock 
@@ -644,12 +640,14 @@ variableDeclarator  : Id=identifier Op=assignoperator Expr=expression
 localdecl          : LOCAL (Static=STATIC)? LocalVars+=localvar (COMMA LocalVars+=localvar)*			end=eos #commonLocalDecl	
                    | Static=STATIC LOCAL    LocalVars+=localvar (COMMA LocalVars+=localvar)*			end=eos #commonLocalDecl	
                    | {!XSharpLexer.IsKeyword(InputStream.La(2))}?   // STATIC Identifier , but not STATIC <Keyword>
-                     Static=STATIC          LocalVars+=localvar (COMMA LocalVars+=localvar)*			end=eos #commonLocalDecl	
+                     Static=STATIC          LocalVars+=localvar (COMMA LocalVars+=localvar)*			end=eos #commonLocalDecl
                    // The following rules allow STATIC in the parser, 
                    // but the treetransformation will produce an error 9044 for STATIC implied
                    | Static=STATIC? VAR           ImpliedVars+=impliedvar (COMMA ImpliedVars+=impliedvar)*  end=eos #varLocalDecl
                    | Static=STATIC LOCAL? IMPLIED ImpliedVars+=impliedvar (COMMA ImpliedVars+=impliedvar)*  end=eos #varLocalDecl
                    | LOCAL Static=STATIC? IMPLIED ImpliedVars+=impliedvar (COMMA ImpliedVars+=impliedvar)*  end=eos #varLocalDecl
+                   // FoxPro dimension statement
+                   | (DIMENSION|DECLARE) DimVars += dimensionVar (COMMA ImpliedVars+=dimensionVar)*         end=eos #dimLocalDecl
                    ;
 
 localvar           : (Const=CONST)? ( Dim=DIM )? Id=identifier (LBRKT ArraySub=arraysub RBRKT)?
@@ -657,6 +655,9 @@ localvar           : (Const=CONST)? ( Dim=DIM )? Id=identifier (LBRKT ArraySub=a
                    ;
 
 impliedvar         : (Const=CONST)? Id=identifier Op=assignoperator Expression=expression
+                   ;
+
+dimensionVar       : Id=identifier  ( LBRKT ArraySub=arraysub RBRKT | LPAREN ArraySub=arraysub RPAREN ) (AS DataType=datatype)?
                    ;
 
 fielddecl          : FIELD Fields+=identifierName (COMMA Fields+=identifierName)* (IN Alias=identifierName)? end=eos
@@ -1203,6 +1204,7 @@ xppmemberModifiers  : ( Tokens+=( CLASS | STATIC) )+
 
 /// FoxPro Parser definities
 keywordfox          :  Token=( OLEPUBLIC| EXCLUDE| THISACCESS| HELPSTRING| NOINIT | FOX_AND| FOX_OR| FOX_NOT| FOX_XOR )
+                      // These tokens are already marked as 'only valid in a certain context ' in the lexer
                               // ENDDEFINE | TEXT| ENDTEXT | DIMENSION | LPARAMETERS | NOSHOW | TEXTMERGE | PRETEXT | FLAGS | ADDITIVE
                     ;
 // class declaration

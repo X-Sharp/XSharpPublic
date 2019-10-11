@@ -14150,11 +14150,11 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The &apos;{0}&apos; clause is not supported (yet) and ignored..
+        ///   Looks up a localized string similar to The &apos;{0}&apos; clause is not supported and ignored..
         /// </summary>
-        internal static string WRN_FoxUnsupporteClause {
+        internal static string WRN_FoxUnsupportedClause {
             get {
-                return ResourceManager.GetString("WRN_FoxUnsupporteClause", resourceCulture);
+                return ResourceManager.GetString("WRN_FoxUnsupportedClause", resourceCulture);
             }
         }
         

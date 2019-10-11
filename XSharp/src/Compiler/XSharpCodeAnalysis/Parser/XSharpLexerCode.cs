@@ -97,9 +97,9 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         bool _inDottedIdentifier = false;
         bool _currentLineIsPreprocessorDefinition = false;
         bool _currentLineHasEos = true;
-        bool _nextLineTextMode = false;
-        bool _foxTextMode = false;
-        bool _foxTextLineMode = false;
+        bool _onStartOfTextBlock = false;
+        bool _inTextBlock = false;
+        bool _onTextLine = false;
         XSharpToken _lastToken = new XSharpToken(NL);
         IList<ParseErrorData> _lexErrors = new List<ParseErrorData>();
 
@@ -260,11 +260,11 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 Interpreter.Line += 1;
                 Interpreter.Column = 0;
                 _lineStartCharIndex = InputStream.Index;
-                if (_nextLineTextMode)
+                if (_onStartOfTextBlock)
                 {
                     // this happens in FoxPro dialect only, because only there the TEXT keyword is available
-                    _foxTextMode = true;
-                    _nextLineTextMode = false;
+                    _inTextBlock = true;
+                    _onStartOfTextBlock = false;
                 }
                 return true;
             }
@@ -526,7 +526,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             Interpreter.Column += (InputStream.Index - _startCharIndex);
             XSharpToken t = TokenFactory.Create(this.SourcePair, _tokenType, _textSb.ToString(), _tokenChannel, _startCharIndex, CharIndex - 1, _startLine, _startColumn) as XSharpToken;
             Emit(t);
-            _foxTextLineMode = false;
+            _onTextLine = false;
             return t;
 
         }
@@ -561,7 +561,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             }
             bool unmatched = (La_1 == Eof);
             parseType(TEXT_STRING_CONST);
-            _foxTextMode = false;
+            _inTextBlock = false;
             Interpreter.Column += (InputStream.Index - _startCharIndex);
             XSharpToken  t = TokenFactory.Create(this.SourcePair, _tokenType, _textSb.ToString(), _tokenChannel, _startCharIndex, CharIndex - 1, _startLine, _startColumn) as XSharpToken;
             Emit(t);
@@ -577,11 +577,11 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             {
                 parseInit();
                 // this happens in FoxPro dialect only, because only there the TEXT keyword is available
-                if (_foxTextMode)
+                if (_inTextBlock)
                 {
                     return parseTextEndText();
                 }
-                if (_foxTextLineMode)
+                if (_onTextLine)
                 {
                     return parseTextLine();
                 }
@@ -631,7 +631,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                             if (La_1 == '\\')
                                 parseOne(BACKBACKSLASH);
                             // todo: In FoxPro dialect this 'eats' the whole line and makes this a TEXT_STRING_CONST
-                            _foxTextLineMode = true;
+                            _onTextLine = true;
                         }
                         break;
                     case '|':
@@ -1035,7 +1035,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 // but should only happen when TEXT is the first non ws token on a line
                 if (type == TEXT && StartOfLine(LastToken))
                 {
-                    _nextLineTextMode = true;
+                    _onStartOfTextBlock = true;
                 }
             }
             else if (type == REAL_CONST || type == INT_CONST || type == HEX_CONST || type == BIN_CONST)
@@ -1350,7 +1350,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 case PRETEXT:
                 case FLAGS:
                 case NOSHOW:
-                    if (!_nextLineTextMode)
+                    if (!_onStartOfTextBlock)
                     {
                         return ID;
                     }

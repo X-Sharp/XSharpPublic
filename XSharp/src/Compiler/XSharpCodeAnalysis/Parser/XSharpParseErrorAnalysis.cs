@@ -180,7 +180,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var endToken = context.T2 as XSharpToken;
                 if (endToken != null && endToken.Type != context.T.Type)
                 {
-                    _parseErrors.Add(new ParseErrorData(endToken, ErrorCode.ERR_UnexpectedToken, endToken.SourceSymbol.Text));
+                    _parseErrors.Add(new ParseErrorData(endToken, ErrorCode.ERR_UnexpectedToken, endToken.Text));
                 }
             }
         }
@@ -190,12 +190,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             bool isDim = context.Dim != null;
             bool hasArraySub = context.ArraySub != null;
             if (isDim && !hasArraySub)
-            {
+            { 
                 _parseErrors.Add(new ParseErrorData(context.DIM(), ErrorCode.ERR_ArrayInitializerExpected)); 
             }
             if (!isDim && hasArraySub && _options.Dialect == XSharpDialect.Core)
             {
                 _parseErrors.Add(new ParseErrorData(context.ArraySub, ErrorCode.ERR_FeatureNotAvailableInDialect, "Indexed Local", _options.Dialect.ToString()));
+            }
+        }
+
+        public override void ExitDimensionVar([NotNull] XSharpParser.DimensionVarContext context)
+        {
+            // only comes here in the Fox dialect
+            if (context.DataType != null)
+            {
+                _parseErrors.Add(new ParseErrorData(context.DataType, ErrorCode.WRN_FoxUnsupportedClause, "AS <DataType>"));
             }
         }
 
@@ -293,15 +302,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             return;
         }
-        public override void ExitFoxdimensionStmt(XSharpParser.FoxdimensionStmtContext context)
-        {
-            // Should not happen, the DIMENSION keyword only exists in the FoxPro dialect
-            if (_options.Dialect != XSharpDialect.FoxPro)
-            {
-                NotInDialect(context, "DIMENSION statement");
-            }
-            return;
-        }
         public override void ExitFoxtextoutStmt(XSharpParser.FoxtextoutStmtContext context)
         {
             if (_options.Dialect != XSharpDialect.FoxPro)
@@ -345,11 +345,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             if (context.Classlib != null)
             {
-                _parseErrors.Add(new ParseErrorData(context, ErrorCode.WRN_FoxUnsupportedClause, "OF ClassLib"));
+                _parseErrors.Add(new ParseErrorData(context.Classlib, ErrorCode.WRN_FoxUnsupportedClause, "OF ClassLib"));
             }
             if (context.OLEPUBLIC() != null)
             {
-                _parseErrors.Add(new ParseErrorData(context, ErrorCode.WRN_FoxUnsupportedClause, "OLEPUBLIC" ));
+                _parseErrors.Add(new ParseErrorData(context.OLEPUBLIC(), ErrorCode.WRN_FoxUnsupportedClause, "OLEPUBLIC" ));
             }
         }
 

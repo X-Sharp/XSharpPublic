@@ -5675,8 +5675,8 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="ERR_FoxAsClauseMandatory" xml:space="preserve">
     <value>The 'AS BaseType' clause is mandatory in the FoxPro dialect, unless you compile with /fox1-.</value>
   </data>
-  <data name="WRN_FoxUnsupporteClause" xml:space="preserve">
-    <value>The '{0}' clause is not supported (yet) and ignored.</value>
+  <data name="WRN_FoxUnsupportedClause" xml:space="preserve">
+    <value>The '{0}' clause is not supported and ignored.</value>
   </data>
   <data name="ERR_UnexpectedCommand" xml:space="preserve">
     <value>Unexpected Command or Statement.</value>

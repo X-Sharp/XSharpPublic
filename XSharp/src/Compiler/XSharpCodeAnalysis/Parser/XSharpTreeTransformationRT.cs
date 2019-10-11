@@ -947,6 +947,39 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             base.VisitLocalvar(context);
         }
 
+        public override void EnterDimensionVar([NotNull] XP.DimensionVarContext context)
+        {
+            // Do nothing here. It will be handled by the visitor after Datatype(s) are processed.
+            context.SetSequencePoint();
+        }
+
+        public override void ExitDimLocalDecl([NotNull] XP.DimLocalDeclContext context)
+        {
+            context.SetSequencePoint();
+            foreach (var lvCtx in context._DimVars)
+            {
+                VisitDimVar(lvCtx);
+            }
+            context.PutList(MakeList<StatementSyntax>(context._DimVars));
+        }
+
+        protected virtual void VisitDimVar([NotNull] XP.DimensionVarContext context)
+        {
+            var initExpr = GenerateVOArrayInitializer(context.ArraySub);
+            var variables = _pool.AllocateSeparated<VariableDeclaratorSyntax>();
+            var vardecl = _syntaxFactory.VariableDeclarator(context.Id.Get<SyntaxToken>(), null,
+                _syntaxFactory.EqualsValueClause(SyntaxFactory.MakeToken(SyntaxKind.EqualsToken), initExpr));
+            variables.Add(vardecl);
+            var modifiers = _pool.Allocate();
+            var ldecl = _syntaxFactory.LocalDeclarationStatement(
+                               modifiers.ToList<SyntaxToken>(),
+                               _syntaxFactory.VariableDeclaration(_arrayType, variables),
+                               SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+            _pool.Free(variables);
+            _pool.Free(modifiers);
+            context.Put(ldecl);
+        }
+
         public override void ExitArrayOfType([NotNull] XP.ArrayOfTypeContext context)
         {
             var type = MakeGenericName(OurTypeNames.ArrayBase, context.TypeName.Get<TypeSyntax>());
@@ -3586,7 +3619,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
 
 
-        private ExpressionSyntax GenerateVOArrayInitializer([NotNull]XP.ArraysubContext arraysub)
+        protected ExpressionSyntax GenerateVOArrayInitializer([NotNull]XP.ArraysubContext arraysub)
         {
             var args = new List<ArgumentSyntax>();
             foreach (var index in arraysub._ArrayIndex)

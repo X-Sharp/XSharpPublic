@@ -46,7 +46,7 @@ FUNCTION Start AS VOID
 	
 	LOCAL asm AS System.Reflection.Assembly
 	LOCAL cFolder AS STRING
-	asm := System.Reflection.Assembly.LoadFile("c:\XSharp\Dev\XSharp\Binaries\Debug\XSharp.CodeAnalysis.dll")
+	asm := System.Reflection.Assembly.LoadFile("c:\XSharp\Dev\XSharp\Binaries\Debug\Dlls\XSharp.CodeAnalysis.dll")
 	LOCAL res AS System.Type
 	res := asm:GetType("LanguageService.CodeAnalysis.XSharpResources")	
 	LOCAL type AS System.Type

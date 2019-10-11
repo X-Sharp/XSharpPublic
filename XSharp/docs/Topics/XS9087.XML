@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Under Construction" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<title>Warning XS9087</title>
+<keywords>
+<keyword>XS9087</keyword>
+</keywords>
+<body>
+  <header>
+    <para styleclass="Heading1">Warning XS9087</para>
+  </header>
+  <para styleclass="Normal">'ARRAY' does not have a method '{0}'. This code is converted to an 'ASend()' function call.</para>
+  <para styleclass="Normal"></para>
+</body>
+</topic>

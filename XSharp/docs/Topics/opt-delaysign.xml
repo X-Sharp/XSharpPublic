@@ -24,7 +24,6 @@
     <para styleclass="Normal">For more information, see Creating and Using Strong-Named Assemblies and Delay Signing an Assembly.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment</para>
-    <para styleclass="Normal"></para>
     <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">Open the Properties page for the project.</li>
       <li styleclass="Normal" style="margin-left:13px;">Modify the Delay sign only property.</li>

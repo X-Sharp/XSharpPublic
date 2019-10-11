@@ -30,14 +30,7 @@
     <para styleclass="Normal">The setting for -vo13 is registered with the runtime by the main application at startup. <text styleclass="List">If you library is compiled with -vo13+ but the main app isn&apos;t, then the string comparisons called from the library will follow the same rules as the main app because the main app registers -vo13 setting with the runtime and the stringcomparison routines in the runtime now detect that the main app does not want to do VO compatible string comparisons. </text><br/><text styleclass="List">We therefore recommend that 3rd party products always enable -vo13.</text></para>
     <para styleclass="Heading2">Compatibility Note: </para>
     <para styleclass="Normal">When using -vo13 string comparisons involve converting unicode strings to ansi for compatibility and consequently are slower than with String.Compare().</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal">&#32;<text styleclass="Heading3">To set this compiler option in the Visual Studio development environment:</text></para>
-    <para styleclass="Normal"></para>
-    <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
-      <li styleclass="Normal" style="margin-left:13px;">Open the project&apos;s Properties page</li>
-      <li styleclass="Normal" style="margin-left:13px;">Click the Language tab. </li>
-      <li styleclass="Normal" style="margin-left:13px;">In the Visual Objects Compatibility section, modify the &quot;Compatible string comparisons&quot; property. </li>
-    </list>
+    <para styleclass="Heading3"><snippet src="__VsDialect" inline="false"/></para>
     <para styleclass="Heading2"></para>
   </body>
 </topic>

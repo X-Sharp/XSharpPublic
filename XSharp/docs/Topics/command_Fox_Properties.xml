@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Properties and Fields</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">Properties and Fields (FoxPro class syntax)</para>
+    </header>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Normal">Declare fields and or properties with optional initial values</para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Normal"><tab />[FIELD] [modifiers] &lt;<text styleclass="List">IdName&gt;</text>, &lt;<text styleclass="List">IdName&gt;</text> ...] [AS &lt;idType&gt;]</para>
+    <para styleclass="Normal"><tab />[[.]Object.] &lt;<text styleclass="List">IdName</text>&gt; = &lt;Expression&gt; ...] </para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">Both syntaxes to declare and/or initialize properties are supported. </para>
+    <para styleclass="Normal">We have added an optional AS DataType clause. <br/>We have also added an optional FIELD clause that allows you to declare fields (opposed to properties)</para>
+    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">FIELD <tab />When you include the FIELD keyword then the names will be the names of fields in the class</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">Modifiers<tab />An optional list of modifiers that specify the visibility or scope of the property, such as PUBLIC,. PROTECTED, HIDDEN.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">&lt;IdName&gt;<tab />A valid identifier name for the fields or properties to declare.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><snippet src="__asType" inline="false"/></para>
+    <para styleclass="List">Expression<tab />The initial value to assign to the field/property</para>
+    <para styleclass="Heading1">Notes</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Body Text">The way in which properties are implemented depends on the value of the /fox1 compiler switch. When this switch is enabled, then all properties will read/write from a property collection that is declared in the Custom Object. When this switch is NOT enabled then &apos;normal&apos; auto properties will be declared with a backing field in this class.</para>
+  </body>
+</topic>

@@ -1,11 +1,15 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
 <topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>Class Members</title>
+  <title>Macros</title>
+  <keywords>
+    <keyword>Macros</keyword>
+  </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">ClassMembers (FoxPro dialect)</para>
+      <para styleclass="Heading1">Macros</para>
     </header>
-    <para styleclass="Normal"></para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text"><link displaytype="text" defaultstyle="true" type="topiclink" href="Amp_Command">&amp; Command</link></para>
   </body>
 </topic>

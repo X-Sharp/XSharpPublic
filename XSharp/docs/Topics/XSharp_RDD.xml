@@ -14,6 +14,9 @@
       <li styleclass="Normal">DBFNTX (including DBT memos)</li>
       <li styleclass="Normal">DBFCDX (Including FPT memos)</li>
     </list>
+    <list id="5" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">DBFVFP = DBFCDX with support for additional Visual FoxPro datatypes.</li>
+    </list>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">You can also uses &quot;limited&quot; RDDs with do not have all the functionality:</para>
     <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -22,7 +25,7 @@
       <li styleclass="Normal">DBFFPT: &#160;DBF files with FPT memos, no index support</li>
     </list>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">The Advantage RDDs (require advantage DLLs)</para>
+    <para styleclass="Normal">The Advantage RDDs (require external advantage DLLs, such as ACE32, ACE64, adsloc32.dll, adsloc64.dll etc )</para>
     <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">ADSADT</li>
       <li styleclass="Normal">AXDBFCDX</li>
@@ -39,7 +42,6 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text style="font-weight:bold; font-style:italic;">In one of the coming releases we will add support for:</text></para>
     <list id="5" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">DBFVFP = DBFCDX with support for additional Visual FoxPro datatypes.</li>
       <li styleclass="Normal">DBFMEMO = DBF + NTX + DBV</li>
       <li styleclass="Normal">DBFBLOB = DBF without associated DBF file</li>
       <li styleclass="Normal">DELIM</li>

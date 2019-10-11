@@ -14,13 +14,15 @@
     <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command__DLL">_DLL</link></para>
     <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_ACCESS">ACCESS</link></para>
     <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_ASSIGN">ASSIGN</link></para>
-    <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_CLASS">CLASS</link></para>
-    <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_CLASS">CLASS</link></para>
-    <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_CLASS">CLASS</link></para>
+    <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_CLASS">CLASS</link> (Generic)</para>
+    <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_CLASS_Fox">CLASS</link> (FoxPro)</para>
+    <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_CLASS_Xpp">CLASS</link> (Xbase++)</para>
     <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_CONSTRUCTOR">CONSTRUCTOR</link></para>
     <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DECLARE_METHOD">DECLARE METHOD</link></para>
     <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DEFINE">DEFINE</link></para>
+    <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DELEGATE">DELEGATE</link></para>
     <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DESTRUCTOR">DESTRUCTOR</link></para>
+    <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_ENUM">ENUM</link></para>
     <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_EVENT">EVENT</link></para>
     <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_FUNCTION">FUNCTION</link></para>
     <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_GLOBAL">GLOBAL</link></para>

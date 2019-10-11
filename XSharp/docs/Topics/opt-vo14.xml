@@ -24,13 +24,7 @@
     <para styleclass="Normal">if -vo14 is enabled, the compiler treats the &quot;1.0&quot;, &quot;1.5&quot; and &quot;2.5&quot; values as numbers of type FLOAT, causing the whole calculation to be made on FLOAT values and the result is at the end converted to REAL8, before it is finally stored to the local variable. FLOAT is a special data type defined in the runtime and is significantly slower than the REAL8 (System.Decimal) data type, which maps directly to a (mathematic) processor registry. Disabling -vo14 option, would cause the above code to execute faster by a large factor.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">Note that by using the &quot;d&quot; or &quot;s&quot; suffix, as in 123.456d and 123.456s, the REAL8 or REAL4 data type is being enforced on a literal number, no matter if -vo14 is enabled or disabled. See Literals for more information.</para>
-    <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment:</para>
-    <para styleclass="Normal"></para>
-    <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
-      <li styleclass="Normal" style="margin-left:13px;">Open the project&apos;s Properties page</li>
-      <li styleclass="Normal" style="margin-left:13px;">Click the Language tab. </li>
-      <li styleclass="Normal" style="margin-left:13px;">In the Visual Objects Compatibility section, modify the &quot;Use FLOAT literals&quot; property. </li>
-    </list>
+    <para styleclass="Heading3"><snippet src="__VsDialect" inline="false"/></para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

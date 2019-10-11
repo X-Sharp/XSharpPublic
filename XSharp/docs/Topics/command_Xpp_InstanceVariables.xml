@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Fields</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">Fields (Xbase++ class syntax)</para>
+    </header>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Normal">Declare fields/ instance variables with optional initial values</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Normal"><tab />[Visibility :]</para>
+    <para styleclass="Body Text"><tab />[STATIC] VAR &lt;idVar,...&gt; [IS &lt;Name&gt;] [IN &lt;SuperClass&gt;] &#160;[AS &lt;idType&gt;]</para>
+    <para styleclass="Normal"><tab />[SHARED]</para>
+    <para styleclass="Normal"><tab />[READONLY]</para>
+    <para styleclass="Normal"><tab /><text styleclass="Body Text">[ASSIGNMENT HIDDEN | PROTECTED | EXPORTED] </text><br/><tab />[NOSAVE]</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="List">Visibility<tab />This sets the visibility for the variables on the line following the statement. This can <text styleclass="Body Text">be HIDDEN ,PROTECTED, EXPORTED or INTERNAL. The default visibility is HIDDEN.</text></para>
+    <para styleclass="List"></para>
+    <para styleclass="List">STATIC<tab />Declares that this is a class level field.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">&lt;idVar&gt;<tab />A valid identifier name for the field to declare.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">IS .. IN ..<tab />This clause is not supported in X#</para>
+    <para styleclass="List"></para>
+    <para styleclass="Normal"><snippet src="__asType" inline="false"/></para>
+    <para styleclass="List">SHARED<tab />This clause is not supported in X#</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">READONLY<tab />This clause is not supported in X#</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">ASSIGNMENT ..<tab />This clause is not supported in X#</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">NOSAVE<tab />This sets the [NonSerializable] attribute on the field.</para>
+    <para styleclass="List"></para>
+    <para styleclass="Heading1">Note</para>
+    <para styleclass="List">Xbase++ has a complicated set of rules on how to control read/write access to fields. In .Net we simply use the Visibility .</para>
+  </body>
+</topic>

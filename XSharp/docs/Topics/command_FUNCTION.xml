@@ -41,7 +41,7 @@
     <para styleclass="List"></para>
     <para styleclass="List"><snippet src="__IncludeBody" inline="false"/></para>
     <para styleclass="List"></para>
-    <para styleclass="List"><text styleclass="Normal">ENDFUNC | END FUNCTION</text><tab /><text styleclass="Normal">These (optional)keywords indicate the logical end of the function.</text></para>
+    <para styleclass="List">ENDFUNC | END FUNCTION<tab />These (optional)keywords indicate the logical end of the function.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Heading1">Description</text></para>
     <para styleclass="Normal">A function is a subprogram comprised of a set of declarations and statements to be executed whenever you refer to &lt;<text styleclass="Italic">idFunction</text>&gt; followed by a pair of parentheses (see Notes section, below).</para>

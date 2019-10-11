@@ -34,7 +34,7 @@
     <para styleclass="List"><text styleclass="Normal">&lt;</text><text styleclass="Italic">idName</text><text styleclass="Normal">&gt;</text><tab /><text styleclass="Normal">A valid identifier name for the instance variable whose access method you are defining. &#160;Like other methods, access methods are entities; however, the system uses a unique naming scheme for them to prevent collisions with other entity names. &#160;Access method names must be unique within a class, but can share the same name as other entities in your application.</text></para>
     <para styleclass="Normal"><snippet src="__IncludeMethodParameters" inline="false"/></para>
     <para styleclass="List"><snippet src="__IncludeBody" inline="false"/></para>
-    <para styleclass="List">END ACCESS<tab />Optional end class to indicate the end of the ACCESS entity</para>
+    <para styleclass="List">END ACCESS<tab />Optional end clause to indicate the end of the ACCESS entity</para>
     <para styleclass="List"></para>
     <para styleclass="Normal"><text styleclass="Heading1">Description</text></para>
     <para styleclass="Normal">ACCESS declares a special method, called an access method, that is automatically executed each time you access the named instance variable.</para>

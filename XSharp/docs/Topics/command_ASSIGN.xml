@@ -32,7 +32,7 @@
     <para styleclass="List"></para>
     <para styleclass="List"><snippet src="__IncludeMethodParameters" inline="false"/></para>
     <para styleclass="List"><snippet src="__IncludeBody" inline="false"/></para>
-    <para styleclass="List">END ASSIGN<tab />Optional end class to indicate the end of the ASSIGN entity</para>
+    <para styleclass="List">END ASSIGN<tab />Optional end clause to indicate the end of the ASSIGN entity</para>
     <para styleclass="Heading1">Description</para>
     <para styleclass="Normal">ASSIGN declares a special method, called an assign method, that is automatically executed each time you assign a value to the named instance variable (e.g., &lt;<text styleclass="Italic">idVar</text>&gt; := &lt;<text styleclass="Italic">uValue</text>&gt;). &#160;The value on the right-hand side of the assignment operator is passed to the ASSIGN method as an argument.</para>
     <para styleclass="Normal"></para>

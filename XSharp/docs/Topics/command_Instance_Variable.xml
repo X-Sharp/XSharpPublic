@@ -6,6 +6,25 @@
     <header>
       <para styleclass="Heading1">Instance Variables</para>
     </header>
-    <para styleclass="Normal">Enter topic text here.</para>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Normal">Declare fields/ instance variables with optional initial values</para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text"><tab />[Attributes] [Modifiers] [INSTANCE] [DIM] &lt;idVar&gt;[ [ &lt;dimensions&gt; ] ] &#160; &#160;[:= &lt;uValue&gt;] &#160; &#160;[, ...] [AS &lt;idType&gt;] [, ...]]</para>
+    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="Heading1"><snippet src="__IncludeMethodModifiers" inline="false"/></para>
+    <para styleclass="List">DIM<tab />An optional keyword that specifies that you want to create a variable of a (.Net) array type</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">INSTANCE<tab />An optional keyword that you have to use when no modifiers are used. Without modifier the fields will become PUBLIC</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">&lt;idVar&gt;<tab />A valid identifier name for the field to declare.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">[&lt;dimensions&gt;]<tab />The initial dimensions for a variable of type array. This may be used with the DIM keyword, in which case it is a .Net array, or without the DIM keyword in which case it is a VO compatible dynamic array.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">&lt;uValue&gt;<tab />The initial value to assign to the variable.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><snippet src="__asType" inline="false"/><tab /></para>
+    <para styleclass="List"></para>
+    <para styleclass="List"></para>
   </body>
 </topic>

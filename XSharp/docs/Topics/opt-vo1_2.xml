@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>-vo1_2</title>
+  <keywords>
+    <keyword>-vo1</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">-fox1<tab /><tab />Classes are assumed to inherit from the Custom class</para>
+    </header>
+    <para styleclass="Normal">The -fox1 compiler option tells the compiler that all classes with the FoxPro class syntax are assumed to inherit from the Custom class. This means:</para>
+    <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">the AS &lt;idType&gt; CLASS becomes mandatory</li>
+      <li styleclass="Normal">the code generation for properties assumes that the class inherits from the Custom class and creates Get and Set methods that read/write the values to the properties collection inside the Custom class</li>
+    </list>
+    <para styleclass="Heading2">Syntax</para>
+    <para styleclass="Code with box">-fox1[+ | -] <text styleclass="Normal">&#32;</text></para>
+    <para styleclass="Heading2">Arguments</para>
+    <para styleclass="List">+ | - <tab />Specifying +, or just -</para>
+    <para styleclass="Heading3"><snippet src="__VsDialect" inline="false"/></para>
+    <para styleclass="Heading2"></para>
+  </body>
+</topic>

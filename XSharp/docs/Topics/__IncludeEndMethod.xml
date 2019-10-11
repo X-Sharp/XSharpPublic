@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
 <topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>Instance Variables</title>
+  <title>__IncludeEndMethod</title>
   <body>
     <header>
-      <para styleclass="Heading1">Instance Variables</para>
+      <para styleclass="Heading1">__IncludeEndMethod</para>
     </header>
-    <para styleclass="Normal">Enter topic text here.</para>
+    <para styleclass="List">END METHOD<tab />Optional end clause to indicate the end of the inline METHOD entity</para>
   </body>
 </topic>

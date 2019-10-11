@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>IMPLEMENTS clause</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">FoxPro IMPLEMENTS clause</para>
+    </header>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Normal">Declare an interface that the clause implements</para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><tab /><text style="font-weight:bold;">IMPLEMENTS</text> &lt;idInterface&gt; [EXCLUDE] IN TypeLib | TypeLibGUID | ProgID ]</para>
+    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">IMPLEMENTS <text styleclass="Normal">&lt;idInterface&gt;</text><tab /><text styleclass="Normal">The name(s) of the interface(s) that this class implements</text></para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><text styleclass="Normal">EXCLUDE</text><tab /><text styleclass="Normal">This clause is not supported</text></para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><text styleclass="Normal">IN [Typelib etc]</text><tab /><text styleclass="Normal">This clause is not supported.</text></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

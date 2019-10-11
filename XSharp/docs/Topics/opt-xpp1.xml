@@ -10,5 +10,6 @@
       <para styleclass="Heading1">-xpp1</para>
     </header>
     <para styleclass="Body Text">All XPP classes inherit from the Abstract class (default = OFF)</para>
+    <para styleclass="Heading3"><snippet src="__VsDialect" inline="false"/></para>
   </body>
 </topic>

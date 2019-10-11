@@ -6,16 +6,27 @@
     <header>
       <para styleclass="Heading1">ClassMembers (All dialects)</para>
     </header>
-    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_ACCESS" styleclass="List">ACCESS</link><text styleclass="List">, </text></para>
-    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_ASSIGN" styleclass="List">ASSIGN</link><text styleclass="List">,</text></para>
-    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_CONSTRUCTOR" styleclass="List">CONSTRUCTOR</link><text styleclass="List">, </text></para>
-    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DESTRUCTOR" styleclass="List">DESTRUCTOR</link><text styleclass="List">, </text></para>
-    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_EVENT" styleclass="List">EVENT</link><text styleclass="List">, </text></para>
-    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_METHOD" styleclass="List">METHOD</link><text styleclass="List">, </text></para>
-    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_OPERATOR" styleclass="List">OPERATOR</link><text styleclass="List">, </text></para>
+    <para styleclass="Heading1">Normal class members (apart from Instance Variables)</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_ACCESS" styleclass="List">ACCESS</link><text styleclass="List"> </text></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_ASSIGN" styleclass="List">ASSIGN</link></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_CONSTRUCTOR" styleclass="List">CONSTRUCTOR</link><text styleclass="List"> </text></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DESTRUCTOR" styleclass="List">DESTRUCTOR</link><text styleclass="List"> </text></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_EVENT" styleclass="List">EVENT</link><text styleclass="List"> </text></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_METHOD" styleclass="List">METHOD</link><text styleclass="List"> </text></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_OPERATOR" styleclass="List">OPERATOR</link><text styleclass="List"> </text></para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_PROPERTY" styleclass="List">PROPERTY</link></para>
     <para styleclass="Normal"></para>
-    <para styleclass="List"><tab />DECLARE &#160;( ACCESS | ASSIGN | METHOD ) &#160;&lt;message_identifier_list&gt;</para>
+    <para styleclass="List">The DECLARE  ( ACCESS | ASSIGN | METHOD )  &lt;idName&gt; [, &lt;idName&gt;] clause is supported by the compiler but ignored</para>
+    <para styleclass="Heading1">Nested types</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">&apos;Regular&apos; classes can also have embedded types:</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_CLASS">CLASS</link></para>
+    <para styleclass="List"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DELEGATE">DELEGATE</link></para>
+    <para styleclass="List"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_STRUCTURE">STRUCTURE</link></para>
+    <para styleclass="List"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_INTERFACE">INTERFACE</link></para>
+    <para styleclass="List"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_ENUM">ENUM</link></para>
     <para styleclass="List"></para>
     <para styleclass="List"></para>
   </body>

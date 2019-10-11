@@ -21,8 +21,7 @@
     <para styleclass="Heading1">Purpose</para>
     <para styleclass="Normal">Declare a interface name to the compiler.</para>
     <para styleclass="Heading1">Syntax</para>
-    <para styleclass="Normal"><tab />[Attributes] [Modifiers] <text style="font-weight:bold;">INTERFACE</text> &lt;<text styleclass="Italic">idInterface</text>&gt; [INHERIT &lt;<text styleclass="Italic">idInterface</text>&gt;] <br/><tab />[IMPLEMENTS &lt;idInterface&gt;[, &lt;IdInterface2&gt;,..]</para>
-    <para styleclass="Normal"><tab />[InterfaceMembers]</para>
+    <para styleclass="Normal"><tab />[Attributes] [Modifiers] <text style="font-weight:bold;">INTERFACE</text> &lt;<text styleclass="Italic">idInterface</text>&gt; [INHERIT &lt;<text styleclass="Italic">idInterface</text>&gt;] <br/><tab />[InterfaceMembers]</para>
     <para styleclass="Normal"><tab /><text style="font-weight:bold;">END INTERFACE</text></para>
     <para styleclass="Heading1">Arguments</para>
     <para styleclass="List"><snippet src="__IncludeMethodModifiers" inline="false"/></para>
@@ -31,10 +30,7 @@
     <para styleclass="List"></para>
     <para styleclass="List">INHERIT &lt;<text styleclass="Italic">idInterface</text>&gt;<tab />The name of an existing class (called a superclass) from which the new class inherits methods and instance variables (with the exception of HIDDEN).</para>
     <para styleclass="List"></para>
-    <para styleclass="List">IMPLEMENTS <text styleclass="Normal">&lt;idInterface&gt;</text><tab /><text styleclass="Normal">The name(s) of the interface(s) that this class implements</text></para>
-    <para styleclass="List"></para>
-    <para styleclass="List"></para>
-    <para styleclass="List">ClassMembers<tab />This can be any of <link displaytype="text" defaultstyle="true" type="topiclink" href="command_ACCESS">ACCESS</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_ASSIGN">ASSIGN</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_METHOD">METHOD</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_OPERATOR">OPERATOR</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_PROPERTY">PROPERTY</link></para>
+    <para styleclass="List">InterfaceMembers<tab />This can be any of <link displaytype="text" defaultstyle="true" type="topiclink" href="command_ACCESS">ACCESS</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_ASSIGN">ASSIGN</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_METHOD">METHOD</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_OPERATOR">OPERATOR</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_PROPERTY">PROPERTY</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_EVENT">EVENT</link></para>
     <para styleclass="Heading1">Description</para>
     <para styleclass="Heading1">Notess</para>
     <para styleclass="Heading1">See Also</para>

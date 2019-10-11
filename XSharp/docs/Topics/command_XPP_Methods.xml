@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>METHOD Implementation</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">METHOD implementations (Xbase ++ dialect)</para>
+    </header>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Normal">Provide the implementation for methods that are forward defined between CLASS .. ENDCLASS</para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><tab />[Attributes] <text styleclass="Body Text"> [ACCESS|ASSIGN] [CLASS] METHOD [&lt;ClassName&gt;:] &lt;MethodName&gt;[ </text>[([&lt;<text styleclass="Italic">idParam</text>&gt; [AS|REF|OUT &lt;<text styleclass="Italic">idType</text>&gt;] [, ...])] <text styleclass="Body Text">) </text>[AS &lt;<text styleclass="Italic">idType</text>&gt;]<br/><tab />[&lt;<text styleclass="Italic">Body</text>&gt;]<br/><tab />[END METHOD]?</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Arguments</text></para>
+    <para styleclass="Normal"><snippet src="__IncludeAttributes" inline="false"/></para>
+    <para styleclass="List">ACCESS | ASSIGN<tab />Declares that this method implements a Getter or Setter for a property. This must also be defined as ACCESS or ASSIGN in the class declaration.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">CLASS<tab />Optional modifier that specify that the declaration is for a STATIC method.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">ClassName<tab />The name of the class in which the class method is declared. When only one class is declared in the PRG file, the class name is optional. Otherwise &lt;ClassName&gt;: is required. </para>
+    <para styleclass="List"></para>
+    <para styleclass="List">&lt;idMethod&gt;<tab />A valid identifier name for the method. &#160;Method names must be unique within a class, but can share the same name as other entities (including access and assign methods) in your application.</para>
+    <para styleclass="List"><snippet src="__IncludeParameters" inline="false"/></para>
+    <para styleclass="List"><snippet src="__asType" inline="false"/></para>
+    <para styleclass="List"><snippet src="__IncludeBody" inline="false"/></para>
+    <para styleclass="List"><snippet src="__IncludeEndMethod" inline="false"/></para>
+    <para styleclass="List"><snippet src="__IncludeXPPMethodNames" inline="false"/></para>
+  </body>
+</topic>

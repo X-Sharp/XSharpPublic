@@ -24,13 +24,6 @@
     </list>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">The -vo12 option is enabled in projects created by the Transporter if the Compiler-&gt;Clipper Compatiblity-&gt;Integer Divisions option was enabled for the project in Visual Objects.</para>
-    <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment:</para>
-    <para styleclass="Normal"></para>
-    <list id="3" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
-      <li styleclass="Normal" style="margin-left:13px;">Open the project&apos;s Properties page</li>
-      <li styleclass="Normal" style="margin-left:13px;">Click the Language tab. </li>
-      <li styleclass="Normal" style="margin-left:13px;">In the Visual Objects Compatibility section, modify the &quot;Clipper Compatible integer divisions&quot; property. </li>
-    </list>
-    <para styleclass="Normal"></para>
+    <para styleclass="Heading3"><snippet src="__VsDialect" inline="false"/></para>
   </body>
 </topic>

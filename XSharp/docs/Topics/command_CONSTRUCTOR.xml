@@ -22,7 +22,7 @@
     <para styleclass="Heading1"><snippet src="__IncludeAttributes" inline="false"/></para>
     <para styleclass="List"><snippet src="__IncludeParameters" inline="false"/></para>
     <para styleclass="List"><snippet src="__IncludeBody" inline="false"/></para>
-    <para styleclass="List">END <text styleclass="Normal">CONSTRUCTOR</text><tab />Optional end class to indicate the end of the <text styleclass="Normal">CONSTRUCTOR</text> entity</para>
+    <para styleclass="List">END <text styleclass="Normal">CONSTRUCTOR</text><tab />Optional end clause to indicate the end of the <text styleclass="Normal">CONSTRUCTOR</text> entity</para>
     <para styleclass="Heading1">Arguments</para>
     <para styleclass="Heading1">See Also</para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_ASSIGN">ASSIGN</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_CLASS">CLASS</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_METHOD">METHOD</link></para>

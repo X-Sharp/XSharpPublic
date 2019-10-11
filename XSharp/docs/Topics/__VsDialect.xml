@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>__VsDialect</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">__VsDialect</para>
+    </header>
+    <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment:</para>
+    <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;">Open the project&apos;s Properties page</li>
+      <li styleclass="Normal" style="margin-left:13px;">Click the Dialect tab. </li>
+      <li styleclass="Normal" style="margin-left:13px;">Change the value</li>
+    </list>
+  </body>
+</topic>

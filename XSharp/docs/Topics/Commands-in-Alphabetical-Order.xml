@@ -30,26 +30,32 @@
           <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_ASSIGN">ASSIGN</link></para>
           <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_BEGIN_SEQUENCE">BEGIN SEQUENCE</link></para>
           <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_CLASS">CLASS</link></para>
-          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DECLARE">DECLARE*</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DECLARE">DECLARE</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DELEGATE">DELEGATE</link></para>
           <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DEFINE">DEFINE</link></para>
           <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DO">DO*</link></para>
           <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DO_CASE">DO CASE</link></para>
           <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DO_WHILE">DO WHILE</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_ENUM">ENUM</link></para>
           <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_FIELD">FIELD</link></para>
           <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_FOR">FOR</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_FOREACH">FOREACH</link></para>
           <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_FUNCTION">FUNCTION</link></para>
           <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_GLOBAL">GLOBAL</link></para>
           <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_IF">IF</link></para>
           <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_LOCAL">LOCAL</link></para>
-          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_MEMVAR">MEMVAR*</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_MEMVAR">MEMVAR</link></para>
           <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_METHOD">METHOD</link></para>
-          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_PARAMETERS">PARAMETERS*</link></para>
-          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_PRIVATE">PRIVATE*</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_PARAMETERS">PARAMETERS</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_PRIVATE">PRIVATE</link></para>
           <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_PROCEDURE">PROCEDURE</link></para>
-          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_PUBLIC">PUBLIC*</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_PUBLIC">PUBLIC</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_REPEAT_UNTIL">REPEAT</link></para>
           <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_RETURN">RETURN</link></para>
           <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_STATIC">STATIC</link></para>
-          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_VOSTRUCT">STRUCTURE</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_STRUCTURE">STRUCTURE</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_UNION">UNION</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_VOSTRUCT">VOSTRUCT</link></para>
           <para styleclass="link"></para>
           <para styleclass="link"></para>
           <para styleclass="Heading2"></para>

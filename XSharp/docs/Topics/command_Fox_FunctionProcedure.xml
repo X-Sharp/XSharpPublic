@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>FUNCTION and PROCEDURE</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">FoxPro FUNCTION and PROCEDURE definition clauses</para>
+    </header>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Normal">Defines method and event functions and procedures for the class definition. </para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Body Text"><tab />[Modifiers] FUNCTION | PROCEDURE Name[_ACCESS |_ASSIGN]</para>
+    <para styleclass="Body Text"><tab /> &#160; ([cParamName | cArrayName[] [AS Type][@]]) [AS Type]</para>
+    <para styleclass="Body Text"><tab /> &#160; [HELPSTRING cHelpString] | THIS_ACCESS(cMemberName) [NODEFAULT]</para>
+    <para styleclass="Body Text"><tab /> &#160; &#160; &#160;cStatements</para>
+    <para styleclass="Body Text"><tab />[ENDFUNC | ENDPROC]]</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">See the topics for <link displaytype="text" defaultstyle="true" type="topiclink" href="command_FUNCTION">FUNCTION </link> and <link displaytype="text" defaultstyle="true" type="topiclink" href="command_FUNCTION">PROCEDURE</link> for more details.</para>
+    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="List">_ACCESS<tab />The _ACCESS or _ASSIGN suffixes specify to create an Access or Assign method for a property with the same name. </para>
+    <para styleclass="List">_ASSIGN<tab /></para>
+    <para styleclass="List"></para>
+    <para styleclass="List">HELPSTRING<tab />The HELPSTRING clause is not supported in X#</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><text styleclass="Body Text">THIS_ACCESS</text><tab />The <text styleclass="Body Text">THIS_ACCESS</text> clause is not supported in X#</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><text styleclass="Body Text">NODEFAULT</text><tab />The <text styleclass="Body Text">NODEFAULT</text> clause is not supported in X#</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">ENDFUNC <tab />This may also be written as END FUNCTION</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">ENDPROC <tab />This may also be written as END PROCEDURE</para>
+    <para styleclass="Heading1"></para>
+  </body>
+</topic>

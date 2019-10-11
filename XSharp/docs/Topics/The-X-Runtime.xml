@@ -143,7 +143,7 @@
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="XSharp_RDD">XSharp.RDD.DLL</link></para>
         </td>
         <td style="width:618px;">
-          <para styleclass="Normal">This will contain the various RDDs implemented for X#.</para>
+          <para styleclass="Normal">This DLL contains the various RDDs implemented for X#.</para>
         </td>
         <td style="width:271px;">
           <para styleclass="Normal">X# Core</para>
@@ -174,14 +174,9 @@
         </td>
       </tr>
     </table></para>
-    <para styleclass="Heading2">Known Issues</para>
-    <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">The macro compiler in this release is fully functional but not as fast as we&apos;d like. We are working on a smaller and faster macro compiler.</li>
-      <li styleclass="Normal">The DBFCDX RDD is missing</li>
-    </list>
     <para styleclass="Heading2">Missing or incomplete Features </para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><table styleclass="Default" rowcount="5" colcount="3" style="head-row-background-color:#c0c0c0; alt-row-background-color:#ccffff;">
+    <para styleclass="Normal"><table styleclass="Default" rowcount="2" colcount="3" style="head-row-background-color:#c0c0c0; alt-row-background-color:#ccffff;">
       <thead style="vertical-align:top">
         <td>
           <para styleclass="Normal"><text style="font-weight:bold;">Feature</text></para>
@@ -195,42 +190,10 @@
       </thead>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal">RDD system</para>
-        </td>
-        <td>
-          <para styleclass="Normal">The DBFCDX RDD is missing</para>
-        </td>
-        <td>
-          <para styleclass="Normal">Jan-Feb 2019</para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td>
-          <para styleclass="Normal">MemVar support</para>
-        </td>
-        <td>
-          <para styleclass="Normal">There are already some statements in the language (like MEMVAR, PRIVATE etc) but the underlying runtime support and compiler support is not ready</para>
-        </td>
-        <td>
-          <para styleclass="Normal">Jan 2019</para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td>
           <para styleclass="Normal">Some runtime functions are not supported yet:<br/>Crypt functions (Crypt(), CryptA())<br/>Encoding functions (B64Enc.., UUEnc.., GetChunkBase64 etc)<br/></para>
         </td>
         <td>
           <para styleclass="Normal">These functions will most likely be added in one of the next betas. For now they will throw a notimplementedexception when you use them</para>
-        </td>
-        <td>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td>
-          <para styleclass="Normal">Fast Macro compiler</para>
-        </td>
-        <td>
-          <para styleclass="Normal">We are not happy with the speed of the current macro compiler. It is very powerful but compiling a macro simply takes too much time. We are working on a replacement for this. To help increase performance we are caching compiled macros at this moment, so the second time you compile the same macro you will get the same codeblock back as the first time. That helps but is not enough.</para>
         </td>
         <td>
         </td>

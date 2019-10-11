@@ -24,8 +24,7 @@
     <para styleclass="Normal"><text styleclass="Heading1">Arguments</text></para>
     <para styleclass="List">&lt;idProcedure&gt;<tab />The name of the procedure or function to execute.</para>
     <para styleclass="List"></para>
-    <para styleclass="List">WITH &lt;uValueArgList&gt;</para>
-    <para styleclass="List"><tab />A comma-separated list of up to 128 arguments to pass to &lt;idProcedure&gt;.</para>
+    <para styleclass="List">WITH &lt;uValueArgList&gt;<tab />A comma-separated list of arguments to pass to &lt;idProcedure&gt;.</para>
     <para styleclass="List"></para>
     <para styleclass="Normal"><text styleclass="Heading1">Description</text></para>
     <para styleclass="Normal">DO performs the same action as a function or procedure specified on a line by itself with the exception that variables other than field variables are passed by reference as the default. &#160;In order to pass a field variable as an argument, enclose it in parentheses, unless you declare it with the FIELD statement or specify it with an alias.</para>

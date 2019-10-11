@@ -20,13 +20,7 @@
     <para styleclass="Normal">If this option is enabled and a pointer type cannot be resolved, the compiler will attempt to locate a function with the same name as the pointer type (without &quot;PTR&quot;). If found, the compiler will resolve the type to PTR. This allows existing Visual Objects code to be compiled without modification, at least as far as the variable declaration is concerned.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">The pointer type may be used as an argument to CCallNative(), PCallNative() or CallManaged(), depending on the type of function the pointer points to.</para>
-    <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment:</para>
-    <para styleclass="Normal"></para>
-    <list id="2" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
-      <li styleclass="Normal" style="margin-left:13px;">Open the project&apos;s Properties page</li>
-      <li styleclass="Normal" style="margin-left:13px;">Click the Language tab. </li>
-      <li styleclass="Normal" style="margin-left:13px;">In the Visual Objects Compatibility section, modify the <text styleclass="Body Text">&quot;Implicit pointer conversions&quot; </text>property. </li>
-    </list>
+    <para styleclass="Heading3"><snippet src="__VsDialect" inline="false"/></para>
     <para styleclass="Heading2">Example</para>
     <para styleclass="Normal">The following code is valid in Visual Objects, but will not compile in X# unless -vo6 is used.</para>
     <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; color:#000000;"> foo( x </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">INT</text><text style="font-weight:normal; font-style:normal; color:#000000;"> ) </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">VOID</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">RETURN</text><br/><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">GLOBAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> pFoo </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;"> foo </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">PTR</text><br/></para>

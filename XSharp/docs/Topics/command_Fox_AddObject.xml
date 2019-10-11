@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>ADD OBJECT Clause</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">FoxPro ADD OBJECT Clause</para>
+    </header>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Normal">Adds objects from other classes to the class definition. </para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Normal"><tab /><text style="font-weight:bold;">ADD OBJECT</text> [Modifiers] &lt;ObjectName&gt; AS &lt;idType&gt; [NOINIT] [WITH &lt;Propertylist&gt;]]</para>
+    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="List">Modifiers<tab />An optional list of modifiers that specify the visibility or scope of the entity, such as PUBLIC, PROTECTED, HIDDEN, INTERNAL</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">&lt;<text styleclass="Normal">ObjectName</text>&gt;<tab />A valid identifier name for the fields or properties to declare.</para>
+    <para styleclass="List"></para>
+    <para styleclass="Normal"><snippet src="__asType" inline="false"/></para>
+    <para styleclass="List">NOINIT<tab />This clause is not supported</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">WITH &lt;PropertyList&gt;<tab />Specifies a list of properties and their values for the object that you add to the class definition. </para>
+    <para styleclass="List"></para>
+    <para styleclass="List">The object will be instantiated and added to the list of &quot;child objects&quot; in the class. Also a property will be created with the name and type specified in the ADD OBJECT clause. </para>
+    <para styleclass="Heading1">Notes</para>
+    <para styleclass="Body Text">The way in which properties are implemented depends on the value of the /fox1 compiler switch. When this switch is enabled, then all properties will read/write from a property collection that is declared in the Custom Object. When this switch is NOT enabled then &apos;normal&apos; auto properties will be declared with a backing field in this class.</para>
+  </body>
+</topic>

@@ -92,7 +92,8 @@
         </td>
       </tr>
     </table></para>
-    <para styleclass="Heading2">Example</para>
+    <para styleclass="Heading3"><snippet src="__VsDialect" inline="false"/></para>
+    <para styleclass="Heading3"><text styleclass="Heading2">Example</text></para>
     <para styleclass="Normal">The following code is valid in Visual Objects, but will not compile in X# unless -vo7 is used, because CreateObject() returns OBJECT and there is no implicit conversion from OBJECT to a more derived type (such a conversion cannot be guaranteed to be safe, and implicit conversions are always safe).</para>
     <para styleclass="Normal"></para>
     <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">CLASS</text><text style="font-weight:normal; font-style:normal; color:#000000;"> foo</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">...</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">END</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">CLASS</text><br/><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Start() </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">VOID</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> f </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;"> foo</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> s </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">SYMBOL</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">s := #foo</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">f := CreateObject( s ) </text><text style="font-weight:bold; font-style:italic; color:#339966;">// no implicit conversion from &apos;OBJECT&apos; to &apos;foo&apos;</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">RETURN</text></para>
@@ -109,13 +110,7 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal">The -vo7 option will automatically convert @x, which resolves to type INT PTR, into REF INT which is compatible with the function parameter. However, it is recommended that you remove the @ operator rather than use -vo7 for this purpose.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment:</para>
-    <para styleclass="Normal"></para>
-    <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
-      <li styleclass="Normal" style="margin-left:13px;">Open the project&apos;s Properties page</li>
-      <li styleclass="Normal" style="margin-left:13px;">Click the Language tab. </li>
-      <li styleclass="Normal" style="margin-left:13px;">In the Visual Objects Compatibility section, modify the Compatible &quot;Implicit casts and conversions&quot; property. </li>
-    </list>
+    <para styleclass="Heading3"></para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

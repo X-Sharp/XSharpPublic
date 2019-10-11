@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>METHOD Declarations</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">Method declarations (Xbase++ dialect)</para>
+    </header>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Normal">Declare and implement methods for a class, both for instances and the class itself</para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Normal"><tab /><text style="font-weight:bold;">Method forward declaration</text></para>
+    <para styleclass="Body Text"><tab />[Modifiers] METHOD &lt;MethodName,...&gt; [IS &lt;MethodName&gt;] [IN &lt;SuperClass&gt;] </para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text"><tab /><text styleclass="Normal" style="font-weight:bold;">Access/Assign method forward declaration</text></para>
+    <para styleclass="Body Text"><tab />[Attributes] ACCESS ASSIGN [CLASS] METHOD &lt;MethodName&gt; [VAR &lt;VarName&gt;] &#160;<text styleclass="Normal">[AS &lt;</text><text styleclass="Italic">idType</text><text styleclass="Normal">&gt;]</text></para>
+    <para styleclass="Body Text"><tab />[Attributes] ACCESS | ASSIGN [CLASS] METHOD &lt;MethodName&gt; [VAR &lt;VarName&gt;] &#160;<text styleclass="Normal">[AS &lt;</text><text styleclass="Italic">idType</text><text styleclass="Normal">&gt;]</text></para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text"><tab /><text styleclass="Normal" style="font-weight:bold;">Method inline declaration</text></para>
+    <para styleclass="Body Text"><tab />[Attributes] INLINE [CLASS] METHOD &lt;MethodName&gt;[ <text styleclass="Normal">[([&lt;</text><text styleclass="Italic">idParam</text><text styleclass="Normal">&gt; [AS|REF|OUT &lt;</text><text styleclass="Italic">idType</text><text styleclass="Normal">&gt;] [, ...])] </text>) <text styleclass="Normal">[AS &lt;</text><text styleclass="Italic">idType</text><text styleclass="Normal">&gt;]</text><br/><tab /><text styleclass="Normal">[&lt;</text><text styleclass="Italic">Body</text><text styleclass="Normal">&gt;]</text><br/><tab /><text styleclass="Normal">[END METHOD]</text></para>
+    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="List">Modifiers<tab />An optional list of modifiers that specify info about the method. (DEFERRED , FINAL , INTRODUCE , OVERRIDE , CLASS , SYNC).</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">&lt;MethodName,...&gt; <tab />is a comma separated list with the names of the instance methods being declared. The name for a method follows the same convention as function and variable names. It must begin with a underscore or a letter and must contain alpha numeric characters. </para>
+    <para styleclass="List"></para>
+    <para styleclass="List">IS &lt;MethodName&gt;<tab />The IS methodname clause is not supported by X#</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">IN &lt;SuperClass&gt;<tab />The IN Superclass clause is not supported (and not needed) by X#</para>
+    <para styleclass="List"></para>
+    <para styleclass="Normal"><snippet src="__IncludeAttributes" inline="false"/></para>
+    <para styleclass="List">CLASS<tab />Optional modifier that specify that the declaration is for a class level method or class level property</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">ACCESS ASSIGN<tab />Declares a Get/Set method for a property. You can to use one or both of these keywords.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List">&lt;VarName&gt;<tab />The Get/Set method may have a different name than the property that they implement.</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><snippet src="__asType" inline="false"/></para>
+    <para styleclass="List">INLINE<tab />Specifies that the whole method is included between the CLASS .. ENDCLASS keywords (other methods are so called forward declarations)</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><snippet src="__IncludeParameters" inline="false"/></para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><snippet src="__IncludeBody" inline="false"/></para>
+    <para styleclass="List"><snippet src="__IncludeEndMethod" inline="false"/></para>
+    <para styleclass="Heading1">Note</para>
+    <para styleclass="Body Text">The visibility of a method is determined by the visibility attribute set with one of the statements EXPORTED:, PROTECTED:, HIDDEN: or INTERNAL:</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="List"><snippet src="__IncludeXPPMethodNames" inline="false"/></para>
+  </body>
+</topic>

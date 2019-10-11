@@ -35,9 +35,13 @@
     <para styleclass="Heading1">Purpose</para>
     <para styleclass="Normal">Declare a class name to the compiler.</para>
     <para styleclass="Heading1">Syntax</para>
-    <para styleclass="Normal"><tab />[Attributes] [Modifiers] <tab /><text style="font-weight:bold;">CLASS</text> &lt;<text styleclass="Italic">idClass</text>&gt; [<text style="font-weight:bold;">FROM</text> &lt;<text styleclass="Italic">idParentClass</text>&gt;] <br/><tab />[<text style="font-weight:bold;">IMPLEMENTS</text> &lt;idInterface&gt;[, &lt;IdInterface2&gt;,..]</para>
+    <para styleclass="Normal"><tab />[Attributes] [Modifiers] <tab /><text style="font-weight:bold;">CLASS</text> &lt;<text styleclass="Italic">idClass</text>&gt; [<text style="font-weight:bold;">FROM</text> &lt;<text styleclass="Italic">idParentClass</text>&gt;] &#160;[<text style="font-weight:bold;">SHARING</text> &lt;<text styleclass="Italic">idParentClass</text>,...&gt;]<br/><tab />[<text style="font-weight:bold;">IMPLEMENTS</text> &lt;idInterface&gt;[, &lt;IdInterface2&gt;,..]</para>
     <para styleclass="Normal"><tab />[ClassMembers]</para>
     <para styleclass="Normal"><tab /><text style="font-weight:bold;">ENDCLASS</text></para>
+    <para styleclass="Body Text"><tab />[CLASS] METHOD [&lt;ClassName&gt;:] &lt;MethodName&gt; [( [&lt;Parameters,...&gt;] )]</para>
+    <para styleclass="Body Text"><tab /><tab />[&lt;Body&gt;]</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
     <para styleclass="Heading1">Arguments</para>
     <para styleclass="List">Attributes<tab />An optional list of one or more attributes that describe meta information for am entity, such as for example the [TestMethod] attribute on a method containing tests in a MsTest class library. Please note that Attributes must be on the same line or suffixed with a semi colon when they are written on the line above that keyword.<tab /></para>
     <para styleclass="List"></para>
@@ -46,14 +50,18 @@
     <para styleclass="List"><snippet src="__includeIdClass" inline="false"/></para>
     <para styleclass="List">FROM &lt;idParentClass&gt;<tab />The name of an existing class (called a superclass) from which the new class inherits methods and instance variables (with the exception of HIDDEN). X# does NOT allow multiple inheritance.</para>
     <para styleclass="List"></para>
+    <para styleclass="List">SHARING &lt;<text styleclass="Italic">idParentClass</text>&gt;<tab />This clause is not supported by X#.</para>
+    <para styleclass="List"></para>
     <para styleclass="List">IMPLEMENTS <text styleclass="Normal">&lt;idInterface&gt;</text><tab /><text styleclass="Normal">The name(s) of the interface(s) that this class implements</text></para>
     <para styleclass="List"></para>
-    <para styleclass="List"><text styleclass="Normal">ClassMembers</text><tab /></para>
-    <para styleclass="Heading1">Description</para>
-    <para styleclass="Heading1">Examples</para>
-    <para styleclass="Normal">The following example defines two classes, one of which inherits values from the other, and demonstrates how to create a class instance with initial values for the instance variables:</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Code Example"></para>
+    <para styleclass="List"><text styleclass="Normal">ClassMembers</text><tab /><text styleclass="Normal">This may be a list of variable declarations, method declarations and inline method implementations</text></para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><text styleclass="Normal">[CLASS] METHOD</text><tab /><text styleclass="Normal">This implements one or more methods outside of the class declaration. The CLASS keyword indicates that it is a STATIC method, as opposed to an INSTANCE method.</text></para>
+    <para styleclass="Heading1">ClassMembers</para>
+    <para styleclass="List"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_Xpp_InstanceVariables" styleclass="Normal">Fields</link></para>
+    <para styleclass="List"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_Xpp_Classmembers">Method Declarations</link></para>
+    <para styleclass="List"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_XPP_Methods">Method Implementation</link></para>
+    <para styleclass="Heading1"></para>
     <para styleclass="Heading1">See Also</para>
     <para styleclass="Normal"></para>
   </body>

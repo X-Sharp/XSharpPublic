@@ -721,7 +721,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         public override void ExitFilewidememvar([NotNull] XSharpParser.FilewidememvarContext context)
         {
-           NotInCore(context, "Dynamic Memory Variables");
+            if (_options.Dialect == XSharpDialect.Core)
+            {
+                NotInCore(context, "Dynamic Memory Variables");
+                return;
+            }
+            if (!_options.SupportsMemvars)
+            {
+                _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_DynamicVariablesNotAllowed));
+            }
         }
 
 

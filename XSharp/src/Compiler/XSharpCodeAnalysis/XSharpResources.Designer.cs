@@ -4031,7 +4031,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to To use Dynamic variables (PUBLIC, PRIVATE, MEMVAR) you will have to pass the /memvar commandline option..
+        ///   Looks up a localized string similar to To use Dynamic variables (PUBLIC, PRIVATE, MEMVAR, DECLARE, DIMENSION) you will have to pass the /memvar commandline option..
         /// </summary>
         internal static string ERR_DynamicVariablesNotAllowed {
             get {

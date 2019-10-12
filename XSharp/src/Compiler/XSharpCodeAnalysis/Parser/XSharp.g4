@@ -493,7 +493,7 @@ filewidememvar      : Token=MEMVAR Vars+=identifierName (COMMA Vars+=identifierN
 
 
 statement           : Decl=localdecl                        #declarationStmt
-                    | xbasedecl                             #xbasedeclStmt
+                    | Decl=xbasedecl                        #xbasedeclStmt
                     | Decl=fielddecl                        #fieldStmt
                     | DO? WHILE Expr=expression end=eos
                       StmtBlk=statementBlock 
@@ -646,8 +646,6 @@ localdecl          : LOCAL (Static=STATIC)? LocalVars+=localvar (COMMA LocalVars
                    | Static=STATIC? VAR           ImpliedVars+=impliedvar (COMMA ImpliedVars+=impliedvar)*  end=eos #varLocalDecl
                    | Static=STATIC LOCAL? IMPLIED ImpliedVars+=impliedvar (COMMA ImpliedVars+=impliedvar)*  end=eos #varLocalDecl
                    | LOCAL Static=STATIC? IMPLIED ImpliedVars+=impliedvar (COMMA ImpliedVars+=impliedvar)*  end=eos #varLocalDecl
-                   // FoxPro dimension statement
-                   | (DIMENSION|DECLARE) DimVars += dimensionVar (COMMA ImpliedVars+=dimensionVar)*         end=eos #dimLocalDecl
                    ;
 
 localvar           : (Const=CONST)? ( Dim=DIM )? Id=identifier (LBRKT ArraySub=arraysub RBRKT)?
@@ -657,8 +655,6 @@ localvar           : (Const=CONST)? ( Dim=DIM )? Id=identifier (LBRKT ArraySub=a
 impliedvar         : (Const=CONST)? Id=identifier Op=assignoperator Expression=expression
                    ;
 
-dimensionVar       : Id=identifier  ( LBRKT ArraySub=arraysub RBRKT | LPAREN ArraySub=arraysub RPAREN ) (AS DataType=datatype)?
-                   ;
 
 fielddecl          : FIELD Fields+=identifierName (COMMA Fields+=identifierName)* (IN Alias=identifierName)? end=eos
                    ;
@@ -671,10 +667,16 @@ xbasedecl           : T=(MEMVAR|PARAMETERS|LPARAMETERS)      // MEMVAR  Foo, Bar
                     | T=(PRIVATE | PUBLIC)
                       XVars+=xbasevar (COMMA XVars+=xbasevar)*   // PRIVATE Foo := 123,  PUBLIC Bar
                       end=eos
+                   // FoxPro dimension statement
+                   | T=(DIMENSION|DECLARE) DimVars += dimensionVar (COMMA DimVars+=dimensionVar)*    end=eos 
                     ;
 
 xbasevar            : Id=identifierName (Op=assignoperator Expression=expression)?
                     ;
+
+dimensionVar        : Id=identifierName  ( LBRKT ArraySub=arraysub RBRKT | LPAREN ArraySub=arraysub RPAREN ) (AS DataType=datatype)?
+                    ;
+
 
 // The operators in VO have the following precedence level:
 //    lowest (13)  assignment           := *= /= %= ^= += -= <<= >>=

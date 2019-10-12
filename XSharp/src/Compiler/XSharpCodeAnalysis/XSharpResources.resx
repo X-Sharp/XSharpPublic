@@ -5688,7 +5688,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
     <value>The _DLL syntax for Methods, Accesses and Assigns is not supported and not needed in .Net. You should add a reference to the assembly.</value>
   </data>
   <data name="ERR_DynamicVariablesNotAllowed" xml:space="preserve">
-    <value>To use Dynamic variables (PUBLIC, PRIVATE, MEMVAR) you will have to pass the /memvar commandline option.</value>
+    <value>To use Dynamic variables (PUBLIC, PRIVATE, MEMVAR, DECLARE, DIMENSION) you will have to pass the /memvar commandline option.</value>
   </data>
   <data name="ERR_FoxCtorDtor" xml:space="preserve">
     <value>CONSTRUCTOR and DESTRUCTOR are only allowed in the FoxPro dialect, when you compile with /fox1-.</value>

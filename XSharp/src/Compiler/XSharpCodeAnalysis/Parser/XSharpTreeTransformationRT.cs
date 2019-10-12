@@ -947,38 +947,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             base.VisitLocalvar(context);
         }
 
-        public override void EnterDimensionVar([NotNull] XP.DimensionVarContext context)
-        {
-            // Do nothing here. It will be handled by the visitor after Datatype(s) are processed.
-            context.SetSequencePoint();
-        }
-
-        public override void ExitDimLocalDecl([NotNull] XP.DimLocalDeclContext context)
-        {
-            context.SetSequencePoint();
-            foreach (var lvCtx in context._DimVars)
-            {
-                VisitDimVar(lvCtx);
-            }
-            context.PutList(MakeList<StatementSyntax>(context._DimVars));
-        }
-
-        protected virtual void VisitDimVar([NotNull] XP.DimensionVarContext context)
-        {
-            var initExpr = GenerateVOArrayInitializer(context.ArraySub);
-            var variables = _pool.AllocateSeparated<VariableDeclaratorSyntax>();
-            var vardecl = _syntaxFactory.VariableDeclarator(context.Id.Get<SyntaxToken>(), null,
-                _syntaxFactory.EqualsValueClause(SyntaxFactory.MakeToken(SyntaxKind.EqualsToken), initExpr));
-            variables.Add(vardecl);
-            var modifiers = _pool.Allocate();
-            var ldecl = _syntaxFactory.LocalDeclarationStatement(
-                               modifiers.ToList<SyntaxToken>(),
-                               _syntaxFactory.VariableDeclaration(_arrayType, variables),
-                               SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
-            _pool.Free(variables);
-            _pool.Free(modifiers);
-            context.Put(ldecl);
-        }
 
         public override void ExitArrayOfType([NotNull] XP.ArrayOfTypeContext context)
         {
@@ -1015,6 +983,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     else if (context.T.Type == XP.PUBLIC || context.T.Type == XP.PRIVATE)
                     {
                         foreach (var memvar in context._XVars)
+                        {
+                            var name = memvar.Id.GetText();
+                            if (CurrentEntity.Data.GetField(name) != null)
+                            {
+                                context.AddError(new ParseErrorData(context, ErrorCode.ERR_MemvarFieldWithSameName, name));
+                            }
+                            else
+                            {
+                                CurrentEntity.Data.AddField(name, "M", false, memvar);
+                            }
+                        }
+
+                    }
+                    else if (context.T.Type == XP.DIMENSION || context.T.Type == XP.DECLARE)
+                    {
+                        foreach (var memvar in context._DimVars)
                         {
                             var name = memvar.Id.GetText();
                             if (CurrentEntity.Data.GetField(name) != null)
@@ -1096,15 +1080,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitXbasedeclStmt([NotNull] XP.XbasedeclStmtContext context)
         {
-            context.Put(context.xbasedecl().Get<StatementSyntax>());
+            context.Put(context.Decl.Get<StatementSyntax>());
         }
         public override void ExitXbasedecl([NotNull] XP.XbasedeclContext context)
         {
             context.SetSequencePoint(context.end);
+            var stmts = _pool.Allocate<StatementSyntax>();
             switch (context.T.Type)
             {
                 case XP.PARAMETERS:
-                    var stmts = _pool.Allocate<StatementSyntax>();
                     int i = 0;
                     foreach (var memvar in context._Vars)
                     {
@@ -1120,23 +1104,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         stmts.Add(stmt);
                     }
                     context.Put(MakeBlock(stmts));
-                    _pool.Free(stmts);
                     break;
                 case XP.PRIVATE:
                 case XP.PUBLIC:
                     bool isprivate = context.T.Type == XP.PRIVATE;
-                    var stmts2 = _pool.Allocate<StatementSyntax>();
                     foreach (var memvar in context._XVars)
                     {
                         var name = memvar.Id.GetText();
                         var exp = GenerateMemVarDecl(name, isprivate);
-                        stmts2.Add(GenerateExpressionStatement(exp));
+                        stmts.Add(GenerateExpressionStatement(exp));
                         if (memvar.Expression != null)
                         {
                             exp = GenerateMemVarPut(GenerateLiteral(name), memvar.Expression.Get<ExpressionSyntax>());
                             var stmt = GenerateExpressionStatement(exp);
                             memvar.Put(stmt);
-                            stmts2.Add(stmt);
+                            stmts.Add(stmt);
                         }
                         else if (!isprivate)
                         {
@@ -1145,11 +1127,26 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             exp = GenerateMemVarPut(GenerateLiteral(name), GenerateLiteral(publicvalue));
                             var stmt = GenerateExpressionStatement(exp);
                             memvar.Put(stmt);
-                            stmts2.Add(stmt);
+                            stmts.Add(stmt);
                         }
                     }
-                    context.Put(MakeBlock(stmts2));
-                    _pool.Free(stmts2);
+                    context.Put(MakeBlock(stmts));
+                    break;
+                case XP.DECLARE:
+                case XP.DIMENSION:
+                    foreach (var dimvar in context._DimVars)
+                    {
+                        var name = dimvar.Id.GetText();
+                        var exp = GenerateMemVarDecl(name, true);
+                        stmts.Add(GenerateExpressionStatement(exp));
+
+                        var initExpr = GenerateVOArrayInitializer(dimvar.ArraySub);
+                        exp = GenerateMemVarPut(GenerateLiteral(name), initExpr);
+                        var stmt = GenerateExpressionStatement(exp);
+                        dimvar.Put(stmt);
+                        stmts.Add(stmt);
+                    }
+                    context.Put(MakeBlock(stmts));
                     break;
                 case XP.MEMVAR:
                     // handled in the Enter method
@@ -1169,6 +1166,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 node = NotInDialect(node, "Memory Variables", "(did you forget the /memvar commandline option ?)");
                 context.Put(node);
             }
+            _pool.Free(stmts);
+
         }
 
         public override void ExitXbaseType([NotNull] XP.XbaseTypeContext context)

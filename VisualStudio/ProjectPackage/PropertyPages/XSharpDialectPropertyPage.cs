@@ -47,7 +47,7 @@ namespace XSharp.Project
         internal const string XPP1Caption = "Inherit from Abstract class";
         internal const string FOX1Caption = "Inherit from Custom class";
         internal const string VO1Description = "Allow Init() and Axit() as aliases for Constructor/Destructor (/vo1)";
-        internal const string VO2Description = "Initialize strings to empty string (String.Empty) ( /vo2). Please note that in .NET a NULL_STRING is not the same as a string with length 0";
+        internal const string VO2Description = "Initialize strings to empty string (String.Empty) ( /vo2). Please note that in .NET a NULL_STRING is not the same as a string with length 0. When enabled this will initialize local string variables regardless of the setting of 'initialize locals' setting from the Language page.";
         internal const string VO3Description = "Add the virtual modifier to all methods by default (which is the normal Visual Objects behavior) (/vo3)";
         internal const string VO4Description = "Implicit signed/unsigned integer conversions (/vo4)";
         internal const string VO5Description = "Methods without parameters and calling convention are compiled as Clipper calling convention (/vo5). \nPlease note that without this switch all methods without parameters will be seen as STRICT. Methods with untyped parameters are always seen as CLIPPER calling convention.";
@@ -63,7 +63,7 @@ namespace XSharp.Project
         internal const string VO15Description = "Missing type clauses for locals, instance variables and parameters are treated as USUAL (VO and Vulcan dialect). The default = TRUE for the VO dialect and FALSE for the other dialects. We strongly recommend to set this to FALSE because this will help you to find problems in your code and non optimal code. If you have to use the USUAL type we recommend to explicitly declare variables and parameters as USUAL (/vo15)";
         internal const string VO16Description = "Automatically create clipper calling convention constructors for classes without constructor where the parent class has a Clipper Calling convention constructor.(/vo16)";
         internal const string XPP1Description = "All classes without parent class inherit from the XPP Abstract class.(/xpp1)";
-        internal const string FOX1Description = "All classes should inherit from the Custom class.(/fox1)";
+        internal const string FOX1Description = "All classes are assumed to inherit from the Custom class. This also affects the way in which properties are processed by the compiler.(/fox1)";
         internal const string CatCompatibility = "All dialects";
         internal const string CatNotCore = "Not in Core dialect";
         internal const string XPPCompatibility = "Xbase++ Compatibility";
@@ -256,8 +256,12 @@ namespace XSharp.Project
                         if (e.NewValue.ToLower() == "foxpro")
                         {
                             fox1 = true;
-                            Grid.Refresh();
                         }
+                        else
+                        {
+                            fox1 = false;
+                        }
+                        Grid.Refresh();
                         EnableDialectOptions(e.NewValue);
                     }
                   }

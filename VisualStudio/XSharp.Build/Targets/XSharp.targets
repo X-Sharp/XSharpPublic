@@ -235,6 +235,7 @@ Copyright (c) XSharp B.V.  All Rights Reserved
 	    GenerateFullPaths="$(GenerateFullPaths)"
 	    HighEntropyVA="$(HighEntropyVA)"
 	    IncludePaths="$(IncludePaths)"
+	    InitLocals="$(InitLocals)"
 	    KeyContainer="$(KeyContainerName)"
 	    KeyFile="$(AssemblyOriginatorKeyFile)"
 	    LangVersion="$(LangVersion)"

@@ -72,6 +72,11 @@ namespace XSharp.Build
             set { base.Bag[nameof(IncludePaths)] = value; }
             get { return (string[])base.Bag[nameof(IncludePaths)]; }
         }
+        public Boolean InitLocals
+        {
+            set { base.Bag[nameof(InitLocals)] = value; }
+            get { return base.GetBoolParameterWithDefault(nameof(InitLocals), false); }
+        }
 
         public Boolean NoStandardDefs
         {
@@ -675,6 +680,7 @@ namespace XSharp.Build
             }
             commandline.AppendPlusOrMinusSwitch("/az", base.Bag, nameof(AZ));
             //commandline.AppendPlusOrMinusSwitch("/cs", base.Bag, nameof(CS));
+            commandline.AppendPlusOrMinusSwitch("/initlocals", base.Bag, nameof(InitLocals));
             commandline.AppendPlusOrMinusSwitch("/ins", base.Bag, nameof(INS));
             commandline.AppendPlusOrMinusSwitch("/lb", base.Bag, nameof(LB));
             commandline.AppendPlusOrMinusSwitch("/namedarguments", base.Bag, nameof(NamedArgs));

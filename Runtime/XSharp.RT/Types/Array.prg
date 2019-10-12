@@ -146,7 +146,7 @@ BEGIN NAMESPACE XSharp
         END PROPERTY
 
         /// <Summary>Returns the default value for array elements when arrays are resized or initialized. This is NIL.</summary>
-        PUBLIC OVERRIDE PROPERTY DefaultValue as USUAL GET NIL
+        PUBLIC OVERRIDE PROPERTY DefaultValue AS USUAL GET NIL
 
         NEW INTERNAL METHOD Swap(position AS INT, element AS USUAL) AS USUAL
             RETURN SUPER:Swap(position, element)
@@ -280,6 +280,11 @@ BEGIN NAMESPACE XSharp
             _internalList:Sort(startIndex-__ARRAYBASE__ ,count,comparer)
             RETURN
 
+        PUBLIC METHOD Invoke(index PARAMS INT[]) AS USUAL
+            FOR VAR i := 1 TO index:Length 
+                index[i] -= 1
+            NEXT
+            RETURN SELF:__GetElement(index)
 
         INTERNAL CLASS ArrayDebugView
             PRIVATE _value AS ARRAY

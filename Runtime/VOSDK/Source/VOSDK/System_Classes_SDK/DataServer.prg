@@ -1,335 +1,333 @@
 CLASS DataServer
-   PROTECT oHyperLabel AS HyperLabel
-   PROTECT oHLStatus		AS USUAL
-	PROTECT wFieldCount	AS DWORD
-	PROTECT aDataFields	AS ARRAY
-	PROTECT aClients		AS ARRAY
-	PROTECT nClients		AS DWORD
-	PROTECT nCCMode		AS DWORD
-	PROTECT nLastLock		AS DWORD
+    PROTECT oHyperLabel AS HyperLabel
+    PROTECT oHLStatus		AS USUAL
+    PROTECT wFieldCount	AS DWORD
+    PROTECT aDataFields	AS ARRAY
+    PROTECT aClients		AS ARRAY
+    PROTECT nClients		AS DWORD
+    PROTECT nCCMode		AS DWORD
+    PROTECT nLastLock		AS DWORD
 
 METHOD __ClearLocks( ) AS VOID STRICT 
+    SWITCH nCCMode
+    CASE ccStable
+        SELF:Unlock( nLastLock )
+    CASE ccRepeatable
+        SELF:Unlock( )
+    CASE ccFile
+        SELF:Unlock( )
+    END SWITCH
 
+    RETURN
 
-	SWITCH nCCMode
-	CASE ccStable
-		SELF:Unlock( nLastLock )
-	CASE ccRepeatable
-		SELF:Unlock( )
-	CASE ccFile
-		SELF:Unlock( )
-	END SWITCH
-
-	RETURN
-
-METHOD __DataField (nFieldPosition as DWORD) AS DataField
+METHOD __DataField (nFieldPosition AS DWORD) AS DataField
     RETURN aDataFields[ nFieldPosition ]
 
 ACCESS __Clients AS ARRAY STRICT 
-	RETURN SELF:aClients
+    RETURN SELF:aClients
 
 METHOD __SetupLocks( ) AS VOID STRICT 
 
-	nLastLock := 0
+    nLastLock := 0
 
-	SWITCH nCCMode
-	CASE ccNone 
-	CASE ccOptimistic
-		//nothing to do
-		NOP
-	CASE ccStable 
-	CASE ccRepeatable
-		nLastLock := SELF:Recno
-		// Do not free locks in case user has other locks
-		IF ! SELF:RLOCK( nLastLock )
-			nLastLock := 0
-			oHLStatus := SELF:Status
-		ENDIF
-	CASE ccFile
-		IF ! SELF:FLOCK( )
-			oHLStatus := SELF:Status
-		ENDIF
-	OTHERWISE
-		BREAK DbError{ SELF, #ConcurrencyControl, EG_ARG, ;
-			__CavoStr(__CAVOSTR_DBFCLASS_BADCONCURRENCYASSIGN), nCCMode, "nCCMode" }
-	END SWITCH
+    SWITCH nCCMode
+    CASE ccNone 
+    CASE ccOptimistic
+        //nothing to do
+        NOP
+    CASE ccStable 
+    CASE ccRepeatable
+        nLastLock := SELF:Recno
+        // Do not free locks in case user has other locks
+        IF ! SELF:RLOCK( nLastLock )
+            nLastLock := 0
+            oHLStatus := SELF:Status
+        ENDIF
+    CASE ccFile
+        IF ! SELF:FLOCK( )
+            oHLStatus := SELF:Status
+        ENDIF
+    OTHERWISE
+        BREAK DbError{ SELF, #ConcurrencyControl, EG_ARG, ;
+            __CavoStr(__CAVOSTR_DBFCLASS_BADCONCURRENCYASSIGN), nCCMode, "nCCMode" }
+    END SWITCH
 
-	RETURN
+    RETURN
 
 METHOD Append( ) 
-	RETURN FALSE
+    RETURN FALSE
 
 METHOD AsString( ) 
-	RETURN oHyperLabel:AsString( )
+    RETURN oHyperLabel:AsString( )
 
 ACCESS BoF 
-	RETURN FALSE
+    RETURN FALSE
 
 ACCESS Clients 
-	// DHer: 18/12/2008
+    // DHer: 18/12/2008
    RETURN SELF:aClients
 
 ASSIGN Clients(aNewClients) 
-	// DHer: 18/12/2008
-	IF IsArray(aNewClients)
-		SELF:aClients := aNewClients
-	ENDIF
-	SELF:nClients := ALen(SELF:aClients)
+    // DHer: 18/12/2008
+    IF IsArray(aNewClients)
+        SELF:aClients := aNewClients
+    ENDIF
+    SELF:nClients := ALen(SELF:aClients)
 RETURN 
 
 METHOD Close( ) 
-	RETURN FALSE
+    RETURN FALSE
 
 METHOD Commit( ) 
-	RETURN FALSE
+    RETURN FALSE
 
 ACCESS ConcurrencyControl( ) 
-	RETURN SELF:nCCMode
+    RETURN SELF:nCCMode
 
 ASSIGN ConcurrencyControl( nMode) 
-	LOCAL newMode := nMode
+    LOCAL newMode := nMode
 
-	IF UsualType( newMode ) == STRING
-		newMode := String2Symbol( nMode )
-	ENDIF
+    IF UsualType( newMode ) == STRING
+        newMode := String2Symbol( nMode )
+    ENDIF
 
-	IF UsualType( newMode ) == SYMBOL
-		SWITCH newMode:ToString()
-		CASE "CCNONE"
-			newMode := ccNone
-		CASE "CCOPTIMISTIC"
-			newMode := ccOptimistic
-		CASE "CCSTABLE"
-			newMode := ccStable
-		CASE "CCREPEATABLE"
-			newMode := ccRepeatable
-		CASE "CCFILE"
-			newMode := ccFile
-		OTHERWISE
-			BREAK DbError{ SELF, #ConcurrencyControl, EG_ARG, ;
-				__CavoStr( __CAVOSTR_DBFCLASS_BADCONCURRENCYASSIGN ), nMode, "nMode" }
-		END SWITCH
-	ENDIF
+    IF UsualType( newMode ) == SYMBOL
+        SWITCH newMode:ToString()
+        CASE "CCNONE"
+            newMode := ccNone
+        CASE "CCOPTIMISTIC"
+            newMode := ccOptimistic
+        CASE "CCSTABLE"
+            newMode := ccStable
+        CASE "CCREPEATABLE"
+            newMode := ccRepeatable
+        CASE "CCFILE"
+            newMode := ccFile
+        OTHERWISE
+            BREAK DbError{ SELF, #ConcurrencyControl, EG_ARG, ;
+                __CavoStr( __CAVOSTR_DBFCLASS_BADCONCURRENCYASSIGN ), nMode, "nMode" }
+        END SWITCH
+    ENDIF
 
-	IF IsNumeric( newMode ) .AND. ( newMode != SELF:nCCMode )
-		SELF:__ClearLocks( )
-		SELF:nCCMode := newMode
-		SELF:__SetupLocks( )
-	ENDIF
+    IF IsNumeric( newMode ) .AND. ( newMode != SELF:nCCMode )
+        SELF:__ClearLocks( )
+        SELF:nCCMode := newMode
+        SELF:__SetupLocks( )
+    ENDIF
 
-	RETURN SELF:nCCMode
+    RETURN 
 
 METHOD DataField( nFieldPosition ) 
-	RETURN __DataField (nFieldPosition)
+    RETURN __DataField (nFieldPosition)
 
 ACCESS DBStruct 
-	LOCAL aStruct	AS ARRAY
-	LOCAL oDF		AS DataField
-	LOCAL w			AS DWORD
+    LOCAL aStruct	AS ARRAY
+    LOCAL oDF		AS DataField
+    LOCAL w			AS DWORD
 
-	aStruct := ArrayNew( wFieldCount )
-	FOR w := 1 UPTO wFieldCount
-		oDF := aDataFields[ w ]
-		aStruct[ w ] := { oDF:Name, oDF:__FieldSpec:UsualType, oDF:__FieldSpec:Length, oDF:__FieldSpec:Decimals }
-	NEXT
+    aStruct := ArrayNew( wFieldCount )
+    FOR w := 1 UPTO wFieldCount
+        oDF := aDataFields[ w ]
+        aStruct[ w ] := { oDF:Name, oDF:__FieldSpec:UsualType, oDF:__FieldSpec:Length, oDF:__FieldSpec:Decimals }
+    NEXT
 
-	RETURN aStruct
+    RETURN aStruct
 
 METHOD Delete( ) 
-	RETURN FALSE
+    RETURN FALSE
 
 ACCESS EoF 
-	RETURN FALSE
+    RETURN FALSE
 
 ACCESS FCount 
-	RETURN wFieldCount
+    RETURN wFieldCount
 
 METHOD FIELDGET( nFieldPosition ) 
-	RETURN NIL
+    RETURN NIL
 
 METHOD FieldGetFormatted( nFieldPosition ) 
-	RETURN NIL
+    RETURN NIL
 
 METHOD FieldHyperLabel( nFieldPosition ) 
-	RETURN __DataField (nFieldPosition):HyperLabel
+    RETURN __DataField (nFieldPosition):HyperLabel
 
 METHOD FieldName( nFieldPosition ) 
-	RETURN __DataField (nFieldPosition):__HyperLabel:Name
+    RETURN __DataField (nFieldPosition):__HyperLabel:Name
 
 METHOD FieldPos( nFieldPosition ) 
-	RETURN NIL
+    RETURN NIL
 
 METHOD FIELDPUT( nFieldPosition, uValue ) 
-	RETURN NIL
+    RETURN NIL
 
 METHOD FieldSpec( nFieldPosition ) 
-	RETURN __DataField (nFieldPosition):FieldSpec
+    RETURN __DataField (nFieldPosition):FieldSpec
 
 METHOD FieldStatus( nFieldPosition ) 
-	RETURN __DataField (nFieldPosition):__FieldSpec:Status
+    RETURN __DataField (nFieldPosition):__FieldSpec:Status
 
 METHOD FieldSym( nFieldPosition ) 
-	RETURN __DataField (nFieldPosition):__HyperLabel:NameSym
+    RETURN __DataField (nFieldPosition):__HyperLabel:NameSym
 
 METHOD FieldValidate( nFieldPosition, uValue ) 
-	RETURN __DataField (nFieldPosition):__FieldSpec:PerformValidations( uValue )
+    RETURN __DataField (nFieldPosition):__FieldSpec:PerformValidations( uValue )
 
 METHOD FLOCK( ) 
-	RETURN FALSE
+    RETURN FALSE
 
 METHOD GoBottom( ) 
-	RETURN FALSE
+    RETURN FALSE
 
 METHOD GoTo( nPosition ) 
-	RETURN FALSE
+    RETURN FALSE
 
 METHOD GoTop( ) 
-	RETURN FALSE
+    RETURN FALSE
 
 ACCESS HLStatus
     // This always returns the status, regardless of the error flag	
     RETURN SELF:oHLStatus	
 
 ACCESS HyperLabel 
-	RETURN oHyperLabel
+    RETURN oHyperLabel
 
 ASSIGN HyperLabel( oHL ) 
-	oHyperLabel := oHL
-	RETURN 
+    oHyperLabel := oHL
+    RETURN 
 
 CONSTRUCTOR( ) 
-	SELF:aClients := { }
-	RETURN 
+    SELF:aClients := { }
+    RETURN 
 
 ACCESS Name 
-	IF oHyperlabel != NULL_OBJECT
-		RETURN oHyperLabel:Name
-	ENDIF
-	RETURN NULL_STRING
+    IF oHyperlabel != NULL_OBJECT
+        RETURN oHyperLabel:Name
+    ENDIF
+    RETURN NULL_STRING
 
 ACCESS NameSym 
-	IF oHyperlabel != NULL_OBJECT
-		RETURN oHyperLabel:NameSym
-	ENDIF
-	RETURN NULL_STRING
+    IF oHyperlabel != NULL_OBJECT
+        RETURN oHyperLabel:NameSym
+    ENDIF
+    RETURN NULL_STRING
 
 METHOD NoIVarGet( symFieldName ) 
-	RETURN SELF:FIELDGET( symFieldName )
+    RETURN SELF:FieldGet( symFieldName )
 
 METHOD NoIVarPut( symFieldName, uValue ) 
 
-	SELF:FIELDPUT( symFieldName, uValue )
-	SELF:Notify( NOTIFYFIELDCHANGE, symFieldName )
-	RETURN uValue
+    SELF:FieldPut( symFieldName, uValue )
+    SELF:Notify( NOTIFYFIELDCHANGE, symFieldName )
+    RETURN uValue
 
 METHOD Notify( kNotification, uDescription ) 
-	//unsupported syntax under .NET
-	//aClients:Notify( kNotification, uDescription )
-    FOREACH oClient as OBJECT in aClients
+    //unsupported syntax under .NET
+    //aClients:Notify( kNotification, uDescription )
+    FOREACH oClient AS OBJECT IN AClone(aClients)
         Send(oClient, #Notify, kNotification, uDescription )
     NEXT
-	RETURN SELF
+    RETURN SELF
 
 METHOD PostInit( ) 
-	RETURN SELF
+    RETURN SELF
 
 METHOD PreInit( ) 
-	RETURN SELF
+    RETURN SELF
 
 ACCESS RecCount 
-	RETURN 0
+    RETURN 0
 
 ACCESS RecNo 
-	RETURN NIL
+    RETURN NIL
 
 ASSIGN RecNo( lRecNo ) 
-	RETURN 
+    RETURN 
 
 METHOD RegisterClient( oForm ) 
 
-	IF AScan( aClients, oForm ) # 0
-		RETURN FALSE
-	ENDIF
-	AAdd( aClients, oForm )
-	nClients := ALen( aClients )
+    IF AScan( aClients, oForm ) # 0
+        RETURN FALSE
+    ENDIF
+    AAdd( aClients, oForm )
+    nClients := ALen( aClients )
 
-	RETURN TRUE
+    RETURN TRUE
 
 METHOD ResetNotification( ) 
-	RETURN 0
+    RETURN 0
 
 METHOD RLOCK( nRecord ) 
-	RETURN FALSE
+    RETURN FALSE
 
 METHOD RLockVerify( ) 
-	RETURN FALSE
+    RETURN FALSE
 
 METHOD Rollback( ) 
-	RETURN FALSE
+    RETURN FALSE
 
 METHOD Seek( uValue ) 
-	RETURN FALSE
+    RETURN FALSE
 
 METHOD SetDataField( nFieldPosition, oDataField ) 
-	LOCAL wFieldPosition := nFieldPosition	AS WORD
+    LOCAL wFieldPosition := nFieldPosition	AS WORD
 
-	IF aDataFields = NULL_ARRAY
-		BREAK DbError{ SELF, #SetDataField, EG_SEQUENCE, ;
-			__CavoStr( __CAVOSTR_DBFCLASS_NODATAFIELDSEXIST ) }
-	ELSEIF IsNil( nFieldPosition) .OR. ! IsNumeric( nFieldPosition ) .OR.   ;
-		wFieldPosition < 1 .OR. wFieldPosition > ALen( aDataFields )
-		BREAK DbError{ SELF, #SetDataField, EG_ARG, ;
-			__CavoStr(__CAVOSTR_DBFCLASS_BADFIELDPOSITION), nFieldPosition, "nFieldPosition" }
-	ELSEIF ! (__Usual.ToObject(oDataField) IS DataField)
-		BREAK DbError{ SELF, #SetDataField, EG_ARG,   ;
-			__CavoStr(__CAVOSTR_DBFCLASS_BADFIELDPOSITION), nFieldPosition, "nFieldPosition" }
-	ELSE
-	    LOCAL oField := oDataField				AS DataField
-	    LOCAL oDF								AS DataField
-		oDF := aDataFields[ wFieldPosition ]
-		IF oField:Name == oDF:Name .AND.    ;
-			oField:__FieldSpec:UsualType == oDF:__FieldSpec:UsualType .AND.     ;
-			oField:__FieldSpec:Length    == oDF:__FieldSpec:Length .AND.   ;
-			oField:__FieldSpec:Decimals  == oDF:__FieldSpec:Decimals
-			aDataFields[ wFieldPosition ] := oField
-			RETURN TRUE
-		ELSE
-			RETURN FALSE
-		ENDIF
-	ENDIF
+    IF aDataFields = NULL_ARRAY
+        BREAK DbError{ SELF, #SetDataField, EG_SEQUENCE, ;
+            __CavoStr( __CAVOSTR_DBFCLASS_NODATAFIELDSEXIST ) }
+    ELSEIF IsNil( nFieldPosition) .OR. ! IsNumeric( nFieldPosition ) .OR.   ;
+        wFieldPosition < 1 .OR. wFieldPosition > ALen( aDataFields )
+        BREAK DbError{ SELF, #SetDataField, EG_ARG, ;
+            __CavoStr(__CAVOSTR_DBFCLASS_BADFIELDPOSITION), nFieldPosition, "nFieldPosition" }
+    ELSEIF ! (__Usual.ToObject(oDataField) IS DataField)
+        BREAK DbError{ SELF, #SetDataField, EG_ARG,   ;
+            __CavoStr(__CAVOSTR_DBFCLASS_BADFIELDPOSITION), nFieldPosition, "nFieldPosition" }
+    ELSE
+        LOCAL oField := oDataField				AS DataField
+        LOCAL oDF								AS DataField
+        oDF := aDataFields[ wFieldPosition ]
+        IF oField:Name == oDF:Name .AND.    ;
+            oField:__FieldSpec:UsualType == oDF:__FieldSpec:UsualType .AND.     ;
+            oField:__FieldSpec:Length    == oDF:__FieldSpec:Length .AND.   ;
+            oField:__FieldSpec:Decimals  == oDF:__FieldSpec:Decimals
+            aDataFields[ wFieldPosition ] := oField
+            RETURN TRUE
+        ELSE
+            RETURN FALSE
+        ENDIF
+    ENDIF
 
 METHOD Skip( nRelativePosition ) 
-	RETURN FALSE
+    RETURN FALSE
 
 ACCESS Status 
-	RETURN oHLStatus
+    RETURN oHLStatus
 
 ASSIGN Status(oHl) 
-	SELF:oHLStatus := oHl
-RETURN SELF:oHLStatus
-
+    SELF:oHLStatus := oHl
+    RETURN
+    
 METHOD SuspendNotification( ) 
-	RETURN 0
+    RETURN 0
 
 METHOD UnLock( ) CLIPPER 
-	RETURN FALSE
+    RETURN FALSE
 
 METHOD UnRegisterClient( oClient, lAllowClose ) 
-	LOCAL w AS DWORD
+    LOCAL w AS DWORD
 
-	IF ( w := AScan( aClients, oClient ) ) = 0
-		RETURN FALSE
-	ELSE
-		ADel( aClients, w )
-		nClients := ALen( aClients ) -1
-		ASize( aClients, nClients )
-		IF ( IsNil( lAllowClose ) .OR. lAllowClose) .AND. nClients = 0
-			SELF:Close( )
-		ENDIF
-		RETURN TRUE
-	ENDIF
+    IF ( w := AScan( aClients, oClient ) ) = 0
+        RETURN FALSE
+    ELSE
+        ADel( aClients, w )
+        nClients := ALen( aClients ) -1
+        ASize( aClients, nClients )
+        IF ( IsNil( lAllowClose ) .OR. lAllowClose) .AND. nClients = 0
+            SELF:Close( )
+        ENDIF
+        RETURN TRUE
+    ENDIF
 
 METHOD Update( ) 
-	RETURN FALSE
+    RETURN FALSE
 END CLASS
 

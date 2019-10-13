@@ -374,7 +374,7 @@ BEGIN NAMESPACE XSharp.RDD
                     ENDIF
                 ENDDO
             ENDIF
-            SELF:_Found := lFound
+            SELF:_Found := lFound .AND. ! SELF:_Eof
             RETURN result
             
 			/// <inheritdoc />

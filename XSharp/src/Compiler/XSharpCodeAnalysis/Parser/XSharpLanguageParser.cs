@@ -503,21 +503,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // these tokens will get as many errors as needed.
             var textNode = SyntaxFactory.BadToken(null, _text.ToString(), null);
             var builder = new SyntaxListBuilder(parseErrors.Count+1);
-            var reportedErrors = new List<ErrorCode>();
+            //var reportedErrors = new List<ErrorCode>();
             if (!parseErrors.IsEmpty())
             {
-                int errorsAdded = 0;
+                //int errorsAdded = 0;
                 foreach (var e in parseErrors)
                 {
-                    if (errorsAdded > 10 &&  reportedErrors.Contains(e.Code))
-                    {
-                        break;
-                    }
-                    errorsAdded++;
-                    if (! reportedErrors.Contains(e.Code))
-                    {
-                        reportedErrors.Add(e.Code);
-                    }
+                    //if (errorsAdded > 10 &&  reportedErrors.Contains(e.Code))
+                    //{
+                    //    break;
+                    //}
+                    //errorsAdded++;
+                    //if (! reportedErrors.Contains(e.Code))
+                    //{
+                    //    reportedErrors.Add(e.Code);
+                    //}
                     if (e.Node != null)
                     {
                         var node = e.Node;

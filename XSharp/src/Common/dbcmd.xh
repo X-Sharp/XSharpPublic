@@ -523,4 +523,16 @@
 #command CLOSE INDEXES          => dbClearIndex()
 
 
+#command SCAN                                                           ;
+         [FOR <FOR>]                                                    ;
+         [WHILE <WHILE>]                                                ;
+         [NEXT <NEXT>]                                                  ;
+         [RECORD <rec>]                                                 ;
+         [<rest:REST>]                                                  ;
+         [ALL]                                                          ;
+                                                                        ;
+      => dbLocate( <{FOR}>, <{WHILE}>, <NEXT>, <rec>, <.rest.> ); DO WHILE found() 
+
+#command ENDSCAN => dbContinue(); ENDDO
+
 ** EOF

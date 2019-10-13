@@ -12,3 +12,4 @@
 #xcommand ENDFUNC <*any*> => END FUNCTION
 #xcommand ENDWITH <*any*> => END WITH
 #xcommand ENDFOR  <*any*> => NEXT
+#xtranslate FOR EACH => FOREACH

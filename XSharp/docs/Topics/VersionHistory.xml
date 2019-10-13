@@ -63,7 +63,7 @@
     </list>
     <para styleclass="Heading2">FoxPro dialect</para>
     <list id="66" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="List">We have added a compiler option /fox1 that controls the class hierarchy for objects. With /fox1 enabled (the default in the FoxPro dialect) all classes must inherit from the Custom class. The code generation for properties stores the values for properties in a collection inside the Custom class. With /fox- properties will be generated as &quot;auto&quot; properties with a backing field.</li>
+      <li styleclass="List">We have added a compiler option /fox1 that controls the class hierarchy for objects. With /fox1 enabled (the default in the FoxPro dialect) all classes must inherit from the Custom class. The code generation for properties stores the values for properties in a collection inside the Custom class. With /fox1- properties will be generated as &quot;auto&quot; properties with a backing field.</li>
       <li styleclass="List">We have added support for FoxPro classes. See the topic <link displaytype="text" defaultstyle="true" type="topiclink" href="command_CLASS_Fox">FoxPro class</link> syntax for more information about what works and what doesn&apos;t work.</li>
       <li styleclass="List"></li>
     </list>

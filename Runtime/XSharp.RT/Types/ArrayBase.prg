@@ -72,8 +72,8 @@ BEGIN NAMESPACE XSharp
         /// <summary>Length of the array as integer.</summary>
         PUBLIC PROPERTY Count AS INT GET _internalList:Count
 
-        /// <Summary>Returns the default value for array elements when arrays are resized or initialized.</summary>
-        PUBLIC VIRTUAL PROPERTY DefaultValue as T GET T{}
+        /// <summary>Returns the default value for array elements when arrays are resized or initialized.</summary>
+        PUBLIC VIRTUAL PROPERTY DefaultValue AS T GET T{}
 		#endregion
 
 		#region Enumerators

@@ -151,7 +151,7 @@ METHOD GoTo(nRec AS LONG) AS LOGIC
                 //SELF:_Found :=TRUE    
 				SELF:_BufferValid := FALSE
 				SELF:_isValid := TRUE
-			ELSEIF nRec < 0 .and. nCount > 0
+			ELSEIF nRec < 0 .AND. nCount > 0
                 // skip to BOF. Move to record 1. 
 				SELF:_RecNo := 1
 				SELF:_EOF := FALSE
@@ -167,7 +167,10 @@ METHOD GoTo(nRec AS LONG) AS LOGIC
 				SELF:_Found := FALSE
 				SELF:_BufferValid := FALSE
 				SELF:_isValid := FALSE
-			ENDIF
+            ENDIF
+            IF SELF:_Relations:Count != 0
+                SELF:SyncChildren()
+            ENDIF
             SELF:_CheckEofBof()
 			RETURN TRUE
 		END LOCK

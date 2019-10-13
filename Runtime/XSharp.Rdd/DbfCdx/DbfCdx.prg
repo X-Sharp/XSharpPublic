@@ -432,7 +432,7 @@ RETURN isOk
 
 PUBLIC METHOD GoBottom() AS LOGIC
     BEGIN LOCK SELF
-        local result as LOGIC    
+        LOCAL result AS LOGIC    
         IF SELF:CurrentOrder != NULL
             result := SELF:CurrentOrder:GoBottom()
 	    SELF:_CheckEofBof()
@@ -444,7 +444,7 @@ PUBLIC METHOD GoBottom() AS LOGIC
     
 PUBLIC METHOD GoTop() AS LOGIC
     BEGIN LOCK SELF
-        local result as LOGIC    
+        LOCAL result AS LOGIC    
         IF SELF:CurrentOrder != NULL
             result := SELF:CurrentOrder:GoTop()
 	    SELF:_CheckEofBof()
@@ -459,7 +459,7 @@ METHOD __Goto(nRec AS LONG) AS LOGIC
 RETURN SUPER:Goto(nRec)
 
 METHOD GoTo(nRec AS LONG) AS LOGIC
-    local result as LOGIC    
+    LOCAL result AS LOGIC    
     SELF:GoCold()
     IF SELF:CurrentOrder != NULL
         SELF:CurrentOrder:ClearStack() // force to reseek later
@@ -470,7 +470,7 @@ METHOD GoTo(nRec AS LONG) AS LOGIC
 
 PUBLIC METHOD SkipRaw( move AS LONG ) AS LOGIC
     BEGIN LOCK SELF
-        local result as LOGIC    
+        LOCAL result AS LOGIC    
         IF SELF:CurrentOrder != NULL
             result := SELF:CurrentOrder:SkipRaw(move)
 	    SELF:_CheckEofBof()

@@ -532,6 +532,7 @@
          [ALL]                                                          ;
                                                                         ;
       => dbLocate( <{FOR}>, <{WHILE}>, <NEXT>, <rec>, <.rest.> ); DO WHILE found() 
+** Todo FoxPro Nooptimize clause 
 
 #command ENDSCAN => dbContinue(); ENDDO
 

@@ -36,7 +36,7 @@
 //  Member keywords 
 #xcommand END <kw:METHOD,ASSIGN,ACCESS,PROPERTY,EVENT,OPERATOR,FUNCTION,PROCEDURE,CONSTRUCTOR,DESTRUCTOR> <*any*> => END <kw>
 // END accessor keywords followed by "garbage"
-#xcommand END <kw:ADD, REMOVE,GET,SET> <*any*> => END <kw>
+#xcommand END <kw:ADD,REMOVE,GET,SET> <*any*> => END <kw>
 // Specific end keywords  
 #xcommand ENDIF <*any*> => ENDIF 
 #xcommand ENDCASE <*any*> => ENDCASE 
@@ -44,6 +44,9 @@
 #xcommand NEXT <*any*> => NEXT
 #xcommand ENDDEFINE <*any*> => ENDDEFINE 
 #xcommand ENDCLASS <*any*> => ENDCLASS 
+
+#command  DO <proc> [WITH <para,...>]   => <proc> (<para>)
+
 #endif	
 
 #ifdef __DIALECT_XBASEPP__

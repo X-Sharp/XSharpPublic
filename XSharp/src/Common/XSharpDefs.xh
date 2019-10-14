@@ -45,8 +45,6 @@
 #xcommand ENDDEFINE <*any*> => ENDDEFINE 
 #xcommand ENDCLASS <*any*> => ENDCLASS 
 
-#command  DO <proc> [WITH <para,...>]   => <proc> (<para>)
-
 #endif	
 
 #ifdef __DIALECT_XBASEPP__

@@ -1,9 +1,8 @@
-﻿//------------------------------------------------------------------------------
-// <copyright file="XSharpOutlining.cs" company="Company">
-//     Copyright (c) Company.  All rights reserved.
-// </copyright>
-//------------------------------------------------------------------------------
-
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -73,7 +72,7 @@ namespace XSharpColorizer
             if (! buffer.Properties.ContainsProperty(typeof(XSharpClassifier)))
             {
                 // should not happen we checked before we created the class
-                return;    
+                return;
             }
             this.buffer.Properties.AddProperty(typeof(XSharpOutliningTagger), this);
             xsharpRegionStartType = registry.GetClassificationType(ColorizerConstants.XSharpRegionStartFormat);
@@ -110,7 +109,7 @@ namespace XSharpColorizer
                 ITextSnapshot snapshot = xsClassifier.Snapshot;
                 SnapshotSpan Span = new SnapshotSpan(snapshot, 0, snapshot.Length);
                 var classifications = xsClassifier.GetRegionTags();
-                
+
                 SnapshotSpan fullSpan = new SnapshotSpan(spans[0].Start, spans[spans.Count - 1].End).TranslateTo(snapshot, SpanTrackingMode.EdgeExclusive);
                 int startLineNumber = fullSpan.Start.GetContainingLine().LineNumber;
                 int endLineNumber = fullSpan.End.GetContainingLine().LineNumber;
@@ -118,7 +117,7 @@ namespace XSharpColorizer
                 Stack<ClassificationSpan> startStack = new Stack<ClassificationSpan>();
                 // convert classifications to an array so there will be no crash when the classifications are changed
                 // in another thread.
-                
+
                 // Now, let's have a look at all the Classifications we have in the document
                 foreach (var tag in classifications)
                 {
@@ -134,8 +133,8 @@ namespace XSharpColorizer
                         var startLine = startTag.Span.Start.GetContainingLine();
                         var endLine = tag.Span.End.GetContainingLine();
                         //
-                        if ( startTag.Span.Start < tag.Span.End && 
-                            startLine.LineNumber <= endLineNumber 
+                        if ( startTag.Span.Start < tag.Span.End &&
+                            startLine.LineNumber <= endLineNumber
                             && endLine.LineNumber >= startLineNumber)
                         {
                             SnapshotSpan sSpan;

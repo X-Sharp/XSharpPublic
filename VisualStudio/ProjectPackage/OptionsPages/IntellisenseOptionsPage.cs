@@ -68,12 +68,10 @@ namespace XSharp.Project.OptionsPages
             {
                 this.CommitChars = "{}[]().,:;+-*/%&|^!~=<>?@#\'\"\\";
             }
-            ShowAfterChar = false;
         }
         public override void SaveSettingsToStorage()
         {
             base.SaveSettingsToStorage();
-            ShowAfterChar = false;
         }
     }
 }

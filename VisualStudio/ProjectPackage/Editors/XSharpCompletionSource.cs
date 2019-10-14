@@ -364,15 +364,22 @@ namespace XSharpLanguage
                         Modifiers visibleAs = Modifiers.Public;
                         if (foundElement != null)
                         {
-                            if (String.Compare(foundElement.Name, "self", true) == 0)
+                            switch (foundElement.Name.ToLower())
                             {
-                                visibleAs = Modifiers.Private;
+                                case "self":
+                                case "this":
+                                    visibleAs = Modifiers.Private;
+                                    break;
+                                case "super":
+                                    visibleAs = Modifiers.Protected;
+                                    break;
+                                default:
+                                    if (member.ParentName == cType.FullName)
+                                    {
+                                        visibleAs = Modifiers.Private;
+                                    }
+                                    break;
                             }
-                            else if (String.Compare(foundElement.Name, "super", true) == 0)
-                            {
-                                visibleAs = Modifiers.Protected;
-                            }
-
                         }
                         else if (member.ParentName == cType.FullName)
                         {
@@ -453,7 +460,7 @@ namespace XSharpLanguage
                         }
                     }
                 }
-                // Add Keywors to the ALL Tab ?
+                // Add Keywords to the ALL Tab ?
                 if ((kwdList.Count > 0) && _keywordsInAll)
                 {
                     foreach (var item in kwdList.Values)
@@ -613,12 +620,11 @@ namespace XSharpLanguage
             //
             // And our own Types
             AddXSharpTypeNames(compList, project, startWith);
-            //// We should also add the external TypeNames
-            //var prjs = project.ReferencedProjects;
-            //foreach (var prj in prjs)
-            //{
-            //    AddXSharpTypeNames(compList, prj, startWith);
-            //}
+            // We should also add the external TypeNames
+            foreach (var prj in project.ReferencedProjects)
+            {
+                AddXSharpTypeNames(compList, prj, startWith);
+            }
             //// And Stranger Projects
             //var sprjs = project.StrangerProjects;
             //foreach (var prj in sprjs)

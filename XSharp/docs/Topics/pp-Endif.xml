@@ -10,6 +10,7 @@
     <header>
       <para styleclass="Heading1">#endif</para>
     </header>
+    <para styleclass="Heading1">Purpose</para>
     <para styleclass="Body Text">#endif specifies the end of a conditional directive, which began with the <link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Ifdef">#ifdef</link> &#160;or <link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Ifndef">#ifndef</link> directive. For example:</para>
     <para styleclass="Code Example">// DEBUG may be defined from the command line<br/>// ...<br/>#if DEBUG<br/> &#160; &#160;Console.WriteLine(&quot;Debug version&quot;);<br/>#else<br/> &#160; &#160;Console.WriteLine(&quot;Release version&quot;);<br/>#endif</para>
     <para styleclass="Normal"></para>

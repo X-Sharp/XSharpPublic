@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
-<topic template="Default" status="Complete" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>#include</title>
   <keywords>
     <keyword>#include</keyword>
@@ -10,13 +10,14 @@
     <header>
       <para styleclass="Heading1">#include</para>
     </header>
+    <para styleclass="Heading1">Purpose</para>
     <para styleclass="Body Text">Tells the preprocessor to treat the contents of a specified file as if they appear in the source program at the point where the directive appears.</para>
     <para styleclass="Code Example">#include &quot;path-spec&quot; </para>
     <para styleclass="Normal"></para>
     <para styleclass="Body Text">You can preprocessor definitions into include files and then use #include directives to add them to any source file. </para>
     <para styleclass="Body Text">The path-spec is a file name that may optionally be preceded by a directory specification. The file name must name an existing file. </para>
     <para styleclass="Body Text">The preprocessor searches for include files in this order:</para>
-    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:&apos;Segoe UI&apos;; font-size:8pt; color:#000000;">
+    <list id="2" type="ol" listtype="decimal" formatstring="&#37;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Arial; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">In the same directory as the file that contains the #include statement.</li>
       <li styleclass="Body Text">Along the path that&apos;s specified by each /I compiler option.</li>
       <li styleclass="Body Text">In the Include folder inside the XSharp installation folder</li>

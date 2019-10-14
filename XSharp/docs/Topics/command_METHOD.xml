@@ -46,7 +46,6 @@
     <para styleclass="Code Example">SELF:&lt;idMethod&gt;([&lt;uArgList&gt;])</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">Classes, instance variables (see the CLASS statement in this guide), and methods are the basic object-oriented programming units. &#160;You will use methods in your applications to organize computational blocks of code for a specific class of objects.</para>
-    <para styleclass="Normal">For more information on object-oriented programming, refer to the &quot;Objects, Classes, and Methods&quot; chapter in the <text styleclass="Italic">Programmer&apos;s Guide</text>.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Heading1">Notes</text></para>
     <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">The Start() method: &#160;</text>All applications must either have one function or procedure named Start(). &#160;<br/>Start() serves as the startup routine when the application is executed. &#160;Start() must be declared without parameters or with an string array parameter and must either have an Int return value or of type Void</para>
@@ -88,8 +87,6 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">The visibility of typed methods can also be influenced by using the HIDDEN and PROTECT modifiers as in their use with instance variables. &#160;SUPER calls of HIDDEN methods in parent classes cannot be done by methods of the sub-classes.</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Note: &#160;</text>See the Binding of Methods section in the &quot;Objects, Classes, and Methods&quot; chapter of the <text styleclass="Italic">Programmer&apos;s Guide </text>for more information.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Calling convention: &#160;</text>Methods use the CLIPPER calling convention, unless they are strongly typed. &#160;See the FUNCTION statement in this guide for more information.</para>
     <para styleclass="Normal"></para>

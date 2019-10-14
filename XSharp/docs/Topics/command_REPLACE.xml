@@ -30,7 +30,7 @@
     <para styleclass="List"><snippet src="__While" inline="false"/></para>
     <para styleclass="List"><snippet src="__In" inline="false"/></para>
     <para styleclass="Heading1">Description</para>
-    <para styleclass="Normal">REPLACE performs the same function as the assignment operator (:=) except that it assumes field variables. &#160;See the &quot;Operators and Expressions&quot; chapter in the <text styleclass="Italic">Programmer&apos;s Guide </text>for more information on using the assignment operator to assign field values.</para>
+    <para styleclass="Normal">REPLACE performs the same function as the assignment operator (:=) except that it assumes field variables. &#160;</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Warning!</text><text styleclass="Italic"> &#160;When you REPLACE a key field, the index is updated and the relative position of the record pointer within the index is changed. &#160;This means that replacing a key field with a scope or a condition can yield an erroneous result. &#160;To update a key field, suppress the controlling order (with, for example, SET ORDER TO 0 or DBSetOrder(0)) before the REPLACE. &#160;This insures that the record pointer moves sequentially in natural order and that all orders in the order list are updated properly.</text></para>
     <para styleclass="Normal"></para>

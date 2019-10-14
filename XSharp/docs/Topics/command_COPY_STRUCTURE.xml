@@ -25,7 +25,7 @@
     <para styleclass="Normal"><text styleclass="Heading1">Arguments</text></para>
     <para styleclass="List">FIELDS &lt;idFieldList&gt;<tab />The set of fields to copy to the new database structure in the order specified. &#160;The default is all fields.</para>
     <para styleclass="List"></para>
-    <para styleclass="List">TO &lt;xcTargetFile&gt;<tab />The name of the target database file, including an optional drive, directory, and extension. &#160;See SetDefault() and SetPath() for file searching and creation rules. &#160;The default extension for database files is determined by the RDD (see the &quot;RDD Specifics&quot; appendix in the Programmer&apos;s Guide for details on a particular RDD).</para>
+    <para styleclass="List">TO &lt;xcTargetFile&gt;<tab />The name of the target database file, including an optional drive, directory, and extension. &#160;See SetDefault() and SetPath() for file searching and creation rules. &#160;The default extension for database files is determined by the RDD .</para>
     <para styleclass="List"></para>
     <para styleclass="List"><tab />If &lt;xcTargetFile&gt; does not exist, it is created. &#160;If it exists, this command attempts to open the file in exclusive mode and, if successful, the file is overwritten without warning or error. &#160;If access is denied because, for example, another process is using the file, NetErr() is set to TRUE. &#160;</para>
     <para styleclass="List"></para>

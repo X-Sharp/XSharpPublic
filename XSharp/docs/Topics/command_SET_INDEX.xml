@@ -21,7 +21,7 @@
     <para styleclass="Heading1">Syntax</para>
     <para styleclass="Normal">SET INDEX TO [&lt;<text styleclass="Italic">xcIndexFileList</text>&gt; [ADDITIVE]]</para>
     <para styleclass="Heading1">Arguments</para>
-    <para styleclass="List">TO &lt;xcIndexFileList&gt;<tab />The names of the index files to open, including an optional drive, directory, and extension for each. &#160;See SetDefault() and SetPath() for file searching and creation rules. &#160;The default extension is determined by the RDD and can be obtained using DBOrderInfo(DBOI_INDEXEXT). &#160;See the &quot;RDD Specifics&quot; appendix in the Programmer&apos;s Guide for details on a particular RDD.</para>
+    <para styleclass="List">TO &lt;xcIndexFileList&gt;<tab />The names of the index files to open, including an optional drive, directory, and extension for each. &#160;See SetDefault() and SetPath() for file searching and creation rules. &#160;The default extension is determined by the RDD and can be obtained using DBOrderInfo(DBOI_INDEXEXT). &#160;</para>
     <para styleclass="List"></para>
     <para styleclass="List"><tab />If a file in the list does not exist, a runtime error is raised. &#160;If it exists, this command attempts to open the file in the same mode as the corresponding database file. &#160;If access is denied because, for example, another process is using the file and this one is asking for exclusive use, NetErr() is set to TRUE. &#160;Otherwise, the file open is successful, the command proceeds to the next file in the list.</para>
     <para styleclass="List"></para>

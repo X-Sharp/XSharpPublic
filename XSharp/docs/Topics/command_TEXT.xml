@@ -13,8 +13,7 @@
     <header>
       <para styleclass="Heading1">TEXT Statement</para>
     </header>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Heading1">Purpose</text></para>
+    <para styleclass="Heading1">Purpose</para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

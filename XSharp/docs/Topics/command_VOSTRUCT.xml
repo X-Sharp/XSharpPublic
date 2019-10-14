@@ -55,14 +55,12 @@
     <para styleclass="List">AS &lt;idType&gt;<tab />Specifies the data type of the variable you are declaring (called <link displaytype="text" defaultstyle="true" type="topiclink" href="Strong-Typing" styleclass="Normal">strong typing</link>). &#160;For DIM arrays, declares the data type for all array elements. &#160;The AS &lt;idType&gt; is required for all structure members.</para>
     <para styleclass="List"></para>
     <para styleclass="List"><tab />Refer to the CLASS entry for a list of valid values for &lt;idType&gt;. &#160;Note that the following data types are not supported in structures because they are dynamic types that require garbage collection:</para>
-    <para styleclass="List">ARRAY</para>
-    <para styleclass="List">FLOAT</para>
-    <para styleclass="List">OBJECT</para>
-    <para styleclass="List">&lt;idClass&gt;</para>
-    <para styleclass="List">STRING</para>
-    <para styleclass="List">USUAL</para>
-    <para styleclass="List"></para>
-    <para styleclass="List"><tab />Refer to the &quot;Variables, Constants, and Declarations&quot; chapter in the Programmer&apos;s Guide for a complete discussion of data types and the advantages of strong typing.</para>
+    <para styleclass="List"><tab />ARRAY</para>
+    <para styleclass="List"><tab />FLOAT<tab /></para>
+    <para styleclass="List"><tab />OBJECT</para>
+    <para styleclass="List"><tab />&lt;idClass&gt;</para>
+    <para styleclass="List"><tab />STRING</para>
+    <para styleclass="List"><tab />USUAL</para>
     <para styleclass="List"></para>
     <para styleclass="List">IS &lt;idType&gt;<tab />Specifies a structure data type in which the memory needed to hold the structure is allocated on the stack (i.e., &lt;idStructure&gt; is the only &lt;idType&gt; allowed with the IS keyword).</para>
     <para styleclass="List"></para>

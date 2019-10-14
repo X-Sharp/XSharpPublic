@@ -10,6 +10,7 @@
     <header>
       <para styleclass="Heading1">#translate and #xtranslate</para>
     </header>
+    <para styleclass="Heading1">Purpose</para>
     <para styleclass="Normal">Specify a user-defined translation directive</para>
     <para styleclass="Heading2">Syntax</para>
     <para styleclass="Code Example"> &#160; &#160; #translate &#160; <tab />&lt;matchPattern&gt; =&gt; &lt;resultPattern&gt;<br/> &#160; &#160; #xtranslate &#160; &lt;matchPattern&gt; =&gt; &lt;resultPattern&gt;</para>

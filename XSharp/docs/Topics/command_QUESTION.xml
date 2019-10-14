@@ -12,7 +12,7 @@
     <header>
       <para styleclass="Heading1">?|?? Statement</para>
     </header>
-    <para styleclass="Normal"><text styleclass="Heading1">Purpose</text></para>
+    <para styleclass="Heading1">Purpose</para>
     <para styleclass="Normal">Display the results of one or more expressions, separated by a space, in the terminal window.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>

@@ -10,8 +10,9 @@
     <header>
       <para styleclass="Heading1">#command and #xcommand</para>
     </header>
+    <para styleclass="Heading1">Purpose</para>
     <para styleclass="Normal">Specify a user-defined command or translation directive</para>
-    <para styleclass="Heading2">Syntax</para>
+    <para styleclass="Heading1">Syntax</para>
     <para styleclass="Code Example"> &#160; &#160; #command &#160; <tab />&lt;matchPattern&gt; =&gt; &lt;resultPattern&gt;<br/> &#160; &#160; #xcommand &#160; <tab />&lt;matchPattern&gt; =&gt; &lt;resultPattern&gt;</para>
     <para styleclass="Normal"><snippet src="Command-translate" inline="false"/></para>
   </body>

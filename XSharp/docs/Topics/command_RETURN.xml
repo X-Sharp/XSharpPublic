@@ -12,8 +12,7 @@
     <header>
       <para styleclass="Heading1">RETURN Statement</para>
     </header>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Heading1">Purpose</text></para>
+    <para styleclass="Heading1">Purpose</para>
     <para styleclass="Normal">Terminate a routine by returning control to the calling routine or operating system if executed from the Start() routine.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>

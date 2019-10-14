@@ -1359,6 +1359,9 @@
               <topicref type="topic" id="436999313841944" build="ALL" modified="2019-09-24T14:19:27.452Z" icon="0" href="command_TRY_CATCH">
                 <caption translate="true">TRY CATCH Statement</caption>
               </topicref>
+              <topicref type="topic" id="437526355445228" build="ALL" modified="2019-10-14T12:26:27.869Z" icon="0" href="command_TRY_CATCH_2">
+                <caption translate="true">YIELD Statement</caption>
+              </topicref>
             </topicref>
             <topicref type="topic" id="436966329416659" build="ALL" modified="2019-09-24T13:44:42.209Z" icon="0" href="cmd_cat_rtdecl">
               <caption translate="true">Runtime Declaration</caption>

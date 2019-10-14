@@ -16,11 +16,9 @@
     <header>
       <para styleclass="Heading1">DO CASE Statement</para>
     </header>
-    <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Heading1">Purpose</text></para>
     <para styleclass="Normal">Conditionally execute a block of statements.</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>
+    <para styleclass="Heading1">Syntax</para>
     <para styleclass="Normal">DO CASE</para>
     <para styleclass="Normal">CASE &lt;<text styleclass="Italic">lCondition</text>&gt;</para>
     <para styleclass="Normal"><tab />&lt;<text styleclass="Italic">Statements</text>&gt;...</para>
@@ -29,12 +27,10 @@
     <para styleclass="Normal">[OTHERWISE]</para>
     <para styleclass="Normal"><tab />&lt;<text styleclass="Italic">Statements</text>&gt;...</para>
     <para styleclass="Normal">END[CASE]</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Heading1">Arguments</text></para>
+    <para styleclass="Heading1">Arguments</para>
     <para styleclass="List">&lt;lCondition&gt;<tab />If this expression evaluates to TRUE, the statements following it up until the next CASE, OTHERWISE, or ENDCASE are executed. &#160;Afterwards, control branches to the statement following the next ENDCASE statement.</para>
     <para styleclass="List"></para>
     <para styleclass="List">OTHERWISE<tab />If all preceding CASE conditions evaluate to FALSE, the statements following the OTHERWISE up until the next ENDCASE are executed. &#160;Afterwards, control branches to the statement following the next ENDCASE statement.</para>
-    <para styleclass="List"></para>
     <para styleclass="Normal"><text styleclass="Heading1">Description</text></para>
     <para styleclass="Normal">DO CASE works by branching to the statement following the first CASE &lt;<text styleclass="Italic">lCondition</text>&gt; that evaluates to TRUE. &#160;If all CASE conditions evaluate to FALSE, it branches to the statement following the OTHERWISE statement (if specified). &#160;</para>
     <para styleclass="Normal"></para>
@@ -43,10 +39,8 @@
     <para styleclass="Normal">Control structures can be nested to any depth. &#160;The only requirement is that each control structure be properly nested.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Note: &#160;</text>DO CASE...ENDCASE is identical to IF...ELSEIF...ENDIF, with neither syntax having a performance advantage over the other.</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Heading1">Examples</text></para>
+    <para styleclass="Heading1">Examples</para>
     <para styleclass="Normal">This example uses DO CASE in a menu structure to branch control based on user selection:</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#0000ff;">@</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">3,</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">25</text><text style="font-weight:bold; font-style:normal; color:#000000;"> PROMPT </text><text style="font-weight:bold; font-style:normal; color:#0000ff;">&quot;First choice&quot;</text><br/><text style="font-weight:bold; font-style:normal; color:#0000ff;">@</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">4,</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">25</text><text style="font-weight:bold; font-style:normal; color:#000000;"> PROMPT </text><text style="font-weight:bold; font-style:normal; color:#0000ff;">&quot;Second choice&quot;</text><br/><text style="font-weight:bold; font-style:normal; color:#000000;">MENU </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">TO</text><text style="font-weight:bold; font-style:normal; color:#000000;"> nChoice</text><br/><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">DO</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">CASE</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">CASE</text><text style="font-weight:bold; font-style:normal; color:#000000;"> nChoice </text><text style="font-weight:bold; font-style:normal; color:#0000ff;">=</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">0</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#ff0000;">RETURN</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">CASE</text><text style="font-weight:bold; font-style:normal; color:#000000;"> nChoice </text><text style="font-weight:bold; font-style:normal; color:#0000ff;">=</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">1</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#000000;">ChoiceOne</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">()</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">CASE</text><text style="font-weight:bold; font-style:normal; color:#000000;"> nChoice </text><text style="font-weight:bold; font-style:normal; color:#0000ff;">=</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">2</text><br/><tab /><text style="font-weight:bold; font-style:normal; color:#000000;">ChoiceTwo</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">()</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">ENDCASE</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Heading1">See Also</text></para>

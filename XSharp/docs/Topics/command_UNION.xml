@@ -58,7 +58,7 @@
         <li styleclass="List"></li>
       </list>
     </list>
-    <para styleclass="List"><tab />Refer to the &quot;Variables, Constants, and Declarations&quot; chapter in the Programmer&apos;s Guide for a complete discussion of data types and the advantages of strong typing.</para>
+    <para styleclass="List"><tab /></para>
     <para styleclass="List"></para>
     <para styleclass="List">IS &lt;idType&gt;<tab />Specifies a union data type in which the memory needed to hold the union is allocated on the stack (i.e., &lt;idUnion&gt; is the only &lt;idType&gt; allowed with the IS keyword).</para>
     <para styleclass="List"></para>
@@ -70,8 +70,6 @@
     <para styleclass="Normal">UNIONs are like STRUCTUREs, but all members start at offset zero (0). &#160;In other words, assigning a value to a union member affects all other union members. &#160;As the size of the union is equal to the size of the biggest member, changing one member will change all of the others because they occupy the same memory.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">You use the UNION statement to mark the beginning of the definition of a union entity, followed by one or more MEMBER statements that define what the union looks like. &#160;</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Note: &#160;</text>See the Strongly Typed Variables section in the &quot;Variables, Constants and Declarations&quot; chapter of the <text styleclass="Italic">Programmer&apos;s Guide </text> for more information.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Heading1">Examples</text></para>
     <para styleclass="Normal">The following is a conversion example:</para>

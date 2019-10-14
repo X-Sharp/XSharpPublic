@@ -29,7 +29,6 @@
     <para styleclass="Normal"><text styleclass="Heading1">Description</text></para>
     <para styleclass="Normal">NOTE is command synonym for the single-line comment indicator (*). &#160;All characters after NOTE are ignored until the compiler encounters a carriage return/linefeed. &#160;This means a single-line comment cannot be continued with the semicolon onto a new line.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">There are several other comment indicators in the language that are described in the &quot;Overview of Language Elements&quot; chapter in the <text styleclass="Italic">Programmer&apos;s Guide</text>.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Heading1">Examples</text></para>
     <para styleclass="Normal">These examples show the various comment symbols:</para>

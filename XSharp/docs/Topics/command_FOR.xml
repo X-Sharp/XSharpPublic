@@ -16,22 +16,23 @@
     <header>
       <para styleclass="Heading1">FOR Statement</para>
     </header>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Heading1">Purpose</text></para>
+    <para styleclass="Heading1">Purpose</para>
     <para styleclass="Normal">Execute a block of statements a specified number of times.</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>
-    <para styleclass="Normal">FOR &lt;<text styleclass="Italic">idCounter</text>&gt; := &lt;<text styleclass="Italic">nStart</text>&gt; TO | UPTO | DOWNTO &lt;<text styleclass="Italic">nEnd</text>&gt;</para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Normal">FOR [&lt;<text styleclass="Italic">idCounter</text>&gt; := &lt;<text styleclass="Italic">nStart</text>&gt; | VAR &lt;idCounter&gt; := &lt;nStart&gt; | LOCAL &lt;idCounter&gt; := &lt;nStart&gt; AS &lt;idType&gt; ] [TO | UPTO | DOWNTO] &lt;<text styleclass="Italic">nEnd</text>&gt;</para>
     <para styleclass="Normal">[STEP &lt;<text styleclass="Italic">nDelta</text>&gt;]</para>
     <para styleclass="Normal">&lt;<text styleclass="Italic">Statements</text>&gt;...</para>
     <para styleclass="Normal">[EXIT]</para>
     <para styleclass="Normal">&lt;<text styleclass="Italic">Statements</text>&gt;...</para>
     <para styleclass="Normal">[LOOP]</para>
     <para styleclass="Normal">NEXT</para>
+    <para styleclass="Heading2">Note</para>
+    <para styleclass="Normal">In the FoxPro and Xbase++ dialect ENDFOR is allowed as alternative for NEXT</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Heading1">Arguments</text></para>
-    <para styleclass="List">&lt;idCounter&gt;<tab />The name of the loop control or counter variable. &#160;If the specified &lt;idCounter&gt; is not visible or does not exist, a private variable is created.</para>
+    <para styleclass="List">&lt;idCounter&gt;<tab />The name of the loop control or counter variable. &#160;IF a LOCAL or VAR clause is included then the local is created for the duration of the loop. With the VAR clause the datatype is inferred from the usage. </para>
     <para styleclass="List"></para>
+    <para styleclass="List"><snippet src="__asType" inline="false"/></para>
     <para styleclass="List">&lt;nStart&gt;<tab />The initial value assigned to &lt;idCounter&gt;. &#160;If the loop is counting up, &lt;nStart&gt; must be less than &lt;nEnd&gt;. &#160;If the loop is counting down, &lt;nStart&gt; must be greater than &lt;nEnd&gt;.</para>
     <para styleclass="List"></para>
     <para styleclass="List">TO &lt;nEnd&gt;<tab />The final value of &lt;idCounter&gt;. &#160;The TO clause can be used for counting up or down, depending on whether the STEP clause gives a positive or negative value for &lt;nDelta&gt;. &#160;Note, however, that your code will be more efficient if you avoid the TO clause and specify UPTO or DOWNTO instead.</para>

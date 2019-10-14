@@ -12,6 +12,7 @@
     <header>
       <para styleclass="Heading1">#pragma</para>
     </header>
+    <para styleclass="Heading1">Purpose</para>
     <para styleclass="Normal">The #pragma directive allow you to suppress certain compiler warnings for a piece of code. It is not supported yet.</para>
   </body>
 </topic>

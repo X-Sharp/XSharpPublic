@@ -23,7 +23,7 @@
     <para styleclass="Normal"><text styleclass="Heading1">Arguments</text></para>
     <para styleclass="List">WITH &lt;xcAlias&gt;<tab />The alias identifier for the work area to merge with the current work area. &#160;If there is no open database associated with &lt;xcAlias&gt;, a runtime error is raised.</para>
     <para styleclass="List"></para>
-    <para styleclass="List">TO &lt;xcTargetFile&gt;<tab />The name of the target database file, including an optional drive, directory, and extension. &#160;See SetDefault() and SetPath() for file searching and creation rules. &#160;The default extension for database files is determined by the RDD (see the &quot;RDD Specifics&quot; appendix in the Programmer&apos;s Guide for details on a particular RDD).</para>
+    <para styleclass="List">TO &lt;xcTargetFile&gt;<tab />The name of the target database file, including an optional drive, directory, and extension. &#160;See SetDefault() and SetPath() for file searching and creation rules. &#160;The default extension for database files is determined by the RDD .</para>
     <para styleclass="List"></para>
     <para styleclass="List"><tab />If &lt;xcTargetFile&gt; does not exist, it is created. &#160;If it exists, this command attempts to open the file in exclusive mode and, if successful, the file is overwritten without warning or error. &#160;If access is denied because, for example, another process is using the file, NetErr() is set to TRUE. &#160;</para>
     <para styleclass="List"></para>

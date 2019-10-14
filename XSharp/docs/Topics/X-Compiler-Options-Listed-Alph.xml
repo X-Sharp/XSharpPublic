@@ -8,7 +8,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Body Text">X# Compiler Options Listed Alphabetically</para>
+      <para styleclass="Heading1">X# Compiler Options Listed Alphabetically</para>
     </header>
     <para styleclass="Body Text">The following compiler options are sorted by category. For an alphabetical list, see : <link displaytype="text" defaultstyle="true" type="topiclink" href="X-Compiler-Options-Listed-Alph">X# Compiler Options Listed Alphabetically</link></para>
     <para styleclass="Body Text">The options in <text style="font-weight:bold; color:#ff0000;">RED</text> are not supported yet.</para>

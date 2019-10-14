@@ -16,11 +16,9 @@
     <header>
       <para styleclass="Heading1">BEGIN SEQUENCE Statement</para>
     </header>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Heading1">Purpose</text></para>
+    <para styleclass="Heading1">Purpose</para>
     <para styleclass="Normal">Define a sequence of statements for a BREAK.</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>
+    <para styleclass="Heading1">Syntax</para>
     <para styleclass="Normal">BEGIN SEQUENCE</para>
     <para styleclass="Normal"><tab />&lt;<text styleclass="Italic">Statements</text>&gt;...</para>
     <para styleclass="Normal">[BREAK [&lt;<text styleclass="Italic">uValue</text>&gt;]]</para>
@@ -47,7 +45,6 @@
     <para styleclass="Normal">You cannot RETURN, LOOP, or EXIT between a BEGIN SEQUENCE and RECOVER statement</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">Control structures can be nested to any depth. &#160;The only requirement is that each control structure be properly nested.</para>
-    <para styleclass="Normal">For more information on error objects, refer to the Error Class entry. &#160;For more information on error handling, refer to the &quot;Error and Exception Handling&quot; chapter in the <text styleclass="Italic">Programmer&apos;s Guide</text>.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Heading1">Examples</text></para>
     <para styleclass="Normal">This code fragment demonstrates a SEQUENCE construct in which the BREAK occurs within the current procedure:</para>

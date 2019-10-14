@@ -31,8 +31,6 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal">The MEMVAR statement neither creates the variables nor verifies their existence. &#160;Its primary purpose is to ensure correct references to variables that are known to exist at runtime. &#160;Attempting to access variables before they are created will raise a runtime error.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">For more information on variable declarations and scoping, refer to the &quot;Variables, Constants, and Declarations&quot; chapter in the <text styleclass="Italic">Programmer&apos;s Guide</text>.</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Heading1">Examples</para>
     <para styleclass="Normal">This example demonstrates the relationship between a private and field variable with the same name. &#160;The private variable is declared with the MEMVAR statement:</para>
     <para styleclass="Normal"></para>

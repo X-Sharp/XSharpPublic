@@ -10,6 +10,7 @@
     <header>
       <para styleclass="Heading1">#line</para>
     </header>
+    <para styleclass="Heading1">Purpose</para>
     <para styleclass="Body Text">#line sets the current line number for the compiler. It is usually inserted by the preprocessor after preprocessing an include file to synchronize the line numbers with the original source file.</para>
     <para styleclass="Body Text"></para>
     <para styleclass="Code with box">#line &lt;number&gt; [FileName]</para>

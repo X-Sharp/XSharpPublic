@@ -10,6 +10,7 @@
     <header>
       <para styleclass="Heading1">#else</para>
     </header>
+    <para styleclass="Heading1">Purpose</para>
     <para styleclass="Body Text">#else lets you create a compound conditional directive, so that, if the expression in the preceding <link displaytype="text" defaultstyle="true" type="topiclink" href="">#ifdef</link> directive or <link displaytype="text" defaultstyle="true" type="topiclink" href="">#ifndef</link> directive does not evaluate to true, the compiler will evaluate all code between #else and the subsequent <link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Endif">#endif</link>.</para>
     <para styleclass="Body Text">For example, the following code will show the string &quot;Debug Version&quot; if the symbol DEBUG is defined on the command line, else it will show the text &quot;Release Version&quot; </para>
     <para styleclass="Code Example">// DEBUG may be defined from the command line<br/>// ...<br/>#if DEBUG<br/> &#160; &#160;Console.WriteLine(&quot;Debug version&quot;);<br/>#else<br/> &#160; &#160;Console.WriteLine(&quot;Release version&quot;);<br/>#endif</para>

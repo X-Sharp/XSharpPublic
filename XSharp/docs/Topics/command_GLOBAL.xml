@@ -34,7 +34,6 @@
     <para styleclass="List"></para>
     <para styleclass="List"><tab />If &lt;uValue&gt; is not specified, the initial value of the variable depends on the data type you declare (e.g., NIL if you do not use strong typing, 0 for AS INT, etc.)</para>
     <para styleclass="List"></para>
-    <para styleclass="List"><tab />See the &quot;Data Types,&quot; &quot;Arrays,&quot; and &quot;Code Blocks&quot; chapters in the Programmer&apos;s Guide for more information on how to form literal values for the various data types.</para>
     <para styleclass="List"></para>
     <para styleclass="List">DIM &lt;ArraySpec&gt;<tab />The specification for a dimensioned array to declare.</para>
     <para styleclass="List"></para>

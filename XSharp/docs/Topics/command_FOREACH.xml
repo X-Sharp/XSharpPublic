@@ -16,9 +16,29 @@
     <header>
       <para styleclass="Heading1">FOREACH Statement</para>
     </header>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Normal">Execute a block of statements for all elements in a collection</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Heading1">Purpose</text></para>
-    <para styleclass="Normal">Execute a block of statements a specified number of times.</para>
-    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>
+    <para styleclass="Normal">FOREACH &#160;[IMPLIED &lt;<text styleclass="Italic">idElement</text>&gt; | VAR &lt;<text styleclass="Italic">idElement</text>&gt; | &lt;idElement&gt; AS &lt;idType&gt;] IN &lt;container&gt;</para>
+    <para styleclass="Normal">&lt;<text styleclass="Italic">Statements</text>&gt;...</para>
+    <para styleclass="Normal">[EXIT]</para>
+    <para styleclass="Normal">&lt;<text styleclass="Italic">Statements</text>&gt;...</para>
+    <para styleclass="Normal">[LOOP]</para>
+    <para styleclass="Normal">NEXT</para>
+    <para styleclass="Heading2">Note</para>
+    <para styleclass="Normal">In the FoxPro dialect FOR EACH as 2 separate words is also allowed.</para>
+    <para styleclass="Normal">In the FoxPro and Xbase++ dialect ENDFOR is allowed as alternative for NEXT</para>
+    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="List">&lt;idElement&gt;<tab />The name of the variable that will receive the values of the elements in &lt;container&gt; When the IMPLIED or VAR clause is used then the datatype of the variable is inferred from the container. When the AS &lt;idType&gt; clause is used then this will be the datatype of the variable</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><snippet src="__asType" inline="false"/></para>
+    <para styleclass="List">&lt;container&gt;<tab />A DotNet object that supports IEnumerable(), such as a XBase array, .Net array or a collection like List&lt;&gt;</para>
+    <para styleclass="List"></para>
+    <para styleclass="List"><snippet src="__ExitLoop" inline="false"/></para>
+    <para styleclass="Heading1">Description</para>
+    <para styleclass="Normal">The FOREACH statement is a convenient way to enumerate variable in an array or collection.</para>
+    <para styleclass="Normal"><text styleclass="List">Preferrably the iteration variable should not be changed inside the loop. A compiler warning will be shown when you do this. </text></para>
+    <para styleclass="Normal"><text styleclass="List">It is also not recommended to change the container in the loop as this may often result in a runtime error.</text></para>
   </body>
 </topic>

@@ -57,7 +57,7 @@
     <para styleclass="Body Text">Unless you specify the STATIC keyword, local variables are created automatically each time the routine in which they were declared begins executing. They continue to exist and retain their values until the declaring routine returns control to the routine that invoked it.</para>
     <para styleclass="Body Text">The STATIC keyword serves as a lifetime modifier for a local variable, preventing the variable from being released from memory when the creating entity returns to its calling routine.</para>
     <para styleclass="Body Text"><text style="font-weight:bold; font-style:italic;">Important</text>! When an application containing static variable declarations is invoked, the variables are created and initialized before the beginning of program execution. Thus, initial values are assigned only once per application run, not each time the creator is called.</para>
-    <para styleclass="Body Text">For more information on variable declarations and scoping, refer to the &quot;Variables, Constants, and Declarations&quot; chapter in the Programmer&apos;s Guide.</para>
+    <para styleclass="Body Text"></para>
     <para styleclass="Heading2">Notes</para>
     <para styleclass="Body Text">Local parameters: The FUNCTION, METHOD, and PROCEDURE statements allow you to declare a list of local parameters enclosed in parentheses following the entity name. For example:</para>
     <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; color:#000000;"> &lt;idFunction&gt;(&lt;idParamList&gt;)</text></para>

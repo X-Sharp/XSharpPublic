@@ -83,7 +83,7 @@
     <para styleclass="Body Text">If no order list exists for the work area, the type of RDD determines how the controlling order is set. &#160;For RDDs that support only single-order index files (such as DBFNTX), the controlling order is set to the order in the specified index file. &#160;For RDDs that support multi-order index files (such as DBFMDX), the controlling order is normally set to the first order in the index file.</para>
     <para styleclass="Body Text"></para>
     <para styleclass="Heading1">Notes</para>
-    <para styleclass="Body Text">RDD support: &#160;Not all RDDs support all aspects of the INDEX command. &#160;See the &quot;RDD Specifics&quot; appendix in the Programmer&apos;s Guide for details on a particular RDD.</para>
+    <para styleclass="Body Text">RDD support: &#160;Not all RDDs support all aspects of the INDEX command. &#160;</para>
     <para styleclass="Body Text"></para>
     <para styleclass="Heading1">Examples</para>
     <para styleclass="Body Text">The following example creates a single-order index based on the Acct field:</para>

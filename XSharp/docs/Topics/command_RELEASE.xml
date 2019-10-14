@@ -15,7 +15,7 @@
       <para styleclass="Heading1">RELEASE Command</para>
     </header>
     <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
-    <para styleclass="Normal"><text styleclass="Heading1">Purpose</text></para>
+    <para styleclass="Heading1">Purpose</para>
     <para styleclass="Normal">Releases public and private memory variables visible to the current routine by assigning a NIL value to them.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>
@@ -33,7 +33,7 @@
     <para styleclass="Normal"><text styleclass="Heading1">Description</text></para>
     <para styleclass="Normal">This command does not actually delete the specified variables from memory like CLEAR ALL or CLEAR MEMORY. &#160;Instead, it releases the value of the variables by assigning NIL to them. &#160;For this reason, variables that are hidden do not become visible until termination of the routine initiating the RELEASE operation.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Note: &#160;</text>Declared variables and constants are not affected by the RELEASE command. &#160;For information on the lifetime and visibility of variables, refer to the &quot;Variables, Constants, and Declarations&quot; chapter in the <text styleclass="Italic">Programmer&apos;s Guide</text>.</para>
+    <para styleclass="Normal"><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Note: &#160;</text>Declared variables and constants are not affected by the RELEASE command. &#160;</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><snippet src="__IncludeLibRT" inline="false"/></para>
     <para styleclass="Normal"></para>

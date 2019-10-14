@@ -15,19 +15,15 @@
       <para styleclass="Heading1">CANCEL Command</para>
     </header>
     <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
-    <para styleclass="Normal"><text styleclass="Heading1">Purpose</text></para>
+    <para styleclass="Heading1">Purpose</para>
     <para styleclass="Normal">Terminate the application, close all open files, and return control to the operating system.</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>
+    <para styleclass="Heading1">Syntax</para>
     <para styleclass="Normal">CANCEL | QUIT</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Heading1">Description</text></para>
+    <para styleclass="Heading1">Description</para>
     <para styleclass="Normal">You can use either command from anywhere in an application. &#160;A RETURN executed from the Start() routine performs the same action.</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Heading1">Notes</text></para>
+    <para styleclass="Heading1">Notes</para>
     <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Usage: &#160;</text>Both commands can be used from anywhere in an application. &#160;A RETURN executed at the highest level procedure or a BREAK, with no pending SEQUENCE, can also be used to QUIT an application.</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Heading1">Examples</text></para>
+    <para styleclass="Heading1">Examples</para>
     <para styleclass="Normal">This example uses QUIT in a dialog box:</para>
     <para styleclass="Normal"></para>
     <para styleclass="Code Example">IF DialogYesNo(10, 10, &quot;Quit application&quot;, ;<br/><tab /><tab />BG+/B,B/W&quot;, 2)<br/><tab />QUIT<br/>ENDIF</para>

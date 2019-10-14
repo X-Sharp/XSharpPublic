@@ -12,7 +12,8 @@
     <header>
       <para styleclass="Heading1">ACCEPT Command</para>
     </header>
-    <para styleclass="Heading1"><snippet src="__CommandInclude" inline="false"/>Purpose</para>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">Purpose</para>
     <para styleclass="Normal">Take input from the keyboard and assign it to a memory variable.</para>
     <para styleclass="Heading1">Syntax</para>
     <para styleclass="Normal">ACCEPT [&lt;<text styleclass="Italic">uValuePrompt</text>&gt;] TO &lt;<text styleclass="Italic">idVar</text>&gt;</para>

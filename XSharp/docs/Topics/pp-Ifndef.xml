@@ -10,6 +10,7 @@
     <header>
       <para styleclass="Heading1">#ifndef</para>
     </header>
+    <para styleclass="Heading1">Purpose</para>
     <para styleclass="Body Text">When the X# compiler encounters an #ifndef directive, followed eventually by an <link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Endif">#endif</link> directive, it will compile the code between the directives only if the specified symbol is NOT defined. </para>
     <para styleclass="Body Text">The #ifndef statement in X# is Boolean and only tests whether the symbol has been defined or not. For example,</para>
     <para styleclass="Normal"></para>

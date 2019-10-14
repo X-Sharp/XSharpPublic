@@ -13,7 +13,7 @@
       <para styleclass="Heading1">WAIT Command</para>
     </header>
     <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
-    <para styleclass="Normal"><text styleclass="Heading1">Purpose</text></para>
+    <para styleclass="Heading1">Purpose</para>
     <para styleclass="Normal">Display a prompt after sending a carriage return/linefeed to the terminal window, then wait for a key to be pressed.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Note: &#160;</text>WAIT is a compatibility command and is no longer recommended. &#160;</para>

@@ -26,7 +26,7 @@
     <para styleclass="List">&lt;xcDataFile&gt;<tab />The name of the database file to open, including an optional drive, directory, and extension. &#160;If the database file has a corresponding memo file, it is also opened. &#160;The default extension for database and memo files is determined by the RDD.</para>
     <para styleclass="List"></para>
     <para styleclass="List">INDEX &lt;xcIndexFileList&gt;</para>
-    <para styleclass="List"><tab />The names of the index files to open, including an optional drive, directory, and extension for each. &#160;The default extension is determined by the RDD and can be obtained using DBOrderInfo(DBOI_INDEXEXT). &#160;See the &quot;RDD Specifics&quot; appendix in the Programmer&apos;s Guide for details on a particular RDD.</para>
+    <para styleclass="List"><tab />The names of the index files to open, including an optional drive, directory, and extension for each. &#160;The default extension is determined by the RDD and can be obtained using DBOrderInfo(DBOI_INDEXEXT). &#160;</para>
     <para styleclass="List"></para>
     <para styleclass="List"><tab />If you specify &lt;xcIndexList&gt; as an expression and the value returned is spaces or NIL, it is ignored.</para>
     <para styleclass="List"></para>
@@ -65,9 +65,6 @@
     <para styleclass="Normal">When a database file is first opened, the record pointer is positioned at the first logical record in the file (record one if there is no controlling order).</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">If the database file is opened in shared mode, other processes can have concurrent access to the file and responsibility for data integrity falls on the application program. &#160;File and record locking (using, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_Flock.htm" domain="XsRuntime.chm">FLock()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_RLock.htm" domain="XsRuntime.chm">RLock()</link>, or DBRLock()) are the basic means of denying other processes access to a particular file or record.</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal">Refer to the Database Programming section in the <text styleclass="Italic">Programmer&apos;s Guide </text>for more information about using database files. &#160;</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">Refer to the CLOSE command for information on how to close files of all types.</para>
     <para styleclass="Normal"></para>

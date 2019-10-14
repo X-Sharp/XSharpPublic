@@ -29,9 +29,6 @@
     <para styleclass="Normal">Like other variable declaration statements (i.e., LOCAL and MEMVAR), you must place FIELD statements before any executable statements (including PRIVATE, PUBLIC, and PARAMETERS) in the routine you are defining. &#160;The FIELD statement has no effect on the macro operator, which always assumes memory variables.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">The FIELD statement neither opens a database file nor verifies the existence of the specified fields. &#160;It is useful primarily to ensure correct references to fields that are known to exist at runtime. &#160;Attempting to access the fields when the associated database is not in use will raise a runtime error.</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal">For more information on variable declarations and scoping, refer to the &quot;Variables, Constants, and Declarations&quot; chapter in the <text styleclass="Italic">Programmer&apos;s Guide</text>.</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Heading1">Examples</para>
     <para styleclass="Normal">This function includes statements to declare database field names in both the current and Employee work areas:</para>
     <para styleclass="Normal"></para>

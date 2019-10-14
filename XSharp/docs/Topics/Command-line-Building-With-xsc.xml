@@ -20,7 +20,6 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal">When you build programs with the Visual Studio IDE then Visual Studio will locate the X# compiler automatically for you and the build output from the compiler will be shown in the Output Windows of Visual Studio.</para>
     <para styleclass="Normal">You can set the verbosity level of the compiler output from the Tools/Options, Projects and Solutions, Build and Run page.</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Heading2">Rules for Command-Line Syntax for the X# Compiler</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">The X# compiler uses the following rules when it interprets arguments given on the operating system command line:</para>

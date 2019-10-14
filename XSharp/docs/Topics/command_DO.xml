@@ -13,10 +13,10 @@
       <para styleclass="Heading1">DO Statement</para>
     </header>
     <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
-    <para styleclass="Normal"><text styleclass="Heading1">Purpose</text></para>
+    <para styleclass="Heading1">Purpose</para>
     <para styleclass="Normal">Call a procedure or function, and optionally pass arguments to the called routine.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Note: &#160;</text>DO is a compatibility command and is no longer recommended. &#160;Calling a procedure or function on a line by itself is the preferred method. &#160;For more information, refer to the &quot;Functions and Procedures&quot; chapter in the <text styleclass="Italic">Programmer&apos;s Guide</text>.</para>
+    <para styleclass="Normal"><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Note: &#160;</text>DO is a compatibility command and is no longer recommended. &#160;Calling a procedure or function on a line by itself is the preferred method. &#160;</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>
     <para styleclass="Normal">DO &lt;<text styleclass="Italic">idProcedure</text>&gt; [WITH &lt;<text styleclass="Italic">uValueArgList</text>&gt;]</para>

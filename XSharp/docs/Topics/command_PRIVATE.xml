@@ -15,8 +15,7 @@
     <header>
       <para styleclass="Heading1">PRIVATE Statement</para>
     </header>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Heading1">Purpose</text></para>
+    <para styleclass="Heading1">Purpose</para>
     <para styleclass="Normal">Create variables and arrays visible within current and invoked routines.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>
@@ -46,12 +45,12 @@
     <para styleclass="Normal">In class methods, instance variables (with the exception of access/assign variables) are always more visible than private variables of the same name. &#160;Use the _MEMVAR-&gt; alias to access a private variable within a method if there is a name conflict. &#160;For access/assign variables, use the SELF: &#160;prefix to override a name conflict with a private variable.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">In addition to the PRIVATE statement, you can create private variables by:</para>
-    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Indented" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none; font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Indented" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none; font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Indented" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal">Assigning to a variable that does not exist or is not visible will create a private variable</text></li>
       <li styleclass="Indented" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal">Receiving parameters using the PARAMETERS statement</text></li>
     </list>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">Private variables are dynamically scoped. &#160;They exist until the creating routine returns to its caller or until explicitly released with CLEAR ALL, or CLEAR MEMORY. &#160;For more information on variable declarations and scoping, refer to the &quot;Variables, Constants, and Declarations&quot; chapter in the <text styleclass="Italic">Programmer&apos;s Guide</text>.</para>
+    <para styleclass="Normal">Private variables are dynamically scoped. &#160;They exist until the creating routine returns to its caller or until explicitly released with CLEAR ALL, or CLEAR MEMORY. &#160;</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Heading1">Notes</text></para>
     <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Compatibility: &#160;</text>The ALL, LIKE, and EXCEPT clauses of the PRIVATE statement supported by other Xbase dialects are not supported.</para>

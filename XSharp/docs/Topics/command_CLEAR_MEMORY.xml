@@ -24,8 +24,6 @@
     <para styleclass="Normal"><text styleclass="Heading1">Description</text></para>
     <para styleclass="Normal">It operates in contrast to RELEASE ALL which does not actually delete public and private memory variables, but assigns NIL to those whose scope is the current procedure. &#160;CLEAR MEMORY is the only way to delete all public memory variables from current memory. &#160;Declared variables and constants, however, are unaffected by CLEAR MEMORY.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">For more information on variables, refer to the &quot;Variables, Constants, and Declarations&quot; chapter in the <text styleclass="Italic">Programmer&apos;s Guide</text>.</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Body Text"><snippet src="__IncludeLibRT" inline="false"/></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Heading1">See Also</text></para>

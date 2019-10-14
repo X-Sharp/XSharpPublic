@@ -532,7 +532,7 @@ statement           : Decl=localdecl                        #declarationStmt
                       StmtBlk=statementBlock
                       UNTIL Expr=expression
                       eos                                                 #repeatStmt
-                    | FOREACH
+                    | (FOREACH | FOR EACH)
                       (IMPLIED Id=identifier | Id=identifier AS Type=datatype| VAR Id=identifier)
                       IN Container=expression end=eos
                       StmtBlk=statementBlock
@@ -1205,7 +1205,7 @@ xppmemberModifiers  : ( Tokens+=( CLASS | STATIC) )+
 
 
 /// FoxPro Parser definities
-keywordfox          :  Token=( OLEPUBLIC| EXCLUDE| THISACCESS| HELPSTRING| NOINIT | FOX_AND| FOX_OR| FOX_NOT| FOX_XOR )
+keywordfox          :  Token=( OLEPUBLIC | EACH | EXCLUDE| THISACCESS| HELPSTRING| NOINIT | FOX_AND| FOX_OR| FOX_NOT| FOX_XOR )
                       // These tokens are already marked as 'only valid in a certain context ' in the lexer
                               // ENDDEFINE | TEXT| ENDTEXT | DIMENSION | LPARAMETERS | NOSHOW | TEXTMERGE | PRETEXT | FLAGS | ADDITIVE
                     ;

@@ -1161,6 +1161,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             }
             if (t.Type == ALIAS )
             {
+                // ALIAS after keyword, then the keyword should be the name of a workarea. For example EVENT->DATE
                 if (IsKeyword(LastToken))
                 {
                     _lastToken.Type = ID;
@@ -1200,6 +1201,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 case EOS:
                 case NL:
                 case SEMI:
+                case UDCSEP:        // first keyword in UDC after '=>' is considered to be at start of line
                     return true;
             }
             return false;
@@ -1256,7 +1258,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             switch (keyword)
             {
                 // Some keywords are impossible to use as ID
-                case SELF:
+                 case SELF:
                 case SUPER:
                 case STATIC:
                 case DIM:
@@ -1270,7 +1272,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         return ID;
                     }
                     break;
-                    // Next tokens only at Start of Line
+                // Next tokens only at Start of Line
                 case FOREACH:
                 case FINALLY:
                 case CATCH:
@@ -1393,6 +1395,12 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         return ID;
                     }
                     break;
+                case EACH:                   // FoxPro dialect and only after FOR
+                    if (lastToken != FOR)
+                        return ID;
+                    else
+                        return keyword;
+
                 default:
                     switch (lastToken)
                     {
@@ -1755,7 +1763,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 {
                     // normal keywords
                     // {"ENDSEQUENCE", END }, Xbase++ redefines ENDSEQUENCE to END in STD.CH
-                    //{"ENDFOR",   NEXT }, Xbase++ redefines ENDFOR to NEXT in STD.CH
+                    {"ENDFOR",   NEXT }, 
                     // class keywords
                     {"ENDCLASS",ENDCLASS},
                     {"READONLY",READONLY },
@@ -1819,11 +1827,13 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     {"AND", FOX_AND},
                     {"OR", FOX_OR},
                     {"NOT", FOX_NOT},
-                    {"XOR", FOX_XOR},  
+                    {"XOR", FOX_XOR},
+                    {"EACH", EACH },                // Only after FOR
                 }; 
                 var vfpKeyWordAbbrev = new Dictionary<string, int>
                 {
                     {"ENDDEFINE", ENDDEFINE },
+                    {"ENDFOR", NEXT },
                     {"LPARAMETERS",   LPARAMETERS },
                     {"EXCLUDE", EXCLUDE },
                     {"OLEPUBLIC", OLEPUBLIC },

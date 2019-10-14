@@ -322,6 +322,7 @@ namespace XSharpLanguage
                         case XSharpLexer.IS:
                         case XSharpLexer.REF:
                         case XSharpLexer.INHERIT:
+                        case XSharpLexer.FROM:          // Xbase++ Parent clause
                             // It can be a namespace
                             AddNamespaces(compList, _file.Project, filterText);
                             // It can be Type, FullyQualified
@@ -438,6 +439,7 @@ namespace XSharpLanguage
                                 {
                                     // Fill with the context ( Parameters and Locals )
                                     BuildCompletionList(compList, member, filterText, currentLine);
+                                    AddXSharpKeywords(compList,filterText);
                                     // Context Type....
                                     cType = new CompletionType(member.Parent.Clone);
                                     if (!cType.IsEmpty())
@@ -653,6 +655,15 @@ namespace XSharpLanguage
             if (realTypeName.Length > 7 && realTypeName.StartsWith("remove_"))
                 return true;
             return false;
+        }
+
+        private void AddXSharpKeywords(CompletionList compList, string startWith)
+        {
+            foreach (var kw in XSharpTypes.Get().Where(ti => nameStartsWith(ti.FullName, startWith)))
+            {
+                ImageSource icon = _provider.GlyphService.GetGlyph(kw.GlyphGroup, kw.GlyphItem);
+                compList.Add(new XSCompletion(kw.Name, kw.Name, kw.Description, icon, null, Kind.Keyword));
+            }
         }
 
         private void AddXSharpTypeNames(CompletionList compList, XProject project, string startWith)
@@ -2887,11 +2898,10 @@ namespace XSharpLanguage
                         // could be namespace.Type
                         // so now try with right side of the string
                         startToken = currentToken.Substring(dotPos + 1);
-                        if (String.IsNullOrEmpty(startToken))
-                            break;
-                        cType = new CompletionType(startToken, currentMember.File, currentMember.Parent.NameSpace);
-                        //if (!cType.IsEmpty())
-                        //    return cType;
+                        if (!String.IsNullOrEmpty(startToken))
+                        {
+                            cType = new CompletionType(startToken, currentMember.File, currentMember.Parent.NameSpace);
+                        }
                     }
                     if (!cType.IsEmpty())
                     {
@@ -3033,8 +3043,12 @@ namespace XSharpLanguage
                         currentToken = currentToken.Substring(0, currentToken.Length - 2);
                         hasBracket = true;
                     }
+                    else if (currentToken.EndsWith("."))
+                    {
+                        currentToken = currentToken.Substring(0,currentToken.Length - 1);
+                    }
                     // First token, so it could be a parameter or a local var
-                    if (startOfExpression)
+                   if (startOfExpression)
                     {
                         // Search in Parameters, Locals, Field and Properties
                         foundElement = FindIdentifier(currentMember, currentToken, ref cType, visibility, currentNS, snapshot, currentLine, dialect);

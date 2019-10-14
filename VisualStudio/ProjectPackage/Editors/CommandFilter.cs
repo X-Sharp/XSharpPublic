@@ -719,20 +719,24 @@ namespace XSharp.Project
                 var lineText = line.GetText();
                 var pos = caret.Position - line.Start.Position;
                 int chars = 0;
-                // count the number of characters in the current word. When > 3 then trigger completion
+                bool done = false;
+                // count the number of characters in the current word. When > 2 then trigger completion
                 for (int i = pos-1; i >= 0; i--)
                 {
                     switch (lineText[i])
                     {
                         case ' ':
                         case '\t':
+                            done = true;
                             break;
                     }
+                    if (done)
+                        break;
                     chars++;
-                    if (chars > 3)
+                    if (chars > 2)
                         break;
                 }
-                if (chars > 3)
+                if (chars > 2)
                 {
                     StartCompletionSession(nCmdID, '\0');
                 }

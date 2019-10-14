@@ -168,7 +168,13 @@ BEGIN NAMESPACE XSharpModel
 						parallelOptions:MaxDegreeOfParallelism := ((System.Environment.ProcessorCount * 3) / 4)
 					ENDIF
 					project:ProjectNode:SetStatusBarAnimation(TRUE, 0)
-					Parallel.ForEach(aFiles, walkOneFile)
+                    TRY
+					    Parallel.ForEach(aFiles, walkOneFile)
+                    CATCH e as Exception
+
+                        WriteOutPutMessage("Parallel.Foreach failed")
+                        XSolution.WriteException(e)
+                    END TRY
 					BEGIN LOCK SELF
 						_projectsForTypeResolution:Enqueue(project)
 					END LOCK

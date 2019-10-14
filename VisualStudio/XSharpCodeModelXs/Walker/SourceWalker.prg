@@ -22,7 +22,7 @@ BEGIN NAMESPACE XSharpModel
 		#region fields
 			PRIVATE _errors AS IList<XError>
 			PRIVATE _file AS XFile
-			PRIVATE _gate AS OBJECT
+			//PRIVATE _gate AS OBJECT
 			PRIVATE _prjNode AS IXSharpProject
 			PRIVATE _tokenStream AS ITokenStream
 			PRIVATE _info AS ParseResult
@@ -44,10 +44,12 @@ BEGIN NAMESPACE XSharpModel
 			SUPER()
             IF (file != NULL)
 			    LOCAL sourcePath AS STRING
-			    SELF:_gate := OBJECT{}
+			    //SELF:_gate := OBJECT{}
 			    SELF:_file := file
 			    SELF:_prjNode := SELF:_file?:Project?:ProjectNode
-				SELF:_file:Dialect := SELF:_prjNode:ParseOptions:Dialect
+                IF _prjNode != null
+				    SELF:_file:Dialect := SELF:_prjNode:ParseOptions:Dialect
+                ENDIF
 			    SELF:StartPosition := 0
 			    //
 			    sourcePath := SELF:_file:SourcePath

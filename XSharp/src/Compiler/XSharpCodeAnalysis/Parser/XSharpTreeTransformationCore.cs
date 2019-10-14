@@ -6944,6 +6944,25 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return false;
         }
 
+        public override void ExitDoStmt([NotNull] XP.DoStmtContext context)
+        {
+            var name = context.Id.GetText();
+            ArgumentListSyntax argList;
+            if (context.ArgList != null)
+            {
+                argList = context.ArgList.Get<ArgumentListSyntax>();
+            }
+            else
+            {
+                argList = EmptyArgumentList();
+            }
+            // Todo
+            // DO .. WITH should pass identifiers by reference to be completely compatible with the old XBase languages
+            var expr = GenerateMethodCall(name, argList);
+            context.HasRefArguments = HasRefArguments(argList);
+            context.Put(GenerateExpressionStatement(expr));
+        }
+
         private bool GenerateSLen(XP.MethodCallContext context)
         {
             // Pseudo function SLen

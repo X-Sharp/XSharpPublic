@@ -334,6 +334,11 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public bool HasRefArguments;
         }
 
+        public partial class DoStmtContext
+        {
+            public bool HasRefArguments;
+        }
+
         public partial class RepeatStmtContext : ILoopStmtContext
         {
             public StatementBlockContext Statements { get { return StmtBlk; } }

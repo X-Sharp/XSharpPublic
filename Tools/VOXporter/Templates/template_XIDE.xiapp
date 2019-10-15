@@ -38,7 +38,7 @@ ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ;ReferenceProject = %referenceguid%,1,0,%referencename%
 
 [General Options]
-Switches=/nowarn:9032,9043,618,162,649,9025
+Switches=/nowarn:9032,9043,618,162,165,649,9025
 ; /define:__VULCAN__
 ZeroArrays=0
 CaseSensitive=0

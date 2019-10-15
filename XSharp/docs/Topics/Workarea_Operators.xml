@@ -20,10 +20,10 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="4" colcount="3" style="width:auto;">
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:15%;">
           <para styleclass="Normal"><text style="font-weight:bold;">Operator</text></para>
         </td>
-        <td style="width:30%;">
+        <td style="width:15%;">
           <para styleclass="Normal"><text style="font-weight:bold;">Example</text></para>
         </td>
         <td>
@@ -43,7 +43,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal">.</para>
+          <para styleclass="Normal">. (Dot)</para>
         </td>
         <td>
           <para styleclass="Normal">Customer.LastName<br/><br/><br/></para>
@@ -55,7 +55,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal">.</para>
+          <para styleclass="Normal">. (Dot)</para>
         </td>
         <td>
           <para styleclass="Normal">M.Name</para>

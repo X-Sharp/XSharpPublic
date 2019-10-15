@@ -18,7 +18,7 @@
     <para styleclass="Body Text">I have not changed any or the xPort options. The options are:</para>
     <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><table styleclass="Default" rowcount="14" colcount="2" style="width:auto;">
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:30%;">
           <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:11px; margin-left:0px; line-height:1.07; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; font-weight:bold; color:#000000;">Option</text></para>
         </td>
         <td>
@@ -150,7 +150,7 @@
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td style="vertical-align:top;">
+        <td style="vertical-align:top; width:30%;">
           <para styleclass="Body Text">Explorer.sln</para>
         </td>
         <td style="vertical-align:top;">
@@ -194,7 +194,7 @@
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td style="vertical-align:top;">
+        <td style="vertical-align:top; width:30%;">
           <para styleclass="Body Text">Explorer Shell.prg</para>
         </td>
         <td style="vertical-align:top;">
@@ -378,32 +378,32 @@
     <para styleclass="Body Text">This DLL is located in the Redist folder of your VO installation. Simply copy the “Cato3spl.dll” file from your VO Redist folder to the output folder as well as the MSVCRT.DLL and try again.<br/>You can also add the DLLs to your project (Add Existing Item, and point to the DLLs in the Redist folder). This will copy them to the project folder. Then set the build action for the 2 DLLs to None and the “Copy to Output Directory” property to “Preserve Newest”. When you now build your app the DLL will be copied to the right folder.</para>
     <para styleclass="Body Text">After that the code will run just like it did in VO with no code changes!</para>
     <para styleclass="Body Text">Let’s have a closer look at what the xPorter has done:</para>
-    <list id="8" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="110" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">Each module in VO has become a PRG file in the X# project</li>
     </list>
-    <list id="9" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="111" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">Source code has been grouped by class and put in a CLASS .. END CLASS construct</li>
     </list>
-    <list id="10" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="112" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">Init methods have been renamed to CONSTRUCTOR</li>
       <li styleclass="Body Text">Compiler macros such as &quot;%CavoSamplesRootDir%\Explorer\&quot; have been replaced with literal values: &quot;C:\cavo28SP3\Samples\Explorer\&quot;</li>
     </list>
-    <list id="11" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="113" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">Recourses have become “children” of the source file where they were defined</li>
       <li styleclass="Body Text">Locations for resources have also been changed %CavoSamplesRootDir%\Explorer\TWO.ICO has been changed to ICONTWO Icon C:\cavo28SP3\Samples\Explorer\TWO.ICO. <br/>Also the RESOURCE keyword has been removed.</li>
       <li styleclass="Body Text">The binaries for the forms and menus have not been included in this version of the XPorter (Beta 11). That will change.</li>
     </list>
-    <list id="12" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="114" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">The Start file has the biggest change. In VO there was a method in there App:Start(). However the App class is not defined in this application but part of the GUI Classes. There was also no Start function in the App. VO would call the Start function in the GUI classes and would merge the App:Start() method in the application with the rest of the App class in the GUI Classes.<br/>This is not allowed in .Net. Classes cannot be spread over more than one assembly (the .Net name for of a Library, EXE or DLL).<br/>Therefore the XPorter has created a new class (xApp) and moved the Start method to this Xapp class. It has also added a Start() function which instantiates the App class and calls the Start method inside XApp. You can also see in the example below that a TRY .. CATCH .. END TRY construct is added which captures the errors that are not catched anywhere else and shows an error message in an ErrorBox object. This is the errorbox that was shown before because the CATO3SPL.DLL was missing.</li>
       <li styleclass="Body Text">Finally the Start function is marked with an attribute (The word between the square brackets). In this case the attribute is [STAThread] which means that the main function (and therefore the whole app) needs to run in <text style="font-weight:bold;">S</text>ingle <text style="font-weight:bold;">T</text>hreaded &#160;<text style="font-weight:bold;">A</text>ppartment mode. This is important if your app uses external code such as OCX/ActiveX controls.</li>
     </list>
-    <list id="13" type="ul" listtype="bullet" formatstring="&#45;" levelreset="true" legalstyle="false" startfrom="0" styleclass="Body Text" style="font-family:Calibri; font-size:11pt; color:#000000;">
+    <list id="115" type="ul" listtype="bullet" formatstring="&#45;" levelreset="true" legalstyle="false" startfrom="0" styleclass="Body Text" style="font-family:Calibri; font-size:11pt; color:#000000;">
       <li styleclass="Body Text"><image src="explorer-startmodule.png" scale="100.00%" styleclass="Image Caption"></image></li>
     </list>
-    <list id="6" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:8pt; color:#000000;">
-      <li styleclass="Body Text">If you look closer to the solution explorer in Visual Studio and click on the References node in the tree you will see that the example has references to the Vulcan runtime and the VO Class libraries as well as the SDK defines library that was included with the XPorter.</li>
+    <list id="6" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:8pt; color:#000000;">
+      <li styleclass="Normal"><text styleclass="Body Text">If you look closer to the solution explorer in Visual Studio and click on the References node in the tree you will see that the example has references to the Vulcan runtime and the VO Class libraries as well as the SDK defines library that was included with the XPorter.</text></li>
     </list>
-    <list id="14" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="109" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">If you open the project properties you will see on the General page that the selected dialect is “Visual Object” , on the Dialect page are most VO options are set and on the Build page the platform target is x86 (because the GUI classes are designed to run in x86 mode) and several warnings have been suppressed. These warnings are:</li>
     </list>
     <para styleclass="Body Text"><table styleclass="Default" rowcount="7" colcount="2">
@@ -424,7 +424,7 @@
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td style="vertical-align:top;">
+        <td style="vertical-align:top; width:30%;">
           <para styleclass="Body Text">618</para>
         </td>
         <td style="vertical-align:top;">

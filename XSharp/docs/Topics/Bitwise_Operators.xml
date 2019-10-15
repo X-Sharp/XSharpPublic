@@ -19,10 +19,10 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="5" colcount="4" style="width:auto;">
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:15%;">
           <para styleclass="Normal"><text style="font-weight:bold;">Operator</text></para>
         </td>
-        <td>
+        <td style="width:15%;">
           <para styleclass="Normal"><text style="font-weight:bold;">Pseudo Function</text></para>
         </td>
         <td>

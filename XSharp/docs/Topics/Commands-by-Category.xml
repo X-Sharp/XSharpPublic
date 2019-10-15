@@ -1,27 +1,184 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" status="Under Construction" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>Commands by Category</title>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Commands and Statements</title>
   <body>
     <header>
-      <para styleclass="Heading1">Commands by Category</para>
+      <para styleclass="Heading1">Commands and Statements</para>
     </header>
+    <para styleclass="Normal">The X# language knows commands and statements. The difference between these two is:</para>
+    <list id="1" type="ul" listtype="bullet" formatstring="·" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">Statements are defined by the compiler. Examples are the declarations of functions,local variables and control structures such as IF statements and FOR statements</li>
+      <li styleclass="Normal">Commands are defined in a header file and are preprocessed by the compiler into function calls. Examples of a Command are the USE command and APPEND BLANK command</li>
+    </list>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="cmd_cat_comment" styleclass="link" style="font-family:Arial; font-size:10pt; font-weight:bold; font-style:normal; text-transform:none; vertical-align:baseline; color:#0000ff; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Comment</link></para>
-    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="cmd_cat_concur" styleclass="link" style="font-family:Arial; font-size:10pt; font-weight:bold; font-style:normal; text-transform:none; vertical-align:baseline; color:#0000ff; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Concurrency Control</link></para>
-    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="cmd_cat_Database" styleclass="link" style="font-family:Arial; font-size:10pt; font-weight:bold; font-style:normal; text-transform:none; vertical-align:baseline; color:#0000ff; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Database</link></para>
-    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="cmd_cat_date" styleclass="link" style="font-family:Arial; font-size:10pt; font-weight:bold; font-style:normal; text-transform:none; vertical-align:baseline; color:#0000ff; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Date</link></para>
-    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="cmd_cat_entdecl" styleclass="link" style="font-family:Arial; font-size:10pt; font-weight:bold; font-style:normal; text-transform:none; vertical-align:baseline; color:#0000ff; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Entity Declaration</link></para>
-    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="cmd_cat_set" styleclass="link" style="font-family:Arial; font-size:10pt; font-weight:bold; font-style:normal; text-transform:none; vertical-align:baseline; color:#0000ff; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Environment</link></para>
-    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="cmd_cat_file" styleclass="link" style="font-family:Arial; font-size:10pt; font-weight:bold; font-style:normal; text-transform:none; vertical-align:baseline; color:#0000ff; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">File</link></para>
-    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="cmd_cat_index" styleclass="link" style="font-family:Arial; font-size:10pt; font-weight:bold; font-style:normal; text-transform:none; vertical-align:baseline; color:#0000ff; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Index/Order</link></para>
-    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="cmd_cat_international" styleclass="link" style="font-family:Arial; font-size:10pt; font-weight:bold; font-style:normal; text-transform:none; vertical-align:baseline; color:#0000ff; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">International</link></para>
-    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="cmd_cat_memvar" styleclass="link" style="font-family:Arial; font-size:10pt; font-weight:bold; font-style:normal; text-transform:none; vertical-align:baseline; color:#0000ff; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Memory Variable</link></para>
-    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="cmd_cat_num" styleclass="link" style="font-family:Arial; font-size:10pt; font-weight:bold; font-style:normal; text-transform:none; vertical-align:baseline; color:#0000ff; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Numeric</link></para>
-    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="cmd_cat_control" styleclass="link" style="font-family:Arial; font-size:10pt; font-weight:bold; font-style:normal; text-transform:none; vertical-align:baseline; color:#0000ff; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Program Control</link></para>
-    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="cmd_cat_rtdecl" styleclass="link" style="font-family:Arial; font-size:10pt; font-weight:bold; font-style:normal; text-transform:none; vertical-align:baseline; color:#0000ff; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Runtime Declaration</link></para>
-    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="cmd_cat_terminal" styleclass="link" style="font-family:Arial; font-size:10pt; font-weight:bold; font-style:normal; text-transform:none; vertical-align:baseline; color:#0000ff; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Terminal Window</link></para>
-    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="cmd_cat_vardecl" styleclass="link" style="font-family:Arial; font-size:10pt; font-weight:bold; font-style:normal; text-transform:none; vertical-align:baseline; color:#0000ff; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Variable Declaration</link></para>
+    <para styleclass="Normal">Statements are available in almost all dialects, with only a few exceptions.</para>
+    <para styleclass="Normal">The available commands are very much dependent on the dialect. For example in the Core dialect no commands are available at all. Most commands have optional parameters and depend on the X# runtime types such as USUAL</para>
     <para styleclass="Normal"></para>
+    <para styleclass="Normal">This reference lists both the commands that are &apos;built-in&apos; into the compiler and commands that are defined as default &apos;User Defined Commands&apos; in STD.UDC.</para>
+    <para styleclass="Normal">Some commands are marked with an asterisk as &apos;deprecated&apos;. They may not be available in future versions of %APP%</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="2" colcount="4">
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Heading2">Built-in Statements</para>
+        </td>
+        <td>
+          <para styleclass="Heading2">Commands in header file</para>
+        </td>
+        <td>
+          <para styleclass="Heading2">Commands in header file</para>
+        </td>
+        <td>
+          <para styleclass="Heading2">Grouped by category</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_IFDEF" style="font-size:9pt;">#ifdef #else #endif</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_IFNDEF" style="font-size:9pt;">#ifndef #else #endif</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_QUESTION" style="font-size:9pt;">?|??</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_BACKSLASH" style="font-size:9pt;">\|\\</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command__DLL" style="font-size:9pt;">_DLL</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_ACCESS" style="font-size:9pt;">ACCESS</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_ASSIGN" style="font-size:9pt;">ASSIGN</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_BEGIN_SEQUENCE" style="font-size:9pt;">BEGIN SEQUENCE</link></para>
+          <para styleclass="link"><text style="font-size:9pt;">BREAK</text></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_CLASS" style="font-size:9pt;">CLASS</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DECLARE" style="font-size:9pt;">DECLARE</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DELEGATE" style="font-size:9pt;">DELEGATE</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DEFINE" style="font-size:9pt;">DEFINE</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DO" style="font-size:9pt;">DO*</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DO_CASE" style="font-size:9pt;">DO CASE</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DO_WHILE" style="font-size:9pt;">DO WHILE</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_ENUM" style="font-size:9pt;">ENUM</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_EXIT" style="font-size:9pt;">EXIT</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_FIELD" style="font-size:9pt;">FIELD</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_FOR" style="font-size:9pt;">FOR</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_FOREACH" style="font-size:9pt;">FOREACH</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_FUNCTION" style="font-size:9pt;">FUNCTION</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_GLOBAL" style="font-size:9pt;">GLOBAL</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_IF" style="font-size:9pt;">IF</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_LOCAL" style="font-size:9pt;">LOCAL</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_LOOP" style="font-size:9pt;">LOOP</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_MEMVAR" style="font-size:9pt;">MEMVAR</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_METHOD" style="font-size:9pt;">METHOD</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_PARAMETERS" style="font-size:9pt;">PARAMETERS</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_PRIVATE" style="font-size:9pt;">PRIVATE</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_PROCEDURE" style="font-size:9pt;">PROCEDURE</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_PUBLIC" style="font-size:9pt;">PUBLIC</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_REPEAT_UNTIL" style="font-size:9pt;">REPEAT</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_RETURN" style="font-size:9pt;">RETURN</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_STATIC" style="font-size:9pt;">STATIC</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_STRUCTURE" style="font-size:9pt;">STRUCTURE</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_TEXT" style="font-size:9pt;">TEXT</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_UNION" style="font-size:9pt;">UNION</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_VOSTRUCT" style="font-size:9pt;">VOSTRUCT</link></para>
+        </td>
+        <td>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_ACCEPT" style="font-size:9pt;">ACCEPT</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_APPEND_BLANK" style="font-size:9pt;">APPEND BLANK</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_APPEND_FROM" style="font-size:9pt;">APPEND FROM</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_AVERAGE" style="font-size:9pt;">AVERAGE</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_CANCEL" style="font-size:9pt;">CANCEL</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_CLEAR_ALL" style="font-size:9pt;">CLEAR ALL*</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_CLEAR_MEMORY" style="font-size:9pt;">CLEAR MEMORY*</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_CLOSE" style="font-size:9pt;">CLOSE</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_COMMIT" style="font-size:9pt;">COMMIT</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_CONTINUE" style="font-size:9pt;">CONTINUE</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_COPY_FILE" style="font-size:9pt;">COPY FILE</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_COPY_STRUCTURE" style="font-size:9pt;">COPY STRUCTURE</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_COPY_STRUCTURE_EXTENDE" style="font-size:9pt;">COPY STRUCTURE EXTENDED</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_COPY_TO" style="font-size:9pt;">COPY TO</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_COUNT" style="font-size:9pt;">COUNT</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_CREATE" style="font-size:9pt;">CREATE</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_CREATE_FROM" style="font-size:9pt;">CREATE FROM</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DEFAULT" style="font-size:9pt;">DEFAULT</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DELETE" style="font-size:9pt;">DELETE</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DELETE_FILE" style="font-size:9pt;">DELETE FILE</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DELETE_TAG" style="font-size:9pt;">DELETE TAG</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DIR" style="font-size:9pt;">DIR</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_ERASE" style="font-size:9pt;">ERASE</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_EXTERNAL" style="font-size:9pt;">EXTERNAL*</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_FIND" style="font-size:9pt;">FIND</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_GO" style="font-size:9pt;">GO</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_INDEX" style="font-size:9pt;">INDEX</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_JOIN" style="font-size:9pt;">JOIN</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_LOCATE" style="font-size:9pt;">LOCATE</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_NOTE" style="font-size:9pt;">NOTE</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_PACK" style="font-size:9pt;">PACK</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_QUIT" style="font-size:9pt;">QUIT</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_RECALL" style="font-size:9pt;">RECALL</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_REINDEX" style="font-size:9pt;">REINDEX</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_RELEASE" style="font-size:9pt;">RELEASE*</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_RENAME" style="font-size:9pt;">RENAME</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_REPLACE" style="font-size:9pt;">REPLACE</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_RESTORE" style="font-size:9pt;">RESTORE*</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_RUN" style="font-size:9pt;">RUN</link></para>
+          <para styleclass="Normal"></para>
+        </td>
+        <td>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SAVE" style="font-size:9pt;">SAVE*</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SEEK" style="font-size:9pt;">SEEK</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SELECT" style="font-size:9pt;">SELECT</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_ANSI" style="font-size:9pt;">SET ANSI</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_CENTURY" style="font-size:9pt;">SET CENTURY</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_COLLATION" style="font-size:9pt;">SET COLLATION</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_COLOR" style="font-size:9pt;">SET COLOR</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_DATE" style="font-size:9pt;">SET DATE</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_DATE_FORMAT" style="font-size:9pt;">SET DATE FORMAT</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_DECIMALS" style="font-size:9pt;">SET DECIMALS</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_DEFAULT" style="font-size:9pt;">SET DEFAULT</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_DELETED" style="font-size:9pt;">SET DELETED</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_DESCENDING" style="font-size:9pt;">SET DESCENDING</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_DIGITFIXED" style="font-size:9pt;">SET DIGITFIXED</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_DIGITS" style="font-size:9pt;">SET DIGITS</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_DRIVER" style="font-size:9pt;">SET DRIVER</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_EPOCH" style="font-size:9pt;">SET EPOCH</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_EXCLUSIVE" style="font-size:9pt;">SET EXCLUSIVE</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_FILTER" style="font-size:9pt;">SET FILTER</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_FIXED" style="font-size:9pt;">SET FIXED</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_INDEX" style="font-size:9pt;">SET INDEX</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_INTERNATIONAL" style="font-size:9pt;">SET INTERNATIONAL</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_MEMOBLOCK" style="font-size:9pt;">SET MEMOBLOCK</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_OPTIMIZE" style="font-size:9pt;">SET OPTIMIZE</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_ORDER" style="font-size:9pt;">SET ORDER</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_PATH" style="font-size:9pt;">SET PATH</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_RELATION" style="font-size:9pt;">SET RELATION</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_SCOPE" style="font-size:9pt;">SET SCOPE</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_SCOPEBOTTOM" style="font-size:9pt;">SET SCOPEBOTTOM</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_SCOPETOP" style="font-size:9pt;">SET SCOPETOP</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_SOFTSEEK" style="font-size:9pt;">SET SOFTSEEK</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_UNIQUE" style="font-size:9pt;">SET UNIQUE</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SKIP" style="font-size:9pt;">SKIP</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SORT" style="font-size:9pt;">SORT</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_STORE" style="font-size:9pt;">STORE</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SUM" style="font-size:9pt;">SUM</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_TOTAL" style="font-size:9pt;">TOTAL</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_UNLOCK" style="font-size:9pt;">UNLOCK</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_UPDATE" style="font-size:9pt;">UPDATE</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_USE" style="font-size:9pt;">USE</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_WAIT" style="font-size:9pt;">WAIT</link></para>
+          <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_ZAP" style="font-size:9pt;">ZAP</link></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="cmd_cat_comment" styleclass="link" style="font-family:Arial; font-size:9pt; font-weight:bold; font-style:normal; text-transform:none; vertical-align:baseline; color:#0000ff; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Comment</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="cmd_cat_concur" styleclass="link" style="font-family:Arial; font-size:9pt; font-weight:bold; font-style:normal; text-transform:none; vertical-align:baseline; color:#0000ff; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Concurrency Control</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="cmd_cat_Database" styleclass="link" style="font-family:Arial; font-size:9pt; font-weight:bold; font-style:normal; text-transform:none; vertical-align:baseline; color:#0000ff; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Database</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="cmd_cat_date" styleclass="link" style="font-family:Arial; font-size:9pt; font-weight:bold; font-style:normal; text-transform:none; vertical-align:baseline; color:#0000ff; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Date</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="cmd_cat_entdecl" styleclass="link" style="font-family:Arial; font-size:9pt; font-weight:bold; font-style:normal; text-transform:none; vertical-align:baseline; color:#0000ff; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Entity Declaration</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="cmd_cat_set" styleclass="link" style="font-family:Arial; font-size:9pt; font-weight:bold; font-style:normal; text-transform:none; vertical-align:baseline; color:#0000ff; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Environment</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="cmd_cat_file" styleclass="link" style="font-family:Arial; font-size:9pt; font-weight:bold; font-style:normal; text-transform:none; vertical-align:baseline; color:#0000ff; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">File</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="cmd_cat_index" styleclass="link" style="font-family:Arial; font-size:9pt; font-weight:bold; font-style:normal; text-transform:none; vertical-align:baseline; color:#0000ff; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Index/Order</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="cmd_cat_international" styleclass="link" style="font-family:Arial; font-size:9pt; font-weight:bold; font-style:normal; text-transform:none; vertical-align:baseline; color:#0000ff; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">International</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="cmd_cat_memvar" styleclass="link" style="font-family:Arial; font-size:9pt; font-weight:bold; font-style:normal; text-transform:none; vertical-align:baseline; color:#0000ff; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Memory Variable</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="cmd_cat_num" styleclass="link" style="font-family:Arial; font-size:9pt; font-weight:bold; font-style:normal; text-transform:none; vertical-align:baseline; color:#0000ff; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Numeric</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="cmd_cat_control" styleclass="link" style="font-family:Arial; font-size:9pt; font-weight:bold; font-style:normal; text-transform:none; vertical-align:baseline; color:#0000ff; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Program Control</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="cmd_cat_rtdecl" styleclass="link" style="font-family:Arial; font-size:9pt; font-weight:bold; font-style:normal; text-transform:none; vertical-align:baseline; color:#0000ff; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Runtime Declaration</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="cmd_cat_terminal" styleclass="link" style="font-family:Arial; font-size:9pt; font-weight:bold; font-style:normal; text-transform:none; vertical-align:baseline; color:#0000ff; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Terminal Window</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="cmd_cat_vardecl" styleclass="link" style="font-family:Arial; font-size:9pt; font-weight:bold; font-style:normal; text-transform:none; vertical-align:baseline; color:#0000ff; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Variable Declaration</link></para>
+        </td>
+      </tr>
+    </table></para>
   </body>
 </topic>

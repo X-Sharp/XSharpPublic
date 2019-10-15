@@ -14,18 +14,18 @@
     <para styleclass="Normal">SetMacroCompiler(typeof(XSharp.MacroCompiler))</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">If you don&apos;t do this then the runtime will try to locate the standard macro compiler in the following locations:</para>
-    <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="List">The directory where the XSharp.R.DLL is loaded from</li>
+    <list id="31" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">The directory where the XSharp.R.DLL is loaded from</li>
       <li styleclass="Normal">The directories in the path. If you use this then make sure that the assemblies listed below are in the same folder as XSharp.MacroCompiler.DLL</li>
       <li styleclass="Normal">The Global Assembly Cache (GAC). If you use this mechanism then make sure that the assemblies listed below are also in the GAC.</li>
     </list>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">This assembly depends on:</para>
-    <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="List">XSharp.Scripting.DLL</li>
+    <list id="32" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">XSharp.Scripting.DLL</li>
     </list>
-    <list id="5" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="List">XSharp.CodeAnalysis.DLL</li>
+    <list id="33" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">XSharp.CodeAnalysis.DLL</li>
       <li styleclass="Normal">System.Collections.Immutable</li>
       <li styleclass="Normal">System.Reflection.Metadata</li>
     </list>

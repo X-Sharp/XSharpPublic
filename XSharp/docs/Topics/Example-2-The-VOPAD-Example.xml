@@ -20,7 +20,7 @@
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td style="vertical-align:top;">
+        <td style="vertical-align:top; width:30%;">
           <para styleclass="Body Text">VoPad.sln</para>
         </td>
         <td style="vertical-align:top;">
@@ -56,7 +56,7 @@
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:30%;">
           <para styleclass="Body Text">image.IMAGE.rc</para>
         </td>
         <td>

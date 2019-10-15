@@ -1,26 +1,26 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
 <topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>X# Keywords</title>
+  <title>Keywords</title>
   <keywords>
     <keyword>Entities</keyword>
     <keyword>Parameters</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">X# Keywords</para>
+      <para styleclass="Heading1">Keywords</para>
     </header>
     <para styleclass="Body Text">The table below has the keywords that are available in the X# language.</para>
-    <list id="1" type="ul" listtype="bullet" formatstring="·" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">The Keywords in the <text style="font-weight:bold;">VO </text><text style="font-weight:normal;">column find their origin in the Visual Objects language. When the compiler dialect is set to VO then these keywords may be abbreviated (4 letter minimum)</text></li>
       <li styleclass="Body Text"><text style="font-weight:normal;">The Keywords in the </text><text style="font-weight:bold;">VN</text><text style="font-weight:normal;"> column were introduced in Vulcan.NET. These keywords may never be abbreviated, and most of these keywords are positional, so are only recognized in certain positions in the language. That also means that these keywords may be used as Variable Names or Method names</text></li>
       <li styleclass="Body Text"><text style="font-weight:normal;">The Keywords in the </text><text style="font-weight:bold;">X#</text><text style="font-weight:normal;"> column were introduced in X#. Just like the VN keywords they may never be abbreviated and they are also positional.</text></li>
       <li styleclass="Body Text"><text style="font-weight:normal;">Keywords that are listed in the Id column may also be used as an identifier. These are so called &quot;context sensitive&quot; keywords. You may see in the Visual Studio editor that these keywords will change color depending on the position in the source. </text><br/><text style="font-weight:normal;">For example if you start typing PROPERTY the word will be shown in the IDENTIFIER color:</text></li>
     </list>
     <para styleclass="Body Text" style="margin-left:39px;"><image src="Keyword1.jpg" scale="100.00%" styleclass="Image Caption"></image></para>
-    <para styleclass="Body Text"><tab/><text style="font-weight:normal;"> But as soon as you continue to complete the PROPERTY definition it will get the KEYWORD color:</text></para>
+    <para styleclass="Body Text"><tab /><text style="font-weight:normal;"> But as soon as you continue to complete the PROPERTY definition it will get the KEYWORD color:</text></para>
     <para styleclass="Body Text" style="margin-left:39px;"><image src="Keyword2.jpg" scale="100.00%" styleclass="Image Caption"></image></para>
-    <para styleclass="Normal"><table styleclass="Default" rowcount="229" colcount="7" style="border-width:0px; border-spacing:0px; border-collapse:collapse; cell-border-width:1px; border-color:#000000; border-style:solid;">
+    <para styleclass="Normal"><table styleclass="Default" rowcount="230" colcount="5" style="border-width:0px; border-spacing:0px; border-collapse:collapse; cell-border-width:1px; border-color:#000000; border-style:solid;">
       <thead style="vertical-align:top">
         <td style="vertical-align:middle;">
           <para styleclass="Normal"><text style="font-weight:bold;">Keyword</text></para>
@@ -36,12 +36,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">Id</text></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><text style="font-weight:bold;">Topic</text></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><text style="font-weight:bold;">Description</text></para>
         </td>
       </thead>
       <tr style="vertical-align:top">
@@ -60,12 +54,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Modifiers">Modifiers</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Class and Member Modifier</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -82,12 +70,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Entities">Entities</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Class Member</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -106,12 +88,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Entities">Entities</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">REMOVE Part of an Event</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -128,12 +104,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Entities">Entities</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Part of VOSTRUCT declaration</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -152,12 +122,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="_DLL-Function">_DLL Functions</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Character Encoding flag for _DLL declaration</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -174,12 +138,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="XBase-Specific-Types">XBase Specific Types</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">XBase datatype</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -198,12 +156,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Statements">Statements</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="Parameters">Parameters</link> </para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Part of type specification</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -220,12 +172,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="LINQ-Query-Expressions">LINQ Queries</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Sort order in LINQ query</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -244,12 +190,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Calling-Conventions">Calling Conventions</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Calling Convention (obsolete)</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -266,12 +206,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Attributes">Attributes</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Global Attribute Target</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -290,12 +224,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Entities">Entities</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Class Member</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -312,12 +240,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Statements">Statements</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Entity Modifier for Async Processing</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -336,12 +258,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="_DLL-Function">_DLL Functions</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Character Encoding flag for _DLL declaration. Also part of PROPERTY declaration.</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -358,12 +274,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Statements">Statements</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Expression modifier for Async Processing</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -382,12 +292,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Statements">Statements</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Indicates the start of a Block</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -404,12 +308,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Statements">Statements</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Breaks out of the current Begin Sequence .. END block</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -428,12 +326,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="LINQ-Query-Expressions">LINQ Queries</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Part of the &quot;GROUP BY&quot; clause in LINQ</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -450,12 +342,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Native-Types">Native Types</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Native Type</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -474,12 +360,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Calling-Conventions">Calling Conventions</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Calling Convention (obsolete)</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -496,12 +376,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Statements">Statements</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">CASE clause of DO CASE statement. Also CASE cause of SWITCH statement.</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -520,12 +394,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Statements">Statements</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">CATCH clause of TRY statement</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -542,12 +410,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Pseudo-Functions">Pseudo Functions</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Call function through Pointer (untyped) with strict calling convention</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -566,12 +428,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Pseudo-Functions">Pseudo Functions</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Call function through Pointer (untyped) with strict calling convention</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -588,12 +444,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Native-Types">Native Types</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Native Type</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -612,12 +462,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Statements">Statements</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="Expressions">Expressions</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Indicate that code in expression or block should not be checked for overflow</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -634,12 +478,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Entities">Entities</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Part of CLASS declaration</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -658,12 +496,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Calling-Conventions">Calling Conventions</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Calling Convention (All parameters are USUALs and Optional)</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -680,12 +512,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="XBase-Specific-Types">XBase Specific Types</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">XBase Specific Type</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -704,12 +530,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Entities">Entities</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Class Member modifier</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -726,12 +546,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Entities">Entities</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Class Member</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -750,12 +564,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="XBase-Specific-Types">XBase Specific Types</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">XBase Specific Type</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -772,12 +580,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Statements">Statements</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">DECLARE METHOD, ACCESS, ASSIGN (obsolete)</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -796,12 +598,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Pragma-Statements">Pragma Statements</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="Expressions">Expressions</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">#Pragma command, DEFAULT expression.</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -818,12 +614,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Entities">Entities</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Constant</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -842,12 +632,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Entities">Entities</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">User Defined Type</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -864,12 +648,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="LINQ-Query-Expressions">LINQ Queries</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Sort order in LINQ query</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -888,12 +666,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Entities">Entities</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Class Member</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -910,12 +682,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Statements">Statements</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Part of variable declaration</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -934,12 +700,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Entities">Entities</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Part of function/procedure declaration (obsolete)</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -956,12 +716,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Statements">Statements</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">DO CASE and DO WHILE statements</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -980,12 +734,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Statements">Statements</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">FOR NEXT statement</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -1002,12 +750,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Native-Types">Native Types</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Native Type</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -1026,12 +768,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Native-Types">Native Types</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Native Type</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -1048,12 +784,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Statements">Statements</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">IF Statement</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -1072,12 +802,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Statements">Statements</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">IF Statement</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -1094,12 +818,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Statements">Statements</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">End for many (block) statements</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -1118,12 +836,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Statements">Statements</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">DO CASE statement</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -1141,11 +853,22 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
+      </tr>
+      <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Statements">Statements</link></para>
+          <para styleclass="Normal">EN</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Normal">DO WHILE statement</para>
+          <para styleclass="Normal" style="text-align:center;"></para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal" style="text-align:center;"></para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal" style="text-align:center;"></para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal" style="text-align:center;"></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -1164,12 +887,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Statements">Statements</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">IF statement</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -1186,12 +903,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Entities">Entities</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">User Defined Type</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -1210,12 +921,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="LINQ-Query-Expressions">LINQ Queries</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Part if LINQ Query</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -1232,12 +937,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Entities">Entities</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Class Member</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -1256,12 +955,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Statements">Statements</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Exit current FOR, DO WHILE or REPEAT loop</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -1278,12 +971,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Modifiers">Modifiers</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Modifier for Operator</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -1302,12 +989,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Modifiers">Modifiers</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Class member modifier </para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -1324,12 +1005,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Modifiers">Modifiers</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Class member modifier </para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -1348,12 +1023,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Literals">Literals</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Logic Literal</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -1370,12 +1039,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Calling-Conventions">Calling Conventions</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Calling Convention (obsolete)</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -1394,12 +1057,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Statements">Statements</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Database field declaration</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -1416,12 +1073,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Statements">Statements</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">TRY .. FINALLY statement</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -1440,12 +1091,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Modifiers">Modifiers</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="Statements">Statements</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">BEGIN FIXED and Variable modifier</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -1462,12 +1107,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="XBase-Specific-Types">XBase Specific Types</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">XBase Specific Type</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -1486,12 +1125,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Statements">Statements</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">FOR NEXT statement</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -1508,12 +1141,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Statements">Statements</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">FOREACH IN NEXT statement</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -1532,12 +1159,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="LINQ-Query-Expressions">LINQ Queries</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">FROM clause in LINQ Queries</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -1554,12 +1175,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Entities">Entities</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Function declaration</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -1578,12 +1193,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Entities">Entities</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Function declaration</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -1600,12 +1209,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Entities">Entities</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">GET Part of a Property</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -1624,12 +1227,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Entities">Entities</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Global field declaration</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -1646,12 +1243,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="LINQ-Query-Expressions">LINQ Queries</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Part of the &quot;GROUP BY&quot; clause in LINQ</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -1670,12 +1261,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Modifiers">Modifiers</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Class member modifier</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -1692,12 +1277,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Statements">Statements</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="Pseudo-Functions">Pseudo Functions</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">IF Statement and IF(..,..,..) Immediate IF</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -1716,12 +1295,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Pseudo-Functions">Pseudo Functions</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Immediate IF</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -1738,12 +1311,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Entities">Entities</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Part of CLASS declaration</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -1762,12 +1329,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Modifiers">Modifiers</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Modifier for Operator</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -1784,12 +1345,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Statements">Statements</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Variable declaration with implied type</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -1808,12 +1363,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Workarea, <link displaytype="text" defaultstyle="true" type="topiclink" href="LINQ-Query-Expressions">LINQ Queries</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">FIELD declaration, FOREACH IN NEXT statement</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -1830,12 +1379,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Entities">Entities</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Part of CLASS declaration</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -1854,12 +1397,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Modifiers">Modifiers</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Class member modifier</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -1876,12 +1413,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Fields</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Class Member declaration</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -1900,12 +1431,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Native-Types">Native Types</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Native Type</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -1922,12 +1447,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Native-Types">Native Types</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Native Type</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -1946,12 +1465,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Entities">Entities</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">User Defined Type</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -1968,12 +1481,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="LINQ-Query-Expressions">LINQ Queries</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">INTO CLause for LINQ Queries</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -1992,12 +1499,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Modifiers">Modifiers</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Class and Member modifier</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -2014,12 +1515,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Statements">Statements</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="Parameters">Parameters</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Part of type specification</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -2038,12 +1533,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="LINQ-Query-Expressions">LINQ Queries</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">JOIN Clause for LINQ Query</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -2060,12 +1549,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="LINQ-Query-Expressions">LINQ Queries</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">LET Clause for LINQ Query</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -2084,12 +1567,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Statements">Statements</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Local Variable Declaration</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -2106,12 +1583,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Statements">Statements</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">BEGIN LOCK statement</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -2130,12 +1601,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Native-Types">Native Types</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Native Type</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -2152,12 +1617,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Native-Types">Native Types</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Native Type</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -2176,12 +1635,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Statements">Statements</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Goto start of FOR, DO WHILE or REPEAT loop</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -2198,12 +1651,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Entities">Entities</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">VOSTRUCT fields</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -2222,12 +1669,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Statements">Statements</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"> dBase Style Variable declararion</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -2244,12 +1685,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Entities">Entities</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Class Member</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -2268,12 +1703,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Attributes">Attributes</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Global Attribute Target</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -2290,12 +1719,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Pseudo-Functions">Pseudo Functions</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Return Name of parameter or variable</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -2314,12 +1737,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Entities">Entities</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">BEGIN NAMESPACE </para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -2336,12 +1753,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Modifiers">Modifiers</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Class Member modifier</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -2360,12 +1771,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Statements">Statements</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">FOR and FOREACH statement</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -2382,12 +1787,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Literals">Literals</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Empty USUAL</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -2406,12 +1805,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Literals">Literals</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">&quot;Do Nothing&quot; statement</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -2428,12 +1821,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Literals">Literals</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Untyped NULL Literal</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -2452,12 +1839,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Literals">Literals</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Typed NULL Literal</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -2474,12 +1855,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Literals">Literals</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Typed NULL Literal</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -2498,12 +1873,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Literals">Literals</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Typed NULL Literal</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -2520,12 +1889,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Literals">Literals</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Typed NULL Literal</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -2544,12 +1907,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Literals">Literals</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Typed NULL Literal</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -2566,12 +1923,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Literals">Literals</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Typed NULL Literal</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -2590,12 +1941,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Literals">Literals</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Typed NULL Literal</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -2612,12 +1957,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Literals">Literals</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Typed NULL Literal</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -2636,12 +1975,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Native-Types">Native Types</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Native Type</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -2658,12 +1991,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Pragma-Statements">Pragma Statements</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">#Pragma command</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -2682,12 +2009,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Pragma-Statements">Pragma Statements</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">#Pragma command</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -2704,12 +2025,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Entities">Entities</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Class Member</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -2728,12 +2043,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Pragma-Statements">Pragma Statements</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">#Pragma command</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -2750,12 +2059,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="LINQ-Query-Expressions">LINQ Queries</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">ORDERBY Class in LINQ Expression</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -2774,12 +2077,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Statements">Statements</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Default block for DO CASE and SWITCH statements</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -2796,12 +2093,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Modifiers">Modifiers</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Class Member modifier</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -2820,12 +2111,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Parameters">Parameters</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Part of parameter type specification</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -2842,12 +2127,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Statements">Statements</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">dBase style parameter declaration</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -2866,12 +2145,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Parameters">Parameters</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Part of parameter type specification</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -2888,12 +2161,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Modifiers">Modifiers</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Class modifier</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -2912,12 +2179,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Calling-Conventions">Calling Conventions</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Calling Convention</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -2934,12 +2195,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Pseudo-Functions">Pseudo Functions</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Call function through Pointer (untyped) with pascal calling convention</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -2958,12 +2213,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Pseudo-Functions">Pseudo Functions</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Call function through Pointer (untyped) with pascal calling convention</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -2980,12 +2229,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Pseudo-Functions">Pseudo Functions</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"># of Arguments received by method / function with Clipper Calling Convention</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -3004,12 +2247,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Pragma-Statements">Pragma Statements</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">#pragma Command</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -3026,12 +2263,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Modifiers">Modifiers</link>,<link displaytype="text" defaultstyle="true" type="topiclink" href="Statements">Statements</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Class or Member modifier, dBase Style Variable declararion</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -3050,12 +2281,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Entities">Entities</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Procedure declaration</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -3072,12 +2297,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Entities">Entities</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Procedure declaration</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -3096,12 +2315,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Entities">Entities</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Class Member</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -3118,12 +2331,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Modifiers">Modifiers</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Class and Member modifier</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -3142,12 +2349,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="XBase-Specific-Types">XBase Specific Types</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">XBase Specific Type</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -3164,12 +2365,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Native-Types">Native Types</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Native Type (unsafe)</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -3188,12 +2383,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Modifiers">Modifiers</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="Statements">Statements</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Class or Member modifier, dBase Style Variable declararion</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -3210,12 +2399,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Pragma-Statements">Pragma Statements</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">#pragma Command</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -3234,12 +2417,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Native-Types">Native Types</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Native Type</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -3256,12 +2433,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Native-Types">Native Types</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Native Type</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -3280,12 +2451,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Statements">Statements</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">BEGIN SEQUENCE ... Statement</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -3302,12 +2467,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Parameters">Parameters</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Part of parameter specification</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -3326,12 +2485,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="X-Operators">Operators</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">REMOVE Part of an Event</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -3348,12 +2501,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Statements">Statements</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">REPEAT Statement</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -3372,12 +2519,6 @@
         <td style="vertical-align:middle; height:39px;">
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
-        <td style="vertical-align:middle; height:39px;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Statements">Statements</link></para>
-        </td>
-        <td style="vertical-align:middle; height:39px;">
-          <para styleclass="Normal">RETURN statement</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -3394,12 +2535,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Statements">Statements</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">BEGIN SCOPE statement</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -3418,12 +2553,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Modifiers">Modifiers</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Type modifier</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -3440,12 +2569,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="LINQ-Query-Expressions">LINQ Queries</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">SELECT clause of LINQ Query</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -3464,12 +2587,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Literals">Literals</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="Parameters">Parameters</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Reference to SELF object, Also part of Parameters declaration for Extension Methods</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -3486,12 +2603,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Statements">Statements</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">BEGIN SEQUENCE ... Statement</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -3510,12 +2621,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Entities">Entities</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">SET Part of a Property</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -3532,12 +2637,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Native-Types">Native Types</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Native Type</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -3556,12 +2655,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Native-Types">Native Types</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Native Type</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -3578,12 +2671,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Pseudo-Functions">Pseudo Functions</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Calculate the size of a type</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -3602,12 +2689,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Modifiers">Modifiers</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="Statements">Statements</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Class, Member of Variable Modifier</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -3624,12 +2705,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Statements">Statements</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">FOR .. NEXT statement</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -3648,12 +2723,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Calling-Conventions">Calling Conventions</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Calling Convention</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -3670,12 +2739,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Native-Types">Native Types</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Native Type</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -3694,12 +2757,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Entities">Entities</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">User Defined Value Type </para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -3716,12 +2773,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Entities">Entities</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">User Defined Value Type </para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -3740,12 +2791,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Literals">Literals</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Reference to SUPER class</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -3762,12 +2807,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Statements">Statements</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">SWITCH Statement</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -3786,12 +2825,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="XBase-Specific-Types">XBase Specific Types</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">xBase Type</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -3808,12 +2841,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Calling-Conventions">Calling Conventions</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Calling convention (obsolete)</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -3832,12 +2859,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Statements">Statements</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">FOR NEXT statement</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -3854,12 +2875,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Statements">Statements</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Throw an Exception</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -3878,12 +2893,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Literals">Literals</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Logic Literal</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -3900,12 +2909,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Statements">Statements</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">TRY ... CATCH statement</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -3924,12 +2927,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Pseudo-Functions">Pseudo Functions</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Same as _TypeOf()</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -3946,12 +2943,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Native-Types">Native Types</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Native Type</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -3970,12 +2961,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Modifiers">Modifiers</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="Statements">Statements</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Member modifier and BEGIN .. UNCHECKED statement</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -3992,12 +2977,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="_DLL-Function">_DLL Functions</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Character Encoding flag for _DLL declaration</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -4016,12 +2995,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Entities">Entities</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">User Defined Value Type </para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -4038,12 +3011,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Modifiers">Modifiers</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="Statements">Statements</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Member modifier and BEGIN .. UNSAFE statement</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -4062,12 +3029,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Statements">Statements</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">REPEAT Statement</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -4084,12 +3045,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Statements">Statements</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">FOR NEXT statement</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -4108,12 +3063,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Entities">Entities</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="Statements">Statements</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">BEGIN .. USING statement and USING &lt;NameSpace&gt; </para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -4130,12 +3079,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="XBase-Specific-Types">XBase Specific Types</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">XBase Specific Type</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -4154,12 +3097,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Entities">Entities</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Value place holder inside PROPERTY SET methods</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -4176,12 +3113,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Statements">Statements</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Variable declaration with implied type</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -4200,12 +3131,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Modifiers">Modifiers</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Member Modifier</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -4222,12 +3147,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Native-Types">Native Types</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Native Type</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -4246,12 +3165,6 @@
         <td style="vertical-align:middle; height:22px;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
         </td>
-        <td style="vertical-align:middle; height:22px;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Modifiers">Modifiers</link></para>
-        </td>
-        <td style="vertical-align:middle; height:22px;">
-          <para styleclass="Normal">Field and Variable modifier</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -4268,12 +3181,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Entities">Entities</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">User Defined Value Type with VO semantics (AS/IS) </para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -4292,12 +3199,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Pragma-Statements">Pragma Statements</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">#Pragma command</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -4314,12 +3215,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Calling-Conventions">Calling Conventions</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Calling Convention (obsolete)</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -4338,12 +3233,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="LINQ-Query-Expressions">LINQ Queries</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">WHERE Clause in LINQ Expressions</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -4360,12 +3249,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Statements">Statements</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">DO WHILE .. Statement</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -4384,12 +3267,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Native-Types">Native Types</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Native Type</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -4406,12 +3283,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;">Y</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Statements">Statements</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">YIELD .. EXIT and YIELD .. RETURN statements</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -4430,12 +3301,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="X-Operators">Operators</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Varargs local variable for functions with ... (Ellipses) parameter</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -4452,12 +3317,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="X-Operators">Operators</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Logical Operator</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -4476,12 +3335,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="X-Operators">Operators</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Cast operator</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -4498,12 +3351,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="XBase-Specific-Types">XBase Specific Types</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">xBase Type</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -4522,12 +3369,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Entities">Entities</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">_DLL Function</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -4544,12 +3385,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Statements">Statements</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Field prefix to </para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -4568,12 +3403,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Pseudo-Functions">Pseudo Functions</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Gets Parameter in method/function with Clipper calling convention</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -4590,12 +3419,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Pseudo-Functions">Pseudo Functions</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Gets Parameter in method/function with Clipper calling convention</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -4614,12 +3437,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Entities">Entities</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Procedure statement</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -4636,12 +3453,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="X-Operators">Operators</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Logical Operator</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -4660,12 +3471,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="X-Operators">Operators</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Logical Operator</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -4682,12 +3487,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Pseudo-Functions">Pseudo Functions</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Calculate size of type</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -4706,12 +3505,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Pseudo-Functions">Pseudo Functions</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Calculate type of variable</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -4728,12 +3521,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="X-Operators">Operators</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Logical Operator</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -4752,12 +3539,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="X-Operators">Operators</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Logical Operator</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -4774,12 +3555,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Literals">Literals</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Logic Literal</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -4798,12 +3573,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="X-Operators">Operators</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Logical Operator</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -4820,12 +3589,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="X-Operators">Operators</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Logical Operator</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -4844,12 +3607,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Literals">Literals</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Logic Literal</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -4866,12 +3623,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="X-Operators">Operators</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Logical Operator</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -4890,12 +3641,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Parameters">Parameters</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Ellipses (varargs) parameter</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -4912,12 +3657,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="X-Preprocessor-Directives">Preprocessor Directives</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Preprocessor</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -4936,12 +3675,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="X-Preprocessor-Directives">Preprocessor Directives</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Preprocessor</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -4958,12 +3691,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="X-Preprocessor-Directives">Preprocessor Directives</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Preprocessor</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -4982,12 +3709,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="X-Preprocessor-Directives">Preprocessor Directives</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Preprocessor</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -5004,12 +3725,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="X-Preprocessor-Directives">Preprocessor Directives</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Preprocessor</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -5028,12 +3743,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="X-Preprocessor-Directives">Preprocessor Directives</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Preprocessor</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -5050,12 +3759,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="X-Preprocessor-Directives">Preprocessor Directives</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Preprocessor</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -5074,12 +3777,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="X-Preprocessor-Directives">Preprocessor Directives</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Preprocessor</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -5096,12 +3793,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="X-Preprocessor-Directives">Preprocessor Directives</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Preprocessor</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -5120,12 +3811,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Pragma-Statements">Pragma Statements</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Preprocessor</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -5142,12 +3827,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="X-Preprocessor-Directives">Preprocessor Directives</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Preprocessor</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -5166,12 +3845,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="X-Preprocessor-Directives">Preprocessor Directives</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Preprocessor</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -5188,12 +3861,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="X-Preprocessor-Directives">Preprocessor Directives</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Preprocessor</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -5212,12 +3879,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="NameSpaces">Namespace</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Obsolete: use USING in stead</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -5234,12 +3895,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="X-Preprocessor-Directives">Preprocessor Directives</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Preprocessor</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -5258,12 +3913,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="X-Preprocessor-Directives">Preprocessor Directives</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Preprocessor</para>
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -5280,12 +3929,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="X-Preprocessor-Directives">Preprocessor Directives</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal">Preprocessor</para>
         </td>
       </tr>
     </table></para>

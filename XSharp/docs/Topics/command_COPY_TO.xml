@@ -34,7 +34,7 @@
     <para styleclass="List"></para>
     <para styleclass="List"><snippet src="__While" inline="false"/></para>
     <para styleclass="List"><snippet src="__For" inline="false"/></para>
-    <para styleclass="List">SDF<tab />A System Data Format file with format specifications as shown in the table below. &#160;Records and fields are fixed length.</para>
+    <para styleclass="List">SDF<tab />A System Data Format file with format specifications as shown in the table below. &#160;Records and fields are fixed length.<br/><snippet src="__TextRDD" inline="false"/></para>
     <para styleclass="List"></para>
     <para styleclass="List">File Element<tab />Format<tab /></para>
     <para styleclass="List">Character fields<tab />Padded with trailing blanks<tab /></para>
@@ -48,6 +48,7 @@
     <para styleclass="List"></para>
     <para styleclass="List">DELIMITED [WITH &lt;xcDelimiter&gt;]</para>
     <para styleclass="List"><tab />A text file in which character fields are enclosed in double quote marks (the default delimiter) or the specified &lt;xcDelimiter&gt;. &#160;Fields and records are variable length, and the format specifications are shown in the table below:</para>
+    <para styleclass="List"><snippet src="__TextRDD" inline="false"/></para>
     <para styleclass="List"></para>
     <para styleclass="List">File Element<tab />Format<tab /></para>
     <para styleclass="List">Character fields<tab />Delimited, with trailing blanks truncated<tab /></para>

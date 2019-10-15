@@ -11,7 +11,7 @@
     <para styleclass="Body Text">As you can see many new keywords were introduced, but these are positional: they will also be recognized as Identifiers on other places, so there is very little chance that you will have to make changes to avoid naming conflicts.</para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="18" colcount="2">
       <thead style="vertical-align:top">
-        <td style="vertical-align:top;">
+        <td style="vertical-align:top; width:30%;">
           <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.05; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="" style="font-family:Calibri; font-size:11pt; font-weight:bold; color:#000000;">FEATURE</text></para>
         </td>
         <td style="vertical-align:top;">
@@ -20,7 +20,7 @@
       </thead>
       <tr style="vertical-align:top">
         <td style="vertical-align:top;">
-          <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#3366ff;">DEFINE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> &lt;id&gt; := &lt;Expression</text>&gt;</para>
+          <para styleclass="Body Text">DEFINE &lt;id&gt; := &lt;Expression&gt;</para>
         </td>
         <td style="vertical-align:top;">
           <para styleclass="Body Text">The VO Define is back again in X#. It will be compiled into a constant of the Globals class, the same class in which all Functions and Methods are implemented. The biggest advantage of a DEFINE over the preprocessor DEFINEs in Vulcan.NET is that there is no longer a chance that a DEFINE with the same name as a Method, Property or Variable will lead to incomprehensible compiler errors.</para>
@@ -28,7 +28,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:top;">
-          <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#3366ff;">USING</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:normal; font-style:normal; color:#3366ff;">STATIC</text><text style="font-weight:normal; font-style:normal; color:#000000;"> &lt;Name</text>&gt;</para>
+          <para styleclass="Body Text">USING&#32;STATIC &lt;Name&gt;</para>
         </td>
         <td style="vertical-align:top;">
           <para styleclass="Body Text">The STATIC modifier for USING (note that the # sign is no longer needed) allows you to name a static class. When you do so you can then use the methods of this class as functions. For example: <br/><text styleclass="Code Example"> &#160;</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#3366ff;">USING</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#3366ff;">STATIC</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> System.Console &#160;</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#3366ff;">FUNCTION</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> Start </text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#3366ff;">as</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#3366ff;">VOID</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160;WriteLine(</text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#993366;">&quot;X# is cool!&quot;</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">) </text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#3366ff;">RETURN</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> &#160;</text></para>
@@ -36,7 +36,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:top;">
-          <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#3366ff;">BEGIN</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:normal; font-style:normal; color:#3366ff;">USING</text><text style="font-weight:normal; font-style:normal; color:#000000;"> &lt;</text><text style="font-weight:normal; font-style:normal; color:#3366ff;">Var</text><text style="font-weight:normal; font-style:normal; color:#000000;">&gt; &#160;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &lt;Statements&gt; &#160;</text><br/><text style="font-weight:normal; font-style:normal; color:#3366ff;">END</text><text style="font-weight:normal; font-style:normal; color:#000000;"> [</text><text style="font-weight:normal; font-style:normal; color:#3366ff;">USING</text><text style="font-weight:normal; font-style:normal; color:#000000;">]</text></para>
+          <para styleclass="Body Text">BEGIN&#32;USING &lt;Var&gt; &#160;<br/> &lt;Statements&gt; &#160;<br/>END [USING]</para>
         </td>
         <td style="vertical-align:top;">
           <para styleclass="Body Text">The USING block allows you to control the lifetime of a variable. If &lt;Var&gt; has a destructor then it will be automatically destructed once the block has finished</para>
@@ -44,7 +44,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:top;">
-          <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#3366ff;">SWITCH</text><text style="font-weight:normal; font-style:normal; color:#000000;"> &lt;Expression&gt;</text><br/><text style="font-weight:normal; font-style:normal; color:#3366ff;">CASE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> &lt;</text><text style="font-weight:normal; font-style:normal; color:#3366ff;">Const</text><text style="font-weight:normal; font-style:normal; color:#000000;">&gt; &#160; </text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">&lt;Statements&gt; </text><br/><text style="font-weight:normal; font-style:normal; color:#3366ff;">CASE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> &lt;Const2&gt; </text><br/><text style="font-weight:normal; font-style:normal; color:#3366ff;">CASE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> &lt;Const3&gt; &#160; </text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">&lt;Statements&gt; </text><br/><text style="font-weight:normal; font-style:normal; color:#3366ff;">OTHERWISE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">&lt;Statements&gt; </text><br/><text style="font-weight:normal; font-style:normal; color:#3366ff;">END</text><text style="font-weight:normal; font-style:normal; color:#000000;"> [</text><text style="font-weight:normal; font-style:normal; color:#3366ff;">SWITCH</text><text style="font-weight:normal; font-style:normal; color:#000000;">]</text></para>
+          <para styleclass="Body Text">SWITCH &lt;Expression&gt;<br/>CASE &lt;Const&gt; &#160; <br/>&lt;Statements&gt; <br/>CASE &lt;Const2&gt; <br/>CASE &lt;Const3&gt; &#160; <br/>&lt;Statements&gt; <br/>OTHERWISE &#160; <br/>&lt;Statements&gt; <br/>END [SWITCH]</para>
         </td>
         <td style="vertical-align:top;">
           <para styleclass="Body Text">The SWITCH statement generates a more efficient jump structure than the DO CASE command. Also the expression is only evaluated once.</para>
@@ -52,7 +52,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:top;">
-          <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#3366ff;">BEGIN</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:normal; font-style:normal; color:#3366ff;">UNSAFE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">&lt;Statements&gt; &#160;</text><br/><text style="font-weight:normal; font-style:normal; color:#3366ff;">END</text><text style="font-weight:normal; font-style:normal; color:#000000;"> [</text><text style="font-weight:normal; font-style:normal; color:#3366ff;">UNSAFE</text><text style="font-weight:normal; font-style:normal; color:#000000;">]</text></para>
+          <para styleclass="Body Text">BEGIN&#32;UNSAFE &#160; <br/>&lt;Statements&gt; &#160;<br/>END [UNSAFE]</para>
         </td>
         <td style="vertical-align:top;">
           <para styleclass="Body Text">Allows unsafe code in the context of this block , regardless of the compiler setting for the project as a whole.</para>
@@ -60,9 +60,9 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:top;">
-          <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#3366ff;">BEGIN</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:normal; font-style:normal; color:#3366ff;">CHECKED</text><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">&lt;Statements&gt; &#160;</text><br/><text style="font-weight:normal; font-style:normal; color:#3366ff;">END</text><text style="font-weight:normal; font-style:normal; color:#000000;"> [</text><text style="font-weight:normal; font-style:normal; color:#3366ff;">CHECKED</text><text style="font-weight:normal; font-style:normal; color:#000000;">]</text></para>
+          <para styleclass="Body Text">BEGIN&#32;CHECKED &#160; <br/>&lt;Statements&gt; &#160;<br/>END [CHECKED]</para>
           <para styleclass="Body Text">Also allowed as expression</para>
-          <para styleclass="Code Example">x := CHECKED(y)</para>
+          <para styleclass="Body Text">x := CHECKED(y)</para>
         </td>
         <td style="vertical-align:top;">
           <para styleclass="Body Text">The statements inside the block will have checked conversions, regardless of the compiler setting for the project as a whole.</para>
@@ -70,9 +70,9 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:top;">
-          <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#3366ff;">BEGIN</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:normal; font-style:normal; color:#3366ff;">UNCHECKED</text><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">&lt;Statements&gt; &#160;</text><br/><text style="font-weight:normal; font-style:normal; color:#3366ff;">END</text><text style="font-weight:normal; font-style:normal; color:#000000;"> [</text><text style="font-weight:normal; font-style:normal; color:#3366ff;">UNCHECKED</text><text style="font-weight:normal; font-style:normal; color:#000000;">]</text></para>
+          <para styleclass="Body Text">BEGIN&#32;UNCHECKED &#160; <br/>&lt;Statements&gt; &#160;<br/>END [UNCHECKED]</para>
           <para styleclass="Body Text">Also allowed as expression</para>
-          <para styleclass="Code Example">x := UNCHECKED(y)</para>
+          <para styleclass="Body Text">x := UNCHECKED(y)</para>
         </td>
         <td style="vertical-align:top;">
           <para styleclass="Body Text">The statements inside the block will have unchecked conversions, regardless of the compiler setting for the project as a whole.</para>
@@ -80,7 +80,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:top;">
-          <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#3366ff;">VAR</text><text style="font-weight:normal; font-style:normal; color:#000000;"> &lt;Identifier&gt; := &lt;Expression&gt;</text></para>
+          <para styleclass="Body Text">VAR &lt;Identifier&gt; := &lt;Expression&gt;</para>
         </td>
         <td style="vertical-align:top;">
           <para styleclass="Body Text">This is a synonym for LOCAL IMPLIED</para>
@@ -88,7 +88,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:top;">
-          <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#3366ff;">CLASS</text><text style="font-weight:normal; font-style:normal; color:#000000;"> &lt;Id&gt; &lt; &lt;ParamName&gt; &gt; </text><text style="font-weight:normal; font-style:normal; color:#3366ff;">WHERE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> &lt;TypeConstraints&gt; &#160; &#160; &lt;Classmembers&gt; </text><br/><text style="font-weight:normal; font-style:normal; color:#3366ff;">END</text><text style="font-weight:normal; font-style:normal; color:#000000;"> [</text><text style="font-weight:normal; font-style:normal; color:#3366ff;">CLASS</text><text style="font-weight:normal; font-style:normal; color:#000000;">]</text></para>
+          <para styleclass="Body Text">CLASS &lt;Id&gt; &lt; &lt;ParamName&gt; &gt; WHERE &lt;TypeConstraints&gt; &#160; &#160; &lt;Classmembers&gt; <br/>END [CLASS]</para>
         </td>
         <td style="vertical-align:top;">
           <para styleclass="Body Text">Creating Generic classes is now supported in X#, with all the features that C# also has For example <br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#3366ff;">CLASS</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> MyList&lt;T&gt; </text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#3366ff;">WHERE</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> T </text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#3366ff;">IS</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#3366ff;">CLASS</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> &#160; .. </text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#3366ff;">END</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#3366ff;">CLASS</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><br/>or <br/><text styleclass="Code Example"> &#160; </text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#3366ff;">CLASS</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> MyList&lt;T&gt; </text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#3366ff;">WHERE</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> T </text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#3366ff;">IS</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> ICustomer, </text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#3366ff;">NEW</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">() </text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> &#160; .. </text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#3366ff;">END</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#3366ff;">CLASS</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> &#160;</text></para>
@@ -96,7 +96,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:top;">
-          <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#3366ff;">ASYNC</text><text style="font-weight:normal; font-style:normal; color:#000000;"> - </text><text style="font-weight:normal; font-style:normal; color:#3366ff;">AWAIT</text></para>
+          <para styleclass="Body Text">ASYNC - AWAIT</para>
         </td>
         <td style="vertical-align:top;">
           <para styleclass="Body Text">The ASYNC AWAIT infratructure is fully available inside X#</para>
@@ -104,7 +104,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:top;">
-          <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">&lt;Expression&gt; </text><text style="font-weight:normal; font-style:normal; color:#3366ff;">IS</text><text style="font-weight:normal; font-style:normal; color:#000000;"> &lt;Type&gt;</text></para>
+          <para styleclass="Body Text">&lt;Expression&gt; IS &lt;Type&gt;</para>
         </td>
         <td style="vertical-align:top;">
           <para styleclass="Body Text">Allows to check an expression for a type. Can be used in stead of IsInstanceOf() and will perform better</para>
@@ -112,7 +112,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:top;">
-          <para styleclass="Code Example">Conditional Access Operator<text style="font-weight:normal; font-style:normal; color:#000000;"> ? &lt;Expression&gt; ? &lt;Expression&gt;</text></para>
+          <para styleclass="Body Text">Conditional Access Operator ?:<br/> &lt;Expression&gt; ? &lt;Expression&gt;</para>
         </td>
         <td style="vertical-align:top;">
           <para styleclass="Body Text">Conditional access for properties, methods etc. For example <br/><text styleclass="Code Example"> &#160; nCount &#160;:= MyList?:Count &#160;</text><br/>This translates to something like: <br/><text styleclass="Code Example">&#32;</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> &#160;</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#3366ff;">VAR</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> temp := MyList </text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#3366ff;">IF</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> temp &#160;!= NULL &#160; </text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160;nCount := temp:Count </text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#3366ff;">ENDIF</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text styleclass="Code Example">&#32;</text><br/>The expression on the Left hand side of the Questionmark will be evaluated only once !</para>
@@ -120,7 +120,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:top;">
-          <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">&lt;Expression&gt; </text><text style="font-weight:normal; font-style:normal; color:#3366ff;">DEFAULT</text><text style="font-weight:normal; font-style:normal; color:#000000;"> &lt;Expression</text>&gt;</para>
+          <para styleclass="Body Text">&lt;Expression&gt; DEFAULT &lt;Expression&gt;</para>
         </td>
         <td style="vertical-align:top;">
           <para styleclass="Body Text">The default operator allows you to inline a check for NULL: <br/><text styleclass="Code Example"> &#160; lResult := Foo() DEFAULT Bar()</text>&#32;<br/>This translates to the same as <br/><text styleclass="Code Example"> &#160;</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> lResult := Foo() </text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#3366ff;">IF</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> lResult == NULL &#160; &#160;</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160;lResult := Bar() </text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#3366ff;">ENDIF</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><br/>Foo() will be evaluated only once. And only when the result is NULL then Bar() will be evaluated.</para>
@@ -128,7 +128,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:top;">
-          <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">y := </text><text style="font-weight:normal; font-style:normal; color:#3366ff;">CHECKED</text><text style="font-weight:normal; font-style:normal; color:#000000;">(x)</text></para>
+          <para styleclass="Body Text">y := CHECKED(x)</para>
         </td>
         <td style="vertical-align:top;">
           <para styleclass="Body Text">Tells the compiler to generate code that checks for overflow</para>
@@ -136,7 +136,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:top;">
-          <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">y := </text><text style="font-weight:normal; font-style:normal; color:#3366ff;">UNCHECKED</text><text style="font-weight:normal; font-style:normal; color:#000000;">(x)</text></para>
+          <para styleclass="Body Text">y := UNCHECKED(x)</para>
         </td>
         <td style="vertical-align:top;">
           <para styleclass="Body Text">Tells the compiler to generate code that does NOT check for overflow</para>
@@ -144,7 +144,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:top;">
-          <para styleclass="Code Example">LINQ Query expressions are now supported: <br/><text style="font-weight:normal; font-style:normal; color:#3366ff;">VAR</text><text style="font-weight:normal; font-style:normal; color:#000000;"> CustQuery = </text><text style="font-weight:normal; font-style:normal; color:#3366ff;">FROM</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Cust </text><text style="font-weight:normal; font-style:normal; color:#3366ff;">in</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Customers ; </text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text style="font-weight:normal; font-style:normal; color:#3366ff;">WHERE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Cust.City = </text><text style="font-weight:bold; font-style:normal; color:#993366;">&quot;Athens&quot;</text><text style="font-weight:normal; font-style:normal; color:#000000;"> ;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; ORDER </text><text style="font-weight:normal; font-style:normal; color:#3366ff;">BY</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Cust.Zipcode </text><text style="font-weight:normal; font-style:normal; color:#3366ff;">Select</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Cust</text></para>
+          <para styleclass="Body Text">LINQ Query expressions are now supported: <br/>VAR CustQuery = FROM Cust in Customers ; <br/> &#160; WHERE Cust.City = &quot;Athens&quot; ;<br/> &#160; ORDER BY Cust.Zipcode Select Cust</para>
         </td>
         <td style="vertical-align:top;">
           <para styleclass="Body Text">The full LINQ feature set will be supported by X#: <br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#3366ff;">FROM</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#3366ff;">LET</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#3366ff;">WHERE</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#3366ff;">JOIN</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#0000ff;">ORDER</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#3366ff;">BY</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#3366ff;">EQUALS</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#3366ff;">INTO</text></para>
@@ -152,7 +152,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:top;">
-          <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#3366ff;">YIELD</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:normal; font-style:normal; color:#3366ff;">RETURN</text><text style="font-weight:normal; font-style:normal; color:#000000;"> &lt;</text><text style="font-weight:normal; font-style:normal; color:#3366ff;">Value</text>&gt;</para>
+          <para styleclass="Body Text">YIELD&#32;RETURN &lt;Value&gt;</para>
         </td>
         <td style="vertical-align:top;">
           <para styleclass="Body Text">Can be used in a method declared as Enumerator of a type. This will instruct the compiler to automatically generate a class that implemented an enumerator and return to the calling code directly on the YIELD RETURN line. The next time the Iterator is called the code will remember where the code was the previous time it was executed and will continue on the next statement after the YIELD RETURN line. </para>

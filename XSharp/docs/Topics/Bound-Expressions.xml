@@ -8,22 +8,13 @@
     </header>
     <para styleclass="Normal">Bound expressions are expressions that access properties or members from objects or structures</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code Example"><table styleclass="Default" rowcount="7" colcount="5">
+    <para styleclass="Code Example"><table styleclass="Default" rowcount="7" colcount="2">
       <thead style="vertical-align:top">
-        <td style="vertical-align:middle;">
+        <td style="vertical-align:middle; width:30%;">
           <para styleclass="Normal"><text style="font-weight:bold;">Expression type</text></para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">Syntax</text></para>
-        </td>
-        <td style="vertical-align:middle; width:60px;">
-          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">VO</text></para>
-        </td>
-        <td style="vertical-align:middle; width:60px;">
-          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">VN</text></para>
-        </td>
-        <td style="vertical-align:middle; width:60px;">
-          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">X#</text></para>
         </td>
       </thead>
       <tr style="vertical-align:top">
@@ -31,16 +22,7 @@
           <para styleclass="Body Text">Bound Member Access</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Body Text">boundexpression (DOT|COLON) simpleName</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;">Y</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;"></para>
+          <para styleclass="Body Text">boundexpression (.|:) simpleName</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -48,16 +30,7 @@
           <para styleclass="Body Text">Bound Method Call</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Body Text">boundexpression LPAREN argumentlist? RPAREN</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;">Y</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;"></para>
+          <para styleclass="Body Text">boundexpression ( argumentlist? )</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -65,16 +38,7 @@
           <para styleclass="Body Text">Bound Array Access</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Body Text">boundexpression LBRKT argumentlist RBRKT</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;">Y</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;"></para>
+          <para styleclass="Body Text">boundexpression [ argumentlist ]</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -82,16 +46,7 @@
           <para styleclass="Body Text">Bound Conditional Access </para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Body Text">expression QMARK boundexpression</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;">Y</para>
+          <para styleclass="Body Text">expression ? boundexpression</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -99,16 +54,7 @@
           <para styleclass="Body Text">Bind Member Access</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Body Text">(DOT|COLON) simpleName</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;">Y</para>
+          <para styleclass="Body Text">(.|:) simpleName</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -116,16 +62,7 @@
           <para styleclass="Body Text">Bind Array Access</para>
         </td>
         <td style="vertical-align:middle;">
-          <para styleclass="Body Text">LBRKT argumentlist RBRKT</para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;">Y</para>
+          <para styleclass="Body Text">[ argumentlist ]</para>
         </td>
       </tr>
     </table></para>

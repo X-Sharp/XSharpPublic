@@ -50,7 +50,7 @@
       <para styleclass="Heading1">Compiler Macros</para>
     </header>
     <para styleclass="Normal">The following defines can be used in your code and will be replaced by the compiler with a literal value:</para>
-    <para styleclass="Normal"><table styleclass="Default" rowcount="36" colcount="3" style="width:auto;">
+    <para styleclass="Normal"><table styleclass="Default" rowcount="38" colcount="3" style="width:auto;">
       <tr style="vertical-align:top">
         <td>
           <para styleclass="Normal">Name</para>
@@ -63,7 +63,7 @@
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:20%;">
           <para styleclass="Normal">__ARRAYBASE__</para>
         </td>
         <td>
@@ -77,7 +77,7 @@
         <td>
           <para styleclass="Normal">__CLR2__</para>
         </td>
-        <td>
+        <td style="width:20%;">
           <para styleclass="Normal">String Literal</para>
         </td>
         <td>
@@ -236,6 +236,17 @@
         </td>
         <td>
           <para styleclass="Normal">Current source file name</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">__FOX1__</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Logical</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Current value of the matching FOX compatibility compiler option. Only defined in the FoxPro dialect.</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -423,6 +434,17 @@
         </td>
         <td>
           <para styleclass="Normal">TRUE when the XBase++ dialect is selected. Otherwise not defined.</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">__XPP1__</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Logical</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Current value of the matching XPP compatibility compiler option. Only defined in the Xbase++ dialect.</para>
         </td>
       </tr>
       <tr style="vertical-align:top">

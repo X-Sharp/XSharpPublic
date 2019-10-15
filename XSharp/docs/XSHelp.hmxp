@@ -63,11 +63,15 @@
     </helpwindows>
     <styleclasses>
       <styleclass name="Normal" shortcut="0">
+        <style-set media="screen" type="para">text-indent:0px; margin-left:0px; tabstops:48px left,96px left,144px left,192px left,240px left ;</style-set>
         <style-set media="screen" type="text">font-family:Arial; font-size:11pt; letter-spacing:normal;</style-set>
       </styleclass>
       <styleclass name="Body Text" parentclass="Normal" shortcut="114"/>
       <styleclass name="List" parentclass="Body Text" shortcut="32882">
         <style-set media="screen" type="para">text-indent:-192px; margin-left:192px; tabstops:192px left,240px left ;</style-set>
+      </styleclass>
+      <styleclass name="List1" parentclass="List" shortcut="0">
+        <style-set media="screen" type="para">text-indent:-48px; margin-left:48px; tabstops:48px left,96px left,144px left,192px left,240px left ;</style-set>
       </styleclass>
       <styleclass name="Bold" parentclass="Normal" shortcut="0">
         <style-set media="screen" type="text">font-weight:bold;</style-set>
@@ -185,6 +189,7 @@
       <config-value name="tidyxml">1</config-value>
       <config-value name="contents">XSharp</config-value>
       <config-value name="make3includeskin">OPT_PARENTHOME,OPT_TOPICFOOTER</config-value>
+      <config-group name="bookmarks"/>
     </config-group>
     <config-group name="pdf">
       <config-value name="style">0</config-value>
@@ -634,7 +639,7 @@
     <config-group name="user">
       <config-group name="robert">
         <config-group name="project">
-          <config-value name="lastexport">0</config-value>
+          <config-value name="lastexport">4</config-value>
         </config-group>
         <config-group name="report">
           <config-value name="type">2</config-value>
@@ -735,6 +740,8 @@
       <file-mod href="__IncludeXPPMethodNames.xml"/>
       <file-mod href="X-Walkthroughs.xml"/>
       <file-mod href="Pragma-Statements.xml"/>
+      <file-mod href="__ByRef.xml"/>
+      <file-mod href="__TextRDD.xml"/>
     </file>
     <file href="Baggage/*.*" build="ALL" filetype="baggage"/>
   </project-files>

@@ -21,9 +21,7 @@
     <para styleclass="Heading1">Syntax</para>
     <para styleclass="Normal">SET CENTURY ON | OFF | (&lt;<text styleclass="Italic">lToggle</text>&gt;)</para>
     <para styleclass="Heading1">Arguments</para>
-    <para styleclass="List">ON <tab /></para>
-    <para styleclass="List">OFF<tab /></para>
-    <para styleclass="List">lToggle<tab /><text styleclass="Body Text">A logical expression which must appear in parentheses. True is equivalent to ON, False to OFF</text></para>
+    <para styleclass="List">ON, OFF, lToggle<tab /><text styleclass="Body Text">A logical expression which must appear in parentheses. True is equivalent to ON, False to OFF</text></para>
     <para styleclass="Heading1">Description</para>
     <para styleclass="Normal">SET CENTURY is functionally equivalent to SetCentury().</para>
     <para styleclass="Body Text"><snippet src="__IncludeLibRT" inline="false"/></para>

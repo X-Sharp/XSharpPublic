@@ -15,15 +15,15 @@
     <para styleclass="Normal">SetMacroCompiler(typeof(XSharp.Runtime.MacroCompiler))</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">If you don&apos;t do this then the runtime will try to locate the macro compiler in the following locations:</para>
-    <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="List">The directory where the XSharp.RT.DLL is loaded from</li>
-      <li styleclass="Normal">The directories in the path. If you use this then make sure that the assemblies listed below are in the same folder as XSharp.MacroCompiler.DLL</li>
-      <li styleclass="Normal">The Global Assembly Cache (GAC). If you use this mechanism then make sure that the assemblies listed below are also in the GAC.</li>
+    <list id="75" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">The directory where the XSharp.RT.DLL is loaded from</li>
+      <li styleclass="Body Text">The directories in the path. If you use this then make sure that the assemblies listed below are in the same folder as XSharp.MacroCompiler.DLL</li>
+      <li styleclass="Body Text">The Global Assembly Cache (GAC). If you use this mechanism then make sure that the assemblies listed below are also in the <text styleclass="Normal">GAC.</text></li>
     </list>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">This assembly depends on:</para>
-    <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="List"><text styleclass="Normal">XSharp.Core.DLL</text></li>
+    <list id="76" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">XSharp.Core.DLL</li>
     </list>
     <para styleclass="Heading3">Note<tab /></para>
     <para styleclass="Normal">The XSharp installer adds the Macro compiler and the assemblies it depends on to the GAC so you will be able to run your apps without adding the macro compiler to the references list of your application. Please make sure you include the macro compiler in your installer when deploying your applications.</para>

@@ -22,6 +22,7 @@
     <para styleclass="List">WITH &lt;uValueArgList&gt;<tab />A comma-separated list of arguments to pass to &lt;idProcedure&gt;.</para>
     <para styleclass="Heading1">Description</para>
     <para styleclass="Normal">DO performs the same action as a function or procedure specified on a line by itself with the exception that variables other than field variables are passed by reference as the default. &#160;<br/>In order to pass a field variable as an argument, enclose it in parentheses, unless you declare it with the FIELD statement or specify it with an alias.</para>
+    <para styleclass="Normal"><snippet src="__ByRef" inline="false"/></para>
     <para styleclass="Heading1">Examples</para>
     <para styleclass="Normal">This example executes a procedure with no parameters:</para>
     <para styleclass="Code Example">DO AcctsRpt<br/>AcctsRpt()<tab /><tab /><tab />// Preferred method</para>

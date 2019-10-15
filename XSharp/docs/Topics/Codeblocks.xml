@@ -2,6 +2,9 @@
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
 <topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Codeblocks</title>
+  <keywords>
+    <keyword>statementblock</keyword>
+  </keywords>
   <body>
     <header>
       <para styleclass="Heading1">Codeblocks</para>
@@ -15,10 +18,10 @@
     <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; {|a,b| a*b}</text></para>
     <para styleclass="Body Text">X# has extended the Codeblock rule. We now not only accept a single expression, but also a statement list and an expressionlist:</para>
     <para styleclass="Body Text"></para>
-    <para styleclass="Code Example">codeblock &#160; <tab /><tab />: LCURLY PIPE codeblockParamList? PIPE <br/><tab /><tab /><tab /><tab />( expression <br/><tab /><tab /><tab /><tab />| eos <link displaytype="text" defaultstyle="true" type="topiclink" href="Statement-Block">statementblock</link>&#32;<br/><tab /><tab /><tab /><tab />| codeblockExpressionList )<br/><tab /><tab /><tab /><tab />RCURLY<br/><tab /><tab /><tab /><tab />;</para>
+    <para styleclass="Code Example">codeblock &#160; <tab /><tab />: LCURLY PIPE codeblockParamList? PIPE <br/><tab /><tab /><tab /><tab />( expression <br/><tab /><tab /><tab /><tab />| eos statementblock <br/><tab /><tab /><tab /><tab />| codeblockExpressionList )<br/><tab /><tab /><tab /><tab />RCURLY<br/><tab /><tab /><tab /><tab />;</para>
     <para styleclass="Code Example">codeblockExprList<tab />: (expression? COMMA)+ expression<tab /><tab /><tab />// The last expression is the return value of the block<br/> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; ;<br/></para>
     <para styleclass="Body Text">Examples of this are</para>
-    <para styleclass="Code Example"> &#160; {|a,b| a:= Sqrt(a), a*b}<tab /><tab /><tab /><br/> &#160; {|a,b| <br/><tab /><tab />? a<br/><tab /><tab />? b <br/> &#160; }</para>
+    <para styleclass="Code Example"> &#160;<text style="font-weight:normal; font-style:normal; color:#000000;"> {|a,b| a:= Sqrt(a), a*b} &#160; &#160; </text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; {|a,b| </text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160;? a</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160;? b </text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; }</text></para>
     <para styleclass="Body Text">The second example can be seen as an anonymous method with 2 parameters<tab /><tab /></para>
   </body>
 </topic>

@@ -32,10 +32,10 @@
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:15%;">
           <para styleclass="Normal">+</para>
         </td>
-        <td>
+        <td style="width:15%;">
           <para styleclass="Normal">x + y</para>
         </td>
         <td>
@@ -106,7 +106,7 @@
         <td>
           <para styleclass="Normal">Type</para>
         </td>
-        <td>
+        <td style="width:15%;">
           <para styleclass="Normal">Operator</para>
         </td>
         <td>
@@ -114,7 +114,7 @@
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:15%;">
           <para styleclass="Normal">ARRAY</para>
         </td>
         <td>

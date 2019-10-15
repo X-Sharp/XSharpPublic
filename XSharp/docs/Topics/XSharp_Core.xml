@@ -10,22 +10,21 @@
       <para styleclass="Heading1">XSharp.Core</para>
     </header>
     <para styleclass="Normal">This is the base DLL of the X# Runtime. It contains:</para>
-    <list id="3" type="ul" listtype="bullet" formatstring="&#8226;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Arial; font-size:11pt; color:#000000;">
-      <li styleclass="List">Common interfaces, such as IDate, IFloat, ICodeBlock, IMacroCompiler, used by other X# components</li>
-      <li styleclass="List">Runtime functions that use standard .Net datatypes such as SLen(), AllTrim(), SLen().</li>
+    <list id="3" type="ul" listtype="bullet" formatstring="&#8226;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Arial; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">Common interfaces, such as IDate, IFloat, ICodeBlock, IMacroCompiler, used by other X# components</li>
+      <li styleclass="Normal">Runtime functions that use standard .Net datatypes such as SLen(), AllTrim(), SLen().</li>
     </list>
-    <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="List">The Runtime State (<link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetDeleted.htm" domain="XsRuntime.chm" styleclass="Normal">SetDeleted()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">&#32;</text>, SetExact() etc)</li>
-      <li styleclass="List">The Workarea information </li>
-      <li styleclass="List">The nation resources and collations.</li>
+    <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">The Runtime State (<link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetDeleted.htm" domain="XsRuntime.chm">SetDeleted()</link> , SetExact() etc)</li>
+      <li styleclass="Normal">The Workarea information </li>
+      <li styleclass="Normal">The nation resources and collations.</li>
     </list>
-    <list id="5" type="ul" listtype="bullet" formatstring="&#8226;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Arial; font-size:11pt; color:#000000;">
-      <li styleclass="List">RDD related functions that do not depend on XBase types as DATE, USUAL and FLOAT.</li>
+    <list id="5" type="ul" listtype="bullet" formatstring="&#8226;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Arial; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">RDD related functions that do not depend on XBase types as DATE, USUAL and FLOAT.</li>
     </list>
-    <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="List">The low level File/IO </li>
+    <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">The low level File/IO </li>
     </list>
-    <para styleclass="List"></para>
     <para styleclass="List">This assembly can be used in all dialects of X#</para>
   </body>
 </topic>

@@ -1047,23 +1047,23 @@
         </td>
       </tr>
     </table></para>
-    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"></para>
-    <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Arial; font-size:11pt; color:#000000;">
-      <li styleclass="List">Requires VulcanRT.DLL or XSharp.VO.DLL</li>
-      <li styleclass="List">Requires VulcanRTFuncs.DLL or XSharp.VO.DLL</li>
-      <li styleclass="List">Missing types get translated to USUAL. With the new /vo15 compiler option you can tell the compiler that you do not want to allow missing types</li>
-      <li styleclass="List">Only supported inside functions and methods with Clipper Calling convention</li>
-      <li styleclass="List">The Vulcan runtime does not have a SLen() function. The compiler translates this to accessing the Length property of the string</li>
-      <li styleclass="List">This gets translated to <br/><tab />IF System.Diagnostics.Debugger.Attached<br/><tab /><tab />System.Diagnostics.Debugger.Break()<br/><tab />ENDIF</li>
-      <li styleclass="List">In the core dialect each of the expressions is cast to OBJECT. In the other dialects the expression is cast to USUAL.</li>
-      <li styleclass="List">Untyped literal arrays in the VO/Vulcan dialect are translated to the VO Array type:<br/>{&quot;aa&quot;, &quot;bb&quot;, &quot;cc&quot;}<br/>Typed literal arrays are prefixed with &lt;Type&gt; like this:<br/>&lt;STRING&gt;{&quot;aa&quot;, &quot;bb&quot;, &quot;cc&quot;}<br/>This becomes a literal string array</li>
-      <li styleclass="List">With the /vo2 compiler option NULL_STRING is compiled to an empty string. Otherwise to a NULL.</li>
-      <li styleclass="List">The VOSTRUCT and UNION can be replaced with a standard .NET structure. For Union you need to use the [StructLayout(LayoutKind.Explicit)] attribute on the structure and the [FieldOffSet()] attribute on each field to explicitly define the location of the fields. </li>
-      <li styleclass="List">Only for VO compatible keywords, not for keywords introduced in Vulcan or XSharp.</li>
-      <li styleclass="List">The true and false expressions for an IIF() are optional in Harbour and XBase++</li>
-      <li styleclass="List">The macro compiler is not supported. However when you use the RDD system in the Core dialect then the index expression will still use the macro compiler and a reference to the XSharp.RT.DLL is needed for the support of the macro compiler.</li>
-      <li styleclass="List">This requires the XSharp runtime.</li>
-      <li styleclass="List">In FoxPro NIL is not allowed and redefined to FALSE.</li>
+    <para styleclass="Normal"></para>
+    <list id="7" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Arial; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">Requires VulcanRT.DLL or XSharp.VO.DLL</li>
+      <li styleclass="Normal">Requires VulcanRTFuncs.DLL or XSharp.VO.DLL</li>
+      <li styleclass="Normal">Missing types get translated to USUAL. With the new /vo15 compiler option you can tell the compiler that you do not want to allow missing types</li>
+      <li styleclass="Normal">Only supported inside functions and methods with Clipper Calling convention</li>
+      <li styleclass="Normal">The Vulcan runtime does not have a SLen() function. The compiler translates this to accessing the Length property of the string</li>
+      <li styleclass="Normal">This gets translated to <br/><tab />IF System.Diagnostics.Debugger.Attached<br/><tab /><tab />System.Diagnostics.Debugger.Break()<br/><tab />ENDIF</li>
+      <li styleclass="Normal">In the core dialect each of the expressions is cast to OBJECT. In the other dialects the expression is cast to USUAL.</li>
+      <li styleclass="Normal">Untyped literal arrays in the VO/Vulcan dialect are translated to the VO Array type:<br/>{&quot;aa&quot;, &quot;bb&quot;, &quot;cc&quot;}<br/>Typed literal arrays are prefixed with &lt;Type&gt; like this:<br/>&lt;STRING&gt;{&quot;aa&quot;, &quot;bb&quot;, &quot;cc&quot;}<br/>This becomes a literal string array</li>
+      <li styleclass="Normal">With the /vo2 compiler option NULL_STRING is compiled to an empty string. Otherwise to a NULL.</li>
+      <li styleclass="Normal">The VOSTRUCT and UNION can be replaced with a standard .NET structure. For Union you need to use the [StructLayout(LayoutKind.Explicit)] attribute on the structure and the [FieldOffSet()] attribute on each field to explicitly define the location of the fields. </li>
+      <li styleclass="Normal">Only for VO compatible keywords, not for keywords introduced in Vulcan or XSharp.</li>
+      <li styleclass="Normal">The true and false expressions for an IIF() are optional in Harbour and XBase++</li>
+      <li styleclass="Normal">The macro compiler is not supported. However when you use the RDD system in the Core dialect then the index expression will still use the macro compiler and a reference to the XSharp.RT.DLL is needed for the support of the macro compiler.</li>
+      <li styleclass="Normal">This requires the XSharp runtime.</li>
+      <li styleclass="Normal">In FoxPro NIL is not allowed and redefined to FALSE.</li>
     </list>
   </body>
 </topic>

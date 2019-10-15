@@ -8,7 +8,7 @@
     </header>
     <para styleclass="Normal">When you install XSharp you will find the following folders on your machine.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><table styleclass="Default" rowcount="17" colcount="2">
+    <para styleclass="Normal"><table styleclass="Default" rowcount="18" colcount="2">
       <tr style="vertical-align:top">
         <td style="width:321px;">
           <para styleclass="Normal"><text style="font-weight:bold;">Folder</text></para>
@@ -112,6 +112,14 @@
         </td>
         <td style="width:993px;">
           <para styleclass="Normal">Files that you may want to include with your application compiled with X#.</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:321px;">
+          <para styleclass="Normal">- Templates</para>
+        </td>
+        <td style="width:993px;">
+          <para styleclass="Normal">Contains the templates for the VO Compatible editors for Windows, Servers and Menus</para>
         </td>
       </tr>
       <tr style="vertical-align:top">

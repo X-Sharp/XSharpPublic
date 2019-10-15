@@ -44,6 +44,7 @@ namespace XSharp.Project
         internal const string descDialect = "Select the compiler dialect to use when compiling this project. Changing the dialect may also change the 'Allow NamedArguments' setting on the Language page.";
         internal const string captWin32Manifest = "Suppress default Win32 manifest";
         internal const string descWin32Manifest = "Suppress default Win32 manifest. You will have to supply your own Win32 manifest if you suppress the default one. (/nowin32manifest)";
+        internal const string catResources = "Resources";
         #endregion
 
         #region Constructors
@@ -90,25 +91,25 @@ namespace XSharp.Project
         public Dialect Dialect
         {
             get { return this.dialect; }
-            set {
+            set
+            {
                 this.dialect = value;
                 this.IsDirty = true;
                 this.ProjectMgr.SetProjectProperty(nameof(Dialect), this.dialect.ToString());
-                this.ProjectMgr.SetProjectProperty("NamedArgs", "");
+                this.ProjectMgr.SetProjectProperty("NamedArgs", "False");
                 switch (dialect)
                 {
                     case Dialect.Core:
                     case Dialect.Vulcan:
-                        this.ProjectMgr.SetProjectProperty("Memvar", "");
-                        this.ProjectMgr.SetProjectProperty("Undeclared", "");
+                        this.ProjectMgr.SetProjectProperty("Memvar", "False");
+                        this.ProjectMgr.SetProjectProperty("Undeclared", "False");
                         break;
                 }
-            ;
             }
         }
 
 
-        [ResourcesCategory(Resources.Application)]
+        [ResourcesCategory(catResources)]
         [DisplayName(captVulcanCompatibleResouces)]
         [Description(descVulcanCompatibleResouces)]
         public bool VulcanCompatibleResources
@@ -117,7 +118,7 @@ namespace XSharp.Project
             set { this.vulcanCompatibleResources = value; this.IsDirty = true; }
         }
 
-        [ResourcesCategory(Resources.Application)]
+        [ResourcesCategory(catResources)]
         [DisplayName(captWin32Manifest)]
         [Description(descWin32Manifest)]
         public bool NoWin32Manifest
@@ -153,7 +154,7 @@ namespace XSharp.Project
             set { this.startupObject = value; this.IsDirty = true; }
         }
 
-        [ResourcesCategory(Resources.Application)]
+        [ResourcesCategory(catResources)]
         [LocDisplayName(Resources.ApplicationIcon)]
         [ResourcesDescription(Resources.ApplicationIconDescription)]
         /// <summary>

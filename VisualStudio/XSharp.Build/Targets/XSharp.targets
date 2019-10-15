@@ -235,6 +235,7 @@ Copyright (c) XSharp B.V.  All Rights Reserved
 	    GenerateFullPaths="$(GenerateFullPaths)"
 	    HighEntropyVA="$(HighEntropyVA)"
 	    IncludePaths="$(IncludePaths)"
+	    InitLocals="$(InitLocals)"
 	    KeyContainer="$(KeyContainerName)"
 	    KeyFile="$(AssemblyOriginatorKeyFile)"
 	    LangVersion="$(LangVersion)"
@@ -303,6 +304,7 @@ Copyright (c) XSharp B.V.  All Rights Reserved
 	    VO16="$(VO16)" 
 	    XPP1="$(XPP1)" 
 	    XPP2="$(XPP2)" 
+      FOX1="$(FOX1)" 
     />
 
     <ItemGroup>

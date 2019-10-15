@@ -85,9 +85,8 @@ namespace XSharpLanguage
             // Currently, set as default, but should be VS Settings Based
             // Retrieve from Project properties later: _file.Project.ProjectNode.ParseOptions.
             var prj = _file.Project.ProjectNode;
-            var parseoptions = prj.ParseOptions;
-            _dialect = parseoptions.Dialect;
-            _allowDot = parseoptions.Dialect == XSharpDialect.Core || parseoptions.Dialect == XSharpDialect.FoxPro;
+            _dialect = _file.Project.Dialect;
+            _allowDot = _dialect == XSharpDialect.Core || _dialect == XSharpDialect.FoxPro;
             _settingIgnoreCase = true;
             _stopToken = null;
             this.aggregator = aggregator;
@@ -322,6 +321,7 @@ namespace XSharpLanguage
                         case XSharpLexer.IS:
                         case XSharpLexer.REF:
                         case XSharpLexer.INHERIT:
+                        case XSharpLexer.FROM:          // Xbase++ Parent clause
                             // It can be a namespace
                             AddNamespaces(compList, _file.Project, filterText);
                             // It can be Type, FullyQualified
@@ -364,15 +364,22 @@ namespace XSharpLanguage
                         Modifiers visibleAs = Modifiers.Public;
                         if (foundElement != null)
                         {
-                            if (String.Compare(foundElement.Name, "self", true) == 0)
+                            switch (foundElement.Name.ToLower())
                             {
-                                visibleAs = Modifiers.Private;
+                                case "self":
+                                case "this":
+                                    visibleAs = Modifiers.Private;
+                                    break;
+                                case "super":
+                                    visibleAs = Modifiers.Protected;
+                                    break;
+                                default:
+                                    if (member.ParentName == cType.FullName)
+                                    {
+                                        visibleAs = Modifiers.Private;
+                                    }
+                                    break;
                             }
-                            else if (String.Compare(foundElement.Name, "super", true) == 0)
-                            {
-                                visibleAs = Modifiers.Protected;
-                            }
-
                         }
                         else if (member.ParentName == cType.FullName)
                         {
@@ -431,6 +438,7 @@ namespace XSharpLanguage
                                 {
                                     // Fill with the context ( Parameters and Locals )
                                     BuildCompletionList(compList, member, filterText, currentLine);
+                                    AddXSharpKeywords(compList,filterText);
                                     // Context Type....
                                     cType = new CompletionType(member.Parent.Clone);
                                     if (!cType.IsEmpty())
@@ -453,7 +461,7 @@ namespace XSharpLanguage
                         }
                     }
                 }
-                // Add Keywors to the ALL Tab ?
+                // Add Keywords to the ALL Tab ?
                 if ((kwdList.Count > 0) && _keywordsInAll)
                 {
                     foreach (var item in kwdList.Values)
@@ -613,12 +621,11 @@ namespace XSharpLanguage
             //
             // And our own Types
             AddXSharpTypeNames(compList, project, startWith);
-            //// We should also add the external TypeNames
-            //var prjs = project.ReferencedProjects;
-            //foreach (var prj in prjs)
-            //{
-            //    AddXSharpTypeNames(compList, prj, startWith);
-            //}
+            // We should also add the external TypeNames
+            foreach (var prj in project.ReferencedProjects)
+            {
+                AddXSharpTypeNames(compList, prj, startWith);
+            }
             //// And Stranger Projects
             //var sprjs = project.StrangerProjects;
             //foreach (var prj in sprjs)
@@ -647,6 +654,15 @@ namespace XSharpLanguage
             if (realTypeName.Length > 7 && realTypeName.StartsWith("remove_"))
                 return true;
             return false;
+        }
+
+        private void AddXSharpKeywords(CompletionList compList, string startWith)
+        {
+            foreach (var kw in XSharpTypes.Get().Where(ti => nameStartsWith(ti.FullName, startWith)))
+            {
+                ImageSource icon = _provider.GlyphService.GetGlyph(kw.GlyphGroup, kw.GlyphItem);
+                compList.Add(new XSCompletion(kw.Name, kw.Name, kw.Description, icon, null, Kind.Keyword));
+            }
         }
 
         private void AddXSharpTypeNames(CompletionList compList, XProject project, string startWith)
@@ -2594,12 +2610,12 @@ namespace XSharpLanguage
                         }
                     }
                 }
-                else if ((file.Project.ProjectNode.ParseOptions.Dialect == XSharpDialect.XPP) && (token.CompareTo("::") == 0))
+                else if ((file.Project.Dialect == XSharpDialect.XPP) && (token.CompareTo("::") == 0))
                 {
                     returnList.Add("SELF");
                     returnList.Add(":");
                 }
-                else if (file.Project.ProjectNode.ParseOptions.Dialect == XSharpDialect.FoxPro)
+                else if (file.Project.Dialect == XSharpDialect.FoxPro)
                 {
                     string lowerToken = token.ToLower();
                     switch (lowerToken)
@@ -2881,11 +2897,10 @@ namespace XSharpLanguage
                         // could be namespace.Type
                         // so now try with right side of the string
                         startToken = currentToken.Substring(dotPos + 1);
-                        if (String.IsNullOrEmpty(startToken))
-                            break;
-                        cType = new CompletionType(startToken, currentMember.File, currentMember.Parent.NameSpace);
-                        //if (!cType.IsEmpty())
-                        //    return cType;
+                        if (!String.IsNullOrEmpty(startToken))
+                        {
+                            cType = new CompletionType(startToken, currentMember.File, currentMember.Parent.NameSpace);
+                        }
                     }
                     if (!cType.IsEmpty())
                     {
@@ -3027,8 +3042,12 @@ namespace XSharpLanguage
                         currentToken = currentToken.Substring(0, currentToken.Length - 2);
                         hasBracket = true;
                     }
+                    else if (currentToken.EndsWith("."))
+                    {
+                        currentToken = currentToken.Substring(0,currentToken.Length - 1);
+                    }
                     // First token, so it could be a parameter or a local var
-                    if (startOfExpression)
+                   if (startOfExpression)
                     {
                         // Search in Parameters, Locals, Field and Properties
                         foundElement = FindIdentifier(currentMember, currentToken, ref cType, visibility, currentNS, snapshot, currentLine, dialect);

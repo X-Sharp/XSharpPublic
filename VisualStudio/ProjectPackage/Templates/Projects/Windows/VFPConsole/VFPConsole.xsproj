@@ -12,6 +12,27 @@
     <Nologo>true</Nologo>
     <GenerateFullPaths>true</GenerateFullPaths>
     <Dialect>FoxPro</Dialect>
+    <na>false</na>
+    <az>false</az>
+    <nostddef>false</nostddef>
+    <ins>true</ins>
+    <unsafe>true</unsafe>
+    <vo2>true</vo2>
+    <vo3>true</vo3>
+    <vo4>true</vo4>
+    <vo6>true</vo6>
+    <vo7>true</vo7>
+    <vo9>true</vo9>
+    <vo10>true</vo10>
+    <vo13>true</vo13>
+    <vo14>true</vo14>
+    <vo15>true</vo15>
+    <vo16>true</vo16>
+    <lb>true</lb>
+    <memvar>true</memvar>
+    <undeclared>true</undeclared>
+    <initlocals>true</initlocals>
+
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>

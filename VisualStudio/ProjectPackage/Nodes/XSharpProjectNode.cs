@@ -1827,6 +1827,25 @@ namespace XSharp.Project
         {
             return this.FindChild(strFileName) != null;
         }
+
+        public XSharpDialect Dialect
+        {
+            get
+            {
+                var prop = GetProjectProperty("Dialect");
+                XSharpDialect dialect = XSharpDialect.Core;
+                try
+                {
+                    dialect = (XSharpDialect)Enum.Parse(typeof(XSharpDialect), prop);
+                }
+                catch
+                {
+                    dialect = XSharpDialect.Core;
+                }
+                return dialect;
+            }
+
+        }
         public XSharpParseOptions ParseOptions
         {
             get

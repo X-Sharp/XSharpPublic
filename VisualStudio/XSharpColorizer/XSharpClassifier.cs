@@ -620,7 +620,9 @@ namespace XSharpColorizer
         private ClassificationSpan Token2ClassificationSpan(IToken start, IToken stop, ITextSnapshot snapshot, IClassificationType type)
         {
             TextSpan tokenSpan = new TextSpan(start.StartIndex, stop.StopIndex - start.StartIndex + 1);
-            ClassificationSpan span = tokenSpan.ToClassificationSpan(snapshot, type);
+            XsClassificationSpan span = tokenSpan.ToClassificationSpan(snapshot, type);
+            span.startTokenType = start.Type;
+            span.endTokenType = stop.Type;
             return span;
         }
 
@@ -634,7 +636,9 @@ namespace XSharpColorizer
         private ClassificationSpan Token2ClassificationSpan(IToken token, ITextSnapshot snapshot, IClassificationType type)
         {
             TextSpan tokenSpan = new TextSpan(token.StartIndex, token.StopIndex - token.StartIndex + 1);
-            ClassificationSpan span = tokenSpan.ToClassificationSpan(snapshot, type);
+            XsClassificationSpan span = tokenSpan.ToClassificationSpan(snapshot, type);
+            span.startTokenType = token.Type;
+            span.endTokenType = -1;
             return span;
         }
 
@@ -947,7 +951,7 @@ namespace XSharpColorizer
         private void BuildColorClassifications(ITokenStream tokenStream, ITextSnapshot snapshot)
         {
             Debug("Start building Classifications at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
-            XClassificationSpans newtags, texttags;
+            XClassificationSpans newtags; //, texttags;
             IToken startText, endText;
             var regionTags = new List<ClassificationSpan>();
             if (tokenStream != null)
@@ -959,7 +963,7 @@ namespace XSharpColorizer
                 int iLastDocComment = -1;
                 int iLastUsing = -1;
                 newtags = new XClassificationSpans();
-                texttags = new XClassificationSpans();
+                //texttags = new XClassificationSpans();
                 startText = null;
                 endText = null;
                 keywordContext = null;
@@ -1195,6 +1199,20 @@ namespace XSharpColorizer
             if (System.Diagnostics.Debugger.IsAttached)
                 System.Diagnostics.Debug.WriteLine(String.Format("XColorizer: " + msg, o));
 #endif
+        }
+    }
+
+
+    public class XsClassificationSpan : ClassificationSpan
+    {
+
+        public int startTokenType;
+        public int endTokenType;
+
+        public XsClassificationSpan(SnapshotSpan span, IClassificationType classification) : base(span, classification)
+        {
+            startTokenType = -1;
+            endTokenType = -1;
         }
     }
 

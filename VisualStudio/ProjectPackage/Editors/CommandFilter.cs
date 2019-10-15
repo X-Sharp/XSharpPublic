@@ -74,8 +74,11 @@ namespace XSharp.Project
         {
             if (_buffer.Properties.ContainsProperty(typeof(XSharpClassifier)))
             {
-                _classifier = (XSharpClassifier)_buffer.Properties.GetProperty(typeof(XSharpClassifier));
-                _classifier.ClassificationChanged += _classifier_ClassificationChanged;
+                if (_classifier == null)
+                {
+                    _classifier = (XSharpClassifier)_buffer.Properties.GetProperty(typeof(XSharpClassifier));
+                    _classifier.ClassificationChanged += _classifier_ClassificationChanged;
+                }
             }
             else
             {
@@ -113,6 +116,7 @@ namespace XSharp.Project
                 {
                     System.Threading.Thread.Sleep(100);
                 }
+                
                 UIThread.DoOnUIThread(delegate ()
                     {
                         var editSession = _buffer.CreateEdit();
@@ -147,6 +151,8 @@ namespace XSharp.Project
                             }
                         }
                     });
+
+                
             }
         }
         public CommandFilter(IWpfTextView textView, ICompletionBroker completionBroker, ITextStructureNavigator nav, ISignatureHelpBroker signatureBroker, IBufferTagAggregatorFactoryService aggregator)

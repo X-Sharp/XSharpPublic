@@ -31,7 +31,7 @@ namespace XSharpColorizer
         //    return new TagSpan<IClassificationTag>(sspan, tag);
         //}
 
-        public static ClassificationSpan ToClassificationSpan(this TextSpan span, ITextSnapshot snapshot, IClassificationType classificationType)
+        public static XsClassificationSpan ToClassificationSpan(this TextSpan span, ITextSnapshot snapshot, IClassificationType classificationType)
         {
             int start = span.Start;
             int length = span.Length;
@@ -44,7 +44,7 @@ namespace XSharpColorizer
             }
             length = length < 0 ? 0 : length;
             SnapshotSpan sspan = new SnapshotSpan(snapshot, start, length);
-            return new ClassificationSpan(sspan, classificationType);
+            return new XsClassificationSpan(sspan, classificationType);
         }
 
         //public static String GetText(this ITextSnapshot snapshot, TextSpan span)

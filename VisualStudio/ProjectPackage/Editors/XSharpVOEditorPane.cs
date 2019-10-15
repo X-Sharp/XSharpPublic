@@ -1108,7 +1108,7 @@ namespace XSharp.Project
         /// <returns>Result of teh operation</returns>
         private int SetFileChangeNotification(string strFileName, bool fStart)
         {
-            XSharpProjectPackage.Instance.DisplayOutPutMessage("**** Inside SetFileChangeNotification ****");
+            XSharpProjectPackage.Instance.DisplayOutPutMessage($"**** Inside SetFileChangeNotification {strFileName} {fStart} {vsFileChangeCookie} ****");
 
             int result = VSConstants.E_FAIL;
 
@@ -1155,7 +1155,7 @@ namespace XSharp.Project
 
         private int SuspendFileChangeNotification(string strFileName, int fSuspend)
         {
-            XSharpProjectPackage.Instance.DisplayOutPutMessage("**** Inside SuspendFileChangeNotification ****");
+            XSharpProjectPackage.Instance.DisplayOutPutMessage($"**** Inside SuspendFileChangeNotification {strFileName} {fSuspend}****");
 
             if (null == vsFileChangeEx)
                 vsFileChangeEx = (IVsFileChangeEx)GetService(typeof(SVsFileChangeEx));

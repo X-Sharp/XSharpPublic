@@ -176,7 +176,11 @@ namespace XSharp.Project
             {
                 _buffer.ChangedLowPriority += Textbuffer_Changed;
                 _file = _buffer.GetFile();
-                _parseoptions = _file.Project.ParseOptions;
+                if (_file.Project != null)
+                    _parseoptions = _file.Project.ParseOptions;
+                else
+                    _parseoptions = XSharpParseOptions.Default;
+
                 if (_buffer.CheckEditAccess())
                 {
                     //formatCaseForWholeBuffer();
@@ -275,7 +279,7 @@ namespace XSharp.Project
                 if (element == null)
                 {
                     // then Locals
-                    var locals = currentMember.GetLocals(TextView.TextSnapshot, lineNumber, _file.Project.ProjectNode.ParseOptions.Dialect);
+                    var locals = currentMember.GetLocals(TextView.TextSnapshot, lineNumber, _file.Project.Dialect);
                     if (locals != null)
                     {
                         element = locals.Where(x => XSharpTokenTools.StringEquals(x.Name, identifier)).FirstOrDefault();
@@ -399,7 +403,7 @@ namespace XSharp.Project
         {
             if (XSharpProjectPackage.Instance.DebuggerIsRunning)
                 return;
-            
+
             getEditorPreferences(TextView);
             if (_optionsPage.KeywordCase != 0)
             {
@@ -587,9 +591,7 @@ namespace XSharp.Project
                                         StartSignatureSession(true);
                                         break;
                                     default:
-                                        //if (_optionsPage.ShowAfterChar)
-                                        //    if (Char.IsLetterOrDigit(ch) || ch == '_')
-                                        //        StartCompletionSession(nCmdID, '\0');
+                                        completeCurrentToken(nCmdID, ch);
                                         break;
                                 }
                             }
@@ -658,7 +660,7 @@ namespace XSharp.Project
                     currentNS = currentNamespace.Name;
                 }
                 //
-                CompletionType cType = XSharpTokenTools.RetrieveType(file, tokenList, member, currentNS, stopToken, out gotoElement, snapshot, lineNumber, file.Project.ProjectNode.ParseOptions.Dialect);
+                CompletionType cType = XSharpTokenTools.RetrieveType(file, tokenList, member, currentNS, stopToken, out gotoElement, snapshot, lineNumber, file.Project.Dialect);
                 //
                 if (gotoElement != null)
                 {
@@ -687,7 +689,7 @@ namespace XSharp.Project
                 {
                     // try again with just the last element in the list
                     tokenList.RemoveRange(0, tokenList.Count - 1);
-                    cType = XSharpTokenTools.RetrieveType(file, tokenList, member, currentNS, stopToken, out gotoElement, snapshot, lineNumber, file.Project.ProjectNode.ParseOptions.Dialect);
+                    cType = XSharpTokenTools.RetrieveType(file, tokenList, member, currentNS, stopToken, out gotoElement, snapshot, lineNumber, file.Project.Dialect);
                 }
                 if ((gotoElement != null) && (gotoElement.XSharpElement != null))
                 {
@@ -715,6 +717,42 @@ namespace XSharp.Project
         #endregion
 
         #region Completion Session
+        private void completeCurrentToken(uint nCmdID, char ch)
+        {
+            if (!_optionsPage.ShowAfterChar)
+                return;
+
+            if (Char.IsLetterOrDigit(ch) || ch == '_')
+            {
+                SnapshotPoint caret = TextView.Caret.Position.BufferPosition;
+                var line = caret.GetContainingLine();
+                var lineText = line.GetText();
+                var pos = caret.Position - line.Start.Position;
+                int chars = 0;
+                bool done = false;
+                // count the number of characters in the current word. When > 2 then trigger completion
+                for (int i = pos-1; i >= 0; i--)
+                {
+                    switch (lineText[i])
+                    {
+                        case ' ':
+                        case '\t':
+                            done = true;
+                            break;
+                    }
+                    if (done)
+                        break;
+                    chars++;
+                    if (chars > 2)
+                        break;
+                }
+                if (chars > 2)
+                {
+                    StartCompletionSession(nCmdID, '\0');
+                }
+            }
+        }
+
         private void FilterCompletionSession(char ch)
         {
             XSharpProjectPackage.Instance.DisplayOutPutMessage("CommandFilter.FilterCompletionSession()");
@@ -765,10 +803,10 @@ namespace XSharp.Project
                 if ((_completionSession.SelectedCompletionSet.Completions.Count > 0) && (_completionSession.SelectedCompletionSet.SelectionStatus.IsSelected))
                 {
                     //
-                    if (XSharp.CodeDom.XSharpKeywords.Contains(_completionSession.SelectedCompletionSet.SelectionStatus.Completion.InsertionText))
-                    {
-                        _completionSession.SelectedCompletionSet.SelectionStatus.Completion.InsertionText = "@@" + _completionSession.SelectedCompletionSet.SelectionStatus.Completion.InsertionText;
-                    }
+                    //if (XSharp.CodeDom.XSharpKeywords.Contains(_completionSession.SelectedCompletionSet.SelectionStatus.Completion.InsertionText))
+                    //{
+                    //    _completionSession.SelectedCompletionSet.SelectionStatus.Completion.InsertionText = "@@" + _completionSession.SelectedCompletionSet.SelectionStatus.Completion.InsertionText;
+                    //}
                     //
                     XSharpProjectPackage.Instance.DisplayOutPutMessage(" --> Commit");
                     _completionSession.Commit();
@@ -973,11 +1011,11 @@ namespace XSharp.Project
             //
             if (cType != null && methodName != null)
             {
-                XSharpLanguage.XSharpTokenTools.SearchMethodTypeIn(cType, methodName, XSharpModel.Modifiers.Private, false, out gotoElement, file.Project.ProjectNode.ParseOptions.Dialect );
+                XSharpLanguage.XSharpTokenTools.SearchMethodTypeIn(cType, methodName, XSharpModel.Modifiers.Private, false, out gotoElement, file.Project.Dialect );
             }
             else
             {
-                
+
                 // Then, the corresponding Type/Element if possible
                 IToken stopToken;
                 // Check if we can get the member where we are
@@ -992,7 +1030,7 @@ namespace XSharp.Project
                     currentNS = currentNamespace.Name;
                 }
                 // We don't care of the corresponding Type, we are looking for the gotoElement
-                XSharpTokenTools.RetrieveType(file, tokenList, member, currentNS, stopToken, out gotoElement, snapshot, startLineNumber, file.Project.ProjectNode.ParseOptions.Dialect);
+                XSharpTokenTools.RetrieveType(file, tokenList, member, currentNS, stopToken, out gotoElement, snapshot, startLineNumber, file.Project.Dialect);
             }
             //
             if ((gotoElement != null) && (gotoElement.IsInitialized))

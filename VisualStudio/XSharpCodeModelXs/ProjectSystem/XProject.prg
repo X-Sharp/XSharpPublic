@@ -38,7 +38,20 @@ BEGIN NAMESPACE XSharpModel
         PRIVATE _TypeDict								AS ConcurrentDictionary<STRING, List<STRING>>
         PRIVATE _ExternalTypeCache						AS ConcurrentDictionary<STRING, System.Type>
         PROPERTY FileWalkCompleted                      AS LOGIC AUTO
+        PROPERTY Dialect                                AS XSharpDialect
+            GET
+                TRY
+                    IF _projectNode != NULL
+                        return _projectNode:Dialect
+                    ENDIF
+                    RETURN XSharpDialect.Core
+                CATCH e as Exception
+                    XSolution.WriteException(e)
+                END TRY
+                RETURN XSharpDialect.Core
 
+            END GET
+        END PROPERTY
         CONSTRUCTOR(project AS IXSharpProject)
             SUPER()
             SELF:_AssemblyReferences := List<AssemblyInfo>{}

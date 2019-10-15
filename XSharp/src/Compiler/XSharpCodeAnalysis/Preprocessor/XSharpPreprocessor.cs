@@ -318,7 +318,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 else
                     macroDefines.Add("__XPP1__", () => new XSharpToken(XSharpLexer.FALSE_CONST));
             }
-            if (options.Dialect == XSharpDialect.FoxPro
+            if (options.Dialect == XSharpDialect.FoxPro)
             {
                 if (options.fox1)
                     macroDefines.Add("__FOX1__", () => new XSharpToken(XSharpLexer.TRUE_CONST));

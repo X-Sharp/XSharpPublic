@@ -40,10 +40,9 @@ BEGIN NAMESPACE XSharpModel
             SELF:_parsed := ! SELF:HasCode
             SELF:_lock := OBJECT{}
             SELF:_lastWritten := System.DateTime.MinValue
-            SELF:Dialect := XSharpDialect.Core
 
         PROPERTY EntityList AS 	List<XElement> GET _entityList
-        PROPERTY Dialect AS XSharpDialect AUTO
+        PROPERTY Dialect AS XSharpDialect GET _project:Dialect
 
 
         METHOD AddDefaultUsings() AS void
@@ -283,7 +282,7 @@ BEGIN NAMESPACE XSharpModel
                 BEGIN LOCK SELF:_lock
 
                     statics:AddRange(SELF:_usingStatics)
-                    IF (((SELF:Project != NULL) .AND. (SELF:Project:ProjectNode != NULL)) .AND. SELF:Project:ProjectNode:ParseOptions:HasRuntime)
+                    IF SELF:Project != NULL .AND. SELF:Project:ProjectNode != NULL .AND. SELF:Project:ProjectNode:ParseOptions:HasRuntime
 
                         FOREACH asm AS AssemblyInfo IN SELF:Project:AssemblyReferences
 
@@ -353,9 +352,6 @@ BEGIN NAMESPACE XSharpModel
             END GET
             SET
                 SELF:_project := VALUE
-                IF ( SELF:_project != NULL )
-                    SELF:Dialect := SELF:_project:ParseOptions:Dialect
-                ENDIF
             END SET
         END PROPERTY
 

@@ -47,9 +47,6 @@ BEGIN NAMESPACE XSharpModel
 			    //SELF:_gate := OBJECT{}
 			    SELF:_file := file
 			    SELF:_prjNode := SELF:_file?:Project?:ProjectNode
-                IF _prjNode != null
-				    SELF:_file:Dialect := SELF:_prjNode:ParseOptions:Dialect
-                ENDIF
 			    SELF:StartPosition := 0
 			    //
 			    sourcePath := SELF:_file:SourcePath

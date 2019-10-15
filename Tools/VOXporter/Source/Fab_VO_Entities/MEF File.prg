@@ -392,6 +392,7 @@ EXPORT aDesigners := System.Collections.Generic.List<Designer>{} AS System.Colle
 			        SELF:oMS:Position := PosData+0
 				    br := BinaryReader{ SELF:oMS }
 				    nCurrentType := br:ReadInt16()
+				    oInfoTemp:Type := nCurrentType
 				    ? nCurrentType
 				    IF nCurrentType == 16 .OR. nCurrentType == 10 .OR. ;
 				    	 nCurrentType == 12 .OR. nCurrentType == 14
@@ -452,7 +453,8 @@ EXPORT aDesigners := System.Collections.Generic.List<Designer>{} AS System.Colle
 			    CASE SELF:oRecHeader:uiType == FabVODefinitions.ENTNAME
     // First Entity Information
 				    // Only add Entities with source
-				    IF !Empty( oInfoTemp:Proto )
+//				    IF !Empty( oInfoTemp:Proto )
+				    IF oInfoTemp:MustExport
 					    AAdd( SELF:aEnt, FabMEFEntity{ oInfoTemp } )
 					    //
 					    oInfoTemp := FabEntInfo{ SELF:oMS }
@@ -504,7 +506,8 @@ EXPORT aDesigners := System.Collections.Generic.List<Designer>{} AS System.Colle
 		    //
 	    ENDDO
 	    //
-	    IF !Empty(  oInfoTemp:Proto  )
+//	    IF !Empty(  oInfoTemp:Proto  )
+	    IF oInfoTemp:MustExport
 		    AAdd( SELF:aEnt, FabMEFEntity{ oInfoTemp } )
 	    ENDIF
 	    //

@@ -311,6 +311,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 else
                     macroDefines.Add(flagName, () => new XSharpToken(XSharpLexer.FALSE_CONST));
             }
+            if (options.Dialect == XSharpDialect.XPP)
+            {
+                if (options.xpp1)
+                    macroDefines.Add("__XPP1__", () => new XSharpToken(XSharpLexer.TRUE_CONST));
+                else
+                    macroDefines.Add("__XPP1__", () => new XSharpToken(XSharpLexer.FALSE_CONST));
+            }
+            if (options.Dialect == XSharpDialect.FoxPro
+            {
+                if (options.fox1)
+                    macroDefines.Add("__FOX1__", () => new XSharpToken(XSharpLexer.TRUE_CONST));
+                else
+                    macroDefines.Add("__FOX1__", () => new XSharpToken(XSharpLexer.FALSE_CONST));
+            }
             if (!options.NoStdDef && options.Kind != SourceCodeKind.Script)
             {
                 // Todo: when the compiler option nostddefs is not set: read XSharpDefs.xh from the XSharp Include folder,//

@@ -2067,6 +2067,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     { "__XPP__", MACRO},
                     { "__XSHARP__", MACRO},
                     { "__XSHARP_RT__", MACRO},
+                    { "__XPP1__", MACRO},
+                    { "__FOX1__", MACRO},
                 };
 
             }

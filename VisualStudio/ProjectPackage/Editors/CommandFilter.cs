@@ -170,7 +170,11 @@ namespace XSharp.Project
             {
                 _buffer.ChangedLowPriority += Textbuffer_Changed;
                 _file = _buffer.GetFile();
-                _parseoptions = _file.Project.ParseOptions;
+                if (_file.Project != null)
+                    _parseoptions = _file.Project.ParseOptions;
+                else
+                    _parseoptions = XSharpParseOptions.Default;
+
                 if (_buffer.CheckEditAccess())
                 {
                     //formatCaseForWholeBuffer();
@@ -269,7 +273,7 @@ namespace XSharp.Project
                 if (element == null)
                 {
                     // then Locals
-                    var locals = currentMember.GetLocals(TextView.TextSnapshot, lineNumber, _file.Project.ProjectNode.ParseOptions.Dialect);
+                    var locals = currentMember.GetLocals(TextView.TextSnapshot, lineNumber, _file.Project.Dialect);
                     if (locals != null)
                     {
                         element = locals.Where(x => XSharpTokenTools.StringEquals(x.Name, identifier)).FirstOrDefault();
@@ -650,7 +654,7 @@ namespace XSharp.Project
                     currentNS = currentNamespace.Name;
                 }
                 //
-                CompletionType cType = XSharpTokenTools.RetrieveType(file, tokenList, member, currentNS, stopToken, out gotoElement, snapshot, lineNumber, file.Project.ProjectNode.ParseOptions.Dialect);
+                CompletionType cType = XSharpTokenTools.RetrieveType(file, tokenList, member, currentNS, stopToken, out gotoElement, snapshot, lineNumber, file.Project.Dialect);
                 //
                 if (gotoElement != null)
                 {
@@ -679,7 +683,7 @@ namespace XSharp.Project
                 {
                     // try again with just the last element in the list
                     tokenList.RemoveRange(0, tokenList.Count - 1);
-                    cType = XSharpTokenTools.RetrieveType(file, tokenList, member, currentNS, stopToken, out gotoElement, snapshot, lineNumber, file.Project.ProjectNode.ParseOptions.Dialect);
+                    cType = XSharpTokenTools.RetrieveType(file, tokenList, member, currentNS, stopToken, out gotoElement, snapshot, lineNumber, file.Project.Dialect);
                 }
                 if ((gotoElement != null) && (gotoElement.XSharpElement != null))
                 {
@@ -1001,7 +1005,7 @@ namespace XSharp.Project
             //
             if (cType != null && methodName != null)
             {
-                XSharpLanguage.XSharpTokenTools.SearchMethodTypeIn(cType, methodName, XSharpModel.Modifiers.Private, false, out gotoElement, file.Project.ProjectNode.ParseOptions.Dialect );
+                XSharpLanguage.XSharpTokenTools.SearchMethodTypeIn(cType, methodName, XSharpModel.Modifiers.Private, false, out gotoElement, file.Project.Dialect );
             }
             else
             {
@@ -1020,7 +1024,7 @@ namespace XSharp.Project
                     currentNS = currentNamespace.Name;
                 }
                 // We don't care of the corresponding Type, we are looking for the gotoElement
-                XSharpTokenTools.RetrieveType(file, tokenList, member, currentNS, stopToken, out gotoElement, snapshot, startLineNumber, file.Project.ProjectNode.ParseOptions.Dialect);
+                XSharpTokenTools.RetrieveType(file, tokenList, member, currentNS, stopToken, out gotoElement, snapshot, startLineNumber, file.Project.Dialect);
             }
             //
             if ((gotoElement != null) && (gotoElement.IsInitialized))

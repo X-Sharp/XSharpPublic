@@ -85,9 +85,8 @@ namespace XSharpLanguage
             // Currently, set as default, but should be VS Settings Based
             // Retrieve from Project properties later: _file.Project.ProjectNode.ParseOptions.
             var prj = _file.Project.ProjectNode;
-            var parseoptions = prj.ParseOptions;
-            _dialect = parseoptions.Dialect;
-            _allowDot = parseoptions.Dialect == XSharpDialect.Core || parseoptions.Dialect == XSharpDialect.FoxPro;
+            _dialect = _file.Project.Dialect;
+            _allowDot = _dialect == XSharpDialect.Core || _dialect == XSharpDialect.FoxPro;
             _settingIgnoreCase = true;
             _stopToken = null;
             this.aggregator = aggregator;
@@ -2611,12 +2610,12 @@ namespace XSharpLanguage
                         }
                     }
                 }
-                else if ((file.Project.ProjectNode.ParseOptions.Dialect == XSharpDialect.XPP) && (token.CompareTo("::") == 0))
+                else if ((file.Project.Dialect == XSharpDialect.XPP) && (token.CompareTo("::") == 0))
                 {
                     returnList.Add("SELF");
                     returnList.Add(":");
                 }
-                else if (file.Project.ProjectNode.ParseOptions.Dialect == XSharpDialect.FoxPro)
+                else if (file.Project.Dialect == XSharpDialect.FoxPro)
                 {
                     string lowerToken = token.ToLower();
                     switch (lowerToken)

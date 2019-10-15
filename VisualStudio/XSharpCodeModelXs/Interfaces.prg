@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 USING LanguageService.CodeAnalysis
@@ -29,27 +29,28 @@ BEGIN NAMESPACE XSharpModel
 		METHOD SetStatusBarAnimation(onOff AS LOGIC, id AS SHORT) AS VOID
 		METHOD SetStatusBarText(message AS STRING) AS VOID
 		METHOD ShowIntellisenseErrors() AS VOID
-		
+
 		// Properties
-		PROPERTY IntermediateOutputPath AS STRING GET 
-		PROPERTY IsVsBuilding AS LOGIC GET 
-		PROPERTY OutputFile AS STRING GET 
-		PROPERTY ParseOptions AS XSharpParseOptions GET 
-		PROPERTY PrefixClassesWithDefaultNamespace AS LOGIC GET 
-		PROPERTY RootNameSpace AS STRING GET 
-		PROPERTY Url AS STRING GET 
+		PROPERTY IntermediateOutputPath AS STRING GET
+		PROPERTY IsVsBuilding AS LOGIC GET
+		PROPERTY OutputFile AS STRING GET
+		PROPERTY ParseOptions AS XSharpParseOptions GET
+		PROPERTY PrefixClassesWithDefaultNamespace AS LOGIC GET
+		PROPERTY RootNameSpace AS STRING GET
+		PROPERTY Url AS STRING GET
 		PROPERTY DisableLexing  AS LOGIC GET
 		PROPERTY DisableParsing  AS LOGIC GET
 		PROPERTY DisableRegions AS LOGIC GET
 		PROPERTY KeywordsUppercase AS LOGIC GET
-		
+        PROPERTY Dialect as XSharpDialect GET
+
 	END INTERFACE
-	
+
 	INTERFACE IXErrorPosition
 		PROPERTY Column AS LONG GET SET
 		PROPERTY Length AS LONG GET SET
 		PROPERTY Line AS LONG GET SET
 	END INTERFACE
-	
-END NAMESPACE 
+
+END NAMESPACE
 

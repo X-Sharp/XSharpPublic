@@ -4092,7 +4092,8 @@ namespace XSharpLanguage
         public CompletionElement(XElement XSharpElement)
         {
             this.foundElement = XSharpElement;
-            this.isArray = XSharpElement.IsArray;
+            if (XSharpElement != null)
+                this.isArray = XSharpElement.IsArray;
         }
 
         public CompletionElement(MemberInfo SystemElement)

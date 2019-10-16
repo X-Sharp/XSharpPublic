@@ -189,7 +189,6 @@
       <config-value name="tidyxml">1</config-value>
       <config-value name="contents">XSharp</config-value>
       <config-value name="make3includeskin">OPT_PARENTHOME,OPT_TOPICFOOTER</config-value>
-      <config-group name="bookmarks"/>
     </config-group>
     <config-group name="pdf">
       <config-value name="style">0</config-value>
@@ -699,6 +698,7 @@
     </config-group>
     <variables>
       <variable id="TXTVERSION" type="text" translate="true">Bandol GA (2.0.8.0)</variable>
+      <variable id="APP" type="text" translate="true">XSharp</variable>
     </variables>
     <helpcontext-numbers/>
   </config>

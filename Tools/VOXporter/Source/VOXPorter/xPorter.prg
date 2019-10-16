@@ -1015,7 +1015,7 @@ CLASS ApplicationDescriptor
 						cName := oPair:Key
 						cUpperName := cName:ToUpperInvariant()
 
-						#warning WTF, the following never executes!
+						#warning Need to investigate, the following never executes
 						DO CASE
 						CASE cUpperName:StartsWith("IDM_")
 							cName := cName:Substring(4)
@@ -1908,7 +1908,7 @@ CLASS EntityDescriptor
 
 			IF xPorter.Options:RemoveDeclareMethod .AND. oCurrentEntity != NULL .AND. ;
 				oCurrentEntity:eType == EntityType._Class
-				#warning DECLAREs recognition needs to be improved as well
+				#warning Need to improve DECLAREs recognition
 				IF cLine:ToUpper():Contains("DECLARE METHOD") .OR. ;
 					cLine:ToUpper():Contains("DECLARE ACCESS") .OR. ;
 					cLine:ToUpper():Contains("DECLARE ASSIGN")
@@ -1931,7 +1931,7 @@ CLASS EntityDescriptor
 				END IF
 			ENDIF*/
 
-			#warning Ouch, Init/Axit/Super tokens are still specified like that? Need changing ASAP!
+			#warning Need to improve recognition of Init/Axit/Super tokens
 			IF xPorter.Options:ChangeInitAxitToCtorDtor
 				IF oLine:oEntity == NULL
 					LOCAL cUpper AS STRING
@@ -2257,7 +2257,7 @@ CLASS EntityDescriptor
 						LOCAL cValue AS STRING
 						cValue := xPorter.SDKDefines[cUpper]
 						IF xPorter.Options:ReplaceResourceDefinesWithValues .OR. (cValue:Contains("'") .OR. cValue:Contains('"'))
-							#warning Need to check here
+							#warning Need to review handling of VERSION resource
 							// need to check where this is needed and when not
 							// as it is now, it replaces defines for VERSION resource like VOVER_FILE_VERSION_TXT
 							// from '""' as defined manually above, to an empty string without quotes

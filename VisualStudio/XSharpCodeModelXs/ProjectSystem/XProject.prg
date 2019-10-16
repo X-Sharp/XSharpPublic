@@ -38,7 +38,20 @@ BEGIN NAMESPACE XSharpModel
         PRIVATE _TypeDict								AS ConcurrentDictionary<STRING, List<STRING>>
         PRIVATE _ExternalTypeCache						AS ConcurrentDictionary<STRING, System.Type>
         PROPERTY FileWalkCompleted                      AS LOGIC AUTO
+        PROPERTY Dialect                                AS XSharpDialect
+            GET
+                TRY
+                    IF _projectNode != NULL
+                        return _projectNode:Dialect
+                    ENDIF
+                    RETURN XSharpDialect.Core
+                CATCH e as Exception
+                    XSolution.WriteException(e)
+                END TRY
+                RETURN XSharpDialect.Core
 
+            END GET
+        END PROPERTY
         CONSTRUCTOR(project AS IXSharpProject)
             SUPER()
             SELF:_AssemblyReferences := List<AssemblyInfo>{}
@@ -174,7 +187,7 @@ BEGIN NAMESPACE XSharpModel
 
 
             METHOD UpdateAssemblyReference(fileName AS STRING) AS VOID
-                IF ! AssemblyInfo.DisableAssemblyReferences .and. ! String.IsNullOrEmpty(fileName)
+                IF ! AssemblyInfo.DisableAssemblyReferences .AND. ! String.IsNullOrEmpty(fileName)
                     SystemTypeController.LoadAssembly(fileName):AddProject(SELF)
                 ENDIF
 
@@ -193,7 +206,7 @@ BEGIN NAMESPACE XSharpModel
                 RETURN FALSE
 
             METHOD AddProjectOutput(sProjectURL AS STRING, sOutputDLL AS STRING) AS VOID
-                IF ! String.IsNullOrEmpty(sProjectURL) .and. ! String.IsNullOrEmpty(sOutputDLL)
+                IF ! String.IsNullOrEmpty(sProjectURL) .AND. ! String.IsNullOrEmpty(sOutputDLL)
                     SELF:WriteOutputMessage("AddProjectOutput "+sProjectURL+"("+sOutputDLL+")")
                     IF SELF:_projectOutputDLLs:ContainsKey(sProjectURL)
                         SELF:_projectOutputDLLs:Item[sProjectURL] := sOutputDLL
@@ -573,7 +586,7 @@ BEGIN NAMESPACE XSharpModel
                 WriteOutputMessage("LookupReferenced() "+typeName)
                 FOREACH project AS XProject IN SELF:ReferencedProjects
                     IF project == SELF
-                        loop
+                        LOOP
                     ENDIF
                     xType := project:Lookup(typeName, caseInvariant)
                     IF xType != NULL

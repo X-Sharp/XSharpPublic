@@ -129,6 +129,10 @@ namespace XSharp.Project
             }
             object result;
             bool ours = false;
+            if (string.Compare(XSharpProjectPackage.VsVersion.Substring(0, 3) ,"15.0") >= 0)
+            {
+                ours = true;
+            }
             // Ask for the Language. X# returns the product name
             // the implementation for this property is inside XSharpFileNode.
             if (hierarchy != null)
@@ -143,10 +147,14 @@ namespace XSharp.Project
                 var file = XSharpModel.XSolution.FindFullPath(fileName);
                 ours = (file != null);
             }
-            if (! ours)
+            if (! ours )
             {
                 // ask for a project root. If there is no project root, then we take ownership
-                hierarchy.GetProperty(itemID, (int)__VSHPROPID.VSHPROPID_Root, out result);
+				result = null;
+                if (hierarchy != null)
+                {
+                    hierarchy.GetProperty(itemID, (int)__VSHPROPID.VSHPROPID_Root, out result);
+                }
                 ours = (result == null);
                 if (ours)
                 {

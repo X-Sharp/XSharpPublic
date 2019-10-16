@@ -680,11 +680,11 @@ namespace XSharp.CodeDom
             _locals.Clear();
             var newMethod = new XCodeMemberMethod();
             writeTrivia(newMethod, context);
-            newMethod.Name = context.Id.GetCleanText();
+            newMethod.Name = context.Sig.Id.GetCleanText();
             newMethod.Attributes = MemberAttributes.Public;
-            newMethod.Parameters.AddRange(GetParametersList(context.ParamList));
+            newMethod.Parameters.AddRange(GetParametersList(context.Sig.ParamList));
             FillCodeDomDesignerData(newMethod, context.Start.Line, context.Start.Column);
-            var returnType = BuildDataType(context.Type);
+            var returnType = BuildDataType(context.Sig.Type);
             newMethod.ReturnType = returnType;
             //
             if (context.Modifiers != null)

@@ -28,6 +28,17 @@
     <IntermediateOutputPath>$(SolutionDir)Binaries\obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
     <OutputPath>$(SolutionDir)Binaries\$(Configuration)\</OutputPath>
     <AssemblyOriginatorKeyFile>$(SolutionDir)Common\XSharp.snk</AssemblyOriginatorKeyFile>
+    <AZ>false</AZ>
+    <CS>false</CS>
+    <LB>false</LB>
+    <NamedArgs>true</NamedArgs>
+    <OVF>false</OVF>
+    <Unsafe>false</Unsafe>
+    <INS>false</INS>
+    <NS>false</NS>
+    <StandardDefs />
+    <MemVar>false</MemVar>
+    <Undeclared>false</Undeclared>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -81,9 +92,19 @@
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\CodeGenerator\XSharpCodeGenerator.xsproj">
+      <Name>XSharpCodeGenerator</Name>
+      <Project>{b837ac3b-9c61-49e4-9f4f-c8ad1faf21cc}</Project>
+      <Private>True</Private>
+    </ProjectReference>
     <ProjectReference Include="..\VODesigners\VODesigners.xsproj">
       <Name>VODesigners</Name>
       <Project>{faac947e-0355-4f8d-adb9-c57b1c9357d2}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\XSharpVoEditors\XSharpVoEditors.xsproj">
+      <Name>XSharpVoEditors</Name>
+      <Project>{7619db88-6286-4ef1-8273-2a08cc8ac70e}</Project>
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>

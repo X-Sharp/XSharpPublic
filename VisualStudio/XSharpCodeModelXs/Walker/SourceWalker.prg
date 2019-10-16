@@ -22,7 +22,7 @@ BEGIN NAMESPACE XSharpModel
 		#region fields
 			PRIVATE _errors AS IList<XError>
 			PRIVATE _file AS XFile
-			PRIVATE _gate AS OBJECT
+			//PRIVATE _gate AS OBJECT
 			PRIVATE _prjNode AS IXSharpProject
 			PRIVATE _tokenStream AS ITokenStream
 			PRIVATE _info AS ParseResult
@@ -44,7 +44,7 @@ BEGIN NAMESPACE XSharpModel
 			SUPER()
             IF (file != NULL)
 			    LOCAL sourcePath AS STRING
-			    SELF:_gate := OBJECT{}
+			    //SELF:_gate := OBJECT{}
 			    SELF:_file := file
 			    SELF:_prjNode := SELF:_file?:Project?:ProjectNode
 			    SELF:StartPosition := 0
@@ -87,7 +87,7 @@ BEGIN NAMESPACE XSharpModel
 			BEGIN LOCK SELF
 				SELF:_tokenStream := stream
 			END LOCK
-            CATCH e as Exception
+            CATCH e AS Exception
                 WriteOutputMessage("Lex() Failed:")
                 WriteOutputMessage(e:Message)
             END TRY
@@ -121,7 +121,7 @@ BEGIN NAMESPACE XSharpModel
 			    BEGIN LOCK SELF
 				    SELF:_info := info
 			    END LOCK
-            CATCH e as Exception
+            CATCH e AS Exception
                 WriteOutputMessage("Parse() Failed:")
                 WriteOutputMessage(e:Message)
             END TRY

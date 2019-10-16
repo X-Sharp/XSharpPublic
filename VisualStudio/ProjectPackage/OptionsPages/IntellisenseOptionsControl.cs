@@ -29,9 +29,7 @@ namespace XSharp.Project.OptionsPages
             chkCompletionListtabs.Checked = optionsPage.CompletionListTabs;
             chkKeywordsInAll.Checked = optionsPage.KeywordsInAll;
             chkDotAsUniversalSelector.Checked = optionsPage.UseDotAsUniversalSelector;
-            //chkShowAfterChar.Checked = optionsPage.ShowAfterChar;
-            chkShowAfterChar.Visible = false;
-            chkShowAfterChar.Checked = false;
+            chkShowAfterChar.Checked = optionsPage.ShowAfterChar;
             grpCase.Enabled = true;
             switch (optionsPage.KeywordCase)
             {
@@ -125,8 +123,7 @@ namespace XSharp.Project.OptionsPages
 
         private void chkShowAfterChar_CheckedChanged(object sender, EventArgs e)
         {
-            //optionsPage.ShowAfterChar = chkShowAfterChar.Checked;
-            optionsPage.ShowAfterChar = false;
+            optionsPage.ShowAfterChar = chkShowAfterChar.Checked;
         }
 
         private void Control_CheckedChanged(object sender, EventArgs e)

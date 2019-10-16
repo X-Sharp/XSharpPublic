@@ -6,6 +6,8 @@
 USING System.Collections.Generic
 USING System.Diagnostics
 USING XSharpModel
+USING LanguageService.CodeAnalysis.XSharp
+
 BEGIN NAMESPACE XSharpModel
 	[DebuggerDisplay("{Prototype,nq}")];
 	CLASS XTypeMember INHERIT XElement
@@ -23,7 +25,7 @@ BEGIN NAMESPACE XSharpModel
 				SELF:_typeName := typeName
 				SELF:_isStatic := isStatic
 
-			STATIC METHOD create(oElement AS EntityObject, oInfo AS ParseResult, oFile AS XFile, oType AS XType) AS XTypeMember
+			STATIC METHOD create(oElement AS EntityObject, oInfo AS ParseResult, oFile AS XFile, oType AS XType, dialect AS XSharpDialect ) AS XTypeMember
 				LOCAL cName := oElement:cName AS STRING
 				LOCAL kind  := Etype2Kind(oElement:eType) AS Kind
 				LOCAL cType := oElement:cRetType AS STRING
@@ -36,6 +38,7 @@ BEGIN NAMESPACE XSharpModel
 				CalculateRange(oElement, oInfo, OUT span, OUT intv)
 				LOCAL result := XTypeMember{cName, kind, mods, vis, span, intv, cType, isStat} AS XTypeMember
 				result:File := oFile
+				result:Dialect := dialect
 				IF oElement:aParams != NULL
 					FOREACH oParam AS EntityParamsObject IN oElement:aParams
 						LOCAL oVar AS XVariable
@@ -106,8 +109,11 @@ BEGIN NAMESPACE XSharpModel
 		PROPERTY HasParameters AS LOGIC GET SELF:Kind:HasParameters() .AND. SELF:_parameters:Count > 0
 		PROPERTY ParameterCount  AS INT GET SELF:_parameters:Count
 
-		PROPERTY IsArray AS LOGIC AUTO
-
+		PROPERTY IsArray AS LOGIC
+			GET
+				RETURN SELF:_typeName:EndsWith("[]")
+			END GET
+		END PROPERTY
 
 		NEW PROPERTY Parent AS XType GET (XType) SUPER:parent  SET SUPER:parent := VALUE
 
@@ -167,8 +173,8 @@ BEGIN NAMESPACE XSharpModel
 				ELSE
 					desc := SUPER:Name + vars
 				ENDIF 
-				//
-				IF SELF:Kind:HasReturnType() .AND. ! String.IsNullOrEmpty(SELF:TypeName)
+				// Maybe we should check the Dialect ?
+				IF SELF:Kind:HasReturnType( SELF:Dialect ) .AND. ! String.IsNullOrEmpty(SELF:TypeName)
 					desc := desc + AsKeyWord + SELF:TypeName
 				ENDIF
 				RETURN desc
@@ -190,14 +196,17 @@ BEGIN NAMESPACE XSharpModel
 					desc := SELF:Parent:FullName + vars
 				ELSE
 					desc := SUPER:Name + vars
-				ENDIF 
-				IF SELF:Kind:HasReturnType() .AND. ! String.IsNullOrEmpty(SELF:TypeName)
+				ENDIF
+				// Maybe we should check the Dialect ?
+			    IF SELF:Kind:HasReturnType( SELF:Dialect ) .AND. ! String.IsNullOrEmpty(SELF:TypeName)
 					desc := desc + AsKeyWord + SELF:TypeName
 				ENDIF
 				RETURN desc
 			END GET
 		END PROPERTY
+
 		PROPERTY TypeName AS STRING GET SELF:_typeName
+
 		#endregion
 	END CLASS
 

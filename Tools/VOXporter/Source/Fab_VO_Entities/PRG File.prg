@@ -2,7 +2,7 @@
 #using System.Collections.Generic
 #using System.IO
 #using FabToolsNS
-
+DEFINE CRLF := e"\r\n"
 BEGIN NAMESPACE Fab_VO_Entities
 
     CLASS FabPRGFile 	INHERIT	FabModuleBase

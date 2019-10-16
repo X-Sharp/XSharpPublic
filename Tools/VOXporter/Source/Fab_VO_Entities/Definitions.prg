@@ -44,7 +44,7 @@ BEGIN NAMESPACE Fab_VO_Entities
         PUBLIC uiType AS WORD
         PUBLIC ulLength AS DWORD
         
-        STATIC PUBLIC Size := 6 AS long
+        STATIC PUBLIC Size := 6 AS LONG
         
     END CLASS
     
@@ -52,10 +52,11 @@ BEGIN NAMESPACE Fab_VO_Entities
         PUBLIC Name         AS  STRING
         PUBLIC Pos          AS  LONG
         PUBLIC Proto        AS  STRING
-        PUBLIC LastBuild    as  DWORD
-        PUBLIC CreateTime   as  DWORD
-        PUBLIC MemStream    as  MemoryStream
-        PUBLIC Size         as  long
+        PUBLIC LastBuild    AS  DWORD
+        PUBLIC CreateTime   AS  DWORD
+        PUBLIC MemStream    AS  MemoryStream
+        PUBLIC Size         AS  LONG
+        PUBLIC Type         AS  LONG
         
         CONSTRUCTOR( oMS AS MemoryStream )
             SELF:Name := ""
@@ -64,8 +65,11 @@ BEGIN NAMESPACE Fab_VO_Entities
             SELF:LastBuild := 0
             SELF:CreateTime := 0
             SELF:MemStream := oMS
-            Self:Size := 0
+            SELF:Size := 0
         RETURN
+        
+        ACCESS MustExport AS LOGIC
+        RETURN .not. Empty(SELF:Proto) .or. SELF:Type == 3
         
     END CLASS
            

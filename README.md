@@ -31,6 +31,7 @@ After retrieving this source code, you need to perform the following steps to be
   The separate Build.cmd will not clean old results and will only build changed code.
   In all cases the log file of the build process will be written into build-debug.log  or build-release.log 
   
-The source code is available under the license that you can find in the root of this repository.
+The source code is available under the license that you can find in the root of this repository: https://github.com/X-Sharp/XSharpDev/blob/master/license.txt.
+
 Of course we welcome all additions, bug fixes etc.
 

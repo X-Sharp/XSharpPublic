@@ -26,7 +26,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal("F x", Transform(FALSE, "@R L x"))
 			Assert.Equal("Y x", Transform(TRUE, "@R YYx"))
 			Assert.Equal("N x", Transform(FALSE, "@R YYx"))
-			SetNatDll("French.DLL")
+			SetNatDLL("French.DLL")
 			Assert.Equal("O", Transform(TRUE, "Y"))
 			Assert.Equal("N", Transform(FALSE, "Y"))
 			Assert.Equal("T", Transform(TRUE, "L"))     // you would expect V but VO returns T
@@ -35,7 +35,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal("F x", Transform(FALSE, "@R L x"))
 			Assert.Equal("O x", Transform(TRUE, "@R YYx"))
 			Assert.Equal("N x", Transform(FALSE, "@R YYx"))
-			SetNatDll("UK") // restore
+			SetNatDLL("UK") // restore
 			
 
 		[Fact, Trait("Category", "TransForm")];
@@ -109,6 +109,19 @@ BEGIN NAMESPACE XSharp.VO.Tests
             Assert.Equal(" ", 		Transform(0, "@Z 9")  ) 
             Assert.Equal("   ", 	Transform(0, "@Z 999")  ) 
             Assert.Equal("     ", 	Transform(0, "@Z 99999")  ) 
+
+            Assert.Equal(Space(11), 	Transform( 0.00, "@z 999,9999.99" )  ) 
+            Assert.Equal(Space(11), 	Transform( 0, "@z 999,9999.99" )  ) 
+            Assert.Equal(Space(14), 	Transform( 0, "@Z 999,9   999.99" )  ) 
+            Assert.Equal(Space(16), 	Transform( 0, "@z 999,9 a b 999.99" )  ) 
+            Assert.Equal(Space(3), 	    Transform( 0.0, "@ZC 9.9" )  ) 
+            Assert.Equal(Space(2), 	    Transform( 0, "@z .9" )  ) 
+            Assert.Equal(Space(1), 	    Transform( 0, "@CZ 9" )  ) 
+
+            Assert.Equal(Space(10),     Transform( 0, "@z " )  )  // VO behavior...
+            Assert.Equal(Space(1),      Transform( 0, "@z  " )  ) 
+            Assert.Equal(Space(2),      Transform( 0, "@z   " )  ) 
+            Assert.Equal(Space(3),      Transform( 0, "@z   a" )  ) 
 
         [Fact, Trait("Category", "Unformat")];
         METHOD UnformatCTest AS VOID

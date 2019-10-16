@@ -12,10 +12,12 @@ USING System.Text
 USING XSharp.RDD
 USING XSharp.RDD.Enums
 USING XSharp.RDD.Support
-
+USING System.Diagnostics
+ 
 /// <summary>
 /// The AdsRDD class. 
 /// </summary>
+[DebuggerDisplay("AdsRDD ({Alias,nq})")];
 CLASS XSharp.ADS.AdsRDD INHERIT Workarea
   #region Fields
   //PRIVATE m_CallbackFn AS CallbackFn
@@ -572,30 +574,36 @@ RETURN SELF:Skip(lCount)
 
     /// <inheritdoc />
 
-
-INTERNAL METHOD _SetScope(hIndex AS System.IntPtr, usScopeOption AS WORD, oScope AS OBJECT ) AS OBJECT
+INTERNAL METHOD _GetScope(hIndex AS System.IntPtr, usScopeOption AS WORD) AS OBJECT
 	LOCAL aScope    AS CHAR[]
 	LOCAL wBufLen   AS WORD
 	LOCAL result AS DWORD
-	LOCAL str       AS STRING
 	aScope    := CHAR[]{(SELF:_MaxKeySize + 1)}
 	wBufLen   := (WORD)(SELF:_MaxKeySize + 1) 
 	result := ACE.AdsGetScope(hIndex, usScopeOption, aScope, REF wBufLen)
-	IF result != ACE.AE_NO_SCOPE .AND. result != 0
-		SELF:_CheckError(result,EG_READ)
-	ENDIF
-	str := oScope:ToString()
-	IF !String.IsNullOrEmpty(str)
-		SELF:_CheckError(ACE.AdsSetScope(hIndex, usScopeOption, str, (WORD)str:Length , ACE.ADS_STRINGKEY),EG_READ)
-	ELSE
-		SELF:_CheckError(ACE.AdsClearScope(hIndex, usScopeOption),EG_READ)
-	ENDIF
-    // return the previous scope
-	IF result == ACE.AE_NO_SCOPE
-		RETURN NULL
-	ELSE
-		RETURN SELF:_Ansi2Unicode(aScope, wBufLen)
-	ENDIF
+    IF result == 0
+        RETURN SELF:_Ansi2Unicode(aScope, wBufLen)
+    ENDIF
+    IF result != ACE.AE_NO_SCOPE
+        SELF:_CheckError(result,EG_READ)
+    ENDIF
+    RETURN NULL
+INTERNAL METHOD _SetScope(hIndex AS System.IntPtr, usScopeOption AS WORD, lClear as LOGIC, oScope AS OBJECT ) AS OBJECT
+    LOCAL oldVal as OBJECT
+	LOCAL result AS DWORD
+    oldVal    := SELF:_GetScope(hIndex, usScopeOption) 
+    IF lClear .or. oScope == NULL
+        result := ACE.AdsClearScope(hIndex, usScopeOption)
+    ELSE
+ 	    VAR str := oScope:ToString()
+ 	    IF !String.IsNullOrEmpty(str)
+		    result := ACE.AdsSetScope(hIndex, usScopeOption, str, (WORD)str:Length , ACE.ADS_STRINGKEY)
+            SELF:_CheckError(result,EG_READ)
+	    ELSE
+		    result := ACE.AdsClearScope(hIndex, usScopeOption)
+	    ENDIF
+    ENDIF
+	return oldVal
 	
 	
     #endregion
@@ -866,7 +874,7 @@ VIRTUAL METHOD Unlock(recordID AS OBJECT) AS LOGIC
 	ELSE
 		result := ACE.AdsUnlockRecord(SELF:_Table, dwRecno)
 	ENDIF
-	IF result != ACE.AE_TABLE_NOT_SHARED .AND. result != 0
+	IF result != ACE.AE_TABLE_NOT_SHARED .and. result != ACE.AE_TABLE_NOT_LOCKED .AND. result != 0
 		SELF:_CheckError(result)
 	ENDIF
 RETURN TRUE

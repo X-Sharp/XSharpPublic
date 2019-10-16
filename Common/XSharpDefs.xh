@@ -12,7 +12,7 @@
 //
 #ifndef XSHARPDEFS_XH
 #define XSHARPDEFS_XH
-#define CRLF e"\r\n"
+
 
 // The following UDCs require the xBase Runtime
 #ifndef __DIALECT_CORE__
@@ -28,7 +28,22 @@
 #xcommand STORE <value> TO <var1> [, <varN> ]   => ;
 				<var1> := [ <varN> := ] <value>
 
-
+// Allow "garbage" after END <id> 
+// Statements
+#xcommand END <kw:IF,DO,WHILE,FOR,CASE,SEQUENCE,TRY,LOCK,SCOPE,SWITCH,USING,UNSAFE,CHECKED,UNCHECKED,FIXED,WITH> <*any*> => END <kw>
+//  Type keywords 
+#xcommand END <kw:NAMESPACE,CLASS,INTERFACE,ENUM,STRUCTURE,UNION,VOSTRUCT,DEFINE> <*any*> => END <kw>
+//  Member keywords 
+#xcommand END <kw:METHOD,ASSIGN,ACCESS,PROPERTY,EVENT,OPERATOR,FUNCTION,PROCEDURE,CONSTRUCTOR,DESTRUCTOR> <*any*> => END <kw>
+// END accessor keywords followed by "garbage"
+#xcommand END <kw:ADD, REMOVE,GET,SET> <*any*> => END <kw>
+// Specific end keywords  
+#xcommand ENDIF <*any*> => ENDIF 
+#xcommand ENDCASE <*any*> => ENDCASE 
+#xcommand ENDDO <*any*> => ENDDO 
+#xcommand NEXT <*any*> => NEXT
+#xcommand ENDDEFINE <*any*> => ENDDEFINE 
+#xcommand ENDCLASS <*any*> => ENDCLASS 
 #endif	
 
 #ifdef __DIALECT_XBASEPP__
@@ -39,5 +54,8 @@
 #include "FoxProCmd.xh"
 #endif
 
+#include "dbcmd.xh"
+
 #endif
+
 

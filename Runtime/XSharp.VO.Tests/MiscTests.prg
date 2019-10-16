@@ -131,6 +131,38 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			LOCAL cText := "The brown fox does the funny stuff that we all know" AS STRING
 			Assert.Equal(cText , W2String(String2W(cText)))
 
+        [Fact, Trait("Category", "IsObject")];
+		METHOD IsObject_Tests() AS VOID
+			LOCAL u AS USUAL
+            Assert.False(IsObject(u))
+            Assert.False(IsObject(NIL))
+            u := NULL
+            Assert.True(IsObject(u))
+            LOCAL o AS OBJECT
+            Assert.True(IsObject(o))
+            o := NULL
+            Assert.True(IsObject(o))
+            LOCAL t AS System.Collections.ArrayList
+            Assert.True(IsObject(t))
+            t := NULL
+            Assert.True(IsObject(t))
+            t := System.Collections.ArrayList{}
+            Assert.True(IsObject(t))
+
+        [Fact, Trait("Category", "EmptyUsual")];
+		METHOD EmptyUsual_Tests() AS VOID
+			LOCAL u AS USUAL
+			EnforceType(REF u, STRING)
+			Assert.True(u == "")
+			Assert.True(UsualType(u) == STRING)
+
+			#warning Hmmm, in VO EnforceType() can be used also like that and has different behavior when value is passed by reference or by value. Need to look closer into it.
+/*			u := 123
+			EnforceType(REF u, STRING)
+			Assert.True(u == "")
+			Assert.True(UsualType(u) == STRING)*/
+			
+			Assert.True(EmptyUsual(STRING) == "")
 	END CLASS
 
 END NAMESPACE

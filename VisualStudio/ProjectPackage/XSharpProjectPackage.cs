@@ -32,7 +32,7 @@ $=RegistryEntry$	The value of the RegistryEntry entry. If the registry entry str
 $AppName$	        The qualified name of the application that is passed to the AppEnv.dll entry points.
                     The qualified name consists of the application name, an underscore, and the class identifier
                     (CLSID) of the application automation object, which is also recorded as the value of the
-                    ThisVersionDTECLSID setting in the project .pkgdef file.
+                    ThisVersion CLSID setting in the project .pkgdef file.
 $AppDataLocalFolder	The subfolder under %LOCALAPPDATA% for this application.
 $BaseInstallDir$	The full path of the location where Visual Studio was installed.
 $CommonFiles$	    The value of the %CommonProgramFiles% environment variable.
@@ -301,8 +301,14 @@ namespace XSharp.Project
             //
             container.AddService(typeof(IXSharpLibraryManager), callback, true);
             this._documentWatcher = new XSharpDocumentWatcher(this);
-        }
 
+            // determine version of VS
+            object vers;
+            shell.GetProperty((int)__VSSPROPID5.VSSPROPID_ReleaseVersion, out vers);
+
+            VsVersion = vers.ToString();
+        }
+        internal static string VsVersion;
 
         private object CreateService(IServiceContainer container, Type serviceType)
         {

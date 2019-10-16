@@ -56,7 +56,7 @@
     <OutputPath>$(SolutionDir)$(Configuration)</OutputPath>
     <IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\</IntermediateOutputPath>
     <UseSharedCompilation>true</UseSharedCompilation>
-    <DisabledWarnings>9032;9043;618;162;649;9025</DisabledWarnings>
+    <DisabledWarnings>9032;9043;618;162;165;649;9025</DisabledWarnings>
     <WarningLevel>4</WarningLevel>
 ;    <CommandLineOption>/define:__VULCAN__</CommandLineOption>
     <PPO>false</PPO>
@@ -72,7 +72,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <UseSharedCompilation>true</UseSharedCompilation>
-    <DisabledWarnings>9032;9043;618;162;649;9025</DisabledWarnings>
+    <DisabledWarnings>9032;9043;618;162;165;649;9025</DisabledWarnings>
     <PPO>false</PPO>
     <IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\</IntermediateOutputPath>
   </PropertyGroup>

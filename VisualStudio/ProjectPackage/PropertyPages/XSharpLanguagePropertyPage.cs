@@ -40,6 +40,7 @@ namespace XSharp.Project
         internal const string UnsafeCaption = "Allow Unsafe Code";
         internal const string MemVarCaption = "Enable Memvar support";
         internal const string UndeclaredCaption = "Enable Undeclared variables support";
+        internal const string InitLocalsCaption = "Initialize Local variables";
 
         internal const string CSDescription = "Enable/Disable case sensitivity (/cs)";
         internal const string AZDescription = "Use Zero Based Arrays (/az)";
@@ -49,6 +50,7 @@ namespace XSharp.Project
         internal const string NSDescription = "Prefix all classes that do not have a namespace prefix and are not in a begin namespace ... end namespace block with the namespace of the assembly (/ns:<Namespace>)";
         internal const string OVFDescription = "Check for Overflow and Underflow for numeric expressions, like the CHECKED keyword. (/ovf)";
         internal const string UnsafeDescription = "Allow Unsafe code inside this assembly (/unsafe)";
+        internal const string InitLocalsDescription = "Automatically initialize local variables without initialization expression. Please note that for locals of type string the initial value will depend on the 'Initialize strings' setting from the Dialect page.(/initlocals)";
 
         internal const string NoStdDefCaption = "Suppress standard header file";
         internal const string NoStdDefDescription = "Suppress inclusion of the standard header file (XSharpDefs.xh) in every file (/nostddef)";
@@ -70,6 +72,7 @@ namespace XSharp.Project
         private bool @unsafe;
         private bool az;
         private bool cs;
+        private bool initlocals;
         private bool ins;
         private bool lb;
         private bool namedargs;
@@ -130,7 +133,12 @@ namespace XSharp.Project
             get { return this.lb; }
             set { this.lb = value; this.IsDirty = true; }
         }
-
+        [Category(CatGeneral), DisplayName(InitLocalsCaption), Description(InitLocalsDescription)]
+        public bool InitLocals
+        {
+            get { return this.initlocals; }
+            set { this.initlocals = value; this.IsDirty = true; }
+        }
         [Category(CatGeneral), DisplayName(NamedArgCaption), Description(NamedArgDescription)]
         public bool NamedArgs
         {
@@ -226,6 +234,26 @@ namespace XSharp.Project
                         ReadMemvars();
                         Grid.Refresh();
                     }
+                    if (e.PropertyName.ToLower() == "dialect")
+                    {
+                        switch (e.NewValue.ToLower())
+                        {
+                            case "foxpro":
+                                memvar = true;
+                                undeclared = true;
+                                initlocals = true;
+                                break;
+                            case "core":
+                            case "vulcan":
+                                memvar = false;
+                                undeclared = false;
+                                initlocals = false;
+                                break;
+                        }
+                        EnableDisableStandardDefs();
+                        EnableMemVars();
+                        Grid.Refresh();
+                    }
                 }
                 catch (Exception)
                 {
@@ -288,6 +316,7 @@ namespace XSharp.Project
 
             ins = getPrjLogic(nameof(INS), false);
             ns = getPrjLogic(nameof(NS), false);
+            initlocals = getPrjLogic(nameof(InitLocals), false);
 
             nostandarddefs = getPrjLogic(nameof(NoStandardDefs), false);
             includepaths = getPrjString(nameof(IncludePaths), "",true);
@@ -329,6 +358,7 @@ namespace XSharp.Project
             this.ProjectMgr.SetProjectProperty(nameof(StandardDefs), this.standarddefs?.ToString());
             this.ProjectMgr.SetProjectProperty(nameof(MemVar), this.memvar.ToString().ToLower());
             this.ProjectMgr.SetProjectProperty(nameof(Undeclared), this.undeclared.ToString().ToLower());
+            this.ProjectMgr.SetProjectProperty(nameof(InitLocals), this.initlocals.ToString().ToLower());
             saving = false;
             this.IsDirty = false;
 

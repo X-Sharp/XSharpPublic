@@ -32,6 +32,7 @@ BEGIN NAMESPACE XSharpModel
 		PROPERTY DisableLexing AS LOGIC GET false
 		PROPERTY DisableParsing AS LOGIC GET false
 		PROPERTY KeywordsUppercase AS LOGIC GET TRUE
+        PROPERTY Dialect as XSHarpDialect GET XSharpDialect.Core
 	#endregion
         PRIVATE _parseOptions as XSharpParseOptions
 		CONSTRUCTOR()

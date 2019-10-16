@@ -20,6 +20,7 @@
     #define FILEVERSION_NUMBER       2,0,8,0
     #define FILEVERSION_NUMBER_STR   "2.0.8.0"
     #define INFORMATIONAL_NUMBER_STR  "2.08 GA"
+
     #ifdef __DEBUG__
         #define ASSEMBLY_CONFIGURATION "Debug"
     #else

@@ -18,6 +18,7 @@ BEGIN NAMESPACE XSharpModel
 		PRIVATE _stype	 AS System.Type
 		PRIVATE _xtype	 AS XType
 
+
 		// Methods
 		CONSTRUCTOR()
 			SUPER()
@@ -125,9 +126,15 @@ BEGIN NAMESPACE XSharpModel
 			ENDIF
 
 		PRIVATE METHOD CheckType(typeName AS STRING, xFile AS XFile, usings AS IList<STRING>) AS VOID
+			LOCAL isArray AS LOGIC
 			//
 			SELF:_file := xFile
 			LOCAL stype AS System.Type
+			//
+			IF typeName.EndsWith("[]")
+				typeName := typeName.Substring(0, typeName.Length - 2)
+				isArray := TRUE
+			ENDIF
 			// prevent lookup from simple types
 			stype := SimpleTypeToSystemType(typeName)
 			IF sType != NULL
@@ -253,6 +260,9 @@ BEGIN NAMESPACE XSharpModel
 
 		// Properties
 		PROPERTY File AS XFile GET SELF:_file
+
+		PROPERTY IsArray AS LOGIC AUTO
+		PROPERTY ElementType AS CompletionType AUTO
 
 		PROPERTY FullName AS STRING
 			GET

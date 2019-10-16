@@ -4,7 +4,6 @@ XSharp Development branch
 This is the development branch of the Compiler.
 Apart from the compiler this repository also has the source to:
 - Documentation
-- Installer
 
 The Roslyn folder contains (modified) source from Roslyn
 The XSharp folder contains our own source for the compiler, documentation  and other components
@@ -28,7 +27,7 @@ After retrieving this source code, you need to perform the following steps to be
   x MsBuild Roslyn.sln to build everything
 - Then navigate to the XSharp folder
 - Run Restore.cmd to restore the nuget packages. This will also call Rebuild.Cmd that will build a Debug AND Release version.
-- If you want to you can also build either for Debug or for Release with the build.cmd. Add the configuration name: Build Debug.
+- If you want to you can also build either for Debug, Public or for Release with the build.cmd. Add the configuration name: Build Debug.
   The separate Build.cmd will not clean old results and will only build changed code.
   In all cases the log file of the build process will be written into build-debug.log  or build-release.log 
   

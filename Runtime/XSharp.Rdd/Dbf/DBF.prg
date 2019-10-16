@@ -12,10 +12,11 @@ USING XSharp.RDD.Enums
 USING XSharp.RDD.Support
 USING System.Globalization
 USING System.Collections.Generic
-
+USING System.Diagnostics
 
 BEGIN NAMESPACE XSharp.RDD
     /// <summary>DBF RDD. Usually not used 'stand alone'</summary>
+[DebuggerDisplay("DBF ({Alias,nq})")];
 PARTIAL CLASS DBF INHERIT Workarea IMPLEMENTS IRddSortWriter
 #region STATIC properties and fields
         STATIC PROTECT _Extension := ".DBF" AS STRING
@@ -70,7 +71,13 @@ PARTIAL CLASS DBF INHERIT Workarea IMPLEMENTS IRddSortWriter
         PROTECT PROPERTY IsOpen AS LOGIC GET SELF:_hFile != F_ERROR
         PROTECT PROPERTY HasMemo AS LOGIC GET SELF:_hasMemo
         PROTECT PROPERTY Memo AS BaseMemo GET (BaseMemo) SELF:_Memo
-	
+
+INTERNAL METHOD _CheckEofBof() AS VOID
+    IF SELF:RecCount == 0
+       SELF:_EoF := TRUE
+       SELF:_Bof := TRUE
+    ENDIF
+
 PRIVATE METHOD _AllocateBuffers() AS VOID
 	SELF:_RecordBuffer  := BYTE[]{ SELF:_RecordLength}
 	SELF:_BlankBuffer   := BYTE[]{ SELF:_RecordLength}
@@ -101,8 +108,10 @@ METHOD GoTop() AS LOGIC
 			SELF:_Bottom := FALSE
 			SELF:_BufferValid := FALSE
                 // Apply Filter and SetDeleted
-			RETURN SkipFilter(1)
-		END LOCK
+			VAR result := SkipFilter(1)
+            SELF:_CheckEofBof()
+            RETURN result
+        END LOCK
 	ENDIF
 RETURN FALSE
 
@@ -115,8 +124,10 @@ METHOD GoBottom() AS LOGIC
 			SELF:_Bottom := TRUE
 			SELF:_BufferValid := FALSE
             // Apply Filter and SetDeleted
-			RETURN SkipFilter(-1)
-		END LOCK
+			VAR result := SkipFilter(-1)
+            SELF:_CheckEofBof()
+            RETURN result
+        END LOCK
 	ENDIF
 RETURN FALSE
 
@@ -140,7 +151,7 @@ METHOD GoTo(nRec AS LONG) AS LOGIC
                 //SELF:_Found :=TRUE    
 				SELF:_BufferValid := FALSE
 				SELF:_isValid := TRUE
-			ELSEIF nRec < 0 .and. nCount > 0
+			ELSEIF nRec < 0 .AND. nCount > 0
                 // skip to BOF. Move to record 1. 
 				SELF:_RecNo := 1
 				SELF:_EOF := FALSE
@@ -156,10 +167,14 @@ METHOD GoTo(nRec AS LONG) AS LOGIC
 				SELF:_Found := FALSE
 				SELF:_BufferValid := FALSE
 				SELF:_isValid := FALSE
-			ENDIF
+            ENDIF
+            IF SELF:_Relations:Count != 0
+                SELF:SyncChildren()
+            ENDIF
+            SELF:_CheckEofBof()
 			RETURN TRUE
 		END LOCK
-	ENDIF
+    ENDIF
 RETURN FALSE
 
 /// <inheritdoc />
@@ -173,7 +188,8 @@ METHOD GoToId(oRec AS OBJECT) AS LOGIC
 			SELF:_dbfError(ex, SubCodes.EDB_GOTO,GenCode.EG_DATATYPE,  "DBF.GoToId") 
 			result := FALSE
 		END TRY
-	END LOCK
+    END LOCK
+    SELF:_CheckEofBof()
 RETURN result
 
 /// <inheritdoc />
@@ -205,8 +221,9 @@ METHOD Skip(nToSkip AS INT) AS LOGIC
 			ELSEIF nToSkip > 0 
 				SELF:_Bof := FALSE
 			ENDIF
-		ENDIF
+        ENDIF
 	ENDIF
+    SELF:_CheckEofBof()
 RETURN result
 
 
@@ -230,7 +247,8 @@ METHOD SkipRaw(nToSkip AS INT) AS LOGIC
             isOk := SELF:Goto( 1 )
             SELF:_Bof := TRUE
         ENDIF
-	ENDIF
+    ENDIF
+    SELF:_CheckEofBof()
 RETURN isOK 
 
 
@@ -639,7 +657,7 @@ METHOD Delete() AS LOGIC
 			ENDIF
 		ELSE
         // VO does not report an error when deleting on an invalid record
-			isOk := TRUE // SELF:_DbfError( ERDD.READ, XSharp.Gencode.EG_READ )
+			isOk := TRUE // SELF_DbfError( ERDD.READ, XSharp.Gencode.EG_READ )
 		ENDIF
 	END LOCK
 RETURN isOk
@@ -729,6 +747,7 @@ METHOD Pack() AS LOGIC
 		SELF:_Hot := FALSE
 		SELF:_UpdateRecCount(nTotal)
 		SELF:Flush()
+        SELF:_CheckEofBof()
         //
 	ENDIF
 RETURN isOk
@@ -765,7 +784,8 @@ METHOD Zap() AS LOGIC
 				RETURN SUPER:Zap()
 			ENDIF
 		ENDIF
-	ENDIF
+        SELF:_CheckEofBof()
+    ENDIF
 RETURN isOk
 
     // Open and Close
@@ -1469,7 +1489,7 @@ METHOD GetValue(nFldPos AS LONG) AS OBJECT
             // do not call _Memo for empty values. Memo columns return an empty string for the empty value
 			ret := oColumn:EmptyValue()
 		ELSE
-			SELF:_DbfError( ERDD.READ, XSharp.Gencode.EG_READ )
+			SELF:_DbfError( Subcodes.ERDD_READ, XSharp.Gencode.EG_READ ,"DBF.GetValue")
 		ENDIF
 	ENDIF
 RETURN ret
@@ -1582,9 +1602,11 @@ PROPERTY IsNewRecord AS LOGIC GET SELF:_NewRecord
 	
 /// <inheritdoc />
 METHOD PutValue(nFldPos AS LONG, oValue AS OBJECT) AS LOGIC
-	SELF:ForceRel()
+    LOCAL ret := FALSE AS LOGIC
+    SELF:ForceRel()
 	IF SELF:_readRecord()
         // GoHot() must be called first because this saves the current index values
+    	ret := TRUE
 		IF ! SELF:_Hot
 			SELF:GoHot()
 		ENDIF
@@ -1596,13 +1618,16 @@ METHOD PutValue(nFldPos AS LONG, oValue AS OBJECT) AS LOGIC
 					oColumn:PutValue(SELF:Memo:LastWrittenBlockNumber, SELF:_RecordBuffer)
 				ENDIF
 			ELSE
-				RETURN SUPER:PutValue(nFldPos, oValue)
+				ret := SUPER:PutValue(nFldPos, oValue)
 			ENDIF
 		ELSE
-			oColumn:PutValue(oValue, SELF:_RecordBuffer)
+			ret := oColumn:PutValue(oValue, SELF:_RecordBuffer)
 		ENDIF
-	ENDIF
-RETURN TRUE
+    ENDIF
+    IF ! ret
+        SELF:_dbfError(Subcodes.ERDD_WRITE, Gencode.EG_WRITE,"DBF.PutValue")
+    ENDIF
+RETURN ret
 
     /// <inheritdoc />
 METHOD PutValueFile(nFldPos AS LONG, fileName AS STRING) AS LOGIC
@@ -1700,11 +1725,14 @@ METHOD OrderListRebuild() AS LOGIC
 	ENDIF
     /// <inheritdoc />
 METHOD Seek(info AS DbSeekInfo) AS LOGIC
+    LOCAL result as LOGIC
 	IF _oIndex != NULL
-		RETURN _oIndex:Seek(info)
+		result := _oIndex:Seek(info)
 	ELSE
-		RETURN SUPER:Seek(info)
-	ENDIF
+		result := SUPER:Seek(info)
+    ENDIF
+    SELF:_CheckEofBof()
+    RETURN result
 	
     // Relations
     /// <inheritdoc />
@@ -1775,7 +1803,11 @@ VIRTUAL METHOD Compile(sBlock AS STRING) AS ICodeblock
 	LOCAL result AS ICodeblock
 	result := SUPER:Compile(sBlock)
 	IF result == NULL
-		SELF:_dbfError( SubCodes.EDB_EXPRESSION, GenCode.EG_SYNTAX,"DBF.Compile")
+        var msg := "Could not compile epression '"+sBlock+"'"
+        if (runtimestate:LastRddError != NULL_OBJECT)
+            msg += "("+runtimestate:LastRddError:Message+")"
+        ENDIF
+		SELF:_dbfError( SubCodes.EDB_EXPRESSION, GenCode.EG_SYNTAX,"DBF.Compile", msg )
 	ENDIF
 RETURN result
 

@@ -409,17 +409,12 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
                 info:Result  := NULL
             ELSE
                 LOCAL wScopeOption AS WORD
-                wScopeOption  := IIF(nOrdinal != DBOI_SCOPEBOTTOM , 1 , 2)
-                IF (info:Result != NULL)
-                    RETURN SELF:oRDD:_SetScope(hIndex, wScopeOption, info:Result)
+                wScopeOption  := IIF(nOrdinal != DBOI_SCOPEBOTTOM , ACE.ADS_TOP , ACE.ADS_BOTTOM)
+                IF info:Result != NULL
+                    RETURN SELF:oRDD:_SetScope(hIndex, wScopeOption, FALSE, info:Result)
                 ENDIF
-                num     := SELF:oRDD:_MaxKeySize +1
-                chars   := CHAR[]{ SELF:oRDD:_MaxKeySize +1}
-                result := ACE.AdsGetScope(hIndex, wScopeOption, chars, REF num)
-                IF result != ACE.AE_NO_SCOPE .AND. result != 0
-                    SELF:_CheckError(result, EG_ARG)
-                ENDIF
-                info:Result := SELF:oRDD:_Ansi2Unicode(chars, num)
+                
+                info:Result := SELF:oRDD:_GetScope(hIndex, wScopeOption)
            ENDIF            
     CASE DBOI_SCOPETOPCLEAR
     CASE DBOI_SCOPEBOTTOMCLEAR
@@ -427,9 +422,9 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
                 info:Result  := FALSE
             ELSE
                 LOCAL wScopeOption AS WORD
-                wScopeOption  := IIF(nOrdinal != DBOI_SCOPEBOTTOMCLEAR , 1 , 2)
+                wScopeOption  := IIF(nOrdinal != DBOI_SCOPEBOTTOMCLEAR , ACE.ADS_TOP , ACE.ADS_BOTTOM)
                 info:Result := NULL
-                RETURN SELF:oRDD:_SetScope(hIndex, wScopeOption, info:Result)
+                RETURN SELF:oRDD:_SetScope(hIndex, wScopeOption, TRUE, info:Result)
             ENDIF            
     CASE DBOI_SKIPUNIQUE
            IF hIndex == IntPtr.Zero

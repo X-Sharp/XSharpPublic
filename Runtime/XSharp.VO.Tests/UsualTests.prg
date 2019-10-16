@@ -78,7 +78,10 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal(l,1)
 			Assert.Equal(l,  (LONG) u)
 			u := UInt32.MaxValue
+            var previous := RuntimeState.CompilerOptionOVF
+            RuntimeState.CompilerOptionOVF := TRUE
 			Assert.Throws(TYPEOF(Error), { => l := (LONG) u})	// Overflow Error
+            RuntimeState.CompilerOptionOVF := previous
 			u := "a text"
 			Assert.Throws(TYPEOF(Error), { => l := (LONG) u})	// Conversion Error
 			

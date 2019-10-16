@@ -468,15 +468,15 @@ METHOD Delete()
 	ENDIF
 	nType := SELF:__FigureScrollUpdateType()
 	cQuote := oStmt:__Connection:IdentifierQuoteChar
-	DO CASE
-	CASE nType = SQL_SC_UPD_CURSOR
+	SWITCH nType
+	CASE SQL_SC_UPD_CURSOR
 
 		SELF:__GetCursorName()
 
 		sDelete := "delete from " + cTableName + " where current of " + cCursor
 
 
-	CASE nType = SQL_SC_UPD_KEY
+	CASE SQL_SC_UPD_KEY
 		IF ALen( aIndexCol ) = 0
 			oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__NO_KEY ), #Delete )
 			RETURN FALSE
@@ -494,7 +494,7 @@ METHOD Delete()
          ENDIF
       NEXT
 
-	CASE nType = SQL_SC_UPD_VALUE
+	CASE SQL_SC_UPD_VALUE
 		sDelete := "delete from " + cTableName + " where "
 		//aDataBuffer := aSQLDataBuffer[nBuffIndex, SQL_DATA_BUFFER]
 		aDataBuffer	  := SELF:aOriginalRecord
@@ -511,7 +511,7 @@ METHOD Delete()
             sDelete += " and "
          ENDIF
       NEXT
-	ENDCASE
+	END SWITCH
 
 	oDelete := oConn:__GetExtraStmt(sDelete)
 
@@ -767,8 +767,8 @@ METHOD ExtendedFetch( nFetchType, nRow )
 									@nRowStatus )
 
 	IF nRetCode = SQL_NO_DATA_FOUND
-		DO CASE
-		CASE nFetchType = SQL_FETCH_NEXT
+		SWITCH (LONG) nFetchType
+		CASE SQL_FETCH_NEXT
 			SELF:__SetRecordFlags( NIL, TRUE )
 			IF !SELF:lLastRecFound
 				SELF:nLastRecnum := SELF:nRecnum
@@ -778,19 +778,20 @@ METHOD ExtendedFetch( nFetchType, nRow )
 				__SQLOutputDebug( "** SQLSelect:ExtendedFetch( NEXT ) EOF!, last record found!" )
 			#ENDIF
 
-		CASE nFetchType = SQL_FETCH_PREV
+		CASE SQL_FETCH_PREV
 			SELF:__SetRecordFlags( TRUE, NIL )
 			#IFDEF __DEBUG__
 				__SQLOutputDebug( "** SQLSelect:ExtendedFetch( PREV ) BOF!" )
 			#ENDIF
 
-		CASE nFetchType = SQL_FETCH_FIRST .OR. nFetchType = SQL_FETCH_LAST
+		CASE SQL_FETCH_FIRST 
+		CASE SQL_FETCH_LAST
 			SELF:__SetRecordFlags( TRUE, TRUE)
 			#IFDEF __DEBUG__
 				__SQLOutputDebug( "** SQLSelect:ExtendedFetch() BOF & EOF!" )
 			#ENDIF
 
-		CASE nFetchType = SQL_FETCH_RELATIVE
+		CASE SQL_FETCH_RELATIVE
 			IF nRow > 0
 				SELF:__SetRecordFlags( NIL, TRUE )
 				#IFDEF __DEBUG__
@@ -802,7 +803,7 @@ METHOD ExtendedFetch( nFetchType, nRow )
 					__SQLOutputDebug( "** SQLSelect:ExtendedFetch( -REL ) BOF!" )
 				#ENDIF
 			ENDIF
-		ENDCASE
+		END SWITCH
 		lFetchFlag := TRUE   // say we attempted to fetch
 		IF SELF:lBof .AND. !SELF:lEof
 			// position csr on the first row...
@@ -931,37 +932,37 @@ METHOD ExtendedFetch( nFetchType, nRow )
 	SELF:lFetchFlag  := TRUE
 	SELF:lRowModified:= FALSE
 	SELF:nRowCount   := -1
-	DO CASE
-	CASE nFetchType = SQL_FETCH_NEXT
+	SWITCH (LONG) nFetchType
+	CASE SQL_FETCH_NEXT
 		++nRecNum
 		SELF:Notify( NOTIFYRECORDCHANGE, 1 )
 
-	CASE nFetchType = SQL_FETCH_PREV
+	CASE SQL_FETCH_PREV
 		IF ! lAppended  //  appended already restored recnum
 			--nRecNum
 		ENDIF
 		SELF:Notify( NOTIFYRECORDCHANGE, -1 )
 
-	CASE nFetchType = SQL_FETCH_FIRST
+	CASE SQL_FETCH_FIRST
 		nRecNum := 1
 		IF SELF:nLastRecnum = -1
 			SELF:nLastRecnum := 1
 		ENDIF
 		SELF:Notify( NOTIFYGOTOP )
 
-	CASE nFetchType = SQL_FETCH_LAST
+	CASE SQL_FETCH_LAST
 		nRecNum := SELF:nLastRecNum
 		SELF:Notify( NOTIFYGOBOTTOM )
 
-	CASE nFetchType = SQL_FETCH_ABSOLUTE
+	CASE SQL_FETCH_ABSOLUTE
 		nRecNum := nRow
 		SELF:Notify( NOTIFYRECORDCHANGE )
 
-	CASE nFetchType = SQL_FETCH_RELATIVE
+	CASE SQL_FETCH_RELATIVE
 		nRecNum += nRow
 		SELF:Notify( NOTIFYRECORDCHANGE, nRow )
 
-	ENDCASE
+	END SWITCH
 
 	IF !SELF:lLastRecFound
 		IF SELF:nRecnum > SELF:nLastRecNum
@@ -1060,18 +1061,18 @@ METHOD FIELDGET( uField )
 		xRet := SELF:GetData( nIndex )
 		IF xRet = NIL .AND. SELF:lNullAsBlank
 			cType := ((FieldSpec)SELF:FieldSpec( uField )):ValType
-			DO CASE
-			CASE cType == "C"
+			SWITCH cType
+			CASE "C"
 				xRet := NULL_STRING
-			CASE cType == "D"
+			CASE "D"
 				xRet := NULL_DATE
-			CASE cType == "L"
+			CASE  "L"
 				xRet := FALSE
-			CASE cType == "M"
+			CASE  "M"
 				xRet := NULL_STRING
-			CASE cType == "N"
+			CASE  "N"
 				xRet := 0
-			ENDCASE
+			END SWITCH
 		ELSE
 			nType := UsualType( xRet )
 			IF nType == LONGINT

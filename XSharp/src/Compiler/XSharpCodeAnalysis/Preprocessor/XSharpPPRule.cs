@@ -1246,7 +1246,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     // 
                     // Get sublist of optional token and match with source
                     var optional = mToken.Children;
-                    bool optfound = true;
+                    bool optfound = false;
                     int iOriginal = iSource;
                     iChild = 0;
                     var children = matchInfo[mToken.Index].Children;
@@ -1272,6 +1272,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 optfound = false;
                             }
                             break;
+                        }
+                        else
+                        {
+                            optfound = true;
                         }
                     }
                     if (optfound)

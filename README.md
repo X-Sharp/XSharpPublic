@@ -5,6 +5,8 @@ This is the development branch of the Compiler.
 Apart from the compiler this repository also has the source to:
 - Documentation
 
+The source code for the Runtime, VsIntegration and tools is on https://github.com/X-Sharp/XSharpPublic/
+
 The Roslyn folder contains (modified) source from Roslyn
 The XSharp folder contains our own source for the compiler, documentation  and other components
 

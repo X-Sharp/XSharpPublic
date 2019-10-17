@@ -16,11 +16,11 @@ FUNCTION MemoTran(cTarget ,cReplaceHardCR ,cReplaceSoftCR ) AS STRING CLIPPER
    ENDIF
 
    IF cTarget == NIL .OR. ! cTarget:IsString
-      THROW Error.ArgumentError( __ENTITY__, "cTarget", 1, <OBJECT>{ cTarget } )
+      THROW Error.ArgumentError( __ENTITY__, nameof(cTarget), 1, <OBJECT>{ cTarget } )
    ELSEIF ! cReplaceHardCR:IsString
-      THROW Error.ArgumentError( __ENTITY__, "cReplaceHardCR", 2, <OBJECT>{ cReplaceHardCR } )
+      THROW Error.ArgumentError( __ENTITY__, nameof(cReplaceHardCR), 2, <OBJECT>{ cReplaceHardCR } )
    ELSEIF ! cReplaceSoftCR:IsString
-      THROW Error.ArgumentError( __ENTITY__, "cReplaceSoftCR", 3, <OBJECT>{ cReplaceSoftCR } )
+      THROW Error.ArgumentError( __ENTITY__, nameof(cReplaceSoftCR), 3, <OBJECT>{ cReplaceSoftCR } )
    ENDIF
    LOCAL cSrc := cTarget AS STRING
     cSrc := cSrc:Replace( e"\r\n" , cReplaceHardCR )

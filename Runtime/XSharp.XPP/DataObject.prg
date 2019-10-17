@@ -128,15 +128,17 @@ CLASS XSharp.XPP.DataObject INHERIT XSharp.XPP.Abstract
    /// Once a method is defined using defineMethod(), calls to the new method no longer cause noMethod() to be executed.
    /// Consequently, overriding noMethod() in a derived class is not required for adding methods to DataObject instances. 
    /// </remarks>
-   OVERRIDE METHOD NoMethod(cName, uParams) AS USUAL CLIPPER
+   OVERRIDE METHOD NoMethod(uParams) AS USUAL CLIPPER
         LOCAL aParams AS USUAL[]
-        IF SELF:_methods:ContainsKey(cName)
-            aParams := USUAL[]{ PCOunt() }
+        LOCAL cMethod AS STRING
+        cMethod := RuntimeState.NoMethod
+        IF SELF:_methods:ContainsKey(cMethod)
+            aParams := USUAL[]{ PCOunt() +1}
             // The pseudo function _ARGS() returns the Clipper arguments array
-            System.Array.Copy(_ARGS(), 1, aParams, 1, PCount()-1)
-            aparams[1] := SELF
+            System.Array.Copy(_ARGS(), 0, aParams, 1, PCount())
+            aParams[1] := SELF
             LOCAL action AS USUAL
-            action := SELF:_methods[cName]
+            action := SELF:_methods[cMethod]
             IF IsString(action)
                 RETURN _CallClipFunc(action, aParams)
             ELSEIF IsCodeBlock(action)

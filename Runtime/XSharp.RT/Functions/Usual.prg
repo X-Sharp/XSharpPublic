@@ -154,7 +154,7 @@ FUNCTION Len(uValue AS USUAL) AS DWORD
 	ELSEIF uValue:IsString
 		RETURN (DWORD) ((STRING) uValue):Length
 	ELSE
-		THROW Error.DataTypeError(__ENTITY__, uValue, 1, uValue)
+		THROW Error.DataTypeError(__ENTITY__, nameof(uValue), 1, uValue)
 	ENDIF
 
 
@@ -186,7 +186,7 @@ FUNCTION EnforceNumeric(u REF USUAL) AS VOID
 	IF u:IsNil
 		u := 0
 	ELSEIF ! u:IsNumeric
-		THROW Error.DataTypeError(__ENTITY__, u, 1, u)
+		THROW Error.DataTypeError(__ENTITY__, nameof(u), 1, u)
 	ENDIF
 	RETURN  
 
@@ -202,6 +202,6 @@ FUNCTION EnforceType(u REF USUAL, dwType AS DWORD) AS VOID
 		u := EmptyUsual(dwType)
 	ELSEIF UsualType(u) != dwType
         VAR cMessage := "Expected type: " + ((__UsualType) dwType):ToString()+" actual type "+ ((__UsualType) UsualType(u)):ToString()
-		THROW Error.DataTypeError(ProcName(1), u, 1, u, cMessage)
+		THROW Error.DataTypeError(ProcName(1), nameof(u), 1, u, cMessage)
 	ENDIF
 	RETURN  

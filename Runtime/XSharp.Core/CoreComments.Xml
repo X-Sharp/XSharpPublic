@@ -134,7 +134,7 @@
     </span>
   </TrueOrFalse>
   <ScopeInfo>
-    <summary>Scope value for DbScope(), DbSetScope() and DbClearScope().</summary>
+    <summary>Scope value for <c>DbScope()</c>, <c>DbSetScope()</c> and <c>DbClearScope()</c>.</summary>
     <seealso cref='M:XSharp.RT.Functions.DbScope(XSharp.__Usual)' >DbScope()</seealso>
     <seealso cref='M:XSharp.RT.Functions.DbSetScope(System.Int32,XSharp.__Usual)' >DbSetScope()</seealso>
     <seealso cref='M:XSharp.RT.Functions.DbClearScope(XSharp.__Usual)' >DbClearScope()</seealso>
@@ -191,5 +191,21 @@
       </list>
 
     </span>
-  </Collation>
+  </Collation>  
+  <PerThread>
+    <remarks>
+      <note type="tip">This value is 'per thread'. New threads inherit the settings from the main thread. Changes to this setting are visible to code in the same thread only.</note>
+    </remarks>
+  </PerThread>
+  <CompilerOptions>
+     <remarks> This value gets assigned in the startup code for applications that are not in the Core dialect.<br/>
+     If your main app is not written in XSharp then this setting will have its default value.<br/>
+      <note type="tip">This value is NOT 'per thread' but global for all threads.</note>
+    </remarks>
+    <seealso cref="P:XSharp.RuntimeState.CompilerOptionVO11" />
+    <seealso cref="P:XSharp.RuntimeState.CompilerOptionVO13" />
+    <seealso cref="P:XSharp.RuntimeState.CompilerOptionOVF" />
+    <seealso cref="P:XSharp.RuntimeState.CompilerOptionFOVF" />
+    <seealso cref="P:XSharp.RuntimeState.Dialect" />
+  </CompilerOptions>
 </Comments>

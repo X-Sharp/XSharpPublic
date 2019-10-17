@@ -1252,7 +1252,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     var children = matchInfo[mToken.Index].Children;
                     PPMatchRange[] copyMatchInfo = new PPMatchRange[matchInfo.Length];
                     Array.Copy(matchInfo, copyMatchInfo, matchInfo.Length);
-                    while (iChild < optional.Length && iSource < tokens.Count && optfound)
+                    while (iChild < optional.Length && iSource < tokens.Count )
                     {
                         var mchild = optional[iChild];
                         if (!matchToken(mchild, ref iChild, matchInfo.Length, ref iSource, tokens, copyMatchInfo, matchedWithToken))

@@ -74475,9 +74475,9 @@ FileType = Code
 CopyToBin = 0
 [C684 - Problem with (DWORD), (INT) conversion References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.0.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.0.0.0
-ReferenceGAC = CLR4,XSharp.VO,1,0,2.0.0.0
+ReferenceGAC = XSharp.Core,1,0,2.0.0.0
+ReferenceGAC = XSharp.RT,1,0,2.0.0.0
+ReferenceGAC = XSharp.VO,1,0,2.0.0.0
 [C684 - Problem with (DWORD), (INT) conversion Resources]
 [C684 - Problem with (DWORD), (INT) conversion Native Resources]
 [C684 - Problem with (DWORD), (INT) conversion License files]
@@ -74795,9 +74795,9 @@ FileType = Code
 CopyToBin = 0
 [C687 - Problems with undeclared vars/PUBLICs/PRIVATEs in VFP dialect References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.0.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.0.0.0
-ReferenceGAC = CLR4,XSharp.VO,1,0,2.0.0.0
+ReferenceGAC = XSharp.Core,1,0,2.0.0.0
+ReferenceGAC = XSharp.RT,1,0,2.0.0.0
+ReferenceGAC = XSharp.VO,1,0,2.0.0.0
 [C687 - Problems with undeclared vars/PUBLICs/PRIVATEs in VFP dialect Resources]
 [C687 - Problems with undeclared vars/PUBLICs/PRIVATEs in VFP dialect Native Resources]
 [C687 - Problems with undeclared vars/PUBLICs/PRIVATEs in VFP dialect License files]
@@ -74814,7 +74814,7 @@ VO5=0
 VO6=0
 VO7=0
 VO8=0
-VO9=0
+VO9=1
 VO10=0
 VO11=0
 VO12=0
@@ -74907,9 +74907,9 @@ FileType = Code
 CopyToBin = 0
 [C688 - Another PUBLIC/PRIVATE FoxPro sample References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.0.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.0.0.0
-ReferenceGAC = CLR4,XSharp.VFP,1,0,2.0.0.0
+ReferenceGAC = XSharp.Core,1,0,2.0.0.0
+ReferenceGAC = XSharp.RT,1,0,2.0.0.0
+ReferenceGAC = XSharp.VFP,1,0,2.0.0.0
 [C688 - Another PUBLIC/PRIVATE FoxPro sample Resources]
 [C688 - Another PUBLIC/PRIVATE FoxPro sample Native Resources]
 [C688 - Another PUBLIC/PRIVATE FoxPro sample License files]
@@ -75120,9 +75120,9 @@ FileType = Code
 CopyToBin = 0
 [R690 Missing Out parameters and default values References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.0.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.0.0.0
-ReferenceGAC = CLR4,XSharp.VO,1,0,2.0.0.0
+ReferenceGAC = XSharp.Core,1,0,2.0.0.0
+ReferenceGAC = XSharp.RT,1,0,2.0.0.0
+ReferenceGAC = XSharp.VO,1,0,2.0.0.0
 [R690 Missing Out parameters and default values Resources]
 [R690 Missing Out parameters and default values Native Resources]
 [R690 Missing Out parameters and default values License files]

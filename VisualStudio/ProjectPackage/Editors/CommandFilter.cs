@@ -51,6 +51,7 @@ namespace XSharp.Project
         IBufferTagAggregatorFactoryService _aggregator;
         OptionsPages.IntellisenseOptionsPage _optionsPage;
         List<int> _linesToSync;
+        bool _suspendSync = false;
         private static System.Globalization.TextInfo txtInfo = new System.Globalization.CultureInfo("en-US", false).TextInfo;
 
 
@@ -99,6 +100,8 @@ namespace XSharp.Project
         private void _classifier_ClassificationChanged(object sender, ClassificationChangedEventArgs e)
         {
             XSharpProjectPackage.Instance.DisplayOutPutMessage("CommandFilter.ClassificationChanged()");
+            if (_suspendSync)
+                return;
             if (_linesToSync.Count > 0)
             {
                 int[] lines;
@@ -373,10 +376,13 @@ namespace XSharp.Project
 
         private void registerLineForCaseSync(int line)
         {
-            lock (_linesToSync)
+            if (!_suspendSync)
             {
-                if (!_linesToSync.Contains(line))
-                    _linesToSync.Add(line);
+                lock (_linesToSync)
+                {
+                    if (!_linesToSync.Contains(line))
+                        _linesToSync.Add(line);
+                }
             }
         }
         private void Textbuffer_Changed(object sender, TextContentChangedEventArgs e)
@@ -601,7 +607,23 @@ namespace XSharp.Project
                             break;
 #if SMARTINDENT
                         case VSConstants.VSStd2KCmdID.FORMATDOCUMENT:
-                            FormatDocument();
+                            try
+                            {
+                                lock (_linesToSync)
+                                {
+                                    _suspendSync = true;
+                                    _linesToSync.Clear();
+                                }
+                                FormatDocument();
+                            }
+                            finally
+                            {
+                                lock (_linesToSync)
+                                {
+                                    _linesToSync.Clear();
+                                    _suspendSync = false;
+                                }
+                            }
                             break;
 #endif
                         case VSConstants.VSStd2KCmdID.RETURN:

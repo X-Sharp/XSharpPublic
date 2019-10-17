@@ -1162,7 +1162,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             if (t.Type == ALIAS )
             {
                 // ALIAS after keyword, then the keyword should be the name of a workarea. For example EVENT->DATE
-                if (IsKeyword(LastToken))
+                if (IsKeyword(LastToken) && LastToken != FIELD && LastToken != MEMVAR)
                 {
                     _lastToken.Type = ID;
                 }

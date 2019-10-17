@@ -502,10 +502,44 @@ FUNCTION DbSetDriver(cNewSetting) AS STRING CLIPPER
     
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbsetfilter/*" /> 
 FUNCTION DbSetFilter(cbCondition, cCondition) AS LOGIC CLIPPER
-    IF cCondition:IsNil
-        cCondition := "UNKNOWN"
-    ENDIF
-    RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.SetFilter(cbCondition, cCondition) )
+    local sCondition as string
+    if PCount() == 0 .or. (cbCondition:IsNil .and. cCondition:IsNil)
+        return DbClearFilter()
+    endif
+    // Only one parameter passed and it is a string
+    // Move it to the second parameter and clear the first parameter
+    IF cbCondition:IsString .and. PCount() == 1
+        cCondition  := cbCondition
+        cbCondition := NIL
+    endif
+    // Create Compiled codeblock from String
+    IF cbCondition:IsNil
+        EnForceType(cCondition, STRING)
+        sCondition := cCondition
+        sCondition := sCondition:Trim()
+        if !sCondition:StartsWith("{||")
+            cbCondition := &("{||"+scondition+"}")
+        else
+            cbCondition := &(cCondition)
+        endif
+    endif
+    // Todo : Extract the string from compiled codeblocks
+    if cCondition:IsNil
+        local oBlock as Object
+        EnForceType(cbCondition, CODEBLOCK)
+        oBlock := cbCondition
+        // When the codeblock is a macro compiled codeblock
+        if oBlock IS XSharp._Codeblock VAR cbMacro
+            sCondition := cbMacro:ToString():Trim()
+            if sCondition:StartsWith("{||") .and. sCondition:EndsWith("}")
+                sCondition := sCondition:Substring(3, sCondition:Length-4):Trim()
+            endif
+            cCondition := sCondition
+        else
+            cCondition := "UNKNOWN"
+        endif
+    endif
+    return _DbThrowErrorOnFailure(__FUNCTION__, VoDb.SetFilter(cbCondition, cCondition) )
     
     
     

@@ -13,7 +13,7 @@ INTERNAL STATIC CLASS TransFormHelpers
         MEMBER None        := 0
         MEMBER Left        := 1
         MEMBER Credit      := 2
-        MEMBER Date        := 4
+        MEMBER @@Date      := 4
         MEMBER British     := 8
         MEMBER NonTemplate := 16
         MEMBER Debit       := 32
@@ -289,7 +289,7 @@ INTERNAL STATIC CLASS TransFormHelpers
         ELSE
             LOCAL aTemp AS STRING[]
             aTemp    := STRING[]{5}
-            IF InStr("L", cPic) .OR. Instr("L", cFunc)
+            IF Instr("L", cPic) .OR. Instr("L", cFunc)
                 aTemp[1] := "TRUE"
                 aTemp[2] := ".T."
                 aTemp[3] := "T"
@@ -317,7 +317,7 @@ INTERNAL STATIC CLASS TransFormHelpers
                         IF nValIdx > nValueLen
                             EXIT
                         ENDIF
-                        IF InStr(cPic:SubString(n-1,1),"YL")
+                        IF Instr(cPic:SubString(n-1,1),"YL")
                             cChar := cValue:SubString(nValIdx-1,1)
                             nTemp := Array.IndexOf(aTemp, Upper(cChar) )+1
                             IF nTemp > 0
@@ -549,6 +549,7 @@ INTERNAL STATIC CLASS TransFormHelpers
         //
         LOCAL nPicFunc          AS TransformPictures
         LOCAL cTemplate         AS STRING
+        LOCAL cOrigTemplate     AS STRING
         LOCAL cReturn           AS STRING
         LOCAL lWhole            AS LOGIC
         LOCAL nWhole, nDecimal	AS INT
@@ -560,6 +561,7 @@ INTERNAL STATIC CLASS TransFormHelpers
         
         
         cTemplate := TransformHelpers.ParseTemplate( cPicture, OUT nPicFunc )
+        cOrigTemplate := cTemplate
         
         
         IF  nPicFunc:HasFlag( TransformPictures.Date ) 
@@ -637,8 +639,12 @@ INTERNAL STATIC CLASS TransFormHelpers
             
             IF nPicFunc:HasFLag(TransformPictures.ZeroBlank ) 
                 IF nValue == 0
-                    cReturn := Space((DWORD) cReturn:Length)
-                    
+                    IF cOrigTemplate:Length != 0
+                       cReturn := Space((DWORD) cOrigTemplate:Length)
+                    ELSE
+                       cReturn := Space((DWORD) cReturn:Length)
+                    ENDIF
+                    RETURN cReturn
                 ELSEIF lIsFloat .AND. Math.Abs( (REAL8) nValue) < 1.0
                     VAR x := cReturn:IndexOf('.')
                     IF x == -1

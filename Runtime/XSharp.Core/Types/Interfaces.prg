@@ -3,6 +3,7 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
+USING XSharp.RDD
 BEGIN NAMESPACE XSharp
 
 	/// <summary>
@@ -45,10 +46,4 @@ BEGIN NAMESPACE XSharp
 		PROPERTY Decimals AS INT  GET 
 	END INTERFACE
 
-	/// <summary>
-	/// This interface must be implemented by objects that register themselves for DB Notifications
-	/// </summary>
-    INTERFACE IDbNotify
-        METHOD Notify(nEvent AS LONG, nNotification AS LONG) AS VOID
-    END INTERFACE 
 END NAMESPACE

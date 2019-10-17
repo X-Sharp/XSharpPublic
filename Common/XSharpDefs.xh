@@ -54,7 +54,7 @@
 #include "FoxProCmd.xh"
 #endif
 
-
+#include "dbcmd.xh"
 
 #endif
 

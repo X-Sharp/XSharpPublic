@@ -24,48 +24,51 @@ FUNCTION __GetSymString( uString AS USUAL ) AS STRING STRICT
 
    nType := UsualType( uString )
 
-   DO CASE
-   CASE nType = SYMBOL
+   SWITCH nType
+   CASE SYMBOL
       cRet := Symbol2String( uString )
-   CASE nType = STRING
+   CASE STRING
       cRet := uString
    OTHERWISE
       cRet := NULL_STRING
-   ENDCASE
+   END SWITCH
    RETURN cRet
 
 FUNCTION __GetStringFromODBCType( ODBCType AS SHORTINT ) AS STRING STRICT
    LOCAL cType     AS STRING
 
-   DO CASE
-   CASE ODBCType = SQL_INTEGER     .OR.  ;
-      ODBCType  = SQL_SMALLINT    .OR.  ;
-      ODBCType  = SQL_FLOAT       .OR.  ;
-      ODBCType  = SQL_REAL        .OR.  ;
-      ODBCType  = SQL_TINYINT     .OR.  ;
-      ODBCType  = SQL_BIGINT      .OR.  ;
-      ODBCType  = SQL_DOUBLE
+   SWITCH ODBCType
+   CASE SQL_INTEGER   
+   CASE SQL_SMALLINT  
+   CASE SQL_FLOAT     
+   CASE SQL_REAL      
+   CASE SQL_TINYINT   
+   CASE SQL_BIGINT    
+   CASE SQL_DOUBLE
       cType := "N"
 
-   CASE ODBCType = SQL_BIT
+   CASE SQL_BIT
       cType := "L"
 
-   CASE ODBCType = SQL_DATE
+   CASE SQL_DATE
       cType := "D"
 
-   CASE ODBCType = SQL_TIMESTAMP
+   CASE SQL_TIMESTAMP
       cType := "C"
 
-   CASE ODBCType = SQL_NUMERIC .OR. ODBCType = SQL_DECIMAL
+   CASE SQL_NUMERIC 
+   CASE SQL_DECIMAL
       cType := "N"
 
-   CASE ( ODBCType = SQL_LONGVARCHAR ) .OR. ( ODBCType = SQL_LONGVARBINARY ) .OR. (ODBCTYPE = SQL_WLONGVARCHAR)
+   CASE SQL_LONGVARCHAR 
+   CASE SQL_LONGVARBINARY 
+   CASE SQL_WLONGVARCHAR
       cType := "M"
 
    OTHERWISE
       cType := "C"
 
-   ENDCASE
+   END SWITCH
 
    RETURN cType
 
@@ -284,6 +287,7 @@ FUNCTION SQLThrowOutOfMemoryError() AS VOID STRICT
 	oError:Description:="Out of memory"
 	Eval(ErrorBlock(),oError)
 	RETURN
+	
 FUNCTION _SLen( c AS STRING ) AS SHORTINT STRICT
    RETURN SHORTINT( _CAST, SLen( c ) )
 
@@ -328,34 +332,36 @@ FUNCTION __GetDataValuePSZ( oSQLColumn AS SQLColumn, oSQLData AS SqlData, lEqual
       ENDIF
 
       pTemp := oSQLData:ptrValue
-      DO CASE
-      CASE nODBCType = SQL_SMALLINT
+      SWITCH nODBCType
+      CASE  SQL_SMALLINT
 
          MemCopy( PTR( _CAST, @siVal ), pTemp, _SIZEOF( SHORTINT ) )
          sValue += __Str( siVal )
 
-      CASE nODBCType = SQL_INTEGER
+      CASE SQL_INTEGER
 
          MemCopy( PTR( _CAST, @liVal ), pTemp, _SIZEOF( LONGINT ) )
          sValue += __Str( liVal )
 
-      CASE nODBCType = SQL_REAL
+      CASE SQL_REAL
 
          MemCopy( PTR( _CAST, @fVal ), pTemp, _SIZEOF( REAL4 ) )
          sValue += __Str( fVal )
 
-      CASE nODBCType = SQL_FLOAT .OR. nODBCType = SQL_DOUBLE
+      CASE SQL_FLOAT 
+	  CASE SQL_DOUBLE
 
          MemCopy( PTR( _CAST, @dVal ), pTemp, _SIZEOF( REAL8 ) )
          sValue += __Str( dVal )
 
-      CASE nODBCType = SQL_DECIMAL .OR. nODBCType = SQL_NUMERIC
+      CASE SQL_DECIMAL 
+	  CASE SQL_NUMERIC
          uiLen := oSQLColumn:__FieldSpec:Length
 
          cTemp := Mem2String( pTemp, uiLen )
          sValue += AllTrim( __AdjustString( cTemp ) )
 
-      CASE nODBCType = SQL_BINARY
+      CASE SQL_BINARY
          sVal  := Mem2String(pTemp, oSQLData:Length)
          sValue += "'" + sVal + "'"
 
@@ -363,7 +369,7 @@ FUNCTION __GetDataValuePSZ( oSQLColumn AS SQLColumn, oSQLData AS SqlData, lEqual
             __SQLOutputDebug( "__GetDataValuePSZ() for BIN: " + cTemp )
          #ENDIF
 
-      CASE nODBCType = SQL_BIT
+      CASE SQL_BIT
 
          bVal  := BYTE( pTemp )
          IF bVal > 0x29
@@ -372,7 +378,7 @@ FUNCTION __GetDataValuePSZ( oSQLColumn AS SQLColumn, oSQLData AS SqlData, lEqual
             sValue += Str( bVal,1,0 )
          ENDIF
 
-      CASE nODBCType = SQL_DATE
+      CASE SQL_DATE
 
          sVal := Mem2String(pTemp, PszLen(pTemp))
          sValue += "{d '" +RTrim(sVal)  + "'}"
@@ -380,7 +386,7 @@ FUNCTION __GetDataValuePSZ( oSQLColumn AS SQLColumn, oSQLData AS SqlData, lEqual
             __SQLOutputDebug( "__GetDataValuePSZ( ) for DATE: " + sValue )
          #ENDIF
 
-      CASE nODBCType = SQL_TIMESTAMP
+      CASE SQL_TIMESTAMP
 
          sVal 	 := Mem2String(pTemp, PszLen(pTemp))
          sValue += "{ts '" + sVal + "'}"
@@ -388,7 +394,7 @@ FUNCTION __GetDataValuePSZ( oSQLColumn AS SQLColumn, oSQLData AS SqlData, lEqual
          // 				__SQLOutputDebug( "__GetDataValuePSZ( ) for TIMESTAMP: " + sValue )
          // 			#ENDIF
 
-      CASE nODBCType = SQL_TINYINT
+      CASE SQL_TINYINT
 
          bTemp := BYTE( pTemp )
          sValue += Str3( FLOAT(bTemp), 3, 0 )
@@ -396,7 +402,7 @@ FUNCTION __GetDataValuePSZ( oSQLColumn AS SQLColumn, oSQLData AS SqlData, lEqual
             __SQLOutputDebug( "__GetDataValuePSZ( ) for TINYINT: " + sValue )
          #ENDIF
 
-      CASE nODBCType = SQL_BIGINT
+      CASE SQL_BIGINT
 
          MemCopy( @nLow, pTemp, 4 )
          pTemp := PTR( _CAST, DWORD( _CAST, pTemp ) + 4 )
@@ -406,7 +412,9 @@ FUNCTION __GetDataValuePSZ( oSQLColumn AS SQLColumn, oSQLData AS SqlData, lEqual
          fTemp += nLow
          sValue += __Str( fTemp )
 
-      CASE ( nODBCType = SQL_LONGVARCHAR ) .OR. ( nODBCType = SQL_LONGVARBINARY ) .OR. (nODBCTYPE = SQL_WLONGVARCHAR)
+      CASE SQL_LONGVARCHAR 
+	  CASE SQL_LONGVARBINARY 
+      CASE SQL_WLONGVARCHAR
          cTemp  := Space( 10 )
          sValue += "'" + cTemp +"'"
 
@@ -424,29 +432,29 @@ FUNCTION __GetDataValuePSZ( oSQLColumn AS SQLColumn, oSQLData AS SqlData, lEqual
 
          sValue += "'" + Trim( cTemp )+ "'"
 
-      ENDCASE
+      END SWITCH
    ENDIF
 
    RETURN sValue
 
 FUNCTION SQLType2CType( nODBCType AS SHORTINT ) AS SHORTINT STRICT
-   LOCAL nType     AS SHORTINT
-
-   IF  nODBCType = SQL_DATE .OR.           ;
-      nODBCType = SQL_TIME .OR.           ;
-      nODBCType = SQL_TIMESTAMP .OR.      ;
-      nODBCType = SQL_LONGVARCHAR .OR.     ;
-      nODBCType = SQL_WLONGVARCHAR .OR.   ;
-      nODBCType = SQL_GUID
+	LOCAL nType     AS SHORTINT
+	SWITCH nODBCType
+	CASE SQL_DATE 
+	CASE SQL_TIME 
+	CASE SQL_TIMESTAMP 
+	CASE SQL_LONGVARCHAR
+	CASE SQL_WLONGVARCHAR
+	CASE SQL_GUID
 
       nType := SQL_C_CHAR
 
-   ELSEIF nODBCType = SQL_BINARY
+   CASE SQL_BINARY
       nType := SQL_C_BINARY
 
-   ELSE
+   OTHERWISE
       nType := SQL_C_DEFAULT
-   ENDIF
+   END SWITCH
 
    RETURN nType
 

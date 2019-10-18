@@ -26,6 +26,8 @@ namespace Microsoft.CodeAnalysis.CSharp
             TypeCompilationState compilationState,
             DiagnosticBag diagnostics)
         {
+            //var xnode = method.GetNonNullSyntaxNode().XNode;
+
             switch (method.Name)
             {
                 case XSharpSpecialNames.AppInit:

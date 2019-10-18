@@ -3271,6 +3271,61 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			DbCloseAll()
 		END METHOD
 
+
+        [Fact, Trait("Category", "DBF")];
+		METHOD Update_from_two_workareas() AS VOID
+			LOCAL cDbf AS STRING
+
+			RddSetDefault("DBFCDX")
+			cDBF := GetTempFileName()
+			
+			DbfTests.CreateDatabase(cDbf , { { "CFIELD" , "C" , 10 , 0 } , { "MFILED" , "M" , 10 , 0 } } )
+
+			DbUseArea(TRUE,  , cDbf)
+			DbCreateIndex(cDbf , "CFIELD")
+			DbAppend()
+			FieldPut(1,"z-ALIAS1")
+			FieldPut(2,"z-ALIAS1_memo")
+			DbAppend()
+			FieldPut(1,"a-ALIAS1")
+			FieldPut(2,"a-ALIAS1_memo")
+		
+			DbCloseArea()
+			
+			DbUseArea(TRUE, , cDbf , "alias1" , TRUE)
+			DbGoTop()
+			alias1->RLock()
+			alias1->FieldPut(1 , "c-ALIAS1")
+			alias1->FieldPut(2 , "c-ALIAS1_memo")
+			Assert.Equal(2 , (INT)alias1->RecCount() )
+		
+				DbUseArea(TRUE, , cDbf , "alias2" , TRUE)
+				Assert.Equal(2 , (INT)alias2->RecCount() )
+				alias2->DbAppend()
+				alias2->FieldPut(1,"b-ALIAS2")
+				alias2->FieldPut(2,"b-ALIAS2_memo")
+				Assert.Equal(3 , (INT)alias2->RecCount() )
+				alias2->DbCloseArea()
+			
+			alias1->DbCloseArea()
+			
+			DbUseArea(TRUE, , cDbf , , TRUE)
+			Assert.Equal(3 , (INT) RecCount() )
+
+			DbGoTop()
+			Assert.Equal("b-ALIAS1" , AllTrim(FieldGet(1)) )
+			Assert.Equal("b-ALIAS1_memo" , AllTrim(FieldGet(2)) )
+			DbGoBottom()
+			Assert.Equal("z-ALIAS1" , AllTrim(FieldGet(1)) )
+			Assert.Equal("z-ALIAS1_memo" , AllTrim(FieldGet(2)) )
+			DbSkip(-1)
+			Assert.Equal("c-ALIAS1" , AllTrim(FieldGet(1)) )
+			Assert.Equal("c-ALIAS1_memo" , AllTrim(FieldGet(2)) )
+			DbCloseArea()
+		END METHOD
+
+
+
 		STATIC PRIVATE METHOD GetTempFileName() AS STRING
            STATIC nCounter AS LONG
             ++nCounter

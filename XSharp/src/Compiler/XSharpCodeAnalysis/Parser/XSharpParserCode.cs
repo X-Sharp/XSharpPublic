@@ -1024,7 +1024,17 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             else
                 return parent.isInInterface();
         }
-
+        internal static bool IsInLambda([NotNull] this RuleContext context)
+        {
+            var parent = context.Parent;
+            if (parent == null)
+                return false;
+            if (parent is XSharpParser.CodeblockContext cbc)
+            {
+                return cbc.lambda != null;
+            }
+            return parent.IsInLambda();
+        }
         internal static bool isInClass([NotNull] this RuleContext context)
         {
             var parent = context.Parent;

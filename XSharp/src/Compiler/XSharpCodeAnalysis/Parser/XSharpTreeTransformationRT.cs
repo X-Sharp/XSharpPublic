@@ -2256,6 +2256,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitReturnStmt([NotNull] XP.ReturnStmtContext context)
         {
             context.SetSequencePoint(context.end);
+            if (context.IsInLambda())
+            {
+                base.ExitReturnStmt(context);
+                return;
+            }
+
             var expr = context.Expr?.Get<ExpressionSyntax>();
             // when / vo9 is enabled then add missing Expression
             var ent = CurrentEntity;

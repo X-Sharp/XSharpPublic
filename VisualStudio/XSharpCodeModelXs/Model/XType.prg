@@ -78,9 +78,14 @@ BEGIN NAMESPACE XSharpModel
 			IF oElement:eType:IsType()
 				FOREACH VAR oMember IN oElement:aChildren
 					LOCAL xMember AS XTypeMember
-					xMember := XTypeMember.create(oMember, oInfo, oFile, oXType, dialect)
-					oMember:oCargo := xMember
-					oXType:AddMember(xMember)
+                    // HACK:
+                    // At this moment the parser (incorrectly) generates VODefines for a DEFINE CLASS (VFP class def)
+                    // these do not have a name. I am suppressing these to prevent problems elsewhere
+                    IF !String.IsNullOrEmpty(oMember:cName )
+					    xMember := XTypeMember.create(oMember, oInfo, oFile, oXType, dialect)
+					    oMember:oCargo := xMember
+					    oXType:AddMember(xMember)
+                    ENDIF
 				NEXT
 				IF oXType.Kind == Kind.Delegate
 					// Add "pseudo method" for the delegate for the editor

@@ -6251,12 +6251,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
-
-        public override void ExitExpressionStmt([NotNull] XP.ExpressionStmtContext context)
+        protected StatementSyntax HandleExpressionStmt(IList<XP.ExpressionContext> expressions)
         {
             var statements = _pool.Allocate<StatementSyntax>();
-            context.SetSequencePoint(context._Exprs[0].Start, context._Exprs[0].Stop);
-            foreach (var exprCtx in context._Exprs)
+            StatementSyntax result;
+            foreach (var exprCtx in expressions)
             {
                 // check because there may already be statements in here, such as the IF statement generated for AltD()
                 var node = exprCtx.CsNode;
@@ -6276,13 +6275,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     //       Op   = ==
                     //       Right = Simple Name z
                     // so we need to 'rebuild' the expression
-
+                    exprCtx.SetSequencePoint(exprCtx.Start, exprCtx.Stop);
                     var expr = exprCtx.Get<ExpressionSyntax>();
                     if (expr is BinaryExpressionSyntax bin)
                     {
                         bool nestedAssign = false;
                         var xNode1 = bin.XNode as XP.BinaryExpressionContext;
-                        var oldStyleAssign = bin.OperatorToken.Kind == SyntaxKind.EqualsEqualsToken && xNode1 != null && xNode1.Op.Type == XP.EQ ;
+                        var oldStyleAssign = bin.OperatorToken.Kind == SyntaxKind.EqualsEqualsToken && xNode1 != null && xNode1.Op.Type == XP.EQ;
                         if (bin.Left is BinaryExpressionSyntax binLeft)
                         {
                             if (binLeft.OperatorToken.Kind == SyntaxKind.EqualsEqualsToken)
@@ -6324,14 +6323,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             if (statements.Count == 1)
             {
-                context.Put(statements[0]);
+                result = statements[0];
             }
             else
             {
-                var block = MakeBlock(statements);
-                context.Put(block);
+                result = MakeBlock(statements);
             }
             _pool.Free(statements);
+            return result;
+        }
+
+        public override void ExitExpressionStmt([NotNull] XP.ExpressionStmtContext context)
+        {
+            context.SetSequencePoint(context._Exprs[0].Start, context._Exprs[0].Stop);
+            var stmt = HandleExpressionStmt(context._Exprs);
+            context.Put(stmt);
         }
 
 

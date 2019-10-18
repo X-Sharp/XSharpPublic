@@ -111,6 +111,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             CoreAccessMember(context);
         }
 
+        public override void ExitFoxexpressionStmt([NotNull] XP.FoxexpressionStmtContext context)
+        {
+            context.SetSequencePoint(context._Exprs[0].Start, context._Exprs[0].Stop);
+            var stmt = HandleExpressionStmt(context._Exprs);
+            context.Put(stmt);
+        }
+
         public override void ExitMethodCall([NotNull] XP.MethodCallContext context)
         {
             var expr = context.Expr.Get<ExpressionSyntax>();

@@ -13,6 +13,10 @@
 // Caution: do not modify this file. It will be overwritten during product updates
 //
 
+#ifndef DBCMD_XH
+
+#define DBCMD_XH
+
 ****
 *  DB SETs
 *
@@ -535,5 +539,7 @@
 ** Todo FoxPro Nooptimize clause 
 
 #command ENDSCAN => dbContinue(); ENDDO
+
+#endif
 
 ** EOF

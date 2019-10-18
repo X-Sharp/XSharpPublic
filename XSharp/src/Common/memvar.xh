@@ -12,7 +12,8 @@
 //             character are reserved, version-dependent functions.
 //             These functions should not be called directly.
 
-
+#ifndef MEMVAR_XH
+#define MEMVAR_XH
 ***
 *  MEMVAR variables
 *
@@ -40,5 +41,6 @@
 #command SAVE [TO <(file)>] [ALL]                                       ;
       => _MSave( <(file)>, "*", TRUE )
 
+#endif
 
 ** EOF

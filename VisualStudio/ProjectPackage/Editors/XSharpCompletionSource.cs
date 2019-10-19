@@ -2479,8 +2479,8 @@ namespace XSharpLanguage
                             break;
                         else if (XSharpLexer.IsKeyword(triggerToken.Type))
                         {
-                            //token = null;
-                            //triggerToken = null;
+                            token = null;
+                            triggerToken = null;
                             break;
                         }
                         else if (XSharpLexer.IsOperator(triggerToken.Type) && !inCtor)

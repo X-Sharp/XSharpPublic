@@ -9,4 +9,4 @@
 // Caution: do not modify this file. It will be overwritten during product updates
 //
 
-#xcommand ENDFOR  => NEXT
+#xcommand ENDFOR  <*any*> => NEXT

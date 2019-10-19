@@ -13,5 +13,5 @@
 //
 [ASSEMBLY: AssemblyTitle("XSharp.VFP")]
 [ASSEMBLY: AssemblyDescription("XSharp runtime DLL for the (Visual) FoxPro dialect")]
-[ASSEMBLY: ImplicitNamespace("XSharp")]
+[ASSEMBLY: ImplicitNamespace("XSharp.VFP")]
 

@@ -486,8 +486,8 @@ METHOD Update( lUpdateFlag )
 	IF lRowModified
 		nType := SELF:__FigureScrollUpdateType()
 
-		DO CASE
-		CASE nType = SQL_SC_UPD_CURSOR
+		SWITCH nType
+		CASE SQL_SC_UPD_CURSOR
 			lRet := SELF:UpdateCursor()
 			IF !lRet
 				//  Fall back to other methods to update
@@ -499,17 +499,17 @@ METHOD Update( lUpdateFlag )
 				ENDIF
 			ENDIF
 
-		CASE nType = SQL_SC_UPD_KEY
+		CASE SQL_SC_UPD_KEY
 			lRet := SELF:UpdateKey()
 			IF !lRet
 				//  Fall back to other method to update
 				lRet := SELF:UpdateVal()
 			ENDIF
 
-		CASE nType = SQL_SC_UPD_VALUE
+		CASE SQL_SC_UPD_VALUE
 			lRet := SELF:UpdateVal()
 
-		ENDCASE
+		END SWITCH
 
 		IF lRet
 			SELF:__UpdateLongData( FALSE )

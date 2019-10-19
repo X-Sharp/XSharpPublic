@@ -18,7 +18,7 @@ CLASS WorkAreas
         local domain := Appdomain.CurrentDomain as Appdomain
         domain:ProcessExit += _CloseFiles
         RETURN
-
+    /// <exclude />
     STATIC METHOD _CloseFiles(sender as Object, e as EventArgs)  as void
         // Get the state for all threads
         RuntimeState.CloseWorkareasForAllThreads()           

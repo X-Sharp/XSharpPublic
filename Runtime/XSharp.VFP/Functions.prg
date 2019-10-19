@@ -52,17 +52,18 @@ RETURN cOld
 
 
 function ICase(lCond1, uExp1, lCond2, uExp2) as usual
+     LOCAL nCount := PCount() AS LONG
     // loop through the actual parameters. The odd parameters should be logic
     // the even parameters are return values for their siblings.
-    for var nI := 1 to PCount()-1 step 2
+    for var nI := 1 to nCount-1 step 2
         local cond := _GetFParam(nI) as logic
         if cond
             return _GetFParam(nI+1)
         endif
     next
     // no conditions are met, if the # of parameters is odd then return the last value
-    if PCount() % 2 == 1
-        return _GetFParam(PCount())
+    if nCount % 2 == 1
+        return _GetFParam(nCount)
     endif
     // the # of parameters is even. When >= 2 then get the type of parameter 2 and return an empty value
     if PCount() >= 2

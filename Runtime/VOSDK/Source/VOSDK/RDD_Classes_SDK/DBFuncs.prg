@@ -1200,18 +1200,18 @@ FUNCTION __CheckFieldType(uValue REF USUAL, aField AS ARRAY, uError REF USUAL) A
     LOCAL lOK    AS LOGIC
     
     dwType := Asc(aField[DBS_TYPE]) 
-    DO CASE
-    CASE dwType = 67 // "C"
+    SWITCH dwType
+    CASE 67 // "C"
         lOK := IsString(uValue)
-    CASE dwType = 68 // "D"
+    CASE 68 // "D"
         lOK := IsDate(uValue)
-    CASE dwType = 78 // "N"
+    CASE 78 // "N"
         lOK := IsNumeric(uValue)
-    CASE dwType = 76 // "L"
+    CASE 76 // "L"
         lOK := IsLogic(uValue) 
-    CASE dwType = 77 // "M"
+    CASE 77 // "M"
         lOK := TRUE
-    ENDCASE
+    END SWITCH
     IF lOK
         IF dwType = 67 // "C"
             IF SLen(uValue) != aField[DBS_LEN]
@@ -1225,16 +1225,16 @@ FUNCTION __CheckFieldType(uValue REF USUAL, aField AS ARRAY, uError REF USUAL) A
             ENDIF
         ENDIF 
     ELSE             
-        DO CASE
-        CASE dwType = 67 // "C"
+        SWITCH dwType
+        CASE 67 // "C"
             cType := "STRING"
-        CASE dwType = 68 // "D"
+        CASE 68 // "D"
             cType := "DATE"
-        CASE dwType = 78 // "N"
+        CASE 78 // "N"
             cType := "NUMERIC"
-        CASE dwType = 76 // "L"
+        CASE 76 // "L"
             cType := "LOGIC"
-        ENDCASE
+        END SWITCH
         uError := {EG_DATATYPE, __CAVOSTR_DBFCLASS_INVALIDTYPE, cType}
     ENDIF
     

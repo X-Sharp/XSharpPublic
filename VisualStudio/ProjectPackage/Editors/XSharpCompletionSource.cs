@@ -2482,6 +2482,14 @@ namespace XSharpLanguage
                             token = null;
                             triggerToken = null;
                         }
+                        // Simple EQUAL in FoxPro could mean ASSIGN_OP
+                        else if ((triggerToken.Type == XSharpLexer.EQ) && (file.Project.Dialect == XSharpDialect.FoxPro))
+                        {
+                            // Stop here
+                            stopToken = triggerToken;
+                            token = null;
+                            triggerToken = null;
+                        }
                         break;
                 }
                 //

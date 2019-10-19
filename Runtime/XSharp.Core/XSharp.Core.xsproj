@@ -107,6 +107,7 @@
     <Compile Include="RDD\BaseIndex.prg" />
     <Compile Include="RDD\BaseMemo.prg" />
     <Compile Include="RDD\DbFloat.prg" />
+    <Compile Include="RDD\RDDNotifications.prg" />
     <Compile Include="RDD\RDDDefines.prg" />
     <Compile Include="RDD\RddEnums.prg" />
     <Compile Include="RDD\IMemo.prg" />

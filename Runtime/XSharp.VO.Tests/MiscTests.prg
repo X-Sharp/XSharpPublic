@@ -134,7 +134,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
         [Fact, Trait("Category", "IsObject")];
 		METHOD IsObject_Tests() AS VOID
 			LOCAL u AS USUAL
-            Assert.True(IsObject(u))
+            Assert.False(IsObject(u))
+            Assert.False(IsObject(NIL))
             u := NULL
             Assert.True(IsObject(u))
             LOCAL o AS OBJECT

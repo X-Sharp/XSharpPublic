@@ -35,7 +35,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     _bags:Add(oBag)
                     LOCAL lOk AS LOGIC
                     lOk := oBag:Open(info)
-                    IF lOk .AND. XSharp.RuntimeState.AutoOrder
+                    IF lOk .AND. XSharp.RuntimeState.AutoOrder != 0
                         SELF:CurrentOrder := oBag:Tags[0]
                     ENDIF
                     IF lStructural

@@ -1332,6 +1332,20 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             if (SingleValidResult(results))
             {
+#if XSHARP
+                int bi = GetTheBestCandidateIndex(results, arguments, ref useSiteDiagnostics);
+                if (results[bi].Member.HasClipperCallingConvention())
+                {
+                    for (var i = 0; i < arguments.Arguments.Count; i++)
+                    {
+                        if (arguments.Arguments[i] is BoundAddressOfOperator b)
+                        {
+                            arguments.Arguments[i] = b.Operand;
+                            arguments.SetRefKind(i, RefKind.Ref);
+                        }
+                    }
+                }
+#endif
                 return;
             }
 
@@ -1349,6 +1363,19 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
                 }
 
+#if XSHARP
+                if (results[bestIndex].Member.HasClipperCallingConvention())
+                {
+                    for (var i = 0; i < arguments.Arguments.Count; i++)
+                    {
+                        if (arguments.Arguments[i] is BoundAddressOfOperator b)
+                        {
+                            arguments.Arguments[i] = b.Operand;
+                            arguments.SetRefKind(i, RefKind.Ref);
+                        }
+                    }
+                }
+#endif
                 return;
             }
 
@@ -3429,6 +3456,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                         {
                             conversion = Conversion.Identity;
                         }
+                        if (argumentRefKind == RefKind.None && argument is BoundAddressOfOperator b && candidate.HasClipperCallingConvention())
+                        {
+                            argumentRefKind = RefKind.Ref;
+                        }
                     }
                     if (conversion.Kind == ConversionKind.NoConversion)
                     { 
@@ -3527,6 +3558,16 @@ namespace Microsoft.CodeAnalysis.CSharp
             //   exists from the argument to the type of the corresponding parameter, or
             // - for a ref or out parameter, the type of the argument is identical to the type of the corresponding parameter. 
 
+#if XSHARP
+            if (argRefKind != parRefKind && argRefKind == RefKind.Ref && candidate.HasClipperCallingConvention())
+            {
+                argRefKind = RefKind.None;
+                if (argument is BoundAddressOfOperator b)
+                {
+                    argument = b.Operand;
+                }
+            }
+#endif
             // effective RefKind has to match unless argument expression is of the type dynamic. 
             // This is a bug in Dev11 which we also implement. 
             //       The spec is correct, this is not an intended behavior. We don't fix the bug to avoid a breaking change.

@@ -32,19 +32,40 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             if (node.Arguments.Length > 0 && node.Syntax is ObjectCreationExpressionSyntax oces)
             {
-                var xnode = oces.XNode as XSharpParser.CtorCallContext;
+                var xnode = (oces.XNode as XSharpParser.PrimaryExpressionContext)?.Expr as XSharpParser.CtorCallContext;
                 if (xnode == null || !xnode.HasRefArguments)
                     return null;
                 if (!node.Constructor.HasClipperCallingConvention())
                     return null;
-                // not sure if we have to return a object creation expression, or if we can return
-                // a method call expression that returns a new object of the right type.
-                // need to try.
-                // the idea is the same as for method calls.
             }
-            
-            return null;
+            else
+                return null;
+
+            var argumentRefKindsOpt = node.ArgumentRefKindsOpt;
+            ImmutableArray<LocalSymbol> temps;
+            ImmutableArray<BoundExpression> preExprs;
+            ImmutableArray<BoundExpression> postExprs;
+            var rewrittenArguments = MakeClipperCallArguments(node.Type, node.Syntax, node.Arguments, node.Constructor, node.Expanded, node.ArgsToParamsOpt, ref argumentRefKindsOpt, out temps, false, out preExprs, out postExprs);
+
+            LocalSymbol objTemp = _factory.SynthesizedLocal(node.Type);
+            BoundLocal boundObjTemp = _factory.Local(objTemp);
+            BoundExpression rewrittenObjectCreation = node.UpdateArgumentsAndInitializer(rewrittenArguments, argumentRefKindsOpt, newInitializerExpression: null, changeTypeOpt: node.Constructor.ContainingType);
+            if (node.Type.IsInterfaceType())
+            {
+                Debug.Assert(rewrittenObjectCreation.Type == ((NamedTypeSymbol)node.Type).ComImportCoClass);
+                rewrittenObjectCreation = MakeConversionNode(rewrittenObjectCreation, node.Type, false, false);
+            }
+            BoundExpression objectAssignment = _factory.AssignmentExpression(boundObjTemp, rewrittenObjectCreation);
+            var exprs = preExprs.Add(objectAssignment).AddRange(postExprs);
+
+            rewrittenObjectCreation = new BoundSequence(node.Syntax, temps.Add(objTemp), exprs, boundObjTemp, node.Type);
+            if (node.InitializerExpressionOpt == null || node.InitializerExpressionOpt.HasErrors)
+            {
+                return rewrittenObjectCreation;
+            }
+            return MakeObjectCreationWithInitializer(node.Syntax, rewrittenObjectCreation, node.InitializerExpressionOpt, node.Type);
         }
+
         internal BoundNode VisitCallClipperConvention(BoundCall node)
         {
             // some generated nodes do not have an invocation expression syntax node
@@ -56,17 +77,88 @@ namespace Microsoft.CodeAnalysis.CSharp
                 if (!node.Method.HasClipperCallingConvention())
                     return null;
             }
-            // create new method with parameter types that match the types of the arguments
-            // return type of the method should be the same as the return type from the original method call.
-            // and a 'ref' modifier or 'out' modifier should be set for parameters when an argument was passed by reference.
-            // We can later call this method with the original arguments list.
-            // inside the method create a parameter array from the passed parameters. Deref the arguments that were by ref.
-            // if the returntype from the method is not void then also create a result variable for the return value
-            // call the original method with the parameter array created before and assign the return value (if any)
-            // foreach ref variable assign the value from the params array back into the (ref) usual
-            // and finally return the returnvalue (or nothing)
-            // then create a new BoundCall node based on the original node but replace the Method with the newly created method.
-            return null;
+            else
+                return null;
+
+            BoundExpression rewrittenReceiver = VisitExpression(node.ReceiverOpt);
+
+            var argumentRefKindsOpt = node.ArgumentRefKindsOpt;
+            ImmutableArray<LocalSymbol> temps;
+            ImmutableArray<BoundExpression> preExprs;
+            ImmutableArray<BoundExpression> postExprs;
+            var rewrittenArguments = MakeClipperCallArguments(node.Type, node.Syntax, node.Arguments, node.Method, node.Expanded, node.ArgsToParamsOpt, ref argumentRefKindsOpt, out temps, node.InvokedAsExtensionMethod, out preExprs, out postExprs);
+
+            LocalSymbol callTemp = _factory.SynthesizedLocal(node.Type);
+            BoundLocal boundCallTemp = _factory.Local(callTemp);
+            var call = MakeCall(node, node.Syntax, rewrittenReceiver, node.Method, rewrittenArguments, argumentRefKindsOpt, node.InvokedAsExtensionMethod, node.ResultKind, node.Type);
+            BoundExpression callAssignment = _factory.AssignmentExpression(boundCallTemp, call);
+            var exprs = preExprs.Add(callAssignment).AddRange(postExprs);
+
+            return new BoundSequence(node.Syntax, temps.Add(callTemp), exprs, boundCallTemp, node.Type);
+        }
+
+        internal ImmutableArray<BoundExpression> MakeClipperCallArguments(TypeSymbol type, SyntaxNode syntax, ImmutableArray<BoundExpression> arguments, MethodSymbol method, bool expanded, ImmutableArray<int> argsToParamsOpt,
+            ref ImmutableArray<RefKind> argumentRefKindsOpt, out ImmutableArray<LocalSymbol> temps, bool invokeAsExtensionMethod, out ImmutableArray<BoundExpression> preExprs, out ImmutableArray<BoundExpression> postExprs)
+        {
+            var argTemps = ImmutableArray.CreateBuilder<LocalSymbol>();
+
+            var exprs = ImmutableArray.CreateBuilder<BoundExpression>();
+            var args = ImmutableArray.CreateBuilder<BoundExpression>(arguments.Length);
+            var argBoundTemps = new BoundLocal[arguments.Length];
+            for (int i = 0; i < arguments.Length; i++)
+            {
+                var r = (!argumentRefKindsOpt.IsDefaultOrEmpty && i < argumentRefKindsOpt.Length) ? argumentRefKindsOpt[i] : RefKind.None;
+                if (r == RefKind.Ref)
+                {
+                    var a = arguments[i];
+                    while (a is BoundConversion c) a = c.Operand;
+                    a = VisitExpression(a);
+                    LocalSymbol la = _factory.SynthesizedLocal(a.Type, refKind: RefKind.Ref);
+                    BoundLocal bla = _factory.Local(la);
+                    var lasgn = _factory.AssignmentExpression(bla, a, isRef: true);
+                    exprs.Add(VisitAssignmentOperator(lasgn, true));
+                    args.Add(MakeConversionNode(bla, arguments[i].Type, false));
+                    argTemps.Add(la);
+                    argBoundTemps[i] = bla;
+                }
+                else
+                    args.Add(VisitExpression(arguments[i]));
+            }
+
+            var rewrittenArgumentRefKindsOpt = argumentRefKindsOpt;
+            var rewrittenArguments = args.ToImmutable();
+            ImmutableArray<LocalSymbol> aTemps;
+            rewrittenArguments = MakeArguments(syntax, rewrittenArguments, method, method, expanded, argsToParamsOpt, ref rewrittenArgumentRefKindsOpt, out aTemps, invokeAsExtensionMethod);
+            argTemps.AddRange(aTemps);
+
+            var argsNode = rewrittenArguments[rewrittenArguments.Length - 1];
+            LocalSymbol parsTemp = _factory.SynthesizedLocal(argsNode.Type);
+            BoundExpression boundPars = _factory.Local(parsTemp);
+            BoundExpression parsAssignment = _factory.AssignmentExpression(boundPars, argsNode);
+            rewrittenArguments = rewrittenArguments.RemoveAt(rewrittenArguments.Length - 1).Add(parsAssignment);
+            argTemps.Add(parsTemp);
+
+            preExprs = exprs.ToImmutable();
+            exprs.Clear();
+
+            for (int i = 0; i < arguments.Length; i++)
+            {
+                var r = (!argumentRefKindsOpt.IsDefaultOrEmpty && i < argumentRefKindsOpt.Length) ? argumentRefKindsOpt[i] : RefKind.None;
+                if (r == RefKind.Ref)
+                {
+                    BoundExpression idx = _factory.Literal(i);
+                    var elem = _factory.ArrayAccess(boundPars, ImmutableArray.Create(idx));
+                    var a = argBoundTemps[i];
+                    var conv = MakeConversionNode(elem, a.Type, false);
+                    var asgn = _factory.AssignmentExpression(a, conv);
+                    exprs.Add(asgn);
+                }
+            }
+
+            argumentRefKindsOpt = rewrittenArgumentRefKindsOpt;
+            temps = argTemps.ToImmutable();
+            postExprs = exprs.ToImmutable();
+            return rewrittenArguments;
         }
     }
 }

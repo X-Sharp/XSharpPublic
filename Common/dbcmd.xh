@@ -13,20 +13,24 @@
 // Caution: do not modify this file. It will be overwritten during product updates
 //
 
+#ifndef DBCMD_XH
+
+#define DBCMD_XH
+
 ****
 *  DB SETs
 *
 
-#command SET EXCLUSIVE <x:ON,OFF,&>     =>  SetExclusive(<(x)> )
+#command SET EXCLUSIVE <x:ON,OFF,&>     =>  SetExclusive(upper(<(x)>)=="ON" )
 #command SET EXCLUSIVE (<x>)            =>  SetExclusive( <x> )
 
-#command SET SOFTSEEK <x:ON,OFF,&>      =>  SetSoftSeek( <(x)> )
+#command SET SOFTSEEK <x:ON,OFF,&>      =>  SetSoftSeek( upper(<(x)>)=="ON" )
 #command SET SOFTSEEK (<x>)             =>  SetSoftSeek( <x> )
 
-#command SET UNIQUE <x:ON,OFF,&>        =>  SetUnique( <(x)> )
+#command SET UNIQUE <x:ON,OFF,&>        =>  SetUnique( upper(<(x)>)=="ON" )
 #command SET UNIQUE (<x>)               =>  SetUnique( <x> )
 
-#command SET DELETED <x:ON,OFF,&>       =>  SetDeleted( <(x)> )
+#command SET DELETED <x:ON,OFF,&>       =>  SetDeleted( upper(<(x)>)=="ON" )
 #command SET DELETED (<x>)              =>  SetDeleted( <x> )
 
 
@@ -173,54 +177,54 @@
 ** Todo: Add FoxPro NoOptimize clause
 #command RECALL                 =>  dbRecall()
 
-
+	
 ***
 * Variations of the commands with IN or ALIAS clause
 ***
-#command APPEND BLANK <x:IN,ALIAS> <a>         	=>  (<a>) -> (dbAppend())
-#command PACK <x:IN,ALIAS> <a>    				=> (<a>) -> (dbPack())
-#command ZAP  <x:IN,ALIAS> <a>              	=> (<a>) -> (dbZap())
-#command UNLOCK [RECORD <rcd>]  <x:IN,ALIAS> <a> => (<a>) -> (dbUnlock(<rcd>))
-#command COMMIT <x:IN,ALIAS> <a>                => (<a>) -> (dbCommit())
+#command APPEND BLANK <x:IN,ALIAS> <(a)>         	=>  (<(a)>) -> (dbAppend())
+#command PACK <x:IN,ALIAS> <(a)>    				=> (<(a)>) -> (dbPack())
+#command ZAP  <x:IN,ALIAS> <(a)>              	=> (<(a)>) -> (dbZap())
+#command UNLOCK [RECORD <rcd>]  <x:IN,ALIAS> <(a)> => (<(a)>) -> (dbUnlock(<rcd>))
+#command COMMIT <x:IN,ALIAS> <(a)>                => (<(a)>) -> (dbCommit())
 
-#command GOTO <n>  		<x:IN,ALIAS> <a>     => (<a>) -> (dbGoto(<n>))
-#command GO <n>   		<x:IN,ALIAS> <a>     => (<a>) -> (dbGoto(<n>))
-#command GOTO TOP  		<x:IN,ALIAS> <a>     => (<a>) -> (dbGoTop())
-#command GO TOP   		<x:IN,ALIAS> <a>     => (<a>) -> (dbGoTop())
-#command GOTO BOTTOM 	<x:IN,ALIAS> <a>     => (<a>) -> (dbGoBottom())
-#command GO BOTTOM  	<x:IN,ALIAS> <a>     => (<a>) -> (dbGoBottom())
-#command SKIP 			<x:IN,ALIAS> <a>     => (<a>) -> ( dbSkip(1) )
-#command SKIP <n> 		<x:IN,ALIAS> <a>     => (<a>) -> ( dbSkip(<n>) )
+#command GOTO <n>  		<x:IN,ALIAS> <(a)>     => (<(a)>) -> (dbGoto(<n>))
+#command GO <n>   		<x:IN,ALIAS> <(a)>     => (<(a)>) -> (dbGoto(<n>))
+#command GOTO TOP  		<x:IN,ALIAS> <(a)>     => (<(a)>) -> (dbGoTop())
+#command GO TOP   		<x:IN,ALIAS> <(a)>     => (<(a)>) -> (dbGoTop())
+#command GOTO BOTTOM 	<x:IN,ALIAS> <(a)>     => (<(a)>) -> (dbGoBottom())
+#command GO BOTTOM  	<x:IN,ALIAS> <(a)>     => (<(a)>) -> (dbGoBottom())
+#command SKIP 			<x:IN,ALIAS> <(a)>     => (<(a)>) -> ( dbSkip(1) )
+#command SKIP <n> 		<x:IN,ALIAS> <(a)>     => (<(a)>) -> ( dbSkip(<n>) )
 
-#command SEEK <xpr>  [<soft:SOFTSEEK>] [<lst:LAST>] <x:IN,ALIAS> <a>  => (<a>) -> (dbSeek( <xpr> , <.soft.>, <.lst.>))
+#command SEEK <xpr>  [<soft:SOFTSEEK>] [<lst:LAST>] <x:IN,ALIAS> <(a)>  => (<(a)>) -> (dbSeek( <xpr> , <.soft.>, <.lst.>))
 ** Todo: Add FoxPro clauses ORDER <order> TAG <tag> OF <index> ASCENDING | DESCENDING 
 
-#command SET FILTER TO  <x:IN,ALIAS> <a>        => (<a>) -> (dbClearFilter())
-#command SET FILTER TO <xpr> <x:IN,ALIAS> <a>   => (<a>) -> (dbSetFilter( <{xpr}>, <"xpr"> ))
+#command SET FILTER TO  <x:IN,ALIAS> <(a)>        => (<(a)>) -> (dbClearFilter())
+#command SET FILTER TO <xpr> <x:IN,ALIAS> <(a)>   => (<(a)>) -> (dbSetFilter( <{xpr}>, <"xpr"> ))
 #command SET FILTER TO <x:&>  <y:IN,ALIAS> <a>                          ;
       => IF ( Empty(<(x)>) )                                            ;
-       ;    (<a>) -> (dbClearFilter())                                  ;
+       ;    (<(a)>) -> (dbClearFilter())                                  ;
        ; ELSE                                                           ;
-       ;    (<a>) -> (dbSetFilter( <{x}>, <(x)> ))                      ;
+       ;    (<(a)>) -> (dbSetFilter( <{x}>, <(x)> ))                      ;
        ; END
 
 
-#command REPLACE [ <f1> WITH <x1> [, <fn> WITH <xn>] ]                  ;
+#command REPLACE   <f1> WITH <x1> [, <fn> WITH <xn>]                    ;
          [FOR <FOR>]                                                    ;
          [WHILE <WHILE>]                                                ;
          [NEXT <NEXT>]                                                  ;
          [RECORD <rec>]                                                 ;
          [<rest:REST>]                                                  ;
          [ALL]                                                          ;
-         <x:IN,ALIAS> <a>                                               ;
-      => (<a>) -> ( DBEval(                                             ;
+         <x:IN,ALIAS> <(a)>                                               ;
+      => (<(a)>) -> ( DBEval(                                             ;
                  {|| _FIELD-><f1> := <x1> [, _FIELD-><fn> := <xn>]},    ;
                  <{FOR}>, <{WHILE}>, <NEXT>, <rec>, <.rest.>            ;
                ))
 ** Todo: Add FoxPro NoOptimize clause
 
-#command REPLACE <f1> WITH <v1> [, <fN> WITH <vN> ]   <x:IN,ALIAS> <a>   ;
-      => (<a>) -> ( _FIELD-><f1> := <v1>) [; (<a>) -> ( _FIELD-><fN> := <vN> )]
+#command REPLACE <f1> WITH <v1> [, <fN> WITH <vN> ]   <x:IN,ALIAS> <(a)>   ;
+      => (<(a)>) -> ( _FIELD-><f1> := <v1>) [; (<(a)>) -> ( _FIELD-><fN> := <vN> )]
 
 
 #command DELETE                                                         ;
@@ -230,15 +234,15 @@
          [RECORD <rec>]                                                 ;
          [<rest:REST>]                                                  ;
          [ALL]                                                          ;
-         <x:IN,ALIAS> <a>                                               ;
-      => (<a>) -> (DBEval(                                                        ;
+         <x:IN,ALIAS> <(a)>                                               ;
+      => (<(a)>) -> (DBEval(                                                        ;
                  {|| dbDelete()},                                       ;
                  <{FOR}>, <{WHILE}>, <NEXT>, <rec>, <.rest.>            ;
                ))
 
 ** Todo: Add FoxPro NoOptimize clause
 
-#command DELETE  <x:IN,ALIAS> <a>                =>  (<a>) -> (dbDelete())
+#command DELETE  <x:IN,ALIAS> <(a)>                =>  (<(a)>) -> (dbDelete())
 
 #command RECALL                                                         ;
          [FOR <FOR>]                                                    ;
@@ -247,13 +251,13 @@
          [RECORD <rec>]                                                 ;
          [<rest:REST>]                                                  ;
          [ALL]                                                          ;
-         <x:IN,ALIAS> <a>                                               ;
-      => (<a>) -> (DBEval(                                                        ;
+         <x:IN,ALIAS> <(a)>                                               ;
+      => (<(a)>) -> (DBEval(                                                        ;
                  {|| dbRecall()},                                       ;
                  <{FOR}>, <{WHILE}>, <NEXT>, <rec>, <.rest.>            ;
                ))
 
-#command RECALL  <x:IN,ALIAS> <a>                =>  (<a>) -> (dbRecall())
+#command RECALL  <x:IN,ALIAS> <(a)>                =>  (<(a)>) -> (dbRecall())
 			   
 ** Todo: Add FoxPro NoOptimize clause
 
@@ -311,7 +315,7 @@
       => dbCopyStruct( <(file)>, { <(fields)> } )
 ** FoxPro clauses [[WITH] CDX | [WITH] PRODUCTION]  [DATABASE cDatabaseName [NAME cTableName]]
 
-#command COPY [TO <(file)>] [DELIMITED [WITH <*delim*>]]                ;
+#command COPY TO <(file)>   DELIMITED [WITH <*delim*>]                  ;
          [FIELDS <fields,...>]                                          ;
          [FOR <FOR>]                                                    ;
          [WHILE <WHILE>]                                                ;
@@ -326,7 +330,7 @@
                       )
 
 
-#command COPY [TO <(file)>] [SDF]                                       ;
+#command COPY TO <(file)> SDF                                           ;
          [FIELDS <fields,...>]                                          ;
          [FOR <FOR>]                                                    ;
          [WHILE <WHILE>]                                                ;
@@ -341,7 +345,7 @@
                     )
 
 
-#command COPY [TO <(file)>]                                             ;
+#command COPY TO <(file)>                                               ;
          [FIELDS <fields,...>]                                          ;
          [FOR <FOR>]                                                    ;
          [WHILE <WHILE>]                                                ;
@@ -363,7 +367,7 @@
 **  WITH TAB | WITH CHARACTER Delimiter ] ] ] [AS nCodePage]
 
 
-#command APPEND [FROM <(file)>] [DELIMITED [WITH <*delim*>]]            ;
+#command APPEND FROM <(file)> DELIMITED [WITH <*delim*>]                ;
          [FIELDS <fields,...>]                                          ;
          [FOR <FOR>]                                                    ;
          [WHILE <WHILE>]                                                ;
@@ -378,7 +382,7 @@
                      )
 
 
-#command APPEND [FROM <(file)>] [SDF]                                   ;
+#command APPEND FROM <(file)> SDF                                       ;
          [FIELDS <fields,...>]                                          ;
          [FOR <FOR>]                                                    ;
          [WHILE <WHILE>]                                                ;
@@ -393,7 +397,7 @@
                    )
 
 
-#command APPEND [FROM <(file)>]                                         ;
+#command APPEND FROM <(file)>                                          ;
          [FIELDS <fields,...>]                                          ;
          [FOR <FOR>]                                                    ;
          [WHILE <WHILE>]                                                ;
@@ -414,7 +418,7 @@
 **       SDF | SYLK | WK1 | WK3 | WKS | WR1 | WRK | CSV | XLS | XL5 
 **       [SHEET cSheetName] | XL8 [SHEET cSheetName]]] [AS nCodePage]
 
-#command SORT [TO <(file)>] [ON <fields,...>]                           ;
+#command SORT  TO <(file)>  [ON <fields,...>]                           ;
          [FOR <FOR>]                                                    ;
          [WHILE <WHILE>]                                                ;
          [NEXT <NEXT>]                                                  ;
@@ -446,7 +450,7 @@
 ** Todo FoxPro Nooptimize clause 
 
 
-#command UPDATE [FROM <(alias)>] [ON <key>]                             ;
+#command UPDATE  FROM <(alias)>  [ON <key>]                             ;
          [REPLACE <f1> WITH <x1> [, <fn> WITH <xn>]]                    ;
          [<rand:RANDOM>]                                                ;
                                                                         ;
@@ -456,14 +460,14 @@
                    )
 
 
-#command JOIN [WITH <(alias)>] [TO <file>]                              ;
+#command JOIN  WITH <(alias)>  [TO <file>]                              ;
          [FIELDS <fields,...>]                                          ;
          [FOR <for>]                                                    ;
                                                                         ;
       => dbJoin( <(alias)>, <(file)>, { <(fields)> }, <{for}> )
 ** Todo FoxPro Nooptimize clause 
 
-#command COUNT [TO <var>]                                               ;
+#command COUNT TO <var>                                                 ;
          [FOR <for>]                                                    ;
          [WHILE <while>]                                                ;
          [NEXT <next>]                                                  ;
@@ -478,7 +482,7 @@
                )
 ** Todo FoxPro Nooptimize clause 
 
-#command SUM [ <x1> [, <xn>]  TO  <v1> [, <vn>] ]                       ;
+#command SUM  [<x1> [, <xn>]  TO  <v1> [, <vn>] ]                         ;
          [FOR <for>]                                                    ;
          [WHILE <while>]                                                ;
          [NEXT <next>]                                                  ;
@@ -494,7 +498,7 @@
 ** Todo FoxPro Nooptimize clause 
 ** Todo FoxPro [TO ARRAY ArrayName]   
 
-#command AVERAGE [ <x1> [, <xn>]  TO  <v1> [, <vn>] ]                   ;
+#command AVERAGE   <x1> [, <xn>]  TO  <v1> [, <vn>]                     ;
          [FOR <for>]                                                    ;
          [WHILE <while>]                                                ;
          [NEXT <next>]                                                  ;
@@ -531,8 +535,12 @@
          [<rest:REST>]                                                  ;
          [ALL]                                                          ;
                                                                         ;
-      => dbLocate( <{FOR}>, <{WHILE}>, <NEXT>, <rec>, <.rest.> ); DO WHILE found() 
+      => IIF( <.FOR.>, dbLocate( <{FOR}>, <{WHILE}>, <NEXT>, <rec>, <.rest.> ), dbLocate( {||TRUE}, <{WHILE}>, <NEXT>, <rec>, <.rest.> ) ); DO WHILE found() 
+** Todo FoxPro Nooptimize clause 
 
 #command ENDSCAN => dbContinue(); ENDDO
+#command END SCAN => dbContinue(); ENDDO
+
+#endif
 
 ** EOF

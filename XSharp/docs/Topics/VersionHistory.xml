@@ -16,6 +16,8 @@
       <li styleclass="List1">Fixed a recursion problem in the preprocessor</li>
       <li styleclass="List1">MEMVAR-&gt; and FIELD-&gt; were no longer correcty detected This has been fixed.</li>
       <li styleclass="List1">We have fixed several issues in &#160;dbcmd.xh </li>
+      <li styleclass="List1">Fixed a problem with return statements inside Lambda expressions.</li>
+      <li styleclass="List1">The = Expression() statements (FoxPro dialect) was not generating any code. This has been fixed.</li>
     </list>
     <para styleclass="Heading2">Runtime</para>
     <list id="74" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -26,6 +28,7 @@
     <list id="74" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List">Improved the Format-Document code</li>
       <li styleclass="List">Fixed a problem in the VS Parser when looking up the type for variables defined with the VAR keyword which could send VS in an endless loop.</li>
+      <li styleclass="List">The contents of the TEXT .. ENDTEXT block and the line after the \ and \\ tokens now has its own color</li>
     </list>
     <para styleclass="Heading1">Changes in 2.0.8 (Bandol GA 2.08)</para>
     <para styleclass="Heading2">Compiler</para>

@@ -1,6 +1,6 @@
 ﻿//
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 using System.ComponentModel.Composition;
@@ -63,6 +63,20 @@ namespace XSharpColorizer
         public XSharpBraceCloseFormat()
         {
             this.DisplayName = "XSharp Brace Close";
+        }
+    }
+
+    [Export(typeof(EditorFormatDefinition))]
+    [ClassificationType(ClassificationTypeNames = ColorizerConstants.XSharpTextEndTextFormat)]
+    [Name(ColorizerConstants.XSharpTextEndTextFormat)]
+    [UserVisible(true)]
+    [Order(After = Priority.Default)]
+    internal sealed class XSharpTextEndTextFormat : ClassificationFormatDefinition
+    {
+        public XSharpTextEndTextFormat()
+        {
+            this.DisplayName = "XSharp Text .. EndText";
+            this.ForegroundColor = Colors.DarkSalmon;
         }
     }
 

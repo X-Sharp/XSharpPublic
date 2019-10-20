@@ -1,6 +1,6 @@
 ﻿//
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 using System.ComponentModel.Composition;
@@ -28,5 +28,9 @@ namespace XSharpColorizer
         [Export(typeof(ClassificationTypeDefinition))]
         [Name(ColorizerConstants.XSharpBraceCloseFormat)]
         internal static ClassificationTypeDefinition XSharpBraceCloseFormat = null;
+
+        [Export(typeof(ClassificationTypeDefinition))]
+        [Name(ColorizerConstants.XSharpTextEndTextFormat)]
+        internal static ClassificationTypeDefinition XSharpTextEndTextFormat = null;
     }
 }

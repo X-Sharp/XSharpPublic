@@ -743,11 +743,15 @@ namespace XSharp.Project
         {
             if (!_optionsPage.ShowAfterChar)
                 return;
-
-            if (Char.IsLetterOrDigit(ch) || ch == '_')
+            SnapshotPoint caret = TextView.Caret.Position.BufferPosition;
+            if (cursorIsInStringorComment(caret))
             {
-                SnapshotPoint caret = TextView.Caret.Position.BufferPosition;
-                var line = caret.GetContainingLine();
+                return;
+            }
+            if (Char.IsLetterOrDigit(ch) || ch == '_' )
+            {
+                 var line = caret.GetContainingLine();
+
                 var lineText = line.GetText();
                 var pos = caret.Position - line.Start.Position;
                 int chars = 0;
@@ -954,7 +958,28 @@ namespace XSharp.Project
             _completionSession.Dismiss();
             return false;
         }
+        private bool cursorIsInStringorComment(SnapshotPoint caret)
+        {
+            var line = caret.GetContainingLine();
 
+            SnapshotSpan lineSpan = new SnapshotSpan(line.Start, caret.Position - line.Start);
+            var tagAggregator = _aggregator.CreateTagAggregator<IClassificationTag>(this.TextView.TextBuffer);
+            var tags = tagAggregator.GetTags(lineSpan);
+            var tag = tags.LastOrDefault();
+            if (tag.Tag != null && tag.Tag.ClassificationType != null && tag.Tag.ClassificationType.Classification != null)
+            {
+                switch (tag.Tag.ClassificationType.Classification.ToLower())
+                {
+                    case "string":
+                    case "comment":
+                    case "xsharp.text":
+                        return true;
+                }
+            }
+            return false;
+
+
+        }
         private bool cursorIsAfterSLComment(SnapshotPoint caret)
         {
 

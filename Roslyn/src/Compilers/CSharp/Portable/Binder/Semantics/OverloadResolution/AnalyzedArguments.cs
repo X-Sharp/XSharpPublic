@@ -74,6 +74,9 @@ namespace Microsoft.CodeAnalysis.CSharp
 #if XSHARP
         internal void SetRefKind(int i, RefKind newRefKind)
         {
+            if (RefKinds.Count == 0 && newRefKind != Microsoft.CodeAnalysis.RefKind.None)
+                foreach (var a in Arguments)
+                    RefKinds.Add(a.GetRefKind());
             if (i < RefKinds.Count && i >= 0)
             {
                 RefKinds[i] = newRefKind;

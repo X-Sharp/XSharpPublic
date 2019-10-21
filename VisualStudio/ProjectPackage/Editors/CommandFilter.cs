@@ -51,6 +51,7 @@ namespace XSharp.Project
         IBufferTagAggregatorFactoryService _aggregator;
         OptionsPages.IntellisenseOptionsPage _optionsPage;
         List<int> _linesToSync;
+        bool _suspendSync = false;
         private static System.Globalization.TextInfo txtInfo = new System.Globalization.CultureInfo("en-US", false).TextInfo;
 
 
@@ -74,8 +75,11 @@ namespace XSharp.Project
         {
             if (_buffer.Properties.ContainsProperty(typeof(XSharpClassifier)))
             {
-                _classifier = (XSharpClassifier)_buffer.Properties.GetProperty(typeof(XSharpClassifier));
-                _classifier.ClassificationChanged += _classifier_ClassificationChanged;
+                if (_classifier == null)
+                {
+                    _classifier = (XSharpClassifier)_buffer.Properties.GetProperty(typeof(XSharpClassifier));
+                    _classifier.ClassificationChanged += _classifier_ClassificationChanged;
+                }
             }
             else
             {
@@ -96,6 +100,8 @@ namespace XSharp.Project
         private void _classifier_ClassificationChanged(object sender, ClassificationChangedEventArgs e)
         {
             XSharpProjectPackage.Instance.DisplayOutPutMessage("CommandFilter.ClassificationChanged()");
+            if (_suspendSync)
+                return;
             if (_linesToSync.Count > 0)
             {
                 int[] lines;
@@ -113,6 +119,7 @@ namespace XSharp.Project
                 {
                     System.Threading.Thread.Sleep(100);
                 }
+
                 UIThread.DoOnUIThread(delegate ()
                     {
                         var editSession = _buffer.CreateEdit();
@@ -147,6 +154,8 @@ namespace XSharp.Project
                             }
                         }
                     });
+
+
             }
         }
         public CommandFilter(IWpfTextView textView, ICompletionBroker completionBroker, ITextStructureNavigator nav, ISignatureHelpBroker signatureBroker, IBufferTagAggregatorFactoryService aggregator)
@@ -367,10 +376,13 @@ namespace XSharp.Project
 
         private void registerLineForCaseSync(int line)
         {
-            lock (_linesToSync)
+            if (!_suspendSync)
             {
-                if (!_linesToSync.Contains(line))
-                    _linesToSync.Add(line);
+                lock (_linesToSync)
+                {
+                    if (!_linesToSync.Contains(line))
+                        _linesToSync.Add(line);
+                }
             }
         }
         private void Textbuffer_Changed(object sender, TextContentChangedEventArgs e)
@@ -595,7 +607,23 @@ namespace XSharp.Project
                             break;
 #if SMARTINDENT
                         case VSConstants.VSStd2KCmdID.FORMATDOCUMENT:
-                            FormatDocument();
+                            try
+                            {
+                                lock (_linesToSync)
+                                {
+                                    _suspendSync = true;
+                                    _linesToSync.Clear();
+                                }
+                                FormatDocument();
+                            }
+                            finally
+                            {
+                                lock (_linesToSync)
+                                {
+                                    _linesToSync.Clear();
+                                    _suspendSync = false;
+                                }
+                            }
                             break;
 #endif
                         case VSConstants.VSStd2KCmdID.RETURN:
@@ -715,11 +743,15 @@ namespace XSharp.Project
         {
             if (!_optionsPage.ShowAfterChar)
                 return;
-
-            if (Char.IsLetterOrDigit(ch) || ch == '_')
+            SnapshotPoint caret = TextView.Caret.Position.BufferPosition;
+            if (cursorIsInStringorComment(caret))
             {
-                SnapshotPoint caret = TextView.Caret.Position.BufferPosition;
-                var line = caret.GetContainingLine();
+                return;
+            }
+            if (Char.IsLetterOrDigit(ch) || ch == '_' )
+            {
+                 var line = caret.GetContainingLine();
+
                 var lineText = line.GetText();
                 var pos = caret.Position - line.Start.Position;
                 int chars = 0;
@@ -785,31 +817,91 @@ namespace XSharp.Project
             return true;
         }
 
+        void formatKeyword(Completion completion , char nextChar)
+        {
+            switch (_optionsPage.KeywordCase)
+            {
+                case 1:     // Upper
+                    completion.InsertionText = completion.InsertionText.ToUpper();
+                    break;
+                case 2:     // Lower
+                    completion.InsertionText = completion.InsertionText.ToLower();
+                    break;
+                case 3:     // Proper
+                    completion.InsertionText = Char.ToUpper(completion.InsertionText[0]) + completion.InsertionText.Substring(1).ToLower();
+                    break;
+            }
+            if (nextChar != ' ' && nextChar != '\t')
+            {
+                completion.InsertionText += " ";
+            }
+        }
+
         bool CompleteCompletionSession(bool force = false, char ch = ' ')
         {
             if (_completionSession == null)
             {
                 return false;
             }
+            bool commit = false;
+            bool moveBack = false;
+            ITextCaret caret = null;
             XSharpProjectPackage.Instance.DisplayOutPutMessage("CommandFilter.CompleteCompletionSession()");
             if (_completionSession.SelectedCompletionSet != null)
             {
                 if ((_completionSession.SelectedCompletionSet.Completions.Count > 0) && (_completionSession.SelectedCompletionSet.SelectionStatus.IsSelected))
                 {
-                    //
-                    //if (XSharp.CodeDom.XSharpKeywords.Contains(_completionSession.SelectedCompletionSet.SelectionStatus.Completion.InsertionText))
-                    //{
-                    //    _completionSession.SelectedCompletionSet.SelectionStatus.Completion.InsertionText = "@@" + _completionSession.SelectedCompletionSet.SelectionStatus.Completion.InsertionText;
-                    //}
-                    //
-                    XSharpProjectPackage.Instance.DisplayOutPutMessage(" --> Commit");
-                    _completionSession.Commit();
-                    return true;
+                     if (_optionsPage.AutoPairs)
+                    {
+                        caret = _completionSession.TextView.Caret;
+                        Kind kind = Kind.Unknown;
+                        var completion = _completionSession.SelectedCompletionSet.SelectionStatus.Completion;
+                        if (completion is XSCompletion)
+                        {
+                            kind = ((XSCompletion)completion).Kind;
+                        }
+                        if (kind == Kind.Keyword)
+                        {
+                            formatKeyword(completion, '\0');
+                        }
+                        XSharpProjectPackage.Instance.DisplayOutPutMessage(" --> select "+completion.InsertionText);
+                        if (completion.InsertionText.EndsWith("("))
+                        {
+                            moveBack = true;
+                            completion.InsertionText += ")";
+                        }
+                        else if (completion.InsertionText.EndsWith("{"))
+                        {
+                            moveBack = true;
+                            completion.InsertionText += "}";
+                        }
+                        else if (completion.InsertionText.EndsWith("["))
+                        {
+                            moveBack = true;
+                            completion.InsertionText += "]";
+                        }
+                        else
+                        {
+                            switch (kind)
+                            {
+                                case Kind.Method:
+                                case Kind.Function:
+                                case Kind.Procedure:
+                                case Kind.VODLL:
+                                    moveBack = true;
+                                    completion.InsertionText += "()";
+                                    break;
+                                case Kind.Constructor:
+                                    moveBack = true;
+                                    completion.InsertionText += "{}";
+                                    break;
+                            }
+                        }
+                    }
+                    commit = true;
                 }
                 else if (force)
                 {
-                    bool moveBack = false;
-                    ITextCaret caret = null;
                     if (completionWas != null)
                     {
                         _completionSession.SelectedCompletionSet.SelectionStatus = completionWas;
@@ -817,45 +909,77 @@ namespace XSharp.Project
                     //
                     if (_completionSession.SelectedCompletionSet.SelectionStatus.Completion != null)
                     {
+                        var completion = _completionSession.SelectedCompletionSet.SelectionStatus.Completion;
+                        if (completion is XSCompletion  && ((XSCompletion) completion).Kind == Kind.Keyword)
+                        {
+                            formatKeyword(completion, ch);
+                        }
                         // Push the completion char into the InsertionText if needed
-                        if (!_completionSession.SelectedCompletionSet.SelectionStatus.Completion.InsertionText.EndsWith(ch.ToString()))
-                            _completionSession.SelectedCompletionSet.SelectionStatus.Completion.InsertionText += ch;
-                        //
+                        if (!completion.InsertionText.EndsWith(ch.ToString()))
+                        {
+                            completion.InsertionText += ch;
+                        }
                         if (_optionsPage.AutoPairs)
                         {
                             caret = _completionSession.TextView.Caret;
                             if (ch == '(')
                             {
-                                _completionSession.SelectedCompletionSet.SelectionStatus.Completion.InsertionText += ')';
+                                completion.InsertionText += ')';
                                 moveBack = true;
                             }
                             else if (ch == '{')
                             {
-                                _completionSession.SelectedCompletionSet.SelectionStatus.Completion.InsertionText += '}';
+                                completion.InsertionText += '}';
                                 moveBack = true;
                             }
                             else if (ch == '[')
                             {
-                                _completionSession.SelectedCompletionSet.SelectionStatus.Completion.InsertionText += ']';
+                                completion.InsertionText += ']';
                                 moveBack = true;
                             }
                         }
                     }
-                    XSharpProjectPackage.Instance.DisplayOutPutMessage(" --> Commit");
-                    _completionSession.Commit();
-                    if (moveBack && (caret != null))
-                    {
-                        caret.MoveToPreviousCaretPosition();
-                        StartSignatureSession(false);
-                    }
-                    return true;
+                    commit = true;
                 }
             }
+            if (commit)
+            {
+                XSharpProjectPackage.Instance.DisplayOutPutMessage(" --> Commit");
+                _completionSession.Commit();
+                if (moveBack && (caret != null))
+                {
+                    caret.MoveToPreviousCaretPosition();
+                    StartSignatureSession(false);
+                }
+                return true;
+            }
+
             XSharpProjectPackage.Instance.DisplayOutPutMessage(" --> Dismiss");
             _completionSession.Dismiss();
             return false;
         }
+        private bool cursorIsInStringorComment(SnapshotPoint caret)
+        {
+            var line = caret.GetContainingLine();
 
+            SnapshotSpan lineSpan = new SnapshotSpan(line.Start, caret.Position - line.Start);
+            var tagAggregator = _aggregator.CreateTagAggregator<IClassificationTag>(this.TextView.TextBuffer);
+            var tags = tagAggregator.GetTags(lineSpan);
+            var tag = tags.LastOrDefault();
+            if (tag.Tag != null && tag.Tag.ClassificationType != null && tag.Tag.ClassificationType.Classification != null)
+            {
+                switch (tag.Tag.ClassificationType.Classification.ToLower())
+                {
+                    case "string":
+                    case "comment":
+                    case "xsharp.text":
+                        return true;
+                }
+            }
+            return false;
+
+
+        }
         private bool cursorIsAfterSLComment(SnapshotPoint caret)
         {
 

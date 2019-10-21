@@ -150,7 +150,7 @@ CLASS VOBitmaps
         RETURN Process(hWnd, cFileName, cTitle, FALSE)
             
     STATIC METHOD Stretch(hWnd AS IntPtr,cFileName AS STRING,cTitle AS STRING) AS LOGIC
-        RETURN Process(hWnd, cFileName, cTitle, FALSE)
+        RETURN Process(hWnd, cFileName, cTitle, TRUE)
         
     STATIC METHOD Process(hWnd AS IntPtr, cFileName AS STRING, cTitle AS STRING, stretch AS LOGIC) AS LOGIC
         LOCAL bRet := FALSE AS LOGIC

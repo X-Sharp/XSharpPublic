@@ -317,7 +317,7 @@ BEGIN NAMESPACE XSharpModel
 			LOCAL nRealStartLine AS INT
 			LOCAL lFoundAlias AS LOGIC
 			LOCAL lWasAliased AS LOGIC
-			
+
 			aSourceLines := aLineCollection
 			aLineFields := List<EntityObject>{}
 			aLineLocals := List<EntityObject>{}
@@ -1376,7 +1376,7 @@ BEGIN NAMESPACE XSharpModel
 										oStatementLine:cArgument := "BEGIN"
 									END SWITCH
 							END IF
-						CASE state:lFirstWord .AND. System.Array.IndexOf(SELF:aSpecialEndClassMarkers , cUpperWord) != -1 
+						CASE state:lFirstWord .AND. System.Array.IndexOf(SELF:aSpecialEndClassMarkers , cUpperWord) != -1
 							//
 							state:lIgnore := TRUE
 							lInEnum := FALSE
@@ -1390,7 +1390,7 @@ BEGIN NAMESPACE XSharpModel
 							eStep := ParseStep.AfterEnd
 							_SetLineType(oStatementLine, LineType.TokenOut)
 							oStatementLine:cArgument := cUpperWord
-						CASE state:lFirstWord .AND. System.Array.IndexOf(SELF:aSingleOptionnalEndMarkers , cUpperWord) != -1 
+						CASE state:lFirstWord .AND. System.Array.IndexOf(SELF:aSingleOptionnalEndMarkers , cUpperWord) != -1
 							oStatementLine:cArgument := cUpperWord
 							_SetLineType(oStatementLine, LineType.OptionnalEnd)
 							//
@@ -1471,7 +1471,7 @@ BEGIN NAMESPACE XSharpModel
 									LOCAL followedByAssign := FALSE AS LOGIC
 									LOCAL nNext := nChar AS INT
 									LOCAL cTemp := cChar AS CHAR
-									DO WHILE nNext <=nLineLen
+									DO WHILE nNext < nLineLen
 										IF cTemp == ' ' .OR. cTemp == '\t'
 											cTemp := cLine[nNext]
 											nNext++

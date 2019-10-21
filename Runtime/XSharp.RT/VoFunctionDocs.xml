@@ -553,13 +553,16 @@
 
     <param name="aArray">The array to traverse.</param>
     <param name="cbBlock">The code block to execute.</param>
-    <param name="nStart">The starting element.  A negative value starts from the end.  If &lt;nCount&gt; is  positive, the default value is 1; if &lt;nCount&gt; is negative, the default value is the length of the array.</param>
+    <param name="nStart">The starting element.  A negative value starts from the end.  
+    If &lt;nCount&gt; is  positive, the default value is 1; if &lt;nCount&gt; is negative, the default value is the length of the array.</param>
     <param name="nCount">The number of elements to process from &lt;nStart&gt;.  A negative value starts from the end.  The default is all elements to the end of the array.</param>
     <returns>
       A reference to &lt;aArray&gt;.
     </returns>
     <remarks>
-      AEvalA() is similar to AEval() in that they both evaluate a code block once for each element of an array, passing the element value as an argument.  The difference is that while AEval() ignores the return value of the code block, AEvalA() assigns the return value to the array element.  See AEval() for details.
+      AEvalA() is similar to AEval() in that they both evaluate a code block once for each element of an array,
+      passing the element value as an argument.  The difference is that while AEval() ignores the return value of the code block,
+      AEvalA() assigns the return value to the array element.  See AEval() for details.
     </remarks>
     <example>
       This example uses AEvalA() to create an array of file names in lowercase:
@@ -567,8 +570,7 @@
         FUNCTION Start()
         &#0009;LOCAL aFiles := Directory("*.dbf")
         &#0009;LOCAL nTotal AS SHORTINT
-        &#0009;AEvalA(aFiles,{|aDBFFile|;
-        &#0009;&#0009;LOWER(PadR(aDBFFile[F_NAME], 10))})
+        &#0009;AEvalA(aFiles,{|aDBFFile| LOWER(PadR(aDBFFile[F_NAME], 10))})
       </code>
     </example>
     <seealso cref='O:XSharp.RT.Functions.AEval'>AEval Overload</seealso>

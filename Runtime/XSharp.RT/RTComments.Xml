@@ -5,7 +5,8 @@
       <note type="tip">
         The Static Memory Functions (MemAlloc, MemSet etc) are included for compatibility only.
         In most cases the static memory blocks can (and should) be replaced with arrays of bytes.<br/>
-        Many of the functions in the runtime that take memory blocks as parameter, such as the low level IO functions, now have overloads that take arrays of bytes as parameter.<br/>
+        Many of the functions in the runtime that take memory blocks as parameter, 
+        such as the low level IO functions, now have overloads that take arrays of bytes as parameter.<br/>
         We recommend that you use these overloads, because their performance is somewhat better.
       </note>
     </remarks>
@@ -135,7 +136,8 @@
         </item>
         <item>
           <term>SCOPE_BOTH</term>
-          <description>Returns an array with 2 elements with the Top scope in element 1 and the Bottom scope in element 2. When a scope is not set then the value NIL is stored in the array</description>
+          <description>Returns an array with 2 elements with the Top scope in element 1 and the Bottom scope in element 2. 
+          When a scope is not set then the value NIL is stored in the array</description>
         </item>
 
       </list>

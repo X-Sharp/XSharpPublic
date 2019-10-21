@@ -67,23 +67,21 @@ CLASS XSharp.XPP.Abstract
         /// However, when :noMethod() is declared in the class, the runtime error will not occur.
         /// Instead, program execution is directed to this method. The parameter <paramref name="cName" /> contains the name of the undefined method,
         /// followed by the parameters the callee has passed to the method call.</remarks>
-    VIRTUAL METHOD NoMethod(cName, uParams) AS USUAL CLIPPER
-        LOCAL aParams AS USUAL[]
+    VIRTUAL METHOD NoMethod(uParams) AS USUAL CLIPPER
+        LOCAL cMethod AS STRING
+        cMethod := RuntimeState.NoMethod
         IF ! SELF:inSend
             SELF:inSend := TRUE
             TRY
-                aParams := USUAL[]{ PCOunt()-1 }
-                // The pseudo function _ARGS() returns the Clipper arguments array
-                System.Array.Copy(_ARGS(), 1, aParams, 0, PCount()-1)
                 IF XSharp.XPP.ClassObject.IsInstanceOfRuntimeClass(SELF)
-                    RETURN XSharp.XPP.ClassObject.CallMethod(SELF, cName, aParams)
+                    RETURN XSharp.XPP.ClassObject.CallMethod(SELF, cMethod, _ARGS())
                 ENDIF
-                RETURN __InternalSend(SELF, cName, aParams)
+                RETURN __InternalSend(SELF, cMethod,  _ARGS())
             FINALLY
                 SELF:inSend := FALSE
             END TRY
         ELSE
-            THROW Error.VOError( EG_NOMETHOD, __ENTITY__, cName, 1, <OBJECT>{cName} )
+            THROW Error.VOError( EG_NOMETHOD, __ENTITY__, cMethod, 1, <OBJECT>{cMethod} )
         ENDIF
 
     /// <summary>Receives notifications from DatabaseEngines </summary>

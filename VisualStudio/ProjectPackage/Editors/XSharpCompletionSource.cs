@@ -62,7 +62,6 @@ namespace XSharpLanguage
         private IToken _stopToken;
 
         private XFile _file;
-        private bool _allowDot;
         private bool _showTabs;
         private bool _keywordsInAll;
         private bool _dotUniversal;
@@ -86,7 +85,6 @@ namespace XSharpLanguage
             // Retrieve from Project properties later: _file.Project.ProjectNode.ParseOptions.
             var prj = _file.Project.ProjectNode;
             _dialect = _file.Project.Dialect;
-            _allowDot = _dialect == XSharpDialect.Core || _dialect == XSharpDialect.FoxPro;
             _settingIgnoreCase = true;
             _stopToken = null;
             this.aggregator = aggregator;
@@ -106,7 +104,11 @@ namespace XSharpLanguage
                     throw new ObjectDisposedException("XSharpCompletionSource");
                 _showTabs = _optionsPage.CompletionListTabs;
                 _keywordsInAll = _optionsPage.KeywordsInAll;
-                if (_allowDot)
+                if (_dialect == XSharpDialect.FoxPro)
+                {
+                    _dotUniversal = true;
+                }
+                else if (_dialect == XSharpDialect.Core )
                 {
                     _dotUniversal = _optionsPage.UseDotAsUniversalSelector;
                 }
@@ -908,7 +910,10 @@ namespace XSharpLanguage
 
         private bool nameStartsWith(string name, string startWith)
         {
-            return name.StartsWith(startWith, this._settingIgnoreCase, System.Globalization.CultureInfo.InvariantCulture);
+            // prevent crash for members without a name.
+            if (name != null)
+                return name.StartsWith(startWith, this._settingIgnoreCase, System.Globalization.CultureInfo.InvariantCulture);
+            return false;
         }
 
         /// <summary>
@@ -2476,9 +2481,18 @@ namespace XSharpLanguage
                         {
                             token = null;
                             triggerToken = null;
+                            break;
                         }
                         else if (XSharpLexer.IsOperator(triggerToken.Type) && !inCtor)
                         {
+                            token = null;
+                            triggerToken = null;
+                        }
+                        // Simple EQUAL in FoxPro could mean ASSIGN_OP
+                        else if ((triggerToken.Type == XSharpLexer.EQ) && (file.Project.Dialect == XSharpDialect.FoxPro))
+                        {
+                            // Stop here
+                            stopToken = triggerToken;
                             token = null;
                             triggerToken = null;
                         }
@@ -3302,6 +3316,26 @@ namespace XSharpLanguage
                                             found = true;
                                         }
                                     }
+                                    else
+                                    {
+                                        // find assignment and trim "oObject = " or "oObject := " from the tokenlist
+                                        int pos = -1;
+                                        for (int i = 0; i < tokenList.Count; i++)
+                                        {
+                                            if (tokenList[i] == ":=" || tokenList[i] == "=") // assign operation
+                                            {
+                                                pos = i;
+                                                break;
+                                            }
+                                        }
+                                        if (pos >= 0)
+                                        {
+                                           for ( int i = pos; i >= 0; i--)
+                                            {
+                                                tokenList.RemoveAt(i);
+                                            }
+                                        }
+                                    }
                                     if (!found)
                                     {
                                         // Try to Handle Inline Array initialization
@@ -4111,7 +4145,8 @@ namespace XSharpLanguage
         public CompletionElement(XElement XSharpElement)
         {
             this.foundElement = XSharpElement;
-            this.isArray = XSharpElement.IsArray;
+            if (XSharpElement != null)
+                this.isArray = XSharpElement.IsArray;
         }
 
         public CompletionElement(MemberInfo SystemElement)

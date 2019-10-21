@@ -3,8 +3,8 @@
     <DefaultName>Service.prg</DefaultName>
     <Name>WCF Service</Name>
     <Description>A WCF Service</Description>
-    <TemplateID>XSharp.WcfItem</TemplateID>
     <Icon>WCF.png</Icon>
+    <TemplateID>XSharp.WcfItem</TemplateID>
     <ProjectType>XSharp</ProjectType>
     <RequiredFrameworkVersion>3.0</RequiredFrameworkVersion>
   </TemplateData>
@@ -26,5 +26,4 @@
     <ProjectItem SubType="Code" TargetFileName="I$fileinputname$.prg" ReplaceParameters="true">IService.prg</ProjectItem>
     <ProjectItem SubType="Code" TargetFileName="$fileinputname$.prg" ReplaceParameters="true">Service.prg</ProjectItem>
   </TemplateContent>
-
 </VSTemplate>

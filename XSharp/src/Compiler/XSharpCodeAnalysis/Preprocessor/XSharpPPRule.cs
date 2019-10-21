@@ -1008,12 +1008,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     break;
                 }
-                // after matchExpresssion iSource points to the next token after the expression
-                int iEnd = matchExpression(iSource, tokens, null);
-                if (iEnd != iSource)
+                // after matchExpresssion iLastUsed points to the last token of the expression
+                if (matchExpression(iSource, tokens, null, out int iLastUsed))
                 {
-                    matches.Add(new Tuple<int, int>(iSource, iEnd - 1));
-                    iSource = iEnd;
+                    matches.Add(new Tuple<int, int>(iSource, iLastUsed));
+                    iSource = iLastUsed+1;
                 }
                 // IsOperator included comma, ellipses etc.
                 else if (XSharpLexer.IsOperator(token.Type))
@@ -1061,16 +1060,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case PPTokenType.MatchRegular:
                     // Matches an expression
                     // use Expression method to find the end of the list
-                    // iEnd points to the next token after the expression
-                    iEnd = matchExpression(iSource, tokens, null);
-                    int iLastUsed = iEnd - 1;
-                    // truncate spaces at the end
-                    iLastUsed = trimHiddenTokens(tokens, iSource, iLastUsed);
+                    // iLastUsed indicates the last token that is part of the expression
+                    found = matchExpression(iSource, tokens, null, out int iLastUsed);
+                    if (found)
+                    {
+                        // truncate spaces at the end
+                        iLastUsed = trimHiddenTokens(tokens, iSource, iLastUsed);
 
-                    matchInfo[mToken.Index].SetPos(iSource, iLastUsed);
-                    iSource = iEnd;
-                    iRule += 1;
-                    found = true;
+                        matchInfo[mToken.Index].SetPos(iSource, iLastUsed);
+                        iSource = iLastUsed+1;
+                        iRule += 1;
+                    }
+
                     break;
                 case PPTokenType.MatchList:
                     // ignore for now
@@ -1614,10 +1615,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             end= -1;
             if (tokens.Count >= start+1 && tokens[start].Type == XSharpLexer.AMP )
             {
-                var iend = matchExpression(start + 1, tokens, null);
-                if (iend != start+1)
+                
+                if (matchExpression(start + 1, tokens, null, out end))
                 {
-                    end = iend-1;
                     return true;
                 }
             
@@ -1850,10 +1850,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             return false;
         }
-        int matchExpression(int start, IList<XSharpToken> tokens, XSharpToken stopToken)
+        bool matchExpression(int start, IList<XSharpToken> tokens, XSharpToken stopToken, out int lastUsed)
         {
+            lastUsed = start ;
             if (!tokenCanStartExpression(start, tokens))
-                return start;
+            {
+                return false;
+            }
             int current = start;
             int braceLevel = 0;
             int count = tokens.Count;
@@ -1917,7 +1920,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 current++;
             }
-            return current;
+            lastUsed = current-1;
+            return current != start;
         }
     }
 }

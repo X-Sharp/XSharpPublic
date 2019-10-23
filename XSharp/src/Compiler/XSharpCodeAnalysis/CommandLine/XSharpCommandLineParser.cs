@@ -519,7 +519,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
                 else {
                     AddDiagnostic(diagnostics, ErrorCode.ERR_DialectRequiresReferenceToRuntime, options.Dialect.ToString(),
-                        "VulcanRT.DLL and VulcanRTFuncs.DLL or XSharp.Core.DLL and XSharp.RT.DLL");
+                        "XSharp.Core.DLL and XSharp.RT.DLL or VulcanRT.DLL and VulcanRTFuncs.DLL");
                     newDialect = XSharpDialect.Core;
                 }
             }

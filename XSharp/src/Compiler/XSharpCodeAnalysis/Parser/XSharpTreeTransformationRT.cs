@@ -3282,7 +3282,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     }
                     if (parameternames.Count > 0)
                     {
-                        var updatestmt = GenerateGetClipperByRefAssignParam(parameternames);
+                        var updatestmt = GenerateGetClipperByRefAssignParam(parameternames,context.Data.HasParametersStmt);
                         finallystmts.Add(updatestmt);
 
                     }
@@ -3427,7 +3427,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _pool.Free(indices);
             return result;
         }
-        private StatementSyntax GenerateGetClipperByRefAssignParam(List<string> paramNames)
+        private StatementSyntax GenerateGetClipperByRefAssignParam(List<string> paramNames, bool parametersStatement)
         {
             // Note that the expr must result into a 1 based offset or (with /az) a 0 based offset
             // XS$PCount > ..
@@ -3461,8 +3461,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
                         indices,
                         SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken)));
+                var right = GenerateSimpleName(paramName);
 
-                var assign = GenerateExpressionStatement(MakeSimpleAssignment(left, GenerateSimpleName(paramName)), true);
+                if (parametersStatement)
+                {
+                    right = GenerateSimpleName(XSharpSpecialNames.MemVarPrefix + "->"+paramName);
+                }
+                var assign = GenerateExpressionStatement(MakeSimpleAssignment(left, right), true);
                 if (last != null)
                 {
                     var list = new List<StatementSyntax>();

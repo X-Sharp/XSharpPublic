@@ -354,11 +354,6 @@ FUNCTION ModuleName( lFull AS LOGIC ) AS STRING
     RETURN ExecName( lFull )
 
 
-FUNCTION GetMimeType(sFileName AS STRING) AS STRING
-    LOCAL sExt AS STRING
-	sExt := System.IO.Path.GetExtension(sFileName)
-    RETURN Microsoft.Win32.Registry.GetValue("HKEY_CLASSES_ROOT\"+sExt,"Content Type",""):ToString()
-
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/_getcmdline/*" />
 FUNCTION _GetCmdLine() AS STRING

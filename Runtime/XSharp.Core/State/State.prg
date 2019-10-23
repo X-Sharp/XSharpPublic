@@ -64,11 +64,18 @@ CLASS XSharp.RuntimeState
 			SELF:_SetThreadValue(Set.Digits , (DWORD) 10 )
 			SELF:_SetThreadValue(Set.Exact , FALSE)
 			SELF:_SetThreadValue(Set.FloatDelta , 0.0000000000001)
-			SELF:_SetThreadValue(Set.DOSCODEPAGE, Win32.GetDosCodePage())
-			SELF:_SetThreadValue(Set.WINCODEPAGE, Win32.GetWinCodePage())
+            SELF:_SetThreadValue<BYTE[]>(Set.CollationTable, NULL )
+			IF System.Environment.OSVersion:Platform == System.PlatformID.Win32NT
+                SELF:_SetThreadValue(Set.DOSCODEPAGE, Win32.GetDosCodePage())
+                SELF:_SetThreadValue(Set.WINCODEPAGE, Win32.GetWinCodePage())
+                SELF:_SetThreadValue(Set.CollationMode, CollationMode.Windows)
+            ELSE
+                SELF:_SetThreadValue(Set.DOSCODEPAGE, 437 )
+                SELF:_SetThreadValue(Set.WINCODEPAGE, 1250 )
+                SELF:_SetThreadValue(Set.CollationMode, CollationMode.Unicode )
+            ENDIF
             SELF:_SetThreadValue(Set.Dialect, XSharpDialect.Core)
 			// Add null value for Clipper collation 
-			SELF:_SetThreadValue<BYTE[]>(Set.CollationTable, NULL )
 			SELF:_SetThreadValue(Set.CollationMode, CollationMode.Windows)
 			// Date and time settings
 			SELF:_SetInternationalWindows()
@@ -85,14 +92,14 @@ CLASS XSharp.RuntimeState
 
     /// <summary>This method closes all open workareas for all threads. It is automatically called ad shutdown.</summary>
     /// <remarks>It is usually better to manage the lifetime of your workarea yourself in code, so don't trust on the runtime to close the workareas.</remarks>
-    STATIC METHOD CloseWorkareasForAllThreads() as VOID
+    STATIC METHOD CloseWorkareasForAllThreads() AS VOID
         TRY
-            FOREACH var state in currentState:Values
-                if state:_workareas != NULL
+            FOREACH VAR state IN currentState:Values
+                IF state:_workareas != NULL
                     state:_workareas:CloseAll()
                 ENDIF
             NEXT
-        CATCH e as Exception
+        CATCH e AS Exception
             System.Diagnostics.Debug.WriteLine(e:ToString())
         END TRY
 	PRIVATE METHOD Clone() AS RuntimeState
@@ -599,7 +606,7 @@ CLASS XSharp.RuntimeState
 
 
 
-	private _workareas AS WorkAreas
+	PRIVATE _workareas AS WorkAreas
 	/// <summary>The workarea information for the current Thread.</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
 	PUBLIC STATIC PROPERTY Workareas AS WorkAreas
@@ -751,7 +758,11 @@ CLASS XSharp.RuntimeState
         VAR mode := RuntimeState.CollationMode 
         SWITCH mode
         CASE CollationMode.Windows
-            ret := XSharp.StringHelpers.CompareWindows(strLHS, strRHS) 
+            IF System.Environment.OSVersion:Platform == System.PlatformID.Win32NT
+                ret := XSharp.StringHelpers.CompareWindows(strLHS, strRHS)
+            ELSE
+                ret := String.Compare(strLHS, strRHS)
+            ENDIF
         CASE CollationMode.Clipper
             ret := XSharp.StringHelpers.CompareClipper(strLHS, strRHS) 
         CASE CollationMode.Unicode
@@ -777,7 +788,13 @@ CLASS XSharp.RuntimeState
         CASE CollationMode.Clipper
             RETURN XSharp.StringHelpers.CompareClipper(aLHS, aRHS, nLen)
         CASE CollationMode.Windows
-            RETURN XSharp.StringHelpers.CompareWindows(aLHS, aRHS, nLen)
+            IF System.Environment.OSVersion:Platform == System.PlatformID.Win32NT
+                RETURN XSharp.StringHelpers.CompareWindows(aLHS, aRHS, nLen)
+            ELSE
+                VAR strLHS := RuntimeState.WinEncoding:GetString(aLHS, 0, nLen)
+                VAR strRHS := RuntimeState.WinEncoding:GetString(aRHS, 0, nLen)
+                RETURN String.Compare(strLHS, strRHS)
+            ENDIF
         CASE CollationMode.Unicode
             VAR strLHS := RuntimeState.WinEncoding:GetString(aLHS, 0, nLen)
             VAR strRHS := RuntimeState.WinEncoding:GetString(aRHS, 0, nLen)

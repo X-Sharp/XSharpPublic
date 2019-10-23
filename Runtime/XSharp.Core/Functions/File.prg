@@ -11,7 +11,6 @@ USING System.Linq
 USING System.Runtime.InteropServices
 USING System.Runtime.CompilerServices
 USING System.Security
-USING Microsoft.Win32.SafeHandles
 USING System.Runtime
 USING System.Runtime.ConstrainedExecution
 USING System.Text

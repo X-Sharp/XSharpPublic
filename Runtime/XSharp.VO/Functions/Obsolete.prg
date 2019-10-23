@@ -264,12 +264,12 @@ FUNCTION Variant2Usual(pvarg AS IntPtr,pItem AS IntPtr) AS LOGIC
 	
 	
 /// <exclude/>
-[Obsolete( "'UnRegisterKid()' is not supported always returns FALSE" )];
+[Obsolete( "'UnRegisterKid()' is not supported, always returns FALSE" )];
 FUNCTION UnRegisterKid(ptrKid AS IntPtr) AS LOGIC
 	RETURN FALSE   
 	
 /// <exclude/>
-[Obsolete( "'UnRegisterKid()' is not supported always returns 0" )];
+[Obsolete( "'VOSendMessage()' is not supported, always returns 0" )];
 FUNCTION VOSendMessage(hwnd AS IntPtr,nMsg AS DWORD,dwParam AS DWORD,lParam AS LONG) AS LONG
 	RETURN 0	
 	

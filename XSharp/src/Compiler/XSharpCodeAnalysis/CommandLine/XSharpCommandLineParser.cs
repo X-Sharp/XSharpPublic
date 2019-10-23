@@ -513,13 +513,14 @@ namespace Microsoft.CodeAnalysis.CSharp
                     withRT = true;
                 }
                 else if(options.TargetDLL == XSharpTargetDLL.VO || options.TargetDLL == XSharpTargetDLL.RDD ||
-                    options.TargetDLL == XSharpTargetDLL.XPP || options.TargetDLL == XSharpTargetDLL.RT || options.TargetDLL == XSharpTargetDLL.VFP) {
+                    options.TargetDLL == XSharpTargetDLL.XPP || options.TargetDLL == XSharpTargetDLL.RT ||
+                    options.TargetDLL == XSharpTargetDLL.VFP) {
                     // Ok
                     withRT = true;
                 }
                 else {
                     AddDiagnostic(diagnostics, ErrorCode.ERR_DialectRequiresReferenceToRuntime, options.Dialect.ToString(),
-                        "VulcanRT.DLL and VulcanRTFuncs.DLL or XSharp.Core.DLL and XSharp.RT.DLL");
+                        "XSharp.Core.DLL and XSharp.RT.DLL or VulcanRT.DLL and VulcanRTFuncs.DLL");
                     newDialect = XSharpDialect.Core;
                 }
             }

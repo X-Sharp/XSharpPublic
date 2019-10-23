@@ -15,9 +15,9 @@
     <header>
       <para styleclass="Heading1">-dialect</para>
     </header>
-    <para styleclass="Normal">The -dialect compiler option selects the dialect that the compiler should follow. Valid options are: Core, VO, Vulcan, dBase, FoxPro, xBase++ and Harbour.</para>
+    <para styleclass="Normal">The -dialect compiler option selects the dialect that the compiler should follow. Valid options are: Core, VO, Vulcan, dBase, FoxPro, xBase++ and Harbour. <br/>Note: There should be NO space between the colon and the dialect. </para>
     <para styleclass="Heading2">Syntax</para>
-    <para styleclass="Code with box">-dialect: Core | VO | Vulcan</para>
+    <para styleclass="Code with box">-dialect: Core | VO | Vulcan | Harbour | XbasePP | FoxPro</para>
     <para styleclass="Heading2">Arguments</para>
     <para styleclass="List" style="text-indent:-100px; margin-left:100px; tabstops:96px left,144px left ;">Core<tab />Use the Core dialect. This is like C# with an xBase syntax. </para>
     <para styleclass="List" style="text-indent:-100px; margin-left:100px; tabstops:96px left,144px left ;">VO<tab />This activates the VO dialect. </para>

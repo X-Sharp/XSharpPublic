@@ -119,6 +119,12 @@
       <Private>True</Private>
       <HintPath>..\..\Dll\XIRES.dll</HintPath>
     </Reference>
+    <Reference Include="XSharp.VODesigners">
+      <Name>XSharp.VODesigners</Name>
+      <AssemblyName>XSharp.VODesigners.dll</AssemblyName>
+      <Private>True</Private>
+      <HintPath>..\..\..\..\Binaries\Debug\XSharp.VODesigners.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.prg" />

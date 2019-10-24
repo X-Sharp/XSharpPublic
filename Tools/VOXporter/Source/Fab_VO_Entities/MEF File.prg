@@ -3,6 +3,14 @@
 #using System.Text
 #using FabToolsNS
 
+DEFINE BINARY_WED := 10
+DEFINE BINARY_MED := 16
+DEFINE BINARY_FED := 14
+DEFINE BINARY_DED := 11
+DEFINE BINARY_FLD := 12
+DEFINE BINARY_IND := 13
+DEFINE BINARY_ORD := 30
+
 CLASS Designer
 	PROPERTY Name AS STRING AUTO
 	PROPERTY Bytes AS BYTE[] AUTO
@@ -40,8 +48,21 @@ CLASS Designer
 	PROPERTY MustExport AS LOGIC
 		GET
 			SWITCH SELF:Type
-			CASE 10		// Window
-			CASE 16		// Menu
+			CASE BINARY_WED		// Window
+			CASE BINARY_MED		// Menu
+			CASE BINARY_FED		// FieldSpec
+			CASE BINARY_DED		// DBServer
+				RETURN TRUE
+			END SWITCH
+			RETURN FALSE
+		END GET
+	END PROPERTY
+	PROPERTY IsDedHelper AS LOGIC
+		GET
+			SWITCH SELF:Type
+			CASE BINARY_FLD
+			CASE BINARY_IND
+			CASE BINARY_ORD
 				RETURN TRUE
 			END SWITCH
 			RETURN FALSE
@@ -50,10 +71,20 @@ CLASS Designer
 	PROPERTY Extension AS STRING 
 		GET
 			SWITCH SELF:Type
-			CASE 10	// Window
+			CASE BINARY_WED
 				RETURN ".xsfrm"
-			CASE 16	// Menu
+			CASE BINARY_MED
 				RETURN ".xsmnu"
+			CASE BINARY_FED
+				RETURN ".xsfs"
+			CASE BINARY_DED
+				RETURN ".xsdbs"
+			CASE BINARY_FLD
+				RETURN ".vnfld"
+			CASE BINARY_IND
+				RETURN ".vnind"
+			CASE BINARY_ORD
+				RETURN ".vnord"
 			END SWITCH
 			RETURN ".bin"
 		END GET
@@ -394,8 +425,9 @@ EXPORT aDesigners := System.Collections.Generic.List<Designer>{} AS System.Colle
 				    nCurrentType := br:ReadInt16()
 				    oInfoTemp:Type := nCurrentType
 				    ? nCurrentType
-				    IF nCurrentType == 16 .OR. nCurrentType == 10 .OR. ;
-				    	 nCurrentType == 12 .OR. nCurrentType == 14
+				    IF nCurrentType == BINARY_MED .OR. nCurrentType == BINARY_WED .OR. ;
+				    	 nCurrentType == BINARY_DED .OR. nCurrentType == BINARY_FED .OR. ;
+				    	 nCurrentType == BINARY_FLD .OR. nCurrentType == BINARY_IND .OR. nCurrentType == BINARY_ORD
 				    	oCurrentDesigner := Designer{cCurrentName , nCurrentType}
 				    	SELF:aDesigners:Add(oCurrentDesigner)
 				    END IF

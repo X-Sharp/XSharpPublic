@@ -71,9 +71,15 @@ namespace Microsoft.CodeAnalysis.CSharp
             // some generated nodes do not have an invocation expression syntax node
             if (node.Arguments.Length > 0 && node.Syntax is InvocationExpressionSyntax ies)
             {
-                var xnode = ies.XNode as XSharpParser.MethodCallContext;
-                if (xnode == null || !xnode.HasRefArguments)
+                var mcall = ies.XNode as XSharpParser.MethodCallContext;
+                var dostmt = ies.XNode as XSharpParser.DoStmtContext;
+                if (mcall == null && dostmt == null)
                     return null;
+                if (mcall != null && !mcall.HasRefArguments)
+                    return null;
+                if (dostmt != null && !dostmt.HasRefArguments)
+                    return null;
+
                 if (!node.Method.HasClipperCallingConvention())
                     return null;
             }

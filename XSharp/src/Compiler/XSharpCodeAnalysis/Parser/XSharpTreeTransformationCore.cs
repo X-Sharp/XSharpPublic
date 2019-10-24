@@ -6675,6 +6675,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (CurrentEntity != null && context.Op.Type == XP.ADDROF)
             {
                 CurrentEntity.Data.HasAddressOf = true;
+                if (context.Expr.CsNode is IdentifierNameSyntax ins)
+                {
+                    // do not allow @ abc->def
+                    if (ins.Identifier.Text.Contains("->"))
+                    {
+                        context.Put(ins);
+                        context.AddError(new ParseErrorData(context.Op, ErrorCode.ERR_CannotTakeAddressOfAliasedExpression));
+                        return;
+                    }
+                }
+
             }
             context.Put(_syntaxFactory.PrefixUnaryExpression(
                 context.Op.ExpressionKindPrefixOp(),
@@ -6964,8 +6975,27 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             // Todo
             // DO .. WITH should pass identifiers by reference to be completely compatible with the old XBase languages
+            if (argList.Arguments.Count > 0)
+            {
+                var newargs = new List<ArgumentSyntax>();
+                for (int iArg = 0; iArg < argList.Arguments.Count; iArg++)
+                {
+                    var arg = argList.Arguments[iArg];
+                    var exp = arg.Expression;
+                    if (exp is IdentifierNameSyntax ins)
+                    {
+                        if (ins.identifier.Text.IndexOf("->") == 0)
+                        {
+                            arg = MakeArgument(exp, true);
+                            context.HasRefArguments = true;
+                        }
+                    }
+                    newargs.Add(arg);
+                }
+                argList = MakeArgumentList(newargs.ToArray());
+                context.ArgList.Put(argList);
+            }
             var expr = GenerateMethodCall(name, argList);
-            context.HasRefArguments = HasRefArguments(argList);
             context.Put(GenerateExpressionStatement(expr));
         }
 

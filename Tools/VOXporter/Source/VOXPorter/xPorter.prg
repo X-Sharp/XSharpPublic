@@ -977,27 +977,91 @@ CLASS ApplicationDescriptor
 				END TRY
 			ENDIF
 
-			FOREACH oDesigner AS Designer IN oModule:Designers
-				IF oDesigner:MustExport
-					LOCAL cBinary AS STRING
-					LOCAL cModule AS STRING
-					LOCAL cPrg AS STRING
-					cModule := cFolder + "\" + oModule:PathValidName
-					cPrg := cModule + ".prg"
-					cBinary := cModule + "." + oDesigner:FileName
-					File.WriteAllBytes(cBinary , oDesigner:Bytes)
-					IF xPorter.ExportXideBinaries
-						TRY
-							DO CASE
-							CASE oDesigner:Type == 10
-								VOWindowEditor.ProjectImportVNFrm(cPrg , cBinary)
-							CASE oDesigner:Type == 16
-								VOMenuEditor.ProjectImportVNMnu(cPrg , cBinary)
-							END CASE
-						END TRY
+			BEGIN SCOPE // designers
+				LOCAL oModuleFieldSpecs AS XSharp.VODesigners.VOFieldSpecDescription
+				LOCAL aXideFieldSpecs AS List<STRING>
+				LOCAL aXideDBServers AS List<STRING>
+				LOCAL aFilesToDel AS List<STRING>
+				LOCAL cBinary AS STRING
+				LOCAL cModule AS STRING
+				LOCAL cPrg AS STRING
+				cModule := cFolder + "\" + oModule:PathValidName
+				cPrg := cModule + ".prg"
+				oModuleFieldSpecs := XSharp.VODesigners.VOFieldSpecDescription{}
+				aXideFieldSpecs := List<STRING>{}
+				aXideDBServers := List<STRING>{}
+				aFilesToDel := List<STRING>{}
+				
+				LOCAL aDBServers AS SortedList<STRING,BYTE[]>
+				aDBServers := SortedList<STRING,BYTE[]>{}
+
+				FOREACH oDesigner AS Designer IN oModule:Designers
+					IF oDesigner:MustExport .or. oDesigner:IsDedHelper
+						cBinary := cModule + "." + oDesigner:FileName
+						IF oDesigner:Type == BINARY_FED // FieldSpec
+							oModuleFieldSpecs:LoadFromBinary(oDesigner:Bytes, oDesigner:Name)
+						ELSEIF oDesigner:Type == BINARY_FLD
+//							MessageBox.Show(oDesigner:Name , "FIELD")
+							XSharp.VODesigners.DBServerBinary.Add(oDesigner:Name , XSharp.VODesigners.DBServerItemType.Field , oDesigner:Bytes)
+						ELSEIF oDesigner:Type == BINARY_IND
+//							MessageBox.Show(oDesigner:Name , "INDEX")
+							XSharp.VODesigners.DBServerBinary.Add(oDesigner:Name , XSharp.VODesigners.DBServerItemType.Index , oDesigner:Bytes)
+						ELSEIF oDesigner:Type == BINARY_ORD
+//							MessageBox.Show(oDesigner:Name , "ORDER")
+							XSharp.VODesigners.DBServerBinary.Add(oDesigner:Name , XSharp.VODesigners.DBServerItemType.Order , oDesigner:Bytes)
+						ELSEIF oDesigner:Type == BINARY_DED
+//							MessageBox.Show(oDesigner:Name , "DBSERVER")
+							aDBServers:Add(cBinary, oDesigner:Bytes)
+						ELSE
+							File.WriteAllBytes(cBinary , oDesigner:Bytes)
+						ENDIF
+						IF xPorter.ExportXideBinaries
+							TRY
+								DO CASE
+								CASE oDesigner:Type == BINARY_WED
+									VOWindowEditor.ProjectImportVNFrm(cPrg , cBinary)
+								CASE oDesigner:Type == BINARY_MED
+									VOMenuEditor.ProjectImportVNMnu(cPrg , cBinary)
+								CASE oDesigner:Type == BINARY_FED
+									File.WriteAllBytes(cBinary , oDesigner:Bytes)
+									aXideFieldSpecs:Add(cBinary)
+									aFilesToDel:Add(cBinary)
+								CASE oDesigner:Type == BINARY_DED
+									File.WriteAllBytes(cBinary , oDesigner:Bytes)
+									aXideDBServers:Add(cBinary)
+								CASE oDesigner:IsDedHelper
+									File.WriteAllBytes(cBinary , oDesigner:Bytes)
+									aFilesToDel:Add(cBinary)
+								END CASE
+							END TRY
+						END IF
+					ENDIF
+				NEXT
+				
+				// FieldSpecs:
+				IF .not. oModuleFieldSpecs:IsEmpty
+					cBinary := cFolder + "\" + oModule:PathValidName + ".FieldSpecs.xsfs"
+					oModuleFieldSpecs:SaveToDocument(cBinary)
+					IF xPorter.ExportXideBinaries .and. aXideFieldSpecs:Count != 0
+						VOFieldSpecEditor.ProjectImportVNFs(cPrg , aXideFieldSpecs:ToArray())
 					END IF
+				END IF
+				
+				// DBServers:
+				FOREACH oDBServer AS KeyValuePair<STRING,BYTE[]> IN aDBServers
+					LOCAL oDBDescr AS XSharp.VODesigners.VODBServerDescription
+					oDBDescr := XSharp.VODesigners.VODBServerDescription.LoadFromBinary(oDBServer:Value)
+					oDBDescr:SaveToDocument(oDBServer:Key)
+				NEXT
+				IF xPorter.ExportXideBinaries .and. aXideDBServers:Count != 0
+					FOREACH cDBServer AS STRING IN aXideDBServers
+						VODBServerEditor.ProjectImportVNDbs(cPrg , cDBServer)
+					NEXT
 				ENDIF
-			NEXT
+				FOREACH cFileName AS STRING IN aFilesToDel
+					SafeFileDelete(cFileName)
+				NEXT
+			END SCOPE
 
 			IF .NOT. xPorter.Options:ExportOnlyDefines
 				LOCAL aResources AS SortedList<STRING,OutputCode>
@@ -1218,9 +1282,21 @@ CLASS ApplicationDescriptor
 							NEXT
 						END IF
 						IF oModule:Designers:Count != 0
+							LOCAL lAddedFieldSpec := FALSE AS LOGIC
 							FOREACH oDesigner AS Designer IN oModule:Designers
 								IF oDesigner:MustExport
-									oOutput:WriteLine(String.Format(e"<VOBinary Include=\"{0}\">" ,  oModule:PathValidName + "." +oDesigner:Name+oDesigner:Extension))
+									LOCAL cFileName AS STRING
+									IF oDesigner:Type == 14 // FieldSpec
+										IF lAddedFieldSpec
+											LOOP
+										ELSE
+											lAddedFieldSpec := TRUE
+										END IF
+										cFileName := oModule:PathValidName + ".FieldSpecs" + oDesigner:Extension
+									ELSE
+										cFileName := oModule:PathValidName + "." +oDesigner:Name+oDesigner:Extension
+									END IF
+									oOutput:WriteLine(String.Format(e"<VOBinary Include=\"{0}\">" , cFileName))
 									oOutput:WriteLine(String.Format(e"  <DependentUpon>{0}</DependentUpon>" , cName))
 									oOutput:WriteLine(String.Format(e"</VOBinary>" , ""))
 								ENDIF
@@ -2462,6 +2538,11 @@ FUNCTION SafeFolderExists(cFolder AS STRING) AS LOGIC
 		lRet := Directory.Exists(cFolder)
 	END TRY
 RETURN lRet
+PROCEDURE SafeFileDelete(cFileName AS STRING)
+	TRY
+		File.Delete(cFileName)
+	END TRY
+RETURN
 
 
 

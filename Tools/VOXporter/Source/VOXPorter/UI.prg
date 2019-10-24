@@ -1,4 +1,4 @@
-﻿// the files below is in c:\XSharp\DevPublic\Common
+// the files below is in c:\XSharp\DevPublic\Common
 #include "buildnumber.h"
 USING System.IO
 USING System.Reflection
@@ -163,6 +163,7 @@ CLASS xPorterUI INHERIT System.Windows.Forms.Form IMPLEMENTS IProgressBar
 		SELF:oTextAppName:Name := "TextAppName"
 		SELF:oTextAppName:Size := System.Drawing.Size{137 , 20}
 		SELF:oTextAppName:TabIndex := 12
+		SELF:oTextAppName:TextChanged += SELF:Other_TextChanged
 		SELF:oGroupBox2:Controls:Add(SELF:oTextAppName)
 		
 		SELF:oLabelSource2:AutoSize := TRUE
@@ -177,6 +178,7 @@ CLASS xPorterUI INHERIT System.Windows.Forms.Form IMPLEMENTS IProgressBar
 		SELF:oTextSolutionName:Name := "TextSolutionName"
 		SELF:oTextSolutionName:Size := System.Drawing.Size{137 , 20}
 		SELF:oTextSolutionName:TabIndex := 10
+		SELF:oTextSolutionName:TextChanged += SELF:Other_TextChanged
 		SELF:oGroupBox2:Controls:Add(SELF:oTextSolutionName)
 		
 		SELF:oLabelSource1:AutoSize := TRUE
@@ -207,6 +209,7 @@ CLASS xPorterUI INHERIT System.Windows.Forms.Form IMPLEMENTS IProgressBar
 		SELF:oTextOutput:Name := "TextOutput"
 		SELF:oTextOutput:Size := System.Drawing.Size{254 , 20}
 		SELF:oTextOutput:TabIndex := 7
+		SELF:oTextOutput:TextChanged += SELF:Other_TextChanged
 		SELF:oGroupBox2:Controls:Add(SELF:oTextOutput)
 		
 		SELF:oLabel2:AutoSize := TRUE
@@ -308,6 +311,13 @@ CLASS xPorterUI INHERIT System.Windows.Forms.Form IMPLEMENTS IProgressBar
 		SELF:oTextSolutionName:Text := cSolutionName
 		SELF:oTextAppName:Text := cAppName
 	RETURN
+	
+	PROTECTED METHOD EnableDisableStartButton() AS VOID
+		SELF:oxPortButton:Enabled := .not. (String.IsNullOrWhiteSpace( SELF:oTextSource:Text ) .or. ;
+											String.IsNullOrWhiteSpace( SELF:oTextOutput:Text ) .or. ;
+											(String.IsNullOrWhiteSpace( SELF:oTextAppName:Text ) .and. .not. SELF:oRadioFromAefsInFolder:Checked).or. ;
+											String.IsNullOrWhiteSpace( SELF:oTextSolutionName:Text ) )
+	END METHOD
 
 	PROTECTED METHOD Radio_Click(sender AS System.Object , e AS System.EventArgs) AS VOID
 		IF sender == SELF:oRadioFromAef
@@ -319,10 +329,16 @@ CLASS xPorterUI INHERIT System.Windows.Forms.Form IMPLEMENTS IProgressBar
 			SELF:oTextSource:Text := ""
 		END IF
 		SELF:EnableDisableControls()
+		SELF:EnableDisableStartButton()
 	RETURN
 
 	PROTECTED METHOD TextSource_TextChanged(sender AS System.Object , e AS System.EventArgs) AS VOID
 		SELF:EnableDisableControls()
+		SELF:EnableDisableStartButton()
+	RETURN
+
+	PROTECTED METHOD Other_TextChanged(sender AS System.Object , e AS System.EventArgs) AS VOID
+		SELF:EnableDisableStartButton()
 	RETURN
 
 	PROTECTED METHOD ButtonSource_Click(sender AS System.Object , e AS System.EventArgs) AS VOID

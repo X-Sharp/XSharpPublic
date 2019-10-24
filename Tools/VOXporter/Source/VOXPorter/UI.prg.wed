@@ -87,6 +87,7 @@ SUBCONTROLSSTART
     Location=171 , 201
     Size=137 , 20
     TabIndex=12
+    TextChanged=Other_TextChanged
     
     CONTROL=System.Windows.Forms.Label
     GUID=668E0583-3044-4B4E-9638-B658EDC4C064
@@ -103,6 +104,7 @@ SUBCONTROLSSTART
     Location=18 , 201
     Size=137 , 20
     TabIndex=10
+    TextChanged=Other_TextChanged
     
     CONTROL=System.Windows.Forms.Label
     GUID=61C34B46-9E79-4975-AEB6-D0B28A3107F6
@@ -137,6 +139,7 @@ SUBCONTROLSSTART
     Location=18 , 158
     Size=254 , 20
     TabIndex=7
+    TextChanged=Other_TextChanged
     
     CONTROL=System.Windows.Forms.Label
     GUID=05E9503F-41F4-44BA-A7E0-62EBBCFEBE67

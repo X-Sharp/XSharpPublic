@@ -165,7 +165,7 @@ BEGIN NAMESPACE XSharp.IO
 	END CLASS
 	
 	INTERNAL CLASS FileCacheElement
-		PUBLIC PROPERTY Stream	   AS FileStream AUTO
+		PUBLIC PROPERTY Stream	   AS Stream AUTO
 		PUBLIC PROPERTY Attributes AS DWORD AUTO
 		PUBLIC PROPERTY Bytes	   AS BYTE[] AUTO
 		
@@ -189,7 +189,7 @@ BEGIN NAMESPACE XSharp.IO
 			streams := Dictionary<IntPtr, FileCacheElement >{}
 			random := Random{}
 		
-		STATIC INTERNAL METHOD findStream(pStream AS IntPtr) AS FileStream
+		STATIC INTERNAL METHOD findStream(pStream AS IntPtr) AS Stream
             LOCAL element := NULL AS FileCacheElement
             IF streams:TryGetValue(pStream, OUT element)
                 RETURN element:stream
@@ -204,6 +204,14 @@ BEGIN NAMESPACE XSharp.IO
 				streams:Add(pStream, FileCacheElement {oStream, attributes})
 				RETURN TRUE
 			ENDIF
+			RETURN FALSE
+            
+		STATIC INTERNAL METHOD setStream(pStream AS IntPtr, oStream AS Stream) AS LOGIC
+            LOCAL element := NULL AS FileCacheElement
+            IF streams:TryGetValue(pStream, OUT element)
+                element:Stream := oStream
+                RETURN TRUE
+            ENDIF
 			RETURN FALSE
 		
 		STATIC PRIVATE METHOD removeStream(pStream AS Intptr) AS LOGIC
@@ -232,9 +240,9 @@ BEGIN NAMESPACE XSharp.IO
             RETURN
             
 		STATIC METHOD SetErrorState ( o AS Exception ) AS VOID
-            local e as Error
+            LOCAL e AS Error
             e := Error{o}
-            e:StackTrace := o:StackTrace+Environment.NewLine+System.Diagnostics.StackTrace{1,true}:ToString()
+            e:StackTrace := o:StackTrace+Environment.NewLine+System.Diagnostics.StackTrace{1,TRUE}:ToString()
             lastException := e
             errorCode := _AND ( (DWORD) System.Runtime.InteropServices.Marshal.GetHRForException ( o ) , 0x0000FFFF )
             e:OsCode := errorCode
@@ -277,15 +285,15 @@ BEGIN NAMESPACE XSharp.IO
 		
 		STATIC INTERNAL METHOD close(pStream AS IntPtr) AS LOGIC
 			IF hasStream(pStream)
-				LOCAL oStream      := streams[pStream]:Stream AS FileStream
+				LOCAL oStream      := streams[pStream]:Stream AS Stream
 				LOCAL dwAttributes := streams[pStream]:Attributes AS DWORD
 				removeStream(pStream)
                 TRY
                     clearErrorState()
 				    oStream:Flush()
 				    oStream:Close()
-				    IF dwAttributes != 0
-					    VAR fi := FileInfo{oStream:Name}
+				    IF dwAttributes != 0 .AND. oStream IS FileStream VAR oFileStream
+					    VAR fi := FileInfo{oFileStream:Name}
 					    fi:Attributes := (FileAttributes) dwAttributes
 				    ENDIF
 				    oStream:Dispose()
@@ -326,7 +334,7 @@ BEGIN NAMESPACE XSharp.IO
 		INTERNAL STATIC METHOD readLine(pFile AS IntPtr,iCount AS INT) AS STRING
 			LOCAL cResult := "" AS STRING
 			LOCAL nPos	AS INT64
-			LOCAL oStream := XSharp.IO.File.findStream(pFile) AS FileStream
+			LOCAL oStream := XSharp.IO.File.findStream(pFile) AS Stream
 			IF iCount <= 0
 				// According to the VO docs the default value for the buffer length = 256
 				iCount := 256
@@ -347,7 +355,7 @@ BEGIN NAMESPACE XSharp.IO
 			RETURN cResult
 		
 		INTERNAL STATIC METHOD seek(pFile AS IntPtr,lOffset AS INT64,dwOrigin AS DWORD) AS INT64
-			LOCAL oStream AS FileStream
+			LOCAL oStream AS Stream
 			LOCAL iResult AS INT64
 			oStream := XSharp.IO.File.findStream(pFile)
 			IF oStream != NULL_OBJECT
@@ -377,7 +385,7 @@ BEGIN NAMESPACE XSharp.IO
 			RETURN writeBuff(pFile, aBytes, nLength, lAnsi)
 
 		INTERNAL STATIC METHOD writeBuff(pFile AS IntPtr,pBuffer AS BYTE[],iCount AS INT) AS INT
-			LOCAL oStream	AS FileStream
+			LOCAL oStream	AS Stream
 			LOCAL iWritten := 0 AS INT
 			oStream := XSharp.IO.File.findStream(pFile)
 			IF oStream != NULL_OBJECT
@@ -407,16 +415,18 @@ BEGIN NAMESPACE XSharp.IO
 		
 		
 		INTERNAL STATIC METHOD lock(pFile AS IntPtr,iOffset AS INT64,iLength AS INT64, lLock AS LOGIC) AS LOGIC
-			LOCAL oStream := findStream(pFile) AS FileStream
+			LOCAL oStream := findStream(pFile) AS Stream
 			LOCAL lResult := FALSE AS LOGIC
 			IF oStream != NULL_OBJECT
 				TRY
                     clearErrorState()
-					IF (lLock)
-						oStream:Lock(iOffset, iLength)
-					ELSE
-						oStream:UnLock(iOffset, iLength)
-					ENDIF
+                    IF oStream IS FileStream VAR oFileStream
+					    IF (lLock)
+						    oFileStream:Lock(iOffset, iLength)
+					    ELSE
+						    oFileStream:UnLock(iOffset, iLength)
+                        ENDIF
+                        ENDIF
 					lResult := TRUE
 				CATCH e AS Exception
 					// Catch and save error
@@ -427,13 +437,13 @@ BEGIN NAMESPACE XSharp.IO
 			RETURN lResult   		
 		
 		INTERNAL STATIC METHOD flush(pFile AS IntPtr, lCommit AS LOGIC) AS LOGIC
-			LOCAL oStream := XSharp.IO.File.findStream(pFile) AS FileStream
+			LOCAL oStream := XSharp.IO.File.findStream(pFile) AS Stream
 			LOCAL lOk := FALSE AS LOGIC
 			IF oStream != NULL_OBJECT
 				TRY
                     clearErrorState()
-					IF lCommit
-						oStream:Flush(TRUE)
+					IF lCommit .AND. oStream IS FileStream VAR oFileStream
+						oFileStream:Flush(TRUE)
 					ELSE
 						oStream:Flush()
 					ENDIF
@@ -446,7 +456,7 @@ BEGIN NAMESPACE XSharp.IO
 			ENDIF	
 			RETURN lOk
 		INTERNAL STATIC METHOD ChSize(pFile AS IntPtr,nValue AS DWORD) AS LOGIC
-			LOCAL oStream := XSharp.IO.File.findStream(pFile) AS FileStream
+			LOCAL oStream := XSharp.IO.File.findStream(pFile) AS Stream
 			LOCAL lOk := FALSE AS LOGIC
 			IF oStream != NULL_OBJECT
 				TRY
@@ -462,7 +472,7 @@ BEGIN NAMESPACE XSharp.IO
 			RETURN lOk
 		
 		INTERNAL STATIC METHOD Eof(pFile AS IntPtr) AS LOGIC
-			LOCAL oStream := XSharp.IO.File.findStream(pFile) AS FileStream
+			LOCAL oStream := XSharp.IO.File.findStream(pFile) AS Stream
 			LOCAL lResult := TRUE AS LOGIC
 			IF oStream != NULL_OBJECT
 				lResult := oStream:Position == oStream:Length
@@ -470,7 +480,7 @@ BEGIN NAMESPACE XSharp.IO
 			RETURN lResult
 		
 		INTERNAL STATIC METHOD Tell(pFile AS IntPtr) AS INT64
-			LOCAL oStream AS FileStream
+			LOCAL oStream AS Stream
 			oStream := XSharp.IO.File.findStream(pFile)
 			IF oStream != NULL_OBJECT
 				TRY
@@ -482,6 +492,30 @@ BEGIN NAMESPACE XSharp.IO
 				END TRY
 			ENDIF
 			RETURN -1
+
+        INTERNAL STATIC METHOD ConvertToMemoryStream(pFile AS IntPtr) AS IntPtr
+ 			LOCAL oStream AS Stream
+            LOCAL oNewStream AS MemoryStream
+            LOCAL nPos AS INT64
+			oStream := XSharp.IO.File.findStream(pFile)
+			IF oStream != NULL_OBJECT .AND. oStream:Length < Int32.MaxValue
+                 oNewStream := MemoryStream{ (INT) oStream:Length}
+                 nPos := oStream:Position
+                 oStream:Flush()
+                 oStream:Seek(0, SeekOrigin.Begin)
+                 VAR Buffer := GetBuffer(pFile, 1024)
+                 LOCAL nRead AS INT
+                 REPEAT
+                    nRead  := oStream:Read(Buffer, 0, Buffer:Length)
+                    oNewStream:Write(Buffer, 0, nRead)
+                 UNTIL nRead != Buffer:Length
+                 oStream:Close()
+                 oNewStream:Position := nPos
+                 XSharp.IO.File.setStream(pFile, oNewStream)
+                 RETURN pFile
+ 			ENDIF
+			RETURN -1
+          
 	END CLASS
 	
 	
@@ -764,6 +798,8 @@ FUNCTION FCreate(cFileName AS STRING ,kAttributes AS DWORD) AS IntPtr
 FUNCTION FOpen(cFileName AS STRING) AS IntPtr
 	RETURN FOpen2(cFileName, FC_NORMAL)
 
+
+
 /// <overloads>
 /// <summary>Open a file.</summary>
 /// <include file="CoreComments.xml" path="Comments/File/*" />
@@ -780,7 +816,8 @@ FUNCTION FOpen2(cFileName AS STRING,kMode AS DWORD) AS IntPtr
 	oFileMode := VOFileMode{kMode, 0}
 	RETURN XSharp.IO.File.CreateFile(cFileName, oFileMode)
 
-
+FUNCTION FConvertToMemoryStream(pFile AS IntPtr) AS IntPtr
+   RETURN XSharp.IO.File.ConvertToMemoryStream(pFile)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/getfattr/*" />
 FUNCTION GetFAttr(uAttributes AS STRING) AS DWORD
@@ -939,6 +976,6 @@ FUNCTION FGetBuffer(hFile AS IntPtr, nSize AS INT) AS BYTE[]
 /// If you want to close the stream, please use the FClose() function </note>
 /// </remarks>
 /// <seealso cref="M:XSharp.Core.Functions.FClose(System.IntPtr)" />
-FUNCTION FGetStream(pFile AS IntPtr) AS FileStream
+FUNCTION FGetStream(pFile AS IntPtr) AS Stream
     RETURN XSharp.IO.File.FindStream(pFile)
 

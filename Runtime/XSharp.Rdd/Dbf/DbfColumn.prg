@@ -280,10 +280,14 @@ BEGIN NAMESPACE XSharp.RDD
             IF String.IsNullOrWhiteSpace(str)
                 result := DbDate{0,0,0}
             ELSEIF str:Length == 8
-                VAR year  := Int32.Parse(str:Substring(0,4))
-                VAR month := Int32.Parse(str:Substring(4,2))
-                VAR day   := Int32.Parse(str:Substring(6,2))
-                result := DbDate{Year, Month, Day}
+                local year, month, day as Int32
+                if Int32.TryParse(str:Substring(0,4), out year) .and. ;
+                    Int32.TryParse(str:Substring(4,2), out month) .and. ;
+                    Int32.TryParse(str:Substring(6,2), out day)
+                    result := DbDate{Year, Month, Day}
+                else
+                    result := DbDate{0,0,0}
+                endif
             ELSE
                 result := DbDate{0,0,0}
             ENDIF

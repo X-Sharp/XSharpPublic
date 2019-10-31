@@ -225,7 +225,7 @@ BEGIN NAMESPACE XSharp
 
 			/// <include file="RTComments.xml" path="Comments/Operator/*" />
             [MethodImpl(MethodImplOptions.AggressiveInlining)];
-			STATIC OPERATOR -(lhs AS DATE, days AS USUAL) AS DATE
+			STATIC OPERATOR -(lhs AS DATE, days AS USUAL) AS USUAL
 				RETURN lhs:Subtract(days)
 
 			/// <include file="RTComments.xml" path="Comments/Operator/*" />
@@ -463,11 +463,13 @@ BEGIN NAMESPACE XSharp
 
 			/// <exclude />
             [MethodImpl(MethodImplOptions.AggressiveInlining)];
-			METHOD Subtract(days AS USUAL) AS DATE
+			METHOD Subtract(days AS USUAL) AS USUAL
 				IF days:IsInteger
-					RETURN SELF:Add( -(INT64) days)
+					RETURN SELF:Subtract( -(INT64) days)
 				ELSEIF days:IsNumeric
-					 RETURN SELF:Add( -(REAL8) days)
+					 RETURN SELF:Subtract( -(REAL8) days)
+				ELSEIF days:IsDate
+					 RETURN SELF:Subtract( (Date) days)
 				ELSE
 					THROW Error.ArgumentError(__ENTITY__,NAMEOF(days), 1, "Incompatible argument for Date:Subtract()", {days})
 				ENDIF
@@ -476,6 +478,7 @@ BEGIN NAMESPACE XSharp
             [MethodImpl(MethodImplOptions.AggressiveInlining)];
 			METHOD Subtract(days AS REAL8) AS DATE
 				RETURN SELF:Add(-days)
+
 
 			/// <exclude />
             [MethodImpl(MethodImplOptions.AggressiveInlining)];

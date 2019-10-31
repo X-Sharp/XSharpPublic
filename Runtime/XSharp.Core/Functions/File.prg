@@ -493,28 +493,24 @@ BEGIN NAMESPACE XSharp.IO
 			ENDIF
 			RETURN -1
 
-        INTERNAL STATIC METHOD ConvertToMemoryStream(pFile AS IntPtr) AS IntPtr
- 			LOCAL oStream AS Stream
-            LOCAL oNewStream AS MemoryStream
-            LOCAL nPos AS INT64
-			oStream := XSharp.IO.File.findStream(pFile)
-			IF oStream != NULL_OBJECT .AND. oStream:Length < Int32.MaxValue
-                 oNewStream := MemoryStream{ (INT) oStream:Length}
-                 nPos := oStream:Position
+        INTERNAL STATIC ASYNC  METHOD ConvertToMemoryStream(pFile AS IntPtr) AS VOID
+			VAR oStream := XSharp.IO.File.findStream(pFile)
+			IF oStream != NULL_OBJECT
+                 IF oStream:Length > Int32.MaxValue
+                      THROW Error{"Cannot convert stream because input stream is too large: "+oStream:Length:ToString()}
+                 ENDIF
+                 VAR oNewStream := MemoryStream{ (INT) oStream:Length}
+                 VAR nPos := oStream:Position
                  oStream:Flush()
                  oStream:Seek(0, SeekOrigin.Begin)
-                 VAR Buffer := GetBuffer(pFile, 1024)
-                 LOCAL nRead AS INT
-                 REPEAT
-                    nRead  := oStream:Read(Buffer, 0, Buffer:Length)
-                    oNewStream:Write(Buffer, 0, nRead)
-                 UNTIL nRead != Buffer:Length
+                 AWAIT oStream:CopyToAsync(oNewStream)
                  oStream:Close()
                  oNewStream:Position := nPos
                  XSharp.IO.File.setStream(pFile, oNewStream)
-                 RETURN pFile
- 			ENDIF
-			RETURN -1
+                 RETURN 
+            ENDIF
+            THROW Error{"Could not copy stream, source stream not found"}
+			RETURN 
           
 	END CLASS
 	
@@ -817,8 +813,14 @@ FUNCTION FOpen2(cFileName AS STRING,kMode AS DWORD) AS IntPtr
 	RETURN XSharp.IO.File.CreateFile(cFileName, oFileMode)
 
 FUNCTION FConvertToMemoryStream(pFile AS IntPtr) AS IntPtr
-   RETURN XSharp.IO.File.ConvertToMemoryStream(pFile)
-
+   TRY
+        XSharp.IO.File.ClearErrorState()
+        XSharp.IO.File.ConvertToMemoryStream(pFile)
+    CATCH e AS Exception
+        XSharp.IO.File.setErrorState(e)
+        RETURN F_ERROR
+   END TRY
+   RETURN pFile
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/getfattr/*" />
 FUNCTION GetFAttr(uAttributes AS STRING) AS DWORD
 	RETURN String2FAttr(uAttributes)

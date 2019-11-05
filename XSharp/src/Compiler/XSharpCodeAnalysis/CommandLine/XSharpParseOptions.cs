@@ -72,6 +72,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         // Some options are also handled by the parser
         // Other options have flags, for the preprocessor macros, such as __VO1__
 
+        public bool AllowUnsafe { get; private set; }
         public bool ArrayZero { get; private set; }
         public int ClrVersion { get; private set; }
         public bool MacroScript { get; private set; }
@@ -207,6 +208,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 MemVars = opt.MemVars;
                 InitLocals = opt.InitLocals;
                 UndeclaredLocals = opt.UndeclaredLocalVars;
+                AllowUnsafe = opt.AllowUnsafe;
             }
             LanguageVersion = LanguageVersion.CSharp7_3;
         }
@@ -277,6 +279,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             MemVars = opt.MemVars;
             UndeclaredLocals = opt.UndeclaredLocals;
             InitLocals = opt.InitLocals;
+            AllowUnsafe = opt.AllowUnsafe;
         }
 
         public CSharpParseOptions WithXSharpSpecificOptions(XSharpSpecificCompilationOptions opt)

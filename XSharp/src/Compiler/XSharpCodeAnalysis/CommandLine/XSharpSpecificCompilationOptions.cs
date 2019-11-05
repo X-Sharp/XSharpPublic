@@ -98,6 +98,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal RuntimeAssemblies RuntimeAssemblies { get; set; } = RuntimeAssemblies.None;
         public bool Overflow { get; internal set; } = false;
         public bool MemVars { get; internal set; } = false;
+        public bool AllowUnsafe { get; internal set; } = false;
         public bool UndeclaredLocalVars { get; internal set; } = false;
         public ExplicitOptions ExplicitOptions { get ; internal set; } = ExplicitOptions.None;
 

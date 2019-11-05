@@ -2262,7 +2262,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 return;
             }
 
-            var expr = context.Expr?.Get<ExpressionSyntax>();
+            var expr = context.Expr?.CsNode as ExpressionSyntax;
             // when / vo9 is enabled then add missing Expression
             var ent = CurrentEntity;
             ErrorCode errcode = (ErrorCode)0;

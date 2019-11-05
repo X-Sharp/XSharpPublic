@@ -1745,11 +1745,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                 if (conversion.IsExplicit )
                 {
                     // silently convert integral types
-                    if (CheckImplicitCast(expression.Type, targetType, expression.Syntax, diagnostics))
+                    if (CheckImplicitCast(expression.Type, targetType, expression.Syntax, diagnostics) || conversion.IsNullable)
                     { 
                         return CreateConversion(expression.Syntax, expression, conversion, false, targetType, diagnostics);
                     }
                 }
+
 #endif
 
                 if (!isDefaultParameter)

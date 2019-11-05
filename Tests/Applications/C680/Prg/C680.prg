@@ -2,10 +2,12 @@
 FUNCTION Start() AS VOID
 	LOCAL n AS INT
 	LOCAL o AS TestClass
-	n := o?:Test()
+	o := GetObject()
+	n := o?:Test() DEFAULT 42
 	? n
 RETURN
-
+function GetObject() as TestClass
+	return null
 // small git test
 CLASS TestClass
 	METHOD Test() AS INT

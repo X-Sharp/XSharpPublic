@@ -31,6 +31,7 @@ using System.Linq;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Project;
 using LanguageService.CodeAnalysis.XSharp;
+using Microsoft;
 
 namespace XSharp.Project
 {
@@ -102,6 +103,16 @@ namespace XSharp.Project
             XSharpProjectPackage.Instance.DisplayOutPutMessage("CommandFilter.ClassificationChanged()");
             if (_suspendSync)
                 return;
+            if (_keywordCase == 0)
+            {
+                return;
+            }
+            // do not update buffer from background thread
+            if (!_buffer.CheckEditAccess())
+            {
+                return;
+            }
+
             if (_linesToSync.Count > 0)
             {
                 int[] lines;
@@ -125,17 +136,15 @@ namespace XSharp.Project
                         var editSession = _buffer.CreateEdit();
                         try
                         {
-                            // simplify things: take lowest and highest numbers and do all lines in between
-                            int first = lines[0];
-                            int last = lines[lines.Length - 1];
-                            if (last > snapshot.LineCount - 1)
-                            {
-                                last = snapshot.LineCount - 1;
-                            }
-                            for (int nLine = first; nLine <= last; nLine++)
+                            var end = DateTime.Now + new TimeSpan(0,0,2);
+                            int counter = 0;
+                            foreach (int nLine in lines)
                             {
                                 ITextSnapshotLine line = snapshot.GetLineFromLineNumber(nLine);
                                 formatLineCase(editSession, line);
+                                // when it takes longer than 2 seconds, then abort
+                                if (++counter > 100 && DateTime.Now > end)
+                                    break;
                             }
                         }
                         catch (Exception)
@@ -376,7 +385,7 @@ namespace XSharp.Project
 
         private void registerLineForCaseSync(int line)
         {
-            if (!_suspendSync)
+            if (!_suspendSync && _keywordCase != 0)
             {
                 lock (_linesToSync)
                 {
@@ -1478,6 +1487,7 @@ namespace XSharp.Project
         {
             System.IServiceProvider provider = XSharpProjectPackage.Instance;
             IVsFindSymbol searcher = provider.GetService(typeof(SVsObjectSearch)) as IVsFindSymbol;
+            Assumes.Present(searcher);
             var guidSymbolScope = new Guid(XSharpConstants.Library);
             return HResult.Succeeded(searcher.DoSearch(ref guidSymbolScope, createSearchCriteria(memberName, searchOptions)));
         }
@@ -1486,6 +1496,7 @@ namespace XSharp.Project
         {
             System.IServiceProvider provider = XSharpProjectPackage.Instance;
             IVsFindSymbol searcher = provider.GetService(typeof(SVsObjectSearch)) as IVsFindSymbol;
+            Assumes.Present(searcher);
             var guidSymbolScope = ObjectBrowserHelper.GUID_VsSymbolScope_All;
             //
             return HResult.Succeeded(searcher.DoSearch(ref guidSymbolScope, createSearchCriteria(memberName, searchOptions)));

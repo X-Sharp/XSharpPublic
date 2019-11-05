@@ -140,7 +140,11 @@ namespace XSharp.Project
                 var docMember = GetDocMember(docMembers, member);
                 docSummary = docMember.Elements("summary").First();
             }
-            catch { }
+            catch ( Exception e )
+            {
+                XSharpProjectPackage.Instance.DisplayOutPutMessage("Exception in XSharpXMLDocMember.GetDocSummary");
+                XSharpProjectPackage.Instance.DisplayException(e);
+            }
             //
             if (docSummary != null)
                 summary = docSummary.Value;

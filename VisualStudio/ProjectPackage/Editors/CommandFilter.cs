@@ -124,7 +124,6 @@ namespace XSharp.Project
                     Array.Sort(lines);
                 }
 
-                var snapshot = _buffer.CurrentSnapshot;
                 // wait until we can work
                 while (_buffer.EditInProgress)
                 {
@@ -134,6 +133,7 @@ namespace XSharp.Project
                 UIThread.DoOnUIThread(delegate ()
                     {
                         var editSession = _buffer.CreateEdit();
+                        var snapshot = editSession.Snapshot;
                         try
                         {
                             var end = DateTime.Now + new TimeSpan(0,0,2);

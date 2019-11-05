@@ -44,11 +44,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             bool handled = true;
             bool positive = !name.EndsWith("-");
             string oldname = name;
-            if (name.EndsWith("+"))
-            {
-                name = name.Substring(0, name.Length - 1);
-            }
-            else if (name.EndsWith("-"))
+            if (name.EndsWith("+") || name.EndsWith("-"))
             {
                 name = name.Substring(0, name.Length - 1);
             }
@@ -352,6 +348,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                     options.Fox1 = positive;
                     options.ExplicitOptions |= ExplicitOptions.Fox1;
                     break;
+                case "unsafe":
+                    options.AllowUnsafe = positive;
+                    handled = false;    // there is also an 'unsafe' option in Roslyn
+                    break;
+
                 default:
                     name = oldname;
                     handled = false;

@@ -6973,8 +6973,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 argList = EmptyArgumentList();
             }
-            // Todo
-            // DO .. WITH should pass identifiers by reference to be completely compatible with the old XBase languages
+            // DO .. WITH ...,... passes arguments by reference
             if (argList.Arguments.Count > 0)
             {
                 var newargs = new List<ArgumentSyntax>();
@@ -7508,9 +7507,24 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 context.Put(MakeArgument(GenerateMissingExpression(_options.Dialect == XSharpDialect.Core)));
                 return;
             }
+            var expr = context.Expr.Get<ExpressionSyntax>();
+            var refKeyword = context.RefOut?.SyntaxKeyword();
+            if (expr is PrefixUnaryExpressionSyntax pues && pues.OperatorToken.Kind == SyntaxKind.AmpersandToken)
+            {
+                bool allowAddressOf = _options.Dialect.SupportsAddressOf() && _options.AllowUnsafe;
+                if (! allowAddressOf)
+                {
+                    var xnode = pues.XNode as XP.PrefixExpressionContext;
+                    if (xnode.Op.Type == XP.ADDROF)
+                    {
+                        expr = pues.Operand;
+                        refKeyword = SyntaxFactory.MakeToken(SyntaxKind.RefKeyword, xnode.Op.Text);
+                    }
+                }
+            }
             context.Put(_syntaxFactory.Argument(
                 context.Name == null ? null : _syntaxFactory.NameColon(context.Name.Get<IdentifierNameSyntax>(), SyntaxFactory.MakeToken(SyntaxKind.ColonToken)),
-                context.RefOut?.SyntaxKeyword(), context.Expr.Get<ExpressionSyntax>()));
+                refKeyword, expr));
         }
 
         #endregion

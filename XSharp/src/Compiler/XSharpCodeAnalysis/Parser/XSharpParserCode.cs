@@ -325,6 +325,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
 
         }
+
         public partial class MethodCallContext
         {
             public bool HasRefArguments;

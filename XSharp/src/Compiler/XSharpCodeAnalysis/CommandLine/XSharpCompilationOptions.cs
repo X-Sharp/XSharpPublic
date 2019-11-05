@@ -123,6 +123,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 TargetDLL = opt.TargetDLL;
                 RuntimeAssemblies = opt.RuntimeAssemblies;
                 InitLocals = opt.InitLocals;
+                AllowUnsafe = opt.AllowUnsafe;
                 
             }
         }
@@ -165,6 +166,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             UndeclaredLocalVars = opt.UndeclaredLocalVars;
             MemVars = opt.MemVars;
             InitLocals = opt.InitLocals;
+            AllowUnsafe = opt.AllowUnsafe;
         }
 
         internal CSharpCompilationOptions WithXSharpSpecificOptions(XSharpSpecificCompilationOptions opt)

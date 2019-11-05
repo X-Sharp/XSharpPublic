@@ -145,5 +145,20 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return true;
             }
         }
+        public static bool SupportsAddressOf(this XSharpDialect dialect)
+        {
+            switch (dialect)
+            {
+                case XSharpDialect.Core:
+                case XSharpDialect.VO:
+                case XSharpDialect.Vulcan:
+                    return true;
+                case XSharpDialect.Harbour:
+                case XSharpDialect.XPP:
+                case XSharpDialect.FoxPro:
+                default:
+                    return false;
+            }
+        }
     }
 }

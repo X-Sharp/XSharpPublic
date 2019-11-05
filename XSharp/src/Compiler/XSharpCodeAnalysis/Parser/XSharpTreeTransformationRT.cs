@@ -3151,7 +3151,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 body = MakeBlock(stmts);
                 context.Data.UsesPSZ = false;
             }
-            if (context.Data.HasClipperCallingConvention || context.Data.UsesPSZ || context.Data.HasMemVars)
+            if (context.Data.HasClipperCallingConvention || context.Data.UsesPSZ || context.Data.HasMemVars || _options.UndeclaredLocals)
             {
                 var stmts = _pool.Allocate<StatementSyntax>();
                 var finallystmts = _pool.Allocate<StatementSyntax>();
@@ -3283,7 +3283,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         finallystmts.Add(updatestmt);
 
                     }
-                    if (context.Data.HasMemVars)
+                    if (context.Data.HasMemVars || _options.UndeclaredLocals)
                     {
                         // VAR Xs$PrivatesLevel := XSharp.RT.Functions.__MemVarInit()
                         // in the finally

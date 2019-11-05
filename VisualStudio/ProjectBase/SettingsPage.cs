@@ -263,6 +263,7 @@ namespace Microsoft.VisualStudio.Project
             if(this.grid == null && this.project != null && this.project.Site != null)
             {
                 IVSMDPropertyBrowser pb = this.project.Site.GetService(typeof(IVSMDPropertyBrowser)) as IVSMDPropertyBrowser;
+                Assumes.Present(pb);
                 this.grid = pb.CreatePropertyGrid();
             }
 

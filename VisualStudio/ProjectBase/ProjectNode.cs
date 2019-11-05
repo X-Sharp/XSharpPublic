@@ -576,7 +576,7 @@ namespace Microsoft.VisualStudio.Project
         /// <summary>
         /// The internal package implementation.
         /// </summary>
-        private ProjectPackage package;
+        private AsyncProjectPackage package;
 
         // Has the object been disposed.
         private bool isDisposed;
@@ -1337,7 +1337,7 @@ namespace Microsoft.VisualStudio.Project
         /// The internal package implementation.
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal ProjectPackage Package
+        internal AsyncProjectPackage Package
         {
             get
             {
@@ -1652,6 +1652,7 @@ namespace Microsoft.VisualStudio.Project
 
             // Remove the entire project from the solution
             IVsSolution solution = this.Site.GetService(typeof(SVsSolution)) as IVsSolution;
+            Assumes.Present(solution);
             uint iOption = 1; // SLNSAVEOPT_PromptSave
             ErrorHandler.ThrowOnFailure(solution.CloseSolutionElement(iOption, this, 0));
         }
@@ -4350,6 +4351,7 @@ namespace Microsoft.VisualStudio.Project
         private void TellMSBuildCurrentSolutionConfiguration()
         {
             IVsSolutionBuildManager buildMgr = this.Site.GetService(typeof(SVsSolutionBuildManager)) as IVsSolutionBuildManager;
+            Assumes.Present(buildMgr);
             IVsProjectCfg[] cfgs = new IVsProjectCfg[] { null };
             buildMgr.FindActiveProjectCfg(System.IntPtr.Zero, System.IntPtr.Zero, this, cfgs);
             if (cfgs[0] != null)
@@ -7297,6 +7299,7 @@ namespace Microsoft.VisualStudio.Project
         private bool IsFrameworkOnMachine()
         {
             var multiTargeting = this.site.GetService(typeof(SVsFrameworkMultiTargeting)) as IVsFrameworkMultiTargeting;
+            Assumes.Present(multiTargeting);
             Array frameworks;
             Marshal.ThrowExceptionForHR(multiTargeting.GetSupportedFrameworks(out frameworks));
             foreach (string fx in frameworks)

@@ -3,8 +3,8 @@
  * Copyright (c) Microsoft Corporation.
  *
  * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
- * copy of the license can be found in the License.txt file at the root of this distribution. 
- * 
+ * copy of the license can be found in the License.txt file at the root of this distribution.
+ *
  * You must not remove this notice, or any other, from this software.
  *
  * ***************************************************************************/
@@ -178,7 +178,7 @@ namespace Microsoft.VisualStudio.Project
 				}
 
                 string prjPath = prj.FullName;
-				
+
 				// If the full path of this project is the same as the one of this
 				// reference, then we have found the right project.
 				if (NativeMethods.IsSamePath(prjPath, referencedProjectFullPath))
@@ -198,9 +198,9 @@ namespace Microsoft.VisualStudio.Project
 				if (!this.referencedProjectIsCached)
 				{
 
-					// Search for the project in the collection of the projects in the
-					// current solution.
-					EnvDTE.DTE dte = (EnvDTE.DTE)this.ProjectMgr.GetService(typeof(EnvDTE.DTE));
+                    // Search for the project in the collection of the projects in the
+                    // current solution.
+                    EnvDTE.DTE dte = (EnvDTE.DTE)this.ProjectMgr.GetService(typeof(EnvDTE.DTE));
 					if ((null == dte) || (null == dte.Solution))
 					{
 						return null;
@@ -242,8 +242,8 @@ namespace Microsoft.VisualStudio.Project
 				EnvDTE.Property outputPathProperty = null;
 				try
 				{
-					// Get the configuration manager from the project.
-					EnvDTE.ConfigurationManager confManager = this.ReferencedProjectObject.ConfigurationManager;
+                    // Get the configuration manager from the project.
+                    EnvDTE.ConfigurationManager confManager = this.ReferencedProjectObject.ConfigurationManager;
 					if (null != confManager)
 					{
 						// Get the active configuration.

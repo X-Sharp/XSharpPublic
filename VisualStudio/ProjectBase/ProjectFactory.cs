@@ -3,8 +3,8 @@
  * Copyright (c) Microsoft Corporation.
  *
  * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
- * copy of the license can be found in the License.txt file at the root of this distribution. 
- * 
+ * copy of the license can be found in the License.txt file at the root of this distribution.
+ *
  * You must not remove this notice, or any other, from this software.
  *
  * ***************************************************************************/
@@ -127,6 +127,7 @@ namespace Microsoft.VisualStudio.Project
 
             // Launch the aggregate creation process (we should be called back on our IVsAggregatableProjectFactoryCorrected implementation)
             IVsCreateAggregateProject aggregateProjectFactory = (IVsCreateAggregateProject)this.Site.GetService(typeof(SVsCreateAggregateProject));
+            Assumes.Present(aggregateProjectFactory);
             int hr = aggregateProjectFactory.CreateAggregateProject(guidsList, fileName, location, name, flags, ref projectGuid, out project);
             if(hr == VSConstants.E_ABORT)
                 canceled = 1;
@@ -158,7 +159,7 @@ namespace Microsoft.VisualStudio.Project
             Utilities.CheckNotNull(node, "The project failed to be created");
             node.BuildEngine = this.buildEngine;
             node.BuildProject = this.buildProject;
-            node.Package = this.package as ProjectPackage;
+            node.Package = this.package as AsyncProjectPackage;
 			node.InitializeGlobals();
             return node;
         }
@@ -189,7 +190,7 @@ namespace Microsoft.VisualStudio.Project
         #region helpers
         private IProjectEvents GetProjectEventsProvider()
         {
-            ProjectPackage projectPackage = this.package as ProjectPackage;
+            AsyncProjectPackage projectPackage = this.package as AsyncProjectPackage;
             Debug.Assert(projectPackage != null, "Package not inherited from framework");
             if(projectPackage != null)
             {

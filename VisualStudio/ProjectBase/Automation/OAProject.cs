@@ -3,8 +3,8 @@
  * Copyright (c) Microsoft Corporation.
  *
  * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
- * copy of the license can be found in the License.txt file at the root of this distribution. 
- * 
+ * copy of the license can be found in the License.txt file at the root of this distribution.
+ *
  * You must not remove this notice, or any other, from this software.
  *
  * ***************************************************************************/
@@ -32,8 +32,8 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             get { return this.project; }
         }
-        internal ProjectNode ProjectNode 
-		{
+        internal ProjectNode ProjectNode
+        {
             get { return this.project; }
         }
 
@@ -61,18 +61,18 @@ namespace Microsoft.VisualStudio.Project.Automation
             {
                 CheckProjectIsValid();
 
-                UIThread.DoOnUIThread(delegate()
+                UIThread.DoOnUIThread(delegate ()
                 {
                     using (AutomationScope scope = new AutomationScope(this.project.Site))
                     {
-                    project.SetEditLabel(value);
-                }
+                        project.SetEditLabel(value);
+                    }
                 });
             }
         }
 
-        public void Dispose() 
-		{
+        public void Dispose()
+        {
             configurationManager = null;
         }
 
@@ -103,19 +103,20 @@ namespace Microsoft.VisualStudio.Project.Automation
             {
                 CheckProjectIsValid();
 
-                UIThread.DoOnUIThread(delegate()
+                UIThread.DoOnUIThread(delegate ()
                 {
                     using (AutomationScope scope = new AutomationScope(this.project.Site))
                     {
-                    project.SetProjectFileDirty(value);
-                }
+                        project.SetProjectFileDirty(value);
+                    }
                 });
             }
         }
 
-        internal void CheckProjectIsValid() 
-		{
-            if (this.project == null || this.project.Site == null || this.project.IsClosed) {
+        internal void CheckProjectIsValid()
+        {
+            if (this.project == null || this.project.Site == null || this.project.IsClosed)
+            {
                 throw new InvalidOperationException();
             }
         }
@@ -176,25 +177,25 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             get
             {
-                if(this.project == null || this.project.IsClosed)
+                if (this.project == null || this.project.IsClosed)
                 {
                     return null;
                 }
                 else
                 {
-                    return UIThread.DoOnUIThread(delegate()
+                    return UIThread.DoOnUIThread(delegate ()
                     {
-                    // Get Solution service
-                    IVsSolution solution = this.project.GetService(typeof(IVsSolution)) as IVsSolution;
+                        // Get Solution service
+                        IVsSolution solution = this.project.GetService(typeof(IVsSolution)) as IVsSolution;
                         if (solution == null)
-                    {
-                        throw new InvalidOperationException();
-                    }
+                        {
+                            throw new InvalidOperationException();
+                        }
 
-                    // Ask solution for unique name of project
-                    string uniqueName = string.Empty;
-                    ErrorHandler.ThrowOnFailure(solution.GetUniqueNameOfProject(this.project , out uniqueName));
-                    return uniqueName;
+                        // Ask solution for unique name of project
+                        string uniqueName = string.Empty;
+                        ErrorHandler.ThrowOnFailure(solution.GetUniqueNameOfProject(this.project, out uniqueName));
+                        return uniqueName;
                     });
                 }
             }
@@ -215,9 +216,9 @@ namespace Microsoft.VisualStudio.Project.Automation
         /// <returns>An Extender object. </returns>
         public virtual object get_Extender(string ExtenderName)
         {
-         // changed by suggestion on http://mpfproj10.codeplex.com/workitem/9695 
-         //return null;
-         return DTE.ObjectExtenders.GetExtender(project.NodeProperties.ExtenderCATID.ToUpper(), ExtenderName, project.NodeProperties);
+            // changed by suggestion on http://mpfproj10.codeplex.com/workitem/9695
+            //return null;
+            return DTE.ObjectExtenders.GetExtender(project.NodeProperties.ExtenderCATID.ToUpper(), ExtenderName, project.NodeProperties);
         }
 
         /// <summary>
@@ -225,9 +226,9 @@ namespace Microsoft.VisualStudio.Project.Automation
         /// </summary>
         public virtual object ExtenderNames
         {
-         // changed by suggestion on http://mpfproj10.codeplex.com/workitem/9695 
-         //get { return null; }
-         get { return DTE.ObjectExtenders.GetExtenderNames(project.NodeProperties.ExtenderCATID.ToUpper(), project.NodeProperties); }
+            // changed by suggestion on http://mpfproj10.codeplex.com/workitem/9695
+            //get { return null; }
+            get { return DTE.ObjectExtenders.GetExtenderNames(project.NodeProperties.ExtenderCATID.ToUpper(), project.NodeProperties); }
         }
 
         /// <summary>
@@ -235,9 +236,9 @@ namespace Microsoft.VisualStudio.Project.Automation
         /// </summary>
         public virtual string ExtenderCATID
         {
-         // changed by suggestion on http://mpfproj10.codeplex.com/workitem/9695 
-         //get { return String.Empty; }
-         get { return project.NodeProperties.ExtenderCATID; }
+            // changed by suggestion on http://mpfproj10.codeplex.com/workitem/9695
+            //get { return String.Empty; }
+            get { return project.NodeProperties.ExtenderCATID; }
         }
 
         /// <summary>
@@ -247,12 +248,12 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             get
             {
-                return UIThread.DoOnUIThread(delegate()
+                return UIThread.DoOnUIThread(delegate ()
                 {
-                string filename;
-                uint format;
-                ErrorHandler.ThrowOnFailure(project.GetCurFile(out filename, out format));
-                return filename;
+                    string filename;
+                    uint format;
+                    ErrorHandler.ThrowOnFailure(project.GetCurFile(out filename, out format));
+                    return filename;
                 });
             }
         }
@@ -268,17 +269,17 @@ namespace Microsoft.VisualStudio.Project.Automation
             }
             set
             {
-                if(this.project == null || this.project.Site == null || this.project.IsClosed)
+                if (this.project == null || this.project.Site == null || this.project.IsClosed)
                 {
                     throw new InvalidOperationException();
                 }
 
-                UIThread.DoOnUIThread(delegate()
+                UIThread.DoOnUIThread(delegate ()
                 {
                     using (AutomationScope scope = new AutomationScope(this.project.Site))
                     {
-                    project.SetProjectFileDirty(!value);
-                }
+                        project.SetProjectFileDirty(!value);
+                    }
                 });
             }
         }
@@ -290,22 +291,22 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             get
             {
-                return UIThread.DoOnUIThread(delegate()
+                return UIThread.DoOnUIThread(delegate ()
                 {
                     if (this.configurationManager == null)
                     {
-                    IVsExtensibility3 extensibility = this.project.Site.GetService(typeof(IVsExtensibility)) as IVsExtensibility3;
+                        IVsExtensibility3 extensibility = this.project.Site.GetService(typeof(IVsExtensibility)) as IVsExtensibility3;
+                        Assumes.Present(extensibility);
 
-                    Utilities.CheckNotNull(extensibility);
 
-                    object configurationManagerAsObject;
-                    ErrorHandler.ThrowOnFailure(extensibility.GetConfigMgr(this.project , VSConstants.VSITEMID_ROOT, out configurationManagerAsObject));
+                        object configurationManagerAsObject;
+                        ErrorHandler.ThrowOnFailure(extensibility.GetConfigMgr(this.project, VSConstants.VSITEMID_ROOT, out configurationManagerAsObject));
 
-                    Utilities.CheckNotNull(configurationManagerAsObject);
-                    this.configurationManager = (ConfigurationManager)configurationManagerAsObject;
-                }
+                        Utilities.CheckNotNull(configurationManagerAsObject);
+                        this.configurationManager = (ConfigurationManager)configurationManagerAsObject;
+                    }
 
-                return this.configurationManager;
+                    return this.configurationManager;
                 });
             }
         }
@@ -315,7 +316,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         /// </summary>
         public virtual EnvDTE.Globals Globals
         {
-            get { return this.project.Globals;  }
+            get { return this.project.Globals; }
         }
 
         /// <summary>
@@ -363,12 +364,12 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             CheckProjectIsValid();
 
-            UIThread.DoOnUIThread(delegate()
+            UIThread.DoOnUIThread(delegate ()
             {
                 using (AutomationScope scope = new AutomationScope(this.project.Site))
-            {
-                this.project.Remove(false);
-            }
+                {
+                    this.project.Remove(false);
+                }
             });
         }
         #endregion
@@ -394,94 +395,95 @@ namespace Microsoft.VisualStudio.Project.Automation
 
             CheckProjectIsValid();
 
-            UIThread.DoOnUIThread(delegate()
+            UIThread.DoOnUIThread(delegate ()
             {
                 using (AutomationScope scope = new AutomationScope(this.project.Site))
-            {
-                // If an empty file name is passed in for Save then make the file name the project name.
-                if (!isCalledFromSaveAs && String.IsNullOrEmpty(fileName))
                 {
-                    // Use the solution service to save the project file. Note that we have to use the service
-                    // so that all the shell's elements are aware that we are inside a save operation and
-                    // all the file change listenters registered by the shell are suspended.
+                    // If an empty file name is passed in for Save then make the file name the project name.
+                    if (!isCalledFromSaveAs && String.IsNullOrEmpty(fileName))
+                    {
+                        // Use the solution service to save the project file. Note that we have to use the service
+                        // so that all the shell's elements are aware that we are inside a save operation and
+                        // all the file change listenters registered by the shell are suspended.
 
-                    // Get the cookie of the project file from the RTD.
-                    IVsRunningDocumentTable rdt = this.project.Site.GetService(typeof(SVsRunningDocumentTable)) as IVsRunningDocumentTable;
-                    Utilities.CheckNotNull(rdt);
+                        // Get the cookie of the project file from the RTD.
+                        IVsRunningDocumentTable rdt = this.project.Site.GetService(typeof(SVsRunningDocumentTable)) as IVsRunningDocumentTable;
+                        Assumes.Present(rdt);
 
-                    IVsHierarchy hier;
-                    uint itemid;
-                    IntPtr unkData;
-                    uint cookie;
-                    ErrorHandler.ThrowOnFailure(rdt.FindAndLockDocument((uint)_VSRDTFLAGS.RDT_NoLock, this.project.Url, out hier,
-                                                                        out itemid, out unkData, out cookie));
+                        IVsHierarchy hier;
+                        uint itemid;
+                        IntPtr unkData;
+                        uint cookie;
+                        ErrorHandler.ThrowOnFailure(rdt.FindAndLockDocument((uint)_VSRDTFLAGS.RDT_NoLock, this.project.Url, out hier,
+                                                                            out itemid, out unkData, out cookie));
                         if (IntPtr.Zero != unkData)
-                    {
-                        Marshal.Release(unkData);
-                    }
-
-                    // Verify that we have a cookie.
-                        if (0 == cookie)
-                    {
-                        // This should never happen because if the project is open, then it must be in the RDT.
-                        throw new InvalidOperationException();
-                    }
-
-                    // Get the IVsHierarchy for the project.
-                    IVsHierarchy prjHierarchy = project;
-
-                    // Now get the solution.
-                    IVsSolution solution = this.project.Site.GetService(typeof(SVsSolution)) as IVsSolution;
-                    // Verify that we have both solution and hierarchy.
-                    Utilities.CheckNotNull(prjHierarchy);
-                    Utilities.CheckNotNull(solution);
-
-
-                    ErrorHandler.ThrowOnFailure(solution.SaveSolutionElement((uint)__VSSLNSAVEOPTIONS.SLNSAVEOPT_SaveIfDirty, prjHierarchy, cookie));
-                }
-                else
-                {
-
-                    // We need to make some checks before we can call the save method on the project node.
-                    // This is mainly because it is now us and not the caller like in  case of SaveAs or Save that should validate the file name.
-                    // The IPersistFileFormat.Save method only does a validation that is necesseray to be performed. Example: in case of Save As the
-                    // file name itself is not validated only the whole path. (thus a file name like file\file is accepted, since as a path is valid)
-
-                    // 1. The file name has to be valid.
-                    string fullPath = fileName;
-                    try
-                    {
-                            if (!Path.IsPathRooted(fileName))
                         {
-                            fullPath = Path.Combine(this.project.ProjectFolder, fileName);
+                            Marshal.Release(unkData);
                         }
-                    }
-                    // We want to be consistent in the error message and exception we throw. fileName could be for example #�&%"�&"%  and that would trigger an ArgumentException on Path.IsRooted.
-                        catch (ArgumentException)
-                    {
-                        throw new InvalidOperationException(SR.GetString(SR.ErrorInvalidFileName, CultureInfo.CurrentUICulture));
-                    }
 
-                    // It might be redundant but we validate the file and the full path of the file being valid. The SaveAs would also validate the path.
-                    // If we decide that this is performance critical then this should be refactored.
-                    Utilities.ValidateFileName(this.project.Site, fullPath);
-
-                        if (!isCalledFromSaveAs)
-                    {
-                        // 2. The file name has to be the same
-                            if (!NativeMethods.IsSamePath(fullPath, this.project.Url))
+                        // Verify that we have a cookie.
+                        if (0 == cookie)
                         {
+                            // This should never happen because if the project is open, then it must be in the RDT.
                             throw new InvalidOperationException();
                         }
 
-                        ErrorHandler.ThrowOnFailure(this.project.Save(fullPath, 1, 0));
+                        // Get the IVsHierarchy for the project.
+                        IVsHierarchy prjHierarchy = project;
+
+                        // Now get the solution.
+                        IVsSolution solution = this.project.Site.GetService(typeof(SVsSolution)) as IVsSolution;
+                        // Verify that we have both solution and hierarchy.
+                        Assumes.Present(solution);
+                        Assumes.Present(prjHierarchy);
+
+
+
+                        ErrorHandler.ThrowOnFailure(solution.SaveSolutionElement((uint)__VSSLNSAVEOPTIONS.SLNSAVEOPT_SaveIfDirty, prjHierarchy, cookie));
                     }
                     else
                     {
-                        ErrorHandler.ThrowOnFailure(this.project.Save(fullPath, 0, 0));
+
+                        // We need to make some checks before we can call the save method on the project node.
+                        // This is mainly because it is now us and not the caller like in  case of SaveAs or Save that should validate the file name.
+                        // The IPersistFileFormat.Save method only does a validation that is necesseray to be performed. Example: in case of Save As the
+                        // file name itself is not validated only the whole path. (thus a file name like file\file is accepted, since as a path is valid)
+
+                        // 1. The file name has to be valid.
+                        string fullPath = fileName;
+                        try
+                        {
+                            if (!Path.IsPathRooted(fileName))
+                            {
+                                fullPath = Path.Combine(this.project.ProjectFolder, fileName);
+                            }
+                        }
+                        // We want to be consistent in the error message and exception we throw. fileName could be for example #�&%"�&"%  and that would trigger an ArgumentException on Path.IsRooted.
+                        catch (ArgumentException)
+                        {
+                            throw new InvalidOperationException(SR.GetString(SR.ErrorInvalidFileName, CultureInfo.CurrentUICulture));
+                        }
+
+                        // It might be redundant but we validate the file and the full path of the file being valid. The SaveAs would also validate the path.
+                        // If we decide that this is performance critical then this should be refactored.
+                        Utilities.ValidateFileName(this.project.Site, fullPath);
+
+                        if (!isCalledFromSaveAs)
+                        {
+                            // 2. The file name has to be the same
+                            if (!NativeMethods.IsSamePath(fullPath, this.project.Url))
+                            {
+                                throw new InvalidOperationException();
+                            }
+
+                            ErrorHandler.ThrowOnFailure(this.project.Save(fullPath, 1, 0));
+                        }
+                        else
+                        {
+                            ErrorHandler.ThrowOnFailure(this.project.Save(fullPath, 0, 0));
+                        }
                     }
                 }
-            }
             });
         }
         #endregion

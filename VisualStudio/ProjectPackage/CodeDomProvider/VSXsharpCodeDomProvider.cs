@@ -14,6 +14,7 @@ using System.Text;
 using System.Threading.Tasks;
 using XSharp.CodeDom;
 using System.CodeDom.Compiler;
+using Microsoft;
 
 namespace XSharp.Project
 {
@@ -93,6 +94,7 @@ namespace XSharp.Project
                         // Ok, so get the Filename, to get the .Designer.prg
                         DocDataTextReader ddtr = codeStream as DocDataTextReader;
                         DocData dd = ((IServiceProvider)ddtr).GetService(typeof(DocData)) as DocData;
+                        Assumes.Present(dd);
                         String prgFileName = dd.Name;
                         // Build the Designer FileName
                         String designerPrgFile = XSharpCodeDomHelper.BuildDesignerFileName(prgFileName);

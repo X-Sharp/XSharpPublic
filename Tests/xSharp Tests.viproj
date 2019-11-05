@@ -34807,7 +34807,7 @@ CopyToBin = 0
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-ReferenceGAC = VulcanVOWin32APILibrary,1,0,1.1.303.0
+ReferenceGAC = VulcanVOWin32APILibrary,1,0,1.1.401.0
 [C327 - cannot convert DWORD to IntPtr Resources]
 [C327 - cannot convert DWORD to IntPtr Native Resources]
 [C327 - cannot convert DWORD to IntPtr License files]
@@ -35450,7 +35450,7 @@ CopyToBin = 0
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-ReferenceGAC = VulcanVOWin32APILibrary,1,0,1.1.303.0
+ReferenceGAC = VulcanVOWin32APILibrary,1,0,1.1.401.0
 [C333 - PCALL() with class field PTR Resources]
 [C333 - PCALL() with class field PTR Native Resources]
 [C333 - PCALL() with class field PTR License files]
@@ -36735,7 +36735,7 @@ CopyToBin = 0
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-ReferenceGAC = VulcanVOWin32APILibrary,1,0,1.1.303.0
+ReferenceGAC = VulcanVOWin32APILibrary,1,0,1.1.401.0
 [C345 - Problem passing string as PSZ parameter Resources]
 [C345 - Problem passing string as PSZ parameter Native Resources]
 [C345 - Problem passing string as PSZ parameter License files]
@@ -37057,8 +37057,8 @@ CopyToBin = 0
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-ReferenceGAC = VulcanVOSystemClasses,1,0,1.1.303.0
-ReferenceGAC = VulcanVORDDClasses,1,0,1.1.303.0
+ReferenceGAC = VulcanVOSystemClasses,1,0,1.1.401.0
+ReferenceGAC = VulcanVORDDClasses,1,0,1.1.401.0
 [C348 - Incorrect error about mixing STRICT/CLIPPER Resources]
 [C348 - Incorrect error about mixing STRICT/CLIPPER Native Resources]
 [C348 - Incorrect error about mixing STRICT/CLIPPER License files]
@@ -37273,7 +37273,7 @@ CopyToBin = 0
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-ReferenceGAC = VulcanVOWin32APILibrary,1,0,1.1.303.0
+ReferenceGAC = VulcanVOWin32APILibrary,1,0,1.1.401.0
 [C350 - Problem passing VOSTRUCT as parameter Resources]
 [C350 - Problem passing VOSTRUCT as parameter Native Resources]
 [C350 - Problem passing VOSTRUCT as parameter License files]
@@ -37595,7 +37595,7 @@ CopyToBin = 0
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-ReferenceGAC = VulcanVOWin32APILibrary,1,0,1.1.303.0
+ReferenceGAC = VulcanVOWin32APILibrary,1,0,1.1.401.0
 [C353 - Some issues with VOSTRUCTs Resources]
 [C353 - Some issues with VOSTRUCTs Native Resources]
 [C353 - Some issues with VOSTRUCTs License files]
@@ -37703,7 +37703,7 @@ CopyToBin = 0
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-ReferenceGAC = VulcanVORDDClasses,1,0,1.1.303.0
+ReferenceGAC = VulcanVORDDClasses,1,0,1.1.401.0
 [C354 - No error with missing /ins compiler option Resources]
 [C354 - No error with missing /ins compiler option Native Resources]
 [C354 - No error with missing /ins compiler option License files]
@@ -40698,7 +40698,7 @@ CopyToBin = 0
 [C381 - Helpdisplay References]
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-ReferenceGAC = VulcanVOWin32APILibrary,1,0,1.1.303.0
+ReferenceGAC = VulcanVOWin32APILibrary,1,0,1.1.401.0
 [C381 - Helpdisplay Resources]
 [C381 - Helpdisplay Native Resources]
 [C381 - Helpdisplay License files]
@@ -49283,7 +49283,7 @@ CopyToBin = 0
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-ReferenceGAC = VulcanVOGUIClasses,1,0,1.1.303.0
+ReferenceGAC = VulcanVOGUIClasses,1,0,1.1.401.0
 [C458 - Name conflict between DEFINE and METHOD Resources]
 [C458 - Name conflict between DEFINE and METHOD Native Resources]
 [C458 - Name conflict between DEFINE and METHOD License files]
@@ -54140,8 +54140,8 @@ CopyToBin = 0
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-ReferenceGAC = VulcanVOInternetClasses,1,0,1.1.303.0
-ReferenceGAC = VulcanVOWin32APILibrary,1,0,1.1.303.0
+ReferenceGAC = VulcanVOInternetClasses,1,0,1.1.401.0
+ReferenceGAC = VulcanVOWin32APILibrary,1,0,1.1.401.0
 [C501 - Error about ambiguous function (used to be a warning) Resources]
 [C501 - Error about ambiguous function (used to be a warning) Native Resources]
 [C501 - Error about ambiguous function (used to be a warning) License files]
@@ -58983,7 +58983,7 @@ CopyToBin = 0
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-ReferenceGAC = VulcanVOWin32APILibrary,1,0,1.1.303.0
+ReferenceGAC = VulcanVOWin32APILibrary,1,0,1.1.401.0
 [C545 - Problem using _DLL FUNCs with __arglist params Resources]
 [C545 - Problem using _DLL FUNCs with __arglist params Native Resources]
 [C545 - Problem using _DLL FUNCs with __arglist params License files]
@@ -75403,7 +75403,7 @@ IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
-Target = 0
+Target = 2
 Platform = x86
 Language = XSharp
 Runtime = CLR4

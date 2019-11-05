@@ -2941,10 +2941,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 else if (string.Equals(methodName, XSharpIntrinsicNames.AxitMethod, StringComparison.OrdinalIgnoreCase))
                 {
-                    var stmt = _syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
-                    stmt = stmt.WithAdditionalDiagnostics(
-                        new SyntaxDiagnosticInfo(ErrorCode.WRN_SuppressAxitMethodCall));
-                    context.Put(stmt);
+                    context.Put(GenerateNIL());
                     return;
                 }
             }

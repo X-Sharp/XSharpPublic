@@ -6,13 +6,14 @@
 CLASS TestClass
 	DESTRUCTOR()
 	RETURN SUPER:Axit()
-	DESTRUCTOR()
+	Method FooBar()
 	RETURN SELF:Axit()
-	DESTRUCTOR()
-	? SELF:Axit()
+	METHOD Bar()
+	? SELF:Axit()   
+	RETURN NIL
 	CONSTRUCTOR()
 	RETURN SUPER:Axit()
-	CONSTRUCTOR()
+	Method Foo()
 	RETURN SELF:Axit()
 	METHOD Test() AS VOID
 		LOCAL o AS OBJECT

@@ -24,7 +24,7 @@ namespace XSharp.Project.OptionsPages
         public bool ShowAfterChar { get; set; }
 
         // 0 : none; 1 : UPPER; 2 : lower; 3 : TitleCase
-        public int KeywordCase { get; set; }
+        public KeywordCase KeywordCase { get; set; }
         public bool IdentifierCase => false;
         public bool AlignDoCase { get; set; }
         public bool AlignMethod { get; set; }
@@ -60,17 +60,23 @@ namespace XSharp.Project.OptionsPages
                 return page;
             }
         }
+
+        private void SetDefaultCommitChars()
+        {
+            if (String.IsNullOrEmpty(this.CommitChars.Trim()))
+            {
+                this.CommitChars = "{}[]();+-*/%&|^!~=<>?@#\'\"\\";
+            }
+        }
+
         public override void LoadSettingsFromStorage()
         {
             base.LoadSettingsFromStorage();
-            //
-            if (String.IsNullOrEmpty( this.CommitChars))
-            {
-                this.CommitChars = "{}[]().,:;+-*/%&|^!~=<>?@#\'\"\\";
-            }
+            SetDefaultCommitChars();
         }
         public override void SaveSettingsToStorage()
         {
+            SetDefaultCommitChars();
             base.SaveSettingsToStorage();
         }
     }

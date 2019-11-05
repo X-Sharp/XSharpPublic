@@ -21,6 +21,14 @@ using System.Reflection;
 
 namespace XSharp.Project
 {
+    public enum KeywordCase
+    {
+        None = 0,
+        Upper = 1,
+        Lower = 2,
+        Title = 3
+    }
+
     /// <summary>
     /// This class adds X# specific project options and builds a command line for use in the intellisense
     /// </summary>

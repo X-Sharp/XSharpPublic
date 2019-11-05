@@ -206,6 +206,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 SaveAsCSharp = opt.SaveAsCSharp;
                 MemVars = opt.MemVars;
                 InitLocals = opt.InitLocals;
+                UndeclaredLocals = opt.UndeclaredLocalVars;
             }
             LanguageVersion = LanguageVersion.CSharp7_3;
         }
@@ -274,6 +275,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 #endif
             LanguageVersion = LanguageVersion.CSharp7_3;
             MemVars = opt.MemVars;
+            UndeclaredLocals = opt.UndeclaredLocals;
             InitLocals = opt.InitLocals;
         }
 

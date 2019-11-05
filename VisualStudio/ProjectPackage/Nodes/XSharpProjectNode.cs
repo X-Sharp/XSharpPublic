@@ -33,6 +33,7 @@ using LanguageService.CodeAnalysis;
 using LanguageService.CodeAnalysis.XSharp;
 using XSharp.CodeDom;
 using MBC = Microsoft.Build.Construction;
+using Microsoft;
 
 namespace XSharp.Project
 {
@@ -1246,6 +1247,7 @@ namespace XSharp.Project
         {
             List<EnvDTE.Project> list = new List<EnvDTE.Project>();
             EnvDTE.DTE dte = (EnvDTE.DTE)this.Site.GetService(typeof(EnvDTE.DTE));
+            Assumes.Present(dte);
             foreach (EnvDTE.Project p in dte.Solution.Projects)
             {
                 if (p == null)

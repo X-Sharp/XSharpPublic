@@ -3,8 +3,8 @@
  * Copyright (c) Microsoft Corporation.
  *
  * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
- * copy of the license can be found in the License.txt file at the root of this distribution. 
- * 
+ * copy of the license can be found in the License.txt file at the root of this distribution.
+ *
  * You must not remove this notice, or any other, from this software.
  *
  * ***************************************************************************/
@@ -100,7 +100,7 @@ namespace Microsoft.VisualStudio.Project
         /// <returns>If the method succeeds, it returns S_OK. If it fails, it returns an error code.</returns>
         public int Open(bool newFile, bool openWith, WindowFrameShowAction windowFrameAction)
         {
-            Guid logicalView = VSConstants.LOGVIEWID_Primary; 
+            Guid logicalView = VSConstants.LOGVIEWID_Primary;
             IVsWindowFrame windowFrame = null;
             return this.Open(newFile, openWith, logicalView, out windowFrame, windowFrameAction);
         }
@@ -193,9 +193,12 @@ namespace Microsoft.VisualStudio.Project
             int returnValue = VSConstants.S_OK;
             string caption = this.GetOwnerCaption();
             string fullPath = this.GetFullPathForDocument();
-            
+
             IVsUIShellOpenDocument uiShellOpenDocument = this.Node.ProjectMgr.Site.GetService(typeof(SVsUIShellOpenDocument)) as IVsUIShellOpenDocument;
+            Assumes.Present(uiShellOpenDocument);
+
             IOleServiceProvider serviceProvider = this.Node.ProjectMgr.Site.GetService(typeof(IOleServiceProvider)) as IOleServiceProvider;
+            Assumes.Present(serviceProvider);
 
             var openState = uiShellOpenDocument as IVsUIShellOpenDocument3;
             bool showDialog = !reopen && (openState == null || !((__VSNEWDOCUMENTSTATE)openState.NewDocumentState).HasFlag(__VSNEWDOCUMENTSTATE.NDS_Provisional));

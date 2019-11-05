@@ -3,14 +3,16 @@
  * Copyright (c) Microsoft Corporation.
  *
  * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
- * copy of the license can be found in the License.txt file at the root of this distribution. 
- * 
+ * copy of the license can be found in the License.txt file at the root of this distribution.
+ *
  * You must not remove this notice, or any other, from this software.
  *
  * ***************************************************************************/
 
+using EnvDTE;
 using System;
 using Microsoft.VisualStudio.Shell.Interop;
+using System.Diagnostics.CodeAnalysis;
 using ErrorHandler = Microsoft.VisualStudio.ErrorHandler;
 
 namespace Microsoft.VisualStudio.Project.Automation
@@ -30,7 +32,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         /// <summary>
         /// Initializes the <see cref="AutomationScope"/> class.
         /// </summary>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1810:InitializeReferenceTypeStaticFieldsInline")]
+        [SuppressMessage("Microsoft.Performance", "CA1810:InitializeReferenceTypeStaticFieldsInline")]
         static AutomationScope()
         {
             Mutex = new object();
@@ -45,11 +47,8 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             Utilities.ArgumentNotNull("provider", provider);
 
-            extensibility = provider.GetService(typeof(EnvDTE.IVsExtensibility)) as IVsExtensibility3;
-            if(null == extensibility)
-            {
-                throw new InvalidOperationException();
-            }
+            extensibility = provider.GetService(typeof(IVsExtensibility)) as IVsExtensibility3;
+            Assumes.Present(extensibility);
             ErrorHandler.ThrowOnFailure(extensibility.EnterAutomationFunction());
             inAutomation = true;
         }

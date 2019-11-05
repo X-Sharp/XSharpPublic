@@ -98,6 +98,7 @@ namespace Microsoft.VisualStudio.Project
             Utilities.ArgumentNotNull("site", site);
 
             IVsMonitorSelection selectionMonitor = site.GetService(typeof(IVsMonitorSelection)) as IVsMonitorSelection;
+            Assumes.Present(selectionMonitor);
             uint cookie = 0;
             int active = 0;
             Guid designContext = VSConstants.UICONTEXT_DesignMode;
@@ -444,13 +445,14 @@ namespace Microsoft.VisualStudio.Project
 		/// <returns>The name of the active platform.</returns>
 		internal static string GetActivePlatformName(EnvDTE.Project automationObject)
 		{
-			if (automationObject == null)
+            if (automationObject == null)
 			{
 				throw new ArgumentNullException("automationObject");
 			}
 
 			string currentPlatformName = string.Empty;
-			if (automationObject.ConfigurationManager != null)
+            ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+            if (automationObject.ConfigurationManager != null)
 			{
                 try
                 {

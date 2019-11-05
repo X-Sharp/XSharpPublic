@@ -15,6 +15,8 @@ using System.IO;
 using System.Runtime.InteropServices;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
+using System.Threading;
+using Microsoft.VisualStudio.Shell;
 
 namespace Microsoft.VisualStudio.Project
 {
@@ -23,7 +25,7 @@ namespace Microsoft.VisualStudio.Project
     /// </summary>
     [ComVisible(true)]
     [CLSCompliant(false)]
-    public abstract class ProjectPackage : Microsoft.VisualStudio.Shell.Package
+    public abstract class AsyncProjectPackage : Microsoft.VisualStudio.Shell.AsyncPackage
     {
         #region fields
         /// <summary>
@@ -48,16 +50,16 @@ namespace Microsoft.VisualStudio.Project
         #endregion
 
         #region ctor
-        protected ProjectPackage()
+        protected AsyncProjectPackage()
         {
         }
 
         #endregion
 
         #region methods
-        protected override void Initialize()
+        protected override async System.Threading.Tasks.Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
-            base.Initialize();
+            await base.InitializeAsync( cancellationToken, progress );
 
             // Subscribe to the solution events
             this.solutionListeners.Add(new SolutionListenerForProjectReferenceUpdate(this));

@@ -101,19 +101,21 @@ namespace XSharp.Project.Editors.BraceMatching
             if (spans.Count == 0)   //there is no content in the buffer
                 yield break;
 
+            if (CurrentChar == null)
+                yield break;
+
             //don't do anything if the current SnapshotPoint is not initialized or at the end of the buffer
             if (!CurrentChar.HasValue || CurrentChar.Value.Position >= CurrentChar.Value.Snapshot.Length)
                 yield break;
 
 
             //hold on to a snapshot of the current character
-            SnapshotPoint currentChar = CurrentChar.Value;
+            SnapshotPoint ssp = CurrentChar.Value;
 
             //if the requested snapshot isn't the same as the one the brace is on, translate our spans to the expected snapshot
-            if (spans[0].Snapshot != currentChar.Snapshot)
+            if (spans[0].Snapshot != ssp.Snapshot)
             {
-                //currentChar = currentChar.TranslateTo(spans[0].Snapshot, PointTrackingMode.Positive);
-                yield break;
+                ssp = ssp.TranslateTo(spans[0].Snapshot, PointTrackingMode.Positive);
             }
 
             //get the current char and the previous char
@@ -123,8 +125,8 @@ namespace XSharp.Project.Editors.BraceMatching
             SnapshotPoint lastChar = new SnapshotPoint();
             try
             {
-                currentText = currentChar.GetChar();
-                lastChar = currentChar == 0 ? currentChar : currentChar - 1; //if currentChar is 0 (beginning of buffer), don't move it back
+                currentText = ssp.GetChar();
+                lastChar = ssp == 0 ? ssp : ssp - 1; //if ssp is 0 (beginning of buffer), don't move it back
                 lastText = lastChar.GetChar();
             }
             catch (Exception)
@@ -135,21 +137,21 @@ namespace XSharp.Project.Editors.BraceMatching
             XSharpTokens xTokens = null;
             IList<IToken> tokens = null;
             int offset = 0;
-            if (SourceBuffer.Properties.ContainsProperty(typeof(XSharpTokens)))
+            if (SourceBuffer != null && SourceBuffer.Properties != null && SourceBuffer.Properties.ContainsProperty(typeof(XSharpTokens)))
             {
                 xTokens = SourceBuffer.Properties.GetProperty<XSharpTokens>(typeof(XSharpTokens));
                 tokens = xTokens.TokenStream.GetTokens();
-                if (xTokens.SnapShot.Version != currentChar.Snapshot.Version)
+                if (xTokens.SnapShot.Version != ssp.Snapshot.Version)
                 {
                     // get source from the start of the file until the current entity
                     var xfile = SourceBuffer.GetFile();
-                    var member = XSharpTokenTools.FindMemberAtPosition(currentChar.Position, xfile);
+                    var member = XSharpTokenTools.FindMemberAtPosition(ssp.Position, xfile);
                     if (member != null)
                     {
                         try
                         {
                             var sourceWalker = new SourceWalker(xfile);
-                            string text = currentChar.Snapshot.GetText();
+                            string text = ssp.Snapshot.GetText();
                             var stream = (BufferedTokenStream) sourceWalker.Lex(text);
                             tokens = stream.GetTokens();
                         }
@@ -169,9 +171,9 @@ namespace XSharp.Project.Editors.BraceMatching
             {
                 char closeChar;
                 m_braceList.TryGetValue(currentText, out closeChar);
-                if (BraceMatchingTagger.FindMatchingCloseChar(currentChar, currentText, closeChar, out pairSpan, tokens, offset) == true)
+                if (BraceMatchingTagger.FindMatchingCloseChar(ssp, currentText, closeChar, out pairSpan, tokens, offset) == true)
                 {
-                    yield return new TagSpan<TextMarkerTag>(new SnapshotSpan(currentChar, 1), new TextMarkerTag("blue"));
+                    yield return new TagSpan<TextMarkerTag>(new SnapshotSpan(ssp, 1), new TextMarkerTag("blue"));
                     yield return new TagSpan<TextMarkerTag>(pairSpan, new TextMarkerTag("blue"));
                 }
             }
@@ -200,7 +202,7 @@ namespace XSharp.Project.Editors.BraceMatching
                 {
 
                     ITextSnapshot snapshot = xsClassifier.Snapshot;
-                    if (snapshot.Version != currentChar.Snapshot.Version)
+                    if (snapshot.Version != ssp.Snapshot.Version)
                         yield break;
                     SnapshotSpan Span = new SnapshotSpan(snapshot, 0, snapshot.Length);
                     var classifications = xsClassifier.GetTags();
@@ -215,7 +217,7 @@ namespace XSharp.Project.Editors.BraceMatching
                     }
                     sortedTags.Sort((a, b) => a.Span.Start.Position.CompareTo(b.Span.Start.Position)*1000 + string.Compare(a.ClassificationType.Classification, b.ClassificationType.Classification));
                     //
-                    var tags = sortedTags.Where(x => currentChar.Position >= x.Span.Start.Position && currentChar.Position <= x.Span.End.Position);
+                    var tags = sortedTags.Where(x => ssp.Position >= x.Span.Start.Position && ssp.Position <= x.Span.End.Position);
                     foreach (var currentTag in tags)
                     {
                         var index = sortedTags.IndexOf(currentTag);

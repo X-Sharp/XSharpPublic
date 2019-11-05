@@ -103,7 +103,7 @@ namespace XSharp.Project
             XSharpProjectPackage.Instance.DisplayOutPutMessage("CommandFilter.ClassificationChanged()");
             if (_suspendSync)
                 return;
-            if (_keywordCase == 0)
+            if (_keywordCase == KeywordCase.None)
             {
                 return;
             }
@@ -210,11 +210,11 @@ namespace XSharp.Project
         {
             switch (KeywordCase)
             {
-                case 1:
+                case KeywordCase.Upper:
                     return keyword.ToUpper();
-                case 2:
+                case KeywordCase.Lower:
                     return keyword.ToLower();
-                case 3:
+                case KeywordCase.Title:
                     return txtInfo.ToTitleCase(keyword.ToLower());
             }
             return keyword;
@@ -337,11 +337,13 @@ namespace XSharp.Project
         {
             if (XSharpProjectPackage.Instance.DebuggerIsRunning)
                 return;
+            getEditorPreferences(TextView);
+            if (_keywordCase == KeywordCase.None)
+                return;
             XSharpProjectPackage.Instance.DisplayOutPutMessage($"CommandFilter.formatLineCase({line.LineNumber + 1})");
             // get classification of the line.
             // when the line is part of a multi line comment then do nothing
             // to detect that we take the start of the line and check if it is in
-            getEditorPreferences(TextView);
             int lineStart = line.Start.Position;
             if (line.Length == 0)
                 return;
@@ -385,7 +387,7 @@ namespace XSharp.Project
 
         private void registerLineForCaseSync(int line)
         {
-            if (!_suspendSync && _keywordCase != 0)
+            if (!_suspendSync && _keywordCase != KeywordCase.None)
             {
                 lock (_linesToSync)
                 {
@@ -830,13 +832,13 @@ namespace XSharp.Project
         {
             switch (_optionsPage.KeywordCase)
             {
-                case 1:     // Upper
+                case KeywordCase.Upper:     // Upper
                     completion.InsertionText = completion.InsertionText.ToUpper();
                     break;
-                case 2:     // Lower
+                case KeywordCase.Lower:     // Lower
                     completion.InsertionText = completion.InsertionText.ToLower();
                     break;
-                case 3:     // Proper
+                case KeywordCase.Title:     // Proper
                     completion.InsertionText = Char.ToUpper(completion.InsertionText[0]) + completion.InsertionText.Substring(1).ToLower();
                     break;
             }

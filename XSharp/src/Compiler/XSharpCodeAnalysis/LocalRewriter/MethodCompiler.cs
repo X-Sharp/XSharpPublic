@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using Microsoft.CodeAnalysis.CSharp.Symbols;
 
 namespace Microsoft.CodeAnalysis.CSharp
@@ -38,7 +39,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case XSharpSpecialNames.ExitProc:
                     body = LocalRewriter.RewriteExit(method, body, diagnostics);
                     break;
-                case XSharpFunctionNames.RunInitProcs:
+                case ReservedNames.RunInitProcs:
                     body = LocalRewriter.RewriteRunInitProc(method,body,diagnostics);
                     break;
             }
@@ -57,6 +58,21 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
                     break;
             }
+
+            var xnode = method.GetNonNullSyntaxNode().XNode as XSharpParserRuleContext;
+            if (xnode is XSharpParser.ClsmethodContext cmc)
+            {
+                xnode = cmc.Member;
+            }
+            else if (xnode is XSharpParser.FoxclsmethodContext fmc)
+            {
+                xnode = fmc.Member;
+            }
+            if (xnode is XSharpParser.IEntityContext iec)
+            {
+                 body = LocalRewriter.RemoveUnusedVars(iec.Data, body, diagnostics);
+            }
+
             return body;
         }
     }

@@ -847,7 +847,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             if (hasDelim && context.Merge == null)
             {
-                var txtmerge = GenerateMethodCall(XSharpFunctionNames.TextMergeCheck, true);
+                var txtmerge = GenerateMethodCall(ReservedNames.TextMergeCheck, true);
                 stringExpr = MakeConditional(txtmerge, stringExpr, GenerateLiteral(context.String.Text));
             }
 
@@ -856,7 +856,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var arg3 = MakeArgument(context.Flags != null ? context.Flags.Get<ExpressionSyntax>() : GenerateLiteral(0));
             var arg4 = MakeArgument(context.Pretext != null ? context.Pretext.Get<ExpressionSyntax>() : GenerateNIL());
             var args = MakeArgumentList(arg1, arg2, arg3, arg4);
-            var call = GenerateMethodCall(XSharpFunctionNames.TextSupport, args);
+            var call = GenerateMethodCall(ReservedNames.TextSupport, args);
 
             if (context.Id != null)
             {
@@ -903,14 +903,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 expr = GenerateLiteral(sourceText);
             }
             var arg2 = GenerateLiteral(context.B.Type != XP.BACKBACKSLASH);
-            var cond = GenerateMethodCall(XSharpFunctionNames.TextMergeCheck, true);  
+            var cond = GenerateMethodCall(ReservedNames.TextMergeCheck, true);  
             if (! hasDelim)
             {
                 cond = GenerateLiteral(false);
             }
             var arg1 = MakeConditional(cond, expr, GenerateLiteral(context.String.Text));
             var args = MakeArgumentList(MakeArgument(arg1), MakeArgument(arg2));
-            var call = GenerateMethodCall(XSharpFunctionNames.TextOut, args, true); 
+            var call = GenerateMethodCall(ReservedNames.TextOut, args, true); 
             var stmt = GenerateExpressionStatement(call);
             if (!delimitersOk)
                 stmt = stmt.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.WRN_UnbalancedTextMergeOperators));

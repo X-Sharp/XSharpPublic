@@ -97,7 +97,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 // VO Style String Comparison
                 type = Compilation.RuntimeFunctionsType();
-                string methodName = XSharpFunctionNames.StringCompare ;
+                string methodName = ReservedNames.StringCompare ;
                 var symbols = Binder.GetCandidateMembers(type, methodName, LookupOptions.MustNotBeInstance, this);
                 if (symbols.Length == 1)
                 {
@@ -127,7 +127,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             MethodSymbol opMeth = null;
             BoundExpression opCall = null;
             var type = Compilation.RuntimeFunctionsType();
-            var methodName = XSharpFunctionNames.StringEquals; 
+            var methodName = ReservedNames.StringEquals; 
             var symbols = Binder.GetCandidateMembers(type, methodName, LookupOptions.MustNotBeInstance, this);
             if (symbols.Length == 1)
             {
@@ -267,7 +267,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             MethodSymbol opMeth = null;
             BoundExpression opCall = null;
             var usualType = Compilation.UsualType();
-            var methodName = XSharpFunctionNames.InExactEquals  ;
+            var methodName = ReservedNames.InExactEquals  ;
             var symbols = Binder.GetCandidateMembers(usualType, methodName, LookupOptions.MustNotBeInstance, this);
             if (symbols.Length == 2)
             {
@@ -311,7 +311,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             MethodSymbol opMeth = null;
             BoundExpression opCall = null;
             var usualType = Compilation.UsualType();
-            var methodName = XSharpFunctionNames.InExactNotEquals ;
+            var methodName = ReservedNames.InExactNotEquals ;
             var symbols = Binder.GetCandidateMembers(usualType, methodName, LookupOptions.MustNotBeInstance, this);
             if (symbols.Length == 2)
             {
@@ -354,7 +354,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             MethodSymbol opMeth = null;
             BoundExpression opCall = null;
             var type = Compilation.CompilerServicesType();
-            var methodName = XSharpFunctionNames.StringSubtract ;
+            var methodName = ReservedNames.StringSubtract ;
             var symbols = Binder.GetCandidateMembers(type, methodName, LookupOptions.MustNotBeInstance, this);
             if (symbols.Length == 1)
             {

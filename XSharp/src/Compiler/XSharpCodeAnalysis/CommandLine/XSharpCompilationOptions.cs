@@ -20,6 +20,9 @@ namespace Microsoft.CodeAnalysis.CSharp
 {
     public sealed partial class CSharpCompilationOptions
     {
+#if VSPARSER
+        public bool AllowUnsafe { get; private set; }
+#endif
         public bool ArrayZero { get; private set; }
         public int ClrVersion { get; private set; }
         public bool MacroScript { get; private set; }

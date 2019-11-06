@@ -417,7 +417,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             var stmts = _pool.Allocate<StatementSyntax>();
             var body = MakeBlock(stmts);
-            var appId = SyntaxFactory.Identifier(XSharpFunctionNames.RunInitProcs);
+            var appId = SyntaxFactory.Identifier(ReservedNames.RunInitProcs);
             var modifiers = TokenList(SyntaxKind.PublicKeyword, SyntaxKind.StaticKeyword);
             var initProcs = _syntaxFactory.MethodDeclaration(
                 MakeCompilerGeneratedAttribute(), modifiers,
@@ -2880,7 +2880,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         }
                         expr = GenerateLiteral("", 0).WithAdditionalDiagnostics(
                             new SyntaxDiagnosticInfo(ErrorCode.ERR_OnlySupportedForClipperCallingConvention, ins.Identifier.Text));
-                        context.Put(expr);
+                        context.Put(expr);                        
                         return;
                     default:
                         break;
@@ -3294,6 +3294,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         var arg = MakeArgument(GenerateSimpleName(XSharpSpecialNames.PrivatesLevel));
                         expr = GenerateMethodCall(XSharpQualifiedFunctionNames.MemVarRelease, MakeArgumentList(arg), true);
                         finallystmts.Add(GenerateExpressionStatement(expr, true));
+                        context.Data.HasMemVarLevel = true;
                     }
                     if (finallystmts.Count > 0)
                     {
@@ -3399,6 +3400,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // Note that the expr must result into a 1 based offset or (with /az) a 0 based offset
             // XS$PCount > ..
             BinaryExpressionSyntax cond;
+            CurrentEntity.Data.UsesPCount = true;
             // no changes to expr for length comparison, even with /az
             cond = _syntaxFactory.BinaryExpression(
                                 SyntaxKind.GreaterThanOrEqualExpression,
@@ -3544,6 +3546,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 else
                 {
+                    if (CurrentEntity != null)
+                    {
+                        CurrentEntity.Data.UsesPCount = true;
+                    }
                     expr = GenerateSimpleName(XSharpSpecialNames.ClipperPCount);
                     if (argList.Arguments.Count != 0)
                     {
@@ -3929,7 +3935,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             ))
                         )
                     ),
-                _syntaxFactory.IdentifierName(SyntaxFactory.MakeIdentifier(XSharpFunctionNames.Eval))
+                _syntaxFactory.IdentifierName(SyntaxFactory.MakeIdentifier(ReservedNames.Eval))
                 ),
             EmptyArgumentList());
 

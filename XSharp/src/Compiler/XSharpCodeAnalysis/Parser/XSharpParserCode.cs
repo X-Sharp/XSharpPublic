@@ -165,8 +165,11 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             HasMemVars = 1 << 16,       // Member property
             HasYield = 1 << 17,         // Member property
             HasFormalParameters = 1 << 18,  // Member property
-            HasInit = 1 << 19,         // class property
-            IsEntryPoint = 1 << 20,    // member property
+            HasInit = 1 << 19,          // class property
+            IsEntryPoint = 1 << 20,     // member property
+            HasUndeclared = 1 << 21,    // member property
+            HasMemVarLevel = 1 << 22,   // member property
+            UsesPCount = 1 << 23,       // member property
         }
 
 
@@ -278,6 +281,22 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 set { flags = setFlag(flags, EntityFlags.HasMemVars, value); }
             }
 
+            public bool HasUndeclared
+            {
+                get { return flags.HasFlag(EntityFlags.HasUndeclared); }
+                set { flags = setFlag(flags, EntityFlags.HasUndeclared, value); }
+            }
+
+            public bool HasMemVarLevel
+            {
+                get { return flags.HasFlag(EntityFlags.HasMemVarLevel); }
+                set { flags = setFlag(flags, EntityFlags.HasMemVarLevel, value); }
+            }
+            public bool UsesPCount
+            {
+                get { return flags.HasFlag(EntityFlags.UsesPCount); }
+                set { flags = setFlag(flags, EntityFlags.UsesPCount, value); }
+            }
             public bool HasYield
             {
                 get { return flags.HasFlag(EntityFlags.HasYield); }

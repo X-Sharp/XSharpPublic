@@ -783,8 +783,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var type = Compilation.RuntimeFunctionsType();
                 bool declared = false;
                 string alias = null;
-                var get = GetCandidateMembers(type, XSharpFunctionNames.VarGet, LookupOptions.MustNotBeInstance, this);
-                var set = GetCandidateMembers(type, XSharpFunctionNames.VarPut, LookupOptions.MustNotBeInstance, this);
+                var get = GetCandidateMembers(type, ReservedNames.VarGet, LookupOptions.MustNotBeInstance, this);
+                var set = GetCandidateMembers(type, ReservedNames.VarPut, LookupOptions.MustNotBeInstance, this);
                 if (memvarorfield)
                 {
                     // this is either:
@@ -798,19 +798,19 @@ namespace Microsoft.CodeAnalysis.CSharp
                         name = parts[1];
                         if (parts[0] == XSharpSpecialNames.MemVarPrefix)
                         {
-                            get = GetCandidateMembers(type, XSharpFunctionNames.MemVarGet, LookupOptions.MustNotBeInstance, this);
-                            set = GetCandidateMembers(type, XSharpFunctionNames.MemVarPut, LookupOptions.MustNotBeInstance, this);
+                            get = GetCandidateMembers(type, ReservedNames.MemVarGet, LookupOptions.MustNotBeInstance, this);
+                            set = GetCandidateMembers(type, ReservedNames.MemVarPut, LookupOptions.MustNotBeInstance, this);
 
                         }
                         else if (parts[0] == XSharpSpecialNames.FieldPrefix)
                         {
-                            get = GetCandidateMembers(type, XSharpFunctionNames.FieldGet, LookupOptions.MustNotBeInstance, this);
-                            set = GetCandidateMembers(type, XSharpFunctionNames.FieldPut, LookupOptions.MustNotBeInstance, this);
+                            get = GetCandidateMembers(type, ReservedNames.FieldGet, LookupOptions.MustNotBeInstance, this);
+                            set = GetCandidateMembers(type, ReservedNames.FieldPut, LookupOptions.MustNotBeInstance, this);
                         }
                         else
                         {
-                            get = GetCandidateMembers(type, XSharpFunctionNames.FieldGetWa, LookupOptions.MustNotBeInstance, this);
-                            set = GetCandidateMembers(type, XSharpFunctionNames.FieldPutWa, LookupOptions.MustNotBeInstance, this);
+                            get = GetCandidateMembers(type, ReservedNames.FieldGetWa, LookupOptions.MustNotBeInstance, this);
+                            set = GetCandidateMembers(type, ReservedNames.FieldPutWa, LookupOptions.MustNotBeInstance, this);
                             alias = parts[0];
                         }
                     }
@@ -834,6 +834,19 @@ namespace Microsoft.CodeAnalysis.CSharp
                         if (!Compilation.Options.MacroScript && !declared)
                         {
                             Error(diagnostics, ErrorCode.WRN_UndeclaredVariable, node.Location, name);
+
+                            // find entity and set flag HasUndeclared
+                            var parent = node.XNode as XSharpParserRuleContext;
+                            while (parent != null)
+                            {
+                                if (parent is IEntityContext)
+                                    break;
+                                parent = parent.Parent as XSharpParserRuleContext;
+                            }
+                            if (parent is IEntityContext iec)
+                            {
+                                iec.Data.HasUndeclared = true;
+                            }
                         }
 
                     }

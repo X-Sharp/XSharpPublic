@@ -208,7 +208,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string ArrayNew = ".__ArrayNew";
         internal const string NullDate = ".NullDate";
         internal const string NIL = "._NIL";
-        internal const string WrapRawException = "._WrapRawException";
+        internal const string WrapRawExceptionVn = "._WrapRawException";
+        internal const string WrapRawExceptionXs = ".WrapRawException";
     }
     internal static class VulcanQualifiedFunctionNames
     {
@@ -227,7 +228,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string InStr = VulcanRTFuncs + ReservedNames.Instr;
         internal const string EnterSequence = CompilerServices + ReservedNames.BeginSequenceEnter;
         internal const string ExitSequence = CompilerServices + ReservedNames.BeginSequenceExit;
-        internal const string WrapException = VulcanQualifiedTypeNames.Error + ReservedNames.WrapRawException;
+        internal const string WrapException = VulcanQualifiedTypeNames.Error + ReservedNames.WrapRawExceptionVn;
         internal const string QQout = VulcanRTFuncs + ReservedNames.QQout;
         internal const string Qout = VulcanRTFuncs + ReservedNames.Qout;
         internal const string Chr = VulcanRTFuncs + ReservedNames.Chr;
@@ -247,7 +248,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         // In core
         internal const string Chr = GlobalCore + ReservedNames.Chr;
         internal const string InStr = GlobalCore + ReservedNames.Instr;
-        internal const string WrapException = XSharpQualifiedTypeNames.Error + ReservedNames.WrapRawException;
+        internal const string WrapException = XSharpQualifiedTypeNames.Error + ReservedNames.WrapRawExceptionXs;
         // In RT assembly
         internal const string FieldGet = GlobalRT + ReservedNames.FieldGet;
         internal const string FieldGetWa = GlobalRT + ReservedNames.FieldGetWa;

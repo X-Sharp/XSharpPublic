@@ -52590,7 +52590,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C486 - Problem resolving correct overload with REF param, @ operator and inherited classes
 
-ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
+ApplicationGroup = 6E592304-313A-42E3-8A1D-C66384522531
 ; ************** APPLICATION C487 - Compiler crash with GLOBAL CRLF in first line of .prg *************
 Application = C487 - Compiler crash with GLOBAL CRLF in first line of .prg
 IDEVersion = 1.06
@@ -53298,7 +53298,7 @@ VO3=0
 VO4=0
 VO5=0
 VO6=0
-VO7=1
+VO7=0
 VO8=0
 VO9=0
 VO10=0
@@ -53307,8 +53307,8 @@ VO12=0
 VO13=0
 VO14=0
 VO16=0
-LateBound=1
-Unsafe=0
+LateBound=0
+Unsafe=1
 Undeclared=0
 MemVar=0
 IgnoreStdDefs=0
@@ -59800,7 +59800,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C552 - Incorrect PSZ pointer arithmetic
 
-ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
+ApplicationGroup = EFF5B9B4-0F2A-45E0-87BB-24AC86F3D3DB
 ; ************** APPLICATION C553 - Not clear error message, mentioning a lambda expression in a codeblock *************
 Application = C553 - Not clear error message, mentioning a lambda expression in a codeblock
 IDEVersion = 1.06
@@ -60014,7 +60014,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C554 - Compiler crash with += USUAL operator
 
-ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
+ApplicationGroup = EFF5B9B4-0F2A-45E0-87BB-24AC86F3D3DB
 ; ************** APPLICATION C555 - Compiler crash with invalid pass by reference (old problem) *************
 Application = C555 - Compiler crash with invalid pass by reference (old problem)
 IDEVersion = 1.06
@@ -74003,7 +74003,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C679 - Internal compiler error with STATIC LOCALS with no type clause and /vo2
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 7D1C4D98-F0BB-48B3-932B-B3AECEE395BA
 ; ************** APPLICATION C680 - Problem with ?: syntax *************
 Application = C680 - Problem with ?: syntax
 IDEVersion = 1.06
@@ -75291,7 +75291,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C691 -Compiler stack overflow with incorrect conversion syntax
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
 ; ************** APPLICATION C692 - Compiler hungs with UDC *************
 Application = C692 - Compiler hungs with UDC
 IDEVersion = 1.06
@@ -75396,7 +75396,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C692 - Compiler hungs with UDC
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 7D1C4D98-F0BB-48B3-932B-B3AECEE395BA
 ; ************** APPLICATION C693 - Internal compiler error with incorrect Axit() syntax *************
 Application = C693 - Internal compiler error with incorrect Axit() syntax
 IDEVersion = 1.06

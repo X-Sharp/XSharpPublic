@@ -30,8 +30,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             var usualType = _compilation.UsualType();
             if (((NamedTypeSymbol)loweredReceiver.Type).ConstructedFrom == usualType)
-                loweredReceiver = _factory.StaticCall(usualType, XSharpFunctionNames.ToObject, loweredReceiver);
-            return _factory.StaticCall(_compilation.RuntimeFunctionsType(), XSharpFunctionNames.IVarGet,
+                loweredReceiver = _factory.StaticCall(usualType, ReservedNames.ToObject, loweredReceiver);
+            return _factory.StaticCall(_compilation.RuntimeFunctionsType(), ReservedNames.IVarGet,
                 MakeConversionNode(loweredReceiver, _compilation.GetSpecialType(SpecialType.System_Object), false),
                 new BoundLiteral(loweredReceiver.Syntax, ConstantValue.Create(name), _compilation.GetSpecialType(SpecialType.System_String)));
         }
@@ -40,8 +40,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             var usualType = _compilation.UsualType();
             if (((NamedTypeSymbol)loweredReceiver.Type).ConstructedFrom == usualType)
-                loweredReceiver = _factory.StaticCall(usualType, XSharpFunctionNames.ToObject, loweredReceiver);
-            return _factory.StaticCall(_compilation.RuntimeFunctionsType(), XSharpFunctionNames.IVarPut,
+                loweredReceiver = _factory.StaticCall(usualType, ReservedNames.ToObject, loweredReceiver);
+            return _factory.StaticCall(_compilation.RuntimeFunctionsType(), ReservedNames.IVarPut,
                 MakeConversionNode(loweredReceiver, _compilation.GetSpecialType(SpecialType.System_Object), false),
                 new BoundLiteral(loweredReceiver.Syntax, ConstantValue.Create(name), _compilation.GetSpecialType(SpecialType.System_String)),
                 loweredValue.Type == null ? new BoundDefaultExpression(loweredValue.Syntax, usualType)
@@ -72,7 +72,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             var aArgs = _factory.Array(usualType, convArgs.ToImmutableAndFree());
             // Note: Make sure the first parameter in __InternalSend() in the runtime is a USUAL!
-            return _factory.StaticCall(_compilation.RuntimeFunctionsType(), XSharpFunctionNames.InternalSend,
+            return _factory.StaticCall(_compilation.RuntimeFunctionsType(), ReservedNames.InternalSend,
                     MakeConversionNode(loweredReceiver, usualType, false),
                     new BoundLiteral(loweredReceiver.Syntax, ConstantValue.Create(name), _compilation.GetSpecialType(SpecialType.System_String)),
                     aArgs);
@@ -92,7 +92,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     convArgs.Add(MakeConversionNode(a, usualType, false));
             }
             var aArgs = _factory.Array(usualType, convArgs.ToImmutableAndFree());
-            var expr = _factory.StaticCall(_compilation.RuntimeFunctionsType(), XSharpFunctionNames.ASend,
+            var expr = _factory.StaticCall(_compilation.RuntimeFunctionsType(), ReservedNames.ASend,
                     MakeConversionNode(loweredReceiver, arrayType, false),
                     new BoundLiteral(loweredReceiver.Syntax, ConstantValue.Create(name), _compilation.GetSpecialType(SpecialType.System_String)),
                     aArgs);

@@ -7511,7 +7511,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var refKeyword = context.RefOut?.SyntaxKeyword();
             if (expr is PrefixUnaryExpressionSyntax pues && pues.OperatorToken.Kind == SyntaxKind.AmpersandToken)
             {
-                bool allowAddressOf = _options.Dialect.SupportsAddressOf() && _options.AllowUnsafe;
+                bool allowAddressOf = _options.Dialect.SupportsAddressOf() && (_options.AllowUnsafe || _options.VOImplicitCastsAndConversions);
                 if (! allowAddressOf)
                 {
                     var xnode = pues.XNode as XP.PrefixExpressionContext;

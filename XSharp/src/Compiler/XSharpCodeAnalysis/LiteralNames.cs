@@ -159,21 +159,24 @@ namespace Microsoft.CodeAnalysis.CSharp
 
     }
 
-    internal static class XSharpFunctionNames
+    internal static class ReservedNames
     {
         // these are all expected in the VO Function type
         internal const string StringCompare = "__StringCompare";
         internal const string StringEquals = "__StringEquals";
         internal const string StringSubtract = "StringSubtract";
+        internal const string StringAlloc = "StringAlloc";
         internal const string InExactEquals = "__InexactEquals";
         internal const string InExactNotEquals = "__InexactNotEquals";
+        internal const string Evaluate = "Evaluate";
         internal const string ToObject = "ToObject";
         internal const string IVarGet = "IVarGet";
         internal const string IVarPut = "IVarPut";
         internal const string InternalSend = "__InternalSend";
         internal const string ASend = "ASend";
         internal const string Eval = "Eval";
-        internal const string StringAlloc = "StringAlloc";
+        internal const string QQout = "QQOut";
+        internal const string Qout = "QOut";
         internal const string GetElement = "__GetElement";
         internal const string SetElement = "__SetElement";
         // These are in the generated code
@@ -182,75 +185,96 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string VarPut = "__VarPut";
         internal const string MemVarGet = "__MemVarGet";
         internal const string MemVarPut = "__MemVarPut";
+        internal const string MemVarRelease = "__MemVarRelease";
+        internal const string MemVarInit = "__MemVarInit";
+        internal const string MemVarDecl = "__MemVarDecl";
         internal const string FieldGet = "__FieldGet";
         internal const string FieldPut = "__FieldSet";
         internal const string FieldGetWa = "__FieldGetWa";
         internal const string FieldPutWa = "__FieldSetWa";
+        internal const string PushWorkarea ="__pushWorkarea";
+        internal const string PopWorkarea = "__popWorkarea";
+        internal const string String2Psz = "String2Psz";
+        internal const string String2PszRelease = "String2PszRelease";
+        internal const string StringArrayInit = "StringArrayInit";
+        internal const string BeginSequenceEnter = "EnterBeginSequence";
+        internal const string BeginSequenceExit = "ExitBeginSequence";
         internal const string TextSupport = "__TextSupport";
         internal const string TextOut = "__TextOut";
         internal const string TextMergeCheck = "SetTextMerge";
+        internal const string Chr = "Chr";
+        internal const string Instr = "Instr";
+        internal const string AreaEval = "__AreaEval";
+        internal const string ArrayNew = ".__ArrayNew";
+        internal const string NullDate = ".NullDate";
+        internal const string NIL = "._NIL";
+        internal const string WrapRawException = "._WrapRawException";
     }
     internal static class VulcanQualifiedFunctionNames
     {
-        internal const string FieldGet = "global::VulcanRTFuncs.Functions.__FieldGet";
-        internal const string FieldGetWa = "global::VulcanRTFuncs.Functions.__FieldGetWa";
-        internal const string FieldSet = "global::VulcanRTFuncs.Functions.__FieldSet";
-        internal const string FieldSetWa = "global::VulcanRTFuncs.Functions.__FieldSetWa";
-        internal const string NullDate = "global::Vulcan.__VODate.NullDate";
-        internal const string UsualNIL = "global::Vulcan.__Usual._NIL";
-        internal const string PszRelease = "global::Vulcan.Internal.CompilerServices.String2PszRelease";
-        internal const string String2Psz = "global::Vulcan.Internal.CompilerServices.String2Psz";
-        internal const string StringArrayInit = "global::Vulcan.Internal.CompilerServices.StringArrayInit";
-        internal const string ArrayNew = "global::Vulcan.__Array.__ArrayNew";
-        internal const string InStr = "global::VulcanRTFuncs.Functions.Instr";
-        internal const string EnterSequence = "global::Vulcan.Internal.CompilerServices.EnterBeginSequence";
-        internal const string ExitSequence = "global::Vulcan.Internal.CompilerServices.ExitBeginSequence";
-        internal const string WrapException = "global::Vulcan.Error._WrapRawException";
-        internal const string QQout = "global::VulcanRTFuncs.Functions.QQOut";
-        internal const string Qout = "global::VulcanRTFuncs.Functions.QOut";
-        internal const string Chr = "global::VulcanRTFuncs.Functions.Chr";
-        internal const string StringAlloc = "global::VulcanRTFuncs.Functions.StringAlloc";
-        internal const string PushWorkarea = "global::VulcanRTFuncs.Functions.__pushWorkarea";
-        internal const string PopWorkarea = "global::VulcanRTFuncs.Functions.__popWorkarea";
-        internal const string Evaluate = "global::VulcanRTFuncs.Functions.Evaluate";
-        internal const string IVarGet = "global::VulcanRTFuncs.Functions.IVarGet";
-        internal const string IVarPut = "global::VulcanRTFuncs.Functions.IVarPut";
+        internal const string VulcanRTFuncs = "global::VulcanRTFuncs.Functions.";
+        internal const string CompilerServices = "global::Vulcan.Internal.CompilerServices.";
+        internal const string FieldGet = VulcanRTFuncs + ReservedNames.FieldGet;
+        internal const string FieldGetWa = VulcanRTFuncs + ReservedNames.FieldGetWa;
+        internal const string FieldSet = VulcanRTFuncs + ReservedNames.FieldPut;
+        internal const string FieldSetWa = VulcanRTFuncs + ReservedNames.FieldPutWa;
+        internal const string NullDate = VulcanQualifiedTypeNames.Date +  ReservedNames.NullDate;
+        internal const string UsualNIL = VulcanQualifiedTypeNames.Usual + ReservedNames.NIL;
+        internal const string PszRelease = CompilerServices + ReservedNames.String2PszRelease;
+        internal const string String2Psz = CompilerServices + ReservedNames.String2Psz;
+        internal const string StringArrayInit = CompilerServices + ReservedNames.StringArrayInit;
+        internal const string ArrayNew = VulcanQualifiedTypeNames.Array + ReservedNames.ArrayNew;
+        internal const string InStr = VulcanRTFuncs + ReservedNames.Instr;
+        internal const string EnterSequence = CompilerServices + ReservedNames.BeginSequenceEnter;
+        internal const string ExitSequence = CompilerServices + ReservedNames.BeginSequenceExit;
+        internal const string WrapException = VulcanQualifiedTypeNames.Error + ReservedNames.WrapRawException;
+        internal const string QQout = VulcanRTFuncs + ReservedNames.QQout;
+        internal const string Qout = VulcanRTFuncs + ReservedNames.Qout;
+        internal const string Chr = VulcanRTFuncs + ReservedNames.Chr;
+        internal const string StringAlloc = VulcanRTFuncs + ReservedNames.StringAlloc;
+        internal const string PushWorkarea = VulcanRTFuncs + ReservedNames.PushWorkarea;
+        internal const string PopWorkarea = VulcanRTFuncs + ReservedNames.PopWorkarea;
+        internal const string Evaluate = VulcanRTFuncs + ReservedNames.Evaluate;
+        internal const string IVarGet = VulcanRTFuncs + ReservedNames.IVarGet;
+        internal const string IVarPut = VulcanRTFuncs + ReservedNames.IVarPut;
     }
 
     internal static class XSharpQualifiedFunctionNames
     {
+        internal const string GlobalRT = "global::" + XSharpSpecialNames.XSharpRTFunctionsClass + ".";
+        internal const string GlobalCore = "global::" + XSharpSpecialNames.XSharpCoreFunctionsClass + ".";
+        internal const string CompilerServices = "global::XSharp.Internal.CompilerServices.";
         // In core
-        internal const string Chr = "global::XSharp.Core.Functions.Chr";
-        internal const string InStr = "global::XSharp.Core.Functions.Instr";
-        internal const string WrapException = "global::XSharp.Error.WrapRawException";
+        internal const string Chr = GlobalCore + ReservedNames.Chr;
+        internal const string InStr = GlobalCore + ReservedNames.Instr;
+        internal const string WrapException = XSharpQualifiedTypeNames.Error + ReservedNames.WrapRawException;
         // In RT assembly
-        internal const string FieldGet = "global::XSharp.RT.Functions.__FieldGet";
-        internal const string FieldGetWa = "global::XSharp.RT.Functions.__FieldGetWa";
-        internal const string FieldSet = "global::XSharp.RT.Functions.__FieldSet";
-        internal const string FieldSetWa = "global::XSharp.RT.Functions.__FieldSetWa";
-        internal const string AreaEval = "global::XSharp.RT.Functions.__AreaEval";
-        internal const string MemVarGet = "global::XSharp.RT.Functions.__MemVarGet";
-        internal const string MemVarPut = "global::XSharp.RT.Functions.__MemVarPut";
-        internal const string MemVarInit = "global::XSharp.RT.Functions.__MemVarInit";
-        internal const string MemVarRelease = "global::XSharp.RT.Functions.__MemVarRelease";
-        internal const string MemVarDecl = "global::XSharp.RT.Functions.__MemVarDecl";
-        internal const string NullDate = "global::XSharp.__Date.NullDate";
-        internal const string UsualNIL = "global::XSharp.__Usual._NIL";
-        internal const string PszRelease = "global::XSharp.Internal.CompilerServices.String2PszRelease";
-        internal const string String2Psz = "global::XSharp.Internal.CompilerServices.String2Psz";
-        internal const string StringArrayInit = "global::XSharp.Internal.CompilerServices.StringArrayInit";
-        internal const string ArrayNew = "global::XSharp.__Array.__ArrayNew";
-        internal const string EnterSequence = "global::XSharp.Internal.CompilerServices.EnterBeginSequence"; 
-        internal const string ExitSequence = "global::XSharp.Internal.CompilerServices.ExitBeginSequence";
-        internal const string QQout = "global::XSharp.RT.Functions.QQOut";
-        internal const string Qout = "global::XSharp.RT.Functions.QOut"; 
-        internal const string StringAlloc = "global::XSharp.RT.Functions.StringAlloc";
-        internal const string PushWorkarea = "global::XSharp.RT.Functions.__pushWorkarea";
-        internal const string PopWorkarea = "global::XSharp.RT.Functions.__popWorkarea";
-        internal const string Evaluate = "global::XSharp.RT.Functions.Evaluate";
-        internal const string IVarGet = "global::XSharp.RT.Functions.IVarGet";
-        internal const string IVarPut = "global::XSharp.RT.Functions.IVarPut";
-
+        internal const string FieldGet = GlobalRT + ReservedNames.FieldGet;
+        internal const string FieldGetWa = GlobalRT + ReservedNames.FieldGetWa;
+        internal const string FieldSet = GlobalRT + ReservedNames.FieldPut;
+        internal const string FieldSetWa = GlobalRT + ReservedNames.FieldPutWa;
+        internal const string AreaEval = GlobalRT + ReservedNames.AreaEval;
+        internal const string MemVarGet = GlobalRT + ReservedNames.MemVarGet;
+        internal const string MemVarPut = GlobalRT + ReservedNames.MemVarPut;
+        internal const string MemVarInit = GlobalRT + ReservedNames.MemVarInit;
+        internal const string MemVarRelease = GlobalRT + ReservedNames.MemVarRelease;
+        internal const string MemVarDecl = GlobalRT + ReservedNames.MemVarDecl;
+        internal const string NullDate = XSharpQualifiedTypeNames.Date + ReservedNames.NullDate;
+        internal const string UsualNIL = XSharpQualifiedTypeNames.Usual + ReservedNames.NIL;
+        internal const string PszRelease = CompilerServices + ReservedNames.String2PszRelease;
+        internal const string String2Psz = CompilerServices + ReservedNames.String2Psz;
+        internal const string StringArrayInit = CompilerServices + ReservedNames.StringArrayInit;
+        internal const string ArrayNew = XSharpQualifiedTypeNames.Array + ReservedNames.ArrayNew;
+        internal const string EnterSequence = CompilerServices + ReservedNames.BeginSequenceEnter;
+        internal const string ExitSequence = CompilerServices + ReservedNames.BeginSequenceExit;
+        internal const string QQout = GlobalRT + ReservedNames.QQout;
+        internal const string Qout = GlobalRT + ReservedNames.Qout;
+        internal const string StringAlloc = GlobalRT + ReservedNames.StringAlloc;
+        internal const string PushWorkarea = GlobalRT + ReservedNames.PushWorkarea;
+        internal const string PopWorkarea = GlobalRT + ReservedNames.PopWorkarea;
+        internal const string Evaluate = GlobalRT + ReservedNames.Evaluate;
+        internal const string IVarGet = GlobalRT + ReservedNames.IVarGet;
+        internal const string IVarPut = GlobalRT + ReservedNames.IVarPut;
     }
 
     internal static class VulcanAssemblyNames
@@ -313,4 +337,5 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string NonSerialized = "global::System.NonSerializedAttribute";
     }
 }
+
 

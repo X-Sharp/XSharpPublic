@@ -23,6 +23,8 @@ using Microsoft.CodeAnalysis.CSharp.Symbols;
 using Roslyn.Utilities;
 using Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax;
 using Microsoft.CodeAnalysis.CSharp.Emit;
+using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
+
 namespace Microsoft.CodeAnalysis.CSharp
 {
     internal partial class LocalRewriter
@@ -362,7 +364,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             DiagnosticBag diagnostics)
 
         {
-            if ( method.Name != XSharpFunctionNames.RunInitProcs)
+            if ( method.Name != ReservedNames.RunInitProcs)
                 return statement;
             var oldbody = statement as BoundBlock;
             var newstatements = new List<BoundStatement>();
@@ -435,5 +437,102 @@ namespace Microsoft.CodeAnalysis.CSharp
             //return newbody;
         }
 
+        public static BoundStatement RemoveUnusedVars(
+                 XSharpParser.EntityData data,
+                 BoundStatement statement,
+                 DiagnosticBag diagnostics)
+        {
+            bool removeMemvars = data.HasMemVarLevel && !(data.HasMemVars || data.HasUndeclared);
+            bool removePCount = data.HasClipperCallingConvention && data.UsesPCount == false;
+            if (!removeMemvars && !removePCount)
+            {
+                return statement;
+            }
+            var body = statement as BoundBlock;
+            if (body == null)
+            {
+                return statement;
+            }
+            LocalSymbol level = null;
+            LocalSymbol pcount = null;
+            var syms = new List<LocalSymbol>();
+            foreach (var local in body.Locals)
+            {
+                if (local.Name == XSharpSpecialNames.PrivatesLevel && removeMemvars)
+                {
+                    level = local;
+                }
+                else if (local.Name == XSharpSpecialNames.ClipperPCount && removePCount)
+                {
+                    pcount = local;
+                }
+                else
+                {
+                    syms.Add(local);
+                }
+            }
+            if (level == null && pcount == null)        // should not happen
+                return body;
+            var newStmts = new List<BoundStatement>();
+            foreach (var stmt in body.Statements)
+            {
+                switch (stmt.Kind)
+                {
+                    case BoundKind.LocalDeclaration:
+                        var decl = stmt as BoundLocalDeclaration;
+                        if (decl.LocalSymbol == level)      // no need for local to store Level
+                            continue;
+                        if (decl.LocalSymbol == pcount)     // no need for local to store PCount
+                            continue;
+                        newStmts.Add(decl); 
+                        break;
+                    case BoundKind.TryStatement:
+                        if (level == null)
+                        {
+                            newStmts.Add(stmt);
+                            continue;
+                        }
+                        var tryStmt = stmt as BoundTryStatement;
+                        var finBlock = tryStmt.FinallyBlockOpt;
+                        if (finBlock != null)
+                        {
+                            var newfinStatements = new List<BoundStatement>();
+                            foreach (var finstmt in finBlock.Statements)
+                            {
+                                if (finstmt.Kind == BoundKind.ExpressionStatement)
+                                {
+                                    var exprStmt = finstmt as BoundExpressionStatement;
+                                    if (exprStmt.Expression is BoundCall bc && bc.Method.Name == ReservedNames.MemVarRelease)
+                                    {
+                                        continue;
+                                    }
+                                }
+                                newfinStatements.Add(finstmt);
+                            }
+                            if (newfinStatements.Count > 0  || tryStmt.CatchBlocks.Length > 0)
+                            {
+                                finBlock = finBlock.Update(finBlock.Locals, finBlock.LocalFunctions, newfinStatements.ToImmutableArray());
+                                tryStmt = tryStmt.Update(tryStmt.TryBlock, tryStmt.CatchBlocks, finBlock, tryStmt.PreferFaultHandler);
+                                newStmts.Add(tryStmt);
+                            }
+                            else
+                            {
+                                // empty finally block and no Catch blocks, so we can remove the try completely
+                                newStmts.Add(tryStmt.TryBlock);
+                            }
+                        }
+                        else
+                        {
+                            newStmts.Add(stmt);
+                        }
+                        break;
+                    default:
+                        newStmts.Add(stmt);
+                        break;
+                }
+            }
+            body = body.Update(syms.ToImmutableArray(), body.LocalFunctions, newStmts.ToImmutableArray());
+            return body;
+        }
     }
 }

@@ -113,7 +113,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
                     else if (rewrittenType.SpecialType == SpecialType.System_DateTime)
                     {
-                        rewrittenOperand = _factory.StaticCall(usualType, XSharpFunctionNames.ToObject , rewrittenOperand);
+                        rewrittenOperand = _factory.StaticCall(usualType, ReservedNames.ToObject , rewrittenOperand);
                         return ConversionKind.Unboxing;
                     }
                     else // System.Decimals, Objects and reference types, but not String
@@ -138,7 +138,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         }
                         else
                         {
-                            rewrittenOperand = _factory.StaticCall(usualType, XSharpFunctionNames.ToObject, rewrittenOperand);
+                            rewrittenOperand = _factory.StaticCall(usualType, ReservedNames.ToObject, rewrittenOperand);
                             if (rewrittenType.IsObjectType())
                             {
                                 conversionKind = ConversionKind.Identity;

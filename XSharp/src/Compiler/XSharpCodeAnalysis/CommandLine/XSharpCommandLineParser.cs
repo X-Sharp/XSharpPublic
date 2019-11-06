@@ -351,6 +351,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case "unsafe":
                     options.AllowUnsafe = positive;
                     handled = false;    // there is also an 'unsafe' option in Roslyn
+                    name = oldname;
                     break;
 
                 default:

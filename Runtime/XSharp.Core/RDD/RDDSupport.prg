@@ -470,7 +470,7 @@ CLASS RddFieldInfo
 		SELF:Alias      := oInfo:Alias
 		SELF:Flags      := oInfo:Flags
 		SELF:OffSet     := oInfo:OffSet
-        IF SELF:FieldType:HasDecimals()
+        IF SELF:FieldType:HasDecimals()  .OR. SELF:FieldType == DbFieldType.Character  // Support for char fields > 255 characters
         	SELF:Decimals 	:= oInfo:Decimals
         ENDIF
        

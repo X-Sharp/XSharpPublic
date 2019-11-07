@@ -134,8 +134,8 @@ namespace XSharp.MacroCompiler
             get
             {
                 return Location.Valid ?
-                      String.Format("({1},{2}): error XM{0:D4}: {3}", (int)Code, Location.Line, Location.Col, ErrorMessage)
-                    : String.Format("error XM{0:D4}: {1}", (int)Code, ErrorMessage);
+                      String.Format("Macrocompiler ({1},{2}): error XM{0:D4}: {3}", (int)Code, Location.Line, Location.Col, ErrorMessage)
+                    : String.Format("Macrocompiler error XM{0:D4}: {1}", (int)Code, ErrorMessage);
             }
         }
         internal CompilationError(SourceLocation loc, ErrorCode e, params object[] args) { Code = e; Location = loc; ErrorMessage = ErrorString.Format(e, args); }

@@ -318,8 +318,13 @@ BEGIN NAMESPACE XSharp
     /// <exclude/>	
     STATIC METHOD WrapRawException( ex AS Exception ) AS Error
     LOCAL e AS Error
-    e			  := Error{ ex }
-    e:Description := ErrString( EG_EXCEPTION ) + ":" + ex:Message
+    if ex != null
+        e			  := Error{ ex }
+        e:Description := ErrString( EG_EXCEPTION ) + ":" + ex:Message
+    else
+        e			  := Error{  }
+        e:Description := ErrString( EG_SEQUENCE ) + ":" + ex:Message
+    endif
     RETURN e
     
     /// <exclude/>	

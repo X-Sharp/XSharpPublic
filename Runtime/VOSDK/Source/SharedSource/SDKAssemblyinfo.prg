@@ -6,7 +6,7 @@
 #using System.Runtime.InteropServices
 #using System.Security
 
-#include "BuildNumber.h" 
+#include "BuildNumber.h"    
 
 
 [assembly: AssemblyConfigurationAttribute( ASSEMBLY_CONFIGURATION )]
@@ -25,7 +25,6 @@
 [assembly: Vulcan.VulcanImplicitNamespaceAttribute( "VO" )]
 #endif
 
-[module: UnverifiableCodeAttribute()]
 [assembly: AllowPartiallyTrustedCallersAttribute()]
 #ifdef __CLR4__
 [assembly: SecurityRulesAttribute (SecurityRuleSet.Level1)]

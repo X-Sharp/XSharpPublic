@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -75,6 +75,22 @@ namespace XSharp.MacroCompiler
     internal partial class MethodSymbol : MethodBaseSymbol
     {
         internal override string FullName { get { return ContainingType.FullName + "." + Method.Name + "()"; } }
+        internal string Signature
+        {
+            get
+            {
+                var sig = ContainingType.FullName + "." + Method.Name + "(";
+                var sParams = "";
+                foreach (var p in this.Parameters.Parameters)
+                {
+                    if (sParams.Length > 0)
+                        sParams += ",";
+                    sParams += p.ParameterType.ToString();
+                }
+                sig += sParams + ")";
+                return sig;
+            }
+        }
     }
     internal partial class FieldSymbol : MemberSymbol
     {
@@ -91,5 +107,21 @@ namespace XSharp.MacroCompiler
     internal partial class ConstructorSymbol : MethodBaseSymbol
     {
         internal override string FullName { get { return Type.FullName + "{}"; } }
+        internal string Signature
+        {
+            get
+            {
+                var sig = Type.FullName + "{";
+                var sParams = "";
+                foreach (var p in this.Parameters.Parameters)
+                {
+                    if (sParams.Length > 0)
+                        sParams += ",";
+                    sParams += p.ParameterType.ToString();
+                }
+                sig += sParams + "}";
+                return sig;
+            }
+        }
     }
 }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -58,9 +58,20 @@ namespace XSharp.MacroCompiler
             }
 
             if (ovRes?.Unique == false)
-                return expr.Error(ErrorCode.AmbiguousCall);
-
-            return expr.Error(ErrorCode.NotFound, "Expression");
+            {
+                string sMessage1 = "";
+                string sMessage2 = "";
+                if (ovRes?.Symbol is MethodSymbol msym)
+                {
+                    sMessage1 = msym.Signature;
+                }
+                if (ovRes?.Equivalent?.Symbol is MethodSymbol msym2)
+                {
+                    sMessage2 = msym2.Signature;
+                }
+                return expr.Error(ErrorCode.AmbiguousCall, sMessage1, sMessage2);
+            }
+            return expr.Error(ErrorCode.NotFound, "Expression", "");
         }
 
         internal static CompilationError CtorCallBindError(Expr expr, Symbol symbol, ArgList args, OverloadResult ovRes)
@@ -76,7 +87,19 @@ namespace XSharp.MacroCompiler
             }
 
             if (ovRes.Unique == false)
-                return expr.Error(ErrorCode.AmbiguousCall);
+            {
+                string sMessage1 = "";
+                string sMessage2 = "";
+                if (ovRes?.Symbol is ConstructorSymbol msym)
+                {
+                    sMessage1 = msym.Signature;
+                }
+                if (ovRes?.Equivalent?.Symbol is ConstructorSymbol msym2)
+                {
+                    sMessage2 = msym2.Signature;
+                }
+                return expr.Error(ErrorCode.AmbiguousCall, sMessage1,sMessage2);
+            }
 
             return expr.Error(ErrorCode.CtorNotFound);
         }

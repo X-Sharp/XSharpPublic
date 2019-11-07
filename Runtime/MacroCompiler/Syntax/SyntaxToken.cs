@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -187,7 +187,7 @@ namespace XSharp.MacroCompiler.Syntax
             this.value = value;
         }
         internal static readonly Token None = new Token(TokenType.UNRECOGNIZED, TokenType.UNRECOGNIZED, -1, 0, null, Channel.DEFOUTCHANNEL);
-        public override string ToString() => "'" + value + "'";
+        public override string ToString() => ( !string.IsNullOrEmpty(value) ? value : TokenAttr.TokenText(type) ) ;
     }
 
     internal class TokenAttr

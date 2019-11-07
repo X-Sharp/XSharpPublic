@@ -33,51 +33,66 @@ PARTIAL CLASS DBF INHERIT Workarea IMPLEMENTS IRddSortWriter
 	PROTECT _HasMemo		AS LOGIC
 	PROTECT _wasChanged     AS LOGIC
 	
-        //PROTECT _HasTags		AS LOGIC
-        //PROTECT _HasAutoInc		AS LOGIC
-        //PROTECT _HasTimeStamp	AS LOGIC
-        //PROTECT _LastUpdate	    AS DateTime
-	    PROTECT _RecCount		AS LONG
-	    PROTECT _RecNo			AS LONG
-        //PROTECT _Temporary		AS LOGIC
-	    PROTECT _RecordChanged	AS LOGIC 	// Current record has changed ?
-	    PROTECT _Positioned		AS LOGIC 	//
-        //PROTECT _Appended		AS LOGIC	// Record has been added ?
-    	PROTECT _Deleted		AS LOGIC	// Record has been deleted ?
-        //PROTECT _HeaderDirty	AS LOGIC	// Header is dirty ?
-    	PROTECT _fLocked		AS LOGIC    // File Locked ?
-    	PROTECT _HeaderLocked	AS LOGIC
-        //PROTECT _PackMemo		AS LOGIC
-    	INTERNAL _OpenInfo		AS DbOpenInfo // current dbOpenInfo structure in OPEN/CREATE method
-    	PROTECT _Locks			AS List<LONG>
-        //PROTECT _DirtyRead		AS LONG
-        //PROTECT _HasTrigger		AS LOGIC
-        //PROTECT _Encrypted		AS LOGIC	// Current record Encrypted
-        //PROTECT _TableEncrypted 	AS LOGIC	// Whole table encrypted
-        //PROTECT _CryptKey		AS STRING
-        //PROTRECT _Trigger		as DbTriggerDelegate
-	    PROTECT _oIndex			AS BaseIndex
-	    PROTECT _Hot            AS LOGIC
-	    PROTECT _lockScheme     AS DbfLocking
-	    PROTECT _NewRecord      AS LOGIC
-        PROTECT INTERNAL _NullColumn    AS DbfNullColumn // Column definition for _NullFlags, used in DBFVFP driver
-        PROTECT INTERNAL _NullCount      := 0 AS LONG   // to count the NULL and Length bits for DBFVFP
+    //PROTECT _HasTags		AS LOGIC
+    //PROTECT _HasAutoInc		AS LOGIC
+    //PROTECT _HasTimeStamp	AS LOGIC
+    //PROTECT _LastUpdate	    AS DateTime
+	PROTECT _RecCount		AS LONG
+	PROTECT _RecNo			AS LONG
+    //PROTECT _Temporary		AS LOGIC
+	PROTECT _RecordChanged	AS LOGIC 	// Current record has changed ?
+	PROTECT _Positioned		AS LOGIC 	//
+    //PROTECT _Appended		AS LOGIC	// Record has been added ?
+    PROTECT _Deleted		AS LOGIC	// Record has been deleted ?
+    //PROTECT _HeaderDirty	AS LOGIC	// Header is dirty ?
+    PROTECT _fLocked		AS LOGIC    // File Locked ?
+    PROTECT _HeaderLocked	AS LOGIC
+    //PROTECT _PackMemo		AS LOGIC
+    INTERNAL _OpenInfo		AS DbOpenInfo // current dbOpenInfo structure in OPEN/CREATE method
+    PROTECT _Locks			AS List<LONG>
+    //PROTECT _DirtyRead		AS LONG
+    //PROTECT _HasTrigger		AS LOGIC
+    //PROTECT _Encrypted		AS LOGIC	// Current record Encrypted
+    //PROTECT _TableEncrypted 	AS LOGIC	// Whole table encrypted
+    //PROTECT _CryptKey		AS STRING
+    //PROTRECT _Trigger		as DbTriggerDelegate
+	PROTECT _oIndex			AS BaseIndex
+	PROTECT _Hot            AS LOGIC
+	PROTECT _lockScheme     AS DbfLocking
+	PROTECT _NewRecord      AS LOGIC
+    PROTECT INTERNAL _NullColumn    AS DbfNullColumn // Column definition for _NullFlags, used in DBFVFP driver
+    PROTECT INTERNAL _NullCount      := 0 AS LONG   // to count the NULL and Length bits for DBFVFP
 	
-        PROTECT INTERNAL PROPERTY FullPath AS STRING GET _FileName
-        PROTECT INTERNAL PROPERTY Header AS DbfHeader GET _Header
-        PROTECT INTERNAL _Ansi          AS LOGIC
-        PROTECT INTERNAL _Encoding      AS Encoding
-        PROTECT INTERNAL  _numformat AS NumberFormatInfo
-        PROTECT PROPERTY IsOpen AS LOGIC GET SELF:_hFile != F_ERROR
-        PROTECT PROPERTY HasMemo AS LOGIC GET SELF:_hasMemo
-        PROTECT PROPERTY Memo AS BaseMemo GET (BaseMemo) SELF:_Memo
+    PROTECT INTERNAL PROPERTY FullPath AS STRING GET _FileName
+    PROTECT INTERNAL PROPERTY Header AS DbfHeader GET _Header
+    PROTECT INTERNAL _Ansi          AS LOGIC
+    PROTECT INTERNAL _Encoding      AS Encoding
+    PROTECT INTERNAL  _numformat AS NumberFormatInfo
+    PROTECT PROPERTY IsOpen AS LOGIC GET SELF:_hFile != F_ERROR
+    PROTECT PROPERTY HasMemo AS LOGIC GET SELF:_hasMemo
+    PROTECT PROPERTY Memo AS BaseMemo GET (BaseMemo) SELF:_Memo
 
 INTERNAL METHOD _CheckEofBof() AS VOID
     IF SELF:RecCount == 0
-       SELF:_EoF := TRUE
-       SELF:_Bof := TRUE
+        SELF:_SetEOF(TRUE)
+        SELF:_SetBOF(TRUE)
     ENDIF
 
+
+INTERNAL METHOD _SetBOF(lNewValue as LOGIC) AS VOID
+    IF lNewValue != SELF:_BoF
+        SELF:_BoF := lNewValue
+    ENDIF
+
+
+INTERNAL METHOD _SetEOF(lNewValue as LOGIC) AS VOID
+    IF lNewValue != SELF:_EoF
+        SELF:_EoF := lNewValue
+        IF lNewValue
+            Array.Copy(SELF:_BlankBuffer, SELF:_RecordBuffer, SELF:_RecordLength)
+        ENDIF
+    ENDIF
+    
 PRIVATE METHOD _AllocateBuffers() AS VOID
 	SELF:_RecordBuffer  := BYTE[]{ SELF:_RecordLength}
 	SELF:_BlankBuffer   := BYTE[]{ SELF:_RecordLength}
@@ -146,24 +161,24 @@ METHOD GoTo(nRec AS LONG) AS LOGIC
                 // Normal positioning
                 // VO does not set _Found to TRUE for a succesfull Goto. It does set _Found to false for a failed Goto
 				SELF:_RecNo := nRec
-				SELF:_EOF := FALSE
-				SELF:_Bof := FALSE
+				SELF:_SetEOF(FALSE)
+                SELF:_SetBOF(FALSE)
                 //SELF:_Found :=TRUE    
 				SELF:_BufferValid := FALSE
 				SELF:_isValid := TRUE
 			ELSEIF nRec < 0 .AND. nCount > 0
                 // skip to BOF. Move to record 1. 
 				SELF:_RecNo := 1
-				SELF:_EOF := FALSE
-				SELF:_Bof := TRUE
+				SELF:_SetEOF(FALSE)
+                SELF:_SetBOF(TRUE)
 				SELF:_Found :=FALSE
 				SELF:_BufferValid := FALSE
 				SELF:_isValid := FALSE
 			ELSE
                 // File empty, or move after last record
 				SELF:_RecNo := nCount + 1
-				SELF:_EOF   := TRUE
-				SELF:_Bof   := nCount == 0
+				SELF:_SetEOF(TRUE)
+                SELF:_SetBOF(nCount == 0)
 				SELF:_Found := FALSE
 				SELF:_BufferValid := FALSE
 				SELF:_isValid := FALSE
@@ -217,7 +232,7 @@ METHOD Skip(nToSkip AS INT) AS LOGIC
 				SELF:_Bof := TRUE
 			ENDIF
 			IF nToSkip < 0 
-				SELF:_Eof := FALSE
+				SELF:_SetEOF(FALSE)
 			ELSEIF nToSkip > 0 
 				SELF:_Bof := FALSE
 			ENDIF
@@ -237,15 +252,15 @@ METHOD SkipRaw(nToSkip AS INT) AS LOGIC
 		LOCAL currentBof := SELF:_Bof AS LOGIC
 		LOCAL currentEof := SELF:_EOF AS LOGIC
 		SELF:Goto( SELF:_Recno )
-		SELF:_Bof := currentBof
-		SELF:_Eof := currentEof
+		SELF:_SetBof(currentBof)
+        SELF:_SetEOF(currentEof)
 	ELSE
         nNewRec := SELF:_RecNo + nToSkip
         IF nNewRec != 0
 		    isOk := SELF:Goto( SELF:_RecNo + nToSkip )
         ELSE
             isOk := SELF:Goto( 1 )
-            SELF:_Bof := TRUE
+            SELF:_SetBOF(TRUE)
         ENDIF
     ENDIF
     SELF:_CheckEofBof()
@@ -284,7 +299,7 @@ METHOD Append(lReleaseLock AS LOGIC) AS LOGIC
                     // Now, update state
 					SELF:_UpdateRecCount(SELF:_RecCount+1)
 					SELF:_RecNo         := SELF:_RecCount
-					SELF:_EOF           := FALSE
+					SELF:_SetEOF(FALSE)
 					SELF:_Bof           := FALSE
 					SELF:_Deleted       := FALSE
 					SELF:_BufferValid   := TRUE
@@ -1528,6 +1543,8 @@ METHOD Flush() 			AS LOGIC
 	IF isOk .and. SELF:_wasChanged
 		IF SELF:Shared 
 			SELF:HeaderLock( DbLockMode.Lock )
+            // Another workstation may have added another record, so make sure we update the reccount
+            SELF:_RecCount := SELF:_calculateRecCount()
 		ENDIF
 		SELF:_putEndOfFileMarker()
 		SELF:_writeHeader()
@@ -1773,7 +1790,7 @@ METHOD ForceRel() AS LOGIC
 		ENDIF
 		isOk := SELF:Goto( gotoRec )
 		SELF:_Found := SELF:_isValid
-		SELF:_Bof := FALSE
+		SELF:_SetBOF(FALSE)
 	ENDIF
 RETURN isOk
 

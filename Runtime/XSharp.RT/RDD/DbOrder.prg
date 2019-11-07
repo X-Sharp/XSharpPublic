@@ -424,7 +424,8 @@ FUNCTION DbScope(uScope) AS USUAL CLIPPER
     /// <include file="RTComments.xml" path="Comments/ScopeParams/*"  /></param>
     /// <param name="uValue">The value that needs to be set.
     /// The type of the value must match the type of the index expression.</param>
-    /// <returns>TRUE when the scope was set succesfully, otherwise FALSE.</returns>
+    /// <returns>TRUE when the scope was set succesfully and when the record pointer has been successfully moved to the first record in the scope, otherwise FALSE.</returns>
+    /// <remarks>The record pointer is moved to the first record in the scope when setting of the scope was succesfull.</remarks>
     /// <seealso cref='M:XSharp.RT.Functions.DbClearScope(XSharp.__Usual)' />
     /// <seealso cref='M:XSharp.RT.Functions.DbScope(XSharp.__Usual)' />
 
@@ -435,7 +436,7 @@ FUNCTION DbSetScope(nScope AS LONG, uValue AS USUAL) AS LOGIC
         CASE SCOPE_TOP
             OrdScope(TOPSCOPE,uValue)
             lResult := XSharp.RuntimeState:LastRDDError == NULL
-                
+               
         CASE SCOPE_BOTTOM
             OrdScope(BOTTOMSCOPE, uValue)
             lResult := XSharp.RuntimeState:LastRDDError == NULL
@@ -450,6 +451,9 @@ FUNCTION DbSetScope(nScope AS LONG, uValue AS USUAL) AS LOGIC
     CATCH AS Exception
         lResult := FALSE
     END TRY
+    IF lResult
+        lResult := DbGoTop()
+    ENDIF
     RETURN lResult
 
     /// <summary>Clears the top and/or bottom scope. </summary>

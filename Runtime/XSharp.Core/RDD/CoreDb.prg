@@ -1383,7 +1383,7 @@ CLASS XSharp.CoreDb
             strPreviousOrder := String.Empty
             VAR result := oRDD:OrderListFocus(info)
            
-            RAISE OperationFailed  "OrdSetFocus"
+            RAISE OrderChanged oRDD:OrderInfo(DBOI_NAME,NULL)
             IF result .AND. info:Result IS STRING
                 strPreviousOrder := (STRING)info:Result
             ENDIF

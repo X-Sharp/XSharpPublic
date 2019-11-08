@@ -303,7 +303,7 @@ CLASS XSharp.CoreDb
     STATIC METHOD BuffRefresh() AS LOGIC
         RETURN CoreDb.Do ({ =>
         LOCAL oRDD := CoreDb.CWA(__FUNCTION__) AS IRDD
-        oRDD:RecInfo(0, DbRecordInfo.DBRI_Updated,NULL)
+        oRDD:RecInfo(DbRecordInfo.DBRI_Updated,0, NULL)
         RETURN TRUE
         })
         /// <summary>

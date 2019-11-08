@@ -19,4 +19,5 @@ USING XSharp.Internal
 [assembly: ImplicitNamespace("XSharp")]
 [assembly: CompilerVersionAttribute("X# "+__VERSION__ +" - dialect:"+__DIALECT__ )] 
 [assembly: ClassLibrary("XSharp.RDD.Functions","XSharp")]
+[assembly: RuntimeCompatibility(WrapNonExceptionThrows := TRUE)]
 

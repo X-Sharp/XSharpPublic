@@ -218,15 +218,21 @@ BEGIN NAMESPACE XSharp.ADS
 			    ELSE
                     // there is a function to convert julian to string but it does not always work correctly
                     // this seems to always do the job
-				    LOCAL wLength := ACE.ADS_MAX_DATEMASK+1 AS DWORD
-                    LOCAL chars := CHAR[] {SELF:length} as CHAR[]
-				    result := ACE.AdsGetString(SELF:_Table, SELF:FieldPos, chars, REF wLength, 0)
-				    VAR cDate := STRING{chars, 0, 8}
-				    IF String.IsNullOrWhiteSpace(cDate)
+				    LOCAL wLength := ACE.ADS_MAX_DATEMASK+1 AS WORD
+                    LOCAL chars := CHAR[] {SELF:length+1} as CHAR[]
+                    result := ACEUNPUB.AdsConvertJulianToString(lJulian, chars, ref wLength) 
+				    IF result != 0
 					    RETURN DbDate{0,0,0}
-				    ELSE
-					    VAR dt := DateTime.ParseExact(cDate, "yyyyMMdd",NULL)
-					    RETURN DbDate{dt:Year, dt:Month, dt:Day}
+                    ELSE
+                        var cDate := String{chars, 0, wLength}
+                        local year, month, day as int
+                        if Int32.TryParse(cDate:Substring(0,4), out year) .and. ;
+                            Int32.TryParse(cDate:Substring(4,2), out month) .and. ;
+                            Int32.TryParse(cDate:Substring(6,2), out day) 
+					        RETURN DbDate{year, month, day}
+                        else
+                            RETURN DbDate{0,0,0}
+                        endif
 				    ENDIF
 			    ENDIF
 		    CATCH

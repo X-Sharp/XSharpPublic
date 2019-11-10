@@ -170,6 +170,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             HasUndeclared = 1 << 21,    // member property
             HasMemVarLevel = 1 << 22,   // member property
             UsesPCount = 1 << 23,       // member property
+            ParameterAssign = 1 <<24, // member property
         }
 
 
@@ -318,26 +319,31 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 get { return flags.HasFlag(EntityFlags.IsEntryPoint); }
                 set { flags = setFlag(flags, EntityFlags.IsEntryPoint, value); }
             }
-            private List<MemVarFieldInfo> Fields = null;
-            internal void AddField(string Name, string Alias, bool Field, XSharpParserRuleContext context)
+
+            public bool ParameterAssign
+            {
+                get { return flags.HasFlag(EntityFlags.ParameterAssign); }
+                set { flags = setFlag(flags, EntityFlags.ParameterAssign, value); }
+            }
+
+            private Dictionary<string, MemVarFieldInfo> Fields = null;
+            internal MemVarFieldInfo AddField(string Name, string Alias,XSharpParserRuleContext context)
             {
                 if (Fields == null)
                 {
-                    Fields = new List<MemVarFieldInfo>();
+                    Fields = new Dictionary<string, MemVarFieldInfo>(StringComparer.OrdinalIgnoreCase);
                 }
-                var info = new MemVarFieldInfo(Name, Alias, Field);
+                var info = new MemVarFieldInfo(Name, Alias);
                 info.Context = context;
-                Fields.Add(info);
+                Fields.Add(Name, info);
+                Fields.Add(info.FullName, info);
+                return info;
             }
             internal MemVarFieldInfo GetField(string Name)
             {
-                if (Fields != null)
+                if (Fields != null && Fields.ContainsKey(Name))
                 {
-                    foreach (var field in Fields)
-                    {
-                        if (string.Compare(Name, field.Name, StringComparison.OrdinalIgnoreCase) == 0)
-                            return field;
-                    }
+                    return Fields[Name];
                 }
                 return null;
             }
@@ -916,22 +922,48 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 #if !VSPARSER
     public class MemVarFieldInfo
     {
+        enum vartype
+        {
+            Memvar,
+            Field,
+            ClipperParameter,
+        }
+        private vartype _varType;
         public string Name { get; private set; }
         public string Alias { get; private set; }
-        public bool IsField { get; private set; }
+        public string FullName => Alias != null ? Alias + "->" + Name : Name;
+        public bool IsField => _varType == vartype.Field;
+        public bool IsClipperParameter=> _varType == vartype.ClipperParameter;
+        public bool IsMemvar => _varType == vartype.Memvar;
         public bool IsFileWidePublic { get; private set; }
+        public bool IsParameter { get; set; }
+        public bool IsWritten { get; set; }
         public XSharpParserRuleContext Context { get; set; }
         internal MemVarFieldInfo(string name, string alias, bool filewidepublic = false)
         {
             Name = name;
             Alias = alias;
-            if (!string.IsNullOrEmpty(alias) &&  alias.ToUpper() == "M")
+            _varType = vartype.Field;
+            if (!string.IsNullOrEmpty(alias) )
             {
-                IsField = false;
+                if (alias.ToUpper() == "M")
+                {
+                    _varType = vartype.Memvar;
+                    Alias = XSharpSpecialNames.MemVarPrefix;
+                }
+                else if (alias== XSharpSpecialNames.ClipperParamPrefix)
+                {
+                    _varType = vartype.ClipperParameter;
+                    IsParameter = true;
+                }
+                else if (alias.ToUpper() == "FIELD" || alias.ToUpper() == "_FIELD")
+                {
+                    Alias = XSharpSpecialNames.FieldPrefix;
+                }
             }
             else
             {
-                IsField = true;
+                Alias = XSharpSpecialNames.FieldPrefix;
             }
             IsFileWidePublic = filewidepublic;
         }

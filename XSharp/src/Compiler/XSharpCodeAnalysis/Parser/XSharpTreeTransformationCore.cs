@@ -4974,7 +4974,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void EnterParameterList([NotNull] XP.ParameterListContext context)
         {
-            CurrentEntity.Data.HasFormalParameters = true;
+            if (context._Params?.Count > 0)
+            {
+                CurrentEntity.Data.HasFormalParameters = true;
+            }
         }
         public override void ExitParameterList([NotNull] XP.ParameterListContext context)
         {
@@ -6687,6 +6690,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
 
             }
+
             context.Put(_syntaxFactory.PrefixUnaryExpression(
                 context.Op.ExpressionKindPrefixOp(),
                 context.Op.SyntaxPrefixOp(),
@@ -6946,13 +6950,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.Put(_syntaxFactory.InvocationExpression(expr, argList));
 
         }
-        private bool HasRefArguments(ArgumentListSyntax list)
+        protected bool HasRefArguments(ArgumentListSyntax list)
         {
             // Check for parameters by reference
             for (int i = 0; i < list.Arguments.Count; i++)
             {
                 var arg = list.Arguments[i];
-                if ((arg.Expression is PrefixUnaryExpressionSyntax pes && pes.Kind == SyntaxKind.AddressOfExpression) ||
+                if ((arg.Expression is PrefixUnaryExpressionSyntax pes && pes.Kind == SyntaxKind.AddressOfExpression && _options.VOImplicitCastsAndConversions) ||
                     arg.RefKindKeyword != null)
                 {
                     return true;
@@ -7511,7 +7515,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var refKeyword = context.RefOut?.SyntaxKeyword();
             if (expr is PrefixUnaryExpressionSyntax pues && pues.OperatorToken.Kind == SyntaxKind.AmpersandToken)
             {
-                bool allowAddressOf = _options.Dialect.SupportsAddressOf() && (_options.AllowUnsafe || _options.VOImplicitCastsAndConversions);
+
+                bool allowAddressOf = _options.Dialect.SupportsAddressOf() ;
                 if (! allowAddressOf)
                 {
                     var xnode = pues.XNode as XP.PrefixExpressionContext;

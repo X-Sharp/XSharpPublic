@@ -59,7 +59,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
         public override ImmutableArray<PropertySymbol> ExplicitInterfaceImplementations => ImmutableArray<PropertySymbol>.Empty;
 
-        public override Symbol ContainingSymbol => throw new System.NotImplementedException();
+        public override Symbol ContainingSymbol => _getMethod.ContainingSymbol;
 
         public override ImmutableArray<Location> Locations => throw new System.NotImplementedException();
 

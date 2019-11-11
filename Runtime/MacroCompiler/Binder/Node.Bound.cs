@@ -814,7 +814,7 @@ namespace XSharp.MacroCompiler.Syntax
             {
                 foreach (var p in Params)
                 {
-                    b.AddLocal(p.LookupName, b.ObjectType);
+                    b.AddLocal(p.LookupName, b.ObjectType,true);
                     p.Bind(b);
                 }
             }

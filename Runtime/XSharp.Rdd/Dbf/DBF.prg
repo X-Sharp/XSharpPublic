@@ -906,7 +906,17 @@ METHOD Create(info AS DbOpenInfo) AS LOGIC
         // Convert the Windows CodePage to a DBF CodePage
 		SELF:_Header:CodePage := CodePageExtensions.ToHeaderCodePage( (OsCodePage)codePage ) 
         // Init Header version, should it be a parameter ?
-		IF SELF:_Ansi
+        LOCAL lSupportAnsi := FALSE AS LOGIC
+        SWITCH RuntimeState.Dialect
+            CASE XSharpDialect.VO
+            CASE XSharpDialect.Vulcan
+            CASE XSharpDialect.Core
+                lSupportAnsi := TRUE
+            OTHERWISE
+                lSupportAnsi := FALSE
+        END SWITCH
+         
+		IF SELF:_Ansi .and. lSupportAnsi
 			SELF:_Header:Version := IIF(SELF:_HasMemo, DBFVersion.VOWithMemo , DBFVersion.VO )
 		ELSE
 			SELF:_Header:Version := IIF(SELF:_HasMemo, DBFVersion.FoxBaseDBase3WithMemo , DBFVersion.FoxBaseDBase3NoMemo )

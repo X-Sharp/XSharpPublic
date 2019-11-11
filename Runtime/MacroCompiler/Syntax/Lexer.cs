@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -322,6 +322,20 @@ namespace XSharp.MacroCompiler
 
                     switch (t)
                     {
+                        case TokenType.LBRKT:
+                            if (_options.AllowSingleQuotedStrings)
+                            { 
+                                if (_lastToken == TokenType.ID ||_lastToken == TokenType.RPAREN ||_lastToken == TokenType.RCURLY ||_lastToken == TokenType.RBRKT)
+                                {
+                                    break;
+                                }
+                                t = TokenType.STRING_CONST;
+                                while (!Reach(']')) ;
+                                if (!Expect(']')) t = TokenType.INCOMPLETE_STRING_CONST;
+                                value = _Source.Substring(start, _index - start);
+                            }
+                            break;
+
                         case TokenType.COLON:
                             if (Expect(':')) t = TokenType.COLONCOLON;
                             else if (Expect('=')) t = TokenType.ASSIGN_OP;

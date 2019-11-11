@@ -755,8 +755,18 @@ FUNCTION ASort(aTarget AS ARRAY, nStart := NIL AS USUAL,nCount := NIL AS USUAL,c
 	ENDIF */
 	
 	
-	IF cbOrder != NIL .AND. ( ( ! cbOrder:IsCodeBlock ) || ((CODEBLOCK)cbOrder):PCount() != 2 )
-		THROW Error.ArgumentError( __ENTITY__, nameof(cbOrder), 4, <OBJECT>{ cbOrder } )
+	IF cbOrder != NIL
+        var ok := cbOrder:IsCodeBlock
+        IF ok
+            var cb := (CodeBlock) cbOrder
+            ok := cb:PCount() >= 2
+            IF ! Ok
+                THROW Error.ArgumentError( __ENTITY__, nameof(cbOrder), "ASort Codeblock must have at least 2 arguments" )
+            ENDIF
+        ELSE
+		    THROW Error.ArgumentError( __ENTITY__, nameof(cbOrder), 4, <OBJECT>{ cbOrder } )
+        ENDIF
+
 	ENDIF
 	
 

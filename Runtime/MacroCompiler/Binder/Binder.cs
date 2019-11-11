@@ -449,8 +449,8 @@ namespace XSharp.MacroCompiler
             get
             {
                 int c = 0;
-                foreach (var loc in LocalCache)
-                    if (loc.Value is LocalSymbol ls && ls.IsParam)
+                foreach (var loc in Locals)
+                    if (loc.IsParam)
                         c++;
                 return c;
             }

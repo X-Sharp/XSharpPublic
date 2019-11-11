@@ -38,7 +38,27 @@ FUNCTION ACot(nNum AS USUAL) AS FLOAT
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/atan/*" />	
 FUNCTION ATan(nNum AS USUAL) AS FLOAT
     RETURN Math.ATan((REAL8)nNum)
-    
+
+
+FUNCTION ACos(nNum AS USUAL) AS FLOAT
+    RETURN Math.Acos((REAL8) nNum)
+
+FUNCTION ASin(nNum AS USUAL) AS FLOAT
+    RETURN Math.ASin((REAL8) nNum)
+
+FUNCTION Atan2(nY as USUAL, nX AS USUAL) AS FLOAT
+    RETURN Math.Atan2((REAL8) nY, (REAL8) nX)
+
+FUNCTION DToR(nDegrees as USUAL) AS REAL8
+    RETURN (Real8) nDegrees / 360 * Math.PI
+
+FUNCTION RToD(nRadian as USUAL) AS REAL8
+    RETURN ((REAL8) nRadian / Math.PI) * 360.0
+
+
+FUNCTION PI() AS REAL8
+    RETURN Math.PI
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ceil/*" />	    
 FUNCTION Ceil(nNumber AS USUAL) AS USUAL
     LOCAL result AS USUAL

@@ -1,13 +1,13 @@
 [General]
 PROJECT = VOXPorter
-IDEVersion = 1.20
+IDEVersion = 1.06
 OutputFolder = %ProjectPath%\Bin\
 Description = 
 GUID = 62B730D7-93AB-4B38-982C-3BF0600725F2
 StartUpApp = FD056C5F-6DE1-465A-90E4-0145DEB734D2
 PrgEncoding = Default
 SupportCF = 0
-NoAppFileCreate = 0
+NoAppFileCreate = 1
 CopyAssembliesToFolder = 
 DebugExecutable = 
 
@@ -34,7 +34,7 @@ DefaultPropertiesGuid = DC6FD78A-F117-431E-8C2D-F6667142861F
 
 ; ************** APPLICATION VOXPorter *************
 Application = VOXPorter
-IDEVersion = 1.20
+IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -172,7 +172,7 @@ ENDApplication = VOXPorter
 
 ; ************** APPLICATION Fab_VO_Entities *************
 Application = Fab_VO_Entities
-IDEVersion = 1.20
+IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 

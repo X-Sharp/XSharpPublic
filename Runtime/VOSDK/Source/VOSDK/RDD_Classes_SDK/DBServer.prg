@@ -1,3 +1,5 @@
+#translate DBFDebug(<c1> [, <cn>]) =>
+
 PARTIAL CLASS DbServer INHERIT DataServer
 	PROTECT lShared AS LOGIC
 	PROTECT lReadOnly AS LOGIC

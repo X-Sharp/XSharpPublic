@@ -327,6 +327,8 @@ BEGIN NAMESPACE XSharp
                     return false
                 CASE __UsualType.Logic
                     return SELF:_flags:initialized
+                CASE __UsualType.Object
+                    return SELF:_refdata != NULL
                 OTHERWISE
                     return TRUE
                 END SWITCH

@@ -324,13 +324,14 @@ BEGIN NAMESPACE MacroCompilerTest
 
         mc:Options:UndeclaredVariableResolution := VariableResolution.Error
         TestMacro(mc, e"{|a,b| testtest__() }", Args(1,2,3), NULL, NULL, ErrorCode.IdentifierNotFound)
-
+        TestMacro(mc, e"{|a,b,c| a[b,c] }", Args({{42,43,44},{45,46,47}},1,1) ,42, typeof(Long))
         mc:Options:UndeclaredVariableResolution := VariableResolution.GenerateLocal
         TestMacro(mc, e"{|a| a() }", Args((@@Func<INT>){ => 1234}), 1234, typeof(INT))
         TestMacro(mc, "#HELLo", Args(), #hello, typeof(SYMBOL))
         TestMacro(mc, "#HELLo + #World", Args(), #hello + #world, typeof(STRING))
         TestMacro(mc, e"#HELLo + \"world\"", Args(), #hello + "world", typeof(STRING))
         TestMacro(mc, e"\"Hello\" + #world", Args(), "Hello" + #world, typeof(STRING))
+        TestMacro(mc, "[Hello] + [world]", Args(), "Helloworld", typeof(STRING))
         TestMacro(mc, "U(12345)", Args(), 12345, typeof(INT))
         TestMacro(mc, "U(U(12345)-1)", Args(), 12344, typeof(INT))
         TestMacro(mc, "I(123+45)", Args(), 123+45, typeof(INT))
@@ -526,7 +527,7 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, e"-tsi", Args(), NULL, NULL, ErrorCode.UnaryOperationNotFound)
         TestMacro(mc, e"tsi+1", Args(), NULL, NULL, ErrorCode.BinaryOperationNotFound)
         TestMacro(mc, e"tsi[2]", Args(), NULL, NULL, ErrorCode.NoConversion)
-        TestMacro(mc, e"{|a,b| 1[2]}", Args(), NULL, NULL, ErrorCode.NoConversion)
+        TestMacro(mc, e"{|a,b| 1[2]}", Args(), NULL, NULL, ErrorCode.UnExpected)
         TestMacro(mc, "ArgCount(1,nil)", Args(), NULL, NULL, ErrorCode.BadNumArgs)
         TestMacro(mc, "ArgCount()", Args(), 0, typeof(INT))
         TestMacro(mc, "{|a,b|ArgCount()}", Args(), 2, typeof(INT))

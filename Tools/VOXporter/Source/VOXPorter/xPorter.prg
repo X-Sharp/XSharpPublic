@@ -102,22 +102,34 @@ FUNCTION ReadIni() AS VOID
 				LOCAL cKey,cValue AS STRING
 				cKey := cLine:Substring(0 , nIndex):Trim():ToUpper()
 				cValue := cLine:Substring(nIndex + 1):Trim()
-				DO CASE
-				CASE cKey == "OUTPUTFOLDER"
-					DefaultOutputFolder := cValue
-				CASE cKey == "SOURCEFOLDER"
-					DefaultSourceFolder := cValue
-				CASE cKey == "VOFOLDER"
-					VOFolder.Set(cValue)
-				CASE cKey == "SDKDEFINESDLL"
-					SDKDefines_FileName := cValue
-				CASE cKey == "NOWARNINGSCREEN"
-					NoWarningScreen := cValue == "1"
-				CASE cKey == "_VOOLECONTAINER"
-					Replace_VOOleContainer := cValue
-				CASE cKey == "RUNTIMELOCATION"
-					RuntimeFolder := cValue
-				END CASE
+				SWITCH cKey
+					CASE "OUTPUTFOLDER"
+						DefaultOutputFolder := cValue
+					CASE "SOURCEFOLDER"
+						DefaultSourceFolder := cValue
+					CASE "VOFOLDER"
+						VOFolder.Set(cValue)
+					CASE "SDKDEFINESDLL"
+						SDKDefines_FileName := cValue
+					CASE "NOWARNINGSCREEN"
+						NoWarningScreen := cValue == "1"
+					CASE "_VOOLECONTAINER"
+						Replace_VOOleContainer := cValue
+					CASE "RUNTIMELOCATION"
+						RuntimeFolder := cValue
+					CASE "EXTRAKEYWORDS"
+						TRY
+							LOCAL aKeywords AS STRING[]
+							aKeywords := cValue:Split(<Char>{',',';',' '})
+							FOREACH cKeyword AS STRING IN aKeywords
+								IF .not. String.IsNullOrWhiteSpace(cKeyword)
+									IF .not. xPorter.NewKeywordsInXSharp:ContainsKey(cKeyword:ToUpperInvariant())
+										xPorter.NewKeywordsInXSharp:Add(cKeyword:ToUpperInvariant() , cKeyword)
+									ENDIF
+								END IF
+							NEXT
+						END TRY
+				END SWITCH
 			END IF
 		NEXT
 	END IF
@@ -249,6 +261,7 @@ CLASS xPorter
 	STATIC EXPORT uiForm AS xPorterUI
 
 	STATIC EXPORT ExportXideBinaries := TRUE AS LOGIC
+	STATIC EXPORT NewKeywordsInXSharp AS Dictionary<STRING,STRING>
 
 
 	STATIC PROPERTY OverWriteProjectFiles AS LOGIC AUTO
@@ -260,6 +273,11 @@ CLASS xPorter
 	STATIC CONSTRUCTOR()
 
 //		MessageBox.Show("loading file : " + Environment.CurrentDirectory + "\SDK_Defines.dll")
+		NewKeywordsInXSharp := Dictionary<STRING,STRING>{}
+		FOREACH cKeyword AS STRING IN gaNewKeywordsInXSharp
+			NewKeywordsInXSharp:Add(cKeyword:ToUpper(),cKeyword)
+		NEXT
+		
 
 		TRY
 			LOCAL oAssembly AS Assembly
@@ -2158,7 +2176,7 @@ CLASS EntityDescriptor
 				DO CASE
 				CASE cWordUpper:StartsWith("STRU") .AND. oWord:eSubStatus == WordSubStatus.TextReserved .AND. oLine:oEntity != NULL
 					cWord := "VOSTRUCT"
-				CASE gaNewKeywordsInXSharp:Contains(cWordUpper) .AND. (oPrevWord == NULL .OR. .NOT. oPrevWord:cWord:StartsWith("@"))
+				CASE xPorter.NewKeywordsInXSharp:ContainsKey(cWordUpper) .AND. (oPrevWord == NULL .OR. .NOT. oPrevWord:cWord:StartsWith("@"))
 					cWord := "@@" + cWord
 				CASE cWordUpper == "_NC" .OR. cWordUpper == "_CO"
 					cWord := ""

@@ -333,7 +333,16 @@ BEGIN NAMESPACE XSharp.RDD
             LOCAL isOk AS LOGIC
             
             isOk := SUPER:Create(openInfo)
-            IF  XSharp.RuntimeState.Ansi .AND. isOk
+            LOCAL lSupportAnsi := FALSE AS LOGIC
+            SWITCH RuntimeState.Dialect
+                CASE XSharpDialect.VO
+                CASE XSharpDialect.Vulcan
+                CASE XSharpDialect.Core
+                    lSupportAnsi := TRUE
+                OTHERWISE
+                    lSupportAnsi := FALSE
+            END SWITCH
+            IF  XSharp.RuntimeState.Ansi .AND. isOk .and. lSupportAnsi
                 VAR sig := SELF:_Header:Version
                 //SET bit TO Force ANSI Signature
                 sig := sig |4

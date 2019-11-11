@@ -17,13 +17,14 @@ namespace XSharp.MacroCompiler
             {
                 var self = (expr as MemberAccessExpr)?.Expr;
                 bool isStatic = self == null;
-                if (symbol is SymbolList)
+                if (symbol is SymbolList sl)
                 {
-                    bool hasMethod = (symbol as SymbolList).SymbolTypes.HasFlag(MemberTypes.Method) || (symbol as SymbolList).SymbolTypes.HasFlag(MemberTypes.Constructor);
                     bool validStatic = false;
-                    foreach (var s in (symbol as SymbolList).Symbols)
+                    foreach (var s in sl.Symbols)
                     {
-                        if ((s as MethodSymbol)?.Method.IsStatic == isStatic || symbol is ConstructorSymbol)
+                        if (s is MethodSymbol ms && ms.Method.IsStatic == isStatic)
+                            validStatic = true;
+                        if (symbol is ConstructorSymbol cs && cs.Constructor.IsStatic == isStatic)
                             validStatic = true;
                     }
                     if (validStatic)
@@ -33,9 +34,11 @@ namespace XSharp.MacroCompiler
                     else
                         return expr.Error(ErrorCode.NoInstanceOverload, symbol.MemberName());
                 }
-                else if (symbol is MethodSymbol)
+                else if (symbol is MethodSymbol || symbol is ConstructorSymbol)
                 {
-                    if ((symbol as MethodSymbol)?.Method.IsStatic == isStatic || symbol is ConstructorSymbol)
+                    if ((symbol as MethodSymbol)?.Method.IsStatic == isStatic)
+                        return expr.Error(ErrorCode.ArgumentsNotMatch, symbol.MemberName());
+                    else if ((symbol as ConstructorSymbol)?.Constructor.IsStatic == isStatic)
                         return expr.Error(ErrorCode.ArgumentsNotMatch, symbol.MemberName());
                     else if (isStatic)
                         return expr.Error(ErrorCode.NoStaticMethod, symbol.MemberName());

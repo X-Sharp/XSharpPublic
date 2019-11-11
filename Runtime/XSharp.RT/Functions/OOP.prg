@@ -394,11 +394,11 @@ INTERNAL STATIC CLASS OOPHelpers
 		IF t == NULL
 			RETURN NULL_ARRAY
 		ENDIF
-		
-		VAR aFields := t:GetFields( BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic )
+		// Note that VO only returns PUBLIC properties and fields
+		VAR aFields := t:GetFields( BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
 		VAR list := List<STRING>{}
 		FOREACH fi AS FieldInfo IN aFields
-			IF fi:IsPublic || fi:IsFamily 
+			IF fi:IsPublic || (fi:IsFamily  .and. fi:IsDefined(typeof(IsInstanceAttribute), false))
 				VAR name := fi:Name:ToUpper()
 				IF ! list:Contains(name)
 					list:Add(name)
@@ -862,10 +862,14 @@ FUNCTION IsInstanceOf(oObject AS OBJECT,symClassName AS STRING) AS LOGIC
 	
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/isinstanceofusual/*" />
 FUNCTION IsInstanceOfUsual(uObject AS USUAL,symClassName AS STRING) AS LOGIC
-	IF ! uObject:IsObject
-		RETURN FALSE
-	ENDIF
-	RETURN IsInstanceOf(uObject, symClassName)
+    SWITCH uObject:Type
+    CASE __UsualType.Object
+    CASE __UsualType.CodeBlock
+    CASE __UsualType.Array
+    CASE __UsualType.Decimal
+    	RETURN IsInstanceOf(uObject, symClassName)
+    END SWITCH
+    RETURN FALSE
 	
 	
 	

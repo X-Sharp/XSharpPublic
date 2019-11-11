@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -40,3 +40,18 @@ XSharp.RuntimeState._macroCompiler := oCompiler
 XSharp.RuntimeState._macroCompilerType := oCompiler:GetType()
 RETURN old
 
+
+/// <summary>
+/// Set the delegate that may be used to decide which symbol to call for ambiguous symbols
+/// </summary>
+/// <param name="resolver">The delegate to call.</param>
+/// <returns>The previously delegate.</returns>
+/// <seealso cref="T:XSharp.IMacroCompiler"/>
+/// <seealso cref="T:XSharp.IMacroCompiler2"/>
+/// <seealso cref="T:XSharp.MacroCompilerResolveAmbiguousMatch"/>
+
+FUNCTION SetMacroDuplicatesResolver(resolver as MacroCompilerResolveAmbiguousMatch) AS MacroCompilerResolveAmbiguousMatch
+    VAR old := XSharp.RuntimeState._macroResolver
+    XSharp.RuntimeState.MacroResolver := resolver
+    RETURN old
+    

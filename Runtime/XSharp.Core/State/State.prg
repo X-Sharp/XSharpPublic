@@ -650,6 +650,7 @@ CLASS XSharp.RuntimeState
 
 	STATIC INTERNAL _macrocompilerType   AS System.Type
     STATIC INTERNAL _macrocompiler       AS IMacroCompiler
+    STATIC INTERNAL _macroresolver       AS MacroCompilerResolveAmbiguousMatch
     /// <summary>Active Macro compiler</summary>
     /// <remarks><note>This value is NOT 'per thread' but global for all threads.</note></remarks>
     PUBLIC STATIC PROPERTY MacroCompiler AS IMacroCompiler
@@ -663,6 +664,25 @@ CLASS XSharp.RuntimeState
             _macrocompiler := VALUE
         END SET
     END PROPERTY
+        
+    /// <summary>Active Macro compiler</summary>
+    /// <remarks><note>This value is NOT 'per thread' but global for all threads.</note></remarks>
+    PUBLIC STATIC PROPERTY MacroResolver AS MacroCompilerResolveAmbiguousMatch
+        GET
+            if _macroResolver == null
+                IF _macroCompiler IS IMacroCompiler2 VAR mc
+                    _macroResolver := mc:Resolver 
+                ENDIF
+            endif
+            RETURN _macroresolver
+        END GET
+        SET
+            _macroresolver := VALUE
+            IF _macroCompiler IS IMacroCompiler2 VAR mc
+                mc:Resolver := Value
+            ENDIF
+        END SET
+    END PROPERTY    
 	/// <summary>This event is thrown when the codepage of the runtimestate is changed</summary>
     /// <remarks>Clients can refresh cached information by registering to this event</remarks>
 	PUBLIC STATIC EVENT OnCodePageChanged AS EventHandler
@@ -693,8 +713,12 @@ CLASS XSharp.RuntimeState
         ENDIF
         IF _macroCompilerType != NULL_OBJECT
             _macroCompiler := Activator:CreateInstance(_macroCompilerType) ASTYPE IMacroCompiler
+            IF _macroCompiler IS IMacroCompiler2 VAR mc
+                mc:Resolver := _macroResolver
+            ENDIF
 		ENDIF
 		RETURN
+
 
     /// <overloads>
     /// <summary>Compare 2 strings respecting the runtime string comparison rules.</summary>

@@ -265,6 +265,7 @@ CLASS xPorter
 
 
 	STATIC PROPERTY OverWriteProjectFiles AS LOGIC AUTO
+	STATIC PROPERTY GenerateWinForms AS LOGIC AUTO
 
 	STATIC PROTECT _aFoundDefines := SortedList<STRING,STRING>{} AS SortedList<STRING,STRING>
 	STATIC PROTECT _aSDKDefines AS Dictionary<STRING,STRING>
@@ -417,6 +418,7 @@ CLASS VOProjectDescriptor
 	PROPERTY Guid AS STRING GET SELF:_cGuid
 	PROPERTY Applications AS List<ApplicationDescriptor> GET SELF:_aApplications
 	PROPERTY ProjectFolder AS STRING GET SELF:_cProjectFolder
+	PROPERTY WinFormsFolder AS STRING GET SELF:_cProjectFolder + "\Windows.Forms"
 	PROPERTY Solution_SDKDefines_Filename AS STRING GET SELF:_cSolution_SDKDefines_Filename
 
 	CONSTRUCTOR(cName AS STRING , cGuid AS STRING)
@@ -427,6 +429,9 @@ CLASS VOProjectDescriptor
 
 	METHOD SetName(cName AS STRING) AS VOID
 		SELF:_cName := cName
+	RETURN
+	METHOD SetProjectFolder(cFolder AS STRING) AS VOID
+		SELF:_cProjectFolder := cFolder
 	RETURN
 
 	METHOD AddApplication(oApp AS ApplicationDescriptor) AS ApplicationDescriptor
@@ -467,6 +472,11 @@ CLASS VOProjectDescriptor
 				File.Copy(SDKDefines_FileName , SELF:_cSolution_SDKDefines_Filename)
 			END IF
 		END IF
+		
+		IF xPorter.GenerateWinForms
+			Directory.CreateDirectory(SELF:WinFormsFolder)
+			Directory.CreateDirectory(SELF:WinFormsFolder + "\tmp")
+		END IF
 
 		xPorter.uiForm:SetProgressBarRange(SELF:CountModules() * 2) // analysis and export
 		SELF:Analyze()
@@ -480,6 +490,10 @@ CLASS VOProjectDescriptor
 		SELF:CreateSolutionFile(cOutputFolder , TRUE)
 		SELF:CreateSolutionFile(cOutputFolder , FALSE)
 
+		IF xPorter.GenerateWinForms
+			WinFormsConverter.Convert(SELF:WinFormsFolder)
+		END IF
+
 		xPorter.Message("Finished xPorting!")
 	RETURN
 
@@ -490,7 +504,7 @@ CLASS VOProjectDescriptor
 		NEXT
 	RETURN
 
-	PROTECTED METHOD CreateSolutionFile(cFolder AS STRING , lXide AS LOGIC) AS VOID
+	METHOD CreateSolutionFile(cFolder AS STRING , lXide AS LOGIC) AS VOID
 		LOCAL oTemplate AS StreamReader
 		LOCAL oOutput AS StreamWriter
 		LOCAL cTemplate AS STRING
@@ -598,6 +612,9 @@ CLASS ApplicationDescriptor
 	PROTECT _lOptionIntDiv AS LOGIC
 
 	PROTECT _oProject AS VOProjectDescriptor
+	
+	PROTECT _lIsWinForms AS LOGIC
+	PROTECT _cAppSubFolder AS STRING
 
 	CONSTRUCTOR(cName AS STRING , oProject AS VOProjectDescriptor)
 		SELF(cName , NewGuid() , oProject)
@@ -657,13 +674,26 @@ CLASS ApplicationDescriptor
 
 	EXPORT xPortOptions AS xPorterOptions
 
-	PROPERTY AppFolder AS STRING GET SELF:Project:ProjectFolder + "\" + SELF:PathValidName
+	PROPERTY AppFolder AS STRING 
+		GET 
+			IF SELF:_cAppSubFolder == NULL
+				SELF:_cAppSubFolder := SELF:PathValidName
+			END IF
+			RETURN SELF:Project:ProjectFolder + "\" + SELF:_cAppSubFolder
+		END GET
+	END PROPERTY
 
 	PROPERTY ModulesCount AS INT GET SELF:_aModules:Count
 
 /*	METHOD SetProject(oProject AS VOProjectDescriptor) AS VOID
 		SELF:_oProject := oProject
 	RETURN*/
+
+	METHOD SetWinForms() AS VOID
+		SELF:_lSaved := TRUE
+		SELF:_cAppSubFolder := "Source"
+		SELF:_lIsWinForms := TRUE
+	RETURN
 
 	METHOD AddRuntimeReference(cReference AS STRING) AS VOID
 		LOCAL lAddAsDll := FALSE AS LOGIC
@@ -1053,6 +1083,14 @@ CLASS ApplicationDescriptor
 								END CASE
 							END TRY
 						END IF
+						IF xPorter.GenerateWinForms
+							IF oDesigner:Type == BINARY_WED
+								LOCAL cWF AS STRING
+								cWf := SELF:Project:WinFormsFolder + "\tmp\" + SELF:Name + "." + oDesigner:Name
+								SafeFileDelete(cWf + ".wed")
+								VOWindowEditor.ProjectImportVNFrm(cWf , cBinary)
+							END IF
+						END IF
 					ENDIF
 				NEXT
 				
@@ -1272,7 +1310,9 @@ CLASS ApplicationDescriptor
 			CASE cTemplate == "%appfiles%"
 				FOREACH oModule AS ModuleDescriptor IN SELF:_aModules
 					IF .NOT. oModule:Generated
-						LOOP
+						IF .not. SELF:_lIsWinForms
+							LOOP
+						END IF
 					END IF
 					LOCAL cName AS STRING
 					cName := oModule:PathValidName + ".prg"
@@ -1282,7 +1322,11 @@ CLASS ApplicationDescriptor
 						oOutput:WriteLine("FileType = Code")
 					ELSE
 						oOutput:WriteLine(String.Format(e"<Compile Include=\"{0}\">" , cName))
-						oOutput:WriteLine("  <SubType>Code</SubType>")
+						IF SELF:_lIsWinForms
+							oOutput:WriteLine("  <SubType>Form</SubType>")
+						ELSE
+							oOutput:WriteLine("  <SubType>Code</SubType>")
+						END IF
 						oOutput:WriteLine("</Compile>")
 					END IF
 
@@ -2561,6 +2605,12 @@ PROCEDURE SafeFileDelete(cFileName AS STRING)
 		File.Delete(cFileName)
 	END TRY
 RETURN
-
-
+PROCEDURE SafeDirectoryDelete(cFolder AS STRING)
+	TRY
+		FOREACH cFileName AS STRING IN Directory.GetFiles(cFolder, "*.wed")
+			SafeFileDelete(cFileName)
+		NEXT
+		Directory.Delete(cFolder)
+	END TRY
+RETURN
 

@@ -48,8 +48,14 @@ STATIC CLASS WinFormsConverter
 			aCode := List<STRING>{}
 
 			LOCAL cFileName AS STRING
+			LOCAL cNameSpace AS STRING
 			LOCAL cPrg AS STRING
 			cFileName := FileInfo{cWed}:Name:Replace(".wed","")
+			cNameSpace := cFileName:Substring(0, cFileName:IndexOf('.'))
+			FOREACH cChar AS Char IN e"!@#$%^&*()_+~`-=[]{};:',./<>?|\\\" "
+				cNameSpace := cNameSpace:Replace(cChar:ToString(), "")
+			NEXT
+			
 			cPrg := cAppFolder + "\" + cFileName + ".prg"
 			oApp:AddModule(cFileName, ""):HasDesignerChild := TRUE
 
@@ -95,17 +101,23 @@ STATIC CLASS WinFormsConverter
 			aCode:Add( String.Format(e"" ) )
 
 			oWriter := StreamWriter{cPrg , FALSE , Encoding.Default}
+			oWriter:WriteLine("BEGIN NAMESPACE " + cNameSpace)
+			oWriter:WriteLine("")
 			oWriter:WriteLine(cClassDeclCode)
 			FOREACH cLine AS STRING IN aConstrCode
 				oWriter:WriteLine(cLine)
 			NEXT
 			oWriter:WriteLine("END CLASS")
+			oWriter:WriteLine("")
+			oWriter:WriteLine("END NAMESPACE")
 			oWriter:Close()
 
 			cFileName := FileInfo{cWed}:Name:Replace(".wed","")
 			cPrg := cAppFolder + "\" + cFileName + ".Designer.prg"
 			oApp:AddModule(cFileName + ".Designer", ""):IsDesignerChild := TRUE
 			oWriter := StreamWriter{cPrg , FALSE , Encoding.Default}
+			oWriter:WriteLine("BEGIN NAMESPACE " + cNameSpace)
+			oWriter:WriteLine("")
 			oWriter:WriteLine(cClassDeclCode)
 			FOREACH cLine AS STRING IN aClassCode
 				oWriter:WriteLine(cLine)
@@ -117,6 +129,8 @@ STATIC CLASS WinFormsConverter
 				oWriter:WriteLine(cLine)
 			NEXT
 			oWriter:WriteLine("END CLASS")
+			oWriter:WriteLine("")
+			oWriter:WriteLine("END NAMESPACE")
 			oWriter:Close()
 			
 		NEXT

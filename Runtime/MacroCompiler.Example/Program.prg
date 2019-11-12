@@ -155,6 +155,17 @@ STRUCT teststruct
         RETURN !(o1 == o2)
 END STRUCT
 
+CLASS TestWithItem
+    METHOD Item()
+        RETURN 42
+    PROPERTY Nested AS USUAL GET TestWithItem{}
+END CLASS
+
+CLASS TestWithItem2
+    PROPERTY Item as LONG  GET 42
+    PROPERTY Nested AS USUAL GET TestWithItem2{}
+END CLASS
+
 GLOBAL tsi := teststruct{1} AS teststruct
 
 GLOBAL tci := testclass{1} AS testclass
@@ -325,6 +336,10 @@ BEGIN NAMESPACE MacroCompilerTest
         mc:Options:UndeclaredVariableResolution := VariableResolution.Error
         TestMacro(mc, e"{|a,b| testtest__() }", Args(1,2,3), NULL, NULL, ErrorCode.IdentifierNotFound)
         TestMacro(mc, e"{|a,b,c| a[b,c] }", Args({{42,43,44},{45,46,47}},1,1) ,42, typeof(Long))
+        TestMacro(mc, e"{|a| a:Item()}", Args(TestWithItem{}), 42,typeof(LONG))
+        TestMacro(mc, e"{|a| a:Nested:Item()}", Args(TestWithItem{}), 42,typeof(LONG))
+        TestMacro(mc, e"{|a| a:Item}", Args(TestWithItem2{}), 42,typeof(LONG))
+        TestMacro(mc, e"{|a| a:Nested:Item}", Args(TestWithItem2{}), 42,typeof(LONG))
         mc:Options:UndeclaredVariableResolution := VariableResolution.GenerateLocal
         TestMacro(mc, e"{|a| a() }", Args((@@Func<INT>){ => 1234}), 1234, typeof(INT))
         TestMacro(mc, "#HELLo", Args(), #hello, typeof(SYMBOL))

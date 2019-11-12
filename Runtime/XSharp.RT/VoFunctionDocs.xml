@@ -17124,7 +17124,7 @@
       Evaluate a macro-compiled string.
     </summary>
 
-    <param name="cString">The macro-compiled string.</param>
+    <param name="oBlock">The macro-compiled string.</param>
     <returns>
       The value of the compiled expression.
     </returns>

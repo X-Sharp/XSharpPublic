@@ -1333,16 +1333,26 @@ CLASS ApplicationDescriptor
 							LOOP
 						END IF
 					END IF
+					IF lXide .and. oModule:IsDesignerChild
+						LOOP
+					END IF
 					LOCAL cName AS STRING
 					cName := oModule:PathValidName + ".prg"
 					IF lXide
 						oOutput:WriteLine("File = %AppPath%\" + cName)
 						oOutput:WriteLine("FileGUID = " + NewGuid())
 						oOutput:WriteLine("FileType = Code")
+						IF oModule:HasDesignerChild
+							oOutput:WriteLine("DesignerFileGUID = " + NewGuid())
+						END IF
 					ELSE
 						oOutput:WriteLine(String.Format(e"<Compile Include=\"{0}\">" , cName))
 						IF SELF:_lIsWinForms
-							oOutput:WriteLine("  <SubType>Form</SubType>")
+							IF oModule:IsDesignerChild
+								oOutput:WriteLine(String.Format("  <DependentUpon>{0}</DependentUpon>", cName:Replace(".Designer.",".")) )
+							ELSE
+								oOutput:WriteLine("  <SubType>Form</SubType>")
+							END IF
 						ELSE
 							oOutput:WriteLine("  <SubType>Code</SubType>")
 						END IF
@@ -1584,6 +1594,8 @@ CLASS ModuleDescriptor
 	PROPERTY Generated AS LOGIC GET SELF:_lGenerated
 	PROPERTY VSrc AS List<STRING> GET SELF:_aVSrc
 	PROPERTY XIDErc AS STRING GET SELF:_cXIDErc
+	PROPERTY HasDesignerChild AS LOGIC AUTO
+	PROPERTY IsDesignerChild AS LOGIC AUTO
 
 	PROPERTY Designers AS List<Designer> GET SELF:_aDesigners
 

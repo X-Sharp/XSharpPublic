@@ -12,6 +12,7 @@ CLASS xPorterUI INHERIT System.Windows.Forms.Form IMPLEMENTS IProgressBar
 	PROTECT oProgressBar AS System.Windows.Forms.ProgressBar
 	PROTECT oxPortButton AS System.Windows.Forms.Button
 	PROTECT oGroupBox2 AS System.Windows.Forms.GroupBox
+	PROTECT oGenerateWindowsForms AS System.Windows.Forms.CheckBox
 	PROTECT oCheckNotOverwriteProjectFiles AS System.Windows.Forms.CheckBox
 	PROTECT oTextAppName AS System.Windows.Forms.TextBox
 	PROTECT oLabelSource2 AS System.Windows.Forms.Label
@@ -74,6 +75,7 @@ CLASS xPorterUI INHERIT System.Windows.Forms.Form IMPLEMENTS IProgressBar
 		SELF:oProgressBar := System.Windows.Forms.ProgressBar{}
 		SELF:oxPortButton := System.Windows.Forms.Button{}
 		SELF:oGroupBox2 := System.Windows.Forms.GroupBox{}
+		SELF:oGenerateWindowsForms := System.Windows.Forms.CheckBox{}
 		SELF:oCheckNotOverwriteProjectFiles := System.Windows.Forms.CheckBox{}
 		SELF:oTextAppName := System.Windows.Forms.TextBox{}
 		SELF:oLabelSource2 := System.Windows.Forms.Label{}
@@ -93,7 +95,7 @@ CLASS xPorterUI INHERIT System.Windows.Forms.Form IMPLEMENTS IProgressBar
 
 		SELF:SuspendLayout()
 
-		SELF:ClientSize := System.Drawing.Size{604 , 396}
+		SELF:ClientSize := System.Drawing.Size{604 , 415}
 		SELF:FormBorderStyle := System.Windows.Forms.FormBorderStyle.FixedSingle
 		SELF:Icon := (System.Drawing.Icon)oResourceManager:GetObject( "XSharpSm.ico" )
 		SELF:Location := System.Drawing.Point{100 , 100}
@@ -104,7 +106,7 @@ CLASS xPorterUI INHERIT System.Windows.Forms.Form IMPLEMENTS IProgressBar
 
 		SELF:CancelButton := SELF:oExitButton
 		SELF:oExitButton:Click += SELF:ExitButtonClick
-		SELF:oExitButton:Location := System.Drawing.Point{474 , 365}
+		SELF:oExitButton:Location := System.Drawing.Point{474 , 383}
 		SELF:oExitButton:Name := "ExitButton"
 		SELF:oExitButton:Size := System.Drawing.Size{119 , 23}
 		SELF:oExitButton:TabIndex := 4
@@ -112,7 +114,7 @@ CLASS xPorterUI INHERIT System.Windows.Forms.Form IMPLEMENTS IProgressBar
 		SELF:Controls:Add(SELF:oExitButton)
 		
 		SELF:oGroupBox3:SuspendLayout()
-		SELF:oGroupBox3:Location := System.Drawing.Point{11 , 277}
+		SELF:oGroupBox3:Location := System.Drawing.Point{11 , 295}
 		SELF:oGroupBox3:Name := "GroupBox3"
 		SELF:oGroupBox3:Size := System.Drawing.Size{582 , 79}
 		SELF:oGroupBox3:TabIndex := 3
@@ -136,7 +138,7 @@ CLASS xPorterUI INHERIT System.Windows.Forms.Form IMPLEMENTS IProgressBar
 		SELF:oGroupBox3:Controls:Add(SELF:oProgressBar)
 		
 		SELF:oxPortButton:Click += SELF:xPortButton_Click
-		SELF:oxPortButton:Location := System.Drawing.Point{338 , 365}
+		SELF:oxPortButton:Location := System.Drawing.Point{338 , 383}
 		SELF:oxPortButton:Name := "xPortButton"
 		SELF:oxPortButton:Size := System.Drawing.Size{119 , 23}
 		SELF:oxPortButton:TabIndex := 2
@@ -144,17 +146,26 @@ CLASS xPorterUI INHERIT System.Windows.Forms.Form IMPLEMENTS IProgressBar
 		SELF:Controls:Add(SELF:oxPortButton)
 		
 		SELF:oGroupBox2:SuspendLayout()
-		SELF:oGroupBox2:Location := System.Drawing.Point{11 , 9}
+		SELF:oGroupBox2:Location := System.Drawing.Point{11 , 7}
 		SELF:oGroupBox2:Name := "GroupBox2"
-		SELF:oGroupBox2:Size := System.Drawing.Size{316 , 263}
+		SELF:oGroupBox2:Size := System.Drawing.Size{320 , 283}
 		SELF:oGroupBox2:TabIndex := 0
 		SELF:oGroupBox2:Text := "xPort"
 		SELF:Controls:Add(SELF:oGroupBox2)
 		
 
-		SELF:oCheckNotOverwriteProjectFiles:Location := System.Drawing.Point{18 , 226}
+		SELF:oGenerateWindowsForms:AutoSize := TRUE
+		SELF:oGenerateWindowsForms:Location := System.Drawing.Point{18 , 253}
+		SELF:oGenerateWindowsForms:Name := "GenerateWindowsForms"
+		SELF:oGenerateWindowsForms:Size := System.Drawing.Size{289 , 18}
+		SELF:oGenerateWindowsForms:TabIndex := 14
+		SELF:oGenerateWindowsForms:Text := "Generate Windows.Forms forms out of WED binaries"
+		SELF:oGroupBox2:Controls:Add(SELF:oGenerateWindowsForms)
+		
+		SELF:oCheckNotOverwriteProjectFiles:AutoSize := TRUE
+		SELF:oCheckNotOverwriteProjectFiles:Location := System.Drawing.Point{18 , 229}
 		SELF:oCheckNotOverwriteProjectFiles:Name := "CheckNotOverwriteProjectFiles"
-		SELF:oCheckNotOverwriteProjectFiles:Size := System.Drawing.Size{289 , 27}
+		SELF:oCheckNotOverwriteProjectFiles:Size := System.Drawing.Size{266 , 18}
 		SELF:oCheckNotOverwriteProjectFiles:TabIndex := 13
 		SELF:oCheckNotOverwriteProjectFiles:Text := "Do not overwrite project files if they already exist"
 		SELF:oGroupBox2:Controls:Add(SELF:oCheckNotOverwriteProjectFiles)
@@ -266,9 +277,9 @@ CLASS xPorterUI INHERIT System.Windows.Forms.Form IMPLEMENTS IProgressBar
 		SELF:oGroupBox2:Controls:Add(SELF:oRadioFromAef)
 		
 		SELF:oGroupBox1:SuspendLayout()
-		SELF:oGroupBox1:Location := System.Drawing.Point{338 , 9}
+		SELF:oGroupBox1:Location := System.Drawing.Point{338 , 7}
 		SELF:oGroupBox1:Name := "GroupBox1"
-		SELF:oGroupBox1:Size := System.Drawing.Size{255 , 263}
+		SELF:oGroupBox1:Size := System.Drawing.Size{255 , 283}
 		SELF:oGroupBox1:TabIndex := 1
 		SELF:oGroupBox1:Text := "xPort options"
 		SELF:Controls:Add(SELF:oGroupBox1)
@@ -277,7 +288,7 @@ CLASS xPorterUI INHERIT System.Windows.Forms.Form IMPLEMENTS IProgressBar
 		SELF:oOptionsList:IntegralHeight := FALSE
 		SELF:oOptionsList:Location := System.Drawing.Point{15 , 26}
 		SELF:oOptionsList:Name := "OptionsList"
-		SELF:oOptionsList:Size := System.Drawing.Size{222 , 225}
+		SELF:oOptionsList:Size := System.Drawing.Size{222 , 243}
 		SELF:oOptionsList:TabIndex := 0
 		SELF:oGroupBox1:Controls:Add(SELF:oOptionsList)
 		
@@ -482,6 +493,7 @@ CLASS xPorterUI INHERIT System.Windows.Forms.Form IMPLEMENTS IProgressBar
 		SELF:lExporting := TRUE
 		
 		xPorter.OverWriteProjectFiles := .not. SELF:oCheckNotOverwriteProjectFiles:Checked
+		xPorter.GenerateWinForms := SELF:oGenerateWindowsForms:Checked
 		
 		DO CASE
 		CASE SELF:oRadioFromAef:Checked

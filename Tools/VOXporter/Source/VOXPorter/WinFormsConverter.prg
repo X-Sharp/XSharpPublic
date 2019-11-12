@@ -4,21 +4,13 @@ USING System.Drawing
 USING System.Collections.Generic
 
 STATIC CLASS WinFormsConverter
-	STATIC METHOD Convert(cFolder AS STRING) AS VOID
+	STATIC METHOD Convert(oProject AS VOProjectDescriptor, cAppFolder AS STRING) AS VOID
 		LOCAL aWeds AS STRING[]
-		LOCAL cSolutionFolder AS STRING
-		LOCAL cProjectFolder AS STRING
 
-		cSolutionFolder := cFolder
-		cProjectFolder := cFolder + "\Source"
-		aWeds := Directory.GetFiles(cFolder + "\tmp" , "*.wed")
-		Directory.CreateDirectory(cSolutionFolder)
-		Directory.CreateDirectory(cProjectFolder)
+		aWeds := Directory.GetFiles(cAppFolder + "\tmp" , "*.wed")
+		Directory.CreateDirectory(cAppFolder)
 
-		LOCAL oProject AS VOProjectDescriptor
 		LOCAL oApp AS ApplicationDescriptor
-		oProject := VOProjectDescriptor{"Windows.Forms", Guid.NewGuid():ToString()}
-		oProject:SetProjectFolder(cSolutionFolder)
 		oApp := oProject:AddApplication("Windows.Forms")
 		oApp:SetWinForms()
 		oApp:GACReferences:Add("System.Drawing")
@@ -51,7 +43,7 @@ STATIC CLASS WinFormsConverter
 			LOCAL cPrg AS STRING
 			LOCAL cFileName AS STRING
 			cFileName := FileInfo{cWed}:Name:Replace(".wed","")
-			cPrg := cProjectFolder + "\" + cFileName + ".prg"
+			cPrg := cAppFolder + "\" + cFileName + ".prg"
 
 			LOCAL aCode, aClassCode, aConstrCode AS List<STRING>
 			aClassCode := List<STRING>{}
@@ -114,13 +106,10 @@ STATIC CLASS WinFormsConverter
 			
 		NEXT
 		
-		oApp:CreateAppFile(cProjectFolder , TRUE)
-		oApp:CreateAppFile(cProjectFolder , FALSE)
-		oProject:CreateSolutionFile(cSolutionFolder, TRUE)
-		oProject:CreateSolutionFile(cSolutionFolder, FALSE)
+		oApp:CreateAppFile(cAppFolder , TRUE)
+		oApp:CreateAppFile(cAppFolder , FALSE)
 		
-		SafeDirectoryDelete(cFolder + "\tmp")
-		
+		SafeDirectoryDelete(cAppFolder + "\tmp")
 	RETURN
 
 	INTERNAL STATIC METHOD WriteControl(oControl AS WedDescriptor, cParent AS STRING, oWriter AS StreamWriter, aClassCode AS List<STRING>, aConstrCode AS List<STRING>, aCode AS List<STRING>) AS VOID

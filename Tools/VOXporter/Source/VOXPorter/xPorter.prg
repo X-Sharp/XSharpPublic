@@ -487,12 +487,12 @@ CLASS VOProjectDescriptor
 			END IF
 		NEXT
 
+		IF xPorter.GenerateWinForms
+			WinFormsConverter.Convert(SELF, SELF:WinFormsFolder)
+		END IF
+
 		SELF:CreateSolutionFile(cOutputFolder , TRUE)
 		SELF:CreateSolutionFile(cOutputFolder , FALSE)
-
-		IF xPorter.GenerateWinForms
-			WinFormsConverter.Convert(SELF:WinFormsFolder)
-		END IF
 
 		xPorter.Message("Finished xPorting!")
 	RETURN
@@ -685,13 +685,8 @@ CLASS ApplicationDescriptor
 
 	PROPERTY ModulesCount AS INT GET SELF:_aModules:Count
 
-/*	METHOD SetProject(oProject AS VOProjectDescriptor) AS VOID
-		SELF:_oProject := oProject
-	RETURN*/
-
 	METHOD SetWinForms() AS VOID
 		SELF:_lSaved := TRUE
-		SELF:_cAppSubFolder := "Source"
 		SELF:_lIsWinForms := TRUE
 	RETURN
 

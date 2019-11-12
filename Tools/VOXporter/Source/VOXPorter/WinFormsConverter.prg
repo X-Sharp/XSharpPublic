@@ -106,8 +106,12 @@ STATIC CLASS WinFormsConverter
 			
 		NEXT
 		
-		oApp:CreateAppFile(cAppFolder , TRUE)
-		oApp:CreateAppFile(cAppFolder , FALSE)
+		IF xPorter.ExportToXide
+			oApp:CreateAppFile(cAppFolder , TRUE)
+		ENDIF
+		IF xPorter.ExportToXide
+			oApp:CreateAppFile(cAppFolder , FALSE)
+		ENDIF
 		
 		SafeDirectoryDelete(cAppFolder + "\tmp")
 	RETURN

@@ -1,5 +1,5 @@
 DESIGNERSTART = Form,Form,xPorterUI
-GUID=539E9F01-A137-44EE-80FB-440F84861F55
+GUID=F69D629E-4FAC-4A82-9697-7A4DDED9ED59
 FormBorderStyle=FixedSingle
 Icon=%AppPath%\XSharpSm.ico
 MaximizeBox=False
@@ -221,13 +221,42 @@ SUBCONTROLSSTART
   TabIndex=1
   SUBCONTROLSSTART
     
+    CONTROL=System.Windows.Forms.RadioButton
+    GUID=743D7734-901C-4844-948F-C5485045BD59
+    AutoSize=True
+    Checked=True
+    Name=ExportToBoth
+    Text=Both
+    Location=186 , 21
+    Size=45 , 18
+    TabIndex=3
+    
+    CONTROL=System.Windows.Forms.RadioButton
+    GUID=6428BA90-57C1-45A0-892C-D2B117C60BC1
+    AutoSize=True
+    Name=ExportToXIDE
+    Text=XIDE
+    Location=117 , 21
+    Size=49 , 18
+    TabIndex=2
+    
+    CONTROL=System.Windows.Forms.RadioButton
+    GUID=DDEA41D2-0880-44ED-BA3C-0150C9E93180
+    AutoSize=True
+    Name=ExportToVS
+    Text=Export to VS
+    Location=15 , 21
+    Size=85 , 18
+    TabIndex=1
+    TabStop=True
+    
     CONTROL=System.Windows.Forms.CheckedListBox
     GUID=C9926179-E238-4757-8426-520E8BC59C57
     IntegralHeight=False
     Name=OptionsList
-    Location=15 , 26
-    Size=222 , 243
-    TabIndex=0
+    Location=15 , 44
+    Size=222 , 225
+    TabIndex=4
  
  SUBCONTROLSEND
 

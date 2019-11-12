@@ -16,7 +16,8 @@ BEGIN NAMESPACE XSharp
     /// <summary>An integer numeric value representing a subsystem-specific error code.</summary>
     VIRTUAL PROPERTY SubCode AS DWORD AUTO    := 0
     /// <summary>An string containing the description of the SubCode.</summary>
-    VIRTUAL PROPERTY SubCodeText AS STRING GET IIF (SubCode != 0, __CavoStr(SubCode), "Unknown SubCode")
+    VIRTUAL PROPERTY SubCodeText AS STRING GET IIF(!String.IsNullOrEmpty(_subcode), _subcode, IIF (SubCode != 0, __CavoStr(SubCode), "Unknown SubCode")) SET _Subcode := value
+    PRIVATE _Subcode as STRING
     /// <summary>A string representing the name of the function or method in which the error occurred.</summary>
     VIRTUAL PROPERTY FuncSym AS STRING AUTO   := ""
     /// <summary>A string representing the name used to open the file associated with the error condition.</summary>

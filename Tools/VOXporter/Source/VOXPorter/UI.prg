@@ -28,6 +28,9 @@ CLASS xPorterUI INHERIT System.Windows.Forms.Form IMPLEMENTS IProgressBar
 	PROTECT oRadioFromAefsInFolder AS System.Windows.Forms.RadioButton
 	PROTECT oRadioFromAef AS System.Windows.Forms.RadioButton
 	PROTECT oGroupBox1 AS System.Windows.Forms.GroupBox
+	PROTECT oExportToBoth AS System.Windows.Forms.RadioButton
+	PROTECT oExportToXIDE AS System.Windows.Forms.RadioButton
+	PROTECT oExportToVS AS System.Windows.Forms.RadioButton
 	PROTECT oOptionsList AS System.Windows.Forms.CheckedListBox
 	// User code starts here (DO NOT remove this line)  ##USER##
 	
@@ -58,6 +61,13 @@ CLASS xPorterUI INHERIT System.Windows.Forms.Form IMPLEMENTS IProgressBar
 					SELF:oRadioFromAefsInFolder:Checked := TRUE
 				END IF
 			END TRY
+		END IF
+		IF xPorter.ExportToXide .and. xPorter.ExportToVS
+			SELF:oExportToBoth:Checked := TRUE
+		ELSEIF xPorter.ExportToXide
+			SELF:oExportToXIDE:Checked := TRUE
+		ELSE
+			SELF:oExportToVS:Checked := TRUE
 		END IF
 
 	RETURN
@@ -91,6 +101,9 @@ CLASS xPorterUI INHERIT System.Windows.Forms.Form IMPLEMENTS IProgressBar
 		SELF:oRadioFromAefsInFolder := System.Windows.Forms.RadioButton{}
 		SELF:oRadioFromAef := System.Windows.Forms.RadioButton{}
 		SELF:oGroupBox1 := System.Windows.Forms.GroupBox{}
+		SELF:oExportToBoth := System.Windows.Forms.RadioButton{}
+		SELF:oExportToXIDE := System.Windows.Forms.RadioButton{}
+		SELF:oExportToVS := System.Windows.Forms.RadioButton{}
 		SELF:oOptionsList := System.Windows.Forms.CheckedListBox{}
 
 		SELF:SuspendLayout()
@@ -285,11 +298,37 @@ CLASS xPorterUI INHERIT System.Windows.Forms.Form IMPLEMENTS IProgressBar
 		SELF:Controls:Add(SELF:oGroupBox1)
 		
 
+		SELF:oExportToBoth:AutoSize := TRUE
+		SELF:oExportToBoth:Checked := TRUE
+		SELF:oExportToBoth:Location := System.Drawing.Point{186 , 21}
+		SELF:oExportToBoth:Name := "ExportToBoth"
+		SELF:oExportToBoth:Size := System.Drawing.Size{45 , 18}
+		SELF:oExportToBoth:TabIndex := 3
+		SELF:oExportToBoth:Text := "Both"
+		SELF:oGroupBox1:Controls:Add(SELF:oExportToBoth)
+		
+		SELF:oExportToXIDE:AutoSize := TRUE
+		SELF:oExportToXIDE:Location := System.Drawing.Point{117 , 21}
+		SELF:oExportToXIDE:Name := "ExportToXIDE"
+		SELF:oExportToXIDE:Size := System.Drawing.Size{49 , 18}
+		SELF:oExportToXIDE:TabIndex := 2
+		SELF:oExportToXIDE:Text := "XIDE"
+		SELF:oGroupBox1:Controls:Add(SELF:oExportToXIDE)
+		
+		SELF:oExportToVS:AutoSize := TRUE
+		SELF:oExportToVS:Location := System.Drawing.Point{15 , 21}
+		SELF:oExportToVS:Name := "ExportToVS"
+		SELF:oExportToVS:Size := System.Drawing.Size{85 , 18}
+		SELF:oExportToVS:TabIndex := 1
+		SELF:oExportToVS:TabStop := TRUE
+		SELF:oExportToVS:Text := "Export to VS"
+		SELF:oGroupBox1:Controls:Add(SELF:oExportToVS)
+		
 		SELF:oOptionsList:IntegralHeight := FALSE
-		SELF:oOptionsList:Location := System.Drawing.Point{15 , 26}
+		SELF:oOptionsList:Location := System.Drawing.Point{15 , 44}
 		SELF:oOptionsList:Name := "OptionsList"
-		SELF:oOptionsList:Size := System.Drawing.Size{222 , 243}
-		SELF:oOptionsList:TabIndex := 0
+		SELF:oOptionsList:Size := System.Drawing.Size{222 , 225}
+		SELF:oOptionsList:TabIndex := 4
 		SELF:oGroupBox1:Controls:Add(SELF:oOptionsList)
 		
 		SELF:oGroupBox1:ResumeLayout()
@@ -494,6 +533,8 @@ CLASS xPorterUI INHERIT System.Windows.Forms.Form IMPLEMENTS IProgressBar
 		
 		xPorter.OverWriteProjectFiles := .not. SELF:oCheckNotOverwriteProjectFiles:Checked
 		xPorter.GenerateWinForms := SELF:oGenerateWindowsForms:Checked
+		xPorter.ExportToXide := SELF:oExportToXIDE:Checked .or. SELF:oExportToBoth:Checked
+		xPorter.ExportToVS := SELF:oExportToVS:Checked .or. SELF:oExportToBoth:Checked
 		
 		DO CASE
 		CASE SELF:oRadioFromAef:Checked

@@ -129,6 +129,10 @@ FUNCTION ReadIni() AS VOID
 								END IF
 							NEXT
 						END TRY
+					CASE "EXPORTTOIDE"
+						cValue := cValue:ToUpper()
+						xPorter.ExportToXide := cValue:Contains("XIDE") .or. .not. cValue:Contains("VS")
+						xPorter.ExportToVS := cValue:Contains("VS") .or. .not. cValue:Contains("XIDE")
 				END SWITCH
 			END IF
 		NEXT
@@ -260,7 +264,8 @@ CLASS xPorter
 	STATIC EXPORT Options AS xPorterOptions
 	STATIC EXPORT uiForm AS xPorterUI
 
-	STATIC EXPORT ExportXideBinaries := TRUE AS LOGIC
+	STATIC EXPORT ExportToXide := TRUE AS LOGIC
+	STATIC EXPORT ExportToVS := TRUE AS LOGIC
 	STATIC EXPORT NewKeywordsInXSharp AS Dictionary<STRING,STRING>
 
 
@@ -487,12 +492,16 @@ CLASS VOProjectDescriptor
 			END IF
 		NEXT
 
-		SELF:CreateSolutionFile(cOutputFolder , TRUE)
-		SELF:CreateSolutionFile(cOutputFolder , FALSE)
-
 		IF xPorter.GenerateWinForms
-			WinFormsConverter.Convert(SELF:WinFormsFolder)
+			WinFormsConverter.Convert(SELF, SELF:WinFormsFolder)
 		END IF
+
+		IF xPorter.ExportToXide
+			SELF:CreateSolutionFile(cOutputFolder , TRUE)
+		ENDIF
+		IF xPorter.ExportToVS
+			SELF:CreateSolutionFile(cOutputFolder , FALSE)
+		ENDIF
 
 		xPorter.Message("Finished xPorting!")
 	RETURN
@@ -593,8 +602,6 @@ END ENUM
 CLASS ApplicationDescriptor
 	PROTECT _cName AS STRING
 	PROTECT _cGuid AS STRING
-//	PROTECT _cAppFile_VS AS STRING
-//	PROTECT _cAppFile_XIDE AS STRING
 	PROTECT _lLoaded AS LOGIC
 	PROTECT _lSaved AS LOGIC
 	PROTECT _eType AS ApplicationType
@@ -637,16 +644,15 @@ CLASS ApplicationDescriptor
 
 		SELF:xPortOptions := xPorter.Options
 
-//		SELF:_cAppFile_XIDE := SELF:AppFolder + "\" + SELF:Name + ".viapp"
-//		SELF:_cAppFile_VS := SELF:AppFolder + "\" + SELF:Name + ".xsproj"
-
-		IF xPorter.Options:UseXSharpRuntime
-			SELF:AddRuntimeReference("XSharp.Core")
-            SELF:AddRuntimeReference("XSharp.RT")
-			SELF:AddRuntimeReference("XSharp.VO")
-		ELSE
-			SELF:AddRuntimeReference("VulcanRT")
-			SELF:AddRuntimeReference("VulcanRTFuncs")
+		IF .not. SELF:_lIsWinForms
+			IF xPorter.Options:UseXSharpRuntime
+				SELF:AddRuntimeReference("XSharp.Core")
+	            SELF:AddRuntimeReference("XSharp.RT")
+				SELF:AddRuntimeReference("XSharp.VO")
+			ELSE
+				SELF:AddRuntimeReference("VulcanRT")
+				SELF:AddRuntimeReference("VulcanRTFuncs")
+			END IF
 		END IF
 
 	RETURN
@@ -661,9 +667,7 @@ CLASS ApplicationDescriptor
 	PROPERTY BrowseReferences AS List<STRING> GET SELF:_aBrowseReferences
 	PROPERTY ProjectReferences AS List<STRING> GET SELF:_aProjectReferences
 
-//	PROPERTY AppFile_XIDE AS STRING GET SELF:_cAppFile_XIDE
 	PROPERTY AppFile_XIDE AS STRING GET SELF:AppFolder + "\" + SELF:PathValidName + ".viapp"
-//	PROPERTY AppFile_VS AS STRING GET SELF:_cAppFile_VS
 	PROPERTY AppFile_VS AS STRING GET SELF:AppFolder + "\" + SELF:PathValidName + ".xsproj"
 
 	PROPERTY OptionOverflow AS LOGIC GET SELF:_lOptionOverflow
@@ -685,13 +689,8 @@ CLASS ApplicationDescriptor
 
 	PROPERTY ModulesCount AS INT GET SELF:_aModules:Count
 
-/*	METHOD SetProject(oProject AS VOProjectDescriptor) AS VOID
-		SELF:_oProject := oProject
-	RETURN*/
-
 	METHOD SetWinForms() AS VOID
 		SELF:_lSaved := TRUE
-		SELF:_cAppSubFolder := "Source"
 		SELF:_lIsWinForms := TRUE
 	RETURN
 
@@ -1015,7 +1014,7 @@ CLASS ApplicationDescriptor
 				File.WriteAllLines(cFolder + "\" + oModule:PathValidName + ".prg" , oCode:GetContents() , System.Text.Encoding.Default)
 			END IF
 
-			IF xPorter.ExportXideBinaries
+			IF xPorter.ExportToXide
 				TRY
 					LOCAL cWedFile AS STRING
 					cWedFile := cFolder + "\" + oModule:PathValidName + ".prg.wed"
@@ -1030,7 +1029,6 @@ CLASS ApplicationDescriptor
 				LOCAL aXideFieldSpecs AS List<STRING>
 				LOCAL aXideDBServers AS List<STRING>
 				LOCAL aFilesToDel AS List<STRING>
-				LOCAL cBinary AS STRING
 				LOCAL cModule AS STRING
 				LOCAL cPrg AS STRING
 				cModule := cFolder + "\" + oModule:PathValidName
@@ -1045,6 +1043,7 @@ CLASS ApplicationDescriptor
 
 				FOREACH oDesigner AS Designer IN oModule:Designers
 					IF oDesigner:MustExport .or. oDesigner:IsDedHelper
+						LOCAL cBinary AS STRING
 						cBinary := cModule + "." + oDesigner:FileName
 						IF oDesigner:Type == BINARY_FED // FieldSpec
 							oModuleFieldSpecs:LoadFromBinary(oDesigner:Bytes, oDesigner:Name)
@@ -1061,9 +1060,10 @@ CLASS ApplicationDescriptor
 //							MessageBox.Show(oDesigner:Name , "DBSERVER")
 							aDBServers:Add(cBinary, oDesigner:Bytes)
 						ELSE
+							// Necessary for both VS and XIDE, deleteded later if not needed anymore for VS
 							File.WriteAllBytes(cBinary , oDesigner:Bytes)
 						ENDIF
-						IF xPorter.ExportXideBinaries
+						IF xPorter.ExportToXide
 							TRY
 								DO CASE
 								CASE oDesigner:Type == BINARY_WED
@@ -1091,25 +1091,33 @@ CLASS ApplicationDescriptor
 								VOWindowEditor.ProjectImportVNFrm(cWf , cBinary)
 							END IF
 						END IF
+						IF .not. xPorter.ExportToVS
+							aFilesToDel:Add(cBinary)
+						END IF
 					ENDIF
 				NEXT
 				
 				// FieldSpecs:
 				IF .not. oModuleFieldSpecs:IsEmpty
-					cBinary := cFolder + "\" + oModule:PathValidName + ".FieldSpecs.xsfs"
-					oModuleFieldSpecs:SaveToDocument(cBinary)
-					IF xPorter.ExportXideBinaries .and. aXideFieldSpecs:Count != 0
+					IF xPorter.ExportToVS
+						LOCAL cBinary AS STRING
+						cBinary := cFolder + "\" + oModule:PathValidName + ".FieldSpecs.xsfs"
+						oModuleFieldSpecs:SaveToDocument(cBinary)
+					END IF
+					IF xPorter.ExportToXide .and. aXideFieldSpecs:Count != 0
 						VOFieldSpecEditor.ProjectImportVNFs(cPrg , aXideFieldSpecs:ToArray())
 					END IF
 				END IF
 				
 				// DBServers:
-				FOREACH oDBServer AS KeyValuePair<STRING,BYTE[]> IN aDBServers
-					LOCAL oDBDescr AS XSharp.VODesigners.VODBServerDescription
-					oDBDescr := XSharp.VODesigners.VODBServerDescription.LoadFromBinary(oDBServer:Value)
-					oDBDescr:SaveToDocument(oDBServer:Key)
-				NEXT
-				IF xPorter.ExportXideBinaries .and. aXideDBServers:Count != 0
+				IF xPorter.ExportToVS
+					FOREACH oDBServer AS KeyValuePair<STRING,BYTE[]> IN aDBServers
+						LOCAL oDBDescr AS XSharp.VODesigners.VODBServerDescription
+						oDBDescr := XSharp.VODesigners.VODBServerDescription.LoadFromBinary(oDBServer:Value)
+						oDBDescr:SaveToDocument(oDBServer:Key)
+					NEXT
+				END IF
+				IF xPorter.ExportToXide .and. aXideDBServers:Count != 0
 					FOREACH cDBServer AS STRING IN aXideDBServers
 						VODBServerEditor.ProjectImportVNDbs(cPrg , cDBServer)
 					NEXT
@@ -1123,13 +1131,11 @@ CLASS ApplicationDescriptor
 				LOCAL aResources AS SortedList<STRING,OutputCode>
 				aResources := oModule:GenerateResources()
 				IF aResources:Count != 0
-					LOCAL cResFileName AS STRING
 					LOCAL oXideResources, oWedResources AS OutputCode
 					oXideResources := OutputCode{}
 					oWedResources := OutputCode{}
                     FOREACH oPair AS KeyValuePair<STRING , OutputCode> IN aResources
 
-						// For VS:
 						LOCAL cName, cUpperName AS STRING
                         LOCAL cRcSource AS STRING
 						cName := oPair:Key
@@ -1145,57 +1151,66 @@ CLASS ApplicationDescriptor
 							cUpperName := cName:ToUpperInvariant()
 						END CASE
 
-						cResFileName := oModule:PathValidName + "." + cName + ".rc"
-                        VAR aContents := oPair:Value:GetContents():ToArray()
-                        cRcSource     := aContents[1]
-
-						cRcSource := SELF:AdjustResource(cRcSource,cFolder,TRUE)
-						aContents[1] := cRcSource
-
-						File.WriteAllLines(cFolder + "\" + cResFileName , aContents , System.Text.Encoding.Default)
-						oModule:AddVSrc(cResFileName)
+						// For VS:
+						IF xPorter.ExportToVS
+							LOCAL cResFileName AS STRING
+							cResFileName := oModule:PathValidName + "." + cName + ".rc"
+	                        VAR aContents := oPair:Value:GetContents():ToArray()
+	                        cRcSource     := aContents[1]
+	
+							cRcSource := SELF:AdjustResource(cRcSource,cFolder,TRUE)
+							aContents[1] := cRcSource
+	
+							File.WriteAllLines(cFolder + "\" + cResFileName , aContents , System.Text.Encoding.Default)
+							oModule:AddVSrc(cResFileName)
+						END IF
 
 						// For XIDE:
-						LOCAL lWedRc := FALSE AS LOGIC
-						FOREACH oDesigner AS Designer IN oModule:Designers
-							IF cUpperName == oDesigner:Name:ToUpperInvariant() .OR. cUpperName == oDesigner:Name:ToUpperInvariant() + "_ACCELERATOR"
-								lWedRc := TRUE
-								EXIT
+						IF xPorter.ExportToXide
+							LOCAL lWedRc := FALSE AS LOGIC
+							FOREACH oDesigner AS Designer IN oModule:Designers
+								IF cUpperName == oDesigner:Name:ToUpperInvariant() .OR. cUpperName == oDesigner:Name:ToUpperInvariant() + "_ACCELERATOR"
+									lWedRc := TRUE
+									EXIT
+								END IF
+							NEXT
+							IF lWedRc
+								oWedResources:Combine(oPair:Value)
+							ELSE
+								oXideResources:Combine(oPair:Value)
 							END IF
-						NEXT
-						IF lWedRc
-							oWedResources:Combine(oPair:Value)
-						ELSE
-							oXideResources:Combine(oPair:Value)
 						END IF
 
 					NEXT
 
 					// For XIDE:
-					IF xPorter.ExportXideBinaries
-						IF .NOT. oXideResources:IsEmpty()
+					IF xPorter.ExportToXide
+						IF TRUE // if we generate XIDE binaries
+							LOCAL cResFileName AS STRING
 							cResFileName := oModule:PathValidName + ".rc"
-                            LOCAL aResult   := List<STRING>{} AS List<STRING>
-                            FOREACH cLinex AS STRING IN oXideResources:GetContents():ToArray()
-                            	// in XIDE, all resource of one file are included in a single
-                            	// buffer, so we need to check every line for resource markers
-                            	// Probably need to redesign this...
-                            	VAR cLine := SELF:AdjustResource(cLinex, cFolder , FALSE)
-                                aResult:Add(cLine)
-                            NEXT
-							File.WriteAllLines(cFolder + "\" + cResFileName , aResult , System.Text.Encoding.Default)
-							oModule:AddXIDErc(cResFileName)
+							IF .NOT. oXideResources:IsEmpty()
+	                            LOCAL aResult   := List<STRING>{} AS List<STRING>
+	                            FOREACH cLinex AS STRING IN oXideResources:GetContents():ToArray()
+	                            	// in XIDE, all resource of one file are included in a single
+	                            	// buffer, so we need to check every line for resource markers
+	                            	// Probably need to redesign this...
+	                            	VAR cLine := SELF:AdjustResource(cLinex, cFolder , FALSE)
+	                                aResult:Add(cLine)
+	                            NEXT
+								File.WriteAllLines(cFolder + "\" + cResFileName , aResult , System.Text.Encoding.Default)
+								oModule:AddXIDErc(cResFileName)
+							END IF
+	
+							IF .NOT. oWedResources:IsEmpty()
+								cResFileName := oModule:PathValidName + ".prg.rc"
+								File.WriteAllLines(cFolder + "\" + cResFileName , oWedResources:GetContents() , System.Text.Encoding.Default)
+							END IF
+	/*					ELSE // otherwise make it simple:
+							oXideResources:Combine(oWedResources)
+							cResFileName := oModule:PathValidName + ".rc"
+							File.WriteAllLines(cFolder + "\" + cResFileName , oXideResources:GetContents() , System.Text.Encoding.Default)
+							oModule:AddXIDErc(cResFileName)*/
 						END IF
-
-						IF .NOT. oWedResources:IsEmpty()
-							cResFileName := oModule:PathValidName + ".prg.rc"
-							File.WriteAllLines(cFolder + "\" + cResFileName , oWedResources:GetContents() , System.Text.Encoding.Default)
-						END IF
-					ELSE
-						oXideResources:Combine(oWedResources)
-						cResFileName := oModule:PathValidName + ".rc"
-						File.WriteAllLines(cFolder + "\" + cResFileName , oXideResources:GetContents() , System.Text.Encoding.Default)
-						oModule:AddXIDErc(cResFileName)
 					END IF
 				END IF
 			END IF
@@ -1205,8 +1220,12 @@ CLASS ApplicationDescriptor
 
 		SELF:_lSaved := TRUE
 
-		SELF:CreateAppFile(cFolder , TRUE)
-		SELF:CreateAppFile(cFolder , FALSE)
+		IF xPorter.ExportToXide
+			SELF:CreateAppFile(cFolder , TRUE)
+		ENDIF
+		IF xPorter.ExportToVS
+			SELF:CreateAppFile(cFolder , FALSE)
+		ENDIF
 	RETURN
 
     METHOD AdjustResource(cLine AS STRING,cFolder AS STRING,lAddToOtherFiles AS LOGIC) AS STRING
@@ -1314,16 +1333,26 @@ CLASS ApplicationDescriptor
 							LOOP
 						END IF
 					END IF
+					IF lXide .and. oModule:IsDesignerChild
+						LOOP
+					END IF
 					LOCAL cName AS STRING
 					cName := oModule:PathValidName + ".prg"
 					IF lXide
 						oOutput:WriteLine("File = %AppPath%\" + cName)
 						oOutput:WriteLine("FileGUID = " + NewGuid())
 						oOutput:WriteLine("FileType = Code")
+						IF oModule:HasDesignerChild
+							oOutput:WriteLine("DesignerFileGUID = " + NewGuid())
+						END IF
 					ELSE
 						oOutput:WriteLine(String.Format(e"<Compile Include=\"{0}\">" , cName))
 						IF SELF:_lIsWinForms
-							oOutput:WriteLine("  <SubType>Form</SubType>")
+							IF oModule:IsDesignerChild
+								oOutput:WriteLine(String.Format("  <DependentUpon>{0}</DependentUpon>", cName:Replace(".Designer.",".")) )
+							ELSE
+								oOutput:WriteLine("  <SubType>Form</SubType>")
+							END IF
 						ELSE
 							oOutput:WriteLine("  <SubType>Code</SubType>")
 						END IF
@@ -1565,6 +1594,8 @@ CLASS ModuleDescriptor
 	PROPERTY Generated AS LOGIC GET SELF:_lGenerated
 	PROPERTY VSrc AS List<STRING> GET SELF:_aVSrc
 	PROPERTY XIDErc AS STRING GET SELF:_cXIDErc
+	PROPERTY HasDesignerChild AS LOGIC AUTO
+	PROPERTY IsDesignerChild AS LOGIC AUTO
 
 	PROPERTY Designers AS List<Designer> GET SELF:_aDesigners
 

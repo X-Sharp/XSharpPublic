@@ -4,21 +4,13 @@ USING System.Drawing
 USING System.Collections.Generic
 
 STATIC CLASS WinFormsConverter
-	STATIC METHOD Convert(cFolder AS STRING) AS VOID
+	STATIC METHOD Convert(oProject AS VOProjectDescriptor, cAppFolder AS STRING) AS VOID
 		LOCAL aWeds AS STRING[]
-		LOCAL cSolutionFolder AS STRING
-		LOCAL cProjectFolder AS STRING
 
-		cSolutionFolder := cFolder
-		cProjectFolder := cFolder + "\Source"
-		aWeds := Directory.GetFiles(cFolder + "\tmp" , "*.wed")
-		Directory.CreateDirectory(cSolutionFolder)
-		Directory.CreateDirectory(cProjectFolder)
+		aWeds := Directory.GetFiles(cAppFolder + "\tmp" , "*.wed")
+		Directory.CreateDirectory(cAppFolder)
 
-		LOCAL oProject AS VOProjectDescriptor
 		LOCAL oApp AS ApplicationDescriptor
-		oProject := VOProjectDescriptor{"Windows.Forms", Guid.NewGuid():ToString()}
-		oProject:SetProjectFolder(cSolutionFolder)
 		oApp := oProject:AddApplication("Windows.Forms")
 		oApp:SetWinForms()
 		oApp:GACReferences:Add("System.Drawing")
@@ -48,17 +40,24 @@ STATIC CLASS WinFormsConverter
 			// Put control inside GroupBoxes
 			AdjustContainers(oMainWed)
 			
-			LOCAL cPrg AS STRING
-			LOCAL cFileName AS STRING
-			cFileName := FileInfo{cWed}:Name:Replace(".wed","")
-			cPrg := cProjectFolder + "\" + cFileName + ".prg"
-
-			LOCAL aCode, aClassCode, aConstrCode AS List<STRING>
+			LOCAL aCode, aClassCode, aInitCode, aConstrCode AS List<STRING>
+			LOCAL cClassDeclCode AS STRING
 			aClassCode := List<STRING>{}
 			aConstrCode := List<STRING>{}
+			aInitCode := List<STRING>{}
 			aCode := List<STRING>{}
 
-			oApp:AddModule(cFileName, "")
+			LOCAL cFileName AS STRING
+			LOCAL cNameSpace AS STRING
+			LOCAL cPrg AS STRING
+			cFileName := FileInfo{cWed}:Name:Replace(".wed","")
+			cNameSpace := cFileName:Substring(0, cFileName:IndexOf('.'))
+			FOREACH cChar AS Char IN e"!@#$%^&*()_+~`-=[]{};:',./<>?|\\\" "
+				cNameSpace := cNameSpace:Replace(cChar:ToString(), "")
+			NEXT
+			
+			cPrg := cAppFolder + "\" + cFileName + ".prg"
+			oApp:AddModule(cFileName, ""):HasDesignerChild := TRUE
 
 			LOCAL oWriter AS StreamWriter
 			oWriter := StreamWriter{cPrg + ".wed" , FALSE , Encoding.Default}
@@ -68,15 +67,18 @@ STATIC CLASS WinFormsConverter
 			oWriter:WriteLine(String.Format("Text={0}" , oMainWed:Caption) )
 			oWriter:WriteLine(String.Format("Location={0},{1}" , oMainWed:Location:X , oMainWed:Location:Y) )
 			oWriter:WriteLine(String.Format("ClientSize={0},{1}" , oMainWed:Size:Width , oMainWed:Size:Height) )
+			oWriter:WriteLine(String.Format("ControlPrefix=None") )
 			oWriter:WriteLine(String.Format("") )
 			
-			aClassCode:Add( String.Format("PUBLIC CLASS {0} INHERIT System.Windows.Forms.Form", oMainWed:Name) )
+			cClassDeclCode := String.Format("PARTIAL CLASS {0} INHERIT System.Windows.Forms.Form", oMainWed:Name)
 
+			aConstrCode:Add( String.Format(e"" ) )
 			aConstrCode:Add( String.Format(e"CONSTRUCTOR()" ) )
 			aConstrCode:Add( String.Format(e"\tSELF:InitializeComponent()" ) )
 			aConstrCode:Add( String.Format(e"RETURN" ) )
-			aConstrCode:Add( String.Format(e"" ) )
-			aConstrCode:Add( String.Format(e"PRIVATE METHOD InitializeComponent() AS VOID" ) )
+
+			aInitCode:Add( String.Format(e"" ) )
+			aInitCode:Add( String.Format(e"PRIVATE METHOD InitializeComponent() AS VOID" ) )
 
 			aCode:Add( String.Format(e"\tSELF:Name := {0}", Quoted(oMainWed:Name)) )
 			aCode:Add( String.Format(e"\tSELF:Text := {0}", Quoted(oMainWed:Name)) )
@@ -86,7 +88,7 @@ STATIC CLASS WinFormsConverter
 			oWriter:WriteLine(String.Format("SUBCONTROLSSTART") )
 
 			FOREACH oControl AS WedDescriptor IN oMainWed:Controls
-				WriteControl(oControl, "SELF", oWriter, aClassCode, aConstrCode, aCode)
+				WriteControl(oControl, "SELF", oWriter, aClassCode, aInitCode, aCode)
 			NEXT
 
 			oWriter:WriteLine(String.Format("SUBCONTROLSEND") )
@@ -97,33 +99,53 @@ STATIC CLASS WinFormsConverter
 
 			aCode:Add( String.Format(e"RETURN" ) )
 			aCode:Add( String.Format(e"" ) )
-			aCode:Add( String.Format("END CLASS") )
-
 
 			oWriter := StreamWriter{cPrg , FALSE , Encoding.Default}
+			oWriter:WriteLine("BEGIN NAMESPACE " + cNameSpace)
+			oWriter:WriteLine("")
+			oWriter:WriteLine(cClassDeclCode)
+			FOREACH cLine AS STRING IN aConstrCode
+				oWriter:WriteLine(cLine)
+			NEXT
+			oWriter:WriteLine("END CLASS")
+			oWriter:WriteLine("")
+			oWriter:WriteLine("END NAMESPACE")
+			oWriter:Close()
+
+			cFileName := FileInfo{cWed}:Name:Replace(".wed","")
+			cPrg := cAppFolder + "\" + cFileName + ".Designer.prg"
+			oApp:AddModule(cFileName + ".Designer", ""):IsDesignerChild := TRUE
+			oWriter := StreamWriter{cPrg , FALSE , Encoding.Default}
+			oWriter:WriteLine("BEGIN NAMESPACE " + cNameSpace)
+			oWriter:WriteLine("")
+			oWriter:WriteLine(cClassDeclCode)
 			FOREACH cLine AS STRING IN aClassCode
 				oWriter:WriteLine(cLine)
 			NEXT
-			FOREACH cLine AS STRING IN aConstrCode
+			FOREACH cLine AS STRING IN aInitCode
 				oWriter:WriteLine(cLine)
 			NEXT
 			FOREACH cLine AS STRING IN aCode
 				oWriter:WriteLine(cLine)
 			NEXT
+			oWriter:WriteLine("END CLASS")
+			oWriter:WriteLine("")
+			oWriter:WriteLine("END NAMESPACE")
 			oWriter:Close()
 			
 		NEXT
 		
-		oApp:CreateAppFile(cProjectFolder , TRUE)
-		oApp:CreateAppFile(cProjectFolder , FALSE)
-		oProject:CreateSolutionFile(cSolutionFolder, TRUE)
-		oProject:CreateSolutionFile(cSolutionFolder, FALSE)
+		IF xPorter.ExportToXide
+			oApp:CreateAppFile(cAppFolder , TRUE)
+		ENDIF
+		IF xPorter.ExportToXide
+			oApp:CreateAppFile(cAppFolder , FALSE)
+		ENDIF
 		
-		SafeDirectoryDelete(cFolder + "\tmp")
-		
+		SafeDirectoryDelete(cAppFolder + "\tmp")
 	RETURN
 
-	INTERNAL STATIC METHOD WriteControl(oControl AS WedDescriptor, cParent AS STRING, oWriter AS StreamWriter, aClassCode AS List<STRING>, aConstrCode AS List<STRING>, aCode AS List<STRING>) AS VOID
+	INTERNAL STATIC METHOD WriteControl(oControl AS WedDescriptor, cParent AS STRING, oWriter AS StreamWriter, aClassCode AS List<STRING>, aInitCode AS List<STRING>, aCode AS List<STRING>) AS VOID
 		oWriter:WriteLine(String.Format("CONTROL={0}" , oControl:Type) )
 		oWriter:WriteLine(String.Format("GUID={0}" , Guid.NewGuid():ToString()) )
 		oWriter:WriteLine(String.Format("Name={0}" , oControl:Name) )
@@ -134,7 +156,7 @@ STATIC CLASS WinFormsConverter
 
 		aClassCode:Add(String.Format(e"\tPRIVATE {0} AS {1}" , oControl:Name, oControl:Type) )
 
-		aConstrCode:Add(String.Format(e"\tSELF:{0} := {1}{{}}" , oControl:Name, oControl:Type) )
+		aInitCode:Add(String.Format(e"\tSELF:{0} := {1}{{}}" , oControl:Name, oControl:Type) )
 
 		aCode:Add(String.Format(e"\tSELF:{0}:Name := {1}" , oControl:Name, Quoted(oControl:Name)) )
 		aCode:Add(String.Format(e"\tSELF:{0}:Text := {1}" , oControl:Name, Quoted(oControl:Caption)) )
@@ -146,7 +168,7 @@ STATIC CLASS WinFormsConverter
 		IF oControl:Controls:Count != 0
 			oWriter:WriteLine("SUBCONTROLSSTART")
 			FOREACH oChild AS WedDescriptor IN oControl:Controls
-				WriteControl(oChild, "SELF:" + oControl:Name, oWriter, aClassCode, aConstrCode, aCode)
+				WriteControl(oChild, "SELF:" + oControl:Name, oWriter, aClassCode, aInitCode, aCode)
 			NEXT
 			oWriter:WriteLine("SUBCONTROLSEND")
 		END IF

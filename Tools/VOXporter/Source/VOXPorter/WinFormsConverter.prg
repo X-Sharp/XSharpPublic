@@ -138,7 +138,7 @@ STATIC CLASS WinFormsConverter
 		IF xPorter.ExportToXide
 			oApp:CreateAppFile(cAppFolder , TRUE)
 		ENDIF
-		IF xPorter.ExportToXide
+		IF xPorter.ExportToVS
 			oApp:CreateAppFile(cAppFolder , FALSE)
 		ENDIF
 		

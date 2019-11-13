@@ -28,6 +28,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
     
     // A Page is organized as follows :
     // 0x00 - (WORD) Item Count - how many items this particular page holds.
+    // 0x02 - (WORD) Location of Item
     // 0x02 - (LONG) Items Offset - This is an array of <Item Count> elements, that contains the offset within the page of each Item
     // 0x?? - The area where Item values are stored
     
@@ -82,7 +83,28 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 
             END SET
         END PROPERTY
-        
+
+        INTERNAL PROPERTY FirstKeyOffSet AS WORD
+             GET
+                LOCAL nCount := 0 AS WORD
+                TRY
+                    nCount := BitConverter.ToUInt16( SELF:_Bytes, sizeof(WORD))
+                CATCH e AS Exception
+                    Debug.WriteLine( "Ntx Error : " + e:Message )
+                END TRY
+                RETURN nCount
+            END GET
+            
+            SET
+                TRY
+                    Array.Copy(BitConverter.GetBytes( VALUE), 0, SELF:_bytes, 2, sizeof(WORD))
+                CATCH e AS Exception
+                    Debug.WriteLine( "Ntx Error : " + e:Message )
+                END TRY
+                
+            END SET
+        END PROPERTY
+
 		// Retrieve a NtxNode in the current Page, at the specified position
         INTERNAL PROPERTY SELF[ index AS LONG ] AS NtxPageNode
             GET
@@ -175,7 +197,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 offset += uiEntrySize
             NEXT
             NodeCount := 0
-
+            FirstKeyOffSet := uiMaxEntry * 2 + 4
 
         INTERNAL METHOD Dump(keyLen AS WORD) AS STRING
             VAR sb := System.Text.StringBuilder{}

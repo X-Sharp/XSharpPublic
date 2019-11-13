@@ -173,7 +173,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             SELF:_Header:Descending             := SELF:_Descending
             SELF:_Header:KeyExpression          := SELF:_KeyExpr
             SELF:_Header:ForExpression          := SELF:_ForExpr
-            SELF:_Header:OrdName                := SELF:_orderName
+            SELF:_Header:OrdName                := SELF:_orderName:ToUpper()
             IF SELF:_Conditional .OR. SELF:_Descending .OR. lScoped
                 SELF:_Header:Signature |= NtxHeaderFlags.Conditional
             ENDIF

@@ -45,7 +45,8 @@ namespace Microsoft.CodeAnalysis.CSharp
             ImmutableArray<LocalSymbol> temps;
             ImmutableArray<BoundExpression> preExprs;
             ImmutableArray<BoundExpression> postExprs;
-            var rewrittenArguments = MakeClipperCallArguments(node.Type, node.Syntax, node.Arguments, node.Constructor, node.Expanded, node.ArgsToParamsOpt, ref argumentRefKindsOpt, out temps, false, out preExprs, out postExprs);
+            var rewrittenArguments = MakeClipperCallArguments(node.Syntax, node.Arguments, node.Constructor, node.Expanded, node.ArgsToParamsOpt,
+                                                                ref argumentRefKindsOpt, out temps, false, out preExprs, out postExprs);
 
             LocalSymbol objTemp = _factory.SynthesizedLocal(node.Type);
             BoundLocal boundObjTemp = _factory.Local(objTemp);
@@ -92,34 +93,57 @@ namespace Microsoft.CodeAnalysis.CSharp
             ImmutableArray<LocalSymbol> temps;
             ImmutableArray<BoundExpression> preExprs;
             ImmutableArray<BoundExpression> postExprs;
-            var rewrittenArguments = MakeClipperCallArguments(node.Type, node.Syntax, node.Arguments, node.Method, node.Expanded, node.ArgsToParamsOpt, ref argumentRefKindsOpt, out temps, node.InvokedAsExtensionMethod, out preExprs, out postExprs);
+            ImmutableArray<BoundExpression> exprs;
+            var rewrittenArguments = MakeClipperCallArguments(node.Syntax, node.Arguments, node.Method, node.Expanded, node.ArgsToParamsOpt,
+                                                            ref argumentRefKindsOpt, out temps, node.InvokedAsExtensionMethod, out preExprs, out postExprs);
+            var mustassign = true;
+            var nodeType = node.Type;
+            if (nodeType.SpecialType == SpecialType.System_Void)
+            {
+                mustassign = false;
+                nodeType = _compilation.GetSpecialType(SpecialType.System_Int32);
+            }
 
-            LocalSymbol callTemp = _factory.SynthesizedLocal(node.Type);
+            LocalSymbol callTemp = _factory.SynthesizedLocal(nodeType);
             BoundLocal boundCallTemp = _factory.Local(callTemp);
             var call = MakeCall(node, node.Syntax, rewrittenReceiver, node.Method, rewrittenArguments, argumentRefKindsOpt, node.InvokedAsExtensionMethod, node.ResultKind, node.Type);
-            BoundExpression callAssignment = _factory.AssignmentExpression(boundCallTemp, call);
-            var exprs = preExprs.Add(callAssignment).AddRange(postExprs);
+            if (mustassign)
+            {
+                BoundExpression callAssignment = _factory.AssignmentExpression(boundCallTemp, call);
+                exprs = preExprs.Add(callAssignment).AddRange(postExprs);
+            }
+            else
+            {
+                exprs = preExprs.Add(call).AddRange(postExprs);
 
+            }
+
+        
             return new BoundSequence(node.Syntax, temps.Add(callTemp), exprs, boundCallTemp, node.Type);
         }
 
-        internal ImmutableArray<BoundExpression> MakeClipperCallArguments(TypeSymbol type, SyntaxNode syntax, ImmutableArray<BoundExpression> arguments, MethodSymbol method, bool expanded, ImmutableArray<int> argsToParamsOpt,
+        internal ImmutableArray<BoundExpression> MakeClipperCallArguments(SyntaxNode syntax, ImmutableArray<BoundExpression> arguments, MethodSymbol method, bool expanded, ImmutableArray<int> argsToParamsOpt,
             ref ImmutableArray<RefKind> argumentRefKindsOpt, out ImmutableArray<LocalSymbol> temps, bool invokeAsExtensionMethod, out ImmutableArray<BoundExpression> preExprs, out ImmutableArray<BoundExpression> postExprs)
         {
             var argTemps = ImmutableArray.CreateBuilder<LocalSymbol>();
-
+             
             var exprs = ImmutableArray.CreateBuilder<BoundExpression>();
             var args = ImmutableArray.CreateBuilder<BoundExpression>(arguments.Length);
             var argBoundTemps = new BoundLocal[arguments.Length];
+            var refKinds = new RefKind[arguments.Length];
             for (int i = 0; i < arguments.Length; i++)
             {
                 var r = (!argumentRefKindsOpt.IsDefaultOrEmpty && i < argumentRefKindsOpt.Length) ? argumentRefKindsOpt[i] : RefKind.None;
-                if (r == RefKind.Ref)
+                refKinds[i] = r;
+            }
+            for (int i = 0; i < arguments.Length; i++)
+            {
+                if (refKinds[i].IsWritableReference())
                 {
                     var a = arguments[i];
                     while (a is BoundConversion c) a = c.Operand;
                     a = VisitExpression(a);
-                    LocalSymbol la = _factory.SynthesizedLocal(a.Type, refKind: RefKind.Ref);
+                    LocalSymbol la = _factory.SynthesizedLocal(a.Type, refKind: refKinds[i]);
                     BoundLocal bla = _factory.Local(la);
                     var lasgn = _factory.AssignmentExpression(bla, a, isRef: true);
                     exprs.Add(VisitAssignmentOperator(lasgn, true));
@@ -149,8 +173,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             for (int i = 0; i < arguments.Length; i++)
             {
-                var r = (!argumentRefKindsOpt.IsDefaultOrEmpty && i < argumentRefKindsOpt.Length) ? argumentRefKindsOpt[i] : RefKind.None;
-                if (r == RefKind.Ref)
+                if (refKinds[i].IsWritableReference())
                 {
                     BoundExpression idx = _factory.Literal(i);
                     var elem = _factory.ArrayAccess(boundPars, ImmutableArray.Create(idx));

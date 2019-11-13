@@ -60,15 +60,17 @@ STATIC CLASS WinFormsConverter
 			oApp:AddModule(cFileName, ""):HasDesignerChild := TRUE
 
 			LOCAL oWriter AS StreamWriter
-			oWriter := StreamWriter{cPrg + ".wed" , FALSE , Encoding.Default}
-			oWriter:WriteLine(String.Format("DESIGNERSTART = Form,Form,{0}" , oMainWed:Name ) )
-			oWriter:WriteLine(String.Format("GUID={0}" , Guid.NewGuid():ToString()) )
-			oWriter:WriteLine(String.Format("Name={0}" , oMainWed:Name) )
-			oWriter:WriteLine(String.Format("Text={0}" , oMainWed:Caption) )
-			oWriter:WriteLine(String.Format("Location={0},{1}" , oMainWed:Location:X , oMainWed:Location:Y) )
-			oWriter:WriteLine(String.Format("ClientSize={0},{1}" , oMainWed:Size:Width , oMainWed:Size:Height) )
-			oWriter:WriteLine(String.Format("ControlPrefix=None") )
-			oWriter:WriteLine(String.Format("") )
+			IF xPorter.ExportToXide
+				oWriter := StreamWriter{cPrg + ".wed" , FALSE , Encoding.Default}
+				oWriter:WriteLine(String.Format("DESIGNERSTART = Form,Form,{0}" , oMainWed:Name ) )
+				oWriter:WriteLine(String.Format("GUID={0}" , Guid.NewGuid():ToString()) )
+				oWriter:WriteLine(String.Format("Name={0}" , oMainWed:Name) )
+				oWriter:WriteLine(String.Format("Text={0}" , oMainWed:Caption) )
+				oWriter:WriteLine(String.Format("Location={0},{1}" , oMainWed:Location:X , oMainWed:Location:Y) )
+				oWriter:WriteLine(String.Format("ClientSize={0},{1}" , oMainWed:Size:Width , oMainWed:Size:Height) )
+				oWriter:WriteLine(String.Format("ControlPrefix=None") )
+				oWriter:WriteLine(String.Format("") )
+			ENDIF
 			
 			cClassDeclCode := String.Format("PARTIAL CLASS {0} INHERIT System.Windows.Forms.Form", oMainWed:Name)
 
@@ -89,17 +91,16 @@ STATIC CLASS WinFormsConverter
 			aCode:Add( String.Format(e"\tSELF:ClientSize := System.Drawing.Size{{{0},{1}}}", oMainWed:Size:Width , oMainWed:Size:Height) )
 			aCode:Add( String.Format(e"") )
 
-			oWriter:WriteLine(String.Format("SUBCONTROLSSTART") )
+			oWriter?:WriteLine(String.Format("SUBCONTROLSSTART") )
 
 			FOREACH oControl AS WedDescriptor IN oMainWed:Controls
 				WriteControl(oControl, "SELF", oWriter, aClassCode, aInitCode, aCode)
 			NEXT
 
-			oWriter:WriteLine(String.Format("SUBCONTROLSEND") )
-
-			oWriter:WriteLine(String.Format("") )
-			oWriter:WriteLine(String.Format("DESIGNEREND={0}" , oMainWed:Name) )
-			oWriter:Close()
+			oWriter?:WriteLine(String.Format("SUBCONTROLSEND") )
+			oWriter?:WriteLine(String.Format("") )
+			oWriter?:WriteLine(String.Format("DESIGNEREND={0}" , oMainWed:Name) )
+			oWriter?:Close()
 
 			aCode:Add( String.Format(e"\tSELF:ResumeLayout(false)" ) )
 			aCode:Add( String.Format(e"\tSELF:PerformLayout()" ) )
@@ -153,13 +154,30 @@ STATIC CLASS WinFormsConverter
 	RETURN
 
 	INTERNAL STATIC METHOD WriteControl(oControl AS WedDescriptor, cParent AS STRING, oWriter AS StreamWriter, aClassCode AS List<STRING>, aInitCode AS List<STRING>, aCode AS List<STRING>) AS VOID
-		oWriter:WriteLine(String.Format("CONTROL={0}" , oControl:Type) )
-		oWriter:WriteLine(String.Format("GUID={0}" , Guid.NewGuid():ToString()) )
-		oWriter:WriteLine(String.Format("Name={0}" , oControl:Name) )
-		oWriter:WriteLine(String.Format("Text={0}" , oControl:Caption) )
-		oWriter:WriteLine(String.Format("Location={0},{1}" , oControl:Location:X , oControl:Location:Y) )
-		oWriter:WriteLine(String.Format("Size={0},{1}" , oControl:Size:Width , oControl:Size:Height) )
-		oWriter:WriteLine(String.Format("TabIndex={0}" , oControl:Order) )
+		IF oWriter != NULL
+			oWriter:WriteLine(String.Format("") )
+			oWriter:WriteLine(String.Format("CONTROL={0}" , oControl:Type) )
+			oWriter:WriteLine(String.Format("GUID={0}" , Guid.NewGuid():ToString()) )
+			oWriter:WriteLine(String.Format("Name={0}" , oControl:Name) )
+			oWriter:WriteLine(String.Format("Text={0}" , oControl:Caption) )
+			oWriter:WriteLine(String.Format("Location={0},{1}" , oControl:Location:X , oControl:Location:Y) )
+			oWriter:WriteLine(String.Format("Size={0},{1}" , oControl:Size:Width , oControl:Size:Height) )
+			oWriter:WriteLine(String.Format("TabIndex={0}" , oControl:Order) )
+			IF oControl:ForeColor != NULL
+			oWriter:WriteLine(String.Format("ForeColor={0}" , oControl:ForeColor) )
+			ENDIF
+			IF oControl:BackColor != NULL
+			oWriter:WriteLine(String.Format("BackColor={0}" , oControl:BackColor) )
+			ENDIF
+			IF oControl:Font != NULL
+				LOCAL cFont AS STRING
+				cFont := String.Format("{0},{1}" , oControl:Font[2] , oControl:Font[1])
+				FOR LOCAL n := 3 AS INT UPTO oControl:Font:Length
+					cFont += "," + oControl:Font[n]
+				NEXT
+			oWriter:WriteLine(String.Format("Font={0}" , cFont) )
+			ENDIF
+		END IF
 
 		aClassCode:Add(String.Format(e"\tPRIVATE {0} AS {1}" , oControl:Name, oControl:Type) )
 
@@ -169,25 +187,35 @@ STATIC CLASS WinFormsConverter
 		aCode:Add(String.Format(e"\tSELF:{0}:Text := {1}" , oControl:Name, Quoted(oControl:Caption)) )
 		aCode:Add(String.Format(e"\tSELF:{0}:Location := System.Drawing.Point{{{1},{2}}}" , oControl:Name, oControl:Location:X, oControl:Location:Y) )
 		aCode:Add(String.Format(e"\tSELF:{0}:Size := System.Drawing.Size{{{1},{2}}}" , oControl:Name, oControl:Size:Width, oControl:Size:Height) )
+		aCode:Add(String.Format(e"\tSELF:{0}:TabIndex := {1}" , oControl:Name, iif(oControl:Order >= 0 , oControl:Order, 0) ) )
+		IF oControl:ForeColor != NULL
+		aCode:Add(String.Format(e"\tSELF:{0}:ForeColor := {1}", oControl:Name, ColorToNetColor(oControl:ForeColor)) )
+		END IF
+		IF oControl:BackColor != NULL
+		aCode:Add(String.Format(e"\tSELF:{0}:BackColor := {1}", oControl:Name, ColorToNetColor(oControl:BackColor)) )
+		END IF
+		IF oControl:Font != NULL
+		aCode:Add(String.Format(e"\tSELF:{0}:Font := {1}", oControl:Name, FontToNetFont(oControl:Font)) )
+		END IF
 		aCode:Add(String.Format(e"\t{1}:Controls:Add(SELF:{0})" , oControl:Name, cParent) )
 		aCode:Add(String.Format(e"") )
 		
 		IF oControl:Controls:Count != 0
-			oWriter:WriteLine("SUBCONTROLSSTART")
+			oWriter?:WriteLine("SUBCONTROLSSTART")
 			FOREACH oChild AS WedDescriptor IN oControl:Controls
 				WriteControl(oChild, "SELF:" + oControl:Name, oWriter, aClassCode, aInitCode, aCode)
 			NEXT
-			oWriter:WriteLine("SUBCONTROLSEND")
+			oWriter?:WriteLine("SUBCONTROLSEND")
 		END IF
 
 		SWITCH oControl:VOType
 			CASE "FIXEDTEXT"
 				NOP
 			CASE "RADIOBUTTON"
-				oWriter:WriteLine(String.Format("AutoSize=TRUE") )
+				oWriter?:WriteLine(String.Format("AutoSize=TRUE") )
 				aCode:Add(String.Format(e"\tSELF:{0}:AutoSize := true" , oControl:Name) )
 			CASE "MULTILINEEDIT"
-				oWriter:WriteLine(String.Format("Multiline=TRUE") )
+				oWriter?:WriteLine(String.Format("Multiline=TRUE") )
 				aCode:Add(String.Format(e"\tSELF:{0}:Multiline := true" , oControl:Name) )
 		END SWITCH
 	RETURN
@@ -237,6 +265,29 @@ STATIC CLASS WinFormsConverter
 	
 	STATIC METHOD Quoted(cText AS STRING) AS STRING
 	RETURN e"\"" + cText + e"\""
+	STATIC METHOD ColorToNetColor(cColor AS STRING) AS STRING
+		LOCAL cRet AS STRING
+		cRet := "System.Drawing."
+		IF cColor:StartsWith("Color.")
+			cRet += cColor
+		ELSE
+			cRet += String.Format("Color.FromArgb({0})" , cColor)
+		END IF
+	RETURN cRet
+	STATIC METHOD FontToNetFont(aFont AS STRING[]) AS STRING
+		LOCAL cRet AS STRING
+		LOCAL cStyles AS STRING
+		cStyles := ""
+		FOR LOCAL n := 3 AS INT UPTO aFont:Length
+			IF n == 3
+				cStyles += ", "
+			ELSE
+				cStyles += " | "
+			END IF
+			cStyles += "System.Drawing.FontStyle." + aFont[n]:Replace("Strikethru" ,"Strikeout")
+		NEXT
+		cRet := String.Format("System.Drawing.Font{{{0}, {1}{2}}}" , Quoted(aFont[2]), aFont[1], cStyles)
+	RETURN cRet
 	
 END CLASS
 
@@ -264,6 +315,9 @@ INTERNAL CLASS WedDescriptor
 	PROPERTY Size AS Size AUTO
 	PROPERTY VOType AS STRING AUTO
 	PROPERTY Type AS STRING GET _cType
+	PROPERTY Font AS STRING[] AUTO
+	PROPERTY ForeColor AS STRING AUTO
+	PROPERTY BackColor AS STRING AUTO
 	PROPERTY Parent AS WedDescriptor GET SELF:_oParent
 	PROPERTY IsContainer AS LOGIC GET SELF:_lIsContainer
 	PROPERTY Controls AS List<WedDescriptor> GET SELF:_aControls
@@ -320,6 +374,7 @@ INTERNAL CLASS WedDescriptor
 					CASE "IPADDRESS"
 					CASE "RICHEDIT"
 					CASE "HOTKEYEDIT"
+					CASE "TEXTEDIT"
 						SELF:_cType := "System.Windows.Forms.TextBox"
 					CASE "CHECKBOX"
 						SELF:_cType := "System.Windows.Forms.CheckBox"
@@ -349,12 +404,63 @@ INTERNAL CLASS WedDescriptor
 					CASE "VERTICALSLIDER"
 						SELF:_cType := "System.Windows.Forms.TrackBar"
 					CASE "VERTSCROLL"
-						SELF:_cType := "System.Windows.Forms.HScrollBar"
-					CASE "HORZSCROLL"
+					CASE "VERTICALSCROLLBAR"
 						SELF:_cType := "System.Windows.Forms.VScrollBar"
+					CASE "HORZSCROLL"
+					CASE "HORIZONTALSCROLLBAR"
+						SELF:_cType := "System.Windows.Forms.HScrollBar"
+					CASE "FIXEDICON"
+					CASE "FIXEDBITMAP"
+						SELF:_cType := "System.Windows.Forms.PictureBox"
+					CASE "DATETIMEPICKER"
+						SELF:_cType := "System.Windows.Forms.DateTimePicker"
+					CASE "CUSTOMCONTROL"
+						SELF:_cType := "System.Windows.Forms.Panel"
 					CASE "SUBDATAWINDOW"
+					CASE "BBROWSER"
 						SELF:_cType := "System.Windows.Forms.DataGridView"
+/*					OTHERWISE
+						System.Windows.Forms.MessageBox.Show(cValue)*/
 				END SWITCH
+			CASE "PROPERTY"
+				IF cValue:Contains("=")
+					cLine := cValue
+					nAt := cLine:IndexOf('=')
+					cProp := cLine:Substring(0,nAt):Trim():ToUpperInvariant()
+					cValue := cLine:Substring(nAt+1):Trim()
+					SWITCH cProp
+						CASE "TEXTCOLOR"
+							SELF:ForeColor := TranslateColor(cValue)
+						CASE "BACKGROUND"
+							SELF:BackColor := TranslateColor(cValue)
+						CASE "NEWFONT"
+							TRY
+								LOCAL aFont AS STRING[]
+								aFont := cValue:Split(<Char>{':'})
+								IF aFont:Length >= 2
+									SELF:Font := aFont
+								END IF
+							END TRY
+					END SWITCH
+				END IF
 		END SWITCH
 	RETURN
+	
+	STATIC METHOD TranslateColor(cColor AS STRING) AS STRING
+		LOCAL cRet := NULL AS STRING
+		TRY
+			IF cColor:StartsWith("COLOR")
+				cColor := cColor:Substring(5)
+				cColor := cColor:Substring(0,1):ToUpper() + cColor:Substring(1):ToLower()
+				cRet := "Color." + cColor
+			ELSE
+				LOCAL aColors AS STRING[]
+				aColors := cColor:Split(<Char>{' '})
+				IF aColors:Length == 3
+					cRet := String.Format("{0}, {1}, {2}" , aColors[1], aColors[2], aColors[3])
+				END IF
+			END IF
+		END TRY
+	RETURN cRet
+	
 END CLASS

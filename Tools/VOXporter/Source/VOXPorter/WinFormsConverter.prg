@@ -79,7 +79,11 @@ STATIC CLASS WinFormsConverter
 
 			aInitCode:Add( String.Format(e"" ) )
 			aInitCode:Add( String.Format(e"PRIVATE METHOD InitializeComponent() AS VOID" ) )
+			aInitCode:Add( String.Format(e"" ) )
 
+			aCode:Add( String.Format(e"\t", Quoted(oMainWed:Name)) )
+			aCode:Add( String.Format(e"\tSELF:SuspendLayout()", Quoted(oMainWed:Name)) )
+			aCode:Add( String.Format(e"\t", Quoted(oMainWed:Name)) )
 			aCode:Add( String.Format(e"\tSELF:Name := {0}", Quoted(oMainWed:Name)) )
 			aCode:Add( String.Format(e"\tSELF:Text := {0}", Quoted(oMainWed:Name)) )
 			aCode:Add( String.Format(e"\tSELF:ClientSize := System.Drawing.Size{{{0},{1}}}", oMainWed:Size:Width , oMainWed:Size:Height) )
@@ -97,6 +101,9 @@ STATIC CLASS WinFormsConverter
 			oWriter:WriteLine(String.Format("DESIGNEREND={0}" , oMainWed:Name) )
 			oWriter:Close()
 
+			aCode:Add( String.Format(e"\tSELF:ResumeLayout(false)" ) )
+			aCode:Add( String.Format(e"\tSELF:PerformLayout()" ) )
+			aCode:Add( String.Format(e"" ) )
 			aCode:Add( String.Format(e"RETURN" ) )
 			aCode:Add( String.Format(e"" ) )
 
@@ -194,7 +201,7 @@ STATIC CLASS WinFormsConverter
 				aContainers:Add(oControl)
 			END IF
 		NEXT
-		
+
 		LOCAL nControl := 0 AS INT
 		DO WHILE nControl < oWindow:Controls:Count
 			LOCAL oControl AS WedDescriptor
@@ -207,7 +214,9 @@ STATIC CLASS WinFormsConverter
 				END IF
 				LOCAL oRectangle AS Rectangle
 				oRectangle := Rectangle{oContainer:AbsoluteLocation , oContainer:Size}
-				IF oRectangle:Contains(oControl:Location)
+				IF oRectangle:Contains(oControl:Location) .and. ;
+					oRectangle:Contains(Point{oControl:Location:X + oControl:Size:Width - 1, oControl:Location:Y + oControl:Size:Height - 1}) .and. ; 
+					.not. oContainer:Parent == oControl
 					IF oCurrent == NULL .or. ;
 								(oContainer:AbsoluteLocation:X > oCurrent:AbsoluteLocation:X .and. ;
 								oContainer:AbsoluteLocation:Y > oCurrent:AbsoluteLocation:Y)
@@ -255,6 +264,7 @@ INTERNAL CLASS WedDescriptor
 	PROPERTY Size AS Size AUTO
 	PROPERTY VOType AS STRING AUTO
 	PROPERTY Type AS STRING GET _cType
+	PROPERTY Parent AS WedDescriptor GET SELF:_oParent
 	PROPERTY IsContainer AS LOGIC GET SELF:_lIsContainer
 	PROPERTY Controls AS List<WedDescriptor> GET SELF:_aControls
 	PROPERTY AbsoluteLocation AS Point

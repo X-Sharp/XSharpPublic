@@ -33,7 +33,7 @@
     <memvar>true</memvar>
     <undeclared>true</undeclared>
     <initlocals>true</initlocals>
-	  <fox1>true</fox>
+    <fox1>true</fox1>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>

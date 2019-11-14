@@ -6,12 +6,21 @@ USING XSharp.RDD
 USING System.IO
 USING System.Threading
 USING XSharp.Vfp
-   
+using System.Reflection   
 
-[STAThread];     
+[STAThread];      
 FUNCTION Start() AS VOID
     TRY
-        TestRel()
+        TestNestedMacro()
+//        ShowArray(SetCollationTable(1))
+//        testCreate()
+//        testOverloads()
+        //testScopes() 
+        //testCorrupt3()
+        //testtcc()
+        //TestCorrupt2()
+        //TestCorrupt1()
+        //TestRel()
         //TestVfpClass()
         //TestNotifications()
         //testFilter()
@@ -133,13 +142,268 @@ FUNCTION Start() AS VOID
         //Start10()
         //Start11()
     WAIT
-   CATCH e AS Exception
+   CATCH e AS Exception  
         IF ! (e IS Error)
             e := Error{e}
         ENDIF
         ErrorDialog(e)
     END TRY
     RETURN
+
+FUNCTION TestNestedMacro() AS VOID
+    LOCAL cMacro AS STRING
+    LOCAL cb AS CODEBLOCK
+    LOCAL cb2 AS CODEBLOCK
+    LOCAL u AS USUAL
+    cMacro := "{|e| iif(e, {|| TRUE}, {|| false} ) }"
+    cb := &(cMacro)
+    u := cb
+    ? cMacro, valtype(u), u
+    cb2 := EVal(cb, TRUE)
+    u := cb2
+    ? cMacro, valtype(u), u
+    u := Eval(cb2)
+    ? valtype(u), u
+
+    cb2 := EVal(cb, False)
+    u := cb2
+    ? cMacro, valtype(u), u
+    u := Eval(cb2)
+    ? valtype(u), u
+
+    cMacro := "{|e| '{|a,b,c|TRUE}' }"
+    cb := &(cMacro)
+    u := cb
+    ? cMacro, valtype(u), u
+    u := Eval(cb)
+    ? cMacro, valtype(u), u
+    cMacro := "{|e| iif(e, {|| TRUE}, '{|| FALSE}') }"
+    cb := &(cMacro)
+    u := cb
+    ? valtype(u), u
+    u := Eval(cb, FALSE)
+    ? cMacro, valtype(u), u
+    cMacro := "{|e| '|||||||' }"
+    cb := &(cMacro)
+    u := cb
+    ? valtype(u), u
+    u := Eval(cb, FALSE)
+    ? cMacro, valtype(u), u
+    
+
+RETURN
+    
+    
+
+function TestCreate() AS VOID
+    LOCAL cDbf AS STRING
+    SetAnsi(TRUE)
+    RddSetDefault("DBFNTX")
+    RuntimeState.Dialect := XSHarpDialect.XPP
+    cDbf := "C:\Test\testxpp.dbf"
+    DbCreate(cDbf, {{"FIELD1","C",10,0}})
+    
+    RuntimeState.Dialect := XSHarpDialect.VO
+    cDbf := "C:\Test\testvo.dbf"
+    DbCreate(cDbf, {{"FIELD1","C",10,0}})
+    SetAnsi(FALSE)
+    RddSetDefault("DBFNTX")
+    RuntimeState.Dialect := XSHarpDialect.XPP
+    cDbf := "C:\Test\testxppoem.dbf"
+    DbCreate(cDbf, {{"FIELD1","C",10,0}})
+    
+    RuntimeState.Dialect := XSHarpDialect.VO
+    cDbf := "C:\Test\testvooem.dbf"
+    DbCreate(cDbf, {{"FIELD1","C",10,0}})
+    RETURN
+    
+function Val(cString as STRING) AS LONG
+    return 42
+
+function Val(nString as LONG) AS LONG
+    return 4242
+
+function Val(dDate as DATE) AS LONG
+    return 424242
+
+Function GetSignature( m as MemberInfo) as STRING
+    local name as string
+    name :=m:DeclaringType:Name+"."+m:Name 
+    IF m is ConstructorInfo
+        LOCAL ci := (ConstructorInfo) m as ConstructorInfo
+        var pars := ""
+        FOREACH par AS ParameterInfo in ci:GetParameters()
+            if Pars:Length > 0
+                Pars += ","
+            ENDIF
+            pars += par:ParameterType:Name
+        NEXT
+        name +="{"+pars+"}"
+    ELSEif m is MethodInfo 
+        LOCAL mi := (MethodInfo) m as MethodInfo
+        var pars := ""
+        FOREACH par AS ParameterInfo in mi:GetParameters()
+            if Pars:Length > 0
+                Pars += ","
+            ENDIF
+            pars += par:ParameterType:Name
+        NEXT
+        name +="("+pars+")"
+    elseif m is PropertyInfo 
+        LOCAL pi := (PropertyInfo) m as PropertyInfo
+        var pars := ""
+        FOREACH par AS ParameterInfo in pi:GetGetMethod():GetParameters()
+            if Pars:Length > 0
+                Pars += ","
+            ENDIF
+            pars += par:ParameterType:Name
+        NEXT
+        name +="["+pars+"]"
+    ENDIF
+    RETURN name
+        
+
+function Resolver(m1 as MemberInfo, m2 as MemberInfo, argtypes as System.Type[]) as LONG
+    ? argTypes:Length,": "
+    foreach var o in argTypes
+        ?? o:FullName,","
+    next
+    
+    ? "Ambiguous 1", GetSignature(m1)
+    ? "Ambiguous 2", GetSignature(m2)
+    var result := 1
+    ? "Choosing",result
+    return result
+
+function TestOverloads() as VOID
+    SetMacroDuplicatesResolver(Resolver)
+    ? Eval(MCompile("{|u| val(u)"),123):ToString()
+    RETURN
+
+function testScopes() as Void
+    local cDbf as STRING
+    cDbf := "C:\Test\test.dbf"
+    DbCreate(cDbf, {{"FIELD1","C",10,0}})
+    DbUseArea(TRUE, "DBFNTX",cDbf)
+    FOR var i := 1 to 10
+        DbAppend()
+        FieldPut(1, "AAA")
+        DbAppend()
+        FieldPut(1, "BBB")
+    NEXT
+    DbAppend()
+    FieldPut(1, "CCC")
+    DbCommit()
+    DbcreateIndex("test","FIELD1")
+    DbSetScope(SCOPE_BOTH, "CCC")
+        ? Recno(), FieldGet(1)
+    DO WHILE TEST->FIELD1 = "CCC"
+        ? Recno(), FieldGet(1)
+        DbSkip(1)
+    ENDDO
+    ? "EOF", FieldGet(1)
+    DbCloseArea()
+    RETURN
+        
+
+function TestCorrupt3 as void
+        DbUseArea(TRUE,"DBFNTX","c:\download\corrupt\CCIVoM.Lgi")  
+        RETURN
+
+function TestTCC as void
+        local cString as string
+        cString := "abcdefg"
+        ? cString[1]
+        wait
+        DbUseArea(TRUE,"DBFNTX","c:\temp\tcc.DBF")
+        DbSetIndex("c:\temp\tcc1.ntx")
+        DbOrderInfo(DBOI_USER+42)
+        wait
+        RETURN
+
+Function TestCorrupt2() as VOID
+            LOCAL cDBF AS STRING
+            LOCAL oDBF1 AS Vo.DbServer
+            LOCAL oDBF2 AS Vo.DbServer
+
+            cDbf := "c:\temp\testVO"
+            FErase(cDbf+ ".cdx")
+            FErase(cDbf+ ".dbf")
+
+            RddSetDefault("DBFCDX")
+            DbCreate(cDbf, {{"CFIELD","C",10,0}})
+            DbUseArea(TRUE,  , cDbf)
+            DbCreateOrder("CFIELD", cDbf, "CFIELD", &( "{|| CFIELD}" ),)
+
+            DbAppend()
+            FieldPut(1,"AAAA")
+            DbCommit()
+            DbAppend()
+            FieldPut(1,"BBBB")
+            DbCommit()
+            DbCloseArea()
+                        
+            ? "TestDB"  
+            oDBF1  := Vo.DbServer{ cDbf + ".dbf", TRUE, FALSE, "DBFCDX" }
+            oDBF2  := Vo.DbServer{ cDbf + ".dbf", TRUE, FALSE, "DBFCDX" } 
+            //odbf2:SetOrder( 0 ) // without order no missing record during while
+            
+            oDBF1:Append()
+            oDBF1:FieldPut( 1, "CCCC" ) 
+            oDBF1:Commit()
+            oDBF1:Close()
+            oDBF1  := null_object
+            
+            ? "DBF2"  
+            oDBF2:GoTop()
+            WHILE ! oDBF2:EoF
+                        ? oDBF2:FieldGet( 1 ) 
+                        oDBF2:Skip()
+            ENDDO
+            //? oDBF2:FieldGet( 1 )             // record found after EoF
+            oDBF2:Close()
+            
+            ? ""
+            ? "DBF2 New"  
+            oDBF2  := Vo.DbServer{ cDbf + ".dbf", TRUE, FALSE, "DBFCDX" } 
+            oDBF2:GoTop()
+            WHILE ! oDBF2:EoF
+                        ? oDBF2:FieldGet( 1 ) 
+                        oDBF2:Skip()
+            ENDDO
+            oDBF2:Close()
+            
+            RETURN
+
+    
+
+FUNCTION TestCorrupt1() AS VOID
+	LOCAL cDbf AS STRING
+	cDbf := "c:\test\testVO"
+	RddSetDefault("DBFCDX")
+	DbCreate(cDbf, {{"CFIELD","C",10,0},{"MFIELD","M",10,0}})
+	FErase(cDbf+ ".cdx")
+	DbUseArea(TRUE,  , cDbf)
+	DbCreateIndex(cDbf, "CFIELD")
+	DbAppend()
+	FieldPut(1,"asdf")
+	FieldPut(2,"efgh")
+	DbAppend()
+	FieldPut(1,"ADJKSHA")
+	FieldPut(2,"YUWED")
+	DbCloseArea()
+	
+	DbUseArea(TRUE, , cDbf , , TRUE)
+	RLock()
+	FieldPut(1 , "aaaaa")
+	? "Records in dbf", RecCount()
+	WAIT "Now append a record from another app and press enter"
+	DbCloseArea()
+	
+	DbUseArea(TRUE, , cDbf , , TRUE)
+	? "Records in dbf", RecCount()
+	DbCloseArea()
+RETURN
 
 FUNCTION TestRel() AS VOID
 	LOCAL cPath AS STRING
@@ -4568,4 +4832,5 @@ FUNCTION Start11() AS VOID
 FUNCTION IsRlocked() AS LOGIC // Helper func
 
     RETURN ascan ( DBRlocklist() , recno() ) > 0
+
 

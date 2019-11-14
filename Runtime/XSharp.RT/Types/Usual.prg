@@ -1217,6 +1217,14 @@ BEGIN NAMESPACE XSharp
                 CASE __UsualType.String
                     SWITCH rhs:_usualType
                         CASE __UsualType.String		; RETURN lhs:_stringValue+ rhs:_stringValue
+                        CASE __UsualType.Symbol		; RETURN lhs:_stringValue+ (STRING) rhs:_symValue
+                        OTHERWISE
+                            THROW BinaryError("+", __CavoStr(VOErrors.ARGNOTSTRING), FALSE, lhs, rhs)
+                    END SWITCH
+                CASE __UsualType.Symbol
+                    SWITCH rhs:_usualType
+                        CASE __UsualType.String		; RETURN (STRING)lhs:_symValue+ rhs:_stringValue
+                        CASE __UsualType.Symbol		; RETURN (STRING)lhs:_symValue+ (STRING) rhs:_symValue
                         OTHERWISE
                             THROW BinaryError("+", __CavoStr(VOErrors.ARGNOTSTRING), FALSE, lhs, rhs)
                     END SWITCH

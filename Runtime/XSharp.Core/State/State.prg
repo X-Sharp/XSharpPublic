@@ -48,6 +48,7 @@ CLASS XSharp.RuntimeState
 			// Initialize the values that are not 'blank'
 			// RDD Settings
 			SELF:_SetThreadValue(Set.Ansi , TRUE)
+            SELF:_SetThreadValue(Set.Charset, 0)        // 0 = Ansi, 1 = Oem
 			SELF:_SetThreadValue(Set.AutoOpen , TRUE)
 			SELF:_SetThreadValue(Set.AutoOrder , 1)
 			SELF:_SetThreadValue(Set.Optimize , TRUE)

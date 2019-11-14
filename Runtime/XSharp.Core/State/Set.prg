@@ -34,6 +34,8 @@ FUNCTION SetAnsi() AS LOGIC
 FUNCTION SetAnsi(lNewSetting AS LOGIC) AS LOGIC
 	LOCAL lOld := RuntimeState.Ansi AS LOGIC
 	RuntimeState.Ansi := lNewSetting
+    // Keep charset in sync with Ansi
+    RuntimeState.SetValue<LONG>(Set.Charset, IIF (lNewSetting, 0, 1))
 	RETURN lOld
 
 
@@ -470,6 +472,8 @@ FUNCTION SetCollation(symNewSetting AS STRING)  AS STRING
 	SWITCH symNewSetting:ToUpper()
 	CASE "CLIPPER"
 		RuntimeState.CollationMode := CollationMode.Clipper
+	CASE "XPP"
+		RuntimeState.CollationMode := CollationMode.Xpp
 	CASE "WINDOWS"
 		RuntimeState.CollationMode := CollationMode.Windows
 	CASE "UNICODE"

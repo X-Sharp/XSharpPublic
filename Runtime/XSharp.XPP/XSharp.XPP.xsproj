@@ -111,6 +111,7 @@
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Collations\AnsiSystem.collation" />
     <None Include="Collations\Ascii.collation" />
     <None Include="Collations\British.collation" />
     <None Include="Collations\Danish.collation" />
@@ -124,6 +125,7 @@
     <None Include="Collations\Icelandic861.collation" />
     <None Include="Collations\Italian.collation" />
     <None Include="Collations\Norwegian.collation" />
+    <None Include="Collations\OemSystem.collation" />
     <None Include="Collations\Portuguese.collation" />
     <None Include="Collations\Spanish.collation" />
     <None Include="Collations\Swedish.collation" />

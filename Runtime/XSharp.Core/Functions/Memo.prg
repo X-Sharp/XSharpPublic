@@ -396,7 +396,7 @@ FUNCTION MemoWrit(cFileName AS STRING,cString AS STRING) AS LOGIC
         ELSE
             System.IO.File.WriteAllText(cFileName, cString, RuntimeState.DosEncoding)
         ENDIF
-		
+		System.IO.File.AppendAllText(cFileName, chr(26))
 		lOk := TRUE
 	CATCH e AS Exception
 		XSharp.IO.File.setErrorState(e)

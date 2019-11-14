@@ -33,12 +33,19 @@ FUNCTION SetCollationTable(nCollation, aTable) AS ARRAY
     IF liEnum != SET(Set.Collation) 
         XSharp.RuntimeState.CollationTable := NULL
         XSharp.RuntimeState.CollationMode  := CollationMode.Windows
-        IF nEnum == XppCollations.System
-            aBytes := NULL
-        ELSE
+//        IF nEnum == XppCollations.System
+//            aBytes := NULL
+//        ELSE
             XSharp.RuntimeState.CollationTable := NULL
             XSharp.RuntimeState.CollationMode  := CollationMode.Windows
             LOCAL tableName := nEnum:ToString() AS STRING
+            IF nEnum == XppCollations.System
+                IF SetAnsi()
+                    tableName := "Ansi"+tablename
+                ELSE
+                    tableName := "Oem"+tablename
+                ENDIF
+            ENDIF
             LOCAL oType := typeof(XSharp.XPP.Collations) AS System.Type
             LOCAL oProp := oType:GetProperty(tableName, BindingFlags.Static| BindingFlags.Public | BindingFlags.NonPublic| BindingFlags.IgnoreCase) AS PropertyInfo
             IF oProp != NULL
@@ -47,7 +54,7 @@ FUNCTION SetCollationTable(nCollation, aTable) AS ARRAY
                 XSharp.RuntimeState.CollationMode  := CollationMode.XPP
                 SET(Set.Collation, liEnum)
             ENDIF
-         ENDIF
+//         ENDIF
     ENDIF
     IF aBytes != NULL
         aCollation := {}

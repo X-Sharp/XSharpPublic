@@ -10,6 +10,7 @@ BEGIN NAMESPACE XSharp
 	ENUM CollationMode
 		MEMBER Windows
 		MEMBER Clipper
+        MEMBER XPP      := CollationMode.Clipper
 		MEMBER Unicode
 		MEMBER Ordinal
 	END ENUM

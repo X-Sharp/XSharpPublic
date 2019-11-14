@@ -104,6 +104,7 @@
     <Compile Include="Functions\Misc.prg" />
     <Compile Include="Functions\OOP.prg" />
     <Compile Include="Functions\Psz.prg" />
+    <Compile Include="Functions\Set.prg" />
     <Compile Include="Functions\String.prg" />
     <Compile Include="Functions\Symbol.prg" />
     <Compile Include="Functions\Terminal.prg" />
@@ -125,6 +126,7 @@
     <Compile Include="Types\Float.prg" />
     <Compile Include="Types\Interfaces.prg" />
     <Compile Include="Types\MemVar.prg" />
+    <Compile Include="Types\NestedMacros.prg" />
     <Compile Include="Types\PSZ.prg" />
     <Compile Include="Types\FixedMemory.prg" />
     <Compile Include="Types\Symbol.prg" />

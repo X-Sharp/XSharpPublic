@@ -68,7 +68,11 @@ STATIC CLASS WinFormsConverter
 				oWriter:WriteLine(String.Format("Text={0}" , oMainWed:Caption) )
 				oWriter:WriteLine(String.Format("Location={0},{1}" , oMainWed:Location:X , oMainWed:Location:Y) )
 				oWriter:WriteLine(String.Format("ClientSize={0},{1}" , oMainWed:Size:Width , oMainWed:Size:Height) )
+				IF xPorter.UseWinFormsIVarPrefix
+				oWriter:WriteLine(String.Format("ControlPrefix=o") )
+				ELSE
 				oWriter:WriteLine(String.Format("ControlPrefix=None") )
+				END IF
 				oWriter:WriteLine(String.Format("") )
 			ENDIF
 			
@@ -179,31 +183,37 @@ STATIC CLASS WinFormsConverter
 			ENDIF
 		END IF
 
-		aClassCode:Add(String.Format(e"\tPRIVATE {0} AS {1}" , oControl:Name, oControl:Type) )
+		LOCAL cControlIVar AS STRING
+		cControlIVar := oControl:Name
+		IF xPorter.UseWinFormsIVarPrefix
+			cControlIVar := "o" + cControlIVar
+		END IF
+		
+		aClassCode:Add(String.Format(e"\tPRIVATE {0} AS {1}" , cControlIVar, oControl:Type) )
 
-		aInitCode:Add(String.Format(e"\tSELF:{0} := {1}{{}}" , oControl:Name, oControl:Type) )
+		aInitCode:Add(String.Format(e"\tSELF:{0} := {1}{{}}" , cControlIVar, oControl:Type) )
 
-		aCode:Add(String.Format(e"\tSELF:{0}:Name := {1}" , oControl:Name, Quoted(oControl:Name)) )
-		aCode:Add(String.Format(e"\tSELF:{0}:Text := {1}" , oControl:Name, Quoted(oControl:Caption)) )
-		aCode:Add(String.Format(e"\tSELF:{0}:Location := System.Drawing.Point{{{1},{2}}}" , oControl:Name, oControl:Location:X, oControl:Location:Y) )
-		aCode:Add(String.Format(e"\tSELF:{0}:Size := System.Drawing.Size{{{1},{2}}}" , oControl:Name, oControl:Size:Width, oControl:Size:Height) )
-		aCode:Add(String.Format(e"\tSELF:{0}:TabIndex := {1}" , oControl:Name, iif(oControl:Order >= 0 , oControl:Order, 0) ) )
+		aCode:Add(String.Format(e"\tSELF:{0}:Name := {1}" , cControlIVar, Quoted(oControl:Name)) )
+		aCode:Add(String.Format(e"\tSELF:{0}:Text := {1}" , cControlIVar, Quoted(oControl:Caption)) )
+		aCode:Add(String.Format(e"\tSELF:{0}:Location := System.Drawing.Point{{{1},{2}}}" , cControlIVar, oControl:Location:X, oControl:Location:Y) )
+		aCode:Add(String.Format(e"\tSELF:{0}:Size := System.Drawing.Size{{{1},{2}}}" , cControlIVar, oControl:Size:Width, oControl:Size:Height) )
+		aCode:Add(String.Format(e"\tSELF:{0}:TabIndex := {1}" , cControlIVar, iif(oControl:Order >= 0 , oControl:Order, 0) ) )
 		IF oControl:ForeColor != NULL
-		aCode:Add(String.Format(e"\tSELF:{0}:ForeColor := {1}", oControl:Name, ColorToNetColor(oControl:ForeColor)) )
+		aCode:Add(String.Format(e"\tSELF:{0}:ForeColor := {1}", cControlIVar, ColorToNetColor(oControl:ForeColor)) )
 		END IF
 		IF oControl:BackColor != NULL
-		aCode:Add(String.Format(e"\tSELF:{0}:BackColor := {1}", oControl:Name, ColorToNetColor(oControl:BackColor)) )
+		aCode:Add(String.Format(e"\tSELF:{0}:BackColor := {1}", cControlIVar, ColorToNetColor(oControl:BackColor)) )
 		END IF
 		IF oControl:Font != NULL
-		aCode:Add(String.Format(e"\tSELF:{0}:Font := {1}", oControl:Name, FontToNetFont(oControl:Font)) )
+		aCode:Add(String.Format(e"\tSELF:{0}:Font := {1}", cControlIVar, FontToNetFont(oControl:Font)) )
 		END IF
-		aCode:Add(String.Format(e"\t{1}:Controls:Add(SELF:{0})" , oControl:Name, cParent) )
+		aCode:Add(String.Format(e"\t{1}:Controls:Add(SELF:{0})" , cControlIVar, cParent) )
 		aCode:Add(String.Format(e"") )
 		
 		IF oControl:Controls:Count != 0
 			oWriter?:WriteLine("SUBCONTROLSSTART")
 			FOREACH oChild AS WedDescriptor IN oControl:Controls
-				WriteControl(oChild, "SELF:" + oControl:Name, oWriter, aClassCode, aInitCode, aCode)
+				WriteControl(oChild, "SELF:" + cControlIVar, oWriter, aClassCode, aInitCode, aCode)
 			NEXT
 			oWriter?:WriteLine("SUBCONTROLSEND")
 		END IF
@@ -213,10 +223,10 @@ STATIC CLASS WinFormsConverter
 				NOP
 			CASE "RADIOBUTTON"
 				oWriter?:WriteLine(String.Format("AutoSize=TRUE") )
-				aCode:Add(String.Format(e"\tSELF:{0}:AutoSize := true" , oControl:Name) )
+				aCode:Add(String.Format(e"\tSELF:{0}:AutoSize := true" , cControlIVar) )
 			CASE "MULTILINEEDIT"
 				oWriter?:WriteLine(String.Format("Multiline=TRUE") )
-				aCode:Add(String.Format(e"\tSELF:{0}:Multiline := true" , oControl:Name) )
+				aCode:Add(String.Format(e"\tSELF:{0}:Multiline := true" , cControlIVar) )
 		END SWITCH
 	RETURN
 

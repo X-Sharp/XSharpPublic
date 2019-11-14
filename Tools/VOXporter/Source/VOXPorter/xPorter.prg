@@ -129,6 +129,8 @@ FUNCTION ReadIni() AS VOID
 								END IF
 							NEXT
 						END TRY
+					CASE "USEWINFORMSIVARPREFIX"
+						xPorter.UseWinFormsIVarPrefix := cValue == "1"
 					CASE "EXPORTTOIDE"
 						cValue := cValue:ToUpper()
 						xPorter.ExportToXide := cValue:Contains("XIDE") .or. .not. cValue:Contains("VS")
@@ -271,6 +273,7 @@ CLASS xPorter
 
 	STATIC PROPERTY OverWriteProjectFiles AS LOGIC AUTO
 	STATIC PROPERTY GenerateWinForms AS LOGIC AUTO
+	STATIC PROPERTY UseWinFormsIVarPrefix AS LOGIC AUTO
 
 	STATIC PROTECT _aFoundDefines := SortedList<STRING,STRING>{} AS SortedList<STRING,STRING>
 	STATIC PROTECT _aSDKDefines AS Dictionary<STRING,STRING>

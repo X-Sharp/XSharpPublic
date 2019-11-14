@@ -4,14 +4,10 @@
 // See License.txt in the project root for license information.
 //
 
-USING System.Reflection
-USING System.IO
-
-	
 		
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/evaluate/*" />
 FUNCTION Evaluate(cString AS STRING) AS USUAL
-	RETURN Evaluate(cString, TRUE)
+	RETURN Evaluate(cString, TRUE) 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/evaluate/*" />	
 /// <param name="lAllowSingleQuotes">Should single quotes be allowed as string delimiters.</param>
@@ -51,13 +47,24 @@ FUNCTION MCompile(cString AS STRING, lAllowSingleQuotes AS LOGIC) AS XSharp._Cod
 		LOCAL oResult AS XSharp._Codeblock
 		LOCAL lIsCodeblock  AS LOGIC
         LOCAL addsMemVars   AS LOGIC
+        cString := MPrepare(cString)
 		iResult := oMC:Compile(cString, lAllowSingleQuotes, oMod, OUT lIsCodeBlock, OUT addsMemVars)
 		oResult := XSharp._Codeblock{iResult, cString, lIsCodeBlock, addsMemVars}
 		RETURN oResult
 	ENDIF
 	RETURN NULL_OBJECT	
-	
-	
+
+
+
+INTERNAL FUNCTION MPrepare(cString AS STRING) AS STRING
+    IF !cString:Trim():StartsWith("{")
+        RETURN cString
+    ENDIF
+    IF ! NestedMacroHandler.IsNested(cString)
+        RETURN cString
+    ENDIF
+    RETURN NestedMacroHandler.Expand(cString)
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mexec/*" />	
 /// <note type="caution">MCompile returns a STRING containing PCode tokens in VO.
 /// It returns a XSharp._Codeblock in .Net. Therefore the parameter of MExec is a Codeblock</note>
@@ -85,3 +92,4 @@ FUNCTION Type(cString AS STRING) AS STRING
 	RETURN cRet
 	
 	
+

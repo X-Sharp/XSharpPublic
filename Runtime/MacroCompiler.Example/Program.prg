@@ -332,20 +332,25 @@ BEGIN NAMESPACE MacroCompilerTest
 
         TestParse(mc, e"{|a,b| +a[++b] += 100, a[2]}", "{|a, b|((+a((++b)))+='100'), a('2')}")
         TestMacro(mc, e"{|a,b| asdgfafd(123) }", Args(), NULL, NULL,ErrorCode.NotAMethod)
-
         mc:Options:UndeclaredVariableResolution := VariableResolution.Error
         TestMacro(mc, e"{|a,b| testtest__() }", Args(1,2,3), NULL, NULL, ErrorCode.IdentifierNotFound)
-        TestMacro(mc, e"{|a,b,c| a[b,c] }", Args({{42,43,44},{45,46,47}},1,1) ,42, typeof(Long))
+        TestMacro(mc, e"{|a,b,c| a[b,c] }", Args({{42,43,44},{45,46,47}},1,1) ,42, typeof(LONG))
+        // The next 2 items are for Github issue #238
+        TestMacro(mc, e"{|a| a == 1 }", Args(1), TRUE, typeof(LOGIC),)
+        TestMacro(mc, e"{|a| a == 1 }", Args(TRUE), TRUE, typeof(LOGIC),)
+        // The following items handle the late bound call of a method / property with the a name that matches a property inside the Usual type
         TestMacro(mc, e"{|a| a:Item()}", Args(TestWithItem{}), 42,typeof(LONG))
         TestMacro(mc, e"{|a| a:Nested:Item()}", Args(TestWithItem{}), 42,typeof(LONG))
         TestMacro(mc, e"{|a| a:Item}", Args(TestWithItem2{}), 42,typeof(LONG))
         TestMacro(mc, e"{|a| a:Nested:Item}", Args(TestWithItem2{}), 42,typeof(LONG))
+        
         mc:Options:UndeclaredVariableResolution := VariableResolution.GenerateLocal
         TestMacro(mc, e"{|a| a() }", Args((@@Func<INT>){ => 1234}), 1234, typeof(INT))
         TestMacro(mc, "#HELLo", Args(), #hello, typeof(SYMBOL))
         TestMacro(mc, "#HELLo + #World", Args(), #hello + #world, typeof(STRING))
         TestMacro(mc, e"#HELLo + \"world\"", Args(), #hello + "world", typeof(STRING))
         TestMacro(mc, e"\"Hello\" + #world", Args(), "Hello" + #world, typeof(STRING))
+        // Literals of type string with bracketed delimiters
         TestMacro(mc, "[Hello] + [world]", Args(), "Helloworld", typeof(STRING))
         TestMacro(mc, "U(12345)", Args(), 12345, typeof(INT))
         TestMacro(mc, "U(U(12345)-1)", Args(), 12344, typeof(INT))

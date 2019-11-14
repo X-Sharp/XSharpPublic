@@ -3,11 +3,11 @@
 #define BUILDNUMBER_H
 #define PRODUCT_NAME     "XSharp"
 
-#define VERSION_NUMBER_STR     "2.0.0.0"
-#define VERSION_NUMBER			2,0,0,0
-#define FILEVERSION_NUMBER       2,0,8,0
-#define FILEVERSION_NUMBER_STR   "2.0.8.0"
-#define INFORMATIONAL_NUMBER_STR  "2.08 GA"
+#define VERSION_NUMBER_STR     "2.1.0.0"
+#define VERSION_NUMBER			2,1,0,0
+#define FILEVERSION_NUMBER       2,1,0,0
+#define FILEVERSION_NUMBER_STR   "2.1.0.0"
+#define INFORMATIONAL_NUMBER_STR  "2.10 GA"
 
 #define COMPANY_NAME "XSharp B.V."
 #define COPYRIGHT_STR "Copyright © 1993-2019 Computer Associates & XSharp BV, All rights reserved"

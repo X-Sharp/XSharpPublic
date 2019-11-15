@@ -7517,7 +7517,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
 
                 bool allowAddressOf = _options.Dialect.SupportsAddressOf() ;
-                if (! allowAddressOf)
+
+                if (! allowAddressOf || _options.VOImplicitCastsAndConversions)
                 {
                     var xnode = pues.XNode as XP.PrefixExpressionContext;
                     if (xnode.Op.Type == XP.ADDROF)

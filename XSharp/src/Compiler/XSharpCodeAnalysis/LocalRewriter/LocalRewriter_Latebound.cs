@@ -22,6 +22,8 @@ using Microsoft.CodeAnalysis.CSharp.Symbols;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Roslyn.Utilities;
 using Microsoft.CodeAnalysis.PooledObjects;
+using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
+
 namespace Microsoft.CodeAnalysis.CSharp
 {
     internal sealed partial class LocalRewriter
@@ -48,7 +50,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 : MakeConversionNode(loweredValue, usualType, false));
         }
 
-        public BoundExpression MakeVODynamicInvokeMember(BoundExpression loweredReceiver, string name, ImmutableArray<BoundExpression> args)
+        public BoundExpression MakeVODynamicInvokeMember(BoundExpression loweredReceiver, string name,BoundDynamicInvocation node, ImmutableArray<BoundExpression> args)           
         {
             if (loweredReceiver.Type == _compilation.ArrayType())
             {
@@ -60,6 +62,19 @@ namespace Microsoft.CodeAnalysis.CSharp
                 // This should not happen because we are not converting the method call to a dynamic call, but better safe than sorry.
                 return null;
             }
+            // for a method call the hierarchy is:
+            // loweredReceiver = object
+            // loweredReceiver.Parent = MemberAccess
+            // loweredReceiver.Parent.Parent = InvocationExpression
+            // loweredReceiver.Parent.Parent.Syntax.XNode = MethodCallContext
+            //
+            var parent = loweredReceiver.Syntax?.Parent?.Parent;
+            var xnode = parent.XNode as XSharpParser.MethodCallContext;
+            if (xnode.HasRefArguments)
+            {
+                return RewriteLateBoundCallWithRefParams(loweredReceiver, name, node, args);
+            }
+
             var convArgs = new ArrayBuilder<BoundExpression>();
             var usualType = _compilation.UsualType();
             foreach (var a in args)

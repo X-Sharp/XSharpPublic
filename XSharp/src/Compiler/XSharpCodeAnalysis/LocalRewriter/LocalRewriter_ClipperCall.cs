@@ -21,6 +21,7 @@ using System.Diagnostics;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using Microsoft.CodeAnalysis.CSharp.Symbols;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.PooledObjects;
 using Roslyn.Utilities;
 
 namespace Microsoft.CodeAnalysis.CSharp
@@ -28,6 +29,145 @@ namespace Microsoft.CodeAnalysis.CSharp
     internal partial class LocalRewriter
     {
 
+        private void checkRefKinds(ImmutableArray<BoundExpression> arguments, RefKind[] refKinds,
+                                   ImmutableArray<BoundExpression>.Builder exprs, ImmutableArray<BoundExpression>.Builder args,
+                                   ImmutableArray<LocalSymbol>.Builder temps, BoundLocal[] argBoundTemps)
+        {
+            exprs.Clear();
+            for (int i = 0; i < arguments.Length; i++)
+            {
+                if (refKinds[i].IsWritableReference())
+                {
+                    var a = arguments[i];
+                    while (a is BoundConversion c) a = c.Operand;
+                    a = VisitExpression(a);
+                    LocalSymbol la = _factory.SynthesizedLocal(a.Type, refKind: refKinds[i]);
+                    temps.Add(la);
+                    BoundLocal bla = _factory.Local(la);
+                    var lasgn = _factory.AssignmentExpression(bla, a, isRef: true);
+                    exprs.Add(VisitAssignmentOperator(lasgn, true));
+                    args.Add(MakeConversionNode(bla, arguments[i].Type, false));
+                    argBoundTemps[i] = bla;
+                }
+                else
+                {
+                    args.Add(VisitExpression(arguments[i]));
+                }
+            }
+        }
+
+        private void writeRefBack(ImmutableArray<BoundExpression> arguments, RefKind[] refKinds,
+            BoundExpression boundPars, BoundLocal[] argBoundTemps, ImmutableArray<BoundExpression>.Builder exprs)
+        {
+            exprs.Clear();
+            for (int i = 0; i < arguments.Length; i++)
+            {
+                if (refKinds[i].IsWritableReference())
+                {
+                    BoundExpression idx = _factory.Literal(i);
+                    var elem = _factory.ArrayAccess(boundPars, ImmutableArray.Create(idx));
+                    var a = argBoundTemps[i];
+                    var conv = MakeConversionNode(elem, a.Type, false);
+                    var asgn = _factory.AssignmentExpression(a, conv);
+                    exprs.Add(asgn);
+                }
+            }
+
+        }
+
+        internal BoundExpression RewriteLateBoundCallWithRefParams(BoundExpression loweredReceiver, string name, BoundDynamicInvocation node, ImmutableArray<BoundExpression> arguments)
+        {
+            
+            var convArgs = new ArrayBuilder<BoundExpression>();
+            var usualType = _compilation.UsualType();
+            foreach (var a in arguments)
+            {
+
+                if (a.Type == null && !a.Syntax.XIsCodeBlock)
+                    convArgs.Add(new BoundDefaultExpression(a.Syntax, usualType));
+                else
+                    convArgs.Add(MakeConversionNode(a, usualType, false));
+            }
+            var aArgs = _factory.Array(usualType, convArgs.ToImmutableAndFree());
+
+             // Note: Make sure the first parameter in __InternalSend() in the runtime is a USUAL!
+            var expr = _factory.StaticCall(_compilation.RuntimeFunctionsType(), ReservedNames.InternalSend,
+                        MakeConversionNode(loweredReceiver, usualType, false),
+                        new BoundLiteral(loweredReceiver.Syntax, ConstantValue.Create(name), _compilation.GetSpecialType(SpecialType.System_String)),
+                        aArgs);
+
+            if (expr is BoundCall bc && bc.Arguments.Length == 3)       // object, name, param array
+            {
+                // we can't use the code for early bound code because we our param array is already processed.
+
+                var temps = ImmutableArray.CreateBuilder<LocalSymbol>();
+                var exprs = ImmutableArray.CreateBuilder<BoundExpression>();
+                var args = ImmutableArray.CreateBuilder<BoundExpression>(arguments.Length);
+                var argBoundTemps = new BoundLocal[arguments.Length];
+                var refKinds = new RefKind[arguments.Length];
+                var argumentRefKindsOpt = node.ArgumentRefKindsOpt;
+                for (int i = 0; i < arguments.Length; i++)
+                {
+                    var r = (!argumentRefKindsOpt.IsDefaultOrEmpty && i < argumentRefKindsOpt.Length) ? argumentRefKindsOpt[i] : RefKind.None;
+                    refKinds[i] = r;
+                }
+
+                // keep track of the locals that need to be assigned back
+                checkRefKinds(arguments, refKinds, exprs, args, temps, argBoundTemps);
+                var preExprs = exprs.ToImmutable();
+                exprs.Clear();
+
+                // the usual array is in the 3rd parameter to the bound call
+                var actualargs = bc.Arguments;
+                var argsNode = actualargs[2] as BoundArrayCreation;
+
+                LocalSymbol parsTemp = _factory.SynthesizedLocal(argsNode.Type);
+                BoundExpression boundPars = _factory.Local(parsTemp);
+                temps.Add(parsTemp);
+                BoundExpression parsAssignment = _factory.AssignmentExpression(boundPars, argsNode);
+
+                // local temp 
+                // __InternalSend( oObject, cName, temp = paramArray)
+
+                var rewrittenArgs = ImmutableArray.CreateBuilder<BoundExpression>();
+                // replace last argument node with assignment node
+                rewrittenArgs.Add(actualargs[0]);
+                rewrittenArgs.Add(actualargs[1]);
+                rewrittenArgs.Add(parsAssignment);
+                bc = bc.Update(bc.ReceiverOpt, bc.Method, rewrittenArgs.ToImmutableArray());
+
+
+
+                // result = __InternalSend(oObject, methodName, params)
+                LocalSymbol callTemp = _factory.SynthesizedLocal(bc.Type);
+                temps.Add(callTemp);
+                BoundLocal boundCallTemp = _factory.Local(callTemp);
+                BoundExpression callAssignment = _factory.AssignmentExpression(boundCallTemp, bc);
+
+                // generate statements that assign param array elements back to the locals
+
+                writeRefBack(arguments, refKinds, boundPars, argBoundTemps, exprs);
+                var postExprs = exprs.ToImmutable();
+                exprs.Clear();
+
+                exprs.AddRange(preExprs);
+                exprs.Add(callAssignment);
+                exprs.AddRange(postExprs);
+
+                // the sequence now contains:
+                // save vars
+                // temp = paramArray
+                // result = __INternalSend()
+                // assign array elements from temp back to local vars
+                // return result
+                return new BoundSequence(node.Syntax, temps.ToImmutable(), exprs.ToImmutableArray(), boundCallTemp, node.Type);
+
+            }
+            return expr;
+
+        }
+
+   
         internal BoundNode VisitCtorCallClipperConvention(BoundObjectCreationExpression node)
         {
             if (node.Arguments.Length > 0 && node.Syntax is ObjectCreationExpressionSyntax oces)
@@ -136,24 +276,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var r = (!argumentRefKindsOpt.IsDefaultOrEmpty && i < argumentRefKindsOpt.Length) ? argumentRefKindsOpt[i] : RefKind.None;
                 refKinds[i] = r;
             }
-            for (int i = 0; i < arguments.Length; i++)
-            {
-                if (refKinds[i].IsWritableReference())
-                {
-                    var a = arguments[i];
-                    while (a is BoundConversion c) a = c.Operand;
-                    a = VisitExpression(a);
-                    LocalSymbol la = _factory.SynthesizedLocal(a.Type, refKind: refKinds[i]);
-                    BoundLocal bla = _factory.Local(la);
-                    var lasgn = _factory.AssignmentExpression(bla, a, isRef: true);
-                    exprs.Add(VisitAssignmentOperator(lasgn, true));
-                    args.Add(MakeConversionNode(bla, arguments[i].Type, false));
-                    argTemps.Add(la);
-                    argBoundTemps[i] = bla;
-                }
-                else
-                    args.Add(VisitExpression(arguments[i]));
-            }
+
+            checkRefKinds(arguments, refKinds, exprs, args, argTemps, argBoundTemps);
 
             var rewrittenArgumentRefKindsOpt = argumentRefKindsOpt;
             var rewrittenArguments = args.ToImmutable();
@@ -169,20 +293,8 @@ namespace Microsoft.CodeAnalysis.CSharp
             argTemps.Add(parsTemp);
 
             preExprs = exprs.ToImmutable();
-            exprs.Clear();
 
-            for (int i = 0; i < arguments.Length; i++)
-            {
-                if (refKinds[i].IsWritableReference())
-                {
-                    BoundExpression idx = _factory.Literal(i);
-                    var elem = _factory.ArrayAccess(boundPars, ImmutableArray.Create(idx));
-                    var a = argBoundTemps[i];
-                    var conv = MakeConversionNode(elem, a.Type, false);
-                    var asgn = _factory.AssignmentExpression(a, conv);
-                    exprs.Add(asgn);
-                }
-            }
+            writeRefBack(arguments, refKinds, boundPars, argBoundTemps, exprs);
 
             argumentRefKindsOpt = rewrittenArgumentRefKindsOpt;
             temps = argTemps.ToImmutable();
@@ -191,3 +303,4 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
     }
 }
+

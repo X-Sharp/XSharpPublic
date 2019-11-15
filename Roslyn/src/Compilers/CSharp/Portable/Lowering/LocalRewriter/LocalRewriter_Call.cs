@@ -79,7 +79,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 #if XSHARP
                     if (_compilation.Options.HasRuntime && _compilation.Options.LateBinding && !loweredExpression.HasDynamicType())
                     {
-                        return MakeVODynamicInvokeMember(loweredExpression, "Invoke", loweredArguments);
+                        return MakeVODynamicInvokeMember(loweredExpression, "Invoke", node, loweredArguments );
                     }
 #endif
                     return _dynamicFactory.MakeDynamicInvocation(loweredExpression, loweredArguments, node.ArgumentNamesOpt, node.ArgumentRefKindsOpt, resultDiscarded).ToExpression();
@@ -89,7 +89,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 #if XSHARP
             if (_compilation.Options.HasRuntime && _compilation.Options.LateBinding && !loweredReceiver.HasDynamicType())
             {
-                return MakeVODynamicInvokeMember(loweredReceiver, name, loweredArguments);
+                return MakeVODynamicInvokeMember(loweredReceiver, name, node, loweredArguments);
             }
 #endif
             return _dynamicFactory.MakeDynamicMemberInvocation(

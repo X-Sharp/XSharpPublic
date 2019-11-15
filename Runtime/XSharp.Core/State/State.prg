@@ -58,6 +58,7 @@ CLASS XSharp.RuntimeState
 			SELF:_SetThreadValue(Set.MemoBlockSize , 32U)
 			SELF:_SetThreadValue(Set.DefaultRDD , "DBFNTX")
 			SELF:_SetThreadValue(Set.Exclusive , TRUE)
+            SELF:_SetThreadValue(Set.FoxLock , FALSE)
 			// Console Settings
 			SELF:_SetThreadValue(Set.Bell , TRUE)
 			SELF:_SetThreadValue(Set.Color , "W/N,N/W,N/N,N/N,N/W")

@@ -37,6 +37,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     lOk := oBag:Open(info)
                     IF lOk .AND. XSharp.RuntimeState.AutoOrder != 0
                         SELF:CurrentOrder := oBag:Tags[0]
+                        SELF:CurrentOrder:GoTop()
                     ENDIF
                     IF lStructural
                         SELF:_oRDD:Header:HasTags |= DbfTableFlags.HasStructuralCDX

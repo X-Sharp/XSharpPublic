@@ -5,14 +5,15 @@
 USING XSharp.RDD
 USING System.IO
 USING System.Threading
-USING XSharp.Vfp
-using System.Reflection   
+USING System.Reflection   
 
 [STAThread];      
 FUNCTION Start() AS VOID
     TRY
-        TestNestedMacro()
-//        ShowArray(SetCollationTable(1))
+        TestCorrupt2()
+        //testCdxLock()
+        //TestXppCollations()
+        //TestNestedMacro()
 //        testCreate()
 //        testOverloads()
         //testScopes() 
@@ -149,6 +150,76 @@ FUNCTION Start() AS VOID
         ErrorDialog(e)
     END TRY
     RETURN
+
+FUNCTION TestCdxLock() AS VOID
+LOCAL aFields AS ARRAY
+LOCAL cFile AS STRING
+//SET(Set.FOXLOCK, TRUE)
+RddSetDefault ( "DBFCDX" )
+cFile := "C:\Test\TestFpt"
+aFields := { { "ID" , "N" , 2 , 0 },{ "MEMO" , "M" , 10 , 0 }}
+DbCreate(cFile, aFields)
+ VoDbUseArea(TRUE, "DBFCDX",cFile,"test" ,FALSE,FALSE)
+OrdCreate("C:\Test\TestFpt","Test","ID")
+DbAppend()
+FieldPut(1, 1)
+FieldPut(2, Replicate("X", 20))
+DbCloseArea()
+VoDbUseArea(TRUE, "DBFCDX",cFile,"test" ,TRUE,FALSE)
+VoDbGoTop()
+RLock()
+FieldPut(1, 2)
+FieldPut(2, Replicate("X", 24))
+DbUnlock()
+DbCloseArea()
+VoDbUseArea(TRUE, "DBFCDX",cFile,"test" ,TRUE,FALSE)
+VoDbGoTop()
+RLock()
+FieldPut(1, 3)
+FieldPut(2, Replicate("X", 64))
+DbUnlock()
+DbCloseArea()
+RETURN
+    
+
+FUNCTION TestXppCollations() AS VOID
+    SetAnsi(TRUE)
+    DumpTable("A")
+    SetAnsi(FALSE)
+    DumpTable("O")
+RETURN
+    
+FUNCTION DumpTable(cChar)
+LOCAL i,j
+LOCAL cTable
+LOCAL cResult
+LOCAL aCollation 
+DbCreate("Test"+cChar,{{"NUM","N",3,0},{"CHAR","C",10,0}},"DBFNTX")
+DbUseArea(.T., "DBFNTX", "Test"+cChar)
+FOR i = 0 TO 255
+	DbAppend()
+	FieldPut(1, i)
+	FieldPut(2, Repl(CHR(I), 10))
+NEXT
+DbCommit()
+DbCLoseArea()
+FOR i := -1 TO 16
+	aCollation := SetCollationTable(i)
+	cTable := ""
+	cResult := ""
+	FOR j := 1 TO 256
+		cTable += Chr(aCollation[j])
+		cResult  += Str(j,3) + "=" +repl(chr(j),10)+str(aCollation[j],4,0)+chr(13)+chr(10)
+	NEXT
+	IF cChar == "A"
+		MemoWrit("Ansi\Table"+ltrim(str(i)), cTable)
+		MemoWrit("Ansi\List"+ltrim(str(i)), cResult)
+	ELSE
+		MemoWrit("Oem\Table"+ltrim(str(i)), cTable)
+		MemoWrit("Oem\List"+ltrim(str(i)), cResult)
+	ENDIF
+NEXT
+RETURN .T.
 
 FUNCTION TestNestedMacro() AS VOID
     LOCAL cMacro AS STRING
@@ -326,7 +397,7 @@ Function TestCorrupt2() as VOID
             LOCAL oDBF1 AS Vo.DbServer
             LOCAL oDBF2 AS Vo.DbServer
 
-            cDbf := "c:\temp\testVO"
+            cDbf := "c:\temp\testVO" 
             FErase(cDbf+ ".cdx")
             FErase(cDbf+ ".dbf")
 
@@ -349,12 +420,12 @@ Function TestCorrupt2() as VOID
             //odbf2:SetOrder( 0 ) // without order no missing record during while
             
             oDBF1:Append()
-            oDBF1:FieldPut( 1, "CCCC" ) 
+            oDBF1:FieldPut( 1, "CCCC" )  
             oDBF1:Commit()
             oDBF1:Close()
             oDBF1  := null_object
             
-            ? "DBF2"  
+            ? "DBF2"   
             oDBF2:GoTop()
             WHILE ! oDBF2:EoF
                         ? oDBF2:FieldGet( 1 ) 
@@ -449,45 +520,45 @@ FUNCTION TestRel() AS VOID
 	child->DbCloseArea()
 	parent->DbCloseArea()
 RETURN
-CLASS MyVfpClass INHERIT XSharp.Vfp.Custom
-    PROPERTY Test AS USUAL GET _GetProperty("Test") SET _SetProperty("Test", VALUE)
-    METHOD Init(a,b,c) CLIPPER
-        ? a,b,c
-        RETURN TRUE
-    CONSTRUCTOR() CLIPPER
-       SUPER(_Args())
-        SELF:Test := 1
-END CLASS
+//CLASS MyVfpClass INHERIT XSharp.Vfp.Custom
+//    PROPERTY Test AS USUAL GET _GetProperty("Test") SET _SetProperty("Test", VALUE)
+//    METHOD Init(a,b,c) CLIPPER
+//        ? a,b,c
+//        RETURN TRUE
+//    CONSTRUCTOR() CLIPPER
+//       SUPER(_Args())
+//        SELF:Test := 1
+//END CLASS
 
-FUNCTION TestVfpClass AS VOID
-//    local oC as MyVfpClass
-//    oC := MyVfpClass{1,2,3}
-//    ? oC:Name
-    LOCAL oColl AS Collection
-    oColl := Collection{}
-    oColl:AddObject("item a", "a")
-    oColl:AddObject("item A", "A")
-    oColl:AddObject("item B", "B")
-    oColl:AddObject("item b", "b")
-    oColl:AddObject("item C", "C","A")
-    //oColl:AddObject(1)
-//    oColl:AddObject(2)
-//    oColl:AddObject(3)
-//    oColl:AddObject(4)
-//    
-//    oColl:AddObject(100,,2)
-//    oColl:AddObject(200,,,3)
-//    ? oColl:Count
-//    ? oColl:Item(1)
-//    ? oColl:Item(2)
-    oColl:KeySort := 3
-    FOREACH VAR o IN oColl
-        ? o, oCOll:GetKey(o)
-    NEXT
-//    ? oColl:Item("a")
-//    ? oColl:Item("A")
-//    ? oColl:Item("b")
-    RETURN
+//FUNCTION TestVfpClass AS VOID
+////    local oC as MyVfpClass
+////    oC := MyVfpClass{1,2,3}
+////    ? oC:Name
+//    LOCAL oColl AS Collection
+//    oColl := Collection{}
+//    oColl:AddObject("item a", "a")
+//    oColl:AddObject("item A", "A")
+//    oColl:AddObject("item B", "B")
+//    oColl:AddObject("item b", "b")
+//    oColl:AddObject("item C", "C","A")
+//    //oColl:AddObject(1)
+////    oColl:AddObject(2)
+////    oColl:AddObject(3)
+////    oColl:AddObject(4)
+////    
+////    oColl:AddObject(100,,2)
+////    oColl:AddObject(200,,,3)
+////    ? oColl:Count
+////    ? oColl:Item(1)
+////    ? oColl:Item(2)
+//    oColl:KeySort := 3
+//    FOREACH VAR o IN oColl
+//        ? o, oCOll:GetKey(o)
+//    NEXT
+////    ? oColl:Item("a")
+////    ? oColl:Item("A")
+////    ? oColl:Item("b")
+//    RETURN
 
 FUNCTION NotifyRDDOperations(oRDD AS XSharp.RDD.IRdd, oEvent AS XSharp.DbNotifyEventArgs) AS VOID
     IF oRDD != NULL

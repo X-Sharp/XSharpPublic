@@ -167,9 +167,9 @@
       <Project>{eb3f3142-07f7-48ca-b38d-f611c45a9511}</Project>
       <Private>True</Private>
     </ProjectReference>
-    <ProjectReference Include="..\XSharp.VFP\XSharp.VFP.xsproj">
-      <Name>XSharp.VFP</Name>
-      <Project>{3a771f0e-9400-4a19-8663-c71567ebfa29}</Project>
+    <ProjectReference Include="..\XSharp.XPP\XSharp.XPP.xsproj">
+      <Name>XSharp.XPP</Name>
+      <Project>{c5d7be20-038e-4b42-a90a-b13bab83d8e5}</Project>
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>

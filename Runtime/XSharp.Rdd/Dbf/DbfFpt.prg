@@ -208,7 +208,11 @@ USING System.Diagnostics
                 Array.Copy(bData,8, buffer, 0, buffer:Length)
                 RETURN buffer
             CASE FlexFieldType.String
-                RETURN encoding:GetString(bData,8, bData:Length-8)
+                IF bData[bData:Length-1] == 0
+                    RETURN encoding:GetString(bData,8, bData:Length-9)
+                ELSE
+                    RETURN encoding:GetString(bData,8, bData:Length-8)
+                ENDIF
             CASE FlexFieldType.IndexBlock
             CASE FlexFieldType.Delete
             CASE FlexFieldType.Object16

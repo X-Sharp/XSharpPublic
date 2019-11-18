@@ -785,12 +785,12 @@
       Return the alias of a specified work area as a string.
     </summary>
 
-    <param name="nWorkArea">Any work area number.  If not specified, the alias of the current work area is returned.</param>
+    <param name="uWorkArea">Any work area name or number.  If not specified, the alias of the current work area is returned.</param>
     <returns>
       If there is no database file in use, Alias() returns a NULL_STRING.
     </returns>
     <remarks>
-      Alias() is the inverse of Select(): Alias() returns the alias name given the work area number, while Select() returns the work area number given the alias name.
+      Alias() is the inverse of Select(). Alias() returns the alias name given the work area number, while Select() returns the work area number given the alias name.
     </remarks>
     <example>
       This example returns the name of the previously selected work area:
@@ -3024,6 +3024,9 @@
     <summary>
       Determine when beginning-of-file is encountered.
     </summary>
+    <param name="uArea">
+      Specifies the work area name or number for a table.
+    </param>
     <returns>
       TRUE after an attempt to skip backward beyond the first logical record in a database file or if the database file contains no records; otherwise, FALSE.  If there is no database file open in the work area, BOF() returns TRUE.
     </returns>
@@ -4689,6 +4692,9 @@
     <summary>
       Clear any active relations.
     </summary>
+    <param name="uArea">
+      Specifies the work area name or number for a table.
+    </param>
     <returns>
       TRUE if successful; otherwise FALSE.
     </returns>
@@ -4757,6 +4763,9 @@
     <summary>
       Close all files in a work area.
     </summary>
+    <param name="uArea">
+      Specifies the work area name or number for a table.
+    </param>
     <returns>
       TRUE if successful; otherwise, FALSE.
     </returns>
@@ -4799,6 +4808,9 @@
     <summary>
       Flush all pending updates in one work area.
     </summary>
+    <param name="uArea">
+      Specifies the work area name or number for a table.
+    </param>
     <returns>
       TRUE if successful; otherwise, FALSE.
     </returns>
@@ -4888,6 +4900,9 @@
     <summary>
       Resume a pending locate condition.
     </summary>
+    <param name="uArea">
+      Specifies the work area name or number for a table.
+    </param>
     <returns>
       TRUE if successful; otherwise, FALSE.
     </returns>
@@ -5440,6 +5455,9 @@
       Return the name of the alias.
       Note:  DBF() is a compatibility function and is no longer recommended.  It is superseded by Alias0().  See Alias0() for more information.
     </summary>
+    <param name="uArea">
+      Specifies the work area name or number for a table.
+    </param>
     <returns>
       The alias of the work area as a string.  If there is no active database file in the work area, DBF() returns a NULL_STRING.
     </returns>
@@ -5539,6 +5557,9 @@
     <summary>
       Return a filter.
     </summary>
+    <param name="uArea">
+      Specifies the work area name or number for a table.
+    </param>
     <returns>
       The filter condition defined in a work area.  If no filter has been set, DBFilter() returns a NULL_STRING.
     </returns>
@@ -5574,8 +5595,11 @@
     <summary>
       Return the work area number.
     </summary>
+    <param name="uArea">
+      Specifies the work area name or number for a table.
+    </param>
     <returns>
-      A number in the range of 1 to 1023.
+      A number that indicates the workarea number.
     </returns>
     <remarks>
       DBGetSelect() is the recommended way to get the number of the currently selected work area. It does not, however, retrieve any information about the occupation of this work area by a database.
@@ -5595,6 +5619,9 @@
     <summary>
       Move to the last logical record.
     </summary>
+    <param name="uArea">
+      Specifies the work area name or number for a table.
+    </param>
     <returns>
       TRUE if successful; otherwise, FALSE.
     </returns>
@@ -5673,6 +5700,9 @@
     <summary>
       Move to the first logical record.
     </summary>
+    <param name="uArea">
+      Specifies the work area name or number for a table.
+    </param>
     <returns>
       TRUE if successful; otherwise, FALSE.
     </returns>
@@ -6029,6 +6059,9 @@
     <summary>
       Remove all records marked for deletion from a database file, rebuild all active orders, and recover all physical space occupied by the deleted records.
     </summary>
+    <param name="uArea">
+      Specifies the work area name or number for a table.
+    </param>
     <returns>
       TRUE if successful; otherwise, FALSE.
     </returns>
@@ -6054,6 +6087,9 @@
     <summary>
       Restore the current record if it has been marked for deletion.
     </summary>
+    <param name="uArea">
+      Specifies the work area name or number for a table.
+    </param>
     <returns>
       TRUE if successful; otherwise, FALSE.
     </returns>
@@ -6460,7 +6496,7 @@
       Change the current work area.
     </summary>
 
-    <param name="uArea">A number from 0 to 250 that specifies the work area to be selected. or the alias of the work area to be selected.</param>
+    <param name="uArea">A number that specifies the work area to be selected. or the alias of the work area to be selected.</param>
     <returns>
       TRUE if successful; otherwise, FALSE.
     </returns>
@@ -6910,6 +6946,10 @@
     <summary>
       Create an array containing the structure of a database file.
     </summary>
+    <param name="uArea">
+      Specifies the work area name or number for a table.
+    </param>
+
     <returns>
       The structure of the database file in an array whose length is equal to the number of fields in the database file.  Each element of the array is a subarray containing information for one field.  The subarrays have the following format:
       Constant&#0009;Attribute&#0009;
@@ -7112,6 +7152,9 @@
     <summary>
       Release all locks for all work areas.
     </summary>
+    <param name="uArea">
+      Specifies the work area name or number for a table.
+    </param>
     <returns>
       TRUE if successful; otherwise, FALSE.
     </returns>
@@ -7227,6 +7270,9 @@
     <summary>
       Remove all records from open files.
     </summary>
+    <param name="uArea">
+      Specifies the work area name or number for a table.
+    </param>
     <returns>
       TRUE if successful; otherwise, FALSE.
     </returns>
@@ -7419,6 +7465,9 @@
     <summary>
       Return the deleted status of the current record.
     </summary>
+    <param name="uArea">
+      Specifies the work area name or number for a table.
+    </param>
     <returns>
       TRUE if the current record is marked for deletion; otherwise, FALSE.  If there is no database file in use in the work area, Deleted() returns FALSE.
     </returns>
@@ -8824,6 +8873,9 @@
     <summary>
       Determine when end-of-file is encountered.
     </summary>
+    <param name="uArea">
+      Specifies the work area name or number for a table.
+    </param>
     <returns>
       TRUE when an attempt is made to move the record pointer beyond the last logical record in a database file or if the database file contains no records; otherwise, FALSE.  If there is no database file open in the work area, EOF() returns TRUE.
     </returns>
@@ -9606,6 +9658,9 @@
     <summary>
       Return the number of fields in the current database file.
     </summary>
+    <param name="uArea">
+      Specifies the work area name or number for a table.
+    </param>
     <returns>
       If there is no database file open, FCount() returns 0.
     </returns>
@@ -10350,8 +10405,10 @@
     <summary>
       Return the name of a field as a string.
     </summary>
-
     <param name="dwFieldPos">The position of the field in the database file structure.</param>
+    <param name="uArea">
+      Specifies the work area name or number for a table.
+    </param>
     <returns>
       The name of the specified field as a string.  If &lt;dwFieldPos&gt; does not correspond to an existing field in the database file or if no database file is open, FieldName() returns a NULL_STRING.
     </returns>
@@ -10399,8 +10456,10 @@
     <summary>
       Return the position of a field.
     </summary>
-
     <param name="cFieldName">The name of the field.</param>
+    <param name="nArea">
+      Specifies the work area number for the table.
+    </param>
     <returns>
       The position of the specified field within the list of fields associated with the work area.  If the work area has no field with the specified name, FieldPos() returns 0.
     </returns>
@@ -10587,6 +10646,9 @@
     <summary>
       Return the name of a field as a symbol.
     </summary>
+    <param name="uArea">
+      Specifies the work area name or number for a table.
+    </param>
 
     <param name="dwFieldPos">The position of the field in the database file structure.</param>
     <returns>
@@ -10749,6 +10811,9 @@
     <summary>
       Lock an opened and shared database file.
     </summary>
+    <param name="uArea">
+      Specifies the work area name or number for a table.
+    </param>
     <returns>
       TRUE if the lock succeeded; otherwise, FALSE.
     </returns>
@@ -10968,6 +11033,9 @@
     <summary>
       Determine if the previous search operation succeeded.
     </summary>
+    <param name="uArea">
+      Specifies the work area name or number for a table.
+    </param>
     <returns>
       TRUE if the last search was successful; otherwise, FALSE.  Found() will also return FALSE if there is no database open in the work area.
     </returns>
@@ -12666,6 +12734,9 @@
     <summary>
       Return the length of the database file header.
     </summary>
+    <param name="uArea">
+      Specifies the work area name or number for a table.
+    </param>
     <returns>
       The number of bytes in the header of the database file.  If no database file is in use, Header() returns a 0.
     </returns>
@@ -14686,6 +14757,9 @@
     <summary>
       Return the number of the last record in a database file.
     </summary>
+    <param name="uArea">
+      Specifies the work area name or number for a table.
+    </param>
     <returns>
       The number of physical records in a database file.  Filtering or deleted settings have no effect on the return value.  LastRec() returns 0 if there is no database file in use.
     </returns>
@@ -15182,6 +15256,9 @@
     <summary>
       Return the date a database file was last modified and closed.
     </summary>
+    <param name="uArea">
+      Specifies the work area name or number for a table.
+    </param>
     <returns>
       The date of last change.  If there is no database file in use, LUpdate() returns a NULL_DATE.
     </returns>
@@ -19927,8 +20004,10 @@
   <reccount>
     <summary>
       Determine the number of records in a database file.
-      Note:  RecCount() is a compatibility function and is no longer recommended.  It is superseded by LastRec().  See LastRec() for more information.
     </summary>
+    <param name="uArea">
+      Specifies the work area name or number for a table.
+    </param>
     <returns>
     </returns>
     <remarks>
@@ -19941,6 +20020,9 @@
     <summary>
       Return the current record number.
     </summary>
+    <param name="uArea">
+      Specifies the work area name or number for a table.
+    </param>
     <returns>
       The current record number.  If the work area contains a database file with 0 records, RecNo() returns 1, BOF() and EOF() both return TRUE, and LastRec() returns 0.
       If the record pointer is moved past the last record, RecNo() returns LastRec() + 1 and EOF() returns TRUE.  If an attempt is made to move before the first record, RecNo() returns the record number of the first logical record in the database file and BOF() returns TRUE.  If no database file is open, RecNo() will return a 0.
@@ -19982,6 +20064,9 @@
     <summary>
       Determine the record length of a database file.
     </summary>
+    <param name="uArea">
+      Specifies the work area name or number for a table.
+    </param>
     <returns>
       The record length, in bytes.  RecSize() returns 0 if no database file is open.
     </returns>
@@ -20259,8 +20344,14 @@
     <summary>
       Lock the current record.
     </summary>
+    <param name="uArea">
+      Specifies the work area name or number for a table.
+    </param>
+    <param name="cRecordNumberList">
+      Specifies that RLOCK( ) attempts to lock multiple records. The character expression cRecordNumberList specifies one or more record numbers, separated by commas, that RLOCK( ) attempts to lock. For example, to attempt record locks on the first four records in a table, cRecordNumberList should contain 1, 2, 3, 4.
+    </param>
     <returns>
-      TRUE if the record lock is obtained; otherwise, FALSE.  An attempt to lock a record in an empty database returns TRUE.
+      TRUE if the record lock(s) is (are) obtained; otherwise, FALSE.  An attempt to lock a record in an empty database returns TRUE.
     </returns>
     <remarks>
       If a database file is opened in shared mode, you must obtain a record lock before attempting any operation that writes to the database file.
@@ -24259,6 +24350,9 @@
     <summary>
       Determine whether a database file is open.
     </summary>
+   <param name="uArea">
+      Specifies the work area name or number for a table.
+    </param>
     <returns>
       TRUE if there is a database file in use; otherwise, FALSE.
     </returns>

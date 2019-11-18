@@ -186,11 +186,15 @@ FUNCTION FieldPutSelect(symAlias AS USUAL,symField AS SYMBOL,uNewValue AS USUAL)
     *----------------------------------------------------------------------------
     
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/alias/*" />
-FUNCTION Alias(nWorkArea) AS STRING CLIPPER
-    IF nWorkArea:IsNil
+FUNCTION Alias(uWorkArea) AS STRING CLIPPER
+    IF uWorkArea:IsNil
         RETURN Alias0()
     ENDIF
-    RETURN VoDb.Alias(nWorkArea)
+    IF IsNumeric(uWorkArea)
+        RETURN VoDb.Alias(uWorkArea)
+    ENDIF
+    RETURN (uWorkArea)->Alias()
+    
     
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/alias0sym/*" />
@@ -323,6 +327,16 @@ FUNCTION DbGoto(uRecID) AS LOGIC CLIPPER
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbinfo/*" />
 FUNCTION DbInfo(kInfoType, uNewSetting) AS USUAL CLIPPER
     _DbThrowErrorOnFailure(__FUNCTION__, VoDb.Info(kInfoType, REF uNewSetting))
+    IF kInfoType == DBI_GETLOCKARRAY .AND. ((OBJECT) uNewSetting) IS INT[]
+        LOCAL aLocks AS INT[]
+        LOCAL aResult AS ARRAY
+        aLocks := (INT[]) uNewSetting
+        aResult := ArrayNew()
+        FOREACH VAR iLock IN aLocks
+            aResult:Add(iLock)
+        NEXT
+        uNewSetting := aResult
+    ENDIF
     RETURN uNewSetting
     
     
@@ -684,7 +698,12 @@ FUNCTION FieldPutArea(dwWorkArea AS DWORD, symField AS SYMBOL, uNewValue AS USUA
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/lupdate/*" />  
 FUNCTION LUpdate()  AS DATE STRICT
     RETURN DbInfo(DBI_LASTUPDATE)
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/lupdate/*" />  
+FUNCTION LUpdate(uArea AS USUAL)  AS DATE STRICT
+    RETURN (uArea)->(LUpdate())
     
+
     
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/rddcount/*" />      
 FUNCTION RddCount() AS DWORD CLIPPER
@@ -969,7 +988,12 @@ FUNCTION DbStruct() AS ARRAY PASCAL
     ENDIF
     
     RETURN aStruct
-    
+
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbstruct/*" />
+FUNCTION DbStruct(uArea AS USUAL) AS ARRAY PASCAL
+    RETURN (uArea)->(DbStruct())
+
     
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/indexhplock/*" />
 FUNCTION IndexHPLock(lNewSetting AS USUAL) AS LOGIC

@@ -50,8 +50,8 @@ FUNCTION _SelectString(uWorkArea AS STRING) AS DWORD
 FUNCTION _Select(uWorkArea) AS USUAL CLIPPER
     LOCAL nSelect           AS DWORD
     LOCAL xType             AS DWORD
-    
-    IF uWorkArea:IsNil
+     
+    IF uWorkArea:IsNil 
         RETURN  (INT) VoDb.GetSelect() 
     ENDIF
     xType := UsualType(uWorkArea)
@@ -309,7 +309,7 @@ FUNCTION DbEval(cbExecute, cbForCondition, cbWhileCondition, nNext, nRecord, lRe
     ENDIF
     RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.Eval(VoDb.ValidBlock(cbExecute), VoDb.ValidBlock(cbForCondition), VoDb.ValidBlock(cbWhileCondition), nNext, nRecord, lRest) )
   
-    
+     
     
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbfieldinfo/*" />
 FUNCTION DbFieldInfo(kInfoType, nFieldPos, uNewSetting) AS USUAL CLIPPER
@@ -320,10 +320,14 @@ FUNCTION DbFieldInfo(kInfoType, nFieldPos, uNewSetting) AS USUAL CLIPPER
     
     
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbgoto/*" />
-FUNCTION DbGoto(uRecID) AS LOGIC CLIPPER
+FUNCTION DbGoto(uRecID AS USUAL) AS LOGIC 
     RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.Goto(uRecId) )
     
-    
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbgoto/*" />
+FUNCTION DbGoto(uRecID AS USUAL, uArea AS USUAL) AS LOGIC 
+    RETURN (uArea)->(DbGoto(uRecID))
+
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbinfo/*" />
 FUNCTION DbInfo(kInfoType, uNewSetting) AS USUAL CLIPPER
     _DbThrowErrorOnFailure(__FUNCTION__, VoDb.Info(kInfoType, REF uNewSetting))

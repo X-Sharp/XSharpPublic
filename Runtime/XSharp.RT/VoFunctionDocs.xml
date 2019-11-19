@@ -553,8 +553,10 @@
 
     <param name="aArray">The array to traverse.</param>
     <param name="cbBlock">The code block to execute.</param>
-    <param name="nStart">The starting element.  A negative value starts from the end.  
-    If &lt;nCount&gt; is  positive, the default value is 1; if &lt;nCount&gt; is negative, the default value is the length of the array.</param>
+    <param name="nStart">
+      The starting element.  A negative value starts from the end.  
+      If &lt;nCount&gt; is  positive, the default value is 1; if &lt;nCount&gt; is negative, the default value is the length of the array.
+    </param>
     <param name="nCount">The number of elements to process from &lt;nStart&gt;.  A negative value starts from the end.  The default is all elements to the end of the array.</param>
     <returns>
       A reference to &lt;aArray&gt;.
@@ -638,7 +640,7 @@
     <remarks>
       AFields() fills a series of arrays (structure attribute arrays) with the structure of the database file currently open, one element in each array per field.  AFields() works like ADir(), filling a series of existing arrays with information.
       To use AFields(), you must first create the arrays to hold the database structure information, each with the same number of elements as the number of fields (that is, FCount()).  Once the structure attribute arrays exist, you can then invoke AFields() to fill them with information about each field.
-      By default, AFields() operates on the currently selected work area.  It can operate on an unselected work area if you specify it within an aliased expression (see example below).
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
     </remarks>
     <example>
       This example uses AFields() with an aliased expression to fill arrays with the structure of SALES.DBF, open in an unselected work area:
@@ -2550,7 +2552,7 @@
       TRUE if successful; otherwise, FALSE.
     </returns>
     <remarks>
-      By default, this function operates on the currently selected work area.  It can be made to operate on an unselected work area by specifying it within an aliased expression.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
     </remarks>
     <example>
       This example extracts an array of pointers from the BLOB file's root area, then uses one of the pointers to export a picture to a file:
@@ -2596,7 +2598,7 @@
     </returns>
     <remarks>
       BLOBDirectGet() retrieves data stored in a BLOB file without the need to reference a particular field in the database file.  It is particularly useful when accessing data that is larger than 64 KB, (such as memo fields created with the BLOBImport() function).
-      By default, this function operates on the currently selected work area.  It can be made to operate on an unselected work area by specifying it within an aliased expression.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
     </remarks>
     <example>
       This example illustrates storing setup information in a BLOB file, then selectively retrieving the stored information:
@@ -2646,7 +2648,8 @@
       A numeric pointer to the BLOB image stored in &lt;cSourceFile&gt;.
     </returns>
     <remarks>
-      BLOBDirectImport() provides a mechanism for copying the contents of a file into a BLOB file.  By default, this function operates on the currently selected work area.  It can be made to operate on an unselected work area by specifying it within an aliased expression.
+      BLOBDirectImport() provides a mechanism for copying the contents of a file into a BLOB file.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
       BLOBDirectImport() is used in conjunction with BLOBDirectExport() to transfer data back and forth between external files and BLOB files.  You can use BLOBDirectImport() with a variety of file types, including graphics images, word processor files, and printer fonts.  These two functions are excellent for creating databases of documents, graphics, sounds, and so on.
       &#0009;After importing a file with BLOBDirectImport(), nNewPointer, the return value, is the only way to access the data from the BLOB file.  It is up to you, the developer, to provide permanent storage for this reference (see example below)
       Note:  DBFieldInfo(DBS_BLOB_TYPE, &lt;nFieldPos&gt;) will return "C" (string) for any memo field created using BLOBDirectImport().
@@ -2696,7 +2699,7 @@
     <remarks>
       BLOBDirectPut() stores variable length BLOB data without creating a link with a particular memo field in a database file.
       After adding data to a BLOB file using BLOBDirectPut(), you should store the function's return value, as this is the only way to access the data from the BLOB file.  It is up to you, the developer, to provide permanent storage for this reference (see BLOBRootPut()).
-      By default, this function operates on the currently selected work area.  It can be made to operate on an unselected work area by specifying it within an aliased expression.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
     </remarks>
     <example>
       This example illustrates storing setup information in a BLOB file, then selectively retrieving the stored information:
@@ -2749,7 +2752,7 @@
       TRUE if successful; otherwise, FALSE.
     </returns>
     <remarks>
-      By default, this function operates on the currently selected work area.  It can be made to operate on an unselected work area by specifying it within an aliased expression.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
     </remarks>
     <example>
       This example exports the contents of a field that stores a picture to a .GIF file, so that the file can be programmatically displayed:
@@ -2789,7 +2792,7 @@
     <remarks>
       BLOBGet() is very similar to FieldGet().  However, because string type variables cannot be larger than 64 KB, FieldGet() will raise a runtime error when attempting to retrieve memo fields of this magnitude or greater.
       BLOBGet() will also raise an error if you attempt to retrieve a field greater than this magnitude; however, you can retrieve any subset of the BLOB data by using an &lt;nCount&gt; less than 64 KB.
-      By default, this function operates on the currently selected work area.  It can be made to operate on an unselected work area by specifying it within an aliased expression.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
       Note:  BLOB data less than 64 KB can be retrieved from a memo field using standard means (for example, referring to the field by name in an expression or using the FieldGet() function).
     </remarks>
     <example>
@@ -2834,7 +2837,8 @@
       TRUE if successful; otherwise, FALSE.
     </returns>
     <remarks>
-      BLOBImport() provides a mechanism for copying the contents of a file into a memo field as BLOB data.  By default, this function operates on the currently selected work area.  It can be made to operate on an unselected work area by specifying it within an aliased expression.
+      BLOBImport() provides a mechanism for copying the contents of a file into a memo field as BLOB data.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
       BLOBImport() is used in conjunction with BLOBExport() to transfer BLOB data back and forth between files and memo fields.  You can use BLOBImport() with a variety of file types, including graphics images, word processor files, and printer fonts.  These two functions are excellent for creating databases of documents, graphics, sounds, and so on.
       Note:  DBFieldInfo(DBS_BLOB_TYPE, &lt;nFieldPos&gt;) will return "C" (string) for any memo field created using BLOBImport().
     </remarks>
@@ -2869,7 +2873,8 @@
       The data retrieved from the root of the BLOB file.  The data type of the return value depends on the actual data stored.  Use ValType() or UsualType() to determine the data type.  Note that BLOBRootGet() returns NIL if the root reference has never been written to with BLOBRootPut().
     </returns>
     <remarks>
-      BLOBRootGet() allows the retrieval of a BLOB from the root of a BLOB file in a work area.  By default, this function operates on the currently selected work area.  It can be made to operate on an unselected work area by specifying it within an aliased expression.
+      BLOBRootGet() allows the retrieval of a BLOB from the root of a BLOB file in a work area.  
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
       Note:  Because the root data does not reference a particular record in the database file, the DBRLock() will not protect this root storage reference.  Therefore, if the database file is opened in shared mode, you should use BLOBRootLock() before calling BLOBRootGet().
     </remarks>
     <example>
@@ -2916,7 +2921,7 @@
     </returns>
     <remarks>
       Use BLOBRootLock() when accessing the database file in shared mode to obtain a lock on the root area of a BLOB file for reading from or writing to the root area.
-      By default, this function operates on the currently selected work area.  It can be made to operate on an unselected work area by specifying it within an aliased expression.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
     </remarks>
     <example>
       This example illustrates how to properly lock and unlock the root area of a BLOB file for a database file opened in shared mode.
@@ -2953,7 +2958,7 @@
     </returns>
     <remarks>
       BLOBRootPut() allows the storage of one — and only one — piece of data to a BLOB file's root area (there is no size limitation on this one piece of data).  After storing the new data, BLOBRootPut() releases the space associated with any data previously stored in the BLOB file's root area.
-      By default, this function operates on the currently selected work area.  It can be made to operate on an unselected work area by specifying it within an aliased expression.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
       Note:  Because the root data does not reference a particular record in the database file, the DBRLock() will not protect this root storage reference.  Therefore, if the database file is opened in shared mode, you should use BLOBRootLock() before calling BLOBRootPut().
     </remarks>
     <example>
@@ -2997,7 +3002,7 @@
     </returns>
     <remarks>
       Use BLOBRootUnlock() to release a lock previously obtained using BLOBRootLock().
-      By default, this function operates on the currently selected work area.  It can be made to operate on an unselected work area by specifying it within an aliased expression.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
       Note:  The only functions that require the use of BLOBRootLock() or BLOBRootUnlock() are BLOBRootGet() and BLOBRootPut().
     </remarks>
     <example>
@@ -3025,14 +3030,14 @@
       Determine when beginning-of-file is encountered.
     </summary>
     <param name="uArea">
-      Specifies the work area name or number for a table.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/uAreaValue/*" />
     </param>
     <returns>
       TRUE after an attempt to skip backward beyond the first logical record in a database file or if the database file contains no records; otherwise, FALSE.  If there is no database file open in the work area, BOF() returns TRUE.
     </returns>
     <remarks>
       BOF() is a database function used to test for a boundary condition when you are moving the record pointer backward through a database file using the DBSkip() function.  An example is a screen paging routine that pages forward or backward through the database file based on a user key stroke.  When the user attempts to page backward, you would use BOF() to test for a beginning-of-file condition before using DBSkip() to move the record pointer and repaint the screen.
-      By default, BOF() operates on the currently selected work area.  It can be made to operate on an unselected work area by specifying it within an aliased expression (see example below).
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkareaParam/*" />
       DBSkip(), VODBSkip(), and the SKIP command are the only record movement operations that can set BOF() to TRUE.  Once BOF() is set to TRUE, it retains its value until there is another attempt to move the record pointer.
     </remarks>
     <example>
@@ -3050,9 +3055,16 @@
         USE invoices NEW
         QOut(sales-&gt;BOF(), customer-&gt;BOF())
       </code>
+      This example uses a parameter to the BOF() function to eveluate the value of BOF() in unselected work areas:
+      <code language="X#">
+        USE sales NEW
+        USE customer NEW
+        USE invoices NEW
+        QOut(BOF("sales"), BOF("customer"))
+      </code>
     </example>
     <seealso cref='M:XSharp.RT.Functions.DbSkip(XSharp.__Usual)'>DBSkip</seealso>
-    <seealso cref='M:XSharp.RT.Functions.Eof'>EOF</seealso>
+    <seealso cref='O:XSharp.RT.Functions.Eof'>EOF</seealso>
     <seealso cref='M:XSharp.RT.Functions.VoDbBof'>VODBBOF</seealso>
   </bof>
   <break>
@@ -4169,9 +4181,9 @@
         ? c&#0009;&#0009;// The quick brown fox jumps over the lazy dog.
       </code>
     </example>
-    <seealso></seealso>
-    <seealso></seealso>
-    <seealso></seealso>
+
+
+
   </crypt>
   <crypta>
     <summary>
@@ -4204,9 +4216,9 @@
         // The quick brown fox jumps over the lazy dog.
       </code>
     </example>
-    <seealso></seealso>
-    <seealso></seealso>
-    <seealso></seealso>
+
+
+
   </crypta>
   <ctod>
     <summary>
@@ -4235,14 +4247,7 @@
       This example demonstrates the inverse relationship between CToD() and DToC():
       <code language="X#">? CToD(DToC(Today())) = Today()&#0009;&#0009;// .T.</code>
     </example>
-    <seealso></seealso>
-    <seealso></seealso>
-    <seealso></seealso>
-    <seealso></seealso>
-    <seealso></seealso>
-    <seealso></seealso>
-    <seealso></seealso>
-    <seealso></seealso>
+
   </ctod>
   <ctodansi>
     <summary>
@@ -4274,14 +4279,14 @@
         ? CToDAnsi("84/10/23")&#0009;&#0009;&#0009;&#0009;// 23.10.1984
       </code>
     </example>
-    <seealso></seealso>
-    <seealso></seealso>
-    <seealso></seealso>
-    <seealso></seealso>
-    <seealso></seealso>
-    <seealso></seealso>
-    <seealso></seealso>
-    <seealso></seealso>
+
+
+
+
+
+
+
+
   </ctodansi>
   <curdir>
     <summary>
@@ -4311,11 +4316,11 @@
         ENDIF
       </code>
     </example>
-    <seealso></seealso>
-    <seealso></seealso>
-    <seealso></seealso>
-    <seealso></seealso>
-    <seealso></seealso>
+
+
+
+
+
   </curdir>
   <curdrive>
     <summary>
@@ -4339,10 +4344,6 @@
         &#0009;? CurDrive()&#0009;&#0009;&#0009;// C
       </code>
     </example>
-    <seealso></seealso>
-    <seealso></seealso>
-    <seealso></seealso>
-    <seealso></seealso>
   </curdrive>
   <date2bin>
     <summary>
@@ -4459,10 +4460,11 @@
       The list of fields to append from &lt;cSourceFile&gt;.  The default is all fields.<br/>
       &#0009;Only fields with the same names and types in both files are appended.  If fields with the same name do not match in data type, a runtime error is raised.
     </param>
-    <param name="cbForCondition">A code block that defines a condition that each record within the scope must meet in order to be processed.</param>
+    <param name="cbForCondition">
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/cbfor/*" />
+    </param>
     <param name="cbWhileCondition">
-      A code block that defines another condition that each record must meet in order to be processed.  As soon as a record is encountered that causes the condition to fail, the operation terminates.<br/>
-      &#0009;You define the scope using one of these three, mutually exclusive arguments.  The default is all records.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/cbwhile/*" />
     </param>
     <param name="nNext">The number of records to append, starting at the first record.</param>
     <param name="nRecord">The number of the record to append.</param>
@@ -4473,6 +4475,7 @@
       TRUE if successful; otherwise, FALSE.
     </returns>
     <remarks>
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/recordscope/*" />
       By default, this function adds record to the database file in the currently selected work area.  It can be made to operate on an unselected work area by specifying it within an aliased expression.
       DBApp() does not require that the database file be used exclusively or locked with FLock() to perform its operation.  As each record is added, X# automatically arbitrates contention for the new record.
       DBApp() is the functional equivalent of the APPEND FROM command, specified without a DELIMITED or SDF clause.
@@ -4497,10 +4500,11 @@
     </param>
     <param name="cDelim">The delimiter used to separate fields in &lt;cSourceFile&gt;.  The default delimiter is a double quote mark. </param>
     <param name="acFields">A list of fields to copy from &lt;cSourceFile&gt;.  The default is all fields.</param>
-    <param name="cbForCondition">A code block that defines a condition that each record within the scope must meet in order to be processed.</param>
+    <param name="cbForCondition">
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/cbfor/*" />
+    </param>
     <param name="cbWhileCondition">
-      A code block that defines another condition that each record must meet in order to be processed.  As soon as a record is encountered that causes the condition to fail, the operation terminates.<br/>
-      &#0009;You define the scope using one of these three, mutually exclusive arguments.  The default is all records.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/cbwhile/*" />
     </param>
     <param name="nNext">The number of records to append, starting at the first record.</param>
     <param name="nRecord">The number of the record to append.</param>
@@ -4509,7 +4513,9 @@
       TRUE if successful; otherwise, FALSE.
     </returns>
     <remarks>
-      DBAppDelim() is the functional equivalent of the APPEND FROM DELIMITED command.  It is the same as the DBApp() function except that it can be used only with text files.  See APPEND FROM and DBApp() for more information.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/recordscope/*" />
+      DBAppDelim() is the functional equivalent of the APPEND FROM DELIMITED command.  
+      It is the same as the DBApp() function except that it can be used only with text files.  See APPEND FROM and DBApp() for more information.
     </remarks>
     <example>
       The following example appends records from a text file named SRCDELIM.TXT:
@@ -4580,10 +4586,11 @@
       &#0009;This function attempts to open &lt;cSourceFile&gt; in shared mode.  If the file does not exist, a runtime error is raised.  If the file is successfully opened, the operation proceeds.  If access is denied because, for example, another process has exclusive use of the file, NetErr() is set to TRUE.  Refer to the "Concurrency Control" chapter in the Programmer's Guide for more information on resolving concurrency conflicts.
     </param>
     <param name="acFields">A list of fields to copy from &lt;cSourceFile&gt;.  The default is all records.</param>
-    <param name="cbForCondition">A code block that defines a condition that each record within the scope must meet in order to be processed.</param>
+    <param name="cbForCondition">
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/cbfor/*" />
+    </param>
     <param name="cbWhileCondition">
-      A code block that defines another condition that each record must meet in order to be processed.  As soon as a record is encountered that causes the condition to fail, the operation terminates.<br/>
-      &#0009;You define the scope using one of these three, mutually exclusive arguments.  The default is all records.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/cbwhile/*" />
     </param>
     <param name="nNext">The number of records to append, starting at the first record.</param>
     <param name="nRecord">The number of the record to append.</param>
@@ -4592,7 +4599,9 @@
       TRUE if successful; otherwise, FALSE.
     </returns>
     <remarks>
-      DBAppSDF() is the functional equivalent of the APPEND FROM SDF command.  It is the same as the DBApp() function except that it can be used only with SDF files.  See APPEND FROM and DBApp() for more information.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/recordscope/*" />
+      DBAppSDF() is the functional equivalent of the APPEND FROM SDF command.
+      It is the same as the DBApp() function except that it can be used only with SDF files.  See APPEND FROM and DBApp() for more information.
     </remarks>
     <example>
       The following example appends text from an SDF file:
@@ -4615,7 +4624,7 @@
     </returns>
     <remarks>
       DBClearFilter() performs the same function as the SET FILTER command with no expression specified.  For more information, refer to SET FILTER.
-      By default, this function operates on the currently selected work area.  It can be made to operate on an unselected work area by specifying it within an aliased expression.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkareaParam/*" />
       <note type="tip">
         Logical records:  DBClearFilter() affects the logical visibility of records in a work area.  For more information, refer to DBSetFilter() and the SET FILTER command.
       </note>
@@ -4630,7 +4639,7 @@
         DBClearFilter()
       </code>
     </example>
-    <seealso cref='M:XSharp.RT.Functions.DbFilter'>DBFilter</seealso>
+    <seealso cref='O:XSharp.RT.Functions.DbFilter'>DBFilter</seealso>
     <seealso cref='M:XSharp.RT.Functions.DbSetFilter(XSharp.__Usual,XSharp.__Usual)'>DBSetFilter</seealso>
     <seealso>SET FILTER</seealso>
     <seealso cref='M:XSharp.RT.Functions.VoDbClearFilter'>VODBClearFilter</seealso>
@@ -4651,7 +4660,7 @@
     </returns>
     <remarks>
       All pending updates are written to disk prior to closing the index files.  Once the files are closed and the order list cleared, the database file returns to its natural order.
-      By default, this function operates on the currently selected work area.  It can be made to operate on an unselected work area by specifying it within an aliased expression.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
     </remarks>
     <example>
       The following example closes index files if any are open:
@@ -4693,14 +4702,14 @@
       Clear any active relations.
     </summary>
     <param name="uArea">
-      Specifies the work area name or number for a table.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/uAreaOperation/*" />
     </param>
     <returns>
       TRUE if successful; otherwise FALSE.
     </returns>
     <remarks>
       DBClearRelation() performs the same function as the SET RELATION command with no clauses specified.  For more information, refer to the SET RELATION command.
-      By default, this function operates on the currently selected work area.  It can be made to operate on an unselected work area by specifying it within an aliased expression.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkareaParam/*" />
     </remarks>
     <example>
       The following example sets a relation, lists data, and then clears the relation:
@@ -4764,14 +4773,14 @@
       Close all files in a work area.
     </summary>
     <param name="uArea">
-      Specifies the work area name or number for a table.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/uAreaOperation/*" />
     </param>
     <returns>
       TRUE if successful; otherwise, FALSE.
     </returns>
     <remarks>
-      DBCloseArea() releases a work area from use.  By default, this function operates on the currently selected work area.  It can be made to operate on an unselected work area by specifying it within an aliased expression.
-      Pending updates are written, pending locks are released, and any resources associated with the work area are closed or released.
+      DBCloseArea() releases a work area from use.  
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkareaParam/*" />
       DBCloseArea() is equivalent to the CLOSE command or the USE command with no clauses.  For more information, refer to the USE and CLOSE commands.
     </remarks>
     <example>
@@ -4809,13 +4818,14 @@
       Flush all pending updates in one work area.
     </summary>
     <param name="uArea">
-      Specifies the work area name or number for a table.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/uAreaOperation/*" />
     </param>
     <returns>
       TRUE if successful; otherwise, FALSE.
     </returns>
     <remarks>
-      DBCommit() causes all updates to the work area to be written to disk.  By default, this function operates on the currently selected work area.  It can be made to operate on an unselected work area by specifying it within an aliased expression.
+      DBCommit() causes all updates to the work area to be written to disk.  
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkareaParam/*" />
       All updated database and order buffers are written to DOS, and a DOS Commit request is issued for the database file and any index files associated with the work area.
       DBCommit() performs the same function as the DBCommitAll() function, except that it operates only on the current or aliased work area.
       <note type="tip">
@@ -4846,7 +4856,7 @@
     <seealso cref='M:XSharp.RT.Functions.DbCloseAll'>DBCloseAll</seealso>
     <seealso cref='M:XSharp.RT.Functions.DbCommitAll'>DBCommitAll</seealso>
     <seealso>DBServer:Commit</seealso>
-    <seealso cref='M:XSharp.RT.Functions.DbUnLock'>DBUnlock</seealso>
+    <seealso cref='O:XSharp.RT.Functions.DbUnLock'>DBUnlock</seealso>
     <seealso cref='M:XSharp.RT.Functions.VoDbCommit'>VODBCommit</seealso>
   </dbcommit>
   <dbcommitall>
@@ -4893,7 +4903,7 @@
     <seealso cref='M:XSharp.RT.Functions.DbCloseAll'>DBCloseAll</seealso>
     <seealso cref='M:XSharp.RT.Functions.DbCommit'>DBCommit</seealso>
     <seealso>DBServer:Commit</seealso>
-    <seealso cref='M:XSharp.RT.Functions.DbUnLock'>DBUnlock</seealso>
+    <seealso cref='O:XSharp.RT.Functions.DbUnLock'>DBUnlock</seealso>
     <seealso cref='M:XSharp.RT.Functions.VoDbCommitAll'>VODBCommitAll</seealso>
   </dbcommitall>
   <dbcontinue>
@@ -4901,7 +4911,7 @@
       Resume a pending locate condition.
     </summary>
     <param name="uArea">
-      Specifies the work area name or number for a table.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/uAreaOperation/*" />
     </param>
     <returns>
       TRUE if successful; otherwise, FALSE.
@@ -4937,10 +4947,11 @@
       &#0009;DBCreate() creates the specified file in ANSI or OEM character set format, based on the SetAnsi() setting.  (For more information, refer to the SetAnsi() function.)
     </param>
     <param name="acFields">A list of fields to copy to &lt;cTargetFile&gt;.  The default is all fields.</param>
-    <param name="cbForCondition">A code block that defines a condition that each record within the scope must meet in order to be processed.</param>
+    <param name="cbForCondition">
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/cbfor/*" />
+    </param>
     <param name="cbWhileCondition">
-      A code block that defines another condition that each record must meet in order to be processed.  As soon as a record is encountered that causes the condition to fail, the operation terminates.  If no scope is specified, &lt;cbWhileCondition&gt; changes the default scope to &lt;lRest&gt;.<br/>
-      &#0009;You define the scope using one of these three, mutually exclusive arguments.  The default is all records.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/cbwhile/*" />
     </param>
     <param name="nNext">The number of records to append, starting at the current record.</param>
     <param name="nRecord">The number of the record to append.</param>
@@ -4951,7 +4962,9 @@
       TRUE if successful; otherwise, FALSE.
     </returns>
     <remarks>
-      By default, this function copies records from the database file in the currently selected work area to a new file.  It can be made to operate on an unselected work area by specifying it within an aliased expression.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/recordscope/*" />
+      By default, this function copies records from the database file in the currently selected work area to a new file.  
+      It can be made to operate on an unselected work area by specifying it within an aliased expression.
       If SetDeleted() is FALSE, deleted records in the source file are copied to &lt;cTargetFile&gt; where they retain their deleted status.  If SetDeleted() is TRUE, however, no deleted records are copied.  Similarly, if a filter has been set, invisible records are not copied.
       DBCopy() is the functional equivalent of the COPY TO command, specified without a DELIMITED or SDF clause.
     </remarks>
@@ -4979,11 +4992,11 @@
     </param>
     <param name="cDelim">The delimiter used to separate fields in &lt;cTargetFile&gt;.  The default delimiter is a double quote mark. </param>
     <param name="acFields">A list of fields to copy to &lt;cTargetFile&gt;.  The default is all fields.</param>
-    <param name="cbForCondition">A code block that defines a condition that each record within the scope must meet in order to be processed.</param>
-    <param name="cbWhileCondition">
-      A code block that defines another condition that each record must meet in order to be processed.  As soon as a record is encountered that causes the condition to fail, the operation terminates.  If no scope is specified, &lt;cbWhileCondition&gt; changes the default scope to &lt;lRest&gt;.<br/>
-      &#0009;You define the scope using one of these three, mutually exclusive arguments.  The default is all records.
+    <param name="cbForCondition">
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/cbfor/*" />
     </param>
+    <param name="cbWhileCondition">
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/cbwhile/*" />    </param>
     <param name="nNext">The number of records to append, starting at the current record.</param>
     <param name="nRecord">The number of the record to append.</param>
     <param name="lRest">TRUE processes only records from the current record to end-of-file.  FALSE processes all records.</param>
@@ -4991,7 +5004,9 @@
       TRUE if successful; otherwise, FALSE.
     </returns>
     <remarks>
-      DBCopyDelim() is the functional equivalent of the COPY TO DELIMITED command.  It is the same as DBCopy() except that it copies records to a delimited text file.  See COPY TO and DBCopy() for more information.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/recordscope/*" />
+      DBCopyDelim() is the functional equivalent of the COPY TO DELIMITED command.  
+      It is the same as DBCopy() except that it copies records to a delimited text file.  See COPY TO and DBCopy() for more information.
     </remarks>
     <example>
       The following example copies records from the current database file to a delimited text file:
@@ -5017,11 +5032,11 @@
       &#0009;If &lt;cTargetFile&gt; does not exist, it is created.  If it exists, this function attempts to open the file in exclusive mode and, if successful, the file is overwritten without warning or error.  If access is denied because, for example, another process is using the file, NetErr() is set to TRUE.  Refer to the "Concurrency Control" chapter in the Programmer's Guide for more information on resolving concurrency conflicts.
     </param>
     <param name="acFields">A list of fields to copy to &lt;cTargetFile&gt;.  The default is all fields.</param>
-    <param name="cbForCondition">A code block that defines a condition that each record within the scope must meet in order to be processed.</param>
-    <param name="cbWhileCondition">
-      A code block that defines another condition that each record must meet in order to be processed.  As soon as a record is encountered that causes the condition to fail, the operation terminates.  If no scope is specified, &lt;cbWhileCondition&gt; changes the default scope to &lt;lRest&gt;.<br/>
-      &#0009;You define the scope using one of these three, mutually exclusive arguments.  The default is all records.
+    <param name="cbForCondition">
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/cbfor/*" />
     </param>
+    <param name="cbWhileCondition">
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/cbwhile/*" />    </param>
     <param name="nNext">The number of records to append, starting at the current record.</param>
     <param name="nRecord">The number of the record to append.</param>
     <param name="lRest">TRUE processes only records from the current record to end-of-file.  FALSE processes all records.</param>
@@ -5029,7 +5044,9 @@
       TRUE if successful; otherwise, FALSE.
     </returns>
     <remarks>
-      DBCopySDF() is the functional equivalent of the COPY TO SDF command.  It is the same as DBCopy() except that it copies records to an SDF file.  See COPY TO and DBCopy() for more information.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/recordscope/*" />
+      DBCopySDF() is the functional equivalent of the COPY TO SDF command.  
+      It is the same as DBCopy() except that it copies records to an SDF file.  See COPY TO and DBCopy() for more information.
     </remarks>
     <example>
       The following example copies records from the current database file to an SDF file:
@@ -5060,7 +5077,7 @@
       TRUE if successful; otherwise, FALSE.
     </returns>
     <remarks>
-      By default, this function operates on the currently selected work area.  It can be made to operate on an unselected work area by specifying it within an aliased expression.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
       DBCopyStruct() is the functional equivalent of the COPY STRUCTURE command.
     </remarks>
     <example>
@@ -5092,7 +5109,8 @@
       TRUE if successful; otherwise, FALSE.
     </returns>
     <remarks>
-      DBCopyXStruct() creates a database file whose contents is the structure of the current database file, with a record for the definition of each field.  By default, this function operates on the currently selected work area.  It can be made to operate on an unselected work area by specifying it within an aliased expression.
+      DBCopyXStruct() creates a database file whose contents is the structure of the current database file, with a record for the definition of each field.  
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
       The structure-extended database file has the following structure:
       Name&#0009;Type&#0009;Length&#0009;Decimals&#0009;
       Field_Name&#0009;Character&#0009;10&#0009;&#0009;
@@ -5267,7 +5285,7 @@
       TRUE if successful; otherwise, FALSE.
     </returns>
     <remarks>
-      By default, this function operates on the currently selected work area.  It can be made to operate on an unselected work area by specifying it within an aliased expression.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
       DBCreateOrder() uses the current DBSetOrderCondition() to determine the conditions for the order (for example, its scope, for condition, and while condition).
       After it is created (or replaced), the new order is added to the order list for the work area.  Other orders already associated with the work area, including the controlling order, are unaffected.
       Note:  Although this function is designed to work with both single-order and multiple-order index files, you may find it is easier to use DBCreateIndex() for creating single-order index files.
@@ -5304,7 +5322,7 @@
     </returns>
     <remarks>
       Records marked for deletion can be filtered using SetDeleted() or removed from the file using DBPack().
-      By default, this function operates on the currently selected work area.  It can be made to operate on an unselected work area by specifying it within an aliased expression.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
       DBDelete() is the functional equivalent of the DELETE command with a scope of the current record.  For more information, refer to DELETE.
       <note type="tip">
         Logical records:&#0009;If SetDeleted() is TRUE, deleted records are not logically visible.  That is, database operations which operate on logical records will not consider records marked for deletion.  Note, however, that if SetDeleted() is TRUE when the current record is marked for deletion, the record remains visible until it is no longer the current record.
@@ -5353,7 +5371,7 @@
       DBDeleteOrder() requires that the current database be open in exclusive mode.  If this condition is not met when DBDeleteOrder() is invoked, a runtime error is raised.
       DBDeleteOrder() deletes one order from a multiple-order index file and removes the order from the current order list.
       To delete the entire index file, use a regular file handling function such as Windows DeleteFile().
-      By default, this function operates on the currently selected work area.  It can be made to operate on an unselected work area by specifying it within an aliased expression.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
       Note:  The RDD determines the order capacity of an index file, and DBDeleteOrder() is supported only by RDDs with multiple-order capabilities.  For single-order index files, you must delete the entire file.  See the "RDD Specifics" appendix in the Programmer's Guide for details on a particular RDD.
       <br/>
       Third-party RDD suppliers may define specific behaviors for this function.
@@ -5401,11 +5419,11 @@
     </summary>
 
     <param name="cbExecute">The code block to execute for each record that matches the scope and conditions.</param>
-    <param name="cbForCondition">A code block that defines a condition that each record within the scope must meet in order to be processed.</param>
-    <param name="cbWhileCondition">
-      A code block that defines another condition that each record must meet in order to be processed.  As soon as a record is encountered that causes the condition to fail, the operation terminates.  If no scope is specified, &lt;cbWhileCondition&gt; changes the default scope to &lt;lRest&gt;.<br/>
-      &#0009;You define the scope using one of these three, mutually exclusive arguments.  The default is all records.
+    <param name="cbForCondition">
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/cbfor/*" />
     </param>
+    <param name="cbWhileCondition">
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/cbwhile/*" />    </param>
     <param name="nNext">The number of records to process, starting at the current record.</param>
     <param name="nRecord">The number of the record to process.</param>
     <param name="lRest">TRUE processes only records from the current record to end-of-file.  FALSE processes all records.</param>
@@ -5413,10 +5431,13 @@
       TRUE if successful; otherwise, FALSE.
     </returns>
     <remarks>
-      By default, DBEval() operates on the currently selected work area.  It will operate on an unselected work area if you specify it as part of an aliased expression.
-      On each iteration, DBEval() evaluates the specified code block.  All records within the scope or matching the condition are processed until end-of-file is reached.
-      DBEval() is similar to AEval(), which executes code for each element in an array.  Like AEval(), DBEval() can be used as a primitive for the construction of commands that process database files.  In fact, many of the X# database processing commands are created using DBEval().
-      Refer to "Code Blocks" in the Programmer's Guide for more information on the syntax and theory of code blocks; refer also to the Database Programming section in the Programmer's Guide for information on record scoping and conditions.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/recordscope/*" />
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
+      On each iteration, DBEval() evaluates the specified code block.  
+      All records within the scope or matching the condition are processed until end-of-file is reached.
+      DBEval() is similar to AEval(), which executes code for each element in an array.  
+      Like AEval(), DBEval() can be used as a primitive for the construction of commands that process database files.  
+      In fact, many of the X# database processing commands are created using DBEval().
     </remarks>
     <example>
       This example uses DBEval() to enhance the DBList() function:
@@ -5456,13 +5477,13 @@
       Note:  DBF() is a compatibility function and is no longer recommended.  It is superseded by Alias0().  See Alias0() for more information.
     </summary>
     <param name="uArea">
-      Specifies the work area name or number for a table.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/uAreaValue/*" />
     </param>
     <returns>
       The alias of the work area as a string.  If there is no active database file in the work area, DBF() returns a NULL_STRING.
     </returns>
     <remarks>
-      By default, this function operates on the currently selected work area.  It can be made to operate on an unselected work area by specifying it within an aliased expression.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkareaParam/*" />
     </remarks>
     <example>
     </example>
@@ -5512,7 +5533,8 @@
       If &lt;uNewSetting&gt; is not specified, DBFieldInfo() returns the current setting.  If &lt;uNewSetting&gt; is specified, the previous setting is returned.
     </returns>
     <remarks>
-      DBFieldInfo() retrieves information about the state of a field (column).  By default, this function operates on the currently selected work area.  It can be made to operate on an unselected work area by specifying it within an aliased expression.
+      DBFieldInfo() retrieves information about the state of a field (column).  
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
       The field information that is available is defined by the RDD.  In the DBF work area model, this is limited to the information stored in the DBF file structure (that is, name, length, number of decimals, and data type) plus the field alias that can be changed at runtime.
       To support RDDs for other database models (such as dictionary based databases) that store more information about each field or column, the X# RDD API has been enhanced.  The DBFieldInfo() and VODBFieldInfo() functions are designed to allow for additional &lt;kInfoType&gt; values that can be defined by third-party RDD developers.
     </remarks>
@@ -5558,14 +5580,14 @@
       Return a filter.
     </summary>
     <param name="uArea">
-      Specifies the work area name or number for a table.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/uAreaValue/*" />
     </param>
     <returns>
       The filter condition defined in a work area.  If no filter has been set, DBFilter() returns a NULL_STRING.
     </returns>
     <remarks>
       DBFilter() is a database function used to save and re-execute an active filter by returning the filter expression as a string.
-      By default, this function operates on the currently selected work area.  It can be made to operate on an unselected work area by specifying it within an aliased expression.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkareaParam/*" />
       This function operates like the DBRelation() and DBRSelect() functions, which save and re-execute the linking expression of a relation within a work area.
       <note type="tip">
         Declared variables:&#0009;A string returned by DBFilter() cannot operate correctly when recompiled and executed using the macro operator (&amp;) if the original filter expression contained references to local or static variables or is otherwise dependent on compile-time declarations.
@@ -5596,7 +5618,7 @@
       Return the work area number.
     </summary>
     <param name="uArea">
-      Specifies the work area name or number for a table.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/uAreaValue/*" />
     </param>
     <returns>
       A number that indicates the workarea number.
@@ -5620,13 +5642,13 @@
       Move to the last logical record.
     </summary>
     <param name="uArea">
-      Specifies the work area name or number for a table.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/uAreaOperation/*" />
     </param>
     <returns>
       TRUE if successful; otherwise, FALSE.
     </returns>
     <remarks>
-      By default, this function operates on the currently selected work area.  It can be made to operate on an unselected work area by specifying it within an aliased expression.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkareaParam/*" />
       DBGoBottom() is the functional equivalent of the GO BOTTOM command.  For more information, refer to the GO command.
       <note type="tip">
         Logical records:&#0009;DBGoBottom() operates on logical records.  If the work area has an active order list, DBGoBottom() moves to the last record in controlling order.  If a filter is set, only records which meet the filter condition are considered.
@@ -5649,12 +5671,12 @@
         END
       </code>
     </example>
-    <seealso cref='M:XSharp.RT.Functions.Bof'>BOF</seealso>
-    <seealso cref='M:XSharp.RT.Functions.DbGoTop'>DBGoTop</seealso>
+    <seealso cref='O:XSharp.RT.Functions.Bof'>BOF</seealso>
+    <seealso cref='O:XSharp.RT.Functions.DbGoTop'>DBGoTop</seealso>
     <seealso cref='M:XSharp.RT.Functions.DbSeek(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)'>DBSeek</seealso>
     <seealso>DBServer:GoBottom</seealso>
     <seealso cref='M:XSharp.RT.Functions.DbSkip(XSharp.__Usual)'>DBSkip</seealso>
-    <seealso cref='M:XSharp.RT.Functions.Eof'>EOF</seealso>
+    <seealso cref='O:XSharp.RT.Functions.Eof'>EOF</seealso>
     <seealso>GO</seealso>
     <seealso cref='M:XSharp.RT.Functions.VoDbGoBottom'>VODBGoBottom</seealso>
   </dbgobottom>
@@ -5664,19 +5686,22 @@
     </summary>
 
     <param name="uRecID">The record number to go to.  If &lt;uRecID&gt; does not exist, the work area is positioned to LastRec() + 1, and both EOF() and BOF() return TRUE.</param>
+    <param name="uArea">
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/uAreaOperation/*" />
+    </param>
     <returns>
       TRUE if successful; otherwise, FALSE.
     </returns>
     <remarks>
-      By default, this function operates on the currently selected work area.  It can be made to operate on an unselected work area by specifying it within an aliased expression.
-      DBGoTo() performs the same function as the GO command.  For more information, refer to the GO command.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkareaParam/*" />
+      DbGoTo() performs the same function as the GO command.  For more information, refer to the GO command.
       <note type="tip">
         Logical records:&#0009;DBGoTo() does not respect logical visibility.  That is, if the specified record exists, it will become the current record regardless of any order or filter condition.
         Shared mode:&#0009;For a shared file, moving to a different record can cause updates to the current record to become visible to other processes.  For more information, refer to "Concurrency Control" in the Programmer's Guide.
       </note>
     </remarks>
     <example>
-      The following example uses DBGoTo() to iteratively process every fourth record:
+      The following example uses DbGoTo() to iteratively process every fourth record:
       <code language="X#">
         DBUseArea(TRUE, "DBFNTX", "sales", "Sales", TRUE)
         // Toggle every fourth record
@@ -5686,13 +5711,13 @@
         ENDDO
       </code>
     </example>
-    <seealso cref='M:XSharp.RT.Functions.Bof'>BOF</seealso>
-    <seealso cref='M:XSharp.RT.Functions.DbGoBottom'>DBGoBottom</seealso>
-    <seealso cref='M:XSharp.RT.Functions.DbGoTop'>DBGoTop</seealso>
+    <seealso cref='O:XSharp.RT.Functions.Bof'>BOF</seealso>
+    <seealso cref='O:XSharp.RT.Functions.DbGoBottom'>DBGoBottom</seealso>
+    <seealso cref='O:XSharp.RT.Functions.DbGoTop'>DBGoTop</seealso>
     <seealso cref='M:XSharp.RT.Functions.DbSeek(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)'>DBSeek</seealso>
     <seealso>DBServer:GoTo</seealso>
     <seealso cref='M:XSharp.RT.Functions.DbSkip(XSharp.__Usual)'>DBSkip</seealso>
-    <seealso cref='M:XSharp.RT.Functions.Eof'>EOF</seealso>
+    <seealso cref='O:XSharp.RT.Functions.Eof'>EOF</seealso>
     <seealso>GO</seealso>
     <seealso cref='M:XSharp.RT.Functions.VoDbGoto(XSharp.__Usual)'>VODBGoTo</seealso>
   </dbgoto>
@@ -5701,13 +5726,13 @@
       Move to the first logical record.
     </summary>
     <param name="uArea">
-      Specifies the work area name or number for a table.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/uAreaOperation/*" />
     </param>
     <returns>
       TRUE if successful; otherwise, FALSE.
     </returns>
     <remarks>
-      By default, this function operates on the currently selected work area.  It can be made to operate on an unselected work area by specifying it within an aliased expression.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkareaParam/*" />
       DBGoTop() performs the same function as the GO TOP command.
       <note type="tip">
         Logical records:&#0009;DBGoTop() operates on logical records.  If the work area has an active order list, DBGoTop() moves to the first record in the controlling order.  If a filter is set, only records which meet the filter condition are considered.
@@ -5724,12 +5749,12 @@
         END
       </code>
     </example>
-    <seealso cref='M:XSharp.RT.Functions.Bof'>BOF</seealso>
-    <seealso cref='M:XSharp.RT.Functions.DbGoBottom'>DBGoBottom</seealso>
+    <seealso cref='O:XSharp.RT.Functions.Bof'>BOF</seealso>
+    <seealso cref='O:XSharp.RT.Functions.DbGoBottom'>DBGoBottom</seealso>
     <seealso cref='M:XSharp.RT.Functions.DbSeek(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)'>DBSeek</seealso>
     <seealso>DBServer:GoTop</seealso>
     <seealso cref='M:XSharp.RT.Functions.DbSkip(XSharp.__Usual)'>DBSkip</seealso>
-    <seealso cref='M:XSharp.RT.Functions.Eof'>EOF</seealso>
+    <seealso cref='O:XSharp.RT.Functions.Eof'>EOF</seealso>
     <seealso>GO</seealso>
     <seealso cref='M:XSharp.RT.Functions.VoDbGoTop'>VODBGoTop</seealso>
   </dbgotop>
@@ -5789,7 +5814,7 @@
       If &lt;uNewSetting&gt; is not specified, RDDInfo() returns the current setting.  If &lt;uNewSetting&gt; is specified, the previous setting is returned.
     </returns>
     <remarks>
-      By default, this function operates on the currently selected work area.  It can be made to operate on an unselected work area by specifying it within an aliased expression.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
     </remarks>
     <example>
       The following examples return work area information:
@@ -5833,7 +5858,9 @@
       &#0009;If &lt;cTargetFile&gt; does not exist, it is created.  If it exists, this function attempts to open the file in exclusive mode and, if successful, the file is overwritten without warning or error.  If access is denied because, for example, another process is using the file, NetErr() is set to TRUE.  Refer to the "Concurrency Control" chapter in the Programmer's Guide for more information on resolving concurrency conflicts.
     </param>
     <param name="acFields">The projection of fields from both work areas into the new database file.  To specify fields in the secondary work area, reference them with the alias operator (-&gt;).  If &lt;acFields&gt; is not specified, all fields from the source database file are included in the target database file.</param>
-    <param name="cbForCondition">A condition that is processed for each visible record in the current work area using every visible record in the target work area.  If a record meets the condition, a new record is written to &lt;cTargetFile&gt;.  If a record does not meet the specified condition, it is ignored and the next record is processed.  By default, all records in the source work area are processed.</param>
+    <param name="cbForCondition">
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/cbfor/*" />
+    </param>
     <returns>
       TRUE if successful; otherwise, FALSE.
     </returns>
@@ -5857,11 +5884,11 @@
       Search for the first record that matches the specified condition and scope.
     </summary>
 
-    <param name="cbForCondition">A code block that defines a condition that each record within the scope must meet in order to be processed.</param>
-    <param name="cbWhileCondition">
-      A code block that defines another condition that each record must meet in order to be processed.  As soon as a record is encountered that causes the condition to fail, the operation terminates.  If no scope is specified, &lt;cbWhileCondition&gt; changes the default scope to &lt;lRest&gt;.<br/>
-      &#0009;You define the scope using one of these three, mutually exclusive arguments.  The default is all records.
+    <param name="cbForCondition">
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/cbfor/*" />
     </param>
+    <param name="cbWhileCondition">
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/cbwhile/*" />    </param>
     <param name="nNext">The number of records to process, starting with the current record.</param>
     <param name="nRecord">The number of the record to process.</param>
     <param name="lRest">TRUE processes only records from the current record to end-of-file.  FALSE processes all records.</param>
@@ -5869,10 +5896,15 @@
       TRUE if successful; otherwise, FALSE.
     </returns>
     <remarks>
-      By default, this function operates on the currently selected work area.  It can be made to operate on an unselected work area by specifying it within an aliased expression.
-      DBLocate() is the functional form of the LOCATE command.  DBLocate() searches from the beginning record of the scope.  It terminates when a match is found or the end of the scope is reached.  If it is successful, the matching record becomes the current record and Found() returns TRUE.  If it is unsuccessful, Found() returns FALSE and the position of the record pointer depends on the scope.
-      Each work area can have its own locate condition.  The condition remains active until you execute another locate condition in that work area or the application terminates.
-      DBLocate() works with DBContinue().  Once DBLocate() has been issued, you can resume the search from the current record pointer position with DBContinue().  There are, however, some exceptions.  Both the scope and &lt;cbWhileCondition&gt; apply only to the initial DBLocate() function and are not operational for any subsequent DBContinue() functions.  To continue a pending locate condition with a scope or &lt;cbWhileCondition&gt;, use DBSkip(); then DBLocate() with the &lt;lRest&gt; and &lt;cbWhileCondition&gt; arguments instead of DBContinue().
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/recordscope/*" />
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
+      DBLocate() is the functional form of the LOCATE command.  
+      DBLocate() searches from the beginning record of the scope.  It terminates when a match is found or the end of the scope is reached.  If it is successful, the matching record becomes the current record and Found() returns TRUE.  
+      If it is unsuccessful, Found() returns FALSE and the position of the record pointer depends on the scope.
+      Each work area can have its own locate condition.  
+      The condition remains active until you execute another locate condition in that work area or the application terminates.
+      DBLocate() works with DBContinue().  Once DBLocate() has been issued, you can resume the search from the current record pointer position with DBContinue().  
+      There are, however, some exceptions.  Both the scope and &lt;cbWhileCondition&gt; apply only to the initial DBLocate() function and are not operational for any subsequent DBContinue() functions.  To continue a pending locate condition with a scope or &lt;cbWhileCondition&gt;, use DBSkip(); then DBLocate() with the &lt;lRest&gt; and &lt;cbWhileCondition&gt; arguments instead of DBContinue().
     </remarks>
     <example>
       This example sequentially searches for a string:
@@ -5980,7 +6012,7 @@
       If &lt;uNewSetting&gt; is not specified, DBOrderInfo() returns the current setting.  If &lt;uNewSetting&gt; is specified, the previous setting is returned.
     </returns>
     <remarks>
-      By default, this function operates on the currently selected work area.  It can be made to operate on an unselected work area by specifying it within an aliased expression.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
     </remarks>
     <example>
       This example uses DBOI_NAME to save the current controlling order.  After changing to a new controlling order, it uses the saved value to restore the original order:
@@ -6060,13 +6092,13 @@
       Remove all records marked for deletion from a database file, rebuild all active orders, and recover all physical space occupied by the deleted records.
     </summary>
     <param name="uArea">
-      Specifies the work area name or number for a table.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/uAreaOperation/*" />
     </param>
     <returns>
       TRUE if successful; otherwise, FALSE.
     </returns>
     <remarks>
-      By default, this function operates on the currently selected work area.  It can be made to operate on an unselected work area by specifying it within an aliased expression.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkareaParam/*" />
       This function requires that the current database be open in exclusive mode (see SetExclusive()).  If this condition is not met when the function is invoked, a runtime error is raised.  See "Concurrency Control" in the Programmer's Guide for more information.  Otherwise, the operation proceeds and, upon termination, resets the record pointer to the first logical record in the current work area.
       Warning!  DBPack() does not create backup files.  You may want to make a backup of the file before issuing this function call; otherwise, you will not be able to recover deleted records.
       Tip:  Packing large database files can be a time-consuming process and is, therefore, not recommended in a high-volume transaction application.  By modifying the application design, you can remove the necessity of physically removing records from the database file.  Simply filter the deleted records with SetDeleted(TRUE) or DBSetFilter(!Deleted()) and reuse deleted records instead of adding new ones.
@@ -6088,13 +6120,13 @@
       Restore the current record if it has been marked for deletion.
     </summary>
     <param name="uArea">
-      Specifies the work area name or number for a table.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/uAreaOperation/*" />
     </param>
     <returns>
       TRUE if successful; otherwise, FALSE.
     </returns>
     <remarks>
-      By default, this function operates on the currently selected work area.  It can be made to operate on an unselected work area by specifying it within an aliased expression.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkareaParam/*" />
       DBRecall() performs the same function as the RECALL command.  For more information, refer to the DELETE and RECALL commands.
       <note type="tip">
         Logical records:&#0009;Reinstating a deleted record affects the record's logical visibility if SetDeleted() is TRUE.  For more information, refer to the DBDelete() function and the DELETE and RECALL commands.
@@ -6121,7 +6153,7 @@
         ENDIF
       </code>
     </example>
-    <seealso cref='M:XSharp.RT.Functions.DbDelete'>DBDelete</seealso>
+    <seealso cref='O:XSharp.RT.Functions.DbDelete'>DBDelete</seealso>
     <seealso>DBServer:Recall</seealso>
     <seealso>DELETE</seealso>
     <seealso cref='M:XSharp.RT.Functions.Deleted'>Deleted</seealso>
@@ -6182,7 +6214,7 @@
       TRUE if successful; otherwise FALSE.
     </returns>
     <remarks>
-      By default, this function operates on the currently selected work area.  It can be made to operate on an unselected work area by specifying it within an aliased expression.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
       All orders are rebuilt, respecting uniqueness and descending order flags and the for condition specified when the order was created.  After the orders are rebuilt, the work area is positioned to the first logical record in the controlling order.
       Although this operation will work in both shared and exclusive mode, exclusive mode is highly recommended.  See both SetExclusive() and "Concurrency Control" in the Programmer's Guide for more information.
       Caution!  DBReindex() does not recreate the header of the index file when it recreates the order.  Because of this, DBReindex() does not help if there is corruption of the file header.  To guarantee a valid index, always use DBCreateIndex() in place of DBReindex() to rebuild damaged index files
@@ -6232,7 +6264,7 @@
     <remarks>
       DBRelation() is a database function to determine the linking expression and work area of an existing relation.
       DBRelation() returns the linking expression defined by the TO clause.  DBRSelect() returns the work area linked as defined by the INTO clause.
-      By default, DBRelation() operates on the currently selected work area.  It will operate on an unselected work area if you specify it as part of an aliased expression (see example below).
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
       <note type="tip">
         Declared variables:&#0009;A string returned by DBRelation() cannot operate correctly when recompiled and executed using the macro operator (&amp;) if the original expression contained references to local or static variables, or otherwise depends on compile-time declarations.
       </note>
@@ -6262,7 +6294,7 @@
         &#0009;&#0009;&#0009;}
       </code>
     </example>
-    <seealso cref='M:XSharp.RT.Functions.DbFilter'>DBFilter</seealso>
+    <seealso cref='O:XSharp.RT.Functions.DbFilter'>DBFilter</seealso>
     <seealso cref='M:XSharp.RT.Functions.DbRSelect(XSharp.__Usual)'>DBRSelect</seealso>
     <seealso>DBServer:Relation</seealso>
     <seealso>SET RELATION</seealso>
@@ -6282,9 +6314,10 @@
       For each invocation of DBRLock(), there is one attempt to lock the target record, and the result is returned as a logical value.  An attempt to obtain a record lock fails if another process currently has a file lock or record lock on the target record.
       If DBRLock() is successful, the record is locked and other processes are prevented from updating the record until the lock is released.  DBRLock() provides a shared lock, allowing other users read-only access to the locked record while allowing only the current process to modify it.
       A record lock remains in effect until you explicitly unlock it (with DBUnlock(), for example), close the database file, or attempt another file or record lock (with RLock() or DBRLock() with no argument).  DBRLock() when specified with an argument does not release records locks held by the current process.  Instead, it adds the newly locked records to the lock list (see DBRLockList()).
-      By default, DBRLock() operates on the currently selected work area.  It will operate on an unselected work area if you specify it as part of an aliased expression.  This feature is useful since DBRLock() does not automatically attempt a record lock for related files.
-      Refer to "Concurrency Control" in the Programmer's Guide for  more information on record locking.
-    </remarks>
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
+    This feature is useful since DBRLock() does not automatically attempt a record lock for related files.
+    Refer to "Concurrency Control" in the Programmer's Guide for  more information on record locking.
+  </remarks>
     <example>
       This example deletes a record from a shared database file DBRLock():
       <code language="X#">
@@ -6317,12 +6350,12 @@
     <seealso>DBServer:RLockList</seealso>
     <seealso>DBServer:RLockVerify</seealso>
     <seealso>DBServer:Unlock</seealso>
-    <seealso cref='M:XSharp.RT.Functions.DbUnLock'>DBUnlock</seealso>
+    <seealso cref='O:XSharp.RT.Functions.DbUnLock'>DBUnlock</seealso>
     <seealso cref='M:XSharp.RT.Functions.DbUseArea(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)'>DBUseArea</seealso>
-    <seealso cref='M:XSharp.RT.Functions.Flock'>FLock</seealso>
+    <seealso cref='O:XSharp.RT.Functions.Flock'>FLock</seealso>
     <seealso cref='M:XSharp.RT.Functions.IndexHPLock(XSharp.__Usual)'>IndexHPLock</seealso>
     <seealso cref='M:XSharp.RT.Functions.NewIndexLock(XSharp.__Usual)'>NewIndexLock</seealso>
-    <seealso cref='M:XSharp.RT.Functions.RLock'>RLock</seealso>
+    <seealso cref='O:XSharp.RT.Functions.RLock'>RLock</seealso>
     <seealso cref='O:XSharp.Core.Functions.SetExclusive'>SetExclusive Overload</seealso>
     <seealso>UNLOCK</seealso>
     <seealso>USE</seealso>
@@ -6337,7 +6370,7 @@
     </returns>
     <remarks>
       DBRLock() can be used to obtain multiple record locks in a single work area.  This function returns the numbers of all locked records in an array.
-      By default, this function operates on the currently selected work area.  It can be made to operate on an unselected work area by specifying it within an aliased expression.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
     </remarks>
     <example>
       The following example shows all currently locked records:
@@ -6357,7 +6390,7 @@
     <seealso>DBServer:RLockList</seealso>
     <seealso>DBServer:RLockVerify</seealso>
     <seealso>DBServer:Unlock</seealso>
-    <seealso cref='M:XSharp.RT.Functions.RecNo'>RecNo</seealso>
+    <seealso cref='O:XSharp.RT.Functions.RecNo'>RecNo</seealso>
   </dbrlocklist>
   <dbrselect>
     <summary>
@@ -6370,7 +6403,7 @@
     </returns>
     <remarks>
       DBRSelect() is a database function used in combination with DBRelation() to determine the work area and linking expression of an existing relation.  DBRSelect() returns the work area defined by the INTO clause.  DBRelation() returns the linking expression defined by the TO clause.  To determine the alias of the relation instead of the work area number, use the expression Alias(DBRSelect(&lt;nRelation&gt;)).
-      By default, DBRSelect() operates on the currently selected work area.  It will operate on an unselected work area if you specify it as part of an aliased expression (see example below).
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
     </remarks>
     <example>
       This example opens three database files, sets two child relations from the parent work area, then displays the linking expression to the second child work area as well as the target work area of the relation:
@@ -6394,7 +6427,7 @@
         // Result: 3
       </code>
     </example>
-    <seealso cref='M:XSharp.RT.Functions.DbFilter'>DBFilter</seealso>
+    <seealso cref='O:XSharp.RT.Functions.DbFilter'>DBFilter</seealso>
     <seealso cref='M:XSharp.RT.Functions.DbRelation(XSharp.__Usual)'>DBRelation</seealso>
     <seealso>SET RELATION</seealso>
     <seealso cref='M:XSharp.RT.Functions.VoDbRSelect(System.UInt32)'>VODBRSelect</seealso>
@@ -6429,7 +6462,7 @@
     <seealso>DBServer:Unlock</seealso>
     <seealso cref='M:XSharp.RT.Functions.IndexHPLock(XSharp.__Usual)'>IndexHPLock</seealso>
     <seealso cref='M:XSharp.RT.Functions.NewIndexLock(XSharp.__Usual)'>NewIndexLock</seealso>
-    <seealso cref='M:XSharp.RT.Functions.RLock'>RLock</seealso>
+    <seealso cref='O:XSharp.RT.Functions.RLock'>RLock</seealso>
   </dbrunlock>
   <dbseek>
     <summary>
@@ -6445,7 +6478,7 @@
     <remarks>
       DBSeek() moves to the first logical record whose key value is equal to &lt;uKey&gt;.  If such a record is found, it becomes the current record and DBSeek() returns TRUE.  Otherwise, DBSeek() returns FALSE and the positioning of the work area is as follows: for a normal (not soft) seek, the work area is positioned to LastRec() + 1 and EOF() returns TRUE; for a soft seek, the work area is positioned to the first record whose key value is greater than the specified key value.  If no such record exists, the work area is positioned to LastRec() + 1 and EOF() returns TRUE.
       For a work area with no controlling order, DBSeek() has no effect.
-      By default, this function operates on the currently selected work area.  It can be made to operate on an unselected work area by specifying it within an aliased expression.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
       DBSeek() performs the same function as the SEEK command.  For more information, refer to the SEEK command.
       <note type="tip">
         Logical records:&#0009;DBSeek() operates on logical records.  Records are processed in controlling order.  If a filter is set, only records which meet the filter condition are considered.
@@ -6454,12 +6487,12 @@
     </remarks>
     <example>
     </example>
-    <seealso cref='M:XSharp.RT.Functions.DbGoBottom'>DBGoBottom</seealso>
-    <seealso cref='M:XSharp.RT.Functions.DbGoTop'>DBGoTop</seealso>
+    <seealso cref='O:XSharp.RT.Functions.DbGoBottom'>DBGoBottom</seealso>
+    <seealso cref='O:XSharp.RT.Functions.DbGoTop'>DBGoTop</seealso>
     <seealso>DBServer:Seek</seealso>
     <seealso cref='M:XSharp.RT.Functions.DbSkip(XSharp.__Usual)'>DBSkip</seealso>
-    <seealso cref='M:XSharp.RT.Functions.Eof'>EOF</seealso>
-    <seealso cref='M:XSharp.RT.Functions.Found'>Found</seealso>
+    <seealso cref='O:XSharp.RT.Functions.Eof'>EOF</seealso>
+    <seealso cref='O:XSharp.RT.Functions.Found'>Found</seealso>
     <seealso>SEEK</seealso>
     <seealso cref='O:XSharp.Core.Functions.SetSoftSeek'>SetSoftSeek Overload</seealso>
     <seealso cref='O:XSharp.RT.Functions.VoDbSeek'>VODBSeek Overload</seealso>
@@ -6561,7 +6594,8 @@
       TRUE if the current record meets the filter condition; otherwise, FALSE.
     </returns>
     <remarks>
-      DBSetFilter() sets a logical filter condition.  By default, this function operates on the currently selected work area.  It can be made to operate on an unselected work area by specifying it within an aliased expression.
+      DBSetFilter() sets a logical filter condition.  
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
       When a filter is set, records which do not meet the filter condition are not logically visible.  That is, database operations which act on logical records will not consider these records.
       The filter expression can be a code block (&lt;bCondition&gt;) or both a code block and equivalent text (&lt;cCondition&gt;).  If both versions are supplied, they must express the same condition.
       DBSetFilter() performs the same function as the SET FILTER command.  For more information, refer to the SET FILTER command.
@@ -6580,8 +6614,8 @@
         DBGoTop()
       </code>
     </example>
-    <seealso cref='M:XSharp.RT.Functions.DbClearFilter'>DBClearFilter</seealso>
-    <seealso cref='M:XSharp.RT.Functions.DbFilter'>DBFilter</seealso>
+    <seealso cref='O:XSharp.RT.Functions.DbClearFilter'>DBClearFilter</seealso>
+    <seealso cref='O:XSharp.RT.Functions.DbFilter'>DBFilter</seealso>
     <seealso>DBServer:SetFilter</seealso>
     <seealso>SET FILTER</seealso>
     <seealso>SET OPTIMIZE</seealso>
@@ -6598,7 +6632,7 @@
     </returns>
     <remarks>
       The found flag is set after database search functions, such as DBSeek() or DBLocate().  In a group programming project or when writing black-box general routines, you do not want modules to have any side effects.  DBSetFound() gives you more control over a global environmental setting.
-      By default, this function operates on the currently selected work area.  It can be made to operate on an unselected work area by specifying it within an aliased expression.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
     </remarks>
     <example>
       This example sets the found flag to true:
@@ -6629,7 +6663,7 @@
       TRUE if successful; otherwise, FALSE.
     </returns>
     <remarks>
-      By default, this function operates on the currently selected work area.  It can be made to operate on an unselected work area by specifying it within an aliased expression.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
       If the order list for the work area is empty when DBSetIndex() is issued, the first order in the index file becomes the controlling order.  If there are orders already associated with the work area, they are unaffected — the new orders are simply added to the current order list.  After the new index file is opened (using the same open mode as its associated database file), the work area is positioned to the first logical record in the controlling order.
       Opening an index file imposes a logical order (defined by the controlling order) on the records in a database file and may also filter the records according to a for condition or a unique flag.  This means that when you process the database file, the records will appear in the order determined by the controlling order and filtered records, although still physically present in the database file, will be inaccessible.
       Note:  Except for production index files supported by some RDDs (see the "RDD Specifics" appendix in the Programmer's Guide for details on a particular RDD.), index files are not opened automatically when you open the corresponding database file.  To ensure that index files are accurately maintained, you should either open them prior to making any updates to their corresponding database files or rebuild them at a later time with DBReindex().
@@ -6681,7 +6715,7 @@
     </returns>
     <remarks>
       DBSetOrder() controls which of the orders in a work area's order list is the controlling order.  The controlling order is the one that determines the logical order of records in the work area.  Before using this function, use DBSetIndex() to add orders from an index file to the order list.
-      By default, this function operates on the currently selected work area.  It can be made to operate on an unselected work area by specifying it within an aliased expression.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
     </remarks>
     <example>
       This example sets the second named order, AGE, as the controlling order:
@@ -6716,8 +6750,8 @@
     </param>
     <param name="lAll">A value of TRUE specifies a scope of all records.  Use FALSE if you want to indicate other record scoping conditions (that is, &lt;nNext&gt;, &lt;nRecord&gt;, or &lt;lRest&gt;).  The default is FALSE.</param>
     <param name="cbWhileCondition">
-      A code block that defines a condition that each record must meet in order to be processed.  If no scope is specified, having a &lt;cbWhileCondition&gt; changes the default scope to &lt;lRest&gt;.  As soon as a record is encountered that causes the condition to fail, the operation terminates.<br/>
-      &#0009;The while condition is used only to create the order.  It is not stored in the index file and not used for updating or reindexing purposes.  The default is NIL.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/cbwhile/*" /><br/>
+      The while condition is used only to create the order.  It is not stored in the index file and not used for updating or reindexing purposes.  The default is NIL.
     </param>
     <param name="cbEval">A code block that is evaluated at intervals specified by &lt;nInterval&gt;.  This is useful in producing a status bar or odometer that monitors the ordering progress.  The return value of &lt;cbEval&gt; must be a logical value.  If &lt;cbEval&gt; returns FALSE, indexing halts.  The default is NIL.</param>
     <param name="nInterval">A numeric expression that determines the number of times &lt;cbEval&gt; is evaluated.  This argument offers a performance enhancement by evaluating the condition at intervals instead of for every record processed.  To step through every record, you can specify a value of 0.  The default is 0.</param>
@@ -6737,8 +6771,12 @@
       TRUE if successful; otherwise, FALSE.
     </returns>
     <remarks>
-      By default, this function operates on the currently selected work area.  It can be made to operate on an unselected work area by specifying it within an aliased expression.
-      Unless you specify otherwise with DBSetOrderCondition(), new orders that you create will use default scoping rules, processing all records in the work area.  DBSetOrderCondition() allows you to specify conditions and scoping rules that records must meet in order to be included in the next order created.  Creating a new order, then, automatically resets the work area to use the default scoping rules.  Thus, if scoping is required, you must reset DBSetOrderCondition() each time you create a new order.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/recordscope/*" />
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
+      Unless you specify otherwise with DBSetOrderCondition(), new orders that you create will use default scoping rules, processing all records in the work area.  
+      DBSetOrderCondition() allows you to specify conditions and scoping rules that records must meet in order to be included in the next order created.  
+      Creating a new order, then, automatically resets the work area to use the default scoping rules.  
+      Thus, if scoping is required, you must reset DBSetOrderCondition() each time you create a new order.
       This function is essential if you want to create conditional orders using DBCreateOrder() and DBCreateIndex() because these functions do not support arguments to do this.
     </remarks>
     <example>
@@ -6818,7 +6856,7 @@
     <seealso>DBServer:ClearRelation</seealso>
     <seealso>DBServer:Relation</seealso>
     <seealso>DBServer:SetRelation</seealso>
-    <seealso cref='M:XSharp.RT.Functions.Found'>Found</seealso>
+    <seealso cref='O:XSharp.RT.Functions.Found'>Found</seealso>
     <seealso>SET RELATION</seealso>
     <seealso cref='M:XSharp.RT.Functions.VoDbSetRelation(System.String,XSharp.__Usual,System.String,System.String)'>VODBSetRelation</seealso>
   </dbsetrelation>
@@ -6869,7 +6907,7 @@
     </returns>
     <remarks>
       Attempting to skip forward beyond the last record positions the work area to LastRec() + 1 and EOF() returns TRUE.  Attempting to skip backward beyond the first record positions the work area to the first record and BOF() returns TRUE.
-      By default, this function operates on the currently selected work area.  It can be made to operate on an unselected work area by specifying it within an aliased expression.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkareaParam/*" />
       DBSkip() is the functional equivalent of the SKIP command.  For more information, refer to the SKIP command.
       <note type="tip">
         Logical records:&#0009;DBSkip() operates on logical records.  If the work area has an active order list, records are considered in controlling order.  If a filter is set, only records which meet the filter condition are considered.
@@ -6886,15 +6924,15 @@
         ENDDO
       </code>
     </example>
-    <seealso cref='M:XSharp.RT.Functions.Bof'>BOF</seealso>
-    <seealso cref='M:XSharp.RT.Functions.DbGoBottom'>DBGoBottom</seealso>
-    <seealso cref='M:XSharp.RT.Functions.DbGoTop'>DBGoTop</seealso>
+    <seealso cref='O:XSharp.RT.Functions.Bof'>BOF</seealso>
+    <seealso cref='O:XSharp.RT.Functions.DbGoBottom'>DBGoBottom</seealso>
+    <seealso cref='O:XSharp.RT.Functions.DbGoTop'>DBGoTop</seealso>
     <seealso cref='M:XSharp.RT.Functions.DbSeek(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)'>DBSeek</seealso>
     <seealso>DBServer:GoBottom</seealso>
     <seealso>DBServer:GoTop</seealso>
     <seealso>DBServer:Seek</seealso>
     <seealso>DBServer:Skip</seealso>
-    <seealso cref='M:XSharp.RT.Functions.Eof'>EOF</seealso>
+    <seealso cref='O:XSharp.RT.Functions.Eof'>EOF</seealso>
     <seealso>SKIP</seealso>
     <seealso cref='M:XSharp.RT.Functions.VoDbSkip(System.Int32)'>VODBSkip</seealso>
   </dbskip>
@@ -6908,11 +6946,12 @@
       &#0009;If &lt;cTargetFile&gt; does not exist, it is created.  If it exists, this function attempts to open the file in exclusive mode and, if successful, the file is overwritten without warning or error.  If access is denied because, for example, another process is using the file, NetErr() is set to TRUE.  Refer to the "Concurrency Control" chapter in the Programmer's Guide for more information on resolving concurrency conflicts.
     </param>
     <param name="acFields">The sort keys, specified as an array of field names.  You may optionally add, after the field name, /A (to sort in dictionary order), /C (to ignore capitalization), or /D (to sort in descending order). The default setting is /A.</param>
-    <param name="cbForCondition">A code block that defines a condition that each record within the scope must meet in order to be processed.</param>
-    <param name="cbWhileCondition">
-      A code block that defines another condition that each record must meet in order to be processed.  As soon as a record is encountered that causes the condition to fail, the operation terminates.  If no scope is specified, having a &lt;cbWhileCondition&gt; changes the default scope to &lt;lRest&gt;.<br/>
-      &#0009;You define the scope using one of these three, mutually exclusive arguments.  The default is all records.
+    <param name="cbForCondition">
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/cbfor/*" />
     </param>
+    <param name="cbWhileCondition">
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/cbwhile/*" />
+     </param>
     <param name="nNext">The number of records to append, starting at the current record.</param>
     <param name="nRecord">The number of the record to append.</param>
     <param name="lRest">TRUE processes only records from the current record to end-of-file.  FALSE processes all records.</param>
@@ -6920,8 +6959,13 @@
       TRUE if successful; otherwise, FALSE.
     </returns>
     <remarks>
-      DBSort() copies records from the current work area to another database file in sorted order.  X# sorts character fields in accordance with the ASCII value of each character within the string.  Numeric fields are sorted in numeric order, date fields are sorted chronologically, and logical fields are sorted with TRUE as the high value.  Memo fields cannot be sorted.
-      DBSort() performs as much of its operation as possible in memory, then it spools to a uniquely named temporary disk file.  This temporary file can be as large as the size of the source database file.  Note also that DBSort() uses up three file handles: the source database file, the target database file, and the temporary file.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/recordscope/*" />
+      DBSort() copies records from the current work area to another database file in sorted order.  
+      X# sorts character fields in accordance with the ASCII value of each character within the string.  
+      Numeric fields are sorted in numeric order, date fields are sorted chronologically, and logical fields are sorted with TRUE as the high value.  
+      Memo fields cannot be sorted.
+      DBSort() performs as much of its operation as possible in memory, then it spools to a uniquely named temporary disk file.  This temporary file can be as large as the size of the source database file.  
+      Note also that DBSort() uses up three file handles: the source database file, the target database file, and the temporary file.
       If the database is opened in shared mode, you must lock the file to be sorted with FLock().
       DBSort() is the functional equivalent of the SORT command.
       <note type="tip">
@@ -6947,7 +6991,7 @@
       Create an array containing the structure of a database file.
     </summary>
     <param name="uArea">
-      Specifies the work area name or number for a table.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/uAreaValue/*" />
     </param>
 
     <returns>
@@ -6962,7 +7006,7 @@
     </returns>
     <remarks>
       DBStruct() operates like COPY STRUCTURE EXTENDED by creating an array of structure information rather than a database file of structure information.  There is another function, DBCreate(), that can create a database file from the structure array.
-      By default, DBStruct() operates on the currently selected work area.  It will operate on an unselected work area if you specify it as part of an aliased expression as shown below.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
     </remarks>
     <example>
       This example opens two database files, then creates an array containing the database structure using DBStruct() within an aliased expression.  The field attributes are then listed using AEval():
@@ -7030,11 +7074,11 @@
     </param>
     <param name="cbKey">A key expression specified as a code block.</param>
     <param name="acFields">The fields to be totaled specified as an array of strings.</param>
-    <param name="cbForCondition">A code block that defines a condition that each record within the scope must meet in order to be processed.</param>
-    <param name="cbWhileCondition">
-      A code block that defines another condition that each record must meet in order to be processed.  As soon as a record is encountered that causes the condition to fail, the operation terminates.  If no scope is specified, having a &lt;cbWhileCondition&gt; changes the default scope to &lt;lRest&gt;.<br/>
-      &#0009;You define the scope using one of these three, mutually exclusive arguments.  The default is all records.
+    <param name="cbForCondition">
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/cbfor/*" />
     </param>
+    <param name="cbWhileCondition">
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/cbwhile/*" />    </param>
     <param name="nNext">The number of records to append, starting at the current record.</param>
     <param name="nRecord">The number of the record to append.</param>
     <param name="lRest">TRUE processes only records from the current record to end-of-file.  FALSE processes all records.</param>
@@ -7042,6 +7086,7 @@
       TRUE if successful; otherwise, FALSE.
     </returns>
     <remarks>
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/recordscope/*" />
       DBTotal() is the functional equivalent of the TOTAL command.
     </remarks>
     <example>
@@ -7061,11 +7106,11 @@
 
     <param name="wTarget">The work area number of the destination file.</param>
     <param name="aStruct">An array containing field descriptions in the format returned by DBStruct().  This array contains the structure of the source file.</param>
-    <param name="cbForCondition">A code block that defines a condition that each record within the scope must meet in order to be processed.</param>
-    <param name="cbWhileCondition">
-      A code block that defines another condition that each record must meet in order to be processed.  As soon as a record is encountered that causes the condition to fail, the operation terminates.  If no scope is specified, having a &lt;cbWhileCondition&gt; changes the default scope to &lt;lRest&gt;.<br/>
-      &#0009;You define the scope using one of these three, mutually exclusive arguments.  The default is all records.
+    <param name="cbForCondition">
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/cbfor/*" />
     </param>
+    <param name="cbWhileCondition">
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/cbwhile/*" />    </param>
     <param name="nNext">The number of records to append, starting at the current record.</param>
     <param name="nRecord">The number of the record to append.</param>
     <param name="lRest">TRUE processes only records from the current record to end-of-file.  FALSE processes all records.</param>
@@ -7073,8 +7118,9 @@
       TRUE if successful; otherwise, FALSE.
     </returns>
     <remarks>
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/recordscope/*" />
       DBTrans() copies records from one work area to another open database file.
-      By default, this function operates on the currently selected work area.  It can be made to operate on an unselected work area by specifying it within an aliased expression.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
       <note type="tip">
         Deleted source records:
         &#0009;If SetDeleted() is FALSE, records are copied; however, the deleted records do not retain their deleted status.  No record is marked for deletion in the target file regardless of its status in the source file
@@ -7116,7 +7162,7 @@
     </returns>
     <remarks>
       DBUnlock() releases any record or file locks obtained by the current process for a work area.  DBUnlock() is only meaningful on a shared database.
-      By default, this function operates on the currently selected work area.  It can be made to operate on an unselected work area by specifying it within an aliased expression.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
       <note type="tip">
         Shared mode:&#0009;Releasing locks can cause updates to the database to become visible to other processes.  For more information, refer to "Concurrency Control" in the Programmer's Guide.
       </note>
@@ -7141,11 +7187,11 @@
       </code>
     </example>
     <seealso>DBServer:Unlock</seealso>
-    <seealso cref='M:XSharp.RT.Functions.DbUnlockAll'>DBUnlockAll</seealso>
-    <seealso cref='M:XSharp.RT.Functions.Flock'>FLock</seealso>
+    <seealso cref='O:XSharp.RT.Functions.DbUnLockAll'>DBUnlockAll</seealso>
+    <seealso cref='O:XSharp.RT.Functions.Flock'>FLock</seealso>
     <seealso cref='M:XSharp.RT.Functions.IndexHPLock(XSharp.__Usual)'>IndexHPLock</seealso>
     <seealso cref='M:XSharp.RT.Functions.NewIndexLock(XSharp.__Usual)'>NewIndexLock</seealso>
-    <seealso cref='M:XSharp.RT.Functions.RLock'>RLock</seealso>
+    <seealso cref='O:XSharp.RT.Functions.RLock'>RLock</seealso>
     <seealso cref='M:XSharp.RT.Functions.VoDbUnlock(XSharp.__Usual)'>VODBUnlock</seealso>
   </dbunlock>
   <dbunlockall>
@@ -7153,7 +7199,7 @@
       Release all locks for all work areas.
     </summary>
     <param name="uArea">
-      Specifies the work area name or number for a table.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/uAreaOperation/*" />
     </param>
     <returns>
       TRUE if successful; otherwise, FALSE.
@@ -7186,11 +7232,11 @@
       </code>
     </example>
     <seealso>DBServer:Unlock</seealso>
-    <seealso cref='M:XSharp.RT.Functions.DbUnLock'>DBUnlock</seealso>
-    <seealso cref='M:XSharp.RT.Functions.Flock'>FLock</seealso>
+    <seealso cref='O:XSharp.RT.Functions.DbUnLock'>DBUnlock</seealso>
+    <seealso cref='O:XSharp.RT.Functions.Flock'>FLock</seealso>
     <seealso cref='M:XSharp.RT.Functions.IndexHPLock(XSharp.__Usual)'>IndexHPLock</seealso>
     <seealso cref='M:XSharp.RT.Functions.NewIndexLock(XSharp.__Usual)'>NewIndexLock</seealso>
-    <seealso cref='M:XSharp.RT.Functions.RLock'>RLock</seealso>
+    <seealso cref='O:XSharp.RT.Functions.RLock'>RLock</seealso>
     <seealso cref='M:XSharp.RT.Functions.VoDbUnlockAll'>VODBUnlockAll</seealso>
   </dbunlockall>
   <dbupdate>
@@ -7221,7 +7267,7 @@
     </example>
     <seealso>DBServer:Update</seealso>
     <seealso cref='M:XSharp.RT.Functions.DbUpdate(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)'>DBUpdate</seealso>
-    <seealso cref='M:XSharp.RT.Functions.Flock'>FLock</seealso>
+    <seealso cref='O:XSharp.RT.Functions.Flock'>FLock</seealso>
     <seealso>UPDATE</seealso>
   </dbupdate>
   <dbusearea>
@@ -7271,14 +7317,14 @@
       Remove all records from open files.
     </summary>
     <param name="uArea">
-      Specifies the work area name or number for a table.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/uAreaOperation/*" />
     </param>
     <returns>
       TRUE if successful; otherwise, FALSE.
     </returns>
     <remarks>
       DBZap() permanently removes all records from files open in the work area.  This includes the database file, index files, and associated memo file.  Disk space previously occupied by the zapped files is released to the operating system.  If all the records in the database file are marked for deletion, DBZap() performs the same operation as DBPack(), but is almost instantaneous.
-      By default, this function operates on the currently selected work area.  It can be made to operate on an unselected work area by specifying it within an aliased expression.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkareaParam/*" />
       This operation requires that the current database be open in exclusive mode (see SetExclusive()).  If this condition is not met when the function is invoked, a runtime error is raised.  See "Concurrency Control" in the Programmer's Guide for more information.  Otherwise, the operation proceeds and, upon termination, resets the record pointer to the first logical record in the current work area.
     </remarks>
     <example>
@@ -7298,8 +7344,8 @@
         ENDIF
       </code>
     </example>
-    <seealso cref='M:XSharp.RT.Functions.DbDelete'>DBDelete</seealso>
-    <seealso cref='M:XSharp.RT.Functions.DbPack'>DBPack</seealso>
+    <seealso cref='O:XSharp.RT.Functions.DbDelete'>DBDelete</seealso>
+    <seealso cref='O:XSharp.RT.Functions.DbPack'>DBPack</seealso>
     <seealso>DBServer:Delete</seealso>
     <seealso>DBServer:Zap</seealso>
     <seealso>DELETE</seealso>
@@ -7466,14 +7512,14 @@
       Return the deleted status of the current record.
     </summary>
     <param name="uArea">
-      Specifies the work area name or number for a table.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/uAreaValue/*" />
     </param>
     <returns>
       TRUE if the current record is marked for deletion; otherwise, FALSE.  If there is no database file in use in the work area, Deleted() returns FALSE.
     </returns>
     <remarks>
       Deleted() determines if the current record in the active work area is marked for deletion.  Since each work area with an open database file can have a current record, each work area has its own Deleted() value.
-      By default, Deleted() operates on the currently selected work area.  It will operate on an unselected work area if you specify it as part of an aliased expression (see example below).
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkareaParam/*" />
       In applications, Deleted() is generally used to query the deleted status as a part of record processing conditions, or to display the deleted status as a part of screens and reports.
     </remarks>
     <example>
@@ -7487,8 +7533,8 @@
         QOut(Customer-&gt;Deleted())&#0009;// Result: FALSE
       </code>
     </example>
-    <seealso cref='M:XSharp.RT.Functions.DbDelete'>DBDelete</seealso>
-    <seealso>DELETE</seealso>
+    <seealso cref='O:XSharp.RT.Functions.DbDelete'>DBDelete</seealso>
+    <conceptualLink target="cmd_Delete" />
     <seealso cref='O:XSharp.Core.Functions.SetDeleted'>SetDeleted Overload</seealso>
   </deleted>
   <deletestorage>
@@ -7965,9 +8011,9 @@
       </code>
     </example>
     <seealso cref='O:XSharp.Core.Functions.DiskSpace'>DiskSpace Overload</seealso>
-    <seealso cref='M:XSharp.RT.Functions.Header'>Header</seealso>
-    <seealso cref='M:XSharp.RT.Functions.LastRec'>LastRec</seealso>
-    <seealso cref='M:XSharp.RT.Functions.RecSize'>RecSize</seealso>
+    <seealso cref='O:XSharp.RT.Functions.Header'>Header</seealso>
+    <seealso cref='O:XSharp.RT.Functions.LastRec'>LastRec</seealso>
+    <seealso cref='O:XSharp.RT.Functions.RecSize'>RecSize</seealso>
   </diskfree>
   <diskname>
     <summary>
@@ -8017,9 +8063,9 @@
       </code>
     </example>
     <seealso cref='O:XSharp.Core.Functions.DiskFree'>DiskFree Overload</seealso>
-    <seealso cref='M:XSharp.RT.Functions.Header'>Header</seealso>
-    <seealso cref='M:XSharp.RT.Functions.LastRec'>LastRec</seealso>
-    <seealso cref='M:XSharp.RT.Functions.RecSize'>RecSize</seealso>
+    <seealso cref='O:XSharp.RT.Functions.Header'>Header</seealso>
+    <seealso cref='O:XSharp.RT.Functions.LastRec'>LastRec</seealso>
+    <seealso cref='O:XSharp.RT.Functions.RecSize'>RecSize</seealso>
   </diskspace>
   <doserror>
     <summary>
@@ -8874,7 +8920,7 @@
       Determine when end-of-file is encountered.
     </summary>
     <param name="uArea">
-      Specifies the work area name or number for a table.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/uAreaValue/*" />
     </param>
     <returns>
       TRUE when an attempt is made to move the record pointer beyond the last logical record in a database file or if the database file contains no records; otherwise, FALSE.  If there is no database file open in the work area, EOF() returns TRUE.
@@ -8884,7 +8930,7 @@
       The most typical application is as a part of the &lt;lCondition&gt; argument of a DO WHILE construct that sequentially processes records in a database file.  Here &lt;lCondition&gt; would include a test for .NOT. EOF(), forcing the DO WHILE loop to terminate when EOF() returns TRUE.
       EOF() and Found() are often used interchangeably to test whether a SEEK, FIND, or LOCATE command failed.  With these commands, however, Found() is preferred.
       When EOF() returns TRUE, the record pointer is positioned at LastRec() + 1 regardless of whether there is an active filter setting or SetDeleted() is TRUE.  Further attempts to move the record pointer forward return the same result without error.  Once EOF() is set to TRUE, it retains its value until there is another attempt to move the record pointer.
-      By default, EOF() operates on the currently selected work area.  It can be made to operate on an unselected work area by specifying it within an aliased expression (see example below).
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkareaParam/*" />
     </remarks>
     <example>
       This example demonstrates EOF() by deliberately moving the record pointer beyond the last record:
@@ -8919,13 +8965,20 @@
         &#0009;QOut("Total amount: ", nTotalAmount)
         ENDDO
       </code>
+      You could have written the EOF check in the code above with an alias parameter to EOF() as well:
+      <code language="X#">
+        DO WHILE !EOF("Sales")
+        &#0009;.
+        &#0009;.
+        ENDDO
+      </code>
     </example>
-    <seealso cref='M:XSharp.RT.Functions.Bof'>BOF</seealso>
+    <seealso cref='O:XSharp.RT.Functions.Bof'>BOF</seealso>
     <seealso>DO WHILE</seealso>
-    <seealso cref='M:XSharp.RT.Functions.Found'>Found</seealso>
-    <seealso cref='M:XSharp.RT.Functions.LastRec'>LastRec</seealso>
+    <seealso cref='O:XSharp.RT.Functions.Found'>Found</seealso>
+    <seealso cref='O:XSharp.RT.Functions.LastRec'>LastRec</seealso>
     <seealso>LOCATE</seealso>
-    <seealso cref='M:XSharp.RT.Functions.RecNo'>RecNo</seealso>
+    <seealso cref='O:XSharp.RT.Functions.RecNo'>RecNo</seealso>
     <seealso>SEEK</seealso>
     <seealso cref='M:XSharp.RT.Functions.VoDbEof'>VODBEOF</seealso>
   </eof>
@@ -9659,14 +9712,14 @@
       Return the number of fields in the current database file.
     </summary>
     <param name="uArea">
-      Specifies the work area name or number for a table.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/uAreaValue/*" />
     </param>
     <returns>
       If there is no database file open, FCount() returns 0.
     </returns>
     <remarks>
       FCount() is useful in applications containing data-independent programs that can operate on any database file.  These include generalized import/export and reporting programs.  Typically, you use FCount() to establish the upper limit of a FOR...NEXT or DO WHILE loop that processes a single field at a time.
-      By default, this function operates on the currently selected work area.  It can be made to operate on an unselected work area by specifying it within an aliased expression.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkareaParams/*" />
     </remarks>
     <example>
       This example uses FCount() to return the number of fields in the current and an unselected work area:
@@ -10204,7 +10257,7 @@
       A runtime code block (implemented as an object) that, when evaluated, sets (assigns) or gets (retrieves) the value of the given field.  If &lt;cFieldName&gt; does not exist in the current work area, FieldBlock() returns NULL_OBJECT.
     </returns>
     <remarks>
-      By default, this function operates on the currently selected work area.  It can be made to operate on an unselected work area by specifying it within an aliased expression.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
       Note that the specified field variable does not have to exist when the code block is created but must exist before the code block is executed.
       <note type="tip">
         Work area:  The code block returned by FieldBlock() sets or gets the value of the specified field in whatever work area is current when the block is run.  For example, given work areas 1 and 2, both containing field FName:
@@ -10248,7 +10301,7 @@
       A runtime code block (implemented as an object) that, when evaluated, sets (assigns) or gets (retrieves) the value of the given field.  If &lt;symFieldName&gt; does not exist in the current work area, FieldBlockSym() returns NULL_OBJECT.
     </returns>
     <remarks>
-      By default, this function operates on the currently selected work area.  It can be made to operate on an unselected work area by specifying it within an aliased expression.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
       Note that the specified field variable does not have to exist when the code block is created but must exist before the code block is executed.
       <note type="tip">
         Work area:  The code block returned by FieldBlockSym() sets or gets the value of the specified field in whatever work area is current when the block is run.  For example, given work areas 1 and 2, both containing field FName:
@@ -10349,7 +10402,7 @@
     <returns>
     </returns>
     <remarks>
-      By default, this function operates on the currently selected work area.  It can be made to operate on an unselected work area by specifying it within an aliased expression.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
     </remarks>
     <example>
       This example uses FieldGetArea():
@@ -10407,7 +10460,7 @@
     </summary>
     <param name="dwFieldPos">The position of the field in the database file structure.</param>
     <param name="uArea">
-      Specifies the work area name or number for a table.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/uAreaValue/*" />
     </param>
     <returns>
       The name of the specified field as a string.  If &lt;dwFieldPos&gt; does not correspond to an existing field in the database file or if no database file is open, FieldName() returns a NULL_STRING.
@@ -10416,7 +10469,7 @@
       FieldName() returns a field name using an index to the position of the field name in the database structure.  Use it in data-independent applications where the field name is unknown.  If information for more than one field is required, use DBStruct().
       If you need additional database file structure information, use Type() and Len().  For example, to obtain the number of decimal places for a numeric field, use the following expression:
       <code language="X#">Len(Substr(Str(&lt;idField&gt;), RAt(".", Str(&lt;idField&gt;)) + 1))</code>
-      By default, FieldName() operates on the currently selected work area as shown in the example below.  It can be made to operate on an unselected work area by specifying it within an aliased expression.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkareaParam/*" />
     </remarks>
     <example>
       These examples illustrate FieldName() used with several other functions:
@@ -10465,7 +10518,7 @@
     </returns>
     <remarks>
       FieldPos() is the inverse of the FieldName() function.  FieldPos() is most often used with the FieldPut() and FieldGet() functions.
-      By default, this function operates on the currently selected work area.  It can be made to operate on an unselected work area by specifying it within an aliased expression.  See the example below.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkareaParam/*" />
     </remarks>
     <example>
       This example demonstrates a typical specification of the FieldPos() function:
@@ -10499,7 +10552,7 @@
     </returns>
     <remarks>
       FieldPosSym() is the inverse of the FieldName() function.  FieldPosSym() is most often used with the FieldPut() and FieldGet() functions.
-      By default, this function operates on the currently selected work area.  It can be made to operate on an unselected work area by specifying it within an aliased expression.  See the example below.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
     </remarks>
     <example>
       This example demonstrates a typical specification of the FieldPosSym() function:
@@ -10533,7 +10586,7 @@
     <remarks>
       FieldPut() allows you to set the value of a field using its position within the database file structure rather than its field name.  Within generic database service functions this allows, among other things, the setting of field values without use of the macro operator.
       Note:  FieldPut() can be used with a BLOB field (that is, a memo field associated with a BLOB file), provided the length of the field does not exceed 64 KB.
-      By default, this function operates on the currently selected work area, as shown in the example below.  It can be made to operate on an unselected work area by specifying it within an aliased expression.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
       Shared mode:  For a shared database, this function requires a record lock.  Refer to the "Concurrency Control" chapter in the Programmer's Guide for more information on locking.
     </remarks>
     <example>
@@ -10565,7 +10618,7 @@
     </returns>
     <remarks>
       FieldPutAlias() allows you to set the value of a field using a symbol that specifies the field name.  Within generic database service functions, this allows the setting of field values without the use of the macro operator, among other things.
-      By default, this function operates on the currently selected work area, as shown in the example below.  It can be made to operate on an unselected work area by specifying it within an aliased expression.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
       Shared mode:  For a shared database, this function requires a record lock.  Refer to the "Concurrency Control" chapter in the Programmer's Guide for more information on locking.
     </remarks>
     <example>
@@ -10647,7 +10700,7 @@
       Return the name of a field as a symbol.
     </summary>
     <param name="uArea">
-      Specifies the work area name or number for a table.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/uAreaValue/*" />
     </param>
 
     <param name="dwFieldPos">The position of the field in the database file structure.</param>
@@ -10658,7 +10711,7 @@
       FieldSym() returns a field name as a symbol, using an index to the position of the field name in the database structure.  Use it in data-independent applications where the field name is unknown.  If information for more than one field is required, use DBStruct().
       If you need additional database file structure information, use Type() and Len().  For example, to obtain the number of decimal places for a numeric field, use the following expression:
       <code language="X#">Len(Substr(Str(&lt;idField&gt;), RAt(".", Str(&lt;idField&gt;)) + 1))</code>
-      By default, FieldSym() operates on the currently selected work area, as shown in the example below.  It can be made to operate on an unselected work area by specifying it within an aliased expression.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkareaParam/*" />
     </remarks>
     <example>
       These examples illustrate FieldSym() used with several other functions:
@@ -10689,7 +10742,7 @@
     <seealso cref='M:XSharp.RT.Functions.DbStruct'>DBStruct</seealso>
     <seealso cref='M:XSharp.RT.Functions.FCount'>FCount</seealso>
     <seealso cref='M:XSharp.RT.Functions.FieldName(System.UInt32)'>FieldName</seealso>
-    <seealso cref='M:XSharp.RT.Functions.LastRec'>LastRec</seealso>
+    <seealso cref='O:XSharp.RT.Functions.LastRec'>LastRec</seealso>
     <seealso cref='M:XSharp.RT.Functions.Len(XSharp.__Usual)'>Len</seealso>
     <seealso cref='M:XSharp.RT.Functions.Type(System.String)'>Type</seealso>
     <seealso cref='M:XSharp.RT.Functions.ValType(XSharp.__Usual)'>ValType</seealso>
@@ -10812,7 +10865,7 @@
       Lock an opened and shared database file.
     </summary>
     <param name="uArea">
-      Specifies the work area name or number for a table.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/uAreaOperation/*" />
     </param>
     <returns>
       TRUE if the lock succeeded; otherwise, FALSE.
@@ -10822,7 +10875,8 @@
       For each invocation of FLock(), there is one attempt to lock the database file (and other related files, such as index and memo files), and the result is returned as a logical value.  A file lock fails if another process currently has a file or record lock for the same database file.
       If FLock() is successful, the file lock is locked and other processes are prevented from making updates until the lock is released.  FLock() provides a shared lock, allowing other users read-only access to the locked file while allowing only the current process to modify it.
       A file lock remains in effect until you close the database, explicitly unlock it (with DBUnlock(), for example), or attempt another file or record lock (with RLock() or DBRLock()).
-      By default, FLock() operates on the currently selected work area.  It can be made to operate on an unselected work area by specifying it within an aliased expression.  This feature is useful since FLock() does not automatically attempt a file lock for related files.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkareaParam/*" />
+      This feature is useful since FLock() does not automatically attempt a file lock for related files.
       Refer to "Concurrency Control" in the Programmer's Guide for  more information on file locking.
     </remarks>
     <example>
@@ -10846,11 +10900,11 @@
       </code>
     </example>
     <seealso cref='M:XSharp.RT.Functions.DbRLock(XSharp.__Usual)'>DBRLock</seealso>
-    <seealso cref='M:XSharp.RT.Functions.DbUnLock'>DBUnlock</seealso>
+    <seealso cref='O:XSharp.RT.Functions.DbUnLock'>DBUnlock</seealso>
     <seealso cref='M:XSharp.RT.Functions.DbUseArea(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)'>DBUseArea</seealso>
     <seealso cref='M:XSharp.RT.Functions.IndexHPLock(XSharp.__Usual)'>IndexHPLock</seealso>
     <seealso cref='M:XSharp.RT.Functions.NewIndexLock(XSharp.__Usual)'>NewIndexLock</seealso>
-    <seealso cref='M:XSharp.RT.Functions.RLock'>RLock</seealso>
+    <seealso cref='O:XSharp.RT.Functions.RLock'>RLock</seealso>
     <seealso cref='O:XSharp.Core.Functions.SetExclusive'>SetExclusive Overload</seealso>
     <seealso cref='M:XSharp.RT.Functions.VoDbFlock'>VODBFLock</seealso>
   </flock>
@@ -11034,7 +11088,7 @@
       Determine if the previous search operation succeeded.
     </summary>
     <param name="uArea">
-      Specifies the work area name or number for a table.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/uAreaValue/*" />
     </param>
     <returns>
       TRUE if the last search was successful; otherwise, FALSE.  Found() will also return FALSE if there is no database open in the work area.
@@ -11044,7 +11098,7 @@
       If the search command is LOCATE or CONTINUE, a match is the next record meeting the scope and condition.  If the search command is FIND, SEEK or SET RELATION, a match is the first key in the controlling order that equals the search argument.  If the key value equals the search argument, Found() is TRUE; otherwise, it is FALSE.
       The value of Found() is retained until another record movement command is executed.  Unless the command is another search command, Found() is automatically set to FALSE.  You can also use DBSetFound() to manually set this flag.
       Each work area has a Found() value.  This means that if one work area has a relation set to a child work area, querying Found() in the child returns TRUE if there is a match.
-      By default, Found() operates on the currently selected work area.  It can be made to operate on an unselected work area by specifying it within an aliased expression (see example below).
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkareaParam/*" />
     </remarks>
     <example>
       This example illustrates the behavior of Found() after a record movement command:
@@ -11080,7 +11134,7 @@
     </example>
     <seealso>CONTINUE</seealso>
     <seealso cref='M:XSharp.RT.Functions.DbSetFound(System.Boolean)'>DBSetFound</seealso>
-    <seealso cref='M:XSharp.RT.Functions.Eof'>EOF</seealso>
+    <seealso cref='O:XSharp.RT.Functions.Eof'>EOF</seealso>
     <seealso>LOCATE</seealso>
     <seealso>SEEK</seealso>
     <seealso>SET RELATION</seealso>
@@ -12735,14 +12789,14 @@
       Return the length of the database file header.
     </summary>
     <param name="uArea">
-      Specifies the work area name or number for a table.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/uAreaValue/*" />
     </param>
     <returns>
       The number of bytes in the header of the database file.  If no database file is in use, Header() returns a 0.
     </returns>
     <remarks>
       Header() is used with LastRec(), RecSize(), and DiskSpace() to create procedures for backing up files.
-      By default, Header() operates on the currently selected work area.  It will operate on an unselected work area if you specify it as part of an aliased expression (see example below).
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkareaParam/*" />
     </remarks>
     <example>
       This example determines the header size of the SALES.DBF:
@@ -12762,8 +12816,8 @@
     </example>
     <seealso cref='M:XSharp.RT.Functions.DbInfo(XSharp.__Usual,XSharp.__Usual)'>DBInfo</seealso>
     <seealso cref='O:XSharp.Core.Functions.DiskSpace'>DiskSpace Overload</seealso>
-    <seealso cref='M:XSharp.RT.Functions.LastRec'>LastRec</seealso>
-    <seealso cref='M:XSharp.RT.Functions.RecSize'>RecSize</seealso>
+    <seealso cref='O:XSharp.RT.Functions.LastRec'>LastRec</seealso>
+    <seealso cref='O:XSharp.RT.Functions.RecSize'>RecSize</seealso>
   </header>
   <hibyte>
     <summary>
@@ -14758,13 +14812,13 @@
       Return the number of the last record in a database file.
     </summary>
     <param name="uArea">
-      Specifies the work area name or number for a table.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/uAreaValue/*" />
     </param>
     <returns>
       The number of physical records in a database file.  Filtering or deleted settings have no effect on the return value.  LastRec() returns 0 if there is no database file in use.
     </returns>
     <remarks>
-      By default, LastRec() operates on the currently selected work area.  It will operate on an unselected work area if you specify it as part of an aliased expression (see example below).
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkareaParam/*" />
     </remarks>
     <example>
       This example illustrates the relationship between LastRec(), RecCount(), and COUNT:
@@ -14785,7 +14839,7 @@
     </example>
     <seealso>COUNT</seealso>
     <seealso cref='M:XSharp.RT.Functions.DbInfo(XSharp.__Usual,XSharp.__Usual)'>DBInfo</seealso>
-    <seealso cref='M:XSharp.RT.Functions.Eof'>EOF</seealso>
+    <seealso cref='O:XSharp.RT.Functions.Eof'>EOF</seealso>
     <seealso cref='M:XSharp.RT.Functions.VoDbLastRec'>VODBLastRec</seealso>
   </lastrec>
   <left>
@@ -15257,13 +15311,13 @@
       Return the date a database file was last modified and closed.
     </summary>
     <param name="uArea">
-      Specifies the work area name or number for a table.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/uAreaValue/*" />
     </param>
     <returns>
       The date of last change.  If there is no database file in use, LUpdate() returns a NULL_DATE.
     </returns>
     <remarks>
-      By default, LUpdate() operates on the currently selected work area.  It will operate on an unselected work area if you specify it as part of an aliased expression, as shown in the example below.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkareaParam/*" />
     </remarks>
     <example>
       This example demonstrates that the modification date of a database file is not changed until the database file is closed:
@@ -15286,8 +15340,8 @@
     </example>
     <seealso cref='M:XSharp.RT.Functions.DbInfo(XSharp.__Usual,XSharp.__Usual)'>DBInfo</seealso>
     <seealso cref='M:XSharp.RT.Functions.FieldName(System.UInt32)'>FieldName</seealso>
-    <seealso cref='M:XSharp.RT.Functions.LastRec'>LastRec</seealso>
-    <seealso cref='M:XSharp.RT.Functions.RecSize'>RecSize</seealso>
+    <seealso cref='O:XSharp.RT.Functions.LastRec'>LastRec</seealso>
+    <seealso cref='O:XSharp.RT.Functions.RecSize'>RecSize</seealso>
   </lupdate>
   <makedword>
     <summary>
@@ -15658,9 +15712,7 @@
     </example>
     <seealso cref='M:XSharp.RT.Functions.Len(XSharp.__Usual)'>Len</seealso>
     <seealso cref='M:XSharp.VO.Functions.MBLTrim(System.String)'>MBLTrim</seealso>
-    <seealso>MBPszLen</seealso>
     <seealso cref='M:XSharp.VO.Functions.MBRTrim(System.String)'>MBRTrim</seealso>
-    <seealso cref='M:XSharp.VO.Functions.MBLEN(System.String)'>MBLen</seealso>
   </mblen>
   <mbltrim>
     <summary>
@@ -15682,24 +15734,6 @@
     <seealso cref='M:XSharp.VO.Functions.MBSubstr(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)'>MBSubstr</seealso>
     <seealso cref='M:XSharp.VO.Functions.MBTrim(System.String)'>MBTrim</seealso>
   </mbltrim>
-  <mbpszlen>
-    <summary>
-      Return the length of a PSZ containing double-byte characters.
-    </summary>
-
-    <param name="pszMBString">A null-terminated string.</param>
-    <returns>
-      The length of &lt;pszMBString&gt; in which each double-byte character counts as one character.  The null-terminating character is not counted.
-    </returns>
-    <remarks>
-      This function is like PszLen() except that it handles strings containing double-byte characters.
-    </remarks>
-    <example>
-    </example>
-    <seealso cref='M:XSharp.VO.Functions.MBLEN(System.String)'>MBLen</seealso>
-    <seealso cref='M:XSharp.VO.Functions.MBSLen(System.String)'>MBSLen</seealso>
-    <seealso cref='M:XSharp.RT.Functions.PszLen(XSharp.__Psz)'>PszLen</seealso>
-  </mbpszlen>
   <mbrat>
     <summary>
       Return the position of the last occurrence of a substring within a string — both the substring and the string can contain double-byte characters.
@@ -15819,9 +15853,8 @@
     <example>
     </example>
     <seealso cref='M:XSharp.VO.Functions.MBAllTrim(System.String)'>MBAllTrim</seealso>
-    <seealso cref='M:XSharp.VO.Functions.MBLEN(System.String)'>MBLen</seealso>
+    <seealso cref='M:XSharp.VO.Functions.MBLen(System.String)'>MBLen</seealso>
     <seealso cref='M:XSharp.VO.Functions.MBLTrim(System.String)'>MBLTrim</seealso>
-    <seealso>MBPszLen</seealso>
     <seealso cref='M:XSharp.VO.Functions.MBRTrim(System.String)'>MBRTrim</seealso>
     <seealso cref='M:XSharp.VO.Functions.MBTrim(System.String)'>MBTrim</seealso>
     <seealso cref='M:XSharp.Core.Functions.SLen(System.String)'>SLen</seealso>
@@ -17612,8 +17645,8 @@
     </example>
     <seealso>APPEND BLANK</seealso>
     <seealso cref='M:XSharp.RT.Functions.DbRLock(XSharp.__Usual)'>DBRLock</seealso>
-    <seealso cref='M:XSharp.RT.Functions.Flock'>FLock</seealso>
-    <seealso cref='M:XSharp.RT.Functions.RLock'>RLock</seealso>
+    <seealso cref='O:XSharp.RT.Functions.Flock'>FLock</seealso>
+    <seealso cref='O:XSharp.RT.Functions.RLock'>RLock</seealso>
     <seealso>USE</seealso>
   </neterr>
   <netname>
@@ -18222,14 +18255,14 @@
 
     <param name="cForCondition">A string that specifies the for condition for the order.  This string is returned by DBOrderInfo(DBOI_CONDITION, [&lt;cIndexFile&gt;], &lt;cOrder&gt;).  If you do not need this information, you can specify a NULL_STRING.</param>
     <param name="cbForCondition">
-      A code block that defines a condition (called the for condition) that each record within the scope must meet in order to be processed.  If a record does not meet the specified condition, it is ignored and the next record is processed.  Duplicate key values are not added to the index file when a for condition is used.  The default is NIL.<br/>
-      &#0009;This condition (not &lt;cForCondition&gt;) is the one that is actually used to create the order.  Unlike the while condition and other scoping information, the for condition is stored as part of the index file and is used when updating or rebuilding the order with DBReindex().  Any limitations on the for condition are determined by the RDD (see the "RDD Specifics" appendix in the Programmer's Guide for information about RDD limitations.)
-    </param>
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/cbfor/*" /> <br/>>
+      This condition (not &lt;cForCondition&gt;) is the one that is actually used to create the order.  
+      Unlike the while condition and other scoping information, the for condition is stored as part of the index file and is used when updating or rebuilding the order with DBReindex().  Any limitations on the for condition are determined by the RDD (see the "RDD Specifics" appendix in the Programmer's Guide for information about RDD limitations.)
+   </param>
+
     <param name="lAll">A value of TRUE specifies a scope of all records.  Use FALSE if you want to indicate other record scoping conditions (that is, &lt;nNext&gt;, &lt;nRecord&gt;, or &lt;lRest&gt;).  The default is FALSE.</param>
     <param name="cbWhileCondition">
-      A code block that defines a condition that each record must meet in order to be processed.  If no scope is specified, having a &lt;cbWhileCondition&gt; changes the default scope to &lt;lRest&gt;.  As soon as a record is encountered that causes the condition to fail, the operation terminates.<br/>
-      &#0009;The while condition is used only to create the order.  It is not stored in the index file and not used for updating or reindexing purposes.  The default is NIL.
-    </param>
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/cbwhile/*" />    </param>
     <param name="cbEval">A code block that is evaluated at intervals specified by &lt;nInterval&gt;.  This is useful in producing a status bar or odometer that monitors the ordering progress.  The return value of &lt;cbEval&gt; must be a logical value.  If &lt;cbEval&gt; returns FALSE, indexing halts.  The default is NIL.</param>
     <param name="nInterval">A numeric expression that determines the number of times &lt;cbEval&gt; is evaluated.  This argument offers a performance enhancement by evaluating the condition at intervals instead of for every record processed.  To step through every record, you can specify a value of 0.  The default is 0.</param>
     <param name="nStart">
@@ -18285,7 +18318,7 @@
     </returns>
     <remarks>
       OrdDescend() changes the ascending/descending flag at runtime only — it does not change the descending flag stored in the actual index file.
-      By default, this function operates on the currently selected work area.  It will operate on an unselected work area if you specify it as part of an aliased expression.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
     </remarks>
     <example>
       The following example illustrates OrdDescend(), every order can be both ascending and descending.
@@ -18324,7 +18357,7 @@
     </remarks>
     <example>
     </example>
-    <seealso cref='M:XSharp.RT.Functions.DbDeleteOrder(XSharp.__Usual,XSharp.__Usual)'>DBDeleteOrder</seealso>
+    <seealso cref='O:XSharp.RT.Functions.DbDeleteOrder(XSharp.__Usual,XSharp.__Usual)'>DBDeleteOrder</seealso>
   </orddestroy>
   <ordfor>
     <summary>
@@ -18364,7 +18397,7 @@
       The status of the indicated order's unique flag as a logical value.
     </returns>
     <remarks>
-      By default, this function operates on the currently selected work area.  It will operate on an unselected work area if you specify it as part of an aliased expression.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
     </remarks>
     <example>
       This example shows the return value of OrdIsUnique() using various orders:
@@ -18433,7 +18466,7 @@
       &#0009;The specified order is not custom built
       &#0009;The specified order does not exist
       &#0009;No order was specified and there is no controlling order
-      By default, this function operates on the currently selected work area.  It will operate on an unselected work area if you specify it as part of an aliased expression.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
     </remarks>
     <example>
       This example creates a custom index and adds every fiftieth record to it:
@@ -18469,7 +18502,7 @@
     </returns>
     <remarks>
       OrdKeyCount() counts the keys in the specified order and returns the result as a numeric value.  If the order is not conditional and no scope has been set for it, OrdKeyCount() is identical to RecCount(), returning the number of records in the database file.  However, for a conditional order, there may be fewer keys than there are records, since some records may not meet the order's for condition or may not fall inside the scope specified by OrdScope() — in counting the keys, OrdKeyCount() respects the currently defined scope and for condition.
-      By default, this function operates on the currently selected work area.  It will operate on an unselected work area if you specify it as part of an aliased expression.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
       <br/>
       If there is no order in operation, the return value will be 0 and not the value of RecCount().
     </remarks>
@@ -18520,7 +18553,7 @@
       &#0009;The specified order is not custom built
       &#0009;The specified order does not exist
       &#0009;No order was specified and there is no controlling order
-      By default, this function operates on the currently selected work area.  It will operate on an unselected work area if you specify it as part of an aliased expression.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
     </remarks>
     <example>
       This example creates a custom index, adds every fiftieth record to it, and deletes every hundredth record:
@@ -18556,7 +18589,7 @@
     <remarks>
       OrdKeyGoTo() is the complement to OrdKeyNo().  OrdKeyNo() returns the logical record number (i.e., its position in the controlling order) of the current record, and OrdKeyGoTo() moves the record pointer to the specified logical record.
       Tip:  This function can be useful when displaying scroll bars.  If the user clicks on a certain position on the scroll bar, you can move to the corresponding record by calling OrdKeyGoTo().
-      By default, this function operates on the currently selected work area.  It will operate on an unselected work area if you specify it as part of an aliased expression.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
     </remarks>
     <example>
       This example shows the difference between physical and logical record number:
@@ -18571,7 +18604,7 @@
         &#0009;&#0009;&#0009;&#0009;&#0009;&#0009;// record no
       </code>
     </example>
-    <seealso cref='M:XSharp.RT.Functions.DbGoto(XSharp.__Usual)'>DBGoTo</seealso>
+    <seealso cref='O:XSharp.RT.Functions.DbGoto'>DBGoTo</seealso>
     <seealso cref='M:XSharp.RT.Functions.OrdKeyCount(XSharp.__Usual,XSharp.__Usual)'>OrdKeyCount</seealso>
     <seealso cref='M:XSharp.RT.Functions.OrdKeyNo(XSharp.__Usual,XSharp.__Usual)'>OrdKeyNo</seealso>
   </ordkeygoto>
@@ -18594,7 +18627,7 @@
     <remarks>
       OrdKeyNo() returns the logical record number of a key in an order.  This in contrast to the physical record number (returned using the RecNo() function), which is the relative position of the record in the physical database file.
       Tip:  This function can be useful for displaying scroll bars and messages such as "Record 9 of 123" when viewing records in a browser.
-      By default, this function operates on the currently selected work area.  It will operate on an unselected work area if you specify it as part of an aliased expression.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
     </remarks>
     <example>
       This example shows the difference between physical and logical record number:
@@ -18613,7 +18646,7 @@
     <seealso cref='M:XSharp.RT.Functions.OrdKeyCount(XSharp.__Usual,XSharp.__Usual)'>OrdKeyCount</seealso>
     <seealso cref='M:XSharp.RT.Functions.OrdKeyGoto(XSharp.__Usual)'>OrdKeyGoTo</seealso>
     <seealso cref='M:XSharp.RT.Functions.OrdScope(XSharp.__Usual,XSharp.__Usual)'>OrdScope</seealso>
-    <seealso cref='M:XSharp.RT.Functions.RecNo'>RecNo</seealso>
+    <seealso cref='O:XSharp.RT.Functions.RecNo'>RecNo</seealso>
   </ordkeyno>
   <ordkeyval>
     <summary>
@@ -18629,7 +18662,7 @@
     <remarks>
       The key value is retrieved from the controlling order, not the database file.  This makes the retrieval faster because no time is spent reading in the actual record.
       Tip:  OrdKeyVal() is fast, but if you are going to use the value more than once, it is faster to store the result in a local variable.  Then use the local variable rather than calling OrdKeyVal() repeatedly for the same record.
-      By default, this function operates on the currently selected work area.  It will operate on an unselected work area if you specify it as part of an aliased expression.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
     </remarks>
     <example>
       This example displays the values for all keys in an order without ever reading the individual records into memory:
@@ -18772,7 +18805,7 @@
     <remarks>
       The range of values specified using OrdScope() is inclusive.  In other words, the keys included in the scope will be greater than or equal the top boundary and less than or equal to the bottom boundary.
       Note:  To return current settings without changing them, call the DBOrderInfo() function, using the DBOI_SCOPETOP and DBOI_SCOPEBOTTOM constants.
-      By default, this function operates on the currently selected work area.  It will operate on an unselected work area if you specify it as part of an aliased expression.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
     </remarks>
     <example>
       This example illustrates using OrdScope() to set various scoping limitations on an order:
@@ -18853,7 +18886,7 @@
     <seealso cref='M:XSharp.RT.Functions.DbRelation(XSharp.__Usual)'>DBRelation</seealso>
     <seealso cref='M:XSharp.RT.Functions.DbRSelect(XSharp.__Usual)'>DBRSelect</seealso>
     <seealso cref='M:XSharp.RT.Functions.DbSetRelation(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)'>DBSetRelation</seealso>
-    <seealso cref='M:XSharp.RT.Functions.Found'>Found</seealso>
+    <seealso cref='O:XSharp.RT.Functions.Found'>Found</seealso>
     <seealso>SET RELATION</seealso>
   </ordsetrelation>
   <ordskipunique>
@@ -18867,7 +18900,7 @@
     </returns>
     <remarks>
       OrdSkipUnique() allows you to make a non-unique order look like a unique order.  Each time you use OrdSkipUnique(), you are moved to the next (or previous) unique key, exactly as if you were skipping through a unique order.  This function eliminates the problems associated with maintaining a unique order, while providing you with fast access to unique keys.
-      By default, this function operates on the currently selected work area.  It will operate on an unselected work area if you specify it as part of an aliased expression....
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
     </remarks>
     <example>
       This examples uses OrdSkipUnique() to build an array of unique last names beginning with the letter "J:"
@@ -19454,7 +19487,7 @@
     </example>
     <seealso>?</seealso>
     <seealso cref='O:XSharp.RT.Functions.QQOut'>QQOut Overload</seealso>
-    <seealso></seealso>
+
   </qout>
   <qqout>
     <summary>
@@ -20006,7 +20039,7 @@
       Determine the number of records in a database file.
     </summary>
     <param name="uArea">
-      Specifies the work area name or number for a table.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/uAreaValue/*" />
     </param>
     <returns>
     </returns>
@@ -20014,14 +20047,14 @@
     </remarks>
     <example>
     </example>
-    <seealso cref='M:XSharp.RT.Functions.LastRec'>LastRec</seealso>
+    <seealso cref='O:XSharp.RT.Functions.LastRec'>LastRec</seealso>
   </reccount>
   <recno>
     <summary>
       Return the current record number.
     </summary>
     <param name="uArea">
-      Specifies the work area name or number for a table.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/uAreaValue/*" />
     </param>
     <returns>
       The current record number.  If the work area contains a database file with 0 records, RecNo() returns 1, BOF() and EOF() both return TRUE, and LastRec() returns 0.
@@ -20030,7 +20063,7 @@
     <remarks>
       X# database files are physically ordered by record number.  Each work area in turn maintains a pointer to the current record in its open database file.  That record number is reported by RecNo().  This allows direct access to a record without sequentially scanning the database file to reach the specified record position.
       Typically, RecNo() generalizes routines that process records by record number.
-      By default, RecNo() operates on the currently selected work area.  It operates on an unselected work area if you specify it as part of an aliased expression (see example below).
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkareaParam/*" />
     </remarks>
     <example>
       This example queries RecNo() after deliberately moving the record pointer:
@@ -20055,17 +20088,17 @@
         QOut(Customer-&gt;RECNO())
       </code>
     </example>
-    <seealso cref='M:XSharp.RT.Functions.Bof'>BOF</seealso>
+    <seealso cref='O:XSharp.RT.Functions.Bof'>BOF</seealso>
     <seealso cref='M:XSharp.RT.Functions.DbInfo(XSharp.__Usual,XSharp.__Usual)'>DBInfo</seealso>
-    <seealso cref='M:XSharp.RT.Functions.Eof'>EOF</seealso>
-    <seealso cref='M:XSharp.RT.Functions.LastRec'>LastRec</seealso>
+    <seealso cref='O:XSharp.RT.Functions.Eof'>EOF</seealso>
+    <seealso cref='O:XSharp.RT.Functions.LastRec'>LastRec</seealso>
   </recno>
   <recsize>
     <summary>
       Determine the record length of a database file.
     </summary>
     <param name="uArea">
-      Specifies the work area name or number for a table.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/uAreaValue/*" />
     </param>
     <returns>
       The record length, in bytes.  RecSize() returns 0 if no database file is open.
@@ -20073,7 +20106,7 @@
     <remarks>
       RecSize() determines the length of a record by summing the lengths of each field, then adding one for the Deleted() status flag.  When this value is multiplied by LastRec(), the product is the amount of space occupied by all of the file's records.
       RecSize() is useful in programs that perform automatic file backup.  When used in conjunction with DiskSpace(), the RecSize() function can assist in ensuring that sufficient free space exists on the disk before a file is stored.
-      By default, RecSize() operates on the currently selected work area.  It will operate on an unselected work area if you specify it as part of an aliased expression (see example below).
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkareaParam/*" />
     </remarks>
     <example>
       The following function, DBFSize(), uses RecSize() to calculate the size of the current database file:
@@ -20093,8 +20126,8 @@
     <seealso cref='M:XSharp.RT.Functions.DbRecordInfo(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)'>DBRecordInfo</seealso>
     <seealso cref='O:XSharp.Core.Functions.DiskSpace'>DiskSpace Overload</seealso>
     <seealso cref='M:XSharp.RT.Functions.FieldName(System.UInt32)'>FieldName</seealso>
-    <seealso cref='M:XSharp.RT.Functions.Header'>Header</seealso>
-    <seealso cref='M:XSharp.RT.Functions.LastRec'>LastRec</seealso>
+    <seealso cref='O:XSharp.RT.Functions.Header'>Header</seealso>
+    <seealso cref='O:XSharp.RT.Functions.LastRec'>LastRec</seealso>
   </recsize>
   <reference>
     <summary>
@@ -20141,7 +20174,7 @@
         &#0009;// just before object is destroyed.
       </code>
     </example>
-    <seealso>_RegisterExit</seealso>
+    <seealso cref='M:XSharp.VO.Functions.RegisterExit'>_RegisterExit</seealso>
     <seealso cref='M:XSharp.RT.Functions.InCollect'>InCollect</seealso>
     <seealso cref='M:XSharp.VO.Functions.RegisterKid(System.IntPtr,System.UInt32,System.Boolean)'>RegisterKid</seealso>
     <seealso cref='M:XSharp.RT.Functions.UnRegisterAxit(System.Object)'>UnregisterAxit</seealso>
@@ -20345,7 +20378,7 @@
       Lock the current record.
     </summary>
     <param name="uArea">
-      Specifies the work area name or number for a table.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/uAreaOperation/*" />
     </param>
     <param name="cRecordNumberList">
       Specifies that RLOCK( ) attempts to lock multiple records. The character expression cRecordNumberList specifies one or more record numbers, separated by commas, that RLOCK( ) attempts to lock. For example, to attempt record locks on the first four records in a table, cRecordNumberList should contain 1, 2, 3, 4.
@@ -20358,7 +20391,8 @@
       For each invocation of RLock(), there is one attempt to lock the target record, and the result is returned as a logical value.  An attempt to obtain a record lock fails if another process currently has a file lock or record lock on the target record.
       If RLock() is successful, the record is locked and other processes are prevented from updating the record until the lock is released.  RLock() provides a shared lock, allowing other users read-only access to the locked record while allowing only the current process to modify it.
       A record lock remains in effect until you explicitly unlock it (with DBUnlock(), for example), close the database file, or attempt another file or record lock (with RLock() or DBRLock() without an argument).
-      By default, RLock() operates on the currently selected work area.  It will operate on an unselected work area if you specify it as part of an aliased expression.  This feature is useful since RLock() does not automatically attempt a record lock for related files.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkareaParam/*" />
+      This feature is useful since RLock() does not automatically attempt a record lock for related files.
       Refer to "Concurrency Control" in the Programmer's Guide for  more information on record locking.
     </remarks>
     <example>
@@ -20380,9 +20414,9 @@
       </code>
     </example>
     <seealso cref='M:XSharp.RT.Functions.DbRLock(XSharp.__Usual)'>DBRLock</seealso>
-    <seealso cref='M:XSharp.RT.Functions.DbUnLock'>DBUnlock</seealso>
+    <seealso cref='O:XSharp.RT.Functions.DbUnLock'>DBUnlock</seealso>
     <seealso cref='M:XSharp.RT.Functions.DbUseArea(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)'>DBUseArea</seealso>
-    <seealso cref='M:XSharp.RT.Functions.Flock'>FLock</seealso>
+    <seealso cref='O:XSharp.RT.Functions.Flock'>FLock</seealso>
     <seealso cref='M:XSharp.RT.Functions.IndexHPLock(XSharp.__Usual)'>IndexHPLock</seealso>
     <seealso cref='M:XSharp.RT.Functions.NewIndexLock(XSharp.__Usual)'>NewIndexLock</seealso>
     <seealso cref='O:XSharp.Core.Functions.SetExclusive'>SetExclusive Overload</seealso>
@@ -21432,9 +21466,9 @@
     </remarks>
     <example>
     </example>
-    <seealso cref='M:XSharp.RT.Functions.Flock'>FLock</seealso>
+    <seealso cref='O:XSharp.RT.Functions.Flock'>FLock</seealso>
     <seealso cref='O:XSharp.Core.Functions.NetErr'>NetErr Overload</seealso>
-    <seealso cref='M:XSharp.RT.Functions.RLock'>RLock</seealso>
+    <seealso cref='O:XSharp.RT.Functions.RLock'>RLock</seealso>
     <seealso>USE</seealso>
   </setexclusive>
   <setfdatetime>
@@ -22050,7 +22084,7 @@
     <seealso cref='M:XSharp.RT.Functions.DbSetIndex(XSharp.__Usual,XSharp.__Usual)'>DBSetIndex</seealso>
     <seealso cref='M:XSharp.RT.Functions.DbSetOrder(XSharp.__Usual,XSharp.__Usual)'>DBSetOrder</seealso>
     <seealso cref='M:XSharp.RT.Functions.DbSetRelation(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)'>DBSetRelation</seealso>
-    <seealso cref='M:XSharp.RT.Functions.Found'>Found</seealso>
+    <seealso cref='O:XSharp.RT.Functions.Found'>Found</seealso>
     <seealso>SEEK</seealso>
   </setsoftseek>
   <setthousandsep>
@@ -24350,14 +24384,15 @@
     <summary>
       Determine whether a database file is open.
     </summary>
-   <param name="uArea">
-      Specifies the work area name or number for a table.
+    <param name="uArea">
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/uAreaValue/*" />
     </param>
     <returns>
       TRUE if there is a database file in use; otherwise, FALSE.
     </returns>
     <remarks>
-      Used() determines whether there is a database file in use in a work area.  By default, Used() operates on the currently selected work area.  It will operate on an unselected work area if you specify it as part of an aliased expression.
+      Used() determines whether there is a database file in use in a work area.
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkareaParam/*" />
     </remarks>
     <example>
       This example determines whether a database file is in use in the current work area:
@@ -24752,7 +24787,7 @@
     </remarks>
     <example>
     </example>
-    <seealso cref='M:XSharp.RT.Functions.Bof'>BOF</seealso>
+    <seealso cref='O:XSharp.RT.Functions.Bof'>BOF</seealso>
     <seealso cref='M:XSharp.RT.Functions.VoDbEof'>VODBEOF</seealso>
   </vodbbof>
   <vodbclearfilter>
@@ -24767,7 +24802,7 @@
     </remarks>
     <example>
     </example>
-    <seealso cref='M:XSharp.RT.Functions.DbClearFilter'>DBClearFilter</seealso>
+    <seealso cref='O:XSharp.RT.Functions.DbClearFilter'>DBClearFilter</seealso>
   </vodbclearfilter>
   <vodbclearlocate>
     <summary>
@@ -24777,7 +24812,8 @@
       TRUE if successful; otherwise, FALSE.
     </returns>
     <remarks>
-      VODBClearLocate() clears the locate condition by deleting the locate code block.  By default, this function operates on the currently selected work area.  It can be made to operate on an unselected work area by specifying it within an aliased expression.
+      VODBClearLocate() clears the locate condition by deleting the locate code block.  
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
       A locate condition can be set by DBLocate(), VODBLocate(), VODBSetLocate(), or the LOCATE command.
       Note that this function does not call the error handler and will not, therefore, produce a runtime error message or create an error object if it fails.  Thus, it may be important to check the return value to determine if the function succeeded.
       The global structure, StrucErrInfo, will contain needed information regarding any error that occurs.
@@ -24989,7 +25025,7 @@
     </remarks>
     <example>
     </example>
-    <seealso cref='M:XSharp.RT.Functions.DbDelete'>DBDelete</seealso>
+    <seealso cref='O:XSharp.RT.Functions.DbDelete'>DBDelete</seealso>
     <seealso cref='M:XSharp.RT.Functions.Deleted'>Deleted</seealso>
     <seealso cref='M:XSharp.RT.Functions.VoDbDeleted'>VODBDeleted</seealso>
   </vodbdelete>
@@ -25005,7 +25041,7 @@
     </remarks>
     <example>
     </example>
-    <seealso cref='M:XSharp.RT.Functions.DbDelete'>DBDelete</seealso>
+    <seealso cref='O:XSharp.RT.Functions.DbDelete'>DBDelete</seealso>
     <seealso cref='M:XSharp.RT.Functions.Deleted'>Deleted</seealso>
     <seealso cref='M:XSharp.RT.Functions.VoDbDelete'>VODBDelete</seealso>
   </vodbdeleted>
@@ -25021,7 +25057,7 @@
     </remarks>
     <example>
     </example>
-    <seealso cref='M:XSharp.RT.Functions.Eof'>EOF</seealso>
+    <seealso cref='O:XSharp.RT.Functions.Eof'>EOF</seealso>
     <seealso cref='M:XSharp.RT.Functions.VoDbBof'>VODBBOF</seealso>
   </vodbeof>
   <vodbeval>
@@ -25030,8 +25066,12 @@
     </summary>
 
     <param name="cbExecute">The code block to execute for each record that matches the scope and conditions.</param>
-    <param name="cbForCondition">A code block that defines a condition that each record within the scope must meet in order to be processed.  If no scope is specified, &lt;cbForCondition&gt; changes the default scope to all records.</param>
-    <param name="cbWhileCondition">&#0009;A code block that defines another condition that each record must meet in order to be processed.  As soon as a record is encountered that causes the condition to fail, the operation terminates.  If no scope is specified, having a &lt;cbWhileCondition&gt; changes the default scope to &lt;lRest&gt;.</param>
+    <param name="cbForCondition">
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/cbfor/*" />
+    </param>
+    <param name="cbWhileCondition">
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/cbwhile/*" />
+    </param>
     <param name="nNext">The number of records to process, starting with the current record.</param>
     <param name="nRecord">The number of the record to process.</param>
     <param name="lRest">TRUE processes only records from the current record to end-of-file.  FALSE processes all records.</param>
@@ -25039,6 +25079,7 @@
       TRUE if successful; otherwise, FALSE.
     </returns>
     <remarks>
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/recordscope/*" />
       VODBEval() is like DBEval() but is strongly typed.  This function, however, does not call the error handler and will not, therefore, produce a runtime error message or create an error object if it fails.  Thus, it may be important to check the return value to determine if the function succeeded.  The global structure, StrucErrInfo, will contain needed information regarding any error that occurs.  See DBEval() for more information.
     </remarks>
     <example>
@@ -25200,7 +25241,7 @@
     </remarks>
     <example>
     </example>
-    <seealso cref='M:XSharp.RT.Functions.DbFilter'>DBFilter</seealso>
+    <seealso cref='O:XSharp.RT.Functions.DbFilter'>DBFilter</seealso>
     <seealso cref='M:XSharp.RT.Functions.VoDbClearFilter'>VODBClearFilter</seealso>
   </vodbfilter>
   <vodbflock>
@@ -25215,7 +25256,7 @@
     </remarks>
     <example>
     </example>
-    <seealso cref='M:XSharp.RT.Functions.Flock'>FLock</seealso>
+    <seealso cref='O:XSharp.RT.Functions.Flock'>FLock</seealso>
     <seealso cref='M:XSharp.RT.Functions.IndexHPLock(XSharp.__Usual)'>IndexHPLock</seealso>
     <seealso cref='M:XSharp.RT.Functions.NewIndexLock(XSharp.__Usual)'>NewIndexLock</seealso>
     <seealso cref='M:XSharp.RT.Functions.VoDbRlock(XSharp.__Usual)'>VODBRLock</seealso>
@@ -25232,7 +25273,7 @@
     </remarks>
     <example>
     </example>
-    <seealso cref='M:XSharp.RT.Functions.Found'>Found</seealso>
+    <seealso cref='O:XSharp.RT.Functions.Found'>Found</seealso>
     <seealso cref='O:XSharp.RT.Functions.VoDbSeek'>VODBSeek Overload</seealso>
   </vodbfound>
   <vodbgetselect>
@@ -25278,8 +25319,8 @@
         END
       </code>
     </example>
-    <seealso cref='M:XSharp.RT.Functions.DbGoBottom'>DBGoBottom</seealso>
-    <seealso cref='M:XSharp.RT.Functions.DbGoTop'>DBGoTop</seealso>
+    <seealso cref='O:XSharp.RT.Functions.DbGoBottom'>DBGoBottom</seealso>
+    <seealso cref='O:XSharp.RT.Functions.DbGoTop'>DBGoTop</seealso>
     <seealso cref='M:XSharp.RT.Functions.VoDbGoTop'>VODBGoTop</seealso>
   </vodbgobottom>
   <vodbgoto>
@@ -25296,7 +25337,7 @@
     </remarks>
     <example>
     </example>
-    <seealso cref='M:XSharp.RT.Functions.DbGoto(XSharp.__Usual)'>DBGoTo</seealso>
+    <seealso cref='O:XSharp.RT.Functions.DbGoto'>DBGoTo</seealso>
   </vodbgoto>
   <vodbgotop>
     <summary>
@@ -25310,8 +25351,8 @@
     </remarks>
     <example>
     </example>
-    <seealso cref='M:XSharp.RT.Functions.DbGoBottom'>DBGoBottom</seealso>
-    <seealso cref='M:XSharp.RT.Functions.DbGoTop'>DBGoTop</seealso>
+    <seealso cref='O:XSharp.RT.Functions.DbGoBottom'>DBGoBottom</seealso>
+    <seealso cref='O:XSharp.RT.Functions.DbGoTop'>DBGoTop</seealso>
     <seealso cref='M:XSharp.RT.Functions.VoDbGoBottom'>VODBGoBottom</seealso>
   </vodbgotop>
   <vodbinfo>
@@ -25383,15 +25424,19 @@
     </remarks>
     <example>
     </example>
-    <seealso cref='M:XSharp.RT.Functions.LastRec'>LastRec</seealso>
+    <seealso cref='O:XSharp.RT.Functions.LastRec'>LastRec</seealso>
   </vodblastrec>
   <vodblocate>
     <summary>
       Search for the first record that matches a specified condition and scope.
     </summary>
 
-    <param name="cbForCondition">A code block that defines a condition that each record within the scope must meet in order to be processed.  If no scope is specified, &lt;cbForCondition&gt; changes the default scope to all records.</param>
-    <param name="cbWhileCondition">A code block that defines another condition that each record must meet in order to be processed.  As soon as a record is encountered that causes the condition to fail, the operation terminates.  If no scope is specified, having a &lt;cbWhileCondition&gt; changes the default scope to &lt;lRest&gt;.</param>
+    <param name="cbForCondition">
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/cbfor/*" />
+    </param>
+    <param name="cbWhileCondition">
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/cbwhile/*" />
+    </param>
     <param name="liNext">The number of records to process, starting with the current record.  To omit this argument, specify -1.</param>
     <param name="uRecord">The number of the record to process.  To omit this argument, specify -1.</param>
     <param name="lRest">TRUE processes only records from the current record to end-of-file.  FALSE processes all records.</param>
@@ -25474,7 +25519,7 @@
     </remarks>
     <example>
     </example>
-    <seealso cref='M:XSharp.RT.Functions.DbDeleteOrder(XSharp.__Usual,XSharp.__Usual)'>DBDeleteOrder</seealso>
+    <seealso cref='O:XSharp.RT.Functions.DbDeleteOrder(XSharp.__Usual,XSharp.__Usual)'>DBDeleteOrder</seealso>
   </vodborddestroy>
   <vodborderinfo>
     <summary>
@@ -25598,7 +25643,7 @@
     </remarks>
     <example>
     </example>
-    <seealso cref='M:XSharp.RT.Functions.DbPack'>DBPack</seealso>
+    <seealso cref='O:XSharp.RT.Functions.DbPack'>DBPack</seealso>
     <seealso cref='M:XSharp.RT.Functions.VoDbDelete'>VODBDelete</seealso>
   </vodbpack>
   <vodbrddlist>
@@ -25740,8 +25785,8 @@
     </remarks>
     <example>
     </example>
-    <seealso cref='M:XSharp.RT.Functions.RecNo'>RecNo</seealso>
-    <seealso cref='M:XSharp.RT.Functions.RecSize'>RecSize</seealso>
+    <seealso cref='O:XSharp.RT.Functions.RecNo'>RecNo</seealso>
+    <seealso cref='O:XSharp.RT.Functions.RecSize'>RecSize</seealso>
     <seealso cref='O:XSharp.RT.Functions.VoDbRecordInfo'>VODBRecordInfo Overload</seealso>
   </vodbrecno>
   <vodbrecordinfo>
@@ -25827,7 +25872,7 @@
     <seealso cref='M:XSharp.RT.Functions.DbRLock(XSharp.__Usual)'>DBRLock</seealso>
     <seealso cref='M:XSharp.RT.Functions.IndexHPLock(XSharp.__Usual)'>IndexHPLock</seealso>
     <seealso cref='M:XSharp.RT.Functions.NewIndexLock(XSharp.__Usual)'>NewIndexLock</seealso>
-    <seealso cref='M:XSharp.RT.Functions.RLock'>RLock</seealso>
+    <seealso cref='O:XSharp.RT.Functions.RLock'>RLock</seealso>
     <seealso cref='M:XSharp.RT.Functions.VoDbAppend(System.Boolean)'>VODBAppend</seealso>
   </vodbrlock>
   <vodbrselect>
@@ -25935,12 +25980,15 @@
       Specify the code block for a locate condition.
     </summary>
 
-    <param name="cbForCondition">A code block that defines a condition that each record within the scope must meet in order to be processed.  If no scope is specified, &lt;cbForCondition&gt; changes the default scope to all records.  The code block should contain a logical expression.  It corresponds to the first argument of DBLocate() or VODBLocate().  It is valid until it is overwritten by the next VODBSetLocate().</param>
+    <param name="cbForCondition">
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/cbfor/*" /> <br/>
+      If no scope is specified, &lt;cbForCondition&gt; changes the default scope to all records.  The code block should contain a logical expression.  It corresponds to the first argument of DBLocate() or VODBLocate().  It is valid until it is overwritten by the next VODBSetLocate().</param>
     <returns>
       TRUE if successful; otherwise, FALSE.
     </returns>
     <remarks>
-      VODBSetLocate() allows you to change the locate condition.  Once you issue a LOCATE command, DBLocate(), or VODBLocate(), you could continue searching but with a different condition.  By default, this function operates on the currently selected work area.  It can be made to operate on an unselected work area by specifying it within an aliased expression.
+      VODBSetLocate() allows you to change the locate condition.  Once you issue a LOCATE command, DBLocate(), or VODBLocate(), you could continue searching but with a different condition.  
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
       Note that this function does not call the error handler and will not, therefore, produce a runtime error message or create an error object if it fails.  Thus, it may be important to check the return value to determine if the function succeeded.  The global structure, StrucErrInfo, will contain needed information regarding any error that occurs.
     </remarks>
     <example>
@@ -26080,8 +26128,8 @@
         ENDIF
       </code>
     </example>
-    <seealso cref='M:XSharp.RT.Functions.DbUnLock'>DBUnlock</seealso>
-    <seealso cref='M:XSharp.RT.Functions.DbUnlockAll'>DBUnlockAll</seealso>
+    <seealso cref='O:XSharp.RT.Functions.DbUnLock'>DBUnlock</seealso>
+    <seealso cref='O:XSharp.RT.Functions.DbUnLockAll'>DBUnlockAll</seealso>
     <seealso cref='M:XSharp.RT.Functions.IndexHPLock(XSharp.__Usual)'>IndexHPLock</seealso>
     <seealso cref='M:XSharp.RT.Functions.NewIndexLock(XSharp.__Usual)'>NewIndexLock</seealso>
     <seealso cref='M:XSharp.RT.Functions.VoDbUnlockAll'>VODBUnlockAll</seealso>
@@ -26122,8 +26170,8 @@
         ENDIF&#0009;&#0009;&#0009;&#0009;&#0009;&#0009;&#0009;// all work areas
       </code>
     </example>
-    <seealso cref='M:XSharp.RT.Functions.DbUnLock'>DBUnlock</seealso>
-    <seealso cref='M:XSharp.RT.Functions.DbUnlockAll'>DBUnlockAll</seealso>
+    <seealso cref='O:XSharp.RT.Functions.DbUnLock'>DBUnlock</seealso>
+    <seealso cref='O:XSharp.RT.Functions.DbUnLockAll'>DBUnlockAll</seealso>
     <seealso cref='M:XSharp.RT.Functions.IndexHPLock(XSharp.__Usual)'>IndexHPLock</seealso>
     <seealso cref='M:XSharp.RT.Functions.NewIndexLock(XSharp.__Usual)'>NewIndexLock</seealso>
     <seealso cref='M:XSharp.RT.Functions.VoDbUnlock(XSharp.__Usual)'>VODBUnlock</seealso>
@@ -26413,8 +26461,8 @@
     <example>
     </example>
     <seealso>_GetCmdShow</seealso>
-    <seealso>_GetInst</seealso>
-    <seealso>_GetPrevInst</seealso>
+    <seealso cref='M:XSharp.Core.Functions._GetInst'>_GetInst</seealso>
+    <seealso cref='M:XSharp.Core.Functions._GetPrevInst'>_GetPrevInst</seealso>
   </_getcmdline>
   <_getcmdshow>
     <summary>
@@ -26439,8 +26487,8 @@
     <example>
     </example>
     <seealso cref='M:XSharp.Core.Functions._GetCmdLine'>_GetCmdLine</seealso>
-    <seealso>_GetInst</seealso>
-    <seealso>_GetPrevInst</seealso>
+    <seealso cref='M:XSharp.Core.Functions._GetInst'>_GetInst</seealso>
+    <seealso cref='M:XSharp.Core.Functions._GetPrevInst'>_GetPrevInst</seealso>
   </_getcmdshow>
   <_getfirstparam>
     <summary>
@@ -26511,8 +26559,8 @@
       </code>
     </example>
     <seealso cref='M:XSharp.Core.Functions._GetCmdLine'>_GetCmdLine</seealso>
-    <seealso>_GetCmdShow</seealso>
-    <seealso>_GetPrevInst</seealso>
+    <seealso cref='M:XSharp.Core.Functions._GetCmdShow'>_GetCmdShow</seealso>
+    <seealso cref='M:XSharp.Core.Functions._GetPrevInst'>_GetPrevInst</seealso>
   </_getinst>
   <_getnextparam>
     <summary>
@@ -26549,8 +26597,8 @@
     <example>
     </example>
     <seealso cref='M:XSharp.Core.Functions._GetCmdLine'>_GetCmdLine</seealso>
-    <seealso>_GetCmdShow</seealso>
-    <seealso>_GetInst</seealso>
+    <seealso cref='M:XSharp.Core.Functions._GetCmdShow'>_GetCmdShow</seealso>
+    <seealso cref='M:XSharp.Core.Functions._GetInst'>_GetInst</seealso>
   </_getprevinst>
   <_registerexit>
     <summary>
@@ -26616,4 +26664,46 @@
     </example>
     <seealso>ACCEPT</seealso>
   </_wait>
+  <uAreaValue>
+    <span>
+      Specifies the work area name or number for a table from which the value must be retrieved.
+    </span>
+  </uAreaValue>
+  <uAreaOperation>
+    <span>
+      Specifies the work area name or number for a table on which the operation must be performed.
+    </span>
+  </uAreaOperation>
+  <currentWorkareaParam>
+    <span>
+      By default, this function operates on the currently selected work area.  
+      It can be made to operate on an unselected work area by specifying it within an aliased expression or by calling the overload that accepts a workarea parameter (a workarea number or alias ).
+    </span>
+  </currentWorkareaParam>
+  <currentWorkarea>
+    <span>
+      By default, this function operates on the currently selected work area.  It can be made to operate on an unselected work area by specifying it within an aliased expression
+    </span>
+  </currentWorkarea>
+  <cbwhile>
+    <span>
+      A code block that defines another condition that each record must meet in order to be processed.  
+      As soon as a record is encountered that causes the condition to fail, the operation terminates.<br/>
+      If no scope is specified, &lt;cbWhileCondition&gt; changes the default scope to &lt;lRest&gt;.<br/>
+      You define the scope using one of these three, mutually exclusive arguments.  The default is all records.
+    </span>
+  </cbwhile>
+  <cbfor>
+    <span>
+      A code block that defines a condition that each record within the scope must meet in order to be processed.
+    </span>
+  </cbfor>
+  <recordscope>
+    <span>
+      <note type="tip">
+        The &lt;nNext&gt;, &lt;nRecord&gt;, and &lt;lRest&gt; arguments are mutually exclusive. You should not pass all three of them.
+        And if you pass the &lt;cbWhile&gt; argument then this also controls the scope behavior.
+      </note>
+  </span>
+  </recordscope>
 </Runtimefunctions>

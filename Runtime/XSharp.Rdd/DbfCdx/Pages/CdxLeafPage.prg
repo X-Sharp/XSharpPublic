@@ -372,13 +372,16 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 #endregion
         INTERNAL METHOD SetRecordBits(numRecs as LONG) AS VOID
             VAR bits            := CdxHelpers.GetBits(SELF:KeyLength)
+            VAR totbits := bits * 2
+            
+
             DO CASE
-//            CASE numRecs < 2^12
-//                SELF:RecordBits     := 12
-            CASE numRecs < 2^16
-                SELF:RecordBits     := 16
-            CASE numRecs < 2^24
-                SELF:RecordBits     := 24
+            CASE numRecs < 2^(16 - totbits)
+                SELF:RecordBits     := (BYTE) (16-totbits)
+            CASE numRecs < 2^(24 - totbits)
+                SELF:RecordBits     := (BYTE) (24-totbits)
+            CASE numRecs < 2^(32 - totbits)
+                SELF:RecordBits     := (BYTE) (32-totbits)
             OTHERWISE
                 SELF:RecordBits     := 32
             ENDCASE
@@ -413,6 +416,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             //System.Diagnostics.Trace.WriteLine(i"CdxLeafPage:Add({recno})")
             IF _AND( recno, SELF:RecnoMask) != recno
                 //Debug( "triggers ExpandRecnos", "Rec", recno)
+                SELF:Write()
                 RETURN CdxAction.ExpandRecnos(SELF, recno, key, -1)
             ENDIF
             //Debug("rec",recno, "keys", self:NumKeys, "free before", self:Freespace)
@@ -425,9 +429,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 nDupCount   := _getDupCount(prevkey, key, nTrailCount)
             ENDIF
             VAR nBytesNeeded := SELF:KeyLength - nDupCount - nTrailCount  + SELF:DataBytes 
-            IF SELF:Freespace < nBytesNeeded + nDupCount
+            IF SELF:Freespace < nBytesNeeded 
                 //Debug( "triggers SplitLeaf", "Rec", recno)
-                RETURN CdxAction.SplitLeaf(SELF, recno, key, _leaves:Count)
+                SELF:Write()
+                RETURN CdxAction.AddLeaf(SELF, recno, key)
             ENDIF
             VAR leaf := CdxLeaf{recno, key,nDupCount, nTrailCount}
             _leaves:Add( leaf)
@@ -439,7 +444,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:NumKeys += 1
             SELF:Freespace -= nBytesNeeded
             //Debug("rec",recno, "keys", self:NumKeys, "free after", self:Freespace)
-            SELF:Write()
+            //SELF:Write()
             RETURN CdxAction.Ok
 
 
@@ -864,6 +869,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             sb := stringBuilder{}
             sb:AppendLine("--------------------------")
             sb:AppendLine(String.Format("{0} Page {1:X6}, # of keys: {2}, Free Bytes {3}", SELF:PageType, SELF:PageNo, SELF:NumKeys, SELF:Freespace))
+            sb:AppendLine(String.Format("                 DataBytes: {0}, RecordBits: {1}, DuplicateBits: {2}, TrailBit: {3}", SELF:DataBytes, SELF:RecordBits, SELF:DuplicateBits, SELF:TrailingBits))
             sb:AppendLine(String.Format("Left page reference {0:X6}", SELF:LeftPtr))
             IF SELF:NumKeys > 0
                SELF:_ExpandLeaves(FALSE)

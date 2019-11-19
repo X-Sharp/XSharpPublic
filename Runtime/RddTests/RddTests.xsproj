@@ -131,13 +131,6 @@
       <Private>True</Private>
       <HintPath>..\..\Binaries\Debug\XSharp.Core.dll</HintPath>
     </Reference>
-    <Reference Include="XSharp.Rdd, Version=2.0.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586">
-      <Name>XSharp.Rdd</Name>
-      <AssemblyName>XSharp.Rdd.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\Binaries\Debug\XSharp.Rdd.dll</HintPath>
-    </Reference>
     <Reference Include="XSharp.RT, Version=2.0.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586">
       <Name>XSharp.RT</Name>
       <AssemblyName>XSharp.RT.dll</AssemblyName>
@@ -165,6 +158,11 @@
     <ProjectReference Include="..\MacroCompiler\MacroCompiler.csproj">
       <Name>MacroCompiler (Macrocompiler\MacroCompiler)</Name>
       <Project>{eb3f3142-07f7-48ca-b38d-f611c45a9511}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\XSharp.Rdd\XSharp.RDD.xsproj">
+      <Name>XSharp.RDD</Name>
+      <Project>{e83c6c8c-773f-4b01-a597-3d38398a9362}</Project>
       <Private>True</Private>
     </ProjectReference>
     <ProjectReference Include="..\XSharp.XPP\XSharp.XPP.xsproj">

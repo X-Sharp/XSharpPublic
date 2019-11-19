@@ -21,6 +21,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL isOk AS LOGIC
             LOCAL hasForCond AS LOGIC
             SELF:_ordCondInfo := SELF:_oRdd:_OrderCondInfo:Clone()
+            //? DateTime.Now, "Create"
+
             IF string.IsNullOrEmpty(createInfo:BagName)
                 SELF:_oRDD:_dbfError(  SubCodes.EDB_CREATEINDEX, GenCode.EG_ARG,"OrdCreate", "Missing Orderbag Name")
                 RETURN FALSE
@@ -58,6 +60,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 SELF:_oRDD:_dbfError(  SubCodes.EDB_CREATEINDEX, GenCode.EG_ARG,"OrdCreate", "Missing Order Name")
                 RETURN FALSE
             ENDIF
+            //? DateTime.Now, "Delete Tags"
 
             // now verify if the order already exists in the bag and when so, then delete it from the orderbag
             FOREACH VAR tag IN SELF:OrderBag:Tags
@@ -98,16 +101,19 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL METHOD Build() AS LOGIC
             LOCAL isOk AS LOGIC
             LOCAL ic AS CdxSortCompare
+            //? DateTime.Now, "HeaderCreate"
             IF ! SELF:_HeaderCreate()
                 SELF:Close()
                 SELF:_oRdd:_dbfError(GenCode.EG_CREATE,  SubCodes.ERDD_WRITE,"OrdCreate", "Could not write Header ")
                 RETURN FALSE
             ENDIF
+            //? DateTime.Now, "Read"
             IF !SELF:Unique .AND. !SELF:_Conditional .AND. !_ordCondInfo:Scoped .AND. ! _ordCondInfo:Custom
                 isOk := SELF:_CreateNormalIndex()
             ELSE
                 isOk := SELF:_CreateUnique(_ordCondInfo )
             ENDIF
+            //? DateTime.Now, "Sort"
             IF isOk
                 IF _sorter:Ascii
                     ic := CdxSortCompareAscii{SELF:_oRdd, _sorter}
@@ -116,6 +122,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 ENDIF
                 isOk := _sorter:Sort(ic)
             ENDIF
+            //? DateTime.Now, "Write"
             IF isOk
                 SELF:_sorter:StartWrite()
                 isOk := _sorter:Write(SELF)
@@ -123,6 +130,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF isOk
                 SELF:_sorter:EndWrite()
             ENDIF
+            //? DateTime.Now, "End"
+
             SELF:_sorter := NULL
             SELF:ClearStack()
 
@@ -428,6 +437,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL PROPERTY SourceIndex    AS INT AUTO
         INTERNAL PROPERTY Ascii          AS LOGIC AUTO
         INTERNAL PROPERTY Unique         AS LOGIC AUTO
+        //PRIVATE written                  AS LONG
         PRIVATE _tag                     AS CdxTag
         INTERNAL CONSTRUCTOR( rdd AS DBF, sortInfo   AS DbSortInfo , len AS LONG, tag AS CdxTag )
             SUPER(rdd, sortInfo, len)
@@ -446,6 +456,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 Error("CdxSortHelper.AddRecord","Could not add record to leaf")
                 RETURN FALSE
             ENDIF
+//            ++Written
+//            IF Written % 1000 == 0
+//                ? "Written", written                
+//            ENDIF
             RETURN TRUE
 
         INTERNAL METHOD StartWrite() AS LOGIC

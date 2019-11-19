@@ -429,11 +429,7 @@ FUNCTION DbRLockList() AS ARRAY STRICT
     nRecords := 0
     
     IF _DbThrowErrorOnFailure(__FUNCTION__, VoDb.Info(DBI_LOCKCOUNT, REF uRecords))
-        lockList := (DWORD[]) DbInfo(DBI_GETLOCKARRAY)
-        nRecords := (DWORD) uRecords
-        FOR i := 1 TO nRecords
-            AAdd(aLockList, lockList[i])
-        NEXT
+        aLockList := DbInfo(DBI_GETLOCKARRAY)
     ENDIF
     
     RETURN aLockList

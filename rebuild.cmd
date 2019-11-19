@@ -1,4 +1,5 @@
 @echo off
+Echo Rebuilding for Debug and Release configuration
 Echo Cleaning Binaries folder
 SET XSHARPDEV=\XSharp\Dev\XSharp\Binaries\Debug\net46
 if exist Binaries\Debug  rd Binaries\Debug /s /q

@@ -206,7 +206,7 @@ CLASS XSharp.RuntimeState
 
 	/// <summary>The current ANSI setting</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-    /// <seealso cref="F:XSharp.Set.Ansi" />
+    /// <seealso cref="F:XSharp.Set.ANSI" />
     STATIC PROPERTY Ansi AS LOGIC ;
         GET GetValue<LOGIC>(Set.Ansi);
         SET SetValue<LOGIC>(Set.Ansi, VALUE)

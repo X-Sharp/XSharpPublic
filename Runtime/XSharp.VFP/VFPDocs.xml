@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Runtimefunctions>
+  <addproperty>
+    <summary></summary>
+    <param name="oObject">
+      Specifies the name of the object to which the property is added.<br/>
+      If oObjectName is not a valid object, Visual FoxPro generates the appropriate message.
+    </param>
+    <param name="cPropertyName">
+      Specifies the name of the new property to add to the object.<br/>
+      If the property with the name you specify does not exist, the property is created and added.
+    </param>
+    <param name="eNewValue">
+      Specifies the value to set for the new property.<br/>
+      If you omit eNewValue, and the property exists, Visual FoxPro leaves the value of the property unchanged. If you omit eNewValue, and the property is new, Visual FoxPro sets the value of the new property to False (.F.).
+    </param>
+    <returns>
+      Logical data type. The following table describes the return values for ADDPROPERTY( ) and the behavior when you attempt to add a property that already exists for an object.
+
+    </returns>
+    <remarks>
+      You can create property arrays using ADDPROPERTY( ) for an object. When you do so, every element in the array is initialized with eNewValue, if provided. Otherwise, the value of each property in the array is set to False (.F.). For more information about creating a property array for an object, see the Examples section.
+      <br/>Visual FoxPro adds the new property as a Public property. You cannot specify the property as Protected or Hidden.
+      <br/>If the existing property is a read-only Visual FoxPro native property, such as the BaseClass property, Visual FoxPro generates an error, "Property name is read-only (Error 1743)".
+      <br/>If the property name is not valid, for example, the property name contains a space or other illegal characters, Visual FoxPro generates an error, "Incorrect property name (Error 1470)".
+    <br/>For object instances derived from native Visual FoxPro classes, ADDPROPERTY( ) respects the visibility setting of the intrinsic AddProperty method. If AddProperty is marked as Hidden or Protected, ADDPROPERTY( ) does not create the new property and returns False (.F.). If the AddProperty method is marked as Public (default), ADDPROPERTY( ) creates the property and returns True (.T.). This protects the original class design.
+
+    </remarks>
+    <example></example>
+  </addproperty>
+
+  <xxdummy>
+    <summary></summary>
+    <param name="p1"></param>
+    <param name="p2"></param>
+    <param name="p3"></param>
+    <returns>
+    </returns>
+    <remarks>
+    </remarks>
+    <example></example>
+  </xxdummy>
+  <xxdummy>
+    <summary></summary>
+    <param name="p1">
+    </param>
+    <param name="p2">
+    </param>
+    <param name="p3">
+    </param>
+    <returns>
+    </returns>
+    <remarks>
+    </remarks>
+    <example></example>
+  </xxdummy>
+
+</Runtimefunctions>
+

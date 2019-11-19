@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -40,7 +40,7 @@ FUNCTION CollectForced() AS VOID
 
 /// <exclude/>
 [Obsolete( "'AxitCalled()' is not supported and always returns FALSE" )] ;
-	FUNCTION AxitCalled(o AS OBJECT) AS LOGIC
+FUNCTION AxitCalled(o AS OBJECT) AS LOGIC
 RETURN FALSE  
 
 /// <summary>
@@ -52,6 +52,11 @@ RETURN FALSE
 FUNCTION InCollect() AS LOGIC
 	RETURN FALSE   
 
+    
+[Obsolete( "'_RegisterExit()' is not supported and has no effect, use 'AppDomain.CurrentDomain:ProcessExit' in stead..",TRUE)];
+FUNCTION _RegisterExit(aFunction AS USUAL) AS VOID
+	RETURN
+    
 
 
 /// <summary>

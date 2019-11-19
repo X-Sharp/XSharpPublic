@@ -10,7 +10,8 @@ USING System.Reflection
 [STAThread];      
 FUNCTION Start() AS VOID
     TRY
-        TestCorrupt2()
+        TestProj()
+        //TestCorrupt2()
         //testCdxLock()
         //TestXppCollations()
         //TestNestedMacro()
@@ -149,6 +150,32 @@ FUNCTION Start() AS VOID
         ENDIF
         ErrorDialog(e)
     END TRY
+    RETURN
+
+
+FUNCTION TestProj() AS VOID
+    LOCAL i AS DWORD
+    LOCAL uValue AS USUAL
+
+    RddSetDefault("DBFVFP")
+    DbUseArea(TRUE, "DBFVFP", "c:\cavo28SP3\Samples\Email\EMAIL.DBF", "Email", TRUE)
+    
+    ? RLock("1,2","Email")
+    ? DbInfo(DBI_GETLOCKARRAY)
+    DO WHILE ! EOF()
+        ? "Record", Recno()
+        FOR  i := 1 TO FCount()
+            uValue := FieldGet(i)
+            IF IsString(uValue)
+                VAR sValue := (STRING) uValue
+                uValue := sValue:TrimEnd()
+            ENDIF
+            ? i, FieldName(i), uValue
+            
+        NEXT
+        DbSkip(1)
+    ENDDO
+    DbCloseArea()
     RETURN
 
 FUNCTION TestCdxLock() AS VOID

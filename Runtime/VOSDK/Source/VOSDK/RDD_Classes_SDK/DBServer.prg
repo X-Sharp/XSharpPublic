@@ -36,7 +36,7 @@ PARTIAL CLASS DbServer INHERIT DataServer
 	PROTECT aStruct AS ARRAY
 	PROTECT aRdds AS ARRAY
 	PROTECT nReTries AS DWORD
-    PROTECT oRDD AS XSharp.RDD.IRDD
+	PROTECT oRDD AS XSharp.RDD.IRdd
 
 
 METHOD __AcceptSelectiveRelation( oDBParent AS DbServer, wParentWorkArea AS DWORD, ;

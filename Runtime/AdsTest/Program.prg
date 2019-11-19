@@ -83,7 +83,7 @@ function GetADSHandle( cPath as string ) as IntPtr pascal
 
 CLASS AdsSQLServer INHERIT DBServer
 	
-CONSTRUCTOR ( oFile, lShareMode, lReadOnlyMode, xDriver, aRdd, @@params ) 
+CONSTRUCTOR ( oFile, lShareMode, lReadOnlyMode, xDriver, aRdd, parameters ) 
    LOCAL cTemp AS STRING
    LOCAL cFileName AS STRING
 
@@ -96,11 +96,11 @@ CONSTRUCTOR ( oFile, lShareMode, lReadOnlyMode, xDriver, aRdd, @@params )
 	// The array should be an array of parameter names and parameter values.
 	// For example:
 	//  {{ "lastname", "Smith" }, { "ID", 25 }}
-	IF ( IsNil( params ) )
+	IF ( IsNil( parameters ) )
 		// Pass in an empty array.  Passing in NIL doesn't get to the RDD.
 		RDDINFO( _SET_SQL_PARAMETERS, {} )
 	ELSE
-      RDDINFO( _SET_SQL_PARAMETERS, @@params )
+      RDDINFO( _SET_SQL_PARAMETERS, parameters)
 	ENDIF
    
    // Some VO libraries have trouble with the alias as is.  So for the SQL RDDS,
@@ -144,15 +144,15 @@ CONSTRUCTOR ( oFile, lShareMode, lReadOnlyMode, xDriver, aRdd, @@params )
 RETURN 
 
 
-METHOD Refresh( @@params ) 
+METHOD Refresh( parameters ) 
 	// This version of Refresh() accepts an array of SQL parameters
 	// for the query.  The array should be an array of parameter names and
 	// parameter values. For example:
 	//  {{ "lastname", "Smith" }, { "ID", 25 }}
 	
 	// Set the parameters if provided.
-	IF params != nil
-      RDDINFO( _SET_SQL_PARAMETERS, @@params )
+	IF parameters != nil
+      RDDINFO( _SET_SQL_PARAMETERS, parameters )
 	ENDIF
 
    return SUPER:Refresh()

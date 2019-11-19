@@ -48,10 +48,10 @@ END CLASS
 /// <param name="sender">Workarea for which the event happened.
 /// <note>The <paramref name="sender">sender</paramref> object may be NULL for operations that work on all workareas, such as DbCloseAll() </note></param>
 /// <param name="e">Object that describes the event that happened.</param>
-/// <seealso cref="T:XSharp.RDD.IRDD"/>
+/// <seealso cref="T:XSharp.RDD.IRdd"/>
 /// <seealso cref="T:XSharp.DbNotifyEventArgs"/>
 // note this method matches the signature of XSharp.IDbNotify.Notify()
-PUBLIC DELEGATE XSharp.DbNotifyEventHandler(osender AS XSharp.RDD.IRDD, e AS XSharp.DBNotifyEventArgs) AS VOID
+PUBLIC DELEGATE XSharp.DbNotifyEventHandler(osender AS XSharp.RDD.IRdd, e AS XSharp.DBNotifyEventArgs) AS VOID
 
 
 /// <summary>
@@ -59,7 +59,7 @@ PUBLIC DELEGATE XSharp.DbNotifyEventHandler(osender AS XSharp.RDD.IRDD, e AS XSh
 /// </summary>
 /// <seealso cref="M:XSharp.Core.Functions.DbRegisterClient(XSharp.IDbNotify)"/>
 /// <seealso cref="M:XSharp.Core.Functions.DbUnRegisterClient(XSharp.IDbNotify)"/>
-/// <seealso cref="T:XSharp.RDD.IRDD"/>
+/// <seealso cref="T:XSharp.RDD.IRdd"/>
 /// <seealso cref="T:XSharp.DbNotifyEventArgs"/>
 INTERFACE XSharp.IDbNotify
     /// <summary>This message is sent to clients when a workarea event happens</summary>
@@ -67,5 +67,5 @@ INTERFACE XSharp.IDbNotify
     /// <note>The <paramref name="sender">sender</paramref> object may be NULL for operations that work on all workareas, such as DbCloseAll() </note></param>
     /// <param name="e">Object that describes the event that happened.</param>
     // note this method matches the signature of XSharp.DbNotifyEventHandler
-    METHOD Notify(sender AS XSharp.RDD.IRDD, e AS DbNotifyEventArgs) AS VOID
+    METHOD Notify(sender AS XSharp.RDD.IRdd, e AS DbNotifyEventArgs) AS VOID
 END INTERFACE 

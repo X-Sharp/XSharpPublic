@@ -68,14 +68,6 @@
     <StringProperty Name="DefaultContentType" Visible="false" Description="The default content type name to use when adding files." />
     <StringProperty Name="DebuggerSymbolsPath" Visible="false" />
     <StringProperty Name="TargetPlatformWinMDLocation" Visible="false" />
-    <EnumProperty Name="PlatformTarget" DisplayName="Platform Target" Category="Target" Default="AnyCPU" >
-        <EnumValue Name="x86" DisplayName="x86" />
-        <EnumValue Name="AnyCPU" DisplayName="Any Cpu" />
-        <EnumValue Name="x64" DisplayName="x64" />
-        <EnumProperty.DataSource>
-            <DataSource Persistence="ProjectFile" Label="Configuration" HasConfigurationCondition="false" />
-        </EnumProperty.DataSource>
-    </EnumProperty>
     <StringProperty Name="SDKReferenceDirectoryRoot" Visible="false" />
     <StringProperty Name="SDKReferenceRegistryRoot" Visible="false" />
     <StringProperty Name="TargetPlatformIdentifier" Visible="false" />

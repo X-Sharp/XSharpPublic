@@ -140,6 +140,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <None Include="Xaml\PropertyPage_Dialect.xaml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <Page Include="Xaml\VoBinary.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

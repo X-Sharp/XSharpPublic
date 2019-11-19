@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -13,8 +13,8 @@ namespace DocumentationChanger
         {
             // Check which modes all need to be compiled
             bool htmlHelp1 = false, MsHelpViewer = false, Website = false;
-            //string basePath = @"c:\XSharp\DevRt\Binaries\Obj\VOHelp";
-            string basePath = @"c:\XSharp\DevRt\Binaries\Obj\Help";
+            string basePath = @"c:\XSharp\DevRt\Binaries\Obj\VOHelp";
+            //string basePath = @"c:\XSharp\DevRt\Binaries\Obj\Help";
             string htmlHelp1Path = @"\Output\HtmlHelp1";
             string MsHelpViewerPath = @"\Output\MsHelpViewer";
             string websitePath = @"\Output\Website";

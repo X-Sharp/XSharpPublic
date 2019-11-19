@@ -6,6 +6,7 @@
 
 // Use UDC below to standardize the NULL checks for the array arguments
 #command ARRAYNOTNULL <aArray> => IF <aArray> == NULL ; THROW Error.NullArgumentError(__FUNCTION__,nameof(<aArray>), 1) ; ENDIF
+#command ARRAYNULL <aArray>    => IF <aArray> == NULL ; return <aArray> ; ENDIF
 
 INTERNAL STATIC CLASS ArrayHelpers
 
@@ -549,6 +550,7 @@ FUNCTION AScanExact( aTarget AS ARRAY, uSearch AS USUAL) AS DWORD
     
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ascanbin/*" />
 FUNCTION AScanBin(aTarget AS ARRAY,uSearch AS USUAL) AS DWORD
+    ARRAYNOTNULL aTarget
     RETURN ArrayHelpers.AScanBin( "AscanBin" , aTarget, uSearch, FALSE )
     
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ascanbinexact/*" />
@@ -863,7 +865,7 @@ INTERNAL STRUCTURE ArraySortComparer<T, U>  IMPLEMENTS System.Collections.Generi
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/asort/*" /> 
     /// <typeparam name="T">The type of the array elements</typeparam>
 FUNCTION ASort<T>(aTarget AS __ArrayBase<T> ,nStart AS INT,nCount AS INT,cbOrder AS @@Func<T,T,LOGIC>) AS __ArrayBase<T> WHERE T IS NEW()
-    ARRAYNOTNULL aTarget
+    ARRAYNULL aTarget
     aTarget:Sort( nStart, nCount, ArraySortComparer<T, LOGIC> { cbOrder } )
     RETURN aTarget
     
@@ -871,27 +873,27 @@ FUNCTION ASort<T>(aTarget AS __ArrayBase<T> ,nStart AS INT,nCount AS INT,cbOrder
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/asort/*" /> 
     /// <typeparam name="T">The type of the array elements</typeparam>
 FUNCTION ASort<T>(aTarget AS __ArrayBase<T> ,cbOrder AS @@Func<T,T,LOGIC>) AS __ArrayBase<T> WHERE T IS NEW()
-    ARRAYNOTNULL aTarget
+    ARRAYNULL aTarget
     aTarget:Sort( ArraySortComparer<T, LOGIC> { cbOrder } )
     RETURN aTarget
     
     
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aeval/*" /> 
 FUNCTION AEval<T>(aArray AS __ArrayBase<T>, cbBlock AS Action<T>) AS __ArrayBase<T> WHERE T IS NEW()
-    ARRAYNOTNULL aArray
+    ARRAYNULL aArray
     RETURN AEval(aArray, cbBlock, 1, ALen(aArray) )
     
     
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aeval/*" /> 
 FUNCTION AEval<T>(aArray AS __ArrayBase<T>, cbBlock AS Action<T>,nStart AS DWORD) AS __ArrayBase<T> WHERE T IS NEW()
-    ARRAYNOTNULL aArray
+    ARRAYNULL aArray
     RETURN AEval(aArray, cbBlock, nStart, ALen(aArray) - nStart +1)
     
     
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aeval/*" /> 
     /// <typeparam name="T">The type of the array elements</typeparam>
 FUNCTION AEval<T>(aArray AS __ArrayBase<T>, cbBlock AS Action<T>,nStart AS DWORD,nCount  AS DWORD) AS __ArrayBase<T> WHERE T IS NEW()
-    ARRAYNOTNULL aArray
+    ARRAYNULL aArray
     LOCAL nEnd AS DWORD
     nEnd := nStart + nCount -1
     FOR VAR nX := nStart TO nEnd
@@ -901,7 +903,7 @@ FUNCTION AEval<T>(aArray AS __ArrayBase<T>, cbBlock AS Action<T>,nStart AS DWORD
     
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aeval/*" />
 FUNCTION AEval(aArray AS ARRAY,cbBlock AS ICodeblock ) AS ARRAY 
-    ARRAYNOTNULL aArray
+    ARRAYNULL aArray
     LOCAL uCount    := NIL AS USUAL
     LOCAL uStart	:= NIL AS USUAL
     ArrayHelpers.AEvalCheckArgs(aArray, cbBlock, REF uStart, REF uCount, "AEval")
@@ -909,7 +911,7 @@ FUNCTION AEval(aArray AS ARRAY,cbBlock AS ICodeblock ) AS ARRAY
     
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aeval/*" />
 FUNCTION AEval(aArray AS ARRAY,cbBlock AS ICodeblock ,nStart AS USUAL ) AS ARRAY 
-    ARRAYNOTNULL aArray
+    ARRAYNULL aArray
     LOCAL uCount    := NIL AS USUAL
     ArrayHelpers.AEvalCheckArgs(aArray, cbBlock, REF nStart, REF uCount, "AEval")
     RETURN ArrayHelpers.AEval( aArray, cbBlock, nStart, uCount, FALSE)
@@ -917,14 +919,14 @@ FUNCTION AEval(aArray AS ARRAY,cbBlock AS ICodeblock ,nStart AS USUAL ) AS ARRAY
     
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aeval/*" />
 FUNCTION AEval(aArray AS ARRAY,cbBlock AS ICodeblock ,nStart AS USUAL ,nCount AS USUAL) AS ARRAY 
-    ARRAYNOTNULL aArray
+    ARRAYNULL aArray
     ArrayHelpers.AEvalCheckArgs(aArray, cbBlock, REF nStart, REF nCount, "AEval")
     RETURN ArrayHelpers.AEval( aArray, cbBlock, nStart, nCount , FALSE )
     
     
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aevala/*" />
 FUNCTION AEvalA(aArray AS ARRAY ,cbBlock AS ICodeblock) AS ARRAY
-    ARRAYNOTNULL aArray
+    ARRAYNULL aArray
     LOCAL uCount    := NIL AS USUAL
     LOCAL uStart	:= NIL AS USUAL
     ArrayHelpers.AEvalCheckArgs(aArray, cbBlock, REF uStart, REF uCount, "AEvalA")
@@ -933,35 +935,35 @@ FUNCTION AEvalA(aArray AS ARRAY ,cbBlock AS ICodeblock) AS ARRAY
     
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aevala/*" />
 FUNCTION AEvalA(aArray AS ARRAY ,cbBlock AS ICodeblock, nStart AS USUAL ) AS ARRAY
-    ARRAYNOTNULL aArray
+    ARRAYNULL aArray
     LOCAL uCount    := NIL AS USUAL
     ArrayHelpers.AEvalCheckArgs(aArray, cbBlock, REF nStart, REF uCount, "AEvalA")
     RETURN ArrayHelpers.AEval( aArray, cbBlock, nStart,uCount , TRUE)
     
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aevala/*" />
 FUNCTION AEvalA(aArray AS ARRAY ,cbBlock AS ICodeblock, nStart  AS USUAL ,nCount AS USUAL) AS ARRAY
-    ARRAYNOTNULL aArray
+    ARRAYNULL aArray
     ArrayHelpers.AEvalCheckArgs(aArray, cbBlock, REF nStart, REF nCount, "AEvalA")
     RETURN ArrayHelpers.AEval( aArray, cbBlock, nStart,nCount , TRUE)
     
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aevala/*" /> 
     /// <typeparam name="T">The type of the array elements</typeparam>
 FUNCTION AEvalA<T>(aArray AS __ArrayBase<T>, cbBlock AS @@Func<T,T>) AS __ArrayBase<T> WHERE T IS NEW()
-    ARRAYNOTNULL aArray
+    ARRAYNULL aArray
     RETURN AEvalA(aArray, cbBlock, 1, ALen(aArray))
     
     
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aevala/*" /> 
     /// <typeparam name="T">The type of the array elements</typeparam>
 FUNCTION AEvalA<T>(aArray AS __ArrayBase<T>, cbBlock AS @@Func<T,T>,nStart AS DWORD) AS __ArrayBase<T> WHERE T IS NEW()
-    ARRAYNOTNULL aArray
+    ARRAYNULL aArray
     RETURN AEvalA(aArray, cbBlock, nStart, ALen(aArray) - nStart +1)
     
     
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aevala/*" /> 
     /// <typeparam name="T">The type of the array elements</typeparam>
 FUNCTION AEvalA<T>(aArray AS __ArrayBase<T>, cbBlock AS @@Func<T,T>,nStart AS DWORD, nCount AS DWORD) AS __ArrayBase<T> WHERE T IS NEW()
-    ARRAYNOTNULL aArray
+    ARRAYNULL aArray
     LOCAL nEnd  AS DWORD
     nEnd := nStart + nCount -1
     FOR VAR nX := nStart TO nEnd
@@ -972,21 +974,21 @@ FUNCTION AEvalA<T>(aArray AS __ArrayBase<T>, cbBlock AS @@Func<T,T>,nStart AS DW
     
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aevalold/*" />
 FUNCTION AEvalOld(aArray AS ARRAY ,cbBlock AS ICodeblock,nStart  AS USUAL ,nCount AS USUAL) AS ARRAY
-    ARRAYNOTNULL aArray
+    ARRAYNULL aArray
     ArrayHelpers.AEvalCheckArgs(aArray, cbBlock, REF nStart, REF nCount, "AEvalOld")
     RETURN ArrayHelpers.AEval( aArray, cbBlock, nStart,nCount , FALSE)
     
     
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aevalold/*" />
 FUNCTION AEvalOld(aArray AS ARRAY ,cbBlock AS ICodeblock,nStart  AS USUAL ) AS ARRAY
-    ARRAYNOTNULL aArray
+    ARRAYNULL aArray
     LOCAL uCount	 := NIL AS USUAL
     ArrayHelpers.AEvalCheckArgs(aArray, cbBlock, REF nStart, REF uCount, "AEvalOld")
     RETURN ArrayHelpers.AEval( aArray, cbBlock, nStart,uCount , FALSE)
     
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/aevalold/*" />
 FUNCTION AEvalOld(aArray AS ARRAY ,cbBlock AS ICodeblock) AS ARRAY
-    ARRAYNOTNULL aArray
+    ARRAYNULL aArray
     LOCAL uStart	 := NIL AS USUAL
     LOCAL uCount	 := NIL AS USUAL
     ArrayHelpers.AEvalCheckArgs(aArray, cbBlock, REF uStart, REF uCount, "AEvalOld")

@@ -352,7 +352,10 @@ FUNCTION MemoRead(cFileName AS STRING) AS STRING
             ENDIF
 		ELSE
 			cResult := ""
-		ENDIF
+        ENDIF
+        IF cResult:EndsWith(Chr(26)) .AND. RUntimeState.Dialect == XSharpDialect.FoxPro
+            cResult := cResult:Substring(0, cResult:Length-1)
+        ENDIF
 	CATCH e AS Exception
 		XSharp.IO.File.setErrorState(e)
 		cResult := ""
@@ -396,7 +399,9 @@ FUNCTION MemoWrit(cFileName AS STRING,cString AS STRING) AS LOGIC
         ELSE
             System.IO.File.WriteAllText(cFileName, cString, RuntimeState.DosEncoding)
         ENDIF
-		System.IO.File.AppendAllText(cFileName, chr(26))
+        IF RuntimeState.Dialect == XSharpDialect.FoxPro
+		    System.IO.File.AppendAllText(cFileName, chr(26))
+        ENDIF
 		lOk := TRUE
 	CATCH e AS Exception
 		XSharp.IO.File.setErrorState(e)

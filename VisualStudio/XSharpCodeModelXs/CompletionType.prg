@@ -191,16 +191,16 @@ BEGIN NAMESPACE XSharpModel
 					CASE "uint32"
 					CASE "system.uint32"
 						typeName := "system.uint32"
-					
+
 					CASE "int64"
 					CASE "system.int64"
 						typeName := "system.int64"
-					
+
 					CASE "int16"
 					CASE "shortint"
 					CASE "short"
 					CASE "system.int16"
-						typeName := "system.uint32"
+						typeName := "system.uint16"
 
 					CASE "longint"
 					CASE "long"
@@ -227,10 +227,10 @@ BEGIN NAMESPACE XSharpModel
 						typeName := "system.char"
 
 					CASE "real4"
-						RETURN TYPEOF(REAL4)
+						typeName :=  "system.single"
 
 					CASE "real8"
-						RETURN TYPEOF(REAL8)
+						typeName :=  "system.double"
 
 					CASE "uint64"
 					CASE "system.uint64"
@@ -244,7 +244,19 @@ BEGIN NAMESPACE XSharpModel
 					CASE "system.sbyte"
 						typeName := "system.sbyte"
 
+
+					CASE "ptr"
+						typeName := "system.intptr"
+                    case "array"
+                    case "date"
+                    case "float"
+                    case "symbol"
+                    case "psz`"
+                    case "usual"
+                        typeName := kw
+
 				END SWITCH
+
 				IF ( String.IsNullOrEmpty( typeName ) )
 					RETURN NULL
 				ENDIF

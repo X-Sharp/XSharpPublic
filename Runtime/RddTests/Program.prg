@@ -10,7 +10,8 @@ USING System.Reflection
 [STAThread];      
 FUNCTION Start() AS VOID
     TRY
-        TestProj()
+        TestRateCdx()
+        //TestProj()
         //TestCorrupt2()
         //testCdxLock()
         //TestXppCollations()
@@ -152,6 +153,55 @@ FUNCTION Start() AS VOID
     END TRY
     RETURN
 
+
+FUNCTION TestRateCdx() AS VOID
+    VAR f := Seconds()
+    RddSetDefault("DBFCDX")
+    ? Time()
+    DbUseArea(TRUE, "DBFCDX", "c:\test\Rate.DBF", "Rate", FALSE)
+    DbSetOrderCondition("Deleted() == .F.   .And. Recurse == .F.   .And. Undone == .F.")
+    OrdCreate("RateX#", "RateMain", "Str( MainRecno, 7 ) + '~' + DToS( ScaDov )") 
+    ? Time()
+
+    DbSetOrderCondition("Deleted() == .F.   .And. Recurse == .F.   .And. Undone == .F.   .ANd. TipoC == 'U'")
+    OrdCreate("RateX#", "RateUsu", "Str( MainRecno, 7 ) + '~' + DToS( ScaDov )")
+    ? Time()
+    
+    DbSetOrderCondition("Deleted() == .F.   .And. Recurse == .F.   .And. Undone == .F.")
+    OrdCreate("RateX#", "RatePrev", "Str( PrevRecno, 7 ) + '~' + Mode + '~' + DToS( ScaDov )")
+    ? Time()
+
+    DbSetOrderCondition("Deleted() == .F.")
+    OrdCreate("RateX#", "RatePNor", "Str( PrevRecno, 7 ) + '~' + Mode + '~' + DToS( ScaDov )")
+    ? Time()
+
+    DbSetOrderCondition("Deleted() == .F.")
+    OrdCreate("RateX#", "RateMNor", "Str( MainRecno, 7 ) + '~' + Mode + '~' + DToS( ScaDov )")
+    ? Time()
+
+    DbSetOrderCondition("Deleted() == .F.   .And. Recurse == .F.")
+    OrdCreate("RateX#", "RateScop", "Str( MainRecno, 7 ) + '~' + Str( PrevRecno, 7 ) + '~' + Mode + '~' + DToS( ScaDov )")
+    ? Time()
+
+    DbSetOrderCondition("Deleted() == .F.   .And. Recurse == .F.   .And. Undone == .T.")
+    OrdCreate("RateX#", "RateUndo", "Str( PrevRecno, 7 ) + '~' + Mode + '~' + DToS( ScaDov )")
+    ? Time()
+
+    DbSetOrderCondition("Deleted() == .F.")
+    OrdCreate("RateX#", "RateTemp", "PrevRecno")
+    ? Time()
+
+    DbSetOrderCondition("Deleted() == .F.")
+    OrdCreate("RateX#", "RateData", "Str( MainRecno, 7 ) + '~' + DToS( ScaDov )")
+    ? Time()
+
+    DbSetOrderCondition("Deleted() == .F.")
+    OrdCreate("RateX#", "RateScoA", "Str( MainRecno, 7 ) + '~' + Str( PrevRecno, 7 ) + '~' + Mode")
+    ? Time()
+    DbCloseArea()
+    ? Time()
+    ? Seconds() - f
+    RETURN
 
 FUNCTION TestProj() AS VOID
     LOCAL i AS DWORD

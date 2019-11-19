@@ -359,11 +359,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 SELF:_currentValue:Recno := node:Recno
                 Array.Copy(node:KeyBytes, SELF:_currentValue:Key, _keySize)
             ENDIF
-
+            
+        STATIC PRIVATE Jan_1_1901 := DateTime{1901, 1, 1 } AS DateTime
+        
         PRIVATE STATIC METHOD _toJulian(dt AS DateTime) AS LONG
-            VAR baseDate  := DateTime{1901, 1, 1 }
-            VAR days      := dt:Subtract( baseDate )
-            RETURN Convert.ToInt32( days:TotalDays ) + 2415386
+            VAR days      := dt:Subtract( Jan_1_1901 )
+            RETURN Convert.ToInt32( days:TotalDays ) + 2415386   // Julian date number of 1901-01-01
 
         PRIVATE METHOD _ToString( toConvert AS OBJECT , sLen AS LONG ,  buffer AS BYTE[] ) AS LOGIC    
             LOCAL resultLength AS LONG

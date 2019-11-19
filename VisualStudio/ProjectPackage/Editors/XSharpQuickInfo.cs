@@ -161,6 +161,7 @@ namespace XSharp.Project
                                 var description = new TextBlock();
                                 description.Inlines.AddRange(qitm.WPFDescription);
                                 qiContent.Add(description);
+
                             }
                             else
                             {
@@ -170,12 +171,16 @@ namespace XSharp.Project
                             }
 
                         }
-                        else if (gotoElement.SystemElement is TypeInfo)
+                        else if (gotoElement.SystemElement is TypeInfo )
                         {
-                            QuickInfoTypeAnalysis analysis = new QuickInfoTypeAnalysis((TypeInfo)gotoElement.SystemElement);
+                            var ti = gotoElement.SystemElement as TypeInfo;
+                            string xmldoc = XSharpXMLDocMember.GetTypeSummary(ti, member.File.Project);
+                            QuickInfoTypeAnalysis analysis = new QuickInfoTypeAnalysis(ti);
                             var description = new TextBlock();
                             description.Inlines.AddRange(analysis.WPFDescription);
                             qiContent.Add(description);
+                            if (xmldoc != null)
+                                qiContent.Add(xmldoc);
                         }
                         else
                         {
@@ -183,7 +188,7 @@ namespace XSharp.Project
                             QuickInfoMemberAnalysis analysis = null;
                             if (gotoElement.SystemElement is MemberInfo)
                             {
-                                string xmldoc = XSharpXMLDocMember.GetDocSummary(gotoElement.SystemElement, member.File.Project);
+                                string xmldoc = XSharpXMLDocMember.GetMemberSummary(gotoElement.SystemElement, member.File.Project);
 
                                 analysis = new QuickInfoMemberAnalysis(gotoElement.SystemElement);
                                 if (analysis.IsInitialized)
@@ -376,6 +381,7 @@ namespace XSharp.Project
                     List<Inline> content = new List<Inline>();
 
                     Run temp;
+
                     if (this.Modifiers != XSharpModel.Modifiers.None)
                     {
                         temp = new Run(this.Modifiers.ToString() + " ");
@@ -388,7 +394,7 @@ namespace XSharp.Project
                     //
                     if (this.IsStatic)
                     {
-                        temp = new Run("STATIC" + " ");
+                        temp = new Run("Static" + " ");
                         temp.Foreground = Brushes.Blue;
                         content.Add(temp);
                     }
@@ -433,7 +439,7 @@ namespace XSharp.Project
                     //
                     if ((this.IsStatic) && ((this.Kind != Kind.Function) && (this.Kind != Kind.Procedure)))
                     {
-                        temp = new Run("STATIC" + " ");
+                        temp = new Run("Static" + " ");
                         temp.Foreground = Brushes.Blue;
                         content.Add(temp);
                     }

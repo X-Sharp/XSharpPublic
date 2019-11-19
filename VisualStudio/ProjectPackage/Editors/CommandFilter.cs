@@ -969,17 +969,22 @@ namespace XSharp.Project
             _completionSession.Dismiss();
             return false;
         }
-        private bool cursorIsInStringorComment(SnapshotPoint caret)
+
+        private string getClassification(SnapshotPoint caret)
         {
             var line = caret.GetContainingLine();
-
             SnapshotSpan lineSpan = new SnapshotSpan(line.Start, caret.Position - line.Start);
             var tagAggregator = _aggregator.CreateTagAggregator<IClassificationTag>(this.TextView.TextBuffer);
             var tags = tagAggregator.GetTags(lineSpan);
             var tag = tags.LastOrDefault();
-            if (tag.Tag != null && tag.Tag.ClassificationType != null && tag.Tag.ClassificationType.Classification != null)
+            return tag?.Tag?.ClassificationType?.Classification;
+        }
+        private bool cursorIsInStringorComment(SnapshotPoint caret)
+        {
+            var classification = getClassification(caret);
+            if (classification != null)
             {
-                switch (tag.Tag.ClassificationType.Classification.ToLower())
+                switch (classification.ToLower())
                 {
                     case "string":
                     case "comment":
@@ -988,26 +993,12 @@ namespace XSharp.Project
                 }
             }
             return false;
-
-
         }
         private bool cursorIsAfterSLComment(SnapshotPoint caret)
         {
 
-            ////////////////////////////////////////////
-            //
-
-            var line = caret.GetContainingLine();
-
-            SnapshotSpan lineSpan = new SnapshotSpan(line.Start, caret.Position - line.Start);
-            var tagAggregator = _aggregator.CreateTagAggregator<IClassificationTag>(this.TextView.TextBuffer);
-            var tags = tagAggregator.GetTags(lineSpan);
-            var tag = tags.LastOrDefault();
-            if (tag != null && tag.Tag.ClassificationType.Classification.ToLower() == "comment")
-            {
-                return true;
-            }
-            return false;
+            var classification = getClassification(caret);
+            return classification != null && classification.ToLower() == "comment";
         }
 
 
@@ -1206,6 +1197,7 @@ namespace XSharp.Project
                 _signatureSession.Properties["Start"] = ssp.Position;
                 _signatureSession.Properties["Length"] = TextView.Caret.Position.BufferPosition.Position - ssp.Position;
                 _signatureSession.Properties["Comma"] = comma;
+                _signatureSession.Properties["File"] = file;
 
                 try
                 {

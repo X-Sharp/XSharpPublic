@@ -421,12 +421,8 @@ FUNCTION DbRLock(uRecId) AS USUAL CLIPPER
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbrlocklist/*" />
 FUNCTION DbRLockList() AS ARRAY STRICT
 
-    LOCAL lockList          AS DWORD[]
     LOCAL aLockList := {}   AS ARRAY
-    LOCAL i                 AS DWORD
     LOCAL uRecords  := NIL AS USUAL
-    LOCAL nRecords          AS DWORD
-    nRecords := 0
     
     IF _DbThrowErrorOnFailure(__FUNCTION__, VoDb.Info(DBI_LOCKCOUNT, REF uRecords))
         aLockList := DbInfo(DBI_GETLOCKARRAY)

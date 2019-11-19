@@ -44,12 +44,13 @@
   <ItemGroup>
 	<PropertyPageSchema Include="
 			$(XamlResourcesDirectory)PropertyPage_Application.xaml;
-            $(XamlResourcesDirectory)PropertyPage_Language.xaml;
+      $(XamlResourcesDirectory)PropertyPage_Language.xaml;
+      $(XamlResourcesDirectory)PropertyPage_Dialect.xaml;
 			$(XamlResourcesDirectory)PropertyPage_Build.xaml;
-            $(XamlResourcesDirectory)PropertyPage_Debugger.xaml;
+      $(XamlResourcesDirectory)PropertyPage_Debugger.xaml;
 			$(XamlResourcesDirectory)PropertyPage_Advanced.xaml;
 			">
-        	<Context>Project</Context>
+  <Context>Project</Context>
 	</PropertyPageSchema>
 
 	<PropertyPageSchema Include="$(XamlResourcesDirectory)ProjectItemsSchema.xaml;"/>

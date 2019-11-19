@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Rule
+	Name="LanguageSettings"
+	DisplayName="Language"
+	PageTemplate="generic"
+	Description="Language Settings"
+    Order="2"
+    SwitchPrefix="/"
+    xmlns="http://schemas.microsoft.com/build/2009/properties">
+    <Rule.DataSource>
+        <DataSource Persistence="ProjectFile" Label="Configuration" HasConfigurationCondition="True" />
+    </Rule.DataSource>
+
+    <Rule.Categories>
+      <Category Name="All"               DisplayName="All dialects"/>
+      <Category Name="XBase"             DisplayName="Not in Core"/>
+      <Category Name="XPPCompatibility"  DisplayName="Xbase++ Compatibility"/>
+      <Category Name="VFPCompatibility"  DisplayName="FoxPro Compatibility"/>
+
+    </Rule.Categories>
+
+
+    <BoolProperty   Category="All" Name="VO3"                 DisplayName="All methods virtual"                         Visible="True" Description="Add the virtual modifier to all methods by default (which is the normal Visual Objects behavior) (/vo3)" Default="False" Switch="vo3"/>
+    <BoolProperty   Category="All" Name="VO1"                 DisplayName="Allow Init() and Axit() for Constructor/Destructor"  Visible="True" Description="/vo1" Default="False" Switch="vo1"/>
+    <BoolProperty   Category="All" Name="VO9"                 DisplayName="Allow Missing Return Statements"             Visible="True" Description="Allow Missing Return Statements (/vo9)"  Default="False" Switch="vo9"/>
+    <BoolProperty   Category="All" Name="VO10"                DisplayName="Compatible IIF Behavior"                     Visible="True" Description="Compatible IIF Behavior, allow different types of return values in TRUE and FALSE expression (/vo10)"  Default="False" Switch="vo10"/>
+    <BoolProperty   Category="All" Name="VO8"                 DisplayName="Compatible preprocessor"                     Visible="True" Description="Makes the preprocessor case insensitive and also controls how #ifdef inspects #defines (/vo8)"  Default="False" Switch="vo8"/>
+    <BoolProperty   Category="All" Name="VO2"                 DisplayName="Initialize Strings"                          Visible="True" Description="Initialize strings to empty string (String.Empty) ( /vo2). Please note that in .NET a NULL_STRING is not the same as a string with length 0" Default="False" Switch="vo2"/>
+    <BoolProperty   Category="All" Name="VO4"                 DisplayName="Implicit signed/unsigned conversions"        Visible="True" Description="Implicit signed/unsigned integer conversions (/vo4)" Default="False" Switch="vo4"/>
+
+    <BoolProperty   Category="XBase" Name="VO12"                DisplayName="Compatible integer divisions"                Visible="True" Description="Compatible integer divisions, integer divisions may return a float  (/vo12)"  Default="False" Switch="vo12"/>
+    <BoolProperty   Category="XBase" Name="VO11"                DisplayName="Compatible numeric conversions"              Visible="True" Description="VO Compatible arithmetic conversions  (/vo11)"  Default="False" Switch="vo11"/>
+    <BoolProperty   Category="XBase" Name="VO13"                DisplayName="Compatible String Comparisons"               Visible="True" Description="Compatible string comparisons (respects SetExact and collation table) /vo13"  Default="False" Switch="vo13"/>
+    <BoolProperty   Category="XBase" Name="VO16"                DisplayName="Generate Clipper constructors"               Visible="True" Description="Automatically create clipper calling convention constructors for classes without constructor where the parent class has a Clipper Calling convention constructor.(/vo16)"  Default="False" Switch="vo16"/>
+    <BoolProperty   Category="XBase" Name="VO7"                 DisplayName="Implicit casts and Conversions"              Visible="True" Description="Compatible implicit casts and Conversions (/vo7)"  Default="False" Switch="vo7"/>
+    <BoolProperty   Category="XBase" Name="VO5"                 DisplayName="Implicit CLIPPER calling convention"         Visible="True" Description="Methods without parameters and calling convention are compiled as CLIPPER calling convention (/vo5)"  Default="False" Switch="vo5"/>
+    <BoolProperty   Category="XBase" Name="VO6"                 DisplayName="Implicit pointer conversions "               Visible="True" Description="Implicit conversions between typed function PTR and PTR (/vo6)"  Default="False" Switch="vo6"/>
+    <BoolProperty   Category="XBase" Name="VO15"                DisplayName="Treat missing types as USUAL"                Visible="True" Description="Missing type clauses for locals, instance variables and parameters are treated as USUAL (VO and Vulcan dialect). The default = TRUE  (/vo15)"  Default="True" Switch="vo15"/>
+    <BoolProperty   Category="XBase" Name="VO14"                DisplayName="Use Float Literals"                          Visible="True" Description="Store floating point literals as FLOAT and not as System.Double (REAL8)  /vo14"  Default="False" Switch="vo14"/>
+
+    <BoolProperty   Category="XPPCompatibility" Name="XPP1"             DisplayName="Inherit from Abstract class"         Visible="True" Description="All classes without parent class inherit from the XPP Abstract class.(/xpp1)"  Default="False" Switch="xpp1"/>
+    <BoolProperty   Category="VFPCompatibility" Name="FOX1"             DisplayName="Inherit from Custom class"           Visible="True" Description="All classes are assumed to inherit from the Custom class.(/fox1)"  Default="False" Switch="fox1"/>
+</Rule>
+

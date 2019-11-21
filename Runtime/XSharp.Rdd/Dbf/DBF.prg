@@ -1410,20 +1410,26 @@ INTERNAL METHOD _dbfError(ex AS Exception, iSubCode AS DWORD, iGenCode AS DWORD,
 	LOCAL oError AS RddError
     //
 	IF ex != NULL
-		oError := RddError{ex}
+		oError := RddError{ex,iGenCode, iSubCode}
 	ELSE
-		oError := RddError{}
+		oError := RddError{iGenCode, iSubCode}
 	ENDIF
-	oError:SubCode := iSubCode
-	oError:Gencode := iGenCode
 	oError:SubSystem := SELF:Driver
 	oError:Severity := iSeverity
 	oError:FuncSym  := IIF(strFunction == NULL, "", strFunction) // code in the SDK expects all string properties to be non-NULL
 	oError:FileName := SELF:_FileName
 	IF String.IsNullOrEmpty(strMessage)  .AND. ex != NULL
 		strMessage := ex:Message
-	ENDIF
-	oError:Description := IIF(strMessage == NULL , "", strMessage)
+    ENDIF
+    IF String.IsNullOrEmpty(strMessage)
+        IF oError:SubCode != 0
+            oError:Description := oError:GenCodeText + " (" + oError:SubCodeText+")"
+        ELSE
+            oError:Description := oError:GenCodeText 
+        ENDIF
+    ELSE
+	    oError:Description := strMessage
+    ENDIF
 	RuntimeState.LastRDDError := oError
     //
 	THROW oError
@@ -1468,23 +1474,29 @@ INTERNAL VIRTUAL METHOD _GetColumn(nFldPos AS LONG) AS DbfColumn
 	LOCAL nArrPos := nFldPos AS LONG
 	IF __ARRAYBASE__ == 0
 		nArrPos -= 1
-	ENDIF
+    ENDIF
+    IF nArrPos >= 0 .AND. nArrPos < SELF:_Fields:Length
     //
-RETURN (DbfColumn) SELF:_Fields[ nArrPos ]
-
+        RETURN (DbfColumn) SELF:_Fields[ nArrPos ]
+    ENDIF
+    SELF:_dbfError(EDB_FIELDINDEX, EG_ARG)
+    RETURN NULL
 
     // Indicate if a Field is a Memo
     // At DBF Level, TRUE only for DbFieldType.Memo
 INTERNAL VIRTUAL METHOD _isMemoField( nFldPos AS LONG ) AS LOGIC
-	VAR oColumn := SELF:_GetColumn(nFldPos) 
-RETURN oColumn:IsMemo
+	VAR oColumn := SELF:_GetColumn(nFldPos)
+    IF oColumn != NULL
+        RETURN oColumn:IsMemo
+    ENDIF
+    RETURN FALSE
 
     // Retrieve the BlockNumber as it is written in the DBF
 OVERRIDE METHOD _getMemoBlockNumber( nFldPos AS LONG ) AS LONG
 	LOCAL blockNbr := 0 AS LONG
 	SELF:ForceRel()
 	VAR oColumn := SELF:_GetColumn(nFldPos)
-	IF oColumn:IsMemo
+	IF oColumn != NULL .AND. oColumn:IsMemo
 		IF SELF:_readRecord()
 			blockNbr := (LONG) oColumn:GetValue(SELF:_RecordBuffer)
 		ENDIF
@@ -1497,6 +1509,10 @@ METHOD GetValue(nFldPos AS LONG) AS OBJECT
 	SELF:ForceRel()
     // Read Record to Buffer
 	VAR oColumn := SELF:_GetColumn(nFldPos)
+    IF oColumn == NULL
+        // Getcolumn already sets the error
+        RETURN NULL
+    ENDIF
 	IF SELF:_readRecord()
         //
 		IF oColumn:IsMemo
@@ -1630,6 +1646,9 @@ PROPERTY IsNewRecord AS LOGIC GET SELF:_NewRecord
 /// <inheritdoc />
 METHOD PutValue(nFldPos AS LONG, oValue AS OBJECT) AS LOGIC
     LOCAL ret := FALSE AS LOGIC
+    IF SELF:_ReadOnly
+        SELF:_dbfError(ERDD.READONLY, XSharp.Gencode.EG_READONLY )
+    ENDIF
     SELF:ForceRel()
 	IF SELF:_readRecord()
         // GoHot() must be called first because this saves the current index values
@@ -1638,18 +1657,23 @@ METHOD PutValue(nFldPos AS LONG, oValue AS OBJECT) AS LOGIC
 			SELF:GoHot()
 		ENDIF
 		VAR oColumn := SELF:_GetColumn(nFldPos)
-		IF oColumn:IsMemo
-			IF SELF:HasMemo
-				IF _Memo:PutValue(nFldPos, oValue)
-                    // Update the Field Info with the new MemoBlock Position
-					oColumn:PutValue(SELF:Memo:LastWrittenBlockNumber, SELF:_RecordBuffer)
-				ENDIF
-			ELSE
-				ret := SUPER:PutValue(nFldPos, oValue)
-			ENDIF
-		ELSE
-			ret := oColumn:PutValue(oValue, SELF:_RecordBuffer)
-		ENDIF
+        IF oColumn != NULL
+		    IF oColumn:IsMemo
+			    IF SELF:HasMemo
+				    IF _Memo:PutValue(nFldPos, oValue)
+                        // Update the Field Info with the new MemoBlock Position
+					    oColumn:PutValue(SELF:Memo:LastWrittenBlockNumber, SELF:_RecordBuffer)
+				    ENDIF
+			    ELSE
+				    ret := SUPER:PutValue(nFldPos, oValue)
+			    ENDIF
+		    ELSE
+			    ret := oColumn:PutValue(oValue, SELF:_RecordBuffer)
+            ENDIF
+        ELSE
+            // Getcolumn already sets the error
+            RETURN FALSE
+        ENDIF
     ENDIF
     IF ! ret
         SELF:_dbfError(Subcodes.ERDD_WRITE, Gencode.EG_WRITE,"DBF.PutValue")
@@ -1658,7 +1682,10 @@ RETURN ret
 
     /// <inheritdoc />
 METHOD PutValueFile(nFldPos AS LONG, fileName AS STRING) AS LOGIC
-	IF SELF:HasMemo
+    IF SELF:_ReadOnly
+        SELF:_dbfError(ERDD.READONLY, XSharp.Gencode.EG_READONLY )
+    ENDIF
+    IF SELF:HasMemo
 		RETURN _Memo:PutValueFile(nFldPos, fileName)
 	ELSE
 		RETURN SUPER:PutValue(nFldPos, fileName)

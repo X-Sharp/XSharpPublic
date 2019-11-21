@@ -184,6 +184,7 @@ BEGIN NAMESPACE XSharp
     SELF:setDefaultValues()
     SELF:Gencode := dwGenCode
     SELF:Arg	 := cArg
+    SELF:Description := ErrString( dwGenCode )
 
     /// <summary>Create an Error Object for a Gencode, Argument Name and Description.</summary>
     CONSTRUCTOR (dwgencode AS DWORD, cArg AS STRING, cDescription AS STRING)
@@ -203,13 +204,14 @@ BEGIN NAMESPACE XSharp
     SELF:FuncSym     := cFuncName
     SELF:Arg         := cArgName
     SELF:ArgNum      := iArgNum
+    SELF:Description := ErrString( dwGenCode )
     
     /// <summary>Create an Error Object.</summary>
     CONSTRUCTOR (dwgencode AS DWORD, dwSubCode := 0 AS DWORD)
     SELF:setDefaultValues()
     SELF:Gencode := dwgencode
     SELF:SubCode := dwSubcode
-    
+    SELF:Description := ErrString( dwGenCode )
 
     PRIVATE METHOD LangString(e as VOErrors) AS STRING
         local cString := __CavoStr(e):Trim() as string
@@ -315,7 +317,13 @@ BEGIN NAMESPACE XSharp
     err:Description := err:Message
     err:Argnum		:= iArgNum
     RETURN err
-    
+
+
+    STATIC METHOD ArgumentError(cFuncName AS STRING, name AS STRING, description AS STRING, iArgnum AS DWORD, aArgs AS OBJECT[]) AS Error
+        VAR err := ArgumentError(cFuncName, name, description, iArgNum)
+        err:Args := aArgs
+    RETURN err
+
     /// <exclude/>	
     STATIC METHOD WrapRawException( ex AS Exception ) AS Error
     LOCAL e AS Error
@@ -335,6 +343,7 @@ BEGIN NAMESPACE XSharp
         e:FuncSym := cFuncName
         e:ArgNum := iArgNum
         e:Args := aArgs
+        e:Description := ErrString( dwGenCode )
         RETURN e 
     
     /// <exclude/>	

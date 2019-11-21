@@ -144,7 +144,8 @@ CLASS XSharp.CoreDb
         IF nNext != NULL
             TRY
                 info:Scope:NextCount := Convert.ToInt32(nNext)
-            CATCH AS Exception
+            CATCH e AS Exception
+                Fail(e)
                 info:Scope:NextCount := 0
             END TRY
         ELSE
@@ -159,8 +160,9 @@ CLASS XSharp.CoreDb
         TRY
             cAlias := Path.GetFileNameWithoutExtension( cFilename )
             ret    := ! String.IsNullOrEmpty( cAlias )
-        CATCH AS ArgumentException
-            ret := FALSE 
+        CATCH e AS ArgumentException
+            Fail(e)
+            ret := FALSE
         END TRY
         IF ret
             LOCAL sb AS StringBuilder
@@ -198,18 +200,26 @@ CLASS XSharp.CoreDb
         TRY
             ret := (IRDD) rddType:InvokeMember( NULL, BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance | BindingFlags.CreateInstance, NULL, NULL, <OBJECT>{} )
             ret:Alias := cAlias:ToUpperInvariant()
-        CATCH
+        CATCH e AS Exception
+            Fail(e)
             ret := NULL
         END TRY
         RETURN ret 
-        
+
+    INTERNAL STATIC METHOD Fail(e AS Exception) AS VOID
+        RuntimeState.LastRDDError := e
+        VAR oRDD := RuntimeState.Workareas:CurrentWorkArea
+        LOCAL procName := Procname(1) AS STRING
+        IF procName == "COREDB:DO"
+            procName := ProcName(2)
+        ENDIF
+        RAISE OperationFailed procName
+
     INTERNAL STATIC METHOD Do<T>(action AS @@func<t>) AS T
         TRY
             RETURN action()
         CATCH e AS RddError
-            RuntimeState.LastRDDError := e
-            VAR oRDD := RuntimeState.Workareas:CurrentWorkArea 
-            RAISE OperationFailed Procname(1)
+            Fail(e)
         END TRY
         RETURN DEFAULT(T)
         
@@ -275,7 +285,7 @@ CLASS XSharp.CoreDb
             oRet := oRDD:BlobInfo(nOrdinal, nPos)
             RETURN TRUE
         CATCH e AS Exception
-            RuntimeState.LastRDDError := e
+            Fail(e)
         END TRY
         RETURN FALSE   
         /// <summary>
@@ -665,7 +675,8 @@ CLASS XSharp.CoreDb
                 ELSE
                     nNext := 0
                 ENDIF
-            CATCH AS Exception
+            CATCH e AS Exception
+                Fail(e)
                 THROW Error.ArgumentError(__FUNCTION__, nameof(uNext),4, <OBJECT>{uNext})
             END TRY
         ENDIF
@@ -701,7 +712,7 @@ CLASS XSharp.CoreDb
             oRet := oRDD:GetValue((INT) nPos)
             RETURN TRUE
         CATCH e AS Exception
-            RuntimeState.LastRDDError := e
+            Fail(e)
         END TRY
         RETURN FALSE
 
@@ -744,7 +755,7 @@ CLASS XSharp.CoreDb
             oRet := NULL
             RETURN FALSE
         CATCH e AS Exception
-            RuntimeState.LastRDDError := e
+            Fail(e)
         END TRY
         RETURN FALSE
 
@@ -778,7 +789,7 @@ CLASS XSharp.CoreDb
             ENDIF
             RETURN FALSE
         CATCH e AS Exception
-            RuntimeState.LastRDDError := e
+            Fail(e)
         END TRY
         RETURN FALSE
         /// <inheritdoc cref="M:XSharp.RDD.IRdd.FieldInfo(System.Int32,System.Int32,System.Object)" />
@@ -803,7 +814,7 @@ CLASS XSharp.CoreDb
             oRet := oRDD:FieldInfo((INT) nFldPos, (INT) nOrdinal, oRet)
             RETURN TRUE
         CATCH e AS Exception
-            RuntimeState.LastRDDError := e
+            Fail(e)
         END TRY
         RETURN FALSE
         
@@ -1024,7 +1035,7 @@ CLASS XSharp.CoreDb
             ENDIF
             RETURN TRUE
         CATCH e AS Exception
-            RuntimeState.LastRDDError := e
+            Fail(e)
         END TRY
         
         RETURN FALSE   
@@ -1251,7 +1262,7 @@ CLASS XSharp.CoreDb
             xNewVal :=  info:Result
             RETURN TRUE
         CATCH e AS Exception
-            RuntimeState.LastRDDError := e
+            Fail(e)
         END TRY
         
         RETURN FALSE
@@ -1356,9 +1367,7 @@ CLASS XSharp.CoreDb
             RAISE OrderChanged oRDD:OrderInfo(DBOI_NAME,NULL)
             RETURN  result
         CATCH e AS Exception
-            RuntimeState.LastRDDError := e
-            VAR oRDD := RuntimeState.Workareas:CurrentWorkArea  
-            RAISE OperationFailed  "OrdSetFocus"
+            Fail(e)
         END TRY
         RETURN FALSE
         
@@ -1389,10 +1398,7 @@ CLASS XSharp.CoreDb
             ENDIF
             RETURN result
         CATCH e AS Exception
-            RuntimeState.LastRDDError := e
-            VAR oRDD := RuntimeState.Workareas:CurrentWorkArea  
-            RAISE OperationFailed  "OrdSetFocus"
-
+            Fail(e)
         END TRY
         
         RETURN FALSE
@@ -1443,7 +1449,7 @@ CLASS XSharp.CoreDb
             oRet := oValue
             RETURN oValue != NULL
         CATCH e AS Exception
-            RuntimeState.LastRDDError := e
+            Fail(e)
         END TRY
         RETURN FALSE
         
@@ -1581,7 +1587,7 @@ CLASS XSharp.CoreDb
             oRet := oRDD:RecInfo( (INT) nOrdinal,oRecID, oRet )
             RETURN TRUE
         CATCH e AS Exception
-            RuntimeState.LastRDDError := e
+            Fail(e)
         END TRY
         
         RETURN FALSE       
@@ -1613,7 +1619,7 @@ CLASS XSharp.CoreDb
             sRel :=  oRDD:RelText(nPos)
             RETURN TRUE
         CATCH e AS Exception
-            RuntimeState.LastRDDError := e
+            Fail(e)
         END TRY
         
         RETURN FALSE   
@@ -1707,7 +1713,7 @@ CLASS XSharp.CoreDb
             ENDIF
             RETURN TRUE
         CATCH e AS Exception
-            RuntimeState.LastRDDError := e
+            Fail(e)
         END TRY
         
         RETURN FALSE   
@@ -2098,7 +2104,8 @@ CLASS XSharp.CoreDb
             IF String.IsNullOrEmpty( cAlias )
                 TRY
                     cAlias := Path.GetFileNameWithoutExtension( cName )
-                CATCH  AS ArgumentException
+                CATCH e  AS ArgumentException
+                    Fail(e)
                     RddError.PostArgumentError( __FUNCTION__, EDB_USE, nameof(cName), 3, <OBJECT>{cName} ) 
                     ret := FALSE
                 END TRY   
@@ -2142,7 +2149,7 @@ CLASS XSharp.CoreDb
                             RAISE FileOpen oRdd:Info(DbInfo.DBI_FULLPATH,NULL)
 
                         CATCH e AS Exception
-                            RuntimeState.LastRddError := e
+                            Fail(e)
                             ret := FALSE
                         END TRY
                     ENDIF

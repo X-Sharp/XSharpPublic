@@ -133,6 +133,43 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN String.Empty
 
 
+        PROTECTED METHOD GetNumericValue(buffer AS BYTE[]) AS INT64
+            LOCAL lValid := TRUE AS LOGIC
+            LOCAL nValue AS INT64
+            LOCAL nPos, nLen AS LONG
+            nValue := 0
+            nLen := SELF:Length
+            nPos := 0
+            DO WHILE buffer[SELF:Offset+nPos] == 32 .AND. nPos < nLen
+                nPos++
+            ENDDO
+            FOR VAR i := nPos TO nLen -1
+                LOCAL b AS BYTE
+                b := buffer[SELF:Offset+i]
+                SWITCH b
+                CASE 48  // 0
+                CASE 49  // 1
+                CASE 50  // 2
+                CASE 51  // 3
+                CASE 52  // 4
+                CASE 53  // 5
+                CASE 54  // 6
+                CASE 55  // 7
+                CASE 56  // 8
+                CASE 57  // 9
+                    nValue := nValue * 10 + (b - 48)
+                OTHERWISE
+                    lValid := FALSE        
+                END SWITCH
+                IF ! lValid
+                    EXIT
+                ENDIF
+            NEXT
+            IF lValid
+                RETURN nValue
+            ENDIF
+            RETURN 0
+
         PROTECTED METHOD GetNumber<T>(oValue AS OBJECT, oResult OUT T) AS LOGIC WHERE T IS NEW()
             LOCAL tc AS TypeCode
             IF oValue != NULL
@@ -271,24 +308,24 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN
 
         OVERRIDE METHOD GetValue(buffer AS BYTE[]) AS OBJECT
-            LOCAL str AS STRING
-            LOCAL result AS IDate
+            LOCAL result := NULL AS IDate
             IF SELF:IsNull()
                 RETURN NULL
             ENDIF
-            str :=  SUPER:_GetString(buffer)
-            IF String.IsNullOrWhiteSpace(str)
-                result := DbDate{0,0,0}
-            ELSEIF str:Length == 8
-                local year, month, day as Int32
-                if Int32.TryParse(str:Substring(0,4), out year) .and. ;
-                    Int32.TryParse(str:Substring(4,2), out month) .and. ;
-                    Int32.TryParse(str:Substring(6,2), out day)
-                    result := DbDate{Year, Month, Day}
-                else
-                    result := DbDate{0,0,0}
-                endif
-            ELSE
+            LOCAL nValue := SELF:GetNumericValue(buffer) AS INT64
+            LOCAL lOk := FALSE AS LOGIC
+            IF nValue != 0
+                LOCAL nDay   := (LONG) nValue % 100 AS INT
+                nValue /= 100
+                LOCAL nMonth  := (LONG) nValue % 100 AS INT
+                nValue /= 100
+                LOCAL nYear   := (LONG) nValue AS INT
+                IF nYear > 0 .AND. nDay > 0 .AND. nMonth > 0
+                    result := DbDate{nYear,nMonth,nDay}
+                    lOk := TRUE
+                ENDIF
+            ENDIF
+            IF ! lOk
                 result := DbDate{0,0,0}
             ENDIF
             RETURN result
@@ -339,25 +376,19 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN
 
         OVERRIDE METHOD GetValue(buffer AS BYTE[]) AS OBJECT
-            LOCAL str AS STRING
             LOCAL result AS LOGIC
             IF SELF:IsNull()
                 RETURN NULL
             ENDIF
-            str := SUPER:_GetString(buffer)
-            IF String.IsNullOrEmpty(str)
+            SWITCH buffer[SELF:Offset]
+            CASE 84 // T
+            CASE 116 // t
+            CASE 89 // Y
+            CASE 121 // y
+                result := TRUE
+            OTHERWISE
                 result := FALSE
-            ELSE
-                SWITCH str[0]
-                CASE 'T'
-                CASE 't'
-                CASE 'Y'
-                CASE 'y'
-                    result := TRUE
-                OTHERWISE
-                    result := FALSE
-                END SWITCH
-            ENDIF
+            END SWITCH
             RETURN result
 
        OVERRIDE METHOD PutValue(oValue AS OBJECT, buffer AS BYTE[]) AS LOGIC
@@ -389,17 +420,60 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN
 
         OVERRIDE METHOD GetValue(buffer AS BYTE[]) AS OBJECT
-            LOCAL str AS STRING
             LOCAL result AS IFloat
+            LOCAL r8 AS REAL8
             IF SELF:IsNull()
                 RETURN NULL
             ENDIF
-            str := SUPER:_GetString(buffer)
-            LOCAL r8 AS REAL8
-            IF !String.IsNullOrEmpty(str)
-                r8 := Convert.ToDouble(_val(str))
+            LOCAL nPos, nLen AS LONG
+            nLen := SELF:Length
+            nPos := 0
+            DO WHILE buffer[SELF:Offset+nPos] == 32 .AND. nPos < nLen
+                nPos++
+            ENDDO
+            LOCAL lDec := FALSE AS LOGIC
+            LOCAL lValid := TRUE AS LOGIC
+            LOCAL nBefore, nCount, nDec AS INT64
+            nBefore :=  nCount := nDec:= 0 
+            FOR VAR i := nPos TO nLen -1
+                LOCAL b AS BYTE
+                b := buffer[SELF:Offset+i]
+                SWITCH b
+                CASE 48  // 0
+                CASE 49  // 1
+                CASE 50  // 2
+                CASE 51  // 3
+                CASE 52  // 4
+                CASE 53  // 5
+                CASE 54  // 6
+                CASE 55  // 7
+                CASE 56  // 8
+                CASE 57  // 9
+                    nCount := nCount * 10 + (b - 48)
+                    nDec   += 1
+                CASE 46  // .
+                    IF lDec // second Dot ?
+                        lValid := FALSE
+                    ELSE
+                        nBefore := nCount
+                        nCount  := 0
+                        nDec    := 0
+                    ENDIF
+                OTHERWISE
+                    lValid := FALSE        
+                END SWITCH
+                IF ! lValid
+                    EXIT
+                ENDIF
+            NEXT
+            IF lValid
+                IF lDec
+                    r8 := nBefore + (nCount * 1.0 / 10 ^ nDec)
+                ELSE
+                    r8 := nCount
+                ENDIF
             ELSE
-                r8 := 0.0
+                 r8 := 0
             ENDIF
             result := DbFloat{r8, SELF:Length, SELF:Decimals}
             RETURN result
@@ -462,14 +536,12 @@ BEGIN NAMESPACE XSharp.RDD
 
         OVERRIDE METHOD GetValue(buffer AS BYTE[]) AS OBJECT
             // Read the Memo Block Number
-            LOCAL str AS STRING
             LOCAL result AS LONG
             IF SELF:IsNull()
                 RETURN NULL
             ENDIF
             IF SELF:Length == 10
-                str     := SUPER:_GetString(buffer)
-                result  := Convert.ToInt32(_Val(str))
+                result  := (LONG) SELF:GetNumericValue(buffer)
             ELSE
                 result := BuffToLong(buffer, SELF:OffSet)
             ENDIF

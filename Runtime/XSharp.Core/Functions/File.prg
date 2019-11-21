@@ -496,15 +496,19 @@ BEGIN NAMESPACE XSharp.IO
 
         INTERNAL STATIC  METHOD ConvertToMemoryStream(pFile AS IntPtr) AS VOID
 			VAR oStream := XSharp.IO.File.findStream(pFile)
-			IF oStream != NULL_OBJECT .AND. ! oStream IS XsMemoryStream
-                 IF oStream:Length > Int32.MaxValue
-                      THROW Error{"Cannot convert stream because input stream is too large: "+oStream:Length:ToString()}
+			IF oStream != NULL_OBJECT
+                  LOCAL oNewStream AS Stream
+                 IF oStream IS XsMemoryStream
+                        RETURN
                  ENDIF
-              	 VAR oNewStream := XsMemoryStream{oStream}
+                 IF oStream:Length >= Int32.MaxValue
+                      THROW Error{"Cannot convert stream because input stream is too large: "+oStream:Length:ToString()}
+                 ELSE
+              	    oNewStream := XsMemoryStream{oStream}
+                 ENDIF
                  XSharp.IO.File.setStream(pFile, oNewStream)
                  RETURN 
             ENDIF
-            THROW Error{"Could not copy stream, source stream not found or source stream length > Int32.MaxValue"}
 			RETURN 
           
         INTERNAL STATIC  METHOD ConvertToFileStream(pFile AS IntPtr) AS VOID

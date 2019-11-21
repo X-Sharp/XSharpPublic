@@ -133,14 +133,17 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN String.Empty
 
 
-        PROTECTED METHOD GetNumericValue(buffer AS BYTE[]) AS INT64
+        PROTECTED METHOD _GetNumericValue(buffer AS BYTE[]) AS INT64
             LOCAL lValid := TRUE AS LOGIC
             LOCAL nValue AS INT64
             LOCAL nPos, nLen AS LONG
             nValue := 0
             nLen := SELF:Length
             nPos := 0
-            DO WHILE buffer[SELF:Offset+nPos] == 32 .AND. nPos < nLen
+            IF SELF:Offset+nLen >= buffer:Length
+                NOP
+            ENDIF
+            DO WHILE nPos < nLen .AND. buffer[SELF:Offset+nPos] == 32 
                 nPos++
             ENDDO
             FOR VAR i := nPos TO nLen -1
@@ -312,7 +315,7 @@ BEGIN NAMESPACE XSharp.RDD
             IF SELF:IsNull()
                 RETURN NULL
             ENDIF
-            LOCAL nValue := SELF:GetNumericValue(buffer) AS INT64
+            LOCAL nValue := SELF:_GetNumericValue(buffer) AS INT64
             LOCAL lOk := FALSE AS LOGIC
             IF nValue != 0
                 LOCAL nDay   := (LONG) nValue % 100 AS INT
@@ -428,7 +431,7 @@ BEGIN NAMESPACE XSharp.RDD
             LOCAL nPos, nLen AS LONG
             nLen := SELF:Length
             nPos := 0
-            DO WHILE buffer[SELF:Offset+nPos] == 32 .AND. nPos < nLen
+            DO WHILE  nPos < nLen .AND. buffer[SELF:Offset+nPos] == 32 
                 nPos++
             ENDDO
             LOCAL lDec := FALSE AS LOGIC
@@ -458,6 +461,7 @@ BEGIN NAMESPACE XSharp.RDD
                         nBefore := nCount
                         nCount  := 0
                         nDec    := 0
+                        lDec    := TRUE
                     ENDIF
                 OTHERWISE
                     lValid := FALSE        
@@ -541,7 +545,7 @@ BEGIN NAMESPACE XSharp.RDD
                 RETURN NULL
             ENDIF
             IF SELF:Length == 10
-                result  := (LONG) SELF:GetNumericValue(buffer)
+                result  := (LONG) SELF:_GetNumericValue(buffer)
             ELSE
                 result := BuffToLong(buffer, SELF:OffSet)
             ENDIF

@@ -143,6 +143,9 @@ BEGIN NAMESPACE XSharp.RDD.Cdx
                 ENDIF
             NEXT
             IF ! keepData
+//                FOREACH VAR pair IN _pages
+//                    pair:Value:Free()
+//                NEXT
                 SELF:_pages:Clear()
             ENDIF
             RETURN lOk

@@ -199,16 +199,14 @@ INTERNAL METHOD _txtError(ex AS Exception, iSubCode AS DWORD, iGenCode AS DWORD,
 INTERNAL METHOD _txtError(iSubCode AS DWORD, iGenCode AS DWORD, strFunction AS STRING, strMessage AS STRING) AS VOID
 	SELF:_txtError(NULL, iSubCode, iGenCode, strFunction,strMessage, XSharp.Severity.ES_ERROR)
 	
-INTERNAL METHOD _txtError(ex AS Exception, iSubCode AS DWORD, iGenCode AS DWORD, strFunction AS STRING, strMessage AS STRING, iSeverity AS DWORD) AS VOID
+INTERNAL METHOD _txtError(ex AS Exception, iGenCode AS DWORD, iSubCode AS DWORD, strFunction AS STRING, strMessage AS STRING, iSeverity AS DWORD) AS VOID
 	LOCAL oError AS RddError
     //
 	IF ex != NULL
-		oError := RddError{ex}
+		oError := RddError{ex,iGenCode, iSubCode}
 	ELSE
-		oError := RddError{}
+		oError := RddError{iGenCode, iSubCode}
 	ENDIF
-	oError:SubCode := iSubCode
-	oError:Gencode := iGenCode
 	oError:SubSystem := SELF:Driver
 	oError:Severity := iSeverity
 	oError:FuncSym  := IIF(strFunction == NULL, "", strFunction) // code in the SDK expects all string properties to be non-NULL

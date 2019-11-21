@@ -109,7 +109,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
     END CLASS
 
-    INTERNAL CLASS CdxLeafPageNode INHERIT CdxPageNode
+    INTERNAL SEALED CLASS CdxLeafPageNode INHERIT CdxPageNode
         INTERNAL CONSTRUCTOR( keylen AS LONG , page AS CdxTreePage, pos AS WORD)
             SUPER( keylen, page  , pos)
         INTERNAL OVERRIDE PROPERTY ChildPageNo AS LONG GET 0 SET 

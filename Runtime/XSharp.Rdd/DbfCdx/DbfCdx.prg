@@ -29,7 +29,15 @@ RETURN
 #region Order Support
     
 VIRTUAL METHOD OrderCreate(orderInfo AS DbOrderCreateInfo ) AS LOGIC
-RETURN SELF:_indexList:Create(orderInfo)
+    VAR useMemoryStream := FSize(SELF:_hFile) < Int32.MaxValue
+    IF useMemoryStream
+        FConvertToMemoryStream(SELF:_hFile)
+    ENDIF
+    VAR result := SELF:_indexList:Create(orderInfo)
+    IF useMemoryStream
+        FConvertToFileStream(SELF:_hFile)
+    ENDIF
+    RETURN result
 
 VIRTUAL METHOD OrderDestroy(orderInfo AS DbOrderInfo ) AS LOGIC
 RETURN SELF:_indexList:Destroy(orderInfo)

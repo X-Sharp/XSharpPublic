@@ -146,7 +146,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         PROTECTED VIRTUAL METHOD _setTag(newTag AS CdxTag) AS VOID
             _tag := newTag
-            IF newTag != NULL
+            IF SELF IS CdxTagList
+                TrailByte := 0
+            ELSEIF newTag != NULL
                 IF _Tag:Collation != NULL
                     TrailByte := 0
                 ELSE
@@ -217,8 +219,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         PUBLIC METHOD GetKey(nPos AS Int32) AS BYTE[]
             System.Diagnostics.Debug.Assert(nPos >= 0 .AND. nPos < SELF:NumKeys)
-            SELF:_ExpandLeaves(FALSE)
-            RETURN _leaves[nPos]:Key
+            IF nPos >= 0 .AND. nPos < SELF:NumKeys
+                SELF:_ExpandLeaves(FALSE)
+                RETURN _leaves[nPos]:Key
+            ENDIF
+            RETURN NULL
 #endregion
 
          // For Debugging we calculate all Recnos and KeyBytes
@@ -243,6 +248,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             _leaves := List<CdxLeaf>{}
             IF SELF:Tag != NULL
                 trailChar :=  (BYTE) IIF (Tag:KeyType == __UsualType.String, 32, 0)
+            ELSEIF SELF IS CdxTagList
+                trailChar := 0
             ELSE
                 trailChar := 32
             ENDIF
@@ -401,7 +408,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:TrailingBits   := bits
             SELF:TrailingMask   := (BYTE) (( 1 << bits  ) - 1)
             SELF:DuplicateMask  := (BYTE) (( 1 << bits  ) - 1)
-            SELF:RecnoMask      := (1 << SELF:RecordBits) -1
+            IF SELF:RecordBits == 32
+                SELF:RecnoMask      := -1   // all bit set
+            ELSE
+                SELF:RecnoMask      := (1 << SELF:RecordBits) -1
+            ENDIF
 
         INTERNAL METHOD GetLeaves() AS IList<CdxLeaf>
             SELF:_ExpandLeaves(TRUE)
@@ -702,7 +713,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     var nextLeaf := leaves[nPos+1]
                     var prevLeaf := leaves[nPos-1]
                     nextLeaf:Dup := _getDupCount(prevLeaf:Key, nextLeaf:Key,nextLeaf:Trail)
-                elseif nPos == 0 .and. _Leaves:Count > 1
+                ELSEIF nPos == 0 .AND. _Leaves:Count > 1
                     leaves[1]:Dup := 0
                 endif
                 _Leaves:RemoveAt(nPos)

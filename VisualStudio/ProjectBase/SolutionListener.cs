@@ -3,8 +3,8 @@
  * Copyright (c) Microsoft Corporation.
  *
  * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
- * copy of the license can be found in the License.txt file at the root of this distribution. 
- * 
+ * copy of the license can be found in the License.txt file at the root of this distribution.
+ *
  * You must not remove this notice, or any other, from this software.
  *
  * ***************************************************************************/
@@ -41,12 +41,13 @@ namespace Microsoft.VisualStudio.Project
             {
                 throw new ArgumentNullException("serviceProviderParameter");
             }
-
-            this.serviceProvider = serviceProviderParameter;
-            this.solution = this.serviceProvider.GetService(typeof(SVsSolution)) as IVsSolution;
-
+            UIThread.DoOnUIThread(() =>
+              {
+                  this.serviceProvider = serviceProviderParameter;
+                  this.solution = this.serviceProvider.GetService(typeof(SVsSolution)) as IVsSolution;
+              });
             if (this.solution == null)
-			{
+            {
                 throw new InvalidOperationException("Could not get the IVsSolution object from the services exposed by this project");
             }
 

@@ -3,8 +3,8 @@
  * Copyright (c) Microsoft Corporation.
  *
  * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
- * copy of the license can be found in the License.txt file at the root of this distribution. 
- * 
+ * copy of the license can be found in the License.txt file at the root of this distribution.
+ *
  * You must not remove this notice, or any other, from this software.
  *
  * ***************************************************************************/
@@ -173,7 +173,7 @@ namespace Microsoft.VisualStudio.Project
                     OLEMSGICON icon = OLEMSGICON.OLEMSGICON_CRITICAL;
                     OLEMSGBUTTON buttons = OLEMSGBUTTON.OLEMSGBUTTON_OK;
                     OLEMSGDEFBUTTON defaultButton = OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST;
-                    VsShellUtilities.ShowMessageBox(this.Site, title, message, icon, buttons, defaultButton);
+                    Utilities.ShowMessageBox(this.Site, title, message, icon, buttons, defaultButton);
                 }
 
                 returnValue = VSConstants.E_FAIL;
@@ -298,7 +298,7 @@ namespace Microsoft.VisualStudio.Project
             OLEMSGICON icon = OLEMSGICON.OLEMSGICON_WARNING;
             OLEMSGBUTTON buttons = OLEMSGBUTTON.OLEMSGBUTTON_YESNOCANCEL;
             OLEMSGDEFBUTTON defaultButton = OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST;
-            int result = VsShellUtilities.ShowMessageBox(Site, title, message, icon, buttons, defaultButton);
+            int result = Utilities.ShowMessageBox(Site, title, message, icon, buttons, defaultButton);
             switch(result)
             {
                 case NativeMethods.IDYES:
@@ -1388,63 +1388,63 @@ internal static DropDataType QueryDropDataType(IOleDataObject pDataObject)
 
             if (dropItem.isFolder)
             {
-               try
-               {
-                  AddFolderFromOtherProject(dropItem.reference, targetNode, dropEffect, true);
-               }
-               catch (CopyPasteException e)
-               {
-                  string errorMessage = e.Message;
-                  if (!Utilities.IsInAutomationFunction(this.ProjectMgr.Site))
-                  {
-                     string title = null;
-                     OLEMSGICON icon = OLEMSGICON.OLEMSGICON_CRITICAL;
-                     OLEMSGBUTTON buttons = OLEMSGBUTTON.OLEMSGBUTTON_OK;
-                     OLEMSGDEFBUTTON defaultButton = OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST;
-                     VsShellUtilities.ShowMessageBox(this.ProjectMgr.Site, title, errorMessage, icon, buttons, defaultButton);
-                     return false;
-                  }
-                  else
-                  {
-                     throw new InvalidOperationException(errorMessage);
-                  }
-               }
+                    try
+                    {
+                        AddFolderFromOtherProject(dropItem.reference, targetNode, dropEffect, true);
+                    }
+                    catch (CopyPasteException e)
+                    {
+                        string errorMessage = e.Message;
+                        if (!Utilities.IsInAutomationFunction(this.ProjectMgr.Site))
+                        {
+                            string title = null;
+                            OLEMSGICON icon = OLEMSGICON.OLEMSGICON_CRITICAL;
+                            OLEMSGBUTTON buttons = OLEMSGBUTTON.OLEMSGBUTTON_OK;
+                            OLEMSGDEFBUTTON defaultButton = OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST;
+                            Utilities.ShowMessageBox(this.ProjectMgr.Site, title, errorMessage, icon, buttons, defaultButton);
+                            return false;
+                        }
+                        else
+                        {
+                            throw new InvalidOperationException(errorMessage);
+                        }
+                    }
             }
             else
             {
-               try
-               {
-                  if (dropItem.sourceDirMatchesDestDir && dropEffect == (uint)DropEffect.Move)
-                  {
-                     throw new DestionPathSameAsSourceException(filename);
-                  }
+                    try
+                    {
+                        if (dropItem.sourceDirMatchesDestDir && dropEffect == (uint)DropEffect.Move)
+                        {
+                            throw new DestionPathSameAsSourceException(filename);
+                        }
 
-                  bool bWillHaveCopyOfPrepended = dropItem.sourceDirMatchesDestDir && dropEffect == (uint)DropEffect.Copy;
-                  // Check if overwriting is possible.
-                  // If not, a dialog box will be shown by SystemCanOverwriteExistingItem
-                  // and we should stop processing items.
-                  if (!bWillHaveCopyOfPrepended && dropItem.destinationExists && this.CanOverwriteExistingItemCore(dropItem.source, dropItem.destination) != VSConstants.S_OK)
-                  {
-                     return false;
-                  }
-               }
-               catch (DestionPathSameAsSourceException e)
-               {
-                  string errorMessage = e.Message;
-                  if (!Utilities.IsInAutomationFunction(this.ProjectMgr.Site))
-                  {
-                     string title = null;
-                     OLEMSGICON icon = OLEMSGICON.OLEMSGICON_CRITICAL;
-                     OLEMSGBUTTON buttons = OLEMSGBUTTON.OLEMSGBUTTON_OK;
-                     OLEMSGDEFBUTTON defaultButton = OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST;
-                     VsShellUtilities.ShowMessageBox(this.ProjectMgr.Site, title, errorMessage, icon, buttons, defaultButton);
-                     return false;
-                  }
-                  else
-                  {
-                     throw new InvalidOperationException(errorMessage);
-                  }
-               }
+                        bool bWillHaveCopyOfPrepended = dropItem.sourceDirMatchesDestDir && dropEffect == (uint)DropEffect.Copy;
+                        // Check if overwriting is possible.
+                        // If not, a dialog box will be shown by SystemCanOverwriteExistingItem
+                        // and we should stop processing items.
+                        if (!bWillHaveCopyOfPrepended && dropItem.destinationExists && this.CanOverwriteExistingItemCore(dropItem.source, dropItem.destination) != VSConstants.S_OK)
+                        {
+                            return false;
+                        }
+                    }
+                    catch (DestionPathSameAsSourceException e)
+                    {
+                        string errorMessage = e.Message;
+                        if (!Utilities.IsInAutomationFunction(this.ProjectMgr.Site))
+                        {
+                            string title = null;
+                            OLEMSGICON icon = OLEMSGICON.OLEMSGICON_CRITICAL;
+                            OLEMSGBUTTON buttons = OLEMSGBUTTON.OLEMSGBUTTON_OK;
+                            OLEMSGDEFBUTTON defaultButton = OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST;
+                            Utilities.ShowMessageBox(this.ProjectMgr.Site, title, errorMessage, icon, buttons, defaultButton);
+                            return false;
+                        }
+                        else
+                        {
+                            throw new InvalidOperationException(errorMessage);
+                        }
+                    }
             }
          }
 

@@ -3,8 +3,8 @@
  * Copyright (c) Microsoft Corporation.
  *
  * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
- * copy of the license can be found in the License.txt file at the root of this distribution. 
- * 
+ * copy of the license can be found in the License.txt file at the root of this distribution.
+ *
  * You must not remove this notice, or any other, from this software.
  *
  * ***************************************************************************/
@@ -257,7 +257,7 @@ namespace Microsoft.VisualStudio.Project
                     OLEMSGICON icon = OLEMSGICON.OLEMSGICON_CRITICAL;
                     OLEMSGBUTTON buttons = OLEMSGBUTTON.OLEMSGBUTTON_OK;
                     OLEMSGDEFBUTTON defaultButton = OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST;
-                    VsShellUtilities.ShowMessageBox(this.Site, title, e.Message, icon, buttons, defaultButton);
+                    Utilities.ShowMessageBox(this.Site, title, e.Message, icon, buttons, defaultButton);
                 }
 
                 XSharpProjectPackage.Instance.DisplayException(e);
@@ -728,7 +728,7 @@ namespace Microsoft.VisualStudio.Project
                         OLEMSGICON icon = OLEMSGICON.OLEMSGICON_CRITICAL;
                         OLEMSGBUTTON buttons = OLEMSGBUTTON.OLEMSGBUTTON_OK;
                         OLEMSGDEFBUTTON defaultButton = OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST;
-                        VsShellUtilities.ShowMessageBox(this.Site, title, message, icon, buttons, defaultButton);
+                        Utilities.ShowMessageBox(this.Site, title, message, icon, buttons, defaultButton);
                     }
 
                     // Do not digest exception. let the caller handle it. If in a later stage this exception is not digested then the above messagebox is not needed.
@@ -791,13 +791,13 @@ namespace Microsoft.VisualStudio.Project
                 OLEMSGICON icon = OLEMSGICON.OLEMSGICON_INFO;
                 OLEMSGBUTTON buttons = OLEMSGBUTTON.OLEMSGBUTTON_YESNO;
                 OLEMSGDEFBUTTON defaultButton = OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST;
-                reload = (VsShellUtilities.ShowMessageBox(this.Site, message, title, icon, buttons, defaultButton) == NativeMethods.IDYES);
+                reload = (Utilities.ShowMessageBox(this.Site, message, title, icon, buttons, defaultButton) == NativeMethods.IDYES);
             }
 
             if(reload)
             {
                 // We have to use here the interface method call, since it might be that specialized project nodes like the project container item
-                // is owerwriting the default functionality.
+                // is overwriting the default functionality.
                 this.ReloadItem(e.ItemID, 0);
             }
         }

@@ -1045,8 +1045,11 @@ namespace Microsoft.VisualStudio.Project
             }
             set
             {
-                this.Node.SetEditLabel(value);
-                this.Node.ReDraw(UIHierarchyElement.Caption);
+               UIThread.DoOnUIThread(() =>
+               {
+                   this.Node.SetEditLabel(value);
+                   this.Node.ReDraw(UIHierarchyElement.Caption);
+               });
             }
         }
 
@@ -1061,7 +1064,11 @@ namespace Microsoft.VisualStudio.Project
             }
             set
             {
-                this.Node.SetEditLabel(value);
+                UIThread.DoOnUIThread(() =>
+                 {
+                     this.Node.SetEditLabel(value);
+                     this.Node.ReDraw(UIHierarchyElement.Caption);
+                     });
             }
         }
         [Browsable(false)]

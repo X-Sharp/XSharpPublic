@@ -10,7 +10,11 @@ USING System.Reflection
 [STAThread];      
 FUNCTION Start() AS VOID
     TRY
-        TestRateCdx()
+        //TestWolfgang2()
+        TestEncoding()
+        //TestXppFieldGetFieldPut()
+        //DumpRateCdx()
+        //TestRateCdx()
         //TestProj()
         //TestCorrupt2()
         //testCdxLock()
@@ -153,56 +157,282 @@ FUNCTION Start() AS VOID
     END TRY
     RETURN
 
+FUNCTION TestWolfgang2 AS VOID
+            LOCAL cFileName          AS STRING
+
+            LOCAL aStruct              AS ARRAY
+
+            LOCAL oDBServer                     AS VO.DBServer
+
+            LOCAL lShareMode        AS LOGIC
+
+ 
+
+            lShareMode                               := TRUE
+
+            cFileName                                := "C:\Temp\Test.DBF"
+
+            aStruct                                     := { { "FIELD1", "C", 10, 0 }, { "FIELD2", "C", 10, 0 } }
+
+            DbCreate( cFileName, aStruct, "DBFCDX", TRUE, "TEST",, FALSE )
+
+            TEST->DbAppend()
+
+            TEST->FIELD1 := "9"
+
+            TEST->DbCommit()
+
+ 
+
+            TEST->DbSetOrderCondition( "! DELETED()", {|| ! Deleted() } )
+
+            TEST->DbCreateOrder( "ORDER1",, "UPPER(FIELD1)", {|| Upper( _FIELD->FIELD1 ) }, FALSE )
+
+            TEST->DbAppend()
+
+            TEST->FIELD1 := "8"
+
+            TEST->DbCommit()      
+
+ 
+
+            IF TRUE
+
+                        TEST->DbSetOrderCondition( "! DELETED() .and. Left(FIELD1,1) == '9'", {|| ! Deleted() .AND. left(_FIELD->FIELD1,1) == '9' } )
+
+                        TEST->DbCreateOrder( "ORDER2",, "UPPER(FIELD1)", {|| Upper( _FIELD->FIELD1 ) }, FALSE )
+
+                        TEST->DbAppend()
+
+                        TEST->FIELD1 := "3"
+
+                        TEST->DbCommit()     
+
+            ENDIF
+
+            TEST->DbCloseArea()
+
+           
+
+            DbUseArea( TRUE, "DBFCDX", cFileName, "TEST2", lShareMode, FALSE )
+
+            TEST2->DbAppend()
+
+            TEST2->FIELD1            := "4"
+
+            ? " OK bevor Commit"
+
+            TEST2->DbCommit() 
+
+            ? "Commit not working "          
+
+            TEST2->DbCloseArea()
+
+           
+
+            oDBServer                    := VO.DbServer{ cFileName, lShareMode, FALSE, "DBFCDX"  }
+
+            oDBServer:Append()
+
+            oDBServer:FieldPut( #FIELD1, "7" )
+
+            ? "OK bevor Commit"
+
+            //oDBServer:Commit()
+
+            ? "Commit not working"
+
+            oDBServer:Close()
+
+            oDBServer                    := NULL_OBJECT
+
+            
+FUNCTION TestWolfgang() AS VOID
+           LOCAL cPath                             AS STRING
+
+            LOCAL cFileName                      AS STRING
+
+            LOCAL aStruct               AS ARRAY
+
+            LOCAL nI                                  AS DWORD
+
+           
+
+            cPath                                        := "C:\Temp"
+
+            cFileName                                := cPath + "\" + "Test.DBF"
+
+            aStruct                                     := { { "FIELD1", "C", 10, 0 } }
+
+            DbCreate( cFileName, aStruct, "DBFCDX", TRUE, "ORDERDBF",, FALSE )
+
+            ORDERDBF->DbSetOrderCondition( "! DELETED()", {|| ! Deleted() } )
+
+            ORDERDBF->DbCreateOrder( "ORDER1",, "UPPER(FIELD1)", {|| Upper( _FIELD->FIELD1 ) }, FALSE )
+
+            ORDERDBF->DbCloseArea()
+
+            DbUseArea( TRUE, "DBFCDX", cFileName, "ORDERDBF", TRUE, FALSE )
+
+           
+
+            FOR nI := 1 UPTO 120000
+                            IF nI % 100 == 0
+                        ? nI
+                        ENDIF
+
+                        ORDERDBF->DbAppend()
+
+                        ORDERDBF->FIELD1     := NTrim( nI )
+
+            NEXT
+
+            ORDERDBF->DbCloseArea()
+
+            
+FUNCTION TestEncoding AS VOID
+    RddSetDefault("DBFNTX")
+    DbUseArea(TRUE,NIL,"c:\download\dbcompare\f1\GID.DBF")
+    DbGoBottom()
+    ? FIeldGetSym(#AArdGoed)
+    ? FIeldPutSym(#AArdGoed,"BIÈRE FÛT 20 LTR LA TRAPPE BLOND")
+    DbSKip(-1)
+    ? FIeldPutSym(#AArdGoed,"BIÈRE FÛT 20 LTR LA TRAPPE BLOND")
+    DbCloseArea()
+    
+FUNCTION TestXppFieldGetFieldPut() AS VOID
+    LOCAL aStruct := {{"NAAM","C",10,0}}
+    RddSetDefault("DBFNTX")
+    RuntimeState.Dialect := XSHarpDIalect.VO
+    DbCreate("Klant",aStruct)
+    DbUseArea(TRUE,,"KLANT","KLANT",FALSE,FALSE)
+    //DbAppend()
+    FieldPut("a", "Robert")
+    ? FieldPos("NAAM")
+    ? FieldGet(FieldPos("NAAM"))
+    ? FieldGet(0)
+    ? FieldPut(0, "abc")
+    ? FieldPut(FieldPos("def"),"abc")
+    ? FieldGet(FieldPos("NAAM"))
+    ? Eval(FieldBlock("NAAM"))
+    DbCloseARea()
+RETURN    
+
+FUNCTION DumpRateCdx() AS VOID
+    RddSetDefault("DBFCDX")
+    DBUSEAREA(TRUE, "DBFCDX", "c:\test\Rate.DBF", "Rate", FALSE)
+//    DbGoto(360939)
+//    ? FieldGetSym(#MainRecNo)
+//    WAIT
+    DbSetIndex("c:\test\RateVN.CDX")
+    FOR VAR i := 1 TO 1 //(INT) DbOrderInfo(DBOI_ORDERCOUNT)
+        DbSetOrder(i)
+        ? OrdName()
+        DbOrderInfo(DBOI_USER+42)
+    NEXT
+    DbCloseArea()
+    DBUSEAREA(TRUE, "DBFCDX", "c:\test\Rate.DBF", "Rate", FALSE)      
+    DbSetIndex("c:\test\RateX#.CDX")
+    FOR VAR i := 1 TO 1 //(INT) DbOrderInfo(DBOI_ORDERCOUNT)
+        DbSetOrder(i)
+        ? OrdName()
+        DbOrderInfo(DBOI_USER+42)
+    NEXT
+    DbCloseArea()    
+    
 
 FUNCTION TestRateCdx() AS VOID
     VAR f := Seconds()
+    VAR f2 := Seconds()
+    LOCAL cFile := "C:\Test\RateX#" AS STRING
+    SET(_SET_OPTIMIZE, FALSE)
     RddSetDefault("DBFCDX")
-    ? Time()
+	 FErase(cFile+".CDX")
+    ? Time()               
+    ? DELETED()             
+    ? Version()
     DbUseArea(TRUE, "DBFCDX", "c:\test\Rate.DBF", "Rate", FALSE)
-    DbSetOrderCondition("Deleted() == .F.   .And. Recurse == .F.   .And. Undone == .F.")
-    OrdCreate("RateX#", "RateMain", "Str( MainRecno, 7 ) + '~' + DToS( ScaDov )") 
-    ? Time()
-
-    DbSetOrderCondition("Deleted() == .F.   .And. Recurse == .F.   .And. Undone == .F.   .ANd. TipoC == 'U'")
-    OrdCreate("RateX#", "RateUsu", "Str( MainRecno, 7 ) + '~' + DToS( ScaDov )")
-    ? Time()
+    ? LASTREC(), "Records"
+    SETORDERCONDITION("Deleted() == .F.   .And. Recurse == .F.   .And. Undone == .F.")
+    OrdCreate(cFile, "RateMain", "Str( MainRecno, 7 ) + '~' + DToS( ScaDov )") 
+	 SHowInfo(f2)    
+    f2 := Seconds()
     
-    DbSetOrderCondition("Deleted() == .F.   .And. Recurse == .F.   .And. Undone == .F.")
-    OrdCreate("RateX#", "RatePrev", "Str( PrevRecno, 7 ) + '~' + Mode + '~' + DToS( ScaDov )")
-    ? Time()
+    SETORDERCONDITION("Deleted() == .F.   .And. Recurse == .F.   .And. Undone == .F.   .ANd. TipoC == 'U'")
+    OrdCreate(cFile, "RateUsu", "Str( MainRecno, 7 ) + '~' + DToS( ScaDov )")
+	 SHowInfo(f2)    
+    f2 := Seconds()
+    
+    SETORDERCONDITION("Deleted() == .F.   .And. Recurse == .F.   .And. Undone == .F.")
+    OrdCreate(cFile, "RatePrev", "Str( PrevRecno, 7 ) + '~' + Mode + '~' + DToS( ScaDov )")
+	 SHowInfo(f2)    
+    f2 := Seconds()
 
-    DbSetOrderCondition("Deleted() == .F.")
-    OrdCreate("RateX#", "RatePNor", "Str( PrevRecno, 7 ) + '~' + Mode + '~' + DToS( ScaDov )")
-    ? Time()
+    SETORDERCONDITION("Deleted() == .F.")
+    OrdCreate(cFile, "RatePNor", "Str( PrevRecno, 7 ) + '~' + Mode + '~' + DToS( ScaDov )")
+	 SHowInfo(f2)    
+    f2 := Seconds()
 
-    DbSetOrderCondition("Deleted() == .F.")
-    OrdCreate("RateX#", "RateMNor", "Str( MainRecno, 7 ) + '~' + Mode + '~' + DToS( ScaDov )")
-    ? Time()
+    SETORDERCONDITION("Deleted() == .F.") 
+    OrdCreate(cFile, "RateMNor", "Str( MainRecno, 7 ) + '~' + Mode + '~' + DToS( ScaDov )")
+	 SHowInfo(f2)    
+    f2 := Seconds()
 
-    DbSetOrderCondition("Deleted() == .F.   .And. Recurse == .F.")
-    OrdCreate("RateX#", "RateScop", "Str( MainRecno, 7 ) + '~' + Str( PrevRecno, 7 ) + '~' + Mode + '~' + DToS( ScaDov )")
-    ? Time()
+    SETORDERCONDITION("Deleted() == .F.   .And. Recurse == .F.") 
+    OrdCreate(cFile, "RateScop", "Str( MainRecno, 7 ) + '~' + Str( PrevRecno, 7 ) + '~' + Mode + '~' + DToS( ScaDov )")
+	 SHowInfo(f2)    
+    f2 := Seconds()
 
-    DbSetOrderCondition("Deleted() == .F.   .And. Recurse == .F.   .And. Undone == .T.")
-    OrdCreate("RateX#", "RateUndo", "Str( PrevRecno, 7 ) + '~' + Mode + '~' + DToS( ScaDov )")
-    ? Time()
+    SetOrderCondition("Deleted() == .F.   .And. Recurse == .F.   .And. Undone == .T.")
+    OrdCreate(cFile, "RateUndo", "Str( PrevRecno, 7 ) + '~' + Mode + '~' + DToS( ScaDov )")
+	 SHowInfo(f2)    
+    f2 := Seconds()
 
-    DbSetOrderCondition("Deleted() == .F.")
-    OrdCreate("RateX#", "RateTemp", "PrevRecno")
-    ? Time()
+    SETORDERCONDITION("Deleted() == .F.")
+    OrdCreate(cFile, "RateTemp", "PrevRecno")
+	 SHowInfo(f2)    
+    f2 := Seconds()
 
-    DbSetOrderCondition("Deleted() == .F.")
-    OrdCreate("RateX#", "RateData", "Str( MainRecno, 7 ) + '~' + DToS( ScaDov )")
-    ? Time()
+    SETORDERCONDITION("Deleted() == .F.")
+    OrdCreate(cFile, "RateData", "Str( MainRecno, 7 ) + '~' + DToS( ScaDov )")
+	 SHowInfo(f2)    
+    f2 := Seconds()
 
-    DbSetOrderCondition("Deleted() == .F.")
-    OrdCreate("RateX#", "RateScoA", "Str( MainRecno, 7 ) + '~' + Str( PrevRecno, 7 ) + '~' + Mode")
-    ? Time()
+    SETORDERCONDITION("Deleted() == .F.")
+    OrdCreate(cFile, "RateScoA", "Str( MainRecno, 7 ) + '~' + Str( PrevRecno, 7 ) + '~' + Mode")
+	 SHowInfo(f2)    
+    f2 := Seconds()
     DbCloseArea()
     ? Time()
     ? Seconds() - f
-    RETURN
+      
+WAIT
+RETURN NIL
 
+
+FUNCTION SETORDERCONDITION(cFor)
+LOCAL cbFor :=&("{|| "+cFor+" }")             
+RETURN OrdCondSet(cFor, cbFor, TRUE) 
+
+
+FUNCTION OrderCount
+RETURN DbOrderInfo(DBOI_ORDERCOUNT)
+
+
+
+
+FUNCTION SHowInfo(f2)
+? Time(), Seconds() - f2,OrdKeyCount()  
+? "NAME", OrdName(OrderCount())
+? "KEY", ORDKEY(OrderCount())
+? "FOR", ORDFOR(OrderCount())                  
+? 
+RETURN NIL
+
+
+
+
+ 
 FUNCTION TestProj() AS VOID
     LOCAL i AS DWORD
     LOCAL uValue AS USUAL

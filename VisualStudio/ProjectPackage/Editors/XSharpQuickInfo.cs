@@ -163,6 +163,15 @@ namespace XSharp.Project
                                 qiContent.Add(description);
 
                             }
+                            else if (gotoElement.XSharpElement is XSharpModel.XType)
+                            {
+                                var xtype = gotoElement.XSharpElement as XType;
+                                var qitm = new QuickInfoTypeAnalysis(xtype);
+                                var description = new TextBlock();
+                                description.Inlines.AddRange(qitm.WPFDescription);
+                                qiContent.Add(description);
+
+                            }
                             else
                             {
                                 var description = new TextBlock();
@@ -373,7 +382,8 @@ namespace XSharp.Project
         {
             internal QuickInfoTypeAnalysis(TypeInfo typeInfo) : base(typeInfo)
             { }
-
+            internal QuickInfoTypeAnalysis(XType type) : base(type)
+            { }
             public List<Inline> WPFDescription
             {
                 get
@@ -691,9 +701,10 @@ namespace XSharp.Project
                 }
             }
 
+
+
+
         }
-
-
 
     }
 }

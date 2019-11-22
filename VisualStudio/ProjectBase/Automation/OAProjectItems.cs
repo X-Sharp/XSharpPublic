@@ -3,8 +3,8 @@
  * Copyright (c) Microsoft Corporation.
  *
  * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
- * copy of the license can be found in the License.txt file at the root of this distribution. 
- * 
+ * copy of the license can be found in the License.txt file at the root of this distribution.
+ *
  * You must not remove this notice, or any other, from this software.
  *
  * ***************************************************************************/
@@ -47,51 +47,51 @@ namespace Microsoft.VisualStudio.Project.Automation
 
             CheckProjectIsValid();
 
-            return UIThread.DoOnUIThread(delegate()
+            return UIThread.DoOnUIThread(delegate ()
             {
-            ProjectNode proj = this.Project.Project;
-            EnvDTE.ProjectItem itemAdded = null;
+                ProjectNode proj = this.Project.Project;
+                EnvDTE.ProjectItem itemAdded = null;
 
                 using (AutomationScope scope = new AutomationScope(this.Project.Project.Site))
-            {
-                string fixedFileName = fileName;
-
-                if (!File.Exists(fileName))
                 {
-                    string tempFileName = GetTemplateNoZip(fileName);
-                    if (File.Exists(tempFileName))
+                    string fixedFileName = fileName;
+
+                    if (!File.Exists(fileName))
                     {
-                        fixedFileName = tempFileName;
+                        string tempFileName = GetTemplateNoZip(fileName);
+                        if (File.Exists(tempFileName))
+                        {
+                            fixedFileName = tempFileName;
+                        }
                     }
+
+                    // Determine the operation based on the extension of the filename.
+                    // We should run the wizard only if the extension is vstemplate
+                    // otherwise it's a clone operation
+                    VSADDITEMOPERATION op;
+
+                    if (Utilities.IsTemplateFile(fixedFileName))
+                    {
+                        op = VSADDITEMOPERATION.VSADDITEMOP_RUNWIZARD;
+                    }
+                    else
+                    {
+                        op = VSADDITEMOPERATION.VSADDITEMOP_CLONEFILE;
+                    }
+
+                    VSADDRESULT[] result = new VSADDRESULT[1];
+
+                    // It is not a very good idea to throw since the AddItem might return Cancel or Abort.
+                    // The problem is that up in the call stack the wizard code does not check whether it has received a ProjectItem or not and will crash.
+                    // The other problem is that we cannot get add wizard dialog back if a cancel or abort was returned because we throw and that code will never be executed. Typical catch 22.
+                    ErrorHandler.ThrowOnFailure(proj.AddItem(this.NodeWithItems.ID, op, name, 0, new string[1] { fixedFileName }, IntPtr.Zero, result));
+
+                    string fileDirectory = proj.GetBaseDirectoryForAddingFiles(this.NodeWithItems);
+                    string templateFilePath = System.IO.Path.Combine(fileDirectory, name);
+                    itemAdded = this.EvaluateAddResult(result[0], templateFilePath);
                 }
 
-                // Determine the operation based on the extension of the filename.
-                // We should run the wizard only if the extension is vstemplate
-                // otherwise it's a clone operation
-                VSADDITEMOPERATION op;
-
-                if(Utilities.IsTemplateFile(fixedFileName))
-                {
-                    op = VSADDITEMOPERATION.VSADDITEMOP_RUNWIZARD;
-                }
-                else
-                {
-                    op = VSADDITEMOPERATION.VSADDITEMOP_CLONEFILE;
-                }
-
-                VSADDRESULT[] result = new VSADDRESULT[1];
-
-                // It is not a very good idea to throw since the AddItem might return Cancel or Abort.
-                // The problem is that up in the call stack the wizard code does not check whether it has received a ProjectItem or not and will crash.
-                // The other problem is that we cannot get add wizard dialog back if a cancel or abort was returned because we throw and that code will never be executed. Typical catch 22.
-                ErrorHandler.ThrowOnFailure(proj.AddItem(this.NodeWithItems.ID, op, name, 0, new string[1] { fixedFileName }, IntPtr.Zero, result));
-
-                string fileDirectory = proj.GetBaseDirectoryForAddingFiles(this.NodeWithItems);
-                string templateFilePath = System.IO.Path.Combine(fileDirectory, name);
-                itemAdded = this.EvaluateAddResult(result[0], templateFilePath);
-            }
-
-            return itemAdded;
+                return itemAdded;
             });
         }
         private void CheckProjectIsValid() {
@@ -99,6 +99,7 @@ namespace Microsoft.VisualStudio.Project.Automation
                 throw new InvalidOperationException();
             }
         }
+
         /// <summary>
         /// Adds a folder to the collection of ProjectItems with the given name.
         ///
@@ -178,9 +179,9 @@ namespace Microsoft.VisualStudio.Project.Automation
 		{
 			return this.AddItem(fileName, VSADDITEMOPERATION.VSADDITEMOP_LINKTOFILE);
 		}
-		#endregion
+        #endregion
 
-		#region helper methods
+        #region helper methods
         /// <summary>
         /// Adds an item to the project.
         /// </summary>
@@ -191,24 +192,24 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             CheckProjectIsValid();
 
-            return UIThread.DoOnUIThread(delegate()
+            return UIThread.DoOnUIThread( () =>
             {
-            ProjectNode proj = this.Project.Project;
+                ProjectNode proj = this.Project.Project;
 
-            EnvDTE.ProjectItem itemAdded = null;
+                EnvDTE.ProjectItem itemAdded = null;
                 using (AutomationScope scope = new AutomationScope(this.Project.Project.Site))
-            {
-                VSADDRESULT[] result = new VSADDRESULT[1];
-                ErrorHandler.ThrowOnFailure(proj.AddItem(this.NodeWithItems.ID, op, path, 0, new string[1] { path }, IntPtr.Zero, result));
+                {
+                    VSADDRESULT[] result = new VSADDRESULT[1];
+                    ErrorHandler.ThrowOnFailure(proj.AddItem(this.NodeWithItems.ID, op, path, 0, new string[1] { path }, IntPtr.Zero, result));
 
-                string fileName = System.IO.Path.GetFileName(path);
-                string fileDirectory = proj.GetBaseDirectoryForAddingFiles(this.NodeWithItems);
-                string filePathInProject = System.IO.Path.Combine(fileDirectory, fileName);
+                    string fileName = System.IO.Path.GetFileName(path);
+                    string fileDirectory = proj.GetBaseDirectoryForAddingFiles(this.NodeWithItems);
+                    string filePathInProject = System.IO.Path.Combine(fileDirectory, fileName);
 
-                itemAdded = this.EvaluateAddResult(result[0], filePathInProject);
-            }
+                    itemAdded = this.EvaluateAddResult(result[0], filePathInProject);
+                }
 
-            return itemAdded;
+                return itemAdded;
             });
         }
 
@@ -221,33 +222,33 @@ namespace Microsoft.VisualStudio.Project.Automation
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1800:DoNotCastUnnecessarily")]
         protected virtual EnvDTE.ProjectItem EvaluateAddResult(VSADDRESULT result, string path)
         {
-            return UIThread.DoOnUIThread(delegate()
+            return UIThread.DoOnUIThread( () =>
             {
                 if (result == VSADDRESULT.ADDRESULT_Success)
-            {
-                HierarchyNode nodeAdded = this.NodeWithItems.FindChild(path);
-                Debug.Assert(nodeAdded != null, "We should have been able to find the new element in the hierarchy");
-                    if (nodeAdded != null)
                 {
-                    EnvDTE.ProjectItem item = null;
-                        if (nodeAdded is FileNode)
+                    HierarchyNode nodeAdded = this.NodeWithItems.FindChild(path);
+                    Debug.Assert(nodeAdded != null, "We should have been able to find the new element in the hierarchy");
+                    if (nodeAdded != null)
                     {
-                        item = new OAFileItem(this.Project, nodeAdded as FileNode);
-                    }
+                        EnvDTE.ProjectItem item = null;
+                        if (nodeAdded is FileNode )
+                        {
+                            item = new OAFileItem(this.Project, nodeAdded as FileNode);
+                        }
                         else if (nodeAdded is NestedProjectNode)
-                    {
-                        item = new OANestedProjectItem(this.Project, nodeAdded as NestedProjectNode);
-                    }
-                    else
-                    {
-                        item = new OAProjectItem<HierarchyNode>(this.Project, nodeAdded);
-                    }
+                        {
+                            item = new OANestedProjectItem(this.Project, nodeAdded as NestedProjectNode);
+                        }
+                        else
+                        {
+                            item = new OAProjectItem<HierarchyNode>(this.Project, nodeAdded);
+                        }
 
-                    this.Items.Add(item);
-                    return item;
+                        this.Items.Add(item);
+                        return item;
+                    }
                 }
-            }
-            return null;
+                return null;
             });
         }
 

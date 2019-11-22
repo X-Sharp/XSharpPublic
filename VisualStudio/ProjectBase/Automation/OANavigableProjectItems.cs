@@ -3,8 +3,8 @@
  * Copyright (c) Microsoft Corporation.
  *
  * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
- * copy of the license can be found in the License.txt file at the root of this distribution. 
- * 
+ * copy of the license can be found in the License.txt file at the root of this distribution.
+ *
  * You must not remove this notice, or any other, from this software.
  *
  * ***************************************************************************/
@@ -101,7 +101,12 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             get
             {
-                return items.Count;
+                int count = 0;
+                UIThread.DoOnUIThread(delegate ()
+               {
+                   count = items.Count;
+               });
+                return count;
             }
         }
 

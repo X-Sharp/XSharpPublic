@@ -3,8 +3,8 @@
  * Copyright (c) Microsoft Corporation.
  *
  * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
- * copy of the license can be found in the License.txt file at the root of this distribution. 
- * 
+ * copy of the license can be found in the License.txt file at the root of this distribution.
+ *
  * You must not remove this notice, or any other, from this software.
  *
  * ***************************************************************************/
@@ -142,23 +142,25 @@ namespace Microsoft.VisualStudio.Project.Automation
         /// <param name="value">The value to set.</param>
         public void set_IndexedValue(object index1, object index2, object index3, object index4, object value)
         {
-            ParameterInfo[] par = pi.GetIndexParameters();
-            int len = Math.Min(par.Length, 4);
-            if(len == 0)
+            UIThread.DoOnUIThread(() =>
             {
-                this.Value = value;
-            }
-            else
-            {
-                object[] index = new object[len];
-                Array.Copy(new object[4] { index1, index2, index3, index4 }, index, len);
-
-                using(AutomationScope scope = new AutomationScope(this.parent.Target.Node.ProjectMgr.Site))
+                ParameterInfo[] par = pi.GetIndexParameters();
+                int len = Math.Min(par.Length, 4);
+                if (len == 0)
                 {
-                    this.pi.SetValue(this.parent.Target, value, index);
+                    this.Value = value;
                 }
-            }
+                else
+                {
+                    object[] index = new object[len];
+                    Array.Copy(new object[4] { index1, index2, index3, index4 }, index, len);
 
+                    using (AutomationScope scope = new AutomationScope(this.parent.Target.Node.ProjectMgr.Site))
+                    {
+                        this.pi.SetValue(this.parent.Target, value, index);
+                    }
+                }
+            });
         }
 
         /// <summary>
@@ -166,13 +168,20 @@ namespace Microsoft.VisualStudio.Project.Automation
         /// </summary>
         public object Value
         {
-            get { return pi.GetValue(this.parent.Target, null); }
+            get
+            {
+                return UIThread.DoOnUIThread(() => { return pi.GetValue(this.parent.Target, null); });
+            }
             set
             {
-                using(AutomationScope scope = new AutomationScope(this.parent.Target.Node.ProjectMgr.Site))
-                {
-                    this.pi.SetValue(this.parent.Target, value, null);
-                }
+                UIThread.DoOnUIThread(() =>
+               {
+                   using (AutomationScope scope = new AutomationScope(this.parent.Target.Node.ProjectMgr.Site))
+                   {
+                       this.pi.SetValue(this.parent.Target, value, null);
+                   }
+               }
+                );
             }
         }
         #endregion

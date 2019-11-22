@@ -3,8 +3,8 @@
  * Copyright (c) Microsoft Corporation.
  *
  * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
- * copy of the license can be found in the License.txt file at the root of this distribution. 
- * 
+ * copy of the license can be found in the License.txt file at the root of this distribution.
+ *
  * You must not remove this notice, or any other, from this software.
  *
  * ***************************************************************************/
@@ -35,8 +35,14 @@ namespace Microsoft.VisualStudio.Project
             {
                 IVsUIHierarchy uiHierarchy = hierarchy as IVsUIHierarchy;
                 Debug.Assert(uiHierarchy != null, "The ProjectNode should implement IVsUIHierarchy");
+                if (uiHierarchy == null) {
+                    return VSConstants.E_FAIL;
+                }
                 // Expand and select project node
-                IVsUIHierarchyWindow uiWindow = UIHierarchyUtilities.GetUIHierarchyWindow(this.ServiceProvider, HierarchyNode.SolutionExplorer);
+                IServiceProvider provider = (IServiceProvider)this.ServiceProvider;
+
+
+                IVsUIHierarchyWindow uiWindow = UIHierarchyUtilities.GetUIHierarchyWindow(provider, HierarchyNode.SolutionExplorer);
                 if(uiWindow != null)
                 {
                     __VSHIERARCHYITEMSTATE state;

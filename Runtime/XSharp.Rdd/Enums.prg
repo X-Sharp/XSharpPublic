@@ -162,7 +162,7 @@ BEGIN NAMESPACE XSharp.RDD
             CASE DbfHeaderCodepage.CP_DBF_MAC_RUSSIAN   ; RETURN OsCodepage.CP_INI_MAC_RUSSIAN    
             CASE DbfHeaderCodepage.CP_DBF_MAC_EEUROPEAN ; RETURN OsCodepage.CP_INI_MAC_EEUROPEAN
             OTHERWISE
-                RETURN 0
+                RETURN  IIF(SetAnsi(), OsCodepage.CP_INI_WIN_ANSI, OsCodepage.CP_INI_DOS_US)
                     
             END SWITCH
                 
@@ -203,6 +203,8 @@ BEGIN NAMESPACE XSharp.RDD
             CASE DbfHeaderCodepage.CP_DBF_WIN_GREEK
             CASE DbfHeaderCodepage.CP_DBF_WIN_TURKISH
                 RETURN TRUE
+            CASE DbfHeaderCodepage.CP_DBF_DOS_OLD       // 0
+                RETURN SetAnsi()        
             END SWITCH
             RETURN FALSE
  

@@ -8,6 +8,7 @@ USING System.IO
 USING XSharp.RDD.Enums
 USING System.Collections.Generic
 USING System.Linq
+USING System.Runtime.CompilerServices
 USING XSharp.RDD.Enums
 USING XSharp.RDD.Support
 BEGIN NAMESPACE XSharp.RDD
@@ -109,13 +110,14 @@ BEGIN NAMESPACE XSharp.RDD
         VIRTUAL METHOD PutValue(oValue AS OBJECT, buffer AS BYTE[]) AS LOGIC
             RETURN FALSE
 
-
-        METHOD IsNull() AS LOGIC
+        [MethodImpl(MethodImplOptions.AggressiveInlining)];
+         INTERNAL METHOD IsNull() AS LOGIC
             IF SELF:IsNullable .AND. SELF:RDD:_NullColumn != NULL
                 RETURN SELF:RDD:_NullColumn:GetBit(SELF:NullBit)
             ENDIF
             RETURN FALSE
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)];
         PROTECTED METHOD SetNullValue() AS LOGIC 
             IF SELF:IsNullable .AND. SELF:RDD:_NullColumn != NULL
                 SELF:RDD:_NullColumn:SetBit(SELF:NullBit, TRUE)
@@ -123,16 +125,18 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             RETURN FALSE
 
-        PROTECTED METHOD ClearNullValue() AS VOID
+         [MethodImpl(MethodImplOptions.AggressiveInlining)];
+         PROTECTED METHOD ClearNullValue() AS VOID
             IF SELF:IsNullable .AND. SELF:RDD:_NullColumn != NULL
                 SELF:RDD:_NullColumn:SetBit(SELF:NullBit, FALSE)
             ENDIF
             RETURN 
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)];
         VIRTUAL METHOD EmptyValue() AS OBJECT
             RETURN String.Empty
 
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)];
         PROTECTED METHOD _GetNumericValue(buffer AS BYTE[]) AS INT64
             LOCAL lValid := TRUE AS LOGIC
             LOCAL nValue AS INT64
@@ -173,6 +177,7 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             RETURN 0
 
+         [MethodImpl(MethodImplOptions.AggressiveInlining)];
         PROTECTED METHOD GetNumber<T>(oValue AS OBJECT, oResult OUT T) AS LOGIC WHERE T IS NEW()
             LOCAL tc AS TypeCode
             IF oValue != NULL

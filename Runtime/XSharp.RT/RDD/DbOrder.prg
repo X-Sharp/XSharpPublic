@@ -245,11 +245,12 @@ FUNCTION OrdDestroy(uOrder, cIndexFile) AS LOGIC CLIPPER
 	
 	
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ordfor/*" />
-FUNCTION OrdFor(uOrder, cIndexFile, cFor) AS LOGIC CLIPPER
+FUNCTION OrdFor(uOrder, cIndexFile, cFor) AS USUAL CLIPPER
 	IF !cFor:IsString
 		cFor := NIL
 	ENDIF
-	RETURN VoDb.OrderInfo(DBOI_CONDITION, cIndexFile, uOrder, cFor)
+	VoDb.OrderInfo(DBOI_CONDITION, cIndexFile, uOrder, REF cFor)
+    RETURN cFor
 	
 	
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ordkey/*" />

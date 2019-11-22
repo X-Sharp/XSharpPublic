@@ -51,16 +51,17 @@ namespace XSharp.Project.Editors.BraceMatching
         SnapshotPoint? CurrentChar { get; set; }
         static private Dictionary<char, char> m_braceList;
 
-        internal BraceMatchingTagger(ITextView view, ITextBuffer sourceBuffer)
+        static BraceMatchingTagger()
         {
             //here the keys are the open braces, and the values are the close braces
-            if (m_braceList == null)
-            {
-                m_braceList = new Dictionary<char, char>();
-                m_braceList.Add('{', '}');
-                m_braceList.Add('[', ']');
-                m_braceList.Add('(', ')');
-            }
+            m_braceList = new Dictionary<char, char>();
+            m_braceList.Add('{', '}');
+            m_braceList.Add('[', ']');
+            m_braceList.Add('(', ')');
+        }
+
+        internal BraceMatchingTagger(ITextView view, ITextBuffer sourceBuffer)
+        {
             this.View = view;
             this.SourceBuffer = sourceBuffer;
             this.CurrentChar = null;
@@ -101,7 +102,7 @@ namespace XSharp.Project.Editors.BraceMatching
             if (spans.Count == 0)   //there is no content in the buffer
                 yield break;
 
-            if (CurrentChar == null)
+            if (CurrentChar == null || SourceBuffer == null)
                 yield break;
 
             //don't do anything if the current SnapshotPoint is not initialized or at the end of the buffer
@@ -137,10 +138,15 @@ namespace XSharp.Project.Editors.BraceMatching
             XSharpTokens xTokens = null;
             IList<IToken> tokens = null;
             int offset = 0;
-            if (SourceBuffer != null && SourceBuffer.Properties != null && SourceBuffer.Properties.ContainsProperty(typeof(XSharpTokens)))
+            if ( SourceBuffer.Properties != null && SourceBuffer.Properties.ContainsProperty(typeof(XSharpTokens)))
             {
                 xTokens = SourceBuffer.Properties.GetProperty<XSharpTokens>(typeof(XSharpTokens));
+                if (xTokens == null || xTokens.TokenStream == null || xTokens.SnapShot == null)
+                    yield break;
+
                 tokens = xTokens.TokenStream.GetTokens();
+                if (tokens == null)
+                    yield break;
                 if (xTokens.SnapShot.Version != ssp.Snapshot.Version)
                 {
                     // get source from the start of the file until the current entity
@@ -165,7 +171,6 @@ namespace XSharp.Project.Editors.BraceMatching
                     }
                 }
             }
-
             // First, try to match Simple chars
             if (m_braceList.ContainsKey(currentText))   //the key is the open brace
             {

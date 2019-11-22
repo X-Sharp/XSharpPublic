@@ -634,9 +634,8 @@ END NAMESPACE
 
 
 
-
-/// <exclude/>
-FUNCTION ErrorBuild(pErrInfo AS exception) AS XSharp.ERROR
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/errorbuild/*" /> 
+FUNCTION ErrorBuild(pErrInfo AS exception) AS XSharp.Error
 	RETURN  XSharp.Error{pErrInfo}
 
 

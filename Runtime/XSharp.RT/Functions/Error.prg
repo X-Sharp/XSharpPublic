@@ -54,6 +54,3 @@ FUNCTION VO_Sprintf( format AS USUAL,  args PARAMS OBJECT[] ) AS STRING
 	    RETURN _VO_Sprintf( (STRING) format, args)
     ENDIF
     RETURN _VO_Sprintf( (DWORD) format, args)
-
-
-

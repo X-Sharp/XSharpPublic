@@ -211,7 +211,7 @@ internal static class XHelperMethods
             OLEMSGBUTTON buttons = OLEMSGBUTTON.OLEMSGBUTTON_OK;
             OLEMSGDEFBUTTON defaultButton = OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST;
 
-            XHelperMethods.ShowMessageBox(serviceProvider, buttons, icon, defaultButton, message, args);
+            ShowMessageBox(serviceProvider, buttons, icon, defaultButton, message, args);
         }
 
       /// <summary>
@@ -232,7 +232,7 @@ internal static class XHelperMethods
          }
 
             // show the message box
-            VsShellUtilities.ShowMessageBox(serviceProvider, message, String.Empty, icon, buttons, defaultButton);
+            Utilities.ShowMessageBox(serviceProvider, message, String.Empty, icon, buttons, defaultButton);
         }
 
       /// <summary>

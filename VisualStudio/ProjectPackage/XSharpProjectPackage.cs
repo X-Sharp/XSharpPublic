@@ -204,6 +204,7 @@ namespace XSharp.Project
     public sealed class XSharpProjectPackage : AsyncProjectPackage, IOleComponent,
         IVsShellPropertyEvents, IVsDebuggerEvents, XSharpModel.IOutputWindow
     {
+        private UIThread _uiThread;
         private uint m_componentID;
         private static XSharpProjectPackage instance;
         private XPackageSettings settings;
@@ -216,6 +217,8 @@ namespace XSharp.Project
         // =========================================================================================
         // Properties
         // =========================================================================================
+
+        internal UIThread UIThread => _uiThread;
 
         /// <summary>
         /// Gets the singleton XSharpProjectPackage instance.
@@ -258,7 +261,7 @@ namespace XSharp.Project
             // Suspend walking until Solution is opened.
             base.SolutionListeners.Add(new ModelScannerEvents(this));
             await base.InitializeAsync(cancellationToken, progress);
-
+            _uiThread = new UIThread();
             XSharpProjectPackage.instance = this;
             XSharpModel.XSolution.OutputWindow = this;
             this.RegisterProjectFactory(new XSharpProjectFactory(this));
@@ -302,6 +305,8 @@ namespace XSharp.Project
             // Initialize Custom Menu Items
             XSharp.Project.XSharpMenuItems.Initialize(this);
             // register property changed event handler
+
+
             var shell = await this.GetServiceAsync(typeof(SVsShell)) as IVsShell;
             Assumes.Present(shell);
                 shell.AdviseShellPropertyChanges(this, out shellCookie);
@@ -310,7 +315,7 @@ namespace XSharp.Project
             // LibraryManager : Offers Object Browser and ClassView
             // ObjectBrowser : Add the LibraryManager service as a Service provided by that container
             IServiceContainer container = this as IServiceContainer;
-            ServiceCreatorCallback callback = new ServiceCreatorCallback(CreateService);
+            ServiceCreatorCallback callback = new ServiceCreatorCallback(CreateLibraryService);
             //
             container.AddService(typeof(IXSharpLibraryManager), callback, true);
             this._documentWatcher = new XSharpDocumentWatcher(this);
@@ -325,7 +330,7 @@ namespace XSharp.Project
         }
         internal static string VsVersion;
 
-        private object CreateService(IServiceContainer container, Type serviceType)
+        private object CreateLibraryService(IServiceContainer container, Type serviceType)
         {
             if (typeof(IXSharpLibraryManager) == serviceType)
             {
@@ -339,6 +344,7 @@ namespace XSharp.Project
         {
             try
             {
+                _uiThread.MustBeCalledFromUIThread();
                 this.UnRegisterDebuggerEvents();
                 if (null != _libraryManager)
                 {
@@ -423,9 +429,9 @@ namespace XSharp.Project
         #region IOleComponent Members
         internal async void LangServiceInit()
         {
-                Task<XSharpLanguageService> t = await GetServiceAsync(typeof(XSharpLanguageService)) as Task<XSharpLanguageService>;
+            Task<XSharpLanguageService> t = await GetServiceAsync(typeof(XSharpLanguageService)) as Task<XSharpLanguageService>;
             Assumes.Present(t);
-                _xsLangService = t.Result;
+            _xsLangService = t.Result;
         }
 
         public int FDoIdle(uint grfidlef)
@@ -510,6 +516,7 @@ namespace XSharp.Project
 
         public void Terminate()
         {
+            _uiThread.MustBeCalledFromUIThread();
             var shell = this.GetService(typeof(SVsShell)) as IVsShell;
             if (shell != null)
             {
@@ -536,6 +543,7 @@ namespace XSharp.Project
         private void RegisterDebuggerEvents()
         {
             int hr;
+            _uiThread.MustBeCalledFromUIThread();
             m_debugger = base.GetService(typeof(SVsShellDebugger)) as IVsDebugger;
             if (m_debugger != null)
             {
@@ -549,6 +557,7 @@ namespace XSharp.Project
         private void UnRegisterDebuggerEvents()
         {
             int hr;
+            _uiThread.MustBeCalledFromUIThread();
             if (m_debugger != null)
             {
                 if (m_Debuggercookie != 0)

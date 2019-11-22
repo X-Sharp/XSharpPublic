@@ -37,6 +37,7 @@ BEGIN NAMESPACE XSharpModel
         PRIVATE _SourceFilesDict						AS ConcurrentDictionary<STRING, XFile>
         PRIVATE _TypeDict								AS ConcurrentDictionary<STRING, List<STRING>>
         PRIVATE _ExternalTypeCache						AS ConcurrentDictionary<STRING, System.Type>
+        PRIVATE _ImplicitNamespaces                     AS List<String>
         PROPERTY FileWalkCompleted                      AS LOGIC AUTO
         PROPERTY Dialect                                AS XSharpDialect
             GET
@@ -74,6 +75,8 @@ BEGIN NAMESPACE XSharpModel
 
         PRIVATE METHOD _clearTypeCache() AS VOID
             SELF:_ExternalTypeCache:Clear()
+            _ImplicitNamespaces := NULL
+
             RETURN
             #region AssemblyReferences
 
@@ -197,6 +200,7 @@ BEGIN NAMESPACE XSharpModel
 
             METHOD AddProjectReference(url AS STRING) AS LOGIC
                 IF ! String.IsNullOrEmpty(url)
+                    _ImplicitNamespaces := NULL
                     SELF:WriteOutputMessage("Add XSharp ProjectReference "+url)
                     IF ! SELF:_unprocessedProjectReferences:Contains(url)
                         SELF:_unprocessedProjectReferences:Add(url)
@@ -505,6 +509,29 @@ BEGIN NAMESPACE XSharpModel
 
             RETURN NULL
 
+            METHOD FindGlobalOrDefine(name AS STRING) AS XTypeMember
+                WriteOutputMessage("FindGlobalOrDefine() "+name)
+                IF _TypeDict:ContainsKey(XType.GlobalName)
+                    VAR fileNames := _TypeDict[XType.GlobalName]:ToArray()
+                    FOREACH sfile AS STRING IN filenames
+                        LOCAL file AS XFile
+                        // It seems sometimes the Key has changed; may be after a reparse ?
+                        // To just TRY to get the file
+                        IF _SourceFilesDict:TryGetValue( sFile, REF file )
+                            VAR members := file:GlobalType:Members
+                            IF members != NULL
+                                FOREACH oMember AS XTypeMember IN members
+                                    IF (oMember:Kind == Kind.VOGlobal .OR. oMember:Kind == Kind.VODefine ) .AND. string.Compare(oMember:Name, name, TRUE) == 0
+                                        WriteOutputMessage("FindGlobalOrDefine()  found: "+oMember:FullName)
+                                        RETURN oMember
+                                    ENDIF
+                                NEXT
+                            ENDIF
+                        ENDIF
+                    NEXT
+                ENDIF
+
+            RETURN NULL
         METHOD FindSystemType(name AS STRING, usings AS IList<STRING>) AS Type
             WriteOutputMessage("FindSystemType() "+name)
             IF ! AssemblyInfo.DisableForeignProjectReferences
@@ -597,6 +624,24 @@ BEGIN NAMESPACE XSharpModel
             ENDIF
             RETURN xType
 
+            PROPERTY ImplicitNamespaces as List<String>
+                GET
+                    if _ImplicitNamespaces != NULL
+                        RETURN _ImplicitNamespaces
+                    ENDIF
+                    VAR result := List<String>{}
+                    IF SELF:ParseOptions:ImplicitNamespace
+                        FOREACH project AS XProject IN SELF:ReferencedProjects
+                            VAR ns := project:ProjectNode:ParseOptions:DefaultNamespace
+                            IF ! String.IsNullOrEmpty(ns) .AND. result:IndexOf(ns) == -1
+                                result:Add(ns)
+                            ENDIF
+                        NEXT
+                    ENDIF
+                    _ImplicitNamespaces := result
+                    return result
+                END GET
+            END PROPERTY
             #endregion
 
         METHOD UnLoad() AS VOID

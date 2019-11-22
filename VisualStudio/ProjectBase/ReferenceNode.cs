@@ -210,6 +210,8 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
 		public virtual /*void*/ ReferenceNode AddReference()  //
 		{
+            XSharpProjectPackage.Instance.UIThread.MustBeCalledFromUIThread();
+
             ReferenceNode existingNode = null;  /// returns existing node or null if this node has been newly added
 
 			ReferenceContainerNode referencesFolder = this.ProjectMgr.FindChild(ReferenceContainerNode.ReferencesNodeVirtualName) as ReferenceContainerNode;
@@ -324,7 +326,7 @@ namespace Microsoft.VisualStudio.Project
 			OLEMSGICON icon = OLEMSGICON.OLEMSGICON_CRITICAL;
 			OLEMSGBUTTON buttons = OLEMSGBUTTON.OLEMSGBUTTON_OK;
 			OLEMSGDEFBUTTON defaultButton = OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST;
-			VsShellUtilities.ShowMessageBox(this.ProjectMgr.Site, title, message, icon, buttons, defaultButton);
+            Utilities.ShowMessageBox(this.ProjectMgr.Site, title, message, icon, buttons, defaultButton);
 		}
 
 		/// <summary>
@@ -361,6 +363,7 @@ namespace Microsoft.VisualStudio.Project
                 objInfo[0].pszLibName = this.Url;
 
                 IVsObjBrowser objBrowser = this.ProjectMgr.Site.GetService(typeof(SVsObjBrowser)) as IVsObjBrowser;
+                Assumes.Present(objBrowser);
 
                 ErrorHandler.ThrowOnFailure(objBrowser.NavigateTo(objInfo, 0));
             }

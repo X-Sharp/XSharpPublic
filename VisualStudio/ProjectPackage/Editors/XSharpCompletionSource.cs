@@ -1839,6 +1839,26 @@ namespace XSharpLanguage
             //
         }
 
+        internal TypeAnalysis(XSharpModel.XType type)
+        {
+            //
+            this._name = type.FullName;
+            this._kind = type.Kind;
+            this._modifiers = Modifiers.None;
+            this._visibility = Modifiers.Public;
+            //
+            this._isStatic = type.Modifiers.HasFlag(XSharpModel.Modifiers.Static);
+            //
+            if (!this.IsStatic)
+            {
+                if (type.Modifiers.HasFlag(XSharpModel.Modifiers.Abstract))
+                {
+                    this._modifiers = Modifiers.Abstract;
+                }
+            }
+            //
+        }
+
         internal TypeAnalysis(EnvDTE.CodeType typeInfo)
         {
             //
@@ -2823,6 +2843,7 @@ namespace XSharpLanguage
             CompletionType cType = null;
             int currentPos = 0;
             var startOfExpression = true;
+            var findConstructor = true;
             String currentToken = "";
             //
             if (currentMember == null)
@@ -2935,8 +2956,13 @@ namespace XSharpLanguage
                         case XSharpLexer.AS:
                         case XSharpLexer.IS:
                         case XSharpLexer.REF:
+                        case XSharpLexer.OUT:
+                        case XSharpLexer.ASTYPE:
                         case XSharpLexer.IMPLEMENTS:
                         case XSharpLexer.INHERIT:
+                        case XSharpLexer.OF:
+                        case XSharpLexer.SHARING:
+                        case XSharpLexer.FROM:
                             if (tokenList.Count == 1)
                             {
                                 // One Token, after such keyword, this is a type
@@ -2944,6 +2970,7 @@ namespace XSharpLanguage
                                 if (!currentToken.EndsWith("{}"))
                                 {
                                     currentToken += "{}";
+                                    findConstructor = false;
                                 }
                             }
                             break;
@@ -2961,9 +2988,20 @@ namespace XSharpLanguage
 
 
                     cType = new CompletionType(currentToken, currentMember.File, currentMember.Parent.NameSpace);
-                    if (!cType.IsEmpty())
+                    if (!cType.IsEmpty() )
                     {
-                        SearchConstructorIn(cType, visibility, out foundElement);
+                        if (cType.SType != null)
+                        {
+                            foundElement = new CompletionElement(cType.SType);
+                        }
+                        else
+                        {
+                            foundElement = new CompletionElement(cType.XType);
+                        }
+                        if (findConstructor)
+                        {
+                            SearchConstructorIn(cType, visibility, out foundElement);
+                        }
                         if (foundElement.XSharpElement == null && cType.XType != null)
                         {
                             foundElement = new CompletionElement(cType.XType);
@@ -2972,6 +3010,7 @@ namespace XSharpLanguage
                         {
                             foundElement = new CompletionElement(cType.SType);
                         }
+
                         if ((foundElement != null) && (foundElement.IsGeneric))
                         {
                             if (String.IsNullOrEmpty(foundElement.GenericTypeName))
@@ -3964,6 +4003,21 @@ namespace XSharpLanguage
                 return null;
             }
             //
+            var global = xFile.Project.FindGlobalOrDefine(currentToken);
+            if (global != null)
+            {
+                foundElement = new CompletionElement(global);
+                return new CompletionType(global.Parent);
+            }
+            foreach (var project in xFile.Project.ReferencedProjects)
+            {
+                global = xFile.Project.FindGlobalOrDefine(currentToken);
+                if (global != null)
+                {
+                    foundElement = new CompletionElement(global);
+                    return new CompletionType(global.Parent);
+                }
+            }
             CompletionType cType = null;
             List<String> emptyUsings = new List<String>();
             foreach (AssemblyInfo asm in xFile.Project.AssemblyReferences)

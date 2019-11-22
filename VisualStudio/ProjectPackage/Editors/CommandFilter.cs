@@ -31,6 +31,7 @@ using System.Linq;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Project;
 using LanguageService.CodeAnalysis.XSharp;
+using Microsoft;
 
 namespace XSharp.Project
 {
@@ -102,6 +103,16 @@ namespace XSharp.Project
             XSharpProjectPackage.Instance.DisplayOutPutMessage("CommandFilter.ClassificationChanged()");
             if (_suspendSync)
                 return;
+            if (_keywordCase == KeywordCase.None)
+            {
+                return;
+            }
+            // do not update buffer from background thread
+            if (!_buffer.CheckEditAccess())
+            {
+                return;
+            }
+
             if (_linesToSync.Count > 0)
             {
                 int[] lines;
@@ -113,7 +124,6 @@ namespace XSharp.Project
                     Array.Sort(lines);
                 }
 
-                var snapshot = _buffer.CurrentSnapshot;
                 // wait until we can work
                 while (_buffer.EditInProgress)
                 {
@@ -123,19 +133,18 @@ namespace XSharp.Project
                 UIThread.DoOnUIThread(delegate ()
                     {
                         var editSession = _buffer.CreateEdit();
+                        var snapshot = editSession.Snapshot;
                         try
                         {
-                            // simplify things: take lowest and highest numbers and do all lines in between
-                            int first = lines[0];
-                            int last = lines[lines.Length - 1];
-                            if (last > snapshot.LineCount - 1)
-                            {
-                                last = snapshot.LineCount - 1;
-                            }
-                            for (int nLine = first; nLine <= last; nLine++)
+                            var end = DateTime.Now + new TimeSpan(0,0,2);
+                            int counter = 0;
+                            foreach (int nLine in lines)
                             {
                                 ITextSnapshotLine line = snapshot.GetLineFromLineNumber(nLine);
                                 formatLineCase(editSession, line);
+                                // when it takes longer than 2 seconds, then abort
+                                if (++counter > 100 && DateTime.Now > end)
+                                    break;
                             }
                         }
                         catch (Exception)
@@ -201,11 +210,11 @@ namespace XSharp.Project
         {
             switch (KeywordCase)
             {
-                case 1:
+                case KeywordCase.Upper:
                     return keyword.ToUpper();
-                case 2:
+                case KeywordCase.Lower:
                     return keyword.ToLower();
-                case 3:
+                case KeywordCase.Title:
                     return txtInfo.ToTitleCase(keyword.ToLower());
             }
             return keyword;
@@ -328,11 +337,13 @@ namespace XSharp.Project
         {
             if (XSharpProjectPackage.Instance.DebuggerIsRunning)
                 return;
+            getEditorPreferences(TextView);
+            if (_keywordCase == KeywordCase.None)
+                return;
             XSharpProjectPackage.Instance.DisplayOutPutMessage($"CommandFilter.formatLineCase({line.LineNumber + 1})");
             // get classification of the line.
             // when the line is part of a multi line comment then do nothing
             // to detect that we take the start of the line and check if it is in
-            getEditorPreferences(TextView);
             int lineStart = line.Start.Position;
             if (line.Length == 0)
                 return;
@@ -376,7 +387,7 @@ namespace XSharp.Project
 
         private void registerLineForCaseSync(int line)
         {
-            if (!_suspendSync)
+            if (!_suspendSync && _keywordCase != KeywordCase.None)
             {
                 lock (_linesToSync)
                 {
@@ -821,13 +832,13 @@ namespace XSharp.Project
         {
             switch (_optionsPage.KeywordCase)
             {
-                case 1:     // Upper
+                case KeywordCase.Upper:     // Upper
                     completion.InsertionText = completion.InsertionText.ToUpper();
                     break;
-                case 2:     // Lower
+                case KeywordCase.Lower:     // Lower
                     completion.InsertionText = completion.InsertionText.ToLower();
                     break;
-                case 3:     // Proper
+                case KeywordCase.Title:     // Proper
                     completion.InsertionText = Char.ToUpper(completion.InsertionText[0]) + completion.InsertionText.Substring(1).ToLower();
                     break;
             }
@@ -958,17 +969,22 @@ namespace XSharp.Project
             _completionSession.Dismiss();
             return false;
         }
-        private bool cursorIsInStringorComment(SnapshotPoint caret)
+
+        private string getClassification(SnapshotPoint caret)
         {
             var line = caret.GetContainingLine();
-
             SnapshotSpan lineSpan = new SnapshotSpan(line.Start, caret.Position - line.Start);
             var tagAggregator = _aggregator.CreateTagAggregator<IClassificationTag>(this.TextView.TextBuffer);
             var tags = tagAggregator.GetTags(lineSpan);
             var tag = tags.LastOrDefault();
-            if (tag.Tag != null && tag.Tag.ClassificationType != null && tag.Tag.ClassificationType.Classification != null)
+            return tag?.Tag?.ClassificationType?.Classification;
+        }
+        private bool cursorIsInStringorComment(SnapshotPoint caret)
+        {
+            var classification = getClassification(caret);
+            if (classification != null)
             {
-                switch (tag.Tag.ClassificationType.Classification.ToLower())
+                switch (classification.ToLower())
                 {
                     case "string":
                     case "comment":
@@ -977,26 +993,12 @@ namespace XSharp.Project
                 }
             }
             return false;
-
-
         }
         private bool cursorIsAfterSLComment(SnapshotPoint caret)
         {
 
-            ////////////////////////////////////////////
-            //
-
-            var line = caret.GetContainingLine();
-
-            SnapshotSpan lineSpan = new SnapshotSpan(line.Start, caret.Position - line.Start);
-            var tagAggregator = _aggregator.CreateTagAggregator<IClassificationTag>(this.TextView.TextBuffer);
-            var tags = tagAggregator.GetTags(lineSpan);
-            var tag = tags.LastOrDefault();
-            if (tag != null && tag.Tag.ClassificationType.Classification.ToLower() == "comment")
-            {
-                return true;
-            }
-            return false;
+            var classification = getClassification(caret);
+            return classification != null && classification.ToLower() == "comment";
         }
 
 
@@ -1195,6 +1197,7 @@ namespace XSharp.Project
                 _signatureSession.Properties["Start"] = ssp.Position;
                 _signatureSession.Properties["Length"] = TextView.Caret.Position.BufferPosition.Position - ssp.Position;
                 _signatureSession.Properties["Comma"] = comma;
+                _signatureSession.Properties["File"] = file;
 
                 try
                 {
@@ -1478,6 +1481,7 @@ namespace XSharp.Project
         {
             System.IServiceProvider provider = XSharpProjectPackage.Instance;
             IVsFindSymbol searcher = provider.GetService(typeof(SVsObjectSearch)) as IVsFindSymbol;
+            Assumes.Present(searcher);
             var guidSymbolScope = new Guid(XSharpConstants.Library);
             return HResult.Succeeded(searcher.DoSearch(ref guidSymbolScope, createSearchCriteria(memberName, searchOptions)));
         }
@@ -1486,6 +1490,7 @@ namespace XSharp.Project
         {
             System.IServiceProvider provider = XSharpProjectPackage.Instance;
             IVsFindSymbol searcher = provider.GetService(typeof(SVsObjectSearch)) as IVsFindSymbol;
+            Assumes.Present(searcher);
             var guidSymbolScope = ObjectBrowserHelper.GUID_VsSymbolScope_All;
             //
             return HResult.Succeeded(searcher.DoSearch(ref guidSymbolScope, createSearchCriteria(memberName, searchOptions)));

@@ -33,6 +33,7 @@ using LanguageService.CodeAnalysis;
 using LanguageService.CodeAnalysis.XSharp;
 using XSharp.CodeDom;
 using MBC = Microsoft.Build.Construction;
+using Microsoft;
 
 namespace XSharp.Project
 {
@@ -1246,6 +1247,7 @@ namespace XSharp.Project
         {
             List<EnvDTE.Project> list = new List<EnvDTE.Project>();
             EnvDTE.DTE dte = (EnvDTE.DTE)this.Site.GetService(typeof(EnvDTE.DTE));
+            Assumes.Present(dte);
             foreach (EnvDTE.Project p in dte.Solution.Projects)
             {
                 if (p == null)
@@ -1475,7 +1477,7 @@ namespace XSharp.Project
         public bool DisableParsing => package.GetIntellisenseOptionsPage().DisableEntityParsing;
         public bool DisableRegions => package.GetIntellisenseOptionsPage().DisableRegions;
 
-        public bool KeywordsUppercase => package.GetIntellisenseOptionsPage().KeywordCase == 1;
+        public bool KeywordsUppercase => package.GetIntellisenseOptionsPage().KeywordCase == KeywordCase.Upper;
 
         #endregion
 
@@ -1602,6 +1604,13 @@ namespace XSharp.Project
                     if (result != null)
                         return result;
                 }
+            }
+            foreach (var usingName in model.ImplicitNamespaces)
+            {
+                var fullname = usingName + "." + name;
+                result = model.LookupReferenced(fullname, true);
+                if (result != null)
+                    return result;
             }
             return result;
         }
@@ -2412,7 +2421,7 @@ namespace XSharp.Project
             OLEMSGBUTTON buttons = OLEMSGBUTTON.OLEMSGBUTTON_OK;
             OLEMSGDEFBUTTON defaultButton = OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST;
 
-            return VsShellUtilities.ShowMessageBox(this.Site, message, title, icon, buttons, defaultButton);
+            return Utilities.ShowMessageBox(this.Site, message, title, icon, buttons, defaultButton);
 
         }
 

@@ -33,13 +33,13 @@ namespace XSharp.Project.OptionsPages
             grpCase.Enabled = true;
             switch (optionsPage.KeywordCase)
             {
-                case 1:
+                case KeywordCase.Upper:
                     rbUpper.Checked = true;
                     break;
-                case 2:
+                case KeywordCase.Lower:
                     rbLower.Checked = true;
                     break;
-                case 3:
+                case KeywordCase.Title:
                     rbTitle.Checked = true;
                     break;
                 default:
@@ -75,19 +75,19 @@ namespace XSharp.Project.OptionsPages
         {
             if (rbNone.Checked)
             {
-                optionsPage.KeywordCase = 0;
+                optionsPage.KeywordCase = KeywordCase.None;
             }
             else if (rbUpper.Checked)
             {
-                optionsPage.KeywordCase = 1;
+                optionsPage.KeywordCase = KeywordCase.Upper;
             }
             else if (rbLower.Checked)
             {
-                optionsPage.KeywordCase = 2;
+                optionsPage.KeywordCase = KeywordCase.Lower;
             }
             else if (rbTitle.Checked)
             {
-                optionsPage.KeywordCase = 3;
+                optionsPage.KeywordCase = KeywordCase.Title;
             }
         }
 

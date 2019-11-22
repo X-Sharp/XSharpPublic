@@ -21,6 +21,14 @@ using System.Reflection;
 
 namespace XSharp.Project
 {
+    public enum KeywordCase
+    {
+        None = 0,
+        Upper = 1,
+        Lower = 2,
+        Title = 3
+    }
+
     /// <summary>
     /// This class adds X# specific project options and builds a command line for use in the intellisense
     /// </summary>
@@ -93,7 +101,6 @@ namespace XSharp.Project
                 options.Add("r:" + comNode.Url);
             }
 
-
             var defines = "";
             var value = "";
             foreach (var d in DefinedPreprocessorSymbols)
@@ -111,9 +118,9 @@ namespace XSharp.Project
                 include = _includedirs;
             }
             options.Add("i:" + include);
-
+            options.Add("ns:" + _prjNode.GetProjectProperty("RootNamespace"));
             var flags = new string[] {"vo1", "vo2" , "vo3" , "vo4" , "vo5" , "vo6" , "vo7" , "vo8" , "vo9" , "vo10" , "vo11" , "vo12", "vo13", "vo14", "vo15","vo16",
-                "az","ins", "lb","memvar","namedargs","undeclared","unsafe","xpp1","xpp2"};
+                "az","ins", "lb","memvar","namedargs","undeclared","unsafe","xpp1","xpp2","fox1"};
             foreach (var flag in flags)
             {
                 value = _prjNode.GetProjectProperty(flag);

@@ -20,6 +20,7 @@
     <vo2>true</vo2>
     <vo3>true</vo3>
     <vo4>true</vo4>
+    <vo5>true</vo5>
     <vo6>true</vo6>
     <vo7>true</vo7>
     <vo9>true</vo9>
@@ -32,7 +33,7 @@
     <memvar>true</memvar>
     <undeclared>true</undeclared>
     <initlocals>true</initlocals>
-
+    <fox1>true</fox1>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>

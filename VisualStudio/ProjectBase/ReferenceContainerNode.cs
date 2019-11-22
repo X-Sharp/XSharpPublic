@@ -283,6 +283,7 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         public void LoadReferencesFromBuildProject(MSBuild.Project buildProject)
         {
+            XSharpProjectPackage.Instance.UIThread.MustBeCalledFromUIThread();
             List<ReferenceNode> duplicatedNode = new List<ReferenceNode>();
 			BuildResult buildResult = this.ProjectMgr.Build(MsBuildTarget.ResolveAssemblyReferences);
 

@@ -41,7 +41,7 @@
     <Undeclared>false</Undeclared>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <EmitDebugInformation>true</EmitDebugInformation>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -55,10 +55,13 @@
     <DelaySign>false</DelaySign>
     <CommandLineOption />
     <PPO>false</PPO>
-    <Prefer32Bit>True</Prefer32Bit>
+    <Prefer32Bit>False</Prefer32Bit>
+    <OutputPath>$(SolutionDir)Binaries\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>$(SolutionDir)Binaries\obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
+    <AssemblyOriginatorKeyFile>$(solutiondir)common\xsharp.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <EmitDebugInformation>false</EmitDebugInformation>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
@@ -74,6 +77,8 @@
     <CommandLineOption />
     <PPO>false</PPO>
     <Prefer32Bit>False</Prefer32Bit>
+    <OutputPath>$(SolutionDir)Binaries\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>$(SolutionDir)Binaries\obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.targets" />
   <ItemGroup>
@@ -86,6 +91,9 @@
     <Compile Include="Start.prg">
       <SubType>Code</SubType>
     </Compile>
+    <None Include="..\..\Common\BuildNumber.h">
+      <Link>BuildNumber.h</Link>
+    </None>
     <None Include="VOWEDTest.prg" />
   </ItemGroup>
   <ItemGroup>

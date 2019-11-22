@@ -502,7 +502,7 @@ namespace Microsoft.VisualStudio.Project
         protected HierarchyNode(ProjectNode root, ProjectElement element)
         {
             Utilities.ArgumentNotNull("root", root);
-
+            XSharpProjectPackage.Instance.UIThread.MustBeCalledFromUIThread();
             this.projectMgr = root;
             this.itemNode = element;
             this.hierarchyId = this.projectMgr.ItemIdMap.Add(this);
@@ -516,7 +516,7 @@ namespace Microsoft.VisualStudio.Project
         protected HierarchyNode(ProjectNode root)
         {
             Utilities.ArgumentNotNull("root", root);
-
+            XSharpProjectPackage.Instance.UIThread.MustBeCalledFromUIThread();
             this.projectMgr = root;
             this.itemNode = new ProjectElement(this.projectMgr, null, true);
             this.hierarchyId = this.projectMgr.ItemIdMap.Add(this);
@@ -632,6 +632,7 @@ namespace Microsoft.VisualStudio.Project
         public virtual void RemoveChild(HierarchyNode node)
         {
             Utilities.ArgumentNotNull("node", node);
+            XSharpProjectPackage.Instance.UIThread.MustBeCalledFromUIThread();
 
             this.projectMgr.ItemIdMap.Remove(node);
 
@@ -1287,6 +1288,7 @@ namespace Microsoft.VisualStudio.Project
         /// <returns></returns>
         protected virtual int ExcludeFromProject()
         {
+            new UIThread().MustBeCalledFromUIThread();
             Debug.Assert(this.ProjectMgr != null, "The project item " + this.ToString() + " has not been initialised correctly. It has a null ProjectMgr");
             this.Remove(false);
             return VSConstants.S_OK;

@@ -22,17 +22,20 @@ using System.Globalization;
 using static XSharp.Project.XSharpConstants;
 using XSharp.Project.OptionsPages;
 using XSharp.VOEditors;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft;
 /*
 Substitution strings
 String	Description
 $=RegistryEntry$	The value of the RegistryEntry entry. If the registry entry string
-                    ends in a backslash (\), then the default value of the registry subkey is used.
-                    For example, the substitution string $=HKEY_CURRENT_USER\Environment\TEMP$ is expanded
-                    to the temporary folder of the current user.
+ends in a backslash (\), then the default value of the registry subkey is used.
+For example, the substitution string $=HKEY_CURRENT_USER\Environment\TEMP$ is expanded
+to the temporary folder of the current user.
 $AppName$	        The qualified name of the application that is passed to the AppEnv.dll entry points.
-                    The qualified name consists of the application name, an underscore, and the class identifier
-                    (CLSID) of the application automation object, which is also recorded as the value of the
-                    ThisVersion CLSID setting in the project .pkgdef file.
+The qualified name consists of the application name, an underscore, and the class identifier
+(CLSID) of the application automation object, which is also recorded as the value of the
+ThisVersion CLSID setting in the project .pkgdef file.
 $AppDataLocalFolder	The subfolder under %LOCALAPPDATA% for this application.
 $BaseInstallDir$	The full path of the location where Visual Studio was installed.
 $CommonFiles$	    The value of the %CommonProgramFiles% environment variable.
@@ -41,12 +44,12 @@ $PackageFolder$	    The full path of the directory that contains the package ass
 $ProgramFiles$	    The value of the %ProgramFiles% environment variable.
 $RootFolder$	    The full path of the root directory of the application.
 $RootKey$	        The root registry key for the application. By default the root is in
-                    HKEY_CURRENT_USER\Software\CompanyName\ProjectName\VersionNumber (when the application
-                    is running, _Config is appended to this key). It is set by the RegistryRoot value in
-                    the SolutionName.pkgdef file.
-                    The $RootKey$ string can be used to retrieve a registry value under the application subkey.
-                    For example, the string "$=$RootKey$\AppIcon$" will return the value of the AppIcon entry
-                    under the application root subkey.
+HKEY_CURRENT_USER\Software\CompanyName\ProjectName\VersionNumber (when the application
+is running, _Config is appended to this key). It is set by the RegistryRoot value in
+the SolutionName.pkgdef file.
+The $RootKey$ string can be used to retrieve a registry value under the application subkey.
+For example, the string "$=$RootKey$\AppIcon$" will return the value of the AppIcon entry
+under the application root subkey.
 The parser processes the .pkgdef file sequentially, and can access a registry entry under the application subkey only if the entry has been previously defined
 $ShellFolder$	The full path of the location where Visual Studio was installed.
 $System$	The Windows\system32 folder.
@@ -80,7 +83,11 @@ namespace XSharp.Project
     ///
     [InstalledProductRegistration("#110", "#112", XSharp.Constants.FileVersion, IconResourceID = 400)]
     [Description(ProjectSystemName)]
-    [PackageRegistration(UseManagedResourcesOnly = true)]
+    // [PackageRegistration(UseManagedResourcesOnly = true)] <-- Standard Package loading
+    // ++ Async Package
+    [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
+    [ProvideAutoLoad(VSConstants.UICONTEXT.SolutionExistsAndFullyLoaded_string, PackageAutoLoadFlags.BackgroundLoad)]
+    // -- Async Package
     [DefaultRegistryRoot("Software\\Microsoft\\VisualStudio\\14.0")]
     [ProvideObject(typeof(XSharpGeneralPropertyPage))]
     [ProvideObject(typeof(XSharpLanguagePropertyPage))]
@@ -194,19 +201,24 @@ namespace XSharp.Project
     [Guid(GuidStrings.guidXSharpProjectPkgString)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
     //[ProvideBindingPath]        // Tell VS to look in our path for assemblies
-    public sealed class XSharpProjectPackage : ProjectPackage, IOleComponent,
+    public sealed class XSharpProjectPackage : AsyncProjectPackage, IOleComponent,
         IVsShellPropertyEvents, IVsDebuggerEvents, XSharpModel.IOutputWindow
     {
+        private UIThread _uiThread;
         private uint m_componentID;
         private static XSharpProjectPackage instance;
         private XPackageSettings settings;
         private uint shellCookie;
         private XSharpLibraryManager _libraryManager;
         private XSharpDocumentWatcher _documentWatcher;
+        private Microsoft.VisualStudio.Package.LanguageService _xsLangService;
+        private IVsTextManager4 _txtManager;
 
         // =========================================================================================
         // Properties
         // =========================================================================================
+
+        internal UIThread UIThread => _uiThread;
 
         /// <summary>
         /// Gets the singleton XSharpProjectPackage instance.
@@ -216,9 +228,11 @@ namespace XSharp.Project
             get { return XSharpProjectPackage.instance; }
         }
 
-        public void OpenInBrowser(string url)
+        public async void OpenInBrowser(string url)
         {
-            IVsWebBrowsingService service = (IVsWebBrowsingService)GetService(typeof(SVsWebBrowsingService));
+            Task<IVsWebBrowsingService> t = await GetServiceAsync(typeof(SVsWebBrowsingService)) as Task<IVsWebBrowsingService>;
+            Assumes.Present(t);
+            IVsWebBrowsingService service = t.Result;
             if (service != null)
             {
                 IVsWindowFrame frame = null;
@@ -234,7 +248,7 @@ namespace XSharp.Project
 
         internal IVsTextManager4 GetTextManager()
         {
-            return (IVsTextManager4)GetService(typeof(SVsTextManager));
+            return this._txtManager;
         }
 
         #region Overridden Implementation
@@ -242,11 +256,12 @@ namespace XSharp.Project
         /// Initialization of the package; this method is called right after the package is sited, so this is the place
         /// where you can put all the initialization code that rely on services provided by VisualStudio.
         /// </summary>
-        protected override void Initialize()
+        protected override async System.Threading.Tasks.Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
             // Suspend walking until Solution is opened.
             base.SolutionListeners.Add(new ModelScannerEvents(this));
-            base.Initialize();
+            await base.InitializeAsync(cancellationToken, progress);
+            _uiThread = new UIThread();
             XSharpProjectPackage.instance = this;
             XSharpModel.XSolution.OutputWindow = this;
             this.RegisterProjectFactory(new XSharpProjectFactory(this));
@@ -274,8 +289,7 @@ namespace XSharp.Project
 
             // Register a timer to call our language service during
             // idle periods.
-            IOleComponentManager mgr = GetService(typeof(SOleComponentManager))
-                                       as IOleComponentManager;
+            IOleComponentManager mgr = await GetServiceAsync(typeof(SOleComponentManager)) as IOleComponentManager;
             if (m_componentID == 0 && mgr != null)
             {
                 OLECRINFO[] crinfo = new OLECRINFO[1];
@@ -291,16 +305,22 @@ namespace XSharp.Project
             // Initialize Custom Menu Items
             XSharp.Project.XSharpMenuItems.Initialize(this);
             // register property changed event handler
-            var shell = this.GetService(typeof(SVsShell)) as IVsShell;
-            shell.AdviseShellPropertyChanges(this, out shellCookie);
+
+
+            var shell = await this.GetServiceAsync(typeof(SVsShell)) as IVsShell;
+            Assumes.Present(shell);
+                shell.AdviseShellPropertyChanges(this, out shellCookie);
             //
+            _xsLangService = await GetServiceAsync(typeof(XSharpLanguageService)) as Microsoft.VisualStudio.Package.LanguageService;
             // LibraryManager : Offers Object Browser and ClassView
             // ObjectBrowser : Add the LibraryManager service as a Service provided by that container
             IServiceContainer container = this as IServiceContainer;
-            ServiceCreatorCallback callback = new ServiceCreatorCallback(CreateService);
+            ServiceCreatorCallback callback = new ServiceCreatorCallback(CreateLibraryService);
             //
             container.AddService(typeof(IXSharpLibraryManager), callback, true);
             this._documentWatcher = new XSharpDocumentWatcher(this);
+
+            _txtManager = await GetServiceAsync(typeof(SVsTextManager)) as IVsTextManager4;
 
             // determine version of VS
             object vers;
@@ -310,7 +330,7 @@ namespace XSharp.Project
         }
         internal static string VsVersion;
 
-        private object CreateService(IServiceContainer container, Type serviceType)
+        private object CreateLibraryService(IServiceContainer container, Type serviceType)
         {
             if (typeof(IXSharpLibraryManager) == serviceType)
             {
@@ -324,6 +344,7 @@ namespace XSharp.Project
         {
             try
             {
+                _uiThread.MustBeCalledFromUIThread();
                 this.UnRegisterDebuggerEvents();
                 if (null != _libraryManager)
                 {
@@ -355,7 +376,7 @@ namespace XSharp.Project
             return Ok;
         }
 
-        private void validateVulcanEditors()
+        private async void validateVulcanEditors()
         {
             // check Vulcan Source code editor keys
             bool Ok = true;
@@ -371,8 +392,9 @@ namespace XSharp.Project
             {
                 int result = 0;
                 Guid tempGuid = Guid.Empty;
-
-                IVsUIShell VsUiShell = (IVsUIShell)GetService(typeof(SVsUIShell));
+                Task<SVsUIShell> t = await GetServiceAsync(typeof(SVsUIShell)) as Task<SVsUIShell>;
+                Assumes.Present(t);
+                IVsUIShell VsUiShell = (IVsUIShell)t.Result;
                 ErrorHandler.ThrowOnFailure(VsUiShell.ShowMessageBox(0, ref tempGuid, "File Associations",
                     "The Vulcan file associations must be changed.\nPlease run setup again\n\n" +
                     "Failure to do so may result in unexpected behavior inside Visual Studio",
@@ -405,17 +427,27 @@ namespace XSharp.Project
         #endregion
 
         #region IOleComponent Members
+        internal async void LangServiceInit()
+        {
+            Task<XSharpLanguageService> t = await GetServiceAsync(typeof(XSharpLanguageService)) as Task<XSharpLanguageService>;
+            Assumes.Present(t);
+            _xsLangService = t.Result;
+        }
 
         public int FDoIdle(uint grfidlef)
         {
             bool bPeriodic = (grfidlef & (uint)_OLEIDLEF.oleidlefPeriodic) != 0;
             // Use typeof(TestLanguageService) because we need to
             // reference the GUID for our language service.
-            Microsoft.VisualStudio.Package.LanguageService service = GetService(typeof(XSharpLanguageService))
-                                      as Microsoft.VisualStudio.Package.LanguageService;
-            if (service != null)
+            //Microsoft.VisualStudio.Package.LanguageService service = GetService(typeof(XSharpLanguageService))
+            //                          as Microsoft.VisualStudio.Package.LanguageService;
+            if ( _xsLangService == null )
             {
-                service.OnIdle(bPeriodic);
+                LangServiceInit();
+            }
+            if ( _xsLangService != null)
+            {
+                _xsLangService.OnIdle(bPeriodic);
             }
             if (_libraryManager != null)
                 _libraryManager.OnIdle();
@@ -484,6 +516,7 @@ namespace XSharp.Project
 
         public void Terminate()
         {
+            _uiThread.MustBeCalledFromUIThread();
             var shell = this.GetService(typeof(SVsShell)) as IVsShell;
             if (shell != null)
             {
@@ -510,6 +543,7 @@ namespace XSharp.Project
         private void RegisterDebuggerEvents()
         {
             int hr;
+            _uiThread.MustBeCalledFromUIThread();
             m_debugger = base.GetService(typeof(SVsShellDebugger)) as IVsDebugger;
             if (m_debugger != null)
             {
@@ -523,6 +557,7 @@ namespace XSharp.Project
         private void UnRegisterDebuggerEvents()
         {
             int hr;
+            _uiThread.MustBeCalledFromUIThread();
             if (m_debugger != null)
             {
                 if (m_Debuggercookie != 0)

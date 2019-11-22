@@ -102,7 +102,7 @@ namespace XSharp.Project
             }
         }
 
-        
+
         /// <summary>
         /// Specifies if a Node is under source control.
         /// </summary>
@@ -228,7 +228,7 @@ namespace XSharp.Project
             return base.GetEditLabel();
         }
 
-        
+
 
         /// <summary>
         /// Exclude the item from the project system.
@@ -242,6 +242,7 @@ namespace XSharp.Project
 
         protected override int ExcludeFromProject()
         {
+            new UIThread().MustBeCalledFromUIThread();
             if (this.ProjectMgr == null || this.ProjectMgr.IsClosed)
             {
                 return (int)OleConstants.OLECMDERR_E_NOTSUPPORTED;
@@ -341,6 +342,7 @@ namespace XSharp.Project
         [SuppressMessage("Microsoft.Design", "CA1033:InterfaceMethodsShouldBeCallableByChildTypes")]
         protected virtual int IncludeInProject()
         {
+            new UIThread().MustBeCalledFromUIThread();
             XProjectNode projectNode = this.ProjectMgr as XProjectNode;
             if (projectNode == null || projectNode.IsClosed)
             {

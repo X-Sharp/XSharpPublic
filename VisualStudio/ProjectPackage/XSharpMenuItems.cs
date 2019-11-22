@@ -9,6 +9,7 @@ using System.ComponentModel.Design;
 using System.Globalization;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using Microsoft.VisualStudio.Project;
 
 namespace XSharp.Project
 {
@@ -129,7 +130,7 @@ namespace XSharp.Project
                 }
                 else
                 {
-                    VsShellUtilities.ShowMessageBox(ServiceProvider, "Cannot find file \"" + xporterPath+"\"", "Can't start external program", OLEMSGICON.OLEMSGICON_CRITICAL, OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+                    Utilities.ShowMessageBox(ServiceProvider, "Cannot find file \"" + xporterPath+"\"", "Can't start external program", OLEMSGICON.OLEMSGICON_CRITICAL, OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
                 }
             }
 
@@ -162,7 +163,7 @@ namespace XSharp.Project
                     }
                     else
                     {
-                        VsShellUtilities.ShowMessageBox(ServiceProvider, "Cannot find file \"" + docPath + "\"", "Can't show documentation", OLEMSGICON.OLEMSGICON_CRITICAL, OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+                        Utilities.ShowMessageBox(ServiceProvider, "Cannot find file \"" + docPath + "\"", "Can't show documentation", OLEMSGICON.OLEMSGICON_CRITICAL, OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
                     }
 
                     break;

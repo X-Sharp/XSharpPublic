@@ -12,42 +12,30 @@
     </Rule.DataSource>
 
     <Rule.Categories>
-      <Category Name="General"        DisplayName="General"/>
-      <Category Name="Compatibility"  DisplayName="VO/Vulcan Compatibility"/>
-      <Category Name="XPPCompatibility"  DisplayName="Xbase++ Compatibility"/>
-      <Category Name="NS"             DisplayName="Namespaces"/>
-      <Category Name="Preprocessor"   DisplayName="Preprocessor"/>
+      <Category Name="General"          DisplayName="General"/>
+      <Category Name="MemVar"           DisplayName="Memory Variables"/>
+      <Category Name="NS"               DisplayName="Namespaces"/>
+      <Category Name="Preprocessor"     DisplayName="Preprocessor"/>
     </Rule.Categories>
 
-    <StringProperty Category="General"       Name="CommandLineOption"   DisplayName="Extra Command Line Options"                  Visible="True" Description="User-Defined Command Line options"/>
+    <BoolProperty   Category="General"       Name="LB"                  DisplayName="Allow Late Binding"                          Visible="True" Description="/lb" Default="False" Switch="lb"/>
+    <BoolProperty   Category="General"       Name="NamedArgs"           DisplayName="Allow Named Arguments"                       Visible="True" Description="Allow Named Arguments (default = ON for dialect Core and OFF for other dialects)" Default="False"  Switch="namedargs"/>
     <BoolProperty   Category="General"       Name="UnSafe"              DisplayName="Allow Unsafe Code"                           Visible="True" Description="Allow Unsafe code inside this assembly"   Default="False"  Switch="unsafe"/>
     <BoolProperty   Category="General"       Name="CS"                  DisplayName="Case Sensitive"                              Visible="True" Description="Enable/Disable case sensitivity (/cs)"  Default="False"  Switch="cs"/>
-    <BoolProperty   Category="General"       Name="AZ"                  DisplayName="Use Zero Based Arrays"                       Visible="True" Description="Zero Based Arrays (/az)"  Switch="az"/>
+    <BoolProperty   Category="General"       Name="INITLOCALS"          DisplayName="Initialize Local variables"                  Visible="True" Description="Automatically initialize local variables without initialization expression. Please note that for locals of type string the initial value will depend on the 'Initialize strings' setting from the Dialect page.(/initlocals)"  Switch="initlocals"/>
     <BoolProperty   Category="General"       Name="OVF"                 DisplayName="Overflow Exceptions"                         Visible="True" Description="Check for Overflow and Underflow (like the CHECKED keyword, /ovf)" Default="True"  Switch="ovf"/>
-    <BoolProperty   Category="General"       Name="NamedArgs"           DisplayName="Allow Named Arguments"                       Visible="True" Description="Allow Named Arguments (default = ON for dialect Core and OFF for other dialects)" Default="False"  Switch="namedargs"/>
+    <BoolProperty   Category="General"       Name="AZ"                  DisplayName="Use Zero Based Arrays"                       Visible="True" Description="Zero Based Arrays (/az)"  Switch="az"/>
+
+
+    <BoolProperty   Category="MemVar"       Name="MEMVAR"               DisplayName="Enable Memvar support"                       Visible="True" Description="Enable support for memory variables (MEMVAR, PUBLIC, PRIVATE and PARAMETERS). (/memvar)\rPlease note that this is NOT supported for the Core and Vulcan dialects" Default="False"  Switch="memvar"/>
+    <BoolProperty   Category="MemVar"       Name="UNDECLARED"           DisplayName="Enable Undeclared variables support"         Visible="True" Description="Enable support for undeclared variables (these are resolved to MEMVARs). (/undeclared)\rPlease note that this requires /memvar to be enabled as well."  Default="False" Switch="undeclared"/>
+
     <StringProperty Category="NS"            Name="INS"                 DisplayName="Enable Implicit Namespace lookup"            Visible="True" Description="Enable the implicit lookup of classes defined in assemblies with an Implicit Namespace attribute (/ins)"  Default="False"  Switch="ins"/>
     <BoolProperty   Category="NS"            Name="NS"                  DisplayName="Prefix classes with default Namespace"       Visible="True" Description="Prefix all classes that do not have a namespace prefix and are not in a begin namespace ... end namespace block with the namespace of the assembly (/ns:&lt;Namespace&gt;)"  Default="False" Switch="ns"/>
-    <BoolProperty   Category="Compatibility" Name="LB"                  DisplayName="Allow Late Binding"                          Visible="True" Description="/lb" Default="False" Switch="lb"/>
-    <BoolProperty   Category="Compatibility" Name="VO1"                 DisplayName="Allow Init() and Axit() for Constructor/Destructor"  Visible="True" Description="/vo1" Default="False" Switch="vo1"/>
-    <BoolProperty   Category="Compatibility" Name="VO2"                 DisplayName="Initialize Strings"                          Visible="True" Description="Initialize strings to empty string (String.Empty) ( /vo2). Please note that in .NET a NULL_STRING is not the same as a string with length 0" Default="False" Switch="vo2"/>
-    <BoolProperty   Category="Compatibility" Name="VO3"                 DisplayName="All methods virtual"                         Visible="True" Description="Add the virtual modifier to all methods by default (which is the normal Visual Objects behavior) (/vo3)" Default="False" Switch="vo3"/>
-    <BoolProperty   Category="Compatibility" Name="VO4"                 DisplayName="Implicit signed/unsigned conversions"        Visible="True" Description="Implicit signed/unsigned integer conversions (/vo4)" Default="False" Switch="vo4"/>
-    <BoolProperty   Category="Compatibility" Name="VO5"                 DisplayName="Implicit CLIPPER calling convention"         Visible="True" Description="Methods without parameters and calling convention are compiled as CLIPPER calling convention (/vo5)"  Default="False" Switch="vo5"/>
-    <BoolProperty   Category="Compatibility" Name="VO6"                 DisplayName="Implicit pointer conversions "               Visible="True" Description="Implicit conversions between typed function PTR and PTR (/vo6)"  Default="False" Switch="vo6"/>
-    <BoolProperty   Category="Compatibility" Name="VO7"                 DisplayName="Implicit casts and Conversions"              Visible="True" Description="Compatible implicit casts and Conversions (/vo7)"  Default="False" Switch="vo7"/>
-    <BoolProperty   Category="Compatibility" Name="VO8"                 DisplayName="Compatible preprocessor"                     Visible="True" Description="Makes the preprocessor case insensitive and also controls how #ifdef inspects #defines (/vo8)"  Default="False" Switch="vo8"/>
-    <BoolProperty   Category="Compatibility" Name="VO9"                 DisplayName="Allow Missing Return Statements"             Visible="True" Description="Allow Missing Return Statements (/vo9)"  Default="False" Switch="vo9"/>
-    <BoolProperty   Category="Compatibility" Name="VO10"                DisplayName="Compatible IIF Behavior"                     Visible="True" Description="Compatible IIF Behavior, allow different types of return values in TRUE and FALSE expression (/vo10)"  Default="False" Switch="vo10"/>
-    <BoolProperty   Category="Compatibility" Name="VO11"                DisplayName="Compatible numeric conversions"              Visible="True" Description="VO Compatible arithmetic conversions  (/vo11)"  Default="False" Switch="vo11"/>
-    <BoolProperty   Category="Compatibility" Name="VO12"                DisplayName="Compatible integer divisions"                Visible="True" Description="Compatible integer divisions, integer divisions may return a float  (/vo12)"  Default="False" Switch="vo12"/>
-    <BoolProperty   Category="Compatibility" Name="VO13"                DisplayName="Compatible String Comparisons"               Visible="True" Description="Compatible string comparisons (respects SetExact and collation table) /vo13"  Default="False" Switch="vo13"/>
-    <BoolProperty   Category="Compatibility" Name="VO14"                DisplayName="Use Float Literals"                          Visible="True" Description="Store floating point literals as FLOAT and not as System.Double (REAL8)  /vo14"  Default="False" Switch="vo14"/>
-    <BoolProperty   Category="Compatibility" Name="VO15"                DisplayName="Treat missing types as USUAL"                Visible="True" Description="Missing type clauses for locals, instance variables and parameters are treated as USUAL (VO and Vulcan dialect). The default = TRUE  (/vo15)"  Default="True" Switch="vo15"/>
-    <BoolProperty   Category="Compatibility" Name="VO16"                DisplayName="Generate Clipper constructors"               Visible="True" Description="Automatically create clipper calling convention constructors for classes without constructor where the parent class has a Clipper Calling convention constructor.(/vo16)"  Default="False" Switch="vo16"/>
-    <BoolProperty   Category="XPPCompatibility" Name="XPP1"             DisplayName="Inherit from Abstract class"                 Visible="True" Description="All classes without parent class inherit from the XPP Abstract class.(/xpp1)"  Default="False" Switch="xpp1"/>
-    <BoolProperty   Category="Preprocessor"  Name="PPO"                 DisplayName="Generate preprocessor output"                Visible="True" Description="Save the output from the preprocessor to .ppo files  (/ppo)"  Default="False" Switch="ppo"/>
-    <StringProperty Category="Preprocessor"  Name="DefineConstants"     DisplayName="Defines for the preprocessor"                Visible="True" Description="Defines for the preprocessor (/d)"  Default="" Switch="d"/>
+
     <StringProperty Category="Preprocessor"  Name="IncludePaths"        DisplayName="Additional Include paths"                    Visible="True" Description="Additional include paths for the preprocessor (it also looks through the folders set with the include environment variable) (/i)"  Default="" Switch="i"/>
-    <BoolProperty   Category="Preprocessor"  Name="NoStandardDefs"      DisplayName="Include standard header file"                Visible="True" Description="Include the standard header file in every file (/nostddef)"  Default="False" Switch="i"/>
+    <StringProperty Category="Preprocessor"  Name="Stddefs"             DisplayName="ALternate standard header file"              Visible="True" Description="Name of an alternative standard header file (alternative for XSharpDefs.xh)  (/stddefs)"  Default="" Switch="stddefs"/>
+    <BoolProperty   Category="Preprocessor"  Name="NoStandardDefs"      DisplayName="Suppress standard header file"               Visible="True" Description="Include the standard header file in every file (/nostddef)"  Default="False" Switch="i"/>
+
 </Rule>
 

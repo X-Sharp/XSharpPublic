@@ -576,7 +576,7 @@ namespace Microsoft.VisualStudio.Project
         /// <summary>
         /// The internal package implementation.
         /// </summary>
-        private ProjectPackage package;
+        private AsyncProjectPackage package;
 
         // Has the object been disposed.
         private bool isDisposed;
@@ -1337,7 +1337,7 @@ namespace Microsoft.VisualStudio.Project
         /// The internal package implementation.
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal ProjectPackage Package
+        internal AsyncProjectPackage Package
         {
             get
             {
@@ -1652,6 +1652,7 @@ namespace Microsoft.VisualStudio.Project
 
             // Remove the entire project from the solution
             IVsSolution solution = this.Site.GetService(typeof(SVsSolution)) as IVsSolution;
+            Assumes.Present(solution);
             uint iOption = 1; // SLNSAVEOPT_PromptSave
             ErrorHandler.ThrowOnFailure(solution.CloseSolutionElement(iOption, this, 0));
         }
@@ -1959,7 +1960,7 @@ namespace Microsoft.VisualStudio.Project
                     OLEMSGICON icon = OLEMSGICON.OLEMSGICON_CRITICAL;
                     OLEMSGBUTTON buttons = OLEMSGBUTTON.OLEMSGBUTTON_OK;
                     OLEMSGDEFBUTTON defaultButton = OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST;
-                    VsShellUtilities.ShowMessageBox(this.Site, title, errorMessage, icon, buttons, defaultButton);
+                    Utilities.ShowMessageBox(this.Site, title, errorMessage, icon, buttons, defaultButton);
                     return VSADDRESULT.ADDRESULT_Failure;
                 }
                 else
@@ -2424,7 +2425,7 @@ namespace Microsoft.VisualStudio.Project
         public virtual void PrepareBuild(ConfigCanonicalName config, bool cleanBuild)
         {
             if (this.buildIsPrepared && !cleanBuild) return;
-
+            XSharpProjectPackage.Instance.UIThread.MustBeCalledFromUIThread();
             ProjectOptions options = this.GetProjectOptions(config);
             string outputPath = Path.GetDirectoryName(options.OutputAssembly);
 
@@ -2491,6 +2492,7 @@ namespace Microsoft.VisualStudio.Project
         [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "vsopts")]
         public virtual BuildResult Build(uint vsopts, ConfigCanonicalName configCanonicalName, IVsOutputWindowPane output, string target)
         {
+            XSharpProjectPackage.Instance.UIThread.MustBeCalledFromUIThread();
             string cTarget = target;
             if (String.IsNullOrEmpty(cTarget))
                 cTarget = "null";
@@ -3657,7 +3659,7 @@ namespace Microsoft.VisualStudio.Project
                     OLEMSGICON icon = OLEMSGICON.OLEMSGICON_CRITICAL;
                     OLEMSGBUTTON buttons = OLEMSGBUTTON.OLEMSGBUTTON_OK;
                     OLEMSGDEFBUTTON defaultButton = OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST;
-                    VsShellUtilities.ShowMessageBox(this.Site, title, errorMessage, icon, buttons, defaultButton);
+                    Utilities.ShowMessageBox(this.Site, title, errorMessage, icon, buttons, defaultButton);
                     return VSConstants.OLE_E_PROMPTSAVECANCELLED;
                 }
 
@@ -3818,7 +3820,7 @@ namespace Microsoft.VisualStudio.Project
             if (isOpen)
             {
                 message = String.Format(CultureInfo.CurrentCulture, SR.GetString(SR.CannotAddFileThatIsOpenInEditor, CultureInfo.CurrentUICulture), Path.GetFileName(computedNewFileName));
-                VsShellUtilities.ShowMessageBox(this.Site, title, message, icon, buttons, defaultButton);
+                Utilities.ShowMessageBox(this.Site, title, message, icon, buttons, defaultButton);
                 return VSConstants.E_ABORT;
             }
 
@@ -3857,7 +3859,7 @@ namespace Microsoft.VisualStudio.Project
             message = SR.GetString(SR.FileAlreadyInProject, Path.GetFileName(computedNewFileName));
          }
          // File already exists in project... message box
-         int msgboxResult = VsShellUtilities.ShowMessageBox(this.Site, title, message, icon, buttons, defaultButton);
+         int msgboxResult = Utilities.ShowMessageBox(this.Site, title, message, icon, buttons, defaultButton);
          if (msgboxResult != NativeMethods.IDYES)
          {
             return (int)OleConstants.OLECMDERR_E_CANCELED;
@@ -4350,6 +4352,7 @@ namespace Microsoft.VisualStudio.Project
         private void TellMSBuildCurrentSolutionConfiguration()
         {
             IVsSolutionBuildManager buildMgr = this.Site.GetService(typeof(SVsSolutionBuildManager)) as IVsSolutionBuildManager;
+            Assumes.Present(buildMgr);
             IVsProjectCfg[] cfgs = new IVsProjectCfg[] { null };
             buildMgr.FindActiveProjectCfg(System.IntPtr.Zero, System.IntPtr.Zero, this, cfgs);
             if (cfgs[0] != null)
@@ -4478,6 +4481,7 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         public virtual BuildResult Build(string target)
         {
+            XSharpProjectPackage.Instance.UIThread.MustBeCalledFromUIThread();
             return this.Build(0, new ConfigCanonicalName(), null, target);
         }
 
@@ -4660,7 +4664,7 @@ namespace Microsoft.VisualStudio.Project
                             OLEMSGICON icon = OLEMSGICON.OLEMSGICON_CRITICAL;
                             OLEMSGBUTTON buttons = OLEMSGBUTTON.OLEMSGBUTTON_OK;
                             OLEMSGDEFBUTTON defaultButton = OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST;
-                            VsShellUtilities.ShowMessageBox(this.Site, title, message, icon, buttons, defaultButton);
+                            Utilities.ShowMessageBox(this.Site, title, message, icon, buttons, defaultButton);
                         }
                         result = false;
                     }
@@ -5503,7 +5507,7 @@ namespace Microsoft.VisualStudio.Project
                         OLEMSGICON icon = OLEMSGICON.OLEMSGICON_QUERY;
                         OLEMSGBUTTON buttons = OLEMSGBUTTON.OLEMSGBUTTON_YESNO;
                         OLEMSGDEFBUTTON defaultButton = OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST;
-                        int messageboxResult = VsShellUtilities.ShowMessageBox(this.Site, title, message, icon, buttons, defaultButton);
+                        int messageboxResult = Utilities.ShowMessageBox(this.Site, title, message, icon, buttons, defaultButton);
                         if (messageboxResult == NativeMethods.IDNO)
                         {
                             result[0] = VSADDRESULT.ADDRESULT_Cancel;
@@ -5552,7 +5556,7 @@ namespace Microsoft.VisualStudio.Project
                   OLEMSGICON icon = OLEMSGICON.OLEMSGICON_CRITICAL;
                   OLEMSGBUTTON buttons = OLEMSGBUTTON.OLEMSGBUTTON_OK;
                   OLEMSGDEFBUTTON defaultButton = OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST;
-                  VsShellUtilities.ShowMessageBox(this.Site, title, message, icon, buttons, defaultButton);
+                        Utilities.ShowMessageBox(this.Site, title, message, icon, buttons, defaultButton);
                   result[0] = VSADDRESULT.ADDRESULT_Cancel;
                   return (int)OleConstants.OLECMDERR_E_CANCELED;
                }
@@ -5989,8 +5993,6 @@ namespace Microsoft.VisualStudio.Project
         /// </remarks>
         private bool TryBeginBuild(bool designTime, bool requiresUIThread = false)
         {
-
-
             bool releaseUIThread = false;
 
             try
@@ -6208,6 +6210,7 @@ namespace Microsoft.VisualStudio.Project
         /// <param name="pResult">Result to be returned to the caller</param>
         public virtual int AddComponent(VSADDCOMPOPERATION dwAddCompOperation, uint cComponents, System.IntPtr[] rgpcsdComponents, System.IntPtr hwndDialog, VSADDCOMPRESULT[] pResult)
         {
+            XSharpProjectPackage.Instance.UIThread.MustBeCalledFromUIThread();
             if (rgpcsdComponents == null || pResult == null)
             {
                 return VSConstants.E_FAIL;
@@ -6862,6 +6865,7 @@ namespace Microsoft.VisualStudio.Project
         /// <returns>parent node</returns>
         private HierarchyNode GetItemParentNode(MSBuild.ProjectItem item)
         {
+            XSharpProjectPackage.Instance.UIThread.MustBeCalledFromUIThread();
             HierarchyNode currentParent = this;
             string strPath = item.EvaluatedInclude;
             string link = item.GetMetadataValue(ProjectFileConstants.Link);
@@ -7011,7 +7015,7 @@ namespace Microsoft.VisualStudio.Project
                 OLEMSGICON icon = OLEMSGICON.OLEMSGICON_CRITICAL;
                 OLEMSGBUTTON buttons = OLEMSGBUTTON.OLEMSGBUTTON_OK;
                 OLEMSGDEFBUTTON defaultButton = OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST;
-                VsShellUtilities.ShowMessageBox(this.ProjectMgr.Site, title, errorMessage, icon, buttons, defaultButton);
+                Utilities.ShowMessageBox(this.ProjectMgr.Site, title, errorMessage, icon, buttons, defaultButton);
                 return VSConstants.S_OK;
             }
             else
@@ -7297,6 +7301,7 @@ namespace Microsoft.VisualStudio.Project
         private bool IsFrameworkOnMachine()
         {
             var multiTargeting = this.site.GetService(typeof(SVsFrameworkMultiTargeting)) as IVsFrameworkMultiTargeting;
+            Assumes.Present(multiTargeting);
             Array frameworks;
             Marshal.ThrowExceptionForHR(multiTargeting.GetSupportedFrameworks(out frameworks));
             foreach (string fx in frameworks)

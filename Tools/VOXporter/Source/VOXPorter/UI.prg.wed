@@ -1,5 +1,5 @@
 DESIGNERSTART = Form,Form,xPorterUI
-GUID=3D260865-1118-4497-AE9F-0BFC3CA7DBEC
+GUID=F69D629E-4FAC-4A82-9697-7A4DDED9ED59
 FormBorderStyle=FixedSingle
 Icon=%AppPath%\XSharpSm.ico
 MaximizeBox=False
@@ -7,7 +7,7 @@ MinimizeBox=False
 Name=xPorterUI
 Text=VO-xPorter beta 0.11
 Location=100 , 100
-ClientSize=604 , 396
+ClientSize=604 , 415
 CancelButton=153D9C9E-3903-4495-BFF7-E3B798C34B58
 ControlVisibility=Protect
 ControlPrefix=o
@@ -22,7 +22,7 @@ SUBCONTROLSSTART
   GUID=153D9C9E-3903-4495-BFF7-E3B798C34B58
   Name=ExitButton
   Text=Exit
-  Location=474 , 365
+  Location=474 , 383
   Size=119 , 23
   TabIndex=4
   Click=ExitButtonClick
@@ -31,7 +31,7 @@ SUBCONTROLSSTART
   GUID=43DDAD22-77E9-4243-B131-324A702D58B6
   Name=GroupBox3
   Text=Progress
-  Location=11 , 277
+  Location=11 , 295
   Size=582 , 79
   TabIndex=3
   SUBCONTROLSSTART
@@ -59,7 +59,7 @@ SUBCONTROLSSTART
   GUID=C15241BB-E532-4721-ACA1-A203BEE709DE
   Name=xPortButton
   Text=xPort!
-  Location=338 , 365
+  Location=338 , 383
   Size=119 , 23
   TabIndex=2
   Click=xPortButton_Click
@@ -68,17 +68,27 @@ SUBCONTROLSSTART
   GUID=4E2418CF-474D-441C-94B9-8E1725DF7F47
   Name=GroupBox2
   Text=xPort
-  Location=11 , 9
-  Size=316 , 263
+  Location=11 , 7
+  Size=320 , 283
   TabIndex=0
   SUBCONTROLSSTART
     
     CONTROL=System.Windows.Forms.CheckBox
+    GUID=6619FAAE-294A-43EA-AD41-E03224DB34D5
+    AutoSize=True
+    Name=GenerateWindowsForms
+    Text=Generate Windows.Forms forms out of WED binaries
+    Location=18 , 253
+    Size=289 , 18
+    TabIndex=14
+    
+    CONTROL=System.Windows.Forms.CheckBox
     GUID=F5BA06BF-C4A1-4594-B851-C818A8B50A36
+    AutoSize=True
     Name=CheckNotOverwriteProjectFiles
     Text=Do not overwrite project files if they already exist
-    Location=18 , 226
-    Size=289 , 27
+    Location=18 , 229
+    Size=266 , 18
     TabIndex=13
     
     CONTROL=System.Windows.Forms.TextBox
@@ -87,6 +97,7 @@ SUBCONTROLSSTART
     Location=171 , 201
     Size=137 , 20
     TabIndex=12
+    TextChanged=Other_TextChanged
     
     CONTROL=System.Windows.Forms.Label
     GUID=668E0583-3044-4B4E-9638-B658EDC4C064
@@ -103,6 +114,7 @@ SUBCONTROLSSTART
     Location=18 , 201
     Size=137 , 20
     TabIndex=10
+    TextChanged=Other_TextChanged
     
     CONTROL=System.Windows.Forms.Label
     GUID=61C34B46-9E79-4975-AEB6-D0B28A3107F6
@@ -137,6 +149,7 @@ SUBCONTROLSSTART
     Location=18 , 158
     Size=254 , 20
     TabIndex=7
+    TextChanged=Other_TextChanged
     
     CONTROL=System.Windows.Forms.Label
     GUID=05E9503F-41F4-44BA-A7E0-62EBBCFEBE67
@@ -203,18 +216,47 @@ SUBCONTROLSSTART
   GUID=5FAC0159-FFA7-4660-91CA-0CE614506991
   Name=GroupBox1
   Text=xPort options
-  Location=338 , 9
-  Size=255 , 263
+  Location=338 , 7
+  Size=255 , 283
   TabIndex=1
   SUBCONTROLSSTART
+    
+    CONTROL=System.Windows.Forms.RadioButton
+    GUID=743D7734-901C-4844-948F-C5485045BD59
+    AutoSize=True
+    Checked=True
+    Name=ExportToBoth
+    Text=Both
+    Location=186 , 21
+    Size=45 , 18
+    TabIndex=3
+    
+    CONTROL=System.Windows.Forms.RadioButton
+    GUID=6428BA90-57C1-45A0-892C-D2B117C60BC1
+    AutoSize=True
+    Name=ExportToXIDE
+    Text=XIDE
+    Location=117 , 21
+    Size=49 , 18
+    TabIndex=2
+    
+    CONTROL=System.Windows.Forms.RadioButton
+    GUID=DDEA41D2-0880-44ED-BA3C-0150C9E93180
+    AutoSize=True
+    Name=ExportToVS
+    Text=Export to VS
+    Location=15 , 21
+    Size=85 , 18
+    TabIndex=1
+    TabStop=True
     
     CONTROL=System.Windows.Forms.CheckedListBox
     GUID=C9926179-E238-4757-8426-520E8BC59C57
     IntegralHeight=False
     Name=OptionsList
-    Location=15 , 26
+    Location=15 , 44
     Size=222 , 225
-    TabIndex=0
+    TabIndex=4
  
  SUBCONTROLSEND
 

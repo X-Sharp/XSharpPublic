@@ -44,15 +44,16 @@
     <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
     <StartupObject />
     <ApplicationIcon />
-    <XSharpProjectversion>2.0.8.0</XSharpProjectversion>
+    <XSharpProjectversion>2.1.0.0</XSharpProjectversion>
     <Includepaths>$(Solutiondir)common</Includepaths>
     <Nostandarddefs>false</Nostandarddefs>
     <IntermediateOutputPath>$(SolutionDir)Binaries\obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
     <OutputPath>$(SolutionDir)Binaries\$(Configuration)\</OutputPath>
     <AssemblyOriginatorKeyFile>$(SolutionDir)Common\XSharp.snk</AssemblyOriginatorKeyFile>
-    <NamedArgs />
-    <Memvar />
-    <Undeclared />
+    <NamedArgs>False</NamedArgs>
+    <Memvar>False</Memvar>
+    <Undeclared>False</Undeclared>
+    <NoWin32Manifest>False</NoWin32Manifest>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -95,26 +96,26 @@
     <Reference Include="System.Xml" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="XSharp.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586">
+    <Reference Include="XSharp.Core, Version=2.1.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586">
       <Name>XSharp.Core</Name>
       <AssemblyName>XSharp.Core.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
-      <HintPath>..\..\..\..\Program Files (x86)\XSharp\Assemblies\XSharp.Core.dll</HintPath>
+      <HintPath>..\..\..\DevRt\Binaries\Debug\XSharp.Core.dll</HintPath>
     </Reference>
-    <Reference Include="XSharp.RT, Version=2.0.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586">
+    <Reference Include="XSharp.RT, Version=2.1.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586">
       <Name>XSharp.RT</Name>
       <AssemblyName>XSharp.RT.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
-      <HintPath>..\..\..\..\Program Files (x86)\XSharp\Assemblies\XSharp.RT.dll</HintPath>
+      <HintPath>..\..\..\DevRt\Binaries\Debug\XSharp.RT.dll</HintPath>
     </Reference>
-    <Reference Include="XSharp.VO, Version=2.0.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586">
+    <Reference Include="XSharp.VO, Version=2.1.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586">
       <Name>XSharp.VO</Name>
       <AssemblyName>XSharp.VO.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
-      <HintPath>..\..\..\..\Program Files (x86)\XSharp\Assemblies\XSharp.VO.dll</HintPath>
+      <HintPath>..\..\..\DevRt\Binaries\Debug\XSharp.VO.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -152,6 +153,9 @@
     <Folder Include="Templates\" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\Common\BuildNumber.h">
+      <Link>BuildNumber.h</Link>
+    </None>
     <None Include="Templates\cavoded.tpl" />
     <None Include="Templates\cavofed.tpl" />
     <None Include="Templates\cavowed.inf" />

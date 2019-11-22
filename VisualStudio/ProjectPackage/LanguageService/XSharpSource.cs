@@ -81,7 +81,7 @@ namespace XSharp.LanguageService
             return span2;
         }
 
-        private TextSpan xsCommentLines(TextSpan span, String commentStart)
+        private TextSpan xsCommentLines(TextSpan span, string commentStart)
         {
             int commentpos = 0;
             // First Search the min position for comment
@@ -101,18 +101,19 @@ namespace XSharp.LanguageService
             return span;
         }
 
-        private TextSpan xsUnCommentLines(TextSpan span, String commentStart)
+        private TextSpan xsUnCommentLines(TextSpan span, string commentStart)
         {
             // Empty selection ?
             if (span.iStartLine == span.iEndLine && span.iStartIndex == span.iEndIndex)
             {
+                int len = commentStart.Length;
                 int commentpos = ScanToNonWhitespaceChar(span.iStartLine);
-                String text = GetLine(span.iStartLine);
-                if (text.Substring(commentpos, 2) == commentStart)
+                string text = GetLine(span.iStartLine);
+                if (text.Substring(commentpos, len) == commentStart)
                 {
                     using (new CompoundAction(this, "Uncomment Selection"))
                     {
-                        SetText(span.iStartLine, commentpos, span.iStartLine, commentpos + 2, "");
+                        SetText(span.iStartLine, commentpos, span.iStartLine, commentpos + len, "");
                     }
                 }
             }
@@ -120,13 +121,18 @@ namespace XSharp.LanguageService
             {
                 using (new CompoundAction(this, "Uncomment Selection"))
                 {
+                    int len = commentStart.Length;
+                    var spaces = new string(' ', len);
                     for (int line = span.iStartLine; line <= span.iEndLine; line++)
                     {
                         int commentpos = ScanToNonWhitespaceChar(line);
-                        String text = GetLine(line);
-                        if (text.Length > 1 && (commentpos+2) < text.Length && text.Substring(commentpos, 2) == commentStart)
+                        string text = GetLine(line);
+                        if (text.Substring(commentpos, len) == commentStart)
                         {
-                            SetText(line, commentpos, line, commentpos + 2, "");
+                            if (text.Length > len )
+                                SetText(line, commentpos, line, commentpos + len, "");
+                            else
+                                SetText(line, commentpos, line, commentpos + len, spaces);
                         }
                     }
                 }

@@ -20,6 +20,7 @@ using Microsoft.VisualStudio.Text.Operations;
 using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Text.Tagging;
 using Microsoft.VisualStudio.Shell.Interop;
+using Microsoft;
 
 namespace XSharp.Project
 {
@@ -118,6 +119,7 @@ namespace XSharp.Project
             // Find the document in the Running Document Table and Get Its hierarchy object
             // so we can ask for a property that we can use to see if this is 'Ours'
             IVsRunningDocumentTable rdt = serviceProvider.GetService(typeof(IVsRunningDocumentTable)) as IVsRunningDocumentTable;
+            Assumes.Present(rdt);
             uint itemID;
             IVsHierarchy hierarchy;
             IntPtr unkDocData;

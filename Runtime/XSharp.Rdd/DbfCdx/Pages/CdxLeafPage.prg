@@ -383,11 +383,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             
 
             DO CASE
-            CASE numRecs < 2^(16 - totbits)
+            CASE numRecs < 2^(16 - totbits) -1
                 SELF:RecordBits     := (BYTE) (16-totbits)
-            CASE numRecs < 2^(24 - totbits)
+            CASE numRecs < 2^(24 - totbits) -1
                 SELF:RecordBits     := (BYTE) (24-totbits)
-            CASE numRecs < 2^(32 - totbits)
+            CASE numRecs < 2^(32 - totbits) -1
                 SELF:RecordBits     := (BYTE) (32-totbits)
             OTHERWISE
                 SELF:RecordBits     := 32

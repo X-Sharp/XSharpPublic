@@ -114,6 +114,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool MemVars { get; private set; }
         public bool UndeclaredLocals { get; private set; }
         public string DefaultNamespace { get; private set; }
+        public bool ImplicitNamespace { get; private set; }
         public bool HasRuntime { get { return this.Dialect.HasRuntime(); } }
         public bool SupportsMemvars { get { return this.Dialect.SupportsMemvars() && MemVars; } }
 #if !VSPARSER
@@ -164,6 +165,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 Dialect = opt.Dialect;
                 DefaultNamespace = opt.NameSpace;
                 DefaultIncludeDir = opt.DefaultIncludeDir;
+                ImplicitNamespace = opt.ImplicitNameSpace;
                 DumpAST = opt.DumpAST;
                 WindowsDir = opt.WindowsDir;
                 SystemDir = opt.SystemDir;
@@ -236,6 +238,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             WindowsDir = opt.WindowsDir;
             SystemDir = opt.SystemDir;
             DefaultNamespace = opt.DefaultNamespace;
+            ImplicitNamespace = opt.ImplicitNamespace;
             IncludePaths = opt.IncludePaths;
             ShowDefs = opt.ShowDefs;
             ShowIncludes = opt.ShowIncludes;

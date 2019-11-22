@@ -280,7 +280,6 @@
     <seealso cref='O:XSharp.RT.Functions.AIns'>AIns Overload</seealso>
     <seealso cref='M:XSharp.RT.Functions.AReplicate(XSharp.__Usual,System.UInt32)'>AReplicate</seealso>
     <seealso cref='O:XSharp.RT.Functions.ASize'>ASize Overload</seealso>
-    <seealso cref='M:XSharp.VO.Functions.PClone(XSharp.__Usual)'>PClone</seealso>
   </aclone>
   <acloneshallow>
     <summary>
@@ -309,7 +308,6 @@
       </code>
     </example>
     <seealso cref='O:XSharp.RT.Functions.AClone'>AClone Overload</seealso>
-    <seealso cref='M:XSharp.VO.Functions.PClone(XSharp.__Usual)'>PClone</seealso>
   </acloneshallow>
   <acopy>
     <summary>
@@ -459,7 +457,6 @@
       </code>
     </example>
     <seealso cref='M:XSharp.Core.Functions.AdjustFNameA(System.String@)'>AdjustFNameA</seealso>
-    <seealso>AdjustFNamePsz</seealso>
   </adjustfname>
   <adjustfnamea>
     <summary>
@@ -482,25 +479,7 @@
       </code>
     </example>
     <seealso cref='M:XSharp.Core.Functions.AdjustFName(System.String)'>AdjustFName</seealso>
-    <seealso>AdjustFNamePsz</seealso>
   </adjustfnamea>
-  <adjustfnamepsz>
-    <summary>
-      Remove spaces from a file name specified as a PSZ, changing the contents of the original file name as well as the returned file name.
-    </summary>
-
-    <param name="pszFileName">The file name you want to adjust, specified as a null-terminated string.</param>
-    <returns>
-      &lt;pszFileName&gt; with all spaces removed.
-    </returns>
-    <remarks>
-      AdjustFNamePsz() is the same as AdjustFNameA(), except that its argument and return value are type PSZ instead of string.
-    </remarks>
-    <example>
-    </example>
-    <seealso cref='M:XSharp.Core.Functions.AdjustFName(System.String)'>AdjustFName</seealso>
-    <seealso cref='M:XSharp.Core.Functions.AdjustFNameA(System.String@)'>AdjustFNameA</seealso>
-  </adjustfnamepsz>
   <aeval>
     <summary>
       Execute a code block for each element in an array.
@@ -896,7 +875,7 @@
     <returns>
     </returns>
     <remarks>
-      AltD() is operational only if the application is being executed by the Debugger (that is, using the Trace Expression toolbar button or Debug Run menu command).  See "Debugging Your Applications" in the IDE User Guide for more information on using the Debugger.
+      AltD() is operational only if the application is being executed by the Debugger (that is, using the Trace Expression toolbar button or Debug Run menu command).
       Note:  AltD(0) has no effect on breakpoints set from within the Debugger or programmatic breakpoints set with AltD().  Breakpoints will always return control to the Debugger, regardless of the status of Ctrl+Alt+SysRq.
     </remarks>
     <example>
@@ -1512,7 +1491,7 @@
       If &lt;uSearch&gt; is a code block, AScanBinExact() returns the position of the element if the code block returned 0.  Otherwise, AScanBinExact() returns the position of an exact-matching element.  If multiple occurrences of the same element exist, the returned exact match is not necessarily the lowest numbered element since AScanBinExact() uses a binary search algorithm.  AScanBinExact() returns 0 if no exact match is found.
     </returns>
     <remarks>
-      AScanBinExact() is the same as AScanBin() except that == is used for matching instead of =.  See the "Operators and Expressions" chapter in the Programmer's Guide for more information on how these operators work.
+      AScanBinExact() is the same as AScanBin() except that == is used for matching instead of =.  
     </remarks>
     <example>
       This example shows the difference between AScanBinExact() and AScanBin():
@@ -1542,7 +1521,7 @@
       If &lt;uSearch&gt; is a code block, AScanExact() returns the position of the element if the code block returned TRUE.  Otherwise, AScanExact() returns the position of the first exact-matching element.  AScanExact() returns 0 if no exact match is found.
     </returns>
     <remarks>
-      AScanExact() is the same as AScan() except that == is used for matching instead of =.  See the "Operators and Expressions" chapter in the Programmer's Guide for more information on how these operators work.
+      AScanExact() is the same as AScan() except that == is used for matching instead of =.
     </remarks>
     <example>
       This example shows the difference between AScanExact() and AScan():
@@ -1595,49 +1574,8 @@
       </code>
     </example>
     <seealso cref='O:XSharp.RT.Functions.AEval'>AEval Overload</seealso>
-    <seealso cref='M:XSharp.VO.Functions.ASendClass(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)'>ASendClass</seealso>
     <seealso cref='M:XSharp.RT.Functions.Send(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual[])'>Send</seealso>
   </asend>
-  <asendclass>
-    <summary>
-      Invoke a method of a specific class for every element in an array of objects.
-    </summary>
-
-    <param name="aTarget">The array to process.</param>
-    <param name="symMethod">The method name, specified without parentheses.</param>
-    <param name="symClassName">The class to which &lt;symMethod&gt; belongs.</param>
-    <param name="MethodArgList">A comma-separated list of arguments to pass to &lt;symMethod&gt;.</param>
-    <returns>
-      A reference to &lt;aTarget&gt;.
-    </returns>
-    <remarks>
-    </remarks>
-    <example>
-      This example sends a simple message to an array of objects for evaluation.  Each elemental object evaluates the message in turn:
-      <code language="X#">
-        CLASS Greet
-        METHOD Salut(cRest) CLASS Greet
-        &#0009;? "Hello", cRest
-        &#0009;RETURN
-        FUNCTION Start()
-        &#0009;LOCAL oAlpha, oBeta, oGamma, oDelta, oEpsilon ;
-        &#0009;&#0009;AS OBJECT
-        &#0009;LOCAL aBunch AS ARRAY
-        &#0009;oAlpha   := Greet{}
-        &#0009;oBeta    := Greet{}
-        &#0009;oGamma    := Greet{}
-        &#0009;oDelta   := Greet{}
-        &#0009;oEpsilon := Greet{}
-        &#0009;aBunch := {oAlpha, oBeta, oGamma, oDelta, oEpsilon}
-        &#0009;ASendClass(aBunch, #Salut, #Greet, "world")
-        &#0009;// Equivalent output
-        &#0009;AEval(aBunch, {|aTemp| aTemp:Salut("world")})
-      </code>
-    </example>
-    <seealso cref='O:XSharp.RT.Functions.AEval'>AEval Overload</seealso>
-    <seealso cref='M:XSharp.RT.Functions.ASend(XSharp.__Array,System.String,XSharp.__Usual[])'>ASend</seealso>
-    <seealso cref='M:XSharp.VO.Functions.SendClass(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)'>SendClass</seealso>
-  </asendclass>
   <ashexstring>
     <summary>
       Convert a value to a hexadecimal string.
@@ -1756,37 +1694,9 @@
       This example uses AsPadR() to compare a number with the contents of a character field:
       <code language="X#">? _FIELD-&gt;cRegion == AsPadR(2048, 10)</code>
     </example>
-    <seealso cref='M:XSharp.VO.Functions.AsPsz(XSharp.__Usual)'>AsPsz</seealso>
     <seealso cref='M:XSharp.RT.Functions.AsString(XSharp.__Usual)'>AsString</seealso>
     <seealso cref='O:XSharp.RT.Functions.PadR'>PadR Overload</seealso>
   </aspadr>
-  <aspsz>
-    <summary>
-      Convert a value to a static PSZ.
-    </summary>
-
-    <param name="uValue">The value to be converted.</param>
-    <returns>
-      A PSZ to the static buffer containing the value in string form.
-    </returns>
-    <remarks>
-      AsPsz() is similar to AsString() except that AsPsz() does not use dynamic allocation.
-      Another runtime function may overwrite the statically allocated buffer afterwards.
-    </remarks>
-    <example>
-      These examples show how to use AsPsz():
-      <code language="X#">
-        LOCAL pszNum AS PSZ
-        LOCAL pszA AS PSZ
-        pszNum := AsPsz(123456)
-        pszA := AsPsz("hey" + Chr(0)+ "you")
-      </code>
-    </example>
-    <seealso cref='M:XSharp.RT.Functions.AsPadr(XSharp.__Usual,System.UInt32)'>AsPadR</seealso>
-    <seealso cref='M:XSharp.RT.Functions.AsString(XSharp.__Usual)'>AsString</seealso>
-    <seealso cref='M:XSharp.RT.Functions.AsSymbol(XSharp.__Usual)'>AsSymbol</seealso>
-    <seealso cref='M:XSharp.RT.Functions.PszAlloc(XSharp.__Psz)'>PszAlloc</seealso>
-  </aspsz>
   <asstring>
     <summary>
       Convert a value to a string.
@@ -1809,7 +1719,6 @@
       </code>
     </example>
     <seealso cref='M:XSharp.RT.Functions.AsPadr(XSharp.__Usual,System.UInt32)'>AsPadR</seealso>
-    <seealso cref='M:XSharp.VO.Functions.AsPsz(XSharp.__Usual)'>AsPsz</seealso>
     <seealso cref='M:XSharp.RT.Functions.AsSymbol(XSharp.__Usual)'>AsSymbol</seealso>
     <seealso cref='M:XSharp.RT.Functions.IsString(XSharp.__Usual)'>IsString</seealso>
     <seealso cref='M:XSharp.Core.Functions.LTOC(System.Boolean)'>LToC</seealso>
@@ -1834,7 +1743,6 @@
       </code>
     </example>
     <seealso cref='M:XSharp.RT.Functions.AsHexString(XSharp.__Usual)'>AsHexString</seealso>
-    <seealso cref='M:XSharp.VO.Functions.AsPsz(XSharp.__Usual)'>AsPsz</seealso>
     <seealso cref='M:XSharp.RT.Functions.AsString(XSharp.__Usual)'>AsString</seealso>
     <seealso cref='M:XSharp.RT.Functions.IsSymbol(XSharp.__Usual)'>IsSymbol</seealso>
     <seealso cref='M:XSharp.RT.Functions.String2Atom(System.String)'>String2Atom</seealso>
@@ -2534,13 +2442,13 @@
   <blobdirectexport>
     <summary>
       Export the contents of a binary large object (BLOB) pointer to a file.
-      Note:  A BLOB file (.DBV or .FPT) is used for storing memo field information, as an alternative to the standard .DBT file mechanism supported by some RDDs.  It is a more powerful and efficient mechanism for storing and retrieving large amounts of data than using .DBT files.  X# supplies the DBFCDX driver, which uses the BLOB file storage mechanism by default, and the DBFBLOB driver, which you can use as an inherited driver with other RDDs.  Refer to the "RDD Specifics" appendix in the Programmer's Guide for further information on using this driver.
+      Note:  A BLOB file (.DBV or .FPT) is used for storing memo field information, as an alternative to the standard .DBT file mechanism supported by some RDDs.  It is a more powerful and efficient mechanism for storing and retrieving large amounts of data than using .DBT files.  X# supplies the DBFCDX driver, which uses the BLOB file storage mechanism by default, and the DBFBLOB driver, which you can use as an inherited driver with other RDDs.
     </summary>
 
     <param name="nPointer">A pointer to the BLOB data.  This pointer can be obtained using BLOBDirectPut(), BLOBDirectExport(), or DBFieldInfo(DBS_BLOB_POINTER, &lt;nFieldPos&gt;).</param>
     <param name="cTargetFile">
       The name of the target file where the BLOB data will be written, including an optional drive, directory, and extension.  See SetDefault() and SetPath() for file searching and creation rules.  No default extension is assumed.<br/>
-      &#0009;If &lt;cTargetFile&gt; does not exist, it is created.  If it exists, this function attempts to open the file in exclusive mode and, if successful, the file is written to without warning or error.  If access is denied because, for example, another process is using the file, NetErr() is set to TRUE.  Refer to the "Concurrency Control" chapter in the Programmer's Guide for more information on resolving concurrency conflicts.
+      &#0009;If &lt;cTargetFile&gt; does not exist, it is created.  If it exists, this function attempts to open the file in exclusive mode and, if successful, the file is written to without warning or error.  If access is denied because, for example, another process is using the file, NetErr() is set to TRUE.  
     </param>
     <param name="kMode">
       A constant defining the copy mode, as shown in the table below:<br/>
@@ -2642,7 +2550,7 @@
     <param name="cSourceFile">
       The name of the file from which to read the BLOB data, including an optional drive, directory, and extension.  See SetDefault() and SetPath() for file searching and creation rules.  No default extension is assumed.<br/>
       &#0009;<br/>
-      &#0009;This function attempts to open &lt;cSourceFile&gt; in shared mode.  If the file does not exist, a runtime error is raised.  If the file is successfully opened, the operation proceeds.  If access is denied because, for example, another process has exclusive use of the file, NetErr() is set to TRUE.  Refer to the "Concurrency Control" chapter in the Programmer's Guide for more information on resolving concurrency conflicts.
+      &#0009;This function attempts to open &lt;cSourceFile&gt; in shared mode.  If the file does not exist, a runtime error is raised.  If the file is successfully opened, the operation proceeds.  If access is denied because, for example, another process has exclusive use of the file, NetErr() is set to TRUE.  
     </param>
     <returns>
       A numeric pointer to the BLOB image stored in &lt;cSourceFile&gt;.
@@ -2740,7 +2648,7 @@
     <param name="nFieldPos">The position of the field in the database file structure.</param>
     <param name="cTargetFile">
       The name of the target file where the BLOB data will be written, including an optional drive, directory, and extension.  See SetDefault() and SetPath() for file searching and creation rules.  No default extension is assumed.<br/>
-      &#0009;If &lt;cTargetFile&gt; does not exist, it is created.  If it exists, this function attempts to open the file in exclusive mode and, if successful, the file is written to without warning or error.  If access is denied because, for example, another process is using the file, NetErr() is set to TRUE.  Refer to the "Concurrency Control" chapter in the Programmer's Guide for more information on resolving concurrency conflicts.
+      &#0009;If &lt;cTargetFile&gt; does not exist, it is created.  If it exists, this function attempts to open the file in exclusive mode and, if successful, the file is written to without warning or error.  If access is denied because, for example, another process is using the file, NetErr() is set to TRUE.  
     </param>
     <param name="kMode">
       A constant defining the copy mode, as shown in the table below:<br/>
@@ -2831,7 +2739,7 @@
     <param name="nFieldPos">The position of the field in the database file structure.</param>
     <param name="cSourceFile">
       The name of the file from which to read the BLOB data, including an optional drive, directory, and extension.  See SetDefault() and SetPath() for file searching and creation rules.  No default extension is assumed.<br/>
-      &#0009;This function attempts to open &lt;cSourceFile&gt; in shared mode.  If the file does not exist, a runtime error is raised.  If the file is successfully opened, the operation proceeds.  If access is denied because, for example, another process has exclusive use of the file, NetErr() is set to TRUE.  Refer to the "Concurrency Control" chapter in the Programmer's Guide for more information on resolving concurrency conflicts.
+      &#0009;This function attempts to open &lt;cSourceFile&gt; in shared mode.  If the file does not exist, a runtime error is raised.  If the file is successfully opened, the operation proceeds.  If access is denied because, for example, another process has exclusive use of the file, NetErr() is set to TRUE.  
     </param>
     <returns>
       TRUE if successful; otherwise, FALSE.
@@ -3077,7 +2985,7 @@
       The value passed to the RECOVER clause.
     </returns>
     <remarks>
-      _Break() is identical in functionality to the BREAK statement and the LabelJump() function.
+      _Break() is identical in functionality to the BREAK statement
     </remarks>
     <example>
       This example installs an error handler code block that uses a _Break() to get to the line immediately after the RECOVER:
@@ -3109,7 +3017,6 @@
     </example>
     <seealso>BEGIN SEQUENCE</seealso>
     <seealso cref='M:XSharp.RT.Functions.CanBreak'>CanBreak</seealso>
-    <seealso cref='M:XSharp.VO.Functions.LabelJump(XSharp.__Usual)'>LabelJump</seealso>
   </break>
   <buffer>
     <summary>
@@ -3428,7 +3335,6 @@
         ? Chr(72)&#0009;&#0009;&#0009;&#0009;&#0009;&#0009;// H
       </code>
     </example>
-    <seealso>_Chr</seealso>
     <seealso cref='M:XSharp.Core.Functions.Asc(System.String)'>Asc</seealso>
   </chr>
   <classcount>
@@ -3676,7 +3582,7 @@
     <remarks>
       Collect() calls the garbage collector if a watermark is reached.  A watermark is a point at which garbage collection is appropriate as determined by the system.
       Literal or hard-coded strings are static and cannot be collected.  Strings which are dynamic can be collected.  For example, in MyFunc("hello"), the literal string "hello" is not collectable, while in MyFunc(Time()), the string returned from Time() is collectable.
-      Strings, floats, arrays, and object are dynamic and collectable objects unless they are literals or have been moved into the static memory via functions such as DynToOldSpace().
+      Strings, floats, arrays, and object are dynamic and collectable objects unless they are literals..
     </remarks>
     <example>
       These examples illustrate Collect():
@@ -3690,7 +3596,6 @@
     </example>
     <seealso cref='M:XSharp.RT.Functions.CollectCount'>CollectCount</seealso>
     <seealso cref='M:XSharp.RT.Functions.CollectForced'>CollectForced</seealso>
-    <seealso cref='M:XSharp.VO.Functions.DynToOldSpace(XSharp.__Usual)'>DynToOldSpace</seealso>
     <seealso cref='M:XSharp.VO.Functions.Memory(System.Int32)'>Memory</seealso>
     <seealso cref='M:XSharp.RT.Functions.RegisterAxit(System.Object)'>RegisterAxit</seealso>
     <seealso cref='M:XSharp.VO.Functions.RegisterKid(System.IntPtr,System.UInt32,System.Boolean)'>RegisterKid</seealso>
@@ -3729,7 +3634,7 @@
     <remarks>
       CollectForced() calls the garbage collector regardless of whether a watermark has been reached.
       Literal or hard-coded strings are static and cannot be collected.  Strings which are dynamic can be collected.  For example, in MyFunc("hello") the literal string "hello" is not collectable, while in MyFunc(Time()) the string returned from Time() is collectable.
-      Strings, floats, arrays, and object are dynamic and collectable objects unless they are literals or have been moved into the static memory via functions such as DynToOldSpace().
+      Strings, floats, arrays, and object are dynamic and collectable objects unless they are literals.
     </remarks>
     <example>
       These examples illustrate CollectForced():
@@ -3743,7 +3648,6 @@
     </example>
     <seealso cref='M:XSharp.RT.Functions.Collect'>Collect</seealso>
     <seealso cref='M:XSharp.RT.Functions.CollectCount'>CollectCount</seealso>
-    <seealso cref='M:XSharp.VO.Functions.DynToOldSpace(XSharp.__Usual)'>DynToOldSpace</seealso>
   </collectforced>
   <concatatom>
     <summary>
@@ -3756,7 +3660,8 @@
       The concatenated symbol.  This symbol is added to the atom table if it is not already there.
     </returns>
     <remarks>
-      ConcatAtom() lets you concatenate 2 symbols, the same way you concatenate strings with the "+" operator.  To perform more complicated string operations, convert symbols to strings (using Symbol2String()); then use the string operators described in "Operators and Expressions" in the Programmer's Guide.
+      ConcatAtom() lets you concatenate 2 symbols, the same way you concatenate strings with the "+" operator.  
+      To perform more complicated string operations, convert symbols to strings (using Symbol2String()).
     </remarks>
     <example>
       These examples illustrate ConcatAtom():
@@ -3779,7 +3684,8 @@
       The concatenated symbol.  This symbol is added to the atom table if it is not already there.
     </returns>
     <remarks>
-      ConcatAtom3() lets you concatenate 3 symbols, the same way you concatenate strings with the "+" operator.  To perform more complicated string operations, convert symbols to strings (using Symbol2String()); then use the string operators described in "Operators and Expressions" in the Programmer's Guide.
+      ConcatAtom3() lets you concatenate 3 symbols, the same way you concatenate strings with the "+" operator.  
+      To perform more complicated string operations, convert symbols to strings (using Symbol2String()).
     </remarks>
     <example>
       These examples illustrate ConcatAtom3():
@@ -4051,43 +3957,8 @@
         &#0009;? x:name&#0009;&#0009;&#0009;&#0009;&#0009;&#0009;&#0009;// Odile
       </code>
     </example>
-    <seealso cref='M:XSharp.VO.Functions.CreateInstanceStatic(XSharp.__Usual[])'>CreateInstanceStatic</seealso>
     <seealso cref='M:XSharp.RT.Functions.IsInstanceOf(System.Object,System.String)'>IsInstanceOf</seealso>
   </createinstance>
-  <createinstancestatic>
-    <summary>
-      Create a static object.
-    </summary>
-
-    <param name="symClassName">The name of the class for which you want to create a static object.</param>
-    <param name="InitArgList">A comma-separated list of arguments to pass to the Init() method of &lt;symClassName&gt; (see example below).</param>
-    <returns>
-      An instance of the desired static object.
-    </returns>
-    <remarks>
-      CreateInstanceStatic() is the functional way to create an object of a particular class.  It is essentially the same as creating an object through an invocation of {}, but it is more useful in situations where a functional form is needed.
-    </remarks>
-    <example>
-      This example shows how an object is created using CreateInstanceStatic():
-      <code language="X#">
-        CLASS Person
-        &#0009;EXPORT Name, Sign
-        METHOD Init(tName, tSign) CLASS Person
-        &#0009;Name := tName
-        &#0009;Sign := tSign
-        FUNCTION Start()
-        &#0009;STATIC LOCAL x AS OBJECT
-        &#0009;// Pass the class name as symbol and also specify all
-        &#0009;// Init() method arguments.
-        &#0009;x := CreateInstanceStatic(#PERSON, "Odile", "H")
-        &#0009;? x:name&#0009;&#0009;&#0009;//Odile
-        &#0009;? x:sign&#0009;&#0009;&#0009;//H
-      </code>
-    </example>
-    <seealso cref='M:XSharp.RT.Functions.CreateInstance(XSharp.__Usual,XSharp.__Usual)'>CreateInstance</seealso>
-    <seealso cref='M:XSharp.RT.Functions.IsInstanceOf(System.Object,System.String)'>IsInstanceOf</seealso>
-    <seealso cref='M:XSharp.VO.Functions.FreeStaticObject(System.Object)'>FreeStaticObject</seealso>
-  </createinstancestatic>
   <createvothread>
     <summary>
       Create a new thread.
@@ -4453,8 +4324,8 @@
     </summary>
 
     <param name="cSourceFile">
-      The name of the database file from which to add records, including an optional drive, directory, and extension.  See SetDefault() and SetPath() for file searching and creation rules.  The default extension for database files is determined by the RDD (see the "RDD Specifics" appendix in the Programmer's Guide for details on a particular RDD).<br/>
-      &#0009;This function attempts to open &lt;cSourceFile&gt; in shared mode.  If the file does not exist, a runtime error is raised.  If the file is successfully opened, the operation proceeds.  If access is denied because, for example, another process has exclusive use of the file, NetErr() is set to TRUE.  Refer to the "Concurrency Control" chapter in the Programmer's Guide for more information on resolving concurrency conflicts.
+      The name of the database file from which to add records, including an optional drive, directory, and extension.  See SetDefault() and SetPath() for file searching and creation rules.  The default extension for database files is determined by the RDD .<br/>
+      &#0009;This function attempts to open &lt;cSourceFile&gt; in shared mode.  If the file does not exist, a runtime error is raised.  If the file is successfully opened, the operation proceeds.  If access is denied because, for example, another process has exclusive use of the file, NetErr() is set to TRUE.  
     </param>
     <param name="acFields">
       The list of fields to append from &lt;cSourceFile&gt;.  The default is all fields.<br/>
@@ -4496,7 +4367,7 @@
 
     <param name="cSourceFile">
       The name of the delimited text file from which to add records, including an optional drive, directory, and extension.  See SetDefault() and SetPath() for file searching and creation rules.  The default extension is .TXT.<br/>
-      &#0009;This function attempts to open &lt;cSourceFile&gt; in shared mode.  If the file does not exist, a runtime error is raised.  If the file is successfully opened, the operation proceeds.  If access is denied because, for example, another process has exclusive use of the file, NetErr() is set to TRUE.  Refer to the "Concurrency Control" chapter in the Programmer's Guide for more information on resolving concurrency conflicts.
+      &#0009;This function attempts to open &lt;cSourceFile&gt; in shared mode.  If the file does not exist, a runtime error is raised.  If the file is successfully opened, the operation proceeds.  If access is denied because, for example, another process has exclusive use of the file, NetErr() is set to TRUE.  
     </param>
     <param name="cDelim">The delimiter used to separate fields in &lt;cSourceFile&gt;.  The default delimiter is a double quote mark. </param>
     <param name="acFields">A list of fields to copy from &lt;cSourceFile&gt;.  The default is all fields.</param>
@@ -4543,7 +4414,7 @@
       DBAppend(TRUE) performs the same function as the APPEND BLANK command.  For more information, refer to APPEND BLANK.
       <note type="tip">
         Logical records:  DBAppend() does not respect logical visibility.  That is, if the record is successfully added, it becomes the current record, regardless of any order or filter condition.
-        Shared mode:  For a shared database, DBAppend() automatically places a record lock on the new record.  If the record cannot be locked, NetErr() is set to TRUE, indicating that the record was not added, and execution continues.  For more information, refer to "Concurrency Control" in the Programmer's Guide.
+        Shared mode:  For a shared database, DBAppend() automatically places a record lock on the new record.  If the record cannot be locked, NetErr() is set to TRUE, indicating that the record was not added, and execution continues.
       </note>
     </remarks>
     <example>
@@ -4583,7 +4454,7 @@
 
     <param name="cSourceFile">
       The name of the SDF file from which to add records, including an optional drive, directory, and extension.  See SetDefault() and SetPath() for file searching and creation rules.  The default extension is .TXT.<br/>
-      &#0009;This function attempts to open &lt;cSourceFile&gt; in shared mode.  If the file does not exist, a runtime error is raised.  If the file is successfully opened, the operation proceeds.  If access is denied because, for example, another process has exclusive use of the file, NetErr() is set to TRUE.  Refer to the "Concurrency Control" chapter in the Programmer's Guide for more information on resolving concurrency conflicts.
+      &#0009;This function attempts to open &lt;cSourceFile&gt; in shared mode.  If the file does not exist, a runtime error is raised.  If the file is successfully opened, the operation proceeds.  If access is denied because, for example, another process has exclusive use of the file, NetErr() is set to TRUE.  
     </param>
     <param name="acFields">A list of fields to copy from &lt;cSourceFile&gt;.  The default is all records.</param>
     <param name="cbForCondition">
@@ -4829,7 +4700,7 @@
       All updated database and order buffers are written to DOS, and a DOS Commit request is issued for the database file and any index files associated with the work area.
       DBCommit() performs the same function as the DBCommitAll() function, except that it operates only on the current or aliased work area.
       <note type="tip">
-        Shared mode:  DBCommit() makes database updates visible to other processes.  To insure data integrity, issue DBCommit() before an unlock operation.  For more information, refer to "Concurrency Control" in the Programmer's Guide.
+        Shared mode:  DBCommit() makes database updates visible to other processes.  To insure data integrity, issue DBCommit() before an unlock operation.  
         &#0009;DBCommit() uses DOS interrupt 21h function 68h to perform the solid-disk write.  It is up to the network software to properly implement this request.  Check with the network software vendor to see if this is supported.
       </note>
     </remarks>
@@ -4942,8 +4813,8 @@
     </summary>
 
     <param name="cTargetFile">
-      The name of the target file, including an optional drive, directory, and extension.  See SetDefault() and SetPath() for file searching and creation rules.  The default extension for database files is determined by the RDD (see the "RDD Specifics" appendix in the Programmer's Guide for details on a particular RDD).  For text files, it is .TXT.<br/>
-      &#0009;If &lt;cTargetFile&gt; does not exist, it is created.  If it exists, this function attempts to open the file in exclusive mode and, if successful, the file is overwritten without warning or error.  If access is denied because, for example, another process is using the file, NetErr() is set to TRUE.  Refer to the "Concurrency Control" chapter in the Programmer's Guide for more information on resolving concurrency conflicts.<br/>
+      The name of the target file, including an optional drive, directory, and extension.  See SetDefault() and SetPath() for file searching and creation rules.  The default extension for database files is determined by the RDD.  For text files, it is .TXT.<br/>
+      &#0009;If &lt;cTargetFile&gt; does not exist, it is created.  If it exists, this function attempts to open the file in exclusive mode and, if successful, the file is overwritten without warning or error.  If access is denied because, for example, another process is using the file, NetErr() is set to TRUE.  <br/>
       &#0009;DBCreate() creates the specified file in ANSI or OEM character set format, based on the SetAnsi() setting.  (For more information, refer to the SetAnsi() function.)
     </param>
     <param name="acFields">A list of fields to copy to &lt;cTargetFile&gt;.  The default is all fields.</param>
@@ -4987,8 +4858,8 @@
     </summary>
 
     <param name="cTargetFile">
-      The name of the target file, including an optional drive, directory, and extension.  See SetDefault() and SetPath() for file searching and creation rules.  The default extension for database files is determined by the RDD (see the "RDD Specifics" appendix in the Programmer's Guide for details on a particular RDD).  For text files, it is .TXT.<br/>
-      &#0009;If &lt;cTargetFile&gt; does not exist, it is created.  If it exists, this function attempts to open the file in exclusive mode and, if successful, the file is overwritten without warning or error.  If access is denied because, for example, another process is using the file, NetErr() is set to TRUE.  Refer to the "Concurrency Control" chapter in the Programmer's Guide for more information on resolving concurrency conflicts.
+      The name of the target file, including an optional drive, directory, and extension.  See SetDefault() and SetPath() for file searching and creation rules.  The default extension for database files is determined by the RDD .  For text files, it is .TXT.<br/>
+      &#0009;If &lt;cTargetFile&gt; does not exist, it is created.  If it exists, this function attempts to open the file in exclusive mode and, if successful, the file is overwritten without warning or error.  If access is denied because, for example, another process is using the file, NetErr() is set to TRUE.  
     </param>
     <param name="cDelim">The delimiter used to separate fields in &lt;cTargetFile&gt;.  The default delimiter is a double quote mark. </param>
     <param name="acFields">A list of fields to copy to &lt;cTargetFile&gt;.  The default is all fields.</param>
@@ -4996,7 +4867,8 @@
       <include file="VoFunctionDocs.xml" path="Runtimefunctions/cbfor/*" />
     </param>
     <param name="cbWhileCondition">
-      <include file="VoFunctionDocs.xml" path="Runtimefunctions/cbwhile/*" />    </param>
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/cbwhile/*" />
+    </param>
     <param name="nNext">The number of records to append, starting at the current record.</param>
     <param name="nRecord">The number of the record to append.</param>
     <param name="lRest">TRUE processes only records from the current record to end-of-file.  FALSE processes all records.</param>
@@ -5028,15 +4900,16 @@
     </summary>
 
     <param name="cTargetFile">
-      The name of the target file, including an optional drive, directory, and extension.  See SetDefault() and SetPath() for file searching and creation rules.  The default extension for database files is determined by the RDD (see the "RDD Specifics" appendix in the Programmer's Guide for details on a particular RDD).  For text files, it is .TXT.<br/>
-      &#0009;If &lt;cTargetFile&gt; does not exist, it is created.  If it exists, this function attempts to open the file in exclusive mode and, if successful, the file is overwritten without warning or error.  If access is denied because, for example, another process is using the file, NetErr() is set to TRUE.  Refer to the "Concurrency Control" chapter in the Programmer's Guide for more information on resolving concurrency conflicts.
+      The name of the target file, including an optional drive, directory, and extension.  See SetDefault() and SetPath() for file searching and creation rules.  The default extension for database files is determined by the RDD .  For text files, it is .TXT.<br/>
+      &#0009;If &lt;cTargetFile&gt; does not exist, it is created.  If it exists, this function attempts to open the file in exclusive mode and, if successful, the file is overwritten without warning or error.  If access is denied because, for example, another process is using the file, NetErr() is set to TRUE.  
     </param>
     <param name="acFields">A list of fields to copy to &lt;cTargetFile&gt;.  The default is all fields.</param>
     <param name="cbForCondition">
       <include file="VoFunctionDocs.xml" path="Runtimefunctions/cbfor/*" />
     </param>
     <param name="cbWhileCondition">
-      <include file="VoFunctionDocs.xml" path="Runtimefunctions/cbwhile/*" />    </param>
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/cbwhile/*" />
+    </param>
     <param name="nNext">The number of records to append, starting at the current record.</param>
     <param name="nRecord">The number of the record to append.</param>
     <param name="lRest">TRUE processes only records from the current record to end-of-file.  FALSE processes all records.</param>
@@ -5068,8 +4941,8 @@
     </summary>
 
     <param name="cTargetFile">
-      The name of the target database file, including an optional drive, directory, and extension.  See SetDefault() and SetPath() for file searching and creation rules.  The default extension for database files is determined by the RDD (see the "RDD Specifics" appendix in the Programmer's Guide for details on a particular RDD).<br/>
-      &#0009;If &lt;cTargetFile&gt; does not exist, it is created.  If it exists, this function attempts to open the file in exclusive mode and, if successful, the file is overwritten without warning or error.  If access is denied because, for example, another process is using the file, NetErr() is set to TRUE.  Refer to the "Concurrency Control" chapter in the Programmer's Guide for more information on resolving concurrency conflicts.<br/>
+      The name of the target database file, including an optional drive, directory, and extension.  See SetDefault() and SetPath() for file searching and creation rules.  The default extension for database files is determined by the RDD .<br/>
+      &#0009;If &lt;cTargetFile&gt; does not exist, it is created.  If it exists, this function attempts to open the file in exclusive mode and, if successful, the file is overwritten without warning or error.  If access is denied because, for example, another process is using the file, NetErr() is set to TRUE.  <br/>
       &#0009;DBCopyStruct() creates the specified file in ANSI or OEM character set format, based on the SetAnsi() setting.  (For more information, refer to the SetAnsi() function.)
     </param>
     <param name="acStruct">A one-dimensional array of field names to copy to the new database file.  The default is all fields.</param>
@@ -5101,8 +4974,8 @@
     </summary>
 
     <param name="cTargetFile">
-      The name of the target structure-extended database file, including an optional drive, directory, and extension.  See SetDefault() and SetPath() for file searching and creation rules.  The default extension for database files is determined by the RDD (see the "RDD Specifics" appendix in the Programmer's Guide for details on a particular RDD).<br/>
-      &#0009;If &lt;cTargetFile&gt; does not exist, it is created.  If it exists, this function attempts to open the file in exclusive mode and, if successful, the file is overwritten without warning or error.  If access is denied because, for example, another process is using the file, NetErr() is set to TRUE.  Refer to the "Concurrency Control" chapter in the Programmer's Guide for more information on resolving concurrency conflicts.<br/>
+      The name of the target structure-extended database file, including an optional drive, directory, and extension.  See SetDefault() and SetPath() for file searching and creation rules.  The default extension for database files is determined by the RDD .<br/>
+      &#0009;If &lt;cTargetFile&gt; does not exist, it is created.  If it exists, this function attempts to open the file in exclusive mode and, if successful, the file is overwritten without warning or error.  If access is denied because, for example, another process is using the file, NetErr() is set to TRUE.  <br/>
       &#0009;DBCreate() creates the specified file in ANSI or OEM character set format, based on the SetAnsi() setting.  (For more information, refer to the SetAnsi() function.)
     </param>
     <returns>
@@ -5148,8 +5021,8 @@
     </summary>
 
     <param name="cTargetFile">
-      The name of the new database file, including an optional drive, directory, and extension.  See SetDefault() and SetPath() for file searching and creation rules.  The default extension for database files is determined by the RDD (see the "RDD Specifics" appendix in the Programmer's Guide for details on a particular RDD).<br/>
-      &#0009;If &lt;cTargetFile&gt; does not exist, it is created.  If it exists, this function attempts to open the file in exclusive mode and, if successful, the file is overwritten without warning or error.  If access is denied because, for example, another process is using the file, NetErr() is set to TRUE.  Refer to the "Concurrency Control" chapter in the Programmer's Guide for more information on resolving concurrency conflicts.<br/>
+      The name of the new database file, including an optional drive, directory, and extension.  See SetDefault() and SetPath() for file searching and creation rules.  The default extension for database files is determined by the RDD .<br/>
+      &#0009;If &lt;cTargetFile&gt; does not exist, it is created.  If it exists, this function attempts to open the file in exclusive mode and, if successful, the file is overwritten without warning or error.  If access is denied because, for example, another process is using the file, NetErr() is set to TRUE.  <br/>
       &#0009;DBCreate() creates the specified file in ANSI or OEM character set format, based on the SetAnsi() setting.  (For more information, refer to the SetAnsi() function.)
     </param>
     <param name="aStruct">An array containing field descriptions in the format returned by DBStruct().  This array defines the structure for the new database file.</param>
@@ -5157,7 +5030,7 @@
     <param name="lNew">TRUE opens the database file in a new work area (first available).  FALSE opens it in the current work area.  &lt;lNew&gt; is useful only when &lt;lOpen&gt; has a value of TRUE. The default is FALSE.</param>
     <param name="cAlias">The alias to be associated with the work area where the file is opened.  Within a single application, X# will not accept duplicate aliases.  &lt;cAlias&gt; is useful only when &lt;lOpen&gt; has a value of TRUE.  The default alias is the eight-letter database file name .</param>
     <param name="cDelim">
-      The delimiter for fields within a delimited database file.  If you are using one of the supplied RDDs for processing .DBF files (see the "RDD Specifics" appendix in the Programmer's Guide for a complete list), the delimiter should be a NULL_STRING, which is the default if the <br/>
+      The delimiter for fields within a delimited database file.  If you are using one of the supplied RDDs for processing .DBF files, the delimiter should be a NULL_STRING, which is the default if the <br/>
       &#0009;argument is omitted.
     </param>
     <param name="lOpen">TRUE specifies that an existing database file be opened; FALSE specifies that that a new database file be opened.  The default is FALSE.  This can be used to open existing SDF and delimited files, which do not have a structure in the header — in which case, &lt;aStruct&gt; should be used.</param>
@@ -5215,7 +5088,7 @@
       The name of the target index file, including an optional drive, directory, and extension.  See SetDefault() and SetPath() for file searching and creation rules.  The default extension is determined by the RDD and can be obtained using DBOrderInfo(DBOI_INDEXEXT).<br/>
       &#0009;In RDDs that support production indexes, the production index file is assumed if &lt;cIndexFile&gt; is not specified.<br/>
       &#0009;If &lt;cIndexFile&gt; does not exist, it is created.<br/>
-      &#0009;If &lt;cIndexFile&gt; exists, DBCreateIndex() must first obtain exclusive use of the file.  If successful, the file is overwritten without warning or error.  If the attempt is unsuccessful because, for example, the file is open by another process, NetErr() is set to TRUE.  Refer to the "Concurrency Control" chapter in the Programmer's Guide for more information.
+      &#0009;If &lt;cIndexFile&gt; exists, DBCreateIndex() must first obtain exclusive use of the file.  If successful, the file is overwritten without warning or error.  If the attempt is unsuccessful because, for example, the file is open by another process, NetErr() is set to TRUE.  
     </param>
     <param name="cKeyValue">
       The order key expression specified as a string.  This is the key expression that is stored in the index file and used for such purposes as locating key values and recreating the order.<br/>
@@ -5223,7 +5096,7 @@
     </param>
     <param name="cbKeyValue">
       The order key expression specified as a code block.  This code block is used to initially create the order.  If you do not supply &lt;cbKeyValue&gt;, it is macro-compiled from &lt;cKeyValue&gt; (for example, {||&amp;&lt;cKeyValue&gt;}).<br/>
-      &#0009;The data type of the key expression and all other limitations, including the length of the key and the key expression, are determined by the RDD (see the "RDD Specifics" appendix in the Programmer's Guide for information about RDD limitations.)
+      &#0009;The data type of the key expression and all other limitations, including the length of the key and the key expression, are determined by the RDD.
     </param>
     <param name="lUnique">TRUE creates a unique order by including only those records with unique key values; FALSE uses all records in the database file.  If &lt;lUnique&gt; is omitted, the SetUnique() setting is used.</param>
     <returns>
@@ -5233,7 +5106,7 @@
       By default, this function creates an index file for the database file associated with the currently selected work area.  It can be made to operate on an unselected work area by specifying it within an aliased expression.
       DBCreateIndex() uses the current DBSetOrderCondition() to determine the conditions for the order (for example, its scope, for condition, and while condition).
       If there are other open index files in the work area, they are closed.  After the new index file is created, an order is added to the file using the index file name and the specified key.  The index file is opened (in the same mode as its associated database file), the controlling order for the work area is set, and the database file is positioned to the first logical record.
-      Note:  If the RDD supports multiple orders per index file, add subsequent orders to the index file using DBCreateOrder().  See the "RDD Specifics" appendix in the Programmer's Guide if you are unsure about multiple-order support for a particular RDD.
+      Note:  If the RDD supports multiple orders per index file, add subsequent orders to the index file using DBCreateOrder().  
       <note type="tip">
         Side effects:&#0009;DBCreateIndex() is guaranteed to create an order that, when made the controlling order, will impose the specified logical order on the database.  The key expression is not necessarily evaluated at any particular time, by any particular means, or on any particular record or series of records.  If the key expression relies on information external to the database file or work area, the effect is unpredictable.  If the key expression changes the state of the work area (for example, by moving to a different record or changing the contents of a record), the effect is unpredictable.
         Key evaluation:&#0009;Before the key expression is evaluated, the associated work area is automatically selected as the current work area; the previously selected work area is automatically restored afterward.
@@ -5269,7 +5142,7 @@
       The name of the target index file, including an optional drive, directory, and extension.  See SetDefault() and SetPath() for file searching and creation rules.  The default extension is determined by the RDD and can be obtained using DBOrderInfo(DBOI_INDEXEXT).<br/>
       &#0009;In RDDs that support production indexes , the production index file (that is, one with the same name as the database file) is assumed if &lt;cIndexFile&gt; is not specified.<br/>
       &#0009;If &lt;cIndexFile&gt; does not exist, it is created.<br/>
-      &#0009;If &lt;cIndexFile&gt; exists, the INDEX command must first obtain exclusive use of the file.  If the attempt is unsuccessful because, for example, the file is open by another process, NetErr() is set to TRUE.  Refer to the "Concurrency Control" chapter in the Programmer's Guide for more information.<br/>
+      &#0009;If &lt;cIndexFile&gt; exists, the INDEX command must first obtain exclusive use of the file.  If the attempt is unsuccessful because, for example, the file is open by another process, NetErr() is set to TRUE.  <br/>
       &#0009;If the attempt is successful and the RDD specifies that index files can contain only a single order, the current contents of the file is overwritten with the new order.  If the RDD specifies that index files can contain multiple orders, the order is added to &lt;cIndexFile&gt; if it does not already exist; otherwise it is replaced.
     </param>
     <param name="cKeyValue">
@@ -5278,7 +5151,7 @@
     </param>
     <param name="cbKeyValue">
       The order key expression specified as a code block.  This code block is used to initially create the order.  If you do not supply &lt;cbKeyValue&gt;, it is macro-compiled from &lt;cKeyValue&gt; (for example, {||&amp;&lt;cKeyValue&gt;}).<br/>
-      &#0009;The data type of the key expression and all other limitations, including the length of the key and the key expression, are determined by the RDD (see the "RDD Specifics" appendix in the Programmer's Guide for information about RDD limitations.)
+      &#0009;The data type of the key expression and all other limitations, including the length of the key and the key expression, are determined by the RDD.
     </param>
     <param name="lUnique">TRUE creates a unique order by including only those records with unique key values; FALSE uses all records in the database file.  If &lt;lUnique&gt; is omitted, the SetUnique() setting is used.Note that keys from deleted records are also included in the index, and may hide keys from non-deleted records.</param>
     <returns>
@@ -5326,7 +5199,7 @@
       DBDelete() is the functional equivalent of the DELETE command with a scope of the current record.  For more information, refer to DELETE.
       <note type="tip">
         Logical records:&#0009;If SetDeleted() is TRUE, deleted records are not logically visible.  That is, database operations which operate on logical records will not consider records marked for deletion.  Note, however, that if SetDeleted() is TRUE when the current record is marked for deletion, the record remains visible until it is no longer the current record.
-        Shared mode:&#0009;For a shared database, DBDelete() requires the current record to be locked.  For more information, refer to "Concurrency Control" in the Programmer's Guide.
+        Shared mode:&#0009;For a shared database, DBDelete() requires the current record to be locked.  
       </note>
     </remarks>
     <example>
@@ -5372,7 +5245,7 @@
       DBDeleteOrder() deletes one order from a multiple-order index file and removes the order from the current order list.
       To delete the entire index file, use a regular file handling function such as Windows DeleteFile().
       <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
-      Note:  The RDD determines the order capacity of an index file, and DBDeleteOrder() is supported only by RDDs with multiple-order capabilities.  For single-order index files, you must delete the entire file.  See the "RDD Specifics" appendix in the Programmer's Guide for details on a particular RDD.
+      Note:  The RDD determines the order capacity of an index file, and DBDeleteOrder() is supported only by RDDs with multiple-order capabilities.  For single-order index files, you must delete the entire file.  
       <br/>
       Third-party RDD suppliers may define specific behaviors for this function.
     </remarks>
@@ -5423,7 +5296,8 @@
       <include file="VoFunctionDocs.xml" path="Runtimefunctions/cbfor/*" />
     </param>
     <param name="cbWhileCondition">
-      <include file="VoFunctionDocs.xml" path="Runtimefunctions/cbwhile/*" />    </param>
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/cbwhile/*" />
+    </param>
     <param name="nNext">The number of records to process, starting at the current record.</param>
     <param name="nRecord">The number of the record to process.</param>
     <param name="lRest">TRUE processes only records from the current record to end-of-file.  FALSE processes all records.</param>
@@ -5652,7 +5526,7 @@
       DBGoBottom() is the functional equivalent of the GO BOTTOM command.  For more information, refer to the GO command.
       <note type="tip">
         Logical records:&#0009;DBGoBottom() operates on logical records.  If the work area has an active order list, DBGoBottom() moves to the last record in controlling order.  If a filter is set, only records which meet the filter condition are considered.
-        Shared mode:&#0009;For a shared file, moving to a different record can cause updates to the current record to become visible to other processes.  For more information, refer to "Concurrency Control" in the Programmer's Guide.
+        Shared mode:&#0009;For a shared file, moving to a different record can cause updates to the current record to become visible to other processes.  
       </note>
     </remarks>
     <example>
@@ -5697,7 +5571,7 @@
       DbGoTo() performs the same function as the GO command.  For more information, refer to the GO command.
       <note type="tip">
         Logical records:&#0009;DBGoTo() does not respect logical visibility.  That is, if the specified record exists, it will become the current record regardless of any order or filter condition.
-        Shared mode:&#0009;For a shared file, moving to a different record can cause updates to the current record to become visible to other processes.  For more information, refer to "Concurrency Control" in the Programmer's Guide.
+        Shared mode:&#0009;For a shared file, moving to a different record can cause updates to the current record to become visible to other processes.  
       </note>
     </remarks>
     <example>
@@ -5736,7 +5610,7 @@
       DBGoTop() performs the same function as the GO TOP command.
       <note type="tip">
         Logical records:&#0009;DBGoTop() operates on logical records.  If the work area has an active order list, DBGoTop() moves to the first record in the controlling order.  If a filter is set, only records which meet the filter condition are considered.
-        Shared mode:&#0009;For a shared file, moving to a different record can cause updates to the current record to become visible to other processes.  For more information, refer to "Concurrency Control" in the Programmer's Guide.
+        Shared mode:&#0009;For a shared file, moving to a different record can cause updates to the current record to become visible to other processes.  
       </note>
     </remarks>
     <example>
@@ -5854,8 +5728,8 @@
 
     <param name="cAlias">The alias identifier for the work area to join with.  If there is no open database associated with &lt;cAlias&gt;, a runtime error is raised.</param>
     <param name="cTargetFile">
-      The name of the target database file, including an optional drive, directory, and extension.  See SetDefault() and SetPath() for file searching and creation rules.  The default extension for database files is determined by the RDD (see the "RDD Specifics" appendix in the Programmer's Guide for details on a particular RDD).<br/>
-      &#0009;If &lt;cTargetFile&gt; does not exist, it is created.  If it exists, this function attempts to open the file in exclusive mode and, if successful, the file is overwritten without warning or error.  If access is denied because, for example, another process is using the file, NetErr() is set to TRUE.  Refer to the "Concurrency Control" chapter in the Programmer's Guide for more information on resolving concurrency conflicts.
+      The name of the target database file, including an optional drive, directory, and extension.  See SetDefault() and SetPath() for file searching and creation rules.  The default extension for database files is determined by the RDD .<br/>
+      &#0009;If &lt;cTargetFile&gt; does not exist, it is created.  If it exists, this function attempts to open the file in exclusive mode and, if successful, the file is overwritten without warning or error.  If access is denied because, for example, another process is using the file, NetErr() is set to TRUE.  
     </param>
     <param name="acFields">The projection of fields from both work areas into the new database file.  To specify fields in the secondary work area, reference them with the alias operator (-&gt;).  If &lt;acFields&gt; is not specified, all fields from the source database file are included in the target database file.</param>
     <param name="cbForCondition">
@@ -5888,7 +5762,8 @@
       <include file="VoFunctionDocs.xml" path="Runtimefunctions/cbfor/*" />
     </param>
     <param name="cbWhileCondition">
-      <include file="VoFunctionDocs.xml" path="Runtimefunctions/cbwhile/*" />    </param>
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/cbwhile/*" />
+    </param>
     <param name="nNext">The number of records to process, starting with the current record.</param>
     <param name="nRecord">The number of the record to process.</param>
     <param name="lRest">TRUE processes only records from the current record to end-of-file.  FALSE processes all records.</param>
@@ -6099,7 +5974,7 @@
     </returns>
     <remarks>
       <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkareaParam/*" />
-      This function requires that the current database be open in exclusive mode (see SetExclusive()).  If this condition is not met when the function is invoked, a runtime error is raised.  See "Concurrency Control" in the Programmer's Guide for more information.  Otherwise, the operation proceeds and, upon termination, resets the record pointer to the first logical record in the current work area.
+      This function requires that the current database be open in exclusive mode (see SetExclusive()).  If this condition is not met when the function is invoked, a runtime error is raised.   Otherwise, the operation proceeds and, upon termination, resets the record pointer to the first logical record in the current work area.
       Warning!  DBPack() does not create backup files.  You may want to make a backup of the file before issuing this function call; otherwise, you will not be able to recover deleted records.
       Tip:  Packing large database files can be a time-consuming process and is, therefore, not recommended in a high-volume transaction application.  By modifying the application design, you can remove the necessity of physically removing records from the database file.  Simply filter the deleted records with SetDeleted(TRUE) or DBSetFilter(!Deleted()) and reuse deleted records instead of adding new ones.
     </remarks>
@@ -6130,7 +6005,7 @@
       DBRecall() performs the same function as the RECALL command.  For more information, refer to the DELETE and RECALL commands.
       <note type="tip">
         Logical records:&#0009;Reinstating a deleted record affects the record's logical visibility if SetDeleted() is TRUE.  For more information, refer to the DBDelete() function and the DELETE and RECALL commands.
-        Shared mode:&#0009;For a shared database, DBRecall() requires the current record to be locked.  For more information, refer to "Concurrency Control" in the Programmer's Guide.
+        Shared mode:&#0009;For a shared database, DBRecall() requires the current record to be locked.  
       </note>
     </remarks>
     <example>
@@ -6167,7 +6042,7 @@
 
     <param name="kInfoType">Determines what type of information is retrieved.  The constants are listed below.</param>
     <param name="uRecID">The ID of the record that you want information on.  If omitted, the current record is reported on.</param>
-    <param name="uNewValue">This parameter is reserved for RDDs that allow you to change the information rather than just retrieve it.  None of the supplied RDDs (as outlined in the "RDD Specifics" appendix in the Programmer's Guide) support this argument.  Either omit the argument or specify it as NIL.</param>
+    <param name="uNewValue">This parameter is reserved for RDDs that allow you to change the information rather than just retrieve it.  None of the supplied RDDs support this argument.  Either omit the argument or specify it as NIL.</param>
     <returns>
     </returns>
     <remarks>
@@ -6216,7 +6091,7 @@
     <remarks>
       <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
       All orders are rebuilt, respecting uniqueness and descending order flags and the for condition specified when the order was created.  After the orders are rebuilt, the work area is positioned to the first logical record in the controlling order.
-      Although this operation will work in both shared and exclusive mode, exclusive mode is highly recommended.  See both SetExclusive() and "Concurrency Control" in the Programmer's Guide for more information.
+      Although this operation will work in both shared and exclusive mode, exclusive mode is highly recommended.  See SetExclusive() for more information.
       Caution!  DBReindex() does not recreate the header of the index file when it recreates the order.  Because of this, DBReindex() does not help if there is corruption of the file header.  To guarantee a valid index, always use DBCreateIndex() in place of DBReindex() to rebuild damaged index files
     </remarks>
     <example>
@@ -6315,9 +6190,8 @@
       If DBRLock() is successful, the record is locked and other processes are prevented from updating the record until the lock is released.  DBRLock() provides a shared lock, allowing other users read-only access to the locked record while allowing only the current process to modify it.
       A record lock remains in effect until you explicitly unlock it (with DBUnlock(), for example), close the database file, or attempt another file or record lock (with RLock() or DBRLock() with no argument).  DBRLock() when specified with an argument does not release records locks held by the current process.  Instead, it adds the newly locked records to the lock list (see DBRLockList()).
       <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
-    This feature is useful since DBRLock() does not automatically attempt a record lock for related files.
-    Refer to "Concurrency Control" in the Programmer's Guide for  more information on record locking.
-  </remarks>
+      This feature is useful since DBRLock() does not automatically attempt a record lock for related files.
+    </remarks>
     <example>
       This example deletes a record from a shared database file DBRLock():
       <code language="X#">
@@ -6482,7 +6356,7 @@
       DBSeek() performs the same function as the SEEK command.  For more information, refer to the SEEK command.
       <note type="tip">
         Logical records:&#0009;DBSeek() operates on logical records.  Records are processed in controlling order.  If a filter is set, only records which meet the filter condition are considered.
-        Shared mode:&#0009;For a shared file, moving to a different record can cause updates to the current record to become visible to other processes.  For more information, refer to "Concurrency Control" in the Programmer's Guide.
+        Shared mode:&#0009;For a shared file, moving to a different record can cause updates to the current record to become visible to other processes.  
       </note>
     </remarks>
     <example>
@@ -6655,9 +6529,9 @@
     </summary>
 
     <param name="cIndexFile">
-      The name of the index files to open, including an optional drive, directory, and extension for each.  See SetDefault() and SetPath() for file searching and creation rules.  The default extension is determined by the RDD and can be obtained using DBOrderInfo(DBOI_INDEXEXT).  See the "RDD Specifics" appendix in the Programmer's Guide for details on a particular RDD.<br/>
+      The name of the index files to open, including an optional drive, directory, and extension for each.  See SetDefault() and SetPath() for file searching and creation rules.  The default extension is determined by the RDD and can be obtained using DBOrderInfo(DBOI_INDEXEXT).<br/>
       &#0009;If &lt;cIndexFile&gt; does not exist, a runtime error is raised.  If it exists, this function attempts to open the file in the same mode as the corresponding database file.  If access is denied because, for example, another process is using the file and this one is asking for exclusive use, NetErr() is set to TRUE.  Otherwise, the file open is successful.<br/>
-      &#0009;Concurrency conflicts with index files are rare since they should be used with only one database file.  If a concurrency problem arises, it will normally be when you attempt to open the database file.  Refer to the "Concurrency Control" chapter in the Programmer's Guide for more information on resolving concurrency conflicts.
+      &#0009;Concurrency conflicts with index files are rare since they should be used with only one database file.  If a concurrency problem arises, it will normally be when you attempt to open the database file.  
     </param>
     <returns>
       TRUE if successful; otherwise, FALSE.
@@ -6666,7 +6540,7 @@
       <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
       If the order list for the work area is empty when DBSetIndex() is issued, the first order in the index file becomes the controlling order.  If there are orders already associated with the work area, they are unaffected — the new orders are simply added to the current order list.  After the new index file is opened (using the same open mode as its associated database file), the work area is positioned to the first logical record in the controlling order.
       Opening an index file imposes a logical order (defined by the controlling order) on the records in a database file and may also filter the records according to a for condition or a unique flag.  This means that when you process the database file, the records will appear in the order determined by the controlling order and filtered records, although still physically present in the database file, will be inaccessible.
-      Note:  Except for production index files supported by some RDDs (see the "RDD Specifics" appendix in the Programmer's Guide for details on a particular RDD.), index files are not opened automatically when you open the corresponding database file.  To ensure that index files are accurately maintained, you should either open them prior to making any updates to their corresponding database files or rebuild them at a later time with DBReindex().
+      Note:  Except for production index files supported by some RDDs, index files are not opened automatically when you open the corresponding database file.  To ensure that index files are accurately maintained, you should either open them prior to making any updates to their corresponding database files or rebuild them at a later time with DBReindex().
     </remarks>
     <example>
       The following example opens multiple index files:
@@ -6746,7 +6620,7 @@
     <param name="cForCondition">A string that specifies the for condition for the order.  This string is returned by DBOrderInfo(DBOI_CONDITION, [&lt;cIndexFile&gt;], &lt;cOrder&gt;).  If you do not need this information, you can specify a NULL_STRING.</param>
     <param name="cbForCondition">
       A code block that defines a condition (called the for condition) that each record within the scope must meet in order to be processed.  If a record does not meet the specified condition, it is ignored and the next record is processed.  Duplicate key values are not added to the index file when a for condition is used.  The default is NIL.<br/>
-      &#0009;This condition (not &lt;cForCondition&gt;) is the one that is actually used to create the order.  Unlike the while condition and other scoping information, the for condition is stored as part of the index file and is used when updating or rebuilding the order with DBReindex().  Any limitations on the for condition are determined by the RDD (see the "RDD Specifics" appendix in the Programmer's Guide for information about RDD limitations.)
+      &#0009;This condition (not &lt;cForCondition&gt;) is the one that is actually used to create the order.  Unlike the while condition and other scoping information, the for condition is stored as part of the index file and is used when updating or rebuilding the order with DBReindex().  Any limitations on the for condition are determined by the RDD.
     </param>
     <param name="lAll">A value of TRUE specifies a scope of all records.  Use FALSE if you want to indicate other record scoping conditions (that is, &lt;nNext&gt;, &lt;nRecord&gt;, or &lt;lRest&gt;).  The default is FALSE.</param>
     <param name="cbWhileCondition">
@@ -6911,7 +6785,7 @@
       DBSkip() is the functional equivalent of the SKIP command.  For more information, refer to the SKIP command.
       <note type="tip">
         Logical records:&#0009;DBSkip() operates on logical records.  If the work area has an active order list, records are considered in controlling order.  If a filter is set, only records which meet the filter condition are considered.
-        Shared mode:&#0009;For a shared file, moving to a different record can cause updates to the current record to become visible to other processes.  For more information, refer to "Concurrency Control" in the Programmer's Guide.
+        Shared mode:&#0009;For a shared file, moving to a different record can cause updates to the current record to become visible to other processes.  
       </note>
     </remarks>
     <example>
@@ -6942,8 +6816,8 @@
     </summary>
 
     <param name="cTargetFile">
-      The name of the target database file to write the sorted records, including an optional drive, directory, and extension.  See SetDefault() and SetPath() for file searching and creation rules.  The default extension for database files is determined by the RDD (see the "RDD Specifics" appendix in the Programmer's Guide for details on a particular RDD).<br/>
-      &#0009;If &lt;cTargetFile&gt; does not exist, it is created.  If it exists, this function attempts to open the file in exclusive mode and, if successful, the file is overwritten without warning or error.  If access is denied because, for example, another process is using the file, NetErr() is set to TRUE.  Refer to the "Concurrency Control" chapter in the Programmer's Guide for more information on resolving concurrency conflicts.
+      The name of the target database file to write the sorted records, including an optional drive, directory, and extension.  See SetDefault() and SetPath() for file searching and creation rules.  The default extension for database files is determined by the RDD .<br/>
+      &#0009;If &lt;cTargetFile&gt; does not exist, it is created.  If it exists, this function attempts to open the file in exclusive mode and, if successful, the file is overwritten without warning or error.  If access is denied because, for example, another process is using the file, NetErr() is set to TRUE.  
     </param>
     <param name="acFields">The sort keys, specified as an array of field names.  You may optionally add, after the field name, /A (to sort in dictionary order), /C (to ignore capitalization), or /D (to sort in descending order). The default setting is /A.</param>
     <param name="cbForCondition">
@@ -6951,7 +6825,7 @@
     </param>
     <param name="cbWhileCondition">
       <include file="VoFunctionDocs.xml" path="Runtimefunctions/cbwhile/*" />
-     </param>
+    </param>
     <param name="nNext">The number of records to append, starting at the current record.</param>
     <param name="nRecord">The number of the record to append.</param>
     <param name="lRest">TRUE processes only records from the current record to end-of-file.  FALSE processes all records.</param>
@@ -7069,8 +6943,8 @@
     </summary>
 
     <param name="cTargetFile">
-      The name of the target database file to write the totaled records, including an optional drive, directory, and extension.  See SetDefault() and SetPath() for file searching and creation rules.  The default extension for database files is determined by the RDD (see the "RDD Specifics" appendix in the Programmer's Guide for details on a particular RDD).<br/>
-      &#0009;If &lt;cTargetFile&gt; does not exist, it is created.  If it exists, this function attempts to open the file in exclusive mode and, if successful, the file is overwritten without warning or error.  If access is denied because, for example, another process is using the file, NetErr() is set to TRUE.  Refer to the "Concurrency Control" chapter in the Programmer's Guide for more information on resolving concurrency conflicts.
+      The name of the target database file to write the totaled records, including an optional drive, directory, and extension.  See SetDefault() and SetPath() for file searching and creation rules.  The default extension for database files is determined by the RDD .<br/>
+      &#0009;If &lt;cTargetFile&gt; does not exist, it is created.  If it exists, this function attempts to open the file in exclusive mode and, if successful, the file is overwritten without warning or error.  If access is denied because, for example, another process is using the file, NetErr() is set to TRUE.  
     </param>
     <param name="cbKey">A key expression specified as a code block.</param>
     <param name="acFields">The fields to be totaled specified as an array of strings.</param>
@@ -7078,7 +6952,8 @@
       <include file="VoFunctionDocs.xml" path="Runtimefunctions/cbfor/*" />
     </param>
     <param name="cbWhileCondition">
-      <include file="VoFunctionDocs.xml" path="Runtimefunctions/cbwhile/*" />    </param>
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/cbwhile/*" />
+    </param>
     <param name="nNext">The number of records to append, starting at the current record.</param>
     <param name="nRecord">The number of the record to append.</param>
     <param name="lRest">TRUE processes only records from the current record to end-of-file.  FALSE processes all records.</param>
@@ -7110,7 +6985,8 @@
       <include file="VoFunctionDocs.xml" path="Runtimefunctions/cbfor/*" />
     </param>
     <param name="cbWhileCondition">
-      <include file="VoFunctionDocs.xml" path="Runtimefunctions/cbwhile/*" />    </param>
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/cbwhile/*" />
+    </param>
     <param name="nNext">The number of records to append, starting at the current record.</param>
     <param name="nRecord">The number of the record to append.</param>
     <param name="lRest">TRUE processes only records from the current record to end-of-file.  FALSE processes all records.</param>
@@ -7164,7 +7040,7 @@
       DBUnlock() releases any record or file locks obtained by the current process for a work area.  DBUnlock() is only meaningful on a shared database.
       <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
       <note type="tip">
-        Shared mode:&#0009;Releasing locks can cause updates to the database to become visible to other processes.  For more information, refer to "Concurrency Control" in the Programmer's Guide.
+        Shared mode:&#0009;Releasing locks can cause updates to the database to become visible to other processes.  
       </note>
     </remarks>
     <example>
@@ -7187,7 +7063,7 @@
       </code>
     </example>
     <seealso>DBServer:Unlock</seealso>
-    <seealso cref='O:XSharp.RT.Functions.DbUnLockAll'>DBUnlockAll</seealso>
+    <seealso cref='M:XSharp.RT.Functions.DbUnLockAll'>DbUnLockAll</seealso>
     <seealso cref='O:XSharp.RT.Functions.Flock'>FLock</seealso>
     <seealso cref='M:XSharp.RT.Functions.IndexHPLock(XSharp.__Usual)'>IndexHPLock</seealso>
     <seealso cref='M:XSharp.RT.Functions.NewIndexLock(XSharp.__Usual)'>NewIndexLock</seealso>
@@ -7205,7 +7081,8 @@
       TRUE if successful; otherwise, FALSE.
     </returns>
     <remarks>
-      DBUnlockAll() releases any record or file locks obtained by the current process for any work area.  DBUnlockAll() is only meaningful on a shared database.  It is equivalent to calling DBUnlock() on every occupied work area.
+      DbUnLockAll() releases any record or file locks obtained by the current process for any work area.  
+	  DbUnLockAll() is only meaningful on a shared database.  It is equivalent to calling DBUnlock() on every occupied work area.
     </remarks>
     <example>
       The following example marks a record for deletion if an RLock() attempt is successful, then clears all locks in all work areas:
@@ -7227,7 +7104,7 @@
         &#0009;ENDIF
         ELSE
         &#0009;QOut("Not found")
-        &#0009;DBUnlockAll()&#0009;&#0009;&#0009;// Remove all locks in
+        &#0009;DbUnLockAll()&#0009;&#0009;&#0009;// Remove all locks in
         ENDIF&#0009;&#0009;&#0009;&#0009;&#0009;&#0009;// all work areas
       </code>
     </example>
@@ -7237,7 +7114,7 @@
     <seealso cref='M:XSharp.RT.Functions.IndexHPLock(XSharp.__Usual)'>IndexHPLock</seealso>
     <seealso cref='M:XSharp.RT.Functions.NewIndexLock(XSharp.__Usual)'>NewIndexLock</seealso>
     <seealso cref='O:XSharp.RT.Functions.RLock'>RLock</seealso>
-    <seealso cref='M:XSharp.RT.Functions.VoDbUnlockAll'>VODBUnlockAll</seealso>
+    <seealso cref='M:XSharp.RT.Functions.VoDbUnLockAll'>VODbUnLockAll</seealso>
   </dbunlockall>
   <dbupdate>
     <summary>
@@ -7252,7 +7129,7 @@
       TRUE if successful; otherwise, FALSE.
     </returns>
     <remarks>
-      For a shared database, DBUpdate() requires a file lock on the current database file.  The source database file can be open in any mode.  Refer to the "Concurrency Control" chapter in the Programmer's Guide for more information on locking.
+      For a shared database, DBUpdate() requires a file lock on the current database file.  The source database file can be open in any mode.  
       DBUpdate() is the functional equivalent of the UPDATE command.
       <note type="tip">
         Deleted records:&#0009;If SetDeleted() is FALSE, deleted records in both source files are processed.  Records in the file being updated retain their deleted status and are not affected by the deleted status of records in the source file.  If SetDeleted()is TRUE, however, no deleted records are processed from either source file
@@ -7292,7 +7169,7 @@
       &#0009;<code>{"Birthday", "D", 8, 0}}</code><br/>
       &#0009;<code>? First&#0009;&#0009;&#0009;&#0009;&#0009;// Return: Josie</code>
     </param>
-    <param name="cDelim">The delimiter for fields within a delimited database file.  If you are using one of the supplied RDDs for processing .DBF files (see the "RDD Specifics" appendix in the Programmer's Guide for a complete list), the delimiter should be a NULL_STRING, which is the default if the argument is omitted. </param>
+    <param name="cDelim">The delimiter for fields within a delimited database file.  If you are using one of the supplied RDDs for processing .DBF files , the delimiter should be a NULL_STRING, which is the default if the argument is omitted. </param>
     <param name="acRDDs">A one-dimensional array with the names of RDDs from which the main RDD inherits special functionality.  This allows you to use RDDs with special capabilities, like encryption or decryption, in different work areas with different database drivers.  These RDDs overlay special functions of the main RDD (specified with the &lt;cDriver&gt; argument).  If multiple RDDs (specified with this argument) implement the same function, the function associated with the last RDD in the list takes precedence.  If &lt;aRDDs&gt; is omitted, no additional RDDs are assumed.</param>
     <returns>
       TRUE if successful; otherwise, FALSE.
@@ -7325,7 +7202,7 @@
     <remarks>
       DBZap() permanently removes all records from files open in the work area.  This includes the database file, index files, and associated memo file.  Disk space previously occupied by the zapped files is released to the operating system.  If all the records in the database file are marked for deletion, DBZap() performs the same operation as DBPack(), but is almost instantaneous.
       <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkareaParam/*" />
-      This operation requires that the current database be open in exclusive mode (see SetExclusive()).  If this condition is not met when the function is invoked, a runtime error is raised.  See "Concurrency Control" in the Programmer's Guide for more information.  Otherwise, the operation proceeds and, upon termination, resets the record pointer to the first logical record in the current work area.
+      This operation requires that the current database be open in exclusive mode (see SetExclusive()).  If this condition is not met when the function is invoked, a runtime error is raised.    Otherwise, the operation proceeds and, upon termination, resets the record pointer to the first logical record in the current work area.
     </remarks>
     <example>
       This example demonstrates a typical DBZap() operation:
@@ -7491,20 +7368,19 @@
     <summary>
       Convert an ErrInfo structure to an Error object.
     </summary>
-
-    <param name="strucErrorInfo">A pointer to an ErrInfo structure (refer to ErrorBuild() in this guide for more information on this structure).</param>
+    <param name="strucErrorInfo">A pointer to an ErrInfo structure.</param>
     <returns>
       A Error object whose properties match the information in the indicated ErrInfo structure.
     </returns>
     <remarks>
-      This function is automatically installed by ErrorGen() as the default error function before your application begins execution.
-      Thus, unless another error function is installed using ErrorFunc(), DefErrorGen() will be used by all subsystems that create an Error object from an ErrInfo structure.
+      This function is automatically installed by ErrorGen() as the default error function before 
+	  your application begins execution.
+      Thus, unless another error function is installed using ErrorFunc(), DefErrorGen() will 
+	  be used by all subsystems that create an Error object from an ErrInfo structure.
     </remarks>
     <example>
     </example>
     <seealso>Error Class</seealso>
-    <seealso cref='M:XSharp.Core.Functions.ErrorBuild(System.Exception)'>ErrorBuild</seealso>
-    <seealso cref='M:XSharp.VO.Functions.ErrorFunc(XSharp.__Usual)'>ErrorFunc</seealso>
     <seealso>ErrorGen</seealso>
   </deferrorgen>
   <deleted>
@@ -8470,151 +8346,6 @@
     <seealso cref='M:XSharp.VO.Functions.DynShrink'>DynShrink</seealso>
     <seealso cref='M:XSharp.VO.Functions.SetMaxDynSize(System.UInt32)'>SetMaxDynSize</seealso>
   </dynsize>
-  <dyntooldspace>
-    <summary>
-      Copy a dynamic object to static allocated memory.
-    </summary>
-
-    <param name="uValue">The dynamic object you want to copy.  It can be a string, a float, an object, or an array.</param>
-    <returns>
-      The new, copied object in static memory.
-    </returns>
-    <remarks>
-      DynToOldSpace() lets you copy objects to static memory so that the garbage collector won't get them.
-      If you pass a string as an argument to a function which directly or indirectly allocates dynamic memory, it can be collected.  For example, if you issue Psz2String(Time()), the passed string argument (in this case, the string returned by Time()) can be wiped out by the garbage collector when Psz2String() utilizes dynamic allocation.  Static strings, on the other hand, are not collected, so Psz2String("hello") could be issued without a problem.  To free up a static buffer, use OldSpaceFree().
-      <br/>
-      When an object is moved to OldSpace, any nested Strings, Floats, Objects and Arrays will also be moved to OldSpace automatically.
-    </remarks>
-    <example>
-      This example uses DynToOldSpace() on a string:
-      <code language="X#">
-        FUNCTION GarbageProtect() AS VOID
-        &#0009;LOCAL cV AS STRING
-        &#0009;cV := TIME()
-        &#0009;cV := DynToOldSpace(cV)
-        &#0009;? cV&#0009;&#0009;&#0009;&#0009;// Current time
-      </code>
-      This example ensures that a passed argument does not get wiped out by the garbage collector:
-      <code language="X#">Psz2String(DynToOldSpace(TIME()))</code>
-    </example>
-    <seealso cref='M:XSharp.VO.Functions.DynToOldSpaceArray(XSharp.__Array)'>DynToOldSpaceArray</seealso>
-    <seealso cref='M:XSharp.VO.Functions.DynToOldSpaceFloat(XSharp.__Float)'>DynToOldSpaceFloat</seealso>
-    <seealso cref='M:XSharp.VO.Functions.DynToOldSpaceObject(System.Object)'>DynToOldSpaceObject</seealso>
-    <seealso cref='M:XSharp.VO.Functions.DynToOldSpaceString(System.String)'>DynToOldSpaceString</seealso>
-    <seealso>IsDynPtr</seealso>
-    <seealso cref='M:XSharp.VO.Functions.IsOldSpace(XSharp.__Usual)'>IsOldSpace</seealso>
-    <seealso cref='M:XSharp.VO.Functions.OldSpaceFree(XSharp.__Usual)'>OldSpaceFree</seealso>
-  </dyntooldspace>
-  <dyntooldspacearray>
-    <summary>
-      Copy a typed dynamic object to static allocated memory.
-    </summary>
-
-    <param name="aValue">The array you want to copy.</param>
-    <returns>
-      The new, copied object in static memory.
-    </returns>
-    <remarks>
-      DynToOldSpaceArray() is the same as DynToOldSpace() except that it is strongly typed.  For more information, see DynToOldSpace().
-      <br/>
-      When an object is moved to OldSpace, any nested Strings, Floats, Objects and Arrays will also be moved to OldSpace automatically.
-    </remarks>
-    <example>
-      This example uses DynToOldSpaceArray():
-      <code language="X#">
-        FUNCTION AProtect()
-        &#0009;LOCAL a AS ARRAY
-        &#0009;a := {1,2,3}
-        &#0009;a := DynToOldSpaceArray(a)
-        &#0009;? a[1]&#0009;&#0009;&#0009;&#0009;&#0009;&#0009;// 1
-      </code>
-    </example>
-    <seealso cref='M:XSharp.VO.Functions.DynToOldSpace(XSharp.__Usual)'>DynToOldSpace</seealso>
-    <seealso>IsDynPtr</seealso>
-    <seealso cref='M:XSharp.VO.Functions.IsOldSpaceArray(XSharp.__Array)'>IsOldSpaceArray</seealso>
-    <seealso cref='M:XSharp.VO.Functions.OldSpaceFree(XSharp.__Usual)'>OldSpaceFree</seealso>
-  </dyntooldspacearray>
-  <dyntooldspacefloat>
-    <summary>
-      Copy a typed dynamic object to static allocated memory.
-    </summary>
-
-    <param name="aValue">The floating point number you want to copy.</param>
-    <returns>
-      The new, copied object in static memory.
-    </returns>
-    <remarks>
-      DynToOldSpaceFloat() is the same as DynToOldSpace() except that it is strongly typed.  For more information, see DynToOldSpace().
-    </remarks>
-    <example>
-      This example uses DynToOldSpaceFloat():
-      <code language="X#">
-        FUNCTION FProtect()
-        &#0009;LOCAL f AS FLOAT
-        &#0009;f := 3.14
-        &#0009;f := DynToOldSpaceFloat(f)
-        &#0009;? f&#0009;&#0009;&#0009;&#0009;&#0009;&#0009;// 3.14
-      </code>
-    </example>
-    <seealso cref='M:XSharp.VO.Functions.DynToOldSpace(XSharp.__Usual)'>DynToOldSpace</seealso>
-    <seealso>IsDynPtr</seealso>
-    <seealso cref='M:XSharp.VO.Functions.IsOldSpaceFloat(XSharp.__Float)'>IsOldSpaceFloat</seealso>
-    <seealso cref='M:XSharp.VO.Functions.OldSpaceFree(XSharp.__Usual)'>OldSpaceFree</seealso>
-  </dyntooldspacefloat>
-  <dyntooldspaceobject>
-    <summary>
-      Copy a typed dynamic object to static allocated memory.
-    </summary>
-
-    <param name="aValue">The class object you want to copy.</param>
-    <returns>
-      The new, copied object in static memory.
-    </returns>
-    <remarks>
-      DynToOldSpaceObject() is the same as DynToOldSpace() except that it is strongly typed.    For more information, see DynToOldSpace().
-      <br/>
-      When an object is moved to OldSpace, any nested Strings, Floats, Objects and Arrays will also be moved to OldSpace automatically.
-    </remarks>
-    <example>
-      This example uses DynToOldSpaceObject():
-      <code language="X#">
-        FUNCTION OProtect()
-        &#0009;LOCAL o AS OBJECT
-        &#0009;o := MyClass{}
-        &#0009;o := DynToOldSpaceObject(o)
-        &#0009;? o&#0009;&#0009;// Object representation
-      </code>
-    </example>
-    <seealso cref='M:XSharp.VO.Functions.DynToOldSpace(XSharp.__Usual)'>DynToOldSpace</seealso>
-    <seealso>IsDynPtr</seealso>
-    <seealso cref='M:XSharp.VO.Functions.IsOldSpaceObject(System.Object)'>IsOldSpaceObject</seealso>
-  </dyntooldspaceobject>
-  <dyntooldspacestring>
-    <summary>
-      Copy a typed dynamic object to static allocated memory.
-    </summary>
-
-    <param name="aValue">The string you want to copy.</param>
-    <returns>
-      The new, copied object in static memory.
-    </returns>
-    <remarks>
-      DynToOldSpaceString() is the same as DynToOldSpace() except that it is strongly typed.    For more information, see DynToOldSpace().
-    </remarks>
-    <example>
-      This example uses DynToOldSpaceString():
-      <code language="X#">
-        FUNCTION SProtect()
-        &#0009;LOCAL s AS STRING
-        &#0009;s := TIME()
-        &#0009;s := DynToOldSpaceString(s)
-        &#0009;? s&#0009;&#0009;&#0009;&#0009;&#0009;&#0009;// Hello
-      </code>
-    </example>
-    <seealso cref='M:XSharp.VO.Functions.DynToOldSpace(XSharp.__Usual)'>DynToOldSpace</seealso>
-    <seealso>IsDynPtr</seealso>
-    <seealso cref='M:XSharp.VO.Functions.IsOldSpaceString(System.String)'>IsOldSpaceString</seealso>
-  </dyntooldspacestring>
   <dynunlock>
     <summary>
       Unlock dynamic memory and restart the Garbage Collector.
@@ -8996,10 +8727,10 @@
       Specify the error handler as a code block with the following form:
       <code language="X#">{|&lt;oError&gt;| &lt;uList&gt;}</code>
       where &lt;oError&gt; is an error object containing information about the error and &lt;uList&gt; is a comma-separated list of USUAL expressions that call the function that actually handles the errors.  Within the code block, messages can be sent to the error object to obtain information about the error.  A return value of TRUE from the error handling code block retries the failed operation, whereas a return value of FALSE resumes processing.
-      The error handling code block can be specified either as a list of expressions or as a call to a function.  A call to a function is more useful since you can use X# control statements instead of expressions.  This is particularly the case if there is a BEGIN SEQUENCE or LabelPush() pending and you want to BREAK or LabelJump() to the nearest
+      The error handling code block can be specified either as a list of expressions or as a call to a function.  A call to a function is more useful since you can use X# control statements instead of expressions.  This is particularly the case if there is a BEGIN SEQUENCE or LabelPush() pending and you want to BREAK to the nearest
       RECOVER statement.
-      As this implies, error handling code blocks can be used in combination with BEGIN SEQUENCE...END and/or LabelPush()...LabelPop() control structures.  Within an error handling code block, you handle device, low-level, and common errors that have a general recovery mechanism.  If the operation needs specific error handling, define a BEGIN SEQUENCE or LabelPush(), then BREAK or LabelJump() to the RECOVER statement, returning the error object for local processing.  See the example below.
-      For more information on the structure and operations of error objects, refer to the Error Class entry and the "Error and Exception Handling" chapter in the Programmer's Guide.
+      As this implies, error handling code blocks can be used in combination with BEGIN SEQUENCE...END control structures.  Within an error handling code block, you handle device, low-level, and common errors that have a general recovery mechanism.  If the operation needs specific error handling, define a BEGIN SEQUENCE or LabelPush(), then BREAK to the RECOVER statement, returning the error object for local processing.  See the example below.
+      For more information on the structure and operations of error objects, refer to the Error Class entry.
     </remarks>
     <example>
       This code fragment posts, then calls an error handling code block when there is an error within a BEGIN SEQUENCE construct:
@@ -9031,73 +8762,8 @@
       This way you always get a BREAK after successfully running the error system and also update VOERROR.LOG.  EC_BREAK is already defined by the system.
     </example>
     <seealso>BEGIN SEQUENCE</seealso>
-    <seealso cref='M:XSharp.Core.Functions.ErrorBuild(System.Exception)'>ErrorBuild</seealso>
-    <seealso cref='M:XSharp.VO.Functions.ErrorExec(System.IntPtr)'>ErrorExec</seealso>
-    <seealso cref='M:XSharp.VO.Functions.ErrorFunc(XSharp.__Usual)'>ErrorFunc</seealso>
     <seealso>ErrorSys</seealso>
-    <seealso cref='M:XSharp.VO.Functions.LabelJump(XSharp.__Usual)'>LabelJump</seealso>
-    <seealso cref='M:XSharp.VO.Functions.LabelPop'>LabelPop</seealso>
-    <seealso cref='M:XSharp.VO.Functions.LabelPush(System.IntPtr)'>LabelPush</seealso>
   </errorblock>
-  <errorbuild>
-    <summary>
-      Call the currently installed error function and create a new error object.
-    </summary>
-
-    <param name="ptrErrInfo">
-      A pointer to the ErrInfo structure.  ErrInfo is a structure that is used by the error system to contain information about an error.  It is defined as follows:<br/>
-      &#0009;MEMBER pszSubSystem&#0009;AS PSZ<br/>
-      &#0009;MEMBER dwSubCode&#0009;AS DWORD<br/>
-      &#0009;MEMBER dwGenCode&#0009;AS DWORD&#0009;&#0009;//EG_<br/>
-      &#0009;MEMBER dwOSCode&#0009;AS DWORD<br/>
-      &#0009;MEMBER dwSeverity&#0009;AS DWORD<br/>
-      &#0009;MEMBER lCanDefault&#0009;AS LOGIC<br/>
-      &#0009;MEMBER lCanRetry&#0009;AS LOGIC<br/>
-      &#0009;MEMBER lCanSubstitute&#0009;AS LOGIC<br/>
-      &#0009;MEMBER pszOperation&#0009;AS PSZ<br/>
-      &#0009;MEMBER pszDescription&#0009;AS PSZ<br/>
-      &#0009;MEMBER pszFileName&#0009;AS PSZ<br/>
-      &#0009;MEMBER strucArgs&#0009;AS _ARGS<br/>
-      &#0009;MEMBER dwTries&#0009;AS DWORD<br/>
-      &#0009;MEMBER symFuncSym&#0009;AS SYMBOL<br/>
-      &#0009;MEMBER dwFileHandle&#0009;AS DWORD<br/>
-      &#0009;MEMBER dwArgNum&#0009;AS DWORD<br/>
-      &#0009;MEMBER ptrFuncPtr&#0009;AS PTR<br/>
-      &#0009;MEMBER pszSubCodeText&#0009;AS PSZ<br/>
-      &#0009;MEMBER pszArg&#0009;AS PSZ<br/>
-      &#0009;MEMBER dwArgType&#0009;AS DWORD<br/>
-      &#0009;MEMBER dwArgTypeReq&#0009;AS DWORD<br/>
-      &#0009;MEMBER dwMaxSize&#0009;AS DWORD<br/>
-      &#0009;MEMBER dwSubstituteType&#0009;AS DWORD<br/>
-      &#0009;MEMBER dwChoice&#0009;AS DWORD<br/>
-      &#0009;MEMBER symCallFuncSym&#0009;AS SYMBOL
-    </param>
-    <returns>
-      A new error object.
-    </returns>
-    <remarks>
-      An error block is installable via ErrorBlock().  An error function is installable via ErrorFunc().
-      ErrorBuild() may be of use to you if you are programming in C (or some other language besides X#) and want the error information to be available at the system level.
-    </remarks>
-    <example>
-      Although ErrorBuild() is intended to be used in non-X# routines, this example is written in X# to convey the concept:
-      <code language="X#">
-        STATIC GLOBAL MystrucErrInfo IS ErrInfo
-        FUNCTION ErrorLocal()
-        &#0009;MemClear(@MystrucErrInfo, _SizeOf(ErrInfo))
-        &#0009;MystrucErrInfo.wGenCode&#0009;:= MYERRORCODE
-        &#0009;MystrucErrInfo.wSeverity := ES_ERROR
-        &#0009;MystrucErrInfo.symFuncSym := #MyDefError
-        &#0009;MystrucErrInfo.pszArg := AsPsz("MyBase")
-        &#0009;MystrucErrInfo.wArgNum := 1
-        &#0009;MYstrucErrInfo.lCanDefault := FALSE
-        &#0009;oError := ErrorBuild(@MystrucErrInfo)
-      </code>
-    </example>
-    <seealso cref='O:XSharp.RT.Functions.ErrorBlock'>ErrorBlock Overload</seealso>
-    <seealso cref='M:XSharp.VO.Functions.ErrorExec(System.IntPtr)'>ErrorExec</seealso>
-    <seealso cref='M:XSharp.VO.Functions.ErrorFunc(XSharp.__Usual)'>ErrorFunc</seealso>
-  </errorbuild>
   <errorcount>
     <summary>
       Return the number of errors that have occurred during program execution.
@@ -9125,118 +8791,6 @@
       </code>
     </example>
   </errorcount>
-  <errorexec>
-    <summary>
-      Call the currently installed error function and error block.
-    </summary>
-
-    <param name="ptrErrInfo">
-      A pointer to the ErrInfo structure.  ErrInfo is a structure that is used by the error system to contain information about an error.  It is defined as follows:<br/>
-      &#0009;MEMBER pszSubSystem&#0009;AS PSZ<br/>
-      &#0009;MEMBER dwSubCode&#0009;AS DWORD<br/>
-      &#0009;MEMBER dwGenCode&#0009;AS DWORD&#0009;&#0009;//EG_<br/>
-      &#0009;MEMBER dwOSCode&#0009;AS DWORD<br/>
-      &#0009;MEMBER dwSeverity&#0009;AS DWORD<br/>
-      &#0009;MEMBER lCanDefault&#0009;AS LOGIC<br/>
-      &#0009;MEMBER lCanRetry&#0009;AS LOGIC<br/>
-      &#0009;MEMBER lCanSubstitute&#0009;AS LOGIC<br/>
-      &#0009;MEMBER pszOperation&#0009;AS PSZ<br/>
-      &#0009;MEMBER pszDescription&#0009;AS PSZ<br/>
-      &#0009;MEMBER pszFileName&#0009;AS PSZ<br/>
-      &#0009;MEMBER strucArgs&#0009;AS _ARGS<br/>
-      &#0009;MEMBER dwTries&#0009;AS DWORD<br/>
-      &#0009;MEMBER symFuncSym&#0009;AS SYMBOL<br/>
-      &#0009;MEMBER dwFileHandle&#0009;AS DWORD<br/>
-      &#0009;MEMBER dwArgNum&#0009;AS DWORD<br/>
-      &#0009;MEMBER ptrFuncPtr&#0009;AS PTR<br/>
-      &#0009;MEMBER pszSubCodeText&#0009;AS PSZ<br/>
-      &#0009;MEMBER pszArg&#0009;AS PSZ<br/>
-      &#0009;MEMBER dwArgType&#0009;AS DWORD<br/>
-      &#0009;MEMBER dwArgTypeReq&#0009;AS DWORD<br/>
-      &#0009;MEMBER dwMaxSize&#0009;AS DWORD<br/>
-      &#0009;MEMBER dwSubstituteType&#0009;AS DWORD<br/>
-      &#0009;MEMBER dwChoice&#0009;AS DWORD<br/>
-      &#0009;MEMBER symCallFuncSym&#0009;AS SYMBOL
-    </param>
-    <returns>
-      E_RETRY or E_DEFAULT.  If, in a dialog box of the default error system, the user selects the retry option, E_RETRY is returned; otherwise E_DEFAULT is returned.  Note that for the retry option to be enabled, ptrErrInfo.lCanRetry must be set to TRUE.  For the default or ignore option to be enabled, ptrErrnfo.lCanDefault must be set to TRUE.  If neither lCanRetry and lCanDefault is enabled, abort is the only user-selectable option.
-    </returns>
-    <remarks>
-      After the call to the currently installed error function, an error object is created.  The current error block is evaluated using the new error object.
-      An error block is installable via ErrorBlock().  An error function is installable via ErrorFunc().
-      ErrorExec() may be of use to you if you are programming in C (or some other language besides X#) and want the error information to be available at the system level.
-    </remarks>
-    <example>
-      This example calls ErrorExec() until a file is successfully opened by FRead2():
-      <code language="X#">
-        DEFINE EG_MYGENCODE := 1
-        FUNCTION Start()
-        &#0009;LOCAL strucMyErrInfo IS ErrInfo
-        &#0009;LOCAL ptrHandle AS PTR
-        &#0009;LOCAL wUserTries AS DWORD
-        &#0009;DO WHILE (ptrHandle := FOpen2("notexist.txt", FO_READWRITE)) = F_ERROR
-        &#0009;&#0009;&#0009;? "Open failed.  Calling ErrorExec()"
-        &#0009;&#0009;&#0009;WAIT
-        &#0009;&#0009;&#0009;strucMyErrInfo.wGenCode   := EG_MYGENCODE
-        &#0009;&#0009;&#0009;strucMyErrInfo.wSeverity  := ES_ERROR
-        &#0009;&#0009;&#0009;strucMyErrInfo.symFuncSym := #_MyModule
-        &#0009;&#0009;&#0009;strucMyErrInfo.pszFileName:= "notexist.txt"
-        &#0009;&#0009;&#0009;strucMyErrInfo.wOSCode    := FError()
-        &#0009;&#0009;&#0009;strucMyErrInfo.lCanDefault:= TRUE
-        &#0009;&#0009;&#0009;strucMyErrInfo.lCanRetry  := TRUE
-        &#0009;&#0009;&#0009;&#0009;strucMyErrInfo.wTries := wUserTries
-        &#0009;&#0009;&#0009;&#0009;wUserTries += 1
-        &#0009;&#0009;&#0009;&#0009;IF ErrorExec(@strucMyErrInfo) &lt;&gt; E_RETRY
-        &#0009;&#0009;&#0009;&#0009;&#0009;&#0009;QUIT
-        &#0009;&#0009;&#0009;&#0009;ELSE
-        &#0009;&#0009;&#0009;&#0009;&#0009;? "Make sure that the file exists;
-        &#0009;&#0009;&#0009;&#0009;&#0009;&#0009;and"+" has read-write attributes"
-        &#0009;&#0009;&#0009;&#0009;ENDIF
-        &#0009;ENDDO
-      </code>
-    </example>
-    <seealso cref='O:XSharp.RT.Functions.ErrorBlock'>ErrorBlock Overload</seealso>
-    <seealso cref='M:XSharp.Core.Functions.ErrorBuild(System.Exception)'>ErrorBuild</seealso>
-    <seealso cref='M:XSharp.VO.Functions.ErrorFunc(XSharp.__Usual)'>ErrorFunc</seealso>
-  </errorexec>
-  <errorfunc>
-    <summary>
-      Install an error function.
-    </summary>
-
-    <param name="ptrFunction">A pointer to a function which uses the CLIPPER calling convention.</param>
-    <returns>
-      A pointer to the previous error function.
-    </returns>
-    <remarks>
-      ErrorFunc() is comparable to ErrorBlock(), but, instead of installing a code block which will execute when an error occurs, ErrorFunc() installs a function which contains a pointer to an error structure.  On error, the installed function is called by C or other language functions and a pointer to an error structure is passed to it.  The installed function returns a new object of the Error class.
-      ErrorFunc() may be of use to you if you are programming in C (or some other language besides X#) and want the error information to be available at the system level.
-    </remarks>
-    <example>
-      This example uses ErrorFunc() to install an error function for the current module:
-      <code language="X#">
-        STATIC GLOBAL ptrOldErrorGen AS PTR
-        FUNCTION BrowseDBF(cFile AS STRING) AS VOID PASCAL
-        &#0009;// Install an error function and save the
-        &#0009;// pointer to the old error function:
-        &#0009;ptrOldErrorGen := ErrorFunc(@ErrorGenBrowseDBF())
-        &#0009;&#0009;.
-        &#0009;&#0009;.
-        &#0009;&#0009;.
-        &#0009;// Reinstall the old error function:
-        &#0009;ErrorFunc(ptrOldErrorGen)
-        // Install an error function for the current module:
-        STATIC FUNCTION ErrorGenBrowseDBF(ptrStrucError) AS ERROR
-        &#0009;LOCAL oError AS ERROR
-        &#0009;oError := ErrorExec(ptrStrucError)
-        &#0009;oError:SubSystem := "browseDBF"
-        &#0009;RETURN oError
-      </code>
-    </example>
-    <seealso cref='O:XSharp.RT.Functions.ErrorBlock'>ErrorBlock Overload</seealso>
-    <seealso cref='M:XSharp.Core.Functions.ErrorBuild(System.Exception)'>ErrorBuild</seealso>
-    <seealso cref='M:XSharp.VO.Functions.ErrorExec(System.IntPtr)'>ErrorExec</seealso>
-  </errorfunc>
   <errorgen>
     <summary>
       Reinstall the default error function.
@@ -9319,7 +8873,7 @@
     <returns>
     </returns>
     <remarks>
-      The ErrorSys() procedure, because it is declared with the _INIT1 keyword, executes automatically at the startup of every X# application to install the default error handler.  If you choose to install your own error handler (see the "Error and Exception Handling" chapter in the Programmer's Guide for more information) and want to reinstall the default one at any point during your application, simply call ErrorSys().
+      The ErrorSys() procedure, because it is declared with the _INIT1 keyword, executes automatically at the startup of every X# application to install the default error handler.  If you choose to install your own error handler and want to reinstall the default one at any point during your application, simply call ErrorSys().
       The source code for the default error handler is defined in the ERRORSYS.PRG file, located in your X#  \SAMPLES directory.
     </remarks>
     <example>
@@ -9418,7 +8972,6 @@
     </example>
     <seealso cref='M:XSharp.RT.Functions.MAssign(System.String,XSharp.__Usual)'>MAssign</seealso>
     <seealso cref='O:XSharp.RT.Functions.MCompile'>MCompile Overload</seealso>
-    <seealso cref='M:XSharp.VO.Functions.MCSHORT(XSharp.__Usual)'>MCShort</seealso>
     <seealso cref='M:XSharp.RT.Functions.MExec(XSharp.Codeblock)'>MExec</seealso>
     <seealso cref='M:XSharp.VO.Functions.StrEvaluate(System.String)'>StrEvaluate</seealso>
   </evaluate>
@@ -9688,7 +9241,7 @@
     </param>
     <param name="cTargetFile">
       The name of the target file, including an optional drive, directory, and extension.<br/>
-      &#0009;If &lt;cTargetFile&gt; does not exist, it is created.  If it exists, this function attempts to open the file in exclusive mode and, if successful, the file is overwritten without warning or error.  If access is denied because, for example, another process is using the file, NetErr() is set to TRUE.  Refer to the "Concurrency Control" chapter in the Programmer's Guide for more information on resolving concurrency conflicts.<br/>
+      &#0009;If &lt;cTargetFile&gt; does not exist, it is created.  If it exists, this function attempts to open the file in exclusive mode and, if successful, the file is overwritten without warning or error.  If access is denied because, for example, another process is using the file, NetErr() is set to TRUE.  <br/>
       &#0009;See SetDefault() and SetPath() for file searching and creation rules.  This function does not supply a default extension for either file name.<br/>
       &#0009;&lt;cTargetFile&gt; can also be the name of the target device specified without a trailing colon.  When you specify one of the following device names: PRN, LPT1, LPT2, LPT3, COM1, or COM2, FCopy() searches the Windows registry for a Device entry to use for the printing device.  If there is no Device entry, it looks for the Devices entries and presents the user with a list box of devices from which to choose.
     </param>
@@ -10340,11 +9893,14 @@
 
     <param name="nFieldPos">The position of the field in the database file structure for the current work area.</param>
     <returns>
-      The value of the specified field.  If &lt;nFieldPos&gt; does not correspond to the position of any field in the current database file, FieldGet() returns NIL.
+      The value of the specified field.  If &lt;nFieldPos&gt; does not correspond to the position of any
+      field in the current database file, FieldGet() will generate a runtime error. Only in the Xbase++ dialect a NIL will be returned.
     </returns>
     <remarks>
       FieldGet() retrieves the value of a field using its position within the database file structure rather than its field name.  Within generic database service functions this allows, among other things, the retrieval of field values without use of the macro operator.
-      Note:  FieldGet() can be used with a BLOB field (that is, a memo field associated with a BLOB file), provided the length of the field does not exceed 64 KB.  For BLOB fields longer than 64 KB, use the BLOBGet() function instead.
+      <note type="tip">
+        FieldGet() can be used with a BLOB field (that is, a memo field associated with a BLOB file), provided the length of the field does not exceed 64 KB.  For BLOB fields longer than 64 KB, use the BLOBGet() function instead.
+      </note>
     </remarks>
     <example>
       This example compares FieldGet() to functionally equivalent code that uses the macro operator to retrieve the value of a field:
@@ -10581,13 +10137,15 @@
     <param name="nFieldPos">The position of the field in the database file structure.</param>
     <param name="uNewValue">The value to assign to the field.  The data type of this expression must match the data type of the field.</param>
     <returns>
-      The value assigned to the field.  If &lt;nFieldPos&gt; does not correspond to the position of any field in the database file, FieldPut() returns NIL.
+      The value assigned to the field.  
+      If &lt;nFieldPos&gt; does not correspond to the position of any field in the database file, FieldPut() will generate an error.
+      The exception to this is the XBase++ dialect where an invalid &lt;nFieldPos&gt; will not generate an exception but will return NIL.
     </returns>
     <remarks>
       FieldPut() allows you to set the value of a field using its position within the database file structure rather than its field name.  Within generic database service functions this allows, among other things, the setting of field values without use of the macro operator.
       Note:  FieldPut() can be used with a BLOB field (that is, a memo field associated with a BLOB file), provided the length of the field does not exceed 64 KB.
       <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
-      Shared mode:  For a shared database, this function requires a record lock.  Refer to the "Concurrency Control" chapter in the Programmer's Guide for more information on locking.
+      Shared mode:  For a shared database, this function requires a record lock.  
     </remarks>
     <example>
       This example compares FieldPut() to functionally equivalent code that uses the macro operator to set the value of a field:
@@ -10619,7 +10177,7 @@
     <remarks>
       FieldPutAlias() allows you to set the value of a field using a symbol that specifies the field name.  Within generic database service functions, this allows the setting of field values without the use of the macro operator, among other things.
       <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*" />
-      Shared mode:  For a shared database, this function requires a record lock.  Refer to the "Concurrency Control" chapter in the Programmer's Guide for more information on locking.
+      Shared mode:  For a shared database, this function requires a record lock.  
     </remarks>
     <example>
       This example uses FieldPutAlias() to set field values in two different work areas:
@@ -10649,7 +10207,7 @@
     </returns>
     <remarks>
       FieldPutArea() allows you to set the value of a field using a symbol that specifies the field name.  Within generic database service functions this allows, among other things, the setting of field values without use of the macro operator.
-      Shared mode:  For a shared database, this function requires a record lock.  Refer to the "Concurrency Control" chapter in the Programmer's Guide for more information on locking.
+      Shared mode:  For a shared database, this function requires a record lock.  
     </remarks>
     <example>
       This example uses FieldPutArea() to set field values:
@@ -10831,7 +10389,6 @@
       </code>
     </example>
     <seealso cref='M:XSharp.Core.Functions.FPathName'>FPathName</seealso>
-    <seealso cref='M:XSharp.VO.Functions.FxOpen(System.String,System.UInt32,System.String)'>FXOpen</seealso>
     <seealso cref='O:XSharp.Core.Functions.SetDefault'>SetDefault Overload</seealso>
     <seealso cref='O:XSharp.Core.Functions.SetPath'>SetPath Overload</seealso>
   </file>
@@ -10877,7 +10434,6 @@
       A file lock remains in effect until you close the database, explicitly unlock it (with DBUnlock(), for example), or attempt another file or record lock (with RLock() or DBRLock()).
       <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkareaParam/*" />
       This feature is useful since FLock() does not automatically attempt a file lock for related files.
-      Refer to "Concurrency Control" in the Programmer's Guide for  more information on file locking.
     </remarks>
     <example>
       This example uses FLock() for a batch update of prices in INVENTORY.DBF:
@@ -11165,15 +10721,15 @@
   </fparamcount>
   <fpathname>
     <summary>
-      Return the name and path of the file that was used by FXOpen() or File().
+      Return the name and path of the file that was used by File().
     </summary>
     <returns>
-      The complete name, including path, of the file that was last used by either FXOpen() or File().  Note that the system might also use FXOpen() or File() internally.
+      The complete name, including path, of the file that was last used by File().  Note that the system might also use File() internally.
     </returns>
     <remarks>
     </remarks>
     <example>
-      This example uses FPathName() after calling File() or FXOpen():
+      This example uses FPathName() after calling File:
       <code language="X#">
         SetDefault("\vo")
         ? File("*.exe")
@@ -11184,14 +10740,9 @@
         File("exists.txt")&#0009;&#0009;&#0009;// c:\backup\exists.txt
         ? FPathName()
         SetDefault("c:\vo\data")
-        FXOpen("exists.txt", FO_READ,"")
-        ? FPathName()&#0009;&#0009;&#0009;&#0009;// C:\VO\DATA\EXISTS.TXT
-        FXOpen("exists.txt", FO_READ, "c:\junk")
-        ? FPathName()&#0009;&#0009;&#0009;&#0009;// C:\JUNK\EXISTS.TXT
       </code>
     </example>
     <seealso cref='M:XSharp.Core.Functions.File(System.String)'>File</seealso>
-    <seealso cref='M:XSharp.VO.Functions.FxOpen(System.String,System.UInt32,System.String)'>FXOpen</seealso>
     <seealso cref='O:XSharp.Core.Functions.SetDefault'>SetDefault Overload</seealso>
     <seealso cref='O:XSharp.Core.Functions.SetPath'>SetPath Overload</seealso>
     <seealso cref='O:XSharp.RT.Functions.SplitPath'>SplitPath Overload</seealso>
@@ -11654,34 +11205,6 @@
     <seealso cref='M:XSharp.RT.Functions.FWrite(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)'>FWrite</seealso>
     <seealso cref='O:XSharp.Core.Functions.SetAnsi'>SetAnsi Overload</seealso>
   </freadtext3>
-  <freestaticobject>
-    <summary>
-      To free objects that have been created using the CreateInstanceStatic( ) function.
-    </summary>
-
-    <param name="oObject">The object to be released.</param>
-    <returns>
-      TRUE if successful, otherwise FALSE.
-    </returns>
-    <remarks>
-      Previously you would have had code like this –
-      <code language="X#">
-        o := CreateInstanceStatic(#MyClass)
-        …..
-        MemFree(PTR(_CAST, o))
-      </code>
-      However, this code did not release the memory.
-      The code that you should be using is this
-      <code language="X#">
-        o := CreateInstanceStatic(#MyClass)
-        …..
-        FreeStaticObject(o)
-      </code>
-    </remarks>
-    <example>
-    </example>
-    <seealso cref='M:XSharp.VO.Functions.CreateInstanceStatic(XSharp.__Usual[])'>CreateInstanceStatic</seealso>
-  </freestaticobject>
   <frename>
     <summary>
       Change the name of a file.
@@ -12147,65 +11670,6 @@
     <seealso cref='O:XSharp.Core.Functions.Oem2Ansi'>Oem2Ansi Overload</seealso>
     <seealso cref='O:XSharp.Core.Functions.SetAnsi'>SetAnsi Overload</seealso>
   </fwritetext3>
-  <fxopen>
-    <summary>
-      Open a file.
-    </summary>
-
-    <param name="cFileName">The name of the file to open, including an optional drive, directory, and extension.  When &lt;dwMode&gt; contains FXO_WILD, &lt;cFileName&gt; may contain wildcard characters.</param>
-    <param name="dwMode">The DOS open mode, indicating how the opened file is to be accessed.  You may specify one or more of these constants by adding them together or using the _Or() operator:</param>
-    <param name="Constant">Description&#0009;</param>
-    <param name="OF_READ">Open for read only.&#0009;</param>
-    <param name="OF_WRITE">Open for write.&#0009;</param>
-    <param name="OF_READWRITE">Open for read and write.&#0009;</param>
-    <param name="OF_SHARE_COMPAT">Open the file with compatibility mode, allowing multiple tasks or work stations to open the file.&#0009;</param>
-    <param name="OF_SHARE_EXCLUSIVE">Open exclusively, preventing any other program from opening the file.&#0009;</param>
-    <param name="OF_SHARE_DENY_WRITE">Open file and deny other programs write access to the file.&#0009;</param>
-    <param name="OF_SHARE_DENY_READ">Open file and deny other programs read access to the file.&#0009;</param>
-    <param name="OF_SHARE_DENY_NONE">Open file without denying read or write access to other programs.&#0009;</param>
-    <param name="OF_PARSE">Fills internal file structure that contains file information resulting from opening the file.&#0009;</param>
-    <param name="OF_DELETE">Delete the file (note that file must be closed when deleted).&#0009;</param>
-    <param name="OF_VERIFY">Compare time and date of an internal file structure with time and date of the file.&#0009;</param>
-    <param name="OF_SEARCH">Direct Windows to search in directories.&#0009;</param>
-    <param name="OF_CANCEL">Used for Cancel button in a dialog box.&#0009;</param>
-    <param name="OF_CREATE">Create a new file or truncate an existing file to a length of zero.&#0009;</param>
-    <param name="OF_PROMPT">Display a dialog box if the file does not exist.&#0009;</param>
-    <param name="OF_EXIST">Open and then close the file, thus performing an existence test.&#0009;</param>
-    <param name="OF_REOPEN">Open the file using internal reopen information.&#0009;</param>
-    <param name="FXO_WILD">Allow wildcard characters in the file name.&#0009;</param>
-    <param name="cPath">
-      If &lt;cFileName&gt; is specified without an explicit drive and directory indicating where to find the file, this argument allows you to supply a list of additional paths to search in case the file is not found in the default directory or search path (see SetDefault() and SetPath() for standard file searching rules).  To omit the argument, specify NULL_STRING.<br/>
-      &#0009;Note:This argument is not meaningful and should be omitted if you are creating a file.
-    </param>
-    <returns>
-      The file handle of the opened file in the range of 0 to 32,767.  This value is similar to an alias in the database system and is required to identify the open file to other file functions.  It is, therefore, important to assign the return value to a variable for later use, as in the example below.
-      If an error occurs, FXOpen() returns F_ERROR.  FError() can be used to determine the specific error.  For example, if the file does not exist, FXOpen() returns F_ERROR and FError() returns 2 to indicate that the file was not found.
-      In case of a concurrency conflict, FXOpen() sets NetErr() to TRUE.  Refer to the "Concurrency Control" chapter in the Programmer's Guide for more information on resolving concurrency conflicts.
-    </returns>
-    <remarks>
-    </remarks>
-    <example>
-      In this example, FXOpen() attempts to open SALES.TXT in different directories:
-      <code language="X#">
-        // Open in the DEFAULT directory
-        FXOpen("sales.txt", FO_READ, NULL_STRING)
-        // Open in the c:\data directory
-        ? FXOpen("sales.txt", FO_READ, "c:\data")
-        // Assuming it does not exist in the current
-        // default directory, open up in the c:\data
-        // directory
-        SetPath(c:\data)
-        ? FXOpen("sales.txt", FO_READ, NULL_STRING)
-        // Or hard code the path in the file name
-        ? FXOpen("c:\data\sales.txt", FO_READ,;
-        NULL_STRING)
-      </code>
-    </example>
-    <seealso>_Or</seealso>
-    <seealso cref='M:XSharp.Core.Functions.File(System.String)'>File</seealso>
-    <seealso cref='O:XSharp.Core.Functions.FOpen'>FOpen Overload</seealso>
-    <seealso cref='M:XSharp.Core.Functions.FPathName'>FPathName</seealso>
-  </fxopen>
   <getamext>
     <summary>
       Returns a string representing the morning extension for time strings in 12-hour format.
@@ -12383,7 +11847,7 @@
     </returns>
     <remarks>
       GetEnv() lets you retrieve information from the DOS environment into an application program.  Typically, this is configuration information — including path names — that describe the location of files (database, index, label, or reports).
-      Note:  Instead of using environment variables for configuring your application, you may want to consider using registry settings.  See the "X# Registry Entries" appendix in the IDE User Guide for more information.
+      Note:  Instead of using environment variables for configuring your application, you may want to consider using registry settings.
       <note type="tip">
         Empty return value:  If you are certain that an environment variable exists and yet GetEnv() always returns a NULL_STRING, be sure there are no spaces between the environment variable name and the first character of the string assigned to it in the DOS SET command.
       </note>
@@ -12553,23 +12017,7 @@
       </code>
     </example>
     <seealso cref='M:XSharp.Core.Functions.SetNatDLL(System.String)'>SetNatDLL</seealso>
-    <seealso cref='M:XSharp.VO.Functions.GetNatDllHandle'>GetNatDLLHandle</seealso>
   </getnatdll>
-  <getnatdllhandle>
-    <summary>
-      Retrieve the DLL handle for the currently loaded NationDLL
-    </summary>
-    <returns>
-      PTR of the current loaded DLL
-    </returns>
-    <remarks>
-      This function gives you access to the currently loaded Nation DLL. You can use this to retrieve language strings from the DLL.
-    </remarks>
-    <example>
-    </example>
-    <seealso cref='M:XSharp.Core.Functions.GetNatDLL'>GetNatDLL</seealso>
-    <seealso cref='M:XSharp.Core.Functions.SetNatDLL(System.String)'>SetNatDLL</seealso>
-  </getnatdllhandle>
   <getobjectbyhandle>
     <summary>
       Return the object associated with a given window handle.
@@ -13058,7 +12506,7 @@
       TRUE if the first expression matches any of the other listed expressions; otherwise, FALSE.
     </returns>
     <remarks>
-      InListExact() is the same as InList() except that == is used for matching instead of =.  See the "Operators and Expressions" chapter in the Programmer's Guide for more information on how these operators work.
+      InListExact() is the same as InList() except that == is used for matching instead of =.
     </remarks>
     <example>
       This example compares InList() and InListExact() when the left operand in a comparison is longer than the right operand of a comparison:
@@ -13089,7 +12537,7 @@
       TRUE if the substring was found; otherwise, FALSE.
     </returns>
     <remarks>
-      InStr() is a strongly typed version of the $ operator.  See "Operators and Expressions" in the Programmer's Guide for information on the $ operator.
+      InStr() is a strongly typed version of the $ operator.
     </remarks>
     <example>
       This example uses InStr() to indicate if a specific substring is part of a longer string:
@@ -13117,11 +12565,12 @@
       The whole number to the left of the decimal point.  Since both &lt;uValue&gt; and the return value are data type USUAL, you are not limited to the size of an integer.
     </returns>
     <remarks>
-      Integer() converts a numeric value to an integer by taking the floor of the number. Note – this is not the same as truncation except for positive integers — it is not rounding.  Integer() is useful in operations where the decimal portion of a number is not needed.  See "Operators and Expressions" in the Programmer's Guide for information on type casting.
+      Integer() converts a numeric value to an integer by taking the floor of the number. Note – this is not the same as truncation except for positive integers — it is not rounding.  Integer() is useful in operations where the decimal portion of a number is not needed.  
       Note that a loss of precision on floating numbers might be significant.  For example, you might not know that a number is internally represented as 0.99999999999999999, because, when that number is displayed with QOut() or passed to the Str() function, internal rounding returns a value of 1.0.
       When a number like that is passed to the Integer() function, however, its decimal portion is truncated and a value of zero is returned.  If this is not what you had intended, you can use Round(&lt;nValue&gt;, 0) instead of Integer().
       <note type="tip">
-        Integer() is the same as the Int() function in CA-Clipper, but INT is a reserved word in X#.  Under X#, Int() is a conversion operator.  With numbers that are not greater than a short integer, it yields the same results as Integer() and maintains compatibility with CA-Clipper.
+        Integer() is the same as the Int() function in CA-Clipper, but INT is a reserved word in X#.  
+        Under X#, Int() is a conversion operator.  With numbers that are not greater than a short integer, it yields the same results as Integer() and maintains compatibility with CA-Clipper.
       </note>
     </remarks>
     <example>
@@ -13484,37 +12933,6 @@
     <seealso cref='M:XSharp.Core.Functions.IsUpper(System.String)'>IsUpper</seealso>
     <seealso cref='M:XSharp.Core.Functions.IsXDigit(System.String)'>IsXDigit</seealso>
   </isdigit>
-  <isdynptr>
-    <summary>
-      Check to see if a value is in dynamic memory.
-    </summary>
-
-    <param name="ptrValue">A pointer to the object you want to check.</param>
-    <returns>
-      TRUE if a value is in dynamic memory; otherwise, FALSE.
-    </returns>
-    <remarks>
-      IsDynPtr() determines whether a value is in dynamic memory.  Literal objects, such as strings and floats, are in static memory.  Objects copied through DynToOldSpace() are also in static memory.  It is possible that both IsDynPtr() and IsOldSpace() return FALSE for a given pointer.
-    </remarks>
-    <example>
-      This example uses IsDynPtr() on a literal string, which is static:
-      <code language="X#">? IsDynPtr(Ptr(_CAST, "hello"))&#0009;&#0009;&#0009;&#0009;// FALSE</code>
-      This example uses IsDynPtr() on a string that is created through the + operator and is dynamic:
-      <code language="X#">? IsDynPtr(Ptr(_CAST, "hello" + "world"))&#0009;&#0009;&#0009;// TRUE</code>
-      This example uses IsDynPtr() to show the effect of DynToOldSpace() on a value:
-      <code language="X#">
-        FUNCTION IsDynamic()
-        &#0009;LOCAL cDynTool
-        &#0009;cDynTool := Time()&#0009;&#0009;&#0009;&#0009;&#0009;// Dynamic
-        &#0009;? IsDynPtr(Ptr(_CAST, cDynTool))&#0009;&#0009;// TRUE
-        &#0009;cDynTool := DynToOldSpace(cDynTool)
-        &#0009;// Copy it to static memory
-        &#0009;? IsDynPtr(Ptr(_CAST, cDynTool))&#0009;&#0009;// FALSE
-      </code>
-    </example>
-    <seealso cref='M:XSharp.VO.Functions.DynToOldSpace(XSharp.__Usual)'>DynToOldSpace</seealso>
-    <seealso cref='M:XSharp.VO.Functions.IsOldSpace(XSharp.__Usual)'>IsOldSpace</seealso>
-  </isdynptr>
   <isfloat>
     <summary>
       Determine if a value is a FLOAT.
@@ -13988,162 +13406,6 @@
     <seealso cref='M:XSharp.RT.Functions.IsSymbol(XSharp.__Usual)'>IsSymbol</seealso>
     <seealso cref='M:XSharp.RT.Functions.UsualType(XSharp.__Usual)'>UsualType</seealso>
   </isobject>
-  <isoldspace>
-    <summary>
-      Check to see if a dynamic object is static.
-    </summary>
-
-    <param name="uValue">The object (string, float, class object, or array) you want to check.</param>
-    <returns>
-      TRUE if &lt;uValue&gt; is static; otherwise, FALSE.
-    </returns>
-    <remarks>
-      IsOldSpace() determines whether a value is static, either because it is a literal string or because it was copied with one of the DynToOldSpace() functions.
-    </remarks>
-    <example>
-      This example uses IsOldSpace() both on a literal static and on a static created through DynToOldSpace():
-      <code language="X#">
-        Function Start()
-        &#0009;LOCAL cLiteral
-        &#0009;LOCAL cDynTool
-        &#0009;cLiteral := "Hello"
-        &#0009;cDynTool := Time()
-        &#0009;? IsOldSpace(cLiteral)&#0009;&#0009;// TRUE (static)
-        &#0009;? IsOldSpace(cDynTool)&#0009;&#0009;// FALSE (not static)
-        &#0009;cDynTool := DynToOldSpace(cDynTool)
-        &#0009;// Make it static
-        &#0009;? IsOldSpace(cDynTool)&#0009;&#0009;// TRUE (static now)
-      </code>
-    </example>
-    <seealso cref='M:XSharp.VO.Functions.DynToOldSpace(XSharp.__Usual)'>DynToOldSpace</seealso>
-    <seealso cref='M:XSharp.VO.Functions.IsOldSpaceArray(XSharp.__Array)'>IsOldSpaceArray</seealso>
-    <seealso cref='M:XSharp.VO.Functions.OldSpaceFree(XSharp.__Usual)'>OldSpaceFree</seealso>
-  </isoldspace>
-  <isoldspacearray>
-    <summary>
-      Check to see if a typed dynamic object is static.
-    </summary>
-
-    <param name="aValue">The array you want to check.</param>
-    <returns>
-      TRUE if &lt;aValue&gt; is static; otherwise, FALSE.
-    </returns>
-    <remarks>
-      IsOldSpaceArray() is the same as IsOldSpace() except that it is strongly typed.  For more information, see IsOldSpace().
-    </remarks>
-    <example>
-      This example uses IsOldSpaceArray():
-      <code language="X#">
-        FUNCTION Start()
-        &#0009;LOCAL aDyn AS ARRAY
-        &#0009;LOCAL aOldSpace AS ARRAY
-      </code>
-      &#0009;
-      <code language="X#">
-        &#0009;aDyn := {1,2,3}
-        &#0009;aOldSpace := DynToOldSpaceArray(aDyn)
-        &#0009;? IsOldSpaceArray(aDyn)&#0009;&#0009;&#0009;&#0009;// FALSE
-        &#0009;? IsOldSpaceArray(aOldSpace)&#0009;&#0009;&#0009;// TRUE
-      </code>
-    </example>
-    <seealso cref='M:XSharp.VO.Functions.DynToOldSpace(XSharp.__Usual)'>DynToOldSpace</seealso>
-    <seealso cref='M:XSharp.VO.Functions.IsOldSpace(XSharp.__Usual)'>IsOldSpace</seealso>
-    <seealso cref='M:XSharp.VO.Functions.OldSpaceFree(XSharp.__Usual)'>OldSpaceFree</seealso>
-  </isoldspacearray>
-  <isoldspacefloat>
-    <summary>
-      Check to see if a typed dynamic object is static.
-    </summary>
-
-    <param name="fValue">The floating point number you want to check.</param>
-    <returns>
-      TRUE if &lt;fValue&gt; is static; otherwise, FALSE.
-    </returns>
-    <remarks>
-      IsOldSpaceFloat() is the same as IsOldSpace() except that it is strongly typed.  For more information, see IsOldSpace().
-    </remarks>
-    <example>
-      This example uses IsOldSpaceFloat():
-      <code language="X#">
-        FUNCTION Start()
-        &#0009;LOCAL fDyn AS FLOAT
-        &#0009;LOCAL fOldSpace AS FLOAT
-      </code>
-      &#0009;
-      <code language="X#">
-        &#0009;fDyn := 2.71828
-        &#0009;fOldSpace := DynToOldSpaceFloat(fDyn)
-        &#0009;? IsOldSpaceFloat(aDyn)&#0009;&#0009;&#0009;&#0009;// FALSE
-        &#0009;? IsOldSpaceFloat(fOldSpace)&#0009;&#0009;&#0009;// TRUE
-      </code>
-    </example>
-    <seealso cref='M:XSharp.VO.Functions.DynToOldSpace(XSharp.__Usual)'>DynToOldSpace</seealso>
-    <seealso cref='M:XSharp.VO.Functions.IsOldSpace(XSharp.__Usual)'>IsOldSpace</seealso>
-    <seealso cref='M:XSharp.VO.Functions.OldSpaceFree(XSharp.__Usual)'>OldSpaceFree</seealso>
-  </isoldspacefloat>
-  <isoldspaceobject>
-    <summary>
-      Check to see if a typed dynamic object is static.
-    </summary>
-
-    <param name="oValue">The class object you want to check.</param>
-    <returns>
-      TRUE if &lt;oValue&gt; is static; otherwise, FALSE.
-    </returns>
-    <remarks>
-      IsOldSpaceObject() is the same as IsOldSpace() except that it is strongly typed.  For more information, see IsOldSpace().
-    </remarks>
-    <example>
-      This example uses IsOldSpaceObject():
-      <code language="X#">
-        FUNCTION Start()
-        &#0009;LOCAL oDyn AS MyClass
-        &#0009;LOCAL oOldSpace AS MyClass
-      </code>
-      &#0009;
-      <code language="X#">
-        &#0009;oDyn := MyClass{}
-        &#0009;oOldSpace := DynToOldSpaceObject(oDyn)
-        &#0009;? IsOldSpaceObject(oDyn)&#0009;&#0009;&#0009;// FALSE
-        &#0009;? IsOldSpaceObject(oOldSpace) &#0009;&#0009;// TRUE
-      </code>
-    </example>
-    <seealso cref='M:XSharp.VO.Functions.DynToOldSpace(XSharp.__Usual)'>DynToOldSpace</seealso>
-    <seealso cref='M:XSharp.VO.Functions.IsOldSpace(XSharp.__Usual)'>IsOldSpace</seealso>
-    <seealso cref='M:XSharp.VO.Functions.OldSpaceFree(XSharp.__Usual)'>OldSpaceFree</seealso>
-  </isoldspaceobject>
-  <isoldspacestring>
-    <summary>
-      Check to see if a typed dynamic object is static.
-    </summary>
-
-    <param name="cValue">The string you want to check.</param>
-    <returns>
-      TRUE if &lt;cValue&gt; is static; otherwise, FALSE.
-    </returns>
-    <remarks>
-      IsOldSpaceString() is the same as IsOldSpace() except that it is strongly typed.  For more information, see IsOldSpace().
-    </remarks>
-    <example>
-      This example uses IsOldSpaceString():
-      <code language="X#">
-        Function Start()
-        &#0009;LOCAL cLiteral AS STRING
-        &#0009;LOCAL cDynTool AS STRING
-        &#0009;cLiteral := "Hello"
-        &#0009;cDynTool := Time()
-        &#0009;? IsOldSpaceString(cLiteral)&#0009;// TRUE (static)
-        &#0009;? IsOldSpaceString(cDynTool)
-        &#0009;// FALSE (not static)
-        &#0009;cDynTool := DynToOldSpaceString(cDynTool)
-        &#0009;// Make it static
-        &#0009;? IsOldSpaceString(cDynTool)&#0009;// TRUE
-      </code>
-    </example>
-    <seealso cref='M:XSharp.VO.Functions.DynToOldSpace(XSharp.__Usual)'>DynToOldSpace</seealso>
-    <seealso cref='M:XSharp.VO.Functions.IsOldSpace(XSharp.__Usual)'>IsOldSpace</seealso>
-    <seealso cref='M:XSharp.VO.Functions.OldSpaceFree(XSharp.__Usual)'>OldSpaceFree</seealso>
-  </isoldspacestring>
   <isptr>
     <summary>
       Determine if a value is a pointer.
@@ -14718,95 +13980,6 @@
     <seealso cref='M:XSharp.Core.Functions.Real42Bin(System.Single)'>Real42Bin</seealso>
     <seealso cref='M:XSharp.Core.Functions.W2Bin(System.UInt16)'>W2Bin</seealso>
   </l2bin>
-  <labeljump>
-    <summary>
-      Branch out of a BEGIN SEQUENCE...END construct.
-    </summary>
-
-    <param name="uValue">The value passed to the RECOVER clause.  Note that &lt;uValue&gt; is not optional; however, NIL can be specified if there is no break value.</param>
-    <returns>
-      The same value as its argument.  Traditionally, this is an object of the Error class.  The return value is passed to the RECOVER USING clause.
-    </returns>
-    <remarks>
-      LabelJump() is identical in functionality to both _Break() and the BREAK statement.
-      LabelJump(), LabelPop(), and LabelPush() provide functional forms of the BEGIN SEQUENCE...END construct.
-    </remarks>
-    <example>
-      This example shows a simple error handling code which goes to the line after the RECOVER:
-      <code language="X#">
-        FUNCTION GoToLine() AS VOID
-        &#0009;LOCAL e AS USUAL&#0009;&#0009;&#0009;&#0009;// Value passed to RECOVER
-        &#0009;BEGIN SEQUENCE
-        &#0009;&#0009;? "You see this"
-        &#0009;&#0009;LabelJump("Hello")
-        &#0009;&#0009;? "But not this.  This line never executes!"
-        &#0009;RECOVER USING e
-        &#0009;&#0009;? "I was forced to jump to here"
-        &#0009;&#0009;? e&#0009;&#0009;&#0009;&#0009;&#0009;&#0009;// Hello
-        &#0009;END SEQUENCE
-      </code>
-      This example installs an error handler through ErrorBlock().  The installed error handler calls up LabelJump(), which in turn goes to the RECOVER line.  The error is invoked when an attempt is made to open a non-existing file.  The error object (ErrorInfo) is passed to RECOVER and is printed out:
-      <code language="X#">
-        FUNCTION LabelTest() AS VOID
-        &#0009;LOCAL cbSblock AS USUAL
-        &#0009;LOCAL ErrorInfo AS USUAL
-        &#0009;cbSblock := ErrorBlock({|x| LabelJump(x)})
-        &#0009;BEGIN SEQUENCE
-        &#0009;&#0009;// File does not exist so an error is invoked
-        &#0009;&#0009;USE noexist
-        &#0009;&#0009;?? "Never execute this if an error " + ;
-        &#0009;&#0009;?  "occurred on the previous line"
-        &#0009;RECOVER USING ErrorInfo
-        &#0009;&#0009;// ErrorInfo contains the error object
-        &#0009;&#0009;?  "An error has occurred"
-        &#0009;&#0009;?? "Operating system error code is:"
-        &#0009;&#0009;?  ErrorInfo:OSCode
-        &#0009;END
-        &#0009;// Restore the old error handler
-        &#0009;ErrorBlock(cbSblock)
-      </code>
-    </example>
-    <seealso cref='M:XSharp.RT.Functions._Break(XSharp.__Usual)'>_Break</seealso>
-    <seealso>BEGIN SEQUENCE</seealso>
-    <seealso cref='M:XSharp.RT.Functions.CanBreak'>CanBreak</seealso>
-    <seealso>Error Class</seealso>
-    <seealso cref='M:XSharp.VO.Functions.LabelPop'>LabelPop</seealso>
-    <seealso cref='M:XSharp.VO.Functions.LabelPush(System.IntPtr)'>LabelPush</seealso>
-    <seealso cref='M:XSharp.VO.Functions.LongJmp(System.IntPtr,System.Int32)'>LongJmp</seealso>
-    <seealso>SetJmp</seealso>
-  </labeljump>
-  <labelpop>
-    <summary>
-      Functional form of END SEQUENCE.
-    </summary>
-    <returns>
-    </returns>
-    <remarks>
-      LabelPop() is the functional form of END SEQUENCE and must be issued after a LabelPush() or a BEGIN SEQUENCE has been issued.  The number of calls to LabelPop() should equal the number of calls to LabelPush().
-      LabelJump(), LabelPop(), and LabelPush() provide functional forms of the BEGIN SEQUENCE...END construct.
-    </remarks>
-    <example>
-    </example>
-    <seealso cref='M:XSharp.VO.Functions.LabelJump(XSharp.__Usual)'>LabelJump</seealso>
-    <seealso cref='M:XSharp.VO.Functions.LabelPush(System.IntPtr)'>LabelPush</seealso>
-  </labelpop>
-  <labelpush>
-    <summary>
-      Functional form of BEGIN SEQUENCE.
-    </summary>
-
-    <param name="ptrLabel">A pointer to a jump target label.  Note that X# does not provide you with labels inside a function.  A label can only be obtained from a low-level programming language, such as C or Assembler.</param>
-    <returns>
-    </returns>
-    <remarks>
-      LabelPush() is the functional form of BEGIN SEQUENCE.  It is used internally by the X# compiler to implement BEGIN SEQUENCE.  LabelPush() is only useful if you can obtain a label in your code.
-      LabelJump(), LabelPop(), and LabelPush() provide functional forms of the BEGIN SEQUENCE...END construct.
-    </remarks>
-    <example>
-    </example>
-    <seealso cref='M:XSharp.VO.Functions.LabelJump(XSharp.__Usual)'>LabelJump</seealso>
-    <seealso cref='M:XSharp.VO.Functions.LabelPop'>LabelPop</seealso>
-  </labelpush>
   <lastrec>
     <summary>
       Return the number of the last record in a database file.
@@ -15452,7 +14625,6 @@
     </example>
     <seealso cref='O:XSharp.RT.Functions.Evaluate'>Evaluate Overload</seealso>
     <seealso cref='O:XSharp.RT.Functions.MCompile'>MCompile Overload</seealso>
-    <seealso cref='M:XSharp.VO.Functions.MCSHORT(XSharp.__Usual)'>MCShort</seealso>
     <seealso cref='M:XSharp.RT.Functions.MExec(XSharp.Codeblock)'>MExec</seealso>
     <seealso cref='M:XSharp.VO.Functions.StrEvaluate(System.String)'>StrEvaluate</seealso>
   </massign>
@@ -16001,41 +15173,9 @@
     </example>
     <seealso cref='O:XSharp.RT.Functions.Evaluate'>Evaluate Overload</seealso>
     <seealso cref='M:XSharp.RT.Functions.MAssign(System.String,XSharp.__Usual)'>MAssign</seealso>
-    <seealso cref='M:XSharp.VO.Functions.MCSHORT(XSharp.__Usual)'>MCShort</seealso>
     <seealso cref='M:XSharp.RT.Functions.MExec(XSharp.Codeblock)'>MExec</seealso>
     <seealso cref='M:XSharp.VO.Functions.StrEvaluate(System.String)'>StrEvaluate</seealso>
   </mcompile>
-  <mcshort>
-    <summary>
-      Return and optionally change the setting that determines whether logical shortcutting is used in macro expression evaluation.
-    </summary>
-
-    <param name="lNewSetting">TRUE turns logical shortcutting on.  FALSE turns it off.  The initial default is TRUE.</param>
-    <returns>
-      If &lt;lNewSetting&gt; is not specified, MCShort() returns the current setting.  If &lt;lNewSetting&gt; is specified, the previous setting is returned.
-    </returns>
-    <remarks>
-      When MCShort() is set to its initial default of TRUE, X# uses a shortcut to speed up the evaluation of the logical .AND. and .OR. operators in macro expressions.  For .AND., the second operand is not evaluated if the first operand evaluates to FALSE.  For .OR., the second operand is not evaluated if the first operand evaluates to TRUE.
-      Note:  X# always uses this shortcut for non-macro expressions — there is no function to control this behavior.
-    </remarks>
-    <example>
-      The following examples demonstrates the difference in macro expression evaluation with MCShort() set to TRUE and FALSE:
-      <code language="X#">
-        FUNCTION MacroTest()
-        &#0009;Yes := FALSE
-        &#0009;x := "Yes .AND. No"
-        &#0009;? &amp;x&#0009;&#0009;&#0009;&#0009;// FALSE, variable No is never evaluated
-        &#0009;MCShort(FALSE)
-        &#0009;? &amp;x&#0009;&#0009;&#0009;&#0009;// Runtime error because variable No
-        &#0009;&#0009;&#0009;&#0009;&#0009;&#0009;// is not defined
-      </code>
-    </example>
-    <seealso cref='O:XSharp.RT.Functions.Evaluate'>Evaluate Overload</seealso>
-    <seealso cref='M:XSharp.RT.Functions.MAssign(System.String,XSharp.__Usual)'>MAssign</seealso>
-    <seealso cref='O:XSharp.RT.Functions.MCompile'>MCompile Overload</seealso>
-    <seealso cref='M:XSharp.RT.Functions.MExec(XSharp.Codeblock)'>MExec</seealso>
-    <seealso cref='M:XSharp.VO.Functions.StrEvaluate(System.String)'>StrEvaluate</seealso>
-  </mcshort>
   <mem2string>
     <summary>
       Extract a substring of a certain size from the left of a buffer.
@@ -16764,7 +15904,6 @@
     <seealso cref='M:XSharp.RT.Functions.FReadLine(XSharp.__Usual,XSharp.__Usual)'>FReadLine</seealso>
     <seealso cref='M:XSharp.Core.Functions.FReadStr(System.IntPtr,System.UInt32)'>FReadStr</seealso>
     <seealso cref='O:XSharp.Core.Functions.MemoWrit'>MemoWrit Overload</seealso>
-    <seealso>REPLACE</seealso>
   </memoread>
   <memory>
     <summary>
@@ -16946,7 +16085,6 @@
         &#0009;// Same pointer as above
       </code>
     </example>
-    <seealso cref='M:XSharp.VO.Functions.MCSHORT(XSharp.__Usual)'>MCShort</seealso>
     <seealso cref='M:XSharp.RT.Functions.MemByte(System.IntPtr,System.Byte,System.UInt32)'>MemByte</seealso>
     <seealso cref='M:XSharp.RT.Functions.MemChr(System.IntPtr,System.Byte,System.UInt32)'>MemChr</seealso>
     <seealso cref='M:XSharp.RT.Functions.MemDWord(System.IntPtr,System.UInt32,System.UInt32)'>MemDWord</seealso>
@@ -17258,7 +16396,6 @@
     <seealso cref='O:XSharp.RT.Functions.Evaluate'>Evaluate Overload</seealso>
     <seealso cref='M:XSharp.RT.Functions.MAssign(System.String,XSharp.__Usual)'>MAssign</seealso>
     <seealso cref='O:XSharp.RT.Functions.MCompile'>MCompile Overload</seealso>
-    <seealso cref='M:XSharp.VO.Functions.MCSHORT(XSharp.__Usual)'>MCShort</seealso>
     <seealso cref='M:XSharp.VO.Functions.StrEvaluate(System.String)'>StrEvaluate</seealso>
   </mexec>
   <min>
@@ -17630,7 +16767,7 @@
       &#0009;The source code for the default error handler, defined in the ERRORSYS.PRG file located in your X# \SAMPLES directory, does not display an error message in these cases, allowing your application to continue.
       NetErr() is generally applied in a program by testing one of these operations.
       &#0009;If the function returns FALSE, you can perform the next operation.  Otherwise, you must handle the error either by retrying the operation or by terminating it with a BREAK or RETURN.
-      For more information, refer to "Concurrency Control" in the Programmer's Guide.
+
     </remarks>
     <example>
       This example demonstrates typical usage of NetErr().  If the USE succeeds, the index files are opened and processing continues.  If the USE fails, a message is displayed, and control returns to the nearest BEGIN SEQUENCE construct:
@@ -18018,45 +17155,6 @@
     <seealso cref='O:XSharp.Core.Functions.Oem2Ansi'>Oem2Ansi Overload</seealso>
     <seealso cref='O:XSharp.Core.Functions.Oem2AnsiA'>Oem2AnsiA Overload</seealso>
   </oem2ansibuff>
-  <oldspacefree>
-    <summary>
-      Free up static memory created by DynToOldSpace().
-    </summary>
-
-    <param name="uStatic">The static object that occupies the memory to be freed.</param>
-    <returns>
-    </returns>
-    <remarks>
-      Static memory is not touched by the garbage collector.  Therefore OldSpaceFree() is used to wipe out objects that have been copied to static memory via DynToOldSpace().
-      <br/>
-      IIf you have created several items (objects, strings, floats etc) and moved them into OldSpace, then moved an object to OldSpace memory that has references to these other items, OldSpaceFree() will clear these items as well as the item named in uStatic.
-      For this reason, it is important that you clear the items from the lowest item up to the highest item in a linked list. Clearing the highest item first will give a runtime error when you try to clear a lower item using OldSpaceFree().
-      For example –
-      <code language="X#">
-        LOCAL cDynStatic AS STRING
-        LOCAL oStatic AS MyObject
-        cDynStatic := Space(100)
-        cDynStatic := DynToOldSpace(cDynStatic)
-        oStatic := MyObject{cDynStatic}
-        oStatic := DynToOldSpace(oStatic)
-        OldSpaceFree(oStatic)
-        OldSpaceFree(cDynStatic)
-      </code>
-      In this code an error would occur on the last line because freeing the object on the line before it would have already freed the string.
-      This should make it clear that you would need to free the string first and then the object that referenced it.
-    </remarks>
-    <example>
-      This example first uses DynToOldSpace() to copy a dynamic object to static memory and then uses OldSpaceFree() to free up the static memory:
-      <code language="X#">
-        LOCAL cDynStatic AS STRING
-        cDynStatic := Space(100)
-        cDynStatic := DynToOldSpace(cDynStatic)
-        OldSpaceFree(cDynStatic)
-      </code>
-    </example>
-    <seealso cref='M:XSharp.VO.Functions.DynToOldSpace(XSharp.__Usual)'>DynToOldSpace</seealso>
-    <seealso cref='M:XSharp.VO.Functions.IsOldSpace(XSharp.__Usual)'>IsOldSpace</seealso>
-  </oldspacefree>
   <oledatetimeasdate>
     <summary>
       Change the return values of OLE date values to VO date values.
@@ -18253,16 +17351,21 @@
       Set the condition and scope for an order.
     </summary>
 
-    <param name="cForCondition">A string that specifies the for condition for the order.  This string is returned by DBOrderInfo(DBOI_CONDITION, [&lt;cIndexFile&gt;], &lt;cOrder&gt;).  If you do not need this information, you can specify a NULL_STRING.</param>
+    <param name="cForCondition">
+      A string that specifies the for condition for the order.  This string is returned by DBOrderInfo(DBOI_CONDITION, [&lt;cIndexFile&gt;], &lt;cOrder&gt;).  
+      If you do not need this information, you can specify a NULL_STRING.
+    </param>
     <param name="cbForCondition">
       <include file="VoFunctionDocs.xml" path="Runtimefunctions/cbfor/*" /> <br/>>
       This condition (not &lt;cForCondition&gt;) is the one that is actually used to create the order.  
-      Unlike the while condition and other scoping information, the for condition is stored as part of the index file and is used when updating or rebuilding the order with DBReindex().  Any limitations on the for condition are determined by the RDD (see the "RDD Specifics" appendix in the Programmer's Guide for information about RDD limitations.)
-   </param>
+      Unlike the while condition and other scoping information, the for condition is stored as part of the index file and is used when updating or rebuilding the order with DBReindex().  
+      Any limitations on the for condition are determined by the RDD
+    </param>
 
     <param name="lAll">A value of TRUE specifies a scope of all records.  Use FALSE if you want to indicate other record scoping conditions (that is, &lt;nNext&gt;, &lt;nRecord&gt;, or &lt;lRest&gt;).  The default is FALSE.</param>
     <param name="cbWhileCondition">
-      <include file="VoFunctionDocs.xml" path="Runtimefunctions/cbwhile/*" />    </param>
+      <include file="VoFunctionDocs.xml" path="Runtimefunctions/cbwhile/*" />
+    </param>
     <param name="cbEval">A code block that is evaluated at intervals specified by &lt;nInterval&gt;.  This is useful in producing a status bar or odometer that monitors the ordering progress.  The return value of &lt;cbEval&gt; must be a logical value.  If &lt;cbEval&gt; returns FALSE, indexing halts.  The default is NIL.</param>
     <param name="nInterval">A numeric expression that determines the number of times &lt;cbEval&gt; is evaluated.  This argument offers a performance enhancement by evaluating the condition at intervals instead of for every record processed.  To step through every record, you can specify a value of 0.  The default is 0.</param>
     <param name="nStart">
@@ -18370,7 +17473,7 @@
       &#0009;If &lt;cIndexFile&gt; is not open by the current process, a runtime error is raised.
     </param>
     <returns>
-      A string representing the for condition of the specified order.  If the order was not created with a for condition, the return value will be a NULL_STRING.  If the RDD does not support the for condition, it can either return a NULL_STRING or cause an error, depending on the RDD.  See the "RDD Specifics" appendix in the Programmer's Guide for details about a particular RDD.
+      A string representing the for condition of the specified order.  If the order was not created with a for condition, the return value will be a NULL_STRING.  If the RDD does not support the for condition, it can either return a NULL_STRING or cause an error, depending on the RDD.
     </returns>
     <remarks>
       <note type="tip">
@@ -18701,9 +17804,9 @@
     </summary>
 
     <param name="cIndexFile">
-      The name of the index file to open, including an optional drive, directory, and extension for each.  See SetDefault() and SetPath() for file searching and creation rules.  The default extension is determined by the RDD and can be obtained using DBOrderInfo(DBOI_INDEXEXT).  See the "RDD Specifics" appendix in the Programmer's Guide for details on a particular RDD.<br/>
+      The name of the index file to open, including an optional drive, directory, and extension for each.  See SetDefault() and SetPath() for file searching and creation rules.  The default extension is determined by the RDD and can be obtained using DBOrderInfo(DBOI_INDEXEXT).  <br/>
       &#0009;If &lt;cIndexFile&gt; does not exist, a runtime error is raised.  If it exists and is not already open by the current process, this function attempts to open the file in the same mode as the corresponding database file.  If access is denied because, for example, another process is using the file and this one is asking for exclusive use, NetErr() is set to TRUE.  Otherwise, the file open is successful.<br/>
-      &#0009;Concurrency conflicts with index files are rare since they should be used with only one database file.  If a concurrency problem arises, it will normally be when you attempt to open the database file.  Refer to the "Concurrency Control" chapter in the Programmer's Guide for more information on resolving concurrency conflicts.
+      &#0009;Concurrency conflicts with index files are rare since they should be used with only one database file.  If a concurrency problem arises, it will normally be when you attempt to open the database file.  
     </param>
     <param name="cOrder">
       The name of a specific order to add.  If not specified, all orders in the index file are added to the order list.  Invalid values are ignored.<br/>
@@ -19069,48 +18172,6 @@
     </example>
     <seealso>ASSERT</seealso>
   </pause>
-  <pclone>
-    <summary>
-      Duplicate a polymorphic variable.
-    </summary>
-
-    <param name="uSource">The variable to duplicate.</param>
-    <returns>
-      A new copy of &lt;uSource&gt;.
-    </returns>
-    <remarks>
-      PClone() is similar to SClone() and ACloneShallow() but PClone() accepts a polymorphic argument.
-    </remarks>
-    <example>
-      This example uses PClone() to duplicate polymorphic arguments that were passed to a function:
-      <code language="X#">
-        FUNCTION Start()
-        &#0009;LOCAL u1
-        &#0009;LOCAL u2
-        &#0009;LOCAL u3
-        &#0009;u1 := 1
-        &#0009;u2 := TRUE
-        &#0009;u3 := {||TRUE}
-        &#0009;CloneThem(@u1, @u2, @u3)
-        &#0009;RETURN TRUE
-        FUNCTION CloneThem(u1, u2, u3) AS VOID
-        &#0009;LOCAL u1Clone, u2Clone, u3Clone
-        &#0009;u1Clone := PClone(u1)
-        &#0009;u2Clone := PClone(u2)
-        &#0009;u3Clone := PClone(u3)
-        &#0009;// Change the originals
-        &#0009;u1 := 0
-        &#0009;u2 :=FALSE
-        &#0009;u3 := {||FALSE}
-        &#0009;? u1, u2, u3&#0009;&#0009;&#0009;&#0009;&#0009;// 0 FALSE {||FALSE}
-        &#0009;// Clone copies remain unchanged
-        &#0009;? u1Clone, u2Clone, u3Clone&#0009;&#0009;// 1 TRUE {||TRUE}
-      </code>
-    </example>
-    <seealso cref='O:XSharp.RT.Functions.AClone'>AClone Overload</seealso>
-    <seealso cref='O:XSharp.RT.Functions.ACloneShallow'>ACloneShallow Overload</seealso>
-    <seealso cref='M:XSharp.Core.Functions.SClone(System.String)'>SClone</seealso>
-  </pclone>
   <pcount>
     <summary>
       Return the position of the last argument in the list of arguments passed when a procedure or function is invoked.
@@ -19123,7 +18184,7 @@
       &#0009;Skipped arguments are uninitialized and, therefore, return NIL when accessed.  Therefore, you can determine if a argument did not receive a value by testing it for NIL.  To check arguments for NIL, use the IsNil() function.
       &#0009;You can set the default value of skipped arguments with the Default() function.
       &#0009;You can enforce correct data types by using EnforceType() or EnforceNumeric().
-      For more information on passing arguments, refer to "Functions and Procedures" in the Programmer's Guide.
+
     </remarks>
     <example>
       This example is a function that opens a database file and uses PCount() to determine whether the calling procedure passed the name of the database file to open.  If the name was not passed, OpenFile() asks for the name:
@@ -19376,7 +18437,7 @@
     <returns>
     </returns>
     <remarks>
-      The newly allocated string is a static object, which implies that the garbage collector does not move the string.  To free up the buffer of a static object, use OldSpaceFree().
+      The newly allocated string is a static object, which implies that the garbage collector does not move the string.  
     </remarks>
     <example>
       This example displays the storage addresses of two variables:
@@ -19387,10 +18448,8 @@
         pszString := PszAlloc(pszOrigString)
       </code>
     </example>
-    <seealso cref='M:XSharp.VO.Functions.DynToOldSpace(XSharp.__Usual)'>DynToOldSpace</seealso>
     <seealso cref='M:XSharp.RT.Functions.MemAlloc(System.UInt32)'>MemAlloc</seealso>
     <seealso cref='M:XSharp.RT.Functions.MemFree(System.IntPtr)'>MemFree</seealso>
-    <seealso cref='M:XSharp.VO.Functions.OldSpaceFree(XSharp.__Usual)'>OldSpaceFree</seealso>
     <seealso cref='M:XSharp.RT.Functions.Psz2String(XSharp.__Psz)'>Psz2String</seealso>
     <seealso cref='M:XSharp.RT.Functions.Psz2Usual(XSharp.__Psz)'>Psz2Usual</seealso>
     <seealso cref='M:XSharp.RT.Functions.PszLen(XSharp.__Psz)'>PszLen</seealso>
@@ -19650,7 +18709,7 @@
       The position of &lt;cSearch&gt; within &lt;cTarget&gt;.  If &lt;cSearch&gt; is not found, RAt() returns 0.
     </returns>
     <remarks>
-      RAt() is like At(), which returns the position of the first occurrence of a substring within another string.  If you only need to know whether a substring exists within another string, use the InStr() function or the $ operator.  (See "Operators and Expressions" in the Programmer's Guide for information on the $ operator.)
+      RAt() is like At(), which returns the position of the first occurrence of a substring within another string.  If you only need to know whether a substring exists within another string, use the InStr() function or the $ operator.  
       Both the RAt() and At() functions are used with Substr(), Left(), and Right() to extract substrings.
     </remarks>
     <example>
@@ -20223,7 +19282,7 @@
         &#0009;// Collection is complete. Unregister objects.
         &#0009;// Objects have survived after a collection.
         &#0009;FOR wI := 1 UPTO 10
-        &#0009;&#0009;MessageBox(0, strucMyArray.aStr[wI], AsPsz(wI), 0)
+        &#0009;&#0009;MessageBox(0, strucMyArray.aStr[wI], Psz(wI), 0)
         &#0009;NEXT
         &#0009;MemFree(strucMyArray)
         &#0009;// Don't forget to free the allocated memory when you're done
@@ -20245,7 +19304,7 @@
         END SEQUENCE
         UnregisterKid(strucMyArray)
         FOR I := 1 UPTO 10 &#0009;// did we survive?
-        &#0009;MessageBox(0, strucMyArray.aStr[I], AsPsz(I), 0)
+        &#0009;MessageBox(0, strucMyArray.aStr[I], Psz(I), 0)
         NEXT
         MemFree(strucMyArray)
         // Don't forget to free the allocated memory when you're done
@@ -20393,7 +19452,7 @@
       A record lock remains in effect until you explicitly unlock it (with DBUnlock(), for example), close the database file, or attempt another file or record lock (with RLock() or DBRLock() without an argument).
       <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkareaParam/*" />
       This feature is useful since RLock() does not automatically attempt a record lock for related files.
-      Refer to "Concurrency Control" in the Programmer's Guide for  more information on record locking.
+
     </remarks>
     <example>
       This example deletes a record in a shared database file using RLock():
@@ -20542,7 +19601,6 @@
         ? cString1 == cString2&#0009;&#0009;// FALSE
       </code>
     </example>
-    <seealso cref='M:XSharp.VO.Functions.PClone(XSharp.__Usual)'>PClone</seealso>
     <seealso cref='M:XSharp.RT.Functions.StringAlloc(System.String)'>StringAlloc</seealso>
   </sclone>
   <seconds>
@@ -20631,7 +19689,7 @@
       Invoke a method.
     </summary>
 
-    <param name="oObject">The object whose method is invoked.  If this argument  is not specified, SysObject() is used in its place (see second example).</param>
+    <param name="oObject">The object whose method is invoked.</param>
     <param name="symMethod">The method name, specified without parentheses.</param>
     <param name="MethodArgList">A comma-separated list of arguments to pass to &lt;symMethod&gt;.</param>
     <returns>
@@ -20656,73 +19714,10 @@
         &#0009;// x:Horn(100, "Hello!")
         &#0009;Send(x, #Horn, 100, "Hello!")
       </code>
-      The last line of this example shows how the object installed by SysObject is used instead of the first Send() argument:
-      <code language="X#">
-        CLASS SysClass
-        // Define a customized QOut method
-        METHOD QOut() CLASS SysClass
-        &#0009;// Still could use the normal QOut():
-        &#0009;QOut("This custom QOut method!")
-        Function Start()
-        &#0009;LOCAL oCustomQOut AS OBJECT
-        &#0009;oCustomQOut := SysClass{}
-        &#0009;SysObject(oCustomQOut)
-        &#0009;Send(,#QOut)&#0009;&#0009;&#0009;// This custom QOut method!
-      </code>
     </example>
     <seealso cref='M:XSharp.RT.Functions.ASend(XSharp.__Array,System.String,XSharp.__Usual[])'>ASend</seealso>
     <seealso cref='M:XSharp.RT.Functions.NoMethod'>NoMethod</seealso>
-    <seealso cref='M:XSharp.VO.Functions.SendClass(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)'>SendClass</seealso>
-    <seealso cref='M:XSharp.VO.Functions.SysObject'>SysObject</seealso>
   </send>
-  <sendclass>
-    <summary>
-      Invoke a method with a specified class.
-    </summary>
-
-    <param name="oObject">The object whose method is invoked.</param>
-    <param name="symMethod">The method name, specified without parentheses.</param>
-    <param name="symClassName">The class that contains the method to send.  &lt;symClassName&gt; must either be the class or a super class of &lt;oObject&gt;.</param>
-    <param name="MethodArgList">A comma-separated list of arguments to pass to &lt;symMethod&gt;.</param>
-    <returns>
-    </returns>
-    <remarks>
-      SendClass() allows you to invoke a method through a function call.
-      SendClass() requires you to specify the class containing the method to send.  This lets you distinguish among methods of the same name that might exist across a class hierarchy.  In other words, if a method is redefined by an inherited class, an object that is an instance of the inherited class could still call the original method that was defined by its super class.  Note, however, that the local data of the object (inherited class) will be used.
-    </remarks>
-    <example>
-      This example uses SendClass() to invoke a method of a super class:
-      <code language="X#">
-        CLASS Person&#0009;&#0009;&#0009;&#0009;&#0009;// The super class
-        &#0009;EXPORT name
-        METHOD Init() CLASS Person
-        &#0009;// Name will be changed  by an inherited class
-        &#0009;name := "Adam"
-        METHOD Sound() CLASS Person  
-        &#0009;// Method will be redefined by inherited class
-        &#0009;? "Hi", name
-        CLASS Programmer INHERIT Person
-        &#0009;EXPORT prefers
-        METHOD Init() CLASS Programmer
-        &#0009;name := "Hacker"&#0009;&#0009;// Change the name
-        METHOD Sound() CLASS Programmer
-        &#0009;// Redefine the sound method
-        &#0009;? "Hello World", name
-        FUNCTION Start()
-        &#0009;LOCAL x AS OBJECT
-        &#0009;x := Programmer{}
-        &#0009;// Calls the method of the inherited class
-        &#0009;// and returns Hello World Hacker
-        &#0009;Send(x, #sound)
-        &#0009;// Calls the method of the super class, but
-        &#0009;// uses the data of the current (inherited)
-        &#0009;// class and returns Hi Hacker
-        &#0009;SendClass(x, #sound, #Person)
-      </code>
-    </example>
-    <seealso cref='M:XSharp.RT.Functions.ASend(XSharp.__Array,System.String,XSharp.__Usual[])'>ASend</seealso>
-    <seealso cref='M:XSharp.RT.Functions.Send(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual[])'>Send</seealso>
-  </sendclass>
   <setamext>
     <summary>
       Set the morning extension for time strings in 12-hour format.
@@ -20791,7 +19786,7 @@
       SetAnsi() is a dual purpose function.
       <br/>
       First and foremost, it determines the format used to create new database files — ANSI, which uses the Windows character set, or OEM, which uses the ASCII character set.  Thus, functions such as DBCreate() and DBCopyStruct() are affected by this setting.  The information that determines the ANSI/OEM format of a database file is stored in the header record of the file.
-      Important!  If your application must share data with a DOS-based product, either simultaneously or at different times, you must use the OEM format when creating .DBF files.  (See Data Sharing in the "Using DBF Files" chapter of the Programmer's Guide.)
+      Important!  If your application must share data with a DOS-based product, either simultaneously or at different times, you must use the OEM format when creating .DBF files.  
       If SetAnsi() is TRUE, your X# application will perform an automatic conversion between OEM and ANSI for existing database files that are in OEM format, thereby preserving the format of the data and allowing it to be used by other applications that do not support the ANSI format.
       Is SetAnsi() is FALSE, however, no automatic conversion is performed when reading to or writing from any database file.  In this case, the data will appear at runtime just as it was read from disk.  For OEM databases, therefore, the programmer is fully responsible for ANSI/OEM conversion of displayed data or data modified by any edit control or terminal function.  You can use the Ansi2Oem() and Oem2Ansi() functions to convert data between the two formats.
       <br/>
@@ -21183,7 +20178,7 @@
     <remarks>
       By default, when a X# program starts, the default drive and directory are the current X# drive and directory.  Within the program, you can change this with SetDefault() — it sets the drive and directory where the application program creates and searches for files specified without a path name.
       Note:  Certain commands and functions that open files do not respect the SetDefault() setting.  These cases are noted explicitly in the documentation for those commands and functions.
-      SetDefault() does not change the X# drive and directory, but instead causes the application to use a different default.  To set additional search paths for file access, use SetPath().  See the "File Handling" chapter in the Programmer's Guide for more information on managing file locations in your applications.
+      SetDefault() does not change the X# drive and directory, but instead causes the application to use a different default.  To set additional search paths for file access, use SetPath().
     </remarks>
     <example>
       This example uses SetDefault() to set and query the current default drive and directory:
@@ -21346,7 +20341,7 @@
     </returns>
     <remarks>
       SetEnv() lets you either append or replace a DOS environment variable from within an application.  Typically this is configuration information-- including path names--that describes the location of files (database, index, label, or reports).
-      Note:  Instead of using environment variables for configuring your application, you may want to consider using registry settings.  See the "X# Registry Entries" appendix in the IDE User Guide for more information.
+      Note:  Instead of using environment variables for configuring your application, you may want to consider using registry settings.  
     </remarks>
     <example>
       These examples modify the DOS PATH:
@@ -21430,7 +20425,7 @@
     </summary>
 
     <param name="lNewSetting">
-      TRUE causes strings to be compared for length and value; FALSE causes strings to be compared by length and position only. Please read the Programmers' Guide for further details and examples.  The initial default is FALSE.<br/>
+      TRUE causes strings to be compared for length and value; FALSE causes strings to be compared by length and position only. The initial default is FALSE.<br/>
       &#0009;This function is equivalent to the == operator for string evaluation and is preferred for most string evaluations.
     </param>
     <returns>
@@ -21459,7 +20454,7 @@
       When FALSE is specified, all files are open in shared mode unless the USE command is specified with the EXCLUSIVE clause.
       Do not use SetExclusive() to control access by other users to records and files.  You can control access programmatically using RLock() and FLock().
       SetExclusive() is a compatibility function and not recommended.  It is superseded by the EXCLUSIVE and SHARED clauses of the USE command.
-      Refer to the "Concurrency Control" chapter in the Programmer's Guide for more information.
+
       <note type="tip">
         Error handling:  Attempting to use a database file already opened as exclusive by another user generates a runtime error and sets NetErr() to TRUE.  After control returns to the point of error, you can test NetErr() to determine whether the USE command failed.
       </note>
@@ -22196,7 +21191,6 @@
     </returns>
     <remarks>
       SEval() is a character function that evaluates a code block once for each character in a string, passing the ASCII value and the character index as arguments.  The return value of the code block is ignored.  All characters in &lt;cString&gt; are processed unless either the &lt;nStart&gt; or the &lt;nCount&gt; argument is specified.
-      Refer to "Code Blocks" in the Programmer's Guide for more information on code blocks.
     </remarks>
     <example>
       This example uses SEval() to extract the street number from a string containing the complete street address:
@@ -22215,7 +21209,7 @@
     <seealso cref='M:XSharp.RT.Functions.DbEval(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)'>DBEval</seealso>
     <seealso cref='O:XSharp.RT.Functions.Eval'>Eval Overload</seealso>
     <seealso cref='O:XSharp.RT.Functions.QOut'>QOut Overload</seealso>
-    <seealso cref='M:XSharp.VO.Functions.SEvalA(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)'>SEvalA</seealso>
+    <seealso cref='M:XSharp.RT.Functions.SEvalA(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)'>SEvalA</seealso>
   </seval>
   <sevala>
     <summary>
@@ -22230,7 +21224,10 @@
       A string of characters that have been processed by the code block.
     </returns>
     <remarks>
-      SEvalA() is identical to SEval() in that they both evaluate a code block once for each character of a string, passing the ASCII value and the character index as arguments.  The only difference is that, while SEval() ignores the return value of the code block, SEvalA() assigns the return value to the original string.  See SEval() for details.
+      SEvalA() is identical to SEval() in that they both evaluate a code block once for each character of a string, 
+	  passing the ASCII value and the character index as arguments.  The only difference is that, while SEval() 
+	  ignores the return value of the code block, SEvalA() assigns the return value to the original string.  
+	  See SEval() for details.
     </remarks>
     <example>
       This example uses SEvalA() to change part of a string to uppercase:
@@ -22391,7 +21388,6 @@
     </remarks>
     <example>
     </example>
-    <seealso cref='M:XSharp.VO.Functions.Buffer(System.UInt32)'>Buffer</seealso>
     <seealso cref='O:XSharp.RT.Functions.Pad'>Pad Overload</seealso>
     <seealso cref='M:XSharp.Core.Functions.Replicate(System.String,System.UInt32)'>Replicate</seealso>
   </space>
@@ -23016,7 +22012,6 @@
     <seealso cref='O:XSharp.RT.Functions.Evaluate'>Evaluate Overload</seealso>
     <seealso cref='M:XSharp.RT.Functions.MAssign(System.String,XSharp.__Usual)'>MAssign</seealso>
     <seealso cref='O:XSharp.RT.Functions.MCompile'>MCompile Overload</seealso>
-    <seealso cref='M:XSharp.VO.Functions.MCSHORT(XSharp.__Usual)'>MCShort</seealso>
     <seealso cref='M:XSharp.RT.Functions.MExec(XSharp.Codeblock)'>MExec</seealso>
   </strevaluate>
   <strfloat>
@@ -23186,7 +22181,6 @@
         MemFree(pszString)
       </code>
     </example>
-    <seealso cref='M:XSharp.VO.Functions.DynToOldSpace(XSharp.__Usual)'>DynToOldSpace</seealso>
     <seealso cref='M:XSharp.RT.Functions.MemAlloc(System.UInt32)'>MemAlloc</seealso>
     <seealso cref='M:XSharp.RT.Functions.MemFree(System.IntPtr)'>MemFree</seealso>
     <seealso cref='M:XSharp.RT.Functions.PszAlloc(XSharp.__Psz)'>PszAlloc</seealso>
@@ -23746,57 +22740,6 @@
     <seealso cref='O:XSharp.RT.Functions.SysAddAtomUpperA'>SysAddAtomUpperA Overload</seealso>
     <seealso cref='O:XSharp.RT.Functions.SysFindAtom'>SysFindAtom Overload</seealso>
   </sysgetatomname>
-  <sysobject>
-    <summary>
-      Install a system-wide object that receives all messages being sent to other data types.
-    </summary>
-
-    <param name="oSys">The object to be installed.  &lt;oSys&gt; can be a NULL_OBJECT, in which case the system object mechanism is disabled. </param>
-    <returns>
-      &lt;oSys&gt; or, if &lt;oSys&gt; is not specified, the currently installed object.
-    </returns>
-    <remarks>
-      SysObject() serves as the default object for Send().  Therefore, if the first argument of Send() is not specified, SysObject() is used in its place.
-    </remarks>
-    <example>
-      This example defines QQOut() and AsString() methods and then applies them to normal X# expressions:
-      <code language="X#">
-        CLASS SysClass
-        // Define a customized QQOut() method
-        METHOD QQOut(x) CLASS SysClass
-        &#0009;// Still could use the normal QQOut():
-        &#0009;QQOut("This", x)
-        // Define a customized AsString()
-        Method AsString(x) CLASS SysClass
-        &#0009;LOCAL wType AS DWORD
-        &#0009;// no OBJECT, no ARRAY, if not called directly
-        &#0009;wType := USUALTYPE(x)
-        &#0009;&#0009;DO CASE
-        &#0009;&#0009;CASE wType =DATE
-        &#0009;&#0009;&#0009;RETURN "Date is: " + DTOC(x)
-        &#0009;&#0009;CASE wType =STRING
-        &#0009;&#0009;&#0009;RETURN "String is: " + x
-        &#0009;&#0009;CASE wType =SYMBOL
-        &#0009;&#0009;&#0009;RETURN "Symbol is: " + SYMBOL2STRING(x)
-        &#0009;&#0009;OTHERWISE
-        &#0009;&#0009;&#0009;// Use the normal AsString()
-        &#0009;&#0009;&#0009;RETURN AsString(x)
-        &#0009;&#0009;ENDCASE
-        Function Start()
-        &#0009;SysObject(SysClass{})
-        &#0009;// Invoke the AsString() method
-        &#0009;// This is like using SysClass:AsString(Today())
-        &#0009;? Today():AsString()&#0009;// Date is: 11/19/98
-        &#0009;? 1:AsString()&#0009;&#0009;&#0009;// 1
-        &#0009;? #HELLO:AsString()&#0009;&#0009;// Symbol is: HELLO
-        &#0009;? "HELLO":AsString()&#0009;&#0009;// String is: HELLO
-        &#0009;// Invoke the QQOut() method
-        &#0009;"Thing":QQOut()&#0009;&#0009;&#0009;// This Thing
-        &#0009;{1, 2, 3}:QQOut()&#0009;&#0009;// This&#0009;1This&#0009;2This&#0009;3
-      </code>
-    </example>
-    <seealso cref='M:XSharp.RT.Functions.Send(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual[])'>Send</seealso>
-  </sysobject>
   <tan>
     <summary>
       Calculate the tangent of a number.
@@ -24293,7 +23236,7 @@
         &#0009;// Objects have survived after a collection:
         &#0009;FOR wI := 1 UPTO 10
         &#0009;&#0009;MessageBox(0, strucMyArray.aStr[wI], ;
-        &#0009;&#0009;&#0009;&#0009;AsPsz(wI), 0)
+        &#0009;&#0009;&#0009;&#0009;Psz(wI), 0)
         &#0009;NEXT
         &#0009;MemFree(strucMyArray)
         &#0009;// Don't forget to free the allocated memory when you're done
@@ -25124,7 +24067,7 @@
     <param name="wFieldPos">The position of the field in the record structure for the current work area.</param>
     <param name="ptrRetVal">
       A pointer to a polymorphic value.  This value will receive the requested information if the function is successful and will be unchanged otherwise.  If you just want to retrieve information, this value must be NIL before calling the function.<br/>
-      &#0009;Although other RDDs may expand on this concept, the supplied RDDs (as outlined in the "RDD Specifics" appendix in the Programmer's Guide) limit using a non-NIL value to a single circumstance in which you can change the information rather than just retrieve it.  With the DBS_ALIAS &lt;kInfoType&gt;, you can specify a non-NIL value, allowing you to specify a string that you can subsequently use to access the indicated field.
+      &#0009;Although other RDDs may expand on this concept, the supplied RDDs limit using a non-NIL value to a single circumstance in which you can change the information rather than just retrieve it.  With the DBS_ALIAS &lt;kInfoType&gt;, you can specify a non-NIL value, allowing you to specify a string that you can subsequently use to access the indicated field.
     </param>
     <returns>
       TRUE if successful; otherwise, FALSE.
@@ -25149,7 +24092,7 @@
     <param name="wFieldPos">The position number of the field that you want information on.</param>
     <param name="ptrRetVal">
       A pointer to a polymorphic value.  This value will receive the requested information if the function is successful and will be unchanged otherwise.  If you just want to retrieve information, this value must be NIL before calling the function.<br/>
-      &#0009;Although other RDDs may expand on this concept, the supplied RDDs (as outlined in the "RDD Specifics" appendix in the Programmer's Guide) limit using a non-NIL value to a single circumstance in which you can change the information rather than just retrieve it.  With the DBS_ALIAS &lt;kInfoType&gt;, you can specify a non-NIL value, allowing you to specify a string that you can subsequently use to access the indicated field.
+      &#0009;Although other RDDs may expand on this concept, the supplied RDDs  limit using a non-NIL value to a single circumstance in which you can change the information rather than just retrieve it.  With the DBS_ALIAS &lt;kInfoType&gt;, you can specify a non-NIL value, allowing you to specify a string that you can subsequently use to access the indicated field.
     </param>
     <param name="uNewValue">A new value to assign to the field attribute.  </param>
     <returns>
@@ -25363,7 +24306,7 @@
     <param name="kInfoType">Determines what type of information is retrieved.</param>
     <param name="ptrRetVal">
       A pointer to a polymorphic value.  This value will receive the requested information if the function is successful and will be unchanged otherwise.  If you just want to retrieve information, this value must be NIL before calling the function.<br/>
-      &#0009;Using a non-NIL value is not currently supported by any of the supplied RDDs (as outlined in the "RDD Specifics" appendix in the Programmer's Guide).  This feature is reserved for RDDs that allow you to change the information rather than just retrieve it.
+      &#0009;Using a non-NIL value is not currently supported by any of the supplied RDDs .  This feature is reserved for RDDs that allow you to change the information rather than just retrieve it.
     </param>
     <returns>
       TRUE if successful; otherwise, FALSE.
@@ -25531,7 +24474,7 @@
     <param name="uOrder">&#0009;The name of the order about which you want to obtain information or a number representing its position in the order list.  To omit the &lt;cOrder&gt; | &lt;nPosition&gt; argument, specify NIL.</param>
     <param name="ptrRetVal">
       A pointer to a polymorphic value.  This value will receive the requested information if the function is successful and will be unchanged otherwise.  If you just want to retrieve information, this value must be NIL before calling the function.<br/>
-      &#0009;Using a non-NIL value is not currently supported by any of the supplied RDDs (as outlined in the "RDD Specifics" appendix in the Programmer's Guide).  This feature is reserved for RDDs that allow you to change the information rather than just retrieve it.
+      &#0009;Using a non-NIL value is not currently supported by any of the supplied RDDs .  This feature is reserved for RDDs that allow you to change the information rather than just retrieve it.
     </param>
     <returns>
       TRUE if successful; otherwise, FALSE.
@@ -25798,7 +24741,7 @@
     <param name="nRecID">The ID of the record to retrieve information on.  A value of 0L means the current record.</param>
     <param name="ptrRetVal">
       A pointer to a polymorphic value.  This value will receive the requested information if the function is successful and will be unchanged otherwise.  If you just want to retrieve information, this value must be NIL before calling the function.<br/>
-      &#0009;Using a non-NIL value is not currently supported by any of the supplied RDDs (as outlined in the "RDD Specifics" appendix in the Programmer's Guide).  This feature is reserved for RDDs that allow you to change the information rather than just retrieve it.
+      &#0009;Using a non-NIL value is not currently supported by any of the supplied RDDs .  This feature is reserved for RDDs that allow you to change the information rather than just retrieve it.
     </param>
     <returns>
       TRUE if successful; otherwise, FALSE.
@@ -25982,7 +24925,8 @@
 
     <param name="cbForCondition">
       <include file="VoFunctionDocs.xml" path="Runtimefunctions/cbfor/*" /> <br/>
-      If no scope is specified, &lt;cbForCondition&gt; changes the default scope to all records.  The code block should contain a logical expression.  It corresponds to the first argument of DBLocate() or VODBLocate().  It is valid until it is overwritten by the next VODBSetLocate().</param>
+      If no scope is specified, &lt;cbForCondition&gt; changes the default scope to all records.  The code block should contain a logical expression.  It corresponds to the first argument of DBLocate() or VODBLocate().  It is valid until it is overwritten by the next VODBSetLocate().
+    </param>
     <returns>
       TRUE if successful; otherwise, FALSE.
     </returns>
@@ -26129,10 +25073,10 @@
       </code>
     </example>
     <seealso cref='O:XSharp.RT.Functions.DbUnLock'>DBUnlock</seealso>
-    <seealso cref='O:XSharp.RT.Functions.DbUnLockAll'>DBUnlockAll</seealso>
+    <seealso cref='O:XSharp.RT.Functions.DbUnLockAll'>DbUnLockAll</seealso>
     <seealso cref='M:XSharp.RT.Functions.IndexHPLock(XSharp.__Usual)'>IndexHPLock</seealso>
     <seealso cref='M:XSharp.RT.Functions.NewIndexLock(XSharp.__Usual)'>NewIndexLock</seealso>
-    <seealso cref='M:XSharp.RT.Functions.VoDbUnlockAll'>VODBUnlockAll</seealso>
+    <seealso cref='M:XSharp.RT.Functions.VoDbUnLockAll'>VODbUnLockAll</seealso>
   </vodbunlock>
   <vodbunlockall>
     <summary>
@@ -26142,7 +25086,7 @@
       TRUE if successful; otherwise, FALSE.
     </returns>
     <remarks>
-      VODBUnlockAll() is the same as DBUnlockAll().  This function, however, does not call the error handler and will not, therefore, produce a runtime error message or create an error object if it fails.  Thus, it may be important to check the return value to determine if the function succeeded.  The global structure, StrucErrInfo, will contain needed information regarding any error that occurs.  See DBUnlockAll() for more information.
+      VODbUnLockAll() is the same as DbUnLockAll().  This function, however, does not call the error handler and will not, therefore, produce a runtime error message or create an error object if it fails.  Thus, it may be important to check the return value to determine if the function succeeded.  The global structure, StrucErrInfo, will contain needed information regarding any error that occurs.  See DbUnLockAll() for more information.
     </remarks>
     <example>
       The following example marks a record for deletion if an VODBRLock() attempt is successful, then clears all locks in all work areas:
@@ -26166,12 +25110,12 @@
         &#0009;ENDIF
         ELSE
         &#0009;? "Not found"
-        &#0009;VODBUnlockAll()&#0009;&#0009;// Remove all locks in
+        &#0009;VODbUnLockAll()&#0009;&#0009;// Remove all locks in
         ENDIF&#0009;&#0009;&#0009;&#0009;&#0009;&#0009;&#0009;// all work areas
       </code>
     </example>
     <seealso cref='O:XSharp.RT.Functions.DbUnLock'>DBUnlock</seealso>
-    <seealso cref='O:XSharp.RT.Functions.DbUnLockAll'>DBUnlockAll</seealso>
+    <seealso cref='O:XSharp.RT.Functions.DbUnLockAll'>DbUnLockAll</seealso>
     <seealso cref='M:XSharp.RT.Functions.IndexHPLock(XSharp.__Usual)'>IndexHPLock</seealso>
     <seealso cref='M:XSharp.RT.Functions.NewIndexLock(XSharp.__Usual)'>NewIndexLock</seealso>
     <seealso cref='M:XSharp.RT.Functions.VoDbUnlock(XSharp.__Usual)'>VODBUnlock</seealso>
@@ -26460,7 +25404,6 @@
     </remarks>
     <example>
     </example>
-    <seealso>_GetCmdShow</seealso>
     <seealso cref='M:XSharp.Core.Functions._GetInst'>_GetInst</seealso>
     <seealso cref='M:XSharp.Core.Functions._GetPrevInst'>_GetPrevInst</seealso>
   </_getcmdline>
@@ -26704,6 +25647,6 @@
         The &lt;nNext&gt;, &lt;nRecord&gt;, and &lt;lRest&gt; arguments are mutually exclusive. You should not pass all three of them.
         And if you pass the &lt;cbWhile&gt; argument then this also controls the scope behavior.
       </note>
-  </span>
+    </span>
   </recordscope>
 </Runtimefunctions>

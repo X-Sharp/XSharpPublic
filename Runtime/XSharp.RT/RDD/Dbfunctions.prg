@@ -80,13 +80,8 @@ FUNCTION DbZap(uArea AS USUAL) AS LOGIC STRICT
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbunlockall/*" />
-FUNCTION DbUnlockAll() AS LOGIC STRICT
-	RETURN VoDb.UnlockAll()
-
-
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbunlockall/*" />
-FUNCTION DbUnlockAll(uArea AS USUAL) AS LOGIC STRICT
-	RETURN (uArea)->(DbUnlockAll())
+FUNCTION DbUnLockAll() AS LOGIC STRICT
+	RETURN VoDb.UnLockAll()
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/deleted/*" />

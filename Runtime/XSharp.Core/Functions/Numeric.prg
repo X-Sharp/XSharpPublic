@@ -94,6 +94,11 @@ FUNCTION MakeLong( wLow AS WORD, wHigh AS WORD ) AS INT
 FUNCTION MakeWord( bLow AS BYTE, bHigh AS BYTE ) AS WORD
 	RETURN WORD( ( WORD(bHigh) << 8 ) | bLow )
 
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/makeshort/*" />
+FUNCTION MakeShort( bLow AS BYTE, bHigh AS BYTE ) AS SHORT
+	RETURN SHORT( ( SHORT(bHigh) << 8 ) | bLow )
+
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/rgb/*" />
 FUNCTION RGB(bRed AS BYTE,bGreen AS BYTE,bBlue AS BYTE) AS DWORD
 	var result :=  (DWORD(bBlue) << 16) + (DWORD(bGreen) << 8) + DWORD(bRed)

@@ -26,6 +26,11 @@ FUNCTION SEval(cString ,cbBlock ,nStart ,nCount ) AS STRING CLIPPER
 	RETURN SEvalWorker(cString, cbBlock, nStart, nCount)
 
 
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/sevala/*" />
+FUNCTION SEvalA(cString ,cbBlock ,nStart ,nCount ) AS STRING CLIPPER
+	cString := SEval(cString, cbBlock, nStart, nCount)
+    RETURN cString 
+
 INTERNAL FUNCTION SEvalWorker(cSource AS STRING, oBlock AS CODEBLOCK, nStart AS INT, nCount AS INT) AS STRING
 	LOCAL elements AS INT
 	LOCAL nLast		AS INT

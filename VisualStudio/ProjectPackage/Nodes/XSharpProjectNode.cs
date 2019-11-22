@@ -1605,6 +1605,13 @@ namespace XSharp.Project
                         return result;
                 }
             }
+            foreach (var usingName in model.ImplicitNamespaces)
+            {
+                var fullname = usingName + "." + name;
+                result = model.LookupReferenced(fullname, true);
+                if (result != null)
+                    return result;
+            }
             return result;
         }
 
@@ -2414,7 +2421,7 @@ namespace XSharp.Project
             OLEMSGBUTTON buttons = OLEMSGBUTTON.OLEMSGBUTTON_OK;
             OLEMSGDEFBUTTON defaultButton = OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST;
 
-            return VsShellUtilities.ShowMessageBox(this.Site, message, title, icon, buttons, defaultButton);
+            return Utilities.ShowMessageBox(this.Site, message, title, icon, buttons, defaultButton);
 
         }
 

@@ -70,7 +70,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             //
             var parent = loweredReceiver.Syntax?.Parent?.Parent;
             var xnode = parent.XNode as XSharpParser.MethodCallContext;
-            if (xnode.HasRefArguments)
+            if (xnode != null && xnode.HasRefArguments)
             {
                 return RewriteLateBoundCallWithRefParams(loweredReceiver, name, node, args);
             }

@@ -169,7 +169,7 @@ BEGIN NAMESPACE XSharp.IO
 		PUBLIC PROPERTY Attributes AS DWORD AUTO
 		PUBLIC PROPERTY Bytes	   AS BYTE[] AUTO
 		
-		CONSTRUCTOR (oStream AS FileStream, dwAttributes AS DWORD)
+		CONSTRUCTOR (oStream AS Stream, dwAttributes AS DWORD)
 			SELF:Attributes := dwAttributes
 			SELF:Stream     := oStream
 			RETURN
@@ -199,7 +199,7 @@ BEGIN NAMESPACE XSharp.IO
 		STATIC PRIVATE METHOD hasStream(pStream AS Intptr) AS LOGIC
 			RETURN streams:ContainsKey(pStream)
 		
-		STATIC PRIVATE METHOD addStream(pStream AS Intptr, oStream AS FileStream, attributes AS DWORD) AS LOGIC
+		STATIC PRIVATE METHOD addStream(pStream AS Intptr, oStream AS Stream, attributes AS DWORD) AS LOGIC
 			IF ! streams:ContainsKey(pStream)
 				streams:Add(pStream, FileCacheElement {oStream, attributes})
 				RETURN TRUE
@@ -225,8 +225,8 @@ BEGIN NAMESPACE XSharp.IO
 		STATIC PRIVATE METHOD createManagedFileStream(cFIle AS STRING, oMode AS VOFileMode) AS FileStream
 			LOCAL oStream := NULL AS FileSTream
 			TRY
-                		clearErrorState()
-				oStream := FileStream{cFile, oMode:FileMode, oMode:FileAccess, oMode:FileShare, 4096}
+                clearErrorState()
+				oStream := FileStream{cFile, oMode:FileMode, oMode:FileAccess, oMode:FileShare, 16*1024}
  
 			CATCH e AS Exception
 				System.Diagnostics.Trace.writeLine(e:Message)

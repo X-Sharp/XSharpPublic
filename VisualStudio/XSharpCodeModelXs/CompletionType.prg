@@ -163,6 +163,9 @@ BEGIN NAMESPACE XSharpModel
 			IF ! String.IsNullOrEmpty(defaultNS)
 				usings:Add(defaultNS)
 			ENDIF
+            FOREACH var ns in xFile:Project:ImplicitNamespaces
+                usings:AddUnique(ns)
+            NEXT
             // For fully qualified typenames, search without usings first. That is usually faster
             IF typename:Contains(".")
                 SELF:CheckType(typeName, xFile, List<STRING>{})

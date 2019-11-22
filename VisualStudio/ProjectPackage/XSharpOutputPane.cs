@@ -6,6 +6,8 @@ using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Task = System.Threading.Tasks.Task;
+using Microsoft;
+
 namespace XSharp.Project
 {
     class XSharpOutputPane
@@ -19,6 +21,7 @@ namespace XSharp.Project
             {
                 IVsWindowFrame windowFrame;
                 var vsUiShell = ServiceProvider.GlobalProvider.GetService(typeof(SVsUIShell)) as IVsUIShell;
+                Assumes.Present(vsUiShell);
                 uint flags = (uint)__VSFINDTOOLWIN.FTW_fForceCreate;
                 vsUiShell.FindToolWindow(flags, VSConstants.StandardToolWindows.Output, out windowFrame);
                 windowFrame.Show();

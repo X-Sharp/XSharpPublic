@@ -15,6 +15,8 @@ using Microsoft.VisualStudio.Project;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
+using Microsoft;
+
 namespace XSharp.Project
 {
     /// <summary>
@@ -311,6 +313,7 @@ namespace XSharp.Project
             }
 
             IVsPropertyPageFrame propertyPageFrame = (IVsPropertyPageFrame)this.ProjectMgr.Site.GetService((typeof(SVsPropertyPageFrame)));
+            Assumes.Present(propertyPageFrame);
             bool reloadRequired = this.ProjectMgr.TargetFrameworkMoniker != this.targetFrameworkMoniker;
 
             this.ProjectMgr.SetProjectProperty(nameof(AssemblyName), this.assemblyName);

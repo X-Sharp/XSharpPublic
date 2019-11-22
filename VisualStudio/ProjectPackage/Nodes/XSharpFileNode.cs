@@ -117,6 +117,7 @@ namespace XSharp.Project
 
         protected override int IncludeInProject()
         {
+            new UIThread().MustBeCalledFromUIThread();
             int result = base.IncludeInProject();
             DetermineSubType();
             //if (this.FileType == XFileType.SourceCode)
@@ -129,6 +130,7 @@ namespace XSharp.Project
 
         protected override int ExcludeFromProject()
         {
+            new UIThread().MustBeCalledFromUIThread();
             //if (this.FileType == XFileType.SourceCode)
             {
                 var prjNode = this.ProjectMgr as XSharpProjectNode;

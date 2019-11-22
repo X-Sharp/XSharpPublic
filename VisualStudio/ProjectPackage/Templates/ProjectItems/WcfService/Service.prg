@@ -7,7 +7,7 @@ USING System.Text
 
 BEGIN NAMESPACE  $rootnamespace$
 
-	CLASS $safeitemrootname$ IMPLEMENTS $contractName$
+	CLASS $safeitemrootname$ IMPLEMENTS I$safeitemrootname$
 		METHOD DoWork() AS VOID STRICT
 			RETURN
 

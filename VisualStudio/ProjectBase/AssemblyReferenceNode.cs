@@ -188,6 +188,7 @@ namespace Microsoft.VisualStudio.Project
         protected override void BindReferenceData()
         {
             Debug.Assert(this.assemblyName != null, "The AssemblyName field has not been initialized");
+            new UIThread().MustBeCalledFromUIThread();
 
             // If the item has not been set correctly like in case of a new reference added it now.
             // The constructor for the AssemblyReference node will create a default project item. In that case the Item is null.
@@ -426,8 +427,9 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
 		private void SetReferenceProperties()
 		{
-			// Set a default HintPath for msbuild to be able to resolve the reference.
-			this.ItemNode.SetMetadata(ProjectFileConstants.HintPath, this.assemblyPath);
+            new UIThread().MustBeCalledFromUIThread();
+            // Set a default HintPath for msbuild to be able to resolve the reference.
+            this.ItemNode.SetMetadata(ProjectFileConstants.HintPath, this.assemblyPath);
 
             // Resolve assembly references. This is needed to make sure that properties like the full path
             // to the assembly or the hint path are set.

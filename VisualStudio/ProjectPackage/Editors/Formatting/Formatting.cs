@@ -54,7 +54,7 @@ namespace XSharp.Project
                 _specialKeywords = getSpecialMiddleKeywords();
                 // Build list for Outdent tokens
                 _specialOutdentKeywords = getSpecialOutdentKeywords();
-                // 
+                //
                 //_xtraKeywords = getXtraKeywords();
             }
         }
@@ -701,7 +701,7 @@ namespace XSharp.Project
                                 //{
                                 //    indentValue--;
                                 //}
-                                //else 
+                                //else
                                 if (String.Compare(insideKeyword, "end", true) == 0)
                                 {
                                     // We may have an optionnal closing keyword indication
@@ -1025,11 +1025,11 @@ namespace XSharp.Project
         private static int _indentFactor;
         private static bool _alignDoCase;
         private static bool _alignMethod;
-        private static int _keywordCase;
+        private static KeywordCase _keywordCase;
         private static bool _identifierCase;
         private static bool _noGotoDefinition;
         private static vsIndentStyle _indentStyle;
-        internal static int KeywordCase => _keywordCase;
+        internal static KeywordCase KeywordCase => _keywordCase;
         internal static bool IdentifierCase => _identifierCase;
         //private IEditorOptions _options;
         //

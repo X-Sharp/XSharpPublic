@@ -10,26 +10,40 @@
         <DataSource Persistence="ProjectFile" Label="Configuration" HasConfigurationCondition="True" />
     </Rule.DataSource>
     <Rule.Categories>
-        <Category Name="Build" 		DisplayName="Build"  Description="General" />
-        <Category Name="Events"  	DisplayName="Build Events" Description="Define pre- and post- build events" />
+        <Category Name="Output"     DisplayName="Output"  Description="Output" />
         <Category Name="Signing"  	DisplayName="Code Signing" Description="Set Codesigning properties" />
+        <Category Name="Misc" 		DisplayName="Miscellaneous"  Description="Miscellaneous" />
+        <Category Name="Events"  	DisplayName="Build Events" Description="Define pre- and post- build events" />
         <Category Name="Warnings"  	DisplayName="Warnings" Description="Suppress specific warnings and set warning level" />
+        <Category Name="XML"  	    DisplayName="XML Output" Description="XML Output" />
     </Rule.Categories>
-    <StringProperty 	Category="Build" Name="ApplicationIcon" DisplayName="Application Icon" />
-    <StringProperty 	Category="Build" Name="OutPutPath" DisplayName="Output Path" Subtype="file"  Switch="o"/>
-    <StringProperty 	Category="Build" Name="IntermediateOutputPath" DisplayName ="Intermediate Output Path" Subtype="file" />
-    <StringProperty 	Category="Build" Name="IncludePath" DisplayName ="Additional Include paths" Subtype="file" Description="Additional include paths for the preprocessor (it also looks through the folders set with the include environment variable)" Switch="i" />
-    <BoolProperty   	Category="Build" Name="DocumentationFile" DisplayName="Generate XML doc comments file" Default="False" Switch="xml"/>
-    <BoolProperty	Category="Build" Name="Optimize" Description="Should compiler optimize output?" Switch="optimize"/>
-    <BoolProperty 	Category="Build" Name="UseSharedCompilation" DisplayName="Use Shared Compiler" Description="Should the shared compiler be used to compile the project? (Faster, but may hide some compiler errors)" Default="True" Switch="shared"/>
-     
-    <StringProperty Category="Events" Name="PreBuildEvent"  DisplayName="Pre Build Event"  Description="Pre Build Event Command Line" Subtype="CommandLine"/>
-    <StringProperty Category="Events" Name="PostBuildEvent" DisplayName="Post Build Event" Description="Post Build Event Command Line" Subtype="CommandLine" />
-    <EnumProperty 	Category="Events" Name="RunPostBuildEvent" DisplayName="Run the Post Build Event" Description="When to run the Post Build Event" Default="Always" >
-        <EnumValue Name="OnBuildSuccess" DisplayName="On Successful Build" />
-        <EnumValue Name="OnOutputUpdated" DisplayName="When the build updates the project output" />
-        <EnumValue Name="Always" DisplayName="Always" />
+
+    <EnumProperty Name="PlatformTarget" DisplayName="Platform Target" Category="Output" Default="AnyCPU" >
+        <EnumValue Name="x86" DisplayName="x86" />
+        <EnumValue Name="AnyCPU" DisplayName="Any Cpu" />
+        <EnumValue Name="x64" DisplayName="x64" />
+        <EnumProperty.DataSource>
+            <DataSource Persistence="ProjectFile" Label="Configuration" HasConfigurationCondition="true" />
+        </EnumProperty.DataSource>
     </EnumProperty>
+    <BoolProperty	Category="Output" Name="Prefer 32 Bit" Description="Prefer 32 Bit when the AnyCpu target is selected?" Switch="Prefer32Bit"/>
+    <StringProperty Category="Output" Name="IntermediateOutputPath" DisplayName ="Intermediate Output Path" Subtype="file" />
+    <StringProperty Category="Output" Name="OutPutPath" DisplayName="Output Path" Subtype="file"  Switch="o"/>
+
+    <BoolProperty 	Category="Signing"  Name="SignAssembly"           DisplayName="Sign the output assembly" Description="Sign the assembly  (/sign)" Default="True" />
+    <BoolProperty 	Category="Signing"  Name="DelaySign"              DisplayName="Delayed sign only" Description="Delayed signing (/delaysign)" Default="True" />
+    <StringProperty Category="Signing"  Name="AssemblyOriginatorKeyFile" DisplayName="Code Signing KeyFile" Description="Choose a code signing key file (/keyfile)" Default="" Subtype="file" />
+
+    <StringProperty	Category="Misc" Name="CommandLineOption" DisplayName="Extra commandline options" Description="User defined Commandline options" Switch="CommandLineOption"/>
+    <BoolProperty	Category="Misc" Name="Optimize" Description="Should compiler optimize output?" Switch="optimize"/>
+    <BoolProperty 	Category="Misc" Name="UseSharedCompilation" DisplayName="Use Shared Compiler" Description="Should the shared compiler be used to compile the project? (Faster, but may hide some compiler errors)" Default="True" Switch="shared"/>
+
+
+    <BoolProperty   Category="Preprocessor"  Name="PPO"                 DisplayName="Generate preprocessor output"                Visible="True" Description="Save the output from the preprocessor to .ppo files  (/ppo)"  Default="False" Switch="ppo"/>
+    <StringProperty Category="Preprocessor"  Name="DefineConstants"     DisplayName="Defines for the preprocessor"                Visible="True" Description="Defines for the preprocessor (/d)"  Default="" Switch="d"/>
+
+
+    <BoolProperty 	Category="Warnings" Name="TreatWarningsAsErrors"  DisplayName="Warnings As Errors"  Description="Treat warnings as errors (/warnaserror)" Default="True" />
     <StringListProperty Category="Warnings" Name="DisabledWarnings"  DisplayName="Suppress Warnings"  Description="Specify a list of warnings to suppress (/nowarn)" Subtype="CommandLine"/>
     <EnumProperty 	Category="Warnings" Name="WarningLevel" DisplayName="Warning Level" Description="Set the warning level to a value between 0 and 4 (/warn)" Default="4" >
         <EnumValue Name="0" DisplayName="0" />
@@ -39,10 +53,16 @@
         <EnumValue Name="4" DisplayName="4" />
     </EnumProperty>
 
-    <BoolProperty 	Category="Warnings" Name="TreatWarningsAsErrors"  DisplayName="Warnings As Errors"  Description="Treat warnings as errors (/warnaserror)" Default="True" />
-    <BoolProperty 	Category="Signing"  Name="SignAssembly"           DisplayName="Sign the output assembly" Description="Sign the assembly  (/sign)" Default="True" />
-    <BoolProperty 	Category="Signing"  Name="DelaySign"              DisplayName="Delayed sign only" Description="Delayed signing (/delaysign)" Default="True" />
-    <StringProperty Category="Signing"  Name="AssemblyOriginatorKeyFile" DisplayName="Code Signing KeyFile" Description="Choose a code signing key file (/keyfile)" Default="" Subtype="file" />
+    <BoolProperty   	Category="XML" Name="DocumentationFile" DisplayName="Generate XML doc comments file" Default="False" Switch="xml"/>
+
+
+    <StringProperty Category="Events" Name="PreBuildEvent"  DisplayName="Pre Build Event"  Description="Pre Build Event Command Line" Subtype="CommandLine"/>
+    <StringProperty Category="Events" Name="PostBuildEvent" DisplayName="Post Build Event" Description="Post Build Event Command Line" Subtype="CommandLine" />
+    <EnumProperty 	Category="Events" Name="RunPostBuildEvent" DisplayName="Run the Post Build Event" Description="When to run the Post Build Event" Default="Always" >
+        <EnumValue Name="OnBuildSuccess" DisplayName="On Successful Build" />
+        <EnumValue Name="OnOutputUpdated" DisplayName="When the build updates the project output" />
+        <EnumValue Name="Always" DisplayName="Always" />
+    </EnumProperty>
 
 
 

@@ -98,6 +98,7 @@ namespace Microsoft.VisualStudio.Project
             Utilities.ArgumentNotNull("site", site);
 
             IVsMonitorSelection selectionMonitor = site.GetService(typeof(IVsMonitorSelection)) as IVsMonitorSelection;
+            Assumes.Present(selectionMonitor);
             uint cookie = 0;
             int active = 0;
             Guid designContext = VSConstants.UICONTEXT_DesignMode;
@@ -255,7 +256,7 @@ namespace Microsoft.VisualStudio.Project
                     OLEMSGICON icon = OLEMSGICON.OLEMSGICON_CRITICAL;
                     OLEMSGBUTTON buttons = OLEMSGBUTTON.OLEMSGBUTTON_OK;
                     OLEMSGDEFBUTTON defaultButton = OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST;
-                    VsShellUtilities.ShowMessageBox(serviceProvider, title, errorMessage, icon, buttons, defaultButton);
+                    Utilities.ShowMessageBox(serviceProvider, title, errorMessage, icon, buttons, defaultButton);
                 }
                 else
                 {
@@ -444,13 +445,14 @@ namespace Microsoft.VisualStudio.Project
 		/// <returns>The name of the active platform.</returns>
 		internal static string GetActivePlatformName(EnvDTE.Project automationObject)
 		{
-			if (automationObject == null)
+            if (automationObject == null)
 			{
 				throw new ArgumentNullException("automationObject");
 			}
 
 			string currentPlatformName = string.Empty;
-			if (automationObject.ConfigurationManager != null)
+            ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+            if (automationObject.ConfigurationManager != null)
 			{
                 try
                 {
@@ -1206,5 +1208,39 @@ namespace Microsoft.VisualStudio.Project
             }
             return true;
         }
-	}
+        /// <summary>
+        /// Use this instead of VsShellUtilities.ShowMessageBox because VSU uses ThreadHelper which
+        /// uses a private interface that can't be mocked AND goes to the global service provider.
+        /// </summary>
+        public static int ShowMessageBox(IServiceProvider serviceProvider, string message, string title, OLEMSGICON icon, OLEMSGBUTTON msgButton, OLEMSGDEFBUTTON defaultButton)
+        {
+            IVsUIShell uiShell = serviceProvider.GetService(typeof(IVsUIShell)) as IVsUIShell;
+            Debug.Assert(uiShell != null, "Could not get the IVsUIShell object from the services exposed by this serviceprovider");
+            if (uiShell == null)
+            {
+                throw new InvalidOperationException();
+            }
+
+            Guid emptyGuid = Guid.Empty;
+            int result = 0;
+
+            UIThread.DoOnUIThread(() =>
+            {
+                ErrorHandler.ThrowOnFailure(uiShell.ShowMessageBox(
+                    0,
+                    ref emptyGuid,
+                    title,
+                    message,
+                    null,
+                    0,
+                    msgButton,
+                    defaultButton,
+                    icon,
+                    0,
+                    out result));
+            });
+            return result;
+        }
+
+    }
 }

@@ -19,105 +19,172 @@ using System.Globalization;
 using System.Linq;
 using System.Xml;
 using XSharpModel;
+using Microsoft.VisualStudio.Shell.Interop;
 
 namespace XSharp.Project
 {
-    // Based on https://stackoverflow.com/questions/230925/retrieve-xml-doc-comments-programmatically#231005
-    //
+    // No need to do a complicated lookup for the reference assembly names
+    // Our system type controller has these already
     static public class XSharpXMLDocTools
     {
-        public static FileInfo GetXmlDocFile(Assembly assembly, XProject project)
+        static Dictionary<string, IVsXMLMemberIndex> _memberIndexes = new Dictionary<string, IVsXMLMemberIndex>();
+        static IVsXMLMemberIndexService _XMLMemberIndexService;
+        static XSharpXMLDocTools()
         {
-            if (String.IsNullOrEmpty(assembly.Location))
-            {
-                // Maybe we should have a default directory to look at, or a list of directories ??
-                return null;
-            }
-            string assemblyDirPath = Path.GetDirectoryName(assembly.Location);
-            string fileName = Path.GetFileNameWithoutExtension(assembly.Location) + ".xml";
-            // First try at the same location as the Assembly
-            FileInfo xmlFile = null;
+            _XMLMemberIndexService = (IVsXMLMemberIndexService)XSharpProjectPackage.GetGlobalService(typeof(SVsXMLMemberIndexService));
+        }
 
-            try
+        public static IVsXMLMemberIndex GetXmlDocFile(Assembly assembly, XProject project)
+        {
+            IVsXMLMemberIndex index = null;
+            var location = assembly.Location;
+            if (!string.IsNullOrWhiteSpace(location))
             {
-                xmlFile = GetFallbackDirectories(CultureInfo.CurrentCulture)
-                .Select(dirName => CombinePath(assemblyDirPath, dirName, fileName))
-                .Select(filePath => new FileInfo(filePath))
-                .Where(file => file.Exists)
-                .First();
-            }
-            catch
-            { }
-            // Ok, search in the "Reference Assemblies" folder
-            if (xmlFile == null)
-            {
-                //
-                string dllFile = Path.GetFileName(assembly.Location);
-                List<AssemblyInfo> refs = project.AssemblyReferences;
-                foreach (AssemblyInfo dllRef in refs)
+                if (!_memberIndexes.TryGetValue(location, out index))
                 {
-                    if (String.Equals(dllRef.DisplayName, dllFile, StringComparison.InvariantCultureIgnoreCase))
+                    _XMLMemberIndexService.CreateXMLMemberIndex(location, out index);
+                    if (index != null)
                     {
-                        // Got it !!
-                        assemblyDirPath = Path.GetDirectoryName(dllRef.FileName);
-                        fileName = Path.GetFileNameWithoutExtension(dllRef.DisplayName) + ".xml";
-                        // So, xml file should be here
-                        xmlFile = new FileInfo(Path.Combine(assemblyDirPath, fileName));
-                        if (!xmlFile.Exists)
-                            xmlFile = null;
-                        break;
+                        _memberIndexes.Add(location, index);
                     }
                 }
             }
-            //// References assemblies are in %ProgramFiles(x86)% on
-            //// 64 bit machines
-            //var programFiles = Environment.GetEnvironmentVariable("ProgramFiles(x86)");
+            if (index == null)  // Sometimes we get a type in the Microsoft.Net folder and not the reference assemblies folder
+            {
+                string refasm = "";
+                foreach (var asm in project.AssemblyReferences)
+                {
+                    if (asm.FullName == assembly.FullName)
+                    {
+                        refasm = asm.FileName;
+                        break;
+                    }
+                    if (asm.FileName.EndsWith("System.DLL", StringComparison.OrdinalIgnoreCase))
+                    {
+                        if (assembly.FullName.Contains("mscorlib"))
+                        {
+                            refasm = Path.Combine(Path.GetDirectoryName(asm.FileName), "mscorlib.dll");
+                            break;
+                        }
+                    }
+                }
 
-            //if (string.IsNullOrEmpty(programFiles))
-            //{
-            //    // On 32 bit machines they are in %ProgramFiles%
-            //    programFiles = Environment.GetEnvironmentVariable("ProgramFiles");
-            //}
+                if (refasm != location && !String.IsNullOrEmpty(refasm))
+                {
+                    if (!_memberIndexes.TryGetValue(refasm, out index))
+                    {
+                        _XMLMemberIndexService.CreateXMLMemberIndex(refasm, out index);
+                        if (index != null)
+                        {
+                            if (!String.IsNullOrWhiteSpace(location))
+                                _memberIndexes.Add(location, index);
+                            _memberIndexes.Add(refasm, index);
+                        }
 
-            //if (string.IsNullOrEmpty(programFiles))
-            //{
-            //    // Reference assemblies aren't installed
-            //    return null;
-            //}
-            //String prefixPath = Path.Combine(programFiles, "Reference Assemblies", "Microsoft", "Framework", ".NETFramework");
+                    }
+                }
+            }
 
-
-            //xmlFile = new FileInfo( prefixPath );
-            //if (!xmlFile.Exists)
-            //    return null;
-            return xmlFile;
-        }
-
-        static IEnumerable<string> GetFallbackDirectories(CultureInfo culture)
-        {
-            return culture
-              .Enumerate(c => c.Parent.Name != c.Name ? c.Parent : null)
-              .Select(c => c.Name);
-        }
-
-        static IEnumerable<T> Enumerate<T>(this T start, Func<T, T> next)
-        {
-            for (T item = start; !object.Equals(item, default(T)); item = next(item))
-                yield return item;
-        }
-
-        static string CombinePath(params string[] args)
-        {
-            return args.Aggregate(Path.Combine);
+            return index;
         }
     }
 
+
     static public class XSharpXMLDocMember
     {
-        static public string GetDocSummary(MemberInfo member, XProject project)
+        /// <summary>
+        /// Build list of parameter names needed for lookup in the xml file
+        /// </summary>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        static private string getParameterNames(ParameterInfo[] parameters, MemberInfo member)
+        {
+            var pars = "";
+            if (parameters.Length == 1)
+            {
+                if (parameters[0].ParameterType.FullName.EndsWith("Usual[]"))
+                {
+                    var atts = member.GetCustomAttributes(false);
+                    if (atts != null)
+                    {
+                        foreach (var custattr in atts)
+                        {
+                            if (custattr.ToString().EndsWith("ClipperCallingConventionAttribute"))
+                            {
+                                string[] names = (string[])custattr.GetType().GetProperty("ParameterNames").GetValue(custattr, null);
+                                var typeName = parameters[0].ParameterType.FullName.Replace("[]", "");
+                                foreach (var n in names)
+                                {
+                                    if (pars.Length > 0)
+                                        pars += ",";
+                                    else
+                                        pars = "(";
+                                    pars += typeName;
+                                }
+                                if (pars.Length > 0)
+                                    pars += ")";
+                                return pars;
+                            }
+                        }
+                    }
+                }
+            }
+            foreach (var p in parameters)
+            {
+                if (pars.Length > 0)
+                    pars += ",";
+                else
+                    pars = "(";
+                pars += p.ParameterType.FullName;
+            }
+            if (pars.Length > 0)
+                pars += ")";
+
+
+            return pars;
+        }
+        /// <summary>
+        /// Get the summary of the type
+        /// </summary>
+        /// <param name="member"></param>
+        /// <param name="project"></param>
+        /// <returns></returns>
+        static public string GetTypeSummary(System.Type member, XProject project)
         {
             string summary = null;
-            System.Xml.Linq.XElement docSummary = null;
+            Assembly declarationAssembly = null;
+            declarationAssembly = member.Assembly;
+            var file = XSharpXMLDocTools.GetXmlDocFile(declarationAssembly, project);
+            if (file == null)
+                return null;
+            string name = member.FullName;
+            string prefix = "T:";
+            if (!string.IsNullOrEmpty(name))
+            {
+                uint id = 0;
+                string xml = "";
+                IVsXMLMemberData data = null;
+                var result = file.ParseMemberSignature(prefix + name, out id);
+                if (result >= 0 && id != 0)
+                {
+                    result = file.GetMemberXML(id, out xml);
+                }
+                if (result >= 0 && !String.IsNullOrEmpty(xml))
+                {
+                    result = file.GetMemberDataFromXML(xml, out data);
+                }
+                if (result >= 0 && data != null)
+                {
+                    result = data.GetSummaryText(out summary);
+                }
+
+            }
+            return summary;
+        }
+
+        static public string GetMemberSummary(MemberInfo member, XProject project)
+        {
+            string summary = null;
             Assembly declarationAssembly = null;
             //
             if (member is Type)
@@ -133,79 +200,142 @@ namespace XSharp.Project
                 return null;
             try
             {
+                string prefix = "";
+                string name = "";
+                switch (member.MemberType)
+                {
+                    case MemberTypes.Field:
+                        prefix = "F:";
+                        name = member.Name;
+                        break;
+                    case MemberTypes.Property:
+                        prefix = "P:";
+                        name = member.Name;
+                        break;
 
-                var docXml = System.Xml.Linq.XDocument.Load(file.FullName);
-                var docMembers = docXml.Root.Element("members");
+                    case MemberTypes.Method:
+                        prefix = "M:";
+                        name = member.Name;
+                        var mi = member as MethodInfo;
+                        name += getParameterNames(mi.GetParameters(), member);
+                        break;
+                    case MemberTypes.Constructor:
+                        prefix = "M:";
+                        name = "#ctor";
+                        var ci = member as ConstructorInfo;
+                        name += getParameterNames(ci.GetParameters(), member);
+                        break;
 
-                var docMember = GetDocMember(docMembers, member);
-                docSummary = docMember.Elements("summary").First();
+                    case MemberTypes.Event:
+                        prefix = "E:";
+                        name = member.Name;
+                        break;
+                }
+                if (!string.IsNullOrEmpty(name))
+                {
+                    uint id = 0;
+                    string xml = "";
+                    IVsXMLMemberData data = null;
+                    var result = file.ParseMemberSignature(prefix + member.DeclaringType.FullName + "." + name, out id);
+                    if (result >= 0 && id != 0)
+                    {
+                        result = file.GetMemberXML(id, out xml);
+                    }
+                    if (result >= 0 && !String.IsNullOrEmpty(xml))
+                    {
+                        result = file.GetMemberDataFromXML(xml, out data);
+                    }
+                    if (result >= 0 && data != null)
+                    {
+                        result = data.GetSummaryText(out summary);
+                    }
+                }
+                if (string.IsNullOrWhiteSpace(summary) && member is ConstructorInfo)
+                    summary = GetTypeSummary(member.DeclaringType, project);
             }
-            catch { }
-            //
-            if (docSummary != null)
-                summary = docSummary.Value;
+            catch (Exception e)
+            {
+                XSharpProjectPackage.Instance.DisplayOutPutMessage("Exception in XSharpXMLDocMember.GetDocSummary");
+                XSharpProjectPackage.Instance.DisplayException(e);
+            }
             //
             return summary;
         }
 
-        /// <summary>
-        /// Search the XElement corresponding to member in the docMembers xml tree
-        /// </summary>
-        /// <param name="docMembers"></param>
-        /// <param name="member"></param>
-        /// <returns></returns>
-        static System.Xml.Linq.XElement GetDocMember(System.Xml.Linq.XElement docMembers, MemberInfo member)
+        static public bool GetMemberParameters(MemberInfo member, XProject project,  IList<string> names, IList<string> descriptions)
         {
-            string memberId = GetMemberId(member);
-            return docMembers.Elements("member")
-              .Where(e => e.Attribute("name").Value == memberId)
-              .First();
-        }
+            Assembly declarationAssembly = null;
+            //
+            if (member is Type)
+                declarationAssembly = ((Type)member).Assembly;
+            else if (member.DeclaringType != null)
+                declarationAssembly = member.DeclaringType.Assembly;
+            else
+                return false;
 
+            //
+            var file = XSharpXMLDocTools.GetXmlDocFile(declarationAssembly, project);
+            if (file == null)
+                return false;
+            try
+            {
+                string prefix = "";
+                string name = "";
+                switch (member.MemberType)
+                {
 
-        /// <summary>
-        /// Build the Member Name to search for in the XMLDoc file.
-        /// ie : member name="T:System.Version"
-        /// </summary>
-        /// <param name="member"></param>
-        /// <returns></returns>
-        static string GetMemberId(MemberInfo member)
-        {
-            char memberKindPrefix = GetMemberPrefix(member);
-            if (memberKindPrefix == 'C')  // ctor
-                memberKindPrefix = 'M';
-            string memberName = GetMemberFullName(member);
-            return memberKindPrefix + ":" + memberName;
-        }
-
-
-        /// <summary>
-        /// Retrieve Member prefix : P(roperty); M(ethod); T(ype)
-        /// </summary>
-        /// <param name="member"></param>
-        /// <returns></returns>
-        static char GetMemberPrefix(MemberInfo member)
-        {
-            return member.GetType().Name
-              .Replace("Runtime", "")[0];
-        }
-
-        /// <summary>
-        /// Retrieve the Fully Qualified Name of a Member
-        /// </summary>
-        /// <param name="member"></param>
-        /// <returns></returns>
-        static string GetMemberFullName(MemberInfo member)
-        {
-            string memberScope = "";
-            if (member.DeclaringType != null)
-                memberScope = GetMemberFullName(member.DeclaringType);
-            else if (member is Type)
-                memberScope = ((Type)member).Namespace;
-            string memberName = member.Name;
-            if (memberName == ".ctor")
-                memberName = "#ctor";
-            return memberScope + "." + memberName;
+                    case MemberTypes.Method:
+                        prefix = "M:";
+                        name = member.Name;
+                        var mi = member as MethodInfo;
+                        name += getParameterNames(mi.GetParameters(), member);
+                        break;
+                    case MemberTypes.Constructor:
+                        prefix = "M:";
+                        name = "#ctor";
+                        var ci = member as ConstructorInfo;
+                        name += getParameterNames(ci.GetParameters(), member);
+                        break;
+                }
+                if (!string.IsNullOrEmpty(name))
+                {
+                    uint id = 0;
+                    string xml = "";
+                    int numparams = 0;
+                    IVsXMLMemberData data = null;
+                    var result = file.ParseMemberSignature(prefix + member.DeclaringType.FullName + "." + name, out id);
+                    if (result >= 0 && id != 0)
+                    {
+                        result = file.GetMemberXML(id, out xml);
+                    }
+                    if (result >= 0 && !String.IsNullOrEmpty(xml))
+                    {
+                        result = file.GetMemberDataFromXML(xml, out data);
+                    }
+                    if (result >= 0 && data != null)
+                    {
+                        result = data.GetParamCount(out numparams);
+                    }
+                    if (result >= 0 && numparams != 0)
+                    {
+                        string paramName;
+                        string paramDesc;
+                        for (int i = 0; i < numparams; i++)
+                        {
+                            result = data.GetParamTextAt(i, out paramName, out paramDesc);
+                            names.Add(paramName);
+                            descriptions.Add(paramDesc);
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                XSharpProjectPackage.Instance.DisplayOutPutMessage("Exception in XSharpXMLDocMember.GetDocSummary");
+                XSharpProjectPackage.Instance.DisplayException(e);
+                return false;
+            }
+            return true;
         }
     }
 }

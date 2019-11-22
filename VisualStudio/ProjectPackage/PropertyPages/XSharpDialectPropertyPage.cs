@@ -36,7 +36,7 @@ namespace XSharp.Project
         internal const string VO6Caption = "Implicit pointer conversions";
         internal const string VO7Caption = "Implicit casts and conversions";
         internal const string VO8Caption = "Compatible preprocessor";
-        internal const string VO9Caption = "Allow missing return statements";
+        internal const string VO9Caption = "Handle problems with incorrect or missing return statements";
         internal const string VO10Caption = "Compatible IIF Behavior";
         internal const string VO11Caption = "Compatible numeric conversions";
         internal const string VO12Caption = "Clipper Compatible integer divisions";
@@ -54,7 +54,7 @@ namespace XSharp.Project
         internal const string VO6Description = "Implicit conversions between typed function PTR and PTR (/vo6)";
         internal const string VO7Description = "Compatible implicit casts and Conversions (/vo7)";
         internal const string VO8Description = "Makes the preprocessor case insensitive and also controls how #ifdef inspects #defines (/vo8)";
-        internal const string VO9Description = "Allow Missing Return Statements (/vo9)";
+        internal const string VO9Description = "Allow missing return statements or allow return statements with incorrect return values (/vo9)";
         internal const string VO10Description = "Compatible IIF Behavior, allow different types of return values in TRUE and FALSE expression (/vo10)";
         internal const string VO11Description = "Compatible arithmetic conversions  (/vo11)";
         internal const string VO12Description = "Compatible integer divisions, integer divisions may return a float  (/vo12)";

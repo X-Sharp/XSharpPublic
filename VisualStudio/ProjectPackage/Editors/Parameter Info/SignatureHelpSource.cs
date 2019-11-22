@@ -15,6 +15,7 @@ using Microsoft.VisualStudio.OLE.Interop;
 using System.Reflection;
 using System.Linq;
 using System.Diagnostics;
+using XSharpModel;
 
 namespace XSharp.Project
 {
@@ -59,7 +60,7 @@ namespace XSharp.Project
         public event EventHandler<CurrentParameterChangedEventArgs> CurrentParameterChanged;
 
 
-        #region 
+        #region
 
         private void RaiseCurrentParameterChanged(IParameter prevCurrentParameter, IParameter newCurrentParameter)
         {
@@ -182,13 +183,14 @@ namespace XSharp.Project
         {
             try
             {
-                XSharpProjectPackage.Instance.DisplayOutPutMessage("XSharpSignatureHelpSource.AugmentSignatureHelpSession()");                
+                XSharpProjectPackage.Instance.DisplayOutPutMessage("XSharpSignatureHelpSource.AugmentSignatureHelpSession()");
                 XSharpModel.ModelWalker.Suspend();
                 ITextSnapshot snapshot = m_textBuffer.CurrentSnapshot;
                 int position = session.GetTriggerPoint(m_textBuffer).GetPosition(snapshot);
                 int start = (int)session.Properties["Start"];
                 int length = (int)session.Properties["Length"];
                 var comma = (bool)session.Properties["Comma"];
+                var file = (XFile)session.Properties["File"];
                 m_applicableToSpan = m_textBuffer.CurrentSnapshot.CreateTrackingSpan(
                  new Span(start, length), SpanTrackingMode.EdgeInclusive, 0);
 
@@ -201,18 +203,18 @@ namespace XSharp.Project
                     if (elt is XSharpModel.XTypeMember)
                     {
                         XSharpModel.XTypeMember xMember = elt as XSharpModel.XTypeMember;
-                        signatures.Add(CreateSignature(m_textBuffer, xMember.Prototype, "", ApplicableToSpan, comma, xMember.Kind == XSharpModel.Kind.Constructor));
+                        signatures.Add(CreateSignature(m_textBuffer, null, xMember.Prototype, "", ApplicableToSpan, comma, xMember.Kind == XSharpModel.Kind.Constructor, file));
                         List<XSharpModel.XTypeMember> namesake = xMember.Namesake();
                         foreach (var member in namesake)
                         {
-                            signatures.Add(CreateSignature(m_textBuffer, member.Prototype, "", ApplicableToSpan, comma, member.Kind == XSharpModel.Kind.Constructor));
+                            signatures.Add(CreateSignature(m_textBuffer, null,member.Prototype, "", ApplicableToSpan, comma, member.Kind == XSharpModel.Kind.Constructor, file));
                         }
                         //
                     }
                     else
                     {
                         // Type ??
-                        signatures.Add(CreateSignature(m_textBuffer, element.Prototype, "", ApplicableToSpan, comma, false));
+                        signatures.Add(CreateSignature(m_textBuffer, null, element.Prototype, "", ApplicableToSpan, comma, false, file));
                     }
                     // why not ?
                     int paramCount = int.MaxValue;
@@ -232,9 +234,9 @@ namespace XSharp.Project
                     XSharpLanguage.MemberAnalysis analysis = new XSharpLanguage.MemberAnalysis(element);
                     if (analysis.IsInitialized)
                     {
-                        signatures.Add(CreateSignature(m_textBuffer, analysis.Prototype, "", ApplicableToSpan, comma, (element.MemberType == MemberTypes.Constructor)));
+                        signatures.Add(CreateSignature(m_textBuffer, element, analysis.Prototype, "", ApplicableToSpan, comma, (element.MemberType == MemberTypes.Constructor), file));
                         // Any other member with the same name in the current Type and in the Parent(s) ?
-                        SystemNameSake(element.DeclaringType, signatures, element.Name, analysis.Prototype, comma);
+                        SystemNameSake(element.DeclaringType, signatures, element.Name, analysis.Prototype, comma,file);
                         //
                         m_textBuffer.Changed += new EventHandler<TextContentChangedEventArgs>(OnSubjectBufferChanged);
                     }
@@ -253,7 +255,7 @@ namespace XSharp.Project
         }
 
 
-        private void SystemNameSake(System.Type sType, IList<ISignature> signatures, String elementName, String elementPrototype, bool comma)
+        private void SystemNameSake(System.Type sType, IList<ISignature> signatures, String elementName, String elementPrototype, bool comma, XFile file)
         {
             XSharpProjectPackage.Instance.DisplayOutPutMessage("XSharpSignatureHelpSource.SystemNameSake()");
             MemberInfo[] members;
@@ -272,22 +274,34 @@ namespace XSharp.Project
                     // But don't add the current one
                     if (String.Compare(elementPrototype, analysis.Prototype, true) != 0)
                     {
-                        signatures.Add(CreateSignature(m_textBuffer, analysis.Prototype, "", ApplicableToSpan, comma, ctor ));
+                        signatures.Add(CreateSignature(m_textBuffer, member, analysis.Prototype, "", ApplicableToSpan, comma, ctor,file ));
                     }
                 }
             }
             // fill members of parent class,but not for constructorsS
             if (sType.BaseType != null && !ctor)
             {
-                SystemNameSake(sType.BaseType, signatures, elementName, elementPrototype, comma);
+                SystemNameSake(sType.BaseType, signatures, elementName, elementPrototype, comma,file);
             }
         }
 
- 
-        private XSharpSignature CreateSignature(ITextBuffer textBuffer, string methodSig, string methodDoc, ITrackingSpan span, bool comma, bool isCtor )
+
+        private XSharpSignature CreateSignature(ITextBuffer textBuffer, MemberInfo member, string methodSig, string methodDoc, ITrackingSpan span, bool comma, bool isCtor, XFile file )
         {
+            var doc = methodDoc;
+            if (member != null)
+            {
+                doc = XSharpXMLDocMember.GetMemberSummary(member, file.Project);
+            }
+
             XSharpProjectPackage.Instance.DisplayOutPutMessage("XSharpSignatureHelpSource.CreateSignature()");
-            XSharpSignature sig = new XSharpSignature(textBuffer, methodSig, methodDoc, null);
+            XSharpSignature sig = new XSharpSignature(textBuffer, methodSig, doc, null);
+            var names = new List<String>();
+            var descriptions = new List<String>();
+            if (member != null)
+            {
+                XSharpXMLDocMember.GetMemberParameters(member, file.Project, names, descriptions);
+            }
             // Moved : Done in the XSharpSignature constructor
             // textBuffer.Changed += new EventHandler<TextContentChangedEventArgs>(sig.OnSubjectBufferChanged);
 
@@ -305,6 +319,11 @@ namespace XSharp.Project
             List<IParameter> paramList = new List<IParameter>();
             int locusSearchStart = 0;
             // i = 1 to skip the MethodName; Length-1 to Skip the ReturnType
+            while (names.Count < pars.Length)
+            {
+                names.Add("");
+                descriptions.Add("");
+            }
             for (int i = 1; i < pars.Length-1; i++)
             {
                 string param = pars[i].Trim();
@@ -318,7 +337,9 @@ namespace XSharp.Project
                     Span locus = new Span(locusStart, param.Length);
                     locusSearchStart = locusStart + param.Length;
                     // paramList.Add(new XSharpParameter("Documentation for the parameter.", locus, param, sig));
-                    paramList.Add(new XSharpParameter("", locus, param, sig));
+                    if (!string.IsNullOrEmpty(names[i - 1]))
+                        param = names[i - 1];
+                    paramList.Add(new XSharpParameter(descriptions[i-1], locus, param, sig));
                 }
             }
 

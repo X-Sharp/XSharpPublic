@@ -11,19 +11,20 @@ FUNCTION Start() AS VOID
 	
 //	aDbfStruct := {{"@@FOR", "C", 10, 0}}
 	aDbfStruct := {{"FOR", "C", 10, 0}}
-	DBCreate(cDbf, aDbfStruct, "DBFCDX", TRUE)
-	DBCloseArea()
+	DbCreate(cDbf, aDbfStruct, "DBFCDX", TRUE)
+	DbCloseArea()
 	
-	DBUseArea(TRUE , "DBFCDX" , cDbf , "test")
-	DBAppend()
+	DbUseArea(TRUE , "DBFCDX" , cDbf , "test")
+	DbAppend()
 
-	// compiler error. probably it's ok and we cannot workaround it with @@, but see blow
-	//test->FOR := "abc"
-	//? test->FOR
+	// compiler error. probably it's ok and we cannot workaround it with @@, but see below
+	test->FOR := "abc"
+	? test->FOR
 
 	// the following compiles, but does not work at runtime, tries to use a field named "@@FOR"
-	test->@@FOR := "abc"
-	? test->@@FOR
-	DBCloseArea()
+	// update: above is working without errors, so no need for the following which still does not work
+//	test->@@FOR := "abc"
+//	? test->@@FOR
+	DbCloseArea()
 RETURN
 

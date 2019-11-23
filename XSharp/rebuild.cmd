@@ -1,4 +1,5 @@
 @echo off
+Echo Rebuilding for Debug, Release and Public configuration
 Echo Cleaning Binaries folder
 taskkill  /f /t /fi "IMAGENAME eq XSCompiler.exe" >nul
 if exist Binaries\Debug     	rd Binaries\Debug  /s /q

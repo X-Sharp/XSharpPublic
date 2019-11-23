@@ -158,8 +158,8 @@
       <config-value name="author" translate="true">XSharp BV</config-value>
       <config-value name="copyright" translate="true">© 2015- &lt;%YEAR%&gt; &lt;%AUTHOR%&gt;</config-value>
       <config-value name="versionmajor">2</config-value>
-      <config-value name="versionminor">0</config-value>
-      <config-value name="versionbuild">8</config-value>
+      <config-value name="versionminor">1</config-value>
+      <config-value name="versionbuild">0</config-value>
       <config-value name="lcid" translate="true">en-us</config-value>
       <config-value name="charset" translate="true">ANSI_CHARSET</config-value>
       <config-value name="deffont">font-family:Verdana; font-size:10pt; color:#000000; </config-value>
@@ -638,7 +638,7 @@
     <config-group name="user">
       <config-group name="robert">
         <config-group name="project">
-          <config-value name="lastexport">4</config-value>
+          <config-value name="lastexport">0</config-value>
         </config-group>
         <config-group name="report">
           <config-value name="type">2</config-value>
@@ -697,7 +697,7 @@
       <config-value name="tocname">Table of Contents</config-value>
     </config-group>
     <variables>
-      <variable id="TXTVERSION" type="text" translate="true">Bandol GA (2.0.8.0)</variable>
+      <variable id="TXTVERSION" type="text" translate="true">Bandol GA (2.1.0.0)</variable>
       <variable id="APP" type="text" translate="true">XSharp</variable>
     </variables>
     <helpcontext-numbers/>

@@ -664,23 +664,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return;
         }
 
-        public override void ExitAliasedMemvar([NotNull] XSharpParser.AliasedMemvarContext context)
-        {
-            NotInCore(context, "ALIAS(->) operator");
-            return;
-        }
-        public override void ExitAliasedField([NotNull] XSharpParser.AliasedFieldContext context)
-        {
-            NotInCore(context, "ALIAS(->) operator");
-            return;
-        }
 
-        public override void ExitAliasedFieldLate([NotNull] XSharpParser.AliasedFieldLateContext context)
+        public override void ExitAliasedExpression([NotNull] XSharpParser.AliasedExpressionContext context)
         {
+            // This rule, part of primary handles all aliased expressions
             NotInCore(context, "ALIAS(->) operator");
             return;
         }
-
         public override void ExitMacro([NotNull] XSharpParser.MacroContext context)
         {
             NotInCore(context, "MACRO compiler");

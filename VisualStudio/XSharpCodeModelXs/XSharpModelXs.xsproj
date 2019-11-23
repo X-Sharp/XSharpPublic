@@ -94,13 +94,6 @@
       <SpecificVersion>False</SpecificVersion>
       <AssemblyName>Microsoft.CSharp.dll</AssemblyName>
     </Reference>
-    <Reference Include="Microsoft.VisualStudio.Language.Intellisense">
-      <Name>Microsoft.VisualStudio.Language.Intellisense</Name>
-      <SpecificVersion>False</SpecificVersion>
-      <AssemblyName>Microsoft.VisualStudio.Language.Intellisense.dll</AssemblyName>
-      <Private>True</Private>
-      <HintPath>..\..\..\..\Program Files (x86)\Microsoft Visual Studio 14.0\VSSDK\VisualStudioIntegration\Common\Assemblies\v4.0\Microsoft.VisualStudio.Language.Intellisense.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.VisualStudio.Shell.14.0">
       <Name>Microsoft.VisualStudio.Shell.14.0</Name>
       <SpecificVersion>False</SpecificVersion>

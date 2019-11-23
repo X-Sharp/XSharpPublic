@@ -3,7 +3,7 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
-USING Microsoft.VisualStudio.Language.Intellisense
+//USING Microsoft.VisualStudio.Language.Intellisense
 USING System.Collections.Generic
 USING System.Diagnostics
 USING System
@@ -284,7 +284,10 @@ BEGIN NAMESPACE XSharpModel
 					RETURN SELF:GetImageListIndex(imgK, imgO)
 				END GET
 			END PROPERTY
-			
+
+// This set a dependency to Microsoft.VisualStudio.Language.Intellisense, but we may put this code in an extension method elsewhere...
+/*
+
 			PROPERTY GlyphGroup AS StandardGlyphGroup
 				GET
 					LOCAL imgG := StandardGlyphGroup.GlyphGroupClass AS StandardGlyphGroup 
@@ -358,6 +361,7 @@ BEGIN NAMESPACE XSharpModel
 					RETURN imgI
 				END GET
 			END PROPERTY
+*/
 			
 			
 //			PROPERTY ProjectItem AS ProjectItem

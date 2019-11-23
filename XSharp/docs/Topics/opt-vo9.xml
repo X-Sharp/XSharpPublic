@@ -7,9 +7,9 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">-vo9<tab /><tab />Allow missing return statements </para>
+      <para styleclass="Heading1">-vo9<tab /><tab />Handle problems with incorrect or missing return statements </para>
     </header>
-    <para styleclass="Normal">The -vo9 option prevents the compiler from raising error XS0161 when a function or method does not have any RETURN statements</para>
+    <para styleclass="Normal">The -vo9 option prevents the compiler from raising error XS0161 when a function or method does not have any RETURN statements. It also fixes problems with incorrect return values.</para>
     <para styleclass="Heading2">Syntax</para>
     <para styleclass="Code with box">-vo9[+|-]</para>
     <para styleclass="Heading2">Arguments</para>

@@ -10,6 +10,85 @@
     <header>
       <para styleclass="Heading1">Version History</para>
     </header>
+    <para styleclass="Heading1">Changes in 2.1.0.0 (Bandol GA 2.1)</para>
+    <para styleclass="Heading2">Compiler</para>
+    <list id="74" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="List1">We have added support for parameters by reference to function and method calls for untyped parameters</li>
+      <li styleclass="List1">In the XBase++ and FoxPro dialect arguments passed with &apos;@&apos; are always treated as BY REF arguments because these dialects do not support the &apos;AddressOf&apos; functionality</li>
+      <li styleclass="List1">When /undeclared was used and an entity added a new private then this private was not cleared when the entity went out of scope. This has been fixed.</li>
+      <li styleclass="List1">Compiling oObject?:Variable was not handled correctly by the compiler</li>
+      <li styleclass="List1">Fixed an internal compiler error when calling SELF:Axit() </li>
+      <li styleclass="List1">Parameters for the DO statement are now passed by reference</li>
+      <li styleclass="List1">Changed the order of &apos;necessary&apos; assembly names when compiling for not core dialect. </li>
+    </list>
+    <para styleclass="Heading2">Runtime</para>
+    <list id="74" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="List">We have made some changes to get XSharp.Core to run on Linux</li>
+      <li styleclass="List">We have fixed a problem in the Subtract operator for the Date type. This changes the signature of the Subtract operator which has forced us to increase the Assemblyversion of the runtime.</li>
+      <li styleclass="List">The XBase++ dialect now allows the [] operator on a string inside a usual. This returns a substring of 1 character for the given position.</li>
+      <li styleclass="List">We have fixed an incorrect event for the OrderChanged event</li>
+      <li styleclass="List">CoreDb.BuffRefresh was sending an incorrect enumerator value to the IRDD.RecInfo() method.</li>
+      <li styleclass="List">The IVarList() function was including protected Fields and Properties. This has been fixed.</li>
+      <li styleclass="List">IsInstanceOfUsual() could not be used if an objects was of a subclass of CodeBlock. This has now been fixed.</li>
+      <li styleclass="List">We have added many overloads of workarea related functions with an extra parameter to indicate a workarea number or workarea name. For example for the EoF(), Recno(), Found() and Deleted() functions</li>
+      <li styleclass="List">We have added Xbase++ collation tables. The SetCollationTable() function now selects the right collation.</li>
+      <li styleclass="List">Several Array related functions now have better checks for NULL arrays</li>
+      <li styleclass="List">The SubcodeText property in the error class is now Read/Write. When the value has not been written then the subcode number is used to lookup the value of the property.</li>
+      <li styleclass="List">MExec() was not always evaluating the compiled codeblock. This has been fixed.</li>
+      <li styleclass="List">We have added some missing Goniometric functions, such as ACos(), ASin() and more.</li>
+      <li styleclass="List">In the XBase++ dialect the FieldGet() and FieldPut() functions no longer throw an error for incorrect field numbers</li>
+      <li styleclass="List">We have added a missing MakeShort() function and SEvalA() function.</li>
+    </list>
+    <para styleclass="Heading2">Macrocompiler</para>
+    <list id="74" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="List">When the macro compiler detects an ambiguous method or constructor it now includes the signatures of these in the error message</li>
+      <li styleclass="List">We have added a new IMacroCompiler2 interface that adds an extra property &quot;Resolver&quot;. This property will may receive a Delegate of type &quot;MacroCompilerResolveAmbiguousMatch&quot;. This delegate has the following prototype:<br/><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">DELEGATE</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> MacroCompilerResolveAmbiguousMatch(m1 </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">as</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> MemberInfo, m2 </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">as</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> MemberInfo, args </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">as</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> System.Type[]) </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">LONG</text></li>
+      <li styleclass="List"><text styleclass="Body Text">The delegate will be called when the macro compiler detects an ambiguous match and receives the System.Reflection.MemberInfo for possible candidates and an array of the detected types of the arguments (detected at c</text><text styleclass="Body Text" style="text-decoration:underline;">ompile</text><text styleclass="Body Text"> time). The delegate can return 1 or 2 to choose between either candidate. Any other value means that the delegate does not know which of the ambiguous members to choose.</text><br/><text styleclass="Body Text">If the macro compiler finds more than 2 alternatives, it first calls the delegate with alternatives 1 &amp; 2, and then the selected delegate from these 2 and alternative 3 etc.</text></li>
+      <li styleclass="List"><text styleclass="Body Text">You can register a function or method as delegate with the new function</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">SetMacroDuplicatesResolver()</text></li>
+      <li styleclass="List"><text styleclass="Body Text">We are now handling (one level of) nested Macros. So the macro compiler correctly compiles a codeblock like </text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">{|e| </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">iif</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">(e, {||TRUE}, {||FALSE})}</text></li>
+      <li styleclass="List"><text styleclass="Body Text">The macrocompiler now allows comparisons between Integers and Logics (just like the Usual type in the runtime). This is still not recommended !</text></li>
+      <li styleclass="List"><text styleclass="Body Text">The macrocompiler now allows the use of &apos;[&apos; and &apos;]&apos; as string delimiters. This is NOT allowed in the normal compiler because these delimiters will be impossible to differentiate from attributes.</text></li>
+      <li styleclass="List">We have fixed <text styleclass="Body Text">a problem when a late bound call was needed for method names that were matching method names or property names in the Usual type (such as a method with the name Item()).</text></li>
+      <li styleclass="List"><text styleclass="Body Text">PCount() for macro compiled codeblocks was always returning 1. This has been fixed.</text></li>
+    </list>
+    <para styleclass="Heading2">VOSDK</para>
+    <list id="74" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="List">Fixes a problem with DbServer objects that were not closed in code. <br/>The existing code was trying to close the workarea from the destructor. But in .Net the destructor runs in a separate thread and in that GC Thread there where no files open...</li>
+      <li styleclass="List">Removed unneeded calls to DbfDebug()</li>
+      <li styleclass="List">The AdsSqlServer class is now added to the VORDDClasses assembly</li>
+    </list>
+    <para styleclass="Heading2">RDD</para>
+    <list id="74" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="List">We have fixed a problem with parsing incorrect or empty dates</li>
+      <li styleclass="List">We have fixed a problem with reading Dates in the Advantage RDD that could cause a Heap error when reading dates.</li>
+      <li styleclass="List">We have added several &apos;missing&apos; functions for Advantage support that were in the &apos;Ace.Aef&apos; for VO</li>
+      <li styleclass="List">We have added support for Character fields &gt; 255 characters</li>
+      <li styleclass="List">DbSetScope() now moves the record pointer to the first record that matches the new scope.</li>
+      <li styleclass="List">DbCreate() for the DBFNTX driver with SetAnsi(TRUE) was creating a file with a first byte of 0x07 (or 0x87) . <br/>This no longer happens in the XBase++, FoxPro and Harbour dialects because this first byte is VO specific only</li>
+      <li styleclass="List">Some FoxPro memo values are written with an extra 0 byte at the end. This extra byte is now suppressed when reading these values.</li>
+      <li styleclass="List">We have fixed a problem with the version numbers in CDX files not being updated and also improved CDX locking.</li>
+      <li styleclass="List">XBase++ was not recognizing NTX indices when the tag name in the index header was not in uppercase. This has been fixed.</li>
+      <li styleclass="List">We have fixed a (performance and size) problem when creating CDX indexes.</li>
+      <li styleclass="List">When opening a DBF file that does not have a codepage byte, we default to the current Windows or DOS codepage, depending on the current SetAnsi() setting.</li>
+      <li styleclass="List">Optimized reading numeric, date and logical columns</li>
+      <li styleclass="List"></li>
+    </list>
+    <para styleclass="Heading2">Visual Studio integration</para>
+    <list id="74" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="List">The WCF Service template has been fixed</li>
+      <li styleclass="List">We have migrated the project system to the Asynchronous API. This should make loading of solutions with a large number of X# projects a bit faster.</li>
+      <li styleclass="List">Fixed a problem in the Keyword Case synchronization that could lock up the UI for several seconds</li>
+      <li styleclass="List">Fixed an exception in the BraceMatching code.</li>
+      <li styleclass="List">Uncommenting a block of lines was sometimes leaving the comments in front of empty lines. This has been fixed.</li>
+      <li styleclass="List">We have improved the (XML) documentation lookup for types, methods, fields, properties and parameters.</li>
+      <li styleclass="List">We have improved the type lookup between X# projects.</li>
+    </list>
+    <para styleclass="Heading2">VOXPorter</para>
+    <list id="74" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="List">DbServer and FieldSpec entities are now also exported</li>
+      <li styleclass="List">VOXPorter now also can genarate a separate project/application that contains Windows Forms versions of the VO GUI windows found in the VO Applications.</li>
+      <li styleclass="List">When running VOXPorter you now can choose to export to XIDE, Visual Studio or Both.</li>
+    </list>
     <para styleclass="Heading1">Changes in 2.0.8.1 (Bandol GA 2.08a)</para>
     <para styleclass="Heading2">Compiler</para>
     <list id="74" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">

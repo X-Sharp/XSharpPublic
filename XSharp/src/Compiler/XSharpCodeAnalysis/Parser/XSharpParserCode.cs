@@ -556,7 +556,13 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public ParameterListContext Params => null;
             public DatatypeContext ReturnType => this.Type;
             public String Name => ParentName + ShortName;
-            public String ShortName => Id.GetText();
+            public String ShortName
+            {
+                get
+                {
+                    return Id != null ? Id.GetText() : "Item";
+                }
+            }
         }
         public partial class Operator_Context : IEntityWithBodyContext
         {

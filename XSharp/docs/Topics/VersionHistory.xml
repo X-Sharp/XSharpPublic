@@ -20,6 +20,7 @@
       <li styleclass="List1">Fixed an internal compiler error when calling SELF:Axit() </li>
       <li styleclass="List1">Parameters for the DO statement are now passed by reference</li>
       <li styleclass="List1">Changed the order of &apos;necessary&apos; assembly names when compiling for not core dialect. </li>
+      <li styleclass="List1">We have added support for several SET commands, such as SET DEFAULT, SET PATH, SET DATE, SET EXACT etc.</li>
     </list>
     <para styleclass="Heading2">Runtime</para>
     <list id="74" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -38,6 +39,7 @@
       <li styleclass="List">We have added some missing Goniometric functions, such as ACos(), ASin() and more.</li>
       <li styleclass="List">In the XBase++ dialect the FieldGet() and FieldPut() functions no longer throw an error for incorrect field numbers</li>
       <li styleclass="List">We have added a missing MakeShort() function and SEvalA() function.</li>
+      <li styleclass="List">The DateCountry settings now include a System setting which will read the date format from the settings for the current culture.</li>
     </list>
     <para styleclass="Heading2">Macrocompiler</para>
     <list id="74" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">

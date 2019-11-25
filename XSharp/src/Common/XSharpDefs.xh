@@ -55,6 +55,10 @@
 #include "FoxProCmd.xh"
 #endif
 
+// Various SET commands
+#include "set.xh"
+
+// Various DBF related commands
 #include "dbcmd.xh"
 
 #endif

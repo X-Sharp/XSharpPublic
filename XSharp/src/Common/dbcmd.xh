@@ -17,22 +17,6 @@
 
 #define DBCMD_XH
 
-****
-*  DB SETs
-*
-
-#command SET EXCLUSIVE <x:ON,OFF,&>     =>  SetExclusive(upper(<(x)>)=="ON" )
-#command SET EXCLUSIVE (<x>)            =>  SetExclusive( <x> )
-
-#command SET SOFTSEEK <x:ON,OFF,&>      =>  SetSoftSeek( upper(<(x)>)=="ON" )
-#command SET SOFTSEEK (<x>)             =>  SetSoftSeek( <x> )
-
-#command SET UNIQUE <x:ON,OFF,&>        =>  SetUnique( upper(<(x)>)=="ON" )
-#command SET UNIQUE (<x>)               =>  SetUnique( <x> )
-
-#command SET DELETED <x:ON,OFF,&>       =>  SetDeleted( upper(<(x)>)=="ON" )
-#command SET DELETED (<x>)              =>  SetDeleted( <x> )
-
 
 ****
 *  DB
@@ -90,7 +74,7 @@
 
 
 #command REINDEX                => dbReindex()
-#command SET ORDER TO <(n)>     => dbSetOrder( <(n)> )
+#command SET ORDER TO <n>       => dbSetOrder( <n> )
 #command SET ORDER TO           => dbSetOrder(0)
 
 
@@ -124,7 +108,7 @@
        ;    dbSetFilter( <{x}>, <(x)> )                                 ;
        ; END
 
-#command REPLACE  <f1> WITH <x1> [, <fn> WITH <xn>]                     ;
+#command REPLACE [ <f1> WITH <x1> [, <fn> WITH <xn>] ]                  ;
          [FOR <FOR>]                                                    ;
          [WHILE <WHILE>]                                                ;
          [NEXT <NEXT>]                                                  ;
@@ -208,6 +192,58 @@
        ; END
 
 
+#command REPLACE   <f1> WITH <x1> [, <fn> WITH <xn>]                    ;
+         [FOR <FOR>]                                                    ;
+         [WHILE <WHILE>]                                                ;
+         [NEXT <NEXT>]                                                  ;
+         [RECORD <rec>]                                                 ;
+         [<rest:REST>]                                                  ;
+         [ALL]                                                          ;
+         <x:IN,ALIAS> <(a)>                                               ;
+      => (<(a)>) -> ( DBEval(                                             ;
+                 {|| _FIELD-><f1> := <x1> [, _FIELD-><fn> := <xn>]},    ;
+                 <{FOR}>, <{WHILE}>, <NEXT>, <rec>, <.rest.>            ;
+               ))
+** Todo: Add FoxPro NoOptimize clause
+
+#command REPLACE <f1> WITH <v1> [, <fN> WITH <vN> ]   <x:IN,ALIAS> <(a)>   ;
+      => (<(a)>) -> ( _FIELD-><f1> := <v1>) [; (<(a)>) -> ( _FIELD-><fN> := <vN> )]
+
+
+#command DELETE                                                         ;
+         [FOR <FOR>]                                                    ;
+         [WHILE <WHILE>]                                                ;
+         [NEXT <NEXT>]                                                  ;
+         [RECORD <rec>]                                                 ;
+         [<rest:REST>]                                                  ;
+         [ALL]                                                          ;
+         <x:IN,ALIAS> <(a)>                                               ;
+      => (<(a)>) -> (DBEval(                                                        ;
+                 {|| dbDelete()},                                       ;
+                 <{FOR}>, <{WHILE}>, <NEXT>, <rec>, <.rest.>            ;
+               ))
+
+** Todo: Add FoxPro NoOptimize clause
+
+#command DELETE  <x:IN,ALIAS> <(a)>                =>  (<(a)>) -> (dbDelete())
+
+#command RECALL                                                         ;
+         [FOR <FOR>]                                                    ;
+         [WHILE <WHILE>]                                                ;
+         [NEXT <NEXT>]                                                  ;
+         [RECORD <rec>]                                                 ;
+         [<rest:REST>]                                                  ;
+         [ALL]                                                          ;
+         <x:IN,ALIAS> <(a)>                                               ;
+      => (<(a)>) -> (DBEval(                                                        ;
+                 {|| dbRecall()},                                       ;
+                 <{FOR}>, <{WHILE}>, <NEXT>, <rec>, <.rest.>            ;
+               ))
+
+#command RECALL  <x:IN,ALIAS> <(a)>                =>  (<(a)>) -> (dbRecall())
+			   
+** Todo: Add FoxPro NoOptimize clause
+
 ***
 * Commands without IN/ALIAS variations
 ***
@@ -233,7 +269,7 @@
 
 #command SET RELATION                                                   ;
          [<add:ADDITIVE>]                                               ;
-         TO <key1> INTO <(alias1)> [, [TO] <keyn> INTO <(aliasn)>]      ;
+         [TO <key1> INTO <(alias1)> [, [TO] <keyn> INTO <(aliasn)>]]    ;
                                                                         ;
       => if ( !<.add.> )                                                ;
        ;    DbClearRelation()                                           ;
@@ -242,16 +278,12 @@
        ; dbSetRelation( <(alias1)>, <{key1}>, <"key1"> )                ;
       [; dbSetRelation( <(aliasn)>, <{keyn}>, <"keyn"> )]
 
-
 ** Todo: Add Tag Clause
 ** Todo: IN <area> which should prefix the calls to dbSetRelation 
 
-#command SET RELATION TO                                               ;
-		 => DbClearRelation()
-		 
 
 #command CREATE <(file1)> 												;
-			FROM <(file2)>                              				;
+			[FROM <(file2)>]                              				;
 			[ALIAS <a>]                                                	;
             [VIA <rdd>]                                                	;
             [<new: NEW>]                                               	;

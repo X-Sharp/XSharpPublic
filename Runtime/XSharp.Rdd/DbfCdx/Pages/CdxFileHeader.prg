@@ -22,11 +22,15 @@ BEGIN NAMESPACE XSharp.RDD.CDX
   	/// The root points to the list of tags (which is a LEAF page)
   	/// The freepage points to the list of free pages at BAG level.
     /// </remarks>
+
 	INTERNAL SEALED  CLASS CdxFileHeader INHERIT CdxTagHeader
+    PRIVATE CONST CDXFILEHEADER_VERSION := 8 AS LONG
 
     INTERNAL CONSTRUCTOR( bag AS CdxOrderBag )
         SUPER(bag, 0, "__ROOT__",NULL)
         
+
+    PROPERTY RootVersion AS DWORD GET _GetDWord(CDXFILEHEADER_VERSION) SET _SetDWord(CDXFILEHEADER_VERSION, VALUE)
 
         METHOD Initialize() AS VOID
             SELF:FreeList   := 0

@@ -37,6 +37,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     lOk := oBag:Open(info)
                     IF lOk .AND. XSharp.RuntimeState.AutoOrder != 0
                         SELF:CurrentOrder := oBag:Tags[0]
+                        SELF:CurrentOrder:GoTop()
                     ENDIF
                     IF lStructural
                         SELF:_oRDD:Header:HasTags |= DbfTableFlags.HasStructuralCDX
@@ -72,6 +73,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     oBag := SELF:FindOrderBag(info:BagName)
                     IF oBag == NULL_OBJECT
                         // bag does not exist
+                        IF String.IsNullOrEmpty(Path.GetExtension(info:BagName))
+                            info:BagName := Path.ChangeExtension(info:BagName, CdxOrderBag.CDX_EXTENSION)
+                        ENDIF
                         if File(info:BagName)
                             local orderInfo as DbOrderInfo
                             orderInfo := DbOrderInfo{}

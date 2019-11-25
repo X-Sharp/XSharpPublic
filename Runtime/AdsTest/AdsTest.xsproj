@@ -74,13 +74,6 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="XSharp.MacroCompiler, Version=2.0.1.0, Culture=neutral, PublicKeyToken=ed555a0467764586">
-      <Name>XSharp.MacroCompiler</Name>
-      <AssemblyName>XSharp.MacroCompiler.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\Binaries\Debug\XSharp.MacroCompiler.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.prg">
@@ -94,6 +87,11 @@
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\MacroCompiler\MacroCompiler.csproj">
+      <Name>MacroCompiler (Macrocompiler\MacroCompiler)</Name>
+      <Project>{eb3f3142-07f7-48ca-b38d-f611c45a9511}</Project>
+      <Private>True</Private>
+    </ProjectReference>
     <ProjectReference Include="..\VOSDK\Source\VOSDK\RDD_Classes_SDK\VORDDClasses.xsproj">
       <Name>VORDDClasses</Name>
       <Project>{d7079298-1712-4b03-ad76-4ec53bfe8356}</Project>

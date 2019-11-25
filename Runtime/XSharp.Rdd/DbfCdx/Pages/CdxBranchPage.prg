@@ -260,7 +260,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
 
  
-        INTERNAL METHOD Split(oTarget AS CdxBranchPage, action AS CdxAction) AS CdxAction
+        INTERNAL METHOD Split(oTarget AS CdxBranchPage, action AS CdxAction, lAdd AS LOGIC) AS CdxAction
             VAR  branches  := (List<CdxBranch>) SELF:Branches
             VAR nPos := SELF:FindKey(action:Key,action:Recno, action:Key:Length)
             //Self:Debug("Split to page", oTarget:PageNo:ToString("X"))
@@ -270,8 +270,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 branches:Add( CdxBranch{action:Recno, action:ChildPage, action:Key})
             ELSE
                 branches:Insert(nPos, CdxBranch{action:Recno, action:ChildPage, action:Key})
-            endif
-            var half := branches:Count /2
+            ENDIF
+            LOCAL half AS INT
+            IF lAdd
+                half := SELF:MaxKeys-1
+            ELSE    
+                half := branches:Count /2
+            ENDIF
             SELF:NumKeys := 0
             FOR VAR i := 0 TO half
                 VAR node := branches[i]
@@ -281,6 +286,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 VAR node := branches[i]
                 oTarget:Add(node:Recno, node:ChildPage, node:Key)
             NEXT
+            SELF:Write()
             RETURN CdxAction.Ok
 
             
@@ -309,7 +315,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL i := 0 AS WORD
             sb := stringBuilder{}
             sb:AppendLine("--------------------------")
-            sb:AppendLine(String.Format("{0} Page {1:X6}, # of keys: {2}", SELF:PageType, SELF:PageNo, SELF:NumKeys))
+            sb:AppendLine(String.Format("{0} Page {1:X6}, # of keys: {2}, MaxKeys: {3}", SELF:PageType, SELF:PageNo, SELF:NumKeys, SELF:MaxKeys))
             sb:AppendLine(String.Format("Left page reference {0:X6}", SELF:LeftPtr))
             FOREACH branch AS CdxBranch IN SELF:Branches
                 sb:AppendLine(String.Format("Item {0,2}, Page {1:X6}, Record {2,6} : {3} ", i, branch:ChildPage, branch:Recno, branch:KeyText))

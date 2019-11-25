@@ -73,7 +73,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
 
     INTERNAL CLASS NtxPageNode INHERIT NtxNode
         PRIVATE _Page           AS NtxPage			// Page that olds the Item
-        PROTECTED _Offset         AS LONG				// Item offset from start of Page
+        PROTECTED _Offset       AS LONG				// Item offset from start of Page
         PRIVATE CONST PAGE_OFFSET  := 0 AS  LONG
         PRIVATE CONST REC_OFFSET   := 4 AS  LONG
         PRIVATE CONST DATA_OFFSET  := 8 AS LONG

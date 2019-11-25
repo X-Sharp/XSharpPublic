@@ -28,7 +28,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
     END CLASS
     
-    INTERNAL CLASS CdxSortCompareDefault INHERIT CdxSortCompare 
+    INTERNAL SEALED CLASS CdxSortCompareDefault INHERIT CdxSortCompare 
         
         INTERNAL CONSTRUCTOR( rdd AS DBF , helper AS RddSortHelper )
             SUPER(rdd, helper)
@@ -62,7 +62,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             
     END CLASS
 
-    INTERNAL CLASS CdxSortCompareAscii INHERIT CdxSortCompare 
+    INTERNAL SEALED CLASS CdxSortCompareAscii INHERIT CdxSortCompare 
         
         INTERNAL CONSTRUCTOR( rdd AS DBF , helper AS RddSortHelper)
             SUPER(rdd, helper)

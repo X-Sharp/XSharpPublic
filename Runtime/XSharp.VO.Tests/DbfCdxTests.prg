@@ -3313,8 +3313,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal(3 , (INT) RecCount() )
 
 			DbGoTop()
-			Assert.Equal("b-ALIAS1" , AllTrim(FieldGet(1)) )
-			Assert.Equal("b-ALIAS1_memo" , AllTrim(FieldGet(2)) )
+			Assert.Equal("b-ALIAS2" , AllTrim(FieldGet(1)) )
+			Assert.Equal("b-ALIAS2_memo" , AllTrim(FieldGet(2)) )
 			DbGoBottom()
 			Assert.Equal("z-ALIAS1" , AllTrim(FieldGet(1)) )
 			Assert.Equal("z-ALIAS1_memo" , AllTrim(FieldGet(2)) )

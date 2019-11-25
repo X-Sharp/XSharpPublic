@@ -5,13 +5,30 @@
 USING XSharp.RDD
 USING System.IO
 USING System.Threading
-USING XSharp.Vfp
-   
+USING System.Reflection   
 
-[STAThread];     
+[STAThread];      
 FUNCTION Start() AS VOID
     TRY
-        TestRel()
+        testCecil()
+        //TestWolfgang2()
+        //TestEncoding()
+        //TestXppFieldGetFieldPut()
+        //DumpRateCdx()
+        //TestRateCdx()
+        //TestProj()
+        //TestCorrupt2()
+        //testCdxLock()
+        //TestXppCollations()
+        //TestNestedMacro()
+//        testCreate()
+//        testOverloads()
+        //testScopes() 
+        //testCorrupt3()
+        //testtcc()
+        //TestCorrupt2()
+        //TestCorrupt1()
+        //TestRel()
         //TestVfpClass()
         //TestNotifications()
         //testFilter()
@@ -133,13 +150,650 @@ FUNCTION Start() AS VOID
         //Start10()
         //Start11()
     WAIT
-   CATCH e AS Exception
+   CATCH e AS Exception  
         IF ! (e IS Error)
             e := Error{e}
         ENDIF
         ErrorDialog(e)
     END TRY
     RETURN
+FUNCTION TestCeCil() AS VOID
+    SET DEFAULT TO C:\Test
+    SET TIME TO SYSTEM
+    ? Time()
+    RddSetDefault("DBFVFP")
+    DbUseArea(FALSE,,"Address.dbf")
+    LOCAL i AS INT
+    FOR i := 1 TO OrderCount()
+        ? i, OrdKey(i), OrdFor(i)
+    NEXT
+    DbCLoseArea()
+    RETURN
+FUNCTION TestWolfgang2 AS VOID
+            LOCAL cFileName          AS STRING
+
+            LOCAL aStruct              AS ARRAY
+
+            LOCAL oDBServer                     AS VO.DBServer
+
+            LOCAL lShareMode        AS LOGIC
+
+ 
+
+            lShareMode                               := TRUE
+
+            cFileName                                := "C:\Temp\Test.DBF"
+
+            aStruct                                     := { { "FIELD1", "C", 10, 0 }, { "FIELD2", "C", 10, 0 } }
+
+            DbCreate( cFileName, aStruct, "DBFCDX", TRUE, "TEST",, FALSE )
+
+            TEST->DbAppend()
+
+            TEST->FIELD1 := "9"
+
+            TEST->DbCommit()
+
+ 
+
+            TEST->DbSetOrderCondition( "! DELETED()", {|| ! Deleted() } )
+
+            TEST->DbCreateOrder( "ORDER1",, "UPPER(FIELD1)", {|| Upper( _FIELD->FIELD1 ) }, FALSE )
+
+            TEST->DbAppend()
+
+            TEST->FIELD1 := "8"
+
+            TEST->DbCommit()      
+
+ 
+
+            IF TRUE
+
+                        TEST->DbSetOrderCondition( "! DELETED() .and. Left(FIELD1,1) == '9'", {|| ! Deleted() .AND. left(_FIELD->FIELD1,1) == '9' } )
+
+                        TEST->DbCreateOrder( "ORDER2",, "UPPER(FIELD1)", {|| Upper( _FIELD->FIELD1 ) }, FALSE )
+
+                        TEST->DbAppend()
+
+                        TEST->FIELD1 := "3"
+
+                        TEST->DbCommit()     
+
+            ENDIF
+
+            TEST->DbCloseArea()
+
+           
+
+            DbUseArea( TRUE, "DBFCDX", cFileName, "TEST2", lShareMode, FALSE )
+
+            TEST2->DbAppend()
+
+            TEST2->FIELD1            := "4"
+
+            ? " OK bevor Commit"
+
+            TEST2->DbCommit() 
+
+            ? "Commit not working "          
+
+            TEST2->DbCloseArea()
+
+           
+
+            oDBServer                    := VO.DbServer{ cFileName, lShareMode, FALSE, "DBFCDX"  }
+
+            oDBServer:Append()
+
+            oDBServer:FieldPut( #FIELD1, "7" )
+
+            ? "OK bevor Commit"
+
+            //oDBServer:Commit()
+
+            ? "Commit not working"
+
+            oDBServer:Close()
+
+            oDBServer                    := NULL_OBJECT
+
+            
+FUNCTION TestWolfgang() AS VOID
+           LOCAL cPath                             AS STRING
+
+            LOCAL cFileName                      AS STRING
+
+            LOCAL aStruct               AS ARRAY
+
+            LOCAL nI                                  AS DWORD
+
+           
+
+            cPath                                        := "C:\Temp"
+
+            cFileName                                := cPath + "\" + "Test.DBF"
+
+            aStruct                                     := { { "FIELD1", "C", 10, 0 } }
+
+            DbCreate( cFileName, aStruct, "DBFCDX", TRUE, "ORDERDBF",, FALSE )
+
+            ORDERDBF->DbSetOrderCondition( "! DELETED()", {|| ! Deleted() } )
+
+            ORDERDBF->DbCreateOrder( "ORDER1",, "UPPER(FIELD1)", {|| Upper( _FIELD->FIELD1 ) }, FALSE )
+
+            ORDERDBF->DbCloseArea()
+
+            DbUseArea( TRUE, "DBFCDX", cFileName, "ORDERDBF", TRUE, FALSE )
+
+           
+
+            FOR nI := 1 UPTO 120000
+                            IF nI % 100 == 0
+                        ? nI
+                        ENDIF
+
+                        ORDERDBF->DbAppend()
+
+                        ORDERDBF->FIELD1     := NTrim( nI )
+
+            NEXT
+
+            ORDERDBF->DbCloseArea()
+
+            
+FUNCTION TestEncoding AS VOID
+    RddSetDefault("DBFNTX")
+    DbUseArea(TRUE,NIL,"c:\download\dbcompare\f1\GID.DBF")
+    DbGoBottom()
+    ? FIeldGetSym(#AArdGoed)
+    ? FIeldPutSym(#AArdGoed,"BIÈRE FÛT 20 LTR LA TRAPPE BLOND")
+    DbSKip(-1)
+    ? FIeldPutSym(#AArdGoed,"BIÈRE FÛT 20 LTR LA TRAPPE BLOND")
+    DbCloseArea()
+    
+FUNCTION TestXppFieldGetFieldPut() AS VOID
+    LOCAL aStruct := {{"NAAM","C",10,0}}
+    RddSetDefault("DBFNTX")
+    RuntimeState.Dialect := XSHarpDIalect.VO
+    DbCreate("Klant",aStruct)
+    DbUseArea(TRUE,,"KLANT","KLANT",FALSE,FALSE)
+    //DbAppend()
+    FieldPut("a", "Robert")
+    ? FieldPos("NAAM")
+    ? FieldGet(FieldPos("NAAM"))
+    ? FieldGet(0)
+    ? FieldPut(0, "abc")
+    ? FieldPut(FieldPos("def"),"abc")
+    ? FieldGet(FieldPos("NAAM"))
+    ? Eval(FieldBlock("NAAM"))
+    DbCloseARea()
+RETURN    
+
+FUNCTION DumpRateCdx() AS VOID
+    RddSetDefault("DBFCDX")
+    DBUSEAREA(TRUE, "DBFCDX", "c:\test\Rate.DBF", "Rate", FALSE)
+//    DbGoto(360939)
+//    ? FieldGetSym(#MainRecNo)
+//    WAIT
+    DbSetIndex("c:\test\RateVN.CDX")
+    FOR VAR i := 1 TO 1 //(INT) DbOrderInfo(DBOI_ORDERCOUNT)
+        DbSetOrder(i)
+        ? OrdName()
+        DbOrderInfo(DBOI_USER+42)
+    NEXT
+    DbCloseArea()
+    DBUSEAREA(TRUE, "DBFCDX", "c:\test\Rate.DBF", "Rate", FALSE)      
+    DbSetIndex("c:\test\RateX#.CDX")
+    FOR VAR i := 1 TO 1 //(INT) DbOrderInfo(DBOI_ORDERCOUNT)
+        DbSetOrder(i)
+        ? OrdName()
+        DbOrderInfo(DBOI_USER+42)
+    NEXT
+    DbCloseArea()    
+    
+
+FUNCTION TestRateCdx() AS VOID
+    VAR f := Seconds()
+    VAR f2 := Seconds()
+    LOCAL cFile := "C:\Test\RateX#" AS STRING
+    SET(_SET_OPTIMIZE, FALSE)
+    RddSetDefault("DBFCDX")
+	 FErase(cFile+".CDX")
+    ? Time()               
+    ? DELETED()             
+    ? Version()
+    DbUseArea(TRUE, "DBFCDX", "c:\test\Rate.DBF", "Rate", FALSE)
+    ? LASTREC(), "Records"
+    SETORDERCONDITION("Deleted() == .F.   .And. Recurse == .F.   .And. Undone == .F.")
+    OrdCreate(cFile, "RateMain", "Str( MainRecno, 7 ) + '~' + DToS( ScaDov )") 
+	 SHowInfo(f2)    
+    f2 := Seconds()
+    
+    SETORDERCONDITION("Deleted() == .F.   .And. Recurse == .F.   .And. Undone == .F.   .ANd. TipoC == 'U'")
+    OrdCreate(cFile, "RateUsu", "Str( MainRecno, 7 ) + '~' + DToS( ScaDov )")
+	 SHowInfo(f2)    
+    f2 := Seconds()
+    
+    SETORDERCONDITION("Deleted() == .F.   .And. Recurse == .F.   .And. Undone == .F.")
+    OrdCreate(cFile, "RatePrev", "Str( PrevRecno, 7 ) + '~' + Mode + '~' + DToS( ScaDov )")
+	 SHowInfo(f2)    
+    f2 := Seconds()
+
+    SETORDERCONDITION("Deleted() == .F.")
+    OrdCreate(cFile, "RatePNor", "Str( PrevRecno, 7 ) + '~' + Mode + '~' + DToS( ScaDov )")
+	 SHowInfo(f2)    
+    f2 := Seconds()
+
+    SETORDERCONDITION("Deleted() == .F.") 
+    OrdCreate(cFile, "RateMNor", "Str( MainRecno, 7 ) + '~' + Mode + '~' + DToS( ScaDov )")
+	 SHowInfo(f2)    
+    f2 := Seconds()
+
+    SETORDERCONDITION("Deleted() == .F.   .And. Recurse == .F.") 
+    OrdCreate(cFile, "RateScop", "Str( MainRecno, 7 ) + '~' + Str( PrevRecno, 7 ) + '~' + Mode + '~' + DToS( ScaDov )")
+	 SHowInfo(f2)    
+    f2 := Seconds()
+
+    SetOrderCondition("Deleted() == .F.   .And. Recurse == .F.   .And. Undone == .T.")
+    OrdCreate(cFile, "RateUndo", "Str( PrevRecno, 7 ) + '~' + Mode + '~' + DToS( ScaDov )")
+	 SHowInfo(f2)    
+    f2 := Seconds()
+
+    SETORDERCONDITION("Deleted() == .F.")
+    OrdCreate(cFile, "RateTemp", "PrevRecno")
+	 SHowInfo(f2)    
+    f2 := Seconds()
+
+    SETORDERCONDITION("Deleted() == .F.")
+    OrdCreate(cFile, "RateData", "Str( MainRecno, 7 ) + '~' + DToS( ScaDov )")
+	 SHowInfo(f2)    
+    f2 := Seconds()
+
+    SETORDERCONDITION("Deleted() == .F.")
+    OrdCreate(cFile, "RateScoA", "Str( MainRecno, 7 ) + '~' + Str( PrevRecno, 7 ) + '~' + Mode")
+	 SHowInfo(f2)    
+    f2 := Seconds()
+    DbCloseArea()
+    ? Time()
+    ? Seconds() - f
+      
+WAIT
+RETURN NIL
+
+
+FUNCTION SETORDERCONDITION(cFor)
+LOCAL cbFor :=&("{|| "+cFor+" }")             
+RETURN OrdCondSet(cFor, cbFor, TRUE) 
+
+
+FUNCTION OrderCount
+RETURN DbOrderInfo(DBOI_ORDERCOUNT)
+
+
+
+
+FUNCTION SHowInfo(f2)
+? Time(), Seconds() - f2,OrdKeyCount()  
+? "NAME", OrdName(OrderCount())
+? "KEY", ORDKEY(OrderCount())
+? "FOR", ORDFOR(OrderCount())                  
+? 
+RETURN NIL
+
+
+
+
+ 
+FUNCTION TestProj() AS VOID
+    LOCAL i AS DWORD
+    LOCAL uValue AS USUAL
+
+    RddSetDefault("DBFVFP")
+    DbUseArea(TRUE, "DBFVFP", "c:\cavo28SP3\Samples\Email\EMAIL.DBF", "Email", TRUE)
+    
+    ? RLock("1,2","Email")
+    ? DbInfo(DBI_GETLOCKARRAY)
+    DO WHILE ! EOF()
+        ? "Record", Recno()
+        FOR  i := 1 TO FCount()
+            uValue := FieldGet(i)
+            IF IsString(uValue)
+                VAR sValue := (STRING) uValue
+                uValue := sValue:TrimEnd()
+            ENDIF
+            ? i, FieldName(i), uValue
+            
+        NEXT
+        DbSkip(1)
+    ENDDO
+    DbCloseArea()
+    RETURN
+
+FUNCTION TestCdxLock() AS VOID
+LOCAL aFields AS ARRAY
+LOCAL cFile AS STRING
+//SET(Set.FOXLOCK, TRUE)
+RddSetDefault ( "DBFCDX" )
+cFile := "C:\Test\TestFpt"
+aFields := { { "ID" , "N" , 2 , 0 },{ "MEMO" , "M" , 10 , 0 }}
+DbCreate(cFile, aFields)
+ VoDbUseArea(TRUE, "DBFCDX",cFile,"test" ,FALSE,FALSE)
+OrdCreate("C:\Test\TestFpt","Test","ID")
+DbAppend()
+FieldPut(1, 1)
+FieldPut(2, Replicate("X", 20))
+DbCloseArea()
+VoDbUseArea(TRUE, "DBFCDX",cFile,"test" ,TRUE,FALSE)
+VoDbGoTop()
+RLock()
+FieldPut(1, 2)
+FieldPut(2, Replicate("X", 24))
+DbUnlock()
+DbCloseArea()
+VoDbUseArea(TRUE, "DBFCDX",cFile,"test" ,TRUE,FALSE)
+VoDbGoTop()
+RLock()
+FieldPut(1, 3)
+FieldPut(2, Replicate("X", 64))
+DbUnlock()
+DbCloseArea()
+RETURN
+    
+
+FUNCTION TestXppCollations() AS VOID
+    SetAnsi(TRUE)
+    DumpTable("A")
+    SetAnsi(FALSE)
+    DumpTable("O")
+RETURN
+    
+FUNCTION DumpTable(cChar)
+LOCAL i,j
+LOCAL cTable
+LOCAL cResult
+LOCAL aCollation 
+DbCreate("Test"+cChar,{{"NUM","N",3,0},{"CHAR","C",10,0}},"DBFNTX")
+DbUseArea(.T., "DBFNTX", "Test"+cChar)
+FOR i = 0 TO 255
+	DbAppend()
+	FieldPut(1, i)
+	FieldPut(2, Repl(CHR(I), 10))
+NEXT
+DbCommit()
+DbCLoseArea()
+FOR i := -1 TO 16
+	aCollation := SetCollationTable(i)
+	cTable := ""
+	cResult := ""
+	FOR j := 1 TO 256
+		cTable += Chr(aCollation[j])
+		cResult  += Str(j,3) + "=" +repl(chr(j),10)+str(aCollation[j],4,0)+chr(13)+chr(10)
+	NEXT
+	IF cChar == "A"
+		MemoWrit("Ansi\Table"+ltrim(str(i)), cTable)
+		MemoWrit("Ansi\List"+ltrim(str(i)), cResult)
+	ELSE
+		MemoWrit("Oem\Table"+ltrim(str(i)), cTable)
+		MemoWrit("Oem\List"+ltrim(str(i)), cResult)
+	ENDIF
+NEXT
+RETURN .T.
+
+FUNCTION TestNestedMacro() AS VOID
+    LOCAL cMacro AS STRING
+    LOCAL cb AS CODEBLOCK
+    LOCAL cb2 AS CODEBLOCK
+    LOCAL u AS USUAL
+    cMacro := "{|e| iif(e, {|| TRUE}, {|| false} ) }"
+    cb := &(cMacro)
+    u := cb
+    ? cMacro, valtype(u), u
+    cb2 := EVal(cb, TRUE)
+    u := cb2
+    ? cMacro, valtype(u), u
+    u := Eval(cb2)
+    ? valtype(u), u
+
+    cb2 := EVal(cb, False)
+    u := cb2
+    ? cMacro, valtype(u), u
+    u := Eval(cb2)
+    ? valtype(u), u
+
+    cMacro := "{|e| '{|a,b,c|TRUE}' }"
+    cb := &(cMacro)
+    u := cb
+    ? cMacro, valtype(u), u
+    u := Eval(cb)
+    ? cMacro, valtype(u), u
+    cMacro := "{|e| iif(e, {|| TRUE}, '{|| FALSE}') }"
+    cb := &(cMacro)
+    u := cb
+    ? valtype(u), u
+    u := Eval(cb, FALSE)
+    ? cMacro, valtype(u), u
+    cMacro := "{|e| '|||||||' }"
+    cb := &(cMacro)
+    u := cb
+    ? valtype(u), u
+    u := Eval(cb, FALSE)
+    ? cMacro, valtype(u), u
+    
+
+RETURN
+    
+    
+
+function TestCreate() AS VOID
+    LOCAL cDbf AS STRING
+    SetAnsi(TRUE)
+    RddSetDefault("DBFNTX")
+    RuntimeState.Dialect := XSHarpDialect.XPP
+    cDbf := "C:\Test\testxpp.dbf"
+    DbCreate(cDbf, {{"FIELD1","C",10,0}})
+    
+    RuntimeState.Dialect := XSHarpDialect.VO
+    cDbf := "C:\Test\testvo.dbf"
+    DbCreate(cDbf, {{"FIELD1","C",10,0}})
+    SetAnsi(FALSE)
+    RddSetDefault("DBFNTX")
+    RuntimeState.Dialect := XSHarpDialect.XPP
+    cDbf := "C:\Test\testxppoem.dbf"
+    DbCreate(cDbf, {{"FIELD1","C",10,0}})
+    
+    RuntimeState.Dialect := XSHarpDialect.VO
+    cDbf := "C:\Test\testvooem.dbf"
+    DbCreate(cDbf, {{"FIELD1","C",10,0}})
+    RETURN
+    
+function Val(cString as STRING) AS LONG
+    return 42
+
+function Val(nString as LONG) AS LONG
+    return 4242
+
+function Val(dDate as DATE) AS LONG
+    return 424242
+
+Function GetSignature( m as MemberInfo) as STRING
+    local name as string
+    name :=m:DeclaringType:Name+"."+m:Name 
+    IF m is ConstructorInfo
+        LOCAL ci := (ConstructorInfo) m as ConstructorInfo
+        var pars := ""
+        FOREACH par AS ParameterInfo in ci:GetParameters()
+            if Pars:Length > 0
+                Pars += ","
+            ENDIF
+            pars += par:ParameterType:Name
+        NEXT
+        name +="{"+pars+"}"
+    ELSEif m is MethodInfo 
+        LOCAL mi := (MethodInfo) m as MethodInfo
+        var pars := ""
+        FOREACH par AS ParameterInfo in mi:GetParameters()
+            if Pars:Length > 0
+                Pars += ","
+            ENDIF
+            pars += par:ParameterType:Name
+        NEXT
+        name +="("+pars+")"
+    elseif m is PropertyInfo 
+        LOCAL pi := (PropertyInfo) m as PropertyInfo
+        var pars := ""
+        FOREACH par AS ParameterInfo in pi:GetGetMethod():GetParameters()
+            if Pars:Length > 0
+                Pars += ","
+            ENDIF
+            pars += par:ParameterType:Name
+        NEXT
+        name +="["+pars+"]"
+    ENDIF
+    RETURN name
+        
+
+function Resolver(m1 as MemberInfo, m2 as MemberInfo, argtypes as System.Type[]) as LONG
+    ? argTypes:Length,": "
+    foreach var o in argTypes
+        ?? o:FullName,","
+    next
+    
+    ? "Ambiguous 1", GetSignature(m1)
+    ? "Ambiguous 2", GetSignature(m2)
+    var result := 1
+    ? "Choosing",result
+    return result
+
+function TestOverloads() as VOID
+    SetMacroDuplicatesResolver(Resolver)
+    ? Eval(MCompile("{|u| val(u)"),123):ToString()
+    RETURN
+
+function testScopes() as Void
+    local cDbf as STRING
+    cDbf := "C:\Test\test.dbf"
+    DbCreate(cDbf, {{"FIELD1","C",10,0}})
+    DbUseArea(TRUE, "DBFNTX",cDbf)
+    FOR var i := 1 to 10
+        DbAppend()
+        FieldPut(1, "AAA")
+        DbAppend()
+        FieldPut(1, "BBB")
+    NEXT
+    DbAppend()
+    FieldPut(1, "CCC")
+    DbCommit()
+    DbcreateIndex("test","FIELD1")
+    DbSetScope(SCOPE_BOTH, "CCC")
+        ? Recno(), FieldGet(1)
+    DO WHILE TEST->FIELD1 = "CCC"
+        ? Recno(), FieldGet(1)
+        DbSkip(1)
+    ENDDO
+    ? "EOF", FieldGet(1)
+    DbCloseArea()
+    RETURN
+        
+
+function TestCorrupt3 as void
+        DbUseArea(TRUE,"DBFNTX","c:\download\corrupt\CCIVoM.Lgi")  
+        RETURN
+
+function TestTCC as void
+        local cString as string
+        cString := "abcdefg"
+        ? cString[1]
+        wait
+        DbUseArea(TRUE,"DBFNTX","c:\temp\tcc.DBF")
+        DbSetIndex("c:\temp\tcc1.ntx")
+        DbOrderInfo(DBOI_USER+42)
+        wait
+        RETURN
+
+Function TestCorrupt2() as VOID
+            LOCAL cDBF AS STRING
+            LOCAL oDBF1 AS Vo.DbServer
+            LOCAL oDBF2 AS Vo.DbServer
+
+            cDbf := "c:\temp\testVO" 
+            FErase(cDbf+ ".cdx")
+            FErase(cDbf+ ".dbf")
+
+            RddSetDefault("DBFCDX")
+            DbCreate(cDbf, {{"CFIELD","C",10,0}})
+            DbUseArea(TRUE,  , cDbf)
+            DbCreateOrder("CFIELD", cDbf, "CFIELD", &( "{|| CFIELD}" ),)
+
+            DbAppend()
+            FieldPut(1,"AAAA")
+            DbCommit()
+            DbAppend()
+            FieldPut(1,"BBBB")
+            DbCommit()
+            DbCloseArea()
+                        
+            ? "TestDB"  
+            oDBF1  := Vo.DbServer{ cDbf + ".dbf", TRUE, FALSE, "DBFCDX" }
+            oDBF2  := Vo.DbServer{ cDbf + ".dbf", TRUE, FALSE, "DBFCDX" } 
+            //odbf2:SetOrder( 0 ) // without order no missing record during while
+            
+            oDBF1:Append()
+            oDBF1:FieldPut( 1, "CCCC" )  
+            oDBF1:Commit()
+            oDBF1:Close()
+            oDBF1  := null_object
+            
+            ? "DBF2"   
+            oDBF2:GoTop()
+            WHILE ! oDBF2:EoF
+                        ? oDBF2:FieldGet( 1 ) 
+                        oDBF2:Skip()
+            ENDDO
+            //? oDBF2:FieldGet( 1 )             // record found after EoF
+            oDBF2:Close()
+            
+            ? ""
+            ? "DBF2 New"  
+            oDBF2  := Vo.DbServer{ cDbf + ".dbf", TRUE, FALSE, "DBFCDX" } 
+            oDBF2:GoTop()
+            WHILE ! oDBF2:EoF
+                        ? oDBF2:FieldGet( 1 ) 
+                        oDBF2:Skip()
+            ENDDO
+            oDBF2:Close()
+            
+            RETURN
+
+    
+
+FUNCTION TestCorrupt1() AS VOID
+	LOCAL cDbf AS STRING
+	cDbf := "c:\test\testVO"
+	RddSetDefault("DBFCDX")
+	DbCreate(cDbf, {{"CFIELD","C",10,0},{"MFIELD","M",10,0}})
+	FErase(cDbf+ ".cdx")
+	DbUseArea(TRUE,  , cDbf)
+	DbCreateIndex(cDbf, "CFIELD")
+	DbAppend()
+	FieldPut(1,"asdf")
+	FieldPut(2,"efgh")
+	DbAppend()
+	FieldPut(1,"ADJKSHA")
+	FieldPut(2,"YUWED")
+	DbCloseArea()
+	
+	DbUseArea(TRUE, , cDbf , , TRUE)
+	RLock()
+	FieldPut(1 , "aaaaa")
+	? "Records in dbf", RecCount()
+	WAIT "Now append a record from another app and press enter"
+	DbCloseArea()
+	
+	DbUseArea(TRUE, , cDbf , , TRUE)
+	? "Records in dbf", RecCount()
+	DbCloseArea()
+RETURN
 
 FUNCTION TestRel() AS VOID
 	LOCAL cPath AS STRING
@@ -185,45 +839,45 @@ FUNCTION TestRel() AS VOID
 	child->DbCloseArea()
 	parent->DbCloseArea()
 RETURN
-CLASS MyVfpClass INHERIT XSharp.Vfp.Custom
-    PROPERTY Test AS USUAL GET _GetProperty("Test") SET _SetProperty("Test", VALUE)
-    METHOD Init(a,b,c) CLIPPER
-        ? a,b,c
-        RETURN TRUE
-    CONSTRUCTOR() CLIPPER
-       SUPER(_Args())
-        SELF:Test := 1
-END CLASS
+//CLASS MyVfpClass INHERIT XSharp.Vfp.Custom
+//    PROPERTY Test AS USUAL GET _GetProperty("Test") SET _SetProperty("Test", VALUE)
+//    METHOD Init(a,b,c) CLIPPER
+//        ? a,b,c
+//        RETURN TRUE
+//    CONSTRUCTOR() CLIPPER
+//       SUPER(_Args())
+//        SELF:Test := 1
+//END CLASS
 
-FUNCTION TestVfpClass AS VOID
-//    local oC as MyVfpClass
-//    oC := MyVfpClass{1,2,3}
-//    ? oC:Name
-    LOCAL oColl AS Collection
-    oColl := Collection{}
-    oColl:AddObject("item a", "a")
-    oColl:AddObject("item A", "A")
-    oColl:AddObject("item B", "B")
-    oColl:AddObject("item b", "b")
-    oColl:AddObject("item C", "C","A")
-    //oColl:AddObject(1)
-//    oColl:AddObject(2)
-//    oColl:AddObject(3)
-//    oColl:AddObject(4)
-//    
-//    oColl:AddObject(100,,2)
-//    oColl:AddObject(200,,,3)
-//    ? oColl:Count
-//    ? oColl:Item(1)
-//    ? oColl:Item(2)
-    oColl:KeySort := 3
-    FOREACH VAR o IN oColl
-        ? o, oCOll:GetKey(o)
-    NEXT
-//    ? oColl:Item("a")
-//    ? oColl:Item("A")
-//    ? oColl:Item("b")
-    RETURN
+//FUNCTION TestVfpClass AS VOID
+////    local oC as MyVfpClass
+////    oC := MyVfpClass{1,2,3}
+////    ? oC:Name
+//    LOCAL oColl AS Collection
+//    oColl := Collection{}
+//    oColl:AddObject("item a", "a")
+//    oColl:AddObject("item A", "A")
+//    oColl:AddObject("item B", "B")
+//    oColl:AddObject("item b", "b")
+//    oColl:AddObject("item C", "C","A")
+//    //oColl:AddObject(1)
+////    oColl:AddObject(2)
+////    oColl:AddObject(3)
+////    oColl:AddObject(4)
+////    
+////    oColl:AddObject(100,,2)
+////    oColl:AddObject(200,,,3)
+////    ? oColl:Count
+////    ? oColl:Item(1)
+////    ? oColl:Item(2)
+//    oColl:KeySort := 3
+//    FOREACH VAR o IN oColl
+//        ? o, oCOll:GetKey(o)
+//    NEXT
+////    ? oColl:Item("a")
+////    ? oColl:Item("A")
+////    ? oColl:Item("b")
+//    RETURN
 
 FUNCTION NotifyRDDOperations(oRDD AS XSharp.RDD.IRdd, oEvent AS XSharp.DbNotifyEventArgs) AS VOID
     IF oRDD != NULL
@@ -4568,4 +5222,5 @@ FUNCTION Start11() AS VOID
 FUNCTION IsRlocked() AS LOGIC // Helper func
 
     RETURN ascan ( DBRlocklist() , recno() ) > 0
+
 

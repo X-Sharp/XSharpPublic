@@ -6,7 +6,7 @@ BEGIN NAMESPACE XSharp.ADS
 	PUBLIC CLASS ACEUNPUB32
 		
         [DllImport("ace32.dll", CharSet := CharSet.Ansi)];
-		PUBLIC STATIC EXTERN METHOD AdsBuildKeyFromRecord(hTag AS Intptr, mpucRecBuffer AS STRING , ulRecordLen AS DWORD , pucKey AS CHAR[], pusKeyLen REF WORD ) AS DWORD 
+		PUBLIC STATIC EXTERN METHOD AdsBuildKeyFromRecord(hTag AS Intptr, mpucRecBuffer AS STRING , ulRecordLen AS DWORD , [In] [Out] pucKey AS CHAR[], pusKeyLen REF WORD ) AS DWORD 
 
 		[DllImport("ace32.dll", CharSet := CharSet.Ansi)];
 		PUBLIC STATIC EXTERN METHOD AdsClearLastError() AS DWORD 
@@ -45,7 +45,7 @@ BEGIN NAMESPACE XSharp.ADS
 		PUBLIC STATIC EXTERN METHOD AdsGetNumSegments(hTag AS Intptr, usSegments OUT WORD ) AS DWORD 
 		
         [DllImport("ace32.dll", CharSet := CharSet.Ansi)];
-		PUBLIC STATIC EXTERN METHOD AdsGetSegmentFieldname(hTag AS Intptr, usSegmentNum AS WORD , pucFieldname AS CHAR[], pusFldnameLen REF WORD ) AS DWORD 
+		PUBLIC STATIC EXTERN METHOD AdsGetSegmentFieldname(hTag AS Intptr, usSegmentNum AS WORD , [In] [Out] pucFieldname AS CHAR[], pusFldnameLen REF WORD ) AS DWORD 
 		
         [DllImport("ace32.dll", CharSet := CharSet.Ansi)];
 		PUBLIC STATIC EXTERN METHOD AdsGetSegmentOffset(hTag AS Intptr, usSegmentNum AS WORD , usOffset OUT WORD ) AS DWORD 
@@ -54,19 +54,19 @@ BEGIN NAMESPACE XSharp.ADS
 		PUBLIC STATIC EXTERN METHOD AdsIsSegmentDescending(hTag AS Intptr, usSegmentNum AS WORD , pbDescending OUT WORD ) AS DWORD 
 		
         [DllImport("ace32.dll", CharSet := CharSet.Ansi)];
-		PUBLIC STATIC EXTERN METHOD AdsGetSegmentFieldNumbers(hTag AS Intptr, pusNumSegments OUT WORD , pusSegFieldNumbers AS WORD[] )AS DWORD 
+		PUBLIC STATIC EXTERN METHOD AdsGetSegmentFieldNumbers(hTag AS Intptr, pusNumSegments OUT WORD , [In] [Out] pusSegFieldNumbers AS WORD[] )AS DWORD 
 		
         [DllImport("ace32.dll", CharSet := CharSet.Ansi)];
-		PUBLIC STATIC EXTERN METHOD AdsSetFieldRaw(hObj AS Intptr, pucFldName AS STRING , pucBuf AS BYTE[] , ulLen AS DWORD ) AS DWORD 
+		PUBLIC STATIC EXTERN METHOD AdsSetFieldRaw(hObj AS Intptr, pucFldName AS STRING , [In] [Out] pucBuf AS BYTE[] , ulLen AS DWORD ) AS DWORD 
 		
         [DllImport("ace32.dll", CharSet := CharSet.Ansi)];
-		PUBLIC STATIC EXTERN METHOD  AdsSetFieldRaw(hObj AS Intptr, lFieldOrdinal AS DWORD , pucBuf AS BYTE[] , ulLen AS DWORD ) AS DWORD
+		PUBLIC STATIC EXTERN METHOD  AdsSetFieldRaw(hObj AS Intptr, lFieldOrdinal AS DWORD , [In] [Out] pucBuf AS BYTE[] , ulLen AS DWORD ) AS DWORD
 		
         [DllImport("ace32.dll", CharSet := CharSet.Ansi)];
-		PUBLIC STATIC EXTERN METHOD AdsGetFieldRaw(hTbl AS Intptr, pucFldName AS STRING , pucBuf AS BYTE[] , pulLen REF DWORD ) AS DWORD 
+		PUBLIC STATIC EXTERN METHOD AdsGetFieldRaw(hTbl AS Intptr, pucFldName AS STRING , [In] [Out] pucBuf AS BYTE[] , pulLen REF DWORD ) AS DWORD 
 		
         [DllImport("ace32.dll", CharSet := CharSet.Ansi)];
-		PUBLIC STATIC EXTERN METHOD AdsGetFieldRaw(hTbl AS Intptr, lFieldOrdinal AS DWORD , pucBuf AS BYTE[] , pulLen REF DWORD ) AS DWORD 
+		PUBLIC STATIC EXTERN METHOD AdsGetFieldRaw(hTbl AS Intptr, lFieldOrdinal AS DWORD , [In] [Out] pucBuf AS BYTE[] , pulLen REF DWORD ) AS DWORD 
 		
         [DllImport("ace32.dll", CharSet := CharSet.Ansi)];
 		PUBLIC STATIC EXTERN METHOD AdsSetFlushFlag(hConnect AS Intptr, usFlushEveryUpdate AS WORD ) AS DWORD 
@@ -89,17 +89,17 @@ BEGIN NAMESPACE XSharp.ADS
 		[DllImport("ace32.dll", CharSet := CharSet.Ansi)];
         PUBLIC STATIC EXTERN METHOD AdsSetTableCharType(hTbl AS Intptr, usCharType AS WORD ) AS DWORD 
 
-		[DllImport("ace32.dll", CharSet := CharSet.Ansi)];
-		PUBLIC STATIC EXTERN METHOD AdsConvertJulianToString(dJulian AS double , pucJulian AS CHAR[] , pusLen REF WORD ) AS DWORD 
+		[DllImport("ace32.dll", CharSet := CharSet.Ansi,EntryPoint := "AdsConvertJulianToString")];
+		PUBLIC STATIC EXTERN METHOD AdsConvertJulianToString(dJulian AS REAL8 , [In] [Out] pucJulian AS CHAR[] , pusLen REF WORD ) AS DWORD 
+
+		[DllImport("ace32.dll", CharSet := CharSet.Ansi,EntryPoint:="AdsConvertStringToJulian")];
+		PUBLIC STATIC EXTERN METHOD AdsConvertStringToJulian(pucJulian AS STRING , usLen AS WORD , pdJulian OUT REAL8 ) AS DWORD 
+
+		[DllImport("ace32.dll", CharSet := CharSet.Ansi,EntryPoint:="AdsConvertStringToJulian")];
+		PUBLIC STATIC EXTERN METHOD AdsConvertStringToJulian([In] [Out] pucJulian AS CHAR[] , usLen AS WORD , pdJulian OUT REAL8 ) AS DWORD 
 
 		[DllImport("ace32.dll", CharSet := CharSet.Ansi)];
-		PUBLIC STATIC EXTERN METHOD AdsConvertStringToJulian(pucJulian AS STRING , usLen AS WORD , pdJulian OUT double ) AS DWORD 
-
-		[DllImport("ace32.dll", CharSet := CharSet.Ansi)];
-		PUBLIC STATIC EXTERN METHOD AdsConvertStringToJulian(pucJulian AS CHAR[] , usLen AS WORD , pdJulian OUT double ) AS DWORD 
-
-		[DllImport("ace32.dll", CharSet := CharSet.Ansi)];
-		PUBLIC STATIC EXTERN METHOD AdsConvertMillisecondsToString(ulMSeconds AS DWORD , pucTime AS CHAR[] , pusLen REF WORD ) AS DWORD 
+		PUBLIC STATIC EXTERN METHOD AdsConvertMillisecondsToString(ulMSeconds AS DWORD , [In] [Out] pucTime AS CHAR[] , pusLen REF WORD ) AS DWORD 
 
 		[DllImport("ace32.dll", CharSet := CharSet.Ansi)];
 		PUBLIC STATIC EXTERN METHOD AdsConvertStringToMilliseconds(pucTime AS STRING , usLen AS WORD , pulMSeconds OUT DWORD ) AS DWORD 
@@ -120,19 +120,19 @@ BEGIN NAMESPACE XSharp.ADS
 		PUBLIC STATIC EXTERN METHOD AdsDeactivateAOF(hTable AS IntPtr )AS DWORD
 
 		[DllImport("ace32.dll", CharSet := CharSet.Ansi)];
-		PUBLIC STATIC EXTERN METHOD AdsExtractPathPart(usPart AS WORD , pucFile AS STRING , pucPart AS CHAR[] , pusPartLen REF WORD )AS DWORD
+		PUBLIC STATIC EXTERN METHOD AdsExtractPathPart(usPart AS WORD , pucFile AS STRING , [In] [Out] pucPart AS CHAR[] , pusPartLen REF WORD )AS DWORD
 
 		[DllImport("ace32.dll", CharSet := CharSet.Ansi)];
-		PUBLIC STATIC EXTERN METHOD AdsExpressionLongToShort(hTable AS Intptr, pucLongExpr AS STRING ,  pucShortExpr AS CHAR[] , pusBufferLen REF WORD )AS DWORD
+		PUBLIC STATIC EXTERN METHOD AdsExpressionLongToShort(hTable AS Intptr, pucLongExpr AS STRING ,  [In] [Out] pucShortExpr AS CHAR[] , pusBufferLen REF WORD )AS DWORD
 
 		[DllImport("ace32.dll", CharSet := CharSet.Ansi)];
-		PUBLIC STATIC EXTERN METHOD AdsExpressionShortToLong(hTable AS Intptr, pucShortExpr AS STRING ,  pucLongExpr AS CHAR[] , pusBufferLen REF WORD )AS DWORD
+		PUBLIC STATIC EXTERN METHOD AdsExpressionShortToLong(hTable AS Intptr, pucShortExpr AS STRING ,  [In] [Out] pucLongExpr AS CHAR[] , pusBufferLen REF WORD )AS DWORD
 
 		[DllImport("ace32.dll", CharSet := CharSet.Ansi)];
-		PUBLIC STATIC EXTERN METHOD AdsExpressionLongToShort90(hTable AS Intptr, pucLongExpr AS STRING ,  pucShortExpr AS CHAR[] , pulBufferLen REF DWORD ) AS DWORD
+		PUBLIC STATIC EXTERN METHOD AdsExpressionLongToShort90(hTable AS Intptr, pucLongExpr AS STRING ,  [In] [Out] pucShortExpr AS CHAR[] , pulBufferLen REF DWORD ) AS DWORD
 
 		[DllImport("ace32.dll", CharSet := CharSet.Ansi)];
-		PUBLIC STATIC EXTERN METHOD AdsExpressionShortToLong90(hTable AS Intptr, pucShortExpr AS STRING ,  pucLongExpr AS CHAR[] , pulBufferLen REF DWORD ) AS DWORD
+		PUBLIC STATIC EXTERN METHOD AdsExpressionShortToLong90(hTable AS Intptr, pucShortExpr AS STRING ,  [In] [Out] pucLongExpr AS CHAR[] , pulBufferLen REF DWORD ) AS DWORD
 
 		[DllImport("ace32.dll", CharSet := CharSet.Ansi)];
 		PUBLIC STATIC EXTERN METHOD AdsSqlPeekStatement(hCursor AS IntPtr, IsLive OUT BYTE ) AS DWORD
@@ -141,7 +141,7 @@ BEGIN NAMESPACE XSharp.ADS
 		PUBLIC STATIC EXTERN METHOD AdsSetCursorAOF(hTable AS Intptr, pucFilter AS STRING , usResolve AS WORD ) AS DWORD
 
 		[DllImport("ace32.dll", CharSet := CharSet.Ansi)];
-		PUBLIC STATIC EXTERN METHOD AdsGetCursorAOF(hCursor AS IntPtr,  pucFilter AS CHAR[] , pusFilterLen REF WORD ) AS DWORD
+		PUBLIC STATIC EXTERN METHOD AdsGetCursorAOF(hCursor AS IntPtr,  [In] [Out] pucFilter AS CHAR[] , pusFilterLen REF WORD ) AS DWORD
 
 		[DllImport("ace32.dll", CharSet := CharSet.Ansi)];
 		PUBLIC STATIC EXTERN METHOD AdsClearCursorAOF(hTable AS IntPtr ) AS DWORD
@@ -159,7 +159,7 @@ BEGIN NAMESPACE XSharp.ADS
 		PUBLIC STATIC EXTERN METHOD ObsAdsDecryptBuffer(pucPassword AS STRING , pucBuffer AS STRING , usLen AS WORD ) AS DWORD
 
 		[DllImport("ace32.dll", CharSet := CharSet.Ansi)];
-		PUBLIC STATIC EXTERN METHOD AdsEvalExpr(hTable AS Intptr, pucPCode AS STRING,  pucResult AS CHAR[] , pusLen REF WORD ) AS DWORD
+		PUBLIC STATIC EXTERN METHOD AdsEvalExpr(hTable AS Intptr, pucPCode AS STRING,  [In] [Out] pucResult AS CHAR[] , pusLen REF WORD ) AS DWORD
 
 		[DllImport("ace32.dll", CharSet := CharSet.Ansi)];
 		PUBLIC STATIC EXTERN METHOD AdsFreeExpr(hTable AS Intptr, pucPCode AS STRING) AS DWORD
@@ -171,10 +171,10 @@ BEGIN NAMESPACE XSharp.ADS
 		PUBLIC STATIC EXTERN METHOD AdsStepIndexKey(hIndex AS Intptr, pucKey AS STRING , usLen AS WORD,  sDirection AS SHORT ) AS DWORD 
 
 		[DllImport("ace32.dll", CharSet := CharSet.Ansi)];
-		PUBLIC STATIC EXTERN METHOD AdsPrepareSQLNow(hStatement AS Intptr, pucSQL AS STRING ,  pucFieldInfo AS CHAR[] , pusFieldInfoLen REF WORD ) AS DWORD 
+		PUBLIC STATIC EXTERN METHOD AdsPrepareSQLNow(hStatement AS Intptr, pucSQL AS STRING ,  [In] [Out] pucFieldInfo AS CHAR[] , pusFieldInfoLen REF WORD ) AS DWORD 
 
 		[DllImport("ace32.dll", CharSet := CharSet.Ansi)];
-		PUBLIC STATIC EXTERN METHOD AdsGetPreparedFields(hStatement AS Intptr,  pucBuffer AS CHAR[] , pulBufferLen REF DWORD , ulOptions AS DWORD ) AS DWORD 
+		PUBLIC STATIC EXTERN METHOD AdsGetPreparedFields(hStatement AS Intptr,  [In] [Out] pucBuffer AS CHAR[] , pulBufferLen REF DWORD , ulOptions AS DWORD ) AS DWORD 
 
 		[DllImport("ace32.dll", CharSet := CharSet.Ansi)];
 		PUBLIC STATIC EXTERN METHOD AdsEcho(hConnect AS Intptr, pucData AS STRING , usLen AS WORD ) AS DWORD 
@@ -201,7 +201,7 @@ BEGIN NAMESPACE XSharp.ADS
 		PUBLIC STATIC EXTERN METHOD AdsGetBaseFieldNum(hCursor AS IntPtr , pucColumnName AS STRING , pusBaseFieldNum OUT WORD ) AS DWORD 
 
 		[DllImport("ace32.dll", CharSet := CharSet.Ansi)];
-		PUBLIC STATIC EXTERN METHOD AdsGetBaseFieldName(hTbl AS Intptr, usFld AS WORD ,  pucName AS CHAR[] , pusBufLen REF WORD ) AS DWORD 
+		PUBLIC STATIC EXTERN METHOD AdsGetBaseFieldName(hTbl AS Intptr, usFld AS WORD ,  [In] [Out] pucName AS CHAR[] , pusBufLen REF WORD ) AS DWORD 
 
 		[DllImport("ace32.dll", CharSet := CharSet.Ansi)];
 		PUBLIC STATIC EXTERN METHOD AdsDDOpen( pucDictionaryPath AS STRING, pucPassword AS STRING , phDictionary OUT IntPtr ) AS DWORD 
@@ -330,19 +330,19 @@ BEGIN NAMESPACE XSharp.ADS
 		PUBLIC STATIC EXTERN METHOD AdsDDDropFunction(hDictionary AS Intptr, pucName AS STRING ) AS DWORD 
 		
         [DllImport("ace32.dll", CharSet := CharSet.Ansi)];
-		PUBLIC STATIC EXTERN METHOD AdsDDGetObjectProperty(hDictionary AS Intptr, usObjectType AS WORD , pucParent AS STRING , pucName AS STRING , usPropertyID AS WORD ,  pvProperty AS BYTE[] , pusPropertyLen REF WORD ) AS DWORD 
+		PUBLIC STATIC EXTERN METHOD AdsDDGetObjectProperty(hDictionary AS Intptr, usObjectType AS WORD , pucParent AS STRING , pucName AS STRING , usPropertyID AS WORD ,  [In] [Out] pvProperty AS BYTE[] , pusPropertyLen REF WORD ) AS DWORD 
 		
         [DllImport("ace32.dll", CharSet := CharSet.Ansi)];
-		PUBLIC STATIC EXTERN METHOD AdsDDGetObjectProperty(hDictionary AS Intptr, usObjectType AS WORD , pucParent AS STRING , pucName AS STRING , usPropertyID AS WORD ,  pucProperty AS CHAR[] , pusPropertyLen REF WORD ) AS DWORD 
+		PUBLIC STATIC EXTERN METHOD AdsDDGetObjectProperty(hDictionary AS Intptr, usObjectType AS WORD , pucParent AS STRING , pucName AS STRING , usPropertyID AS WORD ,  [In] [Out] pucProperty AS CHAR[] , pusPropertyLen REF WORD ) AS DWORD 
 		
         [DllImport("ace32.dll", CharSet := CharSet.Ansi)];
 		PUBLIC STATIC EXTERN METHOD AdsDDGetObjectProperty(hDictionary AS Intptr, usObjectType AS WORD , pucParent AS STRING , pucName AS STRING , usPropertyID AS WORD , pusProperty REF WORD , pusPropertyLen REF WORD ) AS DWORD 
 		
         [DllImport("ace32.dll", CharSet := CharSet.Ansi)];
-		PUBLIC STATIC EXTERN METHOD AdsDDSetObjectProperty(hDictionary AS Intptr, usObjectType AS WORD , pucParent AS STRING , pucName AS STRING , usPropertyID AS WORD ,  pvProperty AS BYTE[] , usPropertyLen AS WORD ) AS DWORD 
+		PUBLIC STATIC EXTERN METHOD AdsDDSetObjectProperty(hDictionary AS Intptr, usObjectType AS WORD , pucParent AS STRING , pucName AS STRING , usPropertyID AS WORD ,  [In] [Out] pvProperty AS BYTE[] , usPropertyLen AS WORD ) AS DWORD 
 		
         [DllImport("ace32.dll", CharSet := CharSet.Ansi)];
-		PUBLIC STATIC EXTERN METHOD AdsDDSetObjectProperty(hDictionary AS Intptr, usObjectType AS WORD , pucParent AS STRING , pucName AS STRING , usPropertyID AS WORD ,  pucProperty AS CHAR[] , usPropertyLen AS WORD ) AS DWORD 
+		PUBLIC STATIC EXTERN METHOD AdsDDSetObjectProperty(hDictionary AS Intptr, usObjectType AS WORD , pucParent AS STRING , pucName AS STRING , usPropertyID AS WORD ,  [In] [Out] pucProperty AS CHAR[] , usPropertyLen AS WORD ) AS DWORD 
 		
         [DllImport("ace32.dll", CharSet := CharSet.Ansi)];
 		PUBLIC STATIC EXTERN METHOD AdsDDSetObjectProperty(hDictionary AS Intptr, usObjectType AS WORD , pucParent AS STRING , pucName AS STRING , usPropertyID AS WORD , pusProperty REF WORD , usPropertyLen AS WORD ) AS DWORD 

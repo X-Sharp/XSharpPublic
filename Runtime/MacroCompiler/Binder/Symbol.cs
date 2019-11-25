@@ -185,6 +185,7 @@ namespace XSharp.MacroCompiler
         internal string Name;
         internal override TypeSymbol Type { get; }
         internal int Index = -1;
+        internal bool IsParam { get; set; }
         internal LocalSymbol(string name, TypeSymbol type) : base(AccessMode.All) { Name = name; Type = type; }
         internal override Symbol Lookup(string name) { return null; }
     }

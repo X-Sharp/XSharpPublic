@@ -73,7 +73,7 @@ namespace XSharp.MacroCompiler
             { ErrorCode.MemberNotMethod, "Member is not a method or function: '{0}'" },
             { ErrorCode.ArgumentsNotMatch, "Arguments do not match method/function '{0}'" },
             { ErrorCode.MemberNotFound, "No accessible member '{0}' found" },
-            { ErrorCode.AmbiguousCall, "Ambiguous call" },
+            { ErrorCode.AmbiguousCall, "Ambiguous call, could be {0} or {1}" },
             { ErrorCode.CtorNotFound, "No accessible constructor found" },
             { ErrorCode.ArgumentsNotMatchCtor, "Constructor arguments do not match" },
             { ErrorCode.NoSuitableCtor, "No suitable constructor" },
@@ -88,7 +88,7 @@ namespace XSharp.MacroCompiler
             { ErrorCode.NotAType, "'{0}' is not a type" },
             { ErrorCode.NotAnExpression, "'{0}' is not a valid expression term" },
             { ErrorCode.NotAMethod, "Could not find method/function '{0}'" },
-            { ErrorCode.NotFound, "'{0}' not found" },
+            { ErrorCode.NotFound, "{0} '{1}' not found" },
             { ErrorCode.NoAccessMode, "'{0}' does not provide '{1}' access" },
             { ErrorCode.NoStaticMethod, "Method or function '{0}' is not static" },
             { ErrorCode.NoInstanceMethod, "Method or function '{0}' is not instance" },
@@ -134,8 +134,8 @@ namespace XSharp.MacroCompiler
             get
             {
                 return Location.Valid ?
-                      String.Format("({1},{2}): error XM{0:D4}: {3}", (int)Code, Location.Line, Location.Col, ErrorMessage)
-                    : String.Format("error XM{0:D4}: {1}", (int)Code, ErrorMessage);
+                      String.Format("Macrocompiler ({1},{2}): error XM{0:D4}: {3}", (int)Code, Location.Line, Location.Col, ErrorMessage)
+                    : String.Format("Macrocompiler error XM{0:D4}: {1}", (int)Code, ErrorMessage);
             }
         }
         internal CompilationError(SourceLocation loc, ErrorCode e, params object[] args) { Code = e; Location = loc; ErrorMessage = ErrorString.Format(e, args); }

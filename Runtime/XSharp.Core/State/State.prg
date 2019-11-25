@@ -30,15 +30,15 @@ CLASS XSharp.RuntimeState
 	PUBLIC STATIC METHOD GetInstance() AS RuntimeState
 		RETURN currentState:Value
 
-	PRIVATE oSettings AS Dictionary<INT, OBJECT>
+	PRIVATE oSettings AS Dictionary<XSharp.Set, OBJECT>
     /// <summary>The dictionary that stores most of the settings in the runtime state. The key to the index is the number from the Set Enum</summary>
     /// <seealso cref="T:XSharp.Set" >Set Enum</seealso>
-    PUBLIC PROPERTY Settings AS Dictionary<INT, OBJECT> GET oSettings
+    PUBLIC PROPERTY Settings AS Dictionary<XSharp.Set, OBJECT> GET oSettings
 
 	PRIVATE CONSTRUCTOR(initialize AS LOGIC)       
 		VAR oThread := Thread.CurrentThread
 		SELF:Name := "ThreadState for "+oThread:ManagedThreadId:ToString()
-		oSettings := Dictionary<INT, OBJECT>{}
+		oSettings := Dictionary<XSharp.Set, OBJECT>{}
 		IF initialize
 			SELF:BreakLevel := 0 
 			SELF:_SetThreadValue(Set.DateFormat ,"MM/DD/YYYY")
@@ -48,6 +48,7 @@ CLASS XSharp.RuntimeState
 			// Initialize the values that are not 'blank'
 			// RDD Settings
 			SELF:_SetThreadValue(Set.Ansi , TRUE)
+            SELF:_SetThreadValue(Set.Charset, 0)        // 0 = Ansi, 1 = Oem
 			SELF:_SetThreadValue(Set.AutoOpen , TRUE)
 			SELF:_SetThreadValue(Set.AutoOrder , 1)
 			SELF:_SetThreadValue(Set.Optimize , TRUE)
@@ -57,6 +58,7 @@ CLASS XSharp.RuntimeState
 			SELF:_SetThreadValue(Set.MemoBlockSize , 32U)
 			SELF:_SetThreadValue(Set.DefaultRDD , "DBFNTX")
 			SELF:_SetThreadValue(Set.Exclusive , TRUE)
+            SELF:_SetThreadValue(Set.FoxLock , FALSE)
 			// Console Settings
 			SELF:_SetThreadValue(Set.Bell , TRUE)
 			SELF:_SetThreadValue(Set.Color , "W/N,N/W,N/N,N/N,N/W")
@@ -64,11 +66,18 @@ CLASS XSharp.RuntimeState
 			SELF:_SetThreadValue(Set.Digits , (DWORD) 10 )
 			SELF:_SetThreadValue(Set.Exact , FALSE)
 			SELF:_SetThreadValue(Set.FloatDelta , 0.0000000000001)
-			SELF:_SetThreadValue(Set.DOSCODEPAGE, Win32.GetDosCodePage())
-			SELF:_SetThreadValue(Set.WINCODEPAGE, Win32.GetWinCodePage())
+            SELF:_SetThreadValue<BYTE[]>(Set.CollationTable, NULL )
+			IF System.Environment.OSVersion:Platform == System.PlatformID.Win32NT
+                SELF:_SetThreadValue(Set.DOSCODEPAGE, Win32.GetDosCodePage())
+                SELF:_SetThreadValue(Set.WINCODEPAGE, Win32.GetWinCodePage())
+                SELF:_SetThreadValue(Set.CollationMode, CollationMode.Windows)
+            ELSE
+                SELF:_SetThreadValue(Set.DOSCODEPAGE, 437 )
+                SELF:_SetThreadValue(Set.WINCODEPAGE, 1250 )
+                SELF:_SetThreadValue(Set.CollationMode, CollationMode.Unicode )
+            ENDIF
             SELF:_SetThreadValue(Set.Dialect, XSharpDialect.Core)
 			// Add null value for Clipper collation 
-			SELF:_SetThreadValue<BYTE[]>(Set.CollationTable, NULL )
 			SELF:_SetThreadValue(Set.CollationMode, CollationMode.Windows)
 			// Date and time settings
 			SELF:_SetInternationalWindows()
@@ -85,14 +94,14 @@ CLASS XSharp.RuntimeState
 
     /// <summary>This method closes all open workareas for all threads. It is automatically called ad shutdown.</summary>
     /// <remarks>It is usually better to manage the lifetime of your workarea yourself in code, so don't trust on the runtime to close the workareas.</remarks>
-    STATIC METHOD CloseWorkareasForAllThreads() as VOID
+    STATIC METHOD CloseWorkareasForAllThreads() AS VOID
         TRY
-            FOREACH var state in currentState:Values
-                if state:_workareas != NULL
+            FOREACH VAR state IN currentState:Values
+                IF state:_workareas != NULL
                     state:_workareas:CloseAll()
                 ENDIF
             NEXT
-        CATCH e as Exception
+        CATCH e AS Exception
             System.Diagnostics.Debug.WriteLine(e:ToString())
         END TRY
 	PRIVATE METHOD Clone() AS RuntimeState
@@ -122,7 +131,7 @@ CLASS XSharp.RuntimeState
 	/// <typeparam name="T">The return type expected for this setting.</typeparam>
 	/// <returns>The current value, or a default value of type T.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)];
-	PUBLIC STATIC METHOD GetValue<T> (nSetting AS INT) AS T
+	PUBLIC STATIC METHOD GetValue<T> (nSetting AS XSharp.Set) AS T
 		RETURN currentState:Value:_GetThreadValue<T>(nSetting);
 
 	/// <summary>Set a value for the state of the current Thread.</summary>
@@ -131,10 +140,10 @@ CLASS XSharp.RuntimeState
 	/// <typeparam name="T">The return type expected for this setting.</typeparam>
 	/// <returns>The previous value, or a default value of type T when the setting was not yetr defined.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)];
-	PUBLIC STATIC METHOD SetValue<T> (nSetting AS INT, oValue AS T) AS T
+	PUBLIC STATIC METHOD SetValue<T> (nSetting AS XSharp.Set, oValue AS T) AS T
 		RETURN currentState:Value:_SetThreadValue<T>(nSetting, oValue)
     [MethodImpl(MethodImplOptions.AggressiveInlining)];
-	PRIVATE METHOD _GetThreadValue<T> (nSetting AS INT) AS T
+	PRIVATE METHOD _GetThreadValue<T> (nSetting AS XSharp.Set) AS T
 		BEGIN LOCK oSettings
             LOCAL result AS OBJECT
             IF oSettings:TryGetValue(nSetting, OUT result)
@@ -143,7 +152,7 @@ CLASS XSharp.RuntimeState
 		END LOCK
 		RETURN DEFAULT(T) 
     [MethodImpl(MethodImplOptions.AggressiveInlining)];
-	PRIVATE METHOD _SetThreadValue<T>(nSetting AS INT, oValue AS T) AS T
+	PRIVATE METHOD _SetThreadValue<T>(nSetting AS XSharp.Set, oValue AS T) AS T
 		LOCAL result AS T
 		BEGIN LOCK oSettings
             LOCAL oResult AS OBJECT
@@ -197,7 +206,7 @@ CLASS XSharp.RuntimeState
 
 	/// <summary>The current ANSI setting</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-    /// <seealso cref="F:XSharp.Set.Ansi" />
+    /// <seealso cref="F:XSharp.Set.ANSI" />
     STATIC PROPERTY Ansi AS LOGIC ;
         GET GetValue<LOGIC>(Set.Ansi);
         SET SetValue<LOGIC>(Set.Ansi, VALUE)
@@ -253,8 +262,8 @@ CLASS XSharp.RuntimeState
     /// <seealso cref="P:XSharp.RuntimeState.DateFormat" />
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
    STATIC PROPERTY DateCountry AS DWORD ;
-        GET GetValue<DWORD>(Set.DateCountry);
-        SET _SetDateCountry(VALUE)
+        GET (DWORD) GetValue<XSharp.DateCountry>(Set.DateCountry);
+        SET RuntimeState:GetInstance():_SetDateCountry( (XSharp.DateCountry) VALUE)
 
 	/// <summary>The current Date format</summary>
 	/// <remarks>This string should contain a combination of DD MM and either YY or YYYY characters.<br/>
@@ -265,7 +274,7 @@ CLASS XSharp.RuntimeState
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
     STATIC PROPERTY DateFormat AS STRING ;
         GET GetValue<STRING>(Set.DateFormat);
-        SET _SetDateFormat(VALUE)
+        SET RuntimeState.GetInstance():_SetDateFormat(VALUE)
 
     /// <summary>A cached copy of the string that is returned for empty dates, matching the current DateFormat</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
@@ -471,46 +480,16 @@ CLASS XSharp.RuntimeState
 
 
 	INTERNAL METHOD _SetInternationalClipper() AS VOID
-		SELF:_SetThreadValue(Set.AMEXT, "")
-		SELF:_SetThreadValue(Set.PMEXT, "")
-		SELF:_SetThreadValue(Set.AMPM, FALSE)
 		SELF:_SetThreadValue(Set.Century, FALSE)
-		SELF:_SetThreadValue(Set.DateCountry, (DWORD)1)
 		SELF:_SetThreadValue(Set.Decimals, (DWORD) 2)
 		SELF:_SetThreadValue(Set.DECIMALSEP,  (DWORD) 46)		// DOT .
 		SELF:_SetThreadValue(Set.THOUSANDSEP, (DWORD) 44)	// COMMA ,
-		SELF:_SetThreadValue(Set.DateFormat, "MM/DD/YY")
 		SELF:_SetThreadValue(Set.Intl, CollationMode.Clipper)
         SELF:_SetThreadValue(Set.Dict, FALSE)
+        SELF:_SetDateCountry(DateCountry.American)
+        SELF:_SetTimeFormat("hh:MM:SS")
 
 	INTERNAL METHOD _SetInternationalWindows() AS VOID
-		VAR dtInfo	    := System.Globalization.DateTimeFormatInfo.CurrentInfo
-		SELF:_SetThreadValue(Set.AMEXT, dtInfo:AMDesignator)
-		SELF:_SetThreadValue(Set.PMEXT, dtInfo:PMDesignator)
-		VAR separator := dtInfo:TimeSeparator
-		IF String.IsNullOrEmpty(separator)
-			SELF:_SetThreadValue(Set.TimeSep, (DWORD) 0)
-		ELSE
-			SELF:_SetThreadValue(Set.TimeSep, (DWORD) separator[0])
-		ENDIF
-		SELF:_SetThreadValue(Set.AMPM, dtInfo:ShortDatePattern:IndexOf("tt") != -1)
-		VAR dateformat  := dtInfo:ShortDatePattern:ToLower()
-		// reduce to single m and d
-		DO WHILE (dateformat.IndexOf("mm") != -1)
-			dateformat		:= dateformat:Replace("mm", "m")
-		ENDDO
-		// make sure we have a double mm to get double digit dates
-
-		DO WHILE dateformat.IndexOf("dd") != -1
-			dateformat		:= dateformat:Replace("dd", "d")
-		ENDDO
-		// change dates to dd and mm and then everything to upper case
-		dateformat := dateformat:Replace("d", "dd"):Replace("m","mm"):ToUpper()
-		SELF:_SetThreadValue(Set.Century, dateformat:IndexOf("YYYY",StringComparison.OrdinalIgnoreCase) != -1)
-		SELF:_SetThreadValue(Set.DateFormatNet, dateformat:ToUpper():Replace("D","d"):Replace("Y","y"):Replace("/","'/'"))
-		SELF:_SetThreadValue(Set.DateFormatEmpty, dateformat:ToUpper():Replace("D"," "):Replace("Y"," "):Replace("M"," "))
-		SELF:_SetThreadValue(Set.DateFormat,  dateformat)
-		SELF:_SetThreadValue(Set.DateCountry, (DWORD) 1)
 		SELF:_SetThreadValue(Set.DECIMALS , (DWORD) 2)
 		VAR numberformat := System.Globalization.NumberFormatInfo.CurrentInfo
 		SELF:_SetThreadValue(Set.DECIMALSEP, (DWORD) numberformat:NumberDecimalSeparator[0])
@@ -524,57 +503,81 @@ CLASS XSharp.RuntimeState
         SELF:_SetThreadValue(Set.FullPath, TRUE)
         SELF:_SetThreadValue(Set.Space, TRUE)
         SELF:_SetThreadValue(Set.Textmerge, FALSE)
+        SELF:_SetDateCountry(DateCountry.System)
+        SELF:_SetTimeFormat("")                         // Gets System time
 		RETURN
 
 
-	INTERNAL STATIC METHOD _SetDateFormat(format AS STRING) AS VOID
+    INTERNAL METHOD _SetTimeFormat(format AS STRING) AS VOID
+        IF String.IsNullOrEmpty(format)
+		    VAR dtInfo	    := System.Globalization.DateTimeFormatInfo.CurrentInfo
+		    SELF:_SetThreadValue(Set.AMEXT, dtInfo:AMDesignator)
+		    SELF:_SetThreadValue(Set.PMEXT, dtInfo:PMDesignator)
+		    VAR separator := dtInfo:TimeSeparator
+		    IF String.IsNullOrEmpty(separator)
+			    SELF:_SetThreadValue(Set.TimeSep, (DWORD) 0)
+		    ELSE
+			    SELF:_SetThreadValue(Set.TimeSep, (DWORD) separator[0])
+		    ENDIF
+		    SELF:_SetThreadValue(Set.AMPM, dtInfo:ShortDatePattern:IndexOf("tt") != -1)
+        ELSE
+            format := format:ToUpper()
+            IF format:EndsWith("TT")
+		        SELF:_SetThreadValue(Set.AMEXT, "AM")
+		        SELF:_SetThreadValue(Set.PMEXT, "PM")
+		        SELF:_SetThreadValue(Set.AMPM, TRUE)
+            ELSE
+		        SELF:_SetThreadValue(Set.AMEXT, "")
+		        SELF:_SetThreadValue(Set.PMEXT, "")
+		        SELF:_SetThreadValue(Set.AMPM, FALSE)
+            ENDIF
+            SELF:_SetThreadValue(Set.TimeSep, ASC(Substr3(format, 3,1)))
+       ENDIF
+
+	INTERNAL METHOD _SetDateFormat(format AS STRING) AS VOID
 		format := format:ToUpper()
 		// ensure we have dd, mm and yy
 		IF format:IndexOf("DD") == -1 .OR. format:IndexOf("MM") == -1 .OR. format:IndexOf("YY") == -1
 			RETURN
 		ENDIF
-		SetValue(Set.DateFormatNet, format:Replace("D","d"):Replace("Y","y"):Replace("/","'/'"))
-		SetValue(Set.DateFormatEmpty, format:Replace("D"," "):Replace("Y"," "):Replace("M"," "))
-		SetValue(SET.CENTURY, format:Contains("YYYY"))
-		SetValue(Set.DATEFORMAT, format)
+		SELF:_SetThreadValue(Set.DateFormatNet, format:Replace("D","d"):Replace("Y","y"):Replace("/","'/'"))
+		SELF:_SetThreadValue(Set.DateFormatEmpty, format:Replace("D"," "):Replace("Y"," "):Replace("M"," "))
+		SELF:_SetThreadValue(SET.CENTURY, format:Contains("YYYY"))
+		SELF:_SetThreadValue(Set.DATEFORMAT, format)
+        IF SELF:_GetThreadValue<XSharp.DateCountry>(Set.DATECOUNTRY) != XSharp.DateCountry.System
 		SWITCH format
 			CASE "MM/DD/YY"
 			CASE "MM/DD/YYYY" 
-				SetValue(Set.DATECOUNTRY, (DWORD) XSharp.DateCountry.American)	 
+				SELF:_SetThreadValue(Set.DATECOUNTRY, XSharp.DateCountry.American)	 
 			CASE "YY.MM.DD" 
 			CASE "YYYY.MM.DD"
-				SetValue(Set.DATECOUNTRY, (DWORD) XSharp.DateCountry.Ansi)	  
+				SELF:_SetThreadValue(Set.DATECOUNTRY, XSharp.DateCountry.Ansi)	  
 			CASE "DD/MM/YY"
 			CASE "DD/MM/YYYY"
                 // What a laugh, the British & french have an identical format. 
-				SetValue(Set.DATECOUNTRY, (DWORD)XSharp.DateCountry.British)	
+				SELF:_SetThreadValue(Set.DATECOUNTRY, XSharp.DateCountry.British)	
 			CASE "DD.MM.YY"
 			CASE "DD.MM.YYYY"
-				SetValue(Set.DATECOUNTRY, (DWORD)XSharp.DateCountry.German)	
+				SELF:_SetThreadValue(Set.DATECOUNTRY, XSharp.DateCountry.German)	
 			CASE "DD-MM-YY"
 			CASE "DD-MM-YYYY"
-				SetValue(Set.DATECOUNTRY, (DWORD)XSharp.DateCountry.Italian)	
+				SELF:_SetThreadValue(Set.DATECOUNTRY, XSharp.DateCountry.Italian)	
 			CASE "YY/MM/DD"
 			CASE "YYYY/MM/DD"
-				SetValue(Set.DATECOUNTRY, (DWORD)XSharp.DateCountry.Japanese)	
+				SELF:_SetThreadValue(Set.DATECOUNTRY, XSharp.DateCountry.Japanese)	
 			CASE "MM-DD-YY"
 			CASE "MM-DD-YYYY"
-				SetValue(Set.DATECOUNTRY, (DWORD)XSharp.DateCountry.USA)	
-			OTHERWISE
-				SetValue(Set.DATECOUNTRY, (DWORD)0)	
+				SELF:_SetThreadValue(Set.DATECOUNTRY, XSharp.DateCountry.USA)	
 		END SWITCH
+        ENDIF
 
-
-	INTERNAL STATIC METHOD _SetDateCountry(country AS DWORD) AS VOID
-		IF country > 8
-			RETURN
-		END IF
-
-		SetValue<DWORD>(Set.DateCountry, country)
+    INTERNAL METHOD _SetDateCountry(country AS XSharp.DateCountry) AS VOID
 		
 		LOCAL format, year AS STRING
-		year := IIF(Century , "YYYY" , "YY")
-		SWITCH (DateCountry) country
+        SELF:_SetThreadValue(Set.DATECOUNTRY, country)
+        IF country != XSharp.DateCountry.System
+		    year := IIF(Century , "YYYY" , "YY")
+		    SWITCH (DateCountry) country
 			CASE XSharp.DateCountry.American
 				format := "MM/DD/" + year
 			CASE XSharp.DateCountry.Ansi
@@ -595,11 +598,25 @@ CLASS XSharp.RuntimeState
 				format := "MM/DD/" + year
 		END SWITCH
 		// this will adjust DateFormatNet, DateFormatEmpty etc, but also DateCountry again
-		_SetDateFormat(format) 
+    ELSE
+        VAR dtInfo	    := System.Globalization.DateTimeFormatInfo.CurrentInfo
+        format  := dtInfo:ShortDatePattern:ToLower()
+		// reduce to single m and d
+		DO WHILE (format.IndexOf("mm") != -1)
+        	format		:= dateformat:Replace("mm", "m")
+        ENDDO
+		// make sure we have a double mm to get double digit dates
+    
+	    DO WHILE format.IndexOf("dd") != -1
+			format		:= format:Replace("dd", "d")
+		ENDDO
+		// change dates to dd and mm and then everything to upper case
+		format := format:Replace("d", "dd"):Replace("m","mm"):ToUpper()
+    ENDIF
+    SELF:_SetDateFormat(format) 
 
 
-
-	private _workareas AS WorkAreas
+	PRIVATE _workareas AS WorkAreas
 	/// <summary>The workarea information for the current Thread.</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
 	PUBLIC STATIC PROPERTY Workareas AS WorkAreas
@@ -643,6 +660,7 @@ CLASS XSharp.RuntimeState
 
 	STATIC INTERNAL _macrocompilerType   AS System.Type
     STATIC INTERNAL _macrocompiler       AS IMacroCompiler
+    STATIC INTERNAL _macroresolver       AS MacroCompilerResolveAmbiguousMatch
     /// <summary>Active Macro compiler</summary>
     /// <remarks><note>This value is NOT 'per thread' but global for all threads.</note></remarks>
     PUBLIC STATIC PROPERTY MacroCompiler AS IMacroCompiler
@@ -656,6 +674,25 @@ CLASS XSharp.RuntimeState
             _macrocompiler := VALUE
         END SET
     END PROPERTY
+        
+    /// <summary>Active Macro compiler</summary>
+    /// <remarks><note>This value is NOT 'per thread' but global for all threads.</note></remarks>
+    PUBLIC STATIC PROPERTY MacroResolver AS MacroCompilerResolveAmbiguousMatch
+        GET
+            if _macroResolver == null
+                IF _macroCompiler IS IMacroCompiler2 VAR mc
+                    _macroResolver := mc:Resolver 
+                ENDIF
+            endif
+            RETURN _macroresolver
+        END GET
+        SET
+            _macroresolver := VALUE
+            IF _macroCompiler IS IMacroCompiler2 VAR mc
+                mc:Resolver := Value
+            ENDIF
+        END SET
+    END PROPERTY    
 	/// <summary>This event is thrown when the codepage of the runtimestate is changed</summary>
     /// <remarks>Clients can refresh cached information by registering to this event</remarks>
 	PUBLIC STATIC EVENT OnCodePageChanged AS EventHandler
@@ -686,8 +723,12 @@ CLASS XSharp.RuntimeState
         ENDIF
         IF _macroCompilerType != NULL_OBJECT
             _macroCompiler := Activator:CreateInstance(_macroCompilerType) ASTYPE IMacroCompiler
+            IF _macroCompiler IS IMacroCompiler2 VAR mc
+                mc:Resolver := _macroResolver
+            ENDIF
 		ENDIF
 		RETURN
+
 
     /// <overloads>
     /// <summary>Compare 2 strings respecting the runtime string comparison rules.</summary>
@@ -751,7 +792,11 @@ CLASS XSharp.RuntimeState
         VAR mode := RuntimeState.CollationMode 
         SWITCH mode
         CASE CollationMode.Windows
-            ret := XSharp.StringHelpers.CompareWindows(strLHS, strRHS) 
+            IF System.Environment.OSVersion:Platform == System.PlatformID.Win32NT
+                ret := XSharp.StringHelpers.CompareWindows(strLHS, strRHS)
+            ELSE
+                ret := String.Compare(strLHS, strRHS)
+            ENDIF
         CASE CollationMode.Clipper
             ret := XSharp.StringHelpers.CompareClipper(strLHS, strRHS) 
         CASE CollationMode.Unicode
@@ -777,7 +822,13 @@ CLASS XSharp.RuntimeState
         CASE CollationMode.Clipper
             RETURN XSharp.StringHelpers.CompareClipper(aLHS, aRHS, nLen)
         CASE CollationMode.Windows
-            RETURN XSharp.StringHelpers.CompareWindows(aLHS, aRHS, nLen)
+            IF System.Environment.OSVersion:Platform == System.PlatformID.Win32NT
+                RETURN XSharp.StringHelpers.CompareWindows(aLHS, aRHS, nLen)
+            ELSE
+                VAR strLHS := RuntimeState.WinEncoding:GetString(aLHS, 0, nLen)
+                VAR strRHS := RuntimeState.WinEncoding:GetString(aRHS, 0, nLen)
+                RETURN String.Compare(strLHS, strRHS)
+            ENDIF
         CASE CollationMode.Unicode
             VAR strLHS := RuntimeState.WinEncoding:GetString(aLHS, 0, nLen)
             VAR strRHS := RuntimeState.WinEncoding:GetString(aRHS, 0, nLen)

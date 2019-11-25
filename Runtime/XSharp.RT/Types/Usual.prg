@@ -327,6 +327,8 @@ BEGIN NAMESPACE XSharp
                     return false
                 CASE __UsualType.Logic
                     return SELF:_flags:initialized
+                CASE __UsualType.Object
+                    return SELF:_refdata != NULL
                 OTHERWISE
                     return TRUE
                 END SWITCH
@@ -1215,6 +1217,14 @@ BEGIN NAMESPACE XSharp
                 CASE __UsualType.String
                     SWITCH rhs:_usualType
                         CASE __UsualType.String		; RETURN lhs:_stringValue+ rhs:_stringValue
+                        CASE __UsualType.Symbol		; RETURN lhs:_stringValue+ (STRING) rhs:_symValue
+                        OTHERWISE
+                            THROW BinaryError("+", __CavoStr(VOErrors.ARGNOTSTRING), FALSE, lhs, rhs)
+                    END SWITCH
+                CASE __UsualType.Symbol
+                    SWITCH rhs:_usualType
+                        CASE __UsualType.String		; RETURN (STRING)lhs:_symValue+ rhs:_stringValue
+                        CASE __UsualType.Symbol		; RETURN (STRING)lhs:_symValue+ (STRING) rhs:_symValue
                         OTHERWISE
                             THROW BinaryError("+", __CavoStr(VOErrors.ARGNOTSTRING), FALSE, lhs, rhs)
                     END SWITCH
@@ -2479,6 +2489,13 @@ BEGIN NAMESPACE XSharp
             GET
               IF SELF:IsArray
                  RETURN  SELF:_arrayValue:__GetElement(index)
+              ELSEIF SELF:IsString .and. RuntimeState.Dialect == XSharpDialect.XPP .and. index:Length == 1
+                    VAR s := SELF:_stringValue
+                    var i := index[1]
+                    if i> 0 .and. i <= s:Length
+                        return s:Substring(i-1, 1)
+                    ENDIF
+                    RETURN ""
 
               ELSEIF SELF:IsObject .AND. _refData IS IIndexedProperties
                   VAR props := (IIndexedProperties) _refData
@@ -2523,6 +2540,13 @@ BEGIN NAMESPACE XSharp
                     VAR a := SELF:_arrayValue
                     RETURN a:__GetElement(index)
                 ENDIF
+                IF SELF:IsString .and. RuntimeState.Dialect == XSharpDialect.XPP
+                    VAR s := SELF:_stringValue
+                    if index > 0 .and. index <= s:Length
+                        return s:Substring(index-1, 1)
+                    ENDIF
+                    RETURN ""
+                ENDIF
 
                 VAR indexer := _refData ASTYPE IIndexedProperties
                 IF indexer == NULL
@@ -2536,7 +2560,6 @@ BEGIN NAMESPACE XSharp
                     a:__SetElement(index,VALUE)
                     RETURN
                 ENDIF
-   
                 VAR indexer := _refData ASTYPE IIndexedProperties
                 IF indexer == NULL
                     THROW InvalidCastException{VO_Sprintf(VOErrors.USUALNOTINDEXED, typeof(IIndexedProperties):FullName)}

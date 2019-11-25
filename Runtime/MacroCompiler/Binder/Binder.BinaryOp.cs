@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -40,6 +40,13 @@ namespace XSharp.MacroCompiler
 
         internal static BinaryOperatorSymbol BinaryOperation(BinaryOperatorKind kind, ref Expr left, ref Expr right, BindOptions options)
         {
+            // When one or both of the datatypes is Usual or Object then convert to Usual and let
+            // the operators in the Usual type handle the binary operation
+            if (left.Datatype != right.Datatype && (left.Datatype.IsUsualOrObject() || right.Datatype.IsUsualOrObject()))
+            {
+                Convert(ref left, Compilation.Get(NativeType.Usual), options);
+                Convert(ref right, Compilation.Get(NativeType.Usual), options);
+            }
             var sym = BinaryOperatorEasyOut.ClassifyOperation(kind, left.Datatype, right.Datatype);
 
             if (options.HasFlag(BindOptions.AllowInexactComparisons) && sym != null)
@@ -107,6 +114,7 @@ namespace XSharp.MacroCompiler
             if (options.HasFlag(BindOptions.AllowInexactComparisons))
             {
                 bool hasString = left.Datatype.NativeType == NativeType.String || right.Datatype.NativeType == NativeType.String;
+                bool hasUsuals = left.Datatype.NativeType == NativeType.Usual || right.Datatype.NativeType == NativeType.Usual;
                 bool bothStrings = left.Datatype.NativeType == NativeType.String && right.Datatype.NativeType == NativeType.String;
 
                 switch (kind)
@@ -114,7 +122,7 @@ namespace XSharp.MacroCompiler
                     case BinaryOperatorKind.Equal:
                         if (bothStrings)
                             ResolveBinaryOperator(left, right, Compilation.Get(WellKnownMembers.XSharp_RT_Functions___StringEquals), ref mop, ref lconv, ref rconv, options);
-                        else if (hasString)
+                        else if (hasString || hasUsuals)
                             ResolveBinaryOperator(left, right, Compilation.Get(NativeType.Usual).Lookup(OperatorNames.__UsualInExactEquals), ref mop, ref lconv, ref rconv, options);
                         break;
                     case BinaryOperatorKind.NotEqual:

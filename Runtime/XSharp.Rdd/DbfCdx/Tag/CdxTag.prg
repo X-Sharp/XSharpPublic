@@ -21,7 +21,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
 
     [DebuggerDisplay("Tag: {OrderName}, Key: {Expression}, For: {Condition}")];
-    INTERNAL PARTIAL CLASS CdxTag
+    INTERNAL SEALED PARTIAL CLASS CdxTag
         #region constants
         PRIVATE CONST MAX_KEY_LEN       := 240  AS WORD
         #endregion
@@ -157,6 +157,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     SELF:_oRdd:_dbfError( SubCodes.ERDD_CORRUPT, GenCode.EG_CORRUPTION, "CdxTag.Open","Indexes with collation must be opened with the DBFVFP driver")
                 ENDIF
             ENDIF
+            SELF:_oRdd:__Goto(0)
             IF ! SELF:EvaluateExpressions()
                 RETURN FALSE
             ENDIF
@@ -275,30 +276,27 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN isOk
 
         PUBLIC METHOD Flush() AS LOGIC
-            /*
-            IF !SELF:_Shared .AND. SELF:_Hot 
-                SELF:GoCold()
-                SELF:_PageList:Flush(TRUE)
-                SELF:_Header:IndexingVersion        := 1
-                SELF:_Header:NextUnusedPageOffset   := SELF:_nextUnusedPageOffset
-                SELF:_Header:FirstPageOffset        := SELF:_rootPage
-                SELF:_Header:Write( )
-            ENDIF
-            FFlush( SELF:_hFile )
-            */
+//           
+//            IF !SELF:Shared .AND. SELF:_Hot 
+//                SELF:GoCold()
+//                SELF:_PageList:Flush(TRUE)
+//                SELF:_Header:IndexingVersion        := 1
+//                SELF:_Header:NextUnusedPageOffset   := SELF:_nextUnusedPageOffset
+//                SELF:_Header:FirstPageOffset        := SELF:_rootPage
+//                SELF:_Header:Write( )
+//            ENDIF
+//            FFlush( SELF:_hFile )
             RETURN TRUE
 
         PUBLIC METHOD Commit() AS LOGIC
-            /*
-            SELF:GoCold()
-            IF !SELF:_Shared .AND. SELF:_Hot .AND. SELF:_hFile != F_ERROR
-                SELF:_Header:IndexingVersion        := 1
-                SELF:_Header:NextUnusedPageOffset   := SELF:_nextUnusedPageOffset
-                SELF:_Header:FirstPageOffset        := SELF:_rootPage
-                SELF:_Header:Write( )
-            ENDIF
-            FFlush( SELF:_hFile )
-            */ 
+            //SELF:GoCold()
+//            IF !SELF:_Shared .AND. SELF:_Hot .AND. SELF:_hFile != F_ERROR
+//                SELF:_Header:IndexingVersion        := 1
+//                SELF:_Header:NextUnusedPageOffset   := SELF:_nextUnusedPageOffset
+//                SELF:_Header:FirstPageOffset        := SELF:_rootPage
+//                SELF:_Header:Write( )
+//            ENDIF
+//            FFlush( SELF:_hFile )
             RETURN TRUE
             
         PUBLIC METHOD Close() AS LOGIC
@@ -359,11 +357,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 SELF:_currentValue:Recno := node:Recno
                 Array.Copy(node:KeyBytes, SELF:_currentValue:Key, _keySize)
             ENDIF
-
+            
+        STATIC PRIVATE Jan_1_1901 := DateTime{1901, 1, 1 } AS DateTime
+        
         PRIVATE STATIC METHOD _toJulian(dt AS DateTime) AS LONG
-            VAR baseDate  := DateTime{1901, 1, 1 }
-            VAR days      := dt:Subtract( baseDate )
-            RETURN Convert.ToInt32( days:TotalDays ) + 2415386
+            VAR days      := dt:Subtract( Jan_1_1901 )
+            RETURN Convert.ToInt32( days:TotalDays ) + 2415386   // Julian date number of 1901-01-01
 
         PRIVATE METHOD _ToString( toConvert AS OBJECT , sLen AS LONG ,  buffer AS BYTE[] ) AS LOGIC    
             LOCAL resultLength AS LONG

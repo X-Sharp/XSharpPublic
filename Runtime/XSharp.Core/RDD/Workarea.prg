@@ -1043,6 +1043,8 @@ BEGIN NAMESPACE XSharp.RDD
 					oResult := SELF:_FileName
                 CASE DbInfo.DBI_CHILDCOUNT
                     oResult := SELF:_Relations:Count
+                CASE DbInfo.DBI_RDD_OBJECT
+                    oResult := SELF
 				OTHERWISE
 					oResult := NULL
 				END SWITCH

@@ -13,20 +13,57 @@ CLASS WorkAreas
 	#region Constants
 		PUBLIC CONST MaxWorkAreas := 4096 AS DWORD
 	#endregion
-
+    
+    STATIC PROTECTED _AllRDDs   AS Dictionary<IRDD, Workareas>
+    
     STATIC CONSTRUCTOR()
-        local domain := Appdomain.CurrentDomain as Appdomain
+        LOCAL domain := Appdomain.CurrentDomain AS Appdomain
         domain:ProcessExit += _CloseFiles
+        _AllRDDs  := Dictionary<IRDD, Workareas>{}
         RETURN
     /// <exclude />
-    STATIC METHOD _CloseFiles(sender as Object, e as EventArgs)  as void
+    
+    STATIC METHOD _CloseFiles(sender AS OBJECT, e AS EventArgs)  AS VOID
         // Get the state for all threads
         RuntimeState.CloseWorkareasForAllThreads()           
         RETURN
 
+    STATIC METHOD _Add(oRDD AS IRDD, oWA AS Workareas) AS Guid
+        VAR oGuid := guid.NewGuid()
+        BEGIN LOCK _AllRDDs
+            _AllRDDs.Add(oRDD, oWA)
+        END LOCK
+        RETURN oGuid
+
+    STATIC METHOD _Remove(oRDD AS IRDD) AS LOGIC
+        BEGIN LOCK _AllRDDs
+            IF _AllRDDs:ContainsKey(oRDD)
+                _AllRDDs:Remove(oRDD)
+                RETURN TRUE
+            ENDIF
+        END LOCK
+        RETURN FALSE
+        
+    STATIC METHOD _FindRDD (oRDD AS IRDD, oWa OUT Workareas) AS LOGIC
+        oWA  := NULL
+        BEGIN LOCK _allRDDs
+            IF _AllRDDs:ContainsKey(oRDD)
+                oWa  := _AllRDDs[oRDD]
+                RETURN TRUE
+            ENDIF
+        END LOCK
+        RETURN FALSE
+
+    STATIC METHOD _CloseArea(oRDD AS IRDD) AS LOGIC
+        LOCAL oWA  AS Workareas
+        IF Workareas._FindRDD(oRDD, OUT oWA)
+            RETURN oWa:CloseArea(oRDD:Area)
+        ENDIF
+        RETURN FALSE
+
 	#region Fields
 	PRIVATE Aliases  AS Dictionary<STRING, DWORD>	// 1 based area numbers !
-	PRIVATE RDDs	 AS IRDD[]    
+	PRIVATE RDDs	 AS IRDD[]
 	PRIVATE iCurrentWorkarea AS DWORD
     PRIVATE workAreaStack AS Stack<DWORD>
 
@@ -63,8 +100,8 @@ CLASS WorkAreas
 		LOCAL lResult := TRUE AS LOGIC
 		BEGIN LOCK RDDs      
 			RuntimeState.LastRDDError := NULL
-			FOREACH var element in Aliases
-                var nArea := element:Value -1
+			FOREACH VAR element IN Aliases
+                VAR nArea := element:Value -1
 				IF RDDs[nArea] != NULL
 					VAR oRdd := RDDs[nArea]
 					TRY
@@ -111,6 +148,7 @@ CLASS WorkAreas
 					TRY
 						lResult := oRdd:Close()
 						Aliases:Remove(oRdd:Alias:ToUpperInvariant())
+                        Workareas._Remove(oRDD)
 					CATCH e AS Exception
 						lResult			:= FALSE  
 						RuntimeState.LastRDDError 	:= e
@@ -121,8 +159,13 @@ CLASS WorkAreas
 				RDDs[ nArea] 		:= NULL
 			END LOCK               
 		ENDIF
-		RETURN lResult   
-
+		RETURN lResult
+        
+    PUBLIC METHOD CloseArea(oRDD AS IRDD) AS LOGIC
+        // This can be called from any thread and will close the RDD
+        // in the right workarea even if that area is from another thread
+        RETURN WorkAreas._CloseArea(oRDD)
+        
 	///<summary> Return 1 based Workarea Number for Alias or 0 when no found</summary>
 	PUBLIC METHOD FindAlias(sAlias AS STRING) AS DWORD
 		sAlias := sAlias:ToUpperInvariant()
@@ -183,8 +226,12 @@ CLASS WorkAreas
 				sAlias := sAlias:ToUpperInvariant()
 			ENDIF			
 			BEGIN LOCK RDDs
+                IF RDDs [nArea] != NULL
+                    WorkAreas._Remove(RDDs [nArea])
+                ENDIF
 				RDDs[ nArea] 	:= oRDD 
 				Aliases:Add(sAlias, nArea+1)
+                WorkAreas._Add(oRDD, SELF)
 			END LOCK
 			RETURN TRUE
 		ENDIF          
@@ -198,8 +245,8 @@ CLASS WorkAreas
 			FOR VAR i := 0 TO MaxWorkAreas-1
 				IF RDDs[i] != NULL
                     TRY
-					VAR oRdd := RDDs[i]
-    				lResult := lResult .AND. oRdd:Unlock(0)
+					    VAR oRdd := RDDs[i]
+    				    lResult := lResult .AND. oRdd:Unlock(0)
                     CATCH e AS Exception
                         RuntimeState.LastRDDError := e            
                     END TRY

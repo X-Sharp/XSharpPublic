@@ -208,7 +208,11 @@ USING System.Diagnostics
                 Array.Copy(bData,8, buffer, 0, buffer:Length)
                 RETURN buffer
             CASE FlexFieldType.String
-                RETURN encoding:GetString(bData,8, bData:Length-8)
+                IF bData[bData:Length-1] == 0
+                    RETURN encoding:GetString(bData,8, bData:Length-9)
+                ELSE
+                    RETURN encoding:GetString(bData,8, bData:Length-8)
+                ENDIF
             CASE FlexFieldType.IndexBlock
             CASE FlexFieldType.Delete
             CASE FlexFieldType.Object16
@@ -272,6 +276,9 @@ USING System.Diagnostics
             RETURN SUPER:GetValue(nFldPos)
 
         METHOD PutValue(nFldPos AS LONG, oValue AS OBJECT) AS LOGIC
+            IF SELF:_ReadOnly
+                SELF:_dbfError(ERDD.READONLY, XSharp.Gencode.EG_READONLY )
+            ENDIF
             SELF:ForceRel()
             IF SELF:_readRecord()
                 // GoHot() must be called first because this saves the current index values
@@ -279,20 +286,22 @@ USING System.Diagnostics
                     SELF:GoHot()
                 ENDIF
                 VAR oColumn := SELF:_GetColumn(nFldPos)
-                IF oColumn:IsMemo
-                    IF SELF:HasMemo
-                        LOCAL bData AS BYTE[]
-                        bData := SELF:EncodeValue(oValue)
-                        IF SELF:_oFptMemo:PutValue(nFldPos, bData)
-                            // Update the Field Info with the new MemoBlock Position
-                            RETURN oColumn:PutValue(SELF:_oFptMemo:LastWrittenBlockNumber, SELF:_RecordBuffer)
+                IF oColumn != NULL
+                    IF oColumn:IsMemo
+                        IF SELF:HasMemo
+                            LOCAL bData AS BYTE[]
+                            bData := SELF:EncodeValue(oValue)
+                            IF SELF:_oFptMemo:PutValue(nFldPos, bData)
+                                // Update the Field Info with the new MemoBlock Position
+                                RETURN oColumn:PutValue(SELF:_oFptMemo:LastWrittenBlockNumber, SELF:_RecordBuffer)
+                            ENDIF
+                        ELSE
+                            RETURN SUPER:PutValue(nFldPos, oValue)
                         ENDIF
                     ELSE
-                        RETURN SUPER:PutValue(nFldPos, oValue)
+                        RETURN oColumn:PutValue(oValue, SELF:_RecordBuffer)
                     ENDIF
-                ELSE
-                    RETURN oColumn:PutValue(oValue, SELF:_RecordBuffer)
-                ENDIF
+                 ENDIF
             ENDIF
             RETURN FALSE
             

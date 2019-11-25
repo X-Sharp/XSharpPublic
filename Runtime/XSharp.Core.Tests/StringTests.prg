@@ -386,9 +386,7 @@ BEGIN NAMESPACE XSharp.Core.Tests
 	METHOD MemoTest() AS VOID
 		LOCAL sToWrite := "test" AS STRING
 		MemoWrit("MemoTest.txt", sToWrite)
-		VAR sText := System.IO.File.ReadAllText("MemoTest.txt")
-		Assert.Equal(sToWrite, sText)
-		sText := MemORead("MemoTest.txt")
+		VAR sText := MemORead("MemoTest.txt")
 		Assert.Equal(sToWrite, sText)
 		
 

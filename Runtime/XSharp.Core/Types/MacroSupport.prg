@@ -3,6 +3,7 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
+using System.Reflection
 BEGIN NAMESPACE XSharp
 	/// <summary>
 	/// This interface defines Compile time and runtime codeblocks
@@ -16,7 +17,28 @@ BEGIN NAMESPACE XSharp
 		/// Returns the number of parameters defined for the codeblock
 		/// </summary>
 		METHOD	PCount AS LONG 
-	END INTERFACE
+    END INTERFACE
+
+    /// <summary>
+	/// This delegate is used to decide between 2 ambigous methods or constructors
+	/// </summary>
+    /// <param name="cSignature1">Signature of the first symbol</param>
+    /// <param name="cSignature2">Signature of the second symbol</param>
+    /// <returns>The delegate should return 1 when it wants to use the first symbol and 2 when it wants to use the second symbol or 0 when it does not want to use either symbol</returns>
+    /// <seealso cref="T:XSharp.IMacroCompiler2"/>
+    /// <seealso cref="T:XSharp.IMacroCompiler2"/>
+    /// <seealso cref="M:XSharp.Core.Functions.SetMacroDuplicatesResolver(XSharp.MacroCompilerResolveAmbiguousMatch)"/>
+    DELEGATE MacroCompilerResolveAmbiguousMatch(m1 as MemberInfo, m2 as MemberInfo, args as System.Type[]) AS LONG
+
+    /// <summary>
+	/// This interface extends the Macro compiler and adds a method that is called to decide between ambigous methods or constructors
+	/// </summary>
+	/// <seealso cref="M:XSharp.Core.Functions.SetMacroDuplicatesResolver(XSharp.MacroCompilerResolveAmbiguousMatch)"/>
+	/// <seealso cref="T:XSharp.MacroCompilerResolveAmbiguousMatch"/>
+	INTERFACE IMacroCompiler2 INHERIT IMacroCompiler
+        PROPERTY Resolver as MacroCompilerResolveAmbiguousMatch GET SET
+    END INTERFACE
+
 	/// <summary>
 	/// This interface defines the Macro compiler subsystem
 	/// </summary>

@@ -10,6 +10,7 @@ BEGIN NAMESPACE XSharp
 	ENUM CollationMode
 		MEMBER Windows
 		MEMBER Clipper
+        MEMBER XPP      := CollationMode.Clipper
 		MEMBER Unicode
 		MEMBER Ordinal
 	END ENUM
@@ -379,8 +380,8 @@ BEGIN NAMESPACE XSharp.RDD.Enums
 		
 		
 		// advantage
-		MEMBER DBI_GET_ACE_TABLE_HANDLE  := 1110
-		MEMBER DBI_GET_ACE_STMT_HANDLE   := 1111
+		MEMBER DBI_GET_ACE_TABLE_HANDLE  := DBI_USER + 110
+		MEMBER DBI_GET_ACE_STMT_HANDLE   := DBI_USER + 111
 		
 		
 	END	 ENUM

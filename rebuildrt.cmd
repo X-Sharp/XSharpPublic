@@ -1,4 +1,5 @@
 @echo off
+Echo Rebuilding for Debug, Release and Documentation configuration
 Echo Cleaning Binaries folder
 if exist Binaries\Debug  rd Binaries\Debug /s /q
 if exist Binaries\Release rd Binaries\Release /s /q

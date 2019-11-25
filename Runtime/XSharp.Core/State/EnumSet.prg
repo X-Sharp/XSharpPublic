@@ -118,7 +118,7 @@ BEGIN NAMESPACE XSharp
         MEMBER FOXLOCK      := 112		// LOGIC
         MEMBER WINCODEPAGE	:= 113		// Numeric
         MEMBER DOSCODEPAGE	:= 114		// Numeric
-        MEMBER COLLATIONMODE:= 115		// COLLATIONMODE (STRING)
+        MEMBER COLLATIONMODE:= 115		// COLLATIONMODE 
 
         // FoxPro settings
         /// <summary>FoxPro: Is Textmerge enabled.</summary>
@@ -143,6 +143,8 @@ BEGIN NAMESPACE XSharp
         MEMBER Rushmore         := 165
         MEMBER SmartFilter      := 166
         MEMBER NullValue        := 167
+        MEMBER Collation        := 168  // XPP Collation Number
+        MEMBER Lexical          := 169  // Not implemented 
 
 
         // 180 - 197 Harbour extensions
@@ -427,6 +429,12 @@ DEFINE  _SET_RUSHMORE    := Set.Rushmore
 DEFINE  _SET_SMARTFILTER := Set.SmartFilter
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
 DEFINE  _SET_NULLVALUE   := Set.NullValue
+
+/// <include file="CoreComments.xml" path="Comments/Set/*" />
+DEFINE  _SET_COLLATION   := Set.Collation
+/// <include file="CoreComments.xml" path="Comments/Set/*" />
+DEFINE  _SET_LEXICAL    := Set.Lexical
+
 
     
 #endregion

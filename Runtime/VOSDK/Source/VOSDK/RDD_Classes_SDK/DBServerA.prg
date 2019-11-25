@@ -1,3 +1,5 @@
+#translate DBFDebug(<c1> [, <cn>]) =>
+
 PARTIAL CLASS DbServer
 
 PROPERTY __FileSpec as FileSpec GET SELF:oFileSpec

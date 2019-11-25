@@ -1,3 +1,5 @@
+#translate DBFDebug(<c1> [, <cn>]) =>
+
 PARTIAL CLASS DbServer INHERIT DataServer
 	PROTECT lShared AS LOGIC
 	PROTECT lReadOnly AS LOGIC
@@ -34,6 +36,7 @@ PARTIAL CLASS DbServer INHERIT DataServer
 	PROTECT aStruct AS ARRAY
 	PROTECT aRdds AS ARRAY
 	PROTECT nReTries AS DWORD
+	PROTECT oRDD AS XSharp.RDD.IRdd
 
 
 METHOD __AcceptSelectiveRelation( oDBParent AS DbServer, wParentWorkArea AS DWORD, ;
@@ -709,7 +712,7 @@ CONSTRUCTOR( oFile, lShareMode, lReadOnlyMode, xDriver, aRdd )
 		siSuspendNotification := 0
 		dwCurrentWorkArea := VODBGetSelect( )
 
-		IF  IsObject(oFile) .and. __Usual.ToObject(oFile) IS FileSpec var oFS
+		IF  IsObject(oFile) .AND. __Usual.ToObject(oFile) IS FileSpec VAR oFS
 			IF Empty( oFS:Extension )
 				oFS:Extension := ".DBF"
 			ENDIF
@@ -819,8 +822,9 @@ CONSTRUCTOR( oFile, lShareMode, lReadOnlyMode, xDriver, aRdd )
 		ENDIF
 
 		SELF:cRDDName := RDDName( )
+        SELF:oRDD     := DbInfo(DBI_RDD_OBJECT)
 
-      SELF:nCCMode := SELF:nEffectiveCCMode := DbGetDefaultLockMode()
+        SELF:nCCMode := SELF:nEffectiveCCMode := DbGetDefaultLockMode()
 		IF lReadOnly .OR. ! lShared
 			SELF:nEffectiveCCMode := ccNone
 		ENDIF

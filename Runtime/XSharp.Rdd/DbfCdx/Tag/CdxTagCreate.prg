@@ -8,6 +8,7 @@ USING System.Diagnostics
 USING XSharp.RDD.Enums
 USING XSharp.RDD.Support
 USING System.Collections.Generic
+#undef SHOWTIMES
 
 BEGIN NAMESPACE XSharp.RDD.CDX
 
@@ -21,6 +22,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL isOk AS LOGIC
             LOCAL hasForCond AS LOGIC
             SELF:_ordCondInfo := SELF:_oRdd:_OrderCondInfo:Clone()
+            #ifdef SHOWTIMES
+            ? DateTime.Now, "Create", createInfo:Order, "# of records", SELF:_oRDD:RecCount
+            #endif
             IF string.IsNullOrEmpty(createInfo:BagName)
                 SELF:_oRDD:_dbfError(  SubCodes.EDB_CREATEINDEX, GenCode.EG_ARG,"OrdCreate", "Missing Orderbag Name")
                 RETURN FALSE
@@ -58,7 +62,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 SELF:_oRDD:_dbfError(  SubCodes.EDB_CREATEINDEX, GenCode.EG_ARG,"OrdCreate", "Missing Order Name")
                 RETURN FALSE
             ENDIF
-
             // now verify if the order already exists in the bag and when so, then delete it from the orderbag
             FOREACH VAR tag IN SELF:OrderBag:Tags
                 IF string.Compare(tag:OrderName, SELF:OrderName, StringComparison.OrdinalIgnoreCase) == 0
@@ -82,7 +85,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     SELF:_Conditional := TRUE
                 ENDIF
             ENDIF
-            isOk := SELF:Build()
+            isOk := SELF:_Build()
+            SELF:_bag:FlushPages()
+            Gc.Collect()
             RETURN isOk
 
 
@@ -93,9 +98,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:_ordCondInfo:Compile(SELF:_oRDD)
             SELF:_ordCondInfo:Active := TRUE
             SELF:_ordCondInfo:Validate()
-            RETURN SELF:Build()
+            RETURN SELF:_Build()
 
-        INTERNAL METHOD Build() AS LOGIC
+        PRIVATE METHOD _Build() AS LOGIC
             LOCAL isOk AS LOGIC
             LOCAL ic AS CdxSortCompare
             IF ! SELF:_HeaderCreate()
@@ -103,11 +108,17 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 SELF:_oRdd:_dbfError(GenCode.EG_CREATE,  SubCodes.ERDD_WRITE,"OrdCreate", "Could not write Header ")
                 RETURN FALSE
             ENDIF
+            #ifdef SHOWTIMES
+            ? DateTime.Now, "Read"
+            #endif
             IF !SELF:Unique .AND. !SELF:_Conditional .AND. !_ordCondInfo:Scoped .AND. ! _ordCondInfo:Custom
                 isOk := SELF:_CreateNormalIndex()
             ELSE
                 isOk := SELF:_CreateUnique(_ordCondInfo )
             ENDIF
+            #ifdef SHOWTIMES
+            ? DateTime.Now, "Sort, # of keys", _sorter:_dataBuffer:Count
+            #endif
             IF isOk
                 IF _sorter:Ascii
                     ic := CdxSortCompareAscii{SELF:_oRdd, _sorter}
@@ -116,6 +127,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 ENDIF
                 isOk := _sorter:Sort(ic)
             ENDIF
+            #ifdef SHOWTIMES
+            ? DateTime.Now, "Write"
+            #endif
             IF isOk
                 SELF:_sorter:StartWrite()
                 isOk := _sorter:Write(SELF)
@@ -123,6 +137,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF isOk
                 SELF:_sorter:EndWrite()
             ENDIF
+            #ifdef SHOWTIMES
+            ? DateTime.Now, "End"
+            #endif
+
             SELF:_sorter := NULL
             SELF:ClearStack()
 
@@ -215,7 +233,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 ENDIF
                 IF SELF:_oRdd:_indexList:CurrentOrder != NULL
                     leadingOrder := SELF:_oRdd:_indexList:CurrentOrder
-                    lUseOrder    := leadingOrder != NULL
+                    lUseOrder    := leadingOrder != NULL .AND. ordCondInfo:UseCurrent
                 ENDIF
                 IF ordCondInfo:All
                     // All overrules start record no
@@ -254,44 +272,63 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     RETURN result
                 ENDIF
             ENDIF
-            DO WHILE TRUE
-                IF hasWhile
-                    IF ! SELF:_EvalBlock(ordCondInfo:WhileBlock, TRUE)
-                        EXIT
-                    ENDIF
+            IF hasWhile .OR. hasEvalBlock .OR. todo != 0 .OR. lUseOrder .OR. ! SELF:_Conditional
+                LOCAL cbSkip AS @@Func<LONG>
+                IF lUseOrder
+                    cbSKip := { => leadingOrder:_getNextKey(SkipDirection.Forward)}
+                ELSE
+                    cbSKip := { =>SELF:_RecNo + 1}
                 ENDIF
-                IF SELF:_Conditional
-                    includeRecord := SELF:_EvalBlock(ordCondInfo:ForBlock, TRUE)
-                ENDIF
-                IF includeRecord
-                    IF ! SELF:_sortGetRecord()
-                        EXIT
-                    ENDIF
-                ENDIF
-                IF hasEvalBlock
-                    IF count >= ordCondInfo:StepSize
-                        IF ! SELF:_EvalBlock(ordCondInfo:EvalBlock,FALSE)
+                DO WHILE TRUE
+                    IF hasWhile
+                        IF ! SELF:_EvalBlock(ordCondInfo:WhileBlock, TRUE)
                             EXIT
                         ENDIF
-                        count := 1
-                    ELSE
-                        count++
                     ENDIF
-                ENDIF
-                done++
-                IF lUseOrder 
-                    nextRecord := leadingOrder:_getNextKey(SkipDirection.Forward)
-                ELSE
-                    nextRecord := SELF:_RecNo + 1
-                ENDIF
-                SELF:_oRdd:__Goto( nextRecord)
-                IF todo != 0 .AND. done >= todo
-                    EXIT
-                ENDIF
-                IF SELF:_oRdd:_Eof 
-                    EXIT
-                ENDIF
-            ENDDO
+                    IF SELF:_Conditional
+                        includeRecord := SELF:_EvalBlock(ordCondInfo:ForBlock, TRUE)
+                    ENDIF
+   
+                    IF includeRecord
+                        IF ! SELF:_sortGetRecord()
+                            EXIT
+                        ENDIF
+                    ENDIF
+                    IF hasEvalBlock
+                        IF count >= ordCondInfo:StepSize
+                            IF ! SELF:_EvalBlock(ordCondInfo:EvalBlock,FALSE)
+                                EXIT
+                            ENDIF
+                            count := 1
+                        ELSE
+                            count++
+                        ENDIF
+                    ENDIF
+                    done++
+                    nextRecord := cbSkip()
+                    SELF:_oRdd:__Goto( nextRecord)
+                    IF todo != 0 .AND. done >= todo
+                        EXIT
+                    ENDIF
+                    IF SELF:_oRdd:_Eof 
+                        EXIT
+                    ENDIF
+                ENDDO
+            ELSE
+                DO WHILE TRUE
+                    // Only conditions, nothing else
+                    includeRecord := SELF:_EvalBlock(ordCondInfo:ForBlock, TRUE)
+                    IF includeRecord
+                        IF ! SELF:_sortGetRecord()
+                            EXIT
+                        ENDIF
+                    ENDIF
+                    SELF:_oRdd:__Goto( SELF:_RecNo + 1)
+                    IF SELF:_oRdd:_Eof 
+                        EXIT
+                    ENDIF
+                ENDDO
+            ENDIF
             // evaluate the block once more at eof
             IF hasEvalBlock
                 SELF:_EvalBlock(ordCondInfo:EvalBlock,FALSE)
@@ -424,11 +461,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN TRUE
             
     END CLASS
-    INTERNAL CLASS CdxSortHelper INHERIT RddSortHelper
+    INTERNAL SEALED CLASS CdxSortHelper INHERIT RddSortHelper
         INTERNAL PROPERTY SourceIndex    AS INT AUTO
         INTERNAL PROPERTY Ascii          AS LOGIC AUTO
         INTERNAL PROPERTY Unique         AS LOGIC AUTO
+        //PRIVATE written                  AS LONG
         PRIVATE _tag                     AS CdxTag
+
         INTERNAL CONSTRUCTOR( rdd AS DBF, sortInfo   AS DbSortInfo , len AS LONG, tag AS CdxTag )
             SUPER(rdd, sortInfo, len)
             _tag := tag
@@ -446,6 +485,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 Error("CdxSortHelper.AddRecord","Could not add record to leaf")
                 RETURN FALSE
             ENDIF
+//            ++Written
+//            IF Written % 1000 == 0
+//                ? "Written", written                
+//            ENDIF
             RETURN TRUE
 
         INTERNAL METHOD StartWrite() AS LOGIC
@@ -455,29 +498,26 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN TRUE
 
         INTERNAL METHOD EndWrite() AS LOGIC
-            // at the end of the index creation we will create the branch pages (when needed)
-            // that point to the leaf pages that were allocated in this process.
-            // To do that:
-            // - first write each leaf node to disk, so we have a page number
-            //   to do that quickly we write from Right to left, so we only have to
-            //   write each page once
-            // - based on the number of leaf pages we know how many branch keys we have
-            //   and based on that we can determine the # of levels we need.
-            //   when there was only one leaf page then we don't create a branch, otherwise
-            //   we create as many branches as necessary.
+            // Write the header
+            // Write the last node for all branch pages
             LOCAL oLeaf  AS CdxLeafPage
             oLeaf       := (CdxLeafPage) _tag:Stack:Top:Page
-            VAR action  := CdxAction.ChangeParent(oLeaf)
-            action      := _tag.Doaction(action)
-            VAR root := _tag:Stack:Root?:Page
-            _tag:Stack:Clear()
+            VAR oLast   := oLeaf:LastNode
+            VAR root    := _tag:Stack:Root?:Page
             IF root != NULL
                 _tag:SetRoot(root)
             ENDIF
+            root:Write()
+            VAR oPage := root
+            DO WHILE oPage IS CdxBranchPage VAR oBranch
+                VAR nLast := oPage:NumKeys-1
+                VAR nPage := oBranch:GetChildPage(nLast)
+                oBranch:SetData(nLast, oLast:Recno, nPage, oLast:KeyBytes)
+                oPage := SELF:_tag:GetPage(nPage)
+            ENDDO
+                
             SELF:Clear()
             RETURN TRUE
-
-
 
         PRIVATE METHOD Error(strFunction AS STRING, strMessage AS STRING) AS VOID
             SELF:_tag:RDD:_dbfError(ERDD.CREATE_ORDER, GenCode.EG_CORRUPTION, strFunction, strMessage)

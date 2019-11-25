@@ -19,11 +19,9 @@ BEGIN NAMESPACE XSharp.RDD
             
             
     INTERNAL CLASS RddSortHelper
-        PRIVATE _sortInfo   AS DbSortInfo
-        PRIVATE _dataBuffer AS List<SortRecord>
-        PRIVATE _currentPos AS LONG
-        PRIVATE _Length     AS LONG
-        PRIVATE _oRdd       AS DBF
+        INTERNAL _sortInfo   AS DbSortInfo
+        INTERNAL _dataBuffer AS List<SortRecord>
+        INTERNAL _oRdd       AS DBF
 
         INTERNAL PROPERTY SortInfo AS DbSortInfo GET _sortInfo
         
@@ -31,16 +29,11 @@ BEGIN NAMESPACE XSharp.RDD
             SELF:_oRDD      := rdd
             SELF:_sortInfo := sortInfo
             SELF:_dataBuffer := List<SortRecord>{len}
-            SELF:_currentPos := 0
-            SELF:_Length    := len
             
             
         INTERNAL METHOD Add(o AS SortRecord ) AS LOGIC
-            IF SELF:_currentPos < SELF:_Length
-                SELF:_dataBuffer:Add(o)
-                RETURN TRUE
-            ENDIF
-            RETURN FALSE
+            SELF:_dataBuffer:Add(o)
+            RETURN TRUE
             
             
         INTERNAL METHOD Sort(ic AS IComparer<SortRecord> ) AS LOGIC
@@ -71,7 +64,6 @@ BEGIN NAMESPACE XSharp.RDD
         INTERNAL METHOD Clear() AS VOID
             SELF:_dataBuffer := NULL
             SELF:_sortInfo := NULL
-            SELF:_currentPos := (SELF:_Length := 0)
             
             
     END CLASS

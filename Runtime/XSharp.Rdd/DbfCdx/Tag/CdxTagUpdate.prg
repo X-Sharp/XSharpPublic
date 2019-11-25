@@ -362,7 +362,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             //oPageR:Debug("Added", oPageR:PageType)
             oPageL:AddRightSibling(oPageR)
             //oPageL:Debug("Add branch after ", oPageL:PageNo:ToString("X8"), oPageR:PageNo:ToString("X8"), "Pos", Action:Pos, "Rec", Action:Recno)
-            action := oPageL:Split(oPageR, action)
+            action := oPageL:Split(oPageR, action,TRUE)
             IF action:Type != CdxActionType.Ok
                 _UpdateError(NULL,"CdxTag.AddBranch","Could not insert key into new Branch page")
             ENDIF

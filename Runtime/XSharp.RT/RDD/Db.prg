@@ -50,8 +50,8 @@ FUNCTION _SelectString(uWorkArea AS STRING) AS DWORD
 FUNCTION _Select(uWorkArea) AS USUAL CLIPPER
     LOCAL nSelect           AS DWORD
     LOCAL xType             AS DWORD
-    
-    IF uWorkArea:IsNil
+     
+    IF uWorkArea:IsNil 
         RETURN  (INT) VoDb.GetSelect() 
     ENDIF
     xType := UsualType(uWorkArea)
@@ -186,11 +186,15 @@ FUNCTION FieldPutSelect(symAlias AS USUAL,symField AS SYMBOL,uNewValue AS USUAL)
     *----------------------------------------------------------------------------
     
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/alias/*" />
-FUNCTION Alias(nWorkArea) AS STRING CLIPPER
-    IF nWorkArea:IsNil
+FUNCTION Alias(uWorkArea) AS STRING CLIPPER
+    IF uWorkArea:IsNil
         RETURN Alias0()
     ENDIF
-    RETURN VoDb.Alias(nWorkArea)
+    IF IsNumeric(uWorkArea)
+        RETURN VoDb.Alias(uWorkArea)
+    ENDIF
+    RETURN (uWorkArea)->Alias()
+    
     
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/alias0sym/*" />
@@ -305,7 +309,7 @@ FUNCTION DbEval(cbExecute, cbForCondition, cbWhileCondition, nNext, nRecord, lRe
     ENDIF
     RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.Eval(VoDb.ValidBlock(cbExecute), VoDb.ValidBlock(cbForCondition), VoDb.ValidBlock(cbWhileCondition), nNext, nRecord, lRest) )
   
-    
+     
     
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbfieldinfo/*" />
 FUNCTION DbFieldInfo(kInfoType, nFieldPos, uNewSetting) AS USUAL CLIPPER
@@ -316,13 +320,27 @@ FUNCTION DbFieldInfo(kInfoType, nFieldPos, uNewSetting) AS USUAL CLIPPER
     
     
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbgoto/*" />
-FUNCTION DbGoto(uRecID) AS LOGIC CLIPPER
+FUNCTION DbGoto(uRecID AS USUAL) AS LOGIC 
     RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.Goto(uRecId) )
     
-    
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbgoto/*" />
+FUNCTION DbGoto(uRecID AS USUAL, uArea AS USUAL) AS LOGIC 
+    RETURN (uArea)->(DbGoto(uRecID))
+
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbinfo/*" />
 FUNCTION DbInfo(kInfoType, uNewSetting) AS USUAL CLIPPER
     _DbThrowErrorOnFailure(__FUNCTION__, VoDb.Info(kInfoType, REF uNewSetting))
+    IF kInfoType == DBI_GETLOCKARRAY .AND. ((OBJECT) uNewSetting) IS INT[]
+        LOCAL aLocks AS INT[]
+        LOCAL aResult AS ARRAY
+        aLocks := (INT[]) uNewSetting
+        aResult := ArrayNew()
+        FOREACH VAR iLock IN aLocks
+            aResult:Add(iLock)
+        NEXT
+        uNewSetting := aResult
+    ENDIF
     RETURN uNewSetting
     
     
@@ -403,19 +421,11 @@ FUNCTION DbRLock(uRecId) AS USUAL CLIPPER
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbrlocklist/*" />
 FUNCTION DbRLockList() AS ARRAY STRICT
 
-    LOCAL lockList          AS DWORD[]
     LOCAL aLockList := {}   AS ARRAY
-    LOCAL i                 AS DWORD
     LOCAL uRecords  := NIL AS USUAL
-    LOCAL nRecords          AS DWORD
-    nRecords := 0
     
     IF _DbThrowErrorOnFailure(__FUNCTION__, VoDb.Info(DBI_LOCKCOUNT, REF uRecords))
-        lockList := (DWORD[]) DbInfo(DBI_GETLOCKARRAY)
-        nRecords := (DWORD) uRecords
-        FOR i := 1 TO nRecords
-            AAdd(aLockList, lockList[i])
-        NEXT
+        aLockList := DbInfo(DBI_GETLOCKARRAY)
     ENDIF
     
     RETURN aLockList
@@ -614,24 +624,44 @@ FUNCTION DbUseArea (lNewArea, cDriver, cDataFile, cAlias, lShared, lReadOnly, aS
     
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fieldput/*" /> 
 FUNCTION FieldPut (nFieldPos AS USUAL, uNewValue  AS USUAL) AS USUAL 
-    LOCAL xRetVal := NIL AS USUAL
-    IF _DbThrowErrorOnFailure(__FUNCTION__, VoDb.FieldPut(nFieldPos, uNewValue) )
-        xRetVal := uNewValue
+    LOCAL lResult AS LOGIC
+    IF ! IsNumeric(nFieldPos)
+        THROW Error.ArgumentError( __FUNCTION__, nameof(nFieldPos), __CavoStr(VoErrors.ARGNOTNUMERIC), 1 ,<OBJECT>{nFieldPos,uNewValue})
     ENDIF
-    RETURN xRetVal
+    lResult  := VoDb.FieldPut(nFieldPos, uNewValue)
+    IF ! lResult
+        IF RuntimeState.Dialect == XSharpDialect.XPP
+            uNewValue := NIL
+        ELSE
+            DoError(__FUNCTION__)
+        ENDIF
+    ENDIF
+    RETURN uNewValue
     
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fieldget/*" /> 
 FUNCTION FieldGet(nFieldPos) AS USUAL CLIPPER
     LOCAL xRetVal := NIL AS USUAL
-    DEFAULT( REF nFieldPos, 1)
-    _DbThrowErrorOnFailure(__FUNCTION__, VoDb.FieldGet(nFieldPos, REF xRetVal))
+    LOCAL lResult AS LOGIC
+    IF ! IsNumeric(nFieldPos)
+        THROW Error.ArgumentError(__FUNCTION__, nameof(nFieldPos), __CavoStr(VoErrors.ARGNOTNUMERIC), 1 ,<OBJECT> {nFieldPos})
+    ENDIF
+    lResult  := VoDb.FieldGet(nFieldPos, REF xRetVal)
+    IF ! lResult
+        IF RuntimeState.Dialect == XSharpDialect.XPP
+            xRetVal := NIL
+        ELSE
+            DoError(__FUNCTION__)
+        ENDIF
+    ENDIF
     RETURN xRetVal
 
 /// <summary>Read an array of bytes direct from the workarea buffer.</summary>
 /// <remarks>This will only work for DBF based workareas (not for Advantage workareas)</remarks>
 FUNCTION FieldGetBytes(nPos ) AS BYTE[] CLIPPER
     LOCAL bRetVal := NULL AS BYTE[]
-     DEFAULT( REF nPos, 1)
+    IF ! IsNumeric(nPos)
+        THROW Error.ArgumentError(__FUNCTION__, nameof(nPos), __CavoStr(VoErrors.ARGNOTNUMERIC), 1 ,<OBJECT> {nPos})
+    ENDIF
     _DbThrowErrorOnFailure(__FUNCTION__, VoDb.FieldGetBytes(nPos, REF bRetVal))
     RETURN bRetVal
 
@@ -639,7 +669,9 @@ FUNCTION FieldGetBytes(nPos ) AS BYTE[] CLIPPER
 /// <summary>Write an array of bytes direct to the workarea buffer.</summary>
 /// <remarks>This will only work for DBF based workareas (not for Advantage workareas)</remarks>
 FUNCTION FieldPutBytes(nPos AS USUAL, aBytes AS BYTE[]) AS LOGIC
-     DEFAULT( REF nPos, 1)
+    IF ! IsNumeric(nPos)
+        THROW Error.ArgumentError(__FUNCTION__, nameof(nPos), __CavoStr(VoErrors.ARGNOTNUMERIC), 1 ,<OBJECT> {nPos,aBytes})
+    ENDIF
     _DbThrowErrorOnFailure(__FUNCTION__, VoDb.FieldPutBytes(nPos, aBytes))
     RETURN TRUE
 
@@ -684,7 +716,12 @@ FUNCTION FieldPutArea(dwWorkArea AS DWORD, symField AS SYMBOL, uNewValue AS USUA
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/lupdate/*" />  
 FUNCTION LUpdate()  AS DATE STRICT
     RETURN DbInfo(DBI_LASTUPDATE)
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/lupdate/*" />  
+FUNCTION LUpdate(uArea AS USUAL)  AS DATE STRICT
+    RETURN (uArea)->(LUpdate())
     
+
     
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/rddcount/*" />      
 FUNCTION RddCount() AS DWORD CLIPPER
@@ -969,7 +1006,12 @@ FUNCTION DbStruct() AS ARRAY PASCAL
     ENDIF
     
     RETURN aStruct
-    
+
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbstruct/*" />
+FUNCTION DbStruct(uArea AS USUAL) AS ARRAY PASCAL
+    RETURN (uArea)->(DbStruct())
+
     
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/indexhplock/*" />
 FUNCTION IndexHPLock(lNewSetting AS USUAL) AS LOGIC

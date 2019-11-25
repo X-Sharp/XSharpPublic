@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -153,7 +153,13 @@ namespace XSharp.MacroCompiler.Syntax
         internal TypeExpr Type;
         internal Expr Expr;
         internal TypeCast(TypeExpr t, Expr e) : base(t?.Token ?? e.Token) { Type = t; Expr = e; }
-        public override string ToString() { return "(" + Type.ToString() + ")" + Expr.ToString(); }
+        public override string ToString()
+        {
+            if (Type != null)
+                return "(" + Type.ToString() + ")" + Expr.ToString();
+            else
+                return "( <Unknown type> )" + Expr.ToString();
+        }
     }
     internal partial class TypeConversion : TypeCast
     {

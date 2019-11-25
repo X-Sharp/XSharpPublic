@@ -1,3 +1,5 @@
+#translate DBFDebug(<c1> [, <cn>]) =>
+
 PARTIAL CLASS DbServer
 
 METHOD GetArray( nMaxRows, uField1, uSearchValue )  

@@ -244,8 +244,10 @@ FUNCTION CharPos(cString AS STRING, wPosition AS DWORD) AS STRING
 /// <remarks>
 /// The value of dwChar must be between 0 and 255<br/>
 /// The return value of Chr() in XSharp depends on the setting of SetAnsi().<br/>
-/// When SetAnsi() = TRUE then the active windows Ansi codepage is used to calculate the character.<br/>
-/// When SetAnsi() = FALSE then the active windows Oem codepage is used to calculate the character.<br/>
+/// When SetAnsi() = TRUE then the active windows <b>Ansi</b> codepage is used to calculate the character.<br/>
+/// When SetAnsi() = FALSE then the active windows <b>Oem</b> codepage is used to calculate the character.<br/>
+/// This is different from the behior in most single byte versions of Xbase where Chr() simply returnes a string with a single byte
+/// that matches the number passed to this function.
 /// </remarks>
 FUNCTION Chr(dwCode AS DWORD) AS STRING
   LOCAL b   AS BYTE
@@ -268,9 +270,7 @@ FUNCTION Chr(dwCode AS DWORD) AS STRING
       bytes[__ARRAYBASE__] := b
       decoder:GetChars( bytes, 0, 1, chars, 0 )
       ret := chars[__ARRAYBASE__]:ToString()
-
    ENDIF
-
    RETURN ret
 
 

@@ -399,9 +399,10 @@ namespace XSharp.MacroCompiler
             return AddParam(null, type);
         }
 
-        internal LocalSymbol AddLocal(string name, TypeSymbol type)
+        internal LocalSymbol AddLocal(string name, TypeSymbol type, bool isParam = false)
         {
             var local = new LocalSymbol(name, type);
+            local.IsParam = isParam;
             Locals.Add(local);
             if (!string.IsNullOrEmpty(name))
                 LocalCache.Add(name, local);
@@ -448,8 +449,8 @@ namespace XSharp.MacroCompiler
             get
             {
                 int c = 0;
-                foreach (var loc in LocalCache)
-                    if (loc.Value is ArgumentSymbol)
+                foreach (var loc in Locals)
+                    if (loc.IsParam)
                         c++;
                 return c;
             }

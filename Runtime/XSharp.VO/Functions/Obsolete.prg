@@ -264,12 +264,12 @@ FUNCTION Variant2Usual(pvarg AS IntPtr,pItem AS IntPtr) AS LOGIC
 	
 	
 /// <exclude/>
-[Obsolete( "'UnRegisterKid()' is not supported always returns FALSE" )];
+[Obsolete( "'UnRegisterKid()' is not supported, always returns FALSE" )];
 FUNCTION UnRegisterKid(ptrKid AS IntPtr) AS LOGIC
 	RETURN FALSE   
 	
 /// <exclude/>
-[Obsolete( "'UnRegisterKid()' is not supported always returns 0" )];
+[Obsolete( "'VOSendMessage()' is not supported, always returns 0" )];
 FUNCTION VOSendMessage(hwnd AS IntPtr,nMsg AS DWORD,dwParam AS DWORD,lParam AS LONG) AS LONG
 	RETURN 0	
 	
@@ -511,9 +511,9 @@ FUNCTION WagnerExit() AS DWORD
 	
 	
 /// <exclude/>
-[Obsolete( "'Buffer()' is not supported, use MemAlloc() and MemFree() instead" )] ;
-FUNCTION Buffer( n AS DWORD ) AS STRING
-	RETURN NULL
+//[Obsolete( "'Buffer()' is not supported, use MemAlloc() and MemFree() instead" )] ;
+//FUNCTION Buffer( n AS DWORD ) AS STRING
+//	RETURN NULL
 	
 /// <exclude/>
 [Obsolete( "'GetPrivPtr()' is not supported and always returns IntPtr.Zero" )] ;
@@ -530,10 +530,6 @@ FUNCTION GetStgServer(pStgRoot AS IntPtr,cSubStorage AS STRING) AS STRING
 FUNCTION FxOpen(cFile AS STRING,dwMode AS DWORD,cPath AS STRING) AS IntPtr
 	RETURN IntPtr.Zero
 	
-/// <exclude/>
-[Obsolete( "'ErrorExec()' is not supported and always returns NIL" )] ;
-FUNCTION ErrorExec(pErrInfo AS IntPtr) AS USUAL
-	RETURN	 NIL   
 	
 	
 /// <exclude/>
@@ -749,11 +745,6 @@ FUNCTION CompString() AS INT
 [Obsolete] ;
 FUNCTION SBTODB(c AS STRING) AS STRING
 	RETURN String.Empty   
-
-/// <exclude/>
-[Obsolete];
-FUNCTION SEvalA(cSource AS USUAL,block AS USUAL,nStart AS USUAL,nCount AS USUAL) AS STRING
-	RETURN cSource
 
 /// <exclude/>
 [ObsoleteAttribute( "'SysObject()' is not supported", TRUE )] ;

@@ -484,3 +484,7 @@ FUNCTION SetCollation(symNewSetting AS STRING)  AS STRING
 		THROW Error.ArgumentError(__ENTITY__, NAMEOF(symNewSetting), "Unsupported collation mode: "+symNewSetting)
 	END SWITCH
 	RETURN cOld
+
+
+FUNCTION SetTimeFormat(timeformat AS STRING) AS VOID
+    RuntimeState.GetInstance():_SetTimeFormat(timeformat)

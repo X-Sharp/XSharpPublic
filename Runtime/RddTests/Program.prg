@@ -10,8 +10,9 @@ USING System.Reflection
 [STAThread];      
 FUNCTION Start() AS VOID
     TRY
+        testCecil()
         //TestWolfgang2()
-        TestEncoding()
+        //TestEncoding()
         //TestXppFieldGetFieldPut()
         //DumpRateCdx()
         //TestRateCdx()
@@ -156,7 +157,18 @@ FUNCTION Start() AS VOID
         ErrorDialog(e)
     END TRY
     RETURN
-
+FUNCTION TestCeCil() AS VOID
+    SET DEFAULT TO C:\Test
+    SET TIME TO SYSTEM
+    ? Time()
+    RddSetDefault("DBFVFP")
+    DbUseArea(FALSE,,"Address.dbf")
+    LOCAL i AS INT
+    FOR i := 1 TO OrderCount()
+        ? i, OrdKey(i), OrdFor(i)
+    NEXT
+    DbCLoseArea()
+    RETURN
 FUNCTION TestWolfgang2 AS VOID
             LOCAL cFileName          AS STRING
 

@@ -29,7 +29,15 @@ RETURN
 #region Order Support
     
 VIRTUAL METHOD OrderCreate(orderInfo AS DbOrderCreateInfo ) AS LOGIC
-RETURN SELF:_indexList:Create(orderInfo)
+    VAR useMemoryStream := FSize(SELF:_hFile) < Int32.MaxValue .and. ! self:_Shared
+    IF useMemoryStream
+        FConvertToMemoryStream(SELF:_hFile)
+    ENDIF
+    VAR result := SELF:_indexList:Create(orderInfo)
+    IF useMemoryStream
+        FConvertToFileStream(SELF:_hFile)
+    ENDIF
+    RETURN result
 
 VIRTUAL METHOD OrderDestroy(orderInfo AS DbOrderInfo ) AS LOGIC
 RETURN SELF:_indexList:Destroy(orderInfo)
@@ -155,6 +163,7 @@ OVERRIDE METHOD OrderInfo(nOrdinal AS DWORD , info AS DbOrderInfo ) AS OBJECT
             info:Result := ""
         ENDIF
     CASE DBOI_BAGNAME
+    //CASE DBOI_INDEXNAME // alias
         IF workOrder != NULL
             info:Result := workOrder:FileName
         ELSE
@@ -415,13 +424,12 @@ RETURN SELF:_ReadRecord()
 
 PUBLIC METHOD Seek(seekInfo AS DBSEEKINFO ) AS LOGIC
     LOCAL isOk AS LOGIC
-    LOCAL ntxIndex AS CdxTag
     
     isOk := FALSE
     BEGIN LOCK SELF
-        ntxIndex := SELF:CurrentOrder
-        IF ntxIndex != NULL
-            isOk := ntxIndex:Seek(seekInfo)
+        var index := SELF:CurrentOrder
+        IF index != NULL
+            isOk := index:Seek(seekInfo)
         ENDIF
         IF  !isOk 
             SELF:_DbfError(SubCodes.ERDD_DATATYPE, GenCode.EG_NOORDER )

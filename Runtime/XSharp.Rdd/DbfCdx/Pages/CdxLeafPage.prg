@@ -146,7 +146,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         PROTECTED VIRTUAL METHOD _setTag(newTag AS CdxTag) AS VOID
             _tag := newTag
-            IF newTag != NULL
+            IF SELF IS CdxTagList
+                TrailByte := 0
+            ELSEIF newTag != NULL
                 IF _Tag:Collation != NULL
                     TrailByte := 0
                 ELSE
@@ -217,8 +219,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         PUBLIC METHOD GetKey(nPos AS Int32) AS BYTE[]
             System.Diagnostics.Debug.Assert(nPos >= 0 .AND. nPos < SELF:NumKeys)
-            SELF:_ExpandLeaves(FALSE)
-            RETURN _leaves[nPos]:Key
+            IF nPos >= 0 .AND. nPos < SELF:NumKeys
+                SELF:_ExpandLeaves(FALSE)
+                RETURN _leaves[nPos]:Key
+            ENDIF
+            RETURN NULL
 #endregion
 
          // For Debugging we calculate all Recnos and KeyBytes
@@ -243,6 +248,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             _leaves := List<CdxLeaf>{}
             IF SELF:Tag != NULL
                 trailChar :=  (BYTE) IIF (Tag:KeyType == __UsualType.String, 32, 0)
+            ELSEIF SELF IS CdxTagList
+                trailChar := 0
             ELSE
                 trailChar := 32
             ENDIF
@@ -372,13 +379,16 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 #endregion
         INTERNAL METHOD SetRecordBits(numRecs as LONG) AS VOID
             VAR bits            := CdxHelpers.GetBits(SELF:KeyLength)
+            VAR totbits := bits * 2
+            
+
             DO CASE
-//            CASE numRecs < 2^12
-//                SELF:RecordBits     := 12
-            CASE numRecs < 2^16
-                SELF:RecordBits     := 16
-            CASE numRecs < 2^24
-                SELF:RecordBits     := 24
+            CASE numRecs < 2^(16 - totbits) -1
+                SELF:RecordBits     := (BYTE) (16-totbits)
+            CASE numRecs < 2^(24 - totbits) -1
+                SELF:RecordBits     := (BYTE) (24-totbits)
+            CASE numRecs < 2^(32 - totbits) -1
+                SELF:RecordBits     := (BYTE) (32-totbits)
             OTHERWISE
                 SELF:RecordBits     := 32
             ENDCASE
@@ -398,7 +408,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:TrailingBits   := bits
             SELF:TrailingMask   := (BYTE) (( 1 << bits  ) - 1)
             SELF:DuplicateMask  := (BYTE) (( 1 << bits  ) - 1)
-            SELF:RecnoMask      := (1 << SELF:RecordBits) -1
+            IF SELF:RecordBits == 32
+                SELF:RecnoMask      := -1   // all bit set
+            ELSE
+                SELF:RecnoMask      := (1 << SELF:RecordBits) -1
+            ENDIF
 
         INTERNAL METHOD GetLeaves() AS IList<CdxLeaf>
             SELF:_ExpandLeaves(TRUE)
@@ -413,6 +427,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             //System.Diagnostics.Trace.WriteLine(i"CdxLeafPage:Add({recno})")
             IF _AND( recno, SELF:RecnoMask) != recno
                 //Debug( "triggers ExpandRecnos", "Rec", recno)
+                SELF:Write()
                 RETURN CdxAction.ExpandRecnos(SELF, recno, key, -1)
             ENDIF
             //Debug("rec",recno, "keys", self:NumKeys, "free before", self:Freespace)
@@ -425,9 +440,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 nDupCount   := _getDupCount(prevkey, key, nTrailCount)
             ENDIF
             VAR nBytesNeeded := SELF:KeyLength - nDupCount - nTrailCount  + SELF:DataBytes 
-            IF SELF:Freespace < nBytesNeeded + nDupCount
+            IF SELF:Freespace < nBytesNeeded 
                 //Debug( "triggers SplitLeaf", "Rec", recno)
-                RETURN CdxAction.SplitLeaf(SELF, recno, key, _leaves:Count)
+                SELF:Write()
+                RETURN CdxAction.AddLeaf(SELF, recno, key)
             ENDIF
             VAR leaf := CdxLeaf{recno, key,nDupCount, nTrailCount}
             _leaves:Add( leaf)
@@ -439,7 +455,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:NumKeys += 1
             SELF:Freespace -= nBytesNeeded
             //Debug("rec",recno, "keys", self:NumKeys, "free after", self:Freespace)
-            SELF:Write()
+            //SELF:Write()
             RETURN CdxAction.Ok
 
 
@@ -697,7 +713,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     var nextLeaf := leaves[nPos+1]
                     var prevLeaf := leaves[nPos-1]
                     nextLeaf:Dup := _getDupCount(prevLeaf:Key, nextLeaf:Key,nextLeaf:Trail)
-                elseif nPos == 0 .and. _Leaves:Count > 1
+                ELSEIF nPos == 0 .AND. _Leaves:Count > 1
                     leaves[1]:Dup := 0
                 endif
                 _Leaves:RemoveAt(nPos)
@@ -864,6 +880,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             sb := stringBuilder{}
             sb:AppendLine("--------------------------")
             sb:AppendLine(String.Format("{0} Page {1:X6}, # of keys: {2}, Free Bytes {3}", SELF:PageType, SELF:PageNo, SELF:NumKeys, SELF:Freespace))
+            sb:AppendLine(String.Format("                 DataBytes: {0}, RecordBits: {1}, DuplicateBits: {2}, TrailBit: {3}", SELF:DataBytes, SELF:RecordBits, SELF:DuplicateBits, SELF:TrailingBits))
             sb:AppendLine(String.Format("Left page reference {0:X6}", SELF:LeftPtr))
             IF SELF:NumKeys > 0
                SELF:_ExpandLeaves(FALSE)

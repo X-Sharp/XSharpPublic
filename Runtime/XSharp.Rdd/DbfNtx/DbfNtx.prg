@@ -27,7 +27,15 @@ BEGIN NAMESPACE XSharp.RDD
             
             #REGION Order Support 
             VIRTUAL METHOD OrderCreate(orderInfo AS DBORDERCREATEINFO ) AS LOGIC
-                RETURN SELF:_indexList:Create(orderInfo)
+		        VAR useMemoryStream := FSize(SELF:_hFile) < Int32.MaxValue .AND. ! SELF:_Shared
+		        IF useMemoryStream
+			        FConvertToMemoryStream(SELF:_hFile)
+		        ENDIF
+                        VAR result :=  SELF:_indexList:Create(orderInfo)
+		        IF useMemoryStream
+			        FConvertToFileStream(SELF:_hFile)
+		        ENDIF
+		        RETURN result
                 
             VIRTUAL METHOD OrderDestroy(orderInfo AS DBORDERINFO ) AS LOGIC
                 RETURN SUPER:OrderDestroy(orderInfo)
@@ -140,7 +148,7 @@ BEGIN NAMESPACE XSharp.RDD
                     info:Result := ""
                 ENDIF
             CASE DBOI_BAGNAME
-                //CASE DBOI_INDEXNAME // alias
+            //CASE DBOI_INDEXNAME // alias
                 IF workOrder != NULL
                     info:Result := System.IO.Path.GetFileName(workOrder:FullPath)
                 ELSE
@@ -246,11 +254,14 @@ BEGIN NAMESPACE XSharp.RDD
                     ELSE
                         info:Result := NULL
                 ENDIF
-    CASE DBOI_KEYADD
+        CASE DBOI_KEYADD
+        	// Not Supported
 		 info:Result := FALSE
     CASE DBOI_KEYDELETE
+        	// Not Supported
 		 info:Result := FALSE
     CASE DBOI_CUSTOM
+        	// Not Supported
 		 info:Result := FALSE
             CASE DBOI_USER + 42
                     // Dump Ntx to Txt file
@@ -333,7 +344,16 @@ BEGIN NAMESPACE XSharp.RDD
             LOCAL isOk AS LOGIC
             
             isOk := SUPER:Create(openInfo)
-            IF  XSharp.RuntimeState.Ansi .AND. isOk
+            LOCAL lSupportAnsi := FALSE AS LOGIC
+            SWITCH RuntimeState.Dialect
+                CASE XSharpDialect.VO
+                CASE XSharpDialect.Vulcan
+                CASE XSharpDialect.Core
+                    lSupportAnsi := TRUE
+                OTHERWISE
+                    lSupportAnsi := FALSE
+            END SWITCH
+            IF  XSharp.RuntimeState.Ansi .AND. isOk .and. lSupportAnsi
                 VAR sig := SELF:_Header:Version
                 //SET bit TO Force ANSI Signature
                 sig := sig |4
@@ -357,13 +377,12 @@ BEGIN NAMESPACE XSharp.RDD
             
         PUBLIC METHOD Seek(seekInfo AS DBSEEKINFO ) AS LOGIC
             LOCAL isOk AS LOGIC
-            LOCAL ntxIndex AS NtxOrder
             
             isOk := FALSE
             BEGIN LOCK SELF
-                ntxIndex := SELF:CurrentOrder
-                IF ntxIndex != NULL
-                    isOk := ntxIndex:Seek(seekInfo)
+                var index := SELF:CurrentOrder
+                IF index != NULL
+                    isOk := index:Seek(seekInfo)
                 ENDIF
                 IF  !isOk 
                     SELF:_DbfError(SubCodes.ERDD_DATATYPE, GenCode.EG_NOORDER )

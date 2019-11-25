@@ -42,11 +42,69 @@ namespace XSharp.MacroCompiler
             throw CtorCallBindError(expr, symbol, args, ovRes);
         }
 
-        internal static MemberSymbol TryBindCall(Expr expr, Symbol symbol, ArgList args, out Expr self, ref OverloadResult ovRes, BindOptions options)
+        internal OverloadResult AskUserForCorrectOverload(IList<OverloadResult> matching, ArgList args)
+        {
+            OverloadResult res = null;
+            if (Options.Resolver != null)
+            {
+                res = matching[0];
+                var argtýpes = new System.Type[args.Args.Count];
+                for (int i = 0; i < args.Args.Count; i++)
+                {
+                    argtýpes[i] = args.Args[i].Expr.Datatype.Type;
+                }
+                Symbol lhs = matching[0].Symbol;
+                int result = 0;
+                for (int i = 1; i < matching.Count && res != null; i++)
+                {
+                    var rhs = matching[i].Symbol;
+                    MemberInfo m1= null, m2 = null;
+                    if (lhs is ConstructorSymbol)
+                    {
+                        var c1 = lhs as ConstructorSymbol;
+                        var c2 = rhs as ConstructorSymbol;
+                        m1 = c1.MethodBase;
+                        m2 = c2.MethodBase;
+
+                    }
+                    if (lhs is MethodSymbol)
+                    {
+                        var ms1 = lhs as MethodSymbol;
+                        var ms2 = rhs as MethodSymbol;
+                        m1 = ms1.MethodBase;
+                        m2 = ms2.MethodBase;
+                    }
+                    if (lhs is PropertySymbol)
+                    {
+                        var p1 = lhs as PropertySymbol;
+                        var p2 = rhs as PropertySymbol;
+                        m1 = p1.Property;
+                        m2 = p2.Property;
+                    }
+                    result = this.Options.Resolver(m1, m2, argtýpes);
+                    switch (result)
+                    {
+                        case 1:
+                            break;
+                        case 2:
+                            lhs = rhs;
+                            res = matching[i];
+                            break;
+                        case 0:
+                            res = null;
+                            break;
+                    }
+                }
+            }
+            return res;
+        }
+
+        internal MemberSymbol TryBindCall(Expr expr, Symbol symbol, ArgList args, out Expr self, ref OverloadResult ovRes, BindOptions options)
         {
             self = (expr as MemberAccessExpr)?.Expr;
 
             bool isStatic = self == null;
+            var matching = new List<OverloadResult>();
 
             if ((symbol as MethodSymbol)?.Method.IsStatic == isStatic || symbol is ConstructorSymbol)
             {
@@ -55,7 +113,8 @@ namespace XSharp.MacroCompiler
             else if ((symbol as SymbolList)?.HasMethodBase == true)
             {
                 var methods = symbol as SymbolList;
-                for (int i = 0; i<methods.Symbols.Count; i++)
+ 
+                for (int i = 0; i < methods.Symbols.Count; i++)
                 {
                     var m = methods.Symbols[i];
                     if ((m as MethodSymbol)?.Method.IsStatic == isStatic || m is ConstructorSymbol)
@@ -63,6 +122,14 @@ namespace XSharp.MacroCompiler
                         CheckArguments(m as MemberSymbol, ((MethodBaseSymbol)m).Parameters, args, ref ovRes, options);
                         if (ovRes?.Exact == true)
                             break;
+                        if (ovRes != null)
+                        {
+                            if (!matching.Contains(ovRes))
+                                matching.Add(ovRes);
+                            if (ovRes.Equivalent != null && !matching.Contains(ovRes.Equivalent))
+                                matching.Add(ovRes.Equivalent);
+                        }
+
                     }
                 }
             }
@@ -72,7 +139,16 @@ namespace XSharp.MacroCompiler
                 ApplyConversions(args, ovRes);
                 return ovRes.Symbol;
             }
-
+            if (matching.Count > 1 && ovRes.Valid && Options.Resolver != null)
+            {
+                var res = AskUserForCorrectOverload(matching, args);
+                if (res != null)
+                {
+                    ovRes = res;
+                    ApplyConversions(args, ovRes);
+                    return ovRes.Symbol;
+                }
+            }
             if (options.HasFlag(BindOptions.AllowDynamic) && expr != null && ovRes?.Valid != true)
             {
                 if (symbol is DynamicExprSymbol symbolExpr)

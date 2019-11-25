@@ -67,7 +67,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 IF SELF:HasTopScope
                     result := SELF:_ScopeSeek(DBOrder_Info.DBOI_SCOPETOP)
                     IF !SELF:_oRdd:_Found
-                        SELF:_oRdd:_Bof := TRUE
+                        SELF:_oRdd:_SetBof(TRUE)
                     ENDIF
                 ELSE
                     SELF:_oRdd:_Top := TRUE
@@ -90,7 +90,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                         ENDIF
                     ELSE
                         result := SELF:_oRdd:__Goto(0)
-                        SELF:_oRdd:_Eof := TRUE
+                        SELF:_oRdd:_SetEOF(TRUE)
                         result := TRUE
                     ENDIF
                 ENDIF
@@ -215,16 +215,16 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 result := SELF:_oRdd:__Goto(recno)
                 if recno == 0
                     if Forward
-                        SELF:_oRdd:_Eof := true
+                        SELF:_oRdd:_SetEOF(TRUE)
                     else
-                        SELF:_oRdd:_Bof := true
+                        SELF:_oRdd:_SetBof(TRUE)
                     endif
                 else 
                     IF changedBof
-                        SELF:_oRdd:_Bof := isBof
+                        SELF:_oRdd:_SetBof(isBof)
                     ENDIF
                     IF changedEof
-                        SELF:_oRdd:_Eof := isEof
+                        SELF:_oRdd:_SetEOF(isEof)
                     ENDIF
                 endif
                IF !SELF:HasScope
@@ -374,7 +374,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     recno := SELF:_skipFilter(recno, SkipDirection.Forward)
                 ENDIF
                 IF recno == 0
-                    SELF:_oRdd:_Eof := TRUE
+                    SELF:_oRdd:_SetEOF(TRUE)
                     RETURN 0
                 ENDIF
                 // Note we hardcoded the ranges here on purpose. Otherwise it does NOT work
@@ -385,9 +385,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     IF lEOF
                         IF SELF:Descending
                             recno := SELF:_getNextKey(SkipDirection.Forward)
-                            SELF:_oRdd:_Bof := TRUE
+                            SELF:_oRdd:_SetBof(TRUE)
                         ELSE
-                            SELF:_oRdd:_Eof := TRUE
+                            SELF:_oRdd:_SetEOF(TRUE)
                         ENDIF
                         RETURN result
                     ENDIF
@@ -414,26 +414,26 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                                 VAR lBOF := nRes < 0
                                 IF lBOF
                                     IF SELF:Descending
-                                        SELF:_oRdd:_Eof := TRUE
+                                        SELF:_oRdd:_SetEOF(TRUE)
                                     ELSE
                                         recno := SELF:_getNextKey(SkipDirection.Forward)
-                                        SELF:_oRdd:_Bof := TRUE
+                                        SELF:_oRdd:_SetBof(TRUE)
                                     ENDIF
                                     EXIT
                                 ENDIF
                             ENDIF
                         ELSE
                             IF SELF:_Scopes[BottomScope]:IsSet
-                                SELF:_oRdd:_Bof := FALSE
+                                SELF:_oRdd:_SetBof(FALSE)
                                 LOCAL nRes AS LONG
                                 nRes := SELF:__Compare(SELF:_currentvalue:Key, SELF:_Scopes[BottomScope]:Buffer, SELF:_Scopes[BottomScope]:Size) 
                                 VAR lEOF := nRes > 0
                                 IF lEOF
                                     IF SELF:Descending
                                         recno := SELF:_getNextKey(SkipDirection.Forward)
-                                        SELF:_oRdd:_Bof := TRUE
+                                        SELF:_oRdd:_SetBof(TRUE)
                                     ELSE
-                                        SELF:_oRdd:_Eof := TRUE
+                                        SELF:_oRdd:_SetEOF(TRUE)
                                     ENDIF
                                     RETURN result
                                 ENDIF
@@ -910,7 +910,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 IF !SELF:_oRdd:_isValid
                     SELF:ClearStack()
                 ENDIF
-                SELF:_oRdd:_Bof := (SELF:_oRdd:RecCount == 0)
+                SELF:_oRdd:_SetBof(SELF:_oRdd:RecCount == 0)
                 SELF:_oRdd:_Found := found
                 RETURN result
                 

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -8,11 +8,22 @@ using XSharp.MacroCompiler;
 
 namespace XSharp.Runtime
     {
-    public class MacroCompiler : IMacroCompiler
+    public class MacroCompiler : IMacroCompiler2
     {
         private  MacroOptions options;
         internal Compilation<object, RuntimeCodeblockDelegate> compiler;
 
+        public MacroCompilerResolveAmbiguousMatch Resolver
+        {
+            get
+            {
+                return options.Resolver;
+            }
+            set
+            {
+                options.Resolver = value;
+            }
+        }
 
         public MacroCompiler(): this(RuntimeState.Dialect == XSharpDialect.FoxPro ? MacroOptions.FoxPro : MacroOptions.VisualObjects) { }
 

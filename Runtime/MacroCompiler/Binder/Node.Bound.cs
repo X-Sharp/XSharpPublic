@@ -40,7 +40,7 @@ namespace XSharp.MacroCompiler.Syntax
             if (Symbol is SymbolList)
                 Symbol = Symbol.UniqueType();
             if (Symbol == null)
-                ThrowError(ErrorCode.NotFound, "Type");
+                ThrowError(ErrorCode.NotFound, "Type", this.ToString());
             if (!(Symbol is TypeSymbol))
                 ThrowError(ErrorCode.NotAType, Symbol);
         }
@@ -48,7 +48,7 @@ namespace XSharp.MacroCompiler.Syntax
         {
             RequireValue();
             if (Symbol == null)
-                ThrowError(ErrorCode.NotFound, "Expression");
+                ThrowError(ErrorCode.NotFound, "Expression", this.ToString());
             if (!Symbol.HasGetAccess)
                 throw Binder.AccessModeError(this, Symbol, Symbol.AccessMode.Get);
         }
@@ -56,7 +56,7 @@ namespace XSharp.MacroCompiler.Syntax
         {
             RequireValue();
             if (Symbol == null)
-                ThrowError(ErrorCode.NotFound, "Expression");
+                ThrowError(ErrorCode.NotFound, "Expression", this.ToString());
             if (!Symbol.HasSetAccess)
                 throw Binder.AccessModeError(this, Symbol, Symbol.AccessMode.Set);
         }
@@ -64,7 +64,7 @@ namespace XSharp.MacroCompiler.Syntax
         {
             RequireValue();
             if (Symbol == null)
-                ThrowError(ErrorCode.NotFound, "Expression");
+                ThrowError(ErrorCode.NotFound, "Expression", this.ToString());
             if (!Symbol.HasGetAccess)
                 throw Binder.AccessModeError(this, Symbol, Symbol.AccessMode.Get);
             if (!Symbol.HasSetAccess)
@@ -74,7 +74,7 @@ namespace XSharp.MacroCompiler.Syntax
         {
             RequireValue();
             if (Symbol == null)
-                ThrowError(ErrorCode.NotFound, "Expression");
+                ThrowError(ErrorCode.NotFound, "Expression", this.ToString());
             if (!Symbol.HasRefAccess)
                 throw Binder.AccessModeError(this, Symbol, Symbol.AccessMode.Ref);
         }
@@ -814,7 +814,7 @@ namespace XSharp.MacroCompiler.Syntax
             {
                 foreach (var p in Params)
                 {
-                    b.AddLocal(p.LookupName, b.ObjectType);
+                    b.AddLocal(p.LookupName, b.ObjectType,true);
                     p.Bind(b);
                 }
             }

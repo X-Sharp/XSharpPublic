@@ -354,17 +354,28 @@ FUNCTION ModuleName( lFull AS LOGIC ) AS STRING
     RETURN ExecName( lFull )
 
 
-FUNCTION GetMimeType(sFileName AS STRING) AS STRING
-    LOCAL sExt AS STRING
-	sExt := System.IO.Path.GetExtension(sFileName)
-    RETURN Microsoft.Win32.Registry.GetValue("HKEY_CLASSES_ROOT\"+sExt,"Content Type",""):ToString()
-
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/_getcmdline/*" />
 FUNCTION _GetCmdLine() AS STRING
 RETURN System.Environment.CommandLine
 
 
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/_getinst/*" />
+FUNCTION _GetInst() AS IntPtr
+    LOCAL oType AS System.Type
+    oType := Typeof(Functions)
+    RETURN System.Runtime.InteropServices.Marshal.GetHINSTANCE(oType:Module)
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/_getcmdshow/*" />
+[Obsolete];
+FUNCTION _GetCmdShow() AS LONG
+    RETURN 1
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/_getprevinst/*" />
+[Obsolete];
+FUNCTION _GetPrevInst AS IntPtr
+    RETURN IntPtr.Zero
 
 
 /// <summary>Terminate application processing, close all open files, and return control to the operating system.</summary>

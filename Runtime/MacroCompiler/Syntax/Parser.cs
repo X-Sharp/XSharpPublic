@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Diagnostics;
@@ -402,17 +402,17 @@ namespace XSharp.MacroCompiler
             {
                 bool cast = false;
 
-                Require(Expect(TokenType.LPAREN), ErrorCode.Expected, "'('");
+                Require(Expect(TokenType.LPAREN), ErrorCode.Expected, "(");
 
                 if (Expect(TokenType.CAST))
                 {
-                    Require(Expect(TokenType.COMMA), ErrorCode.Expected, "','");
+                    Require(Expect(TokenType.COMMA), ErrorCode.Expected, ",");
                     cast = true;
                 }
 
                 var expr = ParseExpression();
 
-                Require(Expect(TokenType.RPAREN) || AllowMissingSyntax, ErrorCode.Expected, "')'");
+                Require(Expect(TokenType.RPAREN) || AllowMissingSyntax, ErrorCode.Expected, ")");
 
                 return cast ? new TypeCast((TypeExpr)e, expr) : new TypeConversion((TypeExpr)e, expr);
             }
@@ -525,11 +525,11 @@ namespace XSharp.MacroCompiler
         {
             var o = ConsumeAndGet();
 
-            Require(Expect(TokenType.LPAREN), ErrorCode.Expected, "'('");
+            Require(Expect(TokenType.LPAREN), ErrorCode.Expected, "(");
 
             var e = ParseExprList(true);
 
-            Require(Expect(TokenType.RPAREN) || AllowMissingSyntax, ErrorCode.Expected, "')'");
+            Require(Expect(TokenType.RPAREN) || AllowMissingSyntax, ErrorCode.Expected, ")");
 
             switch (o.type)
             {
@@ -657,7 +657,7 @@ namespace XSharp.MacroCompiler
 
         internal Codeblock ParseCodeblock()
         {
-            Require(Expect(TokenType.LCURLY), ErrorCode.Expected, "'{'");
+            Require(Expect(TokenType.LCURLY), ErrorCode.Expected, "{");
 
             List<IdExpr> p = null;
 
@@ -676,13 +676,13 @@ namespace XSharp.MacroCompiler
                     } while (true);
                 }
 
-                Require(Expect(TokenType.PIPE), ErrorCode.Expected, "'|'");
+                Require(Expect(TokenType.PIPE), ErrorCode.Expected, "|");
             }
-            else Require(Expect(TokenType.OR), ErrorCode.Expected, "'|'");
+            else Require(Expect(TokenType.OR), ErrorCode.Expected, "|");
 
             var l = ParseExprList();
 
-            Require(Expect(TokenType.RCURLY) || AllowMissingSyntax, ErrorCode.Expected, "'}'");
+            Require(Expect(TokenType.RCURLY) || AllowMissingSyntax, ErrorCode.Expected, "}");
 
             return new Codeblock(p,l);
         }
@@ -702,33 +702,33 @@ namespace XSharp.MacroCompiler
 
         internal TypeExpr ParseParenType()
         {
-            Require(Expect(TokenType.LPAREN), ErrorCode.Expected, "'('");
+            Require(Expect(TokenType.LPAREN), ErrorCode.Expected, "(");
 
             var t = Require(ParseType(), ErrorCode.Expected, "type");
 
-            Require(Expect(TokenType.RPAREN) || AllowMissingSyntax, ErrorCode.Expected, "')'");
+            Require(Expect(TokenType.RPAREN) || AllowMissingSyntax, ErrorCode.Expected, ")");
 
             return t;
         }
 
         internal Expr ParseParenExpr()
         {
-            Require(Expect(TokenType.LPAREN), ErrorCode.Expected, "'('");
+            Require(Expect(TokenType.LPAREN), ErrorCode.Expected, "(");
 
             var e = Require(ParseExpression(), ErrorCode.Expected, "expression");
 
-            Require(Expect(TokenType.RPAREN) || AllowMissingSyntax, ErrorCode.Expected, "')'");
+            Require(Expect(TokenType.RPAREN) || AllowMissingSyntax, ErrorCode.Expected, ")");
 
             return e;
         }
 
         internal Expr ParseLiteralArray(TypeExpr t = null)
         {
-            Require(Expect(TokenType.LCURLY), ErrorCode.Expected, "'{'");
+            Require(Expect(TokenType.LCURLY), ErrorCode.Expected, "{");
 
             var e = ParseExprList(true);
 
-            Require(Expect(TokenType.RCURLY) || AllowMissingSyntax, ErrorCode.Expected, "'}'");
+            Require(Expect(TokenType.RCURLY) || AllowMissingSyntax, ErrorCode.Expected, "}");
 
             return new LiteralArray(e, t);
         }
@@ -764,7 +764,7 @@ namespace XSharp.MacroCompiler
             Token o;
             if (ExpectAndGet(TokenType.IIF, out o) || Expect(TokenType.IF))
             {
-                Require(Expect(TokenType.LPAREN), ErrorCode.Expected, "'('");
+                Require(Expect(TokenType.LPAREN), ErrorCode.Expected, "(");
 
                 var c = Require(ParseExpression(), ErrorCode.Expected, "expression");
 
@@ -776,7 +776,7 @@ namespace XSharp.MacroCompiler
 
                 var ef = ParseExpression() ?? new EmptyExpr(Lt());
 
-                Require(Expect(TokenType.RPAREN) || AllowMissingSyntax, ErrorCode.Expected, "')'");
+                Require(Expect(TokenType.RPAREN) || AllowMissingSyntax, ErrorCode.Expected, ")");
 
                 return new IifExpr(c, et, ef, o);
             }
@@ -790,7 +790,7 @@ namespace XSharp.MacroCompiler
                 if (La(3) == TokenType.LPAREN || La(3) == TokenType.AMP || La(4) == TokenType.LPAREN)
                     return null;
                 if (Expect(TokenType.FIELD))
-                    Require(Expect(TokenType.ALIAS), ErrorCode.Expected, "'->'");
+                    Require(Expect(TokenType.ALIAS), ErrorCode.Expected, "->");
                 var alias = Require(ParseId(), ErrorCode.Expected, "name");
                 if (La() == TokenType.ALIAS)
                 {
@@ -847,33 +847,33 @@ namespace XSharp.MacroCompiler
 
         internal ArgList ParseParenArgList()
         {
-            Require(Expect(TokenType.LPAREN), ErrorCode.Expected, "'('");
+            Require(Expect(TokenType.LPAREN), ErrorCode.Expected, "(");
 
             var l = ParseArgList();
 
-            Require(Expect(TokenType.RPAREN) || AllowMissingSyntax, ErrorCode.Expected, "')'");
+            Require(Expect(TokenType.RPAREN) || AllowMissingSyntax, ErrorCode.Expected, ")");
 
             return l;
         }
 
         internal ArgList ParseBrktArgList()
         {
-            Require(Expect(TokenType.LBRKT), ErrorCode.Expected, "'['");
+            Require(Expect(TokenType.LBRKT), ErrorCode.Expected, "[");
 
             var l = ParseArgList();
 
-            Require(Expect(TokenType.RBRKT), ErrorCode.Expected, "']'");
+            Require(Expect(TokenType.RBRKT), ErrorCode.Expected, "]");
 
             return l;
         }
 
         internal ArgList ParseCurlyArgList()
         {
-            Require(Expect(TokenType.LCURLY), ErrorCode.Expected, "'{'");
+            Require(Expect(TokenType.LCURLY), ErrorCode.Expected, "{");
 
             var l = ParseArgList();
 
-            Require(Expect(TokenType.RCURLY) || AllowMissingSyntax, ErrorCode.Expected, "'}'");
+            Require(Expect(TokenType.RCURLY) || AllowMissingSyntax, ErrorCode.Expected, "}");
 
             return l;
         }

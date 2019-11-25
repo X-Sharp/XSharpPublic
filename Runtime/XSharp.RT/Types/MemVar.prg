@@ -269,8 +269,9 @@ PUBLIC CLASS XSharp.MemVar
 		ENDIF            
 		IF oMemVar != NULL
 			RETURN oMemVar:Value
-		ENDIF            
-		THROW Error{"Undeclared variable :"+name:ToString()}
+		ENDIF
+        VAR err := Error.VOError(EG_NOVAR,"MemVarGet",nameof(name),1, <OBJECT>{name})
+        THROW err
     
 	STATIC METHOD Put(name AS STRING, uValue AS USUAL) AS USUAL
 		LOCAL oMemVar AS XSharp.MemVar

@@ -17,23 +17,6 @@
 
 #define DBCMD_XH
 
-****
-*  DB SETs
-*
-
-#command SET EXCLUSIVE <x:ON,OFF,&>     =>  SetExclusive(upper(<(x)>)=="ON" )
-#command SET EXCLUSIVE (<x>)            =>  SetExclusive( <x> )
-
-#command SET SOFTSEEK <x:ON,OFF,&>      =>  SetSoftSeek( upper(<(x)>)=="ON" )
-#command SET SOFTSEEK (<x>)             =>  SetSoftSeek( <x> )
-
-#command SET UNIQUE <x:ON,OFF,&>        =>  SetUnique( upper(<(x)>)=="ON" )
-#command SET UNIQUE (<x>)               =>  SetUnique( <x> )
-
-#command SET DELETED <x:ON,OFF,&>       =>  SetDeleted( upper(<(x)>)=="ON" )
-#command SET DELETED (<x>)              =>  SetDeleted( <x> )
-
-
 
 ****
 *  DB

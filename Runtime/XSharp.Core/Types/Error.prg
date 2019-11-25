@@ -16,7 +16,8 @@ BEGIN NAMESPACE XSharp
     /// <summary>An integer numeric value representing a subsystem-specific error code.</summary>
     VIRTUAL PROPERTY SubCode AS DWORD AUTO    := 0
     /// <summary>An string containing the description of the SubCode.</summary>
-    VIRTUAL PROPERTY SubCodeText AS STRING GET IIF (SubCode != 0, __CavoStr(SubCode), "Unknown SubCode")
+    VIRTUAL PROPERTY SubCodeText AS STRING GET IIF(!String.IsNullOrEmpty(_subcode), _subcode, IIF (SubCode != 0, __CavoStr(SubCode), "Unknown SubCode")) SET _Subcode := value
+    PRIVATE _Subcode as STRING
     /// <summary>A string representing the name of the function or method in which the error occurred.</summary>
     VIRTUAL PROPERTY FuncSym AS STRING AUTO   := ""
     /// <summary>A string representing the name used to open the file associated with the error condition.</summary>
@@ -183,6 +184,7 @@ BEGIN NAMESPACE XSharp
     SELF:setDefaultValues()
     SELF:Gencode := dwGenCode
     SELF:Arg	 := cArg
+    SELF:Description := ErrString( dwGenCode )
 
     /// <summary>Create an Error Object for a Gencode, Argument Name and Description.</summary>
     CONSTRUCTOR (dwgencode AS DWORD, cArg AS STRING, cDescription AS STRING)
@@ -202,13 +204,14 @@ BEGIN NAMESPACE XSharp
     SELF:FuncSym     := cFuncName
     SELF:Arg         := cArgName
     SELF:ArgNum      := iArgNum
+    SELF:Description := ErrString( dwGenCode )
     
     /// <summary>Create an Error Object.</summary>
     CONSTRUCTOR (dwgencode AS DWORD, dwSubCode := 0 AS DWORD)
     SELF:setDefaultValues()
     SELF:Gencode := dwgencode
     SELF:SubCode := dwSubcode
-    
+    SELF:Description := ErrString( dwGenCode )
 
     PRIVATE METHOD LangString(e as VOErrors) AS STRING
         local cString := __CavoStr(e):Trim() as string
@@ -314,12 +317,23 @@ BEGIN NAMESPACE XSharp
     err:Description := err:Message
     err:Argnum		:= iArgNum
     RETURN err
-    
+
+
+    STATIC METHOD ArgumentError(cFuncName AS STRING, name AS STRING, description AS STRING, iArgnum AS DWORD, aArgs AS OBJECT[]) AS Error
+        VAR err := ArgumentError(cFuncName, name, description, iArgNum)
+        err:Args := aArgs
+    RETURN err
+
     /// <exclude/>	
     STATIC METHOD WrapRawException( ex AS Exception ) AS Error
     LOCAL e AS Error
-    e			  := Error{ ex }
-    e:Description := ErrString( EG_EXCEPTION ) + ":" + ex:Message
+    if ex != null
+        e			  := Error{ ex }
+        e:Description := ErrString( EG_EXCEPTION ) + ":" + ex:Message
+    else
+        e			  := Error{  }
+        e:Description := ErrString( EG_SEQUENCE ) + ":" + ex:Message
+    endif
     RETURN e
     
     /// <exclude/>	
@@ -329,6 +343,7 @@ BEGIN NAMESPACE XSharp
         e:FuncSym := cFuncName
         e:ArgNum := iArgNum
         e:Args := aArgs
+        e:Description := ErrString( dwGenCode )
         RETURN e 
     
     /// <exclude/>	
@@ -619,9 +634,8 @@ END NAMESPACE
 
 
 
-
-/// <exclude/>
-FUNCTION ErrorBuild(pErrInfo AS exception) AS XSharp.ERROR
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/errorbuild/*" /> 
+FUNCTION ErrorBuild(pErrInfo AS exception) AS XSharp.Error
 	RETURN  XSharp.Error{pErrInfo}
 
 

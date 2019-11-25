@@ -144,14 +144,14 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
 
     [DebuggerDisplay("Action {Type}")];
-    INTERNAL CLASS CdxAction
-        INTERNAL PROPERTY Type  AS CdxActionType AUTO   
-        INTERNAL PROPERTY Page  AS CdxTreePage   AUTO  := NULL
-        INTERNAL PROPERTY Page2 AS CdxTreePage   AUTO  := NULL
-        INTERNAL PROPERTY Pos   AS LONG AUTO           := 0
-        INTERNAL PROPERTY Recno AS LONG AUTO           := -1
-        INTERNAL PROPERTY Key   AS BYTE[] AUTO         := NULL
-        INTERNAL PROPERTY ChildPage AS LONG AUTO       := 0
+    INTERNAL SEALED CLASS CdxAction
+        INTERNAL Type  AS CdxActionType 
+        INTERNAL Page  AS CdxTreePage   
+        INTERNAL Page2 AS CdxTreePage   
+        INTERNAL Pos   AS LONG 
+        INTERNAL Recno AS LONG 
+        INTERNAL Key   AS BYTE[] 
+        INTERNAL ChildPage AS LONG 
         PRIVATE STATIC _Ok AS CdxAction
 
         STATIC CONSTRUCTOR
@@ -159,6 +159,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         PRIVATE CONSTRUCTOR(ntype AS CdxActionType)
             Type   := nType
+            Page   := NULL
+            Page2  := NULL
+            Pos    := 0
+            Recno  := -1
+            Key    := NULL
+            ChildPage  := 0
 
 
         STATIC PROPERTY Ok AS CdxAction GET _Ok

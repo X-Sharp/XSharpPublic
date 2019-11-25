@@ -124,39 +124,48 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 SELF:_oRdd:_dbfError( SubCodes.ERDD_CREATE_ORDER, GenCode.EG_CREATE, createInfo:BagName)
                 RETURN FALSE
             ENDIF
-            SELF:_PageList := NtxPageList{SELF}
+            TRY
+                IF !SELF:Shared
+                    FConvertToMemoryStream(SELF:_hFile)
+                ENDIF
+                SELF:_PageList := NtxPageList{SELF}
             
-            SELF:_midItem                       := NtxNode{SELF:_keySize}
-            SELF:_oneItem                       := NtxNode{SELF:_keySize}
-            SELF:_maxLockTries  := 99 //(LONG)XSharp.RuntimeState.LockTries
-            SELF:_tagNumber     := 1
-            IF  XSharp.RuntimeState.NewIndexLock 
-                SELF:_lockOffset := LOCKOFFSET_NEW
-            ELSE
-                SELF:_lockOffset := LOCKOFFSET_OLD
-            ENDIF
-            IF  XSharp.RuntimeState.HPLocking
-                SELF:_HPLocking := TRUE
-            ENDIF
-            IF !SELF:_HeaderCreate(ordCondInfo:Scoped)
-                SELF:Close()
-                SELF:_oRdd:_dbfError(SubCodes.ERDD_WRITE,GenCode.EG_CREATE,  createInfo:BagName)
-                RETURN FALSE
-            ENDIF
-            SELF:_fileSize += BUFF_SIZE
-            IF !SELF:_Unique .AND. !SELF:_Conditional .AND. !SELF:_Descending .AND. !ordCondInfo:Scoped
-                isOk := SELF:_CreateIndex()
-            ELSE
-                isOk := SELF:_CreateUnique(ordCondInfo)
-            ENDIF
-            IF !isOk
+                SELF:_midItem                       := NtxNode{SELF:_keySize}
+                SELF:_oneItem                       := NtxNode{SELF:_keySize}
+                SELF:_maxLockTries  := 99 //(LONG)XSharp.RuntimeState.LockTries
+                SELF:_tagNumber     := 1
+                IF  XSharp.RuntimeState.NewIndexLock 
+                    SELF:_lockOffset := LOCKOFFSET_NEW
+                ELSE
+                    SELF:_lockOffset := LOCKOFFSET_OLD
+                ENDIF
+                IF  XSharp.RuntimeState.HPLocking
+                    SELF:_HPLocking := TRUE
+                ENDIF
+                IF !SELF:_HeaderCreate(ordCondInfo:Scoped)
+                    isOk := FALSE
+                    RETURN FALSE
+                ENDIF
+                SELF:_fileSize += BUFF_SIZE
+                IF !SELF:_Unique .AND. !SELF:_Conditional .AND. !SELF:_Descending .AND. !ordCondInfo:Scoped
+                    isOk := SELF:_CreateIndex()
+                ELSE
+                    isOk := SELF:_CreateUnique(ordCondInfo)
+                ENDIF
                 SELF:Flush()
-                SELF:Close()
-                RETURN isOk
-            ENDIF
-            RETURN SELF:Flush()
-            
-
+            FINALLY
+                IF !SELF:Shared
+                    FConvertToFileStream(SELF:_hFile)
+                ENDIF
+                IF !isOk
+                    SELF:Close()
+                    IF System.IO.File.Exists(SELF:FileName)
+                        FErase(SELF:FileName)
+                    ENDIF
+                ENDIF
+                 
+            END TRY
+            RETURN isOk
             
         PRIVATE METHOD _HeaderCreate(lScoped AS LOGIC) AS LOGIC
             SELF:_Header := NtxHeader{ SELF, SELF:_hFile }
@@ -173,7 +182,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             SELF:_Header:Descending             := SELF:_Descending
             SELF:_Header:KeyExpression          := SELF:_KeyExpr
             SELF:_Header:ForExpression          := SELF:_ForExpr
-            SELF:_Header:OrdName                := SELF:_orderName
+            SELF:_Header:OrdName                := SELF:_orderName:ToUpper()
             IF SELF:_Conditional .OR. SELF:_Descending .OR. lScoped
                 SELF:_Header:Signature |= NtxHeaderFlags.Conditional
             ENDIF

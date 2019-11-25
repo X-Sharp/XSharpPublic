@@ -498,8 +498,8 @@ FUNCTION VoDbUnlock(uRecID AS USUAL) AS LOGIC
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbunlockall/*" /> 
 /// <seealso cref="M:XSharp.CoreDb.OrdBagExt"  /> 
-FUNCTION VoDbUnlockAll() AS LOGIC
-    RETURN VoDb.UnlockAll()
+FUNCTION VoDbUnLockAll() AS LOGIC
+    RETURN VoDb.UnLockAll()
 
 /// <overloads>
 /// <summary>

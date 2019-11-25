@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,8 +17,12 @@ namespace XSharp.MacroCompiler
             {
                 if (affinity == BindAffinity.Invoke)
                 {
-                    var s = Lookup(expr.Datatype, MemberName.LookupName);
-                    if (s == null)
+                    Symbol s= null;
+                    if (!expr.Datatype.IsUsualOrObject())
+                    {
+                        s = Lookup(expr.Datatype, MemberName.LookupName);
+                    }
+                    if (s == null )
                     {
                         if (Options.Binding.HasFlag(BindOptions.AllowDynamic) && expr.Datatype.IsUsualOrObject())
                         {

@@ -61,7 +61,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 IF SELF:_Scopes[TOPSCOPE]:IsSet
                     result := SELF:_ScopeSeek(DBOrder_Info.DBOI_SCOPETOP)
                     IF !SELF:_oRdd:_Found
-                        SELF:_oRdd:_Bof := TRUE
+                        SELF:_oRdd:_SetBof(TRUE)
                     ENDIF
                 ELSE
                     SELF:_oRdd:_Top := TRUE
@@ -184,19 +184,19 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 result := SELF:_oRdd:__Goto(recno)
                  if recno == 0
                     if Forward
-                        SELF:_oRdd:_Eof := true
+                        SELF:_oRdd:_SetEOF(TRUE)
                     else
-                        SELF:_oRdd:_Bof := true
+                        SELF:_oRdd:_SetBof(TRUE)
                     endif
                 else
                     IF !SELF:HasScope
                         RETURN result
                     ENDIF
                     IF changedBof
-                        SELF:_oRdd:_Bof := isBof
+                        SELF:_oRdd:_SetBof(isBof)
                     ENDIF
                     IF changedEof
-                        SELF:_oRdd:_Eof := isEof
+                        SELF:_oRdd:_SetEOF(isEof)
                     ENDIF
                 endif                
             CATCH ex AS Exception
@@ -351,14 +351,14 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                     recno := SELF:_skipFilter(recno, SkipDirection.Forward)
                 ENDIF
                 IF recno == 0
-                    SELF:_oRdd:_Eof := TRUE
+                    SELF:_oRdd:_SetEOF(TRUE)
                     RETURN 0
                 ENDIF
                 IF SELF:_Scopes[BOTTOMSCOPE]:IsSet
                     VAR nRes := SELF:__Compare(SELF:_currentvalue:Key, SELF:_Scopes[BOTTOMSCOPE]:Buffer, SELF:_Scopes[BOTTOMSCOPE]:Size)
                     VAR lEOF := IIF(SELF:Descending, nRes < 0, nRes > 0)
                     IF lEOF
-                        SELF:_oRdd:_Eof := TRUE
+                        SELF:_oRdd:_SetEOF(TRUE)
                         RETURN result
                     ENDIF
                 ENDIF
@@ -382,21 +382,21 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                                 VAR lBOF := IIF(SELF:Descending, nRes > 0, nRes < 0)
                                 IF lBOF
 	                    	        recno := SELF:_getNextKey(FALSE, SkipDirection.Forward)
-	                                SELF:_oRdd:_Bof := TRUE
+	                                SELF:_oRdd:_SetBof(TRUE)
                                     EXIT
                                 ENDIF
                             ENDIF
                         ELSE
                             IF SELF:_Scopes[BOTTOMSCOPE]:IsSet
                                 IF recno != 0
-                                    SELF:_oRdd:_Eof := TRUE
+                                    SELF:_oRdd:_SetEOF(TRUE)
                                     RETURN result
                                 ENDIF
-                                SELF:_oRdd:_Bof := FALSE
+                                SELF:_oRdd:_SetBof(FALSE)
                                 VAR nRes := SELF:__Compare(SELF:_currentvalue:Key, SELF:_Scopes[BOTTOMSCOPE]:Buffer, SELF:_Scopes[BOTTOMSCOPE]:Size)
                                 VAR lEOF := IIF(SELF:Descending, nRes < 0, nRes > 0)
                                 IF lEOF
-                                    SELF:_oRdd:_Eof := TRUE
+                                    SELF:_oRdd:_SetEOF(TRUE)
                                     RETURN result
                                 ENDIF
                                 result := recno
@@ -810,7 +810,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 IF !SELF:_oRdd:_isValid
                     SELF:ClearStack()
                 ENDIF
-                SELF:_oRdd:_Bof := (SELF:_oRdd:RecCount == 0)
+                SELF:_oRdd:_SetBof(SELF:_oRdd:RecCount == 0)
                 SELF:_oRdd:_Found := found
                 RETURN result
                 

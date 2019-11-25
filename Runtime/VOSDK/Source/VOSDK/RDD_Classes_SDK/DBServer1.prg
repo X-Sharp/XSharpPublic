@@ -1,3 +1,5 @@
+#translate DBFDebug(<c1> [, <cn>]) =>
+
 PARTIAL CLASS DbServer
 
 METHOD Append( lReleaseLocks ) 
@@ -537,7 +539,11 @@ DESTRUCTOR( )
 		BEGIN SEQUENCE                                                           
 			//RvdH 070508 Make sure the workarea is restored properly. This is the easiest
 			//            way to do it.
-			(SELF:wWorkArea)->(VODBCloseArea( ))			
+			//(SELF:wWorkArea)->(VODBCloseArea( ))
+            // The destructor runs on a separate thread. Therefore
+            // we can't close it using the workarea number
+            XSharp.RuntimeState.Workareas:CloseArea(SELF:oRDD)
+
 
 		RECOVER USING oError       
 			//RvdH 070509 Always throw errors on Axit. The owner window may be gone!

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -42,6 +42,7 @@ namespace XSharp.MacroCompiler
         public bool AllowDotAccess = true;
 
         public bool ArrayZero = false;
+        public MacroCompilerResolveAmbiguousMatch Resolver = null;
 
         public bool AllowInexactComparisons {
             get { return Binding.HasFlag(BindOptions.AllowInexactComparisons); }

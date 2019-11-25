@@ -11,39 +11,39 @@ USING XSharp.RDD.Support
 USING System.Text
 USING System.IO
 USING System.Linq
+//#define USE_STREAM 
 
 BEGIN NAMESPACE XSharp.RDD.CDX
     /// <summary>
     /// Orderbag = CDX file. Contains one or more orders = Tags
     /// </summary>
-    INTERNAL CLASS CdxOrderBag INHERIT BaseIndex 
+    INTERNAL SEALED CLASS CdxOrderBag INHERIT BaseIndex 
 #region constants
-    PRIVATE CONST ComixXLockOfs		:= 0xfffeffffL AS LONG
-    PRIVATE CONST ComixSLockOfs		:= 0xffff0000L AS LONG
-    PRIVATE CONST ComixXLockLen		:= 0x00010000L AS LONG
-    PRIVATE CONST FoxXLockOfs		:= 0x7ffffffeL AS LONG
-    PRIVATE CONST FoxXLockLen		:= 1           AS LONG
-    PRIVATE CONST FoxSLockOfs		:= 0x7ffffffeL AS LONG
-    PRIVATE CONST FoxSLockLen		:= 1 AS LONG
     INTERNAL CONST CDX_EXTENSION := ".CDX" AS STRING
 
 #endregion
         INTERNAL _hFile     AS IntPtr
+        #ifdef USE_STREAM
+        INTERNAL _stream    AS Stream
+        #endif
         INTERNAL _OpenInfo	AS DbOpenInfo
         INTERNAL _Encoding  AS Encoding
         INTERNAL _PageList  AS CdxPageList
         INTERNAL PROPERTY Shared    AS LOGIC GET _OpenInfo:Shared
         INTERNAL PROPERTY ReadOnly  AS LOGIC GET _OpenInfo:ReadOnly
-        INTERNAL _oRDD      AS DBFCDX
-        INTERNAL _root      AS CdxFileHeader
-        INTERNAL _tagList   AS CdxTagList
-        INTERNAL CONST CDXPAGE_SIZE        := 512 AS WORD
+        INTERNAL _oRDD              AS DBFCDX
+        INTERNAL _root              AS CdxFileHeader
+        INTERNAL _tagList           AS CdxTagList
+        INTERNAL CONST CDXPAGE_SIZE := 512 AS WORD
 
         //INTERNAL PROPERTY FileName AS STRING AUTO
         INTERNAL PROPERTY FullPath AS STRING AUTO
         INTERNAL PROPERTY Name AS STRING GET Path.GetFileNameWithoutExtension(FullPath)
         INTERNAL PROPERTY Handle AS IntPtr GET _hFile
-        INTERNAL PROPERTY Tags AS IList<CdxTag> GET _tagList:Tags
+        #ifdef USE_STREAM
+        INTERNAL PROPERTY Stream AS Stream GET _stream
+        #endif
+        INTERNAL PROPERTY Tags AS IList<CdxTag> GET IIF(_tagList == NULL, NULL, _tagList:Tags)
         INTERNAL PROPERTY Structural AS LOGIC AUTO
         INTERNAL PROPERTY Root      AS CdxFileHeader GET _root
         INTERNAL PROPERTY Encoding AS System.Text.Encoding GET _oRDD:_Encoding
@@ -52,6 +52,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:_oRdd     := oRDD
             SELF:_PageList := CdxPageList{SELF}
             SELF:_OpenInfo := oRDD:_OpenInfo
+            SELF:_useFoxLock := XSharp.RuntimeState.GetValue<LOGIC>(Set.FoxLock)
             
         #region RDD Overloads
             /// <inheritdoc />		
@@ -87,15 +88,21 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF oTag != NULL_OBJECT
                 SELF:_tagList:Remove(oTag)
             ENDIF
+            IF !SELF:Shared
+                FConvertToMemoryStream(SELF:_hFile)
+            ENDIF
             oTag := CdxTag{SELF}
             VAR lOk := oTag:Create(info)
             IF lOk
                 // Read the tag from disk to get all the normal stuff
                 oTag  := CdxTag{SELF,oTag:Header:PageNo, oTag:OrderName}
                 SELF:AddTag(oTag)
-                
+            ENDIF
+            IF !SELF:Shared
+                FConvertToFileStream(SELF:_hFile)
             ENDIF
             RETURN lOk
+            
 
         METHOD AddTag(oTag AS CdxTag) AS LOGIC
             _tagList:Add(oTag)
@@ -165,7 +172,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         METHOD Seek(info AS DbSeekInfo) AS LOGIC		
             THROW NotImplementedException{}
             /// <inheritdoc />
-        VIRTUAL PROPERTY Found AS LOGIC	
+        PROPERTY Found AS LOGIC	
             GET
                 THROW NotImplementedException{}
             END GET
@@ -193,10 +200,18 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 cFullName := Path.Combine(cPath, cFullName)
             ENDIF
             IF File(cFullName)
-                RETURN FALSE
+                LOCAL openInfo AS DbOrderInfo
+                openInfo := DbOrderInfo{}
+                openInfo:BagName := FPathName()
+                SELF:Open(openInfo)
+                RETURN TRUE
             ENDIF
             SELF:FullPath := cFullName
             SELF:_hFile    := FCreate(cFullName)
+            #ifdef USE_STREAM
+            SELF:_stream    := FGetStream(SELF:_hFile)
+            #endif
+            
             // Allocate Root Page
             _root   := CdxFileHeader{SELF}
             _root:Initialize()
@@ -211,11 +226,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN TRUE
 
         METHOD _FindTagByName(cName AS STRING) AS CdxTag
-            FOREACH oTag AS CdxTag IN SELF:Tags
-                IF String.Compare(oTag:OrderName, cName,StringComparison.OrdinalIgnoreCase) == 0
-                    RETURN oTag
-                ENDIF
-            NEXT
+            IF SELF:Tags != NULL
+                FOREACH oTag AS CdxTag IN SELF:Tags
+                    IF String.Compare(oTag:OrderName, cName,StringComparison.OrdinalIgnoreCase) == 0
+                        RETURN oTag
+                    ENDIF
+                NEXT
+            ENDIF
             RETURN NULL
 
 
@@ -234,6 +251,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF ! FClose(SELF:_hFile)
                 lOk := FALSE
             ENDIF
+            #ifdef USE_STREAM
+            SELF:_stream := NULL
+            #endif
+            SELF:_hFile  := F_ERROR
             RETURN lOk
 
 
@@ -267,6 +288,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF SELF:_hFile == F_ERROR
                 RETURN FALSE
             ENDIF
+            #ifdef USE_STREAM
+            SELF:_stream   := FGetStream(SELF:_hFile)
+            #endif
             _root := CdxFileHeader{SELF}
             _root:Read()
             SELF:SetPage(_root)
@@ -353,7 +377,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 ENDIF
                 SELF:_PageList:Delete(nPage)
             ELSE
+                #ifdef USE_STREAM
+                nPage   := (LONG) _stream:Length
+                #else
                 nPage :=  FSeek3( SELF:_hFile, 0, SeekOrigin.End )
+                #endif
+                
             ENDIF
             RETURN nPage
 
@@ -371,14 +400,24 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         METHOD Read(nPage AS LONG, buffer AS BYTE[]) AS LOGIC
             LOCAL isOk AS LOGIC
-			FSeek3( SELF:_hFile, nPage, SeekOrigin.Begin )
-			isOk :=  FRead3(SELF:_hFile, buffer, (DWORD) Buffer:Length) == (DWORD) Buffer:Length 
+            #ifdef USE_STREAM
+                SELF:_stream:Seek(nPage, SeekOrigin.Begin)
+                isOk := SELF:_stream:Read(buffer, 0, Buffer:Length) == Buffer:Length
+            #else
+    			FSeek3( SELF:_hFile, nPage, SeekOrigin.Begin )
+	    		isOk :=  FRead3(SELF:_hFile, buffer, (DWORD) Buffer:Length) == (DWORD) Buffer:Length
+            #endif
             RETURN IsOk
  
         METHOD Read(oPage AS CdxPage) AS LOGIC
             LOCAL isOk AS LOGIC
-			FSeek3( SELF:_hFile, oPage:PageNo, SeekOrigin.Begin )
-			isOk :=  FRead3(SELF:_hFile, oPage:Buffer, (DWORD) oPage:Buffer:Length) == (DWORD) oPage:Buffer:Length 
+            #ifdef USE_STREAM
+                SELF:_stream:Seek(oPage:PageNo, SeekOrigin.Begin)
+                isOk :=  SELF:_stream:Read(oPage:Buffer, 0, oPage:Buffer:Length) == oPage:Buffer:Length
+            #else
+			    FSeek3( SELF:_hFile, oPage:PageNo, SeekOrigin.Begin )
+			    isOk :=  FRead3(SELF:_hFile, oPage:Buffer, (DWORD) oPage:Buffer:Length) == (DWORD) oPage:Buffer:Length 
+            #endif
             RETURN IsOk
 
         METHOD Write(oPage AS CdxPage) AS LOGIC
@@ -389,8 +428,14 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 SELF:_PageList:SetPage(oPage:PageNo, oPage)
             ENDIF
             IF oPage:IsHot
-                FSeek3( SELF:_hFile, oPage:PageNo, SeekOrigin.Begin )
-			    isOk :=  FWrite3(SELF:_hFile, oPage:Buffer, (DWORD) oPage:Buffer:Length) == (DWORD) oPage:Buffer:Length
+                #ifdef USE_STREAM
+                    SELF:_stream:Seek(oPage:PageNo, SeekOrigin.Begin)
+                    SELF:_stream:Write(oPage:Buffer,0,oPage:Buffer:Length)
+                    isOk := TRUE
+                #else
+                    FSeek3( SELF:_hFile, oPage:PageNo, SeekOrigin.Begin )
+			        isOk :=  FWrite3(SELF:_hFile, oPage:Buffer, (DWORD) oPage:Buffer:Length) == (DWORD) oPage:Buffer:Length
+                #endif
             ELSE
                 isOk := TRUE
             ENDIF
@@ -411,22 +456,21 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         #region properties
 
         PROPERTY Count AS LONG GET SELF:Tags:Count
-
-        PROPERTY BagHasChanged AS LOGIC 
+        PROPERTY BagHasChanged AS LOGIC
             GET
                 LOCAL nVersion AS DWORD
-                LOCAL lChanged AS LOGIC
-                nVersion := _root:Version
+                nVersion := _root:RootVersion
                 SELF:Read(SELF:_root)
-                lChanged := (nVersion != _root:Version)
-                IF lChanged
-                    // we 
-                ENDIF
-                RETURN lChanged
-
-
+                RETURN nVersion != _root:RootVersion
             END GET
         END PROPERTY
+
+        INTERNAL METHOD CheckForChangedBag() AS VOID
+            IF SELF:BagHasChanged
+                SELF:_PageList:Clear()
+                SELF:Flush()
+            ENDIF
+            RETURN 
 
         PROPERTY IsHot AS LOGIC
         GET
@@ -441,79 +485,176 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         END PROPERTY
         #endregion
 
-#region Locking
-        PRIVATE _sharedLocks    := 0 AS LONG
-        PRIVATE _exclusiveLocks := 0 AS LONG
+#region Common Locking code
         PRIVATE _useFoxLock     := FALSE AS LOGIC
-        //PRIVATE _sLockGate      := 0 AS LONG
-        //PRIVATE _sLockOffSet    := 0 AS DWORD
-        PRIVATE _xLockedInOne   := FALSE AS LOGIC
-        INTERNAL _LockOffSet    := 0 AS LONG
+        PRIVATE _sharedLocks    := 0 AS LONG         
+        PRIVATE _exclusiveLocks := 0 AS LONG        
+
+
+        PRIVATE METHOD _LockRetry(nOffSet AS DWORD, nLen AS DWORD) AS VOID
+            LOCAL result := FALSE AS LOGIC
+            REPEAT
+                result := FFLock(SELF:_hFile, nOffSet, nLen)
+            UNTIL result
+
+        PRIVATE METHOD _UnLock(nOffSet AS DWORD, nLen AS DWORD) AS VOID
+            FFUnLock(SELF:_hFile, nOffSet, nLen)
 
         INTERNAL METHOD SLock() AS LOGIC
             IF !SELF:Shared
                 RETURN TRUE
             ENDIF
-            IF _useFoxLock
-                NOP
+            SELF:_sharedLocks += 1
+            IF SELF:_useFoxLock
+                SELF:_SLockFox()
             ELSE
-                NOP
+                SELF:_SLockComix()
             ENDIF
             RETURN TRUE
+            
 
         INTERNAL METHOD XLock() AS LOGIC
             IF !SELF:Shared
                 RETURN TRUE
             ENDIF
+            SELF:_exclusiveLocks += 1
             IF _useFoxLock
-                NOP
+                SELF:_xLockFox()
             ELSE
-                NOP
+                SELF:_xLockComix()
             ENDIF
             RETURN TRUE
+
 
         INTERNAL METHOD UnLock() AS VOID
             IF !SELF:Shared
                 RETURN
             ENDIF
             IF _useFoxLock
-                IF _sharedLocks > 0
-                    _sharedLocks -= 1
-                   IF _sharedLocks == 0
-                        // Unlock at the fox offset for shared
-                        NOP
-                   ENDIF
-                ELSEIF _exclusiveLocks > 0
-                    _exclusiveLocks -= 1
-                    IF _exclusiveLocks == 0
-                       // update Bag header version
-                       // write Bag Header
-                       NOP
-                    ENDIF
-                ENDIF
+                SELF:_UnLockFox()
             ELSE
-                IF _sharedLocks > 0
-                    _sharedLocks -= 1
-                   IF _sharedLocks == 0
-                        // Unlock at the comix offset for shared
-                   ENDIF
-                ELSEIF _exclusiveLocks > 0
-                    _exclusiveLocks -= 1
-                    IF _exclusiveLocks == 0
-                        // update Bag header version
-                        // write Bag Header
-                       IF _xLockedInOne
-                        // special unlocking for comix
-                            NOP
-                       ELSE
-                        NOP
-                       ENDIF
-                    ENDIF
-                ELSE
-                ENDIF
+                SELF:_UnLockComix()
             ENDIF
             RETURN
 #endregion
+    #region FoxPro compatible locking
+        PRIVATE CONST FoxXLockOfs		:= 0x7ffffffeU AS DWORD
+        PRIVATE CONST FoxXLockLen		:= 1           AS DWORD
+        PRIVATE CONST FoxSLockOfs		:= 0x7ffffffeU AS DWORD
+        PRIVATE CONST FoxSLockLen		:= 1 AS DWORD
+
+        PRIVATE METHOD _SlockFox() AS VOID
+            IF SELF:_exclusiveLocks == 0 .AND. SELF:_sharedLocks == 1
+                SELF:_LockRetry(FoxSLockOfs, FoxSLockLen)
+                SELF:CheckForChangedBag()
+            ENDIF
+            RETURN 
+
+
+        PRIVATE METHOD _xLockFox() AS VOID
+            IF SELF:_sharedLocks != 0
+                // Should not happen !
+                RETURN 
+            ENDIF
+            IF SELF:_exclusiveLocks == 1
+                SELF:_LockRetry(FoxXLockOfs, FoxXLockLen)
+            ENDIF
+            CheckForChangedBag()
+            RETURN 
+            
+
+        PRIVATE METHOD _UnLockFox() AS VOID
+            IF SELF:_sharedLocks > 0
+                SELF:_sharedLocks -= 1
+                IF SELF:_sharedLocks == 0
+                    SELF:_Unlock(FoxSLockOfs, FoxSLockLen)
+                ENDIF
+            ELSEIF SELF:_exclusiveLocks > 0
+                SELF:_exclusiveLocks -= 1
+                IF SELF:_exclusiveLocks == 0
+                    SELF:_root:RootVersion += 1
+                    SELF:_root:Write()
+                    SELF:_Unlock(FoxXLockOfs, FoxXLockLen)
+                ENDIF
+            ENDIF    
+            RETURN
+
+    #endregion
+    #region Comix Compatible locking
+        PRIVATE _sLockGate      := 0 AS LONG        // For CmxLock
+        PRIVATE _sLockOffSet    := 0 AS DWORD       // For CmxLock
+        PRIVATE _xLockedInOne   := FALSE AS LOGIC   
+        INTERNAL _LockOffSet    := 0 AS LONG
+        PRIVATE CONST SLockGateCount    := 10 AS LONG
+        PRIVATE CONST ComixXLockOfs		:= 0xfffeffffU AS DWORD
+        PRIVATE CONST ComixSLockOfs		:= 0xffff0000U AS DWORD
+        PRIVATE CONST ComixXLockLen		:= 0x00010000U AS DWORD
+        STATIC PRIVATE randVal := 0 AS DWORD
+        STATIC PRIVATE randInc, randDec AS LONG
+
+        PRIVATE METHOD randNum () AS DWORD
+            randInc -= randDec
+            IF randInc <= 0
+                randInc := DateTime.Now:Millisecond
+                randDec := (randInc >> 8) + (randInc & 0xFF) + 1
+            ENDIF
+            randVal += (DWORD) randInc
+            RETURN randVal
+
+
+        PRIVATE METHOD _SlockComix() AS VOID
+            IF SELF:_sharedLocks == 1
+                IF ++_sLockGate >= SLockGateCount
+                    _sLockGate := 0
+                    SELF:_LockRetry(ComixXLockOfs, 1)
+                    SELF:_UnLock(ComixXLockOfs, 1)
+                ENDIF
+                SELF:_sLockOffSet := RandNum()
+                SELF:_LockRetry( _OR(ComixSLockOfs, _sLockOffSet),1)
+                SELF:CheckForChangedBag()
+            ENDIF
+            RETURN 
+
+        PRIVATE METHOD _xLockComix() AS VOID
+            IF SELF:_exclusiveLocks == 1
+                SELF:_sLockGate := 0
+                SELF:_xLockedInOne := TRUE
+            
+                IF ! FFLock(SELF:_hFile, ComixXLockOfs, ComixXLockLen+1)
+                    SELF:_xLockedInOne := FALSE
+                    SELF:_LockRetry(ComixXLockOfs, 1)
+                    SELF:_LockRetry(ComixSLockOfs, ComixXLockLen)
+                ENDIF
+                SELF:CheckForChangedBag()
+            ENDIF
+            RETURN 
+
+        PRIVATE METHOD _UnLockComix() AS VOID
+            IF SELF:_sharedLocks > 0
+                SELF:_sharedLocks -= 1
+                IF SELF:_sharedLocks == 0
+                    SELF:_Unlock(ComixSLockOfs| SELF:_sLockOffSet, 1)
+                ENDIF
+            ELSEIF SELF:_exclusiveLocks > 0
+                SELF:_exclusiveLocks -= 1
+                IF SELF:_exclusiveLocks == 0
+                    SELF:_root:RootVersion += 1
+                    SELF:_root:Write()
+                    IF SELF:_xLockedInOne
+                        SELF:_Unlock(ComixXLockOfs, ComixXLockLen+1)
+                    ELSE
+                        SELF:_Unlock(ComixXLockOfs, 1)
+                        SELF:_Unlock(ComixSLockOfs, ComixXLockLen)
+                    ENDIF
+                ENDIF
+            ENDIF    
+            RETURN
+    #endregion
+
+
+            
+            
+
 
 
     END CLASS

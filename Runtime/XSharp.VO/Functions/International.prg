@@ -54,7 +54,7 @@ FUNCTION MBLEFT(cMBString AS STRING,wCount AS DWORD) AS STRING
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mblen/*" />
 /// <remarks><note type="tip">This function is the same as SLen() since .Net has unicode strings</note></remarks>
-FUNCTION MBLEN(uMBValue AS STRING) AS DWORD 
+FUNCTION MBLen(uMBValue AS STRING) AS DWORD 
 	RETURN SLen(uMBValue)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mbltrim/*" />

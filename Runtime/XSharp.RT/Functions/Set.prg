@@ -23,7 +23,7 @@
 FUNCTION Set(nDefine, newValue) AS USUAL CLIPPER
     LOCAL state AS XSharp.RuntimeState
     LOCAL oOld  := NULL AS OBJECT
-    LOCAL nSetting AS LONG
+    LOCAL nSetting AS XSharp.Set
     IF ! IsNumeric(nDefine)
         RETURN NIL
     ENDIF

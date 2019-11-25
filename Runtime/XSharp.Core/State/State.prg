@@ -30,15 +30,15 @@ CLASS XSharp.RuntimeState
 	PUBLIC STATIC METHOD GetInstance() AS RuntimeState
 		RETURN currentState:Value
 
-	PRIVATE oSettings AS Dictionary<INT, OBJECT>
+	PRIVATE oSettings AS Dictionary<XSharp.Set, OBJECT>
     /// <summary>The dictionary that stores most of the settings in the runtime state. The key to the index is the number from the Set Enum</summary>
     /// <seealso cref="T:XSharp.Set" >Set Enum</seealso>
-    PUBLIC PROPERTY Settings AS Dictionary<INT, OBJECT> GET oSettings
+    PUBLIC PROPERTY Settings AS Dictionary<XSharp.Set, OBJECT> GET oSettings
 
 	PRIVATE CONSTRUCTOR(initialize AS LOGIC)       
 		VAR oThread := Thread.CurrentThread
 		SELF:Name := "ThreadState for "+oThread:ManagedThreadId:ToString()
-		oSettings := Dictionary<INT, OBJECT>{}
+		oSettings := Dictionary<XSharp.Set, OBJECT>{}
 		IF initialize
 			SELF:BreakLevel := 0 
 			SELF:_SetThreadValue(Set.DateFormat ,"MM/DD/YYYY")
@@ -131,7 +131,7 @@ CLASS XSharp.RuntimeState
 	/// <typeparam name="T">The return type expected for this setting.</typeparam>
 	/// <returns>The current value, or a default value of type T.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)];
-	PUBLIC STATIC METHOD GetValue<T> (nSetting AS INT) AS T
+	PUBLIC STATIC METHOD GetValue<T> (nSetting AS XSharp.Set) AS T
 		RETURN currentState:Value:_GetThreadValue<T>(nSetting);
 
 	/// <summary>Set a value for the state of the current Thread.</summary>
@@ -140,10 +140,10 @@ CLASS XSharp.RuntimeState
 	/// <typeparam name="T">The return type expected for this setting.</typeparam>
 	/// <returns>The previous value, or a default value of type T when the setting was not yetr defined.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)];
-	PUBLIC STATIC METHOD SetValue<T> (nSetting AS INT, oValue AS T) AS T
+	PUBLIC STATIC METHOD SetValue<T> (nSetting AS XSharp.Set, oValue AS T) AS T
 		RETURN currentState:Value:_SetThreadValue<T>(nSetting, oValue)
     [MethodImpl(MethodImplOptions.AggressiveInlining)];
-	PRIVATE METHOD _GetThreadValue<T> (nSetting AS INT) AS T
+	PRIVATE METHOD _GetThreadValue<T> (nSetting AS XSharp.Set) AS T
 		BEGIN LOCK oSettings
             LOCAL result AS OBJECT
             IF oSettings:TryGetValue(nSetting, OUT result)
@@ -152,7 +152,7 @@ CLASS XSharp.RuntimeState
 		END LOCK
 		RETURN DEFAULT(T) 
     [MethodImpl(MethodImplOptions.AggressiveInlining)];
-	PRIVATE METHOD _SetThreadValue<T>(nSetting AS INT, oValue AS T) AS T
+	PRIVATE METHOD _SetThreadValue<T>(nSetting AS XSharp.Set, oValue AS T) AS T
 		LOCAL result AS T
 		BEGIN LOCK oSettings
             LOCAL oResult AS OBJECT
@@ -262,8 +262,8 @@ CLASS XSharp.RuntimeState
     /// <seealso cref="P:XSharp.RuntimeState.DateFormat" />
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
    STATIC PROPERTY DateCountry AS DWORD ;
-        GET GetValue<DWORD>(Set.DateCountry);
-        SET _SetDateCountry(VALUE)
+        GET (DWORD) GetValue<XSharp.DateCountry>(Set.DateCountry);
+        SET RuntimeState:GetInstance():_SetDateCountry( (XSharp.DateCountry) VALUE)
 
 	/// <summary>The current Date format</summary>
 	/// <remarks>This string should contain a combination of DD MM and either YY or YYYY characters.<br/>
@@ -274,7 +274,7 @@ CLASS XSharp.RuntimeState
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
     STATIC PROPERTY DateFormat AS STRING ;
         GET GetValue<STRING>(Set.DateFormat);
-        SET _SetDateFormat(VALUE)
+        SET RuntimeState.GetInstance():_SetDateFormat(VALUE)
 
     /// <summary>A cached copy of the string that is returned for empty dates, matching the current DateFormat</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
@@ -480,46 +480,16 @@ CLASS XSharp.RuntimeState
 
 
 	INTERNAL METHOD _SetInternationalClipper() AS VOID
-		SELF:_SetThreadValue(Set.AMEXT, "")
-		SELF:_SetThreadValue(Set.PMEXT, "")
-		SELF:_SetThreadValue(Set.AMPM, FALSE)
 		SELF:_SetThreadValue(Set.Century, FALSE)
-		SELF:_SetThreadValue(Set.DateCountry, (DWORD)1)
 		SELF:_SetThreadValue(Set.Decimals, (DWORD) 2)
 		SELF:_SetThreadValue(Set.DECIMALSEP,  (DWORD) 46)		// DOT .
 		SELF:_SetThreadValue(Set.THOUSANDSEP, (DWORD) 44)	// COMMA ,
-		SELF:_SetThreadValue(Set.DateFormat, "MM/DD/YY")
 		SELF:_SetThreadValue(Set.Intl, CollationMode.Clipper)
         SELF:_SetThreadValue(Set.Dict, FALSE)
+        SELF:_SetDateCountry(DateCountry.American)
+        SELF:_SetTimeFormat("hh:MM:SS")
 
 	INTERNAL METHOD _SetInternationalWindows() AS VOID
-		VAR dtInfo	    := System.Globalization.DateTimeFormatInfo.CurrentInfo
-		SELF:_SetThreadValue(Set.AMEXT, dtInfo:AMDesignator)
-		SELF:_SetThreadValue(Set.PMEXT, dtInfo:PMDesignator)
-		VAR separator := dtInfo:TimeSeparator
-		IF String.IsNullOrEmpty(separator)
-			SELF:_SetThreadValue(Set.TimeSep, (DWORD) 0)
-		ELSE
-			SELF:_SetThreadValue(Set.TimeSep, (DWORD) separator[0])
-		ENDIF
-		SELF:_SetThreadValue(Set.AMPM, dtInfo:ShortDatePattern:IndexOf("tt") != -1)
-		VAR dateformat  := dtInfo:ShortDatePattern:ToLower()
-		// reduce to single m and d
-		DO WHILE (dateformat.IndexOf("mm") != -1)
-			dateformat		:= dateformat:Replace("mm", "m")
-		ENDDO
-		// make sure we have a double mm to get double digit dates
-
-		DO WHILE dateformat.IndexOf("dd") != -1
-			dateformat		:= dateformat:Replace("dd", "d")
-		ENDDO
-		// change dates to dd and mm and then everything to upper case
-		dateformat := dateformat:Replace("d", "dd"):Replace("m","mm"):ToUpper()
-		SELF:_SetThreadValue(Set.Century, dateformat:IndexOf("YYYY",StringComparison.OrdinalIgnoreCase) != -1)
-		SELF:_SetThreadValue(Set.DateFormatNet, dateformat:ToUpper():Replace("D","d"):Replace("Y","y"):Replace("/","'/'"))
-		SELF:_SetThreadValue(Set.DateFormatEmpty, dateformat:ToUpper():Replace("D"," "):Replace("Y"," "):Replace("M"," "))
-		SELF:_SetThreadValue(Set.DateFormat,  dateformat)
-		SELF:_SetThreadValue(Set.DateCountry, (DWORD) 1)
 		SELF:_SetThreadValue(Set.DECIMALS , (DWORD) 2)
 		VAR numberformat := System.Globalization.NumberFormatInfo.CurrentInfo
 		SELF:_SetThreadValue(Set.DECIMALSEP, (DWORD) numberformat:NumberDecimalSeparator[0])
@@ -533,57 +503,81 @@ CLASS XSharp.RuntimeState
         SELF:_SetThreadValue(Set.FullPath, TRUE)
         SELF:_SetThreadValue(Set.Space, TRUE)
         SELF:_SetThreadValue(Set.Textmerge, FALSE)
+        SELF:_SetDateCountry(DateCountry.System)
+        SELF:_SetTimeFormat("")                         // Gets System time
 		RETURN
 
 
-	INTERNAL STATIC METHOD _SetDateFormat(format AS STRING) AS VOID
+    INTERNAL METHOD _SetTimeFormat(format AS STRING) AS VOID
+        IF String.IsNullOrEmpty(format)
+		    VAR dtInfo	    := System.Globalization.DateTimeFormatInfo.CurrentInfo
+		    SELF:_SetThreadValue(Set.AMEXT, dtInfo:AMDesignator)
+		    SELF:_SetThreadValue(Set.PMEXT, dtInfo:PMDesignator)
+		    VAR separator := dtInfo:TimeSeparator
+		    IF String.IsNullOrEmpty(separator)
+			    SELF:_SetThreadValue(Set.TimeSep, (DWORD) 0)
+		    ELSE
+			    SELF:_SetThreadValue(Set.TimeSep, (DWORD) separator[0])
+		    ENDIF
+		    SELF:_SetThreadValue(Set.AMPM, dtInfo:ShortDatePattern:IndexOf("tt") != -1)
+        ELSE
+            format := format:ToUpper()
+            IF format:EndsWith("TT")
+		        SELF:_SetThreadValue(Set.AMEXT, "AM")
+		        SELF:_SetThreadValue(Set.PMEXT, "PM")
+		        SELF:_SetThreadValue(Set.AMPM, TRUE)
+            ELSE
+		        SELF:_SetThreadValue(Set.AMEXT, "")
+		        SELF:_SetThreadValue(Set.PMEXT, "")
+		        SELF:_SetThreadValue(Set.AMPM, FALSE)
+            ENDIF
+            SELF:_SetThreadValue(Set.TimeSep, ASC(Substr3(format, 3,1)))
+       ENDIF
+
+	INTERNAL METHOD _SetDateFormat(format AS STRING) AS VOID
 		format := format:ToUpper()
 		// ensure we have dd, mm and yy
 		IF format:IndexOf("DD") == -1 .OR. format:IndexOf("MM") == -1 .OR. format:IndexOf("YY") == -1
 			RETURN
 		ENDIF
-		SetValue(Set.DateFormatNet, format:Replace("D","d"):Replace("Y","y"):Replace("/","'/'"))
-		SetValue(Set.DateFormatEmpty, format:Replace("D"," "):Replace("Y"," "):Replace("M"," "))
-		SetValue(SET.CENTURY, format:Contains("YYYY"))
-		SetValue(Set.DATEFORMAT, format)
+		SELF:_SetThreadValue(Set.DateFormatNet, format:Replace("D","d"):Replace("Y","y"):Replace("/","'/'"))
+		SELF:_SetThreadValue(Set.DateFormatEmpty, format:Replace("D"," "):Replace("Y"," "):Replace("M"," "))
+		SELF:_SetThreadValue(SET.CENTURY, format:Contains("YYYY"))
+		SELF:_SetThreadValue(Set.DATEFORMAT, format)
+        IF SELF:_GetThreadValue<XSharp.DateCountry>(Set.DATECOUNTRY) != XSharp.DateCountry.System
 		SWITCH format
 			CASE "MM/DD/YY"
 			CASE "MM/DD/YYYY" 
-				SetValue(Set.DATECOUNTRY, (DWORD) XSharp.DateCountry.American)	 
+				SELF:_SetThreadValue(Set.DATECOUNTRY, XSharp.DateCountry.American)	 
 			CASE "YY.MM.DD" 
 			CASE "YYYY.MM.DD"
-				SetValue(Set.DATECOUNTRY, (DWORD) XSharp.DateCountry.Ansi)	  
+				SELF:_SetThreadValue(Set.DATECOUNTRY, XSharp.DateCountry.Ansi)	  
 			CASE "DD/MM/YY"
 			CASE "DD/MM/YYYY"
                 // What a laugh, the British & french have an identical format. 
-				SetValue(Set.DATECOUNTRY, (DWORD)XSharp.DateCountry.British)	
+				SELF:_SetThreadValue(Set.DATECOUNTRY, XSharp.DateCountry.British)	
 			CASE "DD.MM.YY"
 			CASE "DD.MM.YYYY"
-				SetValue(Set.DATECOUNTRY, (DWORD)XSharp.DateCountry.German)	
+				SELF:_SetThreadValue(Set.DATECOUNTRY, XSharp.DateCountry.German)	
 			CASE "DD-MM-YY"
 			CASE "DD-MM-YYYY"
-				SetValue(Set.DATECOUNTRY, (DWORD)XSharp.DateCountry.Italian)	
+				SELF:_SetThreadValue(Set.DATECOUNTRY, XSharp.DateCountry.Italian)	
 			CASE "YY/MM/DD"
 			CASE "YYYY/MM/DD"
-				SetValue(Set.DATECOUNTRY, (DWORD)XSharp.DateCountry.Japanese)	
+				SELF:_SetThreadValue(Set.DATECOUNTRY, XSharp.DateCountry.Japanese)	
 			CASE "MM-DD-YY"
 			CASE "MM-DD-YYYY"
-				SetValue(Set.DATECOUNTRY, (DWORD)XSharp.DateCountry.USA)	
-			OTHERWISE
-				SetValue(Set.DATECOUNTRY, (DWORD)0)	
+				SELF:_SetThreadValue(Set.DATECOUNTRY, XSharp.DateCountry.USA)	
 		END SWITCH
+        ENDIF
 
-
-	INTERNAL STATIC METHOD _SetDateCountry(country AS DWORD) AS VOID
-		IF country > 8
-			RETURN
-		END IF
-
-		SetValue<DWORD>(Set.DateCountry, country)
+    INTERNAL METHOD _SetDateCountry(country AS XSharp.DateCountry) AS VOID
 		
 		LOCAL format, year AS STRING
-		year := IIF(Century , "YYYY" , "YY")
-		SWITCH (DateCountry) country
+        SELF:_SetThreadValue(Set.DATECOUNTRY, country)
+        IF country != XSharp.DateCountry.System
+		    year := IIF(Century , "YYYY" , "YY")
+		    SWITCH (DateCountry) country
 			CASE XSharp.DateCountry.American
 				format := "MM/DD/" + year
 			CASE XSharp.DateCountry.Ansi
@@ -604,8 +598,22 @@ CLASS XSharp.RuntimeState
 				format := "MM/DD/" + year
 		END SWITCH
 		// this will adjust DateFormatNet, DateFormatEmpty etc, but also DateCountry again
-		_SetDateFormat(format) 
-
+    ELSE
+        VAR dtInfo	    := System.Globalization.DateTimeFormatInfo.CurrentInfo
+        format  := dtInfo:ShortDatePattern:ToLower()
+		// reduce to single m and d
+		DO WHILE (format.IndexOf("mm") != -1)
+        	format		:= dateformat:Replace("mm", "m")
+        ENDDO
+		// make sure we have a double mm to get double digit dates
+    
+	    DO WHILE format.IndexOf("dd") != -1
+			format		:= format:Replace("dd", "d")
+		ENDDO
+		// change dates to dd and mm and then everything to upper case
+		format := format:Replace("d", "dd"):Replace("m","mm"):ToUpper()
+    ENDIF
+    SELF:_SetDateFormat(format) 
 
 
 	PRIVATE _workareas AS WorkAreas

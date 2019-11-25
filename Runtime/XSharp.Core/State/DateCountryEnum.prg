@@ -46,6 +46,10 @@ PUBLIC ENUM DateCountry
 
     // <summary>yy/mm/dd  yyyy/mm/dd</summary>
 	MEMBER YMD      := 12
+    // <summary>Get the format from the System</summary>
+    MEMBER System   := 99
+    // <summary>Get the format from the System</summary>
+    MEMBER Windows  := 99
 END ENUM
 END NAMESPACE
 #region defines

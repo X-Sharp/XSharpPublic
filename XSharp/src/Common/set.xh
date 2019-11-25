@@ -1,0 +1,78 @@
+///////////////////////////////////////////////////////////////////////////
+// XSharp Standard Preprocessor Directives
+//
+// Copyright (c) XSharp BV.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  
+// See License.txt in the project root for license information.
+//
+// Caution: do not modify this file. It will be overwritten during product updates
+///////////////////////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////////////////////
+//
+// This header file contains the SET commands for various global settings 
+// We map to the typed Set..() functions and not to the SET(_SET_<somedefine> ) because
+// that will produce slightly better code.
+//
+///////////////////////////////////////////////////////////////////////////
+
+#ifndef SET_XH
+
+#define SET_XH
+
+///////////////////////////////////////////////////////////////////////////
+// SET commands for directories
+///////////////////////////////////////////////////////////////////////////
+
+#command  SET DEFAULT TO <*path*>   =>  SetDefault(<(path)> )
+#command  SET DEFAULT TO            =>  SetDefault( "" )
+
+#command  SET PATH TO <*path*>      =>  SetPath( <(path)> )
+#command  SET PATH TO               =>  SetPath( "" )
+
+///////////////////////////////////////////////////////////////////////////
+// SET commands for string comparison, date and numeric formats
+///////////////////////////////////////////////////////////////////////////
+
+#command  SET EXACT <x:ON,OFF,&>    =>  SetExact( upper(<(x)>)=="ON" )
+#command  SET EXACT (<x>)           =>  SetExact( <x> )
+
+#command  SET FIXED <x:ON,OFF,&>    =>  SetFixed( upper(<(x)>)=="ON")
+#command  SET FIXED (<x>)           =>  SetFixed(  <x> )
+
+#command  SET DECIMALS TO <x>       =>  SetDecimals( <x> )
+#command  SET DECIMALS TO           =>  SetDecimals( 0 )
+
+#command  SET DATE [TO] <x:AMERICAN,MDY>        =>  SetDateCountry(DateCountry.American)
+#command  SET DATE [TO] ANSI                    =>  SetDateCountry(DateCountry.Ansi)
+#command  SET DATE [TO] <x:BRITISH,FRENCH,DMY>  =>  SetDateCountry(DateCountry.British)
+#command  SET DATE [TO] GERMAN                  =>  SetDateCountry(DateCountry.German)
+#command  SET DATE [TO] <x:ITALIAN,DUTCH>       =>  SetDateCountry(DateCountry.Italian)
+#command  SET DATE [TO] <x:JAPANESE,TAIWAN,YMD> =>  SetDateCountry(DateCountry.Japanese)
+#command  SET DATE [TO] USA                     =>  SetDateCountry(DateCountry.USA)
+#command  SET DATE [TO] <x:SYSTEM,WINDOWS>      =>  SetDateCountry(DateCountry.System)
+
+#command  SET DATE FORMAT [TO] <c>  =>  SetDateFormat( <c> )
+#command  SET TIME TO <*x*>         =>  SetTimeFormat( <(x)> )
+#command  SET TIME TO SYSTEM        =>  SetTimeFormat( "" )
+
+#command  SET CENTURY <x:ON,OFF,&>  =>  SetCentury( upper(<(x)>)=="ON")
+#command  SET CENTURY (<x>)         =>  SetCentury(  <x> )
+#command  SET EPOCH TO <year>       =>  SetEpoch( <year> )
+
+///////////////////////////////////////////////////////////////////////////
+//  DB SETs
+///////////////////////////////////////////////////////////////////////////
+
+#command SET EXCLUSIVE <x:ON,OFF,&>     =>  SetExclusive(upper(<(x)>)=="ON" )
+#command SET EXCLUSIVE (<x>)            =>  SetExclusive( <x> )
+
+#command SET SOFTSEEK <x:ON,OFF,&>      =>  SetSoftSeek( upper(<(x)>)=="ON" )
+#command SET SOFTSEEK (<x>)             =>  SetSoftSeek( <x> )
+
+#command SET UNIQUE <x:ON,OFF,&>        =>  SetUnique( upper(<(x)>)=="ON" )
+#command SET UNIQUE (<x>)               =>  SetUnique( <x> )
+
+#command SET DELETED <x:ON,OFF,&>       =>  SetDeleted( upper(<(x)>)=="ON" )
+#command SET DELETED (<x>)              =>  SetDeleted( <x> )
+
+#endif

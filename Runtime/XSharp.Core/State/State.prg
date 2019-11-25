@@ -603,7 +603,7 @@ CLASS XSharp.RuntimeState
         format  := dtInfo:ShortDatePattern:ToLower()
 		// reduce to single m and d
 		DO WHILE (format.IndexOf("mm") != -1)
-        	format		:= dateformat:Replace("mm", "m")
+        	format		:= format:Replace("mm", "m")
         ENDDO
 		// make sure we have a double mm to get double digit dates
     

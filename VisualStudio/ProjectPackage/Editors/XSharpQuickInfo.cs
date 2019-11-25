@@ -19,6 +19,7 @@ using System.Windows.Documents;
 using System.Windows.Media;
 using XSharpModel;
 using System.Windows.Controls;
+using Microsoft.VisualStudio.Text.Classification;
 
 namespace XSharp.Project
 {
@@ -27,12 +28,16 @@ namespace XSharp.Project
         private XSharpQuickInfoSourceProvider _provider;
         private ITextBuffer _subjectBuffer;
         private XSharpModel.XFile _file;
+        private IClassificationFormatMapService _formatMap;
+        private IClassificationTypeRegistryService _registry;
 
-        public XSharpQuickInfoSource(XSharpQuickInfoSourceProvider provider, ITextBuffer subjectBuffer)
+        public XSharpQuickInfoSource(XSharpQuickInfoSourceProvider provider, ITextBuffer subjectBuffer, IClassificationFormatMapService formatMap, IClassificationTypeRegistryService registry)
         {
             _provider = provider;
             _subjectBuffer = subjectBuffer;
             _file = _subjectBuffer.GetFile();
+            _formatMap = formatMap;
+            _registry = registry;
         }
         private int lastTriggerPoint = -1;
         private Inline[] lastHelp = null;
@@ -130,6 +135,10 @@ namespace XSharp.Project
                     //
                     if ((gotoElement != null) && (gotoElement.IsInitialized))
                     {
+                        IClassificationType kwType = _registry.GetClassificationType("keyword");
+                        IClassificationFormatMap _map = _formatMap.GetClassificationFormatMap(category: "text");
+                        Microsoft.VisualStudio.Text.Formatting.TextFormattingRunProperties format = _map.GetTextProperties(kwType);
+                        //
                         // Ok, find it ! Let's go ;)
                         applicableToSpan = currentSnapshot.CreateTrackingSpan
                             (
@@ -150,14 +159,14 @@ namespace XSharp.Project
                             }
                             else if (gotoElement.XSharpElement is XSharpModel.XTypeMember)
                             {
-                                QuickInfoTypeMember qitm = new QuickInfoTypeMember((XSharpModel.XTypeMember)gotoElement.XSharpElement);
+                                QuickInfoTypeMember qitm = new QuickInfoTypeMember((XSharpModel.XTypeMember)gotoElement.XSharpElement, format.ForegroundBrush);
                                 var description = new TextBlock();
                                 description.Inlines.AddRange(qitm.WPFDescription);
                                 qiContent.Add(description);
                             }
                             else if (gotoElement.XSharpElement is XSharpModel.XVariable)
                             {
-                                QuickInfoVariable qitm = new QuickInfoVariable((XSharpModel.XVariable)gotoElement.XSharpElement);
+                                QuickInfoVariable qitm = new QuickInfoVariable((XSharpModel.XVariable)gotoElement.XSharpElement, format.ForegroundBrush);
                                 var description = new TextBlock();
                                 description.Inlines.AddRange(qitm.WPFDescription);
                                 qiContent.Add(description);
@@ -166,7 +175,7 @@ namespace XSharp.Project
                             else if (gotoElement.XSharpElement is XSharpModel.XType)
                             {
                                 var xtype = gotoElement.XSharpElement as XType;
-                                var qitm = new QuickInfoTypeAnalysis(xtype);
+                                var qitm = new QuickInfoTypeAnalysis(xtype, format.ForegroundBrush);
                                 var description = new TextBlock();
                                 description.Inlines.AddRange(qitm.WPFDescription);
                                 qiContent.Add(description);
@@ -184,7 +193,7 @@ namespace XSharp.Project
                         {
                             var ti = gotoElement.SystemElement as TypeInfo;
                             string xmldoc = XSharpXMLDocMember.GetTypeSummary(ti, member.File.Project);
-                            QuickInfoTypeAnalysis analysis = new QuickInfoTypeAnalysis(ti);
+                            QuickInfoTypeAnalysis analysis = new QuickInfoTypeAnalysis(ti, format.ForegroundBrush);
                             var description = new TextBlock();
                             description.Inlines.AddRange(analysis.WPFDescription);
                             qiContent.Add(description);
@@ -199,13 +208,13 @@ namespace XSharp.Project
                             {
                                 string xmldoc = XSharpXMLDocMember.GetMemberSummary(gotoElement.SystemElement, member.File.Project);
 
-                                analysis = new QuickInfoMemberAnalysis(gotoElement.SystemElement);
+                                analysis = new QuickInfoMemberAnalysis(gotoElement.SystemElement, format.ForegroundBrush);
                                 if (analysis.IsInitialized)
                                 {
                                     if ((analysis.Kind == XSharpModel.Kind.Constructor) && (cType != null) && (cType.SType != null))
                                     {
                                         QuickInfoTypeAnalysis typeAnalysis;
-                                        typeAnalysis = new QuickInfoTypeAnalysis(cType.SType.GetTypeInfo());
+                                        typeAnalysis = new QuickInfoTypeAnalysis(cType.SType.GetTypeInfo(), format.ForegroundBrush);
                                         if (typeAnalysis.IsInitialized)
                                         {
                                             var description = new TextBlock();
@@ -284,9 +293,15 @@ namespace XSharp.Project
             [Import]
             internal ITextBufferFactoryService TextBufferFactoryService { get; set; }
 
+            [Import]
+            IClassificationFormatMapService formatMap = null;
+
+            [Import]
+            IClassificationTypeRegistryService registry = null;
+
             public IQuickInfoSource TryCreateQuickInfoSource(ITextBuffer textBuffer)
             {
-                return new XSharpQuickInfoSource(this, textBuffer);
+                return new XSharpQuickInfoSource(this, textBuffer, formatMap, registry);
             }
 
         }
@@ -380,10 +395,16 @@ namespace XSharp.Project
 
         internal class QuickInfoTypeAnalysis : XSharpLanguage.TypeAnalysis
         {
-            internal QuickInfoTypeAnalysis(TypeInfo typeInfo) : base(typeInfo)
-            { }
-            internal QuickInfoTypeAnalysis(XType type) : base(type)
-            { }
+            Brush foreground;
+
+            internal QuickInfoTypeAnalysis(TypeInfo typeInfo, Brush fg ) : base(typeInfo)
+            {
+                this.foreground = fg;
+            }
+            internal QuickInfoTypeAnalysis(XType type, Brush fg ) : base(type)
+            {
+                this.foreground = fg;
+            }
             public List<Inline> WPFDescription
             {
                 get
@@ -395,24 +416,24 @@ namespace XSharp.Project
                     if (this.Modifiers != XSharpModel.Modifiers.None)
                     {
                         temp = new Run(this.Modifiers.ToString() + " ");
-                        temp.Foreground = Brushes.Blue;
+                        temp.Foreground = this.foreground;
                         content.Add(temp);
                     }
                     temp = new Run(this.Visibility.ToString() + " ");
-                    temp.Foreground = Brushes.Blue;
+                    temp.Foreground = this.foreground;
                     content.Add(temp);
                     //
                     if (this.IsStatic)
                     {
                         temp = new Run("Static" + " ");
-                        temp.Foreground = Brushes.Blue;
+                        temp.Foreground = this.foreground;
                         content.Add(temp);
                     }
                     //
                     if (this.Kind != XSharpModel.Kind.Field)
                     {
                         temp = new Run(this.Kind.ToString() + " ");
-                        temp.Foreground = Brushes.Blue;
+                        temp.Foreground = this.foreground;
                         content.Add(temp);
                     }
                     //
@@ -427,8 +448,11 @@ namespace XSharp.Project
 
         internal class QuickInfoMemberAnalysis : XSharpLanguage.MemberAnalysis
         {
-            internal QuickInfoMemberAnalysis(MemberInfo member) : base(member)
-            { }
+            Brush foreground;
+            internal QuickInfoMemberAnalysis(MemberInfo member, Brush fg) : base(member)
+            {
+                this.foreground = fg;
+            }
 
             public List<Inline> WPFDescription
             {
@@ -440,17 +464,17 @@ namespace XSharp.Project
                     if (this.Modifiers != XSharpModel.Modifiers.None)
                     {
                         temp = new Run(this.Modifiers.ToString() + " ");
-                        temp.Foreground = Brushes.Blue;
+                        temp.Foreground = this.foreground;
                         content.Add(temp);
                     }
                     temp = new Run(this.Visibility.ToString() + " ");
-                    temp.Foreground = Brushes.Blue;
+                    temp.Foreground = this.foreground;
                     content.Add(temp);
                     //
                     if ((this.IsStatic) && ((this.Kind != Kind.Function) && (this.Kind != Kind.Procedure)))
                     {
                         temp = new Run("Static" + " ");
-                        temp.Foreground = Brushes.Blue;
+                        temp.Foreground = this.foreground;
                         content.Add(temp);
                     }
                     //
@@ -468,7 +492,7 @@ namespace XSharp.Project
                         {
                             temp = new Run(this.Kind.ToString() + " ");
                         }
-                        temp.Foreground = Brushes.Blue;
+                        temp.Foreground = this.foreground;
                         content.Add(temp);
                     }
                     //
@@ -489,7 +513,7 @@ namespace XSharp.Project
                     if (this.Kind.HasParameters())
                     {
                         temp = new Run(this.Kind == XSharpModel.Kind.Constructor ? "{" : "(");
-                        temp.Foreground = Brushes.Blue;
+                        temp.Foreground = this.foreground;
                         vars.Add(temp);
 
                         foreach (var var in this.Parameters)
@@ -502,14 +526,14 @@ namespace XSharp.Project
                             temp = new Run(var.Name + " ");
                             vars.Add(temp);
                             temp = new Run(var.Direction + " ");
-                            temp.Foreground = Brushes.Blue;
+                            temp.Foreground = this.foreground;
                             vars.Add(temp);
                             temp = new Run(var.TypeName);
-                            temp.Foreground = Brushes.Blue;
+                            temp.Foreground = this.foreground;
                             vars.Add(temp);
                         }
                         temp = new Run(this.Kind == XSharpModel.Kind.Constructor ? "}" : ")");
-                        temp.Foreground = Brushes.Blue;
+                        temp.Foreground = this.foreground;
                         vars.Add(temp);
                     }
                     //
@@ -520,10 +544,10 @@ namespace XSharp.Project
                     if (this.Kind.HasReturnType())
                     {
                         temp = new Run(" AS ");
-                        temp.Foreground = Brushes.Blue;
+                        temp.Foreground = this.foreground;
                         content.Add(temp);
                         temp = new Run(this.TypeName);
-                        temp.Foreground = Brushes.Blue;
+                        temp.Foreground = this.foreground;
                         content.Add(temp);
                     }
                     //
@@ -535,10 +559,12 @@ namespace XSharp.Project
         internal class QuickInfoTypeMember
         {
             XSharpModel.XTypeMember typeMember;
+            Brush foreground;
 
-            internal QuickInfoTypeMember(XSharpModel.XTypeMember tm)
+            internal QuickInfoTypeMember(XSharpModel.XTypeMember tm, Brush fg)
             {
                 this.typeMember = tm;
+                this.foreground = fg;
             }
 
             public List<Inline> WPFDescription
@@ -551,24 +577,24 @@ namespace XSharp.Project
                     if (this.typeMember.Modifiers != XSharpModel.Modifiers.None)
                     {
                         temp = new Run(this.typeMember.Modifiers.ToString() + " ");
-                        temp.Foreground = Brushes.Blue;
+                        temp.Foreground = this.foreground;
                         content.Add(temp);
                     }
                     temp = new Run(this.typeMember.Visibility.ToString() + " ");
-                    temp.Foreground = Brushes.Blue;
+                    temp.Foreground = this.foreground;
                     content.Add(temp);
                     //
                     if ((this.typeMember.IsStatic) && ((this.typeMember.Kind != Kind.Function) && (this.typeMember.Kind != Kind.Procedure)))
                     {
                         temp = new Run("STATIC" + " ");
-                        temp.Foreground = Brushes.Blue;
+                        temp.Foreground = this.foreground;
                         content.Add(temp);
                     }
                     //
                     if (this.typeMember.Kind != XSharpModel.Kind.Field)
                     {
                         temp = new Run(this.typeMember.Kind.ToString() + " ");
-                        temp.Foreground = Brushes.Blue;
+                        temp.Foreground = this.foreground;
                         content.Add(temp);
                     }
                     //
@@ -589,7 +615,7 @@ namespace XSharp.Project
                     if (this.typeMember.Kind.HasParameters())
                     {
                         temp = new Run(this.typeMember.Kind == XSharpModel.Kind.Constructor ? "{" : "(");
-                        temp.Foreground = Brushes.Blue;
+                        temp.Foreground = this.foreground;
                         vars.Add(temp);
 
                         foreach (var var in this.typeMember.Parameters)
@@ -602,14 +628,14 @@ namespace XSharp.Project
                             temp = new Run(var.Name + " ");
                             vars.Add(temp);
                             temp = new Run(var.ParamTypeDesc + " ");
-                            temp.Foreground = Brushes.Blue;
+                            temp.Foreground = this.foreground;
                             vars.Add(temp);
                             temp = new Run(var.TypeName);
-                            temp.Foreground = Brushes.Blue;
+                            temp.Foreground = this.foreground;
                             vars.Add(temp);
                         }
                         temp = new Run(this.typeMember.Kind == XSharpModel.Kind.Constructor ? "}" : ")");
-                        temp.Foreground = Brushes.Blue;
+                        temp.Foreground = this.foreground;
                         vars.Add(temp);
                     }
                     //
@@ -620,10 +646,10 @@ namespace XSharp.Project
                     if (this.typeMember.Kind.HasReturnType())
                     {
                         temp = new Run(" AS ");
-                        temp.Foreground = Brushes.Blue;
+                        temp.Foreground = this.foreground;
                         content.Add(temp);
                         temp = new Run(this.typeMember.TypeName);
-                        temp.Foreground = Brushes.Blue;
+                        temp.Foreground = this.foreground;
                         content.Add(temp);
                     }
                     //
@@ -637,10 +663,12 @@ namespace XSharp.Project
         internal class QuickInfoVariable
         {
             XSharpModel.XVariable xVar;
+            Brush foreground;
 
-            internal QuickInfoVariable(XSharpModel.XVariable var)
+            internal QuickInfoVariable(XSharpModel.XVariable var, Brush fg)
             {
                 this.xVar = var;
+                this.foreground = fg;
             }
 
             public List<Inline> WPFDescription
@@ -653,13 +681,13 @@ namespace XSharp.Project
                     if (this.xVar.IsParameter)
                     {
                         temp = new Run("PARAMETER" + " ");
-                        temp.Foreground = Brushes.Blue;
+                        temp.Foreground = this.foreground;
                         content.Add(temp);
                     }
                     else
                     {
                         temp = new Run("LOCAL" + " ");
-                        temp.Foreground = Brushes.Blue;
+                        temp.Foreground = this.foreground;
                         content.Add(temp);
                     }
                     //
@@ -668,16 +696,16 @@ namespace XSharp.Project
                     if (this.xVar.IsTyped)
                     {
                         temp = new Run(this.xVar.ParamTypeDesc + " ");
-                        temp.Foreground = Brushes.Blue;
+                        temp.Foreground = this.foreground;
                         content.Add(temp);
                         //
                         temp = new Run(this.xVar.TypeName);
-                        temp.Foreground = Brushes.Blue;
+                        temp.Foreground = this.foreground;
                         content.Add(temp);
                         if (this.xVar.IsArray)
                         {
                             temp = new Run("[] ");
-                            temp.Foreground = Brushes.Blue;
+                            temp.Foreground = this.foreground;
                             content.Add(temp);
                         }
                     }

@@ -10,6 +10,7 @@
     // This is used for the assembly version number, which the CLR uses to determine binding
     // This generally changes when we release a new full build
     // NOTE: DO NOT FORGET THE VERSION NUMBER IN THE CONSTANTS.CS FILE
+
     #define VERSION_NUMBER_STR     "2.1.0.0"
     #define VERSION_NUMBER			2,1,0,0
 
@@ -19,6 +20,7 @@
     #define FILEVERSION_NUMBER       2,1,0,0
     #define FILEVERSION_NUMBER_STR   "2.1.0.0"
     #define INFORMATIONAL_NUMBER_STR  "2.10 GA"
+
     #ifdef __DEBUG__
         #define ASSEMBLY_CONFIGURATION "Debug"
     #else

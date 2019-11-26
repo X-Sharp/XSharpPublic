@@ -396,7 +396,7 @@ FUNCTION Used() AS LOGIC
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/used/*" />
 FUNCTION Used(uArea AS USUAL) AS LOGIC
-    IF IsString(uArea)
+    IF IsString(uArea) .OR. IsSymbol(uArea)
         RETURN VODbGetSelect(uArea) != 0
     ENDIF
     RETURN Alias(uArea) != NULL_STRING

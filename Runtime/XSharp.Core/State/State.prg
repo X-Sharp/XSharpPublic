@@ -576,7 +576,7 @@ CLASS XSharp.RuntimeState
 		LOCAL format, year AS STRING
         SELF:_SetThreadValue(Set.DATECOUNTRY, country)
         IF country != XSharp.DateCountry.System
-		    year := IIF(Century , "YYYY" , "YY")
+		    year := IIF(SELF:_GetThreadValue<LOGIC>(Set.Century) , "YYYY" , "YY")
 		    SWITCH (DateCountry) country
 			CASE XSharp.DateCountry.American
 				format := "MM/DD/" + year

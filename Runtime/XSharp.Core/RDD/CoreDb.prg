@@ -588,7 +588,7 @@ CLASS XSharp.CoreDb
         STATIC METHOD Dbf AS STRING
             LOCAL oRDD := CoreDb.CWA("DBF", FALSE) AS IRDD
             IF oRDD != NULL
-                RETURN oRDD:Alias
+                RETURN (STRING) oRDD:Info(DBI_FULLPATH, NULL)
             ENDIF                            
             RETURN String.Empty
             

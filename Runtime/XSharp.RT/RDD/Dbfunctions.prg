@@ -396,8 +396,10 @@ FUNCTION Used() AS LOGIC
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/used/*" />
 FUNCTION Used(uArea AS USUAL) AS LOGIC
-    RETURN SELECT(uArea) != 0
-
+    IF IsString(uArea)
+        RETURN VODbGetSelect(uArea) != 0
+    ENDIF
+    RETURN Alias(uArea) != NULL_STRING
 
 FUNCTION DoError (cSymFunc AS STRING, nTries:= 0 AS INT) AS OBJECT
 	LOCAL oError    AS Error

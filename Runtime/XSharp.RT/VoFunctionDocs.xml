@@ -19661,7 +19661,7 @@
 
     <param name="uWorkArea">A value that identifies the work area.  This can be the number of the work area or its alias, specified either as a symbol or a string.  If &lt;uWorkArea&gt; is not specified, the current work area number is returned.  Therefore, Select() is the same as DBGetSelect().</param>
     <returns>
-      A number from 0 to 1023.  0 is returned if &lt;uWorkArea&gt; does not identify a valid work area or does not correspond to a valid alias.
+      A number from 0 to 4096.  0 is returned if &lt;uWorkArea&gt; does not identify a valid work area or does not correspond to a valid alias.
     </returns>
     <remarks>
       The Select() function and SELECT command specified with an extended expression argument look somewhat alike.
@@ -24224,7 +24224,7 @@
       Return the work area number.
     </summary>
     <returns>
-      A number from 1 to 1023.
+      A number from 1 to 4096.
     </returns>
     <remarks>
       VODBGetSelect() is the same as DBGetSelect().  See DBGetSelect() for more information and an example.

@@ -200,7 +200,12 @@ FUNCTION VoDbFound() AS LOGIC
 /// <seealso cref="M:XSharp.CoreDb.GetSelect"  /> 
 FUNCTION VoDbGetSelect() AS DWORD
     RETURN VoDb.GetSelect()
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbgetselect1/*" /> 
+FUNCTION VODbGetSelect(sArea AS STRING) AS DWORD
+    RETURN XSharp.RuntimeState.Workareas:FindAlias(sArea)
     
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbgobottom/*" />    
 /// <seealso cref="M:XSharp.CoreDb.GoBottom"  />     
 FUNCTION VoDbGoBottom() AS LOGIC

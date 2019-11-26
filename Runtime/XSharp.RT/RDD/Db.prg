@@ -13,7 +13,6 @@ USING System.Collections.Generic
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/select/*" />
-/// <returns>A number from 0 to 4096.  0 is returned if xValue does not identify a valid work area or does not correspond to a valid alias.</returns>
 FUNCTION Select(uWorkArea) AS USUAL CLIPPER
     LOCAL sSelect   AS DWORD
 	LOCAL sCurrent  AS DWORD
@@ -23,9 +22,7 @@ FUNCTION Select(uWorkArea) AS USUAL CLIPPER
 	RETURN sSelect
 
 
-
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/select/*" />/// <returns>A number from 0 to 4096.  0 is returned if cValue does not identify a valid work area or does not correspond to a valid alias.</returns>
-
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/select/*" />
 FUNCTION _SelectString(uWorkArea AS STRING) AS DWORD
     LOCAL nSelect := 0 AS DWORD
     uWorkArea := AllTrim(uWorkArea)
@@ -46,7 +43,6 @@ FUNCTION _SelectString(uWorkArea AS STRING) AS DWORD
     
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/select/*" />
-/// <returns>A number from 0 to 4096.  0 is returned if xValue does not identify a valid work area or does not correspond to a valid alias.</returns>
 FUNCTION _Select(uWorkArea) AS USUAL CLIPPER
     LOCAL nSelect           AS DWORD
     LOCAL xType             AS DWORD

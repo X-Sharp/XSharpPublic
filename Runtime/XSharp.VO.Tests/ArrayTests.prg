@@ -223,6 +223,19 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal( 0, (INT) AScan(a, 1 , 3 , -2) )
 			Assert.Equal( 1, (INT) AScan(a, 1 , 3 , -3) )
 			Assert.Equal( 1, (INT) AScan(a, 1 , 3 , -4) )
+			
+			LOCAL aUninitialized AS ARRAY
+			Assert.Equal( 0, (INT) AScan(aUninitialized, 123) )
+			Assert.Equal( 0, (INT) AScanExact(aUninitialized, 123) )
+			Assert.Equal( 0, (INT) AScan(aUninitialized, "asd" , 10 , 20) )
+			Assert.True( AEval( aUninitialized , {||TRUE}) == NULL_ARRAY )
+			Assert.True( AEvalOld( aUninitialized , {||TRUE}) == NULL_ARRAY )
+			Assert.True( ASort( aUninitialized , , {||TRUE}) == NULL_ARRAY )
+
+			aUninitialized := NULL_ARRAY
+			Assert.Equal( 0, (INT) AScan(aUninitialized, 123) )
+			Assert.Equal( 0, (INT) AScanExact(aUninitialized, "aaa") )
+			
 
 		[Trait("Category", "Array")];
 		[Fact];

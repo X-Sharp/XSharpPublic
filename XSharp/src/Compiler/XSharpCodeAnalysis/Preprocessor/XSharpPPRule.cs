@@ -1895,7 +1895,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 // check to see if we have 2 tokens that can follow
                 // otherwise exit
                 else if (token.IsClose()
-                          || (lastToken.NeedsRight() && !token.IsPrimary())
+                          || (lastToken.NeedsRight() && !token.IsPrimaryOrPrefix())
                           || (stopToken != null && tokenEquals(stopToken, token))
                         )
                 {

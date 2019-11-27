@@ -392,7 +392,8 @@ STATIC CLASS SqlFunctions
 	STATIC CONSTRUCTOR
 		cErlaubt   := "ABCDEFGHIJKLMNOPQRSTUVWXYZ_0123456789_abcdefghijklmnopqrstuvwxyz"	
 		aFieldNames := System.Collections.Generic.Dictionary<STRING, STRING>{}
-	STATIC METHOD  CleanupColumnName( cColumnName AS  STRING ) AS STRING
+
+    STATIC METHOD  CleanupColumnName( cColumnName AS  STRING ) AS STRING
 		LOCAL sb AS System.Text.StringBuilder
 		LOCAL lLastWasOk AS LOGIC
 		LOCAL cResult AS STRING

@@ -353,14 +353,26 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 return true;
             return false;
         }
+        internal static bool IsPrimaryOrPrefix(this IToken token)
+        {
+            if (token.IsPrimary())
+                return true;
+            if (token.IsPrefix())
+                return true;
+            return false;
+
+        }
+
+
+
         internal static bool CanJoin(this IToken token, IToken nextToken)
         {
             if (token == null )
             {
                 return nextToken.IsName() || nextToken.IsLiteral() || nextToken.IsPrefix() ;
             }
-            if (token.IsPrefix() || token.IsBinary())
-                return (nextToken.IsPrimary());
+            if (token.IsPrefix() || token.IsBinary())          // we allow .and. .not. and even .not. .not.
+                return (nextToken.IsPrimaryOrPrefix());
             if (nextToken.IsBinary() || nextToken.NeedsLeft() || nextToken.IsPostFix())
                 return (token.IsPrimary() ||token.IsClose());
 

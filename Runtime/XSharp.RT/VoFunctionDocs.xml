@@ -24234,6 +24234,20 @@
     <seealso cref='M:XSharp.RT.Functions.DbGetSelect'>DBGetSelect</seealso>
     <seealso cref='O:XSharp.RT.Functions.VoDbSelect'>VODBSelect Overload</seealso>
   </vodbgetselect>
+  <vodbgetselect1>
+    <summary>
+      Return the work area number for a certain alias
+    </summary>
+	<param name="sArea">The name of the alias to look for. This is NOT case sensitive.</param>
+    <returns>
+      A number from 0 to 4096. When the alias is not used (in the current thread) then the return value is 0. Otherwise it is the area number of the area that has this alias.
+    </returns>
+    <example>
+    </example>
+    <seealso cref='M:XSharp.RT.Functions.DbGetSelect'>DBGetSelect</seealso>
+    <seealso cref='O:XSharp.RT.Functions.VoDbSelect'>VODBSelect Overload</seealso>
+    <seealso cref='O:XSharp.RT.Functions.Alias(XSharp.__Usual)'>Alias</seealso>
+  </vodbgetselect>
   <vodbgobottom>
     <summary>
       Move to the last logical record.

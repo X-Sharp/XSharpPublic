@@ -23,7 +23,7 @@ CLASS SqlServerFactory INHERIT AbstractSqlFactory
     METHOD GetName(oConn AS DbConnection) AS STRING
         RETURN "SQL"
 
-   METHOD DriverConnect(hWindow AS USUAL, uCompletion AS USUAL, cConnectionString AS USUAL) AS STRING
+    METHOD DriverConnect(hWindow AS USUAL, uCompletion AS USUAL, cConnectionString AS USUAL) AS STRING
         LOCAL oODBC AS OdbcFactory
         LOCAL cResult AS STRING
         oODBC := OdbcFactory{}

@@ -1,11 +1,40 @@
-//
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
-// See License.txt in the project root for license information.
-//
+XSSqlclasses
 
-USING System.Data.Common
-USING System.Data
+This assembly is meant as replacement for the VOSQLClasses.
+It is based on the Ado.Net dataproviders and should work in AnyCPU and support unicode (if the server supports unicode).
+The class names are the same as in the VOSQLClasses as are most fields and properties.
+Some methods are implemented as "stubs" and marked with the [Obsolete] attribute.
+
+By default the classes use the ODBC dataprovider for .Net, to be compatible with VO.
+We have also added a mechanism to switch the dataprovider.
+At this moment there is support for 2 providers:
+1) ODBC
+2) SQL Server
+Other providers that are planned for the future are MySql and Oracle.
+
+To switch to SQL Server you need to add the following to your code before creating a connection:
+
+SetSqlFactory(SqlServerFactory{})
+
+The source for these classes is on 
+https://github.com/X-Sharp/XSharpPublic/tree/feature/Runtime/Runtime/VOSDK/Source/VOSDK/SQL_Unicode_SDK
+
+The Factory class is the link between the SQLConnection object and the Ado.Net dataproviders.
+
+It implements the ISqlFactory interface (see below).
+
+The Factory class is a wrapper around System.Data.Common.DbProviderFactory.
+It provides similar methods like this class but also has some methods that are called by the SqlConnection, 
+SqlStatement and SqlSelect classes, to allow the Factory to override or implement specific behavior.
+
+AbstractSqlFactory has a default "Abstract" implementation of most methods in the interface. 
+Both SqlServerFactory and ODBCFactory inherit from the AbstractSqlFactory class.
+
+The SQLServer provider for .Net does not know a mechanism for "DriverConnect". 
+We therefore use the ODBC version of this dialog and read connectionstring information from this dialog.
+This assumes that the "Sql Server" ODBC driver is installed on the users machine.
+
+
 INTERFACE ISqlFactory
 
     /// <summary>Return the quote character for table and column names.</summary>
@@ -98,7 +127,7 @@ INTERFACE ISqlFactory
     /// <returns>The datareader as should be used by the SqlSelect class.</returns>
     METHOD AfterOpen(oDataReader AS DbDataReader) AS DbDataReader
 
-    /// <summary>This method is called to create Field information for teh SQLSelect class for a specific datacolumn.</summary>
+    /// <summary>This method is called to create Field information for the SQLSelect class for a specific datacolumn.</summary>
     /// <param name="oSchema">The DataTable containing the schema for the opened resultset.</param>
     /// <param name="oColumn">The datacolumn that describes the field.</param>
     /// <param name="cFieldName">The name of the field. This may be different from the column name, for example if there are 2 columns with the same name.</param>
@@ -107,19 +136,3 @@ INTERFACE ISqlFactory
     METHOD DotNetType2VOType(oSchema AS DataTable, oColumn AS DataColumn, cFieldName AS STRING, oFS REF FieldSpec) AS ARRAY
 
 END INTERFACE    
-
-
-STATIC GLOBAL oDefaultFactory AS ISqlFactory
-
-
-FUNCTION SetSqlFactory(oFactory AS ISqlFactory) AS ISqlFactory
-    LOCAL oOld AS ISqlFactory
-    oOld := oDefaultFactory
-    oDefaultFactory := oFactory
-    RETURN oOld
-
-FUNCTION GetSqlFactory() AS ISqlFactory
-    LOCAL oOld AS ISqlFactory
-    oOld := oDefaultFactory
-    RETURN oOld
-

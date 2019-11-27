@@ -315,7 +315,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     ENDIF
                 ENDDO
             ELSE
-                DO WHILE TRUE
+                DO WHILE !_oRdd:_Eof
                     // Only conditions, nothing else
                     includeRecord := SELF:_EvalBlock(ordCondInfo:ForBlock, TRUE)
                     IF includeRecord
@@ -324,9 +324,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                         ENDIF
                     ENDIF
                     SELF:_oRdd:__Goto( SELF:_RecNo + 1)
-                    IF SELF:_oRdd:_Eof 
-                        EXIT
-                    ENDIF
                 ENDDO
             ENDIF
             // evaluate the block once more at eof

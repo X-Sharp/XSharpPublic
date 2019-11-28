@@ -2892,7 +2892,13 @@ namespace Microsoft.CodeAnalysis.CSharp
             TypeSymbol targetType;
             var isTypeDiagnostics = DiagnosticBag.GetInstance();
             targetType = BindType(node.Right, isTypeDiagnostics, out alias);
-
+#if XSHARP
+            if (operand.Type == Compilation.UsualType())
+            {
+                // this triggers the boxing of the contents of the usual into an object
+                operand = new BoundConversion(node, operand, Conversion.Boxing, false, false, null, GetSpecialType(SpecialType.System_Object, diagnostics, node));
+            }
+#endif
             if (targetType?.IsErrorType() == true && isTypeDiagnostics.HasAnyResolvedErrors() &&
                     ((CSharpParseOptions)node.SyntaxTree.Options).IsFeatureEnabled(MessageID.IDS_FeaturePatternMatching))
             {

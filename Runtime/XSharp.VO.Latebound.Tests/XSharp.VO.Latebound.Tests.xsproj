@@ -18,7 +18,7 @@
     <Name>XSharp.VO.Latebound.Tests</Name>
     <Nologo>true</Nologo>
     <GenerateFullPaths>true</GenerateFullPaths>
-    <Dialect>Vulcan</Dialect>
+    <Dialect>VO</Dialect>
     <OutputName>XSharp.VO.Latebound.Tests</OutputName>
     <StartupObject />
     <ApplicationIcon />
@@ -46,10 +46,13 @@
     <VO14>false</VO14>
     <VO15>true</VO15>
     <VO16>false</VO16>
-    <NamedArgs>false</NamedArgs>
+    <NamedArgs>False</NamedArgs>
     <XSharpProjectversion>2.0.5.0</XSharpProjectversion>
     <Includepaths />
     <Nostandarddefs />
+    <Memvar>False</Memvar>
+    <Undeclared>False</Undeclared>
+    <NoWin32Manifest>False</NoWin32Manifest>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>

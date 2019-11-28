@@ -107,7 +107,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		
 		[Fact, Trait("Category", "OOP")];
 		METHOD CallClipFuncTests() AS VOID
-			SetDecimalSep( (WORD) '.')
+			SetDecimalSep( (WORD) c'.')
 			assert.Equal("10.00", (STRING) _CallClipFunc("STR", {10,5,2}))  
 			assert.Equal("   10.01", (STRING) _CallClipFunc("STR", {10.01,8,2}))  
 			assert.Equal("   10.02", (STRING) _CallClipFunc("STR3", {10.02,8,2}))  

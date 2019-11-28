@@ -2848,7 +2848,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     foreach (var arg in context.ArgList._Args)
                     {
-                        if (arg.RefOut != null)
+                        if (arg.RefOut != null && arg.Expr != null)
                         {
                             RegisterParamAssign(arg.Expr.GetText());
                         }

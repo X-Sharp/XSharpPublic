@@ -7497,13 +7497,39 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitNamedArgument([NotNull] XP.NamedArgumentContext context)
         {
+            /*
+           namedArgument       :  {AllowNamedArgs}?  Name=identifierName Op=assignoperator  ( RefOut=(REF | OUT) )? Expr=expression?
+                                |   RefOut=OUT Var=VAR  Id=identifier
+                                |   RefOut=OUT Null=NULL
+                                |  ( RefOut=(REF | OUT) )? Expr=expression?
+                              ;
+           */
+            var refKeyword = context.RefOut?.SyntaxKeyword();
+            if (context.Null != null || context.Id != null)
+            {
+                TypeSyntax type = context.Type != null ? context.Type.Get<TypeSyntax>() : _impliedType;
+                VariableDesignationSyntax desig;
+                if (context.Null != null || context.Id.GetText() == "_")
+                {
+                    var token = SyntaxFactory.MakeToken(SyntaxKind.UnderscoreToken, "_");
+                    desig = _syntaxFactory.DiscardDesignation(token);
+                }
+                else
+                {
+                    var token = context.Id.Get<SyntaxToken>();
+                    desig = _syntaxFactory.SingleVariableDesignation(token);
+                }
+                var decl = _syntaxFactory.DeclarationExpression(type, desig);
+                var arg = _syntaxFactory.Argument(null, refKeyword, decl);
+                context.Put(arg);
+                return;
+            }
             if (context.Expr == null)
             {
                 context.Put(MakeArgument(GenerateMissingExpression(_options.Dialect == XSharpDialect.Core)));
                 return;
             }
             var expr = context.Expr.Get<ExpressionSyntax>();
-            var refKeyword = context.RefOut?.SyntaxKeyword();
             if (expr is PrefixUnaryExpressionSyntax pues && pues.OperatorToken.Kind == SyntaxKind.AmpersandToken)
             {
 

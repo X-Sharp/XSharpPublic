@@ -159,7 +159,7 @@ namespace Microsoft.CodeAnalysis
                 if (n != null)
                 {
                     if (n is XSharpParser.NamedArgumentContext nac)
-                        return nac.Expr == null;
+                        return nac.Expr == null && nac.Id == null && nac.Null == null;
                     if (n is XSharpParser.UnnamedArgumentContext uac)
                         return uac.Expr == null;
                 }

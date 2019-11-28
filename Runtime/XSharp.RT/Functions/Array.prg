@@ -5,6 +5,7 @@
 //
 
 // Use UDC below to standardize the NULL checks for the array arguments
+#command ARRAYNULL_RETURNZERO <aArray>    => IF <aArray> == NULL ; return 0 ; ENDIF
 #command ARRAYNOTNULL <aArray> => IF <aArray> == NULL ; THROW Error.NullArgumentError(__FUNCTION__,nameof(<aArray>), 1) ; ENDIF
 #command ARRAYNULL <aArray>    => IF <aArray> == NULL ; return <aArray> ; ENDIF
 
@@ -399,7 +400,7 @@ FUNCTION ADim(a AS ARRAY) AS DWORD
         /// <param name="a"></param>
     /// <returns>String that displays the dimensions in an array</returns>
 FUNCTION ADimPic(a AS ARRAY) AS STRING
-RETURN repl("[]", aDim(a))
+RETURN Repl("[]", ADim(a))
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ains/*" /> 
@@ -515,36 +516,36 @@ FUNCTION ArraySwap<T>(aTarget AS __ArrayBase<T>,dwElement AS DWORD,uNewValue AS 
     
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ascan/*" /> 
 FUNCTION AScan(aTarget AS ARRAY, uSearch AS USUAL,nStart := NIL AS USUAL,nCount := NIL AS USUAL) AS DWORD
-    ARRAYNOTNULL aTarget
+    ARRAYNULL_RETURNZERO aTarget
     RETURN ArrayHelpers.AScan( aTarget, uSearch, nStart, nCount, SetExact()) 
     
     
     /// <inheritdoc cref='M:XSharp.RT.Functions.AScan(XSharp.__Array,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)'/>
 FUNCTION AScan(aTarget AS ARRAY, uSearch AS USUAL,nStart AS USUAL) AS DWORD 
-    ARRAYNOTNULL aTarget
+    ARRAYNULL_RETURNZERO aTarget
     RETURN ArrayHelpers.AScan( aTarget, uSearch, nStart, NIL, SetExact()) 
     
     
     /// <inheritdoc cref='M:XSharp.RT.Functions.AScan(XSharp.__Array,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)'/>
 FUNCTION AScan(aTarget AS ARRAY, uSearch AS USUAL) AS DWORD 
-    ARRAYNOTNULL aTarget
+    ARRAYNULL_RETURNZERO aTarget
     RETURN ArrayHelpers.Ascan( aTarget, uSearch, 1, NIL, SetExact()) 
     
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ascanexact/*" /> 
 FUNCTION AScanExact( aTarget AS ARRAY, uSearch AS USUAL, nStart := NIL AS USUAL, nCount := NIL AS USUAL) AS DWORD
-    ARRAYNOTNULL aTarget
+    ARRAYNULL_RETURNZERO aTarget
     RETURN ArrayHelpers.Ascan( aTarget, uSearch, nStart, nCount, TRUE )
     
     
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ascanexact/*" /> 
 FUNCTION AScanExact( aTarget AS ARRAY, uSearch AS USUAL, nStart AS USUAL) AS DWORD 
-    ARRAYNOTNULL aTarget
+    ARRAYNULL_RETURNZERO aTarget
     RETURN ArrayHelpers.Ascan( aTarget, uSearch, nStart, NIL, TRUE )
     
     
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ascanexact/*" /> 
 FUNCTION AScanExact( aTarget AS ARRAY, uSearch AS USUAL) AS DWORD 
-    ARRAYNOTNULL aTarget
+    ARRAYNULL_RETURNZERO aTarget
     RETURN ArrayHelpers.Ascan( aTarget, uSearch, 1, NIL, TRUE )
     
     

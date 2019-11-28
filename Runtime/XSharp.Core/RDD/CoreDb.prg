@@ -209,7 +209,7 @@ CLASS XSharp.CoreDb
     INTERNAL STATIC METHOD Fail(e AS Exception) AS VOID
         RuntimeState.LastRDDError := e
         VAR oRDD := RuntimeState.Workareas:CurrentWorkArea
-        LOCAL procName := Procname(1) AS STRING
+        LOCAL procName := ProcName(1) AS STRING
         IF procName == "COREDB:DO"
             procName := ProcName(2)
         ENDIF
@@ -588,7 +588,11 @@ CLASS XSharp.CoreDb
         STATIC METHOD Dbf AS STRING
             LOCAL oRDD := CoreDb.CWA("DBF", FALSE) AS IRDD
             IF oRDD != NULL
-                RETURN (STRING) oRDD:Info(DBI_FULLPATH, NULL)
+                IF XSharp.Runtimestate.Dialect == XSharpDialect.FoxPro
+                   RETURN (STRING) oRDD:Info(DBI_FULLPATH, NULL)
+                ELSE
+                   RETURN oRDD:Alias
+                ENDIF
             ENDIF                            
             RETURN String.Empty
             

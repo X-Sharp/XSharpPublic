@@ -778,6 +778,16 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public String ShortName => Id.GetText();
 
         }
+
+        public partial class NamedArgumentContext
+        {
+            internal bool IsMissing => Expr == null && Id == null && Null == null;
+        }
+        public partial class UnnamedArgumentContext
+        {
+            internal bool IsMissing => Expr == null ;
+        }
+
 #endif
     }
 

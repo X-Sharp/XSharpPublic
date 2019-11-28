@@ -2964,6 +2964,32 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return;
         }
 
+
+        public override void ExitXFunctionExpression([NotNull] XP.XFunctionExpressionContext context)
+        {
+            // Date (aParam) will then be seen as a voconversion expression
+            // Date() without and with 3 parameters exist in the Runtime
+            // and Array() may be called with and without parameters.
+            var token = context.XFunc.Token;
+            var args = context.ArgList?.Get<ArgumentListSyntax>();
+            if (args == null)
+            {
+                args = EmptyArgumentList();
+            }
+            var count = args.Arguments.Count;
+            if (token.Type == XP.DATE && count == 1) // cast number to date
+            {
+                ExpressionSyntax expr = args.Arguments[0].Expression;
+                expr = MakeCastTo(_dateType, expr);
+                context.Put(expr);
+            }
+            else 
+            {
+                var name = token.Text;
+                context.Put(GenerateMethodCall(name, args, false));
+            }
+        }
+
         #endregion
 
         #region Entities and Clipper CC and PSZ support

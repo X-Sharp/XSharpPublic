@@ -314,6 +314,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
+        public override void ExitXFunctionExpression([NotNull] XSharpParser.XFunctionExpressionContext context)
+        {
+            NotInCore(context, context.XFunc.GetText().ToUpper() + " function");
+        }
+
         public override void ExitFoxclsctor([NotNull] XSharpParser.FoxclsctorContext context)
         {
             if (_options.fox1)

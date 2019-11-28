@@ -694,8 +694,10 @@ expression          : Expr=expression Op=(DOT | COLON) Name=simpleName          
                     | Left=expression Op=(DOT | COLON) AMP LPAREN Right=expression RPAREN  #accessMemberLate // aa:&(Expr). Expr must evaluate to a string which is the ivar name
                                                                                                         // can become IVarGet() or IVarPut when this expression is the LHS of an assignment
                     | Left=expression Op=(DOT | COLON) AMP Name=identifierName  #accessMemberLateName   // aa:&Name  Expr must evaluate to a string which is the ivar name
-                    | Expr=expression LPAREN                       RPAREN       #methodCall             // method call, no params
-                    | Expr=expression LPAREN ArgList=argumentList  RPAREN       #methodCall             // method call, params
+                    | Expr=expression LPAREN                      RPAREN        #methodCall             // method call, no params
+                    | Expr=expression LPAREN ArgList=argumentList RPAREN        #methodCall             // method call, params
+                    | XFunc=xbaseFunc LPAREN RPAREN                             #xFunctionExpression    // Array() or Date() no params
+                    | XFunc=xbaseFunc LPAREN ArgList=argumentList RPAREN        #xFunctionExpression    // Array(...) or Date(...) params
                     | Expr=expression LBRKT ArgList=bracketedArgumentList RBRKT #arrayAccess            // Array element access
                     | Left=expression Op=QMARK Right=boundExpression            #condAccessExpr         // expr ? expr
                     | {IsTypeCastAllowed() }? LPAREN Type=datatype RPAREN Expr=expression               #typeCast               // (typename) expr
@@ -982,6 +984,11 @@ identifierString    : Token=(ID | KWID | STRING_CONST)
                     | FoxToken=keywordfox
                     ;
 
+
+// xBase types that are also available as runtime function
+xbaseFunc           : Token=	// Aphabetical order
+                    ( ARRAY | DATE | DATETIME)
+                    ;
 
 // xBaseTypes are NOT available in the Core dialect and therefore separated here.
 xbaseType           : Token=	// Aphabetical order

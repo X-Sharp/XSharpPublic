@@ -378,3 +378,18 @@ FUNCTION SToDt(cDate AS STRING) AS DateTime
 		convertedDate := DateTime.MinValue
 	END TRY
 	RETURN	 convertedDate
+
+
+
+FUNCTION @@DateTime(nYear AS INT, nMonth AS INT, nDay AS INT) AS DateTime
+    RETURN System.DateTime{nYear, nMonth, nDay}
+    
+FUNCTION @@DateTime(nYear AS INT, nMonth AS INT, nDay AS INT, nHours AS INT) AS DateTime
+    RETURN System.DateTime{nYear, nMonth, nDay,nHours, 0, 0}
+    
+FUNCTION @@DateTime(nYear AS INT, nMonth AS INT, nDay AS INT, nHours AS INT, nMinutes AS INT) AS DateTime
+    RETURN System.DateTime{nYear, nMonth, nDay,nHours, nMinutes, 0}
+    
+FUNCTION @@DateTime(nYear AS INT, nMonth AS INT, nDay AS INT, nHours AS INT, nMinutes AS INT, nSeconds AS INT) AS DateTime
+    RETURN System.DateTime{nYear, nMonth, nDay,nHours, nMinutes, nSeconds}
+            

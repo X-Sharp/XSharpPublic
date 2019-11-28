@@ -120,6 +120,16 @@ FUNCTION SToD(cDate AS STRING) AS DATE
 FUNCTION Today() AS DATE
 	RETURN (DATE) DateTime.Now
 
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/today/*" />     
+FUNCTION @@Date() AS DATE
+	RETURN (DATE) DateTime.Now
+
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/condate/*" />     
+FUNCTION @@Date(dwYear AS DWORD,dwMonth AS DWORD,dwDay AS DWORD) AS DATE
+	RETURN ConDate(dwYear, dwMonth, dwDay)
+
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/tstring/*" />     
 FUNCTION TString(nSeconds AS USUAL) AS STRING
 	IF nSeconds:IsNil

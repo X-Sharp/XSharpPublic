@@ -208,11 +208,15 @@ USING System.Diagnostics
                 Array.Copy(bData,8, buffer, 0, buffer:Length)
                 RETURN buffer
             CASE FlexFieldType.String
-                IF bData[bData:Length-1] == 0
-                    RETURN encoding:GetString(bData,8, bData:Length-9)
-                ELSE
-                    RETURN encoding:GetString(bData,8, bData:Length-8)
+                // Some drivers are stupid enough to allocate blocks in the FPT with a zero length..        
+                IF Token:Length > 0
+                    IF bData[bData:Length-1] == 0
+                        RETURN encoding:GetString(bData,8, bData:Length-9)
+                    ELSE
+                        RETURN encoding:GetString(bData,8, bData:Length-8)
+                    ENDIF
                 ENDIF
+                RETURN ""
             CASE FlexFieldType.IndexBlock
             CASE FlexFieldType.Delete
             CASE FlexFieldType.Object16

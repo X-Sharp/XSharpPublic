@@ -675,10 +675,19 @@ INTERNAL STATIC CLASS OOPHelpers
 	STATIC METHOD DoSend(oObject AS OBJECT, cMethod AS STRING, args AS USUAL[] ) AS USUAL
 		LOCAL result AS USUAL
 		IF ! SendHelper(oObject, cMethod, args, OUT result)
-			LOCAL nomethodArgs := USUAL[]{ args:Length } AS USUAL[]
-			cMethod := cMethod:ToUpperInvariant()
-			RuntimeState.NoMethod := cMethod   // For NoMethod() function
-			Array.Copy( args, 0, noMethodArgs, 0, args:Length )
+			LOCAL nomethodArgs AS USUAL[]
+    	    cMethod := cMethod:ToUpperInvariant()
+    	    RuntimeState.NoMethod := cMethod   // For NoMethod() function
+            IF XSharp.RuntimeState.Dialect == XSharpDialect.Vulcan
+                // vulcan includes the method name
+			    nomethodArgs := USUAL[]{ args:Length+1 } 
+                noMethodArgs[__ARRAYBASE__] := cMethod
+			    Array.Copy( args, 0, noMethodArgs, 1, args:Length )
+            ELSE
+                // other dialects do not include the method name
+			    nomethodArgs := USUAL[]{ args:Length } 
+			    Array.Copy( args, 0, noMethodArgs, 0, args:Length )
+            ENDIF
 			IF ! SendHelper(oObject, "NoMethod" , noMethodArgs, OUT result)
                 VAR oerror := Error.VOError( EG_NOMETHOD, __ENTITY__, nameof(cMethod), 2, <OBJECT>{oObject, cMethod, args} )
                 oError:Description  := oError:Message + " '"+cMethod+"'"

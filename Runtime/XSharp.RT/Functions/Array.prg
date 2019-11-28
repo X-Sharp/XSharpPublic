@@ -732,7 +732,12 @@ FUNCTION ArrayBuild() AS ARRAY
 FUNCTION ArrayNew() AS ARRAY
     RETURN ArrayNew(0)
     
-    /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/arraynew/*" />  
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/arraynew/*" /> 
+FUNCTION @@Array() AS ARRAY
+    RETURN ArrayNew(0)
+
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/arraynew/*" />  
 FUNCTION ArrayNew(wElementList PARAMS USUAL[]) AS ARRAY
     LOCAL aDimInt AS INT[]
     LOCAL i AS INT
@@ -742,10 +747,14 @@ FUNCTION ArrayNew(wElementList PARAMS USUAL[]) AS ARRAY
     NEXT
     RETURN __Array.ArrayCreate(aDimInt)
     
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/arraynew/*" />  
+FUNCTION @@Array(wElementList PARAMS USUAL[]) AS ARRAY
+    RETURN ArrayNew(wElementList)
+
     
-    
-    /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/arraynew/*" /> 
-    /// <typeparam name="T">The type of the array elements</typeparam>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/arraynew/*" /> 
+/// <typeparam name="T">The type of the array elements</typeparam>
 FUNCTION ArrayNew<T>(wElementList AS DWORD) AS __ArrayBase<T> WHERE T IS NEW()
     RETURN __ArrayBase<T>{wElementList}
     

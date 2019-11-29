@@ -427,7 +427,7 @@ BEGIN NAMESPACE XSharp.RDD
             SUPER(oInfo,oRDD)
             RETURN
 
-        OVERRIDE METHOD GetValue(buffer AS BYTE[]) AS OBJECT
+    OVERRIDE METHOD GetValue(buffer AS BYTE[]) AS OBJECT
             LOCAL result AS IFloat
             LOCAL r8 AS REAL8
             IF SELF:IsNull()
@@ -442,11 +442,25 @@ BEGIN NAMESPACE XSharp.RDD
             LOCAL lDec := FALSE AS LOGIC
             LOCAL lValid := TRUE AS LOGIC
             LOCAL nBefore, nCount, nDec AS INT64
+            LOCAL lNegative := FALSE AS LOGIC
+            LOCAL lFirst    := TRUE AS LOGIC
             nBefore :=  nCount := nDec:= 0 
             FOR VAR i := nPos TO nLen -1
                 LOCAL b AS BYTE
                 b := buffer[SELF:Offset+i]
                 SWITCH b
+                CASE 43  // +
+                    IF ! lFirst             // in the middle is invalid
+                        lValid := FALSE
+                    ELSE
+                        lNegative := FALSE
+                    ENDIF
+                CASE 45  // -
+                    IF ! lFirst             // in the middle is invalid
+                        lValid := FALSE
+                    ELSE
+                        lNegative := TRUE
+                    ENDIF
                 CASE 48  // 0
                 CASE 49  // 1
                 CASE 50  // 2
@@ -456,7 +470,7 @@ BEGIN NAMESPACE XSharp.RDD
                 CASE 54  // 6
                 CASE 55  // 7
                 CASE 56  // 8
-                CASE 57  // 9
+                CASE 57  // 9 
                     nCount := nCount * 10 + (b - 48)
                     nDec   += 1
                 CASE 46  // .
@@ -468,18 +482,23 @@ BEGIN NAMESPACE XSharp.RDD
                         nDec    := 0
                         lDec    := TRUE
                     ENDIF
+                CASE 42  // *  Numeric overflow
                 OTHERWISE
                     lValid := FALSE        
                 END SWITCH
                 IF ! lValid
                     EXIT
                 ENDIF
+                lFirst := FALSE
             NEXT
             IF lValid
                 IF lDec
                     r8 := nBefore + (nCount * 1.0 / 10 ^ nDec)
                 ELSE
                     r8 := nCount
+                ENDIF
+                IF lNegative
+                    r8 := -r8
                 ENDIF
             ELSE
                  r8 := 0

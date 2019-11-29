@@ -54,7 +54,7 @@ CLASS XSharp.RuntimeState
 			SELF:_SetThreadValue(Set.Optimize , TRUE)
             SELF:_SetThreadValue(Set.Deleted , FALSE)
 			SELF:_SetThreadValue(Set.AutoShare, (LONG) AutoShareMode.Auto)
-			SELF:_SetThreadValue(Set.LockTries , 1U)
+			SELF:_SetThreadValue(Set.LockTries , 10U)
 			SELF:_SetThreadValue(Set.MemoBlockSize , 32U)
 			SELF:_SetThreadValue(Set.DefaultRDD , "DBFNTX")
 			SELF:_SetThreadValue(Set.Exclusive , TRUE)

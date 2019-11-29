@@ -1368,7 +1368,7 @@ CLASS XSharp.CoreDb
             info:BagName := cBagName
             info:Order   := oOrder
             VAR result := oRDD:OrderListFocus(info)
-            RAISE OrderChanged oRDD:OrderInfo(DBOI_NAME,NULL)
+            RAISE OrderChanged oRDD:OrderInfo(DBOI_NAME,info)
             RETURN  result
         CATCH e AS Exception
             Fail(e)
@@ -2138,7 +2138,7 @@ CLASS XSharp.CoreDb
                     LOCAL dboi := DbOpenInfo{} AS DbOpenInfo
                     LOCAL uiArea AS DWORD
                     uiArea := workareas:CurrentWorkAreaNO
-                    dboi:FileName     := Path.ChangeExtension( cName, NULL )
+                    dboi:FileName     := Path.Combine(path.GetDirectoryName(cName),Path.GetFileNameWithoutExtension(cName))
                     dboi:Extension    := Path.GetExtension( cName )
                     dboi:Shared      := lShare
                     dboi:ReadOnly    := lReadOnly

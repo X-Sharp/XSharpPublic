@@ -380,8 +380,10 @@ RETURN isOk
 METHOD HeaderLock( lockMode AS DbLockMode ) AS LOGIC
     //
 	IF lockMode == DbLockMode.Lock 
-    // Try to Lock for 123 ms
-		SELF:_HeaderLocked := SELF:_tryLock( SELF:_lockScheme:Offset, 1, (LONG)XSharp.RuntimeState.LockTries)
+    
+        DO WHILE ! SELF:_HeaderLocked
+		    SELF:_HeaderLocked := SELF:_tryLock( SELF:_lockScheme:Offset, 1, 123)
+        ENDDO
 	ELSE
 		TRY
 			VAR unlocked := FFUnlock( SELF:_hFile, (DWORD)SELF:_lockScheme:Offset, 1 )
@@ -519,22 +521,27 @@ PROTECTED METHOD _tryLock( nOffset AS INT64, nLong AS LONG, nTries AS LONG  ) AS
 	IF ! SELF:IsOpen
 		RETURN FALSE
 	ENDIF
-	
+	LOCAL lockEx := NULL AS Exception
 	REPEAT
 		TRY
 			locked := FFLock( SELF:_hFile, (DWORD)nOffset, (DWORD)nLong )
-		CATCH ex AS Exception
+        CATCH ex AS Exception
+            lockEx := ex
 			locked := FALSE
-			SELF:_dbfError(ex, SubCodes.ERDD_WRITE_LOCK,GenCode.EG_LOCK_ERROR,  "DBF._tryLock") 
 		END TRY
-		IF !locked 
+		IF !locked
 			nTries --
+            //DebOut32(ProcName(1)+" Lock Failed "+nTries:ToString()+" tries left, offset: "+ nOffSet:ToString()+" length: "+nLong:ToString())
 			IF nTries > 0 
-				System.Threading.Thread.Sleep( 1 )
+				System.Threading.Thread.Sleep( 1)
 			ENDIF
 		ENDIF
 	UNTIL ( locked .OR. (nTries==0) )
-    //
+    IF (! locked)
+         //DebOut32(ProcName(1)+" **Lock Failed ****")
+		 SELF:_dbfError(lockEx, SubCodes.ERDD_WRITE_LOCK,GenCode.EG_LOCK_ERROR,  "DBF._tryLock") 
+    ENDIF
+//
 RETURN locked
 
     // Lock the DBF File : All records are first unlocked, then the File is locked
@@ -580,14 +587,11 @@ PROTECTED METHOD _lockRecord( recordNbr AS LONG ) AS LOGIC
 		iOffset += (INT64)recordNbr
 	ENDIF
     //
-	TRY
-		locked := FFLock( SELF:_hFile, (DWORD)iOffset, (DWORD)SELF:_lockScheme:RecordSize )
-	CATCH ex AS Exception
-		locked := FALSE
-		SELF:_dbfError(ex, SubCodes.ERDD_WRITE_LOCK,GenCode.EG_LOCK_ERROR,  "DBF._lockRecord") 
-	END TRY
+    locked := SELF:_tryLock(iOffSet,(INT) SELF:_lockScheme:RecordSize , 123)
 	IF locked
 		SELF:_Locks:Add( recordNbr )
+    ELSE
+		SELF:_dbfError( SubCodes.ERDD_WRITE_LOCK,GenCode.EG_LOCK_ERROR,  "DBF._lockRecord") 
 	ENDIF
 RETURN locked
 
@@ -2251,15 +2255,14 @@ PROPERTY RecCount	AS LONG
 END PROPERTY
 
 PRIVATE METHOD _calculateRecCount()	AS LONG
-	LOCAL reccount AS LONG
+	LOCAL reccount := 0 AS LONG
     //
-	reccount := 0
 	IF SELF:IsOpen
-		VAR current := FTell( SELF:_hFile )
-		VAR fSize := FSeek3( SELF:_hFile, 0, FS_END )
-		FSeek3( SELF:_hFile, (LONG)current, FS_SET )
+		VAR stream  := FGetStream(SELF:_hFile)
+        stream:Flush()
+        VAR fSize := stream:Length
 		IF fSize != 0  // Just create file ?
-			reccount := ( fSize - SELF:_HeaderLength ) / SELF:_RecordLength
+			reccount := (LONG) ( fSize - SELF:_HeaderLength ) / SELF:_RecordLength
 		ENDIF
 	ENDIF
 RETURN reccount

@@ -11,7 +11,7 @@
     </header>
     <para styleclass="Normal">The -vo2 option directs the compiler to initialize all variables and fields of type STRING (System.String) and all elements of DIM ... AS STRING arrays to an empty string (/vo2[+|-]</para>
     <para styleclass="Heading2">Syntax</para>
-    <para styleclass="Code with box">-vo2[+ | -] <text styleclass="Normal">&#32;</text></para>
+    <para styleclass="Code with box">-vo2[+ | -] </para>
     <para styleclass="Heading2">Arguments</para>
     <para styleclass="List">+ | - <tab />Specifying +, or just -vo2, directs the compiler to initialize all variables and fields of type STRING and all elements of DIM ... AS STRING arrays to an empty string (String.Empty). </para>
     <para styleclass="Heading2">Remarks</para>

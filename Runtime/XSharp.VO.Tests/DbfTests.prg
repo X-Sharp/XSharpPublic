@@ -209,8 +209,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal((FLOAT) FieldGet(1),12.34 ) // 0,00
 
 			SetDecimalSep(Asc("."))
-			FieldPut(1 , 12.34)
-			Assert.Equal(12.34 , (FLOAT) FieldGet(1))
+			FieldPut(1 , -12.34)
+			Assert.Equal(-12.34 , (FLOAT) FieldGet(1))
 
 			DbCloseArea()
 		RETURN
@@ -691,8 +691,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			
 			Assert.True( DbUseArea(,,cFileName) )
 			DbAppend()
-			FieldPut(1 , 123)
-			Assert.True( FieldGet(1) == 123 )
+			FieldPut(1 , -123)
+			Assert.True( FieldGet(1) == -123 )
 			Assert.True( DbCloseArea() )
 		RETURN
 

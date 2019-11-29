@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -89,34 +89,36 @@ namespace XSharp.MacroCompiler
         internal static void InitializeWellKnownMembers()
         {
             var memberSymbols = new MemberSymbol[MemberNames.Length];
-
-            foreach (var m in (WellKnownMembers[])Enum.GetValues(typeof(WellKnownMembers)))
+            lock (MemberNames)
             {
-                var names = MemberNames[(int)m];
-                Debug.Assert(m.ToString().StartsWith(names.Replace("global::", "").Replace('.', '_').Replace("`", "_T").Replace("$","").Replace("@", "").Split('|','(').First()));
-                foreach (var proto in names.Split('|'))
+                foreach (var m in (WellKnownMembers[])Enum.GetValues(typeof(WellKnownMembers)))
                 {
-                    var name = proto.Replace("$", "").Split('(').First();
-                    var s = Binder.LookupFullName(name.Replace("global::","").Split('.').Select(n => n.Replace('@','.')).ToArray());
-                    if (s == null)
-                        continue;
-                    if (s is SymbolList)
+                    var names = MemberNames[(int)m];
+                    Debug.Assert(m.ToString().StartsWith(names.Replace("global::", "").Replace('.', '_').Replace("`", "_T").Replace("$", "").Replace("@", "").Split('|', '(').First()));
+                    foreach (var proto in names.Split('|'))
                     {
-                        var isStatic = proto.Contains('$');
-                        var args = proto.Replace(")", "").Split('(').Last().Split(',');
-                        var argTypes = args.Select(x => Binder.LookupFullName(x) as TypeSymbol).ToArray();
-                        s = (s as SymbolList).Symbols.Find( x => (x as MethodBaseSymbol)?.MethodBase.GetParameters().Length == args.Length
-                            && (x as MethodBaseSymbol)?.MethodBase.IsStatic == isStatic
-                            && (x as MethodBaseSymbol)?.MethodBase.GetParameters().All( y => args[y.Position] == "*" || y.ParameterType == argTypes[y.Position].Type ) == true );
-                        Debug.Assert(s is MethodBaseSymbol);
+                        var name = proto.Replace("$", "").Split('(').First();
+                        var s = Binder.LookupFullName(name.Replace("global::", "").Split('.').Select(n => n.Replace('@', '.')).ToArray());
+                        if (s == null)
+                            continue;
+                        if (s is SymbolList)
+                        {
+                            var isStatic = proto.Contains('$');
+                            var args = proto.Replace(")", "").Split('(').Last().Split(',');
+                            var argTypes = args.Select(x => Binder.LookupFullName(x) as TypeSymbol).ToArray();
+                            s = (s as SymbolList).Symbols.Find(x => (x as MethodBaseSymbol)?.MethodBase.GetParameters().Length == args.Length
+                               && (x as MethodBaseSymbol)?.MethodBase.IsStatic == isStatic
+                               && (x as MethodBaseSymbol)?.MethodBase.GetParameters().All(y => args[y.Position] == "*" || y.ParameterType == argTypes[y.Position].Type) == true);
+                            Debug.Assert(s is MethodBaseSymbol);
+                        }
+                        Debug.Assert(s is MemberSymbol);
+                        memberSymbols[(int)m] = s as MemberSymbol;
+                        break;
                     }
-                    Debug.Assert(s is MemberSymbol);
-                    memberSymbols[(int)m] = s as MemberSymbol;
-                    break;
+                    Debug.Assert(memberSymbols[(int)m] != null);
                 }
-                Debug.Assert(memberSymbols[(int)m] != null);
-            }
 
+            }
             Interlocked.CompareExchange(ref WellKnownMemberSymbols, memberSymbols, null);
         }
 

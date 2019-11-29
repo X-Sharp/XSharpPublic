@@ -482,11 +482,16 @@ BEGIN NAMESPACE XSharp.RDD
                         nDec    := 0
                         lDec    := TRUE
                     ENDIF
+                CASE 32
+                    IF !lDec
+                        lValid := FALSE
+                    ENDIF
+                    i := nLen   // exit loop
                 CASE 42  // *  Numeric overflow
                 OTHERWISE
                     lValid := FALSE        
                 END SWITCH
-                IF ! lValid
+                IF ! lValid 
                     EXIT
                 ENDIF
                 lFirst := FALSE

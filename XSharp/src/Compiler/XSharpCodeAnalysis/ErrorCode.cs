@@ -1710,6 +1710,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         ERR_FunctionsCannotHaveInitExit = 9089,
         ERR_DLLMethodNotSupported = 9090,
         ERR_DynamicVariablesNotAllowed = 9091,
+        WRN_UndeclaredVariableOrCursor = 9092,
+        WRN_UndeclaredCursor = 9093,
 
         // XPP dialect Error messages
         ERR_XPPMultipleInheritance = 9200,

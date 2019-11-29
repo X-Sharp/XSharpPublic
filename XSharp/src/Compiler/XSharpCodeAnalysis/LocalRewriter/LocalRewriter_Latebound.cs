@@ -18,26 +18,83 @@ namespace Microsoft.CodeAnalysis.CSharp
 {
     internal sealed partial class LocalRewriter
     {
+        private bool IsFoxAccessMember(BoundExpression loweredReceiver, out string areaName)
+        {
+            areaName = null;
+            if (_compilation.Options.Dialect == XSharpDialect.FoxPro)
+            {
+                var xNode = loweredReceiver.Syntax.XNode;
+                if (xNode?.Parent is XSharpParser.AccessMemberContext amc && amc.IsFox)
+                {
+                    if (loweredReceiver is BoundCall && amc.Expr is XSharpParser.PrimaryExpressionContext pc
+                        && pc.Expr is XSharpParser.NameExpressionContext)
+                    {
+                        areaName = amc.AreaName;
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        BoundLiteral _makeString(SyntaxNode node, string name)
+        {
+            return new BoundLiteral(node, ConstantValue.Create(name), _compilation.GetSpecialType(SpecialType.System_String));
+        }
+        BoundLiteral _makeLogic(SyntaxNode node, bool value)
+        {
+            return new BoundLiteral(node, ConstantValue.Create(value), _compilation.GetSpecialType(SpecialType.System_Boolean));
+        }
+
         public BoundExpression MakeVODynamicGetMember(BoundExpression loweredReceiver, string name)
         {
+            // check for FoxPro late access, such as Customer.LastName
+            var syntax = loweredReceiver.Syntax;
+            var nameExpr = _makeString(loweredReceiver.Syntax, name);
+            if (IsFoxAccessMember(loweredReceiver, out var areaName))
+            {
+                string method = ReservedNames.FieldGetWaUndeclared;
+                var exprUndeclared = _makeLogic(syntax, _compilation.Options.UndeclaredLocalVars);
+                var areaExpr = _makeString(syntax, areaName);
+                var expr = _factory.StaticCall(_compilation.RuntimeFunctionsType(), method, areaExpr, nameExpr, exprUndeclared);
+                return expr;
+            }
+            if (!_compilation.Options.LateBinding)
+                return null;
             var usualType = _compilation.UsualType();
             if (((NamedTypeSymbol)loweredReceiver.Type).ConstructedFrom == usualType)
                 loweredReceiver = _factory.StaticCall(usualType, ReservedNames.ToObject, loweredReceiver);
-            return _factory.StaticCall(_compilation.RuntimeFunctionsType(), ReservedNames.IVarGet,
-                MakeConversionNode(loweredReceiver, _compilation.GetSpecialType(SpecialType.System_Object), false),
-                new BoundLiteral(loweredReceiver.Syntax, ConstantValue.Create(name), _compilation.GetSpecialType(SpecialType.System_String)));
+            loweredReceiver = MakeConversionNode(loweredReceiver, _compilation.GetSpecialType(SpecialType.System_Object), false);
+            return _factory.StaticCall(_compilation.RuntimeFunctionsType(), ReservedNames.IVarGet, loweredReceiver, nameExpr);
+
+
         }
 
         public BoundExpression MakeVODynamicSetMember(BoundExpression loweredReceiver, string name, BoundExpression loweredValue)
         {
+            var syntax = loweredReceiver.Syntax;
             var usualType = _compilation.UsualType();
+            var value = loweredValue.Type == null ? new BoundDefaultExpression(syntax, usualType)
+                : MakeConversionNode(loweredValue, usualType, false);
+            var nameExpr = _makeString(syntax, name);
+            if (IsFoxAccessMember(loweredReceiver, out var areaName))
+            {
+                string method =  ReservedNames.FieldSetWaUndeclared;
+                var exprUndeclared = _makeLogic(syntax, _compilation.Options.UndeclaredLocalVars);
+                var areaExpr = _makeString(syntax, areaName);
+                var expr = _factory.StaticCall(_compilation.RuntimeFunctionsType(), method, areaExpr, nameExpr,value, exprUndeclared);
+                return expr;
+            }
+
+            if (!_compilation.Options.LateBinding)
+                return null;
+
             if (((NamedTypeSymbol)loweredReceiver.Type).ConstructedFrom == usualType)
                 loweredReceiver = _factory.StaticCall(usualType, ReservedNames.ToObject, loweredReceiver);
-            return _factory.StaticCall(_compilation.RuntimeFunctionsType(), ReservedNames.IVarPut,
-                MakeConversionNode(loweredReceiver, _compilation.GetSpecialType(SpecialType.System_Object), false),
-                new BoundLiteral(loweredReceiver.Syntax, ConstantValue.Create(name), _compilation.GetSpecialType(SpecialType.System_String)),
-                loweredValue.Type == null ? new BoundDefaultExpression(loweredValue.Syntax, usualType)
-                : MakeConversionNode(loweredValue, usualType, false));
+            loweredReceiver = MakeConversionNode(loweredReceiver, _compilation.GetSpecialType(SpecialType.System_Object), false);
+            return _factory.StaticCall(_compilation.RuntimeFunctionsType(), ReservedNames.IVarPut, loweredReceiver, nameExpr, value);
+
+
         }
 
         public BoundExpression MakeVODynamicInvokeMember(BoundExpression loweredReceiver, string name,BoundDynamicInvocation node, ImmutableArray<BoundExpression> args)           

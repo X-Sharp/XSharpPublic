@@ -255,7 +255,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
 #if XSHARP
             // Bind Late bound call.
-            else if (Compilation.Options.HasRuntime && Compilation.Options.LateBinding &&
+            else if (Compilation.Options.LateBindingOrFox &&
                 boundExpression.Kind != BoundKind.MethodGroup && (object)boundExpression.Type != null && 
                 (boundExpression.Type.IsObjectType() || ((NamedTypeSymbol)boundExpression.Type).ConstructedFrom == Compilation.UsualType()) &&
                 !(expression.IsKind(SyntaxKind.SimpleMemberAccessExpression) && GetName((ExpressionSyntax)expression) == ".ctor"))

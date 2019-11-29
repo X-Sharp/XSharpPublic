@@ -829,9 +829,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case BoundKind.DynamicMemberAccess:
                     var dynamicMemberAccess = (BoundDynamicMemberAccess)transformedExpression;
 #if XSHARP
-                    if (_compilation.Options.HasRuntime && _compilation.Options.LateBinding && !dynamicMemberAccess.Receiver.HasDynamicType())
+                    if (_compilation.Options.LateBindingOrFox && !dynamicMemberAccess.Receiver.HasDynamicType())
                     {
-                        return MakeVODynamicGetMember(dynamicMemberAccess.Receiver, dynamicMemberAccess.Name);
+                        var expr = MakeVODynamicGetMember(dynamicMemberAccess.Receiver, dynamicMemberAccess.Name);
+                        if (expr != null)
+                            return expr;
                     }
 #endif
                     return _dynamicFactory.MakeDynamicGetMember(dynamicMemberAccess.Receiver, dynamicMemberAccess.Name, resultIndexed: false).ToExpression();

@@ -181,9 +181,11 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string MemVarInit = "__MemVarInit";
         internal const string MemVarDecl = "__MemVarDecl";
         internal const string FieldGet = "__FieldGet";
-        internal const string FieldPut = "__FieldSet";
+        internal const string FieldSet = "__FieldSet";
         internal const string FieldGetWa = "__FieldGetWa";
-        internal const string FieldPutWa = "__FieldSetWa";
+        internal const string FieldSetWa = "__FieldSetWa";
+        internal const string FieldGetWaUndeclared = "__FieldGetWa2";
+        internal const string FieldSetWaUndeclared = "__FieldSetWa2";
         internal const string PushWorkarea ="__pushWorkarea";
         internal const string PopWorkarea = "__popWorkarea";
         internal const string String2Psz = "String2Psz";
@@ -209,8 +211,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string CompilerServices = "global::Vulcan.Internal.CompilerServices.";
         internal const string FieldGet = VulcanRTFuncs + ReservedNames.FieldGet;
         internal const string FieldGetWa = VulcanRTFuncs + ReservedNames.FieldGetWa;
-        internal const string FieldSet = VulcanRTFuncs + ReservedNames.FieldPut;
-        internal const string FieldSetWa = VulcanRTFuncs + ReservedNames.FieldPutWa;
+        internal const string FieldSet = VulcanRTFuncs + ReservedNames.FieldSet;
+        internal const string FieldSetWa = VulcanRTFuncs + ReservedNames.FieldSetWa;
         internal const string NullDate = VulcanQualifiedTypeNames.Date +  ReservedNames.NullDate;
         internal const string UsualNIL = VulcanQualifiedTypeNames.Usual + ReservedNames.NIL;
         internal const string PszRelease = CompilerServices + ReservedNames.String2PszRelease;
@@ -244,8 +246,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         // In RT assembly
         internal const string FieldGet = GlobalRT + ReservedNames.FieldGet;
         internal const string FieldGetWa = GlobalRT + ReservedNames.FieldGetWa;
-        internal const string FieldSet = GlobalRT + ReservedNames.FieldPut;
-        internal const string FieldSetWa = GlobalRT + ReservedNames.FieldPutWa;
+        internal const string FieldSet = GlobalRT + ReservedNames.FieldSet;
+        internal const string FieldSetWa = GlobalRT + ReservedNames.FieldSetWa;
         internal const string AreaEval = GlobalRT + ReservedNames.AreaEval;
         internal const string MemVarGet = GlobalRT + ReservedNames.MemVarGet;
         internal const string MemVarPut = GlobalRT + ReservedNames.MemVarPut;

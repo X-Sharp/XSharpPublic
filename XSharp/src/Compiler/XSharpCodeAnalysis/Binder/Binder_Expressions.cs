@@ -411,7 +411,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             bool indexed
             )
         {
-            if (Compilation.Options.HasRuntime && Compilation.Options.LateBinding && right.Kind() != SyntaxKind.GenericName)
+            if (Compilation.Options.LateBindingOrFox && right.Kind() != SyntaxKind.GenericName)
             {
                 string propName = right.Identifier.ValueText;
                 if (leftType != null)
@@ -769,7 +769,39 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             // undeclared variables are allowed when the dialect supports memvars and memvars are enabled
             // or in the 'full' macro compiler
-            if (expression == null && (Compilation.Options.MacroScript || Compilation.Options.SupportsMemvars || memvarorfield))
+            bool isFoxMemberAccess = false;
+            if (expression == null)
+            {
+                // Foxpro member access is transformed in 2 ways:
+                // M.SomeVar is transformed to a SomeVar NameExpression node. The AccessMember context is then connected to SomeVar
+                // The reason for this is that FoxPro also allows M. prefix for local variables.
+                // Customer.SomeVar is transformed to a MemberAccess node with a Customer Expression and a SomeVar name. The AccessMember is then the XNode of the parent.
+                var xnode = node?.XNode;
+                if (!(xnode is AccessMemberContext))
+                {
+                    xnode = node?.Parent?.XNode;
+                }
+                if (xnode is AccessMemberContext amc && amc.IsFox)
+                {
+                    isFoxMemberAccess = true;
+                    if (amc.HasMPrefix )
+                    {
+                        memvarorfield = Compilation.Options.SupportsMemvars;
+                        if (memvarorfield)
+                        {
+                            // convert "M.FieldName" to "Xs$Memvar->FieldName"
+                            name = XSharpSpecialNames.MemVarPrefix + "->" + amc.FieldName;
+                        }
+                        else
+                        {
+                            // M. prefix and no support for Memvars, then the M. prefix is invalud and also not a workarea prefix.
+                            isFoxMemberAccess = false;
+                        }
+                    }
+                }
+            }
+            if (expression == null && (Compilation.Options.MacroScript || Compilation.Options.SupportsMemvars
+                || memvarorfield || isFoxMemberAccess))
             {
                 var type = Compilation.RuntimeFunctionsType();
                 bool declared = false;
@@ -782,6 +814,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                     // alias->fieldname
                     // Xs$Memvar->Memvarname
                     // Xs$Field->Memvar
+                    // or the left hand side of a Foxpro Customer.LastName syntax
+                    // 
                     var parts = name.Split(new string[] { "->" }, StringSplitOptions.None);
                     if (parts.Length == 2)
                     {
@@ -796,18 +830,30 @@ namespace Microsoft.CodeAnalysis.CSharp
                         else if (parts[0] == XSharpSpecialNames.FieldPrefix)
                         {
                             get = GetCandidateMembers(type, ReservedNames.FieldGet, LookupOptions.MustNotBeInstance, this);
-                            set = GetCandidateMembers(type, ReservedNames.FieldPut, LookupOptions.MustNotBeInstance, this);
+                            set = GetCandidateMembers(type, ReservedNames.FieldSet, LookupOptions.MustNotBeInstance, this);
                         }
                         else
                         {
                             get = GetCandidateMembers(type, ReservedNames.FieldGetWa, LookupOptions.MustNotBeInstance, this);
-                            set = GetCandidateMembers(type, ReservedNames.FieldPutWa, LookupOptions.MustNotBeInstance, this);
+                            set = GetCandidateMembers(type, ReservedNames.FieldSetWa, LookupOptions.MustNotBeInstance, this);
                             alias = parts[0];
                         }
                     }
                 }
+                var warning = ErrorCode.WRN_UndeclaredVariable;
+                if (isFoxMemberAccess)
+                {
+                    if (Compilation.Options.UndeclaredLocalVars)
+                    {
+                        warning = ErrorCode.WRN_UndeclaredVariableOrCursor;
+                    }
+                    else
+                    {
+                        warning = ErrorCode.WRN_UndeclaredCursor;
+                    }
+                }
 
-                if (Compilation.Options.UndeclaredLocalVars || declared)
+                if (Compilation.Options.UndeclaredLocalVars || declared || isFoxMemberAccess)
                 {
                     if (get.Length == 1 && set.Length == 1 && get[0] is MethodSymbol && set[0] is MethodSymbol)
                     {
@@ -824,7 +870,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         expression = new BoundPropertyAccess(node, null, ps, LookupResultKind.Viable, Compilation.UsualType());
                         if (!Compilation.Options.MacroScript && !declared)
                         {
-                            Error(diagnostics, ErrorCode.WRN_UndeclaredVariable, node.Location, name);
+                            Error(diagnostics, warning, node.Location, name);
 
                             // find entity and set flag HasUndeclared
                             var parent = node.XNode as XSharpParserRuleContext;

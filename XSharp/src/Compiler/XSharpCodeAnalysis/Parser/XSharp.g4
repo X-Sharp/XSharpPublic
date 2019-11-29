@@ -690,7 +690,7 @@ assignoperator      : Op = (ASSIGN_OP | EQ)
                     ;
 
 expression          : Expr=expression Op=(DOT | COLON) Name=simpleName          #accessMember           // member access. 
-                    |    Op=(DOT|COLON|COLONCOLON)   Name=simpleName           #accessMember           // XPP & Harbour SELF member access or inside WITH
+                    |    Op=(DOT|COLON|COLONCOLON)   Name=simpleName           #accessMember            // XPP & Harbour SELF member access or inside WITH
                     | Left=expression Op=(DOT | COLON) AMP LPAREN Right=expression RPAREN  #accessMemberLate // aa:&(Expr). Expr must evaluate to a string which is the ivar name
                                                                                                         // can become IVarGet() or IVarPut when this expression is the LHS of an assignment
                     | Left=expression Op=(DOT | COLON) AMP Name=identifierName  #accessMemberLateName   // aa:&Name  Expr must evaluate to a string which is the ivar name

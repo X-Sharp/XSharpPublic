@@ -15425,11 +15425,29 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; has not been declared. Assuming this is a CURSOR..
+        /// </summary>
+        internal static string WRN_UndeclaredCursor {
+            get {
+                return ResourceManager.GetString("WRN_UndeclaredCursor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Variable &apos;{0}&apos; has not been declared. Assuming this is a FIELD or a MEMVAR..
         /// </summary>
         internal static string WRN_UndeclaredVariable {
             get {
                 return ResourceManager.GetString("WRN_UndeclaredVariable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; has not been declared. Assuming this is a VARIABLE or a CURSOR..
+        /// </summary>
+        internal static string WRN_UndeclaredVariableOrCursor {
+            get {
+                return ResourceManager.GetString("WRN_UndeclaredVariableOrCursor", resourceCulture);
             }
         }
         

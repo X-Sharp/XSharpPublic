@@ -49,9 +49,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                         var memberAccess = (BoundDynamicMemberAccess)left;
                         var loweredReceiver = VisitExpression(memberAccess.Receiver);
 #if XSHARP
-                        if (_compilation.Options.HasRuntime && _compilation.Options.LateBinding && !loweredReceiver.HasDynamicType())
+                        if (_compilation.Options.LateBindingOrFox && !loweredReceiver.HasDynamicType())
                         {
-                            return MakeVODynamicSetMember(loweredReceiver, memberAccess.Name, loweredRight);
+                            var expr = MakeVODynamicSetMember(loweredReceiver, memberAccess.Name, loweredRight);
+                            if (expr != null)
+                                return expr;
                         }
 #endif
                         return _dynamicFactory.MakeDynamicSetMember(loweredReceiver, memberAccess.Name, loweredRight).ToExpression();
@@ -104,9 +106,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case BoundKind.DynamicMemberAccess:
                     var memberAccess = (BoundDynamicMemberAccess)rewrittenLeft;
 #if XSHARP
-                    if (_compilation.Options.HasRuntime && _compilation.Options.LateBinding && !memberAccess.Receiver.HasDynamicType())
+                    if (_compilation.Options.LateBindingOrFox && !memberAccess.Receiver.HasDynamicType())
                     {
-                        return MakeVODynamicSetMember(memberAccess.Receiver, memberAccess.Name, rewrittenRight);
+                        var expr = MakeVODynamicSetMember(memberAccess.Receiver, memberAccess.Name, rewrittenRight);
+                        if (expr != null)
+                            return expr;
                     }
 #endif
                     return _dynamicFactory.MakeDynamicSetMember(

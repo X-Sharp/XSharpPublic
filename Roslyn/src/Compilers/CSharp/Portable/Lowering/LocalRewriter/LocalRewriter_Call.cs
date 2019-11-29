@@ -87,9 +87,11 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             Debug.Assert(loweredReceiver != null);
 #if XSHARP
-            if (_compilation.Options.HasRuntime && _compilation.Options.LateBinding && !loweredReceiver.HasDynamicType())
+            if (_compilation.Options.LateBindingOrFox && !loweredReceiver.HasDynamicType())
             {
-                return MakeVODynamicInvokeMember(loweredReceiver, name, node, loweredArguments);
+                var expr = MakeVODynamicInvokeMember(loweredReceiver, name, node, loweredArguments);
+                if (expr != null)
+                    return expr;
             }
 #endif
             return _dynamicFactory.MakeDynamicMemberInvocation(
@@ -1614,9 +1616,11 @@ namespace Microsoft.CodeAnalysis.CSharp
             Debug.Assert(node.TypeArgumentsOpt.IsDefault);
             var loweredReceiver = VisitExpression(node.Receiver);
 #if XSHARP
-            if (_compilation.Options.HasRuntime && _compilation.Options.LateBinding && !loweredReceiver.HasDynamicType())
+            if (_compilation.Options.LateBindingOrFox  && !loweredReceiver.HasDynamicType())
             {
-                return MakeVODynamicGetMember(loweredReceiver, node.Name);
+                var expr =  MakeVODynamicGetMember(loweredReceiver, node.Name);
+                if (expr != null)
+                    return expr;
             }
 #endif
             return _dynamicFactory.MakeDynamicGetMember(loweredReceiver, node.Name, node.Indexed).ToExpression();

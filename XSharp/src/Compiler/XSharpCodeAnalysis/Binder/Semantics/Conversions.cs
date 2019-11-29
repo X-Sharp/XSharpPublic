@@ -382,7 +382,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
             }
 
-            if (Compilation.Options.LateBinding ||                 // lb
+            if (Compilation.Options.LateBindingOrFox ||                 // lb
                 Compilation.Options.VOImplicitCastsAndConversions) // vo7
             {
                 if (srcType == SpecialType.System_Object)

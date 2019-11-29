@@ -788,6 +788,22 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             internal bool IsMissing => Expr == null ;
         }
 
+        [Flags]
+        internal enum FoxFlags: byte
+        {
+            None = 0,
+            MemberAccess = 1,
+            MPrefix = 2,
+        }
+        public partial class AccessMemberContext
+        {
+            internal FoxFlags foxFlags = FoxFlags.None;
+            internal bool IsFox => foxFlags != FoxFlags.None;
+            internal bool HasMPrefix => foxFlags.HasFlag(FoxFlags.MPrefix);
+            internal string AreaName => Expr == null ? "" : Expr.GetText().ToUpper();
+            internal string FieldName => Name.GetText().ToUpper();
+        }
+
 #endif
     }
 

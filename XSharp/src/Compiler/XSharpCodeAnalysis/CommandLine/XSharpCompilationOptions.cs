@@ -80,7 +80,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             RuntimeAssemblies.HasFlag(RuntimeAssemblies.XSharpCore);
         // Access to the console output
         public TextWriter ConsoleOutput { get; private set; }
-
+        public bool LateBindingOrFox => HasRuntime && (LateBinding || Dialect == XSharpDialect.FoxPro);
         public void SetXSharpSpecificOptions(XSharpSpecificCompilationOptions opt)
         {
             if (opt != null)

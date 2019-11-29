@@ -98,7 +98,23 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
        
         public override void ExitAccessMember([NotNull] XP.AccessMemberContext context)
         {
+            if (context.Expr != null && context.Op.Type == XP.DOT )  // do not assume an area when no Expr (inside WITH Block)
+            {
+                context.foxFlags |= XP.FoxFlags.MemberAccess;
+            }
             CoreAccessMember(context);
+            // FoxPro uses M. for Locals and memvars
+            // We assume it is a local and then will later correct this inside Binder_Expressions.cs if we can't find the local
+            if (context.Expr != null && context.AreaName == "M")
+            {
+                context.foxFlags |= XP.FoxFlags.MPrefix;
+                context.Put(context.Name.Get<ExpressionSyntax>());
+                var ent = CurrentEntity;
+                if (ent != null && _options.SupportsMemvars)
+                {
+                    ent.Data.HasMemVars = true;
+                }
+            }
         }
 
         public override void ExitFoxexpressionStmt([NotNull] XP.FoxexpressionStmtContext context)

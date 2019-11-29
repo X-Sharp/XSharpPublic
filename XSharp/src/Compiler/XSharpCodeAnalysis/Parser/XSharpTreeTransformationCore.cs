@@ -7824,6 +7824,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 }
                             }
                             break;
+                        case '/':
+                                sbCurrent.Append('\\');
+                                break;
                         case '"':
                         case 'r':
                         case 't':

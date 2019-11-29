@@ -3325,6 +3325,39 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		END METHOD
 
 
+        [Fact, Trait("Category", "DBF")];
+		METHOD Check_numeric_values() AS VOID
+			LOCAL cDbf AS STRING
+			LOCAL aValues AS ARRAY
+			RddSetDefault("DBFCDX")
+			cDBF := GetTempFileName()
+			
+			aValues := {123.45, 894837823.0, -323212, 564342.99, -54323.11, 0, 0.00, -0.02, -442, -42523423.7, 12345678, 4324, -6653342.16,;
+						-5563423.44, 64346542.11, 566666.1, -1, -1.5, -5555, 1000000, -432423, 53453, 111, 9999999.99, -999999.99}
+			
+			DbfTests.CreateDatabase(cDbf , { { "NFIELD" , "N" , 12 , 0 } , { "NFIELDDEC" , "N" , 12 , 2 } } )
+			DbUseArea(TRUE,  , cDbf)
+			DbCreateIndex(cDbf , "NFIELDDEC")
+			FOR LOCAL n := 1 AS INT UPTO ALen(aValues)
+				DbAppend()
+				FieldPut(1, aValues[n])
+				FieldPut(2, aValues[n])
+			NEXT
+			
+			aValues := ASort(aValues , , , {|a,b| a < b})
+			DbGoTop()
+			LOCAL nCount := 0 AS INT
+			DO WHILE .not. EOF()
+				nCount ++
+				Assert.True(FieldGet(1) == Round(aValues[nCount] , 0))
+				Assert.True(FieldGet(2) == aValues[nCount])
+				DbSkip()
+			END DO
+			Assert.Equal(nCount, (INT)ALen(aValues))
+			
+			DbCloseArea()
+		RETURN
+
 
 		STATIC PRIVATE METHOD GetTempFileName() AS STRING
            STATIC nCounter AS LONG

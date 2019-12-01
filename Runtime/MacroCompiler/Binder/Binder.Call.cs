@@ -1,4 +1,4 @@
-using System;
+Ôªøusing System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -48,10 +48,10 @@ namespace XSharp.MacroCompiler
             if (Options.Resolver != null)
             {
                 res = matching[0];
-                var argt˝pes = new System.Type[args.Args.Count];
+                var argtœçpes = new System.Type[args.Args.Count];
                 for (int i = 0; i < args.Args.Count; i++)
                 {
-                    argt˝pes[i] = args.Args[i].Expr.Datatype.Type;
+                    argtœçpes[i] = args.Args[i].Expr.Datatype.Type;
                 }
                 Symbol lhs = matching[0].Symbol;
                 int result = 0;
@@ -81,7 +81,7 @@ namespace XSharp.MacroCompiler
                         m1 = p1.Property;
                         m2 = p2.Property;
                     }
-                    result = this.Options.Resolver(m1, m2, argt˝pes);
+                    result = this.Options.Resolver(m1, m2, argtœçpes);
                     switch (result)
                     {
                         case 1:

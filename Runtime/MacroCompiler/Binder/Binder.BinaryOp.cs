@@ -42,7 +42,7 @@ namespace XSharp.MacroCompiler
         {
             // When one or both of the datatypes is Usual or Object then convert to Usual and let
             // the operators in the Usual type handle the binary operation
-            if (left.Datatype != right.Datatype && (left.Datatype.IsUsualOrObject() || right.Datatype.IsUsualOrObject()))
+            if (left.Datatype.IsUsualOrObject() || right.Datatype.IsUsualOrObject())
             {
                 Convert(ref left, Compilation.Get(NativeType.Usual), options);
                 Convert(ref right, Compilation.Get(NativeType.Usual), options);

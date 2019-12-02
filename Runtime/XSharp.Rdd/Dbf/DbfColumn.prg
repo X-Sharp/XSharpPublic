@@ -444,10 +444,15 @@ BEGIN NAMESPACE XSharp.RDD
             LOCAL nBefore, nCount, nDec AS INT64
             LOCAL lNegative := FALSE AS LOGIC
             LOCAL lFirst    := TRUE AS LOGIC
+            LOCAL lLast     := FALSE AS LOGIC
             nBefore :=  nCount := nDec:= 0 
             FOR VAR i := nPos TO nLen -1
                 LOCAL b AS BYTE
                 b := buffer[SELF:Offset+i]
+                IF lLast .AND. b != 32
+                    lValid := FALSE
+                    EXIT
+                ENDIF
                 SWITCH b
                 CASE 43  // +
                     IF ! lFirst             // in the middle is invalid
@@ -483,10 +488,7 @@ BEGIN NAMESPACE XSharp.RDD
                         lDec    := TRUE
                     ENDIF
                 CASE 32
-                    IF !lDec
-                        lValid := FALSE
-                    ENDIF
-                    i := nLen   // exit loop
+                    lLast := TRUE       
                 CASE 42  // *  Numeric overflow
                 OTHERWISE
                     lValid := FALSE        

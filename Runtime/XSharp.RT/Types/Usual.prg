@@ -288,10 +288,10 @@ BEGIN NAMESPACE XSharp
             SELF:_valueData:s       := s
             RETURN
 
-        [DebuggerStepThroughAttribute] [MethodImpl(MethodImplOptions.AggressiveInlining)];
-        PRIVATE CONSTRUCTOR(o AS OBJECT, lIsNull AS LOGIC)
-            SELF(__UsualType.Object)
-        
+       [DebuggerStepThroughAttribute] [MethodImpl(MethodImplOptions.AggressiveInlining)];
+        PUBLIC CONSTRUCTOR(u AS USUAL, lIsByRef AS LOGIC)
+            SELF := u
+            SELF:_flags:isByRef := lIsByRef
             RETURN
 
         #endregion

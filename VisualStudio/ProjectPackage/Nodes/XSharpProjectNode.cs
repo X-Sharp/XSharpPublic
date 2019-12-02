@@ -290,6 +290,19 @@ namespace XSharp.Project
             return options;
         }
 
+        private void invalidateOptions()
+        {
+            this.options = null;
+            this._outputFile = null;
+            this._outputPath = null;
+
+        }
+        public override void SetProjectFileDirty(bool value)
+        {
+            base.SetProjectFileDirty(value);
+            invalidateOptions();
+        }
+
         public override ProjectOptions GetProjectOptions(ConfigCanonicalName configCanonicalName)
         {
             if (this.options != null)
@@ -297,7 +310,7 @@ namespace XSharp.Project
                 var xoptions = this.options as XSharpProjectOptions;
                 if (xoptions.ConfigCanonicalName != configCanonicalName)
                 {
-                    this.options = null;
+                    invalidateOptions();
                 }
             }
             if (this.options == null)
@@ -309,6 +322,7 @@ namespace XSharp.Project
             }
             return this.options;
         }
+
         public override string GetProjectProperty(string propertyName, bool resetCache, bool unevaluated = false)
         {
             if (BuildProject != null)
@@ -1692,6 +1706,7 @@ namespace XSharp.Project
         {
             _config = config;
             base.SetConfiguration(config);
+            invalidateOptions();
             if (this.designTimeAssemblyResolution == null)
             {
                 this.designTimeAssemblyResolution = new DesignTimeAssemblyResolution();
@@ -1859,10 +1874,14 @@ namespace XSharp.Project
         {
             get
             {
-                var xoptions = GetProjectOptions(this.CurrentConfig.ConfigCanonicalName) as XSharpProjectOptions;
-                if (xoptions.ParseOptions == null)
-                    xoptions.BuildCommandLine();
-                return xoptions.ParseOptions;
+                if (this.CurrentConfig != null)
+                {
+                    var xoptions = GetProjectOptions(this.CurrentConfig.ConfigCanonicalName) as XSharpProjectOptions;
+                    if (xoptions.ParseOptions == null)
+                        xoptions.BuildCommandLine();
+                    return xoptions.ParseOptions;
+                }
+                return XSharpParseOptions.Default;
             }
         }
         bool _closing = false;

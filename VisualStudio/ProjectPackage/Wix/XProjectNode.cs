@@ -349,8 +349,12 @@ namespace XSharp.Project
             get
             {
                 EnvDTE.Project automationObject = this.GetAutomationObject() as EnvDTE.Project;
-                var name = new ConfigCanonicalName(Utilities.GetActiveConfigurationName(automationObject), Utilities.GetActivePlatformName(automationObject));
-                return new XProjectConfig(this, name);
+                if (automationObject != null)
+                {
+                    var name = new ConfigCanonicalName(Utilities.GetActiveConfigurationName(automationObject), Utilities.GetActivePlatformName(automationObject));
+                    return new XProjectConfig(this, name);
+                }
+                return null;
             }
         }
 

@@ -19,8 +19,16 @@ using Roslyn.Utilities;
 
 namespace Microsoft.CodeAnalysis.CSharp.Symbols
 {
+    internal class XsFoxMemberAccessSymbol : XsVariableSymbol
+    {
+        internal XsFoxMemberAccessSymbol(string alias, string name, MethodSymbol getMethod, MethodSymbol setMethod, TypeSymbol type):
+            base(alias, name, getMethod, setMethod, type)
+        {
+        }
+    }
+
     [DebuggerDisplay("{GetDebuggerDisplay(), nq}")]
-    internal sealed class XsVariableSymbol : PropertySymbol
+    internal class XsVariableSymbol : PropertySymbol
     {
         private readonly string _name;
         private readonly string _alias;

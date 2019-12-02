@@ -918,9 +918,13 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             Debug.Assert((object)propertySymbol != null);
             Debug.Assert(propertySyntax != null);
-
+#if XSHARP
+            if ((RequiresReferenceToLocation(valueKind) || checkingReceiver) &&
+                propertySymbol.RefKind == RefKind.None && ! (propertySymbol is XsVariableSymbol))
+#else
             if ((RequiresReferenceToLocation(valueKind) || checkingReceiver) &&
                 propertySymbol.RefKind == RefKind.None)
+#endif
             {
                 if (checkingReceiver)
                 {
@@ -1529,7 +1533,7 @@ moreArguments:
             {
                 ReadOnlyLocalErrors[1] = ErrorCode.WRN_AssgReadonlyLocalCause;
             }
-#endif        
+#endif
 
             Error(diagnostics, ReadOnlyLocalErrors[index], node, local, cause.Localize());
         }
@@ -2727,7 +2731,7 @@ moreArguments:
                     Debug.Assert(false, $"{expr.Kind} expression of {expr.Type} type");
                     return false;
 
-                #region "cannot produce ref-like values"
+#region "cannot produce ref-like values"
 //                case BoundKind.ThrowExpression:
 //                case BoundKind.ArgListOperator:
 //                case BoundKind.ArgList:
@@ -2755,9 +2759,9 @@ moreArguments:
 //                case BoundKind.DeconstructionAssignmentOperator:
 //                case BoundKind.EventAccess:
 
-                #endregion
+#endregion
 
-                #region "not expression that can produce a value"
+#region "not expression that can produce a value"
 //                case BoundKind.FieldEqualsValue:
 //                case BoundKind.PropertyEqualsValue:
 //                case BoundKind.ParameterEqualsValue:
@@ -2821,9 +2825,9 @@ moreArguments:
 //                case BoundKind.ConstantPattern:
 //                case BoundKind.WildcardPattern:
 
-                #endregion
+#endregion
 
-                #region "not found as an operand in no-error unlowered bound tree"
+#region "not found as an operand in no-error unlowered bound tree"
 //                case BoundKind.MaximumMethodDefIndex:
 //                case BoundKind.InstrumentationPayloadRoot:
 //                case BoundKind.ModuleVersionId:
@@ -2851,7 +2855,7 @@ moreArguments:
 //                case BoundKind.OutDeconstructVarPendingInference:
 //                case BoundKind.PseudoVariable:
 
-                #endregion
+#endregion
             }
         }
 

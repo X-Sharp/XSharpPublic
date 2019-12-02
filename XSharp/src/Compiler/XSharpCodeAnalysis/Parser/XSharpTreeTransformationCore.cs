@@ -6669,17 +6669,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (CurrentEntity != null && context.Op.Type == XP.ADDROF)
             {
                 CurrentEntity.Data.HasAddressOf = true;
-                if (context.Expr.CsNode is IdentifierNameSyntax ins)
-                {
-                    // do not allow @ abc->def
-                    if (ins.Identifier.Text.Contains("->"))
-                    {
-                        context.Put(ins);
-                        context.AddError(new ParseErrorData(context.Op, ErrorCode.ERR_CannotTakeAddressOfAliasedExpression));
-                        return;
-                    }
-                }
-
             }
 
             context.Put(_syntaxFactory.PrefixUnaryExpression(
@@ -6978,7 +6967,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     var exp = arg.Expression;
                     if (exp is IdentifierNameSyntax ins)
                     {
-                        if (ins.identifier.Text.IndexOf("->") == 0)
+                        if (ins.identifier.Text.IndexOf("->") == -1)
                         {
                             arg = MakeArgument(exp, true);
                             context.HasRefArguments = true;

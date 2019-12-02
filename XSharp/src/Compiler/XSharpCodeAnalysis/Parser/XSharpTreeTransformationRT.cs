@@ -922,82 +922,82 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 type);
             context.Put(qtype);
         }
+
+        private void addFieldOrMemvar(string name, string prefix, XSharpParserRuleContext context, bool isParameter)
+        {
+            if (CurrentEntity.Data.GetField(name) != null)
+            {
+                context.AddError(new ParseErrorData(context, ErrorCode.ERR_MemvarFieldWithSameName, name));
+            }
+            else
+            {
+
+                var info = CurrentEntity.Data.AddField(name, prefix, context);
+                info.IsParameter = isParameter;
+            }
+        }
+
         public override void EnterXbasedecl([NotNull] XP.XbasedeclContext context)
         {
             // declare memvars
             context.SetSequencePoint(context.end);
-            if (CurrentEntity != null)
+            if (CurrentEntity == null)
             {
-                if (_options.SupportsMemvars)
+                return;
+            }
+            if (_options.SupportsMemvars)
+            {
+                CurrentEntity.Data.HasMemVars = true;
+                if (context.T.Type == XP.MEMVAR || context.T.Type == XP.PARAMETERS)
                 {
-                    CurrentEntity.Data.HasMemVars = true;
-                    if (context.T.Type == XP.MEMVAR || context.T.Type == XP.PARAMETERS)
+                    foreach (var memvar in context._Vars)
                     {
-                        foreach (var memvar in context._Vars)
-                        {
-                            var name = memvar.Id.GetText();
-                            if (CurrentEntity.Data.GetField(name) != null)
-                            {
-                                context.AddError(new ParseErrorData(context, ErrorCode.ERR_MemvarFieldWithSameName, name));
-                            }
-                            else
-                            {
-                                var info = CurrentEntity.Data.AddField(name, "M",  memvar);
-                                info.IsParameter = context.T.Type == XP.PARAMETERS;
-
-                            }
-                        }
-                    }
-                    else if (context.T.Type == XP.PUBLIC || context.T.Type == XP.PRIVATE)
-                    {
-                        foreach (var memvar in context._XVars)
-                        {
-                            var name = memvar.Id.GetText();
-                            if (CurrentEntity.Data.GetField(name) != null)
-                            {
-                                context.AddError(new ParseErrorData(context, ErrorCode.ERR_MemvarFieldWithSameName, name));
-                            }
-                            else
-                            {
-                                CurrentEntity.Data.AddField(name, "M", memvar);
-                            }
-                        }
-
-                    }
-                    else if (context.T.Type == XP.DIMENSION || context.T.Type == XP.DECLARE)
-                    {
-                        foreach (var memvar in context._DimVars)
-                        {
-                            var name = memvar.Id.GetText();
-                            if (CurrentEntity.Data.GetField(name) != null)
-                            {
-                                context.AddError(new ParseErrorData(context, ErrorCode.ERR_MemvarFieldWithSameName, name));
-                            }
-                            else
-                            {
-                                CurrentEntity.Data.AddField(name, "M", memvar);
-                            }
-                        }
-
+                        var name = memvar.Id.GetText();
+                        addFieldOrMemvar(name, "M", memvar, context.T.Type == XP.PARAMETERS);
                     }
                 }
-                if (context.T.Type == XP.PARAMETERS ||
-                    context.T.Type == XP.LPARAMETERS)
+                else if (context.T.Type == XP.PUBLIC || context.T.Type == XP.PRIVATE)
                 {
-                    // parameters and lparameters assume CC
-                    CurrentEntity.Data.HasClipperCallingConvention = true;
-                    if (CurrentEntity.Data.HasParametersStmt || CurrentEntity.Data.HasLParametersStmt || CurrentEntity.Data.HasFormalParameters)
+                    foreach (var memvar in context._XVars)
                     {
-                        // trigger error message by setting both
-                        // that way 2 x PARAMETERS or 2x LPARAMETERS will also trigger an error
-                        CurrentEntity.Data.HasParametersStmt = true;
-                        CurrentEntity.Data.HasLParametersStmt = true;
+                        var name = memvar.Id.GetText();
+                        addFieldOrMemvar(name, "M", memvar, false);
                     }
-                    else
+
+                }
+                else if (context.T.Type == XP.DIMENSION || context.T.Type == XP.DECLARE)
+                {
+                    foreach (var memvar in context._DimVars)
                     {
-                        CurrentEntity.Data.HasParametersStmt = (context.T.Type == XP.PARAMETERS);
-                        CurrentEntity.Data.HasLParametersStmt = (context.T.Type == XP.LPARAMETERS);
+                        var name = memvar.Id.GetText();
+                        addFieldOrMemvar(name, "M", memvar, false);
                     }
+
+                }
+            }
+            if (context.T.Type == XP.LPARAMETERS)
+            {
+                foreach (var memvar in context._Vars)
+                {
+                    var name = memvar.Id.GetText();
+                    addFieldOrMemvar(name, XSharpSpecialNames.ClipperParamPrefix, memvar, true);
+                }
+            }
+            if (context.T.Type == XP.PARAMETERS ||context.T.Type == XP.LPARAMETERS)
+            {
+                // parameters and lparameters assume CC
+                CurrentEntity.Data.HasClipperCallingConvention = true;
+                if (CurrentEntity.Data.HasParametersStmt || CurrentEntity.Data.HasLParametersStmt || CurrentEntity.Data.HasFormalParameters)
+                {
+                    // trigger error message by setting both
+                    // that way 2 x PARAMETERS or 2x LPARAMETERS will also trigger an error
+                    CurrentEntity.Data.HasParametersStmt = true;
+                    CurrentEntity.Data.HasLParametersStmt = true;
+                }
+                else
+                {
+                    CurrentEntity.Data.HasParametersStmt = (context.T.Type == XP.PARAMETERS);
+                    CurrentEntity.Data.HasLParametersStmt = (context.T.Type == XP.LPARAMETERS);
                 }
             }
         }
@@ -3893,22 +3893,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             // register field names with current entity
             // so we can check for the field name in the ExitNameExpr method
-            string Alias = "";
+            string alias = "";
             if (context.Alias != null)
-                Alias = context.Alias.GetText();
+                alias = context.Alias.GetText();
             if (CurrentEntity != null)
             {
                 foreach (var field in context._Fields)
                 {
                     var name = field.Id.GetText();
-                    if (CurrentEntity.Data.GetField(name) != null)
-                    {
-                        context.AddError(new ParseErrorData(context, ErrorCode.ERR_MemvarFieldWithSameName, name));
-                    }
-                    else
-                    {
-                        CurrentEntity.Data.AddField(name, Alias, field);
-                    }
+                    addFieldOrMemvar(name, alias, field, false);
                 }
             }
         }

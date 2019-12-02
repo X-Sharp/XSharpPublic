@@ -2,12 +2,14 @@
 FUNCTION Start() AS VOID
 	LOCAL l AS LOGIC
 	LOCAL x 
-	x := "old"
-	l := TestReference( @x )
-	? x
-	xAssert(x == 123)
-	xAssert(l == TRUE) // error, IsByRef does not get assigned to TRUE
-
+	LOCAL i as LONG          
+	i := 42
+	l := TestReference( @i,123 )
+	
+	? i
+	xAssert(i == 123)
+	xAssert(l == TRUE) 
+	x := "old"     
 	TestParameters( @x )
 	? x
 	xAssert(x == "PARAMETERS")
@@ -24,19 +26,19 @@ FUNCTION Start() AS VOID
 	Test_L_Parameters( REF x )
 	? x
 	xAssert(x == "LPARAMETERS")
- 
+
 	x:= "old"
-	DO TestReference WITH x // does not pass by reference
+	DO TestReference WITH x 
 	? x
 	xAssert(x == 123)
 	
 	x := 1
-	DO TestReference WITH REF x // should that work as well?
+	DO TestReference WITH REF x // works as well!
 	? x
 	xAssert(x == 123)
 
 	x := 1
-	DO TestReference WITH REF @x // should that work as well?
+	DO TestReference WITH REF @x // work as well !
 	? x
 	xAssert(x == 123)
 
@@ -49,11 +51,12 @@ FUNCTION Start() AS VOID
 	DO Test_L_Parameters WITH REF x // should that work as well?
 	? x
 	xAssert(x == "LPARAMETERS")
+	*/
 RETURN
 
 FUNCTION TestReference ( a ) 
 	LOCAL l AS LOGIC
-	l := a:IsByref
+	l := IsByref(a)
 	a := 123
 RETURN l
 	

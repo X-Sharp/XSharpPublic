@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,9 +14,16 @@ namespace XSharp.MacroCompiler
     {
         internal static R Emit<T,R>(this Binder<T,R> b, Codeblock macro, string source) where R: class
         {
-            var dm = new DynamicMethod(source, typeof(T), new Type[] { typeof(T[]) });
+            var dm = b.CreateMethod(source);
             macro.Emit(dm.GetILGenerator());
-            return dm.CreateDelegate(typeof(R)) as R;
+            return b.CreateDelegate(dm) as R;
+        }
+
+        internal static Delegate Emit(this Binder b, Codeblock macro, string source)
+        {
+            var dm = b.CreateMethod(source);
+            macro.Emit(dm.GetILGenerator());
+            return b.CreateDelegate(dm);
         }
     }
 }

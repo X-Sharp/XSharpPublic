@@ -835,4 +835,20 @@ namespace XSharp.MacroCompiler.Syntax
             return null;
         }
     }
+    internal partial class CodeblockExpr : Expr
+    {
+        Binder NestedBinder;
+        int CbIndex;
+        IList<_Codeblock> CbList;
+        internal override Node Bind(Binder b)
+        {
+            NestedBinder = b.CreateNested();
+            NestedBinder.Bind(ref Codeblock);
+            CbIndex = b.AddNestedCodeblock(out Symbol);
+            CbList = b.NestedCodeblocks;
+            Datatype = Compilation.Get(WellKnownTypes.XSharp_Codeblock);
+            return null;
+        }
+        internal override void RequireGetAccess() => RequireValue();
+    }
 }

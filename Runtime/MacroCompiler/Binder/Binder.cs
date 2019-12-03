@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using System.Reflection.Emit;
 
 namespace XSharp.MacroCompiler
 {
@@ -38,7 +39,7 @@ namespace XSharp.MacroCompiler
         Default = AllowDynamic | AllowInexactComparisons | AllowImplicitNarrowingConversions
     }
 
-    internal partial class Binder
+    internal abstract partial class Binder
     {
         static NamespaceSymbol Global = null;
         static List<ContainerSymbol> Usings = null;
@@ -54,7 +55,7 @@ namespace XSharp.MacroCompiler
         internal List<ArgumentSymbol> Args = new List<ArgumentSymbol>();
         internal TypeSymbol ObjectType;
         internal Type DelegateType;
-
+        internal List<_Codeblock> NestedCodeblocks;
         internal bool CreatesAutoVars = false;
 
         protected Binder(Type objectType, Type delegateType, MacroOptions options)
@@ -64,6 +65,7 @@ namespace XSharp.MacroCompiler
             ObjectType = FindType(objectType);
             DelegateType = delegateType;
             Options = options;
+            NestedCodeblocks = null;
         }
 
         internal static Binder<T, R> Create<T,R>(MacroOptions options) where R: class
@@ -409,10 +411,16 @@ namespace XSharp.MacroCompiler
             return local;
         }
 
-        internal ArgumentSymbol AddParam(string name, TypeSymbol type)
+        internal ArgumentSymbol AddParam(string name, TypeSymbol type, bool first = false)
         {
-            var arg = new ArgumentSymbol(name, type, Args.Count);
-            Args.Add(arg);
+            var arg = new ArgumentSymbol(name, type, first ? 0 : Args.Count);
+            if (first)
+            {
+                for (int i = 0; i < Args.Count; i++) Args[i].Index += 1;
+                Args.Insert(0,arg);
+            }
+            else
+                Args.Add(arg);
             if (!string.IsNullOrEmpty(name))
                 LocalCache.Add(name, arg);
             return arg;
@@ -432,17 +440,6 @@ namespace XSharp.MacroCompiler
             if (!string.IsNullOrEmpty(name))
                 LocalCache.Add(name, c);
         }
-    }
-
-    internal class Binder<T,R> : Binder where R: class
-    {
-        internal Binder(MacroOptions options) : base(typeof(T),typeof(R), options) { }
-
-        internal Codeblock Bind(Codeblock macro)
-        {
-            Bind(ref macro);
-            return macro;
-        }
 
         internal int ParamCount
         {
@@ -454,6 +451,81 @@ namespace XSharp.MacroCompiler
                         c++;
                 return c;
             }
+        }
+
+        internal int AddNestedCodeblock(out Symbol argSym)
+        {
+            if (NestedCodeblocks == null)
+            {
+                NestedCodeblocks = new List<_Codeblock>();
+                argSym = AddParam(XSharpSpecialNames.NestedCodeblockArgs, ArrayOf(Compilation.Get(WellKnownTypes.XSharp_Codeblock)), true);
+            }
+            else
+                argSym = Args[0];
+            NestedCodeblocks.Add(null);
+            return NestedCodeblocks.Count-1;
+        }
+
+        internal bool HasNestedCodeblocks { get => NestedCodeblocks != null; }
+
+        internal abstract Binder CreateNested();
+
+        internal abstract DynamicMethod CreateMethod(string source);
+
+        internal abstract Delegate CreateDelegate(DynamicMethod dm);
+    }
+
+    internal class Binder<T,R> : Binder where R: class
+    {
+        internal Binder(MacroOptions options) : base(typeof(T),typeof(R), options) { }
+
+        internal class NestedWrapper
+        {
+            internal delegate T EvalDelegate(_Codeblock[] cbs, params dynamic[] args);
+
+            _Codeblock[] nested_cbs_;
+            EvalDelegate eval_func_;
+
+            internal NestedWrapper(_Codeblock[] nested_cbs, EvalDelegate eval_func) {
+                nested_cbs_ = nested_cbs;
+                eval_func_ = eval_func;
+            }
+
+            internal dynamic Eval(params dynamic[] args)
+            {
+                return eval_func_(nested_cbs_, args);
+            }
+        }
+
+        internal Codeblock Bind(Codeblock macro)
+        {
+            Bind(ref macro);
+            return macro;
+        }
+
+        internal override Binder CreateNested()
+        {
+            return new Binder<T,R>(Options);
+        }
+
+        internal override DynamicMethod CreateMethod(string source)
+        {
+            if (HasNestedCodeblocks)
+                return new DynamicMethod(source, typeof(T), new Type[] { typeof(_Codeblock[]), typeof(T[]) });
+            else
+                return new DynamicMethod(source, typeof(T), new Type[] { typeof(T[]) });
+        }
+
+        internal override Delegate CreateDelegate(DynamicMethod dm)
+        {
+            if (HasNestedCodeblocks)
+            {
+                var eval_dlg = dm.CreateDelegate(typeof(NestedWrapper.EvalDelegate)) as NestedWrapper.EvalDelegate;
+                RuntimeCodeblockDelegate dlg = new NestedWrapper(NestedCodeblocks.ToArray(), eval_dlg).Eval;
+                return dlg;
+            }
+            else
+                return dm.CreateDelegate(typeof(R));
         }
     }
 }

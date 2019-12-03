@@ -1,4 +1,4 @@
-﻿namespace XSharp.MacroCompiler
+namespace XSharp.MacroCompiler
 {
     internal static class VulcanTypeNames
     {
@@ -86,6 +86,7 @@
 
         internal const string VoPszList = "Xs$PszList";
         internal const string ClipperArgs = "Xs$Args";
+        internal const string NestedCodeblockArgs = "Xs$NstCbs";
         internal const string ClipperPCount = "Xs$PCount";
         internal const string ClipperArgCount = "Xs$ArgCount";
         internal const string RecoverVarName = "Xs$Obj";

@@ -102,6 +102,10 @@
       <Project>{535dff14-efb7-43f5-a4e1-71c1c4280040}</Project>
       <Name>XSharp.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\XSharp.RT\XSharp.RT.xsproj">
+      <Project>{ef8d2bf2-e81a-479a-ba4f-294c4c348b66}</Project>
+      <Name>XSharp.RT</Name>
+    </ProjectReference>
   </ItemGroup>
   <!-- On machines where the runtime output path exists the macro compiler will be copied to the runtime output folder  -->
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

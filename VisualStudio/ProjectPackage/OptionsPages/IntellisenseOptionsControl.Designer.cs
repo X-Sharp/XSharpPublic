@@ -163,9 +163,9 @@
             this.chkDotAsUniversalSelector.AutoSize = true;
             this.chkDotAsUniversalSelector.Location = new System.Drawing.Point(13, 59);
             this.chkDotAsUniversalSelector.Name = "chkDotAsUniversalSelector";
-            this.chkDotAsUniversalSelector.Size = new System.Drawing.Size(342, 17);
+            this.chkDotAsUniversalSelector.Size = new System.Drawing.Size(355, 17);
             this.chkDotAsUniversalSelector.TabIndex = 1;
-            this.chkDotAsUniversalSelector.Text = "Typing Dot (.) shows list that includes instance members (Core only)";
+            this.chkDotAsUniversalSelector.Text = "Dot (.) triggers a completion list with also instance members (Core only)";
             this.toolTip1.SetToolTip(this.chkDotAsUniversalSelector, "The FoxPro dialect always uses instance members after a DOT and all other dialect" +
         "s except core will  only show static members after a dot and will show instance " +
         "members after a colon (:).");

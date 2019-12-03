@@ -92,7 +92,11 @@ namespace XSharp.Project
             _prjNode.FindNodesOfType<XSharpProjectReferenceNode>(prjNodes);
             foreach (var prjNode in prjNodes)
             {
-                options.Add("r:" + prjNode.ReferencedProjectOutputPath);
+                var path = prjNode.ReferencedProjectOutputPath;
+                if (!string.IsNullOrEmpty(path))
+                {
+                    options.Add("r:" + path);
+                }
             }
             var comNodes = new List<XSharpComReferenceNode>();
             _prjNode.FindNodesOfType<XSharpComReferenceNode>(comNodes);

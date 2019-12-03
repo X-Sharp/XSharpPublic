@@ -332,6 +332,7 @@ BEGIN NAMESPACE MacroCompilerTest
 
         TestParse(mc, e"{|a,b| +a[++b] += 100, a[2]}", "{|a, b|((+a((++b)))+='100'), a('2')}")
         TestMacro(mc, e"{|a,b| asdgfafd(123) }", Args(), NULL, NULL,ErrorCode.NotAMethod)
+
         mc:Options:UndeclaredVariableResolution := VariableResolution.Error
         TestMacro(mc, e"{|a,b| testtest__() }", Args(1,2,3), NULL, NULL, ErrorCode.IdentifierNotFound)
         TestMacro(mc, e"{|a,b,c| a[b,c] }", Args({{42,43,44},{45,46,47}},1,1) ,42, typeof(LONG))
@@ -343,7 +344,16 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, e"{|a| a:Nested:Item()}", Args(TestWithItem{}), 42,typeof(LONG))
         TestMacro(mc, e"{|a| a:Item}", Args(TestWithItem2{}), 42,typeof(LONG))
         TestMacro(mc, e"{|a| a:Nested:Item}", Args(TestWithItem2{}), 42,typeof(LONG))
+        TestMacro(mc, e"{|o| eval({|a| eval({|q|q*q},a)+1 },o) }", Args(5), 26, typeof(int))
         
+        mc:Options:UndeclaredVariableResolution := VariableResolution.TreatAsFieldOrMemvar
+        TestMacro(mc, e"{|| eval({||true}) }", Args(), true, typeof(logic))
+        TestMacro(mc, e"{|o| eval({|a|a},o) }", Args(true), true, typeof(logic))
+        TestMacro(mc, e"{|o| eval({|a|a},o) }", Args(false), false, typeof(logic))
+        TestMacro(mc, e"{|| x := 42, eval({||x}) }", Args(), 42, typeof(int))
+        TestMacro(mc, e"{|| x := true, eval({||x := 42}), x }", Args(), 42, typeof(int))
+        TestMacro(mc, e"{|o| eval({|q|q*q},o) + eval({|a| a+1 },o) }", Args(5), 31, typeof(int))
+
         mc:Options:UndeclaredVariableResolution := VariableResolution.GenerateLocal
         TestMacro(mc, e"{|a| a() }", Args((@@Func<INT>){ => 1234}), 1234, typeof(INT))
         TestMacro(mc, "#HELLo", Args(), #hello, typeof(SYMBOL))
@@ -792,7 +802,12 @@ BEGIN NAMESPACE MacroCompilerTest
         TRY
             TotalTests += 1
             Console.Write("Test: '{0}' ", src)
+
+            //local isCb, memVars as logic
+            //VAR rtc := mc:Compile(src, true, null, ref isCb, ref memVars)
+            //VAR cb := XSharp._Codeblock{rtc, src, isCb, memVars}
             VAR cb := mc:Compile(src)
+            
             VAR res := cb:EvalBlock(args)
             LOCAL match AS LOGIC
             IF IsArray(expect)

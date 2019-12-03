@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -154,6 +154,9 @@ namespace XSharp.MacroCompiler.Syntax
     {
     }
     internal partial class Codeblock : Node
+    {
+    }
+    internal partial class CodeblockExpr : Expr
     {
     }
 }

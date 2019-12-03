@@ -272,4 +272,10 @@ namespace XSharp.MacroCompiler.Syntax
         string ParamsAsString() { if (Params == null) return ""; var sb = new StringBuilder(); foreach (var p in Params) { if (sb.Length > 0) sb.Append(", "); sb.Append(p.ToString()); } return sb.ToString(); }
         public override string ToString() { return "{|" + ParamsAsString() + "|" + Body.ToString() + "}"; }
     }
+    internal partial class CodeblockExpr : Expr
+    {
+        internal Codeblock Codeblock;
+        internal CodeblockExpr(Token o, Codeblock cb) : base(o) { Codeblock = cb; }
+        public override string ToString() { return Codeblock.ToString(); }
+    }
 }

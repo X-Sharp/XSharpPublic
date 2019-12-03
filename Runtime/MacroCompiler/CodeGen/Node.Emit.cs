@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -613,6 +613,25 @@ namespace XSharp.MacroCompiler.Syntax
                 EmitDefault(ilg,(TypeSymbol)Symbol);
             }
             ilg.Emit(OpCodes.Ret);
+        }
+    }
+    internal partial class CodeblockExpr : Expr
+    {
+        internal override void Emit(ILGenerator ilg, bool preserve)
+        {
+            // Emit nested codeblock
+            var source = Token.ToString();
+            var dlg = NestedBinder.Emit(Codeblock, source) as RuntimeCodeblockDelegate;
+            var rtc = new RuntimeCodeblock(dlg, NestedBinder.ParamCount);
+            CbList[CbIndex] = new _Codeblock(rtc, source, true, NestedBinder.CreatesAutoVars);
+
+            // Emit code to retrieve codeblock
+            var lidx = Constant.Create(CbIndex);
+            Symbol.EmitGet(ilg);
+            lidx.EmitGet(ilg);
+            ilg.Emit(OpCodes.Ldelem, Datatype.Type);
+            if (!preserve)
+                ilg.Emit(OpCodes.Pop);
         }
     }
 }

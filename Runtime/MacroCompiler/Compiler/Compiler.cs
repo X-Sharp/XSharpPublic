@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -99,8 +99,7 @@ namespace XSharp.MacroCompiler
         internal Syntax.Codeblock Parse(string source)
         {
             var lexer = new Lexer(source, options);
-            var tokens = lexer.AllTokens();
-            var parser = new Parser(tokens, options);
+            var parser = new Parser(lexer, options);
             return parser.ParseMacro();
         }
     }

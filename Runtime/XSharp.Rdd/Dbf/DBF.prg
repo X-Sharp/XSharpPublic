@@ -160,6 +160,7 @@ METHOD GoTo(nRec AS LONG) AS LOGIC
 			IF  nRec <= nCount  .AND.  nRec > 0 
                 // Normal positioning
                 // VO does not set _Found to TRUE for a succesfull Goto. It does set _Found to false for a failed Goto
+                //? SELF:CurrentThreadId, "Set Recno to ", Nrec
 				SELF:_RecNo := nRec
 				SELF:_SetEOF(FALSE)
                 SELF:_SetBOF(FALSE)
@@ -169,6 +170,7 @@ METHOD GoTo(nRec AS LONG) AS LOGIC
 			ELSEIF nRec < 0 .AND. nCount > 0
                 // skip to BOF. Move to record 1. 
 				SELF:_RecNo := 1
+                //? SELF:CurrentThreadId, "Set Recno to ", 1, "nRec", nRec, "nCount", nCount
 				SELF:_SetEOF(FALSE)
                 SELF:_SetBOF(TRUE)
 				SELF:_Found :=FALSE
@@ -176,6 +178,7 @@ METHOD GoTo(nRec AS LONG) AS LOGIC
 				SELF:_isValid := FALSE
 			ELSE
                 // File empty, or move after last record
+                //? SELF:CurrentThreadId, "Set Recno to nCount+1", nCount+1
 				SELF:_RecNo := nCount + 1
 				SELF:_SetEOF(TRUE)
                 SELF:_SetBOF(nCount == 0)
@@ -285,9 +288,11 @@ METHOD Append(lReleaseLock AS LOGIC) AS LOGIC
 					IF  SELF:_Locks:Count > 0  .AND. lReleaseLock
 						SELF:UnLock( 0 ) // Unlock All Records
 					ENDIF
-					SELF:AppendLock( DbLockMode.Lock )
+					isOk := SELF:AppendLock( DbLockMode.Lock )  // Locks Header and then future new record. Sets _HeaderLocked to TRUE
 				ELSE
 					SELF:_HeaderLocked := FALSE
+					SELF:_UpdateRecCount(SELF:_RecCount+1)      // writes the reccount to the header as well
+					SELF:_RecNo         := SELF:_RecCount+1
 				ENDIF
 				IF isOk 
 					Array.Copy(SELF:_BlankBuffer, SELF:_RecordBuffer, SELF:_RecordLength)
@@ -297,8 +302,6 @@ METHOD Append(lReleaseLock AS LOGIC) AS LOGIC
 						ENDIF   
 					NEXT
                     // Now, update state
-					SELF:_UpdateRecCount(SELF:_RecCount+1)
-					SELF:_RecNo         := SELF:_RecCount
 					SELF:_SetEOF(FALSE)
 					SELF:_Bof           := FALSE
 					SELF:_Deleted       := FALSE
@@ -306,12 +309,12 @@ METHOD Append(lReleaseLock AS LOGIC) AS LOGIC
 					SELF:_isValid       := TRUE
 					SELF:_NewRecord     := TRUE
                     SELF:_wasChanged    := TRUE 
-                    // Mark RecordBuffer and Header as Hot
+                    // Mark RecordBuffer as Hot
 					SELF:_Hot           := TRUE
                     // Now, Save
 					IF SELF:_HeaderLocked 
 						SELF:GoCold()
-						SELF:AppendLock( DbLockMode.UnLock )
+						isOk := SELF:AppendLock( DbLockMode.UnLock ) // unlocks just header 
 					ENDIF
 				ENDIF
 			ENDIF
@@ -321,38 +324,47 @@ METHOD Append(lReleaseLock AS LOGIC) AS LOGIC
 RETURN isOk
 
 PRIVATE METHOD _UpdateRecCount(nCount AS LONG) as LOGIC
-	SELF:_RecCount      := nCount
-	SELF:_Header:isHot  := TRUE
-    SELF:_wasChanged    := TRUE
-RETURN SELF:_writeHeader()
+	SELF:_RecCount          := nCount
+	SELF:_Header:isHot      := TRUE
+    SELF:_Header:RecCount   := nCount
+    SELF:_wasChanged        := TRUE
+    SELF:_writeHeader()
+RETURN TRUE
 
 
 
-// Lock the "future" record (Recno+1) and the Header
-// Unlock the Header
 METHOD AppendLock( lockMode AS DbLockMode ) AS LOGIC
 	LOCAL isOk := FALSE AS LOGIC
-    //
 	BEGIN LOCK SELF
 		IF lockMode == DbLockMode.Lock
-        // Try to Lock for 123 ms
+            // Lock the "future" record (Recno+1) and the Header
 			isOk := SELF:HeaderLock( lockMode )
 			IF isOk 
-            // Now Add the "new" record to the Locked Records ?
-				LOCAL newRecno := SELF:RecCount AS LONG
-				newRecno++
+                VAR newRecno := SELF:_calculateRecCount() +1
 				IF !SELF:_Locks:Contains( newRecno ) .AND. !SELF:_fLocked
 					isOk := SELF:_lockRecord( newRecno )
 				ENDIF
-				IF !isOk 
-					IF SELF:_HeaderLocked 
+				IF !isOk
+                    // when we fail to lock the record then also unlock the header
+					IF SELF:_HeaderLocked
+                        //? CurrentThreadId," Failed to lock the new record", newRecno, "Unlock the header"
 						SELF:HeaderLock( DbLockMode.UnLock )
+                    ELSE
+                        NOP
+                        //? CurrentThreadId," Failed to lock the new record", newRecno, "but header was not locked ?"
 					ENDIF
 					SELF:_dbfError( ERDD.APPENDLOCK, XSharp.Gencode.EG_APPENDLOCK )
-				ENDIF
+                ELSE
+                    SELF:_RecNo := newRecno
+                    //? CurrentThreadId, "Appended and Locked record ", newRecno, "Recno = ", SELF:RecNo
+                ENDIF
+            ELSE
+                NOP
+                //? CurrentThreadId,"AppendLock failed, header can't be locked"
 			ENDIF
 		ELSE
-			SELF:HeaderLock( lockMode )
+            // Unlock the Header, new record remains locked
+			isOk := SELF:HeaderLock( lockMode )
 		ENDIF
 	END LOCK
     //
@@ -365,10 +377,10 @@ METHOD Lock( lockInfo REF DbLockInfo ) AS LOGIC
 	LOCAL isOk AS LOGIC
 	SELF:ForceRel()
 	BEGIN LOCK SELF
-		IF lockInfo:METHOD == DbLockInfo.LockMethod.Exclusive  .OR. ;
-        lockInfo:METHOD == DbLockInfo.LockMethod.Multiple 
+		IF lockInfo:@@Method == DbLockInfo.LockMethod.Exclusive  .OR. ;
+            lockInfo:@@Method == DbLockInfo.LockMethod.Multiple 
 			isOk := SELF:_lockRecord( lockInfo )
-		ELSEIF lockInfo:METHOD == DbLockInfo.LockMethod.File 
+		ELSEIF lockInfo:@@Method == DbLockInfo.LockMethod.File 
 			isOk := SELF:_lockDBFFile( )
 		ELSE
 			isOk := TRUE
@@ -380,23 +392,37 @@ RETURN isOk
 METHOD HeaderLock( lockMode AS DbLockMode ) AS LOGIC
     //
 	IF lockMode == DbLockMode.Lock 
-    
-        DO WHILE ! SELF:_HeaderLocked
-		    SELF:_HeaderLocked := SELF:_tryLock( SELF:_lockScheme:Offset, 1, 123)
+        //? CurrentThreadId, "Start Header Lock", ProcName(1)
+        LOCAL nTries := 0 AS LONG
+        DO WHILE TRUE
+            ++nTries
+		    SELF:_HeaderLocked := SELF:_tryLock( SELF:_lockScheme:Offset, 1,FALSE)
+            IF ! SELF:_HeaderLocked
+                System.Threading.Thread.Sleep(100)
+                
+            ELSE
+                EXIT
+            ENDIF
         ENDDO
-	ELSE
+        //? CurrentThreadId, "Header Lock", SELF:_HeaderLocked , "tries", nTries
+        RETURN SELF:_HeaderLocked 
+    ELSE
+        
 		TRY
-			VAR unlocked := FFUnlock( SELF:_hFile, (DWORD)SELF:_lockScheme:Offset, 1 )
+            //? CurrentThreadId, "Start Header UnLock",ProcName(1)
+			VAR unlocked := FFUnlock64( SELF:_hFile, SELF:_lockScheme:Offset, 1 )
 			IF unlocked
 				SELF:_HeaderLocked := FALSE
-			ENDIF
+            ENDIF
+            //? CurrentThreadId, "Header UnLock", unlocked
 		CATCH ex AS Exception
 			SELF:_HeaderLocked := FALSE
 			SELF:_dbfError(ex, SubCodes.ERDD_WRITE_UNLOCK,GenCode.EG_LOCK_ERROR,  "DBF.HeaderLock") 
-		END TRY
+        END TRY
+        RETURN TRUE 
 	ENDIF
     //
-RETURN SELF:_HeaderLocked
+
 
     // Unlock a indicated record number. If 0, Unlock ALL records
     // Then unlock the File if needed
@@ -407,6 +433,7 @@ METHOD UnLock(oRecId AS OBJECT) AS LOGIC
 	IF SELF:Shared 
 		BEGIN LOCK SELF
     //
+            //? CurrentThreadId, "UnLock", oRecId
 			SELF:GoCold()
 			TRY
 				recordNbr := Convert.ToInt32( oRecId )
@@ -416,7 +443,10 @@ METHOD UnLock(oRecId AS OBJECT) AS LOGIC
 			END TRY
         //
 			isOk := TRUE
-			IF SELF:_Locks:Count > 0 
+            IF recordNbr != 0
+                NOP
+            ENDIF
+			IF SELF:_Locks:Count > 0
 				IF recordNbr == 0 
                 // Create a copy with ToArray() because _unlockRecord modifies the collection
 					FOREACH VAR nbr IN SELF:_Locks:ToArray()
@@ -434,7 +464,8 @@ METHOD UnLock(oRecId AS OBJECT) AS LOGIC
 				ENDIF
 			ENDIF
 		END LOCK
-	ELSE
+    ELSE
+        //? CurrentThreadId, "UnLock nothing to do because not shared"
 		isOk := TRUE
 	ENDIF
 RETURN isOk
@@ -442,26 +473,20 @@ RETURN isOk
     // Unlock file. The Offset depends on the LockScheme
 PROTECT METHOD _unlockFile( ) AS LOGIC
 	LOCAL unlocked AS LOGIC
-	LOCAL iOffset AS INT64
     //
 	IF ! SELF:IsOpen
 		RETURN FALSE
 	ENDIF
 	
-	iOffset := SELF:_lockScheme:Offset
-	IF SELF:_lockScheme:Direction < 0 
-		iOffset -= (INT64)SELF:_lockScheme:FileSize
-	ELSE
-		iOffset++
-	ENDIF
-    //
 	TRY
-		unlocked := FFUnlock( SELF:_hFile, (DWORD)iOffset, (DWORD)SELF:_lockScheme:FileSize )
+		unlocked := FFUnlock64( SELF:_hFile, SELF:_lockScheme:FileLockOffSet, SELF:_lockScheme:FileSize )
 	CATCH ex AS Exception
 		unlocked := FALSE
 		SELF:_dbfError(ex, SubCodes.ERDD_WRITE_UNLOCK,GenCode.EG_LOCK_ERROR,  "DBF._unlockFile") 
 	END TRY
 RETURN unlocked
+
+PROTECTED PROPERTY CurrentThreadId AS STRING GET System.Threading.Thread.CurrentThread:ManagedThreadId:ToString()
 
     // Unlock a record. The Offset depends on the LockScheme
 PROTECT METHOD _unlockRecord( recordNbr AS LONG ) AS LOGIC
@@ -469,20 +494,15 @@ PROTECT METHOD _unlockRecord( recordNbr AS LONG ) AS LOGIC
 	LOCAL iOffset AS INT64
 	IF ! SELF:IsOpen
 		RETURN FALSE
-	ENDIF
-	iOffset := SELF:_lockScheme:Offset
-	IF SELF:_lockScheme:Direction < 0 
-		iOffset -= (INT64)recordNbr
-	ELSEIF( SELF:_lockScheme:Direction == 2 )
-		iOffset += (INT64)( ( recordNbr - 1 ) * SELF:_RecordLength + SELF:_HeaderLength )
-	ELSE
-		iOffset += (INT64)recordNbr
-	ENDIF
-    //
+    ENDIF
+    
 	TRY
-		unlocked := FFUnlock( SELF:_hFile, (DWORD)iOffset, (DWORD)SELF:_lockScheme:RecordSize )
+    	iOffset := SELF:_lockScheme:RecnoOffSet(recordNbr, SELF:_RecordLength , SELF:_HeaderLength )
+		unlocked := FFUnlock64( SELF:_hFile, iOffset, SELF:_lockScheme:RecordSize )
+        //? CurrentThreadId, "unlocked record ", recordNbr
 	CATCH ex AS Exception
 		unlocked := FALSE
+        //? CurrentThreadId, "failed to unlock record ", recordNbr
 		SELF:_dbfError(ex, SubCodes.ERDD_WRITE_UNLOCK,GenCode.EG_LOCK_ERROR,  "DBF._unlockRecord") 
 	END TRY
 	IF( unlocked )
@@ -493,20 +513,12 @@ RETURN unlocked
     // Lock the file. The Offset depends on the LockScheme
 PROTECT METHOD _lockFile( ) AS LOGIC
 	LOCAL locked AS LOGIC
-	LOCAL iOffset AS INT64
 	IF ! SELF:IsOpen
 		RETURN FALSE
 	ENDIF
 	
-	iOffset := SELF:_lockScheme:Offset
-	IF SELF:_lockScheme:Direction < 0 
-		iOffset -= (INT64)SELF:_lockScheme:FileSize
-	ELSE
-		iOffset++
-	ENDIF
-    //
 	TRY
-		locked := FFLock( SELF:_hFile, (DWORD)iOffset, (DWORD)SELF:_lockScheme:FileSize )
+		locked := FFLock64( SELF:_hFile, SELF:_lockScheme:FileLockOffSet, SELF:_lockScheme:FileSize )
 	CATCH ex AS Exception
 		locked := FALSE
 		SELF:_dbfError(ex, SubCodes.ERDD_WRITE_LOCK,GenCode.EG_LOCK_ERROR,  "DBF._lockFile") 
@@ -516,32 +528,37 @@ RETURN locked
     // Place a lock : <nOffset> indicate where the lock should be; <nLong> indicate the number bytes to lock
     // If it fails, the operation is tried <nTries> times, waiting 1ms between each operation.
     // Return the result of the operation
-PROTECTED METHOD _tryLock( nOffset AS INT64, nLong AS LONG, nTries AS LONG  ) AS LOGIC
+PROTECTED METHOD _tryLock( nOffset AS INT64, nLong AS INT64, lGenError AS LOGIC) AS LOGIC
 	LOCAL locked AS LOGIC
+    LOCAL nTries AS LONG
 	IF ! SELF:IsOpen
 		RETURN FALSE
 	ENDIF
 	LOCAL lockEx := NULL AS Exception
+    nTries := 123
 	REPEAT
 		TRY
-			locked := FFLock( SELF:_hFile, (DWORD)nOffset, (DWORD)nLong )
+			locked := FFLock64( SELF:_hFile, nOffset, nLong )
         CATCH ex AS Exception
             lockEx := ex
 			locked := FALSE
 		END TRY
 		IF !locked
+            LOCAL nError := FError() AS DWORD
+            IF nError != 33     // Someone else has locked the file
+                EXIT
+            ENDIF
 			nTries --
             //DebOut32(ProcName(1)+" Lock Failed "+nTries:ToString()+" tries left, offset: "+ nOffSet:ToString()+" length: "+nLong:ToString())
 			IF nTries > 0 
-				System.Threading.Thread.Sleep( 1)
-			ENDIF
+				System.Threading.Thread.Sleep( 10)
+            ENDIF
 		ENDIF
 	UNTIL ( locked .OR. (nTries==0) )
-    IF (! locked)
-         //DebOut32(ProcName(1)+" **Lock Failed ****")
+    IF (! locked .AND. lGenError)
 		 SELF:_dbfError(lockEx, SubCodes.ERDD_WRITE_LOCK,GenCode.EG_LOCK_ERROR,  "DBF._tryLock") 
     ENDIF
-//
+
 RETURN locked
 
     // Lock the DBF File : All records are first unlocked, then the File is locked
@@ -578,19 +595,13 @@ PROTECTED METHOD _lockRecord( recordNbr AS LONG ) AS LOGIC
 		RETURN FALSE
 	ENDIF
 	
-	iOffset := SELF:_lockScheme:Offset
-	IF SELF:_lockScheme:Direction < 0 
-		iOffset -= (INT64)recordNbr
-	ELSEIF( SELF:_lockScheme:Direction == 2 )
-		iOffset += (INT64)( ( recordNbr - 1 ) * SELF:_RecordLength + SELF:_HeaderLength )
-	ELSE
-		iOffset += (INT64)recordNbr
-	ENDIF
-    //
-    locked := SELF:_tryLock(iOffSet,(INT) SELF:_lockScheme:RecordSize , 123)
+    iOffset := SELF:_lockScheme:RecnoOffSet(recordNbr, SELF:_RecordLength , SELF:_HeaderLength )
+    locked := SELF:_tryLock(iOffSet, SELF:_lockScheme:RecordSize ,FALSE)
 	IF locked
 		SELF:_Locks:Add( recordNbr )
+        //? CurrentThreadId, "Locked record ", recordNbr
     ELSE
+        //? CurrentThreadId, "Failed to Lock record ", recordNbr
 		SELF:_dbfError( SubCodes.ERDD_WRITE_LOCK,GenCode.EG_LOCK_ERROR,  "DBF._lockRecord") 
 	ENDIF
 RETURN locked
@@ -764,7 +775,7 @@ METHOD Pack() AS LOGIC
 		ENDDO
         //
 		SELF:_Hot := FALSE
-		SELF:_UpdateRecCount(nTotal)
+		SELF:_UpdateRecCount(nTotal) // writes the reccount to the header as well
 		SELF:Flush()
         SELF:_CheckEofBof()
         //
@@ -792,7 +803,7 @@ METHOD Zap() AS LOGIC
 	IF isOk
 		SELF:Goto(0)
         // Zap means, set the RecCount to zero, so any other write with overwrite datas
-		SELF:_UpdateRecCount(0)
+		SELF:_UpdateRecCount(0) // writes the reccount to the header as well
 		SELF:Flush()
         // Memo File ?
 		IF SELF:_HasMemo 
@@ -1380,6 +1391,7 @@ VIRTUAL PROTECTED METHOD _writeRecord() AS LOGIC
 					IF SELF:Shared 
 						SELF:_writeHeader()
 					ENDIF
+                    FFLush(SELF:_hFile)
 				CATCH ex AS Exception
 					SELF:_DbfError( ex, ERDD.WRITE, XSharp.Gencode.EG_WRITE )
 				END TRY
@@ -1560,6 +1572,7 @@ METHOD GetValueLength(nFldPos AS LONG) AS LONG
     /// <inheritdoc />
 METHOD Flush() 			AS LOGIC
 	LOCAL isOk AS LOGIC
+    LOCAL locked := FALSE AS LOGIC
 	IF ! SELF:IsOpen
 		RETURN FALSE
 	ENDIF
@@ -1572,16 +1585,20 @@ METHOD Flush() 			AS LOGIC
 
 	IF isOk .and. SELF:_wasChanged
 		IF SELF:Shared 
-			SELF:HeaderLock( DbLockMode.Lock )
+			locked := SELF:HeaderLock( DbLockMode.Lock )
             // Another workstation may have added another record, so make sure we update the reccount
             SELF:_RecCount := SELF:_calculateRecCount()
-		ENDIF
+            //? SELF:CurrentThreadId, "After CalcReccount"
+        ENDIF
 		SELF:_putEndOfFileMarker()
+        //? SELF:CurrentThreadId, "After EOF"
 		SELF:_writeHeader()
-		IF SELF:Shared 
-			SELF:HeaderLock( DbLockMode.UnLock )
-		ENDIF
+        //? SELF:CurrentThreadId, "After writeHeader"
     	FFlush( SELF:_hFile )
+        //? SELF:CurrentThreadId, "After FFlush"
+	ENDIF
+	IF SELF:Shared .AND. locked
+		SELF:HeaderLock( DbLockMode.UnLock )
 	ENDIF
     //
 	IF SELF:HasMemo
@@ -1615,6 +1632,7 @@ METHOD GoCold()			AS LOGIC
 	ret := TRUE
 	IF SELF:_Hot 
 		BEGIN LOCK SELF
+            //? CurrentThreadId, "GoCold Recno", SELF:RecNo
 			SELF:_writeRecord()
 			SELF:_NewRecord := FALSE
 			SELF:_Hot := FALSE
@@ -2259,11 +2277,10 @@ PRIVATE METHOD _calculateRecCount()	AS LONG
     //
 	IF SELF:IsOpen
 		VAR stream  := FGetStream(SELF:_hFile)
-        stream:Flush()
-        VAR fSize := stream:Length
-		IF fSize != 0  // Just create file ?
+        VAR fSize   := stream:Length
+		IF fSize != 0  // Just created file ?
 			reccount := (LONG) ( fSize - SELF:_HeaderLength ) / SELF:_RecordLength
-		ENDIF
+        ENDIF
 	ENDIF
 RETURN reccount
 
@@ -2282,14 +2299,14 @@ VIRTUAL PROPERTY Driver AS STRING GET "DBF"
 	
 /// <summary>DBF Header.</summary>
 CLASS DbfHeader
-// Fixed Buffer of 32 bytes
-// Matches the DBF layout
-// Read/Write to/from the Stream with the Buffer
-// and access individual values using the other fields
+    // Fixed Buffer of 32 bytes
+    // Matches the DBF layout
+    // Read/Write to/from the Stream with the Buffer
+    // and access individual values using the other fields
 	
-	PRIVATE CONST OFFSET_SIG			    := 0  AS BYTE
-	PRIVATE CONST OFFSET_YEAR			:= 1  AS BYTE           // add 1900 so possible values are 1900 - 2155
-	PRIVATE CONST OFFSET_MONTH	        := 2  AS BYTE
+	PRIVATE CONST OFFSET_SIG			 := 0  AS BYTE
+	PRIVATE CONST OFFSET_YEAR			 := 1  AS BYTE           // add 1900 so possible values are 1900 - 2155
+	PRIVATE CONST OFFSET_MONTH	         := 2  AS BYTE
 	PRIVATE CONST OFFSET_DAY             := 3  AS BYTE
 	PRIVATE CONST OFFSET_RECCOUNT        := 4  AS BYTE
 	PRIVATE CONST OFFSET_DATAOFFSET      := 8  AS BYTE
@@ -2338,61 +2355,61 @@ PROPERTY Day		AS BYTE			;
     SET Buffer[OFFSET_DAY] := VALUE, isHot := TRUE
 // Number of records in the table. (Least significant byte first.)		
 PROPERTY RecCount	AS LONG			;
-GET BitConverter.ToInt32(Buffer, OFFSET_RECCOUNT) ;
-SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_RECCOUNT, SIZEOF(LONG)), isHot := TRUE
+    GET BitConverter.ToInt32(Buffer, OFFSET_RECCOUNT) ;
+    SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_RECCOUNT, SIZEOF(LONG)), isHot := TRUE
 // Number of bytes in the header. (Least significant byte first.)
 	
 PROPERTY HeaderLen	AS SHORT		;
-GET BitConverter.ToInt16(Buffer, OFFSET_DATAOFFSET);
-SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_DATAOFFSET, SIZEOF(SHORT)), isHot := TRUE
+    GET BitConverter.ToInt16(Buffer, OFFSET_DATAOFFSET);
+    SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_DATAOFFSET, SIZEOF(SHORT)), isHot := TRUE
 	
 // Length of one data record, including deleted flag
 PROPERTY RecordLen	AS WORD		;
-GET BitConverter.ToUInt16(Buffer, OFFSET_RECSIZE);
-SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_RECSIZE, SIZEOF(WORD)), isHot := TRUE
+    GET BitConverter.ToUInt16(Buffer, OFFSET_RECSIZE);
+    SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_RECSIZE, SIZEOF(WORD)), isHot := TRUE
 	
 // Reserved
 PROPERTY Reserved1	AS SHORT		;
-GET BitConverter.ToInt16(Buffer, OFFSET_RESERVED1);
-SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_RESERVED1, SIZEOF(SHORT)), isHot := TRUE
+    GET BitConverter.ToInt16(Buffer, OFFSET_RESERVED1);
+    SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_RESERVED1, SIZEOF(SHORT)), isHot := TRUE
 	
 // Flag indicating incomplete dBASE IV transaction.		
 PROPERTY Transaction AS BYTE		;
-GET Buffer[OFFSET_TRANSACTION];
-SET Buffer[OFFSET_TRANSACTION] := VALUE, isHot := TRUE
+    GET Buffer[OFFSET_TRANSACTION];
+    SET Buffer[OFFSET_TRANSACTION] := VALUE, isHot := TRUE
 	
 // dBASE IV encryption flag.		
 PROPERTY Encrypted	AS BYTE			;
-GET Buffer[OFFSET_ENCRYPTED];
-SET Buffer[OFFSET_ENCRYPTED] := VALUE, isHot := TRUE
+    GET Buffer[OFFSET_ENCRYPTED];
+    SET Buffer[OFFSET_ENCRYPTED] := VALUE, isHot := TRUE
 	
 PROPERTY DbaseLan	AS LONG			;
-GET BitConverter.ToInt32(Buffer, OFFSET_DBASELAN) ;
-SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_DBASELAN, SIZEOF(LONG)), isHot := TRUE
+    GET BitConverter.ToInt32(Buffer, OFFSET_DBASELAN) ;
+    SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_DBASELAN, SIZEOF(LONG)), isHot := TRUE
 	
 PROPERTY MultiUser	AS LONG			;
-GET BitConverter.ToInt32(Buffer, OFFSET_MULTIUSER)	;
-SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_MULTIUSER, SIZEOF(LONG)), isHot := TRUE
+    GET BitConverter.ToInt32(Buffer, OFFSET_MULTIUSER)	;
+    SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_MULTIUSER, SIZEOF(LONG)), isHot := TRUE
 	
 PROPERTY Reserved2	AS LONG			;
-GET BitConverter.ToInt32(Buffer, OFFSET_RESERVED2);
-SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_RESERVED2, SIZEOF(LONG))
+    GET BitConverter.ToInt32(Buffer, OFFSET_RESERVED2);
+    SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_RESERVED2, SIZEOF(LONG))
 	
 PROPERTY HasTags	AS DBFTableFlags ;
-GET (DBFTableFlags)Buffer[OFFSET_HASTAGS] ;
-SET Buffer[OFFSET_HASTAGS] := (BYTE) VALUE, isHot := TRUE
+    GET (DBFTableFlags)Buffer[OFFSET_HASTAGS] ;
+    SET Buffer[OFFSET_HASTAGS] := (BYTE) VALUE, isHot := TRUE
 	
 PROPERTY CodePage	AS DbfHeaderCodepage			 ;
-GET (DbfHeaderCodepage) Buffer[OFFSET_CODEPAGE]  ;
-SET Buffer[OFFSET_CODEPAGE] := (BYTE) VALUE, isHot := TRUE
+    GET (DbfHeaderCodepage) Buffer[OFFSET_CODEPAGE]  ;
+    SET Buffer[OFFSET_CODEPAGE] := (BYTE) VALUE, isHot := TRUE
 	
 PROPERTY Reserved3	AS SHORT         ;
-GET BitConverter.ToInt16(Buffer, OFFSET_RESERVED3);
-SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_RESERVED3, SIZEOF(SHORT)), isHot := TRUE
+    GET BitConverter.ToInt16(Buffer, OFFSET_RESERVED3);
+    SET Array.Copy(BitConverter.GetBytes(VALUE),0, Buffer, OFFSET_RESERVED3, SIZEOF(SHORT)), isHot := TRUE
 	
 // Note that the year property already does the 1900 offset calculation ! 
 PROPERTY LastUpdate AS DateTime      ;  
-GET DateTime{Year, Month, Day} ;
+    GET DateTime{Year, Month, Day} ;
 
 	
 PROPERTY IsAnsi AS LOGIC GET CodePage:IsAnsi()
@@ -2460,9 +2477,9 @@ STRUCTURE DbfLocking
 // Offset of the Locking
 	PUBLIC Offset AS INT64
 // Length for File
-	PUBLIC FileSize AS UINT64
+	PUBLIC FileSize AS INT64
 // Length for Record
-	PUBLIC RecordSize AS UINT64
+	PUBLIC RecordSize AS LONG
 //
 	PUBLIC Direction AS LONG
 	
@@ -2470,41 +2487,62 @@ METHOD Initialize( model AS DbfLockingModel ) AS VOID
 	SWITCH model
 	CASE DbfLockingModel.Clipper52
 		SELF:Offset := 1000000000
-		SELF:FileSize := 1000000000U
-		SELF:RecordSize := 1U
+		SELF:FileSize := 1000000000
+		SELF:RecordSize := 1
 		SELF:Direction := 1
 	CASE DbfLockingModel.Clipper53
 		SELF:Offset := 1000000000
-		SELF:FileSize := 1000000000U
-		SELF:RecordSize := 1U
+		SELF:FileSize := 1000000000
+		SELF:RecordSize := 1
 		SELF:Direction := 1
 	CASE DbfLockingModel.Clipper53Ext
 		SELF:Offset := 4000000000
-		SELF:FileSize := 294967295U
-		SELF:RecordSize := 1U
+		SELF:FileSize := 294967295
+		SELF:RecordSize := 1
 		SELF:Direction := 1
 	CASE DbfLockingModel.FoxPro
-		SELF:Offset := 0x40000000U
+		SELF:Offset := 0x40000000
 		SELF:FileSize := 0x07ffffff
-		SELF:RecordSize := 1U
+		SELF:RecordSize := 1
 		SELF:Direction := 2
 	CASE DbfLockingModel.FoxProExt
 		SELF:Offset := 0x7ffffffe
-		SELF:FileSize := 0x3ffffffdU
-		SELF:RecordSize := 1U
+		SELF:FileSize := 0x3ffffffd
+		SELF:RecordSize := 1
 		SELF:Direction := -1
 	CASE DbfLockingModel.Harbour64
 		SELF:Offset := 0x7FFFFFFF00000001
-		SELF:FileSize := 0x7ffffffeU
-		SELF:RecordSize := 1U
+		SELF:FileSize := 0x7ffffffe
+		SELF:RecordSize := 1
 		SELF:Direction := 1
 	CASE DbfLockingModel.VOAnsi
 		SELF:Offset     := 0x80000000
-		SELF:FileSize   := 0x7fffffffU
-		SELF:RecordSize := 1U
+		SELF:FileSize   := 0x7fffffff
+		SELF:RecordSize := 1
 		SELF:Direction := 1
 	END SWITCH
-	
+
+    PROPERTY FileLockOffSet AS INT64
+        GET
+            VAR iOffset := SELF:Offset
+	        IF SELF:Direction < 0 
+		        iOffset -= SELF:FileSize
+	        ELSE
+		        iOffset++
+            ENDIF
+            RETURN iOffSet
+        END GET
+    END PROPERTY
+    METHOD RecnoOffSet(recordNbr AS LONG, recSize AS LONG, headerLength AS LONG) AS INT64
+	    VAR iOffset := SELF:Offset
+	    IF SELF:Direction < 0 
+		    iOffset -= (INT64)recordNbr
+	    ELSEIF( SELF:Direction == 2 )
+		    iOffset += (INT64)( ( recordNbr - 1 ) * recSize + headerLength )
+	    ELSE
+		    iOffset += (INT64) recordNbr
+	    ENDIF
+        RETURN iOffSet
 END STRUCTURE
 
 

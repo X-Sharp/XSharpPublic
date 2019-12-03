@@ -70,8 +70,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             oSb:AppendLine("Key       : "+SELF:KeyExpression)
             oSb:AppendLine("For       : "+SELF:ForExpression)
             oSb:AppendLine("Root      : 0x"+SELF:RootPage:ToString("X"))
-            oSb:AppendLine("Free      : "+SELF:FreeList:ToString())
-            oSb:AppendLine("Version   : "+SELF:Version:ToString())
             oSb:AppendLine("KeyLen    : "+SELF:KeySize:ToString())
             oSb:AppendLine("Options   : "+SELF:Options:ToString())
             oSb:AppendLine("Sig       : "+SELF:Signature:ToString())
@@ -83,8 +81,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         PRIVATE METHOD _getValues as VOID
             _rootPage   := _GetLong(CDXTAGHEADER_ROOT)
-            _freeList   := _GetLong(CDXTAGHEADER_FREELIST)
-            _version    := _GetDWord(CDXTAGHEADER_VERSION)
             _keyLength  := _GetWord(CDXTAGHEADER_KEYLENGTH)
             _options    := (CdxOptions)Buffer[CDXTAGHEADER_OPTIONS]
             _keyExprPos := _GetWord(CDXTAGHEADER_KEYEXPRPOS)
@@ -98,8 +94,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
 #region Fields
         PRIVATE _rootPage       as LONG
-        PRIVATE _freeList       AS LONG
-        PRIVATE _version        as DWORD
+        //PRIVATE _freeList       AS LONG
+        //PRIVATE _version        as DWORD
         PRIVATE _keyLength      as WORD
         PRIVATE _options        as CdxOptions
         PRIVATE _keyExprPos     as WORD
@@ -116,11 +112,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PROTECTED INTERNAL PROPERTY RootPage AS LONG GET _rootPage;
             SET _SetLong(CDXTAGHEADER_ROOT, VALUE), _rootPage := Value
             
-        PROTECTED INTERNAL PROPERTY FreeList AS LONG GET _freeList ;
-			SET _SetLong(CDXTAGHEADER_FREELIST, VALUE), _freeList  := Value
+//        PROTECTED INTERNAL PROPERTY FreeList AS LONG GET _freeList ;
+//			SET _SetLong(CDXTAGHEADER_FREELIST, VALUE), _freeList  := Value
 
-		PROTECTED INTERNAL PROPERTY Version		AS DWORD GET _version;
-			SET _SetDWord(CDXTAGHEADER_VERSION, VALUE), _version := Value
+//		PROTECTED INTERNAL PROPERTY Version		AS DWORD GET _version;
+//			SET _SetDWord(CDXTAGHEADER_VERSION, VALUE), _version := Value
 			
 		PROTECTED INTERNAL PROPERTY KeySize		AS WORD	GET _keyLength;
 			SET _SetWord(CDXTAGHEADER_KEYLENGTH, VALUE), _keyLength := Value

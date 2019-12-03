@@ -2597,198 +2597,208 @@ namespace Microsoft.VisualStudio.Project
             if (this.options != null)
                 return this.options;
 
-            ProjectOptions options = this.options = CreateProjectOptions();
-            string targetFrameworkMoniker = GetProjectProperty("TargetFrameworkMoniker", false);
-
-            if (!string.IsNullOrEmpty(targetFrameworkMoniker))
+            // Lock the project node so 2 background threads will not try to calculate
+            // the options at the same time.
+            lock (this)
             {
-                try
+                // could have been updated in the mean time by another thread. This happens quite a lot actually...
+                if (this.options != null)
                 {
-                    options.TargetFrameworkMoniker = new FrameworkName(targetFrameworkMoniker);
+                    return this.options;
                 }
-                catch (ArgumentException e)
+                ProjectOptions options = this.options = CreateProjectOptions();
+                string targetFrameworkMoniker = GetProjectProperty("TargetFrameworkMoniker", false);
+
+                if (!string.IsNullOrEmpty(targetFrameworkMoniker))
                 {
-                    XSharpProjectPackage.Instance.DisplayException(e);
+                    try
+                    {
+                        options.TargetFrameworkMoniker = new FrameworkName(targetFrameworkMoniker);
+                    }
+                    catch (ArgumentException e)
+                    {
+                        XSharpProjectPackage.Instance.DisplayException(e);
+                    }
                 }
-            }
 
 
 
-            options.GenerateExecutable = true;
+                options.GenerateExecutable = true;
 
-            this.SetConfiguration(configCanonicalName);
+                this.SetConfiguration(configCanonicalName);
 
-            string outputPath = this.GetOutputPath();
-            if (!String.IsNullOrEmpty(outputPath))
-            {
-                // absolutize relative to project folder location
-                outputPath = Path.Combine(this.ProjectFolder, outputPath);
-            }
+                string outputPath = this.GetOutputPath();
+                if (!String.IsNullOrEmpty(outputPath))
+                {
+                    // absolutize relative to project folder location
+                    outputPath = Path.Combine(this.ProjectFolder, outputPath);
+                }
 
-            // Set some default values
-            options.OutputAssembly = outputPath + this.Caption + ".exe";
-            options.ModuleKind = ModuleKindFlags.ConsoleApplication;
-
-            options.RootNamespace = GetProjectProperty(ProjectFileConstants.RootNamespace, false);
-            options.OutputAssembly = outputPath + this.GetAssemblyName(configCanonicalName);
-
-            string outputtype = GetProjectProperty(ProjectFileConstants.OutputType, false);
-            if (!String.IsNullOrEmpty(outputtype))
-            {
-                outputtype = outputtype.ToLower(CultureInfo.InvariantCulture);
-            }
-
-            if (outputtype == "library")
-            {
-                options.ModuleKind = ModuleKindFlags.DynamicallyLinkedLibrary;
-                options.GenerateExecutable = false; // DLL's have no entry point.
-            }
-            else if (outputtype == "winexe")
-                options.ModuleKind = ModuleKindFlags.WindowsApplication;
-            else
+                // Set some default values
+                options.OutputAssembly = outputPath + this.Caption + ".exe";
                 options.ModuleKind = ModuleKindFlags.ConsoleApplication;
 
-            options.Win32Icon = GetProjectProperty("ApplicationIcon", false);
-            options.MainClass = GetProjectProperty("StartupObject", false);
+                options.RootNamespace = GetProjectProperty(ProjectFileConstants.RootNamespace, false);
+                options.OutputAssembly = outputPath + this.GetAssemblyName(configCanonicalName);
 
-            //    other settings from CSharp we may want to adopt at some point...
-            //    AssemblyKeyContainerName = ""  //This is the key file used to sign the interop assembly generated when importing a com object via add reference
-            //    AssemblyOriginatorKeyFile = ""
-            //    DelaySign = "false"
-            //    DefaultClientScript = "JScript"
-            //    DefaultHTMLPageLayout = "Grid"
-            //    DefaultTargetSchema = "IE50"
-            //    PreBuildEvent = ""
-            //    PostBuildEvent = ""
-            //    RunPostBuildEvent = "OnBuildSuccess"
+                string outputtype = GetProjectProperty(ProjectFileConstants.OutputType, false);
+                if (!String.IsNullOrEmpty(outputtype))
+                {
+                    outputtype = outputtype.ToLower(CultureInfo.InvariantCulture);
+                }
 
-            // transfer all config build options...
-            if (GetBoolAttr("AllowUnsafeBlocks"))
-            {
-                options.AllowUnsafeCode = true;
+                if (outputtype == "library")
+                {
+                    options.ModuleKind = ModuleKindFlags.DynamicallyLinkedLibrary;
+                    options.GenerateExecutable = false; // DLL's have no entry point.
+                }
+                else if (outputtype == "winexe")
+                    options.ModuleKind = ModuleKindFlags.WindowsApplication;
+                else
+                    options.ModuleKind = ModuleKindFlags.ConsoleApplication;
+
+                options.Win32Icon = GetProjectProperty("ApplicationIcon", false);
+                options.MainClass = GetProjectProperty("StartupObject", false);
+
+                //    other settings from CSharp we may want to adopt at some point...
+                //    AssemblyKeyContainerName = ""  //This is the key file used to sign the interop assembly generated when importing a com object via add reference
+                //    AssemblyOriginatorKeyFile = ""
+                //    DelaySign = "false"
+                //    DefaultClientScript = "JScript"
+                //    DefaultHTMLPageLayout = "Grid"
+                //    DefaultTargetSchema = "IE50"
+                //    PreBuildEvent = ""
+                //    PostBuildEvent = ""
+                //    RunPostBuildEvent = "OnBuildSuccess"
+
+                // transfer all config build options...
+                if (GetBoolAttr("AllowUnsafeBlocks"))
+                {
+                    options.AllowUnsafeCode = true;
+                }
+
+                if (GetProjectProperty("BaseAddress", false) != null)
+                {
+                    try
+                    {
+                        options.BaseAddress = Int64.Parse(GetProjectProperty("BaseAddress", false), CultureInfo.InvariantCulture);
+                    }
+                    catch (ArgumentNullException e)
+                    {
+                        XSharpProjectPackage.Instance.DisplayException(e);
+                    }
+                    catch (ArgumentException e)
+                    {
+                        XSharpProjectPackage.Instance.DisplayException(e);
+                    }
+                    catch (FormatException e)
+                    {
+                        XSharpProjectPackage.Instance.DisplayException(e);
+                    }
+                    catch (OverflowException e)
+                    {
+                        XSharpProjectPackage.Instance.DisplayException(e);
+                    }
+                }
+
+                if (GetBoolAttr("CheckForOverflowUnderflow"))
+                {
+                    options.CheckedArithmetic = true;
+                }
+
+                if (GetProjectProperty("DefineConstants", false) != null)
+                {
+                    options.DefinedPreprocessorSymbols = new StringCollection();
+                    foreach (string s in GetProjectProperty("DefineConstants", false).Replace(" \t\r\n", "").Split(';'))
+                    {
+                        options.DefinedPreprocessorSymbols.Add(s);
+                    }
+                }
+
+                string docFile = GetProjectProperty("DocumentationFile", false);
+                if (!String.IsNullOrEmpty(docFile))
+                {
+                    options.XmlDocFileName = Path.Combine(this.ProjectFolder, docFile);
+                }
+
+                if (GetBoolAttr("DebugSymbols"))
+                {
+                    options.IncludeDebugInformation = true;
+                }
+
+                if (GetProjectProperty("FileAlignment", false) != null)
+                {
+                    try
+                    {
+                        options.FileAlignment = Int32.Parse(GetProjectProperty("FileAlignment", false), CultureInfo.InvariantCulture);
+                    }
+                    catch (ArgumentNullException e)
+                    {
+                        XSharpProjectPackage.Instance.DisplayException(e);
+                    }
+                    catch (ArgumentException e)
+                    {
+                        XSharpProjectPackage.Instance.DisplayException(e);
+                    }
+                    catch (FormatException e)
+                    {
+                        XSharpProjectPackage.Instance.DisplayException(e);
+                    }
+                    catch (OverflowException e)
+                    {
+                        XSharpProjectPackage.Instance.DisplayException(e);
+                    }
+                }
+
+                if (GetBoolAttr("IncrementalBuild"))
+                {
+                    options.IncrementalCompile = true;
+                }
+
+                if (GetBoolAttr("Optimize"))
+                {
+                    options.Optimize = true;
+                }
+
+                if (GetBoolAttr("RegisterForComInterop"))
+                {
+                }
+
+                if (GetBoolAttr("RemoveIntegerChecks"))
+                {
+                }
+
+                if (GetBoolAttr("TreatWarningsAsErrors"))
+                {
+                    options.TreatWarningsAsErrors = true;
+                }
+
+                if (GetProjectProperty("WarningLevel", false) != null)
+                {
+                    try
+                    {
+                        options.WarningLevel = Int32.Parse(GetProjectProperty("WarningLevel", false), CultureInfo.InvariantCulture);
+                    }
+                    catch (ArgumentNullException e)
+                    {
+                        XSharpProjectPackage.Instance.DisplayException(e);
+                    }
+                    catch (ArgumentException e)
+                    {
+                        XSharpProjectPackage.Instance.DisplayException(e);
+                    }
+                    catch (FormatException e)
+                    {
+                        XSharpProjectPackage.Instance.DisplayException(e);
+                    }
+                    catch (OverflowException e)
+                    {
+                        XSharpProjectPackage.Instance.DisplayException(e);
+                    }
+                }
+
+                this.options = options; // do this AFTER setting configuration so it doesn't clear it.
             }
-
-            if (GetProjectProperty("BaseAddress", false) != null)
-            {
-                try
-                {
-                    options.BaseAddress = Int64.Parse(GetProjectProperty("BaseAddress", false), CultureInfo.InvariantCulture);
-                }
-                catch (ArgumentNullException e)
-                {
-                    XSharpProjectPackage.Instance.DisplayException(e);
-                }
-                catch (ArgumentException e)
-                {
-                    XSharpProjectPackage.Instance.DisplayException(e);
-                }
-                catch (FormatException e)
-                {
-                    XSharpProjectPackage.Instance.DisplayException(e);
-                }
-                catch (OverflowException e)
-                {
-                    XSharpProjectPackage.Instance.DisplayException(e);
-                }
-            }
-
-            if (GetBoolAttr("CheckForOverflowUnderflow"))
-            {
-                options.CheckedArithmetic = true;
-            }
-
-            if (GetProjectProperty("DefineConstants", false) != null)
-            {
-                options.DefinedPreprocessorSymbols = new StringCollection();
-                foreach (string s in GetProjectProperty("DefineConstants", false).Replace(" \t\r\n", "").Split(';'))
-                {
-                    options.DefinedPreprocessorSymbols.Add(s);
-                }
-            }
-
-            string docFile = GetProjectProperty("DocumentationFile", false);
-            if (!String.IsNullOrEmpty(docFile))
-            {
-                options.XmlDocFileName = Path.Combine(this.ProjectFolder, docFile);
-            }
-
-            if (GetBoolAttr("DebugSymbols"))
-            {
-                options.IncludeDebugInformation = true;
-            }
-
-            if (GetProjectProperty("FileAlignment", false) != null)
-            {
-                try
-                {
-                    options.FileAlignment = Int32.Parse(GetProjectProperty("FileAlignment", false), CultureInfo.InvariantCulture);
-                }
-                catch (ArgumentNullException e)
-                {
-                    XSharpProjectPackage.Instance.DisplayException(e);
-                }
-                catch (ArgumentException e)
-                {
-                    XSharpProjectPackage.Instance.DisplayException(e);
-                }
-                catch (FormatException e)
-                {
-                    XSharpProjectPackage.Instance.DisplayException(e);
-                }
-                catch (OverflowException e)
-                {
-                    XSharpProjectPackage.Instance.DisplayException(e);
-                }
-            }
-
-            if (GetBoolAttr("IncrementalBuild"))
-            {
-                options.IncrementalCompile = true;
-            }
-
-            if (GetBoolAttr("Optimize"))
-            {
-                options.Optimize = true;
-            }
-
-            if (GetBoolAttr("RegisterForComInterop"))
-            {
-            }
-
-            if (GetBoolAttr("RemoveIntegerChecks"))
-            {
-            }
-
-            if (GetBoolAttr("TreatWarningsAsErrors"))
-            {
-                options.TreatWarningsAsErrors = true;
-            }
-
-            if (GetProjectProperty("WarningLevel", false) != null)
-            {
-                try
-                {
-                    options.WarningLevel = Int32.Parse(GetProjectProperty("WarningLevel", false), CultureInfo.InvariantCulture);
-                }
-                catch (ArgumentNullException e)
-                {
-                    XSharpProjectPackage.Instance.DisplayException(e);
-                }
-                catch (ArgumentException e)
-                {
-                    XSharpProjectPackage.Instance.DisplayException(e);
-                }
-                catch (FormatException e)
-                {
-                    XSharpProjectPackage.Instance.DisplayException(e);
-                }
-                catch (OverflowException e)
-                {
-                    XSharpProjectPackage.Instance.DisplayException(e);
-                }
-            }
-
-            this.options = options; // do this AFTER setting configuration so it doesn't clear it.
             return options;
         }
 
@@ -4049,7 +4059,7 @@ namespace Microsoft.VisualStudio.Project
             MSBuildProject.SetGlobalProperty(this.buildProject, ProjectFileConstants.Platform, configCanonicalName.MSBuildPlatform);
             this.UpdateMSBuildState();
 
-            this.options = null;
+
         }
 
         private void UpdateMSBuildState()
@@ -4524,7 +4534,7 @@ namespace Microsoft.VisualStudio.Project
         /// Set dirty state of project
         /// </summary>
         /// <param name="value">boolean value indicating dirty state</param>
-        public void SetProjectFileDirty(bool value)
+        public virtual void SetProjectFileDirty(bool value)
         {
             this.options = null;
             this.isDirty = value;
@@ -6885,6 +6895,8 @@ namespace Microsoft.VisualStudio.Project
 
         private Microsoft.Build.Evaluation.ProjectProperty GetMsBuildProperty(string propertyName, bool resetCache)
         {
+            if (this.IsClosed)
+                return null;
             if (this.buildProject == null)
                 throw new ApplicationException(String.Format(CultureInfo.CurrentCulture, SR.GetString(SR.FailedToRetrieveProperties, CultureInfo.CurrentUICulture), propertyName));
 
@@ -6899,8 +6911,11 @@ namespace Microsoft.VisualStudio.Project
             return this.buildProject.GetProperty(propertyName);
         }
 
+        internal string _outputPath;
         private string GetOutputPath()
         {
+            if (_outputPath != null)
+                return _outputPath;
             string outputPath = GetProjectProperty("OutputPath");
 
             if (!String.IsNullOrEmpty(outputPath))
@@ -6909,7 +6924,7 @@ namespace Microsoft.VisualStudio.Project
                 if (outputPath[outputPath.Length - 1] != Path.DirectorySeparatorChar)
                     outputPath += Path.DirectorySeparatorChar;
             }
-
+            _outputPath = outputPath;
             return outputPath;
         }
 

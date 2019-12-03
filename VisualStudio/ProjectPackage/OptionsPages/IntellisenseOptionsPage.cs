@@ -63,7 +63,7 @@ namespace XSharp.Project.OptionsPages
 
         private void SetDefaultCommitChars()
         {
-            if (String.IsNullOrEmpty(this.CommitChars.Trim()))
+            if (this.CommitChars == null || string.IsNullOrEmpty(this.CommitChars) )
             {
                 this.CommitChars = "{}[]();+-*/%&|^!~=<>?@#\'\"\\";
             }

@@ -42,38 +42,41 @@ CLASS XSharp.RuntimeState
 		IF initialize
 			SELF:BreakLevel := 0 
 			SELF:_SetThreadValue(Set.DateFormat ,"MM/DD/YYYY")
-			SELF:_SetThreadValue(Set.Epoch, 1900U)
-			SELF:_SetThreadValue(Set.EpochYear, 0U)
-			SELF:_SetThreadValue(Set.EpochCent, 1900U)
+			SELF:_SetThreadValue<DWORD>(Set.Epoch, 1900)
+			SELF:_SetThreadValue<DWORD>(Set.EpochYear, 0)
+			SELF:_SetThreadValue<DWORD>(Set.EpochCent, 1900)
 			// Initialize the values that are not 'blank'
 			// RDD Settings
 			SELF:_SetThreadValue(Set.Ansi , TRUE)
-            SELF:_SetThreadValue(Set.Charset, 0)        // 0 = Ansi, 1 = Oem
+            SELF:_SetThreadValue<LONG>(Set.Charset, 0)        // 0 = Ansi, 1 = Oem
 			SELF:_SetThreadValue(Set.AutoOpen , TRUE)
-			SELF:_SetThreadValue(Set.AutoOrder , 1)
+			SELF:_SetThreadValue<LONG>(Set.AutoOrder , 1)
 			SELF:_SetThreadValue(Set.Optimize , TRUE)
             SELF:_SetThreadValue(Set.Deleted , FALSE)
 			SELF:_SetThreadValue(Set.AutoShare, (LONG) AutoShareMode.Auto)
-			SELF:_SetThreadValue(Set.LockTries , 10U)
-			SELF:_SetThreadValue(Set.MemoBlockSize , 32U)
+			SELF:_SetThreadValue<DWORD>(Set.LockTries , 10)
+			SELF:_SetThreadValue<DWORD>(Set.MemoBlockSize , 32)
 			SELF:_SetThreadValue(Set.DefaultRDD , "DBFNTX")
 			SELF:_SetThreadValue(Set.Exclusive , TRUE)
             SELF:_SetThreadValue(Set.FoxLock , FALSE)
 			// Console Settings
 			SELF:_SetThreadValue(Set.Bell , TRUE)
 			SELF:_SetThreadValue(Set.Color , "W/N,N/W,N/N,N/N,N/W")
-			SELF:_SetThreadValue(Set.Decimals , (DWORD) 2)
-			SELF:_SetThreadValue(Set.Digits , (DWORD) 10 )
+			SELF:_SetThreadValue<DWORD>(Set.Decimals ,  2)
+			SELF:_SetThreadValue<DWORD>(Set.Digits , 10 )
 			SELF:_SetThreadValue(Set.Exact , FALSE)
 			SELF:_SetThreadValue(Set.FloatDelta , 0.0000000000001)
+            SELF:_SetThreadValue(Set.LastFound,"")
+            SELF:_SetThreadValue<DWORD>(SET.FileError,0)
+            SELF:_SetThreadValue<Exception>(SET.FileException,NULL)
             SELF:_SetThreadValue<BYTE[]>(Set.CollationTable, NULL )
 			IF System.Environment.OSVersion:Platform == System.PlatformID.Win32NT
-                SELF:_SetThreadValue(Set.DOSCODEPAGE, Win32.GetDosCodePage())
-                SELF:_SetThreadValue(Set.WINCODEPAGE, Win32.GetWinCodePage())
+                SELF:_SetThreadValue<LONG>(Set.DOSCODEPAGE, Win32.GetDosCodePage())
+                SELF:_SetThreadValue<LONG>(Set.WINCODEPAGE, Win32.GetWinCodePage())
                 SELF:_SetThreadValue(Set.CollationMode, CollationMode.Windows)
             ELSE
-                SELF:_SetThreadValue(Set.DOSCODEPAGE, 437 )
-                SELF:_SetThreadValue(Set.WINCODEPAGE, 1250 )
+                SELF:_SetThreadValue<LONG>(Set.DOSCODEPAGE, 437 )
+                SELF:_SetThreadValue<LONG>(Set.WINCODEPAGE, 1250 )
                 SELF:_SetThreadValue(Set.CollationMode, CollationMode.Unicode )
             ENDIF
             SELF:_SetThreadValue(Set.Dialect, XSharpDialect.Core)
@@ -203,6 +206,17 @@ CLASS XSharp.RuntimeState
     STATIC PROPERTY AppModule AS  System.Reflection.Module AUTO
 	#endregion
 
+    STATIC PROPERTY LastFound AS STRING ;
+        GET GetValue<STRING>(Set.LastFound);
+        SET SetValue<STRING>(Set.LastFound, VALUE)
+
+    STATIC PROPERTY FileError AS DWORD ;
+        GET GetValue<DWORD>(Set.FileError);
+        SET SetValue<DWORD>(Set.FileError, VALUE)
+
+    STATIC PROPERTY FileException AS Exception ;
+        GET GetValue<Exception>(Set.FileException);
+        SET SetValue<Exception>(Set.FileException, VALUE)
 
 	/// <summary>The current ANSI setting</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
@@ -325,7 +339,7 @@ CLASS XSharp.RuntimeState
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
     STATIC PROPERTY DosCodePage AS LONG 
         GET
-            RETURN Convert.ToInt32(GetValue<OBJECT>(Set.DOSCODEPAGE))
+            RETURN GetValue<LONG>(Set.DOSCODEPAGE)
 		END GET
         SET 
 			SetValue<LONG>(Set.DOSCODEPAGE, VALUE) 
@@ -447,7 +461,7 @@ CLASS XSharp.RuntimeState
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
     STATIC PROPERTY WinCodePage AS LONG
 	GET
-        RETURN Convert.ToInt32(GetValue<OBJECT>(Set.WINCODEPAGE))
+        RETURN GetValue<LONG>(Set.WINCODEPAGE)
 	END GET
 	SET 
         SetValue<LONG>(Set.WINCODEPAGE, VALUE)
@@ -481,22 +495,22 @@ CLASS XSharp.RuntimeState
 
 	INTERNAL METHOD _SetInternationalClipper() AS VOID
 		SELF:_SetThreadValue(Set.Century, FALSE)
-		SELF:_SetThreadValue(Set.Decimals, (DWORD) 2)
-		SELF:_SetThreadValue(Set.DECIMALSEP,  (DWORD) 46)		// DOT .
-		SELF:_SetThreadValue(Set.THOUSANDSEP, (DWORD) 44)	// COMMA ,
+		SELF:_SetThreadValue<DWORD>(Set.Decimals, 2)
+		SELF:_SetThreadValue<DWORD>(Set.DECIMALSEP, 46)		// DOT .
+		SELF:_SetThreadValue<DWORD>(Set.THOUSANDSEP,44)	// COMMA ,
 		SELF:_SetThreadValue(Set.Intl, CollationMode.Clipper)
         SELF:_SetThreadValue(Set.Dict, FALSE)
         SELF:_SetDateCountry(DateCountry.American)
         SELF:_SetTimeFormat("hh:MM:SS")
 
 	INTERNAL METHOD _SetInternationalWindows() AS VOID
-		SELF:_SetThreadValue(Set.DECIMALS , (DWORD) 2)
+		SELF:_SetThreadValue<DWORD>(Set.DECIMALS , 2)
 		VAR numberformat := System.Globalization.NumberFormatInfo.CurrentInfo
-		SELF:_SetThreadValue(Set.DECIMALSEP, (DWORD) numberformat:NumberDecimalSeparator[0])
-		SELF:_SetThreadValue(Set.THOUSANDSEP, (DWORD) numberformat:NumberGroupSeparator[0])
-		SELF:_SetThreadValue(Set.EPOCH, (DWORD) 1910)
-		SELF:_SetThreadValue(Set.EpochYear, (DWORD) 10)
-		SELF:_SetThreadValue(Set.EpochCent, (DWORD) 2000)
+		SELF:_SetThreadValue<DWORD>(Set.DECIMALSEP, numberformat:NumberDecimalSeparator[0])
+		SELF:_SetThreadValue<DWORD>(Set.THOUSANDSEP, numberformat:NumberGroupSeparator[0])
+		SELF:_SetThreadValue<DWORD>(Set.EPOCH, 1910)
+		SELF:_SetThreadValue<DWORD>(Set.EpochYear, 10)
+		SELF:_SetThreadValue<DWORD>(Set.EpochCent, 2000)
 		SELF:_SetThreadValue(Set.Intl, CollationMode.Windows)
         SELF:_SetThreadValue(Set.Dict, TRUE)
         // FoxPro settings that do not hurt in other dialects

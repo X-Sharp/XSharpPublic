@@ -556,7 +556,7 @@ CLASS XSharp.RuntimeState
 		ENDIF
 		SELF:_SetThreadValue(Set.DateFormatNet, format:Replace("D","d"):Replace("Y","y"):Replace("/","'/'"))
 		SELF:_SetThreadValue(Set.DateFormatEmpty, format:Replace("D"," "):Replace("Y"," "):Replace("M"," "))
-		SELF:_SetThreadValue(SET.CENTURY, format:Contains("YYYY"))
+		SELF:_SetThreadValue(SET.Century, format:Contains("YYYY"))
 		SELF:_SetThreadValue(Set.DATEFORMAT, format)
         IF SELF:_GetThreadValue<XSharp.DateCountry>(Set.DATECOUNTRY) != XSharp.DateCountry.System
 		SWITCH format

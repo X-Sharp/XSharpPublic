@@ -115,6 +115,14 @@ STATIC CLASS XSharp.StringHelpers
    STATIC METHOD CompareClipper(bLHS AS BYTE[], bRHS AS BYTE[], nLen AS LONG) AS INT
 		BEGIN UNCHECKED
             LOCAL nPos AS LONG
+            IF bLHS == NULL
+                IF bRHS == NULL
+                    RETURN 0
+                ENDIF
+                RETURN -1
+            ELSEIF bRHS == NULL
+                RETURN 1
+            ENDIF
 			FOR nPos := 0 TO nLen -1
 				VAR nL := bLHS[nPos]
 				VAR nR := bRHS[nPos]

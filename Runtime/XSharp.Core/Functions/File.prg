@@ -177,10 +177,6 @@ BEGIN NAMESPACE XSharp.IO
 	/// <exclude />
 	INTERNAL STATIC CLASS File
         /// <exclude />
-        PUBLIC STATIC errorCode	:= 0 AS DWORD
-        PUBLIC STATIC lastException := NULL AS Exception
-        /// <exclude />
-		PUBLIC STATIC LastFound AS STRING
 		PRIVATE STATIC streams AS Dictionary<IntPtr, FileCacheElement >
 		PRIVATE STATIC random AS Random
 		
@@ -236,17 +232,17 @@ BEGIN NAMESPACE XSharp.IO
             
         [MethodImpl(MethodImplOptions.AggressiveInlining)];            
         STATIC METHOD ClearErrorState() AS VOID
-            lastException := NULL
-            errorCode := 0
+            RuntimeState.FileException := NULL
+            RuntimeState.FileError     := 0
             RETURN
             
 		STATIC METHOD SetErrorState ( o AS Exception ) AS VOID
             LOCAL e AS Error
             e := Error{o}
             e:StackTrace := o:StackTrace+Environment.NewLine+System.Diagnostics.StackTrace{1,TRUE}:ToString()
-            lastException := e
-            errorCode := _AND ( (DWORD) System.Runtime.InteropServices.Marshal.GetHRForException ( o ) , 0x0000FFFF )
-            e:OsCode := errorCode
+            RuntimeState.FileException := e
+            RuntimeState.FileError := _AND ( (DWORD) System.Runtime.InteropServices.Marshal.GetHRForException ( o ) , 0x0000FFFF )
+            e:OsCode := RuntimeState.FileError 
             RETURN
             
 		STATIC INTERNAL METHOD CreateFile(cFIle AS STRING, oMode AS VOFileMode) AS IntPtr
@@ -574,8 +570,8 @@ END NAMESPACE
 /// <returns>The previous errorcode from the last file operation.</returns>
 FUNCTION FError(nErrorCode AS DWORD) AS DWORD
 	LOCAL nOldError AS DWORD
-	nOldError := XSharp.IO.File.errorCode
-	XSharp.IO.File.errorCode := nErrorCode
+	nOldError := RuntimeState.FileError
+	RuntimeState.FileError := nErrorCode
 	RETURN nOldError
 
 
@@ -585,7 +581,7 @@ FUNCTION FError(nErrorCode AS DWORD) AS DWORD
 /// <returns>The error from the last file operation or the last user-specified setting.  If there was no error, FError() returns 0.</returns>
 FUNCTION FError() AS DWORD
 	LOCAL nOldError AS DWORD
-	nOldError := XSharp.IO.File.errorCode
+	nOldError := RuntimeState.FileError
 	RETURN nOldError
 
 
@@ -594,7 +590,7 @@ FUNCTION FError() AS DWORD
 /// </summary>
 /// <returns>The exception from the last file operation or the last user-specified setting.  If there was no exception, FException() returns null.</returns>
 FUNCTION FException() AS Exception
-	RETURN XSharp.IO.File.lastException
+	RETURN RuntimeState.FileException
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fchsize/*" />
@@ -620,8 +616,22 @@ FUNCTION FEof(ptrHandle AS IntPtr) AS LOGIC
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fflock/*" />
 /// <include file="CoreComments.xml" path="Comments/File/*" />
-FUNCTION FFLock(ptrHandle AS IntPtr,dwOffset AS DWORD,dwLength AS DWORD) AS LOGIC
-	RETURN XSharp.IO.File.lock(ptrHandle, (INT64) dwOffset, (INT64) dwLength, TRUE)
+FUNCTION FFLock(ptrHandle AS IntPtr,offset AS DWORD,length AS DWORD) AS LOGIC
+	VAR lResult := XSharp.IO.File.lock(ptrHandle, (INT64) offset, (INT64) length, TRUE)
+//    IF ! lResult
+//        ? "DWLock", dwOffset, dwLength, lResult
+//    ENDIF
+    RETURN lResult
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fflock/*" />
+/// <include file="CoreComments.xml" path="Comments/File/*" />
+FUNCTION FFLock64(ptrHandle AS IntPtr,offset AS INT64, length AS INT64) AS LOGIC
+    VAR lResult := XSharp.IO.File.lock(ptrHandle, offset, length, TRUE)
+//    IF ! lResult
+//    ? "I64Lock", iOffset, iLength, lResult
+//    ENDIF
+    //? ProcName(1), ProcName(2), ProcName(3)
+    RETURN lResult
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fflush/*" />
@@ -632,8 +642,19 @@ FUNCTION FFlush(ptrHandle AS IntPtr) AS LOGIC
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ffunlock/*" />
 /// <inheritdoc cref="M:XSharp.Core.Functions.FFLock(System.IntPtr,System.UInt32,System.UInt32)" />"
-FUNCTION FFUnLock(ptrHandle AS IntPtr,dwOffset AS DWORD,dwLength AS DWORD) AS LOGIC
-	RETURN XSharp.IO.File.lock(ptrHandle, (INT64) dwOffset, (INT64) dwLength, FALSE)
+FUNCTION FFUnLock(ptrHandle AS IntPtr,offset AS DWORD,length AS DWORD) AS LOGIC
+	VAR lResult := XSharp.IO.File.lock(ptrHandle, (INT64) offset, (INT64) length, FALSE)
+    //? "DWUnLock", dwOffset, dwLength, lResult
+    RETURN lResult
+
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ffunlock/*" />
+/// <inheritdoc cref="M:XSharp.Core.Functions.FFLock(System.IntPtr,System.UInt32,System.UInt32)" />"
+FUNCTION FFUnLock64(ptrHandle AS IntPtr,offset AS INT64,length AS INT64) AS LOGIC
+	VAR lResult := XSharp.IO.File.lock(ptrHandle,  offset,  length, FALSE)
+    //? "I64UnLock", iOffset, iLength, lResult
+    //? ProcName(1), ProcName(2), ProcName(3)
+    RETURN lResult
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fgets/*" />

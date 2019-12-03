@@ -26,7 +26,6 @@ BEGIN NAMESPACE XSharp.RDD.Cdx
         
         INTERNAL METHOD _FindPage( offset AS LONG ) AS CdxPage
             LOCAL page AS Cdxpage
-            SELF:_bag:CheckForChangedBag()
             SELF:_pages:TryGetValue(offSet, OUT page)
             RETURN page
 
@@ -36,7 +35,6 @@ BEGIN NAMESPACE XSharp.RDD.Cdx
          	LOCAL isOk AS LOGIC
             LOCAL buffer AS BYTE[]
             LOCAL oResult AS CdxPage
-            SELF:_bag:CheckForChangedBag()
             oResult := _FindPage(nPage)
             IF oResult != NULL_OBJECT
                 oResult:Tag := tag

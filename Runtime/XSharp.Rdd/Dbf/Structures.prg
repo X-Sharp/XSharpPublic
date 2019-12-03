@@ -18,7 +18,7 @@ INTERNAL STRUCTURE WordStruct
     [FieldOffset(0)]  INTERNAL wordValue  AS UInt16
     [FieldOffset(0)]  INTERNAL b1 AS BYTE
     [FieldOffset(1)]  INTERNAL b2 AS BYTE
-    METHOD CLear() AS VOID
+    METHOD Clear() AS VOID
         shortValue := 0
     RETURN
 END STRUCTURE
@@ -31,7 +31,7 @@ INTERNAL STRUCTURE LongStruct
     [FieldOffset(1)]  INTERNAL b2 AS BYTE
     [FieldOffset(2)]  INTERNAL b3 AS BYTE
     [FieldOffset(3)]  INTERNAL b4 AS BYTE
-    METHOD CLear() AS VOID
+    METHOD Clear() AS VOID
         longValue := 0
     RETURN
 END STRUCTURE

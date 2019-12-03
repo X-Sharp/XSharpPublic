@@ -166,11 +166,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PRIVATE METHOD _HeaderCreate() AS LOGIC
             SELF:_Header            := CdxTagHeader{_bag, -1 ,_orderName, SELF}
             SELF:_Header:Descending := SELF:_Descending
-            SELF:_Header:Version    := 0
             SELF:_Header:Signature  := 1
             SELF:_Header:RootPage   := 0
-            SELF:_Header:FreeList   := 0
-            SELF:_Header:Version    := 0
             SELF:_Header:KeySize    := _keySize
             SELF:_Header:KeyExprPos := 0
             SELF:_Header:KeyExprLen := (WORD) _KeyExpr:Length + 1
@@ -509,8 +506,14 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             DO WHILE oPage IS CdxBranchPage VAR oBranch
                 VAR nLast := oPage:NumKeys-1
                 VAR nPage := oBranch:GetChildPage(nLast)
-                oBranch:SetData(nLast, oLast:Recno, nPage, oLast:KeyBytes)
                 oPage := SELF:_tag:GetPage(nPage)
+                DO WHILE oPage:HasRight
+                    nPage := oPage:RightPtr
+                    oPage := SELF:_tag:GetPage(nPage)
+                ENDDO                    
+                
+                oBranch:SetData(nLast, oLast:Recno, nPage, oLast:KeyBytes)
+                
             ENDDO
                 
             SELF:Clear()

@@ -137,19 +137,23 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:Open()
 
 
-
-	    METHOD Open() AS LOGIC
+         METHOD ReadHeader AS VOID
             SELF:_Header:Read()
-            SELF:_KeyExpr := SELF:_Header:KeyExpression
-            SELF:_ForExpr := SELF:_Header:ForExpression
-            SELF:_oRdd:GoTo(1)
-            SELF:_Hot := FALSE
-            SELF:ClearStack()
             SELF:_keySize       := SELF:_Header:KeySize
             SELF:Options        := SELF:_Header:Options
             SELF:Signature      := SELF:_Header:Signature
             SELF:_Descending    := SELF:_Header:Descending
             SELF:_rootPage      := SELF:_Header:RootPage
+            SELF:_KeyExpr       := SELF:_Header:KeyExpression
+            SELF:_ForExpr       := SELF:_Header:ForExpression
+            RETURN
+
+
+	    METHOD Open() AS LOGIC
+            SELF:_oRdd:GoTo(1)
+            SELF:_Hot := FALSE
+            SELF:ClearStack()
+            SELF:ReadHeader()
             IF !String.IsNullOrEmpty(SELF:_Header:VfpCollation)
                 IF SELF:_oRDD IS DBFVFP 
                     SELF:_Collation := VfpCollation{SELF:_Header:VfpCollation,SELF:_oRDD:Header:CodePage:ToCodePage()}
@@ -449,80 +453,82 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL recno AS LONG
             LOCAL last AS LONG
             LOCAL count AS LONG
-            
+            LOCAL isLocked := FALSE AS LOGIC
             isOk := TRUE
             SELF:_bag:Flush()
             SELF:_oRdd:GoCold()
             oldRec := SELF:_Recno
-            IF SELF:Shared
-                isOk := SELF:SLock()
-                IF !isOk
-                    RETURN FALSE
-                ENDIF
-            ENDIF
-            IF SELF:HasScope .and. ! XSharp.RuntimeState.Deleted .and. ! SELF:_oRdd:_FilterInfo:Active
-                SELF:_ScopeSeek(DBOrder_Info.DBOI_SCOPEBOTTOM)
-                records := SELF:_getScopePos()
-            ELSE
-                IF  XSharp.RuntimeState.Deleted  .OR. SELF:_oRdd:_FilterInfo:Active
-                    SELF:_oRdd:SkipFilter(1)
-                    oldRec := SELF:_Recno
-                    records := 0
-                    local lWasDescending as LOGIC
-                    lWasDescending := SELF:Descending
-                    IF lWasDescending
-                        SELF:Descending := FALSE
+            TRY
+                IF SELF:Shared
+                    isLocked := SELF:SLock()
+                    IF !isLocked
+                        RETURN FALSE
                     ENDIF
-                    isOk := SELF:GoTop()
-                    recno := SELF:_Recno
-                    last := SELF:_oRdd:RecCount + 1
-                    count := 0
-                    local previous as long
-                    previous := recno
-                    DO WHILE recno != 0 .AND. recno < last
-                        count++
-                        recno := SELF:_ScopeSkip(1)
-                        if recno == previous
-                            exit
-                        endif
-                        previous := recno
-                    ENDDO
-                    records := count
-                    SELF:Descending := lWasDescending
+                ENDIF
+                IF SELF:HasScope .AND. ! XSharp.RuntimeState.Deleted .AND. ! SELF:_oRdd:_FilterInfo:Active
+                    SELF:_ScopeSeek(DBOrder_Info.DBOI_SCOPEBOTTOM)
+                    records := SELF:_getScopePos()
                 ELSE
-                     records := 0
-                    IF SELF:GoTop() .and. ! SELF:Stack:Empty
-                        VAR topStack := SELF:CurrentStack
-                        VAR page     := topStack:Page
-                        DO WHILE TRUE
-                            IF page == NULL
+                    IF  XSharp.RuntimeState.Deleted  .OR. SELF:_oRdd:_FilterInfo:Active
+                        SELF:_oRdd:SkipFilter(1)
+                        oldRec := SELF:_Recno
+                        records := 0
+                        LOCAL lWasDescending AS LOGIC
+                        lWasDescending := SELF:Descending
+                        IF lWasDescending
+                            SELF:Descending := FALSE
+                        ENDIF
+                        isOk := SELF:GoTop()
+                        recno := SELF:_Recno
+                        last := SELF:_oRdd:RecCount + 1
+                        count := 0
+                        LOCAL previous AS LONG
+                        previous := recno
+                        DO WHILE recno != 0 .AND. recno < last
+                            count++
+                            recno := SELF:_ScopeSkip(1)
+                            IF recno == previous
                                 EXIT
                             ENDIF
-                            records += page:NumKeys
-                            IF SELF:_Descending
-                                IF page:HasLeft
-                                    VAR pageNo := page:LeftPtr
-                                    page := SELF:GetPage(pageNo)
-                                ELSE
-                                    EXIT
-                                ENDIF
-                            ELSE
-                                IF page:HasRight
-                                    VAR pageNo := page:RightPtr
-                                    page := SELF:GetPage(pageNo)
-                                ELSE
-                                    EXIT
-                                ENDIF
-                            ENDIF
+                            previous := recno
                         ENDDO
+                        records := count
+                        SELF:Descending := lWasDescending
+                    ELSE
+                         records := 0
+                        IF SELF:GoTop() .AND. ! SELF:Stack:Empty
+                            VAR topStack := SELF:CurrentStack
+                            VAR page     := topStack:Page
+                            DO WHILE TRUE
+                                IF page == NULL
+                                    EXIT
+                                ENDIF
+                                records += page:NumKeys
+                                IF SELF:_Descending
+                                    IF page:HasLeft
+                                        VAR pageNo := page:LeftPtr
+                                        page := SELF:GetPage(pageNo)
+                                    ELSE
+                                        EXIT
+                                    ENDIF
+                                ELSE
+                                    IF page:HasRight
+                                        VAR pageNo := page:RightPtr
+                                        page := SELF:GetPage(pageNo)
+                                    ELSE
+                                        EXIT
+                                    ENDIF
+                                ENDIF
+                            ENDDO
+                        ENDIF
                     ENDIF
                 ENDIF
-            ENDIF
-            SELF:_GoToRecno(oldRec)
-
-            IF SELF:Shared
-                isOk := SELF:UnLock()
-            ENDIF
+                SELF:_GoToRecno(oldRec)
+            FINALLY
+                IF SELF:Shared .AND. isLocked
+                    isOk := SELF:UnLock()
+                ENDIF
+            END TRY
             RETURN isOk
 
 
@@ -530,43 +536,53 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL oldRec AS LONG
             LOCAL recno AS LONG
             LOCAL count AS LONG
+            LOCAL isLocked := FALSE AS LOGIC
             
             SELF:_oRdd:GoCold()
             oldRec := SELF:_Recno
-            IF !SELF:SLock()
-                RETURN FALSE
-            ENDIF
-            recno := record
-            IF recno == 0
-                recno := SELF:_Recno
-            ENDIF
-            IF SELF:Stack:Empty
-                SELF:_GoToRecno(recno)
-            ENDIF
-            IF SELF:HasScope
-                record := SELF:_getScopePos()
-            ELSE
-                IF XSharp.RuntimeState.Deleted .OR. SELF:_oRdd:_FilterInfo:Active
-                    SELF:_oRdd:SkipFilter(1)
-                    oldRec := SELF:_Recno
-                    record := 0
-                    IF !SELF:_oRdd:_Eof
-                        SELF:GoTop()
-                        recno := SELF:_Recno
-                        count := 1
-                        VAR dir := IIF(SELF:Descending, -1, 1)
-                        DO WHILE recno != 0 .AND. recno != oldRec
-                            count++
-                            recno := SELF:_ScopeSkip(dir)
-                        ENDDO
-                        record := count
+            TRY
+                IF SELF:Shared
+                    isLocked := SELF:SLock()
+                    IF !isLocked
+                        RETURN FALSE
                     ENDIF
-                ELSE
-                    record := SELF:_findItemPos()
                 ENDIF
-            ENDIF
-            SELF:_oRdd:__Goto(oldRec)
-            RETURN SELF:UnLock()
+                recno := record
+                IF recno == 0
+                    recno := SELF:_Recno
+                ENDIF
+                IF SELF:Stack:Empty
+                    SELF:_GoToRecno(recno)
+                ENDIF
+                IF SELF:HasScope
+                    record := SELF:_getScopePos()
+                ELSE
+                    IF XSharp.RuntimeState.Deleted .OR. SELF:_oRdd:_FilterInfo:Active
+                        SELF:_oRdd:SkipFilter(1)
+                        oldRec := SELF:_Recno
+                        record := 0
+                        IF !SELF:_oRdd:_Eof
+                            SELF:GoTop()
+                            recno := SELF:_Recno
+                            count := 1
+                            VAR dir := IIF(SELF:Descending, -1, 1)
+                            DO WHILE recno != 0 .AND. recno != oldRec
+                                count++
+                                recno := SELF:_ScopeSkip(dir)
+                            ENDDO
+                            record := count
+                        ENDIF
+                    ELSE
+                        record := SELF:_findItemPos()
+                    ENDIF
+                ENDIF
+                SELF:_oRdd:__Goto(oldRec)
+            FINALLY
+                IF SELF:Shared .AND. isLocked
+                    SELF:UnLock()
+                ENDIF
+            END TRY
+            RETURN TRUE
             
         PRIVATE METHOD _nextKey( keyMove AS LONG ) AS LONG
             LOCAL recno			AS LONG

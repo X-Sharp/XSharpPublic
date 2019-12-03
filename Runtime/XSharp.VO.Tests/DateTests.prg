@@ -240,6 +240,9 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		[Fact, Trait("Category", "Date")];
 		METHOD SetDateCountryTests() AS VOID
 			LOCAL dDate AS DATE
+			
+			LOCAL nOld AS DWORD
+			nOld := SetDateCountry()
 
 			dDate := 2000.01.31
 			
@@ -284,6 +287,9 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal("00/01/31", DToC(dDate))
 			SetDateCountry(DateCountry.USA) 
 			Assert.Equal("01-31-00", DToC(dDate))
+			
+			SetDateCountry(nOld)
+			Assert.Equal(nOld, (DWORD)SetDateCountry())
 				 
 		[Fact, Trait("Category", "Time")];
 		METHOD ConTimeTest() AS VOID

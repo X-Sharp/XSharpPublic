@@ -203,11 +203,11 @@ INTERNAL FUNCTION FileSearchWorker(cFile AS STRING) AS STRING
         IF lFirst
             // store the first path that we looked in even when the file is not found
             // to be compatible with VO
-            XSharp.IO.File.LastFound := cTemp
+            RuntimeState.LastFound := cTemp
             lFirst := FALSE
         ENDIF
         IF System.IO.File.Exists(cTemp)
-            XSharp.IO.File.LastFound := cTemp
+            RuntimeState.LastFound := cTemp
             RETURN cTemp
         ENDIF
     NEXT
@@ -240,11 +240,11 @@ FUNCTION File(cFileSpec AS STRING) AS LOGIC
             RETURN FALSE
         ENDIF
         lHasWildCards := cFileSpec:IndexOfAny( <CHAR>{ '*', '?' } ) > 0
-        XSharp.IO.File.LastFound := ""
+        RuntimeState.LastFound := ""
         IF ! lHasWildCards
             VAR cFound := XSharp.FileSearch.Worker(cFileSpec)
             IF ! String.IsNullOrEmpty(cFound)
-                XSharp.IO.File.LastFound := cFound
+                RuntimeState.LastFound := cFound
                 RETURN TRUE
             ENDIF
         ELSE
@@ -254,12 +254,12 @@ FUNCTION File(cFileSpec AS STRING) AS LOGIC
             IF Path.IsPathRooted(cFileSpec)
                 files := Directory.GetFiles( Path.GetDirectoryName( cFileSpec ), Path.GetFileName( cFileSpec ) )
                 IF files:Length > 0
-                    XSharp.IO.File.LastFound := files[1]
+                    RuntimeState.LastFound := files[1]
                     RETURN TRUE
                 ELSE
                     // store the first path that we looked in even when the file is not found
                     // to be compatible with VO
-                    XSharp.IO.File.LastFound := cFileSpec
+                    RuntimeState.LastFound := cFileSpec
                     RETURN FALSE
                 ENDIF
             ELSE
@@ -285,7 +285,7 @@ FUNCTION File(cFileSpec AS STRING) AS LOGIC
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/FPathName/*" />
 FUNCTION FPathName() AS STRING
-    RETURN XSharp.IO.File.LastFound
+    RETURN RuntimeState.LastFound
     
     
 INTERNAL FUNCTION __FileHelper(cPath AS STRING, cFileSpec AS STRING, lSavePath AS LOGIC) AS LOGIC
@@ -303,9 +303,9 @@ INTERNAL FUNCTION __FileHelper(cPath AS STRING, cFileSpec AS STRING, lSavePath A
     ENDIF
     files := System.IO.Directory.GetFiles(cPath, cFile)
     IF files:Length > 0
-        XSharp.IO.File.LastFound := files[0]
+        RuntimeState.LastFound := files[0]
     ELSEIF lSavePath
-        XSharp.IO.File.LastFound := cTemp
+        RuntimeState.LastFound := cTemp
     ENDIF
     RETURN files:Length > 0
     

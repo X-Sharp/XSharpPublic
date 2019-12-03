@@ -98,7 +98,11 @@ BEGIN NAMESPACE XSharp
         MEMBER LastRddError := 84   // Exception object
         /// <sumary>Not used.</sumary>
         MEMBER Dialect      := 85   // XSharpDialect value
-        // 86 - 97 unused
+        MEMBER LastFound    := 86   // Last file found with File()
+        MEMBER FileError    := 87   // Last File error code
+        MEMBER FileException:= 88   // Last File exception
+
+// 86 - 97 unused
         MEMBER DICT        := 98	// LOGIC
         MEMBER INTL        := 99	// LOGIC
 

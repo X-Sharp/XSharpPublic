@@ -230,7 +230,7 @@ FUNCTION DirChange(pszDir AS STRING) AS INT
 		ENDIF
 	CATCH e AS Exception
 		XSharp.IO.File.setErrorState(e)
-        result := (INT) XSharp.IO.File.errorCode
+        result := (INT) RuntimeState.FileError
 	END TRY
 	RETURN result
 	
@@ -247,7 +247,7 @@ FUNCTION DirMake(pszNewDir AS STRING) AS INT
 		ENDIF
 	CATCH e AS Exception
 		XSharp.IO.File.setErrorState(e)
-        result := (INT) XSharp.IO.File.errorCode
+        result := (INT) RuntimeState.FileError
 	END TRY
 	RETURN result
 	
@@ -264,7 +264,7 @@ FUNCTION DirRemove(pszDirName AS STRING) AS INT
 		ENDIF
 	CATCH e AS Exception
 		XSharp.IO.File.setErrorState(e)
-        result := (INT) XSharp.IO.File.errorCode
+        result := (INT) RuntimeState.FileError
 	END TRY
 	RETURN result
 

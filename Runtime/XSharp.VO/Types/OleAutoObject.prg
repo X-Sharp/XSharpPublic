@@ -102,16 +102,19 @@ CLASS XSharp.OleAutoObject
 		LOCAL nArg, nArgs  AS INT
 		LOCAL oRet  AS OBJECT
 		nArgs := PCOUNT()
-		IF (nArgs >= 1)
-			cName := _GetMParam(1)
-			args  := USUAL[]{nArgs-1}
-			FOR nArg := 2 TO nArgs
-				args[nArg-1] :=  _GetMParam(nArg)
-			NEXT
-		ELSE
-			// Throw Exception
-			THROW Error.VOError(EG_SEND_MISSINGARG, "OleAutoObject:NoMethod","Send",0,NULL )
-		ENDIF
+        IF RuntimeState.Dialect == XSharpDialect.Vulcan
+		    cName := NoMethod()
+		    args  := USUAL[]{nArgs-1}
+		    FOR nArg := 2 TO nArgs
+			    args[nArg-1] :=  _GetMParam(nArg)
+            NEXT
+        ELSE
+		    cName := NoMethod()
+		    args  := USUAL[]{nArgs}
+		    FOR nArg := 1 TO nArgs
+			    args[nArg] :=  _GetMParam(nArg)
+            NEXT
+        ENDIF
 		oRet := OleAutoObject.OleSend(oComObject, oType, cName, args)
 			
 		RETURN OleAutoObject.OleWrapObject(oRet, lDateTimeAsDate)

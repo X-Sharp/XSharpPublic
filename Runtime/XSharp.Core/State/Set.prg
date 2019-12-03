@@ -50,12 +50,12 @@ FUNCTION SetBeep(lNewSetting AS LOGIC) AS LOGIC
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setcentury/*" />
 FUNCTION SetCentury() AS LOGIC
-	GETSTATE LOGIC Set.Century 
+	RETURN RuntimeState.Century
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setcentury/*" />
 FUNCTION SetCentury(lNewSetting AS LOGIC) AS LOGIC
 	LOCAL lOld AS LOGIC
-    lOld := XSharp.RuntimeState.GetValue<LOGIC>(Set.CENTURY)
+    lOld := RuntimeState.Century
     IF lOld != lNewSetting
       VAR cFormat := XSharp.RuntimeState.DateFormat
       
@@ -82,12 +82,12 @@ FUNCTION SetCpu() AS DWORD
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setcpu/*" />
 FUNCTION SetCpu(nNewSetting AS DWORD) AS DWORD
-	SETSTATE DWORD Set.CPU nNewSetting
+   	SETSTATE DWORD Set.CPU nNewSetting
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setdatecountry/*" />
 FUNCTION SetDateCountry() AS DWORD
-	GETSTATE DWORD Set.DATECOUNTRY
+	RETURN RuntimeState.DateCountry
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setdatecountry/*" />
 FUNCTION SetDateCountry(dwNewSetting AS DWORD) AS DWORD
@@ -111,24 +111,27 @@ FUNCTION SetDateFormat(cNewSetting AS STRING) AS STRING
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setdecimal/*" />
 FUNCTION SetDecimal() AS DWORD
-	GETSTATE DWORD Set.Decimals 
+	RETURN Runtimestate.Decimals
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setdecimal/*" />
 FUNCTION SetDecimal(nNewSetting AS DWORD) AS DWORD
-	SETSTATE DWORD Set.Decimals nNewSetting
+	VAR nOld := Runtimestate.Decimals
+    Runtimestate.Decimals := nNewSetting
+    RETURN nOld
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setdecimalsep/*" />
 FUNCTION SetDecimalSep() AS DWORD
-	GETSTATE DWORD Set.DecimalSep 
+    RETURN Runtimestate.DecimalSep 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setdecimalsep/*" />
 FUNCTION SetDecimalSep(nNewSetting AS DWORD) AS DWORD
 	LOCAL oCulture AS System.Globalization.CultureInfo
+    VAR nOld := Runtimestate.DecimalSep 
 	oCulture := (System.Globalization.CultureInfo)System.Threading.Thread.CurrentThread:CurrentCulture:Clone()
 	oCulture:NumberFormat:NumberDecimalSeparator := ((CHAR)nNewSetting):ToString()
 	System.Threading.Thread.CurrentThread:CurrentCulture := oCulture
-
-	SETSTATE DWORD Set.DecimalSep nNewSetting
+	Runtimestate.DecimalSep := nNewSetting
+    RETURN nOld
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setdefault/*" />
 FUNCTION SetDefault() AS STRING
@@ -142,42 +145,50 @@ FUNCTION SetDefault(cPathSpec AS STRING) AS STRING
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setdeleted/*" />
 FUNCTION SetDeleted() AS LOGIC
-	GETSTATE LOGIC Set.Deleted 
+	RETURN RuntimeState.Deleted
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setdeleted/*" />
 FUNCTION SetDeleted(lNewSetting AS LOGIC) AS LOGIC
-	SETSTATE LOGIC Set.Deleted lNewSetting
+    VAR lOld :=  RuntimeState.Deleted
+    RuntimeState.Deleted := lNewSetting
+    RETURN lOld
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setdigit/*" />
 FUNCTION SetDigit() AS DWORD
-	GETSTATE DWORD Set.DIGITS 
+	RETURN RuntimeState.Digits
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setdigit/*" />
 FUNCTION SetDigit(nNewSetting AS DWORD) AS DWORD
-	SETSTATE DWORD Set.DIGITS nNewSetting
+    VAR nOld :=  RuntimeState.Digits
+    RuntimeState.Digits := nNewSetting
+    RETURN nOld
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setdigitfixed/*" />
 FUNCTION SetDigitFixed() AS LOGIC
-	GETSTATE LOGIC Set.DigitFixed 
+	RETURN RuntimeState.DigitsFixed
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setdigitfixed/*" />
 FUNCTION SetDigitFixed(lNewSetting AS LOGIC) AS LOGIC
-	SETSTATE LOGIC Set.DigitFixed lNewSetting
+    VAR lOld :=  RuntimeState.DigitsFixed
+    RuntimeState.DigitsFixed := lNewSetting
+    RETURN lOld
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setepoch/*" />
 FUNCTION SetEpoch() AS DWORD
-	GETSTATE DWORD Set.Epoch 
+	RETURN RuntimeState.Epoch
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setepoch/*" />
 FUNCTION SetEpoch(nNewSetting AS DWORD) AS DWORD
 	LOCAL wYear AS DWORD
 	LOCAL wCent AS DWORD
+    VAR nOld := RuntimeState.Epoch
 	wYear := nNewSetting % 100
 	wCent := (( nNewSetting / 100) +1) * 100
 	XSharp.RuntimeState.SetValue<DWORD> (Set.EpochYear, wYear)
 	XSharp.RuntimeState.SetValue<DWORD> (Set.EpochCent, wCent)
-	SETSTATE DWORD Set.Epoch	 nNewSetting
+	RuntimeState.Epoch := nNewSetting
+    RETURN nOld
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/seterrorlog/*" />
 FUNCTION SetErrorLog() AS LOGIC
@@ -189,11 +200,13 @@ FUNCTION SetErrorLog(lNewSetting AS LOGIC) AS LOGIC
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setexact/*" />
 FUNCTION SetExact() AS LOGIC
-	GETSTATE LOGIC Set.Exact 
+	RETURN RuntimeState.Exact
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setexact/*" />
 FUNCTION SetExact(lNewSetting AS LOGIC) AS LOGIC
-	SETSTATE LOGIC Set.Exact lNewSetting
+    VAR lOld :=  RuntimeState.Exact
+    RuntimeState.Exact := lNewSetting
+    RETURN lOld
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setexclusive/*" />
 FUNCTION SetExclusive() AS LOGIC
@@ -213,11 +226,13 @@ FUNCTION SetFieldStore(lNewSetting AS LOGIC) AS LOGIC
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setfixed/*" />
 FUNCTION SetFixed() AS LOGIC
-	GETSTATE LOGIC Set.Fixed 
+	RETURN RuntimeState.Fixed
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setfixed/*" />
 FUNCTION SetFixed(lNewSetting AS LOGIC) AS LOGIC
-	SETSTATE LOGIC Set.Fixed lNewSetting
+    VAR lOld :=  RuntimeState.Fixed
+    RuntimeState.Fixed := lNewSetting
+    RETURN lOld
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setmath/*" />
 FUNCTION SetMath() AS DWORD
@@ -330,11 +345,13 @@ FUNCTION SetScience(lNewSetting AS LOGIC) AS LOGIC
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setsoftseek/*" />
 FUNCTION SetSoftSeek() AS LOGIC
-	GETSTATE LOGIC Set.SoftSeek 
+	RETURN RuntimeState.SoftSeek
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setsoftseek/*" />
 FUNCTION SetSoftSeek(lNewSetting AS LOGIC) AS LOGIC
-	SETSTATE LOGIC Set.SoftSeek lNewSetting
+	VAR lOld := RuntimeState.SoftSeek
+    RuntimeState.SoftSeek := lNewSetting
+    RETURN lOld
 
 /// <summary>
 /// Return the setting that determines whether a space is displayed between fields or expressions when you use the ? or ?? command.
@@ -355,16 +372,17 @@ FUNCTION SetSpace(lSet AS LOGIC) AS LOGIC
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setthousandsep/*" />
 FUNCTION SetThousandSep() AS DWORD
-	GETSTATE DWORD Set.ThousandSep 
+	RETURN RuntimeState.ThousandSep
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setthousandsep/*" />
 FUNCTION SetThousandSep(nNewSetting AS DWORD) AS DWORD
 	LOCAL oCulture AS System.Globalization.CultureInfo
+    VAR nOld := RuntimeState.ThousandSep
 	oCulture := (System.Globalization.CultureInfo)System.Threading.Thread.CurrentThread:CurrentCulture:Clone()
 	oCulture:NumberFormat:NumberGroupSeparator := ((CHAR)nNewSetting):ToString()
 	System.Threading.Thread.CurrentThread:CurrentCulture := oCulture
-
-	SETSTATE DWORD Set.ThousandSep nNewSetting
+    RuntimeState.ThousandSep :=  nNewSetting
+    RETURN nOld
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/settimesep/*" />
 FUNCTION SetTimeSep() AS DWORD
@@ -376,11 +394,13 @@ FUNCTION SetTimeSep(dwNewSetting AS DWORD) AS DWORD
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setunique/*" />
 FUNCTION SetUnique() AS LOGIC
-	GETSTATE LOGIC Set.Unique 
+	RETURN RuntimeState.Unique
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setunique/*" />
 FUNCTION SetUnique(lNewSetting AS LOGIC) AS LOGIC
-	SETSTATE LOGIC Set.Unique lNewSetting
+	VAR lOld := RuntimeState.Unique
+    RuntimeState.Unique := lNewSetting
+    RETURN lOld
 
 /// <summary>
 /// </summary>

@@ -66,7 +66,7 @@ namespace XSharpLanguage
         private bool _keywordsInAll;
         private bool _dotUniversal;
         private IBufferTagAggregatorFactoryService aggregator;
-        private IntellisenseOptionsPage _optionsPage;
+        internal static IntellisenseOptionsPage _optionsPage;
         private XSharpDialect _dialect;
 
         internal static bool StringEquals(string lhs, string rhs)
@@ -1096,6 +1096,7 @@ namespace XSharpLanguage
     }
     public class MemberAnalysis
     {
+        IntellisenseOptionsPage _optionsPage => XSharpCompletionSource._optionsPage;
         public class ParamInfo
         {
             public String Name;
@@ -1369,7 +1370,7 @@ namespace XSharpLanguage
                                 {
                                     foreach (var param in names)
                                     {
-                                        this._parameters.Add(new ParamInfo(param, "USUAL", "AS"));
+                                        this._parameters.Add(new ParamInfo(param, _optionsPage.Usual(), _optionsPage.As()));
                                     }
                                 }
                                 return;
@@ -1476,7 +1477,7 @@ namespace XSharpLanguage
                     EnvDTE.CodeElements pars = method.Parameters;
                     foreach (EnvDTE.CodeParameter p in pars)
                     {
-                        this._parameters.Add(new ParamInfo(p.Name, p.Type.AsFullName, "AS"));
+                        this._parameters.Add(new ParamInfo(p.Name, p.Type.AsFullName, _optionsPage.As()));
                     }
                     //
                     declType = method.Type;
@@ -1532,13 +1533,13 @@ namespace XSharpLanguage
                 String modVis = "";
                 if (this.Modifiers != Modifiers.None)
                 {
-                    modVis += this.Modifiers.ToString() + " ";
+                    modVis += _optionsPage.formatKeyword(this.Modifiers) + " ";
                 }
-                modVis += this.Visibility.ToString() + " ";
+                modVis += _optionsPage.formatKeyword(this.Visibility) + " ";
                 //
                 if (this.IsStatic)
                 {
-                    modVis += "STATIC" + " ";
+                    modVis += _optionsPage.Static() + " ";
                 }
                 //
                 String desc = modVis;
@@ -1547,15 +1548,15 @@ namespace XSharpLanguage
                 {
                     if (this.Kind == Kind.VODefine)
                     {
-                        desc += "Define" + " ";
+                        desc += _optionsPage.Define() + " ";
                     }
                     else if (this.Kind == Kind.VOGlobal)
                     {
-                        desc += "Global" + " ";
+                        desc += _optionsPage.Global() + " ";
                     }
                     else
                     {
-                        desc += this.Kind.ToString() + " ";
+                        desc += _optionsPage.formatKeyword(this.Kind) + " ";
                     }
                 }
                 desc += this.Prototype;
@@ -1576,7 +1577,7 @@ namespace XSharpLanguage
                     {
                         if (vars.Length > 1)
                             vars += ", ";
-                        vars += var.Name + " " + var.Direction + " " + var.TypeName;
+                        vars += var.Name + " " + _optionsPage.formatKeyword(var.Direction) + " " + var.TypeName;
                     }
                     vars += this.Kind == Kind.Constructor ? "}" : ")";
                 }
@@ -1586,7 +1587,7 @@ namespace XSharpLanguage
                 //
                 if (this.Kind.HasReturnType())
                 {
-                    desc += " AS " + this.TypeName;
+                    desc += " " + _optionsPage.As() + this.TypeName;
                 }
                 //
                 return desc;
@@ -1760,7 +1761,7 @@ namespace XSharpLanguage
         private Modifiers _visibility;
         private Kind _kind;
         private bool _isStatic;
-
+        IntellisenseOptionsPage _optionsPage => XSharpCompletionSource._optionsPage;
 
         internal TypeAnalysis(TypeInfo typeInfo)
         {
@@ -1919,13 +1920,13 @@ namespace XSharpLanguage
                 String modVis = "";
                 if (this.Modifiers != Modifiers.None)
                 {
-                    modVis += this.Modifiers.ToString() + " ";
+                    modVis += _optionsPage.formatKeyword(this.Modifiers) + " ";
                 }
-                modVis += this.Visibility.ToString() + " ";
+                modVis += _optionsPage.formatKeyword(this.Visibility) + " ";
                 //
                 if (this.IsStatic)
                 {
-                    modVis += "STATIC" + " ";
+                    modVis += _optionsPage.Static() + " ";
                 }
                 //
                 String desc = modVis;

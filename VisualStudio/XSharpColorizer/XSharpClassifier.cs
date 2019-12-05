@@ -701,6 +701,7 @@ namespace XSharpColorizer
                             case XSharpLexer.CHAR_CONST:
                             case XSharpLexer.ESCAPED_STRING_CONST:
                             case XSharpLexer.INTERPOLATED_STRING_CONST:
+                            case XSharpLexer.INCOMPLETE_STRING_CONST:
                                 type = xsharpStringType;
                                 break;
                             case XSharpLexer.TEXT_STRING_CONST:
@@ -717,6 +718,14 @@ namespace XSharpColorizer
                             case XSharpLexer.SYMBOL_CONST:
                             case XSharpLexer.NIL:
                                 type = xsharpLiteralType;
+                                break;
+                            case XSharpLexer.BIN_CONST:
+                            case XSharpLexer.HEX_CONST:
+                            case XSharpLexer.REAL_CONST:
+                            case XSharpLexer.INT_CONST:
+                            case XSharpLexer.DATE_CONST:
+                            case XSharpLexer.DATETIME_CONST:
+                                type = xsharpNumberType;
                                 break;
                             default:
                                 if ((tokenType >= XSharpLexer.FIRST_NULL) && (tokenType <= XSharpLexer.LAST_NULL))

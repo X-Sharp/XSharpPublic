@@ -158,7 +158,7 @@ namespace XSharpLanguage
                 {
                     var name = lastTag.Tag.ClassificationType.Classification.ToLower();
                     // No Intellisense in Comment
-                    if (name == "comment")
+                    if (name == "comment" || name == "xsharp.text")
                         return;
                 }
                 ////////////////////////////////////////////

@@ -53,7 +53,6 @@ namespace XSharp.Project
         OptionsPages.IntellisenseOptionsPage _optionsPage;
         List<int> _linesToSync;
         bool _suspendSync = false;
-        private static System.Globalization.TextInfo txtInfo = new System.Globalization.CultureInfo("en-US", false).TextInfo;
 
 
         private bool getTagAggregator()
@@ -208,22 +207,15 @@ namespace XSharp.Project
         /// <param name="line"></param>
         private string FormatKeyword(string keyword)
         {
-            switch (KeywordCase)
-            {
-                case KeywordCase.Upper:
-                    return keyword.ToUpper();
-                case KeywordCase.Lower:
-                    return keyword.ToLower();
-                case KeywordCase.Title:
-                    return txtInfo.ToTitleCase(keyword.ToLower());
-            }
-            return keyword;
+            return _optionsPage.SyncKeyword(keyword);
         }
 
 
         private void formatToken(ITextEdit editSession, int offSet, IToken token)
         {
-            if (token.Channel == XSharpLexer.Hidden || token.Channel == XSharpLexer.PREPROCESSORCHANNEL)
+            if (token.Channel == XSharpLexer.Hidden ||
+                token.Channel == XSharpLexer.PREPROCESSORCHANNEL ||
+                token.Type == XSharpLexer.TEXT_STRING_CONST)
                 return;
             bool syncKeyword = false;
             // Some exceptions are (pseudo) functions. These should not be formatted
@@ -333,10 +325,51 @@ namespace XSharp.Project
 
             }
         }
+        private bool canFormatLine(ITextSnapshotLine line)
+        {
+            // get first token on line
+            // when comment: do not format
+            // when xsharp.text and only one token: do not format
+            // when xsharp.text and second token = keyword, then endtext line, so format
+            var ss = new SnapshotSpan(line.Snapshot, line.Start.Position, 1);
+            var spans = _classifier.GetClassificationSpans(ss);
+            if (spans.Count > 0)
+            {
+                var type = spans[0].ClassificationType;
+                if (type.Classification.ToLower() == "comment")
+                    return false;
+                if (type.Classification.ToLower() == "xsharp.text")
+                {
+                    if (spans.Count == 1)
+                        return false;
+                    // endtext line starts with token with type "xsharp.text" when it starts with spaces
+                    return spans[1].ClassificationType.Classification == "keyword";
+                }
+            }
+            return true;
+        }
+        private bool IsCommentOrString(string classification)
+        {
+            if (string.IsNullOrEmpty(classification))
+                return false;
+            switch (classification.ToLower())
+            {
+                case "comment":
+                case "string":
+                case "xsharp.text":
+                    return true;
+            }
+            return false;
+        }
+
+
         private void formatLineCase(ITextEdit editSession, ITextSnapshotLine line)
         {
             if (XSharpProjectPackage.Instance.DebuggerIsRunning)
                 return;
+            if (!canFormatLine(line))
+                return;
+
             getEditorPreferences(TextView);
             if (_keywordCase == KeywordCase.None)
                 return;
@@ -347,16 +380,6 @@ namespace XSharp.Project
             int lineStart = line.Start.Position;
             if (line.Length == 0)
                 return;
-            var ss = new SnapshotSpan(line.Snapshot, lineStart, 1);
-            var spans = _classifier.GetClassificationSpans(ss);
-            if (spans.Count > 0)
-            {
-                var type = spans[0].ClassificationType;
-                if ( (type.Classification == "comment") || (type.Classification == "text") )
-                {
-                    return;
-                }
-            }
             var tokens = getTokensInLine(line);
             foreach (var token in tokens)
             {
@@ -830,18 +853,7 @@ namespace XSharp.Project
 
         void formatKeyword(Completion completion , char nextChar)
         {
-            switch (_optionsPage.KeywordCase)
-            {
-                case KeywordCase.Upper:     // Upper
-                    completion.InsertionText = completion.InsertionText.ToUpper();
-                    break;
-                case KeywordCase.Lower:     // Lower
-                    completion.InsertionText = completion.InsertionText.ToLower();
-                    break;
-                case KeywordCase.Title:     // Proper
-                    completion.InsertionText = Char.ToUpper(completion.InsertionText[0]) + completion.InsertionText.Substring(1).ToLower();
-                    break;
-            }
+            completion.InsertionText = _optionsPage.SyncKeyword(completion.InsertionText);
             if (nextChar != ' ' && nextChar != '\t')
             {
                 completion.InsertionText += " ";
@@ -982,17 +994,7 @@ namespace XSharp.Project
         private bool cursorIsInStringorComment(SnapshotPoint caret)
         {
             var classification = getClassification(caret);
-            if (classification != null)
-            {
-                switch (classification.ToLower())
-                {
-                    case "string":
-                    case "comment":
-                    case "xsharp.text":
-                        return true;
-                }
-            }
-            return false;
+            return IsCommentOrString(classification);
         }
         private bool cursorIsAfterSLComment(SnapshotPoint caret)
         {
@@ -1273,7 +1275,6 @@ namespace XSharp.Project
 
     static class CommandFilterHelper
     {
-        private static System.Globalization.TextInfo txtInfo = new System.Globalization.CultureInfo("en-US", false).TextInfo;
         /// <summary>
         /// Format the Keywords and Identifiers in the Line, using the EditSession
         /// </summary>
@@ -1286,6 +1287,7 @@ namespace XSharp.Project
             int indentSize = TextView.Options.GetIndentSize();
             bool useSpaces = TextView.Options.IsConvertTabsToSpacesEnabled();
             int lineLength = line.Length;
+
             int originalIndentLength = lineLength - line.GetText().TrimStart().Length;
             if (desiredIndentation < 0)
             {

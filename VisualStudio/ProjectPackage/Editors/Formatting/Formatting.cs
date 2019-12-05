@@ -203,6 +203,30 @@ namespace XSharp.Project
 
 #if SMARTINDENT
 
+        private void copyWhiteSpaceFromPreviousLine(ITextSnapshotLine line, ITextEdit editSession )
+        {
+            // only copy the indentation from the previous line
+            var text = line.GetText();
+            if (text?.Length == 0)
+            {
+                if (line.LineNumber > 0)
+                {
+                    var prev = line.Snapshot.GetLineFromLineNumber(line.LineNumber - 1);
+                    var prevText = prev.GetText();
+                    int nWs = 0;
+                    while (nWs < prevText.Length && Char.IsWhiteSpace(prevText[nWs]))
+                    {
+                        nWs++;
+                    }
+                    if (nWs <= prevText.Length)
+                    {
+                        prevText = prevText.Substring(0, nWs);
+                        editSession.Replace(new Span(line.Start.Position, 0), prevText);
+                    }
+                }
+            }
+        }
+
         private void FormatLine()
         {
             //
@@ -230,16 +254,33 @@ namespace XSharp.Project
                 var editSession = _buffer.CreateEdit();
                 // This will calculate the desired indentation of the current line, based on the previous one
                 // and may de-Indent the previous line if needed
-                indentation = getDesiredIndentation(line, editSession, alignOnPrev);
                 //
                 try
                 {
-                    // but we may need to re-Format the previous line for Casing and Identifiers
-                    // so, do it before indenting the current line.
-                    lineNumber = lineNumber - 1;
-                    ITextSnapshotLine prevLine = line.Snapshot.GetLineFromLineNumber(lineNumber);
-                    this.formatLineCase(editSession, prevLine);
-                    CommandFilterHelper.FormatLineIndent(this.TextView, editSession, line, indentation);
+                    if (!canFormatLine(line))
+                    {
+                        copyWhiteSpaceFromPreviousLine(line, editSession);
+                    }
+                    else
+                    {
+                        indentation = getDesiredIndentation(line, editSession, alignOnPrev);
+                        if (indentation == -1)
+                        {
+                            copyWhiteSpaceFromPreviousLine(line, editSession);
+                        }
+                        else
+                        {
+                            // but we may need to re-Format the previous line for Casing and Identifiers
+                            // so, do it before indenting the current line.
+                            lineNumber = lineNumber - 1;
+                            ITextSnapshotLine prevLine = line.Snapshot.GetLineFromLineNumber(lineNumber);
+                            if (canFormatLine(prevLine))
+                            {
+                                this.formatLineCase(editSession, prevLine);
+                            }
+                            CommandFilterHelper.FormatLineIndent(this.TextView, editSession, line, indentation);
+                        }
+                    }
                 }
                 finally
                 {
@@ -388,8 +429,11 @@ namespace XSharp.Project
                                 }
                             }
                         }
-                        formatLineCase(editSession, snapLine);
-                        CommandFilterHelper.FormatLineIndent(this.TextView, editSession, snapLine, indentSize);
+                        if (canFormatLine(snapLine))
+                        {
+                            formatLineCase(editSession, snapLine);
+                            CommandFilterHelper.FormatLineIndent(this.TextView, editSession, snapLine, indentSize);
+                        }
                     }
                 }
                 finally
@@ -1132,14 +1176,17 @@ namespace XSharp.Project
                                 indentValue = (int)specialOutdentValue;
                             }
                             // De-Indent previous line !!!
-                            try
+                            if (canFormatLine(prevLine))
                             {
-                                CommandFilterHelper.FormatLineIndent(this.TextView, editSession, prevLine, indentValue);
-                            }
-                            catch (Exception ex)
-                            {
-                                XSharpProjectPackage.Instance.DisplayOutPutMessage("Indentation of previous line failed");
-                                XSharpProjectPackage.Instance.DisplayException(ex);
+                                try
+                                {
+                                    CommandFilterHelper.FormatLineIndent(this.TextView, editSession, prevLine, indentValue);
+                                }
+                                catch (Exception ex)
+                                {
+                                    XSharpProjectPackage.Instance.DisplayOutPutMessage("Indentation of previous line failed");
+                                    XSharpProjectPackage.Instance.DisplayException(ex);
+                                }
                             }
                         }
                         else
@@ -1182,7 +1229,10 @@ namespace XSharp.Project
                                 try
                                 {
                                     // De-Indent previous line !!!
-                                    CommandFilterHelper.FormatLineIndent(this.TextView, editSession, prevLine, specialIndentValue);
+                                    if (canFormatLine(prevLine))
+                                    {
+                                        CommandFilterHelper.FormatLineIndent(this.TextView, editSession, prevLine, specialIndentValue);
+                                    }
                                     indentValue = specialIndentValue + _indentSize;
                                 }
                                 catch (Exception ex)

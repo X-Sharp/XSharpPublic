@@ -37,7 +37,7 @@
     <StringProperty	Category="Misc" Name="CommandLineOption" DisplayName="Extra commandline options" Description="User defined Commandline options" Switch="CommandLineOption"/>
     <BoolProperty	Category="Misc" Name="Optimize" Description="Should compiler optimize output?" Switch="optimize"/>
     <BoolProperty 	Category="Misc" Name="UseSharedCompilation" DisplayName="Use Shared Compiler" Description="Should the shared compiler be used to compile the project? (Faster, but may hide some compiler errors)" Default="True" Switch="shared"/>
-
+    <BoolProperty   Category="Misc" Name="RegisterForComInterop" DisplayName="Register for COM Interop" Description="Register the output assembly for COM Interop (requires administrator rights)" />
 
     <BoolProperty   Category="Preprocessor"  Name="PPO"                 DisplayName="Generate preprocessor output"                Visible="True" Description="Save the output from the preprocessor to .ppo files  (/ppo)"  Default="False" Switch="ppo"/>
     <StringProperty Category="Preprocessor"  Name="DefineConstants"     DisplayName="Defines for the preprocessor"                Visible="True" Description="Defines for the preprocessor (/d)"  Default="" Switch="d"/>

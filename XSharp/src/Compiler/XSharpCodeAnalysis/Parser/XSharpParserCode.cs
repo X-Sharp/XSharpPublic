@@ -951,7 +951,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             Field,
             ClipperParameter,
         }
-        private vartype _varType;
+        private readonly vartype _varType;
         public string Name { get; private set; }
         public string Alias { get; private set; }
         public string FullName => Alias != null ? Alias + "->" + Name : Name;
@@ -966,27 +966,39 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
             Name = name;
             Alias = alias;
-            _varType = vartype.Field;
-            if (!string.IsNullOrEmpty(alias) )
+            if (!string.IsNullOrEmpty(alias))
             {
-                if (alias.ToUpper() == "M")
+                switch (alias.ToUpper())
                 {
-                    _varType = vartype.Memvar;
-                    Alias = XSharpSpecialNames.MemVarPrefix;
+                    case "M":
+                    case "MEMV":
+                    case "MEMVA":
+                    case "MEMVAR":
+                        _varType = vartype.Memvar;
+                        Alias = XSharpSpecialNames.MemVarPrefix;
+                        break;
+                    case "FIELD":
+                    case "_FIELD":
+                        Alias = XSharpSpecialNames.FieldPrefix;
+                        _varType = vartype.Field;
+                        break;
+                    default:
+                        switch (alias)
+                        {
+                            case XSharpSpecialNames.ClipperParamPrefix:
+                                _varType = vartype.ClipperParameter;
+                                IsParameter = true;
+                                break;
+                            case XSharpSpecialNames.MemVarPrefix:
+                                _varType = vartype.Memvar;
+                                break;
+                            case XSharpSpecialNames.FieldPrefix:
+                            default:
+                                _varType = vartype.Field;
+                                break;
+                        }
+                        break;
                 }
-                else if (alias== XSharpSpecialNames.ClipperParamPrefix)
-                {
-                    _varType = vartype.ClipperParameter;
-                    IsParameter = true;
-                }
-                else if (alias.ToUpper() == "FIELD" || alias.ToUpper() == "_FIELD")
-                {
-                    Alias = XSharpSpecialNames.FieldPrefix;
-                }
-            }
-            else
-            {
-                Alias = XSharpSpecialNames.FieldPrefix;
             }
             IsFileWidePublic = filewidepublic;
         }

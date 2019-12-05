@@ -707,6 +707,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         internal ExpressionSyntax GenerateMemVarGet(ExpressionSyntax memvar)
         {
+            // this is now only used in the aliasedFieldLate rule.
             var arg1 = MakeArgument(memvar);
             var args = MakeArgumentList(arg1);
             var expr = GenerateMethodCall(XSharpQualifiedFunctionNames.MemVarGet, args, true);
@@ -721,30 +722,31 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return expr;
         }
 
-         internal ExpressionSyntax GenerateFieldSet(string alias, ExpressionSyntax field, ExpressionSyntax right)
-        {
-            string method = "";
-            ArgumentListSyntax args;
-            if (!String.IsNullOrEmpty(alias) && alias.ToUpper() == "M")
-            {
-                return GenerateMemVarPut(field, right);
-            }
-            var argField = MakeArgument(field);
-            var argValue = MakeArgument(right);
-            if (!String.IsNullOrEmpty(alias))
-            {
-                return GenerateFieldSetWa(GenerateLiteral(alias), field, right);
-            }
-            else
-            {
-                method = _options.XSharpRuntime ? XSharpQualifiedFunctionNames.FieldSet : VulcanQualifiedFunctionNames.FieldSet;
-                args = MakeArgumentList(argField, argValue);
-                return GenerateMethodCall(method, args, true);
-            }
-        }
+        // internal ExpressionSyntax GenerateFieldSet(string alias, ExpressionSyntax field, ExpressionSyntax right)
+        //{
+        //    string method = "";
+        //    ArgumentListSyntax args;
+        //    if (!String.IsNullOrEmpty(alias) && alias.ToUpper() == "M")
+        //    {
+        //        return GenerateMemVarPut(field, right);
+        //    }
+        //    var argField = MakeArgument(field);
+        //    var argValue = MakeArgument(right);
+        //    if (!String.IsNullOrEmpty(alias))
+        //    {
+        //        return GenerateFieldSetWa(GenerateLiteral(alias), field, right);
+        //    }
+        //    else
+        //    {
+        //        method = _options.XSharpRuntime ? XSharpQualifiedFunctionNames.FieldSet : VulcanQualifiedFunctionNames.FieldSet;
+        //        args = MakeArgumentList(argField, argValue);
+        //        return GenerateMethodCall(method, args, true);
+        //    }
+        //}
 
         internal ExpressionSyntax GenerateFieldGet(string alias, ExpressionSyntax field)
         {
+            // this is now only used in the aliasedFieldLate rule.
             if (string.IsNullOrEmpty(alias))
             {
                 var argField = MakeArgument(field);
@@ -3995,11 +3997,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitAliasedMemvar([NotNull] XP.AliasedMemvarContext context)
         {
             // | MEMVAR ALIAS VarName=identifier   #aliasedMemvar        // MEMVAR->Name
-            ExpressionSyntax expr;
             string field = context.VarName.GetText();
-            var name = GenerateLiteral(field);
-            expr = GenerateMemVarGet(name);
-            context.Put(expr);
+            var name = GenerateSimpleName(XSharpSpecialNames.MemVarPrefix + "->" + field);
+            context.Put(name);
             return;
         }
 

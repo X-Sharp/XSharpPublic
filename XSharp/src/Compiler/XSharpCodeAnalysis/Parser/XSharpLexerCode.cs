@@ -1276,7 +1276,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 case ENDTEXT:
                 case DIMENSION:
                 case DECLARE:
-                case MEMVAR:
                 case LPARAMETERS:
                 case NOP:
                     if (!StartOfLine(lastToken))

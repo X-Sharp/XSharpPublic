@@ -58,6 +58,8 @@ namespace XSharp.Project
         internal const string descDelaySign = "Delayed signing (/delaysign)";
         internal const string captAssemblyOriginatorKeyFile = "Code Signing KeyFile";
         internal const string descAssemblyOriginatorKeyFile = "Choose a code signing key file (/keyfile)";
+        internal const string captRegisterForComInterop = "Register for COM Interop";
+        internal const string descRegisterForComInterop = "Register the output assembly for COM Interop (requires administrator rights)";
 
         internal const string PPOCaption = "Generate preprocessor output";
         internal const string PPODescription = "Save the output from the preprocessor to .ppo files  (/ppo)";
@@ -90,6 +92,7 @@ namespace XSharp.Project
         private string commandlineoption;
         private Platform platformtarget;
         private bool prefer32bit;
+        private bool registerForComInterop;
 
         #endregion Fields
 
@@ -298,7 +301,13 @@ namespace XSharp.Project
             get { return this.defines; }
             set { this.defines = value; this.IsDirty = true; }
         }
+        [Category(catMisc), DisplayName(captRegisterForComInterop), Description(descRegisterForComInterop)]
 
+        public bool RegisterForComInterop
+        {
+            get { return this.registerForComInterop; }
+            set { this.registerForComInterop = value; this.IsDirty = true; }
+        }
 
         #region Overriden Implementation
         /// <summary>
@@ -335,6 +344,7 @@ namespace XSharp.Project
             warningAsErrors = getCfgLogic(nameof(TreatWarningsAsErrors), false);
             signassembly = getCfgLogic(nameof(SignAssembly), false);
             delaysign = getCfgLogic(nameof(DelaySign), false);
+            registerForComInterop = getCfgLogic(nameof(RegisterForComInterop), false);
             assemblyoriginatorkeyfile = getCfgString(nameof(AssemblyOriginatorKeyFile), "");
 
             commandlineoption= getCfgString(nameof(CommandLineOption),  "");
@@ -390,6 +400,7 @@ namespace XSharp.Project
             this.SetConfigProperty(nameof(DefineConstants), this.defines?.ToString());
             this.SetConfigProperty(nameof(PlatformTarget), this.platformtarget.ToString());
             this.SetConfigProperty(nameof(Prefer32Bit), this.prefer32bit.ToString());
+            this.SetConfigProperty(nameof(RegisterForComInterop), this.registerForComInterop.ToString());
 
             this.IsDirty = false;
 

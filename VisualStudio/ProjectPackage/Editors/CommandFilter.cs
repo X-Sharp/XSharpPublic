@@ -331,7 +331,10 @@ namespace XSharp.Project
             // when comment: do not format
             // when xsharp.text and only one token: do not format
             // when xsharp.text and second token = keyword, then endtext line, so format
+            if (line.Length == 0)
+                return false;
             var ss = new SnapshotSpan(line.Snapshot, line.Start.Position, 1);
+            
             var spans = _classifier.GetClassificationSpans(ss);
             if (spans.Count > 0)
             {

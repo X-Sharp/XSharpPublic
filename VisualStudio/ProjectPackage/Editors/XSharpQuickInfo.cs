@@ -487,7 +487,7 @@ namespace XSharp.Project
                     //
                     if ((this.IsStatic) && ((this.Kind != Kind.Function) && (this.Kind != Kind.Procedure)))
                     {
-                        temp = new Run("Static" + " ");
+                        temp = new Run(_optionsPage.Static()+ " ");
                         temp.Foreground = this.kwBrush;
                         content.Add(temp);
                     }
@@ -772,25 +772,7 @@ namespace XSharp.Project
         }
         internal static string formatKeyword(this OptionsPages.IntellisenseOptionsPage page,  string keyword)
         {
-            string result = keyword; ;
-            if (page != null)
-            {
-                switch (page.KeywordCase)
-                {
-                    case KeywordCase.Upper:     // Upper
-                        result = keyword.ToUpper();
-                        break;
-                    case KeywordCase.Lower:     // Lower
-                        result = keyword.ToLower();
-                        break;
-                    case KeywordCase.Title:     // Proper
-                        result = Char.ToUpper(keyword[0]) + keyword.Substring(1).ToLower();
-                        break;
-                    default:
-                        break;
-                }
-            }
-            return result;
+            return page.SyncKeyword(keyword);
         }
         internal static string As(this OptionsPages.IntellisenseOptionsPage page) => page.formatKeyword("AS ");
         internal static string Static(this OptionsPages.IntellisenseOptionsPage page) => page.formatKeyword("STATIC");

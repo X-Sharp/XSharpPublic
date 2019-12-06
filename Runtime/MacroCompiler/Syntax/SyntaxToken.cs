@@ -534,6 +534,20 @@ namespace XSharp.MacroCompiler.Syntax
                 voKwIds.Add(text, token);
             }
 
+            // Add FoxPro dialect LOGICAL operators AND, OR, NOT and XOR
+            if (RuntimeState.Dialect == XSharpDialect.FoxPro)
+            {
+                voKwIds.Add("AND", TokenType.LOGIC_AND);
+                voKwIds.Add("OR", TokenType.LOGIC_OR);
+                voKwIds.Add("NOT", TokenType.LOGIC_NOT);
+                voKwIds.Add("XOR", TokenType.LOGIC_XOR);
+                xsKwIds.Add("AND", TokenType.LOGIC_AND);
+                xsKwIds.Add("OR", TokenType.LOGIC_OR);
+                xsKwIds.Add("NOT", TokenType.LOGIC_NOT);
+                xsKwIds.Add("XOR", TokenType.LOGIC_XOR);
+            }
+
+
             voKwIdsS = new Dictionary<string, TokenType>(voKwIds, StringComparer.OrdinalIgnoreCase);
             xsKwIdsS = new Dictionary<string, TokenType>(xsKwIds, StringComparer.OrdinalIgnoreCase);
 
@@ -597,6 +611,7 @@ namespace XSharp.MacroCompiler.Syntax
                 xsKwIdsS.Add(text, token);
                 voKwIdsS.Add(text, token);
             }
+
 
             symIds = new Dictionary<string, TokenType>(StringComparer.OrdinalIgnoreCase)
             {

@@ -1000,6 +1000,11 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         break;
                 }
             }
+            else
+            {
+                Alias = XSharpSpecialNames.FieldPrefix;
+                _varType = vartype.Field;
+            }
             IsFileWidePublic = filewidepublic;
         }
     }

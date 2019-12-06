@@ -161,6 +161,7 @@ namespace XSharp.MacroCompiler
                 case TokenType.REAL_CONST:
                 case TokenType.INT_CONST:
                 case TokenType.DATE_CONST:
+                case TokenType.DATETIME_CONST:
                 case TokenType.NIL:
                 case TokenType.NULL:
                 case TokenType.NULL_ARRAY:
@@ -274,6 +275,7 @@ namespace XSharp.MacroCompiler
                 case TokenType.REAL_CONST:
                 case TokenType.INT_CONST:
                 case TokenType.DATE_CONST:
+                case TokenType.DATETIME_CONST:
                 case TokenType.NIL:
                 case TokenType.NULL:
                 case TokenType.NULL_ARRAY:

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -221,6 +221,86 @@ namespace XSharp.MacroCompiler
                             }
                         }
                         throw new InternalError();
+                    }
+                case TokenType.DATETIME_CONST:
+                    {
+                        // when we get here then the value is "{^.....}"
+                        Value = Value.Trim();
+                        if (Value.Length < 6)
+                            throw new InternalError();
+                        Value = Value.Substring(2, Value.Length - 3).Trim();
+                        // replace possible duplicate spaces inside the string
+                        var numbers = new int[6];
+                        int current = 0;
+                        int value = 0;
+                        bool hasAmPm = false;
+                        bool isPm = false;
+                        bool valid = true;
+                        char last = '\0';
+                        numbers[0] = numbers[1] = numbers[2] = numbers[3] = numbers[4] = numbers[5] = 0;
+                        foreach (var c in Value)
+                        {
+                            switch (c)
+                            {
+                                case '1': case '2': case '3': case '4': case '5':
+                                case '6': case '7': case '8': case '9': case '0':
+                                    if (hasAmPm) // no numbers after Am or Pm
+                                    {
+                                        valid = false;
+                                    }
+                                    else
+                                    {
+                                        value = value * 10 + (c - '0');
+                                        numbers[current] = value;
+                                    }
+                                    break;
+                                case ':': case '.': case ' ': case '-':
+                                    // separators
+                                    if (char.IsNumber(last))
+                                    {
+                                        // prevent duplicate spaces or other separators from confusing us
+                                        if (current < 5)
+                                        {
+                                            current += 1;
+                                            value = 0;
+                                        }
+                                    }
+                                    break;
+                                case 'a': case 'A': case 'p': case 'P':
+                                    if (current == 5)
+                                    {
+                                        hasAmPm = true;
+                                        isPm = (c == 'P' || c == 'p');
+                                    }
+                                    else
+                                    {
+                                        valid = false;
+                                    }
+                                    break;
+                                case 'm': case 'M':
+                                    if (!hasAmPm)
+                                    {
+                                        valid = false;
+                                    }
+                                    break;
+                                default:
+                                    valid = false;
+                                    break;
+
+                            }
+                            last = c;
+                            if (!valid)
+                                throw new InternalError();
+                        }
+                        var year = numbers[0];
+                        var month = numbers[1];
+                        var day = numbers[2];
+                        var hour = numbers[3];
+                        var minute = numbers[4];
+                        var second = numbers[5];
+                        if (isPm)
+                            hour += 12;
+                        return Constant.CreateDateTime(year, month, day, hour, minute, second);
                     }
                 case TokenType.NULL_ARRAY:
                     return Constant.CreateDefault(Compilation.Get(NativeType.Array));

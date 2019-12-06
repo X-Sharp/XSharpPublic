@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -204,11 +204,20 @@ namespace XSharp.MacroCompiler
                 case NativeType.String:
                     ilg.Emit(OpCodes.Ldstr, c.String);
                     break;
-                case NativeType.DateTime:
+                case NativeType.VODate:
                     EmitConstant_I4(ilg, c.DateTime.Value.Year);
                     EmitConstant_I4(ilg, c.DateTime.Value.Month);
                     EmitConstant_I4(ilg, c.DateTime.Value.Day);
                     ilg.Emit(OpCodes.Newobj, (Compilation.Get(WellKnownMembers.XSharp___Date_ctor) as ConstructorSymbol).Constructor);
+                    break;
+                case NativeType.DateTime:
+                    EmitConstant_I4(ilg, c.DateTime.Value.Year);
+                    EmitConstant_I4(ilg, c.DateTime.Value.Month);
+                    EmitConstant_I4(ilg, c.DateTime.Value.Day);
+                    EmitConstant_I4(ilg, c.DateTime.Value.Hour);
+                    EmitConstant_I4(ilg, c.DateTime.Value.Minute);
+                    EmitConstant_I4(ilg, c.DateTime.Value.Second);
+                    ilg.Emit(OpCodes.Newobj, (Compilation.Get(WellKnownMembers.System_DateTime_ctor) as ConstructorSymbol).Constructor);
                     break;
                 case NativeType.Decimal:
                     {

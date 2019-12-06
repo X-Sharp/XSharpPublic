@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -25,6 +25,7 @@ namespace XSharp.MacroCompiler
         internal static ConstantWithValue<DateTime> Create(DateTime value) { return new ConstantWithValue<DateTime>(value, NativeType.DateTime); }
         internal static ConstantVOFloat Create(double value, int length, int decimals) { return new ConstantVOFloat(value, length, decimals); }
         internal static ConstantVODate CreateVODate(int year, int month, int day) { return new ConstantVODate(year, month, day); }
+        internal static ConstantDateTime CreateDateTime(int year, int month, int day, int hour, int min, int secs) { return new ConstantDateTime(year, month, day, hour, min, secs); }
         internal static ConstantVOSymbol CreateSymbol(string value) { return new ConstantVOSymbol(value); }
         internal static ConstantDefault CreateDefault(TypeSymbol type) { return new ConstantDefault(type); }
 
@@ -76,6 +77,10 @@ namespace XSharp.MacroCompiler
     internal partial class ConstantVODate: ConstantWithValue<DateTime>
     {
         internal ConstantVODate(int year, int month, int day) : base(new DateTime(year, month, day), NativeType.VODate) { }
+    }
+    internal partial class ConstantDateTime : ConstantWithValue<DateTime>
+    {
+        internal ConstantDateTime(int year, int month, int day, int hour, int minutes, int seconds) : base(new DateTime(year, month, day,hour,minutes, seconds), NativeType.DateTime) { }
     }
     internal partial class ConstantVOSymbol : ConstantWithValue<string>
     {

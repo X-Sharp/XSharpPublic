@@ -823,10 +823,10 @@ FUNCTION ASort(aTarget AS ARRAY, nStart := NIL AS USUAL,nCount := NIL AS USUAL,c
     ENDIF
     
     
-    IF cbOrder == NIL
-        aTarget:Sort( nStart, nCount, NULL ) // this uses __Usual.ICompareTo()
-    ELSE
+    IF IsCodeBlock(cbOrder )
         aTarget:Sort( nStart, nCount, ArraySortComparer{ cbOrder } )
+    ELSE
+        aTarget:Sort( nStart, nCount, NULL ) // this uses __Usual.ICompareTo()
     ENDIF   
     
     RETURN aTarget
@@ -838,7 +838,7 @@ INTERNAL STRUCTURE ArraySortComparer  IMPLEMENTS System.Collections.Generic.ICom
 
     PRIVATE _cb AS ICodeblock
     
-    CONSTRUCTOR( cb AS ICodeblock)
+    CONSTRUCTOR( cb AS CODEBLOCK)
         _cb := cb
         RETURN
         

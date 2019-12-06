@@ -508,7 +508,8 @@ FUNCTION DbSetDriver(cNewSetting) AS STRING CLIPPER
     
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbsetfilter/*" /> 
 FUNCTION DbSetFilter(cbCondition, cCondition) AS LOGIC CLIPPER
-    local sCondition as string
+    LOCAL sCondition AS STRING
+    LOCAL cbCond AS CODEBLOCK
     if PCount() == 0 .or. (cbCondition:IsNil .and. cCondition:IsNil)
         return DbClearFilter()
     endif
@@ -528,7 +529,7 @@ FUNCTION DbSetFilter(cbCondition, cCondition) AS LOGIC CLIPPER
         else
             cbCondition := &(cCondition)
         endif
-    endif
+    ENDIF
     // Todo : Extract the string from compiled codeblocks
     if cCondition:IsNil
         local oBlock as Object
@@ -544,8 +545,13 @@ FUNCTION DbSetFilter(cbCondition, cCondition) AS LOGIC CLIPPER
         else
             cCondition := "UNKNOWN"
         endif
-    endif
-    return _DbThrowErrorOnFailure(__FUNCTION__, VoDb.SetFilter(cbCondition, cCondition) )
+    ENDIF
+    IF cbCondition:IsCodeBlock
+        cbCond := cbCondition
+    ELSE
+        cbCond := NULL
+    ENDIF
+    RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.SetFilter(cbCond, cCondition) )
     
     
     
@@ -556,7 +562,7 @@ FUNCTION DbSetRelation  (xAlias, cbKey, cKey, cName) AS LOGIC CLIPPER
 
     LOCAL nSelect   AS DWORD
     LOCAL cAlias    AS STRING
-    
+    LOCAL cbRelation AS CODEBLOCK
     DEFAULT(REF cName, "")
     
     IF xAlias:IsString
@@ -571,8 +577,12 @@ FUNCTION DbSetRelation  (xAlias, cbKey, cKey, cName) AS LOGIC CLIPPER
     ELSE
         cAlias := ALIAS(xAlias)
     ENDIF
-
-    RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.SetRelation(cAlias, cbKey, cKey, cName) )
+    IF cbKey:IsCodeBlock
+        cbRelation := cbKey
+    ELSE
+        cbRelation := NULL
+    ENDIF
+    RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.SetRelation(cAlias, cbRelation, cKey, cName) )
    
 
     

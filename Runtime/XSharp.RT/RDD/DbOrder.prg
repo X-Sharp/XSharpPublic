@@ -197,6 +197,7 @@ FUNCTION OrdCondSet(cForCondition, cbForCondition, lAll, cbWhileCondition, cbEva
 	
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbcreateorder/*" />
 FUNCTION OrdCreate(cIndexFile, cOrder, cKeyValue, cbKeyValue, lUnique) AS LOGIC CLIPPER
+    LOCAL cbKey AS CODEBLOCK
 	IF lUnique:IsNil
 		lUnique := SetUnique()
 	ENDIF
@@ -215,14 +216,16 @@ FUNCTION OrdCreate(cIndexFile, cOrder, cKeyValue, cbKeyValue, lUnique) AS LOGIC 
 		IF cbKeyValue:IsNil
             RddError.PostArgumentError("OrdCreate", EDB_EXPRESSION, nameof(cKeyValue), 3, {cKeyValue})
   			DoError("OrdCreate")
-		ENDIF
+        ENDIF
+        cbKey := cbKeyValue
 	ELSE
 		IF cbKeyValue:IsNil
 			cbKeyValue := &( "{||" + cKeyValue + "}" )
-		ENDIF
+        ENDIF
+        cbKey := cbKeyValue
 	ENDIF
 	
-    RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.OrdCreate(cIndexFile, cOrder, cKeyValue, cbKeyValue, lUnique, NULL))
+    RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.OrdCreate(cIndexFile, cOrder, cKeyValue, cbKey, lUnique, NULL))
 	
 	
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/orddescend/*" />

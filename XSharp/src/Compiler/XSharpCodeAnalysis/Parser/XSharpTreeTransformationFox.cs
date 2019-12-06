@@ -105,7 +105,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             CoreAccessMember(context);
             // FoxPro uses M. for Locals and memvars
             // We assume it is a local and then will later correct this inside Binder_Expressions.cs if we can't find the local
-            if (context.Expr != null && context.AreaName == "M")
+            if (context.foxFlags.HasFlag(XP.FoxFlags.MemberAccess) && context.AreaName == "M" )
             {
                 context.foxFlags |= XP.FoxFlags.MPrefix;
                 context.Put(context.Name.Get<ExpressionSyntax>());

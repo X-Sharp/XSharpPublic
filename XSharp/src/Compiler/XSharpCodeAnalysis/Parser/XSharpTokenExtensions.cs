@@ -289,12 +289,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     r = SyntaxFactory.Literal(SyntaxFactory.WS, text, text.Substring(1).ToUpperInvariant(), SyntaxFactory.WS);
                     switch (options.Dialect)
                     {
-                        case XSharpDialect.VO:
-                        case XSharpDialect.Vulcan:
-                            // Ok
+                        case XSharpDialect.Core:
+                            r.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureNotAvailableInDialect, token.Text, options.Dialect.ToString()));
                             break;
                         default:
-                            r.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureNotAvailableInDialect, token.Text, options.Dialect.ToString()));
+                            // Ok
                             break;
                     }
                     break;
@@ -456,17 +455,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.NULL_STRING:
                     switch (options.Dialect)
                     {
-                        case XSharpDialect.VO:
-                        case XSharpDialect.Vulcan:
+                        case XSharpDialect.Core:
+                            r = SyntaxFactory.MakeToken(SyntaxKind.NullKeyword)
+                            .WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureNotAvailableInDialect, text, options.Dialect.ToString()));
+                            break;
+                        default:
                             // Ok
                             if (options.VONullStrings)
                                 r = SyntaxFactory.Literal(SyntaxFactory.WS, text, "", SyntaxFactory.WS);
                             else
                                 r = SyntaxFactory.MakeToken(SyntaxKind.NullKeyword);
-                            break;
-                        default:
-                            r = SyntaxFactory.MakeToken(SyntaxKind.NullKeyword)
-                            .WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureNotAvailableInDialect, text, options.Dialect.ToString()));
                             break;
                     }
                     break;
@@ -474,12 +472,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     r = SyntaxFactory.Literal(SyntaxFactory.WS, text, "", SyntaxFactory.WS);
                     switch (options.Dialect)
                     {
-                        case XSharpDialect.VO:
-                        case XSharpDialect.Vulcan:
-                            // Ok
+                        case XSharpDialect.Core:
+                            r.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureNotAvailableInDialect, text, options.Dialect.ToString()));
                             break;
                         default:
-                            r.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureNotAvailableInDialect, text, options.Dialect.ToString()));
+                            // Ok
                             break;
                     }
                     break;
@@ -493,12 +490,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     r = SyntaxFactory.MakeToken(SyntaxKind.NullKeyword);
                     switch (options.Dialect)
                     {
-                        case XSharpDialect.VO:
-                        case XSharpDialect.Vulcan:
-                            // Ok
+                        case XSharpDialect.Core:
+                            r.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureNotAvailableInDialect, text, options.Dialect.ToString()));
                             break;
                         default:
-                            r.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureNotAvailableInDialect, text, options.Dialect.ToString()));
+                            // Ok
                             break;
                     }
                     break;

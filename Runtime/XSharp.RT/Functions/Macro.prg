@@ -47,7 +47,7 @@ FUNCTION MCompile(cString AS STRING, lAllowSingleQuotes AS LOGIC) AS XSharp._Cod
 		LOCAL oResult AS XSharp._Codeblock
 		LOCAL lIsCodeblock  AS LOGIC
         LOCAL addsMemVars   AS LOGIC
-        cString := MPrepare(cString)
+        //cString := MPrepare(cString)
 		iResult := oMC:Compile(cString, lAllowSingleQuotes, oMod, OUT lIsCodeBlock, OUT addsMemVars)
 		oResult := XSharp._Codeblock{iResult, cString, lIsCodeBlock, addsMemVars}
 		RETURN oResult
@@ -55,15 +55,15 @@ FUNCTION MCompile(cString AS STRING, lAllowSingleQuotes AS LOGIC) AS XSharp._Cod
 	RETURN NULL_OBJECT	
 
 
-
-INTERNAL FUNCTION MPrepare(cString AS STRING) AS STRING
-    IF !cString:Trim():StartsWith("{")
-        RETURN cString
-    ENDIF
-    IF ! NestedMacroHandler.IsNested(cString)
-        RETURN cString
-    ENDIF
-    RETURN NestedMacroHandler.Expand(cString)
+//
+//INTERNAL FUNCTION MPrepare(cString AS STRING) AS STRING
+//    IF !cString:Trim():StartsWith("{")
+//        RETURN cString
+//    ENDIF
+//    IF ! NestedMacroHandler.IsNested(cString)
+//        RETURN cString
+//    ENDIF
+//    RETURN NestedMacroHandler.Expand(cString)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mexec/*" />	
 /// <note type="caution">MCompile returns a STRING containing PCode tokens in VO.

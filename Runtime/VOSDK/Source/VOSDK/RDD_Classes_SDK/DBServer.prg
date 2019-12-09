@@ -822,7 +822,7 @@ CONSTRUCTOR( oFile, lShareMode, lReadOnlyMode, xDriver, aRdd )
 		ENDIF
 
 		SELF:cRDDName := RDDName( )
-        SELF:oRDD     := DbInfo(DBI_RDD_OBJECT)
+        SELF:oRDD     := (XSharp.RDD.IRdd) DbInfo(DBI_RDD_OBJECT)
 
         SELF:nCCMode := SELF:nEffectiveCCMode := DbGetDefaultLockMode()
 		IF lReadOnly .OR. ! lShared

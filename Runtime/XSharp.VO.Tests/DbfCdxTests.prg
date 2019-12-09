@@ -127,7 +127,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			DbCreate(cFileName , { {"CFIELD","C",10,0} })
 			DbUseArea(,,cFileName)
 			DbAppend()
-			
+			Assert.Equal(1, (LONG) Recno())
 			LOCAL u := NIL AS USUAL
 			VoDbSkip(-1)
 			
@@ -2272,10 +2272,11 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			
 			
 			DbUseArea(,,cDBF )
-			DbSetOrder(2)
+			DbSetOrder(2)       // Last
 			DbGoBottom()
 			
-			FieldPut(2, "a")
+			FieldPut(2, "a")    // Change Z to "a"  Note that at this moment the DeleteKey fails
+           
 			DbSkip(-5)
 			FieldPut(2, "d")
 			DbSkip(5)
@@ -2287,10 +2288,12 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			DbGoTop()
 			DO WHILE .NOT. EoF()
 				nCount ++
+                VAR cCurrent := FieldGet(2)
 				IF cPrev != NULL
-					Assert.True( cPrev <= FieldGet(2) )
+                    
+					Assert.True( cPrev <=  cCurrent)
 				END IF
-				cPrev := FieldGet(2)
+				cPrev := cCurrent
 				DbSkip()
 			END DO
 			Assert.Equal( nCount, (INT) ALen(aValues) )

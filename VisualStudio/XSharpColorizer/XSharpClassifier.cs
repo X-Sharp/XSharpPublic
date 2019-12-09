@@ -14,6 +14,7 @@ using LanguageService.CodeAnalysis.Text;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using System.ComponentModel;
 using XSharpModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 namespace XSharpColorizer
@@ -117,8 +118,8 @@ namespace XSharpColorizer
                 xsharpNumberType = registry.GetClassificationType("number");
                 xsharpStringType = registry.GetClassificationType("string");
                 xsharpInactiveType = registry.GetClassificationType("excluded code");
-                xsharpBraceOpenType = registry.GetClassificationType("punctuation");
-                xsharpBraceCloseType = registry.GetClassificationType("punctuation");
+                xsharpBraceOpenType = registry.GetClassificationType(ColorizerConstants.XSharpBraceOpenFormat);
+                xsharpBraceCloseType = registry.GetClassificationType(ColorizerConstants.XSharpBraceCloseFormat);
                 xsharpLiteralType = registry.GetClassificationType("literal");
                 xsharpTextType = registry.GetClassificationType(ColorizerConstants.XSharpTextEndTextFormat);
                 xsharpRegionStart = registry.GetClassificationType(ColorizerConstants.XSharpRegionStartFormat);
@@ -796,7 +797,10 @@ namespace XSharpColorizer
                     if (startToken != null)
                     {
                         if (startToken.Type == XSharpLexer.END) // END DO
+                        {
+                            keywordContext = null;
                             type = xsharpKwCloseType;
+                        }
                         else
                             startToken = null;
                     }
@@ -813,7 +817,10 @@ namespace XSharpColorizer
                     type = xsharpKwOpenType;
                     if (startToken != null)
                         if (startToken.Type == XSharpLexer.END)     // END SWITCH
+                        {
                             type = xsharpKwCloseType;
+                            keywordContext = null;
+                        }
                         else if ((startToken.Type != XSharpLexer.DO) || (startToken.Type != XSharpLexer.BEGIN))  // DO SWITCH or BEGIN SWITCH are also allowed
                             startToken = null;
                     break;
@@ -823,7 +830,10 @@ namespace XSharpColorizer
                     type = xsharpKwOpenType;
                     if (startToken != null)
                         if (startToken.Type == XSharpLexer.END)         // END TRY or END IF
+                        {
                             type = xsharpKwCloseType;
+                            keywordContext = null;
+                        }
                         else
                             startToken = null;
                     break;
@@ -844,7 +854,10 @@ namespace XSharpColorizer
                         if (startToken.Type == XSharpLexer.DO)  // DO CASE
                             type = xsharpKwOpenType;
                         else if (startToken.Type == XSharpLexer.END) // END CASE
+                        {
                             type = xsharpKwCloseType;
+                            keywordContext = null;
+                        }
                     }
                     else
                     {
@@ -867,6 +880,8 @@ namespace XSharpColorizer
                 case XSharpLexer.ENDIF:
                 case XSharpLexer.ENDCASE:
                 case XSharpLexer.ENDTEXT:
+                case XSharpLexer.ENDDEFINE:             // FoxPro end of class definition
+                case XSharpLexer.ENDCLASS:              // XPP end of class definition
                     startToken = null;
                     type = xsharpKwCloseType;           // Simple close
                     break;
@@ -899,9 +914,15 @@ namespace XSharpColorizer
                     if (startToken != null)
                     {
                         if (startToken.Type == XSharpLexer.BEGIN)           // prefixed by BEGIN
+                        {
                             type = xsharpKwOpenType;
+                            keywordContext = null;
+                        }
                         else if (startToken.Type == XSharpLexer.END)        // prefixed by END
+                        {
                             type = xsharpKwCloseType;
+                            keywordContext = null;
+                        }
                     }
                     break;
                 case XSharpLexer.SET:
@@ -911,9 +932,23 @@ namespace XSharpColorizer
                     type = xsharpKwOpenType;
                     if (startToken != null && startToken.Type == XSharpLexer.END)
                     {
+                        keywordContext = null;
                         type = xsharpKwCloseType;
                     }
                     break;
+                // some entities also have an END marker
+                case XSharpLexer.CLASS:
+                case XSharpLexer.INTERFACE:
+                case XSharpLexer.STRUCTURE:
+                case XSharpLexer.ENUM:
+                    type = xsharpKwOpenType;
+                    if (startToken != null && startToken.Type == XSharpLexer.END)
+                    {
+                        type = xsharpKwCloseType;
+                        keywordContext = null;
+                    }
+                    break;
+
             }
             //
             if (type != null)
@@ -1186,6 +1221,7 @@ namespace XSharpColorizer
     }
 
 
+    [DebuggerDisplay("{Span} {ClassificationType.Classification,nq} ")]
     public class XsClassificationSpan : ClassificationSpan
     {
 
@@ -1218,6 +1254,8 @@ namespace XSharpColorizer
         {
             lock (gate)
             {
+                if (_tags.Contains(span))
+                    return;
                 _tags.Add(span);
                 int start = span.Span.Start.GetContainingLine().LineNumber;
                 int end = span.Span.End.GetContainingLine().LineNumber;
@@ -1290,14 +1328,6 @@ namespace XSharpColorizer
                 }
             }
         }
-        internal void Clear()
-        {
-            lock (gate)
-            {
-                _tags.Clear();
-                _hash.Clear();
-            }
-        }
         internal IList<ClassificationSpan> Tags
         {
             get
@@ -1313,3 +1343,4 @@ namespace XSharpColorizer
         }
     }
 }
+

@@ -7870,8 +7870,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 int pos = expr.IndexOf(":");
                 if (pos > 0)
                 {
-                    format = expr.Substring(pos);
-                    expr = expr.Substring(0, pos);
+                    var lhs = expr.Substring(0, pos).ToUpper();
+                    if (lhs == "SELF" || lhs == "SUPER" || lhs == "THIS")
+                    {
+                        ; // do nothing. Assume SELF:, SUPER: and THIS: are not shown with format specifier
+                    }
+                    else
+                    {
+                        format = expr.Substring(pos);
+                        expr = expr.Substring(0, pos).ToUpper();
+                    }
                 }
                 res = ParseSubExpression(expr, out extra);
                 if (!String.IsNullOrEmpty(format))

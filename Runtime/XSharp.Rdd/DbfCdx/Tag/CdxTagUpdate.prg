@@ -429,9 +429,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             oPageR := SELF:NewBranchPage()
             //oPageR:Debug("Added", oPageR:PageType)
             //? "Branch", oPageR:PageNo:ToString("X"), "Added"
-            IF oPageR:PageNo == 0xb600
-                NOP
-            ENDIF
             oPageL:AddRightSibling(oPageR)
             //oPageL:Debug("Add branch after ", oPageL:PageNo:ToString("X8"), oPageR:PageNo:ToString("X8"), "Pos", Action:Pos, "Rec", Action:Recno)
             action := oPageL:Split(oPageR, action,TRUE)

@@ -464,9 +464,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 LOCAL nVersion AS DWORD
                 nVersion := _root:RootVersion
                 SELF:Read(SELF:_root)
-//                IF nVersion != _root:RootVersion
-//                    ? System.Threading.Thread.CurrentThread.ManagedThreadId:ToString()+ " New Root version "+_root:RootVersion:ToString()
-//                ENDIF
                 RETURN nVersion != _root:RootVersion
                 
             END GET
@@ -476,6 +473,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL lChanged := FALSE AS LOGIC
             IF SELF:BagHasChanged
                 lChanged := TRUE
+                SELF:_PageList:Clear()
             ENDIF
             RETURN lChanged
 
@@ -557,9 +555,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                         SELF:_xLockComix()
                     ENDIF
                     IF SELF:CheckForChangedBag()
-//                        FOREACH VAR oTag IN SELF:Tags
-//                            oTag:Stack:Clear()
-//                        NEXT
+                        FOREACH VAR oTag IN SELF:Tags
+                            oTag:Stack:Clear()
+                        NEXT
                     ENDIF
                 ENDIF
             END LOCK

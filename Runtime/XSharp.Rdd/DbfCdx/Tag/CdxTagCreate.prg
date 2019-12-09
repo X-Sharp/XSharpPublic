@@ -455,6 +455,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN TRUE
             
     END CLASS
+    
     INTERNAL SEALED CLASS CdxSortHelper INHERIT RddSortHelper
         INTERNAL PROPERTY SourceIndex    AS INT AUTO
         INTERNAL PROPERTY Ascii          AS LOGIC AUTO
@@ -513,7 +514,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 ENDDO                    
                 
                 oBranch:SetData(nLast, oLast:Recno, nPage, oLast:KeyBytes)
-                
+                oBranch:Write()
             ENDDO
                 
             SELF:Clear()

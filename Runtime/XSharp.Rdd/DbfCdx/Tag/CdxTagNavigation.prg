@@ -823,6 +823,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 LOCAL found := false AS LOGIC
                 IF SELF:_oRdd:_isValid
                     // Get Current Key
+                    SELF:_saveCurrentKey(recno,SELF:_currentValue)
                     VAR currentKeyBuffer := SELF:_currentvalue:Key
                     // Note: Softseek will also be set when an incomplete key is passed
                     IF activeFilter .OR. seekInfo:SoftSeek .OR. seekInfo:Last

@@ -209,6 +209,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             SELF:_midItem := NtxNode{SELF:_keySize}
             SELF:_oneItem := NtxNode{SELF:_keySize}
             IF string.IsNullOrEmpty(SELF:_Header:OrdName)
+	    	// XBase++ expects the order in UPPER case
                 SELF:_orderName := Path.GetFileNameWithoutExtension(SELF:fileName):ToUpper()
                 SELF:_Header:OrdName := SELF:_orderName
                 SELF:_Header:Write()

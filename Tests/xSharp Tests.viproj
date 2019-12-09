@@ -75508,7 +75508,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C693 - Internal compiler error with incorrect Axit() syntax
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 7D1C4D98-F0BB-48B3-932B-B3AECEE395BA
 ; ************** APPLICATION C694 - Compiler crash with undeclared vars passed by reference *************
 Application = C694 - Compiler crash with undeclared vars passed by reference
 IDEVersion = 1.06
@@ -75567,7 +75567,7 @@ VO3=0
 VO4=0
 VO5=0
 VO6=0
-VO7=0
+VO7=1
 VO8=0
 VO9=0
 VO10=0
@@ -76575,7 +76575,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C698 - Various problems with passing params by reference in FoxPro dialect
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 7D1C4D98-F0BB-48B3-932B-B3AECEE395BA
 ; ************** APPLICATION C699 - {SELF:Member} in interpolated string gets replaced with clas name, instead of member value *************
 Application = C699 - {SELF:Member} in interpolated string gets replaced with clas name, instead of member value
 IDEVersion = 1.06
@@ -76680,7 +76680,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C699 - {SELF:Member} in interpolated string gets replaced with clas name, instead of member value
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 43A04886-532C-4DC6-A4FB-751288B40D7A
 ; ************** APPLICATION R702 *************
 Application = R702
 IDEVersion = 1.06
@@ -76724,7 +76724,7 @@ CopyToBin = 0
 [R702 References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,XSharp.Core,1,0,2.1.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,
+ReferenceGAC = XSharp.RT,1,0,
 [R702 Resources]
 [R702 Native Resources]
 [R702 License files]

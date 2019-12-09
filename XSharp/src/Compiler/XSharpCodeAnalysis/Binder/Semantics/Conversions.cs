@@ -35,7 +35,7 @@ namespace Microsoft.CodeAnalysis.CSharp
     }
     internal sealed partial class Conversions
     {
-
+    
         override public bool HasBoxingConversion(TypeSymbol source, TypeSymbol destination, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
         {
             bool result = base.HasBoxingConversion(source, destination, ref useSiteDiagnostics);
@@ -45,15 +45,16 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var nts = source as NamedTypeSymbol;
                 if (nts.ConstructedFrom == _binder.Compilation.UsualType())
                 {
-                    var constructedFrom = (destination as NamedTypeSymbol)?.ConstructedFrom;
+                    var destFrom = (destination as NamedTypeSymbol)?.ConstructedFrom;
                     if (destination.IsReferenceType)
                     {
                         // do not box string, array, codeblock  and clipperargs
                         result = destination.SpecialType != SpecialType.System_String 
-                            && constructedFrom != null
-                            && constructedFrom != _binder.Compilation.ArrayType()
-                            && constructedFrom != _binder.Compilation.CodeBlockType()
-                            && constructedFrom.IsDerivedFrom(_binder.Compilation.CodeBlockType(), TypeCompareKind.IgnoreDynamicAndTupleNames, ref useSiteDiagnostics) != true
+                            && destFrom != null
+                            && destFrom != _binder.Compilation.ArrayType()
+                            && destFrom != _binder.Compilation.CodeBlockType()
+                            && ! destination.IsInterfaceType()
+                            && destFrom.IsDerivedFrom(_binder.Compilation.CodeBlockType(), TypeCompareKind.IgnoreDynamicAndTupleNames, ref useSiteDiagnostics) != true
                             && !IsClipperArgsType(destination);
                     }
                     else if (destination.IsPointerType())
@@ -64,19 +65,15 @@ namespace Microsoft.CodeAnalysis.CSharp
                     {
                         return true;
                     }
-                    //else if (destination == _binder.Compilation.PszType())
-                    //{
-                    //    result = true;
-                    //}
                     else
                     {
                         // do not box symbol, psz, vofloat, vodate
                         result = destination.SpecialType == SpecialType.None
-                            && constructedFrom != null
-                            && constructedFrom != _binder.Compilation.SymbolType()
-                            && constructedFrom != _binder.Compilation.PszType()
-                            && constructedFrom != _binder.Compilation.FloatType()
-                            && constructedFrom != _binder.Compilation.DateType();
+                            && destFrom != null
+                            && destFrom != _binder.Compilation.SymbolType()
+                            && destFrom != _binder.Compilation.PszType()
+                            && destFrom != _binder.Compilation.FloatType()
+                            && destFrom != _binder.Compilation.DateType();
                     }
                 }
                 else if (nts.ConstructedFrom == _binder.Compilation.FloatType())
@@ -369,6 +366,25 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     // All Objects are boxed in a usual
                     return Conversion.Boxing;
+                }
+                else if (destination.IsInterfaceType())
+                {
+                    // for conversion from usual to interface we require an explicit cast
+                    // otherwise it is not supported
+                    // Type(_CAST, expression) = VoCastExpressionContext
+                    // type( expr )            = TypecastContext
+                    // 
+                    var xNode = sourceExpression.Syntax.XNode;
+                    if (xNode != null)
+                    {
+                        if (xNode.Parent is XSharpParser.VoCastExpressionContext)
+                            return Conversion.Boxing;
+                        if (xNode.Parent is XSharpParser.VoConversionExpressionContext)
+                            return Conversion.Boxing;
+                        if (xNode.Parent is XSharpParser.TypeCastContext)
+                            return Conversion.Boxing;
+                    }
+
                 }
                 else if (destination.IsReferenceType && !IsClipperArgsType(destination) && ! destination.IsStringType())
                 {

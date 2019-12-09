@@ -461,6 +461,7 @@ FUNCTION SetInternational(symNewSetting AS STRING) AS STRING
 	cOld := RuntimeState.International:ToString():ToUpper()
 	SWITCH symNewSetting:ToUpper()
 	CASE "CLIPPER"
+	CASE "XPP"
 		RuntimeState.GetInstance()._SetInternationalClipper()
 	CASE "WINDOWS"
 	CASE "UNICODE"

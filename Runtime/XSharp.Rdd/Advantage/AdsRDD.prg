@@ -303,7 +303,12 @@ VIRTUAL METHOD Open(info AS DbOpenInfo) AS LOGIC
 	openmode := 0
 	SELF:_CheckRDDInfo()
 	alias := Path.GetFileNameWithoutExtension(info:Alias)
-	charset := IIF (RuntimeState.CollationMode == CollationMode.Clipper, ACE.ADS_OEM,ACE.ADS_ANSI)
+    // both Clipper and XPP use weight tables
+    IF RuntimeState.CollationMode == CollationMode.Clipper .OR. RuntimeState.CollationMode == CollationMode.Xpp
+	    charset := ACE.ADS_OEM
+    ELSE
+        charset := ACE.ADS_ANSI
+    ENDIF
 	IF info:ReadOnly
 		openmode |= (WORD) ACE.ADS_READONLY
 	ENDIF
@@ -421,8 +426,13 @@ VIRTUAL METHOD Create(info AS DbOpenInfo) AS LOGIC
 	SELF:_CheckRDDInfo()
 	IF SELF:_SetPaths() != 0
 		RETURN FALSE
-	ENDIF
-	charset := IIF (RuntimeState.CollationMode == CollationMode.Clipper, ACE.ADS_OEM,ACE.ADS_ANSI)
+    ENDIF
+    // both Clipper and XPP use weight tables
+	IF RuntimeState.CollationMode == CollationMode.Clipper .OR. RuntimeState.CollationMode == CollationMode.Xpp
+	    charset := ACE.ADS_OEM
+    ELSE
+        charset := ACE.ADS_ANSI
+    ENDIF
 	alias := Path.GetFileNameWithoutExtension(info:Alias)
 	IF alias:Length > 10
 		alias := string.Empty

@@ -4,17 +4,6 @@
 // See License.txt in the project root for license information.
 //
 
-	
-BEGIN NAMESPACE XSharp
-    /// <summary>This enum specifies the collation mode used to create and update index strings.</summary>
-	ENUM CollationMode
-		MEMBER Windows
-		MEMBER Clipper
-        MEMBER XPP      := CollationMode.Clipper
-		MEMBER Unicode
-		MEMBER Ordinal
-	END ENUM
-END NAMESPACE
 
 
 BEGIN NAMESPACE XSharp.RDD.Enums

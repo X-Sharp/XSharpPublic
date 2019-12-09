@@ -334,7 +334,7 @@ namespace XSharp.Project
             if (line.Length == 0)
                 return false;
             var ss = new SnapshotSpan(line.Snapshot, line.Start.Position, 1);
-            
+
             var spans = _classifier.GetClassificationSpans(ss);
             if (spans.Count > 0)
             {
@@ -369,13 +369,19 @@ namespace XSharp.Project
         private void formatLineCase(ITextEdit editSession, ITextSnapshotLine line)
         {
             if (XSharpProjectPackage.Instance.DebuggerIsRunning)
+            {
                 return;
+            }
             if (!canFormatLine(line))
+            {
                 return;
+            }
 
             getEditorPreferences(TextView);
             if (_keywordCase == KeywordCase.None)
+            {
                 return;
+            }
             XSharpProjectPackage.Instance.DisplayOutPutMessage($"CommandFilter.formatLineCase({line.LineNumber + 1})");
             // get classification of the line.
             // when the line is part of a multi line comment then do nothing
@@ -445,8 +451,9 @@ namespace XSharp.Project
         private void formatCaseForWholeBuffer()
         {
             if (XSharpProjectPackage.Instance.DebuggerIsRunning)
+            {
                 return;
-
+            }
             getEditorPreferences(TextView);
             if (_optionsPage.KeywordCase != 0)
             {
@@ -506,13 +513,26 @@ namespace XSharp.Project
             if (_classifier == null)
                 registerClassifier();
             int hresult = VSConstants.S_OK;
-
+            bool debugging = XSharpProjectPackage.Instance.DebuggerIsRunning;
             // 1. Pre-process
-            if (pguidCmdGroup == VSConstants.VSStd2K)
+            if (debugging && pguidCmdGroup == VSConstants.VSStd2K)
+            {
+                // only allow cursor keys when debugging
+                if (nCmdID >= (int)VSConstants.VSStd2KCmdID.LEFT &&
+                    nCmdID <= (int)VSConstants.VSStd2KCmdID.SCROLLTOP)
+                {
+                    handled = false;
+                }
+                else
+                {
+                    handled = true;
+                }
+            }
+
+            if (pguidCmdGroup == VSConstants.VSStd2K && ! handled)
             {
                 switch ((VSConstants.VSStd2KCmdID)nCmdID)
                 {
-
                     case VSConstants.VSStd2KCmdID.AUTOCOMPLETE:
                     case VSConstants.VSStd2KCmdID.COMPLETEWORD:
                     case VSConstants.VSStd2KCmdID.SHOWMEMBERLIST:
@@ -565,7 +585,7 @@ namespace XSharp.Project
             }
 
             // Let others do their thing
-            if (!handled)
+            if (!handled )
             {
                 if (_completionSession != null)
                 {
@@ -583,7 +603,7 @@ namespace XSharp.Project
                 hresult = Next.Exec(pguidCmdGroup, nCmdID, nCmdexecopt, pvaIn, pvaOut);
             }
 
-            if (ErrorHandler.Succeeded(hresult))
+            if (ErrorHandler.Succeeded(hresult) && ! debugging)
             {
                 // 3. Post process
                 if (pguidCmdGroup == Microsoft.VisualStudio.VSConstants.VSStd2K)

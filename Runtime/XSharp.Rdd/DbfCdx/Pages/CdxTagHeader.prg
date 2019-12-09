@@ -94,8 +94,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
 #region Fields
         PRIVATE _rootPage       as LONG
-        //PRIVATE _freeList       AS LONG
-        //PRIVATE _version        as DWORD
         PRIVATE _keyLength      as WORD
         PRIVATE _options        as CdxOptions
         PRIVATE _keyExprPos     as WORD
@@ -112,12 +110,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PROTECTED INTERNAL PROPERTY RootPage AS LONG GET _rootPage;
             SET _SetLong(CDXTAGHEADER_ROOT, VALUE), _rootPage := Value
             
-//        PROTECTED INTERNAL PROPERTY FreeList AS LONG GET _freeList ;
-//			SET _SetLong(CDXTAGHEADER_FREELIST, VALUE), _freeList  := Value
-
-//		PROTECTED INTERNAL PROPERTY Version		AS DWORD GET _version;
-//			SET _SetDWord(CDXTAGHEADER_VERSION, VALUE), _version := Value
-			
 		PROTECTED INTERNAL PROPERTY KeySize		AS WORD	GET _keyLength;
 			SET _SetWord(CDXTAGHEADER_KEYLENGTH, VALUE), _keyLength := Value
 

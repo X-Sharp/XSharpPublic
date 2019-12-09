@@ -436,7 +436,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF SELF:NumKeys == 0
                 nDupCount := 0
             ELSE
-                VAR prevkey := _Leaves[SELF:NumKeys-1]:Key
+                VAR prevkey := _leaves[SELF:NumKeys-1]:Key
                 nDupCount   := _getDupCount(prevkey, key, nTrailCount)
             ENDIF
             VAR nBytesNeeded := SELF:KeyLength - nDupCount - nTrailCount  + SELF:DataBytes 
@@ -713,9 +713,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     var nextLeaf := leaves[nPos+1]
                     var prevLeaf := leaves[nPos-1]
                     nextLeaf:Dup := _getDupCount(prevLeaf:Key, nextLeaf:Key,nextLeaf:Trail)
-                ELSEIF nPos == 0 .AND. _Leaves:Count > 1
+                ELSEIF nPos == 0 .AND. _leaves:Count > 1
                     leaves[1]:Dup := 0
-                endif
+                ENDIF
                 _Leaves:RemoveAt(nPos)
                 SELF:NumKeys -= 1
                 IF SELF:NumKeys = 0
@@ -723,6 +723,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 ENDIF
                 LOCAL result2 :=  SELF:Compress() AS CdxAction
                 IF result2.Type == CdxActionType.Ok
+                    SELF:Write()
                     RETURN result
                 ELSE
                     RETURN result2

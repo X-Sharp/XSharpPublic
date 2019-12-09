@@ -289,12 +289,13 @@ METHOD Append(lReleaseLock AS LOGIC) AS LOGIC
 						SELF:UnLock( 0 ) // Unlock All Records
 					ENDIF
 					isOk := SELF:AppendLock( DbLockMode.Lock )  // Locks Header and then future new record. Sets _HeaderLocked to TRUE
-				ELSE
+                ELSE
 					SELF:_HeaderLocked := FALSE
-					SELF:_UpdateRecCount(SELF:_RecCount+1)      // writes the reccount to the header as well
-					SELF:_RecNo         := SELF:_RecCount+1
 				ENDIF
 				IF isOk 
+                    VAR nCount := SELF:_calculateRecCount()+1
+					SELF:_UpdateRecCount(nCount)      // writes the reccount to the header as well
+					SELF:_RecNo         := nCount
 					Array.Copy(SELF:_BlankBuffer, SELF:_RecordBuffer, SELF:_RecordLength)
 					FOREACH oFld AS RddFieldInfo IN _Fields
 						IF oFld IS DbfColumn VAR column

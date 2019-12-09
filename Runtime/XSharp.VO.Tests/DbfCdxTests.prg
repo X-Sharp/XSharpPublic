@@ -3126,7 +3126,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
         [Fact, Trait("Category", "DBF")];
 		METHOD ZapTest() AS VOID
-			FOR LOCAL i := 1 AS INT UPTO 3
+			FOR LOCAL i := 0 AS INT UPTO 5
 				ZapTest_helper(i)
 			NEXT
 		END METHOD
@@ -3143,31 +3143,41 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			DbfTests.CreateDatabase(cDbf , { { "LAST" , "C" , 20 , 0 } } , { "a1" , "g1", "g2" , "o5"  } )
 			
 			DO CASE
-			CASE  nType == 1
+			CASE  nType % 3 == 0
 				? "testing with no index:"
-			CASE nType == 2
+			CASE nType % 3 == 1
 				? "testing with NTX:"
 				RddSetDefault ( "DBFNTX" )
-			CASE nType == 3
+			CASE nType % 3 == 2
 				? "testing with CDX:"
 				RddSetDefault ( "DBFCDX" )
 			END CASE
 			
-			IF nType != 1
+			IF nType % 3 != 0
 				DbUseArea( ,,cDBF , , TRUE )
 				DbCreateOrder ( "ORDER1" , cDbf , "upper(LAST)" , { || Upper ( _Field->LAST) } )
 				DbCloseAll()              
 			END IF
 			
 			DbUseArea( ,,cDBF , , FALSE )
-			IF nType != 1
+			IF nType >= 3
+				DbAppend()
+				FieldPut(1,"testing")
+				DbAppend()
+				FieldPut(1,"some")
+				DbAppend()
+				FieldPut(1,"values")
+				DbAppend()
+				FieldPut(1,"last one")
+			END IF
+			IF nType % 3 != 0
 				DbSetIndex ( cDBF )
 			ENDIF
 			Assert.True( DbZap() )
 			DbCloseAll()
 		
 			DbUseArea( ,,cDBF , , TRUE )
-			IF nType != 1
+			IF nType % 3 != 0
 				DbSetIndex ( cDBF )
 				DbSetOrder ( 1 )
 			ENDIF
@@ -3183,6 +3193,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 				DbSkip ( 1)
 			ENDDO
 			Assert.Equal( 0 , nCount )
+			DbCloseArea()
 
 		END METHOD
 
@@ -3234,6 +3245,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 				DbSkip ( 1)
 			ENDDO
 			Assert.Equal("a1g2o5" , cRet )
+			DbCloseArea()
 
 		END METHOD
 
@@ -3360,6 +3372,72 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			
 			DbCloseArea()
 		RETURN
+
+
+        [Fact, Trait("Category", "DBF")];
+		METHOD ZapTest2() AS VOID
+			LOCAL cDbf AS STRING
+			RddSetDefault("DBFCDX")
+
+			cDBF := GetTempFileName()
+			FErase ( cDbf + IndexExt() )
+			
+			DbCreate( cDBF , { { "LAST" , "C" , 20 , 0 } } )
+			DbUseArea( ,,cDBF )	 	
+			DbAppend() 
+			FieldPut ( 1 , "ÁBC" ) 
+			DbCreateOrder ( "ORDER1"  , cDbf , "upper(LAST)" , { || Upper ( _Field->LAST) } )
+			
+			DbCloseArea() 
+			DbUseArea( ,,cDBF)
+//			DbOrderInfo(DBOI_KEYCOUNT)
+
+			? DbZap()		
+			
+			? DbGoTop()	 // <-----------  ArgumentNullException
+
+			Assert.True( Eof() )
+			Assert.True( Bof() )
+			Assert.True( DbOrderInfo(DBOI_KEYCOUNT) == 0 )
+			
+			DbCloseArea()
+		END METHOD
+
+
+        [Fact, Trait("Category", "DBF")];
+		METHOD ZapTest3() AS VOID
+			LOCAL cDbf AS STRING
+			RddSetDefault("DBFCDX")
+
+			cDBF := GetTempFileName()
+			FErase ( cDbf + IndexExt() )
+			
+			DbCreate( cDBF , { { "LAST" , "C" , 20 , 0 } } )
+			DbUseArea( ,,cDBF )	 	
+			DbAppend() 
+			FieldPut ( 1 , "here" ) 
+			DbAppend() 
+			FieldPut ( 1 , "are" ) 
+			DbAppend() 
+			FieldPut ( 1 , "some" ) 
+			DbAppend() 
+			FieldPut ( 1 , "values" ) 
+			DbCreateOrder ( "ORDER1"  , cDbf , "upper(LAST)" , { || Upper ( _Field->LAST) } )
+			
+//			DbCloseArea() 
+//			DbUseArea( ,,cDBF)
+			Assert.Equal( 4, (INT) DbOrderInfo(DBOI_KEYCOUNT) )
+
+			Assert.True( DbZap() )
+			
+			? DbGoTop()	 // <-----------  ArgumentNullException
+
+			Assert.True( Eof() )
+			Assert.True( Bof() )
+			Assert.True( DbOrderInfo(DBOI_KEYCOUNT) == 0 )
+			
+			DbCloseArea()
+		END METHOD
 
 
 		STATIC PRIVATE METHOD GetTempFileName() AS STRING

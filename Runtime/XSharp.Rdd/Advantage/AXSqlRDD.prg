@@ -72,7 +72,13 @@ CLASS XSharp.ADS.AXSQLRDD INHERIT ADSRDD
 
         SELF:_CheckError(ACE.AdsStmtSetTableType(SELF:_hStatement, SELF:_TableType),EG_OPEN,"AdsStmtSetTableType")
 
-        var charset := IIF (RuntimeState.CollationMode == CollationMode.Clipper, ACE.ADS_OEM,ACE.ADS_ANSI)
+        LOCAL charset AS WORD
+        // both Clipper and XPP use weight tables
+        IF RuntimeState.CollationMode == CollationMode.Clipper .OR. RuntimeState.CollationMode == CollationMode.Xpp
+    	    charset := ACE.ADS_OEM
+        ELSE
+            charset := ACE.ADS_ANSI
+        ENDIF
         SELF:_CheckError(ACE.AdsStmtSetTableCharType(SELF:_hStatement, charset),EG_OPEN,"AdsStmtSetTableCharType")
 
         SELF:_CheckError(ACE.AdsStmtSetTableLockType(SELF:_hStatement, SUPER:_LockType),EG_OPEN,"AdsStmtSetTableLockType")

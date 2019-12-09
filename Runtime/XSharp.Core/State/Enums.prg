@@ -51,6 +51,16 @@ PUBLIC ENUM DateCountry
     // <summary>Get the format from the System</summary>
     MEMBER Windows  := 99
 END ENUM
+
+/// <summary>This enum specifies the collation mode used to create and update index strings.</summary>
+ENUM CollationMode
+	MEMBER Windows
+	MEMBER Clipper
+	MEMBER Unicode
+	MEMBER Ordinal
+    MEMBER Xpp
+END ENUM
+
 END NAMESPACE
 #region defines
 /// <include file="CoreComments.xml" path="Comments/DateCountry/*" />
@@ -81,3 +91,5 @@ DEFINE YMD      := DateCountry.YMD
 DEFINE TAIWAN   := DateCountry.TAIWAN
 
 #endregion
+
+	

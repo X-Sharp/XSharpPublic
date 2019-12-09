@@ -465,9 +465,9 @@ CLASS XSharp.RuntimeState
 	END GET
 	SET 
         SetValue<LONG>(Set.WINCODEPAGE, VALUE)
-			IF OnCodePageChanged != NULL
-				OnCodePageChanged(GetInstance(), EventArgs{})
-			ENDIF
+		IF OnCodePageChanged != NULL
+			OnCodePageChanged(GetInstance(), EventArgs{})
+		ENDIF
 	END SET
 	END PROPERTY
 
@@ -489,8 +489,6 @@ CLASS XSharp.RuntimeState
     STATIC PROPERTY NoMethod AS STRING ;
         GET GetValue<STRING>(Set.NoMethod);
         SET SetValue<STRING>(Set.NoMethod, VALUE)
-
-
 
 
 	INTERNAL METHOD _SetInternationalClipper() AS VOID
@@ -811,7 +809,8 @@ CLASS XSharp.RuntimeState
             ELSE
                 ret := String.Compare(strLHS, strRHS)
             ENDIF
-        CASE CollationMode.Clipper
+        CASE CollationMode.Clipper  // both Clipper and XPP use weight tables
+        CASE CollationMode.XPP
             ret := XSharp.StringHelpers.CompareClipper(strLHS, strRHS) 
         CASE CollationMode.Unicode
             ret := String.Compare(strLHS, strRHS)
@@ -834,6 +833,7 @@ CLASS XSharp.RuntimeState
     STATIC METHOD StringCompare(aLHS AS BYTE[], aRHS AS BYTE[], nLen AS INT) AS INT
         SWITCH CollationMode
         CASE CollationMode.Clipper
+        CASE CollationMode.XPP
             RETURN XSharp.StringHelpers.CompareClipper(aLHS, aRHS, nLen)
         CASE CollationMode.Windows
             IF System.Environment.OSVersion:Platform == System.PlatformID.Win32NT

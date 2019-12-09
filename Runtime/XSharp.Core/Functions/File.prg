@@ -6,6 +6,7 @@
 USING System
 USING System.Collections
 USING System.Collections.Generic
+USING System.Collections.Concurrent
 USING System.IO
 USING System.Linq
 USING System.Runtime.InteropServices
@@ -177,44 +178,47 @@ BEGIN NAMESPACE XSharp.IO
 	/// <exclude />
 	INTERNAL STATIC CLASS File
         /// <exclude />
-		PRIVATE STATIC streams AS Dictionary<IntPtr, FileCacheElement >
+		PRIVATE STATIC streams AS ConcurrentDictionary<IntPtr, FileCacheElement >
 		PRIVATE STATIC random AS Random
 		
 	    /// <exclude />
         STATIC CONSTRUCTOR
-			streams := Dictionary<IntPtr, FileCacheElement >{}
+			streams := ConcurrentDictionary<IntPtr, FileCacheElement >{}
 			random := Random{}
 		
 		STATIC INTERNAL METHOD findStream(pStream AS IntPtr) AS Stream
             LOCAL element := NULL AS FileCacheElement
-            IF streams:TryGetValue(pStream, OUT element)
-                RETURN element:stream
-            ENDIF
+            BEGIN LOCK streams
+                IF streams:TryGetValue(pStream, OUT element)
+                    RETURN element:stream
+                ENDIF
+            END LOCK
 			RETURN NULL
 		
 		STATIC PRIVATE METHOD hasStream(pStream AS Intptr) AS LOGIC
 			RETURN streams:ContainsKey(pStream)
 		
 		STATIC PRIVATE METHOD addStream(pStream AS Intptr, oStream AS Stream, attributes AS DWORD) AS LOGIC
-			IF ! streams:ContainsKey(pStream)
-				streams:Add(pStream, FileCacheElement {oStream, attributes})
-				RETURN TRUE
-			ENDIF
+            BEGIN LOCK streams
+			    IF ! streams:ContainsKey(pStream)
+				    RETURN streams:TryAdd(pStream, FileCacheElement {oStream, attributes})
+                ENDIF
+            END LOCK
 			RETURN FALSE
             
 		STATIC INTERNAL METHOD setStream(pStream AS IntPtr, oStream AS Stream) AS LOGIC
             LOCAL element := NULL AS FileCacheElement
-            IF streams:TryGetValue(pStream, OUT element)
-                element:Stream := oStream
-                RETURN TRUE
-            ENDIF
+            BEGIN LOCK streams
+                IF streams:TryGetValue(pStream, OUT element)
+                    element:Stream := oStream
+                    RETURN TRUE
+                ENDIF
+            END LOCK
 			RETURN FALSE
 		
 		STATIC PRIVATE METHOD removeStream(pStream AS Intptr) AS LOGIC
-
 			IF streams:ContainsKey(pStream)
-				streams:Remove(pStream)
-				RETURN TRUE
+				RETURN streams:TryRemove(pStream, OUT NULL)
 			ENDIF
 			RETURN FALSE
 		
@@ -256,49 +260,56 @@ BEGIN NAMESPACE XSharp.IO
 			ENDIF
 			
 			oStream := createManagedFileStream(cFile, oMode)
-			IF oStream != NULL
-				hFile := (IntPtr) random:Next(1, Int32.MaxValue)
-				DO WHILE streams:ContainsKey(hFile)
-					hFile := (IntPtr) random:Next(1, Int32.MaxValue)
-				ENDDO
+	        IF oStream != NULL
+                BEGIN LOCK streams
+                    DO WHILE TRUE
+				        hFile := (IntPtr) random:Next(1, Int32.MaxValue)
+				        DO WHILE streams:ContainsKey(hFile)
+					        hFile := (IntPtr) random:Next(1, Int32.MaxValue)
+                        ENDDO
+                        IF addStream(hFile, oStream, oMode:Attributes)
+                            EXIT
+                        ENDIF
+                    ENDDO
+                END LOCK
 			ELSE
 				hFile := F_ERROR
 			ENDIF
-			//endif
-			IF hFile != F_ERROR
-				addStream(hFile, oStream, oMode:Attributes)
-			ENDIF
 			RETURN hFile
 		
-		STATIC INTERNAL METHOD GetBuffer(pStream AS IntPtr, nSize AS INT) AS BYTE[]		
-			IF hasStream(pStream)
-				LOCAL element := streams[pStream] AS FileCacheElement
-				IF element:Bytes == NULL .OR. element:Bytes:Length < nSize
-					element:Bytes := BYTE[]{nSize}
-				ENDIF
-				RETURN element:Bytes
-			ENDIF
+		STATIC INTERNAL METHOD GetBuffer(pStream AS IntPtr, nSize AS INT) AS BYTE[]
+            BEGIN LOCK streams
+			    IF hasStream(pStream)
+				    LOCAL element := streams[pStream] AS FileCacheElement
+				    IF element:Bytes == NULL .OR. element:Bytes:Length < nSize
+					    element:Bytes := BYTE[]{nSize}
+				    ENDIF
+				    RETURN element:Bytes
+                ENDIF
+            END LOCK
 			RETURN NULL
 		
 		STATIC INTERNAL METHOD close(pStream AS IntPtr) AS LOGIC
-			IF hasStream(pStream)
-				LOCAL oStream      := streams[pStream]:Stream AS Stream
-				LOCAL dwAttributes := streams[pStream]:Attributes AS DWORD
-				removeStream(pStream)
-                TRY
-                    clearErrorState()
-				    oStream:Flush()
-				    oStream:Close()
-				    IF dwAttributes != 0 .AND. oStream IS FileStream VAR oFileStream
-					    VAR fi := FileInfo{oFileStream:Name}
-					    fi:Attributes := (FileAttributes) dwAttributes
-				    ENDIF
-				    oStream:Dispose()
-				RETURN TRUE
-                CATCH e AS Exception
-                    setErrorState(e)
-                END TRY
-			ENDIF
+            BEGIN LOCK streams
+			    IF hasStream(pStream)
+				    LOCAL oStream      := streams[pStream]:Stream AS Stream
+				    LOCAL dwAttributes := streams[pStream]:Attributes AS DWORD
+				    removeStream(pStream)
+                    TRY
+                        clearErrorState()
+				        oStream:Flush()
+				        oStream:Close()
+				        IF dwAttributes != 0 .AND. oStream IS FileStream VAR oFileStream
+					        VAR fi := FileInfo{oFileStream:Name}
+					        fi:Attributes := (FileAttributes) dwAttributes
+				        ENDIF
+				        oStream:Dispose()
+				    RETURN TRUE
+                    CATCH e AS Exception
+                        setErrorState(e)
+                    END TRY
+                ENDIF
+            END LOCK
 			RETURN FALSE
 		
 		INTERNAL STATIC METHOD read(pFile AS Intptr, refC OUT STRING, iCount AS INT, lOem2Ansi AS LOGIC) AS INT
@@ -493,7 +504,7 @@ BEGIN NAMESPACE XSharp.IO
         INTERNAL STATIC  METHOD ConvertToMemoryStream(pFile AS IntPtr) AS VOID
 			VAR oStream := XSharp.IO.File.findStream(pFile)
 			IF oStream != NULL_OBJECT
-                  LOCAL oNewStream AS Stream
+                 LOCAL oNewStream AS Stream
                  IF oStream IS XsMemoryStream
                         RETURN
                  ENDIF

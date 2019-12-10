@@ -18,6 +18,8 @@
     <VO9>false</VO9>
     <VO10>false</VO10>
     <VO14>false</VO14>
+    <VO7>false</VO7>
+    <FOX1>false</FOX1>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
   </PropertyGroup>

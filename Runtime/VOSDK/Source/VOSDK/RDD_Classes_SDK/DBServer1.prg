@@ -17,7 +17,7 @@ METHOD Append( lReleaseLocks )
 	nTries := SELF:nReTries
 
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, @dwCurrentWorkArea )
+		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
 		IF SELF:Notify( NOTIFYINTENTTOMOVE )
 			IF nEffectiveCCMode == ccRepeatable
 				lRetCode := __DBSAPPEND( FALSE, nTries )
@@ -69,10 +69,10 @@ METHOD AppendDB( oFSSource, aFieldList, cbForBlock, cbWhileBlock, uScope, cDrive
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, @dwCurrentWorkArea )
+		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
 		IF SELF:Notify( NOTIFYINTENTTOMOVE )
-			IF  IsObject(oFSSource) .and. __Usual.ToObject(oFSSource) IS FileSpec 
-				cSource := ((FileSpec) oFSSource):FullPath
+			IF  IsObject(oFSSource) .AND. __Usual.ToObject(oFSSource) IS FileSpec VAR oFsParam
+				cSource := oFsParam:FullPath
 			ELSEIF IsObject(oFSSource) .and. __Usual.ToObject(oFSSource) IS DbServer VAR oDb
 				cSource := oDb:__FileSpec:FullPath
 			ELSE
@@ -184,7 +184,7 @@ METHOD AppendDelimited( oFSSource, cDelimiter, aFieldList, cbForBlock, cbWhileBl
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, @dwCurrentWorkArea )
+		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
 		IF SELF:Notify( NOTIFYINTENTTOMOVE )
 			IF IsObject(oFSSource) .and. __Usual.ToObject(oFSSource) IS FileSpec  VAR oFS
 				cSource := oFS:FullPath
@@ -290,7 +290,7 @@ METHOD AppendSDF(oFSSource,aFieldList,cbForBlock,cbWhileBlock,uScope)
 	lErrorFlag := FALSE
 
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, @dwCurrentWorkArea )
+		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
 		IF SELF:Notify( NOTIFYINTENTTOMOVE )
 			IF IsObject(oFSSource) .and. __Usual.ToObject(oFSSource) IS FileSpec 
 				cSource := ((FileSpec) oFSSource):FullPath
@@ -409,7 +409,7 @@ METHOD Average( acbExpression, cbForBlock, cbWhileBlock, uScope )
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, @dwCurrentWorkArea )
+		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
 		IF ! SELF:Notify( NOTIFYINTENTTOMOVE )
 			BREAK DbError{ SELF, #Average, 999, VO_Sprintf( __CAVOSTR_DBFCLASS_INTENTTOMOVE ) }
 		ENDIF
@@ -530,28 +530,20 @@ METHOD Average( acbExpression, cbForBlock, cbWhileBlock, uScope )
 	RETURN aResults
 
 DESTRUCTOR( )	
-	LOCAL oError AS USUAL
 	#IFDEF __DEBUG__
 		DBFDebug("Entering "+__ENTITY__)
 	#ENDIF                
-	IF SELF:wWorkArea != 0
-
-		BEGIN SEQUENCE                                                           
+	IF SELF:wWorkArea != 0  .AND. SELF:oRDD != NULL_OBJECT        // These gets cleared when the file is closed
+		TRY
 			//RvdH 070508 Make sure the workarea is restored properly. This is the easiest
 			//            way to do it.
 			//(SELF:wWorkArea)->(VODBCloseArea( ))
             // The destructor runs on a separate thread. Therefore
             // we can't close it using the workarea number
             XSharp.RuntimeState.Workareas:CloseArea(SELF:oRDD)
-
-
-		RECOVER USING oError       
-			//RvdH 070509 Always throw errors on Axit. The owner window may be gone!
-			IF IsObject(oError) .and. __Usual.ToObject(oError) IS Error VAR oErr
-				oErr:Throw()
-			ENDIF
-			
-		END SEQUENCE
+		CATCH 
+			NOP     // We deliberately 'eat' the error because we don't want to see error messages at shutdown
+		END TRY
 	ENDIF
 	#IFDEF __DEBUG__
 		DBFDebug("Leaving "+__ENTITY__)
@@ -569,7 +561,7 @@ METHOD BLOBDirectExport( nPointer, oFSTarget, kMode )
 		DBFDebug("Entering "+__ENTITY__)
 	#ENDIF
 
-	VODBSelect( wWorkArea, @dwCurrentWorkArea )
+	VODBSelect( wWorkArea, REF dwCurrentWorkArea )
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
@@ -579,7 +571,7 @@ METHOD BLOBDirectExport( nPointer, oFSTarget, kMode )
 			cTarget := oFSTarget
 		ENDIF
 		uRetCode := { nPointer, cTarget, kMode }
-		IF ! VODBInfo( BLOB_DIRECT_EXPORT, @uRetCode )
+		IF ! VODBInfo( BLOB_DIRECT_EXPORT, REF uRetCode )
 			BREAK ErrorBuild( _VODBErrInfoPtr( ) )
 		ENDIF
 	RECOVER USING oError
@@ -608,9 +600,9 @@ METHOD BLOBDirectGet( nPointer, nStart, nCount )
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, @dwCurrentWorkArea )
+		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
 		uRetVal := { nPointer, nStart, nCount }
-		IF ! VODBInfo( BLOB_DIRECT_GET, @uRetVal )
+		IF ! VODBInfo( BLOB_DIRECT_GET, REF uRetVal )
 			BREAK ErrorBuild( _VODBErrInfoPtr( ) )
 		ENDIF
 	   __DBSSetSelect( dwCurrentWorkArea )  //SE-060527
@@ -640,14 +632,14 @@ METHOD BLOBDirectImport( nPointer, oFSSource )
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, @dwCurrentWorkArea )
-		IF IsObject(oFSSource) .and. __Usual.ToObject(oFSSource) IS FileSpec 
-			cTarget := ((FileSpec) oFSSource):FullPath
+		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
+		IF IsObject(oFSSource) .AND. __Usual.ToObject(oFSSource) IS FileSpec VAR oFsParam
+			cTarget := oFsParam:FullPath
 		ELSE
 			cTarget := oFSSource
 		ENDIF
 		uRetVal := { nPointer, cTarget }
-		IF ! VODBInfo( BLOB_DIRECT_IMPORT, @uRetVal )
+		IF ! VODBInfo( BLOB_DIRECT_IMPORT, REF uRetVal )
 			BREAK ErrorBuild( _VODBErrInfoPtr( ) )
 		ENDIF
 	   __DBSSetSelect( dwCurrentWorkArea )  //SE-060527
@@ -676,9 +668,9 @@ METHOD BLOBDirectPut( nPointer, uBlob )
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, @dwCurrentWorkArea )
+		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
 		uRetVal := { nPointer, uBlob }
-		IF ! VODBInfo( BLOB_DIRECT_PUT, @uRetVal )
+		IF ! VODBInfo( BLOB_DIRECT_PUT, REF uRetVal )
 			BREAK ErrorBuild( _VODBErrInfoPtr( ) )
 		ENDIF
 		__DBSSetSelect( dwCurrentWorkArea ) 
@@ -709,7 +701,7 @@ METHOD BLOBExport( uField, oFSTarget, kMode )
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, @dwCurrentWorkArea )
+		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
 		wPos := __GetFldPos( uField, wFieldCount )
 		IF wPos == 0
 			BREAK DbError{ SELF, #BLOBExport, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_FIELDSPEC ),  ;
@@ -720,7 +712,7 @@ METHOD BLOBExport( uField, oFSTarget, kMode )
 		ELSE
 			cTarget := oFSTarget
 		ENDIF
-		IF ! VODBInfo( BLOB_NMODE, @kMode )
+		IF ! VODBInfo( BLOB_NMODE, REF kMode )
 			BREAK ErrorBuild( _VODBErrInfoPtr( ) )
 		ENDIF
 
@@ -757,13 +749,13 @@ METHOD BLOBGet( uField, nStart, nCount )
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, @dwCurrentWorkArea )
+		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
 		IF (wPos := __GetFldPos( uField, wFieldCount )) == 0
 			BREAK DbError{ SELF, #BLOBGet, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_FIELDSPEC ),  ;
 				uField, "uField" }
 		ENDIF
 		uRetVal := { wPos,nStart,nCount }
-		IF ! VODBInfo( BLOB_GET, @uRetVal )
+		IF ! VODBInfo( BLOB_GET, REF uRetVal)
 			BREAK ErrorBuild( _VODBErrInfoPtr( ) )
 		ENDIF
 	   __DBSSetSelect( dwCurrentWorkArea )  //SE-060527
@@ -798,13 +790,13 @@ METHOD BLOBImport( uField, oFSSource )
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, @dwCurrentWorkArea )
+		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
 		IF (wPos := __GetFldPos( uField, wFieldCount )) == 0
 			BREAK DbError{ SELF, #BLOBImport, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_FIELDSPEC ),  ;
 				uField, "uField" }
 		ENDIF
-		IF IsObject(oFSSource) .and. __Usual.ToObject(oFSSource) IS FileSpec 
-			cTarget := ((FileSpec) oFSSource):FullPath
+		IF IsObject(oFSSource) .AND. __Usual.ToObject(oFSSource) IS FileSpec VAR oFsParam
+			cTarget := oFsParam:FullPath
 		ELSE
 			cTarget := oFSSource
 		ENDIF
@@ -815,7 +807,7 @@ METHOD BLOBImport( uField, oFSSource )
 				IF ! lRetCode
 					BREAK ErrorBuild( _VODBErrInfoPtr( ) )
 				ENDIF
-				VODBInfo( DBI_IsFLock, @xNewVal )
+				VODBInfo( DBI_IsFLock, REF xNewVal )
 				IF ! xNewVal
 					VODBUnlock( nCurRec )
 				ENDIF
@@ -861,8 +853,8 @@ METHOD BLOBRootGet( )
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, @dwCurrentWorkArea )
-		IF ! VODBInfo( BLOB_ROOT_GET, @uRetVal )
+		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
+		IF ! VODBInfo( BLOB_ROOT_GET, REF uRetVal)
 			BREAK ErrorBuild( _VODBErrInfoPtr( ) )
 		ENDIF
       __DBSSetSelect( dwCurrentWorkArea ) 
@@ -889,11 +881,11 @@ METHOD BLOBRootLock( )
 		DBFDebug("Entering "+__ENTITY__)
 	#ENDIF
 
-	VODBSelect( wWorkArea, @dwCurrentWorkArea )
+	VODBSelect( wWorkArea, REF dwCurrentWorkArea )
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		IF ! VODBInfo( BLOB_ROOT_LOCK, @uRetCode )
+		IF ! VODBInfo( BLOB_ROOT_LOCK, REF uRetCode )
 			BREAK ErrorBuild( _VODBErrInfoPtr( ) )
 		ENDIF
 
@@ -920,11 +912,11 @@ METHOD BLOBRootPut( uBlob )
 		DBFDebug("Entering "+__ENTITY__)
 	#ENDIF
 
-	VODBSelect( wWorkArea, @dwCurrentWorkArea )
+	VODBSelect( wWorkArea, REF dwCurrentWorkArea )
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		IF ! VODBInfo( BLOB_ROOT_PUT, @uBlob )
+		IF ! VODBInfo( BLOB_ROOT_PUT, REF uBlob )
 			BREAK ErrorBuild( _VODBErrInfoPtr( ) )
 		ENDIF
 
@@ -954,8 +946,8 @@ METHOD BLOBRootUnlock( )
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, @dwCurrentWorkArea )
-		IF ! VODBInfo( BLOB_ROOT_UNLOCK, @uRetVal )
+		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
+		IF ! VODBInfo( BLOB_ROOT_UNLOCK, REF uRetVal)
 			BREAK ErrorBuild( _VODBErrInfoPtr( ) )
 		ENDIF
       __DBSSetSelect( dwCurrentWorkArea ) 
@@ -982,7 +974,7 @@ METHOD ClearFilter( )
 		DBFDebug("Entering "+__ENTITY__)
 	#ENDIF
 
-	VODBSelect( wWorkArea, @dwCurrentWorkArea )
+	VODBSelect( wWorkArea, REF dwCurrentWorkArea )
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
@@ -1014,7 +1006,7 @@ METHOD ClearIndex( uOrder, cOrdBag )
 		DBFDebug("Entering "+__ENTITY__, AsString(uOrder), AsString(cOrdBag))
 	#ENDIF
 
-	VODBSelect( wWorkArea, @dwCurrentWorkArea )
+	VODBSelect( wWorkArea, REF dwCurrentWorkArea )
 
 	BEGIN SEQUENCE
       //RvdH 070925 Save pending changes
@@ -1051,7 +1043,7 @@ METHOD ClearLocate( )
 		DBFDebug("Entering "+__ENTITY__)
 	#ENDIF
 
-	VODBSelect( wWorkArea, @dwCurrentWorkArea )
+	VODBSelect( wWorkArea, REF dwCurrentWorkArea )
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
@@ -1096,7 +1088,7 @@ METHOD ClearRelation( )
 		DBFDebug("Entering "+__ENTITY__)
 	#ENDIF
 
-	VODBSelect( wWorkArea, @dwCurrentWorkArea )
+	VODBSelect( wWorkArea, REF dwCurrentWorkArea )
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
@@ -1157,7 +1149,7 @@ METHOD Close( )
 	BEGIN SEQUENCE
 		IF SELF:wWorkArea # 0
 			SELF:Notify( NOTIFYCLOSE )
-			VODBSelect( wWorkArea, @dwCurrentWorkArea )
+			VODBSelect( wWorkArea, REF dwCurrentWorkArea )
 			SELF:__OptimisticFlush( )
 			IF ! IsNil( oDBSelectionParent )
 				Send(oDBSelectionParent,#__ClearChildRelation, SELF )
@@ -1176,6 +1168,8 @@ METHOD Close( )
 			SELF:aOriginalBuffer := NULL_ARRAY
 			SELF:aCurrentBuffer := NULL_ARRAY
 			SELF:aStruct := NULL_ARRAY
+            SELF:wWorkArea := 0
+            SELF:oRDD := NULL
 			oHLStatus := HyperLabel{ #NoTable, __CavoStr( __CAVOSTR_DBFCLASS_NOTABLE_CAPTION ),  ;
 				__CavoStr( __CAVOSTR_DBFCLASS_NOTABLE2 ), "DbServer_NoTable" }
 		ENDIF
@@ -1210,7 +1204,7 @@ METHOD Commit( )
 	nTries := SELF:nReTries
 
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, @dwCurrentWorkArea )
+		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
 		SELF:__OptimisticFlush( )
 		lRetCode := __DBSCommit( nTries )
 		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
@@ -1248,7 +1242,7 @@ METHOD Commit( )
 
 METHOD ConstructUniqueAlias( cFileName ) 
     LOCAL sResult AS SYMBOL
-	DEFAULT( @cFileName, "" )
+	DEFAULT( REF cFileName, "" )
 	#IFDEF __DEBUG__
 		DBFDebug("Entering "+__ENTITY__)
 	#ENDIF
@@ -1272,7 +1266,7 @@ METHOD Continue( )
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( SELF:wWorkArea, @dwCurrentWorkArea )
+		VODBSelect( SELF:wWorkArea, REF dwCurrentWorkArea )
 		IF SELF:Notify( NOTIFYINTENTTOMOVE )
 			nValue := VODBRecno( )
 			lRetCode := VODBContinue( )

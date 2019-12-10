@@ -152,8 +152,8 @@ METHOD CopyTo( oFS, cDriver, lWantAnsi )
 	LOCAL nNext AS USUAL
 	LOCAL nRec AS USUAL
 
-	IF IsObject(oFS) .and. __Usual.ToObject(oFS) IS FileSpec 
-		oFS := ((FileSpec) oFS):FullPath
+	IF IsObject(oFS) .AND. __Usual.ToObject(oFS) IS FileSpec VAR oFsParam
+		oFS := oFsParam:FullPath
 	ENDIF
 
 	IF Empty( oFS ) .OR. ! IsString( oFS )
@@ -350,10 +350,6 @@ METHOD Create( cFullPath, aDbStruct, cDriver, lWantAnsi, aRDDs )
 		ENDIF
 
 		lRetCode := VODBCreate( cFileName, aDbStruct, rddList, TRUE, cAlias, "", FALSE, FALSE )
-
-		#ifndef __VULCAN__   // RDDLIST is a class in Vulcan
-		   MemFree( RDDLIST )
-		#endif   
 
 		IF lRetCode
 			IF SELF:HeaderSize == 0

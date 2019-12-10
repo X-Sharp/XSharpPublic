@@ -25,7 +25,7 @@ METHOD CopyDB( oFSTarget, aFieldList, cbForBlock, cbWhileBlock, uScope, cdriver,
 	
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, @dwCurrentWorkArea )
+		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
 		IF SELF:Notify( NOTIFYINTENTTOMOVE )
 			IF IsObject(oFSTarget) .and. __Usual.ToObject(oFSTarget) IS FileSpec VAR oFS
 				cTarget := oFS:FullPath
@@ -190,7 +190,7 @@ METHOD CopyDelimited( oFSTarget, cDelimiter, aFieldList, cbForBlock, cbWhileBloc
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, @dwCurrentWorkArea )
+		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
 		IF SELF:Notify( NOTIFYINTENTTOMOVE )
 			IF IsObject(oFSTarget) .and. __Usual.ToObject(oFSTarget) IS FileSpec VAR oFS
 				cTarget := oFS:FullPath
@@ -329,7 +329,7 @@ METHOD CopySDF( oFSTarget, aFieldList, cbForBlock, cbWhileBlock, uScope )
 	
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, @dwCurrentWorkArea )
+		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
 		IF SELF:Notify( NOTIFYINTENTTOMOVE )
 			IF IsObject(oFSTarget) .and. __Usual.ToObject(oFSTarget) IS FileSpec VAR oFS
 				cTarget := oFS:FullPath
@@ -521,10 +521,6 @@ METHOD CopyStructure( oFSTarget, aFieldList )
 		
 		lRetCode := VODBCreate( cTarget, aNew, rddList, TRUE, cAlias, "", FALSE, FALSE )
 		
-#ifndef __VULCAN__
-		MemFree( RDDLIST )
-#endif
-		
 		IF ! lRetCode
 			BREAK ErrorBuild( _VODBErrInfoPtr( ) )
 		ENDIF
@@ -571,7 +567,7 @@ METHOD Count( cbForBlock, cbWhileBlock, uScope )
 	
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, @dwCurrentWorkArea )
+		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
 		IF ! SELF:Notify( NOTIFYINTENTTOMOVE )
 			BREAK DbError{ SELF, #Count, 999, VO_Sprintf( __CAVOSTR_DBFCLASS_INTENTTOMOVE ) }
 		ENDIF
@@ -690,7 +686,7 @@ METHOD CreateIndex( oFSIndex, cExpr, cbExpr, lUnique )
 	
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, @dwCurrentWorkArea )
+		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
 		IF SELF:Notify( NOTIFYINTENTTOMOVE )
 			IF IsObject(oFSIndex) .and. __Usual.ToObject(oFSIndex) IS FileSpec VAR oFs
 				cIndexFileName := oFs:FullPath
@@ -777,7 +773,7 @@ METHOD CreateOrder( cOrderName, cIndexFileName, cExpr, cbExpr, lUnique )
 	
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, @dwCurrentWorkArea )
+		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
 		IF SELF:Notify( NOTIFYINTENTTOMOVE )
 			IF IsObject(cIndexFileName) .and. __Usual.ToObject(cIndexFileName) IS FileSpec VAR oFs
 				cIndexFileName := oFs:FullPath
@@ -861,7 +857,7 @@ METHOD DataField( uField )
 		SELF:__SetStatusHL( #DataField, EG_NOTABLE, __CavoStr( __CAVOSTR_DBFCLASS_NOTABLE2 ) )
 		oResult := NULL_OBJECT
 	ELSE
-		VODBSelect( wWorkArea, @dwCurrentWorkArea )
+		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
 		dwPos := __GetFldPos( uField, wFieldCount )
 		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
 		IF dwPos > 0
@@ -894,7 +890,7 @@ METHOD Delete( cbForBlock, cbWhileBlock, uScope )
 	#ENDIF
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, @dwCurrentWorkArea )
+		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
 		IF ! IsNil( cbForBlock ) .OR. ! IsNil( cbWhileBlock ) .OR. ! IsNil( uScope )
 			IF SELF:Notify( NOTIFYINTENTTOMOVE )
 				IF IsString( cbForBlock )
@@ -952,7 +948,7 @@ METHOD Delete( cbForBlock, cbWhileBlock, uScope )
 					__CavoStr( __CAVOSTR_DBFCLASS_INTENTTOMOVE ) )
 			ENDIF
 		ELSE
-			IF ! VODBInfo( DBI_IsFLock, @uFlock )
+			IF ! VODBInfo( DBI_IsFLock, REF uFlock )
 				BREAK ErrorBuild( _VODBErrInfoPtr( ) )
 			ENDIF
 			IF nEffectiveCCMode == ccOptimistic .AND.  ;
@@ -1008,7 +1004,7 @@ METHOD DeleteAll( )
 	
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, @dwCurrentWorkArea )
+		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
 		IF SELF:Notify( NOTIFYINTENTTOMOVE )
 			IF lSelectionActive
 				uValue := uSelectionValue
@@ -1099,7 +1095,7 @@ METHOD DeleteOrder( uOrder, cIndexFileName )
 	
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, @dwCurrentWorkArea )
+		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
 		IF IsObject(cIndexFileName) .and. __Usual.ToObject(cIndexFileName) IS FileSpec VAR oFs
 			cOrdBag := oFs:FullPath
 		ELSE
@@ -1108,7 +1104,7 @@ METHOD DeleteOrder( uOrder, cIndexFileName )
 		
 		IF IsNumeric( uOrder )
 			cOrder := NIL
-			VODBOrderInfo( DBOI_NAME, "", uOrder, @cOrder )
+			VODBOrderInfo( DBOI_NAME, "", uOrder, REF cOrder )
 			uOrder := cOrder
 		ELSEIF ! IsString( uOrder )
 			BREAK DbError{ SELF, #DeleteOrder, EG_ARG, VO_Sprintf( __CAVOSTR_DBFCLASS_INVALIDORDER ) }
@@ -1198,7 +1194,7 @@ METHOD Eval( cbBlock, cbForBlock, cbWhileBlock, uScope )
 	
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, @dwCurrentWorkArea )
+		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
 		IF SELF:Notify( NOTIFYINTENTTOMOVE )
 			IF ! IsNil( cbForBlock ) .OR. ! IsNil( cbWhileBlock ) .OR. ! IsNil( uScope )
 				IF IsString( cbForBlock )
@@ -1319,7 +1315,7 @@ METHOD FIELDGET( uField )
 	
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, @dwCurrentWorkArea )
+		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
         IF PCount() != 1   
          BREAK DbError{ SELF, #FieldGet, EG_ARG, ;
                 "Incorrect number of arguments", uField, NULL_STRING} 
@@ -1335,7 +1331,7 @@ METHOD FIELDGET( uField )
 			
 			uRetVal := aCurrentBuffer[BUFFER_VALUE, wpos]
 		ELSE
-			IF ! VODBFieldGet( wpos, @uRetVal )
+			IF ! VODBFieldGet( wpos, REF uRetVal )
 				BREAK ErrorBuild( _VODBErrInfoPtr( ) )
 			ENDIF
 		ENDIF
@@ -1368,7 +1364,7 @@ METHOD FieldGetFormatted( uField )
 	
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, @dwCurrentWorkArea )
+		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
 		IF (wPos := __GetFldPos( uField, wFieldCount )) == 0
 			BREAK DbError{ SELF, #FieldGetFormatted, EG_ARG,  ;
 				__CavoStr( __CAVOSTR_DBFCLASS_FIELDSPEC ), uField, "uField" }
@@ -1378,7 +1374,7 @@ METHOD FieldGetFormatted( uField )
 				
 				uRetVal := aCurrentBuffer[BUFFER_VALUE, wpos]
 			ELSE
-				IF ! VODBFieldGet( wPos, @uRetVal )
+				IF ! VODBFieldGet( wPos, REF uRetVal )
 					BREAK ErrorBuild( _VODBErrInfoPtr( ) )
 				ENDIF
 			ENDIF
@@ -1416,7 +1412,7 @@ METHOD FieldHyperLabel( uField )
 	
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, @dwCurrentWorkArea )
+		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
 		wPos := __GetFldPos( uField, wFieldCount )
 		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
 		IF wPos > 0
@@ -1455,7 +1451,7 @@ METHOD FieldInfo( kFieldInfoType, uField, uFieldVal )
 	
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, @dwCurrentWorkArea )
+		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
 		IF kfieldInfoType == DBS_BLOB_DIRECT_LEN .OR.  ;
 				kfieldInfoType == DBS_BLOB_DIRECT_TYPE
 			nPos := uField
@@ -1463,7 +1459,7 @@ METHOD FieldInfo( kFieldInfoType, uField, uFieldVal )
 			nPos := __GetFldPos( uField, wFieldCount )
 		ENDIF
 		
-		IF ! VODBFieldInfo( kFieldInfoType, nPos, @uFieldVal )
+		IF ! VODBFieldInfo( kFieldInfoType, nPos, REF uFieldVal )
 			BREAK ErrorBuild( _VODBErrInfoPtr( ) )
 		ENDIF
 		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
@@ -1492,7 +1488,7 @@ METHOD FieldName( nFieldPosition )
 		DBFDebug("Entering "+__ENTITY__, AsString(nFieldPosition))
 	#ENDIF
 	
-	VODBSelect( wWorkArea, @dwCurrentWorkArea )
+	VODBSelect( wWorkArea, REF dwCurrentWorkArea )
 	
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
@@ -1530,7 +1526,7 @@ METHOD FieldPos( cFieldName )
 	
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, @dwCurrentWorkArea )
+		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
 		uRetVal := __GetFldPos( cFieldName, wFieldCount )
 		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
 		
@@ -1562,7 +1558,7 @@ METHOD FIELDPUT( uField, uValue )
 	#ENDIF
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, @dwCurrentWorkArea )
+		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
         IF PCount() != 2 
             BREAK DbError{ SELF, #FIELDPUT, EG_ARG, ;
                 "Incorrect number of arguments", uField, NULL_STRING} 
@@ -1573,12 +1569,12 @@ METHOD FIELDPUT( uField, uValue )
         ENDIF
         IF nEffectiveCCMode == ccOptimistic .AND. VODBRecno() <= VODBLastRec()
             //type checking for optimistic locking 
-            IF ! __CheckFieldType(@uValue, aStruct[wPos], @uError)
+            IF ! __CheckFieldType(REF uValue, aStruct[wPos], REF uError)
                 ASize(uError, 3)
                 BREAK DbError{SELF, #FIELDPUT, uError[1], VO_Sprintf(uError[2], "Field " + aStruct[wPos,DBS_NAME], uError[3]), uValue, "uValue"}
             ENDIF 
 
-			IF ! VODBRecordInfo( DBRI_LOCKED, 0, @uRLock )
+			IF ! VODBRecordInfo( DBRI_LOCKED, 0, REF uRLock )
 				BREAK ErrorBuild( _VODBErrInfoPtr( ) )
 			ENDIF               
 			IF ! uRLock
@@ -1626,7 +1622,7 @@ METHOD FieldSpec( uField )
 	
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, @dwCurrentWorkArea )
+		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
 		wPos := __GetFldPos( uField, wFieldCount )
 		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
 		IF wPos > 0
@@ -1666,7 +1662,7 @@ METHOD FieldStatus( uField )
 	
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, @dwCurrentWorkArea )
+		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
 		wPos := __GetFldPos( uField, wFieldCount )
 		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
 		IF wPos > 0
@@ -1706,7 +1702,7 @@ METHOD FieldSym( uField )
 	
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, @dwCurrentWorkArea )
+		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
 		IF (wPos := __GetFldPos( uField, wFieldCount )) > 0
 			uRetVal := FieldSym( wPos )
 		ELSE
@@ -1742,7 +1738,7 @@ METHOD FieldValidate( uField, uValue )
 	
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, @dwCurrentWorkArea )
+		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
 		wPos := __GetFldPos( uField, wFieldCount )
 		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
 		IF wPos > 0
@@ -1783,7 +1779,7 @@ METHOD FLOCK( )
 	nTries := SELF:nRetries
 	
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, @dwCurrentWorkArea )
+		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
 		lRetCode := __DBSFLock( nTries )
 		SELF:__OptimisticFlushNoLock( )
 		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527

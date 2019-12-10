@@ -9627,8 +9627,8 @@
     </summary>
 
     <param name="ptrHandle">The handle of the open file you want to lock.</param>
-    <param name="dwOffset">The file offset at which to start locking.  A value of zero corresponds to the first byte of the file.</param>
-    <param name="dwLength">The number of bytes to lock.</param>
+    <param name="offset">The file offset at which to start locking.  A value of zero corresponds to the first byte of the file.</param>
+    <param name="length">The number of bytes to lock.</param>
     <returns>
       TRUE if successful; otherwise, FALSE.
     </returns>
@@ -9701,8 +9701,8 @@
     </summary>
 
     <param name="ptrHandle">The handle of the opened file you want to unlock.</param>
-    <param name="dwOffset">The file offset at which to start unlocking.</param>
-    <param name="dwLength">The number of bytes to unlock.</param>
+    <param name="offset">The file offset at which to start unlocking.</param>
+    <param name="length">The number of bytes to unlock.</param>
     <returns>
       TRUE if successful; otherwise, FALSE.
     </returns>

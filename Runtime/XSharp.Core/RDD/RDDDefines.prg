@@ -492,6 +492,14 @@ DEFINE DBOI_KEYGOTORAW 	:= DbOrder_Info.DBOI_KEYNORAW
 /// <exclude />
 DEFINE DBOI_KEYNO	 	:= DbOrder_Info.DBOI_POSITION
 
+
+/// <exclude />
+DEFINE DBOI_LOCK_ALL    := DbOrder_Info.DBOI_LOCK_ALL
+/// <exclude />
+DEFINE DBOI_LOCK_FAIL   := DbOrder_Info.DBOI_LOCK_FAIL
+/// <exclude />
+DEFINE DBOI_HPLOCK_GATE := DbOrder_Info.DBOI_HPLOCK_GATE
+
 // Blob defines
 
 

@@ -25,14 +25,13 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
     
     PRIVATE METHOD _CheckError(nResult AS DWORD, gencode AS DWORD) AS LOGIC
         IF nResult != 0
-            LOCAL lastError AS DWORD
             LOCAL message AS CHAR[]
             LOCAL wBufLen AS WORD
             LOCAL oError AS RddError
             LOCAL strMessage AS STRING
             message := CHAR[]{ACE.ADS_MAX_ERROR_LEN}
             wBufLen := (WORD) message:Length
-            IF ACE.AdsGetLastError(OUT lastError, message, REF wBufLen) == 0 .AND. lastError != 0 .AND. wBufLen > 0
+            IF ACE.AdsGetLastError(OUT VAR lastError, message, REF wBufLen) == 0 .AND. lastError != 0 .AND. wBufLen > 0
                 strMessage := STRING{message, 0, wBufLen}
             ELSE
                 strMessage := "Unknown Error"
@@ -215,8 +214,7 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
             IF hIndex == IntPtr.Zero
                 info:Result := FALSE
             ELSE
-                LOCAL wIsCustom AS WORD
-                SELF:_CheckError(ACE.AdsIsIndexCustom(hIndex, OUT wIsCustom), EG_ARG)
+                SELF:_CheckError(ACE.AdsIsIndexCustom(hIndex, OUT VAR wIsCustom), EG_ARG)
                 info:Result := wIsCustom != 0
             ENDIF            
     CASE DBOI_EXPRESSION
@@ -259,8 +257,7 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
             IF hIndex == IntPtr.Zero
                 info:Result := FALSE
             ELSE
-                LOCAL wDescending AS WORD
-                SELF:_CheckError(ACE.AdsIsIndexDescending(hIndex, OUT wDescending), EG_ARG)
+                SELF:_CheckError(ACE.AdsIsIndexDescending(hIndex, OUT VAR wDescending), EG_ARG)
                 info:Result:= wDescending > 0
             ENDIF
             
@@ -275,9 +272,8 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
             IF hIndex == IntPtr.Zero
                 info:Result:= 0
             ELSE
-                LOCAL wOptLevel AS WORD
                 num := 0
-                result := ACE.AdsGetAOFOptLevel(SELF:Table, OUT wOptLevel, NULL, REF num)
+                result := ACE.AdsGetAOFOptLevel(SELF:Table, OUT VAR wOptLevel, NULL, REF num)
                 IF result == ACE.AE_NO_FILTER
                     wOptLevel := ACE.ADS_OPTIMIZED_NONE
                 ELSEIF result != 0
@@ -532,8 +528,7 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
         ELSEIF info:Order IS STRING VAR orderName
             IF ! String.IsNullOrEmpty(orderName)
                 orderName := Path.GetFileNameWithoutExtension(orderName)
-                LOCAL hIndex AS IntPtr
-                SELF:_CheckError(ACE.AdsGetIndexHandle(SELF:Table, orderName, OUT hIndex),EG_ARG)
+                SELF:_CheckError(ACE.AdsGetIndexHandle(SELF:Table, orderName, OUT VAR hIndex),EG_ARG)
                 SELF:Index := hIndex
                 SELF:oRDD:RecordMovement()
             ELSE
@@ -547,8 +542,7 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
                 SELF:oRDD:ADSERROR(ERDD_DATATYPE, EG_DATATYPE, "OderListFocus")
             END TRY
             IF orderNum > 0
-                LOCAL hIndex AS IntPtr
-                SELF:_CheckError(ACE.AdsGetIndexHandleByOrder(SELF:Table, orderNum, OUT hIndex),EG_ARG)
+                SELF:_CheckError(ACE.AdsGetIndexHandleByOrder(SELF:Table, orderNum, OUT VAR hIndex),EG_ARG)
                 SELF:Index := hIndex
                 SELF:oRDD:RecordMovement()
             ELSE
@@ -590,15 +584,12 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
         ELSE
             SELF:_CheckError(ACE.AdsSeek(SELF:Index, Key, (WORD)Key:Length , ACE.ADS_STRINGKEY, seekMode, OUT found),EG_CORRUPTION)
         ENDIF
-        LOCAL atEOF AS WORD
-        LOCAL atBOF AS WORD
-        SELF:_CheckError(ACE.AdsAtEOF(SELF:Table, OUT atEOF),EG_CORRUPTION)
-        SELF:_CheckError(ACE.AdsAtBOF(SELF:Table, OUT atBOF),EG_CORRUPTION)
+        SELF:_CheckError(ACE.AdsAtEOF(SELF:Table, OUT VAR atEOF),EG_CORRUPTION)
+        SELF:_CheckError(ACE.AdsAtBOF(SELF:Table, OUT VAR atBOF),EG_CORRUPTION)
         oRDD:_Found := found != 0
         oRDD:_Eof := atEOF != 0
         oRDD:_Bof := atBOF != 0
-        LOCAL dwRecord AS DWORD
-        VAR result := ACE.AdsGetRecordNum(SELF:Table, ACE.ADS_IGNOREFILTERS, OUT dwRecord)
+        VAR result := ACE.AdsGetRecordNum(SELF:Table, ACE.ADS_IGNOREFILTERS, OUT VAR dwRecord)
         IF result == ACE.AE_NO_CURRENT_RECORD
             SELF:oRDD:_Recno := 0
         ELSEIF result == 0

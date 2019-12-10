@@ -820,7 +820,6 @@ INTERNAL FUNCTION _VOVal(cNumber AS STRING) AS USUAL
 
     IF cNumber:IndexOfAny(<CHAR> {'.'}) > -1
 
-        LOCAL r8Result := 0 AS REAL8
         IF cDec != '.'
             cNumber := cNumber:Replace(cDec, '.')
         ENDIF
@@ -828,7 +827,7 @@ INTERNAL FUNCTION _VOVal(cNumber AS STRING) AS USUAL
         IF hasexp
             style |= NumberStyles.AllowExponent
         ENDIF
-        IF System.Double.TryParse(cNumber, style, ConversionHelpers.usCulture, OUT r8Result)
+        IF System.Double.TryParse(cNumber, style, ConversionHelpers.usCulture, OUT VAR r8Result)
             RETURN __Float{ r8Result , cNumber:Length - cNumber:IndexOf('.') - 1}
         ENDIF
 
@@ -855,8 +854,7 @@ INTERNAL FUNCTION _VOVal(cNumber AS STRING) AS USUAL
             	cNumber := cNumber:Substring(1)
             END IF
 
-            LOCAL iResult := 0 AS INT64
-            System.Int64.TryParse(cNumber, style, ConversionHelpers.usCulture, OUT iResult)
+            System.Int64.TryParse(cNumber, style, ConversionHelpers.usCulture, OUT VAR iResult)
             IF lNegativeHex
                 iResult := - iResult
             ENDIF
@@ -871,12 +869,10 @@ INTERNAL FUNCTION _VOVal(cNumber AS STRING) AS USUAL
             style := NumberStyles.Integer
 
             IF cNumber:Length <= 9 // yes, no matter if there's a sign char or not
-                LOCAL iResult := 0 AS INT
-                System.Int32.TryParse(cNumber, style, ConversionHelpers.usCulture, OUT iResult)
+                System.Int32.TryParse(cNumber, style, ConversionHelpers.usCulture, OUT VAR iResult)
                 RETURN iResult
             ELSE
-                LOCAL rResult := 0 AS REAL8
-                System.Double.TryParse(cNumber, style, ConversionHelpers.usCulture, OUT rResult)
+                System.Double.TryParse(cNumber, style, ConversionHelpers.usCulture, OUT VAR rResult)
                 RETURN __Float{rResult, 0}
             ENDIF
 

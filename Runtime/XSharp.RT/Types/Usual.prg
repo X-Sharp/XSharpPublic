@@ -1329,8 +1329,7 @@ BEGIN NAMESPACE XSharp
                     SWITCH rhs:_usualType
                         CASE __UsualType.Long
                             LOCAL result AS INT
-                            LOCAL remainder AS INT
-                            result := Math.DivRem(lhs:_intValue, rhs:_intValue, OUT remainder)
+                            result := Math.DivRem(lhs:_intValue, rhs:_intValue, OUT VAR remainder)
                             IF remainder == 0
                                 RETURN result
                             ELSE
@@ -1338,8 +1337,7 @@ BEGIN NAMESPACE XSharp
                             ENDIF
                         CASE __UsualType.Int64
                             LOCAL result AS INT64
-                            LOCAL remainder AS INT64
-                            result := Math.DivRem((INT64) lhs:_intValue, rhs:_i64Value, OUT remainder)
+                            result := Math.DivRem((INT64) lhs:_intValue, rhs:_i64Value, OUT VAR remainder)
                             IF remainder == 0
                                 RETURN result
                             ELSE
@@ -1350,8 +1348,7 @@ BEGIN NAMESPACE XSharp
 
                         CASE __UsualType.Decimal
                             LOCAL result AS INT64
-                            LOCAL remainder AS INT64
-                            result := Math.DivRem((INT64) lhs:_intValue, (INT64) rhs:_decimalValue, OUT remainder)
+                            result := Math.DivRem((INT64) lhs:_intValue, (INT64) rhs:_decimalValue, OUT VAR remainder)
                             IF remainder == 0
                                 RETURN result
                             ELSE
@@ -1365,8 +1362,7 @@ BEGIN NAMESPACE XSharp
                     SWITCH rhs:_usualType
                         CASE __UsualType.Long
                             LOCAL result AS INT64
-                            LOCAL remainder AS INT64
-                            result := Math.DivRem(lhs:_i64Value, rhs:_intValue, OUT remainder)
+                            result := Math.DivRem(lhs:_i64Value, rhs:_intValue, OUT VAR remainder)
                             IF remainder == 0
                                 RETURN result
                             ELSE
@@ -1374,8 +1370,7 @@ BEGIN NAMESPACE XSharp
                             ENDIF
                         CASE __UsualType.Int64
                             LOCAL result AS INT64
-                            LOCAL remainder AS INT64
-                            result := Math.DivRem( lhs:_i64Value, rhs:_i64Value, OUT remainder)
+                            result := Math.DivRem( lhs:_i64Value, rhs:_i64Value, OUT VAR remainder)
                             IF remainder == 0
                                 RETURN result
                             ELSE
@@ -1386,8 +1381,7 @@ BEGIN NAMESPACE XSharp
 
                         CASE __UsualType.Decimal
                             LOCAL result AS INT64
-                            LOCAL remainder AS INT64
-                            result := Math.DivRem(lhs:_i64Value, (INT64) rhs:_decimalValue, OUT remainder)
+                            result := Math.DivRem(lhs:_i64Value, (INT64) rhs:_decimalValue, OUT VAR remainder)
                             IF remainder == 0
                                 RETURN result
                             ELSE

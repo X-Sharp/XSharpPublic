@@ -88,11 +88,9 @@ INTERNAL STATIC CLASS TransFormHelpers
         
         
     STATIC METHOD UnformatD(cValue AS STRING, cSayPicture AS STRING, lNullable   AS LOGIC)    AS DATE PASCAL
-        LOCAL cFunc 			AS STRING
-        LOCAL cTempValue		AS STRING
         LOCAL dRet				AS DATE
         
-        SplitPict(cSayPicture, OUT cTempValue, OUT cFunc)
+        SplitPict(cSayPicture, OUT VAR cTempValue, OUT VAR cFunc)
         cTempValue := AllTrim(cValue)
         
         LOCAL cFormat			AS STRING
@@ -445,19 +443,17 @@ INTERNAL STATIC CLASS TransFormHelpers
         RETURN System.String{result}
         
     STATIC METHOD TransformS(cValue AS STRING, cPicture AS STRING) AS STRING
-        LOCAL nPicFunc AS TransformPictures
         LOCAL cTemplate AS STRING
-        cTemplate := TransformHelpers.ParseTemplate( cPicture, OUT nPicFunc )
+        cTemplate := TransformHelpers.ParseTemplate( cPicture, OUT VAR nPicFunc )
         IF String.IsNullOrEmpty(cTemplate)
             cTemplate := System.String{c'#', cValue:Length}
         ENDIF
         RETURN TransformHelpers.MergeValueAndTemplate(c'C', cValue, cTemplate, nPicFunc)
         
     STATIC METHOD TransformL( lValue AS LOGIC, cPicture AS STRING ) AS STRING
-        LOCAL nPicFunc AS TransformPictures
         LOCAL cTemplate AS STRING
         
-        cTemplate := TransformHelpers.ParseTemplate( cPicture, OUT nPicFunc )
+        cTemplate := TransformHelpers.ParseTemplate( cPicture, OUT VAR nPicFunc )
         
         IF cTemplate == ""  // for VO compatiblity, an empty picture string returns T or F
             IF nPicFunc:HasFlag(TransformPictures.YesNo)
@@ -490,10 +486,9 @@ INTERNAL STATIC CLASS TransFormHelpers
         RETURN cReturn[0]
         
     STATIC METHOD TransformD( dValue AS DATE, cPicture AS STRING ) AS STRING
-        LOCAL nPicFunc AS TransformPictures
         LOCAL cValue   AS STRING
         LOCAL cTemplate AS STRING
-        cTemplate := TransformHelpers.ParseTemplate(cPicture, OUT nPicFunc )
+        cTemplate := TransformHelpers.ParseTemplate(cPicture, OUT VAR nPicFunc )
         IF nPicFunc:HasFlag(TransFormPictures.British)
            cTemplate := IIF(SetCentury(), "DD/MM/YYYY", "DD/MM/YY") 
         ELSEIF String.IsNullOrEmpty(cTemplate)
@@ -547,7 +542,6 @@ INTERNAL STATIC CLASS TransFormHelpers
         //
         // Note: A,N,X,L and Y template chars are treated as normal letters in VO for numeric pictures
         //
-        LOCAL nPicFunc          AS TransformPictures
         LOCAL cTemplate         AS STRING
         LOCAL cOrigTemplate     AS STRING
         LOCAL cReturn           AS STRING
@@ -559,10 +553,8 @@ INTERNAL STATIC CLASS TransFormHelpers
         nWhole := nDecimal := 0
         lIsFloat := ! lIsInt
         
-        
-        cTemplate := TransformHelpers.ParseTemplate( cPicture, OUT nPicFunc )
+        cTemplate := TransformHelpers.ParseTemplate( cPicture, OUT VAR nPicFunc )
         cOrigTemplate := cTemplate
-        
         
         IF  nPicFunc:HasFlag( TransformPictures.Date ) 
             cTemplate := GetDateFormat():ToUpper():Replace('D' , '#'):Replace('M' , '#'):Replace('Y' , '#')

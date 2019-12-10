@@ -85,8 +85,7 @@ BEGIN NAMESPACE XSharp.XPP
 
         STATIC METHOD FindTag(nId AS INT64) AS ARRAY
             LOCAL oNode AS XMLNode
-            LOCAL oDoc  AS XDocument
-            oNode := FindNode(nID, OUT oDoc)
+            oNode := FindNode(nID, OUT VAR oDoc)
             IF oNode != NULL
                 RETURN AsXmlArray(oNode, oDoc)
             ENDIF
@@ -94,10 +93,9 @@ BEGIN NAMESPACE XSharp.XPP
 
         STATIC METHOD FindChildTag(nId AS INT64, cChildName AS STRING, lFirst AS LOGIC) AS USUAL
             LOCAL oNode AS XMLNode
-            LOCAL oDoc  AS XDocument
             // When lFirst = TRUE then  return the id of that node or -1
             // When lFirst = FALSE then return an array of nodes
-            oNode := FindNode(nID, OUT oDoc)
+            oNode := FindNode(nID, OUT VAR oDoc)
             IF oNode != NULL
                 LOCAL aResult := {} AS ARRAY
                 FOREACH oChild AS XmlNode IN oNode:ChildNodes

@@ -1,11 +1,12 @@
-// Aliases to functions in XSharp.RT
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.  
+// Licensed under the Apache License, Version 2.0.  
+// See License.txt in the project root for license information.
+//
+
 
 USING System.Reflection
 
-PROCEDURE InitCollation INIT3
-    SetCollation(XppCollations.System)
-    SET(Set.CharSet, CHARSET_ANSI)
-    RETURN
 
 FUNCTION SetCollation(nCollation) AS LONG
     LOCAL nOld := Set(Set.Collation) AS LONG

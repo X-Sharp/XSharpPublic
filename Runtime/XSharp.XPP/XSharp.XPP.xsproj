@@ -84,7 +84,7 @@
       <Link>constants.prg</Link>
     </Compile>
     <Compile Include="Abstract.prg" />
-    <Compile Include="Aliases.prg" />
+    <Compile Include="DbFunctions.prg" />
     <Compile Include="Collations.Designer.prg">
       <DependentUpon>Collations.resx</DependentUpon>
     </Compile>
@@ -104,6 +104,7 @@
     <Compile Include="RuntimeClasses.prg" />
     <Compile Include="XMLDocument.prg" />
     <Compile Include="XMLFunctions.prg" />
+    <Compile Include="_StartupCode.prg" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Defines" />

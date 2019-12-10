@@ -62,10 +62,10 @@ CLASS WorkAreas
         RETURN FALSE
 
 	#region Fields
-	PRIVATE Aliases  AS Dictionary<STRING, DWORD>	// 1 based area numbers !
-	PRIVATE RDDs	 AS IRDD[]
-	PRIVATE iCurrentWorkarea AS DWORD
-    PRIVATE workAreaStack AS Stack<DWORD>
+	PRIVATE Aliases             AS Dictionary<STRING, DWORD>	// 1 based area numbers !
+	PRIVATE RDDs	            AS IRDD[]
+	PRIVATE iCurrentWorkarea    AS DWORD
+    PRIVATE workAreaStack       AS Stack<DWORD>
 
     INTERNAL METHOD PushCurrentWorkarea(dwNew AS DWORD) AS VOID
         workAreaStack:Push(iCurrentWorkarea)
@@ -114,6 +114,7 @@ CLASS WorkAreas
 				ENDIF              
 			NEXT
 			Aliases:Clear()
+            cargo:Clear()
             iCurrentWorkarea := 1
 		END LOCK                       
 		RETURN lResult 
@@ -157,6 +158,7 @@ CLASS WorkAreas
                     lResult        := TRUE
 				ENDIF              
 				RDDs[ nArea] 		:= NULL
+                SetCargo(nArea+1, NULL)
 			END LOCK               
 		ENDIF
 		RETURN lResult
@@ -231,6 +233,7 @@ CLASS WorkAreas
                 ENDIF
 				RDDs[ nArea] 	:= oRDD 
 				Aliases:Add(sAlias, nArea+1)
+                SetCargo(nArea+1, NULL)
                 WorkAreas._Add(oRDD, SELF)
 			END LOCK
 			RETURN TRUE
@@ -270,6 +273,28 @@ CLASS WorkAreas
 			ENDIF
 			RETURN NULL					
 		END GET
-	END PROPERTY
+    END PROPERTY
+
+    // xbase++ has a cargo slot per workarea
+
+    PRIVATE cargo    := Dictionary<DWORD, OBJECT>{} AS Dictionary<DWORD, OBJECT>      // 1 based area number and value
+
+    PUBLIC METHOD GetCargo(nArea AS DWORD) AS OBJECT
+        IF SELF:cargo:ContainsKey(nArea)
+            RETURN SELF:cargo[nArea]
+        ENDIF
+        RETURN NULL
+        
+    PUBLIC METHOD SetCargo(nArea AS DWORD, newCargo AS OBJECT) AS VOID
+        IF newCargo == NULL
+            IF SELF:cargo:ContainsKey(nArea)
+                SELF:cargo:Remove(nArea)
+            ENDIF
+        ELSE
+            SELF:cargo[nArea] := newCargo
+        ENDIF
+        RETURN 
+        
+
 END CLASS
 END NAMESPACE

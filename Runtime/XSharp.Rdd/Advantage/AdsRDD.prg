@@ -172,11 +172,9 @@ PROTECTED METHOD _FieldSub() AS LOGIC
 	_fieldCount := wFields
 	sb := CHAR[]{ACE.ADS_MAX_FIELD_NAME+1}
 	FOR num := 1u TO wFields STEP 1
-		LOCAL usType AS WORD
 		LOCAL cName AS STRING
-		SELF:_CheckError(ACE.AdsGetFieldType(SELF:_Table, num, OUT usType),EG_OPEN)
-		LOCAL ulLength AS DWORD
-		SELF:_CheckError(ACE.AdsGetFieldLength(SELF:_Table, num, OUT ulLength),EG_OPEN)
+		SELF:_CheckError(ACE.AdsGetFieldType(SELF:_Table, num, OUT VAR usType),EG_OPEN)
+		SELF:_CheckError(ACE.AdsGetFieldLength(SELF:_Table, num, OUT VAR ulLength),EG_OPEN)
 		wLen := (WORD) sb:Length
 		SELF:_CheckError(ACE.AdsGetFieldName(SELF:_Table, (WORD)num, sb, REF wLen),EG_OPEN)
 		cName := STRING{sb,0, wLen}
@@ -372,20 +370,17 @@ VIRTUAL METHOD Open(info AS DbOpenInfo) AS LOGIC
 		SELF:Close()
 		RETURN FALSE
 	ENDIF
-	LOCAL numIndexes AS WORD
-	SELF:_CheckError(ACE.AdsGetNumIndexes(SELF:_Table, OUT numIndexes),EG_OPEN)
+	SELF:_CheckError(ACE.AdsGetNumIndexes(SELF:_Table, OUT VAR numIndexes),EG_OPEN)
 	IF numIndexes > 0 
 		SELF:_CheckError(ACE.AdsGetIndexHandleByOrder(SELF:_Table, 1, OUT SELF:_Index))
 	ENDIF
 	SELF:_Encoding := Encoding.GetEncoding(IIF (charset == ACE.ADS_ANSI, RuntimeState.WinCodePage,RuntimeState.DosCodePage))
-	LOCAL blockSize AS WORD
-	IF ACE.AdsGetMemoBlockSize(SELF:_Table, OUT blockSize) == 0 .AND. BlockSize > 0
+	IF ACE.AdsGetMemoBlockSize(SELF:_Table, OUT VAR blockSize) == 0 .AND. blockSize > 0
 		_HasMemo := TRUE
 	ELSE
 		_HasMemo := FALSE
 	ENDIF
-	LOCAL dwLength AS DWORD
-	SELF:_CheckError(ACE.AdsGetRecordLength(SELF:_Table, OUT dwLength),EG_OPEN)
+	SELF:_CheckError(ACE.AdsGetRecordLength(SELF:_Table, OUT VAR dwLength),EG_OPEN)
 	SELF:_RecordLength := (LONG) dwLength
 	SELF:Alias   := info:Alias
 	SELF:Area    := info:WorkArea
@@ -445,8 +440,7 @@ VIRTUAL METHOD Create(info AS DbOpenInfo) AS LOGIC
 	fileName := CHAR[]{length}
 	SELF:_CheckError(ACE.AdsGetTableFilename(SELF:_Table, ACE.ADS_FULLPATHNAME , fileName, REF length),EG_CREATE)
 	SELF:_FileName := STRING{fileName,0, length}
-	LOCAL dwLength AS DWORD
-	SELF:_CheckError(ACE.AdsGetRecordLength(SELF:_Table, OUT dwLength),EG_CREATE)
+	SELF:_CheckError(ACE.AdsGetRecordLength(SELF:_Table, OUT VAR dwLength),EG_CREATE)
 	SELF:_RecordLength := (LONG) dwLength
     // Workarea has no implementation of Create
     //    IF !SUPER:Create(info)            
@@ -482,17 +476,13 @@ RETURN isOk
     #endregion
   #region Navigation
 METHOD RecordMovement() AS LOGIC
-	LOCAL atBOF AS WORD
-	LOCAL atEOF AS WORD
-	LOCAL isFound AS WORD
-	LOCAL lRecno AS DWORD
-	SELF:_CheckError(ACE.AdsGetRecordNum(SELF:_Table, ACE.ADS_IGNOREFILTERS,  OUT lRecno),EG_READ)
+	SELF:_CheckError(ACE.AdsGetRecordNum(SELF:_Table, ACE.ADS_IGNOREFILTERS,  OUT VAR lRecno),EG_READ)
 	SELF:_Recno := lRecno
-	SELF:_CheckError(ACE.AdsAtBOF(SELF:_Table, OUT atBOF),EG_READ)
+	SELF:_CheckError(ACE.AdsAtBOF(SELF:_Table, OUT VAR atBOF),EG_READ)
 	SUPER:_Bof := (atBOF == 1)
-	SELF:_CheckError(ACE.AdsAtEOF(SELF:_Table, OUT atEOF),EG_READ)
+	SELF:_CheckError(ACE.AdsAtEOF(SELF:_Table, OUT VAR atEOF),EG_READ)
 	SUPER:_Eof := (atEOF == 1)
-	SELF:_CheckError(ACE.AdsIsFound(SELF:_Table,  OUT isFound),EG_READ)
+	SELF:_CheckError(ACE.AdsIsFound(SELF:_Table,  OUT VAR isFound),EG_READ)
 	SUPER:_Found := (isFound == 1)
 	IF atBOF == 1 .AND. atEOF == 0
 		SELF:GoTop()
@@ -520,13 +510,10 @@ RETURN SELF:RecordMovement()
 
     /// <inheritdoc />
 VIRTUAL METHOD GoTo(lRec AS DWORD) AS LOGIC
-	LOCAL recordnum AS DWORD
-	LOCAL atEOF     AS WORD
-	LOCAL atBOF     AS WORD
-	SELF:_CheckError(ACE.AdsGetRecordNum(SELF:_Table, ACE.ADS_IGNOREFILTERS, OUT recordnum),EG_READ)
+	SELF:_CheckError(ACE.AdsGetRecordNum(SELF:_Table, ACE.ADS_IGNOREFILTERS, OUT VAR recordnum),EG_READ)
 	IF recordnum == lRec
-		SELF:_CheckError(ACE.AdsAtEOF(SELF:_Table, OUT atEOF),EG_READ)
-		SELF:_CheckError(ACE.AdsAtBOF(SELF:_Table, OUT atBOF),EG_READ)
+		SELF:_CheckError(ACE.AdsAtEOF(SELF:_Table, OUT VAR atEOF),EG_READ)
+		SELF:_CheckError(ACE.AdsAtBOF(SELF:_Table, OUT VAR atBOF),EG_READ)
 		IF atEOF== 0 .AND. atBOF == 0
 			SELF:_CheckError(ACE.AdsWriteRecord(SELF:_Table),EG_WRITE)
 			SELF:_CheckError(ACE.AdsRefreshRecord(SELF:_Table),EG_READ)
@@ -635,27 +622,23 @@ RETURN SELF:RecordMovement()
 
     /// <inheritdoc />
 VIRTUAL METHOD GoHot() AS LOGIC
-	LOCAL options AS DWORD
-	LOCAL isTableLocked AS WORD
-	LOCAL isRecordLocked AS WORD
 	LOCAL dwRecNo AS DWORD
-	LOCAL numRecs AS DWORD
 	LOCAL result AS DWORD
     //
-	SELF:_CheckError(ACE.AdsGetTableOpenOptions(SELF:_Table, OUT options),EG_WRITE)
+	SELF:_CheckError(ACE.AdsGetTableOpenOptions(SELF:_Table, OUT VAR options),EG_WRITE)
     // GoHot must have lock when not exclusive
 	IF !_HasFlag(options, ACE.ADS_EXCLUSIVE) 
       // Only allowed when not Readonly
 		IF _HasFlag(options,ACE.ADS_READONLY) 
 			SELF:ADSERROR(ERDD.READONLY, XSharp.Gencode.EG_READONLY)
 		ENDIF
-		SELF:_CheckError(ACE.AdsIsTableLocked(SELF:_Table, OUT isTableLocked),EG_LOCK)
+		SELF:_CheckError(ACE.AdsIsTableLocked(SELF:_Table, OUT VAR isTableLocked),EG_LOCK)
 		IF isTableLocked == 0
-			SELF:_CheckError(ACE.AdsIsRecordLocked(SELF:_Table, 0, OUT isRecordLocked),EG_LOCK)
+			SELF:_CheckError(ACE.AdsIsRecordLocked(SELF:_Table, 0, OUT VAR isRecordLocked),EG_LOCK)
 			IF isRecordLocked == 0
 				dwRecNo := 0
 				IF SELF:IsADT
-					result := ACE.AdsGetRecordCount(SELF:_Table, ACE.ADS_IGNOREFILTERS, OUT numRecs)
+					result := ACE.AdsGetRecordCount(SELF:_Table, ACE.ADS_IGNOREFILTERS, OUT VAR numRecs)
 					IF result == 0
 						result := ACE.AdsGetRecordNum(SELF:_Table, ACE.ADS_IGNOREFILTERS, OUT dwRecNo)
 					ENDIF
@@ -675,8 +658,7 @@ RETURN TRUE
 
     /// <inheritdoc />
 VIRTUAL METHOD Zap() AS LOGIC
-	LOCAL options AS DWORD
-	SELF:_CheckError(ACE.AdsGetTableOpenOptions(SELF:_Table, OUT options),EG_WRITE)
+	SELF:_CheckError(ACE.AdsGetTableOpenOptions(SELF:_Table, OUT VAR options),EG_WRITE)
     // Only allowed when opened exclusively
 	IF !_HasFlag(options, ACE.ADS_EXCLUSIVE) 
 		SELF:ADSERROR(ACE.AE_TABLE_NOT_EXCLUSIVE, EG_SHARED , "Zap")
@@ -692,14 +674,10 @@ RETURN SELF:GoTop()
     /// <inheritdoc />
 VIRTUAL METHOD Append(fReleaseLocks AS LOGIC) AS LOGIC
 	LOCAL result        AS DWORD
-	LOCAL handleType    AS WORD
-	LOCAL isTableLocked AS WORD
-    //
 	IF fReleaseLocks
-      //
-		SELF:_CheckError(ACE.AdsGetHandleType(SELF:_Table, OUT handleType),EG_APPENDLOCK)
+		SELF:_CheckError(ACE.AdsGetHandleType(SELF:_Table, OUT VAR handleType),EG_APPENDLOCK)
 		IF handleType != ACE.ADS_CURSOR
-			result := ACE.AdsIsTableLocked(SELF:_Table, OUT isTableLocked)
+			result := ACE.AdsIsTableLocked(SELF:_Table, OUT VAR isTableLocked)
 			IF isTableLocked == 0
 				result := ACE.AdsUnlockTable(SELF:_Table)
           // When Unlock fails because not shared or because not locked, then no problem
@@ -733,8 +711,7 @@ METHOD GetValue(nFldPos AS INT) AS OBJECT
 
 
 METHOD Pack () AS LOGIC
-	LOCAL options AS DWORD
-	SELF:_CheckError(ACE.AdsGetTableOpenOptions(SELF:_Table, OUT options),EG_READ)
+	SELF:_CheckError(ACE.AdsGetTableOpenOptions(SELF:_Table, OUT VAR options),EG_READ)
 	IF !_HasFlag(options, ACE.ADS_EXCLUSIVE)
 		SELF:ADSERROR(ACE.AE_TABLE_NOT_EXCLUSIVE, EG_SHARED, "Pack")
 		RETURN FALSE
@@ -787,9 +764,8 @@ VIRTUAL PROPERTY Driver AS STRING GET _Driver
       /// <inheritdoc />
 PROPERTY Deleted AS LOGIC
 	GET
-		LOCAL isDeleted AS WORD
 		LOCAL result AS DWORD
-		result := ACE.AdsIsRecordDeleted(SELF:_Table, OUT isDeleted)
+		result := ACE.AdsIsRecordDeleted(SELF:_Table, OUT VAR isDeleted)
 		IF result == ACE.AE_NO_CURRENT_RECORD 
 			IF SELF:_Eof
 				RETURN FALSE
@@ -806,16 +782,14 @@ END PROPERTY
 
 PROPERTY Reccount AS LONG
 	GET
-		LOCAL dwCount AS DWORD
-		SELF:_CheckError(ACE.AdsGetRecordCount(SELF:_Table, ACE.ADS_IGNOREFILTERS, OUT dwCount),EG_READ)
+		SELF:_CheckError(ACE.AdsGetRecordCount(SELF:_Table, ACE.ADS_IGNOREFILTERS, OUT VAR dwCount),EG_READ)
 		RETURN (LONG) dwCount
 	END GET
 END PROPERTY
 PROPERTY RecNo AS LONG
 	GET
 		LOCAL result AS DWORD
-		LOCAL dwRecno AS DWORD
-		result := ACE.AdsGetRecordNum(SELF:_Table, ACE.ADS_IGNOREFILTERS, OUT dwRecno)
+		result := ACE.AdsGetRecordNum(SELF:_Table, ACE.ADS_IGNOREFILTERS, OUT VAR dwRecno)
 		IF result == ACE.AE_NO_CURRENT_RECORD
 			dwRecno := 0
 		ELSEIF result != 0
@@ -834,8 +808,6 @@ END PROPERTY
 VIRTUAL METHOD Lock(lockInfo REF DBLOCKINFO) AS LOGIC
 	LOCAL lRecno := 0 AS DWORD
 	LOCAL result := 0 AS DWORD
-	LOCAL handleType AS WORD
-	LOCAL isLocked  AS WORD
       //
 	lockInfo:Result := FALSE
 	IF lockInfo:recID == NULL
@@ -851,9 +823,9 @@ VIRTUAL METHOD Lock(lockInfo REF DBLOCKINFO) AS LOGIC
 		result := ACE.AdsLockTable(SELF:_Table)
 //      SELF:_CheckError(result)
 	ELSE
-		SELF:_CheckError(ACE.AdsGetHandleType(SELF:_Table, OUT handleType),EG_LOCK)
+		SELF:_CheckError(ACE.AdsGetHandleType(SELF:_Table, OUT VAR handleType),EG_LOCK)
 		IF lRecno == 0 .AND. handleType != ACE.ADS_CURSOR
-			SELF:_CheckError(ACE.AdsIsTableLocked(SELF:_Table, OUT isLocked),EG_LOCK)
+			SELF:_CheckError(ACE.AdsIsTableLocked(SELF:_Table, OUT VAR isLocked),EG_LOCK)
 			IF isLocked == 0
 				result := ACE.AdsUnlockTable(SELF:_Table)
 				IF result != ACE.AE_TABLE_NOT_LOCKED  .AND. result != ACE.AE_TABLE_NOT_SHARED .AND. result != 0
@@ -969,13 +941,11 @@ RETURN TRUE
     #region Info
     /// <inheritdoc />
 VIRTUAL METHOD FieldInfo(uiPos AS LONG, uiOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT
-	LOCAL fieldType AS WORD
-	LOCAL length    AS DWORD
 	LOCAL result AS DWORD
 	LOCAL dwFldPos := (DWORD)(uiPos )AS DWORD
 	SWITCH uiOrdinal
 	CASE DBS_BLOB_TYPE
-		SELF:_CheckError(ACE.AdsGetFieldType(SELF:_Table, dwFldPos ,  OUT fieldType))
+		SELF:_CheckError(ACE.AdsGetFieldType(SELF:_Table, dwFldPos ,  OUT VAR fieldType))
 		SWITCH fieldType
 		CASE ACE.ADS_MEMO
 		CASE ACE.ADS_BINARY
@@ -987,7 +957,7 @@ VIRTUAL METHOD FieldInfo(uiPos AS LONG, uiOrdinal AS INT, oNewValue AS OBJECT) A
 		IF SUPER:_fields[uiPos-1]:fieldType != DBFieldType.Memo  
 			RETURN -1
 		ELSE
-			result := ACE.AdsGetMemoLength(SELF:_Table, dwFldPos , OUT length)
+			result := ACE.AdsGetMemoLength(SELF:_Table, dwFldPos , OUT VAR length)
 			IF result == ACE.AE_INVALID_FIELD_TYPE
 				RETURN -1
 			ENDIF
@@ -1017,8 +987,7 @@ VIRTUAL METHOD RecInfo(uiOrdinal AS LONG, iRecID AS OBJECT, oNewValue AS OBJECT)
 			SELF:ADSERROR(ERDD_DATATYPE, EG_DATATYPE, "RecInfo")
 			RETURN FALSE
 		END TRY
-		LOCAL locked AS WORD
-		_CheckError(ACE.AdsIsRecordLocked(SELF:_Table, dwRecno, OUT locked))
+		_CheckError(ACE.AdsIsRecordLocked(SELF:_Table, dwRecno, OUT VAR locked))
 		RETURN locked != 0
 		
 	CASE DBRecordInfo.DBRI_RECSIZE
@@ -1044,7 +1013,6 @@ RETURN SUPER:RecInfo( uiOrdinal, iRecID, oNewValue)
 
       /// <inheritdoc />
 VIRTUAL METHOD Info(uiOrdinal AS LONG, oNewValue AS OBJECT) AS OBJECT
-	LOCAL options AS DWORD
 	LOCAL result AS DWORD
 	SWITCH (DbInfo)uiOrdinal
 	CASE DbInfo.DBI_ISDBF
@@ -1065,7 +1033,6 @@ VIRTUAL METHOD Info(uiOrdinal AS LONG, oNewValue AS OBJECT) AS OBJECT
 		ACEUNPUB.AdsSetProperty90(SELF:_Table, ACE.ADS_GET_HEADER_LENGTH, dwValue)
 		RETURN (LONG) dwValue
 	CASE DbInfo.DBI_LASTUPDATE
-		LOCAL julDate AS REAL8
 		LOCAL aDate AS CHAR[]
 		LOCAL DateLen AS WORD
 		
@@ -1073,15 +1040,14 @@ VIRTUAL METHOD Info(uiOrdinal AS LONG, oNewValue AS OBJECT) AS OBJECT
 		DateLen := (WORD) aDate:Length
 		SELF:_CheckError(ACE.AdsSetDateFormat("MM/DD/YY"))
 		SELF:_CheckError(ACE.AdsGetLastTableUpdate(SELF:_Table, aDate, REF DateLen))
-		SELF:_CheckError(ACEUNPUB.AdsConvertStringToJulian(aDate, DateLen, OUT julDate))
+		SELF:_CheckError(ACEUNPUB.AdsConvertStringToJulian(aDate, DateLen, OUT VAR julDate))
 		IF !SELF:_CheckDateFormat()
 			SELF:_CheckError(1)
 		ENDIF
 		RETURN (LONG)julDate
 	CASE DbInfo.DBI_GETLOCKARRAY
 	CASE DbInfo.DBI_LOCKCOUNT
-		LOCAL numLocks AS WORD
-		SELF:_CheckError(ACE.AdsGetNumLocks(SELF:_Table, OUT numLocks))
+		SELF:_CheckError(ACE.AdsGetNumLocks(SELF:_Table, OUT VAR numLocks))
 		IF (uiOrdinal == DbInfo.DBI_LOCKCOUNT)
 			RETURN numLocks
 		ENDIF
@@ -1095,19 +1061,17 @@ VIRTUAL METHOD Info(uiOrdinal AS LONG, oNewValue AS OBJECT) AS OBJECT
 			RETURN NULL
 		ENDIF
 	CASE DbInfo.DBI_ISFLOCK
-		LOCAL isLocked AS WORD
-		SELF:_CheckError(ACE.AdsIsTableLocked(SELF:_Table, OUT isLocked))
+		SELF:_CheckError(ACE.AdsIsTableLocked(SELF:_Table, OUT VAR isLocked))
 		RETURN isLocked != 0
 	CASE DbInfo.DBI_FILEHANDLE
 		RETURN IntPtr.Zero
 	CASE DbInfo.DBI_ISANSI
 		RETURN FALSE
 	CASE DbInfo.DBI_FOUND
-		LOCAL isFound AS WORD
-		SELF:_CheckError(ACE.AdsIsFound(SELF:_Table, OUT isFound))
+		SELF:_CheckError(ACE.AdsIsFound(SELF:_Table, OUT VAR isFound))
 		RETURN isFound != 0
 	CASE DbInfo.DBI_SHARED
-		SELF:_CheckError(ACE.AdsGetTableOpenOptions(SELF:_Table, OUT options))
+		SELF:_CheckError(ACE.AdsGetTableOpenOptions(SELF:_Table, OUT VAR options))
 		RETURN !_HasFlag(options,ACE.ADS_EXCLUSIVE) 
 	CASE DbInfo.DBI_MEMOEXT
 		SWITCH SELF:_TableType 

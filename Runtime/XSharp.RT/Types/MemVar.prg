@@ -37,8 +37,7 @@ INTERNAL CLASS XSharp.MemVarLevel
 
 	PROPERTY SELF[Name AS STRING] AS XSharp.MemVar
 		GET                     
-			LOCAL oMemVar AS XSharp.MemVar
-			IF Variables:TryGetValue(name, OUT oMemVar)
+			IF Variables:TryGetValue(name, OUT VAR oMemVar)
 				RETURN oMemVar
 			ENDIF
 			RETURN NULL
@@ -127,8 +126,7 @@ PUBLIC CLASS XSharp.MemVar
 	
 	STATIC METHOD GetHigherLevelPrivate(name AS STRING) AS XSharp.MemVar
 		FOREACH VAR previous IN privates    
-			LOCAL oMemVar AS XSharp.MemVar
-			IF previous!= current .AND. previous:TryGetValue(name, OUT oMemVar)
+			IF previous!= current .AND. previous:TryGetValue(name, OUT VAR oMemVar)
 				RETURN oMemVar
 			ENDIF   
 		NEXT		
@@ -137,8 +135,7 @@ PUBLIC CLASS XSharp.MemVar
     
 	STATIC METHOD PrivatePut(name AS STRING, VALUE AS USUAL) AS LOGIC
 		CheckCurrent()      
-		LOCAL oMemVar AS XSharp.MemVar
-		IF current:TryGetValue(name, OUT oMemVar)
+		IF current:TryGetValue(name, OUT VAR oMemVar)
 			oMemVar:Value := VALUE
 			RETURN TRUE			
 		ENDIF
@@ -151,8 +148,7 @@ PUBLIC CLASS XSharp.MemVar
 
 	
 	STATIC METHOD PrivateFind(name AS STRING) AS XSharp.MemVar
-		LOCAL oMemVar AS XSharp.MemVar
-		IF current != NULL .AND. current:TryGetValue(name, OUT oMemVar)
+		IF current != NULL .AND. current:TryGetValue(name, OUT VAR oMemVar)
 			RETURN oMemVar
 		ENDIF   
         RETURN GetHigherLevelPrivate(name)
@@ -322,9 +318,8 @@ PUBLIC CLASS XSharp.MemVar
     
 
 	STATIC METHOD PublicFind(name AS STRING) AS XSharp.MemVar
-		LOCAL oMemVar AS XSharp.MemVar
         BEGIN LOCK Publics
-		    IF Publics:TryGetValue(name, OUT oMemVar)
+		    IF Publics:TryGetValue(name, OUT VAR oMemVar)
 			    RETURN oMemVar
 		    ENDIF
         END LOCK

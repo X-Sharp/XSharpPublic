@@ -35,11 +35,10 @@ CLASS XSharp.ADS.ADSMemo INHERIT BaseMemo
         /// <inheritdoc />
     METHOD GetValueLength(nFldPos AS LONG) AS LONG
         LOCAL fld AS RddFieldInfo
-        LOCAL dwLen AS DWORD
         LOCAL dwField := (DWORD) nFldPos +1 AS DWORD
         fld := SELF:oRDD:_Fields[nFldPos]
         IF fld:FieldType == DbFieldType.Memo
-            SELF:_CheckError(ACE.AdsGetFieldLength(SELF:Table, dwField,OUT dwLen))
+            SELF:_CheckError(ACE.AdsGetFieldLength(SELF:Table, dwField,OUT VAR dwLen))
             RETURN (LONG) dwLen
         ELSEIF fld:FieldType == DbFieldType.Date
             LOCAL chars AS CHAR[]

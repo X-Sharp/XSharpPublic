@@ -375,8 +375,7 @@ FUNCTION RLock(cRecordNumberList AS STRING, uArea AS USUAL) AS LOGIC STRICT
     DbSelectArea(uArea)
     lOk := TRUE
     FOREACH VAR s IN aRecords
-        LOCAL iRecno AS INT
-        IF Int32.TryParse(s, OUT iRecno)
+        IF Int32.TryParse(s, OUT VAR iRecno)
             IF ! VoDb.RLock(iRecno)
                 lOk := FALSE
                 EXIT

@@ -46,8 +46,7 @@ INTERNAL STATIC CLASS ArrayHelpers
         
         
     STATIC METHOD AScan( aTarget AS USUAL, x AS USUAL, uStart AS USUAL, uCount AS USUAL, lExact AS LOGIC ) AS DWORD
-        LOCAL nSize		AS DWORD
-        IF ! ArrayHelpers.ValidateArrayParams(REF aTarget, REF uStart, REF uCount, OUT nSize)
+        IF ! ArrayHelpers.ValidateArrayParams(REF aTarget, REF uStart, REF uCount, OUT VAR nSize)
             RETURN 0
         ENDIF
         LOCAL a := aTarget AS ARRAY

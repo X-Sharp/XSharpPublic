@@ -548,8 +548,7 @@ INTERNAL STATIC CLASS OOPHelpers
             ENDIF
             THROW // rethrow exception
         END TRY
-		LOCAL result AS USUAL
-		IF sendHelper(oObject, "NoIVarGet", <USUAL>{String2Symbol(cIVar)}, OUT result)
+		IF sendHelper(oObject, "NoIVarGet", <USUAL>{String2Symbol(cIVar)}, OUT VAR result)
 			RETURN result
 		END IF
 		VAR oError := Error.VOError( EG_NOVARMETHOD, IIF( lSelf, __ENTITY__, __ENTITY__ ), NAMEOF(cIVar), 2, <OBJECT>{oObject, cIVar} )
@@ -589,8 +588,7 @@ INTERNAL STATIC CLASS OOPHelpers
         END TRY
 
     STATIC METHOD SendHelper(oObject AS OBJECT, cMethod AS STRING, uArgs AS USUAL[]) AS LOGIC
-        LOCAL result AS USUAL
-        LOCAL lOk := SendHelper(oObject, cMethod, uArgs, OUT result) AS LOGIC
+        LOCAL lOk := SendHelper(oObject, cMethod, uArgs, OUT VAR result) AS LOGIC
         oObject := result   // get rid of warning
         RETURN lOk
 
@@ -673,8 +671,7 @@ INTERNAL STATIC CLASS OOPHelpers
 		ENDIF
 		
 	STATIC METHOD DoSend(oObject AS OBJECT, cMethod AS STRING, args AS USUAL[] ) AS USUAL
-		LOCAL result AS USUAL
-		IF ! SendHelper(oObject, cMethod, args, OUT result)
+		IF ! SendHelper(oObject, cMethod, args, OUT VAR result)
 			LOCAL nomethodArgs AS USUAL[]
     	    cMethod := cMethod:ToUpperInvariant()
     	    RuntimeState.NoMethod := cMethod   // For NoMethod() function
@@ -1213,9 +1210,8 @@ FUNCTION _CallClipFunc(symFunction AS STRING,uArgs PARAMS USUAL[]) AS USUAL
 	IF aFuncs != NULL 
 		IF aFuncs:Length == 1 
 			LOCAL oMI AS MethodInfo
-			LOCAL result AS USUAL
 			oMI		:= aFuncs[1] 
-			IF OOPHelpers.SendHelper(NULL, oMI, uArgs, OUT result)
+			IF OOPHelpers.SendHelper(NULL, oMI, uArgs, OUT VAR result)
 				RETURN result
 			ENDIF
 		ELSEIF aFuncs:Length == 0

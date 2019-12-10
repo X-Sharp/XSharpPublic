@@ -120,9 +120,12 @@ BEGIN NAMESPACE XSharp
         MEMBER BLOBCIRCREF	:= 110		// LOGIC
         MEMBER OPTIMIZE     := 111		// LOGIC
         MEMBER FOXLOCK      := 112		// LOGIC
-        MEMBER WINCODEPAGE	:= 113		// Numeric
-        MEMBER DOSCODEPAGE	:= 114		// Numeric
-        MEMBER COLLATIONMODE:= 115		// COLLATIONMODE 
+
+        MEMBER RDDINFOMAX   := 119
+
+        MEMBER WINCODEPAGE	:= 120		// Numeric
+        MEMBER DOSCODEPAGE	:= 121		// Numeric
+        MEMBER COLLATIONMODE:= 121		// COLLATIONMODE 
 
         // FoxPro settings
         /// <summary>FoxPro: Is Textmerge enabled.</summary>

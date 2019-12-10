@@ -77,9 +77,7 @@ FUNCTION __DBSDBAPP( cFile, aFields, uCobFor, uCobWhile,  ;
 	aRdds := __RddList( cDriver, aRDD )
 	rddList := __AllocRddList( aRdds )
 	lRetCode := VODBUseArea( TRUE, rddList, cFile, __UniqueAlias( cFile ), TRUE, TRUE )
-	#ifndef __VULCAN__  // RDDLIST is a class in Vulcan, not a structure
-	   MemFree( RDDLIST )
-	#endif   
+  
 
 	IF !lRetCode
 		BREAK ErrorBuild( _VODBErrInfoPtr( ) )
@@ -157,9 +155,6 @@ FUNCTION __DBSDBAPPDELIM( cFile, cDelim, aFields,	uCobFor, uCobWhile,   ;
 
 	lRetCode := VODBCreate( cFile, aStruct, rddList, TRUE, __UniqueAlias( cFile ), cDelim, TRUE, TRUE )
 
-#ifndef __VULCAN__
-	MemFree( RDDLIST )
-#endif	
 
 	IF ! lRetCode
 		BREAK ErrorBuild( _VODBErrInfoPtr( ) )
@@ -235,10 +230,6 @@ FUNCTION __DBSDBAPPSDF( cFile, aFields, uCobFor, uCobWhile,  ;
 	rddList := __AllocRddList( { "SDF" } )
 	lRetCode := VODBCreate( cFile, aStruct, rddList, TRUE, __UniqueAlias( cFile ), "", TRUE, TRUE )
 
-#ifndef __VULCAN__
-	MemFree( RDDLIST )
-#endif	
-
 	IF ! lRetCode
 		BREAK ErrorBuild( _VODBErrInfoPtr( ) )
 	ENDIF
@@ -310,9 +301,6 @@ FUNCTION __DBSDBCopy( cFile, aFields, uCobFor,	uCobWhile, nNext, nRec,	lRest,  ;
 		lRetCode := VODBCreate( cFile, aStruct, rddList, TRUE, __UniqueAlias( cFile ), "", FALSE, FALSE )
 
 		IF ! lRetCode
-		#ifndef __VULCAN__
-			MemFree( RDDLIST )
-		#endif	
 			BREAK ErrorBuild( _VODBErrInfoPtr( ) )
 		ENDIF
 
@@ -322,15 +310,11 @@ FUNCTION __DBSDBCopy( cFile, aFields, uCobFor,	uCobWhile, nNext, nRec,	lRest,  ;
 
 		lRetCode := VODBUseArea( TRUE, rddList, cFile, __UniqueAlias( cFile ), ! SetExclusive( ), FALSE )
 
-#ifndef __VULCAN__
-		MemFree( RDDLIST )
-#endif		
-
 		IF ! lRetCode
 			BREAK ErrorBuild( _VODBErrInfoPtr( ) )
 		ENDIF
 
-		VODBSelect( dwFrom, @dwTo )
+		VODBSelect( dwFrom, REF dwTo )
 
       cobOldErrFunc := ErrorBlock( { | oErr | _Break( oErr ) } )
 		BEGIN SEQUENCE
@@ -397,9 +381,6 @@ FUNCTION __DBSDBCOPYDELIM( cFile, cDelim, aFields, uCobFor, uCobWhile, nNext,  ;
 	rddList := __AllocRddList( { "DELIM" } )
 
 	lRetCode := VODBCreate( cFile, aStruct, rddList, TRUE, __UniqueAlias( cFile ), cDelim, TRUE, FALSE )
-#ifndef __VULCAN__
-	MemFree( RDDLIST )
-#endif	
 
 	IF ! lRetCode
 		BREAK ErrorBuild( _VODBErrInfoPtr( ) )
@@ -409,7 +390,7 @@ FUNCTION __DBSDBCOPYDELIM( cFile, cDelim, aFields, uCobFor, uCobWhile, nNext,  ;
 		SetAnsi( TRUE )
 	ENDIF
 
-	VODBSelect( dwFrom, @dwTo )
+	VODBSelect( dwFrom, REF dwTo )
 
 	cobOldErrFunc := ErrorBlock( { | oErr | _Break( oErr ) } )
 	BEGIN SEQUENCE
@@ -472,10 +453,6 @@ FUNCTION __DBSDBCOPYSDF( cFile, aFields, uCobFor, uCobWhile, nNext,  ;
 	rddList := __AllocRddList( { "SDF" } )
 	lRetCode := VODBCreate( cFile, aStruct, rddList, TRUE, cAlias, "", TRUE, FALSE )
 
-#ifndef __VULCAN__
-	MemFree( RDDLIST )
-#endif
-
 	IF ! lRetCode
 		BREAK ErrorBuild( _VODBErrInfoPtr( ) )
 	ENDIF
@@ -484,7 +461,7 @@ FUNCTION __DBSDBCOPYSDF( cFile, aFields, uCobFor, uCobWhile, nNext,  ;
 		SetAnsi( TRUE )
 	ENDIF
 
-	VODBSelect( dwFrom, @dwTo )
+	VODBSelect( dwFrom, REF dwTo )
 
 	cobOldErrFunc := ErrorBlock( { | oErr | _Break( oErr ) } )
 	BEGIN SEQUENCE
@@ -513,7 +490,7 @@ FUNCTION __DBSDBINFO( nOrdinal AS DWORD , xNewVal := NIL AS USUAL, nTries := 1 A
    //SE-060601 
    LOCAL lOk := FALSE AS LOGIC
    DO WHILE nTries > 0
-		IF VODBInfo(nOrdinal, @xNewVal)
+		IF VODBInfo(nOrdinal, REF xNewVal)
 			lOk := TRUE
 			EXIT
 		ENDIF
@@ -532,7 +509,6 @@ FUNCTION __DBSDBJOIN( cAlias, cFile, aFields, uCobFor, cRDD ) AS LOGIC  CLIPPER
 	LOCAL lRetCode AS LOGIC
 	LOCAL rddList AS _RDDLIST
 	LOCAL aRdds AS ARRAY
-	LOCAL pJoinList AS _JOINLIST
 
 	IF uCobFor == NIL
 		RETURN FALSE
@@ -548,7 +524,7 @@ FUNCTION __DBSDBJOIN( cAlias, cFile, aFields, uCobFor, cRDD ) AS LOGIC  CLIPPER
 
 	VODBSetSelect(LONGINT(dwFrom1 ) )
 
-	IF Empty( aStruct := __TargetFields( cAlias, aFields, @pJoinList ) )
+	IF Empty( aStruct := __TargetFields( cAlias, aFields, OUT VAR pJoinList ) )
 		BREAK DbError{ NIL, #JOIN, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_NOFIELDMATCH ), aFields, "aFields" }
 	ENDIF
 
@@ -557,21 +533,13 @@ FUNCTION __DBSDBJOIN( cAlias, cFile, aFields, uCobFor, cRDD ) AS LOGIC  CLIPPER
 
 	lRetCode := VODBCreate( cFile, aStruct, rddList, TRUE, NULL_STRING, NULL_STRING, TRUE, FALSE )
 
-#ifndef __VULCAN__
-	MemFree( RDDLIST )
-#endif
-
 	IF ! lRetCode
 		BREAK ErrorBuild( _VODBErrInfoPtr( ) )
 	ENDIF
 
-	VODBSelect( dwFrom1, @dwTo )
+	VODBSelect( dwFrom1, REF dwTo )
 
-#ifdef __VULCAN__
 	pJoinList:uiDestSel := dwTo
-#else
-	pJoinList.uiDestSel := dwTo
-#endif	
 
 	lRetCode := VODBGoTop( )
 
@@ -589,10 +557,6 @@ FUNCTION __DBSDBJOIN( cAlias, cFile, aFields, uCobFor, cRDD ) AS LOGIC  CLIPPER
 		VODBSetSelect(LONGINT(dwFrom1 ) )
 		VODBSkip( 1 )
 	ENDDO
-
-#ifndef __VULCAN__
-	MemFree( pJoinList )
-#endif	
 
 	IF dwTo > 0
 		VODBSetSelect(LONGINT(dwTo ) )
@@ -620,7 +584,7 @@ FUNCTION __DBSDBOrderInfo( nOrdinal AS DWORD, cBagName := NULL_STRING AS STRING,
 	ENDIF
 
    DO WHILE nTries > 0
-		IF VODBOrderInfo(nOrdinal, cBagName, uOrder, @xNewVal)
+		IF VODBOrderInfo(nOrdinal, cBagName, uOrder, REF xNewVal)
 			EXIT
 		ENDIF
 	   nTries--
@@ -673,15 +637,11 @@ FUNCTION __DBSDBSORT( cFile, aFields, uCobFor, uCobWhile, nNext, nRec, lRest,  ;
 
 	lRetCode := VODBCreate( cFile, aStruct, rddList, TRUE, NULL_STRING, NULL_STRING, TRUE, FALSE )
 
-#ifndef __VULCAN__
-	MemFree( RDDLIST )
-#endif
-
 	IF ! lRetCode
 		BREAK ErrorBuild( _VODBErrInfoPtr( ) )
 	ENDIF
 
-	VODBSelect( dwFrom, @dwTo )
+	VODBSelect( dwFrom, REF dwTo )
 
 	lRetCode := VODBSort( dwTo, fnFieldNames, uCobFor, uCobWhile, nNext, nRec, lRest, fnSortNames )
 	IF ! lRetCode
@@ -763,15 +723,11 @@ FUNCTION __DBSDBTOTAL( cFile, bKey, aFields, uCobFor, uCobWhile, nNext, nRec,  ;
 
 	lRetCode := VODBCreate( cFile, aStruct, rddList, TRUE, NULL_STRING, NULL_STRING, TRUE, FALSE )
 
-#ifndef __VULCAN__
-	MemFree( RDDLIST )
-#endif
-
 	IF ! lRetCode
 		BREAK ErrorBuild( _VODBErrInfoPtr( ) )
 	ENDIF
 
-	VODBSelect( dwFrom, @dwTo )
+	VODBSelect( dwFrom, REF dwTo )
 
 	n := Len( aFldNum )
 
@@ -996,9 +952,9 @@ FUNCTION __DBSSeek( xValue AS USUAL, lSoft AS USUAL, lLast AS USUAL, nTries  := 
    //            in which lLast is passed to the RDD.
 	LOCAL lRet  AS LOGIC
 
-	DEFAULT(@lSoft, SetSoftSeek())
-	DEFAULT(@lLast, FALSE)
-	DEFAULT(@xValue, "")
+	DEFAULT(REF lSoft, SetSoftSeek())
+	DEFAULT(REF lLast, FALSE)
+	DEFAULT(REF xValue, "")
 
 	DO WHILE nTries > 0
 		NetErr( FALSE )
@@ -1032,7 +988,7 @@ STATIC GLOBAL __glRestoreWorkarea := FALSE AS LOGIC //SE-060527
 FUNCTION __DBSFieldGet( wPos AS DWORD ) AS USUAL
 	LOCAL xRetVal AS USUAL
 
-	IF ! VODBFieldGet( wPos, @xRetVal )
+	IF ! VODBFieldGet( wPos, REF xRetVal )
 		BREAK ErrorBuild( _VODBErrInfoPtr( ) )
 	ENDIF
 
@@ -1042,7 +998,7 @@ FUNCTION __IsBlob( nField AS INT ) AS LOGIC
 	LOCAL lRetCode AS LOGIC
 	LOCAL uVal AS USUAL
 
-		IF VODBFieldInfo( DBS_BLOB_TYPE, DWORD(nField), @uVal )
+		IF VODBFieldInfo( DBS_BLOB_TYPE, DWORD(nField), REF uVal )
 			lRetCode := ! IsNil( uVal )
 		ENDIF
 
@@ -1146,10 +1102,7 @@ FUNCTION __ConstructUniqueAlias ( cFileName AS STRING ) AS SYMBOL STRICT
 	ENDDO
 
 	RETURN String2Symbol( cTryNewAlias )
-#ifndef __VULCAN__
-_DLL FUNCTION VODBGetSelect ()              AS DWORD PASCAL:VO28RUN.VODBGetSelect 
-_DLL FUNCTION VODBSetSelect (siNew AS INT)  AS DWORD PASCAL:VO28RUN.VODBSetSelect
-#endif
+
 FUNCTION __DBSGoTo( n AS LONGINT, nTries := 1 AS DWORD) AS LOGIC STRICT
    LOCAL lOk := FALSE AS LOGIC
    //SE-060527

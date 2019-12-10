@@ -8,7 +8,7 @@ METHOD Eval( )
 	LOCAL nOldSelect AS DWORD
 	LOCAL xRet AS USUAL
 
-	VODBSelect( DWORD(SELF:nSelect), @nOldSelect )
+	VODBSelect( DWORD(SELF:nSelect), REF nOldSelect )
 	xRet := Eval( SELF:cbExpression )
 	VODBSetSelect( LONGINT(nOldSelect) )
 	RETURN xRet

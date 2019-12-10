@@ -26,7 +26,7 @@ ACCESS BoF
 		IF lSelectionActive
 			RETURN siSelectionStatus == DBSELECTIONBOF .OR. siSelectionStatus == DBSELECTIONEMPTY
 		ENDIF
-		VODBSelect( wWorkArea, @dwCurrentWorkArea )
+		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
 		lRetVal := VODBBof()
 		__DBSSetSelect( dwCurrentWorkArea )
 		#IFDEF __DEBUG__
@@ -72,7 +72,7 @@ ASSIGN ConcurrencyControl( nMode)
 		SELF:Error( oErrorInfo, #ConcurrencyControl )
 	ELSEIF newMode != SELF:nCCMode
 		BEGIN SEQUENCE
-			VODBSelect( wWorkArea, @dwCurrentWorkArea )
+			VODBSelect( wWorkArea, REF dwCurrentWorkArea )
 			SELF:__ClearLocks()
 			SELF:nEffectiveCCMode := newMode
 			IF lReadOnly .OR. ! lShared
@@ -137,7 +137,7 @@ ACCESS Deleted
 	
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, @dwCurrentWorkArea )
+		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
 		uRetVal := VODBDeleted()
 		
 	RECOVER USING oError
@@ -169,7 +169,7 @@ ACCESS EoF
 	IF lSelectionActive
 		RETURN siSelectionStatus == DBSELECTIONEOF .OR. siSelectionStatus == DBSELECTIONEMPTY
 	ENDIF
-	VODBSelect( wWorkArea, @dwCurrentWorkArea )
+	VODBSelect( wWorkArea, REF dwCurrentWorkArea )
 	lRetVal := VODBEof()
 	__DBSSetSelect( dwCurrentWorkArea )
 	#IFDEF __DEBUG__
@@ -232,8 +232,8 @@ ACCESS Filter
 	
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, @dwCurrentWorkArea )
-		IF !VODBInfo(DBI_DBFILTER, @uInfo)
+		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
+		IF !VODBInfo(DBI_DBFILTER, REF uInfo)
 			BREAK ErrorBuild(_VODBErrInfoPtr())
 		ENDIF
 		__DBSSetSelect( dwCurrentWorkArea )
@@ -294,7 +294,7 @@ ACCESS Found
 	
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, @dwCurrentWorkArea )
+		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
 		lRetCode:=VODBFound()
 	RECOVER USING oError
 		oHLStatus := SELF:__GenerateStatusHL( oError )
@@ -320,8 +320,8 @@ ACCESS Header
 	
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, @dwCurrentWorkArea )
-		IF ! VODBInfo(DBI_GETHEADERSIZE, @uInfo)
+		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
+		IF ! VODBInfo(DBI_GETHEADERSIZE, REF uInfo)
 			BREAK ErrorBuild(_VODBErrInfoPtr())
 		ENDIF
 		__DBSSetSelect( dwCurrentWorkArea )
@@ -346,8 +346,8 @@ ACCESS IndexExt
 	
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, @dwCurrentWorkArea )
-		IF ! VODBOrderInfo(DBOI_BAGEXT, "", NIL, @uOrdVal)
+		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
+		IF ! VODBOrderInfo(DBOI_BAGEXT, "", NIL, REF uOrdVal)
 			BREAK ErrorBuild(_VODBErrInfoPtr())
 		ENDIF
 		__DBSSetSelect( dwCurrentWorkArea )
@@ -379,7 +379,7 @@ ACCESS LastRec
 		DBFDebug(__ENTITY__)
 	#ENDIF
 	
-	VODBSelect( wWorkArea, @dwCurrentWorkArea )
+	VODBSelect( wWorkArea, REF dwCurrentWorkArea )
 	liRecno := VODBLastRec()
 	__DBSSetSelect( dwCurrentWorkArea )
 	RETURN liRecno
@@ -396,8 +396,8 @@ ACCESS Lupdate
 	
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, @dwCurrentWorkArea )
-		IF ! VODBInfo(DBI_LASTUPDATE, @uInfo)
+		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
+		IF ! VODBInfo(DBI_LASTUPDATE, REF uInfo)
 			BREAK ErrorBuild(_VODBErrInfoPtr())
 		ENDIF
 		__DBSSetSelect( dwCurrentWorkArea )
@@ -442,8 +442,8 @@ ACCESS OrderBottomScope
 	
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, @dwCurrentWorkArea )
-		IF ! VODBOrderInfo(DBOI_SCOPEBOTTOM, "", NIL, @uRetVal)
+		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
+		IF ! VODBOrderInfo(DBOI_SCOPEBOTTOM, "", NIL, REF uRetVal)
 			BREAK ErrorBuild(_VODBErrInfoPtr())
 		ENDIF
 		__DBSSetSelect( dwCurrentWorkArea )
@@ -471,14 +471,14 @@ ASSIGN OrderBottomScope(uValue)
 	
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, @dwCurrentWorkArea )
+		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
 		//uRetVal := OrdScope(BottomScope,uValue)
 		n := DBOI_SCOPEBOTTOM
 		IF IsNil(uValue)
 			n := DBOI_SCOPEBOTTOMCLEAR
 		ENDIF
 		
-		IF ! VODBOrderInfo(n, "", NIL, @uValue)
+		IF ! VODBOrderInfo(n, "", NIL, REF uValue)
 			BREAK ErrorBuild(_VODBErrInfoPtr())
 		ENDIF
 		__DBSSetSelect( dwCurrentWorkArea )
@@ -508,9 +508,9 @@ ACCESS OrderKeyNo
 	
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, @dwCurrentWorkArea )
+		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
 		//iRetVal := (OrdKeyNo()
-		IF ! VODBOrderInfo(DBOI_POSITION, "", NIL, @uRetVal)
+		IF ! VODBOrderInfo(DBOI_POSITION, "", NIL, REF uRetVal)
 			BREAK ErrorBuild(_VODBErrInfoPtr())
 		ENDIF
 		__DBSSetSelect( dwCurrentWorkArea )
@@ -537,14 +537,14 @@ ACCESS OrderKeyNo
 // 	
 // 	lErrorFlag := FALSE
 // 	BEGIN SEQUENCE
-// 		VODBSelect( wWorkArea, @dwCurrentWorkArea )
+// 		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
 // 		IF !SELF:Notify( NOTIFYINTENTTOMOVE )
 // 			BREAK DbError{ SELF, #OrderKeyNo, 999, VO_SPrintF(__CAVOSTR_DBFCLASS_INTENTTOMOVE)}
 // 		ENDIF
 // 		//if !OrdKeyVal(uKeyValue)
 // 		//  break ErrorBuild(_VODBErrInfoPtr())
 // 		//endif
-// 		//VODBOrderInfo(DBOI_KEYVAL, "", NIL, @uRetVal)
+// 		//VODBOrderInfo(DBOI_KEYVAL, "", NIL, REF uRetVal)
 // 		SELF:OrderKeyGoTo(nKeyPos)
 // 		
 // 		SELF:__ProcessConcurrency(TRUE)
@@ -580,9 +580,9 @@ ACCESS OrderKeyVal
 	
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, @dwCurrentWorkArea )
+		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
 		//uRetVal := OrdKeyVal()
-		IF ! VODBOrderInfo(DBOI_KEYVAL, "", NIL, @uRetVal)
+		IF ! VODBOrderInfo(DBOI_KEYVAL, "", NIL, REF uRetVal)
 			BREAK ErrorBuild(_VODBErrInfoPtr())
 		ENDIF
 		__DBSSetSelect( dwCurrentWorkArea )
@@ -608,9 +608,9 @@ ACCESS OrderTopScope
 	
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, @dwCurrentWorkArea )
+		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
 		//uRetVal := DBOrderInfo(DBOI_Scopetop)
-		IF ! VODBOrderInfo(DBOI_SCOPETOP, "", NIL, @uRetVal)
+		IF ! VODBOrderInfo(DBOI_SCOPETOP, "", NIL, REF uRetVal)
 			BREAK ErrorBuild(_VODBErrInfoPtr())
 		ENDIF
 		__DBSSetSelect( dwCurrentWorkArea )
@@ -639,14 +639,14 @@ ASSIGN OrderTopScope(uValue)
 	
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, @dwCurrentWorkArea )
+		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
 		//uRetVal := OrdScope(TopScope,uValue)
 		n := DBOI_SCOPETOP
 		IF IsNil(uValue)
 			n := DBOI_SCOPETOPCLEAR
 		ENDIF
 		
-		IF ! VODBOrderInfo(n, "", NIL, @uValue)
+		IF ! VODBOrderInfo(n, "", NIL, REF uValue)
 			BREAK ErrorBuild(_VODBErrInfoPtr())
 		ENDIF
 		__DBSSetSelect( dwCurrentWorkArea )
@@ -720,7 +720,7 @@ ACCESS RecCount
 			IF siSelectionStatus == DBSELECTIONEMPTY
 				iRetVal := 0
 			ELSE
-				VODBSelect( wWorkArea, @dwCurrentWorkArea )
+				VODBSelect( wWorkArea, REF dwCurrentWorkArea )
 				nCurrentRecord          := VODBRecno( )
 				siCurrentSelectionStatus:= siSelectionStatus
 				iRetVal                 := SELF:Count( )
@@ -731,7 +731,7 @@ ACCESS RecCount
 				siSelectionStatus       := siCurrentSelectionStatus
 			ENDIF
 		ELSE
-			VODBSelect( wWorkArea, @dwCurrentWorkArea )
+			VODBSelect( wWorkArea, REF dwCurrentWorkArea )
 			iRetVal := VODBLastRec()
 			__DBSSetSelect( dwCurrentWorkArea )
 		ENDIF
@@ -758,7 +758,7 @@ ACCESS RecNo
 	
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, @dwCurrentWorkArea )
+		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
 		wRetCode := VODBRecno()
 		__DBSSetSelect( dwCurrentWorkArea )
 	RECOVER USING oError
@@ -805,8 +805,8 @@ ACCESS RecSize
 	
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, @dwCurrentWorkArea )
-		IF ! VODBRecordInfo(DBRI_RECSIZE, 0, @uVoVal)
+		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
+		IF ! VODBRecordInfo(DBRI_RECSIZE, 0, REF uVoVal)
 			BREAK ErrorBuild(_VODBErrInfoPtr())
 		ENDIF
 		__DBSSetSelect( dwCurrentWorkArea )
@@ -867,7 +867,7 @@ ACCESS RLockList
 	
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, @dwCurrentWorkArea )
+		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
 		aLockList := DBRLockList()
 		__DBSSetSelect( dwCurrentWorkArea )
 	RECOVER USING oError
@@ -957,7 +957,7 @@ ACCESS Used
 	IF SELF:wWorkArea == 0
 		RETURN FALSE
 	ENDIF
-	VODBSelect( wWorkArea, @dwCurrentWorkArea )
+	VODBSelect( wWorkArea, REF dwCurrentWorkArea )
 	lRetVal := Used()
 	__DBSSetSelect( dwCurrentWorkArea )
 	RETURN lRetVal

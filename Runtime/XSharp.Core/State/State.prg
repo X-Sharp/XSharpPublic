@@ -148,8 +148,7 @@ CLASS XSharp.RuntimeState
     [MethodImpl(MethodImplOptions.AggressiveInlining)];
 	PRIVATE METHOD _GetThreadValue<T> (nSetting AS XSharp.Set) AS T
 		BEGIN LOCK oSettings
-            LOCAL result AS OBJECT
-            IF oSettings:TryGetValue(nSetting, OUT result)
+            IF oSettings:TryGetValue(nSetting, OUT VAR result)
 				RETURN (T) result
 			ENDIF
 		END LOCK
@@ -158,8 +157,7 @@ CLASS XSharp.RuntimeState
 	PRIVATE METHOD _SetThreadValue<T>(nSetting AS XSharp.Set, oValue AS T) AS T
 		LOCAL result AS T
 		BEGIN LOCK oSettings
-            LOCAL oResult AS OBJECT
-			IF oSettings:TryGetValue(nSetting, OUT oResult)
+			IF oSettings:TryGetValue(nSetting, OUT VAR oResult)
 				result := (T) oResult
 			ELSE
 				result := DEFAULT(T)
@@ -461,7 +459,7 @@ CLASS XSharp.RuntimeState
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
     STATIC PROPERTY WinCodePage AS LONG
 	GET
-        RETURN GetValue<LONG>(Set.WINCODEPAGE)
+		RETURN GetValue<LONG>(Set.WINCODEPAGE)
 	END GET
 	SET 
         SetValue<LONG>(Set.WINCODEPAGE, VALUE)
@@ -491,47 +489,38 @@ CLASS XSharp.RuntimeState
         SET SetValue<STRING>(Set.NoMethod, VALUE)
 
 
-	INTERNAL METHOD _SetInternationalClipper() AS VOID
-		SELF:_SetThreadValue(Set.Century, FALSE)
-		SELF:_SetThreadValue<DWORD>(Set.Decimals, 2)
-		SELF:_SetThreadValue<DWORD>(Set.DECIMALSEP, 46)		// DOT .
-		SELF:_SetThreadValue<DWORD>(Set.THOUSANDSEP,44)	// COMMA ,
-		SELF:_SetThreadValue(Set.Intl, CollationMode.Clipper)
+    INTERNAL METHOD _SetInternationalClipper() AS VOID
+        SELF:_SetThreadValue<DWORD>(Set.Decimals, 2)
+        SELF:_SetThreadValue<DWORD>(Set.DECIMALSEP, 46)		// DOT .
+        SELF:_SetThreadValue<DWORD>(Set.THOUSANDSEP,44)	// COMMA ,
+        SELF:_SetThreadValue(Set.Intl, CollationMode.Clipper)
         SELF:_SetThreadValue(Set.Dict, FALSE)
+        SELF:_SetThreadValue(Set.Century, FALSE)
         SELF:_SetDateCountry(DateCountry.American)
         SELF:_SetTimeFormat("hh:MM:SS")
 
-	INTERNAL METHOD _SetInternationalWindows() AS VOID
-		SELF:_SetThreadValue<DWORD>(Set.DECIMALS , 2)
-		VAR numberformat := System.Globalization.NumberFormatInfo.CurrentInfo
-		SELF:_SetThreadValue<DWORD>(Set.DECIMALSEP, numberformat:NumberDecimalSeparator[0])
-		SELF:_SetThreadValue<DWORD>(Set.THOUSANDSEP, numberformat:NumberGroupSeparator[0])
-		SELF:_SetThreadValue<DWORD>(Set.EPOCH, 1910)
-		SELF:_SetThreadValue<DWORD>(Set.EpochYear, 10)
-		SELF:_SetThreadValue<DWORD>(Set.EpochCent, 2000)
-		SELF:_SetThreadValue(Set.Intl, CollationMode.Windows)
+    INTERNAL METHOD _SetInternationalWindows() AS VOID
+        SELF:_SetThreadValue<DWORD>(Set.DECIMALS , 2)
+        VAR numberformat := System.Globalization.NumberFormatInfo.CurrentInfo
+        SELF:_SetThreadValue<DWORD>(Set.DECIMALSEP, numberformat:NumberDecimalSeparator[0])
+        SELF:_SetThreadValue<DWORD>(Set.THOUSANDSEP, numberformat:NumberGroupSeparator[0])
+        SELF:_SetThreadValue<DWORD>(Set.EPOCH, 1910)
+        SELF:_SetThreadValue<DWORD>(Set.EpochYear, 10)
+        SELF:_SetThreadValue<DWORD>(Set.EpochCent, 2000)
+        SELF:_SetThreadValue(Set.Intl, CollationMode.Windows)
         SELF:_SetThreadValue(Set.Dict, TRUE)
         // FoxPro settings that do not hurt in other dialects
         SELF:_SetThreadValue(Set.FullPath, TRUE)
         SELF:_SetThreadValue(Set.Space, TRUE)
         SELF:_SetThreadValue(Set.Textmerge, FALSE)
-        SELF:_SetDateCountry(DateCountry.System)
-        SELF:_SetTimeFormat("")                         // Gets System time
+        SELF:_SetDateFormatSystem()
+        SELF:_SetTimeFormatSystem()
 		RETURN
 
 
     INTERNAL METHOD _SetTimeFormat(format AS STRING) AS VOID
         IF String.IsNullOrEmpty(format)
-		    VAR dtInfo	    := System.Globalization.DateTimeFormatInfo.CurrentInfo
-		    SELF:_SetThreadValue(Set.AMEXT, dtInfo:AMDesignator)
-		    SELF:_SetThreadValue(Set.PMEXT, dtInfo:PMDesignator)
-		    VAR separator := dtInfo:TimeSeparator
-		    IF String.IsNullOrEmpty(separator)
-			    SELF:_SetThreadValue(Set.TimeSep, (DWORD) 0)
-		    ELSE
-			    SELF:_SetThreadValue(Set.TimeSep, (DWORD) separator[0])
-		    ENDIF
-		    SELF:_SetThreadValue(Set.AMPM, dtInfo:ShortDatePattern:IndexOf("tt") != -1)
+            SELF:_SetTimeFormatSystem()
         ELSE
             format := format:ToUpper()
             IF format:EndsWith("TT")
@@ -556,38 +545,67 @@ CLASS XSharp.RuntimeState
 		SELF:_SetThreadValue(Set.DateFormatEmpty, format:Replace("D"," "):Replace("Y"," "):Replace("M"," "))
 		SELF:_SetThreadValue(SET.Century, format:Contains("YYYY"))
 		SELF:_SetThreadValue(Set.DATEFORMAT, format)
-        IF SELF:_GetThreadValue<XSharp.DateCountry>(Set.DATECOUNTRY) != XSharp.DateCountry.System
-		SWITCH format
-			CASE "MM/DD/YY"
-			CASE "MM/DD/YYYY" 
-				SELF:_SetThreadValue(Set.DATECOUNTRY, XSharp.DateCountry.American)	 
-			CASE "YY.MM.DD" 
-			CASE "YYYY.MM.DD"
-				SELF:_SetThreadValue(Set.DATECOUNTRY, XSharp.DateCountry.Ansi)	  
-			CASE "DD/MM/YY"
-			CASE "DD/MM/YYYY"
-                // What a laugh, the British & french have an identical format. 
-				SELF:_SetThreadValue(Set.DATECOUNTRY, XSharp.DateCountry.British)	
-			CASE "DD.MM.YY"
-			CASE "DD.MM.YYYY"
-				SELF:_SetThreadValue(Set.DATECOUNTRY, XSharp.DateCountry.German)	
-			CASE "DD-MM-YY"
-			CASE "DD-MM-YYYY"
-				SELF:_SetThreadValue(Set.DATECOUNTRY, XSharp.DateCountry.Italian)	
-			CASE "YY/MM/DD"
-			CASE "YYYY/MM/DD"
-				SELF:_SetThreadValue(Set.DATECOUNTRY, XSharp.DateCountry.Japanese)	
-			CASE "MM-DD-YY"
-			CASE "MM-DD-YYYY"
-				SELF:_SetThreadValue(Set.DATECOUNTRY, XSharp.DateCountry.USA)	
+ 		SWITCH format
+		CASE "MM/DD/YY"
+		CASE "MM/DD/YYYY" 
+			SELF:_SetThreadValue(Set.DATECOUNTRY, XSharp.DateCountry.American)	 
+		CASE "YY.MM.DD" 
+		CASE "YYYY.MM.DD"
+			SELF:_SetThreadValue(Set.DATECOUNTRY, XSharp.DateCountry.Ansi)	  
+		CASE "DD/MM/YY"
+		CASE "DD/MM/YYYY"
+            // What a laugh, the British & french have an identical format. 
+			SELF:_SetThreadValue(Set.DATECOUNTRY, XSharp.DateCountry.British)	
+		CASE "DD.MM.YY"
+		CASE "DD.MM.YYYY"
+			SELF:_SetThreadValue(Set.DATECOUNTRY, XSharp.DateCountry.German)	
+		CASE "DD-MM-YY"
+		CASE "DD-MM-YYYY"
+			SELF:_SetThreadValue(Set.DATECOUNTRY, XSharp.DateCountry.Italian)	
+		CASE "YY/MM/DD"
+		CASE "YYYY/MM/DD"
+			SELF:_SetThreadValue(Set.DATECOUNTRY, XSharp.DateCountry.Japanese)	
+		CASE "MM-DD-YY"
+		CASE "MM-DD-YYYY"
+			SELF:_SetThreadValue(Set.DATECOUNTRY, XSharp.DateCountry.USA)	
 		END SWITCH
-        ENDIF
+
+    INTERNAL METHOD _SetTimeFormatSystem() AS VOID
+ 		VAR dtInfo	    := System.Globalization.DateTimeFormatInfo.CurrentInfo
+		SELF:_SetThreadValue(Set.AMEXT, dtInfo:AMDesignator)
+		SELF:_SetThreadValue(Set.PMEXT, dtInfo:PMDesignator)
+		VAR separator := dtInfo:TimeSeparator
+		IF String.IsNullOrEmpty(separator)
+			SELF:_SetThreadValue(Set.TimeSep, (DWORD) 0)
+		ELSE
+			SELF:_SetThreadValue(Set.TimeSep, (DWORD) separator[0])
+		ENDIF
+		SELF:_SetThreadValue(Set.AMPM, dtInfo:ShortDatePattern:IndexOf("tt") != -1)
+       
+    INTERNAL METHOD _SetDateFormatSystem() AS VOID
+		LOCAL format    AS STRING
+        VAR dtInfo	    := System.Globalization.DateTimeFormatInfo.CurrentInfo
+        format  := dtInfo:ShortDatePattern:ToLower()
+		// reduce to single m and d
+		DO WHILE (format.IndexOf("mm") != -1)
+        	format		:= format:Replace("mm", "m")
+        ENDDO
+	    DO WHILE format.IndexOf("dd") != -1
+			format		:= format:Replace("dd", "d")
+		ENDDO
+		// make sure we have a double mm to get double digit dates
+		// change dates to dd and mm and then everything to upper case
+		format := format:Replace("d", "dd"):Replace("m","mm"):ToUpper()
+        SELF:_SetDateFormat(format)
+        RETURN
+
 
     INTERNAL METHOD _SetDateCountry(country AS XSharp.DateCountry) AS VOID
 		
 		LOCAL format, year AS STRING
-        SELF:_SetThreadValue(Set.DATECOUNTRY, country)
-        IF country != XSharp.DateCountry.System
+        IF country == XSharp.DateCountry.System
+            SELF:_SetDateFormatSystem()
+        ELSE
 		    year := IIF(SELF:_GetThreadValue<LOGIC>(Set.Century) , "YYYY" , "YY")
 		    SWITCH (DateCountry) country
 			CASE XSharp.DateCountry.American
@@ -608,25 +626,12 @@ CLASS XSharp.RuntimeState
 				format := "MM-DD-" + year
 			OTHERWISE
 				format := "MM/DD/" + year
-		END SWITCH
-		// this will adjust DateFormatNet, DateFormatEmpty etc, but also DateCountry again
-    ELSE
-        VAR dtInfo	    := System.Globalization.DateTimeFormatInfo.CurrentInfo
-        format  := dtInfo:ShortDatePattern:ToLower()
-		// reduce to single m and d
-		DO WHILE (format.IndexOf("mm") != -1)
-        	format		:= format:Replace("mm", "m")
-        ENDDO
-		// make sure we have a double mm to get double digit dates
-    
-	    DO WHILE format.IndexOf("dd") != -1
-			format		:= format:Replace("dd", "d")
-		ENDDO
-		// change dates to dd and mm and then everything to upper case
-		format := format:Replace("d", "dd"):Replace("m","mm"):ToUpper()
-    ENDIF
-    SELF:_SetDateFormat(format) 
-
+		    END SWITCH
+		    // this will adjust DateFormatNet, DateFormatEmpty etc, but also DateCountry again
+            SELF:_SetDateFormat(format) 
+        ENDIF
+        SELF:_SetThreadValue(Set.DATECOUNTRY, country)
+        RETURN
 
 	PRIVATE _workareas AS WorkAreas
 	/// <summary>The workarea information for the current Thread.</summary>

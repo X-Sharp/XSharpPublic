@@ -24247,7 +24247,7 @@
     <seealso cref='M:XSharp.RT.Functions.DbGetSelect'>DBGetSelect</seealso>
     <seealso cref='O:XSharp.RT.Functions.VoDbSelect'>VODBSelect Overload</seealso>
     <seealso cref='O:XSharp.RT.Functions.Alias(XSharp.__Usual)'>Alias</seealso>
-  </vodbgetselect>
+  </vodbgetselect1>
   <vodbgobottom>
     <summary>
       Move to the last logical record.

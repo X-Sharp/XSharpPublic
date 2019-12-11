@@ -1254,8 +1254,6 @@ namespace XSharpColorizer
         {
             lock (gate)
             {
-                if (_tags.Contains(span))
-                    return;
                 _tags.Add(span);
                 int start = span.Span.Start.GetContainingLine().LineNumber;
                 int end = span.Span.End.GetContainingLine().LineNumber;

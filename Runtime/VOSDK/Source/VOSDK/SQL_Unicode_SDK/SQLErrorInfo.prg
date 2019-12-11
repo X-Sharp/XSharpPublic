@@ -108,7 +108,7 @@ PARTIAL CLASS SQLErrorInfo  INHERIT Error
 		
 		IF IsInstanceOf( SELF:MethodSelf , #SqlStatement)
 			
-			oStmt		:= SELF:MethodSelf 		
+			oStmt		:= (SqlStatement) SELF:MethodSelf 		
 			oErr 		:= SELF
 			
 			WHILE oErr != NULL_OBJECT .and. (Val(oErr:SQLState) <> 0 .or. oErr:NativeError <> 0)

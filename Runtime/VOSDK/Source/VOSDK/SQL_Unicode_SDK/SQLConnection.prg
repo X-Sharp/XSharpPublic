@@ -259,18 +259,18 @@ CLASS SqlConnection
             oBuilder  := oFactory:CreateConnectionStringBuilder()
             oBuilder:ConnectionString := cResult
             IF oBuilder:ContainsKey("DataSource")
-                cDSN := oBuilder["DataSource"]
+                cDSN := oBuilder["DataSource"]:ToString()
             ELSEIF oBuilder:ContainsKey("DSN")
-                cDSN := oBuilder["DSN"]
+                cDSN := oBuilder["DSN"]:ToString()
             ENDIF            
             IF oBuilder:ContainsKey("UID" )
-                cUser := oBuilder["UID"]
+                cUser := oBuilder["UID"]:ToString()
             ENDIF
             IF oBuilder:ContainsKey( "PWD")
-                cAuthString := oBuilder["PWD"]
+                cAuthString := oBuilder["PWD"]:ToString()
             ENDIF
             IF oBuilder:ContainsKey( "Driver")
-                cDriver := oBuilder["Driver"]
+                cDriver := oBuilder["Driver"]:ToString()
             ENDIF
         ENDIF
         IF !string.IsNullOrEmpty(cResult)
@@ -408,29 +408,29 @@ CLASS SqlConnection
 		oBuilder:ConnectionString := SELF:cConnectString
 		IF STRING.IsNullOrEmpty(SELF:cUser)
 			IF oBuilder:ContainsKey("UID")
-				cUser := oBuilder["UID"]
+				cUser := oBuilder["UID"]:ToString()
 			ELSEIF oBuilder:ContainsKey("User Id")
-				cUser := oBuilder["User ID"]
+				cUser := oBuilder["User ID"]:ToString()
 			ENDIF
 		ENDIF
 		IF STRING.IsNullOrEmpty(SELF:cAuthString)
 			IF oBuilder:ContainsKey("PWD")
-				cAuthString := oBuilder["PWD"]
+				cAuthString := oBuilder["PWD"]:ToString()
 			ELSEIF oBuilder:ContainsKey("Password")
-				cAuthString := oBuilder["Password"]
+				cAuthString := oBuilder["Password"]:ToString()
 			ENDIF
 		ENDIF
 		IF oBuilder:ContainsKey("Server")
-			cServer := oBuilder["Server"]
+			cServer := oBuilder["Server"]:ToString()
 		ENDIF
 		IF oBuilder:ContainsKey("DSN")
-			cDSN := oBuilder["DSN"]
+			cDSN := oBuilder["DSN"]:ToString()
 		ENDIF
 		IF oBuilder:ContainsKey("Database")
-			cDatabase := oBuilder["Database"]
+			cDatabase := oBuilder["Database"]:ToString()
 		ENDIF
 		IF oBuilder:ContainsKey("Driver")
-			cDriver := oBuilder["Driver"]
+			cDriver := oBuilder["Driver"]:ToString()
 		ENDIF
 		RETURN     
 				   
@@ -453,16 +453,16 @@ CLASS SqlConnection
 		oBuilder:ConnectionString := SELF:NetConn:ConnectionString
 		IF STRING.IsNullOrEmpty(SELF:cUser) 
 			IF oBuilder:ContainsKey("UID")
-				SELF:cUser := oBuilder["UID"]
+				SELF:cUser := oBuilder["UID"]:ToString()
 			ELSEIF oBuilder:ContainsKey("UserId")
-				SELF:cUser := oBuilder["UserId"]
+				SELF:cUser := oBuilder["UserId"]:ToString()
 			ENDIF
 		ENDIF
 		IF STRING.IsNullOrEmpty(SELF:cAuthString) 
 			IF oBuilder:ContainsKey("PWD")
-				SELF:cAuthString := oBuilder["PWD"]
+				SELF:cAuthString := oBuilder["PWD"]:ToString()
 			ELSEIF oBuilder:ContainsKey("PASSWORD")
-				SELF:cAuthString := oBuilder["PASSWORD"]
+				SELF:cAuthString := oBuilder["PASSWORD"]:ToString()
 			ENDIF
 		ENDIF
 		RETURN     
@@ -800,8 +800,7 @@ CLASS SqlConnection
 		IF oConn:Factory:CanCreateDataSourceEnumerator
 			oEnum := oConn:Factory:CreateDataSourceEnumerator()
 			oTable := oEnum:GetDataSources()
-			FOREACH IMPLIED oRow IN oTable:Rows
-				LOCAL oR := oRow AS DataRow
+			FOREACH oR AS DataRow IN oTable:Rows
 				aadd(aSources, oR[0])
 			NEXT
 		ELSE
@@ -846,8 +845,8 @@ CLASS SqlConnection
 	oConn:DriverConnect()
 	RETURN oConn
 	
-	*/    
-	STATIC INTERNAL METHOD SetConnection( oNewConnection := NULL ) AS SQLConnection STRICT
+	*/
+	STATIC INTERNAL METHOD SetConnection( oNewConnection := NULL AS SQLConnection ) AS SQLConnection STRICT
 		LOCAL oDefConn      AS SQLConnection
 		oDefConn    := SqlConnection.oDefConnection
 		IF oNewConnection != NULL
@@ -1103,7 +1102,7 @@ FUNCTION SQLGetDataSources() AS ARRAY
 
 
 FUNCTION SQLConnectErrorMsg( lValue ) AS LOGIC
-	DEFAULT( @lValue, FALSE )
+	DEFAULT( REF lValue, FALSE )
 	SqlConnection.lConnErrMsg := lValue
 	RETURN SqlConnection.lConnErrMsg
 

@@ -548,7 +548,7 @@ END PROPERTY
 
 PROPERTY Status AS HyperLabel
     GET
-	LOCAL   oRet    AS OBJECT
+	LOCAL   oRet    AS HyperLabel
 
 	IF SELF:oErrInfo:ErrorFlag
 		oRet := HyperLabel{ oErrInfo:FuncSym,                           ;

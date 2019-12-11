@@ -45,17 +45,14 @@ CLASS FieldSpec
 		ENDIF
 		IF IsNil(uMin) .AND. !IsNil(uMax)
 			oHLRange := HyperLabel{ #FieldSpecRange, ,  ;
-				/*418@JFS001 changed FS_MSG_INVALIDMAX --> __CavoStr(__CAVOSTR_DBFCLASS_INVALIDMAX) */;
 				VO_Sprintf(__CAVOSTR_DBFCLASS_INVALIDMAX,oHyperLabel:Name,AsString( uMax ) ) }
 		ENDIF
 		IF !IsNil(uMin) .AND. IsNil(uMax)
 			oHLRange := HyperLabel{ #FieldSpecRange, ,  ;
-				/* 418@JFS001 changed FS_MSG_INVALIDMIN --> __CavoStr(__CAVOSTR_DBFCLASS_INVALIDMIN)*/;
 				VO_Sprintf(__CAVOSTR_DBFCLASS_INVALIDMIN,oHyperLabel:Name,AsString( uMin ) ) }
 		ENDIF
 		IF !IsNil(uMin) .AND. !IsNil(uMax)
 			oHLRange := HyperLabel{ #FieldSpecRange, ,  ;
-				/* 418@JFS001 changed FS_MSG_INVALIDRANGE1 --> __CavoStr(__CAVOSTR_DBFCLASS_INVALIDRANGE1)*/;
 				VO_Sprintf(__CAVOSTR_DBFCLASS_INVALIDRANGE,oHyperLabel:Name,AsString(uMin),AsString( uMax )) } 
 		ENDIF
 	ENDIF
@@ -687,7 +684,7 @@ END CLASS
 
 PARTIAL CLASS LogicFS INHERIT FieldSpec
 
-CONSTRUCTOR(oHLName)   //457@AJP001
+CONSTRUCTOR(oHLName)   
 
 	IF IsNil(oHLName)
 		oHLName := "__LogicFS"

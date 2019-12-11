@@ -69,7 +69,6 @@ PARTIAL CLASS SqlSelect INHERIT DataServer
 			oRow := oTable:NewRow()
 			oTable:Rows:Add(oRow)
 			oCurrentRow := oRow
-			oCurrentRow:AcceptChanges()
 			nCurrentRow := oTable:Rows:Count-1
 			nRowCount	:= oTable:Rows:Count-1
 			SELF:lEof	:= FALSE
@@ -355,7 +354,7 @@ METHOD Execute( uParam )
 		wField	:= SELF:__GetColIndex(uFieldID, TRUE)
 		IF wField > 0 .AND. wField <= SELF:nNumCols
 			uValue  := SELF:GetData(uFieldID)
-			IF (uValue == NIL .OR. uValue == NULL) .AND. SELF:lNullAsBlank 
+			IF IsNil(uValue)  .AND. SELF:lNullAsBlank 
 				oCol    := SELF:aSqlColumns[wField]
 				IF oCol != NULL_OBJECT
 					oFs		:= oCol:FieldSpec

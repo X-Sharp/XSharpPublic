@@ -384,7 +384,7 @@ CLASS SqlConnection
 	
 	METHOD _CreateParameter() AS DbParameter STRICT
 		IF SELF:Factory == NULL
-			THROW NullReferenceException{"Factory has not been set. Use MySqlConnection, OracleConnection or MsSqlConnection class"}
+			THROW NullReferenceException{"Factory has not been set"}
 		ENDIF
 		LOCAL oPar AS DbParameter
 		oPar := SELF:Factory:CreateParameter()
@@ -392,7 +392,7 @@ CLASS SqlConnection
 	
 	METHOD _CreateDataAdapter() AS DbDataAdapter STRICT
 		IF SELF:Factory == NULL
-			THROW NullReferenceException{"Factory has not been set. Use MySqlConnection, OracleConnection or MsSqlConnection class"}
+			THROW NullReferenceException{"Factory has not been set"}
 		ENDIF
 		LOCAL oDba AS DbDataAdapter
 		oDba := SELF:Factory:CreateDataAdapter()

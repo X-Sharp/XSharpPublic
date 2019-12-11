@@ -99,7 +99,7 @@ PARTIAL CLASS SQLErrorInfo  INHERIT Error
 		RETURN NIL
 	
 	
-	ACCESS ErrorList
+	ACCESS ErrorList AS ARRAY
 		LOCAL oErr 		AS SQLErrorInfo
 		LOCAL oStmt		AS SQLStatement
 		LOCAL aRet		AS ARRAY

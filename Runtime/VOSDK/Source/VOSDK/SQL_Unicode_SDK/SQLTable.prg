@@ -32,7 +32,7 @@ PARTIAL CLASS SQLTable INHERIT SQLSelect
         oSelectionParent := oParent
         
         IF IsCodeBlock( uRelation )
-            cRelationExpression := IIF( cRelation = NIL, "", cRelation )
+            cRelationExpression := IIF( IsNil(cRelation), "", cRelation )
             aParentRelationCols := {}
             AAdd( aParentRelationCols, cRelationExpression )
             
@@ -50,38 +50,39 @@ PARTIAL CLASS SQLTable INHERIT SQLSelect
                 cRelationExpression := ""
                 aParentRelationCols := {}
                 FOR wFieldNo := 1 UPTO wFieldCount
-                    IF !IsNil( uRelation[wFieldNo] )
-                        IF IsNumeric( uRelation[wFieldNo] )
-                            SWITCH (LONG) uRelation[wFieldNo] 
+                    VAR uRel := uRelation[wFieldNo] 
+                    IF !IsNil( uRel )
+                        IF IsNumeric( uRel )
+                            SWITCH (LONG) uRel 
                             CASE SQL_RELOP_AND
                                 cRelationExpression += " AND "
-                                AAdd( aParentRelationCols, uRelation[wFieldNo] )
+                                AAdd( aParentRelationCols, uRel )
                             
                             CASE SQL_RELOP_OR
                                 cRelationExpression += " OR "
-                                AAdd( aParentRelationCols, uRelation[wFieldNo] )
+                                AAdd( aParentRelationCols, uRel )
                             
                             CASE SQL_RELOP_NOT
                                 cRelationExpression += " NOT "
-                                AAdd( aParentRelationCols, uRelation[wFieldNo] )
+                                AAdd( aParentRelationCols, uRel )
                             
                             CASE SQL_RELOP_OPENP
                                 cRelationExpression += " ( "
-                                AAdd( aParentRelationCols, uRelation[wFieldNo] )
+                                AAdd( aParentRelationCols, uRel )
                             
                             CASE SQL_RELOP_CLOSEP
                                 cRelationExpression += " ) "
-                                AAdd( aParentRelationCols, uRelation[wFieldNo] )
+                                AAdd( aParentRelationCols, uRel )
                             
                             END SWITCH
                         ELSE
                             IF wFieldNo = 1
-                                cRelationExpression += AsString( uRelation[wFieldNo] )
+                                cRelationExpression += AsString( uRel )
                             ELSE
-                                cRelationExpression += "+" + AsString( uRelation[wFieldNo] )
+                                cRelationExpression += "+" + AsString( uRel)
                             ENDIF
                             
-                            AAdd( aParentRelationCols, AsString( uRelation[wFieldNo] ) )
+                            AAdd( aParentRelationCols, AsString( uRel ) )
                         ENDIF  	// IsNumeric( uRelation[wFieldNo] )
                     ENDIF		// !IsNil( uRelation[wFieldNo] )
                 NEXT
@@ -125,7 +126,7 @@ PARTIAL CLASS SQLTable INHERIT SQLSelect
             // build seek where list...
             cWhereSeek := NULL_STRING
             cOrderSeek := NULL_STRING
-            IF symCol != NIL
+            IF !IsNil(symCol)
                 IF UsualType( symCol ) = ARRAY
                     FOR nIndex := 1 TO ALen( symCol )
                         symColumn := symCol[nIndex]
@@ -188,8 +189,9 @@ PARTIAL CLASS SQLTable INHERIT SQLSelect
             lNeedOP := FALSE
             
             FOR nIndex := 1 UPTO nMax
-                IF IsNumeric( aParentRelationCols[nIndex] )
-                    SWITCH (LONG) aParentRelationCols[nIndex]
+                VAR uCol := aParentRelationCols[nIndex]
+                IF IsNumeric(  uCol)
+                    SWITCH (LONG) uCol
                     CASE  SQL_RELOP_AND
                         cTblStmt += " AND "
                         lNeedOP := FALSE
@@ -231,17 +233,17 @@ PARTIAL CLASS SQLTable INHERIT SQLSelect
                     //
                     // This is working very well when the field in the Childtable have the same datatype as the
                     // field in the parenttable.
-                    
-                    IF ( nFPos := At2( "=",aParentRelationCols[nIndex] ) ) > 0          // Syntax 1
-                        cParentField := AllTrim( SubStr3( aParentRelationCols[nIndex], 1, nFPos-1 ) )
-                        cChildField  := AllTrim( SubStr2( aParentRelationCols[nIndex], nFPos + 1 ) )
+                    VAR cCol := (STRING) uCol
+                    IF ( nFPos := At2( "=",cCol) ) > 0          // Syntax 1
+                        cParentField := AllTrim( SubStr3( cCol, 1, nFPos-1 ) )
+                        cChildField  := AllTrim( SubStr2( cCol, nFPos + 1 ) )
                         
-                    ELSEIF ( nFPos := At2( "|",aParentRelationCols[nIndex] ) ) > 0      // Syntax 2
-                        cParentField := AllTrim( SubStr3( aParentRelationCols[nIndex], 1, nFPos-1 ) )
-                        cChildField  := AllTrim( SubStr2( aParentRelationCols[nIndex], nFPos + 1 ) )
+                    ELSEIF ( nFPos := At2( "|",cCol ) ) > 0      // Syntax 2
+                        cParentField := AllTrim( SubStr3( cCol, 1, nFPos-1 ) )
+                        cChildField  := AllTrim( SubStr2( cCol, nFPos + 1 ) )
                         
                     ELSE
-                        cParentField := aParentRelationCols[nIndex]
+                        cParentField := cCol
                         cChildField  := cParentField
                     ENDIF
                     
@@ -253,14 +255,12 @@ PARTIAL CLASS SQLTable INHERIT SQLSelect
                     
                     //  Check NIL value
                     IF IsNil( uTempValue )
-                        cTblStmt += cQuote + SELF:__GetFieldName( cChildField ) + ;
-                        cQuote + __CAVOSTR_SQLCLASS__EQ_NULL
+                        cTblStmt += cQuote + SELF:__GetFieldName( cChildField ) + cQuote + __CAVOSTR_SQLCLASS__EQ_NULL
                     ELSE
                         IF ! IsNil( oFldSpec )
                             SWITCH (STRING) oFldSpec:ValType
                             CASE  "N"
-                                cTblStmt += cQuote + SELF:__GetFieldName( cChildField ) + ;
-                                cQuote + " = " + AsString( uTempValue )
+                                cTblStmt += cQuote + SELF:__GetFieldName( cChildField ) + cQuote + " = " + AsString( uTempValue )
                             
                             CASE "L"
                                 IF uTempValue
@@ -269,24 +269,19 @@ PARTIAL CLASS SQLTable INHERIT SQLSelect
                                     cVal := "0"
                                 ENDIF
                                 
-                                cTblStmt += cQuote + SELF:__GetFieldName( cChildField ) + ;
-                                cQuote + " = " +cVal
+                                cTblStmt += cQuote + SELF:__GetFieldName( cChildField ) + cQuote + " = " +cVal
                             
                             CASE "D"
                                 cVal := DToS( uTempValue )
                                 cVal := SubStr3( cVal, 1, 4 ) + "-" +        ;
                                 SubStr3( cVal, 5, 2 ) + "-" +        ;
                                 SubStr3( cVal, 7, 2 )
-                                cTblStmt += cQuote + ;
-                                SELF:__GetFieldName( cChildField ) + ;
-                                cQuote + " = {d '" + cVal + "'}"
+                                cTblStmt += cQuote + SELF:__GetFieldName( cChildField ) + cQuote + " = {d '" + cVal + "'}"
                             OTHERWISE
-                                cTblStmt += cQuote + SELF:__GetFieldName( cChildField ) + ;
-                                cQuote + " = '"  + AsString( uTempValue ) + "'"
+                                cTblStmt += cQuote + SELF:__GetFieldName( cChildField ) + cQuote + " = '"  + AsString( uTempValue ) + "'"
                             END SWITCH
                         ELSE
-                            cTblStmt += cQuote + SELF:__GetFieldName( cChildField ) + ;
-                            cQuote + " ='" + AsString( uTempValue ) + "'"
+                            cTblStmt += cQuote + SELF:__GetFieldName( cChildField ) + cQuote + " ='" + AsString( uTempValue ) + "'"
                         ENDIF
                     ENDIF
                     
@@ -321,8 +316,6 @@ PARTIAL CLASS SQLTable INHERIT SQLSelect
         
         
         //  add the statement to oStmt
-        //  UH 06/05/2000
-        //  oStmt:SQLString := cTblStmt
         SELF:oStmt:SQLString := SELF:__StripStatement( cTblStmt )
         
         RETURN
@@ -332,7 +325,7 @@ PARTIAL CLASS SQLTable INHERIT SQLSelect
         LOCAL cChar AS STRING
         LOCAL nPos AS DWORD
         
-        cChar := chr(34)
+        cChar := chr(34)        // "
         nPos := At2( cChar, cStat )
         DO WHILE nPos > 0
             IF nPos = 1
@@ -379,7 +372,7 @@ PARTIAL CLASS SQLTable INHERIT SQLSelect
     
     METHOD Condition( cOtherConditions )
         
-        IF cOtherConditions != NIL
+        IF !IsNil(cOtherConditions)
             SELF:cSuffix := cOtherConditions
         ENDIF
         
@@ -414,7 +407,7 @@ PARTIAL CLASS SQLTable INHERIT SQLSelect
         SELF:aRelationChildren   := {}
         SELF:aParentRelationCols := {}
         cTable := __GetSymString( symTableName )
-        IF aFieldList = NIL
+        IF IsNil(aFieldList)
             cFields := "*"
         ELSE
             IF UsualType( aFieldList ) = ARRAY
@@ -441,10 +434,8 @@ PARTIAL CLASS SQLTable INHERIT SQLSelect
         lSoft               := FALSE
         
         SELF:__BuildSQLString()
-        oHyperLabel := HyperLabel{  cTable, ;
-        cTable, ;
-        Symbol2String( ClassName( SELF ) )+": "+cTable, ;
-        Symbol2String( ClassName( SELF ) )+"_"+cTable }
+        VAR sName := Symbol2String( ClassName( SELF ) )
+        oHyperLabel := HyperLabel{  cTable, cTable, sName+": "+cTable, sName+"_"+cTable }
         
         RETURN
     
@@ -558,7 +549,7 @@ PARTIAL CLASS SQLTable INHERIT SQLSelect
     METHOD Seek( symColumn, uValue, lSoftSeek ) AS USUAL CLIPPER
         
         LOCAL aArgs                              AS ARRAY
-        IF lSoftSeek != NIL
+        IF ! IsNil(lSoftSeek )
             lSoft := lSoftSeek
         ENDIF
         
@@ -571,7 +562,7 @@ PARTIAL CLASS SQLTable INHERIT SQLSelect
         //  oStmt:SQLString := SELF:PreExecute( oStmt:SQLString )
         
         aArgs := {}
-        IF uValue != NIL
+        IF ! IsNil(uValue)
             IF UsualType( uValue ) = ARRAY
                 aArgs := uValue
             ELSE
@@ -592,7 +583,7 @@ PARTIAL CLASS SQLTable INHERIT SQLSelect
         RETURN !SELF:lEof
     
     METHOD SetRelation( oChild, uRelation, cRelation )
-        IF oChild = NIL
+        IF IsNil(oChild)
             SELF:ClearRelation()
         ELSE
             //  Prevent infinite loop child=parent
@@ -639,26 +630,19 @@ PARTIAL CLASS SQLTable INHERIT SQLSelect
         RETURN NIL
     
     //RvdH 2010-12-03: Some extra properties
-    ACCESS Fields
-        RETURN cFields
+    PROPERTY Fields AS STRING GET cFields
     
-    ACCESS OrderByClause AS STRING
-        RETURN cOrder
+    PROPERTY OrderByClause AS STRING GET cOrder
     
-    ACCESS OrderSeek  AS STRING
-        RETURN cOrderSeek
+    PROPERTY OrderSeek  AS STRING GET cOrderSeek
     
-    ACCESS Suffix  AS STRING
-        RETURN cSuffix
+    PROPERTY Suffix  AS STRING GET cSuffix
     
-    ACCESS Table  AS STRING
-        RETURN cTable
+    PROPERTY Table  AS STRING GET cTable
     
-    ACCESS WhereClause  AS STRING
-        RETURN cWhere
+    PROPERTY WhereClause  AS STRING GET cWhere
     
-    ACCESS WhereSeek  AS STRING
-        RETURN cWhereSeek
+    PROPERTY WhereSeek  AS STRING GET cWhereSeek
     
 END CLASS
 

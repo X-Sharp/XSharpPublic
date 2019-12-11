@@ -280,7 +280,7 @@ PARTIAL CLASS SqlSelect INHERIT DataServer
 	METHOD GetLookupTable(nMaxRows,uField1,uField2)
 		LOCAL aResult 	:= {}         AS ARRAY
 		LOCAL nRows 	:= 32767      AS DWORD
-		IF nMaxRows == NIL
+		IF IsNil(nMaxRows)
 			nRows := 100
 		ELSEIF nMaxRows<nRows
 			nRows := nMaxRows

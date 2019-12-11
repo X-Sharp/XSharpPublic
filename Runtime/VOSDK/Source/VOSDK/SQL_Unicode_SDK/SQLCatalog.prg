@@ -20,7 +20,7 @@ PARTIAL CLASS SQLCatalogQuery INHERIT SQLSelect
         IF oCatalog == NULL 
             oCatalog := oTable
             oTable:AcceptChanges()
-            IF STRING.IsNullOrEmpty(SELF:cTableName)
+            IF String.IsNullOrEmpty(SELF:cTableName)
                 cTableName := oTable:TableName
             ENDIF
         ENDIF

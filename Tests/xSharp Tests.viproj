@@ -73583,7 +73583,7 @@ GalleryName =
 GalleryPage = 
 GalleryDefaultName = 
 Target = 0
-Platform = AnyCPU
+Platform = x86
 Language = XSharp
 Runtime = CLR4
 Dialect = VO
@@ -76680,7 +76680,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C699 - {SELF:Member} in interpolated string gets replaced with clas name, instead of member value
 
-ApplicationGroup = 43A04886-532C-4DC6-A4FB-751288B40D7A
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
 ; ************** APPLICATION R702 *************
 Application = R702
 IDEVersion = 1.06
@@ -76688,7 +76688,7 @@ GalleryName =
 GalleryPage = 
 GalleryDefaultName = 
 Target = 0
-Platform = AnyCPU
+Platform = x86
 Language = XSharp
 Runtime = CLR4
 Dialect = VO

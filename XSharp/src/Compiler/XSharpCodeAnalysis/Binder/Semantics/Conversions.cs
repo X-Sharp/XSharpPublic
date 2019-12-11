@@ -14,6 +14,10 @@ namespace Microsoft.CodeAnalysis.CSharp
 {
     internal static class VOTypeConversions
     {
+        internal static bool IsIFormatProvider(this TypeSymbol source)
+        {
+            return source.IsInterfaceType() && source.Name == "IFormatProvider";
+        }
         internal static bool CanVOCast(this TypeSymbol source)
         {
             if (source.IsIntegralType())
@@ -53,7 +57,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             && destFrom != null
                             && destFrom != _binder.Compilation.ArrayType()
                             && destFrom != _binder.Compilation.CodeBlockType()
-                            && ! destination.IsInterfaceType()
+                            && ! destination.IsIFormatProvider()
                             && destFrom.IsDerivedFrom(_binder.Compilation.CodeBlockType(), TypeCompareKind.IgnoreDynamicAndTupleNames, ref useSiteDiagnostics) != true
                             && !IsClipperArgsType(destination);
                     }
@@ -367,26 +371,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     // All Objects are boxed in a usual
                     return Conversion.Boxing;
                 }
-                else if (destination.IsInterfaceType())
-                {
-                    // for conversion from usual to interface we require an explicit cast
-                    // otherwise it is not supported
-                    // Type(_CAST, expression) = VoCastExpressionContext
-                    // type( expr )            = TypecastContext
-                    // 
-                    var xNode = sourceExpression.Syntax.XNode;
-                    if (xNode != null)
-                    {
-                        if (xNode.Parent is XSharpParser.VoCastExpressionContext)
-                            return Conversion.Boxing;
-                        if (xNode.Parent is XSharpParser.VoConversionExpressionContext)
-                            return Conversion.Boxing;
-                        if (xNode.Parent is XSharpParser.TypeCastContext)
-                            return Conversion.Boxing;
-                    }
-
-                }
-                else if (destination.IsReferenceType && !IsClipperArgsType(destination) && ! destination.IsStringType())
+                else if (destination.IsReferenceType && !IsClipperArgsType(destination) && ! destination.IsStringType() && !destination.IsIFormatProvider())
                 {
                     // all user reference types are boxed. But not the Usual[] args and not string
                     return Conversion.Boxing;

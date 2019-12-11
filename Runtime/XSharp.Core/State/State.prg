@@ -80,8 +80,6 @@ CLASS XSharp.RuntimeState
                 SELF:_SetThreadValue(Set.CollationMode, CollationMode.Unicode )
             ENDIF
             SELF:_SetThreadValue(Set.Dialect, XSharpDialect.Core)
-			// Add null value for Clipper collation 
-			SELF:_SetThreadValue(Set.CollationMode, CollationMode.Windows)
 			// Date and time settings
 			SELF:_SetInternationalWindows()
 

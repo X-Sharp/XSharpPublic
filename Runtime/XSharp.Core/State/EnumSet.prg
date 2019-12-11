@@ -125,7 +125,7 @@ BEGIN NAMESPACE XSharp
 
         MEMBER WINCODEPAGE	:= 120		// Numeric
         MEMBER DOSCODEPAGE	:= 121		// Numeric
-        MEMBER COLLATIONMODE:= 121		// COLLATIONMODE 
+        MEMBER COLLATIONMODE:= 122		// COLLATIONMODE 
 
         // FoxPro settings
         /// <summary>FoxPro: Is Textmerge enabled.</summary>

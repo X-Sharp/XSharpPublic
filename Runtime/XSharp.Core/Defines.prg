@@ -91,7 +91,7 @@ DEFINE ASC_A        := 65
 DEFINE ASC_Z        := 90
 DEFINE ASC_SOFT_CR  :=   141      // softCarriageReturn
 
-/// <summary>This define consist of a Carriage Return and a Line Feed. Unfortunately this does is not properly displaid in the help file.</summary>
+/// <summary>This define consists of a Carriage Return and a Line Feed. Unfortunately this is not properly shown in the help file, because the help file generator strips CRLF characters...</summary>
 DEFINE CRLF       := e"\r\n"
 DEFINE SE_ABORT := 0
 DEFINE SE_IGNORE := 1

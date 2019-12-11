@@ -120,6 +120,7 @@ INTERFACE XSharp.RDD.IRdd
 	METHOD GetScope()						AS DbScopeInfo 
 
 	/// <summary>Set the filter condition.</summary>
+    /// <param name="info">object containing the filter information.</param>
     /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
 	METHOD SetFilter(info AS DbFilterInfo)	AS LOGIC 
 
@@ -156,6 +157,7 @@ INTERFACE XSharp.RDD.IRdd
     /// <returns>The name of the column.</returns>
 	METHOD FieldName(nFldPos AS LONG)		AS STRING
 
+	/// <summary>Retrieve the field information for a column based on its ONE based column number.</summary>
     /// <param name="nFldPos">The ONE based position of the column whose info you want to obtain.</param>
     /// <returns>The Field information for the specified field.</returns>
     METHOD GetField(nFldPos AS LONG) AS RDDFieldInfo

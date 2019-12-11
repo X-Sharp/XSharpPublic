@@ -10,7 +10,18 @@ USING System.Reflection
 [STAThread];      
 FUNCTION Start() AS VOID
     TRY
-        testCecil()
+        TestCollationChris()
+        //TestIndexCreate()
+        //TestWord() 
+        //CountAndSpeedTest()
+        //TestSalary()
+        //TestThreading()
+        //TestCommitWolf()
+        //TestNeg2()
+        //TestNegative()
+        //TestFpt()
+        //TestWolfgang3()
+        //testCecil()
         //TestWolfgang2()
         //TestEncoding()
         //TestXppFieldGetFieldPut()
@@ -151,12 +162,423 @@ FUNCTION Start() AS VOID
         //Start11()
     WAIT
    CATCH e AS Exception  
-        IF ! (e IS Error)
+        IF ! (e IS Error) 
             e := Error{e}
         ENDIF
         ErrorDialog(e)
     END TRY
     RETURN
+FUNCTION TestCollationChris() AS VOID
+    LOCAL hFile AS IntPtr
+    hFile := FCreate("test.txt")
+    FWriteLine(hFile, "aaa")
+    FClose(hFile)
+   
+    ? SetCollation()
+    ? SetCollation(#Ordinal)   
+    ? SetCollation()
+RETURN
+FUNCTION TestIndexCreate() AS VOID
+    LOCAL nCount AS LONG
+?  DBUSEAREA(TRUE, "DBFCDX", "c:\Test\RATE.DBF")
+   VAR oRDD := XSharp.RuntimeState.Workareas:GetRDD(SELECT())      
+   oRDD := WrapperRDD{oRDD}
+    
+   ? DbSetIndex("c:\Test\RATEXS.CDX","MainRecno")
+   
+   ? DbGotop()
+   nCount := 0
+   DO WHILE ! EOF()                             
+   	++nCount
+   	DBSKIP(1)
+   ENDDO
+   ? nCount
+    DBCLOSEAREA()
+/*
+RddSetDefault("DBFCDX")
+    FERase("c:\Test\RATEXS.CDX")
+    DbUseArea(TRUE, "DBFCDX", "c:\Test\RATE.DBF")
+    DbCreateOrder("MainRecno","RATEXS","Str(MainRecno,10,0)")
+    DbOrderInfo(DBOI_USER+42)
+    DbCLoseArea()
+*/    
+RETURN
+
+FUNCTION TestWord() AS VOID STRICT
+    LOCAL oApp AS OBJECT
+    LOCAL nCounter AS INT
+    oApp := OleAutoObject{ "WORD.Application" }
+    nCounter := oApp:System:Application:Documents:Count
+    IF nCounter == 0
+        oApp:Application:Quit()
+        oApp := NULL
+        Gc.Collect()
+    ENDIF
+    RETURN 
+
+FUNCTION CountAndSpeedTest() AS VOID      
+LOCAL cDBF, cIndex, cPfad  AS STRING 
+LOCAL oDB AS DBServer
+LOCAL fStart, fSum AS FLOAT
+LOCAL dwHits AS DWORD
+LOCAL lUseCDX AS LOGIC  
+    
+    
+	lUseCDX := TRUE  // or FALSE - makes no difference 
+		
+   	RddSetDefault ( "DBFCDX" )
+   	
+    // -----------------
+    cPfad := "c:\download\sumtest\" 
+    // -----------------
+    
+	cDBF := cPfad + "large.dbf"
+	cIndex := cPfad + "large1x.cdx"  
+	
+//    ? cdbf
+//    ? cIndex
+    
+	IF ! File ( cIndex ) 
+		
+	   	? DbUseArea( ,,cDBF )
+		fStart := Seconds()
+		? DbCreateOrder ( "ORDER1"  , cIndex , "Upper(LAST)" , { || Upper ( _FIELD->LAST) } )
+        ? "CDX creation:" , Seconds() - fStart
+        DbCloseArea()
+        ? 
+        
+	ENDIF	
+ 
+    // -------------------  
+    
+	? DbUseArea( ,,cDBF )
+	
+	IF lUseCDX	
+		? DbSetIndex ( cIndex)
+		? DbSetOrder ( 1 )  
+	ENDIF	
+	
+  
+    DbGoTop()
+    dwHits := 0 
+    fSum := 0.00
+    
+    fStart := Seconds()
+    
+	DO WHILE ! Eof() 
+
+		IF FieldGetSym( #LAST ) = "G"
+		
+			dwHits += 1 
+	
+//			fSum += FieldGetSym( #SALARY ) 
+			fSum := fSum + FieldGetSym( #SALARY ) 
+			                                       
+		ENDIF
+		
+		DbSkip ( 1 )
+	
+	ENDDO 
+	
+    ?
+	? "dbfuncs" ,IIF ( lUseCDX, "CDX used" , "No CDx used" )   	 
+	? Seconds() - fStart 
+	? dwHits
+	? fSum
+ 	
+      
+ 	DbCloseArea()  
+ 	
+ 	// ------------
+ 	?
+ 	
+ 	oDB :=  DBServer { cDBF }  
+ 	?  oDB:Used
+ 	
+ 	IF lUseCDX
+	 	? oDB:SetIndex ( cIndex)
+ 		? oDB:Setorder ( 1 ) 
+ 	ENDIF	
+ 	
+    oDB:GoTop()
+    dwHits := 0
+    fSum := 0.00 
+      
+//  oDB:Suspendnotification()
+    
+    fStart := Seconds()
+    
+	DO WHILE ! oDB:Eof 
+
+		IF oDB:FieldGet ( #LAST) = "G"
+		
+			dwHits += 1 
+	
+			fSum += oDB:FieldGet ( #SALARY ) 
+//			fSum := fSum + oDB:FieldGet ( #SALARY ) 
+			                                       
+		ENDIF
+		
+		oDB:Skip (1)	
+	ENDDO 
+	
+//	oDB:ResetNotification()
+
+    ?
+	? "DBServer" ,IIF ( lUseCDX, "CDX used" , "No CDx used" )   	 
+	? Seconds() - fStart 
+	? dwHits
+	? fSum
+ 	
+    oDB:Close() 
+    
+	RETURN 
+	
+FUNCTION TestSalary() AS VOID
+    DbUseArea(TRUE, "DBFNTX", "c:\download\sumtest\Large.DBF")
+    DBGoto(1134)
+    ? FieldGetSym("Salary")
+    DbCLoseArea()
+FUNCTION DoWork( oParam AS OBJECT ) AS VOID
+    LOCAL nI                                  AS DWORD  
+    LOCAL nParam              AS INT
+    LOCAL nSleep               AS INT
+    nParam                                    := INT( oParam )
+    nSleep                          := 10 //* nParam
+    DbUseArea( TRUE, "DBFCDX", "c:\temp\test.dbf", "TEST", TRUE, FALSE )
+    DbCargo(Error{})
+    FOR nI := 1 UPTO 100
+        nSleep                          := Rand(0) * 100
+        System.Console.WriteLine( NTrim(nParam) + " -> " + NTrim(nI) + " Sleep: " + NTrim( nSleep ) )
+        TEST->DbAppend()
+        TEST->FIELD1 := nI
+        TEST->FIELD2 := nParam
+        IF ! TEST->DbCommit()
+            DebOut(NTrim(nParam) +" Error by Commit" )
+            Debout(RuntimeState:LastRDDError:ToString())
+        ENDIF
+        System.Threading.thread.Sleep( INT( nSleep ) )
+    NEXT
+    TEST->DbCloseArea()
+RETURN
+
+ 
+
+FUNCTION DoWork2( oParam AS OBJECT ) AS VOID
+            LOCAL nI                  AS DWORD  
+            LOCAL nParam              AS INT
+            LOCAL nSleep              AS INT
+            LOCAL oDBServer           AS DBServer
+            nParam                    := INT( oParam )
+            nSleep            := 10 * nParam
+            oDBServer         := DBServer{ "c:\temp\test.dbf", TRUE, FALSE, "DBFCDX" }
+            FOR nI := 1 UPTO 1000
+                nSleep        :=  Rand(0) * 25
+                System.Console.WriteLine( NTrim(nParam) + " -> " + NTrim(nI) + " Sleep: " + NTrim( nSleep ) )
+                IF ! oDBServer:Append() 
+                    System.Console.WriteLine( NTrim(nParam) +" Append Failed" )
+                    System.Console.WriteLine(RuntimeState:LastRDDError:ToString())
+                ENDIF
+                oDBServer:FieldPut( #Field1, nI )
+                oDBServer:FieldPut( #Field2, nParam )
+                IF ! oDBServer:Commit()
+                    System.Console.WriteLine( NTrim(nParam) +" Error by Commit" )
+                    System.Console.WriteLine(RuntimeState:LastRDDError:ToString())
+                ENDIF
+                System.Threading.thread.Sleep( INT( nSleep ) )
+            NEXT
+            oDBServer:Close()
+
+ 
+
+RETURN
+
+CLASS DbLogger IMPLEMENTS IDbNotify
+    METHOD Notify(sender AS XSharp.RDD.IRdd, e AS DbNotifyEventArgs) AS VOID
+        IF (sender != NULL)
+            DebOut( sender:Alias, sender:Area, e:Type:ToString(), e:Data)
+        ELSE
+            DebOut( "no area", e:Type:ToString(), e:Data)
+        ENDIF
+        
+END CLASS
+ 
+
+FUNCTION TestThreading() AS VOID
+
+            LOCAL cPath                             AS STRING
+
+            LOCAL cFileName                      AS STRING
+            LOCAL aStruct               AS ARRAY
+            LOCAL nI                                  AS DWORD
+            LOCAL nCount               AS DWORD
+            LOCAL oThread1                       AS system.Threading.Thread
+            LOCAL oThread2                       AS system.Threading.Thread 
+ 
+            System.Console.WriteLine( "Start" )
+            //DbRegisterClient(DbLogger{})
+            RddSetDefault( "DBFCDX" )     
+
+            cPath                := "C:\Temp"
+            cFileName         := cPath + "\" + "Test.DBF"
+            FErase( cPath + "\" + "Test.DBF"  )
+            FErase( cPath + "\" + "Test.CDX"  )
+
+            aStruct              := {}
+            AAdd( aStruct, { "Field1", "N", 10, 0 } )
+
+            AAdd( aStruct, { "Field2", "N", 10, 0 } )
+
+            DbCreate( cFileName, aStruct, "DBFCDX", TRUE, "TEST",, FALSE )        
+
+             TEST->DbCreateOrder( "ORDER1",, "Str(FIELD1,10)", {|| Str( _FIELD->FIELD1,10 ) }, FALSE )
+            TEST->DbCommit( )
+            TEST->DbCloseArea()
+            oThread1          := System.Threading.Thread{ DoWork }  
+            oThread1:Start( 1 )
+            oThread2          := System.Threading.Thread{ DoWork}
+            oThread2:Start( 2 )  
+            oThread1:Join()
+            oThread2:Join()
+
+            DbUseArea( TRUE, "DBFCDX", "c:\temp\test.dbf", "TEST", TRUE, FALSE )
+            ? "With order:"
+            nCount                          := 0
+            Test->DbSetOrder( "ORDER1" )
+            Test->DbGoTop()
+            WHILE ! Test->Eof()
+                        //? NTrim( Test->Field1 ) + " <- " + NTrim( Test->Field2 ) + " - Recno: " + NTrim( Test->RecNo())
+                        Test->DbSkip() 
+                        nCount++                   
+            ENDDO   
+            ? "Count: " + NTrim( nCount )
+            ? "Without order:"
+            Test->DbSetOrder( 0 )
+            Test->DbGoTop()
+            nCount                          := 0
+            WHILE ! Test->Eof()
+                        //? NTrim( Test->Field1 ) + " <- " + NTrim( Test->Field2 ) + " - Recno: " + NTrim( Test->RecNo() )
+                        Test->DbSkip()                       
+                        nCount++
+            ENDDO            
+            ? "Count: " + NTrim( nCount )
+            TEST->DbCloseArea()
+                              
+
+            RETURN
+
+FUNCTION TestCommitWolf() AS VOID
+            LOCAL cPath                             AS STRING
+            LOCAL cFileName                      AS STRING
+            LOCAL aStruct               AS ARRAY
+
+            RddSetDefault( "DBFCDX" )
+            cPath                                        := "C:\Temp"
+            cFileName                                := cPath + "\" + "Test.DBF"
+            FErase( cPath + "\" + "Test.DBF"  )
+            FErase( cPath + "\" + "Test.CDX"  )
+
+            aStruct   := { { "FIELD1", "N", 10, 0 } } 
+            DbCreate( cFileName, aStruct, "DBFCDX", TRUE, "TEST",, FALSE )
+            TEST->DbSetOrderCondition( "FIELD1 == 1", { || _FIELD->FIELD1 == 1 } ,,,,,,,,,,,,, )
+            TEST->DbCreateOrder( "ORDER1",, "STR(FIELD1,10)", {|| Str( _FIELD->FIELD1, 10 ) }, FALSE )
+            TEST->DbCloseArea()
+
+            DbUseArea( TRUE, "DBFCDX", cFileName, "TEST", TRUE, FALSE )
+            TEST->DbAppend()
+            TEST->FIELD1 := 1
+            ? "Bevor Commit"
+            TEST->DbCommit()
+            ? "After Commit"
+            TEST->DbCloseArea()
+
+FUNCTION testNeg2 AS VOID
+      LOCAL cPath                AS STRING
+       LOCAL cArtnr        AS STRING
+        LOCAL f AS FLOAT
+        f := Seconds()
+       cPath               := "C:\Test\artikel.dbf"
+       cArtnr              := "F"
+       DbUseArea( TRUE, "DBFCDX", cPath, "ARTIKEL", FALSE, FALSE )
+       OrdListRebuild()
+       ARTIKEL->DBSeek( cArtnr, FALSE )
+       IF ARTIKEL->Found()
+             ? "Found:" + ARTIKEL->ARTNR + " " + ARTIKEL->Beschr1D
+             ? "Preis:" + Str( ARTIKEL->PREIS, 10, 2 )
+       ELSE
+             ? "not found"
+       ENDIF
+       ARTIKEL->DbCloseArea()
+        ? Seconds() - f
+
+FUNCTION TestNegative() AS VOID
+    LOCAL cPath                 AS STRING
+    LOCAL cFileName             AS STRING
+    LOCAL aStruct               AS ARRAY
+
+    cPath                         := "C:\Temp"
+    cFileName                     := cPath + "\" + "TestNum.DBF"
+    FErase( cPath + "\" + "TestNum.DBF"  )
+    FErase( cPath + "\" + "TestNum.CDX"  )
+
+    aStruct                       := { { "FIELD1", "C", 10, 0 }, { "FIELD2", "N", 10, 2 } }
+    DbCreate( cFileName, aStruct, "DBFCDX", TRUE, "TestNum",, FALSE )
+    TESTNUM->DbCloseArea()
+    DbUseArea( TRUE, "DBFCDX", cFileName, "TESTNUM", TRUE, FALSE )
+    TESTNUM->DbAppend()
+    TESTNUM->FIELD1     := NTrim( 1 )
+    TESTNUM->FIELD2     := -10
+    TESTNUM->DbGoTop()
+    ? "Field1:" + TESTNUM->FIELD1 + ", Field2:" + Str( TESTNUM->FIELD2, 10, 2 )
+    TESTNUM->DbAppend()
+    TESTNUM->FIELD1     := NTrim( 2 )
+    TESTNUM->FIELD2     := 10
+    TESTNUM->DbGoBottom()
+    ? "Field1:" + TESTNUM->FIELD1 + ", Field2:" + Str( TESTNUM->FIELD2, 10, 2 )
+    TESTNUM->DbCloseArea()
+    
+FUNCTION TestFpt() AS VOID
+    LOCAL i AS dword
+    DbUSeArea(TRUE,"DBFCDX", "c:\download\ZENSTATS.DBF")
+    FOR i := 1 TO FCount()
+        ? FieldName(i), FieldGet(i)
+    NEXT
+    DbCLoseArea()
+
+FUNCTION TestWolfgang3() AS VOID
+            LOCAL cPath                             AS STRING
+            LOCAL cFileName                      AS STRING
+            LOCAL aStruct               AS ARRAY
+            LOCAL nI                                  AS DWORD
+            cPath                                        := "C:\Temp"
+            cFileName                                := cPath + "\" + "Test.DBF"
+            FErase( cPath + "\" + "Test.DBF"  )
+            FErase( cPath + "\" + "Test.CDX"  )
+            aStruct                                     := { { "FIELD1", "C", 10, 0 } }
+            DbCreate( cFileName, aStruct, "DBFCDX", TRUE, "ORDERDBF",, FALSE )
+            ORDERDBF->DbSetOrderCondition( "! DELETED()", {|| ! Deleted() } )
+            ORDERDBF->DbCreateOrder( "ORDER1",, "UPPER(FIELD1)", {|| Upper( _FIELD->FIELD1 ) }, FALSE )
+            ORDERDBF->DbCloseArea()
+            DbUseArea( TRUE, "DBFCDX", cFileName, "ORDERDBF", TRUE, FALSE )
+        
+            FOR nI := 1 UPTO 10
+                        ?( nI )
+                        ORDERDBF->DbAppend()
+                        ORDERDBF->FIELD1     := NTrim( nI )
+
+// ORDERDBF->FIELD1  := NTrim( 10-nI )
+            NEXT
+            ? "Records", ORDERDBF->RecCount()
+            ? "Keys",OrderDbf->(DbOrderInfo(DBOI_KEYCOUNT))
+            ? "Start Test: First Record 2 Times"
+            ORDERDBF->DbGoTop()
+            WHILE ! ORDERDBF->Eof()
+                        ? ORDERDBF->FIELD1
+                        ORDERDBF->DbSkip()  
+            ENDDO
+            ORDERDBF->DbCloseArea()
+            RETURN
+
 FUNCTION TestCeCil() AS VOID
     SET DEFAULT TO C:\Test
     SET TIME TO SYSTEM
@@ -210,7 +632,7 @@ FUNCTION TestWolfgang2 AS VOID
 
             IF TRUE
 
-                        TEST->DbSetOrderCondition( "! DELETED() .and. Left(FIELD1,1) == '9'", {|| ! Deleted() .AND. left(_FIELD->FIELD1,1) == '9' } )
+                        TEST->DbSetOrderCondition( "! DELETED() .and. Left(FIELD1,1) == '9'", {|| ! Deleted() .AND. left(_FIELD->FIELD1,1) == "9" } )
 
                         TEST->DbCreateOrder( "ORDER2",, "UPPER(FIELD1)", {|| Upper( _FIELD->FIELD1 ) }, FALSE )
 
@@ -300,16 +722,17 @@ FUNCTION TestWolfgang() AS VOID
             NEXT
 
             ORDERDBF->DbCloseArea()
-
+            
             
 FUNCTION TestEncoding AS VOID
+    LOCAL cValue AS STRING
+
     RddSetDefault("DBFNTX")
-    DbUseArea(TRUE,NIL,"c:\download\dbcompare\f1\GID.DBF")
+    Console.OutputEncoding := System.Text.UnicodeEncoding{}
+    DbUseArea(TRUE,NIL,"c:\download\gid.DBF")
     DbGoBottom()
-    ? FIeldGetSym(#AArdGoed)
-    ? FIeldPutSym(#AArdGoed,"BIÈRE FÛT 20 LTR LA TRAPPE BLOND")
-    DbSKip(-1)
-    ? FIeldPutSym(#AArdGoed,"BIÈRE FÛT 20 LTR LA TRAPPE BLOND")
+    cValue := FIeldGetSym(#AArdGoed)
+    ? cValue
     DbCloseArea()
     
 FUNCTION TestXppFieldGetFieldPut() AS VOID
@@ -500,14 +923,15 @@ DbUnlock()
 DbCloseArea()
 RETURN
     
-
+/*
 FUNCTION TestXppCollations() AS VOID
     SetAnsi(TRUE)
     DumpTable("A")
     SetAnsi(FALSE)
     DumpTable("O")
 RETURN
-    
+*/
+/*    
 FUNCTION DumpTable(cChar)
 LOCAL i,j
 LOCAL cTable
@@ -539,7 +963,7 @@ FOR i := -1 TO 16
 	ENDIF
 NEXT
 RETURN .T.
-
+*/
 FUNCTION TestNestedMacro() AS VOID
     LOCAL cMacro AS STRING
     LOCAL cb AS CODEBLOCK
@@ -940,7 +1364,7 @@ FUNCTION TestFilter() AS VOID
 	cDbf1 := "C:\test\test"
 	DbCreate(cDbf1, {{"FLD1" , "C" , 10 , 0} })
     DbUseArea(TRUE,"DBFCDX", cDbf1, "TEST",TRUE)
-    VoDb.SetFilter(NIL, "FLD1='C'")
+    VoDb.SetFilter(NULL, "FLD1='C'")
     ? DbFilter()
     WAIT
     DbSetFilter(,TRUE)

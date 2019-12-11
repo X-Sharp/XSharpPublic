@@ -187,10 +187,6 @@ namespace XSharp.Project
             {
                 _buffer.ChangedLowPriority += Textbuffer_Changed;
                 _file = _buffer.GetFile();
-                if (_file.Project != null)
-                    _parseoptions = _file.Project.ParseOptions;
-                else
-                    _parseoptions = XSharpParseOptions.Default;
 
                 if (_buffer.CheckEditAccess())
                 {
@@ -325,15 +321,9 @@ namespace XSharp.Project
 
             }
         }
-        private bool canFormatLine(ITextSnapshotLine line)
+        private bool canIndentLine(ITextSnapshotLine line)
         {
-            // get first token on line
-            // when comment: do not format
-            // when xsharp.text and only one token: do not format
-            // when xsharp.text and second token = keyword, then endtext line, so format
-            if (line.Length == 0)
-                return false;
-            var ss = new SnapshotSpan(line.Snapshot, line.Start.Position, 1);
+            var ss = new SnapshotSpan(line.Snapshot, line.Extent);
 
             var spans = _classifier.GetClassificationSpans(ss);
             if (spans.Count > 0)
@@ -350,6 +340,17 @@ namespace XSharp.Project
                 }
             }
             return true;
+
+        }
+        private bool canFormatLine(ITextSnapshotLine line)
+        {
+            // get first token on line
+            // when comment: do not format
+            // when xsharp.text and only one token: do not format
+            // when xsharp.text and second token = keyword, then endtext line, so format
+            if (line.Length == 0)
+                return false;
+            return canIndentLine(line);
         }
         private bool IsCommentOrString(string classification)
         {

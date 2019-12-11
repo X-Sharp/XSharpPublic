@@ -52,11 +52,11 @@ CLASS XSharp.XPP.ClassObject
                 FOREACH VAR fld IN Fields
                     nCode += fld:Name:GetHashCode() + fld:Attributes:GetHashCode()
                 NEXT
-                FOREACH VAR meth IN Methods
-                    nCode += meth:Name:GetHashCode() + meth:Attributes:GetHashCode()
+                FOREACH VAR m IN Methods
+                    nCode += m:Name:GetHashCode() + m:Attributes:GetHashCode()
                 NEXT
-                FOREACH VAR prop IN Properties
-                    nCode += prop:Name:GetHashCode() + prop:Attributes:GetHashCode()
+                FOREACH VAR p IN Properties
+                    nCode += p:Name:GetHashCode() + p:Attributes:GetHashCode()
                 NEXT
             END UNCHECKED
             RETURN nCode

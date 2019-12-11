@@ -2,14 +2,27 @@
 USING System
 USING XSharp.RDD
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/orddescend/*" />
+/// <summary>Checks if the order for navigation is descending </summary>
+/// <returns>The return value of DbDescend() is TRUE when the in the current work area is descending, otherwise FALSE is returned. </returns>
+/// <remarks>The function DbDescend() tests if the order in the current work area is descending.
+/// Refer to DbSetDescend() for more information about reversing the navigational order. 
+/// </remarks>
+/// <seealso cref='M:XSharp.XPP.Functions.DbSetDescend(System.Boolean)' >DbSetDescend()</seealso>
 FUNCTION DbDescend() AS LOGIC
     RETURN OrdDescend()
 
-
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/orddescend/*" />
+/// <summary>Reverses the navigational order of a work area.</summary>
+/// <param name="lNewDescend">A logical value. When TRUE the navigational order in the current work area is set to descending, FALSE sets the order to ascending. </param>
+/// <returns>The return value of DbSetDescend() is the previous setting for DbSetDescend().</returns>
+/// <remarks>The function DbSetDescend() is used to quickly change the order in a work area from ascending to descending and vice versa
+/// without the need to create a corresponding index. When TRUE is passed to the function, the order is reversed, i.e. all functions and
+/// commands that move the record pointer are inverted. DbGoTop() becomes DbGoBottom(), DbSkip(1) becomes DbSkip(-1), EOF becomes BOF() etc.
+/// <note type="tip"> Not all RDDs support switching the order at runtime </note></remarks>
+/// <seealso cref='M:XSharp.XPP.Functions.DbDescend' >DbDescend()</seealso>
 FUNCTION DbSetDescend(lNewDescend AS LOGIC) AS LOGIC
-    RETURN OrdDescend(NIL,NIL, lNewDescend)
+    LOCAL old := OrdDescend() AS LOGIC
+    OrdDescend(NIL,NIL, lNewDescend)
+    RETURN old
 
 
 /// <summary>Attaches an arbitrary value to a used work area </summary>
@@ -24,7 +37,7 @@ FUNCTION DbCargo(xNewValue) AS USUAL
     LOCAL old   AS OBJECT
     LOCAL wa := XSharp.RuntimeState.Workareas AS Workareas
     nArea   := wa:CurrentWorkAreaNO
-    old     := wa:GetCargo(nArea)
+    old     := wa:GetCargo(nArea) 
     IF ! IsNil(xNewValue)
         wa:SetCargo(nArea, xNewValue)
     ENDIF

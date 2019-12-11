@@ -1725,8 +1725,8 @@ CLASS XSharp.CoreDb
         /// <summary>
         /// Set a filter condition.
         /// </summary>
-        /// <param name="oBlock"></param>
-        /// <param name="cFilter"></param>
+        /// <param name="oBlock">Codeblock that defines the filter. Please note that some RDDs (such as Advangate) will NOT use this compiled codeblock.</param>
+        /// <param name="cFilter">String version of the filter. Some RDDs (such as Advantage) use this condition instead of the codeblock</param>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks>This function is like DBSetFilter() but strongly typed.
         /// <include file="CoreComments.xml" path="Comments/LastError/*" />

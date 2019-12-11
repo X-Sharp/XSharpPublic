@@ -1,8 +1,11 @@
 ﻿//
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
+using LanguageService.CodeAnalysis.XSharp;
+using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
+using LanguageService.SyntaxTree;
 using System;
 using System.CodeDom;
 using System.Collections;
@@ -11,6 +14,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using XSharpModel;
 
 namespace XSharp.CodeDom
 {
@@ -223,6 +227,44 @@ namespace XSharp.CodeDom
             return Path.Combine(prgPath, prg) + ext;
         }
 
+        internal static string AdjustKeywordCaseInGeneratedCode(string code, string fileName)
+        {
+            var package = XSharp.Project.XSharpProjectPackage.Instance;
+            var optionsPage = package.GetIntellisenseOptionsPage();
+            if (optionsPage.KeywordCase == Project.KeywordCase.None)
+                return code;
+            // we also normalize the line endings
+            code = code.Replace("\n", "");
+            code = code.Replace("\r", "\r\n");
+
+            var file = XSolution.FindFullPath(fileName);
+            var sb = new StringBuilder();
+            XSharpParseOptions parseoptions;
+            if (file != null)
+            {
+                parseoptions = file.Project.ParseOptions;
+            }
+            else
+                parseoptions = XSharpParseOptions.Default;
+            ITokenStream tokenStream;
+            var reporter = new ErrorIgnorer();
+            bool ok = XSharp.Parser.VsParser.Lex(code, fileName, parseoptions, reporter, out tokenStream);
+            var stream = tokenStream as BufferedTokenStream;
+            var tokens = stream.GetTokens();
+            foreach (var token in tokens)
+            {
+                if (XSharpLexer.IsKeyword(token.Type))
+                {
+                    sb.Append(optionsPage.SyncKeyword(token.Text));
+                }
+                else
+                {
+                    sb.Append(token.Text);
+                }
+            }
+            return sb.ToString();
+        }
+
         #region Dump Tools
         static int indent = 0;
         static StreamWriter writer;
@@ -339,7 +381,7 @@ namespace XSharp.CodeDom
                 DumpExpression(stmt.Expression);
             }
             if (s.UserData.Contains(XSharpCodeConstants.USERDATA_CODE))
-            { 
+            {
                 WriteLineIndent("Original code: " + s.UserData[XSharpCodeConstants.USERDATA_CODE].ToString());
             }
             indent--;

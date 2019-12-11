@@ -52,17 +52,6 @@ namespace XSharp.Project
                     ".Designer.prg");
         }
 
-        private void NormalizeLineEndings(string fileName)
-        {
-            string contents = System.IO.File.ReadAllText(fileName);
-            string changedcontents = contents.Replace("\n", "");
-            changedcontents = changedcontents.Replace("\r", "\r\n");
-            if (contents.Length != changedcontents.Length)
-            {
-                System.IO.File.WriteAllText(fileName, changedcontents);
-            }
-        }
-
         #endregion
 
 
@@ -207,6 +196,7 @@ namespace XSharp.Project
                 inMemory.Position = 0;
                 StreamReader reader = new StreamReader(inMemory, Encoding.UTF8, true);
                 generatedSource = reader.ReadToEnd();
+                generatedSource = XSharpCodeDomHelper.AdjustKeywordCaseInGeneratedCode(generatedSource, prgFileName);
                 Encoding realencoding = reader.CurrentEncoding;
                 reader.Close();
                 designerStream.Close();
@@ -232,7 +222,6 @@ namespace XSharp.Project
                     designerStream.Write(generatedSource);
                     designerStream.Flush();
                     designerStream.Close();
-                    NormalizeLineEndings(designerPrgFile);
                 }
                 // The problem here, is that we "may" have some new members, like EvenHandlers, and we need to update their position (line/col)
                 XSharpCodeParser parser = new XSharpCodeParser(_projectNode);
@@ -255,16 +244,21 @@ namespace XSharp.Project
                 base.GenerateCodeFromCompileUnit(formCCU, writer, options);
                 // BUT, the writer is hold by the Form Designer, don't close  it !!
                 writer.Flush();
-                NormalizeLineEndings(prgFileName);
                 // Now, we must re-read it and parse again
                 IServiceProvider provider = (DocDataTextWriter)writer;
                 DocData docData = (DocData)provider.GetService(typeof(DocData));
                 DocDataTextReader ddtr = new DocDataTextReader(docData);
                 // Retrieve
                 generatedSource = ddtr.ReadToEnd();
-                // normalize the line endings
-                generatedSource = generatedSource.Replace("\n", "");
-                generatedSource = generatedSource.Replace("\r", "\r\n");
+                var newsource = XSharpCodeDomHelper.AdjustKeywordCaseInGeneratedCode(generatedSource, prgFileName);
+                if (string.Compare(newsource, generatedSource) != 0)
+                {
+                    // get DocDataTextWriter and update the source after the case has been synchronized
+                    generatedSource = newsource;
+                    DocDataTextWriter dtw = new DocDataTextWriter(docData);
+                    dtw.Write(generatedSource);
+                    dtw.Flush();
+                }
                 // Don't forget to set the name of the file where the source is...
                 parser.FileName = prgFileName;
                 resultDesigner = parser.Parse(generatedSource);
@@ -319,6 +313,7 @@ namespace XSharp.Project
                     {
                         parser.FileName = (string)compileUnit.UserData[XSharpCodeConstants.USERDATA_FILENAME];
                     }
+                    generatedSource = XSharpCodeDomHelper.AdjustKeywordCaseInGeneratedCode(generatedSource, parser.FileName);
                     CodeCompileUnit resultCcu = parser.Parse(generatedSource);
                     CodeTypeDeclaration resultClass = XSharpCodeDomHelper.FindFirstClass(resultCcu);
                     // just to be sure...

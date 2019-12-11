@@ -97,7 +97,7 @@ CLASS OdbcFactory INHERIT AbstractSqlFactory
     STATIC METHOD GetActiveWindow() AS IntPtr PASCAL
         
     [DllImport("USER32.dll", CharSet := CharSet.Ansi)];
-    STATIC METHOD GetDesktopWindow() AS PTR PASCAL
+    STATIC METHOD GetDesktopWindow() AS IntPtr PASCAL
 
     [DllImport("ODBC32.dll", EntryPoint := "SQLAllocEnv")];
     STATIC METHOD SQLAllocEnv(phenv OUT IntPtr) AS SHORTINT PASCAL

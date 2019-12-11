@@ -21,7 +21,8 @@ FUNCTION CMonth(dDate AS DATE) AS STRING
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/condate/*" />   
 FUNCTION ConDate(dwYear AS DWORD,dwMonth AS DWORD,dwDay AS DWORD) AS DATE
-    IF dwYear == 0 .OR. dwMonth == 0 .OR. dwDay == 0
+    // Year may be 0 and then we use SetEpoch to determine the right year
+    IF dwMonth == 0 .OR. dwDay == 0 
       RETURN NULL_DATE
     ENDIF
     RETURN ConDateTime(dwYear, dwMonth, dwDay)

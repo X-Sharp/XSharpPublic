@@ -200,7 +200,10 @@ INTERNAL FUNCTION _TimeString( h AS DWORD, m AS DWORD, s AS DWORD, lAMPM AS LOGI
 /// <param name="dwDay">A number representing a valid day of dwMonth.</param>
 /// <returns>The date that corresponds to the passed arguments.  If any of the arguments specified do not represent a valid year, month, or day, a DateTime.MinValue is returned.</returns>
 FUNCTION ConDateTime(dwY AS DWORD,dwM AS DWORD,dwDay AS DWORD) AS DateTime
-	IF dwY < 100
+    IF dwM == 0 .OR. dwDay == 0
+        RETURN DateTime.MinValue
+    ENDIF
+    IF dwY < 100
 		LOCAL lAfter AS LOGIC
 		lAfter := dwY > XSharp.RuntimeState.EpochYear
 		dwY += XSharp.RuntimeState.EpochCent

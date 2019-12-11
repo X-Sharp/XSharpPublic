@@ -12,7 +12,7 @@
     <Name>RddTests</Name>
     <Nologo>true</Nologo>
     <GenerateFullPaths>true</GenerateFullPaths>
-    <Dialect>VO</Dialect>
+    <Dialect>Vulcan</Dialect>
     <OutputName>ConsoleApplication1</OutputName>
     <AZ>false</AZ>
     <CS>false</CS>
@@ -45,8 +45,11 @@
     <XSharpProjectversion>2.0.5.0</XSharpProjectversion>
     <Includepaths />
     <Nostandarddefs>false</Nostandarddefs>
-    <NamedArgs />
+    <NamedArgs>False</NamedArgs>
     <XPP1>false</XPP1>
+    <Memvar>False</Memvar>
+    <Undeclared>False</Undeclared>
+    <NoWin32Manifest>False</NoWin32Manifest>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -152,11 +155,6 @@
     <ProjectReference Include="..\XSharp.RT\XSharp.RT.xsproj">
       <Name>XSharp.RT</Name>
       <Project>{ef8d2bf2-e81a-479a-ba4f-294c4c348b66}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\XSharp.VFP\XSharp.VFP.xsproj">
-      <Name>XSharp.VFP</Name>
-      <Project>{3a771f0e-9400-4a19-8663-c71567ebfa29}</Project>
       <Private>True</Private>
     </ProjectReference>
     <ProjectReference Include="..\XSharp.VO\XSharp.VO.xsproj">

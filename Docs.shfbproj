@@ -21,20 +21,21 @@
     <Language>en-US</Language>
     <DocumentationSources>
       <DocumentationSource sourceFile="Docs\XsRuntimeClasses.xml" />
-<DocumentationSource sourceFile="Binaries\Documentation\XSharp.Rdd.dll" />
-<DocumentationSource sourceFile="Binaries\Documentation\XSharp.Core.XML" />
-<DocumentationSource sourceFile="Binaries\Documentation\XSharp.Core.dll" />
-<DocumentationSource sourceFile="Binaries\Documentation\XSharp.RDD.XML" />
-<DocumentationSource sourceFile="Binaries\Documentation\XSharp.RT.XML" />
-<DocumentationSource sourceFile="Binaries\Documentation\XSharp.RT.dll" />
-<DocumentationSource sourceFile="Binaries\Documentation\XSharp.VFP.XML" />
-<DocumentationSource sourceFile="Binaries\Documentation\XSharp.VFP.dll" />
-<DocumentationSource sourceFile="Binaries\Documentation\XSharp.VO.XML" />
-<DocumentationSource sourceFile="Binaries\Documentation\XSharp.VO.dll" />
-<DocumentationSource sourceFile="Binaries\Documentation\XSharp.XPP.XML" />
-<DocumentationSource sourceFile="Binaries\Documentation\XSharp.XPP.dll" /></DocumentationSources>
+      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.Rdd.dll" />
+      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.Core.XML" />
+      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.Core.dll" />
+      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.RDD.XML" />
+      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.RT.XML" />
+      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.RT.dll" />
+      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.VFP.XML" />
+      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.VFP.dll" />
+      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.VO.XML" />
+      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.VO.dll" />
+      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.XPP.XML" />
+      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.XPP.dll" />
+    </DocumentationSources>
     <HelpTitle>X# Runtime Reference</HelpTitle>
-    <HelpFileVersion>2.1.0.0</HelpFileVersion>
+    <HelpFileVersion>2.2.0.0</HelpFileVersion>
     <NamingMethod>MemberName</NamingMethod>
     <ContentPlacement>AboveNamespaces</ContentPlacement>
     <RootNamespaceContainer>True</RootNamespaceContainer>
@@ -175,6 +176,8 @@
         <Filter entryType="Class" fullName="XSharp.ADS.ACE" filterName="ACE" isExposed="True" />
         <Filter entryType="Class" fullName="XSharp.ADS.ACE32" filterName="ACE32" isExposed="True" />
         <Filter entryType="Class" fullName="XSharp.ADS.ACE64" filterName="ACE64" isExposed="True" />
+        <Filter entryType="Delegate" fullName="XSharp.ADS.CallbackFn" filterName="CallbackFn" isExposed="True" />
+        <Filter entryType="Delegate" fullName="XSharp.ADS.CallbackFn101" filterName="CallbackFn101" isExposed="True" />
       </Filter>
       <Filter entryType="Namespace" fullName="XSharp.Core" isExposed="True">
         <Filter entryType="Class" fullName="XSharp.Core.Functions" filterName="Functions" isExposed="True">
@@ -340,6 +343,7 @@
           <Filter entryType="Field" fullName="XSharp.Core.Functions.DBOI_FINDRECCONT" filterName="DBOI_FINDRECCONT" isExposed="False" />
           <Filter entryType="Field" fullName="XSharp.Core.Functions.DBOI_FULLPATH" filterName="DBOI_FULLPATH" isExposed="False" />
           <Filter entryType="Field" fullName="XSharp.Core.Functions.DBOI_GET_ACE_INDEX_HANDLE" filterName="DBOI_GET_ACE_INDEX_HANDLE" isExposed="False" />
+          <Filter entryType="Field" fullName="XSharp.Core.Functions.DBOI_HPLOCK_GATE" filterName="DBOI_HPLOCK_GATE" isExposed="False" />
           <Filter entryType="Field" fullName="XSharp.Core.Functions.DBOI_HPLOCKING" filterName="DBOI_HPLOCKING" isExposed="False" />
           <Filter entryType="Field" fullName="XSharp.Core.Functions.DBOI_I_BAGNAME" filterName="DBOI_I_BAGNAME" isExposed="False" />
           <Filter entryType="Field" fullName="XSharp.Core.Functions.DBOI_I_TAGNAME" filterName="DBOI_I_TAGNAME" isExposed="False" />
@@ -367,6 +371,8 @@
           <Filter entryType="Field" fullName="XSharp.Core.Functions.DBOI_KEYTYPE" filterName="DBOI_KEYTYPE" isExposed="False" />
           <Filter entryType="Field" fullName="XSharp.Core.Functions.DBOI_KEYVAL" filterName="DBOI_KEYVAL" isExposed="False" />
           <Filter entryType="Field" fullName="XSharp.Core.Functions.DBOI_LARGEFILE" filterName="DBOI_LARGEFILE" isExposed="False" />
+          <Filter entryType="Field" fullName="XSharp.Core.Functions.DBOI_LOCK_ALL" filterName="DBOI_LOCK_ALL" isExposed="False" />
+          <Filter entryType="Field" fullName="XSharp.Core.Functions.DBOI_LOCK_FAIL" filterName="DBOI_LOCK_FAIL" isExposed="False" />
           <Filter entryType="Field" fullName="XSharp.Core.Functions.DBOI_LOCKOFFSET" filterName="DBOI_LOCKOFFSET" isExposed="False" />
           <Filter entryType="Field" fullName="XSharp.Core.Functions.DBOI_MULTIKEY" filterName="DBOI_MULTIKEY" isExposed="False" />
           <Filter entryType="Field" fullName="XSharp.Core.Functions.DBOI_NAME" filterName="DBOI_NAME" isExposed="False" />
@@ -593,18 +599,21 @@
       </Filter>
       <Filter entryType="Namespace" fullName="XSharp.RDD" isExposed="False">
         <Filter entryType="Structure" fullName="XSharp.RDD.DbDate" filterName="DbDate" isExposed="True" />
+        <Filter entryType="Enumeration" fullName="XSharp.RDD.DbfHeaderCodepage" filterName="DbfHeaderCodepage" isExposed="True" />
         <Filter entryType="Structure" fullName="XSharp.RDD.DbFloat" filterName="DbFloat" isExposed="True" />
+        <Filter entryType="Enumeration" fullName="XSharp.RDD.DbfLockingModel" filterName="DbfLockingModel" isExposed="True" />
+        <Filter entryType="Enumeration" fullName="XSharp.RDD.ERDD" filterName="ERDD" isExposed="True" />
         <Filter entryType="Class" fullName="XSharp.RDD.Functions" filterName="Functions" isExposed="True" />
         <Filter entryType="Interface" fullName="XSharp.RDD.IMemo" filterName="IMemo" isExposed="True" />
         <Filter entryType="Interface" fullName="XSharp.RDD.IOrder" filterName="IOrder" isExposed="True" />
         <Filter entryType="Interface" fullName="XSharp.RDD.IRdd" filterName="IRdd" isExposed="True" />
-        <Filter entryType="Class" fullName="XSharp.RDD.Workarea" filterName="Workarea" isExposed="True">
-          <Filter entryType="Constructor" fullName="XSharp.RDD.Workarea.#ctor" filterName=".ctor" isExposed="False" />
-        </Filter>
-        <Filter entryType="Class" fullName="XSharp.RDD.WorkAreas" filterName="WorkAreas" isExposed="True">
-          <Filter entryType="Constructor" fullName="XSharp.RDD.WorkAreas.#ctor" filterName=".ctor" isExposed="False" />
-          <Filter entryType="Method" fullName="XSharp.RDD.WorkAreas._CloseFiles" filterName="_CloseFiles" isExposed="False" />
-        </Filter>
+        <Filter entryType="Enumeration" fullName="XSharp.RDD.OsCodepage" filterName="OsCodepage" isExposed="True" />
+        <Filter entryType="Class" fullName="XSharp.RDD.RddError" filterName="RddError" isExposed="True" />
+        <Filter entryType="Class" fullName="XSharp.RDD.RegisteredRDD" filterName="RegisteredRDD" isExposed="True" />
+        <Filter entryType="Class" fullName="XSharp.RDD.SortRecord" filterName="SortRecord" isExposed="True" />
+        <Filter entryType="Class" fullName="XSharp.RDD.Workarea" filterName="Workarea" isExposed="True" />
+        <Filter entryType="Class" fullName="XSharp.RDD.WorkAreas" filterName="WorkAreas" isExposed="True" />
+        <Filter entryType="Class" fullName="XSharp.RDD.WrapperRDD" filterName="WrapperRDD" isExposed="True" />
       </Filter>
       <Filter entryType="Namespace" fullName="XSharp.RT" isExposed="True">
         <Filter entryType="Class" fullName="XSharp.RT.Functions" filterName="Functions" isExposed="True">
@@ -686,7 +695,6 @@
           <Filter entryType="Method" fullName="XSharp.VO.Functions.AtomInit" filterName="AtomInit" isExposed="False" />
           <Filter entryType="Method" fullName="XSharp.VO.Functions.AtomTableGetDirty" filterName="AtomTableGetDirty" isExposed="False" />
           <Filter entryType="Method" fullName="XSharp.VO.Functions.AtomTableSetDirty" filterName="AtomTableSetDirty" isExposed="False" />
-          <Filter entryType="Method" fullName="XSharp.VO.Functions.Buffer" filterName="Buffer" isExposed="False" />
           <Filter entryType="Method" fullName="XSharp.VO.Functions.CompString" filterName="CompString" isExposed="False" />
           <Filter entryType="Method" fullName="XSharp.VO.Functions.CreateAtomTable" filterName="CreateAtomTable" isExposed="False" />
           <Filter entryType="Method" fullName="XSharp.VO.Functions.CreateGCDump" filterName="CreateGCDump" isExposed="False" />
@@ -719,7 +727,6 @@
           <Filter entryType="Method" fullName="XSharp.VO.Functions.DynUnLock" filterName="DynUnLock" isExposed="False" />
           <Filter entryType="Method" fullName="XSharp.VO.Functions.EnterCGCSection" filterName="EnterCGCSection" isExposed="False" />
           <Filter entryType="Method" fullName="XSharp.VO.Functions.ErrorCount" filterName="ErrorCount" isExposed="False" />
-          <Filter entryType="Method" fullName="XSharp.VO.Functions.ErrorExec" filterName="ErrorExec" isExposed="False" />
           <Filter entryType="Method" fullName="XSharp.VO.Functions.ErrorFunc" filterName="ErrorFunc" isExposed="False" />
           <Filter entryType="Method" fullName="XSharp.VO.Functions.ErrorMessageBox" filterName="ErrorMessageBox" isExposed="False" />
           <Filter entryType="Method" fullName="XSharp.VO.Functions.ExitVOThread" filterName="ExitVOThread" isExposed="False" />
@@ -812,7 +819,6 @@
           <Filter entryType="Method" fullName="XSharp.VO.Functions.SetMaxRegisteredKids" filterName="SetMaxRegisteredKids" isExposed="False" />
           <Filter entryType="Method" fullName="XSharp.VO.Functions.SetMaxThreadDynSize" filterName="SetMaxThreadDynSize" isExposed="False" />
           <Filter entryType="Method" fullName="XSharp.VO.Functions.SetWipeDynSpace" filterName="SetWipeDynSpace" isExposed="False" />
-          <Filter entryType="Method" fullName="XSharp.VO.Functions.SEvalA" filterName="SEvalA" isExposed="False" />
           <Filter entryType="Method" fullName="XSharp.VO.Functions.StrEvaluate" filterName="StrEvaluate" isExposed="False" />
           <Filter entryType="Method" fullName="XSharp.VO.Functions.String2W" filterName="String2W" isExposed="False" />
           <Filter entryType="Method" fullName="XSharp.VO.Functions.StrToLong" filterName="StrToLong" isExposed="False" />
@@ -953,30 +959,20 @@
           </configurations>
         </component>
       </ComponentConfig>
-      <ComponentConfig id="Code Block Component" enabled="True">
-        <component id="Code Block Component">
-          <basePath value="{@HtmlEncProjectFolder}" />
-          <outputPaths>{@HelpFormatOutputPaths}</outputPaths>
-          <allowMissingSource value="true" />
-          <removeRegionMarkers value="true" />
-          <colorizer syntaxFile="{@SHFBFolder}PresentationStyles\Colorizer\highlight.xml" styleFile="{@SHFBFolder}PresentationStyles\Colorizer\highlight.xsl" stylesheet="{@SHFBFolder}PresentationStyles\Colorizer\highlight.css" scriptFile="{@SHFBFolder}PresentationStyles\Colorizer\highlight.js" disabled="{@DisableCodeBlockComponent}" language="none" tabSize="0" numberLines="false" outlining="true" keepSeeTags="true" defaultTitle="true" />
-        </component>
-      </ComponentConfig>
-      <ComponentConfig id="API Token Resolution" enabled="True">
-        <component id="API Token Resolution">{@TokenFiles}
-<replace elements="/*//token" item="string(.)" /></component>
-      </ComponentConfig>
-      <ComponentConfig id="Comments Index Data (ESENT Cache)" enabled="True">
-        <component id="Comments Index Data (ESENT Cache)">
-          <index name="comments" value="/doc/members/member" key="@name" cache="30" localCacheSize="2500" frameworkCachePath="{@LocalDataFolder}Cache\CommentsIndexCache" projectCachePath="{@WorkingFolder}CommentsIndexCache">
+<ComponentConfig id="Code Block Component" enabled="True"><component id="Code Block Component">
+  <basePath value="{@HtmlEncProjectFolder}" />
+  <outputPaths>{@HelpFormatOutputPaths}</outputPaths>
+  <allowMissingSource value="true" />
+  <removeRegionMarkers value="true" />
+  <colorizer syntaxFile="{@SHFBFolder}PresentationStyles\Colorizer\highlight.xml" styleFile="{@SHFBFolder}PresentationStyles\Colorizer\highlight.xsl" stylesheet="{@SHFBFolder}PresentationStyles\Colorizer\highlight.css" scriptFile="{@SHFBFolder}PresentationStyles\Colorizer\highlight.js" disabled="{@DisableCodeBlockComponent}" language="none" tabSize="0" numberLines="false" outlining="true" keepSeeTags="true" defaultTitle="true" />
+</component></ComponentConfig>
+<ComponentConfig id="API Token Resolution" enabled="True"><component id="API Token Resolution">{@TokenFiles}
+<replace elements="/*//token" item="string(.)" /></component></ComponentConfig>
+<ComponentConfig id="Comments Index Data (ESENT Cache)" enabled="True"><component id="Comments Index Data (ESENT Cache)"><index name="comments" value="/doc/members/member" key="@name" cache="30" localCacheSize="2500" frameworkCachePath="{@LocalDataFolder}Cache\CommentsIndexCache" projectCachePath="{@WorkingFolder}CommentsIndexCache">
 	{@FrameworkCommentList}
 	{@CommentFileList}
-</index>
-          <copy name="comments" source="*" target="/document/comments" />
-        </component>
-      </ComponentConfig>
-      <ComponentConfig id="Resolve Reference Links (ESENT Cache)" enabled="True">
-        <component id="Resolve Reference Links (ESENT Cache)">{@HRefFormat}
+</index><copy name="comments" source="*" target="/document/comments" /></component></ComponentConfig>
+<ComponentConfig id="Resolve Reference Links (ESENT Cache)" enabled="True"><component id="Resolve Reference Links (ESENT Cache)">{@HRefFormat}
 <locale value="{@Locale}" /><linkTarget value="{@SdkLinkTarget}" /><helpOutput format="HtmlHelp1"><msdnContentIdCache path="{@LocalDataFolder}Cache\MsdnContentId.cache" cachePath="{@LocalDataFolder}Cache\ESentMsdnContentIdCache" localCacheSize="2500" /><targets base="{@FrameworkReflectionDataFolder}" recurse="true" files="*.xml" type="{@HtmlSdkLinkType}" id="FrameworkTargets" cachePath="{@LocalDataFolder}Cache\ESentFrameworkTargetCache" localCacheSize="2500">
 		{@ReferenceLinkNamespaceFiles}
 	</targets><targets files="reflection.xml" type="Local" id="ProjectTargets" cachePath="" localCacheSize="2500" noReload="true" /></helpOutput><helpOutput format="MSHelpViewer"><msdnContentIdCache path="{@LocalDataFolder}Cache\MsdnContentId.cache" cachePath="{@LocalDataFolder}Cache\ESentMsdnContentIdCache" localCacheSize="2500" /><targets base="{@FrameworkReflectionDataFolder}" recurse="true" files="*.xml" type="{@MSHelpViewerSdkLinkType}" id="FrameworkTargets" cachePath="{@LocalDataFolder}Cache\ESentFrameworkTargetCache" localCacheSize="2500">
@@ -987,14 +983,8 @@
 		{@ReferenceLinkNamespaceFiles}
 	</targets><targets files="reflection.xml" type="Local" id="ProjectTargets" cachePath="" localCacheSize="2500" noReload="true" /></helpOutput><helpOutput format="Markdown"><msdnContentIdCache path="{@LocalDataFolder}Cache\MsdnContentId.cache" cachePath="{@LocalDataFolder}Cache\ESentMsdnContentIdCache" localCacheSize="2500" /><targets base="{@FrameworkReflectionDataFolder}" recurse="true" files="*.xml" type="{@WebsiteSdkLinkType}" id="FrameworkTargets" cachePath="{@LocalDataFolder}Cache\ESentFrameworkTargetCache" localCacheSize="2500">
 		{@ReferenceLinkNamespaceFiles}
-	</targets><targets files="reflection.xml" type="Local" id="ProjectTargets" cachePath="" localCacheSize="2500" noReload="true" /></helpOutput></component>
-      </ComponentConfig>
-      <ComponentConfig id="IntelliSense Component" enabled="True">
-        <component id="IntelliSense Component">
-          <output includeNamespaces="true" namespacesFile="Namespaces" folder="{@OutputFolder}" boundedCapacity="100" />
-        </component>
-      </ComponentConfig>
-    </ComponentConfigurations>
+	</targets><targets files="reflection.xml" type="Local" id="ProjectTargets" cachePath="" localCacheSize="2500" noReload="true" /></helpOutput></component></ComponentConfig>
+<ComponentConfig id="IntelliSense Component" enabled="True"><component id="IntelliSense Component"><output includeNamespaces="true" namespacesFile="Namespaces" folder="{@OutputFolder}" boundedCapacity="100" /></component></ComponentConfig></ComponentConfigurations>
     <MissingTags>AutoDocumentCtors, AutoDocumentDispose</MissingTags>
     <TransformComponentArguments>
       <Argument Key="logoFile" Value="" />

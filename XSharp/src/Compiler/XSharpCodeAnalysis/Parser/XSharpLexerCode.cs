@@ -1198,7 +1198,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             return false;
         }
 
-        private bool IsModifier(int iToken)
+        public static bool IsModifier(int iToken)
         {
             switch (iToken)
             {

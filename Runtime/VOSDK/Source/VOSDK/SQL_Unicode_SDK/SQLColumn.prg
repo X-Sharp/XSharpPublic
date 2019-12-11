@@ -6,13 +6,14 @@
 
 USING System.Data
 USING System.Diagnostics
+
 [DebuggerDisplay( "SqlColumn {ColName,nq}" )] ;
 PARTIAL CLASS SQLColumn    INHERIT SQLValue
-	EXPORT DisplaySize  AS DWORD
-	EXPORT Index        AS INT
-	EXPORT ColName      AS STRING
-	EXPORT AliasName    AS STRING
-	EXPORT Length       AS LONGINT
+	PROPERTY DisplaySize  AS DWORD       AUTO
+	PROPERTY Index        AS INT         AUTO
+	PROPERTY ColName      AS STRING      AUTO
+	PROPERTY AliasName    AS STRING      AUTO
+	PROPERTY Length       AS LONGINT     AUTO
 
 CONSTRUCTOR( oHyperLabel AS HyperLabel, oFieldSpec as FieldSpec, oType as System.Type, nScale as SHORT, lNullable as LOGIC, nIndex as INT, cColName as STRING, cAlias  as STRING)  
 

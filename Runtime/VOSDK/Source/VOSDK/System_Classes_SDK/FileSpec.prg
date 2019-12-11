@@ -666,7 +666,7 @@ METHOD Find( )
 
 
 ACCESS FullPath                     
-	RETURN SELF:__FullPathAcc() //359@003
+	RETURN SELF:__FullPathAcc() 
 
 
 ASSIGN FullPath(cFullPath)          
@@ -1464,16 +1464,16 @@ FUNCTION __SplitPath    (oFS , cString , aFullPath )
     aFullPath[3] := cName
     aFullPath[4] := cExt
 
-	IF IsObject(oFS) .and. __Usual.ToObject(oFS) IS FileSpec
+	IF IsObject(oFS) .AND. __Usual.ToObject(oFS) IS FileSpec VAR oFsParam
 	
 	   //SE-081211 fixes a problem with UNC pathnames
        IF aFullPath[2] == NULL_STRING
-          aFullPath[2] := ((FileSpec)oFS):Path
+          aFullPath[2] := oFsParam:Path
        ENDIF
       
        IF aFullPath[1] == NULL_STRING
           IF ! Left(aFullPath[2],2) == "\\"  //SE-081211 copy drive only if path is no UNC path
-             aFullPath[1] := ((FileSpec)oFS):Drive 
+             aFullPath[1] := oFsParam:Drive 
           ENDIF   
        ENDIF
 

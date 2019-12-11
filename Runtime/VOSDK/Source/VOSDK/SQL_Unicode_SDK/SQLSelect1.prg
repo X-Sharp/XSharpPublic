@@ -44,6 +44,7 @@ PARTIAL CLASS SqlSelect INHERIT DataServer
 	PROTECT oNetConn		AS IDBConnection // Connection
 	PROTECT oTable			AS DataTable	// Contents of resultset
 	PROTECT oSchema			AS DataTable	// Schema definition of resultset
+    PROTECT oAdapter        AS DbDataAdapter  // Data Adapter for Insert/Update/Delete
 	PROTECT oCurrentRow		AS DataRow		// Current data row in result set. NULL when at EOF
 	
 	PROTECT oFieldHash      AS System.Collections.HashTable // Hashtable of Strings and Symbols and column positions
@@ -177,6 +178,7 @@ PARTIAL CLASS SqlSelect INHERIT DataServer
 		LOCAL lOk AS LOGIC
 		IF SELF:lChanges
 			// Todo: Write changes back to server. This is not needed for Grün because it is done in the subclass
+            nRowCount := SELF:oAdapter:Update(oTable)
 			oTable:AcceptChanges()
 			SELF:lChanges := FALSE
 			lOk := TRUE
@@ -259,6 +261,13 @@ PARTIAL CLASS SqlSelect INHERIT DataServer
 		LOCAL lRet AS LOGIC
 		lRet := FALSE
 		oTable      := Table
+        SELF:oAdapter := SELF:oConn:Factory:CreateDataAdapter()
+        SELF:oAdapter:SelectCommand := SELF:oStmt:StatementHandle
+        VAR builder := SELF:oConn:Factory:CreateCommandBuilder()
+        builder:DataAdapter := SELF:oAdapter
+        SELF:oAdapter:InsertCommand := builder:GetInsertCommand()
+        SELF:oAdapter:UpdateCommand := builder:GetUpdateCommand()
+        SELF:oAdapter:DeleteCommand := builder:GetDeleteCommand()
 		oSchema     := Schema
 		nRowCount	:= oTable:Rows:Count
 		nCurrentRow := 0

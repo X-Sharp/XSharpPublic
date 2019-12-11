@@ -1,11 +1,11 @@
 CLASS DataServer
     PROTECT oHyperLabel AS HyperLabel
     PROTECT oHLStatus		AS USUAL
-    PROTECT wFieldCount	AS DWORD
-    PROTECT aDataFields	AS ARRAY
+    PROTECT wFieldCount 	AS DWORD
+    PROTECT aDataFields	    AS ARRAY
     PROTECT aClients		AS ARRAY
     PROTECT nClients		AS DWORD
-    PROTECT nCCMode		AS DWORD
+    PROTECT nCCMode		    AS DWORD
     PROTECT nLastLock		AS DWORD
 
 METHOD __ClearLocks( ) AS VOID STRICT 

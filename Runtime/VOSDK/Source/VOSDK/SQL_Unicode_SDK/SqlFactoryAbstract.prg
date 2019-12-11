@@ -29,6 +29,10 @@ ABSTRACT CLASS AbstractSqlFactory IMPLEMENTS ISqlFactory
         
     METHOD CreateCommand    AS DbCommand
         RETURN oInstance:CreateCommand()
+
+    METHOD CreateCommandBuilder    AS DbCommandBuilder
+        RETURN oInstance:CreateCommandBuilder()
+
     METHOD CreateParameter  AS DbParameter
         RETURN oInstance:CreateParameter()
     METHOD CreateDataAdapter    AS DbDataAdapter

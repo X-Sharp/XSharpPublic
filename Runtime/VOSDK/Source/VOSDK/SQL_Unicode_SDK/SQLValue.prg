@@ -8,10 +8,10 @@ USING System.Data
 using System.Reflection
 
 PARTIAL CLASS SQLValue INHERIT DataField
-	EXPORT Type         AS System.Type
-	EXPORT Scale        AS SHORT
-	EXPORT Nullable     AS LOGIC
-    PROTECT nODBCType   AS SHORT
+	PROPERTY Type         AS System.Type       AUTO
+	PROPERTY Scale        AS SHORT             AUTO
+	PROPERTY Nullable     AS LOGIC             AUTO
+	//PROTECT nODBCType   AS SHORT             AUTO
 
 CONSTRUCTOR( oHyperLabel as HyperLabel, oFieldSpec as FieldSpec, nType as System.Type, nScale as SHORT, lNullable  AS LOGIC) 
 	IF IsInstanceOfUsual(oFieldSpec, #FieldSpec) 	
@@ -38,8 +38,8 @@ ACCESS UsualType () AS DWORD
 	ENDIF
 	RETURN nRet
 
-[ObsoleteAttribute( "ODBCType is no longer used. Use Type in stead", FALSE )] ;
-PROPERTY ODBCType AS SHORTINT GET nODBCType SET nODBCType := value 
+//[ObsoleteAttribute( "ODBCType is no longer used. Use Type in stead", FALSE )] ;
+//PROPERTY ODBCType AS SHORTINT GET nODBCType SET nODBCType := value 
     
 END CLASS
 

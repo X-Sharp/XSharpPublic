@@ -29,7 +29,7 @@ PARTIAL CLASS SqlSelect INHERIT DataServer
 		SELF:nRowCount       	:= -1
 		SELF:lTimeStampAsDate   := TRUE
 		SELF:lNullAsBlank		:= TRUE
-		IF cSQLSelect != NIL
+		IF !IsNil(cSQLSelect)
 			SELF:__FindTableName()
 		ENDIF
 
@@ -284,7 +284,7 @@ PARTIAL CLASS SqlSelect INHERIT DataServer
 			lOk := SELF:__PrepareForRecordMovement()
 			IF lOk
 				nRow := SELF:nCurrentRow
-				IF nSkip == NIL
+				IF IsNil(nSkip)
 					nSkip := 1
 				ENDIF
 				IF nSkip < 0 .AND. SELF:lBof

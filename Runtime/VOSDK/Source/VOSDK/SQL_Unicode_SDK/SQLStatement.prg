@@ -37,7 +37,7 @@ CONSTRUCTOR( cSQLStatement, oSQLConnection )
 	IF IsString( cSQLStatement ) .AND. SLen( cSQLStatement ) > 0
 	  SELF:cStatement := cSQLStatement
    ENDIF
-	IF oSQLConnection = NIL
+	IF IsNil(oSQLConnection)
 		SELF:oConn := SQLSetConnection()
 	ELSE
 		SELF:oConn := oSQLConnection
@@ -154,7 +154,7 @@ METHOD Execute( uParm )
 		oDataSet:EnforceConstraints := FALSE
 		oDataReader := SELF:oNetCmd:ExecuteReader()
 		nRows := oDataReader:RecordsAffected
-        oDataReader := SELF:oConn:Factory:AfterOpen(oDataReader)
+		oDataReader := SELF:oConn:Factory:AfterOpen(oDataReader)
 //		IF oDataReader:FieldCount != 0 .AND. SELF:Connection:ProviderType == ProviderType.MySql
 //			// Adjust result set to avoid getting constraints in the DataReader which causes some resultsets
 //			// to only load the first row
@@ -471,35 +471,33 @@ PROPERTY CursorType AS LONG GET 0
 
 PROPERTY ErrInfo AS SqlErrorInfo GET oErrInfo SET oErrInfo := VALUE
 
-ACCESS HyperLabel
+PROPERTY HyperLabel AS HyperLabel
+    GET
 	LOCAL oHL       AS HyperLabel
 	oHL := HyperLabel{  #Statement,     ;
 							cStatement,     ;
 							Symbol2String( ClassName( SELF ) )+ ": " + cStatement,  ;
 							Symbol2String( ClassName( SELF ) )+ "_" + cStatement }
 	RETURN oHL
-
+    END GET
+END PROPERTY   
 
 [Obsolete];
 PROPERTY KeySet AS LONG GET 0
 
-ACCESS NativeSQL
-	RETURN SELF:SQLString
+PROPERTY NativeSQL AS STRING GET SELF:SQLString
 
-ACCESS NumParameters
+ACCESS NumParameters AS LONG
 	SELF:Prepare()
 	RETURN SELF:oNetCmd:Parameters:Count
 
-ACCESS NumSuccessfulRows
-	RETURN SELF:nRows
+PROPERTY NumSuccessfulRows  AS LONG GET SELF:nRows
 
-ACCESS Params
-	RETURN SELF:aParams
+PROPERTY Params AS ARRAY GET SELF:aParams
 
 PROPERTY PrepFlag AS LOGIC AUTO
 
-ACCESS RecCount
-	RETURN SELF:NumSuccessfulRows
+PROPERTY RecCount AS LONG GET SELF:NumSuccessfulRows
 
 [Obsolete];
 PROPERTY RowSet AS LONG GET 0
@@ -548,7 +546,8 @@ PROPERTY StatementHandle AS DbCommand
 END PROPERTY
 
 
-ACCESS Status
+PROPERTY Status AS HyperLabel
+    GET
 	LOCAL   oRet    AS OBJECT
 
 	IF SELF:oErrInfo:ErrorFlag
@@ -559,6 +558,8 @@ ACCESS Status
 	ENDIF
 
 	RETURN oRet
+    END GET
+END PROPERTY
 PROPERTY Table AS DataTable GET oDataTable
 PROPERTY Schema AS DataTable GET oSchema
 

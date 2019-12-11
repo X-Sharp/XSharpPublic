@@ -23,6 +23,9 @@ INTERFACE ISqlFactory
     /// <summary>Create a command object.</summary>
     METHOD CreateCommand                        AS DbCommand
 
+    /// <summary>Create a commandbuilder object.</summary>
+    METHOD CreateCommandBuilder    AS DbCommandBuilder  
+
     /// <summary>Create a connectionstring builder object.</summary>
     METHOD CreateConnectionStringBuilder    AS DbConnectionStringBuilder
 

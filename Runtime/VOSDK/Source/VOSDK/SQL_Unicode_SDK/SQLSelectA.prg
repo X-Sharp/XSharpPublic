@@ -6,21 +6,24 @@
 
 
 USING System.Data.Common
-using System.Data
+USING System.Data
+USING System.Collections.Generic
 
 PARTIAL CLASS SqlSelect INHERIT DataServer
 	PROPERTY AppendData AS ARRAY GET {}
 		
 	PROPERTY AppendFlag AS LOGIC GET SELF:lAppendFlag
 	
-	ACCESS BoF 
-		IF SELF:lAppendFlag
-			RETURN FALSE
-		ENDIF
-		RETURN SELF:lBof
-	
-	ACCESS Connection 
-		RETURN SELF:oConn
+	PROPERTY BoF AS USUAL
+        GET
+		    IF SELF:lAppendFlag
+			    RETURN FALSE
+		    ENDIF
+		    RETURN SELF:lBof
+        END GET
+	END PROPERTY
+
+    PROPERTY Connection AS SqlConnection GET SELF:oConn
 	
 	ACCESS CursorName AS STRING
 		RETURN ""
@@ -29,156 +32,155 @@ PARTIAL CLASS SqlSelect INHERIT DataServer
 		RETURN
 	
 	
-	ACCESS DBStruct 
-		LOCAL aStruct       AS ARRAY
-		LOCAL nIndex        AS DWORD
-		LOCAL oCol			  AS SQLColumn
-		LOCAL oFs			  AS FieldSpec
-		//RvdH 050413 Centralize opening of cursor
-		IF ! SELF:__ForceOpen()
-			RETURN {}
-		ENDIF
+	PROPERTY DBStruct AS USUAL
+        GET
+		    LOCAL aStruct       AS ARRAY
+		    LOCAL nIndex        AS DWORD
+		    LOCAL oCol			  AS SQLColumn
+		    LOCAL oFs			  AS FieldSpec
+		    //RvdH 050413 Centralize opening of cursor
+		    IF ! SELF:__ForceOpen()
+			    RETURN {}
+		    ENDIF
 		
-		// create an array for the dbstructs
-		aStruct := ArrayNew( SELF:nNumCols )
+		    // create an array for the dbstructs
+		    aStruct := ArrayNew( SELF:nNumCols )
 		
-		// fill it...
-		FOR nIndex := 1 TO SELF:nNumCols
-			oCol := SELF:aSQLColumns[nIndex]
-			oFs := oCol:FieldSpec
-			aStruct[nIndex] :=    ;
-			{  oCol:ColName,   ;
-			oFs:ValType,    ;
-			oFs:Length,     ;
-			oFs:Decimals    ;
-			}
-		NEXT
+		    // fill it...
+		    FOR nIndex := 1 TO SELF:nNumCols
+			    oCol := SELF:aSQLColumns[nIndex]
+			    oFs := oCol:FieldSpec
+			    aStruct[nIndex] :=    ;
+			    {  oCol:ColName,   ;
+			    oFs:ValType,    ;
+			    oFs:Length,     ;
+			    oFs:Decimals    ;
+			    }
+		    NEXT
 		
-		RETURN aStruct
+		    RETURN aStruct
+        END GET
+	END PROPERTY
+
 	
-	ACCESS Deleted AS LOGIC
-		RETURN FALSE
+	PROPERTY Deleted AS LOGIC GET FALSE
 	
-	ACCESS EoF 
+	PROPERTY EoF AS USUAL
+        GET
 		SELF:__ForceOpen()
 		IF SELF:lAppendFlag
 			RETURN FALSE
 		ENDIF
 		RETURN SELF:lEof
+        END GET
+    	END PROPERTY
+    
+	PROPERTY ErrInfo AS Error GET SELF:oStmt:ErrInfo
 	
-	ACCESS ErrInfo
-		RETURN SELF:oStmt:ErrInfo
+	PROPERTY FCount AS USUAL
+        GET
+		    LOCAL nRet  AS DWORD
+		    IF ! SELF:__ForceOpen()
+			    nRet := 0
+		    ELSE
+			    nRet := (DWORD) SELF:nNumCols 
+		    ENDIF
+		    RETURN nRet
+        END GET
+        END PROPERTY
+	    
+	PROPERTY FOUND () AS LOGIC GET !SELF:EoF
 	
-	ACCESS FCount 
-		LOCAL nRet  AS DWORD
-		IF ! SELF:__ForceOpen()
-			nRet := 0
-		ELSE
-			nRet := (DWORD) SELF:nNumCols 
-		ENDIF
-		RETURN nRet
+	PROPERTY HyperLabel AS USUAL
+        GET
+		    SELF:__ForceOpen()
+		    RETURN SUPER:HyperLabel
+        END GET
+        END PROPERTY
 	
-	ACCESS FOUND () AS LOGIC
-		RETURN !SELF:EoF
+	PROPERTY IndexColumns AS List<INT> GET aIndexCol
 	
-	ACCESS HyperLabel 
-		SELF:__ForceOpen()
-		RETURN SUPER:HyperLabel
-	
-	ACCESS IndexColumns 
-		RETURN aIndexCol
-	
-	ACCESS LastRec AS LONG
-		IF ! SELF:__ForceOpen()
-			RETURN 0
-		ENDIF
-		IF SELF:oTable != NULL
-			RETURN SELF:oTable:Rows:Count
-		ENDIF
-		RETURN 0
+	PROPERTY LastRec AS LONG
+        GET
+		    IF ! SELF:__ForceOpen()
+			    RETURN 0
+		    ENDIF
+		    IF SELF:oTable != NULL
+			    RETURN SELF:oTable:Rows:Count
+		    ENDIF
+		    RETURN 0
+        END GET
+        END PROPERTY
 	
 	PROPERTY lRowModified AS LOGIC GET oCurrentRow != NULL .and. oCurrentRow:RowState != DataRowState.Unchanged
 
-	ACCESS Modified AS LOGIC
-		RETURN lRowModified
+	PROPERTY Modified AS LOGIC GET lRowModified
 	
-	ACCESS MoreResults AS LOGIC
-		RETURN !SELF:lEof
+	PROPERTY MoreResults AS LOGIC GET !SELF:lEof
 	
-	ACCESS NativeSQL AS STRING
-		RETURN SELF:oStmt:NativeSQL
+	PROPERTY NativeSQL AS STRING GET SELF:oStmt:NativeSQL
 	
 	PROPERTY NullAsBlank AS LOGIC ;
 		GET SELF:lNullAsBlank    ;
 		SET SELF:lNullAsBlank := Value
 	
-	ACCESS NumCols AS LONG
-		RETURN nNumCols
+	PROPERTY NumCols AS LONG GET nNumCols
 	
-	ACCESS NumParameters AS LONG
-		RETURN SELF:oStmt:NumParameters
+	PROPERTY NumParameters AS LONG GET SELF:oStmt:NumParameters
 	
-	ACCESS NumResultColumns AS DWORD
-		RETURN SELF:FCount
+	PROPERTY NumResultColumns AS DWORD GET SELF:FCount
 	
-	ACCESS NumSuccessfulRows AS LONG
-		RETURN SELF:nRowCount
+	PROPERTY NumSuccessfulRows AS LONG GET SELF:nRowCount
 	
-	ACCESS PrepFlag AS LOGIC
-		RETURN SELF:oStmt:PrepFlag
+	PROPERTY PrepFlag AS LOGIC GET SELF:oStmt:PrepFlag
 	
-	ACCESS RecCount 
-		RETURN SELF:LASTREC
+	PROPERTY RecCount AS USUAL GET SELF:LASTREC
 	
-	ACCESS RecNo
+	PROPERTY RecNo AS USUAL
+        GET
 		IF ! SELF:__ForceOpen()
 			RETURN 0
 		ENDIF
 		RETURN SELF:nCurrentRow+1
+        END GET
+        END PROPERTY
 	
-	ACCESS SQLColumns AS SQLColumn[]
-		RETURN SELF:aSQLColumns
+	PROPERTY SQLColumns AS SQLColumn[] GET SELF:aSQLColumns
 	
 	PROPERTY SqlData AS ARRAY GET {}
 	
-	ACCESS SQLString AS STRING
-		RETURN SELF:oStmt:SQLString
-	
-	ASSIGN SQLString( uVal  AS STRING)
+	PROPERTY SQLString AS STRING
+        GET
+		    RETURN SELF:oStmt:SQLString
+        END GET
+	    SET 
 		IF SELF:oStmt:PrepFlag
 			IF !SELF:Close()
 				RETURN 
 			ENDIF
 		ENDIF
 		
-		SELF:oStmt:SQLString := uVal
+		SELF:oStmt:SQLString := VALUE
 		
 		//  Have a statement?
 		IF !String.IsNullOrEmpty(oStmt:SQLString)
 			SELF:__FindTableName()
 		ENDIF
 		RETURN 
+        END SET
+        END PROPERTY
+    
+	PROPERTY Statement AS SqlStatement GET SELF:oStmt
 	
-	ACCESS Statement AS SqlStatement
-		RETURN SELF:oStmt
-	
-	ACCESS StatementHandle
-		RETURN SELF:oStmt:StatementHandle
+	PROPERTY StatementHandle AS DbCommand GET SELF:oStmt:StatementHandle
 		
-	ACCESS Status AS USUAL
-		RETURN SELF:oStmt:Status
+	PROPERTY Status AS USUAL GET SELF:oStmt:Status
 	
-	ACCESS TableName AS STRING
-		RETURN SELF:cTableName
+	PROPERTY TableName AS STRING GET SELF:cTableName
 	
-	ACCESS TimeStampAsDate AS LOGIC
-		RETURN SELF:lTimeStampAsDate
+	PROPERTY TimeStampAsDate AS LOGIC GET SELF:lTimeStampAsDate SET SELF:lTimeStampAsDate := VALUE
 	
-	ASSIGN TimeStampAsDate	( lNew AS LOGIC)
-		SELF:lTimeStampAsDate := lNew
-	
-	ACCESS Used AS LOGIC
-		RETURN SELF:lCsrOpenFlag
+	PROPERTY Used AS LOGIC GET SELF:lCsrOpenFlag
 	
 	
 END CLASS

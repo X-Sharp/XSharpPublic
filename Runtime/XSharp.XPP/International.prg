@@ -7,14 +7,26 @@
 
 USING System.Reflection
 
-
+/// <summary>Query current and/or set new active collation.</summary>
+/// <param name="nCollation">the numeric identifier for the collation table to be selected. Must be one of the values from the XppCollations enum of a simple number</param>
+/// <returns>The numeric identifier of the active collation table </returns>
+/// <seealso cref='T:XSharp.XPP.XppCollations' />
+/// <seealso cref='M:XSharp.XPP.Functions.SetCollationTable(XSharp.__Usual,XSharp.__Usual)' />
 FUNCTION SetCollation(nCollation) AS LONG
-    LOCAL nOld := Set(Set.Collation) AS LONG
+    LOCAL nOld := SET(Set.Collation) AS LONG
     IF PCount() > 0 .AND. IsNumeric(nCollation)
         SetCollationTable(nCollation)
     ENDIF
     RETURN nOld
 
+
+/// <summary>Query current and/or set user defined collation table .</summary>
+/// <param name="nCollation">the numeric identifier for the collation table to be selected. Must be one of the values from the XppCollations enum of a simple number</param>
+/// <param name="aTable">a one dimensional array with 256 elements. It must contain numeric values representing the weighing factors for single characters.
+/// The ASCII value of a character plus 1 defines the array element that contains the weighing factor for that character. </param>
+/// <returns>a one dimensional array holding the weighing factors of characters for the active collation. </returns>
+/// <seealso cref='T:XSharp.XPP.XppCollations' />
+/// <seealso cref='M:XSharp.XPP.Functions.SetCollation(XSharp.__Usual)' />
 FUNCTION SetCollationTable(nCollation, aTable) AS ARRAY
     LOCAL liEnum AS LONG
     LOCAL aCollation AS ARRAY
@@ -76,6 +88,8 @@ FUNCTION SetCollationTable(nCollation, aTable) AS ARRAY
     ENDIF
     RETURN aCollation
 
+/// <summary>List of possible values for XBase++ collations</summary>
+/// <remarks>The System enumeration value is represented by 2 different sort orders, depending on the current Ansi or Charmode setting.</remarks>
 ENUM XppCollations
     MEMBER Ascii          :=   -1
     MEMBER System         :=   0    

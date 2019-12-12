@@ -129,7 +129,7 @@ FUNCTION ATLine(cSearch AS STRING,cTarget AS STRING) AS DWORD
 	IF (nPos > 0)
 		cTarget := Left( cTarget, nPos - 1 )
 		nPos := MemLines( cTarget)
-		IF cTarget:EndsWith(e"\r\n")
+		IF cTarget:EndsWith(RuntimeState.EOL)
 			nPos++
 		ENDIF
 	ENDIF

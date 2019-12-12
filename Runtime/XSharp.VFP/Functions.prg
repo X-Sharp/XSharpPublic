@@ -24,6 +24,7 @@ PROCEDURE RddInit() AS VOID _INIT3
     RuntimeState.SetValue(Set.NEAR, FALSE)
     RuntimeState.SetValue(Set.SQLANSI, FALSE)
     RuntimeState.SetValue(Set.FOXLOCK, TRUE)
+    RuntimeState.SetValue(Set.EOF, TRUE)
     RETURN 
 
 

@@ -40,46 +40,25 @@ CLASS XSharp.RuntimeState
 		SELF:Name := "ThreadState for "+oThread:ManagedThreadId:ToString()
 		oSettings := Dictionary<XSharp.Set, OBJECT>{}
 		IF initialize
-			SELF:BreakLevel := 0 
-			SELF:_SetThreadValue(Set.DateFormat ,"MM/DD/YYYY")
-			SELF:_SetThreadValue<DWORD>(Set.Epoch, 1900)
-			SELF:_SetThreadValue<DWORD>(Set.EpochYear, 0)
-			SELF:_SetThreadValue<DWORD>(Set.EpochCent, 1900)
-			// Initialize the values that are not 'blank'
-			// RDD Settings
-			SELF:_SetThreadValue(Set.Ansi , TRUE)
-            SELF:_SetThreadValue<LONG>(Set.Charset, 0)        // 0 = Ansi, 1 = Oem
-			SELF:_SetThreadValue(Set.AutoOpen , TRUE)
-			SELF:_SetThreadValue<LONG>(Set.AutoOrder , 1)
-			SELF:_SetThreadValue(Set.Optimize , TRUE)
-            SELF:_SetThreadValue(Set.Deleted , FALSE)
-			SELF:_SetThreadValue(Set.AutoShare, (LONG) AutoShareMode.Auto)
-			SELF:_SetThreadValue<DWORD>(Set.LockTries , 10)
-			SELF:_SetThreadValue<DWORD>(Set.MemoBlockSize , 32)
-			SELF:_SetThreadValue(Set.DefaultRDD , "DBFNTX")
-			SELF:_SetThreadValue(Set.Exclusive , TRUE)
-            SELF:_SetThreadValue(Set.FoxLock , FALSE)
-			// Console Settings
-			SELF:_SetThreadValue(Set.Bell , TRUE)
-			SELF:_SetThreadValue(Set.Color , "W/N,N/W,N/N,N/N,N/W")
-			SELF:_SetThreadValue<DWORD>(Set.Decimals ,  2)
-			SELF:_SetThreadValue<DWORD>(Set.Digits , 10 )
-			SELF:_SetThreadValue(Set.Exact , FALSE)
-			SELF:_SetThreadValue(Set.FloatDelta , 0.0000000000001)
-            SELF:_SetThreadValue(Set.LastFound,"")
-            SELF:_SetThreadValue<DWORD>(SET.FileError,0)
+			SELF:BreakLevel := 0
+            // Set default values
+            FOREACH nSet AS XSharp.Set IN System.Enum.GetValues(typeof(XSharp.Set))
+                VAR def := RuntimeStateDefaultValue(nSet)
+                IF def != NULL
+                    SELF:_SetThreadValue(nSet, def)
+                ENDIF
+            NEXT
+            // The following were skipped above bcause of the NULL check
             SELF:_SetThreadValue<Exception>(SET.FileException,NULL)
+            SELF:_SetThreadValue<Exception>(SET.LastRddError,NULL)
+            SELF:_SetThreadValue<Exception>(SET.PathArray,NULL)
             SELF:_SetThreadValue<BYTE[]>(Set.CollationTable, NULL )
 			IF System.Environment.OSVersion:Platform == System.PlatformID.Win32NT
                 SELF:_SetThreadValue<LONG>(Set.DOSCODEPAGE, Win32.GetDosCodePage())
                 SELF:_SetThreadValue<LONG>(Set.WINCODEPAGE, Win32.GetWinCodePage())
-                SELF:_SetThreadValue(Set.CollationMode, CollationMode.Windows)
             ELSE
-                SELF:_SetThreadValue<LONG>(Set.DOSCODEPAGE, 437 )
-                SELF:_SetThreadValue<LONG>(Set.WINCODEPAGE, 1250 )
                 SELF:_SetThreadValue(Set.CollationMode, CollationMode.Unicode )
             ENDIF
-            SELF:_SetThreadValue(Set.Dialect, XSharpDialect.Core)
 			// Date and time settings
 			SELF:_SetInternationalWindows()
 
@@ -169,12 +148,16 @@ CLASS XSharp.RuntimeState
 	/// <summary>The current compiler setting for the VO11 compiler option.</summary>
     /// <include file="CoreComments.xml" path="Comments/CompilerOptions/*" />
     /// <value>The default vale for this option is 'False'.</value>
-	STATIC PROPERTY CompilerOptionVO11 AS LOGIC AUTO
+	STATIC PROPERTY CompilerOptionVO11 AS LOGIC ;
+        GET GetValue<LOGIC>(Set.OptionVO11);
+        SET SetValue<LOGIC>(Set.OptionVO11, VALUE)
  
 	/// <summary>The current compiler setting for the VO13 compiler option.</summary>
     /// <include file="CoreComments.xml" path="Comments/CompilerOptions/*" />
     /// <value>The default vale for this option is 'False'.</value>
-	STATIC PROPERTY CompilerOptionVO13 AS LOGIC AUTO
+	STATIC PROPERTY CompilerOptionVO13 AS LOGIC ;
+        GET GetValue<LOGIC>(Set.OptionVO13);
+        SET SetValue<LOGIC>(Set.OptionVO13, VALUE)
 
 	/// <summary>Gets / Sets the current workarea number.</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
@@ -185,21 +168,29 @@ CLASS XSharp.RuntimeState
     /// <summary>The current compiler setting for the OVF compiler option.</summary>
     /// <include file="CoreComments.xml" path="Comments/CompilerOptions/*" />
     /// <value>The default vale for this option is 'False'.</value>
-	STATIC PROPERTY CompilerOptionOVF AS LOGIC AUTO
+	STATIC PROPERTY CompilerOptionOVF AS LOGIC ;
+        GET GetValue<LOGIC>(Set.OptionOVF);
+        SET SetValue<LOGIC>(Set.OptionOVF, VALUE)
 
     /// <summary>The current compiler setting for the X# Dialect.</summary>
     /// <include file="CoreComments.xml" path="Comments/CompilerOptions/*" />
     /// <value>The default vale for the Dialect is 'Core'.</value>
-	STATIC PROPERTY Dialect AS XSharpDialect AUTO
+	STATIC PROPERTY Dialect AS XSharpDialect ;
+        GET GetValue<XSharpDialect>(Set.Dialect);
+        SET SetValue<XSharpDialect>(Set.Dialect, VALUE)
 
 	/// <summary>The current compiler setting for the FOVF compiler option.</summary>
     /// <include file="CoreComments.xml" path="Comments/CompilerOptions/*" />
     /// <value>The default vale for this option is 'False'.</value>
-	STATIC PROPERTY CompilerOptionFOVF AS LOGIC AUTO
+	STATIC PROPERTY CompilerOptionFOVF AS LOGIC ;
+        GET GetValue<LOGIC>(Set.OptionOVF);
+        SET SetValue<LOGIC>(Set.OptionOVF, VALUE)
 
 	/// <summary>The System.Reflection.Module for the main application.</summary>
     /// <include file="CoreComments.xml" path="Comments/CompilerOptions/*" />
-    STATIC PROPERTY AppModule AS  System.Reflection.Module AUTO
+    STATIC PROPERTY AppModule AS  System.Reflection.Module ;
+        GET GetValue<System.Reflection.Module >(Set.AppModule);
+        SET SetValue<System.Reflection.Module >(Set.AppModule, VALUE)
 	#endregion
 
     STATIC PROPERTY LastFound AS STRING ;
@@ -345,6 +336,20 @@ CLASS XSharp.RuntimeState
 		END SET
 	END PROPERTY
 
+	/// <summary>Should text files, such as memo files be written with a closing EOF = chr(26) character.</summary>
+    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
+    STATIC PROPERTY Eof AS LOGIC ;
+        GET GetValue<LOGIC>(Set.Eof);
+        SET SetValue<LOGIC>(Set.Eof, VALUE)
+
+
+	/// <summary>End of line character to be used by the runtime. Defaults to CR + LF (13 + 13).</summary>
+    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
+    STATIC PROPERTY Eol AS STRING ;
+        GET GetValue<STRING>(Set.Eol);
+        SET SetValue<STRING>(Set.Eol, VALUE)
+
+
 	/// <summary>Date Epoch value that determines how dates without century digits are interpreted.</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
     STATIC PROPERTY Epoch AS DWORD ;
@@ -488,7 +493,6 @@ CLASS XSharp.RuntimeState
 
 
     INTERNAL METHOD _SetInternationalClipper() AS VOID
-        SELF:_SetThreadValue<DWORD>(Set.Decimals, 2)
         SELF:_SetThreadValue<DWORD>(Set.DECIMALSEP, 46)		// DOT .
         SELF:_SetThreadValue<DWORD>(Set.THOUSANDSEP,44)	// COMMA ,
         SELF:_SetThreadValue(Set.Intl, CollationMode.Clipper)
@@ -498,7 +502,6 @@ CLASS XSharp.RuntimeState
         SELF:_SetTimeFormat("hh:MM:SS")
 
     INTERNAL METHOD _SetInternationalWindows() AS VOID
-        SELF:_SetThreadValue<DWORD>(Set.DECIMALS , 2)
         VAR numberformat := System.Globalization.NumberFormatInfo.CurrentInfo
         SELF:_SetThreadValue<DWORD>(Set.DECIMALSEP, numberformat:NumberDecimalSeparator[0])
         SELF:_SetThreadValue<DWORD>(Set.THOUSANDSEP, numberformat:NumberGroupSeparator[0])
@@ -508,9 +511,6 @@ CLASS XSharp.RuntimeState
         SELF:_SetThreadValue(Set.Intl, CollationMode.Windows)
         SELF:_SetThreadValue(Set.Dict, TRUE)
         // FoxPro settings that do not hurt in other dialects
-        SELF:_SetThreadValue(Set.FullPath, TRUE)
-        SELF:_SetThreadValue(Set.Space, TRUE)
-        SELF:_SetThreadValue(Set.Textmerge, FALSE)
         SELF:_SetDateFormatSystem()
         SELF:_SetTimeFormatSystem()
 		RETURN
@@ -531,6 +531,7 @@ CLASS XSharp.RuntimeState
 		        SELF:_SetThreadValue(Set.AMPM, FALSE)
             ENDIF
             SELF:_SetThreadValue(Set.TimeSep, ASC(Substr3(format, 3,1)))
+            SELF:_SetThreadValue(Set.TimeFOrmat, format)
        ENDIF
 
 	INTERNAL METHOD _SetDateFormat(format AS STRING) AS VOID
@@ -579,6 +580,7 @@ CLASS XSharp.RuntimeState
 			SELF:_SetThreadValue(Set.TimeSep, (DWORD) separator[0])
 		ENDIF
 		SELF:_SetThreadValue(Set.AMPM, dtInfo:ShortDatePattern:IndexOf("tt") != -1)
+        SELF:_SetThreadValue(Set.TimeFormat, dtInfo:LongTimePattern)
        
     INTERNAL METHOD _SetDateFormatSystem() AS VOID
 		LOCAL format    AS STRING

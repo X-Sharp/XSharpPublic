@@ -23,7 +23,7 @@ FUNCTION MemoTran(cTarget ,cReplaceHardCR ,cReplaceSoftCR ) AS STRING CLIPPER
       THROW Error.ArgumentError( __ENTITY__, nameof(cReplaceSoftCR), 3, <OBJECT>{ cReplaceSoftCR } )
    ENDIF
    LOCAL cSrc := cTarget AS STRING
-    cSrc := cSrc:Replace( e"\r\n" , cReplaceHardCR )
+    cSrc := cSrc:Replace( RuntimeState.EOL, cReplaceHardCR )
 	cSrc := cSrc:Replace( e"\0x8D\n" , cReplaceSoftCR)
 	RETURN cSrc
 	

@@ -721,6 +721,111 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			END TRY
 		RETURN
 
+		// TECH-9JPUGAOV3L , NTX problem with EoF after sequence of commands
+		[Fact, Trait("Category", "DBF")];
+		METHOD Ntx_SoftSeek_Test_Numeric() AS VOID
+			LOCAL cDbf AS STRING
+			LOCAL cNtx AS STRING
+			
+			RddSetDefault("DBFNTX")
+
+			cDbf := __FUNCTION__
+			cNtx := cDbf + ".ntx"
+			
+			DbCreate( cDbf , {{"NFIELD" , "N" , 5 , 0 }})
+			DbUseArea(,,cDbf,,FALSE)
+			DbAppend()
+			FieldPut(1,123)
+			DbAppend()
+			FieldPut(1,456)
+			DbCreateIndex(cNtx, "NFIELD")
+			DbCloseArea()
+			DbUseArea(,,cDbf,,FALSE)
+			DbSetIndex(cNtx)
+            SetSoftSeek(TRUE)
+            DbSeek(100)
+            Assert.Equal(123, (INT)FieldGet(1))
+            Assert.Equal(FALSE, Eof())
+            Assert.Equal(FALSE, Found())
+            DbSeek(200)
+            Assert.Equal(456, (INT)FieldGet(1))
+            Assert.Equal(FALSE, Eof())
+            Assert.Equal(FALSE, Found())
+            SetSoftSeek(FALSE)
+            DbSeek(200)
+            Assert.Equal(0, (INT)FieldGet(1))
+            Assert.Equal(TRUE, Eof())
+            Assert.Equal(FALSE, Found())
+           SET(_SET_SOFTSEEK, "on")
+            DbSeek(100)
+            Assert.Equal(123, (INT)FieldGet(1))
+            Assert.Equal(FALSE, Eof())
+            Assert.Equal(FALSE, Found())
+            DbSeek(200)
+            Assert.Equal(456, (INT)FieldGet(1))
+            Assert.Equal(FALSE, Eof())
+            Assert.Equal(FALSE, Found())
+           SET(_SET_SOFTSEEK, "off")
+            DbSeek(200)
+            Assert.Equal(0, (INT)FieldGet(1))
+            Assert.Equal(TRUE, Eof())
+            Assert.Equal(FALSE, Found())
+            RETURN
+            
+   		// TECH-9JPUGAOV3L , NTX problem with EoF after sequence of commands
+		[Fact, Trait("Category", "DBF")];
+		METHOD Ntx_SoftSeek_Test_String() AS VOID
+			LOCAL cDbf AS STRING
+			LOCAL cNtx AS STRING
+			
+			RddSetDefault("DBFNTX")
+
+			cDbf := __FUNCTION__
+			cNtx := cDbf + ".ntx"
+			
+			DbCreate( cDbf , {{"CFIELD" , "C" , 5 , 0 }})
+			DbUseArea(,,cDbf,,FALSE)
+			DbAppend()
+			FieldPut(1,"bbbbb")
+			DbAppend()
+			FieldPut(1,"kkkkk")
+			DbCreateIndex(cNtx, "CFIELD")
+			DbCloseArea()
+			DbUseArea(,,cDbf,,FALSE)
+			DbSetIndex(cNtx)
+            SetSoftSeek(TRUE)
+            DbSeek("aaaaa")
+            Assert.Equal("bbbbb", (STRING)FieldGet(1))
+            Assert.Equal(FALSE, Eof())
+            Assert.Equal(FALSE, Found())
+            DbSeek("ccccc")
+            Assert.Equal("kkkkk", (STRING)FieldGet(1))
+            Assert.Equal(FALSE, Eof())
+            Assert.Equal(FALSE, Found())
+            SetSoftSeek(FALSE)
+            DbSeek("ccccc")
+            Assert.Equal("     ", (STRING)FieldGet(1))
+            Assert.Equal(TRUE, Eof())
+            Assert.Equal(FALSE, Found())
+
+           SET(_SET_SOFTSEEK, "on")
+            DbSeek("aaaaa")
+            Assert.Equal("bbbbb", (STRING)FieldGet(1))
+            Assert.Equal(FALSE, Eof())
+            Assert.Equal(FALSE, Found())
+            DbSeek("ccccc")
+            Assert.Equal("kkkkk", (STRING)FieldGet(1))
+            Assert.Equal(FALSE, Eof())
+            Assert.Equal(FALSE, Found())
+           SET(_SET_SOFTSEEK, "off")
+            DbSeek("ccccc")
+            Assert.Equal("     ", (STRING)FieldGet(1))
+            Assert.Equal(TRUE, Eof())
+            Assert.Equal(FALSE, Found())
+
+RETURN
+            
+
 
 		// TECH-9JPUGAOV3L , NTX problem with EoF after sequence of commands
 		[Fact, Trait("Category", "DBF")];

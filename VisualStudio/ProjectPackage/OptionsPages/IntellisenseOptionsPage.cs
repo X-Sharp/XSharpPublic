@@ -109,6 +109,27 @@ namespace XSharp.Project.OptionsPages
                     CaseSync = (x) => x;
                     break;
             }
+            try
+            {
+                var key = Microsoft.Win32.Registry.CurrentUser;
+                var subkey = key.OpenSubKey(Constants.RegistryKey, true);
+                if (subkey == null)
+                {
+                    subkey = key.CreateSubKey(Constants.RegistryKey);
+                }
+                var kwcase = subkey.GetValue("KeywordCase");
+                if (kwcase == null)
+                {
+                    subkey.SetValue("KeywordCase", 1);
+                }
+                subkey.SetValue("KeywordCase", (int)KeywordCase);
+            }
+            catch
+            {
+                ;
+            }
+
+
         }
 
         public string SyncKeyword(string original)

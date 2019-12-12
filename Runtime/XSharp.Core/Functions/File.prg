@@ -418,8 +418,9 @@ BEGIN NAMESPACE XSharp.IO
 		INTERNAL STATIC METHOD writeLine(pFile AS IntPtr,c AS STRING, nLen AS INT) AS INT
 			IF c:Length > nLen
 				c := c:Substring(0, nLen)
-			ENDIF
-			RETURN Write(pFile, c + e"\r\n", nLen+2, TRUE)
+            ENDIF
+            c += RuntimeState.Eol
+			RETURN Write(pFile, c , c:Length, TRUE)
 		
 		
 		INTERNAL STATIC METHOD lock(pFile AS IntPtr,iOffset AS INT64,iLength AS INT64, lLock AS LOGIC) AS LOGIC
@@ -813,7 +814,8 @@ FUNCTION FWrite4(ptrHandle AS IntPtr,ptrBuffer AS BYTE[],dwBytes AS DWORD,lAnsi 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fwriteline/*" />
 FUNCTION FWriteLine(ptrHandle AS IntPtr,cBuffer AS STRING) AS DWORD
-	RETURN (DWORD) XSharp.IO.File.write(ptrHandle, cBuffer + e"\r\n",cBuffer:Length+2, TRUE)
+    cBuffer += RuntimeState.EOL
+	RETURN (DWORD) XSharp.IO.File.write(ptrHandle, cBuffer ,cBuffer:Length, TRUE)
 
 /// <overloads>
 /// <summary>

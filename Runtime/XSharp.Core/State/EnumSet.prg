@@ -4,6 +4,7 @@
 // See License.txt in the project root for license information.
 //
 USING XSharp
+USING XSharp.RDD.Enums
 BEGIN NAMESPACE XSharp
     /// <summary>Values that match the Visual Objects SET_* defines </summary>
     /// <remarks>Global settings are stored in the RuntimeState and are thread specific.
@@ -63,10 +64,10 @@ BEGIN NAMESPACE XSharp
         MEMBER AMPM		    := 47	// LOGIC
         MEMBER CENTURY	    := 48	// LOGIC
         MEMBER DIGITFIXED  	:= 49	// LOGIC
-        MEMBER DECIMALSEP  	:= 50	// INT
-        MEMBER THOUSANDSEP 	:= 51	// INT
-        MEMBER TIMESEP     	:= 52	// INT
-        MEMBER FIELDSTORE  	:= 53
+        MEMBER DECIMALSEP  	:= 50	// DWORD
+        MEMBER THOUSANDSEP 	:= 51	// DWORD
+        MEMBER TIMESEP     	:= 52	// DWORD
+        MEMBER FIELDSTORE  	:= 53   // Logic
         MEMBER SCIENCE     	:= 54	// LOGIC
         MEMBER CPU			:= 55	// INT
         MEMBER FLOATDELTA	:= 56	// System.Double
@@ -81,22 +82,17 @@ BEGIN NAMESPACE XSharp
         MEMBER EpochYear     := 71		// Numeric
         MEMBER DateFormatNet := 72		// String
         MEMBER DateFormatEmpty := 73    // String
-        /// <sumary>Not used.</sumary>
         MEMBER OPTIONVO11	:= 74	// Logic
-        /// <sumary>Not used.</sumary>
         MEMBER OPTIONOVF	:= 75	// Logic
         MEMBER NOMETHOD		:= 76	// STRING
-        /// <sumary>Not used.</sumary>
         MEMBER APPMODULE	:= 77	// System.Reflection.Module
         MEMBER PATHARRAY    := 78	// String[]
         MEMBER NatDLL		:= 79   // string
         MEMBER CollationTable := 80  // byte[]
         MEMBER ErrorLevel   := 81  // DWORD
         MEMBER ErrorBlock   := 82  // Codeblock
-        /// <sumary>Not used.</sumary>
         MEMBER OPTIONVO13	:= 83	// Logic
         MEMBER LastRddError := 84   // Exception object
-        /// <sumary>Not used.</sumary>
         MEMBER Dialect      := 85   // XSharpDialect value
         MEMBER LastFound    := 86   // Last file found with File()
         MEMBER FileError    := 87   // Last File error code
@@ -104,10 +100,10 @@ BEGIN NAMESPACE XSharp
 
 // 86 - 97 unused
         MEMBER DICT        := 98	// LOGIC
-        MEMBER INTL        := 99	// LOGIC
+        MEMBER INTL        := 99	// CollationMode
 
         // Vulcan RDDInfo Settings
-        MEMBER RDDINFO		:= 100
+        MEMBER RDDINFO		:= 100      // no value
         MEMBER MEMOBLOCKSIZE:= 101		// INT
         MEMBER DEFAULTRDD	:= 102		// STRING
         MEMBER MEMOEXT	    := 103		// STRING
@@ -121,11 +117,11 @@ BEGIN NAMESPACE XSharp
         MEMBER OPTIMIZE     := 111		// LOGIC
         MEMBER FOXLOCK      := 112		// LOGIC
 
-        MEMBER RDDINFOMAX   := 119
+        MEMBER RDDINFOMAX   := 119      // no value
 
         MEMBER WINCODEPAGE	:= 120		// Numeric
         MEMBER DOSCODEPAGE	:= 121		// Numeric
-        MEMBER COLLATIONMODE:= 122		// COLLATIONMODE 
+        MEMBER COLLATIONMODE:= 122		// CollationMode 
 
         // FoxPro settings
         /// <summary>FoxPro: Is Textmerge enabled.</summary>
@@ -154,23 +150,24 @@ BEGIN NAMESPACE XSharp
         MEMBER Lexical          := 169  // Not implemented 
 
 
-        // 180 - 197 Harbour extensions
-        MEMBER LANGUAGE       :=  180  
-        MEMBER IDLEREPEAT     :=  181 
-        MEMBER FILECASE       :=  182			
-        MEMBER DIRCASE        :=  183 
-        MEMBER DIRSEPARATOR   :=  184 
-        MEMBER EOF            :=  185 
-        MEMBER HARDCOMMIT     :=  186 
-        MEMBER FORCEOPT       :=  187 
-        MEMBER DBFLOCKSCHEME  :=  188 
-        MEMBER DEFEXTENSIONS  :=  189 
-        MEMBER EOL            :=  190 
-        MEMBER TRIMFILENAME   :=  191	
-        MEMBER HBOUTLOG       :=  192 
-        MEMBER HBOUTLOGINFO   :=  193 
-        MEMBER CODEPAGE       :=  194				// Map to Vulcan setting ?
-        MEMBER OSCODEPAGE     :=  195				// Map to Vulcan setting ?
+        // 180 - 197 Harbour extensions, Most have  No defaults below yet
+        // Originally these started at 100
+        MEMBER LANGUAGE       :=  180               // STRING
+        MEMBER IDLEREPEAT     :=  181               // Numeric Ignored for now
+        MEMBER FILECASE       :=  182			    // Numeric Ignored for now
+        MEMBER DIRCASE        :=  183               // Numeric Ignored for now
+        MEMBER DIRSEPARATOR   :=  184               // String
+        MEMBER EOF            :=  185               // Logic: Is Chr(26) written to end of text files
+        MEMBER HARDCOMMIT     :=  186               // Logic: Forces Hard Commit in RDD system (whatever that me be..)
+        MEMBER FORCEOPT       :=  187               // LOGIC: Force Optimization
+        MEMBER DBFLOCKSCHEME  :=  188               // 
+        MEMBER DEFEXTENSIONS  :=  189               // Logic: Force Extensions for RDD and other output files. Not used yet
+        MEMBER EOL            :=  190               // ENd of Line characters
+        MEMBER TRIMFILENAME   :=  191	            // Logic: Should filenames be trimmed in the IO system
+        MEMBER HBOUTLOG       :=  192               // STRING LogfileName
+        MEMBER HBOUTLOGINFO   :=  193               // String Info written to error log files
+        MEMBER CODEPAGE       :=  WINCODEPAGE		// Remapped
+        MEMBER OSCODEPAGE     :=  DOSCODEPAGE	    // Remapped
         MEMBER TIMEFORMAT     :=  196			
         MEMBER DBCODEPAGE     :=  197				// Map to Vulcan setting ?
         
@@ -450,7 +447,227 @@ DEFINE  _SET_LEXICAL    := Set.Lexical
 DEFINE _MAX_PATH := 260
 DEFINE MAX_PATH := 260
 
+INTERNAL FUNCTION RuntimeStateDefaultValue(nSet AS XSharp.Set) AS OBJECT
+    SWITCH nSet
+        CASE Set.EXACT       	
+        CASE Set.FIXED	   		
+        CASE Set.SOFTSEEK    	
+        CASE Set.UNIQUE      	
+        CASE Set.DELETED     	
+        CASE Set.CANCEL      	
+        CASE SET.@@DEBUG     
+        CASE Set.CONSOLE     	
+        CASE Set.ALTERNATE   	
+        CASE Set.EXTRA       	
+        CASE Set.PRINTER     	
+        CASE Set.CONFIRM     	
+        CASE Set.ESCAPE      	
+        CASE Set.INSERT      	
+        CASE Set.EXIT        	
+        CASE Set.INTENSITY   	
+        CASE Set.SCOREBOARD  	
+        CASE Set.WRAP        	
+        CASE Set.MCENTER     	
+        CASE Set.SCROLLBREAK 	
+        CASE Set.ERRRORLOG   	
+        CASE Set.YIELD          
+        CASE Set.NETERR         
+        CASE Set.AMPM		    
+        CASE Set.CENTURY	    
+        CASE Set.DIGITFIXED     
+        CASE Set.FIELDSTORE     
+        CASE Set.SCIENCE        
+        CASE Set.OPTIONVO11     
+        CASE Set.OPTIONOVF      
+        CASE Set.OPTIONVO13     
+        CASE Set.DICT           
+        CASE Set.HPLOCKING    
+        CASE Set.NEWINDEXLOCK 
+        CASE Set.STRICTREAD   
+        CASE Set.BLOBCIRCREF	
+        CASE Set.FOXLOCK      
+        CASE Set.Near         
+        CASE Set.SqlAnsi     
+        CASE Set.HandleEvent 
+        CASE Set.Rushmore    
+        CASE Set.SmartFilter 
+        CASE Set.NullValue   
+        CASE Set.Lexical
+        CASE Set.HARDCOMMIT
+            RETURN FALSE
+
+        CASE Set.ANSI           
+        CASE Set.Bell
+        CASE Set.EXCLUSIVE   	
+        CASE Set.Space       
+        CASE Set.FullPath    
+        CASE Set.OPTIMIZE     
+        CASE Set.AutoOpen
+        CASE Set.DEFEXTENSIONS
+        CASE Set.FORCEOPT
+        CASE Set.TRIMFILENAME
+        CASE Set.TextMerge    
+			RETURN TRUE
+       
+       CASE Set.DIRCASE
+       CASE Set.FILECASE
+//            //#define HB_SET_CASE_MIXED  0
+//            //#define HB_SET_CASE_LOWER  1
+//            //#define HB_SET_CASE_UPPER  2        
+//            SWITCH System.PlatformID
+//            CASE PlatformID.Unix
+//            CASE PlatformID.MacOSX
+//            CASE PlatformID.Win32NT
+//            CASE PlatformID.Win32S
+//            CASE PlatformID.Win32Windows
+//            CASE PlatformID.WinCE
+//            CASE PlatformID.Xbox
+//            END SWITCH
+            RETURN 0
+        CASE Set.TYPEAHEAD   
+        CASE Set.CURSOR      
+        CASE Set.MARGIN      
+        CASE Set.MESSAGE     
+        CASE Set.CPU		
+        CASE Set.MATH		
+        CASE Set.MemoWidth   
+        CASE Set.CharSet     
+        CASE Set.DevTimeOut  
+        CASE Set.Colormode   
+        CASE Set.Collation
+        CASE Set.IDLEREPEAT
+            RETURN 0L
+
+        CASE Set.AutoOrder   
+            RETURN 1L
+
+        CASE Set.DATECOUNTRY 
+            RETURN DateCountry.American
+
+        CASE Set.AUTOSHARE   
+            RETURN AutoShareMode.Auto
+            
+        CASE Set.COLOR       	
+           RETURN "W/N,N/W,N/N,N/N,N/W"
+        CASE Set.DATEFORMAT
+            RETURN "MM/DD/YYYY"
+
+        CASE Set.DEFAULTRDD	
+            RETURN "DBFNTX"
+
+        CASE Set.EOL
+            RETURN e"\r\n"
+
+        CASE Set.HBOUTLOG
+            RETURN "hb_out.log"
+
+        CASE Set.HBOUTLOGINFO
+        CASE Set.PATH        	
+        CASE Set.DEFAULT	 	
+        CASE Set.ALTFILE     	
+        CASE Set.DEVICE      	
+        CASE Set.EXTRAFILE   	
+        CASE Set.PRINTFILE   	
+        CASE Set.DELIMITERS  	
+        CASE Set.DELIMCHARS  	
+        CASE Set.AMEXT		
+        CASE Set.PMEXT	    
+        CASE Set.INTERNATIONAL
+        CASE Set.NatDLL		
+        CASE Set.NOMETHOD	
+        CASE Set.DateFormatNet 
+        CASE Set.DateFormatEmpty
+        CASE Set.LastFound    
+        CASE Set.MEMOEXT	    
+        CASE Set.FoxCollate
+        CASE Set.LANGUAGE
+        CASE Set.TIMEFORMAT
+            RETURN String.Empty
 
 
+        CASE Set.DIRSEPARATOR
+            RETURN System.IO.Path.DirectorySeparatorChar:ToString()
+            
+        CASE Set.FLOATDELTA
+            RETURN 0.0000000000001
+
+        CASE Set.APPMODULE
+            RETURN typeof(XSharp.Set):Module
+        
+        CASE Set.PATHARRAY     // String[]
+            RETURN (STRING[]) NULL
+        CASE Set.CollationTable   // byte[]
+            RETURN (BYTE[] ) NULL
+
+        CASE Set.DECIMALSEP  
+        CASE Set.THOUSANDSEP 
+        CASE Set.TIMESEP     
+        CASE Set.EpochYear   
+        CASE Set.FileError   
+        CASE Set.ErrorLevel     // DWORD
+             RETURN 0U         
+        CASE Set.DECIMALS    
+             RETURN 2U         
+
+        CASE Set.DIGITS      
+        CASE Set.LOCKTRIES   
+             RETURN 10U         
+
+        CASE Set.MEMOBLOCKSIZE
+            RETURN 32U
+
+        CASE Set.EPOCH       
+        CASE Set.EpochCent   
+             RETURN 1900U
+                
+        CASE Set.ErrorBlock     // Codeblock
+            RETURN NULL        
+        CASE Set.Dialect         // XSharpDialect value
+            RETURN XSharpDialect.Core
+        
+        CASE Set.LastRddError   // Exception object
+            RETURN NULL        
+        CASE Set.FileException  // Last File exception
+            RETURN NULL
+
+        CASE Set.INTL           
+        CASE Set.COLLATIONMODE
+            RETURN CollationMode.Windows
+
+
+
+        CASE Set.DOSCODEPAGE
+            RETURN 437L
+
+        CASE Set.WINCODEPAGE
+            RETURN 1250L
+
+        // 180 - 197 Harbour extensions, no value yet
+//        MEMBER FILECASE       :=  182			
+//        MEMBER DIRCASE        :=  183 
+//        MEMBER DBFLOCKSCHEME  :=  188 
+//        MEMBER DBCODEPAGE     :=  197				// Map to Vulcan setting ?
+
+
+        // Advantage
+        CASE Set.AXSLOCKING
+        CASE Set.RIGHTSCHECKING
+        CASE Set.EXACTKEYPOS
+            RETURN TRUE
+
+        CASE Set.SQL_QUERY
+        CASE Set.COLLATION_NAME
+            RETURN String.Empty
+        CASE Set.CONNECTION_HANDLE
+        CASE Set.SQL_TABLE_PASSWORDS
+        CASE Set.SQL_PARAMETERS
+            RETURN NULL
+        CASE Set.SQL_TIMEOUT
+            RETURN 0
+        END SWITCH
+
+
+
+RETURN NULL
 
 

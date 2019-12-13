@@ -322,6 +322,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN _saveCurrentKey(SELF:_oRdd:RecNo, SELF:_currentValue)
 
         INTERNAL METHOD GetPage(nPage AS LONG) AS CdxTreePage
+            IF nPage == -1
+                RETURN NULL
+            ENDIF
             VAR page := SELF:_bag:GetPage(nPage, SELF:_KeySize, SELF)
             RETURN page ASTYPE CdxTreePage
 

@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -66,7 +66,7 @@ namespace XSharpLanguage
         private bool _keywordsInAll;
         private bool _dotUniversal;
         private IBufferTagAggregatorFactoryService aggregator;
-        private IntellisenseOptionsPage _optionsPage;
+        internal static IntellisenseOptionsPage _optionsPage;
         private XSharpDialect _dialect;
 
         internal static bool StringEquals(string lhs, string rhs)
@@ -108,7 +108,7 @@ namespace XSharpLanguage
                 {
                     _dotUniversal = true;
                 }
-                else if (_dialect == XSharpDialect.Core )
+                else if (_dialect == XSharpDialect.Core)
                 {
                     _dotUniversal = _optionsPage.UseDotAsUniversalSelector;
                 }
@@ -158,7 +158,7 @@ namespace XSharpLanguage
                 {
                     var name = lastTag.Tag.ClassificationType.Classification.ToLower();
                     // No Intellisense in Comment
-                    if (name == "comment")
+                    if (name == "comment" || name == "xsharp.text")
                         return;
                 }
                 ////////////////////////////////////////////
@@ -440,7 +440,7 @@ namespace XSharpLanguage
                                 {
                                     // Fill with the context ( Parameters and Locals )
                                     BuildCompletionList(compList, member, filterText, currentLine);
-                                    AddXSharpKeywords(compList,filterText);
+                                    AddXSharpKeywords(compList, filterText);
                                     // Context Type....
                                     cType = new CompletionType(member.Parent.Clone);
                                     if (!cType.IsEmpty())
@@ -662,7 +662,7 @@ namespace XSharpLanguage
         {
             foreach (var kw in XSharpTypes.Get().Where(ti => nameStartsWith(ti.FullName, startWith)))
             {
-                ImageSource icon = _provider.GlyphService.GetGlyph(kw.GlyphGroup, kw.GlyphItem);
+                ImageSource icon = _provider.GlyphService.GetGlyph(kw.getGlyphGroup(), kw.getGlyphItem());
                 compList.Add(new XSCompletion(kw.Name, kw.Name, kw.Description, icon, null, Kind.Keyword));
             }
         }
@@ -690,7 +690,7 @@ namespace XSharpLanguage
                         // Then remove it
                         if (dotPos > 0)
                             realTypeName = realTypeName.Substring(0, dotPos);
-                        ImageSource icon = _provider.GlyphService.GetGlyph(typeInfo.GlyphGroup, typeInfo.GlyphItem);
+                        ImageSource icon = _provider.GlyphService.GetGlyph(typeInfo.getGlyphGroup(), typeInfo.getGlyphItem());
                         if (!compList.Add(new XSCompletion(realTypeName, realTypeName, typeInfo.Description, icon, null, Kind.Class)))
                             break;
                     }
@@ -719,7 +719,7 @@ namespace XSharpLanguage
                 // Then remove it
                 if (dotPos > 0)
                     realTypeName = realTypeName.Substring(0, dotPos);
-                ImageSource icon = _provider.GlyphService.GetGlyph(typeInfo.GlyphGroup, typeInfo.GlyphItem);
+                ImageSource icon = _provider.GlyphService.GetGlyph(typeInfo.getGlyphGroup(), typeInfo.getGlyphItem());
                 if (!compList.Add(new XSCompletion(realTypeName, realTypeName, typeInfo.Description, icon, null, Kind.Class)))
                     break;
             }
@@ -803,7 +803,7 @@ namespace XSharpLanguage
             foreach (XVariable paramVar in currentMember.Parameters.Where(p => nameStartsWith(p.Name, startWith)))
             {
                 //
-                ImageSource icon = _provider.GlyphService.GetGlyph(paramVar.GlyphGroup, paramVar.GlyphItem);
+                ImageSource icon = _provider.GlyphService.GetGlyph(paramVar.getGlyphGroup(), paramVar.getGlyphItem());
                 if (!compList.Add(new XSCompletion(paramVar.Name, paramVar.Name, paramVar.Description, icon, null, Kind.Parameter)))
                     break;
             }
@@ -811,7 +811,7 @@ namespace XSharpLanguage
             foreach (XVariable localVar in currentMember.GetLocals(_buffer.CurrentSnapshot, currentLine, _dialect).Where(l => nameStartsWith(l.Name, startWith)))
             {
                 //
-                ImageSource icon = _provider.GlyphService.GetGlyph(localVar.GlyphGroup, localVar.GlyphItem);
+                ImageSource icon = _provider.GlyphService.GetGlyph(localVar.getGlyphGroup(), localVar.getGlyphItem());
                 if (!compList.Add(new XSCompletion(localVar.Name, localVar.Name, localVar.Description, icon, null, Kind.Local)))
                     break;
             }
@@ -823,7 +823,7 @@ namespace XSharpLanguage
                 var classElement = currentMember.Parent;
                 foreach (var member in classElement.Members.Where(m => m.Kind == Kind.Field && nameStartsWith(m.Name, startWith)))
                 {
-                    ImageSource icon = _provider.GlyphService.GetGlyph(member.GlyphGroup, member.GlyphItem);
+                    ImageSource icon = _provider.GlyphService.GetGlyph(member.getGlyphGroup(), member.getGlyphItem());
                     if (!compList.Add(new XSCompletion(member.Name, member.Name, member.Description, icon, null, Kind.Field)))
                         break;
                 }
@@ -860,7 +860,7 @@ namespace XSharpLanguage
                 if (elt.Visibility < minVisibility)
                     continue;
                 //
-                ImageSource icon = _provider.GlyphService.GetGlyph(elt.GlyphGroup, elt.GlyphItem);
+                ImageSource icon = _provider.GlyphService.GetGlyph(elt.getGlyphGroup(), elt.getGlyphItem());
                 String toAdd = "";
                 if ((elt.Kind == Kind.Method) || (elt.Kind == Kind.Function) || (elt.Kind == Kind.Procedure))
                 {
@@ -948,7 +948,7 @@ namespace XSharpLanguage
                 if (!add)
                     continue;
                 //
-                ImageSource icon = _provider.GlyphService.GetGlyph(elt.GlyphGroup, elt.GlyphItem);
+                ImageSource icon = _provider.GlyphService.GetGlyph(elt.getGlyphGroup(), elt.getGlyphItem());
                 String toAdd = "";
                 if ((elt.Kind == Kind.Method) || (elt.Kind == Kind.Function) || (elt.Kind == Kind.Procedure))
                 {
@@ -1096,6 +1096,7 @@ namespace XSharpLanguage
     }
     public class MemberAnalysis
     {
+        IntellisenseOptionsPage _optionsPage => XSharpCompletionSource._optionsPage;
         public class ParamInfo
         {
             public String Name;
@@ -1369,7 +1370,7 @@ namespace XSharpLanguage
                                 {
                                     foreach (var param in names)
                                     {
-                                        this._parameters.Add(new ParamInfo(param, "USUAL", "AS"));
+                                        this._parameters.Add(new ParamInfo(param, _optionsPage.Usual(), _optionsPage.As()));
                                     }
                                 }
                                 return;
@@ -1476,7 +1477,7 @@ namespace XSharpLanguage
                     EnvDTE.CodeElements pars = method.Parameters;
                     foreach (EnvDTE.CodeParameter p in pars)
                     {
-                        this._parameters.Add(new ParamInfo(p.Name, p.Type.AsFullName, "AS"));
+                        this._parameters.Add(new ParamInfo(p.Name, p.Type.AsFullName, _optionsPage.As()));
                     }
                     //
                     declType = method.Type;
@@ -1532,13 +1533,13 @@ namespace XSharpLanguage
                 String modVis = "";
                 if (this.Modifiers != Modifiers.None)
                 {
-                    modVis += this.Modifiers.ToString() + " ";
+                    modVis += _optionsPage.formatKeyword(this.Modifiers) + " ";
                 }
-                modVis += this.Visibility.ToString() + " ";
+                modVis += _optionsPage.formatKeyword(this.Visibility) + " ";
                 //
                 if (this.IsStatic)
                 {
-                    modVis += "STATIC" + " ";
+                    modVis += _optionsPage.Static() + " ";
                 }
                 //
                 String desc = modVis;
@@ -1547,15 +1548,15 @@ namespace XSharpLanguage
                 {
                     if (this.Kind == Kind.VODefine)
                     {
-                        desc += "Define" + " ";
+                        desc += _optionsPage.Define() + " ";
                     }
                     else if (this.Kind == Kind.VOGlobal)
                     {
-                        desc += "Global" + " ";
+                        desc += _optionsPage.Global() + " ";
                     }
                     else
                     {
-                        desc += this.Kind.ToString() + " ";
+                        desc += _optionsPage.formatKeyword(this.Kind) + " ";
                     }
                 }
                 desc += this.Prototype;
@@ -1576,7 +1577,7 @@ namespace XSharpLanguage
                     {
                         if (vars.Length > 1)
                             vars += ", ";
-                        vars += var.Name + " " + var.Direction + " " + var.TypeName;
+                        vars += var.Name + " " + _optionsPage.formatKeyword(var.Direction) + " " + var.TypeName;
                     }
                     vars += this.Kind == Kind.Constructor ? "}" : ")";
                 }
@@ -1586,7 +1587,7 @@ namespace XSharpLanguage
                 //
                 if (this.Kind.HasReturnType())
                 {
-                    desc += " AS " + this.TypeName;
+                    desc += " " + _optionsPage.As() + this.TypeName;
                 }
                 //
                 return desc;
@@ -1760,7 +1761,7 @@ namespace XSharpLanguage
         private Modifiers _visibility;
         private Kind _kind;
         private bool _isStatic;
-
+        IntellisenseOptionsPage _optionsPage => XSharpCompletionSource._optionsPage;
 
         internal TypeAnalysis(TypeInfo typeInfo)
         {
@@ -1919,13 +1920,13 @@ namespace XSharpLanguage
                 String modVis = "";
                 if (this.Modifiers != Modifiers.None)
                 {
-                    modVis += this.Modifiers.ToString() + " ";
+                    modVis += _optionsPage.formatKeyword(this.Modifiers) + " ";
                 }
-                modVis += this.Visibility.ToString() + " ";
+                modVis += _optionsPage.formatKeyword(this.Visibility) + " ";
                 //
                 if (this.IsStatic)
                 {
-                    modVis += "STATIC" + " ";
+                    modVis += _optionsPage.Static() + " ";
                 }
                 //
                 String desc = modVis;
@@ -2988,7 +2989,7 @@ namespace XSharpLanguage
 
 
                     cType = new CompletionType(currentToken, currentMember.File, currentMember.Parent.NameSpace);
-                    if (!cType.IsEmpty() )
+                    if (!cType.IsEmpty())
                     {
                         if (cType.SType != null)
                         {
@@ -3097,10 +3098,10 @@ namespace XSharpLanguage
                     }
                     else if (currentToken.EndsWith("."))
                     {
-                        currentToken = currentToken.Substring(0,currentToken.Length - 1);
+                        currentToken = currentToken.Substring(0, currentToken.Length - 1);
                     }
                     // First token, so it could be a parameter or a local var
-                   if (startOfExpression)
+                    if (startOfExpression)
                     {
                         // Search in Parameters, Locals, Field and Properties
                         foundElement = FindIdentifier(currentMember, currentToken, ref cType, visibility, currentNS, snapshot, currentLine, dialect);
@@ -3230,9 +3231,9 @@ namespace XSharpLanguage
                 usings.Add(currentNs);
             // Try to check Check System Types
             cType = new CompletionType(currentToken, xFile, currentNs);
-            if ( cType.SType != null )
+            if (cType.SType != null)
             {
-                foundElement = new CompletionElement(cType.SType );
+                foundElement = new CompletionElement(cType.SType);
                 if (foundElement.IsGeneric)
                 {
                     // We may need to adapt...
@@ -3369,7 +3370,7 @@ namespace XSharpLanguage
                                         }
                                         if (pos >= 0)
                                         {
-                                           for ( int i = pos; i >= 0; i--)
+                                            for (int i = pos; i >= 0; i--)
                                             {
                                                 tokenList.RemoveAt(i);
                                             }
@@ -4183,6 +4184,110 @@ namespace XSharpLanguage
 
     }
 
+
+    /// <summary>
+    /// Static class Tools. Offer services to get Glyphs (Icons) to CompletionSource (at least) ...
+    /// </summary>
+    public static class XSharpGlyphTools
+    {
+        public static StandardGlyphGroup getGlyphGroup(this XElement elt)
+        {
+            StandardGlyphGroup imgG = StandardGlyphGroup.GlyphGroupClass;
+            switch (elt.Kind)
+            {
+                case Kind.Class:
+                    imgG = StandardGlyphGroup.GlyphGroupClass;
+                    break;
+                case Kind.Constructor:
+                case Kind.Destructor:
+                case Kind.Method:
+                case Kind.Function:
+                case Kind.Procedure:
+                    imgG = StandardGlyphGroup.GlyphGroupMethod;
+                    break;
+                case Kind.Structure:
+                    imgG = StandardGlyphGroup.GlyphGroupStruct;
+                    break;
+                case Kind.Access:
+                case Kind.Assign:
+                case Kind.Property:
+                    imgG = StandardGlyphGroup.GlyphGroupProperty;
+                    break;
+                case Kind.Local:
+                case Kind.Parameter:
+                    imgG = StandardGlyphGroup.GlyphGroupVariable;
+                    break;
+                case Kind.Event:
+                    imgG = StandardGlyphGroup.GlyphGroupEvent;
+                    break;
+                case Kind.Delegate:
+                    imgG = StandardGlyphGroup.GlyphGroupDelegate;
+                    break;
+                case Kind.Enum:
+                    imgG = StandardGlyphGroup.GlyphGroupEnum;
+                    break;
+                case Kind.EnumMember:
+                    imgG = StandardGlyphGroup.GlyphGroupEnumMember;
+                    break;
+                case Kind.Operator:
+                    imgG = StandardGlyphGroup.GlyphGroupOperator;
+                    break;
+                case Kind.Interface:
+                    imgG = StandardGlyphGroup.GlyphGroupInterface;
+                    break;
+                case Kind.Namespace:
+                    imgG = StandardGlyphGroup.GlyphGroupNamespace;
+                    break;
+                case Kind.Field:
+                case Kind.VOGlobal:
+                    imgG = StandardGlyphGroup.GlyphGroupField;
+                    break;
+                case Kind.Union:
+                    imgG = StandardGlyphGroup.GlyphGroupUnion;
+                    break;
+                case Kind.VODefine:
+                    imgG = StandardGlyphGroup.GlyphGroupConstant;
+                    break;
+                case Kind.VOStruct:
+                    imgG = StandardGlyphGroup.GlyphGroupValueType;
+                    break;
+                case Kind.Keyword:
+                    imgG = StandardGlyphGroup.GlyphKeyword;
+                    break;
+            }
+            return imgG;
+        }
+
+        public static StandardGlyphItem getGlyphItem(this XElement elt)
+        {
+            StandardGlyphItem imgI = StandardGlyphItem.GlyphItemPublic;
+            switch (elt.Visibility)
+            {
+                case Modifiers.Public:
+                    imgI = StandardGlyphItem.GlyphItemPublic;
+                    break;
+                case Modifiers.Protected:
+                    imgI = StandardGlyphItem.GlyphItemProtected;
+                    break;
+                case Modifiers.Private:
+                    imgI = StandardGlyphItem.GlyphItemPrivate;
+                    break;
+                case Modifiers.Internal:
+                    imgI = StandardGlyphItem.GlyphItemInternal;
+                    break;
+                case Modifiers.ProtectedInternal:
+                    imgI = StandardGlyphItem.GlyphItemProtected;
+                    break;
+            }
+            if (elt.IsStatic)
+            {
+                imgI = StandardGlyphItem.GlyphItemShortcut;
+            }
+            return imgI;
+        }
+    }
+
+
     /// <summary>
     /// Class that contains informations about the Code Element we have found during
     /// type searching.
@@ -4348,9 +4453,9 @@ namespace XSharpLanguage
                     }
                     else if (this.SystemElement is System.Type)
                     {
-                        cType = new CompletionType( (System.Type)this.SystemElement );
+                        cType = new CompletionType((System.Type)this.SystemElement);
                     }
-                    if ( !cType.IsEmpty())
+                    if (!cType.IsEmpty())
                         if (cType.FullName.EndsWith(">"))
                             this.isGeneric = true;
                 }

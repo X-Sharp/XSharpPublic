@@ -19,6 +19,7 @@ using System.Windows.Documents;
 using System.Windows.Media;
 using XSharpModel;
 using System.Windows.Controls;
+using Microsoft.VisualStudio.Text.Classification;
 
 namespace XSharp.Project
 {
@@ -27,18 +28,26 @@ namespace XSharp.Project
         private XSharpQuickInfoSourceProvider _provider;
         private ITextBuffer _subjectBuffer;
         private XSharpModel.XFile _file;
+        private IClassificationFormatMapService _formatMap;
+        private IClassificationTypeRegistryService _registry;
+        private static OptionsPages.IntellisenseOptionsPage _optionsPage;
 
-        public XSharpQuickInfoSource(XSharpQuickInfoSourceProvider provider, ITextBuffer subjectBuffer)
+        public XSharpQuickInfoSource(XSharpQuickInfoSourceProvider provider, ITextBuffer subjectBuffer, IClassificationFormatMapService formatMap, IClassificationTypeRegistryService registry)
         {
             _provider = provider;
             _subjectBuffer = subjectBuffer;
             _file = _subjectBuffer.GetFile();
+            _formatMap = formatMap;
+            _registry = registry;
+            var package = XSharpProjectPackage.Instance;
+            _optionsPage = package.GetIntellisenseOptionsPage();
         }
         private int lastTriggerPoint = -1;
         private Inline[] lastHelp = null;
         private String lastxmldoc = null;
         private ITrackingSpan lastSpan = null;
         private int lastVersion = -1;
+
         static void WriteOutputMessage(string message)
         {
             XSharpProjectPackage.Instance.DisplayOutPutMessage("XSharp.QuickInfoSource :" + message);
@@ -46,218 +55,226 @@ namespace XSharp.Project
         public void AugmentQuickInfoSession(IQuickInfoSession session, IList<object> qiContent, out ITrackingSpan applicableToSpan)
         {
             applicableToSpan = null;
-            if (!XSharpProjectPackage.Instance.DebuggerIsRunning)
+            if (XSharpProjectPackage.Instance.DebuggerIsRunning)
             {
-                try
+                return;
+            }
+            try
+            {
+                XSharpModel.ModelWalker.Suspend();
+                var package = XSharp.Project.XSharpProjectPackage.Instance;
+                var optionsPage = package.GetIntellisenseOptionsPage();
+                if (optionsPage.DisableQuickInfo)
+                    return;
+
+
+                // Map the trigger point down to our buffer.
+                SnapshotPoint? subjectTriggerPoint = session.GetTriggerPoint(_subjectBuffer.CurrentSnapshot);
+                if (!subjectTriggerPoint.HasValue)
                 {
-                    XSharpModel.ModelWalker.Suspend();
-                    var package = XSharp.Project.XSharpProjectPackage.Instance;
-                    var optionsPage = package.GetIntellisenseOptionsPage();
-                    if (optionsPage.DisableQuickInfo)
-                        return;
+                    return;
+                }
+                ITextSnapshot currentSnapshot = subjectTriggerPoint.Value.Snapshot;
+                WriteOutputMessage($"Triggerpoint: {subjectTriggerPoint.Value.Position}");
 
-
-                    // Map the trigger point down to our buffer.
-                    SnapshotPoint? subjectTriggerPoint = session.GetTriggerPoint(_subjectBuffer.CurrentSnapshot);
-                    if (!subjectTriggerPoint.HasValue)
+                if ((subjectTriggerPoint.Value.Position == lastTriggerPoint) && (lastVersion == currentSnapshot.Version.VersionNumber))
+                {
+                    if (lastHelp != null)
                     {
-                        return;
+                        var description = new TextBlock();
+                        description.Inlines.AddRange(lastHelp);
+                        qiContent.Add(description);
+                        if (lastxmldoc != null)
+                            qiContent.Add(lastxmldoc);
+                        WriteOutputMessage($"Return last help content: {lastHelp}");
                     }
-                    ITextSnapshot currentSnapshot = subjectTriggerPoint.Value.Snapshot;
-                    WriteOutputMessage($"Triggerpoint: {subjectTriggerPoint.Value.Position}");
-
-                    if ((subjectTriggerPoint.Value.Position == lastTriggerPoint) && (lastVersion == currentSnapshot.Version.VersionNumber))
+                    if (lastSpan != null)
                     {
-                        if (lastHelp != null)
-                        {
-                            var description = new TextBlock();
-                            description.Inlines.AddRange(lastHelp);
-                            qiContent.Add(description);
-                            if (lastxmldoc != null)
-                                qiContent.Add(lastxmldoc);
-                            WriteOutputMessage($"Return last help content: {lastHelp}");
-                        }
-                        if (lastSpan != null)
-                        {
-                            applicableToSpan = lastSpan;
-                        }
+                        applicableToSpan = lastSpan;
+                    }
+                    return;
+                }
+                // We don't want to lex the buffer. So get the tokens from the last lex run
+                // and when these are too old, then simply bail out
+                var tokens = _subjectBuffer.GetTokens();
+                if (tokens != null)
+                {
+                    if (tokens.SnapShot.Version != currentSnapshot.Version)
                         return;
-                    }
-                    // We don't want to lex the buffer. So get the tokens from the last lex run
-                    // and when these are too old, then simply bail out
-                    var tokens = _subjectBuffer.GetTokens();
-                    if (tokens != null)
-                    {
-                        if (tokens.SnapShot.Version != currentSnapshot.Version)
-                            return;
-                    }
+                }
 
-                    lastTriggerPoint = subjectTriggerPoint.Value.Position;
+                lastTriggerPoint = subjectTriggerPoint.Value.Position;
 
-                    //look for occurrences of our QuickInfo words in the span
-                    ITextStructureNavigator navigator = _provider.NavigatorService.GetTextStructureNavigator(_subjectBuffer);
-                    TextExtent extent = navigator.GetExtentOfWord(subjectTriggerPoint.Value);
-                    string searchText = extent.Span.GetText();
+                //look for occurrences of our QuickInfo words in the span
+                ITextStructureNavigator navigator = _provider.NavigatorService.GetTextStructureNavigator(_subjectBuffer);
+                TextExtent extent = navigator.GetExtentOfWord(subjectTriggerPoint.Value);
+                string searchText = extent.Span.GetText();
 
-                    // First, where are we ?
-                    int caretPos = subjectTriggerPoint.Value.Position;
-                    int lineNumber = subjectTriggerPoint.Value.GetContainingLine().LineNumber;
-                    var snapshot = session.TextView.TextBuffer.CurrentSnapshot;
-                    if (_file == null)
-                        return;
-                    // Then, the corresponding Type/Element if possible
-                    IToken stopToken;
-                    //ITokenStream tokenStream;
-                    XSharpModel.XTypeMember member = XSharpLanguage.XSharpTokenTools.FindMember(lineNumber, _file);
-                    XSharpModel.XType currentNamespace = XSharpLanguage.XSharpTokenTools.FindNamespace(caretPos, _file);
-                    // adjust caretpos, for other completions we need to stop before the caret. Now we include the caret
-                    List<String> tokenList = XSharpLanguage.XSharpTokenTools.GetTokenList(caretPos + 1, lineNumber, tokens.TokenStream, out stopToken, true, _file, false, member);
-                    // Check if we can get the member where we are
-                    //if (tokenList.Count > 1)
-                    //{
-                    //    tokenList.RemoveRange(0, tokenList.Count - 1);
-                    //}
-                    // LookUp for the BaseType, reading the TokenList (From left to right)
-                    XSharpLanguage.CompletionElement gotoElement;
-                    String currentNS = "";
-                    if (currentNamespace != null)
-                    {
-                        currentNS = currentNamespace.Name;
-                    }
+                // First, where are we ?
+                int caretPos = subjectTriggerPoint.Value.Position;
+                int lineNumber = subjectTriggerPoint.Value.GetContainingLine().LineNumber;
+                var snapshot = session.TextView.TextBuffer.CurrentSnapshot;
+                if (_file == null)
+                    return;
+                // Then, the corresponding Type/Element if possible
+                IToken stopToken;
+                //ITokenStream tokenStream;
+                XSharpModel.XTypeMember member = XSharpLanguage.XSharpTokenTools.FindMember(lineNumber, _file);
+                XSharpModel.XType currentNamespace = XSharpLanguage.XSharpTokenTools.FindNamespace(caretPos, _file);
+                // adjust caretpos, for other completions we need to stop before the caret. Now we include the caret
+                List<String> tokenList = XSharpLanguage.XSharpTokenTools.GetTokenList(caretPos + 1, lineNumber, tokens.TokenStream, out stopToken, true, _file, false, member);
+                // Check if we can get the member where we are
+                //if (tokenList.Count > 1)
+                //{
+                //    tokenList.RemoveRange(0, tokenList.Count - 1);
+                //}
+                // LookUp for the BaseType, reading the TokenList (From left to right)
+                XSharpLanguage.CompletionElement gotoElement;
+                String currentNS = "";
+                if (currentNamespace != null)
+                {
+                    currentNS = currentNamespace.Name;
+                }
 
-                    XSharpModel.CompletionType cType = XSharpLanguage.XSharpTokenTools.RetrieveType(_file, tokenList, member, currentNS, stopToken, out gotoElement, snapshot, lineNumber, _file.Project.Dialect);
+                XSharpModel.CompletionType cType = XSharpLanguage.XSharpTokenTools.RetrieveType(_file, tokenList, member, currentNS, stopToken, out gotoElement, snapshot, lineNumber, _file.Project.Dialect);
+                //
+                //
+                if ((gotoElement != null) && (gotoElement.IsInitialized))
+                {
+                    IClassificationType kwType = _registry.GetClassificationType("keyword");
+                    IClassificationFormatMap fmap = _formatMap.GetClassificationFormatMap(category: "text");
+                    Microsoft.VisualStudio.Text.Formatting.TextFormattingRunProperties kwFormat = fmap.GetTextProperties(kwType);
+                    kwType = _registry.GetClassificationType("text");
+                    fmap = _formatMap.GetClassificationFormatMap(category: "text");
+                    Microsoft.VisualStudio.Text.Formatting.TextFormattingRunProperties txtFormat = fmap.GetTextProperties(kwType);
                     //
-                    //
-                    if ((gotoElement != null) && (gotoElement.IsInitialized))
+                    // Ok, find it ! Let's go ;)
+                    applicableToSpan = currentSnapshot.CreateTrackingSpan
+                        (
+                                                extent.Span.Start, searchText.Length, SpanTrackingMode.EdgeInclusive
+                        );
+
+                    if (gotoElement.XSharpElement != null)
                     {
-                        // Ok, find it ! Let's go ;)
-                        applicableToSpan = currentSnapshot.CreateTrackingSpan
-                            (
-                                                    extent.Span.Start, searchText.Length, SpanTrackingMode.EdgeInclusive
-                            );
-
-                        if (gotoElement.XSharpElement != null)
+                        if (gotoElement.XSharpElement.Kind == XSharpModel.Kind.Constructor)
                         {
-                            if (gotoElement.XSharpElement.Kind == XSharpModel.Kind.Constructor)
+                            if (gotoElement.XSharpElement.Parent != null)
                             {
-                                if (gotoElement.XSharpElement.Parent != null)
-                                {
-                                    var description = new TextBlock();
-                                    description.Inlines.Add(new Run(gotoElement.XSharpElement.Parent.Description));
+                                var description = new TextBlock();
+                                description.Inlines.Add(new Run(gotoElement.XSharpElement.Parent.Description));
 
-                                    qiContent.Add(description);
-                                }
-                            }
-                            else if (gotoElement.XSharpElement is XSharpModel.XTypeMember)
-                            {
-                                QuickInfoTypeMember qitm = new QuickInfoTypeMember((XSharpModel.XTypeMember)gotoElement.XSharpElement);
-                                var description = new TextBlock();
-                                description.Inlines.AddRange(qitm.WPFDescription);
                                 qiContent.Add(description);
                             }
-                            else if (gotoElement.XSharpElement is XSharpModel.XVariable)
-                            {
-                                QuickInfoVariable qitm = new QuickInfoVariable((XSharpModel.XVariable)gotoElement.XSharpElement);
-                                var description = new TextBlock();
-                                description.Inlines.AddRange(qitm.WPFDescription);
-                                qiContent.Add(description);
-
-                            }
-                            else if (gotoElement.XSharpElement is XSharpModel.XType)
-                            {
-                                var xtype = gotoElement.XSharpElement as XType;
-                                var qitm = new QuickInfoTypeAnalysis(xtype);
-                                var description = new TextBlock();
-                                description.Inlines.AddRange(qitm.WPFDescription);
-                                qiContent.Add(description);
-
-                            }
-                            else
-                            {
-                                var description = new TextBlock();
-                                description.Inlines.Add(new Run(gotoElement.XSharpElement.Description));
-                                qiContent.Add(description);
-                            }
+                        }
+                        else if (gotoElement.XSharpElement is XSharpModel.XTypeMember)
+                        {
+                            QuickInfoTypeMember qitm = new QuickInfoTypeMember((XSharpModel.XTypeMember)gotoElement.XSharpElement, kwFormat.ForegroundBrush, txtFormat.ForegroundBrush);
+                            var description = new TextBlock();
+                            description.Inlines.AddRange(qitm.WPFDescription);
+                            qiContent.Add(description);
+                        }
+                        else if (gotoElement.XSharpElement is XSharpModel.XVariable)
+                        {
+                            QuickInfoVariable qitm = new QuickInfoVariable((XSharpModel.XVariable)gotoElement.XSharpElement, kwFormat.ForegroundBrush, txtFormat.ForegroundBrush);
+                            var description = new TextBlock();
+                            description.Inlines.AddRange(qitm.WPFDescription);
+                            qiContent.Add(description);
 
                         }
-                        else if (gotoElement.SystemElement is TypeInfo )
+                        else if (gotoElement.XSharpElement is XSharpModel.XType)
                         {
-                            var ti = gotoElement.SystemElement as TypeInfo;
-                            string xmldoc = XSharpXMLDocMember.GetTypeSummary(ti, member.File.Project);
-                            QuickInfoTypeAnalysis analysis = new QuickInfoTypeAnalysis(ti);
+                            var xtype = gotoElement.XSharpElement as XType;
+                            var qitm = new QuickInfoTypeAnalysis(xtype, kwFormat.ForegroundBrush, txtFormat.ForegroundBrush);
                             var description = new TextBlock();
-                            description.Inlines.AddRange(analysis.WPFDescription);
+                            description.Inlines.AddRange(qitm.WPFDescription);
                             qiContent.Add(description);
-                            if (xmldoc != null)
-                                qiContent.Add(xmldoc);
+
                         }
                         else
                         {
-                            // This works with System.MemberInfo AND
-                            QuickInfoMemberAnalysis analysis = null;
-                            if (gotoElement.SystemElement is MemberInfo)
-                            {
-                                string xmldoc = XSharpXMLDocMember.GetMemberSummary(gotoElement.SystemElement, member.File.Project);
+                            var description = new TextBlock();
+                            description.Inlines.Add(new Run(gotoElement.XSharpElement.Description));
+                            qiContent.Add(description);
+                        }
 
-                                analysis = new QuickInfoMemberAnalysis(gotoElement.SystemElement);
-                                if (analysis.IsInitialized)
+                    }
+                    else if (gotoElement.SystemElement is TypeInfo)
+                    {
+                        var ti = gotoElement.SystemElement as TypeInfo;
+                        string xmldoc = XSharpXMLDocMember.GetTypeSummary(ti, member.File.Project);
+                        QuickInfoTypeAnalysis analysis = new QuickInfoTypeAnalysis(ti, kwFormat.ForegroundBrush, txtFormat.ForegroundBrush);
+                        var description = new TextBlock();
+                        description.Inlines.AddRange(analysis.WPFDescription);
+                        qiContent.Add(description);
+                        if (xmldoc != null)
+                            qiContent.Add(xmldoc);
+                    }
+                    else
+                    {
+                        // This works with System.MemberInfo AND
+                        QuickInfoMemberAnalysis analysis = null;
+                        if (gotoElement.SystemElement is MemberInfo)
+                        {
+                            string xmldoc = XSharpXMLDocMember.GetMemberSummary(gotoElement.SystemElement, member.File.Project);
+
+                            analysis = new QuickInfoMemberAnalysis(gotoElement.SystemElement, kwFormat.ForegroundBrush, txtFormat.ForegroundBrush);
+                            if (analysis.IsInitialized)
+                            {
+                                if ((analysis.Kind == XSharpModel.Kind.Constructor) && (cType != null) && (cType.SType != null))
                                 {
-                                    if ((analysis.Kind == XSharpModel.Kind.Constructor) && (cType != null) && (cType.SType != null))
-                                    {
-                                        QuickInfoTypeAnalysis typeAnalysis;
-                                        typeAnalysis = new QuickInfoTypeAnalysis(cType.SType.GetTypeInfo());
-                                        if (typeAnalysis.IsInitialized)
-                                        {
-                                            var description = new TextBlock();
-                                            description.Inlines.AddRange(typeAnalysis.WPFDescription);
-                                            qiContent.Add(description);
-                                        }
-                                    }
-                                    else
+                                    QuickInfoTypeAnalysis typeAnalysis;
+                                    typeAnalysis = new QuickInfoTypeAnalysis(cType.SType.GetTypeInfo(), kwFormat.ForegroundBrush, txtFormat.ForegroundBrush);
+                                    if (typeAnalysis.IsInitialized)
                                     {
                                         var description = new TextBlock();
-                                        description.Inlines.AddRange(analysis.WPFDescription);
+                                        description.Inlines.AddRange(typeAnalysis.WPFDescription);
                                         qiContent.Add(description);
                                     }
-                                    if (xmldoc != null)
-                                        qiContent.Add(xmldoc);
                                 }
+                                else
+                                {
+                                    var description = new TextBlock();
+                                    description.Inlines.AddRange(analysis.WPFDescription);
+                                    qiContent.Add(description);
+                                }
+                                if (xmldoc != null)
+                                    qiContent.Add(xmldoc);
                             }
+                        }
 
-                        }
-                        if (qiContent.Count > 0)
-                        {
-                            TextBlock description;
-                            description = qiContent[0] as TextBlock;
-                            if (qiContent.Count > 1)
-                            {
-                                lastxmldoc = qiContent[1] as String;
-                            }
-                            else
-                            {
-                                lastxmldoc = null;
-                            }
-                            if (description != null)
-                            {
-                                lastHelp = new Inline[description.Inlines.Count];
-                                description.Inlines.CopyTo(lastHelp, 0);
-                                lastSpan = applicableToSpan;
-                                lastVersion = currentSnapshot.Version.VersionNumber;
-                                WriteOutputMessage($"Found new help content: {lastHelp}");
-                            }
-                        }
-                        return;
                     }
+                    if (qiContent.Count > 0)
+                    {
+                        TextBlock description;
+                        description = qiContent[0] as TextBlock;
+                        if (qiContent.Count > 1)
+                        {
+                            lastxmldoc = qiContent[1] as String;
+                        }
+                        else
+                        {
+                            lastxmldoc = null;
+                        }
+                        if (description != null)
+                        {
+                            lastHelp = new Inline[description.Inlines.Count];
+                            description.Inlines.CopyTo(lastHelp, 0);
+                            lastSpan = applicableToSpan;
+                            lastVersion = currentSnapshot.Version.VersionNumber;
+                            WriteOutputMessage($"Found new help content: {lastHelp}");
+                        }
+                    }
+                    return;
                 }
-                catch (Exception ex)
-                {
-                    XSharpProjectPackage.Instance.DisplayOutPutMessage("XSharpQuickInfo.AugmentQuickInfoSession failed : ");
-                    XSharpProjectPackage.Instance.DisplayException(ex);
-                }
-                finally
-                {
-                    XSharpModel.ModelWalker.Resume();
-                }
+            }
+            catch (Exception ex)
+            {
+                XSharpProjectPackage.Instance.DisplayOutPutMessage("XSharpQuickInfo.AugmentQuickInfoSession failed : ");
+                XSharpProjectPackage.Instance.DisplayException(ex);
+            }
+            finally
+            {
+                XSharpModel.ModelWalker.Resume();
             }
         }
 
@@ -284,9 +301,15 @@ namespace XSharp.Project
             [Import]
             internal ITextBufferFactoryService TextBufferFactoryService { get; set; }
 
+            [Import]
+            IClassificationFormatMapService formatMap = null;
+
+            [Import]
+            IClassificationTypeRegistryService registry = null;
+
             public IQuickInfoSource TryCreateQuickInfoSource(ITextBuffer textBuffer)
             {
-                return new XSharpQuickInfoSource(this, textBuffer);
+                return new XSharpQuickInfoSource(this, textBuffer, formatMap, registry);
             }
 
         }
@@ -311,33 +334,34 @@ namespace XSharp.Project
             private int lastPointPosition = -1;
             private void OnTextViewMouseHover(object sender, MouseHoverEventArgs e)
             {
-                if (!XSharpProjectPackage.Instance.DebuggerIsRunning)
+                if (XSharpProjectPackage.Instance.DebuggerIsRunning)
                 {
-                    try
-                    {
-                        //find the mouse position by mapping down to the subject buffer
-                        SnapshotPoint? point = m_textView.BufferGraph.MapDownToFirstMatch
-                             (new SnapshotPoint(m_textView.TextSnapshot, e.Position),
-                            PointTrackingMode.Positive,
-                            snapshot => m_subjectBuffers.Contains(snapshot.TextBuffer),
-                            PositionAffinity.Predecessor);
+                    return;
+                }
+                try
+                {
+                    //find the mouse position by mapping down to the subject buffer
+                    SnapshotPoint? point = m_textView.BufferGraph.MapDownToFirstMatch
+                         (new SnapshotPoint(m_textView.TextSnapshot, e.Position),
+                        PointTrackingMode.Positive,
+                        snapshot => m_subjectBuffers.Contains(snapshot.TextBuffer),
+                        PositionAffinity.Predecessor);
 
-                        if (point.HasValue && point.Value.Position != lastPointPosition)
+                    if (point.HasValue && point.Value.Position != lastPointPosition)
+                    {
+                        lastPointPosition = point.Value.Position;
+                        if (!m_provider.QuickInfoBroker.IsQuickInfoActive(m_textView))
                         {
-                            lastPointPosition = point.Value.Position;
-                            if (!m_provider.QuickInfoBroker.IsQuickInfoActive(m_textView))
-                            {
-                                ITrackingPoint triggerPoint = point.Value.Snapshot.CreateTrackingPoint(point.Value.Position,
-                                    PointTrackingMode.Positive);
-                                m_session = m_provider.QuickInfoBroker.TriggerQuickInfo(m_textView, triggerPoint, true);
-                            }
+                            ITrackingPoint triggerPoint = point.Value.Snapshot.CreateTrackingPoint(point.Value.Position,
+                                PointTrackingMode.Positive);
+                            m_session = m_provider.QuickInfoBroker.TriggerQuickInfo(m_textView, triggerPoint, true);
                         }
                     }
-                    catch (Exception ex)
-                    {
-                        XSharpProjectPackage.Instance.DisplayOutPutMessage("XSharpQuickInfo.OnTextViewMouseHover failed");
-                        XSharpProjectPackage.Instance.DisplayException(ex);
-                    }
+                }
+                catch (Exception ex)
+                {
+                    XSharpProjectPackage.Instance.DisplayOutPutMessage("XSharpQuickInfo.OnTextViewMouseHover failed");
+                    XSharpProjectPackage.Instance.DisplayException(ex);
                 }
             }
 
@@ -380,10 +404,19 @@ namespace XSharp.Project
 
         internal class QuickInfoTypeAnalysis : XSharpLanguage.TypeAnalysis
         {
-            internal QuickInfoTypeAnalysis(TypeInfo typeInfo) : base(typeInfo)
-            { }
-            internal QuickInfoTypeAnalysis(XType type) : base(type)
-            { }
+            Brush kwBrush;
+            Brush txtBrush;
+
+            internal QuickInfoTypeAnalysis(TypeInfo typeInfo, Brush kw, Brush txt) : base(typeInfo)
+            {
+                this.kwBrush = kw;
+                this.txtBrush = txt;
+            }
+            internal QuickInfoTypeAnalysis(XType type, Brush fg, Brush txt) : base(type)
+            {
+                this.kwBrush = fg;
+                this.txtBrush = txt;
+            }
             public List<Inline> WPFDescription
             {
                 get
@@ -394,29 +427,30 @@ namespace XSharp.Project
 
                     if (this.Modifiers != XSharpModel.Modifiers.None)
                     {
-                        temp = new Run(this.Modifiers.ToString() + " ");
-                        temp.Foreground = Brushes.Blue;
+                        temp = new Run(_optionsPage.formatKeyword(this.Modifiers) + " ");
+                        temp.Foreground = this.kwBrush;
                         content.Add(temp);
                     }
-                    temp = new Run(this.Visibility.ToString() + " ");
-                    temp.Foreground = Brushes.Blue;
+                    temp = new Run(_optionsPage.formatKeyword(this.Visibility) + " ");
+                    temp.Foreground = this.kwBrush;
                     content.Add(temp);
                     //
                     if (this.IsStatic)
                     {
-                        temp = new Run("Static" + " ");
-                        temp.Foreground = Brushes.Blue;
+                        temp = new Run(_optionsPage.Static() + " ");
+                        temp.Foreground = this.kwBrush;
                         content.Add(temp);
                     }
                     //
                     if (this.Kind != XSharpModel.Kind.Field)
                     {
-                        temp = new Run(this.Kind.ToString() + " ");
-                        temp.Foreground = Brushes.Blue;
+                        temp = new Run(_optionsPage.formatKeyword(this.Kind) + " ");
+                        temp.Foreground = this.kwBrush;
                         content.Add(temp);
                     }
                     //
                     temp = new Run(this.Prototype);
+                    temp.Foreground = txtBrush;
                     content.Add(temp);
                     //
                     return content;
@@ -427,8 +461,14 @@ namespace XSharp.Project
 
         internal class QuickInfoMemberAnalysis : XSharpLanguage.MemberAnalysis
         {
-            internal QuickInfoMemberAnalysis(MemberInfo member) : base(member)
-            { }
+            Brush kwBrush;
+            Brush txtBrush;
+
+            internal QuickInfoMemberAnalysis(MemberInfo member, Brush kw, Brush txt) : base(member)
+            {
+                this.kwBrush = kw;
+                this.txtBrush = txt;
+            }
 
             public List<Inline> WPFDescription
             {
@@ -439,18 +479,18 @@ namespace XSharp.Project
                     Run temp;
                     if (this.Modifiers != XSharpModel.Modifiers.None)
                     {
-                        temp = new Run(this.Modifiers.ToString() + " ");
-                        temp.Foreground = Brushes.Blue;
+                        temp = new Run(_optionsPage.formatKeyword(this.Modifiers) + " ");
+                        temp.Foreground = this.kwBrush;
                         content.Add(temp);
                     }
-                    temp = new Run(this.Visibility.ToString() + " ");
-                    temp.Foreground = Brushes.Blue;
+                    temp = new Run(_optionsPage.formatKeyword(this.Visibility) + " ");
+                    temp.Foreground = this.kwBrush;
                     content.Add(temp);
                     //
                     if ((this.IsStatic) && ((this.Kind != Kind.Function) && (this.Kind != Kind.Procedure)))
                     {
-                        temp = new Run("Static" + " ");
-                        temp.Foreground = Brushes.Blue;
+                        temp = new Run(_optionsPage.Static()+ " ");
+                        temp.Foreground = this.kwBrush;
                         content.Add(temp);
                     }
                     //
@@ -458,17 +498,17 @@ namespace XSharp.Project
                     {
                         if (this.Kind == XSharpModel.Kind.VODefine)
                         {
-                            temp = new Run("Define" + " ");
+                            temp = new Run(_optionsPage.Define() + " ");
                         }
                         else if (this.Kind == XSharpModel.Kind.VOGlobal)
                         {
-                            temp = new Run("Global" + " ");
+                            temp = new Run(_optionsPage.Global() + " ");
                         }
                         else
                         {
                             temp = new Run(this.Kind.ToString() + " ");
                         }
-                        temp.Foreground = Brushes.Blue;
+                        temp.Foreground = this.kwBrush;
                         content.Add(temp);
                     }
                     //
@@ -489,7 +529,7 @@ namespace XSharp.Project
                     if (this.Kind.HasParameters())
                     {
                         temp = new Run(this.Kind == XSharpModel.Kind.Constructor ? "{" : "(");
-                        temp.Foreground = Brushes.Blue;
+                        temp.Foreground = this.kwBrush;
                         vars.Add(temp);
 
                         foreach (var var in this.Parameters)
@@ -497,33 +537,36 @@ namespace XSharp.Project
                             if (vars.Count > 1)
                             {
                                 temp = new Run(", ");
+                                temp.Foreground = txtBrush;
                                 vars.Add(temp);
                             }
                             temp = new Run(var.Name + " ");
+                            temp.Foreground = txtBrush;
                             vars.Add(temp);
                             temp = new Run(var.Direction + " ");
-                            temp.Foreground = Brushes.Blue;
+                            temp.Foreground = this.kwBrush;
                             vars.Add(temp);
                             temp = new Run(var.TypeName);
-                            temp.Foreground = Brushes.Blue;
+                            temp.Foreground = this.kwBrush;
                             vars.Add(temp);
                         }
                         temp = new Run(this.Kind == XSharpModel.Kind.Constructor ? "}" : ")");
-                        temp.Foreground = Brushes.Blue;
+                        temp.Foreground = this.kwBrush;
                         vars.Add(temp);
                     }
                     //
                     temp = new Run(this.Name);
+                    temp.Foreground = txtBrush;
                     content.Add(temp);
                     content.AddRange(vars);
                     //
                     if (this.Kind.HasReturnType())
                     {
-                        temp = new Run(" AS ");
-                        temp.Foreground = Brushes.Blue;
+                        temp = new Run(" "+ _optionsPage.As());
+                        temp.Foreground = this.kwBrush;
                         content.Add(temp);
                         temp = new Run(this.TypeName);
-                        temp.Foreground = Brushes.Blue;
+                        temp.Foreground = this.kwBrush;
                         content.Add(temp);
                     }
                     //
@@ -535,10 +578,14 @@ namespace XSharp.Project
         internal class QuickInfoTypeMember
         {
             XSharpModel.XTypeMember typeMember;
+            Brush kwBrush;
+            Brush txtBrush;
 
-            internal QuickInfoTypeMember(XSharpModel.XTypeMember tm)
+            internal QuickInfoTypeMember(XSharpModel.XTypeMember tm, Brush kw, Brush txt)
             {
                 this.typeMember = tm;
+                this.kwBrush = kw;
+                this.txtBrush = txt;
             }
 
             public List<Inline> WPFDescription
@@ -550,25 +597,25 @@ namespace XSharp.Project
                     Run temp;
                     if (this.typeMember.Modifiers != XSharpModel.Modifiers.None)
                     {
-                        temp = new Run(this.typeMember.Modifiers.ToString() + " ");
-                        temp.Foreground = Brushes.Blue;
+                        temp = new Run(_optionsPage.formatKeyword(this.typeMember.Modifiers) + " ");
+                        temp.Foreground = this.kwBrush;
                         content.Add(temp);
                     }
-                    temp = new Run(this.typeMember.Visibility.ToString() + " ");
-                    temp.Foreground = Brushes.Blue;
+                    temp = new Run(_optionsPage.formatKeyword(this.typeMember.Visibility) + " ");
+                    temp.Foreground = this.kwBrush;
                     content.Add(temp);
                     //
                     if ((this.typeMember.IsStatic) && ((this.typeMember.Kind != Kind.Function) && (this.typeMember.Kind != Kind.Procedure)))
                     {
-                        temp = new Run("STATIC" + " ");
-                        temp.Foreground = Brushes.Blue;
+                        temp = new Run(_optionsPage.Static() + " ");
+                        temp.Foreground = this.kwBrush;
                         content.Add(temp);
                     }
                     //
                     if (this.typeMember.Kind != XSharpModel.Kind.Field)
                     {
-                        temp = new Run(this.typeMember.Kind.ToString() + " ");
-                        temp.Foreground = Brushes.Blue;
+                        temp = new Run(_optionsPage.formatKeyword(this.typeMember.Kind) + " ");
+                        temp.Foreground = this.kwBrush;
                         content.Add(temp);
                     }
                     //
@@ -589,7 +636,7 @@ namespace XSharp.Project
                     if (this.typeMember.Kind.HasParameters())
                     {
                         temp = new Run(this.typeMember.Kind == XSharpModel.Kind.Constructor ? "{" : "(");
-                        temp.Foreground = Brushes.Blue;
+                        temp.Foreground = this.kwBrush;
                         vars.Add(temp);
 
                         foreach (var var in this.typeMember.Parameters)
@@ -597,33 +644,36 @@ namespace XSharp.Project
                             if (vars.Count > 1)
                             {
                                 temp = new Run(", ");
+                                temp.Foreground = txtBrush;
                                 vars.Add(temp);
                             }
                             temp = new Run(var.Name + " ");
+                            temp.Foreground = txtBrush;
                             vars.Add(temp);
-                            temp = new Run(var.ParamTypeDesc + " ");
-                            temp.Foreground = Brushes.Blue;
+                            temp = new Run(_optionsPage.formatKeyword(var.ParamTypeDesc) + " ");
+                            temp.Foreground = this.kwBrush;
                             vars.Add(temp);
                             temp = new Run(var.TypeName);
-                            temp.Foreground = Brushes.Blue;
+                            temp.Foreground = this.kwBrush;
                             vars.Add(temp);
                         }
                         temp = new Run(this.typeMember.Kind == XSharpModel.Kind.Constructor ? "}" : ")");
-                        temp.Foreground = Brushes.Blue;
+                        temp.Foreground = this.kwBrush;
                         vars.Add(temp);
                     }
                     //
                     temp = new Run(this.typeMember.Name);
+                    temp.Foreground = txtBrush;
                     content.Add(temp);
                     content.AddRange(vars);
                     //
                     if (this.typeMember.Kind.HasReturnType())
                     {
-                        temp = new Run(" AS ");
-                        temp.Foreground = Brushes.Blue;
+                        temp = new Run(" "+ _optionsPage.As());
+                        temp.Foreground = this.kwBrush;
                         content.Add(temp);
                         temp = new Run(this.typeMember.TypeName);
-                        temp.Foreground = Brushes.Blue;
+                        temp.Foreground = this.kwBrush;
                         content.Add(temp);
                     }
                     //
@@ -637,10 +687,14 @@ namespace XSharp.Project
         internal class QuickInfoVariable
         {
             XSharpModel.XVariable xVar;
+            Brush kwBrush;
+            Brush txtBrush;
 
-            internal QuickInfoVariable(XSharpModel.XVariable var)
+            internal QuickInfoVariable(XSharpModel.XVariable var, Brush kw, Brush txt)
             {
                 this.xVar = var;
+                this.kwBrush = kw;
+                this.txtBrush = txt;
             }
 
             public List<Inline> WPFDescription
@@ -652,14 +706,14 @@ namespace XSharp.Project
                     Run temp;
                     if (this.xVar.IsParameter)
                     {
-                        temp = new Run("PARAMETER" + " ");
-                        temp.Foreground = Brushes.Blue;
+                        temp = new Run(_optionsPage.Parameter() + " ");
+                        temp.Foreground = this.kwBrush;
                         content.Add(temp);
                     }
                     else
                     {
-                        temp = new Run("LOCAL" + " ");
-                        temp.Foreground = Brushes.Blue;
+                        temp = new Run(_optionsPage.Local() + " ");
+                        temp.Foreground = this.kwBrush;
                         content.Add(temp);
                     }
                     //
@@ -667,17 +721,17 @@ namespace XSharp.Project
                     //
                     if (this.xVar.IsTyped)
                     {
-                        temp = new Run(this.xVar.ParamTypeDesc + " ");
-                        temp.Foreground = Brushes.Blue;
+                        temp = new Run(" "+ _optionsPage.formatKeyword(this.xVar.ParamTypeDesc.TrimStart()) + " ");
+                        temp.Foreground = this.kwBrush;
                         content.Add(temp);
                         //
                         temp = new Run(this.xVar.TypeName);
-                        temp.Foreground = Brushes.Blue;
+                        temp.Foreground = this.kwBrush;
                         content.Add(temp);
                         if (this.xVar.IsArray)
                         {
                             temp = new Run("[] ");
-                            temp.Foreground = Brushes.Blue;
+                            temp.Foreground = this.kwBrush;
                             content.Add(temp);
                         }
                     }
@@ -695,6 +749,7 @@ namespace XSharp.Project
                     Run temp;
                     //
                     temp = new Run(this.xVar.Name);
+                    temp.Foreground = this.txtBrush;
                     content.Add(temp);
                     //
                     return content;
@@ -707,4 +762,28 @@ namespace XSharp.Project
         }
 
     }
+    static class KeywordExtensions
+    {
+        internal static string formatKeyword(this OptionsPages.IntellisenseOptionsPage page,  Modifiers keyword)
+        {
+            return page.formatKeyword(keyword.ToString());
+        }
+        internal static string formatKeyword(this OptionsPages.IntellisenseOptionsPage page,  Kind keyword)
+        {
+            return page.formatKeyword(keyword.ToString());
+        }
+        internal static string formatKeyword(this OptionsPages.IntellisenseOptionsPage page,  string keyword)
+        {
+            return page.SyncKeyword(keyword);
+        }
+        internal static string As(this OptionsPages.IntellisenseOptionsPage page) => page.formatKeyword("AS ");
+        internal static string Static(this OptionsPages.IntellisenseOptionsPage page) => page.formatKeyword("STATIC");
+        internal static string Define(this OptionsPages.IntellisenseOptionsPage page) => page.formatKeyword("DEFINE");
+        internal static string Global(this OptionsPages.IntellisenseOptionsPage page) => page.formatKeyword("GLOBAL");
+        internal static string Local(this OptionsPages.IntellisenseOptionsPage page) => page.formatKeyword("LOCAL");
+        internal static string Parameter(this OptionsPages.IntellisenseOptionsPage page) => page.formatKeyword("PARAMETER");
+        internal static string Usual(this OptionsPages.IntellisenseOptionsPage page) => page.formatKeyword("USUAL");
+
+    }
 }
+

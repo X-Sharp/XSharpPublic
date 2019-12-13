@@ -70,6 +70,11 @@ namespace XSharp.Project.Editors.BraceMatching
             this.View.LayoutChanged += ViewLayoutChanged;
         }
 
+        void Debug(string sMessage)
+        {
+            XSharpProjectPackage.Instance.DisplayOutPutMessage("Brace Matching: "+sMessage);
+        }
+
         public event EventHandler<SnapshotSpanEventArgs> TagsChanged;
 
         void ViewLayoutChanged(object sender, TextViewLayoutChangedEventArgs e)
@@ -99,6 +104,14 @@ namespace XSharp.Project.Editors.BraceMatching
 
         public IEnumerable<ITagSpan<TextMarkerTag>> GetTags(NormalizedSnapshotSpanCollection spans)
         {
+
+            DateTime oStart, oEnd;
+            TimeSpan timeSpan;
+
+            oStart = DateTime.Now;
+
+            Debug("Start get brackets: " + oStart.ToString("hh:mm:ss.fff"));
+
             if (spans.Count == 0)   //there is no content in the buffer
                 yield break;
 
@@ -134,43 +147,56 @@ namespace XSharp.Project.Editors.BraceMatching
             {
                 yield break;
             }
+
+
             // use the tokens stored in the buffer properties
             XSharpTokens xTokens = null;
             IList<IToken> tokens = null;
             int offset = 0;
-            if ( SourceBuffer.Properties != null && SourceBuffer.Properties.ContainsProperty(typeof(XSharpTokens)))
-            {
-                xTokens = SourceBuffer.Properties.GetProperty<XSharpTokens>(typeof(XSharpTokens));
-                if (xTokens == null || xTokens.TokenStream == null || xTokens.SnapShot == null)
-                    yield break;
 
-                tokens = xTokens.TokenStream.GetTokens();
-                if (tokens == null)
-                    yield break;
-                if (xTokens.SnapShot.Version != ssp.Snapshot.Version)
+            if (m_braceList.ContainsKey(currentText) || (m_braceList.ContainsValue(lastText))) //FM#081219 #1 - Only need to get the tokens if either of these conditions is true
+            {
+
+                if (SourceBuffer.Properties != null && SourceBuffer.Properties.ContainsProperty(typeof(XSharpTokens)))
                 {
-                    // get source from the start of the file until the current entity
-                    var xfile = SourceBuffer.GetFile();
-                    var member = XSharpTokenTools.FindMemberAtPosition(ssp.Position, xfile);
-                    if (member != null)
+                    xTokens = SourceBuffer.Properties.GetProperty<XSharpTokens>(typeof(XSharpTokens));
+                    if (xTokens == null || xTokens.TokenStream == null || xTokens.SnapShot == null)
+                        yield break;
+
+                    tokens = xTokens.TokenStream.GetTokens();
+                    if (tokens == null)
+                        yield break;
+
+                    if (xTokens.SnapShot.Version != ssp.Snapshot.Version)
                     {
-                        try
+                        // get source from the start of the file until the current entity
+                        var xfile = SourceBuffer.GetFile();
+                        var member = XSharpTokenTools.FindMemberAtPosition(ssp.Position, xfile);
+                        if (member != null)
                         {
-                            var sourceWalker = new SourceWalker(xfile);
-                            string text = ssp.Snapshot.GetText();
-                            var stream = (BufferedTokenStream) sourceWalker.Lex(text);
-                            tokens = stream.GetTokens();
-                        }
-                        catch (Exception e)
-                        {
-                            // if it crashes, that might be because the snapshot used for the Lex/Parse is no more
-                            // so, we may have a too much difference
-                            // we do not break but simply use the 'old' tokens
-                            System.Diagnostics.Debug.WriteLine(e.Message);
+                            try
+                            {
+                                var sourceWalker = new SourceWalker(xfile);
+                                string text = ssp.Snapshot.GetText();
+                                text = text.Substring(member.Interval.Start, member.Interval.Width); //FM#081219 #2 - We are in a 'member'. For brace matching we should only ever need to look to the end of this member
+                                offset = member.Interval.Start;
+                                Debug("Start sourceWalker.Lex: " + DateTime.Now.ToString("hh:mm:ss.fff"));
+                                var stream = (BufferedTokenStream)sourceWalker.Lex(text);
+                                Debug("End sourceWalker.Lex: " + DateTime.Now.ToString("hh:mm:ss.fff"));
+                                tokens = stream.GetTokens();
+                            }
+                            catch (Exception e)
+                            {
+                                // if it crashes, that might be because the snapshot used for the Lex/Parse is no more
+                                // so, we may have a too much difference
+                                // we do not break but simply use the 'old' tokens
+                                System.Diagnostics.Debug.WriteLine(e.Message);
+                            }
                         }
                     }
                 }
             }
+
             // First, try to match Simple chars
             if (m_braceList.ContainsKey(currentText))   //the key is the open brace
             {
@@ -220,7 +246,7 @@ namespace XSharp.Project.Editors.BraceMatching
                                 (tag.ClassificationType.IsOfType(ColorizerConstants.XSharpBraceCloseFormat)))
                             sortedTags.Add(tag);
                     }
-                    sortedTags.Sort((a, b) => a.Span.Start.Position.CompareTo(b.Span.Start.Position)*1000 + string.Compare(a.ClassificationType.Classification, b.ClassificationType.Classification));
+                    sortedTags.Sort((a, b) => a.Span.Start.Position.CompareTo(b.Span.Start.Position) * 1000 + string.Compare(a.ClassificationType.Classification, b.ClassificationType.Classification));
                     //
                     var tags = sortedTags.Where(x => ssp.Position >= x.Span.Start.Position && ssp.Position <= x.Span.End.Position);
                     foreach (var currentTag in tags)
@@ -247,8 +273,13 @@ namespace XSharp.Project.Editors.BraceMatching
                     }
                 }
             }
-        }
 
+            oEnd = DateTime.Now;
+            timeSpan = oEnd - oStart;
+
+            Debug("Finished get brackets: " + oEnd.ToString("hh:mm:ss.fff"));
+            Debug("Finished get brackets - total ms: " + timeSpan.TotalMilliseconds.ToString());
+        }
         private bool FindMatchingCloseTag(List<ClassificationSpan> sortedTags, int indexTag, ITextSnapshot snapshot, out SnapshotSpan pairSpan)
         {
             pairSpan = new SnapshotSpan(snapshot, 1, 1);

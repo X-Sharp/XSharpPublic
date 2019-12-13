@@ -1,6 +1,6 @@
-<PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
+﻿<PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Id="XSharp.Debugger" Version="2.1.0.1" Language="en-US" Publisher="XSharp BV" />
+    <Identity Id="XSharp.Debugger" Version="2.2.1.1" Language="en-US" Publisher="XSharp BV" />
     <DisplayName>XSharp Visual Studio Debugger Support</DisplayName>
     <Description xml:space="preserve">XSharp Visual Studio Debugger Support. 
 Adds X# language support to the callstack, locals window and more</Description>
@@ -15,7 +15,7 @@ Adds X# language support to the callstack, locals window and more</Description>
     <InstallationTarget Version="[14.0,16.0)" Id="Microsoft.VisualStudio.Enterprise" />
   </Installation>
   <Dependencies>
-    <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" Version="[4.6,)" />
+    <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="[4.6,)" />
   </Dependencies>
   <Prerequisites>
     <Prerequisite Id="Microsoft.VisualStudio.Debugger" Version="[15.0,)" DisplayName="Visual Studio Debugger" />
@@ -23,5 +23,14 @@ Adds X# language support to the callstack, locals window and more</Description>
   <Assets>
     <Asset Source="File" Path="XSharpDebugger.pkgdef" Type="Microsoft.VisualStudio.VsPackage" TargetPath="|%CurrentProject%|"/>
     <Asset Type="DebuggerEngineExtension" d:Source="Project" d:ProjectName="%CurrentProject%" Path="XSharpDebugger.vsdconfig" />
+    <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" />
   </Assets>
 </PackageManifest>
+<!--
+    Please add the following element to PackageManifest\\Assets:
+    <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" />
+-->
+<!--
+    Please add the following element to PackageManifest\\Dependencies:
+    <Dependency Id="Microsoft.VisualStudio.MPF.14.0" DisplayName="Visual Studio MPF 14.0" d:Source="Installed" Version="[14.0]" />
+-->

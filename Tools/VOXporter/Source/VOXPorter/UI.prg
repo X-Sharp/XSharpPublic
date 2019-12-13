@@ -475,6 +475,9 @@ CLASS xPorterUI INHERIT System.Windows.Forms.Form IMPLEMENTS IProgressBar
 
 		cSourceFolder := SELF:oTextSource:Text:Trim()
 		cOutputFolder := SELF:oTextOutput:Text:Trim()
+		DO WHILE cOutputFolder:EndsWith("\")
+			cOutputFolder := cOutputFolder:Substring(0, cOutputFolder:Length - 1)
+		END DO
 		
 		cSolutionName := SELF:oTextSolutionName:Text:Trim()
 		cAppName      := SELF:oTextAppName:Text:Trim()

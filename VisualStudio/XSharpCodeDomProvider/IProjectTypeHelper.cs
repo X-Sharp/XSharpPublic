@@ -14,5 +14,6 @@ namespace XSharp.CodeDom
         //EnvDTE.CodeElement ResolveStrangerType(string name, IReadOnlyList<string> usings);
 
         XSharpParseOptions ParseOptions { get; }
+        string SynchronizeKeywordCase(string code, string fileName);
     }
 }

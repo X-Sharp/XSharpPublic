@@ -447,6 +447,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
 
         METHOD GetPage(nPage AS Int32, nKeyLen AS WORD,tag AS CdxTag) AS CdxPage
+           IF nPage == -1
+                RETURN NULL
+           ENDIF
            VAR page := SELF:_PageList:GetPage(nPage, nKeyLen,tag)
            IF page != NULL
                 SELF:SetPage( page)

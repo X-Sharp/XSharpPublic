@@ -9,6 +9,9 @@ using System.Windows.Forms;
 
 namespace XSharp.Project.OptionsPages
 {
+
+    delegate string caseSync(string original);
+
     [Guid(XSharpConstants.IntellisenseOptionsPageGuidString)]
     [SharedSettings("TextEditor.XSharp",false)]
     class IntellisenseOptionsPage : DialogPage
@@ -63,7 +66,7 @@ namespace XSharp.Project.OptionsPages
 
         private void SetDefaultCommitChars()
         {
-            if (String.IsNullOrEmpty(this.CommitChars.Trim()))
+            if (this.CommitChars == null || string.IsNullOrEmpty(this.CommitChars) )
             {
                 this.CommitChars = "{}[]();+-*/%&|^!~=<>?@#\'\"\\";
             }
@@ -73,11 +76,67 @@ namespace XSharp.Project.OptionsPages
         {
             base.LoadSettingsFromStorage();
             SetDefaultCommitChars();
+            SetCaseSync();
         }
         public override void SaveSettingsToStorage()
         {
             SetDefaultCommitChars();
             base.SaveSettingsToStorage();
+            SetCaseSync();
+        }
+        private caseSync CaseSync;
+        public IntellisenseOptionsPage() : base()
+        {
+            CaseSync = (x) => x;
+
+        }
+
+
+        void SetCaseSync()
+        {
+            switch (KeywordCase)
+            {
+                case KeywordCase.Upper:
+                    CaseSync = (x) => x.ToUpper();
+                    break;
+                case KeywordCase.Lower:
+                    CaseSync = (x) => x.ToLower();
+                    break;
+                case KeywordCase.Title:
+                    CaseSync = (x) => x.Length > 1 ? x.Substring(0, 1).ToUpper() + x.Substring(1).ToLower() : x.ToUpper();
+                    break;
+                case KeywordCase.None:
+                    CaseSync = (x) => x;
+                    break;
+            }
+            try
+            {
+                var key = Microsoft.Win32.Registry.CurrentUser;
+                var subkey = key.OpenSubKey(Constants.RegistryKey, true);
+                if (subkey == null)
+                {
+                    subkey = key.CreateSubKey(Constants.RegistryKey);
+                }
+                var kwcase = subkey.GetValue("KeywordCase");
+                if (kwcase == null)
+                {
+                    subkey.SetValue("KeywordCase", 1);
+                }
+                subkey.SetValue("KeywordCase", (int)KeywordCase);
+            }
+            catch
+            {
+                ;
+            }
+
+
+        }
+
+        public string SyncKeyword(string original)
+        {
+            if (string.IsNullOrEmpty(original))
+                return original;
+            return CaseSync(original);
         }
     }
 }

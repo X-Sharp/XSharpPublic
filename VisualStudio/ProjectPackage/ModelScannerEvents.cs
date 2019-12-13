@@ -44,6 +44,7 @@ namespace XSharp.Project
         public override int OnBeforeCloseSolution(object pUnkReserved)
         {
             XSharpModel.ModelWalker.Suspend();
+            XSharpModel.XSolution.CloseAll();
             return VSConstants.S_OK;
         }
         public override int OnAfterCloseSolution(object reserved)

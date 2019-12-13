@@ -29,6 +29,7 @@ BEGIN NAMESPACE XSharpModel
 		METHOD SetStatusBarAnimation(onOff AS LOGIC, id AS SHORT) AS VOID
 		METHOD SetStatusBarText(message AS STRING) AS VOID
 		METHOD ShowIntellisenseErrors() AS VOID
+	    METHOD SynchronizeKeywordCase(code as STRING, fileName as STRING) AS STRING
 
 		// Properties
 		PROPERTY IntermediateOutputPath AS STRING GET

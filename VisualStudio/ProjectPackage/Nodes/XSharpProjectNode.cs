@@ -34,6 +34,9 @@ using LanguageService.CodeAnalysis.XSharp;
 using XSharp.CodeDom;
 using MBC = Microsoft.Build.Construction;
 using Microsoft;
+using LanguageService.SyntaxTree;
+using System.Text;
+using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 
 namespace XSharp.Project
 {
@@ -290,6 +293,19 @@ namespace XSharp.Project
             return options;
         }
 
+        private void invalidateOptions()
+        {
+            this.options = null;
+            this._outputFile = null;
+            this._outputPath = null;
+
+        }
+        public override void SetProjectFileDirty(bool value)
+        {
+            base.SetProjectFileDirty(value);
+            invalidateOptions();
+        }
+
         public override ProjectOptions GetProjectOptions(ConfigCanonicalName configCanonicalName)
         {
             if (this.options != null)
@@ -297,7 +313,7 @@ namespace XSharp.Project
                 var xoptions = this.options as XSharpProjectOptions;
                 if (xoptions.ConfigCanonicalName != configCanonicalName)
                 {
-                    this.options = null;
+                    invalidateOptions();
                 }
             }
             if (this.options == null)
@@ -309,6 +325,7 @@ namespace XSharp.Project
             }
             return this.options;
         }
+
         public override string GetProjectProperty(string propertyName, bool resetCache, bool unevaluated = false)
         {
             if (BuildProject != null)
@@ -1348,6 +1365,45 @@ namespace XSharp.Project
         #region IXSharpProject Interface
         protected IVsStatusbar statusBar;
 
+        public string SynchronizeKeywordCase(string code, string fileName)
+        {
+            var package = XSharp.Project.XSharpProjectPackage.Instance;
+            var optionsPage = package.GetIntellisenseOptionsPage();
+            if (optionsPage.KeywordCase == Project.KeywordCase.None)
+                return code;
+            // we also normalize the line endings
+            code = code.Replace("\n", "");
+            code = code.Replace("\r", "\r\n");
+
+            var file = XSolution.FindFullPath(fileName);
+            var sb = new StringBuilder();
+            XSharpParseOptions parseoptions;
+            if (file != null)
+            {
+                parseoptions = file.Project.ParseOptions;
+            }
+            else
+                parseoptions = XSharpParseOptions.Default;
+            ITokenStream tokenStream;
+            var reporter = new ErrorIgnorer();
+            bool ok = XSharp.Parser.VsParser.Lex(code, fileName, parseoptions, reporter, out tokenStream);
+            var stream = tokenStream as BufferedTokenStream;
+            var tokens = stream.GetTokens();
+            foreach (var token in tokens)
+            {
+                if (XSharpLexer.IsKeyword(token.Type))
+                {
+                    sb.Append(optionsPage.SyncKeyword(token.Text));
+                }
+                else
+                {
+                    sb.Append(token.Text);
+                }
+            }
+            return sb.ToString();
+        }
+
+
         private void getStatusBar()
         {
             if (statusBar == null && !lTriedToGetStatusBar)
@@ -1692,6 +1748,7 @@ namespace XSharp.Project
         {
             _config = config;
             base.SetConfiguration(config);
+            invalidateOptions();
             if (this.designTimeAssemblyResolution == null)
             {
                 this.designTimeAssemblyResolution = new DesignTimeAssemblyResolution();
@@ -1859,10 +1916,14 @@ namespace XSharp.Project
         {
             get
             {
-                var xoptions = GetProjectOptions(this.CurrentConfig.ConfigCanonicalName) as XSharpProjectOptions;
-                if (xoptions.ParseOptions == null)
-                    xoptions.BuildCommandLine();
-                return xoptions.ParseOptions;
+                if (this.CurrentConfig != null)
+                {
+                    var xoptions = GetProjectOptions(this.CurrentConfig.ConfigCanonicalName) as XSharpProjectOptions;
+                    if (xoptions.ParseOptions == null)
+                        xoptions.BuildCommandLine();
+                    return xoptions.ParseOptions;
+                }
+                return XSharpParseOptions.Default;
             }
         }
         bool _closing = false;
@@ -2416,13 +2477,7 @@ namespace XSharp.Project
         }
         internal int ShowMessageBox(string message)
         {
-            string title = string.Empty;
-            OLEMSGICON icon = OLEMSGICON.OLEMSGICON_CRITICAL;
-            OLEMSGBUTTON buttons = OLEMSGBUTTON.OLEMSGBUTTON_OK;
-            OLEMSGDEFBUTTON defaultButton = OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST;
-
-            return Utilities.ShowMessageBox(this.Site, message, title, icon, buttons, defaultButton);
-
+            return XSharpProjectPackage.Instance.ShowMessageBox(message);
         }
 
         #region IVsProject5

@@ -96,7 +96,8 @@ BEGIN NAMESPACE XSharpModel
 		VIRTUAL METHOD ShowIntellisenseErrors() AS VOID
 			RETURN
 
-
+        VIRTUAL METHOD SynchronizeKeywordCase(code as STRING, fileName as STRING) AS STRING
+                RETURN code
 
 
 

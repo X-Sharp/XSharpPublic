@@ -62,6 +62,9 @@ BEGIN NAMESPACE XSharpModel
 			WriteOutputMessage("<<-- AddProject()")
 
 		INTERNAL METHOD FileWalk(file AS XFile) AS VOID
+            IF ! XSolution.Open
+                RETURN
+            ENDIF
 			VAR lastWriteTime := System.IO.File.GetLastWriteTime(file:SourcePath)
 			IF lastWriteTime > file:LastWritten
 				//
@@ -121,10 +124,16 @@ BEGIN NAMESPACE XSharpModel
 		STATIC METHOD Suspend() AS VOID
 			//
 			ModelWalker.suspendLevel++
+            IF (ModelWalker._walker != null .and. ModelWalker._walker:_projects:Count > 0)
+                LOCAL project := NULL as XProject
+                IF ModelWalker._walker:_projects:TryPeek(REF project)
+                    project:ProjectNode:SetStatusBarText("")
+                ENDIF
+            ENDIF
 
 		METHOD Walk() AS VOID
 			LOCAL start AS System.Threading.ThreadStart
-			IF (ModelWalker.suspendLevel <= 0)
+			IF (ModelWalker.suspendLevel <= 0 .and. XSolution:Open)
 				TRY
 					SELF:StopThread()
 					start := System.Threading.ThreadStart{ SELF, @Walker() }
@@ -145,6 +154,7 @@ BEGIN NAMESPACE XSharpModel
 		PRIVATE METHOD Walker() AS VOID
 			LOCAL project AS XProject
 			LOCAL parallelOptions AS System.Threading.Tasks.ParallelOptions
+
 			project := NULL
 			IF ((SELF:_projects:Count != 0) .AND. ! System.Linq.Enumerable.First<XProject>(SELF:_projects):ProjectNode:IsVsBuilding)
 				DO WHILE (TRUE)
@@ -209,17 +219,17 @@ BEGIN NAMESPACE XSharpModel
 
 		PRIVATE METHOD walkOneFile(file AS XFile) AS VOID
 			VAR project := file:Project
-			IF (project:Loaded)
+			IF (project:Loaded .and. XSolution:Open)
 				iProcessed++
 				DO WHILE (project:ProjectNode:IsVsBuilding)
 					System.Threading.Thread.Sleep(1000)
 				ENDDO
 				project:ProjectNode:SetStatusBarText(String.Format("Walking {0} : Processing File {1} ({2} of {3})", project:Name, file:Name, iProcessed, aFiles:Length))
 				SELF:FileWalk(file)
+			    DO WHILE ModelWalker.IsSuspended .AND. System.Threading.Thread.CurrentThread:IsBackground
+				    System.Threading.Thread.Sleep(100)
+			    ENDDO
 			ENDIF
-			DO WHILE ModelWalker.IsSuspended .AND. System.Threading.Thread.CurrentThread:IsBackground
-				System.Threading.Thread.Sleep(100)
-			ENDDO
 			RETURN
 
 		// Properties

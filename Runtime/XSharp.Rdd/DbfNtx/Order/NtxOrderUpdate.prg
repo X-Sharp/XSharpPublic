@@ -267,7 +267,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 
                 pageLeft := SELF:_PageList:Read(topStack:Page)
                 // setup left and right siblings
-                IF iPos == topStack:Count
+                IF iPos == topStack:Count .AND. topStack:Pos != 0
                     // underflow page was a right pointer from parent 
                     rightPageNo := pageLeft[iPos]:PageNo
                     num2 := rightPageNo
@@ -423,6 +423,9 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             SELF:_midItem:KeyBytes  := node:KeyBytes
             // delete key from page
             nodeCount   := page:NodeCount
+            IF nodeCount == 0
+                RETURN
+            ENDIF
             leftPageNo  := node:PageNo
             offSet      := page:GetRef(uiPos)
             // shift references

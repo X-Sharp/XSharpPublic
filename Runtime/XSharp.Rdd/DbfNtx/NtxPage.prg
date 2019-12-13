@@ -68,8 +68,8 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 LOCAL nCount := 0 AS WORD
                 TRY
                     nCount := BitConverter.ToUInt16( SELF:_Bytes, 0)
-                CATCH e AS Exception
-                    Debug.WriteLine( "Ntx Error : " + e:Message )
+                CATCH 
+                    THROW // Debug.WriteLine( "Ntx Error : " + e:Message )
                 END TRY
                 RETURN nCount
             END GET
@@ -77,8 +77,8 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             SET
                 TRY
                     Array.Copy(BitConverter.GetBytes( VALUE), 0, SELF:_bytes, 0, 2)
-                CATCH e AS Exception
-                    Debug.WriteLine( "Ntx Error : " + e:Message )
+                CATCH 
+                    THROW // Debug.WriteLine( "Ntx Error : " + e:Message )
                 END TRY
                 
             END SET
@@ -98,8 +98,8 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             SET
                 TRY
                     Array.Copy(BitConverter.GetBytes( VALUE), 0, SELF:_bytes, 2, sizeof(WORD))
-                CATCH e AS Exception
-                    Debug.WriteLine( "Ntx Error : " + e:Message )
+                CATCH 
+                    THROW //Debug.WriteLine( "Ntx Error : " + e:Message )
                 END TRY
                 
             END SET
@@ -112,8 +112,8 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 TRY
                     node := NtxPageNode{ SELF:_Order:KeyLength ,SELF }
                     node:Pos := index
-                CATCH e AS Exception
-                    Debug.WriteLine( "Ntx Error : " + e:Message )
+                CATCH 
+                    THROW //Debug.WriteLine( "Ntx Error : " + e:Message )
                 END TRY
                 RETURN node
             END GET
@@ -146,9 +146,9 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 TRY
                     isOk := SELF:_Order:ReadPage(SELF)
                     SELF:Dumped := FALSE
-                CATCH e AS Exception
+                CATCH 
                     isOk := FALSE
-                    Debug.WriteLine( "Ntx Error : " + e:Message )
+                    THROW //Debug.WriteLine( "Ntx Error : " + e:Message )
                 END TRY
             ENDIF
             RETURN isOk
@@ -169,9 +169,9 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             TRY
                 isOk := SELF:_order:WritePage(SELF)
                 SELF:_Hot := FALSE
-            CATCH e AS Exception
+            CATCH 
                 isOk := FALSE
-                Debug.WriteLine( "Ntx Error : " + e:Message )
+                THROW //Debug.WriteLine( "Ntx Error : " + e:Message )
             END TRY
             RETURN isOk
             

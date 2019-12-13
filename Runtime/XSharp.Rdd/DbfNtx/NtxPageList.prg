@@ -85,6 +85,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 NEXT
             CATCH AS Exception
                 isOk := FALSE
+                THROW //
             END TRY
             IF isOk .AND. !keepData
                 SELF:_Pages:Clear()

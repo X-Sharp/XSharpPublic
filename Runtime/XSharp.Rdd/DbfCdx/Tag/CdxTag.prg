@@ -322,9 +322,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN _saveCurrentKey(SELF:_oRdd:RecNo, SELF:_currentValue)
 
         INTERNAL METHOD GetPage(nPage AS LONG) AS CdxTreePage
-            IF nPage == -1
-                RETURN NULL
-            ENDIF
             VAR page := SELF:_bag:GetPage(nPage, SELF:_KeySize, SELF)
             RETURN page ASTYPE CdxTreePage
 
@@ -357,6 +354,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:ClearStack()
 
         PRIVATE METHOD _saveCurrentRecord( node AS CdxNode) AS VOID
+            IF node:Recno == -1
+                NOP
+            ENDIF
             IF SELF:_currentValue:Recno != node:Recno .AND. ! SELF:RDD:Eof
                 SELF:_currentValue:Recno := node:Recno
                 Array.Copy(node:KeyBytes, SELF:_currentValue:Key, _keySize)

@@ -33,6 +33,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL PROPERTY Tag    AS CDXTag GET _tag SET _setTag(VALUE)
         INTERNAL PROPERTY Buffer AS BYTE[] GET _buffer
         INTERNAL PROPERTY PageNo AS Int32 GET _nPage SET _nPage := VALUE
+        // For debugging
+        INTERNAL PROPERTY PageNoX AS STRING GET _nPage:ToString("X8")
 
         // Helper fields
         PROTECTED wValue := WordStruct{} AS WordStruct

@@ -51,6 +51,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         ABSTRACT PUBLIC   PROPERTY NumKeys      AS WORD  GET
         ABSTRACT INTERNAL PROPERTY LastNode     AS CdxPageNode GET
         INTERNAL PROPERTY NextFree              AS LONG GET LeftPtr SET LeftPtr := VALUE // alias for LeftPtr
+        // For debugging
+        INTERNAL PROPERTY LeftPtrX  AS STRING GET LeftPtr:ToString("X8")
+        INTERNAL PROPERTY RightPtrX AS STRING GET RightPtr:ToString("X8")
+            
         INTERNAL PROPERTY FirstPageOnLevel AS CdxTreePage
             GET
                 VAR oPage := SELF
@@ -65,17 +69,23 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         GET
             VAR oList := List<CdxTreePage>{}
             VAR oPage := SELF:FirstPageOnLevel
+            VAR aPages := List<INT>{}
             oList:Add(oPage)
-            DO WHILE oPage:HasRight 
-                oPage := SELF:Tag:GetPage(oPage:RightPtr)
-                oList:Add(oPage)
+            DO WHILE oPage:HasRight
+                VAR nRight := oPage:RightPtr
+                IF !aPages:Contains(nRight)
+                    oPage := SELF:Tag:GetPage(oPage:RightPtr)
+                    oList:Add(oPage)
+                    aPages:Add(nRight)
+                ELSE
+                    EXIT
+                ENDIF
             ENDDO
             RETURN oList
         END GET
         END PROPERTY
 
-/*
-#ifdef DEBUG 
+#ifdef TESTCDX
         PRIVATE oPageLeft  AS CdxTreePage
         PRIVATE oPageRight AS CdxTreePage
         INTERNAL PROPERTY PageLeft AS CdxTreePage
@@ -154,21 +164,24 @@ BEGIN NAMESPACE XSharp.RDD.CDX
        INTERNAL METHOD AddRightSibling(oSibling AS CdxTreePage) AS VOID
             System.Diagnostics.Debug.Assert(oSibling != NULL_OBJECT)
             IF oSibling != NULL_OBJECT
-                IF SELF:HasRight
-                    //Debug(SELF:PageType, oSibling:PageNo:ToString("X8"),"between", SELF:PageNo:ToString("X8"),"and",SELF:RightPtr:ToString("X8"))
-                    VAR oOldRight := SELF:Tag:GetPage(SELF:RightPtr)
-                    oOldRight:LeftPtr := oSibling:PageNo
-                ELSE
-                    //Debug(SELF:PageType, oSibling:PageNo:ToString("X8"),"after  ", SELF:PageNo:ToString("X8"))
-                ENDIF
-                
-                oSibling:RightPtr := SELF:RightPtr
-                SELF:RightPtr     := oSibling:PageNo
+                LOCAL  oOldRight AS CdxTreePage
                 oSibling:LeftPtr  := SELF:PageNo
+                oSibling:RightPtr := SELF:RightPtr
+                IF SELF:HasRight
+                    oOldRight := SELF:_tag:GetPage(SELF:RightPtr)
+                    Debug.Assert(oOldRight:LeftPtr == SELF:PageNo)
+                    Debug.Assert(oOldRight:PageNo == SELF:RightPtr)
+                    oOldRight:LeftPtr := oSibling:PageNo    
+                    oOldRight:Write()
+                ENDIF
+                SELF:RightPtr     := oSibling:PageNo
+                SELF:Write()
+            ELSE
+                NOP
             ENDIF
             RETURN 
         INTERNAL ABSTRACT METHOD FindKey(key AS BYTE[], recno AS LONG, length AS LONG) AS WORD
-
+#ifdef TESTCDX
         METHOD Debug(o PARAMS  OBJECT[] ) AS VOID
            LOCAL count := o:Length AS INT
            LOCAL x                 AS INT
@@ -185,7 +198,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
               ENDIF
            NEXT
            Console.WriteLine()
-           AltD()
            RETURN
+#endif            
 	END CLASS
 END NAMESPACE 

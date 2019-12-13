@@ -70,7 +70,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             _pages := List<CdxStackEntry>{20}
 
         PROPERTY Count AS LONG GET _pages:Count
-
+        // for debugging: easy access to the levels on the stack
+        INTERNAL PROPERTY Entries AS List<CdxStackEntry> GET _pages
         METHOD Push(page AS CdxTreePage, nPos AS WORD)  AS LONG
             VAR entry := CdxStackEntry{}{ Page := page, Pos := nPos}
             _pages:Add(entry)

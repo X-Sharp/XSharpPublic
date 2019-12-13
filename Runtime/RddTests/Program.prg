@@ -10,7 +10,9 @@ USING System.Reflection
 [STAThread];      
 FUNCTION Start() AS VOID
     TRY
-        TestCollationChris()
+        testChrisOrdinal()
+        //testLndRel()
+        //TestCollationChris()
         //TestIndexCreate()
         //TestWord() 
         //CountAndSpeedTest()
@@ -168,6 +170,93 @@ FUNCTION Start() AS VOID
         ErrorDialog(e)
     END TRY
     RETURN
+
+FUNCTION TestChrisOrdinal() AS VOID
+     Console.WriteLine( SetCollation(#Ordinal))
+    // RuntimeState.Dialect := XSharpDialect.XPP
+     LOCAL cDBF AS STRING
+     LOCAL aFields, aValues AS ARRAY
+     LOCAL cPrev AS STRING
+     LOCAL nCount AS INT
+     LOCAL i AS DWORD
+
+     RddSetDefault ( "DBFCDX" )
+
+     aFields := { { "LAST" , "C" , 200 , 0 }}
+        VAR start := 48934 //seconds()
+     Rand(start)
+
+FOR VAR nRepeat := 1 TO 1000
+        Console.WriteLine( "Repeat " + nRepeat:ToString())
+        //IF nRepeat == 31 //.OR. nRepeat == 1
+        //    XSharp.RDD.DBFCDX.StartLogging()
+        //ENDIF
+     cDBF := "c:\test\mytest"+nRepeat:ToString()
+     FErase ( cDbf + IndexExt() )
+     FErase ( cDbf + ".DBF" )
+
+     DbCreate( cDBF , AFields)
+     DbUseArea(,,cDBF )
+     FOR i := ASC("A") UPTO ASC("Z")
+         DbAppend()
+         FieldPut ( 1 , Replicate( chr(i) , 100) )
+         DbAppend()
+         FieldPut ( 1 , Replicate( chr(i+32) , 100) )
+     NEXT
+     //? "Written"   
+     DbCreateIndex ( cDBF , "LAST" , {||_FIELD->LAST})
+     FOR i := 1 TO RecCount() 
+         VAR nChar := Rand()*32 + ASC("A")
+         VAR nRec := Rand()*RecCount()
+         nRec := System.Math.Min(nRec+1, RecCount())
+         DbGoto(nRec)
+         VAR len := Rand() * 50
+         FieldPut(1, repl(chr(nChar),len))
+         //DbCommit()
+        //XSharp.RDD.DBFCDX.ValidateTree()
+     NEXT
+    //? "Replaced"
+
+     cPrev := NULL
+     nCount := 0
+     DbGoTop()
+     DO WHILE .NOT. EoF()
+         nCount ++
+         VAR cCurrent := FieldGet(1)
+         //? recno(), "ordered value", Left(cCurrent,20)
+         IF cPrev != NULL
+
+             IF .NOT. cPrev <=  cCurrent
+                 ? "Failed at values:"
+                 ? Left(cPrev,10)
+                 ? Left(cCurrent,10)
+                    WAIT
+             END IF
+         END IF
+         cPrev := cCurrent
+         DbSkip()
+     END DO
+
+     DbCloseArea()
+    //? "Checked"
+    NEXT
+
+RETURN
+
+FUNCTION TestLndRel() AS VOID
+    LOCAL nFld AS DWORD
+    RddSetDefault("DBFNTX")
+    SetCollationTable(XppCollations.American)
+    DbUseArea(TRUE,"DBFNTX","c:\Descartes\LndRel\lndrel.dbf","LNDREL")
+    DbSetIndex("c:\Descartes\LndRel\lndrel1.ntx")
+    ? DbSeek("BAV01IT")
+    ? "Record", Recno(), "EOF", Eof(), "Found", Found()
+    FOR nFld := 1 TO FCount()
+        ? FIeldName(nFld), FieldGet(nFld)
+    NEXT
+    DbCloseArea()
+    RETURN
+
 FUNCTION TestCollationChris() AS VOID
     LOCAL hFile AS IntPtr
     hFile := FCreate("test.txt")

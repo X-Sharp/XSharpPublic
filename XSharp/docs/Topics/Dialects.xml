@@ -15,22 +15,22 @@
           <para styleclass="Normal"><text style="font-weight:bold;">Feature</text></para>
         </td>
         <td style="width:15%;">
-          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">Core </text></para>
+          <para styleclass="Normal" style="text-align:center;"><link displaytype="text" defaultstyle="true" type="topiclink" href="dialect_Core" style="font-weight:bold;">Core</link><text style="font-weight:bold;">&#32;</text></para>
         </td>
         <td style="width:15%;">
-          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">VO </text></para>
+          <para styleclass="Normal" style="text-align:center;"><link displaytype="text" defaultstyle="true" type="topiclink" href="dialect_VO" style="font-weight:bold;">VO</link><text style="font-weight:bold;">&#32;</text></para>
         </td>
         <td style="width:15%;">
-          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">Vulcan</text></para>
+          <para styleclass="Normal" style="text-align:center;"><link displaytype="text" defaultstyle="true" type="topiclink" href="dialect_Vulcan" style="font-weight:bold;">Vulcan</link></para>
         </td>
         <td style="width:15%;">
-          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">Harbour</text></para>
+          <para styleclass="Normal" style="text-align:center;"><link displaytype="text" defaultstyle="true" type="topiclink" href="dialect_Harbour" style="font-weight:bold;">Harbour</link></para>
         </td>
         <td style="width:15%;">
-          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">Xbase++ 14</text></para>
+          <para styleclass="Normal" style="text-align:center;"><link displaytype="text" defaultstyle="true" type="topiclink" href="dialect_XPP" style="font-weight:bold;">Xbase</link><text style="font-weight:bold;">++ 14</text></para>
         </td>
         <td style="width:15%;">
-          <para styleclass="Normal" style="text-align:center;"><text style="font-weight:bold;">FoxPro</text></para>
+          <para styleclass="Normal" style="text-align:center;"><link displaytype="text" defaultstyle="true" type="topiclink" href="dialect_FoxPro" style="font-weight:bold;">FoxPro</link></para>
         </td>
       </thead>
       <tr style="vertical-align:top">

@@ -3,12 +3,19 @@
 <topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Vulcan</title>
   <keywords>
+    <keyword>&apos;@&apos;</keyword>
+    <keyword>__VULCAN__</keyword>
+    <keyword>_WINBOOL</keyword>
+    <keyword>PSZ</keyword>
+    <keyword>UNION</keyword>
+    <keyword>VOSTRUCT</keyword>
     <keyword>Vulcan</keyword>
   </keywords>
   <body>
     <header>
       <para styleclass="Heading1">Vulcan</para>
     </header>
+    <para styleclass="Normal">This dialect shares the features of &quot;<link displaytype="text" defaultstyle="true" type="topiclink" href="dialect_All-Non-Core-dialects">All Non Core Dialects</link>&quot;</para>
     <para styleclass="Normal">The compiler and runtime have the following &quot;special&quot; behavior when compiling for the &quot;Vulcan&quot; dialect.</para>
     <para styleclass="Heading2">Compiler</para>
     <list id="12" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -27,9 +34,6 @@
       <li styleclass="Normal">Supports the use of &apos;@&apos; to retrieve the address of a variable. This may also be used for REF variables if the compiler option <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo7">-vo7</link> is used.</li>
     </list>
     <list id="17" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Supports literal symbols (#SomeName)</li>
-    </list>
-    <list id="18" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">NULL_STRING is compiled into either &quot;&quot; or NULL depending on the compiler option <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo2">-vo2</link></li>
     </list>
     <list id="19" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">

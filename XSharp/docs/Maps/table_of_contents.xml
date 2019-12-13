@@ -99,25 +99,25 @@
       </topicref>
       <topicref type="topic" id="425165252463386" build="ALL" modified="2016-05-26T08:37:03.149Z" icon="0" href="Dialects">
         <caption translate="true">Dialects</caption>
-        <topicref type="topic" id="437985041510088" build="ALL" modified="2019-11-29T12:18:31.572Z" icon="0" href="Core">
+        <topicref type="topic" id="437985041510088" build="ALL" modified="2019-12-13T11:25:48.582Z" icon="0" href="dialect_Core">
           <caption translate="true">Core</caption>
         </topicref>
-        <topicref type="topic" id="437986969295327" build="ALL" modified="2019-11-29T12:29:38.658Z" icon="0" href="All-Non-Core-dialects">
+        <topicref type="topic" id="437986969295327" build="ALL" modified="2019-12-13T11:25:55.241Z" icon="0" href="dialect_All-Non-Core-dialects">
           <caption translate="true">All Non Core dialects</caption>
         </topicref>
-        <topicref type="topic" id="437986513610030" build="ALL" modified="2019-11-29T12:18:48.021Z" icon="0" href="Visual-Objects">
+        <topicref type="topic" id="437986513610030" build="ALL" modified="2019-12-13T11:26:00.455Z" icon="0" href="dialect_VO">
           <caption translate="true">Visual Objects</caption>
         </topicref>
-        <topicref type="topic" id="437984592024388" build="ALL" modified="2019-11-29T12:18:54.609Z" icon="0" href="Vulcan">
+        <topicref type="topic" id="437984592024388" build="ALL" modified="2019-12-13T11:26:03.865Z" icon="0" href="dialect_Vulcan">
           <caption translate="true">Vulcan</caption>
         </topicref>
-        <topicref type="topic" id="437983730828770" build="ALL" modified="2019-11-29T12:19:03.334Z" icon="0" href="XBase">
+        <topicref type="topic" id="437983730828770" build="ALL" modified="2019-12-13T11:26:09.629Z" icon="0" href="dialect_XPP">
           <caption translate="true">XBase++</caption>
         </topicref>
-        <topicref type="topic" id="437983412535081" build="ALL" modified="2019-11-29T12:19:13.033Z" icon="0" href="FoxPro">
+        <topicref type="topic" id="437983412535081" build="ALL" modified="2019-12-13T11:26:13.282Z" icon="0" href="dialect_FoxPro">
           <caption translate="true">FoxPro</caption>
         </topicref>
-        <topicref type="topic" id="437983986956982" build="ALL" modified="2019-11-29T12:19:24.869Z" icon="0" href="Harbour">
+        <topicref type="topic" id="437983986956982" build="ALL" modified="2019-12-13T11:26:16.193Z" icon="0" href="dialect_Harbour">
           <caption translate="true">Harbour</caption>
         </topicref>
       </topicref>

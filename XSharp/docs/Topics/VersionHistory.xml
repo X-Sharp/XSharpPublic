@@ -32,6 +32,11 @@
       <li styleclass="List1">We have added a WrapperRDD class that you can inherit from. This allows you to wrap an existing RDD and subclass methods of your choice. See the documentation of WrapperRDD for an example.</li>
       <li styleclass="List1">We had added a XPP member to the CollationMode enum with the same number as Clipper. This was confusing to some users. We have now give the XPP member a new number.</li>
       <li styleclass="List1">OleAutoObject:NoMethod() now behaves different in the Vulcan dialect (to be compatible with Vulcan). In the Vulcan dialect the method name is inserted at the beginning of the list of arguments. In the other dialects the arguments are unchanged, and you need to call the NoMethod() function to retrieve the name of the method that was originally called.</li>
+      <li styleclass="List1">All settings in the runtime state are now initialized with a default value, so the Settings() dictionary in the runtimestate will have values for all Set enum values.</li>
+      <li styleclass="List1">The previous change has fixed a problem with the Set() function when setting values for logical settings with a string &quot;On&quot; or &quot;Off&quot;. Because some settings were not initialized with a logic this was not working. </li>
+      <li styleclass="List1">When creating indexes with SetCollation(#Ordinal) the speed is a bit better now.</li>
+      <li styleclass="List1">The runtimestate now has a setting EOF. When this is TRUE (which is done automatically for the FoxPro dialect) then MemoWrit() will write a ^Z (chr(26)) after a text file, and MemoRead() will remove that character when it finds it.</li>
+      <li styleclass="List1">The runtimestate now has a setting EOL. This defaults to CR - LF (chr(13+chr(10)). This setting is used for line delimiters when writing files with FWriteLine().</li>
     </list>
     <para styleclass="Heading2">RDD system</para>
     <para styleclass="Normal"></para>
@@ -41,6 +46,8 @@
       <li styleclass="List1">Fixed a problem with the File() and FPathName() functions when running multiple threads</li>
       <li styleclass="List1">Added support for Workarea Cargo (See DbCargo())</li>
       <li styleclass="List1">Numeric columns with trailing spaces were returned as 0. This has been fixed.</li>
+      <li styleclass="List1">Fixed a problem in the DBFCDX driver that was happening when many keys were deleted / updated and index pages were deleted.</li>
+      <li styleclass="List1">Fix a read error at EOF for the DBF RDD.</li>
     </list>
     <para styleclass="Heading2">VOSDK</para>
     <list id="74" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -60,6 +67,8 @@
       <li styleclass="List1">We have made some changes to make solutions open and close faster.</li>
       <li styleclass="List1">Some colors were difficult to read when the Visual Studio Dark theme was selected. This has been fixed.</li>
       <li styleclass="List1">Brace matching was sometimes incorrectly matching an END CLASS with the BEGIN NAMESPACE. This should no longer happen.</li>
+      <li styleclass="List1">Fixed an exception when opening a solution under certain circumstances which would display an error inside VS that the XSharp Project System was not loaded correctly.</li>
+      <li styleclass="List1">The Code Generator for Windows Forms, Settings and Resources now respect the keyword case setting from the Tools - Options TextEditor/XSharp page.</li>
     </list>
     <para styleclass="Heading2">VOXPorter</para>
     <list id="74" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">

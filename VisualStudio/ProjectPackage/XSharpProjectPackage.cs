@@ -262,22 +262,25 @@ namespace XSharp.Project
             base.SolutionListeners.Add(new ModelScannerEvents(this));
             await base.InitializeAsync(cancellationToken, progress);
             _uiThread = new UIThread();
-            XSharpProjectPackage.instance = this;
-            XSharpModel.XSolution.OutputWindow = this;
-            this.RegisterProjectFactory(new XSharpProjectFactory(this));
-            this.settings = new XPackageSettings(this);
-            validateVulcanEditors();
-            this.RegisterDebuggerEvents();
-            // Indicate how to open the different source files : SourceCode or Designer ??
-            this.RegisterEditorFactory(new XSharpEditorFactory(this));
-            this.RegisterProjectFactory(new XSharpWPFProjectFactory(this));
+            UIThread.DoOnUIThread(() =>
+                 {
+                     XSharpProjectPackage.instance = this;
+                     XSharpModel.XSolution.OutputWindow = this;
+                     this.RegisterProjectFactory(new XSharpProjectFactory(this));
+                     this.settings = new XPackageSettings(this);
+                     validateVulcanEditors();
+                     this.RegisterDebuggerEvents();
+                     // Indicate how to open the different source files : SourceCode or Designer ??
+                     this.RegisterEditorFactory(new XSharpEditorFactory(this));
+                     this.RegisterProjectFactory(new XSharpWPFProjectFactory(this));
 
-            // editors for the binaries
-            base.RegisterEditorFactory(new VOFormEditorFactory(this));
-            base.RegisterEditorFactory(new VOMenuEditorFactory(this));
-            base.RegisterEditorFactory(new VODBServerEditorFactory(this));
-            base.RegisterEditorFactory(new VOFieldSpecEditorFactory(this));
-            // Register the language service
+                     // editors for the binaries
+                     base.RegisterEditorFactory(new VOFormEditorFactory(this));
+                     base.RegisterEditorFactory(new VOMenuEditorFactory(this));
+                     base.RegisterEditorFactory(new VODBServerEditorFactory(this));
+                     base.RegisterEditorFactory(new VOFieldSpecEditorFactory(this));
+                 });
+                    // Register the language service
 
             // Proffer the service.
             IServiceContainer serviceContainer = this as IServiceContainer;
@@ -309,7 +312,7 @@ namespace XSharp.Project
 
             var shell = await this.GetServiceAsync(typeof(SVsShell)) as IVsShell;
             Assumes.Present(shell);
-                shell.AdviseShellPropertyChanges(this, out shellCookie);
+            shell.AdviseShellPropertyChanges(this, out shellCookie);
             //
             _xsLangService = await GetServiceAsync(typeof(XSharpLanguageService)) as Microsoft.VisualStudio.Package.LanguageService;
             // LibraryManager : Offers Object Browser and ClassView
@@ -328,6 +331,7 @@ namespace XSharp.Project
 
             VsVersion = vers.ToString();
         }
+
         internal static string VsVersion;
 
         private object CreateLibraryService(IServiceContainer container, Type serviceType)
@@ -422,6 +426,17 @@ namespace XSharp.Project
         public override string ProductUserContext
         {
             get { return "XSharp"; }
+        }
+
+        internal int ShowMessageBox(string message)
+        {
+            string title = string.Empty;
+            OLEMSGICON icon = OLEMSGICON.OLEMSGICON_CRITICAL;
+            OLEMSGBUTTON buttons = OLEMSGBUTTON.OLEMSGBUTTON_OK;
+            OLEMSGDEFBUTTON defaultButton = OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST;
+
+            return Utilities.ShowMessageBox(this, message, title, icon, buttons, defaultButton);
+
         }
 
         #endregion

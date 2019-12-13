@@ -186,12 +186,23 @@ namespace XSharp.Project
             if (_buffer != null)
             {
                 _buffer.ChangedLowPriority += Textbuffer_Changed;
+                _buffer.Changing += Textbuffer_Changing;
                 _file = _buffer.GetFile();
 
                 if (_buffer.CheckEditAccess())
                 {
                     //formatCaseForWholeBuffer();
                 }
+            }
+        }
+
+        private void Textbuffer_Changing(object sender, TextContentChangingEventArgs e)
+        {
+            bool debugging = XSharpProjectPackage.Instance.DebuggerIsRunning;
+            if (debugging)
+            {
+                XSharpProjectPackage.Instance.ShowMessageBox("Cannot edit source code while debugging");
+                e.Cancel();
             }
         }
 
@@ -514,23 +525,9 @@ namespace XSharp.Project
             if (_classifier == null)
                 registerClassifier();
             int hresult = VSConstants.S_OK;
-            bool debugging = XSharpProjectPackage.Instance.DebuggerIsRunning;
-            // 1. Pre-process
-            if (debugging && pguidCmdGroup == VSConstants.VSStd2K)
-            {
-                // only allow cursor keys when debugging
-                if (nCmdID >= (int)VSConstants.VSStd2KCmdID.LEFT &&
-                    nCmdID <= (int)VSConstants.VSStd2KCmdID.SCROLLTOP)
-                {
-                    handled = false;
-                }
-                else
-                {
-                    handled = true;
-                }
-            }
 
-            if (pguidCmdGroup == VSConstants.VSStd2K && ! handled)
+            // 1. Pre-process
+            if (pguidCmdGroup == VSConstants.VSStd2K )
             {
                 switch ((VSConstants.VSStd2KCmdID)nCmdID)
                 {
@@ -604,7 +601,7 @@ namespace XSharp.Project
                 hresult = Next.Exec(pguidCmdGroup, nCmdID, nCmdexecopt, pvaIn, pvaOut);
             }
 
-            if (ErrorHandler.Succeeded(hresult) && ! debugging)
+            if (ErrorHandler.Succeeded(hresult) )
             {
                 // 3. Post process
                 if (pguidCmdGroup == Microsoft.VisualStudio.VSConstants.VSStd2K)

@@ -227,43 +227,7 @@ namespace XSharp.CodeDom
             return Path.Combine(prgPath, prg) + ext;
         }
 
-        internal static string AdjustKeywordCaseInGeneratedCode(string code, string fileName)
-        {
-            var package = XSharp.Project.XSharpProjectPackage.Instance;
-            var optionsPage = package.GetIntellisenseOptionsPage();
-            if (optionsPage.KeywordCase == Project.KeywordCase.None)
-                return code;
-            // we also normalize the line endings
-            code = code.Replace("\n", "");
-            code = code.Replace("\r", "\r\n");
 
-            var file = XSolution.FindFullPath(fileName);
-            var sb = new StringBuilder();
-            XSharpParseOptions parseoptions;
-            if (file != null)
-            {
-                parseoptions = file.Project.ParseOptions;
-            }
-            else
-                parseoptions = XSharpParseOptions.Default;
-            ITokenStream tokenStream;
-            var reporter = new ErrorIgnorer();
-            bool ok = XSharp.Parser.VsParser.Lex(code, fileName, parseoptions, reporter, out tokenStream);
-            var stream = tokenStream as BufferedTokenStream;
-            var tokens = stream.GetTokens();
-            foreach (var token in tokens)
-            {
-                if (XSharpLexer.IsKeyword(token.Type))
-                {
-                    sb.Append(optionsPage.SyncKeyword(token.Text));
-                }
-                else
-                {
-                    sb.Append(token.Text);
-                }
-            }
-            return sb.ToString();
-        }
 
         #region Dump Tools
         static int indent = 0;

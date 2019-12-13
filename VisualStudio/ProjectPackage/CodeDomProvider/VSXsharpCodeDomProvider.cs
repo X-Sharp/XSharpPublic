@@ -196,7 +196,7 @@ namespace XSharp.Project
                 inMemory.Position = 0;
                 StreamReader reader = new StreamReader(inMemory, Encoding.UTF8, true);
                 generatedSource = reader.ReadToEnd();
-                generatedSource = XSharpCodeDomHelper.AdjustKeywordCaseInGeneratedCode(generatedSource, prgFileName);
+                generatedSource = this._projectNode.SynchronizeKeywordCase(generatedSource, prgFileName);
                 Encoding realencoding = reader.CurrentEncoding;
                 reader.Close();
                 designerStream.Close();
@@ -250,7 +250,8 @@ namespace XSharp.Project
                 DocDataTextReader ddtr = new DocDataTextReader(docData);
                 // Retrieve
                 generatedSource = ddtr.ReadToEnd();
-                var newsource = XSharpCodeDomHelper.AdjustKeywordCaseInGeneratedCode(generatedSource, prgFileName);
+                var newsource = this._projectNode.SynchronizeKeywordCase(generatedSource, prgFileName);
+
                 if (string.Compare(newsource, generatedSource) != 0)
                 {
                     // get DocDataTextWriter and update the source after the case has been synchronized
@@ -313,7 +314,7 @@ namespace XSharp.Project
                     {
                         parser.FileName = (string)compileUnit.UserData[XSharpCodeConstants.USERDATA_FILENAME];
                     }
-                    generatedSource = XSharpCodeDomHelper.AdjustKeywordCaseInGeneratedCode(generatedSource, parser.FileName);
+                    generatedSource = _projectNode.SynchronizeKeywordCase(generatedSource, parser.FileName);
                     CodeCompileUnit resultCcu = parser.Parse(generatedSource);
                     CodeTypeDeclaration resultClass = XSharpCodeDomHelper.FindFirstClass(resultCcu);
                     // just to be sure...

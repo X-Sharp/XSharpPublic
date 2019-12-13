@@ -663,22 +663,22 @@ FUNCTION FieldGet(nFieldPos) AS USUAL CLIPPER
 
 /// <summary>Read an array of bytes direct from the workarea buffer.</summary>
 /// <remarks>This will only work for DBF based workareas (not for Advantage workareas)</remarks>
-FUNCTION FieldGetBytes(nPos ) AS BYTE[] CLIPPER
+FUNCTION FieldGetBytes(nFieldPos ) AS BYTE[] CLIPPER
     LOCAL bRetVal := NULL AS BYTE[]
-    IF ! IsNumeric(nPos)
-        THROW Error.ArgumentError(__FUNCTION__, nameof(nPos), __CavoStr(VoErrors.ARGNOTNUMERIC), 1 ,<OBJECT> {nPos})
+    IF ! IsNumeric(nFieldPos)
+        THROW Error.ArgumentError(__FUNCTION__, nameof(nFieldPos), __CavoStr(VoErrors.ARGNOTNUMERIC), 1 ,<OBJECT> {nFieldPos})
     ENDIF
-    _DbThrowErrorOnFailure(__FUNCTION__, VoDb.FieldGetBytes(nPos, REF bRetVal))
+    _DbThrowErrorOnFailure(__FUNCTION__, VoDb.FieldGetBytes(nFieldPos, REF bRetVal))
     RETURN bRetVal
 
 
 /// <summary>Write an array of bytes direct to the workarea buffer.</summary>
 /// <remarks>This will only work for DBF based workareas (not for Advantage workareas)</remarks>
-FUNCTION FieldPutBytes(nPos AS USUAL, aBytes AS BYTE[]) AS LOGIC
-    IF ! IsNumeric(nPos)
-        THROW Error.ArgumentError(__FUNCTION__, nameof(nPos), __CavoStr(VoErrors.ARGNOTNUMERIC), 1 ,<OBJECT> {nPos,aBytes})
+FUNCTION FieldPutBytes(nFieldPos AS USUAL, aBytes AS BYTE[]) AS LOGIC
+    IF ! IsNumeric(nFieldPos)
+        THROW Error.ArgumentError(__FUNCTION__, nameof(nFieldPos), __CavoStr(VoErrors.ARGNOTNUMERIC), 1 ,<OBJECT> {nFieldPos,aBytes})
     ENDIF
-    _DbThrowErrorOnFailure(__FUNCTION__, VoDb.FieldPutBytes(nPos, aBytes))
+    _DbThrowErrorOnFailure(__FUNCTION__, VoDb.FieldPutBytes(nFieldPos, aBytes))
     RETURN TRUE
 
 

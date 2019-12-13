@@ -114,7 +114,6 @@ STATIC CLASS XSharp.StringHelpers
 
    STATIC METHOD CompareClipper(bLHS AS BYTE[], bRHS AS BYTE[], nLen AS LONG) AS INT
 		BEGIN UNCHECKED
-            LOCAL nPos AS LONG
             IF bLHS == NULL
                 IF bRHS == NULL
                     RETURN 0
@@ -123,7 +122,17 @@ STATIC CLASS XSharp.StringHelpers
             ELSEIF bRHS == NULL
                 RETURN 1
             ENDIF
-			FOR nPos := 0 TO nLen -1
+            nLen := Math.Min(nLen, Math.Min(bLHS:Length, bRHS:Length))
+            IF collationTable == NULL
+                VAR oErr := Error{Gencode.EG_NULLVAR,nameof(collationTable),"The collation table is not initialized"} 
+                oErr:FuncSym := __FUNCTION__
+                THROW oErr
+            ELSEIF collationTable:Length < Byte.MaxValue+1
+                VAR oErr := Error{Gencode.EG_LIMIT, nameof(collationTable), "The size of the collation table is too small: "+collationTable:Length:ToString()}
+                oErr:FuncSym := __FUNCTION__
+                THROW oErr
+            ENDIF
+			FOR VAR nPos := 0 TO nLen -1
 				VAR nL := bLHS[nPos]
 				VAR nR := bRHS[nPos]
 				// no need to lookup the same character. The weight table will
@@ -142,6 +151,31 @@ STATIC CLASS XSharp.StringHelpers
 						// I am not sure if this ever happens. If would make creating an index unreliable
 						// most likely the ü will be sorted between u and v. 
 					ENDIF
+				ENDIF
+			NEXT
+		END UNCHECKED
+        RETURN 0
+
+    STATIC METHOD CompareOrdinal(bLHS AS BYTE[], bRHS AS BYTE[], nLen AS LONG) AS INT
+		BEGIN UNCHECKED
+            IF bLHS == NULL
+                IF bRHS == NULL
+                    RETURN 0
+                ENDIF
+                RETURN -1
+            ELSEIF bRHS == NULL
+                RETURN 1
+            ENDIF
+            nLen := Math.Min(nLen, Math.Min(bLHS:Length, bRHS:Length))
+			FOR VAR nPos := 0 TO nLen -1
+				VAR nL := bLHS[nPos]
+				VAR nR := bRHS[nPos]
+				IF nL < nR
+					RETURN -1
+				ELSEIF nL > nR
+					RETURN 1
+				ELSE
+					// equal, so continue with the next chars
 				ENDIF
 			NEXT
 		END UNCHECKED

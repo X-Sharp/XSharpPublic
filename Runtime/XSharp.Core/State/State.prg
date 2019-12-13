@@ -853,9 +853,7 @@ CLASS XSharp.RuntimeState
             VAR strRHS := RuntimeState.WinEncoding:GetString(aRHS, 0, nLen)
             RETURN String.Compare(strLHS, strRHS)
         OTHERWISE
-            VAR strLHS := RuntimeState.WinEncoding:GetString(aLHS, 0, nLen)
-            VAR strRHS := RuntimeState.WinEncoding:GetString(aRHS, 0, nLen)
-            RETURN String.CompareOrdinal(strLHS, strRHS)
+            RETURN XSharp.StringHelpers.CompareOrdinal(aLHS, aRHS, nLen)
         END SWITCH
         RETURN 0
 END CLASS

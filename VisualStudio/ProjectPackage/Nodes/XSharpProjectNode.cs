@@ -34,6 +34,9 @@ using LanguageService.CodeAnalysis.XSharp;
 using XSharp.CodeDom;
 using MBC = Microsoft.Build.Construction;
 using Microsoft;
+using LanguageService.SyntaxTree;
+using System.Text;
+using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 
 namespace XSharp.Project
 {
@@ -1362,6 +1365,45 @@ namespace XSharp.Project
         #region IXSharpProject Interface
         protected IVsStatusbar statusBar;
 
+        public string SynchronizeKeywordCase(string code, string fileName)
+        {
+            var package = XSharp.Project.XSharpProjectPackage.Instance;
+            var optionsPage = package.GetIntellisenseOptionsPage();
+            if (optionsPage.KeywordCase == Project.KeywordCase.None)
+                return code;
+            // we also normalize the line endings
+            code = code.Replace("\n", "");
+            code = code.Replace("\r", "\r\n");
+
+            var file = XSolution.FindFullPath(fileName);
+            var sb = new StringBuilder();
+            XSharpParseOptions parseoptions;
+            if (file != null)
+            {
+                parseoptions = file.Project.ParseOptions;
+            }
+            else
+                parseoptions = XSharpParseOptions.Default;
+            ITokenStream tokenStream;
+            var reporter = new ErrorIgnorer();
+            bool ok = XSharp.Parser.VsParser.Lex(code, fileName, parseoptions, reporter, out tokenStream);
+            var stream = tokenStream as BufferedTokenStream;
+            var tokens = stream.GetTokens();
+            foreach (var token in tokens)
+            {
+                if (XSharpLexer.IsKeyword(token.Type))
+                {
+                    sb.Append(optionsPage.SyncKeyword(token.Text));
+                }
+                else
+                {
+                    sb.Append(token.Text);
+                }
+            }
+            return sb.ToString();
+        }
+
+
         private void getStatusBar()
         {
             if (statusBar == null && !lTriedToGetStatusBar)
@@ -2435,13 +2477,7 @@ namespace XSharp.Project
         }
         internal int ShowMessageBox(string message)
         {
-            string title = string.Empty;
-            OLEMSGICON icon = OLEMSGICON.OLEMSGICON_CRITICAL;
-            OLEMSGBUTTON buttons = OLEMSGBUTTON.OLEMSGBUTTON_OK;
-            OLEMSGDEFBUTTON defaultButton = OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST;
-
-            return Utilities.ShowMessageBox(this.Site, message, title, icon, buttons, defaultButton);
-
+            return XSharpProjectPackage.Instance.ShowMessageBox(message);
         }
 
         #region IVsProject5

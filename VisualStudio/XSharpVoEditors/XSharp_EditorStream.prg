@@ -3,9 +3,10 @@ USING System.IO
 USING System.Text
 USING XSharp.VODesigners
 USING Xide
+USING XSharpModel
 
 // inherits from vulcan's EditorStream
-// represents contents of file that can be read/saved directly on disk or 
+// represents contents of file that can be read/saved directly on disk or
 // through an open editor buffer in VS
 CLASS XSharp_EditorStream INHERIT EditorStream
 	PROTECT oXSharpEditor AS XSharpBuffer
@@ -13,7 +14,7 @@ CLASS XSharp_EditorStream INHERIT EditorStream
 	CONSTRUCTOR()
 		SUPER()
 	RETURN
-	
+
 	NEW ACCESS Editor AS XSharpBuffer
 		RETURN SELF:oXSharpEditor
 
@@ -60,39 +61,48 @@ CLASS XSharp_EditorStream INHERIT EditorStream
 
 		SELF:oXSharpEditor := XSharpBuffer.Create(aLines)
 	RETURN
-	
+
 	METHOD InsertLines(newLines AS List<STRING>, nFirstLine AS INT) AS VOID
 		LOCAL i AS LONG
 		FOR i := 1 TO newLines:Count
 			SELF:oXSharpEditor:InsertLine(nFirstLine+i-1, newLines[i])
 		NEXT
-		
+
 
 	METHOD Save() AS LOGIC
 		LOCAL lSuccess:= FALSE AS LOGIC
 		VAR aLines := SELF:oXSharpEditor:GetStringLines()
+		VAR sb := StringBuilder{aLines:Count * 80}
+		FOREACH VAR line IN aLines
+			sb:AppendLine(AddPartial(line))
+		NEXT
+        var source := sb:ToString()
+    	LOCAL oFile := XSolution.FindFile(_fileName) as XFile
+        if oFile == NULL_OBJECT
+            XFuncs.ErrorBox("Could not find in codemodel for file :"+_fileName+e"\r\n"+"File will not be saved","Save")
+            RETURN FALSE
+        ENDIF
+        IF oFile:XFileType == XFileType.SourceCode
+            IF oFile:Project != NULL .and. oFile:Project:ProjectNode != NULL
+                source := oFile:Project:ProjectNode:SynchronizeKeywordCase(source, oFile:FullPath)
+            ENDIF
+        ENDIF
+
 		IF SELF:eType == EditorStreamType.Module
-			VAR oFile := XSharpModel.XSolution.FindFile(_fileName)
-			IF oFile != NULL_OBJECT
-				VAR oProject := oFile:Project
-				IF oProject != NULL_OBJECT
-					VAR sb := StringBuilder{aLines:Count * 80}
-					FOREACH VAR line IN aLines
-						sb:AppendLine(AddPartial(line))
-					NEXT
-					lSuccess := oProject:ProjectNode:DocumentSetText(oFile:FullPath, sb:ToString())
-				ENDIF
+			VAR oProject := oFile:Project
+			IF oProject != NULL_OBJECT
+				lSuccess := oProject:ProjectNode:DocumentSetText(oFile:FullPath, source)
+		    ELSE
+		        // Write to disk
+		        System.IO.File.WriteAllText(oFile:FullPath, source)
 			ENDIF
-			
 		ELSE
 			TRY
 				SELF:oStream:SetLength(0)
-				VAR oWriter := StreamWriter{SELF:oStream , SELF:oEncoding}
-				FOREACH VAR cLine IN aLines
-					oWriter:WriteLine(AddPartial(cLine))
-				NEXT
-				lSuccess := TRUE
+				var oWriter := StreamWriter{SELF:oStream , SELF:oEncoding}
+                oWriter:Write(source)
 				oWriter:Flush()
+				lSuccess := TRUE
 			CATCH e AS Exception
                 IF System.Diagnostics.Debugger:IsAttached
 					System.Diagnostics.Debug.WriteLine(e:Message)
@@ -107,7 +117,7 @@ CLASS XSharp_EditorStream INHERIT EditorStream
 		IF (line:IndexOf("class",StringComparison.OrdinalIgnoreCase) >= 0)
 			VAR line2 := line:TrimStart():ToUpper()
 			IF line2:StartsWith("CLASS ")
-				VAR prefixlength := line:Length-line2:Length 
+				VAR prefixlength := line:Length-line2:Length
 				VAR spaces		 := line:Substring(0, prefixlength)
 				line := spaces+ "PARTIAL "+line:Substring(prefixlength)
 			ENDIF

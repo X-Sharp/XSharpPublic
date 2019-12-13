@@ -1341,7 +1341,7 @@ RETURN oResult
 VIRTUAL PROTECTED METHOD _readRecord() AS LOGIC
 	LOCAL isOk AS LOGIC
     // Buffer is supposed to be correct
-	IF SELF:_BufferValid == TRUE 
+	IF SELF:_BufferValid == TRUE .OR. SELF:_Eof
 		RETURN TRUE
 	ENDIF
     // File Ok ?
@@ -1358,7 +1358,11 @@ VIRTUAL PROTECTED METHOD _readRecord() AS LOGIC
 				SELF:_BufferValid := TRUE
 				SELF:_isValid := TRUE
 				SELF:_Deleted := ( SELF:_RecordBuffer[ 0 ] == '*' )
-			ENDIF
+            ELSE
+               NOP 
+            ENDIF
+        ELSE
+            NOP
 		ENDIF
 	ENDIF
 RETURN isOk
@@ -1672,6 +1676,9 @@ METHOD PutValue(nFldPos AS LONG, oValue AS OBJECT) AS LOGIC
     IF SELF:_ReadOnly
         SELF:_dbfError(ERDD.READONLY, XSharp.Gencode.EG_READONLY )
     ENDIF
+    IF SELF:EOF
+        RETURN FALSE
+    ENDIF
     SELF:ForceRel()
 	IF SELF:_readRecord()
         // GoHot() must be called first because this saves the current index values
@@ -1707,6 +1714,9 @@ RETURN ret
 METHOD PutValueFile(nFldPos AS LONG, fileName AS STRING) AS LOGIC
     IF SELF:_ReadOnly
         SELF:_dbfError(ERDD.READONLY, XSharp.Gencode.EG_READONLY )
+    ENDIF
+    IF SELF:EOF
+        RETURN FALSE
     ENDIF
     IF SELF:HasMemo
 		RETURN _Memo:PutValueFile(nFldPos, fileName)

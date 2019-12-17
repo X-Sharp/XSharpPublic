@@ -542,7 +542,9 @@ namespace XSharpLanguage
             {
                 List<AssemblyInfo> oneAssembly = new List<AssemblyInfo>();
                 oneAssembly.Add(asm);
-                Type globalType = SystemTypeController.Lookup("Functions", oneAssembly);
+                if (String.IsNullOrEmpty(asm.GlobalClassName))
+                    continue;
+                Type globalType = SystemTypeController.Lookup(asm.GlobalClassName, oneAssembly);
                 //
                 if (globalType != null)
                 {
@@ -4025,7 +4027,9 @@ namespace XSharpLanguage
             {
                 List<AssemblyInfo> oneAssembly = new List<AssemblyInfo>();
                 oneAssembly.Add(asm);
-                Type globalType = SystemTypeController.Lookup("Functions", oneAssembly);
+                if ( String.IsNullOrEmpty(asm.GlobalClassName) )
+                    continue;
+                Type globalType = SystemTypeController.Lookup(asm.GlobalClassName, oneAssembly);
                 //
                 if (globalType != null)
                 {
@@ -4096,6 +4100,7 @@ namespace XSharpLanguage
                                 var methods = type.GetMember(currentToken, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Static);
                                 if (methods.Length > 0)
                                 {
+                                    foundElement = new CompletionElement(methods[0]);
                                     return new CompletionType(type);
                                 }
                             }

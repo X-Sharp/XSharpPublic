@@ -2157,6 +2157,7 @@ CLASS EntityDescriptor
 		LOCAL aWords AS List<WordObject>
 		LOCAL cLine , cLineUpper AS STRING
 		LOCAL sLine AS System.Text.StringBuilder
+		LOCAL lInNonPublicIVar := FALSE AS LOGIC
 
 		cCallBack := NULL
 
@@ -2166,8 +2167,8 @@ CLASS EntityDescriptor
 		IF cLineUpper:StartsWith("VTRACE") .OR. cLineUpper:StartsWith("VMETHOD")
 			cLine := "// " + cLine
 			RETURN cLine
-		END IF
-		IF SELF:Type== EntityType._Class .AND. cLineUpper:Trim():StartsWith("INSTANCE")
+		ENDIF
+		IF SELF:Type== EntityType._Class .AND. cLineUpper:StartsWith("INSTANCE")
 			LOCAL cTemp AS STRING
 			cTemp := cLineUpper:Trim()
 			IF cTemp:Length > 9
@@ -2180,6 +2181,9 @@ CLASS EntityDescriptor
 					END IF
 				END IF
 			END IF
+		ENDIF
+		IF SELF:Type== EntityType._Class .AND. (cLineUpper:StartsWith("PROTECT") .or. cLineUpper:StartsWith("HIDDEN"))
+			lInNonPublicIVar := TRUE
 		ENDIF
 
 		IF xPorter.Options:RemoveExportLocalClause .AND. oLine:HasExportLocalClause
@@ -2261,6 +2265,12 @@ CLASS EntityDescriptor
 				CASE cWordUpper == "@" .AND. (oNextWord != NULL .AND. SELF:_oModule:Application:ContainsCallback(oNextWord:cWord))
 //					MessageBox.Show(oNextWord:cWord , "Callback!")
 					cCallBack := oNextWord:cWord
+				CASE lInNonPublicIVar
+					IF .not. String.IsNullOrWhiteSpace(cWord) .and. Char.IsLetter(cWord[0])
+						IF SELF:_oModule:ContainsEntity(cWord, SELF:Name)
+							cWord := "_" + cWord
+						ENDIF
+					END IF
 				END CASE
 
 			CASE oWord:eStatus == WordStatus.Literal

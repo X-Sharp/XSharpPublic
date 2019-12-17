@@ -585,7 +585,7 @@ BEGIN NAMESPACE XSharpModel
                         ENDIF
                         IF xTemp != NULL
                             IF ! xTemp:IsPartial
-                                WriteOutputMessage("Lookup()  found: "+xTemp:FullName)
+                                WriteOutputMessage("Lookup()  found: "+xTemp:FullName + " in " + file:Name )
                                 RETURN xTemp
                             ENDIF
                             IF xType != NULL

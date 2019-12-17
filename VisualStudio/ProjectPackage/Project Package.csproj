@@ -901,6 +901,9 @@
       <SubType>Designer</SubType>
     </ZipItem>
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Editors\LineSeparators\" />
+  </ItemGroup>
   <PropertyGroup>
     <RunPostBuildEvent>Always</RunPostBuildEvent>
   </PropertyGroup>

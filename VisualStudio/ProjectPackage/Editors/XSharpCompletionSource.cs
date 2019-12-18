@@ -1098,7 +1098,7 @@ namespace XSharpLanguage
     }
     public class MemberAnalysis
     {
-        IntellisenseOptionsPage _optionsPage => XSharpCompletionSource._optionsPage;
+        IntellisenseOptionsPage _optionsPage => XSharp.Project.XSharpProjectPackage.Instance.GetIntellisenseOptionsPage();
         public class ParamInfo
         {
             public String Name;
@@ -1763,7 +1763,7 @@ namespace XSharpLanguage
         private Modifiers _visibility;
         private Kind _kind;
         private bool _isStatic;
-        IntellisenseOptionsPage _optionsPage => XSharpCompletionSource._optionsPage;
+        IntellisenseOptionsPage _optionsPage => XSharp.Project.XSharpProjectPackage.Instance.GetIntellisenseOptionsPage();
 
         internal TypeAnalysis(TypeInfo typeInfo)
         {

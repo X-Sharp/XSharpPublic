@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
@@ -41,7 +41,10 @@ namespace XSharp.Project
         protected override ProjectNode CreateProject()
         {
             XSharpProjectNode project = new XSharpProjectNode(this.package);
-            project.SetSite((IOleServiceProvider)((IServiceProvider)this.package).GetService(typeof(IOleServiceProvider)));
+            IOleServiceProvider provider = null;
+            var serviceProvider = this.package as IServiceProvider;
+            UIThread.DoOnUIThread(() => provider = (IOleServiceProvider) serviceProvider.GetService(typeof(IOleServiceProvider)));
+            project.SetSite(provider);
             return project;
         }
         #endregion

@@ -228,17 +228,19 @@ namespace XSharp.Project
             get { return XSharpProjectPackage.instance; }
         }
 
-        public async void OpenInBrowser(string url)
+        public  void OpenInBrowser(string url)
         {
-            Task<IVsWebBrowsingService> t = await GetServiceAsync(typeof(SVsWebBrowsingService)) as Task<IVsWebBrowsingService>;
-            Assumes.Present(t);
-            IVsWebBrowsingService service = t.Result;
-            if (service != null)
+            UIThread.DoOnUIThread(() =>
             {
-                IVsWindowFrame frame = null;
-                service.Navigate(url, (uint)(__VSWBNAVIGATEFLAGS.VSNWB_WebURLOnly | __VSWBNAVIGATEFLAGS.VSNWB_ForceNew), out frame);
-                frame.Show();
-            }
+
+                IVsWebBrowsingService service = GetService(typeof(SVsWebBrowsingService)) as IVsWebBrowsingService;
+                if (service != null)
+                {
+                    IVsWindowFrame frame = null;
+                    service.Navigate(url, (uint)(__VSWBNAVIGATEFLAGS.VSNWB_WebURLOnly | __VSWBNAVIGATEFLAGS.VSNWB_ForceNew), out frame);
+                    frame.Show();
+                }
+            });
         }
         internal IntellisenseOptionsPage GetIntellisenseOptionsPage()
         {
@@ -285,7 +287,11 @@ namespace XSharp.Project
             // Proffer the service.
             IServiceContainer serviceContainer = this as IServiceContainer;
             XSharpLanguageService langService = new XSharpLanguageService();
-            langService.SetSite(this);
+            UIThread.DoOnUIThread(() =>
+            {
+
+                langService.SetSite(this);
+            });
             serviceContainer.AddService(typeof(XSharpLanguageService),
                                         langService,
                                         true);
@@ -306,7 +312,10 @@ namespace XSharp.Project
                 int hr = mgr.FRegisterComponent(this, crinfo, out m_componentID);
             }
             // Initialize Custom Menu Items
-            XSharp.Project.XSharpMenuItems.Initialize(this);
+            UIThread.DoOnUIThread(() =>
+            {
+                XSharp.Project.XSharpMenuItems.Initialize(this);
+            });
             // register property changed event handler
 
 
@@ -437,6 +446,13 @@ namespace XSharp.Project
 
             return Utilities.ShowMessageBox(this, message, title, icon, buttons, defaultButton);
 
+        }
+
+        protected override object GetService(Type serviceType)
+        {
+            object result = null;
+            UIThread.DoOnUIThread( () => result =base.GetService(serviceType));
+            return result;
         }
 
         #endregion

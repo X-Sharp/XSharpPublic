@@ -353,8 +353,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 // check for parser errors, such as missing tokens
                 // This adds items to the parseErrors list for missing
                 // tokens and missing keywords
-                var errchecker = new XSharpParseErrorAnalysis(parser, parseErrors, _options);
-                walker.Walk(errchecker, tree);
+                try
+                {
+                    var errchecker = new XSharpParseErrorAnalysis(parser, parseErrors, _options);
+                    walker.Walk(errchecker, tree);
+                }
+                catch (Exception e)
+                {
+                    parseErrors.Add(new ParseErrorData(_fileName, ErrorCode.ERR_Internal, e.Message, e.StackTrace));
+                }
+
             }
             var treeTransform = CreateTransform(parser, _options, _pool, _syntaxFactory, _fileName);
             bool hasErrors = false;

@@ -107,12 +107,18 @@ namespace Microsoft.CodeAnalysis.CSharp
             else
             {
                 var getMethod = getMethodOpt ?? property.GetOwnOrInheritedGetMethod();
-
+#if !XSHARP
                 Debug.Assert((object)getMethod != null);
                 Debug.Assert(getMethod.ParameterCount == rewrittenArguments.Length);
                 Debug.Assert(((object)getMethodOpt == null) || ReferenceEquals(getMethod, getMethodOpt));
-
-                return BoundCall.Synthesized(
+#else
+                if (getMethod == null)
+                {
+                    _diagnostics.Add(new CSDiagnosticInfo(ErrorCode.ERR_PropertyLacksGet, property.Name), syntax.Location);
+                    return BadExpression(rewrittenReceiver);
+                }
+#endif
+                    return BoundCall.Synthesized(
                     syntax,
                     rewrittenReceiver,
                     getMethod,

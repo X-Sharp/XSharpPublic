@@ -558,7 +558,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (context.T.Token.Type == XSharpParser.ASSIGN || context.T.Token.Type == XSharpParser.ACCESS)
             {
                 // no type parameters on access and assign
-                if (context.Sig.TypeParameters != null || context.Sig._ConstraintsClauses.Count > 0)
+                if (context.Sig != null && (context.Sig.TypeParameters != null || context.Sig._ConstraintsClauses?.Count > 0))
                 {
                     context.AddError(new ParseErrorData(context, ErrorCode.Err_TypeParametersAccessAssign));
                 }

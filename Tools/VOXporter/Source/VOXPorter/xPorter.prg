@@ -11,7 +11,7 @@ USING Xide
 GLOBAL gaNewKeywordsInXSharp := <STRING>{;
 	"EVENT","INT64","ENUM","DELEGATE","PARTIAL","INTERFACE",;
 	"CONSTRUCTOR","DESTRUCTOR","FINALLY","TRY","CATCH","THROW","SEALED","ABSTRACT","PUBLIC",;
-	"CONST","INITONLY","VIRTUAL","OPERATOR","EXPLICIT","IMPLICIT","PROPERTY","IMPLIED","DEBUG";
+	"CONST","INITONLY","VIRTUAL","OPERATOR","EXPLICIT","IMPLICIT","PROPERTY","IMPLIED","DEBUG","TRACE";
 	} AS STRING[]
 
 GLOBAL DefaultOutputFolder := "" AS STRING
@@ -2316,7 +2316,6 @@ CLASS EntityDescriptor
 						END IF
 					END IF
 				ENDIF
-			CASE oWord:eStatus == WordStatus.Literal
 			END CASE
 
 			IF lInIndexedProperty .AND. oWord:eStatus == WordStatus.Text .AND. oWord:cWord == ","

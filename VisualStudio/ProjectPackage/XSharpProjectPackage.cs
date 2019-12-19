@@ -24,6 +24,7 @@ using XSharp.Project.OptionsPages;
 using XSharp.VOEditors;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 using Microsoft;
 /*
 Substitution strings
@@ -253,6 +254,7 @@ namespace XSharp.Project
             return this._txtManager;
         }
 
+       // XSharpLanguageService _langService = null;
         #region Overridden Implementation
         /// <summary>
         /// Initialization of the package; this method is called right after the package is sited, so this is the place
@@ -447,11 +449,19 @@ namespace XSharp.Project
             return Utilities.ShowMessageBox(this, message, title, icon, buttons, defaultButton);
 
         }
-
+        private Dictionary<Type, Object> servicedict = new Dictionary<Type, object>();
         protected override object GetService(Type serviceType)
         {
             object result = null;
-            UIThread.DoOnUIThread( () => result =base.GetService(serviceType));
+            if (servicedict.ContainsKey(serviceType))
+            {
+                return servicedict[serviceType];
+            }
+            UIThread.DoOnUIThread(() => result = base.GetService(serviceType));
+            if (result != null)
+            {
+                servicedict.Add(serviceType, result);
+            }
             return result;
         }
 
@@ -575,7 +585,7 @@ namespace XSharp.Project
         {
             int hr;
             _uiThread.MustBeCalledFromUIThread();
-            m_debugger = base.GetService(typeof(SVsShellDebugger)) as IVsDebugger;
+            m_debugger = this.GetService(typeof(SVsShellDebugger)) as IVsDebugger;
             if (m_debugger != null)
             {
                 hr = m_debugger.AdviseDebuggerEvents(this, out m_Debuggercookie);

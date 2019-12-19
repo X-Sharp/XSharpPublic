@@ -53,6 +53,9 @@ namespace XSharp.Project
         [Import]
         IBufferTagAggregatorFactoryService aggregator = null;
 
+        [Import]
+        internal Microsoft.VisualStudio.Shell.SVsServiceProvider ServiceProvider { get; set; }
+
         public void VsTextViewCreated(IVsTextView textViewAdapter)
         {
             IVsTextLines textlines;
@@ -93,7 +96,7 @@ namespace XSharp.Project
                             textView.TextBuffer.Properties.AddProperty(typeof(XSharpModel.XFile), file);
                         }
                     }
-                    CommandFilter filter = new CommandFilter(textView, CompletionBroker, NavigatorService.GetTextStructureNavigator(textView.TextBuffer), SignatureHelpBroker, aggregator);
+                    CommandFilter filter = new CommandFilter(textView, CompletionBroker, NavigatorService.GetTextStructureNavigator(textView.TextBuffer), SignatureHelpBroker, aggregator, this );
                     IOleCommandTarget next;
                     textViewAdapter.AddCommandFilter(filter, out next);
                     filter.Next = next;

@@ -24,6 +24,7 @@ using XSharp.Project.OptionsPages;
 using XSharp.VOEditors;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 using Microsoft;
 /*
 Substitution strings
@@ -228,17 +229,19 @@ namespace XSharp.Project
             get { return XSharpProjectPackage.instance; }
         }
 
-        public async void OpenInBrowser(string url)
+        public  void OpenInBrowser(string url)
         {
-            Task<IVsWebBrowsingService> t = await GetServiceAsync(typeof(SVsWebBrowsingService)) as Task<IVsWebBrowsingService>;
-            Assumes.Present(t);
-            IVsWebBrowsingService service = t.Result;
-            if (service != null)
+            UIThread.DoOnUIThread(() =>
             {
-                IVsWindowFrame frame = null;
-                service.Navigate(url, (uint)(__VSWBNAVIGATEFLAGS.VSNWB_WebURLOnly | __VSWBNAVIGATEFLAGS.VSNWB_ForceNew), out frame);
-                frame.Show();
-            }
+
+                IVsWebBrowsingService service = GetService(typeof(SVsWebBrowsingService)) as IVsWebBrowsingService;
+                if (service != null)
+                {
+                    IVsWindowFrame frame = null;
+                    service.Navigate(url, (uint)(__VSWBNAVIGATEFLAGS.VSNWB_WebURLOnly | __VSWBNAVIGATEFLAGS.VSNWB_ForceNew), out frame);
+                    frame.Show();
+                }
+            });
         }
         internal IntellisenseOptionsPage GetIntellisenseOptionsPage()
         {
@@ -251,6 +254,7 @@ namespace XSharp.Project
             return this._txtManager;
         }
 
+       // XSharpLanguageService _langService = null;
         #region Overridden Implementation
         /// <summary>
         /// Initialization of the package; this method is called right after the package is sited, so this is the place
@@ -285,7 +289,11 @@ namespace XSharp.Project
             // Proffer the service.
             IServiceContainer serviceContainer = this as IServiceContainer;
             XSharpLanguageService langService = new XSharpLanguageService();
-            langService.SetSite(this);
+            UIThread.DoOnUIThread(() =>
+            {
+
+                langService.SetSite(this);
+            });
             serviceContainer.AddService(typeof(XSharpLanguageService),
                                         langService,
                                         true);
@@ -306,7 +314,10 @@ namespace XSharp.Project
                 int hr = mgr.FRegisterComponent(this, crinfo, out m_componentID);
             }
             // Initialize Custom Menu Items
-            XSharp.Project.XSharpMenuItems.Initialize(this);
+            UIThread.DoOnUIThread(() =>
+            {
+                XSharp.Project.XSharpMenuItems.Initialize(this);
+            });
             // register property changed event handler
 
 
@@ -438,6 +449,21 @@ namespace XSharp.Project
             return Utilities.ShowMessageBox(this, message, title, icon, buttons, defaultButton);
 
         }
+        private Dictionary<Type, Object> servicedict = new Dictionary<Type, object>();
+        protected override object GetService(Type serviceType)
+        {
+            object result = null;
+            if (servicedict.ContainsKey(serviceType))
+            {
+                return servicedict[serviceType];
+            }
+            UIThread.DoOnUIThread(() => result = base.GetService(serviceType));
+            if (result != null)
+            {
+                servicedict.Add(serviceType, result);
+            }
+            return result;
+        }
 
         #endregion
 
@@ -559,7 +585,7 @@ namespace XSharp.Project
         {
             int hr;
             _uiThread.MustBeCalledFromUIThread();
-            m_debugger = base.GetService(typeof(SVsShellDebugger)) as IVsDebugger;
+            m_debugger = this.GetService(typeof(SVsShellDebugger)) as IVsDebugger;
             if (m_debugger != null)
             {
                 hr = m_debugger.AdviseDebuggerEvents(this, out m_Debuggercookie);

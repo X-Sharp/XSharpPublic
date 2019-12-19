@@ -1434,12 +1434,15 @@ namespace XSharp.Project
             IVsSimpleLibrary2 simpleLibrary = null;
             //
             System.IServiceProvider provider = XSharpProjectPackage.Instance;
-            IVsObjectManager2 mgr = provider.GetService(typeof(SVsObjectManager)) as IVsObjectManager2;
-            if (mgr != null)
-            {
-                ErrorHandler.ThrowOnFailure(mgr.FindLibrary(ref guid, out _library));
-                simpleLibrary = _library as IVsSimpleLibrary2;
-            }
+            UIThread.DoOnUIThread(() =>
+           {
+               IVsObjectManager2 mgr = provider.GetService(typeof(SVsObjectManager)) as IVsObjectManager2;
+               if (mgr != null)
+               {
+                   ErrorHandler.ThrowOnFailure(mgr.FindLibrary(ref guid, out _library));
+                   simpleLibrary = _library as IVsSimpleLibrary2;
+               }
+           });
             return simpleLibrary;
         }
 
@@ -1511,20 +1514,30 @@ namespace XSharp.Project
         private static bool canFindSymbols(string memberName, uint searchOptions)
         {
             System.IServiceProvider provider = XSharpProjectPackage.Instance;
-            IVsFindSymbol searcher = provider.GetService(typeof(SVsObjectSearch)) as IVsFindSymbol;
-            Assumes.Present(searcher);
-            var guidSymbolScope = new Guid(XSharpConstants.Library);
-            return HResult.Succeeded(searcher.DoSearch(ref guidSymbolScope, createSearchCriteria(memberName, searchOptions)));
+            bool result = true;
+            UIThread.DoOnUIThread( () =>
+                {
+                IVsFindSymbol searcher = provider.GetService(typeof(SVsObjectSearch)) as IVsFindSymbol;
+                Assumes.Present(searcher);
+                var guidSymbolScope = new Guid(XSharpConstants.Library);
+                result = HResult.Succeeded(searcher.DoSearch(ref guidSymbolScope, createSearchCriteria(memberName, searchOptions)));
+            });
+            return result;
         }
 
         private static bool canFindAllSymbols(string memberName, uint searchOptions)
         {
             System.IServiceProvider provider = XSharpProjectPackage.Instance;
-            IVsFindSymbol searcher = provider.GetService(typeof(SVsObjectSearch)) as IVsFindSymbol;
-            Assumes.Present(searcher);
-            var guidSymbolScope = ObjectBrowserHelper.GUID_VsSymbolScope_All;
-            //
-            return HResult.Succeeded(searcher.DoSearch(ref guidSymbolScope, createSearchCriteria(memberName, searchOptions)));
+            bool result= true;
+            UIThread.DoOnUIThread(() =>
+           {
+               IVsFindSymbol searcher = provider.GetService(typeof(SVsObjectSearch)) as IVsFindSymbol;
+               Assumes.Present(searcher);
+               var guidSymbolScope = ObjectBrowserHelper.GUID_VsSymbolScope_All;
+                //
+                result = HResult.Succeeded(searcher.DoSearch(ref guidSymbolScope, createSearchCriteria(memberName, searchOptions)));
+           });
+            return result;
         }
 
         private static VSOBSEARCHCRITERIA2[] createSearchCriteria(string typeOrMemberName, uint searchOptions)

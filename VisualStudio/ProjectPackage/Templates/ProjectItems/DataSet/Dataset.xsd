@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8" ?> 
+<xs:schema id="$XmlConvert_itemname$" 
+                  targetNamespace="http://tempuri.org/$safeitemname$.xsd"
+                  elementFormDefault="qualified"
+                  attributeFormDefault="qualified"
+                  xmlns="http://tempuri.org/$safeitemname$.xsd"
+                  xmlns:mstns="http://tempuri.org/$safeitemname$.xsd"
+                  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+                  xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+	<xs:element name="$XmlConvert_itemname$" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
+		<xs:complexType>
+			<xs:choice minOccurs="0" maxOccurs="unbounded"></xs:choice>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

@@ -254,6 +254,7 @@ STRUCTURE xPorterOptions
 	EXPORT UseXSharpRuntime AS LOGIC
     EXPORT CopyResourcesToProjectFolder AS LOGIC
     EXPORT ReplaceResourceDefinesWithValues AS LOGIC
+    EXPORT CheckForIVarAndPropertyConflicts AS LOGIC
 END STRUCTURE
 
 INTERFACE IProgressBar
@@ -2195,7 +2196,8 @@ CLASS EntityDescriptor
 				END IF
 			END IF
 		ENDIF
-		IF SELF:Type== EntityType._Class .AND. (cLineUpper:StartsWith("PROTECT") .or. cLineUpper:StartsWith("HIDDEN"))
+		IF xPorter.Options:CheckForIVarAndPropertyConflicts .and. SELF:Type== EntityType._Class .AND. ;
+			(cLineUpper:StartsWith("PROTECT") .or. cLineUpper:StartsWith("HIDDEN") .or. cLineUpper:StartsWith("INSTANCE"))
 			lInNonPublicIVar := TRUE
 			lCanBeNonPublicName := TRUE
 		ENDIF

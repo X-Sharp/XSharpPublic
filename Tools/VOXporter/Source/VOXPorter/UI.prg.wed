@@ -227,7 +227,7 @@ SUBCONTROLSSTART
     Checked=True
     Name=ExportToBoth
     Text=Both
-    Location=186 , 21
+    Location=186 , 15
     Size=45 , 18
     TabIndex=3
     
@@ -236,7 +236,7 @@ SUBCONTROLSSTART
     AutoSize=True
     Name=ExportToXIDE
     Text=XIDE
-    Location=117 , 21
+    Location=117 , 15
     Size=49 , 18
     TabIndex=2
     
@@ -245,7 +245,7 @@ SUBCONTROLSSTART
     AutoSize=True
     Name=ExportToVS
     Text=Export to VS
-    Location=15 , 21
+    Location=15 , 15
     Size=85 , 18
     TabIndex=1
     TabStop=True
@@ -254,8 +254,8 @@ SUBCONTROLSSTART
     GUID=C9926179-E238-4757-8426-520E8BC59C57
     IntegralHeight=False
     Name=OptionsList
-    Location=15 , 44
-    Size=222 , 225
+    Location=15 , 36
+    Size=222 , 233
     TabIndex=4
  
  SUBCONTROLSEND

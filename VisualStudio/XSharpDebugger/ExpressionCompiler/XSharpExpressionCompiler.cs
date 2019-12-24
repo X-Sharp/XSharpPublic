@@ -25,7 +25,7 @@ namespace XSharpDebugger.ExpressionCompiler
     ///        IDkmClrExpressionCompiler.GetClrLocalVariableQuery.
     ///    3.  Modification of values:  When the user edits a value from the Watch or Locals window
     ///        the debug engine will ultimately call IDkmClrExpressionCompiler.CompileAssignment
-    /// 
+    ///
     /// See the method comments below for more details about each method.
     /// </summary>
     public sealed class XSharpExpressionCompiler : IDkmClrExpressionCompiler
@@ -56,7 +56,39 @@ namespace XSharpDebugger.ExpressionCompiler
         {
             error = null;
             result = null;
+            bool changed = false;
+            string originalExpr = expression.Text;
+            // We use a trick to change the Text when sending it to C#, by retrieveing the field info.
+            // This field has a property get but not a property set.
+            var fi = typeof(DkmLanguageExpression).GetField("m_Text", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+            if (fi != null)
+            {
+                var newexpr = originalExpr;
+                if (expression.Text.StartsWith("SELF", System.StringComparison.OrdinalIgnoreCase))
+                {
+                    changed = true;
+                    newexpr = "this" + originalExpr.Substring(4);
+                }
+                else if (expression.Text.StartsWith("SUPER", System.StringComparison.OrdinalIgnoreCase))
+                {
+                    changed = true;
+                    newexpr = "base" + originalExpr.Substring(5);
+                }
+                if (newexpr.Contains(":"))
+                {
+                    newexpr = newexpr.Replace(':', '.');
+                    changed = true;
+                }
+                if (changed && fi != null)
+                {
+                    fi.SetValue(expression, newexpr);
+                }
+            }
             expression.CompileExpression(instructionAddress, inspectionContext, out error, out result);
+            if (changed && fi != null)
+            {
+                fi.SetValue(expression, originalExpr);
+            }
             return;
         }
 

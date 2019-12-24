@@ -226,7 +226,9 @@ namespace XSharp.Project
                 UIThread.DoOnUIThread(() => oStatusBar = (IVsStatusbar)GetService(typeof(IVsStatusbar)));
             }
             if (this.oStatusBar != null)
+            {
                 this.oStatusBar.SetText(cText);
+            }
         }
         void IsDirtyChangedHandler(object o, EventArgs e)
         {

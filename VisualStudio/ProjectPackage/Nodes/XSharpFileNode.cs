@@ -117,7 +117,6 @@ namespace XSharp.Project
 
         protected override int IncludeInProject()
         {
-            new UIThread().MustBeCalledFromUIThread();
             int result = base.IncludeInProject();
             DetermineSubType();
             //if (this.FileType == XFileType.SourceCode)

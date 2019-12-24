@@ -43,7 +43,8 @@ namespace XSharp.Project
             XSharpProjectNode project = new XSharpProjectNode(this.package);
             IOleServiceProvider provider = null;
             var serviceProvider = this.package as IServiceProvider;
-            UIThread.DoOnUIThread(() => provider = (IOleServiceProvider) serviceProvider.GetService(typeof(IOleServiceProvider)));
+            // ProjectPackage already switches to UI thread inside GetService
+            provider = (IOleServiceProvider) serviceProvider.GetService(typeof(IOleServiceProvider));
             project.SetSite(provider);
             return project;
         }

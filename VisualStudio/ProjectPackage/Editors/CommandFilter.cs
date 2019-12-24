@@ -665,6 +665,9 @@ namespace XSharp.Project
                                 }
                             }
                             break;
+                        case VSConstants.VSStd2KCmdID.HELP:
+                        case VSConstants.VSStd2KCmdID.HELPKEYWORD:
+                            break;
                         case VSConstants.VSStd2KCmdID.BACKSPACE:
                             FilterCompletionSession('\0');
                             break;
@@ -1434,15 +1437,13 @@ namespace XSharp.Project
             IVsSimpleLibrary2 simpleLibrary = null;
             //
             System.IServiceProvider provider = XSharpProjectPackage.Instance;
-            UIThread.DoOnUIThread(() =>
-           {
-               IVsObjectManager2 mgr = provider.GetService(typeof(SVsObjectManager)) as IVsObjectManager2;
-               if (mgr != null)
-               {
-                   ErrorHandler.ThrowOnFailure(mgr.FindLibrary(ref guid, out _library));
-                   simpleLibrary = _library as IVsSimpleLibrary2;
-               }
-           });
+            // ProjectPackage already switches to UI thread inside GetService
+            IVsObjectManager2 mgr = provider.GetService(typeof(SVsObjectManager)) as IVsObjectManager2;
+            if (mgr != null)
+            {
+                ErrorHandler.ThrowOnFailure(mgr.FindLibrary(ref guid, out _library));
+                simpleLibrary = _library as IVsSimpleLibrary2;
+            }
             return simpleLibrary;
         }
 
@@ -1515,13 +1516,11 @@ namespace XSharp.Project
         {
             System.IServiceProvider provider = XSharpProjectPackage.Instance;
             bool result = true;
-            UIThread.DoOnUIThread( () =>
-                {
-                IVsFindSymbol searcher = provider.GetService(typeof(SVsObjectSearch)) as IVsFindSymbol;
-                Assumes.Present(searcher);
-                var guidSymbolScope = new Guid(XSharpConstants.Library);
-                result = HResult.Succeeded(searcher.DoSearch(ref guidSymbolScope, createSearchCriteria(memberName, searchOptions)));
-            });
+            // ProjectPackage already switches to UI thread inside GetService
+            IVsFindSymbol searcher = provider.GetService(typeof(SVsObjectSearch)) as IVsFindSymbol;
+            Assumes.Present(searcher);
+            var guidSymbolScope = new Guid(XSharpConstants.Library);
+            result = HResult.Succeeded(searcher.DoSearch(ref guidSymbolScope, createSearchCriteria(memberName, searchOptions)));
             return result;
         }
 
@@ -1529,14 +1528,12 @@ namespace XSharp.Project
         {
             System.IServiceProvider provider = XSharpProjectPackage.Instance;
             bool result= true;
-            UIThread.DoOnUIThread(() =>
-           {
-               IVsFindSymbol searcher = provider.GetService(typeof(SVsObjectSearch)) as IVsFindSymbol;
-               Assumes.Present(searcher);
-               var guidSymbolScope = ObjectBrowserHelper.GUID_VsSymbolScope_All;
-                //
-                result = HResult.Succeeded(searcher.DoSearch(ref guidSymbolScope, createSearchCriteria(memberName, searchOptions)));
-           });
+            // ProjectPackage already switches to UI thread inside GetService
+            IVsFindSymbol searcher = provider.GetService(typeof(SVsObjectSearch)) as IVsFindSymbol;
+            Assumes.Present(searcher);
+            var guidSymbolScope = ObjectBrowserHelper.GUID_VsSymbolScope_All;
+            //
+            result = HResult.Succeeded(searcher.DoSearch(ref guidSymbolScope, createSearchCriteria(memberName, searchOptions)));
             return result;
         }
 

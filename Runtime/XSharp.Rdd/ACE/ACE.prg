@@ -1432,18 +1432,25 @@ BEGIN NAMESPACE XSharp.ADS
             
         PUBLIC STATIC METHOD AdsGetAllLocks(hTable AS IntPtr , [IN] [OUT] aulLocks AS DWORD[] , pusArrayLen REF WORD ) AS DWORD 
             RETURN delGetAllLocks(hTable, aulLocks, REF pusArrayLen)
+            
         PUBLIC STATIC METHOD AdsGetAllTables([IN] [OUT] ahTable AS IntPtr[] , pusArrayLen REF WORD ) AS DWORD 
             RETURN delGetAllTables(ahTable, REF pusArrayLen)
             
-//        PUBLIC STATIC METHOD AdsGetBinary(hTable AS IntPtr , strFldName AS STRING , ulOffset AS DWORD , [IN] [OUT] strBuf AS BYTE[] , pulLen REF DWORD ) AS DWORD 
-//            RETURN delGetBinaryS(hTable, strFldName, ulOffSet, strBuf, REF pulLen)
-            
+        PUBLIC STATIC METHOD AdsGetBinary(hTable AS IntPtr , strFldName AS STRING , ulOffset AS DWORD , [IN] [OUT] strBuf AS BYTE[] , pulLen REF DWORD ) AS DWORD
+                IF Is32Bits
+                    RETURN Ace32.AdsGetBinary(hTable, strFldName, ulOffSet, strBuf, REF pulLen)
+                ELSE
+                    RETURN Ace64.AdsGetBinary(hTable, strFldName, ulOffSet, strBuf, REF pulLen)
+                ENDIF
         PUBLIC STATIC METHOD AdsGetBinary(hTable AS IntPtr , lFieldOrdinal AS DWORD, ulOffset AS DWORD , [IN] [OUT] strBuf AS BYTE[] , pulLen REF DWORD ) AS DWORD 
             RETURN delGetBinaryD(hTable, lFieldOrdinal, ulOffSet, strBuf, REF pulLen)
             
-//        PUBLIC STATIC METHOD AdsGetBinaryLength(hTable AS IntPtr , strFldName AS STRING , pulLength OUT DWORD ) AS DWORD 
-//            RETURN delGetBinaryLengthS(hTable, strFldName, OUT pulLength)
-            
+        PUBLIC STATIC METHOD AdsGetBinaryLength(hTable AS IntPtr , strFldName AS STRING , pulLength OUT DWORD ) AS DWORD
+            IF Is32Bits
+                RETURN Ace32.AdsGetBinaryLength(hTable, strFldName, OUT pulLength)
+            ELSE
+                RETURN Ace64.AdsGetBinaryLength(hTable, strFldName, OUT pulLength)
+             ENDIF
         PUBLIC STATIC METHOD AdsGetBinaryLength(hTable AS IntPtr , lFieldOrdinal AS DWORD, pulLength OUT DWORD ) AS DWORD 
             RETURN delGetBinaryLengthD(hTable, lFieldOrdinal, OUT pulLength)
             
@@ -1453,8 +1460,12 @@ BEGIN NAMESPACE XSharp.ADS
         PUBLIC STATIC METHOD AdsGetConnectionType(hConnect AS IntPtr, pusConnectType OUT WORD ) AS DWORD 
             RETURN delGetConnectionType(hConnect, OUT pusConnectType)
             
-//        PUBLIC STATIC METHOD AdsGetDate(hTable AS IntPtr , strFldName AS STRING , [IN] [OUT] strBuf AS CHAR[] , wLen REF WORD ) AS DWORD 
-//            RETURN delGetDateS(hTable, strFldName, strBuf, REF wLen)
+        PUBLIC STATIC METHOD AdsGetDate(hTable AS IntPtr , strFldName AS STRING , [IN] [OUT] strBuf AS CHAR[] , wLen REF WORD ) AS DWORD 
+            IF Is32Bits
+                RETURN Ace32.AdsGetDate(hTable, strFldName, strBuf , REF wLen)
+            ELSE
+                RETURN Ace64.AdsGetDate(hTable, strFldName, strBuf , REF wLen)
+            ENDIF
             
         PUBLIC STATIC METHOD AdsGetDate(hTable AS IntPtr , lFieldOrdinal AS DWORD, [IN] [OUT] strBuf AS CHAR[] , wLen REF WORD ) AS DWORD 
             RETURN delGetDateD(hTable, lFieldOrdinal, strBuf, REF wLen)
@@ -1463,14 +1474,22 @@ BEGIN NAMESPACE XSharp.ADS
         PUBLIC STATIC METHOD AdsGetDateFormat([IN] [OUT] strFormat AS CHAR[] , wLen REF WORD ) AS DWORD 
             RETURN delGetDateFormat(strFormat, REF wLen)
             
-//        PUBLIC STATIC METHOD AdsGetDouble(hTable AS IntPtr , strFldName AS STRING , pdValue OUT REAL8 ) AS DWORD 
-//            RETURN delGetDoubleS(hTable, strFldName, OUT pdValue)
+        PUBLIC STATIC METHOD AdsGetDouble(hTable AS IntPtr , strFldName AS STRING , pdValue OUT REAL8 ) AS DWORD 
+            IF Is32Bits
+                RETURN Ace32.AdsGetDouble(hTable, strFldName, OUT pdValue)
+            ELSE
+                RETURN Ace64.AdsGetDouble(hTable, strFldName, OUT pdValue)
+            ENDIF
             
         PUBLIC STATIC METHOD AdsGetDouble(hTable AS IntPtr , lFieldOrdinal AS DWORD, pdValue OUT REAL8 ) AS DWORD 
             RETURN delGetDoubleD(hTable, lFieldOrdinal, OUT pdValue)
             
-//        PUBLIC STATIC METHOD AdsGetFieldLength(hTable AS IntPtr , strFldName AS STRING , pulLength OUT DWORD ) AS DWORD 
-//            RETURN delGetFieldLengthS(hTable, strFldName, OUT pulLength)
+        PUBLIC STATIC METHOD AdsGetFieldLength(hTable AS IntPtr , strFldName AS STRING , pulLength OUT DWORD ) AS DWORD 
+           IF Is32Bits
+                RETURN Ace32.AdsGetFieldLength(hTable, strFldName,  OUT pulLength)
+            ELSE
+                RETURN Ace64.AdsGetFieldLength(hTable, strFldName,  OUT pulLength)
+            ENDIF
             
         PUBLIC STATIC METHOD AdsGetFieldLength(hTable AS IntPtr , lFieldOrdinal AS DWORD, pulLength OUT DWORD ) AS DWORD 
             RETURN delGetFieldLengthD(hTable, lFieldOrdinal, OUT pulLength)
@@ -1483,6 +1502,54 @@ BEGIN NAMESPACE XSharp.ADS
             
         PUBLIC STATIC METHOD AdsGetIndexHandle(hTable AS IntPtr , strIndexOrder AS STRING , phIndex OUT IntPtr ) AS DWORD 
             RETURN delGetIndexHandle(hTable, strIndexOrder, OUT phIndex)
+        PUBLIC STATIC METHOD AdsGetLong(hTable AS IntPtr , lFieldOrdinal AS DWORD, plValue OUT INT ) AS DWORD 
+           IF Is32Bits
+                RETURN Ace32.AdsGetLong(hTable, lFieldOrdinal,  OUT plValue)
+            ELSE
+                RETURN Ace64.AdsGetLong(hTable, lFieldOrdinal,  OUT plValue)
+            ENDIF
+        PUBLIC STATIC METHOD AdsGetLong(hTable AS IntPtr , strFldName AS STRING , plValue OUT INT ) AS DWORD 
+           IF Is32Bits
+                RETURN Ace32.AdsGetLong(hTable, strFldName,  OUT plValue)
+            ELSE
+                RETURN Ace64.AdsGetLong(hTable, strFldName,  OUT plValue)
+            ENDIF
+        PUBLIC STATIC METHOD AdsGetLongLong(hTable AS IntPtr , lFieldOrdinal AS DWORD, pqValue OUT INT64 ) AS DWORD 
+           IF Is32Bits
+                RETURN Ace32.AdsGetLongLong(hTable, lFieldOrdinal,  OUT pqValue)
+            ELSE
+                RETURN Ace64.AdsGetLongLong(hTable, lFieldOrdinal,  OUT pqValue)
+            ENDIF
+        PUBLIC STATIC METHOD AdsGetLongLong(hTable AS IntPtr , strFldName AS STRING , pqValue OUT INT64 ) AS DWORD 
+           IF Is32Bits
+                RETURN Ace32.AdsGetLongLong(hTable, strFldName,  OUT pqValue)
+            ELSE
+                RETURN Ace64.AdsGetLongLong(hTable, strFldName,  OUT pqValue)
+            ENDIF
+        PUBLIC STATIC METHOD AdsGetMoney(hTable AS IntPtr , lFieldOrdinal AS DWORD, pqValue OUT INT64 ) AS DWORD 
+          IF Is32Bits
+                RETURN Ace32.AdsGetMoney(hTable, lFieldOrdinal,  OUT pqValue)
+            ELSE
+                RETURN Ace64.AdsGetMoney(hTable, lFieldOrdinal,  OUT pqValue)
+            ENDIF
+         PUBLIC STATIC METHOD AdsGetMoney(hTable AS IntPtr , strFldName AS STRING , pqValue OUT INT64 ) AS DWORD 
+          IF Is32Bits
+                RETURN Ace32.AdsGetMoney(hTable, strFldName,  OUT pqValue)
+            ELSE
+                RETURN Ace64.AdsGetMoney(hTable, strFldName,  OUT pqValue)
+            ENDIF
+        PUBLIC STATIC METHOD AdsGetMilliseconds(hTable AS IntPtr , lFieldOrdinal AS DWORD, plTime OUT INT ) AS DWORD 
+           IF Is32Bits
+                RETURN Ace32.AdsGetMilliseconds(hTable, lFieldOrdinal,  OUT plTime)
+            ELSE
+                RETURN Ace64.AdsGetMilliseconds(hTable, lFieldOrdinal,  OUT plTime)
+            ENDIF
+       PUBLIC STATIC METHOD AdsGetMilliseconds(hTable AS IntPtr , strFldName AS STRING , plTime OUT INT ) AS DWORD 
+           IF Is32Bits
+                RETURN Ace32.AdsGetMilliseconds(hTable, strFldName,  OUT plTime)
+            ELSE
+                RETURN Ace64.AdsGetMilliseconds(hTable, strFldName,  OUT plTime)
+            ENDIF
             
         PUBLIC STATIC METHOD AdsGetLastError(pulErrCode OUT DWORD , [IN] [OUT] strBuf AS CHAR[] , pusBufLen REF WORD ) AS DWORD 
             RETURN delGetLastError(OUT pulErrCode, strBuf, REF pusBufLen)
@@ -1590,7 +1657,20 @@ BEGIN NAMESPACE XSharp.ADS
             
         PUBLIC STATIC METHOD AdsSeekLast(hIndex AS IntPtr , abKey AS BYTE[] , usKeyLen AS WORD, usDataType AS WORD, pbFound OUT WORD) AS DWORD 
             RETURN delSeekLastB(hIndex, abKey, usKeyLen, usDataType, OUT pbFound)
-            
+
+        PUBLIC STATIC METHOD AdsSetDate(hObj AS IntPtr , lFieldOrdinal AS DWORD, strValue AS STRING , wLen AS WORD ) AS DWORD 
+            IF Is32Bits
+                RETURN Ace32.AdsSetDate(hObj, lFieldOrdinal, strValue, wLen)
+            ELSE
+                RETURN Ace64.AdsSetDate(hObj, lFieldOrdinal, strValue, wLen)
+             ENDIF
+        PUBLIC STATIC METHOD AdsSetDate(hObj AS IntPtr , strFldName AS STRING , strValue AS STRING , wLen AS WORD ) AS DWORD 
+            IF Is32Bits
+                RETURN Ace32.AdsSetDate(hObj, strFldName, strValue, wLen)
+            ELSE
+                RETURN Ace64.AdsSetDate(hObj, strFldName, strValue, wLen)
+             ENDIF
+           
         PUBLIC STATIC METHOD AdsSetDateFormat(strFormat AS STRING ) AS DWORD 
             RETURN delSetDateFormat(strFormat)
             
@@ -1612,6 +1692,108 @@ BEGIN NAMESPACE XSharp.ADS
         PUBLIC STATIC METHOD AdsSetRelation(hTableParent AS IntPtr , hIndexChild AS IntPtr , strExpr AS STRING ) AS DWORD 
             RETURN delSetRelation(hTableParent, hIndexChild, strExpr)
             
+        PUBLIC STATIC METHOD AdsSetLong(hObj AS IntPtr , strFldName AS STRING, lValue AS INT ) AS DWORD 
+            IF Is32Bits
+                RETURN Ace32.AdsSetLong(hObj, strFldName, lValue)
+            ELSE
+                RETURN Ace64.AdsSetLong(hObj, strFldName, lValue)
+             ENDIF
+
+        PUBLIC STATIC METHOD AdsSetLong(hObj AS IntPtr , lFieldOrdinal AS DWORD, lValue AS INT ) AS DWORD 
+            IF Is32Bits
+                RETURN Ace32.AdsSetLong(hObj, lFieldOrdinal, lValue)
+            ELSE
+                RETURN Ace64.AdsSetLong(hObj, lFieldOrdinal, lValue)
+             ENDIF
+        PUBLIC STATIC METHOD AdsSetLongLong(hObj AS IntPtr , strFldName AS STRING , qValue AS INT64 ) AS DWORD 
+            IF Is32Bits
+                RETURN Ace32.AdsSetLongLong(hObj, strFldName, qValue)
+            ELSE
+                RETURN Ace64.AdsSetLongLong(hObj, strFldName, qValue)
+            ENDIF
+        PUBLIC STATIC METHOD AdsSetLongLong(hObj AS IntPtr , lFieldOrdinal AS DWORD , qValue AS INT64 ) AS DWORD 
+            IF Is32Bits
+                RETURN Ace32.AdsSetLongLong(hObj, lFieldOrdinal, qValue)
+            ELSE
+                RETURN Ace64.AdsSetLongLong(hObj, lFieldOrdinal, qValue)
+            ENDIF
+
+        PUBLIC STATIC METHOD AdsSetMoney(hObj AS IntPtr , lFieldOrdinal AS DWORD, qValue AS INT64 ) AS DWORD 
+           IF Is32Bits
+                RETURN Ace32.AdsSetMoney(hObj, lFieldOrdinal, qValue)
+            ELSE
+                RETURN Ace64.AdsSetMoney(hObj, lFieldOrdinal, qValue)
+            ENDIF
+        PUBLIC STATIC METHOD AdsSetMoney(hObj AS IntPtr , strFldName AS STRING , qValue AS INT64 ) AS DWORD 
+            IF Is32Bits
+                RETURN Ace32.AdsSetMoney(hObj, strFldName, qValue)
+            ELSE
+                RETURN Ace64.AdsSetMoney(hObj, strFldName, qValue)
+            ENDIF
+
+        PUBLIC STATIC METHOD AdsSetMilliseconds(hObj AS IntPtr , lFieldOrdinal AS DWORD, lTime AS INT ) AS DWORD 
+            IF Is32Bits
+                RETURN Ace32.AdsSetMilliseconds(hObj, lFieldOrdinal, lTime)
+            ELSE
+                RETURN Ace64.AdsSetMilliseconds(hObj, lFieldOrdinal, lTime)
+            ENDIF
+       PUBLIC STATIC METHOD AdsSetMilliseconds(hObj AS IntPtr , strFldName AS STRING , lTime AS INT ) AS DWORD 
+           IF Is32Bits
+                RETURN Ace32.AdsSetMilliseconds(hObj, strFldName, lTime)
+            ELSE
+                RETURN Ace64.AdsSetMilliseconds(hObj, strFldName, lTime)
+            ENDIF
+
+        PUBLIC STATIC METHOD AdsSetNull(hTable AS IntPtr , lFieldOrdinal AS DWORD) AS DWORD 
+            IF Is32Bits
+                RETURN Ace32.AdsSetNull(hTable, lFieldOrdinal)
+            ELSE
+                RETURN Ace64.AdsSetNull(hTable, lFieldOrdinal)
+            ENDIF
+            
+         PUBLIC STATIC METHOD AdsSetNull(hTable AS IntPtr , strFldName AS STRING ) AS DWORD 
+            IF Is32Bits
+                RETURN Ace32.AdsSetNull(hTable, strFldName)
+            ELSE
+                RETURN Ace64.AdsSetNull(hTable, strFldName)
+            ENDIF
+        PUBLIC STATIC METHOD AdsSetShort(hObj AS IntPtr , lFieldOrdinal AS DWORD, sValue AS SHORT ) AS DWORD 
+            IF Is32Bits
+                RETURN Ace32.AdsSetShort(hObj, lFieldOrdinal,sValue)
+            ELSE
+                RETURN Ace64.AdsSetShort(hObj, lFieldOrdinal,sValue)
+            ENDIF
+        PUBLIC STATIC METHOD AdsSetShort(hObj AS IntPtr , strFldName AS STRING , sValue AS SHORT ) AS DWORD 
+            IF Is32Bits
+                RETURN Ace32.AdsSetShort(hObj, strFldName,sValue)
+            ELSE
+                RETURN Ace64.AdsSetShort(hObj, strFldName,sValue)
+            ENDIF
+        PUBLIC STATIC METHOD AdsSetTime(hObj AS IntPtr , lFieldOrdinal AS DWORD, strValue AS STRING , wLen AS WORD ) AS DWORD 
+            IF Is32Bits
+                RETURN Ace32.AdsSetTime(hObj, lFieldOrdinal,strValue, wLen)
+            ELSE
+                RETURN Ace64.AdsSetTime(hObj, lFieldOrdinal,strValue, wLen)
+            ENDIF
+        PUBLIC STATIC METHOD AdsSetTime(hObj AS IntPtr , strFldName AS STRING , strValue AS STRING , wLen AS WORD ) AS DWORD 
+            IF Is32Bits
+                RETURN Ace32.AdsSetTime(hObj, strFldName,strValue, wLen)
+            ELSE
+                RETURN Ace64.AdsSetTime(hObj, strFldName,strValue, wLen)
+            ENDIF
+        PUBLIC STATIC METHOD AdsSetTimeStamp(hObj AS IntPtr , lFieldOrdinal AS DWORD, strBuf AS STRING , ulLen AS DWORD ) AS DWORD 
+            IF Is32Bits
+                RETURN Ace32.AdsSetTimeStamp(hObj, lFieldOrdinal,strBuf, ulLen)
+            ELSE
+                RETURN Ace64.AdsSetTimeStamp(hObj, lFieldOrdinal,strBuf, ulLen)
+            ENDIF
+        PUBLIC STATIC METHOD AdsSetTimeStamp(hObj AS IntPtr , strFldName AS STRING , strBuf AS STRING , ulLen AS DWORD ) AS DWORD 
+            IF Is32Bits
+                RETURN Ace32.AdsSetTimeStamp(hObj, strFldName,strBuf, ulLen)
+            ELSE
+                RETURN Ace64.AdsSetTimeStamp(hObj, strFldName,strBuf, ulLen)
+            ENDIF
+
         PUBLIC STATIC METHOD AdsSetServerType(usServerOptions AS WORD ) AS DWORD 
             RETURN delSetServerType(usServerOptions)
             
@@ -1737,11 +1919,19 @@ BEGIN NAMESPACE XSharp.ADS
         PUBLIC STATIC METHOD AdsGetField(hTable AS IntPtr , lFieldOrdinal AS DWORD, strBuf AS CHAR[] , pulLen REF DWORD , usOption AS WORD ) AS DWORD 
             RETURN delGetField2(hTable, lFieldOrdinal, strBuf, REF pulLen, usOption)
             
-//        PUBLIC STATIC METHOD AdsGetField(hTable AS IntPtr , strFldName AS STRING , abBuf AS BYTE[] , pulLen REF DWORD , usOption AS WORD ) AS DWORD 
-//            RETURN delGetField3(hTable, strFldName, abBuf, REF pulLen, usOption)
-//            
-//        PUBLIC STATIC METHOD AdsGetField(hTable AS IntPtr , strFldName AS STRING ,  strBuf AS CHAR[] , pulLen REF DWORD , usOption AS WORD ) AS DWORD 
-//            RETURN delGetField4(hTable, strFldName, strBuf, REF pulLen, usOption)
+        PUBLIC STATIC METHOD AdsGetField(hTable AS IntPtr , strFldName AS STRING , abBuf AS BYTE[] , pulLen REF DWORD , usOption AS WORD ) AS DWORD 
+           IF Is32Bits
+                RETURN Ace32.AdsGetField(hTable, strFldName,  abBuf, REF pulLen, usOption)
+            ELSE
+                RETURN Ace64.AdsGetField(hTable, strFldName,  abBuf, REF pulLen, usOption)
+            ENDIF
+            
+        PUBLIC STATIC METHOD AdsGetField(hTable AS IntPtr , strFldName AS STRING ,  strBuf AS CHAR[] , pulLen REF DWORD , usOption AS WORD ) AS DWORD 
+           IF Is32Bits
+                RETURN Ace32.AdsGetField(hTable, strFldName, strBuf ,  REF pulLen, usOption)
+            ELSE
+                RETURN Ace64.AdsGetField(hTable, strFldName, strBuf ,  REF pulLen, usOption)
+            ENDIF
             
         PUBLIC STATIC METHOD AdsIsEmpty(hTable AS IntPtr , lFieldOrdinal AS DWORD, pbEmpty OUT WORD ) AS DWORD 
             RETURN delIsEmptyD(hTable, lFieldOrdinal, OUT pbEmpty)
@@ -1752,14 +1942,22 @@ BEGIN NAMESPACE XSharp.ADS
         PUBLIC STATIC METHOD AdsGetString(hTable AS IntPtr , lFieldOrdinal AS DWORD, [IN] [OUT] strBuf AS CHAR[] , pulLen REF DWORD , usOption AS WORD) AS DWORD 
             RETURN delGetStringD(hTable, lFieldOrdinal, strBuf, REF pulLen, usOption)
             
-//        PUBLIC STATIC METHOD AdsGetString(hTable AS IntPtr , strFldName AS STRING , [IN] [OUT] strBuf AS CHAR[] , pulLen REF DWORD , usOption AS WORD ) AS DWORD 
-//            RETURN delGetStringS(hTable, strFldName, strBuf, REF pulLen, usOption)
-            
+        PUBLIC STATIC METHOD AdsGetString(hTable AS IntPtr , strFldName AS STRING , [IN] [OUT] strBuf AS CHAR[] , pulLen REF DWORD , usOption AS WORD ) AS DWORD 
+           IF Is32Bits
+                RETURN Ace32.AdsGetString(hTable, strFldName, strBuf , REF pulLen, usOption)
+            ELSE
+                RETURN Ace64.AdsGetString(hTable, strFldName, strBuf , REF pulLen, usOption)
+            ENDIF
+             
         PUBLIC STATIC METHOD AdsGetStringW(hTable AS IntPtr , lFieldOrdinal AS DWORD, [IN] [OUT] strBuf AS CHAR[] , pulLen REF DWORD , usOption AS WORD) AS DWORD 
             RETURN delGetStringWD(hTable, lFieldOrdinal, strBuf, REF pulLen, usOption)
             
-//        PUBLIC STATIC METHOD AdsGetStringW(hTable AS IntPtr , strFldName AS STRING , [IN] [OUT] strBuf AS CHAR[] , pulLen REF DWORD , usOption AS WORD ) AS DWORD 
-//            RETURN delGetStringWS(hTable, strFldName, strBuf, REF pulLen, usOption)
+        PUBLIC STATIC METHOD AdsGetStringW(hTable AS IntPtr , strFldName AS STRING , [IN] [OUT] strBuf AS CHAR[] , pulLen REF DWORD , usOption AS WORD ) AS DWORD 
+           IF Is32Bits
+                RETURN Ace32.AdsGetStringW(hTable, strFldName, strBuf , REF pulLen, usOption)
+            ELSE
+                RETURN Ace64.AdsGetStringW(hTable, strFldName, strBuf , REF pulLen, usOption)
+            ENDIF
             
         PUBLIC STATIC METHOD AdsGetJulian(hTable AS IntPtr , lFieldOrdinal AS DWORD, plDate OUT INT ) AS DWORD 
             RETURN delGetJulianD(hTable, lFieldOrdinal, OUT plDate)
@@ -1786,11 +1984,19 @@ BEGIN NAMESPACE XSharp.ADS
         PUBLIC STATIC METHOD AdsSetField(hObj AS IntPtr , lFieldOrdinal AS DWORD, strBuf AS STRING , ulLen AS DWORD ) AS DWORD 
             RETURN delSetFieldDS(hObj, lFieldOrdinal, strBuf, ulLen)
             
-//        PUBLIC STATIC METHOD AdsSetField(hObj AS IntPtr , strFldName AS STRING , abBuf AS BYTE[] , ulLen AS DWORD ) AS DWORD 
-//            RETURN delSetFieldSB(hObj, strFldName, abBuf, ulLen)
+        PUBLIC STATIC METHOD AdsSetField(hObj AS IntPtr , strFldName AS STRING , abBuf AS BYTE[] , ulLen AS DWORD ) AS DWORD 
+           IF Is32Bits
+                RETURN Ace32.AdsSetField(hObj, strFldName, abBuf ,  ulLen)
+            ELSE
+                RETURN Ace64.AdsSetField(hObj, strFldName, abBuf ,  ulLen)
+            ENDIF
             
-//        PUBLIC STATIC METHOD AdsSetField(hObj AS IntPtr , strFldName AS STRING , strBuf AS STRING , ulLen AS DWORD ) AS DWORD 
-//            RETURN delSetFieldSS(hObj, strFldName, strBuf, ulLen)
+        PUBLIC STATIC METHOD AdsSetField(hObj AS IntPtr , strFldName AS STRING , strBuf AS STRING , ulLen AS DWORD ) AS DWORD 
+           IF Is32Bits
+                RETURN Ace32.AdsSetField(hObj, strFldName, strBuf , ulLen)
+            ELSE
+                RETURN Ace64.AdsSetField(hObj, strFldName, strBuf , ulLen)
+            ENDIF
             
         PUBLIC STATIC METHOD AdsSetString(hObj AS IntPtr , lFieldOrdinal AS DWORD, strBuf AS STRING , ulLen AS DWORD ) AS DWORD 
             RETURN delSetStringD(hObj, lFieldOrdinal, strBuf, ulLen)
@@ -1807,14 +2013,22 @@ BEGIN NAMESPACE XSharp.ADS
         PUBLIC STATIC METHOD AdsSetBinary(hTable AS IntPtr , lFieldOrdinal AS DWORD, usBinaryType AS WORD , ulTotalLength AS DWORD , ulOffset AS DWORD , strBuf AS BYTE[] , ulLen AS DWORD ) AS DWORD 
             RETURN delSetBinaryD(hTable, lFieldOrdinal, usBinaryType, ulTotalLength, ulOffSet, strBuf, ulLen)
             
-//        PUBLIC STATIC METHOD AdsSetBinary(hTable AS IntPtr , strFldName AS STRING , usBinaryType AS WORD , ulTotalLength AS DWORD , ulOffset AS DWORD , strBuf AS BYTE[] , ulLen AS DWORD ) AS DWORD 
-//            RETURN delSetBinaryS(hTable, strFldName, usBinaryType, ulTotalLength, ulOffSet, strBuf, ulLen)
-            
+        PUBLIC STATIC METHOD AdsSetBinary(hTable AS IntPtr , strFldName AS STRING , usBinaryType AS WORD , ulTotalLength AS DWORD , ulOffset AS DWORD , strBuf AS BYTE[] , ulLen AS DWORD ) AS DWORD 
+           IF Is32Bits
+                RETURN Ace32.AdsSetBinary(hTable, strFldName, usBinaryType , ulTotalLength,ulOffset, strBuf, ulLen)
+            ELSE
+                RETURN Ace64.AdsSetBinary(hTable, strFldName, usBinaryType , ulTotalLength,ulOffset, strBuf, ulLen)
+            ENDIF
+             
         PUBLIC STATIC METHOD AdsSetDouble(hObj AS IntPtr , lFieldOrdinal AS DWORD, dValue AS REAL8) AS DWORD 
             RETURN delSetDoubleD(hObj, lFieldOrdinal, dValue)
             
-//        PUBLIC STATIC METHOD AdsSetDouble(hObj AS IntPtr , strFldName AS STRING , dValue AS REAL8) AS DWORD 
-//            RETURN delSetDoubleS(hObj, strFldName, dValue)
+        PUBLIC STATIC METHOD AdsSetDouble(hObj AS IntPtr , strFldName AS STRING , dValue AS REAL8) AS DWORD 
+           IF Is32Bits
+                RETURN Ace32.AdsSetDouble(hObj, strFldName, dValue)
+            ELSE
+                RETURN Ace64.AdsSetDouble(hObj, strFldName, dValue)
+            ENDIF
             
         PUBLIC STATIC METHOD AdsSetJulian(hObj AS IntPtr , lFieldOrdinal AS DWORD, lDate AS INT) AS DWORD 
             RETURN delSetJulianD(hObj, lFieldOrdinal, lDate)
@@ -2091,20 +2305,12 @@ BEGIN NAMESPACE XSharp.ADS
         PUBLIC STATIC METHOD AdsGetFieldOffset(hTable as IntPtr , strFldName as string , pulOffset out DWORD ) as DWORD 
         PUBLIC STATIC METHOD AdsGetFilter(hTable as IntPtr , [In] [Out] strFilter as char[] , wLen ref WORD ) as DWORD 
         PUBLIC STATIC METHOD AdsGetHandleINT64(hObj as IntPtr , pulVal out DWORD ) as DWORD 
-        PUBLIC STATIC METHOD AdsGetINT64(hTable as IntPtr , lFieldOrdinal as DWORD, plValue out int ) as DWORD 
-        PUBLIC STATIC METHOD AdsGetINT64(hTable as IntPtr , strFldName as string , plValue out int ) as DWORD 
-        PUBLIC STATIC METHOD AdsGetINT64INT64(hTable as IntPtr , lFieldOrdinal as DWORD, pqValue out INT64 ) as DWORD 
-        PUBLIC STATIC METHOD AdsGetINT64INT64(hTable as IntPtr , strFldName as string , pqValue out INT64 ) as DWORD 
         PUBLIC STATIC METHOD AdsGetIndexCollation(hIndex as IntPtr , [In] [Out] strCollation as char[] , wLen ref WORD ) as DWORD 
         PUBLIC STATIC METHOD AdsGetIndexHandleByExpr(hTable as IntPtr , strExpr as string , ulDescending as DWORD , phIndex out IntPtr ) as DWORD 
         PUBLIC STATIC METHOD AdsGetKeyColumn(hCursor as IntPtr , [In] [Out] strKeyColumn as char[] , wLen ref WORD ) as DWORD 
         PUBLIC STATIC METHOD AdsGetLastAutoinc(hObj as IntPtr , pulAutoIncVal out DWORD ) as DWORD 
         PUBLIC STATIC METHOD AdsGetMemoDataType(hTable as IntPtr , lFieldOrdinal as DWORD, pusType out WORD ) as DWORD 
         PUBLIC STATIC METHOD AdsGetMemoDataType(hTable as IntPtr , strFldName as string , pusType out WORD ) as DWORD 
-        PUBLIC STATIC METHOD AdsGetMilliseconds(hTable as IntPtr , lFieldOrdinal as DWORD, plTime out int ) as DWORD 
-        PUBLIC STATIC METHOD AdsGetMilliseconds(hTable as IntPtr , strFldName as string , plTime out int ) as DWORD 
-        PUBLIC STATIC METHOD AdsGetMoney(hTbl as IntPtr , lFieldOrdinal as DWORD, pqValue out INT64 ) as DWORD 
-        PUBLIC STATIC METHOD AdsGetMoney(hTbl as IntPtr , strFldName as string , pqValue out INT64 ) as DWORD 
         PUBLIC STATIC METHOD AdsGetNumActiveLinks(hDBConn as IntPtr , pusNumLinks out WORD ) as DWORD 
         PUBLIC STATIC METHOD AdsGetNumFTSIndexes(hTable as IntPtr , pusNum out WORD ) as DWORD 
         PUBLIC STATIC METHOD AdsGetNumOpenTables(pusNum out WORD ) as DWORD 
@@ -2170,31 +2376,13 @@ BEGIN NAMESPACE XSharp.ADS
         PUBLIC STATIC METHOD AdsRollbackTransaction80(hConnect as IntPtr, strSavepoint as string , ulOptions as DWORD) as DWORD 
         PUBLIC STATIC METHOD AdsSetCollation(hConnect as IntPtr, strCollation as string ) as DWORD 
         PUBLIC STATIC METHOD AdsSetCollationLang(strLang as string ) as DWORD 
-        PUBLIC STATIC METHOD AdsSetDate(hObj as IntPtr , lFieldOrdinal as DWORD, strValue as string , wLen as WORD ) as DWORD 
-        PUBLIC STATIC METHOD AdsSetDate(hObj as IntPtr , strFldName as string , strValue as string , wLen as WORD ) as DWORD 
         PUBLIC STATIC METHOD AdsSetDateFormat60(hConnect as IntPtr, strFormat as string ) as DWORD 
         PUBLIC STATIC METHOD AdsSetExact22(hObj as IntPtr , bExact as WORD ) as DWORD 
         PUBLIC STATIC METHOD AdsSetHandleINT64(hObj as IntPtr , ulVal as DWORD ) as DWORD 
-        PUBLIC STATIC METHOD AdsSetINT64(hObj as IntPtr , lFieldOrdinal as DWORD, lValue as int ) as DWORD 
-        PUBLIC STATIC METHOD AdsSetINT64(hObj as IntPtr , strFldName as string , lValue as int ) as DWORD 
-        PUBLIC STATIC METHOD AdsSetINT64INT64(hObj as IntPtr , lFieldOrdinal as DWORD, qValue as INT64 ) as DWORD 
-        PUBLIC STATIC METHOD AdsSetINT64INT64(hObj as IntPtr , strFldName as string , qValue as INT64 ) as DWORD 
         PUBLIC STATIC METHOD AdsSetIndexDirection(hIndex as IntPtr ,  usReverseDirection as WORD) as DWORD 
-        PUBLIC STATIC METHOD AdsSetMilliseconds(hObj as IntPtr , lFieldOrdinal as DWORD, lTime as int ) as DWORD 
-        PUBLIC STATIC METHOD AdsSetMilliseconds(hObj as IntPtr , strFldName as string , lTime as int ) as DWORD 
-        PUBLIC STATIC METHOD AdsSetMoney(hObj as IntPtr , lFieldOrdinal as DWORD, qValue as INT64 ) as DWORD 
-        PUBLIC STATIC METHOD AdsSetMoney(hObj as IntPtr , strFldName as string , qValue as INT64 ) as DWORD 
-        PUBLIC STATIC METHOD AdsSetNull(hTable as IntPtr , lFieldOrdinal as DWORD) as DWORD 
-        PUBLIC STATIC METHOD AdsSetNull(hTable as IntPtr , strFldName as string ) as DWORD 
         PUBLIC STATIC METHOD AdsSetRecord(hObj as IntPtr , strRec as byte[] , ulLen as DWORD ) as DWORD 
         PUBLIC STATIC METHOD AdsSetRelKeyPos(hIndex as IntPtr , dPos as Real8) as DWORD 
         PUBLIC STATIC METHOD AdsSetScopedRelation(hTableParent as IntPtr , hIndexChild as IntPtr , strExpr as string ) as DWORD 
-        PUBLIC STATIC METHOD AdsSetShort(hObj as IntPtr , lFieldOrdinal as DWORD, sValue as short ) as DWORD 
-        PUBLIC STATIC METHOD AdsSetShort(hObj as IntPtr , strFldName as string , sValue as short ) as DWORD 
-        PUBLIC STATIC METHOD AdsSetTime(hObj as IntPtr , lFieldOrdinal as DWORD, strValue as string , wLen as WORD ) as DWORD 
-        PUBLIC STATIC METHOD AdsSetTime(hObj as IntPtr , strFldName as string , strValue as string , wLen as WORD ) as DWORD 
-        PUBLIC STATIC METHOD AdsSetTimeStamp(hObj as IntPtr , lFieldOrdinal as DWORD, strBuf as string , ulLen as DWORD ) as DWORD 
-        PUBLIC STATIC METHOD AdsSetTimeStamp(hObj as IntPtr , strFldName as string , strBuf as string , ulLen as DWORD ) as DWORD 
         PUBLIC STATIC METHOD AdsShowError(strTitle as string ) as DWORD 
         PUBLIC STATIC METHOD AdsStmtConstrainUpdates(hStatement as IntPtr , usConstrain as WORD ) as DWORD 
         PUBLIC STATIC METHOD AdsStmtEnableEncryption(hStatement as IntPtr , strPassword as string ) as DWORD 

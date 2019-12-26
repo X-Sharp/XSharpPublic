@@ -3,6 +3,7 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
+USING System.Runtime.InteropServices
 #region functions
 
 /// <summary>
@@ -469,3 +470,12 @@ END CLASS
     
     
 #endregion
+
+STATIC CLASS Win32
+     CONST SW_SHOWNORMAL  := 1 AS LONG 
+    [DllImport("kernel32.dll", Charset := Charset.Ansi )];
+    STATIC INTERNAL METHOD WinExec(lpCmdLine AS STRING, uCmdShow AS DWORD) AS DWORD   
+END CLASS 
+FUNCTION _Run (cProg AS STRING) AS DWORD PASCAL
+ 
+    RETURN Win32.WinExec(cProg, Win32.SW_SHOWNORMAL)

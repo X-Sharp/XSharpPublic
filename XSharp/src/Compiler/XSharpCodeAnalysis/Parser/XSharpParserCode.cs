@@ -23,6 +23,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 {
     public partial class XSharpParser
     {
+
         public CSharpParseOptions Options { get; set; }
         public bool AllowNamedArgs => Options.AllowNamedArguments;
         public bool IsXPP => Options.Dialect == XSharpDialect.XPP;
@@ -322,7 +323,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             {
                 if (Fields == null)
                 {
-                    Fields = new Dictionary<string, MemVarFieldInfo>(StringComparer.OrdinalIgnoreCase);
+                    Fields = new Dictionary<string, MemVarFieldInfo>(XSharpString.Comparer);
                 }
                 var info = new MemVarFieldInfo(Name, Alias);
                 info.Context = context;

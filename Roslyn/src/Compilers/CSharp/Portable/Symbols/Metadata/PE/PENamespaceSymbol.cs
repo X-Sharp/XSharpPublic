@@ -281,8 +281,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
                 // Keep track of namespaces that only differ in casing.
                 // we link these namespaces with eachother so the type 
                 // lookup or member lookup on one returns the elements of all
-                var namespaces = new Dictionary<string, PENestedNamespaceSymbol>(CaseInsensitiveComparison.Comparer);
-                var duplicates  = new Dictionary<string, List<PENestedNamespaceSymbol>>(CaseInsensitiveComparison.Comparer);
+                var namespaces = new Dictionary<string, PENestedNamespaceSymbol>(XSharpString.Comparer);
+                var duplicates  = new Dictionary<string, List<PENestedNamespaceSymbol>>(XSharpString.Comparer);
                 var list = new List<PENestedNamespaceSymbol>();
 #else
                 var namespaces = new Dictionary<string, PENestedNamespaceSymbol>(StringOrdinalComparer.Instance);
@@ -361,7 +361,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
                                 if (noPiaLocalTypes == null)
                                 {
 #if XSHARP
-                                    noPiaLocalTypes = new Dictionary<string, TypeDefinitionHandle>(CaseInsensitiveComparison.Comparer);
+                                    noPiaLocalTypes = new Dictionary<string, TypeDefinitionHandle>(XSharpString.Comparer);
 #else
                                     noPiaLocalTypes = new Dictionary<string, TypeDefinitionHandle>(StringOrdinalComparer.Instance);
 #endif
@@ -376,7 +376,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
                 }
 
 #if XSHARP
-                var typesDict = children.ToDictionary(c => c.Name, CaseInsensitiveComparison.Comparer);
+                var typesDict = children.ToDictionary(c => c.Name, XSharpString.Comparer);
 #else
                 var typesDict = children.ToDictionary(c => c.Name, StringOrdinalComparer.Instance);
 #endif

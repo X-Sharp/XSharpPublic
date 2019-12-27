@@ -62,8 +62,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         {
 #if XSHARP
             return
-                CaseInsensitiveComparison.Equals(name, _constructor.Name) ? ImmutableArray.Create<Symbol>(_constructor) :
-                CaseInsensitiveComparison.Equals(name, _invoke.Name) ? ImmutableArray.Create<Symbol>(_invoke) :
+                XSharpString.Equals(name, _constructor.Name) ? ImmutableArray.Create<Symbol>(_constructor) :
+                XSharpString.Equals(name, _invoke.Name) ? ImmutableArray.Create<Symbol>(_invoke) :
                 ImmutableArray<Symbol>.Empty;
 #else
             return

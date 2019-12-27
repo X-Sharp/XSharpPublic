@@ -184,7 +184,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                         for (int j = 0; j < i; j++)
                         {
 #if XSHARP
-                            if (CaseInsensitiveComparison.Equals(name, typeParameterNames[j]))
+                            if (XSharpString.Equals(name, typeParameterNames[j]))
 #else
                             if (name == typeParameterNames[j])
 #endif

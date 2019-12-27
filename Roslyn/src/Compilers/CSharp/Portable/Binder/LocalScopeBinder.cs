@@ -159,7 +159,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             Debug.Assert(array.Length > 0);
 
 #if XSHARP
-            var map = new SmallDictionary<string, TSymbol>(CaseInsensitiveComparison.Comparer);
+            var map = new SmallDictionary<string, TSymbol>(XSharpString.Comparer);
 #else
             var map = new SmallDictionary<string, TSymbol>();
 #endif

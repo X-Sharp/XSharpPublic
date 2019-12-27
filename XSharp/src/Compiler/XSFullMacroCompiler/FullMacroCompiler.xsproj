@@ -22,6 +22,18 @@
     <StartupObject />
     <ApplicationIcon />
     <XSharpProjectversion>2.0.5.0</XSharpProjectversion>
+    <AZ>false</AZ>
+    <CS>false</CS>
+    <LB>false</LB>
+    <NamedArgs>true</NamedArgs>
+    <OVF>false</OVF>
+    <Unsafe>false</Unsafe>
+    <INS>false</INS>
+    <NS>false</NS>
+    <StandardDefs />
+    <MemVar>false</MemVar>
+    <Undeclared>false</Undeclared>
+    <InitLocals>false</InitLocals>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -40,7 +52,7 @@
     <PPO>false</PPO>
     <Prefer32Bit>False</Prefer32Bit>
   </PropertyGroup>
- <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Public|AnyCPU'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Public|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <EmitDebugInformation>true</EmitDebugInformation>
     <DebugType>full</DebugType>

@@ -1064,7 +1064,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     NamedTypeSymbol y = topLevelTypesFromModules[i + 1];
 
 #if XSHARP
-                    if (x.Arity == y.Arity && CaseInsensitiveComparison.Equals(x.Name, y.Name))
+                    if (x.Arity == y.Arity && XSharpString.Equals(x.Name, y.Name))
 #else
                     if (x.Arity == y.Arity && x.Name == y.Name)
 #endif
@@ -2593,7 +2593,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 if (forwardedTypes != null)
                 {
 #if XSHARP
-                    forwardedTypesFromSource = new Dictionary<string, NamedTypeSymbol>(CaseInsensitiveComparison.Comparer);
+                    forwardedTypesFromSource = new Dictionary<string, NamedTypeSymbol>(XSharpString.Comparer);
 #else
                     forwardedTypesFromSource = new Dictionary<string, NamedTypeSymbol>(StringOrdinalComparer.Instance);
 #endif

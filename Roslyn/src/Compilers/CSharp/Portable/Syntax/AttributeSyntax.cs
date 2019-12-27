@@ -27,7 +27,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax
                 foreach (var argSyntax in argumentList.Arguments)
                 {
 #if XSHARP
-                    if (argSyntax.NameEquals != null && CaseInsensitiveComparison.Equals(argSyntax.NameEquals.Name.Identifier.ValueText, namedArgName))
+                    if (argSyntax.NameEquals != null && XSharpString.Equals(argSyntax.NameEquals.Name.Identifier.ValueText, namedArgName))
 #else
                     if (argSyntax.NameEquals != null && argSyntax.NameEquals.Name.Identifier.ValueText == namedArgName)
 #endif

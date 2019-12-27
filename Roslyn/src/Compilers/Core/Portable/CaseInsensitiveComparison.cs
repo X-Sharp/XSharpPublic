@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Text;
@@ -9,6 +10,39 @@ using Roslyn.Utilities;
 
 namespace Microsoft.CodeAnalysis
 {
+
+#if XSHARP
+    public static class XSharpString
+    {
+        public static bool CaseSensitive = false;
+        public static bool Equals(string lhs, string rhs)
+        {
+            if (CaseSensitive)
+            {
+                return string.Equals(lhs, rhs);
+            }
+            else
+            {
+                return CaseInsensitiveComparison.Equals(lhs, rhs);
+            }
+        }
+        public static int Compare(string lhs, string rhs)
+        {
+            if (CaseSensitive)
+            {
+                return string.Compare(lhs, rhs);
+            }
+            else
+            {
+                return String.Compare(lhs, rhs, StringComparison.OrdinalIgnoreCase);
+            }
+        }
+        public static IEqualityComparer<string> Comparer => CaseSensitive ? (IEqualityComparer<string>) StringOrdinalComparer.Instance : (IEqualityComparer<string>) CaseInsensitiveComparison.Comparer;
+        public static StringComparison Comparison => CaseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase;
+        public static bool IgnoreCase => !CaseSensitive;
+    }
+
+#endif
     /// <summary>
     /// Case-insensitive operations (mostly comparison) on unicode strings.
     /// </summary>

@@ -15,6 +15,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 {
     internal sealed partial class OverloadResolution
     {
+
         private bool VOBetterFunctionMember<TMember>(
             MemberResolutionResult<TMember> m1,
             MemberResolutionResult<TMember> m2,
@@ -299,9 +300,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
                 // when both methods are in a functions class from different assemblies
                 // pick the first one in the references list
+                // 
                 if (asm1 != asm2
-                    && string.Equals(m1.Member.ContainingType.Name, XSharpSpecialNames.FunctionsClass, StringComparison.OrdinalIgnoreCase)
-                    && string.Equals(m2.Member.ContainingType.Name, XSharpSpecialNames.FunctionsClass, StringComparison.OrdinalIgnoreCase))
+                    && string.Equals(m1.Member.ContainingType.Name, XSharpSpecialNames.FunctionsClass, XSharpString.Comparison)
+                    && string.Equals(m2.Member.ContainingType.Name, XSharpSpecialNames.FunctionsClass, XSharpString.Comparison))
                 {
                     foreach (var reference in Compilation.ReferencedAssemblyNames)
                     {
@@ -439,7 +441,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     // we decide here which one takes precedence
                     if (Compilation.Options.VOSignedUnsignedConversion)
                     {
-                        #region Integral Binary Operators
+#region Integral Binary Operators
                         if (left.Type.IsIntegralType() && right.Type.IsIntegralType()
                             && op1.Kind.IsIntegral() && op2.Kind.IsIntegral())
                         {
@@ -510,7 +512,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                                 return BetterResult.Right;
                             }
                         }
-                        #endregion
+#endregion
                     }
 
                     if ((left.Type.IsIntegralType() && right.Type.IsPointerType())

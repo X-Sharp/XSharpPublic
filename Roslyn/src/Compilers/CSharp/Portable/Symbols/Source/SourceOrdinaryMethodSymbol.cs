@@ -849,7 +849,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 for (int i = 0; i < result.Count; i++)
                 {
 #if XSHARP
-                    if (CaseInsensitiveComparison.Equals(name, result[i].Name))
+                    if (XSharpString.Equals(name, result[i].Name))
 #else
                     if (name == result[i].Name)
 #endif

@@ -364,9 +364,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 bool isNotEqual;
                 if (caseInsensitive)
                 {
-                    sawInterfaceInName1 = !CaseInsensitiveComparison.Equals(name1, member1.Name);
-                    sawInterfaceInName2 = !CaseInsensitiveComparison.Equals(name2, member2.Name);
-                    isNotEqual = (!CaseInsensitiveComparison.Equals(name1, name2));
+                    sawInterfaceInName1 = !XSharpString.Equals(name1, member1.Name);
+                    sawInterfaceInName2 = !XSharpString.Equals(name2, member2.Name);
+                    isNotEqual = (!XSharpString.Equals(name1, name2));
                 }
                 else
                 {

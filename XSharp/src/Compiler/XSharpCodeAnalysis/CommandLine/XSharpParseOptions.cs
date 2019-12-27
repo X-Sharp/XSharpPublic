@@ -64,6 +64,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         public bool AllowUnsafe { get; private set; }
         public bool ArrayZero { get; private set; }
+        public bool CaseSensitive { get; private set; }
         public int ClrVersion { get; private set; }
         public bool MacroScript { get; private set; }
 
@@ -125,7 +126,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool Overflow { get; private set; }
         public CSharpCommandLineArguments CommandLineArguments { get; private set; }
         public TextWriter ConsoleOutput { get; private set; }
-
+        public bool cs => CaseSensitive;
         public bool vo1 => VoInitAxitMethods;
         public bool vo2 => VONullStrings;
         public bool vo3 => VirtualInstanceMethods;
@@ -150,6 +151,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (opt != null)
             {
                 ArrayZero = opt.ArrayZero;
+                CaseSensitive = opt.CaseSensitive;
                 ClrVersion = opt.ClrVersion;
                 TargetDLL = opt.TargetDLL;
                 Dialect = opt.Dialect;
@@ -219,6 +221,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             ArrayZero = opt.ArrayZero;
             ClrVersion = opt.ClrVersion;
+            CaseSensitive = opt.CaseSensitive;
             TargetDLL = opt.TargetDLL;
             MacroScript = opt.MacroScript;
             DebugEnabled = opt.DebugEnabled;

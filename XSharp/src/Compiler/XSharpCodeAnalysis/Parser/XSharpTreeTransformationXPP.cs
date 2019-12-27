@@ -43,7 +43,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 if (! decl.IsProperty)
                 {
-                    if (string.Equals(name, decl.Name, StringComparison.OrdinalIgnoreCase))
+                    if (XSharpString.Equals(name, decl.Name))
                         return decl;
                 }
             }
@@ -68,11 +68,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 if (decl.IsProperty)
                 {
-                    if (string.Equals(name, decl.Name, StringComparison.OrdinalIgnoreCase))
+                    if (XSharpString.Equals(name, decl.Name))
                         return decl;
-                    if (string.Equals(name, decl.AccessMethod, StringComparison.OrdinalIgnoreCase))
+                    if (XSharpString.Equals(name, decl.AccessMethod))
                         return decl;
-                    if (string.Equals(name, decl.AssignMethod, StringComparison.OrdinalIgnoreCase))
+                    if (XSharpString.Equals(name, decl.AssignMethod))
                         return decl;
                 }
             }
@@ -164,7 +164,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             foreach (var info in _classes)
             {
-                if (String.Compare(info.Name, name, true) == 0)
+                if (XSharpString.Compare(info.Name, name) == 0)
                 {
                     return info;
                 }
@@ -415,12 +415,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             context.Data.MustBeVoid = false;
             var idName = context.ShortName;
-            if (String.Equals(idName, XSharpIntrinsicNames.InitMethod, StringComparison.OrdinalIgnoreCase))
+            if (XSharpString.Equals(idName, XSharpIntrinsicNames.InitMethod))
             {
                 context.Data.MustBeVoid = true;
                 context.Data.IsInitAxit = true;     // normal constructor
             }
-            else if (String.Equals(idName, XSharpIntrinsicNames.InitClassMethod, StringComparison.OrdinalIgnoreCase))
+            else if (XSharpString.Equals(idName, XSharpIntrinsicNames.InitClassMethod))
             {
                 context.Data.MustBeVoid = true;
                 context.Data.IsInitAxit = true;     // class constructor
@@ -502,11 +502,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     if (decl.IsProperty)
                     {
-                        if (String.Equals(decl.AccessMethod, name, StringComparison.OrdinalIgnoreCase))
+                        if (XSharpString.Equals(decl.AccessMethod, name))
                         { 
                             decl.Entity = context;
                         }
-                        if (String.Equals(decl.AssignMethod, name, StringComparison.OrdinalIgnoreCase))
+                        if (XSharpString.Equals(decl.AssignMethod, name))
                         {
                             decl.SetEntity = context;
                         }
@@ -522,7 +522,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         private void implementConstructor([NotNull] XP.IXPPEntityContext context)
         {
             var idName = context.ShortName;
-            var classCtor = String.Compare(idName, XSharpIntrinsicNames.InitClassMethod, true) == 0;
+            var classCtor = XSharpString.Compare(idName, XSharpIntrinsicNames.InitClassMethod) == 0;
             // find method in the declarations and find the visibility
             var mods = decodeXppMemberModifiers(context.Info.Visibility, classCtor, classCtor ? null : context.Mods?._Tokens);
             if (mods.Any((int) SyntaxKind.StaticKeyword))

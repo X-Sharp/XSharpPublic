@@ -1488,7 +1488,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     diagnostics.Add(ErrorCode.ERR_BadVisIndexerParam, _location, this, param.Type);
                 }
 #if XSHARP
-                else if ((object)_setMethod != null && CaseInsensitiveComparison.Equals(param.Name, ParameterSymbol.ValueParameterName))
+                else if ((object)_setMethod != null && XSharpString.Equals(param.Name, ParameterSymbol.ValueParameterName))
 #else
                 else if ((object)_setMethod != null && param.Name == ParameterSymbol.ValueParameterName)
 #endif

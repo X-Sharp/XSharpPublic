@@ -207,7 +207,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 var parameters = _methodSymbol.Parameters;
 #if XSHARP
-                parameterMap = new MultiDictionary<string, ParameterSymbol>(parameters.Length, CaseInsensitiveComparison.Comparer);
+                parameterMap = new MultiDictionary<string, ParameterSymbol>(parameters.Length, XSharpString.Comparer);
 #else
                 parameterMap = new MultiDictionary<string, ParameterSymbol>(parameters.Length, EqualityComparer<string>.Default);
 #endif
@@ -331,7 +331,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (map == null)
             {
 #if XSHARP
-				map = new SmallDictionary<string, Symbol>(CaseInsensitiveComparison.Comparer);
+				map = new SmallDictionary<string, Symbol>(XSharpString.Comparer);
 #else
                 map = new SmallDictionary<string, Symbol>();
 #endif

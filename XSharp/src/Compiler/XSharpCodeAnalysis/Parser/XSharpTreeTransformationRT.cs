@@ -102,7 +102,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             if (_options.SupportsMemvars)
             {
-                _memvars = new Dictionary<string, MemVarFieldInfo>(StringComparer.OrdinalIgnoreCase);
+                _memvars = new Dictionary<string, MemVarFieldInfo>(XSharpString.Comparer);
             }
 
 
@@ -555,7 +555,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 epcall = MakeBlock(stmts);
                 GenerateStartFunction(modifiers, context, epcall, attributeList, parList);
             }
-            else if (string.Compare(this._entryPoint, WellKnownMemberNames.EntryPointMethodName) != 0)
+            else if (XSharpString.Compare(this._entryPoint, WellKnownMemberNames.EntryPointMethodName) != 0)
             {
                 var methodcall = GenerateMethodCall(this._entryPoint, EmptyArgumentList(), true);
                 if (isVoidType(returntype))
@@ -1465,7 +1465,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (context.Data.IsInitAxit)
             {
                 var idName = context.Id.GetText();
-                if (String.Equals(idName, XSharpIntrinsicNames.InitMethod, StringComparison.OrdinalIgnoreCase))
+                if (XSharpString.Equals(idName, XSharpIntrinsicNames.InitMethod))
                 {
                     // Convert method to constructor
                     var mods = context.Modifiers?.GetList<SyntaxToken>() ?? MakeList<SyntaxToken>(SyntaxFactory.MakeToken(SyntaxKind.PublicKeyword));
@@ -1489,7 +1489,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     }
                     return;
                 }
-                else if (String.Equals(idName, XSharpIntrinsicNames.AxitMethod, StringComparison.OrdinalIgnoreCase))
+                else if (XSharpString.Equals(idName, XSharpIntrinsicNames.AxitMethod))
                 {
                     // Convert method to destructor
                     var mods = context.Modifiers?.GetList<SyntaxToken>() ?? EmptyList<SyntaxToken>();
@@ -2779,6 +2779,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             string fieldname = null;
             foreach (var pair in _literalPSZs)
             {
+                // case sensitive always !
                 if (String.Compare(pair.Value.Item1, str) == 0)
                 {
                     fieldname = pair.Key;
@@ -2935,7 +2936,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var mac = expr as MemberAccessExpressionSyntax;
                 var mName = mac.Name as IdentifierNameSyntax;
                 string methodName = mName?.Identifier.Text;
-                if (string.Equals(methodName, XSharpIntrinsicNames.InitMethod, StringComparison.OrdinalIgnoreCase))
+                if (XSharpString.Equals(methodName, XSharpIntrinsicNames.InitMethod))
                 {
                     var mExpr = mac.Expression;
                     if (mExpr is ThisExpressionSyntax || mExpr is BaseExpressionSyntax)
@@ -2955,7 +2956,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
                     }
                 }
-                else if (string.Equals(methodName, XSharpIntrinsicNames.AxitMethod, StringComparison.OrdinalIgnoreCase))
+                else if (XSharpString.Equals(methodName, XSharpIntrinsicNames.AxitMethod))
                 {
                     context.Put(GenerateNIL());
                     return;
@@ -3655,8 +3656,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     if (_options.VoInitAxitMethods && !context.isInInterface())
                     {
                         var idName = context.Id.GetText();
-                        if (String.Equals(idName, XSharpIntrinsicNames.InitMethod, StringComparison.OrdinalIgnoreCase)
-                            || String.Equals(idName, XSharpIntrinsicNames.AxitMethod, StringComparison.OrdinalIgnoreCase))
+                        if (XSharpString.Equals(idName, XSharpIntrinsicNames.InitMethod)
+                            || XSharpString.Equals(idName, XSharpIntrinsicNames.AxitMethod))
                         {
                             context.Data.MustBeVoid = true;
                             context.Data.IsInitAxit = true;

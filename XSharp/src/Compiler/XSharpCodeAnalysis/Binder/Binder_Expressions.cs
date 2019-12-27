@@ -27,6 +27,7 @@ namespace Microsoft.CodeAnalysis.CSharp
     /// </summary>
     internal partial class Binder
     {
+
         private static InitializerExpressionSyntax s_constructInitializerFromArguments(AnalyzedArguments analyzedArguments)
         {
             var expressions = SeparatedSyntaxListBuilder<ExpressionSyntax>.Create();
@@ -491,7 +492,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 if (originalexpr.Kind == BoundKind.MethodGroup)
                 {
                     var methodGroup = originalexpr as BoundMethodGroup;
-                    if (string.Equals(methodGroup.Name, "Item", StringComparison.OrdinalIgnoreCase))
+                    if (XSharpString.Equals(methodGroup.Name, "Item"))
                     {
                         var newDiag = DiagnosticBag.GetInstance();
                         expr = CheckValue(methodGroup.InstanceOpt, BindValueKind.RValue, newDiag);

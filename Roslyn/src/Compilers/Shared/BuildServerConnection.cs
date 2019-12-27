@@ -58,7 +58,8 @@ namespace Microsoft.CodeAnalysis.CommandLine
     {
 #if XSHARP
         internal const string ServerNameDesktop = "XSCompiler.exe";
-		internal const string ServerNameCoreClr = "XSCompiler.dll";
+        internal const string ServerNameCoreClr = "XSCompiler.dll";
+
 #else
         internal const string ServerNameDesktop = "VBCSCompiler.exe";
         internal const string ServerNameCoreClr = "VBCSCompiler.dll";
@@ -534,7 +535,10 @@ namespace Microsoft.CodeAnalysis.CommandLine
         internal static string GetPipeNameForPathOpt(string compilerExeDirectory)
         {
             var basePipeName = GetBasePipeName(compilerExeDirectory);
-
+#if XSHARP
+            if (XSharpString.CaseSensitive)
+                basePipeName += "CS";
+#endif
             // Prefix with username and elevation
             bool isAdmin = false;
             if (PlatformInformation.IsWindows)

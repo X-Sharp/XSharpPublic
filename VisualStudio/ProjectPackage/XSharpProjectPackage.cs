@@ -244,10 +244,12 @@ namespace XSharp.Project
                 }
             });
         }
+        IntellisenseOptionsPage _intellisensePage;
         internal IntellisenseOptionsPage GetIntellisenseOptionsPage()
         {
-            var page = (IntellisenseOptionsPage)GetDialogPage(typeof(IntellisenseOptionsPage));
-            return page;
+            if (_intellisensePage == null)
+                _intellisensePage = (IntellisenseOptionsPage)GetDialogPage(typeof(IntellisenseOptionsPage));
+            return _intellisensePage;
         }
 
         internal IVsTextManager4 GetTextManager()

@@ -27,6 +27,14 @@ namespace XSharp.CodeDom
     internal class XMemberType
     {
 
+        internal XMemberType(string name, MemberTypes memberType, bool inherited, string typeName)
+        {
+            Name = name;
+            MemberType = memberType;
+            Inherited = inherited;
+            Type = null;
+            TypeName = typeName;
+        }
         internal XMemberType(string name, MemberTypes memberType, bool inherited, System.Type type, string typeName)
         {
             Name = name;
@@ -62,6 +70,7 @@ namespace XSharp.CodeDom
 
         internal TypeXType(System.Type type) { Type = type; xType = null; }
         internal TypeXType(XType xtype) { xType = xtype; Type = null; }
+        internal string FullName => Type != null ? Type.FullName : xType.FullName;
 
     }
 
@@ -558,7 +567,15 @@ namespace XSharp.CodeDom
                 foreach (var f in fields)
                 {
                     newClass.Members.Add(f);
-                    addClassMember(new XMemberType(f.Name, MemberTypes.Field, false, findType(f.Type.BaseType), f.Type.BaseType));
+                    var xtype = findTypeXType(f.Type.BaseType);
+                    if (xtype != null)
+                    {
+                        addClassMember(new XMemberType(f.Name, MemberTypes.Field, false, xtype.FullName));
+                    }
+                    else
+                    {
+                        addClassMember(new XMemberType(f.Name, MemberTypes.Field, false, f.Type.BaseType));
+                    }
                 }
             }
             var token = context.Stop as XSharpToken;

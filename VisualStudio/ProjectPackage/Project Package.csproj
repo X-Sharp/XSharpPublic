@@ -418,7 +418,6 @@
       <DependentUpon>XSharpSLEPropertyForm.cs</DependentUpon>
     </Compile>
     <Compile Include="PropertyPages\XSharpUITypeEditors.cs" />
-    <ZipItem Include="Templates\ProjectItems\DataSet\Dataset.xsd" />
     <ZipProject Include="Templates\Projects\Test\TestNUnit\packages.config" />
     <ZipProject Include="Templates\Projects\Test\TestXUnit\packages.config" />
     <ZipItem Include="Templates\ProjectItems\WPF\WPFFlowDocument\WPFFlowDocument.vstemplate" />
@@ -507,8 +506,6 @@
     <ZipProject Include="Templates\Projects\Windows\VFPConsole\VFPConsole.vstemplate" />
     <ZipProject Include="Templates\Projects\Windows\VFPConsole\VFPConsole.xsproj" />
     <ZipProject Include="Templates\Projects\ClassLibraries\ClassLibraryCore\CoreClassLibrary.xsproj" />
-    <ZipItem Include="Templates\ProjectItems\DataSet\DataSet.vstemplate" />
-    <ZipItem Include="Templates\ProjectItems\DataSet\Dataset.png" />
     <Content Include="XSharp.png" />
     <VSCTCompile Include="XSharpProjectPackage.vsct">
       <ResourceName>Menus.ctmenu</ResourceName>

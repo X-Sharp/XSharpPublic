@@ -533,6 +533,7 @@ namespace XSharp.Project
             if (_classifier == null)
                 registerClassifier();
             int hresult = VSConstants.S_OK;
+            bool returnClosedCompletionList = false;
 
             // 1. Pre-process
             if (pguidCmdGroup == VSConstants.VSStd2K)
@@ -547,6 +548,10 @@ namespace XSharp.Project
                         break;
                     case VSConstants.VSStd2KCmdID.RETURN:
                         handled = CompleteCompletionSession();
+                        if (handled)
+                        {
+                            returnClosedCompletionList = true;
+                        }
                         break;
                     case VSConstants.VSStd2KCmdID.TAB:
                         handled = CompleteCompletionSession();
@@ -694,7 +699,8 @@ namespace XSharp.Project
 #endif
                         case VSConstants.VSStd2KCmdID.RETURN:
                             CancelSignatureSession();
-                            FormatLine();
+                            if (!returnClosedCompletionList)
+                                FormatLine();
                             handled = true;
                             break;
                         case VSConstants.VSStd2KCmdID.COMPLETEWORD:

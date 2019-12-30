@@ -85,7 +85,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         #endregion
         #region properties
         INTERNAL PROPERTY Expression AS STRING GET _KeyExpr
-        INTERNAL PROPERTY KeyCodeBlock AS ICodeBlock GET _KeyCodeBlock
+        INTERNAL PROPERTY KeyCodeBlock AS ICodeblock GET _KeyCodeBlock
         INTERNAL PROPERTY KeyLength     AS WORD GET _keySize
         INTERNAL PROPERTY KeyDecimals     AS WORD GET _keyDecimals
         INTERNAL PROPERTY KeyExprType     AS LONG GET _keyExprType

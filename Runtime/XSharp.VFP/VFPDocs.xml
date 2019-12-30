@@ -23,36 +23,56 @@
       <br/>Visual FoxPro adds the new property as a Public property. You cannot specify the property as Protected or Hidden.
       <br/>If the existing property is a read-only Visual FoxPro native property, such as the BaseClass property, Visual FoxPro generates an error, "Property name is read-only (Error 1743)".
       <br/>If the property name is not valid, for example, the property name contains a space or other illegal characters, Visual FoxPro generates an error, "Incorrect property name (Error 1470)".
-    <br/>For object instances derived from native Visual FoxPro classes, ADDPROPERTY( ) respects the visibility setting of the intrinsic AddProperty method. If AddProperty is marked as Hidden or Protected, ADDPROPERTY( ) does not create the new property and returns False (.F.). If the AddProperty method is marked as Public (default), ADDPROPERTY( ) creates the property and returns True (.T.). This protects the original class design.
+      <br/>For object instances derived from native Visual FoxPro classes, ADDPROPERTY( ) respects the visibility setting of the intrinsic AddProperty method. If AddProperty is marked as Hidden or Protected, ADDPROPERTY( ) does not create the new property and returns False (.F.). If the AddProperty method is marked as Public (default), ADDPROPERTY( ) creates the property and returns True (.T.). This protects the original class design.
 
     </remarks>
     <example></example>
   </addproperty>
 
+  <aclass>
+    <summary>documentation is missing</summary>
+  </aclass>
+  <adatabases>
+    <summary>documentation is missing</summary>
+  </adatabases>
+  <adbobjects>
+    <summary>documentation is missing</summary>
+  </adbobjects>
+  <addbs>
+    <summary>documentation is missing</summary>
+  </addbs>
+  <addproperty>
+    <summary>documentation is missing</summary>
+  </addproperty>
+  <aelement>
+    <summary>documentation is missing</summary>
+  </aelement>
+  <agetfileversion>
+    <summary>documentation is missing</summary>
+  </agetfileversion>
+  <alines>
+    <summary>documentation is missing</summary>
+  </alines>
+  <amembers>
+    <summary>documentation is missing</summary>
+  </amembers>
+  <anetresources>
+    <summary>documentation is missing</summary>
+  </anetresources>
+  <aprinters>
+    <summary>documentation is missing</summary>
+  </aprinters>
+  <asessions>
+    <summary>documentation is missing</summary>
+  </asessions>>
+  <asqlhandles>
+    <summary>documentation is missing</summary>
+  </asqlhandles>
+  <astackinfo>
+    <summary>documentation is missing</summary>
+  </astackinfo>
   <xxdummy>
     <summary></summary>
-    <param name="p1"></param>
-    <param name="p2"></param>
-    <param name="p3"></param>
-    <returns>
-    </returns>
-    <remarks>
-    </remarks>
-    <example></example>
-  </xxdummy>
-  <xxdummy>
-    <summary></summary>
-    <param name="p1">
-    </param>
-    <param name="p2">
-    </param>
-    <param name="p3">
-    </param>
-    <returns>
-    </returns>
-    <remarks>
-    </remarks>
-    <example></example>
   </xxdummy>
 
 </Runtimefunctions>

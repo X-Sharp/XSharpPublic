@@ -28,6 +28,7 @@ BEGIN
             VALUE "OriginalFilename", "VOGUIClasses.dll"
             VALUE "ProductName", PRODUCT_NAME
             VALUE "ProductVersion", FILEVERSION_NUMBER_STR
+			VALUE "Assembly Version", VERSION_NUMBER_STR
         END
     END
     BLOCK "VarFileInfo"

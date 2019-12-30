@@ -24,8 +24,7 @@ namespace XSharp.CodeDom
     {
 
         protected IProjectTypeHelper _projectNode;
-        protected Dictionary<string, Type> _types;    // type cache
-        protected Dictionary<string, XType> _xtypes;    // XSharp type cache
+        protected Dictionary<string, TypeXType> _types;    // type cache
         protected Dictionary<string, EnvDTE.CodeElement> _stypes;    // ENVDTE.CodeElement kind = type cache
         protected IList<string> _usings;          // uses for type lookup
         protected IList<IToken> _tokens;          // used to find comments
@@ -48,9 +47,8 @@ namespace XSharp.CodeDom
         {
             FieldList = new Dictionary<ParserRuleContext, List<XCodeMemberField>>();
             _projectNode = projectNode;
-            this._types = new Dictionary<string, Type>(StringComparer.OrdinalIgnoreCase);
+            this._types = new Dictionary<string, TypeXType>(StringComparer.OrdinalIgnoreCase);
             this._usings = new List<string>();
-            this._xtypes = new Dictionary<string, XType>(StringComparer.OrdinalIgnoreCase);
             this._stypes = new Dictionary<string, EnvDTE.CodeElement>(StringComparer.OrdinalIgnoreCase);
         }
 
@@ -186,10 +184,10 @@ namespace XSharp.CodeDom
             //}
             if (!sName.EndsWith(">"))
             {
-                System.Type type = findType(sName);
+                var type = findTypeXType(sName);
                 if (type != null)
                 {
-                    return new XCodeTypeReference(type);
+                   return new XCodeTypeReference(type);
                 }
             }
             if (context is XSharpParser.QualifiedNameContext)
@@ -719,33 +717,38 @@ namespace XSharp.CodeDom
 
         protected XCodeTypeReference BuildTypeReference(string name)
         {
-            System.Type type;
-            type = findType(name);
-            if (type != null)
+            var xtype = findTypeXType(name);
+            if (xtype != null)
             {
-                return new XCodeTypeReference(type);
+                return new XCodeTypeReference(xtype);
             }
             else
             {
-                var xtype = _projectNode.ResolveXType(name, _usings.ToImmutableArray());
-                if (xtype != null)
-                    return new XCodeTypeReference(xtype);
-                else
-                    return new XCodeTypeReference(name);
+                return new XCodeTypeReference(name);
             }
 
 
         }
-        protected System.Type findType(string typeName)
+
+        protected TypeXType findInCache(string typeName)
         {
             if (_types.ContainsKey(typeName))
             {
                 return _types[typeName];
             }
+            return null;
+        }
+
+        protected System.Type findType(string typeName)
+        {
+            if (_types.ContainsKey(typeName))
+            {
+                return _types[typeName].Type;
+            }
             var type = _projectNode.ResolveType(typeName, _usings.ToImmutableArray());
             if (type != null)
             {
-                _types.Add(typeName, type);
+                _types.Add(typeName, new TypeXType(type));
             }
             return type;
 
@@ -753,38 +756,48 @@ namespace XSharp.CodeDom
 
         protected XType findXType(string typeName, IList<string> usings = null)
         {
-            if (_xtypes.ContainsKey(typeName))
-                return _xtypes[typeName];
+            if (_types.ContainsKey(typeName))
+            {
+                return _types[typeName].xType;
+            }
             if (usings == null)
             {
                 usings = _usings;
             }
             var type = _projectNode.ResolveXType(typeName, usings.ToImmutableArray());
             if (type != null)
-                _xtypes.Add(typeName, type);
+                _types.Add(typeName, new TypeXType(type));
             return type;
         }
 
         protected XType findReferencedType(string typeName)
         {
-            if (_xtypes.ContainsKey(typeName))
+            if (_types.ContainsKey(typeName))
             {
-                return _xtypes[typeName];
+                return _types[typeName].xType;
             }
             var type = _projectNode.ResolveReferencedType(typeName, _usings.ToImmutableArray());
             //
             if (type != null)
             {
-                _xtypes.Add(typeName, type);
+                _types.Add(typeName, new TypeXType(type));
             }
             return type;
         }
         protected TypeXType findParentType(XType xtype)
         {
+            var result = findInCache(xtype.ParentName);
+            if (result != null)
+                return result;
+
             var xparent = findXType(xtype.ParentName, xtype.FileUsings);
             if (xparent != null)
                 return new TypeXType(xparent);
-            var parent  = _projectNode.ResolveType(xtype.ParentName, xtype.FileUsings.ToImmutableArray());
+            var parent = findType(xtype.ParentName);
+            if (parent == null)
+            {
+                parent = _projectNode.ResolveType(xtype.ParentName, xtype.FileUsings.ToImmutableArray());
+            }
             if (parent != null)
                 return new TypeXType(parent);
             return null;
@@ -793,13 +806,8 @@ namespace XSharp.CodeDom
 
         protected TypeXType findTypeXType(string typeName)
         {
-            TypeXType txtype = null;
-            var type = findType(typeName);
-            if (type != null)
-            {
-                txtype = new TypeXType(type);
-            }
-            else
+            TypeXType txtype = findInCache(typeName);
+            if (txtype == null)
             {
                 var xtype = findXType(typeName);
                 if (xtype == null)
@@ -809,6 +817,14 @@ namespace XSharp.CodeDom
                 if (xtype != null)
                 {
                     txtype = new TypeXType(xtype);
+                }
+                else
+                {
+                    var type = findType(typeName);
+                    if (type != null)
+                    {
+                        txtype = new TypeXType(type);
+                    }
                 }
             }
             return txtype;

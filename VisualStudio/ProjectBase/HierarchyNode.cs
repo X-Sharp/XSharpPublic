@@ -2575,7 +2575,9 @@ namespace Microsoft.VisualStudio.Project
             }
 
             if(this.projectMgr.Site == null) return null;
-            return this.projectMgr.Site.GetService(type);
+            object result = null;
+            UIThread.DoOnUIThread( () => result = this.projectMgr.Site.GetService(type));
+            return result;
         }
 
 

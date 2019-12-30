@@ -542,7 +542,9 @@ namespace XSharpLanguage
             {
                 List<AssemblyInfo> oneAssembly = new List<AssemblyInfo>();
                 oneAssembly.Add(asm);
-                Type globalType = SystemTypeController.Lookup("Functions", oneAssembly);
+                if (String.IsNullOrEmpty(asm.GlobalClassName))
+                    continue;
+                Type globalType = SystemTypeController.Lookup(asm.GlobalClassName, oneAssembly);
                 //
                 if (globalType != null)
                 {
@@ -1096,7 +1098,7 @@ namespace XSharpLanguage
     }
     public class MemberAnalysis
     {
-        IntellisenseOptionsPage _optionsPage => XSharpCompletionSource._optionsPage;
+        IntellisenseOptionsPage _optionsPage => XSharp.Project.XSharpProjectPackage.Instance.GetIntellisenseOptionsPage();
         public class ParamInfo
         {
             public String Name;
@@ -1761,7 +1763,7 @@ namespace XSharpLanguage
         private Modifiers _visibility;
         private Kind _kind;
         private bool _isStatic;
-        IntellisenseOptionsPage _optionsPage => XSharpCompletionSource._optionsPage;
+        IntellisenseOptionsPage _optionsPage => XSharp.Project.XSharpProjectPackage.Instance.GetIntellisenseOptionsPage();
 
         internal TypeAnalysis(TypeInfo typeInfo)
         {
@@ -4025,7 +4027,9 @@ namespace XSharpLanguage
             {
                 List<AssemblyInfo> oneAssembly = new List<AssemblyInfo>();
                 oneAssembly.Add(asm);
-                Type globalType = SystemTypeController.Lookup("Functions", oneAssembly);
+                if ( String.IsNullOrEmpty(asm.GlobalClassName) )
+                    continue;
+                Type globalType = SystemTypeController.Lookup(asm.GlobalClassName, oneAssembly);
                 //
                 if (globalType != null)
                 {
@@ -4096,6 +4100,7 @@ namespace XSharpLanguage
                                 var methods = type.GetMember(currentToken, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Static);
                                 if (methods.Length > 0)
                                 {
+                                    foundElement = new CompletionElement(methods[0]);
                                     return new CompletionType(type);
                                 }
                             }

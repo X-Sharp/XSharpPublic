@@ -74,7 +74,10 @@ namespace XSharp.Project
                 if (codeStream is DocDataTextReader)
                 {
                     // Anyway, we have that source, just parse it.
+
+                    WriteOutputMessage("Start Parse " + this.FileName);
                     compileUnit = base.Parse(codeStream);
+                    WriteOutputMessage("End Parse " + this.FileName);
                     // Now, we should check if we have a partial Class inside, if so, that's a Candidate for .Designer.prg
                     CodeNamespace nameSpace;
                     CodeTypeDeclaration className;
@@ -93,15 +96,19 @@ namespace XSharp.Project
                             DocData docdata = new DocData((IServiceProvider)ddtr, designerPrgFile);
                             DocDataTextReader reader = new DocDataTextReader(docdata);
                             // so parse
+                            WriteOutputMessage("Start Parse " + designerPrgFile);
                             CodeCompileUnit designerCompileUnit = base.Parse(reader);
+                            WriteOutputMessage("End Parse " + designerPrgFile);
                             CodeCompileUnit mergedCompileUnit = null;
                             // Now we have Two CodeCompileUnit, we must merge them
+                            WriteOutputMessage("Start merge compile Units " + this.FileName);
                             mergedCompileUnit = XSharpCodeDomHelper.MergeCodeCompileUnit(compileUnit, designerCompileUnit);
                             mergedCompileUnit.UserData[XSharpCodeConstants.USERDATA_HASDESIGNER] = true;
                             mergedCompileUnit.UserData[XSharpCodeConstants.USERDATA_FILENAME] = prgFileName;
                             // Save CCU for GenerateCode operation, it will be faster and easier than to recreate it
                             mergedCompileUnit.UserData[XSharpCodeConstants.USERDATA_CCU_FORM] = compileUnit;
                             mergedCompileUnit.UserData[XSharpCodeConstants.USERDATA_CCU_DESIGNER] = designerCompileUnit;
+                            WriteOutputMessage("End merge compile Units " + this.FileName);
                             return mergedCompileUnit;
                         }
                     }
@@ -330,6 +337,10 @@ namespace XSharp.Project
                 }
 
             }
+        }
+        void WriteOutputMessage(string msg)
+        {
+            XSharpModel.XSolution.WriteOutputMessage("XCodeDom: " + msg);
         }
     }
 }

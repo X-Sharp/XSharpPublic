@@ -1,11 +1,11 @@
 /* ****************************************************************************
  *
- * Copyright (c) Microsoft Corporation. 
+ * Copyright (c) Microsoft Corporation.
  *
- * This source code is subject to terms and conditions of the Apache License, Version 2.0. A 
- * copy of the license can be found in the License.html file at the root of this distribution. If 
- * you cannot locate the Apache License, Version 2.0, please send an email to 
- * ironpy@microsoft.com. By using this source code in any fashion, you are agreeing to be bound 
+ * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
+ * copy of the license can be found in the License.html file at the root of this distribution. If
+ * you cannot locate the Apache License, Version 2.0, please send an email to
+ * ironpy@microsoft.com. By using this source code in any fashion, you are agreeing to be bound
  * by the terms of the Apache License, Version 2.0.
  *
  * You must not remove this notice, or any other, from this software.
@@ -31,6 +31,7 @@ using VSConstants = Microsoft.VisualStudio.VSConstants;
 using IServiceProvider = System.IServiceProvider;
 using Microsoft.VisualStudio.TextManager.Interop;
 using XSharpModel;
+using Microsoft.VisualStudio.Project;
 
 namespace XSharp.Project
 {
@@ -125,7 +126,7 @@ namespace XSharp.Project
         {
             this.provider = provider;
             //
-#if TEXTCHANGELISTENER            
+#if TEXTCHANGELISTENER
             documents = new Dictionary<uint, TextLineEventListener>();
 #endif
             hierarchies = new Dictionary<IVsHierarchy, HierarchyListener>();
@@ -145,13 +146,22 @@ namespace XSharp.Project
             walkerThread.Start();
         }
 
+        private IVsRunningDocumentTable DocumentTable
+        {
+            get
+            {
+                IVsRunningDocumentTable rdt = null;
+                UIThread.DoOnUIThread( () => rdt = (IVsRunningDocumentTable) provider.GetService(typeof(SVsRunningDocumentTable)));
+                return rdt;
+            }
+        }
         private void RegisterForRDTEvents()
         {
             if (0 != runningDocTableCookie)
             {
                 return;
             }
-            IVsRunningDocumentTable rdt = provider.GetService(typeof(SVsRunningDocumentTable)) as IVsRunningDocumentTable;
+            var rdt = this.DocumentTable;
             if (null != rdt)
             {
                 // Do not throw here in case of error, simply skip the registration.
@@ -164,7 +174,7 @@ namespace XSharp.Project
             {
                 return;
             }
-            IVsRunningDocumentTable rdt = provider.GetService(typeof(SVsRunningDocumentTable)) as IVsRunningDocumentTable;
+            var rdt = this.DocumentTable;
             if (null != rdt)
             {
                 // Do not throw in case of error.
@@ -252,7 +262,7 @@ namespace XSharp.Project
             {
                 return;
             }
-            // 
+            //
             if (0 == objectManagerCookie)
             {
                 IVsObjectManager2 objManager = provider.GetService(typeof(SVsObjectManager)) as IVsObjectManager2;
@@ -474,7 +484,7 @@ namespace XSharp.Project
             var elements = scope.TypeList;
             if (elements == null)
                 return;
-            // 
+            //
             // First search for NameSpaces
             foreach (KeyValuePair<string, XType> pair in elements)
             {
@@ -607,7 +617,7 @@ namespace XSharp.Project
         }
 #endregion
 
-        // 
+        //
         /// <summary>
         /// We come here after a FileWlak
         /// </summary>
@@ -642,7 +652,7 @@ namespace XSharp.Project
         {
             IVsRunningDocumentTable rdt = provider.GetService(typeof(SVsRunningDocumentTable)) as IVsRunningDocumentTable;
             string fileName = "";
-            
+
             if (rdt != null)
             {
                 IntPtr docData = IntPtr.Zero;
@@ -654,9 +664,9 @@ namespace XSharp.Project
                     hr = rdt.GetDocumentInfo(docCookie, out flags, out readLocks, out editLocks, out fileName, out hier, out itemid, out docData);
                     if (hierarchies.ContainsKey(hier))
                     {
-                        
+
                     }
-                    
+
                 }
                 finally
                 {
@@ -749,7 +759,7 @@ namespace XSharp.Project
                 IVsRunningDocumentTable rdt = provider.GetService(typeof(SVsRunningDocumentTable)) as IVsRunningDocumentTable;
                 if (rdt != null)
                 {
-                    
+
                     IntPtr docData = IntPtr.Zero;
                     string moniker;
                     try

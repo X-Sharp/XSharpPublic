@@ -11,7 +11,7 @@ USING Xide
 GLOBAL gaNewKeywordsInXSharp := <STRING>{;
 	"EVENT","INT64","ENUM","DELEGATE","PARTIAL","INTERFACE",;
 	"CONSTRUCTOR","DESTRUCTOR","FINALLY","TRY","CATCH","THROW","SEALED","ABSTRACT","PUBLIC",;
-	"CONST","INITONLY","VIRTUAL","OPERATOR","EXPLICIT","IMPLICIT","PROPERTY","IMPLIED","DEBUG";
+	"CONST","INITONLY","VIRTUAL","OPERATOR","EXPLICIT","IMPLICIT","PROPERTY","IMPLIED","DEBUG","TRACE";
 	} AS STRING[]
 
 GLOBAL DefaultOutputFolder := "" AS STRING
@@ -254,6 +254,7 @@ STRUCTURE xPorterOptions
 	EXPORT UseXSharpRuntime AS LOGIC
     EXPORT CopyResourcesToProjectFolder AS LOGIC
     EXPORT ReplaceResourceDefinesWithValues AS LOGIC
+    EXPORT CheckForIVarAndPropertyConflicts AS LOGIC
 END STRUCTURE
 
 INTERFACE IProgressBar
@@ -1872,10 +1873,12 @@ CLASS ClassDescriptor
 	PROTECT _oDeclaration AS EntityDescriptor
 	PROTECT _aMembers AS List<EntityDescriptor>
 	PROTECT _oModule AS ModuleDescriptor
+	PROTECT _aNonPublicIVars AS Dictionary<STRING,STRING>
 	CONSTRUCTOR(cName AS STRING , oModule AS ModuleDescriptor)
 		SELF:_cName := cName
 		SELF:_oModule := oModule
 		SELF:_aMembers := List<EntityDescriptor>{}
+		SELF:_aNonPublicIVars := Dictionary<STRING,STRING>{}
 	RETURN
 	PROPERTY Name AS STRING GET SELF:_cName
 	PROPERTY Members AS List<EntityDescriptor> GET SELF:_aMembers
@@ -1887,7 +1890,16 @@ CLASS ClassDescriptor
 		ELSE
 			SELF:_aMembers:Add(oEntity)
 		END IF
+		oEntity:ClassDesc := SELF
 	RETURN
+	
+	METHOD DeclareNonPublicIVar(cIVar AS STRING) AS VOID
+		IF .not. SELF:_aNonPublicIVars:ContainsKey(cIVar:ToUpper())
+			SELF:_aNonPublicIVars:Add(cIVar:ToUpper() , cIVar)
+		END IF
+	RETURN
+	METHOD HasNonPublicIVar(cIVar AS STRING) AS LOGIC
+	RETURN SELF:_aNonPublicIVars:ContainsKey(cIVar:ToUpper())
 
 	METHOD Generate() AS OutputCode
 		LOCAL oCode AS OutputCode
@@ -1985,6 +1997,7 @@ CLASS EntityDescriptor
 	PROPERTY Name AS STRING GET SELF:_cName
 	PROPERTY Type AS EntityType GET SELF:_eType
 	PROPERTY ClassName AS STRING GET SELF:_cClass
+	PROPERTY ClassDesc AS ClassDescriptor AUTO
 	PROPERTY Lines AS List<LineObject> GET SELF:_aLines
 	PROPERTY IsClassOrMember AS LOGIC GET;
 			SELF:_eType == EntityType._Class .OR. SELF:_eType == EntityType._Method .OR. ;
@@ -2057,7 +2070,7 @@ CLASS EntityDescriptor
 
 			LOCAL cCallBack := NULL AS STRING
 //			cLine := oLine:LineText
-			cLine := ConvertLine(oLine , REF cCallBack)
+			cLine := SELF:ConvertLine(oLine , REF cCallBack)
 			IF cCallBack != NULL
 //				oCode:AddLine("// " + cLine + " // XPORTER:DELEGATE")
 				oCode:AddLine("#warning Callback function modified to use a DELEGATE by xPorter. Please review.")
@@ -2157,6 +2170,8 @@ CLASS EntityDescriptor
 		LOCAL aWords AS List<WordObject>
 		LOCAL cLine , cLineUpper AS STRING
 		LOCAL sLine AS System.Text.StringBuilder
+		LOCAL lInNonPublicIVar := FALSE AS LOGIC
+		LOCAL lCanBeNonPublicName := FALSE AS LOGIC
 
 		cCallBack := NULL
 
@@ -2166,8 +2181,8 @@ CLASS EntityDescriptor
 		IF cLineUpper:StartsWith("VTRACE") .OR. cLineUpper:StartsWith("VMETHOD")
 			cLine := "// " + cLine
 			RETURN cLine
-		END IF
-		IF SELF:Type== EntityType._Class .AND. cLineUpper:Trim():StartsWith("INSTANCE")
+		ENDIF
+		IF SELF:Type== EntityType._Class .AND. cLineUpper:StartsWith("INSTANCE")
 			LOCAL cTemp AS STRING
 			cTemp := cLineUpper:Trim()
 			IF cTemp:Length > 9
@@ -2180,6 +2195,11 @@ CLASS EntityDescriptor
 					END IF
 				END IF
 			END IF
+		ENDIF
+		IF xPorter.Options:CheckForIVarAndPropertyConflicts .and. SELF:Type== EntityType._Class .AND. ;
+			(cLineUpper:StartsWith("PROTECT") .or. cLineUpper:StartsWith("HIDDEN") .or. cLineUpper:StartsWith("INSTANCE"))
+			lInNonPublicIVar := TRUE
+			lCanBeNonPublicName := TRUE
 		ENDIF
 
 		IF xPorter.Options:RemoveExportLocalClause .AND. oLine:HasExportLocalClause
@@ -2234,7 +2254,7 @@ CLASS EntityDescriptor
 				oPrevWord := NULL
 			END IF
 
-			LOCAL cWord, cWordUpper AS STRING
+			LOCAL cWord AS STRING
 			cWord := oWord:cWord
 
 			DO CASE
@@ -2250,6 +2270,7 @@ CLASS EntityDescriptor
 				cWord := cWord + " "
 
 			CASE oWord:eStatus == WordStatus.Text // no literals or comments
+				LOCAL cWordUpper AS STRING
 				cWordUpper := cWord:ToUpper()
 				DO CASE
 				CASE cWordUpper:StartsWith("STRU") .AND. oWord:eSubStatus == WordSubStatus.TextReserved .AND. oLine:oEntity != NULL
@@ -2261,6 +2282,22 @@ CLASS EntityDescriptor
 				CASE cWordUpper == "@" .AND. (oNextWord != NULL .AND. SELF:_oModule:Application:ContainsCallback(oNextWord:cWord))
 //					MessageBox.Show(oNextWord:cWord , "Callback!")
 					cCallBack := oNextWord:cWord
+				CASE lInNonPublicIVar
+					IF .not. String.IsNullOrWhiteSpace(cWord) 
+						IF oWord:eSubStatus == WordSubStatus.TextReserved .and. cWordUpper == "AS"
+							lInNonPublicIVar := FALSE
+						ELSEIF Char.IsLetter(cWord[0])
+							IF lCanBeNonPublicName .and. SELF:_oModule:ContainsEntity(cWord, SELF:Name)
+								SELF:ClassDesc:DeclareNonPublicIVar(cWord)
+								cWord := SELF:PrefixIVar(cWord)
+							ENDIF
+						ELSE
+							// if it's a comma, then next word must be an IVar name. Otherwise it must be an assignment expression
+							lCanBeNonPublicName := cWord == ","
+						ENDIF
+					END IF
+				CASE oLine:oEntity == NULL .and. SELF:ClassHasNonPublicIVar(cWord)
+					cWord := SELF:PrefixIVar(cWord)
 				END CASE
 
 			CASE oWord:eStatus == WordStatus.Literal
@@ -2313,7 +2350,15 @@ CLASS EntityDescriptor
 		cLine := sLine:ToString()
 
 	RETURN cLine
-
+	
+	PROTECTED METHOD PrefixIVar(cWord AS STRING) AS STRING
+	RETURN "_" + cWord
+	
+	PROTECTED METHOD ClassHasNonPublicIVar(cWord AS STRING) AS LOGIC
+		IF SELF:ClassDesc != NULL .and. SELF:ClassDesc:HasNonPublicIVar(cWord)
+			RETURN TRUE
+		ENDIF
+	RETURN FALSE
 
 	PROTECTED METHOD Generate_Textblock() AS OutputCode
 		LOCAL oCode AS OutputCode

@@ -160,10 +160,12 @@ namespace XSharp.Project
                         {
                             if (gotoElement.XSharpElement.Parent != null)
                             {
+                                var xtype = gotoElement.XSharpElement.Parent as XType;
+                                var qitm = new QuickInfoTypeAnalysis(xtype, kwFormat.ForegroundBrush, txtFormat.ForegroundBrush);
                                 var description = new TextBlock();
-                                description.Inlines.Add(new Run(gotoElement.XSharpElement.Parent.Description));
-
+                                description.Inlines.AddRange(qitm.WPFDescription);
                                 qiContent.Add(description);
+
                             }
                         }
                         else if (gotoElement.XSharpElement is XSharpModel.XTypeMember)
@@ -193,7 +195,11 @@ namespace XSharp.Project
                         else
                         {
                             var description = new TextBlock();
-                            description.Inlines.Add(new Run(gotoElement.XSharpElement.Description));
+                            Run temp;
+                            temp = new Run(gotoElement.XSharpElement.Description);
+                            temp.Foreground = txtFormat.ForegroundBrush;
+                            //
+                            description.Inlines.Add(temp);
                             qiContent.Add(description);
                         }
 
@@ -760,6 +766,76 @@ namespace XSharp.Project
 
 
         }
+
+        /*
+        internal class QuickInfoType
+        {
+            XSharpModel.XType xtype;
+            Brush kwBrush;
+            Brush txtBrush;
+
+            internal QuickInfoType(XSharpModel.XType tm, Brush kw, Brush txt)
+            {
+                this.xtype = tm;
+                this.kwBrush = kw;
+                this.txtBrush = txt;
+            }
+
+            public List<Inline> WPFDescription
+            {
+                get
+                {
+                    List<Inline> content = new List<Inline>();
+
+                    Run temp;
+                    if (this.xtype.Modifiers != XSharpModel.Modifiers.None)
+                    {
+                        temp = new Run(_optionsPage.formatKeyword(this.xtype.Modifiers) + " ");
+                        temp.Foreground = this.kwBrush;
+                        content.Add(temp);
+                    }
+                    temp = new Run(_optionsPage.formatKeyword(this.xtype.Visibility) + " ");
+                    temp.Foreground = this.kwBrush;
+                    content.Add(temp);
+                    //
+                    if (this.xtype.IsStatic)
+                    {
+                        temp = new Run(_optionsPage.Static() + " ");
+                        temp.Foreground = this.kwBrush;
+                        content.Add(temp);
+                    }
+                    //
+                    if (this.xtype.Kind != XSharpModel.Kind.Field)
+                    {
+                        temp = new Run(_optionsPage.formatKeyword(this.xtype.Kind) + " ");
+                        temp.Foreground = this.kwBrush;
+                        content.Add(temp);
+                    }
+                    //
+                    content.AddRange(this.WPFPrototype);
+                    //
+                    return content;
+                }
+
+            }
+
+            public List<Inline> WPFPrototype
+            {
+                get
+                {
+                    List<Inline> content = new List<Inline>();
+                    Run temp;
+                    //
+                    temp = new Run(this.xtype.Name);
+                    temp.Foreground = txtBrush;
+                    content.Add(temp);
+                    //
+                    return content;
+                }
+            }
+
+        }
+        */
 
     }
     static class KeywordExtensions

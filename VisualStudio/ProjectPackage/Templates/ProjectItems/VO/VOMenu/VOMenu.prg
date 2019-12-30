@@ -1,4 +1,6 @@
-﻿#include "VOGUIClasses.vh"
+﻿#ifndef __XSHARP_RT__
+#include "VOGUIClasses.vh"
+#endif
 
 CLASS $safeitemrootname$ INHERIT Menu
 

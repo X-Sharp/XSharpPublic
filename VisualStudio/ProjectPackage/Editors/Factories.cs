@@ -1,6 +1,6 @@
 ﻿//
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
@@ -11,6 +11,7 @@ using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Project.Automation;
+using Microsoft.VisualStudio.Project;
 
 namespace XSharp.Project
 {
@@ -56,7 +57,9 @@ namespace XSharp.Project
 
         public object GetService(Type serviceType)
         {
-            return vsServiceProvider.GetService(serviceType);
+            object result = null;
+            UIThread.DoOnUIThread(() => result = vsServiceProvider.GetService(serviceType));
+            return result;
         }
 
         // This method is called by the Environment (inside IVsUIShellOpenDocument::
@@ -195,7 +198,7 @@ namespace XSharp.Project
         }
         protected object GetVulcanFactory(string className, string fileName)
         {
-            object projectNode = GetProjectNode(fileName); 
+            object projectNode = GetProjectNode(fileName);
             object package = null;
             object factory = null;
             if (projectNode != null)

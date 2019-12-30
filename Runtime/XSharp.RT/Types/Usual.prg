@@ -302,7 +302,7 @@ BEGIN NAMESPACE XSharp
 
         /// No checks for typeflag. These private properties should always be accessed after checking the correct type
         PRIVATE PROPERTY _arrayValue    AS ARRAY			GET (ARRAY) _refData
-        PRIVATE PROPERTY _codeblockValue AS ICodeBlock		GET (ICodeBlock) _refData
+        PRIVATE PROPERTY _codeblockValue AS ICodeblock		GET (ICodeblock) _refData
         PRIVATE PROPERTY _dateValue		AS DATE				GET _valueData:d
         PRIVATE PROPERTY _dateTimeValue AS DateTime			GET _valueData:dt
         PRIVATE PROPERTY _decimalValue	AS System.Decimal	GET (System.Decimal) _refData

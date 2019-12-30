@@ -82,7 +82,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL PROPERTY IsHot             AS LOGIC GET _Hot
         INTERNAL PROPERTY Header            AS CdxTagHeader GET _Header
         INTERNAL PROPERTY KeyType        	AS INT GET SELF:_KeyExprType
-        INTERNAL PROPERTY KeyCodeBlock      AS ICodeBlock GET _KeyCodeBlock
+        INTERNAL PROPERTY KeyCodeBlock      AS ICodeblock GET _KeyCodeBlock
         INTERNAL PROPERTY KeyLength         AS WORD GET SELF:_keySize
         INTERNAL PROPERTY SourceKeyLength   AS WORD GET SELF:_sourcekeySize
         INTERNAL PROPERTY Partial        	AS LOGIC GET SELF:Custom

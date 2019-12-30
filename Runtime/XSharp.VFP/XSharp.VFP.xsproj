@@ -90,6 +90,7 @@
     <Compile Include="Classes\Custom.prg" />
     <Compile Include="Enums.prg" />
     <Compile Include="Functions.prg" />
+    <Compile Include="MissingFunctionsA.prg" />
     <Compile Include="Properties\AssemblyInfo.prg">
       <SubType>Code</SubType>
     </Compile>
@@ -113,7 +114,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="WhatToDoWith.txt" />
+	<None Include="functionsToImplement.txt" />
   </ItemGroup>
   <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->
   <ProjectExtensions>

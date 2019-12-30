@@ -332,7 +332,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:Flush()
             RETURN TRUE
 
-        PRIVATE METHOD _EvalBlock(oBlock AS ICodeBlock, lMustBeLogic AS LOGIC) AS LOGIC
+        PRIVATE METHOD _EvalBlock(oBlock AS ICodeblock, lMustBeLogic AS LOGIC) AS LOGIC
             LOCAL isOk  := FALSE AS LOGIC
             LOCAL error := FALSE AS LOGIC
             TRY

@@ -59,7 +59,7 @@ namespace XSharp.Project
                         refasm = asm.FileName;
                         break;
                     }
-                    if (asm.FileName.EndsWith("System.DLL", StringComparison.OrdinalIgnoreCase))
+                    if (! string.IsNullOrEmpty(asm.FileName) &&  asm.FileName.EndsWith("System.DLL", StringComparison.OrdinalIgnoreCase))
                     {
                         if (assembly.FullName.Contains("mscorlib"))
                         {

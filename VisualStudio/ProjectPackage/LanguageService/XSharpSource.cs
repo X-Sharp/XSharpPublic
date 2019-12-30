@@ -24,7 +24,8 @@ namespace XSharp.LanguageService
         {
 
         }
-
+        // This class is only used for commenting.
+        // Once that has been moved to MEF we can remove the class
         public override TextSpan UncommentSpan(TextSpan span)
         {
             CommentInfo commentFormat = this.GetCommentFormat();
@@ -138,22 +139,6 @@ namespace XSharp.LanguageService
                 }
             }
             return span;
-        }
-
-
-        //public override void BeginParse()
-        //{
-        //    base.BeginParse();
-        //}
-        //public override ParseRequest BeginParse(int line, int idx, TokenInfo info, ParseReason reason, IVsTextView view, ParseResultHandler callback)
-        //{
-        //    return base.BeginParse(line, idx, info, reason, view, callback);
-        //}
-        public override void OnCommand(IVsTextView textView, VSConstants.VSStd2KCmdID command, char ch)
-        {
-            base.OnCommand(textView, command, ch);
-            // Vulcan formats the keywords here.
-
         }
 
     }

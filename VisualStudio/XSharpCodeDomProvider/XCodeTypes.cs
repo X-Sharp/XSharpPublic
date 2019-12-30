@@ -23,18 +23,16 @@ namespace XSharp.CodeDom
             Type = null;
             XType = null;
         }
-        internal XCodeTypeReference(XType type) : base(type.FullName)
-        {
-            XType = type;
-            Type = null;
-        }
-
         internal XCodeTypeReference(System.Type type) : base(type)
         {
             Type = type;
             XType = null;
         }
-
+        internal XCodeTypeReference(TypeXType type) : base(type.FullName)
+        {
+            Type = type.Type;
+            XType = type.xType;
+        }
     }
 
     [DebuggerDisplay("{Name,nq}")]

@@ -170,6 +170,16 @@ namespace XSharp.Project
 
         }
 
+        private IVsUIShell UIShell
+        {
+            get
+            {
+                IVsUIShell uiShell = null;
+                UIThread.DoOnUIThread( () => uiShell = (IVsUIShell)GetService(typeof(SVsUIShell)));
+                return uiShell;
+            }
+        }
+
         #endregion
 
         /// <summary>
@@ -212,9 +222,13 @@ namespace XSharp.Project
         void StatusBarMessageHandler(string cText)
         {
             if (this.oStatusBar == null)
-                oStatusBar = (IVsStatusbar)GetService(typeof(IVsStatusbar));
+            {
+                UIThread.DoOnUIThread(() => oStatusBar = (IVsStatusbar)GetService(typeof(IVsStatusbar)));
+            }
             if (this.oStatusBar != null)
+            {
                 this.oStatusBar.SetText(cText);
+            }
         }
         void IsDirtyChangedHandler(object o, EventArgs e)
         {
@@ -251,7 +265,7 @@ namespace XSharp.Project
             {
                 if (trackSel == null)
                 {
-                    trackSel = (ITrackSelection)GetService(typeof(ITrackSelection));
+                    UIThread.DoOnUIThread(() => trackSel = (ITrackSelection)GetService(typeof(ITrackSelection)));
                 }
                 return trackSel;
             }
@@ -316,7 +330,8 @@ namespace XSharp.Project
                 return;
 
             // Get a reference to the Running Document Table
-            IVsRunningDocumentTable runningDocTable = (IVsRunningDocumentTable)GetService(typeof(SVsRunningDocumentTable));
+            IVsRunningDocumentTable runningDocTable = null;
+            UIThread.DoOnUIThread( () => runningDocTable = (IVsRunningDocumentTable)GetService(typeof(SVsRunningDocumentTable)));
 
             // Lock the document
             uint docCookie;
@@ -623,7 +638,7 @@ namespace XSharp.Project
             try
             {
                 // Show the wait cursor while loading the file
-                IVsUIShell VsUiShell = (IVsUIShell)GetService(typeof(SVsUIShell));
+                var VsUiShell = this.UIShell;
                 if (VsUiShell != null)
                 {
                     // Note: we don't want to throw or exit if this call fails, so
@@ -826,7 +841,8 @@ namespace XSharp.Project
                 case VSSAVEFLAGS.VSSAVE_Save:
                 case VSSAVEFLAGS.VSSAVE_SilentSave:
                     {
-                        IVsQueryEditQuerySave2 queryEditQuerySave = (IVsQueryEditQuerySave2)GetService(typeof(SVsQueryEditQuerySave));
+                        IVsQueryEditQuerySave2 queryEditQuerySave = null;
+                        UIThread.DoOnUIThread( () => queryEditQuerySave = (IVsQueryEditQuerySave2)GetService(typeof(SVsQueryEditQuerySave)));
 
                         // Call QueryEditQuerySave
                         uint result = 0;
@@ -850,20 +866,26 @@ namespace XSharp.Project
                             case tagVSQuerySaveResult.QSR_SaveOK:
                                 {
                                     // Call the shell to do the save for us
-                                    IVsUIShell uiShell = (IVsUIShell)GetService(typeof(SVsUIShell));
-                                    hr = uiShell.SaveDocDataToFile(dwSave, (IPersistFileFormat)this, fileName, out pbstrMkDocumentNew, out pfSaveCanceled);
-                                    if (ErrorHandler.Failed(hr))
-                                        return hr;
+                                    IVsUIShell uiShell = this.UIShell;
+                                    if (uiShell != null)
+                                    {
+                                        hr = uiShell.SaveDocDataToFile(dwSave, (IPersistFileFormat)this, fileName, out pbstrMkDocumentNew, out pfSaveCanceled);
+                                        if (ErrorHandler.Failed(hr))
+                                            return hr;
+                                    }
                                 }
                                 break;
 
                             case tagVSQuerySaveResult.QSR_ForceSaveAs:
                                 {
                                     // Call the shell to do the SaveAS for us
-                                    IVsUIShell uiShell = (IVsUIShell)GetService(typeof(SVsUIShell));
-                                    hr = uiShell.SaveDocDataToFile(VSSAVEFLAGS.VSSAVE_SaveAs, (IPersistFileFormat)this, fileName, out pbstrMkDocumentNew, out pfSaveCanceled);
-                                    if (ErrorHandler.Failed(hr))
-                                        return hr;
+                                    IVsUIShell uiShell = this.UIShell;
+                                    if (uiShell != null)
+                                    {
+                                        hr = uiShell.SaveDocDataToFile(VSSAVEFLAGS.VSSAVE_SaveAs, (IPersistFileFormat)this, fileName, out pbstrMkDocumentNew, out pfSaveCanceled);
+                                        if (ErrorHandler.Failed(hr))
+                                            return hr;
+                                    }
                                 }
                                 break;
 
@@ -885,10 +907,14 @@ namespace XSharp.Project
                             fileName += MyExtension;
                         }
                         // Call the shell to do the save for us
-                        IVsUIShell uiShell = (IVsUIShell)GetService(typeof(SVsUIShell));
-                        hr = uiShell.SaveDocDataToFile(dwSave, (IPersistFileFormat)this, fileName, out pbstrMkDocumentNew, out pfSaveCanceled);
-                        if (ErrorHandler.Failed(hr))
-                            return hr;
+                        var uiShell = this.UIShell;
+                        if (uiShell != null)
+                        {
+                            hr = uiShell.SaveDocDataToFile(dwSave, (IPersistFileFormat)this, fileName, out pbstrMkDocumentNew, out pfSaveCanceled);
+                            if (ErrorHandler.Failed(hr))
+                                return hr;
+
+                        }
                         break;
                     }
                 default:
@@ -1098,6 +1124,17 @@ namespace XSharp.Project
 
         #region File Change Notification Helpers
 
+        private IVsFileChangeEx VsFileChangeEx
+        {
+            get
+            {
+                if (vsFileChangeEx != null)
+                {
+                    UIThread.DoOnUIThread(() => vsFileChangeEx = (IVsFileChangeEx)GetService(typeof(SVsFileChangeEx)));
+                }
+                return vsFileChangeEx;
+            }
+        }
         /// <summary>
         /// In this function we inform the shell when we wish to receive
         /// events when our file is changed or we inform the shell when
@@ -1113,9 +1150,7 @@ namespace XSharp.Project
             int result = VSConstants.E_FAIL;
 
             //Get the File Change service
-            if (null == vsFileChangeEx)
-                vsFileChangeEx = (IVsFileChangeEx)GetService(typeof(SVsFileChangeEx));
-            if (null == vsFileChangeEx)
+            if (null == VsFileChangeEx)
                 return VSConstants.E_UNEXPECTED;
 
             // Setup Notification if fStart is TRUE, Remove if fStart is FALSE.
@@ -1157,9 +1192,7 @@ namespace XSharp.Project
         {
             XSharpProjectPackage.Instance.DisplayOutPutMessage($"**** Inside SuspendFileChangeNotification {strFileName} {fSuspend}****");
 
-            if (null == vsFileChangeEx)
-                vsFileChangeEx = (IVsFileChangeEx)GetService(typeof(SVsFileChangeEx));
-            if (null == vsFileChangeEx)
+            if (null == VsFileChangeEx)
                 return VSConstants.E_UNEXPECTED;
 
             if (0 == fSuspend)
@@ -1255,7 +1288,7 @@ namespace XSharp.Project
             FileChangeTrigger.Enabled = false;
 
             string message = this.GetResourceString("@80201");    //get the message string from the resource
-            IVsUIShell VsUiShell = (IVsUIShell)GetService(typeof(SVsUIShell));
+            var  VsUiShell = this.UIShell;
             int result = 0;
             Guid tempGuid = Guid.Empty;
             if (VsUiShell != null)
@@ -1282,7 +1315,9 @@ namespace XSharp.Project
         internal string GetResourceString(string resourceName)
         {
             string resourceValue;
-            IVsResourceManager resourceManager = (IVsResourceManager)GetService(typeof(SVsResourceManager));
+
+            IVsResourceManager resourceManager = null;
+            UIThread.DoOnUIThread( () => resourceManager = (IVsResourceManager)GetService(typeof(SVsResourceManager)));
             if (resourceManager == null)
             {
                 throw new InvalidOperationException("Could not get SVsResourceManager service. Make sure the package is Sited before calling this method");
@@ -1310,7 +1345,8 @@ namespace XSharp.Project
                 gettingCheckoutStatus = true;
 
                 // Get the QueryEditQuerySave service
-                IVsQueryEditQuerySave2 queryEditQuerySave = (IVsQueryEditQuerySave2)GetService(typeof(SVsQueryEditQuerySave));
+                IVsQueryEditQuerySave2 queryEditQuerySave = null;
+                UIThread.DoOnUIThread (() => queryEditQuerySave = (IVsQueryEditQuerySave2)GetService(typeof(SVsQueryEditQuerySave)));
 
                 // Now call the QueryEdit method to find the edit status of this file
                 string[] documents = { this.fileName };
@@ -1371,7 +1407,8 @@ namespace XSharp.Project
             // Now get the IMenuCommandService; this object is the one
             // responsible for handling the collection of commands implemented by the package.
 
-            IMenuCommandService mcs = GetService(typeof(IMenuCommandService)) as IMenuCommandService;
+            IMenuCommandService mcs = null;
+            UIThread.DoOnUIThread( () => mcs = GetService(typeof(IMenuCommandService)) as IMenuCommandService);
             if (null != mcs)
             {
                 // Now create one object derived from MenuCommnad for each command defined in

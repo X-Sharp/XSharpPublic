@@ -300,7 +300,7 @@ CLASS xPorterUI INHERIT System.Windows.Forms.Form IMPLEMENTS IProgressBar
 
 		SELF:oExportToBoth:AutoSize := TRUE
 		SELF:oExportToBoth:Checked := TRUE
-		SELF:oExportToBoth:Location := System.Drawing.Point{186 , 21}
+		SELF:oExportToBoth:Location := System.Drawing.Point{186 , 15}
 		SELF:oExportToBoth:Name := "ExportToBoth"
 		SELF:oExportToBoth:Size := System.Drawing.Size{45 , 18}
 		SELF:oExportToBoth:TabIndex := 3
@@ -308,7 +308,7 @@ CLASS xPorterUI INHERIT System.Windows.Forms.Form IMPLEMENTS IProgressBar
 		SELF:oGroupBox1:Controls:Add(SELF:oExportToBoth)
 		
 		SELF:oExportToXIDE:AutoSize := TRUE
-		SELF:oExportToXIDE:Location := System.Drawing.Point{117 , 21}
+		SELF:oExportToXIDE:Location := System.Drawing.Point{117 , 15}
 		SELF:oExportToXIDE:Name := "ExportToXIDE"
 		SELF:oExportToXIDE:Size := System.Drawing.Size{49 , 18}
 		SELF:oExportToXIDE:TabIndex := 2
@@ -316,7 +316,7 @@ CLASS xPorterUI INHERIT System.Windows.Forms.Form IMPLEMENTS IProgressBar
 		SELF:oGroupBox1:Controls:Add(SELF:oExportToXIDE)
 		
 		SELF:oExportToVS:AutoSize := TRUE
-		SELF:oExportToVS:Location := System.Drawing.Point{15 , 21}
+		SELF:oExportToVS:Location := System.Drawing.Point{15 , 15}
 		SELF:oExportToVS:Name := "ExportToVS"
 		SELF:oExportToVS:Size := System.Drawing.Size{85 , 18}
 		SELF:oExportToVS:TabIndex := 1
@@ -325,9 +325,9 @@ CLASS xPorterUI INHERIT System.Windows.Forms.Form IMPLEMENTS IProgressBar
 		SELF:oGroupBox1:Controls:Add(SELF:oExportToVS)
 		
 		SELF:oOptionsList:IntegralHeight := FALSE
-		SELF:oOptionsList:Location := System.Drawing.Point{15 , 44}
+		SELF:oOptionsList:Location := System.Drawing.Point{15 , 36}
 		SELF:oOptionsList:Name := "OptionsList"
-		SELF:oOptionsList:Size := System.Drawing.Size{222 , 225}
+		SELF:oOptionsList:Size := System.Drawing.Size{222 , 233}
 		SELF:oOptionsList:TabIndex := 4
 		SELF:oGroupBox1:Controls:Add(SELF:oOptionsList)
 		

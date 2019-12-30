@@ -1,5 +1,7 @@
-﻿#include "VOSystemClasses.vh"
+﻿#ifndef __XSHARP_RT__
+#include "VOSystemClasses.vh"
 #include "VOSystemLibrary.vh"
+#endif
 
 CLASS $safeitemrootname$ INHERIT DBSERVER
 	INSTANCE cDBFPath	  := "" AS STRING
@@ -63,7 +65,7 @@ CONSTRUCTOR(cDBF, lShare, lRO, xRdd)
 		   IF Left(cDBF, 2) =="\\"  // Unc path, for example \\Server\Share\FileName.DBF
 				SELF:cDBFPath := oFS:Path
 		   ELSE
-				SELF:cDBFPath := oFS:Drive + oFS:Path    
+				SELF:cDBFPath := oFS:Drive + oFS:Path
 		   ENDIF
 				SELF:cName := oFS:FileName + oFS:Extension
 				oFS := FileSpec{SELF:cDBFPath + SELF:cName}
@@ -118,7 +120,7 @@ CONSTRUCTOR(cDBF, lShare, lRO, xRdd)
 	SELF:PostInit()
 
 	RETURN
-	
+
 
 ACCESS FieldDesc
 	//

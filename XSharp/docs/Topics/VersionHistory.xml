@@ -27,6 +27,7 @@
       <li styleclass="Body Text"><text styleclass="List1">The VO item templates now have a condition around the #include statements for the Vulcan include files, since these are no longer needed when compiling for the X# runtime.</text></li>
       <li styleclass="Body Text"><text styleclass="List1">Added Support for the &quot;Auto&quot; window in the debugger</text></li>
       <li styleclass="Body Text"><text styleclass="List1">Expressions in the Watch window, Breakpoint conditions etc may now contain SELF, SUPER and a colon separator. Unfortunately they are still case sensitive.</text></li>
+      <li styleclass="Body Text"><text styleclass="List1">Improved the load speed for Windows Forms with many controls or with custom controls</text></li>
     </list>
     <para styleclass="Heading2">VOXPorter</para>
     <list id="75" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">

@@ -46,7 +46,7 @@
           <para styleclass="Normal">- Debug</para>
         </td>
         <td style="width:993px;">
-          <para styleclass="Normal">Debug versions of the runtime DLLs and SDK DLLs (FOX only)</para>
+          <para styleclass="Normal">Debug versions of the runtime DLLs and SDK DLLs (<text style="font-weight:bold;">FOX only</text>)</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -95,7 +95,7 @@
           <para styleclass="Normal">- NetCore20</para>
         </td>
         <td style="width:993px;">
-          <para styleclass="Normal">A version of the X# compiler and script engine for .Net Core 2.0 (FOX only)</para>
+          <para styleclass="Normal">A version of the X# compiler and script engine for .Net Core 2.0 (<text style="font-weight:bold;">FOX only</text>)</para>
         </td>
       </tr>
       <tr style="vertical-align:top">

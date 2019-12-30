@@ -24,7 +24,9 @@ using XSharp.Project.OptionsPages;
 using XSharp.VOEditors;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 using Microsoft;
+using Microsoft.VisualStudio.ComponentModelHost;
 /*
 Substitution strings
 String	Description
@@ -99,7 +101,7 @@ namespace XSharp.Project
         LanguageName, ProjectFileMask, ProjectExtension, ProjectExtensions,
         @".NullPath", LanguageVsTemplate = "XSharp", NewProjectRequireNewFolderVsTemplate = false)]
 
-    [ProvideService(typeof(XSharpLanguageService), ServiceName = LanguageServiceName)]
+    [ProvideService(typeof(XSharpLanguageService), ServiceName = LanguageServiceName,IsAsyncQueryable =false)]//
     [ProvideLanguageExtension(typeof(XSharpLanguageService), ".prg")]
     [ProvideLanguageExtension(typeof(XSharpLanguageService), ".xs")]
     [ProvideLanguageExtension(typeof(XSharpLanguageService), ".ppo")]
@@ -228,22 +230,26 @@ namespace XSharp.Project
             get { return XSharpProjectPackage.instance; }
         }
 
-        public async void OpenInBrowser(string url)
+        public  void OpenInBrowser(string url)
         {
-            Task<IVsWebBrowsingService> t = await GetServiceAsync(typeof(SVsWebBrowsingService)) as Task<IVsWebBrowsingService>;
-            Assumes.Present(t);
-            IVsWebBrowsingService service = t.Result;
-            if (service != null)
+            UIThread.DoOnUIThread(() =>
             {
-                IVsWindowFrame frame = null;
-                service.Navigate(url, (uint)(__VSWBNAVIGATEFLAGS.VSNWB_WebURLOnly | __VSWBNAVIGATEFLAGS.VSNWB_ForceNew), out frame);
-                frame.Show();
-            }
+
+                IVsWebBrowsingService service = GetService(typeof(SVsWebBrowsingService)) as IVsWebBrowsingService;
+                if (service != null)
+                {
+                    IVsWindowFrame frame = null;
+                    service.Navigate(url, (uint)(__VSWBNAVIGATEFLAGS.VSNWB_WebURLOnly | __VSWBNAVIGATEFLAGS.VSNWB_ForceNew), out frame);
+                    frame.Show();
+                }
+            });
         }
+        IntellisenseOptionsPage _intellisensePage;
         internal IntellisenseOptionsPage GetIntellisenseOptionsPage()
         {
-            var page = (IntellisenseOptionsPage)GetDialogPage(typeof(IntellisenseOptionsPage));
-            return page;
+            if (_intellisensePage == null)
+                _intellisensePage = (IntellisenseOptionsPage)GetDialogPage(typeof(IntellisenseOptionsPage));
+            return _intellisensePage;
         }
 
         internal IVsTextManager4 GetTextManager()
@@ -251,6 +257,7 @@ namespace XSharp.Project
             return this._txtManager;
         }
 
+       // XSharpLanguageService _langService = null;
         #region Overridden Implementation
         /// <summary>
         /// Initialization of the package; this method is called right after the package is sited, so this is the place
@@ -261,34 +268,24 @@ namespace XSharp.Project
             // Suspend walking until Solution is opened.
             base.SolutionListeners.Add(new ModelScannerEvents(this));
             await base.InitializeAsync(cancellationToken, progress);
+            await JoinableTaskFactory.SwitchToMainThreadAsync();
             _uiThread = new UIThread();
-            UIThread.DoOnUIThread(() =>
-                 {
-                     XSharpProjectPackage.instance = this;
-                     XSharpModel.XSolution.OutputWindow = this;
-                     this.RegisterProjectFactory(new XSharpProjectFactory(this));
-                     this.settings = new XPackageSettings(this);
-                     validateVulcanEditors();
-                     this.RegisterDebuggerEvents();
-                     // Indicate how to open the different source files : SourceCode or Designer ??
-                     this.RegisterEditorFactory(new XSharpEditorFactory(this));
-                     this.RegisterProjectFactory(new XSharpWPFProjectFactory(this));
+             XSharpProjectPackage.instance = this;
+             XSharpModel.XSolution.OutputWindow = this;
+             this.RegisterProjectFactory(new XSharpProjectFactory(this));
+             this.settings = new XPackageSettings(this);
+             validateVulcanEditors();
+             this.RegisterDebuggerEvents();
+             // Indicate how to open the different source files : SourceCode or Designer ??
+             this.RegisterEditorFactory(new XSharpEditorFactory(this));
+             this.RegisterProjectFactory(new XSharpWPFProjectFactory(this));
 
-                     // editors for the binaries
-                     base.RegisterEditorFactory(new VOFormEditorFactory(this));
-                     base.RegisterEditorFactory(new VOMenuEditorFactory(this));
-                     base.RegisterEditorFactory(new VODBServerEditorFactory(this));
-                     base.RegisterEditorFactory(new VOFieldSpecEditorFactory(this));
-                 });
-                    // Register the language service
-
-            // Proffer the service.
-            IServiceContainer serviceContainer = this as IServiceContainer;
-            XSharpLanguageService langService = new XSharpLanguageService();
-            langService.SetSite(this);
-            serviceContainer.AddService(typeof(XSharpLanguageService),
-                                        langService,
-                                        true);
+             // editors for the binaries
+             base.RegisterEditorFactory(new VOFormEditorFactory(this));
+             base.RegisterEditorFactory(new VOMenuEditorFactory(this));
+             base.RegisterEditorFactory(new VODBServerEditorFactory(this));
+             base.RegisterEditorFactory(new VOFieldSpecEditorFactory(this));
+            XSharp.Project.XSharpMenuItems.Initialize(this);
 
             // Register a timer to call our language service during
             // idle periods.
@@ -306,16 +303,14 @@ namespace XSharp.Project
                 int hr = mgr.FRegisterComponent(this, crinfo, out m_componentID);
             }
             // Initialize Custom Menu Items
-            XSharp.Project.XSharpMenuItems.Initialize(this);
             // register property changed event handler
 
 
             var shell = await this.GetServiceAsync(typeof(SVsShell)) as IVsShell;
             Assumes.Present(shell);
+
             shell.AdviseShellPropertyChanges(this, out shellCookie);
             //
-            _xsLangService = await GetServiceAsync(typeof(XSharpLanguageService)) as Microsoft.VisualStudio.Package.LanguageService;
-            // LibraryManager : Offers Object Browser and ClassView
             // ObjectBrowser : Add the LibraryManager service as a Service provided by that container
             IServiceContainer container = this as IServiceContainer;
             ServiceCreatorCallback callback = new ServiceCreatorCallback(CreateLibraryService);
@@ -334,6 +329,23 @@ namespace XSharp.Project
 
         internal static string VsVersion;
 
+        internal async void StartLanguageService()
+        {
+            if (_xsLangService == null)
+            {
+                IServiceContainer serviceContainer = this as IServiceContainer;
+                await JoinableTaskFactory.SwitchToMainThreadAsync();
+                if (serviceContainer.GetService(typeof(XSharpLanguageService))== null)
+                {
+                    XSharpLanguageService langService = new XSharpLanguageService(this);
+                    serviceContainer.AddService(typeof(XSharpLanguageService),
+                                                langService,
+                                                true);
+                }
+                _xsLangService =  GetService(typeof(XSharpLanguageService)) as Microsoft.VisualStudio.Package.LanguageService;
+            }
+
+        }
         private object CreateLibraryService(IServiceContainer container, Type serviceType)
         {
             if (typeof(IXSharpLibraryManager) == serviceType)
@@ -348,8 +360,7 @@ namespace XSharp.Project
         {
             try
             {
-                _uiThread.MustBeCalledFromUIThread();
-                this.UnRegisterDebuggerEvents();
+                UIThread.DoOnUIThread(() => this.UnRegisterDebuggerEvents());
                 if (null != _libraryManager)
                 {
                     _libraryManager.Dispose();
@@ -358,7 +369,8 @@ namespace XSharp.Project
             }
             finally
             {
-                base.Dispose(disposing);
+                UIThread.DoOnUIThread(() => base.Dispose(disposing));
+
             }
         }
 
@@ -438,16 +450,20 @@ namespace XSharp.Project
             return Utilities.ShowMessageBox(this, message, title, icon, buttons, defaultButton);
 
         }
+        protected override  object GetService(Type serviceType)
+        {
+            object result= null;
+            UIThread.DoOnUIThread( ()=> result = MyGetService(serviceType));
+            return result;
+        }
+        private object MyGetService(Type serviceType)
+        {
+            return base.GetService(serviceType);
+        }
 
         #endregion
 
         #region IOleComponent Members
-        internal async void LangServiceInit()
-        {
-            Task<XSharpLanguageService> t = await GetServiceAsync(typeof(XSharpLanguageService)) as Task<XSharpLanguageService>;
-            Assumes.Present(t);
-            _xsLangService = t.Result;
-        }
 
         public int FDoIdle(uint grfidlef)
         {
@@ -456,10 +472,6 @@ namespace XSharp.Project
             // reference the GUID for our language service.
             //Microsoft.VisualStudio.Package.LanguageService service = GetService(typeof(XSharpLanguageService))
             //                          as Microsoft.VisualStudio.Package.LanguageService;
-            if ( _xsLangService == null )
-            {
-                LangServiceInit();
-            }
             if ( _xsLangService != null)
             {
                 _xsLangService.OnIdle(bPeriodic);
@@ -559,7 +571,7 @@ namespace XSharp.Project
         {
             int hr;
             _uiThread.MustBeCalledFromUIThread();
-            m_debugger = base.GetService(typeof(SVsShellDebugger)) as IVsDebugger;
+            m_debugger = this.GetService(typeof(SVsShellDebugger)) as IVsDebugger;
             if (m_debugger != null)
             {
                 hr = m_debugger.AdviseDebuggerEvents(this, out m_Debuggercookie);
@@ -619,6 +631,10 @@ namespace XSharp.Project
             }
         }
 
+        internal static IComponentModel GetComponentModel()
+        {
+            return (IComponentModel) GetGlobalService(typeof(SComponentModel));
+        }
     }
 
 

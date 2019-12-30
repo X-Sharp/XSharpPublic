@@ -135,7 +135,7 @@ namespace XSharp.Project
                         var snapshot = editSession.Snapshot;
                         try
                         {
-                            var end = DateTime.Now + new TimeSpan(0,0,2);
+                            var end = DateTime.Now + new TimeSpan(0, 0, 2);
                             int counter = 0;
                             foreach (int nLine in lines)
                             {
@@ -166,9 +166,11 @@ namespace XSharp.Project
 
             }
         }
-        public CommandFilter(IWpfTextView textView, ICompletionBroker completionBroker, ITextStructureNavigator nav, ISignatureHelpBroker signatureBroker, IBufferTagAggregatorFactoryService aggregator)
+        public CommandFilter(IWpfTextView textView, ICompletionBroker completionBroker, ITextStructureNavigator nav, ISignatureHelpBroker signatureBroker, IBufferTagAggregatorFactoryService aggregator, VsTextViewCreationListener provider)
         {
             m_navigator = nav;
+
+            m_provider = provider;
 
             _completionSession = null;
             _signatureSession = null;
@@ -501,7 +503,7 @@ namespace XSharp.Project
                 }
                 if (changed && _buffer.Properties.ContainsProperty(typeof(XSharpClassifier)))
                 */
-                if ( _buffer.Properties.ContainsProperty(typeof(XSharpClassifier)))
+                if (_buffer.Properties.ContainsProperty(typeof(XSharpClassifier)))
                 {
                     var classify = _buffer.Properties.GetProperty<XSharpClassifier>(typeof(XSharpClassifier));
                     classify.Classify();
@@ -518,16 +520,23 @@ namespace XSharp.Project
 
         bool completionWasSelected = false;
         CompletionSelectionStatus completionWas;
+        private VsTextViewCreationListener m_provider;
 
         public int Exec(ref Guid pguidCmdGroup, uint nCmdID, uint nCmdexecopt, IntPtr pvaIn, IntPtr pvaOut)
         {
+            if (Microsoft.VisualStudio.Shell.VsShellUtilities.IsInAutomationFunction(m_provider.ServiceProvider))
+            {
+                return Next.Exec(ref pguidCmdGroup, nCmdID, nCmdexecopt, pvaIn, pvaOut);
+            }
+            //
             bool handled = false;
             if (_classifier == null)
                 registerClassifier();
             int hresult = VSConstants.S_OK;
+            bool returnClosedCompletionList = false;
 
             // 1. Pre-process
-            if (pguidCmdGroup == VSConstants.VSStd2K )
+            if (pguidCmdGroup == VSConstants.VSStd2K)
             {
                 switch ((VSConstants.VSStd2KCmdID)nCmdID)
                 {
@@ -539,6 +548,10 @@ namespace XSharp.Project
                         break;
                     case VSConstants.VSStd2KCmdID.RETURN:
                         handled = CompleteCompletionSession();
+                        if (handled)
+                        {
+                            returnClosedCompletionList = true;
+                        }
                         break;
                     case VSConstants.VSStd2KCmdID.TAB:
                         handled = CompleteCompletionSession();
@@ -583,7 +596,7 @@ namespace XSharp.Project
             }
 
             // Let others do their thing
-            if (!handled )
+            if (!handled)
             {
                 if (_completionSession != null)
                 {
@@ -601,7 +614,7 @@ namespace XSharp.Project
                 hresult = Next.Exec(pguidCmdGroup, nCmdID, nCmdexecopt, pvaIn, pvaOut);
             }
 
-            if (ErrorHandler.Succeeded(hresult) )
+            if (ErrorHandler.Succeeded(hresult))
             {
                 // 3. Post process
                 if (pguidCmdGroup == Microsoft.VisualStudio.VSConstants.VSStd2K)
@@ -657,6 +670,9 @@ namespace XSharp.Project
                                 }
                             }
                             break;
+                        case VSConstants.VSStd2KCmdID.HELP:
+                        case VSConstants.VSStd2KCmdID.HELPKEYWORD:
+                            break;
                         case VSConstants.VSStd2KCmdID.BACKSPACE:
                             FilterCompletionSession('\0');
                             break;
@@ -682,11 +698,10 @@ namespace XSharp.Project
                             break;
 #endif
                         case VSConstants.VSStd2KCmdID.RETURN:
-                            if (!handled)
-                            {
-                                CancelSignatureSession();
+                            CancelSignatureSession();
+                            if (!returnClosedCompletionList)
                                 FormatLine();
-                            }
+                            handled = true;
                             break;
                         case VSConstants.VSStd2KCmdID.COMPLETEWORD:
                             break;
@@ -695,6 +710,8 @@ namespace XSharp.Project
                             MoveSignature();
                             break;
                     }
+                    //
+                    if (handled) return VSConstants.S_OK;
                 }
             }
 
@@ -803,16 +820,16 @@ namespace XSharp.Project
             {
                 return;
             }
-            if (Char.IsLetterOrDigit(ch) || ch == '_' )
+            if (Char.IsLetterOrDigit(ch) || ch == '_')
             {
-                 var line = caret.GetContainingLine();
+                var line = caret.GetContainingLine();
 
                 var lineText = line.GetText();
                 var pos = caret.Position - line.Start.Position;
                 int chars = 0;
                 bool done = false;
                 // count the number of characters in the current word. When > 2 then trigger completion
-                for (int i = pos-1; i >= 0; i--)
+                for (int i = pos - 1; i >= 0; i--)
                 {
                     switch (lineText[i])
                     {
@@ -872,10 +889,10 @@ namespace XSharp.Project
             return true;
         }
 
-        void formatKeyword(Completion completion , char nextChar)
+        void formatKeyword(Completion completion, char nextChar)
         {
             completion.InsertionText = _optionsPage.SyncKeyword(completion.InsertionText);
-            if (nextChar != ' ' && nextChar != '\t')
+            if (nextChar != ' ' && nextChar != '\t' && nextChar != '\0')
             {
                 completion.InsertionText += " ";
             }
@@ -895,7 +912,7 @@ namespace XSharp.Project
             {
                 if ((_completionSession.SelectedCompletionSet.Completions.Count > 0) && (_completionSession.SelectedCompletionSet.SelectionStatus.IsSelected))
                 {
-                     if (_optionsPage.AutoPairs)
+                    if (_optionsPage.AutoPairs)
                     {
                         caret = _completionSession.TextView.Caret;
                         Kind kind = Kind.Unknown;
@@ -908,7 +925,7 @@ namespace XSharp.Project
                         {
                             formatKeyword(completion, '\0');
                         }
-                        XSharpProjectPackage.Instance.DisplayOutPutMessage(" --> select "+completion.InsertionText);
+                        XSharpProjectPackage.Instance.DisplayOutPutMessage(" --> select " + completion.InsertionText);
                         if (completion.InsertionText.EndsWith("("))
                         {
                             moveBack = true;
@@ -954,7 +971,7 @@ namespace XSharp.Project
                     if (_completionSession.SelectedCompletionSet.SelectionStatus.Completion != null)
                     {
                         var completion = _completionSession.SelectedCompletionSet.SelectionStatus.Completion;
-                        if (completion is XSCompletion  && ((XSCompletion) completion).Kind == Kind.Keyword)
+                        if (completion is XSCompletion && ((XSCompletion)completion).Kind == Kind.Keyword)
                         {
                             formatKeyword(completion, ch);
                         }
@@ -1154,7 +1171,7 @@ namespace XSharp.Project
             //
             if (cType != null && methodName != null)
             {
-                XSharpLanguage.XSharpTokenTools.SearchMethodTypeIn(cType, methodName, XSharpModel.Modifiers.Private, false, out gotoElement, file.Project.Dialect );
+                XSharpLanguage.XSharpTokenTools.SearchMethodTypeIn(cType, methodName, XSharpModel.Modifiers.Private, false, out gotoElement, file.Project.Dialect);
             }
             else
             {
@@ -1370,10 +1387,10 @@ namespace XSharp.Project
         DEFINE_GUID(GUID_VsSymbolScope_Solution, 0xb1ba9461, 0xfc54, 0x45b3, 0xa4, 0x84, 0xcb, 0x6d, 0xd0, 0xb9, 0x5c, 0x94);
         */
 
-                /// <summary>
-                ///     If Visual Studio's recognizes the given member and knows where its source code is, goes to the source code.
-                ///     Otherwise, opens the "Find Symbols" ToolWindow.
-                /// </summary>
+        /// <summary>
+        ///     If Visual Studio's recognizes the given member and knows where its source code is, goes to the source code.
+        ///     Otherwise, opens the "Find Symbols" ToolWindow.
+        /// </summary>
         public static void GotoMemberDefinition(string memberName, uint searchOptions = (uint)_VSOBSEARCHOPTIONS.VSOBSO_LOOKINREFS)
         {
             gotoDefinition(memberName, _LIB_LISTTYPE.LLT_MEMBERS, searchOptions);
@@ -1426,6 +1443,7 @@ namespace XSharp.Project
             IVsSimpleLibrary2 simpleLibrary = null;
             //
             System.IServiceProvider provider = XSharpProjectPackage.Instance;
+            // ProjectPackage already switches to UI thread inside GetService
             IVsObjectManager2 mgr = provider.GetService(typeof(SVsObjectManager)) as IVsObjectManager2;
             if (mgr != null)
             {
@@ -1503,20 +1521,26 @@ namespace XSharp.Project
         private static bool canFindSymbols(string memberName, uint searchOptions)
         {
             System.IServiceProvider provider = XSharpProjectPackage.Instance;
+            bool result = true;
+            // ProjectPackage already switches to UI thread inside GetService
             IVsFindSymbol searcher = provider.GetService(typeof(SVsObjectSearch)) as IVsFindSymbol;
             Assumes.Present(searcher);
             var guidSymbolScope = new Guid(XSharpConstants.Library);
-            return HResult.Succeeded(searcher.DoSearch(ref guidSymbolScope, createSearchCriteria(memberName, searchOptions)));
+            result = HResult.Succeeded(searcher.DoSearch(ref guidSymbolScope, createSearchCriteria(memberName, searchOptions)));
+            return result;
         }
 
         private static bool canFindAllSymbols(string memberName, uint searchOptions)
         {
             System.IServiceProvider provider = XSharpProjectPackage.Instance;
+            bool result= true;
+            // ProjectPackage already switches to UI thread inside GetService
             IVsFindSymbol searcher = provider.GetService(typeof(SVsObjectSearch)) as IVsFindSymbol;
             Assumes.Present(searcher);
             var guidSymbolScope = ObjectBrowserHelper.GUID_VsSymbolScope_All;
             //
-            return HResult.Succeeded(searcher.DoSearch(ref guidSymbolScope, createSearchCriteria(memberName, searchOptions)));
+            result = HResult.Succeeded(searcher.DoSearch(ref guidSymbolScope, createSearchCriteria(memberName, searchOptions)));
+            return result;
         }
 
         private static VSOBSEARCHCRITERIA2[] createSearchCriteria(string typeOrMemberName, uint searchOptions)

@@ -402,6 +402,7 @@ namespace XSharpColorizer
                         int nStart, nEnd;
                         nStart = oElement.nOffSet;
                         nEnd = oElement.nOffSet;
+                        //
                         var oNext = oElement.oNext;
                         if (oElement.eType == EntityType._VOStruct
                             || oElement.eType == EntityType._Union)
@@ -411,6 +412,22 @@ namespace XSharpColorizer
                                 oNext = oNext.oNext;
                             }
                         }
+                        //
+                        int nParentEnd = nEnd;
+                        if (oElement.oParent?.cName != XElement.GlobalName)
+                        {
+                            // find the endclass line after this element
+                            foreach (var oLine in info.SpecialLines)
+                            {
+                                if (oLine.eType == LineType.EndClass && oLine.Line > oElement.nStartLine)
+                                {
+                                    var nLine = oLine.Line;
+                                    // our lines are 1 based and we want the line before, so -2
+                                    nParentEnd = snapshot.GetLineFromLineNumber(nLine - 2).Start;
+                                    break;
+                                }
+                            }
+                        }
                         if (oNext != null)
                         {
                             var nLine = oNext.nStartLine;
@@ -418,23 +435,13 @@ namespace XSharpColorizer
                                 nLine = oNext.VisualStartLine;
                             // our lines are 1 based and we want the line before, so -2
                             nEnd = snapshot.GetLineFromLineNumber(nLine - 2).Start;
+                            // If our Parent ends before the Next, get the Parent's End
+                            if (nParentEnd < nEnd)
+                                nEnd = nParentEnd;
                         }
                         else
                         {
-                            if (oElement.oParent?.cName != XElement.GlobalName)
-                            {
-                                // find the endclass line after this element
-                                foreach (var oLine in info.SpecialLines)
-                                {
-                                    if (oLine.eType == LineType.EndClass && oLine.Line > oElement.nStartLine)
-                                    {
-                                        var nLine = oLine.Line;
-                                        // our lines are 1 based and we want the line before, so -2
-                                        nEnd = snapshot.GetLineFromLineNumber(nLine - 2).Start;
-                                        break;
-                                    }
-                                }
-                            }
+                            nEnd = nParentEnd;
                             if (nEnd == nStart)
                             {
                                 var nEndLine = snapshot.LineCount;

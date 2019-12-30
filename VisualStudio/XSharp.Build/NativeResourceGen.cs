@@ -45,8 +45,8 @@ namespace XSharp.Build {
 
         public NativeResourceCompiler() : base()
         {
-        }
 
+        }
 
         private int numberofInputFiles {
             get {
@@ -305,7 +305,6 @@ namespace XSharp.Build {
         /// </summary>
         public string OutputPath { get; set; }
 
-
         public string DefineConstants { get; set; }
 
         /// <summary>
@@ -318,8 +317,10 @@ namespace XSharp.Build {
         /// Encoding for ResponseFile
         /// </summary>
         protected override Encoding ResponseFileEncoding {
-            get {
-                return Encoding.ASCII;
+            get
+            {
+                // the native resource compiler does not understand UTF8. We don't use ASCII because that "kill" accents
+                return Encoding.Default;
             }
         }
 

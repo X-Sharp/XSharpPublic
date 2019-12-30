@@ -1,6 +1,6 @@
 ﻿//
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 using System;
@@ -145,6 +145,7 @@ namespace XSharp.Project
         protected virtual string UpdateGeneratedCodeFile(FileNode fileNode, byte[] data, int size, string fileName, HierarchyNode dependentNode)
         {
             string filePath = Path.Combine(Path.GetDirectoryName(fileNode.GetMkDocument()), fileName);
+
             IVsRunningDocumentTable rdt = this.ProjectMgr.GetService(typeof(SVsRunningDocumentTable)) as IVsRunningDocumentTable;
 
             // (kberes) Shouldn't this be an InvalidOperationException instead with some not to annoying errormessage to the user?
@@ -505,6 +506,15 @@ namespace XSharp.Project
 
             return nspace;
         }
+        private IVsRunningDocumentTable DocumentTable
+        {
+            get
+            {
+                IVsRunningDocumentTable rdt = null;
+                UIThread.DoOnUIThread( ()=> rdt = (IVsRunningDocumentTable) this.ProjectMgr.GetService(typeof(SVsRunningDocumentTable)) );
+                return rdt;
+            }
+        }
 
         #region Helper Methods
         /// <summary>
@@ -517,7 +527,7 @@ namespace XSharp.Project
             string bufferContents = "";
             srpStream = null;
 
-            IVsRunningDocumentTable rdt = this.ProjectMgr.GetService(typeof(SVsRunningDocumentTable)) as IVsRunningDocumentTable;
+            IVsRunningDocumentTable rdt = this.DocumentTable;
             if (rdt != null)
             {
                 IVsHierarchy hier;
@@ -535,7 +545,8 @@ namespace XSharp.Project
                         Guid iid = VSConstants.IID_IUnknown;
                         cookie = 0;
                         docInRdt = false;
-                        ILocalRegistry localReg = this.ProjectMgr.GetService(typeof(SLocalRegistry)) as ILocalRegistry;
+                        ILocalRegistry localReg = null;
+                        UIThread.DoOnUIThread( () => localReg = (ILocalRegistry) this.ProjectMgr.GetService(typeof(SLocalRegistry)) );
                         ErrorHandler.ThrowOnFailure(localReg.CreateInstance(CLSID_VsTextBuffer, null, ref iid, (uint)CLSCTX.CLSCTX_INPROC_SERVER, out docData));
                     }
 

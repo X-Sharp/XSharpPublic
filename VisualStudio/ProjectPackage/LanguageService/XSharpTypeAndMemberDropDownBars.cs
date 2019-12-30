@@ -9,6 +9,8 @@ using Microsoft.VisualStudio.Package;
 using System.Collections;
 using Microsoft.VisualStudio.TextManager.Interop;
 using XSharpModel;
+using System.Diagnostics;
+using XSharp.Project.OptionsPages;
 
 namespace XSharp.LanguageService
 {
@@ -23,12 +25,15 @@ namespace XSharp.LanguageService
         uint _lastHashCode = 0;
         bool lastIncludeFields = false;
         bool lastCurrentTypeOnly = false;
+        IntellisenseOptionsPage _optionsPage;
 
         public XSharpTypeAndMemberDropDownBars(
             XSharpLanguageService lang,
             IVsTextView view)
             : base(lang)
         {
+            var package = XSharp.Project.XSharpProjectPackage.Instance;
+            _optionsPage = package.GetIntellisenseOptionsPage();
         }
         public override int OnItemChosen(int combo, int entry)
         {
@@ -57,12 +62,10 @@ namespace XSharp.LanguageService
             ref int selectedMember)
         {
             //
-            var package = XSharp.Project.XSharpProjectPackage.Instance;
-            var optionsPage = package.GetIntellisenseOptionsPage();
-            var sortItems = optionsPage.SortNavigationBars;
-            var includeFields = optionsPage.IncludeFieldsInNavigationBars;
-            var currentTypeOnly = optionsPage.ShowMembersOfCurrentTypeOnly;
-            if (optionsPage.DisableEditorDropdowns)
+            var sortItems = _optionsPage.SortNavigationBars;
+            var includeFields = _optionsPage.IncludeFieldsInNavigationBars;
+            var currentTypeOnly = _optionsPage.ShowMembersOfCurrentTypeOnly;
+            if (_optionsPage.DisableEditorDropdowns)
             {
                 dropDownTypes.Clear();
                 dropDownMembers.Clear();
@@ -209,8 +212,7 @@ namespace XSharp.LanguageService
                 {
                     name = "?";
                 }
-                elt = new XDropDownMember(name, sp, eltType.Glyph, ft);
-                elt.Element = eltType;
+                elt = new XDropDownMember(name, sp, eltType.Glyph, ft, eltType);
                 nSelect = dropDownTypes.Add(elt);
                 if (eltType?.FullName == currentType?.FullName)
                 {
@@ -284,15 +286,13 @@ namespace XSharp.LanguageService
                     {
                         if (currentType.Kind != Kind.Delegate)
                         {
-                            elt = new XDropDownMember("(" + currentType.Name + ")", spM, currentType.Glyph, ft);
-                            elt.Element = currentType;
+                            elt = new XDropDownMember("(" + currentType.Name + ")", spM, currentType.Glyph, ft,currentType);
                             dropDownMembers.Add(elt);
                         }
                     }
                     else
                     {
-                        elt = new XDropDownMember(currentType.Name, spM, currentType.Glyph, ft);
-                        elt.Element = currentType;
+                        elt = new XDropDownMember(currentType.Name, spM, currentType.Glyph, ft,currentType);
                         dropDownMembers.Add(elt);
                     }
                 }
@@ -310,7 +310,7 @@ namespace XSharp.LanguageService
                         }
 
                         string prototype = member.ComboPrototype;
-                        if (!currentTypeOnly && member.Parent != null && member.Parent != typeGlobal)
+                        if (!currentTypeOnly && member.Parent != null && member.Parent.Name !=XElement.GlobalName)
                         {
                             if (member.Modifiers.HasFlag(Modifiers.Static))
                                 prototype = member.Parent.Name + "." + prototype;
@@ -323,9 +323,8 @@ namespace XSharp.LanguageService
                             ft  = DROPDOWNFONTATTR.FONTATTR_GRAY;
                             prototype += " (" + System.IO.Path.GetFileName(member.File.SourcePath) + ")";
                         }
-                        elt = new XDropDownMember(prototype, spM, member.Glyph, ft);
+                        elt = new XDropDownMember(prototype, spM, member.Glyph, ft,member);
                         nSelect = dropDownMembers.Add(elt);
-                        elt.Element = member;
                         if (member == currentMember)
                         {
                             nSelMbr = nSelect;
@@ -369,14 +368,16 @@ namespace XSharp.LanguageService
         }
 
     }
+    [DebuggerDisplay("{Element.Kind} {Label,nq}")]
     internal class XDropDownMember : DropDownMember
     {
-            internal XDropDownMember(string label, TextSpan span, int glyph, DROPDOWNFONTATTR fontAttribute) :
+            internal XDropDownMember(string label, TextSpan span, int glyph, DROPDOWNFONTATTR fontAttribute, XElement element) :
             base(label, span, glyph, fontAttribute)
         {
+            Element = element;
 
         }
-        internal XElement Element { get; set; }
+        internal XElement Element { get; private set; }
     }
 }
 

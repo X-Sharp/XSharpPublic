@@ -65,6 +65,16 @@ BEGIN NAMESPACE XSharpModel
 			SELF:aTypeStack					:= Stack<EntityObject>{}
 			SELF:oGlobalObject				:= EntityObject{EntityType._Class}
 			SELF:oGlobalObject:cName		:= XELement.GlobalName
+			LOCAL statDummy AS LOGIC
+			LOCAL partDummy AS LOGIC
+			LOCAL eAccessLevel AS AccessLevel
+			LOCAL eModifiers AS EntityModifiers
+			SELF:SetAccessModifiers( "PUBLIC", eAccessLevel, eModifiers, statDummy, partDummy )
+			SELF:SetAccessModifiers( "STATIC", eAccessLevel, eModifiers, statDummy, partDummy )
+			SELF:SetAccessModifiers( "PARTIAL", eAccessLevel, eModifiers, statDummy, partDummy )
+			SELF:oGlobalObject:eAccessLevel := eAccessLevel
+			SELF:oGlobalObject:eModifiers := eModifiers
+			//
 			SELF:oGlobalObject:lStatic		:= TRUE
 			SELF:oGlobalObject:lPartial		:= TRUE
 			SELF:oGlobalObject:nStartLine	:= 1

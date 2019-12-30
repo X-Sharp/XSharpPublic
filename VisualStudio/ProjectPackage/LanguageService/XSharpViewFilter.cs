@@ -29,88 +29,8 @@ namespace XSharp.LanguageService
         {
 
         }
-        public override ExpansionProvider GetExpansionProvider()
-        {
-            return base.GetExpansionProvider();
-        }
-        public override void CommentSelection()
-        {
-            base.CommentSelection();
-        }
-        public override bool CanReformat()
-        {
-            return base.CanReformat();
-        }
-        public override TextTipData CreateTextTipData()
-        {
-            return base.CreateTextTipData();
-        }
-
-
-        public override void Close()
-        {
-            base.Close();
-        }
-
-        public override void RegisterTextViewEventHandlers(Microsoft.VisualStudio.TextManager.Interop.IVsTextView view)
-        {
-            base.RegisterTextViewEventHandlers(view);
-        }
-
-        public override void RegisterExpansionManagerEventHandlers(Microsoft.VisualStudio.TextManager.Interop.IVsExpansionManager emgr)
-        {
-            base.RegisterExpansionManagerEventHandlers(emgr);
-        }
-
-        public override int OnAfterSnippetsKeyBindingChange(uint dwCmdGuid, uint dwCmdId, int fBound)
-        {
-            return base.OnAfterSnippetsKeyBindingChange(dwCmdGuid, dwCmdId, fBound);
-        }
-
-        public override int OnAfterSnippetsUpdate()
-        {
-            return base.OnAfterSnippetsUpdate();
-        }
-
-        public override int GetWordExtent(int line, int index, uint flags, Microsoft.VisualStudio.TextManager.Interop.TextSpan[] span)
-        {
-            return base.GetWordExtent(line, index, flags, span);
-        }
-
-        public override int GetDataTipText(Microsoft.VisualStudio.TextManager.Interop.TextSpan[] aspan, out string textValue)
-        {
-            return base.GetDataTipText(aspan, out textValue);
-        }
-
-        public override int GetPairExtents(int line, int index, Microsoft.VisualStudio.TextManager.Interop.TextSpan[] span)
-        {
-            return base.GetPairExtents(line, index, span);
-        }
-
-        public override void OnChangeCaretLine(Microsoft.VisualStudio.TextManager.Interop.IVsTextView view, int line, int col)
-        {
-            base.OnChangeCaretLine(view, line, col);
-        }
-
-        public override void OnChangeScrollInfo(Microsoft.VisualStudio.TextManager.Interop.IVsTextView view, int iBar, int iMinUnit, int iMaxUnits, int iVisibleUnits, int iFirstVisibleUnit)
-        {
-            base.OnChangeScrollInfo(view, iBar, iMinUnit, iMaxUnits, iVisibleUnits, iFirstVisibleUnit);
-        }
-
-        public override void OnKillFocus(Microsoft.VisualStudio.TextManager.Interop.IVsTextView view)
-        {
-            base.OnKillFocus(view);
-        }
-
-        public override void OnSetBuffer(Microsoft.VisualStudio.TextManager.Interop.IVsTextView view, Microsoft.VisualStudio.TextManager.Interop.IVsTextLines buffer)
-        {
-            base.OnSetBuffer(view, buffer);
-        }
-
-        public override void OnSetFocus(Microsoft.VisualStudio.TextManager.Interop.IVsTextView view)
-        {
-            base.OnSetFocus(view);
-        }
+        // This class is only used for snippet support.
+        // Once that has been moved to MEF we can remove the class
 
         protected override int QueryCommandStatus(ref Guid guidCmdGroup, uint nCmdId)
         {
@@ -139,10 +59,6 @@ namespace XSharp.LanguageService
             return base.QueryCommandStatus(ref guidCmdGroup, nCmdId);
         }
 
-        protected override int QueryParameterList(ref Guid guidCmdGroup, uint nCmdId, uint nCmdexecopt, IntPtr pvaIn, IntPtr pvaOut)
-        {
-            return base.QueryParameterList(ref guidCmdGroup, nCmdId, nCmdexecopt, pvaIn, pvaOut);
-        }
 
         public override bool HandlePreExec(ref Guid guidCmdGroup, uint nCmdId, uint nCmdexecopt, IntPtr pvaIn, IntPtr pvaOut)
         {
@@ -176,66 +92,5 @@ namespace XSharp.LanguageService
             }
             return base.HandlePreExec(ref guidCmdGroup, nCmdId, nCmdexecopt, pvaIn, pvaOut);
         }
-
-        public override void HandlePostExec(ref Guid guidCmdGroup, uint nCmdId, uint nCmdexecopt, IntPtr pvaIn, IntPtr pvaOut, bool bufferWasChanged)
-        {
-            base.HandlePostExec(ref guidCmdGroup, nCmdId, nCmdexecopt, pvaIn, pvaOut, bufferWasChanged);
-        }
-
-        protected override int ExecCommand(ref Guid guidCmdGroup, uint nCmdId, uint nCmdexecopt, IntPtr pvaIn, IntPtr pvaOut)
-        {
-            return base.ExecCommand(ref guidCmdGroup, nCmdId, nCmdexecopt, pvaIn, pvaOut);
-        }
-
-        protected override int InnerExec(ref Guid guidCmdGroup, uint nCmdId, uint nCmdexecopt, IntPtr pvaIn, IntPtr pvaOut)
-        {
-            return base.InnerExec(ref guidCmdGroup, nCmdId, nCmdexecopt, pvaIn, pvaOut);
-        }
-
-        public override void OnAutoComplete()
-        {
-            base.OnAutoComplete();
-        }
-
-        public override bool HandleSmartIndent()
-        {
-            return base.HandleSmartIndent();
-        }
-
-        public override void HandleQuickInfo()
-        {
-            base.HandleQuickInfo();
-        }
-
-        public override int GetFullDataTipText(string textValue, Microsoft.VisualStudio.TextManager.Interop.TextSpan ts, out string fullTipText)
-        {
-            return base.GetFullDataTipText(textValue, ts, out fullTipText);
-        }
-
-        public override void HandleGoto(VSStd97CmdID cmd)
-        {
-            base.HandleGoto(cmd);
-        }
-
-        public override void ShowContextMenu(int menuId, Guid groupGuid, Microsoft.VisualStudio.OLE.Interop.IOleCommandTarget target, int x, int y)
-        {
-            base.ShowContextMenu(menuId, groupGuid, target, x, y);
-        }
-
-        public override void UncommentSelection()
-        {
-            base.UncommentSelection();
-        }
-
-        public override void ReformatDocument()
-        {
-            base.ReformatDocument();
-        }
-
-        public override void ReformatSelection()
-        {
-            base.ReformatSelection();
-        }
-
     }
 }

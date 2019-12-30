@@ -1,6 +1,6 @@
 ﻿//
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 using System;
@@ -18,7 +18,7 @@ using IOleServiceProvider = Microsoft.VisualStudio.OLE.Interop.IServiceProvider;
 
 using System.ComponentModel.Design;
 using System.Diagnostics;
-
+using Microsoft.VisualStudio.Project;
 
 namespace XSharp.Project
 {
@@ -58,27 +58,29 @@ namespace XSharp.Project
         public virtual object GetService(Type serviceType)
         {
             // This is were we will load the IVSMDProvider interface
-            return _serviceProvider.GetService(serviceType);
+            object result = null;
+            UIThread.DoOnUIThread(() => result = _serviceProvider.GetService(serviceType));
+            return result;
         }
 
         // This method is called by the Environment (inside IVsUIShellOpenDocument::
-        // OpenStandardEditor and OpenSpecificEditor) to map a LOGICAL view to a 
+        // OpenStandardEditor and OpenSpecificEditor) to map a LOGICAL view to a
         // PHYSICAL view. A LOGICAL view identifies the purpose of the view that is
-        // desired (e.g. a view appropriate for Debugging [LOGVIEWID_Debugging], or a 
+        // desired (e.g. a view appropriate for Debugging [LOGVIEWID_Debugging], or a
         // view appropriate for text view manipulation as by navigating to a find
-        // result [LOGVIEWID_TextView]). A PHYSICAL view identifies an actual type 
-        // of view implementation that an IVsEditorFactory can create. 
+        // result [LOGVIEWID_TextView]). A PHYSICAL view identifies an actual type
+        // of view implementation that an IVsEditorFactory can create.
         //
-        // NOTE: Physical views are identified by a string of your choice with the 
-        // one constraint that the default/primary physical view for an editor  
+        // NOTE: Physical views are identified by a string of your choice with the
+        // one constraint that the default/primary physical view for an editor
         // *MUST* use a NULL string as its physical view name (*pbstrPhysicalView = NULL).
         //
         // NOTE: It is essential that the implementation of MapLogicalView properly
         // validates that the LogicalView desired is actually supported by the editor.
         // If an unsupported LogicalView is requested then E_NOTIMPL must be returned.
         //
-        // NOTE: The special Logical Views supported by an Editor Factory must also 
-        // be registered in the local registry hive. LOGVIEWID_Primary is implicitly 
+        // NOTE: The special Logical Views supported by an Editor Factory must also
+        // be registered in the local registry hive. LOGVIEWID_Primary is implicitly
         // supported by all editor types and does not need to be registered.
         // For example, an editor that supports a ViewCode/ViewDesigner scenario
         // might register something like the following:
@@ -192,7 +194,9 @@ namespace XSharp.Project
                 textLines = _package.CreateInstance(ref clsid, ref riid, textLinesType) as IVsTextLines;
 
                 // set the buffer's site
-                ((IObjectWithSite)textLines).SetSite(_serviceProvider.GetService(typeof(IOleServiceProvider)));
+                IOleServiceProvider provider = null;
+                UIThread.DoOnUIThread(() => provider = (IOleServiceProvider)_serviceProvider.GetService(typeof(IOleServiceProvider)));
+                ((IObjectWithSite)textLines).SetSite(provider);
             }
             else
             {
@@ -219,11 +223,11 @@ namespace XSharp.Project
         }
 
         private IntPtr CreateDocumentView(
-            string physicalView, 
-            IVsHierarchy hierarchy, 
-            uint itemid, 
-            IVsTextLines textLines, 
-            out string editorCaption, 
+            string physicalView,
+            IVsHierarchy hierarchy,
+            uint itemid,
+            IVsTextLines textLines,
+            out string editorCaption,
             ref Guid cmdUI)
         {
             //Init out params
@@ -249,26 +253,27 @@ namespace XSharp.Project
         }
 
         private IntPtr CreateFormView(
-            IVsHierarchy hierarchy, 
-            uint itemid, 
-            IVsTextLines textLines, 
-            ref string editorCaption, 
+            IVsHierarchy hierarchy,
+            uint itemid,
+            IVsTextLines textLines,
+            ref string editorCaption,
             ref Guid cmdUI)
         {
             // Request the Designer Service
             IVSMDDesignerService designerService = (IVSMDDesignerService)GetService(typeof(IVSMDDesignerService));
 
             // Create loader for the designer
-            IVSMDDesignerLoader designerLoader = 
+            IVSMDDesignerLoader designerLoader =
                 (IVSMDDesignerLoader)designerService.CreateDesignerLoader(
                     "Microsoft.VisualStudio.Designer.Serialization.VSDesignerLoader");
 
             bool loaderInitalized = false;
             try
             {
-                var service = _serviceProvider.GetService(typeof(IOleServiceProvider)) as IOleServiceProvider;
+                IOleServiceProvider service = null;
+                UIThread.DoOnUIThread( () => service = (IOleServiceProvider)_serviceProvider.GetService(typeof(IOleServiceProvider)) );
 
-                // Initialize designer loader 
+                // Initialize designer loader
                 designerLoader.Initialize(service, hierarchy, (int)itemid, textLines);
                 loaderInitalized = true;
 

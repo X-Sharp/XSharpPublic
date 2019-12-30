@@ -27,3 +27,7 @@
 "GeneratesDesignTimeSource"=dword:00000000
 "GeneratesSharedDesignTimeSource"=dword:00000001
 @="Generator for strongly typed settings class (public class)"
+[$RootKey$\Generators\{AA6C8D78-22FF-423A-9C7C-5F2393824E04}\MSDataSetGenerator]
+"CLSID"="{E76D53CC-3D4F-40a2-BD4D-4F3419755476}"
+"GeneratesDesignTimeSource"=dword:00000001
+@="Microsoft DataSet Code Generator for X#"

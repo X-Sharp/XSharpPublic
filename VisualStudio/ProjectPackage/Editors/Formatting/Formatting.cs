@@ -63,7 +63,7 @@ namespace XSharp.Project
         {
             // These are keywords that trigger out-denting. Some keywords have multiple begin keywords
             // ...
-            var result = new Dictionary<string, List<string>> (StringComparer.OrdinalIgnoreCase);
+            var result = new Dictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase);
             result.Add("ENDIF", new List<string>() { "IF" });
             result.Add("ENDCASE", new List<string>() { "DO" });
             result.Add("UNTIL", new List<string>() { "REPEAT" });
@@ -181,7 +181,7 @@ namespace XSharp.Project
 
 #if SMARTINDENT
 
-        private void copyWhiteSpaceFromPreviousLine(ITextSnapshotLine line, ITextEdit editSession )
+        private void copyWhiteSpaceFromPreviousLine( ITextEdit editSession, ITextSnapshotLine line)
         {
             // only copy the indentation from the previous line
             var text = line.GetText();
@@ -237,26 +237,34 @@ namespace XSharp.Project
                 {
                     if (!canIndentLine(line))
                     {
-                        copyWhiteSpaceFromPreviousLine(line, editSession);
+                        copyWhiteSpaceFromPreviousLine( editSession, line);
                     }
                     else
                     {
-                        indentation = getDesiredIndentation(line, editSession, alignOnPrev);
-                        if (indentation == -1)
+                        switch (_indentStyle)
                         {
-                            copyWhiteSpaceFromPreviousLine(line, editSession);
-                        }
-                        else
-                        {
-                            // but we may need to re-Format the previous line for Casing and Identifiers
-                            // so, do it before indenting the current line.
-                            lineNumber = lineNumber - 1;
-                            ITextSnapshotLine prevLine = line.Snapshot.GetLineFromLineNumber(lineNumber);
-                            if (canFormatLine(prevLine))
-                            {
-                                this.formatLineCase(editSession, prevLine);
-                            }
-                            CommandFilterHelper.FormatLineIndent(this.TextView, editSession, line, indentation);
+                            case vsIndentStyle.vsIndentStyleSmart:
+                                indentation = getDesiredIndentation(line, editSession, alignOnPrev);
+                                if (indentation == -1)
+                                {
+                                    copyWhiteSpaceFromPreviousLine( editSession, line);
+                                }
+                                else
+                                {
+                                    // but we may need to re-Format the previous line for Casing and Identifiers
+                                    // so, do it before indenting the current line.
+                                    lineNumber = lineNumber - 1;
+                                    ITextSnapshotLine prevLine = line.Snapshot.GetLineFromLineNumber(lineNumber);
+                                    if (canFormatLine(prevLine))
+                                    {
+                                        this.formatLineCase(editSession, prevLine);
+                                    }
+                                    CommandFilterHelper.FormatLineIndent(this.TextView, editSession, line, indentation);
+                                }
+                                break;
+                            case vsIndentStyle.vsIndentStyleDefault:
+                            case vsIndentStyle.vsIndentStyleNone:
+                                break;
                         }
                     }
                 }
@@ -1102,8 +1110,8 @@ namespace XSharp.Project
             try
             {
                 //
-                if (_indentStyle != vsIndentStyle.vsIndentStyleSmart)
-                    return -1;
+                //if (_indentStyle != vsIndentStyle.vsIndentStyleSmart)
+                //    return -1;
                 // How many spaces do we need ?
                 int indentValue = 0;
                 List<string> outdentTokens;

@@ -98,7 +98,7 @@ namespace XSharp.Project
         public XSharpProjectNode(XSharpProjectPackage package)
         {
             this.package = package;
-
+            package.StartLanguageService();
             InitializeImageList();
 
             InitializeCATIDs();

@@ -10,6 +10,10 @@
     <header>
       <para styleclass="Heading1">Version History</para>
     </header>
+    <para styleclass="Heading2">Compiler</para>
+    <list id="75" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text"><text styleclass="List1">Syntax errors (1003) or Parser errors (9002) in a source file could lead to multiple errors in the error list We are now only reporting the first of these error types in a source file.</text></li>
+    </list>
     <para styleclass="Heading1">Changes in 2.2.1.0 (Bandol GA 2.2a)</para>
     <para styleclass="Heading2">Compiler</para>
     <list id="75" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">

@@ -500,23 +500,30 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // create one syntax token per error
             // and one syntax token for the main file
             // these tokens will get as many errors as needed.
+            // We are only includin 1 syntax error per file (1003) and one parse error (9002)
             var textNode = SyntaxFactory.BadToken(null, _text.ToString(), null);
             var builder = new SyntaxListBuilder(parseErrors.Count+1);
-            //var reportedErrors = new List<ErrorCode>();
             if (!parseErrors.IsEmpty())
             {
-                //int errorsAdded = 0;
+                bool hasSyntaxError = false;
+                bool hasParserError = false;
                 foreach (var e in parseErrors)
                 {
-                    //if (errorsAdded > 10 &&  reportedErrors.Contains(e.Code))
-                    //{
-                    //    break;
-                    //}
-                    //errorsAdded++;
-                    //if (! reportedErrors.Contains(e.Code))
-                    //{
-                    //    reportedErrors.Add(e.Code);
-                    //}
+                    bool add = true;
+                    if (e.Code == ErrorCode.ERR_SyntaxError)
+                    {
+                        add = !hasSyntaxError;
+                        hasSyntaxError = true;
+                    }
+                    else if (e.Code == ErrorCode.ERR_ParserError)
+                    {
+                        add = !hasParserError;
+                        hasParserError = true;
+                    }
+                    if (!add)
+                    {
+                        continue;
+                    }
                     if (e.Node != null)
                     {
                         var node = e.Node;

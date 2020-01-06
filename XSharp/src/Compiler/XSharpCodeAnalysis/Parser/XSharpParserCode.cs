@@ -13,7 +13,8 @@ using System;
 using Antlr4.Runtime.Tree;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
-using Microsoft.CodeAnalysis; 
+using Microsoft.CodeAnalysis;
+using System.Diagnostics;
 #if !VSPARSER
 using MCT = Microsoft.CodeAnalysis.Text;
 using CoreInternalSyntax = Microsoft.CodeAnalysis.Syntax.InternalSyntax;
@@ -808,6 +809,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
     }
 
 
+    [DebuggerDisplay("{DebuggerDisplay()}")]
     internal class ParseErrorData
     {
         internal readonly IXParseTree Node;
@@ -816,6 +818,15 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         internal ParseErrorData(IErrorNode enode, ErrorCode code, params object[] args) :
             this(token: enode.Symbol, code: code, args: args)
         {
+        }
+
+        internal string DebuggerDisplay()
+        {
+            if (Node is XTerminalNodeImpl xterm)
+                return Code.ToString() + " " + xterm.Symbol.Line.ToString() + " " + xterm.Symbol.Text;
+            if (Node.SourceSymbol != null)
+                return Code.ToString() + " " + Node.SourceSymbol.Line.ToString() + " " + Node.SourceSymbol.Text;
+             return Code.ToString();
         }
         //internal ParseErrorData(ErrorCode code) :
         //    this(node: null, code: code, args: Array.Empty<object>())

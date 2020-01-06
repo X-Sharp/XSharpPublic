@@ -65,7 +65,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 id.Start = id.Stop = token;
                 sig.AddChild(sig.Id);
                 ExitIdentifier(id);    // Generate SyntaxToken 
-                if (string.Equals(name, _entryPoint, StringComparison.OrdinalIgnoreCase))
+                if (string.Equals(name, _entryPoint, XSharpString.Comparison))
                 {
                     sig.Type = new XP.DatatypeContext(func,0);
                     sig.Type.Start = new XSharpToken(XP.AS, "AS");

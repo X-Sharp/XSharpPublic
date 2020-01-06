@@ -1200,7 +1200,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             foreach (TypeParameterSymbol tpEnclosing in allTypeParameters)
             {
 #if XSHARP
-                if (CaseInsensitiveComparison.Equals(name, tpEnclosing.Name))
+                if (XSharpString.Equals(name, tpEnclosing.Name))
 #else
                 if (name == tpEnclosing.Name)
 #endif
@@ -1254,7 +1254,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         internal static bool HasNameQualifier(this NamedTypeSymbol type, string qualifiedName)
         {
 #if XSHARP
-            const StringComparison comparison = StringComparison.OrdinalIgnoreCase;
+           StringComparison comparison = XSharpString.Comparison;
 #else
             const StringComparison comparison = StringComparison.Ordinal;
 #endif

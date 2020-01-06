@@ -63,7 +63,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     break;
                 case "cs":
                     options.CaseSensitive = positive;
-                    OptionNotImplemented(diagnostics, oldname, "Case Sensitivity");
+                    XSharpString.CaseSensitive = positive;
                     break;
                 case "i":
                     if (value == null)
@@ -101,7 +101,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     break;
 
                 case "norun":
-                    OptionNotImplemented(diagnostics, oldname, "NoRun compiler option");
+                    OptionNotImplemented(diagnostics, oldname, "NoRun compiler option. To achieve the same result in X# simply remove the references to the X# and/or Vulcan runtime DLLs.");
                     break;
 
                 case "nostddefs":

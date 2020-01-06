@@ -11,7 +11,6 @@
     </header>
     <para styleclass="Normal">The -cs option directs the compiler to treat all identifiers and type names as case-sensitive.</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text style="font-weight:bold; color:#ff0000;">This option is not supported yet in the current version of the compiler</text></para>
     <para styleclass="Heading2">Syntax</para>
     <para styleclass="Code with box">-cs[+|-]</para>
     <para styleclass="Heading2">Arguments</para>
@@ -22,10 +21,12 @@
     <para styleclass="Normal">This option does not affect preprocessor symbols. The -vo8 compiler option controls case-sensitivitiy in the preprocessor. </para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">This option also does not affect keywords. Keywords in X# are always case-insensitive.</para>
-    <para styleclass="Normal"></para>
+    <para styleclass="Heading3">Note</para>
+    <para styleclass="Normal">If you run the shared compiler you have to pass the -cs compiler option through the commandline and not through a response file.</para>
+    <para styleclass="Normal">And when you mix case sensitive and not case sensitive projects then there will be 2 shared compiler processes running, one in case sensitive mode and the other in case insensitive mode.</para>
     <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment:</para>
     <para styleclass="Normal"></para>
-    <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
+    <list id="2" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">Open the project&apos;s Properties page.</li>
       <li styleclass="Normal" style="margin-left:13px;">Click the Language tab. </li>
       <li styleclass="Normal" style="margin-left:13px;">In the General section, modify the Case Sensitive Type Names property in the General. </li>

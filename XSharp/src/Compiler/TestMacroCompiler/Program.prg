@@ -35,7 +35,8 @@ FUNCTION Start() AS VOID
     ? Eval(cb1)
 	cb1 := &("{||MyToDay()}")
 	? Eval(cb1)      
-    wait
+    _wait()
+    
 	
 FUNCTION MyToday() AS USUAL STRICT
 RETURN Today()

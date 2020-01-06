@@ -18,7 +18,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Emit
     internal sealed class CSharpSymbolMatcher : SymbolMatcher
     {
 #if XSHARP
-        private static readonly StringComparer s_nameComparer = CaseInsensitiveComparison.Comparer;
+        private static readonly IEqualityComparer<string> s_nameComparer = XSharpString.Comparer;
 #endif
         private readonly MatchDefs _defs;
         private readonly MatchSymbols _symbols;

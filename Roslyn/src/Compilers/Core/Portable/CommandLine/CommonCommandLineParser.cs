@@ -425,6 +425,9 @@ namespace Microsoft.CodeAnalysis
             parsedArgs = null;
             sessionKey = null;
             var newArgs = new List<string>();
+#if XSHARP
+            XSharpString.CaseSensitive = false;
+#endif
             foreach (var arg in args)
             {
                 bool hasValue;
@@ -435,7 +438,11 @@ namespace Microsoft.CodeAnalysis
                     errorMessage = CodeAnalysisResources.Credits;
                     return false;  
                 }
-#endif                
+                if (IsClientArgsOption(arg, "/cs", out hasValue, out value))
+                {
+                    XSharpString.CaseSensitive = true;
+                }
+#endif
                 if (IsClientArgsOption(arg, "/keepalive", out hasValue, out value))
                 {
                     if (string.IsNullOrEmpty(value))

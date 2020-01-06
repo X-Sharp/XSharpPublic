@@ -25,7 +25,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             var declarationModifiers = MakeModifiers(syntax.Modifiers, location, diagnostics, out modifierErrors);
             this.MakeFlags(methodKind, declarationModifiers, returnsVoid: true, isExtensionMethod: false);
 #if XSHARP
-            if (! string.Equals(syntax.Identifier.ValueText,containingType.Name,System.StringComparison.OrdinalIgnoreCase))
+            if (!XSharpString.Equals(syntax.Identifier.ValueText,containingType.Name))
 #else
             if (syntax.Identifier.ValueText != containingType.Name)
 #endif

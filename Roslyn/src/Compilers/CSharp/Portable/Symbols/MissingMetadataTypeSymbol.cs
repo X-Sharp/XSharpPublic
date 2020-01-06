@@ -321,9 +321,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
 #if XSHARP
                 return (object)other != null &&
-                    string.Equals(MetadataName, other.MetadataName, StringComparison.OrdinalIgnoreCase) &&
+                    XSharpString.Equals(MetadataName, other.MetadataName) &&
                     arity == other.arity &&
-                    string.Equals(_namespaceName, other.NamespaceName, StringComparison.OrdinalIgnoreCase) &&
+                    XSharpString.Equals(_namespaceName, other.NamespaceName) &&
                     _containingModule.Equals(other._containingModule);
 #else
                 return (object)other != null &&
@@ -428,7 +428,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
                 var other = t2 as Nested;
 #if XSHARP
-                return (object)other != null && string.Equals(MetadataName, other.MetadataName, StringComparison.OrdinalIgnoreCase) &&
+                return (object)other != null && XSharpString.Equals(MetadataName, other.MetadataName) &&
                     arity == other.arity &&
                     _containingType.Equals(other._containingType, comparison);
 #else

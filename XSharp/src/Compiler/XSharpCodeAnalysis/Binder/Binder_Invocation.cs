@@ -33,7 +33,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var gns = node.Expression as GenericNameSyntax;
                 var arg = gns.TypeArgumentList.Arguments[0];
                 var method = arg.ToFullString();
-                bool pcallnative = method.IndexOf(XSharpSpecialNames.PCallNativePrefix, StringComparison.OrdinalIgnoreCase) >= 0;
+                bool pcallnative = method.IndexOf(XSharpSpecialNames.PCallNativePrefix, XSharpString.Comparison) >= 0;
                 if (pcallnative)
                 {
                     BindPCallNativeAndDelegate(node, analyzedArguments.Arguments, diagnostics, arg);

@@ -17,6 +17,7 @@ using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using System.Diagnostics;
 using System.Collections.Immutable;
 using System.Collections.Concurrent;
+using Microsoft.CodeAnalysis;
 
 namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
@@ -188,7 +189,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         Dictionary<string, IList<XSharpToken>> symbolDefines;
 
-        Dictionary<string, Func<XSharpToken>> macroDefines = new Dictionary<string, Func<XSharpToken>>(CaseInsensitiveComparison.Comparer);
+        Dictionary<string, Func<XSharpToken>> macroDefines = new Dictionary<string, Func<XSharpToken>>(XSharpString.Comparer);
 
         Stack<bool> defStates = new Stack<bool>();
         Stack<XSharpToken> regions = new Stack<XSharpToken>();
@@ -202,7 +203,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         bool _hasTransrules = false;
         int rulesApplied = 0;
         readonly int defsApplied = 0;
-        HashSet<string> activeSymbols = new HashSet<string>(/*CaseInsensitiveComparison.Comparer*/);
+        HashSet<string> activeSymbols = new HashSet<string>();
 
         readonly bool _preprocessorOutput = false;
         Stream _ppoStream;
@@ -427,7 +428,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _fileName = fileName;
             if (_options.VOPreprocessorBehaviour)
             {
-                symbolDefines = new Dictionary<string, IList<XSharpToken>>(CaseInsensitiveComparison.Comparer);
+                symbolDefines = new Dictionary<string, IList<XSharpToken>>(XSharpString.Comparer);
             }
             else
             {

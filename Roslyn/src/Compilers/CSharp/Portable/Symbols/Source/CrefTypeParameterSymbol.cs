@@ -102,7 +102,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             CrefTypeParameterSymbol other = t2 as CrefTypeParameterSymbol;
             return (object)other != null &&
 #if XSHARP
-                CaseInsensitiveComparison.Equals(other._name, _name) &&
+                XSharpString.Equals(other._name, _name) &&
 #else
                 other._name == _name &&
 #endif

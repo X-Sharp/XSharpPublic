@@ -875,7 +875,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             Debug.Assert(sameNameSymbols.Count > 0);
 #if XSHARP
-            Debug.Assert(CaseInsensitiveComparison.Equals(symbol.Name, symbolName));
+            Debug.Assert(XSharpString.Equals(symbol.Name, symbolName));
 #else
             Debug.Assert(symbol.Name == symbolName);
 #endif
@@ -885,7 +885,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             foreach (Symbol other in sameNameSymbols)
             {
 #if XSHARP
-                if (!CaseInsensitiveComparison.Equals(other.Name, symbolName) && !(isMethodOrProperty && other.Kind == symbol.Kind))
+                if (!XSharpString.Equals(other.Name, symbolName) && !(isMethodOrProperty && other.Kind == symbol.Kind))
 #else
                 if (other.Name != symbolName && !(isMethodOrProperty && other.Kind == symbol.Kind))
 #endif

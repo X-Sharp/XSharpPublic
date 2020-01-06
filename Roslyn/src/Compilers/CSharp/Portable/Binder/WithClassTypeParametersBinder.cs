@@ -35,7 +35,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 if (_lazyTypeParameterMap == null)
                 {
 #if XSHARP
-                    var result = new MultiDictionary<string, TypeParameterSymbol>(CaseInsensitiveComparison.Comparer);
+                    var result = new MultiDictionary<string, TypeParameterSymbol>(XSharpString.Comparer);
 #else
                     var result = new MultiDictionary<string, TypeParameterSymbol>();
 #endif

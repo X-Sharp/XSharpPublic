@@ -32,9 +32,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             //          1-to-1 to the appropriate filed initializer syntax nodes; This means such 
             //          correspondence must be preserved all the time including erroneous scenarios
 
-// set of names already used
+            // set of names already used
 #if XSHARP
-            HashSet<string> uniqueFieldNames = new HashSet<string>(CaseInsensitiveComparison.Comparer);
+            HashSet<string> uniqueFieldNames = new HashSet<string>(XSharpString.Comparer);
 #else
             var uniqueFieldNames = PooledHashSet<string>.GetInstance();
 #endif

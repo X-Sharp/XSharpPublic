@@ -120,7 +120,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             namespaces = ArrayBuilder<SingleNamespaceDeclaration>.GetInstance();
                         }
 #if XSHARP
-                        else if (allNamespacesHaveSameName && !CaseInsensitiveComparison.Equals(asNamespace.Name,namespaces[0].Name))
+                        else if (allNamespacesHaveSameName && !XSharpString.Equals(asNamespace.Name,namespaces[0].Name))
 #else
                         else if (allNamespacesHaveSameName && !asNamespace.Name.Equals(namespaces[0].Name))
 #endif
@@ -148,7 +148,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 else
                 {
 #if XSHARP
-                    var namespaceGroups = namespaces.ToDictionary(n => n.Name, CaseInsensitiveComparison.Comparer);
+                    var namespaceGroups = namespaces.ToDictionary(n => n.Name, XSharpString.Comparer);
 #else
                     var namespaceGroups = namespaces.ToDictionary(n => n.Name, StringOrdinalComparer.Instance);
 #endif

@@ -427,7 +427,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             if (_isCheckedBuiltin == other._isCheckedBuiltin &&
                 _parameters.Length == other._parameters.Length &&
 #if XSHARP
-                CaseInsensitiveComparison.Equals(_name, other._name) &&
+                XSharpString.Equals(_name, other._name) &&
 #else
                 string.Equals(_name, other._name, StringComparison.Ordinal) &&
 #endif

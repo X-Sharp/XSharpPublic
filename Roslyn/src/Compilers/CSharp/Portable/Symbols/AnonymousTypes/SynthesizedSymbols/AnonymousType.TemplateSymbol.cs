@@ -49,7 +49,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
             /// <summary> Maps member names to symbol(s) </summary>
 #if XSHARP
-            private readonly MultiDictionary<string, Symbol> _nameToSymbols = new MultiDictionary<string, Symbol>(CaseInsensitiveComparison.Comparer);
+            private readonly MultiDictionary<string, Symbol> _nameToSymbols = new MultiDictionary<string, Symbol>(XSharpString.Comparer);
 #else
             private readonly MultiDictionary<string, Symbol> _nameToSymbols = new MultiDictionary<string, Symbol>();
 #endif
@@ -196,7 +196,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             internal AnonymousTypeKey GetAnonymousTypeKey()
             {
 #if XSHARP
-                var properties = this.Properties.SelectAsArray(p => new AnonymousTypeKeyField(p.Name, isKey: false, ignoreCase: true));
+                var properties = this.Properties.SelectAsArray(p => new AnonymousTypeKeyField(p.Name, isKey: false, ignoreCase: XSharpString.IgnoreCase));
 #else
                 var properties = this.Properties.SelectAsArray(p => new AnonymousTypeKeyField(p.Name, isKey: false, ignoreCase: false));
 #endif
@@ -229,7 +229,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     var oldValue = Interlocked.CompareExchange(ref _nameAndIndex, value, null);
 #if XSHARP
                     Debug.Assert(oldValue == null ||
-                        (CaseInsensitiveComparison.Equals(oldValue.Name, value.Name) && (oldValue.Index == value.Index)));
+                        (XSharpString.Equals(oldValue.Name, value.Name) && (oldValue.Index == value.Index)));
 #else
                     Debug.Assert(oldValue == null ||
                         ((oldValue.Name == value.Name) && (oldValue.Index == value.Index)));

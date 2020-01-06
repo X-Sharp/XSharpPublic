@@ -20,7 +20,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         private static ConcurrentDictionary<string, XSharpTargetDLL> dictionary;
         static TypeSymbolExtensions()
         {
-            dictionary = new ConcurrentDictionary<string, XSharpTargetDLL>(StringComparer.OrdinalIgnoreCase);
+            dictionary = new ConcurrentDictionary<string, XSharpTargetDLL>(XSharpString.Comparer);
         }
 
         public static bool IsOurAttribute(this NamedTypeSymbol atype, String name)
@@ -29,7 +29,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 return false;
             if (atype.ContainingAssembly.IsRT())
             {
-                return String.Equals(atype.Name, name, System.StringComparison.OrdinalIgnoreCase);
+
+                return XSharpString.Equals(atype.Name, name);
             }
             return false;
 

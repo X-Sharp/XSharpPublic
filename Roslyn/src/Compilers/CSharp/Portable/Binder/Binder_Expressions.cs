@@ -4043,7 +4043,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             // Member name map to report duplicate assignments to a field/property.
 #if XSHARP
-            var memberNameMap = new HashSet<string>(CaseInsensitiveComparison.Comparer);
+            var memberNameMap = new HashSet<string>(XSharpString.Comparer);
 #else
             var memberNameMap = new HashSet<string>();
 #endif
@@ -5420,7 +5420,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                             var leftName = node.Identifier.ValueText;
 #if XSHARP
-                            if (CaseInsensitiveComparison.Equals(leftType.Name, leftName) || IsUsingAliasInScope(leftName))
+                            if (XSharpString.Equals(leftType.Name, leftName) || IsUsingAliasInScope(leftName))
 #else
                             if (leftType.Name == leftName || IsUsingAliasInScope(leftName))
 #endif
@@ -5912,7 +5912,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 else if (boundLeft.Kind == BoundKind.TypeExpression ||
                     boundLeft.Kind == BoundKind.BaseReference ||
 #if XSHARP
-                    node.Kind() == SyntaxKind.AwaitExpression && CaseInsensitiveComparison.Equals(plainName, WellKnownMemberNames.GetResult))
+                    node.Kind() == SyntaxKind.AwaitExpression && XSharpString.Equals(plainName, WellKnownMemberNames.GetResult))
 #else
                     node.Kind() == SyntaxKind.AwaitExpression && plainName == WellKnownMemberNames.GetResult)
 #endif
@@ -5937,7 +5937,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             // then we would suggest a using directive for "System".
             // TODO: we should check if such a using directive would actually help, or if there is already one in scope.
 #if XSHARP
-            return CaseInsensitiveComparison.Equals(methodName, WellKnownMemberNames.GetAwaiter) && ImplementsWinRTAsyncInterface(receiver);
+            return XSharpString.Equals(methodName, WellKnownMemberNames.GetAwaiter) && ImplementsWinRTAsyncInterface(receiver);
 #else
             return methodName == WellKnownMemberNames.GetAwaiter && ImplementsWinRTAsyncInterface(receiver);
 #endif

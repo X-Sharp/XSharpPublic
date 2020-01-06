@@ -66,7 +66,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 foreach (var existingRangeVariable in allRangeVariables.Keys)
                 {
 #if XSHARP
-                    if (CaseInsensitiveComparison.Equals(existingRangeVariable.Name, name))
+                    if (XSharpString.Equals(existingRangeVariable.Name, name))
 #else
                     if (existingRangeVariable.Name == name)
 #endif

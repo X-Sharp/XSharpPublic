@@ -36,7 +36,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             // No need to report duplicate names since duplicates
             // are reported when the type parameters are bound.
 #if XSHARP
-            var names = new Dictionary<string, int>(n, CaseInsensitiveComparison.Comparer);
+            var names = new Dictionary<string, int>(n, XSharpString.Comparer);
 #else
             var names = new Dictionary<string, int>(n, StringOrdinalComparer.Instance);
 #endif

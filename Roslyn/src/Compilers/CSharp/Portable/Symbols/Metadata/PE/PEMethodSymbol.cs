@@ -699,7 +699,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
                     {
                         var moduleSymbol = _containingType.ContainingPEModule;
 #if XSHARP
-                        isExtensionMethod = moduleSymbol.Module.HasExtensionAttribute(_handle, ignoreCase: true);
+                        isExtensionMethod = moduleSymbol.Module.HasExtensionAttribute(_handle, ignoreCase: XSharpString.IgnoreCase);
 #else
                         isExtensionMethod = moduleSymbol.Module.HasExtensionAttribute(_handle, ignoreCase: false);
 #endif

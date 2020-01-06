@@ -40,7 +40,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
             // SPEC: A type parameter [of a type] cannot have the same name as the type itself.
 #if XSHARP
-            if (CaseInsensitiveComparison.Equals(result.Name, result.ContainingSymbol.Name))
+            if (XSharpString.Equals(result.Name, result.ContainingSymbol.Name))
 #else
             if (result.Name == result.ContainingSymbol.Name)
 #endif

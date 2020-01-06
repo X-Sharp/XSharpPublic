@@ -1002,7 +1002,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             public void HoistLocal(LocalSymbol local, SyntheticBoundNodeFactory F)
             {
 #if XSHARP
-                if (!_hoistedLocals.Keys.Any(l => CaseInsensitiveComparison.Equals(l.Name, local.Name) && l.Type == local.Type))
+                if (!_hoistedLocals.Keys.Any(l => XSharpString.Equals(l.Name, local.Name) && l.Type == local.Type))
 #else
                 if (!_hoistedLocals.Keys.Any(l => l.Name == local.Name && l.Type == local.Type))
 #endif

@@ -40,7 +40,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         private MultiDictionary<string, TypeParameterSymbol> CreateTypeParameterMap()
         {
 #if XSHARP
-            var map = new MultiDictionary<string, TypeParameterSymbol>(CaseInsensitiveComparison.Comparer);
+            var map = new MultiDictionary<string, TypeParameterSymbol>(XSharpString.Comparer);
 #else
             var map = new MultiDictionary<string, TypeParameterSymbol>();
 #endif

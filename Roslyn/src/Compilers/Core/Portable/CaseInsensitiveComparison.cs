@@ -14,31 +14,45 @@ namespace Microsoft.CodeAnalysis
 #if XSHARP
     public static class XSharpString
     {
-        public static bool CaseSensitive = false;
-        public static bool Equals(string lhs, string rhs)
+        static XSharpString()
         {
-            if (CaseSensitive)
+            CaseSensitive = false;
+        }
+        private static bool _caseSensitive = false;
+        public static bool CaseSensitive
+        {
+            get
             {
-                return string.Equals(lhs, rhs);
+                return _caseSensitive;
+            }
+            set
+            {
+                _caseSensitive = value;
+                _setProperties();
+            }
+        }
+        private static void _setProperties()
+        {
+            if (_caseSensitive)
+            {
+                _compare = string.Compare;
+                Comparer = StringOrdinalComparer.Instance;
+                Comparison = StringComparison.Ordinal;
             }
             else
             {
-                return CaseInsensitiveComparison.Equals(lhs, rhs);
+                _compare = CaseInsensitiveComparison.Compare;
+                Comparer = CaseInsensitiveComparison.Comparer;
+                Comparison = StringComparison.OrdinalIgnoreCase;
             }
         }
-        public static int Compare(string lhs, string rhs)
-        {
-            if (CaseSensitive)
-            {
-                return string.Compare(lhs, rhs);
-            }
-            else
-            {
-                return String.Compare(lhs, rhs, StringComparison.OrdinalIgnoreCase);
-            }
-        }
-        public static IEqualityComparer<string> Comparer => CaseSensitive ? (IEqualityComparer<string>) StringOrdinalComparer.Instance : (IEqualityComparer<string>) CaseInsensitiveComparison.Comparer;
-        public static StringComparison Comparison => CaseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase;
+        delegate int stringCompare(string lhs, string rhs);
+        private static stringCompare _compare;
+
+        public static bool Equals(string lhs, string rhs) =>  _compare(lhs, rhs) == 0;
+        public static int Compare(string lhs, string rhs) => _compare(lhs, rhs);
+        public static IEqualityComparer<string> Comparer { get; private set; }
+        public static StringComparison Comparison { get; private set; }
         public static bool IgnoreCase => !CaseSensitive;
     }
 

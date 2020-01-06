@@ -58,7 +58,7 @@ FUNCTION DynShrink() AS DWORD
 	
 /// <exclude/>
 [Obsolete( "'DynSize()' is not supported and always returns 0" )] ;
-FUNCTION DynSize() AS DWORD
+FUNCTION DynSize(dwPages AS DWORD) AS DWORD
 	RETURN 0
 	
 	
@@ -748,7 +748,7 @@ FUNCTION SBTODB(c AS STRING) AS STRING
 
 /// <exclude/>
 [ObsoleteAttribute( "'SysObject()' is not supported", TRUE )] ;
-FUNCTION SysObject() AS USUAL
+FUNCTION SysObject(o) AS OBJECT CLIPPER
    RETURN NIL
 
 

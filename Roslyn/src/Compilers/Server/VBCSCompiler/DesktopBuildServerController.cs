@@ -114,6 +114,17 @@ namespace Microsoft.CodeAnalysis.CompilerServer
 
                 try
                 {
+#if XSHARP
+                    if (pipeName != null && pipeName.EndsWith("::CS"))
+                    {
+                        XSharpString.CaseSensitive = true;
+                    }
+                    else
+                    {
+                        XSharpString.CaseSensitive = false;
+                    }
+
+#endif
                     return base.RunServerCore(pipeName, connectionHost, listener, keepAlive, cancellationToken);
                 }
                 finally

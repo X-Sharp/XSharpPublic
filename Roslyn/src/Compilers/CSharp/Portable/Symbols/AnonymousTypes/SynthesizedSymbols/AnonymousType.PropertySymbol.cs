@@ -201,7 +201,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 //  consider properties the same is the owning types are the same and 
                 //  the names are equal
 #if XSHARP
-                return ((object)other != null) && CaseInsensitiveComparison.Equals(other.Name, this.Name)
+                return ((object)other != null) && XSharpString.Equals(other.Name, this.Name)
                     && other.ContainingType.Equals(this.ContainingType);
 #else
                 return ((object)other != null) && other.Name == this.Name

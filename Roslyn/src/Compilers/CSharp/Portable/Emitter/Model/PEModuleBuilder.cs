@@ -539,7 +539,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Emit
         {
             var sourceAssembly = SourceModule.ContainingSourceAssembly;
 #if XSHARP
-            var exportedNamesMap = new Dictionary<string, NamedTypeSymbol>(CaseInsensitiveComparison.Comparer);
+            var exportedNamesMap = new Dictionary<string, NamedTypeSymbol>(XSharpString.Comparer);
 #else
             var exportedNamesMap = new Dictionary<string, NamedTypeSymbol>(StringOrdinalComparer.Instance);
 #endif

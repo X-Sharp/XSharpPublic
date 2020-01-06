@@ -123,5 +123,6 @@ namespace Microsoft.CodeAnalysis.CSharp
         InitLocals = 1 << 20,
         NamedArgs = 1 << 21,
         ClrVersion = 1 << 22,
+        CaseSensitive = 1 << 23,
     }
 }

@@ -21,7 +21,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             this.lambdaSymbol = lambdaSymbol;
 #if XSHARP
-            this.parameterMap = new MultiDictionary<string, ParameterSymbol>(CaseInsensitiveComparison.Comparer);
+            this.parameterMap = new MultiDictionary<string, ParameterSymbol>(XSharpString.Comparer);
 #else
             this.parameterMap = new MultiDictionary<string, ParameterSymbol>();
 #endif
@@ -40,7 +40,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         private void RecordDefinitions(ImmutableArray<ParameterSymbol> definitions)
         {
 #if XSHARP
-            var declarationMap = _definitionMap ?? (_definitionMap = new SmallDictionary<string, ParameterSymbol>(CaseInsensitiveComparison.Comparer));
+            var declarationMap = _definitionMap ?? (_definitionMap = new SmallDictionary<string, ParameterSymbol>(XSharpString.Comparer));
 #else
             var declarationMap = _definitionMap ?? (_definitionMap = new SmallDictionary<string, ParameterSymbol>());
 #endif

@@ -621,7 +621,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     return false;
                 }
 #if XSHARP
-                return IsStatic && CaseInsensitiveComparison.Equals(Name, WellKnownMemberNames.EntryPointMethodName);
+                return IsStatic && XSharpString.Equals(Name, WellKnownMemberNames.EntryPointMethodName);
 #else				
                 return IsStatic && Name == WellKnownMemberNames.EntryPointMethodName;
 #endif								

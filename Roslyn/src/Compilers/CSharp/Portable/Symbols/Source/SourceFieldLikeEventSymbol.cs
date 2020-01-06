@@ -152,7 +152,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             discardedDiagnostics.Free();
 
 #if XSHARP
-            Debug.Assert(CaseInsensitiveComparison.Equals(field.Name, _name));
+            Debug.Assert(XSharpString.Equals(field.Name, _name));
 #else
             Debug.Assert(field.Name == _name);
 #endif

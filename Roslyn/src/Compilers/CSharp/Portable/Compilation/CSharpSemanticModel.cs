@@ -4132,7 +4132,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             foreach (ParameterSymbol param in parameters)
             {
 #if XSHARP
-                if (CaseInsensitiveComparison.Equals(param.Name, argumentName))
+                if (XSharpString.Equals(param.Name, argumentName))
 #else
                 if (param.Name == argumentName)
 #endif

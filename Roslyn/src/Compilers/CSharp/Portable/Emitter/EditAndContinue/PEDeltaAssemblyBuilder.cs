@@ -162,7 +162,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Emit
                 }
 
 #if XSHARP
-                builder.Add(new AnonymousTypeKeyField(fieldName, isKey: false, ignoreCase: true));
+                builder.Add(new AnonymousTypeKeyField(fieldName, isKey: false, ignoreCase: XSharpString.IgnoreCase));
 #else
                 builder.Add(new AnonymousTypeKeyField(fieldName, isKey: false, ignoreCase: false));
 #endif

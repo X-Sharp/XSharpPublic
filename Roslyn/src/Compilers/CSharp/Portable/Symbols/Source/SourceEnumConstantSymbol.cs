@@ -47,7 +47,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             : base(containingEnum, syntax.Identifier.ValueText, syntax.GetReference(), syntax.Identifier.GetLocation())
         {
 #if XSHARP
-            if (CaseInsensitiveComparison.Equals(this.Name, WellKnownMemberNames.EnumBackingFieldName))
+            if (XSharpString.Equals(this.Name, WellKnownMemberNames.EnumBackingFieldName))
 #else
             if (this.Name == WellKnownMemberNames.EnumBackingFieldName)
 #endif

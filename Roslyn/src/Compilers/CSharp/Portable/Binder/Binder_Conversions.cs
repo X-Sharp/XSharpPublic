@@ -627,7 +627,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         diagnostics.Add(ErrorCode.ERR_InitializerAddHasWrongSignature, node.Location, memberSymbol);
                     }
 #if XSHARP
-                    else if (node.Kind() == SyntaxKind.AwaitExpression && CaseInsensitiveComparison.Equals(memberSymbol.Name, WellKnownMemberNames.GetAwaiter))
+                    else if (node.Kind() == SyntaxKind.AwaitExpression && XSharpString.Equals(memberSymbol.Name, WellKnownMemberNames.GetAwaiter))
 #else
                     else if (node.Kind() == SyntaxKind.AwaitExpression && memberSymbol.Name == WellKnownMemberNames.GetAwaiter)
 #endif

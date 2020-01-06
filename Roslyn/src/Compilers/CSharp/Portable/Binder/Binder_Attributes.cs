@@ -323,7 +323,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         {
                             boundNamedArgumentsBuilder = ArrayBuilder<BoundExpression>.GetInstance();
 #if XSHARP
-                            boundNamedArgumentsSet = new HashSet<string>(CaseInsensitiveComparison.Comparer);
+                            boundNamedArgumentsSet = new HashSet<string>(XSharpString.Comparer);
 #else
                             boundNamedArgumentsSet = new HashSet<string>();
 #endif
@@ -711,7 +711,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var name = argumentNamesOpt[argIndex];
 
 #if XSHARP
-                if (string.Equals(name, parameterName, StringComparison.OrdinalIgnoreCase))
+                if (XSharpString.Equals(name, parameterName))
 #else
                 if (string.Equals(name, parameterName, StringComparison.Ordinal))
 #endif

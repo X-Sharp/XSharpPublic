@@ -99,7 +99,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
             UnboundArgumentErrorTypeSymbol other = t2 as UnboundArgumentErrorTypeSymbol;
 #if XSHARP
-            return (object)other != null && string.Equals(other._name, _name, StringComparison.OrdinalIgnoreCase) && object.Equals(other._errorInfo, _errorInfo);
+            return (object)other != null && XSharpString.Equals(other._name, _name) && object.Equals(other._errorInfo, _errorInfo);
 #else
             return (object)other != null && string.Equals(other._name, _name, StringComparison.Ordinal) && object.Equals(other._errorInfo, _errorInfo);
 #endif

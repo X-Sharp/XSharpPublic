@@ -490,9 +490,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
                     string defaultMemberName = _containingType.DefaultMemberName;
 #if XSHARP
                     return !_namedIndexer && (
-                        CaseInsensitiveComparison.Equals(_name, defaultMemberName) || //NB: not Name property (break mutual recursion)
-                        ((object)this.GetMethod != null && CaseInsensitiveComparison.Equals(this.GetMethod.Name, defaultMemberName)) ||
-                        ((object)this.SetMethod != null && CaseInsensitiveComparison.Equals(this.SetMethod.Name, defaultMemberName)) );
+                        XSharpString.Equals(_name, defaultMemberName) || //NB: not Name property (break mutual recursion)
+                        ((object)this.GetMethod != null && XSharpString.Equals(this.GetMethod.Name, defaultMemberName)) ||
+                        ((object)this.SetMethod != null && XSharpString.Equals(this.SetMethod.Name, defaultMemberName)) );
 #else
                     return _name == defaultMemberName || //NB: not Name property (break mutual recursion)
                         ((object)this.GetMethod != null && this.GetMethod.Name == defaultMemberName) ||

@@ -165,9 +165,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             bool isNameOf = token.Type == XSharpParser.NAMEOF;
             (token as CommonToken).Type = XSharpParser.ID;
-            var r = token.Text.StartsWith("@@") ? SyntaxFactory.Identifier(token.Text.Substring(2))
-                : isNameOf ? SyntaxFactory.Identifier(SyntaxKind.NameOfKeyword, null, token.Text, token.Text, null)
-                : SyntaxFactory.MakeIdentifier(token.Text);
+            string text = token.Text;
+            if (text.StartsWith("@@"))
+            {
+                text = text.Substring(2);
+            }
+            var r =  isNameOf ? SyntaxFactory.Identifier(SyntaxKind.NameOfKeyword, null, text, text, null)
+                : SyntaxFactory.MakeIdentifier(text);
             r.XNode = new XTerminalNodeImpl(token);
             return r;
         }
@@ -187,7 +191,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.BYTE:
                     r = SyntaxFactory.MakeToken(SyntaxKind.ByteKeyword);
                     break;
-                case XSharpParser.DWORD:
+               case XSharpParser.DWORD:
                     r = SyntaxFactory.MakeToken(SyntaxKind.UIntKeyword);
                     break;
                 case XSharpParser.SHORTINT:
@@ -878,6 +882,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.REMOVE:
                     r = SyntaxFactory.MakeToken(SyntaxKind.RemoveKeyword, text);
                     break;
+                case XSharpParser.VALUE:
+                    r = SyntaxFactory.Identifier("value");
+                    break;
                 case XSharpParser.ACCESS:
                 case XSharpParser.ALIGN:
                 case XSharpParser.AS:
@@ -958,7 +965,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.SCOPE:
                 case XSharpParser.SET:
                 case XSharpParser.UNTIL:
-                case XSharpParser.VALUE:
                 case XSharpParser.VOSTRUCT:
                 //case XSharpParser.ASYNC:
                 //case XSharpParser.AWAIT:

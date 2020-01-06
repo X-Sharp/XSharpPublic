@@ -24,7 +24,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
 #if XSHARP
     internal abstract partial class PENamedTypeSymbol : NamedTypeSymbol
     {
-        private static readonly Dictionary<string, ImmutableArray<PENamedTypeSymbol>> s_emptyNestedTypes = new Dictionary<string, ImmutableArray<PENamedTypeSymbol>>(CaseInsensitiveComparison.Comparer);
+        private static readonly Dictionary<string, ImmutableArray<PENamedTypeSymbol>> s_emptyNestedTypes = new Dictionary<string, ImmutableArray<PENamedTypeSymbol>>(XSharpString.Comparer);
 #else
     internal abstract class PENamedTypeSymbol : NamedTypeSymbol
     {
@@ -307,7 +307,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
                 // Unmangle name for a generic type.
                 _name = MetadataHelpers.UnmangleMetadataNameForArity(metadataName, arity);
 #if XSHARP
-                Debug.Assert(ReferenceEquals(_name, metadataName) == CaseInsensitiveComparison.Equals(_name, metadataName));
+                Debug.Assert(ReferenceEquals(_name, metadataName) == XSharpString.Equals(_name, metadataName));
 #else
                 Debug.Assert(ReferenceEquals(_name, metadataName) == (_name == metadataName));
 #endif
@@ -653,7 +653,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
                 var module = moduleSymbol.Module;
 
 #if XSHARP
-                var names = new HashSet<string>(CaseInsensitiveComparison.Comparer);
+                var names = new HashSet<string>(XSharpString.Comparer);
 #else
                 var names = new HashSet<string>();
 #endif
@@ -1606,7 +1606,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
                             var moduleSymbol = this.ContainingPEModule;
                             var module = moduleSymbol.Module;
 #if XSHARP
-                            bool moduleHasExtension = module.HasExtensionAttribute(_handle, ignoreCase: true);
+                            bool moduleHasExtension = module.HasExtensionAttribute(_handle, ignoreCase: XSharpString.IgnoreCase);
 #else
                             bool moduleHasExtension = module.HasExtensionAttribute(_handle, ignoreCase: false);
 #endif
@@ -1763,7 +1763,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
         private MultiDictionary<string, PEFieldSymbol> CreateFields(ArrayBuilder<PEFieldSymbol> fieldMembers)
         {
 #if XSHARP
-            var privateFieldNameToSymbols = new MultiDictionary<string, PEFieldSymbol>(CaseInsensitiveComparison.Comparer);
+            var privateFieldNameToSymbols = new MultiDictionary<string, PEFieldSymbol>(XSharpString.Comparer);
 #else
             var privateFieldNameToSymbols = new MultiDictionary<string, PEFieldSymbol>();
 #endif
@@ -1939,7 +1939,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
         private static Dictionary<string, ImmutableArray<Symbol>> GroupByName(ArrayBuilder<Symbol> symbols)
         {
 #if XSHARP
-            return symbols.ToDictionary(s => s.Name, CaseInsensitiveComparison.Comparer);
+            return symbols.ToDictionary(s => s.Name, XSharpString.Comparer);
 #else
             return symbols.ToDictionary(s => s.Name, StringOrdinalComparer.Instance);
 #endif
@@ -1953,7 +1953,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
             }
 
 #if XSHARP
-            return symbols.ToDictionary(s => s.Name, CaseInsensitiveComparison.Comparer);
+            return symbols.ToDictionary(s => s.Name, XSharpString.Comparer);
 #else
             return symbols.ToDictionary(s => s.Name, StringOrdinalComparer.Instance);
 #endif

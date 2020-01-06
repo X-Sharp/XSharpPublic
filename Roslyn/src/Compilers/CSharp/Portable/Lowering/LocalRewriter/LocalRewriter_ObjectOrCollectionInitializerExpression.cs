@@ -133,7 +133,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         private BoundExpression MakeCollectionInitializer(BoundExpression rewrittenReceiver, BoundCollectionElementInitializer initializer)
         {
 #if XSHARP
-            Debug.Assert(CaseInsensitiveComparison.Equals(initializer.AddMethod.Name, "Add"));
+            Debug.Assert(XSharpString.Equals(initializer.AddMethod.Name, "Add"));
 #else
             Debug.Assert(initializer.AddMethod.Name == "Add");
 #endif

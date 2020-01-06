@@ -717,7 +717,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                  node.Parent.Kind() != SyntaxKind.Attribute && // dynamic not allowed as an attribute type
                  SyntaxFacts.IsInTypeOnlyContext(node)) &&
 #if XSHARP
-                CaseInsensitiveComparison.Compare(node.Identifier.ValueText, "dynamic") == 0 &&
+                XSharpString.Compare(node.Identifier.ValueText, "dynamic") == 0 &&
 #else
                 node.Identifier.ValueText == "dynamic" &&
 #endif
@@ -1746,7 +1746,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     // Cannot reference System.Void directly.
                     var singleType = singleResult as TypeSymbol;
 #if XSHARP
-                    if ((object)singleType != null && singleType.PrimitiveTypeCode == Cci.PrimitiveTypeCode.Void && CaseInsensitiveComparison.Equals(simpleName, "Void"))
+                    if ((object)singleType != null && singleType.PrimitiveTypeCode == Cci.PrimitiveTypeCode.Void && XSharpString.Equals(simpleName, "Void"))
 #else
                     if ((object)singleType != null && singleType.PrimitiveTypeCode == Cci.PrimitiveTypeCode.Void && simpleName == "Void")
 #endif

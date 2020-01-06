@@ -40,7 +40,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 var arguments = call.Arguments;
 #if XSHARP
-                if (CaseInsensitiveComparison.Equals(call.Method.Name, "Select"))
+                if (XSharpString.Equals(call.Method.Name, "Select"))
 #else
                 if (call.Method.Name == "Select")
 #endif
@@ -48,7 +48,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     this.Visit(arguments[arguments.Length - 1]);
                 }
 #if XSHARP
-                else if (CaseInsensitiveComparison.Equals(call.Method.Name, "GroupBy"))
+                else if (XSharpString.Equals(call.Method.Name, "GroupBy"))
 #else
                 else if (call.Method.Name == "GroupBy")
 #endif

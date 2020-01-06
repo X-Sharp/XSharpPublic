@@ -1398,7 +1398,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                 if (method is SynthesizedStateMachineMethod stateMachineMethod &&
 #if XSHARP				
-                    String.Compare(method.Name, WellKnownMemberNames.MoveNextMethodName, StringComparison.OrdinalIgnoreCase) == 0)
+                    XSharpString.Compare(method.Name, WellKnownMemberNames.MoveNextMethodName) == 0)
 #else
                     method.Name == WellKnownMemberNames.MoveNextMethodName)
 #endif					

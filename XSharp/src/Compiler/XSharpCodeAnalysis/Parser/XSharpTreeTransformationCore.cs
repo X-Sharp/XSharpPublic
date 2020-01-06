@@ -102,7 +102,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             internal void AddVoPropertyAccessor(XP.IMethodContext accessor, int Type, SyntaxToken idName)
             {
                 if (VoProperties == null)
-                    VoProperties = new Dictionary<string, VoPropertyInfo>(CaseInsensitiveComparison.Comparer);
+                    VoProperties = new Dictionary<string, VoPropertyInfo>(XSharpString.Comparer);
                 string name = idName.Text;
                 VoPropertyInfo propertyInfo;
                 if (!VoProperties.TryGetValue(name, out propertyInfo))
@@ -131,6 +131,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
         #endregion
+
+       
 
         #region Fields
         private static int _unique = 0;
@@ -295,7 +297,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (context.Parent.Parent is XP.Namespace_Context)
                 return node;
             string name = context.Name;
-            if (string.Compare(this.GlobalClassName, 0, name + ".", 0, name.Length + 1, StringComparison.OrdinalIgnoreCase) == 0)
+            if (String.Compare(this.GlobalClassName, 0, name + ".", 0, name.Length + 1,XSharpString.Comparison) == 0)
             {
                 node = node.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_TypeNameMatchesGlobalNamespace, typeKind, name, GlobalClassName));
             }
@@ -497,7 +499,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             strParams += "USUAL";
                     }
                 }
-                if (String.Compare(suffix, ".CTOR", StringComparison.OrdinalIgnoreCase) == 0)
+                if (XSharpString.Compare(suffix, ".ctor") == 0)
                 {
                     name += "{ " + strParams + " }";
                     suffix = "";
@@ -1205,7 +1207,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             NameSyntax r = GenerateSimpleName(idName);
             if (alias != null)
             {
-                if (string.Compare(alias, "global", StringComparison.OrdinalIgnoreCase) == 0)
+                if (XSharpString.Compare(alias, "global") == 0)
                     r = _syntaxFactory.AliasQualifiedName(
                         _syntaxFactory.IdentifierName(SyntaxFactory.MakeToken(SyntaxKind.GlobalKeyword, alias)),
                         SyntaxFactory.MakeTokenNoWs(SyntaxKind.ColonColonToken),
@@ -1241,7 +1243,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             Syntax.NameSyntax r = CSharp.SyntaxFactory.IdentifierName(idName);
             if (alias != null)
             {
-                if (string.Compare(alias, "global", StringComparison.OrdinalIgnoreCase) == 0)
+                if (XSharpString.Compare(alias, "global") == 0)
                     r = CSharp.SyntaxFactory.AliasQualifiedName(
                         CSharp.SyntaxFactory.IdentifierName(CSharp.SyntaxFactory.Token(SyntaxKind.GlobalKeyword)),
                         CSharp.SyntaxFactory.Token(SyntaxKind.ColonColonToken),
@@ -1405,15 +1407,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (alias != null)
                 {
                     // match alias AND name
-                    if (u.Alias != null && CaseInsensitiveComparison.Compare(u.Alias.Name.ToString(), alias.Name.ToString()) == 0
-                        && CaseInsensitiveComparison.Compare(u.Name.ToString(), usingName.ToString()) == 0)
+                    if (u.Alias != null && XSharpString.Compare(u.Alias.Name.ToString(), alias.Name.ToString()) == 0
+                        && XSharpString.Compare(u.Name.ToString(), usingName.ToString()) == 0)
                     {
                         found = true;
                         break;
                     }
 
                 }
-                else if (CaseInsensitiveComparison.Compare(u.Name.ToString(), usingName.ToString()) == 0)
+                else if (XSharpString.Compare(u.Name.ToString(), usingName.ToString()) == 0)
                 {
                     found = true;
                     break;
@@ -1570,7 +1572,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (id2.IndexOf(".") > 0)
                 id2 = id2.Substring(id2.LastIndexOf(".") + 1);
 
-            return string.Compare(id1, id2, StringComparison.OrdinalIgnoreCase) == 0;
+            return XSharpString.Compare(id1, id2) == 0;
         }
 
         internal MemberDeclarationSyntax GeneratePartialProperyMethod(XP.IMethodContext context, bool Access, bool Static)
@@ -1860,7 +1862,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             var name2 = AssMet.ParamList._Params[iParam + 1].Id.GetText();
                             var type1 = AccMet.ParamList._Params[iParam].Type?.Get<TypeSyntax>() ?? _getMissingType();
                             var type2 = AssMet.ParamList._Params[iParam + 1].Type?.Get<TypeSyntax>() ?? _getMissingType();
-                            if (String.Compare(name1, name2, StringComparison.OrdinalIgnoreCase) != 0
+                            if (XSharpString.Compare(name1, name2) != 0
                                 || !IsTypeEqual(type1, type2))
                             {
                                 paramMatch = false;
@@ -1972,7 +1974,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             missingParam = true;
                         }
                         // when the name of the original parameter is value, then there is no need to change things
-                        if (String.Compare(paramName, "value", StringComparison.OrdinalIgnoreCase) == 0)
+                        if (XSharpString.Compare(paramName, "value") == 0)
                         {
                             block = m.Body;
                         }
@@ -3666,8 +3668,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     {
                         name = name.Substring(pos + 1).Trim();
                     }
-                    if (String.Equals(name, attributeName, StringComparison.OrdinalIgnoreCase) ||
-                        String.Equals(name, attributeName + "Attribute", StringComparison.OrdinalIgnoreCase))
+                    if (XSharpString.Equals(name, attributeName) ||
+                        XSharpString.Equals(name, attributeName + "Attribute"))
                     {
                         return true;
                     }
@@ -3686,8 +3688,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     var pos = name.LastIndexOf(".");
                     if (pos > 0)
                         name = name.Substring(pos + 1).Trim();
-                    if (string.Equals(name, attributeName, StringComparison.OrdinalIgnoreCase) ||
-                        string.Equals(name, attributeName + "Attribute", StringComparison.OrdinalIgnoreCase))
+                    if (XSharpString.Equals(name, attributeName) ||
+                        XSharpString.Equals(name, attributeName + "Attribute"))
                     {
                         attrblock._Attributes.Remove(attr);
                         found = true;
@@ -3915,7 +3917,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         className = context.ClassId.GetText();
                         if (context.Namespace != null)
                             className = context.Namespace.GetText() + className;
-                        if (String.Compare(parentName, className, StringComparison.OrdinalIgnoreCase) != 0)
+                        if (XSharpString.Compare(parentName, className) != 0)
                         {
                             m = m.WithAdditionalDiagnostics(
                             new SyntaxDiagnosticInfo(
@@ -4367,8 +4369,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     foreach (var name in names)
                     {
                         string ctxName = attrCtx.Name.GetText();
-                        if (String.Equals(ctxName, name, StringComparison.OrdinalIgnoreCase) ||
-                            String.Equals(ctxName, sSRef + name, StringComparison.OrdinalIgnoreCase))
+                        if (XSharpString.Equals(ctxName, name) ||
+                            XSharpString.Equals(ctxName, sSRef + name))
                         {
                             // check to see if the attribute has a wild card
                             if (attrCtx._Params.Count == 1 && attrCtx._Params[0].Start.Type == XP.STRING_CONST)
@@ -4605,13 +4607,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             SyntaxToken id;
             if (context.CharSet != null)
             {
-                id = SyntaxFactory.Identifier(context.CharSet.Text);
+                // convert to 1 Upper char and lower chars
+                string cs = context.CharSet.Text;
+                cs = cs.Substring(0, 1).ToUpper() + cs.Substring(1).ToLower();
+                id = SyntaxFactory.Identifier(cs);
             }
             else
             {
                 id = SyntaxFactory.Identifier("Auto");
             }
-            charset = _syntaxFactory.AttributeArgument(GenerateNameEquals("Charset"), null,
+            charset = _syntaxFactory.AttributeArgument(GenerateNameEquals("CharSet"), null,
                              MakeSimpleMemberAccess(GenerateQualifiedName(SystemQualifiedNames.CharSet),
                                   _syntaxFactory.IdentifierName(id)));
             var attribs = new List<AttributeArgumentSyntax>() { _syntaxFactory.AttributeArgument(null, null, dllExpr), charset };
@@ -4722,12 +4727,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     var qns = type as QualifiedNameSyntax;
                     // System.Void
                     var sName = qns.ToFullString().Replace(" ", "");
-                    if (sName.Equals("System.String", StringComparison.OrdinalIgnoreCase))
+                    if (sName.Equals("System.String", XSharpString.Comparison))
                     {
                         return true;
                     }
                     // global::System.Void
-                    if (sName.Equals("global::System.String", StringComparison.OrdinalIgnoreCase))
+                    if (sName.Equals("global::System.String", XSharpString.Comparison))
                     {
                         return true;
                     }
@@ -4757,12 +4762,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     var sName = qns.ToFullString().Replace(" ", "");
                     var v1 = GenerateQualifiedName(SystemQualifiedNames.Void1).ToFullString().Replace(" ", "");
                     var v2 = GenerateQualifiedName(SystemQualifiedNames.Void2).ToFullString().Replace(" ", "");
-                    if (sName.Equals(v1, StringComparison.OrdinalIgnoreCase))
+                    if (sName.Equals(v1, XSharpString.Comparison))
                     {
                         return true;
                     }
                     // global::System.Void
-                    if (sName.Equals(v2, StringComparison.OrdinalIgnoreCase))
+                    if (sName.Equals(v2, XSharpString.Comparison))
                     {
                         return true;
                     }
@@ -4810,7 +4815,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 context.Data.MustBeVoid = _options.Dialect != XSharpDialect.FoxPro ;
             }
             string name = context.Id.GetText();
-            context.Data.IsEntryPoint = string.Equals(name, _entryPoint, StringComparison.OrdinalIgnoreCase)
+            context.Data.IsEntryPoint = XSharpString.Equals(name, _entryPoint)
                     && _options.CommandLineArguments.CompilationOptions.OutputKind.IsApplication();
             if (context.Data.IsEntryPoint && context.Type == null)
             {
@@ -7599,6 +7604,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitIdentifier([NotNull] XP.IdentifierContext context)
         {
+            // Value in a property accessor will be converted to "value" but only when not part of a access member
+            if ((CurrentEntity is XP.PropertyAccessorContext) || (CurrentEntity is XP.PropertyLineAccessorContext))
+            {
+                if (!(context.Parent is XP.AccessMemberContext))
+                {
+                    if (context.Start.Text.ToLower() == "value")
+                    {
+                        context.Put(SyntaxFactory.MakeIdentifier("value"));
+                    }
+                }
+            }
             context.Put(context.Start.SyntaxIdentifier());
         }
 

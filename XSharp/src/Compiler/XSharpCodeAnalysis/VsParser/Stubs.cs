@@ -286,6 +286,22 @@ namespace Microsoft.CodeAnalysis.CSharp
     }
 
 
+    internal static class XSharpString
+    {
+        internal static bool Equals(string lhs, string rhs)
+        {
+            return CaseInsensitiveComparison.Equals(lhs, rhs);
+        }
+        internal static int Compare(string lhs, string rhs)
+        {
+            return String.Compare(lhs, rhs,StringComparison.OrdinalIgnoreCase);
+        }
+        internal static StringComparer Comparer => CaseInsensitiveComparison.Comparer;
+        internal const StringComparison Comparison = StringComparison.OrdinalIgnoreCase;
+        internal static bool IgnoreCase => ! CaseSensitive;
+        internal static bool CaseSensitive = false;
+    }
+
     public static class CaseInsensitiveComparison
     {
         public static StringComparer Comparer => StringComparer.OrdinalIgnoreCase;

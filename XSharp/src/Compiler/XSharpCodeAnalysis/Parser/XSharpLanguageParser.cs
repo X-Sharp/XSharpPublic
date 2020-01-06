@@ -671,7 +671,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // have to the same (combined) list of usings
             // When compiling in VO/Vulcan dialect we also collect the literal symbols from the compilation unit.
             // When we have one or more of these then we create a symbol table in the class "Xs$SymbolTable"
-            var partialClasses = new Dictionary<string, List<PartialPropertyElement>>(StringComparer.OrdinalIgnoreCase);
+            var partialClasses = new Dictionary<string, List<PartialPropertyElement>>(XSharpString.Comparer);
             var symbolTable = new Dictionary<string, FieldDeclarationSyntax>();
             var pszTable = new Dictionary<string, Tuple <string, FieldDeclarationSyntax>>();
             foreach (var tree in trees)
@@ -956,7 +956,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // or where access and assign were not found in the same source file
             // the usingList will contain an unique list of using statements combined from the various
             // source files where the types were found.
-            var dict = new Dictionary<string, List<XP.IMethodContext>>(StringComparer.OrdinalIgnoreCase);
+
+            var dict = new Dictionary<string, List<XP.IMethodContext>>(XSharpString.Comparer);
             var tmpUsings = new List<Syntax.UsingDirectiveSyntax>();
             foreach (var clsctx in classes)
             {

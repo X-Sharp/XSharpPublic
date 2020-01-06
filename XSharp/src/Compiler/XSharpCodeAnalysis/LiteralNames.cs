@@ -18,7 +18,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string UsualType = "__Usual";
         internal const string ArrayBase = "__ArrayBase";
         internal const string PszType = "__Psz";
-        internal const string VOStructAttribute = "VOStructAttribute";
+        internal const string VOStructAttribute = "VoStructAttribute";
         internal const string DefaultParameterAttribute = "DefaultParameterValueAttribute";
         internal const string ActualTypeAttribute = "ActualTypeAttribute";
         internal const string ClipperCallingConventionAttribute = "ClipperCallingConventionAttribute";
@@ -324,8 +324,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string LayoutSequential = "global::System.Runtime.InteropServices.LayoutKind.Sequential";
         internal const string FieldOffset = "global::System.Runtime.InteropServices.FieldOffset";
         internal const string GetDelegate = "global::System.Runtime.InteropServices.Marshal.GetDelegateForFunctionPointer";
-        internal const string GcCollect = "global::System.Gc.Collect";
-        internal const string GcWait = "global::System.Gc.WaitForPendingFinalizers";
+        internal const string GcCollect = "global::System.GC.Collect";
+        internal const string GcWait = "global::System.GC.WaitForPendingFinalizers";
         internal const string Void1 = "System.Void";
         internal const string Void2 = "global::System.Void";
         internal const string CollectionsGeneric = "global::System.Collections.Generic";

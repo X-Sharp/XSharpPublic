@@ -40,7 +40,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
             /// <summary> Maps member names to symbol(s) </summary>
 #if XSHARP
-            internal readonly MultiDictionary<string, Symbol> _nameToSymbols = new MultiDictionary<string, Symbol>(CaseInsensitiveComparison.Comparer);
+            internal readonly MultiDictionary<string, Symbol> _nameToSymbols = new MultiDictionary<string, Symbol>(XSharpString.Comparer);
 #else
             private readonly MultiDictionary<string, Symbol> _nameToSymbols = new MultiDictionary<string, Symbol>();
 #endif

@@ -167,7 +167,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 if ((thisDecl._arity != otherDecl._arity) ||
                     (thisDecl._kind != otherDecl._kind) ||
 #if XSHARP
-                    (String.Compare(thisDecl.name, otherDecl.name,StringComparison.OrdinalIgnoreCase) != 0))
+                    (XSharpString.Compare(thisDecl.name, otherDecl.name) != 0))
 #else
                     (thisDecl.name != otherDecl.name))
 #endif

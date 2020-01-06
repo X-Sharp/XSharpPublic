@@ -185,7 +185,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             if (compilation.Options.XSharpRuntime)
             {
-                return compilation.GetWellKnownType(WellKnownType.XSharp_Internal_VOStructAttribute);
+                return compilation.GetWellKnownType(WellKnownType.XSharp_Internal_VoStructAttribute);
             }
             else
             {

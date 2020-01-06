@@ -19,19 +19,30 @@ namespace Microsoft.CodeAnalysis.CSharp
     {
         public bool Equals(String x, String y)
         {
-            return String.Compare(x, y,StringComparison.OrdinalIgnoreCase) == 0;
+            return XSharpString.Compare(x, y) == 0;
         }
 
         public int GetHashCode(String obj)
         {
-            return ((string)obj).ToLower().GetHashCode();
+#if XSHARP
+            if (XSharpString.IgnoreCase)
+            {
+                return ((string)obj).ToLower().GetHashCode();
+            }
+            else
+            {
+                return ((string)obj).GetHashCode();
+            }
+#else
+            return ((string)obj).GetHashCode();
+#endif
         }
     }
 #endif
-    /// <summary>
-    /// Represents symbols imported to the binding scope via using namespace, using alias, and extern alias.
-    /// </summary>
-    [DebuggerDisplay("{GetDebuggerDisplay(),nq}")]
+            /// <summary>
+            /// Represents symbols imported to the binding scope via using namespace, using alias, and extern alias.
+            /// </summary>
+        [DebuggerDisplay("{GetDebuggerDisplay(),nq}")]
 #if XSHARP
     internal sealed partial class Imports
 #else
@@ -183,7 +194,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             foreach (var externAlias in externAliases)
                             {
 #if XSHARP
-                                if (CaseInsensitiveComparison.Equals(externAlias.Alias.Name, identifierValueText))
+                                if (XSharpString.Equals(externAlias.Alias.Name, identifierValueText))
 #else
                                 if (externAlias.Alias.Name == identifierValueText)
 #endif
@@ -532,7 +543,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 foreach (var existingAlias in builder)
                 {
 #if XSHARP
-                    if (CaseInsensitiveComparison.Equals(existingAlias.Alias.Name, aliasSyntax.Identifier.ValueText))
+                    if (XSharpString.Equals(existingAlias.Alias.Name, aliasSyntax.Identifier.ValueText))
 #else
                     if (existingAlias.Alias.Name == aliasSyntax.Identifier.ValueText)
 #endif
@@ -704,7 +715,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             foreach (var a in this.ExternAliases)
             {
 #if XSHARP
-                if (CaseInsensitiveComparison.Equals(a.Alias.Name, name))
+                if (XSharpString.Equals(a.Alias.Name, name))
 #else
                 if (a.Alias.Name == name)
 #endif

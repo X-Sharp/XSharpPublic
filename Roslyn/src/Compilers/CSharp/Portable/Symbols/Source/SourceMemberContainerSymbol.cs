@@ -1167,7 +1167,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 Debug.Assert(s_emptyTypeMembers.Count == 0);
                 return symbols.Count > 0 ?
 #if XSHARP				
-					symbols.ToDictionary(s => s.Name, CaseInsensitiveComparison.Comparer) : 
+					symbols.ToDictionary(s => s.Name, XSharpString.Comparer) : 
 #else
                     symbols.ToDictionary(s => s.Name, StringOrdinalComparer.Instance) :
 #endif					
@@ -1186,7 +1186,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 case TypeKind.Class:
                 case TypeKind.Struct:
 #if XSHARP
-                    if (CaseInsensitiveComparison.Equals(member.Name, this.Name))
+                    if (XSharpString.Equals(member.Name, this.Name))
 #else
                     if (member.Name == this.Name)
 #endif
@@ -1325,7 +1325,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 #if !XSHARP
                 var membersByName = membersAndInitializers.NonTypeNonIndexerMembers.ToDictionary(s => s.Name);
 #else
-                var membersByName = membersAndInitializers.NonTypeNonIndexerMembers.ToDictionary(s => s.Name, CaseInsensitiveComparison.Comparer);
+                var membersByName = membersAndInitializers.NonTypeNonIndexerMembers.ToDictionary(s => s.Name, XSharpString.Comparer);
 #endif
                 AddNestedTypesToDictionary(membersByName, GetTypeMembersDictionary());
 
@@ -2331,7 +2331,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
 
 #if XSHARP
-            var membersByName = merged.ToDictionary(s => s.Name, CaseInsensitiveComparison.Comparer);
+            var membersByName = merged.ToDictionary(s => s.Name, XSharpString.Comparer);
 #else
             var membersByName = merged.ToDictionary(s => s.Name, StringOrdinalComparer.Instance);
 #endif

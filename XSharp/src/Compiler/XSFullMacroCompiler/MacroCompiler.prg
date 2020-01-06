@@ -22,15 +22,15 @@ CLASS XSharp.MacroCompiler IMPLEMENTS XSharp.IMacroCompiler
         IF oMC == NULL
 		    SetMacroCompiler (typeof(XSharp.MacroCompiler))
         ENDIF
-		Appdomain.CurrentDomain:AssemblyLoad += AssemblyLoadEventHandler
+        AppDomain.CurrentDomain:AssemblyLoad += AssemblyLoadEventHandler
 		RETURN
 	STATIC METHOD AssemblyLoadEventHandler(sender AS OBJECT, args AS AssemblyLoadEventArgs) AS VOID
         IF options != NULL
 		    options := options:AddReferences(args:LoadedAssembly)
         ENDIF
 		RETURN
-    METHOD Compile (cMacro AS STRING, lAllowSingleQuotes AS LOGIC, Module AS System.Reflection.Module, lIsBlock OUT LOGIC, lHasMemVars OUT LOGIC) AS ICodeBlock
-        IF string.IsNullOrEmpty(cMacro)
+    METHOD Compile (cMacro AS STRING, lAllowSingleQuotes AS LOGIC, Module AS System.Reflection.Module, lIsBlock OUT LOGIC, lHasMemVars OUT LOGIC) AS ICodeblock
+        IF String.IsNullOrEmpty(cMacro)
             cMacro := "{||}"
         ENDIF
         lIsBlock    := cMacro:Replace(" ",""):StartsWith("{|")
@@ -40,7 +40,7 @@ CLASS XSharp.MacroCompiler IMPLEMENTS XSharp.IMacroCompiler
         ENDIF
         IF options == NULL
             options := ScriptOptions:Default:WithReferences( ;
-			System.AppDomain:CurrentDomain:GetAssemblies().Where({a => !string.IsNullOrEmpty(a:Location)}) ;
+			System.AppDomain:CurrentDomain:GetAssemblies().Where({a => !String.IsNullOrEmpty(a:Location)}) ;
 			)
         ENDIF
         

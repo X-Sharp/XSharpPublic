@@ -90,7 +90,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             _namespacesToMerge = namespacesToMerge;
             _containingNamespace = containingNamespace;
 #if XSHARP
-            _cachedLookup = new CachingDictionary<string, Symbol>(SlowGetChildrenOfName, SlowGetChildNames, CaseInsensitiveComparison.Comparer);
+            _cachedLookup = new CachingDictionary<string, Symbol>(SlowGetChildrenOfName, SlowGetChildNames, XSharpString.Comparer);
 #else
             _cachedLookup = new CachingDictionary<string, Symbol>(SlowGetChildrenOfName, SlowGetChildNames, EqualityComparer<string>.Default);
 #endif

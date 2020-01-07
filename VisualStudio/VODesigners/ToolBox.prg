@@ -134,6 +134,8 @@ CLASS ToolBox INHERIT Panel
 		LOCAL cClass AS STRING
 		cClass := oTemplate:cFullClass:ToUpperInvariant()
 		DO CASE 
+		CASE cClass:StartsWith("CONTROL:CUSTOMCONTROL:BBROWSER")
+			cRet := "System.Windows.Forms.DataGridView.bmp"
 		CASE cClass:StartsWith("CONTROL:TEXTCONTROL:BASELISTBOX:COMBOBOX")
 			cRet := "System.Windows.Forms.ComboBox.bmp"
 		CASE cClass:StartsWith("CONTROL:TEXTCONTROL:BASELISTBOX:LISTBOX")
@@ -159,8 +161,10 @@ CLASS ToolBox INHERIT Panel
 			cRet := "System.Windows.Forms.RadioButton.bmp"
 		CASE cClass:StartsWith("CONTROL:TEXTCONTROL:BUTTON:PUSHBUTTON")
 			cRet := "System.Windows.Forms.Button.bmp"
+		CASE cClass:StartsWith("CONTROL:COMMONCONTROL:ANIMATIONCONTROL")
+			cRet := "System.Windows.Forms.NotifyIcon.bmp"
 		CASE cClass:StartsWith("CONTROL:TEXTCONTROL:BUTTON:CHECKBOX")
-			cRet := "System.Windows.Forms.Button.bmp"
+			cRet := "System.Windows.Forms.CheckBox.bmp"
 		CASE cClass:StartsWith("CONTROL:SCROLLBAR:VERTICALSCROLLBAR")
 			cRet := "System.Windows.Forms.VScrollBar.bmp"
 		CASE cClass:StartsWith("CONTROL:SCROLLBAR:HORIZONTALSCROLLBAR")
@@ -168,8 +172,8 @@ CLASS ToolBox INHERIT Panel
 		CASE cClass:StartsWith("CONTROL:FIXEDBITMAP") .or. ;
 			cClass:StartsWith("CONTROL:FIXEDICON")
 			cRet := "System.Windows.Forms.PictureBox.bmp"
-/*		CASE cClass:StartsWith("CONTROL:TEXTCONTROL:EDIT:MULTILINEEDIT:RICHEDIT")
-			cRet := "System.Windows.Forms.RichEdit.bmp"*/
+		CASE cClass:StartsWith("CONTROL:TEXTCONTROL:EDIT:MULTILINEEDIT:RICHEDIT")
+			cRet := "System.Windows.Forms.RichTextBox.bmp"
 		CASE cClass:StartsWith("CONTROL:SCROLLBAR:SPINNER:HORIZONTALSPINNER") .or. ;
 			cClass:StartsWith("CONTROL:SCROLLBAR:SPINNER:VERTICALSPINNER")
 			cRet := "System.Windows.Forms.NumericUpDown.bmp"
@@ -180,12 +184,9 @@ CLASS ToolBox INHERIT Panel
 			cClass:StartsWith("CONTROL:TEXTCONTROL:HOTKEYEDIT") .or. ;
 			cClass:StartsWith("CONTROL:TEXTCONTROL:EDIT:MULTILINEEDIT") .or. ;
 			cClass:StartsWith("CONTROL:TEXTCONTROL:EDIT:SINGLELINEEDIT") .or. ;
-			cClass:StartsWith("CONTROL:TEXTCONTROL:HOTKEYEDIT") .or. ;
-			cClass:StartsWith("CONTROL:TEXTCONTROL:HOTKEYEDIT") .or. ;
 			cClass:StartsWith("CONTROL:TEXTCONTROL:IPADDRESS")
 			cRet := "System.Windows.Forms.TextBox.bmp"
 		OTHERWISE
-			MessageBox.Show(oTemplate:cFullClass)
 			cRet := "System.Windows.Forms.Panel.bmp"
 		END CASE
 	RETURN cRet

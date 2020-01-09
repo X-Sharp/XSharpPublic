@@ -108,7 +108,7 @@ FUNCTION Min(uValue1 AS USUAL,uValue2 AS USUAL) AS USUAL
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/palettergb/*" />
 FUNCTION PaletteRGB(bR AS USUAL,bG AS USUAL,bB AS BYTE) AS INT
-	return (INT) RGB(bR, bG, bB)
+	RETURN (INT) RGB(bR, bG, bB)
 	
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/pause/*" />
@@ -117,18 +117,6 @@ FUNCTION Pause() AS DWORD
 	
 
 
-     
-
-
-/// <summary>
-/// Install a system-wide object that receives all messages being sent to other data types.
-/// </summary>
-/// <param name="o"></param>
-/// <returns>
-/// </returns>
-[Obsolete];
-FUNCTION SysObject(o AS USUAL) AS OBJECT
-	RETURN NULL_OBJECT   
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/tone/*" />

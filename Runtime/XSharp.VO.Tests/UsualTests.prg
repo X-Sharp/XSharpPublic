@@ -78,7 +78,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal(l,1)
 			Assert.Equal(l,  (LONG) u)
 			u := UInt32.MaxValue
-            var previous := RuntimeState.CompilerOptionOVF
+            VAR previous := RuntimeState.CompilerOptionOVF
             RuntimeState.CompilerOptionOVF := TRUE
 			Assert.Throws(TYPEOF(Error), { => l := (LONG) u})	// Overflow Error
             RuntimeState.CompilerOptionOVF := previous
@@ -357,7 +357,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
             Assert.Equal(FALSE, IsInt64(u))
             Assert.Equal(TRUE, IsInteger(u))
             Assert.Equal(TRUE, IsNumeric(u))
-            Assert.Equal(FALSE, IsFLoat(u))
+            Assert.Equal(FALSE, IsFloat(u))
             Assert.Equal(FALSE, IsFractional(u))
             Assert.Equal(FALSE, IsDecimal(u))
             u := Int64.MaxValue
@@ -365,7 +365,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
             Assert.Equal(TRUE, IsInt64(u))
             Assert.Equal(TRUE, IsInteger(u))
             Assert.Equal(TRUE, IsNumeric(u))
-            Assert.Equal(FALSE, IsFLoat(u))
+            Assert.Equal(FALSE, IsFloat(u))
             Assert.Equal(FALSE, IsFractional(u))
             Assert.Equal(FALSE, IsDecimal(u))
             u := FLOAT{1,1,0}
@@ -373,7 +373,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
             Assert.Equal(FALSE, IsInt64(u))
             Assert.Equal(FALSE, IsInteger(u))
             Assert.Equal(TRUE, IsNumeric(u))
-            Assert.Equal(TRUE, IsFLoat(u))
+            Assert.Equal(TRUE, IsFloat(u))
             Assert.Equal(TRUE, IsFractional(u))
             Assert.Equal(FALSE, IsDecimal(u))
             u := 1m
@@ -381,7 +381,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
             Assert.Equal(FALSE, IsInt64(u))
             Assert.Equal(FALSE, IsInteger(u))
             Assert.Equal(TRUE, IsNumeric(u))
-            Assert.Equal(FALSE, IsFLoat(u))
+            Assert.Equal(FALSE, IsFloat(u))
             Assert.Equal(TRUE, IsFractional(u))
             Assert.Equal(TRUE, IsDecimal(u))
             u := "abc"
@@ -453,6 +453,16 @@ BEGIN NAMESPACE XSharp.VO.Tests
             Assert.Equal(TRUE, u2 <= u1)
 
 
+        [Fact, Trait("Category", "usual to string tests")];
+		METHOD UsualToStringTests() AS VOID
+			LOCAL cVal AS STRING
+			cVal := GetNullStringInUsual()
+			Assert.True(Empty(cVal))
+			Assert.True(cVal == "")
+		
+		PRIVATE METHOD GetNullStringInUsual() AS USUAL
+			LOCAL cRet AS STRING
+		RETURN cRet
 
 	END CLASS
 END NAMESPACE // XSharp.Runtime.Tests

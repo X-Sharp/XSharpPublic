@@ -161,6 +161,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                             case "xsharp.core.dll":
                                 options.TargetDLL = XSharpTargetDLL.Core;
                                 break;
+                            case "xsharp.data.dll":
+                                options.TargetDLL = XSharpTargetDLL.Data;
+                                break;
                             case "xsharp.rt.dll":
                                 options.TargetDLL = XSharpTargetDLL.RT;
                                 break;
@@ -367,6 +370,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                     break;
                 case XSharpAssemblyNames.XSharpCore:
                     options.RuntimeAssemblies |= RuntimeAssemblies.XSharpCore;
+                    break;
+                case XSharpAssemblyNames.XSharpData:
+                    options.RuntimeAssemblies |= RuntimeAssemblies.XSharpData;
                     break;
                 case XSharpAssemblyNames.XSharpRT:
                     options.RuntimeAssemblies |= RuntimeAssemblies.XSharpRT;

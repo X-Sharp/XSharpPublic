@@ -18,19 +18,20 @@ namespace Microsoft.CodeAnalysis.CSharp
         VulcanRT = 0x01,
         VulcanRTFuncs = 0x02,
         XSharpCore = 0x04,
-        XSharpRT = 0x8,
-        XSharpVO = 0x10,
-        XSharpXPP = 0x20,
-        XSharpVFP = 0x40,
-        SdkDefines = 0x80,
-        VoSystem = 0x100,
-        VoGui = 0x200,
-        VoRdd = 0x400,
-        VoSql = 0x800,
-        VoInet = 0x1000,
-        VoConsole = 0x2000,
-        VoReport = 0x4000,
-        VoWin32 = 0x8000
+        XSharpData = 0x08,
+        XSharpRT = 0x10,
+        XSharpVO = 0x20,
+        XSharpXPP = 0x40,
+        XSharpVFP = 0x80,
+        SdkDefines = 0x100,
+        VoSystem = 0x200,
+        VoGui = 0x400,
+        VoRdd = 0x800,
+        VoSql = 0x1000,
+        VoInet = 0x2000,
+        VoConsole = 0x4000,
+        VoReport = 0x8000,
+        VoWin32 = 0x10000
     }
 
     [Flags]
@@ -46,13 +47,14 @@ namespace Microsoft.CodeAnalysis.CSharp
     {
         Other =0,
         Core = 1,
-        RDD = 2,
-        RT = 3,
-        VO = 4,
-        XPP = 5,
-        VFP = 6, 
-        VulcanRT = 7,    // strictly not a target but we use this in the OverloadResolution
-        VulcanRTFuncs= 8  // strictly not a target but we use this in the OverloadResolution
+        Data = 2,
+        RDD = 3,
+        RT = 4,
+        VO = 5,
+        XPP = 6,
+        VFP = 7, 
+        VulcanRT = 8,    // strictly not a target but we use this in the OverloadResolution
+        VulcanRTFuncs= 9  // strictly not a target but we use this in the OverloadResolution
     }
 
     public sealed partial class CSharpParseOptions

@@ -156,17 +156,20 @@ namespace Microsoft.CodeAnalysis.CSharp
                                 TypeSymbol type = r.GetTypeByMetadataName(functionsClassName) as TypeSymbol;
                                 // If we can find the $Exit method then call that method
                                 // Otherwise find the public globals and clear them from our code
-                                var members = type.GetMembers(XSharpSpecialNames.ExitProc);
-                                if (members.Length > 0)
+                                if (type != null)
                                 {
-                                    foreach (MethodSymbol sym in members)
+                                    var members = type.GetMembers(XSharpSpecialNames.ExitProc);
+                                    if (members.Length > 0)
                                     {
-                                        CreateMethodCall(method.DeclaringCompilation, statement.Syntax, sym, newstatements);
+                                        foreach (MethodSymbol sym in members)
+                                        {
+                                            CreateMethodCall(method.DeclaringCompilation, statement.Syntax, sym, newstatements);
+                                        }
                                     }
-                                }
-                                else
-                                {
-                                    ClearGlobals(method.DeclaringCompilation, statement.Syntax, type, newstatements);
+                                    else
+                                    {
+                                        ClearGlobals(method.DeclaringCompilation, statement.Syntax, type, newstatements);
+                                    }
                                 }
 
                             }
@@ -322,9 +325,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                                 if (!string.IsNullOrEmpty(functionsClassName))
                                 {
                                     var type = r.GetTypeByMetadataName(functionsClassName);
-                                    init1.AddRange(type.GetMembers(XSharpSpecialNames.InitProc1));
-                                    init2.AddRange(type.GetMembers(XSharpSpecialNames.InitProc2));
-                                    init3.AddRange(type.GetMembers(XSharpSpecialNames.InitProc3));
+                                    if (type != null)
+                                    {
+                                        init1.AddRange(type.GetMembers(XSharpSpecialNames.InitProc1));
+                                        init2.AddRange(type.GetMembers(XSharpSpecialNames.InitProc2));
+                                        init3.AddRange(type.GetMembers(XSharpSpecialNames.InitProc3));
+                                    }
                                 }
                             }
                         }

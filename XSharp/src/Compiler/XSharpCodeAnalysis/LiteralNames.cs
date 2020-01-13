@@ -131,6 +131,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string FunctionsClass = "Functions";
         internal const string VOExeFunctionsClass = ".Exe.Functions";
         internal const string XSharpCoreFunctionsClass = "XSharp.Core.Functions";
+        internal const string XSharpDataFunctionsClass = "XSharp.Data.Functions";
         internal const string XSharpRDDFunctionsClass = "XSharp.RDD.Functions";
         internal const string XSharpRTFunctionsClass = "XSharp.RT.Functions";
         internal const string XSharpVOFunctionsClass = "XSharp.VO.Functions";
@@ -282,6 +283,7 @@ namespace Microsoft.CodeAnalysis.CSharp
     {
         // please note that these MUST be lowercase !
         internal const string XSharpCore = "xsharp.core";
+        internal const string XSharpData = "xsharp.data";
         internal const string XSharpRT = "xsharp.rt";
         internal const string XSharpVO = "xsharp.vo";
         internal const string XSharpXPP = "xsharp.xpp";

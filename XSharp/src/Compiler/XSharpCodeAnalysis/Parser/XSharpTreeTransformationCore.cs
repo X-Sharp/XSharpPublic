@@ -195,6 +195,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpTargetDLL.Core:
                     className = XSharpSpecialNames.XSharpCoreFunctionsClass;
                     break;
+                case XSharpTargetDLL.Data:
+                    className = XSharpSpecialNames.XSharpDataFunctionsClass;
+                    break;
                 case XSharpTargetDLL.RDD:
                     className = XSharpSpecialNames.XSharpRDDFunctionsClass;
                     break;

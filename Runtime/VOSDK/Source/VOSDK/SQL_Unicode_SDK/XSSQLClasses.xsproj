@@ -35,12 +35,8 @@
     </Compile>
     <Compile Include="SQL.prg" />
     <Compile Include="SQLExt.prg" />
-    <Compile Include="SqlFactoryAbstract.prg" />
-    <Compile Include="SqlFactorySQLServer.prg" />
     <Compile Include="Properties\AssemblyInfo.prg" />
-    <Compile Include="ISQLFactory.prg" />
     <Compile Include="SQLCatalog.prg" />
-    <Compile Include="SqlFactoryODBC.prg" />
     <Compile Include="SqlListSubclasses.prg" />
     <Compile Include="SQLColumn.prg" />
     <Compile Include="SQLColumnAttributes.prg" />
@@ -75,6 +71,11 @@
     <ProjectReference Include="..\..\..\..\XSharp.Core\XSharp.Core.xsproj">
       <Name>XSharp.Core</Name>
       <Project>{535dff14-efb7-43f5-a4e1-71c1c4280040}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\XSharp.Data\XSharp.Data.xsproj">
+      <Name>XSharp.Data</Name>
+      <Project>{db9ad987-ebd9-4f0c-8604-608a9028585c}</Project>
       <Private>True</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\..\..\XSharp.RT\XSharp.RT.xsproj">

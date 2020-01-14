@@ -6,7 +6,8 @@
 
 USING System.Data.Common
 USING System.Data
-INTERFACE ISqlFactory
+USING XSharp.Data
+INTERFACE XSharp.Data.ISqlFactory
 
     /// <summary>Return the quote character for table and column names.</summary>
     PROPERTY QuoteChar AS STRING GET
@@ -78,7 +79,7 @@ INTERFACE ISqlFactory
     /// <param name="nCompletion">A numeric value that indicates what can be changed. For example SQL_DRIVER_PROMPT or SQL_DRIVER_COMPLETE. See the ODBC Docs for more info.</param>
     /// <param name="cConnectionString">A connection string that indicates the start values for the dialog.</param>
     /// <returns>The connection string that is the result of the dialog.</returns>
-    METHOD DriverConnect(hWindow AS USUAL, nCompletion AS USUAL, cConnectionString AS USUAL) AS STRING
+    METHOD DriverConnect(hWindow AS OBJECT, nCompletion AS OBJECT, cConnectionString AS OBJECT) AS STRING
 
     /// <summary>This method is called after a transaction was committed.</summary>
     METHOD EnhanceException(oEx AS SYstem.Exception)  AS SYstem.Exception
@@ -88,7 +89,7 @@ INTERFACE ISqlFactory
     /// <param name="oFS">The fieldspec for the column.</param>
     /// <param name="lDateTimeAsDate">A setting that indicates if the server wants DateTime values as Date.</param>
     /// <returns>The value that must be passed to the program.</returns>
-    METHOD HandleSpecialValue(oValue AS OBJECT,oFS AS FieldSpec, lDateTimeAsDate AS LOGIC) AS USUAL
+    METHOD HandleSpecialValue(oValue AS OBJECT,oFS AS OBJECT, lDateTimeAsDate AS LOGIC) AS OBJECT
 
     /// <summary>This method is called before a statement is sent to the server.</summary>
     /// <param name="cStatement">The original statement.</param>
@@ -101,28 +102,19 @@ INTERFACE ISqlFactory
     /// <returns>The datareader as should be used by the SqlSelect class.</returns>
     METHOD AfterOpen(oDataReader AS DbDataReader) AS DbDataReader
 
-    /// <summary>This method is called to create Field information for teh SQLSelect class for a specific datacolumn.</summary>
-    /// <param name="oSchema">The DataTable containing the schema for the opened resultset.</param>
-    /// <param name="oColumn">The datacolumn that describes the field.</param>
-    /// <param name="cFieldName">The name of the field. This may be different from the column name, for example if there are 2 columns with the same name.</param>
-    /// <param name="oFS">A fieldspec that was created for the column. </param>
-    /// <returns>A 'DbStruct' array of 4 elements with the name, type, length and decimals. For example {"LASTNAME","C",40,0}.</returns>
-    METHOD DotNetType2VOType(oSchema AS DataTable, oColumn AS DataColumn, cFieldName AS STRING, oFS REF FieldSpec) AS ARRAY
 
 END INTERFACE    
 
 
-STATIC GLOBAL oDefaultFactory AS ISqlFactory
-
 
 FUNCTION SetSqlFactory(oFactory AS ISqlFactory) AS ISqlFactory
     LOCAL oOld AS ISqlFactory
-    oOld := oDefaultFactory
-    oDefaultFactory := oFactory
+    oOld := XSharp.Data.AbstractSqlFactory.DefaultFactory
+    XSharp.Data.AbstractSqlFactory.DefaultFactory := oFactory
     RETURN oOld
 
-FUNCTION GetSqlFactory() AS ISqlFactory
+FUNCTION GetSqlFactory() AS ISqlFactory 
     LOCAL oOld AS ISqlFactory
-    oOld := oDefaultFactory
+    oOld := XSharp.Data.AbstractSqlFactory.DefaultFactory
     RETURN oOld
 

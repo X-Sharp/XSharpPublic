@@ -215,7 +215,7 @@ PARTIAL CLASS SqlSelect INHERIT DataServer
 				// Remove unwanted characters
 				cFldName    := SqlFunctions.CleanupColumnName(cFldName)
 				cFldName	:= SqlFunctions.FieldNameCheck(cFldName, aNames)
-                oConn:Factory:DotNetType2VOType(oSchema, oColumn,cFldName, REF oFS)
+                oFS         := DotNetType2VOType(oSchema, oColumn,cFldName)
 				oHL    		:= oFS:HyperLabel
 				oDF    		:= DataField{ oHL, oFS }
 				oFieldHash:Add(oDF:NameSym, i)

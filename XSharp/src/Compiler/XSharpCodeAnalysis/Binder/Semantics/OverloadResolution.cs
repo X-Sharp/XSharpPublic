@@ -620,18 +620,16 @@ namespace Microsoft.CodeAnalysis.CSharp
     {
         internal static bool IsVoCast(this XSharpParserRuleContext node)
         {
-            if (node is XP.PrimaryExpressionContext)
+            if (node is XP.PrimaryExpressionContext pec)
             {
-                var pec = node as XP.PrimaryExpressionContext;
                 return pec.Expr is XP.VoCastExpressionContext;
             }
             return false;
         }
         internal static bool IsVoConvert(this XSharpParserRuleContext node)
         {
-            if (node is XP.PrimaryExpressionContext)
+            if (node is XP.PrimaryExpressionContext pec)
             {
-                var pec = node as XP.PrimaryExpressionContext;
                 return pec.Expr is XP.VoConversionExpressionContext;
             }
             return false;

@@ -1929,11 +1929,22 @@ namespace Microsoft.CodeAnalysis.CSharp
 
 #if XSHARP
             var pe = node.XNode as XSharpParser.PrimaryExpressionContext;
-            if (pe?.Expr is XSharpParser.VoCastExpressionContext)
+            if (pe.IsVoCast())
             {
                 if (targetType.SpecialType == SpecialType.System_Object && ! operand.Type.IsReferenceType && !pe.IsCastClass())
                 {
                     diagnostics.Add(ErrorCode.ERR_NoExplicitCast, node.Location, operand.Type, targetType);
+                }
+                // LOGIC(_CAST, numeric)  => change conversion to <numeric> != 0
+                if (targetType.SpecialType == SpecialType.System_Boolean && operand.Type.IsIntegralType() )
+                {
+                    if (operand is BoundLiteral)
+                    {
+                        bool result = operand.ConstantValue.Int64Value != 0;
+                        return new BoundLiteral(node, ConstantValue.Create(result), targetType);
+                    }
+                    var right = new BoundLiteral(node, ConstantValue.Create(0), Compilation.GetSpecialType(SpecialType.System_Int32));
+                    return new BoundBinaryOperator(node, BinaryOperatorKind.NotEqual, operand, right, null, null, LookupResultKind.Viable, targetType);
                 }
             }
             BoundExpression expression;

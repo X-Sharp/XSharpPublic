@@ -129,12 +129,36 @@ INTERNAL STRUCTURE FtpMemoToken
         
 
     INTERNAL METHOD Read(hFile AS IntPtr) AS LOGIC
+        LOCAL lOk AS LOGIC
         TRY
-            
-            RETURN Fread3(hFile, Buffer, 8) == 8
+            lOk := Fread3(hFile, Buffer, 8) == 8
+            IF lOk
+	        // Check for 'expected' Field Types
+                SWITCH SELF:DataType
+                    CASE FlexFieldType.String
+                    CASE FlexFieldType.Picture
+                    CASE FlexFieldType.OleObject
+                        lOk := TRUE
+                    OTHERWISE
+                        IF SELF:DataType >= FlexFieldType.FirstExtended .AND. ;
+                            SELF:DataType <= FlexFieldType.LastExtended
+                            lOk := TRUE
+                        ELSEIF SELF:DataType >= FlexFieldType.FirstExtended2 .AND. ;
+                            SELF:DataType <= FlexFieldType.LastExtended2
+                            lOk := TRUE
+                        ELSE
+                            lOk := FALSE
+                        ENDIF
+                END SWITCH
+            ENDIF
         CATCH AS IOException
-            RETURN FALSE
+            lOk := FALSE
         END TRY
+        IF ! lOk
+        	SELF:DataType := FlexFieldType.Illegal
+        	SELF:Length   := UInt32.MaxValue
+        ENDIF
+        RETURN lOk
         
         
 

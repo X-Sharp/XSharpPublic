@@ -51,6 +51,7 @@ INTERNAL ENUM FlexFieldType
     MEMBER Picture      := 0
     MEMBER String       := 1
     MEMBER OleObject    := 2
+    MEMBER FirstExtended := IndexBlock
     MEMBER IndexBlock   := 1000
     MEMBER Delete       := 1001
     MEMBER Array16      := 1002
@@ -72,8 +73,11 @@ INTERNAL ENUM FlexFieldType
     MEMBER Compressed   := 1018
     MEMBER StringLong   := 1019
     MEMBER CompressedLong := 1020
+    MEMBER LastExtended := CompressedLong
+    MEMBER FirstExtended2  := ItemClipper
     MEMBER ItemClipper  := 10000
     MEMBER LogicLong    := 10001
     MEMBER StringEmpty  := 10002
+    MEMBER LastExtended2  := StringEmpty
     MEMBER Illegal      := -1
 END ENUM

@@ -10,6 +10,7 @@ USING XSharp.RDD.Support
 BEGIN NAMESPACE XSharp.RDD
 /// <summary>DBFVFP RDD. DBFCDX with support for the FoxPro field types.</summary>
 CLASS DBFVFP INHERIT DBFCDX
+    PRIVATE CONST VFP_BACKLINKSIZE := 263 AS LONG
 	CONSTRUCTOR()
 		SUPER()
 		RETURN
@@ -66,8 +67,11 @@ CLASS DBFVFP INHERIT DBFCDX
         ELSE
             SELF:_Header:Version := DbfVersion.VisualFoxPro
         ENDIF
-        SELF:_Header:HeaderLen += 263
-        SELF:_HeaderLength   += 263
+        SELF:_Header:HeaderLen += VFP_BACKLINKSIZE
+        SELF:_HeaderLength   += VFP_BACKLINKSIZE
+        SELF:_writeHeader()
+        // Adjust the file size to accomodate the backlink data
+        FChSize(SELF:_hFile, (DWORD) SELF:_HeaderLength)
         RETURN
 
     /// <inheritdoc />

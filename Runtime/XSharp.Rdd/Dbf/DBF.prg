@@ -1179,7 +1179,7 @@ RETURN TRUE
 
 
     // Write the DBF file Header : Last DateTime of modification (now), Current Reccount
-PRIVATE METHOD _writeHeader() AS LOGIC
+PROTECTED METHOD _writeHeader() AS LOGIC
 	LOCAL ret := TRUE AS LOGIC
     // Really ?
 	IF SELF:_Header:isHot 

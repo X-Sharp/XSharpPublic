@@ -46,9 +46,9 @@ BEGIN NAMESPACE XSharp.RDD
                 VALIDATETREE := TRUE
                 CoreDb.GoTop()
                 VALIDATETREE := FALSE
-                
-                #endif
-            RETURN 
+                RETURN 
+            #endif
+            
 
 
             #region Order Support

@@ -42,7 +42,9 @@ FUNCTION AX_GetAceIndexHandle( uIndexFile AS OBJECT, uOrder AS OBJECT) AS DWORD
     // uOrder -- order name, number, or NIL
     LOCAL oRet := NULL AS OBJECT
     IF CoreDb.OrderInfo(DBOI_GET_ACE_INDEX_HANDLE, "", uOrder, REF oRet)
-        RETURN Convert.ToUint32(oRet)
+        IF oRet IS IntPtr VAR pHandle
+            RETURN (DWORD) pHandle:ToInt32()
+        ENDIF
     ENDIF
     RETURN 0
 
@@ -57,7 +59,9 @@ Function GetAceIndexHandle() AS DWORD
 FUNCTION AX_GetAceStmtHandle() AS DWORD
     LOCAL oHandle := NULL AS OBJECT
     IF CoreDb.Info( DBI_GET_ACE_STMT_HANDLE , REF oHandle)
-        RETURN Convert.ToUint32(oHandle)
+        IF oHandle IS IntPtr VAR pHandle
+            RETURN (DWORD) pHandle:ToInt32()
+        ENDIF
     ENDIF
     RETURN 0
     
@@ -66,7 +70,9 @@ FUNCTION AX_GetAceStmtHandle() AS DWORD
 FUNCTION AX_GetAceTableHandle() AS DWORD
     LOCAL oHandle := NULL AS OBJECT
     IF CoreDb.Info( DBI_GET_ACE_TABLE_HANDLE , REF oHandle)
-        RETURN Convert.ToUint32(oHandle)
+        IF oHandle IS IntPtr VAR pHandle
+            RETURN (DWORD) pHandle:ToInt32()
+        ENDIF
     ENDIF
     RETURN 0
 

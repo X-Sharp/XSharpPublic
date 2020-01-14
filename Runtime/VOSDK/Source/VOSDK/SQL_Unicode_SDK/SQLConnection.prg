@@ -12,7 +12,7 @@ USING System.ComponentModel
 USING System.Runtime.ConstrainedExecution
 USING System.Runtime.InteropServices
 USING System.Collections.Generic
-
+USING XSharp.Data
 CLASS SqlConnection
 	#region IVars
 	// VO Compatible Ivars
@@ -38,7 +38,7 @@ CLASS SqlConnection
 	// DotNet Specific Ivars
 	PROTECT oNetConn         AS DbConnection
 	PROTECT oTransaction     AS DbTransaction
-	PRIVATE oFactory         AS ISqlFactory 
+	PRIVATE oFactory         AS XSharp.Data.ISqlFactory 
 	#endregion
 	#region static ivars
 	
@@ -252,6 +252,9 @@ CLASS SqlConnection
 	METHOD DriverConnect( hWindow, nDriverCompletion, cConnStrIn )
         LOCAL cResult AS STRING
         LOCAL lRet    AS LOGIC
+        IF IsNil(cConnStrIn)
+            cConnStrIn := SELF:cConnectString
+        ENDIF
 		cResult  := SELF:oFactory:DriverConnect(hWindow, nDriverCompletion, cConnStrIn)
         IF ! empty(cResult)
             SELF:cConnectString := cResult        
@@ -751,7 +754,7 @@ CLASS SqlConnection
 		END SET
 	END PROPERTY
 	
-	PROPERTY Factory    AS ISqlFactory 
+	PROPERTY Factory    AS XSharp.Data.ISqlFactory 
 		GET
 			RETURN oFactory
 		END GET

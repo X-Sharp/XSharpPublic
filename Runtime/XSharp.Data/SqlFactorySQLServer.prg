@@ -11,7 +11,7 @@ USING System.Reflection
 USING System.Text
 USING System.Runtime.InteropServices
 
-CLASS SqlServerFactory INHERIT AbstractSqlFactory
+CLASS XSharp.Data.SqlServerFactory INHERIT XSharp.Data.AbstractSqlFactory
 
     PROPERTY QuoteChar AS STRING GET chr(34)
 
@@ -23,12 +23,13 @@ CLASS SqlServerFactory INHERIT AbstractSqlFactory
     METHOD GetName(oConn AS DbConnection) AS STRING
         RETURN "SQL"
 
-    METHOD DriverConnect(hWindow AS USUAL, uCompletion AS USUAL, cConnectionString AS USUAL) AS STRING
+    METHOD DriverConnect(hWindow AS OBJECT, uCompletion AS OBJECT, cConnectionString AS OBJECT) AS STRING
+
         LOCAL oODBC AS OdbcFactory
         LOCAL cResult AS STRING
         oODBC := OdbcFactory{}
         cConnectionString := "Driver=SQL Server"
-        cResult := SUPER:DriverConnect(hWindow, SQL_DRIVER_COMPLETE, cConnectionString)
+        cResult := SUPER:DriverConnect(hWindow, Win32.SQL_DRIVER_COMPLETE, cConnectionString)
         IF String.IsNullOrEmpty(cResult)
             RETURN cResult
         ENDIF

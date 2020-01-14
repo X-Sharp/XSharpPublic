@@ -504,11 +504,15 @@ USING System.Diagnostics
             IF ( blockNbr > 0 )
                 // Get the raw Length of the Memo, this included the token
                 blockLen := SELF:_getValueLength( nFldPos )
-                IF SELF:_setBlockPos(blockNbr)
-                    block := BYTE[]{blockLen}
-                    IF FRead3( SELF:_hFile, block, (DWORD)blockLen ) != blockLen 
-                        block := NULL
-                    ENDIF
+		IF blockLen != UInt32.MaxValue
+	                IF SELF:_setBlockPos(blockNbr)
+        	            block := BYTE[]{blockLen}
+                	    IF FRead3( SELF:_hFile, block, (DWORD)blockLen ) != blockLen 
+                        	block := NULL
+	                    ENDIF
+			ENDIF
+                ELSE
+                    SELF:_oRDD:_dbfError(SubCodes.ERDD_READ, GenCode.EG_CORRUPTION, "FPTMemo.GetValue")
                 ENDIF
             ENDIF
             // At this level, the return value is the raw Data, in BYTE[]
@@ -549,8 +553,11 @@ USING System.Diagnostics
                 IF SELF:_setBlockPos(blockNbr)
                     LOCAL token AS FtpMemoToken
                     token := FtpMemoToken{SELF:_blockData}    
-                    token:Read(SELF:_hFile)
-                    blockLen     := token:Length+8
+                    IF token:Read(SELF:_hFile)
+                        blockLen     := token:Length+8
+                    ELSE
+                        blockLen     := UInt32.MaxValue
+                    ENDIF
                 ENDIF
             ENDIF
             RETURN blockLen

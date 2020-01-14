@@ -76,6 +76,18 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     if (node is StatementSyntax)
                         break;
+                    if (node is SwitchSectionSyntax)
+                        break;
+                    if (node is SwitchLabelSyntax)
+                        break;
+                    if (node is ElseClauseSyntax)
+                        break;
+                    if (node is CatchClauseSyntax)
+                        break;
+                    if (node is FinallyClauseSyntax)
+                        break;
+                    if (node is QueryClauseSyntax)
+                        break;
                     node = node.Parent;
                 }
                 if (node == null)

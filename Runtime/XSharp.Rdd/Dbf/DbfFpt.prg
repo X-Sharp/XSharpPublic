@@ -211,7 +211,8 @@ BEGIN NAMESPACE XSharp.RDD
                 Array.Copy(bData,8, buffer, 0, buffer:Length)
                 RETURN buffer
             CASE FlexFieldType.String
-                // Some drivers are stupid enough to allocate blocks in the FPT with a zero length..        
+            CASE FlexFieldType.StringLong
+               // Some drivers are stupid enough to allocate blocks in the FPT with a zero length..        
                 IF Token:Length > 0
                     IF bData[bData:Length-1] == 0
                         RETURN encoding:GetString(bData,8, bData:Length-9)
@@ -250,9 +251,7 @@ BEGIN NAMESPACE XSharp.RDD
                 RETURN 0.0
             CASE FlexFieldType.Compressed
                 RETURN ""
-            CASE FlexFieldType.StringLong
-                RETURN encoding:GetString(bData,8, bData:Length-8)
-            CASE FlexFieldType.CompressedLong
+             CASE FlexFieldType.CompressedLong
                 RETURN ""
             CASE FlexFieldType.ItemClipper
                 RETURN NULL
@@ -752,7 +751,11 @@ BEGIN NAMESPACE XSharp.RDD
                         bFile := System.IO.File.ReadAllBytes(filename)
                         VAR bData := BYTE[] { bFile:Length+8}
                         VAR token := FtpMemoToken{bData}
-                        token:DataType := FlexFieldType.String
+                        IF bFile:Length > UInt16.MaxValue
+                            token:DataType := FlexFieldType.StringLong
+                        ELSE
+                            token:DataType := FlexFieldType.String
+                        ENDIF
                         token:Length   := (DWORD) bFile:Length
                         System.Array.Copy(bFile,0, bData,8, bFile:Length)
                         IF SELF:PutValue(nFldPos, bData)

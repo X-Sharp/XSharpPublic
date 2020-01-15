@@ -50,6 +50,7 @@ PARTIAL CLASS DBF INHERIT Workarea IMPLEMENTS IRddSortWriter
     //PROTECT _PackMemo		AS LOGIC
     INTERNAL _OpenInfo		AS DbOpenInfo // current dbOpenInfo structure in OPEN/CREATE method
     PROTECT _Locks			AS List<LONG>
+    PROTECT _AllowedFieldTypes AS STRING
     //PROTECT _DirtyRead		AS LONG
     //PROTECT _HasTrigger		AS LOGIC
     //PROTECT _Encrypted		AS LOGIC	// Current record Encrypted
@@ -113,6 +114,7 @@ CONSTRUCTOR()
 	SELF:_numformat := (NumberFormatInfo) culture:NumberFormat:Clone()
 	SELF:_numformat:NumberDecimalSeparator := "."
 	SELF:_RelInfoPending    := NULL
+	SELF:_AllowedFieldTypes := "CDLMN"
 	
             /// <inheritdoc />
 METHOD GoTop() AS LOGIC
@@ -1145,6 +1147,9 @@ PRIVATE METHOD _readFieldsHeader() AS LOGIC
 		FOR VAR i := nStart TO fieldCount - ( 1 - nStart )
 			local nPos := i*DbfField.SIZE as LONG
 			Array.Copy(fieldsBuffer, nPos, currentField:Buffer, 0, DbfField.SIZE )
+			IF ! SELF:Header:Version:UsesFlags()
+			   currentField:ClearFlags()
+			ENDIF
 			VAR column := DbfColumn.Create(REF currentField, SELF, nPos + DbfHeader.SIZE)
 			SELF:AddField( column)
 			IF column:IsMemo
@@ -1242,9 +1247,14 @@ PROTECT OVERRIDE METHOD _checkFields(info AS RddFieldInfo) AS LOGIC
 		info:Name := info:Name:Substring(0,10)
 	ENDIF
 	IF ! info:Validate()
-		SELF:_dbfError( ERDD.CORRUPT_HEADER, XSharp.Gencode.EG_ARG )
+		SELF:_dbfError( ERDD.CORRUPT_HEADER, XSharp.Gencode.EG_ARG,"ValidateDbfStructure", i"Field '{info.Name}' is not valid"  )
 		RETURN FALSE
 	ENDIF
+	VAR cType := chr( (BYTE) info:FieldType)
+	IF ! cType $ SELF:_AllowedFieldTypes
+		SELF:_dbfError( ERDD.CORRUPT_HEADER, XSharp.Gencode.EG_ARG,"ValidateDbfStructure", i"Field Type '{cType}' for field '{info.Name}' is not allowed for RDD '{SELF:Driver}'" )
+	ENDIF
+
 RETURN TRUE
 
 
@@ -2684,6 +2694,10 @@ METHOD initialize() AS VOID
 	SELF:Buffer := BYTE[]{SIZE}
 	
 	PUBLIC Buffer		 AS BYTE[]
+
+METHOD ClearFlags() AS VOID
+    SELF:OffSet := 0
+    System.Array.Clear(Buffer, OFFSET_FLAGS, SIZE-OFFSET_FLAGS)
 	
 PROPERTY Name		 AS STRING
 	GET

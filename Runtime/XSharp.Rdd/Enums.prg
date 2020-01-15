@@ -130,6 +130,15 @@ BEGIN NAMESPACE XSharp.RDD
     
  
     STATIC CLASS CodePageExtensions
+        STATIC METHOD UsesFlags(SELF version AS DbfVersion) AS LOGIC
+            SWITCH version
+            CASE DBFVersion.VisualFoxPro
+            CASE DBFVersion.VisualFoxProAutoIncrement
+            CASE DBFVersion.VisualFoxProVarChar
+                RETURN TRUE
+            END SWITCH
+            RETURN FALSE
+
         STATIC METHOD ToCodePage(SELF headerCodePage AS DBFHeaderCodePage) AS OsCodePage
             SWITCH headerCodePage
             CASE DbfHeaderCodepage.CP_DBF_DOS_US        ; RETURN OsCodepage.CP_INI_DOS_US        

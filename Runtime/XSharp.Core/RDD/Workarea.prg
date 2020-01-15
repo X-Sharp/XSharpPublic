@@ -578,7 +578,7 @@ BEGIN NAMESPACE XSharp.RDD
                 CASE DbFieldInfo.DBS_NAME
                     RETURN ofld:Name
                 CASE DbFieldInfo.DBS_TYPE
-                    VAR cVar := oFld:FieldType:ToString():SubString(0,1)
+                    VAR cVar := CHR( (BYTE) oFld:FieldType)
                     IF ofld:Flags != DBFFieldFlags.None
                         cVar += ":"
                         cVar += IIF(ofld:Flags:HasFlag(DBFFieldFlags.Nullable),"N","")

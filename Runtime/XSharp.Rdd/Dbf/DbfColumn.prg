@@ -389,7 +389,7 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN DbDate{0,0,0}
 
         OVERRIDE METHOD Validate() AS LOGIC
-            RETURN SELF:Length == 8  .AND.  SELF:Decimals == 0 
+            RETURN SUPER:Validate()
 
 
     END CLASS
@@ -435,7 +435,8 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN FALSE
 
        OVERRIDE METHOD Validate() AS LOGIC
-            RETURN SELF:Length == 1  .AND.  SELF:Decimals == 0 
+            RETURN SUPER:Validate()
+
     END CLASS
 
     /// <summary>Class for reading / writing Numeric Columns</summary>

@@ -95,10 +95,6 @@ BEGIN NAMESPACE XSharp.RDD
 		METHOD Trans(info AS DbTransInfo) 		AS LOGIC
             RETURN SUPER:Trans(info)
         
-		/// <inheritdoc />
-    	METHOD TransRec(info AS DbTransInfo) 	AS LOGIC
-            RETURN SUPER:TransRec(info)
-
             
     END CLASS
 END NAMESPACE

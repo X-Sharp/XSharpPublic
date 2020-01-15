@@ -138,6 +138,7 @@ INTERNAL STRUCTURE FtpMemoToken
                     CASE FlexFieldType.String
                     CASE FlexFieldType.Picture
                     CASE FlexFieldType.OleObject
+                    CASE FlexFieldType.Delete
                         lOk := TRUE
                     OTHERWISE
                         IF SELF:DataType >= FlexFieldType.FirstExtended .AND. ;

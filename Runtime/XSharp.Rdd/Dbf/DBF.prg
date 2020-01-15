@@ -2210,6 +2210,51 @@ PUBLIC METHOD WriteSorted( sortInfo AS DBSORTINFO , record AS SortRecord ) AS LO
 	Array.Copy(record:Data, SELF:_RecordBuffer, SELF:_RecordLength)
 RETURN SELF:TransRec(sortInfo:TransInfo)
 
+
+/// <inheritdoc />
+VIRTUAL METHOD TransRec(info AS DbTransInfo) AS LOGIC
+LOCAL result AS LOGIC
+IF FALSE .AND. info:Destination IS DBF VAR oDest
+    LOCAL oValue AS OBJECT
+    result := oDest:Append(TRUE)
+    IF info:Flags:HasFlag(DbTransInfoFlags.SameStructure)
+        IF info:Flags:HasFlag(DbTransInfoFlags.CanPutRec) 
+            VAR buffer  := SELF:GetRec()
+            result      := oDest:PutRec(buffer)
+        ELSE
+            VAR buffer  := SELF:GetRec()
+            result      := oDest:PutRec(buffer)
+            FOR VAR nI := 1 TO SELF:FieldCount
+                LOCAL oColumn AS DbfColumn
+                oColumn := oDest:_GetColumn(nI)
+                IF oColumn:IsMemo
+                    oValue := SELF:GetValue(nI)
+                    oColumn:PutValue(0, oDest:_RecordBuffer)
+                    result := oDest:PutValue(nI, oValue)
+                    IF ! result
+                        EXIT
+                    ENDIF
+                ENDIF
+            NEXT
+        ENDIF
+    ELSE
+        FOREACH oItem AS DbTransItem IN info:Items
+            oValue := SELF:GetValue(oItem:Source)
+            result := oDest:PutValue(oItem:Destination, oValue)
+            IF ! result
+                EXIT
+            ENDIF
+        NEXT
+    ENDIF
+    IF result .AND. SELF:Deleted
+        result := oDest:Delete()
+    ENDIF
+ELSE
+    result := SUPER:TransRec(info)
+ENDIF
+RETURN result
+
+
 INTERNAL METHOD Validate() AS VOID
 	IF !SELF:_BufferValid 
 		SELF:_readRecord()

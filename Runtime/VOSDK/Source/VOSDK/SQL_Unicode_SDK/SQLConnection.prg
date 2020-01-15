@@ -52,7 +52,7 @@ CLASS SqlConnection
 	
 	#region Constructors and Destructors
 	CONSTRUCTOR ( cConnStr, cUserID, cPassword )
-        SELF:oFactory := GetSqlFactory()
+        SELF:oFactory := XSharp.Data.Functions.GetSqlFactory()
 		aStmts := List<SqlStatement>{}
 		oErrInfo := SQLErrorInfo{}
 		IF IsString( cUserID )

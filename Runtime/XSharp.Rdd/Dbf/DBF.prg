@@ -1896,7 +1896,7 @@ VIRTUAL METHOD Info(nOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT
 	SWITCH nOrdinal
 	CASE DbInfo.DBI_ISDBF
 	CASE DbInfo.DBI_CANPUTREC
-		oResult := TRUE
+		oResult := IIF(SELF:HasMemo, FALSE , TRUE)
 	CASE DbInfo.DBI_GETRECSIZE
 		oResult := SELF:_RecordLength
 	CASE DbInfo.DBI_LASTUPDATE

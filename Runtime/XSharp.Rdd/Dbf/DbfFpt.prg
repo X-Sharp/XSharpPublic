@@ -9,14 +9,17 @@ USING XSharp.RDD.Enums
 USING XSharp.RDD.Support
 USING XSharp.RDD.CDX
 USING System.Diagnostics
-
-    BEGIN NAMESPACE XSharp.RDD
+USING System.IO
+BEGIN NAMESPACE XSharp.RDD
     /// <summary>DBFFPT RDD. For DBF/FPT. No index support at this level</summary>
     CLASS DBFFPT INHERIT DBF 
         PRIVATE _oFptMemo AS FptMemo
+        PROTECTED INTERNAL _iExportMode AS LONG
         CONSTRUCTOR   
             SUPER()
             SELF:_Memo := _oFptMemo := FptMemo{SELF}
+            SELF:_iExportMode := BLOB_EXPORT_APPEND
+            
             /// <inheritdoc />	
         PROPERTY Driver AS STRING GET "DBFFPT"
 
@@ -308,10 +311,12 @@ USING System.Diagnostics
                  ENDIF
             ENDIF
             RETURN FALSE
+
+ 
             
             /// <inheritdoc />
         VIRTUAL METHOD Info(nOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT
-            LOCAL oResult AS OBJECT
+            LOCAL oResult := NULL AS OBJECT
             SWITCH nOrdinal
             CASE DbInfo.DBI_MEMOHANDLE
                 IF ( SELF:_oFptMemo != NULL .AND. SELF:_oFptMemo:_Open)
@@ -358,12 +363,57 @@ USING System.Diagnostics
                 oResult := DB_MEMO_FPT
             CASE DbInfo.DBI_MEMOVERSION
                 oResult := DB_MEMOVER_STD
+            CASE DbInfo.BLOB_GET
+                // oNewValue should be object[] with 3 elements
+                TRY
+                    IF oNewValue IS OBJECT[] VAR oArray
+                        IF oArray:Length >= 3
+                            VAR nFld    := Convert.ToInt32(oArray[0])
+                            VAR nOffSet := Convert.ToInt32(oArray[1])
+                            VAR nLen    := Convert.ToInt32(oArray[2])
+                            VAR rawData := (BYTE[])SUPER:GetValue(nFld)
+                            IF rawData != NULL .AND. rawData:Length > 8 // 1st 8 bytes are the header
+                                VAR nDataLen := rawData:Length -8
+                                nOffSet += 8
+                                IF nOffSet <= rawData:Length 
+                                    VAR nToCopy := nLen
+                                    IF nToCopy == 0
+                                        nToCopy := nDataLen
+                                    ELSEIF nToCopy > nDataLen - nOffSet + 1
+                                        nToCopy := nDataLen - nOffSet + 1
+                                    ENDIF
+                                    VAR result  := BYTE[]{nToCopy}
+                                    System.Array.Copy(rawData, nOffSet, result,0, nToCopy)
+                                    oResult := SELF:_Encoding:GetString(result,0, nToCopy)
+                                ENDIF
+                            ENDIF
+                        ENDIF
+                    ENDIF
+                CATCH ex AS Exception
+                    SELF:_DbfError(ex, Subcodes.ERDD_READ, Gencode.EG_CORRUPTION, "DBFFPT.BlobGet")
+                END TRY
+            CASE DbInfo.BLOB_NMODE
+                IF oNewValue IS LONG VAR iExportMode
+                    SELF:_iExportMode := iExportMode
+                ENDIF
             OTHERWISE
                 oResult := SUPER:Info(nOrdinal, oNewValue)
             END SWITCH
             RETURN oResult
             
-            
+        VIRTUAL METHOD PutValueFile(nFldPos AS INT, fileName AS STRING) AS LOGIC
+           IF SELF:_ReadOnly
+                SELF:_dbfError(ERDD.READONLY, XSharp.Gencode.EG_READONLY )
+            ENDIF
+            SELF:ForceRel()
+            IF SELF:_readRecord()
+                // GoHot() must be called first because this saves the current index values
+                IF ! SELF:IsHot
+                    SELF:GoHot()
+                ENDIF
+                RETURN SELF:_oFptMemo:PutValueFile(nFldPos, fileName)
+            ENDIF
+            RETURN FALSE
     END CLASS
             
             
@@ -376,7 +426,7 @@ USING System.Diagnostics
         INTERNAL _Open      AS LOGIC
         PROTECT _Shared     AS LOGIC
         PROTECT _ReadOnly   AS LOGIC
-        PROTECT _oRDD       AS DBF
+        PROTECT _oRDD       AS DBFFPT
         PROTECT _isFlex     AS LOGIC
         PROTECT _blockSize  AS WORD
         PROTECT _lockScheme AS DbfLocking
@@ -466,7 +516,7 @@ USING System.Diagnostics
             
         CONSTRUCTOR (oRDD AS DBF)
             SUPER(oRDD)
-            SELF:_oRdd := oRDD
+            SELF:_oRdd := (DBFFPT) oRDD
             SELF:_hFile := IntPtr.Zero
             SELF:_Shared := SELF:_oRDD:_Shared
             SELF:_ReadOnly := SELF:_oRdd:_ReadOnly
@@ -504,13 +554,13 @@ USING System.Diagnostics
             IF ( blockNbr > 0 )
                 // Get the raw Length of the Memo, this included the token
                 blockLen := SELF:_getValueLength( nFldPos )
-		IF blockLen != UInt32.MaxValue
+		        IF blockLen != UInt32.MaxValue
 	                IF SELF:_setBlockPos(blockNbr)
         	            block := BYTE[]{blockLen}
                 	    IF FRead3( SELF:_hFile, block, (DWORD)blockLen ) != blockLen 
                         	block := NULL
 	                    ENDIF
-			ENDIF
+			        ENDIF
                 ELSE
                     SELF:_oRDD:_dbfError(SubCodes.ERDD_READ, GenCode.EG_CORRUPTION, "FPTMemo.GetValue")
                 ENDIF
@@ -519,8 +569,33 @@ USING System.Diagnostics
             RETURN block
             
             /// <inheritdoc />
-        METHOD GetValueFile(nFldPos AS INT, fileName AS STRING) AS LOGIC
-            THROW NotImplementedException{}
+         OVERRIDE METHOD GetValueFile(nFldPos AS LONG, filename AS STRING) AS LOGIC
+          IF SELF:_oRDD:_isMemoField( nFldPos )
+                // At this level, the return value is the raw Data, in BYTE[]
+                TRY
+                    IF File(fileName)
+                        fileName := FPathName()
+                    ENDIF
+                    VAR rawData := (BYTE[])SELF:GetValue(nFldPos)
+                    IF rawData != NULL
+                        // So, extract the "real" Data
+                        IF SELF:_oRDD:_iExportMode == BLOB_EXPORT_APPEND
+                            LOCAL file := System.IO.File.OpenWrite(fileName) AS FileStream
+                            file:Seek(0, SeekOrigin.End)
+                            file:Write(rawData, 8, rawData:Length-8)
+                            file:Close()
+                        ELSE
+                            LOCAL file := System.IO.File.Create(fileName) AS FileStream
+                            file:Write(rawData, 8, rawData:Length-8)
+                            file:Close()
+                        ENDIF
+                        RETURN TRUE
+                    ENDIF
+                CATCH ex AS Exception
+                    SELF:_oRDD:_DbfError(ex, Subcodes.ERDD_READ, Gencode.EG_READ, "DBFFPT.GetValueFile")
+                END TRY
+            ENDIF
+            RETURN SUPER:GetValueFile(nFldPos, fileName)
             
             /// <inheritdoc />
         METHOD GetValueLength(nFldPos AS INT) AS LONG
@@ -664,19 +739,32 @@ USING System.Diagnostics
                 ENDIF
                 RETURN TRUE
             ENDIF
-            // TODO: write the value to the file, including:
-            // - check if the current block exists
-            // - check if the current block has enough space
-            // - add the current block to the 'deleted blocks' list when not enough space
-            // - allocate a new block from either the list of deleted blocks or at the end of the file
-            // - and of course locking the file.
             RETURN FALSE
             
             /// <inheritdoc />
         VIRTUAL METHOD PutValueFile(nFldPos AS INT, fileName AS STRING) AS LOGIC
-            THROW NotImplementedException{}
-            
-            /// <inheritdoc />
+            TRY
+                VAR oColumn := SELF:_oRDD:_GetColumn(nFldPos)
+                IF oColumn != NULL .AND. oColumn:IsMemo 
+                    LOCAL bFile AS BYTE[]
+                    IF File(fileName)
+                        fileName := FPathName()
+                        bFile := System.IO.File.ReadAllBytes(filename)
+                        VAR bData := BYTE[] { bFile:Length+8}
+                        VAR token := FtpMemoToken{bData}
+                        token:DataType := FlexFieldType.String
+                        token:Length   := (DWORD) bFile:Length
+                        System.Array.Copy(bFile,0, bData,8, bFile:Length)
+                        IF SELF:PutValue(nFldPos, bData)
+                            // Update the Field Info with the new MemoBlock Position
+                            RETURN oColumn:PutValue(SELF:LastWrittenBlockNumber, SELF:_oRDD:_RecordBuffer)
+                        ENDIF
+                    ENDIF
+                ENDIF
+            CATCH ex AS Exception
+                SELF:_oRDD:_DbfError(ex, Subcodes.ERDD_WRITE, Gencode.EG_WRITE, "DBFFPT.PutValueFile")
+            END TRY
+            RETURN FALSE            /// <inheritdoc />
         VIRTUAL METHOD CloseMemFile( ) AS LOGIC
             LOCAL isOk := FALSE AS LOGIC
             IF SELF:IsOpen

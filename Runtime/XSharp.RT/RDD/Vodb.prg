@@ -50,6 +50,10 @@ STATIC METHOD FieldGet(nPos AS DWORD,uRet REF USUAL) AS LOGIC
 STATIC METHOD Info(nOrdinal AS DWORD,ptrRet REF USUAL) AS LOGIC
     LOCAL oRet := ptrRet AS OBJECT
     LOCAL result AS LOGIC
+    IF ptrRet:IsArray
+        LOCAL aValue := ptrRet AS ARRAY
+        oRet := (OBJECT[]) aValue
+    ENDIF
     result := CoreDb.Info(nOrdinal, REF oRet)
     ptrRet := oRet
     RETURN result
@@ -58,6 +62,11 @@ STATIC METHOD Info(nOrdinal AS DWORD,ptrRet REF USUAL) AS LOGIC
 /// <remarks> <inheritdoc cref='M:XSharp.CoreDb.Info(System.UInt32,System.Object)'/>
 /// <br/><br/> <note type="tip">The difference between VoDb.Info and CoreDb.Info is that VoDb.Info takes a USUAL parameter</note></remarks>
 STATIC METHOD Info(nOrdinal AS DWORD,uValue AS USUAL) AS LOGIC
+    IF uValue:IsArray
+        LOCAL aValue := uValue AS ARRAY
+        uValue := (OBJECT[]) aValue
+    ENDIF
+
     RETURN CoreDb.Info(nOrdinal, (OBJECT) uValue)
 
 /// <inheritdoc cref='M:XSharp.CoreDb.OrderInfo(System.UInt32,System.String,System.Object,System.Object@)'/>

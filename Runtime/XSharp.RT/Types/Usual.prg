@@ -1683,7 +1683,12 @@ BEGIN NAMESPACE XSharp
                 RETURN ""
             ENDIF
            SWITCH u:_usualType
-            CASE __UsualType.String	
+            CASE __UsualType.String
+                IF u:_refData == NULL
+		            RETURN ""
+	            ELSE
+		            RETURN u:ToString()
+	            END IF
             CASE __UsualType.Symbol
                 RETURN u:ToString()
             OTHERWISE

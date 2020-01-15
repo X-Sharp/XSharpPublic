@@ -461,6 +461,7 @@ CLASS RddFieldInfo
 		ENDIF
 		Alias       := sName
 		SELF:Offset := nOffSet
+		SELF:Validate()
 		RETURN
     /// <summary>Construct a RddFieldInfo object.</summary>        
 	CONSTRUCTOR(sName AS STRING, nType AS DbFieldType, nLength AS LONG, nDecimals AS LONG, nOffSet := -1 AS LONG, nFlags := DbfFieldFlags.None AS DbfFieldFlags)
@@ -470,7 +471,8 @@ CLASS RddFieldInfo
 		SELF:Decimals 	:= nDecimals
 		SELF:Alias      := sName
 		SELF:Offset     := nOffSet
-        	SELF:Flags      := nFLags
+		SELF:Flags      := nFLags
+		SELF:Validate()
 		RETURN
 
     CONSTRUCTOR(oInfo AS RddFieldInfo)
@@ -480,9 +482,10 @@ CLASS RddFieldInfo
 		SELF:Alias      := oInfo:Alias
 		SELF:Flags      := oInfo:Flags
 		SELF:OffSet     := oInfo:OffSet
-        IF SELF:FieldType:HasDecimals()  .OR. SELF:FieldType == DbFieldType.Character  // Support for char fields > 255 characters
-        	SELF:Decimals 	:= oInfo:Decimals
-        ENDIF
+		IF SELF:FieldType:HasDecimals()  .OR. SELF:FieldType == DbFieldType.Character  // Support for char fields > 255 characters
+        	   SELF:Decimals 	:= oInfo:Decimals
+		ENDIF
+		SELF:Validate()
        
     /// <summary>Clone a RddFieldInfo object.</summary>        
 	METHOD Clone() AS RddFieldInfo
@@ -494,6 +497,18 @@ CLASS RddFieldInfo
         RETURN SELF:FieldType == oFld:FieldType .AND. SELF:Length == oFld:Length .AND. SELF:Decimals == oFld:Decimals
 
     VIRTUAL METHOD Validate() AS LOGIC
+        SWITCH SELF:FieldType
+            CASE DbFieldType.Date
+                SELF:Length := 8
+                SELF:Decimals := 0
+            CASE DbFieldType.Logic
+                SELF:Length := 1
+                SELF:Decimals := 0
+            CASE DbFieldType.Currency
+                SELF:Length   := 8
+            CASE DbFieldType.Memo
+                SELF:Decimals := 0
+        END SWITCH
         RETURN TRUE
 
     OVERRIDE METHOD ToString() AS STRING

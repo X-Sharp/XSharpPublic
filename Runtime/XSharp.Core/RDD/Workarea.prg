@@ -28,7 +28,7 @@ BEGIN NAMESPACE XSharp.RDD
 		PUBLIC _FileName		AS STRING
 		/// <summary>List of Fields</summary>
 		PUBLIC _Fields		    AS RddFieldInfo[]
-        PRIVATE _fieldNames     AS Dictionary<STRING, INT>
+        PROTECTED _fieldNames   AS Dictionary<STRING, INT>
         PRIVATE _currentField   AS LONG
 		/// <summary>Is at BOF ?</summary>
 		PUBLIC _Bof			    AS LOGIC	
@@ -578,7 +578,17 @@ BEGIN NAMESPACE XSharp.RDD
                 CASE DbFieldInfo.DBS_NAME
                     RETURN ofld:Name
                 CASE DbFieldInfo.DBS_TYPE
-                    RETURN oFld:FieldType:ToString():Substring(0,1)
+                    VAR cVar := oFld:FieldType:ToString():SubString(0,1)
+                    IF ofld:Flags != DBFFieldFlags.None
+                        cVar += ":"
+                        cVar += IIF(ofld:Flags:HasFlag(DBFFieldFlags.Nullable),"N","")
+                        cVar += IIF(ofld:Flags:HasFlag(DBFFieldFlags.Binary),"B","")
+                        cVar += IIF(ofld:Flags:HasFlag(DBFFieldFlags.AutoIncrement),"+","")
+                        cVar += IIF(ofld:Flags:HasFlag(DBFFieldFlags.Compressed),"Z","")
+                        cVar += IIF(ofld:Flags:HasFlag(DBFFieldFlags.Unicode),"U","")
+                        cVar += IIF(ofld:Flags:HasFlag(DBFFieldFlags.Encrypted),"E","")
+                    ENDIF
+                    RETURN cVar
                 CASE DbFieldInfo.DBS_LEN
                     RETURN oFld:Length
                 CASE DbFieldInfo.DBS_DEC
@@ -611,8 +621,12 @@ BEGIN NAMESPACE XSharp.RDD
                     ELSE
                         RETURN oFld:Name
                     ENDIF
+                CASE DbFieldInfo.DBS_FLAGS
+                    RETURN ofld:Flags
+                CASE DbFieldInfo.DBS_STRUCT
+                    RETURN ofld
                 CASE DbFieldInfo.DBS_PROPERTIES
-                    RETURN 5
+                    RETURN DbFieldInfo.DBS_FLAGS
                 END SWITCH
             ENDIF
             RETURN NULL

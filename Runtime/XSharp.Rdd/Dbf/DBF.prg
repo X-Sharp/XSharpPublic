@@ -1307,25 +1307,6 @@ METHOD FieldInfo(nFldPos AS LONG, nOrdinal AS LONG, oNewValue AS OBJECT) AS OBJE
 					ENDIF
 				ENDIF
 				
-			CASE DbFieldInfo.DBS_BLOB_GET
-			CASE DbFieldInfo.DBS_BLOB_TYPE
-                // Returns the data type of a BLOB (memo) field. This
-                // is more efficient than using Type() or ValType()
-                // since the data itself does not have to be retrieved
-            // from the BLOB file in order to determine the type.
-			CASE DbFieldInfo.DBS_BLOB_LEN	    // Returns the storage length of the data in a BLOB (memo) file
-			CASE DbFieldInfo.DBS_BLOB_OFFSET	// Returns the file offset of the data in a BLOB (memo) file.
-			CASE DbFieldInfo.DBS_BLOB_POINTER
-                // Returns a numeric pointer to the data in a blob
-                // file. This pointer can be used with BLOBDirectGet(),
-                // BLOBDirectImport(), etc.
-				
-			CASE DbFieldInfo.DBS_BLOB_DIRECT_TYPE
-			CASE DbFieldInfo.DBS_BLOB_DIRECT_LEN
-				
-			CASE DbFieldInfo.DBS_STRUCT
-			CASE DbFieldInfo.DBS_PROPERTIES
-			CASE DbFieldInfo.DBS_USER
 			OTHERWISE
                 // Everything falls through to parent at this moment
 				oResult := SUPER:FieldInfo(nFldPos, nOrdinal, oNewValue)

@@ -68,6 +68,8 @@ BEGIN NAMESPACE XSharp.RDD.Enums
 		MEMBER DBS_DEC				:= 4
         /// <summary>Returns and optionally changes an alternate name (or alias) by which a field can be referenced (by default, same as DBS_NAME).  </summary>
 		MEMBER DBS_ALIAS			:= 5
+        /// <summary>Returns the field flags for a field (a value from the DBFFieldFlags enum)  </summary>
+		MEMBER DBS_FLAGS			:= 6
         /// <summary>Harbour extension: Returns the flag that indicates if a field is Nullable.</summary>
 		MEMBER DBS_ISNULL			:= 11
         /// <summary>Harbour extension: Returns the next available value for autoincrement fields.</summary>
@@ -95,7 +97,7 @@ BEGIN NAMESPACE XSharp.RDD.Enums
         /// or DBFieldInfo(DBS_BLOB_POINTER, &lt;nFieldPos&gt;).
         ///</summary>
 		MEMBER DBS_BLOB_DIRECT_LEN	:= 223
-        /// <summary></summary>
+        /// <summary>Return the RDD FieldInfo structure</summary>
 		MEMBER DBS_STRUCT			:= 998
         /// <summary>Returns the number of properties defined for a field.</summary>
 		MEMBER DBS_PROPERTIES		:= 999

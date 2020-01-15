@@ -6,6 +6,8 @@
 
 USING XSharp.RDD.Enums
 USING XSharp.RDD.Support
+USING System.IO
+USING System.Collections.Generic
 
 BEGIN NAMESPACE XSharp.RDD
 /// <summary>DBFVFP RDD. DBFCDX with support for the FoxPro field types.</summary>
@@ -15,7 +17,9 @@ CLASS DBFVFP INHERIT DBFCDX
 		SUPER()
 		RETURN
 		
-	PROPERTY Driver AS STRING GET "DBFVFP"
+	PROPERTY Driver         AS STRING GET "DBFVFP"
+    PROPERTY DbcName        AS STRING AUTO
+    PROPERTY DbcPosition    AS INT GET 32 + SELF:_Fields:Length  * 32 +1
 
     PUBLIC OVERRIDE METHOD Create( openInfo AS DbOpenInfo ) AS LOGIC
 	LOCAL isOk AS LOGIC
@@ -23,6 +27,7 @@ CLASS DBFVFP INHERIT DBFCDX
     IF isOk
         SELF:_SetFoxHeader()
     ENDIF
+    SELF:_ReadDbcInfo()
     RETURN isOk
 
     PROTECTED VIRTUAL METHOD _checkField( dbffld REF DbfField) AS LOGIC
@@ -103,6 +108,7 @@ CLASS DBFVFP INHERIT DBFCDX
 
         PROPERTY FieldCount AS LONG
         GET
+            // Exclude the _NullColumn
             LOCAL ret := 0 AS LONG
             IF SELF:_Fields != NULL 
                 ret := SELF:_Fields:Length
@@ -113,6 +119,106 @@ CLASS DBFVFP INHERIT DBFCDX
             RETURN ret
         END GET
         END PROPERTY
+
+    METHOD Open ( info AS DbOpenInfo) AS LOGIC
+        LOCAL lOk AS LOGIC
+        LOCAL lOld AS LOGIC
+        // Delay auto open until after we have read the DBC name and we have read the long fieldnames
+        lOld := XSharp.RuntimeState.AutoOpen
+        XSharp.RuntimeState.AutoOpen := FALSE
+        lOk := SUPER:Open(info)
+        XSharp.RuntimeState.AutoOpen := lOld
+        IF lOk
+            SELF:_ReadDbcInfo()
+            IF XSharp.RuntimeState.AutoOpen
+                SELF:OpenProductionIndex(info)
+            ENDIF
+        ENDIF
+        
+        RETURN lOk
+
+    PROTECTED METHOD _ReadDbcInfo() AS VOID
+        LOCAL nPos := SELF:DbcPosition AS LONG
+        LOCAL buffer AS BYTE[]
+        buffer := BYTE[]{VFP_BACKLINKSIZE}
+        FSeek3(SELF:_hFile, nPos, FS_SET)
+        FRead3(SELF:_hFile, buffer, (DWORD) buffer:Length)
+        VAR cName := System.Text.Encoding.Default:GetString(buffer):Replace(e"\0","")
+        IF ! String.IsNullOrEmpty(cName)
+            SELF:DbcName := Path.Combine(Path.GetDirectoryName(SELF:_FileName), cName)
+            SELF:_ReadDbcFieldNames()
+        ELSE
+            SELF:DbcName := ""
+        ENDIF
+        RETURN
+
+    PROTECTED METHOD _ReadDbcFieldNames() AS VOID
+        LOCAL oDbc AS DbfVfp
+        LOCAL oi   AS DbOpenInfo
+        LOCAL nTable := 0 AS LONG
+        LOCAL nType AS LONG
+        LOCAL nName AS LONG
+        LOCAL nParent AS LONG
+        LOCAL fields AS List<STRING>
+        LOCAL cFile AS STRING
+        LOCAL lOk AS LOGIC
+        LOCAL lOld AS LOGIC
+        oDbc := DbfVfp{}
+        oi := DbOpenInfo{}
+        oi:FileName  := SELF:DbcName
+        oi:Extension := System.IO.Path.GetExtension(SELF:DbcName)
+        oi:Shared   := TRUE
+        oi:ReadOnly := TRUE
+        cFile := System.IO.Path.GetFileNameWithoutExtension(SELF:_FileName)
+        lOld := XSharp.RuntimeState.AutoOpen
+        XSharp.RuntimeState.AutoOpen := FALSE
+        lOk := oDbc:Open(oi)
+        XSharp.RuntimeState.AutoOpen := lOld
+        IF lOk
+            nType := oDbc:FieldIndex("OBJECTTYPE")
+            nName := oDbc:FieldIndex("OBJECTNAME")
+            nParent := oDbc:FieldIndex("PARENTID")
+            oDbc:GoTop()
+            DO WHILE ! oDbc:EOF
+                IF ((STRING)oDbc:GetValue(nType)):StartsWith("Table") 
+                    LOCAL cName := (STRING) oDbc:GetValue(nName)  AS STRING
+                    cName := cName:Trim()
+                    IF String.Compare(cName, cFile, TRUE) == 0
+                        nTable := (INT) oDbc:GetValue(oDbc:FieldIndex("OBJECTID"))
+                        EXIT
+                    ENDIF
+                ENDIF
+                oDbc:Skip(1)
+            ENDDO
+            fields := List<STRING>{}
+            IF nTable != 0
+                oDbc:GoTop()
+                DO WHILE ! oDbc:EOF
+                    VAR n1 := (LONG) oDbc:GetValue(nParent)
+                    VAR c1 := (STRING) oDbc:GetValue(nType)
+                    IF n1== nTable .AND.  c1:StartsWith("Field")
+                        VAR cAlias := (STRING) oDbc:GetValue(nName) 
+                        fields:Add(cAlias:Trim())
+                    ENDIF
+                    oDbc:Skip(1)
+                ENDDO
+            ENDIF
+            oDbc:Close()
+            IF SELF:FieldCount == fields:Count
+                // assign aliases
+                LOCAL nPos AS LONG
+                FOR nPos := 1 TO SELF:FieldCount
+                    LOCAL oColumn AS DbfColumn
+                    oColumn := SELF:_GetColumn(nPos)
+                    oColumn:Alias := fields[nPos-1]
+                    IF String.Compare(oColumn:Name, oColumn:Alias, TRUE) != 0
+                        SELF:_FieldNames:Remove(oColumn:Name)
+                        SELF:_FieldNames:Add(oColumn:Alias, nPos-1)
+                    ENDIF
+                NEXT
+            ENDIF
+        ENDIF
+
 
 
     /// <inheritdoc />

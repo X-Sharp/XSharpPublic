@@ -241,7 +241,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 SELF:_sourceKeySize := SELF:_keySize    := 0
                 SELF:getKeyValue := _getExpressionValue
                 isOk             := SELF:_determineSize(oKey)
-                IF SELF:Header != NULL .AND. SELF:Header:KeySize != SELF:_keySize
+                IF SELF:Header != NULL .AND. SELF:Header:KeySize != SELF:_keySize .AND. SELF:Header:KeySize != SELF:_keySize+1
                     IF SELF:_Collation != NULL
                         SELF:_keySize := SELF:Header:KeySize
                     ELSE

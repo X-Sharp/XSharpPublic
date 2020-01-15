@@ -44,6 +44,9 @@ DEFINE DBS_LEN					:= DbFieldInfo.DBS_LEN
 DEFINE DBS_DEC					:= DbFieldInfo.DBS_DEC	
 /// <exclude />
 DEFINE DBS_ALIAS				:= DbFieldInfo.DBS_ALIAS
+/// <exclude />
+DEFINE DBS_FLAGS				:= DbFieldInfo.DBS_FLAGS
+
 DEFINE DBS_ALEN                 := 4  // XBase++ has this define
 
 /// <exclude />

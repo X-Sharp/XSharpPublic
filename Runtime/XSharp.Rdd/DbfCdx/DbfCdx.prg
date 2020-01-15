@@ -424,22 +424,28 @@ BEGIN NAMESPACE XSharp.RDD
             IF lOk
         // Open structural index
                 IF RuntimeState.AutoOpen
-                    VAR cExt  := CdxOrderBag.GetIndexExtFromDbfExt(info:FileName)
-                    IF ! String.IsNullOrEmpty(cExt)
-                        VAR cCdxFileName := System.IO.Path.ChangeExtension(info:FileName, cExt)
-                        IF System.IO.File.Exists(cCdxFileName)
-                            LOCAL orderinfo := DbOrderInfo{} AS DbOrderInfo
-                            orderInfo:BagName := cCdxFileName
-                            SELF:_indexList:Add(orderInfo, TRUE)
-                            SELF:Header:HasTags |= DbfTableFlags.HasStructuralCDX
-                        ELSE
-                            SELF:Header:HasTags &= _NOT(DbfTableFlags.HasStructuralCDX)
-                        ENDIF
-                    ENDIF
+                    SELF:OpenProductionIndex(info)
                 ENDIF
             ENDIF
             RETURN lOk
-            #ENDREGION
+
+        PROTECTED METHOD OpenProductionIndex(info AS DbOpenInfo) AS VOID
+            VAR cExt  := CdxOrderBag.GetIndexExtFromDbfExt(info:FileName)
+            IF ! String.IsNullOrEmpty(cExt)
+                VAR cCdxFileName := System.IO.Path.ChangeExtension(info:FileName, cExt)
+                IF System.IO.File.Exists(cCdxFileName)
+                    LOCAL orderinfo := DbOrderInfo{} AS DbOrderInfo
+                    orderInfo:BagName := cCdxFileName
+                    SELF:_indexList:Add(orderInfo, TRUE)
+                    SELF:Header:HasTags |= DbfTableFlags.HasStructuralCDX
+                ELSE
+                    SELF:Header:HasTags &= _NOT(DbfTableFlags.HasStructuralCDX)
+                ENDIF
+            ENDIF
+
+        #endregion
+
+
 
         #REGION Move
 

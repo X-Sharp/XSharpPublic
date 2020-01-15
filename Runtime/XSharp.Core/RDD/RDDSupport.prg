@@ -422,7 +422,7 @@ CLASS RddFieldInfo
 	PUBLIC Length 		AS LONG
 	PUBLIC Decimals 	AS LONG
 	PUBLIC Alias 		AS STRING
-    	PUBLIC Flags        AS DbfFieldFlags
+    PUBLIC Flags        AS DbfFieldFlags
 	PUBLIC Offset       AS LONG
     
      /// <summary>Construct a RddFieldInfo object.</summary>
@@ -430,20 +430,30 @@ CLASS RddFieldInfo
 		Name 		:= sName
 		Length 		:= nLength
 		Decimals 	:= nDecimals
-        	Flags       := DbfFieldFlags.None
-		IF !String.IsNullOrEmpty(sType)
-			FieldType := (DbFieldType) Char.ToUpper(sType[0])
-			IF sType:IndexOf("0",1) >= 0
-			    Flags |= DbfFieldFlags.Nullable
-			ENDIF
-			IF FieldType:IsBinary() .OR. sType:IndexOf("B", 1) >= 0
-			    Flags |= DbfFieldFlags.Binary
-			ENDIF
-            IF sType:Contains('+')
-                Flags |= DbfFieldFlags.AutoIncrement
-            ENDIF
-		ELSE
-			FieldType := DBFieldType.Unknown
+        Flags       := DbfFieldFlags.None
+		FieldType := (DbFieldType) Char.ToUpper(sType[0])
+		IF FieldType:IsBinary() 
+			Flags |= DbfFieldFlags.Binary
+		ENDIF
+        IF sType:IndexOf(":") >= 0
+            sType := sType:Substring(1)
+            FOREACH VAR cChar IN sType
+                SWITCH cChar
+                CASE 'N'
+                CASE '0'
+			        Flags |= DbfFieldFlags.Nullable
+                CASE 'B'
+                    Flags |= DbfFieldFlags.Binary
+                CASE '+'
+                    Flags |= DbfFieldFlags.AutoIncrement
+                CASE 'Z'
+                    Flags |= DbfFieldFlags.Compressed
+                CASE 'E'
+                    Flags |= DbfFieldFlags.Encrypted
+                CASE 'U'
+                    Flags |= DbfFieldFlags.Unicode
+                END SWITCH
+            NEXT
 		ENDIF
 		IF String.Compare(Name, _NULLFLAGS, TRUE) == 0
 		    Flags |= DbfFieldFlags.System
@@ -487,16 +497,19 @@ CLASS RddFieldInfo
         RETURN TRUE
 
     OVERRIDE METHOD ToString() AS STRING
-        RETURN SELF:Name+" ('"+SELF:FieldTypeStr+"',"+SELF:Length:ToString()+","+SELF:Decimals:ToString()+","+SELF:Flags:ToString()+")"
+        RETURN SELF:Name+" ('"+SELF:FieldTypeStr+"',"+SELF:Length:ToString()+","+SELF:Decimals:ToString()+","+SELF:Flags:ToString("G")+")"
 
-    PROPERTY FieldTypeStr AS STRING GET ((CHAR) SELF:FieldType):ToString()
-    PROPERTY IsMemo      AS LOGIC GET SELF:FieldType:IsMemo()
-    PROPERTY IsBinary    AS LOGIC GET SELF:FieldType:IsBinary()
-    PROPERTY IsNullable  AS LOGIC GET SELF:Flags:HasFlag(DbfFieldFlags.Nullable)
-    PROPERTY IsAutoIncrement AS LOGIC GET SELF:Flags:HasFLag(DbfFieldFlags.AutoIncrement)
-    PROPERTY IsStandard  AS LOGIC GET SELF:FieldType:IsStandard()
-    PROPERTY IsVfp       AS LOGIC GET SELF:FieldType:IsVfp()
-    PROPERTY IsVarLength AS LOGIC GET SELF:FieldType:IsVarLength()
+    PROPERTY FieldTypeStr       AS STRING GET ((CHAR) SELF:FieldType):ToString()
+    PROPERTY IsMemo             AS LOGIC GET SELF:FieldType:IsMemo()
+    PROPERTY IsBinary           AS LOGIC GET SELF:FieldType:IsBinary() .OR. SELF:Flags:HasFlag(DBFFieldFlags.Binary)
+    PROPERTY IsNullable         AS LOGIC GET SELF:Flags:HasFlag(DbfFieldFlags.Nullable)
+    PROPERTY IsAutoIncrement    AS LOGIC GET SELF:Flags:HasFLag(DbfFieldFlags.AutoIncrement)
+    PROPERTY IsStandard         AS LOGIC GET SELF:FieldType:IsStandard()
+    PROPERTY IsVfp              AS LOGIC GET SELF:FieldType:IsVfp()
+    PROPERTY IsVarLength        AS LOGIC GET SELF:FieldType:IsVarLength()
+    PROPERTY IsUnicode          AS LOGIC GET SELF:Flags:HasFLag(DbfFieldFlags.Unicode)
+    PROPERTY IsEncrypted        AS LOGIC GET SELF:Flags:HasFLag(DbfFieldFlags.Encrypted)
+    PROPERTY IsCompressed       AS LOGIC GET SELF:Flags:HasFLag(DbfFieldFlags.Compressed)
 
 END CLASS
 

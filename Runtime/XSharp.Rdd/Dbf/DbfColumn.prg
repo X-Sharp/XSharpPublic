@@ -221,12 +221,18 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN
 
        OVERRIDE METHOD InitValue(buffer AS BYTE[]) AS VOID
-            IF SELF:IsVarLength
+            IF SELF:IsVarLength 
                 buffer[SELF:OffSet + SELF:Length-1] := 0
+            ELSEIF SELF:IsUnicode
+                VAR str := STRING{' ',SELF:Length /2}
+                System.Buffer.BlockCopy(str:ToCharArray(),0, buffer, SELF:Offset, SELF:Length)
             ENDIF
             RETURN
 
        OVERRIDE METHOD EmptyValue() AS OBJECT
+           IF SELF:IsUnicode
+                RETURN STRING{ ' ', SELF:length /2 }
+           ENDIF
            RETURN STRING{ ' ', SELF:length }
 
        OVERRIDE METHOD PutValue(oValue AS OBJECT, buffer AS BYTE[]) AS LOGIC
@@ -246,11 +252,19 @@ BEGIN NAMESPACE XSharp.RDD
                 RETURN FALSE
             ENDIF
             IF str:Length < SELF:length .AND. ! SELF:IsVarLength
-                str := str:PadRight(SELF:length,' ')
+                IF SELF:IsBinary
+                    str := str:PadRight(SELF:length,'\0')
+                ELSEIF SELF:IsUnicode
+                    str := str:PadRight(SELF:length/2,' ')
+                ELSE
+                    str := str:PadRight(SELF:length,' ')
+                ENDIF
             ENDIF
             IF SELF:IsBinary
                 LOCAL nLen := Math.Min(SELF:Length, str:Length) AS LONG
                 System.Text.Encoding.Default:GetBytes(str, 0, nLen, buffer, SELF:Offset)
+            ELSEIF SELF:IsUnicode
+                System.Buffer.BlockCopy(str:ToCharArray(),0, buffer, SELF:Offset, SELF:Length)
             ELSE
                 SELF:_PutString(buffer, str)
             ENDIF
@@ -283,6 +297,10 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             IF SELF:IsBinary
                 result := System.Text.Encoding.Default:GetString(buffer, SELF:OffSet, SELF:Length)
+            ELSEIF SELF:IsUnicode
+                VAR chars := CHAR[]{SELF:Length /2}
+                System.Buffer.BlockCopy(buffer, SELF:Offset, chars, 0, SELF:Length)
+                result := STRING{chars}
             ELSE
                 result := SUPER:_GetString(buffer)
             ENDIF

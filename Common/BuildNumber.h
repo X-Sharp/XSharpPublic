@@ -19,7 +19,7 @@
     // This typically would change if we're generating a patch, otherwise it should be the same as VERSION_NUMBER
     #define FILEVERSION_NUMBER       2,2,2,0
     #define FILEVERSION_NUMBER_STR   "2.2.2.0"
-    #define INFORMATIONAL_NUMBER_STR  "2.2a GA"
+    #define INFORMATIONAL_NUMBER_STR  "2.2b GA"
 
     #ifdef __DEBUG__
         #define ASSEMBLY_CONFIGURATION "Debug"

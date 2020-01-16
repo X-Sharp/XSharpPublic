@@ -1458,8 +1458,8 @@ BEGIN NAMESPACE XSharp.ADS
         [DllImport("ace32.dll", CharSet := CharSet.Ansi)];
         PUBLIC STATIC EXTERN METHOD AdsSetIndexDirection(hIndex AS IntPtr ,  usReverseDirection AS WORD) AS DWORD 
         
-        [DllImport("ace32.dll", CharSet := CharSet.Ansi, EntryPoint := "AdsSetProperty90")];
-        PUBLIC STATIC EXTERN METHOD AdsSetProperty90(hObj AS IntPtr , ulOperation AS WORD , uqValue REF DWORD ) AS DWORD
+        [DllImport("ace32.dll", CharSet := CharSet.Ansi)];
+        PUBLIC STATIC EXTERN METHOD AdsSetProperty90(hObj AS IntPtr , ulOperation AS DWORD , uqValue REF UINT64 ) AS DWORD
         
         
     END CLASS

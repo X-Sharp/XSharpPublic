@@ -259,9 +259,6 @@ CLASS DbOrderInfo
             IF Order == NULL 
                 RETURN String.IsNullOrEmpty(BagName)
             ENDIF
-            IF Order IS LONG .AND. (LONG) Order = 0
-                RETURN String.IsNullOrEmpty(BagName)
-            ENDIF
             RETURN FALSE
         END GET
     END PROPERTY

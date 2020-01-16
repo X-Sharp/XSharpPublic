@@ -147,7 +147,10 @@ FUNCTION VoDbEof() AS LOGIC
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbeval/*" /> 
 /// <seealso cref="M:XSharp.CoreDb.Eval(XSharp.ICodeblock,XSharp.ICodeblock,XSharp.ICodeblock,System.Object,System.Object,System.Boolean)"  />
 FUNCTION VoDbEval(cbExecute AS USUAL,cbForCondition AS USUAL,cbWhileCondition AS USUAL,nNext AS USUAL,nRecord AS USUAL,lRest AS LOGIC) AS LOGIC
-    RETURN VoDb.Eval(VoDb.ValidBlock(cbExecute), VoDb.ValidBlock(cbForCondition), VoDb.ValidBlock(cbWhileCondition), nNext, nRecord, lRest)
+    cbExecute           := VoDb.ValidBlock(cbExecute, {||NIL})
+    cbForCondition      := VoDb.ValidBlock(cbForCondition)
+    cbWhileCondition    := VoDb.ValidBlock(cbWhileCondition)
+    RETURN VoDb.Eval(VoDb.ValidBlock(cbExecute), cbForCondition, cbWhileCondition, nNext, nRecord, lRest)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbfieldget/*" /> 
 /// <seealso cref="M:XSharp.CoreDb.FieldGet(System.UInt32,System.Object@)"  />

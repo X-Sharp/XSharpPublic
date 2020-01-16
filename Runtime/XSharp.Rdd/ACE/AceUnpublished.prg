@@ -230,13 +230,6 @@ BEGIN NAMESPACE XSharp.ADS
                 RETURN ACEUNPUB64.AdsConvertJulianToString(dJulian, pucJulian, REF pusLen)
             ENDIF
 
-		PUBLIC STATIC METHOD AdsSetProperty90(hObj AS Intptr, ulOperation AS DWORD , uqValue AS UINT64 ) AS DWORD 
-            IF Is32Bits
-                RETURN ACEUNPUB32.AdsSetProperty90(hObj, ulOperation, uqValue)
-            ELSE
-                RETURN ACEUNPUB64.AdsSetProperty90(hObj, ulOperation, uqValue)
-            ENDIF
-
 		PUBLIC STATIC METHOD AdsSetLastError(ulErrCode AS DWORD , pucDetails AS STRING ) AS DWORD 
             IF Is32Bits
                 RETURN ACEUNPUB32.AdsSetLastError(ulErrCode, pucDetails)

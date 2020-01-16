@@ -2491,8 +2491,8 @@ BEGIN NAMESPACE XSharp
               ELSEIF SELF:IsString .and. RuntimeState.Dialect == XSharpDialect.XPP .and. index:Length == 1
                     VAR s := SELF:_stringValue
                     var i := index[1]
-                    if i> 0 .and. i <= s:Length
-                        return s:Substring(i-1, 1)
+                    IF i>= 0 .AND. i < s:Length
+                        RETURN s:Substring(i, 1)
                     ENDIF
                     RETURN ""
 
@@ -2541,8 +2541,8 @@ BEGIN NAMESPACE XSharp
                 ENDIF
                 IF SELF:IsString .and. RuntimeState.Dialect == XSharpDialect.XPP
                     VAR s := SELF:_stringValue
-                    if index > 0 .and. index <= s:Length
-                        return s:Substring(index-1, 1)
+                    IF index >= 0 .AND. index < s:Length
+                        RETURN s:Substring(index, 1)
                     ENDIF
                     RETURN ""
                 ENDIF
@@ -2572,7 +2572,7 @@ BEGIN NAMESPACE XSharp
 		/// <returns>The element stored at the indicated location in the collection.</returns>
         /// <remarks>When the contents of the USUAL is not an array or does not name based indexing  then a runtime error is generated.</remarks>
 
-        PROPERTY SELF[name  AS STRING] AS USUAL 
+        PROPERTY SELF[name AS STRING] AS USUAL 
             GET
                 VAR indexer := _refData ASTYPE IIndexedProperties
                 IF indexer == NULL

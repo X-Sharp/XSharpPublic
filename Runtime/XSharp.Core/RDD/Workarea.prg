@@ -167,7 +167,10 @@ BEGIN NAMESPACE XSharp.RDD
                    lRecordOk := TRUE
                 ENDIF
                 IF lRecordOk .AND. cbEval != NULL
-                    isOk := (LOGIC) SELF:EvalBlock(cbEval)
+                    VAR oResult := SELF:EvalBlock(cbEval)
+                    IF oResult IS LOGIC
+                        isOk := (LOGIC) oResult
+                    ENDIF
                 ENDIF
                 IF lLimit
                     nRecno -= 1

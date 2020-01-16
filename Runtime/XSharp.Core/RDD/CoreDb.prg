@@ -139,8 +139,8 @@ CLASS XSharp.CoreDb
                 info:Flags |= DbTransInfoFlags.CanPutRec
             ENDIF
         ENDIF
-        info:Scope:ForBlock := uCobFor
-        info:Scope:WhileBlock := uCobWhile
+        info:Scope:ForBlock     := uCobFor
+        info:Scope:WhileBlock   := uCobWhile
         IF nNext != NULL
             TRY
                 info:Scope:NextCount := Convert.ToInt32(nNext)
@@ -668,10 +668,6 @@ CLASS XSharp.CoreDb
         LOCAL nNext AS LONG
         IF uBlock == NULL
             THROW Error.ArgumentError(__FUNCTION__, nameof(uBlock),1, <OBJECT>{uBlock})
-        ELSEIF uCobFor == NULL
-            THROW Error.ArgumentError(__FUNCTION__, nameof(uCobFor),2, <OBJECT>{uCobFor})        
-        ELSEIF uCobWhile == NULL    
-            THROW Error.ArgumentError(__FUNCTION__, nameof(uCobWhile),3, <OBJECT>{uCobWhile})
         ELSE
             TRY
                 IF uNext != NULL
@@ -688,11 +684,11 @@ CLASS XSharp.CoreDb
         LOCAL oInfo AS DbEvalInfo
         oInfo := DbEvalInfo{}
         oInfo:Block := uBlock
-        oInfo:ScopeInfo:ForBlock := uCobFor
-        oInfo:ScopeInfo:WhileBlock := uCobWhile
-        oInfo:ScopeInfo:NextCount  := nNext
-        oInfo:ScopeInfo:RecId      := nRecno
-        oInfo:ScopeInfo:Rest       := lRest
+        oInfo:ScopeInfo:ForBlock    := uCobFor
+        oInfo:ScopeInfo:WhileBlock  := uCobWhile
+        oInfo:ScopeInfo:NextCount   := nNext
+        oInfo:ScopeInfo:RecId       := nRecno
+        oInfo:ScopeInfo:Rest        := lRest
         RETURN oRDD:DbEval(oInfo)
         })
 
@@ -1390,13 +1386,16 @@ CLASS XSharp.CoreDb
         TRY
             LOCAL oRDD := CoreDb.CWA(__FUNCTION__) AS IRDD
             VAR info     := DbOrderInfo{}
-            cBagName := cBagName?:Trim()
+            cBagName     := cBagName?:Trim()
             info:BagName := cBagName
             info:Order   := oOrder
             strPreviousOrder := String.Empty
             VAR result := oRDD:OrderListFocus(info)
-           
-            RAISE OrderChanged oRDD:OrderInfo(DBOI_NAME,NULL)
+            IF HasEvents .AND. ! info:IsEmpty
+                info := DbOrderInfo{}
+                oRDD:OrderInfo(DBOI_NAME,info)
+                RAISE OrderChanged info:Result
+            ENDIF
             IF result .AND. info:Result IS STRING
                 strPreviousOrder := (STRING)info:Result
             ENDIF
@@ -1649,7 +1648,7 @@ CLASS XSharp.CoreDb
             lockInfo:METHOD  := DbLockInfo.LockMethod.Multiple
         ENDIF
         VAR result := oRDD:Lock(lockInfo)
-        RAISE RecordLocked uRecId
+        RAISE RecordLocked IIF(uRecID == NULL, oRDD:Recno, uRecID)
         RETURN result
         })
         /// <summary>
@@ -2022,7 +2021,7 @@ CLASS XSharp.CoreDb
         RETURN CoreDb.Do ({ =>
         LOCAL oRDD := CoreDb.CWA(__FUNCTION__) AS IRDD
         VAR result := oRDD:UnLock(uRecno)
-        RAISE RecordUnlocked uRecno
+        RAISE RecordUnlocked IIF(uRecno == NULL, oRDD:Recno, uRecno)
         RETURN result
         })
         

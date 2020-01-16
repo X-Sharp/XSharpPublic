@@ -303,7 +303,10 @@ FUNCTION DbEval(cbExecute, cbForCondition, cbWhileCondition, nNext, nRecord, lRe
     IF lRest:IsNil
         lRest := .F.
     ENDIF
-    RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.Eval(VoDb.ValidBlock(cbExecute), VoDb.ValidBlock(cbForCondition), VoDb.ValidBlock(cbWhileCondition), nNext, nRecord, lRest) )
+    cbExecute           := VoDb.ValidBlock(cbExecute,{||NIL})
+    cbForCondition      := VoDb.ValidBlock(cbForCondition)
+    cbWhileCondition    := VoDb.ValidBlock(cbWhileCondition)
+    RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.Eval(cbExecute, cbForCondition, cbWhileCondition, nNext, nRecord, lRest) )
   
      
     
@@ -327,15 +330,15 @@ FUNCTION DbGoto(uRecID AS USUAL, uArea AS USUAL) AS LOGIC
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbinfo/*" />
 FUNCTION DbInfo(kInfoType, uNewSetting) AS USUAL CLIPPER
     _DbThrowErrorOnFailure(__FUNCTION__, VoDb.Info(kInfoType, REF uNewSetting))
-    IF kInfoType == DBI_GETLOCKARRAY .AND. ((OBJECT) uNewSetting) IS INT[]
-        LOCAL aLocks AS INT[]
-        LOCAL aResult AS ARRAY
-        aLocks := (INT[]) uNewSetting
-        aResult := ArrayNew()
-        FOREACH VAR iLock IN aLocks
-            aResult:Add(iLock)
-        NEXT
-        uNewSetting := aResult
+    IF kInfoType == DBI_GETLOCKARRAY
+        LOCAL oResult := uNewSetting AS OBJECT
+        IF oResult IS System.Array VAR aLocks
+            VAR aResult := ArrayNew()
+            FOREACH VAR iLock IN aLocks
+                aResult:Add(iLock)
+            NEXT
+            uNewSetting := aResult
+        ENDIF
     ENDIF
     RETURN uNewSetting
     
@@ -416,15 +419,7 @@ FUNCTION DbRLock(uRecId) AS USUAL CLIPPER
     
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbrlocklist/*" />
 FUNCTION DbRLockList() AS ARRAY STRICT
-
-    LOCAL aLockList := {}   AS ARRAY
-    LOCAL uRecords  := NIL AS USUAL
-    
-    IF _DbThrowErrorOnFailure(__FUNCTION__, VoDb.Info(DBI_LOCKCOUNT, REF uRecords))
-        aLockList := DbInfo(DBI_GETLOCKARRAY)
-    ENDIF
-    
-    RETURN aLockList
+    RETURN DbInfo(DBI_GETLOCKARRAY)
     
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbrselect/*" />
 FUNCTION DbRSelect(nRelation) AS DWORD CLIPPER
@@ -654,7 +649,7 @@ FUNCTION FieldGet(nFieldPos) AS USUAL CLIPPER
     lResult  := VoDb.FieldGet(nFieldPos, REF xRetVal)
     IF ! lResult
         IF RuntimeState.Dialect == XSharpDialect.XPP
-            xRetVal := NIL
+            xRetVal := NIL 
         ELSE
             DoError(__FUNCTION__)
         ENDIF

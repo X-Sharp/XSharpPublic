@@ -170,7 +170,8 @@ STATIC METHOD SetFilter(oBlock AS USUAL,cFilter AS STRING) AS LOGIC
         oError:FuncSym      := cFuncSym
         oError:CanDefault   := .T.
         RETURN oError
-        
+
+
     INTERNAL STATIC METHOD AllocFieldNames(aStru AS ARRAY) AS _FieldNames
         VAR aNames := List<STRING>{}
         FOREACH aField AS USUAL IN aStru
@@ -349,12 +350,12 @@ STATIC METHOD SetFilter(oBlock AS USUAL,cFilter AS STRING) AS LOGIC
         cName   := Trim(Upper(cName))
         RETURN cName
 
-    INTERNAL STATIC METHOD ValidBlock(uBlock AS USUAL) AS ICodeblock
+    INTERNAL STATIC METHOD ValidBlock(uBlock AS USUAL, bDef := NULL AS ICodeBlock) AS ICodeblock
         LOCAL oBlock    := uBlock   AS OBJECT
         IF oBlock IS ICodeblock
             RETURN (ICodeblock) oBlock
         ENDIF
-        RETURN NULL  
+        RETURN bDef
 
 INTERNAL STATIC METHOD  FieldList(aStruct AS ARRAY, aNames AS ARRAY, aMatch AS ARRAY) AS ARRAY 
 	

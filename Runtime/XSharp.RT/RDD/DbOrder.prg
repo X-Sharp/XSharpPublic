@@ -149,9 +149,9 @@ FUNCTION OrdCondSet(cForCondition, cbForCondition, lAll, cbWhileCondition, cbEva
 	dbOrdCondInfo := DbOrderCondInfo{}
 
 	
-    dbOrdCondInfo:ForBlock := VoDb.ValidBlock(cbForCondition)
-    dbOrdCondInfo:WhileBlock := VoDb.ValidBlock(cbWhileCondition)
-	dbOrdCondInfo:EvalBlock := VoDb.ValidBlock(cbEval)
+    dbOrdCondInfo:ForBlock    := VoDb.ValidBlock(cbForCondition)
+    dbOrdCondInfo:WhileBlock  := VoDb.ValidBlock(cbWhileCondition)
+	dbOrdCondInfo:EvalBlock   := VoDb.ValidBlock(cbEval)
 	IF !cForCondition:IsNil
         dbOrdCondInfo:ForExpression := cForCondition
         IF dbOrdCondInfo:ForBlock == NULL

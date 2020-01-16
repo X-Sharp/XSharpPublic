@@ -6,14 +6,14 @@
 #using System.Runtime.InteropServices
 #using System.Security
 
-#include "BuildNumber.h"    
+#include "SDKBuildNumber.h"     
 
 
 [assembly: AssemblyConfigurationAttribute( ASSEMBLY_CONFIGURATION )]
 [assembly: AssemblyCompanyAttribute( COMPANY_NAME )]
 [assembly: AssemblyProductAttribute( PRODUCT_NAME )]
 [assembly: AssemblyCopyrightAttribute( COPYRIGHT_STR )]
-[assembly: ComVisibleAttribute( FALSE )]
+[assembly: ComVisibleAttribute( FALSE )] 
 [assembly: CLSCompliant( FALSE )]
 //[assembly: AllowPartiallyTrustedCallersAttribute()]
 [assembly: AssemblyVersionAttribute( VERSION_NUMBER_STR )]

@@ -685,7 +685,7 @@ namespace XSharp.Project
                                     _suspendSync = true;
                                     _linesToSync.Clear();
                                 }
-                                FormatDocument();
+                                FormatDocumentV2();
                             }
                             finally
                             {

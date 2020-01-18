@@ -292,16 +292,18 @@ namespace XSharp.MacroCompiler
                 case TokenType.INVALID_NUMBER:
                     throw Error(Lt(), ErrorCode.InvalidNumber);
                 case TokenType.ARRAY:
-                case TokenType.CODEBLOCK:
                 case TokenType.DATE:
+                case TokenType.DATETIME:
+                    if (TokenAttr.IsSoftKeyword(La()) && La(2) == TokenType.LPAREN)
+                        return ParseFieldAlias() ?? ParseNameOrCtorCallOrSpecialFunc(ParseTypeSuffix(ParseQualifiedName()));
+                    return ParseNativeTypeOrCast(new NativeTypeExpr(ConsumeAndGet()));
+                case TokenType.CODEBLOCK:
                 case TokenType.FLOAT:
                 case TokenType.PSZ:
                 case TokenType.SYMBOL:
                 case TokenType.USUAL:
-                    return ParseNativeTypeOrCast(new NativeTypeExpr(ConsumeAndGet()));
                 case TokenType.BYTE:
                 case TokenType.CHAR:
-                case TokenType.DATETIME:
                 case TokenType.DECIMAL:
                 case TokenType.DWORD:
                 case TokenType.DYNAMIC:

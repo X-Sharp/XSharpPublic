@@ -705,6 +705,9 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, e"{|a,b| a == b }", Args((INT64)1,(INT)1) ,true, typeof(LOGIC))
         TestMacro(mc, e"{|a,b| a == b }", Args((INT)1,(UINT64)1) ,true, typeof(LOGIC))
         TestMacro(mc, e"{|a,b| a == b }", Args((INT64)1,(UINT64)1) ,true, typeof(LOGIC))
+        TestMacro(mc, "{|| date():gettype():FullName }", Args(), "XSharp.__Date", typeof(string))
+        TestMacro(mc, "{|| datetime():gettype():FullName }", Args(), "System.DateTime", typeof(string))
+        TestMacro(mc, "{|| alen(array()) }", Args(), 0, typeof(dword))
 
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___MemVarGet, "MyMemVarGet")
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___MemVarPut, "MyMemVarPut")
@@ -892,6 +895,7 @@ BEGIN NAMESPACE MacroCompilerTest
             ELSE
                 TotalFails += 1
                 Console.WriteLine("[FAIL] (res = {0}, type = {1}, no error)", res, res?:GetType())
+                wait
             END
             RETURN FALSE
         CATCH e AS CompilationError
@@ -902,6 +906,7 @@ BEGIN NAMESPACE MacroCompilerTest
             ELSE
                 TotalFails += 1
                 Console.WriteLine("[FAIL] ({0})", e:Message)
+                wait
             END
             RETURN FALSE
 /*        catch e as Exception

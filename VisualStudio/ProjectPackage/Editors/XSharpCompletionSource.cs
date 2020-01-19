@@ -2892,7 +2892,7 @@ namespace XSharpLanguage
                 {
 #if TRACE
                         stopWatch.Stop();
-                        Support.Debug(String.Format("Retrieve current Type : Member cannot be null."));
+                        XSharpProjectPackage.Instance.DisplayOutPutMessage(String.Format("Retrieve current Type : Member cannot be null."));
 #endif
                     return null;
                 }

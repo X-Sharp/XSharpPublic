@@ -700,6 +700,11 @@ namespace XSharp.MacroCompiler.Syntax
 
             softKws = new BitArray((int)TokenType.LAST);
 
+            //vo soft KWs
+            softKws[(int)TokenType.DATE] = true;
+            softKws[(int)TokenType.DATETIME] = true;
+            softKws[(int)TokenType.ARRAY] = true;
+
             //vulcan soft KWs
             softKws[(int)TokenType.ABSTRACT] = true;
             softKws[(int)TokenType.ANSI] = true;

@@ -178,6 +178,18 @@ namespace Microsoft.CodeAnalysis
                 return false;
             }
         }
+        internal string XCodeBlockSource
+        {
+            get
+            {
+                var n = XNode;
+                if (n != null)
+                {
+                    return n.CodeBlockSource();
+                }
+                return null;
+            }
+        }
     }
 }
 

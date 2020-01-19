@@ -95,19 +95,23 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     }
                     var cbDelegate = manager.SynthesizeDelegate(typeDescr.Fields.Length - 1, default(BitVector), false, 0).Construct(cbParameters);
 
-                    Symbol[] cbMembers = new Symbol[4];
+                    Symbol[] cbMembers = new Symbol[7];
                     int cbMemberIndex = 0;
 
                     var eval = new AnonymousTypePropertySymbol(this, new AnonymousTypeField("Cb$Eval$", typeDescr.Location, cbDelegate), cbDelegate);
+                    var source = new AnonymousTypePropertySymbol(this, new AnonymousTypeField("Cb$Src$", typeDescr.Location, manager.System_String), manager.System_String);
 
-                    this.Properties = ImmutableArray<AnonymousTypePropertySymbol>.Empty;
+                    this.Properties = new[] { source }.ToImmutableArray();
 
                     // Property related symbols
                     cbMembers[cbMemberIndex++] = eval;
                     cbMembers[cbMemberIndex++] = eval.BackingField;
                     cbMembers[cbMemberIndex++] = eval.GetMethod;
+                    cbMembers[cbMemberIndex++] = source;
+                    cbMembers[cbMemberIndex++] = source.BackingField;
+                    cbMembers[cbMemberIndex++] = source.GetMethod;
 
-                    cbMembers[cbMemberIndex++] = new AnonymousTypeConstructorSymbol(this, new[] { eval }.ToImmutableArray());
+                    cbMembers[cbMemberIndex++] = new AnonymousTypeConstructorSymbol(this, new[] { eval, source }.ToImmutableArray());
 
                     _typeParameters = ImmutableArray<TypeParameterSymbol>.Empty;
 
@@ -121,8 +125,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                         _nameToSymbols.Add(symbol.Name, symbol);
                     }
 
-                    MethodSymbol[] cbSpecialMembers = new MethodSymbol[1];
+                    MethodSymbol[] cbSpecialMembers = new MethodSymbol[2];
                     cbSpecialMembers[0] = new CodeblockEvalMethod(this);
+                    cbSpecialMembers[1] = new AnonymousTypeToStringMethodSymbol(this);
                     this.SpecialMembers = cbSpecialMembers.AsImmutable();
 
                     return;

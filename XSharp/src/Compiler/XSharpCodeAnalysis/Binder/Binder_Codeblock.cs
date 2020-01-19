@@ -63,9 +63,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                 constantValueOpt: ConstantValue.NotAvailable,
                 type: delType)
             { WasCompilerGenerated = unboundLambda.WasCompilerGenerated };
+            var cbSrc = new BoundLiteral(syntax, ConstantValue.Create(syntax.XCodeBlockSource), Compilation.GetSpecialType(SpecialType.System_String));
             BoundExpression cbInst = new BoundAnonymousObjectCreationExpression(syntax,
                 cbType.InstanceConstructors[0],
-                new BoundExpression[] { cbDel }.ToImmutableArrayOrEmpty(),
+                new BoundExpression[] { cbDel, cbSrc }.ToImmutableArrayOrEmpty(),
                 System.Collections.Immutable.ImmutableArray<BoundAnonymousPropertyDeclaration>.Empty, cbType)
             { WasCompilerGenerated = unboundLambda.WasCompilerGenerated }; ;
             if (conv != Conversion.ImplicitReference)

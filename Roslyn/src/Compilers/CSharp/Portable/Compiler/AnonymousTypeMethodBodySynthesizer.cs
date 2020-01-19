@@ -64,7 +64,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 {
                     AnonymousTypeTemplateSymbol anonymousType = (AnonymousTypeTemplateSymbol)this.ContainingType;
 #if XSHARP
-                    Debug.Assert((!anonymousType.IsCodeblock && anonymousType.Properties.Length == paramCount) || (anonymousType.IsCodeblock && paramCount == 1 && anonymousType.Properties.Length == 0));
+                    Debug.Assert((!anonymousType.IsCodeblock && anonymousType.Properties.Length == paramCount) || (anonymousType.IsCodeblock && paramCount == 2 && anonymousType.Properties.Length == 1));
 #else
                     Debug.Assert(anonymousType.Properties.Length == paramCount);
 #endif
@@ -75,6 +75,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     {
                         statements[statementIndex++] =
                             F.Assignment(F.Field(F.This(), (anonymousType.GetMembers()[0] as AnonymousTypePropertySymbol).BackingField), F.Parameter(_parameters[0]));
+                        statements[statementIndex++] =
+                            F.Assignment(F.Field(F.This(), (anonymousType.GetMembers()[3] as AnonymousTypePropertySymbol).BackingField), F.Parameter(_parameters[1]));
                     }
                     else
 #endif
@@ -293,6 +295,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 int fieldCount = anonymousType.Properties.Length;
                 BoundExpression retExpression = null;
 
+#if XSHARP
+                if ((ContainingType as AnonymousTypeTemplateSymbol)?.IsCodeblock == true)
+                {
+                    AnonymousTypePropertySymbol property = anonymousType.Properties[0];
+                    retExpression = F.Field(F.This(), property.BackingField);
+                }
+                else
+#endif
                 if (fieldCount > 0)
                 {
                     //  we do have fields, so have to use String.Format(...)

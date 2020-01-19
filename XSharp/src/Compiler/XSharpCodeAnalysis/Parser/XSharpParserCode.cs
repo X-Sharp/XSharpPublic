@@ -1117,6 +1117,34 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             }
             return false;
         }
+        internal static string CodeBlockSource([NotNull] this IXParseTree context)
+        {
+
+            if (context is XSharpParser.ArrayElementContext aelc)
+                return aelc.Expr.CodeBlockSource();
+            if (context is XSharpParser.PrimaryExpressionContext pec)
+                return pec.Expr.CodeBlockSource();
+            if (context is XSharpParser.CodeblockExpressionContext cec)
+                return cec.CbExpr.CodeBlockSource();
+            if (context is XSharpParser.AliasedExpressionContext aexc)
+            {
+                if (aexc.XSharpRuntime)
+                {
+                    return null;
+                }
+            }
+            if (context is XSharpParser.CodeblockCodeContext)
+                return ((IXParseTree)context.Parent).CodeBlockSource();
+            if (context is XSharpParser.CodeblockContext cbc)
+            {
+                if (cbc.lambda != null)
+                    return null;
+                // when no => operator and no explicit parameters
+                // then this is a true codeblock
+                return cbc.GetText();
+            }
+            return null;
+        }
 #endif
         internal static bool isInInterface([NotNull] this RuleContext context)
         {

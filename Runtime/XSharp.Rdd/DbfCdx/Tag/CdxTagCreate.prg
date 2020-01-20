@@ -92,9 +92,14 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
 
         INTERNAL METHOD Rebuild() AS LOGIC
+            SELF:_Custom := SELF:Custom
+            SELF:_Unique := SELF:Unique
+
             SELF:_ordCondInfo := DbOrderCondInfo{}
             SELF:_ordCondInfo:Descending := SELF:_Descending
+            SELF:_ordCondInfo:Custom := SELF:_Custom
             SELF:_ordCondInfo:ForExpression := SELF:_ForExpr
+
             SELF:_ordCondInfo:Compile(SELF:_oRDD)
             SELF:_ordCondInfo:Active := TRUE
             SELF:_ordCondInfo:Validate()
@@ -438,7 +443,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 IF ! _ordCondInfo:Custom
                     REPEAT
                         SELF:_oRdd:GoTo(SELF:_RecNo + 1)
-                        IF ! SELF:_sortGetRecord()
+                        IF SELF:_oRdd:EoF .OR. ! SELF:_sortGetRecord()
                             EXIT
                         ENDIF
                     UNTIL ! SELF:_oRdd:_isValid

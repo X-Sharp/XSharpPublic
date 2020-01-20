@@ -95,7 +95,7 @@ BEGIN NAMESPACE XSharp.RDD
                 workOrder := NULL
                 orderPos := SELF:_indexList:FindOrder(info)
                 IF orderPos <= 0
-                    IF info:IsEmpty
+                    IF info:IsEmpty .OR. orderPos == 0
                         workOrder := SELF:CurrentOrder
                     ELSE
                         workOrder := NULL

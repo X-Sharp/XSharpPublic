@@ -138,6 +138,12 @@ CLASS DBFVFP INHERIT DBFCDX
         
         RETURN lOk
 
+    METHOD Info(nOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT
+        IF nOrdinal == DbFieldInfo.DBS_PROPERTIES
+           RETURN DbFieldInfo.DBS_FLAGS
+        ENDIF
+        RETURN SUPER:Info(nOrdinal, oNewValue)
+
     PROTECTED METHOD _ReadDbcInfo() AS VOID
         LOCAL nPos := SELF:DbcPosition AS LONG
         LOCAL buffer AS BYTE[]

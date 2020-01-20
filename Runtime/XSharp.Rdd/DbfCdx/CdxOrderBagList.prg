@@ -263,6 +263,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                             number -= oBag:Tags:Count
                         ENDIF
                     NEXT
+                ELSE
+                    RETURN SELF:CurrentOrder
                 ENDIF
             ENDIF
             RETURN NULL

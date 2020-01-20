@@ -93,6 +93,17 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             t.parent = this;
             return t;
         }
+        public object CsNode { get; set; }
+        public string SourceFileName { get { return (Start as XSharpToken).SourceName; } }
+        public string MappedFileName { get { return (Start as XSharpToken).MappedFileName; } }
+
+        internal List<ParseErrorData> ErrorData;
+
+        internal bool HasErrors()
+        {
+            return (ErrorData != null) && ErrorData.Count > 0;
+        }
+#if !VSPARSER
 
         internal InternalSyntax.CompilationUnitSyntax CompilationUnit
         {
@@ -117,7 +128,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 var start = Start as XSharpToken;
                 var stop = Stop as XSharpToken;
                 var cu = this.CompilationUnit;
-                if (cu != null )
+                if (cu != null)
                 {
                     var result = new System.Text.StringBuilder();
                     var tokens = ((BufferedTokenStream)cu.XTokens).GetTokens();
@@ -128,7 +139,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         if (!XSharpLexer.IsComment(token.Type))
                         {
                             if (token.Type != XSharpLexer.LINE_CONT)
-                                result.Append (token.Text);
+                                result.Append(token.Text);
                         }
                     }
                     result = result.Replace('\t', ' ');
@@ -139,17 +150,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 return text;
             }
         }
-        public object CsNode { get; set; }
-        public string SourceFileName { get { return (Start as XSharpToken).SourceName; } }
-        public string MappedFileName { get { return (Start as XSharpToken).MappedFileName; } }
-
-        internal List<ParseErrorData> ErrorData;
-
-        internal bool HasErrors()
-        {
-            return (ErrorData != null) && ErrorData.Count > 0;
-        }
-#if !VSPARSER
         public Location GetLocation()
         {
             return new XSharpSourceLocation(this);

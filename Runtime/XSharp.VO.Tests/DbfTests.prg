@@ -607,6 +607,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		[Fact, Trait("Category", "DBF")];
 		METHOD WorkareaNums() AS VOID
 			LOCAL cFileName AS STRING
+            DbCloseAll()
 			cFileName := __FUNCTION__
 			Assert.True( DbCreate(cFileName, {{"FLD1","C",10,0}}) )
 			

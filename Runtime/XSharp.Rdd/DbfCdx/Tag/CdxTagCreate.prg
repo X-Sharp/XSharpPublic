@@ -80,8 +80,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:_Descending := FALSE
             SELF:_Custom := _ordCondInfo:Custom
             IF _ordCondInfo :Active
-                SELF:_Descending := _ordCondInfo :Descending
-                IF hasForCond .AND. !string.IsNullOrEmpty(_ordCondInfo :ForExpression)
+                SELF:_Descending := _ordCondInfo:Descending
+                IF hasForCond .AND. !string.IsNullOrEmpty(_ordCondInfo:ForExpression)
                     SELF:_Conditional := TRUE
                 ENDIF
             ENDIF
@@ -92,14 +92,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
 
         INTERNAL METHOD Rebuild() AS LOGIC
-            SELF:_Custom := SELF:Custom
-            SELF:_Unique := SELF:Unique
 
-            SELF:_ordCondInfo := DbOrderCondInfo{}
-            SELF:_ordCondInfo:Descending := SELF:_Descending
-            SELF:_ordCondInfo:Custom := SELF:_Custom
+
+            SELF:_ordCondInfo               := DbOrderCondInfo{}
+            SELF:_ordCondInfo:Descending    := SELF:_Descending
+            SELF:_ordCondInfo:Custom        := SELF:_Custom
             SELF:_ordCondInfo:ForExpression := SELF:_ForExpr
-
             SELF:_ordCondInfo:Compile(SELF:_oRDD)
             SELF:_ordCondInfo:Active := TRUE
             SELF:_ordCondInfo:Validate()

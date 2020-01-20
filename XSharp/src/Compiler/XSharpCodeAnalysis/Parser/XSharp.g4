@@ -589,7 +589,7 @@ statement           : Decl=localdecl                        #declarationStmt
                       Exprs+=expression (COMMA Exprs+=expression)+  end=eos			              #expressionStmt
 	                ;
 
-ifElseBlock         : Cond=expression end=eos StmtBlk=statementBlock
+ifElseBlock         : Cond=expression Then=THEN? end=eos StmtBlk=statementBlock
                       ( ELSEIF ElseIfBlock=ifElseBlock 
                     | ELSE eos ElseBlock=statementBlock)?
                     ;
@@ -1209,7 +1209,7 @@ xppmemberModifiers  : ( Tokens+=( CLASS | STATIC) )+
 
 
 /// FoxPro Parser definities
-keywordfox          :  Token=( OLEPUBLIC | EACH | EXCLUDE| THISACCESS| HELPSTRING| NOINIT | FOX_AND| FOX_OR| FOX_NOT| FOX_XOR )
+keywordfox          :  Token=( OLEPUBLIC | EACH | EXCLUDE| THISACCESS| HELPSTRING| NOINIT | FOX_AND| FOX_OR| FOX_NOT| FOX_XOR | THEN)
                       // These tokens are already marked as 'only valid in a certain context ' in the lexer
                               // ENDDEFINE | TEXT| ENDTEXT | DIMENSION | LPARAMETERS | NOSHOW | TEXTMERGE | PRETEXT | FLAGS | ADDITIVE
                     ;

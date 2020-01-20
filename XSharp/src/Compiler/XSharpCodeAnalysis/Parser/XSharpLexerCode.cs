@@ -1817,6 +1817,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     {"AND", FOX_AND},
                     {"OR", FOX_OR},
                     {"NOT", FOX_NOT},
+                    {"THEN", THEN},
                     {"XOR", FOX_XOR},
                     {"EACH", EACH },                // Only after FOR
                 }; 

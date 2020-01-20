@@ -1141,7 +1141,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     return null;
                 // when no => operator and no explicit parameters
                 // then this is a true codeblock
-                return cbc.GetText();
+                return cbc.SourceText;
             }
             return null;
         }

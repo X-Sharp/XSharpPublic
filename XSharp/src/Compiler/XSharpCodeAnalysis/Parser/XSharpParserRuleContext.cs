@@ -9,9 +9,11 @@ using Microsoft.CodeAnalysis;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using InternalSyntax = Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax;
 using Microsoft.CodeAnalysis.CSharp;
 using System;
 using MCT= Microsoft.CodeAnalysis.Text;
+using Antlr4.Runtime.Misc;
 
 namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 {
@@ -92,7 +94,51 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             return t;
         }
 
-  
+        internal InternalSyntax.CompilationUnitSyntax CompilationUnit
+        {
+            get
+            {
+                var node = this;
+                while (node.Parent != null)
+                {
+                    node = node.Parent as XSharpParserRuleContext;
+                }
+                if (node != null && node.CsNode != null)
+                {
+                    return node.CsNode as InternalSyntax.CompilationUnitSyntax;
+                }
+                return null;
+            }
+        }
+        public string SourceText
+        {
+            get
+            {
+                var start = Start as XSharpToken;
+                var stop = Stop as XSharpToken;
+                var cu = this.CompilationUnit;
+                if (cu != null )
+                {
+                    var result = new System.Text.StringBuilder();
+                    var tokens = ((BufferedTokenStream)cu.XTokens).GetTokens();
+
+                    for (int i = start.OriginalTokenIndex; i <= stop.OriginalTokenIndex; i++)
+                    {
+                        var token = tokens[i];
+                        if (!XSharpLexer.IsComment(token.Type))
+                        {
+                            if (token.Type != XSharpLexer.LINE_CONT)
+                                result.Append (token.Text);
+                        }
+                    }
+                    result = result.Replace('\t', ' ');
+                    return result.ToString();
+                }
+
+                var text = start.InputStream.GetText(Interval.Of(start.Position, stop.Position));
+                return text;
+            }
+        }
         public object CsNode { get; set; }
         public string SourceFileName { get { return (Start as XSharpToken).SourceName; } }
         public string MappedFileName { get { return (Start as XSharpToken).MappedFileName; } }

@@ -408,6 +408,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     treeTransform.GlobalEntities.Attributes, 
                     treeTransform.GlobalEntities.Members, eof);
                 result.XNode = tree;
+                tree.CsNode = result;
                 result.XTokens = _lexerTokenStream;
                 result.XPPTokens = _preprocessorTokenStream;
                 result.HasDocComments = lexer.HasDocComments;

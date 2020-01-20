@@ -6,7 +6,8 @@
 //
 // Caution: do not modify this file. It will be overwritten during product updates
 ///////////////////////////////////////////////////////////////////////////
-
+#ifndef NATIVERESOURCEDEFINES_XH
+#define NATIVERESOURCEDEFINES_XH
 /* ----- Symbols ----- */
 #define VS_VERSION_INFO          1
 #define VS_USER_DEFINED          100
@@ -67,3 +68,4 @@
 #define VFT2_DRV_COMM            0x0000000AL
 #define VFT2_DRV_INPUTMETHOD     0x0000000BL
 #define VFT2_DRV_VERSIONED_PRINTER  0x0000000CL
+#endif

@@ -1349,7 +1349,43 @@ METHOD FIELDGET( uField )
 	#ENDIF
 	
 	RETURN uRetVal
+
+METHOD FieldGetBytes( uField AS USUAL ) AS BYTE[]
+	LOCAL bRetVal AS BYTE[]
+	LOCAL oError AS USUAL
+	LOCAL wPos AS DWORD
+	LOCAL dwCurrentWorkArea AS DWORD
+	#IFDEF __DEBUG__
+		DBFDebug("Entering "+__ENTITY__, AsString(uField))
+	#ENDIF
 	
+	
+	lErrorFlag := FALSE
+	BEGIN SEQUENCE
+		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
+        IF (wPos := __GetFldPos( uField, wFieldCount )) = 0
+             BREAK DbError{ SELF, #FIELDGET, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_FIELDSPEC ), uField, "uField" }
+        ENDIF
+		bRetVal := NULL
+		IF ! VODBFieldGetBytes( wpos, REF bRetVal )
+			BREAK ErrorBuild( _VODBErrInfoPtr( ) )
+		ENDIF
+		
+		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
+		
+	RECOVER USING oError
+		oErrorInfo := oError
+		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
+		SELF:Error( oErrorInfo, #FieldGetBytes )
+	END SEQUENCE
+	
+	#IFDEF __DEBUG__
+		DBFDebug("Leaving "+__ENTITY__, AsString(uField), AsString(bRetVal))
+	#ENDIF
+	
+	RETURN bRetVal
+		
+
 
 METHOD FieldGetFormatted( uField ) 
 	//SE-060527
@@ -1608,6 +1644,41 @@ METHOD FIELDPUT( uField, uValue )
 	
 	RETURN uValue
 	
+
+METHOD FieldPutBytes( uField AS USUAL, bValue AS BYTE[])  AS BYTE[]
+	LOCAL wPos AS DWORD
+	LOCAL symFieldName AS SYMBOL
+	LOCAL uError AS USUAL
+	LOCAL dwCurrentWorkArea AS DWORD
+	#IFDEF __DEBUG__
+		DBFDebug("Entering "+__ENTITY__, AsString(uField), AsString(bValue))
+	#ENDIF
+	lErrorFlag := FALSE
+	BEGIN SEQUENCE
+		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
+        IF (wPos := __GetFldPos( uField, wFieldCount )) = 0
+            BREAK DbError{ SELF, #FIELDGET, EG_ARG, __CavoStr( __CAVOSTR_DBFCLASS_FIELDSPEC ), uField, "uField" }
+        ENDIF
+  
+		IF ! VODBFieldPutBytes( wPos, bValue )
+			BREAK ErrorBuild( _VODBErrInfoPtr( ) )
+		ENDIF
+      symFieldName := FieldSym(wPos)      
+		SELF:Notify( NotifyFieldChange, symFieldName )
+		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
+		
+	RECOVER USING uError
+		oErrorInfo := uError
+		__DBSSetSelect( dwCurrentWorkArea )  //SE-060527
+		SELF:Error( oErrorInfo, #FieldPutBytes )
+		bValue := NULL
+	END SEQUENCE
+	
+	#IFDEF __DEBUG__
+		DBFDebug("Leaving "+__ENTITY__, AsString(bValue))
+	#ENDIF
+	
+	RETURN bValue
 
 METHOD FieldSpec( uField ) 
 	//SE-060527

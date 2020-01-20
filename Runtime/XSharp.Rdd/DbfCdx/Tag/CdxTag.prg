@@ -86,9 +86,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL PROPERTY KeyLength         AS WORD GET SELF:_keySize
         INTERNAL PROPERTY SourceKeyLength   AS WORD GET SELF:_sourcekeySize
         INTERNAL PROPERTY Partial        	AS LOGIC GET SELF:Custom
-        INTERNAL PROPERTY Conditional       AS LOGIC GET !String.IsNullOrEmpty(_ForExpr)
-        INTERNAL PROPERTY Custom         	AS LOGIC GET Options:HasFlag(CdxOptions.Custom)
-        INTERNAL PROPERTY Unique         	AS LOGIC GET Options:HasFlag(CdxOptions.Unique)
+        INTERNAL PROPERTY Conditional       AS LOGIC GET SELF:_Conditional
+        INTERNAL PROPERTY Custom         	AS LOGIC GET SELF:_Custom
+        INTERNAL PROPERTY Unique         	AS LOGIC GET SELF:_Unique
         INTERNAL PROPERTY Signature      	AS BYTE AUTO
         INTERNAL PROPERTY Options        	AS CdxOptions AUTO
         INTERNAL PROPERTY LockOffSet     	AS LONG AUTO
@@ -146,6 +146,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:_rootPage      := SELF:_Header:RootPage
             SELF:_KeyExpr       := SELF:_Header:KeyExpression
             SELF:_ForExpr       := SELF:_Header:ForExpression
+            SELF:_Unique        := SELF:Options:HasFlag(CdxOptions.Unique)
+            SELF:_Custom        := SELF:Options:HasFlag(CdxOptions.Custom)
+            SELF:_Conditional   := SELF:Options:HasFlag(CdxOptions.HasFor)
             RETURN
 
 

@@ -629,7 +629,7 @@ BEGIN NAMESPACE XSharp.RDD
                 CASE DbFieldInfo.DBS_STRUCT
                     RETURN ofld
                 CASE DbFieldInfo.DBS_PROPERTIES
-                    RETURN DbFieldInfo.DBS_FLAGS
+                    RETURN DbFieldInfo.DBS_ALIAS
                 END SWITCH
             ENDIF
             RETURN NULL

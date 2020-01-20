@@ -11,8 +11,8 @@ BEGIN NAMESPACE XSharp
     /// The numeric value of these sets indicate the key of the setting in the settings dictionary on the runtimestate.
     /// </remarks>
     /// <seealso cref='T:XSharp.RuntimeState'>RuntimeState</seealso>
-    /// <seealso cref='M:XSharp.RuntimeState.GetValue``1(System.Int32)'>RuntimeState.GetValue</seealso>
-    /// <seealso cref='M:XSharp.RuntimeState.SetValue``1(System.Int32,``0)'>RuntimeState.SetValue</seealso>
+    /// <seealso cref='M:XSharp.RuntimeState.GetValue``1(XSharp.Set)'>RuntimeState.GetValue</seealso>
+    /// <seealso cref='M:XSharp.RuntimeState.SetValue``1(XSharp.Set,``0)'>RuntimeState.SetValue</seealso>
     ENUM Set
         MEMBER EXACT       := 1			// LOGIC
         MEMBER FIXED	   := 2			// LOGIC

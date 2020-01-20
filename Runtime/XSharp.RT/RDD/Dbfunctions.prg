@@ -203,8 +203,7 @@ FUNCTION LastRec() AS DWORD
 FUNCTION LastRec(uArea AS USUAL) AS DWORD
     DOINAREA uArea LastRec()
 
-/// <summary>
-/// </summary>
+/// <summary>Refresh the buffer for the current workarea, discarding any changes that were made.</summary>
 /// <returns>
 /// </returns>
 FUNCTION DbBuffRefresh() AS LOGIC STRICT

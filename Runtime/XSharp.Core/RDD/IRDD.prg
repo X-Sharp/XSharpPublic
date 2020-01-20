@@ -148,9 +148,9 @@ INTERFACE XSharp.RDD.IRdd
 	/// <summary>Retrieve and optionally change information about a column.</summary>
     /// <param name="nFldPos">The ONE based position of the field in the database file structure.</param>
     /// <param name="nOrdinal">Specifies the type of information.</param>
-    /// <param name="oNewValue">If specified (not null), then this parameter is used to change the value of a setting.</param>
+    /// <param name="oValue">If specified (not null), then this parameter is used to change the value of a setting.</param>
     /// <returns>The current value for the property indicated with &lt;nOrdinal&gt;</returns>
-	METHOD FieldInfo(nFldPos AS LONG, nOrdinal AS LONG, oNewValue AS OBJECT) AS OBJECT
+	METHOD FieldInfo(nFldPos AS LONG, nOrdinal AS LONG, oValue AS OBJECT) AS OBJECT
 
 	/// <summary>Retrieve a column name based on its ONE based column number.</summary>
 	/// <param name="nFldPos">The ONE based position of the column whose name you want to obtain.</param>
@@ -260,7 +260,7 @@ INTERFACE XSharp.RDD.IRdd
     /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
 	METHOD OrderDestroy(info AS DbOrderInfo) AS LOGIC    	
 
-	/// <summary>Retrieve information about the current index.</summary>
+	/// <summary>Retrieve information about an index.</summary>
 	/// <param name="info">An object containing information about the order to retrieve the info for.</param>
 	/// <param name="nOrdinal">Specifies the type of information to retrieve.</param>
     /// <returns>The requested value for the specified index.</returns>
@@ -371,10 +371,16 @@ INTERFACE XSharp.RDD.IRdd
 	/// <param name="sBlock">The code block to evaluate.</param>
 	METHOD EvalBlock(oBlock AS ICodeblock)			AS OBJECT	
 
-	// Info
 	/// <summary>Retrieve and optionally change information about a work area.</summary>
-	METHOD Info(nOrdinal AS LONG, oNewValue AS OBJECT) AS OBJECT
+    /// <param name="nOrdinal">Specifies the type of information.</param>
+    /// <param name="oValue">If specified (not null), then this parameter is used to change the value of a setting.</param>
+
+	METHOD Info(nOrdinal AS LONG, oValue AS OBJECT) AS OBJECT
+	
 	/// <summary>Retrieve and optionally change information about a row.</summary>
+    /// <param name="nOrdinal">Specifies the type of information.</param>
+    /// <param name="oRecid">If specified (not null), then this parameter is used to specify for which object to retrieve the info.</param>
+    /// <param name="oValue">If specified (not null), then this parameter is used to change the value of a setting.</param>
 	METHOD RecInfo( nOrdinal AS LONG, oRecID AS OBJECT, oNewValue AS OBJECT) AS OBJECT  
 
 	// Properties

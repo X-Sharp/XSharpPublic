@@ -12,9 +12,6 @@ USING System.Runtime.InteropServices
 
 BEGIN NAMESPACE XSharp.Data
 
-	/// <summary>
-    /// The Win32 class.
-    /// </summary>
     INTERNAL STATIC CLASS Win32
     
         INTERNAL CONST SQL_DRIVER_NOPROMPT	:=	0 AS WORD

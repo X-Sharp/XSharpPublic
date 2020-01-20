@@ -106,13 +106,14 @@ INTERFACE XSharp.Data.ISqlFactory
 END INTERFACE    
 
 
-
+/// <summary>Set the default factory.</summary>
 FUNCTION SetSqlFactory(oFactory AS ISqlFactory) AS ISqlFactory
     LOCAL oOld AS ISqlFactory
     oOld := XSharp.Data.AbstractSqlFactory.DefaultFactory
     XSharp.Data.AbstractSqlFactory.DefaultFactory := oFactory
     RETURN oOld
 
+/// <summary>Retrieve the default factory.</summary>
 FUNCTION GetSqlFactory() AS ISqlFactory 
     LOCAL oOld AS ISqlFactory
     oOld := XSharp.Data.AbstractSqlFactory.DefaultFactory

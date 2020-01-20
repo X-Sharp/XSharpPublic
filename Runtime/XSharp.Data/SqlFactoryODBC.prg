@@ -15,29 +15,36 @@ USING System.Runtime.InteropServices
 
 CLASS XSharp.Data.OdbcFactory INHERIT XSharp.Data.AbstractSqlFactory
 
+    /// <inheritdoc />
     PROPERTY QuoteChar AS STRING GET ""
 
     CONSTRUCTOR
         SUPER()
         oInstance := System.Data.Odbc.OdbcFactory.Instance
 
+    /// <inheritdoc />
     METHOD GetName(oConn AS DbConnection) AS STRING
         RETURN "ODBC"
 
 
+    /// <inheritdoc />
     METHOD EnhanceException(oEx AS SYstem.Exception)  AS SYstem.Exception
         RETURN oEx
 
+    /// <inheritdoc />
     METHOD HandleSpecialValue(oValue AS OBJECT, oFS AS OBJECT, lDateTimeAsDate AS LOGIC) AS OBJECT
         RETURN oValue
 
+    /// <inheritdoc />
     METHOD TranslateStatement(cStatement AS STRING) AS STRING
         RETURN cStatement
 
 
+    /// <inheritdoc />
     METHOD AfterOpen(oDataReader AS DbDataReader) AS DbDataReader
         RETURN oDataReader
 
+    /// <inheritdoc />
     METHOD DriverConnect(hWindow AS object, uCompletion AS object, cConnectionString AS object) AS STRING
         LOCAL nRetCode      AS INT
         LOCAL cConnect      AS STRING

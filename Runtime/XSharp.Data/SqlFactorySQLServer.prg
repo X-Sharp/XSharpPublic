@@ -13,6 +13,7 @@ USING System.Runtime.InteropServices
 
 CLASS XSharp.Data.SqlServerFactory INHERIT XSharp.Data.AbstractSqlFactory
 
+    /// <inheritdoc />
     PROPERTY QuoteChar AS STRING GET chr(34)
 
     CONSTRUCTOR
@@ -20,9 +21,11 @@ CLASS XSharp.Data.SqlServerFactory INHERIT XSharp.Data.AbstractSqlFactory
         oInstance := System.Data.SqlClient.SqlClientFactory.Instance
 
 
+    /// <inheritdoc />
     METHOD GetName(oConn AS DbConnection) AS STRING
         RETURN "SQL"
 
+    /// <inheritdoc />
     METHOD DriverConnect(hWindow AS OBJECT, uCompletion AS OBJECT, cConnectionString AS OBJECT) AS STRING
 
         LOCAL oODBC AS OdbcFactory

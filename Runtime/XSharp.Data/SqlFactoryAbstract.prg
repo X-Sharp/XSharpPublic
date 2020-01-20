@@ -13,6 +13,8 @@ USING System.Runtime.InteropServices
 
 
 
+    /// <summary>This is the base class for most ISqlFactory implementations.</summary>
+    /// <remarks>This class creates connections, commands etc by calling the appropriate methods on a protected DbProvider instance.</remarks>
 
 ABSTRACT CLASS XSharp.Data.AbstractSqlFactory IMPLEMENTS XSharp.Data.ISqlFactory
     #region Static
@@ -31,28 +33,39 @@ ABSTRACT CLASS XSharp.Data.AbstractSqlFactory IMPLEMENTS XSharp.Data.ISqlFactory
     CONSTRUCTOR
         oInstance := NULL
 
+    /// <inheritdoc />
     METHOD CreateConnection AS DbConnection
         RETURN oInstance:CreateConnection()
         
+    /// <inheritdoc />
     METHOD CreateCommand    AS DbCommand
         RETURN oInstance:CreateCommand()
 
+    /// <inheritdoc />
     METHOD CreateCommandBuilder    AS DbCommandBuilder
         RETURN oInstance:CreateCommandBuilder()
 
+    /// <inheritdoc />
     METHOD CreateParameter  AS DbParameter
         RETURN oInstance:CreateParameter()
+
+    /// <inheritdoc />
     METHOD CreateDataAdapter    AS DbDataAdapter
         RETURN oInstance:CreateDataAdapter()
+
+    /// <inheritdoc />
     METHOD CreateConnectionStringBuilder AS DbConnectionStringBuilder
         RETURN oInstance:CreateConnectionStringBuilder()
 
+    /// <inheritdoc />
     METHOD CreateDataSourceEnumerator() AS DbDataSourceEnumerator
         RETURN oInstance:CreateDataSourceEnumerator()
+
+    /// <inheritdoc />
     METHOD AfterConnect(oConnection AS DbConnection) AS VOID
         RETURN
 
-
+    /// <inheritdoc />
     METHOD BeforeConnect(cString AS STRING, cUser AS STRING, cPassword AS STRING) AS STRING
 	    IF !cString:Contains("=") .AND. ! STRING.IsNullOrEmpty(cString)
 			cString := "DSN="+cString+";" 
@@ -65,40 +78,51 @@ ABSTRACT CLASS XSharp.Data.AbstractSqlFactory IMPLEMENTS XSharp.Data.ISqlFactory
 		ENDIF
         RETURN cString
         
+    /// <inheritdoc />
     METHOD BeforeDisConnect(oConnection AS DbConnection) AS VOID
         RETURN
 
+    /// <inheritdoc />
     METHOD AfterDisConnect(oConnection AS DbConnection) AS VOID
         RETURN
 
+    /// <inheritdoc />
     METHOD BeforeRollBack(oConnection AS DbTransaction) AS VOID
         RETURN
 
+    /// <inheritdoc />
     METHOD AfterRollBack(oConnection AS DbTransaction) AS VOID
         RETURN
 
+    /// <inheritdoc />
     METHOD BeforeCommit(oConnection AS DbTransaction) AS VOID
         RETURN
 
+    /// <inheritdoc />
     METHOD AfterCommit(oConnection AS DbTransaction) AS VOID
         RETURN
 
+    /// <inheritdoc />
     METHOD GetName(oConn AS DbConnection) AS STRING
         RETURN "ODBC"
 
-    METHOD DriverConnect(hWindow AS object, uCompletion AS object, cConnectionString AS object) AS STRING
+    /// <inheritdoc />
+    METHOD DriverConnect(hWindow AS OBJECT, uCompletion AS OBJECT, cConnectionString AS OBJECT) AS STRING
         RETURN ""
 
+    /// <inheritdoc />
     METHOD EnhanceException(oEx AS SYstem.Exception)  AS SYstem.Exception
         RETURN oEx
 
+    /// <inheritdoc />
     METHOD HandleSpecialValue(oValue AS OBJECT, oFS AS OBJECT, lDateTimeAsDate AS LOGIC) AS OBJECT
         RETURN oValue
 
+    /// <inheritdoc />
     METHOD TranslateStatement(cStatement AS STRING) AS STRING
         RETURN cStatement
 
-
+    /// <inheritdoc />
     METHOD AfterOpen(oDataReader AS DbDataReader) AS DbDataReader
         RETURN oDataReader
 

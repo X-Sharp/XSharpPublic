@@ -223,7 +223,9 @@ CLASS XSharp.CoreDb
         END TRY
         RETURN DEFAULT(T)
         
-        
+     /// <summary>
+     /// An event to which you can subscribe to be notified of operations on workareas.
+     /// </summary>        
      PUBLIC STATIC EVENT Notify AS DbNotifyEventHandler
 
      PRIVATE STATIC PROPERTY HasEvents AS LOGIC GET Notify != NULL
@@ -304,8 +306,7 @@ CLASS XSharp.CoreDb
         RETURN oRDD:BoF
         })
         
-        /// <summary>
-        /// </summary>
+        /// <summary>Refresh the buffer for the current workarea, discarding any changes that were made.</summary>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks>This function is like DBBuffRefresh().
         /// <include file="CoreComments.xml" path="Comments/LastError/*" />
@@ -585,6 +586,8 @@ CLASS XSharp.CoreDb
         ENDIF
         RETURN ret
         })
+        /// <summary>Return the name of the alias.</summary>
+        /// <remarks>In the FoxPro dialect the full path is returned.</remarks>
         STATIC METHOD Dbf AS STRING
             LOCAL oRDD := CoreDb.CWA("DBF", FALSE) AS IRDD
             IF oRDD != NULL
@@ -692,6 +695,8 @@ CLASS XSharp.CoreDb
         RETURN oRDD:DbEval(oInfo)
         })
 
+        /// <summary>Return the number of fields in the current workarea</summary>
+
     STATIC METHOD FCount() AS DWORD
         LOCAL oRDD := CoreDb.CWA(__FUNCTION__) AS IRDD
         IF (oRDD != NULL)
@@ -702,10 +707,9 @@ CLASS XSharp.CoreDb
         /// <summary>
         /// Retrieve the value of a specified database field.
         /// </summary>
-        /// <param name="nPos"></param>
-        /// <param name="oRet"></param>
-        /// <returns>TRUE if successful; otherwise, FALSE.</returns>
+        /// <param name="nPos">The 1 based position of the field in the database file structure for the current work area.</param>
         /// <param name="oRet">The returnvalue is returned through this parameter</param>
+        /// <returns>TRUE if successful; otherwise, FALSE.</returns>
     STATIC METHOD FieldGet(nPos AS DWORD,oRet REF OBJECT) AS LOGIC
         TRY
             LOCAL oRDD := CoreDb.CWA(__FUNCTION__) AS IRDD
@@ -719,10 +723,10 @@ CLASS XSharp.CoreDb
         /// <summary>
         /// Retrieve the value of a specified database field as an array of bytes
         /// </summary>
-        /// <param name="nPos"></param>
-        /// <param name="oRet"></param>
-        /// <returns>TRUE if successful; otherwise, FALSE.</returns>
+        /// <param name="nPos">The 1 based position of the field in the database file structure for the current work area.</param>
         /// <param name="oRet">The returnvalue is returned through this parameter</param>
+        /// <returns>TRUE if successful; otherwise, FALSE.</returns>
+        /// <remarks>This function only works with RDDs that inherit from the DBF RDD. The Advantage RDD does not support this.</remarks>
     STATIC METHOD FieldGetBytes(nPos AS DWORD,oRet REF BYTE[]) AS LOGIC
         TRY
             LOCAL oRDD := CoreDb.CWA(__FUNCTION__) AS IRDD
@@ -759,13 +763,14 @@ CLASS XSharp.CoreDb
         END TRY
         RETURN FALSE
 
-       /// <summary>
-        /// Retrieve the value of a specified database field as an array of bytes
-        /// </summary>
-        /// <param name="nPos"></param>
-        /// <param name="oRet"></param>
-        /// <returns>TRUE if successful; otherwise, FALSE.</returns>
-        /// <param name="oRet">The returnvalue is returned through this parameter</param>
+    /// <summary>
+    /// Retrieve the value of a specified database field as an array of bytes
+    /// </summary>
+    /// <param name="nPos">The 1 based position of the field in the database file structure for the current work area.</param>
+    /// <param name="aValue">The value to write to the field</param>        
+    /// <returns>TRUE if successful; otherwise, FALSE.</returns>
+    /// <remarks>This function only works with RDDs that inherit from the DBF RDD. The Advantage RDD does not support this.</remarks>
+
     STATIC METHOD FieldPutBytes(nPos AS DWORD, aValue AS BYTE[]) AS LOGIC
         TRY
              LOCAL oRDD := CoreDb.CWA(__FUNCTION__) AS IRDD
@@ -792,6 +797,7 @@ CLASS XSharp.CoreDb
             Fail(e)
         END TRY
         RETURN FALSE
+        
         /// <inheritdoc cref="M:XSharp.RDD.IRdd.FieldInfo(System.Int32,System.Int32,System.Object)" />
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks>This function is like DBFieldInfo().
@@ -801,9 +807,9 @@ CLASS XSharp.CoreDb
         /// <seealso cref='O:XSharp.VoDb.FieldInfo' >FieldInfo overloads in CoreDb</seealso>
         /// <seealso cref='O:XSharp.CoreDb.FieldInfo' >FieldInfo overloads in CoreDb</seealso>
         
-    STATIC METHOD FieldInfo(nOrdinal AS DWORD,nFldPos AS DWORD,oRet AS OBJECT) AS LOGIC
+    STATIC METHOD FieldInfo(nOrdinal AS DWORD,nFldPos AS DWORD,oValue AS OBJECT) AS LOGIC
         RETURN CoreDb.Do ({ =>
-        RETURN CoreDb.FieldInfo(nOrdinal, nFldPos, REF oRet)
+        RETURN CoreDb.FieldInfo(nOrdinal, nFldPos, REF oValue)
         })
         
     /// <inheritdoc cref="M:XSharp.CoreDb.FieldInfo(System.UInt32,System.UInt32,System.Object)" />
@@ -821,14 +827,14 @@ CLASS XSharp.CoreDb
     /// <summary>
     /// Return the name of a field as a string.
     /// </summary>
-    /// <param name="dwFieldPos"></param>
+    /// <param name="nPos">The 1 based position of the field in the database file structure for the current work area.</param>
     /// <returns>
     /// </returns>
 
-    STATIC METHOD FieldName(dwFieldPos AS DWORD) AS STRING
+    STATIC METHOD FieldName(nPos AS DWORD) AS STRING
         LOCAL oRDD := CoreDb.CWA("FieldName") AS IRDD
-        IF (oRDD != NULL)
-            RETURN oRDD:FieldName((INT) dwFieldPos)
+        IF (oRDD != NULL)O
+            RETURN oRDD:FieldName((INT) nPos)
         ENDIF
         RETURN String.Empty   
         /// <summary>
@@ -847,8 +853,8 @@ CLASS XSharp.CoreDb
         /// <summary>
         /// Set the value of a specified database field.
         /// </summary>
-        /// <param name="nPos"></param>
-        /// <param name="xValue"></param>
+        /// <param name="nPos">The 1 based position of the field in the database file structure for the current work area.</param>
+        /// <param name="xValue">The value to write to the field</param>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks>
         /// <include file="CoreComments.xml" path="Comments/LastError/*" />
@@ -863,8 +869,8 @@ CLASS XSharp.CoreDb
         })    
         
         /// <summary>Import contents from file into Memo field </summary>
-        /// <param name="nPos"></param>
-        /// <param name="cFile"></param>
+        /// <param name="nPos">The 1 based position of the field in the database file structure for the current work area.</param>
+        /// <param name="cFile">The name of the file where the value must be written.</param>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks>This function is like DBFileGet().
         /// <include file="CoreComments.xml" path="Comments/LastError/*" />
@@ -876,8 +882,8 @@ CLASS XSharp.CoreDb
         })
         
         /// <summary>Export field contents from Memo field to file</summary>
-        /// <param name="nPos"></param>
-        /// <param name="cFile"></param>
+        /// <param name="nPos">The 1 based position of the field in the database file structure for the current work area.</param>
+        /// <param name="cFile">The name of the file to write</param>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks><note type="tip">VoDbFilePut() and CoreDb.FilePut() are aliases</note></remarks>
     STATIC METHOD FilePut(nPos AS DWORD,cFile AS STRING) AS LOGIC
@@ -969,7 +975,7 @@ CLASS XSharp.CoreDb
         /// <summary>
         /// Move to a record specified by record number.
         /// </summary>
-        /// <param name="uRecId"></param>
+        /// <param name="uRecId">ID of the record to goto</param>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
     STATIC METHOD Goto(uRecId AS OBJECT) AS LOGIC
         RETURN CoreDb.Do ({ =>
@@ -1008,30 +1014,30 @@ CLASS XSharp.CoreDb
         /// Retrieve information about a work area.
         /// </summary>
         /// <param name="nOrdinal"></param>
-        /// <param name="ptrRet"></param>
+       /// <param name="oValue">If specified, this parameter is used to change the value of a setting. This parameter also receives the return value.</param>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <seealso cref='O:XSharp.RT.Functions.VoDbInfo' >VoDbInfo overloads </seealso>
         /// <seealso cref='O:XSharp.VoDb.Info' >Info overloads in VoDb</seealso>
         /// <seealso cref='O:XSharp.CoreDb.Info' >Info overloads in CoreDb</seealso>
     
-    STATIC METHOD Info(nOrdinal AS DWORD,oRet AS OBJECT) AS LOGIC
+    STATIC METHOD Info(nOrdinal AS DWORD,oValue AS OBJECT) AS LOGIC
         RETURN CoreDb.Do ({ =>
-        RETURN CoreDb.Info(nOrdinal, REF oRet)
+        RETURN CoreDb.Info(nOrdinal, REF oValue)
         })
         
         
     /// <inheritdoc cref="M:XSharp.CoreDb.Info(System.UInt32,System.Object)" />
-    /// <param name="oRet">The returnvalue is returned through this parameter. When set on entry this is the new value of the setting.</param>
+    /// <param name="oValue">If specified, this parameter is used to change the value of a setting. This parameter also receives the return value.</param>
 
-    STATIC METHOD Info(nOrdinal AS DWORD,oRet REF OBJECT) AS LOGIC
+    STATIC METHOD Info(nOrdinal AS DWORD,oValue REF OBJECT) AS LOGIC
         TRY
             LOCAL oRDD := CoreDb.CWA(__FUNCTION__) AS IRDD
             IF (nOrdinal == DBI_RDD_OBJECT)
-                oRet := oRDD
+                oValue := oRDD
             ELSEIF (nOrdinal == DBI_RDD_LIST)
-                oRet := _RddList{(WOrkArea) oRDD}
+                oValue := _RddList{(WorkArea) oRDD}
             ELSE
-                oRet := oRDD:Info((INT) nOrdinal, oRet)
+                oValue := oRDD:Info((INT) nOrdinal, oValue)
             ENDIF
             RETURN TRUE
         CATCH e AS Exception
@@ -1091,11 +1097,11 @@ CLASS XSharp.CoreDb
         /// <summary>
         /// Search for the first record that matches a specified condition and scope.
         /// </summary>
-        /// <param name="uCobFor"></param>
-        /// <param name="uCobWhile"></param>
-        /// <param name="nNext"></param>
-        /// <param name="uRecId"></param>
-        /// <param name="lRest"></param>
+        /// <param name="uCobFor"><include file="VoFunctionDocs.xml" path="Runtimefunctions/cbfor/*" /></param>
+        /// <param name="uCobWhile"><include file="VoFunctionDocs.xml" path="Runtimefunctions/cbwhile/*" /></param>
+        /// <param name="nNext">The number of records to process, starting with the current record.</param>
+        /// <param name="uRecId">The number of the record to process.</param>
+        /// <param name="lRest">TRUE processes only records from the current record to end-of-file.  FALSE processes all records.</param>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks>This function is like DBLocate() but strongly typed.  
         /// <include file="CoreComments.xml" path="Comments/LastError/*" />
@@ -1209,8 +1215,8 @@ CLASS XSharp.CoreDb
         /// <summary>
         /// Remove an order from an open index file.
         /// </summary>
-        /// <param name="cBagName"></param>
-        /// <param name="oOrder"></param>
+        /// <param name="cBagName">The name of an index file, including an optional drive and directory.  Use this argument with &lt;cOrder&gt; to remove ambiguity when there are two or more orders with the same name in different index files.</param>
+        /// <param name="oOrder">The name of the order or a number representing its position in the order list.  Using the order name is the preferred method since the position may be difficult to determine using multiple-order index files.  Invalid values are ignored.</param>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks>This function is like DbDeleteOrder() but strongly typed.
         /// <include file="CoreComments.xml" path="Comments/LastError/*" />
@@ -1231,9 +1237,9 @@ CLASS XSharp.CoreDb
         /// Return information about index files and the orders in them.
         /// </summary>
         /// <param name="nOrdinal">Specifies the type of information. This must match the values in the DBOI_ defines</param>
-        /// <param name="cBagName">The name of an index file, including an optional drive and directory (no extension should be specified).  </param>
-        /// <param name="uOrder">The name of the order about which you want to obtain information or a number representing its position in the order list.</param>
-        /// <param name="xNewVal">If specified, this parameter is used to change the value of a setting.</param>
+        /// <param name="cBagName">The name of an index file, including an optional drive and directory.  </param>
+        /// <param name="oOrder">The name of the order about which you want to obtain information or a number representing its position in the order list.</param>
+        /// <param name="oValue">If specified, this parameter is used to change the value of a setting. </param>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks>This function is like DbOrderInfo() but strongly typed.
         /// <include file="CoreComments.xml" path="Comments/LastError/*" />
@@ -1242,24 +1248,22 @@ CLASS XSharp.CoreDb
         /// <seealso cref='O:XSharp.VoDb.OrderInfo' >OrderInfo overloads in VoDb</seealso>
         /// <seealso cref='O:XSharp.CoreDb.OrderInfo' >OrderInfo overloads in CoreDb</seealso>
     
-        
-    STATIC METHOD OrderInfo(nOrdinal AS DWORD,cBagName AS STRING,oOrder AS OBJECT,xNewVal AS OBJECT) AS LOGIC
+        STATIC METHOD OrderInfo(nOrdinal AS DWORD,cBagName AS STRING,oOrder AS OBJECT,oValue AS OBJECT) AS LOGIC
         RETURN CoreDb.Do ({ =>
-        RETURN CoreDb.OrderInfo(nOrdinal, cBagName, oOrder, REF xNewVal)
+        RETURN CoreDb.OrderInfo(nOrdinal, cBagName, oOrder, REF oValue)
         })
         
     /// <inheritdoc cref="M:XSharp.CoreDb.OrderInfo(System.UInt32,System.String,System.Object,System.Object)" />
-    /// <param name="oRet">The returnvalue is returned through this parameter. When set on entry this is the new value of the setting.</param>
-
-    STATIC METHOD OrderInfo(nOrdinal AS DWORD,cBagName AS STRING,oOrder AS OBJECT,xNewVal REF OBJECT) AS LOGIC
+    /// <param name="oValue">If specified, this parameter is used to change the value of a setting and retrieve the current setting. </param>
+    STATIC METHOD OrderInfo(nOrdinal AS DWORD,cBagName AS STRING,oOrder AS OBJECT,oValue REF OBJECT) AS LOGIC
         TRY
             LOCAL oRDD := CoreDb.CWA(__FUNCTION__) AS IRDD
             VAR info := DbOrderInfo{}
             info:BagName := cBagName
             info:Order   := oOrder
-            info:Result  := xNewVal
+            info:Result  := oValue
 			oRDD:OrderInfo(nOrdinal, info)
-            xNewVal :=  info:Result
+            oValue :=  info:Result
             RETURN TRUE
         CATCH e AS Exception
             Fail(e)
@@ -1271,8 +1275,8 @@ CLASS XSharp.CoreDb
         /// <summary>
         /// Open an index file and add specified orders to the order list in a work area.
         /// </summary>
-        /// <param name="cBagName"></param>
-        /// <param name="oOrder"></param>
+        /// <param name="cBagName">The name of an index file, including an optional drive and directory.  Use this argument with &lt;cOrder&gt; to remove ambiguity when there are two or more orders with the same name in different index files.</param>
+        /// <param name="oOrder">The name of the order or a number representing its position in the order list.  Using the order name is the preferred method since the position may be difficult to determine using multiple-order index files.  Invalid values are ignored.</param>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks>This function is like DbSetIndex() but strongly typed.
         /// <include file="CoreComments.xml" path="Comments/LastError/*" />
@@ -1300,8 +1304,8 @@ CLASS XSharp.CoreDb
         /// <summary>
         /// Remove orders from the order list in a work area and close associated index files.
         /// </summary>
-        /// <param name="cBagName"></param>
-        /// <param name="oOrder"></param>
+        /// <param name="cBagName">The name of an index file, including an optional drive and directory.  Use this argument with &lt;cOrder&gt; to remove ambiguity when there are two or more orders with the same name in different index files.</param>
+        /// <param name="oOrder">The name of the order or a number representing its position in the order list.  Using the order name is the preferred method since the position may be difficult to determine using multiple-order index files.  Invalid values are ignored.</param>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks>This function is like DBClearIndex() but strongly typed.
         /// <include file="CoreComments.xml" path="Comments/LastError/*" />
@@ -1349,8 +1353,8 @@ CLASS XSharp.CoreDb
         /// <summary>
         /// Set the controlling order for a work area.
         /// </summary>
-        /// <param name="cBagName"></param>
-        /// <param name="oOrder"></param>
+        /// <param name="cBagName">The name of an index file, including an optional drive and directory.  Use this argument with &lt;cOrder&gt; to remove ambiguity when there are two or more orders with the same name in different index files.</param>
+        /// <param name="oOrder">The name of the order or a number representing its position in the order list.  Using the order name is the preferred method since the position may be difficult to determine using multiple-order index files.  Invalid values are ignored.</param>
         /// <param name="strPreviousOrder"></param>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks>This function is like DbSetOrder() but strongly typed.
@@ -1374,9 +1378,9 @@ CLASS XSharp.CoreDb
         /// <summary>
         /// Set the controlling order for a work area.
         /// </summary>
-        /// <param name="cBagName"></param>
-        /// <param name="oOrder"></param>
-        /// <param name="strPreviousOrder"></param>
+        /// <param name="cBagName">The name of an index file, including an optional drive and directory.  Use this argument with &lt;cOrder&gt; to remove ambiguity when there are two or more orders with the same name in different index files.</param>
+        /// <param name="oOrder">The name of the order or a number representing its position in the order list.  Using the order name is the preferred method since the position may be difficult to determine using multiple-order index files.  Invalid values are ignored.</param>
+        /// <param name="strPreviousOrder">This parameter returns the previous order</param>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks>This function is like DbSetOrder() but strongly typed.
         /// <include file="CoreComments.xml" path="Comments/LastError/*" />
@@ -1425,7 +1429,6 @@ CLASS XSharp.CoreDb
         
         /// <summary>
         /// </summary>
-        /// <param name="nRddType"></param>
         /// <returns>
         /// </returns>
         /// <remarks><note type="tip">VoDbRddCount() and CoreDb.RddCount() are aliases</note></remarks>
@@ -1436,30 +1439,30 @@ CLASS XSharp.CoreDb
         })
         /// <summary>Return and optionally change settings controlled directly by the RDD.</summary>
         /// <param name="nOrdinal">Ordinal number of the setting to set/retrieve.</param>
-        /// <param name="oRet">The returnvalue is returned through this parameter. When set on entry this is the new value of the setting.</param>
+        /// <param name="oValue">The returnvalue is returned through this parameter. When set on entry this is the new value of the setting.</param>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <seealso cref='O:XSharp.RT.Functions.VoDbRddInfo' >VoDbRddInfo overloads </seealso>
         /// <seealso cref='O:XSharp.VoDb.RddInfo' >RddInfo overloads in VoDb</seealso>
         /// <seealso cref='O:XSharp.CoreDb.RddInfo' >RddInfo overloads in CoreDb</seealso>
         
-    STATIC METHOD RddInfo(nOrdinal AS DWORD,oRet REF OBJECT) AS LOGIC
+    STATIC METHOD RddInfo(nOrdinal AS DWORD,oValue REF OBJECT) AS LOGIC
         TRY
-            LOCAL oValue AS OBJECT
-            oValue := RuntimeState.GetValue<OBJECT> ((XSharp.Set) nOrdinal)
-            IF oRet != NULL_OBJECT
-                RuntimeState.SetValue((XSharp.Set) nOrdinal, oRet)
+            LOCAL oResult AS OBJECT
+            oResult := RuntimeState.GetValue<OBJECT> ((XSharp.Set) nOrdinal)
+            IF oValue != NULL_OBJECT
+                RuntimeState.SetValue((XSharp.Set) nOrdinal, oValue)
             ENDIF
-            oRet := oValue
-            RETURN oValue != NULL
+            oValue := oResult
+            RETURN oResult != NULL
         CATCH e AS Exception
             Fail(e)
         END TRY
         RETURN FALSE
         
     /// <inheritdoc cref="M:XSharp.CoreDb.RddInfo(System.UInt32,System.Object@)" />
-    STATIC METHOD RddInfo(nOrdinal AS DWORD,oRet AS OBJECT) AS LOGIC
+    STATIC METHOD RddInfo(nOrdinal AS DWORD,oValue AS OBJECT) AS LOGIC
         RETURN CoreDb.Do ({ =>
-        RuntimeState.SetValue((XSharp.Set) nOrdinal, oRet)
+        RuntimeState.SetValue((XSharp.Set) nOrdinal, oValue)
         RETURN TRUE
         })
         
@@ -1493,8 +1496,7 @@ CLASS XSharp.CoreDb
         /// <summary>
         /// Return an RDD name.                  
         /// </summary>
-        /// <returns>
-        /// </returns>
+        /// <returns>The name of the RDD</returns>
         /// <remarks><note type="tip">VoDbRddName() and CoreDb.RddName() are aliases</note></remarks>
         
     STATIC METHOD RddName() AS STRING
@@ -1506,8 +1508,7 @@ CLASS XSharp.CoreDb
         /// Return and optionally change the default RDD for the application.
         /// </summary>
         /// <param name="cNewRDD"></param>
-        /// <returns>
-        /// </returns>
+        /// <returns>The previous default RDD</returns>
         /// <remarks><note type="tip">VoDbRddSetDefault() and CoreDb.RddSetDefault() are aliases</note></remarks>
         
     STATIC METHOD RddSetDefault(cNewRDD AS STRING) AS STRING
@@ -1536,6 +1537,7 @@ CLASS XSharp.CoreDb
         })
 
 
+        /// <summary>Return the record length in the current workarea</summary>
         STATIC METHOD RecSize AS LONG
             LOCAL nSize := NULL AS OBJECT
             CoreDb.Info(DBInfo.DBI_GETRECSIZE, REF nSize)
@@ -1544,8 +1546,7 @@ CLASS XSharp.CoreDb
         /// <summary>
         /// Return the current record number.
         /// </summary>
-        /// <returns>
-        /// </returns>
+        /// <returns>The 1 based current record number.</returns>
         /// <remarks><note type="tip">VoDbRecno() and CoreDb.Recno() are aliases</note></remarks>
         
     STATIC METHOD Recno() AS DWORD
@@ -1555,8 +1556,7 @@ CLASS XSharp.CoreDb
         })
         
         /// <summary>Get the contents of the current record as an array of bytes</summary>
-        /// <returns>
-        /// </returns>
+        /// <returns>An array of bytes that contains the current record.</returns>
         /// <remarks><note type="tip">VoDbRecordGet() and CoreDb.RecordGet() are aliases</note></remarks>
         
     STATIC METHOD RecordGet() AS BYTE[]
@@ -1570,24 +1570,24 @@ CLASS XSharp.CoreDb
         /// </summary>
         /// <param name="nOrdinal">This must match one of the values from the DbRecordInfo Enum</param>
         /// <param name="oRecID">Some of the DbRecordInfo enum values require a record number</param>
-        /// <param name="oRet">Some of the DbRecordInfo enum values require a new value. </param>
+        /// <param name="oValue">Some of the DbRecordInfo enum values require a new value. </param>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <seealso cref='O:XSharp.RT.Functions.VoDbRecordInfo'  >VoDbRecordInfo overloads</seealso>
         /// <seealso cref='O:XSharp.VoDb.RecordInfo'  >RecordInfo overloads in VoDb</seealso>
         /// <seealso cref='O:XSharp.CoreDb.RecordInfo'  >RecordInfo overloads in CoreDb</seealso>
         /// <seealso cref='T:XSharp.RDD.Enums.DbRecordInfo'>DbRecordInfo ENUM</seealso>
         
-    STATIC METHOD RecordInfo(nOrdinal AS DWORD,oRecID AS OBJECT,oRet AS OBJECT) AS LOGIC
+    STATIC METHOD RecordInfo(nOrdinal AS DWORD,oRecID AS OBJECT,oValue AS OBJECT) AS LOGIC
         RETURN CoreDb.Do ({ =>
-        RETURN CoreDb.RecordInfo(nOrdinal, oRecID, REF oRet)
+        RETURN CoreDb.RecordInfo(nOrdinal, oRecID, REF oValue)
         }) 
         
     /// <inheritdoc cref="M:XSharp.CoreDb.RecordInfo(System.UInt32,System.Object,System.Object)" />
     /// <param name="oRet">The returnvalue is returned through this parameter. When set on entry this is the new value of the setting.</param>
-    STATIC METHOD RecordInfo(nOrdinal AS DWORD,oRecID AS OBJECT,oRet REF OBJECT) AS LOGIC
+    STATIC METHOD RecordInfo(nOrdinal AS DWORD,oRecID AS OBJECT,oValue REF OBJECT) AS LOGIC
         TRY
             LOCAL oRDD := CoreDb.CWA(__FUNCTION__) AS IRDD
-            oRet := oRDD:RecInfo( (INT) nOrdinal,oRecID, oRet )
+            oValue := oRDD:RecInfo( (INT) nOrdinal,oRecID, oValue )
             RETURN TRUE
         CATCH e AS Exception
             Fail(e)
@@ -1596,7 +1596,7 @@ CLASS XSharp.CoreDb
         RETURN FALSE       
         
         /// <summary>Update the current record from an array of bytes</summary>
-        /// <param name="aRecord"></param>
+        /// <param name="aRecord">The bytes that form the record. Please note that if the DBF has a memo file, then this array must contain a valid position for the memo attached to the record.</param>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks><note type="tip">VoDbRecordPut() and CoreDb.RecordPut() are aliases</note></remarks>
         
@@ -1609,8 +1609,8 @@ CLASS XSharp.CoreDb
         /// <summary>
         /// Return the linking expression of a specified relation.
         /// </summary>
-        /// <param name="nPos"></param>
-        /// <param name="pszRel"></param>
+        /// <param name="nPos">The position of the desired relation in the list of current work area relations.  The relations are numbered according to the order in which they were defined by relation setting.</param>
+        /// <param name="pszRel">The linking expression defined to &lt;nRelation&gt;.</param>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks>This function is like DBSetRelation().
         /// <include file="CoreComments.xml" path="Comments/LastError/*" />
@@ -1630,7 +1630,7 @@ CLASS XSharp.CoreDb
         /// <summary>
         /// Lock the current record.
         /// </summary>
-        /// <param name="uRecId"></param>
+        /// <param name="uRecId">The ID (usually a record number) of the record to be locked.  If specified, record locks held by the current process are retained.  If not specified, all locks held by the current process are released and the current record is assumed.</param>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks>This function is like DBRlock() but strongly typed.
         /// <include file="CoreComments.xml" path="Comments/LastError/*" />
@@ -1654,7 +1654,7 @@ CLASS XSharp.CoreDb
         /// <summary>
         /// Return the work area number of a relation.
         /// </summary>
-        /// <param name="nPos"></param>
+        /// <param name="nPos">The position of the desired relation in the list of work area relations.  The relations are numbered according to the order in which they were defined by relation setting.</param>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks>This function is like DBRSelect() but strongly typed.
         /// <include file="CoreComments.xml" path="Comments/LastError/*" />
@@ -1669,8 +1669,8 @@ CLASS XSharp.CoreDb
         /// <summary>
         /// Move to the record having the specified key value.
         /// </summary>
-        /// <param name="oValue"></param>
-        /// <param name="lSoftSeek"></param>
+        /// <param name="oValue">Specifies the key value associated with the desired record.</param>
+        /// <param name="lSoftSeek">Determines how the work area is positioned if the specified key value is not found: TRUE performs a soft seek; FALSE does not.</param>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks>This function is like DBSeek() but strongly typed.
         /// <include file="CoreComments.xml" path="Comments/LastError/*" />
@@ -1693,8 +1693,8 @@ CLASS XSharp.CoreDb
         /// <summary>
         /// Select a new work area and retrieve the current work area.
         /// </summary>
-        /// <param name="nNew"></param>
-        /// <param name="nOld"></param>
+        /// <param name="nNew">The work area number for the new work area.</param>
+        /// <param name="nOld">The work area number for the old work area.</param>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks>This function is like DBSelect() but strongly typed.
         /// <include file="CoreComments.xml" path="Comments/LastError/*" />
@@ -1818,7 +1818,7 @@ CLASS XSharp.CoreDb
         
         
         /// <summary>Set the locate condition.</summary>
-        /// <param name="scope"></param>
+        /// <param name="scope">A Scope objhect describing the current scope.</param>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks><note type="tip">VoDbSetFound() and CoreDb.SetFound() are aliases</note></remarks>
         
@@ -1888,18 +1888,16 @@ CLASS XSharp.CoreDb
         })
         
         
-        /// <summary>
-        /// </summary>
-        /// <param name="nDest"></param>
-        /// <param name="fieldNames"></param>
-        /// <param name="uCobFor"></param>
-        /// <param name="uCobWhile"></param>
-        /// <param name="nNext"></param>
-        /// <param name="nRecno"></param>
-        /// <param name="lRest"></param>
-        /// <param name="sortNames"></param>
-        /// <returns>
-        /// </returns>
+        /// <summary>Copy records to a database file in sorted order.</summary>
+        /// <param name="nDest">The work area number for the target workarea.</param>
+        /// <param name="fieldNames">The field names to write specified as an _FieldNames object.</param>
+        /// <param name="uCobFor"><include file="VoFunctionDocs.xml" path="Runtimefunctions/cbfor/*" /></param>
+        /// <param name="uCobWhile"><include file="VoFunctionDocs.xml" path="Runtimefunctions/cbwhile/*" /></param>
+        /// <param name="nNext">The number of records to append, starting at the current record.</param>
+        /// <param name="nRecno">The number of the record to append.</param>
+        /// <param name="lRest">TRUE processes only records from the current record to end-of-file.  FALSE processes all records.</param>
+        /// <param name="sortNames">The sort keys, specified as an _FieldNames object.</param>
+        /// <returns>TRUE if successful; otherwise, FALSE.</returns>
     STATIC METHOD Sort(nDest AS DWORD,fieldNames AS _FieldNames,uCobFor AS ICodeblock,uCobWhile AS ICodeblock, nNext AS OBJECT,nRecno AS OBJECT,lRest AS LOGIC,sortNames AS _FieldNames) AS LOGIC
         RETURN CoreDb.Do ({ =>
         LOCAL oRDD := CoreDb.CWA(__FUNCTION__) AS IRDD
@@ -1942,7 +1940,7 @@ CLASS XSharp.CoreDb
         /// <summary>
         /// Select a new work area by specifying its alias as a string and return the number of the current work area.
         /// </summary>
-        /// <param name="sAlias"></param>
+        /// <param name="sAlias">The alias of the work area you want to select.</param>
         /// <returns>
         /// </returns>
     STATIC METHOD SymSelect(sAlias AS STRING) AS INT
@@ -1957,13 +1955,11 @@ CLASS XSharp.CoreDb
         ENDIF
         RETURN (INT) ret
         /// <summary>Copy one or more rows from one work area to another.</summary>
-        /// <param name="nDest"></param>
-        /// <param name="fldNames"></param>
-        /// <param name="uCobFor"></param>
-        /// <param name="uCobWhile"></param>
-        /// <param name="nNext"></param>
-        /// <param name="nRecno"></param>
-        /// <param name="lRest"></param>
+        /// <param name="nDest">The work area number for the target workarea.</param>
+        /// <param name="fldNames">The field names to write specified as an _FieldNames object.</param>
+        /// <param name="uCobFor"><include file="VoFunctionDocs.xml" path="Runtimefunctions/cbfor/*" /></param>
+        /// <param name="uCobWhile"><include file="VoFunctionDocs.xml" path="Runtimefunctions/cbwhile/*" /></param>
+        /// <param name="sortNames">The sort keys, specified as an _FieldNames object.</param>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>    
     STATIC METHOD Trans(nDest AS DWORD,fldNames AS _FieldNames,uCobFor AS ICodeblock,uCobWhile AS ICodeblock, nNext AS OBJECT,nRecno AS OBJECT,lRest AS LOGIC) AS LOGIC
         RETURN CoreDb.Do ({ =>
@@ -1978,8 +1974,8 @@ CLASS XSharp.CoreDb
         
         })
         /// <summary>Copy a single row from one work area to another.</summary>
-        /// <param name="nDest"></param>
-        /// <param name="fldNames"></param>
+        /// <param name="nDest">The work area number for the target workarea.</param>
+        /// <param name="fldNames">The field names to write specified as an _FieldNames object.</param>
         /// <returns>TRUE if successful; otherwise, FALSE.</returns>
         /// <remarks><note type="tip">VoDbTransRec() and CoreDb.TransRec() are aliases</note></remarks>
         

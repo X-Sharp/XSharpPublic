@@ -9,7 +9,7 @@ USING XSharp.RDD.Support
 USING System.Collections.Generic
 USING SYstem.Linq
 
-/// <summary>The VoDb class extendes the CoreDb class with methods that take usual parameters or return usual values.<br/>
+/// <summary>The VoDb class extends the CoreDb class with methods that take usual parameters or return usual values.<br/>
 /// All other methods are identical and inherited from the CoreDb class.</summary>
 PARTIAL CLASS XSharp.VoDb INHERIT XSharp.CoreDb
 /// <inheritdoc cref='M:XSharp.CoreDb.BlobInfo(System.UInt32,System.UInt32,System.Object@)'/>
@@ -25,16 +25,16 @@ STATIC METHOD BlobInfo(nOrdinal AS DWORD,nPos AS DWORD,uValue AS USUAL) AS LOGIC
     RETURN CoreDb.BlobInfo(nOrdinal, nPos, (OBJECT) uValue)
 
 /// <inheritdoc cref='M:XSharp.CoreDb.FieldInfo(System.UInt32,System.UInt32,System.Object@)'/>
-STATIC METHOD FieldInfo(nOrdinal AS DWORD,nPos AS DWORD,ptrRet REF USUAL) AS LOGIC
-    LOCAL oRet := ptrRet AS OBJECT
+STATIC METHOD FieldInfo(nOrdinal AS DWORD,nFldPos AS DWORD,oValue REF USUAL) AS LOGIC
+    LOCAL oRet := oValue AS OBJECT
     LOCAL result AS LOGIC
-    result := CoreDb.FieldInfo(nOrdinal, nPos, REF oRet)
-    ptrRet := oRet
+    result := CoreDb.FieldInfo(nOrdinal, nFldPos, REF oRet)
+    oValue := oRet
     RETURN result
 
 /// <inheritdoc cref="M:XSharp.CoreDb.FieldInfo(System.UInt32,System.UInt32,System.Object)"/>
-STATIC METHOD FieldInfo(nOrdinal AS DWORD,nPos AS DWORD,uValue AS USUAL) AS LOGIC
-    RETURN CoreDb.FieldInfo(nOrdinal, nPos, (OBJECT) uValue)
+STATIC METHOD FieldInfo(nOrdinal AS DWORD,nFldPos AS DWORD,oValue AS USUAL) AS LOGIC
+    RETURN CoreDb.FieldInfo(nOrdinal, nFldPos, (OBJECT) oValue)
     
 /// <inheritdoc cref="M:XSharp.CoreDb.FieldGet(System.UInt32,System.Object@)"/>
 STATIC METHOD FieldGet(nPos AS DWORD,uRet REF USUAL) AS LOGIC
@@ -47,47 +47,47 @@ STATIC METHOD FieldGet(nPos AS DWORD,uRet REF USUAL) AS LOGIC
 /// <inheritdoc cref="M:XSharp.CoreDb.Info(System.UInt32,System.Object)"/>
 /// <remarks> <inheritdoc cref="M:XSharp.CoreDb.Info(System.UInt32,System.Object)"/>
 /// <br/><br/> <note type="tip">The difference between VoDb.Info and CoreDb.Info is that VoDb.Info takes a USUAL parameter</note></remarks>
-STATIC METHOD Info(nOrdinal AS DWORD,ptrRet REF USUAL) AS LOGIC
-    LOCAL oRet := ptrRet AS OBJECT
+STATIC METHOD Info(nOrdinal AS DWORD,oValue REF USUAL) AS LOGIC
+    LOCAL oRet := oValue AS OBJECT
     LOCAL result AS LOGIC
-    IF ptrRet:IsArray
-        LOCAL aValue := ptrRet AS ARRAY
+    IF oValue:IsArray
+        LOCAL aValue := oValue AS ARRAY
         oRet := (OBJECT[]) aValue
     ENDIF
     result := CoreDb.Info(nOrdinal, REF oRet)
-    ptrRet := oRet
+    oValue := oRet
     RETURN result
 
 /// <inheritdoc cref='M:XSharp.CoreDb.Info(System.UInt32,System.Object)'/>
 /// <remarks> <inheritdoc cref='M:XSharp.CoreDb.Info(System.UInt32,System.Object)'/>
 /// <br/><br/> <note type="tip">The difference between VoDb.Info and CoreDb.Info is that VoDb.Info takes a USUAL parameter</note></remarks>
-STATIC METHOD Info(nOrdinal AS DWORD,uValue AS USUAL) AS LOGIC
-    IF uValue:IsArray
-        LOCAL aValue := uValue AS ARRAY
-        uValue := (OBJECT[]) aValue
+STATIC METHOD Info(nOrdinal AS DWORD,oValue AS USUAL) AS LOGIC
+    IF oValue:IsArray
+        LOCAL aValue := oValue AS ARRAY
+        oValue := (OBJECT[]) aValue
     ENDIF
 
-    RETURN CoreDb.Info(nOrdinal, (OBJECT) uValue)
+    RETURN CoreDb.Info(nOrdinal, (OBJECT) oValue)
 
 /// <inheritdoc cref='M:XSharp.CoreDb.OrderInfo(System.UInt32,System.String,System.Object,System.Object@)'/>
 /// <remarks> <inheritdoc cref='M:XSharp.CoreDb.OrderInfo(System.UInt32,System.String,System.Object,System.Object@)'/>
 /// <br/><br/> <note type="tip">The difference between VoDb.OrderInfo and CoreDb.OrderInfo is that VoDb.Info takes a USUAL parameter</note></remarks>
-STATIC METHOD OrderInfo(nOrdinal AS DWORD,cBagName AS STRING,uOrder AS OBJECT,uRet REF USUAL) AS LOGIC
-    LOCAL oRet := uRet AS OBJECT   
+STATIC METHOD OrderInfo(nOrdinal AS DWORD,cBagName AS STRING,uOrder AS OBJECT,oValue REF USUAL) AS LOGIC
+    LOCAL oRet := oValue AS OBJECT   
     LOCAL result AS LOGIC
     result := CoreDb.OrderInfo(nOrdinal, cBagName,  uOrder, REF oRet)
     IF oRet == NULL
-        uRet := NIL
+        oValue := NIL
     ELSE
-        uRet := oRet
+        oValue := oRet
     ENDIF
     RETURN result
 
 /// <inheritdoc cref="M:XSharp.CoreDb.OrderInfo(System.UInt32,System.String,System.Object,System.Object)" />
 /// <remarks> <inheritdoc cref='M:XSharp.CoreDb.OrderInfo(System.UInt32,System.String,System.Object,System.Object)'/>
 /// <br/><br/> <note type="tip">The difference between VoDb.OrderInfo and CoreDb.OrderInfo is that VoDb.Info takes a USUAL parameter</note></remarks>
-STATIC METHOD OrderInfo(nOrdinal AS DWORD,cBagName AS STRING,uOrder AS OBJECT,uValue AS USUAL) AS LOGIC
-    RETURN CoreDb.OrderInfo(nOrdinal, cBagName,  uOrder, (OBJECT) uValue)
+STATIC METHOD OrderInfo(nOrdinal AS DWORD,cBagName AS STRING,uOrder AS OBJECT,oValue AS USUAL) AS LOGIC
+    RETURN CoreDb.OrderInfo(nOrdinal, cBagName,  uOrder, (OBJECT) oValue)
 
 /// <inheritdoc cref='M:XSharp.CoreDb.RddInfo(System.UInt32,System.Object@)'/>
 /// <remarks> <inheritdoc cref='M:XSharp.CoreDb.RddInfo(System.UInt32,System.Object@)'/>
@@ -108,18 +108,18 @@ STATIC METHOD RddInfo(nOrdinal AS DWORD,uValue AS USUAL) AS LOGIC
 /// <inheritdoc cref='M:XSharp.CoreDb.RecordInfo(System.UInt32,System.Object,System.Object@)'/>
 /// <remarks> <inheritdoc cref='M:XSharp.CoreDb.RecordInfo(System.UInt32,System.Object,System.Object@)'/>
 /// <br/><br/> <note type="tip">The difference between VoDb.RecordInfo and CoreDb.RecordInfo is that VoDb.RecordInfo takes a USUAL parameter</note></remarks>
-STATIC METHOD RecordInfo(nOrdinal AS DWORD,uRecId AS USUAL,uRet REF USUAL) AS LOGIC
-    LOCAL oRet := uRet AS OBJECT
+STATIC METHOD RecordInfo(nOrdinal AS DWORD,oRecID AS USUAL,oValue REF USUAL) AS LOGIC
+    LOCAL oRet := oValue AS OBJECT
     LOCAL lResult AS LOGIC
-    lResult := CoreDb.RecordInfo(nOrdinal, uRecID, REF oRet)
-    uRet := oRet
+    lResult := CoreDb.RecordInfo(nOrdinal, oRecID, REF oRet)
+    oValue := oRet
     RETURN lResult
     
 /// <inheritdoc cref='M:XSharp.CoreDb.RecordInfo(System.UInt32,System.Object,System.Object)'/>
 /// <remarks> <inheritdoc cref='M:XSharp.CoreDb.RecordInfo(System.UInt32,System.Object,System.Object)'/>
 /// <br/><br/> <note type="tip">The difference between VoDb.RecordInfo and CoreDb.RecordInfo is that VoDb.RecordInfo takes a USUAL parameter</note></remarks>
-STATIC METHOD RecordInfo(nOrdinal AS DWORD,uRecId AS USUAL,uRet AS USUAL) AS LOGIC
-    RETURN CoreDb.RecordInfo(nOrdinal, uRecID,  (OBJECT) uRet)
+STATIC METHOD RecordInfo(nOrdinal AS DWORD,oRecID AS USUAL,oValue AS USUAL) AS LOGIC
+    RETURN CoreDb.RecordInfo(nOrdinal, oRecID,  (OBJECT) oValue)
 
    
 /// <inheritdoc cref='M:XSharp.CoreDb.Select(System.UInt32,System.UInt32@)'/>

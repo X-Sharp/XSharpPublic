@@ -531,15 +531,13 @@ FUNCTION DbSetFilter(cbCondition, cCondition) AS LOGIC CLIPPER
         EnForceType(cbCondition, CODEBLOCK)
         oBlock := cbCondition
         // When the codeblock is a macro compiled codeblock
-        if oBlock IS XSharp._Codeblock VAR cbMacro
+        IF oBlock IS XSharp.Codeblock VAR cbMacro
             sCondition := cbMacro:ToString():Trim()
             if sCondition:StartsWith("{||") .and. sCondition:EndsWith("}")
                 sCondition := sCondition:Substring(3, sCondition:Length-4):Trim()
-            endif
+            ENDIF
             cCondition := sCondition
-        else
-            cCondition := "UNKNOWN"
-        endif
+        ENDIF
     ENDIF
     IF cbCondition:IsCodeBlock
         cbCond := cbCondition
@@ -576,6 +574,15 @@ FUNCTION DbSetRelation  (xAlias, cbKey, cKey, cName) AS LOGIC CLIPPER
         cbRelation := cbKey
     ELSE
         cbRelation := NULL
+    ENDIF
+    IF !IsString(cKey)
+        IF cbRelation != NULL
+            VAR sKey := cbRelation:ToString():Trim()
+            IF sKey:StartsWith("{||") .AND. sKey:EndsWith("}")
+                sKey := sKey:Substring(3, sKey:Length-4):Trim()
+            ENDIF
+            cKey := sKey
+        ENDIF
     ENDIF
     RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.SetRelation(cAlias, cbRelation, cKey, cName) )
    
@@ -656,8 +663,14 @@ FUNCTION FieldGet(nFieldPos) AS USUAL CLIPPER
     ENDIF
     RETURN xRetVal
 
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fieldget/*" /> 
 /// <summary>Read an array of bytes direct from the workarea buffer.</summary>
 /// <remarks>This will only work for DBF based workareas (not for Advantage workareas)</remarks>
+///<returns>
+/// The value of the field.  
+/// IF <paramref name="nFieldPos"/> does not correspond to the position of any field in the database file, FieldGetBytes() will generate an error.
+/// </returns>
+
 FUNCTION FieldGetBytes(nFieldPos ) AS BYTE[] CLIPPER
     LOCAL bRetVal := NULL AS BYTE[]
     IF ! IsNumeric(nFieldPos)
@@ -667,14 +680,20 @@ FUNCTION FieldGetBytes(nFieldPos ) AS BYTE[] CLIPPER
     RETURN bRetVal
 
 
-/// <summary>Write an array of bytes direct to the workarea buffer.</summary>
 /// <remarks>This will only work for DBF based workareas (not for Advantage workareas)</remarks>
-FUNCTION FieldPutBytes(nFieldPos AS USUAL, aBytes AS BYTE[]) AS LOGIC
+/// <summary>Write an array of bytes direct to the workarea buffer.</summary>
+/// <param name="nFieldPos">The position OF the FIELD IN the database file structure.</param>
+/// <param name="aBytes">The value to write to the field</param>
+///<returns>
+/// The VALUE assigned TO the field.  
+/// IF <paramref name="nFieldPos"/> does not correspond to the position of any field in the database file, FieldPutBytes() will generate an error.
+/// </returns>
+FUNCTION FieldPutBytes(nFieldPos AS USUAL, aBytes AS BYTE[]) AS USUAL
     IF ! IsNumeric(nFieldPos)
         THROW Error.ArgumentError(__FUNCTION__, nameof(nFieldPos), __CavoStr(VoErrors.ARGNOTNUMERIC), 1 ,<OBJECT> {nFieldPos,aBytes})
     ENDIF
     _DbThrowErrorOnFailure(__FUNCTION__, VoDb.FieldPutBytes(nFieldPos, aBytes))
-    RETURN TRUE
+    RETURN aBytes
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fieldgetarea/*" />     

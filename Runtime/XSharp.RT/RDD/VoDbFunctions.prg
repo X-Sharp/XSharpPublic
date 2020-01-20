@@ -486,10 +486,10 @@ FUNCTION VoDbSkip(liRecords AS LONG) AS LOGIC
 FUNCTION VoDbSkipScope(nRecords AS LONG,scope AS DBSCOPEINFO) AS LOGIC 
     RETURN VoDb.SkipScope(nRecords, scope) 
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbsort/*" />   
-/// <seealso cref="M:XSharp.CoreDb.Sort(System.UInt32,XSharp._FieldNames,XSharp.ICodeblock,XSharp.ICodeblock,System.Object,System.Object,System.Boolean,XSharp._FieldNames)"  />
 /// <param name="fldNames">List of field names to copy</param>
 /// <param name="fnSortNames">List of field names to sort on</param>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbsort/*" />   
+/// <seealso cref="M:XSharp.CoreDb.Sort(System.UInt32,XSharp._FieldNames,XSharp.ICodeblock,XSharp.ICodeblock,System.Object,System.Object,System.Boolean,XSharp._FieldNames)"  />
 FUNCTION VoDbSort(nDest AS DWORD,fldNames AS _FieldNames,cbForCondition AS USUAL,cbWhileCondition AS USUAL, nNext AS USUAL,nRecord AS USUAL,lRest AS LOGIC,fnSortNames AS _FieldNames) AS LOGIC
     RETURN VoDb.Sort(nDest, fldNames, VoDb.ValidBlock(cbForCondition), VoDb.ValidBlock(cbWhileCondition), nNext, nRecord, lRest, fnSortNames)
 

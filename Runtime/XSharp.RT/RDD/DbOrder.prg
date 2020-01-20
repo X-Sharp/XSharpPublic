@@ -218,6 +218,12 @@ FUNCTION OrdCreate(cIndexFile, cOrder, cKeyValue, cbKeyValue, lUnique) AS LOGIC 
   			DoError("OrdCreate")
         ENDIF
         cbKey := cbKeyValue
+        VAR sKey := cbKey:ToString():Trim()
+        IF sKey:StartsWith("{||") .AND. sKey:EndsWith("}")
+            sKey := sKey:Substring(3, sKey:Length-4):Trim()
+        ENDIF
+        cKeyValue := sKey
+
 	ELSE
 		IF cbKeyValue:IsNil
 			cbKeyValue := &( "{||" + cKeyValue + "}" )

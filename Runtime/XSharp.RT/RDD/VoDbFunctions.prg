@@ -157,6 +157,11 @@ FUNCTION VoDbEval(cbExecute AS USUAL,cbForCondition AS USUAL,cbWhileCondition AS
 FUNCTION VoDbFieldGet(wFieldPos AS DWORD,ptrRetVal REF USUAL) AS LOGIC
     RETURN VoDb.FieldGet(wFieldPos, REF ptrRetVal)
 
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbfieldget/*" /> 
+/// <seealso cref="M:XSharp.CoreDb.FieldGet(System.UInt32,System.Object@)"  />
+FUNCTION VoDbFieldGetBytes(wFieldPos AS DWORD,ptrRetVal REF BYTE[]) AS LOGIC
+    RETURN VoDb.FieldGetBytes(wFieldPos, REF ptrRetVal)
+
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbfieldinfo/*" /> 
 /// <seealso cref="O:XSharp.CoreDb.FieldInfo"  />
@@ -173,6 +178,12 @@ FUNCTION VoDbFieldInfo(kInfoType AS DWORD,wFieldPos AS DWORD,uValue AS USUAL) AS
 /// <seealso cref="M:XSharp.CoreDb.FieldPut(System.UInt32,System.Object)"  />
 FUNCTION VoDbFieldPut(wFieldPos AS DWORD,uNewValue AS USUAL) AS LOGIC
     RETURN VoDb.FieldPut(wFieldPos, uNewValue)
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbfieldput/*" /> 
+/// <seealso cref="M:XSharp.CoreDb.FieldPut(System.UInt32,System.Object)"  />
+FUNCTION VoDbFieldPutBytes(wFieldPos AS DWORD,uNewValue AS BYTE[]) AS LOGIC
+    RETURN VoDb.FieldPutBytes(wFieldPos, uNewValue)
+
 
 /// <inheritdoc cref="M:XSharp.CoreDb.FileGet(System.UInt32,System.String)"  />
 /// <seealso cref="M:XSharp.CoreDb.FileGet(System.UInt32,System.String)"  />

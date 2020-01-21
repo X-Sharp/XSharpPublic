@@ -215,8 +215,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 else
                 {
-                    _children = new List<PPMatchRange>();
-                    _children.Add(Create(Start, End));
+                    if (_children == null)
+                    {
+                        _children = new List<PPMatchRange>();
+                        _children.Add(Create(Start, End));
+                    }
                     _children.Add(Create(start, end));
                     Length = end - Start + 1;
                 }
@@ -234,8 +237,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             else
             {
                 IsToken = true;
-                _children = new List<PPMatchRange>();
-                _children.Add(Token(Start));
+                if (Children == null)
+                {
+                    _children = new List<PPMatchRange>();
+                    _children.Add(Token(Start));
+                }
                 _children.Add(Token(pos));
             }
         }

@@ -5563,7 +5563,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
 
 #if XSHARP
-            BoundExpression result = TryBindLateBoundCall(node, boundLeft, leftType, right, invoked, indexed);
+            BoundExpression result = TryBindLateBoundCall(node, boundLeft, leftType, right, invoked, indexed, diagnostics);
             if (result != null)
                 return result;
 

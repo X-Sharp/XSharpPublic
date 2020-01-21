@@ -1166,6 +1166,13 @@ VIRTUAL METHOD Info(uiOrdinal AS LONG, oNewValue AS OBJECT) AS OBJECT
     END SWITCH
 RETURN SUPER:Info(uiOrdinal, oNewValue)
 
+/// <inheritdoc/>
+VIRTUAL METHOD Trans(info AS DbTransInfo) AS LOGIC
+	RETURN SUPER:Trans(info)
+/// <inheritdoc/>
+VIRTUAL METHOD TransRec(info AS DbTransInfo) AS LOGIC
+	RETURN SUPER:TransRec(info)
+
 
       #endregion
 
@@ -1215,12 +1222,6 @@ RETURN FALSE
       /// <summary>This method is not supported by the AdsRDD class </summary>
 VIRTUAL METHOD Sort(info AS DbSortInfo) AS LOGIC
 RETURN SELF:Unsupported("Sort")
-      /// <summary>This method is not supported by the AdsRDD class </summary>
-VIRTUAL METHOD Trans(info AS DbTransInfo) AS LOGIC
-RETURN SELF:Unsupported("Trans")
-      /// <summary>This method is not supported by the AdsRDD class </summary>
-VIRTUAL METHOD TransRec(info AS DbTransInfo) AS LOGIC
-RETURN SELF:Unsupported("TransRec")
 
       #endregion
 END CLASS

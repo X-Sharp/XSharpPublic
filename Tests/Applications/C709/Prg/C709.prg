@@ -13,13 +13,14 @@ CLASS TestClass2
 		? cName + AsString(uValue)
 	RETURN cName + AsString(uValue)
 END CLASS
-
+CLASS TestClass3 INHERIT TestClass1
+END CLASS	
 
 FUNCTION Start() AS VOID
 	LOCAL u AS USUAL
-	LOCAL o AS OBJECT
-	LOCAL o1 AS TestClass1
-	u := TestClass1{}
+	LOCAL o AS Object
+	LOCAL o1 AS testclass3              
+	u := TestClass3{}
 	o := u
 	o1 := u
 	? u:Nothing(123)

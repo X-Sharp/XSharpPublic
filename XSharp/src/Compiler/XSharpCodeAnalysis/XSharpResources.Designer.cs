@@ -15443,6 +15443,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Type &apos;{0}&apos; does not have a member &apos;{1}&apos;. This gets resolved to a late bound call to the method &apos;{2}&apos;..
+        /// </summary>
+        internal static string WRN_UndeclaredVariableLatebound {
+            get {
+                return ResourceManager.GetString("WRN_UndeclaredVariableLatebound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &apos;{0}&apos; has not been declared. Assuming this is a VARIABLE or a CURSOR..
         /// </summary>
         internal static string WRN_UndeclaredVariableOrCursor {

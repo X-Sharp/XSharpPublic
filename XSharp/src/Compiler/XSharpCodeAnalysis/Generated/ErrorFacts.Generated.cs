@@ -245,6 +245,7 @@
                 case ErrorCode.WRN_ASend:
                 case ErrorCode.WRN_UndeclaredVariableOrCursor:
                 case ErrorCode.WRN_UndeclaredCursor:
+                case ErrorCode.WRN_UndeclaredVariableLatebound:
                 case ErrorCode.WRN_XPPSuperIVarsAlwaysShared:
                 case ErrorCode.WRN_XPPFrozedNotSupported:
                 case ErrorCode.WRN_XPPVarIsInNotSupported:

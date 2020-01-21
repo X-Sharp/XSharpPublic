@@ -409,7 +409,8 @@ namespace Microsoft.CodeAnalysis.CSharp
             TypeSymbol leftType, 
             SimpleNameSyntax right,
             bool invoked,
-            bool indexed
+            bool indexed,
+            DiagnosticBag diagnostics
             )
         {
             if (Compilation.Options.LateBindingOrFox && right.Kind() != SyntaxKind.GenericName)
@@ -476,6 +477,37 @@ namespace Microsoft.CodeAnalysis.CSharp
                                 indexed: indexed,
                                 type: returnType,
                                 hasErrors: false);
+                        }
+                    }
+                    if (!leftType.HasMembers(propName) )
+                    {
+                        string method ;
+                        switch (node.Parent)
+                        {
+                            case InvocationExpressionSyntax ies:
+                                method = "NoMethod";
+                                break;
+                            case AssignmentExpressionSyntax aes:
+                                method = "NoIVarPut";
+                                break;
+                            default:
+                                method = "NoIVarGet";
+                                break;
+                        }
+                        if (leftType.HasMembers(method))
+                        {
+                            var returnType = Compilation.UsualType();
+                            var result = new BoundDynamicMemberAccess(
+                                    syntax: node,
+                                    receiver: boundLeft,
+                                    typeArgumentsOpt: default(ImmutableArray<TypeSymbol>),
+                                    name: propName,
+                                    invoked: invoked,
+                                    indexed: indexed,
+                                    type: returnType,
+                                    hasErrors: false);
+                            diagnostics.Add(ErrorCode.WRN_UndeclaredVariableLatebound,node.Location,leftType, propName, method);
+                            return result;
                         }
                     }
                 }

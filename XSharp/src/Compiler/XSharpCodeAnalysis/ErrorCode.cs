@@ -1712,6 +1712,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         ERR_DynamicVariablesNotAllowed = 9091,
         WRN_UndeclaredVariableOrCursor = 9092,
         WRN_UndeclaredCursor = 9093,
+        WRN_UndeclaredVariableLatebound = 9094,
 
         // XPP dialect Error messages
         ERR_XPPMultipleInheritance = 9200,

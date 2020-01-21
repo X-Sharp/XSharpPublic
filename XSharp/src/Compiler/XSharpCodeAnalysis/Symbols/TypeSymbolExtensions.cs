@@ -266,6 +266,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
             return ConstantValue.Bad;
         }
+
+        public static bool HasMembers(this TypeSymbol type, string name)
+        {
+            TypeSymbol sym;
+            sym = type;
+            while (sym != null)
+            {
+                if (sym.GetMembers(name).Length > 0)
+                    return true;
+                sym = sym.BaseTypeNoUseSiteDiagnostics;
+            }
+            return false;
+        }
         public static TypeSymbol GetActualType(this ParameterSymbol parameter)
         {
             var type = parameter.Type;

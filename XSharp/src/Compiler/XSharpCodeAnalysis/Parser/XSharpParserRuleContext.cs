@@ -131,19 +131,33 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 if (cu != null)
                 {
                     var result = new System.Text.StringBuilder();
-                    var tokens = ((BufferedTokenStream)cu.XTokens).GetTokens();
-
-                    for (int i = start.OriginalTokenIndex; i <= stop.OriginalTokenIndex; i++)
+                    var tokens = ((BufferedTokenStream)cu.XPPTokens).GetTokens();
+                    var startpos = start.TokenIndex;
+                    var stoppos = stop.TokenIndex;
+                    if (tokens == null)
                     {
-                        var token = tokens[i];
-                        if (!XSharpLexer.IsComment(token.Type))
-                        {
-                            if (token.Type != XSharpLexer.LINE_CONT)
-                                result.Append(token.Text);
-                        }
+                        tokens = ((BufferedTokenStream)cu.XTokens).GetTokens();
+                        startpos = start.OriginalTokenIndex;
+                        stoppos = stop.OriginalTokenIndex;
                     }
-                    result = result.Replace('\t', ' ');
-                    return result.ToString();
+                    if (startpos < tokens.Count && stoppos < tokens.Count)
+                    {
+                        for (int i = startpos; i <= stoppos; i++)
+                        {
+                            var token = tokens[i];
+                            if (!XSharpLexer.IsComment(token.Type))
+                            {
+                                if (token.Type != XSharpLexer.LINE_CONT)
+                                    result.Append(token.Text);
+                            }
+                        }
+                        result = result.Replace('\t', ' ');
+                        return result.ToString();
+                    }
+                    else
+                    {
+                        return this.GetText();
+                    }
                 }
 
                 var text = start.InputStream.GetText(Interval.Of(start.Position, stop.Position));

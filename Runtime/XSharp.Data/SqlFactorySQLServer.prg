@@ -11,6 +11,9 @@ USING System.Reflection
 USING System.Text
 USING System.Runtime.InteropServices
 
+/// <summary>This is the class that implements a Factory to access data through the Ado.Net Microsoft SQL Server classes.</summary>
+
+
 CLASS XSharp.Data.SqlServerFactory INHERIT XSharp.Data.AbstractSqlFactory
 
     /// <inheritdoc />

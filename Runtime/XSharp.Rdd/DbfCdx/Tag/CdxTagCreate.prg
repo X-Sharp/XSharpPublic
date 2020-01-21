@@ -424,7 +424,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN result
             
             // IRddSortWriter Interface, used by RddSortHelper
-        PUBLIC METHOD WriteSorted(si AS DbSortInfo , record AS SortRecord) AS LOGIC
+        PUBLIC METHOD IRddSortWriter.WriteSorted(si AS DbSortInfo , record AS SortRecord) AS LOGIC
             RETURN _sorter:AddRecord(record:Recno, record:Data, record:Duplicate)
             
         INTERNAL METHOD _CreateUnique(ordCondInfo AS DbOrderCondInfo ) AS LOGIC

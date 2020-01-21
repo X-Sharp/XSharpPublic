@@ -833,7 +833,7 @@ CLASS XSharp.CoreDb
 
     STATIC METHOD FieldName(nPos AS DWORD) AS STRING
         LOCAL oRDD := CoreDb.CWA("FieldName") AS IRDD
-        IF (oRDD != NULL)O
+        IF (oRDD != NULL)
             RETURN oRDD:FieldName((INT) nPos)
         ENDIF
         RETURN String.Empty   

@@ -5,6 +5,7 @@
 //
 
 BEGIN NAMESPACE XSharp.RDD
+/// <summary>Common RDD Error numbers</summary>
 ENUM ERDD
 	MEMBER MIN                  := 1100
 	MEMBER OPEN_FILE			

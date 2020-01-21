@@ -489,7 +489,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             RETURN result
             
             // IRddSortWriter Interface, used by RddSortHelper
-        PUBLIC METHOD WriteSorted(si AS DbSortInfo , record AS SortRecord) AS LOGIC
+        METHOD IRddSortWriter.WriteSorted(si AS DbSortInfo , record AS SortRecord) AS LOGIC
             SELF:_oneItem:PageNo    := 0
             SELF:_oneItem:Recno     := record:Recno
             SELF:_oneItem:KeyBytes  := record:Data

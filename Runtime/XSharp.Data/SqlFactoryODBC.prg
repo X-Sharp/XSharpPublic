@@ -11,7 +11,8 @@ USING System.Text
 USING System.Runtime.InteropServices
 
 
-
+   /// <summary>This is the class that implements a Factory to access data through the Ado.Net ODBC Classes.</summary>
+ 
 
 CLASS XSharp.Data.OdbcFactory INHERIT XSharp.Data.AbstractSqlFactory
 

@@ -6975,11 +6975,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     var exp = arg.Expression;
                     if (exp is IdentifierNameSyntax ins)
                     {
-                        if (ins.identifier.Text.IndexOf("->") == -1)
-                        {
-                            arg = MakeArgument(exp, true);
-                            context.HasRefArguments = true;
-                        }
+                        arg = MakeArgument(exp, true);
+                        context.HasRefArguments = true;
                     }
                     newargs.Add(arg);
                 }

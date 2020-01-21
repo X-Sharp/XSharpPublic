@@ -7,6 +7,10 @@
 USING System.Data.Common
 USING System.Data
 USING XSharp.Data
+
+/// <summary>This interface declares the common behavior for all XSharp Data Factory classes.</summary>
+
+
 INTERFACE XSharp.Data.ISqlFactory
 
     /// <summary>Return the quote character for table and column names.</summary>

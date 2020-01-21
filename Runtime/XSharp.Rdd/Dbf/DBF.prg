@@ -2216,7 +2216,7 @@ METHOD Sort(info AS DbSortInfo) AS LOGIC
 RETURN isOk            
 
     // IRddSortWriter Interface, used by RddSortHelper
-PUBLIC METHOD WriteSorted( sortInfo AS DBSORTINFO , record AS SortRecord ) AS LOGIC
+METHOD IRddSortWriter.WriteSorted( sortInfo AS DBSORTINFO , record AS SortRecord ) AS LOGIC
 	Array.Copy(record:Data, SELF:_RecordBuffer, SELF:_RecordLength)
 RETURN SELF:TransRec(sortInfo:TransInfo)
 

@@ -535,13 +535,20 @@ BEGIN NAMESPACE XSharp.RDD.Enums
     [Flags];
     ENUM DBFFieldFlags AS BYTE
         MEMBER None             := 0x00
+        /// <summary>System Field ?</summary>
         MEMBER System           := 0x01
+        /// <summary>Field is Nullable</summary>
         MEMBER Nullable         := 0x02
+        /// <summary>Field is Binary</summary>
         MEMBER Binary           := 0x04
+        /// <summary>Field is AutoIncrement</summary>
         MEMBER AutoIncrement    := 0x08
         // Harbour additions
+        /// <summary>Field is Compressed (not used yet, for compatibility with Harbour)</summary>
         MEMBER Compressed       := 0x10
+        /// <summary>Field is Encrypted (not used yet, for compatibility with Harbour)</summary>
         MEMBER Encrypted        := 0x20
+        /// <summary>Field contains Unicode text</summary>
         MEMBER Unicode          := 0x40
         
     END ENUM
@@ -563,32 +570,28 @@ BEGIN NAMESPACE XSharp.RDD.Enums
 		MEMBER VOObject		:= 79  	
 		// FoxPro types in 'Name' order
 
-        /// <summary>'W' = Blob 4 or 10 bytes</summary>
+        /// <summary>'W' = Blob 4 or 10 bytes VFP type</summary>
 		MEMBER Blob			:= 87
         //MEMBER Character 		:= 67 	 
-        /// <summary> 'Y'	8 byte FOX Type</summary>
+        /// <summary> 'Y'	VFP Type 8 byte </summary>
 		MEMBER Currency		:= 89
-        // MEMBER Date	 		:= 68 	 
-        /// <summary>'B'	FOX Type, also '8'</summary>
+        /// <summary>'B'	VFP Type, also '8'</summary>
 		MEMBER Double		:= 66  	 
-        /// <summary>'T'	FOX Type can be 4 or 8 bytes</summary>
+        /// <summary>'T'	VFP Type can be 4 or 8 bytes</summary>
 		MEMBER DateTime		:= 84  	 
-        /// <summary>'F'	FOX Type, uses len and dec</summary>
+        /// <summary>'F'	VFP Type, uses len and dec</summary>
 		MEMBER Float		:= 70  	 
-        /// <summary>'G' = Ole 4 or 10 bytes</summary>
+        /// <summary>'G'    VFP type Ole 4 or 10 bytes </summary>
 		MEMBER General		:= 71	 
-        /// <summary>'I'	FOX Type , autoInc</summary>
+        /// <summary>'I'	VFP Type , may be autoInc</summary>
 		MEMBER Integer		:= 73  	 
-        /// <summary>'P'	FOX Type, 4 or 10 bytes</summary>
-        // MEMBER Logic   		:= 76
-        // MEMBER Number    		:= 78  	 
+        /// <summary>'P'	VFP Type, 4 or 10 bytes</summary>
 		MEMBER Picture		:= 80  	 
-        /// <summary>'Q' = VarBinary , between 1 and 255 </summary>
+        /// <summary>'Q'    VFP Type=, between 1 and 255 </summary>
 		MEMBER VarBinary		:= 81	 
-        /// <summary>'V' = Any</summary>
+        /// <summary>'V'    VFP Type </summary>
 		MEMBER VarChar      := 86	 
-
-        /// <summary>'0' = Null Flags</summary>
+        /// <summary>'0'    VFP Type, contains Null Flags</summary>
         MEMBER NullFlags        := 48
 
         // other types for Harbour will be supported later
@@ -772,6 +775,7 @@ BEGIN NAMESPACE XSharp.RDD.Enums
 		
 	END ENUM
 
+    /// <summary>Flags that describe how a DbSort operation can be done.</summary>
     [Flags];
     ENUM DbSortFlags
 	    /// <summary>An ascending sort (default)   </summary>

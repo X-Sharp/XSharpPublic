@@ -8,12 +8,17 @@ USING System.Collections.Generic
 USING System.Reflection
 #define XSHARPRDD "XSharp.Rdd"  // Make sure this is the same as the file name for XSharp.Rdd (includin the case)
 BEGIN NAMESPACE XSharp.RDD
-            
+    /// <summary>This class is used to register RDD names with the matching System.Types</summary>
     CLASS RegisteredRDD
-        PROPERTY AssemblyName   AS STRING AUTO 
-        PROPERTY Assembly       AS Assembly AUTO 
+        /// <summary>Name of the assembly where the RDD is defined.</summary>
+        PROPERTY AssemblyName   AS STRING AUTO
+        /// <summary>Assembly object where the RDD is defined</summary>
+        PROPERTY Assembly       AS Assembly AUTO
+        /// <summary>'Common' name of the RDD</summary>
         PROPERTY RddName        AS STRING AUTO
+        /// <summary>Type of the RDD</summary>
         PROPERTY RddType        AS System.Type AUTO
+        /// <summary>Fully qualified type name of the RDD</summary>
         PROPERTY TypeName       AS STRING AUTO
         STATIC PRIVATE rDDs     AS Dictionary<STRING, RegisteredRDD>
         
@@ -66,13 +71,17 @@ BEGIN NAMESPACE XSharp.RDD
             
             
             RETURN
-            
+
+        /// <summary>Locate an entry for a particular RDD name</summary>
+        /// <returns>NULL when no RDD registration found.</returns>
         STATIC METHOD Find(cRddName AS STRING) AS RegisteredRDD
             IF RDDs:ContainsKey(cRddName)
                 RETURN (RegisteredRDD) RDDs:Item[cRddName]
             ENDIF
             RETURN NULL
             
+        /// <summary>Add a registration for a new RDD.</summary>
+        /// <returns>FALSE when the RDD name is already registered, TRUE when the registration succeeded.</returns>
         STATIC METHOD Add(oRDD AS RegisteredRDD) AS LOGIC
             LOCAL cRddname AS STRING
             cRddName := oRDD:RddName
@@ -82,17 +91,18 @@ BEGIN NAMESPACE XSharp.RDD
             RDDs:Add(cRddName, oRDD)
             RETURN TRUE
             
+        /// <summary> try to resolve the RDD </summary>
         METHOD Load() AS VOID
             IF SELF:RddType == NULL 
                 IF SELF:Assembly == NULL
                     SELF:Assembly := AssemblyHelper.Load(SELF:AssemblyName)
                 ENDIF
-                IF (SELF:Assembly != NULL)
+                IF SELF:Assembly != NULL
                     SELF:RddType := SELF:Assembly:GetType(SELF:TypeName)
                 ENDIF
             ENDIF
             
-            END CLASS
+    END CLASS
             
 END NAMESPACE
 

@@ -26,7 +26,7 @@
     <StandardDefs />
     <InitLocals>false</InitLocals>
     <VO1>false</VO1>
-    <VO2>false</VO2>
+    <VO2>true</VO2>
     <VO3>true</VO3>
     <VO4>false</VO4>
     <VO5>false</VO5>

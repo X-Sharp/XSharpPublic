@@ -9,7 +9,7 @@ USING System.Collections.Generic
 USING System.Text
 
 BEGIN NAMESPACE XSharp.RDD
-
+    /// <summary>Error subclass used by the RDD system.</summary>
     CLASS RddError INHERIT Error
         CONSTRUCTOR()
             RETURN

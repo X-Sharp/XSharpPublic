@@ -34808,7 +34808,7 @@ CopyToBin = 0
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-ReferenceGAC = VulcanVOWin32APILibrary,1,0,1.1.303.0
+ReferenceGAC = VulcanVOWin32APILibrary,1,0,1.1.401.0
 [C327 - cannot convert DWORD to IntPtr Resources]
 [C327 - cannot convert DWORD to IntPtr Native Resources]
 [C327 - cannot convert DWORD to IntPtr License files]
@@ -35451,7 +35451,7 @@ CopyToBin = 0
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-ReferenceGAC = VulcanVOWin32APILibrary,1,0,1.1.303.0
+ReferenceGAC = VulcanVOWin32APILibrary,1,0,1.1.401.0
 [C333 - PCALL() with class field PTR Resources]
 [C333 - PCALL() with class field PTR Native Resources]
 [C333 - PCALL() with class field PTR License files]
@@ -36736,7 +36736,7 @@ CopyToBin = 0
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-ReferenceGAC = VulcanVOWin32APILibrary,1,0,1.1.303.0
+ReferenceGAC = VulcanVOWin32APILibrary,1,0,1.1.401.0
 [C345 - Problem passing string as PSZ parameter Resources]
 [C345 - Problem passing string as PSZ parameter Native Resources]
 [C345 - Problem passing string as PSZ parameter License files]
@@ -37058,8 +37058,8 @@ CopyToBin = 0
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-ReferenceGAC = VulcanVOSystemClasses,1,0,1.1.303.0
-ReferenceGAC = VulcanVORDDClasses,1,0,1.1.303.0
+ReferenceGAC = VulcanVOSystemClasses,1,0,1.1.401.0
+ReferenceGAC = VulcanVORDDClasses,1,0,1.1.401.0
 [C348 - Incorrect error about mixing STRICT/CLIPPER Resources]
 [C348 - Incorrect error about mixing STRICT/CLIPPER Native Resources]
 [C348 - Incorrect error about mixing STRICT/CLIPPER License files]
@@ -37274,7 +37274,7 @@ CopyToBin = 0
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-ReferenceGAC = VulcanVOWin32APILibrary,1,0,1.1.303.0
+ReferenceGAC = VulcanVOWin32APILibrary,1,0,1.1.401.0
 [C350 - Problem passing VOSTRUCT as parameter Resources]
 [C350 - Problem passing VOSTRUCT as parameter Native Resources]
 [C350 - Problem passing VOSTRUCT as parameter License files]
@@ -37596,7 +37596,7 @@ CopyToBin = 0
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-ReferenceGAC = VulcanVOWin32APILibrary,1,0,1.1.303.0
+ReferenceGAC = VulcanVOWin32APILibrary,1,0,1.1.401.0
 [C353 - Some issues with VOSTRUCTs Resources]
 [C353 - Some issues with VOSTRUCTs Native Resources]
 [C353 - Some issues with VOSTRUCTs License files]
@@ -37704,7 +37704,7 @@ CopyToBin = 0
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-ReferenceGAC = VulcanVORDDClasses,1,0,1.1.303.0
+ReferenceGAC = VulcanVORDDClasses,1,0,1.1.401.0
 [C354 - No error with missing /ins compiler option Resources]
 [C354 - No error with missing /ins compiler option Native Resources]
 [C354 - No error with missing /ins compiler option License files]
@@ -40699,7 +40699,7 @@ CopyToBin = 0
 [C381 - Helpdisplay References]
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-ReferenceGAC = VulcanVOWin32APILibrary,1,0,1.1.303.0
+ReferenceGAC = VulcanVOWin32APILibrary,1,0,1.1.401.0
 [C381 - Helpdisplay Resources]
 [C381 - Helpdisplay Native Resources]
 [C381 - Helpdisplay License files]
@@ -49185,7 +49185,7 @@ ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
 [C457 - Bogus(?) error about repeated match/result markers Native Resources]
 [C457 - Bogus(?) error about repeated match/result markers License files]
 [C457 - Bogus(?) error about repeated match/result markers General Options]
-Switches=
+Switches=/ppo
 ZeroArrays=0
 CaseSensitive=0
 ImplicitNamespace=0
@@ -49288,7 +49288,7 @@ CopyToBin = 0
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-ReferenceGAC = VulcanVOGUIClasses,1,0,1.1.303.0
+ReferenceGAC = VulcanVOGUIClasses,1,0,1.1.401.0
 [C458 - Name conflict between DEFINE and METHOD Resources]
 [C458 - Name conflict between DEFINE and METHOD Native Resources]
 [C458 - Name conflict between DEFINE and METHOD License files]
@@ -54145,8 +54145,8 @@ CopyToBin = 0
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-ReferenceGAC = VulcanVOInternetClasses,1,0,1.1.303.0
-ReferenceGAC = VulcanVOWin32APILibrary,1,0,1.1.303.0
+ReferenceGAC = VulcanVOInternetClasses,1,0,1.1.401.0
+ReferenceGAC = VulcanVOWin32APILibrary,1,0,1.1.401.0
 [C501 - Error about ambiguous function (used to be a warning) Resources]
 [C501 - Error about ambiguous function (used to be a warning) Native Resources]
 [C501 - Error about ambiguous function (used to be a warning) License files]
@@ -58988,7 +58988,7 @@ CopyToBin = 0
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-ReferenceGAC = VulcanVOWin32APILibrary,1,0,1.1.303.0
+ReferenceGAC = VulcanVOWin32APILibrary,1,0,1.1.401.0
 [C545 - Problem using _DLL FUNCs with __arglist params Resources]
 [C545 - Problem using _DLL FUNCs with __arglist params Native Resources]
 [C545 - Problem using _DLL FUNCs with __arglist params License files]
@@ -67426,7 +67426,7 @@ FileType = Code
 CopyToBin = 0
 [C620 - Problem resloving method with both instance and static overloads References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.1.0.0
+ReferenceGAC = XSharp.Core,1,0,2.1.0.0
 ReferenceGAC = XSharp.RT,1,0,2.1.0.0
 ReferenceGAC = XSharp.VO,1,0,2.1.0.0
 [C620 - Problem resloving method with both instance and static overloads Resources]
@@ -72442,7 +72442,7 @@ FileGUID = AF42739E-6D94-49E7-95ED-029782073C59
 FileType = Code
 CopyToBin = 0
 [C666 - Bogus evil warning with function named ToString in a library References]
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.1.0.0
+ReferenceGAC = XSharp.Core,1,0,2.1.0.0
 ReferenceGAC = XSharp.RT,1,0,2.1.0.0
 ReferenceGAC = XSharp.VO,1,0,2.1.0.0
 [C666 - Bogus evil warning with function named ToString in a library Resources]
@@ -73618,7 +73618,7 @@ FileType = Code
 CopyToBin = 0
 [C677 - Problem calling a constructor with PARAMS parameter with a USUAL References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.1.0.0
+ReferenceGAC = XSharp.Core,1,0,2.1.0.0
 ReferenceGAC = XSharp.RT,1,0,2.1.0.0
 ReferenceGAC = XSharp.VO,1,0,2.1.0.0
 [C677 - Problem calling a constructor with PARAMS parameter with a USUAL Resources]
@@ -74913,7 +74913,7 @@ FileType = Code
 CopyToBin = 0
 [C688 - Another PUBLIC/PRIVATE FoxPro sample References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.1.0.0
+ReferenceGAC = XSharp.Core,1,0,2.1.0.0
 ReferenceGAC = XSharp.RT,1,0,2.1.0.0
 ReferenceGAC = XSharp.VO,1,0,2.1.0.0
 [C688 - Another PUBLIC/PRIVATE FoxPro sample Resources]
@@ -75444,7 +75444,7 @@ FileType = Code
 CopyToBin = 0
 [C693 - Internal compiler error with incorrect Axit() syntax References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.1.0.0
+ReferenceGAC = XSharp.Core,1,0,2.1.0.0
 ReferenceGAC = XSharp.RT,1,0,2.1.0.0
 [C693 - Internal compiler error with incorrect Axit() syntax Resources]
 [C693 - Internal compiler error with incorrect Axit() syntax Native Resources]
@@ -75551,7 +75551,7 @@ FileType = Code
 CopyToBin = 0
 [C694 - Compiler crash with undeclared vars passed by reference References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.1.0.0
+ReferenceGAC = XSharp.Core,1,0,2.1.0.0
 ReferenceGAC = XSharp.RT,1,0,2.1.0.0
 [C694 - Compiler crash with undeclared vars passed by reference Resources]
 [C694 - Compiler crash with undeclared vars passed by reference Native Resources]
@@ -75868,7 +75868,7 @@ FileType = Code
 CopyToBin = 0
 [R697 References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.1.0.0
+ReferenceGAC = XSharp.Core,1,0,2.1.0.0
 ReferenceGAC = XSharp.RT,1,0,
 ReferenceGAC = XSharp.VO,1,0,
 [R697 Resources]
@@ -75976,7 +75976,7 @@ FileType = Code
 CopyToBin = 0
 [R698 USUAL IS Type check References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.1.0.0
+ReferenceGAC = XSharp.Core,1,0,2.1.0.0
 ReferenceGAC = XSharp.RT,1,0,
 [R698 USUAL IS Type check Resources]
 [R698 USUAL IS Type check Native Resources]
@@ -76723,7 +76723,7 @@ FileType = Code
 CopyToBin = 0
 [R702 References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.1.0.0
+ReferenceGAC = XSharp.Core,1,0,2.1.0.0
 ReferenceGAC = XSharp.RT,1,0,
 [R702 Resources]
 [R702 Native Resources]
@@ -76830,9 +76830,9 @@ FileType = Code
 CopyToBin = 0
 [C703 - Name conflicts between memvars and class name References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.1.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.1.0.0
-ReferenceGAC = CLR4,XSharp.VO,1,0,2.1.0.0
+ReferenceGAC = XSharp.Core,1,0,2.1.0.0
+ReferenceGAC = XSharp.RT,1,0,2.1.0.0
+ReferenceGAC = XSharp.VO,1,0,2.1.0.0
 [C703 - Name conflicts between memvars and class name Resources]
 [C703 - Name conflicts between memvars and class name Native Resources]
 [C703 - Name conflicts between memvars and class name License files]
@@ -76938,9 +76938,9 @@ FileType = Code
 CopyToBin = 0
 [C704 - Name conflicts between memvars and functions References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.1.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.1.0.0
-ReferenceGAC = CLR4,XSharp.VO,1,0,2.1.0.0
+ReferenceGAC = XSharp.Core,1,0,2.1.0.0
+ReferenceGAC = XSharp.RT,1,0,2.1.0.0
+ReferenceGAC = XSharp.VO,1,0,2.1.0.0
 [C704 - Name conflicts between memvars and functions Resources]
 [C704 - Name conflicts between memvars and functions Native Resources]
 [C704 - Name conflicts between memvars and functions License files]
@@ -77046,9 +77046,9 @@ FileType = Code
 CopyToBin = 0
 [C705 - Unclear error message when explicitly calling Axit() References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.1.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.1.0.0
-ReferenceGAC = CLR4,XSharp.VO,1,0,2.1.0.0
+ReferenceGAC = XSharp.Core,1,0,2.1.0.0
+ReferenceGAC = XSharp.RT,1,0,2.1.0.0
+ReferenceGAC = XSharp.VO,1,0,2.1.0.0
 [C705 - Unclear error message when explicitly calling Axit() Resources]
 [C705 - Unclear error message when explicitly calling Axit() Native Resources]
 [C705 - Unclear error message when explicitly calling Axit() License files]
@@ -77154,9 +77154,9 @@ FileType = Code
 CopyToBin = 0
 [C706 - Problem using indexed properties on usuals References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.1.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.1.0.0
-ReferenceGAC = CLR4,XSharp.VO,1,0,2.1.0.0
+ReferenceGAC = XSharp.Core,1,0,2.1.0.0
+ReferenceGAC = XSharp.RT,1,0,2.1.0.0
+ReferenceGAC = XSharp.VO,1,0,2.1.0.0
 [C706 - Problem using indexed properties on usuals Resources]
 [C706 - Problem using indexed properties on usuals Native Resources]
 [C706 - Problem using indexed properties on usuals License files]
@@ -77262,9 +77262,9 @@ FileType = Code
 CopyToBin = 0
 [C707 - Name conflict between memvar and class References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.1.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.1.0.0
-ReferenceGAC = CLR4,XSharp.VO,1,0,2.1.0.0
+ReferenceGAC = XSharp.Core,1,0,2.1.0.0
+ReferenceGAC = XSharp.RT,1,0,2.1.0.0
+ReferenceGAC = XSharp.VO,1,0,2.1.0.0
 [C707 - Name conflict between memvar and class Resources]
 [C707 - Name conflict between memvar and class Native Resources]
 [C707 - Name conflict between memvar and class License files]
@@ -77432,7 +77432,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C708 - Problem resolving identifier inside parens
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 43A04886-532C-4DC6-A4FB-751288B40D7A
 ; ************** APPLICATION C709 - Calling NoMethod()/NoIva() through typed vars *************
 Application = C709 - Calling NoMethod()/NoIva() through typed vars
 IDEVersion = 1.06
@@ -77475,9 +77475,11 @@ FileType = Code
 CopyToBin = 0
 [C709 - Calling NoMethod()/NoIva() through typed vars References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.1.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.1.0.0
-ReferenceGAC = CLR4,XSharp.VO,1,0,2.1.0.0
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,1
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,1
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.VO.dll,1,1
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\VORDDClasses.dll,1,1
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\VOSystemClasses.dll,1,1
 [C709 - Calling NoMethod()/NoIva() through typed vars Resources]
 [C709 - Calling NoMethod()/NoIva() through typed vars Native Resources]
 [C709 - Calling NoMethod()/NoIva() through typed vars License files]
@@ -77485,7 +77487,7 @@ ReferenceGAC = CLR4,XSharp.VO,1,0,2.1.0.0
 Switches=
 ZeroArrays=0
 CaseSensitive=0
-ImplicitNamespace=0
+ImplicitNamespace=1
 VO1=0
 VO2=0
 VO3=0
@@ -77540,7 +77542,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C709 - Calling NoMethod()/NoIva() through typed vars
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 43A04886-532C-4DC6-A4FB-751288B40D7A
 ; ************** APPLICATION C710 - Problems casting numeric values to LOGIC *************
 Application = C710 - Problems casting numeric values to LOGIC
 IDEVersion = 1.06
@@ -77583,9 +77585,9 @@ FileType = Code
 CopyToBin = 0
 [C710 - Problems casting numeric values to LOGIC References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.1.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.1.0.0
-ReferenceGAC = CLR4,XSharp.VO,1,0,2.1.0.0
+ReferenceGAC = XSharp.Core,1,0,2.1.0.0
+ReferenceGAC = XSharp.RT,1,0,2.1.0.0
+ReferenceGAC = XSharp.VO,1,0,2.1.0.0
 [C710 - Problems casting numeric values to LOGIC Resources]
 [C710 - Problems casting numeric values to LOGIC Native Resources]
 [C710 - Problems casting numeric values to LOGIC License files]

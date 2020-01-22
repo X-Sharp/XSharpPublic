@@ -15,6 +15,7 @@
     <para styleclass="Normal"></para>
     <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">XSharp.Core.DLL</li>
+      <li styleclass="Normal">XSharp.Data.DLL</li>
       <li styleclass="Normal">XSharp.RT.DLL</li>
       <li styleclass="Normal">XSharp.VO.DLL</li>
       <li styleclass="Normal">XSharp.XPP.DLL</li>

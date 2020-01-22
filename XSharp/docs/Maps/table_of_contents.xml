@@ -256,6 +256,9 @@
       <topicref type="topic" id="432589511557658" build="ALL" modified="2018-06-07T17:53:51.735Z" icon="0" href="XSharp_Core">
         <caption translate="true">XSharp.Core</caption>
       </topicref>
+      <topicref type="topic" id="438444311036067" build="ALL" modified="2020-01-14T10:12:24.398Z" icon="0" href="XSharp_Data">
+        <caption translate="true">XSharp.Data</caption>
+      </topicref>
       <topicref type="topic" id="4345204950299" build="ALL" modified="2018-12-07T11:35:46.212Z" icon="0" href="XSharp_RT">
         <caption translate="true">XSharp.RT</caption>
       </topicref>

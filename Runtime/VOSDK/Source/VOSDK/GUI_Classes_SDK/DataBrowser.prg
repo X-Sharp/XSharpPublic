@@ -3,498 +3,500 @@
 #endif
 
 CLASS DataBrowser INHERIT Control
-	PROTECT iBufferGranularity AS INT
-	PROTECT iBufferMaximum AS INT
-	PROTECT iFTHeight AS INT
-	PROTECT iSelectionStyle AS INT
-	PROTECT iBufferSize AS INT
-	PROTECT iDeferPaintCount AS INT
-	PROTECT iDeferNotifyCount AS INT
-	PROTECT iRecordSize AS INT
-	PROTECT nOldRecordNum AS INT
+   PROTECT iBufferGranularity AS INT
+   PROTECT iBufferMaximum AS INT
+   PROTECT iFTHeight AS INT
+   PROTECT iSelectionStyle AS INT
+   PROTECT iBufferSize AS INT
+   PROTECT iDeferPaintCount AS INT
+   PROTECT iDeferNotifyCount AS INT
+   PROTECT iRecordSize AS INT
+   PROTECT nOldRecordNum AS INT
 
-	PROTECT dwDeferredStyle AS DWORD
+   PROTECT dwDeferredStyle AS DWORD
 
-	PROTECT lCaptionSet AS LOGIC
-	PROTECT lColumnTitles AS LOGIC
-	PROTECT lIsReadOnly AS LOGIC
-	PROTECT lIsShown AS LOGIC
-	PROTECT lHasTop AS LOGIC
-	PROTECT lHasBottom AS LOGIC
-	PROTECT lUseDefCaption AS LOGIC
-	PROTECT lUseDefColCaption AS LOGIC
-	PROTECT lUseDefText AS LOGIC
-	PROTECT lUseDefButton AS LOGIC
-	PROTECT lUseDefColButton AS LOGIC
-	PROTECT lUseDefHiText AS LOGIC
-	PROTECT lUse3dLook AS LOGIC
-	PROTECT lLinked AS LOGIC
+   PROTECT lCaptionSet AS LOGIC
+   PROTECT lColumnTitles AS LOGIC
+   PROTECT lIsReadOnly AS LOGIC
+   PROTECT lIsShown AS LOGIC
+   PROTECT lHasTop AS LOGIC
+   PROTECT lHasBottom AS LOGIC
+   PROTECT lUseDefCaption AS LOGIC
+   PROTECT lUseDefColCaption AS LOGIC
+   PROTECT lUseDefText AS LOGIC
+   PROTECT lUseDefButton AS LOGIC
+   PROTECT lUseDefColButton AS LOGIC
+   PROTECT lUseDefHiText AS LOGIC
+   PROTECT lUse3dLook AS LOGIC
+   PROTECT lLinked AS LOGIC
 
-	PROTECT aColumn AS ARRAY
+   PROTECT aColumn AS ARRAY
 
-	PROTECT hNotifyWindow AS PTR
+   PROTECT hNotifyWindow AS PTR
 
-	PROTECT ptrSelf AS PTR
-	EXPORT ptrControlDefaultProc AS PTR
-	PROTECT strucEditField AS PTR //_WinFieldInfo
-	PROTECT strucEditRecord AS PTR //_WinRecordCore
-	PROTECT strucFocusField AS PTR //_WinFieldInfo
+   PROTECT ptrSelf AS PTR
+   EXPORT ptrControlDefaultProc AS PTR
+   PROTECT strucEditField AS PTR //_WinFieldInfo
+   PROTECT strucEditRecord AS PTR //_WinRecordCore
+   PROTECT strucFocusField AS PTR //_WinFieldInfo
 
-	PROTECT oDataServer AS DataServer
-	PROTECT oEditFont AS Font
-	PROTECT oFontText AS Font
-	PROTECT oBackgroundColCaption AS Brush
-	PROTECT oBackgroundHiText AS Brush
-	PROTECT oBackgroundText AS Brush
-	PROTECT oBackgroundCaption AS Brush
-	PROTECT oBackgroundButton AS Brush
-	PROTECT oBackgroundColButton AS Brush
-	PROTECT oTextColor AS Color
-	PROTECT oTextPointer AS Pointer
-	PROTECT oCellEdit AS Control
-	PROTECT dwLastChar AS DWORD
-	PROTECT ptrDataBuffer AS BYTE PTR
-	
-	#ifdef __VULCAN__
-	HIDDEN CellEditProcDelegate AS __CellEditProcDelegate
-	HIDDEN WCGBChildProcDelegate AS __WCGBChildProcDelegate
-	#endif
+   PROTECT oDataServer AS DataServer
+   PROTECT oEditFont AS Font
+   PROTECT oFontText AS Font
+   PROTECT oBackgroundColCaption AS Brush
+   PROTECT oBackgroundHiText AS Brush
+   PROTECT oBackgroundText AS Brush
+   PROTECT oBackgroundCaption AS Brush
+   PROTECT oBackgroundButton AS Brush
+   PROTECT oBackgroundColButton AS Brush
+   PROTECT oTextColor AS Color
+   PROTECT oTextPointer AS Pointer
+   PROTECT oCellEdit AS Control
+   PROTECT dwLastChar AS DWORD
+   PROTECT ptrDataBuffer AS BYTE PTR
+   
+   #ifdef __VULCAN__
+      HIDDEN CellEditProcDelegate AS __CellEditProcDelegate
+      HIDDEN WCGBChildProcDelegate AS __WCGBChildProcDelegate
+   #endif
 
 	//PP-030828 Strong typing
-	METHOD __AddColumn (oDataColumn AS DataColumn, iCol AS INT) AS LOGIC STRICT 
+   METHOD __AddColumn (oDataColumn AS DataColumn, iCol AS INT) AS LOGIC STRICT 
 	//PP-030828 Strong typing
 	// iCol : 1-based index in aColumn, 0 means append to tail
-	LOCAL strucFI AS _WinFieldInfo
-	LOCAL cCaption AS STRING
-	LOCAL lRC AS LOGIC
-	LOCAL oDC AS DataColumn
-	LOCAL oTempCol AS DataColumn
-	LOCAL oFont AS Font
-	LOCAL oTempBrush AS Brush
-	LOCAL oTempColor AS Color
+      LOCAL strucFI AS _WinFieldInfo
+      LOCAL cCaption AS STRING
+      LOCAL lRC AS LOGIC
+      LOCAL oDC AS DataColumn
+      LOCAL oTempCol AS DataColumn
+      LOCAL oFont AS Font
+      LOCAL oTempBrush AS Brush
+      LOCAL oTempColor AS Color
 
 	//PP-040410
-	IF oDataColumn == NULL_OBJECT
-		WCError{#AddColumn,#DataBrowser,__WCSTypeError,oDataColumn,1}:Throw()
-	ENDIF
+      IF oDataColumn == NULL_OBJECT
+         WCError{#AddColumn,#DataBrowser,__WCSTypeError,oDataColumn,1}:Throw()
+      ENDIF
 
-	oDC := oDataColumn
-	IF (oDC:Owner != NULL_OBJECT) //if DataColumn already assigned to Browser
-		RETURN FALSE
-	ENDIF
+      oDC := oDataColumn
+      IF (oDC:Owner != NULL_OBJECT) //if DataColumn already assigned to Browser
+         RETURN FALSE
+      ENDIF
 
-	strucFI := oDC:__FieldInfo
-	PCALL(gpfnCntFldDataAlnSet, hWnd, strucFI, DWORD(oDC:__HorzAlignment))
+      strucFI := oDC:__FieldInfo
+      PCALL(gpfnCntFldDataAlnSet, hWnd, strucFI, DWORD(oDC:__HorzAlignment))
 
 	//PP-041004
-	IF strucFI:cxWidth == DWORD(_CAST,-1)
-		strucFI:cxWidth := 16
-	ELSEIF (oDataColumn:FieldSpec != NULL_OBJECT) .AND. (oDataColumn:FieldSpec:ValType == "O")
-		strucFI:cxWidth := 32
-	ENDIF
+      IF strucFI:cxWidth == DWORD(_CAST,-1)
+         strucFI:cxWidth := 16
+      ELSEIF (oDataColumn:FieldSpec != NULL_OBJECT) .AND. (oDataColumn:FieldSpec:ValType == "O")
+         strucFI:cxWidth := 32
+      ENDIF
 
-	cCaption := oDC:GetCaption()   
-	IF (NULL_STRING != cCaption)
-		PCALL(gpfnCntAttribSet, hWnd, CA_FLDTTL3D)
-		IF lColumnTitles
-			IF (iFTHeight < INT(strucFI:wFTitleLines))
-				iFTHeight := INT(strucFI:wFTitleLines)
-				PCALL(gpfnCntFldTtlHtSet, hWnd, iFTHeight)
-			ENDIF
-		ENDIF
-		IF !lCaptionSet
-			lCaptionSet := TRUE
-			PCALL(gpfnCntFldTtlSepSet, hWnd)
-		ENDIF
-        PCALL(gpfnCntFldTtlSet, hWnd, strucFI, String2Psz(cCaption), SLen(cCaption)+1)
-	ENDIF
+      cCaption := oDC:GetCaption()   
+      IF (NULL_STRING != cCaption)
+         PCALL(gpfnCntAttribSet, hWnd, CA_FLDTTL3D)
+         IF lColumnTitles
+            IF (iFTHeight < INT(strucFI:wFTitleLines))
+               iFTHeight := INT(strucFI:wFTitleLines)
+               PCALL(gpfnCntFldTtlHtSet, hWnd, iFTHeight)
+            ENDIF
+         ENDIF
+         IF !lCaptionSet
+            lCaptionSet := TRUE
+            PCALL(gpfnCntFldTtlSepSet, hWnd)
+         ENDIF
+         PCALL(gpfnCntFldTtlSet, hWnd, strucFI, String2Psz(cCaption), SLen(cCaption)+1)
+      ENDIF
 
 	// Set the Visual attributes of the column
 	// Background Color of Title, Text, and Button
-	oTempBrush := oDC:__TtlBkgdBrsh
-	IF oTempBrush != NULL_OBJECT
-		oDC:__SetFldColor(SELF, oDC:__TtlBkgdLoc, __WCGetBrushColor(oTempBrush))
-	ENDIF
-	oTempBrush := oDC:__TxtBkgdBrsh
-	IF oTempBrush != NULL_OBJECT
-		oDC:__SetFldColor(SELF, oDC:__TxtBkgdLoc, __WCGetBrushColor(oTempBrush))
-	ENDIF
-	oTempBrush := oDC:__BtnBkgdBrsh
-	IF oTempBrush != NULL_OBJECT
-		oDC:__SetFldColor(SELF, oDC:__BtnBkgdLoc, __WCGetBrushColor(oTempBrush))
-	ENDIF
+      oTempBrush := oDC:__TtlBkgdBrsh
+      IF oTempBrush != NULL_OBJECT
+         oDC:__SetFldColor(SELF, oDC:__TtlBkgdLoc, __WCGetBrushColor(oTempBrush))
+      ENDIF
+      oTempBrush := oDC:__TxtBkgdBrsh
+      IF oTempBrush != NULL_OBJECT
+         oDC:__SetFldColor(SELF, oDC:__TxtBkgdLoc, __WCGetBrushColor(oTempBrush))
+      ENDIF
+      oTempBrush := oDC:__BtnBkgdBrsh
+      IF oTempBrush != NULL_OBJECT
+         oDC:__SetFldColor(SELF, oDC:__BtnBkgdLoc, __WCGetBrushColor(oTempBrush))
+      ENDIF
 
 	//Foreground Color of Title, Text, and Button
-	oTempColor := oDC:__TtlClr
-	IF (oTempColor != NULL_OBJECT)
-		oDC:__SetFldColor(SELF, oDC:__TtlClrLoc, oTempColor:ColorRef)
-	ENDIF
-	oTempColor := oDC:__TxtClr
-	IF (oTempColor != NULL_OBJECT)
-		oDC:__SetFldColor(SELF, oDC:__TxtClrLoc, oTempColor:ColorRef)
-	ENDIF
-	oTempColor:=oDC:__BtnClr
-	IF (oTempColor != NULL_OBJECT)
-		oDC:__SetFldColor(SELF, oDC:__BtnClrLoc, oTempColor:ColorRef)
-	ENDIF
+      oTempColor := oDC:__TtlClr
+      IF (oTempColor != NULL_OBJECT)
+         oDC:__SetFldColor(SELF, oDC:__TtlClrLoc, oTempColor:ColorRef)
+      ENDIF
+      oTempColor := oDC:__TxtClr
+      IF (oTempColor != NULL_OBJECT)
+         oDC:__SetFldColor(SELF, oDC:__TxtClrLoc, oTempColor:ColorRef)
+      ENDIF
+      oTempColor:=oDC:__BtnClr
+      IF (oTempColor != NULL_OBJECT)
+         oDC:__SetFldColor(SELF, oDC:__BtnClrLoc, oTempColor:ColorRef)
+      ENDIF
 
 	// Text Font
-	oFont := oDC:__Font
-	IF (oFont != NULL_OBJECT)
-		PCALL(gpfnCntFontSet, hWnd, oFont:Handle(), DWORD(oDC:__FontLoc))
-	ENDIF
+      oFont := oDC:__Font
+      IF (oFont != NULL_OBJECT)
+         PCALL(gpfnCntFontSet, hWnd, oFont:Handle(), DWORD(oDC:__FontLoc))
+      ENDIF
 
 	// if data server is present - write out and delete internal buffers
-	IF (oDataServer != NULL_OBJECT)
-		SELF:__ClearBuffers()
-	ENDIF
+      IF (oDataServer != NULL_OBJECT)
+         SELF:__ClearBuffers()
+      ENDIF
 
 	// Build Column descriptor
 	// oDC:__Type := strucFI.wColType
 	// oDC:__Size := strucFI.wDataBytes
 	// oDC:__Offset := strucFI.wOffStruct
 
-	oDC:__Owner := SELF
+      oDC:__Owner := SELF
 
-	IF (iCol == 0)
-		lRC := PCALL(gpfnCntAddFldTail, hWnd, strucFI)
-	ELSE
-		oTempCol := SELF:GetColumn(iCol)
-		IF (oTempCol == NULL_OBJECT)
-			lRC := PCALL(gpfnCntAddFldTail, hWnd, strucFI)
-		ELSE
+      IF (iCol == 0)
+         lRC := PCALL(gpfnCntAddFldTail, hWnd, strucFI)
+      ELSE
+         oTempCol := SELF:GetColumn(iCol)
+         IF (oTempCol == NULL_OBJECT)
+            lRC := PCALL(gpfnCntAddFldTail, hWnd, strucFI)
+         ELSE
 			// 	strucFIHead := CntFldHeadGet(hWnd)
 			// 	strucFITemp := oTempCol:__FieldInfo
 			// 	if (ptr(_cast, strucFIHead) == oTempCol:__FieldInfo)
 			// 		CntAddFldHead(hwnd, strucFI)
 			// 	else
-			lRC := PCALL(gpfnCntInsFldBefore, hWnd, oTempCol:__FieldInfo, strucFI)
+            lRC := PCALL(gpfnCntInsFldBefore, hWnd, oTempCol:__FieldInfo, strucFI)
 			// endif
-		ENDIF
-	ENDIF
+         ENDIF
+      ENDIF
 
-	IF (lRC)
+      IF (lRC)
 		// Insert/Add Column to array
-		IF (iCol != 0)
-			ASize(aColumn, ALen(aColumn) + 1)
-			AIns(aColumn, DWORD(iCol))
-			aColumn[iCol] := oDC
-		ELSE
-			AAdd(aColumn, oDC)
-		ENDIF
-	ENDIF
+         IF (iCol != 0)
+            ASize(aColumn, ALen(aColumn) + 1)
+            AIns(aColumn, DWORD(iCol))
+            aColumn[iCol] := oDC
+         ELSE
+            AAdd(aColumn, oDC)
+         ENDIF
+      ENDIF
 
-	RETURN lRC
+      RETURN lRC
 
-METHOD __AutoLayout() AS VOID STRICT 
+   METHOD __AutoLayout() AS VOID STRICT 
     //SE-081212 optimized
     //PP-030828 Strong typing
-    LOCAL iFields, iStart, iBegin, iEnd AS INT
-    LOCAL iStep AS INT
-    LOCAL aNewColumns AS ARRAY
-    LOCAL oDataField AS DataField
-    LOCAL oNewColumn AS DataColumn
-    LOCAL oPropFS AS FieldSpec
-    LOCAL oPropHL AS HyperLabel
-    LOCAL oWindow AS Window  
-    LOCAL oDatawin  AS DataWindow
+      LOCAL iFields, iStart, iBegin, iEnd AS INT
+      LOCAL iStep AS INT
+      LOCAL aNewColumns AS ARRAY
+      LOCAL oDataField AS DataField
+      LOCAL oNewColumn AS DataColumn
+      LOCAL oPropFS AS FieldSpec
+      LOCAL oPropHL AS HyperLabel
+      LOCAL oWindow AS Window  
+      LOCAL oDatawin  AS DataWindow
 
-    aNewColumns:={}
+      aNewColumns:={}
 
-    IF lLinked
-        iFields := oDataServer:FCount
+      IF lLinked
+         iFields := oDataServer:FCount
 
-        IF IsBiDi()
+         IF IsBiDi()
             iBegin := iFields
             iEnd := 1
             iStep := -1
-        ELSE
+         ELSE
             iBegin := 1
             iEnd := iFields
             iStep := 1
-        ENDIF
+         ENDIF
 
-        IF IsInstanceOf(oParent, #__FormFrame) 
-           oWindow := oParent:Owner
-        ENDIF           
-        
-        IF IsInstanceOf(oWindow, #DataWindow) //vor die Loop gesetzt, da sich das Ergebnis in der Loop nicht ändert
-           oDatawin := OBJECT(oWindow)
-        ELSE
-           oDatawin := NULL_OBJECT
-        ENDIF  
-        FOR iStart := iBegin TO iEnd STEP iStep
+         IF IsInstanceOf(oParent, #__FormFrame) 
+            oWindow := oParent:Owner
+         ENDIF           
+         
+         IF IsInstanceOf(oWindow, #DataWindow) //vor die Loop gesetzt, da sich das Ergebnis in der Loop nicht ändert
+            oDatawin := OBJECT(oWindow)
+         ELSE
+            oDatawin := NULL_OBJECT
+         ENDIF  
+         FOR iStart := iBegin TO iEnd STEP iStep
             oDataField := oDataServer:DataField(iStart)
 
             IF oDataField == NULL_OBJECT
-                LOOP
+               LOOP
             ENDIF
 
             // If there are explicit properties in the DataWindow view
             // propagate them, else use the DataField Properties
             IF oDatawin == NULL_OBJECT
-                oPropHL := oDataField:HyperLabel
-                oPropFS := oDataField:FieldSpec
+               oPropHL := oDataField:HyperLabel
+               oPropFS := oDataField:FieldSpec
             ELSE           
-                IF (oPropHL := oDatawin:__FindHyperLabel(oDataField:NameSym)) == NULL_OBJECT
-                    oPropHL := oDataField:HyperLabel
-                ENDIF
-                IF (oPropFS := oDatawin:__FindFieldSpec(oDataField:NameSym)) == NULL_OBJECT
-                    oPropFS := oDataField:FieldSpec
-                ENDIF
+               IF (oPropHL := oDatawin:__FindHyperLabel(oDataField:NameSym)) == NULL_OBJECT
+                  oPropHL := oDataField:HyperLabel
+               ENDIF
+               IF (oPropFS := oDatawin:__FindFieldSpec(oDataField:NameSym)) == NULL_OBJECT
+                  oPropFS := oDataField:FieldSpec
+               ENDIF
             ENDIF
             oNewColumn := DataColumn{oPropFS, oPropHL} 
             oNewColumn:Caption := __GetDFCaption(oDataField,{})
             oNewColumn:LinkDF(oDataServer, iStart)
             AAdd(aNewColumns,oNewColumn)
-        NEXT
-        IF ALen(aNewColumns)     > 0
+         NEXT
+         IF ALen(aNewColumns)     > 0
             SELF:AddColumn(aNewColumns)
-        ENDIF
+         ENDIF
 
-    ENDIF
+      ENDIF
 
-    RETURN
+      RETURN
 
-METHOD __AutoResize() AS VOID STRICT 
-    IF SELF:ValidateControl()
-        WCMoveWindow(SELF, Point{0,0}, oParent:CanvasArea:Size, TRUE)
-    ENDIF
+   METHOD __AutoResize() AS VOID STRICT 
+      IF SELF:ValidateControl()
+         WCMoveWindow(SELF, Point{0,0}, oParent:CanvasArea:Size, TRUE)
+      ENDIF
 
-    RETURN
+      RETURN
 
-METHOD __BeginEditField(hWin AS PTR, dwChar AS DWORD) AS VOID STRICT 
+   METHOD __BeginEditField(hWin AS PTR, dwChar AS DWORD) AS VOID STRICT 
 	//PP-030828 Strong typing
-	LOCAL dw AS DWORD
-	LOCAL oPoint AS Point
-	LOCAL oDim AS Dimension
-	LOCAL oCol AS DataColumn
-	LOCAL oEdit AS OBJECT
-	LOCAL hControl AS PTR
-	LOCAL cType := "C" AS STRING
-	LOCAL oDBStg AS USUAL
+      LOCAL dw AS DWORD
+      LOCAL oPoint AS Point
+      LOCAL oDim AS Dimension
+      LOCAL oCol AS DataColumn
+      LOCAL oEdit AS OBJECT
+      LOCAL hControl AS PTR
+      LOCAL cType := "C" AS STRING
+      LOCAL oDBStg AS USUAL
 
-	
+      
 	// Save pointers to the focus cell.
-	strucEditField := PTR(_CAST, PCALL(gpfnCntFocusFldGet, hWnd))
-	StrucEditRecord := PTR(_CAST, PCALL(gpfnCntFocusRecGet, hWnd))
+      strucEditField := PTR(_CAST, PCALL(gpfnCntFocusFldGet, hWnd))
+      StrucEditRecord := PTR(_CAST, PCALL(gpfnCntFocusRecGet, hWnd))
 
-	SELF:__EndEditField(0)
-	SELF:__RefreshData()
+      SELF:__EndEditField(0)
+      SELF:__RefreshData()
 
-	IF (strucEditRecord != NULL_PTR) .AND. (strucEditField != NULL_PTR)
-		dw := PCALL(gpfnCntFocusExtGet, hWin)
-		oDim := Dimension{LoWord(dw), HiWord(dw)}
+      IF (strucEditRecord != NULL_PTR) .AND. (strucEditField != NULL_PTR)
+         dw := PCALL(gpfnCntFocusExtGet, hWin)
+         oDim := Dimension{LoWord(dw), HiWord(dw)}
 
-		dw := PCALL(gpfnCntFocusOrgGet, hWin, FALSE)
-		oPoint := __WCConvertPoint(SELF,Point{LoWord(dw),HiWord(dw)})
+         dw := PCALL(gpfnCntFocusOrgGet, hWin, FALSE)
+         oPoint := __WCConvertPoint(SELF,Point{LoWord(dw),HiWord(dw)})
 
-		IF WCGetCoordinateSystem() // Cartesian Coordinate System
-			oPoint:Y := oPoint:Y - oDim:Height
-		ENDIF
+         IF WCGetCoordinateSystem() // Cartesian Coordinate System
+            oPoint:Y := oPoint:Y - oDim:Height
+         ENDIF
 
-		oCol := SELF:__GetColumn(strucEditField)
-		IF (oCol:FieldSpec != NULL_OBJECT)
-			cType := oCol:FieldSpec:ValType
-		ENDIF
+         oCol := SELF:__GetColumn(strucEditField)
+         IF (oCol:FieldSpec != NULL_OBJECT)
+            cType := oCol:FieldSpec:ValType
+         ENDIF
 
-		IF (cType == "O")
-			IF !IsInstanceOf(oCellEdit, #OleObject)
-#ifdef USE_OLEOBJECT			
-				oEdit := OleObject{ oParent, 101, Point{0,0}, Dimension{0,0}, TRUE}
-#else
-            oEdit := NULL_OBJECT
-#endif				
-				IF oEdit != NULL_OBJECT
-					oCellEdit := oEdit
-					oEdit:AllowInPlace :=  FALSE
-					oDBStg := oDataServer:FIELDGET(oCol:NameSym)
-					IF IsInstanceOfUsual(oDBStg, #OLEDBStorage)
-						oEdit:CreateFromDBStorage(oDBStg)
-						oEdit:Activate()
-						oEdit:SetHostNames( ResourceString{__WCSHostVOApp}:AsString(),;
-							ResourceString{__WCSHostDataBrowser}:AsString())
-					ENDIF
-				ENDIF
-			ELSE
-				oCellEdit:Activate()
-			ENDIF
-		ELSE
-			oEdit := oCol:GetEditObject(SELF, 101, oPoint, oDim)
-			IF IsInstanceOf(oEdit,#Control)
-				oCellEdit := oEdit
-				hControl := oCellEdit:Handle()
-				oCellEdit:Show()
-				oCellEdit:SetFocus()
-				IF (hControl != NULL_PTR)
-					ptrControlDefaultProc := GetWindowLong(hControl, GWL_WNDPROC)
-#ifdef __VULCAN__
-               IF CellEditProcDelegate == NULL
-                  CellEditProcDelegate := __CellEditProcDelegate{ NULL, @__CellEditProc() }
+         IF (cType == "O")
+            IF !IsInstanceOf(oCellEdit, #OleObject)
+               #ifdef USE_OLEOBJECT			
+                  oEdit := OleObject{ oParent, 101, Point{0,0}, Dimension{0,0}, TRUE}
+               #else
+                  oEdit := NULL_OBJECT
+               #endif				
+               IF oEdit != NULL_OBJECT
+                  oCellEdit := oEdit
+                  oEdit:AllowInPlace :=  FALSE
+                  oDBStg := oDataServer:FIELDGET(oCol:NameSym)
+                  IF IsInstanceOfUsual(oDBStg, #OLEDBStorage)
+                     oEdit:CreateFromDBStorage(oDBStg)
+                     oEdit:Activate()
+                     oEdit:SetHostNames( ResourceString{__WCSHostVOApp}:AsString(),;
+                     ResourceString{__WCSHostDataBrowser}:AsString())
+                  ENDIF
                ENDIF
-               SetWindowLong( hControl, GWL_WNDPROC, (INT) System.Runtime.InteropServices.Marshal.GetFunctionPointerForDelegate( (System.Delegate) CellEditProcDelegate ) )
-#else               					
-					SetWindowLong(hControl, GWL_WNDPROC, LONGINT(_CAST, @__CellEditProc()))
-#endif					
-					IF (dwChar != 0)
+            ELSE
+               oCellEdit:Activate()
+            ENDIF
+         ELSE
+            oEdit := oCol:GetEditObject(SELF, 101, oPoint, oDim)
+            IF IsInstanceOf(oEdit,#Control)
+               oCellEdit := oEdit
+               hControl := oCellEdit:Handle()
+               oCellEdit:Show()
+               oCellEdit:SetFocus()
+               IF (hControl != NULL_PTR)
+                  ptrControlDefaultProc := GetWindowLong(hControl, GWL_WNDPROC)
+                  #ifdef __VULCAN__
+                     IF CellEditProcDelegate == NULL
+                        CellEditProcDelegate := __CellEditProcDelegate{ NULL, @__CellEditProc() }
+                     ENDIF
+                     SetWindowLong( hControl, GWL_WNDPROC, (INT) System.Runtime.InteropServices.Marshal.GetFunctionPointerForDelegate( (System.Delegate) CellEditProcDelegate ) )
+                  #else               					
+                     SetWindowLong(hControl, GWL_WNDPROC, LONGINT(_CAST, @__CellEditProc()))
+                  #endif					
+                  IF (dwChar != 0)
 						//PP-040317 Issue 12644 SendMessage changed to PostMessage
-						PostMessage(hControl, EM_SETSEL, 0, -1)
-						PostMessage(hControl, WM_CHAR, dwChar, 0L) //lParam) //Riz is lParam valid?
+                     PostMessage(hControl, EM_SETSEL, 0, -1)
+                     PostMessage(hControl, WM_CHAR, dwChar, 0L) //lParam) //Riz is lParam valid?
 						//SendMessage(hControl, EM_SETSEL, 0, 0)
-					ENDIF
-					PCALL(gpfnCntFocusFldLock, hWnd)
-				ENDIF
-				WCAppSetDialogWindow(NULL_PTR)
-			ENDIF
-		ENDIF
-	ELSE
-		strucEditField := NULL_PTR //make sure both structures are cleared
-		StrucEditRecord := NULL_PTR
-	ENDIF
+                  ENDIF
+                  PCALL(gpfnCntFocusFldLock, hWnd)
+               ENDIF
+               WCAppSetDialogWindow(NULL_PTR)
+            ENDIF
+         ENDIF
+      ELSE
+         strucEditField := NULL_PTR //make sure both structures are cleared
+         StrucEditRecord := NULL_PTR
+      ENDIF
 
-	RETURN
+      RETURN
 
-METHOD __BuildBuffer() AS VOID STRICT 
+   METHOD __BuildBuffer() AS VOID STRICT 
 	//PP-030828 Strong typing
-	LOCAL oOldPointer AS Pointer
-	LOCAL strucRecord AS _WINRecordCore
-	LOCAL iRecNo AS INT
+      LOCAL oOldPointer AS Pointer
+      LOCAL strucRecord AS _WINRecordCore
+      LOCAL iRecNo AS INT
 
-	
+      
 
-	IF oDataServer != NULL_OBJECT
-		oOldPointer := oParent:Pointer
-		oParent:Pointer:=Pointer{PointerHourGlass}
+      IF oDataServer != NULL_OBJECT   .AND. oDataServer:FCount > 0
+         oOldPointer := oParent:Pointer
+         oParent:Pointer:=Pointer{PointerHourGlass}
 
-		SELF:SuspendUpdate()
-		SELF:__DeferNotify()
+         SELF:SuspendUpdate()
+         SELF:__DeferNotify()
 
-		SELF:__ClearBuffers()
+         SELF:__ClearBuffers()
 
-		IF !SELF:__IsDataServerEmpty()
-			iRecNo := oDataServer:RecNo
+         IF !SELF:__IsDataServerEmpty()
+            iRecNo := oDataServer:RecNo
 
-			SELF:__BuildNewBuffer(iRecNo)
+            SELF:__BuildNewBuffer(iRecNo)
 
-			strucRecord := SELF:__GetRecordAtRecNo(iRecNo)
+            strucRecord := SELF:__GetRecordAtRecNo(iRecNo)
 
-			IF strucRecord != NULL_PTR
-				PCALL(gpfnCntFocusSet, hWnd, strucRecord, PCALL(gpfnCntFocusFldGet, hwnd))
-				PCALL(gpfnCntFocusRecLock, hWnd)
-				IF !SELF:__IsFocusRecordInView()
-					PCALL(gpfnCntTopRecSet, hWnd, strucRecord)
-				ENDIF
-			ELSE
-				PCALL(gpfnCntFocusSet, hWnd, NULL_PTR, NULL_PTR)
-			ENDIF
+            IF strucRecord != NULL_PTR
+               PCALL(gpfnCntFocusSet, hWnd, strucRecord, PCALL(gpfnCntFocusFldGet, hwnd))
+               PCALL(gpfnCntFocusRecLock, hWnd)
+               IF !SELF:__IsFocusRecordInView()
+                  PCALL(gpfnCntTopRecSet, hWnd, strucRecord)
+               ENDIF
+            ELSE
+               PCALL(gpfnCntFocusSet, hWnd, NULL_PTR, NULL_PTR)
+            ENDIF
 
-			oDataServer:GoTo(iRecNo)
-		ENDIF
+            oDataServer:GoTo(iRecNo)
+         ENDIF
 
-		SELF:__EnableNotify()
-		SELF:RestoreUpdate()
+         SELF:__EnableNotify()
+         SELF:RestoreUpdate()
 
-		oParent:Pointer:=oOldPointer
-	ENDIF
+         oParent:Pointer:=oOldPointer
+      ENDIF
 
-	RETURN
+      RETURN
 
-METHOD __BuildNewBuffer(iRecNo AS INT) AS VOID STRICT 
+   METHOD __BuildNewBuffer(iRecNo AS INT) AS VOID STRICT 
 	//PP-030828 Strong typing
-	LOCAL strucRecord AS _WINRecordCore
-	LOCAL strucTopRec AS _WINRecordCore
-	LOCAL iDeltaPos, iCurrentPos, iRangeMax, iToBottom AS INT
+      LOCAL strucRecord AS _WINRecordCore
+      LOCAL strucTopRec AS _WINRecordCore
+      LOCAL iDeltaPos, iCurrentPos, iRangeMax, iToBottom AS INT
 
-	
+      
 
 	//PP-041004
-	strucTopRec := NULL_PTR
+      strucTopRec := NULL_PTR
 
-	IF oDataServer != NULL_OBJECT
-		SELF:SuspendUpdate()
-		SELF:__DeferNotify()
+      IF oDataServer != NULL_OBJECT
+         SELF:SuspendUpdate()
+         SELF:__DeferNotify()
 
-		oDataServer:GoTo(iRecNo)
+         oDataServer:GoTo(iRecNo)
 
-		lHasTop := FALSE
-		lHasBottom := FALSE
-		lHasTop := SELF:__TestForTop()
+         lHasTop := FALSE
+         lHasBottom := FALSE
+         lHasTop := SELF:__TestForTop()
 
-		iBufferSize := 0
+         iBufferSize := 0
 
-		DO WHILE (iBufferSize <= iBufferGranularity)
-			IF oDataServer:EOF
-				EXIT
-			ENDIF
+         DO WHILE (iBufferSize <= iBufferGranularity)
+            IF oDataServer:EOF
+               EXIT
+            ENDIF
 
-			SELF:__RefreshData()
+            SELF:__RefreshData()
 
-			strucRecord := SELF:__BuildRecord()
-			IF (strucRecord == NULL_PTR)
-				EXIT
-			ENDIF
+            strucRecord := SELF:__BuildRecord()
+            IF (strucRecord == NULL_PTR)
+               EXIT
+            ENDIF
 
-			PCALL(gpfnCntAddRecTail, hWnd, strucRecord)
-			iBufferSize := iBufferSize + 1
+            PCALL(gpfnCntAddRecTail, hWnd, strucRecord)
+            iBufferSize := iBufferSize + 1
 
-			IF (strucTopRec == NULL_PTR)
-				strucTopRec := strucRecord
-			ENDIF
+            IF (strucTopRec == NULL_PTR)
+               strucTopRec := strucRecord
+            ENDIF
+	    // MSM:2012-03-21 Suggestion from Dirk Herijgers
+            IF iBufferSize<=iBufferGranularity	
+               oDataServer:Skip(1)
+            ENDIF								
+         ENDDO
 
-			oDataServer:Skip(1)
-		ENDDO
+         lHasBottom := SELF:__TestForBottom()
 
-		lHasBottom := SELF:__TestForBottom()
+         IF (iBufferSize <= iBufferGranularity)
+            iToBottom := iBufferSize
 
-		IF (iBufferSize <= iBufferGranularity)
-			iToBottom := iBufferSize
+            oDataServer:GoTo(iRecNo)
+            oDataServer:Skip(-1)
 
-			oDataServer:GoTo(iRecNo)
-			oDataServer:Skip(-1)
+            DO WHILE (iBufferSize <= iBufferGranularity)
+               IF oDataServer:Bof
+                  EXIT
+               ENDIF
 
-			DO WHILE (iBufferSize <= iBufferGranularity)
-				IF oDataServer:Bof
-					EXIT
-				ENDIF
+               SELF:__RefreshData()
+               strucRecord := SELF:__BuildRecord()
+               IF (strucRecord == NULL_PTR)
+                  EXIT
+               ENDIF
 
-				SELF:__RefreshData()
-				strucRecord := SELF:__BuildRecord()
-				IF (strucRecord == NULL_PTR)
-					EXIT
-				ENDIF
+               PCALL(gpfnCntAddRecHead, hWnd, strucRecord)
+               iBufferSize := iBufferSize + 1
+               strucTopRec := strucRecord
+               oDataServer:Skip(-1)
+            ENDDO
 
-				PCALL(gpfnCntAddRecHead, hWnd, strucRecord)
-				iBufferSize := iBufferSize + 1
-				strucTopRec := strucRecord
-				oDataServer:Skip(-1)
-			ENDDO
+            lHasTop := SELF:__TestForTop()
+         ENDIF
 
-			lHasTop := SELF:__TestForTop()
-		ENDIF
-
-		IF (lHasTop .AND. lHasBottom)
-			PCALL(gpfnCntDeltaExSet, hWnd, 0)
-			PCALL(gpfnCntRangeExSet, hWnd, 0, iBufferSize)
-		ELSE
-			iRangeMax := iBufferSize
-			IF (!lHasTop .AND. !lHasBottom)
+         IF (lHasTop .AND. lHasBottom)
+            PCALL(gpfnCntDeltaExSet, hWnd, 0)
+            PCALL(gpfnCntRangeExSet, hWnd, 0, iBufferSize)
+         ELSE
+            iRangeMax := iBufferSize
+            IF (!lHasTop .AND. !lHasBottom)
 				// middle
-				iRangeMax := iBufferSize + (2 * iBufferGranularity)
-				iDeltaPos := iRangeMax - iBufferSize - iBufferGranularity
-				iCurrentPos := iDeltaPos
-			ELSEIF lHasTop
+               iRangeMax := iBufferSize + (2 * iBufferGranularity)
+               iDeltaPos := iRangeMax - iBufferSize - iBufferGranularity
+               iCurrentPos := iDeltaPos
+            ELSEIF lHasTop
 				// top
-				iRangeMax := iBufferSize + iBufferGranularity
-				iDeltaPos := 0
-				iCurrentPos := iDeltaPos
-			ELSE
+               iRangeMax := iBufferSize + iBufferGranularity
+               iDeltaPos := 0
+               iCurrentPos := iDeltaPos
+            ELSE
 				// bottom
-				iRangeMax := iBufferSize + iBufferGranularity
-				iDeltaPos := iRangeMax - iBufferSize
+               iRangeMax := iBufferSize + iBufferGranularity
+               iDeltaPos := iRangeMax - iBufferSize
 				// this will force the bottom
 				// iCurrentPos := (iRangeMax - CntRecsDispGet(hWnd)) + 1 // wrong !?
-				iCurrentPos := iRangeMax - iToBottom
-			ENDIF
+               iCurrentPos := iRangeMax - iToBottom
+            ENDIF
 /*         DebOut("strucTopRec",strucTopRec)
          DebOut("strucTopRec.lpRecData",strucTopRec.lpRecData)
          DebOut("strucTopRec.lpNext",strucTopRec.lpNext)
@@ -508,1046 +510,1064 @@ METHOD __BuildNewBuffer(iRecNo AS INT) AS VOID STRICT
 			DebOut("iRangeMax",iRangeMax) 
 			DebOut("gpfnCntTopRecSet",gpfnCntTopRecSet)
 */			PCALL(gpfnCntTopRecSet, hWnd, strucTopRec)
-			PCALL(gpfnCntDeltaExSet, hWnd, iBufferSize)
-			PCALL(gpfnCntDeltaPosExSet, hWnd, iDeltaPos)
-			PCALL(gpfnCntVScrollPosExSet, hWnd, iCurrentPos)
-			PCALL(gpfnCntRangeExSet, hWnd, 0, iRangeMax)
-		ENDIF
+               PCALL(gpfnCntDeltaExSet, hWnd, iBufferSize)
+               PCALL(gpfnCntDeltaPosExSet, hWnd, iDeltaPos)
+               PCALL(gpfnCntVScrollPosExSet, hWnd, iCurrentPos)
+            PCALL(gpfnCntRangeExSet, hWnd, 0, iRangeMax)
+         ENDIF
 
-		SELF:__EnableNotify()
-		SELF:RestoreUpdate()
-	ENDIF
+         SELF:__EnableNotify()
+         SELF:RestoreUpdate()
+      ENDIF
 
-	RETURN
+      RETURN
 
-METHOD __BuildRecord() AS _WinRecordCore STRICT 
+   METHOD __BuildRecord() AS _WinRecordCore STRICT 
 	//PP-030828 Strong typing
-	LOCAL strucRecCore AS _WinRecordCore
-	LOCAL i AS INT
+      LOCAL strucRecCore AS _WinRecordCore
+      LOCAL i AS INT
 
-	
+      
 
-	IF (oDataServer != NULL_OBJECT)
-		strucRecCore := PCALL(gpfnCntNewRecCore, DWORD(iRecordSize))
-		IF (strucRecCore != NULL_PTR)
-			i := oDataServer:RecNo
-			PCALL(gpfnCntRecUserSet, strucRecCore, @i, _SIZEOF(INT))
-			SELF:__FillRecord(strucRecCore)
-			IF lIsReadOnly
-				PCALL(gpfnCntRecAttrSet, strucRecCore, CRA_RECREADONLY)
-			ENDIF
-		ENDIF
-	ENDIF
+      IF (oDataServer != NULL_OBJECT)
+         strucRecCore := PCALL(gpfnCntNewRecCore, DWORD(iRecordSize))
+         IF (strucRecCore != NULL_PTR)
+            i := oDataServer:RecNo
+            PCALL(gpfnCntRecUserSet, strucRecCore, @i, _SIZEOF(INT))
+            SELF:__FillRecord(strucRecCore)
+            IF lIsReadOnly
+               PCALL(gpfnCntRecAttrSet, strucRecCore, CRA_RECREADONLY)
+            ENDIF
+         ENDIF
+      ENDIF
 
-	RETURN strucRecCore
+      RETURN strucRecCore
 
-METHOD __BuildRecordDescription() AS LOGIC STRICT 
+   METHOD __BuildRecordDescription() AS LOGIC STRICT 
 	//PP-030828 Strong typing
-	LOCAL i AS DWORD
-	LOCAL iLen AS DWORD
-	LOCAL oColumn AS DataColumn
-	LOCAL strucFI AS _WinFieldInfo
-	LOCAL dwOldRecSize AS DWORD
-	LOCAL dwRecordSize 	AS DWORD
+      LOCAL i AS DWORD
+      LOCAL iLen AS DWORD
+      LOCAL oColumn AS DataColumn
+      LOCAL strucFI AS _WinFieldInfo
+      LOCAL dwOldRecSize AS DWORD
+      LOCAL dwRecordSize 	AS DWORD
 
-	IF ptrDataBuffer != NULL_PTR
-		MemFree(ptrDataBuffer)
-		ptrDataBuffer := NULL_PTR
-	ENDIF
+      IF ptrDataBuffer != NULL_PTR
+         MemFree(ptrDataBuffer)
+         ptrDataBuffer := NULL_PTR
+      ENDIF
 
-	dwOldRecSize := DWORD(iRecordSize)
-	dwRecordSize := _SIZEOF(INT) 
-	iLen :=  ALen(aColumn)
-	FOR i:=1 UPTO iLen
-		oColumn := aColumn[i]
-		strucFI := oColumn:__FieldInfo
-		strucFI:wOffStruct := dwRecordSize
-		dwRecordSize += oColumn:__Size + 1
-	NEXT
+      dwOldRecSize := DWORD(iRecordSize)
+      dwRecordSize := _SIZEOF(INT) 
+      iLen :=  ALen(aColumn)
+      FOR i:=1 UPTO iLen
+         oColumn := aColumn[i]
+         strucFI := oColumn:__FieldInfo
+         strucFI:wOffStruct := dwRecordSize
+         dwRecordSize += oColumn:__Size + 1
+      NEXT
 
-	ptrDataBuffer := MemAlloc(dwRecordSize)
-	iRecordSize 	:= INT(dwRecordSize)
+      ptrDataBuffer := MemAlloc(dwRecordSize)
+      iRecordSize 	:= INT(dwRecordSize)
 	// return true if we need to refresh browser
-	RETURN (dwRecordSize > dwOldRecSize)
+      RETURN (dwRecordSize > dwOldRecSize)
 
-METHOD __ClearBuffers() AS VOID STRICT 
+   METHOD __ClearBuffers() AS VOID STRICT 
 	//PP-030828 Strong typing
-	
+      
 
-	IF oCellEdit != NULL_OBJECT
-		SELF:__EndEditField(0)
-	ENDIF
+      IF oCellEdit != NULL_OBJECT
+         SELF:__EndEditField(0)
+      ENDIF
 
-	PCALL(gpfnCntKillRecList, hWnd)
-	PCALL(gpfnCntDeltaExSet, hWnd, 0)
-	PCALL(gpfnCntRangeExSet, hWnd, 0, 0)
+      PCALL(gpfnCntKillRecList, hWnd)
+      PCALL(gpfnCntDeltaExSet, hWnd, 0)
+      PCALL(gpfnCntRangeExSet, hWnd, 0, 0)
 
-	lHasTop := FALSE
-	lHasBottom := FALSE
-	iBufferSize := 0
+      lHasTop := FALSE
+      lHasBottom := FALSE
+      iBufferSize := 0
 
-	RETURN
+      RETURN
 
-ACCESS __ContainerChildWnd AS PTR STRICT 
+   ACCESS __ContainerChildWnd AS PTR STRICT 
 	//PP-030828 Strong typing
-	LOCAL hChild AS PTR
+      LOCAL hChild AS PTR
 
-	hChild := PCALL(gpfnCntCNChildWndGet, hwnd, 0)
-	IF (hChild == NULL_PTR)
-		hChild := GetWindow(hwnd, GW_CHILD)
-	ENDIF
+      hChild := PCALL(gpfnCntCNChildWndGet, hwnd, 0)
+      IF (hChild == NULL_PTR)
+         hChild := GetWindow(hwnd, GW_CHILD)
+      ENDIF
 
-	RETURN hChild
+      RETURN hChild
 
-METHOD __DeferNotify() AS VOID STRICT 
+   METHOD __DeferNotify() AS VOID STRICT 
 	//PP-030828 Strong typing
-	
+      
 
-	IF iDeferNotifyCount==0 .AND. oDataServer != NULL_OBJECT
-		oDataServer:SuspendNotification()
-	ENDIF
-	iDeferNotifyCount := iDeferNotifyCount + 1
+      IF iDeferNotifyCount==0 .AND. oDataServer != NULL_OBJECT
+         oDataServer:SuspendNotification()
+      ENDIF
+      iDeferNotifyCount := iDeferNotifyCount + 1
 
-	RETURN
+      RETURN
 
-METHOD __DeltaBuildBuffer() AS VOID STRICT 
+   METHOD __DeltaBuildBuffer() AS VOID STRICT 
 	//PP-030828 Strong typing
-	LOCAL oOldPointer AS Pointer
-	LOCAL iCurrentRecNo AS INT
-	LOCAL iInc AS INT
-	LOCAL strucRC AS _WinRecordCore
+      LOCAL oOldPointer AS Pointer
+      LOCAL iCurrentRecNo AS INT
+      LOCAL iInc AS INT
+      LOCAL strucRC AS _WinRecordCore
 
-	
+      
 
-	IF oDataServer != NULL_OBJECT
-		oOldPointer:=oParent:Pointer
-		oParent:Pointer := Pointer{PointerHourGlass}
-		SELF:SuspendUpdate()
-		SELF:__DeferNotify()
+      IF oDataServer != NULL_OBJECT
+         oOldPointer:=oParent:Pointer
+         oParent:Pointer := Pointer{PointerHourGlass}
+         SELF:SuspendUpdate()
+         SELF:__DeferNotify()
 
-		iCurrentRecNo := oDataServer:RecNo
-		iInc := PCALL(gpfnCntCNIncExGet, hWnd, 0)
+         iCurrentRecNo := oDataServer:RecNo
+         iInc := PCALL(gpfnCntCNIncExGet, hWnd, 0)
 
-		IF iBufferSize + iBufferGranularity <= iBufferMaximum
-			IF !lHasTop .AND. !lHasBottom
+         IF iBufferSize + iBufferGranularity <= iBufferMaximum
+            IF !lHasTop .AND. !lHasBottom
 				// middle
-				IF iInc < 0
-					SELF:__DeltaBuildBufferUp()
-				ELSE
-					SELF:__DeltaBuildBufferDown()
-				ENDIF
-			ELSEIF lHasTop
+               IF iInc < 0
+                  SELF:__DeltaBuildBufferUp()
+               ELSE
+                  SELF:__DeltaBuildBufferDown()
+               ENDIF
+            ELSEIF lHasTop
 				// top
-				IF iInc > 0
-					SELF:__DeltaBuildBufferDown()
-				ENDIF
-			ELSE
+               IF iInc > 0
+                  SELF:__DeltaBuildBufferDown()
+               ENDIF
+            ELSE
 				// bottom
-				IF iInc < 0
-					SELF:__DeltaBuildBufferUp()
-				ENDIF
-			ENDIF
-		ELSE
-			strucRC := SELF:__GetRecordAtRecNo(iCurrentRecNo)
-			IF !lHasTop .AND. !lHasBottom
+               IF iInc < 0
+                  SELF:__DeltaBuildBufferUp()
+               ENDIF
+            ENDIF
+         ELSE
+            strucRC := SELF:__GetRecordAtRecNo(iCurrentRecNo)
+            IF !lHasTop .AND. !lHasBottom
 				// middle
-				IF iInc < 0
-					SELF:__DeltaReBuildBufferUp()
-				ELSE
-					SELF:__DeltaReBuildBufferDown()
-				ENDIF
-			ELSEIF lHasTop
+               IF iInc < 0
+                  SELF:__DeltaReBuildBufferUp()
+               ELSE
+                  SELF:__DeltaReBuildBufferDown()
+               ENDIF
+            ELSEIF lHasTop
 				// top
-				IF iInc > 0
-					SELF:__DeltaReBuildBufferDown()
-				ENDIF
-			ELSE
+               IF iInc > 0
+                  SELF:__DeltaReBuildBufferDown()
+               ENDIF
+            ELSE
 				// bottom
-				IF iInc < 0
-					SELF:__DeltaReBuildBufferUp()
-				ENDIF
-			ENDIF
+               IF iInc < 0
+                  SELF:__DeltaReBuildBufferUp()
+               ENDIF
+            ENDIF
 
-			IF strucRC == NULL_PTR
+            IF strucRC == NULL_PTR
 				// see if focus was paged in
-				strucRC := SELF:__GetRecordAtRecNo(iCurrentRecNo)
+               strucRC := SELF:__GetRecordAtRecNo(iCurrentRecNo)
 
-				IF strucRC != NULL_PTR
-					PCALL(gpfnCntSelectRec, hWnd, strucRC)
-				ENDIF
-			ENDIF
-		ENDIF
+               IF strucRC != NULL_PTR
+                  PCALL(gpfnCntSelectRec, hWnd, strucRC)
+               ENDIF
+            ENDIF
+         ENDIF
 
-		oDataServer:GoTo(iCurrentRecNo)
+         oDataServer:GoTo(iCurrentRecNo)
 
-		SELF:__EnableNotify()
-		SELF:RestoreUpdate()
+         SELF:__EnableNotify()
+         SELF:RestoreUpdate()
 
-		oParent:Pointer := oOldPointer
-	ENDIF
+         oParent:Pointer := oOldPointer
+      ENDIF
 
-	RETURN
+      RETURN
 
-METHOD __DeltaBuildBufferDown() AS VOID STRICT 
+   METHOD __DeltaBuildBufferDown() AS VOID STRICT 
 	//PP-030828 Strong typing
-	LOCAL i AS INT
-	LOCAL iRangeMax AS INT
-	LOCAL strucRC AS _WinRecordCore
+      LOCAL i AS INT
+      LOCAL iRangeMax AS INT
+      LOCAL strucRC AS _WinRecordCore
 
-	
+      
 
-	SELF:SuspendUpdate()
-	SELF:__DeferNotify()
+      SELF:SuspendUpdate()
+      SELF:__DeferNotify()
 
-	oDataServer:GoTo(SELF:__GetRecordNo(PCALL(gpfnCntRecTailGet, hWnd)))
-	oDataServer:Skip(1)
-	// 2.0a-1, changed borders
-	FOR i:=0 UPTO iBufferGranularity-1
-		IF oDataServer:EOF
-			EXIT
-		ENDIF
-		SELF:__RefreshData()
-		IF (strucRC := SELF:__BuildRecord()) == NULL_PTR
-			EXIT
-		ENDIF
-		PCALL(gpfnCntAddRecTail, hWnd, strucRC)
-		oDataServer:Skip(1)
-	NEXT
+      oDataServer:GoTo(SELF:__GetRecordNo(PCALL(gpfnCntRecTailGet, hWnd)))
+      // MSM:2012-03-21 next moved inside the as suggested by Dirk Heijers
+      // oDataServer:Skip(1)
+      // 2.0a-1, changed borders
+      FOR i:=0 UPTO iBufferGranularity-1
+         oDataServer:Skip(1) // MSM:2012-03-21 suggested by Dirk Heijers
+         IF oDataServer:EOF
+            EXIT
+         ENDIF
+         SELF:__RefreshData()
+         IF (strucRC := SELF:__BuildRecord()) == NULL_PTR
+            EXIT
+         ENDIF
+         PCALL(gpfnCntAddRecTail, hWnd, strucRC)
+	 // MSM:2012-03-21 next removed as suggested by Dirk Heijers
+         // oDataServer:Skip(1)
+      NEXT
 
-	lHasBottom := SELF:__TestForBottom()
-	iBufferSize += i
-	iRangeMax := iBufferSize
+      lHasBottom := SELF:__TestForBottom()
+      iBufferSize += i
+      iRangeMax := iBufferSize
 
-	IF lHasTop .AND. lHasBottom
-		PCALL(gpfnCntDeltaExSet, hWnd, 0)
-		PCALL(gpfnCntRangeExSet, hWnd, 0, iRangeMax)
-	ELSE
-		IF !lHasTop
-			iRangeMax += iBufferGranularity
-		ENDIF
-		IF !lHasBottom
-			iRangeMax += iBufferGranularity
-		ENDIF
+      IF lHasTop .AND. lHasBottom
+         PCALL(gpfnCntDeltaExSet, hWnd, 0)
+         PCALL(gpfnCntRangeExSet, hWnd, 0, iRangeMax)
+      ELSE
+         IF !lHasTop
+            iRangeMax += iBufferGranularity
+         ENDIF
+         IF !lHasBottom
+            iRangeMax += iBufferGranularity
+         ENDIF
 
-		PCALL(gpfnCntRangeExSet, hWnd, 0, iRangeMax)
-		PCALL(gpfnCntDeltaExSet, hWnd, iBufferSize)
-	ENDIF
+         PCALL(gpfnCntRangeExSet, hWnd, 0, iRangeMax)
+         PCALL(gpfnCntDeltaExSet, hWnd, iBufferSize)
+      ENDIF
 
-	SELF:__EnableNotify()
-	SELF:RestoreUpdate()
+      SELF:__EnableNotify()
+      SELF:RestoreUpdate()
 
-	RETURN
+      RETURN
 
-METHOD __DeltaBuildBufferUp() AS VOID STRICT 
+   METHOD __DeltaBuildBufferUp() AS VOID STRICT 
 	//PP-030828 Strong typing
-	LOCAL iRecNo AS INT
-	LOCAL i AS INT
-	LOCAL iRangeMax AS INT
-	LOCAL strucRC AS _WinRecordCore
+      LOCAL iRecNo AS INT
+      LOCAL i AS INT
+      LOCAL iRangeMax AS INT
+      LOCAL strucRC AS _WinRecordCore
 
-	
+      
 
-	SELF:SuspendUpdate()
-	SELF:__DeferNotify()
+      SELF:SuspendUpdate()
+      SELF:__DeferNotify()
 
-	iRecNo := SELF:__GetRecordNo(PCALL(gpfnCntRecHeadGet, hWnd))
-	oDataServer:GoTo(iRecNo)
-	oDataServer:Skip(-1)
+      iRecNo := SELF:__GetRecordNo(PCALL(gpfnCntRecHeadGet, hWnd))
+      oDataServer:GoTo(iRecNo)
+      // MSM:2012-03-21 next moved inside the as suggested by Dirk Heijers
+      // oDataServer:Skip(-1)        
 
 	// 2.0a-1, changed borders
-	FOR i:=0 UPTO iBufferGranularity-1
-		IF oDataServer:BOF
-			EXIT
-		ENDIF
-		SELF:__RefreshData()
-		IF (strucRC := SELF:__BuildRecord()) == NULL_PTR
-			EXIT
-		ENDIF
-		PCALL(gpfnCntAddRecHead, hWnd, strucRC)
-		oDataServer:Skip(-1)
-	NEXT
+      FOR i:=0 UPTO iBufferGranularity-1
+         // MSM:2012-03-21 next moved inside the as suggested by Dirk Heijers
+         oDataServer:Skip(-1)
+         IF oDataServer:BOF
+            EXIT
+         ENDIF
+         SELF:__RefreshData()
+         IF (strucRC := SELF:__BuildRecord()) == NULL_PTR
+            EXIT
+         ENDIF
+         PCALL(gpfnCntAddRecHead, hWnd, strucRC)
+         // MSM:2012-03-21 next removed by Dirk Heijers
+         // oDataServer:Skip(-1)
+      NEXT
 
-	lHasTop := SELF:__TestForTop()
-	iBufferSize += i
-	iRangeMax := iBufferSize
+      lHasTop := SELF:__TestForTop()
+      iBufferSize += i
+      iRangeMax := iBufferSize
 
-	IF (lHasTop .AND. lHasBottom)
-		PCALL(gpfnCntDeltaExSet, hWnd, 0)
-		PCALL(gpfnCntDeltaPosExSet, hWnd, 0)
-		PCALL(gpfnCntVScrollPosExSet, hWnd, i)
-		PCALL(gpfnCntRangeExSet, hWnd, 0, iRangeMax)
-	ELSE
-		IF !lHasTop
-			iRangeMax += iBufferGranularity
-		ENDIF
-		IF !lHasBottom
-			iRangeMax += iBufferGranularity
-		ENDIF
+      IF (lHasTop .AND. lHasBottom)
+         PCALL(gpfnCntDeltaExSet, hWnd, 0)
+         PCALL(gpfnCntDeltaPosExSet, hWnd, 0)
+         PCALL(gpfnCntVScrollPosExSet, hWnd, i)
+         PCALL(gpfnCntRangeExSet, hWnd, 0, iRangeMax)
+      ELSE
+         IF !lHasTop
+            iRangeMax += iBufferGranularity
+         ENDIF
+         IF !lHasBottom
+            iRangeMax += iBufferGranularity
+         ENDIF
 
-		IF !lHasTop
-			i := PCALL(gpfnCntDeltaPosExGet, hWnd)
+         IF !lHasTop
+            i := PCALL(gpfnCntDeltaPosExGet, hWnd)
 
-			PCALL(gpfnCntDeltaExSet, hWnd, iBufferSize)
-			PCALL(gpfnCntVScrollPosExSet, hWnd, i + iBufferGranularity)
-			PCALL(gpfnCntRangeExSet, hWnd, 0, iRangeMax)
-		ELSE
+            PCALL(gpfnCntDeltaExSet, hWnd, iBufferSize)
+            PCALL(gpfnCntVScrollPosExSet, hWnd, i + iBufferGranularity)
+            PCALL(gpfnCntRangeExSet, hWnd, 0, iRangeMax)
+         ELSE
 			// 2.5b
 			// i := pcall(gpfnCntCurrentPosExGet, hWnd)
 
-			PCALL(gpfnCntDeltaExSet, hWnd, iBufferSize)
-			PCALL(gpfnCntDeltaPosExSet, hWnd, 0)
-			PCALL(gpfnCntVScrollPosExSet, hWnd, i)
-			PCALL(gpfnCntRangeExSet, hWnd, 0L, iRangeMax)
-		ENDIF
-	ENDIF
+            PCALL(gpfnCntDeltaExSet, hWnd, iBufferSize)
+            PCALL(gpfnCntDeltaPosExSet, hWnd, 0)
+            PCALL(gpfnCntVScrollPosExSet, hWnd, i)
+            PCALL(gpfnCntRangeExSet, hWnd, 0L, iRangeMax)
+         ENDIF
+      ENDIF
 
-	SELF:__EnableNotify()
-	SELF:RestoreUpdate()
+      SELF:__EnableNotify()
+      SELF:RestoreUpdate()
 
-	RETURN
+      RETURN
 
-METHOD __DeltaRebuildBufferDown() AS VOID STRICT 
+   METHOD __DeltaRebuildBufferDown() AS VOID STRICT 
 	//PP-030828 Strong typing
-	LOCAL i AS INT
-	LOCAL iShift AS INT
-	LOCAL iRangeMax AS INT
-	LOCAL iCurrentPos AS INT
-	LOCAL lLostTop AS LOGIC
-	LOCAL strucRC AS _WinRecordCore
-	LOCAL strucTopRec AS _WinRecordCore
+      LOCAL i AS INT
+      LOCAL iShift AS INT
+      LOCAL iRangeMax AS INT
+      LOCAL iCurrentPos AS INT
+      LOCAL lLostTop AS LOGIC
+      LOCAL strucRC AS _WinRecordCore
+      LOCAL strucTopRec AS _WinRecordCore
 
-	
+      
 
-	SELF:SuspendUpdate()
-	SELF:__DeferNotify()
+      SELF:SuspendUpdate()
+      SELF:__DeferNotify()
 
-	strucTopRec := PCALL(gpfnCntTopRecGet, hwnd)
+      strucTopRec := PCALL(gpfnCntTopRecGet, hwnd)
 
-	oDataServer:GoTo(SELF:__GetRecordNo(PCALL(gpfnCntRecTailGet, hwnd)))
-	oDataServer:Skip(1)
-
-	// 2.0a-1, changed borders
-	FOR i:=0 UPTO iBufferGranularity-1
-		IF oDataServer:Eof
-			EXIT
-		ENDIF
-		SELF:__RefreshData()
-		strucRC := SELF:__BuildRecord()
-		IF (strucRC == NULL_PTR)
-			EXIT
-		ENDIF
-		PCALL(gpfnCntAddRecTail, hwnd, strucRC)
-		oDataServer:Skip(1)
-	NEXT
-
-	lHasBottom := SELF:__TestForBottom()
-	iShift := i
+      oDataServer:GoTo(SELF:__GetRecordNo(PCALL(gpfnCntRecTailGet, hwnd)))
+      // MSM:2012-03-21 next line moved inside loop as suggested by Dirk Herijgers
+      // oDataServer:Skip(1)
 
 	// 2.0a-1, changed borders
-	FOR i:=0 UPTO iShift-1
-		strucRC := PCALL(gpfnCntRemoveRecHead, hwnd)
-		IF (strucRC == NULL_PTR)
-			EXIT
-		ENDIF
-		PCALL(gpfnCntFreeRecCore, strucRC)
-	NEXT
+      FOR i:=0 UPTO iBufferGranularity-1
+         // MSM:2012-03-21 next line moved inside loop as suggested by Dirk Herijgers
+         oDataServer:Skip(1)
+         IF oDataServer:Eof
+            EXIT
+         ENDIF
+         SELF:__RefreshData()
+         strucRC := SELF:__BuildRecord()
+         IF (strucRC == NULL_PTR)
+            EXIT
+         ENDIF
+         PCALL(gpfnCntAddRecTail, hwnd, strucRC)
+         // MSM:2012-03-21 next line removed as suggested by Dirk Herijgers
+         // oDataServer:Skip(1)
+      NEXT
+
+      lHasBottom := SELF:__TestForBottom()
+      iShift := i
+
+	// 2.0a-1, changed borders
+      FOR i:=0 UPTO iShift-1
+         strucRC := PCALL(gpfnCntRemoveRecHead, hwnd)
+         IF (strucRC == NULL_PTR)
+            EXIT
+         ENDIF
+         PCALL(gpfnCntFreeRecCore, strucRC)
+      NEXT
 
 	// this assumes that records were removed and top is lost
-	lLostTop := lHasTop
-	lHasTop := FALSE
+      lLostTop := lHasTop
+      lHasTop := FALSE
 
-	iRangeMax := iBufferSize
-	IF !lHasTop
-		iRangeMax += iBufferGranularity
-	ENDIF
-	IF !lHasBottom
-		iRangeMax += iBufferGranularity
-	ENDIF
+      iRangeMax := iBufferSize
+      IF !lHasTop
+         iRangeMax += iBufferGranularity
+      ENDIF
+      IF !lHasBottom
+         iRangeMax += iBufferGranularity
+      ENDIF
 
-	IF lLostTop
-		iCurrentPos := PCALL(gpfnCntCurrentPosExGet, hwnd)
+      IF lLostTop
+         iCurrentPos := PCALL(gpfnCntCurrentPosExGet, hwnd)
 
-		PCALL(gpfnCntTopRecSet, hwnd, strucTopRec)
-		PCALL(gpfnCntDeltaExSet, hwnd, iBufferSize)
-		PCALL(gpfnCntDeltaPosExSet, hwnd, ibufferGranularity)
-		PCALL(gpfnCntVScrollPosExSet, hwnd, iCurrentPos)
-		PCALL(gpfnCntRangeExSet, hwnd, 0, iRangeMax)
-	ELSE
-		iCurrentPos := PCALL(gpfnCntCurrentPosExGet, hwnd)
+         PCALL(gpfnCntTopRecSet, hwnd, strucTopRec)
+         PCALL(gpfnCntDeltaExSet, hwnd, iBufferSize)
+         PCALL(gpfnCntDeltaPosExSet, hwnd, ibufferGranularity)
+         PCALL(gpfnCntVScrollPosExSet, hwnd, iCurrentPos)
+         PCALL(gpfnCntRangeExSet, hwnd, 0, iRangeMax)
+      ELSE
+         iCurrentPos := PCALL(gpfnCntCurrentPosExGet, hwnd)
 
-		PCALL(gpfnCntTopRecSet, hwnd, strucTopRec)
-		PCALL(gpfnCntDeltaExSet, hwnd, iBufferSize)
-		PCALL(gpfnCntDeltaPosExSet, hwnd, iBufferGranularity)
-		PCALL(gpfnCntVScrollPosExSet, hwnd, iCurrentPos - iShift)
-		PCALL(gpfnCntRangeExSet, hwnd, 0, iRangeMax)
-	ENDIF
+         PCALL(gpfnCntTopRecSet, hwnd, strucTopRec)
+         PCALL(gpfnCntDeltaExSet, hwnd, iBufferSize)
+         PCALL(gpfnCntDeltaPosExSet, hwnd, iBufferGranularity)
+         PCALL(gpfnCntVScrollPosExSet, hwnd, iCurrentPos - iShift)
+         PCALL(gpfnCntRangeExSet, hwnd, 0, iRangeMax)
+      ENDIF
 
-	SELF:__EnableNotify()
-	SELF:RestoreUpdate()
+      SELF:__EnableNotify()
+      SELF:RestoreUpdate()
 
-	RETURN
+      RETURN
 
-METHOD __DeltaRebuildBufferUp() AS VOID STRICT 
+   METHOD __DeltaRebuildBufferUp() AS VOID STRICT 
 	//PP-030828 Strong typing
-	LOCAL i AS INT
-	LOCAL iShift AS INT
-	LOCAL iRangeMax AS INT
-	LOCAL iCurrentPos AS INT
-	LOCAL lGainTop AS LOGIC
-	LOCAL strucTopRec AS _WinRecordCore
-	LOCAL strucRC AS _WinRecordCore
+      LOCAL i AS INT
+      LOCAL iShift AS INT
+      LOCAL iRangeMax AS INT
+      LOCAL iCurrentPos AS INT
+      LOCAL lGainTop AS LOGIC
+      LOCAL strucTopRec AS _WinRecordCore
+      LOCAL strucRC AS _WinRecordCore
 
-	
+      
 
-	SELF:SuspendUpdate()
-	SELF:__DeferNotify()
+      SELF:SuspendUpdate()
+      SELF:__DeferNotify()
 
-	strucTopRec := PCALL(gpfnCntTopRecGet, hwnd)
+      strucTopRec := PCALL(gpfnCntTopRecGet, hwnd)
 
-	oDataServer:GoTo(SELF:__GetRecordNo(PCALL(gpfnCntRecHeadGet, hwnd)))
-	oDataServer:Skip(-1)
-
-	// 2.0a-1, changed borders
-	FOR i:=0 UPTO iBufferGranularity-1
-		IF oDataServer:Bof
-			EXIT
-		ENDIF
-		SELF:__RefreshData()
-		IF (strucRC := SELF:__BuildRecord()) == NULL_PTR
-			EXIT
-		ENDIF
-		PCALL(gpfnCntAddRecHead, hwnd, strucRC)
-		oDataServer:Skip(-1)
-	NEXT
-
-	lGainTop := lHasTop := SELF:__TestForTop()
-	iShift := i
+      oDataServer:GoTo(SELF:__GetRecordNo(PCALL(gpfnCntRecHeadGet, hwnd)))
+      // MSM:2012-03-21 next line moved into the loop as suggested by Dirk Herijgers
+      // oDataServer:Skip(-1)
 
 	// 2.0a-1, changed borders
-	FOR i:=0 UPTO iShift-1
-		IF (strucRC := PCALL(gpfnCntRemoveRecTail, hwnd)) == NULL_PTR
-			EXIT
-		ENDIF
-		PCALL(gpfnCntFreeRecCore, strucRC)
-	NEXT
+      FOR i:=0 UPTO iBufferGranularity-1
+         // MSM:2012-03-21 next line moved into the loop as suggested by Dirk Herijgers
+         oDataServer:Skip(-1)
+         IF oDataServer:Bof
+            EXIT
+         ENDIF
+         SELF:__RefreshData()
+         IF (strucRC := SELF:__BuildRecord()) == NULL_PTR
+            EXIT
+         ENDIF
+         PCALL(gpfnCntAddRecHead, hwnd, strucRC)
+         // MSM:2012-03-21 next line removed as suggested by Dirk Herijgers
+         // oDataServer:Skip(-1)
+      NEXT
+
+      lGainTop := lHasTop := SELF:__TestForTop()
+      iShift := i
+
+	// 2.0a-1, changed borders
+      FOR i:=0 UPTO iShift-1
+         IF (strucRC := PCALL(gpfnCntRemoveRecTail, hwnd)) == NULL_PTR
+            EXIT
+         ENDIF
+         PCALL(gpfnCntFreeRecCore, strucRC)
+      NEXT
 
 	// this assumes that records were removed and bottom is lost
-	lHasBottom := FALSE
-	iRangeMax := iBufferSize
+      lHasBottom := FALSE
+      iRangeMax := iBufferSize
 
-	IF !lHasTop
-		iRangeMax += iBufferGranularity
-	ENDIF
-	IF !lHasBottom
-		iRangeMax += iBufferGranularity
-	ENDIF
+      IF !lHasTop
+         iRangeMax += iBufferGranularity
+      ENDIF
+      IF !lHasBottom
+         iRangeMax += iBufferGranularity
+      ENDIF
 
-	IF lGainTop
-		PCALL(gpfnCntTopRecSet, hwnd, strucTopRec)
-		PCALL(gpfnCntDeltaExSet, hwnd, iBufferSize)
-		PCALL(gpfnCntDeltaPosExSet, hwnd, 0)
-		PCALL(gpfnCntVScrollPosExSet, hwnd, iShift)
-		PCALL(gpfnCntRangeExSet, hwnd, 0, iRangeMax)
-	ELSE
-		icurrentPos := PCALL(gpfnCntCurrentPosExGet, hwnd)
+      IF lGainTop
+         PCALL(gpfnCntTopRecSet, hwnd, strucTopRec)
+         PCALL(gpfnCntDeltaExSet, hwnd, iBufferSize)
+         PCALL(gpfnCntDeltaPosExSet, hwnd, 0)
+         PCALL(gpfnCntVScrollPosExSet, hwnd, iShift)
+         PCALL(gpfnCntRangeExSet, hwnd, 0, iRangeMax)
+      ELSE
+         icurrentPos := PCALL(gpfnCntCurrentPosExGet, hwnd)
 
-		PCALL(gpfnCntTopRecSet, hwnd, strucTopRec)
-		PCALL(gpfnCntDeltaExSet, hwnd, iBufferSize)
-		PCALL(gpfnCntDeltaPosExSet, hwnd, iBufferGranularity)
-		PCALL(gpfnCntVScrollPosExSet, hwnd, iCurrentPos + iShift)
-		PCALL(gpfnCntRangeExSet, hwnd, 0, iRangeMax)
-	ENDIF
+         PCALL(gpfnCntTopRecSet, hwnd, strucTopRec)
+         PCALL(gpfnCntDeltaExSet, hwnd, iBufferSize)
+         PCALL(gpfnCntDeltaPosExSet, hwnd, iBufferGranularity)
+         PCALL(gpfnCntVScrollPosExSet, hwnd, iCurrentPos + iShift)
+         PCALL(gpfnCntRangeExSet, hwnd, 0, iRangeMax)
+      ENDIF
 
-	SELF:__EnableNotify()
-	SELF:RestoreUpdate()
+      SELF:__EnableNotify()
+      SELF:RestoreUpdate()
 
-	RETURN
+      RETURN
 
-METHOD __DestroyEditField() AS VOID STRICT 
+   METHOD __DestroyEditField() AS VOID STRICT 
 	//PP-030828 Strong typing
-	
+      
 
-	IF (oCellEdit != NULL_OBJECT)
-		oCellEdit:Destroy()
-		oCellEdit := NULL_OBJECT
-		ptrControlDefaultProc := NULL_PTR
-	ENDIF
+      IF (oCellEdit != NULL_OBJECT)
+         oCellEdit:Destroy()
+         oCellEdit := NULL_OBJECT
+         ptrControlDefaultProc := NULL_PTR
+      ENDIF
 
-	RETURN
+      RETURN
 
-METHOD __EditDispatch(uMsg AS DWORD, wParam AS DWORD, lParam AS LONGINT) AS LOGIC STRICT 
+   METHOD __EditDispatch(uMsg AS DWORD, wParam AS DWORD, lParam AS LONGINT) AS LOGIC STRICT 
 	//PP-030828 Strong typing
-	
+      
 
-	IF uMsg==WM_KeyDown
-		IF wParam==VK_TAB .OR.;
-			wParam==VK_ESCAPE .OR.;
-			wParam==VK_RETURN .OR.;
-			wParam==VK_UP .OR.;
-			wParam==VK_DOWN .OR.;
-			wParam==VK_PRIOR .OR.;
-			wParam==VK_NEXT
+      IF uMsg==WM_KeyDown
+         IF wParam==VK_TAB .OR.;
+            wParam==VK_ESCAPE .OR.;
+            wParam==VK_RETURN .OR.;
+            wParam==VK_UP .OR.;
+            wParam==VK_DOWN .OR.;
+            wParam==VK_PRIOR .OR.;
+            wParam==VK_NEXT
 
-			PCALL(gpfnCntNotifyAssoc, hwnd, DWORD(_CAST, CN_ENDFLDEDIT), wParam, StrucEditRecord, StrucEditField,;
-				_AND(LONGINT(lParam), 0x0000ffff), (GetAsyncKeyState(VK_SHIFT)<0), (GetAsyncKeyState(VK_CONTROL)<0), NULL_PTR)
-			RETURN TRUE
-		ENDIF
-	ELSEIF uMsg==WM_Char
-		IF wParam==VK_TAB .OR.;
-			wParam==VK_ESCAPE .OR.;
-			wParam==VK_RETURN
-			RETURN TRUE
-		ENDIF
-	ENDIF
+            PCALL(gpfnCntNotifyAssoc, hwnd, DWORD(_CAST, CN_ENDFLDEDIT), wParam, StrucEditRecord, StrucEditField,;
+            _AND(LONGINT(lParam), 0x0000ffff), (GetAsyncKeyState(VK_SHIFT)<0), (GetAsyncKeyState(VK_CONTROL)<0), NULL_PTR)
+            RETURN TRUE
+         ENDIF
+      ELSEIF uMsg==WM_Char
+         IF wParam==VK_TAB .OR.;
+            wParam==VK_ESCAPE .OR.;
+            wParam==VK_RETURN
+            RETURN TRUE
+         ENDIF
+      ENDIF
 
-	RETURN FALSE
+      RETURN FALSE
 
-METHOD __EnableNotify() AS VOID STRICT 
+   METHOD __EnableNotify() AS VOID STRICT 
 	//PP-030828 Strong typing
-	
+      
 
-	IF iDeferNotifyCount>0
-		--iDeferNotifyCount
-	ENDIF
+      IF iDeferNotifyCount>0
+         --iDeferNotifyCount
+      ENDIF
 
-	IF iDeferNotifyCount==0 .AND. oDataServer!=NULL_OBJECT
-		oDataServer:ResetNotification()
-	ENDIF
+      IF iDeferNotifyCount==0 .AND. oDataServer!=NULL_OBJECT
+         oDataServer:ResetNotification()
+      ENDIF
 
-	RETURN
+      RETURN
 
-METHOD __EnableSelection(kStyle AS INT) AS VOID STRICT 
+   METHOD __EnableSelection(kStyle AS INT) AS VOID STRICT 
 	//PP-030828 Strong typing
-	LOCAL strucRC AS _WinRecordCore
+      LOCAL strucRC AS _WinRecordCore
 
 	// if no change do nothing
-	
+      
 
-	IF iSelectionStyle == kStyle
-		RETURN
-	ENDIF
+      IF iSelectionStyle == kStyle
+         RETURN
+      ENDIF
 
 	// Turn off old mode
-	DO CASE
-	CASE iSelectionStyle == ssSingleSelection
+      DO CASE
+      CASE iSelectionStyle == ssSingleSelection
 		// Turn off single selections if any
-		strucRC := PCALL(gpfnCntSelRecGet, hwnd)
-		IF strucRC != NULL_PTR
-			PCALL(gpfnCntUnSelectRec, hwnd, strucRC)
-		ENDIF
-		PCALL(gpfnCntStyleClear, hwnd, CTS_SINGLESEL)
+            strucRC := PCALL(gpfnCntSelRecGet, hwnd)
+            IF strucRC != NULL_PTR
+               PCALL(gpfnCntUnSelectRec, hwnd, strucRC)
+            ENDIF
+            PCALL(gpfnCntStyleClear, hwnd, CTS_SINGLESEL)
 
-	CASE iSelectionStyle == ssExtendedSelection
+      CASE iSelectionStyle == ssExtendedSelection
 		// Turn off multiple selections if any
-		strucRC := PCALL(gpfnCntRecHeadGet, hwnd)
-		WHILE strucRC != NULL_PTR
-			IF PCALL(gpfnCntIsRecSelected, hwnd, strucRC)
-				PCALL(gpfnCntUnSelectRec, hwnd, strucRC)
-			ENDIF
-			strucRC := PCALL(gpfnCntNextRec, strucRC)
-		ENDDO
-		PCALL(gpfnCntStyleClear, hwnd, CTS_EXTENDEDSEL)
+            strucRC := PCALL(gpfnCntRecHeadGet, hwnd)
+            WHILE strucRC != NULL_PTR
+               IF PCALL(gpfnCntIsRecSelected, hwnd, strucRC)
+                  PCALL(gpfnCntUnSelectRec, hwnd, strucRC)
+               ENDIF
+               strucRC := PCALL(gpfnCntNextRec, strucRC)
+            ENDDO
+            PCALL(gpfnCntStyleClear, hwnd, CTS_EXTENDEDSEL)
 
-	CASE iSelectionStyle == ssBlockSelection
-		strucRC := PCALL(gpfnCntRecHeadGet, hwnd)
-		WHILE strucRC != NULL_PTR
-			IF PCALL(gpfnCntIsRecSelected, hwnd, strucRC)
-				PCALL(gpfnCntUnSelectRec, hwnd, strucRC)
-			ENDIF
-			PCALL(gpfnCntRecAttrClear, strucRC, CRA_SELECTED)
-			PCALL(gpfnCntRecAttrClear, strucRC, CRA_FLDSELECTED)
-			strucRC := PCALL(gpfnCntNextRec, strucRC)
-		ENDDO
-		PCALL(gpfnCntStyleClear, hwnd, CTS_BLOCKSEL)
-	ENDCASE
+      CASE iSelectionStyle == ssBlockSelection
+            strucRC := PCALL(gpfnCntRecHeadGet, hwnd)
+            WHILE strucRC != NULL_PTR
+               IF PCALL(gpfnCntIsRecSelected, hwnd, strucRC)
+                  PCALL(gpfnCntUnSelectRec, hwnd, strucRC)
+               ENDIF
+               PCALL(gpfnCntRecAttrClear, strucRC, CRA_SELECTED)
+               PCALL(gpfnCntRecAttrClear, strucRC, CRA_FLDSELECTED)
+               strucRC := PCALL(gpfnCntNextRec, strucRC)
+            ENDDO
+         PCALL(gpfnCntStyleClear, hwnd, CTS_BLOCKSEL)
+      ENDCASE
 
-	DO CASE
+      DO CASE
 		//case kStyle==ssNoSelection
 		//Do nothing
-	CASE kStyle==ssSingleSelection
-		PCALL(gpfnCntStyleSet, hwnd, CTS_SINGLESEL)
+      CASE kStyle==ssSingleSelection
+            PCALL(gpfnCntStyleSet, hwnd, CTS_SINGLESEL)
 
-	CASE kStyle==ssExtendedSelection
-		PCALL(gpfnCntStyleSet, hwnd, CTS_EXTENDEDSEL)
+      CASE kStyle==ssExtendedSelection
+            PCALL(gpfnCntStyleSet, hwnd, CTS_EXTENDEDSEL)
 
-	CASE kStyle==ssBlockSelection
-		PCALL(gpfnCntStyleSet, hwnd, CTS_BLOCKSEL)
-	ENDCASE
+      CASE kStyle==ssBlockSelection
+         PCALL(gpfnCntStyleSet, hwnd, CTS_BLOCKSEL)
+      ENDCASE
 
-	iSelectionStyle := kStyle
+      iSelectionStyle := kStyle
 
-	RETURN
+      RETURN
 
-METHOD __EndEditField(dwChar AS DWORD) AS VOID STRICT 
+   METHOD __EndEditField(dwChar AS DWORD) AS VOID STRICT 
 	//PP-030828 Strong typing
-	LOCAL oDCol AS DataColumn
-	LOCAL c AS STRING
+      LOCAL oDCol AS DataColumn
+      LOCAL c AS STRING
 	//	local strucEF AS _WinFieldInfo
 	//	local strucER AS _WinRecordCore
 
-	
+      
 
-	IF (oCellEdit != NULL_OBJECT)
-		oDCol := SELF:__GetColumn(strucEditField)
+      IF (oCellEdit != NULL_OBJECT)
+         oDCol := SELF:__GetColumn(strucEditField)
 
 		// If the record numbers do not match then the dataServer has
 		// moved (changed?). Therefore lose the edit!
-		IF (dwChar != VK_ESCAPE) .AND. !IsInstanceOf(oCellEdit, #OLEObject) .AND.;
-			SELF:__GetRecordNo(strucEditRecord) == oDataServer:RECNO .AND.;
-			oCellEdit:Modified
+         IF (dwChar != VK_ESCAPE) .AND. !IsInstanceOf(oCellEdit, #OLEObject) .AND.;
+            SELF:__GetRecordNo(strucEditRecord) == oDataServer:RECNO .AND.;
+            oCellEdit:Modified
 
 			//			strucER:=strucEditRecord
 			//			ptrFldBuf := strucER.lpRecData
 			//			strucEF:=strucEditField
 			//			ptrFldBuf := PTR(_CAST,DWORD(_CAST,ptrFldBuf)+strucEF.wOffStruct)
 
-			oCellEdit:__Update()
-			c := oCellEdit:TextValue
+            oCellEdit:__Update()
+            c := oCellEdit:TextValue
 			//must destroy the edit cell before calling SetValue to avoid looping
-			SELF:__DestroyEditField()
-			oDCol:SetValue(c)
-			SELF:ColumnFocusChange(oDCol, TRUE)
-		ELSE
-			SELF:__DestroyEditField()
-		ENDIF
+            SELF:__DestroyEditField()
+            oDCol:SetValue(c)
+            SELF:ColumnFocusChange(oDCol, TRUE)
+         ELSE
+            SELF:__DestroyEditField()
+         ENDIF
 
-		PCALL(gpfnCntFocusFldUnlck, hwnd)
-	ENDIF
+         PCALL(gpfnCntFocusFldUnlck, hwnd)
+      ENDIF
 
-	RETURN
+      RETURN
 
-METHOD __FieldChange() AS VOID STRICT 
+   METHOD __FieldChange() AS VOID STRICT 
 	//PP-030828 Strong typing
-	LOCAL iRecNo AS INT
-	LOCAL strucRecord AS _WinRecordCore
+      LOCAL iRecNo AS INT
+      LOCAL strucRecord AS _WinRecordCore
 
-	
-	IF oDataServer != NULL_OBJECT
-		iRecNo := oDataServer:RecNo
-		strucRecord := SELF:__GetRecordAtRecNo(iRecNo)
-		IF strucRecord != NULL_PTR
-			SELF:SuspendUpdate()
-			SELF:__DeferNotify()
+      
+      IF oDataServer != NULL_OBJECT
+         iRecNo := oDataServer:RecNo
+         strucRecord := SELF:__GetRecordAtRecNo(iRecNo)
+         IF strucRecord != NULL_PTR
+            SELF:SuspendUpdate()
+            SELF:__DeferNotify()
 
-			SELF:__FillRecord(strucRecord)
-			PCALL(gpfnCntEndRecEdit, hwnd, strucRecord, PCALL(gpfnCntFocusFldGet, hwnd))
+            SELF:__FillRecord(strucRecord)
+            PCALL(gpfnCntEndRecEdit, hwnd, strucRecord, PCALL(gpfnCntFocusFldGet, hwnd))
 
-			SELF:__EnableNotify()
-			SELF:RestoreUpdate()
-		ENDIF
-	ENDIF
+            SELF:__EnableNotify()
+            SELF:RestoreUpdate()
+         ENDIF
+      ENDIF
 
-	RETURN
+      RETURN
 
-METHOD __FillRecord(RecCore AS _WINRecordCore) AS VOID STRICT 
+   METHOD __FillRecord(RecCore AS _WINRecordCore) AS VOID STRICT 
 	//PP-030828 Strong typing
-	LOCAL ptrDest AS BYTE PTR
-	LOCAL cValue AS STRING
-	LOCAL iLen AS INT
-	LOCAL i AS INT
-	LOCAL dwOff AS DWORD
-	LOCAL dwSize AS DWORD
-	LOCAL dwLen AS DWORD
-	LOCAL strucRecCore AS _winRECORDCORE
-	LOCAL oColumn AS DataColumn
+      LOCAL ptrDest AS BYTE PTR
+      LOCAL cValue AS STRING
+      LOCAL iLen AS INT
+      LOCAL i AS INT
+      LOCAL dwOff AS DWORD
+      LOCAL dwSize AS DWORD
+      LOCAL dwLen AS DWORD
+      LOCAL strucRecCore AS _winRECORDCORE
+      LOCAL oColumn AS DataColumn
 
-	strucRecCore := RecCore
+      strucRecCore := RecCore
+      IF ptrDataBuffer == null_ptr 
+         SELF:__BuildRecordDescription()
+      ENDIF
+      IF ptrDataBuffer != NULL_PTR
+         MemSet(ptrDataBuffer, 0, DWORD(iRecordSize))
 
-	MemSet(ptrDataBuffer, 0, DWORD(iRecordSize))
+         iLen := INT(ALen(aColumn))
 
-	iLen := INT(ALen(aColumn))
+         FOR i:=1 UPTO iLen  
+            oColumn	:= aColumn[i]
+            cValue 	:= oColumn:GetValue()
+            dwOff 	:= oColumn:__Offset
+            ptrDest	:= ptrDataBuffer + dwOff
+            dwSize 	:= oColumn:__Size // Width // wrong ??
 
-	FOR i:=1 UPTO iLen  
-		oColumn	:= aColumn[i]
-		cValue 	:= oColumn:GetValue()
-		dwOff 	:= oColumn:__Offset
-		ptrDest	:= ptrDataBuffer + dwOff
-		dwSize 	:= oColumn:__Size // Width // wrong ??
+            IF (NULL_STRING != cValue)
+               dwLen := SLen(cValue)
 
-		IF (NULL_STRING != cValue)
-			dwLen := SLen(cValue)
+               IF (dwLen < dwSize)
+                  dwSize := dwLen
+               ENDIF
 
-			IF (dwLen < dwSize)
-				dwSize := dwLen
-			ENDIF
+               MemCopy(ptrDest, String2Psz(cValue), dwSize)
+            ENDIF
 
-			MemCopy(ptrDest, String2Psz(cValue), dwSize)
-		ENDIF
-
-		_NPut(ptrDest, dwSize, 0)
+            _NPut(ptrDest, dwSize, 0)
 
 		//ASSERT dword(_cast, (ptrDest+dwsize)) <= dword(_cast, (ptrDataBuffer+iRecordSize))
-	NEXT
+         NEXT
 
-	PCALL(gpfnCntRecDataSet, strucRecCore, ptrDataBuffer)
+         PCALL(gpfnCntRecDataSet, strucRecCore, ptrDataBuffer)
+      ENDIF
+      RETURN
 
-	RETURN
-
-METHOD __FindColumn(nIndex AS USUAL) AS DWORD STRICT 
+   METHOD __FindColumn(nIndex AS USUAL) AS DWORD STRICT 
 	//PP-030828 Strong typing
 	// returns Index into array
-	LOCAL sIndex AS SYMBOL
-	LOCAL dwType AS DWORD
-	LOCAL dwI, dwCount AS DWORD
-	LOCAL oDCol AS DataColumn
+      LOCAL sIndex AS SYMBOL
+      LOCAL dwType AS DWORD
+      LOCAL dwI, dwCount AS DWORD
+      LOCAL oDCol AS DataColumn
 
-	dwType := UsualType(nIndex)
-	DO CASE
-	CASE dwType == LONGINT
-		IF nIndex > 0 .AND. nIndex <= ALen(aColumn)
-			RETURN nIndex
-		ENDIF
-		RETURN 0
+      dwType := UsualType(nIndex)
+      DO CASE
+      CASE dwType == LONGINT
+            IF nIndex > 0 .AND. nIndex <= ALen(aColumn)
+               RETURN nIndex
+            ENDIF
+            RETURN 0
 	   //SE-060526
-	CASE dwType == SYMBOL .OR. dwType == STRING
-		sIndex := IIF(dwType == SYMBOL, nIndex, String2Symbol(nIndex))
-		dwCount := ALen(aColumn)
-		FOR dwI := 1 UPTO dwCount
-			oDCol := aColumn[dwI]
-			IF oDCol:NameSym == sIndex
-				RETURN dwI
-			ENDIF
-		NEXT //dwI
-		RETURN 0
+      CASE dwType == SYMBOL .OR. dwType == STRING
+            sIndex := IIF(dwType == SYMBOL, nIndex, String2Symbol(nIndex))
+            dwCount := ALen(aColumn)
+            FOR dwI := 1 UPTO dwCount
+               oDCol := aColumn[dwI]
+               IF oDCol:NameSym == sIndex
+                  RETURN dwI
+               ENDIF
+            NEXT //dwI
+            RETURN 0
 	   //SE-060526
-	CASE IsInstanceOfUsual(nIndex, #DataColumn)
-		oDCol := nIndex
-		dwCount := ALen(aColumn)
-		FOR dwI := 1 UPTO dwCount
-			IF oDCol = aColumn[dwI]
-				RETURN dwI
-			ENDIF
-		NEXT //dwI
-		RETURN 0
+      CASE IsInstanceOfUsual(nIndex, #DataColumn)
+            oDCol := nIndex
+            dwCount := ALen(aColumn)
+            FOR dwI := 1 UPTO dwCount
+               IF oDCol = aColumn[dwI]
+                  RETURN dwI
+               ENDIF
+            NEXT //dwI
+            RETURN 0
 
-	CASE (dwType == VOID)
-		RETURN 0
+      CASE (dwType == VOID)
+            RETURN 0
 
-	OTHERWISE
-		WCError{#__FindColumn,#DataBrowser,__WCSTypeError,nIndex,1}:Throw()
-	ENDCASE
+      OTHERWISE
+         WCError{#__FindColumn,#DataBrowser,__WCSTypeError,nIndex,1}:Throw()
+      ENDCASE
 
-	RETURN 0
+      RETURN 0
 
-METHOD __GetColumn(strucFI AS _WINFieldInfo) AS OBJECT STRICT 
+   METHOD __GetColumn(strucFI AS _WINFieldInfo) AS OBJECT STRICT 
 	//PP-030828 Strong typing
-	LOCAL p AS SelfPtr
-	LOCAL strucFITemp AS _WinFieldInfo
-	LOCAL oRet := NULL_OBJECT AS USUAL
+      LOCAL p AS SelfPtr
+      LOCAL strucFITemp AS _WinFieldInfo
+      LOCAL oRet := NULL_OBJECT AS USUAL
 
-	strucFITemp := strucFI
+      strucFITemp := strucFI
 
-	IF (strucFITemp != NULL_PTR)
+      IF (strucFITemp != NULL_PTR)
 	   // Note lpUserData contains a pointer to a buffer of 4 bytes with the self pointer!
-		p := strucFITemp:lpUserData // pCall(gpfnCntFldUserGet(strucFI)
-		p := p:ptrSelf
-		oRet := __WCSelfPtr2Object(p)
-	ENDIF
+         p := strucFITemp:lpUserData // pCall(gpfnCntFldUserGet(strucFI)
+         p := p:ptrSelf
+         oRet := __WCSelfPtr2Object(p)
+      ENDIF
 
-	RETURN oRet
+      RETURN oRet
 
-METHOD __GetRecordAtRecNo(iRecNo AS INT) AS _WINRecordCore STRICT 
+   METHOD __GetRecordAtRecNo(iRecNo AS INT) AS _WINRecordCore STRICT 
 	//PP-030828 Strong typing
-	LOCAL strucRecord AS _WINRecordCore
+      LOCAL strucRecord AS _WINRecordCore
 
-	
+      
 
-	strucRecord := PCALL(gpfnCntRecHeadGet, hwnd)
-	DO WHILE strucRecord != NULL_PTR
-		IF SELF:__GetRecordNo(strucRecord) == iRecNo
-			EXIT
-		ENDIF
-		strucRecord := PCALL(gpfnCntNextRec, strucRecord)
-	ENDDO
+      strucRecord := PCALL(gpfnCntRecHeadGet, hwnd)
+      DO WHILE strucRecord != NULL_PTR
+         IF SELF:__GetRecordNo(strucRecord) == iRecNo
+            EXIT
+         ENDIF
+         strucRecord := PCALL(gpfnCntNextRec, strucRecord)
+      ENDDO
 
-	RETURN strucRecord
+      RETURN strucRecord
 
-METHOD __GetRecordNo(strucRC AS _winRECORDCORE) AS LONGINT STRICT 
+   METHOD __GetRecordNo(strucRC AS _winRECORDCORE) AS LONGINT STRICT 
 	//PP-030828 Strong typing
-	LOCAL p AS LONGINT PTR
-	LOCAL strucRCTemp AS _WinRecordCore
+      LOCAL p AS LONGINT PTR
+      LOCAL strucRCTemp AS _WinRecordCore
 
-	
+      
 
-	strucRCTemp := strucRC
-	IF (strucRCTemp == NULL_PTR)
-		RETURN 0
-	ENDIF
+      strucRCTemp := strucRC
+      IF (strucRCTemp == NULL_PTR)
+         RETURN 0
+      ENDIF
 
-	p := strucRCTemp:lpUserData //pCall(gpfnCntRecUserGet(strucRC)
-	IF (p == NULL_PTR)
-		RETURN 0
-	ENDIF
+      p := strucRCTemp:lpUserData //pCall(gpfnCntRecUserGet(strucRC)
+      IF (p == NULL_PTR)
+         RETURN 0
+      ENDIF
 
-	RETURN LONGINT(p)
+      RETURN LONGINT(p)
 
-METHOD __IsDataServerEmpty() AS LOGIC STRICT 
+   METHOD __IsDataServerEmpty() AS LOGIC STRICT 
 	//PP-030828 Strong typing
-	
+      
 
-	RETURN oDataServer:BOF .AND. oDataServer:EOF
+      RETURN oDataServer:BOF .AND. oDataServer:EOF
 
-METHOD __IsFocusRecordInView() AS LOGIC STRICT 
+   METHOD __IsFocusRecordInView() AS LOGIC STRICT 
 	//PP-030828 Strong typing
-	LOCAL strucFocusRecord AS _WinRecordCore
-	LOCAL strucRecord AS _WinRecordCore
-	LOCAL iDisplaySize AS INT
+      LOCAL strucFocusRecord AS _WinRecordCore
+      LOCAL strucRecord AS _WinRecordCore
+      LOCAL iDisplaySize AS INT
 
-	
+      
 
-	IF (strucFocusRecord := PCALL(gpfnCntFocusRecGet, hwnd)) == NULL_PTR
-		RETURN FALSE
-	ENDIF
+      IF (strucFocusRecord := PCALL(gpfnCntFocusRecGet, hwnd)) == NULL_PTR
+         RETURN FALSE
+      ENDIF
 
-	iDisplaySize := PCALL(gpfnCntRecsDispGet, hwnd)
-	strucRecord := PCALL(gpfnCntTopRecGet, hwnd)
-	DO WHILE iDisplaySize > 1
-		IF strucRecord == NULL_PTR
-			EXIT
-		ELSEIF strucRecord == strucFocusRecord
-			EXIT
-		ENDIF
-		strucRecord := PCALL(gpfnCntNextRec, strucRecord)
-		iDisplaySize--
-	ENDDO
+      iDisplaySize := PCALL(gpfnCntRecsDispGet, hwnd)
+      strucRecord := PCALL(gpfnCntTopRecGet, hwnd)
+      DO WHILE iDisplaySize > 1
+         IF strucRecord == NULL_PTR
+            EXIT
+         ELSEIF strucRecord == strucFocusRecord
+            EXIT
+         ENDIF
+         strucRecord := PCALL(gpfnCntNextRec, strucRecord)
+         iDisplaySize--
+      ENDDO
 
-	RETURN (strucRecord == strucFocusRecord)
+      RETURN (strucRecord == strucFocusRecord)
 
-ASSIGN __LastChar(dwNewLastChar AS DWORD)  STRICT 
+   ASSIGN __LastChar(dwNewLastChar AS DWORD)  STRICT 
 	//PP-030828 Strong typing
-	
+      
 
-	RETURN (dwLastChar := dwNewLastChar)
+      RETURN (dwLastChar := dwNewLastChar)
 
-METHOD __NewFocusField(strucFI AS _WINFieldInfo) AS VOID STRICT 
+   METHOD __NewFocusField(strucFI AS _WINFieldInfo) AS VOID STRICT 
 	//PP-030828 Strong typing
-	
+      
 
-	IF strucFocusField != NULL_PTR
-		SELF:ColumnFocusChange(SELF:__GetColumn(strucFocusField), FALSE)
-	ENDIF
+      IF strucFocusField != NULL_PTR
+         SELF:ColumnFocusChange(SELF:__GetColumn(strucFocusField), FALSE)
+      ENDIF
 
-	IF StrucFI != NULL_PTR
-		SELF:ColumnFocusChange(SELF:__GetColumn(StrucFI), TRUE)
-	ENDIF
+      IF StrucFI != NULL_PTR
+         SELF:ColumnFocusChange(SELF:__GetColumn(StrucFI), TRUE)
+      ENDIF
 
-	strucFocusField := strucFI
+      strucFocusField := strucFI
 
-	RETURN
+      RETURN
 
-METHOD __NewFocusRecord(strucRC AS _WINRecordCore, strucFI AS _WINFieldInfo) AS VOID STRICT 
+   METHOD __NewFocusRecord(strucRC AS _WINRecordCore, strucFI AS _WINFieldInfo) AS VOID STRICT 
 	//PP-030828 Strong typing
-	LOCAL iRecNo AS INT
-	LOCAL strucOldFI AS _WinFieldInfo
+      LOCAL iRecNo AS INT
+      LOCAL strucOldFI AS _WinFieldInfo
 
-	
+      
 
-	iRecNo := SELF:__GetRecordNo(strucRC)
+      iRecNo := SELF:__GetRecordNo(strucRC)
 
-	IF oDataServer:RecNo == 0
-		oDataServer:Update()
-		oDataServer:GoTo(iRecNo - 1)
-	ELSE
-		iDeferNotifyCount := iDeferNotifyCount + 1
+      IF oDataServer:RecNo == 0
+         oDataServer:Update()
+         oDataServer:GoTo(iRecNo - 1)
+      ELSE
+         iDeferNotifyCount := iDeferNotifyCount + 1
 		// self:__DeferNotify()
-		IF oDataServer:GoTo(iRecNo)
-			strucOldFI := PCALL(gpfnCntFocusFldGet, hwnd)
+         IF oDataServer:GoTo(iRecNo)
+            strucOldFI := PCALL(gpfnCntFocusFldGet, hwnd)
 
-			PCALL(gpfnCntFocusSet, hwnd, strucRC, strucFI)
-			PCALL(gpfnCntFocusRecLock, hwnd)
+            PCALL(gpfnCntFocusSet, hwnd, strucRC, strucFI)
+            PCALL(gpfnCntFocusRecLock, hwnd)
 
-			IF strucOldFI != strucFI
-				SELF:__NewFocusField(strucFI)
-			ENDIF
-		ELSE
-			PCALL(gpfnCntFocusRecLock, hwnd)
-		ENDIF
-		iDeferNotifyCount := iDeferNotifyCount - 1
+            IF strucOldFI != strucFI
+               SELF:__NewFocusField(strucFI)
+            ENDIF
+         ELSE
+            PCALL(gpfnCntFocusRecLock, hwnd)
+         ENDIF
+         iDeferNotifyCount := iDeferNotifyCount - 1
 		// self:__EnableNotify()
-	ENDIF
+      ENDIF
 
-	RETURN
+      RETURN
 
-METHOD __NotifyChanges(kNotify AS DWORD) AS USUAL STRICT 
+   METHOD __NotifyChanges(kNotify AS DWORD) AS USUAL STRICT 
 	//PP-030828 Strong typing
-	
+      
 
-	IF iDeferNotifyCount == 0
+      IF iDeferNotifyCount == 0
 		// if in the middle of an edit - end it
-		IF (oCellEdit != NULL_OBJECT)
-			SELF:__EndEditField(0)
-		ENDIF
+         IF (oCellEdit != NULL_OBJECT)
+            SELF:__EndEditField(0)
+         ENDIF
 
-		SWITCH kNotify
-		CASE GBNFY_INTENTTOMOVE
-			RETURN SELF:Validate()
-		CASE GBNFY_RECORDCHANGE
-			SELF:__RecordChange()
-		CASE GBNFY_DOGOTOP 
-		CASE GBNFY_DOGOEND
-			SELF:__RecordChange()
-			SELF:__RefreshBuffer()
-		CASE GBNFY_FIELDCHANGE
-			SELF:__FieldChange()
-		CASE GBNFY_FILECHANGE
-			SELF:__RefreshBuffer()
-		CASE GBNFY_DONEWROW
-			SELF:__RefreshBuffer()
-		CASE GBNFY_DODELETE
-			SELF:__RecordDelete()
-		END SWITCH
-	ELSE
-		IF kNotify == GBNFY_INTENTTOMOVE
-			RETURN TRUE
-		ELSE
-			RETURN NIL
-		ENDIF
-	ENDIF
-	RETURN NIL
+         SWITCH kNotify
+         CASE GBNFY_INTENTTOMOVE
+            RETURN SELF:Validate()
+         CASE GBNFY_RECORDCHANGE
+            SELF:__RecordChange()
+            CASE GBNFY_DOGOTOP 
+         CASE GBNFY_DOGOEND
+               SELF:__RecordChange()
+            SELF:__RefreshBuffer()
+         CASE GBNFY_FIELDCHANGE
+            SELF:__FieldChange()
+         CASE GBNFY_FILECHANGE
+            SELF:__RefreshBuffer()
+         CASE GBNFY_DONEWROW
+            SELF:__RefreshBuffer()
+         CASE GBNFY_DODELETE
+            SELF:__RecordDelete()
+         END SWITCH
+      ELSE
+         IF kNotify == GBNFY_INTENTTOMOVE
+            RETURN TRUE
+         ELSE
+            RETURN NIL
+         ENDIF
+      ENDIF
+      RETURN NIL
 
-ACCESS __NotifyWindow AS PTR STRICT 
+   ACCESS __NotifyWindow AS PTR STRICT 
 	//PP-030828 Strong typing
-	
+      
 
-	RETURN hNotifyWindow
+      RETURN hNotifyWindow
 
-METHOD __RecordChange() AS VOID STRICT 
+   METHOD __RecordChange() AS VOID STRICT 
 	//PP-030828 Strong typing
-	LOCAL iRecNo AS INT
-	LOCAL iCount AS INT
-	LOCAL strucRecord AS _WinRecordCore
+      LOCAL iRecNo AS INT
+      LOCAL iCount AS INT
+      LOCAL strucRecord AS _WinRecordCore
 	//local i as int
 
-	
+      
 
-	IF oDataServer != NULL_OBJECT
-		iRecNo := oDataServer:RecNo
+      IF oDataServer != NULL_OBJECT
+         iRecNo := oDataServer:RecNo
 
 		// check if record is already focused
-		strucRecord := PCALL(gpfnCntFocusRecGet, hwnd)
-		IF strucRecord != NULL_PTR .AND.;
-			SELF:__GetRecordNo(strucRecord) == iRecNo
+         strucRecord := PCALL(gpfnCntFocusRecGet, hwnd)
+         IF strucRecord != NULL_PTR .AND.;
+            SELF:__GetRecordNo(strucRecord) == iRecNo
 			// make sure that it is selected
-			PCALL(gpfnCntSelectRec, hwnd, strucRecord)
-		ELSE
+            PCALL(gpfnCntSelectRec, hwnd, strucRecord)
+         ELSE
 			// check if record is in the buffer
-			strucRecord := PCALL(gpfnCntRecHeadGet, hwnd)
-			DO WHILE strucRecord != NULL_PTR
-				IF SELF:__GetRecordNo(strucRecord) == iRecNo
-					EXIT
-				ENDIF
-				strucRecord := PCALL(gpfnCntNextRec, strucRecord)
-				iCount++
-			ENDDO
+            strucRecord := PCALL(gpfnCntRecHeadGet, hwnd)
+            DO WHILE strucRecord != NULL_PTR
+               IF SELF:__GetRecordNo(strucRecord) == iRecNo
+                  EXIT
+               ENDIF
+               strucRecord := PCALL(gpfnCntNextRec, strucRecord)
+               iCount++
+            ENDDO
 
 			// record is in the buffer so focus it
-			IF strucRecord != NULL_PTR
-				PCALL(gpfnCntFocusSet, hwnd, strucRecord, PCALL(gpfnCntFocusFldGet, hwnd))
-				PCALL(gpfnCntFocusRecLock, hwnd)
+            IF strucRecord != NULL_PTR
+               PCALL(gpfnCntFocusSet, hwnd, strucRecord, PCALL(gpfnCntFocusFldGet, hwnd))
+               PCALL(gpfnCntFocusRecLock, hwnd)
 
-				IF !SELF:__IsFocusRecordInView()
-					IF !lHasTop
+               IF !SELF:__IsFocusRecordInView()
+                  IF !lHasTop
 						//i := pCall(gpfnCntDeltaPosExGet, hwnd)
-						iCount += iBufferGranularity //iBufferGranularity
-					ENDIF
-					IF !lHasBottom
-						PCALL(gpfnCntCurrentPosExSet, hwnd, iCount)
-					ELSE
+                     iCount += iBufferGranularity //iBufferGranularity
+                  ENDIF
+                  IF !lHasBottom
+                     PCALL(gpfnCntCurrentPosExSet, hwnd, iCount)
+                  ELSE
 						// !not clean! need better solution
-						SELF:__RefreshBuffer()
-					ENDIF
-				ENDIF
-			ELSE
-				SELF:__RefreshBuffer()
-			ENDIF
-		ENDIF
-	ENDIF
+                     SELF:__RefreshBuffer()
+                  ENDIF
+               ENDIF
+            ELSE
+               SELF:__RefreshBuffer()
+            ENDIF
+         ENDIF
+      ENDIF
 
-	RETURN
+      RETURN
 
-METHOD __RecordDelete() AS VOID STRICT 
+   METHOD __RecordDelete() AS VOID STRICT 
 	//PP-030828 Strong typing
-	LOCAL strucRecord AS _WinRecordCore
-	LOCAL iRecno AS INT
-	LOCAL iTopRecno AS INT
+      LOCAL strucRecord AS _WinRecordCore
+      LOCAL iRecno AS INT
+      LOCAL iTopRecno AS INT
 
-	
+      
 
-	iRecNo := oDataServer:RecNo
-	SELF:SuspendUpdate()
-	SELF:__DeferNotify()
+      iRecNo := oDataServer:RecNo
+      SELF:SuspendUpdate()
+      SELF:__DeferNotify()
 
-	strucRecord := PCALL(gpfnCntTopRecGet, hwnd)
-	IF strucRecord != NULL_PTR
-		oDataServer:Skip(1)
-		IF oDataServer:EOF
-			oDataServer:Skip(-1)
-		ENDIF
-	ELSE
-		iTopRecNo := SELF:__GetRecordNo(strucRecord)
-		IF iTopRecNo != iRecNo
-			oDataServer:GoTo(iTopRecNo)
-		ELSE
-			oDataServer:Skip(1)
-			IF oDataServer:EOF
-				oDataServer:Skip(-1)
-			ENDIF
-		ENDIF
-	ENDIF
+      strucRecord := PCALL(gpfnCntTopRecGet, hwnd)
+      IF strucRecord != NULL_PTR
+         oDataServer:Skip(1)
+         IF oDataServer:EOF
+            oDataServer:Skip(-1)
+         ENDIF
+      ELSE
+         iTopRecNo := SELF:__GetRecordNo(strucRecord)
+         IF iTopRecNo != iRecNo
+            oDataServer:GoTo(iTopRecNo)
+         ELSE
+            oDataServer:Skip(1)
+            IF oDataServer:EOF
+               oDataServer:Skip(-1)
+            ENDIF
+         ENDIF
+      ENDIF
 
-	SELF:__ClearBuffers()
-	IF !SELF:__IsDataServerEmpty()
-		SELF:__BuildNewBuffer(oDataServer:RecNo)
-	ENDIF
+      SELF:__ClearBuffers()
+      IF !SELF:__IsDataServerEmpty()
+         SELF:__BuildNewBuffer(oDataServer:RecNo)
+      ENDIF
 
-	oDataServer:GoTo(iRecNo)
-	SELF:__EnableNotify()
-	SELF:RestoreUpdate()
+      oDataServer:GoTo(iRecNo)
+      SELF:__EnableNotify()
+      SELF:RestoreUpdate()
 
-	RETURN
+      RETURN
 
-METHOD __RefreshBuffer() AS VOID STRICT 
+   METHOD __RefreshBuffer() AS VOID STRICT 
 	//PP-030828 Strong typing
-	
+      
 
-	SELF:SuspendUpdate()
-	SELF:__BuildBuffer()
-	SELF:RestoreUpdate()
+      SELF:SuspendUpdate()
+      SELF:__BuildBuffer()
+      SELF:RestoreUpdate()
 
-	RETURN
+      RETURN
 
-METHOD __RefreshData() AS VOID STRICT 
+   METHOD __RefreshData() AS VOID STRICT 
 	//PP-030828 Strong typing
-	
+      
 
-	ASend(aColumn, #__Scatter)
+      ASend(aColumn, #__Scatter)
 
-	RETURN
+      RETURN
 
-METHOD __RefreshField(uFieldName AS USUAL) AS DWORD 
+   METHOD __RefreshField(uFieldName AS USUAL) AS DWORD 
 	//PP-030828 Strong typing
-	LOCAL i, iLen AS DWORD
-	LOCAL symFieldName AS SYMBOL
-	LOCAL oDF AS DataField
-	LOCAL oCol AS DataColumn
-	IF IsSymbol(uFieldName)
-		symFieldName:=uFieldName
-		iLen := ALen(aColumn)
-		FOR i := 1 TO iLen    
-			oCol :=aColumn[i] 
-			oDF := oCol:__DataField
-			IF (oDF != NULL_OBJECT) .AND. (oDF:NameSym == symFieldName)
-				oCol:__Scatter()
-			ENDIF
-		NEXT
-	ENDIF
+      LOCAL i, iLen AS DWORD
+      LOCAL symFieldName AS SYMBOL
+      LOCAL oDF AS DataField
+      LOCAL oCol AS DataColumn
+      IF IsSymbol(uFieldName)
+         symFieldName:=uFieldName
+         iLen := ALen(aColumn)
+         FOR i := 1 TO iLen    
+            oCol :=aColumn[i] 
+            oDF := oCol:__DataField
+            IF (oDF != NULL_OBJECT) .AND. (oDF:NameSym == symFieldName)
+               oCol:__Scatter()
+            ENDIF
+         NEXT
+      ENDIF
 
-	RETURN i
+      RETURN i
 
-METHOD __RegisterFieldLinks(oDS AS DataServer) AS LOGIC STRICT 
+   METHOD __RegisterFieldLinks(oDS AS DataServer) AS LOGIC STRICT 
 	//PP-030828 Strong typing
-	LOCAL oDC AS DataColumn
-	LOCAL i, iDF, iColumns AS INT
+      LOCAL oDC AS DataColumn
+      LOCAL i, iDF, iColumns AS INT
 
 	// Link in columns depending on two conditions.
 	// If we already have columns registered with the browser then assume
@@ -1556,1572 +1576,1572 @@ METHOD __RegisterFieldLinks(oDS AS DataServer) AS LOGIC STRICT
 	// If no columns have been registered with the form then we
 	// assume auto layout is desired.
 
-	
+      
 
-	iColumns := INT(Len(aColumn))
-	IF (iColumns > 0)
-		FOR i:=1 UPTO iColumns
-			oDC := aColumn[i]
-			iDF := oDS:FieldPos(oDC:NameSym)
-			IF iDF>0 .AND. IsNil(oDC:Server) // Only one datafield per column
-				oDC:LinkDF(oDS, iDF) // Exit here, only one column per
-				lLinked := TRUE
-			ENDIF
-		NEXT
-	ELSE
+      iColumns := INT(Len(aColumn))
+      IF (iColumns > 0)
+         FOR i:=1 UPTO iColumns
+            oDC := aColumn[i]
+            iDF := oDS:FieldPos(oDC:NameSym)
+            IF iDF>0 .AND. IsNil(oDC:Server) // Only one datafield per column
+               oDC:LinkDF(oDS, iDF) // Exit here, only one column per
+               lLinked := TRUE
+            ENDIF
+         NEXT
+      ELSE
 		// We need to do an auto layout for the form
-		lLinked := .T. 
-		SELF:__AutoLayout()
-	ENDIF
+         lLinked := .T. 
+         SELF:__AutoLayout()
+      ENDIF
 
 	// Register the form as a client of the Server
-	IF lLinked
-		oDS:RegisterClient(SELF)
-	ENDIF
+      IF lLinked
+         oDS:RegisterClient(SELF)
+      ENDIF
 
-	RETURN lLinked
+      RETURN lLinked
 
-METHOD __SetMaxFTHeight(iLines AS INT) AS VOID STRICT 
+   METHOD __SetMaxFTHeight(iLines AS INT) AS VOID STRICT 
 	//PP-030828 Strong typing
-	
+      
 
-	IF lColumnTitles
-		IF iFTHeight < ilines
-			iFTHeight := ilines
-		ENDIF
-	ELSE
-		iFTHeight := 0
-	ENDIF
-	PCALL(gpfnCntFldTtlHtSet, hwnd, iFTHeight)
+      IF lColumnTitles
+         IF iFTHeight < ilines
+            iFTHeight := ilines
+         ENDIF
+      ELSE
+         iFTHeight := 0
+      ENDIF
+      PCALL(gpfnCntFldTtlHtSet, hwnd, iFTHeight)
 
-	RETURN
+      RETURN
 
-METHOD __StatusOK() AS DataColumn STRICT 
+   METHOD __StatusOK() AS DataColumn STRICT 
 	//PP-030828 Strong typing
 	//SE-060526
-	LOCAL oDCInvalidColumn AS DataColumn
-	LOCAL dwI, dwCount AS DWORD
+      LOCAL oDCInvalidColumn AS DataColumn
+      LOCAL dwI, dwCount AS DWORD
 
-	
+      
 
-	dwCount := ALen(aColumn)
-	FOR dwI := 1 UPTO dwCount
-		oDCInvalidColumn := aColumn[dwI]
-		IF oDCInvalidColumn:Status != NIL
-			RETURN oDCInvalidColumn
-		ENDIF
-	NEXT //dwI
+      dwCount := ALen(aColumn)
+      FOR dwI := 1 UPTO dwCount
+         oDCInvalidColumn := aColumn[dwI]
+         IF oDCInvalidColumn:Status != NIL
+            RETURN oDCInvalidColumn
+         ENDIF
+      NEXT //dwI
 
-   oDCInvalidColumn:= NULL_OBJECT
+      oDCInvalidColumn:= NULL_OBJECT
 
-	RETURN oDCInvalidColumn
+      RETURN oDCInvalidColumn
 
-METHOD __TestForBottom() AS LOGIC STRICT 
+   METHOD __TestForBottom() AS LOGIC STRICT 
 	//PP-030828 Strong typing
-	LOCAL lRetCode AS LOGIC
-	LOCAL iRecNo AS INT
+      LOCAL lRetCode AS LOGIC
+      LOCAL iRecNo AS INT
 
-	
+      
 
-	IF oDataServer:EOF
-		RETURN TRUE
-	ENDIF
+      IF oDataServer:EOF
+         RETURN TRUE
+      ENDIF
 
-	iRecNo := oDataServer:RecNo
-	oDataServer:Skip(1)
-	lRetCode := oDataServer:EOF
-	oDataServer:GoTo(iRecNo)
+      iRecNo := oDataServer:RecNo
+      oDataServer:Skip(1)
+      lRetCode := oDataServer:EOF
+      oDataServer:GoTo(iRecNo)
 
-	RETURN lRetCode
+      RETURN lRetCode
 
-METHOD __TestForTop() AS LOGIC STRICT 
+   METHOD __TestForTop() AS LOGIC STRICT 
 	//PP-030828 Strong typing
-	LOCAL lRetCode AS LOGIC
-	LOCAL iRecNo AS INT
+      LOCAL lRetCode AS LOGIC
+      LOCAL iRecNo AS INT
 
-	
+      
 
-	IF oDataServer:Bof
-		RETURN TRUE
-	ENDIF
-	iRecNo := oDataServer:RecNo
+      IF oDataServer:Bof
+         RETURN TRUE
+      ENDIF
+      iRecNo := oDataServer:RecNo
 
-	oDataServer:Skip(-1)
-	lRetCode := oDataServer:BOF
-	oDataServer:GoTo(iRecno)
+      oDataServer:Skip(-1)
+      lRetCode := oDataServer:BOF
+      oDataServer:GoTo(iRecno)
 
-	RETURN lRetCode
+      RETURN lRetCode
 
-METHOD __Unlink(oDS := NIL AS USUAL) AS Control STRICT 
+   METHOD __Unlink(oDS := NIL AS USUAL) AS Control STRICT 
 	//PP-030828 Strong typing
-	
+      
 
-	ASend(aColumn, #__UnLink, oDataServer)
+      ASend(aColumn, #__UnLink, oDataServer)
 
-	IF oDataServer != NULL_OBJECT
-		oDataServer:UnRegisterClient(SELF)
-		oDataServer := NULL_OBJECT
-	ENDIF
+      IF oDataServer != NULL_OBJECT
+         oDataServer:UnRegisterClient(SELF)
+         oDataServer := NULL_OBJECT
+      ENDIF
 
-	RETURN SELF
+      RETURN SELF
 
-METHOD AddColumn(oGColumn, nIndex) 
-	LOCAL i AS INT
-	LOCAL iLen AS INT
-	LOCAL dwPosition AS DWORD
-	LOCAL lRetCode AS LOGIC
+   METHOD AddColumn(oGColumn, nIndex) 
+      LOCAL i AS INT
+      LOCAL iLen AS INT
+      LOCAL dwPosition AS DWORD
+      LOCAL lRetCode AS LOGIC
 
-	
+      
 
-	SELF:SuspendUpdate()
+      SELF:SuspendUpdate()
 
-	IF !IsLong(nIndex) .OR. (nIndex == 0) .OR. (nIndex > ALen(aColumn))
-		dwPosition := 0 // append to tail
-	ELSE
-		dwPosition := SELF:__FindColumn(nIndex)
-	ENDIF
+      IF !IsLong(nIndex) .OR. (nIndex == 0) .OR. (nIndex > ALen(aColumn))
+         dwPosition := 0 // append to tail
+      ELSE
+         dwPosition := SELF:__FindColumn(nIndex)
+      ENDIF
 
 	// add array of columns if parameter is array
-	IF IsArray(oGColumn)
-		iLen := INT(ALen(oGColumn))
-		FOR i := 1 UPTO iLen
-			lRetCode := SELF:__AddColumn(oGColumn[i], INT(dwPosition))
-			IF !lRetcode
-				EXIT
-			ENDIF
+      IF IsArray(oGColumn)
+         iLen := INT(ALen(oGColumn))
+         FOR i := 1 UPTO iLen
+            lRetCode := SELF:__AddColumn(oGColumn[i], INT(dwPosition))
+            IF !lRetcode
+               EXIT
+            ENDIF
 			// iPosition++
-		NEXT
-	ELSE
-		lRetCode := SELF:__AddColumn(oGColumn, INT(dwPosition))
-	ENDIF
+         NEXT
+      ELSE
+         lRetCode := SELF:__AddColumn(oGColumn, INT(dwPosition))
+      ENDIF
 
 	// if data server connection - refresh columns
-	IF (oDataServer != NULL_OBJECT)
-		SELF:__BuildRecordDescription()
-		SELF:__RefreshBuffer()
-	ENDIF
+      IF (oDataServer != NULL_OBJECT)
+         SELF:__BuildRecordDescription()
+         SELF:__RefreshBuffer()
+      ENDIF
 
-	SELF:RestoreUpdate()
+      SELF:RestoreUpdate()
 
-	RETURN lRetCode
+      RETURN lRetCode
 
-METHOD AsString 
+   METHOD AsString 
 	// Used for ? oDB style syntax
 	// Dummy value for now
-	
+      
 
-	RETURN ResourceString{__WCSDBrowserObject}:value
+      RETURN ResourceString{__WCSDBrowserObject}:value
 
-ACCESS Background 
-	
+   ACCESS Background 
+      
 
-	RETURN oBackgroundText
+      RETURN oBackgroundText
 
-ASSIGN Background(oBrush) 
-	
+   ASSIGN Background(oBrush) 
+      
 
-	SELF:ChangeBackground(oBrush, gblText)
+      SELF:ChangeBackground(oBrush, gblText)
 
-	RETURN 
+      RETURN 
 
-METHOD CanUndo() 
-	
+   METHOD CanUndo() 
+      
 
-	IF IsInstanceOf(oCellEdit,#Edit)
-		RETURN Send(oCellEdit,#CanUndo)
-	ENDIF
+      IF IsInstanceOf(oCellEdit,#Edit)
+         RETURN Send(oCellEdit,#CanUndo)
+      ENDIF
 
-	RETURN FALSE
+      RETURN FALSE
 
-ASSIGN Caption(sCaption) 
-	
+   ASSIGN Caption(sCaption) 
+      
 
-	SELF:SetCaption(sCaption)
+      SELF:SetCaption(sCaption)
 
-	RETURN 
+      RETURN 
 
-ACCESS CellEdit 
+   ACCESS CellEdit 
 	// DHer: 18/12/2008
-RETURN SELF:oCellEdit
+      RETURN SELF:oCellEdit
 
-METHOD ChangeBackground ( oBrush, kWhere ) 
-	LOCAL iCntLoc AS DWORD
-	LOCAL dwNewColor AS DWORD
+   METHOD ChangeBackground ( oBrush, kWhere ) 
+      LOCAL iCntLoc AS DWORD
+      LOCAL dwNewColor AS DWORD
 
-	
+      
 
-	IF !IsInstanceOfUsual(oBrush,#Brush)
-		WCError{#ChangeBackground,#DataBrowser,__WCSTypeError,oBrush,1}:Throw()
-	ENDIF
-	IF !IsNil(kWhere)
-		IF !IsLong(kWhere)
-			WCError{#ChangeBackground,#DataBrowser,__WCSTypeError,kWhere,2}:Throw()
-		ENDIF
-	ENDIF
+      IF !IsInstanceOfUsual(oBrush,#Brush)
+         WCError{#ChangeBackground,#DataBrowser,__WCSTypeError,oBrush,1}:Throw()
+      ENDIF
+      IF !IsNil(kWhere)
+         IF !IsLong(kWhere)
+            WCError{#ChangeBackground,#DataBrowser,__WCSTypeError,kWhere,2}:Throw()
+         ENDIF
+      ENDIF
 
-	DO CASE
-	CASE kWhere==gblCaption
-		iCntLoc := CNTCOLOR_TTLBKGD
-		oBackgroundCaption := oBrush
-		IF oBackgroundCaption==NULL_OBJECT
-			dwNewColor := GetSysColor(COLOR_BTNFACE)
-		ENDIF
+      DO CASE
+      CASE kWhere==gblCaption
+            iCntLoc := CNTCOLOR_TTLBKGD
+            oBackgroundCaption := oBrush
+            IF oBackgroundCaption==NULL_OBJECT
+               dwNewColor := GetSysColor(COLOR_BTNFACE)
+            ENDIF
 
-	CASE kWhere==gblText
-		iCntLoc := CNTCOLOR_FLDBKGD
-		oBackgroundText := oBrush
-		IF oBackgroundText==NULL_OBJECT
-			dwnewColor := GetSysColor(COLOR_WINDOW)
-		ENDIF
+      CASE kWhere==gblText
+            iCntLoc := CNTCOLOR_FLDBKGD
+            oBackgroundText := oBrush
+            IF oBackgroundText==NULL_OBJECT
+               dwnewColor := GetSysColor(COLOR_WINDOW)
+            ENDIF
 
-	CASE kWhere==gblColCaption
-		iCntLoc := CNTCOLOR_FLDTTLBKGD
-		oBackgroundColCaption := oBrush
-		IF oBackgroundColCaption==NULL_OBJECT
-			dwNewColor := GetSysColor(COLOR_BTNFACE)
-		ENDIF
+      CASE kWhere==gblColCaption
+            iCntLoc := CNTCOLOR_FLDTTLBKGD
+            oBackgroundColCaption := oBrush
+            IF oBackgroundColCaption==NULL_OBJECT
+               dwNewColor := GetSysColor(COLOR_BTNFACE)
+            ENDIF
 
-	CASE kWhere==gblButton
-		iCntLoc := CNTCOLOR_TTLBTNBKGD
-		oBackgroundButton := oBrush
-		IF oBackgroundButton==NULL_OBJECT
-			dwNewColor := GetSysColor(COLOR_BTNFACE)
-		ENDIF
+      CASE kWhere==gblButton
+            iCntLoc := CNTCOLOR_TTLBTNBKGD
+            oBackgroundButton := oBrush
+            IF oBackgroundButton==NULL_OBJECT
+               dwNewColor := GetSysColor(COLOR_BTNFACE)
+            ENDIF
 
-	CASE kWhere==gblColButton
-		iCntLoc := CNTCOLOR_FLDBTNBKGD
-		oBackgroundColButton := oBrush
-		IF oBackgroundColButton==NULL_OBJECT
-			dwNewColor := GetSysColor(COLOR_BTNFACE)
-		ENDIF
+      CASE kWhere==gblColButton
+            iCntLoc := CNTCOLOR_FLDBTNBKGD
+            oBackgroundColButton := oBrush
+            IF oBackgroundColButton==NULL_OBJECT
+               dwNewColor := GetSysColor(COLOR_BTNFACE)
+            ENDIF
 
-	CASE kWhere==gblHiText
-		iCntLoc := CNTCOLOR_HIGHLIGHT
-		oBackgroundHiText := oBrush
-		IF oBackgroundHiText==NULL_OBJECT
-			dwNewColor := GetSysColor(COLOR_HIGHLIGHT)
-		ENDIF
-	ENDCASE
+      CASE kWhere==gblHiText
+            iCntLoc := CNTCOLOR_HIGHLIGHT
+            oBackgroundHiText := oBrush
+            IF oBackgroundHiText==NULL_OBJECT
+               dwNewColor := GetSysColor(COLOR_HIGHLIGHT)
+         ENDIF
+      ENDCASE
 
-	IF oBrush != NULL_OBJECT
-		dwNewColor := __WCGetBrushColor(oBrush)
-	ENDIF
+      IF oBrush != NULL_OBJECT
+         dwNewColor := __WCGetBrushColor(oBrush)
+      ENDIF
 
-	PCALL(gpfnCntColorSet, hwnd, iCntLoc, dwNewColor)
+      PCALL(gpfnCntColorSet, hwnd, iCntLoc, dwNewColor)
 
-	IF kWhere == gblText
-		PCALL(gpfnCntColorSet, hwnd, CNTCOLOR_CNTBKGD, dwNewColor)
-	ENDIF
+      IF kWhere == gblText
+         PCALL(gpfnCntColorSet, hwnd, CNTCOLOR_CNTBKGD, dwNewColor)
+      ENDIF
 
-	RETURN SELF
+      RETURN SELF
 
-METHOD ChangeFont(oFont, kWhere) 
-	LOCAL iCntLoc AS DWORD
-	LOCAL oOldFont AS Font
-	LOCAL hFont AS PTR
+   METHOD ChangeFont(oFont, kWhere) 
+      LOCAL iCntLoc AS DWORD
+      LOCAL oOldFont AS Font
+      LOCAL hFont AS PTR
 
-	
+      
 
-	IF !IsInstanceOfUsual(oFont,#Font)
-		WCError{#ChangeFont,#DataBrowser,__WCSTypeError,oFont,1}:Throw()
-	ENDIF
-	IF !IsNil(kWhere)
-		IF !IsLong(kWhere)
-			WCError{#ChangeFont,#DataBrowser,__WCSTypeError,kWhere,2}:Throw()
-		ENDIF
-	ENDIF
+      IF !IsInstanceOfUsual(oFont,#Font)
+         WCError{#ChangeFont,#DataBrowser,__WCSTypeError,oFont,1}:Throw()
+      ENDIF
+      IF !IsNil(kWhere)
+         IF !IsLong(kWhere)
+            WCError{#ChangeFont,#DataBrowser,__WCSTypeError,kWhere,2}:Throw()
+         ENDIF
+      ENDIF
 
-	SWITCH (INT) kWhere
-	CASE gblCaption
-		iCntLoc := CF_TITLE
+      SWITCH (INT) kWhere
+      CASE gblCaption
+            iCntLoc := CF_TITLE
 
-	CASE gblText
-		iCntLoc := CF_GENERAL
-		oFontText := oFont
+      CASE gblText
+            iCntLoc := CF_GENERAL
+            oFontText := oFont
 
-	CASE gblColCaption
-		iCntLoc := CF_FLDTITLE
+      CASE gblColCaption
+            iCntLoc := CF_FLDTITLE
 
-	CASE gblButton
-    CASE gblColButton
-    CASE gblHiText
-		iCntLoc := CF_GENERAL
-	END SWITCH
+         CASE gblButton
+         CASE gblColButton
+      CASE gblHiText
+         iCntLoc := CF_GENERAL
+      END SWITCH
 
-	hFont := oFont:Handle()
-	IF (hFont == NULL_PTR)
-		oOldFont := oParent:Font
-		oParent:Font := oFont
-		oParent:SizeText("Hello")
-		oParent:Font := oOldFont
-	ELSE
-		PCALL(gpfnCntFontSet, hwnd, hFont, iCntLoc)
-		IF (iCntLoc == CF_GENERAL)
-			oEditFont := oFont
-		ENDIF
-	ENDIF
+      hFont := oFont:Handle()
+      IF (hFont == NULL_PTR)
+         oOldFont := oParent:Font
+         oParent:Font := oFont
+         oParent:SizeText("Hello")
+         oParent:Font := oOldFont
+      ELSE
+         PCALL(gpfnCntFontSet, hwnd, hFont, iCntLoc)
+         IF (iCntLoc == CF_GENERAL)
+            oEditFont := oFont
+         ENDIF
+      ENDIF
 
-	RETURN SELF
+      RETURN SELF
 
-METHOD ChangeTextColor(oColor, kWhere) 
-	LOCAL iCntLoc AS DWORD
-	LOCAL ptrColor AS BYTE PTR
-	LOCAL dwRGB AS DWORD
+   METHOD ChangeTextColor(oColor, kWhere) 
+      LOCAL iCntLoc AS DWORD
+      LOCAL ptrColor AS BYTE PTR
+      LOCAL dwRGB AS DWORD
 
-	
+      
 
-	IF IsNumeric(oColor)
-		oColor := Color{oColor}
-	ELSEIF !IsInstanceOfUsual(oColor,#Color)
-		WCError{#ChangeTextColor,#DataBrowser,__WCSTypeError,oColor,1}:Throw()
-	ENDIF
-	IF !IsNil(kWhere)
-		IF !IsLong(kWhere)
-			WCError{#ChangeTextColor,#DataBrowser,__WCSTypeError,kWhere,2}:Throw()
-		ENDIF
-	ENDIF
+      IF IsNumeric(oColor)
+         oColor := Color{oColor}
+      ELSEIF !IsInstanceOfUsual(oColor,#Color)
+         WCError{#ChangeTextColor,#DataBrowser,__WCSTypeError,oColor,1}:Throw()
+      ENDIF
+      IF !IsNil(kWhere)
+         IF !IsLong(kWhere)
+            WCError{#ChangeTextColor,#DataBrowser,__WCSTypeError,kWhere,2}:Throw()
+         ENDIF
+      ENDIF
 
-	iCntLoc := CNTCOLOR_TEXT
+      iCntLoc := CNTCOLOR_TEXT
 
-	DO CASE
-	CASE kWhere==gblCaption
-		lUseDefCaption := FALSE
-		iCntLoc := CNTCOLOR_TITLE
+      DO CASE
+      CASE kWhere==gblCaption
+            lUseDefCaption := FALSE
+            iCntLoc := CNTCOLOR_TITLE
 
-	CASE kWhere==gblColCaption
-		lUseDefColCaption := FALSE
-		iCntLoc := CNTCOLOR_FLDTITLES
+      CASE kWhere==gblColCaption
+            lUseDefColCaption := FALSE
+            iCntLoc := CNTCOLOR_FLDTITLES
 
-	CASE kWhere==gblText
-		lUseDefText := FALSE
-		iCntLoc := CNTCOLOR_TEXT
-		oTextColor := oColor
+      CASE kWhere==gblText
+            lUseDefText := FALSE
+            iCntLoc := CNTCOLOR_TEXT
+            oTextColor := oColor
 
-	CASE kWhere==gblButton
-		lUseDefButton := FALSE
-		iCntLoc := CNTCOLOR_TTLBTNTXT
+      CASE kWhere==gblButton
+            lUseDefButton := FALSE
+            iCntLoc := CNTCOLOR_TTLBTNTXT
 
-	CASE kWhere==gblColButton
-		lUseDefColButton := FALSE
-		iCntLoc := CNTCOLOR_FLDBTNTXT
+      CASE kWhere==gblColButton
+            lUseDefColButton := FALSE
+            iCntLoc := CNTCOLOR_FLDBTNTXT
 
-	CASE kWhere==gblHiText
-		lUseDefHiText := FALSE
-		iCntLoc := CNTCOLOR_HITEXT
-	ENDCASE
+      CASE kWhere==gblHiText
+            lUseDefHiText := FALSE
+         iCntLoc := CNTCOLOR_HITEXT
+      ENDCASE
 
-	dwRGB := PCALL(gpfnCntColorGet, hwnd, iCntLoc)
-#ifdef __VULCAN__	
-	ptrColor := (BYTE PTR) @dwRGB
-#else	
-	ptrColor := @dwRGB
-#endif	
+      dwRGB := PCALL(gpfnCntColorGet, hwnd, iCntLoc)
+      #ifdef __VULCAN__	
+         ptrColor := (BYTE PTR) @dwRGB
+      #else	
+         ptrColor := @dwRGB
+      #endif	
 
-	PCALL(gpfnCntColorSet, hwnd, iCntLoc, oColor:ColorRef)
+      PCALL(gpfnCntColorSet, hwnd, iCntLoc, oColor:ColorRef)
 
-	RETURN Color{ptrColor[1], ptrColor[3], ptrColor[2]}
+      RETURN Color{ptrColor[1], ptrColor[3], ptrColor[2]}
 
-METHOD Clear() 
-	
+   METHOD Clear() 
+      
 
-	IF IsInstanceOf(oCellEdit,#Edit)
-		Send(oCellEdit,#Clear)
-	ENDIF
+      IF IsInstanceOf(oCellEdit,#Edit)
+         Send(oCellEdit,#Clear)
+      ENDIF
 
-	RETURN SELF
+      RETURN SELF
 
-METHOD ColPos() 
-	LOCAL i, iLen AS INT
-	LOCAL oDC AS DataColumn
+   METHOD ColPos() 
+      LOCAL i, iLen AS INT
+      LOCAL oDC AS DataColumn
 
-	
+      
 
-	oDC := SELF:CurrentColumn
-	IF oDC==NULL_OBJECT
-		RETURN 0
-	ENDIF
+      oDC := SELF:CurrentColumn
+      IF oDC==NULL_OBJECT
+         RETURN 0
+      ENDIF
 
-	iLen := INT(ALen(aColumn))
-	FOR i:=1 UPTO iLen
-		IF aColumn[i] == oDC
-			RETURN i
-		ENDIF
-	NEXT
+      iLen := INT(ALen(aColumn))
+      FOR i:=1 UPTO iLen
+         IF aColumn[i] == oDC
+            RETURN i
+         ENDIF
+      NEXT
 
-	RETURN 0
+      RETURN 0
 
-ACCESS ColumnCount 
-	
+   ACCESS ColumnCount 
+      
 
-	RETURN ALen(aColumn)
+      RETURN ALen(aColumn)
 
-METHOD ColumnFocusChange(oDataColumn, lHasFocus) 
-	LOCAL oHL AS HyperLabel
+   METHOD ColumnFocusChange(oDataColumn, lHasFocus) 
+      LOCAL oHL AS HyperLabel
 
-	
+      
 
-	oHL := oDataColumn:Status
-	IF (oHL != NULL_OBJECT)
-		SELF:Owner:StatusMessage(oHL:Description, MESSAGEERROR)
-	ELSEIF lHasFocus .AND. (oDataColumn:HyperLabel != NULL_OBJECT)
-		SELF:Owner:StatusMessage(oDataColumn:HyperLabel:Description, MESSAGECONTROL)
-	ENDIF
+      oHL := oDataColumn:Status
+      IF (oHL != NULL_OBJECT)
+         SELF:Owner:StatusMessage(oHL:Description, MESSAGEERROR)
+      ELSEIF lHasFocus .AND. (oDataColumn:HyperLabel != NULL_OBJECT)
+         SELF:Owner:StatusMessage(oDataColumn:HyperLabel:Description, MESSAGECONTROL)
+      ENDIF
 
-	RETURN SELF
+      RETURN SELF
 
-METHOD ColumnMoved(oColumn) 
-	
+   METHOD ColumnMoved(oColumn) 
+      
 
-	SELF:__EndEditField(0)
-	RETURN SELF
+      SELF:__EndEditField(0)
+      RETURN SELF
 
-METHOD ColumnReSize(oColumn) 
-	
+   METHOD ColumnReSize(oColumn) 
+      
 
-	SELF:__EndEditField(0)
+      SELF:__EndEditField(0)
 
 	// self:__BuildRecordDescription()
 	// self:__RefreshBuffer()
 
-	RETURN SELF
+      RETURN SELF
 
-METHOD Copy() 
-	
+   METHOD Copy() 
+      
 
-	IF IsInstanceOf(oCellEdit,#Edit)
-		Send(oCellEdit,#Copy)
-	ENDIF
+      IF IsInstanceOf(oCellEdit,#Edit)
+         Send(oCellEdit,#Copy)
+      ENDIF
 
-	RETURN SELF
+      RETURN SELF
 
-ACCESS CurrentColumn 
-	LOCAL strucFI AS _WinFieldInfo
+   ACCESS CurrentColumn 
+      LOCAL strucFI AS _WinFieldInfo
 
-	
+      
 
-	StrucFI := PCALL(gpfnCntFocusFldGet, hwnd)
-	IF strucFI != NULL_PTR
-		RETURN SELF:__GetColumn(strucFI)
-	ENDIF
-	RETURN NULL_OBJECT
+      StrucFI := PCALL(gpfnCntFocusFldGet, hwnd)
+      IF strucFI != NULL_PTR
+         RETURN SELF:__GetColumn(strucFI)
+      ENDIF
+      RETURN NULL_OBJECT
 
-METHOD Cut() 
-	
+   METHOD Cut() 
+      
 
-	IF IsInstanceOf(oCellEdit,#Edit)
-		Send(oCellEdit,#Cut)
-	ENDIF
+      IF IsInstanceOf(oCellEdit,#Edit)
+         Send(oCellEdit,#Cut)
+      ENDIF
 
-	RETURN SELF
+      RETURN SELF
 
-METHOD Default(oEvent) 
-	LOCAL oEvt := oEvent AS @@event
+   METHOD Default(oEvent) 
+      LOCAL oEvt := oEvent AS @@event
 
-	
+      
 
-	SELF:EventReturnValue := DefWindowProc(oEvt:hWnd, oEvt:uMsg, oEvt:wParam, oEvt:lParam)
+      SELF:EventReturnValue := DefWindowProc(oEvt:hWnd, oEvt:uMsg, oEvt:wParam, oEvt:lParam)
 
-	RETURN SELF
+      RETURN SELF
 
-METHOD Destroy() 
-	LOCAL i AS DWORD
-    LOCAL oCol  AS DataColumn
+   METHOD Destroy() 
+      LOCAL i AS DWORD
+      LOCAL oCol  AS DataColumn
 
-	SELF:__Unlink()
+      SELF:__Unlink()
 
-	IF oCellEdit != NULL_OBJECT
-		oCellEdit:Destroy()
-	ENDIF
+      IF oCellEdit != NULL_OBJECT
+         oCellEdit:Destroy()
+      ENDIF
 
-	IF IsWindow(hNotifyWindow) .AND. IsWindow(hwnd)
-		PCALL(gpfnCntAssociateSet, hwnd, NULL_PTR)
-		DestroyWindow(hNotifyWindow)
-	ENDIF
+      IF IsWindow(hNotifyWindow) .AND. IsWindow(hwnd)
+         PCALL(gpfnCntAssociateSet, hwnd, NULL_PTR)
+         DestroyWindow(hNotifyWindow)
+      ENDIF
 
-   __WCSelfPtrFree(ptrSelf)
-   ptrSelf := NULL_PTR
+      __WCSelfPtrFree(ptrSelf)
+      ptrSelf := NULL_PTR
 
-	IF (ptrDataBuffer != NULL_PTR)
-		MemFree(ptrDataBuffer)
-	ENDIF
+      IF (ptrDataBuffer != NULL_PTR)
+         MemFree(ptrDataBuffer)
+      ENDIF
 
    //PP-040418 Issue 12768
    //SE-050730
-	FOR i := 1 TO ALen(aColumn)
-        oCol := aColumn[i] 
-        oCol:destroy()
-	NEXT
+      FOR i := 1 TO ALen(aColumn)
+         oCol := aColumn[i] 
+         oCol:destroy()
+      NEXT
 
 
-	IF !InCollect()
-		ptrDataBuffer := NULL_PTR
-		strucEditField := NULL_PTR
-		strucEditRecord := NULL_PTR
-		strucFocusField := NULL_PTR
-		hNotifyWindow := NULL_PTR
-		oCellEdit := NULL_OBJECT
-		ptrControlDefaultProc := NULL_PTR
-		oDataServer := NULL_OBJECT
-		oEditFont := NULL_OBJECT
+      IF !InCollect()
+         ptrDataBuffer := NULL_PTR
+         strucEditField := NULL_PTR
+         strucEditRecord := NULL_PTR
+         strucFocusField := NULL_PTR
+         hNotifyWindow := NULL_PTR
+         oCellEdit := NULL_OBJECT
+         ptrControlDefaultProc := NULL_PTR
+         oDataServer := NULL_OBJECT
+         oEditFont := NULL_OBJECT
    //SE-050730
 		// 		//PP-040418 Issue 12768
 		// 		FOR i := 1 TO ALen(aColumn)
 		// 			aColumn[i]:destroy()
 		// 		NEXT
-		aColumn := NULL_ARRAY
+         aColumn := NULL_ARRAY
 
-		oFontText := NULL_OBJECT
-		oBackgroundColCaption := NULL_OBJECT
-		oBackgroundHiText := NULL_OBJECT
-		oBackgroundText := NULL_OBJECT
-		oBackgroundCaption := NULL_OBJECT
-		oBackgroundButton := NULL_OBJECT
-		oBackgroundColButton := NULL_OBJECT
-		oTextColor := NULL_OBJECT
-		oTextPointer := NULL_OBJECT
-	ENDIF
+         oFontText := NULL_OBJECT
+         oBackgroundColCaption := NULL_OBJECT
+         oBackgroundHiText := NULL_OBJECT
+         oBackgroundText := NULL_OBJECT
+         oBackgroundCaption := NULL_OBJECT
+         oBackgroundButton := NULL_OBJECT
+         oBackgroundColButton := NULL_OBJECT
+         oTextColor := NULL_OBJECT
+         oTextPointer := NULL_OBJECT
+      ENDIF
 
-	SUPER:Destroy()
+      SUPER:Destroy()
 
-	RETURN SELF
+      RETURN SELF
 
-METHOD Dispatch(oEvent) 
+   METHOD Dispatch(oEvent) 
 	//PP-040519 Update from S Ebert
-	LOCAL oEvt := oEvent AS @@event
-	LOCAL uMsg AS DWORD
-	LOCAL lParam AS LONGINT
-	LOCAL dwCode AS DWORD
-	LOCAL dwChar AS DWORD
-	LOCAL iMove AS DWORD
-	LOCAL wFlag AS WORD
-	LOCAL oDC AS DataColumn
-	LOCAL strucRC AS _WinRecordCore
-	LOCAL strucFI AS _WinFieldInfo
+      LOCAL oEvt := oEvent AS @@event
+      LOCAL uMsg AS DWORD
+      LOCAL lParam AS LONGINT
+      LOCAL dwCode AS DWORD
+      LOCAL dwChar AS DWORD
+      LOCAL iMove AS DWORD
+      LOCAL wFlag AS WORD
+      LOCAL oDC AS DataColumn
+      LOCAL strucRC AS _WinRecordCore
+      LOCAL strucFI AS _WinFieldInfo
 
-	
+      
 
 	//This method handles the messages of two windows
 	//1.) CONTAINER_CLASS ("Ca_Container32")
 	//2.) GBNotifyWindow
 
 
-	uMsg := oEvt:uMsg
-	SELF:EventReturnValue := 0L
+      uMsg := oEvt:uMsg
+      SELF:EventReturnValue := 0L
 
-	IF oEvt:hWnd = hNotifyWindow
+      IF oEvt:hWnd = hNotifyWindow
 		//Dispatcher for GBNotifyWindow
-		IF uMsg == WM_COMMAND
-			dwCode := HiWord(oEvt:wParam)
-			SWITCH dwCode
-			CASE CN_QUERYFOCUS
-				SELF:__BuildBuffer()
+         IF uMsg == WM_COMMAND
+            dwCode := HiWord(oEvt:wParam)
+            SWITCH dwCode
+            CASE CN_QUERYFOCUS
+                  SELF:__BuildBuffer()
 
-			CASE CN_QUERYDELTA
-				SELF:__DeltaBuildBuffer()
+            CASE CN_QUERYDELTA
+                  SELF:__DeltaBuildBuffer()
 
-			CASE CN_NEWFOCUS
+               CASE CN_NEWFOCUS
             CASE CN_NEWFOCUSREC
-				strucRC := PCALL(gpfnCntCNRecGet, hwnd, oEvt:lParam)
-				strucFI := PCALL(gpfnCntFocusFldGet, hwnd)
+                  strucRC := PCALL(gpfnCntCNRecGet, hwnd, oEvt:lParam)
+                  strucFI := PCALL(gpfnCntFocusFldGet, hwnd)
 				//		if self:Validate() .and. oDataServer:Notify(NotifyIntentToMove)
-				SELF:__NewFocusRecord(strucRC, strucFI)
+                  SELF:__NewFocusRecord(strucRC, strucFI)
 				//		endif
 
-			CASE CN_TAB
-				IF !PCALL(gpfnCntCNShiftKeyGet, hwnd, lParam)
-					iMove := CFM_RIGHT
-				ENDIF
-				IF IsBiDi()
-					IF (iMove == CFM_LEFT)
-						iMove := CFM_RIGHT
-					ELSE
-						iMove := CFM_LEFT
-					ENDIF
-				ENDIF
+            CASE CN_TAB
+                  IF !PCALL(gpfnCntCNShiftKeyGet, hwnd, lParam)
+                     iMove := CFM_RIGHT
+                  ENDIF
+                  IF IsBiDi()
+                     IF (iMove == CFM_LEFT)
+                        iMove := CFM_RIGHT
+                     ELSE
+                        iMove := CFM_LEFT
+                     ENDIF
+                  ENDIF
 
-				IF !PCALL(gpfnCntFocusMove, hwnd, iMove)
-					IF (iMove == CFM_RIGHT)
-						PCALL(gpfnCntFocusMove, hwnd, CFM_DOWN)
-					ELSE
-						PCALL(gpfnCntFocusMove, hwnd, CFM_UP)
-					ENDIF
-					IF (!IsBiDi() .AND. iMove == CFM_RIGHT) .OR. (IsBiDi() .AND. iMove == CFM_LEFT)
-						PCALL(gpfnCntFocusMove, hwnd, CFM_HOME)
-					ELSE
-						PCALL(gpfnCntFocusMove, hwnd, CFM_END)
-					ENDIF
-				ENDIF
+                  IF !PCALL(gpfnCntFocusMove, hwnd, iMove)
+                     IF (iMove == CFM_RIGHT)
+                        PCALL(gpfnCntFocusMove, hwnd, CFM_DOWN)
+                     ELSE
+                        PCALL(gpfnCntFocusMove, hwnd, CFM_UP)
+                     ENDIF
+                     IF (!IsBiDi() .AND. iMove == CFM_RIGHT) .OR. (IsBiDi() .AND. iMove == CFM_LEFT)
+                        PCALL(gpfnCntFocusMove, hwnd, CFM_HOME)
+                     ELSE
+                        PCALL(gpfnCntFocusMove, hwnd, CFM_END)
+                     ENDIF
+                  ENDIF
 
-			CASE CN_BEGFLDEDIT
+               CASE CN_BEGFLDEDIT
             CASE CN_ROFLDDBLCLK
-				IF IsMethod(SELF, #CellDoubleClick)
-					Send(SELF, #CellDoubleClick)
-				ELSEIF !PCALL(gpfnCntIsFocusCellRO, hwnd)
-					SELF:__BeginEditField(PCALL(gpfnCntCNChildWndGet, hwnd, 0), 0)
-				ENDIF
+                  IF IsMethod(SELF, #CellDoubleClick)
+                     Send(SELF, #CellDoubleClick)
+                  ELSEIF !PCALL(gpfnCntIsFocusCellRO, hwnd)
+                     SELF:__BeginEditField(PCALL(gpfnCntCNChildWndGet, hwnd, 0), 0)
+                  ENDIF
 
-			CASE CN_CHARHIT
-				IF !PCALL(gpfnCntIsFocusCellRO, hwnd)
+            CASE CN_CHARHIT
+                  IF !PCALL(gpfnCntIsFocusCellRO, hwnd)
 					//lParam := oEvt:lParam
 					//ci := CntInfoGet(hwnd)
 					//dw := CntCNCharGet(hWnd, lParam)
 					//self:__BeginEditField(CntCNChildWndGet(hWnd, lParam), dw, lParam)
-					SELF:__BeginEditField(PCALL(gpfnCntCNChildWndGet, hwnd, lParam), dwLastChar)
-				ENDIF
+                     SELF:__BeginEditField(PCALL(gpfnCntCNChildWndGet, hwnd, lParam), dwLastChar)
+                  ENDIF
 
-			CASE CN_ENTER
-				IF !PCALL(gpfnCntIsFocusCellRO, hwnd)
-					SELF:__BeginEditField(PCALL(gpfnCntCNChildWndGet, hwnd, lParam), 0)
-				ENDIF
+            CASE CN_ENTER
+                  IF !PCALL(gpfnCntIsFocusCellRO, hwnd)
+                     SELF:__BeginEditField(PCALL(gpfnCntCNChildWndGet, hwnd, lParam), 0)
+                  ENDIF
 
-			CASE CN_ENDFLDEDIT
-				lParam:=oEvt:lParam
-				dwChar := PCALL(gpfnCntCNCharGet, hwnd, lParam)
-				SELF:__EndEditField(dwChar)
+            CASE CN_ENDFLDEDIT
+                  lParam:=oEvt:lParam
+                  dwChar := PCALL(gpfnCntCNCharGet, hwnd, lParam)
+                  SELF:__EndEditField(dwChar)
 
-				SWITCH dwChar
-				CASE KeyTab
-					IF !PCALL(gpfnCntCNShiftKeyGet, hwnd, lParam)
-						iMove := CFM_RIGHT
-					ENDIF
-					PCALL(gpfnCntFocusMove, hWnd, iMove)
+                  SWITCH dwChar
+                  CASE KeyTab
+                        IF !PCALL(gpfnCntCNShiftKeyGet, hwnd, lParam)
+                           iMove := CFM_RIGHT
+                        ENDIF
+                        PCALL(gpfnCntFocusMove, hWnd, iMove)
 
-				CASE KeyArrowUp
+                  CASE KeyArrowUp
 					//	if self:Validate() .and. oDataServer:Notify(NotifyIntentToMove)
-					PCALL(gpfnCntFocusMove, hwnd, CFM_UP)
+                        PCALL(gpfnCntFocusMove, hwnd, CFM_UP)
 					//		endif
 
-				CASE KeyArrowDown
+                  CASE KeyArrowDown
 					//if self:Validate() .and. oDataServer:Notify(NotifyIntentToMove)
-					PCALL(gpfnCntFocusMove, hwnd, CFM_DOWN)
+                        PCALL(gpfnCntFocusMove, hwnd, CFM_DOWN)
 					//endif
 
-				CASE KeyArrowLeft
-					PCALL(gpfnCntFocusMove, hwnd, CFM_LEFT)
+                  CASE KeyArrowLeft
+                        PCALL(gpfnCntFocusMove, hwnd, CFM_LEFT)
 
-				CASE KeyArrowRight
-					PCALL(gpfnCntFocusMove, hwnd, CFM_RIGHT)
+                  CASE KeyArrowRight
+                        PCALL(gpfnCntFocusMove, hwnd, CFM_RIGHT)
 
-				CASE KeyPageUp
-					IF SELF:Validate() .AND. oDataServer:Notify(NotifyIntentToMove)
-						PCALL(gpfnCntFocusMove, hwnd, CFM_PAGEUP)
-					ENDIF
+                  CASE KeyPageUp
+                        IF SELF:Validate() .AND. oDataServer:Notify(NotifyIntentToMove)
+                           PCALL(gpfnCntFocusMove, hwnd, CFM_PAGEUP)
+                        ENDIF
 
-				CASE KeyPageDown
-					IF SELF:Validate() .AND. oDataServer:Notify(NotifyIntentToMove)
-						PCALL(gpfnCntFocusMove, hwnd, CFM_PAGEDOWN)
-					ENDIF
-				END SWITCH
+                  CASE KeyPageDown
+                        IF SELF:Validate() .AND. oDataServer:Notify(NotifyIntentToMove)
+                           PCALL(gpfnCntFocusMove, hwnd, CFM_PAGEDOWN)
+                     ENDIF
+                  END SWITCH
 
-			CASE CN_FLDSIZED
-				oDC := SELF:__GetColumn(PCALL(gpfnCntCNFldGet, hwnd, lParam))
-				IF oDC!=NULL_OBJECT
-					SELF:ColumnReSize(oDC)
-				ENDIF
+            CASE CN_FLDSIZED
+                  oDC := SELF:__GetColumn(PCALL(gpfnCntCNFldGet, hwnd, lParam))
+                  IF oDC!=NULL_OBJECT
+                     SELF:ColumnReSize(oDC)
+                  ENDIF
 
-			CASE CN_FLDMOVED
-				oDC := SELF:__GetColumn(PCALL(gpfnCntCNFldGet, hwnd, lParam))
-				IF oDC!=NULL_OBJECT
-					SELF:ColumnMoved(oDC)
-				ENDIF
+            CASE CN_FLDMOVED
+                  oDC := SELF:__GetColumn(PCALL(gpfnCntCNFldGet, hwnd, lParam))
+                  IF oDC!=NULL_OBJECT
+                     SELF:ColumnMoved(oDC)
+                  ENDIF
 
-			CASE CN_LK_HOME
-				PCALL(gpfnCntFocusSet, hwnd, PCALL(gpfnCntFocusRecGet, hwnd), NULL_PTR)
+            CASE CN_LK_HOME
+                  PCALL(gpfnCntFocusSet, hwnd, PCALL(gpfnCntFocusRecGet, hwnd), NULL_PTR)
 
-			CASE CN_LK_END
-				PCALL(gpfnCntFocusSet, hwnd, PCALL(gpfnCntFocusRecGet, hwnd), PCALL(gpfnCntFldTailGet, hwnd))
+            CASE CN_LK_END
+                  PCALL(gpfnCntFocusSet, hwnd, PCALL(gpfnCntFocusRecGet, hwnd), PCALL(gpfnCntFldTailGet, hwnd))
 
-			CASE CN_LK_PAGEUP
-				IF SELF:Validate() .AND. oDataServer:Notify(NotifyIntentToMove)
-					PCALL(gpfnCntFocusRecUnlck, hwnd)
-					PCALL(gpfnCntFocusMove, hwnd, CFM_PAGEUP)
-				ENDIF
-			CASE CN_LK_PAGEDOWN
-				IF SELF:Validate() .AND. oDataServer:Notify(NotifyIntentToMove)
-					PCALL(gpfnCntFocusRecUnlck, hwnd)
-					PCALL(gpfnCntFocusMove, hwnd, CFM_PAGEDOWN)
-				ENDIF
-			CASE CN_LK_ARROW_UP
-				IF SELF:Validate() .AND. oDataServer:Notify(NotifyIntentToMove)
-					PCALL(gpfnCntFocusRecUnlck, hwnd)
-					PCALL(gpfnCntFocusMove, hwnd, CFM_UP)
-				ENDIF
+            CASE CN_LK_PAGEUP
+                  IF SELF:Validate() .AND. oDataServer:Notify(NotifyIntentToMove)
+                     PCALL(gpfnCntFocusRecUnlck, hwnd)
+                     PCALL(gpfnCntFocusMove, hwnd, CFM_PAGEUP)
+               ENDIF
+            CASE CN_LK_PAGEDOWN
+                  IF SELF:Validate() .AND. oDataServer:Notify(NotifyIntentToMove)
+                     PCALL(gpfnCntFocusRecUnlck, hwnd)
+                     PCALL(gpfnCntFocusMove, hwnd, CFM_PAGEDOWN)
+               ENDIF
+            CASE CN_LK_ARROW_UP
+                  IF SELF:Validate() .AND. oDataServer:Notify(NotifyIntentToMove)
+                     PCALL(gpfnCntFocusRecUnlck, hwnd)
+                     PCALL(gpfnCntFocusMove, hwnd, CFM_UP)
+                  ENDIF
 
-			CASE CN_LK_ARROW_DOWN
-				IF SELF:Validate() .AND. oDataServer:Notify(NotifyIntentToMove)
-					PCALL(gpfnCntFocusRecUnlck, hwnd)
-					PCALL(gpfnCntFocusMove, hwnd, CFM_DOWN)
-				ENDIF
+            CASE CN_LK_ARROW_DOWN
+                  IF SELF:Validate() .AND. oDataServer:Notify(NotifyIntentToMove)
+                     PCALL(gpfnCntFocusRecUnlck, hwnd)
+                     PCALL(gpfnCntFocusMove, hwnd, CFM_DOWN)
+                  ENDIF
 
-			CASE CN_LK_ARROW_LEFT
-				PCALL(gpfnCntFocusRecUnlck, hwnd)
-				PCALL(gpfnCntFocusMove, hwnd, CFM_LEFT)
+            CASE CN_LK_ARROW_LEFT
+                  PCALL(gpfnCntFocusRecUnlck, hwnd)
+                  PCALL(gpfnCntFocusMove, hwnd, CFM_LEFT)
 
-			CASE CN_LK_ARROW_RIGHT
-				PCALL(gpfnCntFocusRecUnlck, hwnd)
-				PCALL(gpfnCntFocusMove, hwnd, CFM_RIGHT)
+            CASE CN_LK_ARROW_RIGHT
+                  PCALL(gpfnCntFocusRecUnlck, hwnd)
+                  PCALL(gpfnCntFocusMove, hwnd, CFM_RIGHT)
 
-			CASE CN_LK_VS_TOP
-            CASE CN_LK_VS_BOTTOM
-            CASE CN_LK_VS_PAGEUP
-            CASE CN_LK_VS_PAGEDOWN
-            CASE CN_LK_VS_LINEUP
-            CASE CN_LK_VS_LINEDOWN
+               CASE CN_LK_VS_TOP
+               CASE CN_LK_VS_BOTTOM
+               CASE CN_LK_VS_PAGEUP
+               CASE CN_LK_VS_PAGEDOWN
+               CASE CN_LK_VS_LINEUP
+               CASE CN_LK_VS_LINEDOWN
             CASE CN_LK_VS_THUMBPOS
-				PCALL(gpfnCntScrollRecAreaEx, hwnd, PCALL(gpfnCntCNIncExGet, hwnd, lParam))
+                  PCALL(gpfnCntScrollRecAreaEx, hwnd, PCALL(gpfnCntCNIncExGet, hwnd, lParam))
 
-			CASE CN_LK_HS_PAGEUP 
-			CASE CN_LK_HS_PAGEDOWN 
-			CASE CN_LK_HS_LINEUP 
-			CASE CN_LK_HS_LINEDOWN 
-			CASE CN_LK_HS_THUMBPOS
-				PCALL(gpfnCntScrollFldArea, hwnd, PCALL(gpfnCntCNIncExGet, hwnd, lParam))
+               CASE CN_LK_HS_PAGEUP 
+               CASE CN_LK_HS_PAGEDOWN 
+               CASE CN_LK_HS_LINEUP 
+               CASE CN_LK_HS_LINEDOWN 
+            CASE CN_LK_HS_THUMBPOS
+                  PCALL(gpfnCntScrollFldArea, hwnd, PCALL(gpfnCntCNIncExGet, hwnd, lParam))
 
-			CASE CN_LK_NEWFOCUS
+               CASE CN_LK_NEWFOCUS
             CASE CN_LK_NEWFOCUSREC
-				strucRC := PCALL(gpfnCntCNRecGet, hwnd, lParam)
-				strucFI := PCALL(gpfnCntCNFldGet, hwnd, lParam)
-				IF SELF:Validate() .AND. oDataServer:Notify(NotifyIntentToMove)
-					PCALL(gpfnCntFocusRecUnlck, hwnd)
-					SELF:__NewFocusRecord(strucRC, strucFI)
-				ENDIF
+                  strucRC := PCALL(gpfnCntCNRecGet, hwnd, lParam)
+                  strucFI := PCALL(gpfnCntCNFldGet, hwnd, lParam)
+                  IF SELF:Validate() .AND. oDataServer:Notify(NotifyIntentToMove)
+                     PCALL(gpfnCntFocusRecUnlck, hwnd)
+                     SELF:__NewFocusRecord(strucRC, strucFI)
+                  ENDIF
 
-			CASE CN_LK_NEWFOCUSFLD
-				SELF:__EndEditField(0)
-				PCALL(gpfnCntFocusSet, hwnd, PCALL(gpfnCntCNRecGet, hwnd, lParam), PCALL(gpfnCntCNFldGet, hwnd, lParam))
+            CASE CN_LK_NEWFOCUSFLD
+                  SELF:__EndEditField(0)
+                  PCALL(gpfnCntFocusSet, hwnd, PCALL(gpfnCntCNRecGet, hwnd, lParam), PCALL(gpfnCntCNFldGet, hwnd, lParam))
 
-			CASE CN_NEWFOCUSFLD
-				SELF:__NewFocusField(PCALL(gpfnCntCNFldGet, hwnd, lParam))
+            CASE CN_NEWFOCUSFLD
+                  SELF:__NewFocusField(PCALL(gpfnCntCNFldGet, hwnd, lParam))
 
-			END SWITCH
-		ELSE
-			SELF:Default(oEvt)
-		ENDIF
+            END SWITCH
+         ELSE
+            SELF:Default(oEvt)
+         ENDIF
 
-		RETURN SELF:EventReturnValue
-	ENDIF
+         RETURN SELF:EventReturnValue
+      ENDIF
 
 	//Dispatcher for CONTAINER_CLASS ("Ca_Container32")
-	IF uMsg == WM_PARENTNOTIFY
-		wFlag := LoWord(oEvt:wParam)
-		IF (wFlag == WM_LBUTTONDOWN) .OR. (wFlag == WM_RBUTTONDOWN) .OR. (wFlag == WM_MBUTTONDOWN) .OR. ;
-			wFlag == WM_XBUTTONDOWN
+      IF uMsg == WM_PARENTNOTIFY
+         wFlag := LoWord(oEvt:wParam)
+         IF (wFlag == WM_LBUTTONDOWN) .OR. (wFlag == WM_RBUTTONDOWN) .OR. (wFlag == WM_MBUTTONDOWN) .OR. ;
+            wFlag == WM_XBUTTONDOWN
 			//PP-030904 XButton
-			SELF:MouseButtonDown(MouseEvent{oEvt:hwnd, wFlag, 0, oEvt:lParam})
-		ENDIF
+            SELF:MouseButtonDown(MouseEvent{oEvt:hwnd, wFlag, 0, oEvt:lParam})
+         ENDIF
 
-	ELSEIF uMsg == WM_SIZE
-		SELF:__EndEditField(0)
+      ELSEIF uMsg == WM_SIZE
+         SELF:__EndEditField(0)
 
-	ENDIF
+      ENDIF
 
-	RETURN SUPER:Dispatch(oEvt)
+      RETURN SUPER:Dispatch(oEvt)
 
-ACCESS EditFont 
-	
+   ACCESS EditFont 
+      
 
-	RETURN oEditFont
+      RETURN oEditFont
 
-METHOD EnableBorder(kBorderType) 
-	
+   METHOD EnableBorder(kBorderType) 
+      
 
-	IF !IsNil(kBorderType)
-		IF !IsLong(kBorderType)
-			WCError{#EnableBorder,#DataBrowser,__WCSTypeError,kBorderType,1}:Throw()
-		ENDIF
-	ENDIF
+      IF !IsNil(kBorderType)
+         IF !IsLong(kBorderType)
+            WCError{#EnableBorder,#DataBrowser,__WCSTypeError,kBorderType,1}:Throw()
+         ENDIF
+      ENDIF
 
-	SWITCH (INT) kBorderType
+      SWITCH (INT) kBorderType
 
-	CASE BTSIZINGBORDER
-		PCALL(gpfnCntStyleSet, hwnd, WS_THICKFRAME)
-	CASE BTNONSIZINGBORDER
-		PCALL(gpfnCntStyleClear, hwnd, WS_THICKFRAME)
-		PCALL(gpfnCntStyleSet, hwnd, WS_BORDER)
-	CASE BTNOBORDER
-		PCALL(gpfnCntStyleClear, hwnd, _OR(WS_THICKFRAME,WS_BORDER))
-	OTHERWISE
-		PCALL(gpfnCntStyleSet, hwnd, WS_THICKFRAME)
-	END SWITCH
+      CASE BTSIZINGBORDER
+         PCALL(gpfnCntStyleSet, hwnd, WS_THICKFRAME)
+      CASE BTNONSIZINGBORDER
+            PCALL(gpfnCntStyleClear, hwnd, WS_THICKFRAME)
+         PCALL(gpfnCntStyleSet, hwnd, WS_BORDER)
+      CASE BTNOBORDER
+         PCALL(gpfnCntStyleClear, hwnd, _OR(WS_THICKFRAME,WS_BORDER))
+      OTHERWISE
+         PCALL(gpfnCntStyleSet, hwnd, WS_THICKFRAME)
+      END SWITCH
 
-	RETURN NIL
+      RETURN NIL
 
-METHOD EnableColumnMove(lAllowMove) 
-	
+   METHOD EnableColumnMove(lAllowMove) 
+      
 
-	DEFAULT(@lAllowMove, TRUE)
+      DEFAULT(@lAllowMove, TRUE)
 
-	IF !IsNil(lAllowMove)
-		IF !IsLogic(lAllowMove)
-			WCError{#EnableColumnMove,#DataBrowser,__WCSTypeError,lAllowMove,1}:Throw()
-		ENDIF
-	ENDIF
+      IF !IsNil(lAllowMove)
+         IF !IsLogic(lAllowMove)
+            WCError{#EnableColumnMove,#DataBrowser,__WCSTypeError,lAllowMove,1}:Throw()
+         ENDIF
+      ENDIF
 
-	IF lAllowMove
-		PCALL(gpfnCntAttribSet, hwnd, CA_MOVEABLEFLDS)
-	ELSE
-		PCALL(gpfnCntAttribClear, hwnd, CA_MOVEABLEFLDS)
-	ENDIF
+      IF lAllowMove
+         PCALL(gpfnCntAttribSet, hwnd, CA_MOVEABLEFLDS)
+      ELSE
+         PCALL(gpfnCntAttribClear, hwnd, CA_MOVEABLEFLDS)
+      ENDIF
 
-	RETURN SELF
+      RETURN SELF
 
-METHOD EnableColumnReSize(lAllowResize) 
-	
+   METHOD EnableColumnReSize(lAllowResize) 
+      
 
-	DEFAULT(@lAllowResize, TRUE)
+      DEFAULT(@lAllowResize, TRUE)
 
-	IF !IsNil(lAllowResize)
-		IF !IsLogic(lAllowResize)
-			WCError{#EnableColumnReSize,#DataBrowser,__WCSTypeError,lAllowResize,1}:Throw()
-		ENDIF
-	ENDIF
+      IF !IsNil(lAllowResize)
+         IF !IsLogic(lAllowResize)
+            WCError{#EnableColumnReSize,#DataBrowser,__WCSTypeError,lAllowResize,1}:Throw()
+         ENDIF
+      ENDIF
 
-	IF lAllowResize
-		PCALL(gpfnCntAttribSet, hwnd, CA_SIZEABLEFLDS)
-	ELSE
-		PCALL(gpfnCntAttribClear, hwnd, CA_SIZEABLEFLDS)
-	ENDIF
+      IF lAllowResize
+         PCALL(gpfnCntAttribSet, hwnd, CA_SIZEABLEFLDS)
+      ELSE
+         PCALL(gpfnCntAttribClear, hwnd, CA_SIZEABLEFLDS)
+      ENDIF
 
-	RETURN SELF
+      RETURN SELF
 
-METHOD EnableColumnTitles(lEnable) 
-	LOCAL iLen, i AS DWORD
-	LOCAL strucFI AS _WinFieldInfo
-    LOCAL oColumn   AS DataColumn
-	
+   METHOD EnableColumnTitles(lEnable) 
+      LOCAL iLen, i AS DWORD
+      LOCAL strucFI AS _WinFieldInfo
+      LOCAL oColumn   AS DataColumn
+      
 
-	IF !IsNil(lEnable)
-		IF !IsLogic(lEnable)
-			WCError{#EnableColumnTitles,#DataBrowser,__WCSTypeError,lEnable,1}:Throw()
-		ENDIF
-	ELSE
-		lEnable:=TRUE
-	ENDIF
+      IF !IsNil(lEnable)
+         IF !IsLogic(lEnable)
+            WCError{#EnableColumnTitles,#DataBrowser,__WCSTypeError,lEnable,1}:Throw()
+         ENDIF
+      ELSE
+         lEnable:=TRUE
+      ENDIF
 
-	IF lColumnTitles == lEnable
-		RETURN FALSE
-	ENDIF
-	SELF:SuspendUpdate()
+      IF lColumnTitles == lEnable
+         RETURN FALSE
+      ENDIF
+      SELF:SuspendUpdate()
 
-	lColumnTitles := lEnable
-	iFTHeight:=0
-	IF lEnable
-		iLen := ALen(aColumn)
-		FOR i:=1 UPTO iLen
+      lColumnTitles := lEnable
+      iFTHeight:=0
+      IF lEnable
+         iLen := ALen(aColumn)
+         FOR i:=1 UPTO iLen
             oColumn := aColumn[i] 
             strucFI:= oColumn:__FieldInfo
-			IF iFTHeight < INT(strucFI:wFTitleLines)
-				iFTHeight := INT(strucFI:wFTitleLines)
-			ENDIF
-		NEXT
-	ENDIF
+            IF iFTHeight < INT(strucFI:wFTitleLines)
+               iFTHeight := INT(strucFI:wFTitleLines)
+            ENDIF
+         NEXT
+      ENDIF
 
-	PCALL(gpfnCntFldTtlHtSet, hwnd, iFTHeight)
+      PCALL(gpfnCntFldTtlHtSet, hwnd, iFTHeight)
 
-	SELF:RestoreUpdate()
+      SELF:RestoreUpdate()
 
-	RETURN TRUE
+      RETURN TRUE
 
-METHOD EnableGrid ( lShowGrid ) 
-	
+   METHOD EnableGrid ( lShowGrid ) 
+      
 
-	IF !IsNil(lShowGrid)
-		IF !IsLogic(lShowGrid)
-			WCError{#EnableGrid,#DataBrowser,__WCSTypeError,lShowGrid,1}:Throw()
-		ENDIF
-	ELSE
-		lShowGrid:=TRUE
-	ENDIF
+      IF !IsNil(lShowGrid)
+         IF !IsLogic(lShowGrid)
+            WCError{#EnableGrid,#DataBrowser,__WCSTypeError,lShowGrid,1}:Throw()
+         ENDIF
+      ELSE
+         lShowGrid:=TRUE
+      ENDIF
 
-	IF lShowGrid
-		PCALL(gpfnCntAttribSet, hwnd, _OR(CA_RECSEPARATOR,CA_VERTFLDSEP))
-	ELSE
-		PCALL(gpfnCntAttribClear, hwnd, _OR(CA_RECSEPARATOR,CA_VERTFLDSEP))
-	ENDIF
+      IF lShowGrid
+         PCALL(gpfnCntAttribSet, hwnd, _OR(CA_RECSEPARATOR,CA_VERTFLDSEP))
+      ELSE
+         PCALL(gpfnCntAttribClear, hwnd, _OR(CA_RECSEPARATOR,CA_VERTFLDSEP))
+      ENDIF
 
-	RETURN SELF
+      RETURN SELF
 
-METHOD EnableHorizontalScroll ( lAllowScroll ) 
-	
+   METHOD EnableHorizontalScroll ( lAllowScroll ) 
+      
 
-	IF !IsNil(lAllowScroll)
-		IF !IsLogic(lAllowScroll)
-			WCError{#EnableHorizontalScroll,#DataBrowser,__WCSTypeError,lAllowScroll,1}:Throw()
-		ENDIF
-	ELSE
-		lAllowScroll:=TRUE
-	ENDIF
+      IF !IsNil(lAllowScroll)
+         IF !IsLogic(lAllowScroll)
+            WCError{#EnableHorizontalScroll,#DataBrowser,__WCSTypeError,lAllowScroll,1}:Throw()
+         ENDIF
+      ELSE
+         lAllowScroll:=TRUE
+      ENDIF
 
-	IF !lIsShown
-		IF lAllowScroll
-			dwDeferredStyle := _OR(dwDeferredStyle,DWORD(CTS_HORZSCROLL))
-		ELSE
-			dwDeferredStyle := _AND(dwDeferredStyle,_NOT(DWORD(CTS_HORZSCROLL)))
-		ENDIF
-	ELSE
-		IF lAllowScroll
-			PCALL(gpfnCntStyleSet, hwnd, CTS_HORZSCROLL)
-		ELSE
-			PCALL(gpfnCntStyleClear, hwnd, CTS_HORZSCROLL)
-		ENDIF
-	ENDIF
+      IF !lIsShown
+         IF lAllowScroll
+            dwDeferredStyle := _OR(dwDeferredStyle,DWORD(CTS_HORZSCROLL))
+         ELSE
+            dwDeferredStyle := _AND(dwDeferredStyle,_NOT(DWORD(CTS_HORZSCROLL)))
+         ENDIF
+      ELSE
+         IF lAllowScroll
+            PCALL(gpfnCntStyleSet, hwnd, CTS_HORZSCROLL)
+         ELSE
+            PCALL(gpfnCntStyleClear, hwnd, CTS_HORZSCROLL)
+         ENDIF
+      ENDIF
 
-	RETURN SELF
+      RETURN SELF
 
-METHOD EnableHorizontalSplit ( lShowSplit ) 
-	
+   METHOD EnableHorizontalSplit ( lShowSplit ) 
+      
 
-	IF !IsNil(lShowSplit)
-		IF !IsLogic(lShowSplit)
-			WCError{#EnableHorizontalSplit,#DataBrowser,__WCSTypeError,lShowSplit,1}:Throw()
-		ENDIF
-	ELSE
-		lShowSplit:=TRUE
-	ENDIF
+      IF !IsNil(lShowSplit)
+         IF !IsLogic(lShowSplit)
+            WCError{#EnableHorizontalSplit,#DataBrowser,__WCSTypeError,lShowSplit,1}:Throw()
+         ENDIF
+      ELSE
+         lShowSplit:=TRUE
+      ENDIF
 	//Riz This was never implemented
 
-	RETURN SELF
+      RETURN SELF
 
-METHOD EnableVerticalScroll ( lAllowScroll ) 
-	
+   METHOD EnableVerticalScroll ( lAllowScroll ) 
+      
 
-	IF !IsNil(lAllowScroll)
-		IF !IsLogic(lAllowScroll)
-			WCError{#EnableVerticalScroll,#DataBrowser,__WCSTypeError,lAllowScroll,1}:Throw()
-		ENDIF
-	ELSE
-		lAllowScroll:=TRUE
-	ENDIF
+      IF !IsNil(lAllowScroll)
+         IF !IsLogic(lAllowScroll)
+            WCError{#EnableVerticalScroll,#DataBrowser,__WCSTypeError,lAllowScroll,1}:Throw()
+         ENDIF
+      ELSE
+         lAllowScroll:=TRUE
+      ENDIF
 
-	IF !lIsShown
-		IF lAllowScroll
-			dwDeferredStyle := _OR(dwDeferredStyle,DWORD(CTS_VERTSCROLL))
-		ELSE
-			dwDeferredStyle := _AND(dwDeferredStyle,_NOT(DWORD(CTS_VERTSCROLL)))
-		ENDIF
-	ELSE
-		IF lAllowScroll
-			PCALL(gpfnCntStyleSet, hwnd, CTS_VERTSCROLL)
-		ELSE
-			PCALL(gpfnCntStyleClear, hwnd, CTS_VERTSCROLL)
-		ENDIF
-	ENDIF
+      IF !lIsShown
+         IF lAllowScroll
+            dwDeferredStyle := _OR(dwDeferredStyle,DWORD(CTS_VERTSCROLL))
+         ELSE
+            dwDeferredStyle := _AND(dwDeferredStyle,_NOT(DWORD(CTS_VERTSCROLL)))
+         ENDIF
+      ELSE
+         IF lAllowScroll
+            PCALL(gpfnCntStyleSet, hwnd, CTS_VERTSCROLL)
+         ELSE
+            PCALL(gpfnCntStyleClear, hwnd, CTS_VERTSCROLL)
+         ENDIF
+      ENDIF
 
-	RETURN SELF
+      RETURN SELF
 
-METHOD EnableVerticalSplit(lShowSplit, nMode) 
-	
+   METHOD EnableVerticalSplit(lShowSplit, nMode) 
+      
 
-	IF !IsNil(lShowSplit)
-		IF !IsLogic(lShowSplit)
-			WCError{#EnableVerticalSplit,#DataBrowser,__WCSTypeError,lShowSplit,1}:Throw()
-		ENDIF
-	ELSE
-		lShowSplit := TRUE
-	ENDIF
+      IF !IsNil(lShowSplit)
+         IF !IsLogic(lShowSplit)
+            WCError{#EnableVerticalSplit,#DataBrowser,__WCSTypeError,lShowSplit,1}:Throw()
+         ENDIF
+      ELSE
+         lShowSplit := TRUE
+      ENDIF
 
-	IF !IsNil(nMode)
-		IF !IsLong(nMode)
-			WCError{#EnableVerticalSplit,#DataBrowser,__WCSTypeError,nMode,2}:Throw()
-		ENDIF
-	ELSE
-		nMode := GBSSBMIDDLE
-	ENDIF
+      IF !IsNil(nMode)
+         IF !IsLong(nMode)
+            WCError{#EnableVerticalSplit,#DataBrowser,__WCSTypeError,nMode,2}:Throw()
+         ENDIF
+      ELSE
+         nMode := GBSSBMIDDLE
+      ENDIF
 
-	IF lShowSplit
-		PCALL(gpfnCntStyleSet, hwnd, CTS_SPLITBAR)
-		PCALL(gpfnCntSpltBarCreate, hwnd, nMode, 0)
-	ELSE
-		PCALL(gpfnCntSpltBarDelete, hwnd, 0, 0)
-		PCALL(gpfnCntStyleClear, hwnd, CTS_SPLITBAR)
-	ENDIF
+      IF lShowSplit
+         PCALL(gpfnCntStyleSet, hwnd, CTS_SPLITBAR)
+         PCALL(gpfnCntSpltBarCreate, hwnd, nMode, 0)
+      ELSE
+         PCALL(gpfnCntSpltBarDelete, hwnd, 0, 0)
+         PCALL(gpfnCntStyleClear, hwnd, CTS_SPLITBAR)
+      ENDIF
 
-	RETURN SELF
+      RETURN SELF
 
-METHOD Error(oErrorObj) 
-	
+   METHOD Error(oErrorObj) 
+      
 
-	RETURN SELF
+      RETURN SELF
 
-ACCESS Font 
-	
+   ACCESS Font 
+      
 
-	RETURN oFontText
+      RETURN oFontText
 
-ASSIGN Font(oFont) 
-	
+   ASSIGN Font(oFont) 
+      
 
-	SELF:ChangeFont(oFont, gblText)
+      SELF:ChangeFont(oFont, gblText)
 
-	RETURN 
+      RETURN 
 
-METHOD GetColumn(xColumnID) 
-	LOCAL dwPosition AS DWORD
+   METHOD GetColumn(xColumnID) 
+      LOCAL dwPosition AS DWORD
 
-	
+      
 
-	IF !IsLong(xColumnID) .AND. !IsSymbol(xColumnID) .AND. !IsString(xColumnID)
-		WCError{#GetColumn,#DataBrowser,__WCSTypeError,xColumnID,1}:Throw()
-	ENDIF
+      IF !IsLong(xColumnID) .AND. !IsSymbol(xColumnID) .AND. !IsString(xColumnID)
+         WCError{#GetColumn,#DataBrowser,__WCSTypeError,xColumnID,1}:Throw()
+      ENDIF
 
-	dwPosition := SELF:__FindColumn(xColumnID)
-	IF dwPosition != 0
-		RETURN aColumn[dwPosition]
-	ENDIF
+      dwPosition := SELF:__FindColumn(xColumnID)
+      IF dwPosition != 0
+         RETURN aColumn[dwPosition]
+      ENDIF
 
-	RETURN NULL_OBJECT
+      RETURN NULL_OBJECT
 
-ACCESS HiBackground 
+   ACCESS HiBackground 
 	// DHer: 18/12/2008
-RETURN SELF:oBackgroundHiText
+      RETURN SELF:oBackgroundHiText
 
 
-CONSTRUCTOR(oOwner, xID, oPoint, oDimension) 
-	LOCAL oBB AS BoundingBox
-	LOCAL oWin AS Window
-	LOCAL hChild AS PTR
-	LOCAL oDataWin AS DataWindow
+   CONSTRUCTOR(oOwner, xID, oPoint, oDimension) 
+      LOCAL oBB AS BoundingBox
+      LOCAL oWin AS Window
+      LOCAL hChild AS PTR
+      LOCAL oDataWin AS DataWindow
 
-	__LoadContainerDLL()
+      __LoadContainerDLL()
 
-	IF !IsInstanceOfUsual(oOwner,#Window)
-		WCError{#Init,#DataBrowser,__WCSTypeError,oOwner,1}:Throw()
-	ENDIF
-	oWin := oOwner
+      IF !IsInstanceOfUsual(oOwner,#Window)
+         WCError{#Init,#DataBrowser,__WCSTypeError,oOwner,1}:Throw()
+      ENDIF
+      oWin := oOwner
 
 	// Automatically generate id if none is supplied
-	DEFAULT(@xID, 1000)
+      DEFAULT(@xID, 1000)
 
-	IF (IsInstanceOfUsual(oOwner, #DataWindow))
-		oBB := oOwner:CanvasArea
-		oPoint := Point{0,0}
-		oDimension := Dimension{obb:Width,obb:Height}
-	ENDIF
+      IF (IsInstanceOfUsual(oOwner, #DataWindow))
+         oBB := oOwner:CanvasArea
+         oPoint := Point{0,0}
+         oDimension := Dimension{obb:Width,obb:Height}
+      ENDIF
 
-	IF IsInstanceOf(oWin, #DataWindow) 
-	    oDataWin := (DataWindow) oWin
-		oWin := oDataWin:__FormWindow
-	ENDIF
+      IF IsInstanceOf(oWin, #DataWindow) 
+         oDataWin := (DataWindow) oWin
+         oWin := oDataWin:__FormWindow
+      ENDIF
 
-	SUPER(oWin, xID, oPoint, oDimension, CONTAINER_CLASS, CTS_SPLITBAR)
+      SUPER(oWin, xID, oPoint, oDimension, CONTAINER_CLASS, CTS_SPLITBAR)
 
-	iBufferGranularity := INT(_CAST, QueryRTRegInt("Browser", "Granularity"))
-	IF (iBufferGranularity == 0)
-		iBufferGranularity := 64
-	ENDIF
-	iBufferGranularity := Max(16, iBufferGranularity)
+      iBufferGranularity := INT(_CAST, QueryRTRegInt("Browser", "Granularity"))
+      IF (iBufferGranularity == 0)
+         iBufferGranularity := 64
+      ENDIF
+      iBufferGranularity := Max(16, iBufferGranularity)
 
-	iBufferMaximum := INT(_CAST, QueryRTRegInt("Browser", "Maximum"))
-	IF (iBufferMaximum == 0)
-		iBufferMaximum := 1024
-	ENDIF
-	iBufferMaximum := Max(2 * iBufferGranularity, iBufferMaximum)
+      iBufferMaximum := INT(_CAST, QueryRTRegInt("Browser", "Maximum"))
+      IF (iBufferMaximum == 0)
+         iBufferMaximum := 1024
+      ENDIF
+      iBufferMaximum := Max(2 * iBufferGranularity, iBufferMaximum)
 
-	lColumnTitles := TRUE
+      lColumnTitles := TRUE
 
-	lUseDefCaption := TRUE
-	lUseDefColCaption := TRUE
-	lUseDefText := TRUE
-	lUseDefButton := TRUE
-	lUseDefColButton := TRUE
-	lUseDefHiText := TRUE
-	aColumn := {}
+      lUseDefCaption := TRUE
+      lUseDefColCaption := TRUE
+      lUseDefText := TRUE
+      lUseDefButton := TRUE
+      lUseDefColButton := TRUE
+      lUseDefHiText := TRUE
+      aColumn := {}
 
-	SELF:SetFocus() // Force Handle to be created
+      SELF:SetFocus() // Force Handle to be created
 
-	IF __WCRegisterGBNotifyWindow(_GetInst())
+      IF __WCRegisterGBNotifyWindow(_GetInst())
 		//Create ptr to pass for WM_Create and to be used for message processing
-		ptrSelf := __WCSelfPtrAlloc(SELF)
-        hNotifyWindow := CreateWindowEx(0, String2Psz(__WCGBNotifyWindowClass), NULL_PSZ, 0,;
-			CW_USEDEFAULT, 0, CW_USEDEFAULT, 0,;
-			0, 0, _GetInst(), ptrSelf)
+         ptrSelf := __WCSelfPtrAlloc(SELF)
+         hNotifyWindow := CreateWindowEx(0, String2Psz(__WCGBNotifyWindowClass), NULL_PSZ, 0,;
+         CW_USEDEFAULT, 0, CW_USEDEFAULT, 0,;
+         0, 0, _GetInst(), ptrSelf)
 
-		IF (hNotifyWindow != NULL_PTR)
-			PCALL(gpfnCntAssociateSet, hwnd, hNotifyWindow)
-		ENDIF
-	ENDIF
+         IF (hNotifyWindow != NULL_PTR)
+            PCALL(gpfnCntAssociateSet, hwnd, hNotifyWindow)
+         ENDIF
+      ENDIF
 
-	PCALL(gpfnCntViewSet, hwnd, CV_DETAIL)
+      PCALL(gpfnCntViewSet, hwnd, CV_DETAIL)
 
-	lUse3dLook := TRUE
+      lUse3dLook := TRUE
 	// Set up default colors so that they respond to Control Panel
 	// This appears to affect over all container
-	PCALL(gpfnCntColorSet, hwnd, CNTCOLOR_CNTBKGD, GetSysColor(COLOR_WINDOW))
-	PCALL(gpfnCntColorSet, hwnd, CNTCOLOR_FLDBKGD,		GetSysColor(COLOR_WINDOW))
-	PCALL(gpfnCntColorSet, hwnd, CNTCOLOR_TEXT,		 GetSysColor(COLOR_WINDOWTEXT))
-	PCALL(gpfnCntColorSet, hwnd, CNTCOLOR_GRID,		 GetSysColor(COLOR_WINDOWFRAME))
-	PCALL(gpfnCntColorSet, hwnd, CNTCOLOR_3DHIGH,		GetSysColor(COLOR_BTNHIGHLIGHT))
-	PCALL(gpfnCntColorSet, hwnd, CNTCOLOR_3DSHADOW,	GetSysColor(COLOR_BTNSHADOW))
-	PCALL(gpfnCntColorSet, hwnd, CNTCOLOR_HIGHLIGHT,	GetSysColor(COLOR_HIGHLIGHT))
-	PCALL(gpfnCntColorSet, hwnd, CNTCOLOR_HITEXT,		GetSysColor(COLOR_HIGHLIGHTTEXT))
+      PCALL(gpfnCntColorSet, hwnd, CNTCOLOR_CNTBKGD, GetSysColor(COLOR_WINDOW))
+      PCALL(gpfnCntColorSet, hwnd, CNTCOLOR_FLDBKGD,		GetSysColor(COLOR_WINDOW))
+      PCALL(gpfnCntColorSet, hwnd, CNTCOLOR_TEXT,		 GetSysColor(COLOR_WINDOWTEXT))
+      PCALL(gpfnCntColorSet, hwnd, CNTCOLOR_GRID,		 GetSysColor(COLOR_WINDOWFRAME))
+      PCALL(gpfnCntColorSet, hwnd, CNTCOLOR_3DHIGH,		GetSysColor(COLOR_BTNHIGHLIGHT))
+      PCALL(gpfnCntColorSet, hwnd, CNTCOLOR_3DSHADOW,	GetSysColor(COLOR_BTNSHADOW))
+      PCALL(gpfnCntColorSet, hwnd, CNTCOLOR_HIGHLIGHT,	GetSysColor(COLOR_HIGHLIGHT))
+      PCALL(gpfnCntColorSet, hwnd, CNTCOLOR_HITEXT,		GetSysColor(COLOR_HIGHLIGHTTEXT))
 
 	//Set title defaults for 3D appearance
-	PCALL(gpfnCntColorSet, hwnd, CNTCOLOR_TITLE, GetSysColor(COLOR_BTNTEXT))
-	PCALL(gpfnCntColorSet, hwnd, CNTCOLOR_FLDTITLES, GetSysColor(COLOR_BTNTEXT))
-	PCALL(gpfnCntColorSet, hwnd, CNTCOLOR_TTLBKGD, GetSysColor(COLOR_BTNFACE))
-	PCALL(gpfnCntColorSet, hwnd, CNTCOLOR_FLDTTLBKGD, GetSysColor(COLOR_BTNFACE))
+      PCALL(gpfnCntColorSet, hwnd, CNTCOLOR_TITLE, GetSysColor(COLOR_BTNTEXT))
+      PCALL(gpfnCntColorSet, hwnd, CNTCOLOR_FLDTITLES, GetSysColor(COLOR_BTNTEXT))
+      PCALL(gpfnCntColorSet, hwnd, CNTCOLOR_TTLBKGD, GetSysColor(COLOR_BTNFACE))
+      PCALL(gpfnCntColorSet, hwnd, CNTCOLOR_FLDTTLBKGD, GetSysColor(COLOR_BTNFACE))
 
 	// Colors for buttons
-	PCALL(gpfnCntColorSet, hwnd, CNTCOLOR_TTLBTNTXT, GetSysColor(COLOR_BTNTEXT))
-	PCALL(gpfnCntColorSet, hwnd, CNTCOLOR_TTLBTNBKGD, GetSysColor(COLOR_BTNFACE))
-	PCALL(gpfnCntColorSet, hwnd, CNTCOLOR_FLDBTNTXT, GetSysColor(COLOR_BTNTEXT))
-	PCALL(gpfnCntColorSet, hwnd, CNTCOLOR_FLDBTNBKGD, GetSysColor(COLOR_BTNFACE))
+      PCALL(gpfnCntColorSet, hwnd, CNTCOLOR_TTLBTNTXT, GetSysColor(COLOR_BTNTEXT))
+      PCALL(gpfnCntColorSet, hwnd, CNTCOLOR_TTLBTNBKGD, GetSysColor(COLOR_BTNFACE))
+      PCALL(gpfnCntColorSet, hwnd, CNTCOLOR_FLDBTNTXT, GetSysColor(COLOR_BTNTEXT))
+      PCALL(gpfnCntColorSet, hwnd, CNTCOLOR_FLDBTNBKGD, GetSysColor(COLOR_BTNFACE))
 
 	// Default line spacing - Quarter Line
-	PCALL(gpfnCntRowHtSet, hwnd, 1, CA_LS_MEDIUM)
+      PCALL(gpfnCntRowHtSet, hwnd, 1, CA_LS_MEDIUM)
 
 
 	// Set default font
-	PCALL(gpfnCntFontSet, hwnd, GetStockObject(DEFAULT_GUI_FONT), CF_GENERAL)
+      PCALL(gpfnCntFontSet, hwnd, GetStockObject(DEFAULT_GUI_FONT), CF_GENERAL)
 
-	PCALL(gpfnCntAttribSet, hwnd, CA_APPSPLITABLE)
-	PCALL(gpfnCntRangeExSet, hwnd, 0, 0)
+      PCALL(gpfnCntAttribSet, hwnd, CA_APPSPLITABLE)
+      PCALL(gpfnCntRangeExSet, hwnd, 0, 0)
 
-	SELF:__EnableSelection(ssSingleSelection)
+      SELF:__EnableSelection(ssSingleSelection)
 
-	SELF:EnableColumnMove()
-	SELF:EnableColumnReSize()
-	SELF:EnableGrid()
-	SELF:EnableHorizontalScroll()
-	SELF:EnableVerticalScroll()
+      SELF:EnableColumnMove()
+      SELF:EnableColumnReSize()
+      SELF:EnableGrid()
+      SELF:EnableHorizontalScroll()
+      SELF:EnableVerticalScroll()
 
-	IF (IsInstanceOfUsual(oOwner, #DataWindow))
-		SELF:__AutoResize()
-	ENDIF
+      IF (IsInstanceOfUsual(oOwner, #DataWindow))
+         SELF:__AutoResize()
+      ENDIF
 
-	hChild := GetWindow(hwnd, GW_CHILD)
-	pfGBChildProcOrg := PTR(_CAST, GetWindowLong(hChild, GWL_WNDPROC))
-#ifdef __VULCAN__
-   IF WCGBChildProcDelegate == NULL
-      WCGBChildProcDelegate := __WCGBChildProcDelegate{ NULL, @__WCGBChildProc() }
-   ENDIF
-	SetWindowLong(hChild, GWL_WNDPROC, (INT) System.Runtime.InteropServices.Marshal.GetFunctionPointerForDelegate( (System.Delegate) WCGBChildProcDelegate ) )
-#else	
-	SetWindowLong(hChild, GWL_WNDPROC, LONGINT(_CAST, @__WCGBChildProc()))
-#endif	
+      hChild := GetWindow(hwnd, GW_CHILD)
+      pfGBChildProcOrg := PTR(_CAST, GetWindowLong(hChild, GWL_WNDPROC))
+      #ifdef __VULCAN__
+         IF WCGBChildProcDelegate == NULL
+            WCGBChildProcDelegate := __WCGBChildProcDelegate{ NULL, @__WCGBChildProc() }
+         ENDIF
+         SetWindowLong(hChild, GWL_WNDPROC, (INT) System.Runtime.InteropServices.Marshal.GetFunctionPointerForDelegate( (System.Delegate) WCGBChildProcDelegate ) )
+      #else	
+         SetWindowLong(hChild, GWL_WNDPROC, LONGINT(_CAST, @__WCGBChildProc()))
+      #endif	
 
-	RETURN 
+      RETURN 
 
-METHOD NewRow() 
-	
+   METHOD NewRow() 
+      
 
-	RETURN FALSE
+      RETURN FALSE
 
-METHOD Notify(kNotification, uDescription) 
-	
+   METHOD Notify(kNotification, uDescription) 
+      
 
-	DO CASE
-	CASE kNotification = NOTIFYCOMPLETION
-		SELF:__NotifyChanges(GBNFY_COMPLETION)
-		nOldRecordNum := oDataServer:Recno
-	CASE kNotification = NOTIFYINTENTTOMOVE
-		RETURN SELF:__NotifyChanges(GBNFY_INTENTTOMOVE)
-	CASE kNotification = NOTIFYFILECHANGE
-		ASend(aColumn, #__Scatter)
-		SELF:__NotifyChanges(GBNFY_FILECHANGE)
-		ASend(aColumn, #__Scatter)
-		nOldRecordNum := oDataServer:Recno
-	CASE kNotification = NOTIFYFIELDCHANGE
-		SELF:__RefreshField(uDescription)
-		SELF:__NotifyChanges(GBNFY_FIELDCHANGE)
-	CASE kNotification = NOTIFYCLOSE
-		SELF:__Unlink()
-	CASE kNotification = NOTIFYRECORDCHANGE
-		ASend(aColumn, #__Scatter)
+      DO CASE
+      CASE kNotification = NOTIFYCOMPLETION
+            SELF:__NotifyChanges(GBNFY_COMPLETION)
+         nOldRecordNum := oDataServer:Recno
+      CASE kNotification = NOTIFYINTENTTOMOVE
+         RETURN SELF:__NotifyChanges(GBNFY_INTENTTOMOVE)
+      CASE kNotification = NOTIFYFILECHANGE
+            ASend(aColumn, #__Scatter)
+            SELF:__NotifyChanges(GBNFY_FILECHANGE)
+            ASend(aColumn, #__Scatter)
+         nOldRecordNum := oDataServer:Recno
+      CASE kNotification = NOTIFYFIELDCHANGE
+            SELF:__RefreshField(uDescription)
+         SELF:__NotifyChanges(GBNFY_FIELDCHANGE)
+      CASE kNotification = NOTIFYCLOSE
+         SELF:__Unlink()
+      CASE kNotification = NOTIFYRECORDCHANGE
+            ASend(aColumn, #__Scatter)
 
-		IF nOldRecordNum != oDataServer:Recno
-			SELF:__NotifyChanges(GBNFY_RECORDCHANGE)
-			ASend(aColumn, #__Scatter)
-		ELSE
-			SELF:__NotifyChanges(GBNFY_FIELDCHANGE)
-		ENDIF
-		nOldRecordNum := oDataServer:Recno
-	CASE kNotification = NOTIFYGOBOTTOM
-		ASend(aColumn, #__Scatter)
-		SELF:__NotifyChanges(GBNFY_DOGOEND)
-		ASend(aColumn, #__Scatter)
-		nOldRecordNum := oDataServer:Recno
-	CASE kNotification = NOTIFYGOTOP
-		ASend(aColumn, #__Scatter)
-		SELF:__NotifyChanges(GBNFY_DOGOTOP)
-		ASend(aColumn, #__Scatter)
-		nOldRecordNum := oDataServer:Recno
-	CASE kNotification = NOTIFYDELETE
-		ASend(aColumn, #__Scatter)
-		SELF:__NotifyChanges(GBNFY_DODELETE)
-		ASend(aColumn, #__Scatter)
-		nOldRecordNum := oDataServer:Recno
-	CASE kNotification = NOTIFYAPPEND
-		ASend(aColumn, #__Scatter)
-		SELF:__NotifyChanges(GBNFY_DONEWROW)
-		ASend(aColumn, #__Scatter)
-		ASend(aColumn, #PerformValidations)
-		nOldRecordNum := oDataServer:Recno
-	END CASE
+            IF nOldRecordNum != oDataServer:Recno
+               SELF:__NotifyChanges(GBNFY_RECORDCHANGE)
+               ASend(aColumn, #__Scatter)
+            ELSE
+               SELF:__NotifyChanges(GBNFY_FIELDCHANGE)
+            ENDIF
+         nOldRecordNum := oDataServer:Recno
+      CASE kNotification = NOTIFYGOBOTTOM
+            ASend(aColumn, #__Scatter)
+            SELF:__NotifyChanges(GBNFY_DOGOEND)
+            ASend(aColumn, #__Scatter)
+         nOldRecordNum := oDataServer:Recno
+      CASE kNotification = NOTIFYGOTOP
+            ASend(aColumn, #__Scatter)
+            SELF:__NotifyChanges(GBNFY_DOGOTOP)
+            ASend(aColumn, #__Scatter)
+         nOldRecordNum := oDataServer:Recno
+      CASE kNotification = NOTIFYDELETE
+            ASend(aColumn, #__Scatter)
+            SELF:__NotifyChanges(GBNFY_DODELETE)
+            ASend(aColumn, #__Scatter)
+         nOldRecordNum := oDataServer:Recno
+      CASE kNotification = NOTIFYAPPEND
+            ASend(aColumn, #__Scatter)
+            SELF:__NotifyChanges(GBNFY_DONEWROW)
+            ASend(aColumn, #__Scatter)
+            ASend(aColumn, #PerformValidations)
+         nOldRecordNum := oDataServer:Recno
+      END CASE
 
-	RETURN NIL
+      RETURN NIL
 
-ACCESS Owner 
-	
+   ACCESS Owner 
+      
 
 	//return oParent
-	IF !IsInstanceOf(oParent, #__FormFrame)
-		RETURN oParent
-	ENDIF
-	RETURN IVarGet(oParent, #DataWindow)
+      IF !IsInstanceOf(oParent, #__FormFrame)
+         RETURN oParent
+      ENDIF
+      RETURN IVarGet(oParent, #DataWindow)
 
-METHOD Paste ( ) 
-	
+   METHOD Paste ( ) 
+      
 
-	IF IsInstanceOf(oCellEdit,#Edit)
-		Send(oCellEdit,#Paste)
-	ENDIF
+      IF IsInstanceOf(oCellEdit,#Edit)
+         Send(oCellEdit,#Paste)
+      ENDIF
 
-	RETURN SELF
+      RETURN SELF
 
-ACCESS Pointer 
-	
+   ACCESS Pointer 
+      
 
-	RETURN oTextPointer
+      RETURN oTextPointer
 
-ASSIGN Pointer(oPointer) 
-	
+   ASSIGN Pointer(oPointer) 
+      
 
-	SELF:SetPointer(oPointer, gblText)
-	RETURN 
+      SELF:SetPointer(oPointer, gblText)
+      RETURN 
 
-METHOD Refresh() 
-	
+   METHOD Refresh() 
+      
 
-	IF oDataServer!=NULL_OBJECT .AND. IsInstanceOf(oDataServer,#DBServer)
-		oDataServer:Goto(oDataServer:Recno) //Forces refresh if DBF was empty
-	ENDIF
-	SELF:__RefreshBuffer()
-	ASend(aColumn, #__Scatter)
+      IF oDataServer!=NULL_OBJECT .AND. IsInstanceOf(oDataServer,#DBServer)
+         oDataServer:Goto(oDataServer:Recno) //Forces refresh if DBF was empty
+      ENDIF
+      SELF:__RefreshBuffer()
+      ASend(aColumn, #__Scatter)
 
-	RETURN SELF
+      RETURN SELF
 
-METHOD RemoveColumn(uColumnOrIndex) 
-	LOCAL i AS DWORD
-	LOCAL oDC AS DataColumn
+   METHOD RemoveColumn(uColumnOrIndex) 
+      LOCAL i AS DWORD
+      LOCAL oDC AS DataColumn
 
-	
+      
 
-	i := SELF:__FindColumn(uColumnOrIndex)
+      i := SELF:__FindColumn(uColumnOrIndex)
 
-	IF (i != 0)
-		SELF:SuspendUpdate()
+      IF (i != 0)
+         SELF:SuspendUpdate()
 
-		IF oDataServer!=NULL_OBJECT
-			SELF:__ClearBuffers()
-		ENDIF
+         IF oDataServer!=NULL_OBJECT
+            SELF:__ClearBuffers()
+         ENDIF
 
-		oDC := aColumn[i]
-		ADel(aColumn, i)
-		ASize(aColumn, ALen(aColumn)-1)
-		PCALL(gpfnCntRemoveFld, hwnd, oDC:__FieldInfo)
-		oDC:__Owner := NULL_OBJECT
+         oDC := aColumn[i]
+         ADel(aColumn, i)
+         ASize(aColumn, ALen(aColumn)-1)
+         PCALL(gpfnCntRemoveFld, hwnd, oDC:__FieldInfo)
+         oDC:__Owner := NULL_OBJECT
 
 		// if data server connection - refresh columns
-		IF oDataServer!=NULL_OBJECT
-			SELF:__BuildRecordDescription()
-			SELF:__RefreshBuffer()
-		ENDIF
+         IF oDataServer!=NULL_OBJECT
+            SELF:__BuildRecordDescription()
+            SELF:__RefreshBuffer()
+         ENDIF
 
-		SELF:RestoreUpdate()
+         SELF:RestoreUpdate()
 
-		strucFocusField := PCALL(gpfnCntFocusFldGet, hwnd)
-	ENDIF
+         strucFocusField := PCALL(gpfnCntFocusFldGet, hwnd)
+      ENDIF
 
-	RETURN oDC
+      RETURN oDC
 
-METHOD RestoreUpdate() 
-	
+   METHOD RestoreUpdate() 
+      
 
-	IF iDeferPaintCount!=0
-		--iDeferPaintCount
-	ENDIF
+      IF iDeferPaintCount!=0
+         --iDeferPaintCount
+      ENDIF
 
-	IF iDeferPaintCount == 0
-		PCALL(gpfnCntEndDeferPaint, hwnd, TRUE)
-	ENDIF
+      IF iDeferPaintCount == 0
+         PCALL(gpfnCntEndDeferPaint, hwnd, TRUE)
+      ENDIF
 
-	RETURN SELF
+      RETURN SELF
 
-ACCESS RowCount 
-	
+   ACCESS RowCount 
+      
 
-	RETURN PCALL(gpfnCntRecsDispGet, hwnd)
+      RETURN PCALL(gpfnCntRecsDispGet, hwnd)
 
-METHOD SetCaption(cText) 
-	LOCAL iLines AS INT
+   METHOD SetCaption(cText) 
+      LOCAL iLines AS INT
 
-	
+      
 
-	IF IsSymbol(cText)
-		cCaption := Symbol2String(cText)
-	ELSEIF IsString(cText)
-		cCaption := cText
-	ELSEIF !IsNil(cText)
-		WCError{#SetCaption,#DataBrowser,__WCSTypeError,cText,1}:Throw()
-	ENDIF
+      IF IsSymbol(cText)
+         cCaption := Symbol2String(cText)
+      ELSEIF IsString(cText)
+         cCaption := cText
+      ELSEIF !IsNil(cText)
+         WCError{#SetCaption,#DataBrowser,__WCSTypeError,cText,1}:Throw()
+      ENDIF
 
-	SELF:SuspendUpdate()
-	IF NULL_STRING != cCaption
+      SELF:SuspendUpdate()
+      IF NULL_STRING != cCaption
 
-		PCALL(gpfnCntAttribSet, hwnd, CA_TITLE)
-		IF lUse3dLook
-			PCALL(gpfnCntAttribSet, hwnd, CA_TITLE3D)
-		ENDIF
-		PCALL(gpfnCntTtlSet, hWnd, String2Psz(cCaption))
-		iLines := INT(Occurs(Chr(10),cCaption)) + 1
-		IF iLines == 1
-			PCALL(gpfnCntTtlAlignSet, hwnd, _OR(CA_TA_HCENTER, CA_TA_VCENTER))
-		ELSE
-			PCALL(gpfnCntTtlAlignSet, hwnd, _OR(CA_TA_HCENTER, CA_TA_TOP))
-		ENDIF
-		PCALL(gpfnCntTtlHtSet, hwnd, ilines)
-		PCALL(gpfnCntTtlSepSet, hwnd)
-	ELSE
-		PCALL(gpfnCntTtlHtSet, hwnd, 0)
-		IF NULL_STRING != cCaption
-			cCaption := NULL_STRING
-			PCALL(gpfnCntTtlSet, hWnd, String2Psz(cCaption))
-		ENDIF
-		PCALL(gpfnCntAttribClear, hwnd, CA_TITLE)
-	ENDIF
+         PCALL(gpfnCntAttribSet, hwnd, CA_TITLE)
+         IF lUse3dLook
+            PCALL(gpfnCntAttribSet, hwnd, CA_TITLE3D)
+         ENDIF
+         PCALL(gpfnCntTtlSet, hWnd, String2Psz(cCaption))
+         iLines := INT(Occurs(Chr(10),cCaption)) + 1
+         IF iLines == 1
+            PCALL(gpfnCntTtlAlignSet, hwnd, _OR(CA_TA_HCENTER, CA_TA_VCENTER))
+         ELSE
+            PCALL(gpfnCntTtlAlignSet, hwnd, _OR(CA_TA_HCENTER, CA_TA_TOP))
+         ENDIF
+         PCALL(gpfnCntTtlHtSet, hwnd, ilines)
+         PCALL(gpfnCntTtlSepSet, hwnd)
+      ELSE
+         PCALL(gpfnCntTtlHtSet, hwnd, 0)
+         IF NULL_STRING != cCaption
+            cCaption := NULL_STRING
+            PCALL(gpfnCntTtlSet, hWnd, String2Psz(cCaption))
+         ENDIF
+         PCALL(gpfnCntAttribClear, hwnd, CA_TITLE)
+      ENDIF
 
-	SELF:RestoreUpdate()
+      SELF:RestoreUpdate()
 
-	RETURN SELF
+      RETURN SELF
 
-METHOD SetColumn(oDataColumn, nColumnNumber) 
-	LOCAL oDC AS DataColumn
+   METHOD SetColumn(oDataColumn, nColumnNumber) 
+      LOCAL oDC AS DataColumn
 
-	
+      
 
-	IF !IsInstanceOfUsual(oDataColumn,#DataColumn)
-		WCError{#SetColumn,#DataBrowser,__WCSTypeError,oDataColumn,1}:Throw()
-	ENDIF
-	IF !IsNil(nColumnNumber)
-		IF !IsLong(nColumnNumber)
-			WCError{#SetColumn,#DataBrowser,__WCSTypeError,nColumnNumber,2}:Throw()
-		ENDIF
-	ENDIF
+      IF !IsInstanceOfUsual(oDataColumn,#DataColumn)
+         WCError{#SetColumn,#DataBrowser,__WCSTypeError,oDataColumn,1}:Throw()
+      ENDIF
+      IF !IsNil(nColumnNumber)
+         IF !IsLong(nColumnNumber)
+            WCError{#SetColumn,#DataBrowser,__WCSTypeError,nColumnNumber,2}:Throw()
+         ENDIF
+      ENDIF
 
-	oDC := SELF:GetColumn(nColumnNumber)
+      oDC := SELF:GetColumn(nColumnNumber)
 
-	IF oDC!=NULL_OBJECT
-		SELF:SuspendUpdate()
-		SELF:RemoveColumn(oDC)
-		SELF:AddColumn(oDataColumn, nColumnNumber)
-		SELF:RestoreUpdate()
-	ENDIF
+      IF oDC!=NULL_OBJECT
+         SELF:SuspendUpdate()
+         SELF:RemoveColumn(oDC)
+         SELF:AddColumn(oDataColumn, nColumnNumber)
+         SELF:RestoreUpdate()
+      ENDIF
 
-	RETURN oDC
+      RETURN oDC
 
-METHOD SetColumnFocus(oColumn) 
-	LOCAL oDC AS DataColumn
+   METHOD SetColumnFocus(oColumn) 
+      LOCAL oDC AS DataColumn
 
-	IF !IsInstanceOfUsual(oColumn,#DataColumn)
-		WCError{#SetColumnFocus,#DataBrowser,__WCSTypeError,oColumn,1}:Throw()
-	ENDIF
+      IF !IsInstanceOfUsual(oColumn,#DataColumn)
+         WCError{#SetColumnFocus,#DataBrowser,__WCSTypeError,oColumn,1}:Throw()
+      ENDIF
 
 	// Cpc 2010-03-25 strongly typed to workaround bug #852
-	oDC := oColumn
+      oDC := oColumn
 
-	IF PCALL(gpfnCntFocusSet, hwnd, PCALL(gpfnCntFocusRecGet, hwnd), oDC:__FieldInfo)
-		SELF:SetFocus()
-		RETURN TRUE
-	ENDIF
+      IF PCALL(gpfnCntFocusSet, hwnd, PCALL(gpfnCntFocusRecGet, hwnd), oDC:__FieldInfo)
+         SELF:SetFocus()
+         RETURN TRUE
+      ENDIF
 
-	RETURN FALSE
+      RETURN FALSE
 
-METHOD SetPointer(oPointer, kWhere) 
-	LOCAL iLoc AS DWORD
+   METHOD SetPointer(oPointer, kWhere) 
+      LOCAL iLoc AS DWORD
 
-	DEFAULT(@oPointer, Pointer{PointerArrow})
+      DEFAULT(@oPointer, Pointer{PointerArrow})
 
-	IF !IsInstanceOfUsual(oPointer,#Pointer)
-		WCError{#SetPointer,#Pointer,__WCSTypeError,oPointer,1}:Throw()
-	ENDIF
+      IF !IsInstanceOfUsual(oPointer,#Pointer)
+         WCError{#SetPointer,#Pointer,__WCSTypeError,oPointer,1}:Throw()
+      ENDIF
 
-	IF !IsNil(kWhere)
-		IF !IsLong(kWhere)
-			WCError{#SetPointer,#DataBrowser,__WCSTypeError,kWhere,2}:Throw()
-		ENDIF
-	ENDIF
+      IF !IsNil(kWhere)
+         IF !IsLong(kWhere)
+            WCError{#SetPointer,#DataBrowser,__WCSTypeError,kWhere,2}:Throw()
+         ENDIF
+      ENDIF
 
-	iLoc := CC_GENERAL
-	DO CASE
-	CASE (kWhere == GBLCAPTION)
-		iLoc := CC_TITLE
+      iLoc := CC_GENERAL
+      DO CASE
+      CASE (kWhere == GBLCAPTION)
+            iLoc := CC_TITLE
 
-	CASE (kWhere == GBLCOLCAPTION)
-		iLoc := CC_FLDTITLE
+      CASE (kWhere == GBLCOLCAPTION)
+            iLoc := CC_FLDTITLE
 
-	CASE (kWhere == GBLTEXT)
-		iLoc := CC_GENERAL
-		oTextPointer := oPointer
-	ENDCASE
+      CASE (kWhere == GBLTEXT)
+            iLoc := CC_GENERAL
+         oTextPointer := oPointer
+      ENDCASE
 
-	PCALL(gpfnCntCursorSet, hwnd, oPointer:Handle(), iLoc)
+      PCALL(gpfnCntCursorSet, hwnd, oPointer:Handle(), iLoc)
 
-	RETURN NIL
+      RETURN NIL
 
-METHOD SetStandardStyle(kStyle) 
-	
+   METHOD SetStandardStyle(kStyle) 
+      
 
-	IF !IsNil(kStyle)
-		IF !IsLong(kStyle)
-			WCError{#SetStandardStyle,#DataBrowser,__WCSTypeError,kStyle,1}:Throw()
-		ENDIF
-	ENDIF
+      IF !IsNil(kStyle)
+         IF !IsLong(kStyle)
+            WCError{#SetStandardStyle,#DataBrowser,__WCSTypeError,kStyle,1}:Throw()
+         ENDIF
+      ENDIF
 
-	SELF:SuspendUpdate()
+      SELF:SuspendUpdate()
 
-	IF IsNil(kStyle)
-		PCALL(gpfnCntStyleClear, hwnd, CTS_READONLY)
-		kStyle:=gbsControl3d
-	ENDIF
+      IF IsNil(kStyle)
+         PCALL(gpfnCntStyleClear, hwnd, CTS_READONLY)
+         kStyle:=gbsControl3d
+      ENDIF
 
-	SWITCH (INT) kStyle
-	CASE GBSREADONLY
-		PCALL(gpfnCntStyleSet, hwnd, CTS_READONLY)
+      SWITCH (INT) kStyle
+      CASE GBSREADONLY
+            PCALL(gpfnCntStyleSet, hwnd, CTS_READONLY)
 
-	CASE GBSEDIT
-		PCALL(gpfnCntStyleClear, hwnd, CTS_READONLY)
+      CASE GBSEDIT
+            PCALL(gpfnCntStyleClear, hwnd, CTS_READONLY)
 
-	CASE GBSCONTROL3D
-		PCALL(gpfnCntAttribSet, hwnd, CA_TITLE3D)
-		PCALL(gpfnCntAttribSet, hwnd, CA_FLDTTL3D)
-		lUse3dLook := TRUE
-		IF lUseDefCaption
-			PCALL(gpfnCntColorSet, hwnd, CNTCOLOR_TITLE, GetSysColor(COLOR_BTNTEXT))
-		ENDIF
-		IF lUseDefColCaption
-			PCALL(gpfnCntColorSet, hwnd, CNTCOLOR_FLDTITLES, GetSysColor(COLOR_BTNTEXT))
-		ENDIF
-		IF (oBackgroundCaption == NULL_OBJECT)
-			PCALL(gpfnCntColorSet, hwnd, CNTCOLOR_TTLBKGD, GetSysColor(COLOR_BTNFACE))
-		ENDIF
-		IF (oBackgroundColCaption == NULL_OBJECT)
-			PCALL(gpfnCntColorSet, hwnd, CNTCOLOR_FLDTTLBKGD, GetSysColor(COLOR_BTNFACE))
-		ENDIF
+      CASE GBSCONTROL3D
+            PCALL(gpfnCntAttribSet, hwnd, CA_TITLE3D)
+            PCALL(gpfnCntAttribSet, hwnd, CA_FLDTTL3D)
+            lUse3dLook := TRUE
+            IF lUseDefCaption
+               PCALL(gpfnCntColorSet, hwnd, CNTCOLOR_TITLE, GetSysColor(COLOR_BTNTEXT))
+            ENDIF
+            IF lUseDefColCaption
+               PCALL(gpfnCntColorSet, hwnd, CNTCOLOR_FLDTITLES, GetSysColor(COLOR_BTNTEXT))
+            ENDIF
+            IF (oBackgroundCaption == NULL_OBJECT)
+               PCALL(gpfnCntColorSet, hwnd, CNTCOLOR_TTLBKGD, GetSysColor(COLOR_BTNFACE))
+            ENDIF
+            IF (oBackgroundColCaption == NULL_OBJECT)
+               PCALL(gpfnCntColorSet, hwnd, CNTCOLOR_FLDTTLBKGD, GetSysColor(COLOR_BTNFACE))
+            ENDIF
 
-	CASE GBSCONTROL2D
-		PCALL(gpfnCntAttribClear, hwnd, CA_TITLE3D)
-		PCALL(gpfnCntAttribClear, hwnd, CA_FLDTTL3D)
-		lUse3dLook := FALSE
-		IF lUseDefCaption
-			PCALL(gpfnCntColorSet, hwnd, CNTCOLOR_TITLE, GetSysColor(COLOR_CAPTIONTEXT))
-		ENDIF
-		IF lUseDefColCaption
-			PCALL(gpfnCntColorSet, hwnd, CNTCOLOR_FLDTITLES, GetSysColor(COLOR_CAPTIONTEXT))
-		ENDIF
-		IF oBackgroundCaption == NULL_OBJECT
-			PCALL(gpfnCntColorSet, hwnd, CNTCOLOR_TTLBKGD, GetSysColor(COLOR_ACTIVECAPTION))
-		ENDIF
-		IF oBackgroundColCaption == NULL_OBJECT
-			PCALL(gpfnCntColorSet, hwnd, CNTCOLOR_FLDTTLBKGD, GetSysColor(COLOR_ACTIVECAPTION))
-		ENDIF
-	END SWITCH
+      CASE GBSCONTROL2D
+            PCALL(gpfnCntAttribClear, hwnd, CA_TITLE3D)
+            PCALL(gpfnCntAttribClear, hwnd, CA_FLDTTL3D)
+            lUse3dLook := FALSE
+            IF lUseDefCaption
+               PCALL(gpfnCntColorSet, hwnd, CNTCOLOR_TITLE, GetSysColor(COLOR_CAPTIONTEXT))
+            ENDIF
+            IF lUseDefColCaption
+               PCALL(gpfnCntColorSet, hwnd, CNTCOLOR_FLDTITLES, GetSysColor(COLOR_CAPTIONTEXT))
+            ENDIF
+            IF oBackgroundCaption == NULL_OBJECT
+               PCALL(gpfnCntColorSet, hwnd, CNTCOLOR_TTLBKGD, GetSysColor(COLOR_ACTIVECAPTION))
+            ENDIF
+            IF oBackgroundColCaption == NULL_OBJECT
+               PCALL(gpfnCntColorSet, hwnd, CNTCOLOR_FLDTTLBKGD, GetSysColor(COLOR_ACTIVECAPTION))
+         ENDIF
+      END SWITCH
 
-	SELF:RestoreUpdate()
+      SELF:RestoreUpdate()
 
-	RETURN SELF
+      RETURN SELF
 
-METHOD Show() 
-	
+   METHOD Show() 
+      
 
-	IF dwDeferredStyle != 0
-		PCALL(gpfnCntStyleSet, hwnd, dwDeferredStyle)
-		dwDeferredStyle := 0
-	ENDIF
+      IF dwDeferredStyle != 0
+         PCALL(gpfnCntStyleSet, hwnd, dwDeferredStyle)
+         dwDeferredStyle := 0
+      ENDIF
 
-	IF oDataServer != NULL_OBJECT
-		IF !lIsShown
-			SELF:__BuildBuffer()
-		ENDIF
-	ENDIF
-	lIsShown := TRUE
+      IF oDataServer != NULL_OBJECT
+         IF !lIsShown
+            SELF:__BuildBuffer()
+         ENDIF
+      ENDIF
+      lIsShown := TRUE
 
-	SUPER:Show()
-	SELF:SetFocus()
+      SUPER:Show()
+      SELF:SetFocus()
 
-	RETURN SELF
+      RETURN SELF
 
-METHOD SuspendUpdate() 
-	
+   METHOD SuspendUpdate() 
+      
 
-	IF iDeferPaintCount == 0
-		PCALL(gpfnCntDeferPaint, hwnd)
-	ENDIF
-	iDeferPaintCount := iDeferPaintCount + 1
+      IF iDeferPaintCount == 0
+         PCALL(gpfnCntDeferPaint, hwnd)
+      ENDIF
+      iDeferPaintCount := iDeferPaintCount + 1
 
-	RETURN NIL
+      RETURN NIL
 
-ACCESS TextColor 
-	
+   ACCESS TextColor 
+      
 
-	RETURN oTextColor
+      RETURN oTextColor
 
-ASSIGN TextColor(oColor) 
-	
+   ASSIGN TextColor(oColor) 
+      
 
-	SELF:ChangeTextColor(oColor, gblText)
+      SELF:ChangeTextColor(oColor, gblText)
 
-	RETURN 
+      RETURN 
 
-METHOD Undo() 
-	
+   METHOD Undo() 
+      
 
-	IF IsInstanceOf(oCellEdit,#Edit)
-		Send(oCellEdit,#Undo)
-	ENDIF
+      IF IsInstanceOf(oCellEdit,#Edit)
+         Send(oCellEdit,#Undo)
+      ENDIF
 
-	RETURN SELF
+      RETURN SELF
 
-METHOD Use(oServer) 
-	
+   METHOD Use(oServer) 
+      
 
-	IF !IsNil(oServer)
-		IF !IsInstanceOfUsual(oServer,#DataServer)
-			WCError{#Use,#DataBrowser,__WCSTypeError,oServer,1}:Throw()
-		ENDIF
-		IF oDataServer != oServer
-			IF oDataServer != NULL_OBJECT
-				SELF:__Unlink()
-			ENDIF
-			oDataServer := oServer
-			SELF:__RegisterFieldLinks(oServer)
-			ASend(aColumn, #__Scatter)
-			IF lLinked
-				SELF:SuspendUpdate()
-				SELF:__ClearBuffers()
-				SELF:__BuildRecordDescription()
-				IF lIsShown
-					SELF:__BuildBuffer()
-				ENDIF
-				SELF:__NewFocusField(PCALL(gpfnCntFldHeadGet, hwnd))
+      IF !IsNil(oServer)
+         IF !IsInstanceOfUsual(oServer,#DataServer)
+            WCError{#Use,#DataBrowser,__WCSTypeError,oServer,1}:Throw()
+         ENDIF
+         IF oDataServer != oServer
+            IF oDataServer != NULL_OBJECT
+               SELF:__Unlink()
+            ENDIF
+            oDataServer := oServer
+            SELF:__RegisterFieldLinks(oServer)
+            ASend(aColumn, #__Scatter)
+            IF lLinked
+               SELF:SuspendUpdate()
+               SELF:__ClearBuffers()
+               SELF:__BuildRecordDescription()
+               IF lIsShown
+                  SELF:__BuildBuffer()
+               ENDIF
+               SELF:__NewFocusField(PCALL(gpfnCntFldHeadGet, hwnd))
 
-				SELF:RestoreUpdate()
+               SELF:RestoreUpdate()
 
-				nOldRecordNum := oServer:Recno
-			ENDIF
-		ENDIF
-	ELSE
-		SELF:__Unlink()
-	ENDIF
+               nOldRecordNum := oServer:Recno
+            ENDIF
+         ENDIF
+      ELSE
+         SELF:__Unlink()
+      ENDIF
 
-	RETURN lLinked
+      RETURN lLinked
 
-METHOD Validate() 
-	
+   METHOD Validate() 
+      
 
-	IF IsInstanceOf(SELF:Owner, #DataWindow)
-		RETURN Send(SELF:Owner, #__CheckRecordStatus)
-	ENDIF
+      IF IsInstanceOf(SELF:Owner, #DataWindow)
+         RETURN Send(SELF:Owner, #__CheckRecordStatus)
+      ENDIF
 
 
 	/*
@@ -3132,726 +3152,726 @@ METHOD Validate()
 	 endif
 	 endif
 	*/
-	RETURN FALSE
+      RETURN FALSE
 
 	// DataColumn
 END CLASS
 
 CLASS DataColumn INHERIT VObject
-	PROTECT strucFI AS _WinFieldInfo
-	PROTECT strucSelf AS SelfPtr
-	PROTECT iTtlBkgdLoc AS INT
-	PROTECT iTxtBkgdLoc AS INT
-	PROTECT iBtnBkgdLoc AS INT
-	PROTECT iTtlClrLoc AS INT
-	PROTECT iTxtClrLoc AS INT
-	PROTECT iBtnClrLoc AS INT
-	PROTECT iHorzAlignment AS INT
-	PROTECT iFontLoc AS INT
-	PROTECT iDataField AS INT
+   PROTECT strucFI AS _WinFieldInfo
+   PROTECT strucSelf AS SelfPtr
+   PROTECT iTtlBkgdLoc AS INT
+   PROTECT iTxtBkgdLoc AS INT
+   PROTECT iBtnBkgdLoc AS INT
+   PROTECT iTtlClrLoc AS INT
+   PROTECT iTxtClrLoc AS INT
+   PROTECT iBtnClrLoc AS INT
+   PROTECT iHorzAlignment AS INT
+   PROTECT iFontLoc AS INT
+   PROTECT iDataField AS INT
 
-	PROTECT lModified AS LOGIC
-	PROTECT lDefaultWidth AS LOGIC
-	PROTECT lUsingDrawProc AS LOGIC
-	PROTECT lBaseServer AS LOGIC
-	PROTECT lExplicitFS AS LOGIC
-	PROTECT lExplicitHL AS LOGIC
-	PROTECT lChanged AS LOGIC
+   PROTECT lModified AS LOGIC
+   PROTECT lDefaultWidth AS LOGIC
+   PROTECT lUsingDrawProc AS LOGIC
+   PROTECT lBaseServer AS LOGIC
+   PROTECT lExplicitFS AS LOGIC
+   PROTECT lExplicitHL AS LOGIC
+   PROTECT lChanged AS LOGIC
 
-	PROTECT cPicture AS STRING
-	PROTECT cCaption AS STRING
-	PROTECT cTextValue AS STRING
+   PROTECT cPicture AS STRING
+   PROTECT cCaption AS STRING
+   PROTECT cTextValue AS STRING
 
-	PROTECT symUserDrawMethod AS SYMBOL
-	PROTECT symDataField AS SYMBOL
+   PROTECT symUserDrawMethod AS SYMBOL
+   PROTECT symDataField AS SYMBOL
 
-	PROTECT oTtlBkgdBrsh AS Brush
-	PROTECT oTxtBkgdBrsh AS Brush
-	PROTECT oBtnBkgdBrsh AS Brush
-	PROTECT oTtlClr AS Color
-	PROTECT oTxtClr AS Color
-	PROTECT oBtnClr AS Color
-	PROTECT oFont AS Font
-	PROTECT oParent AS DataBrowser
-	PROTECT oFieldSpec AS FieldSpec
-	PROTECT oDataField AS DataField
-	PROTECT oCellTextColor AS Color
-	PROTECT oCellBackground AS Brush
-	PROTECT oServer AS DataServer
-	PROTECT oHyperLabel AS HyperLabel
-	PROTECT oHlStatus AS HyperLabel
+   PROTECT oTtlBkgdBrsh AS Brush
+   PROTECT oTxtBkgdBrsh AS Brush
+   PROTECT oBtnBkgdBrsh AS Brush
+   PROTECT oTtlClr AS Color
+   PROTECT oTxtClr AS Color
+   PROTECT oBtnClr AS Color
+   PROTECT oFont AS Font
+   PROTECT oParent AS DataBrowser
+   PROTECT oFieldSpec AS FieldSpec
+   PROTECT oDataField AS DataField
+   PROTECT oCellTextColor AS Color
+   PROTECT oCellBackground AS Brush
+   PROTECT oServer AS DataServer
+   PROTECT oHyperLabel AS HyperLabel
+   PROTECT oHlStatus AS HyperLabel
 
-	PROTECT cbGetSetBlock AS USUAL
-	PROTECT uGetSetOwner AS USUAL
-	PROTECT uValue AS USUAL
+   PROTECT cbGetSetBlock AS USUAL
+   PROTECT uGetSetOwner AS USUAL
+   PROTECT uValue AS USUAL
 
-	#ifdef __VULCAN__
-   HIDDEN DrawFldDataDelegate AS __DrawFldDataDelegate
-	#endif
+   #ifdef __VULCAN__
+      HIDDEN DrawFldDataDelegate AS __DrawFldDataDelegate
+   #endif
 
 	//PP-030828 Strong typing
-	ACCESS __BtnBkgdBrsh AS Brush STRICT 
+   ACCESS __BtnBkgdBrsh AS Brush STRICT 
 	//PP-030828 Strong typing
-	
+      
 
-	RETURN oBtnBkgdBrsh
+      RETURN oBtnBkgdBrsh
 
-ACCESS __BtnBkgdLoc AS INT STRICT 
+   ACCESS __BtnBkgdLoc AS INT STRICT 
 	//PP-030828 Strong typing
-	
+      
 
-	RETURN iBtnBkgdLoc
+      RETURN iBtnBkgdLoc
 
-ACCESS __BtnClr AS Color STRICT 
+   ACCESS __BtnClr AS Color STRICT 
 	//PP-030828 Strong typing
-	
+      
 
-	RETURN oBtnClr
+      RETURN oBtnClr
 
-ACCESS __BtnClrLoc AS INT STRICT 
+   ACCESS __BtnClrLoc AS INT STRICT 
 	//PP-030828 Strong typing
-	
+      
 
-	RETURN iBtnClrLoc
+      RETURN iBtnClrLoc
 
-ACCESS __DataField AS DataField STRICT 
+   ACCESS __DataField AS DataField STRICT 
 	//PP-030828 Strong typing
-	
+      
 
-	RETURN oDataField
+      RETURN oDataField
 
-METHOD __DrawCellData(hDC AS PTR, iX AS INT, iY AS INT, dwOptions AS DWORD, ptrRect AS PTR, ;
-	pszData AS PSZ, dwLength AS DWORD) AS VOID STRICT 
-	LOCAL uValue AS USUAL
-	LOCAL hBackgroundBrush AS PTR
-	LOCAL ptrLogBrush IS _WINLOGBRUSH
-	LOCAL dwOldCellTextColor, dwOldCellBackground AS DWORD
-	LOCAL lRestoreTextColor, lRestoreBackground AS LOGIC
+   METHOD __DrawCellData(hDC AS PTR, iX AS INT, iY AS INT, dwOptions AS DWORD, ptrRect AS PTR, ;
+      pszData AS PSZ, dwLength AS DWORD) AS VOID STRICT 
+      LOCAL uValue AS USUAL
+      LOCAL hBackgroundBrush AS PTR
+      LOCAL ptrLogBrush IS _WINLOGBRUSH
+      LOCAL dwOldCellTextColor, dwOldCellBackground AS DWORD
+      LOCAL lRestoreTextColor, lRestoreBackground AS LOGIC
 
-	
+      
 
-	IF (oFieldSpec != NULL_OBJECT)
-		uValue := oFieldSpec:Val(pszData)
-	ELSE
-		uValue := Send(oServer:FieldSpec(SELF:NameSym), #Val, Psz2String(pszData))
-	ENDIF
+      IF (oFieldSpec != NULL_OBJECT)
+         uValue := oFieldSpec:Val(pszData)
+      ELSE
+         uValue := Send(oServer:FieldSpec(SELF:NameSym), #Val, Psz2String(pszData))
+      ENDIF
 
-	IF (symUserDrawMethod != NULL_SYMBOL)
-		Send(SELF, symUserDrawMethod, uValue)
-	ELSE
-		SELF:DrawCellData(uValue)
-	ENDIF
+      IF (symUserDrawMethod != NULL_SYMBOL)
+         Send(SELF, symUserDrawMethod, uValue)
+      ELSE
+         SELF:DrawCellData(uValue)
+      ENDIF
 
-	IF (oCellTextColor != NULL_OBJECT)
-		dwOldCellTextColor := SetTextColor(hDC, oCellTextColor:ColorRef)
-		lRestoreTextColor := TRUE
-	ENDIF
+      IF (oCellTextColor != NULL_OBJECT)
+         dwOldCellTextColor := SetTextColor(hDC, oCellTextColor:ColorRef)
+         lRestoreTextColor := TRUE
+      ENDIF
 
-	IF (oCellBackground != NULL_OBJECT)
-		hBackgroundBrush := oCellBackground:Handle()
-		GetObject(hBackgroundBrush, _SIZEOF(_WINLOGBRUSH), @ptrLogBrush)
-		dwOldCellBackground := SetBkColor(hDC, ptrLogBrush:lbColor)
-		lRestoreBackground := TRUE
-		IF (hBackgroundBrush != NULL_PTR)
-			FillRect(hDC, ptrRect, hBackgroundBrush)
-		ENDIF
-	ENDIF
+      IF (oCellBackground != NULL_OBJECT)
+         hBackgroundBrush := oCellBackground:Handle()
+         GetObject(hBackgroundBrush, _SIZEOF(_WINLOGBRUSH), @ptrLogBrush)
+         dwOldCellBackground := SetBkColor(hDC, ptrLogBrush:lbColor)
+         lRestoreBackground := TRUE
+         IF (hBackgroundBrush != NULL_PTR)
+            FillRect(hDC, ptrRect, hBackgroundBrush)
+         ENDIF
+      ENDIF
 
-	ExtTextOut(hDC, iX, iY, dwOptions, ptrRect, pszData, dwLength, NULL_PTR)
+      ExtTextOut(hDC, iX, iY, dwOptions, ptrRect, pszData, dwLength, NULL_PTR)
 
-	IF lRestoreTextColor
-		SetTextColor(hDC, dwOldCellTextColor)
-	ENDIF
-	IF lRestoreBackground
-		SetBkColor(hDC, dwOldCellBackground)
-	ENDIF
+      IF lRestoreTextColor
+         SetTextColor(hDC, dwOldCellTextColor)
+      ENDIF
+      IF lRestoreBackground
+         SetBkColor(hDC, dwOldCellBackground)
+      ENDIF
 
-	oCellTextColor := NULL_OBJECT
-	oCellBackground := NULL_OBJECT
-	RETURN
+      oCellTextColor := NULL_OBJECT
+      oCellBackground := NULL_OBJECT
+      RETURN
 
 
-ACCESS __FieldInfo AS _WINFieldInfo STRICT 
+   ACCESS __FieldInfo AS _WINFieldInfo STRICT 
 	//PP-030828 Strong typing
-	
+      
 
-	RETURN strucFI
+      RETURN strucFI
 
-ACCESS __Font AS Font STRICT 
+   ACCESS __Font AS Font STRICT 
 	//PP-030828 Strong typing
-	
+      
 
-	RETURN oFont
+      RETURN oFont
 
-ACCESS __FontLoc AS INT STRICT 
+   ACCESS __FontLoc AS INT STRICT 
 	//PP-030828 Strong typing
-	
+      
 
-	RETURN iFontLoc
+      RETURN iFontLoc
 
-METHOD __Gather() AS DataColumn STRICT 
+   METHOD __Gather() AS DataColumn STRICT 
 	//PP-030828 Strong typing
-	LOCAL oHL AS HyperLabel
-	LOCAL oWin AS window
+      LOCAL oHL AS HyperLabel
+      LOCAL oWin AS window
 
-	
+      
 
-	SELF:__Update()
+      SELF:__Update()
 
-	IF lChanged
-		IF (oServer != NULL_OBJECT)
-			IF lBaseServer // if not subclassing
-				oServer:FIELDPUT(iDataField,SELF:Value) //use FieldPut
-			ELSEIF symDataField!=NULL_SYMBOL
-				IVarPut(oServer, symDataField ,SELF:Value)
-			ELSE
-				IVarPut(oServer, SELF:NameSym ,SELF:Value)
-			ENDIF
-			oHL := oServer:Status
-			IF (oHL != NULL_OBJECT) .AND. (oParent != NULL_OBJECT)
-				oWin := oParent:Owner
-				IF IsInstanceOf(oWin,#AppWindow)
-					oWin:StatusMessage((ResourceString{__WCSError2}:value)+oHL:Description,MESSAGEERROR)
-				ENDIF
-			ENDIF
-		ELSEIF !IsNil(cbGetSetBlock) .AND. IsCodeBlock(cbGetSetBlock)
-			Eval(cbGetSetBlock, uGetSetOwner, SELF:Value)
-		ENDIF
-	ENDIF
+      IF lChanged
+         IF (oServer != NULL_OBJECT)
+            IF lBaseServer // if not subclassing
+               oServer:FIELDPUT(iDataField,SELF:Value) //use FieldPut
+            ELSEIF symDataField!=NULL_SYMBOL
+               IVarPut(oServer, symDataField ,SELF:Value)
+            ELSE
+               IVarPut(oServer, SELF:NameSym ,SELF:Value)
+            ENDIF
+            oHL := oServer:Status
+            IF (oHL != NULL_OBJECT) .AND. (oParent != NULL_OBJECT)
+               oWin := oParent:Owner
+               IF IsInstanceOf(oWin,#AppWindow)
+                  oWin:StatusMessage((ResourceString{__WCSError2}:value)+oHL:Description,MESSAGEERROR)
+               ENDIF
+            ENDIF
+         ELSEIF !IsNil(cbGetSetBlock) .AND. IsCodeBlock(cbGetSetBlock)
+            Eval(cbGetSetBlock, uGetSetOwner, SELF:Value)
+         ENDIF
+      ENDIF
 
-	RETURN SELF
+      RETURN SELF
 
-ACCESS __HorzAlignment AS INT STRICT 
+   ACCESS __HorzAlignment AS INT STRICT 
 	//PP-030828 Strong typing
-	
+      
 
-	RETURN iHorzAlignment
+      RETURN iHorzAlignment
 
-ACCESS __Offset AS DWORD STRICT 
+   ACCESS __Offset AS DWORD STRICT 
 	//PP-030828 Strong typing
-	
+      
 
-	RETURN strucFI:wOffStruct
+      RETURN strucFI:wOffStruct
 
-ASSIGN __Owner(oDB AS DataBrowser)  STRICT 
+   ASSIGN __Owner(oDB AS DataBrowser)  STRICT 
 	//PP-030828 Strong typing
-	
+      
 
-	IF oDB!=NULL_OBJECT
-		IF oParent==NULL_OBJECT
-			oParent:=oDB
-		ENDIF
-	ELSE
-		oParent:=NULL_OBJECT
-	ENDIF
-	RETURN
+      IF oDB!=NULL_OBJECT
+         IF oParent==NULL_OBJECT
+            oParent:=oDB
+         ENDIF
+      ELSE
+         oParent:=NULL_OBJECT
+      ENDIF
+      RETURN
 
 
-ACCESS __Picture AS STRING STRICT 
+   ACCESS __Picture AS STRING STRICT 
 	//PP-030828 Strong typing
-	
+      
 
-	RETURN cPicture
+      RETURN cPicture
 
-METHOD __Scatter() AS VOID STRICT 
+   METHOD __Scatter() AS VOID STRICT 
 	//PP-030828 Strong typing
-	
+      
 
-	IF IsInstanceOf(oServer, #DataServer)
-		IF lBaseServer // if not subclassing
-			SELF:Value := oServer:FIELDGET(symDataField) //use fieldget
-		ELSEIF symDataField != NULL_SYMBOL
-			SELF:Value:=IVarGet(oServer, symDataField)
-		ELSE
-			SELF:Value:=IVarGet(oServer, SELF:NameSym)
-		ENDIF
-	ELSEIF !IsNil(cbGetSetBlock) .AND. IsCodeBlock(cbGetSetBlock)
-		SELF:Value := Eval(cbGetSetBlock, uGetSetOwner)
-	ENDIF
-	RETURN
+      IF IsInstanceOf(oServer, #DataServer)
+         IF lBaseServer // if not subclassing
+            SELF:Value := oServer:FIELDGET(symDataField) //use fieldget
+         ELSEIF symDataField != NULL_SYMBOL
+            SELF:Value:=IVarGet(oServer, symDataField)
+         ELSE
+            SELF:Value:=IVarGet(oServer, SELF:NameSym)
+         ENDIF
+      ELSEIF !IsNil(cbGetSetBlock) .AND. IsCodeBlock(cbGetSetBlock)
+         SELF:Value := Eval(cbGetSetBlock, uGetSetOwner)
+      ENDIF
+      RETURN
 
 
-METHOD __SetFldColor(oDataBrowser AS DataBrowser, iLoc AS INT, dwClr AS DWORD) AS VOID STRICT 
+   METHOD __SetFldColor(oDataBrowser AS DataBrowser, iLoc AS INT, dwClr AS DWORD) AS VOID STRICT 
 	//PP-030828 Strong typing
-	
+      
 
-	IF oDataBrowser!=NULL_OBJECT // set color for specified Browse Control
-		PCALL(gpfnCntFldColorSet, oDataBrowser:Handle(), strucFI, DWORD(iLoc), dwClr)
-	ELSEIF oParent!=NULL_OBJECT // set color for Browser
-		PCALL(gpfnCntFldColorSet, oParent:Handle(), strucFI, DWORD(iLoc), dwClr)
-	ENDIF
-	RETURN
+      IF oDataBrowser!=NULL_OBJECT // set color for specified Browse Control
+         PCALL(gpfnCntFldColorSet, oDataBrowser:Handle(), strucFI, DWORD(iLoc), dwClr)
+      ELSEIF oParent!=NULL_OBJECT // set color for Browser
+         PCALL(gpfnCntFldColorSet, oParent:Handle(), strucFI, DWORD(iLoc), dwClr)
+      ENDIF
+      RETURN
 
-ACCESS __Size AS DWORD STRICT 
+   ACCESS __Size AS DWORD STRICT 
 	//PP-030828 Strong typing
-	
+      
 
-	RETURN strucFI:wDataBytes
+      RETURN strucFI:wDataBytes
 
 	/*assign __Size(dw) class DataColumn
 	 
 
 	return dwSize:=dw */
 
-ACCESS __TtlBkgdBrsh AS Brush STRICT 
+   ACCESS __TtlBkgdBrsh AS Brush STRICT 
 	//PP-030828 Strong typing
-	
+      
 
-	RETURN oTtlBkgdBrsh
+      RETURN oTtlBkgdBrsh
 
-ACCESS __TtlBkgdLoc AS INT STRICT 
+   ACCESS __TtlBkgdLoc AS INT STRICT 
 	//PP-030828 Strong typing
-	
+      
 
-	RETURN iTtlBkgdLoc
+      RETURN iTtlBkgdLoc
 
-ACCESS __TtlClr AS Color STRICT 
+   ACCESS __TtlClr AS Color STRICT 
 	//PP-030828 Strong typing
-	
+      
 
-	RETURN oTtlClr
+      RETURN oTtlClr
 
-ACCESS __TtlClrLoc AS INT STRICT 
+   ACCESS __TtlClrLoc AS INT STRICT 
 	//PP-030828 Strong typing
-	
+      
 
-	RETURN iTtlClrLoc
+      RETURN iTtlClrLoc
 
-ACCESS __TxtBkgdBrsh AS Brush STRICT 
+   ACCESS __TxtBkgdBrsh AS Brush STRICT 
 	//PP-030828 Strong typing
-	
+      
 
-	RETURN oTxtBkgdBrsh
+      RETURN oTxtBkgdBrsh
 
-ACCESS __TxtBkgdLoc AS INT STRICT 
+   ACCESS __TxtBkgdLoc AS INT STRICT 
 	//PP-030828 Strong typing
-	
+      
 
-	RETURN iTxtBkgdLoc
+      RETURN iTxtBkgdLoc
 
-ACCESS __TxtClr AS Color STRICT 
+   ACCESS __TxtClr AS Color STRICT 
 	//PP-030828 Strong typing
-	
+      
 
-	RETURN oTxtClr
+      RETURN oTxtClr
 
-ACCESS __TxtClrLoc AS INT STRICT 
+   ACCESS __TxtClrLoc AS INT STRICT 
 	//PP-030828 Strong typing
-	
+      
 
-	RETURN iTxtClrLoc
+      RETURN iTxtClrLoc
 
-ACCESS __Type AS DWORD STRICT 
+   ACCESS __Type AS DWORD STRICT 
 	//PP-030828 Strong typing
-	
+      
 
-	RETURN strucFI:wColType
+      RETURN strucFI:wColType
 
 	/*assign __Type(dw) class DataColumn
 	 
 
 	return dwType:=dw */
 
-METHOD __UnLink(oDS := NIL AS USUAL) AS VOID STRICT 
+   METHOD __UnLink(oDS := NIL AS USUAL) AS VOID STRICT 
 	//PP-030828 Strong typing
-	
+      
 
 	// Do actual unlinking
-	IF IsNil(oDS)
-		uGetSetOwner := NIL
-		cbGetSetBlock := NIL
-		oDataField:= NULL_OBJECT
-		oServer:= NULL_OBJECT
-	ELSE
-		IF (oDS == oServer)
-			oDataField:= NULL_OBJECT
-			oServer:= NULL_OBJECT
-		ENDIF
-	ENDIF
-	RETURN
+      IF IsNil(oDS)
+         uGetSetOwner := NIL
+         cbGetSetBlock := NIL
+         oDataField:= NULL_OBJECT
+         oServer:= NULL_OBJECT
+      ELSE
+         IF (oDS == oServer)
+            oDataField:= NULL_OBJECT
+            oServer:= NULL_OBJECT
+         ENDIF
+      ENDIF
+      RETURN
 
 
-METHOD __Update() AS VOID STRICT 
+   METHOD __Update() AS VOID STRICT 
 	// force update to container
-	LOCAL cText AS STRING
-	LOCAL uOldValue AS USUAL
+      LOCAL cText AS STRING
+      LOCAL uOldValue AS USUAL
 
-	
+      
 
-	IF lModified
-		cText := SELF:TextValue
-		uOldValue := uValue
-		IF (oFieldSpec != NULL_OBJECT)
-			uValue := oFieldSpec:Val(cText)
-			SELF:TextValue := oFieldSpec:Transform(uValue)
-		ELSE
-			uValue := cText
-		ENDIF
-		SELF:Modified := FALSE
+      IF lModified
+         cText := SELF:TextValue
+         uOldValue := uValue
+         IF (oFieldSpec != NULL_OBJECT)
+            uValue := oFieldSpec:Val(cText)
+            SELF:TextValue := oFieldSpec:Transform(uValue)
+         ELSE
+            uValue := cText
+         ENDIF
+         SELF:Modified := FALSE
 
-		IF !(uOldValue == uValue) // dont change to !=, might be STRING !!!
-			SELF:lChanged := TRUE
-		ENDIF
-	ENDIF
-	RETURN
+         IF !(uOldValue == uValue) // dont change to !=, might be STRING !!!
+            SELF:lChanged := TRUE
+         ENDIF
+      ENDIF
+      RETURN
 
 
-ACCESS Alignment 
-	
+   ACCESS Alignment 
+      
 
-	RETURN strucFI:flFDataAlign
+      RETURN strucFI:flFDataAlign
 
-ASSIGN Alignment (nNewAlign) 
-	LOCAL iAlign AS INT
+   ASSIGN Alignment (nNewAlign) 
+      LOCAL iAlign AS INT
 
-	
+      
 
-	IF !IsLong(nNewAlign)
-		WCError{#Alignment,#DataColumn,__WCSTypeError,nNewAlign,1}:Throw()
-	ENDIF
+      IF !IsLong(nNewAlign)
+         WCError{#Alignment,#DataColumn,__WCSTypeError,nNewAlign,1}:Throw()
+      ENDIF
 
-	iAlign := nNewAlign
+      iAlign := nNewAlign
 
-	DO CASE
-	CASE iAlign==gbaAlignCenter
-		iHorzAlignment := CA_TA_HCENTER
-	CASE iAlign==gbaAlignLeft
-		iHorzAlignment := CA_TA_LEFT
-	CASE iAlign==gbaAlignRight
-		iHorzAlignment := CA_TA_RIGHT
-	ENDCASE
+      DO CASE
+      CASE iAlign==gbaAlignCenter
+         iHorzAlignment := CA_TA_HCENTER
+      CASE iAlign==gbaAlignLeft
+         iHorzAlignment := CA_TA_LEFT
+      CASE iAlign==gbaAlignRight
+         iHorzAlignment := CA_TA_RIGHT
+      ENDCASE
 
-	IF oParent!=NULL_OBJECT
-		PCALL(gpfnCntFldDataAlnSet, oParent:Handle(), strucFI, DWORD(iHorzAlignment))
-	ENDIF
+      IF oParent!=NULL_OBJECT
+         PCALL(gpfnCntFldDataAlnSet, oParent:Handle(), strucFI, DWORD(iHorzAlignment))
+      ENDIF
 
-	RETURN 
+      RETURN 
 
-METHOD AsString(uParam) 
-	LOCAL cString AS STRING
-	LOCAL uVal2Print AS USUAL
-	LOCAL lHasPic AS LOGIC
+   METHOD AsString(uParam) 
+      LOCAL cString AS STRING
+      LOCAL uVal2Print AS USUAL
+      LOCAL lHasPic AS LOGIC
 
-	
+      
 
 	//RvdH 060608 optimized
 	//lHasPic := (oFieldSpec != NULL_OBJECT) .and. !Empty(oFieldSpec:Picture)
-	lHasPic := (oFieldSpec != NULL_OBJECT) .AND. SLen(oFieldSpec:Picture) > 0
+      lHasPic := (oFieldSpec != NULL_OBJECT) .AND. SLen(oFieldSpec:Picture) > 0
 
-	IF IsNil(uParam)
-		uVal2Print := uValue
-	ELSE
-		uVal2Print := uParam
-	ENDIF
+      IF IsNil(uParam)
+         uVal2Print := uValue
+      ELSE
+         uVal2Print := uParam
+      ENDIF
 
-	IF IsNil(uVal2Print)
-		RETURN NULL_STRING
-	ENDIF
+      IF IsNil(uVal2Print)
+         RETURN NULL_STRING
+      ENDIF
 
-	IF lHasPic
-		cString := oFieldSpec:Transform(uVal2Print)
-	ELSEIF (oFieldSpec != NULL_OBJECT) .AND. (oFieldSpec:ValType == "N")
-		cString := Str(uVal2Print, oFieldSpec:Length, oFieldSpec:Decimals)
-	ELSE
-		cString := _AsString(uVal2Print)
-	ENDIF
+      IF lHasPic
+         cString := oFieldSpec:Transform(uVal2Print)
+      ELSEIF (oFieldSpec != NULL_OBJECT) .AND. (oFieldSpec:ValType == "N")
+         cString := Str(uVal2Print, oFieldSpec:Length, oFieldSpec:Decimals)
+      ELSE
+         cString := _AsString(uVal2Print)
+      ENDIF
 
-	RETURN cString
+      RETURN cString
 
-ACCESS Background 
-	
+   ACCESS Background 
+      
 
-	RETURN oTxtBkgdBrsh
+      RETURN oTxtBkgdBrsh
 
-ASSIGN Background(oBrush) 
-	
+   ASSIGN Background(oBrush) 
+      
 
-	SELF:ChangeBackground(oBrush, gblText)
+      SELF:ChangeBackground(oBrush, gblText)
 
-	RETURN 
+      RETURN 
 
-ACCESS Block 
-	
+   ACCESS Block 
+      
 
-	RETURN cbGetSetBlock
+      RETURN cbGetSetBlock
 
-ASSIGN Block(aCb) 
-	
+   ASSIGN Block(aCb) 
+      
 
-	IF !Empty(aCB) .AND. IsCodeBlock(aCB)
-		cbGetSetBlock := aCb
+      IF !Empty(aCB) .AND. IsCodeBlock(aCB)
+         cbGetSetBlock := aCb
 
 		// reset data server connection
-		oDataField:= NULL_OBJECT
-		oServer:= NULL_OBJECT
-		iDataField := 0
-	ELSE
-		cbGetSetBlock := NULL_CODEBLOCK
-	ENDIF
+         oDataField:= NULL_OBJECT
+         oServer:= NULL_OBJECT
+         iDataField := 0
+      ELSE
+         cbGetSetBlock := NULL_CODEBLOCK
+      ENDIF
 
-	RETURN 
+      RETURN 
 
-ACCESS BlockOwner 
-	
+   ACCESS BlockOwner 
+      
 
-	RETURN uGetSetOwner
+      RETURN uGetSetOwner
 
-ASSIGN BlockOwner(xOwner) 
-	
+   ASSIGN BlockOwner(xOwner) 
+      
 
-	IF !IsNil(xOwner)
-		uGetSetOwner := xOwner
-	ELSE
-		uGetSetOwner := NIL
-	ENDIF
+      IF !IsNil(xOwner)
+         uGetSetOwner := xOwner
+      ELSE
+         uGetSetOwner := NIL
+      ENDIF
 
-	RETURN 
+      RETURN 
 
-ACCESS Caption 
-	
+   ACCESS Caption 
+      
 
-	RETURN cCaption
+      RETURN cCaption
 
-ASSIGN Caption(cNewCaption) 
-	
+   ASSIGN Caption(cNewCaption) 
+      
 
-	IF IsSymbol(cNewCaption)
-		SELF:SetCaption(Symbol2String(cNewCaption))
-	ELSEIF IsString(cNewCaption)
-		SELF:SetCaption(cNewCaption)
-	ELSE
-		SELF:SetCaption()
-	ENDIF
+      IF IsSymbol(cNewCaption)
+         SELF:SetCaption(Symbol2String(cNewCaption))
+      ELSEIF IsString(cNewCaption)
+         SELF:SetCaption(cNewCaption)
+      ELSE
+         SELF:SetCaption()
+      ENDIF
 
-	RETURN 
+      RETURN 
 
-ACCESS CellBackground 
-	
+   ACCESS CellBackground 
+      
 
-	RETURN oCellBackground
+      RETURN oCellBackground
 
-ASSIGN CellBackground(oBrush) 
-	
+   ASSIGN CellBackground(oBrush) 
+      
 
-	RETURN oCellBackground := oBrush
+      RETURN oCellBackground := oBrush
 
-ACCESS CellTextColor 
-	
+   ACCESS CellTextColor 
+      
 
-	RETURN oCellTextColor
+      RETURN oCellTextColor
 
-ASSIGN CellTextColor(oColor) 
-	
+   ASSIGN CellTextColor(oColor) 
+      
 
-	RETURN oCellTextColor := oColor
+      RETURN oCellTextColor := oColor
 
-METHOD ChangeBackground(oBrush, kWhere) 
-	LOCAL oOldBrush AS Brush
-	LOCAL iLoc AS INT
+   METHOD ChangeBackground(oBrush, kWhere) 
+      LOCAL oOldBrush AS Brush
+      LOCAL iLoc AS INT
 
-	
+      
 
-	IF !IsInstanceOfUsual(oBrush,#Brush)
-		WCError{#ChangeBackground,#DataColumn,__WCSTypeError,oBrush,1}:Throw()
-	ENDIF
-	IF !IsNil(kWhere)
-		IF !IsLong(kWhere)
-			WCError{#ChangeBackground,#DataColumn,__WCSTypeError,kWhere,1}:Throw()
-		ENDIF
-	ENDIF
+      IF !IsInstanceOfUsual(oBrush,#Brush)
+         WCError{#ChangeBackground,#DataColumn,__WCSTypeError,oBrush,1}:Throw()
+      ENDIF
+      IF !IsNil(kWhere)
+         IF !IsLong(kWhere)
+            WCError{#ChangeBackground,#DataColumn,__WCSTypeError,kWhere,1}:Throw()
+         ENDIF
+      ENDIF
 
-	DO CASE
-	CASE kWhere==gblCaption .OR.;
-		kWhere==gblColCaption
-		oOldBrush := oTtlBkgdBrsh
-		oTtlBkgdBrsh := oBrush
-		iTtlBkgdLoc := iLoc := CNTCOLOR_FLDTTLBKGD
+      DO CASE
+      CASE kWhere==gblCaption .OR.;
+            kWhere==gblColCaption
+            oOldBrush := oTtlBkgdBrsh
+            oTtlBkgdBrsh := oBrush
+            iTtlBkgdLoc := iLoc := CNTCOLOR_FLDTTLBKGD
 
-	CASE kWhere==gblText
-		oOldBrush := oTxtBkgdBrsh
-		oTxtBkgdBrsh := oBrush
-		iTxtBkgdLoc := iLoc := CNTCOLOR_FLDBKGD
+      CASE kWhere==gblText
+            oOldBrush := oTxtBkgdBrsh
+            oTxtBkgdBrsh := oBrush
+            iTxtBkgdLoc := iLoc := CNTCOLOR_FLDBKGD
 
-	CASE kWhere==gblButton .OR.;
-		kWhere==gblColButton
-		oOldBrush := oBtnBkgdBrsh
-		oBtnBkgdBrsh := oBrush
-		iBtnBkgdLoc := iLoc := CNTCOLOR_FLDBTNBKGD
-	ENDCASE
-	SELF:__SetFldColor(NULL_OBJECT, iLoc, __WCGetBrushColor(oBrush))
+      CASE kWhere==gblButton .OR.;
+            kWhere==gblColButton
+            oOldBrush := oBtnBkgdBrsh
+            oBtnBkgdBrsh := oBrush
+         iBtnBkgdLoc := iLoc := CNTCOLOR_FLDBTNBKGD
+      ENDCASE
+      SELF:__SetFldColor(NULL_OBJECT, iLoc, __WCGetBrushColor(oBrush))
 
-	RETURN oOldBrush
+      RETURN oOldBrush
 
-METHOD ChangeTextColor(oColor, kWhere) 
-	LOCAL oOldColor AS Color
-	LOCAL iLoc AS INT
-	LOCAL oNewColor AS color
+   METHOD ChangeTextColor(oColor, kWhere) 
+      LOCAL oOldColor AS Color
+      LOCAL iLoc AS INT
+      LOCAL oNewColor AS color
 
-	
+      
 
-	IF IsNumeric(oColor)
-		oNewColor := Color{oColor}
-	ELSEIF IsInstanceOfUsual(oColor,#Color)
-		oNewColor := oColor
-	ELSE
-		WCError{#ChangeTextColor,#DataColumn,__WCSTypeError,oColor,1}:Throw()
-	ENDIF
-	IF !IsNil(kWhere)
-		IF !IsLong(kWhere)
-			WCError{#ChangeTextColor,#DataColumn,__WCSTypeError,kWhere,2}:Throw()
-		ENDIF
-	ENDIF
+      IF IsNumeric(oColor)
+         oNewColor := Color{oColor}
+      ELSEIF IsInstanceOfUsual(oColor,#Color)
+         oNewColor := oColor
+      ELSE
+         WCError{#ChangeTextColor,#DataColumn,__WCSTypeError,oColor,1}:Throw()
+      ENDIF
+      IF !IsNil(kWhere)
+         IF !IsLong(kWhere)
+            WCError{#ChangeTextColor,#DataColumn,__WCSTypeError,kWhere,2}:Throw()
+         ENDIF
+      ENDIF
 
-	DO CASE
-	CASE kWhere==gblCaption .OR.;
-		kWhere==gblColCaption
-		oOldColor := oTtlClr
-		oTtlClr := oNewColor
-		iTtlClrLoc := iLoc := CNTCOLOR_FLDTITLES
+      DO CASE
+      CASE kWhere==gblCaption .OR.;
+            kWhere==gblColCaption
+            oOldColor := oTtlClr
+            oTtlClr := oNewColor
+            iTtlClrLoc := iLoc := CNTCOLOR_FLDTITLES
 
-	CASE kWhere==gblText
-		oOldColor := oTxtClr
-		oTxtClr := oNewColor
-		iTxtClrLoc := iLoc := CNTCOLOR_TEXT
+      CASE kWhere==gblText
+            oOldColor := oTxtClr
+            oTxtClr := oNewColor
+            iTxtClrLoc := iLoc := CNTCOLOR_TEXT
 
-	CASE kWhere==gblButton .OR.;
-		kWhere==gblColButton
-		oOldColor := oBtnClr
-		oBtnClr := oNewColor
-		iBtnClrLoc := iLoc := CNTCOLOR_FLDBTNTXT
-	ENDCASE
-	SELF:__SetFldColor(NULL_OBJECT, iLoc, oNewColor:ColorRef)
+      CASE kWhere==gblButton .OR.;
+            kWhere==gblColButton
+            oOldColor := oBtnClr
+            oBtnClr := oNewColor
+         iBtnClrLoc := iLoc := CNTCOLOR_FLDBTNTXT
+      ENDCASE
+      SELF:__SetFldColor(NULL_OBJECT, iLoc, oNewColor:ColorRef)
 
-	RETURN oOldColor
+      RETURN oOldColor
 
-METHOD ClearStatus() 
+   METHOD ClearStatus() 
 	// DHer: 18/12/2008
-	SELF:oHlStatus := NULL_OBJECT
+      SELF:oHlStatus := NULL_OBJECT
 
-RETURN NIL
+      RETURN NIL
 
-ACCESS DataField 
+   ACCESS DataField 
 	// DHer: 18/12/2008
-RETURN SELF:symDataField
+      RETURN SELF:symDataField
 
-METHOD Destroy() 
-	
-    __WcSelfPtrFree(strucSelf)
-	IF !InCollect()
-        strucSelf := NULL_PTR
-		UnregisterAxit(SELF)
-		cPicture := NULL_STRING
-		cCaption := NULL_STRING
-		strucFI := NULL_PTR
-		oTtlBkgdBrsh := NULL_OBJECT
-		oTxtBkgdBrsh := NULL_OBJECT
-		oBtnBkgdBrsh := NULL_OBJECT
-		oTtlClr := NULL_OBJECT
-		oTxtClr := NULL_OBJECT
-		oBtnClr := NULL_OBJECT
-		oFont := NULL_OBJECT
-	ENDIF
-	SUPER:Destroy()
+   METHOD Destroy() 
+      
+      __WcSelfPtrFree(strucSelf)
+      IF !InCollect()
+         strucSelf := NULL_PTR
+         UnregisterAxit(SELF)
+         cPicture := NULL_STRING
+         cCaption := NULL_STRING
+         strucFI := NULL_PTR
+         oTtlBkgdBrsh := NULL_OBJECT
+         oTxtBkgdBrsh := NULL_OBJECT
+         oBtnBkgdBrsh := NULL_OBJECT
+         oTtlClr := NULL_OBJECT
+         oTxtClr := NULL_OBJECT
+         oBtnClr := NULL_OBJECT
+         oFont := NULL_OBJECT
+      ENDIF
+      SUPER:Destroy()
 
-	RETURN SELF
+      RETURN SELF
 
-METHOD DisableCellDraw() 
-	
+   METHOD DisableCellDraw() 
+      
 
-	PCALL(gpfnCntFldAttrClear, strucFI, CFA_OWNERDRAW)
-	lUsingDrawProc:=FALSE
+      PCALL(gpfnCntFldAttrClear, strucFI, CFA_OWNERDRAW)
+      lUsingDrawProc:=FALSE
 
-	RETURN SELF
+      RETURN SELF
 
-METHOD DrawCellData(uValue) 
-	
+   METHOD DrawCellData(uValue) 
+      
 
-	RETURN SELF
+      RETURN SELF
 
-METHOD EnableCellDraw(symMethodName) 
-	
+   METHOD EnableCellDraw(symMethodName) 
+      
 
-	IF !IsNil(symMethodName)
-		IF !IsSymbol(symMethodName)
-			WCError{#EnableCellDraw,#DataColumn,__WCSTypeError,symMethodName,1}:Throw()
-		ENDIF
-		symUserDrawMethod := symMethodName
-	ELSE
-		symUserDrawMethod := NULL_SYMBOL
-	ENDIF
+      IF !IsNil(symMethodName)
+         IF !IsSymbol(symMethodName)
+            WCError{#EnableCellDraw,#DataColumn,__WCSTypeError,symMethodName,1}:Throw()
+         ENDIF
+         symUserDrawMethod := symMethodName
+      ELSE
+         symUserDrawMethod := NULL_SYMBOL
+      ENDIF
 
-	IF !lUsingDrawProc
-		lUsingDrawProc := TRUE
-		PCALL(gpfnCntFldAttrSet, strucFI, CFA_OWNERDRAW)
-#ifdef __VULCAN__
-      IF DrawFldDataDelegate == NULL
-         DrawFldDataDelegate := __DrawFldDataDelegate{ NULL, @__DrawFldData() }
-      ENDIF   
+      IF !lUsingDrawProc
+         lUsingDrawProc := TRUE
+         PCALL(gpfnCntFldAttrSet, strucFI, CFA_OWNERDRAW)
+         #ifdef __VULCAN__
+            IF DrawFldDataDelegate == NULL
+               DrawFldDataDelegate := __DrawFldDataDelegate{ NULL, @__DrawFldData() }
+            ENDIF   
 
-		PCALL(gpfnCntFldDrwProcSet, strucFI, System.Runtime.InteropServices.Marshal.GetFunctionPointerForDelegate( (System.Delegate) DrawFldDataDelegate ) )
-#else		
-		PCALL(gpfnCntFldDrwProcSet, strucFI, @__DrawFldData())
-#endif		
-	ENDIF
+            PCALL(gpfnCntFldDrwProcSet, strucFI, System.Runtime.InteropServices.Marshal.GetFunctionPointerForDelegate( (System.Delegate) DrawFldDataDelegate ) )
+         #else		
+            PCALL(gpfnCntFldDrwProcSet, strucFI, @__DrawFldData())
+         #endif		
+      ENDIF
 
-	IF (oParent != NULL_OBJECT)
-		oParent:Refresh()
-	ENDIF
+      IF (oParent != NULL_OBJECT)
+         oParent:Refresh()
+      ENDIF
 
-	RETURN SELF
+      RETURN SELF
 
-METHOD EnableColumnMove(lAllowMove) 
-	
+   METHOD EnableColumnMove(lAllowMove) 
+      
 
-	DEFAULT(@lAllowMove, TRUE)
-	IF !IsLogic(lAllowMove)
-		WCError{#EnableColumnMove,#DataColumn,__WCSTypeError,lAllowMove,1}:Throw()
-	ENDIF
+      DEFAULT(@lAllowMove, TRUE)
+      IF !IsLogic(lAllowMove)
+         WCError{#EnableColumnMove,#DataColumn,__WCSTypeError,lAllowMove,1}:Throw()
+      ENDIF
 
-	IF lAllowMove
-		PCALL(gpfnCntFldAttrClear, strucFI, CFA_NONMOVEABLEFLD)
-		PCALL(gpfnCntFldAttrSet, strucFI, CFA_MOVEABLEFLD)
-	ELSE
-		PCALL(gpfnCntFldAttrClear, strucFI, CFA_MOVEABLEFLD)
-		PCALL(gpfnCntFldAttrSet, strucFI, CFA_NONMOVEABLEFLD)
-	ENDIF
+      IF lAllowMove
+         PCALL(gpfnCntFldAttrClear, strucFI, CFA_NONMOVEABLEFLD)
+         PCALL(gpfnCntFldAttrSet, strucFI, CFA_MOVEABLEFLD)
+      ELSE
+         PCALL(gpfnCntFldAttrClear, strucFI, CFA_MOVEABLEFLD)
+         PCALL(gpfnCntFldAttrSet, strucFI, CFA_NONMOVEABLEFLD)
+      ENDIF
 
-	RETURN SELF
+      RETURN SELF
 
-METHOD EnableColumnReSize(lAllowResize) 
-	
+   METHOD EnableColumnReSize(lAllowResize) 
+      
 
-	DEFAULT(@lAllowResize, TRUE)
+      DEFAULT(@lAllowResize, TRUE)
 
-	IF !IsLogic(lAllowResize)
-		WCError{#EnableColumnReSize,#DataColumn,__WCSTypeError,lAllowResize,1}:Throw()
-	ENDIF
+      IF !IsLogic(lAllowResize)
+         WCError{#EnableColumnReSize,#DataColumn,__WCSTypeError,lAllowResize,1}:Throw()
+      ENDIF
 
-	IF lAllowResize
-		PCALL(gpfnCntFldAttrClear, strucFI, CFA_NONSIZEABLEFLD)
-		PCALL(gpfnCntFldAttrSet, strucFI, CFA_SIZEABLEFLD)
-	ELSE
-		PCALL(gpfnCntFldAttrClear, strucFI, CFA_SIZEABLEFLD)
-		PCALL(gpfnCntFldAttrSet, strucFI, CFA_NONSIZEABLEFLD)
-	ENDIF
+      IF lAllowResize
+         PCALL(gpfnCntFldAttrClear, strucFI, CFA_NONSIZEABLEFLD)
+         PCALL(gpfnCntFldAttrSet, strucFI, CFA_SIZEABLEFLD)
+      ELSE
+         PCALL(gpfnCntFldAttrClear, strucFI, CFA_SIZEABLEFLD)
+         PCALL(gpfnCntFldAttrSet, strucFI, CFA_NONSIZEABLEFLD)
+      ENDIF
 
-	RETURN SELF
+      RETURN SELF
 
-ACCESS FieldSpec 
-	
+   ACCESS FieldSpec 
+      
 
-	RETURN oFieldSpec
+      RETURN oFieldSpec
 
-ASSIGN FieldSpec(oFS) 
-	
+   ASSIGN FieldSpec(oFS) 
+      
 
-	IF !IsInstanceOfUsual(oFS,#FieldSpec)
-		WCError{#FieldSpec,#DataColumn,__WCSTypeError,oFS,1}:Throw()
-	ENDIF
+      IF !IsInstanceOfUsual(oFS,#FieldSpec)
+         WCError{#FieldSpec,#DataColumn,__WCSTypeError,oFS,1}:Throw()
+      ENDIF
 
-	oFieldSpec := oFS
-	lExplicitFS := TRUE
-	cPicture := oFieldSpec:Picture
+      oFieldSpec := oFS
+      lExplicitFS := TRUE
+      cPicture := oFieldSpec:Picture
 	// nType := oFieldSpec:UsualType
 	// DO CASE
 	// CASE nType == FLOAT
@@ -3861,547 +3881,548 @@ ASSIGN FieldSpec(oFS)
 	// iPictureType := PICTYPE_DATE
 	// ENDCASE
 
-	IF oFieldSpec:ValType == "N"
-		IF SubStr(cPicture, 1, 2) == "@B"
-			SELF:Alignment := GBAALIGNLEFT
-		ELSE
-			SELF:Alignment := GBAALIGNRIGHT
-		ENDIF
-	ENDIF
+      IF oFieldSpec:ValType == "N"
+         IF SubStr(cPicture, 1, 2) == "@B"
+            SELF:Alignment := GBAALIGNLEFT
+         ELSE
+            SELF:Alignment := GBAALIGNRIGHT
+         ENDIF
+      ENDIF
 
 	// We need to update the column if is visible and
 	// connected to the server
 
-	IF oServer!=NULL_OBJECT .AND. oDataField!=NULL_OBJECT .OR. !IsNil(cbGetSetBlock)
-		SELF:__Scatter()
-	ENDIF
+      IF oServer!=NULL_OBJECT .AND. oDataField!=NULL_OBJECT .OR. !IsNil(cbGetSetBlock)
+         SELF:__Scatter()
+      ENDIF
 
-	RETURN 
+      RETURN 
 
-METHOD GetCaption() 
-	
+   METHOD GetCaption() 
+      
 
-	RETURN cCaption
+      RETURN cCaption
 
-METHOD GetEditObject(oOwner, iID, oPoint, oDim) 
-	LOCAL oControl AS TextControl
+   METHOD GetEditObject(oOwner, iID, oPoint, oDim) 
+      LOCAL oControl AS TextControl
 
-	
+      
 
-	oControl := SingleLineEdit{oOwner, iID, oPoint, oDim, ES_AUTOHSCROLL}
-	IF (oFieldSpec != NULL_OBJECT)
-		oControl:FieldSpec := oFieldSpec
-	ENDIF
-	IVarPut(oControl, #Overwrite, OVERWRITE_ONKEY)
+      oControl := SingleLineEdit{oOwner, iID, oPoint, oDim, ES_AUTOHSCROLL}
+      IF (oFieldSpec != NULL_OBJECT)
+         oControl:FieldSpec := oFieldSpec
+      ENDIF
+      IVarPut(oControl, #Overwrite, OVERWRITE_ONKEY)
 
-	oControl:SetExStyle(WS_EX_CLIENTEDGE, FALSE)
-	oControl:Font(oOwner:EditFont, FALSE)
-	oControl:TextValue := RTrim(SELF:TextValue)
+      oControl:SetExStyle(WS_EX_CLIENTEDGE, FALSE)
+      oControl:Font(oOwner:EditFont, FALSE)
+      oControl:TextValue := RTrim(SELF:TextValue)
 	//SendMessage(oControl:Handle(), EM_SETSEL, 0, -1)
 
-	RETURN oControl
+      RETURN oControl
 
-METHOD GetModified() 
-	
+   METHOD GetModified() 
+      
 
-	RETURN lModified
+      RETURN lModified
 
-METHOD GetValue() 
-	
+   METHOD GetValue() 
+      
 
-	RETURN cTextValue
+      RETURN cTextValue
 
-ACCESS HyperLabel 
-	
+   ACCESS HyperLabel 
+      
 
-	RETURN oHyperLabel
+      RETURN oHyperLabel
 
-ASSIGN HyperLabel(oNewHL) 
-	
+   ASSIGN HyperLabel(oNewHL) 
+      
 
-	IF IsInstanceOfUsual(oNewHL, #HyperLabel)
-		oHyperLabel := oNewHL
-		lExplicitHL := TRUE
-		SELF:Caption := oNewHL:Caption
-	ELSEIF IsString(oNewHL)
-		oHyperLabel := HyperLabel{String2Symbol(oNewHL)}
-		lExplicitHL := TRUE
-		SELF:Caption := oNewHL:Caption
-	ELSEIF IsSymbol(oNewHL)
-		oHyperLabel := HyperLabel{oNewHL}
-		lExplicitHL := TRUE
-		SELF:Caption := oNewHL:Caption
-	ELSEIF IsNil(oNewHL)
-		oHyperLabel := NULL_OBJECT
-		lExplicitHL := FALSE
+      IF IsInstanceOfUsual(oNewHL, #HyperLabel)
+         oHyperLabel := oNewHL
+         lExplicitHL := TRUE
+         SELF:Caption := oNewHL:Caption
+      ELSEIF IsString(oNewHL)
+         oHyperLabel := HyperLabel{String2Symbol(oNewHL)}
+         lExplicitHL := TRUE
+         SELF:Caption := oNewHL:Caption
+      ELSEIF IsSymbol(oNewHL)
+         oHyperLabel := HyperLabel{oNewHL}
+         lExplicitHL := TRUE
+         SELF:Caption := oNewHL:Caption
+      ELSEIF IsNil(oNewHL)
+         oHyperLabel := NULL_OBJECT
+         lExplicitHL := FALSE
 		// Should we reset the caption ??
-	ELSE
-		WCError{#HyperLabel,#DataColumn,__WCSTypeError,oNewHL,1}:Throw()
-	ENDIF
+      ELSE
+         WCError{#HyperLabel,#DataColumn,__WCSTypeError,oNewHL,1}:Throw()
+      ENDIF
 
-	RETURN 
+      RETURN 
 
-CONSTRUCTOR(nWidth, xColumnID) 
-	LOCAL p AS SelfPtr
-	LOCAL iSize AS INT
+   CONSTRUCTOR(nWidth, xColumnID) 
+      LOCAL p AS SelfPtr
+      LOCAL iSize AS INT
 
-	
+      
 
-	IF IsNil(nWidth)
-		iSize := 16
-	ELSEIF IsInstanceOfUsual(nWidth, #FieldSpec)
-		iSize := __GetFSDefaultLength(nWidth)
-		SELF:FieldSpec := nWidth
-	ELSEIF !IsLong(nWidth)
-		WCError{#Init,#DataColumn,__WCSTypeError,nWidth,1}:Throw()
-	ELSE
-		iSize := nWidth
-	ENDIF
+      IF IsNil(nWidth)
+         iSize := 16
+      ELSEIF IsInstanceOfUsual(nWidth, #FieldSpec)
+         iSize := __GetFSDefaultLength(nWidth)
+         SELF:FieldSpec := nWidth
+      ELSEIF !IsLong(nWidth)
+         WCError{#Init,#DataColumn,__WCSTypeError,nWidth,1}:Throw()
+      ELSE
+         iSize := nWidth
+      ENDIF
 
-	SUPER()
-	
+      SUPER()
+      
 
-	strucFI := PCALL(gpfnCntNewFldInfo) // Alloc a new field struct
+      strucFI := PCALL(gpfnCntNewFldInfo) // Alloc a new field struct
 
-	cTextValue := "N/A"
+      cTextValue := "N/A"
 
-	IF IsInstanceOfUsual(xColumnID, #HyperLabel)
-		SELF:HyperLabel := xColumnID
-	ELSEIF IsString(xColumnID)
-		SELF:HyperLabel := HyperLabel{String2Symbol(xColumnID),xColumnID}
-	ELSEIF IsSymbol(xColumnID)
-		SELF:HyperLabel := HyperLabel{xColumnID,Symbol2String(xColumnID)}
-	ENDIF
-    p := __WCSelfPtrAlloc(SELF)
-#ifdef __VULCAN__
+      IF IsInstanceOfUsual(xColumnID, #HyperLabel)
+         SELF:HyperLabel := xColumnID
+      ELSEIF IsString(xColumnID)
+         SELF:HyperLabel := HyperLabel{String2Symbol(xColumnID),xColumnID}
+      ELSEIF IsSymbol(xColumnID)
+         SELF:HyperLabel := HyperLabel{xColumnID,Symbol2String(xColumnID)}
+      ENDIF
+      p := __WCSelfPtrAlloc(SELF)
+      #ifdef __VULCAN__
 	// the following line is correct, since CntFldUserSet copies 4 bytes
 	// from @p into its own buffer
-	PCallNative<LOGIC>(gpfnCntFldUserSet, strucFI, @p, 4)
-#else	
-	// the following line is correct, since CntFldUserSet copies 4 bytes
-	// from @p into its own buffer
-	PCALL(gpfnCntFldUserSet, strucFI, @p, 4)
-#endif
-	StrucSelf := p
+         PCallNative<LOGIC>(gpfnCntFldUserSet, strucFI, @p, 4)
+      #else	
+         // the following line is correct, since CntFldUserSet copies 4 bytes
+         // from @p into its own buffer
+         PCALL(gpfnCntFldUserSet, strucFI, @p, 4)
+      #endif
+      StrucSelf := p
 
-	strucFI:wFTitleLines := 1 // nbr of lines in field title
-	strucFI:flFTitleAlign := _OR(CA_TA_HCENTER, CA_TA_VCENTER)
+      strucFI:wFTitleLines := 1 // nbr of lines in field title
+      strucFI:flFTitleAlign := _OR(CA_TA_HCENTER, CA_TA_VCENTER)
 
 	// Set up default width
-	lDefaultWidth := TRUE
-	IF iSize != -1
-		strucFI:cxWidth := DWORD(iSize + 2)
-	ELSE
-		strucFI:cxWidth := 0xFFFFFFFF
-	ENDIF
+      lDefaultWidth := TRUE
+      IF iSize != -1
+         strucFI:cxWidth := DWORD(iSize + 2)
+      ELSE
+         strucFI:cxWidth := 0xFFFFFFFF
+      ENDIF
 
-	strucFI:flFDataAlign := _OR(CA_TA_LEFT, CA_TA_VCENTER)
-	strucFI:wColType := CFT_STRING
-	strucFI:wOffStruct := 2
-	strucFI:wDataBytes := DWORD(iSize + 1)
+      strucFI:flFDataAlign := _OR(CA_TA_LEFT, CA_TA_VCENTER)
+      strucFI:wColType := CFT_STRING
+      strucFI:wOffStruct := 2
+      strucFI:wDataBytes := DWORD(iSize + 1)
 
 	// variables for ChangeBackground
-	iTtlBkgdLoc := -1
-	iTxtBkgdLoc := -1
-	iBtnBkgdLoc := -1
+      iTtlBkgdLoc := -1
+      iTxtBkgdLoc := -1
+      iBtnBkgdLoc := -1
 
 	// variables for ChangeTextColor
-	iTtlClrLoc := -1
-	iTxtClrLoc := -1
-	iBtnClrLoc := -1
+      iTtlClrLoc := -1
+      iTxtClrLoc := -1
+      iBtnClrLoc := -1
 
 	// variables for ChangeFont
-	iFontLoc := -1
+      iFontLoc := -1
 
-	RETURN 
+      RETURN 
 
-METHOD LinkDF(oDataServer, nFieldData) 
-	LOCAL tmpDF AS OBJECT
-	LOCAL symClassName AS SYMBOL
+   METHOD LinkDF(oDataServer, nFieldData) 
+      LOCAL tmpDF AS OBJECT
+      LOCAL symClassName AS SYMBOL
 
-	
+      
 
-	IF !IsInstanceOfUsual(oDataServer,#DataServer)
-		WCError{#LinkDF,#DataColumn,__WCSTypeError,oDataServer,1}:Throw()
-	ENDIF
+      IF !IsInstanceOfUsual(oDataServer,#DataServer)
+         WCError{#LinkDF,#DataColumn,__WCSTypeError,oDataServer,1}:Throw()
+      ENDIF
 
-	IF !IsNil(oServer) .AND. oDataServer!=oServer
-		SELF:__Unlink()
-	ENDIF
+      IF !IsNil(oServer) .AND. oDataServer!=oServer
+         SELF:__Unlink()
+      ENDIF
 
-	oServer := oDataServer
-	iDataField := nFieldData
-	symDataField := oServer:FieldSym(iDataField)
-	IF IsMethod(oServer, #IsBaseField)
-       lBaseServer := Send(oServer, #IsBaseField, symDataField)
-    ELSE   
-    	symClassName := ClassName(oServer)
-	    lBaseServer  := symClassName==#DBServer .OR. symClassName==#SQLSelect .OR. symClassName==#SQLTable .OR. symClassName==#JDataServer
-	ENDIF
+      oServer := oDataServer
+      iDataField := nFieldData
+      symDataField := oServer:FieldSym(iDataField)
+      
+      IF IsMethod(oServer, #IsBaseField)
+         lBaseServer := Send(oServer, #IsBaseField, symDataField)
+      ELSE   
+         symClassName := ClassName(oServer)
+         lBaseServer  := symClassName==#DBServer .OR. symClassName==#SQLSelect .OR. symClassName==#SQLTable .OR. symClassName==#JDataServer
+      ENDIF
 
 	// Propogate data field if no explicit one
-	tmpDF:=oServer:DataField(iDataField)
-	IF IsInstanceOfUsual(tmpDF, #DataField)
-		oDataField := tmpDF
+      tmpDF:=oServer:DataField(iDataField)
+      IF IsInstanceOfUsual(tmpDF, #DataField)
+         oDataField := tmpDF
 
-		IF !lExplicitFS
+         IF !lExplicitFS
 			// propogate field spec if no explicit one
-			oFieldSpec := oDataField:FieldSpec
+            oFieldSpec := oDataField:FieldSpec
 
 			// propogate field spec
-			IF !lExplicitHL
+            IF !lExplicitHL
 				// CHECK IF NameSym and hyperlabel are same
-				IF !IsNil(oDataField:HyperLabel) .AND. (oDataField:NameSym == oDataField:HyperLabel:NameSym)
-					oHyperLabel := oDataField:HyperLabel
-				ELSE
-					IF cCaption==NULL_STRING
-						oHyperLabel := HyperLabel {oDataField:NameSym}
-					ELSE
-						oHyperLabel := HyperLabel {oDataField:NameSym,cCaption}
-					ENDIF
-				ENDIF
-			ENDIF
-		ENDIF
-	ENDIF
+               IF !IsNil(oDataField:HyperLabel) .AND. (oDataField:NameSym == oDataField:HyperLabel:NameSym)
+                  oHyperLabel := oDataField:HyperLabel
+               ELSE
+                  IF cCaption==NULL_STRING
+                     oHyperLabel := HyperLabel {oDataField:NameSym}
+                  ELSE
+                     oHyperLabel := HyperLabel {oDataField:NameSym,cCaption}
+                  ENDIF
+               ENDIF
+            ENDIF
+         ENDIF
+      ENDIF
 
-	uGetSetOwner:= NIL
-	cbGetSetBlock:= NIL
+      uGetSetOwner:= NIL
+      cbGetSetBlock:= NIL
 
 	// Get initial value
-	SELF:__Scatter()
+      SELF:__Scatter()
 
-	RETURN NIL
+      RETURN NIL
 
-ACCESS Modified 
-	
+   ACCESS Modified 
+      
 
-	RETURN lModified
+      RETURN lModified
 
-ASSIGN Modified(lChangedFlag) 
-	
+   ASSIGN Modified(lChangedFlag) 
+      
 
-	IF IsLogic(lChangedFlag)
-		lModified := lChangedFlag
-	ENDIF
+      IF IsLogic(lChangedFlag)
+         lModified := lChangedFlag
+      ENDIF
 
-	RETURN 
+      RETURN 
 
-ACCESS Name 
-	
+   ACCESS Name 
+      
 
-	IF oHyperLabel!=NULL_OBJECT
-		RETURN oHyperLabel:Name
-	ENDIF
+      IF oHyperLabel!=NULL_OBJECT
+         RETURN oHyperLabel:Name
+      ENDIF
 
-	RETURN NULL_STRING
+      RETURN NULL_STRING
 
-ACCESS NameSym 
-	
+   ACCESS NameSym 
+      
 
-	IF oHyperLabel!=NULL_OBJECT
-		RETURN oHyperLabel:NameSym
-	ENDIF
+      IF oHyperLabel!=NULL_OBJECT
+         RETURN oHyperLabel:NameSym
+      ENDIF
 
-	RETURN NULL_SYMBOL
+      RETURN NULL_SYMBOL
 
-ACCESS Owner 
-	
+   ACCESS Owner 
+      
 
-	RETURN oParent
+      RETURN oParent
 
-METHOD PerformValidations() 
+   METHOD PerformValidations() 
 	// Perform validations for DataColumn against supplied parameter
 	// if it has a data spec, otherwise just return TRUE
-	
+      
 
-	IF (oFieldSpec != NULL_OBJECT)
-		IF !oFieldSpec:PerformValidations(uValue,SELF)
-			oHLStatus := oFieldSpec:Status
-			RETURN FALSE
-		ENDIF
-	ENDIF
-	oHLStatus:= NULL_OBJECT
+      IF (oFieldSpec != NULL_OBJECT)
+         IF !oFieldSpec:PerformValidations(uValue,SELF)
+            oHLStatus := oFieldSpec:Status
+            RETURN FALSE
+         ENDIF
+      ENDIF
+      oHLStatus:= NULL_OBJECT
 
-	RETURN TRUE
+      RETURN TRUE
 
-ACCESS PixelWidth 
+   ACCESS PixelWidth 
 	// DHer: 18/12/2008
-RETURN SELF:strucFI:cxPxlWidth
+      RETURN SELF:strucFI:cxPxlWidth
 
-ACCESS Server 
-	
+   ACCESS Server 
+      
 
-	RETURN oServer
+      RETURN oServer
 
-METHOD SetCaption(cText, kAlignment) 
-	LOCAL iAlign AS INT
-	LOCAL iLines AS INT
-	LOCAL i AS INT
-	LOCAL iMaxWidth AS INT
-	LOCAL cTemp AS STRING
+   METHOD SetCaption(cText, kAlignment) 
+      LOCAL iAlign AS INT
+      LOCAL iLines AS INT
+      LOCAL i AS INT
+      LOCAL iMaxWidth AS INT
+      LOCAL cTemp AS STRING
 
-	
+      
 
-	IF !IsNil(cText)
-		IF !IsString(cText)
-			WCError{#SetCaption,#DataColumn,__WCSTypeError,cText,1}:Throw()
-		ENDIF
-	ENDIF
-	IF !IsNil(kAlignment)
-		IF !IsLong(kAlignment)
-			WCError{#SetCaption,#DataColumn,__WCSTypeError,kAlignment,2}:Throw()
-		ENDIF
-	ELSE
-		kAlignment:=gbaAlignCenter
-	ENDIF
+      IF !IsNil(cText)
+         IF !IsString(cText)
+            WCError{#SetCaption,#DataColumn,__WCSTypeError,cText,1}:Throw()
+         ENDIF
+      ENDIF
+      IF !IsNil(kAlignment)
+         IF !IsLong(kAlignment)
+            WCError{#SetCaption,#DataColumn,__WCSTypeError,kAlignment,2}:Throw()
+         ENDIF
+      ELSE
+         kAlignment:=gbaAlignCenter
+      ENDIF
 
-	SWITCH (INT) kAlignment
-	CASE GBAALIGNCENTER
-		iAlign := CA_TA_HCENTER
-	CASE GBAALIGNLEFT
-		iAlign := CA_TA_LEFT
-	CASE GBAALIGNRIGHT
-		iAlign := CA_TA_RIGHT
-	END SWITCH
+      SWITCH (INT) kAlignment
+      CASE GBAALIGNCENTER
+         iAlign := CA_TA_HCENTER
+      CASE GBAALIGNLEFT
+         iAlign := CA_TA_LEFT
+      CASE GBAALIGNRIGHT
+         iAlign := CA_TA_RIGHT
+      END SWITCH
 
 	// calculate width based on caption
-	IF (NULL_STRING != cText)
-		iLines := INT(Occurs(_CHR(10), cText)) + 1
-		IF (iLines > 1) //If multiple lines
-			cTemp := cText //Find the longest line
-			DO WHILE TRUE
-				i := INT(_CAST, At(_CHR(10), cTemp))
-				IF (i > 0)
-					iMaxWidth := Max(i-1, iMaxWidth)
-					cTemp := SubStr(cTemp, i+1)
-				ELSE
-					iMaxWidth := Max(SLen(cTemp), iMaxWidth)
-					EXIT
-				ENDIF
-			ENDDO
-		ELSE
-			iMaxWidth := INT(_CAST, SLen(cText))
-		ENDIF
+      IF (NULL_STRING != cText)
+         iLines := INT(Occurs(_CHR(10), cText)) + 1
+         IF (iLines > 1) //If multiple lines
+            cTemp := cText //Find the longest line
+            DO WHILE TRUE
+               i := INT(_CAST, At(_CHR(10), cTemp))
+               IF (i > 0)
+                  iMaxWidth := Max(i-1, iMaxWidth)
+                  cTemp := SubStr(cTemp, i+1)
+               ELSE
+                  iMaxWidth := Max(SLen(cTemp), iMaxWidth)
+                  EXIT
+               ENDIF
+            ENDDO
+         ELSE
+            iMaxWidth := INT(_CAST, SLen(cText))
+         ENDIF
 
-		strucFI:wFTitleLines := DWORD(iLines)
-		IF (oParent != NULL_OBJECT)
-			oParent:__SetMaxFTHeight(iLines)
-		ENDIF
+         strucFI:wFTitleLines := DWORD(iLines)
+         IF (oParent != NULL_OBJECT)
+            oParent:__SetMaxFTHeight(iLines)
+         ENDIF
 
 		// multi line titles are vertically aligned on the Top of the control by default
-		IF (ilines > 1)
-			strucFI:flFTitleAlign := _OR(iAlign,CA_TA_TOP)
-		ELSE
-			strucFI:flFTitleAlign := _OR(iAlign,CA_TA_VCENTER)
-		ENDIF
+         IF (ilines > 1)
+            strucFI:flFTitleAlign := _OR(iAlign,CA_TA_TOP)
+         ELSE
+            strucFI:flFTitleAlign := _OR(iAlign,CA_TA_VCENTER)
+         ENDIF
 
-		cCaption := cText
-		IF (oParent != NULL_OBJECT)
+         cCaption := cText
+         IF (oParent != NULL_OBJECT)
             PCALL(gpfnCntFldTtlSet, oParent:Handle(), strucFI, String2Psz(cCaption), SLen(cCaption)+1)
-		ENDIF
+         ENDIF
 
 		// default width if necessary
-		IF lDefaultWidth .AND. (INT(_CAST, strucFI:cxWidth) < (iMaxWidth + 2))
-			strucFI:cxWidth := DWORD(iMaxWidth + 2)
-		ENDIF
-	ELSE
-		cCaption := NULL_STRING
-		strucFI:wFTitleLines := 0
-	ENDIF
+         IF lDefaultWidth .AND. (INT(_CAST, strucFI:cxWidth) < (iMaxWidth + 2))
+            strucFI:cxWidth := DWORD(iMaxWidth + 2)
+         ENDIF
+      ELSE
+         cCaption := NULL_STRING
+         strucFI:wFTitleLines := 0
+      ENDIF
 
-	RETURN SELF
+      RETURN SELF
 
-METHOD SetModified(lModified) 
-	
+   METHOD SetModified(lModified) 
+      
 
-	IF !IsLogic(lModified)
-		WCError{#SetModified,#DataColumn,__WCSTypeError,lModified,1}:Throw()
-	ENDIF
-	SELF:lModified:=lModified
+      IF !IsLogic(lModified)
+         WCError{#SetModified,#DataColumn,__WCSTypeError,lModified,1}:Throw()
+      ENDIF
+      SELF:lModified:=lModified
 
-	RETURN SELF
+      RETURN SELF
 
-METHOD SetStandardStyle(kStyle) 
-	
+   METHOD SetStandardStyle(kStyle) 
+      
 
-	IF !IsLong(kStyle)
-		WCError{#SetStandardStyle,#DataColumn,__WCSTypeError,kStyle,1}:Throw()
-	ENDIF
+      IF !IsLong(kStyle)
+         WCError{#SetStandardStyle,#DataColumn,__WCSTypeError,kStyle,1}:Throw()
+      ENDIF
 
-	DO CASE
-	CASE (kStyle == GBSREADONLY)
-		PCALL(gpfnCntFldAttrSet, strucFI, CFA_FLDREADONLY)
+      DO CASE
+      CASE (kStyle == GBSREADONLY)
+            PCALL(gpfnCntFldAttrSet, strucFI, CFA_FLDREADONLY)
 
-	CASE (kStyle == GBSEDIT)
-		PCALL(gpfnCntFldAttrClear, strucFI, CFA_FLDREADONLY)
+      CASE (kStyle == GBSEDIT)
+            PCALL(gpfnCntFldAttrClear, strucFI, CFA_FLDREADONLY)
 
-	CASE (kStyle == GBSCONTROL3D)
-		PCALL(gpfnCntFldAttrSet, strucFI, CFA_FLDTTL3D)
+      CASE (kStyle == GBSCONTROL3D)
+            PCALL(gpfnCntFldAttrSet, strucFI, CFA_FLDTTL3D)
 
-	CASE (kStyle == GBSCONTROL2D)
-		PCALL(gpfnCntFldAttrClear, strucFI, CA_FLDTTL3D)
-	ENDCASE
+      CASE (kStyle == GBSCONTROL2D)
+         PCALL(gpfnCntFldAttrClear, strucFI, CA_FLDTTL3D)
+      ENDCASE
 
-	RETURN SELF
+      RETURN SELF
 
-METHOD SetValue(cNewValue) 
-	
+   METHOD SetValue(cNewValue) 
+      
 
-	IF !IsString(cNewValue)
-		WCError{#SetValue,#DataColumn,__WCSTypeError,cNewValue,1}:Throw()
-	ENDIF
+      IF !IsString(cNewValue)
+         WCError{#SetValue,#DataColumn,__WCSTypeError,cNewValue,1}:Throw()
+      ENDIF
 
-	IF !(cNewValue == cTextValue)
+      IF !(cNewValue == cTextValue)
 		//cTextValue := cNewValue
-		SELF:TextValue := cNewValue
-		SELF:Modified := TRUE
-		SELF:__Update()
-	ENDIF
+         SELF:TextValue := cNewValue
+         SELF:Modified := TRUE
+         SELF:__Update()
+      ENDIF
 
-	IF SELF:ValueChanged
-		IF !SELF:PerformValidations()
-			oHLStatus := SELF:Status
-			oParent:__FieldChange()
-		ELSE
-			SELF:__Gather()
-		ENDIF
-	ENDIF
+      IF SELF:ValueChanged
+         IF !SELF:PerformValidations()
+            oHLStatus := SELF:Status
+            oParent:__FieldChange()
+         ELSE
+            SELF:__Gather()
+         ENDIF
+      ENDIF
 
-	RETURN cTextValue
+      RETURN cTextValue
 
-ACCESS Status 
-	
+   ACCESS Status 
+      
 
-	RETURN oHLStatus
+      RETURN oHLStatus
 
-ACCESS TextColor 
-	
+   ACCESS TextColor 
+      
 
-	RETURN oTxtClr
+      RETURN oTxtClr
 
-ASSIGN TextColor(oColor) 
-	
+   ASSIGN TextColor(oColor) 
+      
 
-	SELF:ChangeTextColor(oColor, gblText)
+      SELF:ChangeTextColor(oColor, gblText)
 
-	RETURN 
+      RETURN 
 
-ACCESS TextValue 
-	
+   ACCESS TextValue 
+      
 
-	RETURN cTextValue
+      RETURN cTextValue
 
-ASSIGN TextValue(sNewText) 
-	
+   ASSIGN TextValue(sNewText) 
+      
 
-	IF !IsString(sNewText)
-		WCError{#TextValue,#DataColumn,__WCSTypeError,sNewText,1}:Throw()
-	ENDIF
+      IF !IsString(sNewText)
+         WCError{#TextValue,#DataColumn,__WCSTypeError,sNewText,1}:Throw()
+      ENDIF
 
-	cTextValue := sNewText
+      cTextValue := sNewText
 
-	IF (oFieldSpec != NULL_OBJECT)
-		uValue := oFieldSpec:Val(cTextValue)
-	ELSE
-		uValue := cTextValue
-	ENDIF
+      IF (oFieldSpec != NULL_OBJECT)
+         uValue := oFieldSpec:Val(cTextValue)
+      ELSE
+         uValue := cTextValue
+      ENDIF
 
-	RETURN 
+      RETURN 
 
-ACCESS Value 
-	
+   ACCESS Value 
+      
 
-	RETURN uValue
+      RETURN uValue
 
-ASSIGN Value(uParm) 
-	LOCAL cTemp AS STRING
+   ASSIGN Value(uParm) 
+      LOCAL cTemp AS STRING
 
-	
+      
 
-	IF IsNil(uParm)
-		uValue:= NIL
-		SELF:TextValue := NULL_STRING
-		oHlStatus := NULL_OBJECT
-		SELF:Modified := FALSE
-		SELF:lChanged := TRUE
-	ELSE
-		IF (oFieldSpec != NULL_OBJECT)
-			cTemp := oFieldSpec:Transform(uParm)
-		ELSE
-			cTemp := AsString(uParm)
-		ENDIF
+      IF IsNil(uParm)
+         uValue:= NIL
+         SELF:TextValue := NULL_STRING
+         oHlStatus := NULL_OBJECT
+         SELF:Modified := FALSE
+         SELF:lChanged := TRUE
+      ELSE
+         IF (oFieldSpec != NULL_OBJECT)
+            cTemp := oFieldSpec:Transform(uParm)
+         ELSE
+            cTemp := AsString(uParm)
+         ENDIF
 
-		uValue := uParm
-		SELF:TextValue := cTemp
-		oHLStatus := NULL_OBJECT
-		SELF:Modified := FALSE
-		SELF:lChanged := TRUE
-	ENDIF
+         uValue := uParm
+         SELF:TextValue := cTemp
+         oHLStatus := NULL_OBJECT
+         SELF:Modified := FALSE
+         SELF:lChanged := TRUE
+      ENDIF
 
-	RETURN 
+      RETURN 
 
-ACCESS ValueChanged 
-	
+   ACCESS ValueChanged 
+      
 
-	RETURN lChanged
+      RETURN lChanged
 
-ASSIGN ValueChanged(lNewFlag) 
-	
+   ASSIGN ValueChanged(lNewFlag) 
+      
 
-	IF !IsLogic(lNewFlag)
-		WCError{#ValueChanged,#DataColumn,__WCSTypeError,lNewFlag,1}:Throw()
-	ENDIF
+      IF !IsLogic(lNewFlag)
+         WCError{#ValueChanged,#DataColumn,__WCSTypeError,lNewFlag,1}:Throw()
+      ENDIF
 
-	RETURN lChanged := lNewFlag
+      RETURN lChanged := lNewFlag
 
-ACCESS VisualPos 
-	LOCAL iCount AS INT
-	LOCAL strucFieldInfo AS _WinFieldInfo
-	LOCAL p AS SelfPtr
+   ACCESS VisualPos 
+      LOCAL iCount AS INT
+      LOCAL strucFieldInfo AS _WinFieldInfo
+      LOCAL p AS SelfPtr
 
-	
+      
 
-	IF (oParent == NULL_OBJECT)
-		RETURN 0
-	ENDIF
+      IF (oParent == NULL_OBJECT)
+         RETURN 0
+      ENDIF
 
-	strucFieldInfo := PCALL(gpfnCntFldHeadGet, oParent:Handle())
-	DO WHILE strucFieldInfo != NULL_PTR
-		iCount++
+      strucFieldInfo := PCALL(gpfnCntFldHeadGet, oParent:Handle())
+      DO WHILE strucFieldInfo != NULL_PTR
+         iCount++
 	   // Note lpUserData contains a pointer to a buffer of 4 bytes with the self pointer!
-		p := strucFieldInfo:lpUserData
-		p := p:ptrSelf
-	    IF __WCSelfPtr2Object(p) == SELF
-			RETURN iCount
-		ENDIF
-		strucFieldInfo := strucFieldInfo:lpNext
-	ENDDO
+         p := strucFieldInfo:lpUserData
+         p := p:ptrSelf
+         IF __WCSelfPtr2Object(p) == SELF
+            RETURN iCount
+         ENDIF
+         strucFieldInfo := strucFieldInfo:lpNext
+      ENDDO
 
-	RETURN 0
+      RETURN 0
 
-ACCESS Width 
-	
+   ACCESS Width 
+      
 
-	RETURN strucFI:cxWidth
+      RETURN strucFI:cxWidth
 
-ASSIGN Width(nNewWidth) 
-	
+   ASSIGN Width(nNewWidth) 
+      
 
-	IF !IsLong(nNewWidth)
-		WCError{#Width,#DataColumn,__WCSTypeError,nNewWidth,1}:Throw()
-	ENDIF
+      IF !IsLong(nNewWidth)
+         WCError{#Width,#DataColumn,__WCSTypeError,nNewWidth,1}:Throw()
+      ENDIF
 
-	StrucFI:cxWidth := nNewWidth
-	lDefaultWidth := FALSE
-	IF (oParent != NULL_OBJECT)
-		PCALL(gpfnCntFldWidthSet, oParent:Handle(), strucFI, nNewWidth)
-	ENDIF
+      StrucFI:cxWidth := nNewWidth
+      lDefaultWidth := FALSE
+      IF (oParent != NULL_OBJECT)
+         PCALL(gpfnCntFldWidthSet, oParent:Handle(), strucFI, nNewWidth)
+      ENDIF
 
 	//if (oParent != NULL_OBJECT)
 	// oParent:__BuildRecordDescription()
 	//endif
 
-	RETURN 
+      RETURN 
 END CLASS
 
 STATIC GLOBAL glContainerDllLoaded := FALSE AS LOGIC
@@ -4495,464 +4516,464 @@ STATIC GLOBAL pfGBChildProcOrg AS PTR
 
 STATIC FUNCTION TCntAddFldHead(hCntWnd AS PTR, lpFld AS _winFIELDINFO) AS LOGIC STRICT
 	//SYSTEM
-	RETURN FALSE
+RETURN FALSE
 
 STATIC FUNCTION TCntAddFldTail(hCntWnd AS PTR, lpFld AS _winFIELDINFO) AS LOGIC STRICT
 	//SYSTEM
-	RETURN FALSE
+RETURN FALSE
 
 STATIC FUNCTION TCntAddRecHead(hCntWnd AS PTR, lpNew AS _winRECORDCORE) AS LOGIC STRICT
 	//SYSTEM
-	RETURN FALSE
+   RETURN FALSE
 
 STATIC FUNCTION TCntAddRecTail(hCntWnd AS PTR, lpNew AS _winRECORDCORE) AS LOGIC STRICT
 	//SYSTEM
-	RETURN FALSE
+   RETURN FALSE
 
-STATIC FUNCTION TCntAssociateSet(hWnd AS PTR, hWndAssociate AS PTR) AS PTR STRICT
+   STATIC FUNCTION TCntAssociateSet(hWnd AS PTR, hWndAssociate AS PTR) AS PTR STRICT
 	//SYSTEM
-	RETURN NULL_PTR
+   RETURN NULL_PTR
 
-STATIC FUNCTION TCntAttribClear(hWnd AS PTR, dwAttrib AS DWORD) AS VOID STRICT
-RETURN
+   STATIC FUNCTION TCntAttribClear(hWnd AS PTR, dwAttrib AS DWORD) AS VOID STRICT
+   RETURN
 STATIC FUNCTION TCntAttribSet(hWnd AS PTR, dwAttrib AS DWORD) AS VOID STRICT
-RETURN
-STATIC FUNCTION TCntCNCharGet(hCntWnd AS PTR, lParam AS LONGINT) AS DWORD STRICT
+   RETURN
+   STATIC FUNCTION TCntCNCharGet(hCntWnd AS PTR, lParam AS LONGINT) AS DWORD STRICT
 	//SYSTEM
-	RETURN 0
+   RETURN 0
 
 STATIC FUNCTION TCntCNChildWndGet(hCntWnd AS PTR, lParam AS LONGINT) AS PTR STRICT
 	//SYSTEM
-	RETURN NULL_PTR
+   RETURN NULL_PTR
 
-STATIC FUNCTION TCntCNFldGet(hCntWnd AS PTR, lParam AS LONGINT) AS _winFIELDINFO STRICT
+   STATIC FUNCTION TCntCNFldGet(hCntWnd AS PTR, lParam AS LONGINT) AS _winFIELDINFO STRICT
 	//SYSTEM
-	RETURN NULL_PTR //PP-040410
-STATIC FUNCTION TCntCNIncExGet(hCntWnd AS PTR, lParam AS LONGINT) AS LONGINT STRICT
+   RETURN NULL_PTR //PP-040410
+   STATIC FUNCTION TCntCNIncExGet(hCntWnd AS PTR, lParam AS LONGINT) AS LONGINT STRICT
 	//SYSTEM
-	RETURN 0
+   RETURN 0
 
-STATIC FUNCTION TCntCNRecGet(hCntWnd AS PTR, lParam AS LONGINT) AS _winRECORDCORE STRICT
+   STATIC FUNCTION TCntCNRecGet(hCntWnd AS PTR, lParam AS LONGINT) AS _winRECORDCORE STRICT
 	//SYSTEM
-	RETURN NULL_PTR //PP-040410
+   RETURN NULL_PTR //PP-040410
 
-STATIC FUNCTION TCntCNShiftKeyGet(hCntWnd AS PTR, lParam AS LONGINT) AS LOGIC STRICT
+   STATIC FUNCTION TCntCNShiftKeyGet(hCntWnd AS PTR, lParam AS LONGINT) AS LOGIC STRICT
 	//SYSTEM
-	RETURN FALSE
-STATIC FUNCTION TCntColorGet(hWnd AS PTR, iColor AS DWORD) AS DWORD STRICT
+   RETURN FALSE
+   STATIC FUNCTION TCntColorGet(hWnd AS PTR, iColor AS DWORD) AS DWORD STRICT
 	//SYSTEM
-	RETURN 0
+   RETURN 0
 
-STATIC FUNCTION TCntColorSet(hWnd AS PTR, iColor AS DWORD, cr AS DWORD) AS DWORD STRICT
+   STATIC FUNCTION TCntColorSet(hWnd AS PTR, iColor AS DWORD, cr AS DWORD) AS DWORD STRICT
 	//SYSTEM
-	RETURN 0
+   RETURN 0
 STATIC FUNCTION TCntCurrentPosExGet(hWnd AS PTR) AS LONGINT STRICT
 	//SYSTEM
-	RETURN 0
+   RETURN 0
 
-STATIC FUNCTION TCntCurrentPosExSet(hWnd AS PTR, lPos AS LONGINT) AS LONGINT STRICT
+   STATIC FUNCTION TCntCurrentPosExSet(hWnd AS PTR, lPos AS LONGINT) AS LONGINT STRICT
 	//SYSTEM
-	RETURN 0
+   RETURN 0
 
-STATIC FUNCTION TCntCursorSet(hWnd AS PTR, hCursor AS PTR, iArea AS DWORD) AS LOGIC STRICT
+   STATIC FUNCTION TCntCursorSet(hWnd AS PTR, hCursor AS PTR, iArea AS DWORD) AS LOGIC STRICT
 	//SYSTEM
-	RETURN FALSE
+   RETURN FALSE
 
-STATIC FUNCTION TCntDeferPaint(hWnd AS PTR) AS VOID STRICT
-RETURN
-STATIC FUNCTION TCntDeltaExSet(hCntWnd AS PTR, lDelta AS LONGINT) AS VOID STRICT
-RETURN
-STATIC FUNCTION TCntDeltaPosExGet(hCntWnd AS PTR) AS LONGINT STRICT
+   STATIC FUNCTION TCntDeferPaint(hWnd AS PTR) AS VOID STRICT
+   RETURN
+   STATIC FUNCTION TCntDeltaExSet(hCntWnd AS PTR, lDelta AS LONGINT) AS VOID STRICT
+   RETURN
+   STATIC FUNCTION TCntDeltaPosExGet(hCntWnd AS PTR) AS LONGINT STRICT
 	//SYSTEM
-	RETURN 0
+   RETURN 0
 
 STATIC FUNCTION TCntDeltaPosExSet(hCntWnd AS PTR, lDeltaPos AS LONGINT) AS VOID STRICT
-RETURN
-STATIC FUNCTION TCntEndDeferPaint(hWnd AS PTR, bUpdate AS LOGIC) AS VOID STRICT
-RETURN
-STATIC FUNCTION TCntEndRecEdit(hCntWnd AS PTR, lpRec AS _winRECORDCORE, lpFld AS _winFIELDINFO) AS LOGIC STRICT
+   RETURN
+   STATIC FUNCTION TCntEndDeferPaint(hWnd AS PTR, bUpdate AS LOGIC) AS VOID STRICT
+   RETURN
+   STATIC FUNCTION TCntEndRecEdit(hCntWnd AS PTR, lpRec AS _winRECORDCORE, lpFld AS _winFIELDINFO) AS LOGIC STRICT
 	//SYSTEM
-	RETURN FALSE
+   RETURN FALSE
 
-STATIC FUNCTION TCntFldAttrClear(lpFld AS _winFIELDINFO, dwAttrib AS DWORD) AS VOID STRICT
-RETURN
-STATIC FUNCTION TCntFldAttrSet(lpFld AS _winFIELDINFO, dwAttrib AS DWORD) AS VOID STRICT
-RETURN
-STATIC FUNCTION TCntFldColorSet(hWnd AS PTR, lpFld AS _winFIELDINFO, iColor AS DWORD, cr AS DWORD) AS DWORD STRICT
+   STATIC FUNCTION TCntFldAttrClear(lpFld AS _winFIELDINFO, dwAttrib AS DWORD) AS VOID STRICT
+   RETURN
+   STATIC FUNCTION TCntFldAttrSet(lpFld AS _winFIELDINFO, dwAttrib AS DWORD) AS VOID STRICT
+   RETURN
+   STATIC FUNCTION TCntFldColorSet(hWnd AS PTR, lpFld AS _winFIELDINFO, iColor AS DWORD, cr AS DWORD) AS DWORD STRICT
 	//SYSTEM
-	RETURN 0
+   RETURN 0
 
-STATIC FUNCTION TCntFldDataAlnSet(hWnd AS PTR, lpFld AS _winFIELDINFO, dwAlign AS DWORD) AS VOID STRICT
-RETURN
+   STATIC FUNCTION TCntFldDataAlnSet(hWnd AS PTR, lpFld AS _winFIELDINFO, dwAlign AS DWORD) AS VOID STRICT
+   RETURN
 STATIC FUNCTION TCntFldDrwProcSet(lpFld AS _winFIELDINFO, lpfnDrawProc AS PTR) AS LOGIC STRICT
 	//SYSTEM
-	RETURN FALSE
+   RETURN FALSE
 
 STATIC FUNCTION TCntFldHeadGet(hCntWnd AS PTR) AS _winFIELDINFO STRICT
 	//SYSTEM
-	RETURN NULL_PTR //PP-040410
+   RETURN NULL_PTR //PP-040410
 
 STATIC FUNCTION TCntFldTailGet(hCntWnd AS PTR) AS _winFIELDINFO STRICT
 	//SYSTEM
-	RETURN NULL_PTR //PP-040410
+   RETURN NULL_PTR //PP-040410
 
 STATIC FUNCTION TCntFldTtlHtSet(hCntWnd AS PTR, nHeight AS INT) AS INT STRICT
 	//SYSTEM
-	RETURN 0
+   RETURN 0
 
-STATIC FUNCTION TCntFldTtlSepSet(hWnd AS PTR) AS VOID STRICT
-RETURN
+   STATIC FUNCTION TCntFldTtlSepSet(hWnd AS PTR) AS VOID STRICT
+   RETURN
 STATIC FUNCTION TCntFldTtlSet(hWnd AS PTR, lpFld AS _winFIELDINFO, lpszColTitle AS PSZ, wTitleLen AS DWORD) AS LOGIC STRICT
 	//SYSTEM
-	RETURN FALSE
+   RETURN FALSE
 
-STATIC FUNCTION TCntFldUserGet(lpFld AS _winFIELDINFO) AS PTR STRICT
+   STATIC FUNCTION TCntFldUserGet(lpFld AS _winFIELDINFO) AS PTR STRICT
 	//SYSTEM
-	RETURN NULL_PTR
+   RETURN NULL_PTR
 
-STATIC FUNCTION TCntFldUserSet(lpFld AS _winFIELDINFO, lpUserData AS PTR, wUserBytes AS DWORD) AS LOGIC STRICT
+   STATIC FUNCTION TCntFldUserSet(lpFld AS _winFIELDINFO, lpUserData AS PTR, wUserBytes AS DWORD) AS LOGIC STRICT
 	//SYSTEM
-	RETURN FALSE
+   RETURN FALSE
 
-STATIC FUNCTION TCntFldWidthSet(hCntWnd AS PTR, lpFld AS _winFIELDINFO, nWidth AS DWORD) AS SHORTINT STRICT
+   STATIC FUNCTION TCntFldWidthSet(hCntWnd AS PTR, lpFld AS _winFIELDINFO, nWidth AS DWORD) AS SHORTINT STRICT
 	//SYSTEM
-	RETURN 0
+   RETURN 0
 
 STATIC FUNCTION TCntFocusExtGet(hCntWnd AS PTR) AS DWORD STRICT
 	//SYSTEM
-	RETURN 0
+   RETURN 0
 
-STATIC FUNCTION TCntFocusFldGet(hCntWnd AS PTR) AS _winFIELDINFO STRICT
+   STATIC FUNCTION TCntFocusFldGet(hCntWnd AS PTR) AS _winFIELDINFO STRICT
 	//SYSTEM
-	RETURN NULL_PTR //PP-040410
+   RETURN NULL_PTR //PP-040410
 
-STATIC FUNCTION TCntFocusFldLock(hCntWnd AS PTR) AS INT STRICT
+   STATIC FUNCTION TCntFocusFldLock(hCntWnd AS PTR) AS INT STRICT
 	//SYSTEM
-	RETURN 0
+   RETURN 0
 
-STATIC FUNCTION TCntFocusFldUnlck(hCntWnd AS PTR) AS INT STRICT
+   STATIC FUNCTION TCntFocusFldUnlck(hCntWnd AS PTR) AS INT STRICT
 	//SYSTEM
-	RETURN 0
+   RETURN 0
 
 STATIC FUNCTION TCntFocusMove(hCntWnd AS PTR, wDir AS DWORD) AS LOGIC STRICT
 	//SYSTEM
-	RETURN FALSE
+   RETURN FALSE
 
-STATIC FUNCTION TCntFocusOrgGet(hCntWnd AS PTR, bScreen AS LOGIC) AS DWORD STRICT
+   STATIC FUNCTION TCntFocusOrgGet(hCntWnd AS PTR, bScreen AS LOGIC) AS DWORD STRICT
 	//SYSTEM
-	RETURN 0
+   RETURN 0
 
 STATIC FUNCTION TCntFocusRecGet(hCntWnd AS PTR) AS _winRECORDCORE STRICT
 	//SYSTEM
-	RETURN NULL_PTR //PP-040410
+   RETURN NULL_PTR //PP-040410
 
 STATIC FUNCTION TCntFocusRecLock(hCntWnd AS PTR) AS INT STRICT
 	//SYSTEM
-	RETURN 0
+   RETURN 0
 
 STATIC FUNCTION TCntFocusRecUnlck(hCntWnd AS PTR) AS INT STRICT
 	//SYSTEM
-	RETURN 0
+   RETURN 0
 
 STATIC FUNCTION TCntFocusSet(hCntWnd AS PTR, lpRec AS _winRECORDCORE, lpFld AS _winFIELDINFO) AS LOGIC STRICT
 	//SYSTEM
-	RETURN FALSE
+   RETURN FALSE
 
 STATIC FUNCTION TCntFontSet(hWnd AS PTR, hFont AS PTR, iFont AS DWORD) AS LOGIC STRICT
 	//SYSTEM
-	RETURN FALSE
+   RETURN FALSE
 
 STATIC FUNCTION TCntFreeRecCore(lpRec AS _winRECORDCORE) AS LOGIC STRICT
 	//SYSTEM
-	RETURN FALSE
+   RETURN FALSE
 
 STATIC FUNCTION TCntInsFldBefore(hCntWnd AS PTR, lpFld AS _winFIELDINFO, lpNew AS _winFIELDINFO) AS LOGIC STRICT
 	//SYSTEM
-	RETURN FALSE
+   RETURN FALSE
 
 STATIC FUNCTION TCntIsFocusCellRO(hCntWnd AS PTR) AS LOGIC STRICT
 	//SYSTEM
-	RETURN FALSE
+   RETURN FALSE
 
 STATIC FUNCTION TCntIsRecSelected(hCntWnd AS PTR, lpRec AS _winRECORDCORE) AS LOGIC STRICT
 	//SYSTEM
-	RETURN FALSE
+   RETURN FALSE
 
 STATIC FUNCTION TCntKillRecList(hCntWnd AS PTR) AS LOGIC STRICT
 	//SYSTEM
-	RETURN FALSE
+   RETURN FALSE
 
 STATIC FUNCTION TCntNewFldInfo() AS _winFIELDINFO STRICT
 	//SYSTEM
-	RETURN NULL_PTR //PP-040410
+   RETURN NULL_PTR //PP-040410
 
-STATIC FUNCTION TCntNewRecCore(dwRecSize AS DWORD) AS _winRECORDCORE STRICT
+   STATIC FUNCTION TCntNewRecCore(dwRecSize AS DWORD) AS _winRECORDCORE STRICT
 	//SYSTEM
-	RETURN NULL_PTR //PP-040410
+   RETURN NULL_PTR //PP-040410
 
 STATIC FUNCTION TCntNextRec(lpRec AS _winRECORDCORE) AS _winRECORDCORE STRICT
 	//SYSTEM
-	RETURN NULL_PTR //PP-040410
+   RETURN NULL_PTR //PP-040410
 
 STATIC FUNCTION TCntNotifyAssoc(hWnd AS PTR, wEvent AS DWORD, wOemCharVal AS DWORD, lpRec AS _winRECORDCORE, lpFld AS _WinFIELDINFO, nInc AS INT,;
-	bShiftKey AS LOGIC, bCtrlKey AS LOGIC, lpUserData AS PTR) AS VOID STRICT
-RETURN
+   bShiftKey AS LOGIC, bCtrlKey AS LOGIC, lpUserData AS PTR) AS VOID STRICT
+   RETURN
 
 STATIC FUNCTION TCntRangeExSet(hWnd AS PTR, lMin AS LONGINT, lMax AS LONGINT) AS LOGIC STRICT
 	//SYSTEM
-	RETURN FALSE
+   RETURN FALSE
 
 STATIC FUNCTION TCntRangeSet(hWnd AS PTR, iMin AS DWORD, iMax AS DWORD) AS DWORD STRICT
 	//SYSTEM
-	RETURN 0
+   RETURN 0
 
 STATIC FUNCTION TCntRecAttrClear(lpRec AS _winRECORDCORE, dwAttrib AS DWORD) AS VOID STRICT
-RETURN
-STATIC FUNCTION TCntRecAttrSet(lpRec AS _winRECORDCORE, dwAttrib AS DWORD) AS VOID STRICT
-RETURN
+   RETURN
+   STATIC FUNCTION TCntRecAttrSet(lpRec AS _winRECORDCORE, dwAttrib AS DWORD) AS VOID STRICT
+   RETURN
 STATIC FUNCTION TCntRecDataSet(lpRec AS _winRECORDCORE, lpData AS PTR) AS LOGIC STRICT
 	//SYSTEM
-	RETURN FALSE
+   RETURN FALSE
 
-STATIC FUNCTION TCntRecHeadGet(hCntWnd AS PTR) AS _winRECORDCORE STRICT
+   STATIC FUNCTION TCntRecHeadGet(hCntWnd AS PTR) AS _winRECORDCORE STRICT
 	//SYSTEM
-	RETURN NULL_PTR //PP-040410
+   RETURN NULL_PTR //PP-040410
 
 STATIC FUNCTION TCntRecsDispGet(hCntWnd AS PTR) AS INT STRICT
 	//SYSTEM
-	RETURN 0
+   RETURN 0
 
 STATIC FUNCTION TCntRecTailGet(hCntWnd AS PTR) AS _winRECORDCORE STRICT
 	//SYSTEM
-	RETURN NULL_PTR //PP-040410
+   RETURN NULL_PTR //PP-040410
 
 STATIC FUNCTION TCntRecUserGet(lpRec AS _winRECORDCORE) AS PTR STRICT
 	//SYSTEM
-	RETURN NULL_PTR
+   RETURN NULL_PTR
 
-STATIC FUNCTION TCntRecUserSet(lpRec AS _winRECORDCORE, lpUserData AS PTR, wUserBytes AS DWORD) AS LOGIC STRICT
+   STATIC FUNCTION TCntRecUserSet(lpRec AS _winRECORDCORE, lpUserData AS PTR, wUserBytes AS DWORD) AS LOGIC STRICT
 	//SYSTEM
-	RETURN FALSE
+   RETURN FALSE
 
 STATIC FUNCTION TCntRemoveFld(hCntWnd AS PTR, lpFld AS _winFIELDINFO) AS _winFIELDINFO STRICT
 	//SYSTEM
-	RETURN NULL_PTR //PP-040410
+   RETURN NULL_PTR //PP-040410
 
-STATIC FUNCTION TCntRemoveRec(hCntWnd AS PTR, lpRec AS _winRECORDCORE) AS _winRECORDCORE STRICT
+   STATIC FUNCTION TCntRemoveRec(hCntWnd AS PTR, lpRec AS _winRECORDCORE) AS _winRECORDCORE STRICT
 	//SYSTEM
-	RETURN NULL_PTR //PP-040410
+   RETURN NULL_PTR //PP-040410
 
-STATIC FUNCTION TCntRemoveRecHead(hCntWnd AS PTR) AS _winRECORDCORE STRICT
+   STATIC FUNCTION TCntRemoveRecHead(hCntWnd AS PTR) AS _winRECORDCORE STRICT
 	//SYSTEM
-	RETURN NULL_PTR //PP-040410
+   RETURN NULL_PTR //PP-040410
 
-STATIC FUNCTION TCntRemoveRecTail(hCntWnd AS PTR) AS _winRECORDCORE STRICT
+   STATIC FUNCTION TCntRemoveRecTail(hCntWnd AS PTR) AS _winRECORDCORE STRICT
 	//SYSTEM
-	RETURN NULL_PTR //PP-040410
+   RETURN NULL_PTR //PP-040410
 
-STATIC FUNCTION TCntRowHtSet(hCntWnd AS PTR, nHeight AS INT, wLineSpace AS DWORD) AS INT STRICT
+   STATIC FUNCTION TCntRowHtSet(hCntWnd AS PTR, nHeight AS INT, wLineSpace AS DWORD) AS INT STRICT
 	//SYSTEM
-	RETURN 0
+   RETURN 0
 
-STATIC FUNCTION TCntScrollFldArea(hCntWnd AS PTR, nIncrement AS INT) AS VOID STRICT
-RETURN
-STATIC FUNCTION TCntScrollRecArea(hCntWnd AS PTR, nIncrement AS INT) AS _winRECORDCORE STRICT
+   STATIC FUNCTION TCntScrollFldArea(hCntWnd AS PTR, nIncrement AS INT) AS VOID STRICT
+   RETURN
+   STATIC FUNCTION TCntScrollRecArea(hCntWnd AS PTR, nIncrement AS INT) AS _winRECORDCORE STRICT
 	//SYSTEM
-	RETURN NULL_PTR //PP-040410
+   RETURN NULL_PTR //PP-040410
 
-STATIC FUNCTION TCntScrollRecAreaEx(hCntWnd AS PTR, lIncrement AS LONGINT) AS _winRECORDCORE STRICT
+   STATIC FUNCTION TCntScrollRecAreaEx(hCntWnd AS PTR, lIncrement AS LONGINT) AS _winRECORDCORE STRICT
 	//SYSTEM
-	RETURN NULL_PTR //PP-040410
+   RETURN NULL_PTR //PP-040410
 
-STATIC FUNCTION TCntSelectRec(hCntWnd AS PTR, lpRec AS _winRECORDCORE) AS LOGIC STRICT
+   STATIC FUNCTION TCntSelectRec(hCntWnd AS PTR, lpRec AS _winRECORDCORE) AS LOGIC STRICT
 	//SYSTEM
-	RETURN FALSE
+   RETURN FALSE
 
-STATIC FUNCTION TCntSelRecGet(hCntWnd AS PTR) AS _winRECORDCORE STRICT
+   STATIC FUNCTION TCntSelRecGet(hCntWnd AS PTR) AS _winRECORDCORE STRICT
 	//SYSTEM
-	RETURN NULL_PTR //PP-040410
+   RETURN NULL_PTR //PP-040410
 
-STATIC FUNCTION TCntSpltBarCreate(hCntWnd AS PTR, wMode AS DWORD, xCoord AS INT) AS VOID STRICT
-RETURN
+   STATIC FUNCTION TCntSpltBarCreate(hCntWnd AS PTR, wMode AS DWORD, xCoord AS INT) AS VOID STRICT
+   RETURN
 STATIC FUNCTION TCntSpltBarDelete(hCntWnd AS PTR, wMode AS DWORD, xCoord AS INT) AS VOID STRICT
-RETURN
+   RETURN
 STATIC FUNCTION TCntStyleClear(hWnd AS PTR, dwStyle AS DWORD) AS VOID STRICT
-RETURN
-STATIC FUNCTION TCntStyleSet(hWnd AS PTR, dwStyle AS DWORD) AS VOID STRICT
-RETURN
+   RETURN
+   STATIC FUNCTION TCntStyleSet(hWnd AS PTR, dwStyle AS DWORD) AS VOID STRICT
+   RETURN
 STATIC FUNCTION TCntTopRecGet(hCntWnd AS PTR) AS _winRECORDCORE STRICT
 	//SYSTEM
-	RETURN NULL_PTR //PP-040410
+   RETURN NULL_PTR //PP-040410
 
 STATIC FUNCTION TCntTopRecSet(hCntWnd AS PTR, lpRec AS _winRECORDCORE) AS LOGIC STRICT
 	//SYSTEM
-	RETURN FALSE
+   RETURN FALSE
 
 STATIC FUNCTION TCntTtlAlignSet(hWnd AS PTR, dwAlign AS DWORD) AS VOID STRICT
-RETURN
+   RETURN
 STATIC FUNCTION TCntTtlHtSet(hCntWnd AS PTR, nHeight AS INT) AS INT STRICT
 	//SYSTEM
-	RETURN 0
+   RETURN 0
 
-STATIC FUNCTION TCntTtlSepSet(hWnd AS PTR) AS VOID STRICT
-RETURN
-STATIC FUNCTION TCntTtlSet(hWnd AS PTR, lpszTitle AS PSZ) AS LOGIC STRICT
+   STATIC FUNCTION TCntTtlSepSet(hWnd AS PTR) AS VOID STRICT
+   RETURN
+   STATIC FUNCTION TCntTtlSet(hWnd AS PTR, lpszTitle AS PSZ) AS LOGIC STRICT
 	//SYSTEM
-	RETURN FALSE
+   RETURN FALSE
 
-STATIC FUNCTION TCntUnSelectRec(hCntWnd AS PTR, lpRec AS _winRECORDCORE) AS LOGIC STRICT
+   STATIC FUNCTION TCntUnSelectRec(hCntWnd AS PTR, lpRec AS _winRECORDCORE) AS LOGIC STRICT
 	//SYSTEM
-	RETURN FALSE
+   RETURN FALSE
 
-STATIC FUNCTION TCntViewSet(hWnd AS PTR, iView AS DWORD) AS DWORD STRICT
+   STATIC FUNCTION TCntViewSet(hWnd AS PTR, iView AS DWORD) AS DWORD STRICT
 	//SYSTEM
-	RETURN 0
+   RETURN 0
 
 STATIC FUNCTION TCntVScrollPosExSet(hCntWnd AS PTR, lPosition AS LONGINT) AS VOID STRICT
-RETURN
-STATIC FUNCTION TCntVScrollPosSet(hCntWnd AS PTR, nPosition AS SHORTINT) AS VOID STRICT
-RETURN
+   RETURN
+   STATIC FUNCTION TCntVScrollPosSet(hCntWnd AS PTR, nPosition AS SHORTINT) AS VOID STRICT
+   RETURN
 
-FUNCTION __DrawFldData(hWnd AS PTR, strucFieldInfo AS _WinFieldInfo, strucRecordCore AS _WinRecordCore, ;
-	ptrData AS PTR, hDC AS PTR, iX AS INT, iY AS INT, dwOptions AS DWORD, ;
-	ptrRect AS _WINRECT, pszData AS /*PSZ*/ PTR, dwLength AS DWORD) AS INT /* CALLBACK */
-	
+   FUNCTION __DrawFldData(hWnd AS PTR, strucFieldInfo AS _WinFieldInfo, strucRecordCore AS _WinRecordCore, ;
+   ptrData AS PTR, hDC AS PTR, iX AS INT, iY AS INT, dwOptions AS DWORD, ;
+   ptrRect AS _WINRECT, pszData AS /*PSZ*/ PTR, dwLength AS DWORD) AS INT /* CALLBACK */
+   
 	// dcaton 080608
    // Changed parameter 10 from PSZ to PTR.  This function is used as a callback function via a delegate and
    // Marshal.GetFunctionPointerForDelegate( (System.Delegate) ) and the CLR cannot marshal a PSZ since it is a managed structure.
    // Since a PSZ is really just a byte* (as far as native code is concerned) changing the parameter to PTR
    // keeps the CLR happy, and 'pszData' is cast to a PSZ in the call to __DrawCellData.
    // This fixes defect id #350
-	
-	LOCAL oColumn AS DataColumn
-	LOCAL p AS SelfPtr
+   
+   LOCAL oColumn AS DataColumn
+   LOCAL p AS SelfPtr
    // Note lpUserData contains a pointer to a buffer of 4 bytes with the self pointer!
-	p := strucFieldInfo:lpUserData
-	p := p:ptrSelf
-    oColumn := __WCSelfPtr2Object(p)
-	IF oColumn != NULL_OBJECT
-		oColumn:__DrawCellData(hDC, iX, iY, dwOptions, ptrRect, (PSZ) pszData, dwLength)
-		RETURN 0
-	ENDIF
+   p := strucFieldInfo:lpUserData
+   p := p:ptrSelf
+   oColumn := __WCSelfPtr2Object(p)
+   IF oColumn != NULL_OBJECT
+      oColumn:__DrawCellData(hDC, iX, iY, dwOptions, ptrRect, (PSZ) pszData, dwLength)
+      RETURN 0
+   ENDIF
 
-	RETURN 1
+   RETURN 1
 
-FUNCTION __LoadContainerDLL()
-	LOCAL hDll AS PTR
-	LOCAL rsFormat AS ResourceString
+   FUNCTION __LoadContainerDLL()
+   LOCAL hDll AS PTR
+   LOCAL rsFormat AS ResourceString
 
-	IF glContainerDllLoaded
-		RETURN TRUE
-	ENDIF
+   IF glContainerDllLoaded
+      RETURN TRUE
+   ENDIF
 
-    hDll := LoadLibrary(String2Psz( "CATO3CNT.DLL"))
-	IF (hDll == NULL_PTR)
-		rsFormat := ResourceString{__WCSLoadLibraryError}
-		WCError{#LoadContainerDLL, #DataBrowser, VO_Sprintf(rsFormat:value, "CATO3CNT.DLL"),,,FALSE}:Throw()
-		RETURN FALSE
-	ENDIF
-	ghContainerDLL  			:= hDll
-	gpfnCntFocusFldUnlck 	:= __GetProcAddress( "CntFocusFldUnlck")
-	gpfnCntTopRecGet 			:= __GetProcAddress( "CntTopRecGet")
-	gpfnCntFocusRecGet 		:= __GetProcAddress( "CntFocusRecGet")
-	gpfnCntSelectRec 			:= __GetProcAddress( "CntSelectRec")
-	gpfnCntRecHeadGet 		:= __GetProcAddress( "CntRecHeadGet")
-	gpfnCntNextRec 			:= __GetProcAddress( "CntNextRec")
-	gpfnCntFocusFldGet 		:= __GetProcAddress( "CntFocusFldGet")
-	gpfnCntFocusSet 			:= __GetProcAddress( "CntFocusSet")
-	gpfnCntFocusRecLock 		:= __GetProcAddress( "CntFocusRecLock")
-	gpfnCntCurrentPosExSet 	:= __GetProcAddress( "CntCurrentPosExSet")
-	gpfnCntEndRecEdit 		:= __GetProcAddress( "CntEndRecEdit")
-	gpfnCntAddRecHead 		:= __GetProcAddress( "CntAddRecHead")
-	gpfnCntRemoveRecTail		:= __GetProcAddress( "CntRemoveRecTail")
-	gpfnCntFreeRecCore 		:= __GetProcAddress( "CntFreeRecCore")
-	gpfnCntTopRecSet 			:= __GetProcAddress( "CntTopRecSet")
-	gpfnCntDeltaExSet 		:= __GetProcAddress( "CntDeltaExSet")
-	gpfnCntDeltaPosExSet 	:= __GetProcAddress( "CntDeltaPosExSet")
-	gpfnCntVScrollPosExSet 	:= __GetProcAddress( "CntVScrollPosExSet")
-	gpfnCntRangeExSet 		:= __GetProcAddress( "CntRangeExSet")
-	gpfnCntCurrentPosExGet 	:= __GetProcAddress( "CntCurrentPosExGet")
-	gpfnCntRecTailGet 		:= __GetProcAddress( "CntRecTailGet")
-	gpfnCntAddRecTail 		:= __GetProcAddress( "CntAddRecTail")
-	gpfnCntRemoveRecHead 	:= __GetProcAddress( "CntRemoveRecHead")
-	gpfnCntDeltaPosExGet 	:= __GetProcAddress( "CntDeltaPosExGet")
-	gpfnCntCNIncExGet 		:= __GetProcAddress( "CntCNIncExGet")
-	gpfnCntNewRecCore 		:= __GetProcAddress( "CntNewRecCore")
-	gpfnCntRecUserSet 		:= __GetProcAddress( "CntRecUserSet")
-	gpfnCntRecAttrSet 		:= __GetProcAddress( "CntRecAttrSet")
-	gpfnCntNewFldInfo 		:= __GetProcAddress( "CntNewFldInfo")
-	gpfnCntFldUserSet 		:= __GetProcAddress( "CntFldUserSet")
-	gpfnCntCNChildWndGet 	:= __GetProcAddress( "CntCNChildWndGet")
-	gpfnCntKillRecList 		:= __GetProcAddress( "CntKillRecList")
-	gpfnCntSelRecGet 			:= __GetProcAddress( "CntSelRecGet")
-	gpfnCntUnSelectRec 		:= __GetProcAddress( "CntUnSelectRec")
-	gpfnCntStyleClear 		:= __GetProcAddress( "CntStyleClear")
-	gpfnCntIsRecSelected 	:= __GetProcAddress( "CntIsRecSelected")
-	gpfnCntRecAttrClear 		:= __GetProcAddress( "CntRecAttrClear")
-	gpfnCntStyleSet 			:= __GetProcAddress( "CntStyleSet")
-	gpfnCntRecDataSet 		:= __GetProcAddress( "CntRecDataSet")
-	gpfnCntRecsDispGet 		:= __GetProcAddress( "CntRecsDispGet")
-	gpfnCntFldTtlHtSet 		:= __GetProcAddress( "CntFldTtlHtSet")
-	gpfnCntColorSet 			:= __GetProcAddress( "CntColorSet")
-	gpfnCntFontSet 			:= __GetProcAddress( "CntFontSet")
-	gpfnCntColorGet 			:= __GetProcAddress( "CntColorGet")
-	gpfnCntAttribSet 			:= __GetProcAddress( "CntAttribSet")
-	gpfnCntAttribClear 		:= __GetProcAddress( "CntAttribClear")
-	gpfnCntSpltBarCreate 	:= __GetProcAddress( "CntSpltBarCreate")
-	gpfnCntSpltBarDelete 	:= __GetProcAddress( "CntSpltBarDelete")
-	gpfnCntEndDeferPaint 	:= __GetProcAddress( "CntEndDeferPaint")
-	gpfnCntTtlSet 				:= __GetProcAddress( "CntTtlSet")
-	gpfnCntTtlAlignSet 		:= __GetProcAddress( "CntTtlAlignSet")
-	gpfnCntTtlHtSet 			:= __GetProcAddress( "CntTtlHtSet")
-	gpfnCntTtlSepSet 			:= __GetProcAddress( "CntTtlSepSet")
-	gpfnCntCursorSet 			:= __GetProcAddress( "CntCursorSet")
-	gpfnCntDeferPaint 		:= __GetProcAddress( "CntDeferPaint")
-	gpfnCntFldHeadGet 		:= __GetProcAddress( "CntFldHeadGet")
-	gpfnCntAssociateSet 		:= __GetProcAddress( "CntAssociateSet")
-	gpfnCntViewSet 			:= __GetProcAddress( "CntViewSet")
-	gpfnCntRowHtSet 			:= __GetProcAddress( "CntRowHtSet")
-	gpfnCntNotifyAssoc 		:= __GetProcAddress( "CntNotifyAssoc")
-	gpfnCntCNRecGet 			:= __GetProcAddress( "CntCNRecGet")
-	gpfnCntCNShiftKeyGet 	:= __GetProcAddress( "CntCNShiftKeyGet")
-	gpfnCntFocusMove 			:= __GetProcAddress( "CntFocusMove")
-	gpfnCntIsFocusCellRO 	:= __GetProcAddress( "CntIsFocusCellRO")
-	gpfnCntCNCharGet 			:= __GetProcAddress( "CntCNCharGet")
-	gpfnCntCNFldGet 			:= __GetProcAddress( "CntCNFldGet")
-	gpfnCntFldTailGet 		:= __GetProcAddress( "CntFldTailGet")
-	gpfnCntFocusRecUnlck 	:= __GetProcAddress( "CntFocusRecUnlck")
-	gpfnCntScrollRecAreaEx	:= __GetProcAddress( "CntScrollRecAreaEx")
-	gpfnCntScrollFldArea 	:= __GetProcAddress( "CntScrollFldArea")
-	gpfnCntFldDataAlnSet 	:= __GetProcAddress( "CntFldDataAlnSet")
-	gpfnCntFldTtlSepSet 		:= __GetProcAddress( "CntFldTtlSepSet")
-	gpfnCntFldTtlSet 			:= __GetProcAddress( "CntFldTtlSet")
-	gpfnCntAddFldTail 		:= __GetProcAddress( "CntAddFldTail")
-	gpfnCntInsFldBefore 		:= __GetProcAddress( "CntInsFldBefore")
-	gpfnCntRemoveFld 			:= __GetProcAddress( "CntRemoveFld")
-	gpfnCntFocusExtGet 		:= __GetProcAddress( "CntFocusExtGet")
-	gpfnCntFocusOrgGet 		:= __GetProcAddress( "CntFocusOrgGet")
-	gpfnCntFocusFldLock 		:= __GetProcAddress( "CntFocusFldLock")
-	gpfnCntFldColorSet 		:= __GetProcAddress( "CntFldColorSet")
-	gpfnCntFldAttrClear 		:= __GetProcAddress( "CntFldAttrClear")
-	gpfnCntFldAttrSet 		:= __GetProcAddress( "CntFldAttrSet")
-	gpfnCntFldWidthSet 		:= __GetProcAddress( "CntFldWidthSet")
-	gpfnCntFldDrwProcSet 	:= __GetProcAddress( "CntFldDrwProcSet")
+   hDll := LoadLibrary(String2Psz( "CATO3CNT.DLL"))
+   IF (hDll == NULL_PTR)
+      rsFormat := ResourceString{__WCSLoadLibraryError}
+      WCError{#LoadContainerDLL, #DataBrowser, VO_Sprintf(rsFormat:value, "CATO3CNT.DLL"),,,FALSE}:Throw()
+      RETURN FALSE
+   ENDIF
+   ghContainerDLL  			:= hDll
+   gpfnCntFocusFldUnlck 	:= __GetProcAddress( "CntFocusFldUnlck")
+   gpfnCntTopRecGet 			:= __GetProcAddress( "CntTopRecGet")
+   gpfnCntFocusRecGet 		:= __GetProcAddress( "CntFocusRecGet")
+   gpfnCntSelectRec 			:= __GetProcAddress( "CntSelectRec")
+   gpfnCntRecHeadGet 		:= __GetProcAddress( "CntRecHeadGet")
+   gpfnCntNextRec 			:= __GetProcAddress( "CntNextRec")
+   gpfnCntFocusFldGet 		:= __GetProcAddress( "CntFocusFldGet")
+   gpfnCntFocusSet 			:= __GetProcAddress( "CntFocusSet")
+   gpfnCntFocusRecLock 		:= __GetProcAddress( "CntFocusRecLock")
+   gpfnCntCurrentPosExSet 	:= __GetProcAddress( "CntCurrentPosExSet")
+   gpfnCntEndRecEdit 		:= __GetProcAddress( "CntEndRecEdit")
+   gpfnCntAddRecHead 		:= __GetProcAddress( "CntAddRecHead")
+   gpfnCntRemoveRecTail		:= __GetProcAddress( "CntRemoveRecTail")
+   gpfnCntFreeRecCore 		:= __GetProcAddress( "CntFreeRecCore")
+   gpfnCntTopRecSet 			:= __GetProcAddress( "CntTopRecSet")
+   gpfnCntDeltaExSet 		:= __GetProcAddress( "CntDeltaExSet")
+   gpfnCntDeltaPosExSet 	:= __GetProcAddress( "CntDeltaPosExSet")
+   gpfnCntVScrollPosExSet 	:= __GetProcAddress( "CntVScrollPosExSet")
+   gpfnCntRangeExSet 		:= __GetProcAddress( "CntRangeExSet")
+   gpfnCntCurrentPosExGet 	:= __GetProcAddress( "CntCurrentPosExGet")
+   gpfnCntRecTailGet 		:= __GetProcAddress( "CntRecTailGet")
+   gpfnCntAddRecTail 		:= __GetProcAddress( "CntAddRecTail")
+   gpfnCntRemoveRecHead 	:= __GetProcAddress( "CntRemoveRecHead")
+   gpfnCntDeltaPosExGet 	:= __GetProcAddress( "CntDeltaPosExGet")
+   gpfnCntCNIncExGet 		:= __GetProcAddress( "CntCNIncExGet")
+   gpfnCntNewRecCore 		:= __GetProcAddress( "CntNewRecCore")
+   gpfnCntRecUserSet 		:= __GetProcAddress( "CntRecUserSet")
+   gpfnCntRecAttrSet 		:= __GetProcAddress( "CntRecAttrSet")
+   gpfnCntNewFldInfo 		:= __GetProcAddress( "CntNewFldInfo")
+   gpfnCntFldUserSet 		:= __GetProcAddress( "CntFldUserSet")
+   gpfnCntCNChildWndGet 	:= __GetProcAddress( "CntCNChildWndGet")
+   gpfnCntKillRecList 		:= __GetProcAddress( "CntKillRecList")
+   gpfnCntSelRecGet 			:= __GetProcAddress( "CntSelRecGet")
+   gpfnCntUnSelectRec 		:= __GetProcAddress( "CntUnSelectRec")
+   gpfnCntStyleClear 		:= __GetProcAddress( "CntStyleClear")
+   gpfnCntIsRecSelected 	:= __GetProcAddress( "CntIsRecSelected")
+   gpfnCntRecAttrClear 		:= __GetProcAddress( "CntRecAttrClear")
+   gpfnCntStyleSet 			:= __GetProcAddress( "CntStyleSet")
+   gpfnCntRecDataSet 		:= __GetProcAddress( "CntRecDataSet")
+   gpfnCntRecsDispGet 		:= __GetProcAddress( "CntRecsDispGet")
+   gpfnCntFldTtlHtSet 		:= __GetProcAddress( "CntFldTtlHtSet")
+   gpfnCntColorSet 			:= __GetProcAddress( "CntColorSet")
+   gpfnCntFontSet 			:= __GetProcAddress( "CntFontSet")
+   gpfnCntColorGet 			:= __GetProcAddress( "CntColorGet")
+   gpfnCntAttribSet 			:= __GetProcAddress( "CntAttribSet")
+   gpfnCntAttribClear 		:= __GetProcAddress( "CntAttribClear")
+   gpfnCntSpltBarCreate 	:= __GetProcAddress( "CntSpltBarCreate")
+   gpfnCntSpltBarDelete 	:= __GetProcAddress( "CntSpltBarDelete")
+   gpfnCntEndDeferPaint 	:= __GetProcAddress( "CntEndDeferPaint")
+   gpfnCntTtlSet 				:= __GetProcAddress( "CntTtlSet")
+   gpfnCntTtlAlignSet 		:= __GetProcAddress( "CntTtlAlignSet")
+   gpfnCntTtlHtSet 			:= __GetProcAddress( "CntTtlHtSet")
+   gpfnCntTtlSepSet 			:= __GetProcAddress( "CntTtlSepSet")
+   gpfnCntCursorSet 			:= __GetProcAddress( "CntCursorSet")
+   gpfnCntDeferPaint 		:= __GetProcAddress( "CntDeferPaint")
+   gpfnCntFldHeadGet 		:= __GetProcAddress( "CntFldHeadGet")
+   gpfnCntAssociateSet 		:= __GetProcAddress( "CntAssociateSet")
+   gpfnCntViewSet 			:= __GetProcAddress( "CntViewSet")
+   gpfnCntRowHtSet 			:= __GetProcAddress( "CntRowHtSet")
+   gpfnCntNotifyAssoc 		:= __GetProcAddress( "CntNotifyAssoc")
+   gpfnCntCNRecGet 			:= __GetProcAddress( "CntCNRecGet")
+   gpfnCntCNShiftKeyGet 	:= __GetProcAddress( "CntCNShiftKeyGet")
+   gpfnCntFocusMove 			:= __GetProcAddress( "CntFocusMove")
+   gpfnCntIsFocusCellRO 	:= __GetProcAddress( "CntIsFocusCellRO")
+   gpfnCntCNCharGet 			:= __GetProcAddress( "CntCNCharGet")
+   gpfnCntCNFldGet 			:= __GetProcAddress( "CntCNFldGet")
+   gpfnCntFldTailGet 		:= __GetProcAddress( "CntFldTailGet")
+   gpfnCntFocusRecUnlck 	:= __GetProcAddress( "CntFocusRecUnlck")
+   gpfnCntScrollRecAreaEx	:= __GetProcAddress( "CntScrollRecAreaEx")
+   gpfnCntScrollFldArea 	:= __GetProcAddress( "CntScrollFldArea")
+   gpfnCntFldDataAlnSet 	:= __GetProcAddress( "CntFldDataAlnSet")
+   gpfnCntFldTtlSepSet 		:= __GetProcAddress( "CntFldTtlSepSet")
+   gpfnCntFldTtlSet 			:= __GetProcAddress( "CntFldTtlSet")
+   gpfnCntAddFldTail 		:= __GetProcAddress( "CntAddFldTail")
+   gpfnCntInsFldBefore 		:= __GetProcAddress( "CntInsFldBefore")
+   gpfnCntRemoveFld 			:= __GetProcAddress( "CntRemoveFld")
+   gpfnCntFocusExtGet 		:= __GetProcAddress( "CntFocusExtGet")
+   gpfnCntFocusOrgGet 		:= __GetProcAddress( "CntFocusOrgGet")
+   gpfnCntFocusFldLock 		:= __GetProcAddress( "CntFocusFldLock")
+   gpfnCntFldColorSet 		:= __GetProcAddress( "CntFldColorSet")
+   gpfnCntFldAttrClear 		:= __GetProcAddress( "CntFldAttrClear")
+   gpfnCntFldAttrSet 		:= __GetProcAddress( "CntFldAttrSet")
+   gpfnCntFldWidthSet 		:= __GetProcAddress( "CntFldWidthSet")
+   gpfnCntFldDrwProcSet 	:= __GetProcAddress( "CntFldDrwProcSet")
 
-	RETURN (glContainerDllLoaded := TRUE)
-#ifdef __VULCAN__
-   DELEGATE __CellEditProcDelegate( hWnd AS PTR, uMsg AS DWORD, wParam AS DWORD, lParam AS LONGINT ) AS INT
-   DELEGATE __DrawFldDataDelegate( hWnd AS PTR, strucFieldInfo AS _WinFieldInfo, strucRecordCore AS _WinRecordCore, ptrData AS PTR, hDC AS PTR, iX AS INT, iY AS INT, dwOptions AS DWORD, ptrRect AS _WINRECT, pszData AS /*PSZ*/ PTR, dwLength AS DWORD ) AS INT
-   DELEGATE __WCGBChildProcDelegate( hWnd AS PTR, uMsg AS DWORD, wParam AS DWORD, lParam AS LONGINT ) AS LONGINT
-#endif
+   RETURN (glContainerDllLoaded := TRUE)
+   #ifdef __VULCAN__
+      DELEGATE __CellEditProcDelegate( hWnd AS PTR, uMsg AS DWORD, wParam AS DWORD, lParam AS LONGINT ) AS INT
+      DELEGATE __DrawFldDataDelegate( hWnd AS PTR, strucFieldInfo AS _WinFieldInfo, strucRecordCore AS _WinRecordCore, ptrData AS PTR, hDC AS PTR, iX AS INT, iY AS INT, dwOptions AS DWORD, ptrRect AS _WINRECT, pszData AS /*PSZ*/ PTR, dwLength AS DWORD ) AS INT
+      DELEGATE __WCGBChildProcDelegate( hWnd AS PTR, uMsg AS DWORD, wParam AS DWORD, lParam AS LONGINT ) AS LONGINT
+   #endif
 
 FUNCTION __WCGBChildProc(hWnd AS PTR, uMsg AS DWORD, wParam AS DWORD, lParam AS LONGINT) AS LONGINT /* WINCALL */
-	LOCAL oBrowser AS OBJECT
-	LOCAL i AS INT
+   LOCAL oBrowser AS OBJECT
+   LOCAL i AS INT
 
-	IF (uMsg == WM_CHAR)
-		oBrowser := __WCGetControlByHandle(GetParent(hWnd))
-		IF IsInstanceOf(oBrowser, #DataBrowser)
-			IVarPut(oBrowser, #__LastChar, wParam)
-		ENDIF
+   IF (uMsg == WM_CHAR)
+      oBrowser := __WCGetControlByHandle(GetParent(hWnd))
+      IF IsInstanceOf(oBrowser, #DataBrowser)
+         IVarPut(oBrowser, #__LastChar, wParam)
+      ENDIF
 		//PP-040410 This is better handled in control dispatch
 		// 	ELSEIF (uMsg == WM_CONTEXTMENU)
 		// 		oBrowser := __WCGetControlByHandle(GetParent(hWnd))
@@ -4961,77 +4982,77 @@ FUNCTION __WCGBChildProc(hWnd AS PTR, uMsg AS DWORD, wParam AS DWORD, lParam AS 
 		// 		ELSEIF (oBrowser:Owner:ContextMenu != NULL_OBJECT)
 		// 			oBrowser:Owner:ContextMenu:ShowAsPopUp(oBrowser:Owner)
 		// 		ENDIF
-	ELSEIF (uMsg == 0x020A) //WM_MOUSEWHEEL
-		FOR i:=1 TO 5
-			IF (SHORTINT(_CAST, HiWord(wParam)) < 0)
-				PostMessage(hwnd, WM_VSCROLL, SB_LINEDOWN, 0)
-			ELSE
-				PostMessage(hwnd, WM_VSCROLL, SB_LINEUP, 0)
-			ENDIF
-		NEXT
-	ENDIF
+   ELSEIF (uMsg == 0x020A) //WM_MOUSEWHEEL
+      FOR i:=1 TO 5
+         IF (SHORTINT(_CAST, HiWord(wParam)) < 0)
+            PostMessage(hwnd, WM_VSCROLL, SB_LINEDOWN, 0)
+         ELSE
+            PostMessage(hwnd, WM_VSCROLL, SB_LINEUP, 0)
+         ENDIF
+      NEXT
+   ENDIF
 
-	RETURN CallWindowProc(pfGBChildProcOrg, hWnd, uMsg, wParam, lParam)
-	
-#ifdef __VULCAN__
-   DELEGATE __WCGBNotifyProcDelegate( hWnd AS PTR, uMsg AS DWORD, wParam AS DWORD, lParam AS LONGINT ) AS LONGINT
-#endif
+   RETURN CallWindowProc(pfGBChildProcOrg, hWnd, uMsg, wParam, lParam)
+   
+   #ifdef __VULCAN__
+      DELEGATE __WCGBNotifyProcDelegate( hWnd AS PTR, uMsg AS DWORD, wParam AS DWORD, lParam AS LONGINT ) AS LONGINT
+   #endif
 
-FUNCTION __WCGBNotifyProc(hWnd AS PTR, uMsg AS DWORD, wParam AS DWORD, lParam AS LONGINT) AS LONGINT /* WINCALL */
-	LOCAL oControl AS Control
-	LOCAL strucCreateStruct AS _WinCreateStruct
-	LOCAL p AS SelfPtr
-
-
-	IF uMsg == WM_CREATE
-		strucCreateStruct := PTR(_CAST, lParam)
-		p := strucCreateStruct:lpCreateParams
-		oControl := __WCSelfPtr2Object(p)
-		SetWindowLong(hWnd, DWL_USER, LONGINT(_CAST, p))
-	ELSE
-	   p := PTR(_CAST, GetWindowLong(hWnd, DWL_USER))
-		oControl := __WCSelfPtr2Object(p)
-	ENDIF
-
-	IF oControl != NULL_OBJECT
-		RETURN oControl:Dispatch(@@Event{ hWnd, uMsg, wParam, lParam, oControl})
-	ENDIF
-	RETURN DefWindowProc(hWnd, uMsg, wParam, lParam)
-
-STATIC FUNCTION __WCRegisterGBNotifyWindow(hInst AS PTR) AS LOGIC
-	STATIC LOCAL lretVal AS LOGIC
-	LOCAL wc IS _WINWNDclass
+   FUNCTION __WCGBNotifyProc(hWnd AS PTR, uMsg AS DWORD, wParam AS DWORD, lParam AS LONGINT) AS LONGINT /* WINCALL */
+   LOCAL oControl AS Control
+   LOCAL strucCreateStruct AS _WinCreateStruct
+   LOCAL p AS SelfPtr
 
 
-	IF !lretVal
-		wc:style := CS_GLOBALCLASS
-#ifdef __VULCAN__
-      STATIC LOCAL WCGBNotifyProcDelegate AS __WCGBNotifyProcDelegate
-      IF WCGBNotifyProcDelegate == NULL
-         WCGBNotifyProcDelegate := __WCGBNotifyProcDelegate{ NULL, @__WCGBNotifyProc() }
-      ENDIF
-		wc:lpfnWndProc := System.Runtime.InteropServices.Marshal.GetFunctionPointerForDelegate( (System.Delegate) WCGBNotifyProcDelegate )
-#else		
-		wc:lpfnWndProc := PTR(_CAST, @__WCGBNotifyProc())
-#endif		
-		wc:hInstance := hInst
-		wc:hbrBackground := (COLOR_WINDOW + 1)
-        wc:lpszClassName := String2Psz(__WCGBNotifyWindowClass)
-		wc:cbWndExtra := 12
+   IF uMsg == WM_CREATE
+      strucCreateStruct := PTR(_CAST, lParam)
+      p := strucCreateStruct:lpCreateParams
+      oControl := __WCSelfPtr2Object(p)
+      SetWindowLong(hWnd, DWL_USER, LONGINT(_CAST, p))
+   ELSE
+      p := PTR(_CAST, GetWindowLong(hWnd, DWL_USER))
+      oControl := __WCSelfPtr2Object(p)
+   ENDIF
 
-		lretVal := (RegisterClass(@wc) != 0)
-	ENDIF
+   IF oControl != NULL_OBJECT
+      RETURN oControl:Dispatch(@@Event{ hWnd, uMsg, wParam, lParam, oControl})
+   ENDIF
+   RETURN DefWindowProc(hWnd, uMsg, wParam, lParam)
 
-	RETURN lretVal
+   STATIC FUNCTION __WCRegisterGBNotifyWindow(hInst AS PTR) AS LOGIC
+   STATIC LOCAL lretVal AS LOGIC
+   LOCAL wc IS _WINWNDclass
 
 
-STATIC FUNCTION __GetProcAddress(cProcname AS STRING)	AS	PTR
-	LOCAL pAddr AS PTR
-	pAddr := GetProcAddress(ghContainerDLL, String2Psz(cProcname))
-	IF pAddr == NULL_PTR
-		WCError{#LoadContainerDLL, #DataBrowser, "Could not find address of function "+cProcname+" in CATO3CNT.DLL",,,FALSE}:Throw()
-	ENDIF
-	RETURN pAddr  
+   IF !lretVal
+      wc:style := CS_GLOBALCLASS
+      #ifdef __VULCAN__
+         STATIC LOCAL WCGBNotifyProcDelegate AS __WCGBNotifyProcDelegate
+         IF WCGBNotifyProcDelegate == NULL
+            WCGBNotifyProcDelegate := __WCGBNotifyProcDelegate{ NULL, @__WCGBNotifyProc() }
+         ENDIF
+         wc:lpfnWndProc := System.Runtime.InteropServices.Marshal.GetFunctionPointerForDelegate( (System.Delegate) WCGBNotifyProcDelegate )
+      #else		
+         wc:lpfnWndProc := PTR(_CAST, @__WCGBNotifyProc())
+      #endif		
+      wc:hInstance := hInst
+      wc:hbrBackground := (COLOR_WINDOW + 1)
+      wc:lpszClassName := String2Psz(__WCGBNotifyWindowClass)
+      wc:cbWndExtra := 12
+
+      lretVal := (RegisterClass(@wc) != 0)
+   ENDIF
+
+   RETURN lretVal
+
+
+   STATIC FUNCTION __GetProcAddress(cProcname AS STRING)	AS	PTR
+LOCAL pAddr AS PTR
+pAddr := GetProcAddress(ghContainerDLL, String2Psz(cProcname))
+IF pAddr == NULL_PTR
+   WCError{#LoadContainerDLL, #DataBrowser, "Could not find address of function "+cProcname+" in CATO3CNT.DLL",,,FALSE}:Throw()
+ENDIF
+RETURN pAddr  
 
 
 
@@ -5043,39 +5064,39 @@ STATIC FUNCTION __GetProcAddress(cProcname AS STRING)	AS	PTR
 // when an int is returned.  There is no reason to type this callback as returning a logic, since CallWindowProc()
 // really returns INT as documented in MSDN.	
 FUNCTION __CellEditProc(hWnd AS PTR, uMsg AS DWORD, wParam AS DWORD, lParam AS LONGINT) AS /* LOGIC */ INT //_WINCALL
-	LOCAL oControl AS Control
-	LOCAL oOwner AS OBJECT
-	LOCAL lpfnDefaultProc AS PTR
+LOCAL oControl AS Control
+LOCAL oOwner AS OBJECT
+LOCAL lpfnDefaultProc AS PTR
 
 
-	oControl := __WCGetControlByHandle(hWnd)
+oControl := __WCGetControlByHandle(hWnd)
 
-	IF (oControl != NULL_OBJECT)
-		oOwner := oControl:Owner
-		IF IsInstanceOf(oOwner, #DataBrowser)
-			lpfnDefaultProc := oOwner:ptrControlDefaultProc
-			IF oOwner:__EditDispatch(uMsg, wParam, lParam)
-				RETURN 1 // TRUE
-			ENDIF
-			IF (lpfnDefaultProc != NULL_PTR)
+IF (oControl != NULL_OBJECT)
+   oOwner := oControl:Owner
+   IF IsInstanceOf(oOwner, #DataBrowser)
+      lpfnDefaultProc := oOwner:ptrControlDefaultProc
+      IF oOwner:__EditDispatch(uMsg, wParam, lParam)
+         RETURN 1 // TRUE
+      ENDIF
+      IF (lpfnDefaultProc != NULL_PTR)
 //				RETURN LOGIC(_CAST, CallWindowProc(lpfnDefaultProc, hWnd, umsg, wParam, lParam))
-				RETURN CallWindowProc(lpfnDefaultProc, hWnd, umsg, wParam, lParam)
-			ENDIF
-		ENDIF
-	ENDIF
+         RETURN CallWindowProc(lpfnDefaultProc, hWnd, umsg, wParam, lParam)
+      ENDIF
+   ENDIF
+ENDIF
 
-	RETURN 1 // TRUE
+RETURN 1 // TRUE
 
 
 
 
 #region defines
 DEFINE GBSSBLEFT := 1
-DEFINE GBSSBMIDDLE := 2
-DEFINE GBSSBRIGHT := 3
-DEFINE ssBlockSelection      := 3
-DEFINE ssExtendedSelection := 2
-DEFINE ssNoSelection         := 0
-DEFINE ssSingleSelection     := 1
+   DEFINE GBSSBMIDDLE := 2
+   DEFINE GBSSBRIGHT := 3
+   DEFINE ssBlockSelection      := 3
+   DEFINE ssExtendedSelection := 2
+   DEFINE ssNoSelection         := 0
+   DEFINE ssSingleSelection     := 1
 DEFINE __WCGBNotifyWindowClass := "GBNotifyContext"
 #endregion

@@ -47,7 +47,6 @@ CLASS Control INHERIT VObject
 	//PROTECT hwndToolTip AS PTR //not used
 	
 	EXPORT EventReturnValue AS LONGINT
-   //RvdH 080215 Added property for ControlWindow
    EXPORT __ControlWindow AS ControlWindow
 	
 	//PP-030828 Strong typing
@@ -518,20 +517,12 @@ METHOD Default(oEvent)
 	
 
 METHOD Destroy() 
+    
+    
 	//SE-070501
 	//__WCUnregisterMenu(oContextMenu)
-	
-    // RvdH 080102 Remove control from Owner alignment Array
-/*
-    dcaton 080414 removed per instructions from Robert -this needs to be reviewed
     
-	 IF IsInstanceOf(oFormSurface, #Window)
-       oFormSurface:__AddAlign(SELF, OA_NO)
-	 ELSEIF IsInstanceOf(oParent, #Window) 
-        oParent:__AddAlign(SELF, OA_NO)
-	 ENDIF
-*/	 
-
+     
 	IF (hWnd != NULL_PTR)
 		IF !IsInstanceOf(SELF, #WindowScrollBar)
 			IF lTimerRegistered
@@ -866,9 +857,19 @@ METHOD FocusChange(oFocusChangeEvent)
 	
 	RETURN NIL
 	
+	
+METHOD GetExStyle() AS LONG
+	// Retrieves the complete window ex-styles bitmask for a control
+	RETURN GetWindowLong( SELF:Handle(), GWL_EXSTYLE )
+	
+
+METHOD GetStyle() AS LONG
+	// Retrieves the complete window styles bitmask for a control
+	RETURN GetWindowLong( SELF:Handle(), GWL_STYLE )
+	
+	
 
 METHOD Handle(uType) AS PTR
-	
 	
 	IF !IsNil(uType) .AND. !IsLong(uType)
 		WCError{#Handle,#Control,__WCSTypeError,uType,1}:Throw()
@@ -878,7 +879,10 @@ METHOD Handle(uType) AS PTR
 	ENDIF
 	
 	RETURN hWnd
-	
+
+METHOD HandleAsDword() 
+	RETURN DWORD(_cast,self:Handle())	
+
 METHOD HasBorder() 
 LOCAL lBorder		AS LOGIC
 LOCAL nStyle		AS LONG    
@@ -1055,6 +1059,11 @@ ACCESS IsDestroyed
 	// DHer: 18/12/2008
 RETURN SELF:lIsDestroyed
 
+ACCESS IsDisabled AS LOGIC
+	// Determines wether the control is disabled
+	// TRUE if the control is disabled, FALSE if not
+	RETURN SELF:IsStyle( WS_DISABLED )
+
 ACCESS IsEditable 
    LOCAL lEditable	AS LOGIC
    LOCAL oEdit    AS Edit
@@ -1084,12 +1093,20 @@ RETURN lEditable
 METHOD IsEnabled() 
 	//PP-030319 added method
 	RETURN (_AND(GetWindowLong(SELF:Handle(),GWL_STYLE),WS_DISABLED)==0)
-	
+
+METHOD IsExStyle( nStyle AS LONG) AS LOGIC 
+	// Determines wether a certain windows ex-style is set for this control
+	RETURN _And( LONG( SELF:GetExStyle() ), nStyle  ) != 0
 
 METHOD IsReadOnly() 
 	//PP-030319 added method
 	RETURN IIF(IsInstanceOf(SELF,#Edit), (_AND(GetWindowLong(SELF:Handle(),GWL_STYLE),ES_READONLY)!=0), FALSE)
 	
+
+METHOD IsStyle( nStyle AS LONG ) AS LOGIC
+	// Determines wether a certain windows style is set for this control
+	RETURN _And( SELF:GetStyle() , nStyle  ) != 0
+
 
 METHOD IsVisible 
 	LOCAL style AS LONGINT
@@ -1411,6 +1428,10 @@ METHOD HasStyle(kStyle AS LONG)
 
 	RETURN _AND(liStyle,kStyle) != 0
 	
+METHOD SetParent( hWndNewParent AS PTR)  AS VOID
+	SetParent( self:Handle() , hWndNewParent  )  
+	RETURN
+
 ACCESS Style 
 	// DHer: 18/12/2008
 	RETURN GetWindowLong(SELF:hWnd,GWL_STYLE)

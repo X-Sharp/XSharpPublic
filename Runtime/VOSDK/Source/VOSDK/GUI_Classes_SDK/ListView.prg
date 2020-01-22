@@ -1537,6 +1537,14 @@ ASSIGN FieldSpec(oNewFieldSpec)
 
 	RETURN 
 
+METHOD GetPixWidth() AS LONG
+	LOCAL iCol 		as dword
+	LOCAL iPixWidth	AS LONG
+	iCol := oOwner:__GetColumnIndexFromSymbol(SELF:NameSym)
+	iPixWidth := ListView_GetColumnWidth( oOwner:Handle(), int(_cast,iCol)-1)
+	RETURN iPixWidth
+
+
 ACCESS HyperLabel 
 	
 
@@ -1602,6 +1610,13 @@ ACCESS Owner
 RETURN SELF:oOwner
 
 
+METHOD SetPixWidth(dwPixWidth AS LONG)  AS LOGIC
+	LOCAL iCol 	as dword
+	LOCAL lSet	AS LOGIC
+	iCol := oOwner:__GetColumnIndexFromSymbol(SELF:NameSym)
+	lSet := ListView_SetColumnWidth( oOwner:Handle(), int(_cast,iCol)-1 , dwPixWidth)
+	RETURN lSet
+	
 ACCESS Width 
 	LOCAL dwIndex AS DWORD
 	LOCAL nPixelWidth AS INT

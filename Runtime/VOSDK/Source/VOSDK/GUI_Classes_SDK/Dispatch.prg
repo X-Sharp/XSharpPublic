@@ -196,7 +196,11 @@ METHOD Dispatch(oEvent)
 			lFileDragging := FALSE
 			ReleaseCapture()
 		ENDIF
-		SELF:MouseButtonUp(MouseEvent{oEvt})
+        	IF IsInstanceOf(SELF, #__FormFrame) //SE-111104 for DataWindow
+			SELF:Owner:MouseButtonUp(MouseEvent{oEvt})
+	        ELSE   
+        	   SELF:MouseButtonUp(MouseEvent{oEvt})
+	        ENDIF   
 		RETURN SELF:EventReturnValue
 		
 	CASE WM_RBUTTONUP

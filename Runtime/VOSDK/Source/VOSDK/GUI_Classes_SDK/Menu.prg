@@ -56,6 +56,9 @@ METHOD CheckItem(nItemID)
 
 	RETURN CheckMenuItem(hMenu, nItemID, _OR(MF_CHECKED, MF_BYCOMMAND))
 
+ACCESS Children() AS ARRAY
+	Return aChildren
+
 METHOD DeleteChild(oMenu)  
 	//SE-060526
 	LOCAL dwI, dwCount AS DWORD
@@ -284,6 +287,9 @@ METHOD MakeMenuRtol(lRToL)
 	MemFree(pszbuffer)
 
 	RETURN SELF
+	
+ACCESS MenuItems AS ARRAY
+	RETURN aItem
 
 
 METHOD Name(nItemID) 

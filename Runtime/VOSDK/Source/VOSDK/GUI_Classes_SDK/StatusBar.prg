@@ -687,6 +687,17 @@ ASSIGN ErrorText(cMessage)
 
 	RETURN 
 
+METHOD GetItem(symItemName AS Symbol) AS OBJECT
+	LOCAL dwIndex as DWORD
+	LOCAL oItem as OBJECT
+	
+	dwIndex := self:__GetItemFromSymbol(symItemName)
+	IF (dwIndex != 0)
+		oItem := self:aItems[dwIndex]
+	ENDIF
+
+	RETURN oItem
+	
 METHOD GetItemBoundingBox(symItemName) 
 	LOCAL dwIndex AS DWORD
 	LOCAL strucRect IS _winRECT

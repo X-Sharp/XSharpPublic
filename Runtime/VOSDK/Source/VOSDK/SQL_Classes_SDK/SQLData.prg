@@ -5,6 +5,8 @@ CLASS SQLData
 	EXPORT ptrValue		AS PTR
 	EXPORT ptrLength		AS PTR
 	EXPORT LongValue		AS STRING
+	EXPORT HasValue      AS LOGIC
+
 	METHOD Clear() AS VOID STRICT 
 	IF SELF:ptrValue != NULL_PTR
 		MemClear(SELF:ptrValue, SELF:Length)

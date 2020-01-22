@@ -1,7 +1,7 @@
 FUNCTION __SQLMaxStringSize( nValue )
    //  JSP 09/05/2000
    //  STATIC LOCAL nMaxStringSize := 10000    //MAX_LONGVARCHAR  AS DWORD
-   STATIC LOCAL nMaxStringSize := 0x7FFF  AS DWORD  //MAX_LONGVARCHAR   AS DWORD
+   STATIC LOCAL nMaxStringSize := 0x1000  AS DWORD  //MAX_LONGVARCHAR   AS DWORD
 
    IF IsNumeric( nValue )
       nMaxStringSize := nValue
@@ -83,34 +83,6 @@ FUNCTION __AdjustString( c AS STRING ) AS STRING STRICT
    ENDIF
    RETURN c
 
-   // FUNCTION __GetNULLDataValue( nODBCType AS SHORTINT, lNullAsBlank AS LOGIC ) AS USUAL PASCAL
-   // 	LOCAL xRet AS USUAL
-   // 	IF lNullAsBlank
-   // 		DO CASE
-   // 		CASE nODBCType = SQL_DATE
-   // 			xRet := NULL_DATE
-   //
-   // 		CASE nODBCType = SQL_VARCHAR
-   // 			xRet := NULL_STRING
-   // 		ENDCASE
-   // 	ENDIF
-   //
-   // 	RETURN xRet
-
-   // FUNCTION __CheckNULLDataValue( xValue AS USUAL, nODBCType AS SHORTINT ) AS LOGIC PASCAL
-   // 	LOCAL lRet AS LOGIC
-   // 	IF IsNil( xValue )
-   // 		lRet := TRUE
-   // 	ELSE
-   // 		IF IsString( xValue ) .AND. NULL_STRING = xValue
-   // 			lRet := TRUE
-   //
-   // 		ELSEIF IsDate( xValue ) .AND. NULL_DATE = xValue
-   // 			lRet := TRUE
-   // 		ENDIF
-   // 	ENDIF
-   //
-   // 	RETURN lRet
 
 FUNCTION __CheckHandles( hEnv AS USUAL, hDbc AS USUAL, hStmt AS USUAL ) AS LOGIC STRICT
    LOCAL lRet  AS LOGIC
@@ -172,9 +144,14 @@ FUNCTION  SQL_LEN_DATA_AT_EXEC( nLength AS INT ) AS INT STRICT
 
 FUNCTION __SQLOutputDebug( cMsg AS STRING) AS VOID STRICT
    LOCAL I AS DWORD
-   FOR i := 1 TO SLen(cMsg) STEP 200
-      _DebOut32( String2Psz(SubStr(cMsg ,i, 200)))
-   NEXT
+    LOCAL cLine AS STRING
+    FOR i := 1 TO SLen(cMsg) STEP 200
+      cLine := SubStr(cMsg ,I, 200)
+      IF I > 1
+         cLine := "  .." + cLine
+      ENDIF 
+      DebOut32( cLine)
+    NEXT
    RETURN
 
 FUNCTION SqlSetStmtConcurrency( nNew ) AS INT
@@ -293,20 +270,15 @@ FUNCTION _SLen( c AS STRING ) AS SHORTINT STRICT
 
 FUNCTION __GetDataValuePSZ( oSQLColumn AS SQLColumn, oSQLData AS SqlData, lEqual AS LOGIC, lUseIS AS LOGIC )
    LOCAL sValue                AS STRING
-   LOCAL cTemp						 AS STRING
+   LOCAL cTemp		       AS STRING
    LOCAL sVal                  AS STRING
+   LOCAL uData                 AS SqlData_Union
    LOCAL nODBCType             AS SHORTINT
-   LOCAL siVal                 AS SHORTINT
-   LOCAL liVal                 AS LONGINT
-   LOCAL fVal                  AS REAL4
-   LOCAL dVal                  AS REAL8
    LOCAL uiLen                 AS DWORD
    LOCAL pTemp                 AS PTR
-   LOCAL bTemp                 AS BYTE
    LOCAL fTemp                 AS FLOAT
    LOCAL nLow                  AS DWORD
    LOCAL nHigh                 AS LONGINT
-   LOCAL bVal					AS BYTE
 
    IF  oSQLData:Null
       IF lEqual
@@ -332,30 +304,27 @@ FUNCTION __GetDataValuePSZ( oSQLColumn AS SQLColumn, oSQLData AS SqlData, lEqual
       ENDIF
 
       pTemp := oSQLData:ptrValue
+      uData := pTemp
       SWITCH nODBCType
       CASE  SQL_SMALLINT
 
-         MemCopy( PTR( _CAST, @siVal ), pTemp, _SIZEOF( SHORTINT ) )
-         sValue += __Str( siVal )
+            sValue += LTrim(__Str( uData.siVal ))
 
       CASE SQL_INTEGER
 
-         MemCopy( PTR( _CAST, @liVal ), pTemp, _SIZEOF( LONGINT ) )
-         sValue += __Str( liVal )
+            sValue += LTrim(__Str( uData.liVal ))
 
       CASE SQL_REAL
 
-         MemCopy( PTR( _CAST, @fVal ), pTemp, _SIZEOF( REAL4 ) )
-         sValue += __Str( fVal )
+            sValue += LTrim(__Str( uData.fVal ))
 
       CASE SQL_FLOAT 
-	  CASE SQL_DOUBLE
+      CASE SQL_DOUBLE
 
-         MemCopy( PTR( _CAST, @dVal ), pTemp, _SIZEOF( REAL8 ) )
-         sValue += __Str( dVal )
+            sValue += LTrim(__Str( uData.dVal ))
 
       CASE SQL_DECIMAL 
-	  CASE SQL_NUMERIC
+      CASE SQL_NUMERIC
          uiLen := oSQLColumn:__FieldSpec:Length
 
          cTemp := Mem2String( pTemp, uiLen )
@@ -371,11 +340,10 @@ FUNCTION __GetDataValuePSZ( oSQLColumn AS SQLColumn, oSQLData AS SqlData, lEqual
 
       CASE SQL_BIT
 
-         bVal  := BYTE( pTemp )
-         IF bVal > 0x29
-            sValue += Chr( bVal )
+        IF uData.bVal > 0x29
+            sValue += Chr( uData.bVal )
          ELSE
-            sValue += Str( bVal,1,0 )
+            sValue += Str( uData.bVal,1,0 )
          ENDIF
 
       CASE SQL_DATE
@@ -390,14 +358,10 @@ FUNCTION __GetDataValuePSZ( oSQLColumn AS SQLColumn, oSQLData AS SqlData, lEqual
 
          sVal 	 := Mem2String(pTemp, PszLen(pTemp))
          sValue += "{ts '" + sVal + "'}"
-         // 			#IFDEF __DEBUG__
-         // 				__SQLOutputDebug( "__GetDataValuePSZ( ) for TIMESTAMP: " + sValue )
-         // 			#ENDIF
 
       CASE SQL_TINYINT
 
-         bTemp := BYTE( pTemp )
-         sValue += Str3( FLOAT(bTemp), 3, 0 )
+        sValue += Str3( uData.bVal, 3, 0 )
          #IFDEF __DEBUG__
             __SQLOutputDebug( "__GetDataValuePSZ( ) for TINYINT: " + sValue )
          #ENDIF
@@ -413,7 +377,7 @@ FUNCTION __GetDataValuePSZ( oSQLColumn AS SQLColumn, oSQLData AS SqlData, lEqual
          sValue += __Str( fTemp )
 
       CASE SQL_LONGVARCHAR 
-	  CASE SQL_LONGVARBINARY 
+      CASE SQL_LONGVARBINARY 
       CASE SQL_WLONGVARCHAR
          cTemp  := Space( 10 )
          sValue += "'" + cTemp +"'"
@@ -458,16 +422,57 @@ FUNCTION SQLType2CType( nODBCType AS SHORTINT ) AS SHORTINT STRICT
 
    RETURN nType
 
-FUNCTION __ODBCType2FSpec( nODBCType AS SHORTINT, nPrecision REF DWORD, nScale REF SHORTINT ) AS STRING  STRICT  // dcaton 070206 was nScale REF INT
-   IF ( nODBCType = SQL_LONGVARCHAR ) .OR. ( nODBCType = SQL_LONGVARBINARY )   .OR.  (nODBCTYPE = SQL_WLONGVARCHAR)
-      nPrecision := 10
-   ELSE
-      IF nScale == 0
-         IF nODBCType == SQL_FLOAT .OR. nODBCType == SQL_REAL .OR. nODBCType == SQL_DOUBLE
+FUNCTION __ODBCType2FSpec( nODBCType AS SHORTINT, nPrecision REF DWORD, nScale REF SHORT ) AS STRING  PASCAL  // dcaton 070206 was nScale REF INT
+    IF SqlIsLongType( nODBCType )
+        nPrecision := 10
+    ELSE
+        IF nScale == 0
+            IF nODBCType == SQL_FLOAT .OR. nODBCType == SQL_REAL .OR. nODBCType == SQL_DOUBLE
             nScale := SHORTINT( SetDecimal() ) // dcaton 070206 was INT( _CAST, SetDecimal( ) )
-         ENDIF
-      ENDIF
-   ENDIF
+            ENDIF
+        ENDIF
+    ENDIF
 
-   RETURN __GetStringFromODBCType( nODBCType )
+    RETURN __GetStringFromODBCType( nODBCType )
+
+
+UNION SqlData_Union
+    MEMBER bVal  AS BYTE
+    MEMBER siVal AS SHORTINT
+    MEMBER liVal AS LONGINT
+    MEMBER fVal  AS REAL4
+    MEMBER dVal  AS REAL8
+
+FUNCTION SqlIsBinaryType(nODBCType AS LONG) AS LOGIC
+    SWITCH nODBCType
+    CASE SQL_LONGVARBINARY
+    CASE SQL_VARBINARY
+    CASE SQL_BINARY
+        RETURN TRUE
+    END SWITCH
+    RETURN FALSE
+
+
+FUNCTION SqlIsCharType(nODBCType AS LONG) AS LOGIC
+   SWITCH nODBCType
+    CASE SQL_LONGVARCHAR
+    CASE SQL_WLONGVARCHAR 
+    CASE SQL_CHAR
+    CASE SQL_VARCHAR
+    CASE SQL_WCHAR
+    CASE SQL_WVARCHAR
+        RETURN TRUE
+    END SWITCH
+    RETURN FALSE
+
+FUNCTION SqlIsLongType(nODBCType AS LONG) AS LOGIC
+   SWITCH nODBCType
+   CASE SQL_LONGVARCHAR
+   CASE SQL_LONGVARBINARY
+   CASE SQL_VARBINARY
+   CASE SQL_WLONGVARCHAR   
+        RETURN TRUE
+    END SWITCH
+    RETURN FALSE
+
 

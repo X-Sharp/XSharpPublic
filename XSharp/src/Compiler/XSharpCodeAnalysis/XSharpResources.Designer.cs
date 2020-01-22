@@ -15443,7 +15443,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Type &apos;{0}&apos; does not have a member &apos;{1}&apos;. This gets resolved to a late bound call to the method &apos;{2}&apos;..
+        ///   Looks up a localized string similar to Type &apos;{0}&apos; does not have a member &apos;{1}&apos;. This gets resolved to a late bound call to its method &apos;{2}&apos;..
         /// </summary>
         internal static string WRN_UndeclaredVariableLatebound {
             get {

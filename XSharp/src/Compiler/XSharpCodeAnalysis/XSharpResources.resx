@@ -5701,7 +5701,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
     <value>CONSTRUCTOR and DESTRUCTOR are only allowed in the FoxPro dialect, when you compile with /fox1-.</value>
   </data>
   <data name="WRN_UndeclaredVariableLatebound" xml:space="preserve">
-    <value>Type '{0}' does not have a member '{1}'. This gets resolved to a late bound call to the method '{2}'.</value>
+    <value>Type '{0}' does not have a member '{1}'. This gets resolved to a late bound call to its method '{2}'.</value>
   </data>
 
   

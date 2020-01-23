@@ -304,6 +304,8 @@ METHOD Append(lReleaseLock AS LOGIC) AS LOGIC
 							column:NewRecord(SELF:_RecordBuffer)
 						ENDIF   
 					NEXT
+                    SELF:_writeRecord()
+                    SELF:_putEndOfFileMarker()
                     // Now, update state
 					SELF:_SetEOF(FALSE)
 					SELF:_Bof           := FALSE
@@ -1054,7 +1056,11 @@ METHOD Open(info AS XSharp.RDD.Support.DbOpenInfo) AS LOGIC
 	SELF:_Shared := SELF:_OpenInfo:Shared
 	SELF:_ReadOnly := SELF:_OpenInfo:ReadOnly
 	SELF:_hFile    := FOpen(SELF:_FileName, SELF:_OpenInfo:FileMode)
+
 	IF SELF:IsOpen
+//        IF !SELF:_OpenInfo:Shared
+//            FCOnvertToMemoryStream(SELF:_hFile)
+//        ENDIF
 		isOk := SELF:_ReadHeader()
 		IF isOk 
 			IF SELF:_HasMemo 

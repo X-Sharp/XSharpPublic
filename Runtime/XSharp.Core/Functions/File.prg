@@ -226,7 +226,7 @@ BEGIN NAMESPACE XSharp.IO
 			LOCAL oStream := NULL AS FileSTream
 			TRY
                 clearErrorState()
-				oStream := FileStream{cFile, oMode:FileMode, oMode:FileAccess, oMode:FileShare, 16*1024}
+                	oStream := XsFileStream.CreateFileStream(cFile, oMode:FileMode, oMode:FileAccess, oMode:FileShare, 16*1024,FileOptions.RandomAccess)
  
 			CATCH e AS Exception
 				System.Diagnostics.Trace.writeLine(e:Message)
@@ -373,11 +373,9 @@ BEGIN NAMESPACE XSharp.IO
                     clearErrorState()
 					SWITCH dwOrigin
 						CASE FS_END
-							iResult := oStream:Seek(lOffSet, SeekOrigin.End)
 						CASE FS_RELATIVE
-							iResult := oStream:Seek(lOffSet, SeekOrigin.Current)
 						CASE FS_SET
-							iResult := oStream:Seek(lOffSet, SeekOrigin.Begin)
+							iResult := oStream:Seek(lOffSet, (SeekOrigin) dwOrigin)
 						OTHERWISE
 							iResult := -1					
 					END SWITCH
@@ -531,47 +529,6 @@ BEGIN NAMESPACE XSharp.IO
 
 	END CLASS
 	
-	INTERNAL CLASS XsMemoryStream INHERIT MemoryStream
-        INTERNAL FileStream AS Stream
-        PRIVATE written AS LOGIC
-        CONSTRUCTOR (oFileStream AS Stream)
-            SUPER((INT) oFileStream:Length)
-            SELF:FileStream := oFileStream
-            VAR nPos := SELF:FileStream:Position
-            SELF:FileStream:Flush()
-            SELF:FileStream:Position := 0
-            SELF:FileStream:CopyTo(SELF)
-            SELF:FileStream:Position := nPos
-            SELF:Position := nPos
-            written := FALSE
-            RETURN
-         INTERNAL METHOD Save() AS VOID
-            VAR nPos := SELF:Position
-            IF SELF:written
-                SELF:Flush()
-                SELF:FileStream:SetLength(SELF:Length)
-                SELF:FileStream:Position := 0
-                SELF:Position := 0
-                SELF:CopyTo(SELF:FileStream)
-                SELF:FileStream:Position := nPos
-                SELF:Position := nPos
-            ENDIF
-            RETURN
-            
-         OVERRIDE METHOD Write(buffer AS BYTE[], offset AS INT, count AS INT) AS VOID
-             SUPER:Write(buffer, offset, count)
-             written := TRUE
-             
-                
-         OVERRIDE METHOD WriteByte(aByte AS BYTE) AS VOID
-             SUPER:WriteByte(aByte)
-             written := TRUE
-                
-         OVERRIDE METHOD SetLength(len AS INT64) AS VOID
-             SUPER:SetLength(len)
-             written := TRUE
-             
-    END CLASS
 END NAMESPACE	
 
 

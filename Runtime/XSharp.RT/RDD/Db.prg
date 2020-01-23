@@ -256,7 +256,7 @@ FUNCTION DbCreate (   cTargetFile,  aStruct, cDriver , lNew,  cAlias, cDelim, lO
     ENDIF
     
     LOCAL oDriver := cDriver AS OBJECT
-    IF oDriver == NULL_OBJECT
+    IF IsNil(cDriver)
         oDriver := RuntimeState.DefaultRDD
     ENDIF
     IF oDriver IS STRING

@@ -13,7 +13,7 @@
     <CS>false</CS>
     <LB>false</LB>
     <OVF>false</OVF>
-    <Unsafe>false</Unsafe>
+    <Unsafe>true</Unsafe>
     <INS>false</INS>
     <NS>false</NS>
     <VulcanCompatibleResources>True</VulcanCompatibleResources>
@@ -24,6 +24,8 @@
     <IncludePaths>$(CommonInclude)</IncludePaths>
     <Nostandarddefs>true</Nostandarddefs>
     <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
+    <StandardDefs />
+    <InitLocals>false</InitLocals>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -144,6 +146,7 @@
     <Compile Include="Types\ErrorEnums.prg" />
     <Compile Include="Types\Interfaces.prg" />
     <Compile Include="Types\MacroSupport.prg" />
+    <Compile Include="Types\Streams.prg" />
     <Compile Include="Types\WrappedException.prg" />
   </ItemGroup>
   <ItemGroup>

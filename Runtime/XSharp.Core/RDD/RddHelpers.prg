@@ -49,25 +49,25 @@ BEGIN NAMESPACE XSharp.RDD
             //RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "DBFSMT",  "XSharp.RDD.DBFSMT"})       // DBF + SMT
             //RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "DBFNSX",  "XSharp.RDD.DBFNSX"})       // DBF + SMT + NSX
             
-            RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "ADSADT",    "XSharp.ADS.ADSADT"})       // ADSADT
-            RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "AXDBFCDX",  "XSharp.ADS.AXDBFCDX"})       // ADS DBFCDX
-            RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "AXDBFNTX",  "XSharp.ADS.AXDBFNTX"})       // ADS DBFNTX
-            RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "AXDBFVFP",  "XSharp.ADS.AXDBFVFP"})       // ADS AXDBFVFP
+            RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "ADSADT",    "Advantage.ADSADT"})       // ADSADT
+            RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "AXDBFCDX",  "Advantage.AXDBFCDX"})       // ADS DBFCDX
+            RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "AXDBFNTX",  "Advantage.AXDBFNTX"})       // ADS DBFNTX
+            RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "AXDBFVFP",  "Advantage.AXDBFVFP"})       // ADS AXDBFVFP
             
-            RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "AXSQLCDX",  "XSharp.ADS.AXSQLCDX"})       // SQL CDX
-            RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "AXSQLNTX",  "XSharp.ADS.AXSQLNTX"})       // SQL NTX
-            RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "AXSQLVFP",  "XSharp.ADS.AXSQLVFP"})       // SQL VFP
-            RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "AXSQLADT",  "XSharp.ADS.AXSQLADT"})       // SQL ADT
+            RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "AXSQLCDX",  "Advantage.AXSQLCDX"})       // SQL CDX
+            RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "AXSQLNTX",  "Advantage.AXSQLNTX"})       // SQL NTX
+            RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "AXSQLVFP",  "Advantage.AXSQLVFP"})       // SQL VFP
+            RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "AXSQLADT",  "Advantage.AXSQLADT"})       // SQL ADT
 
-            RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "Advantage.ADSADT",    "XSharp.ADS.ADSADT"})         // ADSADT
-            RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "Advantage.AXDBFCDX",  "XSharp.ADS.AXDBFCDX"})       // ADS DBFCDX
-            RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "Advantage.AXDBFNTX",  "XSharp.ADS.AXDBFNTX"})       // ADS DBFNTX
-            RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "Advantage.AXDBFVFP",  "XSharp.ADS.AXDBFVFP"})       // ADS AXDBFVFP
+            RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "Advantage.ADSADT",    "Advantage.ADSADT"})         // ADSADT
+            RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "Advantage.AXDBFCDX",  "Advantage.AXDBFCDX"})       // ADS DBFCDX
+            RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "Advantage.AXDBFNTX",  "Advantage.AXDBFNTX"})       // ADS DBFNTX
+            RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "Advantage.AXDBFVFP",  "Advantage.AXDBFVFP"})       // ADS AXDBFVFP
 
-            RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "Advantage.AXSQLCDX",  "XSharp.ADS.AXSQLCDX"})       // ADS DBFCDX
-            RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "Advantage.AXSQLNTX",  "XSharp.ADS.AXSQLNTX"})       // ADS DBFNTX
-            RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "Advantage.AXSQLVFP",  "XSharp.ADS.AXSQLVFP"})       // ADS AXDBFVFP
-            RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "Advantage.AXSQLADT",  "XSharp.ADS.AXSQLADT"})       // ADS AXDBFVFP
+            RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "Advantage.AXSQLCDX",  "Advantage.AXSQLCDX"})       // ADS DBFCDX
+            RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "Advantage.AXSQLNTX",  "Advantage.AXSQLNTX"})       // ADS DBFNTX
+            RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "Advantage.AXSQLVFP",  "Advantage.AXSQLVFP"})       // ADS AXDBFVFP
+            RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "Advantage.AXSQLADT",  "Advantage.AXSQLADT"})       // ADS AXDBFVFP
             
             
             RETURN

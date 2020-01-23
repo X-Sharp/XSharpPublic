@@ -92,6 +92,7 @@
     <Compile Include="Advantage\AxDBFNTX.prg" />
     <Compile Include="Advantage\AxDBFVFP.prg" />
     <Compile Include="Advantage\AXSqlRDD.prg" />
+    <Compile Include="Advantage\Compatibility.prg" />
     <Compile Include="Advantage\Functions.prg" />
     <Compile Include="DbfCdx\CdxNode.prg" />
     <Compile Include="DbfCdx\CdxPageList.prg" />

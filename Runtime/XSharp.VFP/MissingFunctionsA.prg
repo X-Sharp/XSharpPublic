@@ -66,11 +66,6 @@ FUNCTION ANetResources (ArrayName, cNetworkName, nResourceType)
     THROW NotImplementedException{}
     RETURN 0
 
-/// <include file="VFPDocs.xml" path="Comments/anetresources/*" />
-[Obsolete( "This function has not yet been implemented" )];
-FUNCTION ANetResources (ArrayName, cNetworkName, nResourceType)
-    THROW NotImplementedException{}
-    RETURN 0
 
 /// <include file="VFPDocs.xml" path="Comments/aprinters/*" />
 [Obsolete( "This function has not yet been implemented" )];
@@ -93,6 +88,12 @@ FUNCTION ASqlHandles (ArrayName , nStatementHandle)
 /// <include file="VFPDocs.xml" path="Comments/astackinfo/*" />
 [Obsolete( "This function has not yet been implemented" )];
 FUNCTION AStackInfo (ArrayName )
+    THROW NotImplementedException{}
+    RETURN 0
+
+/// <include file="VFPDocs.xml" path="Comments/asubscript/*" />
+[Obsolete( "This function has not yet been implemented" )];
+FUNCTION ASubScript(ArrayName, nElementNumber, nSubscript )
     THROW NotImplementedException{}
     RETURN 0
 

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Runtimefunctions>
+<Comments>
   <addproperty>
     <summary></summary>
     <param name="oObject">
@@ -71,9 +71,12 @@
   <astackinfo>
     <summary>documentation is missing</summary>
   </astackinfo>
+  <asubscript>
+    <summary>documentation is missing</summary>
+  </asubscript>
   <xxdummy>
     <summary></summary>
   </xxdummy>
 
-</Runtimefunctions>
+</Comments>
 

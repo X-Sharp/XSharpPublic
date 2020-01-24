@@ -48,7 +48,7 @@ Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharp.VO.Latebound.Tests",
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VOSDK", "VOSDK", "{FABD1B90-611A-48D5-9D69-BC148E103030}"
 	ProjectSection(SolutionItems) = preProject
-		Runtime\VOSDK\Source\SharedSource\BuildNumber.h = Runtime\VOSDK\Source\SharedSource\BuildNumber.h
+		Runtime\VOSDK\Source\SharedSource\SDKBuildNumber.h = Runtime\VOSDK\Source\SharedSource\SDKBuildNumber.h
 	EndProjectSection
 EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "VOConsoleClasses", "Runtime\VOSDK\Source\VOSDK\Console_Classes_SDK\VOConsoleClasses.xsproj", "{D0A5DA23-00B5-41FD-8564-96246B1E222F}"
@@ -94,6 +94,8 @@ EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSSQLClasses", "Runtime\VOSDK\Source\VOSDK\SQL_Unicode_SDK\XSSQLClasses.xsproj", "{91816960-EB2D-4E4A-AE67-4EDC5BD38940}"
 EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "SqlTest", "SqlTest\SqlTest.xsproj", "{21B3548E-ADA0-4137-ABC2-4FC256598E14}"
+EndProject
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharp.Data", "Runtime\XSharp.Data\XSharp.Data.xsproj", "{DB9AD987-EBD9-4F0C-8604-608A9028585C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -249,6 +251,12 @@ Global
 		{21B3548E-ADA0-4137-ABC2-4FC256598E14}.Documentation|Any CPU.ActiveCfg = Debug|Any CPU
 		{21B3548E-ADA0-4137-ABC2-4FC256598E14}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{21B3548E-ADA0-4137-ABC2-4FC256598E14}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DB9AD987-EBD9-4F0C-8604-608A9028585C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DB9AD987-EBD9-4F0C-8604-608A9028585C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB9AD987-EBD9-4F0C-8604-608A9028585C}.Documentation|Any CPU.ActiveCfg = Documentation|Any CPU
+		{DB9AD987-EBD9-4F0C-8604-608A9028585C}.Documentation|Any CPU.Build.0 = Documentation|Any CPU
+		{DB9AD987-EBD9-4F0C-8604-608A9028585C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DB9AD987-EBD9-4F0C-8604-608A9028585C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -280,6 +288,7 @@ Global
 		{98B12B1A-D7B0-457A-B3BC-D7FA3C440264} = {AAA2A7F4-2856-4404-9B77-09D7AF56DE9D}
 		{91816960-EB2D-4E4A-AE67-4EDC5BD38940} = {FABD1B90-611A-48D5-9D69-BC148E103030}
 		{21B3548E-ADA0-4137-ABC2-4FC256598E14} = {AAA2A7F4-2856-4404-9B77-09D7AF56DE9D}
+		{DB9AD987-EBD9-4F0C-8604-608A9028585C} = {3DA9803B-3850-4448-ADA9-DE41C81522DE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EF30CE30-FC9E-4FC7-B9F0-DCA49411ACFC}

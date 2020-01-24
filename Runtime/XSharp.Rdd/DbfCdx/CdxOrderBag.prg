@@ -208,6 +208,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             SELF:FullPath := cFullName
             SELF:_hFile    := FCreate(cFullName)
+//            IF !SELF:_OpenInfo:Shared
+//                FConvertToMemoryStream(SELF:_hFile)
+//            ENDIF
+
             #ifdef USE_STREAM
             SELF:_stream    := FGetStream(SELF:_hFile)
             #endif
@@ -288,6 +292,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF SELF:_hFile == F_ERROR
                 RETURN FALSE
             ENDIF
+//            IF !SELF:_OpenInfo:Shared
+//                FConvertToMemoryStream(SELF:_hFile)
+//            ENDIF
             #ifdef USE_STREAM
             SELF:_stream   := FGetStream(SELF:_hFile)
             #endif

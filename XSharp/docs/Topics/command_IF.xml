@@ -21,7 +21,7 @@
     <para styleclass="Normal">Conditionally execute a block of statements.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>
-    <para styleclass="Normal">IF &lt;<text styleclass="Italic">lCondition</text>&gt;</para>
+    <para styleclass="Normal">IF &lt;<text styleclass="Italic">lCondition</text>&gt; [THEN]</para>
     <para styleclass="Normal"><tab />&lt;<text styleclass="Italic">Statements</text>&gt;...</para>
     <para styleclass="Normal">[ELSEIF &lt;<text styleclass="Italic">lCondition</text>&gt;]</para>
     <para styleclass="Normal"><tab />&lt;<text styleclass="Italic">Statements</text>&gt;...</para>
@@ -30,6 +30,8 @@
     <para styleclass="Normal">END[IF]</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Heading1">Arguments</text></para>
+    <para styleclass="List">[THEN]<tab />The THEN keyword is optional and has been added because Visual FoxPro allows this keyword.</para>
+    <para styleclass="List"></para>
     <para styleclass="List">&lt;lCondition&gt;<tab />If this expression evaluates to TRUE, the statements following it up until the next ELSEIF, ELSE, or ENDIF are executed. &#160;Afterwards, control branches to the statement following the next ENDIF statement.</para>
     <para styleclass="List"></para>
     <para styleclass="List">ELSE<tab />If all preceding IF and ELSEIF conditions evaluate to FALSE, the statements following the ELSE up until the next ENDIF are executed. &#160;Afterwards, control branches to the statement following the next ENDIF statement.</para>

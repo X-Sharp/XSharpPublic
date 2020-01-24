@@ -2,6 +2,7 @@ USING System
 USING System.Collections.Generic
 USING System.Linq
 USING System.Text
+USING XSharp.Data
 
 
 FUNCTION Start() AS VOID STRICT
@@ -13,7 +14,7 @@ FUNCTION Start() AS VOID STRICT
     //SetSqlFactory(SqlServerFactory{})
     oConn := SqlConnection{"CURSADM","cursbeheer","cursbeheer"}
     //oConn := SqlConnection{"Server=(local);Database=Cursadm;User Id=cursbeheer;Password=cursbeheer"}
-    //oConn:DriverConnect()
+    oConn:DriverConnect()
     ? oConn:ConnectString
     IF ! oConn:Connected
         ? oConn:Connect()
@@ -22,7 +23,7 @@ FUNCTION Start() AS VOID STRICT
     IF oConn:COnnected
         oSel := SqlSelect{"Select * from Bedrijven",oConn}
         oSel:Execute()
-        ? "Count"
+        ? "Count", oSel:NumSuccessfulRows
         VAR cName := oSel:FieldGet(2 )
         oSel:FIELDPUT(2, "ABC")
         oSel:Skip(0)

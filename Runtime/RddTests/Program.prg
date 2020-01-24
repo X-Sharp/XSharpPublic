@@ -1,4 +1,4 @@
-//
+ï»¿//
 // Start.prg
 //
 #include "dbcmds.vh"
@@ -12,9 +12,22 @@ USING System.Reflection
 FUNCTION Start() AS VOID
     TRY
         LOCAL hConn AS IntPtr
-        AdsConnect60("abc",1,"","",0, OUT hConn)
+        TestMsg05()
+        // TestWriteError()
+        //TestCdxCreate()
+        //DbCloseAll()
+        //testAdsAppendDb()
+        //TestCreateRepeat()
+        //TestUniquex()
+        //AndreaLikesThis()
+        //TestbBrowserImage()
+        //UniDbf()
+        //NorthWind()
+        //CorruptDbf()
+        //CorruptDbf2()        
+        //AdsConnect60("abc",1,"","",0, OUT hConn)
         //testChrisOrdinal()
-        testLndRel()
+        //testLndRel()
         //TestCollationChris()
         //TestIndexCreate()
         //TestWord() 
@@ -172,6 +185,350 @@ FUNCTION Start() AS VOID
         ENDIF
         ErrorDialog(e)
     END TRY
+    RETURN
+
+FUNCTION    TestMsg05() AS VOID
+    LOCAL aStruct AS ARRAY
+    DbUseArea(,,"c:\download\FieldPutDescartes\msg05.DBF")
+    aStruct := DbStruct()
+    DbCreate("test",aStruct)
+    DbUseArea(,,"TEST")
+    DbAppend()
+    __FIeldSetWa("TEST","OPDSEQNR",1)
+    DbCloseArea()
+    RETURN
+
+FUNCTION TestWriteError() AS VOID
+    XSharp.RuntimeState.Dialect := XSharpDialect.FoxPro
+    RddSetDefault("DBFNTX")
+    DbCreate("test",{{"NUM","N",3,0}})
+    DbUseArea(TRUE ,,"TEST")
+    DbAppend()
+    __FieldSetWa("TEST", "NUM", 1)
+    DbCloseArea()
+    DbUseArea(TRUE ,,"TEST")
+    LOCAL u AS USUAL
+    __FieldSetWa("TEST", "NUM", 1)
+    __FieldSetWa("TEST", "NUM", 1.0)
+    __FieldSetWa("TEST", "NUM", 1.0m)
+    //__FieldSetWa("TEST", "NUM", 9999)
+    //__FieldSetWa("TEST", "NUM", "aaa")
+    DbCloseArea()
+    RETURN
+FUNCTION TestAdsAppendDb() AS VOID
+    LOCAL oServer AS DbServer
+    RddSetDefault("AXDBFNTX")
+    oServer := DbServer{"c:\cavo28SP3\Samples\Gstutor\customer.dbf"}
+    RddSetDefault("ADSADT")
+    oServer:CopyDb("c:\temp\test")
+    oServer:Close()
+    RddSetDefault("ADSADT")
+    oServer := DbServer{"c:\temp\test",FALSE}
+    oServer:Zap()
+    RddSetDefault("AXDBFNTX")
+    oServer:AppendDB("c:\cavo28SP3\Samples\Gstutor\customer.dbf")
+    oServer:Close()
+    RETURN
+
+
+FUNCTION TestCreateRepeat() AS VOID
+LOCAL cDbf AS STRING
+LOCAL cPath AS STRING
+cPath := "c:\test\"
+cDbf := "FooBar"
+? DBCreate(cPath + cDbf, {{"FLD1" , "N" , 5, 1}} , "DBFCDX")
+? DBUseArea(,"DBFCDX" , cPath + cDbf)
+? DBCreateOrder(cDbf, "testing", "fld1+fld1")
+? DBCloseArea()
+? DBUseArea(,"DBFCDX" , cPath + cDbf)
+? DBCreateOrder(cDbf, "testing", "fld1+fld1")
+DbReindex()
+? DBCloseArea()
+RETURN
+FUNCTION TestUniquex() AS VOID
+	LOCAL cDbf AS STRING	
+	LOCAL aValues AS ARRAY
+	LOCAL i AS INT
+
+	RddSetDefault ( "DBFCDX" )
+	
+	cDbf := "C:\TEST\foo"
+	FErase ( cDbf + ".cdx" )
+	
+	aValues := { "g1" , "o5" , "g2", "g1" , "g8" , "g1"}
+	
+	? DbCreate( cDBF , { { "LAST" , "C" , 20 , 0 } })
+	? DbUseArea( ,,cDBF , , TRUE )  // open shared               
+	
+	FOR i := 1 UPTO ALen ( aValues )
+		DbAppend()
+		FieldPut ( 1 , aValues [ i ] )
+	NEXT
+	
+	DbCreateOrder ( "ORDER1" , cDbf , "upper(LAST)" , { || Upper ( _FIELD->LAST) } , TRUE) // Unique
+	? "DBOI_UNIQUE", DbOrderInfo(DBOI_UNIQUE) // TRUE, correct
+	
+	? "Records in UNIQUE order:" // shows all 6, should be 4 only
+	DbGoTop()
+	DO WHILE .NOT. Eof()
+		? RecNo(), FieldGet(1)
+		DbSkip()
+	END DO
+	DbCloseArea()
+
+	DbUseArea( ,,cDBF , , FALSE )    // open not shared
+	? "DBOI_UNIQUE", DbOrderInfo(DBOI_UNIQUE)  // TRUE, correct
+	? "Now pack or zap or reindex"
+
+//	DbPack()
+//	DBZap()
+	DbReindex()
+
+	? "DBOI_UNIQUE", DbOrderInfo(DBOI_UNIQUE)  // TRUE, correct
+	? "Records in UNIQUE order:" // now does not show any records, wrong
+	DbGoTop()
+	DO WHILE .NOT. Eof()
+		? RecNo(), FieldGet(1)
+		DbSkip()
+	END DO
+	DbCloseArea()
+
+	? "--------------------------"   
+	? "Close and reopen dbf + cdx"
+	? "--------------------------"
+
+	DbUseArea( ,,cDBF , , FALSE ) // FALSE, wrong
+	? "DBOI_UNIQUE", DbOrderInfo(DBOI_UNIQUE)
+	? "Records in UNIQUE order:" // again no records
+	DbGoTop()
+	DO WHILE .NOT. Eof()
+		? RecNo(), FieldGet(1)
+		DbSkip()
+	END DO
+	DbCloseArea()
+RETURN
+
+FUNCTION TestbBrowserImage() AS VOID
+    LOCAL oServer AS DbServer
+    LOCAL cDibData AS STRING
+    RddSetDefault("DBFCDX")
+    oServer := DBServer{"Image.dbf",,,"DBFCDX"}
+    cDibData := oServer:FieldGet(#IMAGE)
+	? Slen(cDibData)// 164432, OK
+	cDibData := oServer:BLOBGet(#IMAGE) // XSharp.Error: 'Conversion Error from USUAL (OBJECT)  to STRING'
+    oServer:BLOBExport(#Image, "D:\picture.bmp", BLOB_EXPORT_OVERWRITE)
+    oServer:BLOBImport(#Image, "D:\picture.bmp")
+	? Slen(cDibData) // should be 164432 again
+    oServer:Close()
+    RETURN
+FUNCTION AndreaLikesThis() AS VOID
+
+            LOCAL aStruct                           AS ARRAY
+
+            LOCAL oDBServer                                 AS DBServer
+
+            LOCAL oDBServerNew               AS DBServer
+
+ 
+
+            aStruct             := {}
+
+            AAdd( aStruct, { "Field1", "N", 10, 0 } )
+            AAdd( aStruct, { "L1", "L", 10, 0 } )
+            AAdd( aStruct, { "X1", "N", 10, 0 } )
+            AAdd( aStruct, { "X2", "N", 10, 0 } )
+            AAdd( aStruct, { "X3", "N", 10, 0 } )
+            AAdd( aStruct, { "X4", "N", 10, 0 } )
+            AAdd( aStruct, { "X5", "N", 10, 0 } )
+
+            AAdd( aStruct, { "Field2", "M", 10, 0 } )
+
+            DbCreate( "C:\temp\test.dbf", aStruct, "DBFCDX", TRUE, "TEST",, FALSE )        
+
+            TEST->DbCloseArea()
+
+ 
+
+            oDBServer                    := dbServer{ "C:\temp\test.dbf", TRUE, FALSE, "DBFCDX" }
+
+            oDBServer:Append()
+
+            oDBServer:FieldPut( #Field1, 1 )
+
+            oDBServer:FieldPut( #Field2, "1111111111111111111111111111111111111" )
+
+            oDBServer:Commit()
+
+            oDBServer:Append()
+
+            oDBServer:FieldPut( #Field1, 2 )
+
+            oDBServer:FieldPut( #Field2, "2222222222222222222222222222222222222" )
+
+            oDBServer:Commit()
+
+            oDBServer:Append()
+
+            oDBServer:FieldPut( #Field1, 3 )
+
+            oDBServer:FieldPut( #Field2, "3333333333333333333333333333333333333" )
+
+            oDBServer:Commit()
+
+ 
+
+            oDBServer:CopyDB( "c:\temp\testNew.dbf",,,, DBSCOPEALL, "DBFCDX" )          
+
+ 
+
+            ? "After CopyDB Value MemoField is empty"
+
+            oDBServerNew              := dbServer{ "C:\temp\TestNew.dbf", TRUE, FALSE, "DBFCDX" }
+
+            oDBServerNew:Gotop()
+
+            WHILE ! oDBServerNew:EoF
+
+                        ? Str( oDBServerNew:FieldGet( #Field1 ) ) + " -> " + oDBServerNew:FieldGet( #Field2 )          
+
+                        oDBServerNew:Skip()
+
+            ENDDO
+
+           
+
+            IF TRUE
+
+                        ? "After CopyDB and Append Value MemoField has wrong References"
+
+                        oDBServerNew:Append()
+
+                        oDBServerNew:FieldPut( #Field1, 4 )
+
+                        oDBServerNew:FieldPut( #Field2, "4444444444444444444444444444444444444" )
+
+                        oDBServerNew:Commit()
+
+                        oDBServerNew:Gotop()
+
+                        WHILE ! oDBServerNew:EoF
+
+                                    ? Str( oDBServerNew:RecNo ) + ": " + Str( oDBServerNew:FieldGet( #Field1 ) ) + " -> " + oDBServerNew:FieldGet( #Field2 )       
+
+                                    oDBServerNew:Skip()
+
+                        ENDDO
+
+            ENDIF
+
+           
+
+            IF TRUE
+
+                        ? "Modify old Value"
+
+                        oDBServerNew:Goto( 3 )
+
+                        oDBServerNew:FieldPut( #Field2, "333333333333333333333333333333333333333333333333333333333" )
+
+                        oDBServerNew:Commit()
+
+                        oDBServerNew:Gotop()
+
+                        WHILE ! oDBServerNew:EoF
+
+                                    ? Str( oDBServerNew:RecNo ) + ": " + Str( oDBServerNew:FieldGet( #Field1 ) ) + " -> " + oDBServerNew:FieldGet( #Field2 )       
+
+                                    oDBServerNew:Skip()
+
+                        ENDDO
+
+            ENDIF
+
+ 
+
+            ? "Orginal Table ist still working, update record 3 with '33333'"
+
+            oDBServer:Goto( 3 )
+
+            oDBServer:FieldPut( #Field2, "33333" )
+
+            oDBServer:Commit()
+
+            oDBServer:Gotop()
+
+            WHILE ! oDBServer:EoF
+
+                        ? Str( oDBServer:FieldGet( #Field1 ) ) + " -> " + oDBServer:FieldGet( #Field2 )           
+
+                        oDBServer:Skip()
+
+            ENDDO
+
+ 
+
+RETURN
+
+FUNCTION UniDbf() AS VOID
+Console.OutputEncoding := System.Text.Encoding.Unicode
+RddSetDefault("DBFVFP")
+DbCreate("UNIDBF",{{"ID","I:+",4,0},{"NAME","C:U",50,0},{"COUNTRY","C",25,0},{"MONEY","Y",8,0}})
+DbUseArea(TRUE , "DBFVFP", "UNIDBF","UNIDBF")
+DbAppend()
+FieldPut(2, "Robert")
+FieldPut(3, "The Netherlands")
+DbAppend()
+FieldPut(2, "Î§ÏÎ¯ÏƒÏ„Î¿Ï‚")
+FieldPut(3, "Greece")
+DbAppend()
+FieldPut(2, "Nikos")
+FieldPut(3, "Greece")
+DbAppend()
+FieldPut(2, "Fabrice")
+FieldPut(3, "France")
+DbCloseArea()
+DbUseArea(TRUE , "DBFVFP", "UNIDBF","UNIDBF")
+ShowArray(DbStruct())
+? DbFieldInfo(DBS_STRUCT,1):ToString()
+? DbFieldInfo(DBS_STRUCT,2):ToString()
+? DbFieldInfo(DBS_STRUCT,3):ToString()
+? DbFieldInfo(DBS_STRUCT,4):ToString()
+DO WHILE ! Eof()
+    ? FieldGet(1), FieldGet(2), FieldGet(3)
+    DbSkip(1)
+ENDDO
+DbCloseArea()
+RETURN
+
+
+FUNCTION Northwind() AS VOID
+RddSetDefault("DBFVFP")
+DbUseArea(TRUE , "DBFVFP", "c:\Program Files (x86)\Microsoft Visual FoxPro 9\Samples\Northwind\customers.dbf")
+LOCAL fld AS DWORD
+FOR fld := 1 TO FCOunt()
+    ? fld, FieldName(fld), DbFieldInfo(DBS_ALIAS, fld)
+NEXT
+RETURN
+
+
+FUNCTION CorruptDbf2() AS VOID
+RddSetDefault("DBFVFP")
+CREATE _tmpstructure
+APPEND BLANK
+? RecNo() // 4294967283 (-13)
+? RecCount() // -13
+? DbCloseArea()
+RETURN
+
+FUNCTION CorruptDbf() AS VOID
+    RddSetDefault("DBFCDX")
+    DbUseArea(TRUE,"DBFCDX", "c:\download\fauftrag\FAuftrag.DBF")
+    DbGoto(101)
+    LOCAL fld AS DWORD
+    FOR fld := 1 TO FCOunt()
+        ? FieldName(fld), FieldGet(fld)
+    NEXT
+    DbCloseArea()
     RETURN
 
 FUNCTION TestChrisOrdinal() AS VOID
@@ -1606,13 +1963,13 @@ FUNCTION TestDbfEncoding() AS VOID
 	LOCAL c AS STRING
 	LOCAL cDbf AS STRING
 	cDbf := "C:\test\strasse"
-	c := "STRAßE"
-	? c //"STRAßE", ok
-	DbCreate(cDBF,{{c,"C",10,0} ,{"AÖÄÜ","C",10,0}})
+	c := "STRAÃŸE"
+	? c //"STRAÃŸE", ok
+	DbCreate(cDBF,{{c,"C",10,0} ,{"AÃ–Ã„Ãœ","C",10,0}})
 	DbUseArea(,,cDBF)
 	? FieldName(1) // "STRA?E"
 	? FieldName(2) // A???
-    DbCreateIndex("STRASSE", "STRAßE")
+    DbCreateIndex("STRASSE", "STRAÃŸE")
 	DbCloseArea()
 RETURN
 
@@ -2166,7 +2523,7 @@ LOCAL lUseGermanDll AS LOGIC
 
 //            SetAppLocaleID(MAKELCID(MAKELANGID(LANG_GERMAN, SUBLANG_GERMAN), SORT_GERMAN_PHONE_BOOK))  // Telefonbuch
 
-// SetAppLocaleID(MAKELCID(MAKELANGID(LANG_GERMAN, SUBLANG_GERMAN), SORT_DEFAULT)) // Wörterbuch
+// SetAppLocaleID(MAKELCID(MAKELANGID(LANG_GERMAN, SUBLANG_GERMAN), SORT_DEFAULT)) // WÃ¶rterbuch
 
 ENDIF
 
@@ -2763,10 +3120,10 @@ FUNCTION Ticket119() AS VOID
 	
 	#IFNDEF __XSHARP__ 
 	
-		// the __XSHARP__ Define is used because VO doesn´t refresh the filter - as X# does -
+		// the __XSHARP__ Define is used because VO doesnÂ´t refresh the filter - as X# does -
 		// if SetDeleted() is changed on the fly . 
 		//
-		// NOTE: e.g. using a simple DBGoTop() instead doesn´t help. 
+		// NOTE: e.g. using a simple DBGoTop() instead doesnÂ´t help. 
 		//  
 	
 	DbSetFilter ( { || Upper ( _FIELD->LAST ) = cFilter  } , "Upper (LAST) = "+ cFilter )  
@@ -2866,7 +3223,7 @@ FUNCTION TestDosErrors() AS VOID
 		SetDecimalSep ( Asc ( "," ))   
 	ELSE 
     	//SetAppLocaleID(MAKELCID(MAKELANGID(LANG_GERMAN, SUBLANG_GERMAN), SORT_GERMAN_PHONE_BOOK))  // Telefonbuch    	
-		SetAppLocaleID(MAKELCID(MAKELANGID(LANG_GERMAN, SUBLANG_GERMAN), SORT_DEFAULT)) // Wörterbuch
+		SetAppLocaleID(MAKELCID(MAKELANGID(LANG_GERMAN, SUBLANG_GERMAN), SORT_DEFAULT)) // WÃ¶rterbuch
 	ENDIF  
 	
 	cDBF := cPfad + "Foo"
@@ -2876,16 +3233,16 @@ FUNCTION TestDosErrors() AS VOID
 	
 	aFields := { { "LAST" , "C" , 20 , 0 } } 
 	
-	aValues := { "Art" ,"Aero" , "Anfang",  "Goethe" , "Äffin" , "Ärger" , "Ärmlich", "Goldmann" ,;
-				"Götz" , "Ober" , "Otter" , "Österreich" , "Östrogon" , "Ötzi" ,"Unter" , ;
-				"Übel" , "Überheblich" , "Üblich" , "Göthe" }  
+	aValues := { "Art" ,"Aero" , "Anfang",  "Goethe" , "Ã„ffin" , "Ã„rger" , "Ã„rmlich", "Goldmann" ,;
+				"GÃ¶tz" , "Ober" , "Otter" , "Ã–sterreich" , "Ã–strogon" , "Ã–tzi" ,"Unter" , ;
+				"Ãœbel" , "Ãœberheblich" , "Ãœblich" , "GÃ¶the" }  
 	
 	// -------------
 	
 	lAddUmlauteName := FALSE 
 	
 	IF lAddUmlauteName				
-		AAdd( aValues , "Göbel")
+		AAdd( aValues , "GÃ¶bel")
 	ELSE 
 		AAdd( aValues , "Gobel")
 	ENDIF 		
@@ -2969,8 +3326,8 @@ FUNCTION Ticket115( ) AS VOID
 	FErase ( cDBF + IndexExt() )	
 	
 	aFields := { { "LAST" , "C" , 20 , 0 } } 
-	aValues := { "Art" ,"Aero" , "Anfang",  "Goethe" , "Äffin" , ;
-				"Ärger" , "Ärmlich", "Goldmann" ,"Üblich" , "Göthe" }  
+	aValues := { "Art" ,"Aero" , "Anfang",  "Goethe" , "Ã„ffin" , ;
+				"Ã„rger" , "Ã„rmlich", "Goldmann" ,"Ãœblich" , "GÃ¶the" }  
 	
 	DbCreate( cDBF , AFields)
 	DbUseArea( ,,cDBF , , FALSE )		
@@ -4097,8 +4454,8 @@ NEXT
 ? IndexCount() // 2 ok
 ?
 
-// NOTE: ORDDESTROY() problem. if the order doesn´t exist the func returns TRUE and
-// seems to do nothing. VO throws an error if a order doesn´exist.
+// NOTE: ORDDESTROY() problem. if the order doesnÂ´t exist the func returns TRUE and
+// seems to do nothing. VO throws an error if a order doesnÂ´exist.
 ? OrdDestroy("ORDER4") // NOTE: "ORDER4" does not exist
 ? IndexCount()
 ? IndexOrd()
@@ -4733,13 +5090,13 @@ DBSetSelect ( dwStartWA )
 // VO throws an DataType Error if a param != symbol is used
 //
 // e.g. VO throws an Data Type Error type: longint requested type: symbol
-? DBSymSelect( 1 ) // X# doesn´t throw a exceptions but returns 0
+? DBSymSelect( 1 ) // X# doesnÂ´t throw a exceptions but returns 0
 
 // e.g. VO throws an Data Type Error. type: string requested type: symbol
-? DBSymSelect( "Foo1" ) // X# doesn´t throw a exceptions but returns 1
+? DBSymSelect( "Foo1" ) // X# doesnÂ´t throw a exceptions but returns 1
 
 // e.g. VO throws an Data Type Error . type: codeblock requested type: symbol
-? DBSymSelect( {|| } ) // X# doesn´t throw a exceptions but returns 0
+? DBSymSelect( {|| } ) // X# doesnÂ´t throw a exceptions but returns 0
 
 DBCloseAll()
 RETURN
@@ -4759,7 +5116,7 @@ cDBF := cPath + "foo"
 ? DBUseArea(,"DBFNTX",cDBF,,FALSE) // true
 DbAppend()
 // NOTE: the size of the "LAST" field is 255 and not as expected 511
-// DBUSEAREA() doesn ´t crash
+// DBUSEAREA() doesn Â´t crash
 DBCloseAll()
 // ------------------------------------------
 cDBF := cPath + "foo2"
@@ -4918,12 +5275,12 @@ RDDSetDefault("DBFNTX")
 
 SetCollation(#WINDOWS)
 //SetAppLocaleId(MAKELCID(MAKELANGID(LANG_GERMAN, SUBLANG_GERMAN),SORT_GERMAN_PHONE_BOOK)) // Telefonbuch
-SetAppLocaleID(MAKELCID(MAKELANGID(LANG_GERMAN, SUBLANG_GERMAN),SORT_DEFAULT)) // Wörterbuch
+SetAppLocaleID(MAKELCID(MAKELANGID(LANG_GERMAN, SUBLANG_GERMAN),SORT_DEFAULT)) // WÃ¶rterbuch
 
 DBCreate(cDbf , {{"LAST","C",10,0}})
 DBUseArea(,,cDBF)
 DBAppend()
-FieldPut(1 , "Ärger")
+FieldPut(1 , "Ã„rger")
 DBAppend()
 FieldPut(1 , "Aaaaa")
 DBCloseArea()
@@ -4931,9 +5288,9 @@ DBCloseArea()
 
 DBUseArea(,,cDBF)
 DBCreateIndex(cDbf , "LAST")
-? DBSeek("Ä") // FALSE in X#, TRUE in VO
+? DBSeek("Ã„") // FALSE in X#, TRUE in VO
 ? Recno(), Found(), FieldGet(1)
-? DBSeek("Ärger") // TRUE in both
+? DBSeek("Ã„rger") // TRUE in both
 ? Recno(), Found(), FieldGet(1)
 DBGoTop()
 DO WHILE .NOT. eof()
@@ -5092,11 +5449,11 @@ f := Seconds()
 cDBF := "c:\test\Test10k"
 RddSetDefault("DBFCDX")
 aTags := {"AGE","CITY","FIRST","HIREDATE", "LAST","SALARY","STATE"}
+cIndex := cDBF
+Ferase(cIndex+".CDX")
 FOR i := 1 TO ALen(aTags)
 	VODBUSEAREA(TRUE,"DBFCDX",cDBF,"Test",FALSE,FALSE)
 	aClone := AClone(aTags)
-	cIndex := cDBF+NTrim(i)
-    Ferase(cIndex+".CDX")
 	ASize(aClone, i)
 	AEval(aClone , {|cTag|  OrdCreate(cIndex, cTag, cTag) })
 	DBCLOSEAREA()
@@ -5243,7 +5600,11 @@ RETURN
 
 FUNCTION TestCdxSeek() AS VOID
     //LOCAL aTags AS ARRAY
-    ? VoDbUseArea(TRUE, TYPEOF(DBFCDX), "c:\XSharp\DevRt\Runtime\XSharp.Rdd.Tests\dbfs\TEST10K.DBF", "TEST",TRUE,TRUE)
+    LOCAL f AS FLOAT
+    f := Seconds()
+    ? VoDbUseArea(TRUE, "DBFCDX", "c:\XSharp\DevRt\Runtime\XSharp.Rdd.Tests\dbfs\TEST10K.DBF", "TEST",FALSE,FALSE)
+    ? DbReindex()
+    ? Seconds() - f
     //aTags := {"AGE", "CITY", "STATE", "FIRST","LAST","HIREDATE","SALARY"} 
     //FOR VAR i := 1 TO  alen(aTags)
     VAR nCount := 0

@@ -423,10 +423,17 @@ CLASS XSharp.CoreDb
         /// <note type="tip">VoDbCommit() and CoreDb.Commit() are aliases</note></remarks>
     STATIC METHOD Commit() AS LOGIC
         RETURN CoreDb.Do ({ =>
-        LOCAL oRDD := CoreDb.CWA(__FUNCTION__) AS IRDD
+        LOCAL oRDD := CoreDb.CWA(__FUNCTION__) AS IRDD 
         LOCAL lOk := oRDD:Skip(0) AS LOGIC
         IF lOk
             lOk := oRDD:Flush()
+        ENDIF
+        IF (HasEvents)
+            IF lOk
+                RaiseEvent(oRDD, DbNotificationType.FileCommit, oRDD:Info(DbInfo.DBI_FULLPATH, NULL))
+            ELSE
+                RaiseEvent(oRDD, DbNotificationType.OperationFailed, __FUNCTION__)
+            ENDIF
         ENDIF
         RETURN lOk
         })

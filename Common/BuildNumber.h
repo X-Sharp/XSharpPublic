@@ -3,7 +3,7 @@
     #define BUILDNUMBER_H
     #define PRODUCT_NAME     "XSharp Bandol"
     #define PRODUCT			 "XSharp"
-    #define COPYRIGHT_STR    "Copyright (c) XSharp BV 2015-2019."
+    #define COPYRIGHT_STR    "Copyright (c) XSharp BV 2015-2020."
     #define COMPANY_NAME     "XSharp BV"
     #define REG_COMPANY_NAME  "XSharpBV"
 
@@ -17,9 +17,9 @@
     // This is the file version number, which is ignored by .NET but used by Windows installer to determine
     // whether one file is newer than another.
     // This typically would change if we're generating a patch, otherwise it should be the same as VERSION_NUMBER
-    #define FILEVERSION_NUMBER       2,2,1,0
-    #define FILEVERSION_NUMBER_STR   "2.2.1.0"
-    #define INFORMATIONAL_NUMBER_STR  "2.2a GA"
+    #define FILEVERSION_NUMBER       2,2,2,0
+    #define FILEVERSION_NUMBER_STR   "2.2.2.0"
+    #define INFORMATIONAL_NUMBER_STR  "2.2b GA"
 
     #ifdef __DEBUG__
         #define ASSEMBLY_CONFIGURATION "Debug"

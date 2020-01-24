@@ -497,14 +497,14 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 bool allow_esc = parseType() == CHAR_CONST ?
                     La_1 == '\\' && La_3 == q : parseType() != STRING_CONST;
                 bool esc = false;
-                while (La_1 != TokenConstants.Eof && (La_1 != q || esc))
+                while (La_1 != TokenConstants.Eof && La_1 != '\r' && La_1 != '\n' && (La_1 != q || esc))
                 {
                     esc = allow_esc && !esc && La_1 == '\\';
                     parseOne();
                 }
                 if (La_1 == q)
                     parseOne();
-                else if (La_1 == TokenConstants.Eof)
+                else if (La_1 == TokenConstants.Eof || La_1 == '\r' || La_1 == '\n')
                     parseType(INCOMPLETE_STRING_CONST);
             }
         }

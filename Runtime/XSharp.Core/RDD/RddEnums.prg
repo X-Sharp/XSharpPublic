@@ -848,6 +848,8 @@ BEGIN NAMESPACE XSharp.RDD.Enums
         MEMBER RecordLocked
         /// <summary>This message is sent after a record has been unlocked. The Data parameter is the record number of the record.</summary>
         MEMBER RecordUnLocked
+        /// <summary>This message is sent after a workarea was commited. The Data parameter is the file name of area.</summary>
+        MEMBER FileCommit 
         /// <summary>This message is sent after an operation failed. The Data parameter is the description of the operation.</summary>
         MEMBER OperationFailed    := 99
     END ENUM

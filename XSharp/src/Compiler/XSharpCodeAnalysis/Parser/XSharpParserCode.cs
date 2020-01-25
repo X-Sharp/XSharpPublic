@@ -407,7 +407,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             bool IsInInterface { get; }
             bool IsInStructure { get; }
             int RealType { get; }
-
         }
         public partial class MethodContext : IMethodContext
         {

@@ -7,6 +7,9 @@ using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
+#if XSHARP
+using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
+#endif
 using Microsoft.CodeAnalysis.CSharp.Emit;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.PooledObjects;
@@ -475,6 +478,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         {
             var nameToken = syntax.Identifier;
             var location = nameToken.GetLocation();
+#if XSHARP
+            // When the property was generated from an access and an assign then we use the location of the method as location of the property
+            if (syntax.XNode is XSharpParser.MethodContext mc)
+            {
+                location = mc.Sig.Id.GetLocation();
+            }
+#endif
             return new SourcePropertySymbol(containingType, bodyBinder, syntax, nameToken.ValueText, location, diagnostics);
         }
 
@@ -1077,7 +1087,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
         }
 
-        #region Attributes
+#region Attributes
 
         IAttributeTargetSymbol IAttributeTargetSymbol.AttributesOwner
         {
@@ -1345,9 +1355,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
         }
 
-        #endregion
+#endregion
 
-        #region Completion
+#region Completion
 
         internal sealed override bool RequiresCompletion
         {
@@ -1448,7 +1458,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
         }
 
-        #endregion
+#endregion
 
         private TypeSymbol ComputeType(Binder binder, BasePropertyDeclarationSyntax syntax, DiagnosticBag diagnostics)
         {

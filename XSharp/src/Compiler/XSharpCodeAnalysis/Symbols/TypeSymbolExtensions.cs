@@ -12,6 +12,7 @@ using Roslyn.Utilities;
 using Microsoft.CodeAnalysis.Symbols;
 using Microsoft.CodeAnalysis;
 using System.Collections.Concurrent;
+using static LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
 
 namespace Microsoft.CodeAnalysis.CSharp.Symbols
 {
@@ -300,6 +301,26 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 }
             }
             return type;
+        }
+        public static Location GetLocation(this SourcePropertySymbol prop)
+        {
+            var xNode = prop.GetNonNullSyntaxNode().XNode;
+            if (xNode is PropertyContext)
+            {
+                return prop.Locations[0];
+            }
+            else
+            {
+                if (prop.GetMethod != null)
+                {
+                    return prop.GetMethod.Locations[0];
+                }
+                else
+                {
+                    return prop.SetMethod.Locations[0];
+                }
+
+            }
         }
         public static string GetDisplayName(this TypeSymbol type)
         {

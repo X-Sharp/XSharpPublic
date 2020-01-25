@@ -1,32 +1,42 @@
 // 431. Some issues with #command
-//PP #command MyCommand1 <identifier> DOLOCAL => LOCAL <identifier> AS INT
+//PP #command MyCommand1 <identifier> DOLOCAL  	 => LOCAL <identifier> AS INT
 //PP #command MyCommand2 <identifier> DOLOCAL <t> => LOCAL <identifier> AS <t>
-//PP #command propcommand <n> as <t> GETSET <v> => PRIVATE <v> as <t>; property <n> as <t>; get; return self:<v>; end get; set; if self:<v> <> value; self:<v> := value; endif; end set; end property
-//PP #command PROPERTY <n> as <t> GETSET <v> => PRIVATE <v> as <t>;PROPERTY <n> AS <t>;GET;RETURN SELF:<v>;END GET;SET;IF SELF:<v> <> VALUE;SELF:<v> := VALUE;ENDIF;END SET;END PROPERTY
+//PP #command propcommand <n> as <t> GETSET <v> 	 => PRIVATE <v> as <t>; property <n> as <t>; get; return self:<v>; end get; set; if self:<v> <> value; self:<v> := value; endif; end set; end property
+//PP #command PROPERTY <n> as <t> GETSET <v> 	 => PRIVATE <v> as <t>;;
+//PP 	PROPERTY <n> AS <t>;;
+//PP 	GET;;
+//PP     	RETURN SELF:<v>;;
+//PP     END GET;;
+//PP     SET;;
+//PP 	    IF SELF:<v> <> VALUE;;
+//PP     	 	SELF:<v> := VALUE;;
+//PP     	ENDIF;;
+//PP     END SET;;
+//PP     END PROPERTY
 
 FUNCTION Start( ) AS VOID
 LOCAL n AS INT
-n := 10
-? n
+	n := 10
+	? n
 	
 LOCAL n2 AS STRING
-n2 := "asd"
-? n2
+	n2 := "asd"
+	? n2
 	
-TestClass{}
+	TestClass{}
 RETURN
 
 CLASS TestClass
-PRIVATE _n1 as INT ; property testprop1 as INT ; get; return self:_n1 ; end get; set; if self:_n1 <> value; self:_n1 := value; endif; end set; end property
-PRIVATE _n2 as INT ;PROPERTY testprop2 AS INT ;GET;RETURN SELF:_n2 ;END GET;SET;IF SELF:_n2 <> VALUE;SELF:_n2 := VALUE;ENDIF;END SET;END PROPERTY
-	
-CONSTRUCTOR()
-SELF:_n1 := 1
-SELF:_n2 := 2
-	
-? SELF:testprop1
-? SELF:testprop2
-RETURN
+PRIVATE _n1 as INT ;property testprop1 as INT ;get;return self:_n1 ;end get;set;if self:_n1 <> value;self:_n1 := value;endif;end set; end property
+PRIVATE _n2 as INT ;PROPERTY testprop2 AS INT ;GET;RETURN SELF:_n2 ;END GET;SET;IF SELF:_n2 <> VALUE;SELF:_n2 := VALUE;ENDIF;END SET; END PROPERTY
+		
+	CONSTRUCTOR()
+		SELF:_n1 := 1
+		SELF:_n2 := 2
+		
+		? SELF:testprop1
+		? SELF:testprop2
+	RETURN
 	
 END CLASS
 

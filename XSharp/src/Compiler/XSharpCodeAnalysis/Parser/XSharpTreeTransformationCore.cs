@@ -1838,6 +1838,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             #region ACCESS = Get Accessor
             if (AccMet != null)
             {
+                
                 // Create the GET accessor.
                 bool isInInterfaceOrAbstract = AccMet.IsInInterface ||
                     outerMods.Any((int)SyntaxKind.AbstractKeyword) ||

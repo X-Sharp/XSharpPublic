@@ -3,23 +3,36 @@
 
 #using System.IO
 
-//PP #command @ <row>, <col> zSAY <xpr>=> Test("one argument")
+//PP #command @ <row>, <col> zSAY <xpr>;
+//PP => Test("one argument")
 
-//PP #command @ <row>, <col> zGET <getvar> [PICTURE <pic>] [VALID <valid>] [WHEN <when>] [OTHER <other>] => Test( <getvar>, <"getvar">, <pic>, <{valid}>, <{when}> )
+//PP #command @ <row>, <col> zGET <getvar>                                      ;
+//PP                         [PICTURE <pic>]                                 ;
+//PP                         [VALID <valid>]                                 ;
+//PP                         [WHEN <when>]                                   ;
+//PP                         [OTHER <other>]                                 ;
+//PP                                                                         ;
+//PP => Test( <getvar>, <"getvar">, <pic>, <{valid}>, <{when}> )
 
 // GET & SAY
-//PP #command @ <row>, <col> zSAY <sayxpr> [<sayClauses,...>] zGET <getvar> [<getClauses,...>] => @ <row>, <col> zSAY <sayxpr> [<sayClauses>] ; @ <row>, <col>+1 zGET <getvar> [<getClauses>]
+//PP #command @ <row>, <col> zSAY <sayxpr>                                    ;
+//PP                         [<sayClauses,...>]                              ;
+//PP                         zGET <getvar>                                       ;
+//PP                         [<getClauses,...>]                              ;
+//PP                                                                         ;
+//PP       => @ <row>, <col> zSAY <sayxpr> [<sayClauses>]                     ;
+//PP        ; @ <row>, <col>+1 zGET <getvar> [<getClauses>]
 
 FUNCTION Start() AS VOID
 LOCAL cChFile AS STRING
 cChFile := DirectoryInfo{Environment.CurrentDirectory}:Parent:Parent:FullName + "\Applications\C479\Prg\C479.ppo"
 IF .not. File.ReadAllText(cChFile):Contains(AsString( Test("one argument")) )
 	// string not found in the .ppo file
-THROW Exception{"Ppo file C479.ppo was not fully generated"}
+	THROW Exception{"Ppo file C479.ppo was not fully generated"}
 END IF
 
-Test("one argument") ; Test( 1 , "1" , , , {||TRUE} )
-Test("one argument") ; Test( 1 , "1" , , , {||FALSE} )
+Test("one argument");Test( 1 , "1" ,  ,  , {||TRUE} )
+Test("one argument");Test( 1 , "1" ,  ,  , {||FALSE} )
 // output in .ppo finishes here
 LOCAL nNotSeenInPpo AS INT
 nNotSeenInPpo := 0
@@ -27,12 +40,12 @@ nNotSeenInPpo := 0
 RETURN
 
 FUNCTION Test(a,b,c,d,e,f) CLIPPER
-? a,b,c
-? "Param b:" + AsString(b) + ":"
-IF .not. b == "1" .and. .not. (b == NIL .and. a == "one argument")
-THROW Exception{"Param b contains a space"}
-END IF
-? "This text does not appear in the ppo output"
+	? a,b,c
+	? "Param b:" + AsString(b) + ":"
+	IF .not. b == "1" .and. .not. (b == NIL .and. a == "one argument")
+		THROW Exception{"Param b contains a space"}
+	END IF
+	? "This text does not appear in the ppo output"
 RETURN "nNotSeenInPpo"
 
 

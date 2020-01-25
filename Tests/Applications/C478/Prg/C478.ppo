@@ -2,27 +2,27 @@
 // NOTE: deleting lines 203-208 (optional clauses) of C478.ch allows the sample to compile
 
 //PP #translate ARRAY(<x>) => ArrayCreate(<x>)
-//PP #xtranslate zGetSysId() => zGetSet(1 )
-//PP #xtranslate zSetSysId(<x>) => zGetSet(1 ,<x>)
+//PP #xtranslate zGetSysId()               => zGetSet(1 )
+//PP #xtranslate zSetSysId(<x>)            => zGetSet(1 ,<x>)
 
 //PP #include "C478.ch"
 
 
 FUNCTION Start() AS VOID
-LOCAL GetList := {}
+LOCAL GetList    := {}
 LOCAL nTextRow , nTextCol AS INT
 LOCAL aFiller := ArrayCreate(20) AS ARRAY
 LOCAL o := TRUE AS OBJECT
 
 // Those are OK:
-DevPos( 1 , 5 ) ; DevOut( "a" ) ; SetPos( Row() , Col()+1 ) ; AAdd( GetList, _GET_( o , "o" , "@!" , {||FALSE} , { || TRUE } ):display() ) ;atail(Getlist):reader := {|x| zGEReader(x) } ;atail(Getlist):cargo := ArrayCreate(4 ) ;atail(getlist):cargo[ 2] := "m" 
-SetPos(1 , 5 ) ; Aadd(GetList, zGECheckNew({|x| iif(x == nil, o , o := x) }, "o" , "check " ,.T. , ,.t. , .f. , , , {||TRUE} , ) );atail(getlist):cargo[ 2] := "message" 
-DevPos( 2 , 5 ) ; DevOut( "b" ) ; SetPos(Row() , Col()+1 ) ; Aadd(GetList, zGEDBComboNew( "o" , o , {|x| iif(x == nil, o , o := x) } , , , .F. , "FilGrp" , "FilGrpGC" , , , , , , "GrpCode" , {{"GrpCode" ,"Group" } , {"Descript","Description"}} ,"GrpCode" , "FilGrpGC" , .t. , , "@!" , 39 , 9 , , , .f. ) ) ;atail(getlist):cargo[ 2] := "Select the filler group code"
+DevPos( 1 , 5 ) ; DevOut( "a"  );SetPos( Row() , Col()+1 ) ;AAdd( GetList, _GET_( o , "o" , "@!" , {||FALSE} , {||TRUE} ):display() ) ;atail(Getlist):reader := {|x| zGEReader(x) } ;atail(Getlist):cargo := ArrayCreate(4 ) ;atail(getlist):cargo[ 2] := "m"
+SetPos(1 , 5 ) ; Aadd(GetList, zGECheckNew({|x| iif(x == nil, o , o := x) }, "o" , "check " ,.T. , ,.t. , .f. , ,  , {||TRUE} ,  ) );atail(getlist):cargo[ 2] := "message"
+DevPos( 2 , 5 ) ; DevOut( "b"  );SetPos(Row() , Col()+1 ) ; Aadd(GetList, zGEDBComboNew( "o" , o , {|x| iif(x == nil, o , o := x) } ,  ,  , .F. , "FilGrp" , "FilGrpGC" ,  ,  ,  ,  ,  , "GrpCode" , {{"GrpCode","Group"},{"Descript","Description"}} ,"GrpCode" , "FilGrpGC" , .t. ,  , "@!" , 39 , 9 ,  , , .f. ) );atail(getlist):cargo[ 2] := "Select the filler group code"
 
-DevPos( 2 , 5 ) ; DevOut( "c" ) ; SetPos(Row() , Col()+1 ) ; Aadd(GetList, zGEDBComboNew( "o" , o , {|x| iif(x == nil, o , o := x) } , , , .F. , "SSUsers" , "SSUserSU" , zGetSet(1 ) , zGetSet(1 ) , , {|| SSUsers->SysId == zGetSet(1 )} , zGetSet(1 ) , "UserId" , {{"UserId","User ID"},{"Name","User"}} ,"UserId" , "SSUserSU" , .t. , , "!!!!!!!!!!" , 36 , 10 , , , .f. ) ) ;atail(getlist):cargo[ 2] := "Enter the user id"
+DevPos( 2 , 5 ) ; DevOut( "c"  );SetPos(Row() , Col()+1 ) ; Aadd(GetList, zGEDBComboNew( "o" , o , {|x| iif(x == nil, o , o := x) } ,  ,  , .F. , "SSUsers" , "SSUserSU" , zGetSet(1) , zGetSet(1) ,  , {||SSUsers->SysId==zGetSet(1)} , zGetSet(1) , "UserId" , {{"UserId","User ID"},{"Name","User"}} ,"UserId" , "SSUserSU" , .t. ,  , "!!!!!!!!!!" , 36 , 10 ,  , , .f. ) );atail(getlist):cargo[ 2] := "Enter the user id"
 
 // Error here:
-DevPos( 2 , 5 ) ; DevOut( "c" ) ; SetPos(Row() , Col()+1 ) ; Aadd(GetList, zGEDBComboNew( "o" , o , {|x| iif(x == nil, o , o := x) } , , , .F. , "SSUsers" , "SSUserSU" , zGetSet(1 ) , zGetSet(1 ) , , {|| SSUsers->SysId == zGetSet(1 )} , zGetSet(1 ) , "UserId" , {{"UserId","User ID"},{"Name","User"}} ,"UserId" , "SSUserSU" , .t. , , "!!!!!!!!!!" , 36 , 10 , , , .f. ) ) ;atail(getlist):cargo[ 2] := "Enter the user id";atail(getlist):cargo[ 2] := "message"
+DevPos( 2 , 5 ) ; DevOut( "c"  );SetPos(Row() , Col()+1 ) ; Aadd(GetList, zGEDBComboNew( "o" , o , {|x| iif(x == nil, o , o := x) } ,  ,  , .F. , "SSUsers" , "SSUserSU" , zGetSet(1) , zGetSet(1) ,  , {||SSUsers->SysId==zGetSet(1)} , zGetSet(1) , "UserId" , {{"UserId","User ID"},{"Name","User"}} ,"UserId" , "SSUserSU" , .t. ,  , "!!!!!!!!!!" , 36 , 10 ,  , , .f. ) );atail(getlist):cargo[ 2] := "Enter the user id";atail(getlist):cargo[ 2] := "message"
 
 ? ALen(GetList)
 
@@ -30,71 +30,81 @@ OriginalCode()
 
 RETURN
 
-//PP #xtranslate :Mode => \[1 \]
-//PP #xtranslate :Filler => \[2 \]
-//PP #xtranslate :Descript => \[3 \]
-//PP #xtranslate :Active => \[4 \]
-//PP #xtranslate :OrgActive => \[5 \]
-//PP #xtranslate :Manager => \[6 \]
-//PP #xtranslate :FlOperator => \[7 \]
-//PP #xtranslate :WhsHeight => \[8 \]
-//PP #xtranslate :AutoLabels => \[9 \]
-//PP #xtranslate :GrpCode => \[10\]
-//PP #xtranslate :LeakerGrp => \[11\]
-//PP #xtranslate :LabelGrp => \[12\]
-//PP #xtranslate :LocMixGrp => \[13\]
-//PP #xtranslate :LatePkGrp => \[14\]
-//PP #xtranslate :PalletGrp => \[15\]
-//PP #xtranslate :LevelGrp => \[16\]
-//PP #xtranslate :BestLevel => \[17\]
-//PP #xtranslate :AltBestLvl => \[18\]
-//PP #xtranslate :MinScan => \[19\]
-//PP #xtranslate :MsGrp => \[20\]
-//PP #xtranslate :ScanCheck => \[21\]
+//PP #xtranslate :Mode          => \[1 \]
+//PP #xtranslate :Filler        => \[2 \]
+//PP #xtranslate :Descript      => \[3 \]
+//PP #xtranslate :Active        => \[4 \]
+//PP #xtranslate :OrgActive     => \[5 \]
+//PP #xtranslate :Manager       => \[6 \]
+//PP #xtranslate :FlOperator    => \[7 \]
+//PP #xtranslate :WhsHeight     => \[8 \]
+//PP #xtranslate :AutoLabels    => \[9 \]
+//PP #xtranslate :GrpCode       => \[10\]
+//PP #xtranslate :LeakerGrp     => \[11\]
+//PP #xtranslate :LabelGrp      => \[12\]
+//PP #xtranslate :LocMixGrp     => \[13\]
+//PP #xtranslate :LatePkGrp     => \[14\]
+//PP #xtranslate :PalletGrp     => \[15\]
+//PP #xtranslate :LevelGrp      => \[16\]
+//PP #xtranslate :BestLevel     => \[17\]
+//PP #xtranslate :AltBestLvl    => \[18\]
+//PP #xtranslate :MinScan       => \[19\]
+//PP #xtranslate :MsGrp         => \[20\]
+//PP #xtranslate :ScanCheck     => \[21\]
 
 FUNCTION OriginalCode() AS VOID
 
-LOCAL GetList := {}
+LOCAL GetList    := {}
 LOCAL nTextRow , nTextCol AS INT
 LOCAL aFiller := ArrayCreate(20) AS ARRAY
 
-DevPos( nTextRow-12 , nTextCol-24 ) ; DevOut( "Filler             " ) ; SetPos( Row() , Col()+1 ) ; AAdd( GetList, _GET_( aFiller[ 2 ] , "aFiller[ 2 ]" , "@!" , {||Fillers->(zdbCheckKey(aFiller[ 2 ],"FillerFL"))} , {||aFiller[ 1 ]== "ADD" } ):display() ) ;atail(Getlist):reader := {|x| zGEReader(x) } ;atail(Getlist):cargo := ArrayCreate(4 ) ;atail(getlist):cargo[ 2] := "Enter the filler" 
-SetPos(nTextRow-12 , nTextCol+14 ) ; Aadd(GetList, zGECheckNew({|x| iif(x == nil, aFiller[ 4 ] , aFiller[ 4 ] := x) }, "aFiller[ 4 ]" , "Active " ,.T. , ,.t. , .f. , , , {||ValidActive(aFiller)} , ) );atail(getlist):cargo[ 2] := "Is this an active filler?" 
-DevPos( nTextRow-10 , nTextCol-24 ) ; DevOut( "Description        " ) ; SetPos( Row() , Col()+1 ) ; AAdd( GetList, _GET_( aFiller[ 3 ] , "aFiller[ 3 ]" , , {||zNotEmpty(aFiller[ 3 ])} , ):display() ) ;atail(Getlist):reader := {|x| zGEReader(x) } ;atail(Getlist):cargo := ArrayCreate(4 ) ;atail(getlist):cargo[ 2] := "Enter the description" 
-DevPos( nTextRow-8 , nTextCol-24 ) ; DevOut( "Manager            " ) ; SetPos(Row() , Col()+1 ) ; Aadd(GetList, zGEDBComboNew( "aFiller[ 6 ]" , aFiller[ 6 ] , {|x| iif(x == nil, aFiller[ 6 ] , aFiller[ 6 ] := x) } , , , .F. , "SSUsers" , "SSUserSU" , zGetSet(1 ) , zGetSet(1 ) , , {|| SSUsers->SysId == zGetSet(1 )} , zGetSet(1 ) , "UserId" , {{"UserId","User ID"},{"Name","User"}} ,"UserId" , "SSUserSU" , .t. , , "!!!!!!!!!!" , 36 , 10 , , , .f. ) ) ;atail(getlist):cargo[ 2] := "Enter the user id"
-DevPos( nTextRow-6 , nTextCol-24 ) ; DevOut( "Fork Lift Operator " ) ; SetPos( Row() , Col()+1 ) ; AAdd( GetList, _GET_( aFiller[ 7 ] , "aFiller[ 7 ]" , , {||zNotEmpty(aFiller[ 7 ])} , ):display() ) ;atail(Getlist):reader := {|x| zGEReader(x) } ;atail(Getlist):cargo := ArrayCreate(4 ) ;atail(getlist):cargo[ 2] := "Enter the fork lift operator" 
-SetPos(nTextRow-4 , nTextCol-24 ) ; Aadd(GetList, zGECheckNew({|x| iif(x == nil, aFiller[ 8 ] , aFiller[ 8 ] := x) }, "aFiller[ 8 ]" , "Warehouse Height   " ,.T. , ,.t. , .f. , , , , ) );atail(getlist):cargo[ 2] := "Use the warehouse stack height when packing (false = use truck stack height)?"
-SetPos(nTextRow-2 , nTextCol-24 ) ; Aadd(GetList, zGECheckNew({|x| iif(x == nil, aFiller[ 9 ] , aFiller[ 9 ] := x) }, "aFiller[ 9 ]" , "Auto Labeler       " ,.T. , ,.t. , .f. , , , , ) );atail(getlist):cargo[ 2] := "Does this filler have access to an auto-labeler?"
-DevPos( nTextRow , nTextCol-24 ) ; DevOut( "Filler Group       " ) ; SetPos(Row() , Col()+1 ) ; Aadd(GetList, zGEDBComboNew( "aFiller[ 10]" , aFiller[ 10] , {|x| iif(x == nil, aFiller[ 10] , aFiller[ 10] := x) } , , , .F. , "FilGrp" , "FilGrpGC" , , , , , , "GrpCode" , {{"GrpCode" ,"Group" } , {"Descript","Description"}} ,"GrpCode" , "FilGrpGC" , .t. , , "@!" , 39 , 9 , , , .f. ) ) ;atail(getlist):cargo[ 2] := "Select the filler group code"
+DevPos( nTextRow-12 , nTextCol-24 ) ; DevOut( "Filler             "  );SetPos( Row() , Col()+1 ) ;AAdd( GetList, _GET_( aFiller[2] , "aFiller[2]" , "@!" , {||Fillers->(zdbCheckKey(aFiller[2],"FillerFL"))} , {||aFiller[1]=="ADD"} ):display() ) ;atail(Getlist):reader := {|x| zGEReader(x) } ;atail(Getlist):cargo := ArrayCreate(4 ) ;atail(getlist):cargo[ 2] := "Enter the filler"
+SetPos(nTextRow-12 , nTextCol+14 ) ; Aadd(GetList, zGECheckNew({|x| iif(x == nil, aFiller[4] , aFiller[4] := x) }, "aFiller[4]" , "Active " ,.T. , ,.t. , .f. , ,  , {||ValidActive(aFiller)} ,  ) );atail(getlist):cargo[ 2] := "Is this an active filler?"
+DevPos( nTextRow-10 , nTextCol-24 ) ; DevOut( "Description        "  );SetPos( Row() , Col()+1 ) ;AAdd( GetList, _GET_( aFiller[3] , "aFiller[3]" ,  , {||zNotEmpty(aFiller[3])} ,  ):display() ) ;atail(Getlist):reader := {|x| zGEReader(x) } ;atail(Getlist):cargo := ArrayCreate(4 ) ;atail(getlist):cargo[ 2] := "Enter the description"
+DevPos( nTextRow-8 , nTextCol-24 ) ; DevOut( "Manager            "  );SetPos(Row() , Col()+1 ) ; Aadd(GetList, zGEDBComboNew( "aFiller[6]" , aFiller[6] , {|x| iif(x == nil, aFiller[6] , aFiller[6] := x) } ,  ,  , .F. , "SSUsers" , "SSUserSU" , zGetSet(1) , zGetSet(1) ,  , {||SSUsers->SysId==zGetSet(1)} , zGetSet(1) , "UserId" , {{"UserId","User ID"},{"Name","User"}} ,"UserId" , "SSUserSU" , .t. ,  , "!!!!!!!!!!" , 36 , 10 ,  , , .f. ) );atail(getlist):cargo[ 2] := "Enter the user id"
+DevPos( nTextRow-6 , nTextCol-24 ) ; DevOut( "Fork Lift Operator "  );SetPos( Row() , Col()+1 ) ;AAdd( GetList, _GET_( aFiller[7] , "aFiller[7]" ,  , {||zNotEmpty(aFiller[7])} ,  ):display() ) ;atail(Getlist):reader := {|x| zGEReader(x) } ;atail(Getlist):cargo := ArrayCreate(4 ) ;atail(getlist):cargo[ 2] := "Enter the fork lift operator"
+SetPos(nTextRow-4 , nTextCol-24 ) ; Aadd(GetList, zGECheckNew({|x| iif(x == nil, aFiller[8] , aFiller[8] := x) }, "aFiller[8]" , "Warehouse Height   " ,.T. , ,.t. , .f. , ,  ,  ,  ) );atail(getlist):cargo[ 2] := "Use the warehouse stack height when packing (false = use truck stack height)?"
+SetPos(nTextRow-2 , nTextCol-24 ) ; Aadd(GetList, zGECheckNew({|x| iif(x == nil, aFiller[9] , aFiller[9] := x) }, "aFiller[9]" , "Auto Labeler       " ,.T. , ,.t. , .f. , ,  ,  ,  ) );atail(getlist):cargo[ 2] := "Does this filler have access to an auto-labeler?"
+DevPos( nTextRow , nTextCol-24 ) ; DevOut( "Filler Group       "  );SetPos(Row() , Col()+1 ) ; Aadd(GetList, zGEDBComboNew( "aFiller[10]" , aFiller[10] , {|x| iif(x == nil, aFiller[10] , aFiller[10] := x) } ,  ,  , .F. , "FilGrp" , "FilGrpGC" ,  ,  ,  ,  ,  , "GrpCode" , {{"GrpCode","Group"},{"Descript","Description"}} ,"GrpCode" , "FilGrpGC" , .t. ,  , "@!" , 39 , 9 ,  , , .f. ) );atail(getlist):cargo[ 2] := "Select the filler group code"
 
-DevPos( nTextRow+2 , nTextCol-24 ) ; DevOut( "Leaker Email       " ) ; SetPos(Row() , Col()+1 ) ; Aadd(GetList, zGEDBComboNew( "aFiller[ 11]" , aFiller[ 11] , {|x| iif(x == nil, aFiller[ 11] , aFiller[ 11] := x) } , , , .F. , "SSUsers" , "SSUserSU" , zGetSet(1 ) , zGetSet(1 ) , , {|| SSUsers->SysId == zGetSet(1 )} , zGetSet(1 ) , "UserId" , {{"UserId","User ID"},{"Name","User"}} ,"UserId" , "SSUserSU" , .t. , , "!!!!!!!!!!" , 36 , 10 , , , .t. ) ) ;atail(getlist):cargo[ 2] := "Enter the user id";atail(getlist):cargo[ 2] := "Select the email group to send LEAKER notification emails"
-DevPos( nTextRow+3 , nTextCol-24 ) ; DevOut( "Label Email        " ) ; SetPos(Row() , Col()+1 ) ; Aadd(GetList, zGEDBComboNew( "aFiller[ 12]" , aFiller[ 12] , {|x| iif(x == nil, aFiller[ 12] , aFiller[ 12] := x) } , , , .F. , "SSUsers" , "SSUserSU" , zGetSet(1 ) , zGetSet(1 ) , , {|| SSUsers->SysId == zGetSet(1 )} , zGetSet(1 ) , "UserId" , {{"UserId","User ID"},{"Name","User"}} ,"UserId" , "SSUserSU" , .t. , , "!!!!!!!!!!" , 36 , 10 , , , .t. ) ) ;atail(getlist):cargo[ 2] := "Enter the user id";atail(getlist):cargo[ 2] := "Select the email group to send INCORRECT PALLET LABEL LOCATION emails"
-DevPos( nTextRow+4 , nTextCol-24 ) ; DevOut( "Location Mix Email " ) ; SetPos(Row() , Col()+1 ) ; Aadd(GetList, zGEDBComboNew( "aFiller[ 13]" , aFiller[ 13] , {|x| iif(x == nil, aFiller[ 13] , aFiller[ 13] := x) } , , , .F. , "SSUsers" , "SSUserSU" , zGetSet(1 ) , zGetSet(1 ) , , {|| SSUsers->SysId == zGetSet(1 )} , zGetSet(1 ) , "UserId" , {{"UserId","User ID"},{"Name","User"}} ,"UserId" , "SSUserSU" , .t. , , "!!!!!!!!!!" , 36 , 10 , , , .t. ) ) ;atail(getlist):cargo[ 2] := "Enter the user id";atail(getlist):cargo[ 2] := {"Select the email group to send MIXED F/G LOCATION emails","Pallet dropped in the same row/level with a different f/g and/or lot"}
-DevPos( nTextRow+5 , nTextCol-24 ) ; DevOut( "Late Pack Email    " ) ; SetPos(Row() , Col()+1 ) ; Aadd(GetList, zGEDBComboNew( "aFiller[ 14]" , aFiller[ 14] , {|x| iif(x == nil, aFiller[ 14] , aFiller[ 14] := x) } , , , .F. , "SSUsers" , "SSUserSU" , zGetSet(1 ) , zGetSet(1 ) , , {|| SSUsers->SysId == zGetSet(1 )} , zGetSet(1 ) , "UserId" , {{"UserId","User ID"},{"Name","User"}} ,"UserId" , "SSUserSU" , .t. , , "!!!!!!!!!!" , 36 , 10 , , , .t. ) ) ;atail(getlist):cargo[ 2] := "Enter the user id";atail(getlist):cargo[ 2] := "Select the email group to send LATE PACK notification emails"
-DevPos( nTextRow+6 , nTextCol-24 ) ; DevOut( "Pallet Email       " ) ; SetPos(Row() , Col()+1 ) ; Aadd(GetList, zGEDBComboNew( "aFiller[ 15]" , aFiller[ 15] , {|x| iif(x == nil, aFiller[ 15] , aFiller[ 15] := x) } , , , .F. , "SSUsers" , "SSUserSU" , zGetSet(1 ) , zGetSet(1 ) , , {|| SSUsers->SysId == zGetSet(1 )} , zGetSet(1 ) , "UserId" , {{"UserId","User ID"},{"Name","User"}} ,"UserId" , "SSUserSU" , .t. , , "!!!!!!!!!!" , 36 , 10 , , , .t. ) ) ;atail(getlist):cargo[ 2] := "Enter the user id";atail(getlist):cargo[ 2] := "Select the email group to send INVALID PRODUCTION PALLET SELECTION notification emails"
+DevPos( nTextRow+2 , nTextCol-24 ) ; DevOut( "Leaker Email       "  );SetPos(Row() , Col()+1 ) ; Aadd(GetList, zGEDBComboNew( "aFiller[11]" , aFiller[11] , {|x| iif(x == nil, aFiller[11] , aFiller[11] := x) } ,  ,  , .F. , "SSUsers" , "SSUserSU" , zGetSet(1) , zGetSet(1) ,  , {||SSUsers->SysId==zGetSet(1)} , zGetSet(1) , "UserId" , {{"UserId","User ID"},{"Name","User"}} ,"UserId" , "SSUserSU" , .t. ,  , "!!!!!!!!!!" , 36 , 10 ,  , , .t. ) );atail(getlist):cargo[ 2] := "Enter the user id";atail(getlist):cargo[ 2] := "Select the email group to send LEAKER notification emails"
+DevPos( nTextRow+3 , nTextCol-24 ) ; DevOut( "Label Email        "  );SetPos(Row() , Col()+1 ) ; Aadd(GetList, zGEDBComboNew( "aFiller[12]" , aFiller[12] , {|x| iif(x == nil, aFiller[12] , aFiller[12] := x) } ,  ,  , .F. , "SSUsers" , "SSUserSU" , zGetSet(1) , zGetSet(1) ,  , {||SSUsers->SysId==zGetSet(1)} , zGetSet(1) , "UserId" , {{"UserId","User ID"},{"Name","User"}} ,"UserId" , "SSUserSU" , .t. ,  , "!!!!!!!!!!" , 36 , 10 ,  , , .t. ) );atail(getlist):cargo[ 2] := "Enter the user id";atail(getlist):cargo[ 2] := "Select the email group to send INCORRECT PALLET LABEL LOCATION emails"
+DevPos( nTextRow+4 , nTextCol-24 ) ; DevOut( "Location Mix Email "  );SetPos(Row() , Col()+1 ) ; Aadd(GetList, zGEDBComboNew( "aFiller[13]" , aFiller[13] , {|x| iif(x == nil, aFiller[13] , aFiller[13] := x) } ,  ,  , .F. , "SSUsers" , "SSUserSU" , zGetSet(1) , zGetSet(1) ,  , {||SSUsers->SysId==zGetSet(1)} , zGetSet(1) , "UserId" , {{"UserId","User ID"},{"Name","User"}} ,"UserId" , "SSUserSU" , .t. ,  , "!!!!!!!!!!" , 36 , 10 ,  , , .t. ) );atail(getlist):cargo[ 2] := "Enter the user id";atail(getlist):cargo[ 2] := {"Select the email group to send MIXED F/G LOCATION emails","Pallet dropped in the same row/level with a different f/g and/or lot"}
+DevPos( nTextRow+5 , nTextCol-24 ) ; DevOut( "Late Pack Email    "  );SetPos(Row() , Col()+1 ) ; Aadd(GetList, zGEDBComboNew( "aFiller[14]" , aFiller[14] , {|x| iif(x == nil, aFiller[14] , aFiller[14] := x) } ,  ,  , .F. , "SSUsers" , "SSUserSU" , zGetSet(1) , zGetSet(1) ,  , {||SSUsers->SysId==zGetSet(1)} , zGetSet(1) , "UserId" , {{"UserId","User ID"},{"Name","User"}} ,"UserId" , "SSUserSU" , .t. ,  , "!!!!!!!!!!" , 36 , 10 ,  , , .t. ) );atail(getlist):cargo[ 2] := "Enter the user id";atail(getlist):cargo[ 2] := "Select the email group to send LATE PACK notification emails"
+DevPos( nTextRow+6 , nTextCol-24 ) ; DevOut( "Pallet Email       "  );SetPos(Row() , Col()+1 ) ; Aadd(GetList, zGEDBComboNew( "aFiller[15]" , aFiller[15] , {|x| iif(x == nil, aFiller[15] , aFiller[15] := x) } ,  ,  , .F. , "SSUsers" , "SSUserSU" , zGetSet(1) , zGetSet(1) ,  , {||SSUsers->SysId==zGetSet(1)} , zGetSet(1) , "UserId" , {{"UserId","User ID"},{"Name","User"}} ,"UserId" , "SSUserSU" , .t. ,  , "!!!!!!!!!!" , 36 , 10 ,  , , .t. ) );atail(getlist):cargo[ 2] := "Enter the user id";atail(getlist):cargo[ 2] := "Select the email group to send INVALID PRODUCTION PALLET SELECTION notification emails"
 
-DevPos( nTextRow+8 , nTextCol-24 ) ; DevOut( "Wrong Level Email  " ) ; SetPos(Row() , Col()+1 ) ; Aadd(GetList, zGEDBComboNew( "aFiller[ 16]" , aFiller[ 16] , {|x| iif(x == nil, aFiller[ 16] , aFiller[ 16] := x) } , , , .F. , "SSUsers" , "SSUserSU" , zGetSet(1 ) , zGetSet(1 ) , , {|| SSUsers->SysId == zGetSet(1 )} , zGetSet(1 ) , "UserId" , {{"UserId","User ID"},{"Name","User"}} ,"UserId" , "SSUserSU" , .t. , , "!!!!!!!!!!" , 36 , 10 , , , .t. ) ) ;atail(getlist):cargo[ 2] := "Enter the user id";atail(getlist):cargo[ 2] := "Select the email group to send WRONG LEVEL notification emails"
-DevPos( nTextRow+9 , nTextCol-24 ) ; DevOut( "Preferred Level    " ) ; SetPos( Row() , Col()+1 ) ; AAdd( GetList, _GET_( aFiller[ 17] , "aFiller[ 17]" , "9" , {||zIsPositive(aFiller[ 17])} , { || ! Empty(aFiller[ 16]) } ):display() ) ;atail(Getlist):reader := {|x| zGEReader(x) } ;atail(Getlist):cargo := ArrayCreate(4 ) ;atail(getlist):cargo[ 2] := "Enter the preferred level to drop pallets produced on the current filler" 
-DevPos( nTextRow+10 , nTextCol-24 ) ; DevOut( "Alternate Level    " ) ; SetPos( Row() , Col()+1 ) ; AAdd( GetList, _GET_( aFiller[ 18] , "aFiller[ 18]" , "9" , {||zIsPositive(aFiller[ 18])} , { || ! Empty(aFiller[ 16]) } ):display() ) ;atail(Getlist):reader := {|x| zGEReader(x) } ;atail(Getlist):cargo := ArrayCreate(4 ) ;atail(getlist):cargo[ 2] := "Enter the ALTERNATE preferred level to drop pallets produced on the current filler" 
-SetPos(nTextRow+12 , nTextCol-24 ) ; Aadd(GetList, zGECheckNew({|x| iif(x == nil, aFiller[ 21] , aFiller[ 21] := x) }, "aFiller[ 21]" , "Scan Check         " ,.T. , ,.t. , .f. , , , , ) );atail(getlist):cargo[ 2] := "Perform the minimum production scan time check in p/d?"
-DevPos( nTextRow+14 , nTextCol-24 ) ; DevOut( "Minimum Scan Time  " ) ; SetPos( Row() , Col()+1 ) ; AAdd( GetList, _GET_( aFiller[ 19] , "aFiller[ 19]" , "999" , {||zNotNegative(aFiller[ 19])} , {||aFiller[ 21]} ):display() ) ;atail(Getlist):reader := {|x| zGEReader(x) } ;atail(Getlist):cargo := ArrayCreate(4 ) ;atail(getlist):cargo[ 2] := {"Enter the minimum number of seconds required to record a production scan","Any scan time prior to the entered time, results in an email"} 
-DevPos( nTextRow+14 , nTextCol ) ; DevOut( "seconds" )
-DevPos( nTextRow+15 , nTextCol-24 ) ; DevOut( "Minimum Scan Email " ) ; SetPos(Row() , Col()+1 ) ; Aadd(GetList, zGEDBComboNew( "aFiller[ 20]" , aFiller[ 20] , {|x| iif(x == nil, aFiller[ 20] , aFiller[ 20] := x) } , {||aFiller[ 21]} , , .F. , "SSUsers" , "SSUserSU" , zGetSet(1 ) , zGetSet(1 ) , , {|| SSUsers->SysId == zGetSet(1 )} , zGetSet(1 ) , "UserId" , {{"UserId","User ID"},{"Name","User"}} ,"UserId" , "SSUserSU" , .t. , , "!!!!!!!!!!" , 36 , 10 , , , .t. ) ) ;atail(getlist):cargo[ 2] := "Enter the user id";atail(getlist):cargo[ 2] := "Select the email group to send MINIMUM SCAN TIME NOT MET emails" 
+DevPos( nTextRow+8 , nTextCol-24 ) ; DevOut( "Wrong Level Email  "  );SetPos(Row() , Col()+1 ) ; Aadd(GetList, zGEDBComboNew( "aFiller[16]" , aFiller[16] , {|x| iif(x == nil, aFiller[16] , aFiller[16] := x) } ,  ,  , .F. , "SSUsers" , "SSUserSU" , zGetSet(1) , zGetSet(1) ,  , {||SSUsers->SysId==zGetSet(1)} , zGetSet(1) , "UserId" , {{"UserId","User ID"},{"Name","User"}} ,"UserId" , "SSUserSU" , .t. ,  , "!!!!!!!!!!" , 36 , 10 ,  , , .t. ) );atail(getlist):cargo[ 2] := "Enter the user id";atail(getlist):cargo[ 2] := "Select the email group to send WRONG LEVEL notification emails"
+DevPos( nTextRow+9 , nTextCol-24 ) ; DevOut( "Preferred Level    "  );SetPos( Row() , Col()+1 ) ;AAdd( GetList, _GET_( aFiller[17] , "aFiller[17]" , "9" , {||zIsPositive(aFiller[17])} , {||!Empty(aFiller[16])} ):display() ) ;atail(Getlist):reader := {|x| zGEReader(x) } ;atail(Getlist):cargo := ArrayCreate(4 ) ;atail(getlist):cargo[ 2] := "Enter the preferred level to drop pallets produced on the current filler"
+DevPos( nTextRow+10 , nTextCol-24 ) ; DevOut( "Alternate Level    "  );SetPos( Row() , Col()+1 ) ;AAdd( GetList, _GET_( aFiller[18] , "aFiller[18]" , "9" , {||zIsPositive(aFiller[18])} , {||!Empty(aFiller[16])} ):display() ) ;atail(Getlist):reader := {|x| zGEReader(x) } ;atail(Getlist):cargo := ArrayCreate(4 ) ;atail(getlist):cargo[ 2] := "Enter the ALTERNATE preferred level to drop pallets produced on the current filler"
+SetPos(nTextRow+12 , nTextCol-24 ) ; Aadd(GetList, zGECheckNew({|x| iif(x == nil, aFiller[21] , aFiller[21] := x) }, "aFiller[21]" , "Scan Check         " ,.T. , ,.t. , .f. , ,  ,  ,  ) );atail(getlist):cargo[ 2] := "Perform the minimum production scan time check in p/d?"
+DevPos( nTextRow+14 , nTextCol-24 ) ; DevOut( "Minimum Scan Time  "  );SetPos( Row() , Col()+1 ) ;AAdd( GetList, _GET_( aFiller[19] , "aFiller[19]" , "999" , {||zNotNegative(aFiller[19])} , {||aFiller[21]} ):display() ) ;atail(Getlist):reader := {|x| zGEReader(x) } ;atail(Getlist):cargo := ArrayCreate(4 ) ;atail(getlist):cargo[ 2] := {"Enter the minimum number of seconds required to record a production scan","Any scan time prior to the entered time, results in an email"}
+DevPos( nTextRow+14 , nTextCol ) ; DevOut( "seconds"  )
+DevPos( nTextRow+15 , nTextCol-24 ) ; DevOut( "Minimum Scan Email "  );SetPos(Row() , Col()+1 ) ; Aadd(GetList, zGEDBComboNew( "aFiller[20]" , aFiller[20] , {|x| iif(x == nil, aFiller[20] , aFiller[20] := x) } , {||aFiller[21]} ,  , .F. , "SSUsers" , "SSUserSU" , zGetSet(1) , zGetSet(1) ,  , {||SSUsers->SysId==zGetSet(1)} , zGetSet(1) , "UserId" , {{"UserId","User ID"},{"Name","User"}} ,"UserId" , "SSUserSU" , .t. ,  , "!!!!!!!!!!" , 36 , 10 ,  , , .t. ) );atail(getlist):cargo[ 2] := "Enter the user id";atail(getlist):cargo[ 2] := "Select the email group to send MINIMUM SCAN TIME NOT MET emails"
 ? GetList
 
 RETURN
 
 
-FUNCTION zGEDBComboNew( cVar, cTheVar, bVar, bWhen, bValid, lDropOnEnter,cAlias, cTag, xTop, xBottom, bFor, bWhile,cBaseFilter, xRetFld, aBrowse_,xDispFld, cKeyTag, lStrict, aHotKeys_, cpicture,nWidth,nHeight, cColor, bPostEval, lEmptyAllowed)
-/*? cVar, cTheVar, bVar, bWhen, bValid, lDropOnEnter,;cAlias, cTag, xTop, xBottom, bFor, bWhile,;cBaseFilter, xRetFld, aBrowse_,;xDispFld, cKeyTag, lStrict, aHotKeys_, cpicture,;nWidth,nHeight, cColor, bPostEval, lEmptyAllowed*/ 
+FUNCTION zGEDBComboNew( cVar, cTheVar, bVar, bWhen, bValid, lDropOnEnter,;
+                       cAlias, cTag, xTop, xBottom, bFor, bWhile,;
+                       cBaseFilter, xRetFld, aBrowse_,;
+                       xDispFld, cKeyTag, lStrict, aHotKeys_, cpicture,;
+                       nWidth,nHeight, cColor, bPostEval, lEmptyAllowed)
+/*
+? cVar, cTheVar, bVar, bWhen, bValid, lDropOnEnter,;
+                       cAlias, cTag, xTop, xBottom, bFor, bWhile,;
+                       cBaseFilter, xRetFld, aBrowse_,;
+                       xDispFld, cKeyTag, lStrict, aHotKeys_, cpicture,;
+                       nWidth,nHeight, cColor, bPostEval, lEmptyAllowed
+*/                       
 ? "zGEDBComboNew() params cAlias, cTag:" , cAlias, cTag
 IF cAlias == NIL .or. .not. (cAlias == "SSUsers" .or. cAlias == "FilGrp")
-THROW Exception{"cAlias parameter not preprocessed correctly"}
+	THROW Exception{"cAlias parameter not preprocessed correctly"}
 END IF
 
-LOCAL oGet AS _GET_Object
-oGet := _GET_Object{}
-oGet:cargo := ArrayCreate(10)
+	LOCAL oGet AS _GET_Object
+	oGet := _GET_Object{}
+	oGet:cargo := ArrayCreate(10)
 RETURN oGet
 
 

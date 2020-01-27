@@ -150,8 +150,8 @@ CLASS XSharp.OleAutoObject
 		ENDIF
 		RETURN 0
 			
-	ASSIGN dwFuncs(dwNew AS LONG) 
-		SELF:_liFuncs := dwNew
+	ASSIGN dwFuncs(value AS LONG) 
+		SELF:_liFuncs := value
 		RETURN
 			
 	    /// <exclude />   

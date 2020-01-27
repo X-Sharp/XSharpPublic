@@ -10,11 +10,11 @@
 [Obsolete( "This function has not yet been implemented" )];
 FUNCTION AClass(ArrayName, oExpression)
     THROW NotImplementedException{}
-    RETURN 0
-
+    RETURN 0 
+     
 /// <include file="VFPDocs.xml" path="Comments/adatabases/*" />
 [Obsolete( "This function has not yet been implemented" )];
-FUNCTION ADatabases(ArrayName)
+FUNCTION ADatabases(ArrayName) 
     THROW NotImplementedException{}
     RETURN 0
 
@@ -24,11 +24,7 @@ FUNCTION ADBObjects(ArrayName, cSetting)
     THROW NotImplementedException{}
     RETURN 0
 
-/// <include file="VFPDocs.xml" path="Comments/addbs/*" />
-[Obsolete( "This function has not yet been implemented" )];
-FUNCTION AddBs (cPath)
-    THROW NotImplementedException{}
-    RETURN ""
+
 
 /// <include file="VFPDocs.xml" path="Comments/addproperty/*" />
 [Obsolete( "This function has not yet been implemented" )];
@@ -93,30 +89,21 @@ FUNCTION AStackInfo (ArrayName )
 
 /// <include file="VFPDocs.xml" path="Comments/asubscript/*" />
 [Obsolete( "This function has not yet been implemented" )];
-FUNCTION ASubScript(ArrayName, nElementNumber, nSubscript )
+FUNCTION ASubScript (ArrayName, nElementNumber, nSubscript )
     THROW NotImplementedException{}
     RETURN 0
 
+/// <include file="VFPDocs.xml" path="Comments/ataginfo/*" />
+[Obsolete( "This function has not yet been implemented" )];
+FUNCTION ATagInfo (ArrayName ,cCDXName , nWorkArea , cTableAlias )
+    THROW NotImplementedException{}
+    RETURN 0
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+/// <include file="VFPDocs.xml" path="Comments/aused/*" />
+[Obsolete( "This function has not yet been implemented" )];
+FUNCTION AUsed (ArrayName , nDataSessionNumber , cTableName )
+    THROW NotImplementedException{}
+    RETURN 0
 
 
 

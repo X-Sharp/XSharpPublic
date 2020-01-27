@@ -692,7 +692,15 @@ namespace XSharp.Project
             {
                 throw new FileNotFoundException(string.Format("Template file not found: {0}", source));
             }
-
+            var type = XFileTypeHelpers.GetFileType(target);
+            if (type == XFileType.Resource)
+            {
+                string path = Path.GetDirectoryName(target);
+                if ( ! Directory.Exists(path))
+                    Directory.CreateDirectory(path);
+                File.Copy(source, target, true);
+                return;
+            }
             // The class name is based on the new file name
             string className = Path.GetFileNameWithoutExtension(target);
             string namespce = this.FileTemplateProcessor.GetFileNamespace(target, this);

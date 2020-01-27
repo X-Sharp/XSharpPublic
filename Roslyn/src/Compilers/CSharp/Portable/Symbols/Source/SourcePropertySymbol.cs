@@ -7,14 +7,13 @@ using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
-#if XSHARP
-using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
-#endif
 using Microsoft.CodeAnalysis.CSharp.Emit;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.PooledObjects;
 using Roslyn.Utilities;
-
+#if XSHARP
+using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
+#endif
 namespace Microsoft.CodeAnalysis.CSharp.Symbols
 {
     internal sealed class SourcePropertySymbol : PropertySymbol, IAttributeTargetSymbol
@@ -54,6 +53,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
 #if XSHARP
         private bool _isIndexedProperty;
+        private bool _isGeneratedProperty;
 #endif
 
         // CONSIDER: if the parameters were computed lazily, ParameterCount could be overridden to fall back on the syntax (as in SourceMemberMethodSymbol).
@@ -72,11 +72,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             bool isExplicitInterfaceImplementation = (interfaceSpecifier != null);
 #if XSHARP
             _isIndexedProperty = false;
+            _isGeneratedProperty = false;
             if (isIndexer && !string.IsNullOrEmpty((syntax as IndexerDeclarationSyntax).ThisKeyword.ValueText))
             {
                 name = (syntax as IndexerDeclarationSyntax).ThisKeyword.ValueText;
                 isIndexer = false;
                 _isIndexedProperty = true;
+            }
+            if (syntax.XNode is XSharpParser.MethodContext)
+            {
+                _isGeneratedProperty = true;
             }
 #endif
 
@@ -478,13 +483,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         {
             var nameToken = syntax.Identifier;
             var location = nameToken.GetLocation();
-#if XSHARP
-            // When the property was generated from an access and an assign then we use the location of the method as location of the property
-            if (syntax.XNode is XSharpParser.MethodContext mc)
-            {
-                location = mc.Sig.Id.GetLocation();
-            }
-#endif
             return new SourcePropertySymbol(containingType, bodyBinder, syntax, nameToken.ValueText, location, diagnostics);
         }
 
@@ -590,7 +588,36 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 return ImmutableArray.Create(_location);
             }
         }
+#if XSHARP
+		// The error location for properties generated from an ACCESS and ASSIGN is read from the first GET or SET method.
+        internal Location ErrorLocation
+        {
+            get
+            {
+                if (_isGeneratedProperty)
+                {
+                    if (GetMethod != null)
+                    {
+                        var xnode = GetMethod.GetNonNullSyntaxNode().XNode;
+						if (xnode != null)
+						{
+	                        return xnode.GetLocation();
+						}
+                    }
+                    if (SetMethod != null)
+                    {
+                        var xnode = SetMethod.GetNonNullSyntaxNode().XNode;
+                        if (xnode != null)
+						{
+	                    	return xnode.GetLocation();
+						}
+                    }
+                }
+                return _location;
+            }
+        }
 
+#endif
         internal Location Location
         {
             get

@@ -1548,7 +1548,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                                 // The type '{0}' already contains a definition for '{1}'
                                 if (Locations.Length == 1 || IsPartial)
                                 {
+#if XSHARP
+									// Properties that are generated from an ACCESS and ASSIGN need special handling
+									// for their location
+                                    if (symbol is SourcePropertySymbol ps)
+                                    {
+                                        diagnostics.Add(ErrorCode.ERR_DuplicateNameInClass, ps.ErrorLocation, this, symbol.Name);
+                                    }
+                                    else
+                                    {
+                                        diagnostics.Add(ErrorCode.ERR_DuplicateNameInClass, symbol.Locations[0], this, symbol.Name);
+                                    }
+#else
                                     diagnostics.Add(ErrorCode.ERR_DuplicateNameInClass, symbol.Locations[0], this, symbol.Name);
+#endif
                                 }
                             }
 

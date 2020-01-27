@@ -7,4 +7,3 @@
 [assembly: AssemblyConfigurationAttribute( ASSEMBLY_CONFIGURATION)]
 [assembly: AssemblyCompanyAttribute( COMPANY_NAME )]
 [assembly: AssemblyProductAttribute( PRODUCT_NAME )] 
-

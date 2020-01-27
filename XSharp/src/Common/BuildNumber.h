@@ -27,5 +27,3 @@
         #define ASSEMBLY_CONFIGURATION "Release"
     #endif
 #endif
-
-

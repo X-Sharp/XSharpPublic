@@ -88,18 +88,23 @@
     <Compile Include="Classes\Collection.prg" />
     <Compile Include="Classes\Abstract.prg" />
     <Compile Include="Classes\Custom.prg" />
+    <Compile Include="MissingFunctionsD.prg" />
+    <Compile Include="MissingFunctionsC.prg" />
+    <Compile Include="MissingFunctionsB.prg" />
     <Compile Include="Enums.prg" />
     <Compile Include="Functions.prg" />
     <Compile Include="MissingFunctionsA.prg" />
     <Compile Include="Properties\AssemblyInfo.prg">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="StringFunctions.prg" />
     <Compile Include="SystemVariables.prg" />
     <Compile Include="TextOutPut.prg" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Classes" />
     <Folder Include="Properties\" />
+    <Folder Include="VFPFileStructures\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\XSharp.Core\XSharp.Core.xsproj">
@@ -114,7 +119,24 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-	<None Include="functionsToImplement.txt" />
+    <None Include="functionsToImplement.txt" />
+    <None Include="VFPFileStructures\VFP26Form-2.pdf" />
+    <None Include="VFPFileStructures\VFP26Form.pdf" />
+    <None Include="VFPFileStructures\VFP26Menu.pdf" />
+    <None Include="VFPFileStructures\VFP26Project-2.pdf" />
+    <None Include="VFPFileStructures\VFP26Project.pdf" />
+    <None Include="VFPFileStructures\VFP26Report-2.pdf" />
+    <None Include="VFPFileStructures\VFP26Report.pdf" />
+    <None Include="VFPFileStructures\VFP60Dbc2.pdf" />
+    <None Include="VFPFileStructures\VFP6Dbc.pdf" />
+    <None Include="VFPFileStructures\VFP6Form.pdf" />
+    <None Include="VFPFileStructures\VFP6Form2.pdf" />
+    <None Include="VFPFileStructures\VFP6Menu.pdf" />
+    <None Include="VFPFileStructures\VFP6Project.pdf" />
+    <None Include="VFPFileStructures\VFP6Project2.pdf" />
+    <None Include="VFPFileStructures\VFP6Report.pdf" />
+    <None Include="VFPFileStructures\VFP6Report2.pdf" />
+    <None Include="VfpRuntimeDocs.xml" />
   </ItemGroup>
   <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->
   <ProjectExtensions>

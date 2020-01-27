@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Runtimefunctions>
+  <addbs>
+    <summary>Adds a backslash (if needed) to a path expression.</summary>
+    <param name="cPath">Specifies the path name to which to add the backslash.</param>
+    <returns>Character</returns>
+    <examples>
+       <code language="X#">
+        *-- Both print C:\Windows\
+        ? AddBs( "C:\Windows" )
+        ? AddBs( "C:\Windows\" )
+      </code>
+    </examples>
+  </addbs>
+  <justcommon>
+    <seealso cref='M:XSharp.VFP.Functions.AddBs(System.String)' />
+    <seealso cref='M:XSharp.VFP.Functions.JustDrive(System.String)' />
+    <seealso cref='M:XSharp.VFP.Functions.JustExt(System.String)' />
+    <seealso cref='M:XSharp.VFP.Functions.JustFName(System.String)' />
+    <seealso cref='M:XSharp.VFP.Functions.JustPath(System.String)' />
+    <seealso cref='M:XSharp.VFP.Functions.JustStem(System.String)' />
+
+    <param name="cPath">
+      Specifies the name, which may include the full path, of the file for which you want to extract information.
+      The maximum length of the string passed to cPath is determined by the Operating System.
+    </param>
+    <returns>String</returns>
+    <example>
+      <code language="X#">
+        ? JustDrive("C:\Folder\test.txt")  // C:
+        ? JustExt("C:\Folder\test.txt")    // .txt
+        ? JustPath("C:\Folder\test.txt")   // C:\Folder
+        ? JustFName("C:\Folder\test.txt")  // test.txt
+        ? JustStem("C:\Folder\test.txt")   // test
+      </code>
+    </example>
+  </justcommon>
+
+  <justdrive>
+    <summary>Returns the drive letter from a complete path.</summary>
+  </justdrive>
+  <justext>
+    <summary>Returns the characters of a file extension from a complete path.</summary>
+  </justext>
+  <justfname>
+    <summary>Returns the file name portion of a complete path and file name.</summary>
+  </justfname>
+  <justpath>
+    <summary>Returns the path portion of a complete path and file name.</summary>
+  </justpath>
+  <juststem>
+    <summary>Returns the stem name (the file name before the extension) from a complete path and file name.</summary>
+  </juststem>
+  <at>
+    <summary>Returns the beginning numeric position of the first occurrence of a character expression or memo field within another character expression or memo field, counting from the leftmost character.</summary>
+    <param name="cSearchExpression">Specifies the character expression that At( ) searches for in cExpressionSearched.</param>
+    <param name="cExpressionSearched">Specifies the character expression cSearchExpression searches for.<br/>Both cSearchExpression and cExpressionSearched can be memo fields of any size.</param>
+    <param name="nOccurrence">Specifies which occurrence (first, second, third, and so on) of cSearchExpression is searched for in cExpressionSearched. By default, At( ) searches for the first occurrence of cSearchExpression (nOccurrence = 1). Including nOccurrence lets you search for additional occurrences of cSearchExpression in cExpressionSearched. AT_C( ) returns 0 if nOccurrence is greater than the number of times cSearchExpression occurs in cExpressionSearched.</param>
+    <returns>Numeric</returns>
+    <remarks>
+      At( ) searches the second character expression for the first occurrence of the first character expression. It then returns an integer indicating the position of the first character in the character expression found. If the character expression isn't found, At( ) returns 0.<br/>
+      The search performed by At( ) is case-sensitive. To perform a search that isn't case-sensitive, use AtC( ).
+    </remarks>
+  </at>
+  <at_c>
+    <summary>This is an alias for the At() function. X# works with unicode and the difference between single byte and multi byte characters does not exist in Unicode</summary>
+    <seealso cref="M:XSharp.VFP.Functions.At(System.String,System.String,System.UInt32)">At</seealso>
+  </at_c>
+  <atc>
+    <summary>Returns the beginning numeric position of the first occurrence of a character expression or memo field within another character expression or memo field, without regard for the case of these two expressions.</summary>
+    <param name="cSearchExpression">Specifies the character expression that AtC( ) searches for in cExpressionSearched.</param>
+    <param name="cExpressionSearched">Specifies the character expression cSearchExpression searches for. <br/>
+      Both cSearchExpression and cExpressionSearched can be memo fields of any size.</param>
+    <param name="nOccurrence">
+      Specifies which occurrence (first, second, third, and so on) of cSearchExpression is searched for in cExpressionSearched. <br/>
+      By default, ATCC( ) searches for the first occurrence of cSearchExpression (nOccurrence = 1). Including nOccurrence lets you search for additional occurrences of cSearchExpression in cExpressionSearched.</param>
+    <returns>Numeric</returns>
+  </atc>
+  <atcc>
+    <summary>This is an alias for the AtC() function. X# works with unicode and the difference between single byte and multi byte characters does not exist in Unicode</summary>
+    <seealso cref="M:XSharp.VFP.Functions.AtC(System.String,System.String,System.UInt32)">AtC</seealso>
+  </atcc>
+
+</Runtimefunctions>

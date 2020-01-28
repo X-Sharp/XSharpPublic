@@ -466,9 +466,9 @@
     <ZipProject Include="Templates\Projects\Windows\Console\ConsoleApplication.png" />
     <ZipProject Include="Templates\Projects\Windows\WinFormApp\WinFormApp.png" />
     <ZipProject Include="Templates\Projects\Windows\WPFApplication\WPFApplication.png" />
-    <ZipProject Include="Templates\Projects\Windows\VulcanApp\VulcanApplication.png" />
-    <ZipProject Include="Templates\Projects\Windows\VulcanApp\VulcanApplication.vstemplate" />
-    <ZipProject Include="Templates\Projects\Windows\VulcanApp\Readme.txt" />
+    <ZipProject Include="Templates\Projects\Windows\VulcanConsole\VulcanConsole.png" />
+    <ZipProject Include="Templates\Projects\Windows\VulcanConsole\VulcanConsole.vstemplate" />
+    <ZipProject Include="Templates\Projects\Windows\VulcanConsole\Readme.txt" />
     <ZipItem Include="Templates\ProjectItems\WPF\WPFFlowDocument\WPFFlowDocument.png" />
     <ZipItem Include="Templates\ProjectItems\WPF\WPFPageFunction\WPFPageFunction.png" />
     <ZipItem Include="Templates\ProjectItems\WPF\WPFPage\WPFPage.png" />
@@ -560,6 +560,20 @@
     <ZipProject Include="Templates\Projects\Windows\VOSdiApp\VOSDIApp.xsproj" />
     <ZipProject Include="Templates\Projects\Windows\VOSdiApp\XSharp.ico" />
     <ZipProject Include="Templates\Projects\Windows\VOSdiApp\Standard SDI.Manifest.rc" />
+    <ZipProject Include="Templates\Projects\Windows\VOMdiApp\Readme.txt" />
+    <ZipProject Include="Templates\Projects\Windows\VOSdiApp\Readme.txt" />
+    <ZipProject Include="Templates\Projects\Windows\XPPConsole\AssemblyInfo.prg" />
+    <ZipProject Include="Templates\Projects\Windows\XPPConsole\Program.prg" />
+    <ZipProject Include="Templates\Projects\Windows\XPPConsole\XPPConsole.png" />
+    <ZipProject Include="Templates\Projects\Windows\XPPConsole\XPPConsole.vstemplate" />
+    <ZipProject Include="Templates\Projects\Windows\XPPConsole\XPPConsole.xsproj" />
+    <ZipProject Include="Templates\Projects\ClassLibraries\ClassLibraryVulcan\AssemblyInfo.prg" />
+    <ZipProject Include="Templates\Projects\ClassLibraries\ClassLibraryVulcan\Class1.prg" />
+    <ZipProject Include="Templates\Projects\ClassLibraries\ClassLibraryVulcan\VulcanClassLibrary.png" />
+    <ZipProject Include="Templates\Projects\ClassLibraries\ClassLibraryVulcan\VulcanClassLibrary.vstemplate">
+      <SubType>Designer</SubType>
+    </ZipProject>
+    <ZipProject Include="Templates\Projects\ClassLibraries\ClassLibraryVulcan\VulcanClassLibrary.xsproj" />
     <Content Include="XSharp.png" />
     <VSCTCompile Include="XSharpProjectPackage.vsct">
       <ResourceName>Menus.ctmenu</ResourceName>
@@ -635,9 +649,9 @@
     <ZipItem Include="Templates\ProjectItems\Internal\SettingsInternal\Settings.settings">
     </ZipItem>
     <ZipProject Include="Templates\Projects\Windows\WinFormApp\App.config" />
-    <ZipProject Include="Templates\Projects\Windows\VulcanApp\AssemblyInfo.prg" />
-    <ZipProject Include="Templates\Projects\Windows\VulcanApp\Program.prg" />
-    <ZipProject Include="Templates\Projects\Windows\VulcanApp\VulcanApplication.xsproj" />
+    <ZipProject Include="Templates\Projects\Windows\VulcanConsole\AssemblyInfo.prg" />
+    <ZipProject Include="Templates\Projects\Windows\VulcanConsole\Program.prg" />
+    <ZipProject Include="Templates\Projects\Windows\VulcanConsole\VulcanConsole.xsproj" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>

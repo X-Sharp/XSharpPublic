@@ -4,6 +4,7 @@
     <Name>Windows Forms Application</Name>
     <Description>A project for creating an application with a Windows Forms user interface.</Description>
     <Icon>WinFormApp.png</Icon>
+    <PreviewImage>WinFormApp.png</PreviewImage>
     <TemplateID>XSharp.WindowsFormsApplication</TemplateID>
     <ProjectType>XSharp</ProjectType>
     <RequiredFrameworkVersion>2.0</RequiredFrameworkVersion>

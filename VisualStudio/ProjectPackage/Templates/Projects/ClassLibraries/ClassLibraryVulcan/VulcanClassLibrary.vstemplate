@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <VSTemplate Version="3.0.0" Type="Project" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" xmlns:sdk="http://schemas.microsoft.com/developer/vstemplate-sdkextension/2010">
   <TemplateData>
-    <Name>Class Library Core Dialect without Runtime</Name>
-    <Description>A project for creating a X# class library (.dll) for the Core dialect with no dependencies on the runtime</Description>
-    <Icon>ClassLibrary.png</Icon>
-    <TemplateID>XSharp.ClassLibrary</TemplateID>
+    <Name>Class Library Vulcan Dialect</Name>
+    <Description>A project for creating a X# class library (.dll) for the Vulcan Dialect</Description>
+    <Icon>VulcanClassLibrary.png</Icon>
+    <TemplateID>XSharp.VOClassLibrary</TemplateID>
     <ProjectType>XSharp</ProjectType>
     <SortOrder>1</SortOrder>
     <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>
@@ -12,16 +12,14 @@
     <DefaultName>ClassLibrary</DefaultName>
     <ProvideDefaultName>true</ProvideDefaultName>
     <RequiredFrameworkVersion>2.0</RequiredFrameworkVersion>
-    <PreviewImage>ClassLibrary.png</PreviewImage>
+    <PreviewImage>VulcanClassLibrary.png</PreviewImage>
     <LanguageTag Value="X#" />
     <PlatformTag Value="Windows" />
-    <PlatformTag Value="Linux" />
-    <PlatformTag Value="MacOS" />
     <ProjectTypeTag Value="Library" />
-
-  </TemplateData>
+    <ProjectTypeTag Value="Vulcan" />
+    </TemplateData>
   <TemplateContent>
-    <Project File="ClassLibrary.xsproj" ReplaceParameters="true">
+    <Project File="VulcanClassLibrary.xsproj" ReplaceParameters="true">
       <!-- 
       These are the items which will show up when a new project is created using the custom project system.
       Items referenced in here must also be referenced in the project file.

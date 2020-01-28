@@ -101,9 +101,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Standard Menus.prg">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="Standard Menus.prg" />
+    <Compile Include="Standard Shell.prg" />
+    <Compile Include="Start.prg" />
+    <Compile Include="Help About.prg" />
+    <Compile Include="Properties\AssemblyInfo.prg" />
+  </ItemGroup>
+  <ItemGroup>
     <NativeResource Include="Standard Menus.EmptyShellMenu.rc">
       <DependentUpon>Standard Menus.prg</DependentUpon>
     </NativeResource>
@@ -119,36 +123,26 @@
     <NativeResource Include="Standard Menus.VS_VERSION_INFO.rc">
       <DependentUpon>Standard Menus.prg</DependentUpon>
     </NativeResource>
-    <VOBinary Include="Standard Menus.StandardShellMenu.xsmnu">
-      <DependentUpon>Standard Menus.prg</DependentUpon>
-    </VOBinary>
-    <VOBinary Include="Standard Menus.EmptyShellMenu.xsmnu">
-      <DependentUpon>Standard Menus.prg</DependentUpon>
-    </VOBinary>
-    <Compile Include="Standard Shell.prg">
-      <SubType>Code</SubType>
-    </Compile>
     <NativeResource Include="Standard Shell.IDI_STANDARDICON.rc">
       <DependentUpon>Standard Shell.prg</DependentUpon>
     </NativeResource>
-    <Compile Include="Start.prg">
-      <SubType>Code</SubType>
-    </Compile>
-     <NativeResource Include="Standard Shell.Manifest.rc">
+    <NativeResource Include="Standard Shell.Manifest.rc">
       <DependentUpon>Standard Shell.prg</DependentUpon>
     </NativeResource>
-    <Compile Include="Help About.prg">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Properties\AssemblyInfo.prg">
-      <SubType>Code</SubType>
-    </Compile>
     <NativeResource Include="Help About.HelpAbout.rc">
       <DependentUpon>Help About.prg</DependentUpon>
     </NativeResource>
     <NativeResource Include="Help About.POWXSHARPBMP.rc">
       <DependentUpon>Help About.prg</DependentUpon>
     </NativeResource>
+  </ItemGroup>
+  <ItemGroup>
+    <VOBinary Include="Standard Menus.StandardShellMenu.xsmnu">
+      <DependentUpon>Standard Menus.prg</DependentUpon>
+    </VOBinary>
+    <VOBinary Include="Standard Menus.EmptyShellMenu.xsmnu">
+      <DependentUpon>Standard Menus.prg</DependentUpon>
+    </VOBinary>
     <VOBinary Include="Help About.HELPABOUT.xsfrm">
       <DependentUpon>Help About.prg</DependentUpon>
     </VOBinary>
@@ -159,6 +153,7 @@
     <None Include="Resources\XSharp.ICO" />
     <None Include="Resources\HelpAbt.BMP" />
     <None Include="Resources\cctl6.man" />
+    <None Include="Readme.txt" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />

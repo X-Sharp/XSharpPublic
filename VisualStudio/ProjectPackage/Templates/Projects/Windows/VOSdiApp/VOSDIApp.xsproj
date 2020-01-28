@@ -101,9 +101,16 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="SDI Menus.prg">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="SDI Menus.prg" />
+    <Compile Include="Standard SDI.prg" />
+    <Compile Include="Start.prg" />
+    <Compile Include="Help About.prg" />
+    <Compile Include="Properties\AssemblyInfo.prg" />
+  </ItemGroup>
+  <ItemGroup>
+    <NativeResource Include="Standard SDI.Manifest.rc">
+      <DependentUpon>Standard SDI.prg</DependentUpon>
+    </NativeResource>
     <NativeResource Include="SDI Menus.EmptySDIMenu.rc">
       <DependentUpon>SDI Menus.prg</DependentUpon>
     </NativeResource>
@@ -119,36 +126,23 @@
     <NativeResource Include="SDI Menus.VS_VERSION_INFO.rc">
       <DependentUpon>SDI Menus.prg</DependentUpon>
     </NativeResource>
-    <VOBinary Include="SDI Menus.EmptySDIMenu.xsmnu">
-      <DependentUpon>SDI Menus.prg</DependentUpon>
-    </VOBinary>
-    <VOBinary Include="SDI Menus.StandardSDIMenu.xsmnu">
-      <DependentUpon>SDI Menus.prg</DependentUpon>
-    </VOBinary>
-    <Compile Include="Standard SDI.prg">
-      <SubType>Code</SubType>
-    </Compile>
     <NativeResource Include="Standard SDI.IDI_STANDARDICON.rc">
       <DependentUpon>Standard SDI.prg</DependentUpon>
     </NativeResource>
-    <Compile Include="Start.prg">
-      <SubType>Code</SubType>
-    </Compile>
-     <NativeResource Include="Standard SDI.Manifest.rc">
-      <DependentUpon>Standard SDI.prg</DependentUpon>
-    </NativeResource>
-    <Compile Include="Help About.prg">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Properties\AssemblyInfo.prg">
-      <SubType>Code</SubType>
-    </Compile>
     <NativeResource Include="Help About.HelpAbout.rc">
       <DependentUpon>Help About.prg</DependentUpon>
     </NativeResource>
     <NativeResource Include="Help About.POWXSHARPBMP.rc">
       <DependentUpon>Help About.prg</DependentUpon>
     </NativeResource>
+  </ItemGroup>
+  <ItemGroup>
+    <VOBinary Include="SDI Menus.EmptySDIMenu.xsmnu">
+      <DependentUpon>SDI Menus.prg</DependentUpon>
+    </VOBinary>
+    <VOBinary Include="SDI Menus.StandardSDIMenu.xsmnu">
+      <DependentUpon>SDI Menus.prg</DependentUpon>
+    </VOBinary>
     <VOBinary Include="Help About.HELPABOUT.xsfrm">
       <DependentUpon>Help About.prg</DependentUpon>
     </VOBinary>
@@ -159,6 +153,7 @@
     <None Include="Resources\XSharp.ICO" />
     <None Include="Resources\HelpAbt.BMP" />
     <None Include="Resources\cctl6.man" />
+    <None Include="Readme.txt" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />

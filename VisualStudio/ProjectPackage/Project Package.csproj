@@ -418,6 +418,13 @@
       <DependentUpon>XSharpSLEPropertyForm.cs</DependentUpon>
     </Compile>
     <Compile Include="PropertyPages\XSharpUITypeEditors.cs" />
+    <ZipProject Include="Templates\Projects\Windows\VOSdiApp\cavoded.tpl" />
+    <ZipProject Include="Templates\Projects\Windows\VOSdiApp\cavofed.tpl" />
+    <ZipProject Include="Templates\Projects\Windows\VOSdiApp\cavowed.tpl" />
+    <ZipProject Include="Templates\Projects\Windows\VOSdiApp\cctl6.man" />
+    <ZipProject Include="Templates\Projects\Windows\VOSdiApp\Help About.HELPABOUT.xsfrm" />
+    <ZipProject Include="Templates\Projects\Windows\VOSdiApp\SDI Menus.EmptySDIMenu.xsmnu" />
+    <ZipProject Include="Templates\Projects\Windows\VOSdiApp\SDI Menus.StandardSDIMenu.xsmnu" />
     <ZipProject Include="Templates\Projects\Windows\VOMdiApp\cctl6.man" />
     <ZipProject Include="Templates\Projects\Windows\VOMdiApp\Help About.HELPABOUT.xsfrm" />
     <ZipProject Include="Templates\Projects\Windows\VOMdiApp\cavoded.tpl" />
@@ -533,6 +540,26 @@
     <ZipProject Include="Templates\Projects\Windows\VOMdiApp\VOMDIApp.png" />
     <ZipProject Include="Templates\Projects\Windows\VOMdiApp\VOMDIApp.vstemplate" />
     <ZipProject Include="Templates\Projects\Windows\VOMdiApp\VOMDIApp.xsproj" />
+    <ZipProject Include="Templates\Projects\Windows\VOSdiApp\AssemblyInfo.prg" />
+    <ZipProject Include="Templates\Projects\Windows\VOSdiApp\cavowed.inf" />
+    <ZipProject Include="Templates\Projects\Windows\VOSdiApp\Help About.HelpAbout.rc" />
+    <ZipProject Include="Templates\Projects\Windows\VOSdiApp\Help About.POWXSHARPBMP.rc" />
+    <ZipProject Include="Templates\Projects\Windows\VOSdiApp\Help About.prg" />
+    <ZipProject Include="Templates\Projects\Windows\VOSdiApp\HelpAbt.BMP" />
+    <ZipProject Include="Templates\Projects\Windows\VOSdiApp\SDI Menus.EmptySDIMenu.rc" />
+    <ZipProject Include="Templates\Projects\Windows\VOSdiApp\SDI Menus.EmptySDIMenu_Accelerator.rc" />
+    <ZipProject Include="Templates\Projects\Windows\VOSdiApp\SDI Menus.prg" />
+    <ZipProject Include="Templates\Projects\Windows\VOSdiApp\SDI Menus.StandardSDIMenu.rc" />
+    <ZipProject Include="Templates\Projects\Windows\VOSdiApp\SDI Menus.StandardSDIMenu_Accelerator.rc" />
+    <ZipProject Include="Templates\Projects\Windows\VOSdiApp\SDI Menus.VS_VERSION_INFO.rc" />
+    <ZipProject Include="Templates\Projects\Windows\VOSdiApp\Standard SDI.IDI_STANDARDICON.rc" />
+    <ZipProject Include="Templates\Projects\Windows\VOSdiApp\Standard SDI.prg" />
+    <ZipProject Include="Templates\Projects\Windows\VOSdiApp\Start.prg" />
+    <ZipProject Include="Templates\Projects\Windows\VOSdiApp\VOSdiApp.png" />
+    <ZipProject Include="Templates\Projects\Windows\VOSdiApp\VOSdiApp.vstemplate" />
+    <ZipProject Include="Templates\Projects\Windows\VOSdiApp\VOSDIApp.xsproj" />
+    <ZipProject Include="Templates\Projects\Windows\VOSdiApp\XSharp.ico" />
+    <ZipProject Include="Templates\Projects\Windows\VOSdiApp\Standard SDI.Manifest.rc" />
     <Content Include="XSharp.png" />
     <VSCTCompile Include="XSharpProjectPackage.vsct">
       <ResourceName>Menus.ctmenu</ResourceName>

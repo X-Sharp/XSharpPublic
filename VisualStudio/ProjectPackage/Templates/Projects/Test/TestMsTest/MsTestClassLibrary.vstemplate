@@ -12,6 +12,7 @@
     <DefaultName>MsUnitTestClassLibrary</DefaultName>
     <ProvideDefaultName>true</ProvideDefaultName>
     <RequiredFrameworkVersion>2.0</RequiredFrameworkVersion>
+    <PreviewImage>MsTestClassLibrary.png</PreviewImage>
     <LanguageTag Value="X#" />
     <PlatformTag Value="Windows" />
     <PlatformTag Value="Linux" />

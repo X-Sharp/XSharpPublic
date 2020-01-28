@@ -32,69 +32,58 @@
             System.Windows.Forms.Label label2;
             System.Windows.Forms.Label label1;
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.btnShowMeTheMagic = new System.Windows.Forms.Button();
             this.chkShowMembersOfCurrentType = new System.Windows.Forms.CheckBox();
             this.chkSortNavBar = new System.Windows.Forms.CheckBox();
-            this.grpNavigationBars = new System.Windows.Forms.GroupBox();
             this.chkIncludeFields = new System.Windows.Forms.CheckBox();
+            this.chkAlignMethod = new System.Windows.Forms.CheckBox();
+            this.chkAlignDoCase = new System.Windows.Forms.CheckBox();
+            this.chkKeywordsInAll = new System.Windows.Forms.CheckBox();
+            this.chkShowAfterChar = new System.Windows.Forms.CheckBox();
+            this.chkDotAsUniversalSelector = new System.Windows.Forms.CheckBox();
+            this.chkAutoPairs = new System.Windows.Forms.CheckBox();
+            this.chkCompletionListtabs = new System.Windows.Forms.CheckBox();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.btnShowMeTheMagic = new System.Windows.Forms.Button();
+            this.grpNavigationBars = new System.Windows.Forms.GroupBox();
+            this.grpCompletionListTabs = new System.Windows.Forms.GroupBox();
+            this.commitChars = new System.Windows.Forms.TextBox();
+            this.grpCase = new System.Windows.Forms.GroupBox();
+            this.multiFactor = new System.Windows.Forms.TextBox();
+            this.grpKeywordCase = new System.Windows.Forms.GroupBox();
             this.rbTitle = new System.Windows.Forms.RadioButton();
             this.rbNone = new System.Windows.Forms.RadioButton();
             this.rbUpper = new System.Windows.Forms.RadioButton();
             this.rbLower = new System.Windows.Forms.RadioButton();
-            this.multiFactor = new System.Windows.Forms.TextBox();
-            this.chkAlignMethod = new System.Windows.Forms.CheckBox();
-            this.chkAlignDoCase = new System.Windows.Forms.CheckBox();
-            this.grpKeywordCase = new System.Windows.Forms.GroupBox();
-            this.commitChars = new System.Windows.Forms.TextBox();
-            this.chkKeywordsInAll = new System.Windows.Forms.CheckBox();
-            this.chkShowAfterChar = new System.Windows.Forms.CheckBox();
-            this.chkDotAsUniversalSelector = new System.Windows.Forms.CheckBox();
             this.chkIdentifierCase = new System.Windows.Forms.CheckBox();
-            this.chkAutoPairs = new System.Windows.Forms.CheckBox();
-            this.grpCompletionListTabs = new System.Windows.Forms.GroupBox();
-            this.chkCompletionListtabs = new System.Windows.Forms.CheckBox();
-            this.grpCase = new System.Windows.Forms.GroupBox();
             label2 = new System.Windows.Forms.Label();
             label1 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.grpNavigationBars.SuspendLayout();
-            this.grpKeywordCase.SuspendLayout();
             this.grpCompletionListTabs.SuspendLayout();
             this.grpCase.SuspendLayout();
+            this.grpKeywordCase.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // panel1
-            // 
-            this.panel1.Controls.Add(this.btnShowMeTheMagic);
-            this.panel1.Controls.Add(this.grpNavigationBars);
-            this.panel1.Controls.Add(this.grpCompletionListTabs);
-            this.panel1.Controls.Add(this.grpCase);
-            this.panel1.Location = new System.Drawing.Point(0, 0);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(381, 430);
-            this.panel1.TabIndex = 4;
-            // 
-            // btnShowMeTheMagic
-            // 
-            this.btnShowMeTheMagic.Location = new System.Drawing.Point(262, 401);
-            this.btnShowMeTheMagic.Name = "btnShowMeTheMagic";
-            this.btnShowMeTheMagic.Size = new System.Drawing.Size(114, 23);
-            this.btnShowMeTheMagic.TabIndex = 7;
-            this.btnShowMeTheMagic.Text = "Open Sesame";
-            this.btnShowMeTheMagic.UseVisualStyleBackColor = true;
-            // 
+            //
             // label2
-            // 
+            //
             label2.AutoSize = true;
             label2.Location = new System.Drawing.Point(10, 120);
             label2.Name = "label2";
             label2.Size = new System.Drawing.Size(192, 13);
             label2.TabIndex = 9;
             label2.Text = "MultiLine Statement Indentation factor :";
-            // 
+            //
+            // label1
+            //
+            label1.AutoSize = true;
+            label1.Location = new System.Drawing.Point(10, 99);
+            label1.Name = "label1";
+            label1.Size = new System.Drawing.Size(270, 13);
+            label1.TabIndex = 6;
+            label1.Text = "Commit completion list by typing the following characters";
+            //
             // chkShowMembersOfCurrentType
-            // 
+            //
             this.chkShowMembersOfCurrentType.AutoSize = true;
             this.chkShowMembersOfCurrentType.Location = new System.Drawing.Point(13, 58);
             this.chkShowMembersOfCurrentType.Name = "chkShowMembersOfCurrentType";
@@ -105,9 +94,9 @@
         "of the current selected type. Also the member names will no longer be prefixed w" +
         "ith the typenames.");
             this.chkShowMembersOfCurrentType.UseVisualStyleBackColor = true;
-            // 
+            //
             // chkSortNavBar
-            // 
+            //
             this.chkSortNavBar.AutoSize = true;
             this.chkSortNavBar.Location = new System.Drawing.Point(13, 38);
             this.chkSortNavBar.Name = "chkSortNavBar";
@@ -118,21 +107,9 @@
         " sorted by name. Otherwise they will appear in the order in which they appear in" +
         " the source code.");
             this.chkSortNavBar.UseVisualStyleBackColor = true;
-            // 
-            // grpNavigationBars
-            // 
-            this.grpNavigationBars.Controls.Add(this.chkShowMembersOfCurrentType);
-            this.grpNavigationBars.Controls.Add(this.chkSortNavBar);
-            this.grpNavigationBars.Controls.Add(this.chkIncludeFields);
-            this.grpNavigationBars.Location = new System.Drawing.Point(3, 314);
-            this.grpNavigationBars.Name = "grpNavigationBars";
-            this.grpNavigationBars.Size = new System.Drawing.Size(373, 81);
-            this.grpNavigationBars.TabIndex = 6;
-            this.grpNavigationBars.TabStop = false;
-            this.grpNavigationBars.Text = "Navigation Bars";
-            // 
+            //
             // chkIncludeFields
-            // 
+            //
             this.chkIncludeFields.AutoSize = true;
             this.chkIncludeFields.Location = new System.Drawing.Point(13, 17);
             this.chkIncludeFields.Name = "chkIncludeFields";
@@ -142,62 +119,9 @@
             this.toolTip1.SetToolTip(this.chkIncludeFields, "When you enable this then the combo box on the right hand side of the navigation " +
         "bar will also include fields and defines");
             this.chkIncludeFields.UseVisualStyleBackColor = true;
-            // 
-            // rbTitle
-            // 
-            this.rbTitle.AutoSize = true;
-            this.rbTitle.Location = new System.Drawing.Point(183, 15);
-            this.rbTitle.Name = "rbTitle";
-            this.rbTitle.Size = new System.Drawing.Size(45, 17);
-            this.rbTitle.TabIndex = 3;
-            this.rbTitle.TabStop = true;
-            this.rbTitle.Text = "&Title";
-            this.rbTitle.UseVisualStyleBackColor = true;
-            // 
-            // rbNone
-            // 
-            this.rbNone.AutoSize = true;
-            this.rbNone.Location = new System.Drawing.Point(6, 15);
-            this.rbNone.Name = "rbNone";
-            this.rbNone.Size = new System.Drawing.Size(51, 17);
-            this.rbNone.TabIndex = 0;
-            this.rbNone.TabStop = true;
-            this.rbNone.Text = "&None";
-            this.rbNone.UseVisualStyleBackColor = true;
-            // 
-            // rbUpper
-            // 
-            this.rbUpper.AutoSize = true;
-            this.rbUpper.Location = new System.Drawing.Point(59, 15);
-            this.rbUpper.Name = "rbUpper";
-            this.rbUpper.Size = new System.Drawing.Size(62, 17);
-            this.rbUpper.TabIndex = 1;
-            this.rbUpper.TabStop = true;
-            this.rbUpper.Text = "&UPPER";
-            this.rbUpper.UseVisualStyleBackColor = true;
-            // 
-            // rbLower
-            // 
-            this.rbLower.AutoSize = true;
-            this.rbLower.Location = new System.Drawing.Point(127, 15);
-            this.rbLower.Name = "rbLower";
-            this.rbLower.Size = new System.Drawing.Size(50, 17);
-            this.rbLower.TabIndex = 2;
-            this.rbLower.TabStop = true;
-            this.rbLower.Text = "&lower";
-            this.rbLower.UseVisualStyleBackColor = true;
-            // 
-            // multiFactor
-            // 
-            this.multiFactor.Location = new System.Drawing.Point(220, 118);
-            this.multiFactor.Margin = new System.Windows.Forms.Padding(2);
-            this.multiFactor.Name = "multiFactor";
-            this.multiFactor.Size = new System.Drawing.Size(27, 20);
-            this.multiFactor.TabIndex = 10;
-            this.multiFactor.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            // 
+            //
             // chkAlignMethod
-            // 
+            //
             this.chkAlignMethod.AutoSize = true;
             this.chkAlignMethod.Location = new System.Drawing.Point(13, 100);
             this.chkAlignMethod.Name = "chkAlignMethod";
@@ -208,9 +132,9 @@
         "will have the same indent level as the method. Otherwise they will be indented o" +
         "ne level more.");
             this.chkAlignMethod.UseVisualStyleBackColor = true;
-            // 
+            //
             // chkAlignDoCase
-            // 
+            //
             this.chkAlignDoCase.AutoSize = true;
             this.chkAlignDoCase.Location = new System.Drawing.Point(13, 78);
             this.chkAlignDoCase.Name = "chkAlignDoCase";
@@ -220,30 +144,9 @@
             this.toolTip1.SetToolTip(this.chkAlignDoCase, "When you select this then the CASE keywords will line up with the DO keyword from" +
         " a DO CASE statement or the SWITCH keyword from a SWITCH statement");
             this.chkAlignDoCase.UseVisualStyleBackColor = true;
-            // 
-            // grpKeywordCase
-            // 
-            this.grpKeywordCase.Controls.Add(this.rbTitle);
-            this.grpKeywordCase.Controls.Add(this.rbNone);
-            this.grpKeywordCase.Controls.Add(this.rbUpper);
-            this.grpKeywordCase.Controls.Add(this.rbLower);
-            this.grpKeywordCase.Location = new System.Drawing.Point(7, 16);
-            this.grpKeywordCase.Name = "grpKeywordCase";
-            this.grpKeywordCase.Size = new System.Drawing.Size(237, 36);
-            this.grpKeywordCase.TabIndex = 1;
-            this.grpKeywordCase.TabStop = false;
-            this.grpKeywordCase.Text = "&Keyword Case Synchronization";
-            // 
-            // commitChars
-            // 
-            this.commitChars.Location = new System.Drawing.Point(14, 115);
-            this.commitChars.Name = "commitChars";
-            this.commitChars.Size = new System.Drawing.Size(286, 20);
-            this.commitChars.TabIndex = 7;
-            this.commitChars.Text = "{}[]().,:;+-*/%&|^!~=<>?@#\'\"\\";
-            // 
+            //
             // chkKeywordsInAll
-            // 
+            //
             this.chkKeywordsInAll.AutoSize = true;
             this.chkKeywordsInAll.Location = new System.Drawing.Point(13, 39);
             this.chkKeywordsInAll.Name = "chkKeywordsInAll";
@@ -253,9 +156,9 @@
             this.toolTip1.SetToolTip(this.chkKeywordsInAll, "If you organize the Completion lists in tabs, this controls if keywords are added" +
         " to the main tab");
             this.chkKeywordsInAll.UseVisualStyleBackColor = true;
-            // 
+            //
             // chkShowAfterChar
-            // 
+            //
             this.chkShowAfterChar.AutoSize = true;
             this.chkShowAfterChar.Location = new System.Drawing.Point(13, 80);
             this.chkShowAfterChar.Name = "chkShowAfterChar";
@@ -266,9 +169,9 @@
         " keywords, type names, variable names etc based on the current location in the s" +
         "ource code editor");
             this.chkShowAfterChar.UseVisualStyleBackColor = true;
-            // 
+            //
             // chkDotAsUniversalSelector
-            // 
+            //
             this.chkDotAsUniversalSelector.AutoSize = true;
             this.chkDotAsUniversalSelector.Location = new System.Drawing.Point(13, 59);
             this.chkDotAsUniversalSelector.Name = "chkDotAsUniversalSelector";
@@ -279,20 +182,9 @@
         "s except core will  only show static members after a dot and will show instance " +
         "members after a colon (:).");
             this.chkDotAsUniversalSelector.UseVisualStyleBackColor = true;
-            // 
-            // chkIdentifierCase
-            // 
-            this.chkIdentifierCase.AutoSize = true;
-            this.chkIdentifierCase.Enabled = false;
-            this.chkIdentifierCase.Location = new System.Drawing.Point(13, 57);
-            this.chkIdentifierCase.Name = "chkIdentifierCase";
-            this.chkIdentifierCase.Size = new System.Drawing.Size(171, 17);
-            this.chkIdentifierCase.TabIndex = 2;
-            this.chkIdentifierCase.Text = "&Identifier Case Synchronization";
-            this.chkIdentifierCase.UseVisualStyleBackColor = true;
-            // 
+            //
             // chkAutoPairs
-            // 
+            //
             this.chkAutoPairs.AutoSize = true;
             this.chkAutoPairs.Location = new System.Drawing.Point(13, 140);
             this.chkAutoPairs.Name = "chkAutoPairs";
@@ -302,9 +194,54 @@
             this.toolTip1.SetToolTip(this.chkAutoPairs, "After selecting a function, method or type from the completionlist this will auto" +
         "matically inser a closing token");
             this.chkAutoPairs.UseVisualStyleBackColor = true;
-            // 
+            //
+            // chkCompletionListtabs
+            //
+            this.chkCompletionListtabs.AutoSize = true;
+            this.chkCompletionListtabs.Location = new System.Drawing.Point(13, 18);
+            this.chkCompletionListtabs.Name = "chkCompletionListtabs";
+            this.chkCompletionListtabs.Size = new System.Drawing.Size(334, 17);
+            this.chkCompletionListtabs.TabIndex = 0;
+            this.chkCompletionListtabs.Text = "Organize in tabs with different item types (properties, methods etc)";
+            this.toolTip1.SetToolTip(this.chkCompletionListtabs, "This organizes your comletionlists in tabs, to make it easier to find a method or" +
+        " property in long completionlists");
+            this.chkCompletionListtabs.UseVisualStyleBackColor = true;
+            //
+            // panel1
+            //
+            this.panel1.Controls.Add(this.btnShowMeTheMagic);
+            this.panel1.Controls.Add(this.grpNavigationBars);
+            this.panel1.Controls.Add(this.grpCompletionListTabs);
+            this.panel1.Controls.Add(this.grpCase);
+            this.panel1.Location = new System.Drawing.Point(0, 0);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(381, 430);
+            this.panel1.TabIndex = 4;
+            //
+            // btnShowMeTheMagic
+            //
+            this.btnShowMeTheMagic.Location = new System.Drawing.Point(262, 401);
+            this.btnShowMeTheMagic.Name = "btnShowMeTheMagic";
+            this.btnShowMeTheMagic.Size = new System.Drawing.Size(114, 23);
+            this.btnShowMeTheMagic.TabIndex = 7;
+            this.btnShowMeTheMagic.Text = "Open Sesame";
+            this.btnShowMeTheMagic.UseVisualStyleBackColor = true;
+            this.btnShowMeTheMagic.Click += new System.EventHandler(this.btnShowMeTheMagic_Click);
+            //
+            // grpNavigationBars
+            //
+            this.grpNavigationBars.Controls.Add(this.chkShowMembersOfCurrentType);
+            this.grpNavigationBars.Controls.Add(this.chkSortNavBar);
+            this.grpNavigationBars.Controls.Add(this.chkIncludeFields);
+            this.grpNavigationBars.Location = new System.Drawing.Point(3, 314);
+            this.grpNavigationBars.Name = "grpNavigationBars";
+            this.grpNavigationBars.Size = new System.Drawing.Size(373, 81);
+            this.grpNavigationBars.TabIndex = 6;
+            this.grpNavigationBars.TabStop = false;
+            this.grpNavigationBars.Text = "Navigation Bars";
+            //
             // grpCompletionListTabs
-            // 
+            //
             this.grpCompletionListTabs.Controls.Add(this.chkAutoPairs);
             this.grpCompletionListTabs.Controls.Add(this.commitChars);
             this.grpCompletionListTabs.Controls.Add(label1);
@@ -318,30 +255,17 @@
             this.grpCompletionListTabs.TabIndex = 4;
             this.grpCompletionListTabs.TabStop = false;
             this.grpCompletionListTabs.Text = "Completion Lists";
-            // 
-            // label1
-            // 
-            label1.AutoSize = true;
-            label1.Location = new System.Drawing.Point(10, 99);
-            label1.Name = "label1";
-            label1.Size = new System.Drawing.Size(270, 13);
-            label1.TabIndex = 6;
-            label1.Text = "Commit completion list by typing the following characters";
-            // 
-            // chkCompletionListtabs
-            // 
-            this.chkCompletionListtabs.AutoSize = true;
-            this.chkCompletionListtabs.Location = new System.Drawing.Point(13, 18);
-            this.chkCompletionListtabs.Name = "chkCompletionListtabs";
-            this.chkCompletionListtabs.Size = new System.Drawing.Size(334, 17);
-            this.chkCompletionListtabs.TabIndex = 0;
-            this.chkCompletionListtabs.Text = "Organize in tabs with different item types (properties, methods etc)";
-            this.toolTip1.SetToolTip(this.chkCompletionListtabs, "This organizes your comletionlists in tabs, to make it easier to find a method or" +
-        " property in long completionlists");
-            this.chkCompletionListtabs.UseVisualStyleBackColor = true;
-            // 
+            //
+            // commitChars
+            //
+            this.commitChars.Location = new System.Drawing.Point(14, 115);
+            this.commitChars.Name = "commitChars";
+            this.commitChars.Size = new System.Drawing.Size(286, 20);
+            this.commitChars.TabIndex = 7;
+            this.commitChars.Text = "{}[]().,:;+-*/%&|^!~=<>?@#\'\"\\";
+            //
             // grpCase
-            // 
+            //
             this.grpCase.Controls.Add(this.multiFactor);
             this.grpCase.Controls.Add(label2);
             this.grpCase.Controls.Add(this.chkAlignMethod);
@@ -354,9 +278,86 @@
             this.grpCase.TabIndex = 5;
             this.grpCase.TabStop = false;
             this.grpCase.Text = "Document Formatting";
-            // 
+            //
+            // multiFactor
+            //
+            this.multiFactor.Location = new System.Drawing.Point(220, 118);
+            this.multiFactor.Margin = new System.Windows.Forms.Padding(2);
+            this.multiFactor.Name = "multiFactor";
+            this.multiFactor.Size = new System.Drawing.Size(27, 20);
+            this.multiFactor.TabIndex = 10;
+            this.multiFactor.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            //
+            // grpKeywordCase
+            //
+            this.grpKeywordCase.Controls.Add(this.rbTitle);
+            this.grpKeywordCase.Controls.Add(this.rbNone);
+            this.grpKeywordCase.Controls.Add(this.rbUpper);
+            this.grpKeywordCase.Controls.Add(this.rbLower);
+            this.grpKeywordCase.Location = new System.Drawing.Point(7, 16);
+            this.grpKeywordCase.Name = "grpKeywordCase";
+            this.grpKeywordCase.Size = new System.Drawing.Size(237, 36);
+            this.grpKeywordCase.TabIndex = 1;
+            this.grpKeywordCase.TabStop = false;
+            this.grpKeywordCase.Text = "&Keyword Case Synchronization";
+            //
+            // rbTitle
+            //
+            this.rbTitle.AutoSize = true;
+            this.rbTitle.Location = new System.Drawing.Point(183, 15);
+            this.rbTitle.Name = "rbTitle";
+            this.rbTitle.Size = new System.Drawing.Size(45, 17);
+            this.rbTitle.TabIndex = 3;
+            this.rbTitle.TabStop = true;
+            this.rbTitle.Text = "&Title";
+            this.rbTitle.UseVisualStyleBackColor = true;
+            //
+            // rbNone
+            //
+            this.rbNone.AutoSize = true;
+            this.rbNone.Location = new System.Drawing.Point(6, 15);
+            this.rbNone.Name = "rbNone";
+            this.rbNone.Size = new System.Drawing.Size(51, 17);
+            this.rbNone.TabIndex = 0;
+            this.rbNone.TabStop = true;
+            this.rbNone.Text = "&None";
+            this.rbNone.UseVisualStyleBackColor = true;
+            //
+            // rbUpper
+            //
+            this.rbUpper.AutoSize = true;
+            this.rbUpper.Location = new System.Drawing.Point(59, 15);
+            this.rbUpper.Name = "rbUpper";
+            this.rbUpper.Size = new System.Drawing.Size(62, 17);
+            this.rbUpper.TabIndex = 1;
+            this.rbUpper.TabStop = true;
+            this.rbUpper.Text = "&UPPER";
+            this.rbUpper.UseVisualStyleBackColor = true;
+            //
+            // rbLower
+            //
+            this.rbLower.AutoSize = true;
+            this.rbLower.Location = new System.Drawing.Point(127, 15);
+            this.rbLower.Name = "rbLower";
+            this.rbLower.Size = new System.Drawing.Size(50, 17);
+            this.rbLower.TabIndex = 2;
+            this.rbLower.TabStop = true;
+            this.rbLower.Text = "&lower";
+            this.rbLower.UseVisualStyleBackColor = true;
+            //
+            // chkIdentifierCase
+            //
+            this.chkIdentifierCase.AutoSize = true;
+            this.chkIdentifierCase.Enabled = false;
+            this.chkIdentifierCase.Location = new System.Drawing.Point(13, 57);
+            this.chkIdentifierCase.Name = "chkIdentifierCase";
+            this.chkIdentifierCase.Size = new System.Drawing.Size(171, 17);
+            this.chkIdentifierCase.TabIndex = 2;
+            this.chkIdentifierCase.Text = "&Identifier Case Synchronization";
+            this.chkIdentifierCase.UseVisualStyleBackColor = true;
+            //
             // IntellisenseOptionsControl
-            // 
+            //
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
@@ -366,12 +367,12 @@
             this.panel1.ResumeLayout(false);
             this.grpNavigationBars.ResumeLayout(false);
             this.grpNavigationBars.PerformLayout();
-            this.grpKeywordCase.ResumeLayout(false);
-            this.grpKeywordCase.PerformLayout();
             this.grpCompletionListTabs.ResumeLayout(false);
             this.grpCompletionListTabs.PerformLayout();
             this.grpCase.ResumeLayout(false);
             this.grpCase.PerformLayout();
+            this.grpKeywordCase.ResumeLayout(false);
+            this.grpKeywordCase.PerformLayout();
             this.ResumeLayout(false);
 
         }

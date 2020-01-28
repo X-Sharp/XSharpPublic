@@ -3,6 +3,7 @@
     <Name>VO SDI Application</Name>
     <Description>A project for creating a VO SDI application in the VO Dialect.</Description>
     <Icon>VOSdiApp.png</Icon>
+    <PreviewImage>VOSdiApp.png</PreviewImage>
     <TemplateID>XSharp.VOSDIApplication</TemplateID>
     <ProjectType>XSharp</ProjectType>
     <RequiredFrameworkVersion>4.6</RequiredFrameworkVersion>
@@ -14,6 +15,7 @@
     <LanguageTag Value="X#" />
     <PlatformTag Value="Windows" />
     <ProjectTypeTag Value="Desktop" />
+    <ProjectTypeTag Value="VO" />
   </TemplateData>
   <TemplateContent>
     <Project File="VOSDIApp.xsproj" ReplaceParameters="true" >
@@ -41,6 +43,7 @@
       <ProjectItem>Standard SDI.IDI_STANDARDICON.rc</ProjectItem>
       <ProjectItem>Standard SDI.Manifest.rc</ProjectItem>
       <ProjectItem>Start.prg</ProjectItem>
+      <ProjectItem OpenInEditor="true">Readme.txt</ProjectItem>
     </Project>
   </TemplateContent>
 </VSTemplate>

@@ -952,15 +952,3 @@ File01=
 File02=
 File03=
 File04=
-
-[CONTROL:OLEGEN:OLECONTROL:OCX_CustCtl.OCX.1]
-Name=OCX_CustCtl
-ContTitle=CustCtlX Object
-CLSID={DA9253C8-A91C-4008-A0B5-546ED9E4DF63}
-Path=D:\Cavo28\Bin\CustCtlX.OCX
-FloatBar=D:\Cavo28\Bin\VO28ORUN.DLL
-InitMethod=OLEControl(PARENT,ID,POSITION,SIZE)
-InheritClassName=Inherit from Class,InheritClassName(CLASS:OLEControl)
-OptClassName=_VOOleContainer
-Style=WS_CHILD
-PropTabs=HyperLabel,GenOleControl:General,OCXProperties:Properties,OCXEvents:Events,OLEObjStyles:Styles,ExStyles

@@ -24,6 +24,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         #region Fields
         protected readonly TypeSyntax _usualType;
         protected readonly TypeSyntax _floatType;
+        protected readonly TypeSyntax _currencyType;
         protected readonly TypeSyntax _arrayType;
         protected readonly TypeSyntax _dateType;
         protected readonly TypeSyntax _symbolType;
@@ -68,6 +69,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 _usualType = GenerateQualifiedName(XSharpQualifiedTypeNames.Usual);
                 _floatType = GenerateQualifiedName(XSharpQualifiedTypeNames.Float);
+                _currencyType = GenerateQualifiedName(XSharpQualifiedTypeNames.Currency);
                 _dateType = GenerateQualifiedName(XSharpQualifiedTypeNames.Date);
                 _arrayType = GenerateQualifiedName(XSharpQualifiedTypeNames.Array);
                 _symbolType = GenerateQualifiedName(XSharpQualifiedTypeNames.Symbol);
@@ -86,6 +88,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 _usualType = GenerateQualifiedName(VulcanQualifiedTypeNames.Usual);
                 _floatType = GenerateQualifiedName(VulcanQualifiedTypeNames.Float);
+                _currencyType = GenerateQualifiedName(VulcanQualifiedTypeNames.Usual);
                 _dateType = GenerateQualifiedName(VulcanQualifiedTypeNames.Date);
                 _arrayType = GenerateQualifiedName(VulcanQualifiedTypeNames.Array);
                 _symbolType = GenerateQualifiedName(VulcanQualifiedTypeNames.Symbol);
@@ -1156,6 +1159,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     break;
                 case XP.FLOAT:
                     type = _floatType;
+                    break;
+                case XP.CURRENCY:
+                    type = _currencyType;
                     break;
                 case XP.PSZ:
                     type = _pszType;
@@ -2485,19 +2491,26 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             return MakeDefaultParameter(GenerateLiteral(token), GenerateLiteral(0));   // 0 = regular .Net Value
                     case XP.REAL_CONST:
                         double dValue;
-                        switch (token.Text.Last())
+                        if (token.Text[0] == '$')
                         {
-                            case 'M':
-                            case 'm':
-                            case 'S':
-                            case 's':
-                            case 'D':
-                            case 'd':
-                                dValue = double.Parse(token.Text.Substring(0, token.Text.Length - 1), System.Globalization.CultureInfo.InvariantCulture);
-                                break;
-                            default:
-                                dValue = double.Parse(token.Text, System.Globalization.CultureInfo.InvariantCulture);
-                                break;
+                            dValue = double.Parse(token.Text.Substring(1, token.Text.Length - 1), System.Globalization.CultureInfo.InvariantCulture);
+                        }
+                        else
+                        {
+                            switch (token.Text.Last())
+                            {
+                                case 'M':
+                                case 'm':
+                                case 'S':
+                                case 's':
+                                case 'D':
+                                case 'd':
+                                    dValue = double.Parse(token.Text.Substring(0, token.Text.Length - 1), System.Globalization.CultureInfo.InvariantCulture);
+                                    break;
+                                default:
+                                    dValue = double.Parse(token.Text, System.Globalization.CultureInfo.InvariantCulture);
+                                    break;
+                            }
                         }
                         if (negative)
                             return MakeDefaultParameter(GenerateLiteral(dValue * -1), GenerateLiteral(0));   // 0 = regular .Net Value
@@ -3813,10 +3826,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XP.REAL_CONST:
                     if (_options.VOFloatConstants && !(CurrentEntity is XP.VodefineContext))
                     {
-                        // check to see if the token contains an 'S', 'D' or 'M'. In that case leave as is, since the user has specified
-                        // single, double or decimal
+                        // check to see if the token contains an '$', 'S', 'D' or 'M'. In that case leave as is, since the user has specified
+                        // single, double or decimal or currency
                         var text = context.Token.Text;
-                        if (text.IndexOfAny("sdmSDM".ToCharArray()) == -1)
+                        if (text.IndexOfAny("sdmSDM$".ToCharArray()) == -1 )
                         {
                             args = text.Split('.');
                             if (args.Length == 2)

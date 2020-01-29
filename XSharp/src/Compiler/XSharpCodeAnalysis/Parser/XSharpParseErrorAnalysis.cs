@@ -657,6 +657,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitXbaseType([NotNull] XSharpParser.XbaseTypeContext context)
         {
             NotInCore(context, context.Token.Text);
+            if (context.Token.Type == XSharpParser.CURRENCY && _options.Dialect != XSharpDialect.Core && !_options.XSharpRuntime)
+            {
+                _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_CurrencyTypeNotSupported));
+            }
             return;
         }
 

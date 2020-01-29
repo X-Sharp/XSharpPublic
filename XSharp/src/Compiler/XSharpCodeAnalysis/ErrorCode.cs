@@ -1713,6 +1713,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         WRN_UndeclaredVariableOrCursor = 9092,
         WRN_UndeclaredCursor = 9093,
         WRN_UndeclaredVariableLatebound = 9094,
+        ERR_CurrencyTypeNotSupported = 9095,
 
         // XPP dialect Error messages
         ERR_XPPMultipleInheritance = 9200,

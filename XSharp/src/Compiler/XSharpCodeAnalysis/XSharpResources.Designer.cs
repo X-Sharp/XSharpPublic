@@ -2978,7 +2978,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Typed parameters in codeblocks are not supported by the (Vulcan) runtime..
+        ///   Looks up a localized string similar to Typed parameters in codeblocks are not supported by the runtime..
         /// </summary>
         internal static string ERR_CodeBlockWithTypeParameters {
             get {
@@ -3361,6 +3361,15 @@ namespace LanguageService.CodeAnalysis {
         internal static string ERR_CStyleArray {
             get {
                 return ResourceManager.GetString("ERR_CStyleArray", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The CURRENCY Type requires a reference to the X# runtime and is not supported by the Vulcan runtime..
+        /// </summary>
+        internal static string ERR_CurrencyTypeNotSupported {
+            get {
+                return ResourceManager.GetString("ERR_CurrencyTypeNotSupported", resourceCulture);
             }
         }
         

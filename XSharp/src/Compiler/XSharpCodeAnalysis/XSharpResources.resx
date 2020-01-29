@@ -5545,7 +5545,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
     <value>You cannot assign an untyped codeblock to a delegate of type {0}. Use the Lambda Expression syntax (=&gt;) in stead.</value>
   </data>
   <data name="ERR_CodeBlockWithTypeParameters" xml:space="preserve">
-    <value>Typed parameters in codeblocks are not supported by the (Vulcan) runtime.</value>
+    <value>Typed parameters in codeblocks are not supported by the runtime.</value>
   </data>
   <data name="WRN_LamdaExpressionWithPipes" xml:space="preserve">
     <value>Lamda Expression should not contain pipe ('|') characters around the parameters.</value>
@@ -5703,6 +5703,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="WRN_UndeclaredVariableLatebound" xml:space="preserve">
     <value>Type '{0}' does not have a member '{1}'. This gets resolved to a late bound call to its method '{2}'.</value>
   </data>
-
-  
+  <data name="ERR_CurrencyTypeNotSupported" xml:space="preserve">
+    <value>The CURRENCY Type requires a reference to the X# runtime and is not supported by the Vulcan runtime.</value>
+  </data>
 </root>

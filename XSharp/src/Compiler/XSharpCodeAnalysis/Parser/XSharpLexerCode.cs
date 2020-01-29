@@ -375,7 +375,13 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
             parseType(La_1 == '.' ? REAL_CONST : INT_CONST);
             bool invalid = false;
-            if (La_1 == '.')
+            bool currency = false;
+            if (La_1 == '$')
+            {
+                parseOne();
+                currency = true;
+            }
+            if (La_1 == '.' || La_1 == '$')
                 parseOne();
             else if (La_1 == '0')
             {
@@ -465,6 +471,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 parseOne(REAL_CONST);
             if (invalid)
                 parseType(INVALID_NUMBER);
+            if (currency)
+                parseType(REAL_CONST);
         }
 
         void parseString()
@@ -769,7 +777,17 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                             parseOne(UDCSEP);
                         break;
                     case '$':
-                        parseOne(SUBSTR); 
+                        switch (La_2)
+                        {
+                            case '0': case '1': case '2': case '3': case '4':
+                            case '5': case '6': case '7': case '8': case '9':
+                                parseNumber();
+                                break;
+                            default:
+                                parseOne(SUBSTR);
+                                break;
+                        }
+                        
                         break;
                     case '!':
                         parseOne(NOT);
@@ -1693,8 +1711,10 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 {"ARRAY", ARRAY},
                 {"BYTE", BYTE},
                 {"CODEBLOCK", CODEBLOCK},
+                {"CURRENCY", CURRENCY},
                 {"DATE", DATE},
                 {"DWORD", DWORD},
+                {"DECIMAL", DECIMAL},
                 {"FLOAT", FLOAT},
                 {"INT", INT},
                 {"LOGIC", LOGIC},

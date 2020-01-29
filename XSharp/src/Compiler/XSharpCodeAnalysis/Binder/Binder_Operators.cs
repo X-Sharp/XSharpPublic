@@ -697,6 +697,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                 if (type == XSharpParser.INT_CONST || type == XSharpParser.REAL_CONST)
                 {
                     string text = xnode.Start.Text;
+                    if (text[0] == '$')
+                    {
+                        return Compilation.GetSpecialType(SpecialType.System_Decimal);
+                    }
                     char last = text[text.Length - 1];
                     switch (last)
                     {

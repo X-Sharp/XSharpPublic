@@ -364,22 +364,32 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     }
                     break;
                 case XSharpParser.REAL_CONST:
-                    switch (text.Last()) {
-                        case 'M':
-                        case 'm':
-                            r = SyntaxFactory.Literal(SyntaxFactory.WS, text, decimal.Parse(text.Substring(0,text.Length-1), System.Globalization.CultureInfo.InvariantCulture), SyntaxFactory.WS);
-                            break;
-                        case 'S':
-                        case 's':
-                            r = SyntaxFactory.Literal(SyntaxFactory.WS, text, float.Parse(text.Substring(0,text.Length-1), System.Globalization.CultureInfo.InvariantCulture), SyntaxFactory.WS);
-                            break;
-                        case 'D':
-                        case 'd':
-                            r = SyntaxFactory.Literal(SyntaxFactory.WS, text, double.Parse(text.Substring(0,text.Length-1), System.Globalization.CultureInfo.InvariantCulture), SyntaxFactory.WS);
-                            break;
-                        default:
-                            r = SyntaxFactory.Literal(SyntaxFactory.WS, text, double.Parse(text, System.Globalization.CultureInfo.InvariantCulture), SyntaxFactory.WS);
-                            break;
+                    if (text[0] == '$')
+                    {
+                        decimal value = decimal.Parse(text.Substring(1, text.Length - 1), System.Globalization.CultureInfo.InvariantCulture);
+                        value = Math.Round(value, 4);
+                        r = SyntaxFactory.Literal(SyntaxFactory.WS, text, value , SyntaxFactory.WS);
+                    }
+                    else
+                    {
+                        switch (text.Last())
+                        {
+                            case 'M':
+                            case 'm':
+                                r = SyntaxFactory.Literal(SyntaxFactory.WS, text, decimal.Parse(text.Substring(0, text.Length - 1), System.Globalization.CultureInfo.InvariantCulture), SyntaxFactory.WS);
+                                break;
+                            case 'S':
+                            case 's':
+                                r = SyntaxFactory.Literal(SyntaxFactory.WS, text, float.Parse(text.Substring(0, text.Length - 1), System.Globalization.CultureInfo.InvariantCulture), SyntaxFactory.WS);
+                                break;
+                            case 'D':
+                            case 'd':
+                                r = SyntaxFactory.Literal(SyntaxFactory.WS, text, double.Parse(text.Substring(0, text.Length - 1), System.Globalization.CultureInfo.InvariantCulture), SyntaxFactory.WS);
+                                break;
+                            default:
+                                r = SyntaxFactory.Literal(SyntaxFactory.WS, text, double.Parse(text, System.Globalization.CultureInfo.InvariantCulture), SyntaxFactory.WS);
+                                break;
+                        }
                     }
                     break;
                 case XSharpParser.INT_CONST:

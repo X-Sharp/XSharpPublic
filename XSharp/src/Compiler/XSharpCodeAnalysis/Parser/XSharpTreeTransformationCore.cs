@@ -8650,17 +8650,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     break;
                 case XSharpLexer.CODEBLOCK:
                     context.Put(GenerateLiteral(9));
+                    break;      
+                case XSharpLexer.CURRENCY:                  // New in XSharp
+                    context.Put(GenerateLiteral(28));
                     break;
                 case XSharpLexer.DATE:
                     context.Put(GenerateLiteral(2));
                     break;
-                case XSharpLexer.DATETIME:
+                case XSharpLexer.DATETIME:                  // New in XSharp
                     context.Put(GenerateLiteral(26));
                     break;
-                case XSharpLexer.DECIMAL:
+                case XSharpLexer.DECIMAL:                   // New in XSharp
                     context.Put(GenerateLiteral(27));
                     break;
-                case XSharpLexer.DYNAMIC:
+                case XSharpLexer.DYNAMIC:                   // New in XSharp
                     context.Put(GenerateLiteral(25));
                     break;
                 case XSharpLexer.DWORD:

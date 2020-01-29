@@ -3,16 +3,16 @@
   <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.Default.props" />
   <Import Project="..\Runtime.Targets" />
   <PropertyGroup>
-    <ProjectGuid>cea6079a-eff1-4ae7-acdc-ebafc1555b02</ProjectGuid>
+    <ProjectGuid>f088d39a-3b54-428f-a28c-4c5411650e17</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MacroCompilerTest</RootNamespace>
-    <AssemblyName>MacroCompilerTest</AssemblyName>
+    <RootNamespace>MacroCompilerTestFox</RootNamespace>
+    <AssemblyName>MacroCompilerTestFox</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
-    <Name>MacroCompiler.Example</Name>
+    <Name>MacroCompiler.ExampleFox</Name>
     <Nologo>true</Nologo>
     <GenerateFullPaths>true</GenerateFullPaths>
-    <Dialect>VO</Dialect>
+    <Dialect>FoxPro</Dialect>
     <OutputName>MacroCompilerTest</OutputName>
     <StartupObject />
     <ApplicationIcon />
@@ -97,6 +97,11 @@
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\AdsTest\AdsTest.xsproj">
+      <Name>AdsTest</Name>
+      <Project>{7a247f83-d97e-42fb-94d0-3ecd299038cc}</Project>
+      <Private>True</Private>
+    </ProjectReference>
     <ProjectReference Include="..\MacroCompiler\MacroCompiler.csproj">
       <Name>MacroCompiler (Macrocompiler\MacroCompiler)</Name>
       <Project>{eb3f3142-07f7-48ca-b38d-f611c45a9511}</Project>

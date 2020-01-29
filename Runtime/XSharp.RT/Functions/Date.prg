@@ -114,6 +114,9 @@ FUNCTION Month(dDate AS DATE) AS DWORD
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/stod/*" />
 FUNCTION SToD(cDate AS STRING) AS DATE
+	IF cDate != NULL .and. cDate:Length > 8
+		cDate := cDate:Substring(0, 8)
+	END IF
 	RETURN SToDt(cDate)
 
 

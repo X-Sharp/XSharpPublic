@@ -22,6 +22,8 @@ FUNCTION Abs(nValue AS USUAL) AS USUAL
         uRet := Math.Abs( (INT64) nValue )
     ELSEIF nValue:IsDecimal
         uRet := Math.Abs( (Decimal) nValue)
+    ELSEIF nValue:IsCurrency
+        uRet := __Currency{Math.Abs( (Decimal) (__Currency) nValue)}
     ELSEIF nValue:isInteger
         uRet := Math.Abs( (INT) nValue )
     ELSEIF nValue:IsFLoat
@@ -64,7 +66,7 @@ FUNCTION Ceil(nNumber AS USUAL) AS USUAL
     LOCAL result AS USUAL
     IF nNumber:IsInteger
         result := nNumber
-    ELSEIF nNumber:IsDecimal
+    ELSEIF nNumber:IsDecimal .OR. nNumber:IsCurrency
         LOCAL d AS decimal
         d := (decimal) nNumber
         d := Math.Ceiling(d)
@@ -109,7 +111,7 @@ FUNCTION Floor(nNum AS USUAL) AS USUAL
     LOCAL result AS USUAL
     IF nNum:IsInteger
         result := nNum
-    ELSEIF nNum:IsDecimal
+    ELSEIF nNum:IsDecimal .OR. nNum:IsCurrency
         LOCAL d AS decimal
         d := (decimal) nNum
         d := Math.Floor(d)
@@ -143,7 +145,7 @@ FUNCTION Integer(nValue AS USUAL) AS USUAL
     LOCAL result AS USUAL
     IF nValue:IsInteger
         result := nValue
-    ELSEIF nValue:IsFloat .OR. nValue:IsDecimal
+    ELSEIF nValue:IsFractional
         IF nValue > 0.0
             result := Floor(nValue)
         ELSE

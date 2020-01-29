@@ -132,6 +132,12 @@ BEGIN NAMESPACE XSharp
             SELF(__UsualType.Decimal)
             SELF:_refdata	:= d
 
+       [DebuggerStepThroughAttribute] [MethodImpl(MethodImplOptions.AggressiveInlining)];
+        PRIVATE CONSTRUCTOR(c AS __Currency)
+            SELF(__UsualType.Currency)
+            SELF:_refdata	:= c:Value
+            RETURN
+
         [DebuggerStepThroughAttribute] [MethodImpl(MethodImplOptions.AggressiveInlining)];
         PRIVATE CONSTRUCTOR(Value AS System.IntPtr)
             SELF(__UsualType.Ptr)
@@ -248,6 +254,9 @@ BEGIN NAMESPACE XSharp
                     ELSEIF vartype == TYPEOF(SYMBOL) 
                         SELF:_flags				:= UsualFlags{__UsualType.Symbol}
                         SELF:_valueData:s		:= (SYMBOL) o
+                    ELSEIF vartype == TYPEOF(__Currency) 
+                        SELF:_flags				:= UsualFlags{__UsualType.Currency}
+                        SELF:_refData	 	    := ((__Currency) o):Value
                     ELSEIF vartype == TYPEOF(IntPtr) 
                         SELF:_flags				:= UsualFlags{__UsualType.Ptr}
                         SELF:_valueData:p		:= (IntPtr) o
@@ -303,6 +312,7 @@ BEGIN NAMESPACE XSharp
         /// No checks for typeflag. These private properties should always be accessed after checking the correct type
         PRIVATE PROPERTY _arrayValue    AS ARRAY			GET (ARRAY) _refData
         PRIVATE PROPERTY _codeblockValue AS ICodeblock		GET (ICodeblock) _refData
+        PRIVATE PROPERTY _currencyValue	AS __Currency	    GET __Currency{ (System.Decimal) _refData}
         PRIVATE PROPERTY _dateValue		AS DATE				GET _valueData:d
         PRIVATE PROPERTY _dateTimeValue AS DateTime			GET _valueData:dt
         PRIVATE PROPERTY _decimalValue	AS System.Decimal	GET (System.Decimal) _refData
@@ -317,7 +327,7 @@ BEGIN NAMESPACE XSharp
 
         // properties for floats
         PRIVATE PROPERTY _width			AS SBYTE GET iif(IsFloat, _flags:width, 0)
-        PRIVATE PROPERTY _decimals		AS SBYTE GET iif(IsFloat, _flags:decimals,0)
+        PRIVATE PROPERTY _decimals		AS SBYTE GET IIF(IsFloat, _flags:decimals,0)
         PRIVATE PROPERTY _initialized   AS LOGIC
             // we cannot simply read the initialized flag from _flags
             // because a FLOAT with 0 decimals will also set initialized to false
@@ -339,6 +349,8 @@ BEGIN NAMESPACE XSharp
         PUBLIC PROPERTY IsArray		AS LOGIC GET _usualtype == __UsualType.Array
         /// <summary>This property returns TRUE when the USUAL is of type CODEBLOCK </summary>
         PUBLIC PROPERTY IsCodeblock	AS LOGIC GET _usualtype == __UsualType.Codeblock
+        /// <summary>This property returns TRUE when the USUAL is of type Currency </summary>
+        PUBLIC PROPERTY IsCurrency	AS LOGIC GET _usualtype == __UsualType.Currency
         /// <summary>This property returns TRUE when the USUAL is of type DATE </summary>
         PUBLIC PROPERTY IsDate		AS LOGIC GET _usualtype == __UsualType.Date
         /// <summary>This property returns TRUE when the USUAL is of type DateTime </summary>
@@ -355,6 +367,19 @@ BEGIN NAMESPACE XSharp
         PUBLIC PROPERTY IsLong		AS LOGIC GET _usualtype == __UsualType.Long
         /// <summary>This property returns TRUE when the USUAL is of type LONG or INT64 </summary>
         PUBLIC PROPERTY IsInteger	AS LOGIC GET _usualtype == __UsualType.Long .OR. _usualtype == __UsualType.Int64
+        /// <summary>This property returns TRUE when the USUAL is of type FLOAT, Decimal or Currency</summary>
+        PUBLIC PROPERTY IsFractional AS LOGIC
+            GET
+                SWITCH _usualtype
+                CASE __UsualType.Float
+                CASE __UsualType.Decimal
+                CASE __UsualType.Currency
+                    RETURN TRUE
+                OTHERWISE
+                    RETURN FALSE
+                END SWITCH
+        END GET
+        END PROPERTY
         /// <summary>This property returns the __UsualType of the USUAL </summary>
         PUBLIC PROPERTY Type		AS __UsualType GET _flags:usualType
         /// <summary>This property returns TRUE when the USUAL is of type LONG, Int64, FLOAT or Decimal</summary>
@@ -365,6 +390,7 @@ BEGIN NAMESPACE XSharp
                 CASE __UsualType.Int64
                 CASE __UsualType.Float
                 CASE __UsualType.Decimal
+                CASE __UsualType.Currency
                     RETURN TRUE
                 OTHERWISE
                     RETURN FALSE
@@ -390,6 +416,7 @@ BEGIN NAMESPACE XSharp
                 CASE __UsualType.Object
                 CASE __UsualType.Decimal
                 CASE __UsualType.String
+                CASE __UsualType.Currency
                     RETURN TRUE
                 OTHERWISE
                     RETURN FALSE
@@ -405,6 +432,7 @@ BEGIN NAMESPACE XSharp
                 SWITCH _usualType
                 CASE __UsualType.Array		; RETURN _arrayValue == NULL .OR. _arrayValue:Length == 0
                 CASE __UsualType.Codeblock	; RETURN _codeblockValue == NULL
+                CASE __UsualType.Currency	; RETURN _currencyValue == 0
                 CASE __UsualType.Date		; RETURN _dateValue:IsEmpty
                 CASE __UsualType.DateTime	; RETURN _dateTimeValue == DateTime.MinValue
                 CASE __UsualType.Decimal	; RETURN _decimalValue == 0
@@ -440,6 +468,7 @@ BEGIN NAMESPACE XSharp
                 SWITCH _usualType
                 CASE __UsualType.Array		; RETURN TYPEOF(ARRAY)
                 CASE __UsualType.Codeblock	; RETURN TYPEOF(CODEBLOCK)
+                CASE __UsualType.Currency	; RETURN TYPEOF(__Currency)
                 CASE __UsualType.Date		; RETURN TYPEOF(DATE)
                 CASE __UsualType.DateTime	; RETURN TYPEOF(System.DateTime)
                 CASE __UsualType.Decimal	; RETURN TYPEOF(System.Decimal)
@@ -482,6 +511,7 @@ BEGIN NAMESPACE XSharp
             IF SELF:_UsualType == rhs:_UsualType
                 // Compare ValueTypes
                 SWITCH _UsualType
+                CASE __UsualType.Currency	; RETURN SELF:_currencyValue:CompareTo(rhs:_currencyValue)
                 CASE __UsualType.Date		; RETURN SELF:_dateValue:CompareTo(rhs:_dateValue)
                 CASE __UsualType.DateTime	; RETURN SELF:_dateTimeValue:CompareTo(rhs:_dateTimeValue)
                 CASE __UsualType.Decimal	; RETURN SELF:_decimalValue:CompareTo(rhs:_decimalValue)
@@ -503,6 +533,7 @@ BEGIN NAMESPACE XSharp
                 CASE __UsualType.Date
                     // Upscale when needed to avoid overflow errors
                     SWITCH rhs:_UsualType
+                    CASE __UsualType.Currency	; RETURN ((__Currency) (INT) _dateValue):CompareTo(rhs:_currencyValue)
                     CASE __UsualType.DateTime	; RETURN _dateValue:CompareTo((DATE) rhs:_dateTimeValue)
                     CASE __UsualType.Decimal	; RETURN ((System.Decimal) (INT) _dateValue):CompareTo(rhs:_decimalValue)
                     CASE __UsualType.Float		; RETURN ((REAL8) (INT) _dateValue):CompareTo(rhs:_r8Value)
@@ -514,6 +545,7 @@ BEGIN NAMESPACE XSharp
 
                 CASE __UsualType.Float
                     SWITCH rhs:_usualType
+                    CASE __UsualType.Currency	; RETURN FLOAT{_r8Value}:CompareTo(FLOAT{(REAL8) rhs:_currencyValue})
                     CASE __UsualType.Date		; RETURN FLOAT{_r8Value}:CompareTo( FLOAT{(REAL8) (INT) rhs:_dateValue})
                     CASE __UsualType.Decimal	; RETURN FLOAT{_r8Value}:CompareTo( FLOAT{(REAL8) rhs:_decimalValue})
                     CASE __UsualType.Long		; RETURN FLOAT{_r8Value}:CompareTo( FLOAT{(REAL8) rhs:_intValue})
@@ -525,6 +557,7 @@ BEGIN NAMESPACE XSharp
                 CASE __UsualType.Long
                     // Upscale when needed to avoid overflow errors
                     SWITCH rhs:_usualType
+                    CASE __UsualType.Currency	; RETURN ((System.Decimal) _intValue):CompareTo(rhs:_currencyValue)
                     CASE __UsualType.Date		; RETURN _intValue:CompareTo((INT) rhs:_dateValue)
                     CASE __UsualType.Int64		; RETURN ((INT64)_intValue):CompareTo(rhs:_i64Value)
                     CASE __UsualType.Float		; RETURN ((REAL8)_intValue):CompareTo(rhs:_r8Value)
@@ -536,6 +569,7 @@ BEGIN NAMESPACE XSharp
 
                 CASE __UsualType.Int64
                     SWITCH rhs:_usualType
+                    CASE __UsualType.Currency	; RETURN _i64Value:CompareTo(rhs:_currencyValue)
                     CASE __UsualType.Date		; RETURN _i64Value:CompareTo((INT) rhs:_dateValue)
                     CASE __UsualType.Long		; RETURN _i64Value:CompareTo( rhs:_intValue)
                     CASE __UsualType.Float		; RETURN _i64Value:CompareTo( rhs:_r8Value)
@@ -547,6 +581,7 @@ BEGIN NAMESPACE XSharp
 
                 CASE __UsualType.Decimal
                     SWITCH rhs:_usualType
+                    CASE __UsualType.Currency   ; RETURN _decimalValue:CompareTo(rhs:_currencyValue)
                     CASE __UsualType.Date		; RETURN _decimalValue:CompareTo((INT) rhs:_dateValue)
                     CASE __UsualType.Long		; RETURN _decimalValue:CompareTo(rhs:_intValue)
                     CASE __UsualType.Float		; RETURN _decimalValue:CompareTo(rhs:_r8Value)
@@ -554,7 +589,18 @@ BEGIN NAMESPACE XSharp
                     OTHERWISE
                         NOP	// uses comparison by type
                     END SWITCH
-                 CASE __UsualType.Ptr
+                CASE __UsualType.Currency
+                    SWITCH rhs:_usualType
+                    CASE __UsualType.Date		; RETURN _currencyValue:Value:CompareTo((INT) rhs:_dateValue)
+                    CASE __UsualType.Decimal    ; RETURN _currencyValue:Value:CompareTo(rhs:_decimalValue)
+                    CASE __UsualType.Long		; RETURN _currencyValue:Value:CompareTo(rhs:_intValue)
+                    CASE __UsualType.Float		; RETURN _currencyValue:Value:CompareTo(rhs:_r8Value)
+                    CASE __UsualType.Int64		; RETURN _currencyValue:Value:CompareTo(rhs:_i64Value)
+                    OTHERWISE
+                        NOP	// uses comparison by type
+                    END SWITCH
+  
+                CASE __UsualType.Ptr
                     SWITCH rhs:_usualType
                     CASE __UsualType.Long		; RETURN (_ptrValue:ToInt32()):CompareTo(rhs:_intValue)
                     CASE __UsualType.Int64		; RETURN (_ptrValue:ToInt64()):CompareTo(rhs:_i64Value)
@@ -592,6 +638,7 @@ BEGIN NAMESPACE XSharp
                 CASE __UsualType.Long		; RETURN lhs:_intValue > rhs:_intValue
                 CASE __UsualType.Int64		; RETURN lhs:_intValue > rhs:_i64Value
                 CASE __UsualType.Float		; RETURN lhs:_intValue > rhs:_r8Value
+                CASE __UsualType.Currency	; RETURN lhs:_intValue > rhs:_currencyValue
                 CASE __UsualType.Decimal	; RETURN lhs:_intValue > rhs:_decimalValue
                 CASE __UsualType.Ptr	    ; RETURN lhs:_intValue > rhs:_ptrValue:ToInt32()
                 OTHERWISE
@@ -603,6 +650,7 @@ BEGIN NAMESPACE XSharp
                 CASE __UsualType.Long		; RETURN lhs:_i64Value > rhs:_intValue
                 CASE __UsualType.Int64		; RETURN lhs:_i64Value > rhs:_i64Value
                 CASE __UsualType.Float		; RETURN lhs:_i64Value > rhs:_r8Value
+                CASE __UsualType.Currency	; RETURN lhs:_i64Value > rhs:_currencyValue
                 CASE __UsualType.Decimal	; RETURN lhs:_i64Value > rhs:_decimalValue
                 CASE __UsualType.Ptr	    ; RETURN lhs:_i64Value > rhs:_ptrValue:ToInt64()
                 OTHERWISE
@@ -614,6 +662,7 @@ BEGIN NAMESPACE XSharp
                 CASE __UsualType.Long		; RETURN FLOAT{lhs:_r8Value } > FLOAT{rhs:_intValue}
                 CASE __UsualType.Int64		; RETURN FLOAT{lhs:_r8Value } > FLOAT{rhs:_i64Value}
                 CASE __UsualType.Float		; RETURN FLOAT{lhs:_r8Value } > FLOAT{rhs:_r8Value}
+                CASE __UsualType.Currency	; RETURN FLOAT{lhs:_r8Value } > FLOAT{(REAL8) rhs:_currencyValue}
                 CASE __UsualType.Decimal	; RETURN FLOAT{lhs:_r8Value } > FLOAT{(REAL8) rhs:_decimalValue}
                 OTHERWISE
                     THROW BinaryError(">", __CavoStr(VOErrors.ARGNOTNUMERIC), FALSE, lhs, rhs)
@@ -624,6 +673,7 @@ BEGIN NAMESPACE XSharp
                 CASE __UsualType.Long		; RETURN lhs:_decimalValue > rhs:_intValue
                 CASE __UsualType.Int64		; RETURN lhs:_decimalValue > rhs:_i64Value
                 CASE __UsualType.Float		; RETURN lhs:_decimalValue > (System.Decimal) rhs:_r8Value
+                CASE __UsualType.Currency	; RETURN lhs:_decimalValue > rhs:_currencyValue
                 CASE __UsualType.Decimal	; RETURN lhs:_decimalValue >  rhs:_decimalValue
                 OTHERWISE
                     THROW BinaryError(">", __CavoStr(VOErrors.ARGNOTNUMERIC), FALSE, lhs, rhs)
@@ -683,6 +733,7 @@ BEGIN NAMESPACE XSharp
                 CASE __UsualType.Long		; RETURN lhs:_intValue >= rhs:_intValue
                 CASE __UsualType.Int64		; RETURN lhs:_intValue >= rhs:_i64Value
                 CASE __UsualType.Float		; RETURN lhs:_intValue >= rhs:_r8Value
+                CASE __UsualType.Currency	; RETURN lhs:_intValue >= rhs:_currencyValue
                 CASE __UsualType.Decimal	; RETURN lhs:_intValue >= rhs:_decimalValue
                 CASE __UsualType.Ptr	    ; RETURN lhs:_intValue >= rhs:_ptrValue:ToInt32()
                 OTHERWISE
@@ -693,6 +744,7 @@ BEGIN NAMESPACE XSharp
                 CASE __UsualType.Long		; RETURN lhs:_i64Value >= rhs:_intValue
                 CASE __UsualType.Int64		; RETURN lhs:_i64Value >= rhs:_i64Value
                 CASE __UsualType.Float		; RETURN lhs:_i64Value >= rhs:_r8Value
+                CASE __UsualType.Currency	; RETURN lhs:_i64Value >= rhs:_currencyValue
                 CASE __UsualType.Decimal	; RETURN lhs:_i64Value >= rhs:_decimalValue
                 CASE __UsualType.Ptr	    ; RETURN lhs:_i64Value >= rhs:_ptrValue:ToInt64()
                 OTHERWISE
@@ -702,6 +754,7 @@ BEGIN NAMESPACE XSharp
                 SWITCH rhs:_usualType
                 CASE __UsualType.Long		; RETURN FLOAT{lhs:_r8Value} >= FLOAT{ rhs:_intValue}
                 CASE __UsualType.Int64		; RETURN FLOAT{lhs:_r8Value} >= FLOAT{ rhs:_i64Value}
+                CASE __UsualType.Currency	; RETURN FLOAT{lhs:_r8Value} >= FLOAT{ (REAL8) rhs:_currencyValue}
                 CASE __UsualType.Float		; RETURN FLOAT{lhs:_r8Value} >= FLOAT{ rhs:_r8Value}
                 CASE __UsualType.Decimal	; RETURN FLOAT{lhs:_r8Value} >= FLOAT{ (REAL8) rhs:_decimalValue}
                 OTHERWISE
@@ -713,7 +766,19 @@ BEGIN NAMESPACE XSharp
                 CASE __UsualType.Long		; RETURN lhs:_decimalValue >= rhs:_intValue
                 CASE __UsualType.Int64		; RETURN lhs:_decimalValue >= rhs:_i64Value
                 CASE __UsualType.Float		; RETURN lhs:_decimalValue >= (System.Decimal) rhs:_r8Value
-                CASE __UsualType.Decimal	; RETURN lhs:_decimalValue >=  rhs:_decimalValue
+                CASE __UsualType.Currency	; RETURN lhs:_decimalValue >= rhs:_currencyValue
+                CASE __UsualType.Decimal	; RETURN lhs:_decimalValue >= rhs:_decimalValue
+                OTHERWISE
+                    THROW BinaryError(">=", __CavoStr(VOErrors.ARGNOTNUMERIC), FALSE, lhs, rhs)
+                END SWITCH
+
+            CASE __UsualType.Currency
+                SWITCH rhs:_usualType
+                CASE __UsualType.Long		; RETURN lhs:_currencyValue >= rhs:_intValue
+                CASE __UsualType.Int64		; RETURN lhs:_currencyValue >= rhs:_i64Value
+                CASE __UsualType.Float		; RETURN lhs:_currencyValue >= (System.Decimal) rhs:_r8Value
+                CASE __UsualType.Currency	; RETURN lhs:_currencyValue >= rhs:_currencyValue
+                CASE __UsualType.Decimal	; RETURN lhs:_currencyValue >= rhs:_decimalValue
                 OTHERWISE
                     THROW BinaryError(">=", __CavoStr(VOErrors.ARGNOTNUMERIC), FALSE, lhs, rhs)
                 END SWITCH
@@ -770,6 +835,7 @@ BEGIN NAMESPACE XSharp
                 CASE __UsualType.Long		; RETURN lhs:_intValue < rhs:_intValue
                 CASE __UsualType.Int64		; RETURN lhs:_intValue < rhs:_i64Value
                 CASE __UsualType.Float		; RETURN lhs:_intValue < rhs:_r8Value
+                CASE __UsualType.Currency	; RETURN lhs:_intValue < rhs:_currencyValue
                 CASE __UsualType.Decimal	; RETURN lhs:_intValue < rhs:_decimalValue
                 CASE __UsualType.Ptr	    ; RETURN lhs:_intValue < rhs:_ptrValue:ToInt32()
                 OTHERWISE
@@ -780,6 +846,7 @@ BEGIN NAMESPACE XSharp
                 CASE __UsualType.Long		; RETURN lhs:_i64Value < rhs:_intValue
                 CASE __UsualType.Int64		; RETURN lhs:_i64Value < rhs:_i64Value
                 CASE __UsualType.Float		; RETURN lhs:_i64Value < rhs:_r8Value
+                CASE __UsualType.Currency	; RETURN lhs:_i64Value < rhs:_currencyValue
                 CASE __UsualType.Decimal	; RETURN lhs:_i64Value < rhs:_decimalValue
                 CASE __UsualType.Ptr	    ; RETURN lhs:_i64Value < rhs:_ptrValue:ToInt64()
                 OTHERWISE
@@ -790,6 +857,7 @@ BEGIN NAMESPACE XSharp
                 CASE __UsualType.Long		; RETURN FLOAT{lhs:_r8Value} < FLOAT{rhs:_intValue              }
                 CASE __UsualType.Int64		; RETURN FLOAT{lhs:_r8Value} < FLOAT{rhs:_i64Value              }
                 CASE __UsualType.Float		; RETURN FLOAT{lhs:_r8Value} < FLOAT{rhs:_r8Value               }
+                CASE __UsualType.Currency	; RETURN FLOAT{lhs:_r8Value} < FLOAT{(REAL8) rhs:_currencyValue }
                 CASE __UsualType.Decimal	; RETURN FLOAT{lhs:_r8Value} < FLOAT{(REAL8) rhs:_decimalValue  }
                 OTHERWISE
                     THROW BinaryError("<", __CavoStr(VOErrors.ARGNOTNUMERIC), FALSE, lhs, rhs)
@@ -800,12 +868,23 @@ BEGIN NAMESPACE XSharp
                 CASE __UsualType.Long		; RETURN lhs:_decimalValue < rhs:_intValue
                 CASE __UsualType.Int64		; RETURN lhs:_decimalValue < rhs:_i64Value
                 CASE __UsualType.Float		; RETURN lhs:_decimalValue < (System.Decimal) rhs:_r8Value
+                CASE __UsualType.Currency	; RETURN lhs:_decimalValue < rhs:_currencyValue
                 CASE __UsualType.Decimal	; RETURN lhs:_decimalValue <  rhs:_decimalValue
                 OTHERWISE
                     THROW BinaryError("<", __CavoStr(VOErrors.ARGNOTNUMERIC), FALSE, lhs, rhs)
                 END SWITCH
 
-            CASE __UsualType.String
+            CASE __UsualType.Currency
+                SWITCH rhs:_usualType
+                CASE __UsualType.Long		; RETURN lhs:_currencyValue < rhs:_intValue
+                CASE __UsualType.Int64		; RETURN lhs:_currencyValue < rhs:_i64Value
+                CASE __UsualType.Float		; RETURN lhs:_currencyValue < (System.Decimal) rhs:_r8Value
+                CASE __UsualType.Currency	; RETURN lhs:_currencyValue < rhs:_currencyValue
+                CASE __UsualType.Decimal	; RETURN lhs:_currencyValue <  rhs:_decimalValue
+                OTHERWISE
+                    THROW BinaryError("<", __CavoStr(VOErrors.ARGNOTNUMERIC), FALSE, lhs, rhs)
+                END SWITCH
+           CASE __UsualType.String
                 IF rhs:_usualType == __UsualType.String
                     RETURN __StringCompare( lhs:_stringValue,  rhs:_stringValue) < 0
                 ELSE
@@ -859,6 +938,7 @@ BEGIN NAMESPACE XSharp
                 CASE __UsualType.Long		; RETURN lhs:_intValue <= rhs:_intValue
                 CASE __UsualType.Int64		; RETURN lhs:_intValue <= rhs:_i64Value
                 CASE __UsualType.Float		; RETURN lhs:_intValue <= rhs:_r8Value
+                CASE __UsualType.Currency	; RETURN lhs:_intValue <= rhs:_currencyValue
                 CASE __UsualType.Decimal	; RETURN lhs:_intValue <= rhs:_decimalValue
                 CASE __UsualType.Ptr	    ; RETURN lhs:_intValue <= rhs:_ptrValue:ToInt32()
                 OTHERWISE
@@ -869,6 +949,7 @@ BEGIN NAMESPACE XSharp
                 CASE __UsualType.Long		; RETURN lhs:_i64Value <= rhs:_intValue
                 CASE __UsualType.Int64		; RETURN lhs:_i64Value <= rhs:_i64Value
                 CASE __UsualType.Float		; RETURN lhs:_i64Value <= rhs:_r8Value
+                CASE __UsualType.Currency	; RETURN lhs:_i64Value <= rhs:_currencyValue
                 CASE __UsualType.Decimal	; RETURN lhs:_i64Value <= rhs:_decimalValue
                 CASE __UsualType.Ptr	    ; RETURN lhs:_i64Value <= rhs:_ptrValue:ToInt64()
                 OTHERWISE
@@ -879,6 +960,7 @@ BEGIN NAMESPACE XSharp
                 CASE __UsualType.Long		; RETURN FLOAT{lhs:_r8Value} <= FLOAT{rhs:_intValue             } 
                 CASE __UsualType.Int64		; RETURN FLOAT{lhs:_r8Value} <= FLOAT{rhs:_i64Value             } 
                 CASE __UsualType.Float		; RETURN FLOAT{lhs:_r8Value} <= FLOAT{rhs:_r8Value              } 
+                CASE __UsualType.Currency	; RETURN FLOAT{lhs:_r8Value} <= FLOAT{(REAL8) rhs:_currencyValue }
                 CASE __UsualType.Decimal	; RETURN FLOAT{lhs:_r8Value} <= FLOAT{(REAL8) rhs:_decimalValue } 
                 OTHERWISE
                     THROW BinaryError("<=", __CavoStr(VOErrors.ARGNOTNUMERIC), FALSE, lhs, rhs)
@@ -889,12 +971,24 @@ BEGIN NAMESPACE XSharp
                 CASE __UsualType.Long		; RETURN lhs:_decimalValue <= rhs:_intValue
                 CASE __UsualType.Int64		; RETURN lhs:_decimalValue <= rhs:_i64Value
                 CASE __UsualType.Float		; RETURN lhs:_decimalValue <= (System.Decimal) rhs:_r8Value
+                CASE __UsualType.Currency	; RETURN lhs:_decimalValue <= rhs:_currencyValue
                 CASE __UsualType.Decimal	; RETURN lhs:_decimalValue <=  rhs:_decimalValue
                 OTHERWISE
                     THROW BinaryError("<=", __CavoStr(VOErrors.ARGNOTNUMERIC), FALSE, lhs, rhs)
                 END SWITCH
 
-            CASE __UsualType.String
+            CASE __UsualType.Currency
+                SWITCH rhs:_usualType
+                CASE __UsualType.Long		; RETURN lhs:_currencyValue <= rhs:_intValue
+                CASE __UsualType.Int64		; RETURN lhs:_currencyValue <= rhs:_i64Value
+                CASE __UsualType.Float		; RETURN lhs:_currencyValue <= (System.Decimal) rhs:_r8Value
+                CASE __UsualType.Currency	; RETURN lhs:_currencyValue <= rhs:_currencyValue
+                CASE __UsualType.Decimal	; RETURN lhs:_currencyValue <=  rhs:_decimalValue
+                OTHERWISE
+                    THROW BinaryError("<=", __CavoStr(VOErrors.ARGNOTNUMERIC), FALSE, lhs, rhs)
+                END SWITCH
+
+           CASE __UsualType.String
                 IF rhs:_usualType == __UsualType.String
                     RETURN __StringCompare( lhs:_stringValue,  rhs:_stringValue) <= 0
                 ELSE
@@ -995,6 +1089,7 @@ BEGIN NAMESPACE XSharp
                         CASE __UsualType.Long		; RETURN SELF:_intValue == rhs:_intValue
                         CASE __UsualType.Int64		; RETURN (INT64) SELF:_intValue == rhs:_i64Value	// cast lhs to int64 to avoid overflow
                         CASE __UsualType.Float		; RETURN (REAL8) SELF:_intValue == rhs:_r8Value // cast lhs to real8 to avoid overflow
+                        CASE __UsualType.Currency	; RETURN (System.Decimal) SELF:_intValue == rhs:_currencyValue	// cast lhs to decimal to avoid overflow
                         CASE __UsualType.Decimal	; RETURN (System.Decimal) SELF:_intValue == rhs:_decimalValue	// cast lhs to decimal to avoid overflow
                         CASE __UsualType.Logic		; RETURN rhs:_logicValue == (SELF:_intValue <> 0)
                         CASE __UsualType.Ptr        ; RETURN rhs:_ptrValue:ToInt32() == SELF:_intValue
@@ -1007,6 +1102,7 @@ BEGIN NAMESPACE XSharp
                         CASE __UsualType.Long		; RETURN _i64Value == (INT64) rhs:_intValue
                         CASE __UsualType.Int64		; RETURN _i64Value == rhs:_i64Value
                         CASE __UsualType.Float		; RETURN  FLOAT{(REAL8) _i64Value} == FLOAT{rhs:_r8Value}
+                        CASE __UsualType.Currency	; RETURN _i64Value == rhs:_currencyValue	
                         CASE __UsualType.Decimal	; RETURN _i64Value == rhs:_decimalValue
                         CASE __UsualType.Logic		; RETURN rhs:_logicValue == (SELF:_i64Value <> 0)
                         CASE __UsualType.Ptr        ; RETURN rhs:_ptrValue:ToInt64() == SELF:_i64Value
@@ -1019,6 +1115,7 @@ BEGIN NAMESPACE XSharp
                         CASE __UsualType.Long		; RETURN FLOAT{_r8Value} == FLOAT{(REAL8) rhs:_intValue}
                         CASE __UsualType.Int64		; RETURN FLOAT{_r8Value} == FLOAT{(REAL8) rhs:_i64Value}
                         CASE __UsualType.Float		; RETURN FLOAT{_r8Value} == FLOAT{ rhs:_r8Value}
+                        CASE __UsualType.Currency	; RETURN FLOAT{_r8Value} == FLOAT{ (REAL8) rhs:_currencyValue}	
                         CASE __UsualType.Decimal	; RETURN FLOAT{_r8Value} == FLOAT{ (REAL8) rhs:_decimalValue}
                         OTHERWISE
                             NOP // error below
@@ -1027,22 +1124,35 @@ BEGIN NAMESPACE XSharp
                 CASE __UsualType.Decimal
                     SWITCH rhs:_usualType
                     CASE __UsualType.Long		; RETURN SELF:_decimalValue == rhs:_intValue
-                        CASE __UsualType.Int64		; RETURN SELF:_decimalValue == rhs:_i64Value
-                        CASE __UsualType.Float		; RETURN SELF:_decimalValue == (System.Decimal) rhs:_r8Value
-                        CASE __UsualType.Decimal	; RETURN SELF:_decimalValue == rhs:_decimalValue
-                        OTHERWISE
-                            NOP // error below
-                        END SWITCH
+                    CASE __UsualType.Int64		; RETURN SELF:_decimalValue == rhs:_i64Value
+                    CASE __UsualType.Float		; RETURN SELF:_decimalValue == (System.Decimal) rhs:_r8Value
+                    CASE __UsualType.Currency	; RETURN SELF:_decimalValue == rhs:_currencyValue
+                    CASE __UsualType.Decimal	; RETURN SELF:_decimalValue == rhs:_decimalValue
+                    OTHERWISE
+                        NOP // error below
+                    END SWITCH
 
-                CASE __UsualType.Logic
+                CASE __UsualType.Currency
+                    SWITCH rhs:_usualType
+                    CASE __UsualType.Long		; RETURN SELF:_currencyValue == rhs:_intValue
+                    CASE __UsualType.Int64		; RETURN SELF:_currencyValue == rhs:_i64Value
+                    CASE __UsualType.Float		; RETURN SELF:_currencyValue == (System.Decimal) rhs:_r8Value
+                    CASE __UsualType.Currency	; RETURN SELF:_currencyValue == rhs:_currencyValue
+                    CASE __UsualType.Decimal	; RETURN SELF:_currencyValue == rhs:_decimalValue
+                    OTHERWISE
+                        NOP // error below
+                    END SWITCH
+
+               CASE __UsualType.Logic
                     SWITCH rhs:_usualType
                     CASE __UsualType.Logic		; RETURN SELF:_logicValue == rhs:_logicValue
-                        CASE __UsualType.Long		; RETURN SELF:_logicValue == (rhs:_intValue <> 0)
-                        CASE __UsualType.Int64		; RETURN SELF:_logicValue == (rhs:_i64Value <> 0)
-                        CASE __UsualType.Decimal	; RETURN SELF:_logicValue == (rhs:_decimalValue <> 0)
-                        OTHERWISE
-                            NOP // error below
-                        END SWITCH
+                    CASE __UsualType.Long		; RETURN SELF:_logicValue == (rhs:_intValue <> 0)
+                    CASE __UsualType.Int64		; RETURN SELF:_logicValue == (rhs:_i64Value <> 0)
+                    CASE __UsualType.Currency	; RETURN SELF:_logicValue == (rhs:_currencyValue <> 0)
+                    CASE __UsualType.Decimal	; RETURN SELF:_logicValue == (rhs:_decimalValue <> 0)
+                    OTHERWISE
+                        NOP // error below
+                    END SWITCH
 
                 CASE __UsualType.DATE
                     SWITCH rhs:_usualType
@@ -1130,6 +1240,7 @@ BEGIN NAMESPACE XSharp
                 CASE __UsualType.LONG		; RETURN -u:_intValue
                 CASE __UsualType.Int64		; RETURN -u:_i64Value
                 CASE __UsualType.Float		; RETURN -u:_floatValue
+                CASE __UsualType.Currency	; RETURN -u:_currencyValue
                 CASE __UsualType.Decimal	; RETURN -u:_decimalValue
                 OTHERWISE
                     THROW UnaryError("-", u)
@@ -1141,6 +1252,7 @@ BEGIN NAMESPACE XSharp
                 CASE __UsualType.LONG		; RETURN u:_intValue
                 CASE __UsualType.Int64		; RETURN u:_i64Value
                 CASE __UsualType.Float		; RETURN u:_floatValue
+                CASE __UsualType.Currency	; RETURN u:_currencyValue
                 CASE __UsualType.Decimal	; RETURN u:_decimalValue
                 OTHERWISE
                     THROW UnaryError("+", u)
@@ -1152,6 +1264,7 @@ BEGIN NAMESPACE XSharp
                 CASE __UsualType.LONG		; RETURN u:_intValue - 1
                 CASE __UsualType.Int64		; RETURN u:_i64Value - 1
                 CASE __UsualType.Float		; RETURN u:_floatValue -1
+                CASE __UsualType.Currency	; RETURN u:_currencyValue -1
                 CASE __UsualType.Decimal	; RETURN u:_decimalValue - 1
                 CASE __UsualType.Date	    ; RETURN u:_dateValue -1
                 CASE __UsualType.DateTime   ; RETURN u:_datetimeValue:AddDays(-1)
@@ -1165,6 +1278,7 @@ BEGIN NAMESPACE XSharp
                 CASE __UsualType.LONG		; RETURN u:_intValue + 1
                 CASE __UsualType.Int64		; RETURN u:_i64Value + 1
                 CASE __UsualType.Float		; RETURN u:_floatValue +1
+                CASE __UsualType.Currency	; RETURN u:_currencyValue +1
                 CASE __UsualType.Decimal	; RETURN u:_decimalValue + 1
                 CASE __UsualType.Date	    ; RETURN u:_dateValue + 1
                 CASE __UsualType.DateTime   ; RETURN u:_datetimeValue:AddDays(1)
@@ -1180,71 +1294,85 @@ BEGIN NAMESPACE XSharp
             SWITCH lhs:_usualType
                 CASE __UsualType.Long
                     SWITCH rhs:_usualType
-                     CASE __UsualType.Long		; RETURN lhs:_intValue + rhs:_intValue
-                        CASE __UsualType.Int64		; RETURN lhs:_intValue + rhs:_i64Value
-                        CASE __UsualType.Float		; RETURN lhs:_intValue + rhs:_r8Value
-                        CASE __UsualType.Decimal	; RETURN lhs:_intValue + rhs:_decimalValue
-                        OTHERWISE					; NOP // error below
+                    CASE __UsualType.Long		; RETURN lhs:_intValue + rhs:_intValue
+                    CASE __UsualType.Int64		; RETURN lhs:_intValue + rhs:_i64Value
+                    CASE __UsualType.Float		; RETURN lhs:_intValue + rhs:_r8Value
+                    CASE __UsualType.Currency	; RETURN lhs:_intValue + rhs:_currencyValue
+                    CASE __UsualType.Decimal	; RETURN lhs:_intValue + rhs:_decimalValue
+                    OTHERWISE					; NOP // error below
                     END SWITCH
 
                 CASE __UsualType.Int64
                     SWITCH rhs:_usualType
-                        CASE __UsualType.Long		; RETURN lhs:_i64Value + rhs:_intValue
-                        CASE __UsualType.Int64		; RETURN lhs:_i64Value + rhs:_i64Value
-                        CASE __UsualType.Float		; RETURN lhs:_i64Value + rhs:_r8Value
-                        CASE __UsualType.Decimal	; RETURN lhs:_i64Value + rhs:_decimalValue
-                        OTHERWISE					; NOP // error below
+                    CASE __UsualType.Long		; RETURN lhs:_i64Value + rhs:_intValue
+                    CASE __UsualType.Int64		; RETURN lhs:_i64Value + rhs:_i64Value
+                    CASE __UsualType.Float		; RETURN lhs:_i64Value + rhs:_r8Value
+                    CASE __UsualType.Currency	; RETURN lhs:_i64Value + rhs:_currencyValue
+                    CASE __UsualType.Decimal	; RETURN lhs:_i64Value + rhs:_decimalValue
+                    OTHERWISE					; NOP // error below
                     END SWITCH
 
                 CASE __UsualType.Float
                     SWITCH rhs:_usualType
-                        CASE __UsualType.Long		; RETURN FLOAT{lhs:_r8Value + rhs:_intValue, lhs:_width, lhs:_decimals}
-                        CASE __UsualType.Int64		; RETURN FLOAT{lhs:_r8Value + rhs:_i64Value, lhs:_width, lhs:_decimals}
-                        CASE __UsualType.Float		; RETURN FLOAT{lhs:_r8Value + rhs:_r8Value, lhs:_width, lhs:_decimals}
-                        CASE __UsualType.Decimal	; RETURN FLOAT{lhs:_r8Value + (REAL8) rhs:_decimalValue, lhs:_width, lhs:_decimals}
-                        OTHERWISE					; NOP // error below
+                    CASE __UsualType.Long		; RETURN FLOAT{lhs:_r8Value + rhs:_intValue, lhs:_width, lhs:_decimals}
+                    CASE __UsualType.Int64		; RETURN FLOAT{lhs:_r8Value + rhs:_i64Value, lhs:_width, lhs:_decimals}
+                    CASE __UsualType.Float		; RETURN FLOAT{lhs:_r8Value + rhs:_r8Value, lhs:_width, lhs:_decimals}
+                    CASE __UsualType.Currency	; RETURN FLOAT{lhs:_r8Value + rhs:_currencyValue, lhs:_width, lhs:_decimals}
+                    CASE __UsualType.Decimal	; RETURN FLOAT{lhs:_r8Value + (REAL8) rhs:_decimalValue, lhs:_width, lhs:_decimals}
+                    OTHERWISE					; NOP // error below
                     END SWITCH
 
                 CASE __UsualType.Decimal
                     SWITCH rhs:_usualType
-                        CASE __UsualType.Long		; RETURN lhs:_decimalValue + rhs:_intValue
-                        CASE __UsualType.Int64		; RETURN lhs:_decimalValue + rhs:_i64Value
-                        CASE __UsualType.Float		; RETURN lhs:_decimalValue + (System.Decimal) rhs:_r8Value
-                        CASE __UsualType.Decimal	; RETURN lhs:_decimalValue + rhs:_decimalValue
-                        OTHERWISE					; NOP // error below
+                    CASE __UsualType.Long		; RETURN lhs:_decimalValue + rhs:_intValue
+                    CASE __UsualType.Int64		; RETURN lhs:_decimalValue + rhs:_i64Value
+                    CASE __UsualType.Float		; RETURN lhs:_decimalValue + (System.Decimal) rhs:_r8Value
+                    CASE __UsualType.Currency	; RETURN lhs:_decimalValue + rhs:_currencyValue
+                    CASE __UsualType.Decimal	; RETURN lhs:_decimalValue + rhs:_decimalValue
+                    OTHERWISE					; NOP // error below
                     END SWITCH
 
-                CASE __UsualType.String
+                CASE __UsualType.Currency
                     SWITCH rhs:_usualType
-                        CASE __UsualType.String		; RETURN lhs:_stringValue+ rhs:_stringValue
-                        CASE __UsualType.Symbol		; RETURN lhs:_stringValue+ (STRING) rhs:_symValue
-                        OTHERWISE
-                            THROW BinaryError("+", __CavoStr(VOErrors.ARGNOTSTRING), FALSE, lhs, rhs)
+                    CASE __UsualType.Long		; RETURN lhs:_currencyValue + rhs:_intValue
+                    CASE __UsualType.Int64		; RETURN lhs:_currencyValue + rhs:_i64Value
+                    CASE __UsualType.Float		; RETURN lhs:_currencyValue + (System.Decimal) rhs:_r8Value
+                    CASE __UsualType.Currency	; RETURN lhs:_currencyValue + rhs:_currencyValue
+                    CASE __UsualType.Decimal	; RETURN lhs:_currencyValue + rhs:_decimalValue
+                    OTHERWISE					; NOP // error below
+                    END SWITCH
+
+               CASE __UsualType.String
+                    SWITCH rhs:_usualType
+                    CASE __UsualType.String		; RETURN lhs:_stringValue+ rhs:_stringValue
+                    CASE __UsualType.Symbol		; RETURN lhs:_stringValue+ (STRING) rhs:_symValue
+                    OTHERWISE
+                        THROW BinaryError("+", __CavoStr(VOErrors.ARGNOTSTRING), FALSE, lhs, rhs)
                     END SWITCH
                 CASE __UsualType.Symbol
                     SWITCH rhs:_usualType
-                        CASE __UsualType.String		; RETURN (STRING)lhs:_symValue+ rhs:_stringValue
-                        CASE __UsualType.Symbol		; RETURN (STRING)lhs:_symValue+ (STRING) rhs:_symValue
-                        OTHERWISE
-                            THROW BinaryError("+", __CavoStr(VOErrors.ARGNOTSTRING), FALSE, lhs, rhs)
+                    CASE __UsualType.String		; RETURN (STRING)lhs:_symValue+ rhs:_stringValue
+                    CASE __UsualType.Symbol		; RETURN (STRING)lhs:_symValue+ (STRING) rhs:_symValue
+                    OTHERWISE
+                        THROW BinaryError("+", __CavoStr(VOErrors.ARGNOTSTRING), FALSE, lhs, rhs)
                     END SWITCH
                 CASE __UsualType.Date
                     SWITCH rhs:_usualType
-                        CASE __UsualType.Long		; RETURN lhs:_dateValue + rhs:_intValue
-                        CASE __UsualType.Int64	; RETURN lhs:_dateValue + rhs:_i64Value
-                        CASE __UsualType.Float	; RETURN lhs:_dateValue + rhs:_r8Value
-                            // Note We can't add dates, but we can subtract dates
-                        OTHERWISE
-                            THROW BinaryError("+", __CavoStr(VOErrors.DATE_ADD), FALSE, lhs, rhs)
+                    CASE __UsualType.Long		; RETURN lhs:_dateValue + rhs:_intValue
+                    CASE __UsualType.Int64	; RETURN lhs:_dateValue + rhs:_i64Value
+                    CASE __UsualType.Float	; RETURN lhs:_dateValue + rhs:_r8Value
+                        // Note We can't add dates, but we can subtract dates
+                    OTHERWISE
+                        THROW BinaryError("+", __CavoStr(VOErrors.DATE_ADD), FALSE, lhs, rhs)
                     END SWITCH
                 CASE __UsualType.DateTime
                     SWITCH rhs:_usualType
-                        CASE __UsualType.Long		; RETURN lhs:_dateTimeValue:Add( TimeSpan.FromDays(rhs:_intValue ))
-                        CASE __UsualType.Int64	; RETURN lhs:_dateTimeValue:Add(TimeSpan.FromDays(rhs:_i64Value))
-                        CASE __UsualType.Float	; RETURN lhs:_dateTimeValue:Add(TimeSpan.FromDays(rhs:_r8Value))
-                            // Note We can't add dates, but we can subtract dates
-                        OTHERWISE
-                            THROW BinaryError("+", __CavoStr(VOErrors.DATE_ADD), FALSE, lhs, rhs)
+                    CASE __UsualType.Long		; RETURN lhs:_dateTimeValue:Add( TimeSpan.FromDays(rhs:_intValue ))
+                    CASE __UsualType.Int64	; RETURN lhs:_dateTimeValue:Add(TimeSpan.FromDays(rhs:_i64Value))
+                    CASE __UsualType.Float	; RETURN lhs:_dateTimeValue:Add(TimeSpan.FromDays(rhs:_r8Value))
+                        // Note We can't add dates, but we can subtract dates
+                    OTHERWISE
+                        THROW BinaryError("+", __CavoStr(VOErrors.DATE_ADD), FALSE, lhs, rhs)
                     END SWITCH
 
                 OTHERWISE
@@ -1257,37 +1385,51 @@ BEGIN NAMESPACE XSharp
             SWITCH lhs:_usualType
                 CASE __UsualType.Long
                     SWITCH rhs:_usualType
-                        CASE __UsualType.Long		; RETURN lhs:_intValue - rhs:_intValue
-                        CASE __UsualType.Int64		; RETURN lhs:_intValue - rhs:_i64Value
-                        CASE __UsualType.Float		; RETURN lhs:_intValue - rhs:_r8Value
-                        CASE __UsualType.Decimal	; RETURN lhs:_intValue - rhs:_decimalValue
-                        OTHERWISE					; NOP // error below
+                    CASE __UsualType.Long		; RETURN lhs:_intValue - rhs:_intValue
+                    CASE __UsualType.Int64		; RETURN lhs:_intValue - rhs:_i64Value
+                    CASE __UsualType.Float		; RETURN lhs:_intValue - rhs:_r8Value
+                    CASE __UsualType.Currency	; RETURN lhs:_intValue - rhs:_currencyValue
+                    CASE __UsualType.Decimal	; RETURN lhs:_intValue - rhs:_decimalValue
+                    OTHERWISE					; NOP // error below
                     END SWITCH
                 CASE __UsualType.Int64
                     SWITCH rhs:_usualType
                     CASE __UsualType.Long		; RETURN lhs:_i64Value - rhs:_intValue
-                        CASE __UsualType.Int64		; RETURN lhs:_i64Value - rhs:_i64Value
-                        CASE __UsualType.Float		; RETURN lhs:_i64Value - rhs:_r8Value
-                        CASE __UsualType.Decimal	; RETURN lhs:_i64Value - rhs:_decimalValue
-                        OTHERWISE					; NOP // error below
-                        END SWITCH
+                    CASE __UsualType.Int64		; RETURN lhs:_i64Value - rhs:_i64Value
+                    CASE __UsualType.Float		; RETURN lhs:_i64Value - rhs:_r8Value
+                    CASE __UsualType.Currency	; RETURN lhs:_i64Value - rhs:_currencyValue
+                    CASE __UsualType.Decimal	; RETURN lhs:_i64Value - rhs:_decimalValue
+                    OTHERWISE					; NOP // error below
+                    END SWITCH
                 CASE __UsualType.Float
                     SWITCH rhs:_usualType
-                        CASE __UsualType.Long		; RETURN FLOAT{lhs:_r8Value - rhs:_intValue ,lhs:_width, lhs:_decimals}
-                        CASE __UsualType.Int64		; RETURN FLOAT{lhs:_r8Value - rhs:_i64Value ,lhs:_width, lhs:_decimals}
-                        CASE __UsualType.Float		; RETURN FLOAT{lhs:_r8Value - rhs:_r8Value	,lhs:_width, lhs:_decimals}
-                        CASE __UsualType.Decimal	; RETURN FLOAT{lhs:_r8Value - (REAL8) rhs:_decimalValue ,lhs:_width, lhs:_decimals}
-                        OTHERWISE					; NOP // error below
+                    CASE __UsualType.Long		; RETURN FLOAT{lhs:_r8Value - rhs:_intValue ,lhs:_width, lhs:_decimals}
+                    CASE __UsualType.Int64		; RETURN FLOAT{lhs:_r8Value - rhs:_i64Value ,lhs:_width, lhs:_decimals}
+                    CASE __UsualType.Float		; RETURN FLOAT{lhs:_r8Value - rhs:_r8Value	,lhs:_width, lhs:_decimals}
+                    CASE __UsualType.Currency	; RETURN FLOAT{lhs:_r8Value - rhs:_currencyValue,lhs:_width, lhs:_decimals}
+                    CASE __UsualType.Decimal	; RETURN FLOAT{lhs:_r8Value - (REAL8) rhs:_decimalValue ,lhs:_width, lhs:_decimals}
+                    OTHERWISE					; NOP // error below
                     END SWITCH
 
 
                 CASE __UsualType.Decimal
                     SWITCH rhs:_usualType
-                        CASE __UsualType.Long		; RETURN lhs:_decimalValue - rhs:_intValue
-                        CASE __UsualType.Int64		; RETURN lhs:_decimalValue - rhs:_i64Value
-                        CASE __UsualType.Float		; RETURN lhs:_decimalValue - (System.Decimal) rhs:_r8Value
-                        CASE __UsualType.Decimal	; RETURN lhs:_decimalValue - rhs:_decimalValue
-                        OTHERWISE					; NOP // error below
+                    CASE __UsualType.Long		; RETURN lhs:_decimalValue - rhs:_intValue
+                    CASE __UsualType.Int64		; RETURN lhs:_decimalValue - rhs:_i64Value
+                    CASE __UsualType.Float		; RETURN lhs:_decimalValue - (System.Decimal) rhs:_r8Value
+                    CASE __UsualType.Currency	; RETURN lhs:_decimalValue - rhs:_currencyValue
+                    CASE __UsualType.Decimal	; RETURN lhs:_decimalValue - rhs:_decimalValue
+                    OTHERWISE					; NOP // error below
+                    END SWITCH
+
+                CASE __UsualType.Currency
+                    SWITCH rhs:_usualType
+                    CASE __UsualType.Long		; RETURN lhs:_currencyValue - rhs:_intValue
+                    CASE __UsualType.Int64		; RETURN lhs:_currencyValue - rhs:_i64Value
+                    CASE __UsualType.Float		; RETURN lhs:_currencyValue - (System.Decimal) rhs:_r8Value
+                    CASE __UsualType.Currency	; RETURN lhs:_currencyValue - rhs:_currencyValue
+                    CASE __UsualType.Decimal	; RETURN lhs:_currencyValue - rhs:_decimalValue
+                    OTHERWISE					; NOP // error below
                     END SWITCH
 
                 CASE __UsualType.String
@@ -1327,35 +1469,43 @@ BEGIN NAMESPACE XSharp
 
                 CASE __UsualType.Long
                     SWITCH rhs:_usualType
-                        CASE __UsualType.Long
-                            LOCAL result AS INT
-                            result := Math.DivRem(lhs:_intValue, rhs:_intValue, OUT VAR remainder)
-                            IF remainder == 0
-                                RETURN result
-                            ELSE
-                                RETURN (FLOAT)lhs:_intValue / (FLOAT)rhs:_intValue
-                            ENDIF
-                        CASE __UsualType.Int64
-                            LOCAL result AS INT64
-                            result := Math.DivRem((INT64) lhs:_intValue, rhs:_i64Value, OUT VAR remainder)
-                            IF remainder == 0
-                                RETURN result
-                            ELSE
-                                RETURN (FLOAT)lhs:_intValue / (FLOAT)rhs:_i64Value
-                            ENDIF
-                        CASE __UsualType.Float
-                            RETURN FLOAT{lhs:_intValue / rhs:_r8Value, rhs:_width, rhs:_decimals}
+                    CASE __UsualType.Long
+                        LOCAL result AS INT
+                        result := Math.DivRem(lhs:_intValue, rhs:_intValue, OUT VAR remainder)
+                        IF remainder == 0
+                            RETURN result
+                        ELSE
+                            RETURN (FLOAT)lhs:_intValue / (FLOAT)rhs:_intValue
+                        ENDIF
+                    CASE __UsualType.Int64
+                        LOCAL result AS INT64
+                        result := Math.DivRem((INT64) lhs:_intValue, rhs:_i64Value, OUT VAR remainder)
+                        IF remainder == 0
+                            RETURN result
+                        ELSE
+                            RETURN (FLOAT)lhs:_intValue / (FLOAT)rhs:_i64Value
+                        ENDIF
+                    CASE __UsualType.Float
+                        RETURN FLOAT{lhs:_intValue / rhs:_r8Value, rhs:_width, rhs:_decimals}
 
-                        CASE __UsualType.Decimal
-                            LOCAL result AS INT64
-                            result := Math.DivRem((INT64) lhs:_intValue, (INT64) rhs:_decimalValue, OUT VAR remainder)
-                            IF remainder == 0
-                                RETURN result
-                            ELSE
-                                RETURN lhs:_intValue / rhs:_decimalValue
-                            ENDIF
-                        OTHERWISE
-                            NOP // error below
+                    CASE __UsualType.Currency
+                        LOCAL result AS INT64
+                        result := Math.DivRem((INT64) lhs:_intValue, (INT64) rhs:_currencyValue, OUT VAR remainder)
+                        IF remainder == 0
+                            RETURN result
+                        ELSE
+                            RETURN lhs:_intValue / rhs:_currencyValue
+                        ENDIF
+                   CASE __UsualType.Decimal
+                        LOCAL result AS INT64
+                        result := Math.DivRem((INT64) lhs:_intValue, (INT64) rhs:_decimalValue, OUT VAR remainder)
+                        IF remainder == 0
+                            RETURN result
+                        ELSE
+                            RETURN lhs:_intValue / rhs:_decimalValue
+                        ENDIF
+                    OTHERWISE
+                        NOP // error below
                     END SWITCH
 
                 CASE __UsualType.Int64
@@ -1379,7 +1529,16 @@ BEGIN NAMESPACE XSharp
                         CASE __UsualType.Float
                             RETURN FLOAT{lhs:_i64Value / rhs:_r8Value, rhs:_width, rhs:_decimals}
 
-                        CASE __UsualType.Decimal
+                       CASE __UsualType.Currency
+                            LOCAL result AS INT64
+                            result := Math.DivRem(lhs:_i64Value, (INT64) rhs:_currencyValue, OUT VAR remainder)
+                            IF remainder == 0
+                                RETURN result
+                            ELSE
+                                RETURN lhs:_i64Value / rhs:_currencyValue
+                            ENDIF
+
+                         CASE __UsualType.Decimal
                             LOCAL result AS INT64
                             result := Math.DivRem(lhs:_i64Value, (INT64) rhs:_decimalValue, OUT VAR remainder)
                             IF remainder == 0
@@ -1396,17 +1555,29 @@ BEGIN NAMESPACE XSharp
                         CASE __UsualType.Long		; RETURN FLOAT{lhs:_r8Value / rhs:_intValue, lhs:_width, lhs:_decimals}
                         CASE __UsualType.Int64		; RETURN FLOAT{lhs:_r8Value / rhs:_i64Value, lhs:_width, lhs:_decimals}
                         CASE __UsualType.Float		; RETURN FLOAT{lhs:_r8Value / rhs:_r8Value, Math.Max(lhs:_width,rhs:_width), lhs:_decimals+ rhs:_decimals}
+                        CASE __UsualType.Currency	; RETURN FLOAT{lhs:_r8Value / (REAL8) rhs:_currencyValue, lhs:_width, lhs:_decimals}
                         CASE __UsualType.Decimal	; RETURN FLOAT{lhs:_r8Value / (REAL8) rhs:_decimalValue, lhs:_width, lhs:_decimals}
                         OTHERWISE					; NOP // error below
                     END SWITCH
 
                 CASE __UsualType.Decimal
                     SWITCH rhs:_usualType
-                        CASE __UsualType.Long		; RETURN lhs:_decimalValue / rhs:_intValue
-                        CASE __UsualType.Int64		; RETURN lhs:_decimalValue / rhs:_i64Value
-                        CASE __UsualType.Float		; RETURN lhs:_decimalValue / (System.Decimal) rhs:_r8Value
-                        CASE __UsualType.Decimal	; RETURN lhs:_decimalValue / rhs:_decimalValue
-                        OTHERWISE					; NOP // error below
+                    CASE __UsualType.Long		; RETURN lhs:_decimalValue / rhs:_intValue
+                    CASE __UsualType.Int64		; RETURN lhs:_decimalValue / rhs:_i64Value
+                    CASE __UsualType.Float		; RETURN lhs:_decimalValue / (System.Decimal) rhs:_r8Value
+                    CASE __UsualType.Currency	; RETURN lhs:_decimalValue / rhs:_currencyValue
+                    CASE __UsualType.Decimal	; RETURN lhs:_decimalValue / rhs:_decimalValue
+                    OTHERWISE					; NOP // error below
+                    END SWITCH
+
+               CASE __UsualType.Currency
+                    SWITCH rhs:_usualType
+                    CASE __UsualType.Long		; RETURN lhs:_currencyValue / rhs:_intValue
+                    CASE __UsualType.Int64		; RETURN lhs:_currencyValue / rhs:_i64Value
+                    CASE __UsualType.Float		; RETURN lhs:_currencyValue / (System.Decimal) rhs:_r8Value
+                    CASE __UsualType.Currency	; RETURN lhs:_currencyValue / rhs:_currencyValue
+                    CASE __UsualType.Decimal	; RETURN lhs:_currencyValue / rhs:_decimalValue
+                    OTHERWISE					; NOP // error below
                     END SWITCH
 
                 OTHERWISE
@@ -1419,40 +1590,53 @@ BEGIN NAMESPACE XSharp
             SWITCH lhs:_usualType
                 CASE __UsualType.Long
                     SWITCH rhs:_usualType
-                        CASE __UsualType.Long		; RETURN lhs:_intValue % rhs:_intValue
-                        CASE __UsualType.Int64		; RETURN lhs:_intValue % rhs:_i64Value
-                        CASE __UsualType.Float		; RETURN FLOAT{lhs:_intValue % rhs:_r8Value, rhs:_width, rhs:_decimals}
-                        CASE __UsualType.Decimal	; RETURN lhs:_intValue % rhs:_decimalValue
-                        OTHERWISE					; NOP // error below
+                    CASE __UsualType.Long		; RETURN lhs:_intValue % rhs:_intValue
+                    CASE __UsualType.Int64		; RETURN lhs:_intValue % rhs:_i64Value
+                    CASE __UsualType.Float		; RETURN FLOAT{lhs:_intValue % rhs:_r8Value, rhs:_width, rhs:_decimals}
+                    CASE __UsualType.Currency	; RETURN lhs:_intValue % rhs:_currencyValue
+                    CASE __UsualType.Decimal	; RETURN lhs:_intValue % rhs:_decimalValue
+                    OTHERWISE					; NOP // error below
                     END SWITCH
 
                 CASE __UsualType.Int64
                     SWITCH rhs:_usualType
-                        CASE __UsualType.Long		; RETURN lhs:_i64Value % rhs:_intValue
-                        CASE __UsualType.Int64		; RETURN lhs:_i64Value % rhs:_i64Value
-                        CASE __UsualType.Float		; RETURN FLOAT{lhs:_i64Value % rhs:_r8Value, rhs:_width, rhs:_decimals}
-                        CASE __UsualType.Decimal	; RETURN lhs:_i64Value % rhs:_decimalValue
-                        OTHERWISE					; NOP // error below
+                    CASE __UsualType.Long		; RETURN lhs:_i64Value % rhs:_intValue
+                    CASE __UsualType.Int64		; RETURN lhs:_i64Value % rhs:_i64Value
+                    CASE __UsualType.Float		; RETURN FLOAT{lhs:_i64Value % rhs:_r8Value, rhs:_width, rhs:_decimals}
+                    CASE __UsualType.Currency	; RETURN lhs:_i64Value % rhs:_currencyValue
+                    CASE __UsualType.Decimal	; RETURN lhs:_i64Value % rhs:_decimalValue
+                    OTHERWISE					; NOP // error below
                      END SWITCH
 
                 CASE __UsualType.Float
                     SWITCH rhs:_usualType
-                        CASE __UsualType.Long		; RETURN FLOAT{lhs:_r8Value % rhs:_intValue, lhs:_width, lhs:_decimals}
-                        CASE __UsualType.Int64		; RETURN FLOAT{lhs:_r8Value % rhs:_i64Value, lhs:_width, lhs:_decimals}
-                        CASE __UsualType.Float		; RETURN FLOAT{lhs:_r8Value % rhs:_r8Value, Math.Max(lhs:_width,rhs:_width), lhs:_decimals+ rhs:_decimals}
-                        CASE __UsualType.Decimal	; RETURN FLOAT{lhs:_r8Value % (REAL8) rhs:_decimalValue, lhs:_width, lhs:_decimals}
-                        OTHERWISE					; NOP // error below
+                    CASE __UsualType.Long		; RETURN FLOAT{lhs:_r8Value % rhs:_intValue, lhs:_width, lhs:_decimals}
+                    CASE __UsualType.Int64		; RETURN FLOAT{lhs:_r8Value % rhs:_i64Value, lhs:_width, lhs:_decimals}
+                    CASE __UsualType.Float		; RETURN FLOAT{lhs:_r8Value % rhs:_r8Value, Math.Max(lhs:_width,rhs:_width), lhs:_decimals+ rhs:_decimals}
+                    CASE __UsualType.Currency	; RETURN FLOAT{lhs:_r8Value % (REAL8) rhs:_currencyValue, lhs:_width, lhs:_decimals}
+                    CASE __UsualType.Decimal	; RETURN FLOAT{lhs:_r8Value % (REAL8) rhs:_decimalValue, lhs:_width, lhs:_decimals}
+                    OTHERWISE					; NOP // error below
                     END SWITCH
 
                 CASE __UsualType.Decimal
                     SWITCH rhs:_usualType
-                        CASE __UsualType.Long		; RETURN lhs:_decimalValue % rhs:_intValue
-                        CASE __UsualType.Int64		; RETURN lhs:_decimalValue % rhs:_i64Value
-                        CASE __UsualType.Float		; RETURN lhs:_decimalValue % (System.Decimal) rhs:_r8Value
-                        CASE __UsualType.Decimal	; RETURN lhs:_decimalValue %  rhs:_decimalValue
-                        OTHERWISE					; NOP // error below
+                    CASE __UsualType.Long		; RETURN lhs:_decimalValue % rhs:_intValue
+                    CASE __UsualType.Int64		; RETURN lhs:_decimalValue % rhs:_i64Value
+                    CASE __UsualType.Float		; RETURN lhs:_decimalValue % (System.Decimal) rhs:_r8Value
+                    CASE __UsualType.Currency	; RETURN lhs:_decimalValue %  rhs:_currencyValue
+                    CASE __UsualType.Decimal	; RETURN lhs:_decimalValue %  rhs:_decimalValue
+                    OTHERWISE					; NOP // error below
                     END SWITCH
 
+                CASE __UsualType.Currency
+                    SWITCH rhs:_usualType
+                    CASE __UsualType.Long		; RETURN lhs:_currencyValue % rhs:_intValue
+                    CASE __UsualType.Int64		; RETURN lhs:_currencyValue % rhs:_i64Value
+                    CASE __UsualType.Float		; RETURN lhs:_currencyValue % (System.Decimal) rhs:_r8Value
+                    CASE __UsualType.Currency	; RETURN lhs:_currencyValue %  rhs:_currencyValue
+                    CASE __UsualType.Decimal	; RETURN lhs:_currencyValue %  rhs:_decimalValue
+                    OTHERWISE					; NOP // error below
+                    END SWITCH
 
                 OTHERWISE
                     THROW BinaryError("%", __CavoStr(VOErrors.ARGSINCOMPATIBLE), TRUE, lhs, rhs)
@@ -1464,38 +1648,52 @@ BEGIN NAMESPACE XSharp
             SWITCH lhs:_usualType
                 CASE __UsualType.Long
                     SWITCH rhs:_usualType
-                        CASE __UsualType.Long		; RETURN lhs:_intValue * rhs:_intValue
-                        CASE __UsualType.Int64		; RETURN lhs:_intValue * rhs:_i64Value
-                        CASE __UsualType.Float		; RETURN FLOAT{lhs:_intValue * rhs:_r8Value, rhs:_width, rhs:_decimals}
-                        CASE __UsualType.Decimal	; RETURN lhs:_intValue * rhs:_decimalValue
-                        OTHERWISE					; NOP // error below
+                    CASE __UsualType.Long		; RETURN lhs:_intValue * rhs:_intValue
+                    CASE __UsualType.Int64		; RETURN lhs:_intValue * rhs:_i64Value
+                    CASE __UsualType.Float		; RETURN FLOAT{lhs:_intValue * rhs:_r8Value, rhs:_width, rhs:_decimals}
+                    CASE __UsualType.Currency	; RETURN lhs:_intValue * rhs:_currencyValue
+                    CASE __UsualType.Decimal	; RETURN lhs:_intValue * rhs:_decimalValue
+                    OTHERWISE					; NOP // error below
                     END SWITCH
 
                 CASE __UsualType.Int64
                     SWITCH rhs:_usualType
-                        CASE __UsualType.Long		; RETURN lhs:_i64Value * rhs:_intValue
-                        CASE __UsualType.Int64		; RETURN lhs:_i64Value * rhs:_i64Value
-                        CASE __UsualType.Float		; RETURN FLOAT{lhs:_i64Value * rhs:_r8Value, rhs:_width, rhs:_decimals}
-                        CASE __UsualType.Decimal	; RETURN lhs:_i64Value * rhs:_decimalValue
-                        OTHERWISE					; NOP // error below
+                    CASE __UsualType.Long		; RETURN lhs:_i64Value * rhs:_intValue
+                    CASE __UsualType.Int64		; RETURN lhs:_i64Value * rhs:_i64Value
+                    CASE __UsualType.Float		; RETURN FLOAT{lhs:_i64Value * rhs:_r8Value, rhs:_width, rhs:_decimals}
+                    CASE __UsualType.Currency	; RETURN lhs:_i64Value * rhs:_currencyValue
+                    CASE __UsualType.Decimal	; RETURN lhs:_i64Value * rhs:_decimalValue
+                    OTHERWISE					; NOP // error below
                     END SWITCH
 
                 CASE __UsualType.Float
                     SWITCH rhs:_usualType
-                        CASE __UsualType.Long		; RETURN FLOAT{lhs:_r8Value * rhs:_intValue, lhs:_width, lhs:_decimals}
-                        CASE __UsualType.Int64		; RETURN FLOAT{lhs:_r8Value * rhs:_i64Value, lhs:_width, lhs:_decimals}
-                        CASE __UsualType.Float		; RETURN FLOAT{lhs:_r8Value * rhs:_r8Value, Math.Max(lhs:_width,rhs:_width), lhs:_decimals+ rhs:_decimals}
-                        CASE __UsualType.Decimal	; RETURN FLOAT{lhs:_r8Value * (REAL8) rhs:_decimalValue, lhs:_width, lhs:_decimals}
-                        OTHERWISE					; NOP // error below
+                    CASE __UsualType.Long		; RETURN FLOAT{lhs:_r8Value * rhs:_intValue, lhs:_width, lhs:_decimals}
+                    CASE __UsualType.Int64		; RETURN FLOAT{lhs:_r8Value * rhs:_i64Value, lhs:_width, lhs:_decimals}
+                    CASE __UsualType.Float		; RETURN FLOAT{lhs:_r8Value * rhs:_r8Value, Math.Max(lhs:_width,rhs:_width), lhs:_decimals+ rhs:_decimals}
+                    CASE __UsualType.Currency	; RETURN FLOAT{lhs:_r8Value * (REAL8) rhs:_currencyValue, lhs:_width, lhs:_decimals}
+                    CASE __UsualType.Decimal	; RETURN FLOAT{lhs:_r8Value * (REAL8) rhs:_decimalValue, lhs:_width, lhs:_decimals}
+                    OTHERWISE					; NOP // error below
                     END SWITCH
 
                 CASE __UsualType.Decimal
                     SWITCH rhs:_usualType
-                        CASE __UsualType.Long		; RETURN lhs:_decimalValue * rhs:_intValue
-                        CASE __UsualType.Int64		; RETURN lhs:_decimalValue * rhs:_i64Value
-                        CASE __UsualType.Float		; RETURN lhs:_decimalValue * (System.Decimal) rhs:_r8Value
-                        CASE __UsualType.Decimal	; RETURN lhs:_decimalValue *  rhs:_decimalValue
-                        OTHERWISE					; NOP // error below
+                    CASE __UsualType.Long		; RETURN lhs:_decimalValue * rhs:_intValue
+                    CASE __UsualType.Int64		; RETURN lhs:_decimalValue * rhs:_i64Value
+                    CASE __UsualType.Float		; RETURN lhs:_decimalValue * (System.Decimal) rhs:_r8Value
+                    CASE __UsualType.Currency	; RETURN lhs:_decimalValue *  rhs:_currencyValue
+                    CASE __UsualType.Decimal	; RETURN lhs:_decimalValue *  rhs:_decimalValue
+                    OTHERWISE					; NOP // error below
+                    END SWITCH
+
+                CASE __UsualType.Currency
+                    SWITCH rhs:_usualType
+                    CASE __UsualType.Long		; RETURN lhs:_currencyValue * rhs:_intValue
+                    CASE __UsualType.Int64		; RETURN lhs:_currencyValue * rhs:_i64Value
+                    CASE __UsualType.Float		; RETURN lhs:_currencyValue * (System.Decimal) rhs:_r8Value
+                    CASE __UsualType.Currency	; RETURN lhs:_currencyValue *  rhs:_currencyValue
+                    CASE __UsualType.Decimal	; RETURN lhs:_currencyValue *  rhs:_decimalValue
+                    OTHERWISE					; NOP // error below
                     END SWITCH
 
                 OTHERWISE
@@ -1539,7 +1737,7 @@ BEGIN NAMESPACE XSharp
                     CASE __UsualType.Long		; RETURN lhs:_i64Value & (INT64) rhs:_intValue
                     CASE __UsualType.Int64	    ; RETURN  lhs:_i64Value & rhs:_i64Value
                     OTHERWISE					; NOP // error below
-                        END SWITCH
+                    END SWITCH
                 OTHERWISE
                     THROW BinaryError("&", __CavoStr(VOErrors.ARGNOTINTEGER), TRUE, lhs, rhs)
             END SWITCH
@@ -1613,6 +1811,7 @@ BEGIN NAMESPACE XSharp
             CASE __UsualType.Logic		; RETURN u:_logicValue
             CASE __UsualType.Long		; RETURN u:_intValue != 0
             CASE __UsualType.Int64		; RETURN u:_i64Value != 0
+            CASE __UsualType.Currency	; RETURN u:_currencyValue != 0
             CASE __UsualType.Decimal	; RETURN u:_decimalValue != 0
             OTHERWISE
                 THROW ConversionError(LOGIC, TYPEOF(LOGIC), u)
@@ -1763,6 +1962,21 @@ BEGIN NAMESPACE XSharp
                             RETURN UNCHECKED((BYTE) u:_decimalValue )
                         ENDIF
                     ENDIF
+                CASE __UsualType.Currency
+                    IF RuntimeState.CompilerOptionVO11
+                        IF RuntimeState.CompilerOptionOVF
+                            RETURN CHECKED(Convert.ToByte((Decimal)u:_currencyValue ))
+                        ELSE
+                            RETURN UNCHECKED(Convert.ToByte((Decimal)u:_currencyValue ))
+                        ENDIF
+
+                    ELSE
+                        IF RuntimeState.CompilerOptionOVF
+                            RETURN CHECKED((BYTE) u:_currencyValue )
+                        ELSE
+                            RETURN UNCHECKED((BYTE) u:_currencyValue )
+                        ENDIF
+                    ENDIF
                 OTHERWISE
                     THROW ConversionError(BYTE, TYPEOF(BYTE), u)
                 END SWITCH
@@ -1812,7 +2026,22 @@ BEGIN NAMESPACE XSharp
                         ENDIF
                     ENDIF
 
-                CASE __UsualType.Logic	; RETURN (SHORT) IIF(u:_logicValue, 1, 0)
+                CASE __UsualType.Currency
+                    IF RuntimeState.CompilerOptionVO11
+                        IF RuntimeState.CompilerOptionOVF
+                            RETURN CHECKED(Convert.ToInt16((Decimal)u:_currencyValue ))
+                        ELSE
+                            RETURN UNCHECKED(Convert.ToInt16((Decimal)u:_currencyValue ))
+                        ENDIF
+                    ELSE
+                        IF RuntimeState.CompilerOptionOVF
+                            RETURN CHECKED((SHORT) u:_currencyValue )
+                        ELSE
+                            RETURN UNCHECKED((SHORT) u:_currencyValue )
+                        ENDIF
+                    ENDIF
+
+                 CASE __UsualType.Logic	; RETURN (SHORT) IIF(u:_logicValue, 1, 0)
                 OTHERWISE
                     THROW ConversionError(SHORT, TYPEOF(SHORT), u)
                 END SWITCH
@@ -1863,7 +2092,22 @@ BEGIN NAMESPACE XSharp
                         ENDIF
 
                     ENDIF
-                CASE __UsualType.Logic	; RETURN IIF(u:_logicValue, 1, 0)
+                CASE __UsualType.Currency
+                    IF RuntimeState.CompilerOptionVO11
+                        IF RuntimeState.CompilerOptionOVF
+                            RETURN CHECKED(Convert.ToInt32((Decimal)u:_currencyValue ))
+                        ELSE
+                            RETURN UNCHECKED(Convert.ToInt32((Decimal)u:_currencyValue ))
+                        ENDIF
+                    ELSE
+                        IF RuntimeState.CompilerOptionOVF
+                            RETURN CHECKED((LONG) u:_currencyValue )
+                        ELSE
+                            RETURN UNCHECKED((LONG) u:_currencyValue )
+                        ENDIF
+
+                    ENDIF
+               CASE __UsualType.Logic	; RETURN IIF(u:_logicValue, 1, 0)
                 CASE __UsualType.Ptr
                     // this strange behavior is needed to be compatible with VO. 
                     IF IntPtr.Size == 4
@@ -1903,7 +2147,13 @@ BEGIN NAMESPACE XSharp
                     ELSE
                         RETURN (INT64) u:_decimalValue 
                     ENDIF
-                CASE __UsualType.Ptr
+                CASE __UsualType.Currency
+                    IF RuntimeState.CompilerOptionVO11
+                        RETURN Convert.ToInt64((Decimal)u:_currencyValue )
+                    ELSE
+                        RETURN (INT64) u:_currencyValue 
+                    ENDIF
+               CASE __UsualType.Ptr
                      RETURN u:_ptrValue:ToInt64()
    
                 CASE __UsualType.Logic	; RETURN IIF(u:_logicValue, 1, 0)
@@ -1927,6 +2177,7 @@ BEGIN NAMESPACE XSharp
                 CASE __UsualType.Int64	; RETURN u:_i64Value
                 CASE __UsualType.Float	; RETURN (System.Decimal) u:_r8Value
                 CASE __UsualType.Decimal; RETURN u:_decimalValue
+                CASE __UsualType.Currency; RETURN u:_currencyValue
                 CASE __UsualType.Logic	; RETURN IIF(u:_logicValue, 1, 0)
                 OTHERWISE
                     THROW ConversionError(__UsualType.DECIMAL, TYPEOF(INT64), u)
@@ -1947,6 +2198,7 @@ BEGIN NAMESPACE XSharp
                 CASE __UsualType.Long	; RETURN UNCHECKED( (SByte) u:_intValue)
                 CASE __UsualType.Int64	; RETURN UNCHECKED( (SByte) u:_i64Value)
                 CASE __UsualType.Float	; RETURN UNCHECKED( (SByte) u:_r8Value)
+                CASE __UsualType.Currency; RETURN UNCHECKED((SByte) u:_currencyValue )
                 CASE __UsualType.Decimal; RETURN UNCHECKED((SByte) u:_decimalValue )
                 CASE __UsualType.Logic	; RETURN (SByte) IIF(u:_logicValue, 1, 0)
                 OTHERWISE
@@ -1970,6 +2222,7 @@ BEGIN NAMESPACE XSharp
                 CASE __UsualType.Long	; RETURN UNCHECKED((WORD) u:_intValue)
                 CASE __UsualType.Int64	; RETURN UNCHECKED((WORD) u:_i64Value)
                 CASE __UsualType.Float	; RETURN UNCHECKED((WORD) u:_r8Value)
+                CASE __UsualType.Currency; RETURN UNCHECKED((WORD) u:_currencyValue )
                 CASE __UsualType.Decimal; RETURN UNCHECKED((WORD) u:_decimalValue )
                 CASE __UsualType.Logic	; RETURN (WORD) IIF(u:_logicValue, 1, 0)
                 OTHERWISE
@@ -2009,6 +2262,12 @@ BEGIN NAMESPACE XSharp
                     ELSE
                         RETURN UNCHECKED((DWORD) u:_decimalValue)
                     ENDIF
+                CASE __UsualType.Currency
+                    IF RuntimeState.CompilerOptionOVF
+                        RETURN CHECKED((DWORD) u:_currencyValue)
+                    ELSE
+                        RETURN UNCHECKED((DWORD) u:_currencyValue)
+                    ENDIF
                 CASE __UsualType.Logic    ; RETURN (DWORD) IIF(u:_logicValue, 1, 0)
                 CASE __UsualType.Ptr
                     // this strange behavior is needed to be compatible with VO. 
@@ -2039,6 +2298,7 @@ BEGIN NAMESPACE XSharp
                 CASE __UsualType.Long	; RETURN (UINT64) u:_intValue
                 CASE __UsualType.Int64	; RETURN (UINT64) u:_i64Value
                 CASE __UsualType.Float	; RETURN (UINT64) u:_r8Value
+                CASE __UsualType.Currency; RETURN (UINT64) u:_currencyValue
                 CASE __UsualType.Decimal; RETURN (UINT64) u:_decimalValue 
                 CASE __UsualType.Logic	; RETURN IIF(u:_logicValue, 1, 0)
                 CASE __UsualType.Ptr    ; RETURN (UINT64) u:_ptrValue:ToInt64()
@@ -2062,6 +2322,7 @@ BEGIN NAMESPACE XSharp
                     CASE __UsualType.Long	; RETURN (REAL4) u:_intValue
                     CASE __UsualType.Int64	; RETURN (REAL4) u:_i64Value
                     CASE __UsualType.Float	; RETURN (REAL4) u:_r8Value
+                    CASE __UsualType.Currency; RETURN (REAL4) u:_currencyValue
                     CASE __UsualType.Decimal; RETURN (REAL4) u:_decimalValue 
                     CASE __UsualType.Logic	; RETURN IIF(u:_logicValue, 1, 0)
                     OTHERWISE
@@ -2082,6 +2343,7 @@ BEGIN NAMESPACE XSharp
                 CASE __UsualType.Long	; RETURN (REAL8) u:_intValue
                 CASE __UsualType.Int64	; RETURN (REAL8) u:_i64Value
                 CASE __UsualType.Float	; RETURN (REAL8) u:_r8Value
+                CASE __UsualType.Currency; RETURN (REAL8) u:_currencyValue
                 CASE __UsualType.Decimal; RETURN (REAL8) u:_decimalValue 
                 CASE __UsualType.Logic	; RETURN IIF(u:_logicValue, 1, 0)
                 OTHERWISE
@@ -2102,6 +2364,7 @@ BEGIN NAMESPACE XSharp
                 CASE __UsualType.Long	; RETURN FLOAT{(REAL8) u:_intValue,0}
                 CASE __UsualType.Int64	; RETURN FLOAT{(REAL8) u:_i64Value,0}
                 CASE __UsualType.Float	; RETURN u:_floatValue
+                CASE __UsualType.Currency; RETURN FLOAT{(REAL8) u:_currencyValue, -1}
                 CASE __UsualType.Decimal; RETURN FLOAT{(REAL8) u:_decimalValue, -1}
                 CASE __UsualType.Logic	; RETURN FLOAT{IIF(u:_logicValue, 1, 0),0}
                 OTHERWISE
@@ -2193,7 +2456,13 @@ BEGIN NAMESPACE XSharp
         STATIC OPERATOR IMPLICIT(val AS System.Decimal) AS __Usual
             RETURN __Usual{val}
 
-        OPERATOR IMPLICIT( val AS PTR ) AS USUAL
+        /// <include file="RTComments.xml" path="Comments/Operator/*" />
+        [DebuggerStepThroughAttribute];
+        STATIC OPERATOR IMPLICIT(val AS __Currency) AS __Usual
+            RETURN __Usual{val}
+
+        /// <include file="RTComments.xml" path="Comments/Operator/*" />
+         OPERATOR IMPLICIT( val AS PTR ) AS USUAL
             RETURN __Usual{ (IntPtr) val }
 
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
@@ -2281,6 +2550,7 @@ BEGIN NAMESPACE XSharp
             SWITCH u:_usualType
                 CASE __UsualType.Array		; RETURN u:_arrayValue
                 CASE __UsualType.Codeblock	; RETURN u:_codeblockValue
+                CASE __UsualType.Currency	; RETURN u:_currencyValue
                 CASE __UsualType.Date		; RETURN u:_dateValue
                 CASE __UsualType.DateTime	; RETURN u:_dateTimeValue
                 CASE __UsualType.Decimal	; RETURN u:_decimalValue
@@ -2332,6 +2602,7 @@ BEGIN NAMESPACE XSharp
             SWITCH (SELF:_usualType)
                 CASE __UsualType.Array		; strResult := IIF (SELF:_refData == NULL, "NULL_ARRAY", SELF:_arrayValue:ToString())
                 CASE __UsualType.Codeblock  ; strResult := IIF (SELF:_refData == NULL, "NULL_CODEBLOCK", SELF:_codeblockValue:ToString())
+                CASE __UsualType.Currency	; strResult := IIF (SELF:_refData == NULL, "0", SELF:_currencyValue:ToString())
                 CASE __UsualType.Object		; strResult := AsString(SELF)
                 CASE __UsualType.Date		; strResult := SELF:_dateValue:ToString()
                 CASE __UsualType.DateTime	; strResult := SELF:_dateTimeValue:ToString()
@@ -2390,6 +2661,7 @@ BEGIN NAMESPACE XSharp
             SWITCH _usualType
             CASE __UsualType.Array	    ; RETURN TypeCode.Object
             CASE __UsualType.Codeblock  ; RETURN TypeCode.Object
+            CASE __UsualType.Currency   ; RETURN TypeCode.Decimal
             CASE __UsualType.Date	    ; RETURN TypeCode.Object
             CASE __UsualType.DateTime   ; RETURN TypeCode.DateTime
             CASE __UsualType.Decimal    ; RETURN TypeCode.Decimal
@@ -2414,6 +2686,7 @@ BEGIN NAMESPACE XSharp
                 SWITCH SELF:_usualType
                 CASE __UsualType.Array		; RETURN "A"
                 CASE __UsualType.Codeblock	; RETURN "B"
+                CASE __UsualType.Currency	; RETURN "N"
                 CASE __UsualType.Date		; RETURN "D"
                 CASE __UsualType.DateTime	; RETURN "D"
                 CASE __UsualType.Decimal	; RETURN "N"
@@ -2724,5 +2997,6 @@ FUNCTION UsualVal(u AS __Usual) AS __Usual
 /// </returns>
 FUNCTION ValType(u AS __Usual) AS STRING
     RETURN u:ValType
+
 
 

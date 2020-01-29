@@ -135,7 +135,7 @@ FUNCTION @@Date(dwYear AS DWORD,dwMonth AS DWORD,dwDay AS DWORD) AS DATE
 FUNCTION TString(nSeconds AS USUAL) AS STRING
 	IF nSeconds:IsNil
 		RETURN XSharp.Core.Functions.Tstring( (DWORD) 0 )
-	ELSEIF nSeconds:IsFLoat
+	ELSEIF nSeconds:IsFractional
 		RETURN XSharp.Core.Functions.TString ( (FLOAT) nSeconds)
 	ELSEIF nSeconds:IsInteger
 		RETURN XSharp.Core.Functions.TString ( (DWORD) nSeconds)

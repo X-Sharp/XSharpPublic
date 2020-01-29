@@ -145,6 +145,9 @@
     <SourceCodeBasePath>c:\XSharp\DevRt\</SourceCodeBasePath>
     <WarnOnMissingSourceContext>False</WarnOnMissingSourceContext>
     <PlugInConfigurations>
+      <PlugInConfig id="XSharp Function Output" enabled="True">
+        <configuration />
+      </PlugInConfig>
     </PlugInConfigurations>
     <RootNamespaceTitle>X# Visual Objects SDK Documentation</RootNamespaceTitle>
     <CopyrightHref>https://www.xsharp.info/licensing/xsharp-open-software-license</CopyrightHref>

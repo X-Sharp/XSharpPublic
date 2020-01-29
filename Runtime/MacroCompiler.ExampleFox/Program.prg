@@ -340,6 +340,8 @@ BEGIN NAMESPACE MacroCompilerTest
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___MemVarGet, "MyMemVarGet")
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___MemVarPut, "MyMemVarPut")
 
+        // USUAL defaults to FALSE for FoxPro
+        TestMacro(mc, e"{|a| a := default(usual) }", Args(8), FALSE, typeof(LOGIC))
 
         // FoxPro dot access
         TestMacro(mc, e"{|| testclass{}.NString((byte)1) }", Args(), "child", typeof(STRING))

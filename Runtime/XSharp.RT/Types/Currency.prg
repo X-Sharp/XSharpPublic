@@ -165,6 +165,12 @@ BEGIN NAMESPACE XSharp
         STATIC OPERATOR IMPLICIT(c  AS __Currency) AS REAL4
             RETURN (REAL4) c:_value
             
+
+        /// <include file="RTComments.xml" path="Comments/Operator/*" />
+        [DebuggerStepThroughAttribute];
+        STATIC OPERATOR IMPLICIT(c  AS __Currency) AS FLOAT
+            RETURN FLOAT{ (REAL8) c:_value, -1, 4}
+
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(c  AS __Currency) AS System.Decimal
@@ -398,7 +404,7 @@ BEGIN NAMESPACE XSharp
         #region IFormattable
         /// <inheritdoc />
         PUBLIC OVERRIDE METHOD ToString() AS STRING
-            RETURN Str1(SELF)
+            RETURN ToString("0.0000")
             
         /// <inheritdoc cref="M:System.Double.ToString(System.String)"/>
         PUBLIC METHOD ToString(sFormat AS STRING) AS STRING

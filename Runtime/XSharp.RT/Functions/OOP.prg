@@ -873,6 +873,7 @@ FUNCTION IsInstanceOfUsual(uObject AS USUAL,symClassName AS STRING) AS LOGIC
     CASE __UsualType.CodeBlock
     CASE __UsualType.Array
     CASE __UsualType.Decimal
+    CASE __UsualType.Currency
     	RETURN IsInstanceOf(uObject, symClassName)
     END SWITCH
     RETURN FALSE

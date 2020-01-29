@@ -310,6 +310,8 @@ FUNCTION NTrim(nNum AS USUAL) AS STRING
       ret := ConversionHelpers.FormatNumber( (INT64) nNum, (INT) RuntimeState.Digits, 0):Trim()
     CASE __UsualType.Date
       ret := AsString( nNum )
+    CASE __UsualType.Currency
+      ret := ((__Currency) (nNum)):ToString()
     CASE __UsualType.Float
     CASE __UsualType.Decimal
       ret := ConversionHelpers.AdjustDecimalSeparator(_Str1(  (FLOAT) nNum )):Trim()

@@ -185,6 +185,7 @@ INTERNAL CLASS MemWriter
                 
             CASE __UsualType.FLOAT
             CASE __UsualType.Decimal
+            CASE __UsualType.Currency
                 WriteByte(__UsualType.FLOAT)
                 WriteName()
                 WriteBytes(F2Bin(uVal))

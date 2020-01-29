@@ -775,6 +775,7 @@ FUNCTION Transform( uValue AS USUAL, cSayPicture AS STRING ) AS STRING
     SWITCH uValue:_UsualType
     CASE __UsualType.Float
     CASE __UsualType.Decimal
+    CASE __UsualType.Currency
         ret := TransformHelpers.TransformN( (FLOAT) uValue, cSayPicture , FALSE)
     CASE __UsualType.Int64
     CASE __UsualType.Long

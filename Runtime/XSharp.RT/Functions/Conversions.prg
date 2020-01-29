@@ -273,6 +273,10 @@ FUNCTION Descend(uValue AS USUAL) AS USUAL
         RETURN 0 - (INT64) uValue
     ELSEIF uValue:IsFloat
         RETURN 0 - (__Float) uValue
+    ELSEIF uValue:IsDecimal
+        RETURN 0 - (Decimal) uValue
+    ELSEIF uValue:IsCurrency
+        RETURN 0 - (__Currency) uValue
     ELSEIF uValue:IsDate
         RETURN 5231808 - (DWORD)(DATE) uValue 
     ENDIF
@@ -482,7 +486,7 @@ FUNCTION _Str(nValue ,uLen ,uDec ) AS STRING CLIPPER
         ELSE
             dwLen := (DWORD) nLen
         ENDIF
-        IF nValue:IsFloat
+        IF nValue:IsFractional
             RETURN _Str2(nValue, dwLen)
         ELSE
             RETURN ConversionHelpers.FormatNumber((INT64) nValue, nLen,0)
@@ -496,7 +500,7 @@ FUNCTION _Str(nValue ,uLen ,uDec ) AS STRING CLIPPER
         ENDIF
         nLen := uLen
         nDec := uDec
-        IF nValue:IsFLoat
+        IF nValue:IsFractional
             nLen := uLen
             IF nLen < 0
                 dwLen := System.UInt32.MaxValue

@@ -127,6 +127,7 @@
     <Compile Include="Types\CodeBlock.prg" />
     <Compile Include="Types\ArrayBase.prg" />
     <Compile Include="Types\CompilerServices.prg" />
+    <Compile Include="Types\Currency.prg" />
     <Compile Include="Types\Date.prg" />
     <Compile Include="Types\Float.prg" />
     <Compile Include="Types\Interfaces.prg" />

@@ -50,7 +50,7 @@ BEGIN NAMESPACE XSharp
             ENDIF
             FOREACH element AS OBJECT IN elements
                 IF element == NULL
-                    _internalList:add(NIL)
+                    _internalList:Add(NIL)
                 ELSEIF element IS OBJECT[]
                     LOCAL objects AS OBJECT[]
                     objects := (OBJECT[]) element
@@ -115,9 +115,9 @@ BEGIN NAMESPACE XSharp
                 // warning, nCount-1 below will become MAXDWORD for nCount == 0
                 RETURN aResult
             END IF
-            FOR VAR I := 0 TO nCount-1
+            FOR VAR i := 0 TO nCount-1
                 VAR u := _internalList[i]
-                IF u:isArray
+                IF u:IsArray
                     VAR aElement := (ARRAY) u
                     IF aElement != NULL_ARRAY
                         aResult:_internalList[i] := aElement:Clone()
@@ -181,9 +181,9 @@ BEGIN NAMESPACE XSharp
             sb := StringBuilder{}
             sb:Append(SELF:ToString())
             sb:Append("{")
-            tot := _internallist:Count
+            tot := _internalList:Count
             cnt := 0
-            FOREACH VAR element IN SELF:_internallist
+            FOREACH VAR element IN SELF:_internalList
                 IF cnt > 0
                     sb:Append(",")
                 ENDIF
@@ -229,7 +229,7 @@ BEGIN NAMESPACE XSharp
         STATIC OPERATOR IMPLICIT ( a AS __Array) AS OBJECT[]
             LOCAL aResult := List<OBJECT>{} AS List<OBJECT>
             FOREACH VAR uElement IN a
-                IF uElement:ISArray
+                IF uElement:IsArray
                     LOCAL aSubArray AS ARRAY
                     aSubArray := uElement
                     aResult:Add( (OBJECT[]) aSubArray)
@@ -253,7 +253,7 @@ BEGIN NAMESPACE XSharp
             targetLen-=1
             IF start < sourceLen
                 FOR x := start UPTO sourceLen
-                    aTarget:_InternalList[(INT) offSet] := aSource:_InternalList[(INT) x]
+                    aTarget:_internalList[(INT) offSet] := aSource:_internalList[(INT) x]
                     offSet++
                     IF offSet > targetLen
                         EXIT
@@ -261,7 +261,7 @@ BEGIN NAMESPACE XSharp
                 NEXT
             ELSE
                 FOR x := start DOWNTO sourceLen
-                    aTarget:_InternalList[(INT) offSet] := aSource:_InternalList[(INT) x]
+                    aTarget:_internalList[(INT) offSet] := aSource:_internalList[(INT) x]
                     offSet++
                     IF offSet > targetLen
                         EXIT
@@ -270,7 +270,7 @@ BEGIN NAMESPACE XSharp
             ENDIF
             RETURN
 
-        NEW INTERNAL METHOD Sort(startIndex AS INT, count AS INT, comparer AS IComparer<__USUAL>) AS VOID
+        NEW INTERNAL METHOD Sort(startIndex AS INT, count AS INT, comparer AS IComparer<__Usual>) AS VOID
            IF startIndex <= 0
                 startIndex := 1
             ENDIF

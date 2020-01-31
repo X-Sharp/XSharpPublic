@@ -45,7 +45,7 @@ INTERNAL STATIC UNSAFE CLASS XSharp.FixedMemory
         generator:Emit(OpCodes.Ldarg_2)
         generator:Emit(OpCodes.Initblk)
         generator:Emit(OpCodes.Ret)
-        _memsetDelegate := (Action<IntPtr, BYTE, INT>) dm:CreateDelegate(TYPEOF(Action<IntPtr, BYTE, INT>))
+        _memSetDelegate := (Action<IntPtr, BYTE, INT>) dm:CreateDelegate(TYPEOF(Action<IntPtr, BYTE, INT>))
         dm := DynamicMethod{"Memcopy", atts, CallingConventions.Standard, NULL,  <System.Type> { TYPEOF(IntPtr), TYPEOF(IntPtr), TYPEOF(INT) }, TYPEOF(FixedMemory), TRUE}
         
         generator := dm:GetILGenerator()
@@ -104,7 +104,7 @@ INTERNAL STATIC UNSAFE CLASS XSharp.FixedMemory
         RETURN pMemBlockStart
         
      [MethodImpl(MethodImplOptions.AggressiveInlining)];
-     PRIVATE STATIC METHOD _GetMemBlockEnd (pMemory AS IntPTR ) AS FixedMemBlockEnd PTR
+     PRIVATE STATIC METHOD _GetMemBlockEnd (pMemory AS IntPtr ) AS FixedMemBlockEnd PTR
         VAR pMemBlockStart := _GetMemBlockStart (pMemory)
         LOCAL i64 as Int64
         IF Is32Bits
@@ -166,7 +166,7 @@ INTERNAL STATIC UNSAFE CLASS XSharp.FixedMemory
                 Total -= nSize
                 oGroup := FindGroup(pMemBlockStart:dwGroup)
                 // Overwrite memory so it will not be valid anymore
-                SET(pMemBlockStart, 0xFF, (INT) nTotal)			
+                Set(pMemBlockStart, 0xFF, (INT) nTotal)			
                 IF oGroup != NULL_OBJECT
                     oGroup:Allocated -= nSize
                     Marshal.FreeHGlobal(pMemBlockStart)
@@ -269,7 +269,7 @@ INTERNAL STATIC UNSAFE CLASS XSharp.FixedMemory
         RETURN pResult
         
     [MethodImpl(MethodImplOptions.AggressiveInlining)];        
-    INTERNAL STATIC METHOD Clear(pMemory AS IntPtr, iCount AS INT) AS IntPTR
+    INTERNAL STATIC METHOD Clear(pMemory AS IntPtr, iCount AS INT) AS IntPtr
         // No pointer validation for speed. Should be done in wrapper function
         _memSetDelegate(pMemory, 0, iCount)
         RETURN pMemory
@@ -282,7 +282,7 @@ INTERNAL STATIC UNSAFE CLASS XSharp.FixedMemory
         RETURN pDestination
         
     [MethodImpl(MethodImplOptions.AggressiveInlining)];        
-    INTERNAL STATIC METHOD SET( pMemory AS IntPtr, b AS BYTE, iCount AS INT ) AS IntPtr
+    INTERNAL STATIC METHOD Set( pMemory AS IntPtr, b AS BYTE, iCount AS INT ) AS IntPtr
         // No pointer validation for speed. Should be done in wrapper function
         _memSetDelegate(pMemory, b, iCount)
         RETURN pMemory
@@ -295,13 +295,13 @@ END CLASS
 [StructLayout(LayoutKind.Explicit)];
 STRUCTURE	 XSharp.FixedMemBlockStart
     /// <summary>Checksum</summary>
-    [FieldOffSet(00)] EXPORT dwMagic AS DWORD	// Checksum
+    [FieldOffset(00)] EXPORT dwMagic AS DWORD	// Checksum
     /// <summary>Cargo slot</summary>
-    [FieldOffSet(04)] EXPORT dwCargo AS DWORD    // Can be used by them
+    [FieldOffset(04)] EXPORT dwCargo AS DWORD    // Can be used by them
     /// <summary>Group number</summary>
-    [FieldOffSet(08)] EXPORT dwGroup AS DWORD    // Group Number
+    [FieldOffset(08)] EXPORT dwGroup AS DWORD    // Group Number
     /// <summary>Size</summary>
-    [FieldOffSet(12)] EXPORT dwSize  AS DWORD	// Size of Data Block excluding Guard Blocks
+    [FieldOffset(12)] EXPORT dwSize  AS DWORD	// Size of Data Block excluding Guard Blocks
     /// <exclude />
     CONST MAGIC  := 0x21522358 AS DWORD  // !R#X
     
@@ -325,9 +325,9 @@ END         STRUCTURE
 [StructLayout(LayoutKind.Explicit)];
 STRUCTURE	 XSharp.FixedMemBlockEnd
     /// <summary>Zero terminator</summary>
-    [FieldOffSet(00)] EXPORT dwZero  AS DWORD			// Give them 1 extra DWORD to protect against overflows
+    [FieldOffset(00)] EXPORT dwZero  AS DWORD			// Give them 1 extra DWORD to protect against overflows
     /// <summary>Checksum</summary>
-    [FieldOffSet(04)] EXPORT dwMagic AS DWORD			// 
+    [FieldOffset(04)] EXPORT dwMagic AS DWORD			// 
     /// <exclude />
     CONST MAGIC  := 0x524E4643 AS DWORD  // Chris, Fabrice, Nikos, Robert 
     

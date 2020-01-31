@@ -58,7 +58,7 @@ BEGIN NAMESPACE XSharp
             RETURN result
             
         /// <inheritdoc />
-        METHOD Equals(rhs AS __Currency ) AS LOGIC
+        METHOD Equals(rhs AS CURRENCY ) AS LOGIC
             RETURN SELF:Value == rhs:Value
             
             /// <inheritdoc />
@@ -71,30 +71,30 @@ BEGIN NAMESPACE XSharp
             
             
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
-        OPERATOR ==(lhs AS __Currency, rhs AS __Currency) AS LOGIC
+        OPERATOR ==(lhs AS CURRENCY, rhs AS CURRENCY) AS LOGIC
             RETURN lhs:Equals(rhs)
             
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
-        OPERATOR !=(lhs AS __Currency, rhs AS __Currency) AS LOGIC
+        OPERATOR !=(lhs AS CURRENCY, rhs AS CURRENCY) AS LOGIC
             RETURN ! lhs:Equals(rhs)
             #endregion
             
         #region Comparison Operators
         /// <include file="RTComments.xml" path="Comments/Operator/*" />
-        OPERATOR >(lhs AS __Currency, rhs AS __Currency) AS LOGIC
+        OPERATOR >(lhs AS CURRENCY, rhs AS CURRENCY) AS LOGIC
             RETURN lhs:_value > rhs:_value
             
             
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
-        OPERATOR <(lhs AS __Currency, rhs AS __Currency) AS LOGIC
+        OPERATOR <(lhs AS CURRENCY, rhs AS CURRENCY) AS LOGIC
             RETURN lhs:_value < rhs:_value
             
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
-        OPERATOR >=(lhs AS __Currency, rhs AS __Currency) AS LOGIC
+        OPERATOR >=(lhs AS CURRENCY, rhs AS CURRENCY) AS LOGIC
             RETURN lhs:_value >= rhs:_value
             
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
-        OPERATOR <=(lhs AS __Currency, rhs AS __Currency) AS LOGIC
+        OPERATOR <=(lhs AS CURRENCY, rhs AS CURRENCY) AS LOGIC
             RETURN lhs:_value <= rhs:_value
             
             #endregion
@@ -102,97 +102,97 @@ BEGIN NAMESPACE XSharp
         #region Implicit Converters
         /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
-        STATIC OPERATOR IMPLICIT(b AS BYTE) AS __Currency
+        STATIC OPERATOR IMPLICIT(b AS BYTE) AS CURRENCY
             RETURN __Currency{(Decimal) b}
             
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
-        STATIC OPERATOR IMPLICIT(sb AS SByte) AS __Currency
+        STATIC OPERATOR IMPLICIT(sb AS SByte) AS CURRENCY
             RETURN __Currency{(Decimal) sb}
             
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
-        STATIC OPERATOR IMPLICIT(si AS SHORT) AS __Currency
+        STATIC OPERATOR IMPLICIT(si AS SHORT) AS CURRENCY
             RETURN __Currency{(Decimal)si}
             
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
-        STATIC OPERATOR IMPLICIT(w AS WORD) AS __Currency
+        STATIC OPERATOR IMPLICIT(w AS WORD) AS CURRENCY
             RETURN __Currency{(Decimal)w}
             /// <include file="RTComments.xml" path="Comments/Converter/*" />
             
         [DebuggerStepThroughAttribute];
-        STATIC OPERATOR IMPLICIT(i AS INT) AS __Currency
+        STATIC OPERATOR IMPLICIT(i AS INT) AS CURRENCY
             RETURN __Currency{(Decimal)i}
             
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
-        STATIC OPERATOR IMPLICIT(dw AS DWORD) AS __Currency
+        STATIC OPERATOR IMPLICIT(dw AS DWORD) AS CURRENCY
             RETURN __Currency{(Decimal)dw}
             
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
-        STATIC OPERATOR IMPLICIT(i64 AS INT64) AS __Currency
+        STATIC OPERATOR IMPLICIT(i64 AS INT64) AS CURRENCY
             RETURN __Currency{(Decimal)i64}
             
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
-        STATIC OPERATOR IMPLICIT(ui64 AS UINT64) AS __Currency
+        STATIC OPERATOR IMPLICIT(ui64 AS UINT64) AS CURRENCY
             RETURN __Currency{(Decimal)ui64}
             
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
-        STATIC OPERATOR IMPLICIT(r4 AS REAL4) AS __Currency
+        STATIC OPERATOR IMPLICIT(r4 AS REAL4) AS CURRENCY
             RETURN __Currency{(REAL8)r4}
             
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
-        STATIC OPERATOR IMPLICIT(r8 AS REAL8) AS __Currency
+        STATIC OPERATOR IMPLICIT(r8 AS REAL8) AS CURRENCY
             RETURN __Currency{r8}
             
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
-        STATIC OPERATOR IMPLICIT(val AS System.Decimal) AS __Currency
+        STATIC OPERATOR IMPLICIT(val AS System.Decimal) AS CURRENCY
             RETURN __Currency{val}
             
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
-        STATIC OPERATOR IMPLICIT(c  AS __Currency) AS REAL8
+        STATIC OPERATOR IMPLICIT(c  AS CURRENCY) AS REAL8
             RETURN (REAL8) c:_value
             
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
-        STATIC OPERATOR IMPLICIT(c  AS __Currency) AS REAL4
+        STATIC OPERATOR IMPLICIT(c  AS CURRENCY) AS REAL4
             RETURN (REAL4) c:_value
             
 
         /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
-        STATIC OPERATOR IMPLICIT(c  AS __Currency) AS FLOAT
+        STATIC OPERATOR IMPLICIT(c  AS CURRENCY) AS FLOAT
             RETURN FLOAT{ (REAL8) c:_value, -1, 4}
 
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
-        STATIC OPERATOR IMPLICIT(c  AS __Currency) AS System.Decimal
+        STATIC OPERATOR IMPLICIT(c  AS CURRENCY) AS System.Decimal
             RETURN c:_value
 
         #endregion
         #region Explicit Converters
         /// <include file="RTComments.xml" path="Comments/Converter/*" />
         [DebuggerStepThroughAttribute];
-        STATIC OPERATOR EXPLICIT(c  AS __Currency) AS BYTE
+        STATIC OPERATOR EXPLICIT(c  AS CURRENCY) AS BYTE
             IF RuntimeState.CompilerOptionVO11
                 RETURN Convert.ToByte(c:_value)
             ENDIF
             RETURN (BYTE) c:_value
             /// <include file="RTComments.xml" path="Comments/Converter/*" />
         [DebuggerStepThroughAttribute];
-        STATIC OPERATOR EXPLICIT(c AS __Currency) AS SByte
+        STATIC OPERATOR EXPLICIT(c AS CURRENCY) AS SByte
             RETURN (SByte) c:_value
             /// <include file="RTComments.xml" path="Comments/Converter/*" />
 
         [DebuggerStepThroughAttribute];
-        STATIC OPERATOR EXPLICIT(c  AS __Currency) AS SHORT
+        STATIC OPERATOR EXPLICIT(c  AS CURRENCY) AS SHORT
             IF RuntimeState.CompilerOptionVO11
                 RETURN Convert.ToInt16(c:_value)
             ENDIF
@@ -200,22 +200,22 @@ BEGIN NAMESPACE XSharp
             
             /// <include file="RTComments.xml" path="Comments/Converter/*" />
         [DebuggerStepThroughAttribute];
-        STATIC OPERATOR EXPLICIT(c  AS __Currency) AS WORD
+        STATIC OPERATOR EXPLICIT(c  AS CURRENCY) AS WORD
             RETURN (WORD) c:_value
             /// <include file="RTComments.xml" path="Comments/Converter/*" />
         [DebuggerStepThroughAttribute];
-        STATIC OPERATOR EXPLICIT(c  AS __Currency) AS LONG
+        STATIC OPERATOR EXPLICIT(c  AS CURRENCY) AS LONG
             IF RuntimeState.CompilerOptionVO11
                 RETURN Convert.ToInt32(c:_value)
             ENDIF
             RETURN (LONG) c:_value
             /// <include file="RTComments.xml" path="Comments/Converter/*" />
         [DebuggerStepThroughAttribute];
-        STATIC OPERATOR EXPLICIT(c  AS __Currency) AS DWORD
+        STATIC OPERATOR EXPLICIT(c  AS CURRENCY) AS DWORD
             RETURN (DWORD) c:_value
             /// <include file="RTComments.xml" path="Comments/Converter/*" />
         [DebuggerStepThroughAttribute];
-        STATIC OPERATOR EXPLICIT(c  AS __Currency) AS INT64
+        STATIC OPERATOR EXPLICIT(c  AS CURRENCY) AS INT64
             IF RuntimeState.CompilerOptionVO11
                 RETURN Convert.ToInt64(c:_value)
             ENDIF
@@ -223,65 +223,65 @@ BEGIN NAMESPACE XSharp
             
             /// <include file="RTComments.xml" path="Comments/Converter/*" />
         [DebuggerStepThroughAttribute];
-        STATIC OPERATOR EXPLICIT(c  AS __Currency) AS UINT64
+        STATIC OPERATOR EXPLICIT(c  AS CURRENCY) AS UINT64
             RETURN (UINT64) c:_value
             
             #endregion
             
         #region Numeric Operators
         /// <include file="RTComments.xml" path="Comments/Operator/*" />
-        OPERATOR +(c  AS __Currency) AS __Currency
+        OPERATOR +(c  AS CURRENCY) AS CURRENCY
             RETURN c
             
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
-        OPERATOR -(c  AS __Currency) AS __Currency
+        OPERATOR -(c  AS CURRENCY) AS CURRENCY
             RETURN -c
             
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
-        OPERATOR+(lhs AS __Currency, rhs AS __Currency) AS __Currency
+        OPERATOR+(lhs AS CURRENCY, rhs AS CURRENCY) AS CURRENCY
             RETURN lhs:Add(rhs)
             
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
-        OPERATOR+(lhs AS __Currency, rhs AS USUAL) AS __Currency
+        OPERATOR+(lhs AS CURRENCY, rhs AS USUAL) AS CURRENCY
             RETURN lhs:Add(rhs)
             
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
-        OPERATOR+(lhs AS USUAL, rhs AS __Currency) AS __Currency
+        OPERATOR+(lhs AS USUAL, rhs AS CURRENCY) AS CURRENCY
             RETURN rhs:Add(lhs)
             
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
-        OPERATOR-(lhs AS __Currency, rhs AS __Currency) AS __Currency
+        OPERATOR-(lhs AS CURRENCY, rhs AS CURRENCY) AS CURRENCY
             RETURN lhs:Subtract(rhs)
             
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
-        OPERATOR-(lhs AS __Currency, rhs AS USUAL) AS __Currency
+        OPERATOR-(lhs AS CURRENCY, rhs AS USUAL) AS CURRENCY
             RETURN lhs:Subtract(rhs)
             
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
-        OPERATOR-(lhs AS USUAL, rhs AS __Currency) AS __Currency
+        OPERATOR-(lhs AS USUAL, rhs AS CURRENCY) AS CURRENCY
             // set decimals for LHS to 0, so max decmals is decimals right
             RETURN __Currency{lhs}:Subtract(rhs)		
             
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
-        OPERATOR*(lhs AS __Currency, rhs AS __Currency) AS __Currency
+        OPERATOR*(lhs AS CURRENCY, rhs AS CURRENCY) AS CURRENCY
             RETURN __Currency{ lhs:_value * rhs:_value}
             
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
-        OPERATOR/(lhs AS __Currency, rhs AS __Currency) AS __Currency
+        OPERATOR/(lhs AS CURRENCY, rhs AS CURRENCY) AS CURRENCY
             RETURN __Currency{ lhs:_value / rhs:_value}
             
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
-        OPERATOR%(lhs AS __Currency, rhs AS __Currency) AS __Currency
+        OPERATOR%(lhs AS CURRENCY, rhs AS CURRENCY) AS CURRENCY
             RETURN __Currency{ lhs:_value % rhs:_value}
             
             #endregion
         #region Unary Operators
         /// <include file="RTComments.xml" path="Comments/Operator/*" />
-        OPERATOR ++ (c  AS __Currency) AS __Currency
+        OPERATOR ++ (c  AS CURRENCY) AS CURRENCY
             RETURN __Currency{c:_value+1}
             
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
-        OPERATOR -- (c  AS __Currency) AS __Currency
+        OPERATOR -- (c  AS CURRENCY) AS CURRENCY
             RETURN __Currency{c:_value-1}
             #endregion
             
@@ -297,12 +297,12 @@ BEGIN NAMESPACE XSharp
             #endregion
         #region Add and Subtract
         /// <exclude />	
-        METHOD Add(rhs AS __Currency) AS __Currency
+        METHOD Add(rhs AS CURRENCY) AS CURRENCY
             RETURN __Currency{ SELF:_value + rhs:_value}
             
             /// <exclude />	
-        METHOD Add(rhs AS USUAL) AS __Currency
-            LOCAL result AS __Currency
+        METHOD Add(rhs AS USUAL) AS CURRENCY
+            LOCAL result AS CURRENCY
             IF rhs:IsFloat
                 result := SELF:Add ( (__Currency) rhs)
             ELSEIF rhs:IsDecimal .OR. rhs:IsCurrency
@@ -316,12 +316,12 @@ BEGIN NAMESPACE XSharp
             
             
             /// <exclude />	
-        METHOD Subtract(rhs AS __Currency) AS __Currency
+        METHOD Subtract(rhs AS CURRENCY) AS CURRENCY
             RETURN __Currency{ SELF:_value - rhs:_value}
             
             /// <exclude />	
-        METHOD Subtract(rhs AS USUAL) AS __Currency
-            LOCAL result AS __Currency
+        METHOD Subtract(rhs AS USUAL) AS CURRENCY
+            LOCAL result AS CURRENCY
             IF rhs:IsFloat
                 result := SELF:Subtract( (__Currency) rhs)
             ELSEIF rhs:IsDecimal .OR. rhs:IsCurrency
@@ -416,8 +416,8 @@ BEGIN NAMESPACE XSharp
             #endregion
         #region IComparable
         /// <inheritdoc />
-        PUBLIC METHOD CompareTo(rhs AS __Currency) AS INT
-            RETURN _Value:CompareTo( rhs:_Value)
+        PUBLIC METHOD CompareTo(rhs AS CURRENCY) AS INT
+            RETURN _value:CompareTo( rhs:_value)
             
             /// <inheritdoc />
         PUBLIC METHOD CompareTo(rhs AS OBJECT) AS INT

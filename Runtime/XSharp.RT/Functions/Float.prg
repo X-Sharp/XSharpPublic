@@ -11,7 +11,7 @@ FUNCTION AbsFloat(fValue AS FLOAT) AS FLOAT
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fact/*" />
 FUNCTION Fact(wValue AS DWORD) AS FLOAT
-	LOCAL result := 1 AS double
+	LOCAL result := 1 AS REAL8
 	IF  wValue > 0
 		LOCAL i AS DWORD
 		FOR i := 1 UPTO wValue
@@ -40,8 +40,8 @@ FUNCTION FloatFormat(fValue AS FLOAT,iLen AS INT,iDec AS INT) AS FLOAT
 			nDigits := (SHORT) RuntimeState.Digits
 		ENDIF
 		LOCAL fTemp AS FLOAT
-		fTemp := FLOAT{fValue:value, nDigits, iDec}
-		VAR cTemp := Ntrim(fTemp)
+		fTemp := FLOAT{fValue:Value, nDigits, iDec}
+		VAR cTemp := NTrim(fTemp)
 		iLen := cTemp:Length
 	ELSEIF iDec != 0 .AND. iLen != 0 .AND. iLen < iDec +2
 		iLen := iDec + 2

@@ -10,7 +10,7 @@
     <Dialect>Vulcan</Dialect>
     <OutputName>XSharp.RT</OutputName>
     <AZ>false</AZ>
-    <CS>false</CS>
+    <CS>true</CS>
     <LB>false</LB>
     <OVF>false</OVF>
     <Unsafe>true</Unsafe>

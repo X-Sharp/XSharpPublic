@@ -7,7 +7,7 @@
 USING XSharp.RDD
 USING XSharp.RDD.Support
 USING System.Collections.Generic
-USING SYstem.Linq
+USING System.Linq
 
 /// <summary>The VoDb class extends the CoreDb class with methods that take usual parameters or return usual values.<br/>
 /// All other methods are identical and inherited from the CoreDb class.</summary>
@@ -137,7 +137,7 @@ STATIC METHOD Select(nNew AS DWORD,riOld REF USUAL) AS LOGIC
 /// <remarks> <note type="tip">The difference between VoDb.SetFilter and CoreDb.SetFilter is that VoDb.SetFilter takes a USUAL parameter</note></remarks>
 STATIC METHOD SetFilter(oBlock AS USUAL,cFilter AS STRING) AS LOGIC
     LOCAL cb AS ICodeblock
-    IF oBlock:IsCodeBlock
+    IF oBlock:IsCodeblock
        cb := (ICodeblock) oBlock
     ELSE
         cb := NULL
@@ -148,9 +148,9 @@ STATIC METHOD SetFilter(oBlock AS USUAL,cFilter AS STRING) AS LOGIC
     INTERNAL STATIC METHOD ParamError(cFuncSym AS STRING, dwArgNum  AS DWORD ,   dwArgType AS DWORD) AS Error 
     
         LOCAL oError    AS Error
-        oError := Error{RuntimeState.LastRDDError}
+        oError := Error{RuntimeState.LastRddError}
         oError:SubSystem    := "DBCMD"
-        oError:GenCode      := EG_ARG
+        oError:Gencode      := EG_ARG
         oError:Severity     := ES_ERROR
         oError:CanDefault   := .F.
         oError:CanRetry     := .T.
@@ -160,10 +160,10 @@ STATIC METHOD SetFilter(oBlock AS USUAL,cFilter AS STRING) AS LOGIC
         oError:FuncSym      := cFuncSym
         RETURN oError
         
-    INTERNAL STATIC METHOD DBCMDError(cFuncSym AS STRING)  AS Error 
+    INTERNAL STATIC METHOD DbCmdError(cFuncSym AS STRING)  AS Error 
         LOCAL oError    AS Error
-        oError := Error{RuntimeState.LastRDDError}	
-        oError:GenCode      := EG_NOTABLE
+        oError := Error{RuntimeState.LastRddError}	
+        oError:Gencode      := EG_NOTABLE
         oError:SubCode      := EDB_NOTABLE
         oError:SubSystem    := "DBCMD"
         oError:Severity     := ES_ERROR
@@ -178,7 +178,7 @@ STATIC METHOD SetFilter(oBlock AS USUAL,cFilter AS STRING) AS LOGIC
             IF aField:IsArray
                 aNames:Add(Upper(aField[DBS_NAME]))
             ELSE
-                aNames:Add(upper(aField))
+                aNames:Add(Upper(aField))
             ENDIF
         NEXT
         RETURN _FieldNames{aNames}
@@ -188,13 +188,13 @@ STATIC METHOD SetFilter(oBlock AS USUAL,cFilter AS STRING) AS LOGIC
         LOCAL aNew      AS ARRAY
         LOCAL cName     AS STRING
         LOCAL aStruct   AS ARRAY
-        LOCAL adbStruct AS ARRAY
+        LOCAL aDbStruct AS ARRAY
         LOCAL nFields, i AS INT
         LOCAL siPos     AS DWORD
         LOCAL siSelect  AS DWORD
         LOCAL aFldList  AS ARRAY
         
-        adbStruct := DbStruct()
+        aDbStruct := DbStruct()
         aStruct   := {}
         aFldList := {}
         
@@ -204,7 +204,7 @@ STATIC METHOD SetFilter(oBlock AS USUAL,cFilter AS STRING) AS LOGIC
             nFields    := (INT) FCount()
             siSelect   := VoDb.GetSelect()
             FOR i := 1 TO nFields
-                cName := adbStruct[i, DBS_NAME]
+                cName := aDbStruct[i, DBS_NAME]
                 AAdd(aFldList, {siSelect, FieldPos(cName)})
                 AAdd(aStruct, aDbStruct[i])
                 AAdd(aNames, cName)
@@ -219,14 +219,14 @@ STATIC METHOD SetFilter(oBlock AS USUAL,cFilter AS STRING) AS LOGIC
             nFields := (INT)FCount()
             siSelect := VoDb.GetSelect()
             FOR i := 1 TO nFields
-                cName := adbStruct[i, DBS_NAME]
+                cName := aDbStruct[i, DBS_NAME]
                 IF AScan(aNames, {|c| c == cName}) > 0
                     AAdd(aFldList, {siSelect, FieldPos(cName)})
                     AAdd(aStruct, aDbStruct[i])
                 ENDIF
             NEXT
         ENDIF
-        siSelect := SELECT(cAlias)
+        siSelect := @@Select(cAlias)
         aDbStruct := DbStruct()
         nFields := (INT)Len(aNames)
         
@@ -264,11 +264,11 @@ STATIC METHOD SetFilter(oBlock AS USUAL,cFilter AS STRING) AS LOGIC
             nType := ARRAY
         ELSEIF xDriver:IsString
             IF SLen(xDriver) = 0
-                xDriver := RDDSetDefault()
+                xDriver := RddSetDefault()
             ENDIF
             nType := STRING
         ELSE
-            xDriver := RDDSetDefault()
+            xDriver := RddSetDefault()
             nType := STRING
         ENDIF
         
@@ -276,7 +276,7 @@ STATIC METHOD SetFilter(oBlock AS USUAL,cFilter AS STRING) AS LOGIC
             aRdds := xDriver
         ELSEIF nType == STRING
             aRdds := {}
-            xDriver := upper(xDriver)
+            xDriver := Upper(xDriver)
             SWITCH (STRING) xDriver
             CASE "DBFNTX"
             CASE "DBFMEMO"
@@ -350,7 +350,7 @@ STATIC METHOD SetFilter(oBlock AS USUAL,cFilter AS STRING) AS LOGIC
         cName   := Trim(Upper(cName))
         RETURN cName
 
-    INTERNAL STATIC METHOD ValidBlock(uBlock AS USUAL, bDef := NULL AS ICodeBlock) AS ICodeblock
+    INTERNAL STATIC METHOD ValidBlock(uBlock AS USUAL, bDef := NULL AS ICodeblock) AS ICodeblock
         LOCAL oBlock    := uBlock   AS OBJECT
         IF oBlock IS ICodeblock
             RETURN (ICodeblock) oBlock

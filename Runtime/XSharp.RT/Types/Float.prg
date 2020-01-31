@@ -17,7 +17,7 @@ BEGIN NAMESPACE XSharp
     /// <seealso cref="T:XSharp.IFloat"/>
     /// <seealso cref="T:XSharp.RDD.DbFloat"/>
     [StructLayout(LayoutKind.Explicit, Pack := 4)];
-    PUBLIC STRUCTURE __Float IMPLEMENTS IFLoat, ;
+    PUBLIC STRUCTURE __Float IMPLEMENTS IFloat, ;
         IConvertible,; 
         IFormattable, ;
         IComparable<__Float>, ;
@@ -67,10 +67,10 @@ BEGIN NAMESPACE XSharp
             
         /// <include file="RTComments.xml" path="Comments/Constructor/*" />
         [DebuggerStepThroughAttribute] [MethodImpl(MethodImplOptions.AggressiveInlining)];        
-        CONSTRUCTOR (VALUE AS IFloat)
-            SELF:_value		:= VALUE:value
-            SELF:_length	:= (SHORT) VALUE:Digits
-            SELF:_decimals	:= (SHORT) VALUE:Decimals
+        CONSTRUCTOR (@@Value AS IFloat)
+            SELF:_value		:= @@Value:Value
+            SELF:_length	:= (SHORT)  @@Value:Digits
+            SELF:_decimals	:= (SHORT)  @@Value:Decimals
         #endregion
         #region Properties
         /// <summary>REAL8 (System.Double) value</summary>
@@ -364,7 +364,7 @@ BEGIN NAMESPACE XSharp
         #region Add and Subtract
         /// <exclude />	
         METHOD Add(rhs AS FLOAT) AS FLOAT
-            RETURN FLOAT{ SELF:_value + rhs:_value, math.Max(SELF:_decimals, rhs:_decimals)}
+            RETURN FLOAT{ SELF:_value + rhs:_value, Math.Max(SELF:_decimals, rhs:_decimals)}
             
             /// <exclude />	
         METHOD Add(rhs AS USUAL) AS FLOAT
@@ -383,7 +383,7 @@ BEGIN NAMESPACE XSharp
             
             /// <exclude />	
         METHOD Subtract(rhs AS FLOAT) AS FLOAT
-            RETURN FLOAT{ SELF:_value - rhs:_value, math.Max(SELF:_decimals, rhs:_decimals)}
+            RETURN FLOAT{ SELF:_value - rhs:_value, Math.Max(SELF:_decimals, rhs:_decimals)}
             
             /// <exclude />	
         METHOD Subtract(rhs AS USUAL) AS FLOAT
@@ -483,7 +483,7 @@ BEGIN NAMESPACE XSharp
         #region IComparable
         /// <inheritdoc />
         PUBLIC METHOD CompareTo(rhs AS FLOAT) AS INT
-            RETURN _Value:CompareTo( rhs:_Value)
+            RETURN _value:CompareTo( rhs:_value)
             
             /// <inheritdoc />
         PUBLIC METHOD CompareTo(rhs AS OBJECT) AS INT

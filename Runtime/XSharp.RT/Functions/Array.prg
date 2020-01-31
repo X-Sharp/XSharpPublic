@@ -17,7 +17,7 @@ INTERNAL STATIC CLASS ArrayHelpers
         ARRAYNOTNULL aTarget
         nLen := (INT) aTarget:Length
         FOR nItem := nStart TO nLen
-            IF object.Equals(aTarget[ nItem], element)
+            IF Object.Equals(aTarget[ nItem], element)
                 RETURN (DWORD) nItem
             ENDIF
             nCount -= 1  
@@ -107,7 +107,7 @@ INTERNAL STATIC CLASS ArrayHelpers
         dwHigh := (DWORD) ALen(a)
         iSave := dwRet := 0
         iComp := 0
-        lIsCodeblock := IsCodeBlock( seekVal )
+        lIsCodeBlock := IsCodeBlock( seekVal )
         IF lIsCodeBlock
             cb := seekVal
         ELSEIF lExact
@@ -185,7 +185,7 @@ INTERNAL STATIC CLASS ArrayHelpers
         ENDIF
         ARRAYNOTNULL aArray
         IF nStart == 0
-            THROW  Error.ArgumentError( __FUNCTION__, nameof(nStart), 3, __CavoStr( VOErrors.ArgCannotBeZero ), { nStart } )
+            THROW  Error.ArgumentError( __FUNCTION__, nameof(nStart), 3, __CavoStr( VOErrors.ARGCANNOTBEZERO ), { nStart } )
         ENDIF
         
         IF nCount != 0
@@ -294,13 +294,13 @@ FUNCTION ArrayInit(wElements AS DWORD, avalues REF USUAL[]) AS ARRAY
     LOCAL aTemp AS ARRAY
     LOCAL x AS DWORD
     
-    IF wElements > (DWORD) aValues:Length
+    IF wElements > (DWORD) avalues:Length
         THROW Error.ArgumentError( __FUNCTION__, NAMEOF(wElements), "Element too big")
     ENDIF
     
-    aTemp := ArrayNew(aValues:Length)
-    FOR x := 1 UPTO aValues:Length
-        aTemp [x] := aValues[x] 
+    aTemp := ArrayNew(avalues:Length)
+    FOR x := 1 UPTO avalues:Length
+        aTemp [x] := avalues[x] 
     NEXT
     RETURN aTemp
     
@@ -485,7 +485,7 @@ FUNCTION ArrayStore(aSource AS ARRAY,Buff AS USUAL PTR,dwLen AS DWORD) AS DWORD
     nLen := ALen(aSource)
     dwLen := Math.Min(dwLen, nLen)
     FOR i := 1 TO dwLen
-        buff[i] := aSource[i]
+        Buff[i] := aSource[i]
     NEXT
     RETURN dwLen
     
@@ -497,7 +497,7 @@ FUNCTION ArrayStore<T>(aSource AS __ArrayBase<T>,Buff AS T PTR,dwLen AS DWORD) A
     nLen := aSource:Length
     dwLen := Math.Min(dwLen, nLen)
     FOR i := 1 TO dwLen
-        buff[i] := aSource[(INT) i]
+        Buff[i] := aSource[(INT) i]
     NEXT
     RETURN dwLen
     
@@ -528,24 +528,24 @@ FUNCTION AScan(aTarget AS ARRAY, uSearch AS USUAL,nStart AS USUAL) AS DWORD
     /// <inheritdoc cref='M:XSharp.RT.Functions.AScan(XSharp.__Array,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)'/>
 FUNCTION AScan(aTarget AS ARRAY, uSearch AS USUAL) AS DWORD 
     ARRAYNULL_RETURNZERO aTarget
-    RETURN ArrayHelpers.Ascan( aTarget, uSearch, 1, NIL, SetExact()) 
+    RETURN ArrayHelpers.AScan( aTarget, uSearch, 1, NIL, SetExact()) 
     
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ascanexact/*" /> 
 FUNCTION AScanExact( aTarget AS ARRAY, uSearch AS USUAL, nStart := NIL AS USUAL, nCount := NIL AS USUAL) AS DWORD
     ARRAYNULL_RETURNZERO aTarget
-    RETURN ArrayHelpers.Ascan( aTarget, uSearch, nStart, nCount, TRUE )
+    RETURN ArrayHelpers.AScan( aTarget, uSearch, nStart, nCount, TRUE )
     
     
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ascanexact/*" /> 
 FUNCTION AScanExact( aTarget AS ARRAY, uSearch AS USUAL, nStart AS USUAL) AS DWORD 
     ARRAYNULL_RETURNZERO aTarget
-    RETURN ArrayHelpers.Ascan( aTarget, uSearch, nStart, NIL, TRUE )
+    RETURN ArrayHelpers.AScan( aTarget, uSearch, nStart, NIL, TRUE )
     
     
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ascanexact/*" /> 
 FUNCTION AScanExact( aTarget AS ARRAY, uSearch AS USUAL) AS DWORD 
     ARRAYNULL_RETURNZERO aTarget
-    RETURN ArrayHelpers.Ascan( aTarget, uSearch, 1, NIL, TRUE )
+    RETURN ArrayHelpers.AScan( aTarget, uSearch, 1, NIL, TRUE )
     
     
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ascanbin/*" />
@@ -562,21 +562,21 @@ FUNCTION AScanBinExact(aTarget AS ARRAY,uSearch AS USUAL) AS DWORD
     /// <typeparam name="T">The type of the array elements</typeparam>
 FUNCTION AScan<T>(aTarget AS __ArrayBase<T>, uSearch AS T) AS DWORD WHERE T IS NEW()
     ARRAYNOTNULL aTarget
-    RETURN ArrayHelpers.Ascan( aTarget, uSearch,1, (INT) aTarget:Length) 
+    RETURN ArrayHelpers.AScan( aTarget, uSearch,1, (INT) aTarget:Length) 
     
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ascan/*" /> 
         /// <typeparam name="T">The type of the array elements</typeparam>
     /// <param name="act">A lambda expression that will be evaluated for every element in the array.</param>
 FUNCTION AScan<T>(aTarget AS __ArrayBase<T>, act AS @@Func<T,LOGIC>) AS DWORD WHERE T IS NEW()
     ARRAYNOTNULL aTarget
-    RETURN ArrayHelpers.Ascan( aTarget, act,1, (INT) aTarget:Length) 
+    RETURN ArrayHelpers.AScan( aTarget, act,1, (INT) aTarget:Length) 
     
     
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ascan/*" /> 
     /// <typeparam name="T">The type of the array elements</typeparam>
 FUNCTION AScan<T>(aTarget AS __ArrayBase<T>, uSearch AS T, nStart AS LONG) AS DWORD WHERE T IS NEW()
     ARRAYNOTNULL aTarget
-    RETURN ArrayHelpers.Ascan( aTarget, uSearch, nStart, (INT) aTarget:Length- nStart +1) 
+    RETURN ArrayHelpers.AScan( aTarget, uSearch, nStart, (INT) aTarget:Length- nStart +1) 
     
     
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ascan/*" /> 
@@ -584,7 +584,7 @@ FUNCTION AScan<T>(aTarget AS __ArrayBase<T>, uSearch AS T, nStart AS LONG) AS DW
     /// <param name="act">A lambda expression that will be evaluated for every element in the array.</param>
 FUNCTION AScan<T>(aTarget AS __ArrayBase<T>, act AS @@Func<T,LOGIC>, nStart AS LONG) AS DWORD WHERE T IS NEW()
     ARRAYNOTNULL aTarget
-    RETURN ArrayHelpers.Ascan( aTarget, act, nStart, (INT) aTarget:Length - nStart +1) 
+    RETURN ArrayHelpers.AScan( aTarget, act, nStart, (INT) aTarget:Length - nStart +1) 
     
     
     
@@ -592,13 +592,13 @@ FUNCTION AScan<T>(aTarget AS __ArrayBase<T>, act AS @@Func<T,LOGIC>, nStart AS L
     /// <typeparam name="T">The type of the array elements</typeparam>
 FUNCTION AScan<T>(aTarget AS __ArrayBase<T>, uSearch AS T, nStart AS LONG, nCount AS LONG) AS DWORD WHERE T IS NEW()
     ARRAYNOTNULL aTarget
-    RETURN ArrayHelpers.Ascan( aTarget, uSearch, nStart, nCount) 
+    RETURN ArrayHelpers.AScan( aTarget, uSearch, nStart, nCount) 
     
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ascan/*" /> 
     /// <typeparam name="T">The type of the array elements</typeparam>
 FUNCTION AScan<T>(aTarget AS __ArrayBase<T>, act AS @@Func<T,LOGIC>, nStart AS LONG, nCount  AS LONG) AS DWORD WHERE T IS NEW()
     ARRAYNOTNULL aTarget
-    RETURN ArrayHelpers.Ascan( aTarget, act, nStart, nCount) 
+    RETURN ArrayHelpers.AScan( aTarget, act, nStart, nCount) 
     
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/asize/*" /> 
 FUNCTION ASize(aTarget AS ARRAY,dwLength AS DWORD) AS ARRAY
@@ -808,11 +808,11 @@ FUNCTION ASort(aTarget AS ARRAY, nStart := NIL AS USUAL,nCount := NIL AS USUAL,c
     
     
     IF cbOrder != NIL
-        VAR ok := cbOrder:IsCodeBlock
+        VAR ok := cbOrder:IsCodeblock
         IF ok
             VAR cb := (CODEBLOCK) cbOrder
             ok := cb:PCount() >= 2
-            IF ! Ok
+            IF ! ok
                 THROW Error.ArgumentError( __FUNCTION__, nameof(cbOrder), "ASort Codeblock must have at least 2 arguments" )
             ENDIF
         ELSE

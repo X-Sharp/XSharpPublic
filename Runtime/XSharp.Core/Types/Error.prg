@@ -360,7 +360,7 @@ BEGIN NAMESPACE XSharp
     RETURN e
     
     /// <exclude/>	
-    STATIC METHOD VODBError( dwGenCode AS DWORD, dwSubCode AS DWORD, cFuncName AS STRING ) AS Error
+    STATIC METHOD VoDbError( dwGenCode AS DWORD, dwSubCode AS DWORD, cFuncName AS STRING ) AS Error
     LOCAL e AS Error
     e := Error{dwGenCode, dwSubCode}
     e:SubSystem   := "DBCMD"
@@ -369,7 +369,7 @@ BEGIN NAMESPACE XSharp
     RETURN e
 
     /// <exclude/>	
-    STATIC METHOD VODBError( dwGenCode AS DWORD, dwSubCode AS DWORD, cFuncName AS STRING, aArgs PARAMS OBJECT[] ) AS Error
+    STATIC METHOD VoDbError( dwGenCode AS DWORD, dwSubCode AS DWORD, cFuncName AS STRING, aArgs PARAMS OBJECT[] ) AS Error
     LOCAL e AS Error
     e := Error{dwGenCode, dwSubCode}
     e:SubSystem   := "DBCMD"
@@ -383,7 +383,7 @@ BEGIN NAMESPACE XSharp
 
 
     /// <exclude/>	
-    STATIC METHOD VODBError( dwGenCode AS DWORD, dwSubCode AS DWORD, aArgs PARAMS OBJECT[] ) AS Error
+    STATIC METHOD VoDbError( dwGenCode AS DWORD, dwSubCode AS DWORD, aArgs PARAMS OBJECT[] ) AS Error
     LOCAL e AS Error
     e			  := Error{dwGenCode, dwSubCode}
     e:SubSystem   := "DBCMD"
@@ -395,7 +395,7 @@ BEGIN NAMESPACE XSharp
     RETURN e
     
     /// <exclude/>	
-    STATIC METHOD VODBError( dwGenCode AS DWORD, dwSubCode AS DWORD, cFuncName AS STRING, cArgName AS STRING, iArgNum AS DWORD, aArgs PARAMS OBJECT[] ) AS Error
+    STATIC METHOD VoDbError( dwGenCode AS DWORD, dwSubCode AS DWORD, cFuncName AS STRING, cArgName AS STRING, iArgNum AS DWORD, aArgs PARAMS OBJECT[] ) AS Error
     LOCAL e AS Error
     e := Error{dwGenCode, dwSubCode, cFuncName, cArgName, iArgNum}
     e:SubSystem   := "DBCMD"

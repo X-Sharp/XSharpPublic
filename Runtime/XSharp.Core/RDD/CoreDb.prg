@@ -1230,7 +1230,7 @@ CLASS XSharp.CoreDb
         /// </remarks>
         
         
-    STATIC METHOD oRddestroy(cBagName AS STRING,oOrder AS OBJECT) AS LOGIC
+    STATIC METHOD OrdDestroy(cBagName AS STRING,oOrder AS OBJECT) AS LOGIC
         RETURN CoreDb.Do ({ =>
         LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
         VAR info := DbOrderInfo{}

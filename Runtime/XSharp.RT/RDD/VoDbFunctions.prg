@@ -229,7 +229,7 @@ FUNCTION VoDbGoBottom() AS LOGIC
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbgoto/*" />     
 /// <seealso cref="M:XSharp.CoreDb.Goto(System.Object)"  />
 FUNCTION VoDbGoto(uRecId AS USUAL) AS LOGIC
-    RETURN VoDb.Goto(uRecID)
+    RETURN VoDb.Goto(uRecId)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbgotop/*" />          
 /// <seealso cref="M:XSharp.CoreDb.GoTop"  />        
@@ -415,7 +415,7 @@ FUNCTION VoDbRelation(wRelation AS DWORD, pszRelation REF STRING) AS LOGIC
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbrlock/*" />
 /// <seealso cref="M:XSharp.CoreDb.RLock(System.Object)"  />
-FUNCTION VoDbRlock(uRecID AS USUAL) AS LOGIC
+FUNCTION VoDbRlock(uRecId AS USUAL) AS LOGIC
     RETURN VoDb.RLock(uRecId)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbseek/*" />
@@ -483,7 +483,7 @@ FUNCTION VoDbSkip(liRecords AS LONG) AS LOGIC
     
 /// <inheritdoc cref="M:XSharp.CoreDb.SkipScope(System.Int32,XSharp.RDD.Support.DbScopeInfo)"  />  
 /// <seealso cref="M:XSharp.CoreDb.SkipScope(System.Int32,XSharp.RDD.Support.DbScopeInfo)"  />  
-FUNCTION VoDbSkipScope(nRecords AS LONG,scope AS DBSCOPEINFO) AS LOGIC 
+FUNCTION VoDbSkipScope(nRecords AS LONG,scope AS DbScopeInfo) AS LOGIC 
     RETURN VoDb.SkipScope(nRecords, scope) 
 
 /// <param name="fldNames">List of field names to copy</param>
@@ -512,13 +512,13 @@ FUNCTION VoDbTransRec(nDest AS DWORD,fldNames AS _FieldNames) AS LOGIC
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbunlock/*" /> 
 /// <remarks> <inheritdoc cref="M:XSharp.CoreDb.Unlock(System.Object)"  />
 /// <br/><br/> <note type="tip">The difference between VoDbUnlock and CoreDb.UnLock is that VoDbUnlock takes USUAL parameters</note></remarks>
-FUNCTION VoDbUnlock(uRecID AS USUAL) AS LOGIC
-    RETURN VoDb.UnLock( uRecID)
+FUNCTION VoDbUnlock(uRecId AS USUAL) AS LOGIC
+    RETURN VoDb.Unlock( uRecId)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbunlockall/*" /> 
 /// <seealso cref="M:XSharp.CoreDb.OrdBagExt"  /> 
 FUNCTION VoDbUnLockAll() AS LOGIC
-    RETURN VoDb.UnLockAll()
+    RETURN VoDb.UnlockAll()
 
 /// <overloads>
 /// <summary>

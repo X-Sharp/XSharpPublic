@@ -60,7 +60,7 @@ FUNCTION IsByRef(uVal AS USUAL) AS LOGIC
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/iscodeblock/*" />
 FUNCTION IsCodeBlock(uValue AS USUAL) AS LOGIC
-	RETURN uValue:IsCodeBlock
+	RETURN uValue:IsCodeblock
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/isdate/*" />
 FUNCTION IsDate(uValue AS USUAL) AS LOGIC

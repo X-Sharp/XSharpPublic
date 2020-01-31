@@ -25,7 +25,7 @@ ABSTRACT CLASS XSharp.Codeblock IMPLEMENTS ICodeblock
 
 	/// <summary>Returns the number of parameters in the codeblock</summary>
 	PUBLIC VIRTUAL METHOD PCount AS INT 
-		RETURN _Pcount
+		RETURN _pcount
 		
 	/// <summary>This constructor is used by the Compiler for compile time codeblocks.</summary>
 	/// <param name="pCount">Number of parameters defined in the compile time codeblock.</param>
@@ -99,11 +99,11 @@ PUBLIC CLASS XSharp._Codeblock INHERIT XSharp.Codeblock
 	/// <param name="lIsBlock">Did the macro string start with "{|".</param>
 	/// <param name="lAddsMemvars">Does the macro create Memvars .</param>
 	PUBLIC CONSTRUCTOR(innerBlock AS ICodeblock, cMacro AS STRING, lIsBlock AS LOGIC, lAddsMemvars AS LOGIC)
-		SUPER(IIF (lIsBlock, innerBlock:Pcount(), -1))
+		SUPER(IIF (lIsBlock, innerBlock:PCount(), -1))
 		_innerBlock := innerBlock
 		_cMacro		:= cMacro
 		_lIsBlock   := lIsBlock
-        _addsMemVars := lAddsMemVars
+        _addsMemVars := lAddsMemvars
 		
 	/// <summary>
 	/// Executes the codeblock.</summary>

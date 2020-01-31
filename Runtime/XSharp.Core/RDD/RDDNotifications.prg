@@ -9,7 +9,7 @@ USING System.Collections.Generic
 USING System.Text
 USING XSharp.RDD.Enums
 
-/// <summary>Register an object that will receive notification messages for workarea events.</summary>
+/// <summary>Register an object that will receive notification messages for Workarea events.</summary>
 /// <returns>TRUE when registration succceeded. FALSE when the client was already registered</returns>
 /// <seealso cref="M:XSharp.Core.Functions.DbUnRegisterClient(XSharp.IDbNotify)"/>
 /// <seealso cref="T:XSharp.IDbNotify"/>
@@ -18,7 +18,7 @@ FUNCTION DbRegisterClient(oClient AS IDbNotify) AS LOGIC
     CoreDb.Notify += oClient:Notify
     RETURN TRUE
 
-/// <summary>Unregister an object that receives notification messages for workarea events.</summary>
+/// <summary>Unregister an object that receives notification messages for Workarea events.</summary>
 /// <returns>TRUE when unregistration succceeded. FALSE when the the client was not registered.</returns>
 /// <seealso cref="M:XSharp.Core.Functions.DbRegisterClient(XSharp.IDbNotify)"/>
 /// <seealso cref="T:XSharp.IDbNotify"/>
@@ -46,12 +46,12 @@ END CLASS
 
 /// <summary>The delegate that defines the Workarea Eventhandler</summary>
 /// <param name="sender">Workarea for which the event happened.
-/// <note>The <paramref name="sender">sender</paramref> object may be NULL for operations that work on all workareas, such as DbCloseAll() </note></param>
+/// <note>The <paramref name="sender">sender</paramref> object may be NULL for operations that work on all Workareas, such as DbCloseAll() </note></param>
 /// <param name="e">Object that describes the event that happened.</param>
 /// <seealso cref="T:XSharp.RDD.IRdd"/>
 /// <seealso cref="T:XSharp.DbNotifyEventArgs"/>
 // note this method matches the signature of XSharp.IDbNotify.Notify()
-PUBLIC DELEGATE XSharp.DbNotifyEventHandler(osender AS XSharp.RDD.IRdd, e AS XSharp.DBNotifyEventArgs) AS VOID
+PUBLIC DELEGATE XSharp.DbNotifyEventHandler(osender AS XSharp.RDD.IRdd, e AS XSharp.DbNotifyEventArgs) AS VOID
 
 
 /// <summary>
@@ -62,9 +62,9 @@ PUBLIC DELEGATE XSharp.DbNotifyEventHandler(osender AS XSharp.RDD.IRdd, e AS XSh
 /// <seealso cref="T:XSharp.RDD.IRdd"/>
 /// <seealso cref="T:XSharp.DbNotifyEventArgs"/>
 INTERFACE XSharp.IDbNotify
-    /// <summary>This message is sent to clients when a workarea event happens</summary>
+    /// <summary>This message is sent to clients when a Workarea event happens</summary>
     /// <param name="sender">Workarea for which the event happened.
-    /// <note>The <paramref name="sender">sender</paramref> object may be NULL for operations that work on all workareas, such as DbCloseAll() </note></param>
+    /// <note>The <paramref name="sender">sender</paramref> object may be NULL for operations that work on all Workareas, such as DbCloseAll() </note></param>
     /// <param name="e">Object that describes the event that happened.</param>
     // note this method matches the signature of XSharp.DbNotifyEventHandler
     METHOD Notify(sender AS XSharp.RDD.IRdd, e AS DbNotifyEventArgs) AS VOID

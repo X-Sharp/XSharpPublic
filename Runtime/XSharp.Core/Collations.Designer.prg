@@ -33,7 +33,7 @@ BEGIN NAMESPACE XSharp
         INTERNAL STATIC PROPERTY ResourceManager AS GLOBAL::System.Resources.ResourceManager
         
             GET
-                IF (OBJECT.ReferenceEquals(resourceMan, NULL))
+                IF (Object.ReferenceEquals(resourceMan, NULL))
                     LOCAL temp := GLOBAL::System.Resources.ResourceManager{"XSharp.Collations", typeof(Collations):@@Assembly} AS GLOBAL::System.Resources.ResourceManager
                     resourceMan := temp
                 ENDIF

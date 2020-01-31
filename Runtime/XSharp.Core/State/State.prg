@@ -49,13 +49,13 @@ CLASS XSharp.RuntimeState
                 ENDIF
             NEXT
             // The following were skipped above bcause of the NULL check
-            SELF:_SetThreadValue<Exception>(SET.FileException,NULL)
-            SELF:_SetThreadValue<Exception>(SET.LastRddError,NULL)
-            SELF:_SetThreadValue<Exception>(SET.PathArray,NULL)
+            SELF:_SetThreadValue<Exception>(Set.FileException,NULL)
+            SELF:_SetThreadValue<Exception>(Set.LastRddError,NULL)
+            SELF:_SetThreadValue<Exception>(Set.Patharray,NULL)
             SELF:_SetThreadValue<BYTE[]>(Set.CollationTable, NULL )
 			IF System.Environment.OSVersion:Platform == System.PlatformID.Win32NT
-                SELF:_SetThreadValue<LONG>(Set.DOSCODEPAGE, Win32.GetDosCodePage())
-                SELF:_SetThreadValue<LONG>(Set.WINCODEPAGE, Win32.GetWinCodePage())
+                SELF:_SetThreadValue<LONG>(Set.DosCodepage, Win32.GetDosCodePage())
+                SELF:_SetThreadValue<LONG>(Set.WinCodepage, Win32.GetWinCodePage())
             ELSE
                 SELF:_SetThreadValue(Set.CollationMode, CollationMode.Unicode )
             ENDIF
@@ -72,13 +72,13 @@ CLASS XSharp.RuntimeState
 			oSettings:Clear()
 		ENDIF
 
-    /// <summary>This method closes all open workareas for all threads. It is automatically called ad shutdown.</summary>
-    /// <remarks>It is usually better to manage the lifetime of your workarea yourself in code, so don't trust on the runtime to close the workareas.</remarks>
+    /// <summary>This method closes all open Workareas for all threads. It is automatically called ad shutdown.</summary>
+    /// <remarks>It is usually better to manage the lifetime of your Workarea yourself in code, so don't trust on the runtime to close the Workareas.</remarks>
     STATIC METHOD CloseWorkareasForAllThreads() AS VOID
         TRY
             FOREACH VAR state IN currentState:Values
-                IF state:_workareas != NULL
-                    state:_workareas:CloseAll()
+                IF state:_Workareas != NULL
+                    state:_Workareas:CloseAll()
                 ENDIF
             NEXT
         CATCH e AS Exception
@@ -149,28 +149,28 @@ CLASS XSharp.RuntimeState
     /// <include file="CoreComments.xml" path="Comments/CompilerOptions/*" />
     /// <value>The default vale for this option is 'False'.</value>
 	STATIC PROPERTY CompilerOptionVO11 AS LOGIC ;
-        GET GetValue<LOGIC>(Set.OptionVO11);
-        SET SetValue<LOGIC>(Set.OptionVO11, VALUE)
+        GET GetValue<LOGIC>(Set.Optionvo11);
+        SET SetValue<LOGIC>(Set.Optionvo11, VALUE)
  
 	/// <summary>The current compiler setting for the VO13 compiler option.</summary>
     /// <include file="CoreComments.xml" path="Comments/CompilerOptions/*" />
     /// <value>The default vale for this option is 'False'.</value>
 	STATIC PROPERTY CompilerOptionVO13 AS LOGIC ;
-        GET GetValue<LOGIC>(Set.OptionVO13);
-        SET SetValue<LOGIC>(Set.OptionVO13, VALUE)
+        GET GetValue<LOGIC>(Set.Optionvo13);
+        SET SetValue<LOGIC>(Set.Optionvo13, VALUE)
 
-	/// <summary>Gets / Sets the current workarea number.</summary>
+	/// <summary>Gets / Sets the current Workarea number.</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-    STATIC PROPERTY CurrentWorkArea AS DWORD ;
-        GET Workareas:CurrentWorkAreaNO ;
-        SET Workareas:CurrentWorkAreaNO  := VALUE
+    STATIC PROPERTY CurrentWorkarea AS DWORD ;
+        GET Workareas:CurrentWorkareaNO ;
+        SET Workareas:CurrentWorkareaNO  := VALUE
 
     /// <summary>The current compiler setting for the OVF compiler option.</summary>
     /// <include file="CoreComments.xml" path="Comments/CompilerOptions/*" />
     /// <value>The default vale for this option is 'False'.</value>
 	STATIC PROPERTY CompilerOptionOVF AS LOGIC ;
-        GET GetValue<LOGIC>(Set.OptionOVF);
-        SET SetValue<LOGIC>(Set.OptionOVF, VALUE)
+        GET GetValue<LOGIC>(Set.Optionovf);
+        SET SetValue<LOGIC>(Set.Optionovf, VALUE)
 
     /// <summary>The current compiler setting for the X# Dialect.</summary>
     /// <include file="CoreComments.xml" path="Comments/CompilerOptions/*" />
@@ -183,8 +183,8 @@ CLASS XSharp.RuntimeState
     /// <include file="CoreComments.xml" path="Comments/CompilerOptions/*" />
     /// <value>The default vale for this option is 'False'.</value>
 	STATIC PROPERTY CompilerOptionFOVF AS LOGIC ;
-        GET GetValue<LOGIC>(Set.OptionOVF);
-        SET SetValue<LOGIC>(Set.OptionOVF, VALUE)
+        GET GetValue<LOGIC>(Set.Optionovf);
+        SET SetValue<LOGIC>(Set.Optionovf, VALUE)
 
 	/// <summary>The System.Reflection.Module for the main application.</summary>
     /// <include file="CoreComments.xml" path="Comments/CompilerOptions/*" />
@@ -235,8 +235,8 @@ CLASS XSharp.RuntimeState
     /// <seealso cref="P:XSharp.RuntimeState.AutoOrder" />
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
     STATIC PROPERTY AutoShareMode AS LONG ;
-        GET (LONG) GetValue<AutoShareMode>(Set.AutoShare);
-        SET SetValue<AutoShareMode>(Set.AutoShare, (AutoShareMode)VALUE)
+        GET (LONG) GetValue<AutoShareMode>(Set.Autoshare);
+        SET SetValue<AutoShareMode>(Set.Autoshare, (AutoShareMode)VALUE)
 
 
 	/// <summary>The current Century setting (used in DATE &lt;-&gt; STRING conversions).</summary>
@@ -254,7 +254,7 @@ CLASS XSharp.RuntimeState
         SET 
 			SetValue<CollationMode>(Set.CollationMode, VALUE)
 			IF OnCollationChanged != NULL
-				OnCollationChanged(GetInstance(), EVentArgs{})
+				OnCollationChanged(GetInstance(), EventArgs{})
 			ENDIF
 		END SET
 	END PROPERTY
@@ -284,8 +284,8 @@ CLASS XSharp.RuntimeState
 	/// <summary>The default number of decimals for new FLOAT values that are created without explicit decimals.</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
     STATIC PROPERTY Decimals AS DWORD ;
-        GET GetValue<DWORD>(Set.DECIMALS);
-        SET SetValue<DWORD>(Set.DECIMALS, VALUE)
+        GET GetValue<DWORD>(Set.Decimals);
+        SET SetValue<DWORD>(Set.Decimals, VALUE)
 
 
 	/// <summary>The default number of decimals for new FLOAT values that are created without explicit decimals.</summary>
@@ -298,21 +298,21 @@ CLASS XSharp.RuntimeState
 	/// <summary>The default RDD.</summary>
     /// <remarks><note>This value is 'per thread' </note></remarks>
     STATIC PROPERTY DefaultRDD AS STRING ;
-        GET GetValue<STRING>(Set.DEFAULTRDD);
-        SET SetValue<STRING>(Set.DEFAULTRDD, VALUE)
+        GET GetValue<STRING>(Set.DefaultRdd);
+        SET SetValue<STRING>(Set.DefaultRdd, VALUE)
 
 
 	/// <summary>RDD Deleted Flag that determines whether to ignore or include records that are marked for deletion.</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
     STATIC PROPERTY Deleted AS LOGIC ;
-        GET GetValue<LOGIC>(Set.DELETED);
-        SET SetValue<LOGIC>(Set.DELETED, VALUE)
+        GET GetValue<LOGIC>(Set.Deleted);
+        SET SetValue<LOGIC>(Set.Deleted, VALUE)
 
 	/// <summary>The default number of digits for new FLOAT values that are created without explicit decimals</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
     STATIC PROPERTY Digits AS DWORD ;
-        GET GetValue<DWORD>(Set.DIGITS);
-        SET SetValue<DWORD>(Set.DIGITS, VALUE)
+        GET GetValue<DWORD>(Set.Digits);
+        SET SetValue<DWORD>(Set.Digits, VALUE)
 
     /// <summary>Logical setting that fixes the number of digits used to display numeric output.</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
@@ -326,10 +326,10 @@ CLASS XSharp.RuntimeState
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
     STATIC PROPERTY DosCodePage AS LONG 
         GET
-            RETURN GetValue<LONG>(Set.DOSCODEPAGE)
+            RETURN GetValue<LONG>(Set.DosCodepage)
 		END GET
         SET 
-			SetValue<LONG>(Set.DOSCODEPAGE, VALUE) 
+			SetValue<LONG>(Set.DosCodepage, VALUE) 
 			IF OnCodePageChanged != NULL
 				OnCodePageChanged(GetInstance(), EventArgs{})
 			ENDIF
@@ -353,25 +353,25 @@ CLASS XSharp.RuntimeState
 	/// <summary>Date Epoch value that determines how dates without century digits are interpreted.</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
     STATIC PROPERTY Epoch AS DWORD ;
-        GET Convert.ToUInt32(GetValue<OBJECT>(Set.EPOCH));
-        SET SetValue<DWORD>(Set.EPOCH, VALUE)
+        GET Convert.ToUInt32(GetValue<OBJECT>(Set.Epoch));
+        SET SetValue<DWORD>(Set.Epoch, VALUE)
 
 	/// <summary>Date Epoch Year value. This gets set by the SetEpoch() function to the Epoch year % 100.</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
     STATIC PROPERTY EpochYear AS DWORD ;
-        GET Convert.ToUInt32(GetValue<OBJECT>(Set.EPOCHYEAR));
+        GET Convert.ToUInt32(GetValue<OBJECT>(Set.EpochYear));
 
 	/// <summary>Date Epoch Century value. This gets set by the SetEpoch() function to the century in which the Epoch year falls.</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
     STATIC PROPERTY EpochCent AS DWORD ;
-        GET Convert.ToUInt32(GetValue<OBJECT>(Set.EPOCHCENT));
+        GET Convert.ToUInt32(GetValue<OBJECT>(Set.EpochCent));
 
 
 	/// <summary>String comparison Exact flag that determines how comparisons with the single '=' characters should be done.</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
     STATIC PROPERTY Exact AS LOGIC ;
-        GET GetValue<LOGIC>(Set.EXACT);
-        SET SetValue<LOGIC>(Set.EXACT, VALUE)
+        GET GetValue<LOGIC>(Set.Exact);
+        SET SetValue<LOGIC>(Set.Exact, VALUE)
 
     /// <summary>Logical setting that fixes the number of decimal digits used to display numbers.</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
@@ -384,8 +384,8 @@ CLASS XSharp.RuntimeState
 	/// <summary>Numeric value that controls the precision of Float comparisons.</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
    STATIC PROPERTY FloatDelta AS REAL8 ;
-        GET GetValue<REAL8>(Set.FloatDelta);
-        SET SetValue<REAL8>(Set.FloatDelta, VALUE)
+        GET GetValue<REAL8>(Set.Floatdelta);
+        SET SetValue<REAL8>(Set.Floatdelta, VALUE)
 
 	/// <summary>Current SetInternational Setting.</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
@@ -402,70 +402,70 @@ CLASS XSharp.RuntimeState
 	/// <summary>Number of tries that were done when the last lock operation failed.</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
     STATIC PROPERTY LockTries AS DWORD ;
-        GET Convert.ToUInt32(GetValue<OBJECT>(Set.LOCKTRIES));
-        SET SetValue<DWORD>(Set.LOCKTRIES, VALUE)
+        GET Convert.ToUInt32(GetValue<OBJECT>(Set.Locktries));
+        SET SetValue<DWORD>(Set.Locktries, VALUE)
 
     /// <summary>The setting that determines whether to use the High Performance (HP) locking schema for newly created .NTX files</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
     STATIC PROPERTY HPLocking AS LOGIC ;
-        GET GetValue<LOGIC>(Set.HPLOCKING);
-        SET SetValue<LOGIC>(Set.HPLOCKING, VALUE)
+        GET GetValue<LOGIC>(Set.HpLocking);
+        SET SetValue<LOGIC>(Set.HpLocking, VALUE)
 
     /// <summary>The setting that determines whether to use the new locking offset of -1 (0xFFFFFFFF) for .NTX files.</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
     STATIC PROPERTY NewIndexLock AS LOGIC ;
-        GET GetValue<LOGIC>(Set.NEWINDEXLOCK);
-        SET SetValue<LOGIC>(Set.NEWINDEXLOCK, VALUE)
+        GET GetValue<LOGIC>(Set.NewIndexLock);
+        SET SetValue<LOGIC>(Set.NewIndexLock, VALUE)
 
 
 	/// <summary>The current default MemoBlock size.</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
     STATIC PROPERTY MemoBlockSize AS WORD;
-        GET Convert.ToUInt16(GetValue<OBJECT>(Set.MEMOBLOCKSIZE));
-        SET SetValue<WORD>(Set.MEMOBLOCKSIZE, VALUE)
+        GET Convert.ToUInt16(GetValue<OBJECT>(Set.MemoBlockSize));
+        SET SetValue<WORD>(Set.MemoBlockSize, VALUE)
 
 
 	/// <summary>Did the last RDD operation cause a Network Error ?</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
     STATIC PROPERTY NetErr AS LOGIC;
-        GET GetValue<LOGIC>(Set.NETERR);
-        SET SetValue<LOGIC>(Set.NETERR, VALUE)
+        GET GetValue<LOGIC>(Set.Neterr);
+        SET SetValue<LOGIC>(Set.Neterr, VALUE)
 
 	/// <summary>RDD Optimize Flag  </summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
     STATIC PROPERTY Optimize AS LOGIC ;
-        GET GetValue<LOGIC>(Set.OPTIMIZE);
-        SET SetValue<LOGIC>(Set.OPTIMIZE, VALUE)
+        GET GetValue<LOGIC>(Set.Optimize);
+        SET SetValue<LOGIC>(Set.Optimize, VALUE)
 
 	/// <summary>The current SetSoftSeek flag.</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
     STATIC PROPERTY SoftSeek AS LOGIC ;
-        GET GetValue<LOGIC>(Set.SOFTSEEK);
-        SET SetValue<LOGIC>(Set.SOFTSEEK, VALUE)
+        GET GetValue<LOGIC>(Set.Softseek);
+        SET SetValue<LOGIC>(Set.Softseek, VALUE)
 
 	/// <summary>The Thousand separator</summary>
     /// <seealso cref="P:XSharp.RuntimeState.DecimalSep" />
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
     STATIC PROPERTY ThousandSep AS DWORD ;
-        GET Convert.ToUInt32(GetValue<OBJECT>(Set.THOUSANDSEP));
-        SET SetValue<DWORD>(Set.THOUSANDSEP, VALUE)
+        GET Convert.ToUInt32(GetValue<OBJECT>(Set.ThousandSep));
+        SET SetValue<DWORD>(Set.ThousandSep, VALUE)
 
 
 	/// <summary>Number of tries that were done when the last lock operation failed.</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
     STATIC PROPERTY Unique AS LOGIC ;
-        GET GetValue<LOGIC>(Set.UNIQUE);
-        SET SetValue<LOGIC>(Set.UNIQUE, VALUE)
+        GET GetValue<LOGIC>(Set.Unique);
+        SET SetValue<LOGIC>(Set.Unique, VALUE)
 
 	/// <summary>The Windows Codepage. This gets read at startup from the OS().</summary>
     /// <seealso cref="P:XSharp.RuntimeState.WinEncoding" />
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
     STATIC PROPERTY WinCodePage AS LONG
 	GET
-		RETURN GetValue<LONG>(Set.WINCODEPAGE)
+		RETURN GetValue<LONG>(Set.WinCodepage)
 	END GET
 	SET 
-        SetValue<LONG>(Set.WINCODEPAGE, VALUE)
+        SetValue<LONG>(Set.WinCodepage, VALUE)
 		IF OnCodePageChanged != NULL
 			OnCodePageChanged(GetInstance(), EventArgs{})
 		ENDIF
@@ -493,8 +493,8 @@ CLASS XSharp.RuntimeState
 
 
     INTERNAL METHOD _SetInternationalClipper() AS VOID
-        SELF:_SetThreadValue<DWORD>(Set.DECIMALSEP, 46)		// DOT .
-        SELF:_SetThreadValue<DWORD>(Set.THOUSANDSEP,44)	// COMMA ,
+        SELF:_SetThreadValue<DWORD>(Set.DecimalSep, 46)		// DOT .
+        SELF:_SetThreadValue<DWORD>(Set.ThousandSep,44)	// COMMA ,
         SELF:_SetThreadValue(Set.Intl, CollationMode.Clipper)
         SELF:_SetThreadValue(Set.Dict, FALSE)
         SELF:_SetThreadValue(Set.Century, FALSE)
@@ -503,9 +503,9 @@ CLASS XSharp.RuntimeState
 
     INTERNAL METHOD _SetInternationalWindows() AS VOID
         VAR numberformat := System.Globalization.NumberFormatInfo.CurrentInfo
-        SELF:_SetThreadValue<DWORD>(Set.DECIMALSEP, numberformat:NumberDecimalSeparator[0])
-        SELF:_SetThreadValue<DWORD>(Set.THOUSANDSEP, numberformat:NumberGroupSeparator[0])
-        SELF:_SetThreadValue<DWORD>(Set.EPOCH, 1910)
+        SELF:_SetThreadValue<DWORD>(Set.DecimalSep, numberformat:NumberDecimalSeparator[0])
+        SELF:_SetThreadValue<DWORD>(Set.ThousandSep, numberformat:NumberGroupSeparator[0])
+        SELF:_SetThreadValue<DWORD>(Set.Epoch, 1910)
         SELF:_SetThreadValue<DWORD>(Set.EpochYear, 10)
         SELF:_SetThreadValue<DWORD>(Set.EpochCent, 2000)
         SELF:_SetThreadValue(Set.Intl, CollationMode.Windows)
@@ -522,16 +522,16 @@ CLASS XSharp.RuntimeState
         ELSE
             format := format:ToUpper()
             IF format:EndsWith("TT")
-		        SELF:_SetThreadValue(Set.AMEXT, "AM")
-		        SELF:_SetThreadValue(Set.PMEXT, "PM")
-		        SELF:_SetThreadValue(Set.AMPM, TRUE)
+		        SELF:_SetThreadValue(Set.AmExt, "AM")
+		        SELF:_SetThreadValue(Set.PmExt, "PM")
+		        SELF:_SetThreadValue(Set.AmPm, TRUE)
             ELSE
-		        SELF:_SetThreadValue(Set.AMEXT, "")
-		        SELF:_SetThreadValue(Set.PMEXT, "")
-		        SELF:_SetThreadValue(Set.AMPM, FALSE)
+		        SELF:_SetThreadValue(Set.AmExt, "")
+		        SELF:_SetThreadValue(Set.PmExt, "")
+		        SELF:_SetThreadValue(Set.AmPm, FALSE)
             ENDIF
-            SELF:_SetThreadValue(Set.TimeSep, ASC(Substr3(format, 3,1)))
-            SELF:_SetThreadValue(Set.TimeFOrmat, format)
+            SELF:_SetThreadValue(Set.Timesep, Asc(SubStr3(format, 3,1)))
+            SELF:_SetThreadValue(Set.Timeformat, format)
        ENDIF
 
 	INTERNAL METHOD _SetDateFormat(format AS STRING) AS VOID
@@ -542,45 +542,45 @@ CLASS XSharp.RuntimeState
 		ENDIF
 		SELF:_SetThreadValue(Set.DateFormatNet, format:Replace("D","d"):Replace("Y","y"):Replace("/","'/'"))
 		SELF:_SetThreadValue(Set.DateFormatEmpty, format:Replace("D"," "):Replace("Y"," "):Replace("M"," "))
-		SELF:_SetThreadValue(SET.Century, format:Contains("YYYY"))
-		SELF:_SetThreadValue(Set.DATEFORMAT, format)
+		SELF:_SetThreadValue(Set.Century, format:Contains("YYYY"))
+		SELF:_SetThreadValue(Set.DateFormat, format)
  		SWITCH format
 		CASE "MM/DD/YY"
 		CASE "MM/DD/YYYY" 
-			SELF:_SetThreadValue(Set.DATECOUNTRY, XSharp.DateCountry.American)	 
+			SELF:_SetThreadValue(Set.DateCountry, XSharp.DateCountry.American)	 
 		CASE "YY.MM.DD" 
 		CASE "YYYY.MM.DD"
-			SELF:_SetThreadValue(Set.DATECOUNTRY, XSharp.DateCountry.Ansi)	  
+			SELF:_SetThreadValue(Set.DateCountry, XSharp.DateCountry.Ansi)	  
 		CASE "DD/MM/YY"
 		CASE "DD/MM/YYYY"
             // What a laugh, the British & french have an identical format. 
-			SELF:_SetThreadValue(Set.DATECOUNTRY, XSharp.DateCountry.British)	
+			SELF:_SetThreadValue(Set.DateCountry, XSharp.DateCountry.British)	
 		CASE "DD.MM.YY"
 		CASE "DD.MM.YYYY"
-			SELF:_SetThreadValue(Set.DATECOUNTRY, XSharp.DateCountry.German)	
+			SELF:_SetThreadValue(Set.DateCountry, XSharp.DateCountry.German)	
 		CASE "DD-MM-YY"
 		CASE "DD-MM-YYYY"
-			SELF:_SetThreadValue(Set.DATECOUNTRY, XSharp.DateCountry.Italian)	
+			SELF:_SetThreadValue(Set.DateCountry, XSharp.DateCountry.Italian)	
 		CASE "YY/MM/DD"
 		CASE "YYYY/MM/DD"
-			SELF:_SetThreadValue(Set.DATECOUNTRY, XSharp.DateCountry.Japanese)	
+			SELF:_SetThreadValue(Set.DateCountry, XSharp.DateCountry.Japanese)	
 		CASE "MM-DD-YY"
 		CASE "MM-DD-YYYY"
-			SELF:_SetThreadValue(Set.DATECOUNTRY, XSharp.DateCountry.USA)	
+			SELF:_SetThreadValue(Set.DateCountry, XSharp.DateCountry.USA)	
 		END SWITCH
 
     INTERNAL METHOD _SetTimeFormatSystem() AS VOID
  		VAR dtInfo	    := System.Globalization.DateTimeFormatInfo.CurrentInfo
-		SELF:_SetThreadValue(Set.AMEXT, dtInfo:AMDesignator)
-		SELF:_SetThreadValue(Set.PMEXT, dtInfo:PMDesignator)
+		SELF:_SetThreadValue(Set.AmExt, dtInfo:AMDesignator)
+		SELF:_SetThreadValue(Set.PmExt, dtInfo:PMDesignator)
 		VAR separator := dtInfo:TimeSeparator
 		IF String.IsNullOrEmpty(separator)
-			SELF:_SetThreadValue(Set.TimeSep, (DWORD) 0)
+			SELF:_SetThreadValue(Set.Timesep, (DWORD) 0)
 		ELSE
-			SELF:_SetThreadValue(Set.TimeSep, (DWORD) separator[0])
+			SELF:_SetThreadValue(Set.Timesep, (DWORD) separator[0])
 		ENDIF
-		SELF:_SetThreadValue(Set.AMPM, dtInfo:ShortDatePattern:IndexOf("tt") != -1)
-        SELF:_SetThreadValue(Set.TimeFormat, dtInfo:LongTimePattern)
+		SELF:_SetThreadValue(Set.AmPm, dtInfo:ShortDatePattern:IndexOf("tt") != -1)
+        SELF:_SetThreadValue(Set.Timeformat, dtInfo:LongTimePattern)
        
     INTERNAL METHOD _SetDateFormatSystem() AS VOID
 		LOCAL format    AS STRING
@@ -612,7 +612,7 @@ CLASS XSharp.RuntimeState
 				format := "MM/DD/" + year
 			CASE XSharp.DateCountry.Ansi
 				format := year + ".MM.DD"
-			CASE XSharp.DateCountry.British
+			CASE XSharp.DateCountry.British 
 			CASE XSharp.DateCountry.French
                 // What a laugh, the British & french have an identical format. 
 				format := "DD/MM/" + year
@@ -630,28 +630,28 @@ CLASS XSharp.RuntimeState
 		    // this will adjust DateFormatNet, DateFormatEmpty etc, but also DateCountry again
             SELF:_SetDateFormat(format) 
         ENDIF
-        SELF:_SetThreadValue(Set.DATECOUNTRY, country)
+        SELF:_SetThreadValue(Set.DateCountry, country)
         RETURN
 
-	PRIVATE _workareas AS WorkAreas
-	/// <summary>The workarea information for the current Thread.</summary>
+	PRIVATE _Workareas AS Workareas
+	/// <summary>The Workarea information for the current Thread.</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-	PUBLIC STATIC PROPERTY Workareas AS WorkAreas
+	PUBLIC STATIC PROPERTY Workareas AS Workareas
 	GET
        LOCAL inst AS RuntimeState
         inst := GetInstance()
-		IF inst:_workareas == NULL_OBJECT
-			inst:_workareas := WorkAreas{}
+		IF inst:_Workareas == NULL_OBJECT
+			inst:_Workareas := Workareas{}
 		ENDIF
-		RETURN inst:_workareas
+		RETURN inst:_Workareas
 	END GET
     END PROPERTY
     /// <exclude />
     STATIC METHOD PushCurrentWorkarea(dwArea AS DWORD) AS VOID
-        RuntimeState.WorkAreas:PushCurrentWorkArea(dwArea)
+        RuntimeState.Workareas:PushCurrentWorkarea(dwArea)
     /// <exclude />    
     STATIC METHOD PopCurrentWorkarea() AS DWORD
-        RETURN RuntimeState.WorkAreas:PopCurrentWorkArea()
+        RETURN RuntimeState.Workareas:PopCurrentWorkarea()
 
 	PRIVATE _collationTable AS BYTE[]
     /// <summary>Current collation table.</summary>
@@ -662,7 +662,7 @@ CLASS XSharp.RuntimeState
 		coll := GetInstance():_collationTable 
 		IF coll == NULL .OR. coll :Length < 256
 			_SetCollation("Generic")
-			coll := GetInstance():_collationTable := GetValue<BYTE[]>(SET.CollationTable)
+			coll := GetInstance():_collationTable := GetValue<BYTE[]>(Set.CollationTable)
 		ENDIF
 		RETURN coll
 	END GET
@@ -696,16 +696,16 @@ CLASS XSharp.RuntimeState
     /// <remarks><note>This value is NOT 'per thread' but global for all threads.</note></remarks>
     PUBLIC STATIC PROPERTY MacroResolver AS MacroCompilerResolveAmbiguousMatch
         GET
-            if _macroResolver == null
-                IF _macroCompiler IS IMacroCompiler2 VAR mc
-                    _macroResolver := mc:Resolver 
+            IF _macroresolver == NULL
+                IF _macrocompiler IS IMacroCompiler2 VAR mc
+                    _macroresolver := mc:Resolver 
                 ENDIF
             endif
             RETURN _macroresolver
         END GET
         SET
             _macroresolver := VALUE
-            IF _macroCompiler IS IMacroCompiler2 VAR mc
+            IF _macrocompiler IS IMacroCompiler2 VAR mc
                 mc:Resolver := Value
             ENDIF
         END SET
@@ -718,7 +718,7 @@ CLASS XSharp.RuntimeState
 	PUBLIC STATIC EVENT OnCollationChanged AS EventHandler
 
     PRIVATE STATIC METHOD _LoadMacroCompiler() AS VOID
-        IF _macroCompilerType == NULL_OBJECT
+        IF _macrocompilerType == NULL_OBJECT
             VAR oMacroAsm := AssemblyHelper.Load("XSharp.MacroCompiler")
 		    IF oMacroAsm != NULL_OBJECT
 			    LOCAL oType AS System.Type
@@ -726,9 +726,9 @@ CLASS XSharp.RuntimeState
 			    IF oType != NULL_OBJECT
 				    // create instance of this type
 				    IF TYPEOF(IMacroCompiler):IsAssignableFrom(oType)
-					    _macroCompilerType := oType
+					    _macrocompilerType := oType
 				    ELSE
-					    THROW Error{EG_CORRUPTION, "", "Could not create the macro compiler from the type "+ otype:Fullname+" in the assembly "+oMacroAsm:Location}
+					    THROW Error{EG_CORRUPTION, "", "Could not create the macro compiler from the type "+ oType:FullName+" in the assembly "+oMacroAsm:Location}
 				    ENDIF
 			    ELSE
 				    THROW Error{EG_CORRUPTION, "", "Could not load the macro compiler class in the assembly "+oMacroAsm:Location}
@@ -738,10 +738,10 @@ CLASS XSharp.RuntimeState
                 NOP 
 		    ENDIF
         ENDIF
-        IF _macroCompilerType != NULL_OBJECT
-            _macroCompiler := Activator:CreateInstance(_macroCompilerType) ASTYPE IMacroCompiler
-            IF _macroCompiler IS IMacroCompiler2 VAR mc
-                mc:Resolver := _macroResolver
+        IF _macrocompilerType != NULL_OBJECT
+            _macrocompiler := Activator:CreateInstance(_macrocompilerType) ASTYPE IMacroCompiler
+            IF _macrocompiler IS IMacroCompiler2 VAR mc
+                mc:Resolver := _macroresolver
             ENDIF
 		ENDIF
 		RETURN
@@ -815,7 +815,7 @@ CLASS XSharp.RuntimeState
                 ret := String.Compare(strLHS, strRHS)
             ENDIF
         CASE CollationMode.Clipper  // both Clipper and XPP use weight tables
-        CASE CollationMode.XPP
+        CASE CollationMode.Xpp
             ret := XSharp.StringHelpers.CompareClipper(strLHS, strRHS) 
         CASE CollationMode.Unicode
             ret := String.Compare(strLHS, strRHS)
@@ -838,7 +838,7 @@ CLASS XSharp.RuntimeState
     STATIC METHOD StringCompare(aLHS AS BYTE[], aRHS AS BYTE[], nLen AS INT) AS INT
         SWITCH CollationMode
         CASE CollationMode.Clipper
-        CASE CollationMode.XPP
+        CASE CollationMode.Xpp
             RETURN XSharp.StringHelpers.CompareClipper(aLHS, aRHS, nLen)
         CASE CollationMode.Windows
             IF System.Environment.OSVersion:Platform == System.PlatformID.Win32NT

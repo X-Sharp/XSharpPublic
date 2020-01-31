@@ -20,7 +20,7 @@ BEGIN NAMESPACE XSharp.RDD
         PROPERTY RddType        AS System.Type AUTO
         /// <summary>Fully qualified type name of the RDD</summary>
         PROPERTY TypeName       AS STRING AUTO
-        STATIC PRIVATE rDDs     AS Dictionary<STRING, RegisteredRDD>
+        STATIC PRIVATE RDDs     AS Dictionary<STRING, RegisteredRDD>
         
         CONSTRUCTOR(cRDDName AS STRING, oType AS System.Type)
             SELF:RddName        := cRDDName
@@ -36,7 +36,7 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN    
             
         STATIC CONSTRUCTOR()
-            rDDs    := Dictionary<STRING, RegisteredRDD>{StringComparer.OrdinalIgnoreCase}
+            RDDs    := Dictionary<STRING, RegisteredRDD>{StringComparer.OrdinalIgnoreCase}
             RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "CAVODBF", "XSharp.RDD.DBF"})          // Just DBF
             RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "DBF",     "XSharp.RDD.DBF"})          // Just DBF
             RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "DBFDBT",  "XSharp.RDD.DBFDBT"})       // DBF + DBT
@@ -83,7 +83,7 @@ BEGIN NAMESPACE XSharp.RDD
         /// <summary>Add a registration for a new RDD.</summary>
         /// <returns>FALSE when the RDD name is already registered, TRUE when the registration succeeded.</returns>
         STATIC METHOD Add(oRDD AS RegisteredRDD) AS LOGIC
-            LOCAL cRddname AS STRING
+            LOCAL cRddName AS STRING
             cRddName := oRDD:RddName
             IF RDDs:ContainsKey(cRddName)
                 RETURN FALSE

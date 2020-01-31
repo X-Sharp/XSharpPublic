@@ -15,7 +15,7 @@ STATIC CLASS XSharp.AssemblyHelper
             VAR oAsm  := Assembly.LoadFrom(cFileName)
             RETURN oAsm
         CATCH  AS Exception
-            THROW Error{EG_OPEN, "", "Could not load Assembly '"+cName+ "' from the file "+cFileName} {Filename := cFileName,FuncSym := "AssemblyLoader"}
+            THROW Error{EG_OPEN, "", "Could not load Assembly '"+cName+ "' from the file "+cFileName} {FileName := cFileName,FuncSym := "AssemblyLoader"}
         END TRY
         
         /// <exclude />
@@ -42,9 +42,9 @@ STATIC CLASS XSharp.AssemblyHelper
         VAR cExt      := System.IO.Path.GetExtension(oCore:Location)
         IF ! System.IO.File.Exists(cFileName)
             IF ! cFileName:ToLower():EndsWith(".dll")
-               cFilename := cFileName+ cExt
+               cFileName := cFileName+ cExt
             ELSE
-               cFilename := System.IO.Path.ChangeExtension(cFileName, cExt)
+               cFileName := System.IO.Path.ChangeExtension(cFileName, cExt)
             ENDIF
         ENDIF
         IF System.IO.File.Exists(cFileName)
@@ -65,5 +65,5 @@ STATIC CLASS XSharp.AssemblyHelper
             ENDIF
         NEXT
             
-        THROW Error{EG_OPEN, "", "Could not find "+cName} {Filename := cFileName,FuncSym := "AssemblyLoader"}
+        THROW Error{EG_OPEN, "", "Could not find "+cName} {FileName := cFileName,FuncSym := "AssemblyLoader"}
 END CLASS

@@ -169,14 +169,14 @@ PUBLIC CLASS MemoHelpers
 		nCrLf := 0
 		IF nPos + 1 < cMemo:Length .AND. (INT) cMemo[(INT) nPos + 1] == LINE_FEED
 			nChar := (INT) cMemo[(INT) nPos]
-			SWITCH nCHar
+			SWITCH nChar
 			CASE HARD_CR
 				nCrLf := HARD_CR_LF
 			CASE SOFT_CR
 				nCrLf := SOFT_CR_LF
 			END SWITCH
 		ENDIF
-		RETURN nCRLF != 0
+		RETURN nCrLf != 0
 
 		
 	/// <exclude/>	
@@ -303,16 +303,16 @@ PUBLIC CLASS MemoHelpers
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mline/*" />
 FUNCTION MLine(cString AS STRING,nLine AS DWORD) AS STRING
 	LOCAL nOffset := 0 AS DWORD
-	RETURN MLine3(cString, nLine, REF nOffSet)
+	RETURN MLine3(cString, nLine, REF nOffset)
 	
 	
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mline/*" />
 FUNCTION MLine(cString AS STRING,nLine AS DWORD,nOffset REF DWORD) AS STRING
-	RETURN MLine3(cString, nLine, REF nOffSet)
+	RETURN MLine3(cString, nLine, REF nOffset)
   
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mline/*" />
 FUNCTION MLine(cString AS STRING,nLine AS DWORD,nOffset AS DWORD) AS STRING
-	RETURN MLine3(cString, nLine, REF nOffSet)
+	RETURN MLine3(cString, nLine, REF nOffset)
 	
 	
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mline3/*" />
@@ -332,7 +332,7 @@ FUNCTION MLine3(cString AS STRING,dwLine AS DWORD,ptrN REF DWORD) AS STRING
 FUNCTION MemoLine(cString AS STRING, nLineLength := MemoHelpers.STD_MEMO_WIDTH AS DWORD, nLineNumber := 1 AS DWORD,;
 nTabSize := MemoHelpers.STD_TAB_WIDTH AS DWORD,lWrap := TRUE AS LOGIC) AS STRING
 	LOCAL dPos := 0 AS INT
-	RETURN MemoHelpers.MLine(cString, (INT) nLineNumber, (INT) nLineLength, (INT) nTabSize, lWrap, FALSE, REF DPos)
+	RETURN MemoHelpers.MLine(cString, (INT) nLineNumber, (INT) nLineLength, (INT) nTabSize, lWrap, FALSE, REF dPos)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/memoread/*" />
 /// <remarks>This function should NOT be used to read the contents of a binary file (such as a word document).
@@ -342,7 +342,7 @@ nTabSize := MemoHelpers.STD_TAB_WIDTH AS DWORD,lWrap := TRUE AS LOGIC) AS STRING
 FUNCTION MemoRead(cFileName AS STRING) AS STRING
 	LOCAL cResult AS STRING
 	TRY
-        XSharp.IO.File.clearErrorState()
+        XSharp.IO.File.ClearErrorState()
 		IF File(cFileName)
 			cFileName := FPathName()
             IF RuntimeState.Ansi
@@ -353,11 +353,11 @@ FUNCTION MemoRead(cFileName AS STRING) AS STRING
 		ELSE
 			cResult := ""
         ENDIF
-        IF cResult:EndsWith(Chr(26)) .AND. RuntimeState.EOF
+        IF cResult:EndsWith(Chr(26)) .AND. RuntimeState.Eof
             cResult := cResult:Substring(0, cResult:Length-1)
         ENDIF
 	CATCH e AS Exception
-		XSharp.IO.File.setErrorState(e)
+		XSharp.IO.File.SetErrorState(e)
 		cResult := ""
 	END TRY
 	RETURN cResult
@@ -375,7 +375,7 @@ FUNCTION MemoRead(cFileName AS STRING) AS STRING
 FUNCTION MemoReadBinary(cFile AS STRING) AS BYTE[]
 	LOCAL bResult AS BYTE[]
 	TRY
-        XSharp.IO.File.clearErrorState()
+        XSharp.IO.File.ClearErrorState()
 		IF File(cFile)
 			cFile := FPathName()
             bResult := System.IO.File.ReadAllBytes(cFile)
@@ -383,7 +383,7 @@ FUNCTION MemoReadBinary(cFile AS STRING) AS BYTE[]
 			bResult := BYTE[]{0}
 		ENDIF
 	CATCH e AS Exception
-		XSharp.IO.File.setErrorState(e)
+		XSharp.IO.File.SetErrorState(e)
 		bResult := BYTE[]{0}
 	END TRY
 	RETURN bResult
@@ -393,18 +393,18 @@ FUNCTION MemoReadBinary(cFile AS STRING) AS BYTE[]
 FUNCTION MemoWrit(cFileName AS STRING,cString AS STRING) AS LOGIC
 	LOCAL lOk AS LOGIC
 	TRY
-        XSharp.IO.File.clearErrorState()
+        XSharp.IO.File.ClearErrorState()
         IF RuntimeState.Ansi
 			System.IO.File.WriteAllText(cFileName, cString, RuntimeState.WinEncoding)
         ELSE
             System.IO.File.WriteAllText(cFileName, cString, RuntimeState.DosEncoding)
         ENDIF
-        IF RuntimeState.EOF
+        IF RuntimeState.Eof
 		    System.IO.File.AppendAllText(cFileName, chr(26))
         ENDIF
 		lOk := TRUE
 	CATCH e AS Exception
-		XSharp.IO.File.setErrorState(e)
+		XSharp.IO.File.SetErrorState(e)
 		lOk := FALSE
 	END TRY
 	RETURN lOk
@@ -430,11 +430,11 @@ FUNCTION MemoWrit(cFileName AS STRING,cString AS BYTE[]) AS LOGIC
 FUNCTION MemoWritBinary(cFile AS STRING,bData AS BYTE[]) AS LOGIC
 	LOCAL lOk AS LOGIC
 	TRY
-        XSharp.IO.File.clearErrorState()
+        XSharp.IO.File.ClearErrorState()
 		System.IO.File.WriteAllBytes(cFile, bData)
 		lOk := TRUE
 	CATCH e AS Exception
-		XSharp.IO.File.setErrorState(e)
+		XSharp.IO.File.SetErrorState(e)
 		lOk := FALSE
 	END TRY
 	RETURN lOk

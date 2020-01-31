@@ -35,17 +35,17 @@ FUNCTION SetAnsi(lNewSetting AS LOGIC) AS LOGIC
 	LOCAL lOld := RuntimeState.Ansi AS LOGIC
 	RuntimeState.Ansi := lNewSetting
     // Keep charset in sync with Ansi
-    RuntimeState.SetValue<LONG>(Set.Charset, IIF (lNewSetting, 0, 1))
+    RuntimeState.SetValue<LONG>(Set.CharSet, IIF (lNewSetting, 0, 1))
 	RETURN lOld
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setbeep/*" />
 FUNCTION SetBeep() AS LOGIC
-	GETSTATE LOGIC Set.BELL
+	GETSTATE LOGIC Set.Bell
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setbeep/*" />
 FUNCTION SetBeep(lNewSetting AS LOGIC) AS LOGIC
-	SETSTATE LOGIC Set.BELL lNewSetting
+	SETSTATE LOGIC Set.Bell lNewSetting
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setcentury/*" />
@@ -77,12 +77,12 @@ FUNCTION SetCentury(lNewSetting AS LOGIC) AS LOGIC
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setcpu/*" />
 FUNCTION SetCpu() AS DWORD
-	GETSTATE DWORD Set.CPU
+	GETSTATE DWORD Set.Cpu
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setcpu/*" />
 FUNCTION SetCpu(nNewSetting AS DWORD) AS DWORD
-   	SETSTATE DWORD Set.CPU nNewSetting
+   	SETSTATE DWORD Set.Cpu nNewSetting
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setdatecountry/*" />
@@ -111,26 +111,26 @@ FUNCTION SetDateFormat(cNewSetting AS STRING) AS STRING
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setdecimal/*" />
 FUNCTION SetDecimal() AS DWORD
-	RETURN Runtimestate.Decimals
+	RETURN RuntimeState.Decimals
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setdecimal/*" />
 FUNCTION SetDecimal(nNewSetting AS DWORD) AS DWORD
-	VAR nOld := Runtimestate.Decimals
-    Runtimestate.Decimals := nNewSetting
+	VAR nOld := RuntimeState.Decimals
+    RuntimeState.Decimals := nNewSetting
     RETURN nOld
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setdecimalsep/*" />
 FUNCTION SetDecimalSep() AS DWORD
-    RETURN Runtimestate.DecimalSep 
+    RETURN RuntimeState.DecimalSep 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setdecimalsep/*" />
 FUNCTION SetDecimalSep(nNewSetting AS DWORD) AS DWORD
 	LOCAL oCulture AS System.Globalization.CultureInfo
-    VAR nOld := Runtimestate.DecimalSep 
+    VAR nOld := RuntimeState.DecimalSep 
 	oCulture := (System.Globalization.CultureInfo)System.Threading.Thread.CurrentThread:CurrentCulture:Clone()
 	oCulture:NumberFormat:NumberDecimalSeparator := ((CHAR)nNewSetting):ToString()
 	System.Threading.Thread.CurrentThread:CurrentCulture := oCulture
-	Runtimestate.DecimalSep := nNewSetting
+	RuntimeState.DecimalSep := nNewSetting
     RETURN nOld
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setdefault/*" />
@@ -140,7 +140,7 @@ FUNCTION SetDefault() AS STRING
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setdefault/*" />
 FUNCTION SetDefault(cPathSpec AS STRING) AS STRING
 	SetPathArray(NULL)
-	SETSTATE STRING Set.Default cPathSpec
+	SETSTATE STRING Set.Default  cPathSpec
 	
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setdeleted/*" />
@@ -192,11 +192,11 @@ FUNCTION SetEpoch(nNewSetting AS DWORD) AS DWORD
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/seterrorlog/*" />
 FUNCTION SetErrorLog() AS LOGIC
-	GETSTATE LOGIC Set.ERRRORLOG 
+	GETSTATE LOGIC Set.Errrorlog 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/seterrorlog/*" />
 FUNCTION SetErrorLog(lNewSetting AS LOGIC) AS LOGIC
-	SETSTATE LOGIC Set.ERRRORLOG lNewSetting
+	SETSTATE LOGIC Set.Errrorlog lNewSetting
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setexact/*" />
 FUNCTION SetExact() AS LOGIC
@@ -218,11 +218,11 @@ FUNCTION SetExclusive(lNewSetting AS LOGIC) AS LOGIC
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setfieldstore/*" />
 FUNCTION SetFieldStore() AS LOGIC
-	GETSTATE LOGIC Set.FieldStore
+	GETSTATE LOGIC Set.Fieldstore
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setfieldstore/*" />
 FUNCTION SetFieldStore(lNewSetting AS LOGIC) AS LOGIC
-	SETSTATE LOGIC Set.FieldStore lNewSetting
+	SETSTATE LOGIC Set.Fieldstore lNewSetting
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setfixed/*" />
 FUNCTION SetFixed() AS LOGIC
@@ -236,11 +236,11 @@ FUNCTION SetFixed(lNewSetting AS LOGIC) AS LOGIC
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setmath/*" />
 FUNCTION SetMath() AS DWORD
-	GETSTATE DWORD Set.MATH
+	GETSTATE DWORD Set.Math
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setmath/*" />
 FUNCTION SetMath(nNewSetting AS DWORD) AS DWORD
-	SETSTATE DWORD Set.MATH nNewSetting
+	SETSTATE DWORD Set.Math nNewSetting
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setnatdll/*" />
@@ -262,7 +262,7 @@ FUNCTION SetMath(nNewSetting AS DWORD) AS DWORD
 	
 FUNCTION SetNatDLL(cNewDLL AS STRING) AS LOGIC
 	LOCAL cBase AS STRING
-	_SetNatDLL(cnewDLL)
+	_SetNatDLL(cNewDLL)
 	cBase := System.IO.Path.GetFileNameWithoutExtension(cNewDLL)
 	_SetCollation(cBase)
 	RETURN String.Compare(Messages.CurrentLanguageName, cBase, TRUE) == 0
@@ -292,11 +292,11 @@ FUNCTION SetPath() AS STRING
 
 /// <exclude/>
 FUNCTION _SetDict() AS LOGIC
-    GETSTATE LOGIC Set.DICT
+    GETSTATE LOGIC Set.Dict
 
 /// <exclude/>
 FUNCTION _SetDict(lNewSetting AS LOGIC) AS LOGIC
-    SETSTATE LOGIC Set.DICT lNewSetting
+    SETSTATE LOGIC Set.Dict lNewSetting
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setpath/*" />
 FUNCTION SetPath(cPathList AS STRING) AS STRING
@@ -313,7 +313,7 @@ FUNCTION SetPath(cPathList AS STRING) AS STRING
 /// <returns>
 /// </returns>
 FUNCTION SetPathArray() AS STRING[]
-	GETSTATE STRING[] Set.PathArray 
+	GETSTATE STRING[] Set.Patharray 
 
 /// <summary>
 /// Set the Path array that is used by the File() function to locate files outside of the current directory.
@@ -325,7 +325,7 @@ FUNCTION SetPathArray() AS STRING[]
 /// <returns>
 /// </returns>
 FUNCTION SetPathArray(aPath AS STRING[]) AS STRING[]
-	SETSTATE STRING[] Set.PathArray aPath
+	SETSTATE STRING[] Set.Patharray aPath
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setpmext/*" />
 FUNCTION SetPMExt() AS STRING
@@ -386,11 +386,11 @@ FUNCTION SetThousandSep(nNewSetting AS DWORD) AS DWORD
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/settimesep/*" />
 FUNCTION SetTimeSep() AS DWORD
-	GETSTATE DWORD Set.TimeSep 
+	GETSTATE DWORD Set.Timesep 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/settimesep/*" />
 FUNCTION SetTimeSep(dwNewSetting AS DWORD) AS DWORD
-	SETSTATE DWORD Set.TimeSep dwNewSetting
+	SETSTATE DWORD Set.Timesep dwNewSetting
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setunique/*" />
 FUNCTION SetUnique() AS LOGIC

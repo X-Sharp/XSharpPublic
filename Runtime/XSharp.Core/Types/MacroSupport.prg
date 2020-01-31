@@ -59,14 +59,14 @@ BEGIN NAMESPACE XSharp
     END INTERFACE
 
     /// <summary>Delegate used for Runtime Codeblocks </summary>
-    DELEGATE RuntimeCodeblockDelegate(args PARAMS DYNAMIC[]) AS DYNAMIC
+    DELEGATE RuntimeCodeblockDelegate(args PARAMS OBJECT[]) AS OBJECT
 
     /// <summary>Class wrapper used for Runtime Codeblocks </summary>
     PUBLIC CLASS RuntimeCodeblock IMPLEMENTS ICodeblock
         PRIVATE _eval AS RuntimeCodeblockDelegate
         PRIVATE _pcount AS INT
 
-        PUBLIC METHOD EvalBlock(args PARAMS DYNAMIC[]) AS DYNAMIC
+        PUBLIC METHOD EvalBlock(args PARAMS OBJECT[]) AS Object
             RETURN _eval(args)
 
         PUBLIC METHOD PCount() AS INT

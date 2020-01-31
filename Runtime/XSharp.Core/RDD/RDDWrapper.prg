@@ -10,13 +10,13 @@ BEGIN NAMESPACE XSharp.RDD
     /// logging, encryption etc. <br/>
     /// To use it, create a subclass of this class and implement the methods that you want to override.<br/>
     /// The constructor of this class takes an existing RDD object and automatically replaces it in the
-    /// workarea table.
+    /// Workarea table.
     /// </summary>
     /// <example>
     /// <code>
     /// CLASS MyRDD Inherit XSharp.RDD.WrapperRDD
-    /// CONSTRUCTOR(oRDD as XSharp.RDD.IRDD)
-    ///    SUPER(oRDD)
+    /// CONSTRUCTOR(oRdd as XSharp.RDD.IRDD)
+    ///    SUPER(oRdd)
     /// METHOD GetValue(nFldPos AS LONG)		AS OBJECT
     ///    Log("Reading field "+nFldPos:ToString())
     ///    RETURN SUPER:GetValue(nFldPos)
@@ -29,11 +29,11 @@ BEGIN NAMESPACE XSharp.RDD
     ///    // Open customer table
     ///    USE Customer NEW
     /// 
-    ///    // Get current RDD for the selected workarea
-    ///    VAR oRDD := XSharp.RuntimeState.Workareas:GetRDD(Select())
+    ///    // Get current RDD for the selected Workarea
+    ///    VAR oRdd := XSharp.RuntimeState.Workareas:GetRDD(Select())
     /// 
-    ///    // Create Wrapper RDD. This automatically replaces the RDD in the workarea table
-    ///    oRDD := MyRDD{oRDD}
+    ///    // Create Wrapper RDD. This automatically replaces the RDD in the Workarea table
+    ///    oRdd := MyRDD{oRdd}
     /// 
     ///    ? FieldGet(1)           // This should also call Log() to show reading the value
     ///    ? FieldPut(1,"Jones")   // This should also call Log() to show writing the value
@@ -48,30 +48,30 @@ BEGIN NAMESPACE XSharp.RDD
     [DebuggerDisplay("{DebuggerDisplay(),nq}")];
     CLASS WrapperRDD IMPLEMENTS IRdd
         // Install this as follows:
-        // The class itself will take care of replacing the RDD in the workarea table
+        // The class itself will take care of replacing the RDD in the Workarea table
         //
-        // VAR oRDD := XSharp.RuntimeState.Workareas:GetRDD(<area Number>)      
-        // oRDD := WrapperRDD{oRDD}
+        // VAR oRdd := XSharp.RuntimeState.Workareas:GetRDD(<area Number>)      
+        // oRdd := WrapperRDD{oRdd}
         // If you are only interested in certain methods, then subclass this class and only write the methods that you are interested in
         // 
 
-        PROTECT oRDD AS IRdd
+        PROTECT oRdd AS IRdd
 
         PRIVATE METHOD DebuggerDisplay() AS STRING
-            IF oRDD != NULL
-                RETURN oRDD:Driver+" ("+oRDD:Alias+") - Wrapped"
+            IF oRdd != NULL
+                RETURN oRdd:Driver+" ("+oRdd:Alias+") - Wrapped"
             ENDIF
             RETURN "(uninitialized)"
 
-        CONSTRUCTOR(loRDD AS IRdd)
+        CONSTRUCTOR(loRdd AS IRdd)
             LOCAL oType AS System.Type
             LOCAL oFI   AS System.Reflection.FieldInfo
-            LOCAL aRDDs AS IRDD[]
-            oRDD    := loRDD
-            oType   := TypeOf(XSharp.RDD.WorkAreas)
+            LOCAL aRDDs AS IRdd[]
+            oRdd    := loRdd
+            oType   := TypeOf(XSharp.RDD.Workareas)
             oFI     := oType:GetField("RDDs",BindingFlags.NonPublic | BindingFlags.IgnoreCase|BindingFlags.Instance)
-            aRDDs   := (IRDD[]) oFI:GetValue(XSHarp.RuntimeState.Workareas)
-            aRDDs[oRDD:Area] := SELF
+            aRDDs   := (IRdd[]) oFI:GetValue(XSharp.RuntimeState.Workareas)
+            aRDDs[oRdd:Area] := SELF
             RETURN
             
             
@@ -81,7 +81,7 @@ BEGIN NAMESPACE XSharp.RDD
         #region Record Movement
         /// <inheritdoc />			
         METHOD DbEval(info AS DbEvalInfo)		AS LOGIC
-            RETURN oRDD:DbEval(info)        
+            RETURN oRdd:DbEval(info)        
             
         /// <inheritdoc />			
         METHOD GoTop()							AS LOGIC
@@ -92,11 +92,11 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN oRdd:GoBottom()
         /// <inheritdoc />			
         METHOD GoTo(nRec AS LONG)				AS LOGIC
-            RETURN oRdd:Goto(nRec)
+            RETURN oRdd:GoTo(nRec)
             
         /// <inheritdoc />			
         METHOD GoToId(oRec AS OBJECT)			AS LOGIC
-            RETURN oRdd:GotoId(oRec)
+            RETURN oRdd:GoToId(oRec)
             
         /// <inheritdoc />			
         METHOD Skip(nToSkip AS INT)				AS LOGIC
@@ -220,7 +220,7 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN oRdd:FieldName(nFldPos)
             
         /// <inheritdoc />			
-        METHOD GetField(nFldPos AS LONG) AS RDDFieldInfo
+        METHOD GetField(nFldPos AS LONG) AS RddFieldInfo
             RETURN oRdd:GetField(nFldPos)
             
         /// <inheritdoc />			
@@ -280,12 +280,12 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN oRdd:HeaderLock(uiMode)
             
         /// <inheritdoc />			
-        METHOD Lock(uiMode REF DBLOCKINFO)		AS LOGIC 
+        METHOD Lock(uiMode REF DbLockInfo)		AS LOGIC 
             RETURN oRdd:Lock(REF uiMode)
             
         /// <inheritdoc />			
         METHOD UnLock(oRecId AS OBJECT)			AS LOGIC
-            RETURN oRdd:UnLock(oRecID)
+            RETURN oRdd:UnLock(oRecId)
 
         #endregion
         //-------------------------------------------------------
@@ -443,33 +443,33 @@ BEGIN NAMESPACE XSharp.RDD
         //-------------------------------------------------------
         #region Properties
         /// <inheritdoc />			
-        PROPERTY Alias 		AS STRING	GET oRDD:Alias SET oRDD:Alias := VALUE
+        PROPERTY Alias 		AS STRING	GET oRdd:Alias SET oRdd:Alias := VALUE
         /// <inheritdoc />			
-        PROPERTY Area		AS DWORD	GET oRDD:Area  SET oRDD:Area := VALUE
+        PROPERTY Area		AS DWORD	GET oRdd:Area  SET oRdd:Area := VALUE
         /// <inheritdoc />			
-        PROPERTY BoF 		AS LOGIC	GET oRDD:BoF
+        PROPERTY BoF 		AS LOGIC	GET oRdd:BoF
         /// <inheritdoc />			
-        PROPERTY Deleted 	AS LOGIC	GET oRDD:Deleted
+        PROPERTY Deleted 	AS LOGIC	GET oRdd:Deleted
         /// <inheritdoc />			
-        PROPERTY Driver     AS STRING	GET oRDD:Driver
+        PROPERTY Driver     AS STRING	GET oRdd:Driver
         /// <inheritdoc />			
-        PROPERTY EoF 		AS LOGIC	GET oRDD:EoF
+        PROPERTY EoF 		AS LOGIC	GET oRdd:EoF
         /// <inheritdoc />			
-        PROPERTY Exclusive	AS LOGIC	GET oRDD:Exclusive
+        PROPERTY Exclusive	AS LOGIC	GET oRdd:Exclusive
         /// <inheritdoc />			
-        PROPERTY FieldCount AS LONG		GET oRDD:FieldCount
+        PROPERTY FieldCount AS LONG		GET oRdd:FieldCount
         /// <inheritdoc />			
-        PROPERTY FilterText	AS STRING	GET oRDD:FilterText
+        PROPERTY FilterText	AS STRING	GET oRdd:FilterText
         /// <inheritdoc />			
-        PROPERTY Found		AS LOGIC	GET oRDD:Found SET oRDD:Found := VALUE
+        PROPERTY Found		AS LOGIC	GET oRdd:Found SET oRdd:Found := VALUE
         /// <inheritdoc />			
-        PROPERTY RecCount	AS LONG		GET oRDD:RecCount
+        PROPERTY RecCount	AS LONG		GET oRdd:RecCount
         /// <inheritdoc />			
-        PROPERTY RecId		AS OBJECT	GET	oRDD:RecId
+        PROPERTY RecId		AS OBJECT	GET	oRdd:RecId
         /// <inheritdoc />			
-        PROPERTY RecNo		AS LONG		GET oRDD:RecNo
+        PROPERTY RecNo		AS LONG		GET oRdd:RecNo
         /// <inheritdoc />			
-        PROPERTY Shared		AS LOGIC	GET oRDD:Shared
+        PROPERTY Shared		AS LOGIC	GET oRdd:Shared
         
         #endregion
         

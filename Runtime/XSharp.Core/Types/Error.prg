@@ -21,7 +21,7 @@ BEGIN NAMESPACE XSharp
     /// <summary>An integer numeric value representing a subsystem-specific error code.</summary>
     VIRTUAL PROPERTY SubCode AS DWORD AUTO    := 0
     /// <summary>An string containing the description of the SubCode.</summary>
-    VIRTUAL PROPERTY SubCodeText AS STRING GET IIF(!String.IsNullOrEmpty(_subcode), _subcode, IIF (SubCode != 0, __CavoStr(SubCode), "Unknown SubCode")) SET _Subcode := value
+    VIRTUAL PROPERTY SubCodeText AS STRING GET IIF(!String.IsNullOrEmpty(_Subcode), _Subcode, IIF (SubCode != 0, __CavoStr(SubCode), "Unknown SubCode")) SET _Subcode := VALUE
     PRIVATE _Subcode as STRING
     /// <summary>A string representing the name of the function or method in which the error occurred.</summary>
     VIRTUAL PROPERTY FuncSym AS STRING AUTO   := ""
@@ -147,7 +147,7 @@ BEGIN NAMESPACE XSharp
     SUPER(msg)
     SELF:setDefaultValues()
     SELF:Description := msg
-    SELF:GenCode     := EG_EXCEPTION
+    SELF:Gencode     := EG_EXCEPTION
     RETURN 
 
     /// <summary>Create an Error Object with the Innner Exception</summary>
@@ -157,7 +157,7 @@ BEGIN NAMESPACE XSharp
     IF ex IS Error
         // Clone Error properties from Inner Exception
         LOCAL e := (Error) ex AS Error
-        VAR props := typeof(error):GetProperties()
+        VAR props := typeof(Error):GetProperties()
         FOREACH oProp AS PropertyInfo IN props
             IF oProp:CanWrite
                 oProp:SetValue(SELF, oProp:GetValue(e))
@@ -165,7 +165,7 @@ BEGIN NAMESPACE XSharp
         NEXT
     ELSE
         SELF:Description := ex:Message
-        SELF:GenCode     := EG_EXCEPTION
+        SELF:Gencode     := EG_EXCEPTION
         SELF:_StackTrace := ex:StackTrace
     ENDIF
     IF String.IsNullOrEmpty(SELF:StackTrace)
@@ -176,7 +176,7 @@ BEGIN NAMESPACE XSharp
     CONSTRUCTOR (ex AS Exception, cFuncName AS STRING, cArgName AS STRING, iArgNum AS DWORD, aArgs PARAMS OBJECT[])
     SUPER(ex.Message,ex)
     SELF:setDefaultValues()
-    SELF:GenCode     := EG_EXCEPTION
+    SELF:Gencode     := EG_EXCEPTION
     SELF:FuncSym     := cFuncName
     SELF:Arg         := cArgName
     SELF:ArgNum      := iArgNum
@@ -184,7 +184,7 @@ BEGIN NAMESPACE XSharp
     
     
     /// <summary>Create an Error Object for a Gencode and Argument Name.</summary>
-    CONSTRUCTOR (dwgencode AS DWORD, cArg AS STRING)
+    CONSTRUCTOR (dwGenCode AS DWORD, cArg AS STRING)
     SUPER(ErrString( dwGenCode ))
     SELF:setDefaultValues()
     SELF:Gencode := dwGenCode
@@ -192,7 +192,7 @@ BEGIN NAMESPACE XSharp
     SELF:Description := ErrString( dwGenCode )
 
     /// <summary>Create an Error Object for a Gencode, Argument Name and Description.</summary>
-    CONSTRUCTOR (dwgencode AS DWORD, cArg AS STRING, cDescription AS STRING)
+    CONSTRUCTOR (dwGenCode AS DWORD, cArg AS STRING, cDescription AS STRING)
     SUPER(cDescription)
     SELF:setDefaultValues()
     SELF:Gencode		:= dwGenCode
@@ -201,26 +201,26 @@ BEGIN NAMESPACE XSharp
     
     
     /// <summary>Create an Error Object.</summary>
-    CONSTRUCTOR (dwgencode AS DWORD, dwSubCode AS DWORD, cFuncName AS STRING, cArgName AS STRING, iArgNum AS DWORD)
+    CONSTRUCTOR (dwGenCode AS DWORD, dwSubCode AS DWORD, cFuncName AS STRING, cArgName AS STRING, iArgNum AS DWORD)
     SUPER(ErrString( dwGenCode ))
     SELF:setDefaultValues()
-    SELF:Gencode := dwgencode
-    SELF:SubCode := dwSubcode
+    SELF:Gencode := dwGenCode
+    SELF:SubCode := dwSubCode
     SELF:FuncSym     := cFuncName
     SELF:Arg         := cArgName
     SELF:ArgNum      := iArgNum
     SELF:Description := ErrString( dwGenCode )
     
     /// <summary>Create an Error Object.</summary>
-    CONSTRUCTOR (dwgencode AS DWORD, dwSubCode := 0 AS DWORD)
+    CONSTRUCTOR (dwGenCode AS DWORD, dwSubCode := 0 AS DWORD)
     SELF:setDefaultValues()
-    SELF:Gencode := dwgencode
-    SELF:SubCode := dwSubcode
+    SELF:Gencode := dwGenCode
+    SELF:SubCode := dwSubCode
     SELF:Description := ErrString( dwGenCode )
 
     PRIVATE METHOD LangString(e as VOErrors) AS STRING
         local cString := __CavoStr(e):Trim() as string
-        if cString:Endswith(":")
+        IF cString:EndsWith(":")
             cString := cString:Substring(0, cString:Length-1):Trim()
         endif
         return cString+e" :\t"
@@ -228,8 +228,8 @@ BEGIN NAMESPACE XSharp
     /// <inheritdoc />
     OVERRIDE METHOD ToString() AS STRING
       LOCAL sb AS StringBuilder
-      LOCAL nGenCode AS GenCode
-      nGenCode := (GenCode) SELF:GenCode
+      LOCAL nGenCode AS Gencode
+      nGenCode := (Gencode) SELF:Gencode
       sb := StringBuilder{}
       
       sb:AppendLine( LangString(VOErrors.ERROR_DESCRIPTION) + SELF:Description)
@@ -238,8 +238,8 @@ BEGIN NAMESPACE XSharp
       IF SELF:SubCode != 0
         sb:AppendLine( LangString(VOErrors.ERROR_SUBCODE) + SELF:SubCode:ToString() +" "+SELF:SubCodeText)
       ENDIF
-      IF SELF:OsCode != 0
-        sb:AppendLine( LangString(VOErrors.ERROR_OSCODE)  + SELF:OsCode:ToString() +" " +SELF:OsCodeText )
+      IF SELF:OSCode != 0
+        sb:AppendLine( LangString(VOErrors.ERROR_OSCODE)  + SELF:OSCode:ToString() +" " +SELF:OSCodeText )
       ENDIF
       IF !String.IsNullOrEmpty(SELF:FuncSym)
         sb:AppendLine(LangString(VOErrors.ERROR_FUNCSYM) + SELF:FuncSym   )
@@ -310,8 +310,8 @@ BEGIN NAMESPACE XSharp
     VAR err			:= Error{XSharp.Gencode.EG_ARG, name, ErrString( EG_ARG )}
     err:FuncSym     := cFuncName
     err:Description := err:Message
-    err:Argnum		:= iArgNum
-    err:args		:= aArgs
+    err:ArgNum		:= iArgnum
+    err:Args		:= aArgs
     RETURN err
     
     
@@ -320,12 +320,12 @@ BEGIN NAMESPACE XSharp
     VAR err			:= Error{XSharp.Gencode.EG_ARG, name, description}
     err:FuncSym     := cFuncName
     err:Description := err:Message
-    err:Argnum		:= iArgNum
+    err:ArgNum		:= iArgnum
     RETURN err
 
 
     STATIC METHOD ArgumentError(cFuncName AS STRING, name AS STRING, description AS STRING, iArgnum AS DWORD, aArgs AS OBJECT[]) AS Error
-        VAR err := ArgumentError(cFuncName, name, description, iArgNum)
+        VAR err := ArgumentError(cFuncName, name, description, iArgnum)
         err:Args := aArgs
     RETURN err
 
@@ -344,7 +344,7 @@ BEGIN NAMESPACE XSharp
     /// <exclude/>	
     STATIC METHOD VOError( dwGenCode AS DWORD, cFuncName AS STRING, cArgName AS STRING, iArgNum AS DWORD, aArgs AS OBJECT[] ) AS Error
         LOCAL e AS Error
-        e:= Error{dwGencode,cArgName}
+        e:= Error{dwGenCode,cArgName}
         e:FuncSym := cFuncName
         e:ArgNum := iArgNum
         e:Args := aArgs
@@ -355,7 +355,7 @@ BEGIN NAMESPACE XSharp
     STATIC METHOD VOError( ex AS Exception, dwGenCode AS DWORD, cFuncName AS STRING, cArgName AS STRING, iArgNum AS DWORD, aArgs AS OBJECT[]  ) AS Error
     LOCAL e AS Error
     e			  := Error{ ex, cFuncName, cArgName, iArgNum, aArgs }
-    e:GenCode     := dwGenCode
+    e:Gencode     := dwGenCode
     e:Description := ErrString( dwGenCode )
     RETURN e
     
@@ -411,7 +411,7 @@ BEGIN NAMESPACE XSharp
     STATIC METHOD DataTypeError( cFuncName AS STRING, cArgName AS STRING, iArgNum AS DWORD, aArgs PARAMS OBJECT[] ) AS Error
     LOCAL e AS Error
     e			  := Error{ ArgumentException{} , cFuncName, cArgName, iArgNum, aArgs}
-    e:GenCode     := EG_DATATYPE
+    e:Gencode     := EG_DATATYPE
     e:Description := __CavoStr( VOErrors.DATATYPEERROR )
     RETURN e
     
@@ -419,7 +419,7 @@ BEGIN NAMESPACE XSharp
     STATIC METHOD ArgumentError( cFuncName AS STRING, cArgName AS STRING, iArgNum AS DWORD, cDescription AS STRING, aArgs PARAMS OBJECT[]) AS Error
     LOCAL e AS Error
     e				:= Error{ ArgumentException{} , cFuncName, cArgName, iArgNum, aArgs}
-    e:GenCode     := EG_ARG
+    e:Gencode     := EG_ARG
     e:Description := cDescription
     RETURN e
     
@@ -427,7 +427,7 @@ BEGIN NAMESPACE XSharp
     STATIC METHOD NullArgumentError( cFuncName AS STRING, cArgName AS STRING, iArgNum AS DWORD ) AS Error
     LOCAL e AS Error
     e := Error{ ArgumentNullException{} ,cFuncName, cArgName, iArgNum}
-    e:GenCode     := EG_ARG
+    e:Gencode     := EG_ARG
     e:Description := __CavoStr( VOErrors.ARGISNULL )
     RETURN e
     
@@ -436,7 +436,7 @@ BEGIN NAMESPACE XSharp
     LOCAL e AS Error
     e := Error{ ArgumentException{ErrString( EG_BOUND) } }
     e:Severity    := ES_ERROR
-    e:GenCode     := EG_BOUND
+    e:Gencode     := EG_BOUND
     e:SubSystem   := "BASE"
     e:FuncSym     := cFuncName
     e:Arg         := cArgName
@@ -450,113 +450,117 @@ BEGIN NAMESPACE XSharp
     STATIC METHOD TypeToUsualType(oType AS System.Type) AS DWORD
     SWITCH Type.GetTypeCode(oType)
     CASE TypeCode.Boolean
-      RETURN __UsualType.logic
+      RETURN __UsualType.Logic
     CASE TypeCode.Byte
-      RETURN __UsualType.byte
+      RETURN __UsualType.Byte
     CASE TypeCode.Char
       RETURN __UsualType.Char
     CASE TypeCode.DateTime
-      RETURN __UsualType.DATETIME
+      RETURN __UsualType.DateTime
     CASE TypeCode.DBNull
-      RETURN __UsualType.object
+      RETURN __UsualType.Object
     CASE TypeCode.Decimal
-      RETURN __UsualType.DECIMAL
+      RETURN __UsualType.Decimal
     CASE TypeCode.Double
-      RETURN __UsualType.real8
+      RETURN __UsualType.Real8
     CASE TypeCode.Empty
-      RETURN __UsualType.void
+      RETURN __UsualType.Void
     CASE TypeCode.Int16
-      RETURN __UsualType.shortint
+      RETURN __UsualType.ShortInt
     CASE TypeCode.Int32
-      RETURN __UsualType.long
+      RETURN __UsualType.Long
     CASE TypeCode.Int64
-      RETURN __UsualType.int64
+      RETURN __UsualType.Int64
     CASE TypeCode.SByte
-      RETURN __UsualType.byte
+      RETURN __UsualType.Byte
     CASE TypeCode.Single
-      RETURN __UsualType.real4
+      RETURN __UsualType.Real4
     CASE TypeCode.UInt16
-      RETURN __UsualType.word
+      RETURN __UsualType.Word
     CASE TypeCode.UInt32
-      RETURN __UsualType.dword
+      RETURN __UsualType.DWord
     CASE TypeCode.UInt64
-      RETURN __UsualType.uint64
+      RETURN __UsualType.UInt64
     OTHERWISE
         SWITCH oType:FullName:ToLower()
         CASE "xsharp.__array"
-          RETURN __UsualType.array
+          RETURN __UsualType.Array
         CASE "xsharp.__codeblock"
-          RETURN __UsualType.codeblock
+          RETURN __UsualType.Codeblock
+        CASE "xsharp.__currency"
+          RETURN __UsualType.Currency
         CASE "xsharp.__date"
-          RETURN __UsualType.date
+          RETURN __UsualType.Date
         CASE "xsharp.__float"
-          RETURN __UsualType.float
+          RETURN __UsualType.Float
         CASE "xsharp.__psz"
-          RETURN __UsualType.psz
+          RETURN __UsualType.Psz
         CASE "xsharp.__symbol"
-          RETURN __UsualType.symbol
+          RETURN __UsualType.Symbol
         CASE "xsharp.__usual"
-          RETURN __UsualType.usual
+          RETURN __UsualType.Usual
         CASE "system.intptr"
-          RETURN __UsualType.ptr
+          RETURN __UsualType.Ptr
         
       END SWITCH
     END SWITCH
-    RETURN __UsualType.void
+    RETURN __UsualType.Void
     
     /// <exclude />
-    STATIC METHOD UsualTypeTotype(dwType AS DWORD) AS System.Type
-    LOCAL typename := NULL AS STRING
+    STATIC METHOD UsualTypeToType(dwType AS DWORD) AS System.Type
+    LOCAL typeName := NULL AS STRING
     SWITCH dwType
-    CASE __UsualType.array
+    CASE __UsualType.Array
       typeName := "XSharp.__Array"
-    CASE __UsualType.byte
+    CASE __UsualType.Byte
       RETURN typeof(System.Byte)
-    CASE __UsualType.char
+    CASE __UsualType.Char
       RETURN typeof(System.Char)
-    CASE __UsualType.codeblock
+    CASE __UsualType.Codeblock
       typeName := "XSharp.__CodeBlock"
-    CASE __UsualType.date
+    CASE __UsualType.Currency
+      typeName := "XSharp.__Currency"
+    CASE __UsualType.Date
       typeName := "XSharp.__Date"
-    CASE __UsualType.dword
+    CASE __UsualType.DWord
       RETURN typeof(System.UInt32)
-    CASE __UsualType.int64
+    CASE __UsualType.Int64
       RETURN typeof(System.Int64)
-    CASE __UsualType.float
+    CASE __UsualType.Float
       typeName := "XSharp.__Float"
-    CASE __UsualType.logic
+    CASE __UsualType.Logic
       RETURN typeof(System.Boolean)
-    CASE __UsualType.long
+    CASE __UsualType.Long
       RETURN typeof(System.Int32)
-    CASE __UsualType.object
+    CASE __UsualType.Object
       RETURN typeof(System.Object)
-    CASE __UsualType.psz
+    CASE __UsualType.Psz
       typeName := "XSharp.__Psz"
-    CASE __UsualType.ptr
+    CASE __UsualType.Ptr
       RETURN typeof(System.IntPtr)
-    CASE __UsualType.real4
+    CASE __UsualType.Real4
       RETURN typeof(System.Single)
-    CASE __UsualType.real8
+    CASE __UsualType.Real8
       RETURN typeof(System.Double)
-    CASE __UsualType.shortint
+    CASE __UsualType.ShortInt
       RETURN typeof(System.Int16)
-    CASE __UsualType.string
+    CASE __UsualType.String
       RETURN typeof(System.String)
-    CASE __UsualType.symbol
+    CASE __UsualType.Symbol
       typeName := "XSharp.__Symbol"
-    CASE __UsualType.uint64
+    CASE __UsualType.UInt64
       RETURN typeof(System.Int64)
-    CASE __UsualType.usual
+    CASE __UsualType.Usual
       typeName := "XSharp.__Usual"
-    CASE __UsualType.void
+    CASE __UsualType.Void
       RETURN typeof(System.Void)
-    CASE __UsualType.word
-      RETURN typeof(System.Uint16)
+    CASE __UsualType.Word
+      RETURN typeof(System.UInt16)
     END SWITCH
     // lookup types in XSharp.VO
-    IF typename != NULL
+    IF typeName != NULL
         FOREACH asm AS Assembly IN AppDomain.CurrentDomain:GetAssemblies()
-          IF asm:Getname():Name:ToLower() == "xsharp.vo"
+          IF asm:GetName():Name:ToLower() == "xsharp.vo"
             VAR type := asm:GetType(typeName, FALSE, TRUE)
             IF type != NULL
               RETURN type
@@ -573,7 +577,7 @@ END NAMESPACE
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/errorbuild/*" /> 
-FUNCTION ErrorBuild(pErrInfo AS exception) AS XSharp.Error
+FUNCTION ErrorBuild(pErrInfo AS Exception) AS XSharp.Error
 	RETURN  XSharp.Error{pErrInfo}
 
 

@@ -23,27 +23,27 @@ INTERFACE XSharp.RDD.IOrder
 	/// <param name="nOrdinal"></param>
 	METHOD OrderInfo(nOrdinal AS DWORD, info AS DbOrderInfo) AS OBJECT
 
-	/// <summary>Open an index file and add to the list of open indexes for the current workarea.</summary>
+	/// <summary>Open an index file and add to the list of open indexes for the current Workarea.</summary>
 	/// <param name="info">An object containing information about the orderlist (file)  to add.</param>
 	METHOD OrderListAdd(info AS DbOrderInfo) AS LOGIC
 
-	/// <summary>Close an index file and remove it from the list of open indexes for the current workarea.</summary>
+	/// <summary>Close an index file and remove it from the list of open indexes for the current Workarea.</summary>
 	/// <param name="info"></param>
 	/// <param name="info">An object containing information about the orderlist (file) to delete.</param>
 	METHOD OrderListDelete(info AS DbOrderInfo) AS LOGIC
 
-	/// <summary>Set focus to another index in the list open indexes for the current workarea.</summary>
+	/// <summary>Set focus to another index in the list open indexes for the current Workarea.</summary>
 	/// <param name="info">An object containing information about the order to select.</param>
 	METHOD OrderListFocus(info AS DbOrderInfo) AS LOGIC
 
-	/// <summary>Rebuild all indexes for the current workarea.</summary>
+	/// <summary>Rebuild all indexes for the current Workarea.</summary>
 	METHOD OrderListRebuild() AS LOGIC 
 
-	/// <summary>Perform a seek operation on the current selected index for the current workarea.</summary>
+	/// <summary>Perform a seek operation on the current selected index for the current Workarea.</summary>
 	/// <param name="info">An object containing containing the necessary seek information.</param>
 	METHOD Seek(info AS DbSeekInfo) AS LOGIC
 
-	/// <summary>Result of the last seek operation for the current workarea.</summary>
+	/// <summary>Result of the last seek operation for the current Workarea.</summary>
 	PROPERTY Found	AS LOGIC GET SET
 
 	/// <summary>Flush the changes to the index.</summary>	

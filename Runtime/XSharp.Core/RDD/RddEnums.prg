@@ -804,7 +804,7 @@ BEGIN NAMESPACE XSharp.RDD.Enums
     END ENUM
 
 
-    /// <summary>Enum that described the possible Notification messages that are sent to clients of workareas</summary>
+    /// <summary>Enum that described the possible Notification messages that are sent to clients of Workareas</summary>
     /// <remarks>Clients that want to subscribe to these notifications can register themselves by calling DbRegisterClient() and must implement IDbNotify().</remarks>
     /// <seealso cref="T:XSharp.IDbNotify"/>
     /// <seealso cref="M:XSharp.Core.Functions.DbRegisterClient(XSharp.IDbNotify)"/>
@@ -848,7 +848,7 @@ BEGIN NAMESPACE XSharp.RDD.Enums
         MEMBER RecordLocked
         /// <summary>This message is sent after a record has been unlocked. The Data parameter is the record number of the record.</summary>
         MEMBER RecordUnLocked
-        /// <summary>This message is sent after a workarea was commited. The Data parameter is the file name of area.</summary>
+        /// <summary>This message is sent after a Workarea was commited. The Data parameter is the file name of area.</summary>
         MEMBER FileCommit 
         /// <summary>This message is sent after an operation failed. The Data parameter is the description of the operation.</summary>
         MEMBER OperationFailed    := 99

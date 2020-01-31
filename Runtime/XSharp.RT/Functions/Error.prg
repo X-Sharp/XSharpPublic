@@ -37,10 +37,10 @@ FUNCTION ErrorBlock(cbNewSetting AS CODEBLOCK) AS USUAL
 	// some RDD related operations
 	IF oError:CanDefault
 		// network open error?
-		IF (oError:GenCode = EG_OPEN)
-			IF (oError:OsCode  = 32 ) .OR.; // ERROR_SHARING_VIOLATION
-				(oError:OsCode  = 33 )    .OR.; // ERROR_LOCK_VIOLATION
-				(oError:GenCode = EG_APPENDLOCK)
+		IF (oError:Gencode = EG_OPEN)
+			IF (oError:OSCode  = 32 ) .OR.; // ERROR_SHARING_VIOLATION
+				(oError:OSCode  = 33 )    .OR.; // ERROR_LOCK_VIOLATION
+				(oError:Gencode = EG_APPENDLOCK)
 				NetErr(.T.)
 				RETURN FALSE                // continue with default behavior
 			ENDIF

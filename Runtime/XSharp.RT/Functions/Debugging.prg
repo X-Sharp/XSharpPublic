@@ -23,7 +23,7 @@ FUNCTION	DebOut()	AS	VOID CLIPPER
 		END
 		C+=AsString(_GetFParam(X))
 	NEXT
-	Debout32(C)
+	DebOut32(C)
 	RETURN
 
 

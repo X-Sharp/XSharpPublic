@@ -173,7 +173,7 @@ INTERNAL STATIC METHOD AddFileInfo(aReturn AS ARRAY, oFile AS System.IO.FileInfo
     VAR cAttribute := DecodeAttributes(oFile:Attributes, nAttr, REF lAdd)
 	IF lAdd
         VAR aFile := DirectoryHelper.FileSystemInfo2Array(oFile, cAttribute)
-        aadd(aReturn, aFile)
+        AAdd(aReturn, aFile)
 	ENDIF
 	RETURN
 	
@@ -189,7 +189,7 @@ INTERNAL STATIC METHOD AddDirectoryInfo( aReturn AS ARRAY, cDirectory AS STRING,
                 IF !String.IsNullOrEmpty(cName)
                     aFile[F_NAME] := cName
                 ENDIF
-                aadd(aReturn, aFile)
+                AAdd(aReturn, aFile)
 			ENDIF
 		ENDIF
 	CATCH 

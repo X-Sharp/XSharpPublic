@@ -28,7 +28,7 @@ BEGIN NAMESPACE XSharp
 
         #region fields
         PRIVATE INITONLY _index		AS DWORD
-        PRIVATE STATIC _PszDict			AS Dictionary<DWORD, PSZ>
+        PRIVATE STATIC _PszDict		AS Dictionary<DWORD, PSZ>
         #endregion
 
         #region constrúctors
@@ -59,7 +59,7 @@ BEGIN NAMESPACE XSharp
             SELF:_index := dwValue
 
         #endregion
-        INTERNAL STATIC METHOD Find(sValue AS STRING ) AS __symbol
+        INTERNAL STATIC METHOD Find(sValue AS STRING ) AS __Symbol
             IF SymbolTable:LookupTable:ContainsKey(sValue)
                 VAR index := __Symbol.SymbolTable:LookupTable[sValue]
                 RETURN __Symbol{index}
@@ -74,8 +74,8 @@ BEGIN NAMESPACE XSharp
         END PROPERTY
         INTERNAL STATIC PROPERTY PszDict AS Dictionary<DWORD, PSZ>
             GET
-                IF _pszDict == NULL
-                    _pszDict := Dictionary<DWORD, PSZ>{}
+                IF _PszDict == NULL
+                    _PszDict := Dictionary<DWORD, PSZ>{}
                 ENDIF
                 RETURN _PszDict
             END GET
@@ -110,7 +110,7 @@ BEGIN NAMESPACE XSharp
             ENDIF
             LOCAL pszAtom AS PSZ
             pszAtom := __Psz.CreatePsz(_value)
-            PszDict:add(_index, pszAtom)
+            PszDict:Add(_index, pszAtom)
             RETURN pszAtom
 
             #endregion
@@ -264,7 +264,7 @@ BEGIN NAMESPACE XSharp
             #endregion
 
             #region methods
-                INTERNAL STATIC METHOD ADD(strValue AS STRING) AS DWORD
+                INTERNAL STATIC METHOD Add(strValue AS STRING) AS DWORD
                 LOCAL index := 0 AS DWORD
                     BEGIN LOCK sync
                         IF (LookupTable:ContainsKey(strValue))
@@ -399,7 +399,7 @@ BEGIN NAMESPACE XSharp
         _svalue := s
 
         [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)] ;
-        PUBLIC PROPERTY @@Value AS OBJECT GET _svalue:_VALUE
+        PUBLIC PROPERTY @@Value AS OBJECT GET _svalue:_value
 
     END CLASS
 

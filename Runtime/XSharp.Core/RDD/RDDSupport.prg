@@ -642,7 +642,7 @@ STRUCTURE _RddList
     /// <summary>List of RDD names.</summary>
     EXPORT atomRddName AS STRING[]
     /// <summary>Number of names in the list.</summary>
-    PROPERTY uIRddCount AS DWORD GET (DWORD) atomRddName:Length
+    PROPERTY uiRddCount AS DWORD GET (DWORD) atomRddName:Length
         
     /// <summary>Construct _RddList from class Tree.</summary>
     CONSTRUCTOR(oRDD AS Workarea)

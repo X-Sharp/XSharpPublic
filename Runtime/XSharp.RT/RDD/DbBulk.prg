@@ -61,7 +61,7 @@ FUNCTION __UniqueAlias   (cDbfName AS STRING)            AS STRING
 	
 	cAlias := Upper(cDbfName)
 	
-	nSelect := SELECT(cAlias)
+	nSelect := @@Select(cAlias)
 	
 	DO WHILE nSelect > 0
 		IF Len(cAlias) < 9
@@ -71,7 +71,7 @@ FUNCTION __UniqueAlias   (cDbfName AS STRING)            AS STRING
 		ENDIF
 		
 		n++
-		nSelect := SELECT(cAlias)
+		nSelect := @@Select(cAlias)
 	ENDDO
 	
 	RETURN cAlias
@@ -93,9 +93,9 @@ FUNCTION DbApp(cSourceFile, acFields, cbForCondition, cbWhileCondition,nNext, nR
     lRetCode := FALSE
     siFrom := 0
 	TRY	
-		siTo := VODBGetSelect()
+		siTo := VoDbGetSelect()
 		IF !Used()
-			THROW VoDb.DBCMDError(__FUNCTION__)
+			THROW VoDb.DbCmdError(__FUNCTION__)
 		ENDIF
 		IF aStruct:IsNil
             aStruct := DbStruct()
@@ -106,7 +106,7 @@ FUNCTION DbApp(cSourceFile, acFields, cbForCondition, cbWhileCondition,nNext, nR
 		ENDIF
 		
 		DbUseArea(TRUE, cDriver, cSourceFile, __UniqueAlias(cSourceFile), TRUE, TRUE,/*aStru*/,/*cDelim*/, acRDDs)
-		siFrom := VODBGetSelect()
+		siFrom := VoDbGetSelect()
 		
 		acFields := {}
 		
@@ -126,16 +126,16 @@ FUNCTION DbApp(cSourceFile, acFields, cbForCondition, cbWhileCondition,nNext, nR
 		ENDIF
 		
 		IF (siFrom > 0)
-			VODBCloseArea()
+			VoDbCloseArea()
 		ENDIF
 		
-		VODBSetSelect(INT(siTo))
+		VoDbSetSelect(INT(siTo))
 		
 		
 	CATCH e AS Error
 		IF  siFrom > 0
-			VODBSetSelect(INT(siFrom))
-			VODBCloseArea()
+			VoDbSetSelect(INT(siFrom))
+			VoDbCloseArea()
 		ENDIF
 		
 		e:FuncSym := __FUNCTION__
@@ -160,7 +160,7 @@ FUNCTION DbAppDelim(cSourceFile, cDelim, acFields, cbForCondition, cbWhileCondit
 	
 	TRY
 		
-		siTo := VODBGetSelect()
+		siTo := VoDbGetSelect()
         IF aStruct:IsNil
             aStruct := DbStruct()
         ENDIF
@@ -188,9 +188,9 @@ FUNCTION DbAppDelim(cSourceFile, cDelim, acFields, cbForCondition, cbWhileCondit
 		
 		lRetCode := DbTrans(siTo, aStruct, cbForCondition, cbWhileCondition, nNext, nRecord, lRest)
 		
-		VODBCloseArea()
+		VoDbCloseArea()
 		
-		VODBSetSelect(INT(siTo))
+		VoDbSetSelect(INT(siTo))
 		
 	CATCH e AS Error
 		e:FuncSym := __FUNCTION__
@@ -214,7 +214,7 @@ FUNCTION DbAppSdf(cSourceFile, acFields, cbForCondition,cbWhileCondition, nNext,
 	lAnsi  := SetAnsi()
 	
 	TRY		
-		siTo := VODBGetSelect()
+		siTo := VoDbGetSelect()
         IF aStruct:IsNil
             aStruct := DbStruct()
         ENDIF
@@ -242,8 +242,8 @@ FUNCTION DbAppSdf(cSourceFile, acFields, cbForCondition,cbWhileCondition, nNext,
 		
 		lRetCode := DbTrans(siTo, aStruct, cbForCondition, cbWhileCondition, nNext, nRecord, lRest)
 		
-		VODBCloseArea()
-		VODBSetSelect(INT(siTo))
+		VoDbCloseArea()
+		VoDbSetSelect(INT(siTo))
 		
 	CATCH e AS Error
 		e:FuncSym := __FUNCTION__
@@ -265,14 +265,14 @@ FUNCTION DbCopy(cTargetFile, acFields, cbForCondition, cbWhileCondition, nNext, 
 	
 	lAnsi    := SetAnsi()
 	
-	siFrom   := VODBGetSelect()
+	siFrom   := VoDbGetSelect()
     siTo    := 0    
 	lRetCode := .F.
 	
 	TRY
 		
 		IF !Used()
-			THROW VoDb.DBCMDError(__FUNCTION__)
+			THROW VoDb.DbCmdError(__FUNCTION__)
 		ENDIF
 		
 		lDbfAnsi := DbInfo(DBI_ISANSI)
@@ -305,18 +305,18 @@ FUNCTION DbCopy(cTargetFile, acFields, cbForCondition, cbWhileCondition, nNext, 
 				SetAnsi(.T.)
 			ENDIF
 			
-			DBUSEAREA(.T., cDriver, cTargetFile, __UniqueAlias(cTargetFile),,,,,acRDDs)
+			DbUseArea(.T., cDriver, cTargetFile, __UniqueAlias(cTargetFile),,,,,acRDDs)
 			
-			VODBSelect(siFrom, REF siTo)
+			VoDbSelect(siFrom, REF siTo)
 			
 			lRetCode := DbTrans(siTo, aStruct, cbForCondition, cbWhileCondition, nNext, nRecord, lRest)
 			
 			IF (siTo > 0)
-				VODBSetSelect(INT(siTo))
-				VODBCloseArea()
+				VoDbSetSelect(INT(siTo))
+				VoDbCloseArea()
 			ENDIF
 			
-			VODBSetSelect(INT(siFrom))
+			VoDbSetSelect(INT(siFrom))
 		ENDIF
 		
     CATCH e AS Error
@@ -353,8 +353,8 @@ FUNCTION DBFileCopy( hfFrom AS IntPtr, cFile AS STRING, cFullPath AS STRING) AS 
 		
 		oError := Error{1}
 		oError:SubSystem                := "DBCMD"
-		oError:GenCode                  := EG_OPEN
-		oError:OsCode                   := DosError()
+		oError:Gencode                  := EG_OPEN
+		oError:OSCode                   := DosError()
 		oError:FuncSym                  :=__FUNCTION__
 		oError:FileName                 := FPathName()
 		
@@ -395,12 +395,12 @@ FUNCTION DbCopyDelim (cTargetFile, cDelim, acFields, cbForCondition, cbWhileCond
 	LOCAL lDbfAnsi      AS LOGIC
 	lAnsi  := SetAnsi()
 	
-	siFrom := VODBGetSelect()
+	siFrom := VoDbGetSelect()
 	siTo   := 0
 	TRY
 		
 		IF !Used()
-			THROW VoDb.DBCMDError(__FUNCTION__)
+			THROW VoDb.DbCmdError(__FUNCTION__)
 		ENDIF
         IF aStruct:IsNil
             aStruct := DbStruct()
@@ -427,19 +427,19 @@ FUNCTION DbCopyDelim (cTargetFile, cDelim, acFields, cbForCondition, cbWhileCond
 			SetAnsi(.T.)
 		ENDIF
 		
-		VODBSelect(siFrom, REF siTo)
+		VoDbSelect(siFrom, REF siTo)
 		
 		lRetCode := DbTrans(siTo, aStruct, cbForCondition, cbWhileCondition, nNext, nRecord, lRest)
 		
-		VODBSetSelect(INT(siTo))
-		VODBCloseArea()
+		VoDbSetSelect(INT(siTo))
+		VoDbCloseArea()
 		
 	CATCH e AS Error
 		e:FuncSym := __FUNCTION__
 		THROW e
     FINALLY
         SetAnsi( lAnsi )
-		VODBSetSelect(INT(siFrom))
+		VoDbSetSelect(INT(siFrom))
 	END TRY
 	
 	RETURN (lRetCode)
@@ -457,12 +457,12 @@ FUNCTION DbCopySDF(cTargetFile, acFields, cbForCondition, cbWhileCondition, nNex
 	LOCAL lDbfAnsi      AS LOGIC
 	
 	lAnsi  := SetAnsi()
-	siFrom := VODBGetSelect()
+	siFrom := VoDbGetSelect()
     siTo   := 0
 	TRY
 		
 		IF !Used()
-			THROW VoDb.DBCMDError(__FUNCTION__)
+			THROW VoDb.DbCmdError(__FUNCTION__)
 		ENDIF
         IF aStruct:IsNil
             aStruct := DbStruct()
@@ -493,19 +493,19 @@ FUNCTION DbCopySDF(cTargetFile, acFields, cbForCondition, cbWhileCondition, nNex
 			SetAnsi(.T.)
 		ENDIF
 		
-		VODBSelect(siFrom, REF siTo)
+		VoDbSelect(siFrom, REF siTo)
 		
 		lRetCode := DbTrans(siTo, aStruct, cbForCondition, cbWhileCondition, nNext, nRecord, lRest)
 		
-		VODBSetSelect(INT(siTo))
-		VODBCloseArea()
+		VoDbSetSelect(INT(siTo))
+		VoDbCloseArea()
 		
 	CATCH e AS Error
 		e:FuncSym := __FUNCTION__
 		THROW e
     FINALLY
     	SetAnsi( lAnsi )
-		VODBSetSelect(INT(siFrom))
+		VoDbSetSelect(INT(siFrom))
     
 	END TRY
 	
@@ -523,7 +523,7 @@ FUNCTION DbJoin(cAlias, cTargetFile, acFields, cbForCondition) AS LOGIC CLIPPER
 	LOCAL aStruct       AS ARRAY
 	LOCAL lRetCode      AS LOGIC
 	
-	LOCAL pJoinList     AS _JOINLIST
+	LOCAL pJoinList     AS _JoinList
 	
 	IF cbForCondition:IsNil
 		cbForCondition := {|| .T.}
@@ -532,16 +532,16 @@ FUNCTION DbJoin(cAlias, cTargetFile, acFields, cbForCondition) AS LOGIC CLIPPER
     siFrom1 := 0
 	TRY
 		
-		siFrom1 := VODBGetSelect()
+		siFrom1 := VoDbGetSelect()
 		
-		siFrom2 := SELECT(cAlias)
+		siFrom2 := @@Select(cAlias)
 		
 		
 		IF siFrom2 = 0
 			THROW VoDb.ParamError(__FUNCTION__, STRING, 1)
 		ENDIF
 		
-		VODBSetSelect(INT(siFrom1))
+		VoDbSetSelect(INT(siFrom1))
 
         aStruct := VoDb.TargetFields(cAlias, acFields, OUT pJoinList)
 		IF Empty( aStruct )
@@ -553,33 +553,33 @@ FUNCTION DbJoin(cAlias, cTargetFile, acFields, cbForCondition) AS LOGIC CLIPPER
 			THROW oError
 		ENDIF
 		DbCreate( cTargetFile, aStruct,"" , .T., "" )
-		VODBSelect(siFrom1, REF siTo)
+		VoDbSelect(siFrom1, REF siTo)
 		
 		pJoinList:uiDestSel := siTo
 		
-		lRetCode := DbGotop()
+		lRetCode := DbGoTop()
 		
-		DO WHILE !EOF()
+		DO WHILE !Eof()
 			
-			VODBSetSelect(INT(siFrom2))
+			VoDbSetSelect(INT(siFrom2))
 			
-			lRetCode := DbGotop()
+			lRetCode := DbGoTop()
 			
-			DO WHILE ! EOF()
+			DO WHILE ! Eof()
 				
-				VODBSetSelect(INT(siFrom1))
+				VoDbSetSelect(INT(siFrom1))
 				
 				IF ( Eval(cbForCondition) )
 					DbJoinAppend(siTo, pJoinList)
 				ENDIF
 				
-				VODBSetSelect(INT(siFrom2))
-				DBSKIP(1)
+				VoDbSetSelect(INT(siFrom2))
+				DbSkip(1)
 			ENDDO
 			
-			VODBSetSelect(INT(siFrom1))
+			VoDbSetSelect(INT(siFrom1))
 			
-			DBSKIP(1)
+			DbSkip(1)
 			
 		ENDDO
 		
@@ -588,11 +588,11 @@ FUNCTION DbJoin(cAlias, cTargetFile, acFields, cbForCondition) AS LOGIC CLIPPER
 		THROW e
     FINALLY
 	    IF siTo > 0
-		    VODBSetSelect(INT(siTo))
-		    VODBCloseArea()
+		    VoDbSetSelect(INT(siTo))
+		    VoDbCloseArea()
 	    ENDIF
 	
-	    VODBSetSelect(INT(siFrom1))
+	    VoDbSetSelect(INT(siFrom1))
         
 	END TRY
 	
@@ -603,7 +603,7 @@ FUNCTION DbJoin(cAlias, cTargetFile, acFields, cbForCondition) AS LOGIC CLIPPER
 /// <returns>
 /// </returns>
 FUNCTION DbJoinAppend(nSelect AS DWORD, list AS _JoinList)   AS LOGIC        
-	RETURN _DbThrowErrorOnFailure(__FUNCTION__, VODBJoinAppend(nSelect, list))
+	RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDbJoinAppend(nSelect, list))
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbsort/*" />
 FUNCTION DbSort(	cTargetFile, acFields, cbForCondition, cbWhileCondition, nNext, nRecord, lRest )   AS LOGIC CLIPPER
@@ -617,22 +617,22 @@ FUNCTION DbSort(	cTargetFile, acFields, cbForCondition, cbWhileCondition, nNext,
 	LOCAL cRdd 			AS STRING
 	
 	
-	siFrom := VODBGetSelect()
+	siFrom := VoDbGetSelect()
 	siTo   := 0
 	DEFAULT(REF lRest, .F.)
 	
 	TRY
 		
 		IF !Used()
-			THROW VoDb.DBCMDError(__FUNCTION__)
+			THROW VoDb.DbCmdError(__FUNCTION__)
 		ENDIF
 		
 		aStruct := DbStruct()
 		
 		//	UH 09/23/1997
-		cRdd := RDDNAME()
+		cRdd := RddName()
 		
-		fnFieldNames := VoDb.allocFieldNames(aStruct)
+		fnFieldNames := VoDb.AllocFieldNames(aStruct)
 		
 		IF Empty(acFields)
 			THROW VoDb.ParamError(__FUNCTION__, ARRAY, 2)
@@ -641,19 +641,19 @@ FUNCTION DbSort(	cTargetFile, acFields, cbForCondition, cbWhileCondition, nNext,
 		fnSortNames := VoDb.AllocFieldNames(acFields)
 		
 		DbCreate(cTargetFile, aStruct, cRdd, .T.)
-		VODBSelect(siFrom, REF siTo)
-		lRetCode := VODBSort(siTo, fnFieldNames, cbForCondition, cbWhileCondition, nNext, nRecord, lRest, fnSortNames)
+		VoDbSelect(siFrom, REF siTo)
+		lRetCode := VoDbSort(siTo, fnFieldNames, cbForCondition, cbWhileCondition, nNext, nRecord, lRest, fnSortNames)
 		
 		IF !lRetCode
-			THROW Error{RuntimeState.LastRDDError}
+			THROW Error{RuntimeState.LastRddError}
 		ENDIF
 		
 		IF (siTo > 0)
-			VODBSetSelect(INT(siTo))
-			VODBCloseArea()
+			VoDbSetSelect(INT(siTo))
+			VoDbCloseArea()
 		ENDIF
 		
-		VODBSetSelect(INT(siFrom))
+		VoDbSetSelect(INT(siFrom))
 		
 		
 	CATCH e AS Error
@@ -678,7 +678,7 @@ FUNCTION DbTrans(wTarget, aStruct, cbForCondition, cbWhileCondition, nNext, nRec
 	
 	fldNames := VoDb.AllocFieldNames(aStruct)
 	
-	RETURN _DbThrowErrorOnFailure(__FUNCTION__, VODBTrans(wTarget, fldNames, cbForCondition, cbWhileCondition, nNext, nRecord, lRest))
+	RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDbTrans(wTarget, fldNames, cbForCondition, cbWhileCondition, nNext, nRecord, lRest))
 
 
 
@@ -723,7 +723,7 @@ FUNCTION DbTotal(cTargetFile, cbKey, acFields,  cbForCondition, cbWhileCondition
 		ENDIF
 		
 		IF !lRest
-			DbGotop()
+			DbGoTop()
 		ENDIF
 		
 	ENDIF
@@ -741,12 +741,12 @@ FUNCTION DbTotal(cTargetFile, cbKey, acFields,  cbForCondition, cbWhileCondition
 	TRY
 		
 		IF !Used()
-			THROW VoDb.DBCMDError(__FUNCTION__)
+			THROW VoDb.DbCmdError(__FUNCTION__)
 		ENDIF
 		
 		aStruct := DbStruct()
 		
-		siFrom := VODBGetSelect()
+		siFrom := VoDbGetSelect()
 		
 		aStruct := {}
 		
@@ -762,7 +762,7 @@ FUNCTION DbTotal(cTargetFile, cbKey, acFields,  cbForCondition, cbWhileCondition
 			THROW VoDb.ParamError(__FUNCTION__, ARRAY, 3)
 		ENDIF
 		
-		fldNames := VoDb.allocFieldNames(aStruct)
+		fldNames := VoDb.AllocFieldNames(aStruct)
 		
 		//	DbCreate( cTargetFile, aStruct, "", .T.)
 		IF xDriver:IsNil
@@ -770,11 +770,11 @@ FUNCTION DbTotal(cTargetFile, cbKey, acFields,  cbForCondition, cbWhileCondition
 		ENDIF
 		DbCreate( cTargetFile, aStruct, xDriver, .T.)
 		
-		VODBSelect(siFrom, REF siTo)
+		VoDbSelect(siFrom, REF siTo)
 		
 		n := Len(aFldNum)
 		
-		DO WHILE ( (!EOF()) .AND. nNext != 0 .AND. Eval(cbWhileCondition) )
+		DO WHILE ( (!Eof()) .AND. nNext != 0 .AND. Eval(cbWhileCondition) )
 			
 			lSomething := .F.
 			
@@ -786,39 +786,39 @@ FUNCTION DbTotal(cTargetFile, cbKey, acFields,  cbForCondition, cbWhileCondition
 				IF ( Eval(cbForCondition) )
 					IF ( !lSomething )
 						//	CollectForced()
-						lRetCode := VODBTransRec(siTo, fldNames)
+						lRetCode := VoDbTransRec(siTo, fldNames)
 						lSomething := .T.
 					ENDIF
 					
 					FOR i := 1 TO n
-						aNum[i] := aNum[i] + FIELDGET(aFldNum[i])
+						aNum[i] := aNum[i] + FieldGet(aFldNum[i])
 					NEXT
 					
 				ENDIF
 				
-				DBSKIP(1)
+				DbSkip(1)
 				
 			ENDDO
 			
 			IF ( lSomething )
-				VODBSetSelect(INT(siTo))
+				VoDbSetSelect(INT(siTo))
 				
 				FOR i := 1 TO n
 					FieldPut(aFldNum[i], aNum[i])
 				NEXT
 				
-				VODBSetSelect(INT(siFrom))
+				VoDbSetSelect(INT(siFrom))
 			ENDIF
 			
 		ENDDO
 		
 		
 		IF (siTo > 0)
-			VODBSetSelect(INT(siTo))
-			VODBCloseArea()
+			VoDbSetSelect(INT(siTo))
+			VoDbCloseArea()
 		ENDIF
 		
-		VODBSetSelect(INT(siFrom))
+		VoDbSetSelect(INT(siFrom))
 		
     CATCH e AS Error
 		
@@ -836,7 +836,7 @@ FUNCTION DbUpdate(cAlias, cbKey, lRand, cbReplace) AS LOGIC CLIPPER
 	LOCAL kEval         AS USUAL
 	LOCAL lRetCode      AS LOGIC
 	
-	siTo := VODBGetSelect()
+	siTo := VoDbGetSelect()
 	IF (lRand == NIL)
 		lRand := .F.
 	ENDIF
@@ -847,47 +847,47 @@ FUNCTION DbUpdate(cAlias, cbKey, lRand, cbReplace) AS LOGIC CLIPPER
 		
 		
 		IF !Used()
-			THROW VoDb.DBCMDError(__FUNCTION__)
+			THROW VoDb.DbCmdError(__FUNCTION__)
 		ENDIF
 		
 		
-		DbGotop()
+		DbGoTop()
 		
 		
 		
 		
-		siFrom := SELECT(cAlias)
-		DbGotop()
+		siFrom := @@Select(cAlias)
+		DbGoTop()
 		
-		DO WHILE !EOF()
+		DO WHILE !Eof()
 			
 			kEval := Eval(cbKey)
 			
-			VODBSetSelect(INT(siTo))
+			VoDbSetSelect(INT(siTo))
 			
 			IF lRand
 				
 				DbSeek(kEval)
 				
-				IF FOUND()
+				IF Found()
 					Eval(cbReplace)
 				ENDIF
 				
 			ELSE
 				
-				DO WHILE ( Eval(cbKey) < kEval .AND. !EOF() )
-					DBSKIP(1)
+				DO WHILE ( Eval(cbKey) < kEval .AND. !Eof() )
+					DbSkip(1)
 				ENDDO
 				
-				IF ( Eval(cbKey) == kEval .AND. !EOF() )
+				IF ( Eval(cbKey) == kEval .AND. !Eof() )
 					Eval(cbReplace)
 				ENDIF
 				
 			ENDIF
 			
-			VODBSetSelect(INT(siFrom))
+			VoDbSetSelect(INT(siFrom))
 			
-			DBSKIP(1)
+			DbSkip(1)
 			
 		ENDDO
 		
@@ -895,7 +895,7 @@ FUNCTION DbUpdate(cAlias, cbKey, lRand, cbReplace) AS LOGIC CLIPPER
 		e:FuncSym := __FUNCTION__
 		THROW e
     FINALLY
-        VODBSetSelect(INT(siTo))
+        VoDbSetSelect(INT(siTo))
 	END TRY
 	
 	RETURN (lRetCode)

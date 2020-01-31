@@ -37,9 +37,9 @@ FUNCTION FRead4(ptrHandle AS IntPtr, ptrBufferVar AS IntPtr,dwBytes AS DWORD, lA
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/freadline/*" />
 FUNCTION FReadLine(ptrHandle ,nMax) AS STRING CLIPPER
 	IF nMax == NIL
-		RETURN XSharp.Core.Functions.FreadLine((IntPtr) ptrHandle, 0U)
+		RETURN XSharp.Core.Functions.FReadLine((IntPtr) ptrHandle, 0U)
 	ELSE
-		RETURN XSharp.Core.Functions.FreadLine((IntPtr) ptrHandle, (DWORD) nMax)
+		RETURN XSharp.Core.Functions.FReadLine((IntPtr) ptrHandle, (DWORD) nMax)
 	ENDIF
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/freadtext/*" />
@@ -64,9 +64,9 @@ FUNCTION FRead(ptrHandle AS IntPtr,cBufferVar REF USUAL,dwBytes AS DWORD) AS DWO
 /// <include file="RTComments.xml" path="Comments/FileCompat/*" />
 FUNCTION FSeek(ptrHandle ,nOffset ,kOrigin ) AS LONG CLIPPER
 	IF kOrigin == NIL
-		RETURN XSharp.Core.Functions.FSeek3((IntPtr) ptrHandle, (LONG) nOffSet, (DWORD) FS_SET)
+		RETURN XSharp.Core.Functions.FSeek3((IntPtr) ptrHandle, (LONG) nOffset, (DWORD) FS_SET)
 	ELSE
-		RETURN XSharp.Core.Functions.FSeek3((IntPtr) ptrHandle, (LONG) nOffSet, (DWORD) kOrigin)
+		RETURN XSharp.Core.Functions.FSeek3((IntPtr) ptrHandle, (LONG) nOffset, (DWORD) kOrigin)
 	ENDIF
 	
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fwrite3/*" />
@@ -82,18 +82,18 @@ FUNCTION FWrite3(ptrHandle AS IntPtr,ptrBuffer AS IntPtr,dwBytes AS DWORD) AS DW
 /// <include file="RTComments.xml" path="Comments/FileCompat/*" />
 FUNCTION FWrite(ptrHandle ,cBuffer ,nBytes ) AS DWORD CLIPPER
 	IF nBytes == NIL
-		RETURN XSharp.Core.Functions.Fwrite((IntPtr) ptrHandle, (STRING) cBuffer, SLen(cBuffer))
+		RETURN XSharp.Core.Functions.FWrite((IntPtr) ptrHandle, (STRING) cBuffer, SLen(cBuffer))
 	ELSE
-		RETURN XSharp.Core.Functions.Fwrite((IntPtr) ptrHandle, (STRING) cBuffer, (DWORD) nBytes)
+		RETURN XSharp.Core.Functions.FWrite((IntPtr) ptrHandle, (STRING) cBuffer, (DWORD) nBytes)
 	ENDIF
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fwriteline/*" />
 /// <include file="RTComments.xml" path="Comments/FileCompat/*" />
 FUNCTION FWriteLine(ptrHandle ,cBuffer ,nBytes) AS DWORD CLIPPER
 	IF nBytes == NIL
-		RETURN XSharp.Core.Functions.FwriteLine((IntPtr) ptrHandle, (STRING) cBuffer)
+		RETURN XSharp.Core.Functions.FWriteLine((IntPtr) ptrHandle, (STRING) cBuffer)
 	ELSE
-		RETURN XSharp.Core.Functions.FwriteLine3((IntPtr) ptrHandle, (STRING) cBuffer, (DWORD) nBytes)
+		RETURN XSharp.Core.Functions.FWriteLine((IntPtr) ptrHandle, (STRING) cBuffer, (DWORD) nBytes)
 	ENDIF
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fwritetext/*" />

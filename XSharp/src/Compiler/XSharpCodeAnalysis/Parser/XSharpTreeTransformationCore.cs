@@ -7606,14 +7606,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitIdentifier([NotNull] XP.IdentifierContext context)
         {
             // Value in a property accessor will be converted to "value" but only when not part of a access member
-            if ((CurrentEntity is XP.PropertyAccessorContext) || (CurrentEntity is XP.PropertyLineAccessorContext))
+            if (CurrentEntity is XP.PropertyContext && context.Start.Type == XP.VALUE)
             {
+                // something like SELF:Value should not be lowercased
                 if (!(context.Parent is XP.AccessMemberContext))
                 {
-                    if (context.Start.Text.ToLower() == "value")
-                    {
-                        context.Put(SyntaxFactory.MakeIdentifier("value"));
-                    }
+                    context.Put(SyntaxFactory.MakeIdentifier("value"));
+                    return;
                 }
             }
             context.Put(context.Start.SyntaxIdentifier());

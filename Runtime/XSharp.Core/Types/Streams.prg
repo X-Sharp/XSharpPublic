@@ -53,8 +53,8 @@ BEGIN NAMESPACE XSharp.IO
             SUPER:Close()
     END CLASS
 
-    UNSAFE CLASS XsFileStream INHERIT FileStream
-        PRIVATE hFile AS Intptr
+    CLASS XsFileStream INHERIT FileStream
+        PRIVATE hFile AS IntPtr
         PRIVATE smallBuff AS BYTE[]
         PRIVATE CONSTRUCTOR(path AS STRING, mode AS FileMode, faccess AS FileAccess, share AS FileShare, bufferSize AS LONG, options AS FileOptions) 
             SUPER(path, mode, faccess, share, bufferSize, options)
@@ -62,10 +62,14 @@ BEGIN NAMESPACE XSharp.IO
             smallBuff := BYTE[]{1}
             RETURN
 
-        UNSAFE PUBLIC OVERRIDE METHOD Seek(offset AS INT64, origin AS SeekOrigin) AS INT64
-            VAR hi := (INT) (offset >> 32)
-            VAR lo := SetFilePointerWin32(hFile, (INT)offset, @hi, origin)
-            RETURN (((INT64) hi) << 32) + lo
+        PUBLIC OVERRIDE METHOD Seek(offset AS INT64, origin AS SeekOrigin) AS INT64
+            LOCAL result AS INT64
+            LOCAL lOk AS LOGIC
+            lOk := SetFilePointerEx(hFile, offset, OUT result, origin)
+            IF lOk
+                RETURN result
+            ENDIF
+            THROW System.IO.IOException{"Error moving file pointer"}
 
         PUBLIC OVERRIDE METHOD SetLength(length AS INT64 ) AS VOID
 			// warning: does not restore original file pos
@@ -87,23 +91,33 @@ BEGIN NAMESPACE XSharp.IO
             END GET
         END PROPERTY
 
-        PUBLIC UNSAFE OVERRIDE METHOD Read(bytes AS BYTE[] , offset AS INT, count AS INT) AS INT
+        PUBLIC OVERRIDE METHOD Read(bytes AS BYTE[] , offset AS INT, count AS INT) AS INT
             LOCAL ret := FALSE AS LOGIC
             LOCAL bytesRead := 0 AS INT
-            BEGIN FIXED LOCAL numRef := bytes AS BYTE PTR
-                ret := ReadFile(SELF:hFile, numRef + offset, count, OUT bytesRead, IntPtr.Zero)
-            END FIXED
+            IF offset == 0
+                ret := ReadFile(SELF:hFile, bytes, count, OUT bytesRead, IntPtr.Zero)
+            ELSE
+                LOCAL data AS BYTE[]
+                data := BYTE[]{count}
+                ret := ReadFile(SELF:hFile, data, count, OUT bytesRead, IntPtr.Zero)
+                System.Array.Copy(data, 0, bytes, offset, count)
+            ENDIF
             IF !ret
                 RETURN -1
             ENDIF
             RETURN bytesRead
 
-        PUBLIC UNSAFE OVERRIDE METHOD Write(bytes AS BYTE[] , offset AS INT , count AS INT) AS VOID
+        PUBLIC OVERRIDE METHOD Write(bytes AS BYTE[] , offset AS INT , count AS INT) AS VOID
             LOCAL ret := FALSE AS LOGIC
             LOCAL bytesWritten := 0 AS INT
-            BEGIN FIXED LOCAL numRef := bytes AS BYTE PTR
-                ret := WriteFile(SELF:hFile, numRef + offset, count, OUT bytesWritten, 0)
-            END FIXED
+            IF offset == 0
+                ret := WriteFile(SELF:hFile, bytes, count, OUT bytesWritten, 0)
+            ELSE
+                LOCAL aCopy AS BYTE[]
+                aCopy := BYTE[]{count}
+                System.Array.Copy(bytes,offset, aCopy,0, count)
+                ret := WriteFile(SELF:hFile, aCopy, count, OUT bytesWritten, 0)
+            ENDIF
             IF (!ret)
                 THROW IOException{"Write: File write failed"}
             ENDIF
@@ -127,7 +141,7 @@ BEGIN NAMESPACE XSharp.IO
             
         PUBLIC OVERRIDE METHOD Unlock( position AS INT64, length AS INT64)  AS VOID
             LOCAL ret := FALSE AS LOGIC
-            ret := UnLockFile(SELF:hFile, (INT)position, (INT)(position >> 32), (INT)(length), (INT)(length >> 32))
+            ret := UnlockFile(SELF:hFile, (INT)position, (INT)(position >> 32), (INT)(length), (INT)(length >> 32))
             IF (!ret)
                 THROW IOException{"Lock: File unlock failed"}
             ENDIF
@@ -144,13 +158,13 @@ BEGIN NAMESPACE XSharp.IO
 
         #region External methods
         [DllImport("kernel32.dll", SetLastError := TRUE, EntryPoint := "ReadFile")];
-        UNSAFE STATIC EXTERN METHOD ReadFile(hFile AS IntPtr, bytes AS BYTE PTR, numbytes AS INT, numbytesread OUT INT , mustbezero AS intptr) AS LOGIC
+        STATIC EXTERN METHOD ReadFile(hFile AS IntPtr, bytes AS BYTE[], numbytes AS INT, numbytesread OUT INT , mustbezero AS IntPtr) AS LOGIC
 
         [DllImport("kernel32.dll", SetLastError := TRUE, EntryPoint := "WriteFile")];
-        UNSAFE STATIC EXTERN METHOD WriteFile(hFile AS IntPtr, bytes AS BYTE PTR, numbytes AS INT, numbyteswritten OUT INT , lpOverlapped AS INT) AS LOGIC
+        STATIC EXTERN METHOD WriteFile(hFile AS IntPtr, bytes AS BYTE[], numbytes AS INT, numbyteswritten OUT INT , lpOverlapped AS INT) AS LOGIC
 
-        [DllImport("kernel32.dll", SetLastError := TRUE, EntryPoint := "SetFilePointer")];
-        UNSAFE STATIC EXTERN METHOD SetFilePointerWin32(handle AS IntPtr, lo AS INT , hi AS INT PTR, origin AS SeekOrigin ) AS INT
+        [DllImport("kernel32.dll", SetLastError := TRUE, EntryPoint := "SetFilePointerEx")];
+        STATIC EXTERN METHOD SetFilePointerEx(handle AS IntPtr, distance AS INT64 , newAddress OUT INT64, origin AS SeekOrigin ) AS LOGIC
 
         [DllImport("kernel32.dll", SetLastError := TRUE,EntryPoint := "LockFile")];
         STATIC EXTERN METHOD LockFile(hFile AS IntPtr , dwFileOffsetLow AS INT , dwFileOffsetHigh AS INT , nNumberOfBytesToLockLow AS INT , nNumberOfBytesToLockHigh AS INT ) AS LOGIC

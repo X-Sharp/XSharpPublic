@@ -166,7 +166,7 @@
     <value>Invalid field index</value>
   </data>
   <data name="EDB_SELECT" xml:space="preserve">
-    <value>Invalid workarea number</value>
+    <value>Invalid Workarea number</value>
   </data>
   <data name="EDB_SYMSELECT" xml:space="preserve">
     <value>Invalid alias specification</value>
@@ -190,7 +190,7 @@
     <value>Invalid argument (#%u) for function %s</value>
   </data>
   <data name="EDB_NOAREAS" xml:space="preserve">
-    <value>No free workarea</value>
+    <value>No free Workarea</value>
   </data>
   <data name="EDB_NOMEM" xml:space="preserve">
     <value>Out of memory</value>
@@ -217,7 +217,7 @@
     <value>Structure does not response</value>
   </data>
   <data name="EDB_NOTABLE" xml:space="preserve">
-    <value>Current workarea does not contain a table</value>
+    <value>Current Workarea does not contain a table</value>
   </data>
   <data name="EDB_NOORDER" xml:space="preserve">
     <value>No order specified</value>
@@ -328,7 +328,7 @@
     <value>Record number not found</value>
   </data>
   <data name="ERDD_NOORDER" xml:space="preserve">
-    <value>The current workarea does not contain an order</value>
+    <value>The current Workarea does not contain an order</value>
   </data>
   <data name="ERDD_UNSUPPORTED" xml:space="preserve">
     <value>Operation not supported by current RDD</value>

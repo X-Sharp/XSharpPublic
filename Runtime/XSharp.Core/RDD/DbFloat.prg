@@ -6,7 +6,7 @@
 
 /// <summary>Implementation of the IFloat interface that can be used by the RDD system. </summary> 
 /// <seealso cref="T:XSharp.IFloat"/>
-STRUCTURE XSharp.RDD.DbFloat IMPLEMENTS IFLoat, IConvertible
+STRUCTURE XSharp.RDD.DbFloat IMPLEMENTS IFloat, IConvertible
 	/// <inheritdoc />
 	PROPERTY @@Value	AS REAL8 AUTO GET PRIVATE SET
 	/// <inheritdoc />
@@ -15,8 +15,8 @@ STRUCTURE XSharp.RDD.DbFloat IMPLEMENTS IFLoat, IConvertible
 	PROPERTY Decimals	AS INT AUTO GET PRIVATE SET
     /// <summary></summary>
     CONSTRUCTOR(val AS REAL8, len AS INT, dec AS INT)
-		VALUE := val
-		Digits := len
+		@@Value := val
+		Digits  := len
 		Decimals := dec
 	/// <inheritdoc />
 	OVERRIDE METHOD ToString() AS STRING
@@ -27,55 +27,55 @@ STRUCTURE XSharp.RDD.DbFloat IMPLEMENTS IFLoat, IConvertible
 		RETURN TypeCode.Object
 
 	METHOD IConvertible.ToBoolean(provider AS IFormatProvider ) AS LOGIC
-		IF(	VALUE != 0.0) 
+		IF(	@@Value != 0.0) 
 			RETURN TRUE
 		ENDIF
 		RETURN FALSE
 
 		METHOD IConvertible.ToByte(provider AS IFormatProvider ) AS BYTE
-			RETURN Convert.ToByte(VALUE)
+			RETURN Convert.ToByte(@@Value)
 
 		METHOD IConvertible.ToChar(provider AS IFormatProvider ) AS CHAR
-			RETURN Convert.ToChar(VALUE)
+			RETURN Convert.ToChar(@@Value)
 
 		METHOD IConvertible.ToDateTime(provider AS IFormatProvider ) AS DateTime
-			RETURN Convert.ToDateTime(VALUE)
+			RETURN Convert.ToDateTime(@@Value)
 
 		METHOD IConvertible.ToDecimal(provider AS IFormatProvider ) AS Decimal
-			RETURN Convert.ToDecimal(VALUE)
+			RETURN Convert.ToDecimal(@@Value)
 
 		METHOD IConvertible.ToDouble(provider AS IFormatProvider ) AS Double
-			RETURN VALUE
+			RETURN @@Value
 
 		METHOD IConvertible.ToInt16(provider AS IFormatProvider ) AS SHORT
-			RETURN Convert.ToInt16(VALUE)
+			RETURN Convert.ToInt16(@@Value)
 
-		METHOD IConvertible.ToInt32(provider AS IFormatProvider ) AS INT32
-			RETURN Convert.ToInt32(VALUE)
+		METHOD IConvertible.ToInt32(provider AS IFormatProvider ) AS INT
+			RETURN Convert.ToInt32(@@Value)
 
 		METHOD IConvertible.ToInt64(provider AS IFormatProvider ) AS INT64
-			RETURN Convert.ToInt64(VALUE)
+			RETURN Convert.ToInt64(@@Value)
 
 		METHOD IConvertible.ToSByte(provider AS IFormatProvider ) AS SByte
-			RETURN Convert.ToSByte(VALUE)
+			RETURN Convert.ToSByte(@@Value)
 
-		METHOD IConvertible.ToSingle(provider AS IFormatProvider ) AS SINGLE
-			RETURN Convert.ToSingle(VALUE)
+		METHOD IConvertible.ToSingle(provider AS IFormatProvider ) AS REAL4
+			RETURN Convert.ToSingle(@@Value)
 
 		METHOD IConvertible.ToString(provider AS IFormatProvider ) AS STRING
-			RETURN String.Format("{0}", VALUE)
+			RETURN String.Format("{0}", @@Value)
 
 		METHOD IConvertible.ToType( conversionType AS Type, provider AS IFormatProvider ) AS OBJECT
-			RETURN Convert.ChangeType(VALUE,conversionType)
+			RETURN Convert.ChangeType(@@Value,conversionType)
 
 		METHOD IConvertible.ToUInt16(provider AS IFormatProvider ) AS WORD
-			RETURN Convert.ToUInt16(VALUE)
+			RETURN Convert.ToUInt16(@@Value)
 
 		METHOD IConvertible.ToUInt32(provider AS IFormatProvider ) AS DWORD
-			RETURN Convert.ToUInt32(VALUE)
+			RETURN Convert.ToUInt32(@@Value)
 
 		METHOD IConvertible.ToUInt64(provider AS IFormatProvider ) AS UINT64
-			RETURN Convert.ToUInt64(VALUE)
+			RETURN Convert.ToUInt64(@@Value)
 
 	#endregion
 END	STRUCTURE

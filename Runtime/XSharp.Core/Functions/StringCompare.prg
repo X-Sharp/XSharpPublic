@@ -24,15 +24,15 @@ STATIC CLASS XSharp.StringHelpers
 		// and collation table when the user changes these
 		RuntimeState.OnCodePageChanged += Changed
 		RuntimeState.OnCollationChanged += Changed
-		getValues()
+		GetValues()
 		bLHS := BYTE[]{512}
 		bRHS := BYTE[]{512}
 		gate := OBJECT{}
 
     /// <exclude />
-	STATIC METHOD Changed (o AS OBJECT, e AS eventArgs) AS VOID
+	STATIC METHOD Changed (o AS OBJECT, e AS EventArgs) AS VOID
         // This event gets called when the codepage has changed or the collation has changed
-		getvalues()
+		GetValues()
 
     /// <exclude />
 	STATIC METHOD GetValues() AS VOID

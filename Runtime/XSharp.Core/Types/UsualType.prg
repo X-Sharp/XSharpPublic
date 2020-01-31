@@ -63,7 +63,7 @@ BEGIN NAMESPACE XSharp
         /// <summary>The usual contains an INT64 value (new in Vulcan and X#).</summary>
         MEMBER Int64		:=22
         /// <summary>The usual contains an UINT64 value (new in Vulcan and X#).</summary>
-        MEMBER Uint64     :=23
+        MEMBER UInt64     :=23
         /// <summary>This value is in the enum for completeness but never used inside a usual. Char values are stored as LONG</summary>
         MEMBER Char		:=24    // not stored in a usual
         /// <summary>This value is in the enum for completeness but never used inside a usual. Dynamic values are stored as OBJECT</summary>

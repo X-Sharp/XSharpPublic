@@ -29,7 +29,7 @@ INTERNAL STATIC CLASS XSharp.FileSearch
        
         TRY
             
-            XSharp.IO.File.clearErrorState()
+            XSharp.IO.File.ClearErrorState()
             
             // Split filespec in path and mask
             // when path is empty then path is current directory
@@ -37,7 +37,7 @@ INTERNAL STATIC CLASS XSharp.FileSearch
             LOCAL cPath AS STRING
             LOCAL cMask AS STRING
             cPath := Path.GetDirectoryName(filespec)
-            cMask := Path.GetFilename(filespec)
+            cMask := Path.GetFileName(filespec)
             IF String.IsNullOrEmpty(cPath)
                 cPath := System.Environment.CurrentDirectory
             ENDIF
@@ -75,7 +75,7 @@ INTERNAL STATIC CLASS XSharp.FileSearch
         
         CATCH oEx AS Exception
             
-            XSharp.IO.File.setErrorState(oEx)
+            XSharp.IO.File.SetErrorState(oEx)
             lRet := FALSE
             
         END TRY
@@ -278,7 +278,7 @@ FUNCTION File(cFileSpec AS STRING) AS LOGIC
             ENDIF
         ENDIF
     CATCH e as Exception
-        XSharp.IO.File.setErrorState(e)
+        XSharp.IO.File.SetErrorState(e)
     END TRY
     RETURN FALSE
 

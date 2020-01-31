@@ -8,12 +8,12 @@ USING XSharp.RDD.Support
 /// <summary>Base Index class. Does not implement anything. </summary>
 /// <seealso cref="T:XSharp.RDD.IOrder"/>
 CLASS XSharp.RDD.BaseIndex IMPLEMENTS IOrder
-	PRIVATE _oArea AS WorkArea
+	PRIVATE _oArea AS Workarea
 	
 	/// <summary>Create the BaseIndex object</summary>
 	/// <param name="oArea">Workarea object that 'owns' this index object </param>
 	
-	CONSTRUCTOR(oArea AS WorkArea)
+	CONSTRUCTOR(oArea AS Workarea)
 		_oArea := oArea
 
 	/// <inheritdoc />
@@ -64,7 +64,7 @@ CLASS XSharp.RDD.BaseIndex IMPLEMENTS IOrder
 		CASE DBOI_FULLPATH 	
             RETURN ""
         CASE DBOI_FILEHANDLE
-            RETURN Intptr.Zero
+            RETURN IntPtr.Zero
 		CASE DBOI_ISCOND 	
 		CASE DBOI_ISDESC 	
         CASE DBOI_UNIQUE

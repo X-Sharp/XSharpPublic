@@ -10,10 +10,10 @@
     <Dialect>Core</Dialect>
     <OutputName>XSharp.Core</OutputName>
     <AZ>true</AZ>
-    <CS>false</CS>
+    <CS>true</CS>
     <LB>false</LB>
     <OVF>false</OVF>
-    <Unsafe>true</Unsafe>
+    <Unsafe>false</Unsafe>
     <INS>false</INS>
     <NS>false</NS>
     <VulcanCompatibleResources>True</VulcanCompatibleResources>

@@ -395,7 +395,7 @@ CLASS xPorterUI INHERIT System.Windows.Forms.Form IMPLEMENTS IProgressBar
 		SELF:oTextSolutionName:Enabled := lIsApp
 		SELF:oCheckNotOverwriteProjectFiles:Enabled := lIsApp
 		SELF:oGenerateWindowsForms:Enabled := lIsApp
-		SELF:oButtonSource:Enabled := .not. SELF:oRadioFromClipboard:Checked
+//		SELF:oButtonSource:Enabled := .not. SELF:oRadioFromClipboard:Checked
 		TRY
 			DO CASE
 			CASE SELF:oRadioFromAef:Checked
@@ -488,6 +488,19 @@ CLASS xPorterUI INHERIT System.Windows.Forms.Form IMPLEMENTS IProgressBar
 				SELF:oTextSource:Text := oDlg:FileName
 			ENDIF
 
+		ELSEIF SELF:oRadioFromClipboard:Checked
+			LOCAL oDlg AS SaveFileDialog
+			oDlg := SaveFileDialog{}
+			oDlg:InitialDirectory := SELF:oTextOutput:Text
+			oDlg:Filter := "prg files (*.prg)|*.prg|All files (*.*)|*.*"
+			IF oDlg:ShowDialog() == DialogResult.OK
+				LOCAL oFile AS FileInfo
+				TRY
+					oFile := FileInfo{oDlg:FileName}
+					SELF:oTextOutput:Text := oFile:DirectoryName
+					SELF:oTextSource:Text := oFile:Name
+				END TRY
+			ENDIF
 		ELSE
 			LOCAL oDlg AS FolderBrowserDialog
 			oDlg := FolderBrowserDialog{}

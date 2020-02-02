@@ -46,6 +46,7 @@ FUNCTION Start(asParams AS STRING[]) AS VOID
     oOptions:CopyResourcesToProjectFolder := TRUE
     oOptions:ReplaceResourceDefinesWithValues := TRUE
     oOptions:CheckForIVarAndPropertyConflicts := FALSE
+    oOptions:IgnoreCodeInside_ifdef_endif := TRUE
 	xPorter.Options := oOptions
 
 	ReadIni()
@@ -256,6 +257,7 @@ STRUCTURE xPorterOptions
     EXPORT CopyResourcesToProjectFolder AS LOGIC
     EXPORT ReplaceResourceDefinesWithValues AS LOGIC
     EXPORT CheckForIVarAndPropertyConflicts AS LOGIC
+    EXPORT IgnoreCodeInside_ifdef_endif AS LOGIC
 END STRUCTURE
 
 INTERFACE IProgressBar
@@ -2177,15 +2179,31 @@ CLASS EntityDescriptor
 		LOCAL oCode AS OutputCode
 		oCode := OutputCode{}
 
+		LOCAL nIfDefLevel := 0 AS INT
 		LOCAL lCommentEntity := FALSE AS LOGIC
 		LOCAL oCurrentEntity := NULL AS EntityObject
 
 		FOREACH oLine AS LineObject IN SELF:_aLines
+			LOCAL cCallBack := NULL AS STRING
 			LOCAL lAddEndif := FALSE AS LOGIC
 			LOCAL cLine AS STRING
+			
+			IF xPorter.Options:IgnoreCodeInside_ifdef_endif .and. .not. (oLine:lInAmpersand .or. oLine:lInBlockComment)
+				LOCAL lDoIgnore := FALSE AS LOGIC
+				cLine := oLine:LineText:ToLowerInvariant()
+				IF cLine:StartsWith("#ifdef") .or. cLine:StartsWith("#ifndef")
+					nIfDefLevel ++
+					lDoIgnore := TRUE
+				ELSEIF cLine:StartsWith("#endif")
+					nIfDefLevel --
+					lDoIgnore := TRUE
+				END IF
+				IF nIfDefLevel > 0 .or. lDoIgnore
+					oCode:AddLine(cLine)
+					LOOP
+				END IF
+			END IF
 
-			LOCAL cCallBack := NULL AS STRING
-//			cLine := oLine:LineText
 			cLine := SELF:ConvertLine(oLine , REF cCallBack)
 			IF cCallBack != NULL
 //				oCode:AddLine("// " + cLine + " // XPORTER:DELEGATE")

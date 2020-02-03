@@ -692,7 +692,7 @@ namespace XSharp.MacroCompiler
 
             Require(Expect(TokenType.RCURLY) || AllowMissingSyntax, ErrorCode.Expected, "}");
 
-            return new Codeblock(p, l);
+            return new Codeblock(p, new ReturnStmt(l));
         }
 
         internal Codeblock ParseMacro()
@@ -703,7 +703,7 @@ namespace XSharp.MacroCompiler
 
             var l = ParseExprList();
             if (l != null)
-                return RequireEnd(new Codeblock(null, l), ErrorCode.Unexpected, Lt());
+                return RequireEnd(new Codeblock(null, new ReturnStmt(l)), ErrorCode.Unexpected, Lt());
 
             return null;
         }

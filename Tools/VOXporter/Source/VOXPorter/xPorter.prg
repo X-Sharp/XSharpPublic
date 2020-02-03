@@ -2190,11 +2190,13 @@ CLASS EntityDescriptor
 			
 			IF xPorter.Options:IgnoreCodeInside_ifdef_endif .and. .not. (oLine:lInAmpersand .or. oLine:lInBlockComment)
 				LOCAL lDoIgnore := FALSE AS LOGIC
-				cLine := oLine:LineText:ToLowerInvariant()
-				IF cLine:StartsWith("#ifdef") .or. cLine:StartsWith("#ifndef")
+				LOCAL cLower AS STRING
+				cLine := oLine:LineText
+				cLower := cLine:Trim():ToLowerInvariant()
+				IF cLower:StartsWith("#ifdef") .or. cLower:StartsWith("#ifndef")
 					nIfDefLevel ++
 					lDoIgnore := TRUE
-				ELSEIF cLine:StartsWith("#endif")
+				ELSEIF cLower:StartsWith("#endif")
 					nIfDefLevel --
 					lDoIgnore := TRUE
 				END IF

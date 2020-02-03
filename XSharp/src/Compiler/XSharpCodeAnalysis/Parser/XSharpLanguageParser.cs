@@ -180,7 +180,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             XSharpPreprocessor pp = null;
             XSharpParserRuleContext tree = new XSharpParserRuleContext();
             XSharpParser parser = null;
-            bool hasPragmas = false;
             var parseErrors = ParseErrorData.NewBag();
             try
             {
@@ -201,7 +200,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 t += ts;
                 Debug.WriteLine("Lexing completed in {0}",ts);
             }
-#endif
+#endif  
             // do not pre-process when there were lexer exceptions
             if (lexer != null && parseErrors.Count == 0)
             {
@@ -209,21 +208,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     parseErrors.Add(e);
                 }
-                hasPragmas = lexer.HasPragmas;
                 BufferedTokenStream ppStream = null;
                 try
                 {
                     // Check for #pragma in the lexerTokenStream
                     _lexerTokenStream.Fill();
 
-                    if (hasPragmas)
-                    {
-                        var pragmaTokens = _lexerTokenStream.FilterForChannel(0, _lexerTokenStream.Size - 1, XSharpLexer.PRAGMACHANNEL);
-                        foreach (var pragmaToken in pragmaTokens)
-                        {
-                            parseErrors.Add(new ParseErrorData(pragmaToken, ErrorCode.WRN_PreProcessorNoPragma, "#pragma not (yet) supported, command is ignored"));
-                        }
-                    }
                     if (!_options.MacroScript)
                     {
                         pp = new XSharpPreprocessor(lexer, _lexerTokenStream, _options, _fileName, _text.Encoding, _text.ChecksumAlgorithm, parseErrors);
@@ -412,7 +402,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 result.XTokens = _lexerTokenStream;
                 result.XPPTokens = _preprocessorTokenStream;
                 result.HasDocComments = lexer.HasDocComments;
-                result.HasPragmas = lexer.HasPragmas;
                 if (!_options.MacroScript  && ! hasErrors)
                 {
                     result.InitProcedures = treeTransform.GlobalEntities.InitProcedures;

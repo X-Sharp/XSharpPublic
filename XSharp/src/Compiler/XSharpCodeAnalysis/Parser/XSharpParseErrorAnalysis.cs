@@ -262,7 +262,42 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 _parseErrors.Add(errdata);
             }
         }
-		
+
+        public override void ExitPragma([NotNull] XSharpParser.PragmaContext context)
+        {
+            ErrorCode error = ErrorCode.Unknown;
+            IToken errortoken = null;
+            switch (context.I1.Text.ToLower())
+            {
+                case "warning":
+                case "warnings":
+                    break;
+                default:
+                    error = ErrorCode.WRN_IllegalPragma;
+                    errortoken = context.I1;
+                    break;
+            }
+            if (error == ErrorCode.Unknown)
+            {
+                switch (context.I2.Text.ToLower())
+                {
+                    case "disable":
+                    case "restore":
+                        break;
+                    default:
+                        error = ErrorCode.WRN_IllegalPPWarning;
+                        errortoken = context.I2;
+                        break;
+                }
+            }
+            // C# does not validate the error codes, so we will not do that either.
+            context.IsValid = (error == ErrorCode.Unknown);
+            if (!context.IsValid)
+            {
+                var errdata = new ParseErrorData(errortoken, error, errortoken.Text);
+                _parseErrors.Add(errdata);
+            }
+        }
         public override void ExitLiteralValue([NotNull] XSharpParser.LiteralValueContext context)
         {
             if (context.Token.Type == XSharpLexer.INCOMPLETE_STRING_CONST)

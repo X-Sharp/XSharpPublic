@@ -12546,7 +12546,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot restore warning &apos;CS{0}&apos; because it was disabled globally.
+        ///   Looks up a localized string similar to Cannot restore warning &apos;XS{0}&apos; because it was disabled globally.
         /// </summary>
         internal static string WRN_BadRestoreNumber {
             get {
@@ -14267,7 +14267,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Expected disable or restore.
+        ///   Looks up a localized string similar to Expected &apos;disable&apos; or &apos;restore&apos;.
         /// </summary>
         internal static string WRN_IllegalPPWarning {
             get {
@@ -14276,7 +14276,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Expected disable or restore after #pragma warning.
+        ///   Looks up a localized string similar to Expected &apos;disable&apos; or &apos;restore&apos; after #pragma warning.
         /// </summary>
         internal static string WRN_IllegalPPWarning_Title {
             get {

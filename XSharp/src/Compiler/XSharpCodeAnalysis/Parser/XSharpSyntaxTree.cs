@@ -44,9 +44,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         XPCall = 1 << 2,
         XGenerated = 1 << 3,
         XVoIsDim = 1 << 4,
-        XPragmas = 1 << 5,
-        XDocComments = 1 << 6,
-        XNeedsProcessing = 1 << 7,
+        XDocComments = 1 << 5,
+        XNeedsProcessing = 1 << 6,
     }
 
     internal abstract partial class CSharpSyntaxNode
@@ -108,11 +107,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             internal set => xflags = xflags.SetFlag(XNodeFlags.XDocComments, value);
         }
 
-        public bool HasPragmas
-        {
-            get { return xflags.HasFlag(XNodeFlags.XPragmas); }
-            internal set { xflags = xflags.SetFlag(XNodeFlags.XPragmas, value); }
-        }
         public XSharpParser.SourceContext XSource => XNode as XSharpParser.SourceContext;
         public Dictionary<String, FieldDeclarationSyntax> LiteralSymbols { get; internal set; } = new Dictionary<string, FieldDeclarationSyntax>();
         public Dictionary<String, Tuple<string, FieldDeclarationSyntax>> LiteralPSZs { get; internal set; } =new Dictionary<string, Tuple<string, FieldDeclarationSyntax>>();
@@ -205,7 +199,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax
         public Dictionary<string, SourceText> IncludedFiles => internalUnit.IncludedFiles;
         public bool NeedsProcessing => internalUnit.NeedsProcessing;
         public bool HasDocComments => internalUnit.HasDocComments;
-        public bool HasPragmas => internalUnit.HasPragmas;
         internal Dictionary<String, InternalSyntax.FieldDeclarationSyntax> LiteralSymbols => internalUnit.LiteralSymbols;
         internal Dictionary<String, Tuple<string, InternalSyntax.FieldDeclarationSyntax> > LiteralPSZs => internalUnit.LiteralPSZs;
     }

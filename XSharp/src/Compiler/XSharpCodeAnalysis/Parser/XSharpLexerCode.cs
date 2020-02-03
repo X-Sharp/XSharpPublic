@@ -70,7 +70,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         public bool IsScript { get; set; }
         public bool IsMacroLexer { get; set; }
         // Properties that show what the contents of the Lexer buffer was
-        public bool HasPragmas { get; private set; }
         public bool HasPreprocessorTokens { get; private set; }
         public bool HasPPDefines { get; private set; }
         public bool HasPPIfdefs { get; private set; }
@@ -364,9 +363,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 else if (StartOfLine(LastToken) && text.Equals("PRAGMA", StringComparison.OrdinalIgnoreCase))
                 {
                     parseType(PRAGMA);
-                    parseToEol();
-                    _tokenChannel = PRAGMACHANNEL;
-                    HasPragmas = true;
                 }
             }
         }
@@ -1397,7 +1393,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 case PARTIAL:
                 case SEALED:
                 case ABSTRACT:
-                    // XBase++ modifiers
+                // XBase++ modifiers
                 case FREEZE:
                 case FINAL:
                 case INTRODUCE:
@@ -1548,7 +1544,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 case XSharpLexer.Hidden: // 1
                 case XSharpLexer.XMLDOCCHANNEL:  // 2
                 case XSharpLexer.DEFOUTCHANNEL: // 3
-                case XSharpLexer.PRAGMACHANNEL: // 5
                     return false;
                 case XSharpLexer.PREPROCESSORCHANNEL:  // 4
                 case TokenConstants.DefaultChannel: // 0

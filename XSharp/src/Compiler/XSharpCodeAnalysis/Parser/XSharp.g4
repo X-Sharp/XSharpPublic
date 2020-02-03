@@ -65,6 +65,7 @@ entity              : namespace_
                     | constructor               // Constructor Class xxx syntax
                     | destructor                // Destructor Class xxx syntax
                     | filewidememvar            // memvar declared at file level
+                    | pragma                    // #pragma warning
                     | eos                       // Blank Lines between entities
                     ;
 
@@ -73,6 +74,9 @@ eos                 : EOS+
                     ;
 
 
+pragma                : PRAGMA I1=ID I2=ID      // WARNING      DISABLE | RESTORE
+                        (Tokens += (INT_CONST | ID) (COMMA Tokens += (INT_CONST | ID))* )?
+                      ;
 
 
 funcproc              : (Attributes=attributes)? (Modifiers=funcprocModifiers)?   
@@ -385,6 +389,7 @@ classmember         : Member=method                                 #clsmethod
                     | Member=event_                                 #nestedEvent
                     | Member=interface_                             #nestedInterface
                     | Member=vodllmethod                            #clsdllmethod
+                    | Member=pragma                                 #clspragma
                     | eos                                           #clseos// Blank Lines between entities
                     ;
 
@@ -1118,6 +1123,7 @@ xppclassMember      : Member=xppmethodvis                           #xppclsvisib
                     | Member=xppinlineMethod                        #xppclsinlinemethod
                     | Member=xppdeclareMethod                       #xppclsdeclaremethod
                     | Member=xppproperty                            #xppclsproperty
+                    | Member=pragma                                 #xpppragma
                     ;
 
 xppmethodvis        : Vis=xppvisibility COLON eos
@@ -1240,6 +1246,7 @@ foxclassmember      : Member=foxclassvars          #foxclsvars
                     | Member=foxpemcomattrib       #foxpemcom
                     | Member=constructor           #foxclsctor
                     | Member=destructor            #foxclsdtor
+                    | Member=pragma                #foxpragma
                     ;
                     // do we also add support for events, operators, nested classes etc in the foxpro classes ?
                     //| Member=event_                #foxevent

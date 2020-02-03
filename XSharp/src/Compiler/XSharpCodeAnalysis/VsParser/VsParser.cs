@@ -35,15 +35,7 @@ namespace XSharp.Parser
         private static void GetLexerErrors(XSharpLexer lexer, BufferedTokenStream tokenStream, List<ParseErrorData> parseErrors)
         {
             // get lexer errors
-            if (lexer.HasPragmas)
-            {
-                var pragmaTokens = tokenStream.FilterForChannel(0, tokenStream.Size - 1, XSharpLexer.PRAGMACHANNEL);
-                foreach (var pragmaToken in pragmaTokens)
-                {
-                    parseErrors.Add(new ParseErrorData(pragmaToken, ErrorCode.WRN_PreProcessorWarning, "#pragma not (yet) supported, command is ignored"));
-                }
-            }
-            foreach (var error in lexer.LexErrors)
+              foreach (var error in lexer.LexErrors)
             {
                 parseErrors.Add(error);
             }

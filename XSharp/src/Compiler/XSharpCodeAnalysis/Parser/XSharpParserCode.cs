@@ -375,6 +375,11 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public StatementBlockContext Statements { get { return StmtBlk; } }
         }
 
+        public partial class PragmaContext
+        {
+            public bool IsValid;
+        }
+
         public partial class FuncprocContext : IEntityWithBodyContext, IGlobalEntityContext
         {
 

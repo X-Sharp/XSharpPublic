@@ -14,6 +14,17 @@ namespace XSharp.MacroCompiler.Syntax
         internal Token Token = null;
         internal Node(Token t) { Token = t; }
     }
+    abstract internal partial class Stmt : Node
+    {
+        internal Stmt(Token t) : base(t) { }
+    }
+    internal partial class ReturnStmt : Stmt
+    {
+        internal Expr Expr;
+        internal ReturnStmt(Token t, Expr e) : base(t) { Expr = e; }
+        internal ReturnStmt(Expr e) : this(e.Token, e) { }
+        public override string ToString() { return "RETURN (" + Expr.ToString() + ")"; }
+    }
     abstract internal partial class Expr : Node
     {
         internal Expr(Token t) : base(t) { }
@@ -267,8 +278,8 @@ namespace XSharp.MacroCompiler.Syntax
     internal partial class Codeblock : Node
     {
         internal IList<IdExpr> Params;
-        internal ExprList Body;
-        internal Codeblock(IList<IdExpr> p, ExprList l) : base(null) { Params = p; Body = l; }
+        internal Stmt Body;
+        internal Codeblock(IList<IdExpr> p, Stmt l) : base(null) { Params = p; Body = l; }
         string ParamsAsString() { if (Params == null) return ""; var sb = new StringBuilder(); foreach (var p in Params) { if (sb.Length > 0) sb.Append(", "); sb.Append(p.ToString()); } return sb.ToString(); }
         public override string ToString() { return "{|" + ParamsAsString() + "|" + Body.ToString() + "}"; }
     }

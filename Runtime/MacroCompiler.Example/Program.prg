@@ -329,10 +329,10 @@ BEGIN NAMESPACE MacroCompilerTest
 
     FUNCTION RunTests(mc AS XSharp.Runtime.MacroCompiler) AS VOID
         Console.WriteLine("Running tests ...")
+
+        TestParse(mc, e"{|a,b| +a[++b] += 100, a[2]}", "{|a, b|RETURN (((+a((++b)))+='100'), a('2'))}")
+
         TestMacro(mc, e"{|v|(v := upper(v), left(v,3))}", Args("ABCDE"), "ABC", typeof(STRING))
-
-
-        TestParse(mc, e"{|a,b| +a[++b] += 100, a[2]}", "{|a, b|((+a((++b)))+='100'), a('2')}")
         TestMacro(mc, e"{|a,b| asdgfafd(123) }", Args(), NULL, NULL,ErrorCode.NotAMethod)
 
         mc:Options:UndeclaredVariableResolution := VariableResolution.Error
@@ -349,7 +349,6 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, e"{|o| eval({|a| eval({|q|q*q},a)+1 },o) }", Args(5), 26, typeof(INT))
         TestMacro(mc, e"{|o| eval( iif(o, {||42},{||-42})) }", Args(TRUE), 42, typeof(INT))
         TestMacro(mc, e"{|o| eval( iif(o, {||42},{||-42})) }", Args(FALSE), -42, typeof(INT))
-        
         
         mc:Options:UndeclaredVariableResolution := VariableResolution.TreatAsFieldOrMemvar
         TestMacro(mc, e"{|| eval({||true}) }", Args(), true, typeof(logic))
@@ -760,6 +759,10 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, e"{|| M->NAME := \"Nikos\"}", Args(), "MemVarPut(NAME):Nikos", typeof(STRING))
         TestMacro(mc, e"{|| @@M->NAME}", Args(), "FieldGet(M,NAME)", typeof(STRING))
         TestMacro(mc, e"{|| @@M->NAME := \"Nikos\"}", Args(), "FieldSet(M,NAME):Nikos", typeof(STRING))
+        TestMacro(mc, e"{|| BASE->NIKOS == BASE->NIKOS}", Args(), true, typeof(logic))
+        TestMacro(mc, e"{|| (BASE)->(NIKOS) == (BASE)->(NIKOS)}", Args(), true, typeof(logic))
+        TestMacro(mc, e"{|| (BASE)->(NIKOS)}", Args(), "BASE->FieldGet(NIKOS)", typeof(string))
+        TestMacro(mc, e"{|a| a := (BASE)->(NIKOS)}", Args(), "BASE->FieldGet(NIKOS)", typeof(string))
 
         mc:Options:UndeclaredVariableResolution := VariableResolution.TreatAsFieldOrMemvar
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___VarGet, "MyVarGet")
@@ -810,6 +813,7 @@ BEGIN NAMESPACE MacroCompilerTest
         ELSE
             TotalFails += 1
             Console.WriteLine("[FAIL] ({0} != {1})", res, val)
+            wait
         END
         RETURN FALSE
 

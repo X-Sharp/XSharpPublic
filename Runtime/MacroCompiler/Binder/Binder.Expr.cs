@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -33,6 +33,14 @@ namespace XSharp.MacroCompiler
                     if ( b != null ) nodes[i] = (T)b;
                 }
             }
+        }
+
+        internal void BindStmt<T>(ref T node) where T : Syntax.Stmt
+        {
+            StmtStack.Push(node);
+            var b = node?.Bind(this);
+            if (b != null) node = (T)b;
+            StmtStack.Pop();
         }
 
         internal Syntax.Expr Cache(ref Syntax.Expr expr)

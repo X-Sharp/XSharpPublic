@@ -97,11 +97,11 @@ CLASS XSharp.OleDateTime
 	OVERRIDE METHOD ToString() AS STRING
 		RETURN dt:ToString()
     /// <exclude/>
-	STATIC OPERATOR IMPLICIT(odt AS OleDateTime) AS DateTime
+	STATIC OPERATOR IMPLICIT(oDt AS OleDateTime) AS DateTime
 		RETURN oDt:DateTime
     /// <exclude/>
-	STATIC OPERATOR IMPLICIT(odt AS DateTime) AS OleDateTime
-		RETURN OleDateTime{oDT}
+	STATIC OPERATOR IMPLICIT(oDt AS DateTime) AS OleDateTime
+		RETURN OleDateTime{oDt}
 
 		
 END CLASS

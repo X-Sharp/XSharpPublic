@@ -13,7 +13,7 @@ USING System.Reflection
 /// <seealso cref='T:XSharp.XPP.XppCollations' />
 /// <seealso cref='M:XSharp.XPP.Functions.SetCollationTable(XSharp.__Usual,XSharp.__Usual)' />
 FUNCTION SetCollation(nCollation) AS LONG
-    LOCAL nOld := SET(Set.Collation) AS LONG
+    LOCAL nOld := @@Set(Set.Collation) AS LONG
     IF PCount() > 0 .AND. IsNumeric(nCollation)
         SetCollationTable(nCollation)
     ENDIF
@@ -36,14 +36,14 @@ FUNCTION SetCollationTable(nCollation, aTable) AS ARRAY
             aCollation := aTable
         ENDIF
     ELSE
-        liEnum := SET(Set.Collation) 
+        liEnum := @@Set(Set.Collation) 
     ENDIF
     IF liEnum < XppCollations.Ascii .OR. liEnum > XppCollations.User
         liEnum := XppCollations.Ascii
     ENDIF
     VAR nEnum := (XppCollations) liEnum
     LOCAL aBytes := XSharp.RuntimeState.CollationTable AS BYTE[]
-    IF liEnum != SET(Set.Collation) 
+    IF liEnum != @@Set(Set.Collation) 
         XSharp.RuntimeState.CollationTable := NULL
         XSharp.RuntimeState.CollationMode  := CollationMode.Windows
 //        IF nEnum == XppCollations.System
@@ -54,9 +54,9 @@ FUNCTION SetCollationTable(nCollation, aTable) AS ARRAY
             LOCAL tableName := nEnum:ToString() AS STRING
             IF nEnum == XppCollations.System
                 IF SetAnsi()
-                    tableName := "Ansi"+tablename
+                    tableName := "Ansi"+tableName
                 ELSE
-                    tableName := "Oem"+tablename
+                    tableName := "Oem"+tableName
                 ENDIF
             ENDIF
             LOCAL oType := typeof(XSharp.XPP.Collations) AS System.Type
@@ -64,8 +64,8 @@ FUNCTION SetCollationTable(nCollation, aTable) AS ARRAY
             IF oProp != NULL
                 aBytes := (BYTE[]) oProp:GetValue(NULL)
                 XSharp.RuntimeState.CollationTable := aBytes
-                XSharp.RuntimeState.CollationMode  := CollationMode.XPP
-                SET(Set.Collation, liEnum)
+                XSharp.RuntimeState.CollationMode  := CollationMode.Xpp
+                @@Set(Set.Collation, liEnum)
             ENDIF
 //         ENDIF
     ENDIF
@@ -77,12 +77,12 @@ FUNCTION SetCollationTable(nCollation, aTable) AS ARRAY
     ELSE
         // Create aCollation from Windows Sort Routine
         aCollation := ArrayNew(256)
-        FOR VAR nI := 1 TO alen(aCollation)
-            aCollation[nI] := chr((DWORD) nI-1)
+        FOR VAR nI := 1 TO ALen(aCollation)
+            aCollation[nI] := Chr((DWORD) nI-1)
         NEXT
         ASort(aCollation)
-        FOR VAR nI := 1 TO alen(aCollation)
-            aCollation[nI] := asc(aCollation[nI])
+        FOR VAR nI := 1 TO ALen(aCollation)
+            aCollation[nI] := Asc(aCollation[nI])
         NEXT
         
     ENDIF

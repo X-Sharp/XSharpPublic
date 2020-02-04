@@ -333,8 +333,8 @@ BEGIN NAMESPACE MacroCompilerTest
         TestParse(mc, e"{|a,b| +a[++b] += 100, a[2]}", "{|a, b|RETURN (((+a((++b)))+='100'), a('2'))}")
 
         TestMacro(mc, e"{|v|(v := upper(v), left(v,3))}", Args("ABCDE"), "ABC", typeof(STRING))
-        TestMacro(mc, e"{|l, v|iif (l, (v := upper(v), left(v,3)), (v := lower(v), left(v,4)) }", Args(TRUE, "ABCDE"), "ABC", typeof(STRING))
-        TestMacro(mc, e"{|l, v|iif (l, (v := upper(v), left(v,3)), (v := lower(v), left(v,4)) }", Args(FALSE, "ABCDE"), "abcd", typeof(STRING))
+        TestMacro(mc, e"{|l, v|iif (l, (v := upper(v), left(v,3)), (v := lower(v), left(v,4))) }", Args(TRUE, "ABCDE"), "ABC", typeof(STRING))
+        TestMacro(mc, e"{|l, v|iif (l, (v := upper(v), left(v,3)), (v := lower(v), left(v,4))) }", Args(FALSE, "ABCDE"), "abcd", typeof(STRING))
         TestMacro(mc, e"{|a,b| asdgfafd(123) }", Args(), NULL, NULL,ErrorCode.NotAMethod)
 
         mc:Options:UndeclaredVariableResolution := VariableResolution.Error

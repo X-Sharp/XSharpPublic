@@ -516,8 +516,8 @@ PROPERTY SQLString AS STRING
 	SET
 	LOCAL cRet  AS STRING
 
-	//cRet := SqlDeleteWhiteSpace(VALUE )
-	cRet := VALUE
+	//cRet := SqlDeleteWhiteSpace(value )
+	cRet := value
 	IF ( !lPrepFlag )
 		SELF:cStatement := cRet
 	ELSE

@@ -601,8 +601,8 @@ METHOD __GetOLEObject(symMethod AS SYMBOL) AS DataWindow STRICT
 		ENDIF
 		oOle:RePaint()
 	ELSE
-		MessageBox(0, String2Psz(ResourceString{IDS_NOINSERT}:VALUE),;
-			String2Psz(ResourceString{IDS_OLERUNTIME}:VALUE),;
+		MessageBox(0, String2Psz(ResourceString{IDS_NOINSERT}:Value),;
+			String2Psz(ResourceString{IDS_OLERUNTIME}:Value),;
 			_OR(MB_OK, MB_ICONHAND))
 	ENDIF
 #endif

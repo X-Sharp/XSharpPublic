@@ -96,6 +96,10 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
             public ExpressionContext Expr => _Exprs[_Exprs.Count - 1];
         }
+        public partial class PragmaContext
+        {
+            public bool IsValid;
+        }
 
 #if !VSPARSER
         public interface IPartialPropertyContext : IEntityContext
@@ -375,11 +379,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public StatementBlockContext Statements { get { return StmtBlk; } }
         }
 
-        public partial class PragmaContext
-        {
-            public bool IsValid;
-        }
-
         public partial class FuncprocContext : IEntityWithBodyContext, IGlobalEntityContext
         {
 
@@ -505,7 +504,15 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public String ShortName => ParentName + Key.Text;
             public StatementBlockContext Statements => StmtBlk;
         }
-
+        public partial class PropertyLineAccessorContext : IEntityContext
+        {
+            EntityData data = new EntityData();
+            public EntityData Data => data;
+            public ParameterListContext Params => null;
+            public DatatypeContext ReturnType => null;
+            public String Name => ParentName + Key.Text;
+            public String ShortName => ParentName + Key.Text;
+        }
         public partial class ConstructorContext : IEntityWithBodyContext
         {
             EntityData data = new EntityData();

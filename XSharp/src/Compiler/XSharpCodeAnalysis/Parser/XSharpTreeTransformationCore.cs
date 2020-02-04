@@ -2123,7 +2123,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             s = s.Replace("Context","");
             Debug.WriteLine("{0}<= ({1},{2}) {3} '{4}'",new string(' ',context.Depth()),context.Start.Line,context.Start.Column,s,context.Start.Text);
 #endif
-            if (context is XP.IEntityContext)
+            if (context is XP.IEntityContext && CurrentEntity == context)
                 Entities.Pop();
         }
         #endregion
@@ -7606,13 +7606,29 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitIdentifier([NotNull] XP.IdentifierContext context)
         {
             // Value in a property accessor will be converted to "value" but only when not part of a access member
-            if (CurrentEntity is XP.PropertyContext && context.Start.Type == XP.VALUE)
+            if (CurrentEntity is XP.PropertyLineAccessorContext || CurrentEntity is XP.PropertyAccessorContext)
             {
-                // something like SELF:Value should not be lowercased
-                if (!(context.Parent is XP.AccessMemberContext))
+                int key = 0;
+                if (CurrentEntity is XP.PropertyLineAccessorContext plac)
                 {
-                    context.Put(SyntaxFactory.MakeIdentifier("value"));
-                    return;
+                    key = plac.Key.Type;
+                }
+                else if (CurrentEntity is XP.PropertyAccessorContext pac)
+                {
+                    key = pac.Key.Type;
+                }
+                // Only inside SET accessor we make sure that "value" is lowercase
+                if (key == XSharpParser.SET)
+                {
+                    // something like SELF:Value should not be lowercased
+                    if (!(context.Parent is XP.AccessMemberContext))
+                    {
+                        if (String.Compare(context.Start.Text, "value", true) == 0)
+                        {
+                            var token = context.Start as XSharpToken;
+                            token.Text = token.Text.ToLower();
+                        }
+                    }
                 }
             }
             context.Put(context.Start.SyntaxIdentifier());

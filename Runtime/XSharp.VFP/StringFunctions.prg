@@ -86,7 +86,7 @@ FUNCTION JustStem(cPath AS STRING)
     ENDIF
     VAR result := Path.GetFileNameWithoutExtension(cPath)
     RETURN result
-
+#ifdef NOTREADY
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/at/*" />
 FUNCTION At(cSearchExpression AS STRING, cExpressionSearched AS STRING, nOccurrence := 1 AS DWORD) AS DWORD
@@ -122,3 +122,4 @@ FUNCTION AtC(cSearchExpression AS STRING, cExpressionSearched AS STRING, nOccurr
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/atcc/*" />
 FUNCTION AtCC(cSearchExpression AS STRING, cExpressionSearched AS STRING, nOccurrence := 1 AS DWORD) AS DWORD
 	RETURN AtC(cSearchExpression, cExpressionSearched, nOccurrence)
+#endif

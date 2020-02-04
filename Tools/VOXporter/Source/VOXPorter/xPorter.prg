@@ -45,6 +45,8 @@ FUNCTION Start(asParams AS STRING[]) AS VOID
 	oOptions:UseXSharpRuntime := TRUE
     oOptions:CopyResourcesToProjectFolder := TRUE
     oOptions:ReplaceResourceDefinesWithValues := TRUE
+    oOptions:CheckForIVarAndPropertyConflicts := FALSE
+    oOptions:IgnoreCodeInside_ifdef_endif := TRUE
 	xPorter.Options := oOptions
 
 	ReadIni()
@@ -196,7 +198,7 @@ CLASS WarningDialog INHERIT Form
 		IF .NOT. SELF:lAllowClose .AND. Control.ModifierKeys != Keys.Control
 			e:Cancel := TRUE
 			SELF:oTimer:Stop()
-			MessageBox.Show("Please read this important information!" , ToolName , MEssageBoxButtons.OK , MessageBoxIcon.Exclamation)
+			ShowMessage("Please read this important information!")
 			SELF:oTimer:Interval := 500
 			SELF:oTimer:Start()
 		ENDIF
@@ -230,7 +232,7 @@ CLASS VOFolder
 		IF .NOT. lChecked
 			lChecked := TRUE
 			IF .NOT. VOFolder.IsValid()
-				MessageBox.Show(e"Could not find VO installation folder, macros in code like %cavosamplesrootdir% will not be translated directly.\r\n\r\nYou can manually set the VO folder in xPorter.ini." , ToolName)
+				ShowWarning(e"Could not find VO installation folder, macros in code like %cavosamplesrootdir% will not be translated directly.\r\n\r\nYou can manually set the VO folder in xPorter.ini.")
 			END IF
 		END IF
 	RETURN _scFolder
@@ -255,6 +257,7 @@ STRUCTURE xPorterOptions
     EXPORT CopyResourcesToProjectFolder AS LOGIC
     EXPORT ReplaceResourceDefinesWithValues AS LOGIC
     EXPORT CheckForIVarAndPropertyConflicts AS LOGIC
+    EXPORT IgnoreCodeInside_ifdef_endif AS LOGIC
 END STRUCTURE
 
 INTERFACE IProgressBar
@@ -271,6 +274,7 @@ CLASS xPorter
 	STATIC EXPORT ExportToVS := TRUE AS LOGIC
 	STATIC EXPORT NewKeywordsInXSharp AS Dictionary<STRING,STRING>
 
+	STATIC EXPORT ExportingSingleFile := FALSE AS LOGIC
 
 	STATIC PROPERTY OverWriteProjectFiles AS LOGIC AUTO
 	STATIC PROPERTY GenerateWinForms AS LOGIC AUTO
@@ -335,7 +339,7 @@ CLASS xPorter
 		xPorter.uiForm:SetProgressText(cMessage + " " + cMessage2)
 
 
-	STATIC METHOD xPort_AppFromFolder(cSourceFolder AS STRING , cOutputFolder AS STRING , cSolutionName AS STRING, cAppName AS STRING) AS VOID
+	STATIC METHOD xPort_AppFromFolder(cSourceFolder AS STRING , cOutputFolder AS STRING , cSolutionName AS STRING, cAppName AS STRING) AS LOGIC
 /*		LOCAL cName AS STRING
 		cName := cSourceFolder
 		LOCAL nIndex AS INT
@@ -353,11 +357,11 @@ CLASS xPorter
 		oApp:LoadFromFolder(cSourceFolder)
 
 		IF oApp:Loaded
-			oProject:xPort(cOutputFolder)
+			oProject:xPortApps(cOutputFolder)
 		ENDIF
-	RETURN
+	RETURN TRUE
 
-	STATIC METHOD xPort_AppFromAef(cAefFile AS STRING , cOutputFolder AS STRING , cSolutionName AS STRING , cAppName AS STRING) AS VOID
+	STATIC METHOD xPort_AppFromAef(cAefFile AS STRING , cOutputFolder AS STRING , cSolutionName AS STRING , cAppName AS STRING) AS LOGIC
 		xPorter.Reset()
 		xPorter.Options:IgnoreDuplicateDefines := FALSE
 
@@ -369,11 +373,11 @@ CLASS xPorter
 		oProject:AddApplication(oApp)
 
 		IF oApp:Loaded
-			oProject:xPort(cOutputFolder)
+			oProject:xPortApps(cOutputFolder)
 		ENDIF
-	RETURN
+	RETURN TRUE
 
-	STATIC METHOD xPort_AppsFromAefsInFolder(cSourceFolder AS STRING , cOutputFolder AS STRING , cSolutionName AS STRING) AS VOID
+	STATIC METHOD xPort_AppsFromAefsInFolder(cSourceFolder AS STRING , cOutputFolder AS STRING , cSolutionName AS STRING) AS LOGIC
 		xPorter.Reset()
 		xPorter.Options:IgnoreDuplicateDefines := FALSE
 
@@ -392,8 +396,118 @@ CLASS xPorter
 			oProject:AddApplication(oApp)
 		NEXT
 
-		oProject:xPort(cOutputFolder)
-	RETURN
+		oProject:xPortApps(cOutputFolder)
+	RETURN TRUE
+
+	STATIC METHOD xPort_PrgFromMef(cMefFile AS STRING , cOutputFolder AS STRING) AS LOGIC
+		xPorter.Reset()
+		Directory.CreateDirectory(cOutputFolder)
+
+		LOCAL oMef AS Fab_VO_Entities.FabMEFFile
+		LOCAL oEntity AS Fab_VO_Entities.FabMEFEntity
+		LOCAL oSource AS System.Text.StringBuilder
+
+		xPorter.uiForm:SetProgressText("Reading module " + cMefFile)
+
+		oSource := System.Text.StringBuilder{}
+		
+		oMef := Fab_VO_Entities.FabMEFFile{cMefFile}
+		IF xPorter.Options:SortEntitiesByName
+			oMef:SortByName()
+		ENDIF
+		LOCAL oModule := NULL AS ModuleDescriptor
+		LOCAL aCode AS STRING[]
+		LOCAL cCode AS STRING
+
+		oSource:Clear()
+		FOR LOCAL m := 0 AS INT UPTO oMef:EntityListList:Count - 1
+			oEntity := oMef:EntityListList[m]
+			oSource:Append(oEntity:Source + e"\r\n")
+		NEXT
+		cCode := oSource:ToString()
+		
+		aCode := cCode:ToString():Split(<STRING>{e"\r\n" , e"\r" , e"\n"} , StringSplitOptions.None)
+		oModule := ModuleDescriptor{oMef:Name , NULL , aCode}
+
+		oModule:SetDummyApp()
+		oModule:Analyze()
+
+		oMef:Close()
+
+		LOCAL oCode AS OutputCode
+		oCode := oModule:Generate()
+
+		IF oModule:Generated
+			xPorter.Message("  Generating module :" , oModule:Name)
+			File.WriteAllLines(cOutputFolder + "\" + oModule:PathValidName + ".prg" , oCode:GetContents() , System.Text.Encoding.Default)
+		END IF
+	RETURN TRUE
+
+	STATIC METHOD xPort_PrgFromPrg(cPrgFile AS STRING , cOutputFolder AS STRING) AS LOGIC
+		xPorter.Reset()
+		Directory.CreateDirectory(cOutputFolder)
+
+		xPorter.Message("Reading file " + cPrgFile)
+		
+		LOCAL oModule := NULL AS ModuleDescriptor
+		LOCAL aCode AS STRING[]
+		
+		aCode := File.ReadAllLines(cPrgFile, Encoding.Default)
+		oModule := ModuleDescriptor{FileInfo{cPrgFile}:Name , NULL , aCode}
+
+		oModule:SetDummyApp()
+		oModule:Analyze()
+
+		LOCAL oCode AS OutputCode
+		oCode := oModule:Generate()
+
+		IF oModule:Generated
+			xPorter.Message("  Generating module :" , oModule:Name)
+			File.WriteAllLines(cOutputFolder + "\" + oModule:PathValidName, oCode:GetContents() , System.Text.Encoding.Default)
+		END IF
+	RETURN TRUE
+
+	STATIC METHOD xPort_PrgFromClipboard(cPrgFile AS STRING , cOutputFolder AS STRING) AS LOGIC
+		xPorter.Reset()
+		Directory.CreateDirectory(cOutputFolder)
+
+		xPorter.Message("Reading code from CLipboard")
+		
+		LOCAL oModule := NULL AS ModuleDescriptor
+		LOCAL aCode AS STRING[]
+		
+		LOCAL cClipboard := "" AS STRING
+		TRY
+			IF Clipboard.ContainsText()
+				cClipboard := Clipboard.GetText()
+			END IF
+		END TRY
+		LOCAL cUpper AS STRING
+		cUpper := cClipboard:ToUpper()
+		IF .not. (cUpper:Contains("CLASS") .or. cUpper:Contains("PROC") .or. cUpper:Contains("FUNC") .or. cUpper:Contains("GLOBAL") .or. cUpper:Contains("DEFINE"))
+			ShowWarning("Clipboard does not contain VO code")
+			RETURN FALSE
+		ENDIF
+		
+		aCode := cClipboard:Split(<STRING>{e"\r\n" , e"\r" , e"\n"} , StringSplitOptions.None)
+		IF String.IsNullOrEmpty( FileInfo{cPrgFile}:Extension )
+			cPrgFile += ".prg"
+		END IF
+		oModule := ModuleDescriptor{cPrgFile , NULL , aCode}
+
+		oModule:SetDummyApp()
+		oModule:Analyze()
+
+		LOCAL oCode AS OutputCode
+		oCode := oModule:Generate()
+
+		IF oModule:Generated
+			xPorter.Message("  Generating module :" , oModule:Name)
+			File.WriteAllLines(cOutputFolder + "\" + oModule:PathValidName, oCode:GetContents() , System.Text.Encoding.Default)
+		END IF
+	RETURN TRUE
+
+
 
 	STATIC METHOD AllowEntity(oEntity AS EntityObject , oModule AS ModuleDescriptor) AS LOGIC
 		IF xPorter.Options:IgnoreDuplicateDefines
@@ -464,14 +578,13 @@ CLASS VOProjectDescriptor
 		cName := cName:ToUpper()
 		FOREACH oApp AS ApplicationDescriptor IN SELF:_aApplications
 			IF oApp:Name:ToUpper() == cName
-//				MessageBox.Show(oApp:Name)
 				RETURN oApp
 			END IF
 		NEXT
 	RETURN NULL
 
 
-	METHOD xPort(cOutputFolder AS STRING) AS VOID
+	METHOD xPortApps(cOutputFolder AS STRING) AS VOID
 		SELF:_cProjectFolder := cOutputFolder
 
 		Directory.CreateDirectory(cOutputFolder)
@@ -1602,6 +1715,11 @@ CLASS ModuleDescriptor
 	PROPERTY IsDesignerChild AS LOGIC AUTO
 
 	PROPERTY Designers AS List<Designer> GET SELF:_aDesigners
+	
+	METHOD SetDummyApp() AS VOID
+		SELF:_oApp := ApplicationDescriptor{"Dummy",NULL}
+	RETURN
+	
 
 	METHOD HasDefine(cDefine AS STRING) AS LOGIC
 	RETURN SELF:_aDefines:ContainsKey(cDefine)
@@ -1955,7 +2073,7 @@ CLASS ClassDescriptor
 				oCode:AddLine(e"")
 				oCode:AddLine(IIF(lPartial , "PARTIAL " , "") + "CLASS " + SELF:_cName + " INHERIT App")
 			ELSE
-				IF SELF:_oModule:Application:ClassDeclarationExists(SELF:Name)
+				IF SELF:_oModule:Application:ClassDeclarationExists(SELF:Name) .or. xPorter.ExportingSingleFile
 					oCode:AddLine(IIF(lPartial , "PARTIAL " , "") + "CLASS " + SELF:_cName)
 				ELSE
 					oCode:AddLine("#warning The following method did not include a CLASS declaration")
@@ -2061,15 +2179,33 @@ CLASS EntityDescriptor
 		LOCAL oCode AS OutputCode
 		oCode := OutputCode{}
 
+		LOCAL nIfDefLevel := 0 AS INT
 		LOCAL lCommentEntity := FALSE AS LOGIC
 		LOCAL oCurrentEntity := NULL AS EntityObject
 
 		FOREACH oLine AS LineObject IN SELF:_aLines
+			LOCAL cCallBack := NULL AS STRING
 			LOCAL lAddEndif := FALSE AS LOGIC
 			LOCAL cLine AS STRING
+			
+			IF xPorter.Options:IgnoreCodeInside_ifdef_endif .and. .not. (oLine:lInAmpersand .or. oLine:lInBlockComment)
+				LOCAL lDoIgnore := FALSE AS LOGIC
+				LOCAL cLower AS STRING
+				cLine := oLine:LineText
+				cLower := cLine:Trim():ToLowerInvariant()
+				IF cLower:StartsWith("#ifdef") .or. cLower:StartsWith("#ifndef")
+					nIfDefLevel ++
+					lDoIgnore := TRUE
+				ELSEIF cLower:StartsWith("#endif")
+					nIfDefLevel --
+					lDoIgnore := TRUE
+				END IF
+				IF nIfDefLevel > 0 .or. lDoIgnore
+					oCode:AddLine(cLine)
+					LOOP
+				END IF
+			END IF
 
-			LOCAL cCallBack := NULL AS STRING
-//			cLine := oLine:LineText
 			cLine := SELF:ConvertLine(oLine , REF cCallBack)
 			IF cCallBack != NULL
 //				oCode:AddLine("// " + cLine + " // XPORTER:DELEGATE")
@@ -2693,3 +2829,12 @@ PROCEDURE SafeDirectoryDelete(cFolder AS STRING)
 	END TRY
 RETURN
 
+PROCEDURE ShowMessage(cText AS STRING)
+	MessageBox.Show(cText, ToolName , MessageBoxButtons.OK , MessageBoxIcon.Information)
+RETURN
+PROCEDURE ShowWarning(cText AS STRING)
+	MessageBox.Show(cText, ToolName , MessageBoxButtons.OK , MessageBoxIcon.Warning)
+RETURN
+PROCEDURE ShowError(cText AS STRING)
+	MessageBox.Show(cText, ToolName , MessageBoxButtons.OK , MessageBoxIcon.Error)
+RETURN

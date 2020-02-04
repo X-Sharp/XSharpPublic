@@ -14,7 +14,7 @@ USING System.Diagnostics
 BEGIN NAMESPACE XSharp.VFP
 
 	CLASS Custom INHERIT Abstract
-        PROTECTED _Controls as Vfp.Collection
+        PROTECTED _Controls as VFP.Collection
 
     VFPPROP Top    LONG
     VFPPROP Left   LONG
@@ -30,7 +30,7 @@ BEGIN NAMESPACE XSharp.VFP
         
     CONSTRUCTOR() CLIPPER
         SUPER()
-        _Controls    := Vfp.Collection{}
+        _Controls    := VFP.Collection{}
         SELF:_InitProperties()
         SELF:Init(_Args())
         RETURN

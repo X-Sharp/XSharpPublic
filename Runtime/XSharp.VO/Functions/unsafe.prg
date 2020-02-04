@@ -158,7 +158,7 @@ CLASS VOBitmaps
         
     STATIC METHOD Process(hWnd AS IntPtr, cFileName AS STRING, cTitle AS STRING, stretch AS LOGIC) AS LOGIC
         LOCAL bRet := FALSE AS LOGIC
-        LOCAL oBitMap := VOBitmaps{} AS VOBitMaps
+        LOCAL oBitMap := VOBitmaps{} AS VOBitmaps
         IF hWnd == IntPtr.Zero
             hWnd := GetFocus()
         ENDIF
@@ -473,7 +473,7 @@ END CLASS
 
 STATIC CLASS Win32
      CONST SW_SHOWNORMAL  := 1 AS LONG 
-    [DllImport("kernel32.dll", Charset := Charset.Ansi )];
+    [DllImport("kernel32.dll", CharSet := CharSet.Ansi )];
     STATIC INTERNAL METHOD WinExec(lpCmdLine AS STRING, uCmdShow AS DWORD) AS DWORD   
 END CLASS 
 FUNCTION _Run (cProg AS STRING) AS DWORD PASCAL

@@ -126,9 +126,9 @@ Function __TextSupport(cText as STRING, lNoShow as LOGIC, nFlags as LONG, uPreTe
             lStartOfLine := FALSE
         END SWITCH
     NEXT
-    cText := Result:ToString()
+    cText := result:ToString()
     IF ! lNoShow
-        Qout(cText)
+        QOut(cText)
     ENDIF
     IF _AND(nFlags ,1) != 1
         // Output to _TEXT

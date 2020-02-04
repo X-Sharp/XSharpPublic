@@ -73,7 +73,7 @@ FUNCTION JustPath(cPath AS STRING)
     LOCAL cPathChar := Path.DirectorySeparatorChar:ToString() AS STRING
     LOCAL result := cPath AS STRING
     IF result:IndexOf(cPathChar) >= 0
-        result := result:SubString(0, result:LastIndexOf(cPathChar) -1)
+        result := result:Substring(0, result:LastIndexOf(cPathChar) -1)
     ENDIF
     RETURN result
 

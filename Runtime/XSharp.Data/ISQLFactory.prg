@@ -86,7 +86,7 @@ INTERFACE XSharp.Data.ISqlFactory
     METHOD DriverConnect(hWindow AS OBJECT, nCompletion AS OBJECT, cConnectionString AS OBJECT) AS STRING
 
     /// <summary>This method is called after a transaction was committed.</summary>
-    METHOD EnhanceException(oEx AS SYstem.Exception)  AS SYstem.Exception
+    METHOD EnhanceException(oEx AS System.Exception)  AS System.Exception
 
     /// <summary>This method is called to translate result values for a column.</summary>
     /// <param name="oValue">The value as returned by the dataprovider.</param>

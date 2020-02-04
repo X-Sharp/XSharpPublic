@@ -67,13 +67,13 @@ ABSTRACT CLASS XSharp.Data.AbstractSqlFactory IMPLEMENTS XSharp.Data.ISqlFactory
 
     /// <inheritdoc />
     METHOD BeforeConnect(cString AS STRING, cUser AS STRING, cPassword AS STRING) AS STRING
-	    IF !cString:Contains("=") .AND. ! STRING.IsNullOrEmpty(cString)
+	    IF !cString:Contains("=") .AND. ! String.IsNullOrEmpty(cString)
 			cString := "DSN="+cString+";" 
 		ENDIF
-		IF !STRING.IsNullOrEmpty(cUser)
+		IF !String.IsNullOrEmpty(cUser)
 			cString += "UID="+cUser+";"
 		ENDIF
-		IF !STRING.IsNullOrEmpty(cPassword)
+		IF !String.IsNullOrEmpty(cPassword)
 			cString += "PWD="+cPassword+";"
 		ENDIF
         RETURN cString
@@ -111,7 +111,7 @@ ABSTRACT CLASS XSharp.Data.AbstractSqlFactory IMPLEMENTS XSharp.Data.ISqlFactory
         RETURN ""
 
     /// <inheritdoc />
-    METHOD EnhanceException(oEx AS SYstem.Exception)  AS SYstem.Exception
+    METHOD EnhanceException(oEx AS System.Exception)  AS System.Exception
         RETURN oEx
 
     /// <inheritdoc />

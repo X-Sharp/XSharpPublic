@@ -37,17 +37,17 @@
       <DocumentationSource sourceFile="Binaries\Documentation\XSharp.Data.xml" />
     </DocumentationSources>
     <HelpTitle>X# Runtime Reference</HelpTitle>
-    <HelpFileVersion>2.2.2.0</HelpFileVersion>
+    <HelpFileVersion>2.2.3.0</HelpFileVersion>
     <NamingMethod>MemberName</NamingMethod>
     <ContentPlacement>AboveNamespaces</ContentPlacement>
     <RootNamespaceContainer>True</RootNamespaceContainer>
     <NamespaceGrouping>True</NamespaceGrouping>
     <Preliminary>False</Preliminary>
     <SdkLinkTarget>Blank</SdkLinkTarget>
-    <HelpFileFormat>HtmlHelp1, MSHelpViewer, Website</HelpFileFormat>
+    <HelpFileFormat>HtmlHelp1</HelpFileFormat>
     <SyntaxFilters>C#, X#</SyntaxFilters>
     <PresentationStyle>VS2013Xs</PresentationStyle>
-    <CleanIntermediates>True</CleanIntermediates>
+    <CleanIntermediates>False</CleanIntermediates>
     <KeepLogFile>True</KeepLogFile>
     <DisableCodeBlockComponent>False</DisableCodeBlockComponent>
     <IndentHtml>False</IndentHtml>
@@ -601,24 +601,7 @@
           <Filter entryType="Field" fullName="XSharp.Core.Functions.SMT_DEFBLOCKSIZE" filterName="SMT_DEFBLOCKSIZE" isExposed="False" />
         </Filter>
       </Filter>
-      <Filter entryType="Namespace" fullName="XSharp.RDD" isExposed="False">
-        <Filter entryType="Structure" fullName="XSharp.RDD.DbDate" filterName="DbDate" isExposed="True" />
-        <Filter entryType="Enumeration" fullName="XSharp.RDD.DbfHeaderCodepage" filterName="DbfHeaderCodepage" isExposed="True" />
-        <Filter entryType="Structure" fullName="XSharp.RDD.DbFloat" filterName="DbFloat" isExposed="True" />
-        <Filter entryType="Enumeration" fullName="XSharp.RDD.DbfLockingModel" filterName="DbfLockingModel" isExposed="True" />
-        <Filter entryType="Enumeration" fullName="XSharp.RDD.ERDD" filterName="ERDD" isExposed="True" />
-        <Filter entryType="Class" fullName="XSharp.RDD.Functions" filterName="Functions" isExposed="True" />
-        <Filter entryType="Interface" fullName="XSharp.RDD.IMemo" filterName="IMemo" isExposed="True" />
-        <Filter entryType="Interface" fullName="XSharp.RDD.IOrder" filterName="IOrder" isExposed="True" />
-        <Filter entryType="Interface" fullName="XSharp.RDD.IRdd" filterName="IRdd" isExposed="True" />
-        <Filter entryType="Enumeration" fullName="XSharp.RDD.OsCodepage" filterName="OsCodepage" isExposed="True" />
-        <Filter entryType="Class" fullName="XSharp.RDD.RddError" filterName="RddError" isExposed="True" />
-        <Filter entryType="Class" fullName="XSharp.RDD.RegisteredRDD" filterName="RegisteredRDD" isExposed="True" />
-        <Filter entryType="Class" fullName="XSharp.RDD.SortRecord" filterName="SortRecord" isExposed="True" />
-        <Filter entryType="Class" fullName="XSharp.RDD.Workarea" filterName="Workarea" isExposed="True" />
-        <Filter entryType="Class" fullName="XSharp.RDD.WorkAreas" filterName="WorkAreas" isExposed="True" />
-        <Filter entryType="Class" fullName="XSharp.RDD.WrapperRDD" filterName="WrapperRDD" isExposed="True" />
-      </Filter>
+      <Filter entryType="Namespace" fullName="XSharp.RDD" isExposed="True" />
       <Filter entryType="Namespace" fullName="XSharp.RT" isExposed="True">
         <Filter entryType="Class" fullName="XSharp.RT.Functions" filterName="Functions" isExposed="True">
           <Filter entryType="Method" fullName="XSharp.RT.Functions.$Exit" filterName="$Exit" isExposed="False" />

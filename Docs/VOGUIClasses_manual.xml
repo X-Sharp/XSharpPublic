@@ -13823,12 +13823,10 @@
       </summary>
       <remarks>
         <para>From the hyperlabel, you can retrieve additional information about the window, for example:</para>
-        <code>
-          <![CDATA[
+        <code language="X#">
         cCaption := oWindow:HyperLabel:Caption
         cDescription := oWindow:HyperLabel:Description
         cHelpContext := oWindow:HyperLabel:HelpContext
-        ]]>
         </code>
         <para>HyperLabel can also be used to assign a HyperLabel object to a window, although this is most commonly done during instantiation.</para>
       </remarks>

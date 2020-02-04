@@ -13,7 +13,7 @@ BEGIN NAMESPACE XSharp.RDD
     /// Workarea table.
     /// </summary>
     /// <example>
-    /// <code>
+    /// <code language="X#">
     /// CLASS MyRDD Inherit XSharp.RDD.WrapperRDD
     /// CONSTRUCTOR(oRdd as XSharp.RDD.IRDD)
     ///    SUPER(oRdd)

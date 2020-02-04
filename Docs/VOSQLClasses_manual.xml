@@ -1755,11 +1755,10 @@
           By accessing the properties of this hyperlabel, you can retrieve not only a description but also context-sensitive help on the condition that was
           raised:
         </para>
-        <code>
-          <![CDATA[
+        <code language="X#">
         oServer:FieldStatus(#LastName):Caption
         oServer:FieldStatus(#LastName):Description
-        oServer:FieldStatus(#LastName):HelpContext]]>
+        oServer:FieldStatus(#LastName):HelpContext
         </code>
       </remarks>
     </member>

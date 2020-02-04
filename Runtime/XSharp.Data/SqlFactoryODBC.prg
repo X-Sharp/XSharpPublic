@@ -29,7 +29,7 @@ CLASS XSharp.Data.OdbcFactory INHERIT XSharp.Data.AbstractSqlFactory
 
 
     /// <inheritdoc />
-    METHOD EnhanceException(oEx AS SYstem.Exception)  AS SYstem.Exception
+    METHOD EnhanceException(oEx AS System.Exception)  AS System.Exception
         RETURN oEx
 
     /// <inheritdoc />
@@ -72,12 +72,12 @@ CLASS XSharp.Data.OdbcFactory INHERIT XSharp.Data.AbstractSqlFactory
         ELSEIF hWindow IS System.Int32
             hWnd := IntPtr{(System.Int32) hWindow}
         ELSEIF hWindow IS System.Int64
-            hWnd := IntPtr{(System.INT64) hWindow}
+            hWnd := IntPtr{(System.Int64) hWindow}
         ELSE
             hWnd := Win32.GetActiveWindow()
         ENDIF
         IF hWnd == IntPtr.Zero
-            hWnd := Win32.GetDeskTopWindow()
+            hWnd := Win32.GetDesktopWindow()
         ENDIF
         
         IF cConnectionString IS STRING

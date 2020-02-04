@@ -102,6 +102,7 @@ namespace XSharp.Project
             XSharpProjectPackage.Instance.DisplayOutPutMessage("CommandFilter.ClassificationChanged()");
             if (_suspendSync)
                 return;
+            getEditorPreferences(TextView);
             if (_keywordCase == KeywordCase.None)
             {
                 return;
@@ -889,13 +890,9 @@ namespace XSharp.Project
             return true;
         }
 
-        void formatKeyword(Completion completion, char nextChar)
+        void formatKeyword(Completion completion)
         {
             completion.InsertionText = _optionsPage.SyncKeyword(completion.InsertionText);
-            if (nextChar != ' ' && nextChar != '\t' && nextChar != '\0')
-            {
-                completion.InsertionText += " ";
-            }
         }
 
         bool CompleteCompletionSession(bool force = false, char ch = ' ')
@@ -923,7 +920,7 @@ namespace XSharp.Project
                         }
                         if (kind == Kind.Keyword)
                         {
-                            formatKeyword(completion, '\0');
+                            formatKeyword(completion);
                         }
                         XSharpProjectPackage.Instance.DisplayOutPutMessage(" --> select " + completion.InsertionText);
                         if (completion.InsertionText.EndsWith("("))
@@ -973,7 +970,7 @@ namespace XSharp.Project
                         var completion = _completionSession.SelectedCompletionSet.SelectionStatus.Completion;
                         if (completion is XSCompletion && ((XSCompletion)completion).Kind == Kind.Keyword)
                         {
-                            formatKeyword(completion, ch);
+                            formatKeyword(completion);
                         }
                         // Push the completion char into the InsertionText if needed
                         if (!completion.InsertionText.EndsWith(ch.ToString()))

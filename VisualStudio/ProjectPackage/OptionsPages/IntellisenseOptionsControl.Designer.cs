@@ -94,6 +94,8 @@
         "of the current selected type. Also the member names will no longer be prefixed w" +
         "ith the typenames.");
             this.chkShowMembersOfCurrentType.UseVisualStyleBackColor = true;
+            this.chkShowMembersOfCurrentType.CheckedChanged += new System.EventHandler(this.chkShowMembersOfCurrentType_CheckedChanged);
+
             //
             // chkSortNavBar
             //
@@ -107,6 +109,8 @@
         " sorted by name. Otherwise they will appear in the order in which they appear in" +
         " the source code.");
             this.chkSortNavBar.UseVisualStyleBackColor = true;
+            this.chkSortNavBar.CheckedChanged += new System.EventHandler(this.chkSortNavBar_CheckedChanged);
+
             //
             // chkIncludeFields
             //
@@ -119,6 +123,8 @@
             this.toolTip1.SetToolTip(this.chkIncludeFields, "When you enable this then the combo box on the right hand side of the navigation " +
         "bar will also include fields and defines");
             this.chkIncludeFields.UseVisualStyleBackColor = true;
+            this.chkIncludeFields.CheckedChanged += new System.EventHandler(this.chkIncludeFields_CheckedChanged);
+
             //
             // chkAlignMethod
             //
@@ -132,6 +138,8 @@
         "will have the same indent level as the method. Otherwise they will be indented o" +
         "ne level more.");
             this.chkAlignMethod.UseVisualStyleBackColor = true;
+            this.chkAlignMethod.CheckedChanged += new System.EventHandler(this.chkAlignMethod_CheckedChanged);
+
             //
             // chkAlignDoCase
             //
@@ -144,6 +152,8 @@
             this.toolTip1.SetToolTip(this.chkAlignDoCase, "When you select this then the CASE keywords will line up with the DO keyword from" +
         " a DO CASE statement or the SWITCH keyword from a SWITCH statement");
             this.chkAlignDoCase.UseVisualStyleBackColor = true;
+            this.chkAlignDoCase.CheckedChanged += new System.EventHandler(this.chkAlignDoCase_CheckedChanged);
+
             //
             // chkKeywordsInAll
             //
@@ -156,6 +166,8 @@
             this.toolTip1.SetToolTip(this.chkKeywordsInAll, "If you organize the Completion lists in tabs, this controls if keywords are added" +
         " to the main tab");
             this.chkKeywordsInAll.UseVisualStyleBackColor = true;
+            this.chkKeywordsInAll.CheckedChanged += new System.EventHandler(this.chkKeywordsInAll_CheckedChanged);
+
             //
             // chkShowAfterChar
             //
@@ -169,6 +181,8 @@
         " keywords, type names, variable names etc based on the current location in the s" +
         "ource code editor");
             this.chkShowAfterChar.UseVisualStyleBackColor = true;
+            this.chkShowAfterChar.CheckedChanged += new System.EventHandler(this.chkShowAfterChar_CheckedChanged);
+
             //
             // chkDotAsUniversalSelector
             //
@@ -182,6 +196,8 @@
         "s except core will  only show static members after a dot and will show instance " +
         "members after a colon (:).");
             this.chkDotAsUniversalSelector.UseVisualStyleBackColor = true;
+            this.chkDotAsUniversalSelector.CheckedChanged += new System.EventHandler(this.chkDotAsUniversalSelector_CheckedChanged);
+
             //
             // chkAutoPairs
             //
@@ -191,9 +207,10 @@
             this.chkAutoPairs.Size = new System.Drawing.Size(316, 17);
             this.chkAutoPairs.TabIndex = 8;
             this.chkAutoPairs.Text = "Auto Insert right parenthesis/bracket/curly after selecting item";
-            this.toolTip1.SetToolTip(this.chkAutoPairs, "After selecting a function, method or type from the completionlist this will auto" +
-        "matically inser a closing token");
+            this.toolTip1.SetToolTip(this.chkAutoPairs, "After selecting a function, method or type from the completionlist this will automatically inser a closing token");
             this.chkAutoPairs.UseVisualStyleBackColor = true;
+            this.chkAutoPairs.CheckedChanged += new System.EventHandler(this.chkAutoPairs_CheckedChanged);
+
             //
             // chkCompletionListtabs
             //
@@ -203,9 +220,10 @@
             this.chkCompletionListtabs.Size = new System.Drawing.Size(334, 17);
             this.chkCompletionListtabs.TabIndex = 0;
             this.chkCompletionListtabs.Text = "Organize in tabs with different item types (properties, methods etc)";
-            this.toolTip1.SetToolTip(this.chkCompletionListtabs, "This organizes your comletionlists in tabs, to make it easier to find a method or" +
-        " property in long completionlists");
+            this.toolTip1.SetToolTip(this.chkCompletionListtabs, "This organizes your comletionlists in tabs, to make it easier to find a method or property in long completionlists");
             this.chkCompletionListtabs.UseVisualStyleBackColor = true;
+            this.chkCompletionListtabs.CheckedChanged += new System.EventHandler(this.chkCompletionListtabs_CheckedChanged);
+
             //
             // panel1
             //
@@ -263,6 +281,8 @@
             this.commitChars.Size = new System.Drawing.Size(286, 20);
             this.commitChars.TabIndex = 7;
             this.commitChars.Text = "{}[]().,:;+-*/%&|^!~=<>?@#\'\"\\";
+            this.commitChars.TextChanged += new System.EventHandler(this.commitChars_TextChanged);
+
             //
             // grpCase
             //
@@ -287,6 +307,8 @@
             this.multiFactor.Size = new System.Drawing.Size(27, 20);
             this.multiFactor.TabIndex = 10;
             this.multiFactor.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.multiFactor.TextChanged += new System.EventHandler(this.multiFactor_TextChanged);
+
             //
             // grpKeywordCase
             //
@@ -311,6 +333,8 @@
             this.rbTitle.TabStop = true;
             this.rbTitle.Text = "&Title";
             this.rbTitle.UseVisualStyleBackColor = true;
+            this.rbTitle.CheckedChanged += new System.EventHandler(this.kwCaseChanged);
+
             //
             // rbNone
             //
@@ -322,6 +346,7 @@
             this.rbNone.TabStop = true;
             this.rbNone.Text = "&None";
             this.rbNone.UseVisualStyleBackColor = true;
+            this.rbNone.CheckedChanged += new System.EventHandler(this.kwCaseChanged);
             //
             // rbUpper
             //
@@ -333,6 +358,8 @@
             this.rbUpper.TabStop = true;
             this.rbUpper.Text = "&UPPER";
             this.rbUpper.UseVisualStyleBackColor = true;
+            this.rbUpper.CheckedChanged += new System.EventHandler(this.kwCaseChanged);
+
             //
             // rbLower
             //
@@ -344,6 +371,8 @@
             this.rbLower.TabStop = true;
             this.rbLower.Text = "&lower";
             this.rbLower.UseVisualStyleBackColor = true;
+            this.rbLower.CheckedChanged += new System.EventHandler(this.kwCaseChanged);
+
             //
             // chkIdentifierCase
             //
@@ -355,6 +384,8 @@
             this.chkIdentifierCase.TabIndex = 2;
             this.chkIdentifierCase.Text = "&Identifier Case Synchronization";
             this.chkIdentifierCase.UseVisualStyleBackColor = true;
+            this.chkIdentifierCase.CheckedChanged += new System.EventHandler(this.chkIdentifierCase_CheckedChanged);
+
             //
             // IntellisenseOptionsControl
             //

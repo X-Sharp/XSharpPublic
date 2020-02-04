@@ -844,7 +844,7 @@ BEGIN NAMESPACE XSharp.ADS
                 delStmtSetTableCollation		:= ACE32.AdsStmtSetTableCollation
                 delStmtSetTableLockType		:= ACE32.AdsStmtSetTableLockType
                 delStmtSetTablePassword     := ACE32.AdsStmtSetTablePassword
-                delStmtSetTableReadonly		:= ACE32.AdsStmtSetTableReadonly	
+                delStmtSetTableReadonly		:= ACE32.AdsStmtSetTableReadOnly	
                 delStmtSetTableRights		:= ACE32.AdsStmtSetTableRights	
                 delThreadExit			:= ACE32.AdsThreadExit
                 delUnlockRecord			:= ACE32.AdsUnlockRecord
@@ -1054,7 +1054,7 @@ BEGIN NAMESPACE XSharp.ADS
                 delStmtSetTableCollation		:= ACE64.AdsStmtSetTableCollation
                 delStmtSetTableLockType		:= ACE64.AdsStmtSetTableLockType
                 delStmtSetTablePassword     := ACE64.AdsStmtSetTablePassword
-                delStmtSetTableReadonly		:= ACE64.AdsStmtSetTableReadonly	
+                delStmtSetTableReadonly		:= ACE64.AdsStmtSetTableReadOnly	
                 delStmtSetTableRights		:= ACE64.AdsStmtSetTableRights	
 
                 delThreadExit			:= ACE64.AdsThreadExit
@@ -1158,63 +1158,63 @@ BEGIN NAMESPACE XSharp.ADS
         PRIVATE STATIC delGetField2					AS _delGetField2
         //PRIVATE STATIC delGetField3					AS _delGetField3
         //PRIVATE STATIC delGetField4					AS _delGetField4
-        PRIVATE STATIC delGetFieldDecimals			AS _delHDOUTW
-        //PRIVATE STATIC delGetFieldLengthS			AS _delHSOUTD
-        PRIVATE STATIC delGetFieldLengthD			AS _delHDOUTD
+        PRIVATE STATIC delGetFieldDecimals			AS _delHDOutW
+        //PRIVATE STATIC delGetFieldLengthS			AS _delHSOutD
+        PRIVATE STATIC delGetFieldLengthD			AS _delHDOutD
         PRIVATE STATIC delGetFieldName				AS _delGetFieldName
         PRIVATE STATIC delGetFieldTypeD				AS _delHDOutW
-        PRIVATE STATIC delGetHandleType				AS _delHOUTW
+        PRIVATE STATIC delGetHandleType				AS _delHOutW
         PRIVATE STATIC delGetIndexCondition			AS _delGetIndexCondition
         PRIVATE STATIC delGetIndexExpr				AS _delGetIndexExpr
         PRIVATE STATIC delGetIndexFilename			AS _delGetIndexFilename
-        PRIVATE STATIC delGetIndexHandle			AS _delHSOUTH
-        PRIVATE STATIC delGetIndexHandleByOrder		AS _delHWOUTH
+        PRIVATE STATIC delGetIndexHandle			AS _delHSOutH
+        PRIVATE STATIC delGetIndexHandleByOrder		AS _delHWOutH
         PRIVATE STATIC delGetIndexName				AS _delGetIndexName
-        PRIVATE STATIC delGetIndexOrderByHandle		AS _DELHOUTW
-        PRIVATE STATIC delGetJulianD				AS _delHDOUTI
-        PRIVATE STATIC delGetJulianS				AS _delHSOUTI
-        PRIVATE STATIC delGetKeyCount				AS _delHWOUTD
-        PRIVATE STATIC delGetKeyLength				AS _delHOUTW
-        PRIVATE STATIC delGetKeyNum					AS _delHWOUTD
-        PRIVATE STATIC delGetKeyType				AS _delHOUTW
+        PRIVATE STATIC delGetIndexOrderByHandle		AS _delHOutW
+        PRIVATE STATIC delGetJulianD				AS _delHDOutI
+        PRIVATE STATIC delGetJulianS				AS _delHSOutI
+        PRIVATE STATIC delGetKeyCount				AS _delHWOutD
+        PRIVATE STATIC delGetKeyLength				AS _delHOutW
+        PRIVATE STATIC delGetKeyNum					AS _delHWOutD
+        PRIVATE STATIC delGetKeyType				AS _delHOutW
         PRIVATE STATIC delGetLastError				AS _delGetLastError
         PRIVATE STATIC delGetLastTableUpdate		AS _delGetLastTableUpdate
-        PRIVATE STATIC delGetLogicalS				AS _delHSOUTW	
-        PRIVATE STATIC delGetLogicalD				AS _delHDOUTW
-        PRIVATE STATIC delGetMemoBlockSize			AS _delHOUTW
-        PRIVATE STATIC delGetMemoLengthD			AS _delHDOUTD
-        PRIVATE STATIC delGetNumFields				AS _delHOUTW
-        PRIVATE STATIC delGetNumIndexes				AS _delHOUTW
-        PRIVATE STATIC delGetNumLocks				AS _delHOUTW
-        PRIVATE STATIC delGetRecordCRC				AS _delHOUTDD
-        PRIVATE STATIC delGetRecordCount			AS _delHWOUTD
-        PRIVATE STATIC delGetRecordLength			AS _delHOUTD
-        PRIVATE STATIC delGetRecordNum				AS _delHWOUTD
-        PRIVATE STATIC delGetRelKeyPos				AS _delHOUTR8
+        PRIVATE STATIC delGetLogicalS				AS _delHSOutW	
+        PRIVATE STATIC delGetLogicalD				AS _delHDOutW
+        PRIVATE STATIC delGetMemoBlockSize			AS _delHOutW
+        PRIVATE STATIC delGetMemoLengthD			AS _delHDOutD
+        PRIVATE STATIC delGetNumFields				AS _delHOutW
+        PRIVATE STATIC delGetNumIndexes				AS _delHOutW
+        PRIVATE STATIC delGetNumLocks				AS _delHOutW
+        PRIVATE STATIC delGetRecordCRC				AS _delHOutDD
+        PRIVATE STATIC delGetRecordCount			AS _delHWOutD
+        PRIVATE STATIC delGetRecordLength			AS _delHOutD
+        PRIVATE STATIC delGetRecordNum				AS _delHWOutD
+        PRIVATE STATIC delGetRelKeyPos				AS _delHOutR8
         PRIVATE STATIC delGetScope					AS _delGetScope
         PRIVATE STATIC delGetStringD				AS _delGetStringD
         //PRIVATE STATIC delGetStringS				AS _delGetStringS
         PRIVATE STATIC delGetStringWD				AS _delGetStringD
         //PRIVATE STATIC delGetStringWS				AS _delGetStringS
         PRIVATE STATIC delGetTableFilename			AS _delGetTableFilename
-        PRIVATE STATIC delGetTableOpenOptions		AS _delHOUTD
-        PRIVATE STATIC delGetTableType      		AS _delHOUTW
+        PRIVATE STATIC delGetTableOpenOptions		AS _delHOutD
+        PRIVATE STATIC delGetTableType      		AS _delHOutW
         PRIVATE STATIC delGotoBottom        		AS _delH
         PRIVATE STATIC delGotoRecord           		AS _delHD
         PRIVATE STATIC delGotoTop           		AS _delH
-        PRIVATE STATIC delInTransaction				AS _delHOUTW
+        PRIVATE STATIC delInTransaction				AS _delHOutW
         PRIVATE STATIC delInitRawKey				AS _delH
-        PRIVATE STATIC delIsEmptyS					AS _delHSOUTW
-        PRIVATE STATIC delIsEmptyD					AS _delHDOUTW
-        PRIVATE STATIC delIsFound					AS _delHOUTW
-        PRIVATE STATIC delIsIndexCustom				AS _delHOUTW
-        PRIVATE STATIC delIsIndexDescending			AS _delHOUTW
-        PRIVATE STATIC delIsIndexUnique			    AS _delHOUTW
-        PRIVATE STATIC delIsRecordDeleted			AS _delHOUTW	
-        PRIVATE STATIC delIsRecordLocked			AS _delHDOUTW
-        PRIVATE STATIC delIsRecordVisible			AS _delHOUTW
-        PRIVATE STATIC delIsServerLoaded			AS _delSOUTW
-        PRIVATE STATIC delIsTableLocked				AS _delHOUTW
+        PRIVATE STATIC delIsEmptyS					AS _delHSOutW
+        PRIVATE STATIC delIsEmptyD					AS _delHDOutW
+        PRIVATE STATIC delIsFound					AS _delHOutW
+        PRIVATE STATIC delIsIndexCustom				AS _delHOutW
+        PRIVATE STATIC delIsIndexDescending			AS _delHOutW
+        PRIVATE STATIC delIsIndexUnique			    AS _delHOutW
+        PRIVATE STATIC delIsRecordDeleted			AS _delHOutW	
+        PRIVATE STATIC delIsRecordLocked			AS _delHDOutW
+        PRIVATE STATIC delIsRecordVisible			AS _delHOutW
+        PRIVATE STATIC delIsServerLoaded			AS _delSOutW
+        PRIVATE STATIC delIsTableLocked				AS _delHOutW
         PRIVATE STATIC delLockRecord				AS _delHD	
         PRIVATE STATIC delLockTable					AS _delH
         PRIVATE STATIC delOpenIndex					AS _delOpenIndex
@@ -1292,7 +1292,7 @@ BEGIN NAMESPACE XSharp.ADS
             RETURN delApplicationExit()
             
         PUBLIC STATIC METHOD AdsAtBOF(hTable AS IntPtr, pbBof OUT WORD ) AS DWORD
-            RETURN delAtBOF(hTable, OUT pbBOF)
+            RETURN delAtBOF(hTable, OUT pbBof)
             
         PUBLIC STATIC METHOD AdsAtEOF(hTable AS IntPtr, pbEof OUT WORD ) AS DWORD 
             RETURN delAtEOF(hTable, OUT pbEof)
@@ -1405,10 +1405,10 @@ BEGIN NAMESPACE XSharp.ADS
         PUBLIC STATIC METHOD AdsEvalLogicalExpr(hTable AS IntPtr, strExpr AS STRING, pbResult OUT WORD ) AS DWORD 
             RETURN delEvalLogicalExpr(hTable, strExpr, OUT pbResult)
             
-        PUBLIC STATIC METHOD AdsEvalNumericExpr(hTable AS IntPtr, strExpr AS STRING, pdResult OUT double ) AS DWORD 
+        PUBLIC STATIC METHOD AdsEvalNumericExpr(hTable AS IntPtr, strExpr AS STRING, pdResult OUT System.Double ) AS DWORD 
             RETURN delEvalNumericExpr(hTable, strExpr, OUT pdResult)
             
-        PUBLIC STATIC METHOD AdsEvalStringExpr(hTable AS IntPtr, strExpr AS STRING, [IN] [OUT] strResult AS CHAR[], wLen REF WORD ) AS DWORD 
+        PUBLIC STATIC METHOD AdsEvalStringExpr(hTable AS IntPtr, strExpr AS STRING, [InAttribute] [OutAttribute] strResult AS CHAR[], wLen REF WORD ) AS DWORD 
             RETURN delEvalStringExpr(hTable, strExpr, strResult, REF wLen)
             
         PUBLIC STATIC METHOD AdsEvalTestExpr(hTable AS IntPtr, strExpr AS STRING, pusType OUT WORD ) AS DWORD 
@@ -1423,34 +1423,34 @@ BEGIN NAMESPACE XSharp.ADS
         PUBLIC STATIC METHOD AdsFindConnection(strServerName AS STRING, phConnect OUT IntPtr ) AS DWORD 
             RETURN delFindConnection(strServerName, OUT phConnect)
             
-        PUBLIC STATIC METHOD AdsGetAllIndexes(hTable AS IntPtr, [IN] [OUT] ahIndex AS IntPtr[], pusArrayLen REF WORD ) AS DWORD 
+        PUBLIC STATIC METHOD AdsGetAllIndexes(hTable AS IntPtr, [InAttribute] [OutAttribute] ahIndex AS IntPtr[], pusArrayLen REF WORD ) AS DWORD 
             RETURN delGetAllIndexes(hTable, ahIndex, REF pusArrayLen)
             
             
-        PUBLIC STATIC METHOD AdsGetFTSIndexes(hTable AS IntPtr, [IN] [OUT] ahIndex AS IntPtr[], pusArrayLen REF WORD ) AS DWORD 
+        PUBLIC STATIC METHOD AdsGetFTSIndexes(hTable AS IntPtr, [InAttribute] [OutAttribute] ahIndex AS IntPtr[], pusArrayLen REF WORD ) AS DWORD 
             RETURN delGetFTSIndexes(hTable, ahIndex, REF pusArrayLen)
             
-        PUBLIC STATIC METHOD AdsGetAllLocks(hTable AS IntPtr, [IN] [OUT] aulLocks AS DWORD[], pusArrayLen REF WORD ) AS DWORD 
+        PUBLIC STATIC METHOD AdsGetAllLocks(hTable AS IntPtr, [InAttribute] [OutAttribute] aulLocks AS DWORD[], pusArrayLen REF WORD ) AS DWORD 
             RETURN delGetAllLocks(hTable, aulLocks, REF pusArrayLen)
             
-        PUBLIC STATIC METHOD AdsGetAllTables([IN] [OUT] ahTable AS IntPtr[], pusArrayLen REF WORD ) AS DWORD 
+        PUBLIC STATIC METHOD AdsGetAllTables([InAttribute] [OutAttribute] ahTable AS IntPtr[], pusArrayLen REF WORD ) AS DWORD 
             RETURN delGetAllTables(ahTable, REF pusArrayLen)
             
-        PUBLIC STATIC METHOD AdsGetBinary(hTable AS IntPtr, strFldName AS STRING, ulOffset AS DWORD, [IN] [OUT] strBuf AS BYTE[], pulLen REF DWORD ) AS DWORD
+        PUBLIC STATIC METHOD AdsGetBinary(hTable AS IntPtr, strFldName AS STRING, ulOffset AS DWORD, [InAttribute] [OutAttribute] strBuf AS BYTE[], pulLen REF DWORD ) AS DWORD
                 IF Is32Bits
-                    RETURN Ace32.AdsGetBinary(hTable, strFldName, ulOffSet, strBuf, REF pulLen)
+                    RETURN ACE32.AdsGetBinary(hTable, strFldName, ulOffset, strBuf, REF pulLen)
                 ELSE
-                    RETURN Ace64.AdsGetBinary(hTable, strFldName, ulOffSet, strBuf, REF pulLen)
+                    RETURN ACE64.AdsGetBinary(hTable, strFldName, ulOffset, strBuf, REF pulLen)
                 ENDIF
 
-        PUBLIC STATIC METHOD AdsGetBinary(hTable AS IntPtr, lFieldOrdinal AS DWORD, ulOffset AS DWORD, [IN] [OUT] strBuf AS BYTE[], pulLen REF DWORD ) AS DWORD 
-            RETURN delGetBinaryD(hTable, lFieldOrdinal, ulOffSet, strBuf, REF pulLen)
+        PUBLIC STATIC METHOD AdsGetBinary(hTable AS IntPtr, lFieldOrdinal AS DWORD, ulOffset AS DWORD, [InAttribute] [OutAttribute] strBuf AS BYTE[], pulLen REF DWORD ) AS DWORD 
+            RETURN delGetBinaryD(hTable, lFieldOrdinal, ulOffset, strBuf, REF pulLen)
             
         PUBLIC STATIC METHOD AdsGetBinaryLength(hTable AS IntPtr, strFldName AS STRING, pulLength OUT DWORD ) AS DWORD
             IF Is32Bits
-                RETURN Ace32.AdsGetBinaryLength(hTable, strFldName, OUT pulLength)
+                RETURN ACE32.AdsGetBinaryLength(hTable, strFldName, OUT pulLength)
             ELSE
-                RETURN Ace64.AdsGetBinaryLength(hTable, strFldName, OUT pulLength)
+                RETURN ACE64.AdsGetBinaryLength(hTable, strFldName, OUT pulLength)
              ENDIF
 
         PUBLIC STATIC METHOD AdsGetBinaryLength(hTable AS IntPtr, lFieldOrdinal AS DWORD, pulLength OUT DWORD ) AS DWORD 
@@ -1462,25 +1462,25 @@ BEGIN NAMESPACE XSharp.ADS
         PUBLIC STATIC METHOD AdsGetConnectionType(hConnect AS IntPtr, pusConnectType OUT WORD ) AS DWORD 
             RETURN delGetConnectionType(hConnect, OUT pusConnectType)
             
-        PUBLIC STATIC METHOD AdsGetDate(hTable AS IntPtr, strFldName AS STRING, [IN] [OUT] strBuf AS CHAR[], wLen REF WORD ) AS DWORD 
+        PUBLIC STATIC METHOD AdsGetDate(hTable AS IntPtr, strFldName AS STRING, [InAttribute] [OutAttribute] strBuf AS CHAR[], wLen REF WORD ) AS DWORD 
             IF Is32Bits
-                RETURN Ace32.AdsGetDate(hTable, strFldName, strBuf, REF wLen)
+                RETURN ACE32.AdsGetDate(hTable, strFldName, strBuf, REF wLen)
             ELSE
-                RETURN Ace64.AdsGetDate(hTable, strFldName, strBuf, REF wLen)
+                RETURN ACE64.AdsGetDate(hTable, strFldName, strBuf, REF wLen)
             ENDIF
             
-        PUBLIC STATIC METHOD AdsGetDate(hTable AS IntPtr, lFieldOrdinal AS DWORD, [IN] [OUT] strBuf AS CHAR[], wLen REF WORD ) AS DWORD 
+        PUBLIC STATIC METHOD AdsGetDate(hTable AS IntPtr, lFieldOrdinal AS DWORD, [InAttribute] [OutAttribute] strBuf AS CHAR[], wLen REF WORD ) AS DWORD 
             RETURN delGetDateD(hTable, lFieldOrdinal, strBuf, REF wLen)
             
             
-        PUBLIC STATIC METHOD AdsGetDateFormat([IN] [OUT] strFormat AS CHAR[], wLen REF WORD ) AS DWORD 
+        PUBLIC STATIC METHOD AdsGetDateFormat([InAttribute] [OutAttribute] strFormat AS CHAR[], wLen REF WORD ) AS DWORD 
             RETURN delGetDateFormat(strFormat, REF wLen)
             
         PUBLIC STATIC METHOD AdsGetDouble(hTable AS IntPtr, strFldName AS STRING, pdValue OUT REAL8 ) AS DWORD 
             IF Is32Bits
-                RETURN Ace32.AdsGetDouble(hTable, strFldName, OUT pdValue)
+                RETURN ACE32.AdsGetDouble(hTable, strFldName, OUT pdValue)
             ELSE
-                RETURN Ace64.AdsGetDouble(hTable, strFldName, OUT pdValue)
+                RETURN ACE64.AdsGetDouble(hTable, strFldName, OUT pdValue)
             ENDIF
             
         PUBLIC STATIC METHOD AdsGetDouble(hTable AS IntPtr, lFieldOrdinal AS DWORD, pdValue OUT REAL8 ) AS DWORD 
@@ -1488,9 +1488,9 @@ BEGIN NAMESPACE XSharp.ADS
             
         PUBLIC STATIC METHOD AdsGetFieldLength(hTable AS IntPtr, strFldName AS STRING, pulLength OUT DWORD ) AS DWORD 
            IF Is32Bits
-                RETURN Ace32.AdsGetFieldLength(hTable, strFldName,  OUT pulLength)
+                RETURN ACE32.AdsGetFieldLength(hTable, strFldName,  OUT pulLength)
             ELSE
-                RETURN Ace64.AdsGetFieldLength(hTable, strFldName,  OUT pulLength)
+                RETURN ACE64.AdsGetFieldLength(hTable, strFldName,  OUT pulLength)
             ENDIF
             
         PUBLIC STATIC METHOD AdsGetFieldLength(hTable AS IntPtr, lFieldOrdinal AS DWORD, pulLength OUT DWORD ) AS DWORD 
@@ -1506,61 +1506,61 @@ BEGIN NAMESPACE XSharp.ADS
             RETURN delGetIndexHandle(hTable, strIndexOrder, OUT phIndex)
         PUBLIC STATIC METHOD AdsGetLong(hTable AS IntPtr, lFieldOrdinal AS DWORD, plValue OUT INT ) AS DWORD 
            IF Is32Bits
-                RETURN Ace32.AdsGetLong(hTable, lFieldOrdinal,  OUT plValue)
+                RETURN ACE32.AdsGetLong(hTable, lFieldOrdinal,  OUT plValue)
             ELSE
-                RETURN Ace64.AdsGetLong(hTable, lFieldOrdinal,  OUT plValue)
+                RETURN ACE64.AdsGetLong(hTable, lFieldOrdinal,  OUT plValue)
             ENDIF
 
         PUBLIC STATIC METHOD AdsGetLong(hTable AS IntPtr, strFldName AS STRING, plValue OUT INT ) AS DWORD 
            IF Is32Bits
-                RETURN Ace32.AdsGetLong(hTable, strFldName,  OUT plValue)
+                RETURN ACE32.AdsGetLong(hTable, strFldName,  OUT plValue)
             ELSE
-                RETURN Ace64.AdsGetLong(hTable, strFldName,  OUT plValue)
+                RETURN ACE64.AdsGetLong(hTable, strFldName,  OUT plValue)
             ENDIF
 
         PUBLIC STATIC METHOD AdsGetLongLong(hTable AS IntPtr, lFieldOrdinal AS DWORD, pqValue OUT INT64 ) AS DWORD 
            IF Is32Bits
-                RETURN Ace32.AdsGetLongLong(hTable, lFieldOrdinal,  OUT pqValue)
+                RETURN ACE32.AdsGetLongLong(hTable, lFieldOrdinal,  OUT pqValue)
             ELSE
-                RETURN Ace64.AdsGetLongLong(hTable, lFieldOrdinal,  OUT pqValue)
+                RETURN ACE64.AdsGetLongLong(hTable, lFieldOrdinal,  OUT pqValue)
             ENDIF
 
         PUBLIC STATIC METHOD AdsGetLongLong(hTable AS IntPtr, strFldName AS STRING, pqValue OUT INT64 ) AS DWORD 
            IF Is32Bits
-                RETURN Ace32.AdsGetLongLong(hTable, strFldName,  OUT pqValue)
+                RETURN ACE32.AdsGetLongLong(hTable, strFldName,  OUT pqValue)
             ELSE
-                RETURN Ace64.AdsGetLongLong(hTable, strFldName,  OUT pqValue)
+                RETURN ACE64.AdsGetLongLong(hTable, strFldName,  OUT pqValue)
             ENDIF
 
         PUBLIC STATIC METHOD AdsGetMoney(hTable AS IntPtr, lFieldOrdinal AS DWORD, pqValue OUT INT64 ) AS DWORD 
           IF Is32Bits
-                RETURN Ace32.AdsGetMoney(hTable, lFieldOrdinal,  OUT pqValue)
+                RETURN ACE32.AdsGetMoney(hTable, lFieldOrdinal,  OUT pqValue)
             ELSE
-                RETURN Ace64.AdsGetMoney(hTable, lFieldOrdinal,  OUT pqValue)
+                RETURN ACE64.AdsGetMoney(hTable, lFieldOrdinal,  OUT pqValue)
             ENDIF
 
          PUBLIC STATIC METHOD AdsGetMoney(hTable AS IntPtr, strFldName AS STRING, pqValue OUT INT64 ) AS DWORD 
           IF Is32Bits
-                RETURN Ace32.AdsGetMoney(hTable, strFldName,  OUT pqValue)
+                RETURN ACE32.AdsGetMoney(hTable, strFldName,  OUT pqValue)
             ELSE
-                RETURN Ace64.AdsGetMoney(hTable, strFldName,  OUT pqValue)
+                RETURN ACE64.AdsGetMoney(hTable, strFldName,  OUT pqValue)
             ENDIF
 
         PUBLIC STATIC METHOD AdsGetMilliseconds(hTable AS IntPtr, lFieldOrdinal AS DWORD, plTime OUT INT ) AS DWORD 
            IF Is32Bits
-                RETURN Ace32.AdsGetMilliseconds(hTable, lFieldOrdinal,  OUT plTime)
+                RETURN ACE32.AdsGetMilliseconds(hTable, lFieldOrdinal,  OUT plTime)
             ELSE
-                RETURN Ace64.AdsGetMilliseconds(hTable, lFieldOrdinal,  OUT plTime)
+                RETURN ACE64.AdsGetMilliseconds(hTable, lFieldOrdinal,  OUT plTime)
             ENDIF
 
        PUBLIC STATIC METHOD AdsGetMilliseconds(hTable AS IntPtr, strFldName AS STRING, plTime OUT INT ) AS DWORD 
            IF Is32Bits
-                RETURN Ace32.AdsGetMilliseconds(hTable, strFldName,  OUT plTime)
+                RETURN ACE32.AdsGetMilliseconds(hTable, strFldName,  OUT plTime)
             ELSE
-                RETURN Ace64.AdsGetMilliseconds(hTable, strFldName,  OUT plTime)
+                RETURN ACE64.AdsGetMilliseconds(hTable, strFldName,  OUT plTime)
             ENDIF
             
-        PUBLIC STATIC METHOD AdsGetLastError(pulErrCode OUT DWORD, [IN] [OUT] strBuf AS CHAR[], pusBufLen REF WORD ) AS DWORD 
+        PUBLIC STATIC METHOD AdsGetLastError(pulErrCode OUT DWORD, [InAttribute] [OutAttribute] strBuf AS CHAR[], pusBufLen REF WORD ) AS DWORD 
             RETURN delGetLastError(OUT pulErrCode, strBuf, REF pusBufLen)
             
         PUBLIC STATIC METHOD AdsGetMemoLength(hTable AS IntPtr, lFieldOrdinal AS DWORD, pulLength OUT DWORD ) AS DWORD 
@@ -1581,7 +1581,7 @@ BEGIN NAMESPACE XSharp.ADS
         PUBLIC STATIC METHOD AdsGetRecordCRC(hTable AS IntPtr, pulCRC OUT DWORD, ulOptions AS DWORD) AS DWORD 
             RETURN delGetRecordCRC(hTable, OUT pulCRC, ulOptions)
             
-        PUBLIC STATIC METHOD AdsGetScope(hIndex AS IntPtr, usScopeOption AS WORD, [IN] [OUT] strScope AS CHAR[], pusBufLen REF WORD ) AS DWORD 
+        PUBLIC STATIC METHOD AdsGetScope(hIndex AS IntPtr, usScopeOption AS WORD, [InAttribute] [OutAttribute] strScope AS CHAR[], pusBufLen REF WORD ) AS DWORD 
             RETURN delGetScope(hIndex, usScopeOption, strScope, REF pusBufLen)
             
         PUBLIC STATIC METHOD AdsGetTableOpenOptions(hTable AS IntPtr, pulOptions OUT DWORD ) AS DWORD 
@@ -1590,7 +1590,7 @@ BEGIN NAMESPACE XSharp.ADS
         PUBLIC STATIC METHOD AdsGetTableType(hTable AS IntPtr, pusType OUT WORD) AS DWORD 
             RETURN delGetTableType(hTable, OUT pusType)
 
-        PUBLIC STATIC METHOD AdsGetLastTableUpdate(hTable AS IntPtr, [IN] [OUT] strDate AS CHAR[], pusDateLen REF WORD ) AS DWORD 
+        PUBLIC STATIC METHOD AdsGetLastTableUpdate(hTable AS IntPtr, [InAttribute] [OutAttribute] strDate AS CHAR[], pusDateLen REF WORD ) AS DWORD 
             RETURN delGetLastTableUpdate(hTable, strDate, REF pusDateLen ) 
             
         PUBLIC STATIC METHOD AdsGotoBottom(hObj AS IntPtr ) AS DWORD 
@@ -1669,16 +1669,16 @@ BEGIN NAMESPACE XSharp.ADS
 
         PUBLIC STATIC METHOD AdsSetDate(hObj AS IntPtr, lFieldOrdinal AS DWORD, strValue AS STRING, wLen AS WORD ) AS DWORD 
             IF Is32Bits
-                RETURN Ace32.AdsSetDate(hObj, lFieldOrdinal, strValue, wLen)
+                RETURN ACE32.AdsSetDate(hObj, lFieldOrdinal, strValue, wLen)
             ELSE
-                RETURN Ace64.AdsSetDate(hObj, lFieldOrdinal, strValue, wLen)
+                RETURN ACE64.AdsSetDate(hObj, lFieldOrdinal, strValue, wLen)
              ENDIF
 
         PUBLIC STATIC METHOD AdsSetDate(hObj AS IntPtr, strFldName AS STRING, strValue AS STRING, wLen AS WORD ) AS DWORD 
             IF Is32Bits
-                RETURN Ace32.AdsSetDate(hObj, strFldName, strValue, wLen)
+                RETURN ACE32.AdsSetDate(hObj, strFldName, strValue, wLen)
             ELSE
-                RETURN Ace64.AdsSetDate(hObj, strFldName, strValue, wLen)
+                RETURN ACE64.AdsSetDate(hObj, strFldName, strValue, wLen)
              ENDIF
            
         PUBLIC STATIC METHOD AdsSetDateFormat(strFormat AS STRING ) AS DWORD 
@@ -1704,114 +1704,114 @@ BEGIN NAMESPACE XSharp.ADS
             
         PUBLIC STATIC METHOD AdsSetLong(hObj AS IntPtr, strFldName AS STRING, lValue AS INT ) AS DWORD 
             IF Is32Bits
-                RETURN Ace32.AdsSetLong(hObj, strFldName, lValue)
+                RETURN ACE32.AdsSetLong(hObj, strFldName, lValue)
             ELSE
-                RETURN Ace64.AdsSetLong(hObj, strFldName, lValue)
+                RETURN ACE64.AdsSetLong(hObj, strFldName, lValue)
              ENDIF
 
         PUBLIC STATIC METHOD AdsSetLong(hObj AS IntPtr, lFieldOrdinal AS DWORD, lValue AS INT ) AS DWORD 
             IF Is32Bits
-                RETURN Ace32.AdsSetLong(hObj, lFieldOrdinal, lValue)
+                RETURN ACE32.AdsSetLong(hObj, lFieldOrdinal, lValue)
             ELSE
-                RETURN Ace64.AdsSetLong(hObj, lFieldOrdinal, lValue)
+                RETURN ACE64.AdsSetLong(hObj, lFieldOrdinal, lValue)
              ENDIF
 
         PUBLIC STATIC METHOD AdsSetLongLong(hObj AS IntPtr, strFldName AS STRING, qValue AS INT64 ) AS DWORD 
             IF Is32Bits
-                RETURN Ace32.AdsSetLongLong(hObj, strFldName, qValue)
+                RETURN ACE32.AdsSetLongLong(hObj, strFldName, qValue)
             ELSE
-                RETURN Ace64.AdsSetLongLong(hObj, strFldName, qValue)
+                RETURN ACE64.AdsSetLongLong(hObj, strFldName, qValue)
             ENDIF
 
         PUBLIC STATIC METHOD AdsSetLongLong(hObj AS IntPtr, lFieldOrdinal AS DWORD, qValue AS INT64 ) AS DWORD 
             IF Is32Bits
-                RETURN Ace32.AdsSetLongLong(hObj, lFieldOrdinal, qValue)
+                RETURN ACE32.AdsSetLongLong(hObj, lFieldOrdinal, qValue)
             ELSE
-                RETURN Ace64.AdsSetLongLong(hObj, lFieldOrdinal, qValue)
+                RETURN ACE64.AdsSetLongLong(hObj, lFieldOrdinal, qValue)
             ENDIF
 
         PUBLIC STATIC METHOD AdsSetMoney(hObj AS IntPtr, lFieldOrdinal AS DWORD, qValue AS INT64 ) AS DWORD 
            IF Is32Bits
-                RETURN Ace32.AdsSetMoney(hObj, lFieldOrdinal, qValue)
+                RETURN ACE32.AdsSetMoney(hObj, lFieldOrdinal, qValue)
             ELSE
-                RETURN Ace64.AdsSetMoney(hObj, lFieldOrdinal, qValue)
+                RETURN ACE64.AdsSetMoney(hObj, lFieldOrdinal, qValue)
             ENDIF
 
         PUBLIC STATIC METHOD AdsSetMoney(hObj AS IntPtr, strFldName AS STRING, qValue AS INT64 ) AS DWORD 
             IF Is32Bits
-                RETURN Ace32.AdsSetMoney(hObj, strFldName, qValue)
+                RETURN ACE32.AdsSetMoney(hObj, strFldName, qValue)
             ELSE
-                RETURN Ace64.AdsSetMoney(hObj, strFldName, qValue)
+                RETURN ACE64.AdsSetMoney(hObj, strFldName, qValue)
             ENDIF
 
         PUBLIC STATIC METHOD AdsSetMilliseconds(hObj AS IntPtr, lFieldOrdinal AS DWORD, lTime AS INT ) AS DWORD 
             IF Is32Bits
-                RETURN Ace32.AdsSetMilliseconds(hObj, lFieldOrdinal, lTime)
+                RETURN ACE32.AdsSetMilliseconds(hObj, lFieldOrdinal, lTime)
             ELSE
-                RETURN Ace64.AdsSetMilliseconds(hObj, lFieldOrdinal, lTime)
+                RETURN ACE64.AdsSetMilliseconds(hObj, lFieldOrdinal, lTime)
             ENDIF
 
        PUBLIC STATIC METHOD AdsSetMilliseconds(hObj AS IntPtr, strFldName AS STRING, lTime AS INT ) AS DWORD 
            IF Is32Bits
-                RETURN Ace32.AdsSetMilliseconds(hObj, strFldName, lTime)
+                RETURN ACE32.AdsSetMilliseconds(hObj, strFldName, lTime)
             ELSE
-                RETURN Ace64.AdsSetMilliseconds(hObj, strFldName, lTime)
+                RETURN ACE64.AdsSetMilliseconds(hObj, strFldName, lTime)
             ENDIF
 
         PUBLIC STATIC METHOD AdsSetNull(hTable AS IntPtr, lFieldOrdinal AS DWORD) AS DWORD 
             IF Is32Bits
-                RETURN Ace32.AdsSetNull(hTable, lFieldOrdinal)
+                RETURN ACE32.AdsSetNull(hTable, lFieldOrdinal)
             ELSE
-                RETURN Ace64.AdsSetNull(hTable, lFieldOrdinal)
+                RETURN ACE64.AdsSetNull(hTable, lFieldOrdinal)
             ENDIF
             
          PUBLIC STATIC METHOD AdsSetNull(hTable AS IntPtr, strFldName AS STRING ) AS DWORD 
             IF Is32Bits
-                RETURN Ace32.AdsSetNull(hTable, strFldName)
+                RETURN ACE32.AdsSetNull(hTable, strFldName)
             ELSE
-                RETURN Ace64.AdsSetNull(hTable, strFldName)
+                RETURN ACE64.AdsSetNull(hTable, strFldName)
             ENDIF
 
         PUBLIC STATIC METHOD AdsSetShort(hObj AS IntPtr, lFieldOrdinal AS DWORD, sValue AS SHORT ) AS DWORD 
             IF Is32Bits
-                RETURN Ace32.AdsSetShort(hObj, lFieldOrdinal,sValue)
+                RETURN ACE32.AdsSetShort(hObj, lFieldOrdinal,sValue)
             ELSE
-                RETURN Ace64.AdsSetShort(hObj, lFieldOrdinal,sValue)
+                RETURN ACE64.AdsSetShort(hObj, lFieldOrdinal,sValue)
             ENDIF
 
         PUBLIC STATIC METHOD AdsSetShort(hObj AS IntPtr, strFldName AS STRING, sValue AS SHORT ) AS DWORD 
             IF Is32Bits
-                RETURN Ace32.AdsSetShort(hObj, strFldName,sValue)
+                RETURN ACE32.AdsSetShort(hObj, strFldName,sValue)
             ELSE
-                RETURN Ace64.AdsSetShort(hObj, strFldName,sValue)
+                RETURN ACE64.AdsSetShort(hObj, strFldName,sValue)
             ENDIF
 
         PUBLIC STATIC METHOD AdsSetTime(hObj AS IntPtr, lFieldOrdinal AS DWORD, strValue AS STRING, wLen AS WORD ) AS DWORD 
             IF Is32Bits
-                RETURN Ace32.AdsSetTime(hObj, lFieldOrdinal,strValue, wLen)
+                RETURN ACE32.AdsSetTime(hObj, lFieldOrdinal,strValue, wLen)
             ELSE
-                RETURN Ace64.AdsSetTime(hObj, lFieldOrdinal,strValue, wLen)
+                RETURN ACE64.AdsSetTime(hObj, lFieldOrdinal,strValue, wLen)
             ENDIF
 
         PUBLIC STATIC METHOD AdsSetTime(hObj AS IntPtr, strFldName AS STRING, strValue AS STRING, wLen AS WORD ) AS DWORD 
             IF Is32Bits
-                RETURN Ace32.AdsSetTime(hObj, strFldName,strValue, wLen)
+                RETURN ACE32.AdsSetTime(hObj, strFldName,strValue, wLen)
             ELSE
-                RETURN Ace64.AdsSetTime(hObj, strFldName,strValue, wLen)
+                RETURN ACE64.AdsSetTime(hObj, strFldName,strValue, wLen)
             ENDIF
 
         PUBLIC STATIC METHOD AdsSetTimeStamp(hObj AS IntPtr, lFieldOrdinal AS DWORD, strBuf AS STRING, ulLen AS DWORD ) AS DWORD 
             IF Is32Bits
-                RETURN Ace32.AdsSetTimeStamp(hObj, lFieldOrdinal,strBuf, ulLen)
+                RETURN ACE32.AdsSetTimeStamp(hObj, lFieldOrdinal,strBuf, ulLen)
             ELSE
-                RETURN Ace64.AdsSetTimeStamp(hObj, lFieldOrdinal,strBuf, ulLen)
+                RETURN ACE64.AdsSetTimeStamp(hObj, lFieldOrdinal,strBuf, ulLen)
             ENDIF
 
         PUBLIC STATIC METHOD AdsSetTimeStamp(hObj AS IntPtr, strFldName AS STRING, strBuf AS STRING, ulLen AS DWORD ) AS DWORD 
             IF Is32Bits
-                RETURN Ace32.AdsSetTimeStamp(hObj, strFldName,strBuf, ulLen)
+                RETURN ACE32.AdsSetTimeStamp(hObj, strFldName,strBuf, ulLen)
             ELSE
-                RETURN Ace64.AdsSetTimeStamp(hObj, strFldName,strBuf, ulLen)
+                RETURN ACE64.AdsSetTimeStamp(hObj, strFldName,strBuf, ulLen)
             ENDIF
 
 
@@ -1928,13 +1928,13 @@ BEGIN NAMESPACE XSharp.ADS
         PUBLIC STATIC METHOD AdsGetFieldDecimals(hTable AS IntPtr, lFieldOrdinal AS DWORD, pusDecimals OUT WORD ) AS DWORD 
             RETURN delGetFieldDecimals(hTable, lFieldOrdinal, OUT pusDecimals)
             
-        PUBLIC STATIC METHOD AdsGetFieldName(hTable AS IntPtr, usFld AS WORD, [IN] [OUT] strName AS CHAR[], pusBufLen REF WORD ) AS DWORD 
+        PUBLIC STATIC METHOD AdsGetFieldName(hTable AS IntPtr, usFld AS WORD, [InAttribute] [OutAttribute] strName AS CHAR[], pusBufLen REF WORD ) AS DWORD 
             RETURN delGetFieldName(hTable, usFld, strName, REF pusBufLen)
             
         PUBLIC STATIC METHOD AdsGetNumFields(hTable AS IntPtr, pusCount OUT WORD ) AS DWORD 
             RETURN delGetNumFields(hTable, OUT pusCount)
             
-        PUBLIC STATIC METHOD AdsGetField(hTable AS IntPtr, lFieldOrdinal AS DWORD, [IN] [OUT] abBuf AS BYTE[], pulLen REF DWORD, usOption AS WORD ) AS DWORD 
+        PUBLIC STATIC METHOD AdsGetField(hTable AS IntPtr, lFieldOrdinal AS DWORD, [InAttribute] [OutAttribute] abBuf AS BYTE[], pulLen REF DWORD, usOption AS WORD ) AS DWORD 
             RETURN delGetField1(hTable, lFieldOrdinal, abBuf, REF pulLen, usOption)
             
         PUBLIC STATIC METHOD AdsGetField(hTable AS IntPtr, lFieldOrdinal AS DWORD, strBuf AS CHAR[], pulLen REF DWORD, usOption AS WORD ) AS DWORD 
@@ -1942,16 +1942,16 @@ BEGIN NAMESPACE XSharp.ADS
             
         PUBLIC STATIC METHOD AdsGetField(hTable AS IntPtr, strFldName AS STRING, abBuf AS BYTE[], pulLen REF DWORD, usOption AS WORD ) AS DWORD 
            IF Is32Bits
-                RETURN Ace32.AdsGetField(hTable, strFldName,  abBuf, REF pulLen, usOption)
+                RETURN ACE32.AdsGetField(hTable, strFldName,  abBuf, REF pulLen, usOption)
             ELSE
-                RETURN Ace64.AdsGetField(hTable, strFldName,  abBuf, REF pulLen, usOption)
+                RETURN ACE64.AdsGetField(hTable, strFldName,  abBuf, REF pulLen, usOption)
             ENDIF
             
         PUBLIC STATIC METHOD AdsGetField(hTable AS IntPtr, strFldName AS STRING,  strBuf AS CHAR[], pulLen REF DWORD, usOption AS WORD ) AS DWORD 
            IF Is32Bits
-                RETURN Ace32.AdsGetField(hTable, strFldName, strBuf,  REF pulLen, usOption)
+                RETURN ACE32.AdsGetField(hTable, strFldName, strBuf,  REF pulLen, usOption)
             ELSE
-                RETURN Ace64.AdsGetField(hTable, strFldName, strBuf,  REF pulLen, usOption)
+                RETURN ACE64.AdsGetField(hTable, strFldName, strBuf,  REF pulLen, usOption)
             ENDIF
             
         PUBLIC STATIC METHOD AdsIsEmpty(hTable AS IntPtr, lFieldOrdinal AS DWORD, pbEmpty OUT WORD ) AS DWORD 
@@ -1960,24 +1960,24 @@ BEGIN NAMESPACE XSharp.ADS
         PUBLIC STATIC METHOD AdsIsEmpty(hTable AS IntPtr, strFldName AS STRING, pbEmpty OUT WORD ) AS DWORD 
             RETURN delIsEmptyS(hTable, strFldName, OUT pbEmpty)
             
-        PUBLIC STATIC METHOD AdsGetString(hTable AS IntPtr, lFieldOrdinal AS DWORD, [IN] [OUT] strBuf AS CHAR[], pulLen REF DWORD, usOption AS WORD) AS DWORD 
+        PUBLIC STATIC METHOD AdsGetString(hTable AS IntPtr, lFieldOrdinal AS DWORD, [InAttribute] [OutAttribute] strBuf AS CHAR[], pulLen REF DWORD, usOption AS WORD) AS DWORD 
             RETURN delGetStringD(hTable, lFieldOrdinal, strBuf, REF pulLen, usOption)
             
-        PUBLIC STATIC METHOD AdsGetString(hTable AS IntPtr, strFldName AS STRING, [IN] [OUT] strBuf AS CHAR[], pulLen REF DWORD, usOption AS WORD ) AS DWORD 
+        PUBLIC STATIC METHOD AdsGetString(hTable AS IntPtr, strFldName AS STRING, [InAttribute] [OutAttribute] strBuf AS CHAR[], pulLen REF DWORD, usOption AS WORD ) AS DWORD 
            IF Is32Bits
-                RETURN Ace32.AdsGetString(hTable, strFldName, strBuf, REF pulLen, usOption)
+                RETURN ACE32.AdsGetString(hTable, strFldName, strBuf, REF pulLen, usOption)
             ELSE
-                RETURN Ace64.AdsGetString(hTable, strFldName, strBuf, REF pulLen, usOption)
+                RETURN ACE64.AdsGetString(hTable, strFldName, strBuf, REF pulLen, usOption)
             ENDIF
              
-        PUBLIC STATIC METHOD AdsGetStringW(hTable AS IntPtr, lFieldOrdinal AS DWORD, [IN] [OUT] strBuf AS CHAR[], pulLen REF DWORD, usOption AS WORD) AS DWORD 
+        PUBLIC STATIC METHOD AdsGetStringW(hTable AS IntPtr, lFieldOrdinal AS DWORD, [InAttribute] [OutAttribute] strBuf AS CHAR[], pulLen REF DWORD, usOption AS WORD) AS DWORD 
             RETURN delGetStringWD(hTable, lFieldOrdinal, strBuf, REF pulLen, usOption)
             
-        PUBLIC STATIC METHOD AdsGetStringW(hTable AS IntPtr, strFldName AS STRING, [IN] [OUT] strBuf AS CHAR[], pulLen REF DWORD, usOption AS WORD ) AS DWORD 
+        PUBLIC STATIC METHOD AdsGetStringW(hTable AS IntPtr, strFldName AS STRING, [InAttribute] [OutAttribute] strBuf AS CHAR[], pulLen REF DWORD, usOption AS WORD ) AS DWORD 
            IF Is32Bits
-                RETURN Ace32.AdsGetStringW(hTable, strFldName, strBuf, REF pulLen, usOption)
+                RETURN ACE32.AdsGetStringW(hTable, strFldName, strBuf, REF pulLen, usOption)
             ELSE
-                RETURN Ace64.AdsGetStringW(hTable, strFldName, strBuf, REF pulLen, usOption)
+                RETURN ACE64.AdsGetStringW(hTable, strFldName, strBuf, REF pulLen, usOption)
             ENDIF
             
         PUBLIC STATIC METHOD AdsGetJulian(hTable AS IntPtr, lFieldOrdinal AS DWORD, plDate OUT INT ) AS DWORD 
@@ -2007,16 +2007,16 @@ BEGIN NAMESPACE XSharp.ADS
             
         PUBLIC STATIC METHOD AdsSetField(hObj AS IntPtr, strFldName AS STRING, abBuf AS BYTE[], ulLen AS DWORD ) AS DWORD 
            IF Is32Bits
-                RETURN Ace32.AdsSetField(hObj, strFldName, abBuf,  ulLen)
+                RETURN ACE32.AdsSetField(hObj, strFldName, abBuf,  ulLen)
             ELSE
-                RETURN Ace64.AdsSetField(hObj, strFldName, abBuf,  ulLen)
+                RETURN ACE64.AdsSetField(hObj, strFldName, abBuf,  ulLen)
             ENDIF
             
         PUBLIC STATIC METHOD AdsSetField(hObj AS IntPtr, strFldName AS STRING, strBuf AS STRING, ulLen AS DWORD ) AS DWORD 
            IF Is32Bits
-                RETURN Ace32.AdsSetField(hObj, strFldName, strBuf, ulLen)
+                RETURN ACE32.AdsSetField(hObj, strFldName, strBuf, ulLen)
             ELSE
-                RETURN Ace64.AdsSetField(hObj, strFldName, strBuf, ulLen)
+                RETURN ACE64.AdsSetField(hObj, strFldName, strBuf, ulLen)
             ENDIF
             
         PUBLIC STATIC METHOD AdsSetString(hObj AS IntPtr, lFieldOrdinal AS DWORD, strBuf AS STRING, ulLen AS DWORD ) AS DWORD 
@@ -2032,13 +2032,13 @@ BEGIN NAMESPACE XSharp.ADS
             RETURN delSetStringWS(hObj, strFldName, strBuf, ulLen)
             
         PUBLIC STATIC METHOD AdsSetBinary(hTable AS IntPtr, lFieldOrdinal AS DWORD, usBinaryType AS WORD, ulTotalLength AS DWORD, ulOffset AS DWORD, strBuf AS BYTE[], ulLen AS DWORD ) AS DWORD 
-            RETURN delSetBinaryD(hTable, lFieldOrdinal, usBinaryType, ulTotalLength, ulOffSet, strBuf, ulLen)
+            RETURN delSetBinaryD(hTable, lFieldOrdinal, usBinaryType, ulTotalLength, ulOffset, strBuf, ulLen)
             
         PUBLIC STATIC METHOD AdsSetBinary(hTable AS IntPtr, strFldName AS STRING, usBinaryType AS WORD, ulTotalLength AS DWORD, ulOffset AS DWORD, strBuf AS BYTE[], ulLen AS DWORD ) AS DWORD 
            IF Is32Bits
-                RETURN Ace32.AdsSetBinary(hTable, strFldName, usBinaryType, ulTotalLength,ulOffset, strBuf, ulLen)
+                RETURN ACE32.AdsSetBinary(hTable, strFldName, usBinaryType, ulTotalLength,ulOffset, strBuf, ulLen)
             ELSE
-                RETURN Ace64.AdsSetBinary(hTable, strFldName, usBinaryType, ulTotalLength,ulOffset, strBuf, ulLen)
+                RETURN ACE64.AdsSetBinary(hTable, strFldName, usBinaryType, ulTotalLength,ulOffset, strBuf, ulLen)
             ENDIF
              
         PUBLIC STATIC METHOD AdsSetDouble(hObj AS IntPtr, lFieldOrdinal AS DWORD, dValue AS REAL8) AS DWORD 
@@ -2046,9 +2046,9 @@ BEGIN NAMESPACE XSharp.ADS
             
         PUBLIC STATIC METHOD AdsSetDouble(hObj AS IntPtr, strFldName AS STRING, dValue AS REAL8) AS DWORD 
            IF Is32Bits
-                RETURN Ace32.AdsSetDouble(hObj, strFldName, dValue)
+                RETURN ACE32.AdsSetDouble(hObj, strFldName, dValue)
             ELSE
-                RETURN Ace64.AdsSetDouble(hObj, strFldName, dValue)
+                RETURN ACE64.AdsSetDouble(hObj, strFldName, dValue)
             ENDIF
             
         PUBLIC STATIC METHOD AdsSetJulian(hObj AS IntPtr, lFieldOrdinal AS DWORD, lDate AS INT) AS DWORD 
@@ -2066,10 +2066,10 @@ BEGIN NAMESPACE XSharp.ADS
         PUBLIC STATIC METHOD AdsReindex(hObject AS IntPtr) AS DWORD 
             RETURN delReindex(hObject)
             
-        PUBLIC STATIC METHOD AdsGetIndexFilename(hIndex AS IntPtr, usOption AS WORD, [IN] [OUT] strName AS CHAR[], wLen REF WORD ) AS DWORD 
+        PUBLIC STATIC METHOD AdsGetIndexFilename(hIndex AS IntPtr, usOption AS WORD, [InAttribute] [OutAttribute] strName AS CHAR[], wLen REF WORD ) AS DWORD 
             RETURN delGetIndexFilename(hIndex, usOption, strName, REF wLen)
             
-        PUBLIC STATIC METHOD AdsOpenIndex(hTable AS IntPtr, strName AS STRING, [IN] [OUT] ahIndex AS IntPtr[], pusArrayLen REF WORD ) AS DWORD 
+        PUBLIC STATIC METHOD AdsOpenIndex(hTable AS IntPtr, strName AS STRING, [InAttribute] [OutAttribute] ahIndex AS IntPtr[], pusArrayLen REF WORD ) AS DWORD 
             RETURN delOpenIndex(hTable,  strName, ahIndex, REF pusArrayLen )
             
         PUBLIC STATIC METHOD AdsCreateIndex(hObj AS IntPtr, strFileName AS STRING, strTag AS STRING, strExpr AS STRING, strCondition AS STRING, strWhile AS STRING, ulOptions AS DWORD, phIndex OUT IntPtr ) AS DWORD 
@@ -2080,19 +2080,19 @@ BEGIN NAMESPACE XSharp.ADS
         PUBLIC STATIC METHOD AdsRegisterCallbackFunction(pfn AS CallbackFn, ulCallBackID AS DWORD ) AS DWORD 
             RETURN delRegisterCallbackFunction(pfn,  ulCallBackID )
             
-        PUBLIC STATIC METHOD AdsExtractKey(hIndex AS IntPtr, [IN] [OUT] strKey AS CHAR[], wLen REF WORD ) AS DWORD 
+        PUBLIC STATIC METHOD AdsExtractKey(hIndex AS IntPtr, [InAttribute] [OutAttribute] strKey AS CHAR[], wLen REF WORD ) AS DWORD 
             RETURN delExtractKey(hIndex,  strKey, REF wLen )
             
-        PUBLIC STATIC METHOD AdsGetAOFOptLevel(hTable AS IntPtr, pusOptLevel OUT WORD, [IN] [OUT] strNonOpt AS CHAR[], wLen REF WORD ) AS DWORD 
+        PUBLIC STATIC METHOD AdsGetAOFOptLevel(hTable AS IntPtr, pusOptLevel OUT WORD, [InAttribute] [OutAttribute] strNonOpt AS CHAR[], wLen REF WORD ) AS DWORD 
             RETURN delGetAOFOptLevel(hTable,  OUT pusOptLevel, strNonOpt, REF wLen)
             
-        PUBLIC STATIC METHOD AdsGetIndexCondition(hIndex AS IntPtr, [IN] [OUT] strExpr AS CHAR[], wLen REF WORD ) AS DWORD 
+        PUBLIC STATIC METHOD AdsGetIndexCondition(hIndex AS IntPtr, [InAttribute] [OutAttribute] strExpr AS CHAR[], wLen REF WORD ) AS DWORD 
             RETURN delGetIndexCondition(hIndex,  strExpr, REF wLen)
             
-        PUBLIC STATIC METHOD AdsGetIndexExpr(hIndex AS IntPtr, [IN] [OUT] strExpr AS CHAR[], wLen REF WORD ) AS DWORD 
+        PUBLIC STATIC METHOD AdsGetIndexExpr(hIndex AS IntPtr, [InAttribute] [OutAttribute] strExpr AS CHAR[], wLen REF WORD ) AS DWORD 
             RETURN delGetIndexExpr(hIndex,  strExpr, REF wLen)
             
-        PUBLIC STATIC METHOD AdsGetIndexName(hIndex AS IntPtr, [IN] [OUT] strName AS CHAR[], wLen REF WORD ) AS DWORD 
+        PUBLIC STATIC METHOD AdsGetIndexName(hIndex AS IntPtr, [InAttribute] [OutAttribute] strName AS CHAR[], wLen REF WORD ) AS DWORD 
             RETURN delGetIndexName(hIndex,  strName, REF wLen)
             
         PUBLIC STATIC METHOD AdsGetIndexOrderByHandle(hIndex AS IntPtr, pusIndexOrder OUT WORD ) AS DWORD 
@@ -2113,7 +2113,7 @@ BEGIN NAMESPACE XSharp.ADS
         PUBLIC STATIC METHOD AdsGetKeyType(hIndex AS IntPtr, usKeyType OUT WORD ) AS DWORD 
             RETURN delGetKeyType(hIndex,  OUT usKeyType)
             
-        PUBLIC STATIC METHOD AdsGetRelKeyPos(hIndex AS IntPtr, pdPos OUT double ) AS DWORD 
+        PUBLIC STATIC METHOD AdsGetRelKeyPos(hIndex AS IntPtr, pdPos OUT System.Double ) AS DWORD 
             RETURN delGetRelKeyPos(hIndex,  OUT pdPos)
             
         PUBLIC STATIC METHOD AdsIsIndexCustom(hIndex AS IntPtr, pbCustom OUT WORD ) AS DWORD 
@@ -2144,7 +2144,7 @@ BEGIN NAMESPACE XSharp.ADS
            RETURN delStmtSetTablePassword(hStatement,  strTableName, strPassword)
 
         PUBLIC STATIC METHOD AdsStmtSetTableReadOnly(hStatement AS IntPtr, usReadOnly AS WORD ) AS DWORD 
-           RETURN delStmtSetTableReadOnly(hStatement,  usReadOnly)
+           RETURN delStmtSetTableReadonly(hStatement,  usReadOnly)
 
         PUBLIC STATIC METHOD AdsStmtSetTableRights(hStatement AS IntPtr, usCheckRights AS WORD ) AS DWORD 
             RETURN delStmtSetTableRights(hStatement,  usCheckRights)
@@ -2152,1687 +2152,1687 @@ BEGIN NAMESPACE XSharp.ADS
         PUBLIC STATIC METHOD AdsExecuteSQLDirect(hStatement AS IntPtr, strSQL AS STRING, phCursor OUT IntPtr ) AS DWORD 
             RETURN delExecuteSQLDirect(hStatement,  strSQL, OUT phCursor)
 
-        PUBLIC STATIC METHOD AdsBuildRawKey(hIndex AS IntPtr, [IN] [OUT] strKey AS BYTE[], pusKeyLen REF WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsBuildRawKey(hIndex, strKey, REF pusKeyLen ) 
+        PUBLIC STATIC METHOD AdsBuildRawKey(hIndex AS IntPtr, [InAttribute] [OutAttribute] strKey AS BYTE[], pusKeyLen REF WORD ) AS DWORD 
+            IF Is32Bits
+                RETURN ACE32.AdsBuildRawKey(hIndex, strKey, REF pusKeyLen ) 
             ELSE
-                RETURN Ace64.AdsBuildRawKey(hIndex, strKey, REF pusKeyLen ) 
+                RETURN ACE64.AdsBuildRawKey(hIndex, strKey, REF pusKeyLen ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsCancelUpdate90(hTable AS IntPtr, ulOptions AS DWORD) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsCancelUpdate90(hTable, ulOptions ) 
+            IF Is32Bits
+                RETURN ACE32.AdsCancelUpdate90(hTable, ulOptions ) 
             ELSE
-                RETURN Ace64.AdsCancelUpdate90(hTable, ulOptions )
+                RETURN ACE64.AdsCancelUpdate90(hTable, ulOptions )
             ENDIF
 
         PUBLIC STATIC METHOD AdsCheckExistence(hConnect AS IntPtr, strFileName AS STRING, pusOnDisk OUT WORD) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsCheckExistence(hConnect, strFileName, OUT pusOnDisk ) 
+            IF Is32Bits
+                RETURN ACE32.AdsCheckExistence(hConnect, strFileName, OUT pusOnDisk ) 
             ELSE
-                RETURN Ace64.AdsCheckExistence(hConnect, strFileName, OUT pusOnDisk ) 
+                RETURN ACE64.AdsCheckExistence(hConnect, strFileName, OUT pusOnDisk ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsCompareBookmarks(strBookmark1 AS STRING, strBookmark2 AS STRING, plResult OUT INT ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsCompareBookmarks(strBookmark1, strBookmark2, OUT plResult ) 
+            IF Is32Bits
+                RETURN ACE32.AdsCompareBookmarks(strBookmark1, strBookmark2, OUT plResult ) 
             ELSE
-                RETURN Ace64.AdsCompareBookmarks(strBookmark1, strBookmark2, OUT plResult ) 
+                RETURN ACE64.AdsCompareBookmarks(strBookmark1, strBookmark2, OUT plResult ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsConnect(strServerName AS STRING, phConnect OUT IntPtr ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsConnect(strServerName, OUT phConnect ) 
+            IF Is32Bits
+                RETURN ACE32.AdsConnect(strServerName, OUT phConnect ) 
             ELSE
-                RETURN Ace64.AdsConnect(strServerName, OUT phConnect ) 
+                RETURN ACE64.AdsConnect(strServerName, OUT phConnect ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsConnect26(strServerName AS STRING, usServerTypes AS WORD, phConnect OUT IntPtr ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsConnect26(strServerName, usServerTypes, OUT phConnect) 
+            IF Is32Bits
+                RETURN ACE32.AdsConnect26(strServerName, usServerTypes, OUT phConnect) 
             ELSE
-                RETURN Ace64.AdsConnect26(strServerName, usServerTypes, OUT phConnect) 
+                RETURN ACE64.AdsConnect26(strServerName, usServerTypes, OUT phConnect) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsConvertTable(hObj AS IntPtr,  usFilterOption AS WORD, strFile AS STRING, usTableType AS WORD) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsConvertTable(hObj,  usFilterOption, strFile, usTableType ) 
+            IF Is32Bits
+                RETURN ACE32.AdsConvertTable(hObj,  usFilterOption, strFile, usTableType ) 
             ELSE
-                RETURN Ace64.AdsConvertTable(hObj,  usFilterOption, strFile, usTableType ) 
+                RETURN ACE64.AdsConvertTable(hObj,  usFilterOption, strFile, usTableType ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsCopyTable(hObj AS IntPtr, usFilterOption AS WORD, strFile AS STRING ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsCopyTable(hObj, usFilterOption, strFile ) 
+            IF Is32Bits
+                RETURN ACE32.AdsCopyTable(hObj, usFilterOption, strFile ) 
             ELSE
-                RETURN Ace64.AdsCopyTable(hObj, usFilterOption, strFile ) 
+                RETURN ACE64.AdsCopyTable(hObj, usFilterOption, strFile ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsCopyTableContents(hObjFrom AS IntPtr, hTableTo AS IntPtr, usFilterOption AS WORD) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsCopyTableContents(hObjFrom, hTableTo, usFilterOption ) 
+            IF Is32Bits
+                RETURN ACE32.AdsCopyTableContents(hObjFrom, hTableTo, usFilterOption ) 
             ELSE
-                RETURN Ace64.AdsCopyTableContents(hObjFrom, hTableTo, usFilterOption ) 
+                RETURN ACE64.AdsCopyTableContents(hObjFrom, hTableTo, usFilterOption ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsCreateIndex61(hObj AS IntPtr, strFileName AS STRING, strTag AS STRING, strExpr AS STRING, strCondition AS STRING, strWhile AS STRING, ulOptions AS DWORD, ulPageSize AS DWORD, phIndex OUT IntPtr ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsCreateIndex61(hObj, strFileName, strTag, strExpr, strCondition, strWhile, ulOptions, ulPageSize, OUT phIndex ) 
+            IF Is32Bits
+                RETURN ACE32.AdsCreateIndex61(hObj, strFileName, strTag, strExpr, strCondition, strWhile, ulOptions, ulPageSize, OUT phIndex ) 
             ELSE
-                RETURN Ace64.AdsCreateIndex61(hObj, strFileName, strTag, strExpr, strCondition, strWhile, ulOptions, ulPageSize, OUT phIndex ) 
+                RETURN ACE64.AdsCreateIndex61(hObj, strFileName, strTag, strExpr, strCondition, strWhile, ulOptions, ulPageSize, OUT phIndex ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsCreateSavepoint(hConnect AS IntPtr, strSavepoint AS STRING, ulOptions AS DWORD) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsCreateSavepoint(hConnect, strSavepoint, ulOptions ) 
+            IF Is32Bits
+                RETURN ACE32.AdsCreateSavepoint(hConnect, strSavepoint, ulOptions ) 
             ELSE
-                RETURN Ace64.AdsCreateSavepoint(hConnect, strSavepoint, ulOptions ) 
+                RETURN ACE64.AdsCreateSavepoint(hConnect, strSavepoint, ulOptions ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsCreateTable(hConnect AS IntPtr, strName AS STRING, strAlias AS STRING, usTableType AS WORD, usCharType AS WORD, usLockType AS WORD, usCheckRights AS WORD, usMemoSize AS WORD, strFields AS STRING, phTable OUT IntPtr ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsCreateTable(hConnect, strName, strAlias, usTableType, usCharType, usLockType, usCheckRights, usMemoSize, strFields, OUT phTable ) 
+            IF Is32Bits
+                RETURN ACE32.AdsCreateTable(hConnect, strName, strAlias, usTableType, usCharType, usLockType, usCheckRights, usMemoSize, strFields, OUT phTable ) 
             ELSE
-                RETURN Ace64.AdsCreateTable(hConnect, strName, strAlias, usTableType, usCharType, usLockType, usCheckRights, usMemoSize, strFields, OUT phTable ) 
+                RETURN ACE64.AdsCreateTable(hConnect, strName, strAlias, usTableType, usCharType, usLockType, usCheckRights, usMemoSize, strFields, OUT phTable ) 
             ENDIF
         PUBLIC STATIC METHOD AdsCreateTable71(hConnect AS IntPtr, strName AS STRING, strDBObjName AS STRING, usTableType AS WORD, usCharType AS WORD, usLockType AS WORD, usCheckRights AS WORD, usMemoSize AS WORD, strFields AS STRING, ulOptions AS DWORD, phTable OUT IntPtr ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsCreateTable71(hConnect, strName, strDBObjName, usTableType, usCharType, usLockType, usCheckRights, usMemoSize, strFields, ulOptions, OUT phTable ) 
+            IF Is32Bits
+                RETURN ACE32.AdsCreateTable71(hConnect, strName, strDBObjName, usTableType, usCharType, usLockType, usCheckRights, usMemoSize, strFields, ulOptions, OUT phTable ) 
             ELSE
-                RETURN Ace64.AdsCreateTable71(hConnect, strName, strDBObjName, usTableType, usCharType, usLockType, usCheckRights, usMemoSize, strFields, ulOptions, OUT phTable ) 
+                RETURN ACE64.AdsCreateTable71(hConnect, strName, strDBObjName, usTableType, usCharType, usLockType, usCheckRights, usMemoSize, strFields, ulOptions, OUT phTable ) 
             ENDIF
         PUBLIC STATIC METHOD AdsCustomizeAOF(hTable AS IntPtr, ulNumRecords AS DWORD, pulRecords OUT DWORD, usOption AS WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsCustomizeAOF(hTable, ulNumRecords, OUT pulRecords, usOption ) 
+            IF Is32Bits
+                RETURN ACE32.AdsCustomizeAOF(hTable, ulNumRecords, OUT pulRecords, usOption ) 
             ELSE
-                RETURN Ace64.AdsCustomizeAOF(hTable, ulNumRecords, OUT pulRecords, usOption ) 
+                RETURN ACE64.AdsCustomizeAOF(hTable, ulNumRecords, OUT pulRecords, usOption ) 
             ENDIF
         PUBLIC STATIC METHOD AdsDDAddIndexFile(hDictionary AS IntPtr, strTableName AS STRING, strIndexFilePath AS STRING, strComment AS STRING ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDAddIndexFile(hDictionary, strTableName, strIndexFilePath, strComment ) 
+            IF Is32Bits
+                RETURN ACE32.AdsDDAddIndexFile(hDictionary, strTableName, strIndexFilePath, strComment ) 
             ELSE
-                RETURN Ace64.AdsDDAddIndexFile(hDictionary, strTableName, strIndexFilePath, strComment ) 
+                RETURN ACE64.AdsDDAddIndexFile(hDictionary, strTableName, strIndexFilePath, strComment ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsDDAddProcedure(hDictionary AS IntPtr, strName AS STRING, strContainer AS STRING, strProcName AS STRING, ulInvokeOption AS DWORD, strInParams AS STRING, strOutParams AS STRING, strComments AS STRING ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDAddProcedure(hDictionary, strName, strContainer, strProcName, ulInvokeOption, strInParams, strOutParams, strComments ) 
+            IF Is32Bits
+                RETURN ACE32.AdsDDAddProcedure(hDictionary, strName, strContainer, strProcName, ulInvokeOption, strInParams, strOutParams, strComments ) 
             ELSE
-                RETURN Ace64.AdsDDAddProcedure(hDictionary, strName, strContainer, strProcName, ulInvokeOption, strInParams, strOutParams, strComments ) 
+                RETURN ACE64.AdsDDAddProcedure(hDictionary, strName, strContainer, strProcName, ulInvokeOption, strInParams, strOutParams, strComments ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsDDAddTable(hDictionary AS IntPtr, strTableName AS STRING, strTablePath AS STRING, usTableType AS WORD, usCharType AS WORD, strIndexFiles AS STRING, strComments AS STRING ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDAddTable(hDictionary, strTableName, strTablePath, usTableType, usCharType, strIndexFiles, strComments ) 
+            IF Is32Bits
+                RETURN ACE32.AdsDDAddTable(hDictionary, strTableName, strTablePath, usTableType, usCharType, strIndexFiles, strComments ) 
             ELSE
-                RETURN Ace64.AdsDDAddTable(hDictionary, strTableName, strTablePath, usTableType, usCharType, strIndexFiles, strComments ) 
+                RETURN ACE64.AdsDDAddTable(hDictionary, strTableName, strTablePath, usTableType, usCharType, strIndexFiles, strComments ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsDDAddTable90(hDictionary AS IntPtr, strTableName AS STRING, strTablePath AS STRING, usTableType AS WORD, usCharType AS WORD, strIndexFiles AS STRING, strComments AS STRING, strCollation AS STRING ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDAddTable90(hDictionary, strTableName, strTablePath, usTableType, usCharType, strIndexFiles, strComments, strCollation ) 
+            IF Is32Bits
+                RETURN ACE32.AdsDDAddTable90(hDictionary, strTableName, strTablePath, usTableType, usCharType, strIndexFiles, strComments, strCollation ) 
             ELSE
-                RETURN Ace64.AdsDDAddTable90(hDictionary, strTableName, strTablePath, usTableType, usCharType, strIndexFiles, strComments, strCollation ) 
+                RETURN ACE64.AdsDDAddTable90(hDictionary, strTableName, strTablePath, usTableType, usCharType, strIndexFiles, strComments, strCollation ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsDDAddUserToGroup(hDictionary AS IntPtr, strGroupName AS STRING, strUserName AS STRING ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDAddUserToGroup(hDictionary, strGroupName, strUserName ) 
+            IF Is32Bits
+                RETURN ACE32.AdsDDAddUserToGroup(hDictionary, strGroupName, strUserName ) 
             ELSE
-                RETURN Ace64.AdsDDAddUserToGroup(hDictionary, strGroupName, strUserName ) 
+                RETURN ACE64.AdsDDAddUserToGroup(hDictionary, strGroupName, strUserName ) 
             ENDIF
         PUBLIC STATIC METHOD AdsDDAddView(hDictionary AS IntPtr, strName AS STRING, strComments AS STRING, strSQL AS STRING ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDAddView(hDictionary, strName, strComments, strSQL ) 
+            IF Is32Bits
+                RETURN ACE32.AdsDDAddView(hDictionary, strName, strComments, strSQL ) 
             ELSE
-                RETURN Ace64.AdsDDAddView(hDictionary, strName, strComments, strSQL ) 
+                RETURN ACE64.AdsDDAddView(hDictionary, strName, strComments, strSQL ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsDDCreate(strDictionaryPath AS STRING, usEncrypt AS WORD, strDescription AS STRING, phDictionary OUT IntPtr ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDCreate(strDictionaryPath, usEncrypt, strDescription, OUT phDictionary ) 
+            IF Is32Bits
+                RETURN ACE32.AdsDDCreate(strDictionaryPath, usEncrypt, strDescription, OUT phDictionary ) 
             ELSE
-                RETURN Ace64.AdsDDCreate(strDictionaryPath, usEncrypt, strDescription, OUT phDictionary ) 
+                RETURN ACE64.AdsDDCreate(strDictionaryPath, usEncrypt, strDescription, OUT phDictionary ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsDDCreateArticle(hDictionary AS IntPtr, strPublicationName AS STRING, strObjectName AS STRING, strRowIdentColumns AS STRING, strFilter AS STRING, ulOptions AS DWORD) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDCreateArticle(hDictionary, strPublicationName, strObjectName, strRowIdentColumns, strFilter, ulOptions ) 
+            IF Is32Bits
+                RETURN ACE32.AdsDDCreateArticle(hDictionary, strPublicationName, strObjectName, strRowIdentColumns, strFilter, ulOptions ) 
             ELSE
-                RETURN Ace64.AdsDDCreateArticle(hDictionary, strPublicationName, strObjectName, strRowIdentColumns, strFilter, ulOptions ) 
+                RETURN ACE64.AdsDDCreateArticle(hDictionary, strPublicationName, strObjectName, strRowIdentColumns, strFilter, ulOptions ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsDDCreateLink(hDBConn AS IntPtr, strLinkAlias AS STRING, strLinkedDDPath AS STRING, strUserName AS STRING, strPassword AS STRING, ulOptions AS DWORD) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDCreateLink(hDBConn, strLinkAlias, strLinkedDDPath, strUserName, strPassword, ulOptions ) 
+            IF Is32Bits
+                RETURN ACE32.AdsDDCreateLink(hDBConn, strLinkAlias, strLinkedDDPath, strUserName, strPassword, ulOptions ) 
             ELSE
-                RETURN Ace64.AdsDDCreateLink(hDBConn, strLinkAlias, strLinkedDDPath, strUserName, strPassword, ulOptions ) 
+                RETURN ACE64.AdsDDCreateLink(hDBConn, strLinkAlias, strLinkedDDPath, strUserName, strPassword, ulOptions ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsDDCreatePublication(hDictionary AS IntPtr, strPublicationName AS STRING, strComments AS STRING, ulOptions AS DWORD) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDCreatePublication(hDictionary, strPublicationName, strComments, ulOptions ) 
+            IF Is32Bits
+                RETURN ACE32.AdsDDCreatePublication(hDictionary, strPublicationName, strComments, ulOptions ) 
             ELSE
-                RETURN Ace64.AdsDDCreatePublication(hDictionary, strPublicationName, strComments, ulOptions ) 
+                RETURN ACE64.AdsDDCreatePublication(hDictionary, strPublicationName, strComments, ulOptions ) 
             ENDIF
         PUBLIC STATIC METHOD AdsDDCreateRefIntegrity(hDictionary AS IntPtr, strRIName AS STRING, strFailTable AS STRING, strParentTableName AS STRING, strParentTagName AS STRING, strChildTableName AS STRING, strChildTagName AS STRING, usUpdateRule AS WORD, usDeleteRule AS WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDCreateRefIntegrity(hDictionary, strRIName, strFailTable, strParentTableName, strParentTagName, strChildTableName, strChildTagName, usUpdateRule, usDeleteRule ) 
+            IF Is32Bits
+                RETURN ACE32.AdsDDCreateRefIntegrity(hDictionary, strRIName, strFailTable, strParentTableName, strParentTagName, strChildTableName, strChildTagName, usUpdateRule, usDeleteRule ) 
             ELSE
-                RETURN Ace64.AdsDDCreateRefIntegrity(hDictionary, strRIName, strFailTable, strParentTableName, strParentTagName, strChildTableName, strChildTagName, usUpdateRule, usDeleteRule ) 
+                RETURN ACE64.AdsDDCreateRefIntegrity(hDictionary, strRIName, strFailTable, strParentTableName, strParentTagName, strChildTableName, strChildTagName, usUpdateRule, usDeleteRule ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsDDCreateRefIntegrity62(hDictionary AS IntPtr, strRIName AS STRING, strFailTable AS STRING, strParentTableName AS STRING, strParentTagName AS STRING, strChildTableName AS STRING, strChildTagName AS STRING, usUpdateRule AS WORD, usDeleteRule AS WORD, strNoPrimaryError AS STRING, strCascadeError AS STRING ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDCreateRefIntegrity62(hDictionary, strRIName, strFailTable, strParentTableName, strParentTagName, strChildTableName, strChildTagName, usUpdateRule, usDeleteRule, strNoPrimaryError, strCascadeError ) 
+            IF Is32Bits
+                RETURN ACE32.AdsDDCreateRefIntegrity62(hDictionary, strRIName, strFailTable, strParentTableName, strParentTagName, strChildTableName, strChildTagName, usUpdateRule, usDeleteRule, strNoPrimaryError, strCascadeError ) 
             ELSE
-                RETURN Ace64.AdsDDCreateRefIntegrity62(hDictionary, strRIName, strFailTable, strParentTableName, strParentTagName, strChildTableName, strChildTagName, usUpdateRule, usDeleteRule, strNoPrimaryError, strCascadeError ) 
+                RETURN ACE64.AdsDDCreateRefIntegrity62(hDictionary, strRIName, strFailTable, strParentTableName, strParentTagName, strChildTableName, strChildTagName, usUpdateRule, usDeleteRule, strNoPrimaryError, strCascadeError ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsDDCreateSubscription(hDictionary AS IntPtr, strSubscriptionName AS STRING, strPublicationName AS STRING, strTarget AS STRING, strUser AS STRING, strPassword AS STRING, strReplicationQueue AS STRING, usForward AS WORD, strComments AS STRING, ulOptions AS DWORD) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDCreateSubscription(hDictionary, strSubscriptionName, strPublicationName, strTarget, strUser, strPassword, strReplicationQueue, usForward, strComments, ulOptions ) 
+            IF Is32Bits
+                RETURN ACE32.AdsDDCreateSubscription(hDictionary, strSubscriptionName, strPublicationName, strTarget, strUser, strPassword, strReplicationQueue, usForward, strComments, ulOptions ) 
             ELSE
-                RETURN Ace64.AdsDDCreateSubscription(hDictionary, strSubscriptionName, strPublicationName, strTarget, strUser, strPassword, strReplicationQueue, usForward, strComments, ulOptions ) 
+                RETURN ACE64.AdsDDCreateSubscription(hDictionary, strSubscriptionName, strPublicationName, strTarget, strUser, strPassword, strReplicationQueue, usForward, strComments, ulOptions ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsDDCreateTrigger(hDictionary AS IntPtr, strName AS STRING, strTableName AS STRING,  ulTriggerType AS DWORD, ulEventTypes AS DWORD, ulContainerType AS DWORD, strContainer AS STRING, strFunctionName AS STRING, ulPriority AS DWORD, strComments AS STRING, ulOptions AS DWORD) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDCreateTrigger(hDictionary, strName, strTableName,  ulTriggerType, ulEventTypes, ulContainerType, strContainer, strFunctionName, ulPriority, strComments, ulOptions ) 
+            IF Is32Bits
+                RETURN ACE32.AdsDDCreateTrigger(hDictionary, strName, strTableName,  ulTriggerType, ulEventTypes, ulContainerType, strContainer, strFunctionName, ulPriority, strComments, ulOptions ) 
             ELSE
-                RETURN Ace64.AdsDDCreateTrigger(hDictionary, strName, strTableName,  ulTriggerType, ulEventTypes, ulContainerType, strContainer, strFunctionName, ulPriority, strComments, ulOptions ) 
+                RETURN ACE64.AdsDDCreateTrigger(hDictionary, strName, strTableName,  ulTriggerType, ulEventTypes, ulContainerType, strContainer, strFunctionName, ulPriority, strComments, ulOptions ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsDDCreateUser(hDictionary AS IntPtr, strGroupName AS STRING, strUserName AS STRING, strPassword AS STRING, strDescription AS STRING ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDCreateUser(hDictionary, strGroupName, strUserName, strPassword, strDescription ) 
+            IF Is32Bits
+                RETURN ACE32.AdsDDCreateUser(hDictionary, strGroupName, strUserName, strPassword, strDescription ) 
             ELSE
-                RETURN Ace64.AdsDDCreateUser(hDictionary, strGroupName, strUserName, strPassword, strDescription ) 
+                RETURN ACE64.AdsDDCreateUser(hDictionary, strGroupName, strUserName, strPassword, strDescription ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsDDCreateUserGroup(hDictionary AS IntPtr, strGroupName AS STRING, strDescription AS STRING ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDCreateUserGroup(hDictionary, strGroupName, strDescription ) 
+            IF Is32Bits
+                RETURN ACE32.AdsDDCreateUserGroup(hDictionary, strGroupName, strDescription ) 
             ELSE
-                RETURN Ace64.AdsDDCreateUserGroup(hDictionary, strGroupName, strDescription ) 
+                RETURN ACE64.AdsDDCreateUserGroup(hDictionary, strGroupName, strDescription ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsDDDeleteArticle(hDictionary AS IntPtr, strPublicationName AS STRING, strObjectName AS STRING ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDDeleteArticle(hDictionary, strPublicationName, strObjectName ) 
+            IF Is32Bits
+                RETURN ACE32.AdsDDDeleteArticle(hDictionary, strPublicationName, strObjectName ) 
             ELSE
-                RETURN Ace64.AdsDDDeleteArticle(hDictionary, strPublicationName, strObjectName ) 
+                RETURN ACE64.AdsDDDeleteArticle(hDictionary, strPublicationName, strObjectName ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsDDDeleteIndex(hDictionary AS IntPtr, strTableName AS STRING, strIndexName AS STRING ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDDeleteIndex(hDictionary, strTableName, strIndexName ) 
+            IF Is32Bits
+                RETURN ACE32.AdsDDDeleteIndex(hDictionary, strTableName, strIndexName ) 
             ELSE
-                RETURN Ace64.AdsDDDeleteIndex(hDictionary, strTableName, strIndexName ) 
+                RETURN ACE64.AdsDDDeleteIndex(hDictionary, strTableName, strIndexName ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsDDDeletePublication(hDictionary AS IntPtr, strPublicationName AS STRING ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDDeletePublication(hDictionary, strPublicationName ) 
+            IF Is32Bits
+                RETURN ACE32.AdsDDDeletePublication(hDictionary, strPublicationName ) 
             ELSE
-                RETURN Ace64.AdsDDDeletePublication(hDictionary, strPublicationName ) 
+                RETURN ACE64.AdsDDDeletePublication(hDictionary, strPublicationName ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsDDDeleteSubscription(hDictionary AS IntPtr, strSubscriptionName AS STRING ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDDeleteSubscription(hDictionary, strSubscriptionName ) 
+            IF Is32Bits
+                RETURN ACE32.AdsDDDeleteSubscription(hDictionary, strSubscriptionName ) 
             ELSE
-                RETURN Ace64.AdsDDDeleteSubscription(hDictionary, strSubscriptionName ) 
+                RETURN ACE64.AdsDDDeleteSubscription(hDictionary, strSubscriptionName ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsDDDeleteUser(hDictionary AS IntPtr, strUserName AS STRING ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDDeleteUser(hDictionary, strUserName ) 
+            IF Is32Bits
+                RETURN ACE32.AdsDDDeleteUser(hDictionary, strUserName ) 
             ELSE
-                RETURN Ace64.AdsDDDeleteUser(hDictionary, strUserName ) 
+                RETURN ACE64.AdsDDDeleteUser(hDictionary, strUserName ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsDDDeleteUserGroup(hDictionary AS IntPtr, strGroupName AS STRING ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDDeleteUserGroup(hDictionary, strGroupName ) 
+            IF Is32Bits
+                RETURN ACE32.AdsDDDeleteUserGroup(hDictionary, strGroupName ) 
             ELSE
-                RETURN Ace64.AdsDDDeleteUserGroup(hDictionary, strGroupName ) 
+                RETURN ACE64.AdsDDDeleteUserGroup(hDictionary, strGroupName ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsDDDeployDatabase(strDestination AS STRING, strDestinationPassword AS STRING, strSource AS STRING, strSourcePassword AS STRING, usServerTypes AS WORD, usValidateOption AS WORD, usBackupFiles AS WORD, ulOptions AS DWORD) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDDeployDatabase(strDestination, strDestinationPassword, strSource, strSourcePassword, usServerTypes, usValidateOption, usBackupFiles, ulOptions ) 
+            IF Is32Bits
+                RETURN ACE32.AdsDDDeployDatabase(strDestination, strDestinationPassword, strSource, strSourcePassword, usServerTypes, usValidateOption, usBackupFiles, ulOptions ) 
             ELSE
-                RETURN Ace64.AdsDDDeployDatabase(strDestination, strDestinationPassword, strSource, strSourcePassword, usServerTypes, usValidateOption, usBackupFiles, ulOptions ) 
+                RETURN ACE64.AdsDDDeployDatabase(strDestination, strDestinationPassword, strSource, strSourcePassword, usServerTypes, usValidateOption, usBackupFiles, ulOptions ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsDDDropLink(hDBConn AS IntPtr, strLinkedDD AS STRING, usDropGlobal AS WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDDropLink(hDBConn, strLinkedDD, usDropGlobal ) 
+            IF Is32Bits
+                RETURN ACE32.AdsDDDropLink(hDBConn, strLinkedDD, usDropGlobal ) 
             ELSE
-                RETURN Ace64.AdsDDDropLink(hDBConn, strLinkedDD, usDropGlobal ) 
+                RETURN ACE64.AdsDDDropLink(hDBConn, strLinkedDD, usDropGlobal ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsDDFindClose(hObject AS IntPtr, hFindHandle AS IntPtr ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDFindClose(hObject, hFindHandle ) 
+            IF Is32Bits
+                RETURN ACE32.AdsDDFindClose(hObject, hFindHandle ) 
             ELSE
-                RETURN Ace64.AdsDDFindClose(hObject, hFindHandle ) 
+                RETURN ACE64.AdsDDFindClose(hObject, hFindHandle ) 
             ENDIF
 
-        PUBLIC STATIC METHOD AdsDDFindFirstObject(hObject AS IntPtr, usFindObjectType AS WORD, strParentName AS STRING, [IN] [OUT] strObjectName AS CHAR[], pusObjectNameLen REF WORD, phFindHandle OUT IntPtr ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDFindFirstObject(hObject, usFindObjectType, strParentName, strObjectName, REF pusObjectNameLen, OUT phFindHandle ) 
+        PUBLIC STATIC METHOD AdsDDFindFirstObject(hObject AS IntPtr, usFindObjectType AS WORD, strParentName AS STRING, [InAttribute] [OutAttribute] strObjectName AS CHAR[], pusObjectNameLen REF WORD, phFindHandle OUT IntPtr ) AS DWORD 
+            IF Is32Bits
+                RETURN ACE32.AdsDDFindFirstObject(hObject, usFindObjectType, strParentName, strObjectName, REF pusObjectNameLen, OUT phFindHandle ) 
             ELSE
-                RETURN Ace64.AdsDDFindFirstObject(hObject, usFindObjectType, strParentName, strObjectName, REF pusObjectNameLen, OUT phFindHandle ) 
+                RETURN ACE64.AdsDDFindFirstObject(hObject, usFindObjectType, strParentName, strObjectName, REF pusObjectNameLen, OUT phFindHandle ) 
             ENDIF
 
-        PUBLIC STATIC METHOD AdsDDFindNextObject(hObject AS IntPtr, hFindHandle AS IntPtr, [IN] [OUT] strObjectName AS CHAR[], pusObjectNameLen REF WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDFindNextObject(hObject, hFindHandle, strObjectName, REF pusObjectNameLen ) 
+        PUBLIC STATIC METHOD AdsDDFindNextObject(hObject AS IntPtr, hFindHandle AS IntPtr, [InAttribute] [OutAttribute] strObjectName AS CHAR[], pusObjectNameLen REF WORD ) AS DWORD 
+            IF Is32Bits
+                RETURN ACE32.AdsDDFindNextObject(hObject, hFindHandle, strObjectName, REF pusObjectNameLen ) 
             ELSE
-                RETURN Ace64.AdsDDFindNextObject(hObject, hFindHandle, strObjectName, REF pusObjectNameLen ) 
+                RETURN ACE64.AdsDDFindNextObject(hObject, hFindHandle, strObjectName, REF pusObjectNameLen ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsDDFreeTable(strTableName AS STRING, strPassword AS STRING ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDFreeTable(strTableName, strPassword ) 
+            IF Is32Bits
+                RETURN ACE32.AdsDDFreeTable(strTableName, strPassword ) 
             ELSE
-                RETURN Ace64.AdsDDFreeTable(strTableName, strPassword ) 
+                RETURN ACE64.AdsDDFreeTable(strTableName, strPassword ) 
             ENDIF
-        PUBLIC STATIC METHOD AdsDDGetArticleProperty(hObject AS IntPtr, strPublicationName AS STRING, strObjectName AS STRING, usPropertyID AS WORD, [IN] [OUT] pvProperty AS BYTE[], pusPropertyLen REF WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDGetArticleProperty(hObject, strPublicationName, strObjectName, usPropertyID, pvProperty, REF pusPropertyLen ) 
+        PUBLIC STATIC METHOD AdsDDGetArticleProperty(hObject AS IntPtr, strPublicationName AS STRING, strObjectName AS STRING, usPropertyID AS WORD, [InAttribute] [OutAttribute] pvProperty AS BYTE[], pusPropertyLen REF WORD ) AS DWORD 
+            IF Is32Bits
+                RETURN ACE32.AdsDDGetArticleProperty(hObject, strPublicationName, strObjectName, usPropertyID, pvProperty, REF pusPropertyLen ) 
             ELSE
-                RETURN Ace64.AdsDDGetArticleProperty(hObject, strPublicationName, strObjectName, usPropertyID, pvProperty, REF pusPropertyLen ) 
+                RETURN ACE64.AdsDDGetArticleProperty(hObject, strPublicationName, strObjectName, usPropertyID, pvProperty, REF pusPropertyLen ) 
             ENDIF
 
-        PUBLIC STATIC METHOD AdsDDGetArticleProperty(hObject AS IntPtr, strPublicationName AS STRING, strObjectName AS STRING, usPropertyID AS WORD, [IN] [OUT] strProperty AS CHAR[], pusPropertyLen REF WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDGetArticleProperty(hObject, strPublicationName, strObjectName, usPropertyID, strProperty, REF pusPropertyLen ) 
+        PUBLIC STATIC METHOD AdsDDGetArticleProperty(hObject AS IntPtr, strPublicationName AS STRING, strObjectName AS STRING, usPropertyID AS WORD, [InAttribute] [OutAttribute] strProperty AS CHAR[], pusPropertyLen REF WORD ) AS DWORD 
+            IF Is32Bits
+                RETURN ACE32.AdsDDGetArticleProperty(hObject, strPublicationName, strObjectName, usPropertyID, strProperty, REF pusPropertyLen ) 
             ELSE
-                RETURN Ace64.AdsDDGetArticleProperty(hObject, strPublicationName, strObjectName, usPropertyID, strProperty, REF pusPropertyLen ) 
+                RETURN ACE64.AdsDDGetArticleProperty(hObject, strPublicationName, strObjectName, usPropertyID, strProperty, REF pusPropertyLen ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsDDGetArticleProperty(hObject AS IntPtr, strPublicationName AS STRING, strObjectName AS STRING, usPropertyID AS WORD, pusProperty REF WORD, pusPropertyLen REF WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDGetArticleProperty(hObject, strPublicationName, strObjectName, usPropertyID, REF pusProperty, REF pusPropertyLen ) 
+            IF Is32Bits
+                RETURN ACE32.AdsDDGetArticleProperty(hObject, strPublicationName, strObjectName, usPropertyID, REF pusProperty, REF pusPropertyLen ) 
             ELSE
-                RETURN Ace64.AdsDDGetArticleProperty(hObject, strPublicationName, strObjectName, usPropertyID, REF pusProperty, REF pusPropertyLen ) 
+                RETURN ACE64.AdsDDGetArticleProperty(hObject, strPublicationName, strObjectName, usPropertyID, REF pusProperty, REF pusPropertyLen ) 
             ENDIF
 
-        PUBLIC STATIC METHOD AdsDDGetDatabaseProperty(hObject AS IntPtr, usPropertyID AS WORD, [IN] [OUT] pvProperty AS BYTE[], pusPropertyLen REF WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDGetDatabaseProperty(hObject, usPropertyID, pvProperty, REF pusPropertyLen ) 
+        PUBLIC STATIC METHOD AdsDDGetDatabaseProperty(hObject AS IntPtr, usPropertyID AS WORD, [InAttribute] [OutAttribute] pvProperty AS BYTE[], pusPropertyLen REF WORD ) AS DWORD 
+            IF Is32Bits
+                RETURN ACE32.AdsDDGetDatabaseProperty(hObject, usPropertyID, pvProperty, REF pusPropertyLen ) 
             ELSE
-                RETURN Ace64.AdsDDGetDatabaseProperty(hObject, usPropertyID, pvProperty, REF pusPropertyLen ) 
+                RETURN ACE64.AdsDDGetDatabaseProperty(hObject, usPropertyID, pvProperty, REF pusPropertyLen ) 
             ENDIF
 
-        PUBLIC STATIC METHOD AdsDDGetDatabaseProperty(hObject AS IntPtr, usPropertyID AS WORD, [IN] [OUT] strProperty AS CHAR[], pusPropertyLen REF WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDGetDatabaseProperty(hObject, usPropertyID, strProperty, REF pusPropertyLen ) 
+        PUBLIC STATIC METHOD AdsDDGetDatabaseProperty(hObject AS IntPtr, usPropertyID AS WORD, [InAttribute] [OutAttribute] strProperty AS CHAR[], pusPropertyLen REF WORD ) AS DWORD 
+            IF Is32Bits
+                RETURN ACE32.AdsDDGetDatabaseProperty(hObject, usPropertyID, strProperty, REF pusPropertyLen ) 
             ELSE
-                RETURN Ace64.AdsDDGetDatabaseProperty(hObject, usPropertyID, strProperty, REF pusPropertyLen ) 
+                RETURN ACE64.AdsDDGetDatabaseProperty(hObject, usPropertyID, strProperty, REF pusPropertyLen ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsDDGetDatabaseProperty(hObject AS IntPtr, usPropertyID AS WORD, pusProperty REF WORD, pusPropertyLen REF WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDGetDatabaseProperty(hObject, usPropertyID, REF pusProperty, REF pusPropertyLen ) 
+            IF Is32Bits
+                RETURN ACE32.AdsDDGetDatabaseProperty(hObject, usPropertyID, REF pusProperty, REF pusPropertyLen ) 
             ELSE
-                RETURN Ace64.AdsDDGetDatabaseProperty(hObject, usPropertyID, REF pusProperty, REF pusPropertyLen ) 
+                RETURN ACE64.AdsDDGetDatabaseProperty(hObject, usPropertyID, REF pusProperty, REF pusPropertyLen ) 
             ENDIF
 
-        PUBLIC STATIC METHOD AdsDDGetFieldProperty(hObject AS IntPtr, strTableName AS STRING, strFieldName AS STRING, usPropertyID AS WORD, [IN] [OUT] pvProperty AS BYTE[], pusPropertyLen REF WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDGetFieldProperty(hObject, strTableName, strFieldName, usPropertyID, pvProperty, REF pusPropertyLen ) 
+        PUBLIC STATIC METHOD AdsDDGetFieldProperty(hObject AS IntPtr, strTableName AS STRING, strFieldName AS STRING, usPropertyID AS WORD, [InAttribute] [OutAttribute] pvProperty AS BYTE[], pusPropertyLen REF WORD ) AS DWORD 
+            IF Is32Bits
+                RETURN ACE32.AdsDDGetFieldProperty(hObject, strTableName, strFieldName, usPropertyID, pvProperty, REF pusPropertyLen ) 
             ELSE
-                RETURN Ace64.AdsDDGetFieldProperty(hObject, strTableName, strFieldName, usPropertyID, pvProperty, REF pusPropertyLen ) 
+                RETURN ACE64.AdsDDGetFieldProperty(hObject, strTableName, strFieldName, usPropertyID, pvProperty, REF pusPropertyLen ) 
             ENDIF
 
-        PUBLIC STATIC METHOD AdsDDGetFieldProperty(hObject AS IntPtr, strTableName AS STRING, strFieldName AS STRING, usPropertyID AS WORD, [IN] [OUT] strProperty AS CHAR[], pusPropertyLen REF WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDGetFieldProperty(hObject, strTableName, strFieldName, usPropertyID, strProperty, REF pusPropertyLen ) 
+        PUBLIC STATIC METHOD AdsDDGetFieldProperty(hObject AS IntPtr, strTableName AS STRING, strFieldName AS STRING, usPropertyID AS WORD, [InAttribute] [OutAttribute] strProperty AS CHAR[], pusPropertyLen REF WORD ) AS DWORD 
+            IF Is32Bits
+                RETURN ACE32.AdsDDGetFieldProperty(hObject, strTableName, strFieldName, usPropertyID, strProperty, REF pusPropertyLen ) 
             ELSE
-                RETURN Ace64.AdsDDGetFieldProperty(hObject, strTableName, strFieldName, usPropertyID, strProperty, REF pusPropertyLen ) 
+                RETURN ACE64.AdsDDGetFieldProperty(hObject, strTableName, strFieldName, usPropertyID, strProperty, REF pusPropertyLen ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsDDGetFieldProperty(hObject AS IntPtr, strTableName AS STRING, strFieldName AS STRING, usPropertyID AS WORD, pusProperty REF WORD, pusPropertyLen REF WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDGetFieldProperty(hObject, strTableName, strFieldName, usPropertyID, REF pusProperty, REF pusPropertyLen ) 
+            IF Is32Bits
+                RETURN ACE32.AdsDDGetFieldProperty(hObject, strTableName, strFieldName, usPropertyID, REF pusProperty, REF pusPropertyLen ) 
             ELSE
-                RETURN Ace64.AdsDDGetFieldProperty(hObject, strTableName, strFieldName, usPropertyID, REF pusProperty, REF pusPropertyLen ) 
+                RETURN ACE64.AdsDDGetFieldProperty(hObject, strTableName, strFieldName, usPropertyID, REF pusProperty, REF pusPropertyLen ) 
             ENDIF
 
-        PUBLIC STATIC METHOD AdsDDGetIndexFileProperty(hObject AS IntPtr, strTableName AS STRING, strIndexFileName AS STRING, usPropertyID AS WORD, [IN] [OUT] pvProperty AS BYTE[], pusPropertyLen REF WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDGetIndexFileProperty(hObject, strTableName, strIndexFileName, usPropertyID, pvProperty, REF pusPropertyLen ) 
+        PUBLIC STATIC METHOD AdsDDGetIndexFileProperty(hObject AS IntPtr, strTableName AS STRING, strIndexFileName AS STRING, usPropertyID AS WORD, [InAttribute] [OutAttribute] pvProperty AS BYTE[], pusPropertyLen REF WORD ) AS DWORD 
+            IF Is32Bits
+                RETURN ACE32.AdsDDGetIndexFileProperty(hObject, strTableName, strIndexFileName, usPropertyID, pvProperty, REF pusPropertyLen ) 
             ELSE
-                RETURN Ace64.AdsDDGetIndexFileProperty(hObject, strTableName, strIndexFileName, usPropertyID, pvProperty, REF pusPropertyLen ) 
+                RETURN ACE64.AdsDDGetIndexFileProperty(hObject, strTableName, strIndexFileName, usPropertyID, pvProperty, REF pusPropertyLen ) 
             ENDIF
 
-        PUBLIC STATIC METHOD AdsDDGetIndexFileProperty(hObject AS IntPtr, strTableName AS STRING, strIndexFileName AS STRING, usPropertyID AS WORD, [IN] [OUT] strProperty AS CHAR[], pusPropertyLen REF WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDGetIndexFileProperty(hObject, strTableName, strIndexFileName, usPropertyID, strProperty, REF pusPropertyLen ) 
+        PUBLIC STATIC METHOD AdsDDGetIndexFileProperty(hObject AS IntPtr, strTableName AS STRING, strIndexFileName AS STRING, usPropertyID AS WORD, [InAttribute] [OutAttribute] strProperty AS CHAR[], pusPropertyLen REF WORD ) AS DWORD 
+            IF Is32Bits
+                RETURN ACE32.AdsDDGetIndexFileProperty(hObject, strTableName, strIndexFileName, usPropertyID, strProperty, REF pusPropertyLen ) 
             ELSE
-                RETURN Ace64.AdsDDGetIndexFileProperty(hObject, strTableName, strIndexFileName, usPropertyID, strProperty, REF pusPropertyLen ) 
+                RETURN ACE64.AdsDDGetIndexFileProperty(hObject, strTableName, strIndexFileName, usPropertyID, strProperty, REF pusPropertyLen ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsDDGetIndexFileProperty(hObject AS IntPtr, strTableName AS STRING, strIndexFileName AS STRING, usPropertyID AS WORD, pusProperty REF WORD, pusPropertyLen REF WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDGetIndexFileProperty(hObject, strTableName, strIndexFileName, usPropertyID, REF pusProperty, REF pusPropertyLen ) 
+            IF Is32Bits
+                RETURN ACE32.AdsDDGetIndexFileProperty(hObject, strTableName, strIndexFileName, usPropertyID, REF pusProperty, REF pusPropertyLen ) 
             ELSE
-                RETURN Ace64.AdsDDGetIndexFileProperty(hObject, strTableName, strIndexFileName, usPropertyID, REF pusProperty, REF pusPropertyLen ) 
+                RETURN ACE64.AdsDDGetIndexFileProperty(hObject, strTableName, strIndexFileName, usPropertyID, REF pusProperty, REF pusPropertyLen ) 
             ENDIF
 
-        PUBLIC STATIC METHOD AdsDDGetIndexProperty(hObject AS IntPtr, strTableName AS STRING, strIndexName AS STRING, usPropertyID AS WORD, [IN] [OUT] pvProperty AS BYTE[], pusPropertyLen REF WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDGetIndexProperty(hObject, strTableName, strIndexName, usPropertyID, pvProperty, REF pusPropertyLen ) 
+        PUBLIC STATIC METHOD AdsDDGetIndexProperty(hObject AS IntPtr, strTableName AS STRING, strIndexName AS STRING, usPropertyID AS WORD, [InAttribute] [OutAttribute] pvProperty AS BYTE[], pusPropertyLen REF WORD ) AS DWORD 
+            IF Is32Bits
+                RETURN ACE32.AdsDDGetIndexProperty(hObject, strTableName, strIndexName, usPropertyID, pvProperty, REF pusPropertyLen ) 
             ELSE
-                RETURN Ace64.AdsDDGetIndexProperty(hObject, strTableName, strIndexName, usPropertyID, pvProperty, REF pusPropertyLen ) 
+                RETURN ACE64.AdsDDGetIndexProperty(hObject, strTableName, strIndexName, usPropertyID, pvProperty, REF pusPropertyLen ) 
             ENDIF
 
-        PUBLIC STATIC METHOD AdsDDGetIndexProperty(hObject AS IntPtr, strTableName AS STRING, strIndexName AS STRING, usPropertyID AS WORD, [IN] [OUT] strProperty AS CHAR[], pusPropertyLen REF WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDGetIndexProperty(hObject, strTableName, strIndexName, usPropertyID, strProperty, REF pusPropertyLen ) 
+        PUBLIC STATIC METHOD AdsDDGetIndexProperty(hObject AS IntPtr, strTableName AS STRING, strIndexName AS STRING, usPropertyID AS WORD, [InAttribute] [OutAttribute] strProperty AS CHAR[], pusPropertyLen REF WORD ) AS DWORD 
+            IF Is32Bits
+                RETURN ACE32.AdsDDGetIndexProperty(hObject, strTableName, strIndexName, usPropertyID, strProperty, REF pusPropertyLen ) 
             ELSE
-                RETURN Ace64.AdsDDGetIndexProperty(hObject, strTableName, strIndexName, usPropertyID, strProperty, REF pusPropertyLen ) 
+                RETURN ACE64.AdsDDGetIndexProperty(hObject, strTableName, strIndexName, usPropertyID, strProperty, REF pusPropertyLen ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsDDGetIndexProperty(hObject AS IntPtr, strTableName AS STRING, strIndexName AS STRING, usPropertyID AS WORD, pusProperty REF WORD, pusPropertyLen REF WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDGetIndexProperty(hObject, strTableName, strIndexName, usPropertyID, REF pusProperty, REF pusPropertyLen ) 
+            IF Is32Bits
+                RETURN ACE32.AdsDDGetIndexProperty(hObject, strTableName, strIndexName, usPropertyID, REF pusProperty, REF pusPropertyLen ) 
             ELSE
-                RETURN Ace64.AdsDDGetIndexProperty(hObject, strTableName, strIndexName, usPropertyID, REF pusProperty, REF pusPropertyLen ) 
+                RETURN ACE64.AdsDDGetIndexProperty(hObject, strTableName, strIndexName, usPropertyID, REF pusProperty, REF pusPropertyLen ) 
             ENDIF
 
-        PUBLIC STATIC METHOD AdsDDGetLinkProperty(hConnect AS IntPtr, strLinkName AS STRING, usPropertyID AS WORD, [IN] [OUT] pvProperty AS BYTE[], pusPropertyLen REF WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDGetLinkProperty(hConnect, strLinkName, usPropertyID, pvProperty, REF pusPropertyLen ) 
+        PUBLIC STATIC METHOD AdsDDGetLinkProperty(hConnect AS IntPtr, strLinkName AS STRING, usPropertyID AS WORD, [InAttribute] [OutAttribute] pvProperty AS BYTE[], pusPropertyLen REF WORD ) AS DWORD 
+            IF Is32Bits
+                RETURN ACE32.AdsDDGetLinkProperty(hConnect, strLinkName, usPropertyID, pvProperty, REF pusPropertyLen ) 
             ELSE
-                RETURN Ace64.AdsDDGetLinkProperty(hConnect, strLinkName, usPropertyID, pvProperty, REF pusPropertyLen ) 
+                RETURN ACE64.AdsDDGetLinkProperty(hConnect, strLinkName, usPropertyID, pvProperty, REF pusPropertyLen ) 
             ENDIF
 
-        PUBLIC STATIC METHOD AdsDDGetLinkProperty(hConnect AS IntPtr, strLinkName AS STRING, usPropertyID AS WORD, [IN] [OUT] strProperty AS CHAR[], pusPropertyLen REF WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDGetLinkProperty(hConnect, strLinkName, usPropertyID, strProperty, REF pusPropertyLen ) 
+        PUBLIC STATIC METHOD AdsDDGetLinkProperty(hConnect AS IntPtr, strLinkName AS STRING, usPropertyID AS WORD, [InAttribute] [OutAttribute] strProperty AS CHAR[], pusPropertyLen REF WORD ) AS DWORD 
+            IF Is32Bits
+                RETURN ACE32.AdsDDGetLinkProperty(hConnect, strLinkName, usPropertyID, strProperty, REF pusPropertyLen ) 
             ELSE
-                RETURN Ace64.AdsDDGetLinkProperty(hConnect, strLinkName, usPropertyID, strProperty, REF pusPropertyLen ) 
+                RETURN ACE64.AdsDDGetLinkProperty(hConnect, strLinkName, usPropertyID, strProperty, REF pusPropertyLen ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsDDGetLinkProperty(hConnect AS IntPtr, strLinkName AS STRING, usPropertyID AS WORD, pusProperty REF WORD, pusPropertyLen REF WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDGetLinkProperty(hConnect, strLinkName, usPropertyID, REF pusProperty, REF pusPropertyLen ) 
+            IF Is32Bits
+                RETURN ACE32.AdsDDGetLinkProperty(hConnect, strLinkName, usPropertyID, REF pusProperty, REF pusPropertyLen ) 
             ELSE
-                RETURN Ace64.AdsDDGetLinkProperty(hConnect, strLinkName, usPropertyID, REF pusProperty, REF pusPropertyLen ) 
+                RETURN ACE64.AdsDDGetLinkProperty(hConnect, strLinkName, usPropertyID, REF pusProperty, REF pusPropertyLen ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsDDGetPermissions(hDBConn AS IntPtr, strGrantee AS STRING, usObjectType AS WORD, strObjectName AS STRING, strParentName AS STRING, usGetInherited AS WORD, pulPermissions OUT DWORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDGetPermissions(hDBConn, strGrantee, usObjectType, strObjectName, strParentName, usGetInherited, OUT pulPermissions ) 
+            IF Is32Bits
+                RETURN ACE32.AdsDDGetPermissions(hDBConn, strGrantee, usObjectType, strObjectName, strParentName, usGetInherited, OUT pulPermissions ) 
             ELSE
-                RETURN Ace64.AdsDDGetPermissions(hDBConn, strGrantee, usObjectType, strObjectName, strParentName, usGetInherited, OUT pulPermissions ) 
+                RETURN ACE64.AdsDDGetPermissions(hDBConn, strGrantee, usObjectType, strObjectName, strParentName, usGetInherited, OUT pulPermissions ) 
             ENDIF
 
-        PUBLIC STATIC METHOD AdsDDGetProcedureProperty(hObject AS IntPtr, strProcName AS STRING, usPropertyID AS WORD, [IN] [OUT] pvProperty AS BYTE[], pusPropertyLen REF WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDGetProcedureProperty(hObject, strProcName, usPropertyID, pvProperty, REF pusPropertyLen ) 
+        PUBLIC STATIC METHOD AdsDDGetProcedureProperty(hObject AS IntPtr, strProcName AS STRING, usPropertyID AS WORD, [InAttribute] [OutAttribute] pvProperty AS BYTE[], pusPropertyLen REF WORD ) AS DWORD 
+            IF Is32Bits
+                RETURN ACE32.AdsDDGetProcedureProperty(hObject, strProcName, usPropertyID, pvProperty, REF pusPropertyLen ) 
             ELSE
-                RETURN Ace64.AdsDDGetProcedureProperty(hObject, strProcName, usPropertyID, pvProperty, REF pusPropertyLen ) 
+                RETURN ACE64.AdsDDGetProcedureProperty(hObject, strProcName, usPropertyID, pvProperty, REF pusPropertyLen ) 
             ENDIF
 
-        PUBLIC STATIC METHOD AdsDDGetProcedureProperty(hObject AS IntPtr, strProcName AS STRING, usPropertyID AS WORD, [IN] [OUT] strProperty AS CHAR[], pusPropertyLen REF WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDGetProcedureProperty(hObject, strProcName, usPropertyID, strProperty, REF pusPropertyLen ) 
+        PUBLIC STATIC METHOD AdsDDGetProcedureProperty(hObject AS IntPtr, strProcName AS STRING, usPropertyID AS WORD, [InAttribute] [OutAttribute] strProperty AS CHAR[], pusPropertyLen REF WORD ) AS DWORD 
+            IF Is32Bits
+                RETURN ACE32.AdsDDGetProcedureProperty(hObject, strProcName, usPropertyID, strProperty, REF pusPropertyLen ) 
             ELSE
-                RETURN Ace64.AdsDDGetProcedureProperty(hObject, strProcName, usPropertyID, strProperty, REF pusPropertyLen ) 
+                RETURN ACE64.AdsDDGetProcedureProperty(hObject, strProcName, usPropertyID, strProperty, REF pusPropertyLen ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsDDGetProcedureProperty(hObject AS IntPtr, strProcName AS STRING, usPropertyID AS WORD, pusProperty REF WORD, pusPropertyLen REF WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDGetProcedureProperty(hObject, strProcName, usPropertyID, REF pusProperty, REF pusPropertyLen ) 
+            IF Is32Bits
+                RETURN ACE32.AdsDDGetProcedureProperty(hObject, strProcName, usPropertyID, REF pusProperty, REF pusPropertyLen ) 
             ELSE
-                RETURN Ace64.AdsDDGetProcedureProperty(hObject, strProcName, usPropertyID, REF pusProperty, REF pusPropertyLen ) 
+                RETURN ACE64.AdsDDGetProcedureProperty(hObject, strProcName, usPropertyID, REF pusProperty, REF pusPropertyLen ) 
             ENDIF
 
-        PUBLIC STATIC METHOD AdsDDGetPublicationProperty(hObject AS IntPtr, strPublicationName AS STRING, usPropertyID AS WORD, [IN] [OUT] pvProperty AS BYTE[], pusPropertyLen REF WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDGetPublicationProperty(hObject, strPublicationName, usPropertyID, pvProperty, REF pusPropertyLen ) 
+        PUBLIC STATIC METHOD AdsDDGetPublicationProperty(hObject AS IntPtr, strPublicationName AS STRING, usPropertyID AS WORD, [InAttribute] [OutAttribute] pvProperty AS BYTE[], pusPropertyLen REF WORD ) AS DWORD 
+            IF Is32Bits
+                RETURN ACE32.AdsDDGetPublicationProperty(hObject, strPublicationName, usPropertyID, pvProperty, REF pusPropertyLen ) 
             ELSE
-                RETURN Ace64.AdsDDGetPublicationProperty(hObject, strPublicationName, usPropertyID, pvProperty, REF pusPropertyLen ) 
+                RETURN ACE64.AdsDDGetPublicationProperty(hObject, strPublicationName, usPropertyID, pvProperty, REF pusPropertyLen ) 
             ENDIF
 
-        PUBLIC STATIC METHOD AdsDDGetPublicationProperty(hObject AS IntPtr, strPublicationName AS STRING, usPropertyID AS WORD, [IN] [OUT] strProperty AS CHAR[], pusPropertyLen REF WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDGetPublicationProperty(hObject, strPublicationName, usPropertyID, strProperty, REF pusPropertyLen ) 
+        PUBLIC STATIC METHOD AdsDDGetPublicationProperty(hObject AS IntPtr, strPublicationName AS STRING, usPropertyID AS WORD, [InAttribute] [OutAttribute] strProperty AS CHAR[], pusPropertyLen REF WORD ) AS DWORD 
+            IF Is32Bits
+                RETURN ACE32.AdsDDGetPublicationProperty(hObject, strPublicationName, usPropertyID, strProperty, REF pusPropertyLen ) 
             ELSE
-                RETURN Ace64.AdsDDGetPublicationProperty(hObject, strPublicationName, usPropertyID, strProperty, REF pusPropertyLen ) 
+                RETURN ACE64.AdsDDGetPublicationProperty(hObject, strPublicationName, usPropertyID, strProperty, REF pusPropertyLen ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsDDGetPublicationProperty(hObject AS IntPtr, strPublicationName AS STRING, usPropertyID AS WORD, pusProperty REF WORD, pusPropertyLen REF WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDGetPublicationProperty(hObject, strPublicationName, usPropertyID, REF pusProperty, REF pusPropertyLen ) 
+            IF Is32Bits
+                RETURN ACE32.AdsDDGetPublicationProperty(hObject, strPublicationName, usPropertyID, REF pusProperty, REF pusPropertyLen ) 
             ELSE
-                RETURN Ace64.AdsDDGetPublicationProperty(hObject, strPublicationName, usPropertyID, REF pusProperty, REF pusPropertyLen ) 
+                RETURN ACE64.AdsDDGetPublicationProperty(hObject, strPublicationName, usPropertyID, REF pusProperty, REF pusPropertyLen ) 
             ENDIF
 
-        PUBLIC STATIC METHOD AdsDDGetRefIntegrityProperty(hObject AS IntPtr, strRIName AS STRING, usPropertyID AS WORD, [IN] [OUT] strProperty AS CHAR[], pusPropertyLen REF WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDGetRefIntegrityProperty(hObject, strRIName, usPropertyID, strProperty, REF pusPropertyLen ) 
+        PUBLIC STATIC METHOD AdsDDGetRefIntegrityProperty(hObject AS IntPtr, strRIName AS STRING, usPropertyID AS WORD, [InAttribute] [OutAttribute] strProperty AS CHAR[], pusPropertyLen REF WORD ) AS DWORD 
+            IF Is32Bits
+                RETURN ACE32.AdsDDGetRefIntegrityProperty(hObject, strRIName, usPropertyID, strProperty, REF pusPropertyLen ) 
             ELSE
-                RETURN Ace64.AdsDDGetRefIntegrityProperty(hObject, strRIName, usPropertyID, strProperty, REF pusPropertyLen ) 
+                RETURN ACE64.AdsDDGetRefIntegrityProperty(hObject, strRIName, usPropertyID, strProperty, REF pusPropertyLen ) 
             ENDIF
 
-        PUBLIC STATIC METHOD AdsDDGetSubscriptionProperty(hObject AS IntPtr, strSubscriptionName AS STRING, usPropertyID AS WORD, [IN] [OUT] pvProperty AS BYTE[], pusPropertyLen REF WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDGetSubscriptionProperty(hObject, strSubscriptionName, usPropertyID, pvProperty, REF pusPropertyLen ) 
+        PUBLIC STATIC METHOD AdsDDGetSubscriptionProperty(hObject AS IntPtr, strSubscriptionName AS STRING, usPropertyID AS WORD, [InAttribute] [OutAttribute] pvProperty AS BYTE[], pusPropertyLen REF WORD ) AS DWORD 
+            IF Is32Bits
+                RETURN ACE32.AdsDDGetSubscriptionProperty(hObject, strSubscriptionName, usPropertyID, pvProperty, REF pusPropertyLen ) 
             ELSE
-                RETURN Ace64.AdsDDGetSubscriptionProperty(hObject, strSubscriptionName, usPropertyID, pvProperty, REF pusPropertyLen ) 
+                RETURN ACE64.AdsDDGetSubscriptionProperty(hObject, strSubscriptionName, usPropertyID, pvProperty, REF pusPropertyLen ) 
             ENDIF
 
-        PUBLIC STATIC METHOD AdsDDGetSubscriptionProperty(hObject AS IntPtr, strSubscriptionName AS STRING, usPropertyID AS WORD, [IN] [OUT] strProperty AS CHAR[], pusPropertyLen REF WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDGetSubscriptionProperty(hObject, strSubscriptionName, usPropertyID, strProperty, REF pusPropertyLen ) 
+        PUBLIC STATIC METHOD AdsDDGetSubscriptionProperty(hObject AS IntPtr, strSubscriptionName AS STRING, usPropertyID AS WORD, [InAttribute] [OutAttribute] strProperty AS CHAR[], pusPropertyLen REF WORD ) AS DWORD 
+            IF Is32Bits
+                RETURN ACE32.AdsDDGetSubscriptionProperty(hObject, strSubscriptionName, usPropertyID, strProperty, REF pusPropertyLen ) 
             ELSE
-                RETURN Ace64.AdsDDGetSubscriptionProperty(hObject, strSubscriptionName, usPropertyID, strProperty, REF pusPropertyLen ) 
+                RETURN ACE64.AdsDDGetSubscriptionProperty(hObject, strSubscriptionName, usPropertyID, strProperty, REF pusPropertyLen ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsDDGetSubscriptionProperty(hObject AS IntPtr, strSubscriptionName AS STRING, usPropertyID AS WORD, pusProperty REF WORD, pusPropertyLen REF WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDGetSubscriptionProperty(hObject, strSubscriptionName, usPropertyID, REF pusProperty, REF pusPropertyLen ) 
+            IF Is32Bits
+                RETURN ACE32.AdsDDGetSubscriptionProperty(hObject, strSubscriptionName, usPropertyID, REF pusProperty, REF pusPropertyLen ) 
             ELSE
-                RETURN Ace64.AdsDDGetSubscriptionProperty(hObject, strSubscriptionName, usPropertyID, REF pusProperty, REF pusPropertyLen ) 
+                RETURN ACE64.AdsDDGetSubscriptionProperty(hObject, strSubscriptionName, usPropertyID, REF pusProperty, REF pusPropertyLen ) 
             ENDIF
 
-        PUBLIC STATIC METHOD AdsDDGetTableProperty(hObject AS IntPtr, strTableName AS STRING, usPropertyID AS WORD, [IN] [OUT] pvProperty AS BYTE[], pusPropertyLen REF WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDGetTableProperty(hObject, strTableName, usPropertyID, pvProperty, REF pusPropertyLen ) 
+        PUBLIC STATIC METHOD AdsDDGetTableProperty(hObject AS IntPtr, strTableName AS STRING, usPropertyID AS WORD, [InAttribute] [OutAttribute] pvProperty AS BYTE[], pusPropertyLen REF WORD ) AS DWORD 
+            IF Is32Bits
+                RETURN ACE32.AdsDDGetTableProperty(hObject, strTableName, usPropertyID, pvProperty, REF pusPropertyLen ) 
             ELSE
-                RETURN Ace64.AdsDDGetTableProperty(hObject, strTableName, usPropertyID, pvProperty, REF pusPropertyLen ) 
+                RETURN ACE64.AdsDDGetTableProperty(hObject, strTableName, usPropertyID, pvProperty, REF pusPropertyLen ) 
             ENDIF
 
-        PUBLIC STATIC METHOD AdsDDGetTableProperty(hObject AS IntPtr, strTableName AS STRING, usPropertyID AS WORD, [IN] [OUT] strProperty AS CHAR[], pusPropertyLen REF WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDGetTableProperty(hObject, strTableName, usPropertyID, strProperty, REF pusPropertyLen ) 
+        PUBLIC STATIC METHOD AdsDDGetTableProperty(hObject AS IntPtr, strTableName AS STRING, usPropertyID AS WORD, [InAttribute] [OutAttribute] strProperty AS CHAR[], pusPropertyLen REF WORD ) AS DWORD 
+            IF Is32Bits
+                RETURN ACE32.AdsDDGetTableProperty(hObject, strTableName, usPropertyID, strProperty, REF pusPropertyLen ) 
             ELSE
-                RETURN Ace64.AdsDDGetTableProperty(hObject, strTableName, usPropertyID, strProperty, REF pusPropertyLen ) 
+                RETURN ACE64.AdsDDGetTableProperty(hObject, strTableName, usPropertyID, strProperty, REF pusPropertyLen ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsDDGetTableProperty(hObject AS IntPtr, strTableName AS STRING, usPropertyID AS WORD, pusProperty REF WORD, pusPropertyLen REF WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDGetTableProperty(hObject, strTableName, usPropertyID, REF pusProperty, REF pusPropertyLen ) 
+            IF Is32Bits
+                RETURN ACE32.AdsDDGetTableProperty(hObject, strTableName, usPropertyID, REF pusProperty, REF pusPropertyLen ) 
             ELSE
-                RETURN Ace64.AdsDDGetTableProperty(hObject, strTableName, usPropertyID, REF pusProperty, REF pusPropertyLen ) 
+                RETURN ACE64.AdsDDGetTableProperty(hObject, strTableName, usPropertyID, REF pusProperty, REF pusPropertyLen ) 
             ENDIF
 
-        PUBLIC STATIC METHOD AdsDDGetTriggerProperty(hObject AS IntPtr, strTriggerName AS STRING, usPropertyID AS WORD, [IN] [OUT] pvProperty AS BYTE[], pusPropertyLen REF WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDGetTriggerProperty(hObject, strTriggerName, usPropertyID, pvProperty, REF pusPropertyLen ) 
+        PUBLIC STATIC METHOD AdsDDGetTriggerProperty(hObject AS IntPtr, strTriggerName AS STRING, usPropertyID AS WORD, [InAttribute] [OutAttribute] pvProperty AS BYTE[], pusPropertyLen REF WORD ) AS DWORD 
+            IF Is32Bits
+                RETURN ACE32.AdsDDGetTriggerProperty(hObject, strTriggerName, usPropertyID, pvProperty, REF pusPropertyLen ) 
             ELSE
-                RETURN Ace64.AdsDDGetTriggerProperty(hObject, strTriggerName, usPropertyID, pvProperty, REF pusPropertyLen ) 
+                RETURN ACE64.AdsDDGetTriggerProperty(hObject, strTriggerName, usPropertyID, pvProperty, REF pusPropertyLen ) 
             ENDIF
 
-        PUBLIC STATIC METHOD AdsDDGetTriggerProperty(hObject AS IntPtr, strTriggerName AS STRING, usPropertyID AS WORD, [IN] [OUT] strProperty AS CHAR[], pusPropertyLen REF WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDGetTriggerProperty(hObject, strTriggerName, usPropertyID, strProperty, REF pusPropertyLen ) 
+        PUBLIC STATIC METHOD AdsDDGetTriggerProperty(hObject AS IntPtr, strTriggerName AS STRING, usPropertyID AS WORD, [InAttribute] [OutAttribute] strProperty AS CHAR[], pusPropertyLen REF WORD ) AS DWORD 
+            IF Is32Bits
+                RETURN ACE32.AdsDDGetTriggerProperty(hObject, strTriggerName, usPropertyID, strProperty, REF pusPropertyLen ) 
             ELSE
-                RETURN Ace64.AdsDDGetTriggerProperty(hObject, strTriggerName, usPropertyID, strProperty, REF pusPropertyLen ) 
+                RETURN ACE64.AdsDDGetTriggerProperty(hObject, strTriggerName, usPropertyID, strProperty, REF pusPropertyLen ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsDDGetTriggerProperty(hObject AS IntPtr, strTriggerName AS STRING, usPropertyID AS WORD, pusProperty REF WORD, pusPropertyLen REF WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDGetTriggerProperty(hObject, strTriggerName, usPropertyID, REF pusProperty, REF pusPropertyLen ) 
+            IF Is32Bits
+                RETURN ACE32.AdsDDGetTriggerProperty(hObject, strTriggerName, usPropertyID, REF pusProperty, REF pusPropertyLen ) 
             ELSE
-                RETURN Ace64.AdsDDGetTriggerProperty(hObject, strTriggerName, usPropertyID, REF pusProperty, REF pusPropertyLen ) 
+                RETURN ACE64.AdsDDGetTriggerProperty(hObject, strTriggerName, usPropertyID, REF pusProperty, REF pusPropertyLen ) 
             ENDIF
 
-        PUBLIC STATIC METHOD AdsDDGetUserGroupProperty(hObject AS IntPtr, strUserGroupName AS STRING, usPropertyID AS WORD, [IN] [OUT] pvProperty AS BYTE[], pusPropertyLen REF WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDGetUserGroupProperty(hObject, strUserGroupName, usPropertyID, pvProperty, REF pusPropertyLen ) 
+        PUBLIC STATIC METHOD AdsDDGetUserGroupProperty(hObject AS IntPtr, strUserGroupName AS STRING, usPropertyID AS WORD, [InAttribute] [OutAttribute] pvProperty AS BYTE[], pusPropertyLen REF WORD ) AS DWORD 
+            IF Is32Bits
+                RETURN ACE32.AdsDDGetUserGroupProperty(hObject, strUserGroupName, usPropertyID, pvProperty, REF pusPropertyLen ) 
             ELSE
-                RETURN Ace64.AdsDDGetUserGroupProperty(hObject, strUserGroupName, usPropertyID, pvProperty, REF pusPropertyLen ) 
+                RETURN ACE64.AdsDDGetUserGroupProperty(hObject, strUserGroupName, usPropertyID, pvProperty, REF pusPropertyLen ) 
             ENDIF
 
-        PUBLIC STATIC METHOD AdsDDGetUserGroupProperty(hObject AS IntPtr, strUserGroupName AS STRING, usPropertyID AS WORD, [IN] [OUT] strProperty AS CHAR[], pusPropertyLen REF WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDGetUserGroupProperty(hObject, strUserGroupName, usPropertyID, strProperty, REF pusPropertyLen ) 
+        PUBLIC STATIC METHOD AdsDDGetUserGroupProperty(hObject AS IntPtr, strUserGroupName AS STRING, usPropertyID AS WORD, [InAttribute] [OutAttribute] strProperty AS CHAR[], pusPropertyLen REF WORD ) AS DWORD 
+            IF Is32Bits
+                RETURN ACE32.AdsDDGetUserGroupProperty(hObject, strUserGroupName, usPropertyID, strProperty, REF pusPropertyLen ) 
             ELSE
-                RETURN Ace64.AdsDDGetUserGroupProperty(hObject, strUserGroupName, usPropertyID, strProperty, REF pusPropertyLen ) 
+                RETURN ACE64.AdsDDGetUserGroupProperty(hObject, strUserGroupName, usPropertyID, strProperty, REF pusPropertyLen ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsDDGetUserGroupProperty(hObject AS IntPtr, strUserGroupName AS STRING, usPropertyID AS WORD, pusProperty REF WORD, pusPropertyLen REF WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDGetUserGroupProperty(hObject, strUserGroupName, usPropertyID, REF pusProperty, REF pusPropertyLen ) 
+            IF Is32Bits
+                RETURN ACE32.AdsDDGetUserGroupProperty(hObject, strUserGroupName, usPropertyID, REF pusProperty, REF pusPropertyLen ) 
             ELSE
-                RETURN Ace64.AdsDDGetUserGroupProperty(hObject, strUserGroupName, usPropertyID, REF pusProperty, REF pusPropertyLen ) 
+                RETURN ACE64.AdsDDGetUserGroupProperty(hObject, strUserGroupName, usPropertyID, REF pusProperty, REF pusPropertyLen ) 
             ENDIF
 
-        PUBLIC STATIC METHOD AdsDDGetUserProperty(hObject AS IntPtr, strUserName AS STRING, usPropertyID AS WORD, [IN] [OUT] pvProperty AS BYTE[], pusPropertyLen REF WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDGetUserProperty(hObject, strUserName, usPropertyID, pvProperty, REF pusPropertyLen ) 
+        PUBLIC STATIC METHOD AdsDDGetUserProperty(hObject AS IntPtr, strUserName AS STRING, usPropertyID AS WORD, [InAttribute] [OutAttribute] pvProperty AS BYTE[], pusPropertyLen REF WORD ) AS DWORD 
+            IF Is32Bits
+                RETURN ACE32.AdsDDGetUserProperty(hObject, strUserName, usPropertyID, pvProperty, REF pusPropertyLen ) 
             ELSE
-                RETURN Ace64.AdsDDGetUserProperty(hObject, strUserName, usPropertyID, pvProperty, REF pusPropertyLen ) 
+                RETURN ACE64.AdsDDGetUserProperty(hObject, strUserName, usPropertyID, pvProperty, REF pusPropertyLen ) 
             ENDIF
 
-        PUBLIC STATIC METHOD AdsDDGetUserProperty(hObject AS IntPtr, strUserName AS STRING, usPropertyID AS WORD, [IN] [OUT] strProperty AS CHAR[], pusPropertyLen REF WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDGetUserProperty(hObject, strUserName, usPropertyID, strProperty, REF pusPropertyLen ) 
+        PUBLIC STATIC METHOD AdsDDGetUserProperty(hObject AS IntPtr, strUserName AS STRING, usPropertyID AS WORD, [InAttribute] [OutAttribute] strProperty AS CHAR[], pusPropertyLen REF WORD ) AS DWORD 
+            IF Is32Bits
+                RETURN ACE32.AdsDDGetUserProperty(hObject, strUserName, usPropertyID, strProperty, REF pusPropertyLen ) 
             ELSE
-                RETURN Ace64.AdsDDGetUserProperty(hObject, strUserName, usPropertyID, strProperty, REF pusPropertyLen ) 
+                RETURN ACE64.AdsDDGetUserProperty(hObject, strUserName, usPropertyID, strProperty, REF pusPropertyLen ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsDDGetUserProperty(hObject AS IntPtr, strUserName AS STRING, usPropertyID AS WORD, pusProperty REF WORD, pusPropertyLen REF WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDGetUserProperty(hObject, strUserName, usPropertyID, REF pusProperty, REF pusPropertyLen ) 
+            IF Is32Bits
+                RETURN ACE32.AdsDDGetUserProperty(hObject, strUserName, usPropertyID, REF pusProperty, REF pusPropertyLen ) 
             ELSE
-                RETURN Ace64.AdsDDGetUserProperty(hObject, strUserName, usPropertyID, REF pusProperty, REF pusPropertyLen ) 
+                RETURN ACE64.AdsDDGetUserProperty(hObject, strUserName, usPropertyID, REF pusProperty, REF pusPropertyLen ) 
             ENDIF
 
-        PUBLIC STATIC METHOD AdsDDGetViewProperty(hObject AS IntPtr, strViewName AS STRING, usPropertyID AS WORD, [IN] [OUT] pvProperty AS BYTE[], pusPropertyLen REF WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDGetViewProperty(hObject, strViewName, usPropertyID, pvProperty, REF pusPropertyLen ) 
+        PUBLIC STATIC METHOD AdsDDGetViewProperty(hObject AS IntPtr, strViewName AS STRING, usPropertyID AS WORD, [InAttribute] [OutAttribute] pvProperty AS BYTE[], pusPropertyLen REF WORD ) AS DWORD 
+            IF Is32Bits
+                RETURN ACE32.AdsDDGetViewProperty(hObject, strViewName, usPropertyID, pvProperty, REF pusPropertyLen ) 
             ELSE
-                RETURN Ace64.AdsDDGetViewProperty(hObject, strViewName, usPropertyID, pvProperty, REF pusPropertyLen ) 
+                RETURN ACE64.AdsDDGetViewProperty(hObject, strViewName, usPropertyID, pvProperty, REF pusPropertyLen ) 
             ENDIF
 
-        PUBLIC STATIC METHOD AdsDDGetViewProperty(hObject AS IntPtr, strViewName AS STRING, usPropertyID AS WORD, [IN] [OUT] strProperty AS CHAR[], pusPropertyLen REF WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDGetViewProperty(hObject, strViewName, usPropertyID, strProperty, REF pusPropertyLen ) 
+        PUBLIC STATIC METHOD AdsDDGetViewProperty(hObject AS IntPtr, strViewName AS STRING, usPropertyID AS WORD, [InAttribute] [OutAttribute] strProperty AS CHAR[], pusPropertyLen REF WORD ) AS DWORD 
+            IF Is32Bits
+                RETURN ACE32.AdsDDGetViewProperty(hObject, strViewName, usPropertyID, strProperty, REF pusPropertyLen ) 
             ELSE
-                RETURN Ace64.AdsDDGetViewProperty(hObject, strViewName, usPropertyID, strProperty, REF pusPropertyLen ) 
+                RETURN ACE64.AdsDDGetViewProperty(hObject, strViewName, usPropertyID, strProperty, REF pusPropertyLen ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsDDGetViewProperty(hObject AS IntPtr, strViewName AS STRING, usPropertyID AS WORD, pusProperty REF WORD, pusPropertyLen REF WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDGetViewProperty(hObject, strViewName, usPropertyID, REF pusProperty, REF pusPropertyLen ) 
+            IF Is32Bits
+                RETURN ACE32.AdsDDGetViewProperty(hObject, strViewName, usPropertyID, REF pusProperty, REF pusPropertyLen ) 
             ELSE
-                RETURN Ace64.AdsDDGetViewProperty(hObject, strViewName, usPropertyID, REF pusProperty, REF pusPropertyLen ) 
+                RETURN ACE64.AdsDDGetViewProperty(hObject, strViewName, usPropertyID, REF pusProperty, REF pusPropertyLen ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsDDGrantPermission(hAdminConn AS IntPtr, usObjectType AS WORD, strObjectName AS STRING, strParentName AS STRING, strGrantee AS STRING, ulPermissions AS DWORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDGrantPermission(hAdminConn, usObjectType, strObjectName, strParentName, strGrantee, ulPermissions ) 
+            IF Is32Bits
+                RETURN ACE32.AdsDDGrantPermission(hAdminConn, usObjectType, strObjectName, strParentName, strGrantee, ulPermissions ) 
             ELSE
-                RETURN Ace64.AdsDDGrantPermission(hAdminConn, usObjectType, strObjectName, strParentName, strGrantee, ulPermissions ) 
+                RETURN ACE64.AdsDDGrantPermission(hAdminConn, usObjectType, strObjectName, strParentName, strGrantee, ulPermissions ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsDDModifyLink(hDBConn AS IntPtr, strLinkAlias AS STRING, strLinkedDDPath AS STRING, strUserName AS STRING, strPassword AS STRING, ulOptions AS DWORD) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDModifyLink(hDBConn, strLinkAlias, strLinkedDDPath, strUserName, strPassword, ulOptions ) 
+            IF Is32Bits
+                RETURN ACE32.AdsDDModifyLink(hDBConn, strLinkAlias, strLinkedDDPath, strUserName, strPassword, ulOptions ) 
             ELSE
-                RETURN Ace64.AdsDDModifyLink(hDBConn, strLinkAlias, strLinkedDDPath, strUserName, strPassword, ulOptions ) 
+                RETURN ACE64.AdsDDModifyLink(hDBConn, strLinkAlias, strLinkedDDPath, strUserName, strPassword, ulOptions ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsDDMoveObjectFile(hDictionary AS IntPtr, usObjectType AS WORD, strObjectName AS STRING, strNewPath AS STRING, strIndexFiles AS STRING, strParent AS STRING, ulOptions AS DWORD) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDMoveObjectFile(hDictionary, usObjectType, strObjectName, strNewPath, strIndexFiles, strParent, ulOptions ) 
+            IF Is32Bits
+                RETURN ACE32.AdsDDMoveObjectFile(hDictionary, usObjectType, strObjectName, strNewPath, strIndexFiles, strParent, ulOptions ) 
             ELSE
-                RETURN Ace64.AdsDDMoveObjectFile(hDictionary, usObjectType, strObjectName, strNewPath, strIndexFiles, strParent, ulOptions ) 
+                RETURN ACE64.AdsDDMoveObjectFile(hDictionary, usObjectType, strObjectName, strNewPath, strIndexFiles, strParent, ulOptions ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsDDRemoveIndexFile(hDictionary AS IntPtr, strTableName AS STRING, strIndexFileName AS STRING, usDeleteFile AS WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDRemoveIndexFile(hDictionary, strTableName, strIndexFileName, usDeleteFile ) 
+            IF Is32Bits
+                RETURN ACE32.AdsDDRemoveIndexFile(hDictionary, strTableName, strIndexFileName, usDeleteFile ) 
             ELSE
-                RETURN Ace64.AdsDDRemoveIndexFile(hDictionary, strTableName, strIndexFileName, usDeleteFile ) 
+                RETURN ACE64.AdsDDRemoveIndexFile(hDictionary, strTableName, strIndexFileName, usDeleteFile ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsDDRemoveProcedure(hDictionary AS IntPtr, strName AS STRING ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDRemoveProcedure(hDictionary, strName ) 
+            IF Is32Bits
+                RETURN ACE32.AdsDDRemoveProcedure(hDictionary, strName ) 
             ELSE
-                RETURN Ace64.AdsDDRemoveProcedure(hDictionary, strName ) 
+                RETURN ACE64.AdsDDRemoveProcedure(hDictionary, strName ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsDDRemoveRefIntegrity(hDictionary AS IntPtr, strRIName AS STRING ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDRemoveRefIntegrity(hDictionary, strRIName ) 
+            IF Is32Bits
+                RETURN ACE32.AdsDDRemoveRefIntegrity(hDictionary, strRIName ) 
             ELSE
-                RETURN Ace64.AdsDDRemoveRefIntegrity(hDictionary, strRIName ) 
+                RETURN ACE64.AdsDDRemoveRefIntegrity(hDictionary, strRIName ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsDDRemoveTable(hObject AS IntPtr, strTableName AS STRING, usDeleteFiles AS WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDRemoveTable(hObject, strTableName, usDeleteFiles ) 
+            IF Is32Bits
+                RETURN ACE32.AdsDDRemoveTable(hObject, strTableName, usDeleteFiles ) 
             ELSE
-                RETURN Ace64.AdsDDRemoveTable(hObject, strTableName, usDeleteFiles ) 
+                RETURN ACE64.AdsDDRemoveTable(hObject, strTableName, usDeleteFiles ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsDDRemoveTrigger(hDictionary AS IntPtr, strName AS STRING ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDRemoveTrigger(hDictionary, strName ) 
+            IF Is32Bits
+                RETURN ACE32.AdsDDRemoveTrigger(hDictionary, strName ) 
             ELSE
-                RETURN Ace64.AdsDDRemoveTrigger(hDictionary, strName ) 
+                RETURN ACE64.AdsDDRemoveTrigger(hDictionary, strName ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsDDRemoveUserFromGroup(hDictionary AS IntPtr, strGroupName AS STRING, strUserName AS STRING ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDRemoveUserFromGroup(hDictionary, strGroupName, strUserName ) 
+            IF Is32Bits
+                RETURN ACE32.AdsDDRemoveUserFromGroup(hDictionary, strGroupName, strUserName ) 
             ELSE
-                RETURN Ace64.AdsDDRemoveUserFromGroup(hDictionary, strGroupName, strUserName ) 
+                RETURN ACE64.AdsDDRemoveUserFromGroup(hDictionary, strGroupName, strUserName ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsDDRemoveView(hDictionary AS IntPtr, strName AS STRING ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDRemoveView(hDictionary, strName ) 
+            IF Is32Bits
+                RETURN ACE32.AdsDDRemoveView(hDictionary, strName ) 
             ELSE
-                RETURN Ace64.AdsDDRemoveView(hDictionary, strName ) 
+                RETURN ACE64.AdsDDRemoveView(hDictionary, strName ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsDDRenameObject(hDictionary AS IntPtr, strObjectName AS STRING, strNewObjectName AS STRING, usObjectType AS WORD, ulOptions AS DWORD) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDRenameObject(hDictionary, strObjectName, strNewObjectName, usObjectType, ulOptions ) 
+            IF Is32Bits
+                RETURN ACE32.AdsDDRenameObject(hDictionary, strObjectName, strNewObjectName, usObjectType, ulOptions ) 
             ELSE
-                RETURN Ace64.AdsDDRenameObject(hDictionary, strObjectName, strNewObjectName, usObjectType, ulOptions ) 
+                RETURN ACE64.AdsDDRenameObject(hDictionary, strObjectName, strNewObjectName, usObjectType, ulOptions ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsDDRevokePermission(hAdminConn AS IntPtr, usObjectType AS WORD, strObjectName AS STRING, strParentName AS STRING, strGrantee AS STRING, ulPermissions AS DWORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDRevokePermission(hAdminConn, usObjectType, strObjectName, strParentName, strGrantee, ulPermissions ) 
+            IF Is32Bits
+                RETURN ACE32.AdsDDRevokePermission(hAdminConn, usObjectType, strObjectName, strParentName, strGrantee, ulPermissions ) 
             ELSE
-                RETURN Ace64.AdsDDRevokePermission(hAdminConn, usObjectType, strObjectName, strParentName, strGrantee, ulPermissions ) 
+                RETURN ACE64.AdsDDRevokePermission(hAdminConn, usObjectType, strObjectName, strParentName, strGrantee, ulPermissions ) 
             ENDIF
 
-        PUBLIC STATIC METHOD AdsDDSetArticleProperty(hDictionary AS IntPtr, strPublicationName AS STRING, strObjectName AS STRING, usPropertyID AS WORD, [IN] [OUT] pvProperty AS BYTE[], usPropertyLen AS WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDSetArticleProperty(hDictionary, strPublicationName, strObjectName, usPropertyID, pvProperty, usPropertyLen ) 
+        PUBLIC STATIC METHOD AdsDDSetArticleProperty(hDictionary AS IntPtr, strPublicationName AS STRING, strObjectName AS STRING, usPropertyID AS WORD, [InAttribute] [OutAttribute] pvProperty AS BYTE[], usPropertyLen AS WORD ) AS DWORD 
+            IF Is32Bits
+                RETURN ACE32.AdsDDSetArticleProperty(hDictionary, strPublicationName, strObjectName, usPropertyID, pvProperty, usPropertyLen ) 
             ELSE
-                RETURN Ace64.AdsDDSetArticleProperty(hDictionary, strPublicationName, strObjectName, usPropertyID, pvProperty, usPropertyLen ) 
+                RETURN ACE64.AdsDDSetArticleProperty(hDictionary, strPublicationName, strObjectName, usPropertyID, pvProperty, usPropertyLen ) 
             ENDIF
 
-        PUBLIC STATIC METHOD AdsDDSetArticleProperty(hDictionary AS IntPtr, strPublicationName AS STRING, strObjectName AS STRING, usPropertyID AS WORD, [IN] [OUT] strProperty AS CHAR[], usPropertyLen AS WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDSetArticleProperty(hDictionary, strPublicationName, strObjectName, usPropertyID, strProperty, usPropertyLen ) 
+        PUBLIC STATIC METHOD AdsDDSetArticleProperty(hDictionary AS IntPtr, strPublicationName AS STRING, strObjectName AS STRING, usPropertyID AS WORD, [InAttribute] [OutAttribute] strProperty AS CHAR[], usPropertyLen AS WORD ) AS DWORD 
+            IF Is32Bits
+                RETURN ACE32.AdsDDSetArticleProperty(hDictionary, strPublicationName, strObjectName, usPropertyID, strProperty, usPropertyLen ) 
             ELSE
-                RETURN Ace64.AdsDDSetArticleProperty(hDictionary, strPublicationName, strObjectName, usPropertyID, strProperty, usPropertyLen ) 
+                RETURN ACE64.AdsDDSetArticleProperty(hDictionary, strPublicationName, strObjectName, usPropertyID, strProperty, usPropertyLen ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsDDSetArticleProperty(hDictionary AS IntPtr, strPublicationName AS STRING, strObjectName AS STRING, usPropertyID AS WORD, pusProperty REF WORD, usPropertyLen AS WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDSetArticleProperty(hDictionary, strPublicationName, strObjectName, usPropertyID, REF pusProperty, usPropertyLen ) 
+            IF Is32Bits
+                RETURN ACE32.AdsDDSetArticleProperty(hDictionary, strPublicationName, strObjectName, usPropertyID, REF pusProperty, usPropertyLen ) 
             ELSE
-                RETURN Ace64.AdsDDSetArticleProperty(hDictionary, strPublicationName, strObjectName, usPropertyID, REF pusProperty, usPropertyLen ) 
+                RETURN ACE64.AdsDDSetArticleProperty(hDictionary, strPublicationName, strObjectName, usPropertyID, REF pusProperty, usPropertyLen ) 
             ENDIF
 
-        PUBLIC STATIC METHOD AdsDDSetDatabaseProperty(hDictionary AS IntPtr, usPropertyID AS WORD, [IN] [OUT] pvProperty AS BYTE[], usPropertyLen AS WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDSetDatabaseProperty(hDictionary, usPropertyID, pvProperty, usPropertyLen ) 
+        PUBLIC STATIC METHOD AdsDDSetDatabaseProperty(hDictionary AS IntPtr, usPropertyID AS WORD, [InAttribute] [OutAttribute] pvProperty AS BYTE[], usPropertyLen AS WORD ) AS DWORD 
+            IF Is32Bits
+                RETURN ACE32.AdsDDSetDatabaseProperty(hDictionary, usPropertyID, pvProperty, usPropertyLen ) 
             ELSE
-                RETURN Ace64.AdsDDSetDatabaseProperty(hDictionary, usPropertyID, pvProperty, usPropertyLen ) 
+                RETURN ACE64.AdsDDSetDatabaseProperty(hDictionary, usPropertyID, pvProperty, usPropertyLen ) 
             ENDIF
 
-        PUBLIC STATIC METHOD AdsDDSetDatabaseProperty(hDictionary AS IntPtr, usPropertyID AS WORD, [IN] [OUT] strProperty AS CHAR[], usPropertyLen AS WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDSetDatabaseProperty(hDictionary, usPropertyID, strProperty, usPropertyLen ) 
+        PUBLIC STATIC METHOD AdsDDSetDatabaseProperty(hDictionary AS IntPtr, usPropertyID AS WORD, [InAttribute] [OutAttribute] strProperty AS CHAR[], usPropertyLen AS WORD ) AS DWORD 
+            IF Is32Bits
+                RETURN ACE32.AdsDDSetDatabaseProperty(hDictionary, usPropertyID, strProperty, usPropertyLen ) 
             ELSE
-                RETURN Ace64.AdsDDSetDatabaseProperty(hDictionary, usPropertyID, strProperty, usPropertyLen ) 
+                RETURN ACE64.AdsDDSetDatabaseProperty(hDictionary, usPropertyID, strProperty, usPropertyLen ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsDDSetDatabaseProperty(hDictionary AS IntPtr, usPropertyID AS WORD, pusProperty REF WORD, usPropertyLen AS WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDSetDatabaseProperty(hDictionary, usPropertyID, REF pusProperty, usPropertyLen ) 
+            IF Is32Bits
+                RETURN ACE32.AdsDDSetDatabaseProperty(hDictionary, usPropertyID, REF pusProperty, usPropertyLen ) 
             ELSE
-                RETURN Ace64.AdsDDSetDatabaseProperty(hDictionary, usPropertyID, REF pusProperty, usPropertyLen ) 
+                RETURN ACE64.AdsDDSetDatabaseProperty(hDictionary, usPropertyID, REF pusProperty, usPropertyLen ) 
             ENDIF
 
-        PUBLIC STATIC METHOD AdsDDSetFieldProperty(hDictionary AS IntPtr, strTableName AS STRING, strFieldName AS STRING, usPropertyID AS WORD, [IN] [OUT] pvProperty AS BYTE[], usPropertyLen AS WORD, usValidateOption AS WORD, strFailTable AS STRING ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDSetFieldProperty(hDictionary, strTableName, strFieldName, usPropertyID, pvProperty, usPropertyLen, usValidateOption, strFailTable ) 
+        PUBLIC STATIC METHOD AdsDDSetFieldProperty(hDictionary AS IntPtr, strTableName AS STRING, strFieldName AS STRING, usPropertyID AS WORD, [InAttribute] [OutAttribute] pvProperty AS BYTE[], usPropertyLen AS WORD, usValidateOption AS WORD, strFailTable AS STRING ) AS DWORD 
+            IF Is32Bits
+                RETURN ACE32.AdsDDSetFieldProperty(hDictionary, strTableName, strFieldName, usPropertyID, pvProperty, usPropertyLen, usValidateOption, strFailTable ) 
             ELSE
-                RETURN Ace64.AdsDDSetFieldProperty(hDictionary, strTableName, strFieldName, usPropertyID, pvProperty, usPropertyLen, usValidateOption, strFailTable ) 
+                RETURN ACE64.AdsDDSetFieldProperty(hDictionary, strTableName, strFieldName, usPropertyID, pvProperty, usPropertyLen, usValidateOption, strFailTable ) 
             ENDIF
 
-        PUBLIC STATIC METHOD AdsDDSetFieldProperty(hDictionary AS IntPtr, strTableName AS STRING, strFieldName AS STRING, usPropertyID AS WORD, [IN] [OUT] strProperty AS CHAR[], usPropertyLen AS WORD, usValidateOption AS WORD, strFailTable AS STRING ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDSetFieldProperty(hDictionary, strTableName, strFieldName, usPropertyID, strProperty, usPropertyLen, usValidateOption, strFailTable ) 
+        PUBLIC STATIC METHOD AdsDDSetFieldProperty(hDictionary AS IntPtr, strTableName AS STRING, strFieldName AS STRING, usPropertyID AS WORD, [InAttribute] [OutAttribute] strProperty AS CHAR[], usPropertyLen AS WORD, usValidateOption AS WORD, strFailTable AS STRING ) AS DWORD 
+            IF Is32Bits
+                RETURN ACE32.AdsDDSetFieldProperty(hDictionary, strTableName, strFieldName, usPropertyID, strProperty, usPropertyLen, usValidateOption, strFailTable ) 
             ELSE
-                RETURN Ace64.AdsDDSetFieldProperty(hDictionary, strTableName, strFieldName, usPropertyID, strProperty, usPropertyLen, usValidateOption, strFailTable ) 
+                RETURN ACE64.AdsDDSetFieldProperty(hDictionary, strTableName, strFieldName, usPropertyID, strProperty, usPropertyLen, usValidateOption, strFailTable ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsDDSetFieldProperty(hDictionary AS IntPtr, strTableName AS STRING, strFieldName AS STRING, usPropertyID AS WORD, pusProperty REF WORD, usPropertyLen AS WORD, usValidateOption AS WORD, strFailTable AS STRING ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDSetFieldProperty(hDictionary, strTableName, strFieldName, usPropertyID, REF pusProperty, usPropertyLen, usValidateOption, strFailTable ) 
+            IF Is32Bits
+                RETURN ACE32.AdsDDSetFieldProperty(hDictionary, strTableName, strFieldName, usPropertyID, REF pusProperty, usPropertyLen, usValidateOption, strFailTable ) 
             ELSE
-                RETURN Ace64.AdsDDSetFieldProperty(hDictionary, strTableName, strFieldName, usPropertyID, REF pusProperty, usPropertyLen, usValidateOption, strFailTable ) 
+                RETURN ACE64.AdsDDSetFieldProperty(hDictionary, strTableName, strFieldName, usPropertyID, REF pusProperty, usPropertyLen, usValidateOption, strFailTable ) 
             ENDIF
 
-        PUBLIC STATIC METHOD AdsDDSetIndexProperty(hAdminConn AS IntPtr, strTableName AS STRING, strIndexName AS STRING, usPropertyID AS WORD, [IN] [OUT] pvProperty AS BYTE[], usPropertyLen AS WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDSetIndexProperty(hAdminConn, strTableName, strIndexName, usPropertyID, pvProperty, usPropertyLen ) 
+        PUBLIC STATIC METHOD AdsDDSetIndexProperty(hAdminConn AS IntPtr, strTableName AS STRING, strIndexName AS STRING, usPropertyID AS WORD, [InAttribute] [OutAttribute] pvProperty AS BYTE[], usPropertyLen AS WORD ) AS DWORD 
+            IF Is32Bits
+                RETURN ACE32.AdsDDSetIndexProperty(hAdminConn, strTableName, strIndexName, usPropertyID, pvProperty, usPropertyLen ) 
             ELSE
-                RETURN Ace64.AdsDDSetIndexProperty(hAdminConn, strTableName, strIndexName, usPropertyID, pvProperty, usPropertyLen ) 
+                RETURN ACE64.AdsDDSetIndexProperty(hAdminConn, strTableName, strIndexName, usPropertyID, pvProperty, usPropertyLen ) 
             ENDIF
 
-        PUBLIC STATIC METHOD AdsDDSetIndexProperty(hAdminConn AS IntPtr, strTableName AS STRING, strIndexName  AS STRING, usPropertyID AS WORD, [IN] [OUT] strProperty AS CHAR[], usPropertyLen AS WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDSetIndexProperty(hAdminConn, strTableName, strIndexName, usPropertyID, strProperty, usPropertyLen ) 
+        PUBLIC STATIC METHOD AdsDDSetIndexProperty(hAdminConn AS IntPtr, strTableName AS STRING, strIndexName  AS STRING, usPropertyID AS WORD, [InAttribute] [OutAttribute] strProperty AS CHAR[], usPropertyLen AS WORD ) AS DWORD 
+            IF Is32Bits
+                RETURN ACE32.AdsDDSetIndexProperty(hAdminConn, strTableName, strIndexName, usPropertyID, strProperty, usPropertyLen ) 
             ELSE
-                RETURN Ace64.AdsDDSetIndexProperty(hAdminConn, strTableName, strIndexName, usPropertyID, strProperty, usPropertyLen ) 
+                RETURN ACE64.AdsDDSetIndexProperty(hAdminConn, strTableName, strIndexName, usPropertyID, strProperty, usPropertyLen ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsDDSetIndexProperty(hAdminConn AS IntPtr, strTableName AS STRING, strIndexName AS STRING, usPropertyID AS WORD, pusProperty REF WORD, usPropertyLen AS WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDSetIndexProperty(hAdminConn, strTableName, strIndexName, usPropertyID, REF pusProperty, usPropertyLen ) 
+            IF Is32Bits
+                RETURN ACE32.AdsDDSetIndexProperty(hAdminConn, strTableName, strIndexName, usPropertyID, REF pusProperty, usPropertyLen ) 
             ELSE
-                RETURN Ace64.AdsDDSetIndexProperty(hAdminConn, strTableName, strIndexName, usPropertyID, REF pusProperty, usPropertyLen ) 
+                RETURN ACE64.AdsDDSetIndexProperty(hAdminConn, strTableName, strIndexName, usPropertyID, REF pusProperty, usPropertyLen ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsDDSetObjectAccessRights(hDictionary AS IntPtr, strObjectName AS STRING, strAccessorName AS STRING, strAllowedAccess AS STRING ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDSetObjectAccessRights(hDictionary, strObjectName, strAccessorName, strAllowedAccess ) 
+            IF Is32Bits
+                RETURN ACE32.AdsDDSetObjectAccessRights(hDictionary, strObjectName, strAccessorName, strAllowedAccess ) 
             ELSE
-                RETURN Ace64.AdsDDSetObjectAccessRights(hDictionary, strObjectName, strAccessorName, strAllowedAccess ) 
+                RETURN ACE64.AdsDDSetObjectAccessRights(hDictionary, strObjectName, strAccessorName, strAllowedAccess ) 
             ENDIF
 
-        PUBLIC STATIC METHOD AdsDDSetProcedureProperty(hDictionary AS IntPtr, strProcedureName AS STRING, usPropertyID AS WORD, [IN] [OUT] pvProperty AS BYTE[], usPropertyLen AS WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDSetProcedureProperty(hDictionary, strProcedureName, usPropertyID, pvProperty, usPropertyLen ) 
+        PUBLIC STATIC METHOD AdsDDSetProcedureProperty(hDictionary AS IntPtr, strProcedureName AS STRING, usPropertyID AS WORD, [InAttribute] [OutAttribute] pvProperty AS BYTE[], usPropertyLen AS WORD ) AS DWORD 
+            IF Is32Bits
+                RETURN ACE32.AdsDDSetProcedureProperty(hDictionary, strProcedureName, usPropertyID, pvProperty, usPropertyLen ) 
             ELSE
-                RETURN Ace64.AdsDDSetProcedureProperty(hDictionary, strProcedureName, usPropertyID, pvProperty, usPropertyLen ) 
+                RETURN ACE64.AdsDDSetProcedureProperty(hDictionary, strProcedureName, usPropertyID, pvProperty, usPropertyLen ) 
             ENDIF
 
-        PUBLIC STATIC METHOD AdsDDSetProcedureProperty(hDictionary AS IntPtr, strProcedureName AS STRING, usPropertyID AS WORD, [IN] [OUT] strProperty AS CHAR[], usPropertyLen AS WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDSetProcedureProperty(hDictionary, strProcedureName, usPropertyID, strProperty, usPropertyLen ) 
+        PUBLIC STATIC METHOD AdsDDSetProcedureProperty(hDictionary AS IntPtr, strProcedureName AS STRING, usPropertyID AS WORD, [InAttribute] [OutAttribute] strProperty AS CHAR[], usPropertyLen AS WORD ) AS DWORD 
+            IF Is32Bits
+                RETURN ACE32.AdsDDSetProcedureProperty(hDictionary, strProcedureName, usPropertyID, strProperty, usPropertyLen ) 
             ELSE
-                RETURN Ace64.AdsDDSetProcedureProperty(hDictionary, strProcedureName, usPropertyID, strProperty, usPropertyLen ) 
+                RETURN ACE64.AdsDDSetProcedureProperty(hDictionary, strProcedureName, usPropertyID, strProperty, usPropertyLen ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsDDSetProcedureProperty(hDictionary AS IntPtr, strProcedureName AS STRING, usPropertyID AS WORD, pusProperty REF WORD, usPropertyLen AS WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDSetProcedureProperty(hDictionary, strProcedureName, usPropertyID, REF pusProperty, usPropertyLen ) 
+            IF Is32Bits
+                RETURN ACE32.AdsDDSetProcedureProperty(hDictionary, strProcedureName, usPropertyID, REF pusProperty, usPropertyLen ) 
             ELSE
-                RETURN Ace64.AdsDDSetProcedureProperty(hDictionary, strProcedureName, usPropertyID, REF pusProperty, usPropertyLen ) 
+                RETURN ACE64.AdsDDSetProcedureProperty(hDictionary, strProcedureName, usPropertyID, REF pusProperty, usPropertyLen ) 
             ENDIF
-        PUBLIC STATIC METHOD AdsDDSetPublicationProperty(hDictionary AS IntPtr, strPublicationName AS STRING, usPropertyID AS WORD, [IN] [OUT] pvProperty AS BYTE[], usPropertyLen AS WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDSetPublicationProperty(hDictionary, strPublicationName, usPropertyID, pvProperty, usPropertyLen ) 
+        PUBLIC STATIC METHOD AdsDDSetPublicationProperty(hDictionary AS IntPtr, strPublicationName AS STRING, usPropertyID AS WORD, [InAttribute] [OutAttribute] pvProperty AS BYTE[], usPropertyLen AS WORD ) AS DWORD 
+            IF Is32Bits
+                RETURN ACE32.AdsDDSetPublicationProperty(hDictionary, strPublicationName, usPropertyID, pvProperty, usPropertyLen ) 
             ELSE
-                RETURN Ace64.AdsDDSetPublicationProperty(hDictionary, strPublicationName, usPropertyID, pvProperty, usPropertyLen ) 
+                RETURN ACE64.AdsDDSetPublicationProperty(hDictionary, strPublicationName, usPropertyID, pvProperty, usPropertyLen ) 
             ENDIF
 
-        PUBLIC STATIC METHOD AdsDDSetPublicationProperty(hDictionary AS IntPtr, strPublicationName AS STRING, usPropertyID AS WORD, [IN] [OUT] strProperty AS CHAR[], usPropertyLen AS WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDSetPublicationProperty(hDictionary, strPublicationName, usPropertyID, strProperty, usPropertyLen ) 
+        PUBLIC STATIC METHOD AdsDDSetPublicationProperty(hDictionary AS IntPtr, strPublicationName AS STRING, usPropertyID AS WORD, [InAttribute] [OutAttribute] strProperty AS CHAR[], usPropertyLen AS WORD ) AS DWORD 
+            IF Is32Bits
+                RETURN ACE32.AdsDDSetPublicationProperty(hDictionary, strPublicationName, usPropertyID, strProperty, usPropertyLen ) 
             ELSE
-                RETURN Ace64.AdsDDSetPublicationProperty(hDictionary, strPublicationName, usPropertyID, strProperty, usPropertyLen ) 
+                RETURN ACE64.AdsDDSetPublicationProperty(hDictionary, strPublicationName, usPropertyID, strProperty, usPropertyLen ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsDDSetPublicationProperty(hDictionary AS IntPtr, strPublicationName AS STRING, usPropertyID AS WORD, pusProperty REF WORD, usPropertyLen AS WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDSetPublicationProperty(hDictionary, strPublicationName, usPropertyID, REF pusProperty, usPropertyLen ) 
+            IF Is32Bits
+                RETURN ACE32.AdsDDSetPublicationProperty(hDictionary, strPublicationName, usPropertyID, REF pusProperty, usPropertyLen ) 
             ELSE
-                RETURN Ace64.AdsDDSetPublicationProperty(hDictionary, strPublicationName, usPropertyID, REF pusProperty, usPropertyLen ) 
+                RETURN ACE64.AdsDDSetPublicationProperty(hDictionary, strPublicationName, usPropertyID, REF pusProperty, usPropertyLen ) 
             ENDIF
 
-        PUBLIC STATIC METHOD AdsDDSetSubscriptionProperty(hDictionary AS IntPtr, strSubscriptionName AS STRING, usPropertyID AS WORD, [IN] [OUT] pvProperty AS BYTE[], usPropertyLen AS WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDSetSubscriptionProperty(hDictionary, strSubscriptionName, usPropertyID, pvProperty, usPropertyLen ) 
+        PUBLIC STATIC METHOD AdsDDSetSubscriptionProperty(hDictionary AS IntPtr, strSubscriptionName AS STRING, usPropertyID AS WORD, [InAttribute] [OutAttribute] pvProperty AS BYTE[], usPropertyLen AS WORD ) AS DWORD 
+            IF Is32Bits
+                RETURN ACE32.AdsDDSetSubscriptionProperty(hDictionary, strSubscriptionName, usPropertyID, pvProperty, usPropertyLen ) 
             ELSE
-                RETURN Ace64.AdsDDSetSubscriptionProperty(hDictionary, strSubscriptionName, usPropertyID, pvProperty, usPropertyLen ) 
+                RETURN ACE64.AdsDDSetSubscriptionProperty(hDictionary, strSubscriptionName, usPropertyID, pvProperty, usPropertyLen ) 
             ENDIF
 
-        PUBLIC STATIC METHOD AdsDDSetSubscriptionProperty(hDictionary AS IntPtr, strSubscriptionName AS STRING, usPropertyID AS WORD, [IN] [OUT] strProperty AS CHAR[], usPropertyLen AS WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDSetSubscriptionProperty(hDictionary, strSubscriptionName, usPropertyID, strProperty, usPropertyLen ) 
+        PUBLIC STATIC METHOD AdsDDSetSubscriptionProperty(hDictionary AS IntPtr, strSubscriptionName AS STRING, usPropertyID AS WORD, [InAttribute] [OutAttribute] strProperty AS CHAR[], usPropertyLen AS WORD ) AS DWORD 
+            IF Is32Bits
+                RETURN ACE32.AdsDDSetSubscriptionProperty(hDictionary, strSubscriptionName, usPropertyID, strProperty, usPropertyLen ) 
             ELSE
-                RETURN Ace64.AdsDDSetSubscriptionProperty(hDictionary, strSubscriptionName, usPropertyID, strProperty, usPropertyLen ) 
+                RETURN ACE64.AdsDDSetSubscriptionProperty(hDictionary, strSubscriptionName, usPropertyID, strProperty, usPropertyLen ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsDDSetSubscriptionProperty(hDictionary AS IntPtr, strSubscriptionName AS STRING, usPropertyID AS WORD, pusProperty REF WORD, usPropertyLen AS WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDSetSubscriptionProperty(hDictionary, strSubscriptionName, usPropertyID, REF pusProperty, usPropertyLen ) 
+            IF Is32Bits
+                RETURN ACE32.AdsDDSetSubscriptionProperty(hDictionary, strSubscriptionName, usPropertyID, REF pusProperty, usPropertyLen ) 
             ELSE
-                RETURN Ace64.AdsDDSetSubscriptionProperty(hDictionary, strSubscriptionName, usPropertyID, REF pusProperty, usPropertyLen ) 
+                RETURN ACE64.AdsDDSetSubscriptionProperty(hDictionary, strSubscriptionName, usPropertyID, REF pusProperty, usPropertyLen ) 
             ENDIF
 
-        PUBLIC STATIC METHOD AdsDDSetTableProperty(hDictionary AS IntPtr, strTableName AS STRING, usPropertyID AS WORD, [IN] [OUT] pvProperty AS BYTE[], usPropertyLen AS WORD, usValidateOption AS WORD, strFailTable AS STRING ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDSetTableProperty(hDictionary, strTableName, usPropertyID, pvProperty, usPropertyLen, usValidateOption, strFailTable ) 
+        PUBLIC STATIC METHOD AdsDDSetTableProperty(hDictionary AS IntPtr, strTableName AS STRING, usPropertyID AS WORD, [InAttribute] [OutAttribute] pvProperty AS BYTE[], usPropertyLen AS WORD, usValidateOption AS WORD, strFailTable AS STRING ) AS DWORD 
+            IF Is32Bits
+                RETURN ACE32.AdsDDSetTableProperty(hDictionary, strTableName, usPropertyID, pvProperty, usPropertyLen, usValidateOption, strFailTable ) 
             ELSE
-                RETURN Ace64.AdsDDSetTableProperty(hDictionary, strTableName, usPropertyID, pvProperty, usPropertyLen, usValidateOption, strFailTable ) 
+                RETURN ACE64.AdsDDSetTableProperty(hDictionary, strTableName, usPropertyID, pvProperty, usPropertyLen, usValidateOption, strFailTable ) 
             ENDIF
 
-        PUBLIC STATIC METHOD AdsDDSetTableProperty(hDictionary AS IntPtr, strTableName AS STRING, usPropertyID AS WORD, [IN] [OUT] strProperty AS CHAR[], usPropertyLen AS WORD, usValidateOption AS WORD, strFailTable AS STRING ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDSetTableProperty(hDictionary, strTableName, usPropertyID, strProperty, usPropertyLen, usValidateOption, strFailTable ) 
+        PUBLIC STATIC METHOD AdsDDSetTableProperty(hDictionary AS IntPtr, strTableName AS STRING, usPropertyID AS WORD, [InAttribute] [OutAttribute] strProperty AS CHAR[], usPropertyLen AS WORD, usValidateOption AS WORD, strFailTable AS STRING ) AS DWORD 
+            IF Is32Bits
+                RETURN ACE32.AdsDDSetTableProperty(hDictionary, strTableName, usPropertyID, strProperty, usPropertyLen, usValidateOption, strFailTable ) 
             ELSE
-                RETURN Ace64.AdsDDSetTableProperty(hDictionary, strTableName, usPropertyID, strProperty, usPropertyLen, usValidateOption, strFailTable ) 
+                RETURN ACE64.AdsDDSetTableProperty(hDictionary, strTableName, usPropertyID, strProperty, usPropertyLen, usValidateOption, strFailTable ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsDDSetTableProperty(hDictionary AS IntPtr, strTableName AS STRING, usPropertyID AS WORD, pusProperty REF WORD, usPropertyLen AS WORD, usValidateOption AS WORD, strFailTable AS STRING ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDSetTableProperty(hDictionary, strTableName, usPropertyID, REF pusProperty, usPropertyLen, usValidateOption, strFailTable ) 
+            IF Is32Bits
+                RETURN ACE32.AdsDDSetTableProperty(hDictionary, strTableName, usPropertyID, REF pusProperty, usPropertyLen, usValidateOption, strFailTable ) 
             ELSE
-                RETURN Ace64.AdsDDSetTableProperty(hDictionary, strTableName, usPropertyID, REF pusProperty, usPropertyLen, usValidateOption, strFailTable ) 
+                RETURN ACE64.AdsDDSetTableProperty(hDictionary, strTableName, usPropertyID, REF pusProperty, usPropertyLen, usValidateOption, strFailTable ) 
             ENDIF
 
-        PUBLIC STATIC METHOD AdsDDSetUserGroupProperty(hDictionary AS IntPtr, strUserGroupName AS STRING, usPropertyID AS WORD, [IN] [OUT] pvProperty AS BYTE[], usPropertyLen AS WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDSetUserGroupProperty(hDictionary, strUserGroupName, usPropertyID, pvProperty, usPropertyLen ) 
+        PUBLIC STATIC METHOD AdsDDSetUserGroupProperty(hDictionary AS IntPtr, strUserGroupName AS STRING, usPropertyID AS WORD, [InAttribute] [OutAttribute] pvProperty AS BYTE[], usPropertyLen AS WORD ) AS DWORD 
+            IF Is32Bits
+                RETURN ACE32.AdsDDSetUserGroupProperty(hDictionary, strUserGroupName, usPropertyID, pvProperty, usPropertyLen ) 
             ELSE
-                RETURN Ace64.AdsDDSetUserGroupProperty(hDictionary, strUserGroupName, usPropertyID, pvProperty, usPropertyLen ) 
+                RETURN ACE64.AdsDDSetUserGroupProperty(hDictionary, strUserGroupName, usPropertyID, pvProperty, usPropertyLen ) 
             ENDIF
 
-        PUBLIC STATIC METHOD AdsDDSetUserGroupProperty(hDictionary AS IntPtr, strUserGroupName AS STRING, usPropertyID AS WORD, [IN] [OUT] strProperty AS CHAR[], usPropertyLen AS WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDSetUserGroupProperty(hDictionary, strUserGroupName, usPropertyID, strProperty, usPropertyLen ) 
+        PUBLIC STATIC METHOD AdsDDSetUserGroupProperty(hDictionary AS IntPtr, strUserGroupName AS STRING, usPropertyID AS WORD, [InAttribute] [OutAttribute] strProperty AS CHAR[], usPropertyLen AS WORD ) AS DWORD 
+            IF Is32Bits
+                RETURN ACE32.AdsDDSetUserGroupProperty(hDictionary, strUserGroupName, usPropertyID, strProperty, usPropertyLen ) 
             ELSE
-                RETURN Ace64.AdsDDSetUserGroupProperty(hDictionary, strUserGroupName, usPropertyID, strProperty, usPropertyLen ) 
+                RETURN ACE64.AdsDDSetUserGroupProperty(hDictionary, strUserGroupName, usPropertyID, strProperty, usPropertyLen ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsDDSetUserGroupProperty(hDictionary AS IntPtr, strUserGroupName AS STRING, usPropertyID AS WORD, pusProperty REF WORD, usPropertyLen AS WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDSetUserGroupProperty(hDictionary, strUserGroupName, usPropertyID, REF pusProperty, usPropertyLen ) 
+            IF Is32Bits
+                RETURN ACE32.AdsDDSetUserGroupProperty(hDictionary, strUserGroupName, usPropertyID, REF pusProperty, usPropertyLen ) 
             ELSE
-                RETURN Ace64.AdsDDSetUserGroupProperty(hDictionary, strUserGroupName, usPropertyID, REF pusProperty, usPropertyLen ) 
+                RETURN ACE64.AdsDDSetUserGroupProperty(hDictionary, strUserGroupName, usPropertyID, REF pusProperty, usPropertyLen ) 
             ENDIF
 
-        PUBLIC STATIC METHOD AdsDDSetUserProperty(hDictionary AS IntPtr, strUserName AS STRING, usPropertyID AS WORD, [IN] [OUT] pvProperty AS BYTE[], usPropertyLen AS WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDSetUserProperty(hDictionary, strUserName, usPropertyID, pvProperty, usPropertyLen ) 
+        PUBLIC STATIC METHOD AdsDDSetUserProperty(hDictionary AS IntPtr, strUserName AS STRING, usPropertyID AS WORD, [InAttribute] [OutAttribute] pvProperty AS BYTE[], usPropertyLen AS WORD ) AS DWORD 
+            IF Is32Bits
+                RETURN ACE32.AdsDDSetUserProperty(hDictionary, strUserName, usPropertyID, pvProperty, usPropertyLen ) 
             ELSE
-                RETURN Ace64.AdsDDSetUserProperty(hDictionary, strUserName, usPropertyID, pvProperty, usPropertyLen ) 
+                RETURN ACE64.AdsDDSetUserProperty(hDictionary, strUserName, usPropertyID, pvProperty, usPropertyLen ) 
             ENDIF
 
-        PUBLIC STATIC METHOD AdsDDSetUserProperty(hDictionary AS IntPtr, strUserName AS STRING, usPropertyID AS WORD, [IN] [OUT] strProperty AS CHAR[], usPropertyLen AS WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDSetUserProperty(hDictionary, strUserName, usPropertyID, strProperty, usPropertyLen ) 
+        PUBLIC STATIC METHOD AdsDDSetUserProperty(hDictionary AS IntPtr, strUserName AS STRING, usPropertyID AS WORD, [InAttribute] [OutAttribute] strProperty AS CHAR[], usPropertyLen AS WORD ) AS DWORD 
+            IF Is32Bits
+                RETURN ACE32.AdsDDSetUserProperty(hDictionary, strUserName, usPropertyID, strProperty, usPropertyLen ) 
             ELSE
-                RETURN Ace64.AdsDDSetUserProperty(hDictionary, strUserName, usPropertyID, strProperty, usPropertyLen ) 
+                RETURN ACE64.AdsDDSetUserProperty(hDictionary, strUserName, usPropertyID, strProperty, usPropertyLen ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsDDSetUserProperty(hDictionary AS IntPtr, strUserName AS STRING, usPropertyID AS WORD, pusProperty REF WORD, usPropertyLen AS WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDSetUserProperty(hDictionary, strUserName, usPropertyID, REF pusProperty, usPropertyLen ) 
+            IF Is32Bits
+                RETURN ACE32.AdsDDSetUserProperty(hDictionary, strUserName, usPropertyID, REF pusProperty, usPropertyLen ) 
             ELSE
-                RETURN Ace64.AdsDDSetUserProperty(hDictionary, strUserName, usPropertyID, REF pusProperty, usPropertyLen ) 
+                RETURN ACE64.AdsDDSetUserProperty(hDictionary, strUserName, usPropertyID, REF pusProperty, usPropertyLen ) 
             ENDIF
 
-        PUBLIC STATIC METHOD AdsDDSetViewProperty(hDictionary AS IntPtr, strViewName AS STRING, usPropertyID AS WORD, [IN] [OUT] pvProperty AS BYTE[], usPropertyLen AS WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDSetViewProperty(hDictionary, strViewName, usPropertyID, pvProperty, usPropertyLen ) 
+        PUBLIC STATIC METHOD AdsDDSetViewProperty(hDictionary AS IntPtr, strViewName AS STRING, usPropertyID AS WORD, [InAttribute] [OutAttribute] pvProperty AS BYTE[], usPropertyLen AS WORD ) AS DWORD 
+            IF Is32Bits
+                RETURN ACE32.AdsDDSetViewProperty(hDictionary, strViewName, usPropertyID, pvProperty, usPropertyLen ) 
             ELSE
-                RETURN Ace64.AdsDDSetViewProperty(hDictionary, strViewName, usPropertyID, pvProperty, usPropertyLen ) 
+                RETURN ACE64.AdsDDSetViewProperty(hDictionary, strViewName, usPropertyID, pvProperty, usPropertyLen ) 
             ENDIF
 
-        PUBLIC STATIC METHOD AdsDDSetViewProperty(hDictionary AS IntPtr, strViewName AS STRING, usPropertyID AS WORD, [IN] [OUT] strProperty AS CHAR[], usPropertyLen AS WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDSetViewProperty(hDictionary, strViewName, usPropertyID, strProperty, usPropertyLen ) 
+        PUBLIC STATIC METHOD AdsDDSetViewProperty(hDictionary AS IntPtr, strViewName AS STRING, usPropertyID AS WORD, [InAttribute] [OutAttribute] strProperty AS CHAR[], usPropertyLen AS WORD ) AS DWORD 
+            IF Is32Bits
+                RETURN ACE32.AdsDDSetViewProperty(hDictionary, strViewName, usPropertyID, strProperty, usPropertyLen ) 
             ELSE
-                RETURN Ace64.AdsDDSetViewProperty(hDictionary, strViewName, usPropertyID, strProperty, usPropertyLen ) 
+                RETURN ACE64.AdsDDSetViewProperty(hDictionary, strViewName, usPropertyID, strProperty, usPropertyLen ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsDDSetViewProperty(hDictionary AS IntPtr, strViewName AS STRING, usPropertyID AS WORD, pusProperty REF WORD, usPropertyLen AS WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsDDSetViewProperty(hDictionary, strViewName, usPropertyID, REF pusProperty, usPropertyLen ) 
+            IF Is32Bits
+                RETURN ACE32.AdsDDSetViewProperty(hDictionary, strViewName, usPropertyID, REF pusProperty, usPropertyLen ) 
             ELSE
-                RETURN Ace64.AdsDDSetViewProperty(hDictionary, strViewName, usPropertyID, REF pusProperty, usPropertyLen ) 
+                RETURN ACE64.AdsDDSetViewProperty(hDictionary, strViewName, usPropertyID, REF pusProperty, usPropertyLen ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsEvalAOF(hTable AS IntPtr, strFilter AS STRING, pusOptLevel OUT WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsEvalAOF(hTable, strFilter, OUT pusOptLevel ) 
+            IF Is32Bits
+                RETURN ACE32.AdsEvalAOF(hTable, strFilter, OUT pusOptLevel ) 
             ELSE
-                RETURN Ace64.AdsEvalAOF(hTable, strFilter, OUT pusOptLevel ) 
+                RETURN ACE64.AdsEvalAOF(hTable, strFilter, OUT pusOptLevel ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsFailedTransactionRecovery(strServer AS STRING ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsFailedTransactionRecovery(strServer ) 
+            IF Is32Bits
+                RETURN ACE32.AdsFailedTransactionRecovery(strServer ) 
             ELSE
-                RETURN Ace64.AdsFailedTransactionRecovery(strServer ) 
+                RETURN ACE64.AdsFailedTransactionRecovery(strServer ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsFindClose(hConnect AS IntPtr, lHandle AS IntPtr ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsFindClose(hConnect, lHandle ) 
+            IF Is32Bits
+                RETURN ACE32.AdsFindClose(hConnect, lHandle ) 
             ELSE
-                RETURN Ace64.AdsFindClose(hConnect, lHandle ) 
+                RETURN ACE64.AdsFindClose(hConnect, lHandle ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsFindConnection25(strFullPath AS STRING, phConnect OUT IntPtr ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsFindConnection25(strFullPath, OUT phConnect ) 
+            IF Is32Bits
+                RETURN ACE32.AdsFindConnection25(strFullPath, OUT phConnect ) 
             ELSE
-                RETURN Ace64.AdsFindConnection25(strFullPath, OUT phConnect ) 
+                RETURN ACE64.AdsFindConnection25(strFullPath, OUT phConnect ) 
             ENDIF
 
-        PUBLIC STATIC METHOD AdsFindFirstTable(hConnect AS IntPtr, strFileMask AS STRING, [IN] [OUT] strFirstFile AS CHAR[], pusFileLen REF WORD, plHandle OUT IntPtr ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsFindFirstTable(hConnect, strFileMask, strFirstFile, REF pusFileLen, OUT plHandle ) 
+        PUBLIC STATIC METHOD AdsFindFirstTable(hConnect AS IntPtr, strFileMask AS STRING, [InAttribute] [OutAttribute] strFirstFile AS CHAR[], pusFileLen REF WORD, plHandle OUT IntPtr ) AS DWORD 
+            IF Is32Bits
+                RETURN ACE32.AdsFindFirstTable(hConnect, strFileMask, strFirstFile, REF pusFileLen, OUT plHandle ) 
             ELSE
-                RETURN Ace64.AdsFindFirstTable(hConnect, strFileMask, strFirstFile, REF pusFileLen, OUT plHandle ) 
+                RETURN ACE64.AdsFindFirstTable(hConnect, strFileMask, strFirstFile, REF pusFileLen, OUT plHandle ) 
             ENDIF
 
-        PUBLIC STATIC METHOD AdsFindFirstTable62(hConnect AS IntPtr, strFileMask AS STRING, [IN] [OUT] strFirstDD AS CHAR[], pusDDLen REF WORD, [IN] [OUT] strFirstFile AS CHAR[], pusFileLen REF WORD, plHandle OUT IntPtr ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsFindFirstTable62(hConnect, strFileMask, strFirstDD, REF pusDDLen, strFirstFile, REF pusFileLen, OUT plHandle ) 
+        PUBLIC STATIC METHOD AdsFindFirstTable62(hConnect AS IntPtr, strFileMask AS STRING, [InAttribute] [OutAttribute] strFirstDD AS CHAR[], pusDDLen REF WORD, [InAttribute] [OutAttribute] strFirstFile AS CHAR[], pusFileLen REF WORD, plHandle OUT IntPtr ) AS DWORD 
+            IF Is32Bits
+                RETURN ACE32.AdsFindFirstTable62(hConnect, strFileMask, strFirstDD, REF pusDDLen, strFirstFile, REF pusFileLen, OUT plHandle ) 
             ELSE
-                RETURN Ace64.AdsFindFirstTable62(hConnect, strFileMask, strFirstDD, REF pusDDLen, strFirstFile, REF pusFileLen, OUT plHandle ) 
+                RETURN ACE64.AdsFindFirstTable62(hConnect, strFileMask, strFirstDD, REF pusDDLen, strFirstFile, REF pusFileLen, OUT plHandle ) 
             ENDIF
 
-        PUBLIC STATIC METHOD AdsFindNextTable(hConnect AS IntPtr, lHandle AS IntPtr, [IN] [OUT] strFileName AS CHAR[], pusFileLen REF WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsFindNextTable(hConnect, lHandle, strFileName, REF pusFileLen ) 
+        PUBLIC STATIC METHOD AdsFindNextTable(hConnect AS IntPtr, lHandle AS IntPtr, [InAttribute] [OutAttribute] strFileName AS CHAR[], pusFileLen REF WORD ) AS DWORD 
+            IF Is32Bits
+                RETURN ACE32.AdsFindNextTable(hConnect, lHandle, strFileName, REF pusFileLen ) 
             ELSE
-                RETURN Ace64.AdsFindNextTable(hConnect, lHandle, strFileName, REF pusFileLen ) 
+                RETURN ACE64.AdsFindNextTable(hConnect, lHandle, strFileName, REF pusFileLen ) 
             ENDIF
 
-        PUBLIC STATIC METHOD AdsFindNextTable62(hConnect AS IntPtr, lHandle AS IntPtr, [IN] [OUT] strDDName AS CHAR[], pusDDLen REF WORD, [IN] [OUT] strFileName AS CHAR[], pusFileLen REF WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsFindNextTable62(hConnect, lHandle, strDDName, REF pusDDLen, strFileName, REF pusFileLen ) 
+        PUBLIC STATIC METHOD AdsFindNextTable62(hConnect AS IntPtr, lHandle AS IntPtr, [InAttribute] [OutAttribute] strDDName AS CHAR[], pusDDLen REF WORD, [InAttribute] [OutAttribute] strFileName AS CHAR[], pusFileLen REF WORD ) AS DWORD 
+            IF Is32Bits
+                RETURN ACE32.AdsFindNextTable62(hConnect, lHandle, strDDName, REF pusDDLen, strFileName, REF pusFileLen ) 
             ELSE
-                RETURN Ace64.AdsFindNextTable62(hConnect, lHandle, strDDName, REF pusDDLen, strFileName, REF pusFileLen ) 
+                RETURN ACE64.AdsFindNextTable62(hConnect, lHandle, strDDName, REF pusDDLen, strFileName, REF pusFileLen ) 
             ENDIF
 
-        PUBLIC STATIC METHOD AdsGetAOF(hTable AS IntPtr, [IN] [OUT] strFilter AS CHAR[], wLen REF WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsGetAOF(hTable, strFilter, REF wLen ) 
+        PUBLIC STATIC METHOD AdsGetAOF(hTable AS IntPtr, [InAttribute] [OutAttribute] strFilter AS CHAR[], wLen REF WORD ) AS DWORD 
+            IF Is32Bits
+                RETURN ACE32.AdsGetAOF(hTable, strFilter, REF wLen ) 
             ELSE
-                RETURN Ace64.AdsGetAOF(hTable, strFilter, REF wLen ) 
+                RETURN ACE64.AdsGetAOF(hTable, strFilter, REF wLen ) 
             ENDIF
 
-        PUBLIC STATIC METHOD AdsGetActiveLinkInfo(hDBConn AS IntPtr, usLinkNum AS WORD, [IN] [OUT] strLinkInfo AS CHAR[], pusBufferLen REF WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsGetActiveLinkInfo(hDBConn, usLinkNum, strLinkInfo, REF pusBufferLen ) 
+        PUBLIC STATIC METHOD AdsGetActiveLinkInfo(hDBConn AS IntPtr, usLinkNum AS WORD, [InAttribute] [OutAttribute] strLinkInfo AS CHAR[], pusBufferLen REF WORD ) AS DWORD 
+            IF Is32Bits
+                RETURN ACE32.AdsGetActiveLinkInfo(hDBConn, usLinkNum, strLinkInfo, REF pusBufferLen ) 
             ELSE
-                RETURN Ace64.AdsGetActiveLinkInfo(hDBConn, usLinkNum, strLinkInfo, REF pusBufferLen ) 
+                RETURN ACE64.AdsGetActiveLinkInfo(hDBConn, usLinkNum, strLinkInfo, REF pusBufferLen ) 
             ENDIF
 
-        PUBLIC STATIC METHOD AdsGetBookmark60(hObj AS IntPtr, [IN] [OUT] strBookmark AS CHAR[], pulLength REF DWORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsGetBookmark60(hObj, strBookmark, REF pulLength ) 
+        PUBLIC STATIC METHOD AdsGetBookmark60(hObj AS IntPtr, [InAttribute] [OutAttribute] strBookmark AS CHAR[], pulLength REF DWORD ) AS DWORD 
+            IF Is32Bits
+                RETURN ACE32.AdsGetBookmark60(hObj, strBookmark, REF pulLength ) 
             ELSE
-                RETURN Ace64.AdsGetBookmark60(hObj, strBookmark, REF pulLength ) 
+                RETURN ACE64.AdsGetBookmark60(hObj, strBookmark, REF pulLength ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsGetBookmarkLength(hObj AS IntPtr, pulLength REF DWORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsGetBookmarkLength(hObj, REF pulLength ) 
+            IF Is32Bits
+                RETURN ACE32.AdsGetBookmarkLength(hObj, REF pulLength ) 
             ELSE
-                RETURN Ace64.AdsGetBookmarkLength(hObj, REF pulLength ) 
+                RETURN ACE64.AdsGetBookmarkLength(hObj, REF pulLength ) 
             ENDIF
 
-        PUBLIC STATIC METHOD AdsGetCollation(hConnect AS IntPtr, [IN] [OUT] strCollation AS CHAR[], wLen REF WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsGetCollation(hConnect, strCollation, REF wLen ) 
+        PUBLIC STATIC METHOD AdsGetCollation(hConnect AS IntPtr, [InAttribute] [OutAttribute] strCollation AS CHAR[], wLen REF WORD ) AS DWORD 
+            IF Is32Bits
+                RETURN ACE32.AdsGetCollation(hConnect, strCollation, REF wLen ) 
             ELSE
-                RETURN Ace64.AdsGetCollation(hConnect, strCollation, REF wLen ) 
+                RETURN ACE64.AdsGetCollation(hConnect, strCollation, REF wLen ) 
             ENDIF
 
-        PUBLIC STATIC METHOD AdsGetCollationLang([IN] [OUT] strLang AS CHAR[], wLen REF WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsGetCollationLang(strLang, REF wLen ) 
+        PUBLIC STATIC METHOD AdsGetCollationLang([InAttribute] [OutAttribute] strLang AS CHAR[], wLen REF WORD ) AS DWORD 
+            IF Is32Bits
+                RETURN ACE32.AdsGetCollationLang(strLang, REF wLen ) 
             ELSE
-                RETURN Ace64.AdsGetCollationLang(strLang, REF wLen ) 
+                RETURN ACE64.AdsGetCollationLang(strLang, REF wLen ) 
             ENDIF
 
-        PUBLIC STATIC METHOD AdsGetConnectionPath(hConnect AS IntPtr, [IN] [OUT] strConnectionPath AS CHAR[], wLen REF WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsGetConnectionPath(hConnect, strConnectionPath, REF wLen ) 
+        PUBLIC STATIC METHOD AdsGetConnectionPath(hConnect AS IntPtr, [InAttribute] [OutAttribute] strConnectionPath AS CHAR[], wLen REF WORD ) AS DWORD 
+            IF Is32Bits
+                RETURN ACE32.AdsGetConnectionPath(hConnect, strConnectionPath, REF wLen ) 
             ELSE
-                RETURN Ace64.AdsGetConnectionPath(hConnect, strConnectionPath, REF wLen ) 
+                RETURN ACE64.AdsGetConnectionPath(hConnect, strConnectionPath, REF wLen ) 
             ENDIF
 
-        PUBLIC STATIC METHOD AdsGetConnectionProperty(hConnect AS IntPtr, usPropertyID AS WORD, [IN] [OUT] pvProperty AS BYTE[], pulPropertyLen REF DWORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsGetConnectionProperty(hConnect, usPropertyID, pvProperty, REF pulPropertyLen ) 
+        PUBLIC STATIC METHOD AdsGetConnectionProperty(hConnect AS IntPtr, usPropertyID AS WORD, [InAttribute] [OutAttribute] pvProperty AS BYTE[], pulPropertyLen REF DWORD ) AS DWORD 
+            IF Is32Bits
+                RETURN ACE32.AdsGetConnectionProperty(hConnect, usPropertyID, pvProperty, REF pulPropertyLen ) 
             ELSE
-                RETURN Ace64.AdsGetConnectionProperty(hConnect, usPropertyID, pvProperty, REF pulPropertyLen ) 
+                RETURN ACE64.AdsGetConnectionProperty(hConnect, usPropertyID, pvProperty, REF pulPropertyLen ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsGetDataLength(hTable AS IntPtr, lFieldOrdinal AS DWORD, ulOptions AS DWORD, pulLength OUT DWORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsGetDataLength(hTable, lFieldOrdinal, ulOptions, OUT pulLength ) 
+            IF Is32Bits
+                RETURN ACE32.AdsGetDataLength(hTable, lFieldOrdinal, ulOptions, OUT pulLength ) 
             ELSE
-                RETURN Ace64.AdsGetDataLength(hTable, lFieldOrdinal, ulOptions, OUT pulLength ) 
+                RETURN ACE64.AdsGetDataLength(hTable, lFieldOrdinal, ulOptions, OUT pulLength ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsGetDataLength(hTable AS IntPtr, strFldName AS STRING, ulOptions AS DWORD, pulLength OUT DWORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsGetDataLength(hTable, strFldName, ulOptions, OUT pulLength ) 
+            IF Is32Bits
+                RETURN ACE32.AdsGetDataLength(hTable, strFldName, ulOptions, OUT pulLength ) 
             ELSE
-                RETURN Ace64.AdsGetDataLength(hTable, strFldName, ulOptions, OUT pulLength ) 
+                RETURN ACE64.AdsGetDataLength(hTable, strFldName, ulOptions, OUT pulLength ) 
             ENDIF
 
-        PUBLIC STATIC METHOD AdsGetDateFormat60(hConnect AS IntPtr, [IN] [OUT] strFormat AS CHAR[], wLen REF WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsGetDateFormat60(hConnect, strFormat, REF wLen ) 
+        PUBLIC STATIC METHOD AdsGetDateFormat60(hConnect AS IntPtr, [InAttribute] [OutAttribute] strFormat AS CHAR[], wLen REF WORD ) AS DWORD 
+            IF Is32Bits
+                RETURN ACE32.AdsGetDateFormat60(hConnect, strFormat, REF wLen ) 
             ELSE
-                RETURN Ace64.AdsGetDateFormat60(hConnect, strFormat, REF wLen ) 
+                RETURN ACE64.AdsGetDateFormat60(hConnect, strFormat, REF wLen ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsGetDecimals(pusDecimals OUT WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsGetDecimals(OUT pusDecimals ) 
+            IF Is32Bits
+                RETURN ACE32.AdsGetDecimals(OUT pusDecimals ) 
             ELSE
-                RETURN Ace64.AdsGetDecimals(OUT pusDecimals ) 
+                RETURN ACE64.AdsGetDecimals(OUT pusDecimals ) 
             ENDIF
 
-        PUBLIC STATIC METHOD AdsGetDefault([IN] [OUT] strDefault AS CHAR[], wLen REF WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsGetDefault(strDefault, REF wLen ) 
+        PUBLIC STATIC METHOD AdsGetDefault([InAttribute] [OutAttribute] strDefault AS CHAR[], wLen REF WORD ) AS DWORD 
+            IF Is32Bits
+                RETURN ACE32.AdsGetDefault(strDefault, REF wLen ) 
             ELSE
-                RETURN Ace64.AdsGetDefault(strDefault, REF wLen ) 
+                RETURN ACE64.AdsGetDefault(strDefault, REF wLen ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsGetDeleted(pbUseDeleted OUT WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsGetDeleted(OUT pbUseDeleted ) 
+            IF Is32Bits
+                RETURN ACE32.AdsGetDeleted(OUT pbUseDeleted ) 
             ELSE
-                RETURN Ace64.AdsGetDeleted(OUT pbUseDeleted ) 
+                RETURN ACE64.AdsGetDeleted(OUT pbUseDeleted ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsGetEpoch(pusCentury OUT WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsGetEpoch(OUT pusCentury ) 
+            IF Is32Bits
+                RETURN ACE32.AdsGetEpoch(OUT pusCentury ) 
             ELSE
-                RETURN Ace64.AdsGetEpoch(OUT pusCentury ) 
+                RETURN ACE64.AdsGetEpoch(OUT pusCentury ) 
             ENDIF
 
-        PUBLIC STATIC METHOD AdsGetErrorString(ulErrCode AS DWORD, [IN] [OUT] strBuf AS CHAR[], pusBufLen REF WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsGetErrorString(ulErrCode, strBuf, REF pusBufLen ) 
+        PUBLIC STATIC METHOD AdsGetErrorString(ulErrCode AS DWORD, [InAttribute] [OutAttribute] strBuf AS CHAR[], pusBufLen REF WORD ) AS DWORD 
+            IF Is32Bits
+                RETURN ACE32.AdsGetErrorString(ulErrCode, strBuf, REF pusBufLen ) 
             ELSE
-                RETURN Ace64.AdsGetErrorString(ulErrCode, strBuf, REF pusBufLen ) 
+                RETURN ACE64.AdsGetErrorString(ulErrCode, strBuf, REF pusBufLen ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsGetExact(pbExact OUT WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsGetExact(OUT pbExact ) 
+            IF Is32Bits
+                RETURN ACE32.AdsGetExact(OUT pbExact ) 
             ELSE
-                RETURN Ace64.AdsGetExact(OUT pbExact ) 
+                RETURN ACE64.AdsGetExact(OUT pbExact ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsGetExact22(hObj AS IntPtr, pbExact OUT WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsGetExact22(hObj, OUT pbExact ) 
+            IF Is32Bits
+                RETURN ACE32.AdsGetExact22(hObj, OUT pbExact ) 
             ELSE
-                RETURN Ace64.AdsGetExact22(hObj, OUT pbExact ) 
+                RETURN ACE64.AdsGetExact22(hObj, OUT pbExact ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsGetFieldDecimals(hTable AS IntPtr, strFldName AS STRING, pusDecimals OUT WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsGetFieldDecimals(hTable, strFldName, OUT pusDecimals ) 
+            IF Is32Bits
+                RETURN ACE32.AdsGetFieldDecimals(hTable, strFldName, OUT pusDecimals ) 
             ELSE
-                RETURN Ace64.AdsGetFieldDecimals(hTable, strFldName, OUT pusDecimals ) 
+                RETURN ACE64.AdsGetFieldDecimals(hTable, strFldName, OUT pusDecimals ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsGetFieldNum(hTable AS IntPtr, lFieldOrdinal AS DWORD, pusNum OUT WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsGetFieldNum(hTable, lFieldOrdinal, OUT pusNum ) 
+            IF Is32Bits
+                RETURN ACE32.AdsGetFieldNum(hTable, lFieldOrdinal, OUT pusNum ) 
             ELSE
-                RETURN Ace64.AdsGetFieldNum(hTable, lFieldOrdinal, OUT pusNum ) 
+                RETURN ACE64.AdsGetFieldNum(hTable, lFieldOrdinal, OUT pusNum ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsGetFieldNum(hTable AS IntPtr, strFldName AS STRING, pusNum OUT WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsGetFieldNum(hTable, strFldName, OUT pusNum ) 
+            IF Is32Bits
+                RETURN ACE32.AdsGetFieldNum(hTable, strFldName, OUT pusNum ) 
             ELSE
-                RETURN Ace64.AdsGetFieldNum(hTable, strFldName, OUT pusNum ) 
+                RETURN ACE64.AdsGetFieldNum(hTable, strFldName, OUT pusNum ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsGetFieldOffset(hTable AS IntPtr, lFieldOrdinal AS DWORD, pulOffset OUT DWORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsGetFieldOffset(hTable, lFieldOrdinal, OUT pulOffset ) 
+            IF Is32Bits
+                RETURN ACE32.AdsGetFieldOffset(hTable, lFieldOrdinal, OUT pulOffset ) 
             ELSE
-                RETURN Ace64.AdsGetFieldOffset(hTable, lFieldOrdinal, OUT pulOffset ) 
+                RETURN ACE64.AdsGetFieldOffset(hTable, lFieldOrdinal, OUT pulOffset ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsGetFieldOffset(hTable AS IntPtr, strFldName AS STRING, pulOffset OUT DWORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsGetFieldOffset(hTable, strFldName, OUT pulOffset ) 
+            IF Is32Bits
+                RETURN ACE32.AdsGetFieldOffset(hTable, strFldName, OUT pulOffset ) 
             ELSE
-                RETURN Ace64.AdsGetFieldOffset(hTable, strFldName, OUT pulOffset ) 
+                RETURN ACE64.AdsGetFieldOffset(hTable, strFldName, OUT pulOffset ) 
             ENDIF
 
-        PUBLIC STATIC METHOD AdsGetFilter(hTable AS IntPtr, [IN] [OUT] strFilter AS CHAR[], wLen REF WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsGetFilter(hTable, strFilter, REF wLen ) 
+        PUBLIC STATIC METHOD AdsGetFilter(hTable AS IntPtr, [InAttribute] [OutAttribute] strFilter AS CHAR[], wLen REF WORD ) AS DWORD 
+            IF Is32Bits
+                RETURN ACE32.AdsGetFilter(hTable, strFilter, REF wLen ) 
             ELSE
-                RETURN Ace64.AdsGetFilter(hTable, strFilter, REF wLen ) 
+                RETURN ACE64.AdsGetFilter(hTable, strFilter, REF wLen ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsGetHandleINT64(hObj AS IntPtr, pulVal OUT DWORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsGetHandleINT64(hObj, OUT pulVal ) 
+            IF Is32Bits
+                RETURN ACE32.AdsGetHandleINT64(hObj, OUT pulVal ) 
             ELSE
-                RETURN Ace64.AdsGetHandleINT64(hObj, OUT pulVal ) 
+                RETURN ACE64.AdsGetHandleINT64(hObj, OUT pulVal ) 
             ENDIF
 
-        PUBLIC STATIC METHOD AdsGetIndexCollation(hIndex AS IntPtr, [IN] [OUT] strCollation AS CHAR[], wLen REF WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsGetIndexCollation(hIndex, strCollation, REF wLen ) 
+        PUBLIC STATIC METHOD AdsGetIndexCollation(hIndex AS IntPtr, [InAttribute] [OutAttribute] strCollation AS CHAR[], wLen REF WORD ) AS DWORD 
+            IF Is32Bits
+                RETURN ACE32.AdsGetIndexCollation(hIndex, strCollation, REF wLen ) 
             ELSE
-                RETURN Ace64.AdsGetIndexCollation(hIndex, strCollation, REF wLen ) 
+                RETURN ACE64.AdsGetIndexCollation(hIndex, strCollation, REF wLen ) 
             ENDIF
         PUBLIC STATIC METHOD AdsGetIndexHandleByExpr(hTable AS IntPtr, strExpr AS STRING, ulDescending AS DWORD, phIndex OUT IntPtr ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsGetIndexHandleByExpr(hTable, strExpr, ulDescending, OUT phIndex ) 
+            IF Is32Bits
+                RETURN ACE32.AdsGetIndexHandleByExpr(hTable, strExpr, ulDescending, OUT phIndex ) 
             ELSE
-                RETURN Ace64.AdsGetIndexHandleByExpr(hTable, strExpr, ulDescending, OUT phIndex ) 
+                RETURN ACE64.AdsGetIndexHandleByExpr(hTable, strExpr, ulDescending, OUT phIndex ) 
             ENDIF
-        PUBLIC STATIC METHOD AdsGetKeyColumn(hCursor AS IntPtr, [IN] [OUT] strKeyColumn AS CHAR[], wLen REF WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsGetKeyColumn(hCursor, strKeyColumn, REF wLen ) 
+        PUBLIC STATIC METHOD AdsGetKeyColumn(hCursor AS IntPtr, [InAttribute] [OutAttribute] strKeyColumn AS CHAR[], wLen REF WORD ) AS DWORD 
+            IF Is32Bits
+                RETURN ACE32.AdsGetKeyColumn(hCursor, strKeyColumn, REF wLen ) 
             ELSE
-                RETURN Ace64.AdsGetKeyColumn(hCursor, strKeyColumn, REF wLen ) 
+                RETURN ACE64.AdsGetKeyColumn(hCursor, strKeyColumn, REF wLen ) 
             ENDIF
         PUBLIC STATIC METHOD AdsGetLastAutoinc(hObj AS IntPtr, pulAutoIncVal OUT DWORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsGetLastAutoinc(hObj, OUT pulAutoIncVal ) 
+            IF Is32Bits
+                RETURN ACE32.AdsGetLastAutoinc(hObj, OUT pulAutoIncVal ) 
             ELSE
-                RETURN Ace64.AdsGetLastAutoinc(hObj, OUT pulAutoIncVal ) 
+                RETURN ACE64.AdsGetLastAutoinc(hObj, OUT pulAutoIncVal ) 
             ENDIF
         PUBLIC STATIC METHOD AdsGetMemoDataType(hTable AS IntPtr, lFieldOrdinal AS DWORD, pusType OUT WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsGetMemoDataType(hTable, lFieldOrdinal, OUT pusType ) 
+            IF Is32Bits
+                RETURN ACE32.AdsGetMemoDataType(hTable, lFieldOrdinal, OUT pusType ) 
             ELSE
-                RETURN Ace64.AdsGetMemoDataType(hTable, lFieldOrdinal, OUT pusType ) 
+                RETURN ACE64.AdsGetMemoDataType(hTable, lFieldOrdinal, OUT pusType ) 
             ENDIF
         PUBLIC STATIC METHOD AdsGetMemoDataType(hTable AS IntPtr, strFldName AS STRING, pusType OUT WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsGetMemoDataType(hTable, strFldName, OUT pusType ) 
+            IF Is32Bits
+                RETURN ACE32.AdsGetMemoDataType(hTable, strFldName, OUT pusType ) 
             ELSE
-                RETURN Ace64.AdsGetMemoDataType(hTable, strFldName, OUT pusType ) 
+                RETURN ACE64.AdsGetMemoDataType(hTable, strFldName, OUT pusType ) 
             ENDIF
         PUBLIC STATIC METHOD AdsGetNumActiveLinks(hDBConn AS IntPtr, pusNumLinks OUT WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsGetNumActiveLinks(hDBConn, OUT pusNumLinks ) 
+            IF Is32Bits
+                RETURN ACE32.AdsGetNumActiveLinks(hDBConn, OUT pusNumLinks ) 
             ELSE
-                RETURN Ace64.AdsGetNumActiveLinks(hDBConn, OUT pusNumLinks ) 
+                RETURN ACE64.AdsGetNumActiveLinks(hDBConn, OUT pusNumLinks ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsGetNumFTSIndexes(hTable AS IntPtr, pusNum OUT WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsGetNumFTSIndexes(hTable, OUT pusNum ) 
+            IF Is32Bits
+                RETURN ACE32.AdsGetNumFTSIndexes(hTable, OUT pusNum ) 
             ELSE
-                RETURN Ace64.AdsGetNumFTSIndexes(hTable, OUT pusNum ) 
+                RETURN ACE64.AdsGetNumFTSIndexes(hTable, OUT pusNum ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsGetNumOpenTables(pusNum OUT WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsGetNumOpenTables(OUT pusNum ) 
+            IF Is32Bits
+                RETURN ACE32.AdsGetNumOpenTables(OUT pusNum ) 
             ELSE
-                RETURN Ace64.AdsGetNumOpenTables(OUT pusNum ) 
+                RETURN ACE64.AdsGetNumOpenTables(OUT pusNum ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsGetNumParams(hStatement AS IntPtr, pusNumParams OUT WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsGetNumParams(hStatement, OUT pusNumParams ) 
+            IF Is32Bits
+                RETURN ACE32.AdsGetNumParams(hStatement, OUT pusNumParams ) 
             ELSE
-                RETURN Ace64.AdsGetNumParams(hStatement, OUT pusNumParams ) 
+                RETURN ACE64.AdsGetNumParams(hStatement, OUT pusNumParams ) 
             ENDIF
 
-        PUBLIC STATIC METHOD AdsGetRecord(hTable AS IntPtr, [IN] [OUT] strRec AS BYTE[], pulLen REF DWORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsGetRecord(hTable, strRec, REF pulLen ) 
+        PUBLIC STATIC METHOD AdsGetRecord(hTable AS IntPtr, [InAttribute] [OutAttribute] strRec AS BYTE[], pulLen REF DWORD ) AS DWORD 
+            IF Is32Bits
+                RETURN ACE32.AdsGetRecord(hTable, strRec, REF pulLen ) 
             ELSE
-                RETURN Ace64.AdsGetRecord(hTable, strRec, REF pulLen ) 
+                RETURN ACE64.AdsGetRecord(hTable, strRec, REF pulLen ) 
             ENDIF
 
-        PUBLIC STATIC METHOD AdsGetSQLStatement(hStmt AS IntPtr, [IN] [OUT] strSQL AS CHAR[], wLen REF WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsGetSQLStatement(hStmt, strSQL, REF wLen ) 
+        PUBLIC STATIC METHOD AdsGetSQLStatement(hStmt AS IntPtr, [InAttribute] [OutAttribute] strSQL AS CHAR[], wLen REF WORD ) AS DWORD 
+            IF Is32Bits
+                RETURN ACE32.AdsGetSQLStatement(hStmt, strSQL, REF wLen ) 
             ELSE
-                RETURN Ace64.AdsGetSQLStatement(hStmt, strSQL, REF wLen ) 
+                RETURN ACE64.AdsGetSQLStatement(hStmt, strSQL, REF wLen ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsGetSQLStatementHandle(hCursor AS IntPtr, phStmt OUT IntPtr ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsGetSQLStatementHandle(hCursor, OUT phStmt ) 
+            IF Is32Bits
+                RETURN ACE32.AdsGetSQLStatementHandle(hCursor, OUT phStmt ) 
             ELSE
-                RETURN Ace64.AdsGetSQLStatementHandle(hCursor, OUT phStmt ) 
+                RETURN ACE64.AdsGetSQLStatementHandle(hCursor, OUT phStmt ) 
             ENDIF
 
-        PUBLIC STATIC METHOD AdsGetSearchPath([IN] [OUT] strPath AS CHAR[], wLen REF WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsGetSearchPath(strPath, REF wLen ) 
+        PUBLIC STATIC METHOD AdsGetSearchPath([InAttribute] [OutAttribute] strPath AS CHAR[], wLen REF WORD ) AS DWORD 
+            IF Is32Bits
+                RETURN ACE32.AdsGetSearchPath(strPath, REF wLen ) 
             ELSE
-                RETURN Ace64.AdsGetSearchPath(strPath, REF wLen ) 
+                RETURN ACE64.AdsGetSearchPath(strPath, REF wLen ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsGetServerName(hConnect AS IntPtr, strName AS CHAR[], wLen REF WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsGetServerName(hConnect, strName, REF wLen ) 
+            IF Is32Bits
+                RETURN ACE32.AdsGetServerName(hConnect, strName, REF wLen ) 
             ELSE
-                RETURN Ace64.AdsGetServerName(hConnect, strName, REF wLen ) 
+                RETURN ACE64.AdsGetServerName(hConnect, strName, REF wLen ) 
             ENDIF
 
-        PUBLIC STATIC METHOD AdsGetServerTime(hConnect AS IntPtr,  strDateBuf AS CHAR[], pusDateBufLen REF WORD, plTime OUT INT, [IN] [OUT] strTimeBuf AS CHAR[], pusTimeBufLen REF WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsGetServerTime(hConnect,  strDateBuf, REF pusDateBufLen, OUT plTime, strTimeBuf, REF pusTimeBufLen ) 
+        PUBLIC STATIC METHOD AdsGetServerTime(hConnect AS IntPtr,  strDateBuf AS CHAR[], pusDateBufLen REF WORD, plTime OUT INT, [InAttribute] [OutAttribute] strTimeBuf AS CHAR[], pusTimeBufLen REF WORD ) AS DWORD 
+            IF Is32Bits
+                RETURN ACE32.AdsGetServerTime(hConnect,  strDateBuf, REF pusDateBufLen, OUT plTime, strTimeBuf, REF pusTimeBufLen ) 
             ELSE
-                RETURN Ace64.AdsGetServerTime(hConnect,  strDateBuf, REF pusDateBufLen, OUT plTime, strTimeBuf, REF pusTimeBufLen ) 
+                RETURN ACE64.AdsGetServerTime(hConnect,  strDateBuf, REF pusDateBufLen, OUT plTime, strTimeBuf, REF pusTimeBufLen ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsGetShort(hTable AS IntPtr, lFieldOrdinal AS DWORD, psValue OUT SHORT ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsGetShort(hTable, lFieldOrdinal, OUT psValue ) 
+            IF Is32Bits
+                RETURN ACE32.AdsGetShort(hTable, lFieldOrdinal, OUT psValue ) 
             ELSE
-                RETURN Ace64.AdsGetShort(hTable, lFieldOrdinal, OUT psValue ) 
+                RETURN ACE64.AdsGetShort(hTable, lFieldOrdinal, OUT psValue ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsGetShort(hTable AS IntPtr, strFldName AS STRING, psValue OUT SHORT ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsGetShort(hTable, strFldName, OUT psValue ) 
+            IF Is32Bits
+                RETURN ACE32.AdsGetShort(hTable, strFldName, OUT psValue ) 
             ELSE
-                RETURN Ace64.AdsGetShort(hTable, strFldName, OUT psValue ) 
+                RETURN ACE64.AdsGetShort(hTable, strFldName, OUT psValue ) 
             ENDIF
 
-        PUBLIC STATIC METHOD AdsGetTableAlias(hTable AS IntPtr, [IN] [OUT] strAlias AS CHAR[], wLen REF WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsGetTableAlias(hTable, strAlias, REF wLen ) 
+        PUBLIC STATIC METHOD AdsGetTableAlias(hTable AS IntPtr, [InAttribute] [OutAttribute] strAlias AS CHAR[], wLen REF WORD ) AS DWORD 
+            IF Is32Bits
+                RETURN ACE32.AdsGetTableAlias(hTable, strAlias, REF wLen ) 
             ELSE
-                RETURN Ace64.AdsGetTableAlias(hTable, strAlias, REF wLen ) 
+                RETURN ACE64.AdsGetTableAlias(hTable, strAlias, REF wLen ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsGetTableCharType(hTable AS IntPtr, pusCharType OUT WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsGetTableCharType(hTable, OUT pusCharType ) 
+            IF Is32Bits
+                RETURN ACE32.AdsGetTableCharType(hTable, OUT pusCharType ) 
             ELSE
-                RETURN Ace64.AdsGetTableCharType(hTable, OUT pusCharType ) 
+                RETURN ACE64.AdsGetTableCharType(hTable, OUT pusCharType ) 
             ENDIF
 
-        PUBLIC STATIC METHOD AdsGetTableCollation(hTbl AS IntPtr, [IN] [OUT] strCollation AS CHAR[], wLen REF WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsGetTableCollation(hTbl, strCollation, REF wLen ) 
+        PUBLIC STATIC METHOD AdsGetTableCollation(hTbl AS IntPtr, [InAttribute] [OutAttribute] strCollation AS CHAR[], wLen REF WORD ) AS DWORD 
+            IF Is32Bits
+                RETURN ACE32.AdsGetTableCollation(hTbl, strCollation, REF wLen ) 
             ELSE
-                RETURN Ace64.AdsGetTableCollation(hTbl, strCollation, REF wLen ) 
+                RETURN ACE64.AdsGetTableCollation(hTbl, strCollation, REF wLen ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsGetTableConnection(hTable AS IntPtr, phConnect OUT IntPtr ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsGetTableConnection(hTable, OUT phConnect ) 
+            IF Is32Bits
+                RETURN ACE32.AdsGetTableConnection(hTable, OUT phConnect ) 
             ELSE
-                RETURN Ace64.AdsGetTableConnection(hTable, OUT phConnect ) 
+                RETURN ACE64.AdsGetTableConnection(hTable, OUT phConnect ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsGetTableHandle(strName AS STRING, phTable OUT IntPtr ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsGetTableHandle(strName, OUT phTable ) 
+            IF Is32Bits
+                RETURN ACE32.AdsGetTableHandle(strName, OUT phTable ) 
             ELSE
-                RETURN Ace64.AdsGetTableHandle(strName, OUT phTable ) 
+                RETURN ACE64.AdsGetTableHandle(strName, OUT phTable ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsGetTableHandle25(hConnect AS IntPtr, strName AS STRING, phTable OUT IntPtr ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsGetTableHandle25(hConnect, strName, OUT phTable ) 
+            IF Is32Bits
+                RETURN ACE32.AdsGetTableHandle25(hConnect, strName, OUT phTable ) 
             ELSE
-                RETURN Ace64.AdsGetTableHandle25(hConnect, strName, OUT phTable ) 
+                RETURN ACE64.AdsGetTableHandle25(hConnect, strName, OUT phTable ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsGetTableLockType(hTable AS IntPtr, pusLockType OUT WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsGetTableLockType(hTable, OUT pusLockType ) 
+            IF Is32Bits
+                RETURN ACE32.AdsGetTableLockType(hTable, OUT pusLockType ) 
             ELSE
-                RETURN Ace64.AdsGetTableLockType(hTable, OUT pusLockType ) 
+                RETURN ACE64.AdsGetTableLockType(hTable, OUT pusLockType ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsGetTableMemoSize(hTable AS IntPtr, pusMemoSize OUT WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsGetTableMemoSize(hTable, OUT pusMemoSize ) 
+            IF Is32Bits
+                RETURN ACE32.AdsGetTableMemoSize(hTable, OUT pusMemoSize ) 
             ELSE
-                RETURN Ace64.AdsGetTableMemoSize(hTable, OUT pusMemoSize ) 
+                RETURN ACE64.AdsGetTableMemoSize(hTable, OUT pusMemoSize ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsGetTableRights(hTable AS IntPtr, pusRights OUT WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsGetTableRights(hTable, OUT pusRights ) 
+            IF Is32Bits
+                RETURN ACE32.AdsGetTableRights(hTable, OUT pusRights ) 
             ELSE
-                RETURN Ace64.AdsGetTableRights(hTable, OUT pusRights ) 
+                RETURN ACE64.AdsGetTableRights(hTable, OUT pusRights ) 
             ENDIF
 
-        PUBLIC STATIC METHOD AdsGetTime(hTable AS IntPtr, lFieldOrdinal AS DWORD, [IN] [OUT] strBuf AS CHAR[], wLen REF WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsGetTime(hTable, lFieldOrdinal, strBuf, REF wLen ) 
+        PUBLIC STATIC METHOD AdsGetTime(hTable AS IntPtr, lFieldOrdinal AS DWORD, [InAttribute] [OutAttribute] strBuf AS CHAR[], wLen REF WORD ) AS DWORD 
+            IF Is32Bits
+                RETURN ACE32.AdsGetTime(hTable, lFieldOrdinal, strBuf, REF wLen ) 
             ELSE
-                RETURN Ace64.AdsGetTime(hTable, lFieldOrdinal, strBuf, REF wLen ) 
+                RETURN ACE64.AdsGetTime(hTable, lFieldOrdinal, strBuf, REF wLen ) 
             ENDIF
 
-        PUBLIC STATIC METHOD AdsGetTime(hTable AS IntPtr, strFldName AS STRING, [IN] [OUT] strBuf AS CHAR[], wLen REF WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsGetTime(hTable, strFldName, strBuf, REF wLen ) 
+        PUBLIC STATIC METHOD AdsGetTime(hTable AS IntPtr, strFldName AS STRING, [InAttribute] [OutAttribute] strBuf AS CHAR[], wLen REF WORD ) AS DWORD 
+            IF Is32Bits
+                RETURN ACE32.AdsGetTime(hTable, strFldName, strBuf, REF wLen ) 
             ELSE
-                RETURN Ace64.AdsGetTime(hTable, strFldName, strBuf, REF wLen ) 
+                RETURN ACE64.AdsGetTime(hTable, strFldName, strBuf, REF wLen ) 
             ENDIF
 
-        PUBLIC STATIC METHOD AdsGetVersion(pulMajor OUT DWORD, pulMinor OUT DWORD, strLetter AS STRING, [IN] [OUT] strDesc AS CHAR[], pusDescLen REF WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsGetVersion(OUT pulMajor, OUT pulMinor, strLetter, strDesc, REF pusDescLen ) 
+        PUBLIC STATIC METHOD AdsGetVersion(pulMajor OUT DWORD, pulMinor OUT DWORD, strLetter AS STRING, [InAttribute] [OutAttribute] strDesc AS CHAR[], pusDescLen REF WORD ) AS DWORD 
+            IF Is32Bits
+                RETURN ACE32.AdsGetVersion(OUT pulMajor, OUT pulMinor, strLetter, strDesc, REF pusDescLen ) 
             ELSE
-                RETURN Ace64.AdsGetVersion(OUT pulMajor, OUT pulMinor, strLetter, strDesc, REF pusDescLen ) 
+                RETURN ACE64.AdsGetVersion(OUT pulMajor, OUT pulMinor, strLetter, strDesc, REF pusDescLen ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsGotoBookmark(hTable AS IntPtr, hBookmark AS IntPtr ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsGotoBookmark(hTable, hBookmark ) 
+            IF Is32Bits
+                RETURN ACE32.AdsGotoBookmark(hTable, hBookmark ) 
             ELSE
-                RETURN Ace64.AdsGotoBookmark(hTable, hBookmark ) 
+                RETURN ACE64.AdsGotoBookmark(hTable, hBookmark ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsGotoBookmark60(hObj AS IntPtr, strBookmark AS STRING ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsGotoBookmark60(hObj, strBookmark ) 
+            IF Is32Bits
+                RETURN ACE32.AdsGotoBookmark60(hObj, strBookmark ) 
             ELSE
-                RETURN Ace64.AdsGotoBookmark60(hObj, strBookmark ) 
+                RETURN ACE64.AdsGotoBookmark60(hObj, strBookmark ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsImageToClipboard(hTable AS IntPtr, strFldName AS STRING ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsImageToClipboard(hTable, strFldName ) 
+            IF Is32Bits
+                RETURN ACE32.AdsImageToClipboard(hTable, strFldName ) 
             ELSE
-                RETURN Ace64.AdsImageToClipboard(hTable, strFldName ) 
+                RETURN ACE64.AdsImageToClipboard(hTable, strFldName ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsIsConnectionAlive(hConnect AS IntPtr, pbConnectionIsAlive OUT WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsIsConnectionAlive(hConnect, OUT pbConnectionIsAlive ) 
+            IF Is32Bits
+                RETURN ACE32.AdsIsConnectionAlive(hConnect, OUT pbConnectionIsAlive ) 
             ELSE
-                RETURN Ace64.AdsIsConnectionAlive(hConnect, OUT pbConnectionIsAlive ) 
+                RETURN ACE64.AdsIsConnectionAlive(hConnect, OUT pbConnectionIsAlive ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsIsEncryptionEnabled(hTable AS IntPtr, pusEnabled OUT WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsIsEncryptionEnabled(hTable, OUT pusEnabled ) 
+            IF Is32Bits
+                RETURN ACE32.AdsIsEncryptionEnabled(hTable, OUT pusEnabled ) 
             ELSE
-                RETURN Ace64.AdsIsEncryptionEnabled(hTable, OUT pusEnabled ) 
+                RETURN ACE64.AdsIsEncryptionEnabled(hTable, OUT pusEnabled ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsIsExprValid(hTable AS IntPtr, strExpr AS STRING, pbValid OUT WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsIsExprValid(hTable, strExpr, OUT pbValid ) 
+            IF Is32Bits
+                RETURN ACE32.AdsIsExprValid(hTable, strExpr, OUT pbValid ) 
             ELSE
-                RETURN Ace64.AdsIsExprValid(hTable, strExpr, OUT pbValid ) 
+                RETURN ACE64.AdsIsExprValid(hTable, strExpr, OUT pbValid ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsIsFieldBinary(hTable AS IntPtr, lFieldOrdinal AS DWORD, pbBinary OUT WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsIsFieldBinary(hTable, lFieldOrdinal, OUT pbBinary ) 
+            IF Is32Bits
+                RETURN ACE32.AdsIsFieldBinary(hTable, lFieldOrdinal, OUT pbBinary ) 
             ELSE
-                RETURN Ace64.AdsIsFieldBinary(hTable, lFieldOrdinal, OUT pbBinary ) 
+                RETURN ACE64.AdsIsFieldBinary(hTable, lFieldOrdinal, OUT pbBinary ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsIsFieldBinary(hTable AS IntPtr, strFldName AS STRING, pbBinary OUT WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsIsFieldBinary(hTable, strFldName, OUT pbBinary ) 
+            IF Is32Bits
+                RETURN ACE32.AdsIsFieldBinary(hTable, strFldName, OUT pbBinary ) 
             ELSE
-                RETURN Ace64.AdsIsFieldBinary(hTable, strFldName, OUT pbBinary ) 
+                RETURN ACE64.AdsIsFieldBinary(hTable, strFldName, OUT pbBinary ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsIsIndexCandidate(hIndex AS IntPtr, pbCandidate OUT WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsIsIndexCandidate(hIndex, OUT pbCandidate ) 
+            IF Is32Bits
+                RETURN ACE32.AdsIsIndexCandidate(hIndex, OUT pbCandidate ) 
             ELSE
-                RETURN Ace64.AdsIsIndexCandidate(hIndex, OUT pbCandidate ) 
+                RETURN ACE64.AdsIsIndexCandidate(hIndex, OUT pbCandidate ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsIsIndexCompound(hIndex AS IntPtr, pbCompound OUT WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsIsIndexCompound(hIndex, OUT pbCompound ) 
+            IF Is32Bits
+                RETURN ACE32.AdsIsIndexCompound(hIndex, OUT pbCompound ) 
             ELSE
-                RETURN Ace64.AdsIsIndexCompound(hIndex, OUT pbCompound ) 
+                RETURN ACE64.AdsIsIndexCompound(hIndex, OUT pbCompound ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsIsIndexFTS(hIndex AS IntPtr, pbFTS OUT WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsIsIndexFTS(hIndex, OUT pbFTS ) 
+            IF Is32Bits
+                RETURN ACE32.AdsIsIndexFTS(hIndex, OUT pbFTS ) 
             ELSE
-                RETURN Ace64.AdsIsIndexFTS(hIndex, OUT pbFTS ) 
+                RETURN ACE64.AdsIsIndexFTS(hIndex, OUT pbFTS ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsIsIndexNullable(hIndex AS IntPtr, pbNullable OUT WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsIsIndexNullable(hIndex, OUT pbNullable ) 
+            IF Is32Bits
+                RETURN ACE32.AdsIsIndexNullable(hIndex, OUT pbNullable ) 
             ELSE
-                RETURN Ace64.AdsIsIndexNullable(hIndex, OUT pbNullable ) 
+                RETURN ACE64.AdsIsIndexNullable(hIndex, OUT pbNullable ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsIsIndexPrimaryKey(hIndex AS IntPtr, pbPrimaryKey OUT WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsIsIndexPrimaryKey(hIndex, OUT pbPrimaryKey ) 
+            IF Is32Bits
+                RETURN ACE32.AdsIsIndexPrimaryKey(hIndex, OUT pbPrimaryKey ) 
             ELSE
-                RETURN Ace64.AdsIsIndexPrimaryKey(hIndex, OUT pbPrimaryKey ) 
+                RETURN ACE64.AdsIsIndexPrimaryKey(hIndex, OUT pbPrimaryKey ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsIsIndexUserDefined(hIndex AS IntPtr, pbUserDefined OUT WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsIsIndexUserDefined(hIndex, OUT pbUserDefined ) 
+            IF Is32Bits
+                RETURN ACE32.AdsIsIndexUserDefined(hIndex, OUT pbUserDefined ) 
             ELSE
-                RETURN Ace64.AdsIsIndexUserDefined(hIndex, OUT pbUserDefined ) 
+                RETURN ACE64.AdsIsIndexUserDefined(hIndex, OUT pbUserDefined ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsIsNull(hTable AS IntPtr, lFieldOrdinal AS DWORD, pbNull OUT WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsIsNull(hTable, lFieldOrdinal, OUT pbNull ) 
+            IF Is32Bits
+                RETURN ACE32.AdsIsNull(hTable, lFieldOrdinal, OUT pbNull ) 
             ELSE
-                RETURN Ace64.AdsIsNull(hTable, lFieldOrdinal, OUT pbNull ) 
+                RETURN ACE64.AdsIsNull(hTable, lFieldOrdinal, OUT pbNull ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsIsNull(hTable AS IntPtr, strFldName AS STRING, pbNull OUT WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsIsNull(hTable, strFldName, OUT pbNull ) 
+            IF Is32Bits
+                RETURN ACE32.AdsIsNull(hTable, strFldName, OUT pbNull ) 
             ELSE
-                RETURN Ace64.AdsIsNull(hTable, strFldName, OUT pbNull ) 
+                RETURN ACE64.AdsIsNull(hTable, strFldName, OUT pbNull ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsIsNullable(hTable AS IntPtr, lFieldOrdinal AS DWORD, pbNullable OUT WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsIsNullable(hTable, lFieldOrdinal, OUT pbNullable ) 
+            IF Is32Bits
+                RETURN ACE32.AdsIsNullable(hTable, lFieldOrdinal, OUT pbNullable ) 
             ELSE
-                RETURN Ace64.AdsIsNullable(hTable, lFieldOrdinal, OUT pbNullable ) 
+                RETURN ACE64.AdsIsNullable(hTable, lFieldOrdinal, OUT pbNullable ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsIsNullable(hTable AS IntPtr, strFldName AS STRING, pbNullable OUT WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsIsNullable(hTable, strFldName, OUT pbNullable ) 
+            IF Is32Bits
+                RETURN ACE32.AdsIsNullable(hTable, strFldName, OUT pbNullable ) 
             ELSE
-                RETURN Ace64.AdsIsNullable(hTable, strFldName, OUT pbNullable ) 
+                RETURN ACE64.AdsIsNullable(hTable, strFldName, OUT pbNullable ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsIsRecordEncrypted(hTable AS IntPtr, pbEncrypted OUT WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsIsRecordEncrypted(hTable, OUT pbEncrypted ) 
+            IF Is32Bits
+                RETURN ACE32.AdsIsRecordEncrypted(hTable, OUT pbEncrypted ) 
             ELSE
-                RETURN Ace64.AdsIsRecordEncrypted(hTable, OUT pbEncrypted ) 
+                RETURN ACE64.AdsIsRecordEncrypted(hTable, OUT pbEncrypted ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsIsRecordInAOF(hTable AS IntPtr, ulRecordNum AS DWORD, pusIsInAOF OUT WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsIsRecordInAOF(hTable, ulRecordNum, OUT pusIsInAOF ) 
+            IF Is32Bits
+                RETURN ACE32.AdsIsRecordInAOF(hTable, ulRecordNum, OUT pusIsInAOF ) 
             ELSE
-                RETURN Ace64.AdsIsRecordInAOF(hTable, ulRecordNum, OUT pusIsInAOF ) 
+                RETURN ACE64.AdsIsRecordInAOF(hTable, ulRecordNum, OUT pusIsInAOF ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsIsTableEncrypted(hTable AS IntPtr, pbEncrypted OUT WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsIsTableEncrypted(hTable, OUT pbEncrypted ) 
+            IF Is32Bits
+                RETURN ACE32.AdsIsTableEncrypted(hTable, OUT pbEncrypted ) 
             ELSE
-                RETURN Ace64.AdsIsTableEncrypted(hTable, OUT pbEncrypted ) 
+                RETURN ACE64.AdsIsTableEncrypted(hTable, OUT pbEncrypted ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsLocate(hTable AS IntPtr, strExpr AS STRING, bForward AS WORD, pbFound OUT WORD) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsLocate(hTable, strExpr, bForward, OUT pbFound ) 
+            IF Is32Bits
+                RETURN ACE32.AdsLocate(hTable, strExpr, bForward, OUT pbFound ) 
             ELSE
-                RETURN Ace64.AdsLocate(hTable, strExpr, bForward, OUT pbFound ) 
+                RETURN ACE64.AdsLocate(hTable, strExpr, bForward, OUT pbFound ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsLookupKey(hIndex AS IntPtr, strKey AS STRING, usKeyLen AS WORD, usDataType AS WORD, pbFound OUT WORD) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsLookupKey(hIndex, strKey, usKeyLen, usDataType, OUT pbFound ) 
+            IF Is32Bits
+                RETURN ACE32.AdsLookupKey(hIndex, strKey, usKeyLen, usDataType, OUT pbFound ) 
             ELSE
-                RETURN Ace64.AdsLookupKey(hIndex, strKey, usKeyLen, usDataType, OUT pbFound ) 
+                RETURN ACE64.AdsLookupKey(hIndex, strKey, usKeyLen, usDataType, OUT pbFound ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsNullTerminateStrings(bNullTerminate AS WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsNullTerminateStrings(bNullTerminate ) 
+            IF Is32Bits
+                RETURN ACE32.AdsNullTerminateStrings(bNullTerminate ) 
             ELSE
-                RETURN Ace64.AdsNullTerminateStrings(bNullTerminate ) 
+                RETURN ACE64.AdsNullTerminateStrings(bNullTerminate ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsOpenTable(hConnect AS IntPtr, strName AS STRING, strAlias AS STRING, usTableType AS WORD, usCharType AS WORD, usLockType AS WORD, usCheckRights AS WORD, ulOptions AS DWORD, phTable OUT IntPtr ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsOpenTable(hConnect, strName, strAlias, usTableType, usCharType, usLockType, usCheckRights, ulOptions, OUT phTable ) 
+            IF Is32Bits
+                RETURN ACE32.AdsOpenTable(hConnect, strName, strAlias, usTableType, usCharType, usLockType, usCheckRights, ulOptions, OUT phTable ) 
             ELSE
-                RETURN Ace64.AdsOpenTable(hConnect, strName, strAlias, usTableType, usCharType, usLockType, usCheckRights, ulOptions, OUT phTable ) 
+                RETURN ACE64.AdsOpenTable(hConnect, strName, strAlias, usTableType, usCharType, usLockType, usCheckRights, ulOptions, OUT phTable ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsPrepareSQL(hStatement AS IntPtr, strSQL AS STRING ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsPrepareSQL(hStatement, strSQL ) 
+            IF Is32Bits
+                RETURN ACE32.AdsPrepareSQL(hStatement, strSQL ) 
             ELSE
-                RETURN Ace64.AdsPrepareSQL(hStatement, strSQL ) 
+                RETURN ACE64.AdsPrepareSQL(hStatement, strSQL ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsReindex61(hObject AS IntPtr, ulPageSize AS DWORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsReindex61(hObject, ulPageSize ) 
+            IF Is32Bits
+                RETURN ACE32.AdsReindex61(hObject, ulPageSize ) 
             ELSE
-                RETURN Ace64.AdsReindex61(hObject, ulPageSize ) 
+                RETURN ACE64.AdsReindex61(hObject, ulPageSize ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsReindexFTS(hObject AS IntPtr, ulPageSize AS DWORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsReindexFTS(hObject, ulPageSize ) 
+            IF Is32Bits
+                RETURN ACE32.AdsReindexFTS(hObject, ulPageSize ) 
             ELSE
-                RETURN Ace64.AdsReindexFTS(hObject, ulPageSize ) 
+                RETURN ACE64.AdsReindexFTS(hObject, ulPageSize ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsRestructureTable(hObj AS IntPtr, strName AS STRING, strPassword AS STRING, usTableType AS WORD, usCharType AS WORD, usLockType AS WORD, usCheckRights AS WORD, strAddFields AS STRING, strDeleteFields AS STRING, strChangeFields AS STRING ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsRestructureTable(hObj, strName, strPassword, usTableType, usCharType, usLockType, usCheckRights, strAddFields, strDeleteFields, strChangeFields ) 
+            IF Is32Bits
+                RETURN ACE32.AdsRestructureTable(hObj, strName, strPassword, usTableType, usCharType, usLockType, usCheckRights, strAddFields, strDeleteFields, strChangeFields ) 
             ELSE
-                RETURN Ace64.AdsRestructureTable(hObj, strName, strPassword, usTableType, usCharType, usLockType, usCheckRights, strAddFields, strDeleteFields, strChangeFields ) 
+                RETURN ACE64.AdsRestructureTable(hObj, strName, strPassword, usTableType, usCharType, usLockType, usCheckRights, strAddFields, strDeleteFields, strChangeFields ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsRestructureTable90(hObj AS IntPtr, strName AS STRING, strPassword AS STRING, usTableType AS WORD, usCharType AS WORD, usLockType AS WORD, usCheckRights AS WORD, strAddFields AS STRING, strDeleteFields AS STRING, strChangeFields AS STRING, strCollation AS STRING ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsRestructureTable90(hObj, strName, strPassword, usTableType, usCharType, usLockType, usCheckRights, strAddFields, strDeleteFields, strChangeFields, strCollation ) 
+            IF Is32Bits
+                RETURN ACE32.AdsRestructureTable90(hObj, strName, strPassword, usTableType, usCharType, usLockType, usCheckRights, strAddFields, strDeleteFields, strChangeFields, strCollation ) 
             ELSE
-                RETURN Ace64.AdsRestructureTable90(hObj, strName, strPassword, usTableType, usCharType, usLockType, usCheckRights, strAddFields, strDeleteFields, strChangeFields, strCollation ) 
+                RETURN ACE64.AdsRestructureTable90(hObj, strName, strPassword, usTableType, usCharType, usLockType, usCheckRights, strAddFields, strDeleteFields, strChangeFields, strCollation ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsRollbackTransaction80(hConnect AS IntPtr, strSavepoint AS STRING, ulOptions AS DWORD) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsRollbackTransaction80(hConnect, strSavepoint, ulOptions ) 
+            IF Is32Bits
+                RETURN ACE32.AdsRollbackTransaction80(hConnect, strSavepoint, ulOptions ) 
             ELSE
-                RETURN Ace64.AdsRollbackTransaction80(hConnect, strSavepoint, ulOptions ) 
+                RETURN ACE64.AdsRollbackTransaction80(hConnect, strSavepoint, ulOptions ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsSetCollation(hConnect AS IntPtr, strCollation AS STRING ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsSetCollation(hConnect, strCollation ) 
+            IF Is32Bits
+                RETURN ACE32.AdsSetCollation(hConnect, strCollation ) 
             ELSE
-                RETURN Ace64.AdsSetCollation(hConnect, strCollation ) 
+                RETURN ACE64.AdsSetCollation(hConnect, strCollation ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsSetCollationLang(strLang AS STRING ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsSetCollationLang(strLang ) 
+            IF Is32Bits
+                RETURN ACE32.AdsSetCollationLang(strLang ) 
             ELSE
-                RETURN Ace64.AdsSetCollationLang(strLang ) 
+                RETURN ACE64.AdsSetCollationLang(strLang ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsSetDateFormat60(hConnect AS IntPtr, strFormat AS STRING ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsSetDateFormat60(hConnect, strFormat ) 
+            IF Is32Bits
+                RETURN ACE32.AdsSetDateFormat60(hConnect, strFormat ) 
             ELSE
-                RETURN Ace64.AdsSetDateFormat60(hConnect, strFormat ) 
+                RETURN ACE64.AdsSetDateFormat60(hConnect, strFormat ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsSetExact22(hObj AS IntPtr, bExact AS WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsSetExact22(hObj, bExact ) 
+            IF Is32Bits
+                RETURN ACE32.AdsSetExact22(hObj, bExact ) 
             ELSE
-                RETURN Ace64.AdsSetExact22(hObj, bExact ) 
+                RETURN ACE64.AdsSetExact22(hObj, bExact ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsSetHandleINT64(hObj AS IntPtr, ulVal AS DWORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsSetHandleINT64(hObj, ulVal ) 
+            IF Is32Bits
+                RETURN ACE32.AdsSetHandleINT64(hObj, ulVal ) 
             ELSE
-                RETURN Ace64.AdsSetHandleINT64(hObj, ulVal ) 
+                RETURN ACE64.AdsSetHandleINT64(hObj, ulVal ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsSetIndexDirection(hIndex AS IntPtr,  usReverseDirection AS WORD) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsSetIndexDirection(hIndex,  usReverseDirection ) 
+            IF Is32Bits
+                RETURN ACE32.AdsSetIndexDirection(hIndex,  usReverseDirection ) 
             ELSE
-                RETURN Ace64.AdsSetIndexDirection(hIndex,  usReverseDirection ) 
+                RETURN ACE64.AdsSetIndexDirection(hIndex,  usReverseDirection ) 
             ENDIF
 
-        PUBLIC STATIC METHOD AdsSetProperty90(hObj AS Intptr, ulOperation AS DWORD , uqValue REF UINT64 ) AS DWORD 
+        PUBLIC STATIC METHOD AdsSetProperty90(hObj AS IntPtr, ulOperation AS DWORD , uqValue REF UINT64 ) AS DWORD 
             IF Is32Bits
-                RETURN Ace32.AdsSetProperty90(hObj, ulOperation, REF uqValue)
+                RETURN ACE32.AdsSetProperty90(hObj, ulOperation, REF uqValue)
             ELSE
-                RETURN Ace64.AdsSetProperty90(hObj, ulOperation, REF uqValue)
+                RETURN ACE64.AdsSetProperty90(hObj, ulOperation, REF uqValue)
             ENDIF
 
 
 
         PUBLIC STATIC METHOD AdsSetRecord(hObj AS IntPtr, strRec AS BYTE[], ulLen AS DWORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsSetRecord(hObj, strRec, ulLen ) 
+            IF Is32Bits
+                RETURN ACE32.AdsSetRecord(hObj, strRec, ulLen ) 
             ELSE
-                RETURN Ace64.AdsSetRecord(hObj, strRec, ulLen ) 
+                RETURN ACE64.AdsSetRecord(hObj, strRec, ulLen ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsSetRelKeyPos(hIndex AS IntPtr, dPos AS REAL8) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsSetRelKeyPos(hIndex, dPos ) 
+            IF Is32Bits
+                RETURN ACE32.AdsSetRelKeyPos(hIndex, dPos ) 
             ELSE
-                RETURN Ace64.AdsSetRelKeyPos(hIndex, dPos ) 
+                RETURN ACE64.AdsSetRelKeyPos(hIndex, dPos ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsSetScopedRelation(hTableParent AS IntPtr, hIndexChild AS IntPtr, strExpr AS STRING ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsSetScopedRelation(hTableParent, hIndexChild, strExpr ) 
+            IF Is32Bits
+                RETURN ACE32.AdsSetScopedRelation(hTableParent, hIndexChild, strExpr ) 
             ELSE
-                RETURN Ace64.AdsSetScopedRelation(hTableParent, hIndexChild, strExpr ) 
+                RETURN ACE64.AdsSetScopedRelation(hTableParent, hIndexChild, strExpr ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsShowError(strTitle AS STRING ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsShowError(strTitle ) 
+            IF Is32Bits
+                RETURN ACE32.AdsShowError(strTitle ) 
             ELSE
-                RETURN Ace64.AdsShowError(strTitle ) 
+                RETURN ACE64.AdsShowError(strTitle ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsStmtConstrainUpdates(hStatement AS IntPtr, usConstrain AS WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsStmtConstrainUpdates(hStatement, usConstrain ) 
+            IF Is32Bits
+                RETURN ACE32.AdsStmtConstrainUpdates(hStatement, usConstrain ) 
             ELSE
-                RETURN Ace64.AdsStmtConstrainUpdates(hStatement, usConstrain ) 
+                RETURN ACE64.AdsStmtConstrainUpdates(hStatement, usConstrain ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsStmtEnableEncryption(hStatement AS IntPtr, strPassword AS STRING ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsStmtEnableEncryption(hStatement, strPassword ) 
+            IF Is32Bits
+                RETURN ACE32.AdsStmtEnableEncryption(hStatement, strPassword ) 
             ELSE
-                RETURN Ace64.AdsStmtEnableEncryption(hStatement, strPassword ) 
+                RETURN ACE64.AdsStmtEnableEncryption(hStatement, strPassword ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsStmtReadAllColumns(hStatement AS IntPtr, usReadColumns AS WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsStmtReadAllColumns(hStatement, usReadColumns ) 
+            IF Is32Bits
+                RETURN ACE32.AdsStmtReadAllColumns(hStatement, usReadColumns ) 
             ELSE
-                RETURN Ace64.AdsStmtReadAllColumns(hStatement, usReadColumns ) 
+                RETURN ACE64.AdsStmtReadAllColumns(hStatement, usReadColumns ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsVerifyPassword(hTable AS IntPtr, pusEnabled OUT WORD ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsVerifyPassword(hTable, OUT pusEnabled ) 
+            IF Is32Bits
+                RETURN ACE32.AdsVerifyPassword(hTable, OUT pusEnabled ) 
             ELSE
-                RETURN Ace64.AdsVerifyPassword(hTable, OUT pusEnabled ) 
+                RETURN ACE64.AdsVerifyPassword(hTable, OUT pusEnabled ) 
             ENDIF
 
         PUBLIC STATIC METHOD AdsVerifySQL(hStatement AS IntPtr, strSQL AS STRING ) AS DWORD 
-            IF is32Bits
-                RETURN Ace32.AdsVerifySQL(hStatement, strSQL ) 
+            IF Is32Bits
+                RETURN ACE32.AdsVerifySQL(hStatement, strSQL ) 
             ELSE
-                RETURN Ace64.AdsVerifySQL(hStatement, strSQL ) 
+                RETURN ACE64.AdsVerifySQL(hStatement, strSQL ) 
             ENDIF
             #endregion
 
@@ -3845,34 +3845,34 @@ BEGIN NAMESPACE XSharp.ADS
     INTERNAL DELEGATE _delCreateTable90(hConnect AS IntPtr, strName AS STRING, strDBObjName AS STRING, usTableType AS WORD, usCharType AS WORD, usLockType AS WORD, usCheckRights AS WORD, usMemoSize AS WORD, strFields AS STRING, ulOptions AS DWORD, strCollation AS STRING, phTable OUT IntPtr ) AS DWORD         
     INTERNAL DELEGATE _delConnect60(pucServerPath AS STRING, usServerTypes AS WORD, pucUserName AS STRING, pucPassword AS STRING, ulOptions AS DWORD, phConnect OUT IntPtr ) AS DWORD 
     
-    INTERNAL DELEGATE _delEvalStringExpr(hTable AS IntPtr, strExpr AS STRING, [IN] [OUT] strResult AS CHAR[], wLen REF WORD ) AS DWORD 
-    INTERNAL DELEGATE _delExtractKey(hIndex AS IntPtr, [IN] [OUT] strKey AS CHAR[], wLen REF WORD ) AS DWORD 
-    INTERNAL DELEGATE _delGetAOFOptLevel(hTable AS IntPtr, pusOptLevel OUT WORD, [IN] [OUT] strNonOpt AS CHAR[], wLen REF WORD ) AS DWORD 
-    INTERNAL DELEGATE _delGetAllIndexes(hTable AS IntPtr, [IN] [OUT] ahIndex AS IntPtr[], pusArrayLen REF WORD ) AS DWORD 
-    INTERNAL DELEGATE _delGetAllLocks(hTable AS IntPtr, [IN] [OUT] aulLocks AS DWORD[], pusArrayLen REF WORD ) AS DWORD 
-    INTERNAL DELEGATE _delGetAllTables([IN] [OUT] ahTable AS IntPtr[], pusArrayLen REF WORD ) AS DWORD 
-    INTERNAL DELEGATE _delGetBinaryD(hTable AS IntPtr, lFieldOrdinal AS DWORD, ulOffset AS DWORD, [IN] [OUT] strBuf AS BYTE[], pulLen REF DWORD ) AS DWORD 
+    INTERNAL DELEGATE _delEvalStringExpr(hTable AS IntPtr, strExpr AS STRING, [InAttribute] [OutAttribute] strResult AS CHAR[], wLen REF WORD ) AS DWORD 
+    INTERNAL DELEGATE _delExtractKey(hIndex AS IntPtr, [InAttribute] [OutAttribute] strKey AS CHAR[], wLen REF WORD ) AS DWORD 
+    INTERNAL DELEGATE _delGetAOFOptLevel(hTable AS IntPtr, pusOptLevel OUT WORD, [InAttribute] [OutAttribute] strNonOpt AS CHAR[], wLen REF WORD ) AS DWORD 
+    INTERNAL DELEGATE _delGetAllIndexes(hTable AS IntPtr, [InAttribute] [OutAttribute] ahIndex AS IntPtr[], pusArrayLen REF WORD ) AS DWORD 
+    INTERNAL DELEGATE _delGetAllLocks(hTable AS IntPtr, [InAttribute] [OutAttribute] aulLocks AS DWORD[], pusArrayLen REF WORD ) AS DWORD 
+    INTERNAL DELEGATE _delGetAllTables([InAttribute] [OutAttribute] ahTable AS IntPtr[], pusArrayLen REF WORD ) AS DWORD 
+    INTERNAL DELEGATE _delGetBinaryD(hTable AS IntPtr, lFieldOrdinal AS DWORD, ulOffset AS DWORD, [InAttribute] [OutAttribute] strBuf AS BYTE[], pulLen REF DWORD ) AS DWORD 
     INTERNAL DELEGATE _delGetBinaryLengthD(hTable AS IntPtr, lFieldOrdinal AS DWORD, pulLength OUT DWORD ) AS DWORD 
     //INTERNAL DELEGATE _delGetBinaryLengthS(hTable AS IntPtr, strFldName AS STRING, pulLength OUT DWORD ) AS DWORD 
-    //INTERNAL DELEGATE _delGetBinaryS(hTable AS IntPtr, strFldName AS STRING, ulOffset AS DWORD, [IN] [OUT] strBuf AS BYTE[], pulLen REF DWORD ) AS DWORD 
-    INTERNAL DELEGATE _delGetDateD(hTable AS IntPtr, lFieldOrdinal AS DWORD, [IN] [OUT] strBuf AS CHAR[], wLen REF WORD ) AS DWORD 
-    INTERNAL DELEGATE _delGetDateFormat([IN] [OUT] strFormat AS CHAR[], wLen REF WORD ) AS DWORD
-    //INTERNAL DELEGATE _delGetDateS(hTable AS IntPtr, strFldName AS STRING, [IN] [OUT] strBuf AS CHAR[], wLen REF WORD ) AS DWORD 
-    INTERNAL DELEGATE _delGetFTSIndexes(hTable AS IntPtr, [IN] [OUT] ahIndex AS IntPtr[], pusArrayLen REF WORD ) AS DWORD 
-    INTERNAL DELEGATE _delGetField1(hTable AS IntPtr, lFieldOrdinal AS DWORD, [IN] [OUT] abBuf AS BYTE[], pulLen REF DWORD, usOption AS WORD ) AS DWORD 
+    //INTERNAL DELEGATE _delGetBinaryS(hTable AS IntPtr, strFldName AS STRING, ulOffset AS DWORD, [InAttribute] [OutAttribute] strBuf AS BYTE[], pulLen REF DWORD ) AS DWORD 
+    INTERNAL DELEGATE _delGetDateD(hTable AS IntPtr, lFieldOrdinal AS DWORD, [InAttribute] [OutAttribute] strBuf AS CHAR[], wLen REF WORD ) AS DWORD 
+    INTERNAL DELEGATE _delGetDateFormat([InAttribute] [OutAttribute] strFormat AS CHAR[], wLen REF WORD ) AS DWORD
+    //INTERNAL DELEGATE _delGetDateS(hTable AS IntPtr, strFldName AS STRING, [InAttribute] [OutAttribute] strBuf AS CHAR[], wLen REF WORD ) AS DWORD 
+    INTERNAL DELEGATE _delGetFTSIndexes(hTable AS IntPtr, [InAttribute] [OutAttribute] ahIndex AS IntPtr[], pusArrayLen REF WORD ) AS DWORD 
+    INTERNAL DELEGATE _delGetField1(hTable AS IntPtr, lFieldOrdinal AS DWORD, [InAttribute] [OutAttribute] abBuf AS BYTE[], pulLen REF DWORD, usOption AS WORD ) AS DWORD 
     INTERNAL DELEGATE _delGetField2(hTable AS IntPtr, lFieldOrdinal AS DWORD, strBuf AS CHAR[], pulLen REF DWORD, usOption AS WORD ) AS DWORD 
     //INTERNAL DELEGATE _delGetField3(hTable AS IntPtr, strFldName AS STRING, abBuf AS BYTE[], pulLen REF DWORD, usOption AS WORD ) AS DWORD 
     //INTERNAL DELEGATE _delGetField4(hTable AS IntPtr, strFldName AS STRING,  strBuf AS CHAR[], pulLen REF DWORD, usOption AS WORD ) AS DWORD 
-    INTERNAL DELEGATE _delGetFieldName(hTable AS IntPtr, usFld AS WORD, [IN] [OUT] strName AS CHAR[], pusBufLen REF WORD ) AS DWORD 
-    INTERNAL DELEGATE _delGetIndexCondition(hIndex AS IntPtr, [IN] [OUT] strExpr AS CHAR[], wLen REF WORD ) AS DWORD 
-    INTERNAL DELEGATE _delGetIndexExpr(hIndex AS IntPtr, [IN] [OUT] strExpr AS CHAR[], wLen REF WORD ) AS DWORD 
-    INTERNAL DELEGATE _delGetIndexFilename(hIndex AS IntPtr, usOption AS WORD, [IN] [OUT] strName AS CHAR[], wLen REF WORD ) AS DWORD 
-    INTERNAL DELEGATE _delGetIndexName(hIndex AS IntPtr, [IN] [OUT] strName AS CHAR[], wLen REF WORD ) AS DWORD         
-    INTERNAL DELEGATE _delGetLastError(pulErrCode OUT DWORD, [IN] [OUT] strBuf AS CHAR[], pusBufLen REF WORD ) AS DWORD 
-    INTERNAL DELEGATE _delGetLastTableUpdate(hTable AS IntPtr, [IN] [OUT] strDate AS CHAR[], pusDateLen REF WORD ) AS DWORD 
-    INTERNAL DELEGATE _delGetScope(hIndex AS IntPtr, usScopeOption AS WORD, [IN] [OUT] strScope AS CHAR[], pusBufLen REF WORD ) AS DWORD 
-    INTERNAL DELEGATE _delGetStringD(hTable AS IntPtr, lFieldOrdinal AS DWORD, [IN] [OUT] strBuf AS CHAR[], pulLen REF DWORD, usOption AS WORD) AS DWORD 
-    //INTERNAL DELEGATE _delGetStringS(hTable AS IntPtr, strFldName AS STRING, [IN] [OUT] strBuf AS CHAR[], pulLen REF DWORD, usOption AS WORD ) AS DWORD 
+    INTERNAL DELEGATE _delGetFieldName(hTable AS IntPtr, usFld AS WORD, [InAttribute] [OutAttribute] strName AS CHAR[], pusBufLen REF WORD ) AS DWORD 
+    INTERNAL DELEGATE _delGetIndexCondition(hIndex AS IntPtr, [InAttribute] [OutAttribute] strExpr AS CHAR[], wLen REF WORD ) AS DWORD 
+    INTERNAL DELEGATE _delGetIndexExpr(hIndex AS IntPtr, [InAttribute] [OutAttribute] strExpr AS CHAR[], wLen REF WORD ) AS DWORD 
+    INTERNAL DELEGATE _delGetIndexFilename(hIndex AS IntPtr, usOption AS WORD, [InAttribute] [OutAttribute] strName AS CHAR[], wLen REF WORD ) AS DWORD 
+    INTERNAL DELEGATE _delGetIndexName(hIndex AS IntPtr, [InAttribute] [OutAttribute] strName AS CHAR[], wLen REF WORD ) AS DWORD         
+    INTERNAL DELEGATE _delGetLastError(pulErrCode OUT DWORD, [InAttribute] [OutAttribute] strBuf AS CHAR[], pusBufLen REF WORD ) AS DWORD 
+    INTERNAL DELEGATE _delGetLastTableUpdate(hTable AS IntPtr, [InAttribute] [OutAttribute] strDate AS CHAR[], pusDateLen REF WORD ) AS DWORD 
+    INTERNAL DELEGATE _delGetScope(hIndex AS IntPtr, usScopeOption AS WORD, [InAttribute] [OutAttribute] strScope AS CHAR[], pusBufLen REF WORD ) AS DWORD 
+    INTERNAL DELEGATE _delGetStringD(hTable AS IntPtr, lFieldOrdinal AS DWORD, [InAttribute] [OutAttribute] strBuf AS CHAR[], pulLen REF DWORD, usOption AS WORD) AS DWORD 
+    //INTERNAL DELEGATE _delGetStringS(hTable AS IntPtr, strFldName AS STRING, [InAttribute] [OutAttribute] strBuf AS CHAR[], pulLen REF DWORD, usOption AS WORD ) AS DWORD 
     INTERNAL DELEGATE _delGetTableFilename(hTable AS IntPtr, usOption AS WORD, strName AS CHAR[], wLen REF WORD ) AS DWORD 
     INTERNAL DELEGATE _delH (h AS IntPtr) AS DWORD
     INTERNAL DELEGATE _delHD(h AS IntPtr, d AS DWORD) AS DWORD
@@ -3905,10 +3905,10 @@ BEGIN NAMESPACE XSharp.ADS
     INTERNAL DELEGATE _delHSW(h AS IntPtr, s AS STRING, w AS WORD) AS DWORD
     INTERNAL DELEGATE _delHSWS(h AS IntPtr, s1 AS STRING, w AS WORD, s2 AS STRING) AS DWORD
     INTERNAL DELEGATE _delHW (h AS IntPtr, w AS WORD) AS DWORD
-    INTERNAL DELEGATE _delHWOUTH(h AS IntPtr, w AS WORD, h2 OUT IntPtr) AS DWORD
+    INTERNAL DELEGATE _delHWOutH(h AS IntPtr, w AS WORD, h2 OUT IntPtr) AS DWORD
     INTERNAL DELEGATE _delHWOutD(h AS IntPtr, w AS WORD, d OUT DWORD) AS DWORD
     INTERNAL DELEGATE _delHWOutW(h AS IntPtr, w AS WORD, w2 OUT WORD) AS DWORD
-    INTERNAL DELEGATE _delOpenIndex(hTable AS IntPtr, strName AS STRING, [IN] [OUT] ahIndex AS IntPtr[], pusArrayLen REF WORD ) AS DWORD 
+    INTERNAL DELEGATE _delOpenIndex(hTable AS IntPtr, strName AS STRING, [InAttribute] [OutAttribute] ahIndex AS IntPtr[], pusArrayLen REF WORD ) AS DWORD 
     INTERNAL DELEGATE _delOpenTable90(hConnect AS IntPtr, strName AS STRING, strAlias AS STRING, usTableType AS WORD, usCharType AS WORD, usLockType AS WORD, usCheckRights AS WORD, ulOptions AS DWORD, strCollation AS STRING, phTable OUT IntPtr ) AS DWORD 
     INTERNAL DELEGATE _delRegisterCallbackFunction(pfn AS CallbackFn, ulCallBackID AS DWORD ) AS DWORD 
     INTERNAL DELEGATE _delS(s AS STRING) AS DWORD

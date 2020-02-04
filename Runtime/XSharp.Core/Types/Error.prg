@@ -21,7 +21,7 @@ BEGIN NAMESPACE XSharp
     /// <summary>An integer numeric value representing a subsystem-specific error code.</summary>
     VIRTUAL PROPERTY SubCode AS DWORD AUTO    := 0
     /// <summary>An string containing the description of the SubCode.</summary>
-    VIRTUAL PROPERTY SubCodeText AS STRING GET IIF(!String.IsNullOrEmpty(_Subcode), _Subcode, IIF (SubCode != 0, __CavoStr(SubCode), "Unknown SubCode")) SET _Subcode := VALUE
+    VIRTUAL PROPERTY SubCodeText AS STRING GET IIF(!String.IsNullOrEmpty(_Subcode), _Subcode, IIF (SubCode != 0, __CavoStr(SubCode), "Unknown SubCode")) SET _Subcode := value
     PRIVATE _Subcode as STRING
     /// <summary>A string representing the name of the function or method in which the error occurred.</summary>
     VIRTUAL PROPERTY FuncSym AS STRING AUTO   := ""
@@ -41,8 +41,8 @@ BEGIN NAMESPACE XSharp
         RETURN _ArgType 
       END GET
       SET 
-        _ArgType := VALUE
-        _ArgTypeType := UsualTypeToType(VALUE)
+        _ArgType := value
+        _ArgTypeType := UsualTypeToType(value)
       END SET
     END PROPERTY
     PRIVATE  _ArgTypeType 		:= NULL AS System.Type 
@@ -52,8 +52,8 @@ BEGIN NAMESPACE XSharp
         RETURN _ArgTypeType 
       END GET
       SET 
-        _ArgTypeType := VALUE
-        _ArgType 	 := TypeToUsualType(VALUE)
+        _ArgTypeType := value
+        _ArgType 	 := TypeToUsualType(value)
       END SET
     END PROPERTY
     
@@ -64,8 +64,8 @@ BEGIN NAMESPACE XSharp
         RETURN _ArgTypeReq 
       END GET
       SET 
-        _ArgTypeReq := VALUE
-        _ArgTypeReqType := UsualTypeToType(VALUE)
+        _ArgTypeReq := value
+        _ArgTypeReqType := UsualTypeToType(value)
       END SET
     END PROPERTY
     PRIVATE  _ArgTypeReqType := NULL	AS System.Type 
@@ -75,8 +75,8 @@ BEGIN NAMESPACE XSharp
         RETURN _ArgTypeReqType 
       END GET
       SET 
-        _ArgTypeReqType := VALUE
-        _ArgTypeReq 	 := TypeToUsualType(VALUE)
+        _ArgTypeReqType := value
+        _ArgTypeReq 	 := TypeToUsualType(value)
       END SET
     END PROPERTY
     /// <summary>A numeric value representing the type of the new result that the error handler substitutes for the operation that produced the error condition.</summary>
@@ -124,7 +124,7 @@ BEGIN NAMESPACE XSharp
     		RETURN SELF:_StackTrace
     	END GET
     	SET
-    		SELF:_StackTrace := VALUE
+    		SELF:_StackTrace := value
     	END SET
     END PROPERTY
 

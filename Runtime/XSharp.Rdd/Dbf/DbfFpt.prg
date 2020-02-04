@@ -13,11 +13,11 @@ USING System.IO
 BEGIN NAMESPACE XSharp.RDD
     /// <summary>DBFFPT RDD. For DBF/FPT. No index support at this level</summary>
     CLASS DBFFPT INHERIT DBF 
-        PRIVATE _oFptMemo AS FptMemo
+        PRIVATE _oFptMemo AS FPTMemo
         PROTECTED INTERNAL _iExportMode AS LONG
         CONSTRUCTOR   
             SUPER()
-            SELF:_Memo := _oFptMemo := FptMemo{SELF}
+            SELF:_Memo := _oFptMemo := FPTMemo{SELF}
             SELF:_iExportMode := BLOB_EXPORT_APPEND
             
             /// <inheritdoc />	
@@ -28,104 +28,104 @@ BEGIN NAMESPACE XSharp.RDD
             LOCAL iLen AS Int32
             LOCAL aValues AS OBJECT[]
             IF nType == FlexFieldType.Array16 // 16 bits
-                iLen := BitConverter.ToInt16(bData, nOffSet)
-                nOffSet += 2
+                iLen := BitConverter.ToInt16(bData, nOffset)
+                nOffset += 2
             ELSEIF nType == FlexFieldType.Array32
-                iLen := BitConverter.ToInt32(bData, nOffSet)
-                nOffSet += 4
+                iLen := BitConverter.ToInt32(bData, nOffset)
+                nOffset += 4
             ELSE
                 RETURN NULL
             ENDIF
             aValues := OBJECT[]{iLen}
             FOR VAR i := 0 TO iLen-1
-                VAR nFldType := bData[nOffSet]
+                VAR nFldType := bData[nOffset]
                 LOCAL element AS OBJECT
                 LOCAL length AS LONG
-                nOffSet += 1
+                nOffset += 1
                 VAR nArrType := (FlexArrayTypes) nFldType
                 SWITCH nArrType
                 CASE FlexArrayTypes.NIL
                     element := DBNull.Value
                 CASE FlexArrayTypes.Char
-                    element := (sByte) bData[ nOffSet]
-                    nOffSet += 1
+                    element := (SByte) bData[ nOffset]
+                    nOffset += 1
                 CASE FlexArrayTypes.UChar
-                    element := (BYTE) bData[ nOffSet]
-                    nOffSet += 1
+                    element := (BYTE) bData[ nOffset]
+                    nOffset += 1
                 CASE FlexArrayTypes.Short
-                    element := BitConverter.ToInt16(bData,nOffSet)
-                    nOffSet += 2
+                    element := BitConverter.ToInt16(bData,nOffset)
+                    nOffset += 2
                 CASE FlexArrayTypes.UShort
-                    element := BitConverter.ToUInt16(bData,nOffSet)
-                    nOffSet += 2
+                    element := BitConverter.ToUInt16(bData,nOffset)
+                    nOffset += 2
                 CASE FlexArrayTypes.Long     
-                    element := BitConverter.ToInt32(bData,nOffSet)
-                    nOffSet += 4
+                    element := BitConverter.ToInt32(bData,nOffset)
+                    nOffset += 4
                 CASE FlexArrayTypes.String32 
-                    length := BitConverter.ToInt32(bData,nOffSet)
-                    nOffSet += 4
-                    element := _encoding:GetString(bData, nOffSet, length)
-                    nOffSet += length
+                    length := BitConverter.ToInt32(bData,nOffset)
+                    nOffset += 4
+                    element := _Encoding:GetString(bData, nOffset, length)
+                    nOffset += length
                 CASE FlexArrayTypes.String16 
-                    length := BitConverter.ToInt16(bData,nOffSet)
-                    nOffSet += 2
-                    element := _encoding:GetString(bData, nOffSet, length)
-                    nOffSet += length
+                    length := BitConverter.ToInt16(bData,nOffset)
+                    nOffset += 2
+                    element := _Encoding:GetString(bData, nOffset, length)
+                    nOffset += length
                 CASE FlexArrayTypes.Float    
                     element := 0.0
-                    nOffSet += 10
+                    nOffset += 10
                 CASE FlexArrayTypes.Double 
-                    element := BitConverter.ToDouble(bData, nOffSet)
-                    nOffSet += 8
+                    element := BitConverter.ToDouble(bData, nOffset)
+                    nOffset += 8
                 CASE FlexArrayTypes.Date     
-                    element := BitConverter.ToInt32(bData, nOffSet)
-                    nOffSet += 4
+                    element := BitConverter.ToInt32(bData, nOffset)
+                    nOffset += 4
                 CASE FlexArrayTypes.Logic    
-                    element := bData[nOffSet] != 0
-                    nOffSet += 1
+                    element := bData[nOffset] != 0
+                    nOffset += 1
                 CASE FlexArrayTypes.Array    
-                    element := DecodeFlexArray(FlexFieldType.Array16, bData, REF nOffSet)
+                    element := DecodeFlexArray(FlexFieldType.Array16, bData, REF nOffset)
 
                 CASE FlexArrayTypes.CodeBlock
                     element := NULL
-                    SELF:_dbfError(NULL, SubCodes.ERDD_DATATYPE, GenCode.EG_DATATYPE, __FUNCTION__)
+                    SELF:_dbfError(NULL, Subcodes.ERDD_DATATYPE, Gencode.EG_DATATYPE, __FUNCTION__)
 
                 CASE FlexArrayTypes.DateJ    
-                    element := BitConverter.ToInt32(bData, nOffSet)
-                    nOffSet += 4
+                    element := BitConverter.ToInt32(bData, nOffset)
+                    nOffset += 4
 
                 CASE FlexArrayTypes.Double2  
-                    element := BitConverter.ToDouble(bData, nOffSet)
-                    nOffSet += 6
+                    element := BitConverter.ToDouble(bData, nOffset)
+                    nOffset += 6
 
                 CASE FlexArrayTypes.Cyclic
                     element := NULL
-                    SELF:_dbfError(NULL, SubCodes.ERDD_DATATYPE, GenCode.EG_DATATYPE, __FUNCTION__)
+                    SELF:_dbfError(NULL, Subcodes.ERDD_DATATYPE, Gencode.EG_DATATYPE, __FUNCTION__)
 
                 CASE FlexArrayTypes.UCHar1  
-                    element := (sByte) bData[ nOffSet]
-                    nOffSet += 2
+                    element := (SByte) bData[ nOffset]
+                    nOffset += 2
 
                 CASE FlexArrayTypes.Char1    
-                    element := (BYTE) bData[ nOffSet]
-                    nOffSet += 2
+                    element := (BYTE) bData[ nOffset]
+                    nOffset += 2
 
                 CASE FlexArrayTypes.Short1   
-                    element := BitConverter.ToInt16(bData, nOffSet)
-                    nOffSet += 3
+                    element := BitConverter.ToInt16(bData, nOffset)
+                    nOffset += 3
                 CASE FlexArrayTypes.UShort1  
-                    element := BitConverter.ToUInt16(bData, nOffSet)
-                    nOffSet += 3
+                    element := BitConverter.ToUInt16(bData, nOffset)
+                    nOffset += 3
                 CASE FlexArrayTypes.Long1  
-                    element := BitConverter.ToInt32(bData, nOffSet)
-                    nOffSet += 5
+                    element := BitConverter.ToInt32(bData, nOffset)
+                    nOffset += 5
                 CASE FlexArrayTypes.Unused
                     element := NULL
-                    SELF:_dbfError(NULL, SubCodes.ERDD_DATATYPE, GenCode.EG_DATATYPE, __FUNCTION__)
+                    SELF:_dbfError(NULL, Subcodes.ERDD_DATATYPE, Gencode.EG_DATATYPE, __FUNCTION__)
 
                 CASE FlexArrayTypes.Object
                     element := NULL
-                    SELF:_dbfError(NULL, SubCodes.ERDD_DATATYPE, GenCode.EG_DATATYPE, __FUNCTION__)
+                    SELF:_dbfError(NULL, Subcodes.ERDD_DATATYPE, Gencode.EG_DATATYPE, __FUNCTION__)
 
                 CASE FlexArrayTypes.Null     
                     element := String.Empty
@@ -138,28 +138,28 @@ BEGIN NAMESPACE XSharp.RDD
 
                 CASE FlexArrayTypes.LDouble
                     element := NULL
-                    SELF:_dbfError(NULL, SubCodes.ERDD_DATATYPE, GenCode.EG_DATATYPE, __FUNCTION__)
+                    SELF:_dbfError(NULL, Subcodes.ERDD_DATATYPE, Gencode.EG_DATATYPE, __FUNCTION__)
                 CASE FlexArrayTypes.UCHar2   
-                    element := (SByte) bData[ nOffSet]
-                    nOffSet += 3
+                    element := (SByte) bData[ nOffset]
+                    nOffset += 3
                 CASE FlexArrayTypes.CHar2    
-                    element := (BYTE) bData[ nOffSet]
-                    nOffSet += 3
+                    element := (BYTE) bData[ nOffset]
+                    nOffset += 3
                 CASE FlexArrayTypes.Short2   
-                    element := BitConverter.ToInt16(bData, nOffSet)
-                    nOffSet += 4
+                    element := BitConverter.ToInt16(bData, nOffset)
+                    nOffset += 4
                 CASE FlexArrayTypes.UShort2  
-                    element := BitConverter.ToUInt16(bData, nOffSet)
-                    nOffSet += 4
+                    element := BitConverter.ToUInt16(bData, nOffset)
+                    nOffset += 4
                 CASE FlexArrayTypes.Long2    
-                    element := BitConverter.ToInt32(bData, nOffSet)
-                    nOffSet += 6
+                    element := BitConverter.ToInt32(bData, nOffset)
+                    nOffset += 6
                 CASE FlexArrayTypes.ULong2   
-                    element := BitConverter.ToUInt32(bData, nOffSet)
-                    nOffSet += 6
+                    element := BitConverter.ToUInt32(bData, nOffset)
+                    nOffset += 6
                 OTHERWISE
                     element := NULL
-                    SELF:_dbfError(NULL, SubCodes.ERDD_DATATYPE, GenCode.EG_DATATYPE, __FUNCTION__)
+                    SELF:_dbfError(NULL, Subcodes.ERDD_DATATYPE, Gencode.EG_DATATYPE, __FUNCTION__)
                 END SWITCH
                 aValues[i] := element
             NEXT
@@ -172,14 +172,14 @@ BEGIN NAMESPACE XSharp.RDD
             LOCAL bData AS BYTE[]
             oType := oValue:GetType()
             otc   := System.Type.GetTypeCode(oType)
-            SWITCH oTC
+            SWITCH otc
             CASE TypeCode.String
                 VAR sValue := (STRING) oValue
                 bData := BYTE[] { sValue:Length+8}
                 token := FtpMemoToken{bData}
                 token:DataType := FlexFieldType.String
                 token:Length   := (DWORD) sValue:Length
-                VAR bytes := SELF:_encoding:GetBytes(sValue)
+                VAR bytes := SELF:_Encoding:GetBytes(sValue)
                 System.Array.Copy(bytes,0, bData,8, bytes:Length)
                 RETURN bData
             CASE TypeCode.Boolean
@@ -213,7 +213,7 @@ BEGIN NAMESPACE XSharp.RDD
             CASE FlexFieldType.String
             CASE FlexFieldType.StringLong
                // Some drivers are stupid enough to allocate blocks in the FPT with a zero length..        
-                IF Token:Length > 0
+                IF token:Length > 0
                     IF bData[bData:Length-1] == 0
                         RETURN encoding:GetString(bData,8, bData:Length-9)
                     ELSE
@@ -234,7 +234,7 @@ BEGIN NAMESPACE XSharp.RDD
             CASE FlexFieldType.JDate
                 RETURN FALSE
             CASE FlexFieldType.SByte
-                RETURN (Sbyte) bData[8]
+                RETURN (SByte) bData[8]
             CASE FlexFieldType.Byte
                 RETURN (BYTE) bData[8]
             CASE FlexFieldType.Short
@@ -243,7 +243,7 @@ BEGIN NAMESPACE XSharp.RDD
                 RETURN FoxToWord(bData, 8)
             CASE FlexFieldType.Long
                 RETURN FoxToLong(bData, 8)
-            CASE FlexFieldType.DWord
+            CASE FlexFieldType.Dword
                 RETURN FoxToDword(bData, 8)
             CASE FlexFieldType.Double
                 RETURN BitConverter.ToDouble(bData, 8)
@@ -328,10 +328,10 @@ BEGIN NAMESPACE XSharp.RDD
                 IF ( SELF:_oFptMemo != NULL .AND. SELF:_oFptMemo:_Open)
                     oResult := System.IO.Path.GetExtension(SELF:_oFptMemo:_FileName)
                 ELSE
-                    oResult := FptMemo.DefExt
+                    oResult := FPTMemo.DefExt
                 ENDIF
                 IF oNewValue IS STRING VAR strExt
-                    FptMemo.DefExt := strExt
+                    FPTMemo.DefExt := strExt
                 ENDIF
             CASE DbInfo.DBI_MEMOBLOCKSIZE
                 oResult := SELF:_oFptMemo:BlockSize
@@ -340,22 +340,22 @@ BEGIN NAMESPACE XSharp.RDD
                         LOCAL size AS LONG
                         size:= Convert.ToInt32(oNewValue)
                         SELF:_oFptMemo:BlockSize := (WORD) size
-                    CATCH ex AS exception
+                    CATCH ex AS Exception
                         oResult := ""   
-                        SELF:_dbfError(ex, SubCodes.ERDD_DATATYPE, GenCode.EG_DATATYPE, __FUNCTION__)
+                        SELF:_dbfError(ex, Subcodes.ERDD_DATATYPE, Gencode.EG_DATATYPE, __FUNCTION__)
                     END TRY
                 ENDIF
 
-            CASE DBInfo.DBI_MEMOFIELD
+            CASE DbInfo.DBI_MEMOFIELD
                 oResult := ""
                 IF oNewValue != NULL
                     TRY
                         LOCAL fldPos AS LONG
                         fldPos := Convert.ToInt32(oNewValue)
                         oResult := SELF:GetValue(fldPos)
-                    CATCH ex AS exception
+                    CATCH ex AS Exception
                         oResult := ""   
-                        SELF:_dbfError(ex, SubCodes.ERDD_DATATYPE, GenCode.EG_DATATYPE, __FUNCTION__)
+                        SELF:_dbfError(ex, Subcodes.ERDD_DATATYPE, Gencode.EG_DATATYPE, __FUNCTION__)
                     END TRY
                 ENDIF
             CASE DbInfo.DBI_MEMOTYPE
@@ -368,28 +368,28 @@ BEGIN NAMESPACE XSharp.RDD
                     IF oNewValue IS OBJECT[] VAR oArray
                         IF oArray:Length >= 3
                             VAR nFld    := Convert.ToInt32(oArray[0])
-                            VAR nOffSet := Convert.ToInt32(oArray[1])
+                            VAR nOffset := Convert.ToInt32(oArray[1])
                             VAR nLen    := Convert.ToInt32(oArray[2])
                             VAR rawData := (BYTE[])SUPER:GetValue(nFld)
                             IF rawData != NULL .AND. rawData:Length > 8 // 1st 8 bytes are the header
                                 VAR nDataLen := rawData:Length -8
-                                nOffSet += 8
-                                IF nOffSet <= rawData:Length 
+                                nOffset += 8
+                                IF nOffset <= rawData:Length 
                                     VAR nToCopy := nLen
                                     IF nToCopy == 0
                                         nToCopy := nDataLen
-                                    ELSEIF nToCopy > nDataLen - nOffSet + 1
-                                        nToCopy := nDataLen - nOffSet + 1
+                                    ELSEIF nToCopy > nDataLen - nOffset + 1
+                                        nToCopy := nDataLen - nOffset + 1
                                     ENDIF
                                     VAR result  := BYTE[]{nToCopy}
-                                    System.Array.Copy(rawData, nOffSet, result,0, nToCopy)
+                                    System.Array.Copy(rawData, nOffset, result,0, nToCopy)
                                     oResult := SELF:_Encoding:GetString(result,0, nToCopy)
                                 ENDIF
                             ENDIF
                         ENDIF
                     ENDIF
                 CATCH ex AS Exception
-                    SELF:_DbfError(ex, Subcodes.ERDD_READ, Gencode.EG_CORRUPTION, "DBFFPT.BlobGet")
+                    SELF:_dbfError(ex, Subcodes.ERDD_READ, Gencode.EG_CORRUPTION, "DBFFPT.BlobGet")
                 END TRY
             CASE DbInfo.BLOB_NMODE
                 IF oNewValue IS LONG VAR iExportMode
@@ -446,7 +446,7 @@ BEGIN NAMESPACE XSharp.RDD
         STATIC PROPERTY DefExt AS STRING AUTO
         PROTECTED PROPERTY IsOpen AS LOGIC GET SELF:_hFile != F_ERROR  .AND. SELF:_hFile != IntPtr.Zero      
         INTERNAL PROPERTY IsFlex AS LOGIC GET _isFlex
-        PROPERTY Encoding AS Encoding GET SELF:_oRdd:_Encoding
+        PROPERTY Encoding AS Encoding GET SELF:_oRDD:_Encoding
         STATIC CONSTRUCTOR
             DefExt := FPT_MEMOEXT
 
@@ -464,7 +464,7 @@ BEGIN NAMESPACE XSharp.RDD
                                     // Deal with indexes of deleted blocks
                                 ENDIF
                             ELSE
-                                SELF:_oRDD:_dbfError(FException(), SubCodes.ERDD_READ, GenCode.EG_READ, "FPTMemo.LockHeader")
+                                SELF:_oRDD:_dbfError(FException(), Subcodes.ERDD_READ, Gencode.EG_READ, "FPTMemo.LockHeader")
                             ENDIF
                         ENDIF
                     ENDIF
@@ -515,10 +515,10 @@ BEGIN NAMESPACE XSharp.RDD
             
         CONSTRUCTOR (oRDD AS DBF)
             SUPER(oRDD)
-            SELF:_oRdd := (DBFFPT) oRDD
+            SELF:_oRDD := (DBFFPT) oRDD
             SELF:_hFile := IntPtr.Zero
             SELF:_Shared := SELF:_oRDD:_Shared
-            SELF:_ReadOnly := SELF:_oRdd:_ReadOnly
+            SELF:_ReadOnly := SELF:_oRDD:_ReadOnly
             SELF:_blockData := BYTE[]{8}
             SELF:_fptHeader   := FptHeader{}
             SELF:_flexHeader  := FlexHeader{}
@@ -561,14 +561,14 @@ BEGIN NAMESPACE XSharp.RDD
 	                    ENDIF
 			        ENDIF
                 ELSE
-                    SELF:_oRDD:_dbfError(SubCodes.ERDD_READ, GenCode.EG_CORRUPTION, "FPTMemo.GetValue")
+                    SELF:_oRDD:_dbfError(Subcodes.ERDD_READ, Gencode.EG_CORRUPTION, "FPTMemo.GetValue")
                 ENDIF
             ENDIF
             // At this level, the return value is the raw Data, in BYTE[]
             RETURN block
             
             /// <inheritdoc />
-         OVERRIDE METHOD GetValueFile(nFldPos AS LONG, filename AS STRING) AS LOGIC
+         OVERRIDE METHOD GetValueFile(nFldPos AS LONG, fileName AS STRING) AS LOGIC
           IF SELF:_oRDD:_isMemoField( nFldPos )
                 // At this level, the return value is the raw Data, in BYTE[]
                 TRY
@@ -591,7 +591,7 @@ BEGIN NAMESPACE XSharp.RDD
                         RETURN TRUE
                     ENDIF
                 CATCH ex AS Exception
-                    SELF:_oRDD:_DbfError(ex, Subcodes.ERDD_READ, Gencode.EG_READ, "DBFFPT.GetValueFile")
+                    SELF:_oRDD:_dbfError(ex, Subcodes.ERDD_READ, Gencode.EG_READ, "DBFFPT.GetValueFile")
                 END TRY
             ENDIF
             RETURN SUPER:GetValueFile(nFldPos, fileName)
@@ -610,7 +610,7 @@ BEGIN NAMESPACE XSharp.RDD
             IF blockNbr > 0
                 LOCAL iOffset := blockNbr * SELF:_blockSize AS LONG
                 // Go to the blockNbr position
-                RETURN FSeek3( SELF:_hFile, iOffset, FS_SET ) == iOffSet
+                RETURN FSeek3( SELF:_hFile, iOffset, FS_SET ) == iOffset
             ENDIF
             RETURN FALSE
 
@@ -647,7 +647,7 @@ BEGIN NAMESPACE XSharp.RDD
                 filler[i] := fillByte
             NEXT
             IF FWrite3(SELF:_hFile, filler, nToWrite) != nToWrite
-                SELF:_oRDD:_dbfError(FException(), SubCodes.ERDD_WRITE, GenCode.EG_WRITE, "FPTMemo.PutValue")
+                SELF:_oRDD:_dbfError(FException(), Subcodes.ERDD_WRITE, Gencode.EG_WRITE, "FPTMemo.PutValue")
             ENDIF
             RETURN
 
@@ -664,7 +664,7 @@ BEGIN NAMESPACE XSharp.RDD
                 IF SELF:LockHeader(TRUE)
                     SELF:_setBlockPos(blockNbr)
                     IF FWrite3(SELF:_hFile, block, 8) != 8
-                        SELF:_oRDD:_dbfError(FException(), SubCodes.ERDD_WRITE, GenCode.EG_WRITE, "FPTMemo.PutValue")
+                        SELF:_oRDD:_dbfError(FException(), Subcodes.ERDD_WRITE, Gencode.EG_WRITE, "FPTMemo.PutValue")
                     ENDIF
                     // Clear the data. FlexFiles does not do that, but I think it's better to clean up.
                     SELF:WriteFiller(token:Length, TRUE)
@@ -674,8 +674,8 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN
 
         METHOD _WriteBlock (bytes AS BYTE[]) AS LOGIC
-            IF FWrite3(SELF:_hFile, bytes, (DWORD) bytes:Length) != (DWORD) Bytes:Length
-                SELF:_oRDD:_dbfError(FException(), SubCodes.ERDD_WRITE, GenCode.EG_WRITE, "FPTMemo.PutValue")
+            IF FWrite3(SELF:_hFile, bytes, (DWORD) bytes:Length) != (DWORD) bytes:Length
+                SELF:_oRDD:_dbfError(FException(), Subcodes.ERDD_WRITE, Gencode.EG_WRITE, "FPTMemo.PutValue")
             ENDIF
             // write remainder of block
             LOCAL nToWrite AS DWORD
@@ -712,7 +712,7 @@ BEGIN NAMESPACE XSharp.RDD
                             RETURN TRUE
                         ENDIF
                     ELSE
-                        SELF:_oRDD:_dbfError(FException(), SubCodes.ERDD_WRITE, GenCode.EG_WRITE, "FPTMemo.PutValue")
+                        SELF:_oRDD:_dbfError(FException(), Subcodes.ERDD_WRITE, Gencode.EG_WRITE, "FPTMemo.PutValue")
                     ENDIF
                 ELSE
                     // Deallocate block and allocate new
@@ -728,7 +728,7 @@ BEGIN NAMESPACE XSharp.RDD
                 IF SELF:LockHeader(TRUE)
                     LOCAL nPos AS DWORD
                     nPos := SELF:_fptHeader:NextFree * _blockSize
-                    fSeek3(SELF:_hFile, (LONG) nPos, FS_SET)
+                    FSeek3(SELF:_hFile, (LONG) nPos, FS_SET)
                     SELF:_WriteBlock(bytes)
                     LOCAL nFileSize AS DWORD
                     nFileSize := FTell(SELF:_hFile)
@@ -748,7 +748,7 @@ BEGIN NAMESPACE XSharp.RDD
                     LOCAL bFile AS BYTE[]
                     IF File(fileName)
                         fileName := FPathName()
-                        bFile := System.IO.File.ReadAllBytes(filename)
+                        bFile := System.IO.File.ReadAllBytes(fileName)
                         VAR bData := BYTE[] { bFile:Length+8}
                         VAR token := FtpMemoToken{bData}
                         IF bFile:Length > UInt16.MaxValue
@@ -765,7 +765,7 @@ BEGIN NAMESPACE XSharp.RDD
                     ENDIF
                 ENDIF
             CATCH ex AS Exception
-                SELF:_oRDD:_DbfError(ex, Subcodes.ERDD_WRITE, Gencode.EG_WRITE, "DBFFPT.PutValueFile")
+                SELF:_oRDD:_dbfError(ex, Subcodes.ERDD_WRITE, Gencode.EG_WRITE, "DBFFPT.PutValueFile")
             END TRY
             RETURN FALSE            /// <inheritdoc />
         VIRTUAL METHOD CloseMemFile( ) AS LOGIC
@@ -776,7 +776,7 @@ BEGIN NAMESPACE XSharp.RDD
 
                 CATCH ex AS Exception
                     isOk := FALSE
-                    SELF:_oRDD:_dbfError(ex, SubCodes.ERDD_CLOSE_MEMO, GenCode.EG_CLOSE, "DBFDBT.CloseMemFile")
+                    SELF:_oRDD:_dbfError(ex, Subcodes.ERDD_CLOSE_MEMO, Gencode.EG_CLOSE, "DBFDBT.CloseMemFile")
                     
                 END TRY
                 SELF:_hFile := F_ERROR
@@ -817,17 +817,17 @@ BEGIN NAMESPACE XSharp.RDD
             IF isOk
                 
                 IF ! SELF:_fptHeader:Write(SELF:_hFile)
-                    SELF:_oRDD:_dbfError(FException(), SubCodes.ERDD_CREATE_MEMO, GenCode.EG_WRITE, "FPTMemo.CreateMemFile")
+                    SELF:_oRDD:_dbfError(FException(), Subcodes.ERDD_CREATE_MEMO, Gencode.EG_WRITE, "FPTMemo.CreateMemFile")
                 ENDIF
                 SELF:_flexHeader:Create()
                 IF ! SELF:_flexHeader:Write(SELF:_hFile)
-                    SELF:_oRDD:_dbfError(FException(), SubCodes.ERDD_CREATE_MEMO, GenCode.EG_WRITE, "FPTMemo.CreateMemFile")
+                    SELF:_oRDD:_dbfError(FException(), Subcodes.ERDD_CREATE_MEMO, Gencode.EG_WRITE, "FPTMemo.CreateMemFile")
                 ENDIF
                 SELF:_initContext()
                 SELF:_fptHeader:NextFree :=  RoundToBlockSize(_fptHeader:Size + _flexHeader:Size) / _blockSize
                 SELF:WriteHeader()
             ELSE
-                SELF:_oRDD:_DbfError( ERDD.CREATE_MEMO, XSharp.Gencode.EG_CREATE )
+                SELF:_oRDD:_dbfError( ERDD.CREATE_MEMO, XSharp.Gencode.EG_CREATE )
             ENDIF
             
             RETURN isOk
@@ -841,7 +841,7 @@ BEGIN NAMESPACE XSharp.RDD
             SELF:_Shared    := info:Shared
             SELF:_ReadOnly  := info:ReadOnly
             //
-            SELF:_hFile     := Fopen(SELF:_FileName, info:FileMode)
+            SELF:_hFile     := FOpen(SELF:_FileName, info:FileMode)
             isOk := SELF:IsOpen
             IF isOk
                 // Per default, Block Size if 512
@@ -850,7 +850,7 @@ BEGIN NAMESPACE XSharp.RDD
                     SELF:UnLockHeader(FALSE)
                 ENDIF
             ELSE
-                SELF:_oRDD:_DbfError( ERDD.OPEN_MEMO, XSharp.Gencode.EG_OPEN )
+                SELF:_oRDD:_dbfError( ERDD.OPEN_MEMO, XSharp.Gencode.EG_OPEN )
                 isOk := FALSE
             ENDIF
             //
@@ -858,18 +858,18 @@ BEGIN NAMESPACE XSharp.RDD
             
         VIRTUAL PROPERTY BlockSize 	 AS WORD
             GET
-                RETURN _BlockSize
+                RETURN _blockSize
             END GET
             SET
-                _blockSize := VALUE
-                IF VALUE >= MIN_FOXPRO_BLOCKSIZE
-                    SELF:_fptHeader:Blocksize := VALUE
+                _blockSize := value
+                IF value >= MIN_FOXPRO_BLOCKSIZE
+                    SELF:_fptHeader:BlockSize := value
                 ENDIF
                 IF SELF:_isFlex
-                    IF VALUE >= MIN_FOXPRO_BLOCKSIZE
+                    IF value >= MIN_FOXPRO_BLOCKSIZE
                         SELF:_flexHeader:AltBlockSize := 0
                     ELSE
-                        SELF:_flexHeader:AltBlockSize := VALUE
+                        SELF:_flexHeader:AltBlockSize := value
                     ENDIF
                 ENDIF
             END SET
@@ -889,7 +889,7 @@ BEGIN NAMESPACE XSharp.RDD
                     locked := FFLock( SELF:_hFile, (DWORD)nOffset, (DWORD)nLong )
                 CATCH ex AS Exception
                     locked := FALSE
-                    SELF:_oRDD:_dbfError(ex, SubCodes.ERDD_INIT_LOCK, GenCode.EG_LOCK_ERROR, "FPTMemo._tryLock")
+                    SELF:_oRDD:_dbfError(ex, Subcodes.ERDD_INIT_LOCK, Gencode.EG_LOCK_ERROR, "FPTMemo._tryLock")
                 END TRY
                 IF ( !locked )
                     nTries --
@@ -911,7 +911,7 @@ BEGIN NAMESPACE XSharp.RDD
                 unlocked := FFUnLock( SELF:_hFile, (DWORD)nOffset, (DWORD)nLong )
             CATCH ex AS Exception
                 unlocked := FALSE
-                SELF:_oRDD:_dbfError(ex, SubCodes.ERDD_UNLOCKED, GenCode.EG_UNLOCKED, "FPTMemo._unlock")
+                SELF:_oRDD:_dbfError(ex, Subcodes.ERDD_UNLOCKED, Gencode.EG_UNLOCKED, "FPTMemo._unlock")
                 
             END TRY
             RETURN unlocked
@@ -920,15 +920,15 @@ BEGIN NAMESPACE XSharp.RDD
         VIRTUAL METHOD Zap() AS LOGIC
             IF SELF:IsOpen
                 IF SELF:Shared
-                    SELF:_oRDD:_dbfError(FException(), SubCodes.ERDD_SHARED, GenCode.EG_LOCK, "FPTMemo.Zap")
+                    SELF:_oRDD:_dbfError(FException(), Subcodes.ERDD_SHARED, Gencode.EG_LOCK, "FPTMemo.Zap")
                 ENDIF
                 IF ! FChSize(SELF:_hFile, 0)
-                    SELF:_oRDD:_dbfError(FException(), SubCodes.ERDD_WRITE, GenCode.EG_WRITE, "FPTMemo.Zap")
+                    SELF:_oRDD:_dbfError(FException(), Subcodes.ERDD_WRITE, Gencode.EG_WRITE, "FPTMemo.Zap")
                 ENDIF
                 SELF:WriteHeader()
                 RETURN TRUE
             ELSE
-                SELF:_oRDD:_dbfError(FException(), SubCodes.EDB_NOTABLE, GenCode.EG_NOTABLE, "FPTMemo.Zap")
+                SELF:_oRDD:_dbfError(FException(), Subcodes.EDB_NOTABLE, Gencode.EG_NOTABLE, "FPTMemo.Zap")
             ENDIF
             RETURN FALSE
 
@@ -937,13 +937,13 @@ BEGIN NAMESPACE XSharp.RDD
             LOCAL nFileLen AS LONG
             nFileLen := FSeek3(SELF:_hFile, 0, FS_END)
             IF ! SELF:_fptHeader:Read(SELF:_hFile)
-                SELF:_oRDD:_dbfError(FException(), SubCodes.ERDD_READ, GenCode.EG_READ, "FPTMemo.ReadHeader")
+                SELF:_oRDD:_dbfError(FException(), Subcodes.ERDD_READ, Gencode.EG_READ, "FPTMemo.ReadHeader")
             ENDIF
             _blockSize := SELF:_fptHeader:BlockSize
             // read Flex Header
             IF nFileLen >= 1024
                 IF ! SELF:_flexHeader:Read(SELF:_hFile)
-                     SELF:_oRDD:_dbfError(FException(), SubCodes.ERDD_READ, GenCode.EG_READ, "FPTMemo.ReadHeader")
+                     SELF:_oRDD:_dbfError(FException(), Subcodes.ERDD_READ, Gencode.EG_READ, "FPTMemo.ReadHeader")
                 ENDIF
                 _isFlex := SELF:_flexHeader:Valid
                 if _blockSize == 0 .and. SELF:_flexHeader:AltBlockSize != 0
@@ -958,12 +958,12 @@ BEGIN NAMESPACE XSharp.RDD
         METHOD WriteHeader() AS VOID
             IF SELF:IsOpen .and. ! SELF:_oRDD:_ReadOnly
                 IF ! SELF:_fptHeader:Write(SELF:_hFile)
-                    SELF:_oRDD:_dbfError(FException(), SubCodes.ERDD_WRITE, GenCode.EG_WRITE, "FPTMemo.WriteHeader")
+                    SELF:_oRDD:_dbfError(FException(), Subcodes.ERDD_WRITE, Gencode.EG_WRITE, "FPTMemo.WriteHeader")
                 ENDIF
                 // write flex header
                 IF SELF:IsFlex
                     IF ! SELF:_flexHeader:Write(SELF:_hFile)
-                        SELF:_oRDD:_dbfError(FException(), SubCodes.ERDD_WRITE, GenCode.EG_WRITE, "FPTMemo.WriteHeader")
+                        SELF:_oRDD:_dbfError(FException(), Subcodes.ERDD_WRITE, Gencode.EG_WRITE, "FPTMemo.WriteHeader")
                      ENDIF
                 ENDIF
             ENDIF

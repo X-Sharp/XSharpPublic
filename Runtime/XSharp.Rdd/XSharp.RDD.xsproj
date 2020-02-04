@@ -10,7 +10,7 @@
     <Dialect>Core</Dialect>
     <OutputName>XSharp.RDD</OutputName>
     <AZ>true</AZ>
-    <CS>false</CS>
+    <CS>true</CS>
     <LB>false</LB>
     <OVF>false</OVF>
     <Unsafe>false</Unsafe>
@@ -24,6 +24,8 @@
     <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
     <IncludePaths>$(CommonInclude)</IncludePaths>
     <Nostandarddefs>true</Nostandarddefs>
+    <StandardDefs />
+    <InitLocals>false</InitLocals>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -151,7 +153,7 @@
     <Compile Include="DbfNtx\NtxPageList.prg" />
     <Compile Include="DbfNtx\NtxSort.prg" />
     <Compile Include="SortHelper.prg" />
-    <Compile Include="SubCodes.prg" />
+    <Compile Include="Subcodes.prg" />
     <Compile Include="Properties\AssemblyInfo.prg">
       <SubType>Code</SubType>
     </Compile>

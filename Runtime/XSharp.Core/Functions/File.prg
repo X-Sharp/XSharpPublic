@@ -862,7 +862,7 @@ FUNCTION FConvertToMemoryStream(pFile AS IntPtr) AS IntPtr
    END TRY
    RETURN pFile
 
-FUNCTION FConvertToFileSTream(pFile AS IntPtr) AS IntPtr
+FUNCTION FConvertToFileStream(pFile AS IntPtr) AS IntPtr
    TRY
         XSharp.IO.File.ClearErrorState()
         XSharp.IO.File.ConvertToFileStream(pFile)

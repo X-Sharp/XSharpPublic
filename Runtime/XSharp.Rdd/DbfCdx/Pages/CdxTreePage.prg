@@ -33,7 +33,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         #region Properties
         INTERNAL OVERRIDE PROPERTY PageType AS CdxPageType ;
           GET _pageType ;
-          SET _SetWord(CDXPAGE_TYPE, VALUE), isHot := TRUE, _pageType := VALUE
+          SET _SetWord(CDXPAGE_TYPE, value), IsHot := TRUE, _pageType := value
 
         // FoxPro stores empty pointers as -1, FoxBASE as 0
         PROPERTY HasLeft    AS LOGIC GET LeftPtr    != 0 .AND. LeftPtr  != -1
@@ -50,7 +50,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         ABSTRACT INTERNAL PROPERTY RightPtr		AS Int32 GET SET    // FoxPro stores empty pointers as -1, FoxBASE as 0
         ABSTRACT PUBLIC   PROPERTY NumKeys      AS WORD  GET
         ABSTRACT INTERNAL PROPERTY LastNode     AS CdxPageNode GET
-        INTERNAL PROPERTY NextFree              AS LONG GET LeftPtr SET LeftPtr := VALUE // alias for LeftPtr
+        INTERNAL PROPERTY NextFree              AS LONG GET LeftPtr SET LeftPtr := value // alias for LeftPtr
         // For debugging
         INTERNAL PROPERTY LeftPtrX  AS STRING GET LeftPtr:ToString("X8")
         INTERNAL PROPERTY RightPtrX AS STRING GET RightPtr:ToString("X8")

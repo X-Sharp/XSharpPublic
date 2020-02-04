@@ -13,13 +13,13 @@ USING XSharp.RDD.Enums
 
 BEGIN NAMESPACE XSharp.ADS
     /// <summary>Class for Ads Column reading / writing </summary>
-    CLASS AdsColumn INHERIT RDDFieldInfo
-        INTERNAL RDD        AS XSharp.ADS.AdsRDD
+    CLASS AdsColumn INHERIT RddFieldInfo
+        INTERNAL RDD        AS XSharp.ADS.ADSRDD
         INTERNAL AdsType    as AdsFieldType
         INTERNAL FieldPos   as DWORD
         PROPERTY _Table as IntPtr GET RDD:_Table
 
-        STATIC METHOD Create(oInfo AS RDDFieldInfo, oRDD AS XSharp.ADS.AdsRDD,type as AdsFieldType, nPos as DWORD) AS AdsColumn
+        STATIC METHOD Create(oInfo AS RddFieldInfo, oRDD AS XSharp.ADS.ADSRDD,type as AdsFieldType, nPos as DWORD) AS AdsColumn
             // Commented out types are Harbour specific
             SWITCH type
             // char types
@@ -59,13 +59,13 @@ BEGIN NAMESPACE XSharp.ADS
             CASE AdsFieldType.COMPACTDATE
                 return AdsDateColumn{oInfo, oRDD, type,nPos}
             OTHERWISE
-                oRDD:ADSERROR(ERDD_DATATYPE, EG_DataType, __ENTITY__,"Unexpected fieldtype: "+ ((int) type):ToString())
+                oRDD:ADSERROR(ERDD_DATATYPE, EG_DATATYPE, __ENTITY__,"Unexpected fieldtype: "+ ((int) type):ToString())
             END SWITCH
             RETURN NULL
 
 
 
-        PROTECTED CONSTRUCTOR(oInfo AS RddFieldInfo,oRDD AS XSharp.ADS.AdsRDD, type as AdsFieldType, nPos as DWORD)
+        PROTECTED CONSTRUCTOR(oInfo AS RddFieldInfo,oRDD AS XSharp.ADS.ADSRDD, type as AdsFieldType, nPos as DWORD)
             SUPER(oInfo)
             SELF:RDD        := oRDD
             SELF:AdsType    := type
@@ -83,14 +83,14 @@ BEGIN NAMESPACE XSharp.ADS
             RETURN TRUE
 
    OVERRIDE METHOD ToString() AS STRING
-        RETURN SELF:Name+" ('"+SELF:FieldTypeStr+"',"+SELF:Length:ToString()+","+SELF:Decimals:ToString()+","+SELF:Adstype:ToString()+")"
+        RETURN SELF:Name+" ('"+SELF:FieldTypeStr+"',"+SELF:Length:ToString()+","+SELF:Decimals:ToString()+","+SELF:AdsType:ToString()+")"
 
     END CLASS
 
     /// <summary>Class for reading / writing String Columns</summary>
     CLASS AdsCharacterColumn INHERIT AdsColumn
 
-         CONSTRUCTOR(oInfo AS RddFieldInfo,oRDD AS XSharp.ADS.AdsRDD, type as AdsFieldType,nPos AS DWORD)
+         CONSTRUCTOR(oInfo AS RddFieldInfo,oRDD AS XSharp.ADS.ADSRDD, type as AdsFieldType,nPos AS DWORD)
             SUPER(oInfo, oRDD,type,nPos)
             IF SELF:Decimals != 0
                 SELF:Length         += SELF:Decimals * 256
@@ -115,7 +115,7 @@ BEGIN NAMESPACE XSharp.ADS
             CASE AdsFieldType.NCHAR
             CASE AdsFieldType.NVARCHAR
                 IF tc != TypeCode.String
-                    SELF:RDD:ADSERROR(ERDD_DATATYPE, EG_DataType, __ENTITY__,"String expected")
+                    SELF:RDD:ADSERROR(ERDD_DATATYPE, EG_DATATYPE, __ENTITY__,"String expected")
                 ENDIF
                 strValue := (STRING) oValue
                 slength  := (DWORD) strValue:Length
@@ -135,14 +135,14 @@ BEGIN NAMESPACE XSharp.ADS
             CASE AdsFieldType.ROWVERSION
             CASE AdsFieldType.MODTIME
                 IF tc != TypeCode.String
-                    SELF:RDD:ADSERROR(ERDD_DATATYPE, EG_DataType, __ENTITY__,"String expected")
+                    SELF:RDD:ADSERROR(ERDD_DATATYPE, EG_DATATYPE, __ENTITY__,"String expected")
                 ENDIF
                 strValue := (STRING) oValue
                 slength  := (DWORD) strValue:Length
                 result := ACE.AdsSetField(SELF:_Table, SELF:FieldPos, strValue, slength)
             OTHERWISE
                 // Should never happen. We filter on the type when creating the column object                
-                SELF:RDD:ADSError(ERDD_DATATYPE, EG_DataType, __ENTITY__,"Unexpected fieldtype: "+SELF:AdsType:ToString())
+                SELF:RDD:ADSERROR(ERDD_DATATYPE, EG_DATATYPE, __ENTITY__,"Unexpected fieldtype: "+SELF:AdsType:ToString())
             END SWITCH
             IF result != 0 .AND. result != ACE.AE_DATA_TRUNCATED
                 SELF:RDD:ADSERROR(result, EG_WRITE, __ENTITY__)
@@ -187,17 +187,17 @@ BEGIN NAMESPACE XSharp.ADS
                 ENDIF
             OTHERWISE
                 // Should never happen. We filter on the type when creating the column object
-                SELF:RDD:ADSError(ERDD_DATATYPE, EG_DataType, __ENTITY__,"Unexpected fieldtype: "+SELF:AdsType:ToString())
+                SELF:RDD:ADSERROR(ERDD_DATATYPE, EG_DATATYPE, __ENTITY__,"Unexpected fieldtype: "+SELF:AdsType:ToString())
             END SWITCH
             SWITCH result
             CASE 0
                 IF SELF:AdsType == AdsFieldType.NCHAR .OR. SELF:AdsType == AdsFieldType.NVARCHAR
-                    RETURN STRING{chars, 0, (INT) SELF:length}
+                    RETURN STRING{chars, 0, (INT) SELF:Length}
                 ELSE
-                    RETURN SELF:RDD:_Ansi2Unicode(chars, (INT) SELF:length)
+                    RETURN SELF:RDD:_Ansi2Unicode(chars, (INT) SELF:Length)
                 ENDIF
             CASE ACE.AE_NO_CURRENT_RECORD
-                RETURN STRING{' ', (INT) SELF:length}
+                RETURN STRING{' ', (INT) SELF:Length}
             OTHERWISE
                 SELF:RDD:_CheckError(result,EG_READ)
             END SWITCH
@@ -207,7 +207,7 @@ BEGIN NAMESPACE XSharp.ADS
     /// <summary>Class for reading / writing Date Columns</summary>
     CLASS AdsDateColumn INHERIT AdsColumn
 
-         CONSTRUCTOR(oInfo AS RddFieldInfo,oRDD AS XSharp.ADS.AdsRDD, type as AdsFieldType,nPos AS DWORD)
+         CONSTRUCTOR(oInfo AS RddFieldInfo,oRDD AS XSharp.ADS.ADSRDD, type as AdsFieldType,nPos AS DWORD)
             SUPER(oInfo, oRDD,type,nPos)
             RETURN
 
@@ -226,7 +226,7 @@ BEGIN NAMESPACE XSharp.ADS
                     // there is a function to convert julian to string but it does not always work correctly
                     // this seems to always do the job
                     LOCAL wLength := ACE.ADS_MAX_DATEMASK+1 AS WORD
-                    LOCAL chars := CHAR[] {SELF:length+1} as CHAR[]
+                    LOCAL chars := CHAR[] {SELF:Length+1} as CHAR[]
                     result := ACEUNPUB.AdsConvertJulianToString(lJulian, chars, ref wLength) 
                     IF result != 0
                         RETURN DbDate{0,0,0}
@@ -265,7 +265,7 @@ BEGIN NAMESPACE XSharp.ADS
                 tc := TypeCode.DateTime
             ENDIF
             IF tc != TypeCode.DateTime
-                SELF:RDD:ADSERROR(ERDD_DATATYPE, EG_DataType, __ENTITY__,"Date or DateTime value expected")
+                SELF:RDD:ADSERROR(ERDD_DATATYPE, EG_DATATYPE, __ENTITY__,"Date or DateTime value expected")
             ENDIF
 
             LOCAL dt := (DateTime) oValue AS DateTime
@@ -274,7 +274,7 @@ BEGIN NAMESPACE XSharp.ADS
             ELSE
                 LOCAL text := dt:ToString("yyyyMMdd") AS STRING
                 LOCAL r8Julian AS REAL8
-                SELF:RDD:_CheckError(AceUnPub.AdsConvertStringToJulian(text, (WORD) text:Length, OUT r8Julian),EG_WRITE)
+                SELF:RDD:_CheckError(ACEUNPUB.AdsConvertStringToJulian(text, (WORD) text:Length, OUT r8Julian),EG_WRITE)
                 SELF:RDD:_CheckError(ACE.AdsSetJulian(SELF:_Table, SELF:FieldPos, (LONG) r8Julian),EG_WRITE)
             ENDIF            
             RETURN TRUE
@@ -289,7 +289,7 @@ BEGIN NAMESPACE XSharp.ADS
     /// <summary>Class for reading / writing Logic Columns</summary>
     CLASS AdsLogicColumn INHERIT AdsColumn
 
-        CONSTRUCTOR(oInfo AS RddFieldInfo,oRDD AS XSharp.ADS.AdsRDD, type as AdsFieldType,nPos AS DWORD)
+        CONSTRUCTOR(oInfo AS RddFieldInfo,oRDD AS XSharp.ADS.ADSRDD, type as AdsFieldType,nPos AS DWORD)
             SUPER(oInfo,oRDD,type,nPos)
             RETURN
 
@@ -309,7 +309,7 @@ BEGIN NAMESPACE XSharp.ADS
             ENDIF
             VAR tc := Type.GetTypeCode(oValue:GetType())
             IF tc != TypeCode.Boolean
-                SELF:RDD:ADSERROR(ERDD_DATATYPE, EG_DataType, __ENTITY__,"Logic value expected")
+                SELF:RDD:ADSERROR(ERDD_DATATYPE, EG_DATATYPE, __ENTITY__,"Logic value expected")
             ENDIF
             SELF:RDD:_CheckError(ACE.AdsSetLogical(SELF:_Table, SELF:FieldPos, (WORD)  IIF( (LOGIC) oValue, 1, 0)),EG_WRITE)
             RETURN TRUE
@@ -321,7 +321,7 @@ BEGIN NAMESPACE XSharp.ADS
     /// <summary>Class for reading / writing Numeric Columns</summary>
     CLASS AdsNumericColumn INHERIT AdsColumn
 
-    CONSTRUCTOR(oInfo AS RddFieldInfo,oRDD AS XSharp.ADS.AdsRDD, type as AdsFieldType,nPos AS DWORD)
+    CONSTRUCTOR(oInfo AS RddFieldInfo,oRDD AS XSharp.ADS.ADSRDD, type as AdsFieldType,nPos AS DWORD)
             SUPER(oInfo,oRDD,type,nPos)
             RETURN
 
@@ -341,14 +341,14 @@ BEGIN NAMESPACE XSharp.ADS
                 ENDIF
                 IF SELF:AdsType:IsDouble()
                     VAR value := r8:ToString()
-                    VAR pos := VALUE:IndexOf('.')
+                    VAR pos := value:IndexOf('.')
                     RETURN DbFloat{r8, SELF:Length, IIF(pos > 0, SELF:Length - pos -1, 0)}
                 ELSE
                     RETURN DbFloat{r8, SELF:Length, SELF:Decimals}
                 ENDIF
             OTHERWISE
                 // Should never happen. We filter on the type when creating the column object
-                SELF:RDD:ADSError(ERDD_DATATYPE, EG_DataType, __ENTITY__,"Unexpected fieldtype: "+SELF:AdsType:ToString())
+                SELF:RDD:ADSERROR(ERDD_DATATYPE, EG_DATATYPE, __ENTITY__,"Unexpected fieldtype: "+SELF:AdsType:ToString())
             END SWITCH
             RETURN NULL
 
@@ -369,7 +369,7 @@ BEGIN NAMESPACE XSharp.ADS
                 SELF:RDD:_CheckError(ACE.AdsSetDouble(SELF:_Table, SELF:FieldPos, r8),EG_WRITE)
         
             CATCH
-                SELF:RDD:ADSERROR(ERDD_DATATYPE, EG_DataType, __ENTITY__,"Numeric value expected")
+                SELF:RDD:ADSERROR(ERDD_DATATYPE, EG_DATATYPE, __ENTITY__,"Numeric value expected")
                 RETURN FALSE
             END TRY
         ELSE
@@ -403,7 +403,7 @@ BEGIN NAMESPACE XSharp.ADS
         // AdsFieldType.VARBINARY_FOX
         
 
-        CONSTRUCTOR(oInfo AS RddFieldInfo,oRDD AS XSharp.ADS.AdsRDD, type as AdsFieldType,nPos AS DWORD)
+        CONSTRUCTOR(oInfo AS RddFieldInfo,oRDD AS XSharp.ADS.ADSRDD, type as AdsFieldType,nPos AS DWORD)
             SUPER(oInfo,oRDD,type,nPos)
             RETURN
 
@@ -413,7 +413,7 @@ BEGIN NAMESPACE XSharp.ADS
             LOCAL result    := 0 as DWORD
             LOCAL mlength    := 0 AS DWORD
             LOCAL bytes     := NULL AS BYTE[]
-            LOCAL chars := CHAR[] {length} AS CHAR[]
+            LOCAL chars := CHAR[] {Length} AS CHAR[]
             SWITCH SELF:AdsType
             CASE AdsFieldType.MEMO
             CASE AdsFieldType.NMEMO
@@ -423,11 +423,11 @@ BEGIN NAMESPACE XSharp.ADS
                 SWITCH result
                 CASE 0
                     IF mlength == 0
-                        RETURN string.Empty
+                        RETURN String.Empty
                     ENDIF
                 CASE ACE.AE_NO_CURRENT_RECORD
                     IF SELF:AdsType == AdsFieldType.MEMO .OR. SELF:AdsType == AdsFieldType.NMEMO
-                        RETURN string.Empty
+                        RETURN String.Empty
                     ELSE    // image and binary
                         RETURN NULL
                     ENDIF
@@ -442,7 +442,7 @@ BEGIN NAMESPACE XSharp.ADS
                 CASE AdsFieldType.NMEMO
                     chars := CHAR[] {++mlength}
                     SELF:RDD:_CheckError(ACE.AdsGetStringW(SELF:_Table, SELF:FieldPos, chars, REF mlength ,0),EG_READ)
-                    return String{chars,0, (int)mLength-1}
+                    return String{chars,0, (int)mlength-1}
                 CASE AdsFieldType.BINARY
                 CASE AdsFieldType.IMAGE
                     bytes := BYTE[] {mlength}
@@ -466,7 +466,7 @@ BEGIN NAMESPACE XSharp.ADS
                 RETURN bytes
             OTHERWISE
                 // Should never happen. We filter on the type when creating the column object
-                SELF:RDD:ADSError(ERDD_DATATYPE, EG_DataType, __ENTITY__,"Unexpected fieldtype: "+SELF:AdsType:ToString())
+                SELF:RDD:ADSERROR(ERDD_DATATYPE, EG_DATATYPE, __ENTITY__,"Unexpected fieldtype: "+SELF:AdsType:ToString())
             END SWITCH
             RETURN NULL
 
@@ -483,7 +483,7 @@ BEGIN NAMESPACE XSharp.ADS
             CASE AdsFieldType.MEMO
             CASE AdsFieldType.NMEMO
                 IF tc != TypeCode.String
-                    SELF:RDD:ADSERROR(ERDD_DATATYPE, EG_DataType, __ENTITY__,"String expected")
+                    SELF:RDD:ADSERROR(ERDD_DATATYPE, EG_DATATYPE, __ENTITY__,"String expected")
                 ENDIF
                 strValue := (STRING) oValue
                 slength  := (DWORD) strValue:Length
@@ -501,7 +501,7 @@ BEGIN NAMESPACE XSharp.ADS
             CASE AdsFieldType.RAW
             CASE AdsFieldType.VARBINARY_FOX
                 IF tc != TypeCode.String .AND. tc != TypeCode.Object
-                    SELF:RDD:ADSERROR(ERDD_DATATYPE, EG_DataType, __ENTITY__,"String or Object expected")
+                    SELF:RDD:ADSERROR(ERDD_DATATYPE, EG_DATATYPE, __ENTITY__,"String or Object expected")
                 ENDIF
                 IF tc != TypeCode.String
                     strValue := (STRING) oValue
@@ -519,7 +519,7 @@ BEGIN NAMESPACE XSharp.ADS
                 ENDIF
             OTHERWISE
                 // Should never happen. We filter on the type when creating the column object
-                SELF:RDD:ADSError(ERDD_DATATYPE, EG_DataType, __ENTITY__,"Unexpected fieldtype: "+SELF:AdsType:ToString())
+                SELF:RDD:ADSERROR(ERDD_DATATYPE, EG_DATATYPE, __ENTITY__,"Unexpected fieldtype: "+SELF:AdsType:ToString())
             END SWITCH
             IF result != 0 .AND. result != ACE.AE_DATA_TRUNCATED
                 SELF:RDD:ADSERROR(result, EG_WRITE, __ENTITY__)

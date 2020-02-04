@@ -9,16 +9,16 @@ USING System
 USING System.Collections
 USING System.Collections.Generic
 USING System.Text
-USING XSharp.Rdd.Support
+USING XSharp.RDD.Support
 USING XSharp.RDD.Enums
 BEGIN NAMESPACE XSharp.RDD.NTX
 
             
     INTERNAL CLASS NtxSortCompare IMPLEMENTS IComparer<SortRecord>
-        PROTECTED _sortInfo AS DBSORTINFO
+        PROTECTED _sortInfo AS DbSortInfo
         PROTECTED _oRdd AS DBFNTX
         
-        INTERNAL CONSTRUCTOR( rdd AS DBFNTX , info AS DBSORTINFO )
+        INTERNAL CONSTRUCTOR( rdd AS DBFNTX , info AS DbSortInfo )
             SELF:_oRdd := rdd
             SELF:_sortInfo := info
 
@@ -27,9 +27,9 @@ BEGIN NAMESPACE XSharp.RDD.NTX
 
     END CLASS
     
-    INTERNAL CLASS NTXSortCompareDefault INHERIT NTXSortCompare 
+    INTERNAL CLASS NTXSortCompareDefault INHERIT NtxSortCompare 
         
-        INTERNAL CONSTRUCTOR( rdd AS DBFNTX , info AS DBSORTINFO )
+        INTERNAL CONSTRUCTOR( rdd AS DBFNTX , info AS DbSortInfo )
             SUPER(rdd, info)
             
             
@@ -41,8 +41,8 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             IF x:Recno == y:Recno
                 RETURN 0
             ENDIF
-            dataBuffer  := x:data
-            dataBuffer2 := y:data
+            dataBuffer  := x:Data
+            dataBuffer2 := y:Data
             diff        := 0
             iLen        := SELF:_sortInfo:Items[0]:Length
             // comparison using string rules
@@ -67,7 +67,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
 
     INTERNAL CLASS NTXSortCompareAscii INHERIT NtxSortCompare 
         
-        INTERNAL CONSTRUCTOR( rdd AS DBFNTX , info AS DBSORTINFO )
+        INTERNAL CONSTRUCTOR( rdd AS DBFNTX , info AS DbSortInfo )
             SUPER(rdd, info)
              
             
@@ -80,8 +80,8 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             IF x:Recno == y:Recno
                 RETURN 0
             ENDIF
-            dataBuffer  := x:data
-            dataBuffer2 := y:data
+            dataBuffer  := x:Data
+            dataBuffer2 := y:Data
             diff        := 0
             iLen        := SELF:_sortInfo:Items[0]:Length
             // Binary comparison

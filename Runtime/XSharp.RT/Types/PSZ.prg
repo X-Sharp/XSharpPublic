@@ -196,7 +196,7 @@ BEGIN NAMESPACE XSharp
 			END GET
 			SET
                 IF IsValid
-				    _value[index + __ARRAYBASE__] := VALUE
+				    _value[index + __ARRAYBASE__] := value
                 ENDIF
 			END SET
 		END PROPERTY

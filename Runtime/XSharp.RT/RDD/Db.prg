@@ -685,7 +685,7 @@ FUNCTION FieldGetBytes(nFieldPos ) AS BYTE[] CLIPPER
 /// <param name="nFieldPos">The position OF the FIELD IN the database file structure.</param>
 /// <param name="aBytes">The value to write to the field</param>
 ///<returns>
-/// The VALUE assigned TO the field.  
+/// The value assigned TO the field.  
 /// IF <paramref name="nFieldPos"/> does not correspond to the position of any field in the database file, FieldPutBytes() will generate an error.
 /// </returns>
 FUNCTION FieldPutBytes(nFieldPos AS USUAL, aBytes AS BYTE[]) AS USUAL

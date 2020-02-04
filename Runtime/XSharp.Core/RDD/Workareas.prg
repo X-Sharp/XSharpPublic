@@ -259,7 +259,7 @@ CLASS Workareas
 		RETURN lResult 
 
 	///<summary>Get 1 based Current Workarea Number</summary>
-	PUBLIC PROPERTY CurrentWorkareaNO AS DWORD GET iCurrentWorkarea SET iCurrentWorkarea := VALUE 
+	PUBLIC PROPERTY CurrentWorkareaNO AS DWORD GET iCurrentWorkarea SET iCurrentWorkarea := value 
 
 	///<summary>Get Current Workarea Object</summary>
 	PUBLIC PROPERTY CurrentWorkarea AS IRdd

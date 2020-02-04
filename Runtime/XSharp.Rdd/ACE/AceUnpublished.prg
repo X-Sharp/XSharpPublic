@@ -202,14 +202,14 @@ BEGIN NAMESPACE XSharp.ADS
         RETURN
     #endregion
     #region Method Dispatch Table
-		PUBLIC STATIC METHOD AdsConvertStringToJulian(pucJulian AS STRING , usLen AS WORD , pdJulian OUT double ) AS DWORD 
+		PUBLIC STATIC METHOD AdsConvertStringToJulian(pucJulian AS STRING , usLen AS WORD , pdJulian OUT System.Double ) AS DWORD 
             IF Is32Bits
                 RETURN ACEUNPUB32.AdsConvertStringToJulian(pucJulian, usLen, OUT pdJulian)
             ELSE
                 RETURN ACEUNPUB64.AdsConvertStringToJulian(pucJulian, usLen, OUT pdJulian)
             ENDIF
 
-		PUBLIC STATIC METHOD AdsConvertStringToJulian(pucJulian AS CHAR[] , usLen AS WORD , pdJulian OUT double ) AS DWORD 
+		PUBLIC STATIC METHOD AdsConvertStringToJulian(pucJulian AS CHAR[] , usLen AS WORD , pdJulian OUT System.Double ) AS DWORD 
             IF Is32Bits
                 RETURN ACEUNPUB32.AdsConvertStringToJulian(pucJulian, usLen, OUT pdJulian)
             ELSE
@@ -223,7 +223,7 @@ BEGIN NAMESPACE XSharp.ADS
                 RETURN ACEUNPUB64.AdsSqlPeekStatement(hCursor, OUT IsLive)
             ENDIF
 
-        PUBLIC STATIC METHOD AdsConvertJulianToString(dJulian AS double , pucJulian AS CHAR[] , pusLen REF WORD ) AS DWORD 
+        PUBLIC STATIC METHOD AdsConvertJulianToString(dJulian AS System.Double , pucJulian AS CHAR[] , pusLen REF WORD ) AS DWORD 
             IF Is32Bits
                 RETURN ACEUNPUB32.AdsConvertJulianToString(dJulian, pucJulian, REF pusLen)
             ELSE
@@ -237,28 +237,28 @@ BEGIN NAMESPACE XSharp.ADS
                 RETURN ACEUNPUB64.AdsSetLastError(ulErrCode, pucDetails)
             ENDIF
 
-		PUBLIC STATIC METHOD AdsMemCompare(hConnect AS Intptr, pucStr1 AS STRING , ulStr1Len AS DWORD , pucStr2 AS STRING , ulStr2Len AS DWORD , usCharSet AS WORD , psResult OUT SHORT ) AS DWORD 
+		PUBLIC STATIC METHOD AdsMemCompare(hConnect AS IntPtr, pucStr1 AS STRING , ulStr1Len AS DWORD , pucStr2 AS STRING , ulStr2Len AS DWORD , usCharSet AS WORD , psResult OUT SHORT ) AS DWORD 
 			IF Is32Bits
 				RETURN ACEUNPUB32.AdsMemCompare(hConnect , pucStr1 , ulStr1Len , pucStr2 , ulStr2Len , usCharSet , OUT psResult ) 
 			ELSE
 				RETURN ACEUNPUB64.AdsMemCompare(hConnect , pucStr1 , ulStr1Len , pucStr2 , ulStr2Len , usCharSet , OUT psResult ) 
 			ENDIF
 
-		PUBLIC STATIC METHOD  AdsSetFieldRaw(hObj AS Intptr, lFieldOrdinal AS DWORD , pucBuf AS BYTE[] , ulLen AS DWORD ) AS DWORD
+		PUBLIC STATIC METHOD  AdsSetFieldRaw(hObj AS IntPtr, lFieldOrdinal AS DWORD , pucBuf AS BYTE[] , ulLen AS DWORD ) AS DWORD
 			IF Is32Bits
 				RETURN ACEUNPUB32.AdsSetFieldRaw(hObj , lFieldOrdinal , pucBuf , ulLen ) 
 			ELSE
 				RETURN ACEUNPUB64.AdsSetFieldRaw(hObj , lFieldOrdinal , pucBuf , ulLen ) 
 			ENDIF
 
-		PUBLIC STATIC METHOD AdsAccessVfpSystemField(hTable AS Intptr, lFieldOrdinal AS DWORD , pucBuffer AS STRING , ulOptions AS DWORD , puFlag OUT WORD ) AS DWORD 
+		PUBLIC STATIC METHOD AdsAccessVfpSystemField(hTable AS IntPtr, lFieldOrdinal AS DWORD , pucBuffer AS STRING , ulOptions AS DWORD , puFlag OUT WORD ) AS DWORD 
 			IF Is32Bits
 				RETURN ACEUNPUB32.AdsAccessVfpSystemField(hTable , lFieldOrdinal , pucBuffer , ulOptions ,  OUT puFlag ) 
 			ELSE
 				RETURN ACEUNPUB64.AdsAccessVfpSystemField(hTable , lFieldOrdinal , pucBuffer , ulOptions ,  OUT puFlag ) 
 			ENDIF
 
-		PUBLIC STATIC METHOD AdsAccessVfpSystemField(hTable AS Intptr, pucFldName AS STRING , pucBuffer AS STRING , ulOptions AS DWORD , puFlag OUT WORD ) AS DWORD 
+		PUBLIC STATIC METHOD AdsAccessVfpSystemField(hTable AS IntPtr, pucFldName AS STRING , pucBuffer AS STRING , ulOptions AS DWORD , puFlag OUT WORD ) AS DWORD 
 			IF Is32Bits
 				RETURN ACEUNPUB32.AdsAccessVfpSystemField(hTable , pucFldName , pucBuffer , ulOptions ,  OUT puFlag ) 
 			ELSE
@@ -272,21 +272,21 @@ BEGIN NAMESPACE XSharp.ADS
 				RETURN ACEUNPUB64.AdsActivateAOF(hTable  )
 			ENDIF
 
-		PUBLIC STATIC METHOD AdsAddToAOF(hTable AS Intptr, pucFilter AS STRING , usOperation AS WORD , usWhichAOF AS WORD ) AS DWORD 
+		PUBLIC STATIC METHOD AdsAddToAOF(hTable AS IntPtr, pucFilter AS STRING , usOperation AS WORD , usWhichAOF AS WORD ) AS DWORD 
 			IF Is32Bits
 				RETURN ACEUNPUB32.AdsAddToAOF(hTable , pucFilter , usOperation , usWhichAOF ) 
 			ELSE
 				RETURN ACEUNPUB64.AdsAddToAOF(hTable , pucFilter , usOperation , usWhichAOF ) 
 			ENDIF
 
-		PUBLIC STATIC METHOD AdsBackupDatabase(hConnect AS Intptr, hOutputTable AS IntPtr , pucSourcePath AS STRING , pucSourceMask AS STRING , pucDestPath AS STRING , pucOptions AS STRING , pucFreeTablePasswords AS STRING , usCharType AS WORD , usLockingMode AS WORD , usCheckRights AS WORD , usTableType AS WORD , pucCollation AS STRING , ucDDConn AS BYTE ) AS DWORD 
+		PUBLIC STATIC METHOD AdsBackupDatabase(hConnect AS IntPtr, hOutputTable AS IntPtr , pucSourcePath AS STRING , pucSourceMask AS STRING , pucDestPath AS STRING , pucOptions AS STRING , pucFreeTablePasswords AS STRING , usCharType AS WORD , usLockingMode AS WORD , usCheckRights AS WORD , usTableType AS WORD , pucCollation AS STRING , ucDDConn AS BYTE ) AS DWORD 
 			IF Is32Bits
 				RETURN ACEUNPUB32.AdsBackupDatabase(hConnect , hOutputTable  , pucSourcePath , pucSourceMask , pucDestPath , pucOptions , pucFreeTablePasswords , usCharType , usLockingMode , usCheckRights , usTableType , pucCollation , ucDDConn ) 
 			ELSE
 				RETURN ACEUNPUB64.AdsBackupDatabase(hConnect , hOutputTable  , pucSourcePath , pucSourceMask , pucDestPath , pucOptions , pucFreeTablePasswords , usCharType , usLockingMode , usCheckRights , usTableType , pucCollation , ucDDConn ) 
 			ENDIF
 
-		PUBLIC STATIC METHOD AdsBuildKeyFromRecord(hTag AS Intptr, mpucRecBuffer AS STRING , ulRecordLen AS DWORD , pucKey AS CHAR[], pusKeyLen REF WORD ) AS DWORD 
+		PUBLIC STATIC METHOD AdsBuildKeyFromRecord(hTag AS IntPtr, mpucRecBuffer AS STRING , ulRecordLen AS DWORD , pucKey AS CHAR[], pusKeyLen REF WORD ) AS DWORD 
 			IF Is32Bits
 				RETURN ACEUNPUB32.AdsBuildKeyFromRecord(hTag , mpucRecBuffer , ulRecordLen , pucKey , REF pusKeyLen ) 
 			ELSE
@@ -307,7 +307,7 @@ BEGIN NAMESPACE XSharp.ADS
 				RETURN ACEUNPUB64.AdsClearLastError() 
 			ENDIF
 
-		PUBLIC STATIC METHOD AdsClearRecordBuffer(hTbl AS Intptr, pucBuf AS STRING , ulLen AS DWORD ) AS DWORD
+		PUBLIC STATIC METHOD AdsClearRecordBuffer(hTbl AS IntPtr, pucBuf AS STRING , ulLen AS DWORD ) AS DWORD
 			IF Is32Bits
 				RETURN ACEUNPUB32.AdsClearRecordBuffer(hTbl , pucBuf , ulLen ) 
 			ELSE
@@ -321,14 +321,14 @@ BEGIN NAMESPACE XSharp.ADS
 				RETURN ACEUNPUB64.AdsCloseCachedTrigStatements(hConnection  , lTableID ) 
 			ENDIF
 
-		PUBLIC STATIC METHOD AdsConvertDateToJulian(hConnect AS Intptr, pucDate AS STRING , usLen AS WORD , pdJulian OUT double ) AS DWORD 
+		PUBLIC STATIC METHOD AdsConvertDateToJulian(hConnect AS IntPtr, pucDate AS STRING , usLen AS WORD , pdJulian OUT System.Double ) AS DWORD 
 			IF Is32Bits
 				RETURN ACEUNPUB32.AdsConvertDateToJulian(hConnect , pucDate , usLen , OUT pdJulian ) 
 			ELSE
 				RETURN ACEUNPUB64.AdsConvertDateToJulian(hConnect , pucDate , usLen , OUT pdJulian ) 
 			ENDIF
 
-		PUBLIC STATIC METHOD AdsConvertKeyToDouble(pucKey AS STRING , pdValue OUT double ) AS DWORD 
+		PUBLIC STATIC METHOD AdsConvertKeyToDouble(pucKey AS STRING , pdValue OUT System.Double ) AS DWORD 
 			IF Is32Bits
 				RETURN ACEUNPUB32.AdsConvertKeyToDouble(pucKey , OUT pdValue ) 
 			ELSE
@@ -349,21 +349,21 @@ BEGIN NAMESPACE XSharp.ADS
 				RETURN ACEUNPUB64.AdsConvertStringToMilliseconds(pucTime , usLen ,  OUT pulMSeconds ) 
 			ENDIF
 
-		PUBLIC STATIC METHOD AdsCopyTableStructure81(hTable AS Intptr, pucFile AS STRING , ulOptions AS DWORD ) AS DWORD
+		PUBLIC STATIC METHOD AdsCopyTableStructure81(hTable AS IntPtr, pucFile AS STRING , ulOptions AS DWORD ) AS DWORD
 			IF Is32Bits
 				RETURN ACEUNPUB32.AdsCopyTableStructure81(hTable , pucFile , ulOptions ) 
 			ELSE
 				RETURN ACEUNPUB64.AdsCopyTableStructure81(hTable , pucFile , ulOptions ) 
 			ENDIF
 
-		PUBLIC STATIC METHOD AdsCopyTableTop(hObj AS Intptr, hDestTbl AS IntPtr , ulNumTopRecords AS DWORD) AS DWORD 
+		PUBLIC STATIC METHOD AdsCopyTableTop(hObj AS IntPtr, hDestTbl AS IntPtr , ulNumTopRecords AS DWORD) AS DWORD 
 			IF Is32Bits
 				RETURN ACEUNPUB32.AdsCopyTableTop(hObj , hDestTbl  , ulNumTopRecords ) 
 			ELSE
 				RETURN ACEUNPUB64.AdsCopyTableTop(hObj , hDestTbl  , ulNumTopRecords ) 
 			ENDIF
 
-		PUBLIC STATIC METHOD AdsCreateCriticalSection(hObj AS Intptr, ulOptions AS DWORD ) AS DWORD 
+		PUBLIC STATIC METHOD AdsCreateCriticalSection(hObj AS IntPtr, ulOptions AS DWORD ) AS DWORD 
 			IF Is32Bits
 				RETURN ACEUNPUB32.AdsCreateCriticalSection(hObj , ulOptions ) 
 			ELSE
@@ -391,14 +391,14 @@ BEGIN NAMESPACE XSharp.ADS
 				RETURN ACEUNPUB64.AdsDBFDateToString(pucDBFDate , pucFormattedDate )
 			ENDIF
 
-		PUBLIC STATIC METHOD AdsDDAutoCreateIndex(hConnect AS Intptr, pucTableName AS STRING , pucIndexName AS STRING , pucCollation AS STRING ) AS DWORD 
+		PUBLIC STATIC METHOD AdsDDAutoCreateIndex(hConnect AS IntPtr, pucTableName AS STRING , pucIndexName AS STRING , pucCollation AS STRING ) AS DWORD 
 			IF Is32Bits
 				RETURN ACEUNPUB32.AdsDDAutoCreateIndex(hConnect , pucTableName , pucIndexName , pucCollation ) 
 			ELSE
 				RETURN ACEUNPUB64.AdsDDAutoCreateIndex(hConnect , pucTableName , pucIndexName , pucCollation ) 
 			ENDIF
 
-		PUBLIC STATIC METHOD AdsDDAutoCreateTable(hConnect AS Intptr, pucTableName AS STRING , pucCollation AS STRING ) AS DWORD 
+		PUBLIC STATIC METHOD AdsDDAutoCreateTable(hConnect AS IntPtr, pucTableName AS STRING , pucCollation AS STRING ) AS DWORD 
 			IF Is32Bits
 				RETURN ACEUNPUB32.AdsDDAutoCreateTable(hConnect , pucTableName , pucCollation ) 
 			ELSE
@@ -412,14 +412,14 @@ BEGIN NAMESPACE XSharp.ADS
 				RETURN ACEUNPUB64.AdsDDClose(hDictionary  ) 
 			ENDIF
 
-		PUBLIC STATIC METHOD AdsDDCreateASA(hConnect AS Intptr, pucDictionaryPath AS STRING , usEncrypt AS WORD , pucDescription AS STRING , pucPassword AS STRING ) AS DWORD 
+		PUBLIC STATIC METHOD AdsDDCreateASA(hConnect AS IntPtr, pucDictionaryPath AS STRING , usEncrypt AS WORD , pucDescription AS STRING , pucPassword AS STRING ) AS DWORD 
 			IF Is32Bits
 				RETURN ACEUNPUB32.AdsDDCreateASA(hConnect , pucDictionaryPath , usEncrypt , pucDescription , pucPassword ) 
 			ELSE
 				RETURN ACEUNPUB64.AdsDDCreateASA(hConnect , pucDictionaryPath , usEncrypt , pucDescription , pucPassword ) 
 			ENDIF
 
-		PUBLIC STATIC METHOD AdsDDCreateFunction(hDictionary AS Intptr, pucName AS STRING , pucReturnType AS STRING , usInputParamCnt AS WORD , pucInputParams AS STRING , pucFuncBody AS STRING , pucComments AS STRING ) AS DWORD 
+		PUBLIC STATIC METHOD AdsDDCreateFunction(hDictionary AS IntPtr, pucName AS STRING , pucReturnType AS STRING , usInputParamCnt AS WORD , pucInputParams AS STRING , pucFuncBody AS STRING , pucComments AS STRING ) AS DWORD 
 			IF Is32Bits
 				RETURN ACEUNPUB32.AdsDDCreateFunction(hDictionary , pucName , pucReturnType , usInputParamCnt , pucInputParams , pucFuncBody , pucComments ) 
 			ELSE
@@ -433,21 +433,21 @@ BEGIN NAMESPACE XSharp.ADS
 				RETURN ACEUNPUB64.AdsDDCreateLinkPre71(hDBConn  , pucLinkAlias , pucLinkedDDPath , pucUserName , pucPassword , ulOptions  ) 
 			ENDIF
 
-		PUBLIC STATIC METHOD AdsDDCreatePackage(hDictionary AS Intptr, pucName AS STRING , pucComments AS STRING ) AS DWORD 
+		PUBLIC STATIC METHOD AdsDDCreatePackage(hDictionary AS IntPtr, pucName AS STRING , pucComments AS STRING ) AS DWORD 
 			IF Is32Bits
 				RETURN ACEUNPUB32.AdsDDCreatePackage(hDictionary , pucName , pucComments ) 
 			ELSE
 				RETURN ACEUNPUB64.AdsDDCreatePackage(hDictionary , pucName , pucComments ) 
 			ENDIF
 
-		PUBLIC STATIC METHOD AdsDDDisableTriggers(hDictionary AS Intptr, pucObjectName AS STRING , pucParent AS STRING , ulOptions AS DWORD ) AS DWORD 
+		PUBLIC STATIC METHOD AdsDDDisableTriggers(hDictionary AS IntPtr, pucObjectName AS STRING , pucParent AS STRING , ulOptions AS DWORD ) AS DWORD 
 			IF Is32Bits
 				RETURN ACEUNPUB32.AdsDDDisableTriggers(hDictionary , pucObjectName , pucParent , ulOptions  ) 
 			ELSE
 				RETURN ACEUNPUB64.AdsDDDisableTriggers(hDictionary , pucObjectName , pucParent , ulOptions  ) 
 			ENDIF
 
-		PUBLIC STATIC METHOD AdsDDDropFunction(hDictionary AS Intptr, pucName AS STRING ) AS DWORD 
+		PUBLIC STATIC METHOD AdsDDDropFunction(hDictionary AS IntPtr, pucName AS STRING ) AS DWORD 
 			IF Is32Bits
 				RETURN ACEUNPUB32.AdsDDDropFunction(hDictionary , pucName ) 
 			ELSE
@@ -461,42 +461,42 @@ BEGIN NAMESPACE XSharp.ADS
 				RETURN ACEUNPUB64.AdsDDDropLinkPre71(hDBConn  , pucLinkedDD , usDropGlobal ) 
 			ENDIF
 
-		PUBLIC STATIC METHOD AdsDDDropPackage(hDictionary AS Intptr, pucName AS STRING ) AS DWORD 
+		PUBLIC STATIC METHOD AdsDDDropPackage(hDictionary AS IntPtr, pucName AS STRING ) AS DWORD 
 			IF Is32Bits
 				RETURN ACEUNPUB32.AdsDDDropPackage(hDictionary , pucName ) 
 			ELSE
 				RETURN ACEUNPUB64.AdsDDDropPackage(hDictionary , pucName ) 
 			ENDIF
 
-		PUBLIC STATIC METHOD AdsDDEnableTriggers(hDictionary AS Intptr, pucObjectName AS STRING , pucParent AS STRING , ulOptions AS DWORD ) AS DWORD 
+		PUBLIC STATIC METHOD AdsDDEnableTriggers(hDictionary AS IntPtr, pucObjectName AS STRING , pucParent AS STRING , ulOptions AS DWORD ) AS DWORD 
 			IF Is32Bits
 				RETURN ACEUNPUB32.AdsDDEnableTriggers(hDictionary , pucObjectName , pucParent , ulOptions  ) 
 			ELSE
 				RETURN ACEUNPUB64.AdsDDEnableTriggers(hDictionary , pucObjectName , pucParent , ulOptions  ) 
 			ENDIF
 
-		PUBLIC STATIC METHOD AdsDDExecuteProcedure(hDictionary AS Intptr, pucProcName AS STRING , pucInput AS STRING , pucOutput AS STRING , pulRowsAffected OUT DWORD ) AS DWORD 
+		PUBLIC STATIC METHOD AdsDDExecuteProcedure(hDictionary AS IntPtr, pucProcName AS STRING , pucInput AS STRING , pucOutput AS STRING , pulRowsAffected OUT DWORD ) AS DWORD 
 			IF Is32Bits
 				RETURN ACEUNPUB32.AdsDDExecuteProcedure(hDictionary , pucProcName , pucInput , pucOutput , OUT pulRowsAffected ) 
 			ELSE
 				RETURN ACEUNPUB64.AdsDDExecuteProcedure(hDictionary , pucProcName , pucInput , pucOutput , OUT pulRowsAffected ) 
 			ENDIF
 
-		PUBLIC STATIC METHOD AdsDDGetObjectProperty(hDictionary AS Intptr, usObjectType AS WORD , pucParent AS STRING , pucName AS STRING , usPropertyID AS WORD ,  pucProperty AS CHAR[] , pusPropertyLen REF WORD ) AS DWORD 
+		PUBLIC STATIC METHOD AdsDDGetObjectProperty(hDictionary AS IntPtr, usObjectType AS WORD , pucParent AS STRING , pucName AS STRING , usPropertyID AS WORD ,  pucProperty AS CHAR[] , pusPropertyLen REF WORD ) AS DWORD 
 			IF Is32Bits
 				RETURN ACEUNPUB32.AdsDDGetObjectProperty(hDictionary , usObjectType , pucParent , pucName , usPropertyID ,  pucProperty  , REF pusPropertyLen ) 
 			ELSE
 				RETURN ACEUNPUB64.AdsDDGetObjectProperty(hDictionary , usObjectType , pucParent , pucName , usPropertyID ,  pucProperty  , REF pusPropertyLen ) 
 			ENDIF
 
-		PUBLIC STATIC METHOD AdsDDGetObjectProperty(hDictionary AS Intptr, usObjectType AS WORD , pucParent AS STRING , pucName AS STRING , usPropertyID AS WORD ,  pvProperty AS BYTE[] , pusPropertyLen REF WORD ) AS DWORD 
+		PUBLIC STATIC METHOD AdsDDGetObjectProperty(hDictionary AS IntPtr, usObjectType AS WORD , pucParent AS STRING , pucName AS STRING , usPropertyID AS WORD ,  pvProperty AS BYTE[] , pusPropertyLen REF WORD ) AS DWORD 
 			IF Is32Bits
 				RETURN ACEUNPUB32.AdsDDGetObjectProperty(hDictionary , usObjectType , pucParent , pucName , usPropertyID ,  pvProperty  , REF pusPropertyLen ) 
 			ELSE
 				RETURN ACEUNPUB64.AdsDDGetObjectProperty(hDictionary , usObjectType , pucParent , pucName , usPropertyID ,  pvProperty  , REF pusPropertyLen ) 
 			ENDIF
 
-		PUBLIC STATIC METHOD AdsDDGetObjectProperty(hDictionary AS Intptr, usObjectType AS WORD , pucParent AS STRING , pucName AS STRING , usPropertyID AS WORD , pusProperty REF WORD , pusPropertyLen REF WORD ) AS DWORD 
+		PUBLIC STATIC METHOD AdsDDGetObjectProperty(hDictionary AS IntPtr, usObjectType AS WORD , pucParent AS STRING , pucName AS STRING , usPropertyID AS WORD , pusProperty REF WORD , pusPropertyLen REF WORD ) AS DWORD 
 			IF Is32Bits
 				RETURN ACEUNPUB32.AdsDDGetObjectProperty(hDictionary , usObjectType , pucParent , pucName , usPropertyID , REF pusProperty , REF pusPropertyLen ) 
 			ELSE
@@ -510,35 +510,35 @@ BEGIN NAMESPACE XSharp.ADS
 				RETURN ACEUNPUB64.AdsDDOpen( pucDictionaryPath , pucPassword , OUT phDictionary ) 
 			ENDIF
 
-		PUBLIC STATIC METHOD AdsDDSetActiveDictionary(hConnect AS Intptr, pucLinkName AS STRING , phDictionary OUT IntPtr ) AS DWORD 
+		PUBLIC STATIC METHOD AdsDDSetActiveDictionary(hConnect AS IntPtr, pucLinkName AS STRING , phDictionary OUT IntPtr ) AS DWORD 
 			IF Is32Bits
 				RETURN ACEUNPUB32.AdsDDSetActiveDictionary(hConnect , pucLinkName , OUT phDictionary ) 
 			ELSE
 				RETURN ACEUNPUB64.AdsDDSetActiveDictionary(hConnect , pucLinkName , OUT phDictionary ) 
 			ENDIF
 
-		PUBLIC STATIC METHOD AdsDDSetObjectProperty(hDictionary AS Intptr, usObjectType AS WORD , pucParent AS STRING , pucName AS STRING , usPropertyID AS WORD ,  pucProperty AS CHAR[] , usPropertyLen AS WORD ) AS DWORD 
+		PUBLIC STATIC METHOD AdsDDSetObjectProperty(hDictionary AS IntPtr, usObjectType AS WORD , pucParent AS STRING , pucName AS STRING , usPropertyID AS WORD ,  pucProperty AS CHAR[] , usPropertyLen AS WORD ) AS DWORD 
 			IF Is32Bits
 				RETURN ACEUNPUB32.AdsDDSetObjectProperty(hDictionary , usObjectType , pucParent , pucName , usPropertyID ,  pucProperty  , usPropertyLen ) 
 			ELSE
 				RETURN ACEUNPUB64.AdsDDSetObjectProperty(hDictionary , usObjectType , pucParent , pucName , usPropertyID ,  pucProperty  , usPropertyLen ) 
 			ENDIF
 
-		PUBLIC STATIC METHOD AdsDDSetObjectProperty(hDictionary AS Intptr, usObjectType AS WORD , pucParent AS STRING , pucName AS STRING , usPropertyID AS WORD ,  pvProperty AS BYTE[] , usPropertyLen AS WORD ) AS DWORD 
+		PUBLIC STATIC METHOD AdsDDSetObjectProperty(hDictionary AS IntPtr, usObjectType AS WORD , pucParent AS STRING , pucName AS STRING , usPropertyID AS WORD ,  pvProperty AS BYTE[] , usPropertyLen AS WORD ) AS DWORD 
 			IF Is32Bits
 				RETURN ACEUNPUB32.AdsDDSetObjectProperty(hDictionary , usObjectType , pucParent , pucName , usPropertyID ,  pvProperty  , usPropertyLen ) 
 			ELSE
 				RETURN ACEUNPUB64.AdsDDSetObjectProperty(hDictionary , usObjectType , pucParent , pucName , usPropertyID ,  pvProperty  , usPropertyLen ) 
 			ENDIF
 
-		PUBLIC STATIC METHOD AdsDDSetObjectProperty(hDictionary AS Intptr, usObjectType AS WORD , pucParent AS STRING , pucName AS STRING , usPropertyID AS WORD , pusProperty REF WORD , usPropertyLen AS WORD ) AS DWORD 
+		PUBLIC STATIC METHOD AdsDDSetObjectProperty(hDictionary AS IntPtr, usObjectType AS WORD , pucParent AS STRING , pucName AS STRING , usPropertyID AS WORD , pusProperty REF WORD , usPropertyLen AS WORD ) AS DWORD 
 			IF Is32Bits
 				RETURN ACEUNPUB32.AdsDDSetObjectProperty(hDictionary , usObjectType , pucParent , pucName , usPropertyID , REF pusProperty , usPropertyLen ) 
 			ELSE
 				RETURN ACEUNPUB64.AdsDDSetObjectProperty(hDictionary , usObjectType , pucParent , pucName , usPropertyID , REF pusProperty , usPropertyLen ) 
 			ENDIF
 
-		PUBLIC STATIC METHOD AdsDDSetTriggerProperty(hDictionary AS Intptr,  pucTriggerName AS STRING, usPropertyID AS WORD , pucProperty AS STRING , usPropertyLen AS WORD ) AS DWORD 
+		PUBLIC STATIC METHOD AdsDDSetTriggerProperty(hDictionary AS IntPtr,  pucTriggerName AS STRING, usPropertyID AS WORD , pucProperty AS STRING , usPropertyLen AS WORD ) AS DWORD 
 			IF Is32Bits
 				RETURN ACEUNPUB32.AdsDDSetTriggerProperty(hDictionary ,  pucTriggerName , usPropertyID , pucProperty , usPropertyLen ) 
 			ELSE
@@ -559,7 +559,7 @@ BEGIN NAMESPACE XSharp.ADS
 				RETURN ACEUNPUB64.AdsDeactivateAOF(hTable  )
 			ENDIF
 
-		PUBLIC STATIC METHOD AdsDeleteFile(hConnect AS Intptr, pucFileName AS STRING ) AS DWORD 
+		PUBLIC STATIC METHOD AdsDeleteFile(hConnect AS IntPtr, pucFileName AS STRING ) AS DWORD 
 			IF Is32Bits
 				RETURN ACEUNPUB32.AdsDeleteFile(hConnect , pucFileName ) 
 			ELSE
@@ -573,42 +573,42 @@ BEGIN NAMESPACE XSharp.ADS
 				RETURN ACEUNPUB64.AdsDeleteTable(hTable  ) 
 			ENDIF
 
-		PUBLIC STATIC METHOD AdsEcho(hConnect AS Intptr, pucData AS STRING , usLen AS WORD ) AS DWORD 
+		PUBLIC STATIC METHOD AdsEcho(hConnect AS IntPtr, pucData AS STRING , usLen AS WORD ) AS DWORD 
 			IF Is32Bits
 				RETURN ACEUNPUB32.AdsEcho(hConnect , pucData , usLen ) 
 			ELSE
 				RETURN ACEUNPUB64.AdsEcho(hConnect , pucData , usLen ) 
 			ENDIF
 
-		PUBLIC STATIC METHOD AdsEvalExpr(hTable AS Intptr, pucPCode AS STRING,  pucResult AS CHAR[] , pusLen REF WORD ) AS DWORD
+		PUBLIC STATIC METHOD AdsEvalExpr(hTable AS IntPtr, pucPCode AS STRING,  pucResult AS CHAR[] , pusLen REF WORD ) AS DWORD
 			IF Is32Bits
 				RETURN ACEUNPUB32.AdsEvalExpr(hTable , pucPCode ,  pucResult  , REF pusLen ) 
 			ELSE
 				RETURN ACEUNPUB64.AdsEvalExpr(hTable , pucPCode ,  pucResult  , REF pusLen ) 
 			ENDIF
 
-		PUBLIC STATIC METHOD AdsExpressionLongToShort(hTable AS Intptr, pucLongExpr AS STRING ,  pucShortExpr AS CHAR[] , pusBufferLen REF WORD )AS DWORD
+		PUBLIC STATIC METHOD AdsExpressionLongToShort(hTable AS IntPtr, pucLongExpr AS STRING ,  pucShortExpr AS CHAR[] , pusBufferLen REF WORD )AS DWORD
 			IF Is32Bits
 				RETURN ACEUNPUB32.AdsExpressionLongToShort(hTable , pucLongExpr ,  pucShortExpr  , REF pusBufferLen )
 			ELSE
 				RETURN ACEUNPUB64.AdsExpressionLongToShort(hTable , pucLongExpr ,  pucShortExpr  , REF pusBufferLen )
 			ENDIF
 
-		PUBLIC STATIC METHOD AdsExpressionLongToShort90(hTable AS Intptr, pucLongExpr AS STRING ,  pucShortExpr AS CHAR[] , pulBufferLen REF DWORD ) AS DWORD
+		PUBLIC STATIC METHOD AdsExpressionLongToShort90(hTable AS IntPtr, pucLongExpr AS STRING ,  pucShortExpr AS CHAR[] , pulBufferLen REF DWORD ) AS DWORD
 			IF Is32Bits
 				RETURN ACEUNPUB32.AdsExpressionLongToShort90(hTable , pucLongExpr ,  pucShortExpr  , REF pulBufferLen ) 
 			ELSE
 				RETURN ACEUNPUB64.AdsExpressionLongToShort90(hTable , pucLongExpr ,  pucShortExpr  , REF pulBufferLen ) 
 			ENDIF
 
-		PUBLIC STATIC METHOD AdsExpressionShortToLong(hTable AS Intptr, pucShortExpr AS STRING ,  pucLongExpr AS CHAR[] , pusBufferLen REF WORD )AS DWORD
+		PUBLIC STATIC METHOD AdsExpressionShortToLong(hTable AS IntPtr, pucShortExpr AS STRING ,  pucLongExpr AS CHAR[] , pusBufferLen REF WORD )AS DWORD
 			IF Is32Bits
 				RETURN ACEUNPUB32.AdsExpressionShortToLong(hTable , pucShortExpr ,  pucLongExpr  , REF pusBufferLen )
 			ELSE
 				RETURN ACEUNPUB64.AdsExpressionShortToLong(hTable , pucShortExpr ,  pucLongExpr  , REF pusBufferLen )
 			ENDIF
 
-		PUBLIC STATIC METHOD AdsExpressionShortToLong90(hTable AS Intptr, pucShortExpr AS STRING ,  pucLongExpr AS CHAR[] , pulBufferLen REF DWORD ) AS DWORD
+		PUBLIC STATIC METHOD AdsExpressionShortToLong90(hTable AS IntPtr, pucShortExpr AS STRING ,  pucLongExpr AS CHAR[] , pulBufferLen REF DWORD ) AS DWORD
 			IF Is32Bits
 				RETURN ACEUNPUB32.AdsExpressionShortToLong90(hTable , pucShortExpr ,  pucLongExpr  , REF pulBufferLen ) 
 			ELSE
@@ -622,14 +622,14 @@ BEGIN NAMESPACE XSharp.ADS
 				RETURN ACEUNPUB64.AdsExtractPathPart(usPart , pucFile , pucPart  , REF pusPartLen  )
 			ENDIF
 
-		PUBLIC STATIC METHOD AdsFreeExpr(hTable AS Intptr, pucPCode AS STRING) AS DWORD
+		PUBLIC STATIC METHOD AdsFreeExpr(hTable AS IntPtr, pucPCode AS STRING) AS DWORD
 			IF Is32Bits
 				RETURN ACEUNPUB32.AdsFreeExpr(hTable , pucPCode ) 
 			ELSE
 				RETURN ACEUNPUB64.AdsFreeExpr(hTable , pucPCode ) 
 			ENDIF
 
-		PUBLIC STATIC METHOD AdsGetBaseFieldName(hTbl AS Intptr, usFld AS WORD ,  pucName AS CHAR[] , pusBufLen REF WORD ) AS DWORD 
+		PUBLIC STATIC METHOD AdsGetBaseFieldName(hTbl AS IntPtr, usFld AS WORD ,  pucName AS CHAR[] , pusBufLen REF WORD ) AS DWORD 
 			IF Is32Bits
 				RETURN ACEUNPUB32.AdsGetBaseFieldName(hTbl , usFld ,  pucName  , REF pusBufLen ) 
 			ELSE
@@ -643,7 +643,7 @@ BEGIN NAMESPACE XSharp.ADS
 				RETURN ACEUNPUB64.AdsGetBaseFieldNum(hCursor  , pucColumnName ,OUT  pusBaseFieldNum ) 
 			ENDIF
 
-		PUBLIC STATIC METHOD AdsGetColumnPermissions(hTable AS Intptr, usColumnNum AS WORD , pucPermissions AS STRING ) AS DWORD 
+		PUBLIC STATIC METHOD AdsGetColumnPermissions(hTable AS IntPtr, usColumnNum AS WORD , pucPermissions AS STRING ) AS DWORD 
 			IF Is32Bits
 				RETURN ACEUNPUB32.AdsGetColumnPermissions(hTable , usColumnNum , pucPermissions ) 
 			ELSE
@@ -657,63 +657,63 @@ BEGIN NAMESPACE XSharp.ADS
 				RETURN ACEUNPUB64.AdsGetCursorAOF(hCursor ,  pucFilter  , REF pusFilterLen ) 
 			ENDIF
 
-		PUBLIC STATIC METHOD AdsGetFTSScore(hIndex AS Intptr, ulRecord AS DWORD , pucKey AS STRING , usKeyLen AS WORD , usDataType AS WORD , usSeekType AS WORD , pulScore OUT DWORD ) AS DWORD 
+		PUBLIC STATIC METHOD AdsGetFTSScore(hIndex AS IntPtr, ulRecord AS DWORD , pucKey AS STRING , usKeyLen AS WORD , usDataType AS WORD , usSeekType AS WORD , pulScore OUT DWORD ) AS DWORD 
 			IF Is32Bits
 				RETURN ACEUNPUB32.AdsGetFTSScore(hIndex , ulRecord , pucKey , usKeyLen , usDataType , usSeekType , OUT pulScore ) 
 			ELSE
 				RETURN ACEUNPUB64.AdsGetFTSScore(hIndex , ulRecord , pucKey , usKeyLen , usDataType , usSeekType , OUT pulScore ) 
 			ENDIF
 
-		PUBLIC STATIC METHOD AdsGetFieldRaw(hTbl AS Intptr, lFieldOrdinal AS DWORD , pucBuf AS BYTE[] , pulLen REF DWORD ) AS DWORD 
+		PUBLIC STATIC METHOD AdsGetFieldRaw(hTbl AS IntPtr, lFieldOrdinal AS DWORD , pucBuf AS BYTE[] , pulLen REF DWORD ) AS DWORD 
 			IF Is32Bits
 				RETURN ACEUNPUB32.AdsGetFieldRaw(hTbl , lFieldOrdinal , pucBuf  , REF pulLen ) 
 			ELSE
 				RETURN ACEUNPUB64.AdsGetFieldRaw(hTbl , lFieldOrdinal , pucBuf  , REF pulLen ) 
 			ENDIF
 
-		PUBLIC STATIC METHOD AdsGetFieldRaw(hTbl AS Intptr, pucFldName AS STRING , pucBuf AS BYTE[] , pulLen REF DWORD ) AS DWORD 
+		PUBLIC STATIC METHOD AdsGetFieldRaw(hTbl AS IntPtr, pucFldName AS STRING , pucBuf AS BYTE[] , pulLen REF DWORD ) AS DWORD 
 			IF Is32Bits
 				RETURN ACEUNPUB32.AdsGetFieldRaw(hTbl , pucFldName , pucBuf  , REF pulLen ) 
 			ELSE
 				RETURN ACEUNPUB64.AdsGetFieldRaw(hTbl , pucFldName , pucBuf  , REF pulLen ) 
 			ENDIF
 
-		PUBLIC STATIC METHOD AdsGetIndexFlags(hIndex AS Intptr, pulFlags OUT DWORD ) AS DWORD 
+		PUBLIC STATIC METHOD AdsGetIndexFlags(hIndex AS IntPtr, pulFlags OUT DWORD ) AS DWORD 
 			IF Is32Bits
 				RETURN ACEUNPUB32.AdsGetIndexFlags(hIndex , OUT pulFlags ) 
 			ELSE
 				RETURN ACEUNPUB64.AdsGetIndexFlags(hIndex , OUT pulFlags ) 
 			ENDIF
 
-		PUBLIC STATIC METHOD AdsGetIndexPageSize(hIndex AS Intptr, pulPageSize OUT DWORD ) AS DWORD 
+		PUBLIC STATIC METHOD AdsGetIndexPageSize(hIndex AS IntPtr, pulPageSize OUT DWORD ) AS DWORD 
 			IF Is32Bits
 				RETURN ACEUNPUB32.AdsGetIndexPageSize(hIndex , OUT pulPageSize ) 
 			ELSE
 				RETURN ACEUNPUB64.AdsGetIndexPageSize(hIndex , OUT pulPageSize ) 
 			ENDIF
 
-		PUBLIC STATIC METHOD AdsGetNullRecord(hTbl AS Intptr, pucBuf AS STRING , ulLen AS DWORD ) AS DWORD 
+		PUBLIC STATIC METHOD AdsGetNullRecord(hTbl AS IntPtr, pucBuf AS STRING , ulLen AS DWORD ) AS DWORD 
 			IF Is32Bits
 				RETURN ACEUNPUB32.AdsGetNullRecord(hTbl , pucBuf , ulLen ) 
 			ELSE
 				RETURN ACEUNPUB64.AdsGetNullRecord(hTbl , pucBuf , ulLen ) 
 			ENDIF
 
-		PUBLIC STATIC METHOD AdsGetNumSegments(hTag AS Intptr, usSegments OUT WORD ) AS DWORD 
+		PUBLIC STATIC METHOD AdsGetNumSegments(hTag AS IntPtr, usSegments OUT WORD ) AS DWORD 
 			IF Is32Bits
 				RETURN ACEUNPUB32.AdsGetNumSegments(hTag , OUT usSegments ) 
 			ELSE
 				RETURN ACEUNPUB64.AdsGetNumSegments(hTag , OUT usSegments ) 
 			ENDIF
 
-		PUBLIC STATIC METHOD AdsGetPreparedFields(hStatement AS Intptr,  pucBuffer AS CHAR[] , pulBufferLen REF DWORD , ulOptions AS DWORD ) AS DWORD 
+		PUBLIC STATIC METHOD AdsGetPreparedFields(hStatement AS IntPtr,  pucBuffer AS CHAR[] , pulBufferLen REF DWORD , ulOptions AS DWORD ) AS DWORD 
 			IF Is32Bits
 				RETURN ACEUNPUB32.AdsGetPreparedFields(hStatement ,  pucBuffer  , REF pulBufferLen , ulOptions ) 
 			ELSE
 				RETURN ACEUNPUB64.AdsGetPreparedFields(hStatement ,  pucBuffer  , REF pulBufferLen , ulOptions ) 
 			ENDIF
 
-		PUBLIC STATIC METHOD AdsGetROWIDPrefix(hTable AS Intptr, pucRowIDPrefix AS STRING , usBufferLen AS WORD ) AS DWORD 
+		PUBLIC STATIC METHOD AdsGetROWIDPrefix(hTable AS IntPtr, pucRowIDPrefix AS STRING , usBufferLen AS WORD ) AS DWORD 
 			IF Is32Bits
 				RETURN ACEUNPUB32.AdsGetROWIDPrefix(hTable , pucRowIDPrefix , usBufferLen ) 
 			ELSE
@@ -727,28 +727,28 @@ BEGIN NAMESPACE XSharp.ADS
 				RETURN ACEUNPUB64.AdsGetSQLStmtParams(pucStatement ) 
 			ENDIF
 
-		PUBLIC STATIC METHOD AdsGetSegmentFieldNumbers(hTag AS Intptr, pusNumSegments OUT WORD , pusSegFieldNumbers AS WORD[] )AS DWORD 
+		PUBLIC STATIC METHOD AdsGetSegmentFieldNumbers(hTag AS IntPtr, pusNumSegments OUT WORD , pusSegFieldNumbers AS WORD[] )AS DWORD 
 			IF Is32Bits
 				RETURN ACEUNPUB32.AdsGetSegmentFieldNumbers(hTag , OUT pusNumSegments , pusSegFieldNumbers )
 			ELSE
 				RETURN ACEUNPUB64.AdsGetSegmentFieldNumbers(hTag , OUT pusNumSegments , pusSegFieldNumbers )
 			ENDIF
 
-		PUBLIC STATIC METHOD AdsGetSegmentFieldname(hTag AS Intptr, usSegmentNum AS WORD , pucFieldname AS CHAR[], pusFldnameLen REF WORD ) AS DWORD 
+		PUBLIC STATIC METHOD AdsGetSegmentFieldname(hTag AS IntPtr, usSegmentNum AS WORD , pucFieldname AS CHAR[], pusFldnameLen REF WORD ) AS DWORD 
 			IF Is32Bits
 				RETURN ACEUNPUB32.AdsGetSegmentFieldname(hTag , usSegmentNum , pucFieldname , REF pusFldnameLen ) 
 			ELSE
 				RETURN ACEUNPUB64.AdsGetSegmentFieldname(hTag , usSegmentNum , pucFieldname , REF pusFldnameLen ) 
 			ENDIF
 
-		PUBLIC STATIC METHOD AdsGetSegmentOffset(hTag AS Intptr, usSegmentNum AS WORD , usOffset OUT WORD ) AS DWORD 
+		PUBLIC STATIC METHOD AdsGetSegmentOffset(hTag AS IntPtr, usSegmentNum AS WORD , usOffset OUT WORD ) AS DWORD 
 			IF Is32Bits
 				RETURN ACEUNPUB32.AdsGetSegmentOffset(hTag , usSegmentNum , OUT usOffset ) 
 			ELSE
 				RETURN ACEUNPUB64.AdsGetSegmentOffset(hTag , usSegmentNum , OUT usOffset ) 
 			ENDIF
 
-		PUBLIC STATIC METHOD AdsGetTableWAN(hTable AS Intptr, pusWAN OUT WORD ) AS DWORD 
+		PUBLIC STATIC METHOD AdsGetTableWAN(hTable AS IntPtr, pusWAN OUT WORD ) AS DWORD 
 			IF Is32Bits
 				RETURN ACEUNPUB32.AdsGetTableWAN(hTable , OUT pusWAN ) 
 			ELSE
@@ -762,63 +762,63 @@ BEGIN NAMESPACE XSharp.ADS
 				RETURN ACEUNPUB64.AdsGotoBOF(hObj  ) 
 			ENDIF
 
-		PUBLIC STATIC METHOD AdsInternalCloseCachedTables(hConnect AS Intptr, usOpen AS WORD ) AS DWORD
+		PUBLIC STATIC METHOD AdsInternalCloseCachedTables(hConnect AS IntPtr, usOpen AS WORD ) AS DWORD
 			IF Is32Bits
 				RETURN ACEUNPUB32.AdsInternalCloseCachedTables(hConnect , usOpen ) 
 			ELSE
 				RETURN ACEUNPUB64.AdsInternalCloseCachedTables(hConnect , usOpen ) 
 			ENDIF
 
-		PUBLIC STATIC METHOD AdsIsIndexExprValid(hTbl AS Intptr, pucExpr AS STRING , pbValid OUT WORD ) AS DWORD
+		PUBLIC STATIC METHOD AdsIsIndexExprValid(hTbl AS IntPtr, pucExpr AS STRING , pbValid OUT WORD ) AS DWORD
 			IF Is32Bits
 				RETURN ACEUNPUB32.AdsIsIndexExprValid(hTbl , pucExpr , OUT pbValid ) 
 			ELSE
 				RETURN ACEUNPUB64.AdsIsIndexExprValid(hTbl , pucExpr , OUT pbValid ) 
 			ENDIF
 
-		PUBLIC STATIC METHOD AdsIsSegmentDescending(hTag AS Intptr, usSegmentNum AS WORD , pbDescending OUT WORD ) AS DWORD 
+		PUBLIC STATIC METHOD AdsIsSegmentDescending(hTag AS IntPtr, usSegmentNum AS WORD , pbDescending OUT WORD ) AS DWORD 
 			IF Is32Bits
 				RETURN ACEUNPUB32.AdsIsSegmentDescending(hTag , usSegmentNum , OUT pbDescending ) 
 			ELSE
 				RETURN ACEUNPUB64.AdsIsSegmentDescending(hTag , usSegmentNum , OUT pbDescending ) 
 			ENDIF
 
-		PUBLIC STATIC METHOD AdsLockRecordImplicitly(hTbl AS Intptr, ulRec AS DWORD ) AS DWORD 
+		PUBLIC STATIC METHOD AdsLockRecordImplicitly(hTbl AS IntPtr, ulRec AS DWORD ) AS DWORD 
 			IF Is32Bits
 				RETURN ACEUNPUB32.AdsLockRecordImplicitly(hTbl , ulRec ) 
 			ELSE
 				RETURN ACEUNPUB64.AdsLockRecordImplicitly(hTbl , ulRec ) 
 			ENDIF
 
-		PUBLIC STATIC METHOD AdsMemCompare90(hConnect AS Intptr, pucStr1 AS STRING , ulStr1Len AS DWORD , pucStr2 AS STRING , ulStr2Len AS DWORD , usCharSet AS WORD , ulCollationID AS DWORD , psResult OUT SHORT ) AS DWORD 
+		PUBLIC STATIC METHOD AdsMemCompare90(hConnect AS IntPtr, pucStr1 AS STRING , ulStr1Len AS DWORD , pucStr2 AS STRING , ulStr2Len AS DWORD , usCharSet AS WORD , ulCollationID AS DWORD , psResult OUT SHORT ) AS DWORD 
 			IF Is32Bits
 				RETURN ACEUNPUB32.AdsMemCompare90(hConnect , pucStr1 , ulStr1Len , pucStr2 , ulStr2Len , usCharSet , ulCollationID , OUT psResult ) 
 			ELSE
 				RETURN ACEUNPUB64.AdsMemCompare90(hConnect , pucStr1 , ulStr1Len , pucStr2 , ulStr2Len , usCharSet , ulCollationID , OUT psResult ) 
 			ENDIF
 
-		PUBLIC STATIC METHOD AdsMemICompare(hConnect AS Intptr, pucStr1 AS STRING , ulStr1Len AS DWORD , pucStr2 AS STRING , ulStr2Len AS DWORD , usCharSet AS WORD , psResult OUT SHORT ) AS DWORD 
+		PUBLIC STATIC METHOD AdsMemICompare(hConnect AS IntPtr, pucStr1 AS STRING , ulStr1Len AS DWORD , pucStr2 AS STRING , ulStr2Len AS DWORD , usCharSet AS WORD , psResult OUT SHORT ) AS DWORD 
 			IF Is32Bits
 				RETURN ACEUNPUB32.AdsMemICompare(hConnect , pucStr1 , ulStr1Len , pucStr2 , ulStr2Len , usCharSet , OUT psResult ) 
 			ELSE
 				RETURN ACEUNPUB64.AdsMemICompare(hConnect , pucStr1 , ulStr1Len , pucStr2 , ulStr2Len , usCharSet , OUT psResult ) 
 			ENDIF
 
-		PUBLIC STATIC METHOD AdsMemICompare90(hConnect AS Intptr, pucStr1 AS STRING , ulStr1Len AS DWORD , pucStr2 AS STRING , ulStr2Len AS DWORD , usCharSet AS WORD , ulCollationID AS DWORD , psResult OUT SHORT ) AS DWORD 
+		PUBLIC STATIC METHOD AdsMemICompare90(hConnect AS IntPtr, pucStr1 AS STRING , ulStr1Len AS DWORD , pucStr2 AS STRING , ulStr2Len AS DWORD , usCharSet AS WORD , ulCollationID AS DWORD , psResult OUT SHORT ) AS DWORD 
 			IF Is32Bits
 				RETURN ACEUNPUB32.AdsMemICompare90(hConnect , pucStr1 , ulStr1Len, pucStr2 , ulStr2Len , usCharSet , ulCollationID , OUT psResult ) 
 			ELSE
 				RETURN ACEUNPUB64.AdsMemICompare90(hConnect , pucStr1 , ulStr1Len, pucStr2 , ulStr2Len , usCharSet , ulCollationID , OUT psResult ) 
 			ENDIF
 
-		PUBLIC STATIC METHOD AdsMemLwr(hConnect AS Intptr, pucStr AS STRING , usStrLen AS WORD , usCharSet AS WORD ) AS DWORD 
+		PUBLIC STATIC METHOD AdsMemLwr(hConnect AS IntPtr, pucStr AS STRING , usStrLen AS WORD , usCharSet AS WORD ) AS DWORD 
 			IF Is32Bits
 				RETURN ACEUNPUB32.AdsMemLwr(hConnect , pucStr , usStrLen , usCharSet ) 
 			ELSE
 				RETURN ACEUNPUB64.AdsMemLwr(hConnect , pucStr , usStrLen , usCharSet ) 
 			ENDIF
 
-		PUBLIC STATIC METHOD AdsMemLwr90(hConnect AS Intptr, pucStr AS STRING , usStrLen AS WORD , usCharSet AS WORD , ulCollationID AS DWORD ) AS DWORD 
+		PUBLIC STATIC METHOD AdsMemLwr90(hConnect AS IntPtr, pucStr AS STRING , usStrLen AS WORD , usCharSet AS WORD , ulCollationID AS DWORD ) AS DWORD 
 			IF Is32Bits
 				RETURN ACEUNPUB32.AdsMemLwr90(hConnect , pucStr , usStrLen , usCharSet , ulCollationID ) 
 			ELSE
@@ -832,28 +832,28 @@ BEGIN NAMESPACE XSharp.ADS
 				RETURN ACEUNPUB64.AdsMergeAOF(hTable  ) 
 			ENDIF
 
-		PUBLIC STATIC METHOD AdsPerformRI(hTable AS Intptr, ulRecNum AS DWORD , pucRecBuffer AS STRING ) AS DWORD 
+		PUBLIC STATIC METHOD AdsPerformRI(hTable AS IntPtr, ulRecNum AS DWORD , pucRecBuffer AS STRING ) AS DWORD 
 			IF Is32Bits
 				RETURN ACEUNPUB32.AdsPerformRI(hTable , ulRecNum , pucRecBuffer ) 
 			ELSE
 				RETURN ACEUNPUB64.AdsPerformRI(hTable , ulRecNum , pucRecBuffer ) 
 			ENDIF
 
-		PUBLIC STATIC METHOD AdsPrepareSQLNow(hStatement AS Intptr, pucSQL AS STRING ,  pucFieldInfo AS CHAR[] , pusFieldInfoLen REF WORD ) AS DWORD 
+		PUBLIC STATIC METHOD AdsPrepareSQLNow(hStatement AS IntPtr, pucSQL AS STRING ,  pucFieldInfo AS CHAR[] , pusFieldInfoLen REF WORD ) AS DWORD 
 			IF Is32Bits
 				RETURN ACEUNPUB32.AdsPrepareSQLNow(hStatement , pucSQL ,  pucFieldInfo  , REF pusFieldInfoLen ) 
 			ELSE
 				RETURN ACEUNPUB64.AdsPrepareSQLNow(hStatement , pucSQL ,  pucFieldInfo  , REF pusFieldInfoLen ) 
 			ENDIF
 
-		PUBLIC STATIC METHOD AdsReadRecordNumbers(hObj AS Intptr, ulRecordNum AS DWORD , ucDirection AS BYTE , pulRecords OUT DWORD , pulArrayLen REF DWORD , pusHitEOF OUT WORD ) AS DWORD 
+		PUBLIC STATIC METHOD AdsReadRecordNumbers(hObj AS IntPtr, ulRecordNum AS DWORD , ucDirection AS BYTE , pulRecords OUT DWORD , pulArrayLen REF DWORD , pusHitEOF OUT WORD ) AS DWORD 
 			IF Is32Bits
 				RETURN ACEUNPUB32.AdsReadRecordNumbers(hObj , ulRecordNum , ucDirection , OUT pulRecords , REF pulArrayLen , OUT pusHitEOF ) 
 			ELSE
 				RETURN ACEUNPUB64.AdsReadRecordNumbers(hObj , ulRecordNum , ucDirection , OUT pulRecords , REF pulArrayLen , OUT pusHitEOF ) 
 			ENDIF
 
-		PUBLIC STATIC METHOD AdsReadRecords(hObj AS Intptr, ulRecordNum AS DWORD , cDirection AS BYTE ) AS DWORD 
+		PUBLIC STATIC METHOD AdsReadRecords(hObj AS IntPtr, ulRecordNum AS DWORD , cDirection AS BYTE ) AS DWORD 
 			IF Is32Bits
 				RETURN ACEUNPUB32.AdsReadRecords(hObj , ulRecordNum , cDirection ) 
 			ELSE
@@ -881,21 +881,21 @@ BEGIN NAMESPACE XSharp.ADS
 				RETURN ACEUNPUB64.AdsRemoveSQLComments(pucStatement ) 
 			ENDIF
 
-		PUBLIC STATIC METHOD AdsRestoreDatabase(hConnect AS Intptr, hOutputTable AS IntPtr , pucSourcePath AS STRING , pucSourcePassword AS STRING , pucDestPath AS STRING , pucDestPassword AS STRING , pucOptions AS STRING , pucFreeTablePasswords AS STRING , usCharType AS WORD , usLockingMode AS WORD , usCheckRights AS WORD , usTableType AS WORD , pucCollation AS STRING , ucDDConn AS BYTE ) AS DWORD 
+		PUBLIC STATIC METHOD AdsRestoreDatabase(hConnect AS IntPtr, hOutputTable AS IntPtr , pucSourcePath AS STRING , pucSourcePassword AS STRING , pucDestPath AS STRING , pucDestPassword AS STRING , pucOptions AS STRING , pucFreeTablePasswords AS STRING , usCharType AS WORD , usLockingMode AS WORD , usCheckRights AS WORD , usTableType AS WORD , pucCollation AS STRING , ucDDConn AS BYTE ) AS DWORD 
 			IF Is32Bits
 				RETURN ACEUNPUB32.AdsRestoreDatabase(hConnect , hOutputTable  , pucSourcePath , pucSourcePassword , pucDestPath , pucDestPassword , pucOptions , pucFreeTablePasswords , usCharType , usLockingMode , usCheckRights , usTableType , pucCollation , ucDDConn ) 
 			ELSE
 				RETURN ACEUNPUB64.AdsRestoreDatabase(hConnect , hOutputTable  , pucSourcePath , pucSourcePassword , pucDestPath , pucDestPassword , pucOptions , pucFreeTablePasswords , usCharType , usLockingMode , usCheckRights , usTableType , pucCollation , ucDDConn ) 
 			ENDIF
 
-		PUBLIC STATIC METHOD AdsSetBOFFlag(hTbl AS Intptr, usBOF AS WORD )AS DWORD
+		PUBLIC STATIC METHOD AdsSetBOFFlag(hTbl AS IntPtr, usBOF AS WORD )AS DWORD
 			IF Is32Bits
 				RETURN ACEUNPUB32.AdsSetBOFFlag(hTbl , usBOF )
 			ELSE
 				RETURN ACEUNPUB64.AdsSetBOFFlag(hTbl , usBOF )
 			ENDIF
 
-		PUBLIC STATIC METHOD AdsSetBaseTableAccess(hTbl AS Intptr, usAccessBase AS WORD ) AS DWORD 
+		PUBLIC STATIC METHOD AdsSetBaseTableAccess(hTbl AS IntPtr, usAccessBase AS WORD ) AS DWORD 
 			IF Is32Bits
 				RETURN ACEUNPUB32.AdsSetBaseTableAccess(hTbl , usAccessBase ) 
 			ELSE
@@ -909,21 +909,21 @@ BEGIN NAMESPACE XSharp.ADS
 				RETURN ACEUNPUB64.AdsSetCollationSequence(pucSequence ) 
 			ENDIF
 
-		PUBLIC STATIC METHOD AdsSetCursorAOF(hTable AS Intptr, pucFilter AS STRING , usResolve AS WORD ) AS DWORD
+		PUBLIC STATIC METHOD AdsSetCursorAOF(hTable AS IntPtr, pucFilter AS STRING , usResolve AS WORD ) AS DWORD
 			IF Is32Bits
 				RETURN ACEUNPUB32.AdsSetCursorAOF(hTable , pucFilter , usResolve ) 
 			ELSE
 				RETURN ACEUNPUB64.AdsSetCursorAOF(hTable , pucFilter , usResolve ) 
 			ENDIF
 
-		PUBLIC STATIC METHOD AdsSetFieldRaw(hObj AS Intptr, pucFldName AS STRING , pucBuf AS BYTE[] , ulLen AS DWORD ) AS DWORD 
+		PUBLIC STATIC METHOD AdsSetFieldRaw(hObj AS IntPtr, pucFldName AS STRING , pucBuf AS BYTE[] , ulLen AS DWORD ) AS DWORD 
 			IF Is32Bits
 				RETURN ACEUNPUB32.AdsSetFieldRaw(hObj , pucFldName , pucBuf  , ulLen ) 
 			ELSE
 				RETURN ACEUNPUB64.AdsSetFieldRaw(hObj , pucFldName , pucBuf  , ulLen ) 
 			ENDIF
 
-		PUBLIC STATIC METHOD AdsSetFlushFlag(hConnect AS Intptr, usFlushEveryUpdate AS WORD ) AS DWORD 
+		PUBLIC STATIC METHOD AdsSetFlushFlag(hConnect AS IntPtr, usFlushEveryUpdate AS WORD ) AS DWORD 
 			IF Is32Bits
 				RETURN ACEUNPUB32.AdsSetFlushFlag(hConnect , usFlushEveryUpdate ) 
 			ELSE
@@ -937,42 +937,42 @@ BEGIN NAMESPACE XSharp.ADS
 				RETURN ACEUNPUB64.AdsSetInternalError(ulErrCode , pucFile , ulLine ) 
 			ENDIF
 
-		PUBLIC STATIC METHOD AdsSetPacketSize(hConnect AS Intptr, usPacketLength AS WORD ) AS DWORD 
+		PUBLIC STATIC METHOD AdsSetPacketSize(hConnect AS IntPtr, usPacketLength AS WORD ) AS DWORD 
 			IF Is32Bits
 				RETURN ACEUNPUB32.AdsSetPacketSize(hConnect , usPacketLength ) 
 			ELSE
 				RETURN ACEUNPUB64.AdsSetPacketSize(hConnect , usPacketLength ) 
 			ENDIF
 
-		PUBLIC STATIC METHOD AdsSetProperty(hObj AS Intptr, ulOperation AS DWORD , ulValue AS DWORD ) AS DWORD 
+		PUBLIC STATIC METHOD AdsSetProperty(hObj AS IntPtr, ulOperation AS DWORD , ulValue AS DWORD ) AS DWORD 
 			IF Is32Bits
 				RETURN ACEUNPUB32.AdsSetProperty(hObj , ulOperation , ulValue ) 
 			ELSE
 				RETURN ACEUNPUB64.AdsSetProperty(hObj , ulOperation , ulValue ) 
 			ENDIF
 
-		PUBLIC STATIC METHOD AdsSetRecordPartial(hObj AS Intptr, pucRec AS STRING , ulLen AS DWORD ) AS DWORD 
+		PUBLIC STATIC METHOD AdsSetRecordPartial(hObj AS IntPtr, pucRec AS STRING , ulLen AS DWORD ) AS DWORD 
 			IF Is32Bits
 				RETURN ACEUNPUB32.AdsSetRecordPartial(hObj , pucRec , ulLen ) 
 			ELSE
 				RETURN ACEUNPUB64.AdsSetRecordPartial(hObj , pucRec , ulLen ) 
 			ENDIF
 
-		PUBLIC STATIC METHOD AdsSetTableCharType(hTbl AS Intptr, usCharType AS WORD ) AS DWORD 
+		PUBLIC STATIC METHOD AdsSetTableCharType(hTbl AS IntPtr, usCharType AS WORD ) AS DWORD 
 			IF Is32Bits
 				RETURN ACEUNPUB32.AdsSetTableCharType(hTbl , usCharType ) 
 			ELSE
 				RETURN ACEUNPUB64.AdsSetTableCharType(hTbl , usCharType ) 
 			ENDIF
 
-		PUBLIC STATIC METHOD AdsSetTimeStampRaw(hObj AS Intptr, lFieldOrdinal AS DWORD , pucBuf REF UINT64 , ulLen AS DWORD ) AS DWORD 
+		PUBLIC STATIC METHOD AdsSetTimeStampRaw(hObj AS IntPtr, lFieldOrdinal AS DWORD , pucBuf REF UINT64 , ulLen AS DWORD ) AS DWORD 
 			IF Is32Bits
 				RETURN ACEUNPUB32.AdsSetTimeStampRaw(hObj , lFieldOrdinal , REF pucBuf , ulLen ) 
 			ELSE
 				RETURN ACEUNPUB64.AdsSetTimeStampRaw(hObj , lFieldOrdinal , REF pucBuf , ulLen ) 
 			ENDIF
 
-		PUBLIC STATIC METHOD AdsSetTimeStampRaw(hObj AS Intptr, pucFldName AS STRING , pucBuf REF UINT64 , ulLen AS DWORD ) AS DWORD 
+		PUBLIC STATIC METHOD AdsSetTimeStampRaw(hObj AS IntPtr, pucFldName AS STRING , pucBuf REF UINT64 , ulLen AS DWORD ) AS DWORD 
 			IF Is32Bits
 				RETURN ACEUNPUB32.AdsSetTimeStampRaw(hObj , pucFldName , REF pucBuf , ulLen ) 
 			ELSE
@@ -986,7 +986,7 @@ BEGIN NAMESPACE XSharp.ADS
 				RETURN ACEUNPUB64.AdsSetupRI(hConnection  , lTableID , ucOpen , ulServerWAN ) 
 			ENDIF
 
-		PUBLIC STATIC METHOD AdsStepIndexKey(hIndex AS Intptr, pucKey AS STRING , usLen AS WORD,  sDirection AS SHORT ) AS DWORD 
+		PUBLIC STATIC METHOD AdsStepIndexKey(hIndex AS IntPtr, pucKey AS STRING , usLen AS WORD,  sDirection AS SHORT ) AS DWORD 
 			IF Is32Bits
 				RETURN ACEUNPUB32.AdsStepIndexKey(hIndex , pucKey , usLen ,  sDirection ) 
 			ELSE
@@ -1000,14 +1000,14 @@ BEGIN NAMESPACE XSharp.ADS
 				RETURN ACEUNPUB64.AdsValidateThread() 
 			ENDIF
 
-		PUBLIC STATIC METHOD AdsVerifyRI(hConnect AS Intptr, usExclusive AS WORD ) AS DWORD 
+		PUBLIC STATIC METHOD AdsVerifyRI(hConnect AS IntPtr, usExclusive AS WORD ) AS DWORD 
 			IF Is32Bits
 				RETURN ACEUNPUB32.AdsVerifyRI(hConnect , usExclusive ) 
 			ELSE
 				RETURN ACEUNPUB64.AdsVerifyRI(hConnect , usExclusive ) 
 			ENDIF
 
-		PUBLIC STATIC METHOD AdsWaitForObject(hObj AS Intptr, ulOptions AS DWORD ) AS DWORD 
+		PUBLIC STATIC METHOD AdsWaitForObject(hObj AS IntPtr, ulOptions AS DWORD ) AS DWORD 
 			IF Is32Bits
 				RETURN ACEUNPUB32.AdsWaitForObject(hObj , ulOptions ) 
 			ELSE

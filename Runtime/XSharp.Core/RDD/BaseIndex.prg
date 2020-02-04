@@ -105,7 +105,7 @@ CLASS XSharp.RDD.BaseIndex IMPLEMENTS IOrder
 		THROW NotImplementedException{}
 		
 	/// <inheritdoc />
-	VIRTUAL PROPERTY Found AS LOGIC	GET _oArea:_Found SET _oArea:_Found := VALUE
+	VIRTUAL PROPERTY Found AS LOGIC	GET _oArea:_Found SET _oArea:_Found := value
 
 	/// <inheritdoc />
 	VIRTUAL METHOD Flush() 							AS LOGIC

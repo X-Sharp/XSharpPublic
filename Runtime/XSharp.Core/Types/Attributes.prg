@@ -16,8 +16,8 @@ BEGIN NAMESPACE XSharp.Internal
 		///<summary>The actual type of the parameter.</summary>
 		PROPERTY @@Value AS System.Type GET _value
 		/// <summary></summary>	
-		CONSTRUCTOR(VALUE AS System.Type)
-			_value := VALUE
+		CONSTRUCTOR(@@Value AS System.Type)
+			_value := @@Value
 		
 	END CLASS
 	

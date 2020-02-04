@@ -51,7 +51,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         PRIVATE _indexVersion AS WORD
         PRIVATE _nextUnusedPageOffset AS LONG
         PRIVATE _entrySize AS WORD
-        PRIVATE _KeyExprType AS LONG
+        PRIVATE _keyExprType AS LONG
         PRIVATE _keySize AS WORD
         PRIVATE _keyDecimals AS WORD
         PRIVATE _MaxEntry AS WORD
@@ -81,7 +81,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         PRIVATE _parkPlace AS LONG
         PRIVATE getKeyValue AS ValueBlock       // Delegate to calculate the key
         
-        INTERNAL _lockOffSet AS LONG
+        INTERNAL _LockOffset AS LONG
         #endregion
         #region properties
         INTERNAL PROPERTY Expression AS STRING GET _KeyExpr
@@ -94,13 +94,13 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         INTERNAL PROPERTY CurrentStack       AS RddStack GET  SELF:_stack[SELF:_TopStack]
         INTERNAL PROPERTY OrderName AS STRING GET _orderName
 	    INTERNAL PROPERTY Shared    AS LOGIC GET _Shared
-        INTERNAL PROPERTY _Recno AS LONG GET _oRdd:Recno
+        INTERNAL PROPERTY _RecNo AS LONG GET _oRdd:RecNo
         INTERNAL PROPERTY HasScope AS LOGIC GET _Scopes[TOPSCOPE]:IsSet .OR. _Scopes[BOTTOMSCOPE]:IsSet
         INTERNAL PROPERTY TopScope AS OBJECT GET _Scopes[TOPSCOPE]:Value
-        INTERNAL PROPERTY BottomScope AS OBJECT GET _Scopes[BOTTOMSCOPE]:VALUE
+        INTERNAL PROPERTY BottomScope AS OBJECT GET _Scopes[BOTTOMSCOPE]:Value
         INTERNAL PROPERTY Encoding as System.Text.Encoding GET _oRdd:_Encoding
         INTERNAL PROPERTY FullPath AS STRING GET _fullPath
-        INTERNAL PROPERTY HPLocking AS LOGIC GET _HpLocking
+        INTERNAL PROPERTY HPLocking AS LOGIC GET _HPLocking
         INTERNAL PROPERTY Unique AS LOGIC GET _Unique
         INTERNAL PROPERTY Descending AS LOGIC GET _Descending
         INTERNAL PROPERTY Conditional AS LOGIC GET _Conditional
@@ -109,20 +109,20 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 RETURN SELF:_fileName
             END GET
             SET
-                SELF:_FileName := VALUE
-                IF  String.IsNullOrEmpty( SELF:_FileName )
+                SELF:_fileName := value
+                IF  String.IsNullOrEmpty( SELF:_fileName )
                     // When empty then take same name as DBF but with NTX extension
-                    SELF:_FileName := SELF:_oRDD:_FileName
+                    SELF:_fileName := SELF:_oRdd:_FileName
                     // force extenstion here, so change DBF to NTX
-                    SELF:_FileName := Path.ChangeExtension(SELF:_FileName, NTX_EXTENSION)
+                    SELF:_fileName := Path.ChangeExtension(SELF:_fileName, NTX_EXTENSION)
                 ENDIF
-                SELF:_fullPath := SELF:_FileName
+                SELF:_fullPath := SELF:_fileName
                 // Check that we have a FullPath
                 IF Path.GetDirectoryName(SELF:_fullPath):Length == 0
                     // Get the path from the RDD's open info
-                    VAR cPath := Path.GetDirectoryName(SELF:_oRDD:_OpenInfo:FileName)
+                    VAR cPath := Path.GetDirectoryName(SELF:_oRdd:_OpenInfo:FileName)
                     IF String.IsNullOrEmpty(cPath)
-                        cPath := SELF:_oRDD:_FileName
+                        cPath := SELF:_oRdd:_FileName
                         cPath := Path.GetDirectoryName(cPath)
                     ENDIF
                     SELF:_fullPath := Path.Combine(cPath, SELF:_fullPath)
@@ -142,7 +142,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         #endregion
         
         INTERNAL CONSTRUCTOR(oRDD AS DBFNTX )
-            SUPER( oRdd )
+            SUPER( oRDD )
             
             LOCAL i AS LONG
             
@@ -164,19 +164,19 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             SELF(oRDD)
             SELF:FileName := filePath
         
-        INTERNAL METHOD Open(dbordInfo AS DBORDERINFO ) AS LOGIC
+        INTERNAL METHOD Open(dbordInfo AS DbOrderInfo ) AS LOGIC
             LOCAL isOk AS LOGIC
             isOk := FALSE
             SELF:_oRdd:GoCold()
-            SELF:_Shared := SELF:_oRDD:_Shared
-            SELF:_hFile    := Fopen(SELF:FullPath, SELF:_oRDD:_OpenInfo:FileMode) 
+            SELF:_Shared := SELF:_oRdd:_Shared
+            SELF:_hFile    := FOpen(SELF:FullPath, SELF:_oRdd:_OpenInfo:FileMode) 
             IF SELF:_hFile == F_ERROR 
-                SELF:_oRDD:_dbfError( ERDD.OPEN_ORDER, GenCode.EG_OPEN, SELF:fileName)
+                SELF:_oRdd:_dbfError( ERDD.OPEN_ORDER, Gencode.EG_OPEN, SELF:FileName)
                 RETURN FALSE
             ENDIF
             SELF:_Header := NtxHeader{ SELF, SELF:_hFile }
             IF !SELF:_Header:Read()
-                SELF:_oRDD:_dbfError(ERDD.OPEN_ORDER, GenCode.EG_OPEN, SELF:fileName)
+                SELF:_oRdd:_dbfError(ERDD.OPEN_ORDER, Gencode.EG_OPEN, SELF:FileName)
                 RETURN FALSE
             ENDIF
             
@@ -208,9 +208,9 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             
             SELF:_midItem := NtxNode{SELF:_keySize}
             SELF:_oneItem := NtxNode{SELF:_keySize}
-            IF string.IsNullOrEmpty(SELF:_Header:OrdName)
+            IF String.IsNullOrEmpty(SELF:_Header:OrdName)
 	    	// XBase++ expects the order in UPPER case
-                SELF:_orderName := Path.GetFileNameWithoutExtension(SELF:fileName):ToUpper()
+                SELF:_orderName := Path.GetFileNameWithoutExtension(SELF:FileName):ToUpper()
                 SELF:_Header:OrdName := SELF:_orderName
                 SELF:_Header:Write()
             ELSE
@@ -224,9 +224,9 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             
             // Except
             IF SELF:_Header:Signature:HasFlag(NtxHeaderFlags.NewLock)
-                SELF:_LockOffSet := LOCKOFFSET_NEW
+                SELF:_LockOffset := LOCKOFFSET_NEW
             ELSE
-                SELF:_LockOffSet:= LOCKOFFSET_OLD
+                SELF:_LockOffset:= LOCKOFFSET_OLD
             ENDIF
             // NTX has only one Tag index
             SELF:_tagNumber := 1
@@ -237,8 +237,8 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             IF SELF:_HPLocking .AND. SELF:Shared
                 //DO
                 REPEAT
-                    IF !SELF:_LockInit()
-                        SELF:_oRDD:_dbfError( ERDD.INIT_LOCK, GenCode.EG_LOCK, "DBFNTX.LockInit", SELF:_fileName)
+                    IF !SELF:_lockInit()
+                        SELF:_oRdd:_dbfError( ERDD.INIT_LOCK, Gencode.EG_LOCK, "DBFNTX.LockInit", SELF:_fileName)
                         isOk := FALSE
                     ENDIF
                     //WHILE (!isOk)
@@ -252,8 +252,8 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             RETURN isOk
 
         INTERNAL METHOD AllocateBuffers() AS VOID
-            SELF:_newValue          := RddKeyData{_keySize}
-            SELF:_currentValue      := RddKeyData{_keySize}
+            SELF:_newvalue          := RddKeyData{_keySize}
+            SELF:_currentvalue      := RddKeyData{_keySize}
             SELF:_Scopes[0]:SetBuffer(_keySize)
             SELF:_Scopes[1]:SetBuffer(_keySize)
             RETURN
@@ -268,31 +268,31 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                     SELF:_KeyCodeBlock := SELF:_oRdd:Compile(SELF:_KeyExpr)
                 ENDIF
             CATCH ex AS Exception
-                SELF:_oRdd:_dbfError( ex, SubCodes.EDB_EXPRESSION, GenCode.EG_SYNTAX,"DBFNTX.Compile")
+                SELF:_oRdd:_dbfError( ex, Subcodes.EDB_EXPRESSION, Gencode.EG_SYNTAX,"DBFNTX.Compile")
                 RETURN FALSE
             END TRY
 
             TRY
                 oKey := SELF:_oRdd:EvalBlock(SELF:_KeyCodeBlock)
             CATCH ex AS Exception
-                SELF:_oRdd:_dbfError( ex, SubCodes.EDB_EXPRESSION, GenCode.EG_SYNTAX, "DBFNTX.Compile")
+                SELF:_oRdd:_dbfError( ex, Subcodes.EDB_EXPRESSION, Gencode.EG_SYNTAX, "DBFNTX.Compile")
                 evalOk := FALSE
                 oKey := NULL
             END TRY
             IF !evalOk
                 RETURN FALSE
             ENDIF
-            SELF:_KeyExprType := SELF:_oRdd:_getUsualType(oKey)
+            SELF:_keyExprType := SELF:_oRdd:_getUsualType(oKey)
 
             // If the Key Expression contains only a Field Name
-            SELF:_SingleField := SELF:_oRDD:FieldIndex(SELF:_KeyExpr) -1
+            SELF:_SingleField := SELF:_oRdd:FieldIndex(SELF:_KeyExpr) -1
             SELF:_SourceIndex := 0
             LOCAL isOk AS LOGIC
             IF SELF:_SingleField >= 0
-                SELF:_keySize       := (WORD) SELF:_oRdd:_fields[_SingleField]:Length
-                SELF:_keyDecimals   := (WORD) SELF:_oRdd:_fields[_SingleField]:Decimals
-                SELF:_SourceIndex   := (WORD) SELF:_oRdd:_fields[_SingleField]:OffSet
-                VAR fType           := SELF:_oRdd:_fields[_SingleField]:FieldType
+                SELF:_keySize       := (WORD) SELF:_oRdd:_Fields[_SingleField]:Length
+                SELF:_keyDecimals   := (WORD) SELF:_oRdd:_Fields[_SingleField]:Decimals
+                SELF:_SourceIndex   := (WORD) SELF:_oRdd:_Fields[_SingleField]:Offset
+                VAR fType           := SELF:_oRdd:_Fields[_SingleField]:FieldType
                 IF fType ==  DbFieldType.Number
                     SELF:getKeyValue := _getNumFieldValue
                 ELSE
@@ -315,7 +315,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                         SELF:_ForCodeBlock := SELF:_oRdd:Compile(SELF:_ForExpr)
                     ENDIF
                 CATCH
-                    SELF:_oRdd:_dbfError( SubCodes.EDB_EXPRESSION, GenCode.EG_SYNTAX,"DBFNTX.Compile")
+                    SELF:_oRdd:_dbfError( Subcodes.EDB_EXPRESSION, Gencode.EG_SYNTAX,"DBFNTX.Compile")
                     RETURN FALSE
                 END TRY
                 SELF:_oRdd:GoTo(1)
@@ -327,7 +327,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                     evalOk := FALSE
                 END TRY
                 IF !evalOk
-                    SELF:_oRdd:_dbfError(SubCodes.EDB_EXPRESSION,GenCode.EG_SYNTAX,  "DBFNTX.Compile") 
+                    SELF:_oRdd:_dbfError(Subcodes.EDB_EXPRESSION,Gencode.EG_SYNTAX,  "DBFNTX.Compile") 
                     RETURN FALSE
                 ENDIF
                 SELF:_Conditional := TRUE
@@ -363,7 +363,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             SELF:Flush()
             TRY
                 IF SELF:Shared .AND. SELF:_HPLocking
-                    SELF:_LockExit()
+                    SELF:_lockExit()
                 ENDIF
                 IF SELF:_hFile != F_ERROR
                     FClose( SELF:_hFile )
@@ -377,14 +377,14 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             RETURN TRUE
             
         PUBLIC METHOD GoCold() AS LOGIC
-            IF SELF:_oRDD:IsHot
-                RETURN SELF:_KeyUpdate( SELF:_RecNo, SELF:_oRDD:IsNewRecord )
+            IF SELF:_oRdd:IsHot
+                RETURN SELF:_keyUpdate( SELF:_RecNo, SELF:_oRdd:IsNewRecord )
             ENDIF
             RETURN TRUE
 
         INTERNAL METHOD GoHot() AS LOGIC
             // Is called to save the current for value and key value
-            RETURN _saveCurrentKey(SELF:_oRdd:RecNo, SELF:_currentValue)
+            RETURN _saveCurrentKey(SELF:_oRdd:RecNo, SELF:_currentvalue)
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)];
         INTERNAL METHOD __Compare( aLHS AS BYTE[], aRHS AS BYTE[], nLength AS LONG) AS LONG
@@ -411,7 +411,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             IF SELF:_HPLocking
                 ntxSignature |= NtxHeaderFlags.HpLock
             ENDIF
-            IF  _LockOffSet == LOCKOFFSET_NEW
+            IF  _LockOffset == LOCKOFFSET_NEW
                 ntxSignature |= NtxHeaderFlags.NewLock
             ENDIF
             SELF:_Header:Signature              := ntxSignature
@@ -425,9 +425,9 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             // Save informations about the "current" Item	
 	    
         PRIVATE METHOD _saveCurrentRecord( node AS NtxNode ) AS VOID
-             IF SELF:_currentValue:Recno != node:Recno
-                SELF:_currentValue:Recno := node:Recno
-                Array.Copy(node:KeyBytes, SELF:_currentValue:Key, _keySize)
+             IF SELF:_currentvalue:Recno != node:Recno
+                SELF:_currentvalue:Recno := node:Recno
+                Array.Copy(node:KeyBytes, SELF:_currentvalue:Key, _keySize)
              ENDIF
             
             
@@ -458,7 +458,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 IF text:Length > sLen
                     sBuilder := StringBuilder{}
                     text := sBuilder:Insert(0, "*", sLen):ToString()
-                    SELF:_oRDD:_Encoding:GetBytes( text, 0, slen, buffer, 0)
+                    SELF:_oRdd:_Encoding:GetBytes( text, 0, sLen, buffer, 0)
                     resultLength := text:Length
                     RETURN FALSE
                 ENDIF
@@ -490,7 +490,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 IF length > sLen
                     sBuilder := StringBuilder{}
                     text := sBuilder:Insert(0, "*", sLen):ToString()
-                    SELF:_oRDD:_Encoding:GetBytes( text, 0, slen, buffer, 0)
+                    SELF:_oRdd:_Encoding:GetBytes( text, 0, sLen, buffer, 0)
                     resultLength := text:Length
                     RETURN FALSE
                 ENDIF
@@ -500,7 +500,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             IF sLen > text:Length
                 sLen := text:Length
             ENDIF
-            SELF:_oRDD:_Encoding:GetBytes( text, 0, slen, buffer, 0)
+            SELF:_oRdd:_Encoding:GetBytes( text, 0, sLen, buffer, 0)
             IF chkDigits
                 SELF:_checkDigits(buffer, SELF:_keySize, SELF:_keyDecimals )
             ENDIF
@@ -547,25 +547,25 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             RETURN
             
             
-        METHOD SetOrderScope(itmScope AS OBJECT , uiScope AS DBOrder_Info ) AS LOGIC
+        METHOD SetOrderScope(itmScope AS OBJECT , uiScope AS DbOrder_Info ) AS LOGIC
             LOCAL uiRealLen AS LONG
             LOCAL result AS LOGIC
             
             uiRealLen := 0
             result := TRUE
             SWITCH uiScope
-            CASE DBOrder_Info.DBOI_SCOPETOPCLEAR
+            CASE DbOrder_Info.DBOI_SCOPETOPCLEAR
                 SELF:_Scopes[TOPSCOPE]:Clear()
-            CASE DBOrder_Info.DBOI_SCOPEBOTTOMCLEAR
+            CASE DbOrder_Info.DBOI_SCOPEBOTTOMCLEAR
                 SELF:_Scopes[BOTTOMSCOPE]:Clear()
-            CASE DBOrder_Info.DBOI_SCOPETOP
+            CASE DbOrder_Info.DBOI_SCOPETOP
                 SELF:_Scopes[TOPSCOPE]:Value := itmScope
                 IF itmScope != NULL
                     SELF:_Scopes[TOPSCOPE]:SetBuffer(SELF:_keySize )
                     SELF:_ToString(itmScope, SELF:_keySize, SELF:_keyDecimals, SELF:_Scopes[TOPSCOPE]:Buffer,  REF uiRealLen)
                     SELF:_Scopes[TOPSCOPE]:Size := uiRealLen
                 ENDIF
-            CASE DBOrder_Info.DBOI_SCOPEBOTTOM
+            CASE DbOrder_Info.DBOI_SCOPEBOTTOM
                 SELF:_Scopes[BOTTOMSCOPE]:Value := itmScope
                 IF itmScope != NULL
                     SELF:_Scopes[BOTTOMSCOPE]:SetBuffer(SELF:_keySize )
@@ -588,7 +588,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             
             isOk := TRUE
             SELF:_oRdd:GoCold()
-            oldRec := SELF:_Recno
+            oldRec := SELF:_RecNo
             IF SELF:Shared
                 isOk := SELF:_lockForRead()
                 IF !isOk
@@ -596,20 +596,20 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 ENDIF
             ENDIF
             IF SELF:HasScope
-                SELF:_ScopeSeek(DBOrder_Info.DBOI_SCOPEBOTTOM)
+                SELF:_ScopeSeek(DbOrder_Info.DBOI_SCOPEBOTTOM)
                 records := SELF:_getScopePos()
             ELSE
                 IF  XSharp.RuntimeState.Deleted  .OR. SELF:_oRdd:_FilterInfo:Active
                     SELF:_oRdd:SkipFilter(1)
-                    oldRec := SELF:_Recno
+                    oldRec := SELF:_RecNo
                     records := 0
-                    IF !SELF:_oRdd:_Eof
+                    IF !SELF:_oRdd:_EoF
                         recno := SELF:_locateKey(NULL, 0, SearchMode.Top)
                         isOk := SELF:_oRdd:__Goto(recno)
                         IF isOk
                             isOk := SELF:_oRdd:SkipFilter(1)
                         ENDIF
-                        recno := SELF:_Recno
+                        recno := SELF:_RecNo
                         last := SELF:_oRdd:RecCount + 1
                         count := 0
                         DO WHILE recno != 0 .AND. recno < last
@@ -621,7 +621,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 ELSE
                     SELF:_oRdd:GoBottom()
                     records := 0
-                    IF !SELF:_oRdd:_Eof
+                    IF !SELF:_oRdd:_EoF
                         records := 1
                         DO WHILE SELF:_findItemPos(REF records, FALSE)
                             NOP
@@ -642,13 +642,13 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             LOCAL count AS LONG
             
             SELF:_oRdd:GoCold()
-            oldRec := SELF:_Recno
+            oldRec := SELF:_RecNo
             IF !SELF:_lockForRead()
                 RETURN FALSE
             ENDIF
             recno := record
             IF recno == 0
-                recno := SELF:_Recno
+                recno := SELF:_RecNo
             ENDIF
             IF SELF:_TopStack == 0
                 SELF:_GoToRecno(recno)
@@ -658,14 +658,14 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             ELSE
                 IF XSharp.RuntimeState.Deleted .OR. SELF:_oRdd:_FilterInfo:Active
                     SELF:_oRdd:SkipFilter(1)
-                    oldRec := SELF:_Recno
+                    oldRec := SELF:_RecNo
                     record := 0
-                    IF !SELF:_oRdd:_Eof
+                    IF !SELF:_oRdd:_EoF
                         recno := SELF:_locateKey(NULL, 0, SearchMode.Top)
                         IF SELF:_oRdd:__Goto(recno)
                             SELF:_oRdd:SkipFilter(1)
                         ENDIF
-                        recno := SELF:_Recno
+                        recno := SELF:_RecNo
                         count := 1
                         DO WHILE recno != 0 .AND. recno != oldRec
                             count++
@@ -748,22 +748,22 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             hDump := FCreate(cFile)
             IF hDump != F_ERROR
                 SELF:_PageList:DumpHandle := hDump
-                sBlock := SELF:_Header:Dump("Filedump for:"+SELF:_FileName)
+                sBlock := SELF:_Header:Dump("Filedump for:"+SELF:_fileName)
                 FWrite(hDump, sBlock)
-                _oRdd:Gotop()
+                _oRdd:GoTop()
                 sRecords:AppendLine("------------------------------")
                 sRecords:AppendLine("List of Records in Index order")
                 sRecords:AppendLine("------------------------------")
                 sRecords:AppendLine("Recno      KeyValue")
                 sRecords:AppendLine("------------------------------")
-                DO WHILE ! _oRdd:EOF
+                DO WHILE ! _oRdd:EoF
                     VAR key := _oRdd:EvalBlock(SELF:_KeyCodeBlock)
                     IF key IS IDate VAR d
                         key := DateTime{d:Year, d:Month, d:Day}:ToString("yyyyMMdd")
-                    ELSEIF key IS IFLoat VAR f
+                    ELSEIF key IS IFloat VAR f
                         key   :=  f:Value:ToString("F"+f:Decimals:ToString())
                     ENDIF
-                    sRecords:AppendLine(String.Format("{0,10} {1}", _oRdd:Recno, key))
+                    sRecords:AppendLine(String.Format("{0,10} {1}", _oRdd:RecNo, key))
                     _oRdd:Skip(1)
                 ENDDO
                 FWrite(hDump, sRecords:ToString())
@@ -777,7 +777,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 SELF:_PageList:Flush(FALSE)
                 DO WHILE nPage != 0
                     sRecords:AppendLine(nPage:ToString())
-                    VAR page := SELF:_pageList:Read(nPage)
+                    VAR page := SELF:_PageList:Read(nPage)
                     nPage := page:NextPage
                 ENDDO
                 FWrite(hDump, sRecords:ToString())
@@ -787,25 +787,25 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             RETURN
         // Three methods to calculate keys. We have split these to optimize index creating
         PRIVATE METHOD _getNumFieldValue(sourceIndex AS LONG, byteArray AS BYTE[]) AS LOGIC
-            SELF:_oRDD:Validate()
+            SELF:_oRdd:Validate()
             Array.Copy(SELF:_oRdd:_RecordBuffer, sourceIndex, byteArray, 0, SELF:_keySize)
             SELF:_checkDigits(byteArray, SELF:_keySize, SELF:_keyDecimals)
             RETURN TRUE
             
         PRIVATE METHOD _getFieldValue(sourceIndex AS LONG, byteArray AS BYTE[]) AS LOGIC
-            SELF:_oRDD:Validate()
+            SELF:_oRdd:Validate()
             Array.Copy(SELF:_oRdd:_RecordBuffer, sourceIndex, byteArray, 0, SELF:_keySize)
             RETURN TRUE
             
         PRIVATE METHOD _getExpressionValue(sourceIndex AS LONG, byteArray AS BYTE[]) AS LOGIC
             LOCAL result := TRUE AS LOGIC
             TRY
-                SELF:_oRDD:Validate()
+                SELF:_oRdd:Validate()
                 VAR oKeyValue := SELF:_oRdd:EvalBlock(SELF:_KeyCodeBlock)
                 LOCAL uiRealLen := 0 AS LONG
                 result := SELF:_ToString(oKeyValue, SELF:_keySize, SELF:_keyDecimals, byteArray, REF uiRealLen)
-            CATCH Ex AS Exception
-                SELF:_oRdd:_dbfError(ex, SubCodes.EDB_EXPRESSION,GenCode.EG_SYNTAX,  "DBFNTX._GetExpressionValue") 
+            CATCH ex AS Exception
+                SELF:_oRdd:_dbfError(ex, Subcodes.EDB_EXPRESSION,Gencode.EG_SYNTAX,  "DBFNTX._GetExpressionValue") 
                 result := FALSE
             END TRY
             RETURN result

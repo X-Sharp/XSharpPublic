@@ -18,7 +18,7 @@ USING System.Diagnostics
 /// The AdsRDD class. 
 /// </summary>
 [DebuggerDisplay("AdsRDD ({Alias,nq})")];
-CLASS XSharp.ADS.AdsRDD INHERIT Workarea
+CLASS XSharp.ADS.ADSRDD INHERIT Workarea
   #region Fields
     PRIVATE  _aRlocks AS DWORD[]
     INTERNAL _Encoding AS System.Text.Encoding
@@ -40,15 +40,15 @@ CLASS XSharp.ADS.AdsRDD INHERIT Workarea
   /// <summary>Create instande of RDD </summary>
 CONSTRUCTOR()
     SUPER()
-    SELF:_Order         := AdsIndex{SELF}
-    SELF:_Memo          := AdsMemo{SELF}
+    SELF:_Order         := ADSIndex{SELF}
+    SELF:_Memo          := ADSMemo{SELF}
     SELF:_Table         := System.IntPtr.Zero
     SELF:_Index         := System.IntPtr.Zero
     SELF:_Connection    := System.IntPtr.Zero
     SELF:_Driver        := String.Empty
     SELF:_Collation     := String.Empty
     SELF:_Driver        := "ADSRDD"
-    SELF:_fileName       := String.Empty
+    SELF:_FileName       := String.Empty
     
     #region Helper Methods that check for error conditions
 INTERNAL STATIC METHOD _HasFlag(dw AS DWORD, flag AS DWORD) AS LOGIC
@@ -92,8 +92,8 @@ INTERNAL METHOD ADSERROR(iSubCode AS DWORD, iGenCode AS DWORD, strFunction AS ST
     IF String.IsNullOrEmpty(strMessage) .AND. iSubCode != 0
         strMessage := ErrString(iGenCode)
     ENDIF 
-    oError   := AdsError{strMessage, iGenCode, iSubcode,_Driver, iSeverity, strFunction, _FileName}
-    RuntimeState.LastRDDError := oError
+    oError   := AdsError{strMessage, iGenCode, iSubCode,_Driver, iSeverity, strFunction, _FileName}
+    RuntimeState.LastRddError := oError
     THROW oError
     
     
@@ -138,7 +138,7 @@ INTERNAL METHOD _CheckRDDInfo() AS VOID
         IF CoreDb.RddInfo(_SET_COLLATION_NAME, REF oRet) .AND. oRet != NULL
             SELF:_Collation := (STRING) oRet
         ELSE
-            SELF:_Collation := string.Empty
+            SELF:_Collation := String.Empty
         ENDIF
     ENDIF
 RETURN
@@ -181,35 +181,35 @@ PROTECTED METHOD _FieldSub() AS LOGIC
         CASE AdsFieldType.TIMESTAMP
         CASE AdsFieldType.MODTIME
             fi:Length := 22
-            fi:fieldType := DbFieldType.Character
+            fi:FieldType := DbFieldType.Character
         CASE AdsFieldType.TIME
             fi:Length := 11
-            fi:fieldType := DbFieldType.Character
+            fi:FieldType := DbFieldType.Character
         CASE AdsFieldType.MONEY
         CASE AdsFieldType.ROWVERSION
             fi:Length := 22
-            fi:fieldType := DbFieldType.Character
+            fi:FieldType := DbFieldType.Character
         CASE AdsFieldType.STRING
         CASE AdsFieldType.VARCHAR
         CASE AdsFieldType.CISTRING
         CASE AdsFieldType.VARCHAR_FOX
         CASE AdsFieldType.NCHAR
         CASE AdsFieldType.NVARCHAR
-            fi:fieldType := DbFieldType.Character
+            fi:FieldType := DbFieldType.Character
         CASE AdsFieldType.MEMO
         CASE AdsFieldType.BINARY
         CASE AdsFieldType.IMAGE
         CASE AdsFieldType.NMEMO
-            fi:fieldType := DbFieldType.Memo
+            fi:FieldType := DbFieldType.Memo
             fi:Length := 10
         CASE AdsFieldType.RAW
         CASE AdsFieldType.VARBINARY_FOX
-            fi:fieldType := DbFieldType.Memo
+            fi:FieldType := DbFieldType.Memo
         CASE AdsFieldType.SHORTINT
         CASE AdsFieldType.AUTOINC
         CASE AdsFieldType.INTEGER
         CASE AdsFieldType.NUMERIC
-            fi:fieldType := DbFieldType.Number
+            fi:FieldType := DbFieldType.Number
             SWITCH eType
             CASE AdsFieldType.SHORTINT
                 fi:Length := 6
@@ -223,15 +223,15 @@ PROTECTED METHOD _FieldSub() AS LOGIC
             SELF:_CheckError(ACE.AdsGetFieldDecimals(SELF:_Table, num, OUT wDecimals),EG_OPEN)
             fi:Decimals := wDecimals
         CASE AdsFieldType.LOGICAL
-            fi:fieldType := DbFieldType.Logic
+            fi:FieldType := DbFieldType.Logic
         CASE AdsFieldType.DATE
         CASE AdsFieldType.COMPACTDATE
-            fi:fieldType := DbFieldType.Date
+            fi:FieldType := DbFieldType.Date
             fi:Length := 8
         CASE AdsFieldType.DOUBLE
         CASE AdsFieldType.CURDOUBLE
             fi:Length := 20
-            fi:fieldType := DbFieldType.Number
+            fi:FieldType := DbFieldType.Number
             SELF:_CheckError(ACE.AdsGetFieldDecimals(SELF:_Table, num, OUT wDecimals),EG_OPEN)
             fi:Decimals := wDecimals
         OTHERWISE
@@ -249,7 +249,7 @@ RETURN TRUE
 
 PRIVATE METHOD _GetFieldInfo(strFieldDef REF STRING ) AS LOGIC
     strFieldDef := ""
-    FOREACH fld AS RDDFieldInfo IN SUPER:_Fields
+    FOREACH fld AS RddFieldInfo IN SUPER:_Fields
         strFieldDef += fld:Name+", "
         SWITCH fld:FieldType
         CASE DbFieldType.Character
@@ -278,10 +278,10 @@ PRIVATE METHOD _GetFieldInfo(strFieldDef REF STRING ) AS LOGIC
 RETURN TRUE
 
 INTERNAL METHOD _SetPaths() AS DWORD
-    IF !string.IsNullOrEmpty(SetDefault()) 
+    IF !String.IsNullOrEmpty(SetDefault()) 
         SELF:_CheckError(ACE.AdsSetDefault(SetDefault()),EG_OPEN)
     ENDIF
-    IF !string.IsNullOrEmpty(SetPath()) 
+    IF !String.IsNullOrEmpty(SetPath()) 
         SELF:_CheckError(ACE.AdsSetSearchPath(SetPath()),EG_OPEN)
     ENDIF
 RETURN 0u
@@ -320,7 +320,7 @@ VIRTUAL METHOD Open(info AS DbOpenInfo) AS LOGIC
         fileName := info:FileName + info:Extension
     ENDIF
     IF alias:Length > 10
-        alias := string.Empty
+        alias := String.Empty
     ENDIF
     IF SELF:_TableType == ACE.ADS_ADT .AND. Path.GetExtension(fileName):ToUpper() == ".DBF"
         fileName := Path.ChangeExtension(fileName, ".ADT")
@@ -361,7 +361,7 @@ VIRTUAL METHOD Open(info AS DbOpenInfo) AS LOGIC
     LOCAL afileName AS CHAR[]
     afileName := CHAR[]{length}
     SELF:_CheckError(ACE.AdsGetTableFilename(SELF:_Table, ACE.ADS_FULLPATHNAME, afileName, REF length),EG_OPEN)
-    SELF:_FileName := STRING {aFileName,0, length}
+    SELF:_FileName := STRING {afileName,0, length}
     IF result != 0
         SELF:Close()
         RETURN FALSE
@@ -379,7 +379,7 @@ VIRTUAL METHOD Open(info AS DbOpenInfo) AS LOGIC
     SELF:_CheckError(ACE.AdsGetRecordLength(SELF:_Table, OUT VAR dwLength),EG_OPEN)
     SELF:_RecordLength := (LONG) dwLength
     SELF:Alias   := info:Alias
-    SELF:Area    := info:WorkArea
+    SELF:Area    := info:Workarea
 RETURN SELF:RecordMovement()
 
     /// <inheritdoc />
@@ -404,7 +404,7 @@ VIRTUAL METHOD Create(info AS DbOpenInfo) AS LOGIC
     LOCAL alias AS STRING
     LOCAL length AS WORD
     //
-    strFieldDef     := string.Empty
+    strFieldDef     := String.Empty
     SELF:_Alias     := info:Alias
     SELF:_Area      := info:Workarea
     SELF:_Shared    := info:Shared
@@ -426,7 +426,7 @@ VIRTUAL METHOD Create(info AS DbOpenInfo) AS LOGIC
     ENDIF
     alias := Path.GetFileNameWithoutExtension(info:Alias)
     IF alias:Length > 10
-        alias := string.Empty
+        alias := String.Empty
     ENDIF
     SELF:_FileName := info:FileName
     SELF:_CheckError(ACE.AdsCreateTable90(SELF:_Connection, info:FileName, alias, SELF:_TableType, charset, SELF:_LockType, SELF:_CheckRights, 0, strFieldDef, 0u, SELF:_Collation, OUT SELF:_Table),EG_CREATE)
@@ -473,19 +473,19 @@ RETURN isOk
   #region Navigation
 METHOD RecordMovement() AS LOGIC
     SELF:_CheckError(ACE.AdsAtBOF(SELF:_Table, OUT VAR atBOF),EG_READ)
-    SUPER:_Bof := (atBOF == 1)
+    SUPER:_BoF := (atBOF == 1)
     SELF:_CheckError(ACE.AdsAtEOF(SELF:_Table, OUT VAR atEOF),EG_READ)
-    SUPER:_Eof := (atEOF == 1)
+    SUPER:_EoF := (atEOF == 1)
     SELF:_CheckError(ACE.AdsIsFound(SELF:_Table,  OUT VAR isFound),EG_READ)
     SUPER:_Found := (isFound == 1)
     IF atBOF == 1 .AND. atEOF == 0
         // Do not call self:GoTop() to avoid recursion
         SELF:_CheckError(ACE.AdsGotoTop(SELF:CurrentOrder),EG_READ)
-        SUPER:_Bof := TRUE
+        SUPER:_BoF := TRUE
     ENDIF
     IF SUPER:_Relations != NULL
         FOREACH dbrelinfo AS DbRelInfo IN SUPER:_Relations
-            IF dbRelInfo:Child IS AdsRDD VAR ChildRDD
+            IF dbrelinfo:Child IS ADSRDD VAR ChildRDD
                 ChildRDD:RecordMovement()
             ENDIF
         NEXT
@@ -525,7 +525,7 @@ VIRTUAL METHOD GoToId(oRecnum AS OBJECT) AS LOGIC
     TRY
         recNum := System.Convert.ToUInt32(oRecnum)
     CATCH e AS Exception
-        SELF:ADSERROR(ERDD.DATATYPE, XSharp.Gencode.EG_DataType, "GoToId",e:Message)
+        SELF:ADSERROR(ERDD.DATATYPE, XSharp.Gencode.EG_DATATYPE, "GoToId",e:Message)
         RETURN FALSE
     END TRY
 RETURN SELF:GoTo(recNum)
@@ -546,11 +546,11 @@ VIRTUAL METHOD Skip(lCount AS LONG) AS LOGIC
     ENDIF
     flag := SELF:RecordMovement()
     IF lCount > 0
-        SUPER:_Bof := FALSE
+        SUPER:_BoF := FALSE
         RETURN flag
     ENDIF
     IF lCount < 0
-        SUPER:_Eof := FALSE
+        SUPER:_EoF := FALSE
     ENDIF
 RETURN flag
 
@@ -639,7 +639,7 @@ VIRTUAL METHOD GoHot() AS LOGIC
                     IF result == 0
                         result := ACE.AdsGetRecordNum(SELF:_Table, ACE.ADS_IGNOREFILTERS, OUT dwRecNo)
                     ENDIF
-                    IF result == 0 .AND. numRecs < dwRecNo .AND. ! SUPER:_Bof .AND. ! SUPER:_Eof
+                    IF result == 0 .AND. numRecs < dwRecNo .AND. ! SUPER:_BoF .AND. ! SUPER:_EoF
                         result := ACE.AdsLockRecord(SELF:_Table, 0)
                         IF result == 0 .OR. result == ACE.AE_TABLE_NOT_SHARED
                             RETURN TRUE
@@ -742,9 +742,9 @@ PRIVATE PROPERTY CurrentOrder AS System.IntPtr
 END PROPERTY
 
   /// <inheritdoc />
-PROPERTY BOF AS LOGIC GET SUPER:_Bof
+PROPERTY BOF AS LOGIC GET SUPER:_BoF
   /// <inheritdoc />
-PROPERTY EOF AS LOGIC GET SUPER:_Eof
+PROPERTY EOF AS LOGIC GET SUPER:_EoF
   /// <inheritdoc />
 PROPERTY Found AS LOGIC GET SUPER:_Found
 INTERNAL PROPERTY IsADT AS LOGIC GET _TableType == ACE.ADS_ADT
@@ -759,7 +759,7 @@ PROPERTY Deleted AS LOGIC
         LOCAL result AS DWORD
         result := ACE.AdsIsRecordDeleted(SELF:_Table, OUT VAR isDeleted)
         IF result == ACE.AE_NO_CURRENT_RECORD 
-            IF SELF:_Eof
+            IF SELF:_EoF
                 RETURN FALSE
             ELSE
                 RETURN TRUE
@@ -778,7 +778,7 @@ PROPERTY Reccount AS LONG
         RETURN (LONG) dwCount
     END GET
 END PROPERTY
-PROPERTY RecNo AS LONG GET (LONG) SELF:_Recno
+PROPERTY RecNo AS LONG GET (LONG) SELF:_RecNo
 PROPERTY _RecNo AS DWORD
     GET
         LOCAL result AS DWORD
@@ -804,8 +804,8 @@ VIRTUAL METHOD Lock(lockInfo REF DbLockInfo) AS LOGIC
     LOCAL result := 0 AS DWORD
       //
     lockInfo:Result := FALSE
-    IF lockInfo:recID == NULL
-        lRecno := SELF:_Recno
+    IF lockInfo:RecId == NULL
+        lRecno := SELF:_RecNo
     ELSE
         TRY
             lRecno := System.Convert.ToUInt32(lockInfo:RecId)
@@ -813,7 +813,7 @@ VIRTUAL METHOD Lock(lockInfo REF DbLockInfo) AS LOGIC
             SELF:ADSERROR(ERDD.DATATYPE, XSharp.Gencode.EG_DATATYPE, "Lock", e:Message)
         END TRY
     ENDIF
-    IF lockInfo:@@Method == DBLockInfo.LockMethod.File
+    IF lockInfo:@@Method == DbLockInfo.LockMethod.File
         result := ACE.AdsLockTable(SELF:_Table)
 //      SELF:_CheckError(result)
     ELSE
@@ -884,7 +884,7 @@ RETURN SUPER:SetFieldExtent(fieldCount)
 
 
       /// <inheritdoc />
-VIRTUAL METHOD SetFilter(fi AS DBFILTERINFO) AS LOGIC
+VIRTUAL METHOD SetFilter(fi AS DbFilterInfo) AS LOGIC
     LOCAL result AS DWORD
       // Get the current date format so we can handle literal dates in the filter
     SELF:_SynchronizeSettings()
@@ -920,13 +920,13 @@ VIRTUAL METHOD ClearRel() AS LOGIC
 RETURN TRUE
 
       /// <inheritdoc />
-VIRTUAL METHOD SetRel(relinfo AS DBRELINFO) AS LOGIC
+VIRTUAL METHOD SetRel(relinfo AS DbRelInfo) AS LOGIC
       // Needs a better solution of course. SELF:_Driver currently returns the fullname of the class, while Driver property is not implemented yet
     IF relinfo:Child:Driver != SELF:Driver 
         SELF:ADSERROR(ERDD.UNSUPPORTED, XSharp.Gencode.EG_UNSUPPORTED, "SetRel", "Related workareas must be opened with the same driver.")
         RETURN FALSE
     ENDIF
-    LOCAL child := (ADSRDD) relInfo:Child AS ADSRDD
+    LOCAL child := (ADSRDD) relinfo:Child AS ADSRDD
     SELF:_CheckError(ACE.AdsSetRelation(SELF:_Table, child:ACEIndexHandle, relinfo:Key))
 RETURN TRUE
 
@@ -938,8 +938,8 @@ VIRTUAL METHOD FieldInfo(uiPos AS LONG, uiOrdinal AS INT, oNewValue AS OBJECT) A
     LOCAL result AS DWORD
     SWITCH uiOrdinal
     CASE DBS_BLOB_TYPE
-        SELF:_CheckError(ACE.AdsGetFieldType(SELF:_Table, (DWORD)uiPos  ,  OUT VAR fieldType))
-        SWITCH fieldType
+        SELF:_CheckError(ACE.AdsGetFieldType(SELF:_Table, (DWORD)uiPos  ,  OUT VAR FieldType))
+        SWITCH FieldType
         CASE ACE.ADS_MEMO
         CASE ACE.ADS_BINARY
         CASE ACE.ADS_IMAGE
@@ -947,7 +947,7 @@ VIRTUAL METHOD FieldInfo(uiPos AS LONG, uiOrdinal AS INT, oNewValue AS OBJECT) A
             RETURN "?"
         END SWITCH
     CASE DBS_BLOB_LEN
-        IF SUPER:_fields[uiPos-1]:fieldType != DBFieldType.Memo  
+        IF SUPER:_Fields[uiPos-1]:FieldType != DbFieldType.Memo  
             RETURN -1
         ELSE
             result := ACE.AdsGetMemoLength(SELF:_Table, (DWORD)uiPos , OUT VAR length)
@@ -969,8 +969,8 @@ RETURN SUPER:FieldInfo(uiPos, uiOrdinal, oNewValue)
 VIRTUAL METHOD RecInfo(uiOrdinal AS LONG, iRecID AS OBJECT, oNewValue AS OBJECT) AS OBJECT
     LOCAL dwRecno AS DWORD
       //
-    SWITCH (DBRecordInfo) uiOrdinal
-    CASE DBRecordInfo.DBRI_LOCKED
+    SWITCH (DbRecordInfo) uiOrdinal
+    CASE DbRecordInfo.DBRI_LOCKED
         TRY
             dwRecno := Convert.ToUInt32(iRecID)
 /*          IF dwRecNo == 0
@@ -983,14 +983,14 @@ VIRTUAL METHOD RecInfo(uiOrdinal AS LONG, iRecID AS OBJECT, oNewValue AS OBJECT)
         _CheckError(ACE.AdsIsRecordLocked(SELF:_Table, dwRecno, OUT VAR locked))
         RETURN locked != 0
         
-    CASE DBRecordInfo.DBRI_RECSIZE
+    CASE DbRecordInfo.DBRI_RECSIZE
         RETURN SELF:_RecordLength
         
-    CASE DBRecordInfo.DBRI_UPDATED
+    CASE DbRecordInfo.DBRI_UPDATED
         SELF:_CheckError(ACE.AdsRefreshRecord(SELF:_Table))
         RETURN NULL
         
-    CASE DBRecordInfo.DBRI_RECNO
+    CASE DbRecordInfo.DBRI_RECNO
         RETURN SELF:RecNo
     OTHERWISE
         SELF:ADSERROR(ERDD_UNSUPPORTED, EG_UNSUPPORTED, "RecInfo")
@@ -1183,7 +1183,7 @@ VIRTUAL METHOD TransRec(info AS DbTransInfo) AS LOGIC
 
 
 INTERNAL METHOD Unsupported(strFunctionName AS STRING) AS LOGIC
-    SELF:ADSERROR(ERDD.UNSUPPORTED, XSharp.Gencode.EG_UnSupported, strFunctionName)
+    SELF:ADSERROR(ERDD.UNSUPPORTED, XSharp.Gencode.EG_UNSUPPORTED, strFunctionName)
 RETURN FALSE
 
       /// <summary>This method is not supported by the AdsRDD class </summary>

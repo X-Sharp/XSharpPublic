@@ -109,19 +109,19 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             RETURN ParkingLot.ROOT_GATE + ParkingLot:LOT_SIZE * tagNumber
             
         PRIVATE METHOD _lockExit() AS LOGIC
-            RETURN SELF:_unLockBytes( (DWORD)~(SELF:_parkPlace + 1), 1)
+            RETURN SELF:_unlockBytes( (DWORD)~(SELF:_parkPlace + 1), 1)
             
         PRIVATE METHOD _TryReadLock() AS LOGIC
             LOCAL result AS LOGIC
             LOCAL liOffSet AS LONG
             
             result := FALSE
-            IF _LockGate(SELF:_tagNumber)
+            IF _lockGate(SELF:_tagNumber)
                 liOffSet := ~(SELF:_getParkLotPlace(SELF:_tagNumber) + SELF:_parkPlace)
                 IF !SELF:_lockBytes((DWORD)liOffSet, 1)
                     SELF:_unlockBytes( (DWORD)~SELF:_getParkLotGate( SELF:_tagNumber ), 1)
-                    SELF:_LockExit()
-                    SELF:_LockInit()
+                    SELF:_lockExit()
+                    SELF:_lockInit()
                 ELSE
                     SELF:_unlockBytes( (DWORD)~SELF:_getParkLotGate( SELF:_tagNumber ), 1)
                     result := TRUE
@@ -162,11 +162,11 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             
             
         PRIVATE METHOD _tryExclLock() AS LOGIC
-            RETURN SELF:_lockBytes( (DWORD)SELF:_lockOffset, 1, (DWORD)SELF:_maxLockTries)
+            RETURN SELF:_lockBytes( (DWORD)SELF:_LockOffset, 1, (DWORD)SELF:_maxLockTries)
             
             
         PRIVATE METHOD _tryExclUnlock() AS LOGIC
-            RETURN SELF:_unlockBytes( (DWORD)SELF:_lockOffset, 1)
+            RETURN SELF:_unlockBytes( (DWORD)SELF:_LockOffset, 1)
             
         PRIVATE METHOD _lockForRead() AS LOGIC
             LOCAL locked AS LOGIC
@@ -179,7 +179,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                     locked := SELF:_ReadLock()
                 ENDIF
                 IF !locked
-                    SELF:_oRdd:_dbfError(SubCodes.ERDD_READ_LOCK, GenCode.EG_LOCK, SELF:fileName)
+                    SELF:_oRdd:_dbfError(Subcodes.ERDD_READ_LOCK, Gencode.EG_LOCK, SELF:FileName)
                     RETURN FALSE
                 ENDIF
             ENDIF
@@ -239,7 +239,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 IF SELF:_readLocks == 0
                     Trace.Assert(!SELF:_Hot, "ntx unlock hot")
                     IF SELF:_HPLocking
-                        IF !SELF:_tryReadUNLOCK()
+                        IF !SELF:_tryReadUnLock()
                             result := FALSE
                         ENDIF
                     ELSE
@@ -268,7 +268,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                             SELF:_writeLocks++
                         ENDIF
                     ELSE
-                        IF !SELF:_TryExclLock()
+                        IF !SELF:_tryExclLock()
                             isOk := FALSE
                         ELSE
                             SELF:_writeLocks++
@@ -288,7 +288,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 SELF:_writeLocks--
                 IF SELF:_writeLocks == 0
                     IF SELF:_HPLocking
-                        IF !SELF:_TryWriteUNLOCK()
+                        IF !SELF:_tryWriteUnLock()
                             isOk := FALSE
                         ENDIF
                     ELSE

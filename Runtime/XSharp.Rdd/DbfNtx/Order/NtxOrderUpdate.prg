@@ -54,7 +54,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                         condFor := (LOGIC)SELF:_oRdd:EvalBlock(SELF:_ForCodeBlock)
                     CATCH
                         evalOk := FALSE
-                        SELF:_oRdd:_dbfError( SubCodes.ERDD_KEY_EVAL,GenCode.EG_DATATYPE, SELF:fileName)
+                        SELF:_oRdd:_dbfError( Subcodes.ERDD_KEY_EVAL,Gencode.EG_DATATYPE, SELF:FileName)
                     END TRY
                     IF !evalOk
                         errorLevel := 1
@@ -66,26 +66,26 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                     RETURN TRUE
                 ENDIF
 
-                IF SELF:getKeyValue(SELF:_SourceIndex, SELF:_newValue:Key)
+                IF SELF:getKeyValue(SELF:_SourceIndex, SELF:_newvalue:Key)
                     LOCAL changed := FALSE AS LOGIC
                     IF !lNewRecord
-                        changed := SELF:__Compare(SELF:_newValue:Key, SELF:_currentvalue:Key, SELF:_keySize) != 0
+                        changed := SELF:__Compare(SELF:_newvalue:Key, SELF:_currentvalue:Key, SELF:_keySize) != 0
                         IF changed
                             SELF:_TopStack := 0
                         ENDIF
-                        num := SELF:_goRecord(SELF:_currentValue:Key, SELF:_keySize, recordNo)
+                        num := SELF:_goRecord(SELF:_currentvalue:Key, SELF:_keySize, recordNo)
                         IF (SELF:_TopStack != 0 .AND. !SELF:_Conditional) .OR. num != 0
                             IF changed .OR. !condFor
                                 SELF:_deleteKey()
                             ENDIF
                         ELSE
                             IF !SELF:_Unique .AND. !SELF:_Conditional .AND. !SELF:_Partial
-                                SELF:_oRdd:_dbfError( SubCodes.ERDD_KEY_NOT_FOUND, GenCode.EG_DATATYPE,SELF:fileName)
+                                SELF:_oRdd:_dbfError( Subcodes.ERDD_KEY_NOT_FOUND, Gencode.EG_DATATYPE,SELF:FileName)
                             ENDIF
                         ENDIF
                     ENDIF
                     IF (lNewRecord .OR. changed) .AND. condFor
-                        SELF:_midItem:KeyBytes := SELF:_newValue:Key
+                        SELF:_midItem:KeyBytes := SELF:_newvalue:Key
                         SELF:_midItem:PageNo := 0
                         SELF:_midItem:Recno := recordNo
                         SELF:_TopStack := 0
@@ -125,7 +125,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 RETURN TRUE
             ENDIF
             IF errorLevel == 2
-                SELF:_oRdd:_dbfError( SubCodes.ERDD_KEY_EVAL, GenCode.EG_DATATYPE)
+                SELF:_oRdd:_dbfError( Subcodes.ERDD_KEY_EVAL, Gencode.EG_DATATYPE)
                 RETURN FALSE
             ENDIF
             RETURN TRUE
@@ -143,7 +143,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 // new root 
                 page := SELF:AllocPage()
                 pageNo := page:PageOffset
-                page:InitRefs(_MaxEntry, _EntrySize)
+                page:InitRefs(_MaxEntry, _entrySize)
                 node            := page[0]
                 node:PageNo     := SELF:_firstPageOffset
                 node:Recno      := SELF:_midItem:Recno
@@ -225,7 +225,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             topStack:Pos := page:NodeCount
             SELF:_PageList:Write(lPage)
             IF page:NodeCount < SELF:_halfPage .AND. SELF:_TopStack > 1
-                SELF:_Balance()
+                SELF:_balance()
             ENDIF
             
             
@@ -341,7 +341,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                     SELF:_PageList:Write(leftPageNo)
                     SELF:_PageList:Write(rightPageNo)
                     // the stack points to the parent, which may need balancing
-                    SELF:_Balance()
+                    SELF:_balance()
                 ELSE
                     num4 := (uiCount - 1) / 2
                     IF iPos <= num4

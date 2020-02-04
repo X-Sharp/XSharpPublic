@@ -25,8 +25,8 @@ BEGIN NAMESPACE XSharp.RDD.NTX
 		PRIVATE Buffer   AS BYTE[]
 		// Hot ?  => Header has changed ?
 		INTERNAL isHot	AS LOGIC
-        PRIVATE _order as NtxOrder
-        PRIVATE PROPERTY Encoding as System.Text.Encoding GET _order:Encoding
+        PRIVATE _Order as NtxOrder
+        PRIVATE PROPERTY Encoding as System.Text.Encoding GET _Order:Encoding
 		
 		INTERNAL METHOD Read() AS LOGIC
 			LOCAL isOk AS LOGIC
@@ -81,7 +81,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
 				
         [MethodImpl(MethodImplOptions.AggressiveInlining)];        
 		PRIVATE METHOD _GetWord(nOffSet AS INT) AS WORD
-			RETURN BitConverter.ToUInt16(Buffer, nOffset)
+			RETURN BitConverter.ToUInt16(Buffer, nOffSet)
 				
         [MethodImpl(MethodImplOptions.AggressiveInlining)];        
 		PRIVATE METHOD _SetWord(nOffSet AS INT, wValue AS WORD) AS VOID
@@ -94,65 +94,65 @@ BEGIN NAMESPACE XSharp.RDD.NTX
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)];        
 		PRIVATE METHOD _SetLong(nOffSet AS INT, nValue AS LONG) AS VOID
-            Array.Copy(BitConverter.GetBytes(nValue), 0, Buffer, nOffset, sizeof(LONG))
+            Array.Copy(BitConverter.GetBytes(nValue), 0, Buffer, nOffSet, sizeof(LONG))
             isHot := TRUE
 
  		INTERNAL PROPERTY Signature  AS NtxHeaderFlags	;
 		    GET (NtxHeaderFlags) _GetWord(NTXOFFSET_SIG) ;
-		    SET _SetWord(NTXOFFSET_SIG, VALUE)
+		    SET _SetWord(NTXOFFSET_SIG, value)
 			
 		INTERNAL PROPERTY IndexingVersion		AS WORD			;
 		    GET _GetWord(NTXOFFSET_INDEXING_VER);
-		    SET _SetWord(NTXOFFSET_INDEXING_VER, VALUE)
+		    SET _SetWord(NTXOFFSET_INDEXING_VER, value)
 			
 		INTERNAL PROPERTY FirstPageOffset		AS LONG			;
 		    GET _GetLong(NTXOFFSET_FPAGE_OFFSET);
-		    SET _SetLong(NTXOFFSET_FPAGE_OFFSET, VALUE)
+		    SET _SetLong(NTXOFFSET_FPAGE_OFFSET, value)
 			
 		INTERNAL PROPERTY NextUnusedPageOffset		AS LONG			;
 		    GET _GetLong(NTXOFFSET_NUPAGE_OFFSET)	;
-		    SET _SetLong(NTXOFFSET_NUPAGE_OFFSET, VALUE)
+		    SET _SetLong(NTXOFFSET_NUPAGE_OFFSET, value)
 			
 		// keysize + 2 longs. ie.e Left pointer + record no.
 		INTERNAL PROPERTY EntrySize		AS WORD			;
 		    GET _GetWord(NTXOFFSET_ENTRYSIZE);
-		    SET _SetWord(NTXOFFSET_ENTRYSIZE, VALUE)
+		    SET _SetWord(NTXOFFSET_ENTRYSIZE, value)
 			
 		INTERNAL PROPERTY KeySize		AS WORD			;
 		    GET _GetWord(NTXOFFSET_KEYSIZE);
-		    SET _SetWord(NTXOFFSET_KEYSIZE, VALUE)
+		    SET _SetWord(NTXOFFSET_KEYSIZE, value)
 			
 		INTERNAL PROPERTY KeyDecimals	AS WORD			;
 		    GET _GetWord(NTXOFFSET_KEYDECIMALS);
-		    SET _SetWord(NTXOFFSET_KEYDECIMALS, VALUE)
+		    SET _SetWord(NTXOFFSET_KEYDECIMALS, value)
 			
 		INTERNAL PROPERTY MaxItem	AS WORD			;
 		    GET _GetWord(NTXOFFSET_MAXITEM);
-		    SET _SetWord(NTXOFFSET_MAXITEM, VALUE)
+		    SET _SetWord(NTXOFFSET_MAXITEM, value)
 			
 		INTERNAL PROPERTY HalfPage	AS WORD			;
 		    GET _GetWord(NTXOFFSET_HALFPAGE);
-		    SET _SetWord(NTXOFFSET_HALFPAGE, VALUE)
+		    SET _SetWord(NTXOFFSET_HALFPAGE, value)
 			
 		INTERNAL PROPERTY KeyExpression	 AS STRING ;
 		    GET _GetString(NTXOFFSET_KEYEXPRESSION, NTXOFFSET_EXPRESSION_SIZE ) ;
-		    SET _SetString(NTXOFFSET_KEYEXPRESSION, NTXOFFSET_EXPRESSION_SIZE, VALUE)
+		    SET _SetString(NTXOFFSET_KEYEXPRESSION, NTXOFFSET_EXPRESSION_SIZE, value)
 			
 		INTERNAL PROPERTY Unique	AS LOGIC  ;
 		    GET Buffer[ NTXOFFSET_UNIQUE] != 0 ;
-		    SET Buffer[ NTXOFFSET_UNIQUE ] := (BYTE) IIF(VALUE,1,0), isHot := TRUE
+		    SET Buffer[ NTXOFFSET_UNIQUE ] := (BYTE) IIF(value,1,0), isHot := TRUE
 
 		INTERNAL PROPERTY Descending	AS LOGIC  ;
 		    GET Buffer[ NTXOFFSET_DESCENDING] != 0 ;
-		    SET Buffer[ NTXOFFSET_DESCENDING ] := (BYTE) IIF(VALUE,1,0), isHot := TRUE
+		    SET Buffer[ NTXOFFSET_DESCENDING ] := (BYTE) IIF(value,1,0), isHot := TRUE
 			
 		INTERNAL PROPERTY ForExpression	 AS STRING ;
 		    GET _GetString(NTXOFFSET_FOREXPRESSION, NTXOFFSET_EXPRESSION_SIZE ) ;
-		    SET _SetString(NTXOFFSET_FOREXPRESSION, NTXOFFSET_EXPRESSION_SIZE, VALUE)
+		    SET _SetString(NTXOFFSET_FOREXPRESSION, NTXOFFSET_EXPRESSION_SIZE, value)
 			
 		INTERNAL PROPERTY OrdName	 AS STRING ;
 		    GET _GetString(NTXOFFSET_ORDNAME, NTXOFFSET_EXPRESSION_SIZE );
-		    SET _SetString(NTXOFFSET_ORDNAME, NTXOFFSET_EXPRESSION_SIZE, Upper(VALUE))
+		    SET _SetString(NTXOFFSET_ORDNAME, NTXOFFSET_EXPRESSION_SIZE, Upper(value))
 			
 		PRIVATE CONST NTXOFFSET_SIG			    := 0   AS WORD
 		PRIVATE CONST NTXOFFSET_INDEXING_VER    := 2   AS WORD
@@ -175,7 +175,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             VAR sb := System.Text.StringBuilder{}
             sb:AppendLine( String.Format("NTX Header {0}", cText))
             sb:AppendLine( "----------------------------------------------")
-            sb:AppendLine( String.Format("Signature {0}, Version {1}, First page {2}, Unused Page {3}", SELF:Signature, SELF:IndexingVersion, SELF:FirstPageOffSet, SELF:NextUnusedPageOffset))
+            sb:AppendLine( String.Format("Signature {0}, Version {1}, First page {2}, Unused Page {3}", SELF:Signature, SELF:IndexingVersion, SELF:FirstPageOffset, SELF:NextUnusedPageOffset))
             sb:AppendLine( String.Format("Item size {0}, Key Size {1}, Decimals {2}, Max Items {3}, HalfPage {4}", SELF:EntrySize, SELF:KeySize, SELF:KeyDecimals, SELF:MaxItem, SELF:HalfPage))
             sb:AppendLine( String.Format("Key Expression: {0}, Unique {1}, Descending {2}", SELF:KeyExpression, SELF:Unique, SELF:Descending))
             sb:AppendLine( String.Format("For Expression: {0}, OrdName {1}", SELF:ForExpression, SELF:OrdName))

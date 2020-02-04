@@ -28,7 +28,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PROTECTED _recNo          AS LONG
         PROTECTED _pos            AS WORD				// Index of the Item in the page array of Offsets
 		// Retrieve the Key as String
-        INTERNAL PROPERTY Pos       AS WORD     GET _pos SET _pos := VALUE
+        INTERNAL PROPERTY Pos       AS WORD     GET _pos SET _pos := value
         INTERNAL PROPERTY DebuggerDisplay AS STRING GET String.Format("Rec {0} Page {1:X} Key {2}", Recno, ChildPageNo, KeyText)
 		// Get/Set the Key info as Bytes, copied from/to the Page it belongs to
         INTERNAL VIRTUAL PROPERTY KeyBytes AS BYTE[]
@@ -36,7 +36,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                  RETURN _bytesKey
             END GET
             SET
-                Array.Copy(VALUE, _bytesKey, _keyLength)
+                Array.Copy(value, _bytesKey, _keyLength)
             END SET
         END PROPERTY
 
@@ -45,9 +45,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 		// Retrieve/set the PageNo/PageOffset of the Item
 		// It is on top of the Item's bytes
 		// it is the Record offset from start of page 
-        INTERNAL VIRTUAL PROPERTY ChildPageNo AS LONG GET _childPage SET _childPage := VALUE
+        INTERNAL VIRTUAL PROPERTY ChildPageNo AS LONG GET _childPage SET _childPage := value
 
-        INTERNAL VIRTUAL PROPERTY Recno AS LONG GET _recNo SET _recNo := VALUE
+        INTERNAL VIRTUAL PROPERTY Recno AS LONG GET _recNo SET _recNo := value
 
         INTERNAL CONSTRUCTOR( keylen AS LONG , pos AS WORD )
             SELF:_keyLength := keylen
@@ -69,9 +69,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL CONSTRUCTOR( keylen AS LONG , page AS CdxTreePage, pos AS WORD )
             SUPER( keylen , pos)
             _Page := page
-            _Pos  := pos
+            _pos  := pos
 
-        INTERNAL PROPERTY Page AS CdxTreePage GET _Page // SET _Page := VALUE
+        INTERNAL PROPERTY Page AS CdxTreePage GET _Page // SET _Page := value
 
         INTERNAL OVERRIDE METHOD Clear() AS VOID
             SUPER:Clear()

@@ -534,9 +534,9 @@ namespace XSharp.MacroCompiler.Syntax
             ilg.Emit(OpCodes.Ldc_I4_1);
             ilg.Emit(OpCodes.Stloc, dirty.LocalIndex);
             Field.Emit(ilg, preserve);
-            ilg.Emit(OpCodes.Call, pop.Method);
             ilg.Emit(OpCodes.Ldc_I4_0);
             ilg.Emit(OpCodes.Stloc, dirty.LocalIndex);
+            ilg.Emit(OpCodes.Call, pop.Method);
             Stmt.FinallyClauses.Add(() => {
                 var skip = ilg.DefineLabel();
                 ilg.Emit(OpCodes.Ldloc, dirty.LocalIndex);
@@ -558,9 +558,9 @@ namespace XSharp.MacroCompiler.Syntax
             ilg.Emit(OpCodes.Stloc, dirty.LocalIndex);
             ilg.Emit(OpCodes.Ldloc, v.LocalIndex);
             Field.EmitSet(ilg, preserve);
-            ilg.Emit(OpCodes.Call, pop.Method);
             ilg.Emit(OpCodes.Ldc_I4_0);
             ilg.Emit(OpCodes.Stloc, dirty.LocalIndex);
+            ilg.Emit(OpCodes.Call, pop.Method);
             Stmt.FinallyClauses.Add(() => {
                 var skip = ilg.DefineLabel();
                 ilg.Emit(OpCodes.Ldloc, dirty.LocalIndex);

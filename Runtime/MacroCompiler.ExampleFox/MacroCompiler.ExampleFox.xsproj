@@ -97,11 +97,6 @@
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AdsTest\AdsTest.xsproj">
-      <Name>AdsTest</Name>
-      <Project>{7a247f83-d97e-42fb-94d0-3ecd299038cc}</Project>
-      <Private>True</Private>
-    </ProjectReference>
     <ProjectReference Include="..\MacroCompiler\MacroCompiler.csproj">
       <Name>MacroCompiler (Macrocompiler\MacroCompiler)</Name>
       <Project>{eb3f3142-07f7-48ca-b38d-f611c45a9511}</Project>
@@ -115,6 +110,11 @@
     <ProjectReference Include="..\XSharp.RT\XSharp.RT.xsproj">
       <Name>XSharp.RT</Name>
       <Project>{ef8d2bf2-e81a-479a-ba4f-294c4c348b66}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\XSharp.VFP\XSharp.VFP.xsproj">
+      <Name>XSharp.VFP</Name>
+      <Project>{3a771f0e-9400-4a19-8663-c71567ebfa29}</Project>
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>

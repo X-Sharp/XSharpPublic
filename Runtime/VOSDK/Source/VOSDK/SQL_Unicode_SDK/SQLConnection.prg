@@ -717,7 +717,7 @@ CLASS SqlConnection
 		END GET
 		SET 
 			SELF:DisConnect()
-			SELF:cConnectString := VALUE
+			SELF:cConnectString := value
 			SELF:_ParseConnectionString()
 		END SET
 	END PROPERTY
@@ -746,7 +746,7 @@ CLASS SqlConnection
 		END GET
 		SET 
 			IF  !SELF:Connected
-				SELF:cAuthString := VALUE
+				SELF:cAuthString := value
 			ELSE
 				SELF:__GenerateSqlError( __CavoStr( __CAVOSTR_SQLCLASS__CONNECTED ), #Password )
 				oErrInfo:Throw()

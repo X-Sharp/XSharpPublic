@@ -381,7 +381,7 @@ _DLL FUNC InterlockedIncrement(lpAddend AS LONG PTR) AS LONG PASCAL:KERNEL32.Int
 _DLL FUNC InterlockedDecrement(lpAddend AS LONG PTR) AS LONG PASCAL:KERNEL32.InterlockedDecrement
 
 
-_DLL FUNC InterlockedExchange(Target AS LONG PTR, VALUE AS LONG) AS LONG PASCAL:KERNEL32.InterlockedExchange
+_DLL FUNC InterlockedExchange(Target AS LONG PTR, longValue AS LONG) AS LONG PASCAL:KERNEL32.InterlockedExchange
 
 
 _DLL FUNCTION InterlockedCompareExchange(lpDestenation AS LONG PTR,liExchange AS LONGINT,liComperand AS LONGINT) AS LONG PASCAL:KERNEL32.InterlockedCompareExchange

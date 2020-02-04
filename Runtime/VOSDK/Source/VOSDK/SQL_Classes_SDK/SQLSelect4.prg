@@ -49,13 +49,13 @@ METHOD NoIVarGet( symFieldName )
 	#ENDIF
 	RETURN SELF:GetData( symFieldName )
 
-METHOD NoIVarPut( symFieldName,VALUE ) 
+METHOD NoIVarPut( symFieldName,uValue ) 
 
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLSelect:NoIVarPut( "+AsString( symFieldName )+" )" )
 	#ENDIF
 
-	RETURN SELF:FIELDPUT( symFieldName, VALUE )
+	RETURN SELF:FIELDPUT( symFieldName, uValue )
 
 
 

@@ -54,19 +54,19 @@ INTERNAL STRUCTURE DoubleStruct
     METHOD Reverse() AS VOID
         LOCAL copy := DoubleStruct{} AS DoubleStruct
         copy:doubleValue := SELF:doubleValue
-        SELF:b1 := copy:B8
-        SELF:b2 := copy:B7
-        SELF:b3 := copy:B6
-        SELF:b4 := copy:B5
-        SELF:b5 := copy:B4
-        SELF:b6 := copy:B3
-        SELF:b7 := copy:B2
-        SELF:b8 := copy:B1
+        SELF:b1 := copy:b8
+        SELF:b2 := copy:b7
+        SELF:b3 := copy:b6
+        SELF:b4 := copy:b5
+        SELF:b5 := copy:b4
+        SELF:b6 := copy:b3
+        SELF:b7 := copy:b2
+        SELF:b8 := copy:b1
         
     METHOD SaveToIndex(buffer AS BYTE[]) AS VOID
         SELF:Reverse()
         IF _AND(b1, 0x80) != 0
-            SELF:B1 :=(BYTE) ~SELF:B1
+            SELF:b1 :=(BYTE) ~SELF:b1
             SELF:b2 :=(BYTE) ~SELF:b2
             SELF:b3 :=(BYTE) ~SELF:b3
             SELF:b4 :=(BYTE) ~SELF:b4
@@ -77,7 +77,7 @@ INTERNAL STRUCTURE DoubleStruct
         ELSE
             b1 |= 0x80
         ENDIF
-        buffer[0] := SELF:B1
+        buffer[0] := SELF:b1
         buffer[1] := SELF:b2
         buffer[2] := SELF:b3
         buffer[3] := SELF:b4
@@ -101,7 +101,7 @@ INTERNAL STRUCTURE FtpMemoToken
             RETURN (FlexFieldType) FoxToLong(Buffer, 0)
         END GET
         SET
-            LongToFox((LONG) VALUE, Buffer, 0)
+            LongToFox((LONG) value, Buffer, 0)
         END SET
     END PROPERTY
 
@@ -111,7 +111,7 @@ INTERNAL STRUCTURE FtpMemoToken
             RETURN FoxToDword(Buffer, 4)
         END GET
         SET
-            DwordToFox(VALUE, Buffer, 4)
+            DWordToFox(value, Buffer, 4)
         END SET
     END PROPERTY
 
@@ -131,7 +131,7 @@ INTERNAL STRUCTURE FtpMemoToken
     INTERNAL METHOD Read(hFile AS IntPtr) AS LOGIC
         LOCAL lOk AS LOGIC
         TRY
-            lOk := Fread3(hFile, Buffer, 8) == 8
+            lOk := FRead3(hFile, Buffer, 8) == 8
             IF lOk
 	        // Check for 'expected' Field Types
                 SWITCH SELF:DataType

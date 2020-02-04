@@ -54,7 +54,7 @@ BEGIN NAMESPACE XSharp
 
 		#region datetime conversions
             /// <summary>Return DATE value as DateTime.</summary>
-			PUBLIC PROPERTY @@Value AS System.DateTime
+			PUBLIC PROPERTY Value AS System.DateTime
 				GET
 					IF (_ymd == 0)
 						RETURN System.DateTime.MinValue
@@ -62,10 +62,10 @@ BEGIN NAMESPACE XSharp
 					RETURN System.DateTime{_year, _month, _day}
 				END GET
 				SET
-				    IF VALUE != DateTime.MinValue
-					    _year  := (WORD) VALUE:Year
-					    _month := (BYTE) VALUE:Month
-					    _day   := (BYTE) VALUE:Day
+				    IF value != DateTime.MinValue
+					    _year  := (WORD) value:Year
+					    _month := (BYTE) value:Month
+					    _day   := (BYTE) value:Day
 				    ELSE
 					    _ymd := 0
 				    ENDIF

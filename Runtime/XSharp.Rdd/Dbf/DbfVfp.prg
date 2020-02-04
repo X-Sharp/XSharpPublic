@@ -33,7 +33,7 @@ CLASS DBFVFP INHERIT DBFCDX
 
     PROTECTED VIRTUAL METHOD _checkField( dbffld REF DbfField) AS LOGIC
         IF dbffld:Type:IsVfp()
-            if dbffld:Flags:HasFlag(DBFFieldFlags.Autoincrement)
+            if dbffld:Flags:HasFlag(DBFFieldFlags.AutoIncrement)
                 if dbffld:Counter == 0
                     dbffld:Counter := 1
                 endif
@@ -53,9 +53,9 @@ CLASS DBFVFP INHERIT DBFCDX
         lAutoIncr   := FALSE
         FOREACH VAR fld IN _Fields
             SWITCH fld:FieldType
-            CASE DBFieldType.VarChar
-            CASE DBFieldType.VarBinary
-            CASE DBFieldType.Blob
+            CASE DbFieldType.VarChar
+            CASE DbFieldType.VarBinary
+            CASE DbFieldType.Blob
                 lVar := TRUE
             END SWITCH
             IF fld:Flags:HasFlag(DBFFieldFlags.AutoIncrement)
@@ -64,14 +64,14 @@ CLASS DBFVFP INHERIT DBFCDX
         NEXT
         IF lAutoIncr
             IF lVar
-                SELF:_Header:Version := DbfVersion.VisualFoxProVarChar
+                SELF:_Header:Version := DBFVersion.VisualFoxProVarChar
             ELSE
-                SELF:_Header:Version := DbfVersion.VisualFoxProAutoIncrement
+                SELF:_Header:Version := DBFVersion.VisualFoxProAutoIncrement
             ENDIF
         ELSEIF lVar
-            SELF:_Header:Version := DbfVersion.VisualFoxProVarChar
+            SELF:_Header:Version := DBFVersion.VisualFoxProVarChar
         ELSE
-            SELF:_Header:Version := DbfVersion.VisualFoxPro
+            SELF:_Header:Version := DBFVersion.VisualFoxPro
         ENDIF
         SELF:_Header:HeaderLen += VFP_BACKLINKSIZE
         SELF:_HeaderLength   += VFP_BACKLINKSIZE
@@ -89,10 +89,10 @@ CLASS DBFVFP INHERIT DBFCDX
             IF fld:IsNullable
                 NullCount += 1
             ENDIF
-            IF Fld:IsVarLength
+            IF fld:IsVarLength
                 NullCount += 1
             ENDIF
-            IF string.Compare(fld:Name, _NULLFLAGS, TRUE) == 0
+            IF String.Compare(fld:Name, _NULLFLAGS, TRUE) == 0
                 nullFld := fld
             ENDIF
         NEXT
@@ -160,7 +160,7 @@ CLASS DBFVFP INHERIT DBFCDX
         RETURN
 
     PROTECTED METHOD _ReadDbcFieldNames() AS VOID
-        LOCAL oDbc AS DbfVfp
+        LOCAL oDbc AS DBFVFP
         LOCAL oi   AS DbOpenInfo
         LOCAL nTable := 0 AS LONG
         LOCAL nType AS LONG
@@ -170,7 +170,7 @@ CLASS DBFVFP INHERIT DBFCDX
         LOCAL cFile AS STRING
         LOCAL lOk AS LOGIC
         LOCAL lOld AS LOGIC
-        oDbc := DbfVfp{}
+        oDbc := DBFVFP{}
         oi := DbOpenInfo{}
         oi:FileName  := SELF:DbcName
         oi:Extension := System.IO.Path.GetExtension(SELF:DbcName)
@@ -186,7 +186,7 @@ CLASS DBFVFP INHERIT DBFCDX
             nName := oDbc:FieldIndex("OBJECTNAME")
             nParent := oDbc:FieldIndex("PARENTID")
             oDbc:GoTop()
-            DO WHILE ! oDbc:EOF
+            DO WHILE ! oDbc:EoF
                 IF ((STRING)oDbc:GetValue(nType)):StartsWith("Table") 
                     LOCAL cName := (STRING) oDbc:GetValue(nName)  AS STRING
                     cName := cName:Trim()
@@ -200,7 +200,7 @@ CLASS DBFVFP INHERIT DBFCDX
             fields := List<STRING>{}
             IF nTable != 0
                 oDbc:GoTop()
-                DO WHILE ! oDbc:EOF
+                DO WHILE ! oDbc:EoF
                     VAR n1 := (LONG) oDbc:GetValue(nParent)
                     VAR c1 := (STRING) oDbc:GetValue(nType)
                     IF n1== nTable .AND.  c1:StartsWith("Field")
@@ -219,8 +219,8 @@ CLASS DBFVFP INHERIT DBFCDX
                     oColumn := SELF:_GetColumn(nPos)
                     oColumn:Alias := fields[nPos-1]
                     IF String.Compare(oColumn:Name, oColumn:Alias, TRUE) != 0
-                        SELF:_FieldNames:Remove(oColumn:Name)
-                        SELF:_FieldNames:Add(oColumn:Alias, nPos-1)
+                        SELF:_fieldNames:Remove(oColumn:Name)
+                        SELF:_fieldNames:Add(oColumn:Alias, nPos-1)
                     ENDIF
                 NEXT
             ENDIF
@@ -231,12 +231,12 @@ CLASS DBFVFP INHERIT DBFCDX
     /// <inheritdoc />
     METHOD AddField(info AS RddFieldInfo) AS LOGIC
         LOCAL isOk AS LOGIC
-        isok := SUPER:AddField( info )
+        isOk := SUPER:AddField( info )
         IF String.Compare(info:Name, _NULLFLAGS,TRUE) == 0 .AND. info IS DbfNullColumn VAR dbfnc
             SELF:_NullColumn := dbfnc
         ENDIF
         IF info IS DbfColumn VAR column
-            IF column:isVarLength
+            IF column:IsVarLength
                 column:LengthBit := SELF:_NullCount++
             ENDIF
             IF column:IsNullable

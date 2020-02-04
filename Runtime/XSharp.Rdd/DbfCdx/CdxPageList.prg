@@ -11,7 +11,7 @@ USING System.Text
 USING System.Linq
 USING System.Diagnostics
 
-BEGIN NAMESPACE XSharp.RDD.Cdx
+BEGIN NAMESPACE XSharp.RDD.CDX
 
     /// <summary>
     /// The pageList class.
@@ -25,8 +25,8 @@ BEGIN NAMESPACE XSharp.RDD.Cdx
         INTERNAL CONST CDXPAGE_MAXCOUNT    := 64 AS WORD
         
         INTERNAL METHOD _FindPage( offset AS LONG ) AS CdxPage
-            LOCAL page AS Cdxpage
-            SELF:_pages:TryGetValue(offSet, OUT page)
+            LOCAL page AS CdxPage
+            SELF:_pages:TryGetValue(offset, OUT page)
             RETURN page
 
   
@@ -73,7 +73,7 @@ BEGIN NAMESPACE XSharp.RDD.Cdx
             RETURN oResult
             
         INTERNAL PROPERTY Count AS INT GET _pages:Count
-        INTERNAL PROPERTY DumpHandle AS IntPtr GET _hDump SET _hDump := VALUE
+        INTERNAL PROPERTY DumpHandle AS IntPtr GET _hDump SET _hDump := value
 
         INTERNAL METHOD SetPage(nPage AS LONG, page AS CdxPage) AS VOID
             SELF:_pages[nPage] :=  page
@@ -114,7 +114,7 @@ BEGIN NAMESPACE XSharp.RDD.Cdx
                 page := (CdxTreePage) SELF:GetPage(pageNo, 0,NULL)
                 SELF:SetPage(pageNo, page)
             ENDIF
-            SELF:_dumpPage(page)
+            SELF:_DumpPage(page)
             page:IsHot := TRUE
             RETURN page
             
@@ -127,7 +127,7 @@ BEGIN NAMESPACE XSharp.RDD.Cdx
                 page := (CdxTreePage) SELF:GetPage(pageNo, 0,NULL)
                 SELF:_pages:Add(pageNo, page)
             ENDIF
-            SELF:_dumpPage(page)
+            SELF:_DumpPage(page)
             RETURN page
             
             

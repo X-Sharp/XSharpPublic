@@ -26,14 +26,14 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         PROTECTED _RecNo          AS LONG
         PROTECTED _Pos            AS LONG				// Index of the Item in the page array of Offsets
 
-        INTERNAL VIRTUAL PROPERTY Pos AS LONG GET _Pos SET _Pos := VALUE        
+        INTERNAL VIRTUAL PROPERTY Pos AS LONG GET _Pos SET _Pos := value        
 		// Get/Set the Key info as Bytes, copied from/to the Page it belongs to
         INTERNAL VIRTUAL PROPERTY KeyBytes AS BYTE[]
             GET
                  RETURN _bytesKey
             END GET
             SET
-                Array.Copy(VALUE, _bytesKey, _keyLength)
+                Array.Copy(value, _bytesKey, _keyLength)
             END SET
         END PROPERTY
 
@@ -54,16 +54,16 @@ BEGIN NAMESPACE XSharp.RDD.NTX
 		// Retrieve/set the PageNo/PageOffset of the Item
 		// It is on top of the Item's bytes
 		// it is the Record offset from start of page 
-        INTERNAL VIRTUAL PROPERTY PageNo AS LONG GET _PageNo SET _PageNo := VALUE
+        INTERNAL VIRTUAL PROPERTY PageNo AS LONG GET _PageNo SET _PageNo := value
 
-        INTERNAL VIRTUAL PROPERTY Recno AS LONG GET _Recno SET _Recno := VALUE
+        INTERNAL VIRTUAL PROPERTY Recno AS LONG GET _RecNo SET _RecNo := value
         
         INTERNAL CONSTRUCTOR( keylen AS LONG  )
             SELF:_keyLength := keylen
             SELF:Clear()
 
         INTERNAL VIRTUAL METHOD Clear() AS VOID
-            SELF:_Recno  := 0
+            SELF:_RecNo  := 0
             SELF:_PageNo := 0
             SELF:_bytesKey  := BYTE[]{ _keyLength+1 }
             
@@ -87,7 +87,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 RETURN _Pos
             END GET
             SET
-                _Pos := VALUE
+                _Pos := value
                 SELF:_Offset:= _Page:GetRef( _Pos )
             END SET
         END PROPERTY
@@ -95,13 +95,13 @@ BEGIN NAMESPACE XSharp.RDD.NTX
 
        INTERNAL OVERRIDE PROPERTY KeyBytes AS BYTE[]
             GET
-                Array.Copy(_Page:Bytes, _OffSet + DATA_OFFSET, _bytesKey, 0, _keyLength)
+                Array.Copy(_Page:Bytes, _Offset + DATA_OFFSET, _bytesKey, 0, _keyLength)
                 RETURN _bytesKey 
                 
             END GET
             SET
-                Array.Copy(VALUE, _bytesKey, _keyLength)
-                Array.Copy(_bytesKey, 0, _Page:Bytes, _OffSet + DATA_OFFSET, _keyLength)
+                Array.Copy(value, _bytesKey, _keyLength)
+                Array.Copy(_bytesKey, 0, _Page:Bytes, _Offset + DATA_OFFSET, _keyLength)
                 _Page:Hot := TRUE
                 
             END SET
@@ -110,13 +110,13 @@ BEGIN NAMESPACE XSharp.RDD.NTX
 
         INTERNAL OVERRIDE PROPERTY PageNo AS LONG
             GET
-                 _PageNo := BitConverter.ToInt32(_Page:Bytes, _OffSet+PAGE_OFFSET)
+                 _PageNo := BitConverter.ToInt32(_Page:Bytes, _Offset+PAGE_OFFSET)
                 RETURN _PageNo
                 
             END GET
             SET
-                _PageNo := VALUE
-                Array.Copy(BitConverter.GetBytes(VALUE), 0, _Page:Bytes, _OffSet+PAGE_OFFSET, 4)
+                _PageNo := value
+                Array.Copy(BitConverter.GetBytes(value), 0, _Page:Bytes, _Offset+PAGE_OFFSET, 4)
                 _Page:Hot := TRUE
             END SET
         END PROPERTY
@@ -126,12 +126,12 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         INTERNAL OVERRIDE PROPERTY Recno AS LONG
             GET
 
-                _Recno :=BitConverter.ToInt32(_Page:Bytes,  _OffSet + REC_OFFSET)
-                RETURN _Recno
+                _RecNo :=BitConverter.ToInt32(_Page:Bytes,  _Offset + REC_OFFSET)
+                RETURN _RecNo
             END GET
             SET
-                _Recno := VALUE
-                Array.Copy(BitConverter.GetBytes(VALUE), 0, _Page:Bytes, _OffSet+REC_OFFSET, 4)
+                _RecNo := value
+                Array.Copy(BitConverter.GetBytes(value), 0, _Page:Bytes, _Offset+REC_OFFSET, 4)
                 _Page:Hot := TRUE
             END SET
         END PROPERTY

@@ -35,7 +35,7 @@ BEGIN NAMESPACE XSharp.RDD
 		/// <summary>Is at bottom ?</summary>
 		PUBLIC _Bottom		    AS LOGIC	
 		/// <summary>Is at EOF ?</summary>
-		PUBLIC _Eof			    AS LOGIC	
+		PUBLIC _EoF			    AS LOGIC	
 		/// <summary>Result of last SEEK operation</summary>
 		PUBLIC _Found			AS LOGIC	
 		/// <summary>Is at top?</summary>
@@ -155,7 +155,7 @@ BEGIN NAMESPACE XSharp.RDD
                   isOk := SELF:GoTop()
                 ENDIF
             ENDIF
-            DO WHILE isOk .AND. ! SELF:_Eof 
+            DO WHILE isOk .AND. ! SELF:_EoF 
                 IF cbWhile != NULL
                     IF ! (LOGIC) SELF:EvalBlock(cbWhile)
                         EXIT
@@ -223,12 +223,12 @@ BEGIN NAMESPACE XSharp.RDD
 				IF !SELF:SkipFilter(lToSkip)
 					RETURN FALSE
 				ENDIF              
-				IF SELF:_BoF .OR. SELF:_Eof
+				IF SELF:_BoF .OR. SELF:_EoF
 					EXIT
 				ENDIF
 			ENDDO
 			IF lToSkip < 0
-				SELF:_Eof := FALSE		
+				SELF:_EoF := FALSE		
 			ELSE
 				SELF:_BoF := FALSE
 			ENDIF
@@ -259,7 +259,7 @@ BEGIN NAMESPACE XSharp.RDD
             recordHidden:= TRUE 
             result      := TRUE 
             
-            DO WHILE !SELF:_Eof .AND. ! SELF:_BoF
+            DO WHILE !SELF:_EoF .AND. ! SELF:_BoF
                 // Check deleted first, that is easier and has less overhead
                 IF fRtDeleted
                     recordHidden := SELF:Deleted
@@ -277,15 +277,15 @@ BEGIN NAMESPACE XSharp.RDD
                 ENDIF
              ENDDO
              IF result
-                IF fromTop .AND. SELF:_Eof
+                IF fromTop .AND. SELF:_EoF
                     SELF:_BoF := TRUE
                 ELSEIF fromBottom .AND. SELF:_BoF
-                    SELF:_Eof := TRUE
+                    SELF:_EoF := TRUE
                 ELSEIF SELF:_BoF .AND. nToSkip < 0
                     // note that this will recurse!
                     result := SELF:GoTop()
                     SELF:_BoF := TRUE
-                    SELF:_Eof := FALSE
+                    SELF:_EoF := FALSE
                 ENDIF
              ENDIF
             RETURN result
@@ -308,7 +308,7 @@ BEGIN NAMESPACE XSharp.RDD
             cbFor   := _ScopeInfo:ForBlock
             IF SELF:_ScopeInfo:RecId != NULL
                 result     := SELF:GoToId(SELF:_ScopeInfo:RecId)
-                lContinue  := ! SELF:_Eof
+                lContinue  := ! SELF:_EoF
                 IF lContinue
                     IF cbWhile != NULL
                         lContinue := (LOGIC) SELF:EvalBlock(cbWhile)
@@ -320,7 +320,7 @@ BEGIN NAMESPACE XSharp.RDD
                     ENDIF
                 ENDIF
             ELSEIF nextCnt > 0
-                DO WHILE lContinue .AND. ! SELF:_Eof .AND. nToSkip != 0 .AND. result
+                DO WHILE lContinue .AND. ! SELF:_EoF .AND. nToSkip != 0 .AND. result
                     result := SELF:Skip(1)
                      IF cbWhile != NULL
                         lContinue := (LOGIC) SELF:EvalBlock(cbWhile)
@@ -340,7 +340,7 @@ BEGIN NAMESPACE XSharp.RDD
                     lContinue := nextCnt > 0
                 ENDDO
             ELSEIF SELF:_ScopeInfo:Rest
-                DO WHILE ! SELF:_Eof .AND. nToSkip != 0 .AND. result
+                DO WHILE ! SELF:_EoF .AND. nToSkip != 0 .AND. result
                     result := SELF:Skip(1)
                     IF cbWhile != NULL
                         lContinue := (LOGIC) SELF:EvalBlock(cbWhile)
@@ -363,7 +363,7 @@ BEGIN NAMESPACE XSharp.RDD
                 ENDDO
             ELSE
                 result := SELF:GoTop()
-                DO WHILE ! SELF:_Eof .AND. nToSkip != 0 .AND. result
+                DO WHILE ! SELF:_EoF .AND. nToSkip != 0 .AND. result
                     IF cbFor != NULL
                         lFound := (LOGIC) SELF:EvalBlock(cbFor)
                     ELSE
@@ -377,7 +377,7 @@ BEGIN NAMESPACE XSharp.RDD
                     ENDIF
                 ENDDO
             ENDIF
-            SELF:_Found := lFound .AND. ! SELF:_Eof
+            SELF:_Found := lFound .AND. ! SELF:_EoF
             RETURN result
             
 			/// <inheritdoc />
@@ -881,7 +881,7 @@ BEGIN NAMESPACE XSharp.RDD
                         result := SELF:GoTop()
                     ENDIF
                 ENDIF
-                DO WHILE result .AND. ! SELF:_Eof 
+                DO WHILE result .AND. ! SELF:_EoF 
                     IF cbWhile != NULL
                         IF ! (LOGIC) SELF:EvalBlock(cbWhile)
                             EXIT
@@ -1043,7 +1043,7 @@ BEGIN NAMESPACE XSharp.RDD
 				CASE DbInfo.DBI_BOF           
 					oResult := SELF:_BoF
 				CASE DbInfo.DBI_EOF           
-					oResult := SELF:_Eof   
+					oResult := SELF:_EoF   
 				CASE DbInfo.DBI_DBFILTER
                     IF SELF:_FilterInfo != NULL
 					    oResult := SELF:_FilterInfo:FilterText
@@ -1078,10 +1078,10 @@ BEGIN NAMESPACE XSharp.RDD
 			THROW NotImplementedException{__ENTITY__}
 			
 			/// <inheritdoc />
-		VIRTUAL PROPERTY Alias AS STRING GET _Alias SET _Alias := VALUE
+		VIRTUAL PROPERTY Alias AS STRING GET _Alias SET _Alias := value
 		
 		/// <inheritdoc />
-		VIRTUAL PROPERTY Area AS DWORD GET _Area SET _Area := VALUE 
+		VIRTUAL PROPERTY Area AS DWORD GET _Area SET _Area := value 
 		
 		/// <inheritdoc />
 		VIRTUAL PROPERTY BoF AS LOGIC GET _BoF
@@ -1093,7 +1093,7 @@ BEGIN NAMESPACE XSharp.RDD
 		VIRTUAL PROPERTY Driver AS STRING GET "Workarea"
 		
 		/// <inheritdoc />
-		VIRTUAL PROPERTY EoF AS LOGIC GET _Eof
+		VIRTUAL PROPERTY EoF AS LOGIC GET _EoF
 		
 		/// <inheritdoc />
 		VIRTUAL PROPERTY Exclusive AS LOGIC GET FALSE
@@ -1105,7 +1105,7 @@ BEGIN NAMESPACE XSharp.RDD
 		VIRTUAL PROPERTY FilterText AS STRING GET _FilterInfo?:FilterText
 		
 		/// <inheritdoc />
-		VIRTUAL PROPERTY Found AS LOGIC GET _Order:Found SET _Order:Found := VALUE
+		VIRTUAL PROPERTY Found AS LOGIC GET _Order:Found SET _Order:Found := value
 		
 		
 		/// <inheritdoc />

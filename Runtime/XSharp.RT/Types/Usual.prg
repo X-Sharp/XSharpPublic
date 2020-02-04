@@ -2787,14 +2787,14 @@ BEGIN NAMESPACE XSharp
             END GET
             SET
               IF SELF:IsArray
-                 SELF:_arrayValue:__SetElement(VALUE, index)
+                 SELF:_arrayValue:__SetElement(value, index)
                  RETURN
               ELSEIF SELF:IsObject .AND. _refData IS IIndexedProperties
                   VAR props := (IIndexedProperties) _refData
                   IF index:Length == 1
                       LOCAL pos AS LONG
                       pos := index[1]
-                      props[pos] := VALUE
+                      props[pos] := value
                    ENDIF
                    RETURN
               ENDIF
@@ -2834,14 +2834,14 @@ BEGIN NAMESPACE XSharp
             SET
                 IF SELF:IsArray
                     VAR a := SELF:_arrayValue 
-                    a:__SetElement(index,VALUE)
+                    a:__SetElement(index,value)
                     RETURN
                 ENDIF
                 VAR indexer := _refData ASTYPE IIndexedProperties
                 IF indexer == NULL
                     THROW InvalidCastException{VO_Sprintf(VOErrors.USUALNOTINDEXED, typeof(IIndexedProperties):FullName)}
                 ENDIF
-                indexer[index] := VALUE
+                indexer[index] := value
             END SET
         END PROPERTY
 
@@ -2863,7 +2863,7 @@ BEGIN NAMESPACE XSharp
                 IF indexer == NULL
                     THROW InvalidCastException{VO_Sprintf(VOErrors.USUALNOTINDEXED, typeof(IIndexedProperties):FullName)}
                 ENDIF
-                indexer[name] := VALUE
+                indexer[name] := value
             END SET
         END PROPERTY
         #endregion
@@ -2929,7 +2929,7 @@ BEGIN NAMESPACE XSharp
                 _uvalue := u
 
             [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)] ;
-            PUBLIC PROPERTY @@Value     AS OBJECT       GET _uvalue:Value
+            PUBLIC PROPERTY @@Value     AS OBJECT       GET _uvalue:@@Value
             PUBLIC PROPERTY Type        AS __UsualType  GET _uvalue:_usualType
             PUBLIC PROPERTY Initialized AS LOGIC        GET _uvalue:_initialized
 

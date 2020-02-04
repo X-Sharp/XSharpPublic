@@ -19,7 +19,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         PRIVATE _currentOrder AS NtxOrder
         INTERNAL PROPERTY Count AS LONG GET _Orders:Count
         INTERNAL PROPERTY Focus AS LONG GET _focusNtx
-        INTERNAL PROPERTY CurrentOrder AS NtxOrder GET _currentOrder SET _currentOrder := VALUE
+        INTERNAL PROPERTY CurrentOrder AS NtxOrder GET _currentOrder SET _currentOrder := value
         INTERNAL PROPERTY SELF[index AS LONG ] AS NtxOrder
                 GET
                     IF ((index >= 0) .AND. (index < _Orders:Count))
@@ -44,7 +44,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 isOk := FALSE
                 TRY
                     IF SELF:_Orders:Count >= 16
-                        SELF:_oRdd:_dbfError(SubCodes.ERDD_NTXLIMIT, GenCode.EG_LIMIT,  filePath)
+                        SELF:_oRdd:_dbfError(Subcodes.ERDD_NTXLIMIT, Gencode.EG_LIMIT,  filePath)
                         isOk := FALSE
                     ELSE
 
@@ -68,7 +68,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 RETURN isOk
                 
                 
-            INTERNAL METHOD Create(dboci AS DBORDERCREATEINFO ) AS LOGIC
+            INTERNAL METHOD Create(dboci AS DbOrderCreateInfo ) AS LOGIC
                 LOCAL ntxIndex AS NtxOrder
                 LOCAL isOk AS LOGIC
                 //
@@ -174,7 +174,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                     ENDIF
                 ELSE
                     isOk := FALSE
-                    SELF:_oRdd:_dbfError(SubCodes.ERDD_INVALID_ORDER, GenCode.EG_NOORDER,  NULL)
+                    SELF:_oRdd:_dbfError(Subcodes.ERDD_INVALID_ORDER, Gencode.EG_NOORDER,  NULL)
                 ENDIF
                 RETURN isOk
                 
@@ -190,7 +190,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 ENDIF
                 RETURN 0                
             INTERNAL METHOD Rebuild() AS LOGIC
-                LOCAL ordCondInfo AS DBORDERCONDINFO
+                LOCAL ordCondInfo AS DbOrderCondInfo
                 LOCAL isOk AS LOGIC
                 //
                 ordCondInfo := SELF:_oRdd:_OrderCondInfo
@@ -300,7 +300,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             IF (SELF:_Orders:Count > 0)
                 FOR i := 0 TO SELF:_Orders:Count-1
                     ntxIndex := SELF:_Orders[i]
-                    IF (string.Equals(ntxIndex:OrderName, orderName, StringComparison.OrdinalIgnoreCase))
+                    IF (String.Equals(ntxIndex:OrderName, orderName, StringComparison.OrdinalIgnoreCase))
                         RETURN i + 1
                     ENDIF
                 NEXT

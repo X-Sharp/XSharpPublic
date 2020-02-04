@@ -178,7 +178,7 @@ BEGIN NAMESPACE XSharp
 					IF index > _internalList:Count-1
 						THROW ArgumentOutOfRangeException{}
 					ENDIF
-					_internalList[index] := VALUE
+					_internalList[index] := value
 				ENDIF
 			END SET
 		END PROPERTY
@@ -214,12 +214,12 @@ BEGIN NAMESPACE XSharp
 				    oElement := _internalList[index ]
                     IF oElement IS IIndexedProperties
                         VAR oIndex := (IIndexedProperties) oElement
-                        oIndex[index2] := VALUE
+                        oIndex[index2] := value
                     ENDIF
 					LOCAL oProp    AS PropertyInfo
                     oProp    := __GetIndexer(TRUE)
                     IF oProp != NULL
-                        oProp:SetValue(oElement, OOPHelpers.VOConvert(VALUE, oProp:PropertyType), <OBJECT>{index2} )
+                        oProp:SetValue(oElement, OOPHelpers.VOConvert(value, oProp:PropertyType), <OBJECT>{index2} )
                         RETURN
                     ENDIF
                     THROW ArgumentException{"Indexed property missing for type: "+oElement:GetType():FullName}
@@ -259,16 +259,16 @@ BEGIN NAMESPACE XSharp
 				    oElement := _internalList[index ]
                     IF oElement IS IIndexedProperties
                         VAR oIndex := (IIndexedProperties) oElement
-                        oIndex[name] := VALUE
+                        oIndex[name] := value
                     ENDIF
 					LOCAL oProp    AS PropertyInfo
                     oProp    := __GetIndexer(FALSE)
                     IF oProp != NULL
-                        oProp:SetValue(oElement, OOPHelpers.VOConvert(VALUE, oProp:PropertyType), <OBJECT>{name} )
+                        oProp:SetValue(oElement, OOPHelpers.VOConvert(value, oProp:PropertyType), <OBJECT>{name} )
                         RETURN
                     ENDIF
 					oProp	 := __GetProperty( name)
-					oProp:SetValue(oElement, NULL, VALUE)
+					oProp:SetValue(oElement, NULL, value)
 				ENDIF
 			END SET
 		END PROPERTY

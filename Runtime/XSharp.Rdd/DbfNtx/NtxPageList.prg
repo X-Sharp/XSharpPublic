@@ -21,10 +21,10 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         
         PRIVATE METHOD _FindPage( offset AS LONG ) AS NtxPage
             LOCAL page AS NtxPage
-            _pages:TryGetValue(offset, OUT page)
+            _Pages:TryGetValue(offset, OUT page)
             RETURN page
 
-        INTERNAL PROPERTY DumpHandle AS IntPtr GET _hDump SET _hDump := VALUE
+        INTERNAL PROPERTY DumpHandle AS IntPtr GET _hDump SET _hDump := value
 
         PRIVATE METHOD _DumpPage(page AS NtxPage) AS VOID
             IF _hDump != IntPtr.Zero .AND. ! page:Dumped
@@ -55,7 +55,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 page:PageOffset := pageNo
                 SELF:_Pages:Add(pageNo, page)
             ENDIF
-            SELF:_dumpPage(page)
+            SELF:_DumpPage(page)
             page:Hot := TRUE
             RETURN page
             
@@ -68,7 +68,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 page := NtxPage{SELF:_Order, pageNo}
                 SELF:_Pages:Add(pageNo, page)
             ENDIF
-            SELF:_dumpPage(page)
+            SELF:_DumpPage(page)
             RETURN page
             
             

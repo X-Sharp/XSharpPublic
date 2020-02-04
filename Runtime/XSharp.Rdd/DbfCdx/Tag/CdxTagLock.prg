@@ -21,13 +21,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         // Methods for NTX Locking
     
         METHOD Slock AS LOGIC
-            RETURN SELF:_Bag:SLock()
+            RETURN SELF:_bag:SLock()
 
         METHOD Xlock AS LOGIC
-            RETURN SELF:_Bag:XLock()
+            RETURN SELF:_bag:XLock()
 
         METHOD UnLock AS LOGIC
-            SELF:_Bag:UnLock()
+            SELF:_bag:UnLock()
             RETURN TRUE
             
     END CLASS

@@ -443,9 +443,9 @@ BEGIN NAMESPACE XSharp.RDD
         //-------------------------------------------------------
         #region Properties
         /// <inheritdoc />			
-        PROPERTY Alias 		AS STRING	GET oRdd:Alias SET oRdd:Alias := VALUE
+        PROPERTY Alias 		AS STRING	GET oRdd:Alias SET oRdd:Alias := value
         /// <inheritdoc />			
-        PROPERTY Area		AS DWORD	GET oRdd:Area  SET oRdd:Area := VALUE
+        PROPERTY Area		AS DWORD	GET oRdd:Area  SET oRdd:Area := value
         /// <inheritdoc />			
         PROPERTY BoF 		AS LOGIC	GET oRdd:BoF
         /// <inheritdoc />			
@@ -461,7 +461,7 @@ BEGIN NAMESPACE XSharp.RDD
         /// <inheritdoc />			
         PROPERTY FilterText	AS STRING	GET oRdd:FilterText
         /// <inheritdoc />			
-        PROPERTY Found		AS LOGIC	GET oRdd:Found SET oRdd:Found := VALUE
+        PROPERTY Found		AS LOGIC	GET oRdd:Found SET oRdd:Found := value
         /// <inheritdoc />			
         PROPERTY RecCount	AS LONG		GET oRdd:RecCount
         /// <inheritdoc />			

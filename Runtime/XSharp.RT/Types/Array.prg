@@ -141,7 +141,7 @@ BEGIN NAMESPACE XSharp
                 RETURN __GetElement(index)
             END GET
             SET
-                SELF:__SetElement(VALUE,index)
+                SELF:__SetElement(value,index)
             END SET
         END PROPERTY
 

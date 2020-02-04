@@ -565,7 +565,7 @@ FUNCTION AScan<T>(aTarget AS __ArrayBase<T>, uSearch AS T) AS DWORD WHERE T IS N
     RETURN ArrayHelpers.AScan( aTarget, uSearch,1, (INT) aTarget:Length) 
     
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ascan/*" /> 
-        /// <typeparam name="T">The type of the array elements</typeparam>
+    /// <typeparam name="T">The type of the array elements</typeparam>
     /// <param name="act">A lambda expression that will be evaluated for every element in the array.</param>
 FUNCTION AScan<T>(aTarget AS __ArrayBase<T>, act AS @@Func<T,LOGIC>) AS DWORD WHERE T IS NEW()
     ARRAYNOTNULL aTarget
@@ -580,7 +580,7 @@ FUNCTION AScan<T>(aTarget AS __ArrayBase<T>, uSearch AS T, nStart AS LONG) AS DW
     
     
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ascan/*" /> 
-        /// <typeparam name="T">The type of the array elements</typeparam>
+    /// <typeparam name="T">The type of the array elements</typeparam>
     /// <param name="act">A lambda expression that will be evaluated for every element in the array.</param>
 FUNCTION AScan<T>(aTarget AS __ArrayBase<T>, act AS @@Func<T,LOGIC>, nStart AS LONG) AS DWORD WHERE T IS NEW()
     ARRAYNOTNULL aTarget

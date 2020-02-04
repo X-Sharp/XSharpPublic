@@ -62,8 +62,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 #region Read/Write            
 
          INTERNAL METHOD Dump(sIntro AS STRING) AS STRING
-            LOCAL oSb AS stringBuilder
-            osb := stringBuilder{}
+            LOCAL oSb AS StringBuilder
+            oSb := StringBuilder{}
             oSb:AppendLine(sIntro)
             oSb:AppendLine("Tag       : "+SELF:TagName)
             oSb:AppendLine("Page      : 0x"+SELF:PageNo:ToString("X"))
@@ -108,40 +108,40 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 #region properties
 
         PROTECTED INTERNAL PROPERTY RootPage AS LONG GET _rootPage;
-            SET _SetLong(CDXTAGHEADER_ROOT, VALUE), _rootPage := Value
+            SET _SetLong(CDXTAGHEADER_ROOT, value), _rootPage := value
             
 		PROTECTED INTERNAL PROPERTY KeySize		AS WORD	GET _keyLength;
-			SET _SetWord(CDXTAGHEADER_KEYLENGTH, VALUE), _keyLength := Value
+			SET _SetWord(CDXTAGHEADER_KEYLENGTH, value), _keyLength := value
 
         PROTECTED INTERNAL PROPERTY Options	AS CdxOptions GET _options;
-			SET Buffer[CDXTAGHEADER_OPTIONS] := VALUE, _options := value
+			SET Buffer[CDXTAGHEADER_OPTIONS] := value, _options := value
 
 		PROTECTED INTERNAL PROPERTY Signature  AS BYTE GET _GetByte(CDXTAGHEADER_SIG) ;
-            SET _SetByte(CDXTAGHEADER_SIG, VALUE)
+            SET _SetByte(CDXTAGHEADER_SIG, value)
 
 	    PROTECTED INTERNAL PROPERTY KeyExprPos AS WORD GET _keyExprPos;
-			SET _SetWord(CDXTAGHEADER_KEYEXPRPOS, VALUE), _keyExprPos := Value
+			SET _SetWord(CDXTAGHEADER_KEYEXPRPOS, value), _keyExprPos := value
 
 	    PROTECTED INTERNAL PROPERTY KeyExprLen	AS WORD GET _keyExprLen;
-			SET _SetWord(CDXTAGHEADER_KEYEXPRLEN, VALUE), _keyExprLen := value
+			SET _SetWord(CDXTAGHEADER_KEYEXPRLEN, value), _keyExprLen := value
 
         PROTECTED INTERNAL PROPERTY ForExprPos	AS WORD	GET _forExprPos ;
-			SET _SetWord(CDXTAGHEADER_FOREXPRPOS, VALUE), _forExprPos  := Value
+			SET _SetWord(CDXTAGHEADER_FOREXPRPOS, value), _forExprPos  := value
 
 	    PROTECTED INTERNAL PROPERTY ForExprLen	AS WORD	GET _forExprLen ;
-			SET _SetWord(CDXTAGHEADER_FOREXPRLEN, VALUE), _forExprLen := value
+			SET _SetWord(CDXTAGHEADER_FOREXPRLEN, value), _forExprLen := value
 
 		PROTECTED INTERNAL PROPERTY Descending	AS LOGIC  GET _descending ;
-			SET _SetWord( CDXTAGHEADER_DESCENDING, (WORD) IIF(VALUE,1,0) ), _descending := value
+			SET _SetWord( CDXTAGHEADER_DESCENDING, (WORD) IIF(value,1,0) ), _descending := value
 
         PROTECTED INTERNAL PROPERTY KeyExpression AS STRING GET _keyExpression ;
-            SET _SetString(KeyExprPos+CDXPAGE_SIZE, KeyExprLen, VALUE) , _keyExpression := value
+            SET _SetString(KeyExprPos+CDXPAGE_SIZE, KeyExprLen, value) , _keyExpression := value
 
         PROTECTED INTERNAL PROPERTY ForExpression AS STRING GET _forExpression ;
-            SET _SetString(ForExprPos+CDXPAGE_SIZE, ForExprLen, VALUE) , _forExpression := Value
+            SET _SetString(ForExprPos+CDXPAGE_SIZE, ForExprLen, value) , _forExpression := value
 
         PROTECTED INTERNAL PROPERTY VFPCollation AS STRING GET _vfpCollation ;
-            SET _SetString(CDXTAGHEADER_VFPCOLLATION, 8, VALUE) , _vfpCollation := Value
+            SET _SetString(CDXTAGHEADER_VFPCOLLATION, 8, value) , _vfpCollation := value
 
 
 #endregion
@@ -151,7 +151,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 		PRIVATE CONST CDXTAGHEADER_VERSION		   := 0x08	AS WORD		// to increment on modification
 		PRIVATE CONST CDXTAGHEADER_KEYLENGTH	   := 0x0c	AS WORD		// Length of key
 		PRIVATE CONST CDXTAGHEADER_OPTIONS		   := 0x0e	AS WORD		// CdxOptions : bit field
-		PRIVATE CONST CDXTAGHEADER_Sig			   := 0x0f   AS WORD
+		PRIVATE CONST CDXTAGHEADER_SIG			   := 0x0f   AS WORD
         PRIVATE CONST CDXTAGHEADER_VFPCOLLATION    := 0x1ee AS WORD     // 8 bytes GENERAL, MACHINE, DUTCH, GERMAN , NORDIC etc
 
         // Harbour documents these values

@@ -78,7 +78,7 @@ PUBLIC CLASS XSharp.MemVar
     PRIVATE STATIC ThreadList := ThreadLocal< MemVarThreadInfo >{ {=> MemVarThreadInfo{} }}  AS ThreadLocal< MemVarThreadInfo >
     PRIVATE STATIC PROPERTY Info       AS MemVarThreadInfo          GET ThreadList:Value
 	PRIVATE STATIC PROPERTY Privates   AS Stack <MemVarLevel>       GET Info:Levels
-    PRIVATE STATIC PROPERTY Depth      AS INT GET Info:Depth        SET Info:Depth := VALUE
+    PRIVATE STATIC PROPERTY Depth      AS INT GET Info:Depth        SET Info:Depth := value
 	PRIVATE STATIC PROPERTY Current    AS MemVarLevel GET IIF (Privates:Count > 0, Privates:Peek(), NULL)
 
 	
@@ -133,15 +133,15 @@ PUBLIC CLASS XSharp.MemVar
 		RETURN NULL	
 
     
-	STATIC METHOD PrivatePut(name AS STRING, VALUE AS USUAL) AS LOGIC
+	STATIC METHOD PrivatePut(name AS STRING, uValue AS USUAL) AS LOGIC
 		CheckCurrent()      
 		IF Current:TryGetValue(name, OUT VAR oMemVar)
-			oMemVar:Value := VALUE
+			oMemVar:Value := uValue
 			RETURN TRUE			
 		ENDIF
         oMemVar := GetHigherLevelPrivate(name)
         IF oMemVar != NULL
-        	oMemVar:Value := VALUE
+        	oMemVar:Value := uValue
         	RETURN TRUE
         ENDIF
 		RETURN FALSE	
@@ -327,11 +327,11 @@ PUBLIC CLASS XSharp.MemVar
 		
 				
     
-	STATIC METHOD PublicPut(name AS STRING, VALUE AS USUAL) AS LOGIC
+	STATIC METHOD PublicPut(name AS STRING, uValue AS USUAL) AS LOGIC
 		VAR oMemVar := PublicFind(name)
 		IF oMemVar != NULL
             BEGIN LOCK oMemVar
-			    oMemVar:Value := VALUE
+			    oMemVar:Value := uValue
             END LOCK
 			RETURN TRUE			
 		ENDIF  

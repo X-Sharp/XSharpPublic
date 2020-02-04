@@ -724,6 +724,17 @@ namespace XSharp.MacroCompiler
             Require(Expect(TokenType.LPAREN), ErrorCode.Expected, "(");
 
             var e = Require(ParseExpression(), ErrorCode.Expected, "expression");
+            if (La() == TokenType.COMMA)
+            {
+                var elements = new List<Expr>();
+                elements.Add(e);
+                while (Expect(TokenType.COMMA))
+                {
+                    e = Require(ParseExpression(), ErrorCode.Expected, "expression");
+                    elements.Add(e);
+                }
+                e = new ExprList(elements);
+            }
 
             Require(Expect(TokenType.RPAREN) || AllowMissingSyntax, ErrorCode.Expected, ")");
 

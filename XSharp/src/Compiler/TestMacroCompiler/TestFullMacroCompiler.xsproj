@@ -42,7 +42,7 @@
     <PPO>false</PPO>
     <Prefer32Bit>False</Prefer32Bit>
   </PropertyGroup>
- <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Public|AnyCPU'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Public|AnyCPU'" Label="Configuration">
     <PlatformTarget>x86</PlatformTarget>
     <EmitDebugInformation>true</EmitDebugInformation>
     <DebugType>full</DebugType>
@@ -94,7 +94,7 @@
       <Private>True</Private>
       <HintPath>..\..\..\..\..\DevRt\Binaries\Debug\XSharp.Core.dll</HintPath>
     </Reference>
-    <Reference Include="XSharp.RT, Version=2.0.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586">
+    <Reference Include="XSharp.RT, Version=2.1.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586">
       <Name>XSharp.RT</Name>
       <AssemblyName>XSharp.RT.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
@@ -116,7 +116,7 @@
   <ItemGroup>
     <ProjectReference Include="..\XSFullMacroCompiler\FullMacroCompiler.xsproj">
       <Name>FullMacroCompiler</Name>
-      <Project>{e40ab43d-2dcb-4293-a734-b93a187efe9e}</Project>
+      <Project>{5dc40adc-f250-4611-ad89-b67b150bbc8e}</Project>
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>

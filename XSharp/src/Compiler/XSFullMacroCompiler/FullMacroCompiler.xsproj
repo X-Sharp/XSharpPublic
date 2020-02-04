@@ -102,7 +102,7 @@
       <Private>True</Private>
       <HintPath>..\..\..\..\..\DevRt\Binaries\Debug\XSharp.Core.dll</HintPath>
     </Reference>
-    <Reference Include="XSharp.RT, Version=2.0.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586">
+    <Reference Include="XSharp.RT, Version=2.1.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586">
       <Name>XSharp.RT</Name>
       <AssemblyName>XSharp.RT.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>

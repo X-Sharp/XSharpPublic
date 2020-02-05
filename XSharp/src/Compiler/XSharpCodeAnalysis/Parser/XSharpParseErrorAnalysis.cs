@@ -269,6 +269,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var tokens = context._Tokens;
             IToken i1 = null;
             IToken i2 = null;
+            context.Numbers = new List<IToken>();
             IToken errortoken = null;
             if (context._Tokens.Count > 0)
             {
@@ -278,12 +279,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     i2 = tokens[1];
                     //         0        1  2  3  4   5
                     // #pragma warnings ( 123 , off  )
-                    if (i2.Type == XSharpParser.LPAREN && tokens.Count >= 5 )
+                    // #pragma warnings ( pop )
+                    if (i2.Type == XSharpParser.LPAREN )
                     {
-                        if (tokens[3].Type == XSharpParser.COMMA && tokens[5].Type == XSharpParser.RPAREN)
+                        if (tokens.Count >= 6 && tokens[3].Type == XSharpParser.COMMA && tokens[5].Type == XSharpParser.RPAREN)
                         {
                             i2 = tokens[4];
-                            context.Numbers = new List<IToken>() { tokens[2] };
+                            context.Numbers.Add( tokens[2] );
+                        }
+                        else if (tokens.Count >= 4 && tokens[3].Type == XSharpParser.RPAREN)
+                        {
+                            i2 = tokens[2];
                         }
                     }
                     else
@@ -292,7 +298,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         // #pragma warnings disable 1 , 2 , 3
                         if (tokens.Count > 2)
                         {
-                            context.Numbers = new List<IToken>() ;
                             for (int i = 2; i < context._Tokens.Count; i++)
                             {
                                 if (tokens[i].Type != XSharpParser.COMMA)

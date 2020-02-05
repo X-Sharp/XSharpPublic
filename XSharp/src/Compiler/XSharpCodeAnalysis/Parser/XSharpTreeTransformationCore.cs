@@ -41,6 +41,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             public bool LastIsStatic;
             public List<Tuple<int, String>> InitProcedures;
             public List<FieldDeclarationSyntax> Globals;
+            public List<PragmaWarningDirectiveTriviaSyntax> Pragmas ;
+
             public bool HasPCall;
             public bool NeedsProcessing;
 
@@ -60,6 +62,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 NeedsProcessing = false;
                 LastIsStatic = false;
                 LastMember = null;
+                Pragmas = new List<PragmaWarningDirectiveTriviaSyntax>();
             }
 
             internal void Free()
@@ -2580,19 +2583,64 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         protected void _exitEntity(XSharpParserRuleContext context)
         {
             var entity = context.children[0] as IXParseTree;
-            if (_isScript)
+            if (! (entity is XP.PragmaContext))
             {
-                context.Put(entity.Get<CSharpSyntaxNode>());
+                if (_isScript)
+                {
+                    context.Put(entity.Get<CSharpSyntaxNode>());
+                }
+                else if (entity is XP.IGlobalEntityContext) // procedure, function, DLL function, GLobal, Define
+                {
+                    ProcessGlobalEntityContext(entity as XP.IGlobalEntityContext);
+                }
+                else
+                {
+                    // When last entity has to go to the functions class 
+                    ProcessNonGlobalEntity(context, entity);
+                }
             }
-            else if (entity is XP.IGlobalEntityContext) // procedure, function, DLL function, GLobal, Define
+        }
+
+        public override void EnterPragma([NotNull] XP.PragmaContext context)
+        {
+            if (context.IsValid)
             {
-                ProcessGlobalEntityContext(entity as XP.IGlobalEntityContext);
+                SyntaxToken kind1;
+                SyntaxToken kind2;
+                kind1 = SyntaxFactory.MakeToken(SyntaxKind.WarningKeyword, context._Tokens[0].Text);
+                if (context.Disable)
+                {
+                    kind2 = SyntaxFactory.MakeToken(SyntaxKind.DisableKeyword, context.Switch.Text);
+                }
+                else
+                {
+                    kind2 = SyntaxFactory.MakeToken(SyntaxKind.RestoreKeyword, context.Switch.Text);
+                }
+
+                var list = new List<ExpressionSyntax>();
+                foreach (var token in context.Numbers)
+                {
+                    if (token.Type == XSharpParser.INT_CONST)
+                    {
+                        var num = token.SyntaxLiteralValue(_options);
+                        list.Add(GenerateLiteral((int) num.Value));
+                    }
+                    else
+                    {
+                        list.Add(GenerateLiteral(token.Text));
+                    }
+                }
+
+                var pragma = SyntaxFactory.PragmaWarningDirectiveTrivia(
+                    SyntaxFactory.MakeToken(SyntaxKind.HashToken),
+                    context.Start.SyntaxKeyword(),
+                    kind1, kind2, MakeSeparatedList(list.ToArray()),
+                    SyntaxFactory.MakeToken(SyntaxKind.EndOfDirectiveToken),
+                    true);
+                context.Put(pragma); 
+                GlobalEntities.Pragmas.Add(pragma);
             }
-            else
-            {
-                // When last entity has to go to the functions class 
-                ProcessNonGlobalEntity(context, entity);
-            }
+            return;
         }
 
         public override void ExitEntity([NotNull] XP.EntityContext context)

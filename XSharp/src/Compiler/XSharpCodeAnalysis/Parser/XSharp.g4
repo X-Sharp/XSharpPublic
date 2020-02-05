@@ -73,9 +73,8 @@ entity              : namespace_
 eos                 : EOS+ 
                     ;
 
-
-pragma                : PRAGMA I1=ID I2=ID      // WARNING      DISABLE | RESTORE
-                        (Tokens += (INT_CONST | ID) (COMMA Tokens += (INT_CONST | ID))* )?
+                        // everything is handled in the error analysis and the treetransformation
+pragma                : P=PRAGMA (Tokens += .)*? EOS
                       ;
 
 

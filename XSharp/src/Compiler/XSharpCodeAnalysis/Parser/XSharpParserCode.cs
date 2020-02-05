@@ -99,6 +99,10 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         public partial class PragmaContext
         {
             public bool IsValid;
+            public IToken Switch;
+            public List<IToken> Numbers;
+            public bool Disable;
+
         }
 
 #if !VSPARSER
@@ -397,7 +401,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public FuncprocModifiersContext FuncProcModifiers => Modifiers;
             public StatementBlockContext Statements => StmtBlk;
             public int RealType { get; set; } // fox FoxPro Function and Procedure will be come method, access or assign
-
         }
 
         public interface IMethodContext : IEntityWithBodyContext

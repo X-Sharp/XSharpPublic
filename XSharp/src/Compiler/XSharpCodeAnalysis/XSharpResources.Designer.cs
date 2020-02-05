@@ -14267,7 +14267,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Expected &apos;disable&apos; or &apos;restore&apos;.
+        ///   Looks up a localized string similar to Unrecognized or unsupported #pragma state &apos;{0}&apos;.
         /// </summary>
         internal static string WRN_IllegalPPWarning {
             get {
@@ -14276,7 +14276,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Expected &apos;disable&apos; or &apos;restore&apos; after #pragma warning.
+        ///   Looks up a localized string similar to Unrecognized or unsupported #pragma state &apos;{0}&apos;.
         /// </summary>
         internal static string WRN_IllegalPPWarning_Title {
             get {
@@ -14285,7 +14285,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unrecognized #pragma directive.
+        ///   Looks up a localized string similar to Unrecognized or unsupported #pragma directive &apos;{0}&apos;.
         /// </summary>
         internal static string WRN_IllegalPragma {
             get {
@@ -14294,7 +14294,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unrecognized #pragma directive.
+        ///   Looks up a localized string similar to Unrecognized or unsupported #pragma directive &apos;{0}&apos;.
         /// </summary>
         internal static string WRN_IllegalPragma_Title {
             get {

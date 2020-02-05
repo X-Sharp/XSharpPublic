@@ -2783,16 +2783,16 @@ A catch() block after a catch (System.Exception e) block can catch non-CLS excep
     <value>Control cannot leave the body of an anonymous method or lambda expression</value>
   </data>
   <data name="WRN_IllegalPragma" xml:space="preserve">
-    <value>Unrecognized #pragma directive</value>
+    <value>Unrecognized or unsupported #pragma directive '{0}'</value>
   </data>
   <data name="WRN_IllegalPragma_Title" xml:space="preserve">
-    <value>Unrecognized #pragma directive</value>
+    <value>Unrecognized or unsupported #pragma directive '{0}'</value>
   </data>
   <data name="WRN_IllegalPPWarning" xml:space="preserve">
-    <value>Expected 'disable' or 'restore'</value>
+    <value>Unrecognized or unsupported #pragma state '{0}'</value>
   </data>
   <data name="WRN_IllegalPPWarning_Title" xml:space="preserve">
-    <value>Expected 'disable' or 'restore' after #pragma warning</value>
+    <value>Unrecognized or unsupported #pragma state '{0}'</value>
   </data>
   <data name="WRN_BadRestoreNumber" xml:space="preserve">
     <value>Cannot restore warning 'XS{0}' because it was disabled globally</value>

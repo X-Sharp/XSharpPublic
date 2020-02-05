@@ -2,6 +2,9 @@
 
 using System;
 using System.Diagnostics;
+#if XSHARP
+using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
+#endif
 using Microsoft.CodeAnalysis.Text;
 using Roslyn.Utilities;
 
@@ -24,6 +27,13 @@ namespace Microsoft.CodeAnalysis
         public SourceLocation(SyntaxNode node)
             : this(node.SyntaxTree, node.Span)
         {
+#if XSHARP
+            if (node.XNode != null)
+            {
+                var xnode = node.XNode as XSharpParserRuleContext;
+                _span = xnode.GetLocation().SourceSpan;
+            }
+#endif
         }
 
         public SourceLocation(in SyntaxToken token)

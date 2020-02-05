@@ -406,6 +406,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     result.InitProcedures = treeTransform.GlobalEntities.InitProcedures;
                     result.Globals = treeTransform.GlobalEntities.Globals;
+                    result.Pragmas = treeTransform.GlobalEntities.Pragmas;
                     result.IncludedFiles = pp?.IncludedFiles;
                     result.FileWidePublics = treeTransform.GlobalEntities.FileWidePublics;
                     result.HasPCall = treeTransform.GlobalEntities.HasPCall;

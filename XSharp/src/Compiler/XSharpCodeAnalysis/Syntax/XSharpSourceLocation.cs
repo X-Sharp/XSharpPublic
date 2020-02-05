@@ -5,6 +5,7 @@
 //
 
 using System;
+using Antlr4.Runtime;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using Microsoft.CodeAnalysis.Text;
 using Roslyn.Utilities;
@@ -23,10 +24,32 @@ namespace Microsoft.CodeAnalysis
 
         internal XSharpSourceLocation(XSharpParserRuleContext context)
         {
-            var lp1 = new LinePosition(context.Start.Line - 1, context.Start.Column);
-            var lp2 = new LinePosition(context.Stop.Line - 1, context.Stop.Column + context.FullWidth - 1);
+            var start = context.Start as XSharpToken;
+            var stop = context.Stop as XSharpToken;
+            if (start.SourceSymbol != null)
+                start = start.SourceSymbol;
+            if (stop.SourceSymbol != null)
+                stop = stop.SourceSymbol;
+
+            if (stop.Type == XSharpLexer.Eof)
+            {
+                var cu = context.CompilationUnit;
+                if (cu != null)
+                {
+                    var stream = cu.XTokens as BufferedTokenStream;
+                    var tokens = stream.GetTokens();
+                    var last = tokens.Count - 1;
+                    if (tokens[last].Type == XSharpLexer.Eof && last > 0)
+                    {
+                        stop = (XSharpToken) tokens[last - 1];
+                    }
+                }
+            }
+            var width = stop.StopIndex - start.StartIndex;
+            var lp1 = new LinePosition(start.Line - 1, start.Column);
+            var lp2 = new LinePosition(stop.Line - 1, stop.Column + stop.Text.Length - 1);
             _context = context;
-            _sourceSpan = new TextSpan(context.Start.StartIndex, context.FullWidth);
+            _sourceSpan = new TextSpan(start.StartIndex, width);
             _lineSpan = new FileLinePositionSpan(context.SourceFileName, new LinePositionSpan(lp1, lp2));
 
         }

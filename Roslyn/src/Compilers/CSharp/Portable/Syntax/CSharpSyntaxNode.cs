@@ -14,6 +14,7 @@ using Roslyn.Utilities;
 #if XSHARP
 using static LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
+using Internal = Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax;
 #endif
 namespace Microsoft.CodeAnalysis.CSharp
 {
@@ -222,7 +223,15 @@ namespace Microsoft.CodeAnalysis.CSharp
         /// </summary>
         public new Location GetLocation()
         {
+#if XSHARP
+            if (this.Green is Internal.CSharpSyntaxNode csn && csn.XNode != null)
+            {
+                return csn.XNode.GetLocation();
+            }
+
+#endif
             return new SourceLocation(this);
+
         }
 
         /// <summary>
@@ -559,7 +568,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             return false;
         }
 
-        #endregion
+#endregion
 
         string IFormattable.ToString(string format, IFormatProvider formatProvider)
         {

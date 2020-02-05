@@ -27,6 +27,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax
         // Add all active #pragma warn directives under trivia into the list, in source code order.
         private static void GetAllPragmaWarningDirectives(SyntaxTree syntaxTree, ArrayBuilder<PragmaWarningDirectiveTriviaSyntax> directiveList)
         {
+#if XSHARP
+            var unit = syntaxTree.GetRoot() as CompilationUnitSyntax;
+            foreach (var warning in unit.Pragmas)
+            {
+                var xNode = warning.XNode;
+                directiveList.Add((PragmaWarningDirectiveTriviaSyntax) warning.CreateRed(null, xNode.Position));
+            }
+
+#else
+
             foreach (var d in syntaxTree.GetRoot().GetDirectives())
             {
                 if (d.Kind() == SyntaxKind.PragmaWarningDirectiveTrivia)
@@ -39,12 +49,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax
                         directiveList.Add(w);
                 }
             }
+#endif
         }
 
-        // Given the ordered list of all pragma warning directives in the syntax tree, return a list of mapping entries, 
-        // containing the cumulative set of warnings that are disabled for that point in the source.
-        // This mapping also contains a global warning option, accumulated of all #pragma up to the current line position.
-        private static WarningStateMapEntry[] CreatePragmaWarningStateEntries(ImmutableArray<PragmaWarningDirectiveTriviaSyntax> directiveList)
+            // Given the ordered list of all pragma warning directives in the syntax tree, return a list of mapping entries, 
+            // containing the cumulative set of warnings that are disabled for that point in the source.
+            // This mapping also contains a global warning option, accumulated of all #pragma up to the current line position.
+            private static WarningStateMapEntry[] CreatePragmaWarningStateEntries(ImmutableArray<PragmaWarningDirectiveTriviaSyntax> directiveList)
         {
             var entries = new WarningStateMapEntry[directiveList.Length + 1];
             var current = new WarningStateMapEntry(0, ReportDiagnostic.Default, null);
@@ -98,8 +109,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax
                         }
                     }
                 }
-
+#if XSHARP
+                current = new WarningStateMapEntry(currentDirective.Position, accumulatedGeneralWarningState, accumulatedSpecificWarningState);
+#else
                 current = new WarningStateMapEntry(currentDirective.Location.SourceSpan.End, accumulatedGeneralWarningState, accumulatedSpecificWarningState);
+#endif
                 ++index;
                 entries[index] = current;
             }

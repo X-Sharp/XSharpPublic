@@ -895,6 +895,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.VALUE:
                     r = SyntaxFactory.Identifier("value");
                     break;
+                case XSharpParser.PRAGMA:
+                    r = SyntaxFactory.MakeToken(SyntaxKind.PragmaKeyword, text.Substring(1));
+                    break;
                 case XSharpParser.ACCESS:
                 case XSharpParser.ALIGN:
                 case XSharpParser.AS:

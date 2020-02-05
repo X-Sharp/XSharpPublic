@@ -266,28 +266,89 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitPragma([NotNull] XSharpParser.PragmaContext context)
         {
             ErrorCode error = ErrorCode.Unknown;
+            var tokens = context._Tokens;
+            IToken i1 = null;
+            IToken i2 = null;
             IToken errortoken = null;
-            switch (context.I1.Text.ToLower())
+            if (context._Tokens.Count > 0)
             {
-                case "warning":
-                case "warnings":
-                    break;
-                default:
-                    error = ErrorCode.WRN_IllegalPragma;
-                    errortoken = context.I1;
-                    break;
+                i1 = tokens[0];
+                if (tokens.Count > 1)
+                {
+                    i2 = tokens[1];
+                    //         0        1  2  3  4   5
+                    // #pragma warnings ( 123 , off  )
+                    if (i2.Type == XSharpParser.LPAREN && tokens.Count >= 5 )
+                    {
+                        if (tokens[3].Type == XSharpParser.COMMA && tokens[5].Type == XSharpParser.RPAREN)
+                        {
+                            i2 = tokens[4];
+                            context.Numbers = new List<IToken>() { tokens[2] };
+                        }
+                    }
+                    else
+                    {
+                        //         0        1       2 3 4 5 6 
+                        // #pragma warnings disable 1 , 2 , 3
+                        if (tokens.Count > 2)
+                        {
+                            context.Numbers = new List<IToken>() ;
+                            for (int i = 2; i < context._Tokens.Count; i++)
+                            {
+                                if (tokens[i].Type != XSharpParser.COMMA)
+                                {
+                                    context.Numbers.Add(tokens[i]);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            if (i1 == null) 
+            {
+                error = ErrorCode.WRN_IllegalPragma;
+                errortoken = context.P; 
             }
             if (error == ErrorCode.Unknown)
             {
-                switch (context.I2.Text.ToLower())
+
+                switch (i1.Text.ToLower())
                 {
-                    case "disable":
-                    case "restore":
+                    case "warning":
+                    case "warnings":
                         break;
                     default:
-                        error = ErrorCode.WRN_IllegalPPWarning;
-                        errortoken = context.I2;
+                        error = ErrorCode.WRN_IllegalPragma;
+                        errortoken = i1;
                         break;
+                }
+            }
+            context.Switch = i2;
+            if (error == ErrorCode.Unknown)
+            {
+                if (i2 != null)
+                {
+                    switch (i2.Text.ToLower())
+                    {
+                        case "disable":
+                        case "off":
+                            context.Disable = true;
+                            break;
+                        case "restore":
+                        case "default":
+                        case "pop":
+                            context.Disable = false;
+                            break;
+                        default:
+                            error = ErrorCode.WRN_IllegalPPWarning;
+                            errortoken = i2;
+                            break;
+                    }
+                }
+                else
+                {
+                    error = ErrorCode.WRN_IllegalPPWarning;
+                    errortoken = i1;
                 }
             }
             // C# does not validate the error codes, so we will not do that either.

@@ -234,6 +234,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             LOCAL nOffSet   AS Int32
             LOCAL aBytes := BYTE[]{KeyLength} AS BYTE[]
+            local aClear := BYTE[]{KeyLength} AS BYTE[]
             LOCAL nRecno    AS Int32
             LOCAL nDup, nTrail AS BYTE
             LOCAL nCopy     AS Int32
@@ -241,7 +242,6 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL nStep     AS Int32
             LOCAL nLast     AS Int32
             LOCAL trailchar  AS BYTE
-
             
             // First key starts at end of page
             nStart := CDXPAGE_SIZE
@@ -253,6 +253,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ELSE
                 trailchar := 32
             ENDIF
+            MemSet(aClear, 0, SELF:KeyLength, trailchar)
             nOffSet := CDXLEAF_HEADERLEN
             nStep := SELF:DataBytes
             IF SELF:NumKeys > 0
@@ -264,31 +265,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     iTemp   := _GetWord(nOffSet + SELF:DataBytes - 2)
                     SELF:_getDupTrail(iTemp, OUT nDup, OUT nTrail)
                     nCopy    := SELF:KeyLength - nTrail - nDup
-                    IF nTrail > 0
-                        IF nTrail > SELF:KeyLength
-                            //? "nTrail > _KeyLen"
-                            NOP
-                        ELSE
-                            TRY
-                                MemSet(aBytes, SELF:KeyLength - nTrail, nTrail, trailchar)
-                            CATCH AS Exception
-                                NOP
-                            END TRY
-                        ENDIF
+                    IF nTrail > 0 .and. nTrail <= SELF:KeyLength
+                       System.Array.Copy(aClear, 0,  aBytes, SELF:KeyLength - nTrail, nTrail)
                     ENDIF
                     // Copy to aBytes from pos nDup
-                    IF nCopy > 0
-                        IF nCopy > nStart
-                            //? "nKey > nStart"
-                            NOP // Altd()
-                        ELSE
-                            TRY
-                                System.Array.Copy(Buffer, nStart - nCopy, aBytes, nDup, nCopy)
-                            CATCH AS Exception
-                                NOP
-                            END TRY
-                            nStart := nStart - nCopy
-                        ENDIF
+                    IF nCopy > 0 .and. nCopy <= nStart
+                        System.Array.Copy(_buffer, nStart - nCopy, aBytes, nDup, nCopy)
+                        nStart := nStart - nCopy
                     ENDIF
                     _leaves.Add( CdxLeaf{ nRecno, aBytes,nDup, nTrail})
                     nOffSet      += nStep
@@ -307,12 +290,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             _rightPtr       := _GetLong(CDXLEAF_OFFSET_RIGHTPTR)
             _freeSpace      := _GetWord(CDXLEAF_OFFSET_FREESPACE)
             _recnoMask      := _GetLong(CDXLEAF_OFFSET_RECNOMASK)
-            _duplicateMask  := Buffer[CDXLEAF_OFFSET_DUPMASK]
-            _trailingMask   := Buffer[CDXLEAF_OFFSET_TRAILMASK]
-            _recordBits     := Buffer[CDXLEAF_OFFSET_RECNUMBITS]
-            _dupBits        := Buffer[CDXLEAF_OFFSET_DUPCOUNTBITS]
-            _trailBits      := Buffer[CDXLEAF_OFFSET_TRAILINGBITS]
-            _dataBytes      := Buffer[CDXLEAF_OFFSET_DATABYTES]
+            _duplicateMask  := _buffer[CDXLEAF_OFFSET_DUPMASK]
+            _trailingMask   := _buffer[CDXLEAF_OFFSET_TRAILMASK]
+            _recordBits     := _buffer[CDXLEAF_OFFSET_RECNUMBITS]
+            _dupBits        := _buffer[CDXLEAF_OFFSET_DUPCOUNTBITS]
+            _trailBits      := _buffer[CDXLEAF_OFFSET_TRAILINGBITS]
+            _dataBytes      := _buffer[CDXLEAF_OFFSET_DATABYTES]
             LenShift       := (SELF:KeyLength << 8 ) | (8 - SELF:DuplicateBits)
 
 
@@ -459,12 +442,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN CdxAction.Ok
 
 
-        INTERNAL METHOD SetLeaves(leaves AS IList<CdxLeaf>, nStart AS LONG, nCount AS LONG) AS CdxAction
+        INTERNAL METHOD SetLeaves(list AS IList<CdxLeaf>, nStart AS LONG, nCount AS LONG) AS CdxAction
             LOCAL action AS CdxAction
             //Debug(nStart, nCount, "keys", self:NumKeys, "free", self:Freespace)
             SELF:ClearRecordsAndKeys()
             FOR VAR nKey := nStart TO nStart+nCount-1
-                LOCAL key := leaves[nKey] AS CdxLeaf
+                LOCAL key := list[nKey] AS CdxLeaf
                 action := SELF:Add(key:Recno, key:Key)
             NEXT
             action := SELF:Compress()
@@ -570,7 +553,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 oPage := SELF:Tag:GetPage(SELF:LeftPtr)
                 IF oPage:NumKeys > 0
                     oLeft := oPage:Leaves[oPage:NumKeys-1]
-                    oRight := SELF:Leaves[0]
+                    oRight := SELF:_leaves[0]
                     ValidateLeaves(oLeft, oRight)
                 ENDIF
             ENDIF
@@ -578,7 +561,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 oPage := SELF:Tag:GetPage(SELF:RightPtr)
                 IF oPage:NumKeys > 0
                     oRight := oPage:Leaves[0]
-                    oLeft := SELF:Leaves[SELF:NumKeys-1]
+                    oLeft := SELF:_leaves[SELF:NumKeys-1]
                     ValidateLeaves(oLeft, oRight)
                 ENDIF
             ENDIF
@@ -641,9 +624,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 #endif
         INTERNAL METHOD Split(oPageR AS CdxLeafPage, action AS CdxAction) AS CdxAction
             //Debug("New", oPageR:PageNo:ToString("X"))
-            VAR leaves      := _leaves
+            VAR list      := _leaves
             IF action:Recno > 0
-                leaves := (List<CdxLeaf>) SELF:GetLeaves()
+                list := (List<CdxLeaf>) SELF:GetLeaves()
                 VAR nTrailCount := SELF:_getTrailCount(action:Key)
                 LOCAL nDupCount AS BYTE
                 VAR nPos := SELF:FindKey(action:Key,action:Recno,action:Key:Length)
@@ -651,31 +634,31 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 IF nPos == 0
                     nDupCount := 0
                     leaf := CdxLeaf{action:Recno, action:Key, 0, nTrailCount}
-                    leaves:Insert(0, leaf)
+                    list:Insert(0, leaf)
 #ifdef TESTCDX 
-                    IF leaves:Count > 1
-                        ValidateLeaves(leaf, leaves[1])
+                    IF list:Count > 1
+                        ValidateLeaves(leaf, list[1])
                     ENDIF
 #endif
-                ELSEIF nPos > 0 .and. nPos < leaves:Count
-                    VAR nextLeaf := leaves[nPos]
+                ELSEIF nPos > 0 .and. nPos < list:Count
+                    VAR nextLeaf := list[nPos]
                     VAR nextKey := nextLeaf:Key
                     nDupCount := SELF:_getDupCount(nextKey, action:Key, nTrailCount)
                     leaf := CdxLeaf{action:Recno, action:Key, nDupCount, nTrailCount}
-                    leaves:Insert(nPos, leaf)
+                    list:Insert(nPos, leaf)
 #ifdef TESTCDX
                     ValidateLeaves(leaf, nextLeaf)
                     IF nPos > 0
-                        ValidateLeaves( leaves[nPos-1], leaf)
+                        ValidateLeaves( list[nPos-1], leaf)
                     ENDIF
 #endif
                 ELSE
                     // append at the end
-                    VAR prevLeaf := leaves[leaves:Count-1]
+                    VAR prevLeaf := list[list:Count-1]
                     VAR prevKey := prevLeaf:Key
                     nDupCount := SELF:_getDupCount(prevKey, action:Key, nTrailCount)
                     leaf := CdxLeaf{action:Recno, action:Key, nDupCount, nTrailCount}
-                    leaves:Add(leaf)
+                    list:Add(leaf)
 #ifdef TESTCDX
                     ValidateLeaves(prevLeaf, leaf)
 #endif
@@ -683,10 +666,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 ENDIF
                 
             ENDIF
-            VAR half := leaves:Count /2
+            VAR half := list:Count /2
             //? "Writing to page 1", oPageR:PageNo:ToString("X")
-            SELF:SetLeaves(leaves, 0, half)
-            oPageR:SetLeaves(leaves, half, leaves:Count - half)
+            SELF:SetLeaves(list, 0, half)
+            oPageR:SetLeaves(list, half, list:Count - half)
             //? "Writing to page 2", oPageR:PageNo:ToString("X")
             SELF:Write()
             oPageR:Write()
@@ -710,11 +693,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 ENDIF
                 // we must adjust the dupcount for the element AFTER the element that will be deleted
                 if nPos > 0 .and. nPos < SELF:NumKeys-1
-                    var nextLeaf := Leaves[nPos+1]
-                    var prevLeaf := Leaves[nPos-1]
+                    var nextLeaf := _leaves[nPos+1]
+                    var prevLeaf := _leaves[nPos-1]
                     nextLeaf:Dup := _getDupCount(prevLeaf:Key, nextLeaf:Key,nextLeaf:Trail)
                 ELSEIF nPos == 0 .AND. _leaves:Count > 1
-                    Leaves[1]:Dup := 0
+                    _leaves[1]:Dup := 0
                 ENDIF
                 _leaves:RemoveAt(nPos)
                 SELF:NumKeys -= 1
@@ -756,12 +739,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF SELF:NumKeys == 0 .OR. ! SELF:ValidLeaves
                 RETURN CdxAction.Ok
             ENDIF
-            VAR copyLeaves  := SELF:_leaves
+            VAR list  := SELF:_leaves
             SELF:ClearRecordsAndKeys()
 
             LOCAL nKey   := 0 AS INT
             LOCAL nStart := CDXLEAF_HEADERLEN + SELF:Freespace AS WORD
-            FOREACH leaf AS CdxLeaf IN copyLeaves
+            FOREACH leaf AS CdxLeaf IN list
                 VAR nDup   := leaf:Dup
                 VAR nTrail := leaf:Trail
                 IF nKey == 0
@@ -772,19 +755,19 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 VAR nBytesToCopy := SELF:KeyLength - nDup - nTrail
                 IF SELF:Freespace < (SELF:DataBytes + nBytesToCopy)
                     VAR action := CdxAction.SplitLeaf(SELF, -1, NULL, 0)
-                    SELF:_leaves := copyLeaves
+                    SELF:_leaves := list
                     RETURN SELF:Tag:DoAction(action)
                 ENDIF
                 SELF:_placeRecno(nKey, leaf:Recno, SELF:_makeDupTrail(nDup, nTrail))
                 IF nBytesToCopy != 0
-                    System.Array.Copy(leaf:Key, nDup, Buffer, nStart-nBytesToCopy,  nBytesToCopy)
+                    System.Array.Copy(leaf:Key, nDup, _buffer, nStart-nBytesToCopy,  nBytesToCopy)
                 ENDIF
                 SELF:Freespace := SELF:Freespace -  (nBytesToCopy + SELF:DataBytes)
                 nStart  -= nBytesToCopy  
                 nKey    += 1
             NEXT
-            SELF:NumKeys := (WORD) copyLeaves:Count
-            SELF:_leaves := copyLeaves
+            SELF:NumKeys := (WORD) list:Count
+            SELF:_leaves := list
 #ifdef TESTCDX
             SELF:ValidateChain()
 #endif
@@ -841,11 +824,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 LOCAL nOffset AS LONG
                 nOffset           := CDXLEAF_HEADERLEN + nIndex * SELF:DataBytes
                 liValue:longValue := recno
-	            Buffer[nOffset]   :=  liValue:b1
-                Buffer[nOffset+1] :=  liValue:b2  
-                Buffer[nOffset+2] :=  liValue:b3
+	            _buffer[nOffset]   :=  liValue:b1
+                _buffer[nOffset+1] :=  liValue:b2  
+                _buffer[nOffset+2] :=  liValue:b3
                 IF SELF:DataBytes > 3
-                    Buffer[nOffset+3] :=  liValue:b4
+                    _buffer[nOffset+3] :=  liValue:b4
                 ENDIF
                 nOffset := nOffset + SELF:DataBytes - 2
                 LOCAL wValue := _GetWord(nOffset) AS WORD

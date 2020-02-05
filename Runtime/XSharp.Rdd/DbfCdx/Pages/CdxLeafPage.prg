@@ -756,12 +756,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF SELF:NumKeys == 0 .OR. ! SELF:ValidLeaves
                 RETURN CdxAction.Ok
             ENDIF
-            VAR leaves  := SELF:_leaves
+            VAR copyLeaves  := SELF:_leaves
             SELF:ClearRecordsAndKeys()
 
             LOCAL nKey   := 0 AS INT
             LOCAL nStart := CDXLEAF_HEADERLEN + SELF:Freespace AS WORD
-            FOREACH leaf AS CdxLeaf IN SELF:Leaves
+            FOREACH leaf AS CdxLeaf IN copyLeaves
                 VAR nDup   := leaf:Dup
                 VAR nTrail := leaf:Trail
                 IF nKey == 0
@@ -772,7 +772,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 VAR nBytesToCopy := SELF:KeyLength - nDup - nTrail
                 IF SELF:Freespace < (SELF:DataBytes + nBytesToCopy)
                     VAR action := CdxAction.SplitLeaf(SELF, -1, NULL, 0)
-                    SELF:_leaves := leaves
+                    SELF:_leaves := copyLeaves
                     RETURN SELF:Tag:DoAction(action)
                 ENDIF
                 SELF:_placeRecno(nKey, leaf:Recno, SELF:_makeDupTrail(nDup, nTrail))
@@ -783,8 +783,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 nStart  -= nBytesToCopy  
                 nKey    += 1
             NEXT
-            SELF:NumKeys := (WORD) leaves:Count
-            SELF:_leaves := leaves
+            SELF:NumKeys := (WORD) copyLeaves:Count
+            SELF:_leaves := copyLeaves
 #ifdef TESTCDX
             SELF:ValidateChain()
 #endif

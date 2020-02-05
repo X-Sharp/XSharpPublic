@@ -15,11 +15,14 @@ BEGIN NAMESPACE XSharp.RDD
     /// <example>
     /// <code language="X#">
     /// CLASS MyRDD Inherit XSharp.RDD.WrapperRDD
+    /// 
     /// CONSTRUCTOR(oRdd as XSharp.RDD.IRDD)
     ///    SUPER(oRdd)
+    /// 
     /// METHOD GetValue(nFldPos AS LONG)		AS OBJECT
     ///    Log("Reading field "+nFldPos:ToString())
     ///    RETURN SUPER:GetValue(nFldPos)
+    ///
     /// METHOD PutValue(nFldPos AS LONG, oValue AS OBJECT) AS LOGIC
     ///    Log("Writing field "+nFldPos:ToString()+" value "+oValue:ToString())
     ///    RETURN SUPER:PutValue(nFldPos, oValue)

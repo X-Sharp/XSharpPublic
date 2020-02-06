@@ -266,13 +266,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             t.GlobalEntities.Members.Add(t.GenerateGlobalClass(globalClassName, false, true));
             var eof = SyntaxFactory.Token(SyntaxKind.EndOfFileToken);
-            var tree = CSharpSyntaxTree.Create(
-                (Syntax.CompilationUnitSyntax)t._syntaxFactory.CompilationUnit(
+            var cu = t._syntaxFactory.CompilationUnit(
                     t.GlobalEntities.Externs,
                     t.GlobalEntities.Usings,
                     t.GlobalEntities.Attributes,
-                    t.GlobalEntities.Members, eof).CreateRed());
-            return tree;
+                    t.GlobalEntities.Members, eof);
+            cu.XGenerated = true;
+            var red = (Syntax.CompilationUnitSyntax)cu.CreateRed();
+            return CSharpSyntaxTree.Create(red);
         }
         internal T NotInDialect<T>(T node, string feature, string additional = "") where T : CSharpSyntaxNode
         {

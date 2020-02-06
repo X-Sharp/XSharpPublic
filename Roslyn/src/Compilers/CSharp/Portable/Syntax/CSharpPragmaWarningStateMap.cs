@@ -4,6 +4,9 @@ using System.Collections.Immutable;
 using System.Diagnostics;
 using Microsoft.CodeAnalysis.PooledObjects;
 using Microsoft.CodeAnalysis.Syntax;
+#if XSHARP
+using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
+#endif
 
 namespace Microsoft.CodeAnalysis.CSharp.Syntax
 {
@@ -31,8 +34,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax
             var unit = syntaxTree.GetRoot() as CompilationUnitSyntax;
             foreach (var warning in unit.Pragmas)
             {
-                var xNode = warning.XNode;
-                directiveList.Add((PragmaWarningDirectiveTriviaSyntax) warning.CreateRed(null, xNode.Position));
+                var xNode = warning.XNode as XSharpParserRuleContext;
+                // X# does not include the pragma directives in the SyntaxTree
+                // That is why we can't compare positions, but we use line numbers in stead.
+                directiveList.Add((PragmaWarningDirectiveTriviaSyntax) warning.CreateRed(null, xNode.Start.Line));
             }
 
 #else
@@ -110,7 +115,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax
                     }
                 }
 #if XSHARP
-                current = new WarningStateMapEntry(currentDirective.Position, accumulatedGeneralWarningState, accumulatedSpecificWarningState);
+                // X# does not include the pragma directives in the SyntaxTree
+                // That is why we can't compare positions, but we use line numbers in stead.
+                var line = currentDirective.Position;
+                current = new WarningStateMapEntry(line, accumulatedGeneralWarningState, accumulatedSpecificWarningState);
 #else
                 current = new WarningStateMapEntry(currentDirective.Location.SourceSpan.End, accumulatedGeneralWarningState, accumulatedSpecificWarningState);
 #endif

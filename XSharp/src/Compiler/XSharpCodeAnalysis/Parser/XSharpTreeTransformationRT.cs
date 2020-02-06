@@ -246,13 +246,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _pool.Free(arguments);
             _pool.Free(attributes);
             var eof = SyntaxFactory.Token(SyntaxKind.EndOfFileToken);
-            return CSharpSyntaxTree.Create(
-                (Syntax.CompilationUnitSyntax)_syntaxFactory.CompilationUnit(
+            var cu = _syntaxFactory.CompilationUnit(
                     GlobalEntities.Externs,
                     GlobalEntities.Usings,
                     GlobalEntities.Attributes,
-                    GlobalEntities.Members, eof).
-                    CreateRed());
+                    GlobalEntities.Members, eof);
+            cu.XGenerated = true;
+            var red = (Syntax.CompilationUnitSyntax) cu.CreateRed();
+            return CSharpSyntaxTree.Create(red);
         }
         public static SyntaxTree DefaultRTSyntaxTree(IEnumerable<SyntaxTree> trees, bool isApp)
         {

@@ -27,13 +27,7 @@ namespace Microsoft.CodeAnalysis
         public SourceLocation(SyntaxNode node)
             : this(node.SyntaxTree, node.Span)
         {
-#if XSHARP
-            if (node.XNode != null)
-            {
-                var xnode = node.XNode as XSharpParserRuleContext;
-                _span = xnode.GetLocation().SourceSpan;
-            }
-#endif
+
         }
 
         public SourceLocation(in SyntaxToken token)

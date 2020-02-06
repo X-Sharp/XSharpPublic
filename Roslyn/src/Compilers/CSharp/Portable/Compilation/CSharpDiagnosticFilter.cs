@@ -120,13 +120,26 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
 
             // If location is available, check out pragmas
+#if XSHARP
+            // X# does not include the pragma directives in the SyntaxTree
+            // That is why we can't compare positions, but we use line numbers in stead.
+            if (location != null && location.SourceTree != null)
+            {
+                var line = location.GetLineSpan().StartLinePosition.Line;
+                var tree = ((SyntaxTree)location.SourceTree);
+                if (tree.GetPragmaDirectiveWarningState(id, line) == ReportDiagnostic.Suppress)
+                {
+                    hasPragmaSuppression = true;
+                }
+            }
+#else
             if (location != null &&
                 location.SourceTree != null &&
                 ((SyntaxTree)location.SourceTree).GetPragmaDirectiveWarningState(id, location.SourceSpan.Start) == ReportDiagnostic.Suppress)
             {
                 hasPragmaSuppression = true;
             }
-
+#endif
             // Unless specific warning options are defined (/warnaserror[+|-]:<n> or /nowarn:<n>, 
             // follow the global option (/warnaserror[+|-] or /nowarn).
             if (report == ReportDiagnostic.Default)

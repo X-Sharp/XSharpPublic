@@ -132,6 +132,13 @@ namespace Microsoft.CodeAnalysis.CSharp
                     _root,
                     _directives);
             }
+#if XSHARP
+            internal override bool SupportsLocations
+            {
+                // generated default tree has no location
+                get { return this.HasCompilationUnitRoot && ! _root.XGenerated; }
+            }
+#endif
         }
     }
 }

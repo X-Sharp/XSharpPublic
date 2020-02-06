@@ -223,13 +223,6 @@ namespace Microsoft.CodeAnalysis.CSharp
         /// </summary>
         public new Location GetLocation()
         {
-#if XSHARP
-            if (this.Green is Internal.CSharpSyntaxNode csn && csn.XNode != null)
-            {
-                return csn.XNode.GetLocation();
-            }
-
-#endif
             return new SourceLocation(this);
 
         }

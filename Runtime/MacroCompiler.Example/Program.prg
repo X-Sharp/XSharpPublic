@@ -294,6 +294,9 @@ BEGIN NAMESPACE MacroCompilerTest
         //EvalMacro(mc, "{|foo| bar := 10}")
         //EvalMacro(mc, "{|foo| bar := 10,foo}")
         //wait
+        EvalMacro(mc, "{|| 1+(2+3))))}")
+        EvalMacro(mc, "1+(2+3)))")
+        wait
 
         RunTests(mc)
         wait

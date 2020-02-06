@@ -20,7 +20,7 @@
     <para styleclass="Heading1">Purpose</para>
     <para styleclass="Normal">Creates variables and arrays visible to all routines in an application.</para>
     <para styleclass="Heading1">Syntax</para>
-    <para styleclass="Normal">PUBLIC &lt;<text styleclass="Italic">idVar</text>&gt; [:= &lt;<text styleclass="Italic">uValue</text>&gt;] | &lt;<text styleclass="Italic">ArraySpec</text>&gt; [, ...]</para>
+    <para styleclass="Code with box">PUBLIC &lt;idVar&gt; [:= &lt;uValue&gt;] | &lt;ArraySpec&gt; [, ...]</para>
     <para styleclass="Heading1">Arguments</para>
     <para styleclass="List">&lt;idVar&gt;<tab />A valid identifier name for the public variable to create.</para>
     <para styleclass="List"></para>

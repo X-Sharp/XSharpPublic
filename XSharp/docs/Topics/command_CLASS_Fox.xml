@@ -46,7 +46,6 @@
     <para styleclass="List"></para>
     <para styleclass="List">OLEPUBLIC<tab />This clause is parsed but ignored in X#.</para>
     <para styleclass="List"></para>
-    <para styleclass="List"></para>
     <para styleclass="Heading1">ClassMembers</para>
     <para styleclass="List"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_Fox_Properties" styleclass="Normal">Fields and Properties</link></para>
     <para styleclass="List"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_Fox_Implements" styleclass="Normal">IMPLEMENTS Clause</link></para>
@@ -58,8 +57,7 @@
     <para styleclass="Heading1"></para>
     <para styleclass="Heading1">Examples</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Heading1">See Also</para>
+        <para styleclass="Heading1">See Also</para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

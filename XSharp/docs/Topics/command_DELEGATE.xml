@@ -6,17 +6,12 @@
     <header>
       <para styleclass="Heading1">DELEGATE Statement</para>
     </header>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Heading1">Purpose</text></para>
+        <para styleclass="Heading1"><text>Purpose</text></para>
     <para styleclass="Normal">Declare an enum to &#160;the compiler.</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Heading1">Arguments</text></para>
-    <para styleclass="List"></para>
-    <para styleclass="Normal"><text styleclass="Heading1">Description</text></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Heading1">Notes</text></para>
+        <para styleclass="Heading1"><text>Syntax</text></para>
+        <para styleclass="Heading1"><text>Arguments</text></para>
+    <para styleclass="Heading1"><text>Description</text></para>
+        <para styleclass="Heading1"><text>Notes</text></para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

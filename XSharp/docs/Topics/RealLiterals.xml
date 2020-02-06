@@ -4,7 +4,7 @@
   <title>Floating point Literals</title>
   <body>
     <header>
-      <para styleclass="Normal"><text styleclass="Heading1">Floating point Literals</text></para>
+      <para styleclass="Heading1"><text>Floating point Literals</text></para>
     </header>
     <para styleclass="Normal">Single or double precision literals may be used to store numeric values in your code.</para>
     <para styleclass="Normal"></para>

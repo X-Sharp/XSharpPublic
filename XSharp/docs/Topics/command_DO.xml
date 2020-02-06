@@ -15,14 +15,13 @@
     <para styleclass="Heading1">Purpose</para>
     <para styleclass="Normal">Call a procedure or function, and optionally pass arguments to the called routine.</para>
     <para styleclass="Heading1">Syntax</para>
-    <para styleclass="Normal">DO &lt;<text styleclass="Italic">idProcedure</text>&gt; [WITH &lt;<text styleclass="Italic">uValueArgList</text>&gt;]</para>
+    <para styleclass="Code with box">DO &lt;idProcedure&gt; [WITH &lt;uValueArgList&gt;]</para>
     <para styleclass="Heading1">Arguments</para>
     <para styleclass="List">&lt;idProcedure&gt;<tab />The name of the procedure or function to execute.</para>
     <para styleclass="List"></para>
     <para styleclass="List">WITH &lt;uValueArgList&gt;<tab />A comma-separated list of arguments to pass to &lt;idProcedure&gt;.</para>
     <para styleclass="Heading1">Description</para>
     <para styleclass="Normal">DO performs the same action as a function or procedure specified on a line by itself with the exception that variables other than field variables are passed by reference as the default. &#160;<br/>In order to pass a field variable as an argument, enclose it in parentheses, unless you declare it with the FIELD statement or specify it with an alias.</para>
-    <para styleclass="Normal"><snippet src="__ByRef" inline="false"/></para>
     <para styleclass="Heading1">Examples</para>
     <para styleclass="Normal">This example executes a procedure with no parameters:</para>
     <para styleclass="Code Example">DO AcctsRpt<br/>AcctsRpt()<tab /><tab /><tab />// Preferred method</para>

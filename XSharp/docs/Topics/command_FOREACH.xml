@@ -18,14 +18,8 @@
     </header>
     <para styleclass="Heading1">Purpose</para>
     <para styleclass="Normal">Execute a block of statements for all elements in a collection</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>
-    <para styleclass="Normal">FOREACH &#160;[IMPLIED &lt;<text styleclass="Italic">idElement</text>&gt; | VAR &lt;<text styleclass="Italic">idElement</text>&gt; | &lt;idElement&gt; AS &lt;idType&gt;] IN &lt;container&gt;</para>
-    <para styleclass="Normal">&lt;<text styleclass="Italic">Statements</text>&gt;...</para>
-    <para styleclass="Normal">[EXIT]</para>
-    <para styleclass="Normal">&lt;<text styleclass="Italic">Statements</text>&gt;...</para>
-    <para styleclass="Normal">[LOOP]</para>
-    <para styleclass="Normal">NEXT</para>
+        <para styleclass="Heading1"><text>Syntax</text></para>
+    <para styleclass="Code with box">FOREACH &#160;[IMPLIED &lt;idElement&gt; | VAR &lt;idElement&gt; | &lt;idElement&gt; AS &lt;idType&gt;] IN &lt;container&gt;<br/> &#160; &lt;Statements&gt;...<br/> &#160; [EXIT]<br/> &#160; &lt;Statements&gt;...<br/> &#160; [LOOP]<br/>NEXT</para>
     <para styleclass="Heading2">Note</para>
     <para styleclass="Normal">In the FoxPro dialect FOR EACH as 2 separate words is also allowed.</para>
     <para styleclass="Normal">In the FoxPro and Xbase++ dialect ENDFOR is allowed as alternative for NEXT</para>

@@ -12,21 +12,16 @@
       <para styleclass="Heading1">SET EXACT Command</para>
     </header>
     <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
-    <para styleclass="Normal"><text styleclass="Heading1">Purpose</text></para>
+    <para styleclass="Heading1"><text>Purpose</text></para>
     <para styleclass="Normal">Toggles and exact match for character string comparisons.</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>
+        <para styleclass="Heading1"><text>Syntax</text></para>
     <para styleclass="Normal">SET EXACT ON | OFF | (&lt;<text styleclass="Italic">lToggle</text>&gt;)</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Heading1">Arguments</text></para>
+        <para styleclass="Heading1"><text>Arguments</text></para>
     <para styleclass="List">ON, OFF, lToggle<tab /><text styleclass="Body Text">A logical expression which must appear in parentheses. True is equivalent to ON, False to OFF</text></para>
-    <para styleclass="List"></para>
-    <para styleclass="Normal"><text styleclass="Heading1">Description</text></para>
+    <para styleclass="Heading1"><text>Description</text></para>
     <para styleclass="Normal">SET EXACT is functionally equivalent to SetExact(). &#160;</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Body Text"><snippet src="__IncludeLibRT" inline="false"/></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Heading1">See Also</text></para>
+      <para styleclass="Body Text"><snippet src="__IncludeLibRt" inline="false"/></para>
+        <para styleclass="Heading1"><text>See Also</text></para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="function_SetExact">SetExact()</link></para>
     <para styleclass="Normal"></para>
   </body>

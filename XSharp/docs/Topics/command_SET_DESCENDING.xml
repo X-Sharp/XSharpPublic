@@ -13,7 +13,7 @@
       <para styleclass="Heading1">SET DESCENDING Command</para>
     </header>
     <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
-    <para styleclass="Normal"><text styleclass="Heading1">Purpose</text></para>
+    <para styleclass="Heading1"><text>Purpose</text></para>
     <para styleclass="Normal">Change the descending flag of the controlling order.</para>
     <para styleclass="Heading1">Syntax</para>
     <para styleclass="Normal">SET DESCENDING ON | OFF | (<text styleclass="Italic">&lt;lToggle&gt;</text>)</para>

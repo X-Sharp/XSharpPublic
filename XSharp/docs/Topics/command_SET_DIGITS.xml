@@ -17,16 +17,12 @@
     <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
     <para styleclass="Heading1">Purpose</para>
     <para styleclass="Normal">Change the setting that determines the number of digits that will be shown to the left of the decimal point when a number is displayed.</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>
+        <para styleclass="Heading1"><text>Syntax</text></para>
     <para styleclass="Normal">SET DIGITS TO [&lt;<text styleclass="Italic">nDigits</text>&gt;]</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Heading1">Description</text></para>
+        <para styleclass="Heading1"><text>Description</text></para>
     <para styleclass="Normal">SET DIGITS is functionally equivalent to SetDigit(). &#160;</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Body Text"><snippet src="__IncludeLibRT" inline="false"/></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Heading1">See Also</text></para>
+        <para styleclass="Heading1"><text>See Also</text></para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetDigit.htm" domain="XsRuntime.chm">SetDigit()</link></para>
     <para styleclass="Normal"></para>
   </body>

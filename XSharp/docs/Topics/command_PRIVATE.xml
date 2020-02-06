@@ -17,11 +17,9 @@
     </header>
     <para styleclass="Heading1">Purpose</para>
     <para styleclass="Normal">Create variables and arrays visible within current and invoked routines.</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>
-    <para styleclass="Normal">PRIVATE &lt;<text styleclass="Italic">idVar</text>&gt; [:= &lt;<text styleclass="Italic">uValue</text>&gt;] | &lt;<text styleclass="Italic">ArraySpec</text>&gt; [, ...]</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Heading1">Arguments</text></para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Code with box">PRIVATE &lt;idVar&gt; [:= &lt;uValue&gt;] | &lt;ArraySpec&gt; [, ...]</para>
+    <para styleclass="Heading1">Arguments</para>
     <para styleclass="List">&lt;idVar&gt;<tab />A valid identifier name for the private variable to create.</para>
     <para styleclass="List"></para>
     <para styleclass="List">&lt;uValue&gt;<tab />The initial value to assign to the variable. &#160;If not specified, the variable is initialized to NIL.</para>
@@ -32,8 +30,7 @@
     <para styleclass="List"><tab />All dimensions except the first are optional.</para>
     <para styleclass="List"><tab />&lt;idArray&gt; is a valid identifier name for the array to create. &#160;Array elements are initialized to NIL.</para>
     <para styleclass="List"><tab />&lt;nElements&gt; defines the number of elements in a particular dimension of an array. &#160;The number of dimensions is determined by how many &lt;nElements&gt; arguments you specify.</para>
-    <para styleclass="List"></para>
-    <para styleclass="Normal"><text styleclass="Heading1">Description</text></para>
+    <para styleclass="Heading1">Description</para>
     <para styleclass="Normal">PRIVATE is an executable statement which means you must specify it after any variable declaration statements (such as FIELD, LOCAL, and MEMVAR) in the routine that you are defining.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Warning! &#160;</text><text styleclass="Italic">Any reference to a variable created with this statement will produce a compiler error unless the Undeclared Variables compiler option is checked.</text></para>
@@ -51,24 +48,21 @@
     </list>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">Private variables are dynamically scoped. &#160;They exist until the creating routine returns to its caller or until explicitly released with CLEAR ALL, or CLEAR MEMORY. &#160;</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Heading1">Notes</text></para>
+    <para styleclass="Heading1">Notes</para>
     <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Compatibility: &#160;</text>The ALL, LIKE, and EXCEPT clauses of the PRIVATE statement supported by other Xbase dialects are not supported.</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Heading1">Examples</text></para>
+    <para styleclass="Heading1">Examples</para>
     <para styleclass="Normal">The following example creates two PRIVATE arrays and three other PRIVATE variables:</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code Example">PRIVATE aArray1[10], aArray2[20], var1, var2, var3</para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">PRIVATE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> aArray1[10], aArray2[20], var1, var2, var3</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">The next example creates a multi-dimensional private array using each element addressing convention:</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code Example">PRIVATE aArray[10][10][10], aArray2[10, 10, 10]</para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">PRIVATE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> aArray[10][10][10], aArray2[10, 10, 10]</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">This example uses PRIVATE statements to create and initialize arrays and variables:</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code Example">PRIVATE aArray := { 1, 2, 3, 4 }, ;<br/><tab /><tab />aArray2 := ArrayNew(12, 24)<br/>PRIVATE cChar := Space(10), cColor := SetColor()</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Heading1">See Also</text></para>
+    <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#ff0000;">PRIVATE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> aArray := { 1, 2, 3, 4 }, ;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; &#160; &#160;aArray2 := ArrayNew(12, 24)</text><br/><text style="font-weight:bold; font-style:normal; color:#ff0000;">PRIVATE</text><text style="font-weight:normal; font-style:normal; color:#000000;"> cChar := Space(10), cColor := SetColor()</text></para>
+    <para styleclass="Heading1">See Also</para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_LOCAL">LOCAL</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_MEMVAR">MEMVAR</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_PARAMETERS">PARAMETERS</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_PUBLIC">PUBLIC</link></para>
     <para styleclass="Normal"></para>
   </body>

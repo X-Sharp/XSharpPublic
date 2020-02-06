@@ -41,8 +41,7 @@
     <para styleclass="Body Text"><tab />[CLASS] METHOD [&lt;ClassName&gt;:] &lt;MethodName&gt; [( [&lt;Parameters,...&gt;] )]</para>
     <para styleclass="Body Text"><tab /><tab />[&lt;Body&gt;]</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Heading1">Arguments</para>
+        <para styleclass="Heading1">Arguments</para>
     <para styleclass="List">Attributes<tab />An optional list of one or more attributes that describe meta information for am entity, such as for example the [TestMethod] attribute on a method containing tests in a MsTest class library. Please note that Attributes must be on the same line or suffixed with a semi colon when they are written on the line above that keyword.<tab /></para>
     <para styleclass="List"></para>
     <para styleclass="List">Modifiers<tab />An optional list of modifiers that specify the visibility or scope of the entity, allowed values are STATIC, FREEZE and FINAL</para>

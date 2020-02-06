@@ -3,8 +3,7 @@
 <topic template="Popup" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>__IncludeStrongTyping</title>
   <body>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Heading1">Strongly &#160;typed Methods</text></para>
+        <para styleclass="Heading1"><text>Strongly &#160;typed Methods</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">In addition to &lt;%APP%&gt; untyped method implementation, <text styleclass="Bold">strong typing</text> of method parameters and return values is now supported, providing you with a mechanism through which highly stable code can be obtained. &#160;The type information supplied enables the compiler to perform the necessary type checking and, thus, guarantee a much higher stable code quality.</para>
     <para styleclass="Normal"></para>

@@ -13,25 +13,20 @@
       <para styleclass="Heading1">DELETE FILE Command</para>
     </header>
     <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
-    <para styleclass="Normal"><text styleclass="Heading1">Purpose</text></para>
+    <para styleclass="Heading1">Purpose</para>
     <para styleclass="Normal">Remove a file from disk.</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>
+    <para styleclass="Heading1">Syntax</para>
     <para styleclass="Normal">DELETE FILE | ERASE &lt;<text styleclass="Italic">xcSourceFile</text>&gt;</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Heading1">Arguments</text></para>
+    <para styleclass="Heading1">Arguments</para>
     <para styleclass="List">&lt;xcSourceFile&gt;<tab />The name of the file to delete, including an optional drive, directory, and extension. &#160;SetDefault() and SetPath() do not affect this command. &#160;It assumes the current Windows drive and directory if none is specified. &#160;No default extension is supplied.</para>
     <para styleclass="List"></para>
     <para styleclass="List"><tab />Warning! &#160;Files must be closed before deleting them.</para>
-    <para styleclass="List"></para>
-    <para styleclass="Normal"><text styleclass="Heading1">Examples</text></para>
+    <para styleclass="Heading1">Examples</para>
     <para styleclass="Normal">This example removes a specified file from disk then tests to see if the file was removed:</para>
     <para styleclass="Normal"></para>
     <para styleclass="Code Example">? File(&quot;temp.dbf&quot;)<tab /><tab />// Result: &#160;TRUE<br/>DELETE FILE temp.dbf<br/>? File(&quot;temp.dbf&quot;)<tab /><tab />// Result: &#160;FALSE</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Body Text"><snippet src="__IncludeLibCore" inline="false"/></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Heading1">See Also</text></para>
+    <para styleclass="Heading1">See Also</para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_CurDir.htm" domain="XsRuntime.chm">CurDir()</link>,<text styleclass="link" style="font-weight:normal;">&#32;</text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_Core_Functions_FErase.htm" domain="XsRuntime.chm">FErase()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">,</text><text styleclass="link" style="font-weight:normal;">&#32;</text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_Core_Functions_File.htm" domain="XsRuntime.chm">File()</link><text styleclass="link" style="font-weight:normal;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="command_USE" styleclass="link" style="font-weight:normal;">USE</link><text styleclass="link" style="font-weight:normal;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetDefault.htm" domain="XsRuntime.chm">SetDefault()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetPath.htm" domain="XsRuntime.chm">SetPath()</link></para>
     <para styleclass="Normal"></para>
   </body>

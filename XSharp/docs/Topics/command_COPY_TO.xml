@@ -16,16 +16,14 @@
       <para styleclass="Heading1">COPY TO Command</para>
     </header>
     <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
-    <para styleclass="Normal"><text styleclass="Heading1">Purpose</text></para>
+    <para styleclass="Heading1"><text>Purpose</text></para>
     <para styleclass="Normal">Export records to a new database or text file.</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>
+        <para styleclass="Heading1"><text>Syntax</text></para>
     <para styleclass="Normal">COPY TO &lt;<text styleclass="Italic">xcTargetFile</text>&gt; [FIELDS &lt;<text styleclass="Italic">idFieldList</text>&gt;] [&lt;<text styleclass="Italic">Scope</text>&gt;] </para>
     <para styleclass="Normal"><tab />[WHILE &lt;<text styleclass="Italic">lCondition</text>&gt;] [FOR &lt;<text styleclass="Italic">lCondition</text>&gt;]</para>
     <para styleclass="Normal"><tab />[SDF] | [DELIMITED [WITH BLANK | &lt;<text styleclass="Italic">xcDelimiter</text>&gt;]] | </para>
     <para styleclass="Normal"><tab />[VIA &lt;<text styleclass="Italic">cDriver</text>&gt;] [INHERIT FROM &lt;<text styleclass="Italic">acRDDs</text>&gt;]</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Heading1">Arguments</text></para>
+        <para styleclass="Heading1"><text>Arguments</text></para>
     <para styleclass="List">TO &lt;xcTargetFile&gt;<tab />The name of the target file, including an optional drive, directory, and extension. &#160;See SetDefault() and SetPath() for file searching and creation rules. &#160;The default extension for database files is determined by the RDD. &#160;For text files, it is .TXT.</para>
     <para styleclass="List"></para>
     <para styleclass="List"><tab />If &lt;xcTargetFile&gt; does not exist, it is created. &#160;If it exists, this command attempts to open the file in exclusive mode and, if successful, the file is overwritten without warning or error. &#160;If access is denied because, for example, another process is using the file, NetErr() is set to TRUE. </para>
@@ -79,13 +77,11 @@
     <para styleclass="List"></para>
     <para styleclass="List">INHERIT FROM &lt;acRDDs&gt;</para>
     <para styleclass="List"><tab /><tab />A one-dimensional array with the names of RDDs from which the main RDD inherits special functionality. &#160;This allows you to use RDDs with special capabilities, like encryption or decryption, in different work areas with different database drivers. &#160;These RDDs overlay special functions of the main RDD (specified with the VIA clause). &#160;If multiple RDDs (specified with this INHERIT FROM clause) implement the same function, the function associated with the last RDD in the list takes precedence.</para>
-    <para styleclass="List"></para>
-    <para styleclass="Normal"><text styleclass="Heading1">Notes</text></para>
+    <para styleclass="Heading1"><text>Notes</text></para>
     <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Deleted records: &#160;</text>If <link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetDeleted.htm" domain="XsRuntime.chm">SetDeleted()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">&#32;</text> is FALSE, deleted records in the source file are copied to &lt;<text styleclass="Italic">xcTargetFile</text>&gt; where they retain their deleted status.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="BoldItalic" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Visibility: &#160;</text>If SetDeleted() is TRUE, however, deleted records are not visible and are, therefore, not processed. &#160;Similarly, filtered records (with <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbSetFilter.htm" domain="XsRuntime.chm">DbSetFilter()</link> or a conditional controlling order) are not processed.</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Heading1">Examples</text></para>
+        <para styleclass="Heading1"><text>Examples</text></para>
     <para styleclass="Normal">This example demonstrates copying to another database file:</para>
     <para styleclass="Normal"></para>
     <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#000000;">USE sales NEW</text><br/><text style="font-weight:bold; font-style:normal; color:#000000;">COPY </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">TO</text><text style="font-weight:bold; font-style:normal; color:#000000;"> temp</text></para>
@@ -101,10 +97,8 @@
     <para styleclass="Normal">Finally, this example demonstrates the layout of a DELIMITED file WITH a different delimiter:</para>
     <para styleclass="Normal"></para>
     <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; color:#000000;">COPY </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">NEXT</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">1</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">TO</text><text style="font-weight:bold; font-style:normal; color:#000000;"> temp DELIMITED </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">WITH</text><text style="font-weight:bold; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">&apos;</text><br/><text style="font-weight:bold; font-style:normal; color:#0000ff;">TYPE temp.txt</text><br/><text style="font-weight:bold; font-style:normal; color:#0000ff;">// Result: &#160;&apos;</text><text style="font-weight:bold; font-style:normal; color:#000000;">Character</text><text style="font-weight:bold; font-style:normal; color:#0000ff;">&apos;,12.00,19890801,T</text></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Body Text"><snippet src="__IncludeLibRT" inline="false"/></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Heading1">See Also</text></para>
+      <para styleclass="Body Text"><snippet src="__IncludeLibRt" inline="false"/></para>
+        <para styleclass="Heading1"><text>See Also</text></para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_APPEND_FROM">APPEND FROM</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_COPY_FILE">COPY FILE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_COPY_STRUCTURE">COPY STRUCTURE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbCopy.htm" domain="XsRuntime.chm">DbCopy()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbCopyDelim.htm" domain="XsRuntime.chm">DbCopyDelim()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbCopySDF.htm" domain="XsRuntime.chm">DbCopySDF()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_RT_Functions_RddSetDefault.htm" domain="XsRuntime.chm">RDDSetDefault()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetDefault.htm" domain="XsRuntime.chm">SetDefault()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">, </text><link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetPath.htm" domain="XsRuntime.chm">SetPath()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetDeleted.htm" domain="XsRuntime.chm">SetDeleted()</link><text styleclass="Bold" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">&#32;</text></para>
     <para styleclass="Normal"></para>
   </body>

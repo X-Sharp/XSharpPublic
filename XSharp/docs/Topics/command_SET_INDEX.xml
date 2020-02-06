@@ -16,7 +16,7 @@
       <para styleclass="Heading1">SET INDEX Command</para>
     </header>
     <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
-    <para styleclass="Normal"><text styleclass="Heading1">Purpose</text></para>
+    <para styleclass="Heading1"><text>Purpose</text></para>
     <para styleclass="Normal">Open one or more index files and add their orders to the order list in the current work area.</para>
     <para styleclass="Heading1">Syntax</para>
     <para styleclass="Normal">SET INDEX TO [&lt;<text styleclass="Italic">xcIndexFileList</text>&gt; [ADDITIVE]]</para>

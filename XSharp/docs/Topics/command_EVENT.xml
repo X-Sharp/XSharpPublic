@@ -14,11 +14,9 @@
     <header>
       <para styleclass="Heading1">EVENT Statement</para>
     </header>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Heading1">Purpose</text></para>
+        <para styleclass="Heading1"><text>Purpose</text></para>
     <para styleclass="Normal">Declare a method to access a non-exported or virtual instance variable.</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Heading1">Syntax</text></para>
+        <para styleclass="Heading1"><text>Syntax</text></para>
     <para styleclass="Normal"><tab />[Attributes] [Modifiers] &#160;<text style="font-weight:bold;">EVENT</text>&lt;<text styleclass="Italic">idName</text>&gt;</para>
     <para styleclass="Normal"><tab />[AS &lt;<text styleclass="Italic">idType</text>&gt;] [&lt;<text styleclass="Italic">idConvention</text>&gt;]</para>
     <para styleclass="Normal"><tab />[</para>
@@ -33,9 +31,8 @@
     <para styleclass="List"><snippet src="__asType" inline="false"/></para>
     <para styleclass="List"><snippet src="__IncludeExpression" inline="false"/></para>
     <para styleclass="List"><snippet src="__IncludeBody" inline="false"/></para>
-    <para styleclass="Normal"><text styleclass="Heading1">Arguments</text></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Heading1">Description</text></para>
+    <para styleclass="Heading1"><text>Arguments</text></para>
+        <para styleclass="Heading1"><text>Description</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">There are 3 types of event declarations:</para>
     <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -43,7 +40,7 @@
       <li styleclass="Normal">Single line declaration with ADD / REMOVE accessors</li>
       <li styleclass="Normal">Multi line declaration with ADD accessor block and/or REMOVE accessor bock</li>
     </list>
-    <para styleclass="Normal"><text styleclass="Heading1">See Also</text></para>
+    <para styleclass="Heading1"><text>See Also</text></para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_ASSIGN">ASSIGN</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_CLASS">CLASS</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_METHOD">METHOD</link></para>
     <para styleclass="Normal"></para>
   </body>

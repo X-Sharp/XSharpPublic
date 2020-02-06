@@ -18,7 +18,7 @@
     <para styleclass="Heading1">Purpose</para>
     <para styleclass="Normal">Terminate the application, close all open files, and return control to the operating system.</para>
     <para styleclass="Heading1">Syntax</para>
-    <para styleclass="Normal">CANCEL | QUIT</para>
+    <para styleclass="Code with box">CANCEL | QUIT</para>
     <para styleclass="Heading1">Description</para>
     <para styleclass="Normal">You can use either command from anywhere in an application. &#160;A RETURN executed from the Start() routine performs the same action.</para>
     <para styleclass="Heading1">Notes</para>
@@ -27,10 +27,8 @@
     <para styleclass="Normal">This example uses QUIT in a dialog box:</para>
     <para styleclass="Normal"></para>
     <para styleclass="Code Example">IF DialogYesNo(10, 10, &quot;Quit application&quot;, ;<br/><tab /><tab />BG+/B,B/W&quot;, 2)<br/><tab />QUIT<br/>ENDIF</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Body Text"><snippet src="__IncludeLibRT" inline="false"/></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Heading1">See Also</text></para>
+      <para styleclass="Body Text"><snippet src="__IncludeLibRt" inline="false"/></para>
+        <para styleclass="Heading1"><text>See Also</text></para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_BEGIN_SEQUENCE">BEGIN SEQUENCE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="Function_ErrorLevel">ErrorLevel()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_RETURN">RETURN</link></para>
     <para styleclass="Normal"></para>
   </body>

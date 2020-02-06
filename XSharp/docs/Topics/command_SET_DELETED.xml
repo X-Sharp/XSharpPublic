@@ -15,7 +15,7 @@
       <para styleclass="Heading1">SET DELETED Command</para>
     </header>
     <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
-    <para styleclass="Normal"><text styleclass="Heading1">Purpose</text></para>
+    <para styleclass="Heading1"><text>Purpose</text></para>
     <para styleclass="Normal">Change the setting that determines whether to ignore or include records that are marked for deletion.</para>
     <para styleclass="Heading1">Syntax</para>
     <para styleclass="Normal">SET DELETED ON | OFF | (&lt;<text styleclass="Italic">lToggle</text>&gt;)</para>

@@ -14,8 +14,7 @@
     </header>
     <para styleclass="Heading1">Purpose</para>
     <para styleclass="Normal">Forward declare a method, access or Assign &#160;</para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Heading1">Description</para>
+        <para styleclass="Heading1">Description</para>
     <para styleclass="Normal">DECLARE METHOD, DECLARE ASSIGN and DECLARE ACCESS are recognized by the X# compiler but no longer needed, so they are ignored.</para>
     <para styleclass="Normal"></para>
   </body>

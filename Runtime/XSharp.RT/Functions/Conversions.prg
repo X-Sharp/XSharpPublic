@@ -436,16 +436,11 @@ FUNCTION Str(nNumber ,nLength ,nDecimals ) AS STRING CLIPPER
 
     	RETURN cRet
     ELSEIF nNumber:IsFloat
-        // Get length and decimals from the float
-        local oFloat as Float
+        LOCAL oFloat AS FLOAT
         oFloat := nNumber
-        IF !nLength:IsNumeric .and. oFloat:Digits != -1
-            nLength :=  oFloat:Digits
-        ENDIF
-        IF !nDecimals:IsNumeric .and. oFloat:Decimals != -1
-            nDecimals :=  oFloat:Decimals
-        ENDIF
-  
+        IF oFloat:Digits != -1 .and. IsNil(nLength)
+        	nLength := oFloat:Digits
+        END IF
     END IF
 
     LOCAL result AS STRING

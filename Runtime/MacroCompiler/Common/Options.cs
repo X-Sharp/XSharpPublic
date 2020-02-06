@@ -34,6 +34,7 @@ namespace XSharp.MacroCompiler
         public bool AllowSingleQuotedStrings = true;
         public bool AllowPackedDotOperators = true;
         public bool AllowMissingSyntax = true;
+        public bool AllowExtraneousSyntax = true;
 
         public bool VOFloatConstants = true;
         public bool VODateConstants = true;

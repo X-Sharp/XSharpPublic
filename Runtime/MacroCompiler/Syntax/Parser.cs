@@ -21,6 +21,7 @@ namespace XSharp.MacroCompiler
         // Configuration
         MacroOptions _options;
         bool AllowMissingSyntax { get { return _options.AllowMissingSyntax; } }
+        bool AllowExtraneousSyntax { get { return _options.AllowExtraneousSyntax; } }
 
         // State
         int _index = 0;
@@ -82,6 +83,16 @@ namespace XSharp.MacroCompiler
         bool Expect(TokenType c)
         {
             if (La() == c)
+            {
+                Consume();
+                return true;
+            }
+            return false;
+        }
+
+        bool ExpectAny(params TokenType[] c)
+        {
+            if (c.Contains(La()))
             {
                 Consume();
                 return true;
@@ -690,6 +701,8 @@ namespace XSharp.MacroCompiler
 
             var l = ParseExprList();
 
+            if (AllowExtraneousSyntax) while (ExpectAny(TokenType.RPAREN)) { }
+
             Require(Expect(TokenType.RCURLY) || AllowMissingSyntax, ErrorCode.Expected, "}");
 
             return new Codeblock(p, new ReturnStmt(l));
@@ -703,7 +716,10 @@ namespace XSharp.MacroCompiler
 
             var l = ParseExprList();
             if (l != null)
+            {
+                if (AllowExtraneousSyntax) while (ExpectAny(TokenType.RPAREN)) { }
                 return RequireEnd(new Codeblock(null, new ReturnStmt(l)), ErrorCode.Unexpected, Lt());
+            }
 
             return null;
         }

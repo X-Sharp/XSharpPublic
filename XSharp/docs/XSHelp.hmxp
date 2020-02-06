@@ -189,6 +189,7 @@
       <config-value name="tidyxml">1</config-value>
       <config-value name="contents">XSharp</config-value>
       <config-value name="make3includeskin">OPT_PARENTHOME,OPT_TOPICFOOTER</config-value>
+      <config-group name="bookmarks"/>
     </config-group>
     <config-group name="pdf">
       <config-value name="style">0</config-value>
@@ -739,7 +740,6 @@
       <file-mod href="__IncludeEndMethod.xml"/>
       <file-mod href="__IncludeXPPMethodNames.xml"/>
       <file-mod href="X-Walkthroughs.xml"/>
-      <file-mod href="Pragma-Statements.xml"/>
       <file-mod href="__ByRef.xml"/>
       <file-mod href="__TextRDD.xml"/>
     </file>

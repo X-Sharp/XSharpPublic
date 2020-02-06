@@ -1344,9 +1344,6 @@
         <topicref type="topic" id="424524899744417" build="ALL" modified="2016-03-23T11:43:39.153Z" icon="0" href="pp-Undef">
           <caption translate="true">#undef</caption>
         </topicref>
-        <topicref type="topic" id="426774137004243" modified="2019-10-11T16:38:36.025Z" icon="0" href="Pragma-Statements">
-          <caption translate="true">Pragma Statements</caption>
-        </topicref>
       </topicref>
     </topicref>
     <topicref type="topic" id="423887666250768" build="ALL" modified="2016-01-19T22:47:35.766Z" icon="0" href="X-Compiler-Options">

@@ -13,6 +13,134 @@
       <para styleclass="Heading1">#pragma</para>
     </header>
     <para styleclass="Heading1">Purpose</para>
-    <para styleclass="Normal">The #pragma directive allow you to suppress certain compiler warnings for a piece of code. It is not supported yet.</para>
+    <para styleclass="Normal">The #pragma directive allow you to suppress certain compiler warnings for a piece of code. </para>
+    <para styleclass="Normal"></para>
+    <para styleclass="NotesBox">Note: #pragma directives must appear between before the first entity or between entities and cannot appear in the middle of an entity</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">We support both C# style pragmas (fully) and Vulcan style pragmas (partially)</para>
+    <para styleclass="Heading3">C# style syntax</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="7" colcount="2">
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">Example</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">Description</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">#pragma warning disable 1234</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Disable warning 1234</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">#pragma warning disable 1234, XS2345</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Disable 2 warnings 1234 and XS2345</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">#pragma warning restore 1234</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Reset warning 1234 to the state from the command line</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">#pragma warning restore 1234, XS2345</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Reset 2 warnings 1234 and XS2345 to the state from the command line</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">#pragma warning disable</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Disables all warnings</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">#pragma warning restore</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Restores all warnings to the settings from the command line</para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Heading3">Vulcan style syntax</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="8" colcount="2">
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">Example</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">Description</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">#pragma warnings (1234, off )</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Disable warning 1234</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">#pragma warnings (1234, default)</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Reset warning 1234 to the state from the command line</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">#pragma warnings ( pop )</para>
+        </td>
+        <td>
+          <para styleclass="Normal">Restores all warnings to the settings from the command line</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><text style="font-weight:bold;">NOT supported:</text></para>
+        </td>
+        <td>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">#pragma warnings (1234, on )</para>
+        </td>
+        <td>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">#pragma warnings ( push )</para>
+        </td>
+        <td>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal">#pragma options (....)</para>
+        </td>
+        <td>
+        </td>
+      </tr>
+    </table></para>
   </body>
 </topic>

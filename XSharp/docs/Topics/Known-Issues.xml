@@ -10,7 +10,7 @@
     <para styleclass="Heading2">Compiler</para>
     <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">Some VO <link displaytype="text" defaultstyle="true" type="topiclink" href="X-Compiler-Options-By-Category">compatibility compiler options</link> are not implemented yet. The command line options are recognized but nothing is done with them<br/>/vo 11: VO Compatible Numeric conversions</li>
-      <li styleclass="List1">The compiler pragmas (#pragma warnings and #pragma options) do not work. They are ignored by the compiler.</li>
+      <li styleclass="List1">The compiler pragmas &quot;#pragma options&quot; does not work. They are ignored by the compiler.</li>
       <li styleclass="List1">Some parser errors need improvements</li>
       <li styleclass="List1">Compiler errors may be cryptic every now and then</li>
       <li styleclass="List1">The compiler is case insensitive. There may be a problem with case insensitive matching of interface member names. The case insensitivity cannot be switched off for now. <br/>We have also seen problems for classes where different member names are defined with a name that is only different in case. </li>

@@ -248,7 +248,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     IF SELF:_Collation != NULL
                         SELF:_keySize := SELF:Header:KeySize
                     ELSE
-                        SELF:_oRdd:_dbfError(NULL, Subcodes.EDB_EXPRESSION,Gencode.EG_SYNTAX,  "DBFCDX.EvaluateExpressions") 
+                        var ex := Exception{"Expression length in index does not match calculated expression length"}
+                        SELF:_oRdd:_dbfError(ex, Subcodes.EDB_EXPRESSION,Gencode.EG_SYNTAX,  "DBFCDX.EvaluateExpressions") 
                     ENDIF
                 ENDIF
             ENDIF

@@ -33,6 +33,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             bool handled = true;
             bool positive = !name.EndsWith("-");
+            bool encode = false;
             string oldname = name;
             if (name.EndsWith("+") || name.EndsWith("-"))
             {
@@ -42,6 +43,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 case "az":
                     options.ArrayZero = positive;
+                    encode = true;
                     break;
                 case "cf":
                     OptionNotImplemented(diagnostics, oldname, "Compiling for Compact Framework");
@@ -60,6 +62,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     break;
                 case "clr": // CLR
                     OptionNotImplemented(diagnostics, oldname, "Specify CLR version");
+                    encode = true;
                     break;
                 case "cs":
                     options.CaseSensitive = positive;
@@ -80,20 +83,22 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                 case "initlocals":
                     options.InitLocals = positive;
-                    options.ExplicitOptions |= ExplicitOptions.InitLocals;
+                    encode = true;
                     break;
 
                 case "ins":
                     options.ImplicitNameSpace = positive;
+                    encode = true;
                     break;
 
                 case "lb":
                     options.LateBinding = positive;
+                    encode = true;
                     break;
 
                 case "namedarguments":
                     options.AllowNamedArguments = positive;
-                    options.ExplicitOptions |= ExplicitOptions.NamedArgs;
+                    encode = true;
                     break;
 
                 case "noclipcall":
@@ -120,12 +125,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                     break;
                 case "fovf":    // synonym for checked
                 case "ovf":     // synonym for checked
-                    if (options.ExplicitOptions.HasFlag(ExplicitOptions.Overflow)  && positive != options.Overflow)
+                    if (options.ExplicitOptions.HasFlag(CompilerOption.Overflow)  && positive != options.Overflow)
                     {
                         AddDiagnostic(diagnostics, ErrorCode.ERR_ConflictingCommandLineOptions, arg, options.PreviousArgument);
                     }
                     options.PreviousArgument = arg;
-                    options.ExplicitOptions |= ExplicitOptions.Overflow;
+                    encode = true;
 
                     options.Overflow = positive;
                     if (positive)
@@ -142,9 +147,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                     break;
                 case "memvar":
                     options.MemVars = positive;
+                    encode = true;
                     break;
                 case "undeclared":
-                    options.UndeclaredLocalVars = positive;
+                    options.UndeclaredMemVars = positive;
+                    encode = true;
                     break;
                 case "parseonly":
                     options.ParseLevel = ParseLevel.Parse;
@@ -262,68 +269,68 @@ namespace Microsoft.CodeAnalysis.CSharp
                     break;
                 case "vo1":     // Init & Axit mapped to .ctor and .dtor
                     options.Vo1 = positive;
-                    options.ExplicitOptions |= ExplicitOptions.Vo1;
+                    encode = true;
                     break;
                 case "vo2":     // Initialize Strings to Empty string
                     options.Vo2 = positive;
-                    options.ExplicitOptions |= ExplicitOptions.Vo2;
+                    encode = true;
                     break;
                 case "vo3":     // All methods Virtual
                     options.Vo3 = positive;
-                    options.ExplicitOptions |= ExplicitOptions.Vo3;
+                    encode = true;
                     break;
                 case "vo4":     // Implicit signed/unsigned integer conversions
                     options.Vo4 = positive;
-                    options.ExplicitOptions |= ExplicitOptions.Vo4;
+                    encode = true;
                     break;
                 case "vo5":     // Implicit CLIPPER calling convention
                     options.Vo5 = positive;
-                    options.ExplicitOptions |= ExplicitOptions.Vo5;
+                    encode = true;
                     break;
                 case "vo6":     // Resolve typed function PTR to PTR
                     options.Vo6 = positive;
-                    options.ExplicitOptions |= ExplicitOptions.Vo6;
+                    encode = true;
                     break;
                 case "vo7":     // Compatible implicit cast & conversion
                     options.Vo7 = positive;
-                    options.ExplicitOptions |= ExplicitOptions.Vo7;
+                    encode = true;
                     break;
                 case "vo8":     // Compatible preprocessor
                     options.Vo8 = positive;
-                    options.ExplicitOptions |= ExplicitOptions.Vo8;
+                    encode = true;
                     break;
                 case "vo9":     // Allow missing RETURN
                     options.Vo9 = positive;
-                    options.ExplicitOptions |= ExplicitOptions.Vo9;
+                    encode = true;
                     break;
                 case "vo10":    // Compatible IIF
                     options.Vo10 = positive;
-                    options.ExplicitOptions |= ExplicitOptions.Vo10;
+                    encode = true;
                     break;
                 case "vo11":    // VO arithmetic conversions
                     options.Vo11 = positive;
-                    options.ExplicitOptions |= ExplicitOptions.Vo11;
+                    encode = true;
                     OptionNotImplemented(diagnostics, oldname, "VO compatible arithmetic conversions");
                     break;
                 case "vo12":    // Clipper integer divisions
                     options.Vo12 = positive;
-                    options.ExplicitOptions |= ExplicitOptions.Vo12;
+                    encode = true;
                     break;
                 case "vo13":    // VO String comparisons
                     options.Vo13 = positive;
-                    options.ExplicitOptions |= ExplicitOptions.Vo13;
+                    encode = true;
                     break;
                 case "vo14":    // VO FLoat Literals
                     options.Vo14 = positive;
-                    options.ExplicitOptions |= ExplicitOptions.Vo14;
+                    encode = true;
                     break;
                 case "vo15":    // VO Untyped allowed
                     options.Vo15 = positive;
-                    options.ExplicitOptions |= ExplicitOptions.Vo15;
+                    encode = true;
                     break;
                 case "vo16":    // VO Add Clipper CC Missing constructors
                     options.Vo16 = positive;
-                    options.ExplicitOptions |= ExplicitOptions.Vo16;
+                    encode = true;
                     break;
                 case "wx":       // disable warning
                     name = "warnaserror+";
@@ -331,15 +338,15 @@ namespace Microsoft.CodeAnalysis.CSharp
                     break;
                 case "xpp1":       // classes inherit from XPP.Abstract
                     options.Xpp1 = positive;
-                    options.ExplicitOptions |= ExplicitOptions.Xpp1;
+                    encode = true;
                     break;
                 case "xpp2":       // untyped main instead of Start
                     options.Xpp2 = positive;
-                    options.ExplicitOptions |= ExplicitOptions.Xpp2;
+                    encode = true;
                     break;
                 case "fox1":       // Classes inherit from unknown
                     options.Fox1 = positive;
-                    options.ExplicitOptions |= ExplicitOptions.Fox1;
+                    encode = true;
                     break;
                 case "unsafe":
                     options.AllowUnsafe = positive;
@@ -353,7 +360,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                     break;
 
             }
-             return handled;
+            if (encode)
+            {
+                options.ExplicitOptions |= CompilerOptionDecoder.Decode(name);
+            }
+            return handled;
         }
         private void SetOptionFromReference(string filename)
         {
@@ -412,21 +423,21 @@ namespace Microsoft.CodeAnalysis.CSharp
                     break;
                case "mscorlib":
                 case "system":
-                    if (! options.ExplicitOptions.HasFlag(ExplicitOptions.ClrVersion))
+                    if (! options.ExplicitOptions.HasFlag(CompilerOption.ClrVersion))
                     {
                         if (filename.ToLower().Contains("\\v2") || filename.ToLower().Contains("\\2."))
                         {
-                            options.ExplicitOptions |= ExplicitOptions.ClrVersion;
+                            options.ExplicitOptions |= CompilerOption.ClrVersion;
                             options.ClrVersion = 2;
                         }
                         else if (filename.ToLower().Contains("\\v3") || filename.ToLower().Contains("\\3."))
                         {
-                            options.ExplicitOptions |= ExplicitOptions.ClrVersion;
+                            options.ExplicitOptions |= CompilerOption.ClrVersion;
                             options.ClrVersion = 2;
                         }
                         else if (filename.ToLower().Contains("\\v4") || filename.ToLower().Contains("\\4."))
                         {
-                            options.ExplicitOptions |= ExplicitOptions.ClrVersion;
+                            options.ExplicitOptions |= CompilerOption.ClrVersion;
                             options.ClrVersion = 4;
                         }
 
@@ -489,12 +500,12 @@ namespace Microsoft.CodeAnalysis.CSharp
             var newDialect = options.Dialect;
             if (options.Dialect == XSharpDialect.Core)
             {
-                if (!options.ExplicitOptions.HasFlag(ExplicitOptions.NamedArgs))
+                if (!options.ExplicitOptions.HasFlag(CompilerOption.NamedArgs))
                     options.AllowNamedArguments = true;
             }
             else
             {
-                if (!options.ExplicitOptions.HasFlag(ExplicitOptions.NamedArgs))
+                if (!options.ExplicitOptions.HasFlag(CompilerOption.NamedArgs))
                     options.AllowNamedArguments = false;
             }
             if (newDialect == XSharpDialect.XPP && options.TargetDLL == XSharpTargetDLL.XPP)
@@ -524,47 +535,47 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             if (! withRT)
             {
-                if (options.Vo5 && options.ExplicitOptions.HasFlag(ExplicitOptions.Vo5)) 
+                if (options.Vo5 && options.ExplicitOptions.HasFlag(CompilerOption.Vo5)) 
                 {
                     AddDiagnostic(diagnostics, ErrorCode.ERR_CompilerOptionNotSupportedForDialect, "vo5", "Implicit CLIPPER calling convention", options.Dialect.ToString());
                     options.Vo5 = false;
                 }
-                if (options.Vo6 && options.ExplicitOptions.HasFlag(ExplicitOptions.Vo6))
+                if (options.Vo6 && options.ExplicitOptions.HasFlag(CompilerOption.Vo6))
                 {
                     AddDiagnostic(diagnostics, ErrorCode.ERR_CompilerOptionNotSupportedForDialect, "vo6", "Implicit pointer conversions", options.Dialect.ToString());
                     options.Vo6 = false;
                 }
-                if (options.Vo7 && options.ExplicitOptions.HasFlag(ExplicitOptions.Vo7))
+                if (options.Vo7 && options.ExplicitOptions.HasFlag(CompilerOption.Vo7))
                 {
                     AddDiagnostic(diagnostics, ErrorCode.ERR_CompilerOptionNotSupportedForDialect, "vo7", "Implicit casts and Conversions", options.Dialect.ToString());
                     options.Vo7 = false;
                 }
-                if (options.Vo11 && options.ExplicitOptions.HasFlag(ExplicitOptions.Vo11))
+                if (options.Vo11 && options.ExplicitOptions.HasFlag(CompilerOption.Vo11))
                 {
                     AddDiagnostic(diagnostics, ErrorCode.ERR_CompilerOptionNotSupportedForDialect, "vo11", "Compatible numeric conversions", options.Dialect.ToString());
                     options.Vo11 = false;
                 }
-                if (options.Vo12 && options.ExplicitOptions.HasFlag(ExplicitOptions.Vo12))
+                if (options.Vo12 && options.ExplicitOptions.HasFlag(CompilerOption.Vo12))
                 {
                     AddDiagnostic(diagnostics, ErrorCode.ERR_CompilerOptionNotSupportedForDialect, "vo12", "Clipper Integer divisions", options.Dialect.ToString());
                     options.Vo12 = false;
                 }
-                if (options.Vo13 && options.ExplicitOptions.HasFlag(ExplicitOptions.Vo13))
+                if (options.Vo13 && options.ExplicitOptions.HasFlag(CompilerOption.Vo13))
                 {
                     AddDiagnostic(diagnostics, ErrorCode.ERR_CompilerOptionNotSupportedForDialect, "vo13", "VO Compatible string comparisons", options.Dialect.ToString());
                     options.Vo13 = false;
                 }
-                if (options.Vo14 && options.ExplicitOptions.HasFlag(ExplicitOptions.Vo14))
+                if (options.Vo14 && options.ExplicitOptions.HasFlag(CompilerOption.Vo14))
                 {
                     AddDiagnostic(diagnostics, ErrorCode.ERR_CompilerOptionNotSupportedForDialect, "vo14", "Float literal Values", options.Dialect.ToString());
                     options.Vo14 = false;
                 }
-                if (options.Vo15 && options.ExplicitOptions.HasFlag(ExplicitOptions.Vo15))
+                if (options.Vo15 && options.ExplicitOptions.HasFlag(CompilerOption.Vo15))
                 {
                     AddDiagnostic(diagnostics, ErrorCode.ERR_CompilerOptionNotSupportedForDialect, "vo15", "Allow untyped Locals and return types", options.Dialect.ToString());
                     options.Vo15 = false;
                 }
-                if (options.Vo16 && options.ExplicitOptions.HasFlag(ExplicitOptions.Vo16))
+                if (options.Vo16 && options.ExplicitOptions.HasFlag(CompilerOption.Vo16))
                 {
                     AddDiagnostic(diagnostics, ErrorCode.ERR_CompilerOptionNotSupportedForDialect, "vo16", "Generate Clipper calling convention constructors for classes without constructor", options.Dialect.ToString());
                     options.Vo16 = false;
@@ -572,21 +583,21 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             else
             {
-                if (!options.ExplicitOptions.HasFlag(ExplicitOptions.Vo15))
+                if (!options.ExplicitOptions.HasFlag(CompilerOption.Vo15))
                 {
                     options.Vo15 = true;            // Untyped allowed
                 }
                 if (options.Dialect == XSharpDialect.FoxPro)
                 {
-                    if (!!options.ExplicitOptions.HasFlag(ExplicitOptions.Vo9))
+                    if (!!options.ExplicitOptions.HasFlag(CompilerOption.Vo9))
                     {
                         options.Vo9 = true;             // generate default return values
                     }
-                    if (!!options.ExplicitOptions.HasFlag(ExplicitOptions.InitLocals))
+                    if (!!options.ExplicitOptions.HasFlag(CompilerOption.InitLocals))
                     {
                         options.InitLocals = true;
                     }
-                    if (!options.ExplicitOptions.HasFlag(ExplicitOptions.Fox1))
+                    if (!options.ExplicitOptions.HasFlag(CompilerOption.Fox1))
                     {
                         options.Fox1 = true;             // inherit from Custom
                     }

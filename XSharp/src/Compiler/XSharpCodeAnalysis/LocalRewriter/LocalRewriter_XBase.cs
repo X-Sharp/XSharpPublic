@@ -243,7 +243,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                                     XSharpSpecialNames.RTCompilerOptionVO11};
                     bool[] values = { comp.Options.CheckOverflow ,
                                         comp.Options.CheckOverflow ,
-                                        comp.Options.vo11};
+                                        comp.Options.VOArithmeticConversions};
 
                     for (int n = 0; n < names.Length; n++)
                     {
@@ -267,8 +267,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                                     XSharpSpecialNames.RTCompilerOptionVO13,
                                     XSharpSpecialNames.RTDialect};
                     object[] values = { comp.Options.CheckOverflow ,
-                                        comp.Options.vo11,
-                                        comp.Options.vo13,
+                                        comp.Options.VOArithmeticConversions,
+                                        comp.Options.VOStringComparisons,
                                         comp.Options.Dialect};
                     for (int n = 0; n < names.Length; n++)
                     {

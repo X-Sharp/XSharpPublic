@@ -98,14 +98,11 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         }
         public partial class PragmaContext
         {
-            public bool IsValid;
-            public IToken Switch;
-            public List<IToken> Numbers;
-            public bool Disable;
-
+            public PragmaBase Pragma;
         }
 
 #if !VSPARSER
+        #region Interfaces
         public interface IPartialPropertyContext : IEntityContext
         {
             List<IMethodContext> PartialProperties { get; set; }
@@ -124,6 +121,11 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         {
             StatementBlockContext Statements { get; }
         }
+        public interface ISourceContext
+        {
+            IList<PragmaOption> PragmaOptions { get; set; }
+            IList<EntityContext> Entities { get; }
+        }
 
         public interface IEntityContext : IRuleNode, IXParseTree
         {
@@ -141,7 +143,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             ParameterListContext Parameters { get; }
             new StatementBlockContext Statements { get; set; }
         }
-
+        #endregion
+        #region Flags
         [FlagsAttribute]
         enum EntityFlags : int
         {
@@ -173,7 +176,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             UsesPCount = 1 << 23,       // member property
             ParameterAssign = 1 <<24, // member property
         }
-
+        #endregion
 
         public class EntityData
         {
@@ -366,6 +369,18 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             public bool HasRefArguments;
         }
 
+        public partial class SourceContext : ISourceContext
+        {
+            public IList<PragmaOption> PragmaOptions { get; set; }
+            public IList<EntityContext> Entities => _Entities;
+
+        }
+
+        public partial class FoxsourceContext : ISourceContext
+        {
+            public IList<PragmaOption> PragmaOptions { get; set; }
+            public IList<EntityContext> Entities => _Entities;
+        }
         public partial class RepeatStmtContext : ILoopStmtContext
         {
             public StatementBlockContext Statements { get { return StmtBlk; } }

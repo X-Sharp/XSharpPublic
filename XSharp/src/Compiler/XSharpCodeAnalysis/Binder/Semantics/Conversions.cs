@@ -234,6 +234,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             bool voCast = false;
             bool voConvert = false;
             bool typeCast = false;
+            bool vo7 = Compilation.Options.HasOption(CompilerOption.ImplicitCastsAndConversions, sourceExpression.Syntax);
             if (sourceExpression.Syntax != null)
             {
                 var xNode = sourceExpression.Syntax.XNode;
@@ -253,7 +254,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         break;
                 }
             }
-            if (this.Compilation.Options.VOImplicitCastsAndConversions && (typeCast || voCast || voConvert))
+            if (vo7 && (typeCast || voCast || voConvert))
             {
                 // Allow cast -> BOOLEAN
                 if (dstType == SpecialType.System_Boolean && srcType.IsIntegralType())
@@ -383,8 +384,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
             }
 
-            if (Compilation.Options.LateBindingOrFox ||                 // lb
-                Compilation.Options.VOImplicitCastsAndConversions) // vo7
+            if (Compilation.Options.LateBindingOrFox(sourceExpression.Syntax) || vo7)                // lb or vo7
             {
                 if (srcType == SpecialType.System_Object)
                 {
@@ -405,7 +405,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         return Conversion.Identity;
                 }
             }
-            if (Compilation.Options.VOImplicitCastsAndConversions)
+            if (vo7)
             {
                 // Convert Any Ptr -> Any Ptr 
                 if (source.IsPointerType() && destination.IsPointerType())

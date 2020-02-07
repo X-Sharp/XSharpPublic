@@ -5706,4 +5706,8 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="ERR_CurrencyTypeNotSupported" xml:space="preserve">
     <value>The CURRENCY Type requires a reference to the X# runtime and is not supported by the Vulcan runtime.</value>
   </data>
+  <data name="WRN_IllegalPPOption" xml:space="preserve">
+    <value>Unrecognized or unsupported #pragma option value '{0}'</value>
+  </data>
+
 </root>

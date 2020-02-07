@@ -84,7 +84,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         private static BoundStatement RewriteFieldInitializer(BoundFieldEqualsValue fieldInit)
         {
-            SyntaxNode syntax = fieldInit.Syntax;
+            var syntax = fieldInit.Syntax;
             syntax = (syntax as EqualsValueClauseSyntax)?.Value ?? syntax; //we want the attached sequence point to indicate the value node
             var boundReceiver = fieldInit.Field.IsStatic ? null :
                                         new BoundThisReference(syntax, fieldInit.Field.ContainingType);
@@ -104,8 +104,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
             }
             if (wasGenerated && fieldInit.Field.Type.IsStringType() 
-                && fieldInit.Field.DeclaringCompilation.Options.VONullStrings &&
-                ! fieldInit.Field.IsStatic)
+                && boundReceiver != null 
+                && fieldInit.Field.DeclaringCompilation.Options.HasOption(CompilerOption.NullStrings, boundReceiver.Syntax))
             {
                 var fldaccess = new BoundFieldAccess(syntax,
                                                     boundReceiver,

@@ -117,7 +117,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             var method = foxAccess.SetMethod;
                             var alias = _makeString(arg, foxAccess.Alias);
                             var field = _makeString(arg, foxAccess.Name);
-                            var undecl = _makeLogic(arg, _compilation.Options.UndeclaredLocalVars);
+                            var undecl = _makeLogic(arg, _compilation.Options.HasOption(CompilerOption.UndeclaredMemVars, arguments[0].Syntax));
                             var args = ImmutableArray.Create<BoundExpression>(alias, field, elem, undecl);
                             var call = new BoundCall(arg, null, method, arguments: args,
                                 argumentNamesOpt: default,

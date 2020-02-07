@@ -41,7 +41,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             public bool LastIsStatic;
             public List<Tuple<int, String>> InitProcedures;
             public List<FieldDeclarationSyntax> Globals;
-            public List<PragmaWarningDirectiveTriviaSyntax> Pragmas ;
+            public List<PragmaWarningDirectiveTriviaSyntax> PragmaWarnings ;
+            public List<PragmaOption> PragmaOptions;
+
 
             public bool HasPCall;
             public bool NeedsProcessing;
@@ -62,8 +64,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 NeedsProcessing = false;
                 LastIsStatic = false;
                 LastMember = null;
-                Pragmas = new List<PragmaWarningDirectiveTriviaSyntax>();
-            }
+                PragmaWarnings = null;
+                PragmaOptions = null;
+        }
 
             internal void Free()
             {
@@ -158,6 +161,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         protected string _fileName;
         protected bool _isScript;
         protected string _entryPoint;
+        protected List<PragmaOption> PragmaOptions;
+        protected List<PragmaWarningDirectiveTriviaSyntax> PragmaWarnings;
 
         internal SyntaxEntities GlobalEntities;
         internal SyntaxClassEntities GlobalClassEntities;
@@ -250,7 +255,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _fileName = fileName;
             _entryPoint = "Start";
             initTypes();
-        }
+            PragmaOptions = new List<PragmaOption>();
+            PragmaWarnings = new List<PragmaWarningDirectiveTriviaSyntax>();
+    }
 
 
         public static SyntaxTree DefaultXSharpSyntaxTree(IEnumerable<SyntaxTree> trees, bool isApp, XSharpTargetDLL targetDLL)
@@ -1088,10 +1095,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return result;
         }
 
-        protected LiteralExpressionSyntax GenerateLiteral(IToken token)
+        protected LiteralExpressionSyntax GenerateLiteral(IToken token,XSharpParserRuleContext context = null)
         {
             if (token != null)
-                return SyntaxFactory.LiteralExpression(token.ExpressionKindLiteral(), token.SyntaxLiteralValue(_options));
+                return SyntaxFactory.LiteralExpression(token.ExpressionKindLiteral(), token.SyntaxLiteralValue(_options, context, PragmaOptions));
             return null;
         }
         protected LiteralExpressionSyntax GenerateLiteral(bool value)
@@ -2321,7 +2328,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             AddUsingWhenMissing(GlobalEntities.Usings, "System", false, null);
         }
 
-        protected void _enterSource()
+        protected void _enterSource(XP.ISourceContext context)
         {
             //System.Diagnostics.Debug.WriteLine("Enter Source " + _fileName);
             GlobalClassEntities = CreateClassEntities();
@@ -2329,7 +2336,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         public override void EnterSource([NotNull] XP.SourceContext context)
         {
-            _enterSource();
+            _enterSource(context);
         }
 
         protected void ProcessEntity(SyntaxListBuilder<MemberDeclarationSyntax> globalTypes, XSharpParserRuleContext context)
@@ -2395,7 +2402,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             AddUsingWhenMissing(GlobalEntities.Usings, "System", false, null);
         }
 
-        protected void _exitSource(XSharpParserRuleContext context, IList<XSharpParserRuleContext> entities)
+
+        protected void _exitSource(XP.ISourceContext context)
+        {
+            _exitSource(context, context.Entities);
+        }
+        protected void _exitSource(XP.ISourceContext context, IList<XP.EntityContext> Entities)
         {
             // globaltypes are the types that are not embedded in a namespace
             // they will be embedded in the default namespace when the 
@@ -2403,20 +2415,28 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // GlobalEntities.Members will be added to the output without extra
             // namespace
             var globalTypes = _pool.Allocate<MemberDeclarationSyntax>();
-            foreach (var entityCtx in entities)
+            foreach (var entityCtx in Entities)
             {
                 ProcessEntity(globalTypes, entityCtx);
             }
             finishCompilationUnit(globalTypes);
             _pool.Free(globalTypes);
+            context.PragmaOptions = null;
+            if (PragmaOptions.Count > 0)
+            {
+                context.PragmaOptions = PragmaOptions;
+                GlobalEntities.PragmaOptions = PragmaOptions;
+            }
+            if (PragmaWarnings.Count > 0)
+            {
+                GlobalEntities.PragmaWarnings = PragmaWarnings;
+            }
 
             //System.Diagnostics.Debug.WriteLine("Exit Source " + _fileName);
         }
         public override void ExitSource([NotNull] XP.SourceContext context)
         {
-            var entities = new List<XSharpParserRuleContext>();
-            entities.AddRange(context._Entities);
-            _exitSource(context, entities);
+            _exitSource(context);
         }
         private string RemoveUnwantedCharacters(string input)
         {
@@ -2604,27 +2624,28 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void EnterPragma([NotNull] XP.PragmaContext context)
         {
-            if (context.IsValid)
+            if (context.Pragma is PragmaWarning)
             {
+                var warning = context.Pragma as PragmaWarning;
                 SyntaxToken kind1;
                 SyntaxToken kind2;
-                kind1 = SyntaxFactory.MakeToken(SyntaxKind.WarningKeyword, context._Tokens[0].Text);
-                if (context.Disable)
+                kind1 = SyntaxFactory.MakeToken(SyntaxKind.WarningKeyword, warning.Warning.Text);
+                if (warning.State == Pragmastate.Off)
                 {
-                    kind2 = SyntaxFactory.MakeToken(SyntaxKind.DisableKeyword, context.Switch.Text);
+                    kind2 = SyntaxFactory.MakeToken(SyntaxKind.DisableKeyword, warning.Switch.Text);
                 }
                 else
                 {
-                    kind2 = SyntaxFactory.MakeToken(SyntaxKind.RestoreKeyword, context.Switch.Text);
+                    kind2 = SyntaxFactory.MakeToken(SyntaxKind.RestoreKeyword, warning.Switch.Text);
                 }
 
                 var list = new List<ExpressionSyntax>();
-                foreach (var token in context.Numbers)
+                foreach (var token in warning.Numbers)
                 {
                     if (token.Type == XSharpParser.INT_CONST)
                     {
                         var num = token.SyntaxLiteralValue(_options);
-                        list.Add(GenerateLiteral((int) num.Value));
+                        list.Add(GenerateLiteral((int)num.Value));
                     }
                     else
                     {
@@ -2638,8 +2659,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     kind1, kind2, MakeSeparatedList(list.ToArray()),
                     SyntaxFactory.MakeToken(SyntaxKind.EndOfDirectiveToken),
                     true);
-                context.Put(pragma); 
-                GlobalEntities.Pragmas.Add(pragma);
+                context.Put(pragma);
+                PragmaWarnings.Add(pragma);
+            }
+            else if (context.Pragma is PragmaOption option)
+            {
+                PragmaOptions.Add(option);
             }
             return;
         }
@@ -3400,7 +3425,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         protected virtual ExpressionSyntax GenerateInitializer(XP.DatatypeContext datatype)
         {
-            if (_options.VONullStrings && datatype != null)
+            if (_options.HasOption(CompilerOption.NullStrings,datatype, PragmaOptions)  && datatype != null)
             {
                 var isString = datatype.CsNode is PredefinedTypeSyntax pts
                     && pts.Keyword.Kind == SyntaxKind.StringKeyword;
@@ -3416,7 +3441,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     return value;
                 }
             }
-            if (_options.InitLocals)
+            if (_options.HasOption(CompilerOption.InitLocals, datatype, PragmaOptions))
             {
                 ExpressionSyntax value;
                 if (datatype == null)
@@ -5350,7 +5375,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             InitializerExpressionSyntax init = null;
             var dims = _syntaxFactory.ArrayCreationExpression(SyntaxFactory.MakeToken(SyntaxKind.NewKeyword),arrayType, null);
             bool isstring = false;
-            if (_options.VONullStrings && arrayType.ElementType is PredefinedTypeSyntax pdt)
+            if (_options.HasOption(CompilerOption.NullStrings, sub, PragmaOptions) && arrayType.ElementType is PredefinedTypeSyntax pdt)
             {
                 isstring = pdt.Keyword.Kind == SyntaxKind.StringKeyword;
 
@@ -5459,7 +5484,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 varType = _syntaxFactory.ArrayType(varType, MakeArrayRankSpecifier(context.ArraySub._ArrayIndex.Count));        // without dimensions   string[,]
                 initExpr = GenerateDimArrayInitExpression(arrayType, context.ArraySub );
             }
-            if (_options.InitLocals && initExpr == null)
+            if (_options.HasOption(CompilerOption.InitLocals, context, PragmaOptions) && initExpr == null)
             {
                 initExpr = GenerateInitializer(context.DataType);
             }
@@ -6984,18 +7009,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 argList = EmptyArgumentList();
             }
-            context.HasRefArguments = HasRefArguments(argList);
+            context.HasRefArguments = HasRefArguments(argList,context);
             context.Put(_syntaxFactory.InvocationExpression(expr, argList));
 
         }
-        protected bool HasRefArguments(ArgumentListSyntax list)
+        protected bool HasRefArguments(ArgumentListSyntax list, XSharpParserRuleContext context)
         {
             // Check for parameters by reference
             for (int i = 0; i < list.Arguments.Count; i++)
             {
                 var arg = list.Arguments[i];
-                if ((arg.Expression is PrefixUnaryExpressionSyntax pes && pes.Kind == SyntaxKind.AddressOfExpression && _options.VOImplicitCastsAndConversions) ||
-                    arg.RefKindKeyword != null)
+                if ((arg.Expression is PrefixUnaryExpressionSyntax pes
+                    && pes.Kind == SyntaxKind.AddressOfExpression
+                    && _options.HasOption(CompilerOption.ImplicitCastsAndConversions, context, PragmaOptions))
+                    || arg.RefKindKeyword != null)
                 {
                     return true;
                 }
@@ -7080,7 +7107,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     argList = EmptyArgumentList();
                 }
-                context.HasRefArguments = HasRefArguments(argList);
+                context.HasRefArguments = HasRefArguments(argList, context);
                 if (context.Init != null)
                 {
                     init = context.Init.Get<InitializerExpressionSyntax>();
@@ -8156,7 +8183,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             else
             {
-                context.Put(GenerateLiteral(context.Token));
+                context.Put(GenerateLiteral(context.Token,context));
                 if (context.Token.Type == XP.INCOMPLETE_STRING_CONST)
                 {
                     var litExpr = context.Get<LiteralExpressionSyntax>();

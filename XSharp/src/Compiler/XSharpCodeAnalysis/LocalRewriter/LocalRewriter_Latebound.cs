@@ -54,12 +54,12 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (IsFoxAccessMember(loweredReceiver, out var areaName))
             {
                 string method = ReservedNames.FieldGetWaUndeclared;
-                var exprUndeclared = _makeLogic(syntax, _compilation.Options.UndeclaredLocalVars);
+                var exprUndeclared = _makeLogic(syntax, _compilation.Options.HasOption(CompilerOption.UndeclaredMemVars, syntax));
                 var areaExpr = _makeString(syntax, areaName);
                 var expr = _factory.StaticCall(_compilation.RuntimeFunctionsType(), method, areaExpr, nameExpr, exprUndeclared);
                 return expr;
             }
-            if (!_compilation.Options.LateBinding)
+            if (!_compilation.Options.HasOption(CompilerOption.LateBinding, syntax))
                 return null;
             var usualType = _compilation.UsualType();
             if (((NamedTypeSymbol)loweredReceiver.Type).ConstructedFrom == usualType)
@@ -80,17 +80,19 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (IsFoxAccessMember(loweredReceiver, out var areaName))
             {
                 string method =  ReservedNames.FieldSetWaUndeclared;
-                var exprUndeclared = _makeLogic(syntax, _compilation.Options.UndeclaredLocalVars);
+                var exprUndeclared = _makeLogic(syntax, _compilation.Options.HasOption(CompilerOption.UndeclaredMemVars,syntax));
                 var areaExpr = _makeString(syntax, areaName);
                 var expr = _factory.StaticCall(_compilation.RuntimeFunctionsType(), method, areaExpr, nameExpr,value, exprUndeclared);
                 return expr;
             }
 
-            if (!_compilation.Options.LateBinding)
+            if (!_compilation.Options.HasOption(CompilerOption.LateBinding, syntax))
                 return null;
 
             if (((NamedTypeSymbol)loweredReceiver.Type).ConstructedFrom == usualType)
+            {
                 loweredReceiver = _factory.StaticCall(usualType, ReservedNames.ToObject, loweredReceiver);
+            }
             loweredReceiver = MakeConversionNode(loweredReceiver, _compilation.GetSpecialType(SpecialType.System_Object), false);
             return _factory.StaticCall(_compilation.RuntimeFunctionsType(), ReservedNames.IVarPut, loweredReceiver, nameExpr, value);
 

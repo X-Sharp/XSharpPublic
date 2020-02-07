@@ -317,7 +317,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
 
 #if XSHARP
-            if (Compilation.Options.VOImplicitCastsAndConversions
+            if (Compilation.Options.HasOption(CompilerOption.ImplicitCastsAndConversions, node)
                 && expr.Kind == BoundKind.Literal && ((BoundLiteral)expr).IsLiteralNull())
             {
                 if (valueKind == BindValueKind.RValue)

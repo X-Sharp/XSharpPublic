@@ -221,7 +221,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             // Note Macros such as __ENTITY__ and  __SIG__ are handled in the transformation phase
             // Make sure you also update the MACROs in XSharpLexerCode.cs !
-            macroDefines.Add("__ARRAYBASE__", () => new XSharpToken(XSharpLexer.INT_CONST, _options.ArrayZero ? "0" : "1"));
+            macroDefines.Add("__ARRAYBASE__", () => new XSharpToken(XSharpLexer.INT_CONST, _options.HasOption(CompilerOption.ArrayZero, null, null) ? "0" : "1"));
             if (_options.ClrVersion == 2)
                 macroDefines.Add("__CLR2__", () => new XSharpToken(XSharpLexer.TRUE_CONST));
             if (_options.ClrVersion == 4)
@@ -1552,7 +1552,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (ln.Type == XSharpLexer.INT_CONST)
                 {
 #if !VSPARSER
-                    inputs.MappedLineDiff = (int)ln.SyntaxLiteralValue(_options).Value - (ln.Line + 1);
+                    inputs.MappedLineDiff = (int)ln.SyntaxLiteralValue(_options,null, null).Value - (ln.Line + 1);
 #else
                     int temp;
                     if (Int32.TryParse(ln.Text, out temp))

@@ -1071,7 +1071,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         var exp = GenerateMemVarDecl(name, true);
                         stmts.Add(GenerateExpressionStatement(exp));
 
-                        var val = GenerateGetClipperParam(GenerateLiteral(i));
+                        var val = GenerateGetClipperParam(GenerateLiteral(i), context);
                         exp = GenerateMemVarPut(GenerateLiteral(name), val);
                         var stmt = GenerateExpressionStatement(exp);
                         memvar.Put(stmt);
@@ -1538,7 +1538,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
                 return;
             }
-            else if (context.Op.Type == XP.DIV && _options.VOClipperIntegerDivisions)
+            else if (context.Op.Type == XP.DIV && _options.HasOption(CompilerOption.ClipperIntegerDivisions, context, PragmaOptions))
             {
                 var lhs = MakeCastTo(_usualType, context.Left.Get<ExpressionSyntax>());
                 var rhs = MakeCastTo(_usualType, context.Right.Get<ExpressionSyntax>());
@@ -2238,7 +2238,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             if (CurrentEntity != null && !CurrentEntity.Data.HasYield)
             {
-                if (_options.VOAllowMissingReturns && stmtBlock != null && NeedsReturn(stmtBlock._Stmts))
+                if (_options.HasOption(CompilerOption.AllowMissingReturns, stmtBlock, PragmaOptions)  && stmtBlock != null && NeedsReturn(stmtBlock._Stmts))
                 {
 
                     var result = GetReturnExpression(returnType);
@@ -2282,7 +2282,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     expr = GenerateLiteral(0);
                     errcode = ErrorCode.WRN_MissingReturnValue;
                 }
-                if (expr == null && _options.VOAllowMissingReturns && !ent.Data.MustBeVoid)
+                if (expr == null && _options.HasOption(CompilerOption.AllowMissingReturns, context, PragmaOptions) && !ent.Data.MustBeVoid)
                 {
                     if (_options.Dialect != XSharpDialect.FoxPro)
                     {
@@ -2460,7 +2460,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     case XP.NULL_PTR:
                         return MakeDefaultParameter(GenerateLiteral(0L), GenerateLiteral(5));            // 5 = IntPtr
                     case XP.NULL_STRING:
-                        if (_options.VONullStrings)
+                        if (_options.HasOption(CompilerOption.NullStrings, initexpr, PragmaOptions))
                         {
                             return MakeDefaultParameter(GenerateLiteral(""), GenerateLiteral(0));               // 0 = regular .Net Value
                         }
@@ -2861,7 +2861,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (context.ArgList != null)
             {
                 var args = context.ArgList.CsNode as ArgumentListSyntax;
-                if (HasRefArguments(args))
+                if (HasRefArguments(args, context))
                 {
                     foreach (var arg in context.ArgList._Args)
                     {
@@ -3090,7 +3090,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // Function Foo or Function Foo() without convention
             if (paramCount == 0 && !hasConvention)
             {
-                context.Data.HasClipperCallingConvention = _options.VOClipperCallingConvention && !isEntryPoint;
+                context.Data.HasClipperCallingConvention = _options.HasOption(CompilerOption.ClipperCallingConvention, (XSharpParserRuleContext) context, PragmaOptions) && !isEntryPoint;
             }
             if (paramCount > 0)
             {
@@ -3171,6 +3171,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             ref SyntaxList<AttributeListSyntax> attributes, ref ParameterListSyntax parameters, ref BlockSyntax body,
             ref TypeSyntax dataType)
         {
+            var prc = (XSharpParserRuleContext)context;
             InitializeArrayTypes();
             if (context.Data.HasTypedParameter && context.Data.HasClipperCallingConvention)
             {
@@ -3217,7 +3218,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 body = MakeBlock(stmts);
                 context.Data.UsesPSZ = false;
             }
-            if (context.Data.HasClipperCallingConvention || context.Data.UsesPSZ || context.Data.HasMemVars || _options.UndeclaredLocals)
+            if (context.Data.HasClipperCallingConvention || context.Data.UsesPSZ || context.Data.HasMemVars || _options.HasOption(CompilerOption.UndeclaredMemVars, prc, PragmaOptions))
             {
                 var stmts = _pool.Allocate<StatementSyntax>();
                 var finallystmts = _pool.Allocate<StatementSyntax>();
@@ -3301,7 +3302,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         int i = 1;
                         foreach (var name in parameternames)
                         {
-                            decl = GenerateLocalDecl(name, _usualType, GenerateGetClipperParam(GenerateLiteral(i)));
+                            decl = GenerateLocalDecl(name, _usualType, GenerateGetClipperParam(GenerateLiteral(i),prc));
                             decl.XGenerated = true;
                             var variable = decl.Declaration.Variables[0];
                             variable.XGenerated = true;
@@ -3345,11 +3346,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     }
                     if (parameternames.Count > 0 && CurrentEntity.Data.ParameterAssign)
                     {
-                        var updatestmt = GenerateGetClipperByRefAssignParam(parameternames, context.Data);
+                        var updatestmt = GenerateGetClipperByRefAssignParam(parameternames, context.Data, (XSharpParserRuleContext) context);
                         finallystmts.Add(updatestmt);
 
                     }
-                    if (context.Data.HasMemVars || _options.UndeclaredLocals)
+                    if (context.Data.HasMemVars || _options.HasOption(CompilerOption.UndeclaredMemVars, prc, PragmaOptions)) 
                     {
                         // VAR Xs$PrivatesLevel := XSharp.RT.Functions.__MemVarInit()
                         // in the finally
@@ -3461,7 +3462,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
-        private ExpressionSyntax GenerateGetClipperParam(ExpressionSyntax  expr)
+        private ExpressionSyntax GenerateGetClipperParam(ExpressionSyntax expr, XSharpParserRuleContext context)
         {
             // Note that the expr must result into a 1 based offset or (with /az) a 0 based offset
             // XS$PCount > ..
@@ -3474,7 +3475,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 SyntaxFactory.MakeToken(SyntaxKind.GreaterThanToken),
                                 expr);
             // XS$Args[..]
-            if (_options.ArrayZero)
+            if (_options.HasOption(CompilerOption.ArrayZero, context, PragmaOptions))
             {
                 // adjust array offset when compiling with /az
                 expr = GenerateSubtractOne(expr);
@@ -3492,7 +3493,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _pool.Free(indices);
             return result;
         }
-        private StatementSyntax GenerateGetClipperByRefAssignParam(List<string> paramNames,  XP.EntityData data)
+        private StatementSyntax GenerateGetClipperByRefAssignParam(List<string> paramNames,  XP.EntityData data, XSharpParserRuleContext context)
         {
             // Note that the expr must result into a 1 based offset or (with /az) a 0 based offset
             // XS$PCount > ..
@@ -3516,7 +3517,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                         SyntaxFactory.MakeToken(SyntaxKind.GreaterThanToken),
                                         expr);
                     // XS$Args[..]
-                    if (_options.ArrayZero)
+                    if (_options.HasOption(CompilerOption.ArrayZero, context, PragmaOptions))
                     {
                         // adjust array offset when compiling with /az
                         expr = GenerateSubtractOne(expr);
@@ -3649,7 +3650,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 else
                 {
-                    context.Put(GenerateGetClipperParam(argList.Arguments[0].Expression));
+                    context.Put(GenerateGetClipperParam(argList.Arguments[0].Expression, context));
                 }
                 return true;
             }
@@ -3825,7 +3826,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     expr = GenerateLiteralSymbol(context.Token.Text);
                     break;
                 case XP.REAL_CONST:
-                    if (_options.VOFloatConstants && !(CurrentEntity is XP.VodefineContext))
+                    if (_options.HasOption(CompilerOption.FloatConstants, context , PragmaOptions) && !(CurrentEntity is XP.VodefineContext))
                     {
                         // check to see if the token contains an '$', 'S', 'D' or 'M'. In that case leave as is, since the user has specified
                         // single, double or decimal or currency

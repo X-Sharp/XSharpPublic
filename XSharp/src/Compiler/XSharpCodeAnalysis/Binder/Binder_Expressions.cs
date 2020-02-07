@@ -236,7 +236,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                                     Error(diagnostics, ErrorCode.ERR_CannotConvertArrayIndexAccess, arg.Syntax, arg.Type, Compilation.GetSpecialType(SpecialType.System_Int32));
                                 }
                             }
-                            if (!Compilation.Options.ArrayZero)
+                            if (!Compilation.Options.HasOption(CompilerOption.ArrayZero, node))
                             {
                                 newarg = SubtractIndex(newarg, diagnostics, specialType);
                             }
@@ -323,7 +323,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     var arg = analyzedArguments.Arguments[i];
 
-                    if (Compilation.Options.VOImplicitCastsAndConversions)
+                    if (Compilation.Options.HasOption(CompilerOption.ImplicitCastsAndConversions, arg.Syntax))
                     {
                         bool adjust = false;
                         if (arg is BoundAddressOfOperator)
@@ -379,7 +379,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     var arg = analyzedArguments.Arguments[i];
 
-                    if (Compilation.Options.VOImplicitCastsAndConversions)
+                    if (Compilation.Options.HasOption(CompilerOption.ImplicitCastsAndConversions, arg.Syntax))
                     {
                         if (arg is BoundAddressOfOperator)
                         {
@@ -413,7 +413,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             DiagnosticBag diagnostics
             )
         {
-            if (Compilation.Options.LateBindingOrFox && right.Kind() != SyntaxKind.GenericName)
+            if (Compilation.Options.LateBindingOrFox(node) && right.Kind() != SyntaxKind.GenericName)
             {
                 string propName = right.Identifier.ValueText;
                 if (leftType != null)
@@ -819,7 +819,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     isFoxMemberAccess = true;
                     if (amc.HasMPrefix )
                     {
-                        memvarorfield = Compilation.Options.SupportsMemvars;
+                        memvarorfield = Compilation.Options.SupportsMemvars(node);
                         if (memvarorfield)
                         {
                             // convert "M.FieldName" to "Xs$Memvar->FieldName"
@@ -827,13 +827,13 @@ namespace Microsoft.CodeAnalysis.CSharp
                         }
                         else
                         {
-                            // M. prefix and no support for Memvars, then the M. prefix is invalud and also not a workarea prefix.
+                            // M. prefix and no support for Memvars, then the M. prefix is invalid and also not a workarea prefix.
                             isFoxMemberAccess = false;
                         }
                     }
                 }
             }
-            if (expression == null && (Compilation.Options.MacroScript || Compilation.Options.SupportsMemvars
+            if (expression == null && (Compilation.Options.MacroScript || Compilation.Options.SupportsMemvars(node)
                 || memvarorfield || isFoxMemberAccess))
             {
                 var type = Compilation.RuntimeFunctionsType();
@@ -874,9 +874,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
                 }
                 var warning = ErrorCode.WRN_UndeclaredVariable;
+                var undeclaredMemVar = Compilation.Options.HasOption(CompilerOption.UndeclaredMemVars, node);
                 if (isFoxMemberAccess)
                 {
-                    if (Compilation.Options.UndeclaredLocalVars)
+                    if (undeclaredMemVar)
                     {
                         warning = ErrorCode.WRN_UndeclaredVariableOrCursor;
                     }
@@ -886,7 +887,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
                 }
 
-                if (Compilation.Options.UndeclaredLocalVars || declared || isFoxMemberAccess)
+                if (Compilation.Options.HasOption(CompilerOption.UndeclaredMemVars,node) || declared || isFoxMemberAccess)
                 {
                     if (get.Length == 1 && set.Length == 1 && get[0] is MethodSymbol && set[0] is MethodSymbol)
                     {

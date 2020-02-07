@@ -7,6 +7,7 @@ using System;
 using System.Collections.Immutable;
 using System.Collections.Generic;
 using System.IO;
+using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 
 namespace Microsoft.CodeAnalysis.CSharp
 {
@@ -64,8 +65,24 @@ namespace Microsoft.CodeAnalysis.CSharp
         // Some options are also handled by the parser
         // Other options have flags, for the preprocessor macros, such as __VO1__
 
+        #region private fields (need to be access with HasOption)
+        private bool ArrayZero= false;
+        private bool FoxInheritUnknown = false;
+        private bool InitLocals = false;
+        private bool VOAllowMissingReturns = false;
+        private bool VOClipperIntegerDivisions = false;
+        private bool VOClipperCallingConvention = false;
+        private bool VOImplicitCastsAndConversions = false;
+        private bool VOFloatConstants = false;
+        private bool VONullStrings = false;
+        private bool MemVars = false;
+        private bool UndeclaredMemVars = false;
+        private bool VOStringComparisons = false;
+        private bool XPPInheritFromAbstract = false;
+        private bool XPPUntypedmain = false;
+
+        #endregion
         public bool AllowUnsafe { get; private set; }
-        public bool ArrayZero { get; private set; }
         public bool CaseSensitive { get; private set; }
         public int ClrVersion { get; private set; }
         public bool MacroScript { get; private set; }
@@ -83,29 +100,19 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool NoClipCall { get; internal set; } 
         public ParseLevel ParseLevel { get; set; } = ParseLevel.Complete;
         public bool AllowNamedArguments { get; private set; }
-        public bool InitLocals { get; private set; } 
         public bool PreprocessorOutput { get; private set; }
         public bool SaveAsCSharp { get; private set; }
         public string StdDefs { get; private set; }
         public bool Verbose { get; private set; }
         public bool VirtualInstanceMethods { get; private set; }
-        public bool VOAllowMissingReturns { get; private set; }
         public bool VOArithmeticConversions { get; private set; }
-        public bool VOClipperIntegerDivisions { get; private set; }
         public bool VOClipperConstructors{ get; private set; }
 
-        public bool VOFloatConstants { get; private set; }
         public bool VoInitAxitMethods { get; private set; }
-        public bool VONullStrings { get; private set; }
-        public bool VOClipperCallingConvention { get; private set; }
         public bool VOCompatibleIIF { get; private set; }
-        public bool VOImplicitCastsAndConversions { get; private set; }
         public bool VOPreprocessorBehaviour { get; private set; }
         public bool VOResolveTypedFunctionPointersToPtr { get; private set; }
         public bool VOSignedUnsignedConversion { get; private set; }
-        public bool VOStringComparisons { get; private set; }
-        public bool MemVars { get; private set; }
-        public bool UndeclaredLocals { get; private set; }
         public string DefaultNamespace { get; private set; }
         public bool ImplicitNamespace { get; private set; }
         public bool HasRuntime { get { return this.Dialect.HasRuntime(); } }
@@ -120,10 +127,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool XSharpRuntime => RuntimeAssemblies.HasFlag(RuntimeAssemblies.XSharpRT) |
             RuntimeAssemblies.HasFlag(RuntimeAssemblies.XSharpCore);
         public bool VOUntypedAllowed { get; private set; } = true;
-        public bool XPPInheritFromAbstract { get; private set; } = false;
-        public bool XPPUntypedmain { get; private set; } = false;
 
-        public bool FoxInheritUnknown { get; private set; } = false;
         public RuntimeAssemblies RuntimeAssemblies { get; private set; } = RuntimeAssemblies.None;
         public bool Overflow { get; private set; }
         public CSharpCommandLineArguments CommandLineArguments { get; private set; }
@@ -203,7 +207,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 SaveAsCSharp = opt.SaveAsCSharp;
                 MemVars = opt.MemVars;
                 InitLocals = opt.InitLocals;
-                UndeclaredLocals = opt.UndeclaredLocalVars;
+                UndeclaredMemVars = opt.UndeclaredMemVars;
                 AllowUnsafe = opt.AllowUnsafe;
             }
             LanguageVersion = LanguageVersion.CSharp7_3;
@@ -275,7 +279,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 #endif
             LanguageVersion = LanguageVersion.CSharp7_3;
             MemVars = opt.MemVars;
-            UndeclaredLocals = opt.UndeclaredLocals;
+            UndeclaredMemVars = opt.UndeclaredMemVars;
             InitLocals = opt.InitLocals;
             AllowUnsafe = opt.AllowUnsafe;
         }
@@ -311,5 +315,76 @@ namespace Microsoft.CodeAnalysis.CSharp
             result.LanguageVersion = LanguageVersion.CSharp7_3;
             return result;
         }
+
+        public bool HasOption (CompilerOption option, XSharpParserRuleContext context, IList<PragmaOption> options )
+        {
+            switch (option)
+            {
+                case CompilerOption.ArrayZero: // az
+                    return CheckOption(option, ArrayZero, context, options);
+
+                case CompilerOption.InitLocals: // initlocals
+                    return CheckOption(option, InitLocals, context, options);
+
+                case CompilerOption.LateBinding:  // lb is handled in cde generation
+                    return false;
+
+                case CompilerOption.MemVars: // memvar
+                    return CheckOption(option, MemVars, context, options);
+
+                case CompilerOption.UndeclaredMemVars: // memvar
+                    return CheckOption(option, UndeclaredMemVars, context, options);
+
+                case CompilerOption.NullStrings: // vo2
+                    return CheckOption(option, VONullStrings, context, options);
+
+                case CompilerOption.ClipperCallingConvention: // vo5
+                    return CheckOption(option, VOClipperCallingConvention, context, options);
+
+                case CompilerOption.ImplicitCastsAndConversions: // vo7
+                    return CheckOption(option, VOImplicitCastsAndConversions, context, options);
+
+                case CompilerOption.AllowMissingReturns: // vo9
+                    return CheckOption(option, VOAllowMissingReturns, context, options);
+
+                case CompilerOption.ClipperIntegerDivisions: // vo12
+                    return CheckOption(option, VOClipperIntegerDivisions, context, options);
+
+                case CompilerOption.FloatConstants: // vo14
+                    return CheckOption(option, VOFloatConstants, context, options);
+            }
+            return false;
+        }
+
+        public bool CheckOption(CompilerOption option, bool defaultValue, XSharpParserRuleContext context, IList<PragmaOption> options)
+        {
+            bool result = defaultValue;
+            if (context != null && options != null && options.Count > 0)
+            {
+                int line = context.Start.Line;
+                foreach (var pragmaoption in options)
+                {
+                    if (pragmaoption.Line > line)
+                        break;
+                    if (pragmaoption.Option == option || pragmaoption.Option == CompilerOption.All)
+                    {
+                        switch (pragmaoption.State)
+                        {
+                            case Pragmastate.On:
+                                result = true;
+                                break;
+                            case Pragmastate.Off:
+                                result = false;
+                                break;
+                            case Pragmastate.Default:
+                                result = defaultValue;
+                                break;
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+
     }
 }

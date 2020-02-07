@@ -77,7 +77,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     // delegate invocation
                     var loweredExpression = VisitExpression(node.Expression);
 #if XSHARP
-                    if (_compilation.Options.HasRuntime && _compilation.Options.LateBinding && !loweredExpression.HasDynamicType())
+                    if (_compilation.Options.HasRuntime && _compilation.Options.HasOption(CompilerOption.LateBinding, loweredExpression.Syntax)  && !loweredExpression.HasDynamicType())
                     {
                         return MakeVODynamicInvokeMember(loweredExpression, "Invoke", node, loweredArguments );
                     }
@@ -87,7 +87,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             Debug.Assert(loweredReceiver != null);
 #if XSHARP
-            if (_compilation.Options.LateBindingOrFox && !loweredReceiver.HasDynamicType())
+            if (_compilation.Options.LateBindingOrFox(node.Syntax) && !loweredReceiver.HasDynamicType())
             {
                 var expr = MakeVODynamicInvokeMember(loweredReceiver, name, node, loweredArguments);
                 if (expr != null)
@@ -1616,7 +1616,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             Debug.Assert(node.TypeArgumentsOpt.IsDefault);
             var loweredReceiver = VisitExpression(node.Receiver);
 #if XSHARP
-            if (_compilation.Options.LateBindingOrFox  && !loweredReceiver.HasDynamicType())
+            if (_compilation.Options.LateBindingOrFox(node.Syntax) && !loweredReceiver.HasDynamicType())
             {
                 var expr =  MakeVODynamicGetMember(loweredReceiver, node.Name);
                 if (expr != null)

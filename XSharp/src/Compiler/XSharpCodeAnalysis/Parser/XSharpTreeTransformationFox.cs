@@ -38,7 +38,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void EnterFoxsource([NotNull] XP.FoxsourceContext context)
         {
-            base._enterSource();
+            base._enterSource(context);
         }
         public override void ExitFoxsource([NotNull] XP.FoxsourceContext context)
         {
@@ -90,10 +90,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 ExitEntity(entity);
                 context._Entities.Insert(0, entity);
             }
-            var entities = new List<XSharpParserRuleContext>();
-            entities.AddRange(context._Entities);
 
-            _exitSource(context, entities);
+            _exitSource(context);
         }
        
         public override void ExitAccessMember([NotNull] XP.AccessMemberContext context)
@@ -110,7 +108,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 context.foxFlags |= XP.FoxFlags.MPrefix;
                 context.Put(context.Name.Get<ExpressionSyntax>());
                 var ent = CurrentEntity;
-                if (ent != null && _options.SupportsMemvars)
+                if (ent != null && _options.HasOption(CompilerOption.MemVars, context, PragmaOptions))
                 {
                     ent.Data.HasMemVars = true;
                 }

@@ -36,7 +36,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             bool isPossibleEventHandlerOperation = node.Left.Kind == BoundKind.DynamicMemberAccess &&
                 (binaryOperator == BinaryOperatorKind.Addition || binaryOperator == BinaryOperatorKind.Subtraction);
 #if XSHARP
-            if (isPossibleEventHandlerOperation && _compilation.Options.LateBindingOrFox && !node.Left.HasDynamicType())
+            if (isPossibleEventHandlerOperation && _compilation.Options.LateBindingOrFox(node.Syntax) && !node.Left.HasDynamicType())
             {
                 isPossibleEventHandlerOperation = false;
             }

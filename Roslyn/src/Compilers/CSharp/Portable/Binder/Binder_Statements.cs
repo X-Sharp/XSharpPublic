@@ -951,7 +951,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
                 }
 #if XSHARP
-                if (this.Compilation.Options.VONullStrings && initializerOpt == null && declTypeOpt.SpecialType == SpecialType.System_String)
+                if (initializerOpt == null && declTypeOpt.SpecialType == SpecialType.System_String
+                    && this.Compilation.Options.HasOption(CompilerOption.NullStrings, associatedSyntaxNode))
                 {
                     initializerOpt = BindPossibleArrayInitializer(
                         SyntaxFactory.LiteralExpression(SyntaxKind.StringLiteralExpression, SyntaxFactory.Literal("")), 
@@ -1416,7 +1417,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
 #if XSHARP
                 //Dynamic operation for VO & Latebinding -> use conversion
-                else if (Compilation.Options.LateBindingOrFox && op1.Type == Compilation.UsualType())
+                else if (Compilation.Options.LateBindingOrFox(node)  && op1.Type == Compilation.UsualType())
                 {
                     op2 = conversion;
                 }

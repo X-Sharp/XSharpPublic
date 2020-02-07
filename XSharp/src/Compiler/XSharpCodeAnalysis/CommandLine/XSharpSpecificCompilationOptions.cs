@@ -3,7 +3,9 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
+using Antlr4.Runtime;
 using System;
+using System.Collections.Generic;
 using System.IO;
 namespace Microsoft.CodeAnalysis.CSharp
 {
@@ -89,32 +91,79 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool Overflow { get; internal set; } = false;
         public bool MemVars { get; internal set; } = false;
         public bool AllowUnsafe { get; internal set; } = false;
-        public bool UndeclaredLocalVars { get; internal set; } = false;
-        public ExplicitOptions ExplicitOptions { get ; internal set; } = ExplicitOptions.None;
+        public bool UndeclaredMemVars { get; internal set; } = false;
+        public CompilerOption ExplicitOptions { get ; internal set; } = CompilerOption.None;
 
         public string PreviousArgument { get; internal set; } = string.Empty;
         public TextWriter ConsoleOutput { get; internal set; }
     }
 
+    public class PragmaBase
+    {
+        public Pragmastate State { get; private set; }
+        public ParserRuleContext Context { get; private set; }
+        public PragmaBase(ParserRuleContext context, Pragmastate state)
+        {
+            Context = context;
+            State = state;
+        }
+        public int Line
+        {
+            get
+            {
+                if (Context == null)
+                    return -1;
+                return Context.Start.Line;
+            }
+        }
+    }
+    public class PragmaOption : PragmaBase
+    {
+        public CompilerOption Option { get; private set; }
+        public PragmaOption(ParserRuleContext context, Pragmastate state, CompilerOption option) : base(context, state)
+        {
+            Option = option;
+        }
+  
+    }
+    public class PragmaWarning : PragmaBase
+    {
+        public IList<IToken> Numbers { get; private set; }
+        public IToken Warning { get; private set; }
+        public IToken Switch { get; private set; }
+        public PragmaWarning(ParserRuleContext context, Pragmastate state, IList<IToken> tokens, IToken warning, IToken switch_) : base(context, state)
+        {
+            Numbers = tokens;
+            Warning = warning;
+            Switch = switch_;
+        }
+    }
+
     [Flags]
-    public enum ExplicitOptions
+    public enum CompilerOption
     {
         None = 0,
         Overflow = 1 << 0,
         Vo1 = 1 << 1,
         Vo2 = 1 << 2,
+        NullStrings = Vo2,
         Vo3 = 1 << 3,
         Vo4 = 1 << 4,
         Vo5 = 1 << 5,
+        ClipperCallingConvention = Vo5,
         Vo6 = 1 << 6,
         Vo7 = 1 << 7,
+        ImplicitCastsAndConversions = Vo7,
         Vo8 = 1 << 8,
         Vo9 = 1 << 9,
+        AllowMissingReturns = Vo9,
         Vo10 = 1 << 10,
         Vo11 = 1 << 11,
         Vo12 = 1 << 12,
+        ClipperIntegerDivisions = Vo12,
         Vo13 = 1 << 13,
         Vo14 = 1 << 14,
+        FloatConstants = Vo14,
         Vo15 = 1 << 15,
         Vo16 = 1 << 16,
         Xpp1 = 1 << 17,
@@ -122,7 +171,86 @@ namespace Microsoft.CodeAnalysis.CSharp
         Fox1 = 1 << 19,
         InitLocals = 1 << 20,
         NamedArgs = 1 << 21,
-        ClrVersion = 1 << 22,
-        CaseSensitive = 1 << 23,
+        ArrayZero = 1 << 22,
+        LateBinding = 1 << 23,
+        ImplicitNamespace = 1 << 24,
+        MemVars = 1 << 25,
+        UndeclaredMemVars = 1 << 26,
+        ClrVersion = 1 << 27,
+        All = -1
+
+    }
+
+    internal static class CompilerOptionDecoder
+    {
+        internal static CompilerOption Decode(string option)
+        {
+            switch (option.ToLower())
+            {
+                case "az":
+                    return CompilerOption.ArrayZero;
+                case "fovf":
+                    return CompilerOption.Overflow;
+                case "fox1":
+                    return CompilerOption.Fox1;
+                case "initlocals":
+                    return CompilerOption.InitLocals;
+                case "ins":
+                    return CompilerOption.ImplicitNamespace;
+                case "lb":
+                    return CompilerOption.LateBinding;
+                case "memvar":
+                case "memvars":
+                    return CompilerOption.MemVars;
+                case "namedarguments":
+                    return CompilerOption.NamedArgs;
+                case "ovf":
+                    return CompilerOption.Overflow;
+                case "undeclared":
+                    return CompilerOption.UndeclaredMemVars;
+                case "vo1":
+                    return CompilerOption.Vo1;
+                case "vo2":
+                    return CompilerOption.Vo2;
+                case "vo3":
+                    return CompilerOption.Vo3;
+                case "vo4":
+                    return CompilerOption.Vo4;
+                case "vo5":
+                    return CompilerOption.Vo5;
+                case "vo6":
+                    return CompilerOption.Vo6;
+                case "vo7":
+                    return CompilerOption.Vo7;
+                case "vo8":
+                    return CompilerOption.Vo8;
+                case "vo9":
+                    return CompilerOption.Vo9;
+                case "vo10":
+                    return CompilerOption.Vo10;
+                case "vo11":
+                    return CompilerOption.Vo11;
+                case "vo12":
+                    return CompilerOption.Vo12;
+                case "vo13":
+                    return CompilerOption.Vo13;
+                case "vo14":
+                    return CompilerOption.Vo14;
+                case "xpp1":
+                    return CompilerOption.Xpp1;
+                case "xpp2":
+                    return CompilerOption.Xpp2;
+                default:
+                    break;
+            }
+            return CompilerOption.None;
+        }
+    }
+
+    public enum Pragmastate: byte
+    {
+        Default = 0,
+        On = 1,
+        Off = 2,
     }
 }

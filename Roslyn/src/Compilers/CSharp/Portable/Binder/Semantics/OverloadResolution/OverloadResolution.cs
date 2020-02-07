@@ -1526,7 +1526,17 @@ namespace Microsoft.CodeAnalysis.CSharp
             bool hasAnyRefOmittedArgument2 = m2.Result.HasAnyRefOmittedArgument;
 #if XSHARP
             // X# does not prefer non ref over ref
-            if (hasAnyRefOmittedArgument1 != hasAnyRefOmittedArgument2 && ! Compilation.Options.VOImplicitCastsAndConversions)
+            bool allowImplicit;
+            if (arguments.Count > 0)
+            {
+                allowImplicit = Compilation.Options.HasOption(CompilerOption.ImplicitCastsAndConversions, arguments[0].Syntax);
+            }
+            else
+            {
+                allowImplicit = Compilation.Options.HasOption(CompilerOption.ImplicitCastsAndConversions, null);
+            }
+
+            if (hasAnyRefOmittedArgument1 != hasAnyRefOmittedArgument2 && !allowImplicit)
 #else
             if (hasAnyRefOmittedArgument1 != hasAnyRefOmittedArgument2)
 #endif
@@ -3407,9 +3417,10 @@ namespace Microsoft.CodeAnalysis.CSharp
 
 #if XSHARP
                     bool literalNullForRefParameter = false;
+                    bool implicitCastsAndConversions = Compilation.Options.HasOption(CompilerOption.ImplicitCastsAndConversions, argument.Syntax);
                     if (conversion.Kind == ConversionKind.NoConversion)
                     {
-                        if (Compilation.Options.VOImplicitCastsAndConversions)
+                        if (implicitCastsAndConversions)
                         {
                             // C590 Allow NULL as argument for REF parameters
                             var paramRefKinds = (candidate is MethodSymbol) ? (candidate as MethodSymbol).ParameterRefKinds
@@ -3442,7 +3453,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         {
                             argumentRefKind = parameterRefKind;
                             arguments.SetRefKind(argumentPosition, argumentRefKind);
-                            if (!Compilation.Options.VOImplicitCastsAndConversions)
+                            if (!implicitCastsAndConversions)
                             { 
                                 useSiteDiagnostics = new HashSet<DiagnosticInfo>();
                                 var info = new CSDiagnosticInfo(ErrorCode.ERR_BadArgExtraRef,

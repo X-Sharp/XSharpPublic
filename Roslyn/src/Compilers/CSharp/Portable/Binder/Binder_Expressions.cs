@@ -360,7 +360,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
 #if XSHARP
                 // Allow @ operator as alternative to REF
-                if (expr is BoundAddressOfOperator && Compilation.Options.VOImplicitCastsAndConversions)
+                if (expr is BoundAddressOfOperator && Compilation.Options.HasOption(CompilerOption.ImplicitCastsAndConversions, node))
                 { 
                     return;
                 }

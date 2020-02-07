@@ -245,7 +245,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return r;
         }
 
-        public static SyntaxToken SyntaxLiteralValue(this IToken token, CSharpParseOptions options)
+        public static SyntaxToken SyntaxLiteralValue(this IToken token, CSharpParseOptions options, XSharpParserRuleContext context = null, List<PragmaOption> pragmaoptions = null)
         {
             SyntaxToken r;
             string text;
@@ -475,7 +475,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             break;
                         default:
                             // Ok
-                            if (options.VONullStrings)
+                            if (options.HasOption(CompilerOption.NullStrings, context, pragmaoptions))
                                 r = SyntaxFactory.Literal(SyntaxFactory.WS, text, "", SyntaxFactory.WS);
                             else
                                 r = SyntaxFactory.MakeToken(SyntaxKind.NullKeyword);

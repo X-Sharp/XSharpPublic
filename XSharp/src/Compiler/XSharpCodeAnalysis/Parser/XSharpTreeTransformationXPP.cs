@@ -791,9 +791,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         public override void ExitSource([NotNull] XP.SourceContext context)
         {
+            // we do NOT call base.ExitSource because we want to skip methods that are bound to classes
             // Bind our XPP Classes first and then call _exitSource with the entities that are not a XppMethodContext
             bindXPPClasses();
-            var entities = new List<XSharpParserRuleContext>();
+            var entities = new List<XP.EntityContext>();
             // do not add the methods. These should be linked to a class
             entities.AddRange(context._Entities.Where(e => !(e.GetChild(0) is XP.XppmethodContext)));
             _exitSource(context, entities);

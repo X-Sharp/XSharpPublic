@@ -269,9 +269,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var tokens = context._Tokens;
             IToken i1 = null;
             IToken i2 = null;
-            context.Numbers = new List<IToken>();
+            var numbers = new List<IToken>();
+            Pragmastate state = Pragmastate.Default;
             IToken errortoken = null;
-            if (context._Tokens.Count > 0)
+            bool isWarning = false;
+            if (tokens.Count > 0)
             {
                 i1 = tokens[0];
                 if (tokens.Count > 1)
@@ -285,7 +287,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         if (tokens.Count >= 6 && tokens[3].Type == XSharpParser.COMMA && tokens[5].Type == XSharpParser.RPAREN)
                         {
                             i2 = tokens[4];
-                            context.Numbers.Add( tokens[2] );
+                            numbers.Add( tokens[2] );
                         }
                         else if (tokens.Count >= 4 && tokens[3].Type == XSharpParser.RPAREN)
                         {
@@ -302,7 +304,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             {
                                 if (tokens[i].Type != XSharpParser.COMMA)
                                 {
-                                    context.Numbers.Add(tokens[i]);
+                                    numbers.Add(tokens[i]);
                                 }
                             }
                         }
@@ -319,8 +321,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
                 switch (i1.Text.ToLower())
                 {
+                    case "options":
+                        isWarning = false;
+                        break;
                     case "warning":
                     case "warnings":
+                        isWarning = true;
                         break;
                     default:
                         error = ErrorCode.WRN_IllegalPragma;
@@ -328,21 +334,24 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         break;
                 }
             }
-            context.Switch = i2;
             if (error == ErrorCode.Unknown)
             {
                 if (i2 != null)
                 {
                     switch (i2.Text.ToLower())
                     {
+                        case "on":
+                            state = Pragmastate.On;
+                            break;
                         case "disable":
                         case "off":
-                            context.Disable = true;
+                            state = Pragmastate.Off;
                             break;
+
                         case "restore":
                         case "default":
                         case "pop":
-                            context.Disable = false;
+                            state = Pragmastate.Default;
                             break;
                         default:
                             error = ErrorCode.WRN_IllegalPPWarning;
@@ -356,9 +365,61 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     errortoken = i1;
                 }
             }
+            if (error == ErrorCode.Unknown)
+            {
+                if (isWarning)
+                {
+                    context.Pragma = new PragmaWarning(context, state, numbers,i1,i2);
+                }
+                else if (numbers.Count == 0)
+                {
+                    // options pop
+                    if (i2.Text.ToLower() == "pop")
+                    {
+                        context.Pragma = new PragmaOption(context, Pragmastate.Default, CompilerOption.All);
+                    }
+                    else
+                    {
+                        error = ErrorCode.WRN_IllegalPPWarning;
+                        errortoken = i2;
+                    }
+
+                }
+                else
+                {
+                    var token = numbers[0];
+                    var opt = token.Text.ToLower();
+                    if (token.Type == XSharpParser.STRING_CONST && opt.StartsWith("\"") && opt.EndsWith("\"") && opt.Length > 2)
+                    {
+                        opt = opt.Substring(1, opt.Length - 2);
+                        switch (opt)
+                        {
+                            case "az":
+                            case "initlocals":
+                            case "lb":
+                            case "memvar":
+                            case "memvars":
+                            case "undeclared":
+                            case "vo2":     // Initialize string variables with empty strings
+                            case "vo5":     // Implicit Clipper Calling convention
+                            case "vo7":     // Implicit Casts and Conversions
+                            case "vo9":     // Allow missing return statements or missing return values
+                            case "vo12":    // Clipper Integer divisions
+                            case "vo14":    // Embed real constants as float
+                                context.Pragma = new PragmaOption(context, state, CompilerOptionDecoder.Decode(opt));
+                                break;
+                            default:
+                                error = ErrorCode.WRN_IllegalPPOption;
+                                errortoken = numbers[0];
+                                break;
+                        }
+                    }
+                }
+
+            }
+
             // C# does not validate the error codes, so we will not do that either.
-            context.IsValid = (error == ErrorCode.Unknown);
-            if (!context.IsValid)
+            if (error != ErrorCode.Unknown)
             {
                 var errdata = new ParseErrorData(errortoken, error, errortoken.Text);
                 _parseErrors.Add(errdata);

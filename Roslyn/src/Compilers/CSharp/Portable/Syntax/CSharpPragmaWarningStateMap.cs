@@ -32,12 +32,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax
         {
 #if XSHARP
             var unit = syntaxTree.GetRoot() as CompilationUnitSyntax;
-            foreach (var warning in unit.Pragmas)
+            if (unit.PragmaWarnings != null)
             {
-                var xNode = warning.XNode as XSharpParserRuleContext;
-                // X# does not include the pragma directives in the SyntaxTree
-                // That is why we can't compare positions, but we use line numbers in stead.
-                directiveList.Add((PragmaWarningDirectiveTriviaSyntax) warning.CreateRed(null, xNode.Start.Line));
+                foreach (var warning in unit.PragmaWarnings)
+                {
+                    var xNode = warning.XNode as XSharpParserRuleContext;
+                    // X# does not include the pragma directives in the SyntaxTree
+                    // That is why we can't compare positions, but we use line numbers in stead.
+                    directiveList.Add((PragmaWarningDirectiveTriviaSyntax)warning.CreateRed(null, xNode.Start.Line));
+                }
             }
 
 #else
@@ -57,10 +60,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax
 #endif
         }
 
-            // Given the ordered list of all pragma warning directives in the syntax tree, return a list of mapping entries, 
-            // containing the cumulative set of warnings that are disabled for that point in the source.
-            // This mapping also contains a global warning option, accumulated of all #pragma up to the current line position.
-            private static WarningStateMapEntry[] CreatePragmaWarningStateEntries(ImmutableArray<PragmaWarningDirectiveTriviaSyntax> directiveList)
+        // Given the ordered list of all pragma warning directives in the syntax tree, return a list of mapping entries, 
+        // containing the cumulative set of warnings that are disabled for that point in the source.
+        // This mapping also contains a global warning option, accumulated of all #pragma up to the current line position.
+        private static WarningStateMapEntry[] CreatePragmaWarningStateEntries(ImmutableArray<PragmaWarningDirectiveTriviaSyntax> directiveList)
         {
             var entries = new WarningStateMapEntry[directiveList.Length + 1];
             var current = new WarningStateMapEntry(0, ReportDiagnostic.Default, null);

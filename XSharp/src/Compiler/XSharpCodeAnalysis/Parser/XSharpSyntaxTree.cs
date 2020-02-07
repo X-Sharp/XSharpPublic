@@ -89,7 +89,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public IList<Tuple<int, string>> InitProcedures { get; internal set; } = new List<Tuple<int, string>>();
         public IList< MemVarFieldInfo> FileWidePublics { get; internal set; } = new List<MemVarFieldInfo>();
         public IList<FieldDeclarationSyntax> Globals { get; internal set; } = new List<FieldDeclarationSyntax>();
-        public IList<PragmaWarningDirectiveTriviaSyntax> Pragmas { get; internal set; } = new List<PragmaWarningDirectiveTriviaSyntax>();
+        public IList<PragmaWarningDirectiveTriviaSyntax> PragmaWarnings { get; internal set; } = null;
+        public IList<PragmaOption> PragmaOptions { get; internal set; } = null;
         public bool HasPCall
         {
             get => xflags.HasFlag(XNodeFlags.XPCall);
@@ -203,7 +204,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax
         internal Dictionary<String, InternalSyntax.FieldDeclarationSyntax> LiteralSymbols => internalUnit.LiteralSymbols;
         internal Dictionary<String, Tuple<string, InternalSyntax.FieldDeclarationSyntax> > LiteralPSZs => internalUnit.LiteralPSZs;
 
-        internal IList<InternalSyntax.PragmaWarningDirectiveTriviaSyntax> Pragmas => internalUnit.Pragmas;
+        internal IList<InternalSyntax.PragmaWarningDirectiveTriviaSyntax> PragmaWarnings => internalUnit.PragmaWarnings;
+        internal IList<PragmaOption> PragmaOptions => internalUnit.PragmaOptions;
 
     }
 }

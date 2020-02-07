@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
 <topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>#pragma warning(s)_2</title>
+  <title>#pragma options</title>
   <keywords>
     <keyword>#pragma</keyword>
     <keyword>#pragma options</keyword>
@@ -31,10 +31,10 @@
     <para styleclass="Normal"><table styleclass="Default" rowcount="12" colcount="2" style="width:auto; page-break-inside:avoid;">
       <tr style="vertical-align:top">
         <td style="width:95px;">
-          <para styleclass="Normal">Option</para>
+          <para styleclass="Normal"><text style="font-weight:bold;">Option</text></para>
         </td>
         <td style="width:1152px;">
-          <para styleclass="Normal">Description</para>
+          <para styleclass="Normal"><text style="font-weight:bold;">Description</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">

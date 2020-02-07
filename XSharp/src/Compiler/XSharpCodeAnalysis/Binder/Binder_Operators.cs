@@ -49,7 +49,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 // warning assign to smaller type
                 if (targetType.SpecialType.SizeInBytes() < sourceType.SpecialType.SizeInBytes())
                 {
-                    if (!Compilation.Options.VOImplicitCastsAndConversions)
+                    if (!Compilation.Options.HasOption(CompilerOption.ImplicitCastsAndConversions, syntax))
                     { 
                         var distinguisher = new SymbolDistinguisher(this.Compilation, sourceType, targetType);
                         Error(diagnostics, ErrorCode.WRN_ImplicitCast, syntax, distinguisher.First, distinguisher.Second);
@@ -665,20 +665,21 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
         public BoundExpression RewriteIndexAccess(BoundExpression index, DiagnosticBag diagnostics)
         {
-            if (!index.HasAnyErrors && !this.Compilation.Options.ArrayZero)
+            var syntax = (CSharpSyntaxNode)index.Syntax;
+            if (!index.HasAnyErrors && !this.Compilation.Options.HasOption(CompilerOption.ArrayZero, syntax))
             {
                 var kind = BinaryOperatorKind.Subtraction;
                 var left = index;
-                var right = new BoundLiteral(index.Syntax, ConstantValue.Create(1), index.Type) { WasCompilerGenerated = true };
+                var right = new BoundLiteral(syntax, ConstantValue.Create(1), index.Type) { WasCompilerGenerated = true };
                 int compoundStringLength = 0;
                 var leftType = left.Type;
                 var opKind = leftType.SpecialType == SpecialType.System_Int32 ? BinaryOperatorKind.IntSubtraction
                     : leftType.SpecialType == SpecialType.System_Int64 ? BinaryOperatorKind.LongSubtraction
                     : leftType.SpecialType == SpecialType.System_UInt32 ? BinaryOperatorKind.UIntSubtraction
                     : BinaryOperatorKind.ULongSubtraction;
-                var resultConstant = FoldBinaryOperator((CSharpSyntaxNode)index.Syntax, opKind, left, right, left.Type.SpecialType, diagnostics, ref compoundStringLength);
+                var resultConstant = FoldBinaryOperator(syntax, opKind, left, right, left.Type.SpecialType, diagnostics, ref compoundStringLength);
                 var sig = this.Compilation.builtInOperators.GetSignature(opKind);
-                index = new BoundBinaryOperator(index.Syntax, kind, left, right, resultConstant, sig.Method,
+                index = new BoundBinaryOperator(syntax, kind, left, right, resultConstant, sig.Method,
                     resultKind: LookupResultKind.Viable,
                     originalUserDefinedOperatorsOpt: ImmutableArray<MethodSymbol>.Empty,
                     type: index.Type,

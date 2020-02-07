@@ -2271,7 +2271,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             bool allowManagedAddressOf = Flags.Includes(BinderFlags.AllowManagedAddressOf);
 
 #if XSHARP
-            if (Compilation.Options.VOImplicitCastsAndConversions)
+            if (Compilation.Options.HasOption(CompilerOption.ImplicitCastsAndConversions, node))
                 allowManagedAddressOf = true;
             if (Compilation.Options.HasRuntime && Compilation.Options.AllowUnsafe)
                 allowManagedAddressOf = true;

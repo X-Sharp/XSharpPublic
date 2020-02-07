@@ -49,7 +49,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             // These checks will only be performed when /vo4 Signed-Unsigned conversions is selected
             // That is the only situation where an implicitNumeric conversion is performed.
             // We Check for integral types only
-            if ( _compilation.Options.VOImplicitSignedUnsignedConversions &&
+            if ( _compilation.Options.VOSignedUnsignedConversion &&
                 conversion.Operand.Type != null && conversion.Type != null)
             {
                 var type = conversion.Type;
@@ -59,6 +59,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     opType.SpecialType.IsIntegralType() &&
                     opKind != BoundKind.Literal &&
                     opKind != BoundKind.UnaryOperator &&
+                    opKind != BoundKind.BinaryOperator &&               // Binary operators are often merged to 64 bits
                     expr.Syntax.Kind() != SyntaxKind.CastExpression)
                 //  Unary operators will be handled in the next level
 

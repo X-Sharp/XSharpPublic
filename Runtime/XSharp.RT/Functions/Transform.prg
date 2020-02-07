@@ -705,33 +705,34 @@ INTERNAL STATIC CLASS TransformHelpers
             ENDIF
             FOREACH cChar AS CHAR IN cPicture
                 SWITCH cChar
-        CASE c'B' ; CASE c'b'
-                nPicFunc |= TransformPictures.Left
-        CASE c'C' ; CASE c'c'
-                nPicFunc |= TransformPictures.Credit
-        CASE c'D' ; CASE c'd'
-                nPicFunc |= TransformPictures.Date
-        CASE c'E' ; CASE c'e'
-                nPicFunc |= TransformPictures.British
-        CASE c'R' ; CASE c'r'
-                nPicFunc |= TransformPictures.NonTemplate
-        CASE c'X' ; CASE c'x'
-                nPicFunc |= TransformPictures.Debit
-        CASE c'Z' ; CASE c'z'
+                CASE c'B' ; CASE c'b'
+                     nPicFunc |= TransformPictures.Left
+                CASE c'C' ; CASE c'c'
+                     nPicFunc |= TransformPictures.Credit
+                CASE c'D' ; CASE c'd'
+                     nPicFunc |= TransformPictures.Date
+                CASE c'E' ; CASE c'e'
+                     nPicFunc |= TransformPictures.British
+                CASE c'R' ; CASE c'r'
+                     nPicFunc |= TransformPictures.NonTemplate
+                CASE c'X' ; CASE c'x'
+                     nPicFunc |= TransformPictures.Debit
+                CASE c'Z' ; CASE c'z'
                     nPicFunc |= TransformPictures.ZeroBlank
                 CASE c'('
                     nPicFunc |= TransformPictures.ParenLeft
                 CASE c')'
                     nPicFunc |= TransformPictures.ParenRight
                 CASE c'!'
-                nPicFunc |= TransformPictures.Upper
-        CASE c'Y'; CASE c'y'
+                    nPicFunc |= TransformPictures.Upper
+                CASE c'Y'; CASE c'y'
                     nPicFunc |= TransformPictures.YesNo
                 CASE c' '
                 CASE c'\t'
                     done := TRUE
                 OTHERWISE
-                    cTemplate += cChar:ToString()            
+                    //cTemplate += cChar:ToString()
+                    NOP // ignore non function chars in the function part
                 END SWITCH
                 IF done
                     EXIT

@@ -606,11 +606,11 @@ INTERNAL STATIC CLASS TransformHelpers
         CASE fTemp == 0.0
             cTemp		:= Str2(fTemp , (DWORD) nWhole )
         CASE fTemp < 0.0
-                IF nWhole <= 1
-                    cTemp   := "*"
-                ELSE
-                    fTemp	:= -fTemp:CastToInt64()
-                    cTemp	:= Str2(fTemp , (DWORD) nWhole  )
+            IF nWhole <= 1
+                cTemp   := "*"
+            ELSE
+                fTemp	:= -fTemp:CastToInt64()
+                cTemp	:= Str2(fTemp , (DWORD) nWhole - 1  )
             ENDIF
         OTHERWISE
                 fTemp := fTemp:CastToInt64()

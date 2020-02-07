@@ -83,6 +83,11 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			SetThousandSep('.')
 			Assert.Equal("1.234", Transform(1234, "9,999"))
 
+			Assert.Equal("***,**", Transform(-188.96, "999.99"))
+			Assert.Equal("***,**%", Transform(-188.96, "@RE 999.99%"))
+			Assert.Equal("188,96", Transform(188.96, "999.99"))
+			Assert.Equal("***,**", Transform(1188.96, "999.99"))
+
 
 		[Fact, Trait("Category", "TransForm")];
 		METHOD TransformFLoatTest() AS VOID 

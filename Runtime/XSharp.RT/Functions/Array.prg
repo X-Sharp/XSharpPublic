@@ -642,6 +642,12 @@ FUNCTION ACopy(aSource ,aTarget ,nStart ,nCount ,nTargetPos ) AS ARRAY CLIPPER
     IF pCount() > 2
         IF nStart:IsNumeric
             start := nStart
+        ELSEIF nStart:IsNil
+            IF pCount() >= 4 .and. nCount:IsNumeric .and. nCount < 0
+                start := ALen(aSource)
+            ELSE
+                start := 1
+            END IF
         ELSE
             THROW Error.ArgumentError( __FUNCTION__, NAMEOF(nStart), 3, <OBJECT>{ nStart } )
         ENDIF
@@ -651,7 +657,7 @@ FUNCTION ACopy(aSource ,aTarget ,nStart ,nCount ,nTargetPos ) AS ARRAY CLIPPER
             start := Math.Min(start, sourceLen)
         ENDIF
     ENDIF
-    IF pCount() > 3
+    IF pCount() > 3 .and. .not. nCount:IsNil
         IF nCount:IsNumeric
             count := nCount
         ELSE
@@ -665,7 +671,7 @@ FUNCTION ACopy(aSource ,aTarget ,nStart ,nCount ,nTargetPos ) AS ARRAY CLIPPER
     ENDIF
     LOCAL offSet		:= 1 AS DWORD
     LOCAL targetLen	:= ALen(aTarget) AS DWORD
-    IF pCount() > 4
+    IF pCount() > 4 .and. .not. nTargetPos:IsNil
         IF nTargetPos:IsNumeric
             offSet := nTargetPos
             offSet := Math.Min( offSet, targetLen )

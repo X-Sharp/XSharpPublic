@@ -280,6 +280,75 @@ BEGIN NAMESPACE XSharp.VO.Tests
 
 		[Trait("Category", "Array")];
 		[Fact];
+		METHOD ACopyTestsNew() AS VOID
+			LOCAL aValues AS ARRAY
+			LOCAL aDest   AS ARRAY
+
+			aValues := {1,2}
+			
+			aDest   := {NIL,NIL,NIL}
+			ACopy(aValues, aDest)
+			Assert.True( aDest[1] == 1)
+			Assert.True( aDest[2] == 2)
+			Assert.True( aDest[3] == NIL)
+
+			aDest   := {NIL,NIL,NIL}
+			ACopy(aValues, aDest,,,)
+			Assert.True( aDest[1] == 1)
+			Assert.True( aDest[2] == 2)
+			Assert.True( aDest[3] == NIL)
+
+			aDest   := {NIL,NIL,NIL}
+			ACopy(aValues, aDest,,,1)
+			Assert.True( aDest[1] == 1)
+			Assert.True( aDest[2] == 2)
+			Assert.True( aDest[3] == NIL)
+
+			aDest   := {NIL,NIL,NIL}
+			ACopy(aValues, aDest,,,2)
+			Assert.True( aDest[1] == NIL)
+			Assert.True( aDest[2] == 1)
+			Assert.True( aDest[3] == 2)
+
+			aDest   := {NIL,NIL,NIL}
+			ACopy(aValues, aDest,2)
+			Assert.True( aDest[1] == 2)
+			Assert.True( aDest[2] == NIL)
+			Assert.True( aDest[3] == NIL)
+
+			aDest   := {NIL,NIL,NIL}
+			ACopy(aValues, aDest,-1)
+			Assert.True( aDest[1] == 2)
+			Assert.True( aDest[2] == NIL)
+			Assert.True( aDest[3] == NIL)
+
+			aDest   := {NIL,NIL,NIL}
+			ACopy(aValues, aDest,-2)
+			Assert.True( aDest[1] == 2)
+			Assert.True( aDest[2] == NIL)
+			Assert.True( aDest[3] == NIL)
+
+			aDest   := {NIL,NIL,NIL}
+			ACopy(aValues, aDest, ,1)
+			Assert.True( aDest[1] == 1)
+			Assert.True( aDest[2] == NIL)
+			Assert.True( aDest[3] == NIL)
+
+			aDest   := {NIL,NIL,NIL}
+			ACopy(aValues, aDest, ,2)
+			Assert.True( aDest[1] == 1)
+			Assert.True( aDest[2] == 2)
+			Assert.True( aDest[3] == NIL)
+
+			aDest   := {NIL,NIL,NIL}
+			ACopy(aValues, aDest, ,-1)
+			Assert.True( aDest[1] == 1)
+			Assert.True( aDest[2] == NIL)
+			Assert.True( aDest[3] == NIL)
+
+
+		[Trait("Category", "Array")];
+		[Fact];
 		METHOD AInsDelTests() AS VOID
 			LOCAL arr := {1,2,3} AS ARRAY
 

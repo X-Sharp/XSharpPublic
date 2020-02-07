@@ -38,6 +38,8 @@ Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "VODesigners", "VisualStudio
 EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "VODesigners_tester", "VisualStudio\VODesigners_tester\VODesigners_tester.xsproj", "{63D22C03-1D1A-4746-8E24-7BB1248696EE}"
 EndProject
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharpModelXs.Tests", "VisualStudio\XSharpModelXs.Tests\XSharpModelXs.Tests.xsproj", "{9111A0EE-CEB1-43DC-A39B-7C6186488AFA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -134,6 +136,14 @@ Global
 		{63D22C03-1D1A-4746-8E24-7BB1248696EE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{63D22C03-1D1A-4746-8E24-7BB1248696EE}.Release|x86.ActiveCfg = Release|Any CPU
 		{63D22C03-1D1A-4746-8E24-7BB1248696EE}.Release|x86.Build.0 = Release|Any CPU
+		{9111A0EE-CEB1-43DC-A39B-7C6186488AFA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9111A0EE-CEB1-43DC-A39B-7C6186488AFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9111A0EE-CEB1-43DC-A39B-7C6186488AFA}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{9111A0EE-CEB1-43DC-A39B-7C6186488AFA}.Debug|x86.Build.0 = Debug|Any CPU
+		{9111A0EE-CEB1-43DC-A39B-7C6186488AFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9111A0EE-CEB1-43DC-A39B-7C6186488AFA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9111A0EE-CEB1-43DC-A39B-7C6186488AFA}.Release|x86.ActiveCfg = Release|Any CPU
+		{9111A0EE-CEB1-43DC-A39B-7C6186488AFA}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

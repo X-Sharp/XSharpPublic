@@ -157,6 +157,7 @@
     <Compile Include="Walker\ModelWalker.prg" />
     <Compile Include="Walker\Parser.prg" />
     <Compile Include="Walker\ParseResult.prg" />
+    <Compile Include="Walker\ParserV2.prg" />
     <Compile Include="Walker\SourceWalker.prg" />
     <Compile Include="XError.prg" />
     <Compile Include="XFileTypeHelpers.prg" />

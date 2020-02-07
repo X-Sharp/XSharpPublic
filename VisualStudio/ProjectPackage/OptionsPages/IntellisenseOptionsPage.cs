@@ -134,7 +134,7 @@ namespace XSharp.Project.OptionsPages
 
         public string SyncKeyword(string original)
         {
-            if (string.IsNullOrEmpty(original))
+            if (string.IsNullOrEmpty(original) || string.Equals(original, "value", StringComparison.OrdinalIgnoreCase))
                 return original;
             return CaseSync(original);
         }

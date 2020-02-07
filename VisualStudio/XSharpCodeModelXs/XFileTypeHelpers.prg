@@ -44,6 +44,14 @@ BEGIN NAMESPACE XSharpModel
 					RETURN XFileType.License
 				CASE ".rc"
 					RETURN XFileType.NativeResource
+				CASE ".bmp"
+				CASE ".ico"
+				CASE ".jpg"
+				CASE ".jpeg"
+				CASE ".gif"
+				CASE ".png"
+					RETURN XFileType.Resource
+
 			END SWITCH
 			RETURN XFileType.Unknown
 

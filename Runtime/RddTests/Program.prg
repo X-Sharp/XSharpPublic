@@ -5,13 +5,16 @@
 USING XSharp.RDD
 USING System.IO
 USING System.Threading
-USING System.Reflection   
+USING System.Reflection
+
 
 [STAThread];      
 FUNCTION Start() AS VOID
     TRY
-        testChrisOrdinal()
-        //testLndRel()
+        LOCAL hConn AS IntPtr
+        AdsConnect60("abc",1,"","",0, OUT hConn)
+        //testChrisOrdinal()
+        testLndRel()
         //TestCollationChris()
         //TestIndexCreate()
         //TestWord() 

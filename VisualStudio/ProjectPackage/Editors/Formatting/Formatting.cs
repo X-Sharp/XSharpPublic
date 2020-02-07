@@ -13,6 +13,7 @@ using XSharpLanguage;
 using System.Linq;
 using System;
 using LanguageService.CodeAnalysis.XSharp;
+using Microsoft.VisualStudio.Project;
 
 namespace XSharp.Project
 {
@@ -1173,7 +1174,8 @@ namespace XSharp.Project
                 _noGotoDefinition = optionsPage.DisableGotoDefinition;
                 var languagePreferences = new LANGPREFERENCES3[1];
                 languagePreferences[0].guidLang = GuidStrings.guidLanguageService;
-                var result = textManager.GetUserPreferences4(pViewPrefs: null, pLangPrefs: languagePreferences, pColorPrefs: null);
+                int result = 0;
+                UIThread.DoOnUIThread( () => result = textManager.GetUserPreferences4(pViewPrefs: null, pLangPrefs: languagePreferences, pColorPrefs: null));
                 if (result == VSConstants.S_OK)
                 {
                     _indentStyle = languagePreferences[0].IndentStyle;

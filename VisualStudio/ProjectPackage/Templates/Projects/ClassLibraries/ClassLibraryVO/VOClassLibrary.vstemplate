@@ -12,10 +12,11 @@
     <DefaultName>ClassLibrary</DefaultName>
     <ProvideDefaultName>true</ProvideDefaultName>
     <RequiredFrameworkVersion>2.0</RequiredFrameworkVersion>
+    <PreviewImage>VOClassLibrary.png</PreviewImage>
     <LanguageTag Value="X#" />
     <PlatformTag Value="Windows" />
     <ProjectTypeTag Value="Library" />
-
+    <ProjectTypeTag Value="VO" />
   </TemplateData>
   <TemplateContent>
     <Project File="VOClassLibrary.xsproj" ReplaceParameters="true">

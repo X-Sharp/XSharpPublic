@@ -111,7 +111,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             #ifdef SHOWTIMES
             ? DateTime.Now, "Read"
             #endif
-            IF !SELF:Unique .AND. !SELF:_Conditional .AND. !_ordCondInfo:Scoped .AND. ! _ordCondInfo:Custom
+            IF !SELF:_Unique .AND. !SELF:_Conditional .AND. !_ordCondInfo:Scoped .AND. ! _ordCondInfo:Custom
                 isOk := SELF:_CreateNormalIndex()
             ELSE
                 isOk := SELF:_CreateUnique(_ordCondInfo )

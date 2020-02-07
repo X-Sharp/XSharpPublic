@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<VSTemplate Version="3.0.0" Type="Project" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005">
+  <TemplateData>
+    <Name>VO MDI Application</Name>
+    <Description>A project for creating a VO MDI application in the VO Dialect.</Description>
+    <Icon>VOMDIApp.png</Icon>
+    <PreviewImage>VOMDIApp.png</PreviewImage>
+    <TemplateID>XSharp.VOMDIApplication</TemplateID>
+    <ProjectType>XSharp</ProjectType>
+    <RequiredFrameworkVersion>4.6</RequiredFrameworkVersion>
+    <SortOrder>1000</SortOrder>
+    <CreateNewFolder>true</CreateNewFolder>
+    <DefaultName>VOMDIApp</DefaultName>
+    <ProvideDefaultName>true</ProvideDefaultName>
+    <CreateInPlace>false</CreateInPlace>
+    <LanguageTag Value="X#" />
+    <PlatformTag Value="Windows" />
+    <ProjectTypeTag Value="Desktop" />
+    <ProjectTypeTag Value="VO" />
+  </TemplateData>
+  <TemplateContent>
+    <Project File="VOMDIApp.xsproj"  ReplaceParameters="true"  >
+      <ProjectItem ReplaceParameters="true" TargetFileName="Properties\AssemblyInfo.prg">AssemblyInfo.prg</ProjectItem>
+      <ProjectItem ReplaceParameters="true" >Help About.prg</ProjectItem>
+      <ProjectItem ReplaceParameters="true" >Standard Shell.prg</ProjectItem>
+      <ProjectItem ReplaceParameters="true" >Standard Menus.VS_VERSION_INFO.rc</ProjectItem>
+      <ProjectItem TargetFileName="Properties\cavoded.tpl">cavoded.tpl</ProjectItem>
+      <ProjectItem TargetFileName="Properties\cavofed.tpl">cavofed.tpl</ProjectItem>
+      <ProjectItem TargetFileName="Properties\cavowed.inf">cavowed.inf</ProjectItem>
+      <ProjectItem TargetFileName="Properties\cavowed.tpl">cavowed.tpl</ProjectItem>
+      <ProjectItem TargetFileName="Resources\HelpAbt.BMP">HelpAbt.BMP</ProjectItem>
+      <ProjectItem TargetFileName="Resources\XSharp.ICO">XSharp.ICO</ProjectItem>
+      <ProjectItem TargetFileName="Resources\cctl6.man">cctl6.man</ProjectItem>
+      <ProjectItem>Help About.HELPABOUT.xsfrm</ProjectItem>
+      <ProjectItem>Help About.HelpAbout.rc</ProjectItem>
+      <ProjectItem>Help About.POWXSHARPBMP.rc</ProjectItem>
+      <ProjectItem>Standard Menus.prg</ProjectItem>
+      <ProjectItem>Standard Menus.EmptyShellMenu.xsmnu</ProjectItem>
+      <ProjectItem>Standard Menus.StandardShellMenu.xsmnu</ProjectItem>
+      <ProjectItem>Standard Menus.EmptyShellMenu.rc</ProjectItem>
+      <ProjectItem>Standard Menus.EmptyShellMenu_Accelerator.rc</ProjectItem>
+      <ProjectItem>Standard Menus.StandardShellMenu.rc</ProjectItem>
+      <ProjectItem>Standard Menus.StandardShellMenu_Accelerator.rc</ProjectItem>
+      <ProjectItem>Standard Shell.IDI_STANDARDICON.rc</ProjectItem>
+      <ProjectItem>Standard Shell.Manifest.rc</ProjectItem>
+      <ProjectItem>Start.prg</ProjectItem>
+      <ProjectItem OpenInEditor="true">Readme.txt</ProjectItem>
+    </Project>
+  </TemplateContent>
+</VSTemplate>

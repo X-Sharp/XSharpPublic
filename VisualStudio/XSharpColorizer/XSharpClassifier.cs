@@ -656,7 +656,6 @@ namespace XSharpColorizer
             ClassificationSpan result = null;
             switch (token.Channel)
             {
-                case XSharpLexer.PRAGMACHANNEL:         // #pragma
                 case XSharpLexer.PREPROCESSORCHANNEL:
                     // #define, #ifdef etc
                     result = Token2ClassificationSpan(token, snapshot, xsharpPPType);

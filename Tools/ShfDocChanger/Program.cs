@@ -12,7 +12,7 @@ namespace DocumentationChanger
 
         static void Main(string[] args)
         {
-            Convert(@"c:\XSharp\DevRt\Binaries\Obj\Help");
+            Convert(@"c:\XSharp\DocTest\DocTest\Help\Working");
             //Convert(@"c:\XSharp\DevRt\Binaries\Obj\VOHelp");
         }
         static void Convert(string basePath)

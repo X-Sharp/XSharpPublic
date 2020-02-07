@@ -51,8 +51,8 @@ BEGIN NAMESPACE XSharp
         /// <inheritdoc />
         OVERRIDE METHOD Equals(rhs AS OBJECT  ) AS LOGIC
             LOCAL result AS LOGIC
-            IF rhs != NULL .AND. rhs IS __Currency
-                result := SELF:Equals( (__Currency) rhs)
+            IF rhs != NULL .AND. rhs IS CURRENCY
+                result := SELF:Equals( (CURRENCY) rhs)
             ELSE
                 result := FALSE
             ENDIF
@@ -104,57 +104,57 @@ BEGIN NAMESPACE XSharp
         /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(b AS BYTE) AS CURRENCY
-            RETURN __Currency{(Decimal) b}
+            RETURN CURRENCY{(Decimal) b}
             
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(sb AS SByte) AS CURRENCY
-            RETURN __Currency{(Decimal) sb}
+            RETURN CURRENCY{(Decimal) sb}
             
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(si AS SHORT) AS CURRENCY
-            RETURN __Currency{(Decimal)si}
+            RETURN CURRENCY{(Decimal)si}
             
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(w AS WORD) AS CURRENCY
-            RETURN __Currency{(Decimal)w}
+            RETURN CURRENCY{(Decimal)w}
             /// <include file="RTComments.xml" path="Comments/Converter/*" />
             
         [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(i AS INT) AS CURRENCY
-            RETURN __Currency{(Decimal)i}
+            RETURN CURRENCY{(Decimal)i}
             
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(dw AS DWORD) AS CURRENCY
-            RETURN __Currency{(Decimal)dw}
+            RETURN CURRENCY{(Decimal)dw}
             
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(i64 AS INT64) AS CURRENCY
-            RETURN __Currency{(Decimal)i64}
+            RETURN CURRENCY{(Decimal)i64}
             
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(ui64 AS UINT64) AS CURRENCY
-            RETURN __Currency{(Decimal)ui64}
+            RETURN CURRENCY{(Decimal)ui64}
             
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(r4 AS REAL4) AS CURRENCY
-            RETURN __Currency{(REAL8)r4}
+            RETURN CURRENCY{(REAL8)r4}
             
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(r8 AS REAL8) AS CURRENCY
-            RETURN __Currency{r8}
+            RETURN CURRENCY{r8}
             
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(val AS System.Decimal) AS CURRENCY
-            RETURN __Currency{val}
+            RETURN CURRENCY{val}
             
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
@@ -261,29 +261,29 @@ BEGIN NAMESPACE XSharp
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         OPERATOR-(lhs AS USUAL, rhs AS CURRENCY) AS CURRENCY
             // set decimals for LHS to 0, so max decmals is decimals right
-            RETURN __Currency{lhs}:Subtract(rhs)		
+            RETURN CURRENCY{lhs}:Subtract(rhs)		
             
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         OPERATOR*(lhs AS CURRENCY, rhs AS CURRENCY) AS CURRENCY
-            RETURN __Currency{ lhs:_value * rhs:_value}
+            RETURN CURRENCY{ lhs:_value * rhs:_value}
             
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         OPERATOR/(lhs AS CURRENCY, rhs AS CURRENCY) AS CURRENCY
-            RETURN __Currency{ lhs:_value / rhs:_value}
+            RETURN CURRENCY{ lhs:_value / rhs:_value}
             
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         OPERATOR%(lhs AS CURRENCY, rhs AS CURRENCY) AS CURRENCY
-            RETURN __Currency{ lhs:_value % rhs:_value}
+            RETURN CURRENCY{ lhs:_value % rhs:_value}
             
             #endregion
         #region Unary Operators
         /// <include file="RTComments.xml" path="Comments/Operator/*" />
         OPERATOR ++ (c  AS CURRENCY) AS CURRENCY
-            RETURN __Currency{c:_value+1}
+            RETURN CURRENCY{c:_value+1}
             
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         OPERATOR -- (c  AS CURRENCY) AS CURRENCY
-            RETURN __Currency{c:_value-1}
+            RETURN CURRENCY{c:_value-1}
             #endregion
             
         #region Explicit casts. Used inside Transform
@@ -299,17 +299,17 @@ BEGIN NAMESPACE XSharp
         #region Add and Subtract
         /// <exclude />	
         METHOD Add(rhs AS CURRENCY) AS CURRENCY
-            RETURN __Currency{ SELF:_value + rhs:_value}
+            RETURN CURRENCY{ SELF:_value + rhs:_value}
             
             /// <exclude />	
         METHOD Add(rhs AS USUAL) AS CURRENCY
             LOCAL result AS CURRENCY
             IF rhs:IsFloat
-                result := SELF:Add ( (__Currency) rhs)
+                result := SELF:Add ( (CURRENCY) rhs)
             ELSEIF rhs:IsDecimal .OR. rhs:IsCurrency
                 result := SELF:Add ( (System.Decimal) rhs)
             ELSEIF  rhs:IsLong
-                result := __Currency{ SELF:_value + (LONG) rhs}
+                result := CURRENCY{ SELF:_value + (LONG) rhs}
             ELSE
                 THROW Error.ArgumentError(__ENTITY__,Nameof(rhs), "Argument is not numeric")
             ENDIF
@@ -318,17 +318,17 @@ BEGIN NAMESPACE XSharp
             
             /// <exclude />	
         METHOD Subtract(rhs AS CURRENCY) AS CURRENCY
-            RETURN __Currency{ SELF:_value - rhs:_value}
+            RETURN CURRENCY{ SELF:_value - rhs:_value}
             
             /// <exclude />	
         METHOD Subtract(rhs AS USUAL) AS CURRENCY
             LOCAL result AS CURRENCY
             IF rhs:IsFloat
-                result := SELF:Subtract( (__Currency) rhs)
+                result := SELF:Subtract( (CURRENCY) rhs)
             ELSEIF rhs:IsDecimal .OR. rhs:IsCurrency
                 result := SELF:Subtract( (System.Decimal) rhs)
             ELSEIF  rhs:IsLong
-                result := __Currency{ SELF:_value - (LONG) rhs}			
+                result := CURRENCY{ SELF:_value - (LONG) rhs}			
             ELSE
                 THROW Error.ArgumentError(__ENTITY__,Nameof(rhs), "Argument is not numeric")
             ENDIF
@@ -422,7 +422,7 @@ BEGIN NAMESPACE XSharp
             
             /// <inheritdoc />
         PUBLIC METHOD CompareTo(rhs AS OBJECT) AS INT
-            RETURN SELF:CompareTo( (__Currency) rhs)
+            RETURN SELF:CompareTo( (CURRENCY) rhs)
             #endregion
             
     END STRUCTURE

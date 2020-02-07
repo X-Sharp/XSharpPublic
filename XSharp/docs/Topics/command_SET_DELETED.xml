@@ -15,10 +15,10 @@
       <para styleclass="Heading1">SET DELETED Command</para>
     </header>
     <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
-    <para styleclass="Heading1"><text>Purpose</text></para>
+    <para styleclass="Heading1">Purpose</para>
     <para styleclass="Normal">Change the setting that determines whether to ignore or include records that are marked for deletion.</para>
     <para styleclass="Heading1">Syntax</para>
-    <para styleclass="Normal">SET DELETED ON | OFF | (&lt;<text styleclass="Italic">lToggle</text>&gt;)</para>
+    <para styleclass="Code with box">SET DELETED ON | OFF | (&lt;<text styleclass="Italic">lToggle</text>&gt;)</para>
     <para styleclass="Heading1">Arguments</para>
     <para styleclass="List">ON <tab />Specifies that commands that operate on records, including records in related tables, using a scope ignore records that are marked for deletion</para>
     <para styleclass="List">OFF<tab />Specifies that commands that operate on records, including records in related tables, using a scope can access records marked for deletion. (Default)</para>

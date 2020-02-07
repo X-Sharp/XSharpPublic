@@ -19,7 +19,7 @@
     <para styleclass="Heading1">Purpose</para>
     <para styleclass="Normal">Change the setting that determines whether to include or omit century digits in the date format.</para>
     <para styleclass="Heading1">Syntax</para>
-    <para styleclass="Normal">SET CENTURY ON | OFF | (&lt;<text styleclass="Italic">lToggle</text>&gt;)</para>
+    <para styleclass="Code with box">SET CENTURY ON | OFF | (&lt;lToggle&gt;)</para>
     <para styleclass="Heading1">Arguments</para>
     <para styleclass="List">ON, OFF, lToggle<tab /><text styleclass="Body Text">A logical expression which must appear in parentheses. True is equivalent to ON, False to OFF</text></para>
     <para styleclass="Heading1">Description</para>

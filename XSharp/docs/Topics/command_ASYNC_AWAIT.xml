@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>command_ASYNC .. AWAIT</title>
+  <keywords>
+    <keyword>ASYNC</keyword>
+    <keyword>AWAIT</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">ASYNC .. AWAIT Statement</para>
+    </header>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Normal">ASYNC await are strictly speaking not statements, but modifiers.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">ASYNC is a method modifier used to indicate that a method / function contains asynchronous code</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">AWAIT is used before an expression to indicate that an operation may take a while to process.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">The compiler will (behind the scenes) construct a complicated mechanism in which the body of the method is split into a part before and after the await. When the expression returns then the code jumps to the point where it has to continue. As such this belongs to the JUMP statements.</para>
+    <para styleclass="Heading1">Example</para>
+    <para styleclass="Normal"><snippet src="ASYNC-Example" inline="false"/></para>
+  </body>
+</topic>

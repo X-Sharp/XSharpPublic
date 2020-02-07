@@ -1332,8 +1332,11 @@
         <topicref type="topic" id="424524894660736" build="ALL" modified="2016-03-23T11:45:39.014Z" icon="0" href="pp-Line">
           <caption translate="true">#line</caption>
         </topicref>
-        <topicref type="topic" id="42843892933560" build="ALL" modified="2017-04-19T15:41:10.319Z" icon="0" href="pp-Pragma">
-          <caption translate="true">#pragma</caption>
+        <topicref type="topic" id="438682336432452" build="ALL" modified="2020-02-07T09:32:42.532Z" icon="0" href="pp-Pragma_2">
+          <caption translate="true">#pragma options</caption>
+        </topicref>
+        <topicref type="topic" id="42843892933560" build="ALL" modified="2020-02-07T09:32:25.843Z" icon="0" href="pp-Pragma">
+          <caption translate="true">#pragma warning(s)</caption>
         </topicref>
         <topicref type="topic" id="424525103713638" build="ALL" modified="2016-03-23T11:44:15.135Z" icon="0" href="pp-Region">
           <caption translate="true">#region - #endregion</caption>

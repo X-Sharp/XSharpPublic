@@ -18,7 +18,7 @@
     <para styleclass="Heading1">Purpose</para>
     <para styleclass="Normal">Change the setting that determines how dates without century digits are interpreted.</para>
     <para styleclass="Heading1">Syntax</para>
-    <para styleclass="Normal">SET EPOCH TO &lt;<text styleclass="Italic">nYear</text>&gt;</para>
+    <para styleclass="Code with box">SET EPOCH TO &lt;nYear&gt;</para>
     <para styleclass="Heading1">Description</para>
     <para styleclass="Normal">SET EPOCH is functionally equivalent to SetEpoch(). &#160;</para>
     <para styleclass="Body Text"><snippet src="__IncludeLibRT" inline="false"/></para>

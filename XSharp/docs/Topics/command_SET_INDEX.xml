@@ -16,10 +16,10 @@
       <para styleclass="Heading1">SET INDEX Command</para>
     </header>
     <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
-    <para styleclass="Heading1"><text>Purpose</text></para>
+    <para styleclass="Heading1">Purpose</para>
     <para styleclass="Normal">Open one or more index files and add their orders to the order list in the current work area.</para>
     <para styleclass="Heading1">Syntax</para>
-    <para styleclass="Normal">SET INDEX TO [&lt;<text styleclass="Italic">xcIndexFileList</text>&gt; [ADDITIVE]]</para>
+    <para styleclass="Code with box">SET INDEX TO [&lt;xcIndexFileList&gt; [ADDITIVE]]</para>
     <para styleclass="Heading1">Arguments</para>
     <para styleclass="List">TO &lt;xcIndexFileList&gt;<tab />The names of the index files to open, including an optional drive, directory, and extension for each. &#160;See SetDefault() and SetPath() for file searching and creation rules. &#160;The default extension is determined by the RDD and can be obtained using DBOrderInfo(DBOI_INDEXEXT). &#160;</para>
     <para styleclass="List"></para>

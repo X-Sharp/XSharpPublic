@@ -16,7 +16,7 @@
     <para styleclass="Heading1">Purpose</para>
     <para styleclass="Normal">Remove a file from disk.</para>
     <para styleclass="Heading1">Syntax</para>
-    <para styleclass="Normal">DELETE FILE | ERASE &lt;<text styleclass="Italic">xcSourceFile</text>&gt;</para>
+    <para styleclass="Code with box">DELETE FILE | ERASE &lt;xcSourceFile&gt;</para>
     <para styleclass="Heading1">Arguments</para>
     <para styleclass="List">&lt;xcSourceFile&gt;<tab />The name of the file to delete, including an optional drive, directory, and extension. &#160;SetDefault() and SetPath() do not affect this command. &#160;It assumes the current Windows drive and directory if none is specified. &#160;No default extension is supplied.</para>
     <para styleclass="List"></para>

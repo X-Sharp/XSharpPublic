@@ -19,7 +19,7 @@
     <para styleclass="Heading1">Purpose</para>
     <para styleclass="Normal">Rebuild all orders in the order list of the current work area.</para>
     <para styleclass="Heading1">Syntax</para>
-    <para styleclass="Normal">REINDEX [EVAL &lt;<text styleclass="Italic">lCondition</text>&gt; [EVERY &lt;<text styleclass="Italic">nRecords</text>&gt;]</para>
+    <para styleclass="Code with box">REINDEX [EVAL &lt;lCondition&gt; [EVERY &lt;nRecords&gt;]</para>
     <para styleclass="Heading1">Arguments</para>
     <para styleclass="List">EVAL &lt;cbEval&gt;<tab />A code block that is evaluated at intervals specified by EVERY &lt;nInterval&gt;. &#160;The default interval is 1. &#160;This is useful in producing a status bar or odometer that monitors the ordering progress. &#160;The return value of &lt;cbEval&gt; must be a logical value. &#160;If &lt;cbEval&gt; returns FALSE, indexing halts.</para>
     <para styleclass="List"></para>

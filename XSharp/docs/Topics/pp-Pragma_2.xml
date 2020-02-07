@@ -1,0 +1,142 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>#pragma warning(s)_2</title>
+  <keywords>
+    <keyword>#pragma</keyword>
+    <keyword>#pragma options</keyword>
+    <keyword>az</keyword>
+    <keyword>lb</keyword>
+    <keyword>options</keyword>
+    <keyword>pragma</keyword>
+    <keyword>vo12</keyword>
+    <keyword>vo14</keyword>
+    <keyword>vo2</keyword>
+    <keyword>vo5</keyword>
+    <keyword>vo7</keyword>
+    <keyword>vo9</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">#pragma options</para>
+    </header>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Normal">The #pragma options directive allow you to enable / disable certain compiler options for a range of code.</para>
+    <para styleclass="Heading1">Syntax </para>
+    <para styleclass="Code with box">#pragma options( &quot;option&quot;, <text style="font-style:italic;">state</text> )</para>
+    <para styleclass="NotesBox">Note: #pragma directives must appear between before the first entity or between entities and cannot appear in the middle of an entity</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">&quot;option&quot; can be one of the following</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="12" colcount="2" style="width:auto; page-break-inside:avoid;">
+      <tr style="vertical-align:top">
+        <td style="width:95px;">
+          <para styleclass="Normal">Option</para>
+        </td>
+        <td style="width:1152px;">
+          <para styleclass="Normal">Description</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:95px;">
+          <para styleclass="Normal">&quot;az&quot;</para>
+        </td>
+        <td style="width:1152px;">
+          <para styleclass="Normal">Zero based arrays</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:95px;">
+          <para styleclass="Normal">&quot;initlocals&quot;</para>
+        </td>
+        <td style="width:1152px;">
+          <para styleclass="Normal">Initialize local variables</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:95px;">
+          <para styleclass="Normal">&quot;lb&quot;</para>
+        </td>
+        <td style="width:1152px;">
+          <para styleclass="Normal">Allow late binding</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:95px;">
+          <para styleclass="Normal">&quot;memvars&quot;</para>
+        </td>
+        <td style="width:1152px;">
+          <para styleclass="Normal">Allow memvars</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:95px;">
+          <para styleclass="Normal">&quot;undeclared&quot;</para>
+        </td>
+        <td style="width:1152px;">
+          <para styleclass="Normal">Allow undeclared variables</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:95px;">
+          <para styleclass="Normal">&quot;vo2&quot;</para>
+        </td>
+        <td style="width:1152px;">
+          <para styleclass="Normal">Initialize string variables with empty strings</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:95px;">
+          <para styleclass="Normal">&quot;vo5&quot;</para>
+        </td>
+        <td style="width:1152px;">
+          <para styleclass="Normal">Implicit Clipper Calling convention</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:95px;">
+          <para styleclass="Normal">&quot;vo7&quot;</para>
+        </td>
+        <td style="width:1152px;">
+          <para styleclass="Normal">Implicit Casts and Conversions</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:95px;">
+          <para styleclass="Normal">&quot;vo9&quot;</para>
+        </td>
+        <td style="width:1152px;">
+          <para styleclass="Normal">Allow missing return statements or missing return values</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:95px;">
+          <para styleclass="Normal">&quot;vo12&quot;</para>
+        </td>
+        <td style="width:1152px;">
+          <para styleclass="Normal">Clipper Integer divisions</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:95px;">
+          <para styleclass="Normal">&quot;vo14&quot;</para>
+        </td>
+        <td style="width:1152px;">
+          <para styleclass="Normal">Embed real constants as float</para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text style="font-style:italic;">State</text> can be one of the following</para>
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">on </li>
+      <li styleclass="Body Text">off </li>
+      <li styleclass="Body Text">default </li>
+    </list>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"></para>
+    <para styleclass="Body Text">Please note that Vulcan also has &quot;ovf&quot; and &quot;fovf&quot; to enable/disable overflow checking. In X# this can be achieved with BEGIN CHECKED .. END &#160;/ BEGIN UNCHECKED .. END</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

@@ -17,7 +17,7 @@
     <para styleclass="Heading1">Purpose</para>
     <para styleclass="Normal">Change the current work area.</para>
     <para styleclass="Heading1">Syntax</para>
-    <para styleclass="Normal">SELECT &lt;<text styleclass="Italic">xnWorkArea</text>&gt; | &lt;<text styleclass="Italic">xcAlias</text>&gt;</para>
+    <para styleclass="Code with box">SELECT &lt;<text styleclass="Italic">xnWorkArea</text>&gt; | &lt;<text styleclass="Italic">xcAlias</text>&gt;</para>
     <para styleclass="Heading1">Arguments</para>
     <para styleclass="List">&lt;xnWorkArea&gt;<tab />A number from 0 to 250 that specifies the work area to select.</para>
     <para styleclass="List"></para>

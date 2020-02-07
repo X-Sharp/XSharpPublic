@@ -15,14 +15,14 @@
       <para styleclass="Heading1">SET DRIVER Command</para>
     </header>
     <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
-    <para styleclass="Heading1"><text>Purpose</text></para>
+    <para styleclass="Heading1">Purpose</para>
     <para styleclass="Normal">Change the default RDD for the application.</para>
-        <para styleclass="Heading1"><text>Syntax</text></para>
-    <para styleclass="Normal">SET DRIVER TO &lt;<text styleclass="Italic">idDriverName</text>&gt;</para>
-        <para styleclass="Heading1"><text>Description</text></para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Code with box">SET DRIVER TO &lt;<text styleclass="Italic">idDriverName</text>&gt;</para>
+    <para styleclass="Heading1">Description</para>
     <para styleclass="Normal">SET DRIVER is functionally equivalent to DBSetDriver(). &#160;</para>
-      <para styleclass="Body Text"><snippet src="__IncludeLibRt" inline="false"/></para>
-        <para styleclass="Heading1"><text>See Also</text></para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibRt" inline="false"/></para>
+    <para styleclass="Heading1">See Also</para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbSetDriver.htm" domain="XsRuntime.chm">DbSetDriver()</link></para>
     <para styleclass="Normal"></para>
   </body>

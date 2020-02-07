@@ -13,15 +13,10 @@
     <header>
       <para styleclass="Heading1">BEGIN LOCK</para>
     </header>
+    <para styleclass="Heading1">Purpose</para>
     <para styleclass="Body Text">The BEGIN LOCK and END LOCK keywords mark a block of statements as a critical section.</para>
     <para styleclass="Heading1">Syntax</para>
-    <para styleclass="Body Text"><table rowcount="1" colcount="1" style="width:auto; cell-padding:0px; cell-spacing:0px; page-break-inside:auto; border-width:0px; border-spacing:0px; cell-border-width:0px; border-style:none; background-color:none; head-row-background-color:none; alt-row-background-color:none;">
-      <tr style="vertical-align:top">
-        <td style="vertical-align:middle; width:624px; border:none;">
-          <para styleclass="Code Example">BEGIN LOCK <text style="font-style:italic;">object</text><br/> &#160; <text style="font-style:italic;">statements</text><br/>END LOCK</para>
-        </td>
-      </tr>
-    </table></para>
+    <para styleclass="Code Example">BEGIN LOCK <text style="font-style:italic;">object</text><br/> &#160; <text style="font-style:italic;">statements</text><br/>END LOCK</para>
     <para styleclass="Heading1">Arguments</para>
     <para styleclass="Body Text"></para>
     <para styleclass="List"><text style="font-style:italic;">object</text>&#32;<tab />An expression that evaluates to an object reference that is used as a locking object. </para>

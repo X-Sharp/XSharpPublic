@@ -19,7 +19,7 @@
     <para styleclass="Heading1">Purpose</para>
     <para styleclass="Normal">Set or clear a filter condition for the current work area.</para>
     <para styleclass="Heading1">Syntax</para>
-    <para styleclass="Normal">SET FILTER TO [&lt;<text styleclass="Italic">lCondition</text>&gt;]</para>
+    <para styleclass="Code with box">SET FILTER TO [&lt;<text styleclass="Italic">lCondition</text>&gt;]</para>
     <para styleclass="Heading1">Arguments</para>
     <para styleclass="List">TO &lt;lCondition&gt;<tab />The condition used to filter records.</para>
     <para styleclass="List"></para>

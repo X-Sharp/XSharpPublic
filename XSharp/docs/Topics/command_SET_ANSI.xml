@@ -13,19 +13,19 @@
   <body>
     <header>
       <para styleclass="Normal"></para>
-      <para styleclass="Heading1"><text>SET ANSI Command</text></para>
+      <para styleclass="Heading1">SET ANSI Command</para>
     </header>
     <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
-    <para styleclass="Heading1"><text>Purpose</text></para>
+    <para styleclass="Heading1">Purpose</para>
     <para styleclass="Normal">Change the setting that determines whether database files are created using ANSI or OEM format and whether certain text file operations convert between the two character sets.</para>
-        <para styleclass="Heading1"><text>Syntax</text></para>
+    <para styleclass="Heading1">Syntax</para>
     <para styleclass="Normal">SET ANSI ON | OFF | (&lt;<text styleclass="Italic">lToggle</text>&gt;)</para>
-        <para styleclass="Heading1"><text>Arguments</text></para>
+    <para styleclass="Heading1">Arguments</para>
     <para styleclass="List">ON, OFF, lToggle<tab /><text styleclass="Body Text">A logical expression which must appear in parentheses. True is equivalent to ON, False to OFF</text></para>
-    <para styleclass="Heading1"><text>Description</text></para>
+    <para styleclass="Heading1">Description</para>
     <para styleclass="Normal">SET ANSI is functionally equivalent to SetAnsi().</para>
-      <para styleclass="Body Text"><snippet src="__IncludeLibRt" inline="false"/></para>
-        <para styleclass="Heading1"><text>See Also</text></para>
-    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Function_SetAnsi">SetAnsi()</link></para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibRt" inline="false"/></para>
+    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetAnsi.htm" domain="XsRuntime.chm">SetAnsi()</link></para>
   </body>
 </topic>

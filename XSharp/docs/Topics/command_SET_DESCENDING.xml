@@ -13,10 +13,10 @@
       <para styleclass="Heading1">SET DESCENDING Command</para>
     </header>
     <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
-    <para styleclass="Heading1"><text>Purpose</text></para>
+    <para styleclass="Heading1">Purpose</para>
     <para styleclass="Normal">Change the descending flag of the controlling order.</para>
     <para styleclass="Heading1">Syntax</para>
-    <para styleclass="Normal">SET DESCENDING ON | OFF | (<text styleclass="Italic">&lt;lToggle&gt;</text>)</para>
+    <para styleclass="Code with box">SET DESCENDING ON | OFF | (&lt;lToggle&gt;)</para>
     <para styleclass="Normal"></para>
     <para styleclass="Bold"><text style="font-weight:normal;">Note: The initial default of this setting depends on whether the controlling order was created with descending as an attribute.</text></para>
     <para styleclass="Heading1">Arguments</para>

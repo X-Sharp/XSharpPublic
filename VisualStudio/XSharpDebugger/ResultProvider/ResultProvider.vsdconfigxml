@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+
+    Copyright (c) Microsoft. All rights reserved.
+    Licensed under the MIT license. See LICENSE file in the project root for full license information.
+       
+    This is a configuration file that tells the debug engine about the existence of our Frame
+    Decoder component.  For documentation of the vsdconfigxml format see:
+    https://github.com/Microsoft/ConcordExtensibilitySamples/wiki/Component-discovery-and-configuration    
+-->
+<Configuration xmlns="http://schemas.microsoft.com/vstudio/vsdconfig/2008">
+
+  <DefineGuid Name="guidXSharpXSharpResultProviderCompId" Value="EAF11F39-C084-458B-8C7F-C0A7277CCC9C"/>
+  <DefineGuid Name="guidXSharpLanguageId" Value="F579403A-D3D3-47A0-BF03-9709575BEE69"/>
+  
+  <ManagedComponent
+    ComponentId="guidXSharpXSharpResultProviderCompId"
+    ComponentLevel="64000"
+    AssemblyName="XSharpDebugger"
+    Synchronized="true">
+    <!-- By setting the ComponentLevel to 64000, which is higher than the level of the C# ResultProvider (63000) we get called after the C# ResultProvider-->
+    <Class Name="XSharpDebugger.ResultProvider.XSharpResultProvider">
+      <Implements>
+        <InterfaceGroup>
+          <Filter>
+            <LanguageId RequiredValue="guidXSharpLanguageId"/>
+          </Filter>
+          <Interface Name="IDkmClrResultProvider"/>
+        </InterfaceGroup>
+      </Implements>
+    </Class>
+
+  </ManagedComponent>
+
+</Configuration>

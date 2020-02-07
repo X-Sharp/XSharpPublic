@@ -755,16 +755,16 @@ PUBLIC STATIC EXTERN METHOD AdsGetLogical(hTable AS IntPtr , pucFldName AS STRIN
 PUBLIC STATIC EXTERN METHOD AdsGetLogical(hTable AS IntPtr , lFieldOrdinal AS DWORD, pbValue OUT WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-PUBLIC STATIC EXTERN METHOD AdsGetINT64(hTable AS IntPtr , pucFldName AS STRING , plValue OUT INT ) AS DWORD 
+PUBLIC STATIC EXTERN METHOD AdsGetLong(hTable AS IntPtr , pucFldName AS STRING , plValue OUT LONG ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-PUBLIC STATIC EXTERN METHOD AdsGetINT64(hTable AS IntPtr , lFieldOrdinal AS DWORD, plValue OUT INT ) AS DWORD 
+PUBLIC STATIC EXTERN METHOD AdsGetLong(hTable AS IntPtr , lFieldOrdinal AS DWORD, plValue OUT LONG ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-PUBLIC STATIC EXTERN METHOD AdsGetINT64INT64(hTable AS IntPtr , pucFldName AS STRING , pqValue OUT INT64 ) AS DWORD 
+PUBLIC STATIC EXTERN METHOD AdsGetLongLong(hTable AS IntPtr , pucFldName AS STRING , pqValue OUT INT64 ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-PUBLIC STATIC EXTERN METHOD AdsGetINT64INT64(hTable AS IntPtr , lFieldOrdinal AS DWORD, pqValue OUT INT64 ) AS DWORD 
+PUBLIC STATIC EXTERN METHOD AdsGetLongLong(hTable AS IntPtr , lFieldOrdinal AS DWORD, pqValue OUT INT64 ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
 PUBLIC STATIC EXTERN METHOD AdsGetMemoBlockSize(hTable AS IntPtr , pusBlockSize OUT WORD ) AS DWORD 
@@ -1157,16 +1157,16 @@ PUBLIC STATIC EXTERN METHOD AdsSetLogical(hObj AS IntPtr , pucFldName AS STRING 
 PUBLIC STATIC EXTERN METHOD AdsSetLogical(hObj AS IntPtr , lFieldOrdinal AS DWORD, bValue AS WORD ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-PUBLIC STATIC EXTERN METHOD AdsSetINT64(hObj AS IntPtr , pucFldName AS STRING , lValue AS INT ) AS DWORD 
+PUBLIC STATIC EXTERN METHOD AdsSetLong(hObj AS IntPtr , pucFldName AS STRING , lValue AS LONG ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-PUBLIC STATIC EXTERN METHOD AdsSetINT64(hObj AS IntPtr , lFieldOrdinal AS DWORD, lValue AS INT ) AS DWORD 
+PUBLIC STATIC EXTERN METHOD AdsSetLong(hObj AS IntPtr , lFieldOrdinal AS DWORD, lValue AS LONG ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-PUBLIC STATIC EXTERN METHOD AdsSetINT64INT64(hObj AS IntPtr , pucFldName AS STRING , qValue AS INT64 ) AS DWORD 
+PUBLIC STATIC EXTERN METHOD AdsSetLongLong(hObj AS IntPtr , pucFldName AS STRING , qValue AS INT64 ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
-PUBLIC STATIC EXTERN METHOD AdsSetINT64INT64(hObj AS IntPtr , lFieldOrdinal AS DWORD, qValue AS INT64 ) AS DWORD 
+PUBLIC STATIC EXTERN METHOD AdsSetLongLong(hObj AS IntPtr , lFieldOrdinal AS DWORD, qValue AS INT64 ) AS DWORD 
 
 [DllImport("ace64.dll", CharSet := CharSet.Ansi)];
 PUBLIC STATIC EXTERN METHOD AdsSetMilliseconds(hObj AS IntPtr , pucFldName AS STRING , lTime AS INT ) AS DWORD 

@@ -383,6 +383,8 @@ FUNCTION SToDt(cDate AS STRING) AS DateTime
 	RETURN	 convertedDate
 
 
+FUNCTION @@DateTime() AS DateTime
+    RETURN DateTime.Now
 
 FUNCTION @@DateTime(nYear AS INT, nMonth AS INT, nDay AS INT) AS DateTime
     RETURN System.DateTime{nYear, nMonth, nDay}

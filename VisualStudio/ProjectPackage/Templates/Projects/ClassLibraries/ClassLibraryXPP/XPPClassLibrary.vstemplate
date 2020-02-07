@@ -4,6 +4,7 @@
     <Name>Class Library XBase++ Dialect</Name>
     <Description>A project for creating a X# class library (.dll) for the Xbase++ Dialect</Description>
     <Icon>XPPClassLibrary.png</Icon>
+    <PreviewImage>XPPClassLibrary.png</PreviewImage>
     <TemplateID>XSharp.XPPClassLibrary</TemplateID>
     <ProjectType>XSharp</ProjectType>
     <SortOrder>1</SortOrder>
@@ -15,6 +16,7 @@
     <LanguageTag Value="X#" />
     <PlatformTag Value="Windows" />
     <ProjectTypeTag Value="Library" />
+    <ProjectTypeTag Value="XPP" />
   </TemplateData>
   <TemplateContent>
     <Project File="XPPClassLibrary.xsproj" ReplaceParameters="true">

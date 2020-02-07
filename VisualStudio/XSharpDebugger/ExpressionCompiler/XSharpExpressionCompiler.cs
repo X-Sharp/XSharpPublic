@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
@@ -79,10 +79,18 @@ namespace XSharpDebugger.ExpressionCompiler
                     newexpr = newexpr.Replace(':', '.');
                     changed = true;
                 }
+                // check for literal array
+                var lbrkt = newexpr.IndexOf('[');
+                var rbrkt = newexpr.IndexOf(']');
+                if (lbrkt > 0 && rbrkt > 0 && lbrkt < rbrkt)
+                {
+                    newexpr = AdjustArrayIndices(newexpr, ref changed);
+                }
                 if (changed && fi != null)
                 {
                     fi.SetValue(expression, newexpr);
                 }
+
             }
             expression.CompileExpression(instructionAddress, inspectionContext, out error, out result);
             if (changed && fi != null)
@@ -153,9 +161,60 @@ namespace XSharpDebugger.ExpressionCompiler
         /// execute to perform the assignment.</param>
         void IDkmClrExpressionCompiler.CompileAssignment(DkmLanguageExpression expression, DkmClrInstructionAddress instructionAddress, DkmEvaluationResult lValue, out string error, out DkmCompiledClrInspectionQuery result)
         {
+            // when the user assigns a value in the debugger then this method is called.
+            // we may want to change an expression like "{1,2,3}" to "new object[] {1,2,3}"
+            // and "2020.12.03" to "XSharp.RT.Functions.ConDate(2020,12,03)"
             error = null;
             result = null;
             expression.CompileAssignment(instructionAddress, lValue, out error, out result);
+        }
+
+        private static string AdjustArrayIndices(string newexpr, ref bool changed)
+        {
+            var sb = new System.Text.StringBuilder();
+            bool instring = false;
+            bool inindex = false;
+            foreach (var c in newexpr)
+            {
+                switch (c)
+                {
+                    case '[':
+                        if (!instring)
+                        {
+                            inindex = true;
+                        }
+                        sb.Append(c);
+                        break;
+                    case ',':
+                        if (!instring && inindex)
+                        {
+                            sb.Append("-1][");
+                            changed = true;
+                        }
+                        else
+                        {
+                            sb.Append(c);
+                        }
+                        break;
+                    case ']':
+                        if (!instring)
+                        {
+                            sb.Append("-1");
+                            changed = true;
+                            inindex = false;
+                        }
+                        sb.Append(c);
+                        break;
+                    case '"':
+                        instring = !instring;
+                        sb.Append(c);
+                        break;
+                    default:
+                        sb.Append(c);
+                        break;
+                }
+            }
+            return sb.ToString();
         }
     }
 }

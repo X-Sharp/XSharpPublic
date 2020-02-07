@@ -127,7 +127,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			DbCreate(cFileName , { {"CFIELD","C",10,0} })
 			DbUseArea(,,cFileName)
 			DbAppend()
-			Assert.Equal(1, (LONG) Recno())
+			Assert.Equal(1, (LONG) RecNo())
 			LOCAL u := NIL AS USUAL
 			VoDbSkip(-1)
 			
@@ -3547,6 +3547,190 @@ RETURN
 			Assert.True( Bof() )
 			Assert.True( DbOrderInfo(DBOI_KEYCOUNT) == 0 )
 			
+			DbCloseArea()
+		END METHOD
+
+
+        [Fact, Trait("Category", "DBF")];
+		METHOD LongIndexTest() AS VOID
+			LOCAL cPrev, cCurrent AS USUAL
+			LOCAL nRecords AS INT
+			LOCAL nCount AS INT
+			LOCAL cDbf AS STRING
+
+			RddSetDefault("DBFCDX")
+			SetCollation(#CLIPPER)
+
+			cDBF := GetTempFileName()
+			FErase ( cDbf + IndexExt() )
+			
+			nRecords := 500
+
+			DbCreate( cDBF , { { "LAST" , "C" , 200 , 0 } })
+			DbUseArea( ,,cDBF , , FALSE )  // open shared               
+			FOR LOCAL n := 1 AS DWORD UPTO nRecords
+				DbAppend()
+				FieldPut ( 1 , Replicate( Chr(50 + n % 50) , 50 + n % 80) )
+			NEXT
+			DbCreateIndex ( cDBF , "LAST" , {||_FIELD->LAST})
+			DbGoBottom()
+		
+			FOR LOCAL n := 1 AS DWORD UPTO 500
+				DbGoto((n * 17) % (nRecords - 10) + 2)
+				FieldPut(1, Replicate( Chr((n * 6) % 50 + 40) , n % 80 + 10 ))
+				DbGoto((n * 37) % (nRecords - 10) + 2)
+				FieldPut(1, Replicate( Chr((n * 6) % 50 + 40) , n % 80 + 10 ))
+				DbGoto((n * 97) % (nRecords - 10) + 2)
+				FieldPut(1, Replicate( Chr((n * 6) % 50 + 40) , n % 80 + 10 ))
+				
+				cPrev := NIL
+				nCount := 0
+				DbGoTop()
+				DO WHILE .NOT. EoF()
+					nCount ++
+					cCurrent := FieldGet(1)
+					IF cPrev != NIL
+						Assert.True(cPrev <=  cCurrent)
+						IF .not. cPrev <=  cCurrent
+							? "Failed at values:" , n
+							? Left(cPrev,10)
+							? Left(cCurrent,10)
+						END IF
+					END IF
+					cPrev := cCurrent
+					DbSkip()
+				END DO
+				Assert.Equal(500, nCount)
+			NEXT
+			
+			DbCloseArea()			
+		END METHOD
+
+
+        [Fact, Trait("Category", "DBF")];
+		METHOD UniqeTest() AS VOID
+			LOCAL cDbf AS STRING
+			LOCAL nCount AS INT
+
+			RddSetDefault("DBFCDX")
+			SetCollation(#CLIPPER)
+
+			cDBF := GetTempFileName()
+
+			DbfTests.CreateDatabase(cDbf , { { "LAST" , "C" , 20 , 0 } } , { "g1" , "o5" , "g2", "g1" , "g8" , "g1"} )
+			DbCreateOrder ( "ORDER1" , cDbf , "upper(LAST)" , { || Upper ( _Field->LAST) } , TRUE) // Unique
+
+			Assert.Equal(TRUE , (LOGIC)DbOrderInfo(DBOI_UNIQUE))
+			
+			nCount := 0
+			DbGoTop()
+			DO WHILE .not. Eof()
+				? RecNo(), FieldGet(1)
+				nCount ++
+				DbSkip()
+			END DO
+			Assert.Equal(4 , nCount)
+			DbCloseArea()
+
+			DbUseArea( ,,cDBF , , FALSE )    // open not shared
+			Assert.Equal(TRUE , (LOGIC)DbOrderInfo(DBOI_UNIQUE))
+		
+			DbPack()
+//			DBZap()
+//			DbReindex()
+		
+			Assert.Equal(TRUE , (LOGIC)DbOrderInfo(DBOI_UNIQUE))
+			nCount := 0
+			DbGoTop()
+			DO WHILE .not. Eof()
+				nCount ++
+				DbSkip()
+			END DO
+			Assert.Equal(4 , nCount)
+			DbCloseArea()
+			
+			DbUseArea( ,,cDBF , , FALSE ) // FALSE, wrong
+			Assert.Equal(TRUE , (LOGIC)DbOrderInfo(DBOI_UNIQUE))
+			nCount := 0
+			DbGoTop()
+			DO WHILE .not. Eof()
+				nCount ++
+				DbSkip()
+			END DO
+			Assert.Equal(TRUE , (LOGIC)DbOrderInfo(DBOI_UNIQUE))
+			DbCloseArea()
+		END METHOD
+
+
+        [Fact, Trait("Category", "DBF")];
+		METHOD PackZapReindexTest() AS VOID
+			PackZapReindexTest_helper(1)
+			PackZapReindexTest_helper(2)
+			PackZapReindexTest_helper(3)
+		END METHOD
+
+		METHOD PackZapReindexTest_helper(nWitch AS INT) AS VOID
+			LOCAL cDbf AS STRING
+			LOCAL nCount AS INT
+
+			RddSetDefault("DBFCDX")
+			SetCollation(#CLIPPER)
+
+			cDBF := GetTempFileName()
+
+			DbfTests.CreateDatabase(cDbf , { { "LAST" , "C" , 20 , 0 } } , { "g1" , "o5" , "g2", "g1" , "g8" , "g1"} )
+			DbGoto(2)
+			DbDelete()
+			DbGoto(4)
+			DbDelete()
+
+			DBClearOrderCondition () // descend + condition + unique       order
+			DbSetOrderCondition( "Upper(LAST) = 'G'", {||Upper(_Field->LAST) = "G" } ,,,,,,,,, TRUE)
+			DbCreateOrder ( "ORDER1" , cDbf , "upper(LAST)" , { || Upper ( _Field->LAST) } , TRUE)
+			
+			DBClearOrderCondition ()
+			DbSetOrderCondition(,,,,,,,,,,,,, TRUE) // custom + unique    order
+			DbCreateOrder ( "ORDER2" , cDbf , "upper(LAST)" , { || Upper ( _Field->LAST) } , TRUE )
+			
+			DbCloseArea()
+			
+			DbUseArea( ,,cDBF , , FALSE )    // open not shared
+			DbSetOrder ( 1 ) 
+			Assert.True((LOGIC) DbOrderInfo(DBOI_ISDESC))
+			Assert.True((LOGIC) DbOrderInfo(DBOI_ISCOND))
+			Assert.True((LOGIC) DbOrderInfo(DBOI_UNIQUE))
+			DbSetOrder ( 2 )
+			Assert.True((LOGIC) DbOrderInfo(DBOI_CUSTOM))
+			Assert.True((LOGIC) DbOrderInfo(DBOI_UNIQUE))
+
+			SWITCH nWitch
+			CASE 1
+				DbPack()
+			CASE 2
+				DbZap()
+			CASE 3
+				DbReindex() 
+			END SWITCH
+			
+			DbSetOrder ( 1 ) 
+			Assert.True((LOGIC) DbOrderInfo(DBOI_ISDESC))
+			Assert.True((LOGIC) DbOrderInfo(DBOI_ISCOND))
+			Assert.True((LOGIC) DbOrderInfo(DBOI_UNIQUE))
+			DbSetOrder ( 2 )
+			Assert.True((LOGIC) DbOrderInfo(DBOI_CUSTOM))
+			Assert.True((LOGIC) DbOrderInfo(DBOI_UNIQUE))
+
+			DbCloseArea()
+			DbUseArea( ,,cDBF , , FALSE )    // open shared               
+			
+			DbSetOrder ( 1 ) 
+			Assert.True((LOGIC) DbOrderInfo(DBOI_ISDESC))
+			Assert.True((LOGIC) DbOrderInfo(DBOI_ISCOND))
+			Assert.True((LOGIC) DbOrderInfo(DBOI_UNIQUE))
+			DbSetOrder ( 2 )
+			Assert.True((LOGIC) DbOrderInfo(DBOI_CUSTOM))
+			Assert.True((LOGIC) DbOrderInfo(DBOI_UNIQUE))
+		
 			DbCloseArea()
 		END METHOD
 

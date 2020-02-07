@@ -202,5 +202,6 @@ namespace XSharp.Project.OptionsPages
             int.TryParse(multiFactor.Text, out factor);
             optionsPage.MultiFactor = factor;
         }
+
     }
 }

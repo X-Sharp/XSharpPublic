@@ -4,6 +4,7 @@
     <Name>WPF Application</Name>
     <Description>Windows Presentation Foundation client application.</Description>
     <Icon>WPFApplication.png</Icon>
+    <PreviewImage>WPFApplication.png</PreviewImage>
     <TemplateID>XSharp.WPFApplication</TemplateID>
     <ProjectType>XSharp</ProjectType>
     <RequiredFrameworkVersion>3.0</RequiredFrameworkVersion>

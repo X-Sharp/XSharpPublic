@@ -496,6 +496,10 @@ FUNCTION AdsGetDouble(hTable AS IntPtr , lFieldOrdinal AS DWORD, pdValue OUT REA
     RETURN Ace.AdsGetDouble(hTable, lFieldOrdinal, OUT pdValue)
         
 [MethodImpl(MethodImplOptions.AggressiveInlining)];
+FUNCTION AdsGetDouble(hTable AS IntPtr , strFieldName AS STRING, pdValue OUT REAL8 ) AS DWORD 
+    RETURN Ace.AdsGetDouble(hTable, strFieldName, OUT pdValue)
+
+[MethodImpl(MethodImplOptions.AggressiveInlining)];
 FUNCTION AdsGetFieldLength(hTable AS IntPtr , lFieldOrdinal AS DWORD, pulLength OUT DWORD ) AS DWORD 
     RETURN Ace.AdsGetFieldLength(hTable, lFieldOrdinal, OUT pulLength)
         
@@ -857,11 +861,19 @@ FUNCTION AdsIsEmpty(hTable AS IntPtr , strFldName AS STRING , pbEmpty OUT WORD )
 [MethodImpl(MethodImplOptions.AggressiveInlining)];
 FUNCTION AdsGetString(hTable AS IntPtr , lFieldOrdinal AS DWORD, [IN] [OUT] strBuf AS CHAR[] , pulLen REF DWORD , usOption AS WORD) AS DWORD 
     RETURN Ace.AdsGetString(hTable, lFieldOrdinal, strBuf, REF pulLen, usOption)
-    
+
+[MethodImpl(MethodImplOptions.AggressiveInlining)];
+FUNCTION AdsGetString(hTable AS IntPtr , strFieldName AS STRING, [IN] [OUT] strBuf AS CHAR[] , pulLen REF DWORD , usOption AS WORD ) AS DWORD 
+    RETURN Ace.AdsGetString(hTable, strFieldName, strBuf, REF pulLen, usOption)
+
 [MethodImpl(MethodImplOptions.AggressiveInlining)];
 FUNCTION AdsGetStringW(hTable AS IntPtr , lFieldOrdinal AS DWORD, [IN] [OUT] strBuf AS CHAR[] , pulLen REF DWORD , usOption AS WORD) AS DWORD 
     RETURN Ace.AdsGetString(hTable, lFieldOrdinal, strBuf, REF pulLen, usOption)
-    
+
+[MethodImpl(MethodImplOptions.AggressiveInlining)];
+FUNCTION AdsGetStringW(hTable AS IntPtr , strFieldName AS STRING, [IN] [OUT] strBuf AS CHAR[] , pulLen REF DWORD , usOption AS WORD ) AS DWORD 
+    RETURN Ace.AdsGetStringW(hTable, strFieldName,  strBuf, REF pulLen, usOption)
+
 [MethodImpl(MethodImplOptions.AggressiveInlining)];
 FUNCTION AdsGetJulian(hTable AS IntPtr , lFieldOrdinal AS DWORD, plDate OUT INT ) AS DWORD 
     RETURN Ace.AdsGetJulian(hTable, lFieldOrdinal, OUT plDate)
@@ -877,7 +889,8 @@ FUNCTION AdsGetLogical(hTable AS IntPtr , lFieldOrdinal AS DWORD, pbValue OUT WO
 [MethodImpl(MethodImplOptions.AggressiveInlining)];
 FUNCTION AdsGetLogical(hTable AS IntPtr , strFldName AS STRING , pbValue OUT WORD ) AS DWORD 
     RETURN Ace.AdsGetLogical(hTable, strFldName, OUT pbValue)
-        
+
+
 [MethodImpl(MethodImplOptions.AggressiveInlining)];
 FUNCTION AdsSetEmpty(hObj AS IntPtr , lFieldOrdinal AS DWORD) AS DWORD 
     RETURN Ace.AdsSetEmpty(hObj, lFieldOrdinal)
@@ -890,15 +903,23 @@ FUNCTION AdsSetEmpty(hObj AS IntPtr , strFldName AS STRING ) AS DWORD
 [MethodImpl(MethodImplOptions.AggressiveInlining)];
 FUNCTION AdsSetField(hObj AS IntPtr , lFieldOrdinal AS DWORD, abBuf AS BYTE[] , ulLen AS DWORD ) AS DWORD 
     RETURN Ace.AdsSetField(hObj, lFieldOrdinal, abBuf, ulLen)
-        
+
+[MethodImpl(MethodImplOptions.AggressiveInlining)];
+FUNCTION AdsSetField(hObj AS IntPtr , strFldName AS STRING, abBuf AS BYTE[] , ulLen AS DWORD ) AS DWORD 
+    RETURN Ace.AdsSetField(hObj, strFldName, abBuf, ulLen)
+   
 [MethodImpl(MethodImplOptions.AggressiveInlining)];
 FUNCTION AdsSetField(hObj AS IntPtr , lFieldOrdinal AS DWORD, strBuf AS STRING , ulLen AS DWORD ) AS DWORD 
     RETURN Ace.AdsSetField(hObj, lFieldOrdinal, strBuf, ulLen)
-        
+
+[MethodImpl(MethodImplOptions.AggressiveInlining)];
+FUNCTION AdsSetField(hObj AS IntPtr , strFldName AS STRING, strBuf AS STRING , ulLen AS DWORD ) AS DWORD 
+    RETURN Ace.AdsSetField(hObj, strFldName, strBuf, ulLen)
+
 [MethodImpl(MethodImplOptions.AggressiveInlining)];
 FUNCTION AdsSetString(hObj AS IntPtr , lFieldOrdinal AS DWORD, strBuf AS STRING , ulLen AS DWORD ) AS DWORD 
     RETURN Ace.AdsSetString(hObj, lFieldOrdinal, strBuf, ulLen)
-        
+
 [MethodImpl(MethodImplOptions.AggressiveInlining)];
 FUNCTION AdsSetString(hObj AS IntPtr , strFldName AS STRING , strBuf AS STRING , ulLen AS DWORD ) AS DWORD 
     RETURN Ace.AdsSetString(hObj, strFldName, strBuf, ulLen)
@@ -914,18 +935,27 @@ FUNCTION AdsSetStringW(hObj AS IntPtr , strFldName AS STRING , strBuf AS STRING 
 [MethodImpl(MethodImplOptions.AggressiveInlining)];
 FUNCTION AdsSetBinary(hTable AS IntPtr , lFieldOrdinal AS DWORD, usBinaryType AS WORD , ulTotalLength AS DWORD , ulOffset AS DWORD , strBuf AS BYTE[] , ulLen AS DWORD ) AS DWORD 
     RETURN Ace.AdsSetBinary(hTable, lFieldOrdinal, usBinaryType, ulTotalLength, ulOffSet, strBuf, ulLen)
+
+[MethodImpl(MethodImplOptions.AggressiveInlining)];
+FUNCTION AdsSetBinary(hTable AS IntPtr , strFldName AS STRING , usBinaryType AS WORD , ulTotalLength AS DWORD , ulOffset AS DWORD , strBuf AS BYTE[] , ulLen AS DWORD ) AS DWORD 
+    RETURN Ace.AdsSetBinary(hTable, strFldName, usBinaryType, ulTotalLength, ulOffset, strBuf, ulLen)
         
 [MethodImpl(MethodImplOptions.AggressiveInlining)];
 FUNCTION AdsSetDouble(hObj AS IntPtr , lFieldOrdinal AS DWORD, dValue AS REAL8) AS DWORD 
     RETURN Ace.AdsSetDouble(hObj, lFieldOrdinal, dValue)
         
 [MethodImpl(MethodImplOptions.AggressiveInlining)];
+FUNCTION AdsSetDouble(hObj AS IntPtr , strFldName AS STRING, dValue AS REAL8) AS DWORD 
+    RETURN Ace.AdsSetDouble(hObj, strFldName, dValue)
+
+[MethodImpl(MethodImplOptions.AggressiveInlining)];
 FUNCTION AdsSetJulian(hObj AS IntPtr , lFieldOrdinal AS DWORD, lDate AS INT) AS DWORD 
     RETURN Ace.AdsSetJulian(hObj, lFieldOrdinal, lDate)
-        
+
+[MethodImpl(MethodImplOptions.AggressiveInlining)];
 FUNCTION AdsSetJulian(hObj AS IntPtr , strFldName AS STRING , lDate AS INT ) AS DWORD 
     RETURN Ace.AdsSetJulian(hObj, strFldName, lDate)
-        
+
 [MethodImpl(MethodImplOptions.AggressiveInlining)];
 FUNCTION AdsSetLogical(hObj AS IntPtr , lFieldOrdinal AS DWORD, bValue AS WORD ) AS DWORD 
     RETURN Ace.AdsSetLogical(hObj, lFieldOrdinal, bValue)
@@ -933,7 +963,55 @@ FUNCTION AdsSetLogical(hObj AS IntPtr , lFieldOrdinal AS DWORD, bValue AS WORD )
 [MethodImpl(MethodImplOptions.AggressiveInlining)];
 FUNCTION AdsSetLogical(hObj AS IntPtr , strFldName AS STRING , bValue AS WORD ) AS DWORD 
     RETURN Ace.AdsSetLogical(hObj, strFldName, bValue)
+
+[MethodImpl(MethodImplOptions.AggressiveInlining)];
+FUNCTION AdsSetMoney(hObj AS IntPtr , lFieldOrdinal AS DWORD, qValue AS INT64 ) AS DWORD 
+    RETURN Ace.AdsSetMoney(hObj, lFieldOrdinal, qValue)
         
+[MethodImpl(MethodImplOptions.AggressiveInlining)];
+FUNCTION AdsSetMoney(hObj AS IntPtr , strFldName AS STRING , qValue AS INT64 ) AS DWORD 
+    RETURN Ace.AdsSetMoney(hObj, strFldName, qValue)
+
+[MethodImpl(MethodImplOptions.AggressiveInlining)];
+FUNCTION AdsSetMilliseconds(hObj AS IntPtr , lFieldOrdinal AS DWORD, lTime AS INT ) AS DWORD 
+    RETURN Ace.AdsSetMilliseconds(hObj, lFieldOrdinal, lTime)
+        
+[MethodImpl(MethodImplOptions.AggressiveInlining)];
+FUNCTION AdsSetMilliseconds(hObj AS IntPtr , strFldName AS STRING , lTime AS INT ) AS DWORD 
+    RETURN Ace.AdsSetMilliseconds(hObj, strFldName, lTime)
+
+[MethodImpl(MethodImplOptions.AggressiveInlining)];
+FUNCTION AdsSetNull(hObj AS IntPtr , lFieldOrdinal AS DWORD ) AS DWORD 
+    RETURN Ace.AdsSetNull(hObj, lFieldOrdinal)
+
+[MethodImpl(MethodImplOptions.AggressiveInlining)];
+FUNCTION AdsSetNull(hObj AS IntPtr , strFldName AS STRING  ) AS DWORD 
+    RETURN Ace.AdsSetNull(hObj, strFldName)
+
+[MethodImpl(MethodImplOptions.AggressiveInlining)];
+FUNCTION AdsSetShort(hObj AS IntPtr , lFieldOrdinal AS DWORD, sValue AS SHORT ) AS DWORD 
+    RETURN Ace.AdsSetShort(hObj, lFieldOrdinal, sValue)
+        
+[MethodImpl(MethodImplOptions.AggressiveInlining)];
+FUNCTION AdsSetShort(hObj AS IntPtr , strFldName AS STRING , sValue AS SHORT ) AS DWORD 
+    RETURN Ace.AdsSetShort(hObj, strFldName, sValue)
+
+[MethodImpl(MethodImplOptions.AggressiveInlining)];
+FUNCTION AdsSetTime(hObj AS IntPtr , lFieldOrdinal AS DWORD, strValue AS STRING , wLen AS WORD  ) AS DWORD 
+    RETURN Ace.AdsSetTime(hObj, lFieldOrdinal, strValue, wLen)
+        
+[MethodImpl(MethodImplOptions.AggressiveInlining)];
+FUNCTION AdsSetTime(hObj AS IntPtr , strFldName AS STRING , strValue AS STRING , wLen AS WORD ) AS DWORD 
+    RETURN Ace.AdsSetTime(hObj, strFldName, strValue, wLen)
+
+[MethodImpl(MethodImplOptions.AggressiveInlining)];
+FUNCTION AdsSetTimeStamp(hObj AS IntPtr , lFieldOrdinal AS DWORD, strBuf AS STRING , ulLen AS DWORD   ) AS DWORD 
+    RETURN Ace.AdsSetTimeStamp(hObj, lFieldOrdinal, strBuf, ulLen)
+        
+[MethodImpl(MethodImplOptions.AggressiveInlining)];
+FUNCTION AdsSetTimeStamp(hObj AS IntPtr , strFldName AS STRING , strBuf AS STRING , ulLen AS DWORD  ) AS DWORD 
+    RETURN Ace.AdsSetTimeStamp(hObj, strFldName, strBuf, ulLen)
+
 [MethodImpl(MethodImplOptions.AggressiveInlining)];
 FUNCTION AdsReindex(hObject AS IntPtr) AS DWORD 
     RETURN Ace.AdsReindex(hObject)

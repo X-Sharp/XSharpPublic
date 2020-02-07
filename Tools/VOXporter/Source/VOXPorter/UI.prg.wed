@@ -1,13 +1,13 @@
 DESIGNERSTART = Form,Form,xPorterUI
-GUID=F69D629E-4FAC-4A82-9697-7A4DDED9ED59
-FormBorderStyle=FixedSingle
+GUID=3E847546-C588-4214-B9D2-70C314CD044E
+FormBorderStyle=Sizable
 Icon=%AppPath%\XSharpSm.ico
 MaximizeBox=False
 MinimizeBox=False
 Name=xPorterUI
 Text=VO-xPorter beta 0.11
 Location=100 , 100
-ClientSize=604 , 415
+ClientSize=656 , 434
 CancelButton=153D9C9E-3903-4495-BFF7-E3B798C34B58
 ControlVisibility=Protect
 ControlPrefix=o
@@ -22,18 +22,20 @@ SUBCONTROLSSTART
   GUID=153D9C9E-3903-4495-BFF7-E3B798C34B58
   Name=ExitButton
   Text=Exit
-  Location=474 , 383
+  Location=528 , 402
   Size=119 , 23
   TabIndex=4
+  Anchor=Bottom,Right
   Click=ExitButtonClick
   
   CONTROL=System.Windows.Forms.GroupBox
   GUID=43DDAD22-77E9-4243-B131-324A702D58B6
   Name=GroupBox3
   Text=Progress
-  Location=11 , 295
-  Size=582 , 79
+  Location=11 , 314
+  Size=636 , 79
   TabIndex=3
+  Anchor=Top,Bottom,Left,Right
   SUBCONTROLSSTART
     
     CONTROL=System.Windows.Forms.Label
@@ -50,8 +52,9 @@ SUBCONTROLSSTART
     GUID=4F31FD03-A0E5-4FB1-A43C-0B3FE85C87D0
     Name=ProgressBar
     Location=18 , 37
-    Size=546 , 26
+    Size=600 , 26
     TabIndex=0
+    Anchor=Top,Bottom,Left,Right
  
  SUBCONTROLSEND
   
@@ -59,9 +62,10 @@ SUBCONTROLSSTART
   GUID=C15241BB-E532-4721-ACA1-A203BEE709DE
   Name=xPortButton
   Text=xPort!
-  Location=338 , 383
+  Location=392 , 402
   Size=119 , 23
   TabIndex=2
+  Anchor=Bottom,Right
   Click=xPortButton_Click
   
   CONTROL=System.Windows.Forms.GroupBox
@@ -69,16 +73,50 @@ SUBCONTROLSSTART
   Name=GroupBox2
   Text=xPort
   Location=11 , 7
-  Size=320 , 283
+  Size=370 , 303
   TabIndex=0
+  Anchor=Top,Bottom,Left,Right
   SUBCONTROLSSTART
+    
+    CONTROL=System.Windows.Forms.RadioButton
+    GUID=0E496965-461E-4A6F-8E5F-96E94DCD6010
+    AutoSize=True
+    Checked=False
+    Name=RadioFromClipboard
+    Text=Code from clipboard
+    Location=209 , 78
+    Size=124 , 18
+    TabIndex=17
+    Click=Radio_Click
+    
+    CONTROL=System.Windows.Forms.RadioButton
+    GUID=09C8C303-AEA2-4547-AF79-13F91C1953D1
+    AutoSize=True
+    Checked=False
+    Name=RadioFromPrg
+    Text=Prg from prg
+    Location=209 , 52
+    Size=85 , 18
+    TabIndex=16
+    Click=Radio_Click
+    
+    CONTROL=System.Windows.Forms.RadioButton
+    GUID=7548B301-A2C5-4583-877D-BC4571FCA8C1
+    AutoSize=True
+    Checked=False
+    Name=RadioFromMef
+    Text=Prg from MEF
+    Location=209 , 26
+    Size=92 , 18
+    TabIndex=15
+    Click=Radio_Click
     
     CONTROL=System.Windows.Forms.CheckBox
     GUID=6619FAAE-294A-43EA-AD41-E03224DB34D5
     AutoSize=True
     Name=GenerateWindowsForms
     Text=Generate Windows.Forms forms out of WED binaries
-    Location=18 , 253
+    Location=18 , 272
     Size=289 , 18
     TabIndex=14
     
@@ -87,16 +125,17 @@ SUBCONTROLSSTART
     AutoSize=True
     Name=CheckNotOverwriteProjectFiles
     Text=Do not overwrite project files if they already exist
-    Location=18 , 229
+    Location=18 , 250
     Size=266 , 18
     TabIndex=13
     
     CONTROL=System.Windows.Forms.TextBox
     GUID=F70B4F7F-AEFC-4919-90B1-60E84FF0644C
     Name=TextAppName
-    Location=171 , 201
-    Size=137 , 20
+    Location=203 , 216
+    Size=154 , 20
     TabIndex=12
+    Anchor=Top,Left,Right
     TextChanged=Other_TextChanged
     
     CONTROL=System.Windows.Forms.Label
@@ -104,15 +143,16 @@ SUBCONTROLSSTART
     AutoSize=True
     Name=LabelSource2
     Text=App / library name:
-    Location=171 , 183
+    Location=203 , 198
     Size=99 , 17
     TabIndex=11
+    Anchor=Top,Left,Right
     
     CONTROL=System.Windows.Forms.TextBox
     GUID=8E3A8325-CFFF-4495-82AA-246AD6A51608
     Name=TextSolutionName
-    Location=18 , 201
-    Size=137 , 20
+    Location=18 , 216
+    Size=154 , 20
     TabIndex=10
     TextChanged=Other_TextChanged
     
@@ -121,7 +161,7 @@ SUBCONTROLSSTART
     AutoSize=True
     Name=LabelSource1
     Text=Solution name:
-    Location=18 , 183
+    Location=18 , 198
     Size=80 , 17
     TabIndex=9
     
@@ -129,26 +169,29 @@ SUBCONTROLSSTART
     GUID=42DD4799-E7F7-43C2-9D6E-5067DA137318
     Name=ButtonOutput
     Text=...
-    Location=279 , 158
+    Location=328 , 173
     Size=27 , 20
     TabIndex=8
+    Anchor=Top,Right
     Click=ButtonOutput_Click
     
     CONTROL=System.Windows.Forms.Button
     GUID=EEC7CEE9-6036-4FE5-AA7B-E4C2D5A0D546
     Name=ButtonSource
     Text=...
-    Location=279 , 116
+    Location=328 , 131
     Size=27 , 20
     TabIndex=5
+    Anchor=Top,Right
     Click=ButtonSource_Click
     
     CONTROL=System.Windows.Forms.TextBox
     GUID=A384E921-7167-4AB7-85E9-D41AF2FD5ED4
     Name=TextOutput
-    Location=18 , 158
-    Size=254 , 20
+    Location=18 , 173
+    Size=303 , 20
     TabIndex=7
+    Anchor=Top,Left,Right
     TextChanged=Other_TextChanged
     
     CONTROL=System.Windows.Forms.Label
@@ -156,7 +199,7 @@ SUBCONTROLSSTART
     AutoSize=True
     Name=Label2
     Text=Output folder:
-    Location=18 , 140
+    Location=18 , 155
     Size=73 , 17
     TabIndex=6
     
@@ -165,16 +208,17 @@ SUBCONTROLSSTART
     AutoSize=True
     Name=LabelSource
     Text=Source folder:
-    Location=18 , 98
+    Location=18 , 113
     Size=75 , 17
     TabIndex=3
     
     CONTROL=System.Windows.Forms.TextBox
     GUID=6682F52D-19EE-4C2E-B4D0-4D259947CEA9
     Name=TextSource
-    Location=18 , 116
-    Size=254 , 20
+    Location=18 , 131
+    Size=303 , 20
     TabIndex=4
+    Anchor=Top,Left,Right
     TextChanged=TextSource_TextChanged
     
     CONTROL=System.Windows.Forms.RadioButton
@@ -183,7 +227,7 @@ SUBCONTROLSSTART
     Checked=False
     Name=RadioFromFolder
     Text=Application from files in folder
-    Location=18 , 69
+    Location=18 , 78
     Size=170 , 18
     TabIndex=2
     Click=Radio_Click
@@ -193,7 +237,7 @@ SUBCONTROLSSTART
     AutoSize=True
     Name=RadioFromAefsInFolder
     Text=Applications from AEFs in folder
-    Location=18 , 45
+    Location=18 , 52
     Size=183 , 18
     TabIndex=1
     Click=Radio_Click
@@ -204,7 +248,7 @@ SUBCONTROLSSTART
     Checked=True
     Name=RadioFromAef
     Text=Application from AEF file
-    Location=18 , 21
+    Location=18 , 26
     Size=146 , 18
     TabIndex=0
     Enabled=True
@@ -216,9 +260,10 @@ SUBCONTROLSSTART
   GUID=5FAC0159-FFA7-4660-91CA-0CE614506991
   Name=GroupBox1
   Text=xPort options
-  Location=338 , 7
-  Size=255 , 283
+  Location=392 , 7
+  Size=255 , 303
   TabIndex=1
+  Anchor=Top,Right
   SUBCONTROLSSTART
     
     CONTROL=System.Windows.Forms.RadioButton
@@ -255,7 +300,7 @@ SUBCONTROLSSTART
     IntegralHeight=False
     Name=OptionsList
     Location=15 , 36
-    Size=222 , 233
+    Size=222 , 254
     TabIndex=4
  
  SUBCONTROLSEND

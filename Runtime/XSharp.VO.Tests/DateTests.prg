@@ -296,5 +296,21 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal("13:34:54",ConTime(13,34,54))
 		RETURN
 
+		[Fact, Trait("Category", "Date")];
+		METHOD DateFunctionTest() AS VOID
+            LOCAL dwToDay AS DWORD
+			Assert.Equal(DATE(), Today())
+			Assert.Equal(DATE(2010,3,4), Condate(2010,3,4))
+            dwToday := DWORD(_CAST , ToDay())
+			Assert.Equal(DATE(dwToDay), Today())
+
+            Assert.Equal(DateTime(), DateTime.Now)
+            Assert.Equal(DateTime(2001,1,2), DateTime{2001,1,2})
+            Assert.Equal(DateTime(2001,1,2,3), DateTime{2001,1,2,3,0,0})
+            Assert.Equal(DateTime(2001,1,2,3,4), DateTime{2001,1,2,3,4,0})
+            Assert.Equal(DateTime(2001,1,2,3,4,5), DateTime{2001,1,2,3,4,5})
+            RETURN
+
+
 	END CLASS
 END NAMESPACE // XSharp.Runtime.Tests

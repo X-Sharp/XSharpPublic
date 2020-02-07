@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
@@ -33,7 +33,7 @@ BEGIN NAMESPACE XSharpModel
 		MEMBER @@Local:=23
 		MEMBER @@ClassMethod:=24
 	END ENUM
-	
+
 	INTERNAL ENUM ImageListOverlay AS Int32
 		MEMBER @@Internal:=1
 		MEMBER @@ProtectedInternal:=2
@@ -42,8 +42,8 @@ BEGIN NAMESPACE XSharpModel
 		MEMBER @@ImageListOverlayArrow:=5
 		MEMBER @@Public:=0
 	END ENUM
-	
-	ENUM Kind AS Int32 
+
+	ENUM Kind AS Int32
 		MEMBER @@Namespace
 		MEMBER @@Class
 		MEMBER @@Structure
@@ -109,13 +109,14 @@ BEGIN NAMESPACE XSharpModel
 		MEMBER XAML:=11
 		MEMBER Settings:=12
 		MEMBER License:=13
+        MEMBER Resource:= 14
 	END ENUM
-	
+
 	ENUM ParamType AS BYTE
 		MEMBER @@AS		:= 0
 		MEMBER @@Ref    := 1
 		MEMBER @@Out	:= 2
 		MEMBER @@Params := 3
 	END ENUM
-END NAMESPACE 
+END NAMESPACE
 

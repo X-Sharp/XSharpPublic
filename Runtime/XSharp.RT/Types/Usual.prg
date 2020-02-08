@@ -25,6 +25,7 @@ BEGIN NAMESPACE XSharp
         #region STATIC fields
         /// <exclude />
         PUBLIC STATIC _NIL AS __Usual
+        PRIVATE STATIC dialect as XSharpDialect
         #endregion
 
         #region PRIVATE fields
@@ -36,7 +37,8 @@ BEGIN NAMESPACE XSharp
         #region constructors
         /// <exclude />
         STATIC CONSTRUCTOR
-            IF RuntimeState.Dialect == XSharpDialect.FoxPro
+            dialect := RuntimeState.Dialect 
+            IF dialect == XSharpDialect.FoxPro
                 _NIL := __Usual{__UsualType.Logic,FALSE}
             ELSE
                 _NIL := __Usual{__UsualType.Void}
@@ -2542,31 +2544,31 @@ BEGIN NAMESPACE XSharp
         [DebuggerStepThroughAttribute];
         STATIC METHOD ToObject(u AS __Usual) AS OBJECT
              IF !u:_initialized
-                IF RuntimeState.Dialect == XSharpDialect.FoxPro
+                IF dialect == XSharpDialect.FoxPro
                     RETURN FALSE
                 ELSE
                     RETURN NULL
                 ENDIF
              ENDIF
             SWITCH u:_usualType
-                CASE __UsualType.Array		; RETURN u:_arrayValue
-                CASE __UsualType.Codeblock	; RETURN u:_codeblockValue
-                CASE __UsualType.Currency	; RETURN u:_currencyValue
-                CASE __UsualType.Date		; RETURN u:_dateValue
-                CASE __UsualType.DateTime	; RETURN u:_dateTimeValue
-                CASE __UsualType.Decimal	; RETURN u:_decimalValue
-                CASE __UsualType.Float		; RETURN u:_floatValue
-                CASE __UsualType.Int64		; RETURN u:_i64Value
-                CASE __UsualType.Long		; RETURN u:_intValue
-                CASE __UsualType.Logic		; RETURN u:_logicValue
-                CASE __UsualType.Object		; RETURN u:_refData
-                CASE __UsualType.Ptr		; RETURN u:_ptrValue
-                CASE __UsualType.String		; RETURN u:_stringValue
-                CASE __UsualType.Symbol		; RETURN u:_symValue
-                OTHERWISE
-                    Debug.Fail( "Unhandled data type in Usual:ToObject()" )
-                END SWITCH
-                RETURN NULL_OBJECT
+            CASE __UsualType.Array		; RETURN u:_arrayValue
+            CASE __UsualType.Codeblock	; RETURN u:_codeblockValue
+            CASE __UsualType.Currency	; RETURN u:_currencyValue
+            CASE __UsualType.Date		; RETURN u:_dateValue
+            CASE __UsualType.DateTime	; RETURN u:_dateTimeValue
+            CASE __UsualType.Decimal	; RETURN u:_decimalValue
+            CASE __UsualType.Float		; RETURN u:_floatValue
+            CASE __UsualType.Int64		; RETURN u:_i64Value
+            CASE __UsualType.Long		; RETURN u:_intValue
+            CASE __UsualType.Logic		; RETURN u:_logicValue
+            CASE __UsualType.Object		; RETURN u:_refData
+            CASE __UsualType.Ptr		; RETURN u:_ptrValue
+            CASE __UsualType.String		; RETURN u:_stringValue
+            CASE __UsualType.Symbol		; RETURN u:_symValue
+            OTHERWISE
+                Debug.Fail( "Unhandled data type in Usual:ToObject()" )
+            END SWITCH
+            RETURN NULL_OBJECT
                 
             /// <inheritdoc />
         PUBLIC METHOD IConvertible.ToSByte(provider AS System.IFormatProvider) AS SByte
@@ -2766,7 +2768,7 @@ BEGIN NAMESPACE XSharp
             GET
               IF SELF:IsArray
                  RETURN  SELF:_arrayValue:__GetElement(index)
-              ELSEIF SELF:IsString .and. RuntimeState.Dialect == XSharpDialect.XPP .and. index:Length == 1
+              ELSEIF SELF:IsString .and. dialect == XSharpDialect.XPP .and. index:Length == 1
                     VAR s := SELF:_stringValue
                     var i := index[1]
                     IF i>= 0 .AND. i < s:Length
@@ -2817,7 +2819,7 @@ BEGIN NAMESPACE XSharp
                     VAR a := SELF:_arrayValue
                     RETURN a:__GetElement(index)
                 ENDIF
-                IF SELF:IsString .and. RuntimeState.Dialect == XSharpDialect.XPP
+                IF SELF:IsString .and. dialect == XSharpDialect.XPP
                     VAR s := SELF:_stringValue
                     IF index >= 0 .AND. index < s:Length
                         RETURN s:Substring(index, 1)
@@ -2881,7 +2883,7 @@ BEGIN NAMESPACE XSharp
             IF lhs:IsString
                 RETURN __StringEquals( lhs:_stringValue, rhs)
             ELSEIF lhs:IsNil
-                IF RuntimeState.Dialect == XSharpDialect.FoxPro
+                IF dialect == XSharpDialect.FoxPro
                     // Fox throws an error
                     THROW BinaryError("<>", __CavoStr(VOErrors.ARGSINCOMPATIBLE), TRUE, lhs, rhs)
                 ELSE
@@ -2910,7 +2912,7 @@ BEGIN NAMESPACE XSharp
             /// <summary>This method is used by the compiler for code that does an inexact comparison.</summary>
         STATIC METHOD __InexactNotEquals( lhs AS __Usual, rhs AS STRING ) AS LOGIC
             IF lhs:IsNil 
-                IF RuntimeState.Dialect == XSharpDialect.FoxPro
+                IF dialect == XSharpDialect.FoxPro
                     THROW BinaryError("<>", __CavoStr(VOErrors.ARGSINCOMPATIBLE), TRUE, lhs, rhs)
                 ELSE
                     RETURN TRUE         // one is NIL so notequals returns TRUE

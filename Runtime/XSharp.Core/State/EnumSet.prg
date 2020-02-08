@@ -82,23 +82,21 @@ BEGIN NAMESPACE XSharp
         MEMBER EpochYear     := 71		// Numeric
         MEMBER DateFormatNet := 72		// String
         MEMBER DateFormatEmpty := 73    // String
-        MEMBER Optionvo11	:= 74	// Logic
-        MEMBER Optionovf	:= 75	// Logic
+        // 74 - 75 unused
         MEMBER NoMethod		:= 76	// STRING
-        MEMBER AppModule	:= 77	// System.Reflection.Module
+        // 77 unused 
         MEMBER Patharray    := 78	// String[]
         MEMBER NatDLL		:= 79   // string
         MEMBER CollationTable := 80  // byte[]
         MEMBER ErrorLevel   := 81  // DWORD
         MEMBER ErrorBlock   := 82  // Codeblock
-        MEMBER Optionvo13	:= 83	// Logic
         MEMBER LastRddError := 84   // Exception object
-        MEMBER Dialect      := 85   // XSharpDialect value
+        // 85 unused
         MEMBER LastFound    := 86   // Last file found with File()
         MEMBER FileError    := 87   // Last File error code
         MEMBER FileException:= 88   // Last File exception
 
-// 86 - 97 unused
+        // 89 - 97 unused
         MEMBER Dict        := 98	// LOGIC
         MEMBER Intl        := 99	// CollationMode
 
@@ -477,9 +475,6 @@ INTERNAL FUNCTION RuntimeStateDefaultValue(nSet AS XSharp.Set) AS OBJECT
         CASE Set.DigitFixed     
         CASE Set.Fieldstore     
         CASE Set.Science        
-        CASE Set.Optionvo11     
-        CASE Set.Optionovf      
-        CASE Set.Optionvo13     
         CASE Set.Dict           
         CASE Set.HpLocking    
         CASE Set.NewIndexLock 
@@ -591,8 +586,6 @@ INTERNAL FUNCTION RuntimeStateDefaultValue(nSet AS XSharp.Set) AS OBJECT
         CASE Set.Floatdelta
             RETURN 0.0000000000001
 
-        CASE Set.AppModule
-            RETURN typeof(XSharp.Set):Module
         
         CASE Set.Patharray     // String[]
             RETURN (STRING[]) NULL
@@ -622,8 +615,6 @@ INTERNAL FUNCTION RuntimeStateDefaultValue(nSet AS XSharp.Set) AS OBJECT
                 
         CASE Set.ErrorBlock     // Codeblock
             RETURN NULL        
-        CASE Set.Dialect         // XSharpDialect value
-            RETURN XSharpDialect.Core
         
         CASE Set.LastRddError   // Exception object
             RETURN NULL        

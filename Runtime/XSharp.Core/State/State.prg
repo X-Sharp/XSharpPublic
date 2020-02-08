@@ -149,18 +149,13 @@ CLASS XSharp.RuntimeState
     /// <include file="CoreComments.xml" path="Comments/CompilerOptions/*" />
     /// <value>The default vale for this option is 'False'.</value>
     /// <seealso cref="F:XSharp.Set.Optionvo11" />
-	STATIC PROPERTY CompilerOptionVO11 AS LOGIC ; 
-        GET GetValue<LOGIC>(Set.Optionvo11);
-        SET SetValue<LOGIC>(Set.Optionvo11, value ) 
+	STATIC PROPERTY CompilerOptionVO11 AS LOGIC AUTO
  
 	/// <summary>The current compiler setting for the VO13 compiler option.</summary>
     /// <include file="CoreComments.xml" path="Comments/CompilerOptions/*" />
     /// <value>The default vale for this option is 'False'.</value>
     /// <seealso cref="F:XSharp.Set.Optionvo13" />
-	STATIC PROPERTY CompilerOptionVO13 AS LOGIC ;
-        GET GetValue<LOGIC>(Set.Optionvo13);
-        SET SetValue<LOGIC>(Set.Optionvo13, value)
-
+	STATIC PROPERTY CompilerOptionVO13 AS LOGIC AUTO
 	/// <summary>Gets / Sets the current Workarea number.</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
     STATIC PROPERTY CurrentWorkarea AS DWORD ;
@@ -171,32 +166,24 @@ CLASS XSharp.RuntimeState
     /// <include file="CoreComments.xml" path="Comments/CompilerOptions/*" />
     /// <value>The default vale for this option is 'False'.</value>
     /// <seealso cref="F:XSharp.Set.Optionovf" />
-	STATIC PROPERTY CompilerOptionOVF AS LOGIC ;
-        GET GetValue<LOGIC>(Set.Optionovf);
-        SET SetValue<LOGIC>(Set.Optionovf, value)
+	STATIC PROPERTY CompilerOptionOVF AS LOGIC AUTO
 
     /// <summary>The current compiler setting for the X# Dialect.</summary>
     /// <include file="CoreComments.xml" path="Comments/CompilerOptions/*" />
     /// <value>The default vale for the Dialect is 'Core'.</value>
     /// <seealso cref="F:XSharp.Set.Dialect" />
-	STATIC PROPERTY Dialect AS XSharpDialect ;
-        GET GetValue<XSharpDialect>(Set.Dialect);
-        SET SetValue<XSharpDialect>(Set.Dialect, value)
+	STATIC PROPERTY Dialect AS XSharpDialect  AUTO
 
 	/// <summary>The current compiler setting for the FOVF compiler option.</summary>
     /// <include file="CoreComments.xml" path="Comments/CompilerOptions/*" />
     /// <value>The default vale for this option is 'False'.</value>
     /// <seealso cref="F:XSharp.Set.Optionovf" />
-	STATIC PROPERTY CompilerOptionFOVF AS LOGIC ;
-        GET GetValue<LOGIC>(Set.Optionovf);
-        SET SetValue<LOGIC>(Set.Optionovf, value)
+	STATIC PROPERTY CompilerOptionFOVF AS LOGIC AUTO
 
 	/// <summary>The System.Reflection.Module for the main application.</summary>
     /// <include file="CoreComments.xml" path="Comments/CompilerOptions/*" />
     /// <seealso cref="F:XSharp.Set.AppModule" />
-    STATIC PROPERTY AppModule AS  System.Reflection.Module ;
-        GET GetValue<System.Reflection.Module >(Set.AppModule);
-        SET SetValue<System.Reflection.Module >(Set.AppModule, value)
+    STATIC PROPERTY AppModule AS  System.Reflection.Module AUTO
 	#endregion
 
 	/// <summary>The last file found with File(). This is the name that FPathName() returns.</summary>

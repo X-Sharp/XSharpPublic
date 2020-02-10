@@ -1015,6 +1015,27 @@ namespace XSharpColorizer
                         newtags.Add(Token2ClassificationSpan(keywordContext, snapshot, xsharpKwCloseType));
                         keywordContext = null;
                     }
+                    if (token.Type == XSharpParser.PRAGMA)
+                    {
+                        var start = token;
+                        var stop = token;
+                        while (true)
+                        {
+                            iToken++;
+                            token = tokenStream.Get(iToken);
+                            if (token.Type == XSharpParser.EOS || token.Type == XSharpParser.Eof)
+                                break;
+                            stop = token;
+                        }
+                        TextSpan tokenSpan = new TextSpan(start.StartIndex, stop.StopIndex - start.StartIndex + 1);
+                        XsClassificationSpan span1 = tokenSpan.ToClassificationSpan(snapshot, xsharpPPType);
+                        span1.startTokenType = start.Type;
+                        span1.endTokenType = stop.Type;
+                        newtags.Add(span1);
+                        iToken--;
+                        continue;
+                    }
+
                     var span = ClassifyToken(token, regionTags, snapshot);
                     if ((span != null) )
                     {
@@ -1027,6 +1048,7 @@ namespace XSharpColorizer
                             foreach (var item in list)
                                 newtags.Add(item);
                         }
+
                         if (!disableRegions)
                         {
                             // now look for Regions of similar code lines

@@ -20,31 +20,17 @@
     <HtmlHelpName>XsRuntime</HtmlHelpName>
     <Language>en-US</Language>
     <DocumentationSources>
-      <DocumentationSource sourceFile="Docs\XsRuntimeClasses.xml" />
-      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.Rdd.dll" />
-      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.Core.XML" />
-      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.Core.dll" />
-      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.RDD.XML" />
-      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.RT.XML" />
-      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.RT.dll" />
       <DocumentationSource sourceFile="Binaries\Documentation\XSharp.VFP.XML" />
-      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.VFP.dll" />
-      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.VO.XML" />
-      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.VO.dll" />
-      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.XPP.XML" />
-      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.XPP.dll" />
-      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.Data.dll" />
-      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.Data.xml" />
-    </DocumentationSources>
+<DocumentationSource sourceFile="Binaries\Documentation\XSharp.VFP.dll" /></DocumentationSources>
     <HelpTitle>X# Runtime Reference</HelpTitle>
-    <HelpFileVersion>2.3.0.0</HelpFileVersion>
+    <HelpFileVersion>2.2.3.0</HelpFileVersion>
     <NamingMethod>MemberName</NamingMethod>
     <ContentPlacement>AboveNamespaces</ContentPlacement>
     <RootNamespaceContainer>True</RootNamespaceContainer>
     <NamespaceGrouping>True</NamespaceGrouping>
     <Preliminary>False</Preliminary>
     <SdkLinkTarget>Blank</SdkLinkTarget>
-    <HelpFileFormat>HtmlHelp1, MSHelpViewer, Website</HelpFileFormat>
+    <HelpFileFormat>HtmlHelp1</HelpFileFormat>
     <SyntaxFilters>C#, X#</SyntaxFilters>
     <PresentationStyle>VS2013Xs</PresentationStyle>
     <CleanIntermediates>False</CleanIntermediates>

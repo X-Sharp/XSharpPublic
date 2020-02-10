@@ -5,11 +5,11 @@ using System.Runtime.CompilerServices
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 //
-[assembly: AssemblyTitle("XSharp.Runtime.VO.Tests")]
+[assembly: AssemblyTitle("XSharp.Runtime.VFP.Tests")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("XSharp.Runtime.VO.Tests")]
+[assembly: AssemblyProduct("XSharp.Runtime.VFP.Tests")]
 [assembly: AssemblyCopyright("Copyright ©  2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

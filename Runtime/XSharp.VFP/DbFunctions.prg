@@ -8,6 +8,6 @@ USING System
 USING System.Collections.Generic
 USING System.Text
 
-/// <include file="Runtimefunctions.xml" path="Runtimefunctions/fldcount/*" />
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/fldcount/*" />
 FUNCTION FldCount( )
     RETURN FCount()

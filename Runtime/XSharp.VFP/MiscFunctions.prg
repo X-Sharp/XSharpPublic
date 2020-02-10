@@ -5,11 +5,11 @@
 //
 
 
-/// <include file="VFPDocs.xml" path="Runtimefunctions/iscolor/*" />
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/iscolor/*" />
 FUNCTION IsColor( ) AS LOGIC
     RETURN TRUE
 
-/// <include file="VFPDocs.xml" path="Runtimefunctions/ismouse/*" />
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/ismouse/*" />
 FUNCTION IsMouse( ) AS LOGIC
     RETURN TRUE
 

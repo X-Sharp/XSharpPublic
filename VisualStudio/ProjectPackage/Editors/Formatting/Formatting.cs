@@ -868,15 +868,100 @@ namespace XSharp.Project
         /// <returns></returns>
         private IList<IToken> getTokensInLine(ITextSnapshotLine line)
         {
+            IList<IToken> tokens = new List<IToken>();
+            // Already been lexed ?
+            if (_buffer.Properties != null && _buffer.Properties.ContainsProperty(typeof(XSharpTokens)))
+            {
+                XSharpTokens xTokens = null;
+                xTokens = _buffer.Properties.GetProperty<XSharpTokens>(typeof(XSharpTokens));
+                if (!(xTokens == null || xTokens.TokenStream == null || xTokens.SnapShot == null))
+                {
+                    var allTokens = xTokens.TokenStream.GetTokens();
+                    if (allTokens != null)
+                    {
+                        if (xTokens.SnapShot.Version == _buffer.CurrentSnapshot.Version)
+                        {
+                            // Ok, use it
+                            int startIndex = -1;
+                            // Move to the line position
+                            for (int i = 0; i < allTokens.Count; i++)
+                            {
+                                if (allTokens[i].StartIndex >= line.Start.Position)
+                                {
+                                    startIndex = i;
+                                    break;
+                                }
+                            }
+                            if ( startIndex > -1 )
+                            {
+                                // Move to the end of line
+                                int currentLine = allTokens[startIndex].Line;
+                                do
+                                {
+                                    tokens.Add(allTokens[startIndex]);
+                                    startIndex++;
+
+                                } while ((startIndex < allTokens.Count) && (currentLine == allTokens[startIndex].Line));
+                                return tokens;
+                            }
+                        }
+                    }
+                }
+            }
+            // Ok, do it now
             var text = line.GetText();
-            return getTokens(text);
+            tokens = getTokens(text);
+            return tokens;
+            //
         }
 
         private IList<IToken> getTokensInLine(ITextSnapshot snapshot, int start, int length)
         {
+            IList<IToken> tokens = new List<IToken>();
+            // Already been lexed ?
+            if (_buffer.Properties != null && _buffer.Properties.ContainsProperty(typeof(XSharpTokens)))
+            {
+                XSharpTokens xTokens = null;
+                xTokens = _buffer.Properties.GetProperty<XSharpTokens>(typeof(XSharpTokens));
+                if (!(xTokens == null || xTokens.TokenStream == null || xTokens.SnapShot == null))
+                {
+                    var allTokens = xTokens.TokenStream.GetTokens();
+                    if (allTokens != null)
+                    {
+                        if (xTokens.SnapShot.Version == _buffer.CurrentSnapshot.Version)
+                        {
+                            // Ok, use it
+                            int startIndex = -1;
+                            // Move to the line position
+                            for (int i = 0; i < allTokens.Count; i++)
+                            {
+                                if (allTokens[i].StartIndex >= start)
+                                {
+                                    startIndex = i;
+                                    break;
+                                }
+                            }
+                            if (startIndex > -1)
+                            {
+                                // Move to the end of span
+                                int lastPosition = start + length;
+                                do
+                                {
+                                    tokens.Add(allTokens[startIndex]);
+                                    startIndex++;
+
+                                } while ((startIndex < allTokens.Count) && (allTokens[startIndex].StopIndex < lastPosition ));
+                                return tokens;
+                            }
+                        }
+                    }
+                }
+            }
+            //
             SnapshotSpan lineSpan = new SnapshotSpan(snapshot, start, length);
             var text = lineSpan.GetText();
-            return getTokens(text);
+            tokens = getTokens(text);
+            return tokens;
         }
 
 
@@ -1494,7 +1579,10 @@ namespace XSharp.Project
                 set
                 {
                     currentIndex = value;
-                    currentPosition = allTokens[currentIndex].StartIndex;
+                    if (currentIndex < allTokens.Count)
+                        currentPosition = allTokens[currentIndex].StartIndex;
+                    else
+                        currentPosition = -1;
                 }
             }
 
@@ -1522,6 +1610,23 @@ namespace XSharp.Project
                 }
                 //
                 Dialect = cf.ParseOptions.Dialect;
+            }
+
+            internal FormattingContext(IList<IToken> tokens, XSharpDialect dialect)
+            {
+                allTokens = tokens;
+                if (allTokens.Count > 0)
+                {
+                    currentIndex = 0;
+                    currentPosition = allTokens[0].StartIndex;
+                }
+                else
+                {
+                    currentIndex = -1;
+                    currentPosition = -1;
+                }
+                //
+                Dialect = dialect;
             }
 
             public void MoveTo(int positionToReach)
@@ -1558,7 +1663,7 @@ namespace XSharp.Project
             public IToken GetFirstToken(bool ignoreSpaces)
             {
                 IToken first = null;
-                if (currentIndex > -1)
+                if (currentPosition > -1)
                 {
                     int currentLine = allTokens[currentIndex].Line;
                     int start = currentIndex;
@@ -1589,7 +1694,7 @@ namespace XSharp.Project
             public IToken GetLastToken(bool ignoreSpaces)
             {
                 IToken last = null;
-                if (currentIndex > -1)
+                if (currentPosition > -1)
                 {
                     int currentLine = allTokens[currentIndex].Line;
                     int start = currentIndex;
@@ -1614,6 +1719,41 @@ namespace XSharp.Project
                     }
                 }
                 return last;
+            }
+
+            public IToken GetToken(bool ignoreSpaces, bool moveToNext, bool stayOnLine)
+            {
+                IToken first = null;
+                if (currentPosition > -1)
+                {
+                    int currentLine = allTokens[currentIndex].Line;
+                    int start = currentIndex;
+                    while (start < allTokens.Count)
+                    {
+                        IToken token = allTokens[start];
+                        if ( (token.Line != currentLine) && stayOnLine )
+                        {
+                            break;
+                        }
+                        // skip whitespace tokens
+                        if (((token.Type == XSharpLexer.WS) && ignoreSpaces) ||
+                            (token.Type == XSharpLexer.EOS))
+                        {
+                            start++;
+                            continue;
+                        }
+                        else
+                        {
+                            first = token;
+                            if (moveToNext)
+                                start++;
+                            break;
+                        }
+                    }
+                    //
+                    CurrentIndex = start;
+                }
+                return first;
             }
         }
 
@@ -1720,7 +1860,31 @@ namespace XSharp.Project
                 var editSession = _buffer.CreateEdit();
                 try
                 {
-                    FormattingContext context = new FormattingContext(this, _buffer.CurrentSnapshot);
+                    FormattingContext context = null;
+                    // Already been lexed ?
+                    if (_buffer.Properties != null && _buffer.Properties.ContainsProperty(typeof(XSharpTokens)))
+                    {
+                        XSharpTokens xTokens = null;
+                        xTokens = _buffer.Properties.GetProperty<XSharpTokens>(typeof(XSharpTokens));
+                        if (!(xTokens == null || xTokens.TokenStream == null || xTokens.SnapShot == null))
+                        {
+                            var tokens = xTokens.TokenStream.GetTokens();
+                            // Ok, we have some tokens
+                            if (tokens != null)
+                            {
+                                // And they are the right ones
+                                if (xTokens.SnapShot.Version == _buffer.CurrentSnapshot.Version)
+                                {
+                                    // Ok, use it
+                                    context = new FormattingContext(tokens, this.ParseOptions.Dialect);
+                                }
+                            }
+                        }
+                    }
+                    // No Tokens....Ok, do the lexing now
+                    if (context == null)
+                        context = new FormattingContext(this, _buffer.CurrentSnapshot);
+                    //
                     var lines = _buffer.CurrentSnapshot.Lines;
                     int indentSize = 0;
                     bool inComment = false;
@@ -1788,9 +1952,10 @@ namespace XSharp.Project
                         }
                         if (canFormatLine(snapLine))
                         {
-                            formatLineCase(editSession, snapLine);
-                            CommandFilterHelper.FormatLineIndent(this.TextView, editSession, snapLine, indentSize);
+                            formatLineCaseV2(context, editSession, snapLine);
                         }
+                        CommandFilterHelper.FormatLineIndent(this.TextView, editSession, snapLine, indentSize);
+                        
                     }
                 }
                 finally
@@ -1922,6 +2087,7 @@ namespace XSharp.Project
                     // Skip comment and using regions
                     switch (startTokenType)
                     {
+                        case XSharpLexer.ML_COMMENT:
                         case XSharpLexer.SL_COMMENT:
                         case XSharpLexer.USING:
                         case XSharpLexer.PP_INCLUDE:
@@ -1944,6 +2110,8 @@ namespace XSharp.Project
                                 if (openKeyword.Type != XSharpLexer.CLASS)
                                     continue;
                             }
+                            else
+                                continue;
                             break;
                         default:
                             break;
@@ -1980,6 +2148,7 @@ namespace XSharp.Project
                     // Comment or Using region ?
                     switch (startTokenType)
                     {
+                        case XSharpLexer.ML_COMMENT:
                         case XSharpLexer.SL_COMMENT:
                         case XSharpLexer.USING:
                         case XSharpLexer.PP_INCLUDE:
@@ -2002,6 +2171,8 @@ namespace XSharp.Project
                                 if (openKeyword.Type != XSharpLexer.CLASS)
                                     continue;
                             }
+                            else
+                                continue;
                             break;
                         default:
                             break;
@@ -2100,6 +2271,55 @@ namespace XSharp.Project
             return (indentValue * _indentSize) + mlCmtSpaces;
         }
 
+        private void formatLineCaseV2(FormattingContext context, ITextEdit editSession, ITextSnapshotLine line)
+        {
+            if (XSharpProjectPackage.Instance.DebuggerIsRunning)
+            {
+                return;
+            }
+            if (!canFormatLine(line))
+            {
+                return;
+            }
+
+            getEditorPreferences(TextView);
+            if (_keywordCase == KeywordCase.None)
+            {
+                return;
+            }
+            XSharpProjectPackage.Instance.DisplayOutPutMessage($"CommandFilter.formatLineCaseV2({line.LineNumber + 1})");
+            //
+            context.MoveTo(line.Start);
+            IToken token = context.GetToken(true, true, true);
+            while ( token != null )
+            {
+                if (currentLine == line.LineNumber)
+                {
+                    // do not update tokens touching or after the caret
+                    // after typing String it was already uppercasing even when I wanted to type StringComparer
+                    // now we wait until the user has typed an extra character. That will trigger another session.
+                    // (in this case the C, but it could also be a ' ' or tab and then it would match the STRING keyword)
+                    int caretPos = this.TextView.Caret.Position.BufferPosition.Position;
+                    if ( token.StopIndex < caretPos - 1)
+                    {
+                        formatToken(editSession, 0, token);
+                    }
+                    else
+                    {
+                        // Come back later.
+                        registerLineForCaseSync(line.LineNumber);
+                        break;
+                    }
+                }
+                else
+                {
+                    formatToken(editSession, 0, token);
+                }
+                //
+                token = context.GetToken(true, true, true);
+            }
+            
+        }
         #endregion
 
     }

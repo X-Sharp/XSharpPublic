@@ -146,11 +146,16 @@ BEGIN NAMESPACE XSharp
         STATIC OPERATOR IMPLICIT(r4 AS REAL4) AS CURRENCY
             RETURN CURRENCY{(REAL8)r4}
             
-            /// <include file="RTComments.xml" path="Comments/Operator/*" />
+        /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(r8 AS REAL8) AS CURRENCY
             RETURN CURRENCY{r8}
-            
+
+        [DebuggerStepThroughAttribute];
+        STATIC OPERATOR IMPLICIT(fl AS FLOAT) AS CURRENCY
+            RETURN CURRENCY{fl:Value}
+
+
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
         [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(val AS System.Decimal) AS CURRENCY

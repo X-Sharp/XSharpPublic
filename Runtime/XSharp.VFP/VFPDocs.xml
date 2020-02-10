@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Comments>
+<Runtimefunctions>
 <abs>
 <summary>
 Returns the absolute value of the specified numeric expression.
@@ -11,14 +11,14 @@ Specifies the numeric expression whose absolute value ABS( ) returns.
 <returns>
 Numeric
 </returns>
-<examples>
+<example>
  <code language="X#">? ABS(-45)       &amp;&amp; Displays 45
 ? ABS(10-30)     &amp;&amp; Displays 20
 ? ABS(30-10)     &amp;&amp; Displays 20
 STORE 40 TO gnNumber1
 STORE 2 TO gnNumber2
 ? ABS(gnNumber2-gnNumber1)     &amp;&amp; Displays 38</code>
-</examples>
+</example>
 </abs>
 <aclass>
 <summary>
@@ -40,7 +40,7 @@ Numeric
 ACLASS( ) creates a one-dimensional array containing the class name of the specified object and its ancestor class names. The first array element contains the class name of the object, the second element contains the name of the object's parent class, the third element contains the name of the object's grandparent class, and so on.
 ACLASS( ) returns the number of class names in the array. ACLASS( ) returns 0 if the array cannot be created.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLEAR
 frmMyForm = CREATEOBJECT("FormGrandChild")
 FOR nCount = 1 TO ACLASS(gaNewarray, frmMyForm)    &amp;&amp; Creates an array
@@ -51,7 +51,7 @@ DEFINE CLASS FormChild AS FORM
 ENDDEFINE
 DEFINE CLASS FormGrandChild AS FormChild
 ENDDEFINE</code>
-</examples>
+</example>
 </aclass>
 <acopy>
 <summary>
@@ -77,7 +77,7 @@ Numeric. <b>ACOPY( )</b> returns the number of elements copied to the destinati
 <remarks>
 Copying a member array to an existing non-member array with certain dimensions using the <b>ACOPY( )</b> function might generate the error, "Subscript is outside defined range." You can avoid this error changing the dimension of the destination array to a single element before calling <b>ACOPY( )</b>. For more information, see DIMENSION Command.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLOSE DATABASES
 OPEN DATABASE (HOME(2) + 'data\testdata')
 USE customer     &amp;&amp; Open customer table
@@ -89,7 +89,7 @@ INTO ARRAY gaCompanies
 = ACOPY(gaCompanies, gaCompaniesTemp)  &amp;&amp; Make a copy of the array
 CLEAR
 DISPLAY MEMORY LIKE gaCompaniesTemp</code>
-</examples>
+</example>
 </acopy>
 <acos>
 <summary>
@@ -106,13 +106,13 @@ Numeric
 <remarks>
 The arc cosine is returned in radians.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLEAR
 ? RTOD(ACOS(0))  &amp;&amp; Displays 90.00
 STORE -1 to gnArcAngle
 ? RTOD(ACOS(gnArcAngle))  &amp;&amp; Displays 180.00
 ? RTOD(ACOS(SQRT(2)/2))  &amp;&amp; Displays 45.00</code>
-</examples>
+</example>
 </acos>
 <adatabases>
 <summary>
@@ -130,14 +130,14 @@ The names of all open databases are placed into a variable array.
 ADATABASES( ) creates a two-dimensional array. The first column of the array contains the names of the open databases, and the second column contains the paths to the databases.
 ADATABASES( ) returns the number of database names (rows) in the array. If no databases are open, ADATABASES( ) returns 0 and the array isn't created.
 </remarks>
-<examples>
+<example>
  <code language="X#">SET PATH TO (HOME(2) + 'data\')     &amp;&amp; Sets path to database
 OPEN DATABASE testdata &amp;&amp; Opens the database
 CLEAR
 ? ADATABASES(gaDatabase)     &amp;&amp; Creates an array of open databases
 DISPLAY MEMORY LIKE gadatabase  &amp;&amp; Displays the contents of the array
 CLOSE DATABASES</code>
-</examples>
+</example>
 </adatabases>
 <adbobjects>
 <summary>
@@ -172,7 +172,7 @@ Numeric
 <remarks>
 A database must be open and current when ADBOBJECTS( ) is issued; otherwise X# generates an error message.
 </remarks>
-<examples>
+<example>
  <code language="X#">* Close any open databases
 CLOSE DATABASES
 * Clear desktop to prepare for displaying the array
@@ -183,7 +183,7 @@ OPEN DATABASE (HOME(2) + 'Data\testdata')
 =ADBOBJECTS(gaTables, "TABLE")
 * Displays array gaTables created by ADBOBJECTS( ) function
 DISPLAY MEMORY LIKE gaTables</code>
-</examples>
+</example>
 </adbobjects>
 <addproperty>
 <summary>
@@ -270,7 +270,7 @@ Numeric
 Deleting an element or row from an array doesn't change the size of the array; instead, the trailing elements, rows, or columns are moved towards the start of the array, and the last element, row, or column in the array is set to False (.F.). If you delete a column, values of the elements in the deleted column are set to False (.F.), but trailing elements are not moved.
 If the element, row, or column is successfully deleted, 1 is returned.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLOSE DATABASES
 OPEN DATABASE (HOME(2) + 'Data\testdata')
 USE customer     &amp;&amp; Open customer table
@@ -288,7 +288,7 @@ IF gnPos != 0
 gnCount = gnCount - 1
 ENDIF
 DISPLAY MEMORY LIKE gaCompanies</code>
-</examples>
+</example>
 </adel>
 <adir>
 <summary>
@@ -350,7 +350,7 @@ Numeric
 <remarks>
 For each file, ADIR( ) places into the array the file name, size, date last modified, time last modified, and attributes.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLOSE DATABASES
 SET DEFAULT TO (HOME(2) + 'Data')
 gnDbcnumber = ADIR(gaDatabase, '*.DBC')  &amp;&amp; Create array
@@ -359,7 +359,7 @@ FOR nCount = 1 TO gnDbcnumber  &amp;&amp; Loop for number of databases
 ? gaDatabase(nCount,1)  &amp;&amp; Display database names
 ENDFOR
 SET PATH TO HOME( )  &amp;&amp; Set path to X# directory</code>
-</examples>
+</example>
 </adir>
 <adlls>
 <summary>
@@ -512,7 +512,7 @@ Watch
 X# displays docking information for debugger windows in the debugger. If a window is undocked, X# shows the name, dock state (0) and position (-1). If a window is docked, X# shows only the name, dock state (1), position, and window ("X# Debugger").
 Historically, in prior versions of X#, the Data Session window has always been referred to as the View window. Additionally, language used to control this window, such as <b>HIDE WINDOW</b>, <b>ACTIVATE WINDOW</b>, <b>WONTOP(</b><b> )</b>, also refers to this window as the View window. X# continues to refer to the View window for the <b>ADOCKSTATE( )</b> function.
 </remarks>
-<examples>
+<example>
 The following example shows the return results of <b>ADOCKSTATE( )</b> when no toolbars or windows have been previously docked, for example, after deleting the FoxUser resource files or when X# is newly installed. Make sure the Command window is open.
  <code language="X#">CLEAR
 dockNum = ADOCKSTATE(dockState)
@@ -533,7 +533,7 @@ dockNum = ADOCKSTATE(dockState)
 ? dockState(1,4)  &amp;&amp; Outputs "X#".
 ? dockState(2,1)  &amp;&amp; Outputs "COMMAND".
 ? dockState(2,4)  &amp;&amp; Outputs "X#".</code>
-</examples>
+</example>
 </adockstate>
 <aelement>
 <summary>
@@ -635,7 +635,7 @@ Numeric. The ODBC connection handle.
 7
 The null value.
 </remarks>
-<examples>
+<example>
  <code language="X#">ON ERROR DO errhand     &amp;&amp; errhand is the error handler procedure
 BRWS  &amp;&amp; Causes a syntax error
 ON ERROR  &amp;&amp; Restore system error handler
@@ -646,7 +646,7 @@ CLEAR
 FOR n = 1 TO 7  &amp;&amp; Display all elements of the array
 ? aErrorArray(n)
 ENDFOR</code>
-</examples>
+</example>
 </aerror>
 <aevents>
 <summary>
@@ -706,7 +706,7 @@ If <b>AEVENTS( )</b> returns 0, and the array does not exist, X# does not creat
 No events exist. 
 You specify a value of 0 as the second parameter, and<b> AEVENTS( )</b> does not appear within an event or oEventObject has no bindings.
 </remarks>
-<examples>
+<example>
  <code language="X#">PUBLIC oHandler
 oHandler=NEWOBJECT("myhandler")
 DO (_browser)
@@ -747,7 +747,7 @@ PROCEDURE myresize
 _obrowser.left = _SCREEN.Width - _obrowser.width
 RETURN
 ENDDEFINE</code>
-</examples>
+</example>
 </aevents>
 <afields>
 <summary>
@@ -845,7 +845,7 @@ Numeric
 If the fields in the table use autoincrementing, the Step value is greater than 0.
 You can use COPY STRUCTURE EXTENDED to place similar information into a table instead of an array.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLOSE DATABASES
 OPEN DATABASE (HOME(2) + 'Data\testdata')
 USE Customer     &amp;&amp; Open Customer table.
@@ -854,7 +854,7 @@ CLEAR
 FOR nCount = 1 TO gnFieldcount
 ? gaMyArray(nCount,1)  &amp;&amp; Display field names.
 ENDFOR</code>
-</examples>
+</example>
 </afields>
 <afont>
 <summary>
@@ -914,7 +914,7 @@ Arial
 Arial Baltic
 Arial Black
 </remarks>
-<examples>
+<example>
  <code language="X#">CLEAR
 =AFONT(gaFontArray)  &amp;&amp; Array containS font names.
 gnNumFonts = ALEN(gaFontArray)  &amp;&amp; Number of fonts
@@ -926,7 +926,7 @@ FOR nCount = 1 TO gnNumFonts
 ?? '  This is an example of ' ;
 + ALLTRIM(gaFontArray(nCount)) FONT gaFontArray(nCount), 8
 ENDFOR</code>
-</examples>
+</example>
 </afont>
 <agetclass>
 <summary>
@@ -976,7 +976,7 @@ If the array is larger than necessary, X# truncates the array. If the array exis
 If the array does not exist, and AGETCLASS( ) returns false (.F.), the array is not created.
 X# 8.0 does not support AGETCLASS( ) in its run-time libraries. AGETCLASS( ) is supported in X# 9.0 run-time libraries, but the Program (*.prg) option is not available in the <b>Files of type</b> drop-down list box.
 </remarks>
-<examples>
+<example>
  <code language="X#">LOCAL aClassLib(2)  &amp;&amp; Create an array, initialized to .F.
 cCurrentDir = CURDIR( )  &amp;&amp; Save the current directory.
 CD HOME(2) + 'CLASSES'  &amp;&amp; Switch directories.
@@ -986,7 +986,7 @@ CD (cCurrentDir)  &amp;&amp; Switch to the previous directory.
 IF TYPE('aClassLib(2)') = 'C'  &amp;&amp; Class chosen?
 MODIFY CLASS (aClassLib(2)) OF (aClassLib(1))  &amp;&amp; Open to modify.
 ENDIF</code>
-</examples>
+</example>
 </agetclass>
 <agetfileversion>
 <summary>
@@ -1069,7 +1069,7 @@ Numeric
 Inserting an element, row, or column into an array does not change the size of the array. The trailing elements, rows, or columns are shifted toward the end of the array and the last element, row, or column in the array is dropped from it. The newly inserted element, row, or column is initialized to false (.F.).
 AINS( ) returns 1 if the element, row, or column is successfully inserted.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLOSE DATABASES
 OPEN DATABASE (HOME(2) + 'Data\testdata')
 USE customer     &amp;&amp; Open customer table
@@ -1087,7 +1087,7 @@ DIMENSION gaCompanies[gnCount+1,1]
 gaCompanies[gnCount-1] = gcName
 ENDIF
 DISPLAY MEMORY LIKE gaCompanies</code>
-</examples>
+</example>
 </ains>
 <ainstance>
 <summary>
@@ -1106,14 +1106,14 @@ Specifies a X# base class name or a user-defined class name. For a complete list
 <returns>
 Numeric
 </returns>
-<examples>
+<example>
  <code language="X#">CLEAR ALL
 goINSTANCE1 = CREATEOBJECT('Form')
 goINSTANCE2 = CREATEOBJECT('Form')
 CLEAR
 ? AINSTANCE(gaMyArray, 'Form')  &amp;&amp; Returns 2, two form instances
 DISPLAY MEMORY LIKE gaMyArray  &amp;&amp; Displays the references</code>
-</examples>
+</example>
 </ainstance>
 <alanguage>
 <summary>
@@ -1178,7 +1178,7 @@ Returns the number of columns in the array. If the array is a one-dimensional ar
 <returns>
 Numeric
 </returns>
-<examples>
+<example>
  <code language="X#">CLEAR
 =AFONT(gaFontArray)  &amp;&amp; Array containing font names
 gnNumFonts= ALEN(gaFontArray)  &amp;&amp; Number of fonts
@@ -1190,7 +1190,7 @@ FOR nCount = 1 TO gnNumFonts
 ?? '  This is an example of ' ;
 + ALLTRIM(gaFontArray(nCount)) FONT gaFontArray(nCount), 8
 ENDFOR</code>
-</examples>
+</example>
 </alen>
 <alias>
 <summary>
@@ -1209,7 +1209,7 @@ If you omit nWorkArea or cTableAlias, ALIAS( ) returns the alias of the table o
 <returns>
 Character
 </returns>
-<examples>
+<example>
  <code language="X#">CLOSE DATABASES
 OPEN DATABASE (HOME(2) + 'Data\testdata')
 USE customer     &amp;&amp; Open customer table
@@ -1218,7 +1218,7 @@ CLEAR
 SELECT 0
 USE customer AGAIN ALIAS MyCustomer  &amp;&amp; Different alias
 ? ALIAS( )  &amp;&amp; Display the alias</code>
-</examples>
+</example>
 </alias>
 <alines>
 <summary>
@@ -1267,7 +1267,7 @@ If you want to perform a case-insensitive parse, you can follow one of the follo
 - OR -
  <code language="X#">? ALINES(aMyArray, employee.notes, "R.", "r.")</code>
 </remarks>
-<examples>
+<example>
  <code language="X#">CLOSE DATABASES
 CLEAR
 SET TALK OFF
@@ -1282,7 +1282,7 @@ USE employee  &amp;&amp; Open Employee table
 ? ALINES(aMyArray, employee.notes, 8, "m")    &amp;&amp; Displays 14
 ? ALINES(aMyArray, employee.notes, "m")       &amp;&amp; Displays 11
 ? ALINES(aMyArray, employee.notes, "M")       &amp;&amp; Displays 4</code>
-</examples>
+</example>
 </alines>
 <alltrim>
 <summary>
@@ -1307,7 +1307,7 @@ Character or Varbinary. <b>ALLTRIM( )</b> returns the specified expression with
 <remarks>
 You can use <b>ALLTRIM( )</b> to ensure that spaces or 0 bytes are removed from data entered by a user.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLEAR
 =AFONT(gaFontArray)  &amp;&amp; Array containing font names
 gnNumFonts= ALEN(gaFontArray)  &amp;&amp; Number of fonts
@@ -1319,16 +1319,14 @@ FOR nCount = 1 TO gnNumFonts
 ?? '  This is an example of ' ;
 + ALLTRIM(gaFontArray(nCount)) FONT gaFontArray(nCount), 8
 ENDFOR</code>
-</examples>
+</example>
 </alltrim>
 <amembers>
 <summary>
 Places the names of properties, procedures, and member objects for an object into a variable array.
 </summary>
 <param name="ArrayName">
-
 Specifies the array into which the names of the member properties for oObjectName are placed. If you specify the name of an array that doesn't exist, the array is automatically created. If the array isn't large enough to contain all the names, X# automatically increases the size of the array.
-
 </param>
 <param name="oObjectName">
 
@@ -1383,12 +1381,12 @@ You can pass COM object references to the AMEMBERS( ) function, but when you do
  <code language="X#">oExcel = CREATEOBJECT("excel.application")
 = AMEMBERS(gaPropArray, oExcel, 3)</code>
 </remarks>
-<examples>
+<example>
  <code language="X#">CLEAR
 goForm1 = CREATEOBJECT("Form")  &amp;&amp; Creates a Form
 = AMEMBERS(gaPropArray, goForm1, 1)  &amp;&amp; Array containing Form properties
 DISPLAY MEMORY LIKE gaPropArray  &amp;&amp; Display the Form properties</code>
-</examples>
+</example>
 </amembers>
 <amouseobj>
 <summary>
@@ -1498,14 +1496,14 @@ Printer location.
 <returns>
 Numeric. <b>APRINTERS( )</b> returns the number of rows in the array or 0 when no printers are available.
 </returns>
-<examples>
+<example>
  <code language="X#">IF APRINTERS(gaPrinters) &gt; 0
 CLEAR  &amp;&amp; clear the current output window
 DISPLAY MEMORY LIKE gaPrinters &amp;&amp; show the contents of the array
 ELSE
 WAIT WINDOW 'No printers found.'
 ENDIF</code>
-</examples>
+</example>
 </aprinters>
 <aprocinfo>
 <summary>
@@ -1568,14 +1566,14 @@ Numeric
 <remarks>
 ASC( ) returns the position of the character in the character table of the current code page. Every character has a unique ANSI value in the range from 0 to 255.
 </remarks>
-<examples>
+<example>
  <code language="X#">STORE 'ABCDEFGHIJ' TO gcANSI  &amp;&amp; 10 characters
 CLEAR
 FOR nCOUNT = 1 TO 10
 ? SUBSTR(gcANSI, nCount,1)  &amp;&amp; Display a character
 ?? ASC(SUBSTR(gcANSI, nCount)) &amp;&amp; Display ANSI value
 ENDFOR</code>
-</examples>
+</example>
 </asc>
 <ascan>
 <summary>
@@ -1667,7 +1665,7 @@ In X# 6.0, the nStartElement and nElementsSearched parameters are optional. The 
 The nStartElement and nElementsSearched parameters take on special meaning if the value of nSearchColumn is greater than 0. In X# 6.0, they are always referenced to the entire array. Beginning with X# 7.0, if a positive nSearchColumn is passed, the values of nStartElement and nElementsSearched are referenced to the single one-dimensional array represented by the nSearchColumn. For example, the following would only search the third and fourth elements of column 2, and not the entire array:
  <code language="X#">? ASCAN(abc,"M",3,2,2)</code>
 </remarks>
-<examples>
+<example>
  <code language="X#">CLOSE DATABASES
 OPEN DATABASE (HOME(2) + 'Data\testdata')
 USE customer     &amp;&amp; Open customer table
@@ -1685,7 +1683,7 @@ IF gnPos != 0
 gnCount = gnCount - 1
 ENDIF
 DISPLAY MEMORY LIKE gaCompanies</code>
-</examples>
+</example>
 </ascan>
 <aselobj>
 <summary>
@@ -1717,7 +1715,7 @@ If the array does not exist, X# automatically creates the array.
 If the array exists but is too small to contain all the information, X# automatically increases the size of the array to accommodate the information. If the array is larger than needed, X# truncates the array. 
 If the array exists, and ASELOBJ( ) returns 0 because no controls are selected, the array remains unchanged. If the array does not exist, and ASELOBJ( ) returns 0, the array is not created.
 </remarks>
-<examples>
+<example>
  <code language="X#">gnobjects = ASELOBJ(gaSelected)     &amp;&amp; Create array of control names
 IF gnobjects &gt; 0  &amp;&amp; 0 indicates no controls selected
 CLEAR
@@ -1729,7 +1727,7 @@ gaSelected(nCnt).Caption = 'New Caption ' ;
 + ALLTRIM(STR(nCnt))  &amp;&amp; Assign new caption
 NEXT
 ENDIF</code>
-</examples>
+</example>
 </aselobj>
 <asessions>
 <summary>
@@ -1760,13 +1758,13 @@ Numeric
 <remarks>
 Use RTOD( ) to convert radians to degrees.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLEAR
 ? RTOD(ASIN(0))  &amp;&amp; Returns 0.00
 STORE 1 to gnArcAngle
 ? RTOD(ASIN(gnArcAngle))  &amp;&amp; Returns 90.00
 ? RTOD(ASIN(SQRT(2)/2))  &amp;&amp; Returns 45.00</code>
-</examples>
+</example>
 </asin>
 <asort>
 <summary>
@@ -1833,7 +1831,7 @@ Numeric
 All elements included in the sort must be of the same data type. One-dimensional arrays are sorted by their elements; two-dimensional arrays are sorted by their rows. When a two-dimensional array is sorted, the order of the rows in the array is changed so that the elements in a column of the array are in ascending or descending order.
 If the sort is successful, 1 is returned; otherwise –1 is returned.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLOSE DATABASES
 OPEN DATABASE (HOME(2) + 'Data\testdata')
 USE Customer  &amp;&amp; Open customer table
@@ -1853,7 +1851,7 @@ ENDFOR
 FOR nCount = 1 TO 20
 ? gaContact(nCount)  &amp;&amp; Display first 20 contacts, sorted
 ENDFOR</code>
-</examples>
+</example>
 </asort>
 <asqlhandles>
 <summary>
@@ -1908,7 +1906,7 @@ ASTACKINFO( ) provides, in the 2nd and 4th elements respectively, the name of t
 The 4th element contains the original source file information. For objects, this is same information returned by SYS(16), even when bound inside of applications. 
 ASTACKINFO() might not be able to retrieve information about program (.prg) files. In this case, X# displays the 2nd element similar to the SYS(16) function. For more information, see SYS(16) - Executing Program File Name.
 </remarks>
-<examples>
+<example>
  <code language="X#">ASTACKINFO(myarray)
 DISPLAY MEMO LIKE myarray
 myArray
@@ -1942,7 +1940,7 @@ myArray
 (5,4) c:\vfp\forms\getcusts.sct            &amp;&amp; Module source file name
 (5,5) 2
 (5,6) ASTACKINFO(myarray)                  &amp;&amp; in the source </code>
-</examples>
+</example>
 </astackinfo>
 <asubscript>
 <summary>
@@ -2009,14 +2007,14 @@ Specifies which occurrence, first, second, third, and so on, of cSearchExpressio
 <returns>
 Numeric. <b>AT( )</b> returns an integer indicating the position of the first character for a character expression or memo field within another character expression or memo field, beginning from the leftmost character. If the expression or field is not found, or if nOccurrence is greater than the number of times cSearchExpression occurs in cExpressionSearched, <b>AT( )</b> returns 0.
 </returns>
-<examples>
+<example>
  <code language="X#">STORE 'Now is the time for all good men' TO gcString
 STORE 'is the' TO gcFindString
 CLEAR
 ? AT(gcFindString,gcString)  &amp;&amp; Displays 5
 STORE 'IS' TO gcFindString
 ? AT(gcFindString,gcString)  &amp;&amp; Displays 0, case-sensitive</code>
-</examples>
+</example>
 </at>
 
 <ataginfo>
@@ -2034,15 +2032,10 @@ Specifies the name of the compound index (.cdx) file to return information for.
 Specifying an empty string ("") returns the number of tags in all open .cdx files and all open standalone index (.idx) files for the selected table.
 
 </param>
-<param name="nWorkArea">
+<param name="uArea">
+  Specifies the work area number or workarea alias that contains the table to returns information for. <br/>
+  Omitting this uses the table in the current work area.
 
-Specifies the work area that contains the table to returns information for. 
-
-</param>
-<param name="cTableAlias">
-
-Specifies the alias of the table to return information for. 
-Omitting cTableAlias and nWorkArea uses the table in the current work area.
 </param>
 <returns>
 Numeric. <b>ATAGINFO( )</b> returns the number of index tags in compound index (.cdx) files or open single-key standalone index (.idx) files for the current table.
@@ -2083,14 +2076,14 @@ Numeric
 <remarks>
 Use RTOD( ) to convert radians to degrees.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLEAR
 ? ATAN(0)  &amp;&amp; Displays 0.00
 STORE PI( )/2 to gnAngle
 ? ATAN(gnAngle)  &amp;&amp; Displays 1.00
 ? ATAN(PI( )/2)  &amp;&amp; Displays 1.00
 ? ATAN(DTOR(90))  &amp;&amp; Displays 1.00</code>
-</examples>
+</example>
 </atan>
 <atc>
 <summary>
@@ -2118,7 +2111,7 @@ Numeric
 ATC( ) searches the second character expression for the occurrence of the first character expression, without concern for the case (upper or lower) of the characters in either expression. Use AT( ) to perform a case-sensitive search.
 ATC( ) returns an integer corresponding to the position where the first character of the character expression is found. If the character expression isn't found, ATC( ) returns 0.
 </remarks>
-<examples>
+<example>
  <code language="X#">STORE 'Now is the time for all good men ... ' TO gcString
 STORE 'IS THE' TO gcFindString
 CLEAR
@@ -2126,7 +2119,7 @@ CLEAR
 STORE 'is' TO gcFindString
 ? ATC(gcFindString, gcString)  &amp;&amp; Displays 5
 ? ATC('now',gcString)  &amp;&amp; Displays 1</code>
-</examples>
+</example>
 </atc>
 <atcline>
 <summary>
@@ -2151,7 +2144,7 @@ If the search is successful, ATCLINE( ) returns the number of the line containi
 The line number that ATCLINE( ) returns is determined by the value of SET MEMOWIDTH, even if cExpressionSearched isn't a memo field. For more information, see SET MEMOWIDTH.
 Use ATLINE( ) to perform a case-sensitive search.
 </remarks>
-<examples>
+<example>
  <code language="X#">* Example 1
 CLOSE DATABASES
 OPEN DATABASE (HOME(2) + 'Data\testdata')
@@ -2168,7 +2161,7 @@ SET MEMOWIDTH TO 20
 ? ATCLINE('AB', gcString)  &amp;&amp; Displays 1
 SET MEMOWIDTH TO 10
 ? ATCLINE('AB', gcString)  &amp;&amp; Displays 2</code>
-</examples>
+</example>
 </atcline>
 <atline>
 <summary>
@@ -2194,7 +2187,7 @@ ATLINE( ) searches the second character expression for the occurrence of the fi
 If the search is successful, ATLINE( ) returns the number of the line where the match occurs. If the search is unsuccessful, ATLINE( ) returns 0.
 The line number that ATLINE( ) returns is determined by the value of SET MEMOWIDTH, even if cExpressionSearched isn't a memo field. For more information, see SET MEMOWIDTH Command.
 </remarks>
-<examples>
+<example>
  <code language="X#">* Example 1
 CLOSE DATABASES
 OPEN DATABASE (HOME(2) + 'Data\testdata')
@@ -2211,7 +2204,7 @@ SET MEMOWIDTH TO 20
 ? ATLINE('AB', gcString)  &amp;&amp; Displays 1
 SET MEMOWIDTH TO 10
 ? ATLINE('AB', gcString)  &amp;&amp; Displays 2</code>
-</examples>
+</example>
 </atline>
 <atn2>
 <summary>
@@ -2234,7 +2227,7 @@ ATN2( ) returns the angle (in radians) between the line y = 0 and the line conn
 ATN2( ) returns a value between – pi/2 and +pi/2.
 You can convert the value returned by ATN2( ) to degrees with RTOD( ). You can specify the number of decimal places that are displayed in the result with SET DECIMALS.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLEAR
 ? PI( )  &amp;&amp; Displays 3.14
 ? ATN2(0,-1)  &amp;&amp; Displays 3.14
@@ -2242,7 +2235,7 @@ STORE COS(PI( )) TO gnXCoord
 STORE SIN(PI( )) TO gnYCoord
 ? ATN2(gnYCoord,gnXCoord)  &amp;&amp; Displays 3.14
 ? ATN2(gnYCoord,gnXCoord)/PI( )  &amp;&amp; Displays 1.00</code>
-</examples>
+</example>
 </atn2>
 <aused>
 <summary>
@@ -2283,14 +2276,14 @@ IF CURSORGETPROP( "Buffering", aTableAliases(x) ) &gt; 1 &amp;&amp; Buffered
 ENDIF
 NEXT</code>
 </remarks>
-<examples>
+<example>
  <code language="X#">OPEN DATABASE (HOME(2) + 'Data\testdata') EXCLUSIVE
 USE Customer IN 0
 CLEAR
 ? AUSED(gaInuse)
 DISPLAY MEMORY LIKE gaInuse
 CLOSE DATABASES</code>
-</examples>
+</example>
 </aused>
 <avcxclasses>
 <summary>
@@ -2342,7 +2335,7 @@ Numeric
 <remarks>
 AVCXCLASSES( ) returns the number of rows in the array (the number of classes in the class library).
 </remarks>
-<examples>
+<example>
  <code language="X#">ACTIVATE SCREEN
 CLEAR
 ? AVCXCLASSES(aClasses, '\VFP\SAMPLES\CLASSES\BUTTONS.VCX')
@@ -2363,7 +2356,7 @@ NEXT
 *
 *
 * .F.</code>
-</examples>
+</example>
 </avcxclasses>
 <bar>
 <summary>
@@ -2377,7 +2370,7 @@ Numeric
 Each item on a menu is assigned a number with DEFINE BAR. When a menu item is chosen from the menu, BAR( ) returns the number assigned to that item. A program can branch to other routines based on the value that BAR( ) returns.
 BAR( ) returns 0 if there is no active menu or if the user presses ESC to exit the menu.
 </remarks>
-<examples>
+<example>
  <code language="X#">*** Name this program BAR_EXAM.PRG ***
 CLEAR
 SET SYSMENU SAVE
@@ -2432,7 +2425,7 @@ PARAMETERS gnBar, gcPopup
 WAIT WINDOW 'You chose bar #' + LTRIM(STR(gnBar)) + ;
 ' from popup ' + gcPopup NOWAIT
 SET SYSMENU TO DEFAULT</code>
-</examples>
+</example>
 </bar>
 <barcount>
 <summary>
@@ -2467,7 +2460,7 @@ Specifies the upper value in the range.
 <returns>
 Logical or null. <b>BETWEEN( )</b> returns True (.T.) if the value of the specified expression is equal to one of the values or greater than the lower value and less than the higher value of the two expressions. Otherwise, <b>BETWEEN( )</b> returns False (.F.). <b>BETWEEN( )</b> returns a null value if eLowValue or eHighValue is a null value.
 </returns>
-<examples>
+<example>
  <code language="X#">CLOSE DATABASES
 OPEN DATABASE (HOME(2) + 'Data\testdata')
 USE orders  &amp;&amp; Open order table
@@ -2475,7 +2468,7 @@ CLEAR
 SCAN FOR BETWEEN(order_amt,950,1000)
 ? cust_id, order_amt
 ENDSCAN</code>
-</examples>
+</example>
 </between>
 <bindevent>
 <summary>
@@ -2570,7 +2563,7 @@ When binding to Windows message (Win Msg) events, only one hWnd to Windows messa
 With a Windows message event binding, your user code will execute whenever an event occurs including scenarios in which a modal dialog is displayed. This is because the Window Procedure must always process the message and return. Since it is possible for recursion to occur with an event while your user code is executing, you may want to specify an nFlags value of 4 to prevent this from happening.
 A Windows message event binding should be used with care since your user code is bound to events being triggered by the Windows operating system and these events can occur at times when you do not expect them to.
 </remarks>
-<examples>
+<example>
  <code language="X#">PUBLIC oHandler
 oHandler=NEWOBJECT("myhandler")
 DO (_browser)
@@ -2584,7 +2577,7 @@ _obrowser.left = _SCREEN.Width - _obrowser.width
 ENDIF
 RETURN
 ENDDEFINE</code>
-</examples>
+</example>
 </bindevent>
 <bintoc>
 <summary>
@@ -2656,11 +2649,11 @@ The following table shows the result of a bitwise AND operation on corresponding
 0
 0
 </remarks>
-<examples>
+<example>
  <code language="X#">x = 3  &amp;&amp; 0011 binary
 y = 6  &amp;&amp; 0110 binary
 ? BITAND(x,y) &amp;&amp; Returns 2, 0010 binary</code>
-</examples>
+</example>
 </bitand>
 <bitclear>
 <summary>
@@ -2688,11 +2681,11 @@ If you do not specify nStartBit and nBitCount, the operation applies to all bits
 
 <b>Numeric</b>, <b>Varbinary</b>, or <b>Blob</b>. <b>BITCLEAR( )</b> returns the specified expression without specified bit.
 </returns>
-<examples>
+<example>
  <code language="X#">x = 7  &amp;&amp; 0111 binary
 y = 1  &amp;&amp; 2nd bit position (0 = 1st bit position)
 ? BITCLEAR(x,y) &amp;&amp; Returns 5, 0101 binary</code>
-</examples>
+</example>
 </bitclear>
 <bitlshift>
 <summary>
@@ -2716,11 +2709,11 @@ Numeric. <b>BITLSHIFT( )</b> returns the specified expression with bits moved b
 <b>BITLSHIFT( )</b>
 <b> </b>does not support <b>Varbinary</b> values.
 </remarks>
-<examples>
+<example>
  <code language="X#">x = 5  &amp;&amp; 0101 binary
 y = 1  &amp;&amp; Shift bits 1 position left
 ? BITLSHIFT(x,y) &amp;&amp; Returns 10, 1010 binary</code>
-</examples>
+</example>
 </bitlshift>
 <bitnot>
 <summary>
@@ -2743,10 +2736,10 @@ If you do not specify nStartBit and nBitCount, the operation applies to all bits
 
 <b>Numeric</b>, <b>Varbinary</b>, or <b>Blob</b>. <b>BITNOT( )</b> returns the bitwise complement of the specified expression. In other words, the return value represents the specified expression with each 0 bit changed to 1 and each 1 bit changed to 0.
 </returns>
-<examples>
+<example>
  <code language="X#">x = 5  &amp;&amp; 0101 binary
 ? BITNOT(x) &amp;&amp; Returns -6</code>
-</examples>
+</example>
 </bitnot>
 <bitor>
 <summary>
@@ -2774,11 +2767,11 @@ The following table shows the result of an inclusive OR operation on correspondi
 1
 1
 </remarks>
-<examples>
+<example>
  <code language="X#">x = 5  &amp;&amp; 0101 binary
 y = 6  &amp;&amp; 0110 binary
 ? BITOR(x,y) &amp;&amp; Returns 7, 0111 binary</code>
-</examples>
+</example>
 </bitor>
 <bitrshift>
 <summary>
@@ -2801,11 +2794,11 @@ Numeric. <b>BITRSHIFT( )</b> returns the specified expression with bits moved b
 
 <b>BITRSHIFT( ) </b>does not support <b>Varbinary</b> values.
 </remarks>
-<examples>
+<example>
  <code language="X#">x = 5  &amp;&amp; 0101 binary
 y = 1  &amp;&amp; Shift bits 1 position right
 ? BITRSHIFT(x,y) &amp;&amp; Returns 2, 0010 binary</code>
-</examples>
+</example>
 </bitrshift>
 <bitset>
 <summary>
@@ -2833,11 +2826,11 @@ If you do not specify nStartBit and nBitCount, the operation applies to all bits
 
 <b>Numeric</b>, <b>Varbinary</b>, or <b>Blob</b>. <b>BITSET( )</b> returns the specified expression with the specified bit set to 1.
 </returns>
-<examples>
+<example>
  <code language="X#">x = 5  &amp;&amp; 0101 binary
 y = 1  &amp;&amp; 2nd bit position (0 = 1st bit position)
 ? BITSET(x,y) &amp;&amp; Returns 7, 0111 binary</code>
-</examples>
+</example>
 </bitset>
 <bittest>
 <summary>
@@ -2867,7 +2860,7 @@ If nBitNumber is out of range of qExpression, X# generates an error.
 <returns>
 Logical. <b>BITTEST( ) </b>returns True (.T.) if the specified bit is set to 1; otherwise, it returns False (.F.).
 </returns>
-<examples>
+<example>
  <code language="X#">CLEAR
 ? '2 even? '
 ?? IsEven(2)  &amp;&amp; Even, .T. returned
@@ -2880,7 +2873,7 @@ Logical. <b>BITTEST( ) </b>returns True (.T.) if the specified bit is set to 1;
 Function IsEven
 PARAMETER nInteger
 RETURN NOT BITTEST(nInteger, 0)</code>
-</examples>
+</example>
 </bittest>
 <bitxor>
 <summary>
@@ -2908,11 +2901,11 @@ The following table shows the result of an exclusive OR operation on correspondi
 1
 0
 </remarks>
-<examples>
+<example>
  <code language="X#">Var1 = 5  &amp;&amp; 0101 binary value
 Var2 = 6  &amp;&amp; 0110 binary value
 ? BITXOR(Var1,Var2) &amp;&amp; returns 3 (0011 binary value)</code>
-</examples>
+</example>
 </bitxor>
 <bof>
 <summary>
@@ -2934,7 +2927,7 @@ Logical
 <remarks>
 Use <b>BOF( )</b> to test for a beginning-of-file condition for a table. <b>BOF( )</b> returns true (.T.) if you have tried to move the record pointer to a position before the first record in the table.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLOSE DATABASES
 CLEAR
 OPEN DATABASE (HOME() + "samples\data\testdata")
@@ -2953,7 +2946,7 @@ endif
 Skip -1    &amp;&amp; Move up one record
 ENDDO
 =MESSAGEBOX("Listing complete.",48)</code>
-</examples>
+</example>
 </bof>
 <candidate>
 <summary>
@@ -2965,14 +2958,9 @@ Candidate status for each tag in the structural compound index (if one is presen
 Candidate status for each tag in any open independent compound indexes is returned last. The candidate status is returned for the tags in the order in which the tags are created in the independent compound indexes.
 If you omit nIndexNumber, CANDIDATE( ) checks the master controlling index tag to see if it is a candidate index tag. If there is no master controlling index tag, CANDIDATE( ) returns false (.F.). 
 </param>
-<param name="nWorkArea">
-Specifies the work area of the index tag specified with nIndexNumber.
-
-</param>
-<param name="cTableAlias">
-
-Specifies the work area of the index tag specified with nIndexNumber.
-If you omit nWorkArea and cTableAlias, CANDIDATE( ) checks the index tag in the currently selected work area to see if it is a candidate index tag.
+<param name="uArea">
+Specifies the work area number or workarea alias of the index tag specified with nIndexNumber. <br/>
+If you omit this, CANDIDATE( ) checks the index tag in the currently selected work area to see if it is a candidate index tag.
 </param>
 <returns>
 Logical
@@ -2980,7 +2968,7 @@ Logical
 <remarks>
 A candidate index tag is an index tag that can become the primary index tag because it does not contain null or duplicate values.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLOSE DATABASES
 OPEN DATABASE (HOME(2) + 'data\testdata')
 USE customer     &amp;&amp; Open customer table
@@ -2992,7 +2980,7 @@ ELSE
 EXIT  &amp;&amp; Exit the loop when no more tags are found
 ENDIF
 ENDFOR</code>
-</examples>
+</example>
 </candidate>
 <capslock>
 <summary>
@@ -3008,7 +2996,7 @@ Logical
 <remarks>
 Issuing CAPSLOCK( ) with no argument returns true (.T.) if CAPS LOCK is on, or false (.F.) if CAPS LOCK is off.
 </remarks>
-<examples>
+<example>
  <code language="X#">glOldLock = CAPSLOCK( )     &amp;&amp; Save original setting
 CAPSLOCK(.T.)     &amp;&amp; Turn CAPS LOCK on
 *** Perform any number of statements ***
@@ -3019,7 +3007,7 @@ WAIT WINDOW
 CAPSLOCK(!CAPSLOCK( ))
 WAIT WINDOW
 CAPSLOCK(glOldLock)  &amp;&amp; Return to original setting</code>
-</examples>
+</example>
 </capslock>
 <cast>
 <summary>
@@ -3314,11 +3302,11 @@ F
 If you specify decimal precision, conversions between numeric data types, for example, <b>Numeric</b>, <b>Float</b>, <b>Currency</b>, and <b>Double</b>, to <b>Integer</b> data type might result in loss of precision.
 For conversions to <b>Character</b>, <b>Varchar</b>, and <b>Varbinary</b> data types, if the specified field width is less than that of the original data, X# truncates values to fit the field width. For conversions to <b>Character</b> data type, if the specified width is greater than that of the original data, X# pads the field with spaces to the right of the value.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLEAR ALL
 OPEN DATABASE HOME(2) + 'Data\Testdata.dbc'
 SELECT Product_ID, CAST(unit_Cost * in_Stock AS Numeric(8,2)) FROM Products</code>
-</examples>
+</example>
 </cast>
 <cdow>
 <summary>
@@ -3339,11 +3327,11 @@ Character
 <remarks>
 CDOW( ) returns the name of the day of the week as a string in proper noun format.
 </remarks>
-<examples>
+<example>
  <code language="X#">STORE {^1998-02-16} TO gdDate
 CLEAR
 ? CDOW(gdDate)  &amp;&amp; Displays Monday</code>
-</examples>
+</example>
 </cdow>
 <cdx>
 <summary>
@@ -3364,15 +3352,9 @@ Returns the empty string.
 The following apply to a table with no structural compound index and one or more compound indexes:   
 
 </param>
-<param name="nWorkArea">
-
-Specifies the work area number of a table whose open compound index file names you want CDX( ) to return.
-
-</param>
-<param name="cTableAlias">
-
-Specifies the alias of a table whose open compound index file names you want CDX( ) to return.
-If you omit nWorkArea and cTableAlias, names of compound index files are returned for the table in the currently selected work area.
+<param name="uArea">
+  Specifies the work area number or alias of a table whose open compound index file names you want CDX( ) to return.<br/>
+  If you omit this, names of compound index files are returned for the table in the currently selected work area.
 </param>
 <returns>
 Character
@@ -3386,7 +3368,7 @@ CDX( ) ignores any .idx (Microsoft FoxBASE+ and FoxPro 1.0 compatible index) fi
 Use TAG( ) to return individual tag names contained in a .cdx, and NDX( ) to return the name of open .idx files.
 When SET FULLPATH is ON, CDX( ) returns the path and name of the .cdx. When SET FULLPATH is OFF, CDX( ) returns the drive and name of the .cdx.
 </remarks>
-<examples>
+<example>
 
 <code language="X#">CLOSE DATABASES
 OPEN DATABASE (HOME(2) + 'data\testdata')
@@ -3399,7 +3381,7 @@ ELSE
 EXIT  &amp;&amp; Exit the loop when no more tags are found
 ENDIF
 ENDFOR</code>
-</examples>
+</example>
 </cdx>
 <ceiling>
 <summary>
@@ -3416,14 +3398,14 @@ Numeric
 
 <b>CEILING</b> rounds a number with a fractional portion to the next highest integer.
 </remarks>
-<examples>
+<example>
  <code language="X#">STORE 10.1 TO num1
 STORE -10.9 TO num2
 ? CEILING(num1)  &amp;&amp; Displays 11
 ? CEILING(num2)  &amp;&amp; Displays -10
 ? CEILING(10.0)  &amp;&amp; Displays 10
 ? CEILING(-10.0) &amp;&amp; Displays -10</code>
-</examples>
+</example>
 </ceiling>
 <chr>
 <summary>
@@ -3441,13 +3423,13 @@ Character
 
 <b>CHR( )</b> returns a single character corresponding to the numeric position of the character in the character table of the current code page. <b>CHR( )</b> can be used to send printer control codes to a printer.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLEAR
 FOR nCOUNT = 65 TO 75
 ? nCount &amp;&amp; Display numeric value
 ?? ' ' + CHR(nCount) &amp;&amp; Display character
 ENDFOR</code>
-</examples>
+</example>
 </chr>
 <chrsaw>
 <summary>
@@ -3465,7 +3447,7 @@ Logical
 
 <b>CHRSAW( )</b> returns True (.T.) if a character is present in the keyboard buffer, and False (.F.) if not. <b>CHRSAW( )</b> doesn't affect the keyboard buffer contents.
 </remarks>
-<examples>
+<example>
  <code language="X#">SET TALK OFF
 DEFINE WINDOW wEnter FROM 7,10 to 13,70 PANEL
 ACTIVATE WINDOW wEnter
@@ -3482,7 +3464,7 @@ ENDIF
 RELEASE WINDOW wEnter
 WAIT
 CLEAR</code>
-</examples>
+</example>
 </chrsaw>
 <chrtran>
 <summary>
@@ -3511,11 +3493,11 @@ Character
 
 <b>CHRTRAN( )</b> translates the character expression cSearchedExpression using the translation expressions cSearchExpression and cReplacementExpression and returns the resulting character string.
 </remarks>
-<examples>
+<example>
  <code language="X#">? CHRTRAN('ABCDEF', 'ACE', 'XYZ')  &amp;&amp; Displays XBYDZF
 ? CHRTRAN('ABCD', 'ABC', 'YZ')  &amp;&amp; Displays YZD
 ? CHRTRAN('ABCDEF', 'ACE', 'XYZQRST')  &amp;&amp; Displays XBYDZF</code>
-</examples>
+</example>
 </chrtran>
 <chrtranc>
 <summary>
@@ -3579,13 +3561,13 @@ Character
 
 <b>CMONTH( )</b> returns the name of the month as a string in proper noun format based on the current resource file you are using and not on the Windows locale. For more information, see Managing Files in an International Application.
 </remarks>
-<examples>
+<example>
  <code language="X#">? <b>CMONTH(</b>DATE( )<b>)</b>
 STORE {^1998-02-16} TO gdDueDate
 ? 'Your payment was due in ', <b>CMONTH(</b>gdDueDate<b>)</b>
 STORE gdDueDate+60 TO gdFinalDate
 ? 'You must pay by ', <b>CMONTH(</b>gdFinalDate<b>)</b></code>
-</examples>
+</example>
 </cmonth>
 <cntbar>
 <summary>
@@ -3601,7 +3583,7 @@ Numeric
 <remarks>
 If a user-defined menu is created with the PROMPT option in <b>DEFINE POPUP</b>, X# evaluates the number of menu items when you issue <b>ACTIVATE POPUP</b>. For such a menu, <b>CNTBAR( )</b> returns a meaningful value only after you activate the menu. However, if the menu items in the menu are created with <b>DEFINE BAR</b>, <b>CNTBAR( )</b> can determine the number of menu items before you issue <b>ACTIVATE POPUP</b>.
 </remarks>
-<examples>
+<example>
  <code language="X#">*** You must name this program CNTBAR.PRG ***
 CLEAR
 SET TALK OFF
@@ -3696,7 +3678,7 @@ ENDCASE
 SET MARK OF BAR BAR( ) OF popEnv TO .T.
 ENDIF
 ENDCASE</code>
-</examples>
+</example>
 </cntbar>
 <cntpad>
 <summary>
@@ -3709,9 +3691,9 @@ Specifies the name of the menu bar for which <b>CNTPAD( )</b> returns the numbe
 <returns>
 Numeric
 </returns>
-<examples>
+<example>
  <code language="X#">? CNTPAD('_MSYSMENU')</code>
-</examples>
+</example>
 </cntpad>
 <col>
 <summary>
@@ -3730,7 +3712,7 @@ The special operator $ can be used in place of COL().<br />
 <br />
 
 </remarks>
-<examples>
+<example>
 
 
 
@@ -3750,7 +3732,7 @@ The special operator $ can be used in place of COL().<br />
 
 
 
-</examples>
+</example>
 </col>
 <comarray>
 <summary>
@@ -3852,7 +3834,7 @@ Logical
 <remarks>
 COMPOBJ( ) returns False (.F.) if an object has a property that the other object doesn't have, or if the objects have identical properties but the values of one or more properties differ.
 </remarks>
-<examples>
+<example>
  <code language="X#">lstMyList1 = CREATEOBJ('ListBox')  &amp;&amp; Creates a ListBox
 lstMyList2 = CREATEOBJ('ListBox')  &amp;&amp; Creates a second ListBox
 cmbMyCombo = CREATEOBJ('ComboBox')  &amp;&amp; Creates a ComboBox
@@ -3865,7 +3847,7 @@ CLEAR
 ? COMPOBJ(lstMyList1, lstMyList2)     &amp;&amp; Displays .F., different Names
 lstMyList2.Name = lstMyList1.Name
 ? COMPOBJ(lstMyList1, lstMyList2)     &amp;&amp; Displays .T., same properties</code>
-</examples>
+</example>
 </compobj>
 <comprop>
 <summary>
@@ -3951,14 +3933,14 @@ Numeric
 <remarks>
 COS( ) returns the cosine of nExpression in radians. Use DTOR( ) to convert an angle from degrees to radians. The number of decimal places that COS( ) returns can be specified with SET DECIMALS. The value COS( ) returns ranges between –1 and 1.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLEAR
 ? COS(0)  &amp;&amp; Displays 1.00
 ? COS(PI( ))  &amp;&amp; Displays -1.00
 ? COS(DTOR(180))  &amp;&amp; Displays -1.00
 STORE PI( ) * 3 TO gnAngle
 ? COS(gnAngle)  &amp;&amp; Displays -1.00</code>
-</examples>
+</example>
 </cos>
 <cpconvert>
 <summary>
@@ -4009,8 +3991,8 @@ For additional information on code pages and X#'s international support, see Cod
 <summary>
 Returns the code page with which an open table has been marked.
 </summary>
-<param name="nWorkArea">Specifies the work area number.</param>
-<param name="cTableAlias">Specifies the table alias.Include nWorkArea or cTableAlias to specify a table open in a work area other than the current work area. CPDBF( ) returns 0 if a table isn't open in the work area you specify. If a table doesn't have the alias you specify with cTableAlias, X# generates an error message.
+<param name="uArea">Specifies the work area number or alias .
+Include this to specify a table open in a work area other than the current work area. CPDBF( ) returns 0 if a table isn't open in the work area you specify. If a table doesn't have the alias you specify with cTableAlias, X# generates an error message.
 </param>
 <remarks>
 DISPLAY STRUCTURE also displays the code page with which an open table has been marked.
@@ -4067,7 +4049,7 @@ Use CREATEOBJECT( ) to create an object from a class definition or an applicati
 Before you can create an object from a user-defined class, the user-defined class must first be created with DEFINE CLASS, or it must be available in a .vcx visual class library opened with SET CLASSLIB.
 Use = or STORE to assign a reference to the object to a system variable or array element. If an object assigned to a system variable or array element is released, the system variable or array element contains the null value. Use RELEASE to remove the system variable or array element from memory.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLEAR
 * Verify current class library setting
 cCurClassLib=SET("CLASSLIB")
@@ -4088,7 +4070,7 @@ ENDDEFINE
 * Create FormGrandChild from user-defined FormChild class
 DEFINE CLASS FormGrandChild AS FormChild
 ENDDEFINE</code>
-</examples>
+</example>
 </createobject>
 <createobjectex>
 <summary>
@@ -4116,12 +4098,12 @@ Because it supports early binding through cIID, CREATEOBJECTEX( ) can help impr
 CREATEOBJECTEX( ) supports creation of new early-bound objects. However, it is also possible that your X# component is passed an object that you want to call via early-binding. You can use the GETINTERFACE( ) support on existing COM objects.
 For additional information about using X# to create Automation servers, see Sharing Information and Adding OLE.
 </remarks>
-<examples>
+<example>
  <code language="X#">      x = CREATEOBJECTEX("excel.application","",;
 "{000208D5-0000-0000-C000-000000000046}")</code>
 The following is a valid function call for an excel application object. It will return the excel.application default interface.
  <code language="X#">      x = CREATEOBJECTEX("excel.application","","")</code>
-</examples>
+</example>
 </createobjectex>
 <createoffline>
 <summary>
@@ -4204,13 +4186,13 @@ Date data type. CTOD( ) returns a Date value.
 <remarks>
 CTOD() can create ambiguous Date values and generates a compilation error when SET STRICTDATE is set to 2. To create unambiguous Date values, use the DATE( ) function.
 </remarks>
-<examples>
+<example>
  <code language="X#">SET CENTURY ON               &amp;&amp; Shows the century value.
 cDate="01/01/2003"
 ?CTOD(cDate)               &amp;&amp; Returns 01/01/2003 as Date.
 ?GOMONTH(CTOD(cDate),12)   &amp;&amp; Returns 01/01/2004.
 ?CTOD(cDate)+100            &amp;&amp; Returns 04/11/2003.</code>
-</examples>
+</example>
 </ctod>
 <ctot>
 <summary>
@@ -4259,7 +4241,7 @@ Character
 <remarks>
 CURDIR( ) returns, as a character string, the current MS-DOS directory on a specified drive.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLEAR
 ? 'Current directory: ', CURDIR( )
 gcOldDir = SET('DEFAULT') + SYS(2003)
@@ -4267,7 +4249,7 @@ SET DEFAULT TO (HOME( ))
 ? 'X# directory: ', CURDIR( )
 SET DEFAULT TO (gcOldDir)
 ? 'Current directory: ', CURDIR( )</code>
-</examples>
+</example>
 </curdir>
 <cursorgetprop>
 <summary>
@@ -4402,7 +4384,7 @@ Character, Numeric, or Logical data type
 <remarks>
 The current property settings are returned for the table or cursor open in the currently selected work area if <b>CURSORGETPROP( )</b> is issued without the optional cTableAlias or nWorkArea arguments. If you use CURSORGETPROP( ) without a table selected, a cursor open, or an alias specified, you get Error 52 (No table is open in current work area.) unless a work area is specified as in this example, CURSORSETPROP("Refresh",-2,0).
 </remarks>
-<examples>
+<example>
 When a cursor is opened, the default value for the AutoIncError property is read from the session default value, which is the current default data session setting. The following example shows how you can retrieve the default AutoIncError value for each session by specifying 0 (default session) as the last parameter:
  <code language="X#">CURSORGETPROP("AutoIncError", 0) </code>
 The default session is used when opening a new private data session or cursor. The following example shows how you can retrieve the cursor or table AutoIncError setting for each table by using the nWorkArea or cTableAlias parameter as the last parameter:
@@ -4414,7 +4396,7 @@ OPEN DATABASE (HOME(2) + 'data\testdata')
 USE customer     &amp;&amp; Open customer table
 ? CURSORGETPROP("Buffering") &amp;&amp; Displays buffering mode
 ? CURSORGETPROP("Database")  &amp;&amp; Displays database name</code>
-</examples>
+</example>
 </cursorgetprop>
 <cursorsetprop>
 <summary>
@@ -4531,7 +4513,7 @@ You can use <b>CURSORSETPROP( )</b> to override the FetchSize property in the <
 Use <b>CURSORGETPROP( )</b> to return the current property settings for a X# table or a cursor created for a table.
 If <b>CURSORSETPROP( )</b> is issued without the optional cTableAlias or nWorkArea arguments, the property setting is specified for the open table or cursor in the currently selected work area.
 </remarks>
-<examples>
+<example>
 When a cursor is opened, the default value for the AutoIncError property is read from the session default value, which is the current default data session setting. The following example shows how you can set the default AutoIncError value for each session by specifying 0 (default session) as the last parameter:
  <code language="X#">CURSORSETPROP("AutoIncError", .T., 0) </code>
 The default session is used when opening a new private data session or cursor. The following example shows how you can set the cursor or table AutoIncError setting for each table by using the cTableAlias or nWorkArea parameter as the last parameter:
@@ -4549,21 +4531,16 @@ IF lSuccess = .T.
 ELSE
 =MESSAGEBOX("Operation NOT successful!",0,"Operation Status")
 ENDIF</code>
-</examples>
+</example>
 </cursorsetprop>
 <cursortoxml>
 <summary>
 Converts a X# cursor to XML.
 </summary>
-<param name="nWorkArea">
+<param name="uArea">
 
-Specifies the work area of the table from which to create the XML string. 
+Specifies the work area number or alias of the table from which to create the XML string. 
 If you specify 0 or no value, X# uses the current work area. 
-
-</param>
-<param name="cTableAlias">
-
-Specifies the alias of the table from which to create the XML string.
 
 </param>
 <param name="cOutput">
@@ -4802,14 +4779,10 @@ Returns field values directly from disk for a table or a remote data source.
 Specifies an expression whose value CURVAL( ) returns from a table or a remote data source. cExpression is typically a field or an expression consisting of a set of fields from the table or remote data source.
 
 </param>
-<param name="cTableAlias">
+<param name="uArea">
 
-Specifies the alias of the table from which the field values are returned from disk for a table or a remote data source.
+Specifies the alias or workarea number of the table from which the field values are returned from disk for a table or a remote data source.
 
-</param>
-<param name="nWorkArea">
-
-Specifies the work area of the table from which the field values are returned from disk for a table or a remote data source.
 </param>
 <returns>
 Character, Currency, Date, DateTime, Double, Float, Logical, Numeric, or Memo
@@ -4820,7 +4793,7 @@ If you are working with a view in a multiuser environment, the values returned b
 CURVAL( ) returns field values for the current record, and the return value data type is determined by the expression you specify with cExpression.
 The value is returned for the table or cursor open in the currently selected work area if CURVAL( ) is issued without the optional cTableAlias or nWorkArea arguments.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLOSE DATABASES
 CLEAR
 CREATE TABLE mytable FREE (cDigit C(10))
@@ -4835,7 +4808,7 @@ REPLACE cDigit WITH "Two"    &amp;&amp; New value
 ? "Table changes committed"
 ? "New current value: " + CURVAL("cDigit", "mytable")
 ? "New old value: " + OLDVAL("cDigit", "mytable")</code>
-</examples>
+</example>
 </curval>
 <date>
 <summary>
@@ -4862,14 +4835,14 @@ Date
 DATE( ) returns the current system date if it is issued without the optional arguments. Include the optional arguments to return a year 2000-compliant Date value in the format set in the Regional tab of the Options dialog box. Any NULL parameter is replaced with the current system value.
 No X# commands or functions can directly change the system date.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLEAR
 SET CENTURY OFF
 ? DATE( )  &amp;&amp; Displays today's date without the century
 SET CENTURY ON
 ? DATE( )  &amp;&amp; Displays today's date with the century
 ? DATE(1998, 02, 16)  &amp;&amp; Displays a year 2000-compliant Date value</code>
-</examples>
+</example>
 </date>
 <datetime>
 <summary>
@@ -4911,7 +4884,7 @@ DateTime
 DATETIME( ) returns the current system DateTime if it is issued without the optional arguments. Any NULL date parameters are replaced with current system values. A NULL time parameter is replaced with 12:00:00.
 Include the optional arguments to return a year 2000-compliant DateTime value in the format specified in the Regional tab of the Options dialog box.
 </remarks>
-<examples>
+<example>
  <code language="X#">tNewyear = DATETIME(YEAR(DATE( ) ) + 1, 1, 1)  &amp;&amp; Next New Year
 tToday = DATETIME( )
 nSecondstonewyear = tNewyear - tToday
@@ -4922,7 +4895,7 @@ CLEAR
 SET CENTURY ON
 SET DATE TO AMERICAN
 ? DATETIME(1998, 02, 16, 12, 34, 56) &amp;&amp; Displays 02/16/1998 12:34:56 PM</code>
-</examples>
+</example>
 </datetime>
 <day>
 <summary>
@@ -4944,13 +4917,13 @@ Numeric
 
 <b>DAY( )</b> returns a number from 1 through 31.
 </remarks>
-<examples>
+<example>
  <code language="X#">STORE {^1998-03-05} TO gdBDate
 CLEAR
 ? CDOW(gdBDate)  &amp;&amp; Displays Thursday
 ? DAY(gdBDate) &amp;&amp; Displays 5
 ? 'That date is ', CMONTH(gdBDate), STR(DAY(gdBDate),2)</code>
-</examples>
+</example>
 </day>
 <dbalias>
 <summary>
@@ -4962,7 +4935,7 @@ Character.
 <remarks>
 <b>DBALIAS( )</b> returns the empty string if there is no current database.
 </remarks>
-<examples>
+<example>
 
 <code language="X#">
 OPEN DATABASE HOME(2)+"northwind\northwind" SHARED
@@ -4973,7 +4946,7 @@ SET DATABASE TO TASTRADE
 ? DBALIAS()
 ? JUSTSTEM(DBC())
 </code>
-</examples>
+</example>
 </dbalias>
 <dbc>
 <summary>
@@ -4987,12 +4960,12 @@ Character
 <b>DBC( )</b> returns the empty string if there is no current database.
 Use SET DATABASE to specify the current database.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLOSE DATABASES
 OPEN DATABASE (HOME(2) + 'data\testdata')  &amp;&amp; Opens the DBC.
 CLEAR
 ? DBC( )  &amp;&amp; Displays the path and name of the database</code>
-</examples>
+</example>
 </dbc>
 <dbf>
 <summary>
@@ -5015,7 +4988,7 @@ Character
 <remarks>
 When SET FULLPATH is ON, <b>DBF( )</b> returns the path to the table with the table name. When SET FULLPATH is OFF, <b>DBF( )</b> returns the drive on which the table resides with the table name.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLOSE DATABASES
 OPEN DATABASE (HOME(2) + 'Data\testdata')
 USE customer IN 2 ALIAS mycust
@@ -5024,7 +4997,7 @@ CLEAR
 ? DBF('mycust')  &amp;&amp; Displays customer.dbf with its path
 CLOSE DATABASES
 ? DBF( )      &amp;&amp; Displays the empty string</code>
-</examples>
+</example>
 </dbf>
 <dbgetprop>
 <summary>
@@ -5221,7 +5194,7 @@ Character, Numeric, or Logical data type. <b>DBGETPROP( )</b> returns the value 
 <remarks>
 For more information about setting property values, see DBSETPROP( ) Function.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLOSE DATABASES
 CLEAR
 OPEN DATABASE (HOME(2) + 'Data\testdata')
@@ -5236,7 +5209,7 @@ CHR (13) + "Use DBSETPROP( ) to add comments.")
 ELSE
 =MESSAGEBOX("Cust_id field comments: " + cRESULTS)
 ENDIF</code>
-</examples>
+</example>
 </dbgetprop>
 <dbsetprop>
 <summary>
@@ -5283,7 +5256,7 @@ Logical data type. <b>DBSETPROP( )</b> returns True (.T.) if X# successfully se
 <remarks>
 For more information about retrieving current property values, see DBGETPROP( ) Function.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLOSE DATABASES
 CLEAR
 OPEN DATABASE (HOME(2) + 'data\testdata')
@@ -5292,7 +5265,7 @@ USE customer     &amp;&amp; Open customer table
 "Property has been set by DBSETPROP.")  &amp;&amp; New field comments
 cRESULTS = DBGETPROP("customer.cust_id", "Field", "Comment")
 WAIT WINDOW "Cust_id field comments: "+ cRESULTS  &amp;&amp; Display comments</code>
-</examples>
+</example>
 </dbsetprop>
 <dbused>
 <summary>
@@ -5309,7 +5282,7 @@ Logical
 
 <b>DBUSED( ) </b>returns true (.T.) if the specified database is open; otherwise, it returns false (.F.).
 </remarks>
-<examples>
+<example>
  <code language="X#">CLOSE DATABASES
 OPEN DATABASE (HOME(2) + 'Data\testdata')
 CLEAR
@@ -5317,7 +5290,7 @@ CLEAR
 ?? DBUSED('testdata')     &amp;&amp; Displays .T.
 ? 'Test database open? '
 ?? DBUSED('test')     &amp;&amp; Displays .F.</code>
-</examples>
+</example>
 </dbused>
 <ddeaborttrans>
 <summary>
@@ -5393,7 +5366,7 @@ Before you can create a link, you must establish a channel to the server applica
 You can also use <b>DDEAdvise( )</b> to turn off notification from the server.
 DDEAdvise( ) returns a true value (.T.) if it executes successfully; otherwise, it returns false (.F.).
 </remarks>
-<examples>
+<example>
  <code language="X#">PUBLIC mchannum
 mchannum = DDEInitiate('Excel', 'Sheet1')
 IF mchannum != -1
@@ -5417,7 +5390,7 @@ IF action != "TERMINATE"
 = DDETerminate(mchannum)
 ENDIF
 ENDIF</code>
-</examples>
+</example>
 </ddeadvise>
 <ddeenabled>
 <summary>
@@ -5488,7 +5461,7 @@ The command sent with <b>DDEExecute( )</b> must be understood by the applicatio
 For example, Microsoft Excel has an extensive set of macro commands, including DDE commands that let you request data from X# from within Microsoft Excel. If you establish a channel to Microsoft Excel, you can then use <b>DDEExecute( )</b> to send macro commands to Excel from within X#.
 If the receiving application successfully executes the command, <b>DDEExecute( )</b> returns true (.T.). If the receiving application cannot successfully execute the command or if the channel number you include is not valid, <b>DDEExecute( )</b> returns false (.F.). If the optional asynchronous user-defined function cUDFName is included, a transaction number is returned. If an error occurs, DDEExecute( ) returns –1.
 </remarks>
-<examples>
+<example>
  <code language="X#">gnChanNum = DDEInitiate('Excel', 'Sheet1')
 IF gnChanNum != -1
 glExecute = DDEExecute(gnChanNum, '[App.Maximize]')
@@ -5497,7 +5470,7 @@ WAIT WINDOW 'EXCEL window has been zoomed out.'
 ENDIF
 = DDETerminate(gnChanNum)   &amp;&amp; Close the channel
 ENDIF</code>
-</examples>
+</example>
 </ddeexecute>
 <ddeinitiate>
 <summary>
@@ -5524,13 +5497,13 @@ If the channel is successfully established, <b>DDEInitiate( )</b> returns the c
 To avoid being asked whether you want to open the application, set the <b>DDESetOption( )</b> SAFETY option. You can also use RUN with the /N option to start the application.
 A channel can be closed with <b>DDETerminate( )</b>.
 </remarks>
-<examples>
+<example>
  <code language="X#">mchannum = DDEInitiate('Excel', 'Sheet1')
 IF mchannum != -1
 * Process client actions
 = DDETerminate(mchannum)  &amp;&amp; Close the channel
 ENDIF</code>
-</examples>
+</example>
 </ddeinitiate>
 <ddelasterror>
 <summary>
@@ -5693,7 +5666,7 @@ Character
 Before you can request data using <b>DDERequest( )</b>, you must establish a channel to the server application with <b>DDEInitiate( )</b>.
 If the request for data is successful, <b>DDERequest( )</b> returns the data as a character string. If the request fails, <b>DDERequest( )</b> returns an empty string and <b>DDELastError( )</b> returns a nonzero value. If you include the asynchronous user-defined function cUDFName, DDERequest( ) returns a transaction number if successful, or –1 if an error occurs.
 </remarks>
-<examples>
+<example>
  <code language="X#">mchannum = DDEInitiate('Excel', 'Sheet1')
 IF mchannum != -1
 mrequest = DDERequest(mchannum, 'R1C1')
@@ -5702,7 +5675,7 @@ WAIT WINDOW 'R1C1 contents: ' + mrequest
 ENDIF
 = DDETerminate(mchannum)            &amp;&amp; Close the channel
 ENDIF</code>
-</examples>
+</example>
 </dderequest>
 <ddesetoption>
 <summary>
@@ -5873,7 +5846,7 @@ After a topic name is created, any client requests to the topic name cause X# to
 
 <b>DDESetTopic( )</b> returns true (.T.) if it successfully creates or releases the topic name. It returns false (.F.) if the topic name cannot be created or released. Use DDELastError( ) to determine why a topic name cannot be created or released.
 </remarks>
-<examples>
+<example>
 The following example creates a basic sample server called codemyserver/code that supports X# command execution from a client application. The client application makes requests to codemyserver/code through the DO topic, and macro substitution is used to execute the client's command.
  <code language="X#">*** Set X# up as a DDE server ***
 = DDESetService('myserver', 'DEFINE')
@@ -5905,7 +5878,7 @@ After running this example program, you have set up X# service, which other appl
  <code language="X#">gnMyChan = INITIATE("myserver","DO")
 =EXECUTE(MyChan,"WAIT WINDOW 'Hi, this is EXCEL speaking'")
 =RETURN( )</code>
-</examples>
+</example>
 </ddesettopic>
 <ddeterminate>
 <summary>
@@ -5959,7 +5932,7 @@ Records can be marked for deletion with DELETE and DELETE – SQL, and they can 
 Rushmore Query Optimization optimizes queries that test the deleted status of records if the table is indexed on DELETED( ).
 For information on using Rushmore to optimize queries, see SET OPTIMIZE and Using Rushmore Query Optimization to Speed Data Access.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLOSE DATABASES
 OPEN DATABASE (HOME(2) + 'Data\testdata')
 USE customer  &amp;&amp; Opens Customer table
@@ -5967,27 +5940,24 @@ DELETE FROM customer WHERE country = 'USA'  &amp;&amp; Mark for deletion
 CLEAR
 LIST FIELDS company, country FOR DELETED( ) &amp;&amp; List marked records
 RECALL ALL  &amp;&amp; Unmark all records marked for deletion</code>
-</examples>
+</example>
 </deleted>
 <descending>
 <summary>
 Returns a logical value that indicates whether an index tag was created with the DESCENDING keyword or whether the DESCENDING keyword was included in USE, SET INDEX, or SET ORDER.
 </summary>
-<param name="CDXFileName">
+<param name="uIndex">
 
-Specifies the name of a compound index file with CDXFileName. The compound index file you specify can be the structural compound index file automatically opened with the table or an independent compound index file.
+  Specifies the name or index number of a compound index file with CDXFileName. The compound index file you specify can be the structural compound index file automatically opened with the table or an independent compound index file.
+  Specifies which index tag or index file DESCENDING( ) tests. nIndexNumber is typically an integer that starts at 1 and is increased by 1 to return additional values for each index tag.
+  If nIndexNumber is 1, a value for the master single-entry .idx index file or master index tag (if one is present) is returned.
+  As nIndexNumber increases, values for each tag in the structural compound index (if one is present) are returned. The values are returned for the tags in the order in which the tags were created in the structural compound index.
+  After values for all the tags in the structural compound index are returned, values for each tag in any open independent compound indexes are then returned. The values are returned from the tags in the order in which the tags are created in the independent compound indexes.
+  The empty string is returned if nIndexNumber is greater than the total number of open, single-entry .idx files and structural compound and independent compound index tags.
 
 </param>
-<param name="nIndexNumber">
-
-Specifies which index tag or index file DESCENDING( ) tests. nIndexNumber is typically an integer that starts at 1 and is increased by 1 to return additional values for each index tag.
-If nIndexNumber is 1, a value for the master single-entry .idx index file or master index tag (if one is present) is returned.   
-As nIndexNumber increases, values for each tag in the structural compound index (if one is present) are returned. The values are returned for the tags in the order in which the tags were created in the structural compound index.   
-After values for all the tags in the structural compound index are returned, values for each tag in any open independent compound indexes are then returned. The values are returned from the tags in the order in which the tags are created in the independent compound indexes.   
-The empty string is returned if nIndexNumber is greater than the total number of open, single-entry .idx files and structural compound and independent compound index tags. 
-
-nWorkArea| cTableAlias
-Returns values for index files or tags open in a work area other than the current work area. nWorkArea specifies the work area number and cTableAlias specifies the table alias.
+<param name="uArea">
+Returns values for index files or tags open in a work area other than the current work area. This specifies the work area number or table alias.
 If no table has the alias you specify, X# generates an error message.
 </param>
 <returns>
@@ -6001,7 +5971,7 @@ DESCENDING( ) can determine if an index tag was created in descending order. DE
 DESCENDING( ) can also determine if the master index tag or master index file is in descending order. DESCENDING( ) returns true (.T.) if the DESCENDING keyword was included in USE, SET INDEX, or SET ORDER for the master index tag or a single-entry index (.idx) file you specify.
 If you don't include any of the optional arguments, DESCENDING( ) returns a value for the master index tag or master index file. If you don't include any of the optional arguments and a master index tag or .idx file isn't in effect (for example, you've issued SET ORDER TO to place the table in physical record order), DESCENDING( ) returns false (.F.).
 </remarks>
-<examples>
+<example>
  <code language="X#">CLOSE DATABASES
 OPEN DATABASE (HOME(2) + 'Data\testdata')
 USE Customer     &amp;&amp; Open customer table
@@ -6014,7 +5984,7 @@ ELSE
 EXIT  &amp;&amp; Exit the loop when no more tags are found
 ENDIF
 ENDFOR</code>
-</examples>
+</example>
 </descending>
 <difference>
 <summary>
@@ -6027,7 +5997,7 @@ Numeric
 DIFFERENCE( ) is useful for searching tables when the exact spelling of an entry isn't known.
 The more alike the two expressions are spelled, the higher the number DIFFERENCE( ) returns. If the character expressions are spelled very similarly, DIFFERENCE( ) returns 4. For two character expressions with little in common phonetically, DIFFERENCE( ) returns 0.
 </remarks>
-<examples>
+<example>
  <code language="X#">STORE 'Smith' TO gcName1
 STORE 'Smythe'  TO gcName2
 STORE 'Smittie' TO gcName3
@@ -6036,7 +6006,7 @@ CLEAR
 ? DIFFERENCE(gcName1, gcName2)  &amp;&amp; Displays 4
 ? DIFFERENCE(gcName1, gcName3)  &amp;&amp; Displays 4
 ? DIFFERENCE(gcName1, gcName4)  &amp;&amp; Displays 1</code>
-</examples>
+</example>
 </difference>
 <directory>
 <summary>
@@ -6091,7 +6061,7 @@ The return value of <b>DISKSPACE( )</b> might not be accurate for large network
 You can use <b>DISKSPACE( )</b> to determine if sufficient space is available to back up files or to execute commands such as <b>SORT</b> that require additional disk space for temporary work files.
 You can specify the default disk drive or volume using the <b>SET DEFAULT</b> command.
 </remarks>
-<examples>
+<example>
  <code language="X#">*** Check DISKSPACE before sort ***
 CLOSE DATABASES
 OPEN DATABASE (HOME(2) + 'Data\testdata')
@@ -6105,7 +6075,7 @@ WAIT WINDOW 'Sufficient diskspace to sort.'
 ELSE
 WAIT WINDOW 'Insufficient diskspace. Sort cannot be done.'
 ENDIF</code>
-</examples>
+</example>
 </diskspace>
 <displaypath>
 <summary>
@@ -6145,13 +6115,13 @@ Character
 <remarks>
 If SET CENTURY is OFF, <b>DMY( )</b> returns a character string in a dd-Month-yy format (for example, 16 February 98). If SET CENTURY is ON, the format is dd-Month-yyyy (for example, 16 February 1998).
 </remarks>
-<examples>
+<example>
  <code language="X#">CLEAR
 SET CENTURY OFF
 ? DMY(DATE( ))
 SET CENTURY ON
 ? DMY(DATE( ))</code>
-</examples>
+</example>
 </dmy>
 <dodefault>
 <summary>
@@ -6255,12 +6225,12 @@ Saturday
 <returns>
 Numeric
 </returns>
-<examples>
+<example>
  <code language="X#">STORE DATE( ) TO gdDayNum
 CLEAR
 ? DOW(gdDayNum)
 ? CDOW(gdDayNum)</code>
-</examples>
+</example>
 </dow>
 <drivetype>
 <summary>
@@ -6329,7 +6299,7 @@ Character
 <remarks>
 DTOC( ) returns a character string corresponding to a Date or DateTime expression. The date format is determined by SET CENTURY and SET DATE.
 </remarks>
-<examples>
+<example>
  <code language="X#">SET STRICTDATE TO 1
 STORE CTOD('10/31/98') TO gdThisDate
 CLEAR
@@ -6337,7 +6307,7 @@ CLEAR
 STORE DTOC({^1998-10-31}+90) TO gcExpireDate
 ? 'Your 90-day warranty expires ', gcExpireDate
 ? DTOC({^1998-10-31},1)</code>
-</examples>
+</example>
 </dtoc>
 <dtor>
 <summary>
@@ -6354,14 +6324,14 @@ Numeric
 DTOR( ) converts the value of a numeric expression given in degrees to an equivalent value in radians. DTOR( ) is useful for working with the X# trigonometric functions: ACOS( ), ASIN( ), COS( ), SIN( ), TAN( ).
 Use RTOD( ) to convert radians to degrees. 
 </remarks>
-<examples>
+<example>
  <code language="X#">CLEAR
 ? DTOR(0)  &amp;&amp; Displays 0.00
 ? DTOR(45) &amp;&amp; Displays 0.79
 ? DTOR(90) &amp;&amp; Displays 1.57
 ? DTOR(180)  &amp;&amp; Displays 3.14
 ? COS(DTOR(90))  &amp;&amp; Displays 0.00</code>
-</examples>
+</example>
 </dtor>
 <dtos>
 <summary>
@@ -6383,31 +6353,11 @@ Character
 This function is useful for indexing tables on a Date or DateTime field. It is equivalent to DTOC( ) when its optional 1 argument is included.
 The character string returned by DTOS( ) isn't affected by SET DATE or SET CENTURY.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLEAR
 ? DTOS(DATE( ))</code>
-</examples>
+</example>
 </dtos>
-<dtot>
-<summary>
-Returns a DateTime value from a Date expression.
-</summary>
-<param name="dDateExpression">
-
-Specifies the Date expression from which a DateTime value is returned.
-</param>
-<returns>
-DateTime
-</returns>
-<remarks>
-The format of the DateTime value DTOT( ) returns depends on the current SET DATE and SET MARK settings. If a century isn't supplied, the twentieth century is assumed.
-DTOT( ) adds a default time of 12:00:00 AM (if SET HOURS is 12) or 00:00:00 (if SET HOURS is 24) to the date to produce a valid DateTime value. 
-</remarks>
-<examples>
- <code language="X#">SET HOURS TO 12
-? DTOT({^2004-02-16}) &amp;&amp; Displays 02/16/2004 12:00:00 AM</code>
-</examples>
-</dtot>
 <editsource>
 <summary>
 Opens the X# editor and, optionally positions the cursor. 
@@ -6564,7 +6514,7 @@ WAIT WINDOW IIF(TYPE('goMyForm') = 'O' AND !ISNULL(goMyForm), ;
 'goMyForm has valid object reference',;
 'goMyForm does not have valid object reference')</code>
 </remarks>
-<examples>
+<example>
  <code language="X#">CLOSE DATABASES
 OPEN DATABASE (HOME(2) + 'data\testdata')
 USE customer     &amp;&amp; Open customer table
@@ -6576,7 +6526,7 @@ ELSE
 EXIT  &amp;&amp; Exit the loop when no more tags are found
 ENDIF
 ENDFOR</code>
-</examples>
+</example>
 </empty>
 <eof>
 <summary>
@@ -6599,7 +6549,7 @@ Logical
 <remarks>
 EOF( ) returns true (.T.) if the record pointer reaches the end of the table file (EOF). The end of the table is reached when the record pointer passes the last record in the table. For example, when a FIND, LOCATE, or SEEK is unsuccessful, X# moves the record pointer past the last record, and EOF( ) returns true (.T.). EOF( ) returns false (.F.) if the record pointer isn't at the end of the table.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLOSE DATABASES
 CLEAR
 OPEN DATABASE (HOME() + "samples\data\testdata")
@@ -6619,7 +6569,7 @@ endif
 Skip 1    &amp;&amp; Move down one record
 ENDDO
 =MESSAGEBOX("Listing complete.",48)</code>
-</examples>
+</example>
 </eof>
 <error>
 <summary>
@@ -6634,7 +6584,7 @@ ERROR( ) returns the number of the most recent error. An ON ERROR routine must 
 When an error is trapped during program execution, the error type can be returned by ERROR( ) in an ON ERROR routine. The corresponding error message can be returned by MESSAGE( ).
 The value ERROR( ) returns is reset by RETURN or RETRY.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLEAR
 ON ERROR DO errhand WITH ERROR( ), MESSAGE( )
 *** The next line generates an error - there is no BRWSE command
@@ -6647,7 +6597,7 @@ PARAMETER errnum,message
 ? Message
 ? 'Error number: '+ ALLTRIM(STR(Errnum))
 RETURN</code>
-</examples>
+</example>
 </error>
 <evaluate>
 <summary>
@@ -6665,11 +6615,11 @@ Character, Numeric, Currency, Date, DateTime, Logical, or Memo
 EVALUATE( ) is similar to TYPE( ) but returns the result of an expression instead of the expression type. An expression containing EVALUATE( ) cannot be optimized by Rushmore Query Optimization.
 Including the EVALUATE( ) function in the WHERE clause of a SQL query can return incorrect data.
 </remarks>
-<examples>
+<example>
  <code language="X#">cMathFunc="INT(4.33)"
 nResult=EVALUATE(cMathFunc)
 ?nResult</code>
-</examples>
+</example>
 </evaluate>
 <eventhandler>
 <summary>
@@ -6697,7 +6647,7 @@ Logical data type. <b>EVENTHANDLER( )</b> returns True (.T.) if successful and F
 You can bind a single COM object to several X# objects, or you can bind several COM objects to the same X# object. 
 Event handling is automatically unbound when either the X# or the COM object is released. You can explicitly call the EVENTHANDLER( ) function and pass the lUnbind parameter to unbind objects without releasing object references.
 </remarks>
-<examples>
+<example>
  <code language="X#">LOCAL oEvents
 LOCAL oRS AS adodb.recordset
 LOCAL oConn AS adodb.Connection
@@ -6745,7 +6695,7 @@ PROCEDURE Recordsetevents_FetchProgress(Progress AS Number @, MaxProgress AS Num
 PROCEDURE Recordsetevents_FetchComplete(pError AS VARIANT @, adStatus AS VARIANT @, pRecordset AS VARIANT @) AS VARIANT
 ? " "+program() + ' ' + TRANSFORM(DATETIME())
 ENDDEFINE</code>
-</examples>
+</example>
 </eventhandler>
 <evl>
 <summary>
@@ -6756,7 +6706,7 @@ The X# <b>Logical</b> value, False (.F.), and the <b>Numeric</b> value of 0 also
 <returns>
 Character, Date, DateTime, Numeric, Currency, Logical, Object. <b>EVL( )</b> returns eExpression1 if it does not evaluate to an empty value; otherwise, it returns eExpresssion2.
 </returns>
-<examples>
+<example>
 The following examples create the memory variables, codeglEmptyDate/code, which contains an empty <b>Date</b> value, and codeglEmptyNum/code, which contains an empty <b>Numeric</b> value, 0.
 When performing <b>EVL( )</b> with codeglEmptyDate/code, <b>EVL( )</b> returns an empty string ("") when evaluating codeglEmptyDate/code and an empty string, and code"None"/code when evaluating codeglEmptyDate/code and code"None"/code.
  <code language="X#">STORE {  /  /  } TO glEmptyDate
@@ -6766,28 +6716,31 @@ When performing EVL( ) with glEmptyNum, EVL( ) returns an empty string when eval
  <code language="X#">STORE 0 TO glEmptyNum
 ? EVL(glEmptyNum,"")
 ? EVL(glEmptyNum, "Empty")      </code>
-</examples>
+</example>
 </evl>
 <execscript>
 <summary>
 Enables you to run multiple lines of code from variables, tables, and other text at runtime. 
 </summary>
 <param name="cExpression">
-
-Represents the text, a variable, type string, or memo to be executed as code.
-
-eParameter1, eParameter2, ... 
+  Represents the text, a variable, type string, or memo to be executed as code.
+</param>
+<param name="eParameter1">
 Optional. Specify parameters passed to a script that has a parameter statement in first line.
 </param>
-<returns>
+  <param name="eParameter1">
+    Optional. Specify parameters passed to a script that has a parameter statement in first line.
+  </param>
+
+  <returns>
 The return value is the value returned by the script in cExpression. If the script returns no value, X# returns .T.
 </returns>
 <remarks>
 ExecScript( ), unlike macro expansion, provides the same effect as selecting several lines of code in the command window then pressing the Enter key.
 </remarks>
-<examples>
+<example>
  <code language="X#">?EXECSCRIPT("oForm=CREATEOBJECT('Form')"+CHR(13)+"?oForm.AutoCenter")</code>
-</examples>
+</example>
 </execscript>
 <exp>
 <summary>
@@ -6803,10 +6756,10 @@ Numeric
 <remarks>
 The value of e, the base of natural logarithms, is approximately 2.71828. The number of decimal places returned by EXP( ) is specified with SET DECIMALS.
 </remarks>
-<examples>
+<example>
  <code language="X#">? EXP(0)  &amp;&amp; Displays 1.00
 ? EXP(1)  &amp;&amp; Displays 2.72</code>
-</examples>
+</example>
 </exp>
 <fchsize>
 <summary>
@@ -6868,7 +6821,7 @@ Numeric
 <remarks>
 If you omit the optional arguments, <b>FCOUNT( )</b> returns the number of fields in the table open in the currently selected work area.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLOSE DATABASES
 OPEN DATABASE (HOME(2) + 'Data\testdata')
 USE customer  &amp;&amp; Opens Customer table
@@ -6877,7 +6830,7 @@ USE employee  &amp;&amp; Opens employee table
 CLEAR
 ? FCOUNT('CUSTOMER')     &amp;&amp; Displays 13, # of fields in Customer
 ? FCOUNT('EMPLOYEE')  &amp;&amp; Displays 22, # of fields in Employee</code>
-</examples>
+</example>
 </fcount>
 <fcreate>
 <summary>
@@ -6926,7 +6879,7 @@ If a file with the name you specify already exists, it is overwritten without wa
 Assign the file handle number to a memory variable so you can access the file by the variable in other low-level file functions.
 You cannot open a communication port with <b>FCREATE( )</b>. Use <b>FOPEN( )</b> to open a communication port.
 </remarks>
-<examples>
+<example>
  <code language="X#">IF FILE('errors.txt')  &amp;&amp; Does file exist?
 gnErrFile = FOPEN('errors.txt',12)     &amp;&amp; If so, open read/write
 ELSE
@@ -6941,7 +6894,7 @@ ENDIF
 IF gnErrFile &gt; 0
 MODIFY FILE errors.txt NOWAIT  &amp;&amp; Open file in edit window
 ENDIF  </code>
-</examples>
+</example>
 </fcreate>
 <fdate>
 <summary>
@@ -6963,9 +6916,9 @@ Date
 The Date or DateTime value that <b>FDATE( )</b> returns is assigned to the file by the operating system.
 Use LUPDATE( ) to determine the last modification date for an open table.
 </remarks>
-<examples>
+<example>
  <code language="X#">? FDATE('FOXUSER.DBF', 1)  &amp;&amp; Displays the last modification DateTime</code>
-</examples>
+</example>
 </fdate>
 <feof>
 <summary>
@@ -6981,7 +6934,7 @@ Logical
 <remarks>
 This low-level file function returns true (.T.) if the file pointer is positioned at the end of a file opened with a low-level file function. <b>FEOF( )</b> returns false (.F.) if the file pointer isn't at the end of the file.
 </remarks>
-<examples>
+<example>
  <code language="X#">*** Open the file test.txt ***
 gnFileHandle = FOPEN('test.txt')
 *** Move the file pointer to BOF ***
@@ -6994,7 +6947,7 @@ ELSE
 WAIT WINDOW 'This file has something in it!' NOWAIT
 ENDIF
 = FCLOSE(gnFileHandle)</code>
-</examples>
+</example>
 </feof>
 <ferror>
 <summary>
@@ -7047,7 +7000,7 @@ Logical
 <b>FFLUSH( )</b> also releases the memory used by the file's buffer.
 FLUSH is different from the <b>FFLUSH( )</b> function. FLUSH doesn't operate on low-level files but rather on tables and indexes.
 </remarks>
-<examples>
+<example>
  <code language="X#">IF FILE('input.dat')
 gnTestFile = FOPEN('input.dat',2)
 ELSE
@@ -7061,7 +7014,7 @@ gnIOBytes = FWRITE(gnTestFile,' for low-level file I/O')
 glFlushOk = FFLUSH(gnTestFile)
 glCloseOk = FCLOSE(gnTestFile)
 MODIFY FILE input.dat NOWAIT NOEDIT</code>
-</examples>
+</example>
 </fflush>
 <fgets>
 <summary>
@@ -7085,7 +7038,7 @@ You can read a file line by line by issuing a series of <b>FGETS( )</b>.
 
 <b>FGETS( )</b> returns a series of bytes as a character string. Data is returned starting from the current file's pointer position and continuing until a carriage return is encountered. The file pointer is then positioned on the byte immediately following the carriage return. The carriage return is not returned as part of the string, and line feeds are discarded.
 </remarks>
-<examples>
+<example>
  <code language="X#">*** TEST.TXT must exist ***
 STORE FOPEN('test.txt') TO gnFileHandle    &amp;&amp; Open the file
 STORE FSEEK(gnFileHandle, 0, 2) TO gnEnd    &amp;&amp; Move pointer to EOF
@@ -7097,7 +7050,7 @@ gcString = FGETS(gnFileHandle, gnEnd)  &amp;&amp; Store contents
 ? gcString
 ENDIF
 = FCLOSE(gnFileHandle)  &amp;&amp; Close the file</code>
-</examples>
+</example>
 </fgets>
 <field>
 <summary>
@@ -7142,7 +7095,7 @@ Character data type. If you omit the optional arguments, <b>FIELD( )</b> return
 <remarks>
 You can use the <b>SELECT( )</b> function to determine the current work area for nWorkArea. You can use the <b>ALIAS( )</b> function to determine the alias of the table in the current work area for cTableAlias. For more information, see SELECT( ) Function and ALIAS( ) Function.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLOSE DATABASES
 OPEN DATABASE (HOME(2) + 'Data\testdata')
 USE customer  &amp;&amp; Opens Customer table
@@ -7152,7 +7105,7 @@ FOR gnCount = 1 TO FCOUNT( )  &amp;&amp; Loop for number of fields
 NEXT
 ?
 ? 'Number of fields: ' + ALLTRIM(STR(gnCount -1))</code>
-</examples>
+</example>
 </field>
 <file>
 <summary>
@@ -7179,7 +7132,7 @@ Logical data type. <b>FILE( )</b> returns True (.T.) if the specified file is in
 You can use the <b>ADIR( )</b> function to retrieve specific attributes for the file.
 You can use the <b>CD</b> and <b>CHDIR</b> commands to switch to hidden files and directories.
 </remarks>
-<examples>
+<example>
  
 <code language="X#">SET PATH TO HOME( )
 CLEAR
@@ -7188,7 +7141,7 @@ WAIT WINDOW 'X# resource file present'
 ELSE
 WAIT WINDOW 'X# resource file not present'
 ENDIF</code>
-</examples>
+</example>
 </file>
 <filetostr>
 <summary>
@@ -7204,11 +7157,11 @@ Character
 <remarks>
 Note that the size of the character string FILETOSTR( ) returns can be very large. The amount of available memory or disk space determines if you can store the character string to a memory variable, array element, or memo field. Also, character fields in X# are limited to 254 characters. See X# System Capacities for more information about limitations on character type data.
 </remarks>
-<examples>
+<example>
  <code language="X#">CD HOME()
 cRedist=FILETOSTR("REDIST.TXT")
 ?OCCURS(".MSM",cRedist)</code>
-</examples>
+</example>
 </filetostr>
 <filter>
 <summary>
@@ -7231,7 +7184,7 @@ Character
 <remarks>
 If you omit the optional arguments, FILTER( ) returns the filter expression for the table open in the currently selected work area. For more information about creating a filter, see SET FILTER.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLOSE DATABASES
 OPEN DATABASE (HOME(2) + 'Data\testdata')
 USE customer  &amp;&amp; Opens Customer table
@@ -7245,7 +7198,7 @@ SET FILTER TO country = 'USA'
 SET FILTER TO &amp;gcOldFilter    &amp;&amp; Restore filter expression
 ? FILTER( )  &amp;&amp; Display filter expression
 LIST FIELDS cust_id, contact  &amp;&amp; Demonstrate filter condition</code>
-</examples>
+</example>
 </filter>
 <fklabel>
 <summary>
@@ -7262,7 +7215,7 @@ Character
 Function keys can be programmed with SET FUNCTION.
 The value returned by FKLABEL( ) is affected by SET COMPATIBLE. When COMPATIBLE is set to FOXPLUS (the default), FKLABEL( ) returns the function keys. When COMPATIBLE is set to DB4, FKLABEL( ) returns the function key and function key combinations (F1, CTRL+F1, SHIFT+F1, F2, CTRL+F2, SHIFT+F2, ...).
 </remarks>
-<examples>
+<example>
  <code language="X#">CLEAR
 SET COMPATIBLE OFF
 ? 'COMPATIBLE OFF'
@@ -7277,7 +7230,7 @@ SET COMPATIBLE ON
 FOR nCount = 1 TO FKMAX( )  &amp;&amp; Loop for # of function keys
 ? FKLABEL(nCount)  &amp;&amp; Display programmable function keys
 ENDFOR</code>
-</examples>
+</example>
 </fklabel>
 <fkmax>
 <summary>
@@ -7290,7 +7243,7 @@ Numeric
 <remarks>
 The value returned by FKMAX( ) is affected by SET COMPATIBLE. When SET COMPATIBLE is set to FOXPLUS (the default), FKMAX( ) returns the number of function keys. When SET COMPATIBLE is set to DB4, FKMAX( ) returns the number of function key and function key combinations (F1, CTRL+F1, SHIFT+F1, F2, CTRL+F2, SHIFT+F2, ...).
 </remarks>
-<examples>
+<example>
  <code language="X#">CLEAR
 SET COMPATIBLE OFF
 ? 'COMPATIBLE OFF'
@@ -7305,13 +7258,8 @@ SET COMPATIBLE ON
 FOR nCount = 1 TO FKMAX( )  &amp;&amp; Loop for # of function keys
 ? FKLABEL(nCount)  &amp;&amp; Display programmable function keys
 ENDFOR</code>
-</examples>
+</example>
 </fkmax>
-<fldcount>
-<summary>
-This function is a synonym to FCOUNT() Function.
-</summary>
-</fldcount>
 <fldlist>
 <summary>
 Included for compatibility with dBASE.
@@ -7345,7 +7293,7 @@ By default, FLOCK( ) attempts to lock a table once. Use SET REPROCESS to automa
 You can establish relations between two or more tables with SET RELATION. Placing a file lock on a table that is related to one or more tables doesn't place a file lock on the related tables. You must explicitly place and remove locks on the related tables.
 For additional information about record and file locking and sharing tables on a network, see Programming for Shared Access.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLOSE DATABASES
 OPEN DATABASE (HOME(2) + 'Data\testdata')
 USE products  &amp;&amp; Opens products table
@@ -7363,7 +7311,7 @@ ENDIF
 BROWSE FIELDS in_stock, on_order &amp;&amp; Displays newprods table
 USE
 ERASE newprods.dbf</code>
-</examples>
+</example>
 </flock>
 <floor>
 <summary>
@@ -7376,7 +7324,7 @@ Specifies the numeric expression for which FLOOR( ) returns the nearest integer
 <returns>
 Numeric
 </returns>
-<examples>
+<example>
  <code language="X#">STORE  10.9 TO gnNumber1
 STORE -10.1 TO gnNumber2
 CLEAR
@@ -7384,7 +7332,7 @@ CLEAR
 ? FLOOR(gnNumber2)  &amp;&amp; Displays -11
 ? FLOOR(10.0)  &amp;&amp; Displays 10
 ? FLOOR(-10.0)  &amp;&amp; Displays -10</code>
-</examples>
+</example>
 </floor>
 <fontmetric>
 <summary>
@@ -7510,7 +7458,7 @@ File handle number
 File pointer position
 Read/write attributes
 </remarks>
-<examples>
+<example>
  <code language="X#">IF FILE('errors.txt')  &amp;&amp; Does file exist?
 gnErrFile = FOPEN('errors.txt',12)  &amp;&amp; If so, open read/write
 ELSE
@@ -7523,7 +7471,7 @@ ELSE  &amp;&amp; If no error, write to file
 ENDIF
 =FCLOSE(gnErrFile)  &amp;&amp; Close file
 MODIFY FILE errors.txt NOWAIT  &amp;&amp; Open file in edit window </code>
-</examples>
+</example>
 </fopen>
 <for>
 <summary>
@@ -7670,7 +7618,7 @@ Specifies the number of bytes returned by <b>FREAD( )</b> with a limit of 65,535
 <returns>
 Character
 </returns>
-<examples>
+<example>
  <code language="X#">Local gnFileHandle,nSize,cString
 gnFileHandle = FOPEN("test.txt")
 * Seek to end of file to determine number of bytes in the file.
@@ -7686,7 +7634,7 @@ cString = FREAD(gnFileHandle, nSize)
 ? cString
 ENDIF
 = FCLOSE(gnFileHandle)         &amp;&amp; Close the file</code>
-</examples>
+</example>
 </fread>
 <fseek>
 <summary>
@@ -7718,7 +7666,7 @@ Numeric
 <remarks>
 After moving the file pointer, FSEEK( ) returns the number of bytes the file pointer is positioned from the beginning of the file. The file pointer can also be moved with FREAD( ) and FWRITE( ).
 </remarks>
-<examples>
+<example>
  <code language="X#">FUNCTION fsize2
 PARAMETERS gcFileName  &amp;&amp; File to be checked
 PRIVATE pnHandle,pnSize
@@ -7733,7 +7681,7 @@ pnHandle = FOPEN(gcFileName)   &amp;&amp; Open file
 pnSize = FSEEK(pnHandle,0,2)   &amp;&amp; Determine file size, assign to pnSize
 =FCLOSE(pnHandle)  &amp;&amp; Close file
 RETURN pnSize  &amp;&amp; Return value</code>
-</examples>
+</example>
 </fseek>
 <fsize>
 <summary>
@@ -7785,7 +7733,7 @@ General
 The size of a field can be displayed with DISPLAY STRUCTURE and LIST STRUCTURE.
 If you omit the optional nWorkArea and cTableAlias arguments, FSIZE( ) returns the field size for a field in the current table and work area.
 </remarks>
-<examples>
+<example>
  <code language="X#">SET COMPATIBLE OFF
 CLOSE DATABASES
 OPEN DATABASE (HOME(2) + 'Data\testdata')
@@ -7793,7 +7741,7 @@ USE customer  &amp;&amp; Open Customer table
 CLEAR
 ? FSIZE('contact')  &amp;&amp; Displays 30
 ? FSIZE('cust_id')  &amp;&amp; Displays 6</code>
-</examples>
+</example>
 </fsize>
 <ftime>
 <summary>
@@ -7809,9 +7757,9 @@ Character
 <remarks>
 The time that FTIME( ) returns is assigned to the file by the operating system.
 </remarks>
-<examples>
+<example>
  <code language="X#">? FTIME('FOXUSER.DBF')  &amp;&amp; Displays the last modification time</code>
-</examples>
+</example>
 </ftime>
 <fullpath>
 <summary>
@@ -7868,13 +7816,13 @@ Numeric
 <remarks>
 FV( ) computes the future value of a series of constant periodic payments earning fixed compound interest. The future value is the total of all payments and the interest.
 </remarks>
-<examples>
+<example>
  <code language="X#">STORE 500 TO gnPayment  &amp;&amp; Monthly payment
 STORE .075/12 TO gnInterest     &amp;&amp; 7.5% annual interest rate
 STORE 48 TO gnPeriods  &amp;&amp; Four years (48 months)
 CLEAR
 ? FV(gnPayment, gnInterest, gnPeriods)    &amp;&amp; Displays 27887.93</code>
-</examples>
+</example>
 </fv>
 <fwrite>
 <summary>
@@ -7943,7 +7891,7 @@ Numeric
 <remarks>
 Use GETBAR( ) to determine which item occupies a specific position on a menu. This function is useful when items on a menu are added, removed, or rearranged. Use DEFINE BAR to add an item to a menu or RELEASE BAR to remove an item. The position of items in a menu can be changed if MOVER is included when the menu is created with DEFINE POPUP.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLEAR
 ON KEY LABEL CTRL+Z DO showorder
 WAIT WINDOW "Press CTRL+Z to refresh." NOWAIT
@@ -7961,7 +7909,7 @@ CLEAR
 @ 5,12 SAY  '3 ' + PRMBAR('popDemo', GETBAR('popDemo',3))
 @ 6,12 SAY  '4 ' + PRMBAR('popDemo', GETBAR('popDemo',4))
 RETURN</code>
-</examples>
+</example>
 </getbar>
 <getcolor>
 <summary>
@@ -7977,10 +7925,10 @@ Numeric
 <remarks>
 GETCOLOR( ) returns – 1 if you exit the Color dialog box by pressing ESC, choosing the Cancel button, or choosing Close from the Control menu.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLEAR
 ? GETCOLOR(255)</code>
-</examples>
+</example>
 </getcolor>
 <getcp>
 <summary>
@@ -8008,9 +7956,9 @@ GETCP( ) returns 0 if you exit the Code Page dialog box by pressing ESC, choosi
 The code pages listed in the Code Page dialog box are determined by FOXPRO.INT, the X# International code page support file.
 You can include GETCP( ) in commands such as MODIFY COMMAND, APPEND FROM, and COPY TO that support the AS nCodePage clause. The Code Page dialog box is displayed, making it possible for you to specify the code page of the file opened, appended, or created. Because no code page 0 exists, you must trap for 0 in case the user chooses ESC, the Cancel button, or Close from the Control menu.
 </remarks>
-<examples>
+<example>
  <code language="X#">? GETCP(1252, "Select a Code Page", "Code Page Selection")</code>
-</examples>
+</example>
 </getcp>
 <getcursoradapter>
 <summary>
@@ -8100,10 +8048,10 @@ Character
 Two environment variables are always available: COMSPEC and PATH. You can create your own environment variables with the command shell SET command.
 For additional information on creating environment variables, see the Windows product documentation.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLEAR
 ? GETENV('PATH')  &amp;&amp; Displays the search path</code>
-</examples>
+</example>
 </getenv>
 <getfile>
 <summary>
@@ -8152,7 +8100,7 @@ Specifies the caption for the title bar of the Open dialog box.
 <returns>
 Character. GETFILE( ) returns the name of the file chosen in the Open dialog box or the empty string if the user closes the Open dialog box by pressing ESC, clicking Cancel or the Close button on the Open dialog box.
 </returns>
-<examples>
+<example>
  <code language="X#">CLOSE DATABASES
 SELECT 0
 gcTable=GETFILE('DBF', 'Browse or Create a .DBF:',
@@ -8166,7 +8114,7 @@ OTHERWISE
 USE (gcTable)
 BROWSE
 ENDCASE</code>
-</examples>
+</example>
 </getfile>
 <getfldstate>
 <summary>
@@ -8314,7 +8262,7 @@ An empty string if you exit the Font dialog box by clicking <b>Cancel</b>, <b>Cl
 <remarks>
 You can abbreviate some X# commands and functions to four characters when conflicts with other commands and functions do not exist. In the case of <b>GETFONT( )</b> and <b>GETFILE( )</b>, which both begin with the same four letters, precedence is given to <b>GETFILE( )</b>; therefore, issuing codeGETF( )/code displays the <b>Open</b> dialog box.
 </remarks>
-<examples>
+<example>
  <code language="X#">* Invoke the dialog with script drop-down list disabled:
 ? GETFONT("Arial",12,"B") &amp;&amp; press OK in the dialog box
 * return value is the string:
@@ -8329,7 +8277,7 @@ You can abbreviate some X# commands and functions to four characters when confli
 ? GETFONT("Arial",12,"B",0) &amp;&amp; press Cancel in the dialog box
 * return value is still an empty string
 </code>
-</examples>
+</example>
 </getfont>
 <getinterface>
 <summary>
@@ -8367,7 +8315,7 @@ When a DLL is built on a Windows 95, Windows 98, or Windows Me platform, X# do
 You can use the following code for a DLL built on Windows XP, Windows 2000, or Windows NT:
  <code language="X#">oX = GETINTERFACE(x, "Imyclass", "myclass1.DLL")</code>
 </remarks>
-<examples>
+<example>
  <code language="X#">LOCAL oMTX, oContext, oContextState
 LOCAL lTxnState, lGetTxnState, lDone, lGetDone
 lGetDone = .F.     &amp;&amp; initialize setting
@@ -8386,7 +8334,7 @@ oContextState.GetDeactivateOnReturn(@lGetDone)
 lTxnState = 1
 oContextState.SetMyTransactionVote(lTxnState)
 oContextState.GetMyTransactionVote(@lGetTxnState)</code>
-</examples>
+</example>
 </getinterface>
 <getnextmodified>
 <summary>
@@ -8422,7 +8370,7 @@ Numeric
 <b>GETNEXTMODIFIED( )</b> can operate only on tables and cursors for which table buffering is enabled. Table buffering is enabled with <b>CURSORSETPROP( )</b>.
 Since triggers are unaffected by <b>GETNEXTMODIFIED( )</b>, lNoFire suppresses only field and record rules, and the "Uniqueness of index ID is violated" error. lNoFire prevents the flushing of temporary data, such as data stored in controls or updates made to the current record, to the underlying cursor.
 </remarks>
-<examples>
+<example>
  <code language="X#">LOCAL lnCurRec
 CLEAR
 CLOSE DATABASES
@@ -8452,7 +8400,7 @@ EXIT
 ENDIF
 ENDDO
 =TABLEREVERT(.T.)  &amp;&amp; Restore sample data and discard all changes.</code>
-</examples>
+</example>
 </getnextmodified>
 <getobject>
 <summary>
@@ -8478,12 +8426,12 @@ Object reference
 Use <b>GETOBJECT( )</b> to activate an Automation object from a file and to assign a reference to the object through a memory variable or array element.
 If you specify an invalid file or class name, an OLE error is displayed, and the <b>GETOBJECT( )</b> function returns an empty string.
 </remarks>
-<examples>
+<example>
  <code language="X#">   *  Replace "DomainName" with the domain name, and "UserLoginID"
 *  with the login ID of the user you are looking up.
 oUser = GetObject("WinNT://DomainName/UserLoginID,user")
 ? oUser.FullName</code>
-</examples>
+</example>
 </getobject>
 <getpad>
 <summary>
@@ -8504,14 +8452,14 @@ Character
 <remarks>
 Menu names on a titles bar can be added, removed, or rearranged. Use DEFINE PAD to add a menu name to a title bar or RELEASE PAD to remove a menu title.
 </remarks>
-<examples>
+<example>
  <code language="X#">FOR gnCount = 1 TO CNTPAD('_msysmenu')      &amp;&amp; Number of pads
 IF PRMPAD('_msysmenu', GETPAD('_msysmenu', gnCount)) = 'Edit'
 RELEASE PAD (GETPAD('_msysmenu', gnCount)) OF _msysmenu
 EXIT
 ENDIF
 ENDFOR</code>
-</examples>
+</example>
 </getpad>
 <getpem>
 <summary>
@@ -8617,11 +8565,11 @@ Character. <b>GETPRINTER( )</b> returns the name of the selected printer. If yo
 <remarks>
 The contents of the Printer dialog box can differ between versions of Windows. For example, the Printer dialog box might contain only the printer name or include a network path.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLEAR
 cPrinter = GETPRINTER( )
 WAIT WINDOW IIF(EMPTY(cPrinter), 'No printer chosen', cPrinter)</code>
-</examples>
+</example>
 </getprinter>
 <getresultset>
 <summary>
@@ -8697,14 +8645,14 @@ Date
 <remarks>
 GOMONTH( ) does not support dates earlier than 1753. 
 </remarks>
-<examples>
+<example>
  <code language="X#">SET CENTURY ON
 STORE GOMONTH({^1998-02-16}, 5) TO gdDeadLine
 CLEAR
 ? gdDeadLine  &amp;&amp; Displays 07/16/1998
 ? GOMONTH({^1998-12-31}, 2)  &amp;&amp; Displays 02/28/1999
 ? GOMONTH({^1998-12-31}, -2)  &amp;&amp; Displays 10/31/1998</code>
-</examples>
+</example>
 </gomonth>
 <header>
 <summary>
@@ -8743,7 +8691,7 @@ X# Projects subdirectory in the user's X# My Documents directory. This directory
 <returns>
 Character data type. <b>HOME( )</b> returns the names of specific X# and Visual Studio directories.
 </returns>
-<examples>
+<example>
  <code language="X#">CLEAR
 ? 'X# startup directory:           ', HOME( )
 ? 'X# installation directory:      ', HOME(1)
@@ -8754,29 +8702,8 @@ Character data type. <b>HOME( )</b> returns the names of specific X# and Visual 
 ? 'Visual Studio tools directory:             ', HOME(6)
 ? 'X# user app data subdirectory:  ', HOME(7)
 ? 'X# user documents subdirectory: ', HOME(8)</code>
-</examples>
+</example>
 </home>
-<hour>
-<summary>
-Returns the hour portion from a DateTime expression.
-</summary>
-<param name="tExpression">
-
-Specifies a DateTime expression from which HOUR( ) returns the hour.
-</param>
-<returns>
-Numeric
-</returns>
-<remarks>
-HOUR( ) returns a numeric value based on a 24 hour format, and is not affected by the current setting of SET HOURS. For example, if SET HOURS is 12 or 24, the following command returns 13:
- <code language="X#">? HOUR({^1998-02-16 1:00p})</code>
-</remarks>
-<examples>
- <code language="X#">CLEAR
-? HOUR(DATETIME( ))
-? HOUR({^1998-02-16 10:42a})  &amp;&amp; Displays 10</code>
-</examples>
-</hour>
 <icase>
 <summary>
 Evaluates the results from a list of conditions.
@@ -8807,7 +8734,7 @@ You must always pass a set of two parameters to <b>ICASE( )</b>. If you pass an
 You can pass up to 100 pairs of parameters for <b>ICASE( )</b>.
 If you use a long <b>ICASE( )</b> expression in a filter expression, such as in a <b>FOR</b> or <b>WHERE</b> clause, make sure that <b>SYS(3055)</b> is set to an appropriate complexity level to avoid generating an error. For more information, see SYS(3055) - FOR and WHERE Clause Complexity.
 </remarks>
-<examples>
+<example>
 The following example demonstrates different scenarios using <b>ICASE( )</b> to evaluate expressions and returning certain values based on the results of those expressions.
 The following line of code displays "First is true" because the first expression evaluates to True (.T.).
  <code language="X#">? ICASE(1+1=2,"First is true",1+1=3,"Second is false","None are true")</code>
@@ -8815,7 +8742,7 @@ The following line of code displays "Second is true" because the first expressio
  <code language="X#">? ICASE(1+2=2,"First is false",1+2=3,"Second is true","None are true")</code>
 The following line of code displays "None are true", which is the last result specified, because the first and second expressions evaluate to False (.F.).
  <code language="X#">? ICASE(1+2=2,"First is false",1+1=3,"Second is false","None are true")</code>
-</examples>
+</example>
 </icase>
 <idxcollate>
 <summary>
@@ -8855,7 +8782,7 @@ Character
 Note that IDXCOLLATE( ) is not required for the proper functioning of <b>REINDEX</b>, because the collation sequence information is present in existing indexes and index tags.
 For additional information about X#'s international support, see Developing International Applications.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLOSE DATABASES
 OPEN DATABASE (HOME(2) + 'Data\testdata')
 USE Customer     &amp;&amp; Open Customer table.
@@ -8868,7 +8795,7 @@ ELSE
 EXIT  &amp;&amp; Exit the loop when no more tags are found.
 ENDIF
 ENDFOR</code>
-</examples>
+</example>
 </idxcollate>
 <iif>
 <summary>
@@ -8888,7 +8815,7 @@ Character, Numeric, Currency, Date, or DateTime
 This function, also known as Immediate <b>IF</b>, evaluates a logical expression and then returns one of two expressions. If the logical expression evaluates to True (.T.), <b>IIF( )</b> returns the first expression. If the logical expression evaluates to False (.F.) or null (.NULL.), <b>IIF( )</b> returns the second expression.
 This function can be used in place of <b>IF ... ENDIF</b> for simple conditional expressions, and is especially useful in report and label expressions that conditionally specify field contents. The <b>IIF( )</b> function also executes faster than an equivalent <b>IF ... ENDIF</b>.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLOSE DATABASES
 OPEN DATABASE (HOME(2) + 'Data\testdata')
 USE employee  &amp;&amp; Open Employee table
@@ -8896,7 +8823,7 @@ CLEAR
 SCAN
 ? IIF(EMPTY(notes), 'No notes', notes)    &amp;&amp; Empty memo field?
 ENDSCAN</code>
-</examples>
+</example>
 </iif>
 <imestatus>
 <summary>
@@ -8968,7 +8895,7 @@ Logical
 <remarks>
 A database must be open and current when <b>INDBC( )</b> is issued; otherwise X# generates an error message.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLOSE DATABASES
 CREATE DATABASE mydbc  &amp;&amp; Creates a new database
 CREATE TABLE mytable (field1 C(10)) &amp;&amp; Automatically added to database
@@ -8976,7 +8903,7 @@ CREATE TABLE mytable (field1 C(10)) &amp;&amp; Automatically added to database
 ?? INDBC('mytable', 'TABLE')  &amp;&amp; Returns .T.
 CLOSE DATABASES
 DELETE DATABASE mydbc DELETETABLES</code>
-</examples>
+</example>
 </indbc>
 <indexseek>
 <summary>
@@ -9446,7 +9373,7 @@ Logical or null value
 <remarks>
 INLIST( ) returns true (.T.) if it finds the expression in the set of expressions; otherwise INLIST( ) returns false (.F.). The null value is returned if eExpression1 is the null value. The null value is also returned if eExpression1 is not the null value, eExpression1 does not match another expression, and at least one of the other expressions is the null value.
 </remarks>
-<examples>
+<example>
  <code language="X#">SET TALK ON
 STORE CMONTH(DATE( )) TO gcMonth
 DO CASE
@@ -9460,7 +9387,7 @@ OTHERWISE
 STORE 'Fourth Quarter' TO gcReporTitle
 ENDCASE
 WAIT WINDOW gcReporTitle</code>
-</examples>
+</example>
 </inlist>
 <inputbox>
 <summary>
@@ -9522,13 +9449,13 @@ Logical
 <remarks>
 If you omit the optional argument and the insert mode is on (characters are inserted before the cursor), INSMODE( ) returns true (.T.). If the insert mode is off (characters are overwritten at the insertion point), INSMODE( ) returns false (.F.).
 </remarks>
-<examples>
+<example>
  <code language="X#">SET TALK ON
 =INSMODE(.T.)  &amp;&amp; Set insert mode on
 ? INSMODE( )
 = INSMODE(!INSMODE( ))  &amp;&amp; Toggle insert mode to opposite state
 ? INSMODE( )</code>
-</examples>
+</example>
 </insmode>
 <int>
 <summary>
@@ -9541,14 +9468,14 @@ Specifies the numeric expression for which INT( ) returns the integer portion.
 <returns>
 Numeric
 </returns>
-<examples>
+<example>
  <code language="X#">CLEAR
 ? INT(12.5)  &amp;&amp; Displays 12
 ? INT(6.25 * 2)  &amp;&amp; Displays 12
 ? INT(-12.5)  &amp;&amp; Displays -12
 STORE -12.5 TO gnNumber
 ? INT(gnNumber)  &amp;&amp; Displays -12</code>
-</examples>
+</example>
 </int>
 <isalpha>
 <summary>
@@ -9564,7 +9491,7 @@ Logical
 <remarks>
 ISALPHA( ) returns true (.T.) if the leftmost character in the specified character expression is an alphabetic character; otherwise ISALPHA( ) returns false (.F.).
 </remarks>
-<examples>
+<example>
  <code language="X#">CLOSE DATABASES
 OPEN DATABASE (HOME(2) + 'Data\testdata')
 USE Customer     &amp;&amp; Open customer table
@@ -9573,7 +9500,7 @@ DISPLAY contact
 ? ISALPHA(contact)  &amp;&amp; Displays .T.
 DISPLAY maxordamt
 ? ISALPHA(cust_id)  &amp;&amp; Displays .F.</code>
-</examples>
+</example>
 </isalpha>
 <isblank>
 <summary>
@@ -9634,27 +9561,15 @@ To create a blank record, use the <b>APPEND BLANK</b> and <b>BLANK</b> commands.
 
 <b>ISBLANK( ) </b>differs from <b>EMPTY( )</b> and <b>ISNULL( )</b>. For example, <b>EMPTY( )</b> returns True (.T.) if a character expression evaluates to empty, for example, it contains spaces, tabs, carriage returns, or line feeds. <b>ISBLANK( )</b> returns True (.T.) if the character expression contains only the empty string ("") or spaces.
 </remarks>
-<examples>
+<example>
  <code language="X#">CREATE TABLE mytable FREE (myfield C(20))
 APPEND BLANK  &amp;&amp; Add new blank record
 CLEAR
 ? ISBLANK(myfield)  &amp;&amp; Displays .T.
 REPLACE myfield WITH 'John Smith'  &amp;&amp; Insert a value in the field
 ? ISBLANK(myfield)  &amp;&amp; Displays .F.</code>
-</examples>
+</example>
 </isblank>
-<iscolor>
-<summary>
-Determines whether a computer can display color.
-</summary>
-<returns>
-ISCOLOR( )Return Value
-Logical
-</returns>
-<remarks>
-ISCOLOR( ) returns true (.T.) if the computer has color capability (whether or not a color monitor is actually being used). If the computer doesn't provide color support, ISCOLOR( ) returns false (.F.).
-</remarks>
-</iscolor>
 <isdigit>
 <summary>
 Determines whether the leftmost character of the specified character expression is a digit (0 through 9).
@@ -9669,7 +9584,7 @@ Logical
 <remarks>
 ISDIGIT( ) returns true (.T.) if the leftmost character of the specified character expression is a digit (0 through 9); otherwise, ISDIGIT( ) returns false (.F.).
 </remarks>
-<examples>
+<example>
  <code language="X#">CLOSE DATABASES
 OPEN DATABASE (HOME(2) + 'Data\testdata')
 USE orders  &amp;&amp; Open Orders table
@@ -9678,7 +9593,7 @@ DISPLAY cust_id
 ? ISDIGIT(cust_id)  &amp;&amp; Displays .F.
 DISPLAY order_dsc
 ? ISDIGIT(ALLTRIM(STR(order_dsc)))  &amp;&amp; Displays .T.</code>
-</examples>
+</example>
 </isdigit>
 <isexclusive>
 <summary>
@@ -9716,7 +9631,7 @@ ISEXCLUSIVE( ) returns a value for the table open in the currently selected wor
 A table is opened for exclusive use by including the EXCLUSIVE keyword in USE, or by setting SET EXCLUSIVE to ON before the table is opened.
 A database is opened for exclusive use by including the EXCLUSIVE keyword in OPEN DATABASE.
 </remarks>
-<examples>
+<example>
  <code language="X#">cExclusive = SET('EXCLUSIVE')
 SET EXCLUSIVE OFF
 SET PATH TO (HOME(2) + 'data\')
@@ -9729,7 +9644,7 @@ ELSE
 WAIT WINDOW 'The table has to be exclusively opened'
 ENDIF
 SET EXCLUSIVE &amp;cExclusive</code>
-</examples>
+</example>
 </isexclusive>
 <isflocked>
 <summary>
@@ -9782,11 +9697,11 @@ Logical
 <remarks>
 ISLOWER( ) returns true (.T.) if the leftmost character in the specified character expression is a lowercase alphabetic character; otherwise, ISLOWER( ) returns false (.F.).
 </remarks>
-<examples>
+<example>
  <code language="X#">CLEAR
 ? ISLOWER('redmond')  &amp;&amp; Displays .T.
 ? ISLOWER('Redmond')  &amp;&amp; Displays .F.</code>
-</examples>
+</example>
 </islower>
 <ismemofetched>
 <summary>
@@ -9820,20 +9735,6 @@ The FetchMemo setting in the DBGETPROP( ) Function and CURSORGETPROP( ) Function
 ISMEMOFETCHED( ) works with both memo and general fields. 
 </remarks>
 </ismemofetched>
-<ismouse>
-<summary>
-Returns true (.T.) if mouse hardware is present.
-</summary>
-<remarks>
-ISMOUSE( )Remarks
-ISMOUSE( ) returns true (.T.) if mouse hardware is present; otherwise it returns false (.F.).
-</remarks>
-<examples>
- <code language="X#">CLEAR
-? 'Mouse hardware present? '
-?? ISMOUSE( )</code>
-</examples>
-</ismouse>
 <isnull>
 <summary>
 Returns true (.T.) if an expression evaluates to a null value; otherwise, ISNULL( ) returns false (.F.).
@@ -9848,14 +9749,14 @@ Logical
 <remarks>
 Use ISNULL( ) to determine if the contents of a field, memory variable, or array element contains a null value, or if an expression evaluates to a null value.
 </remarks>
-<examples>
+<example>
  <code language="X#">STORE .NULL. TO mNullvalue  &amp;&amp; Store a null value to a memory variable
 CLEAR
 ? mNullvalue  &amp;&amp; Display the value of the memory variable
 ? ISNULL(mNullvalue)  &amp;&amp; Returns .T., indicating a null value
 ? TYPE('mNullvalue')     &amp;&amp; Returns L, indicating a logical value
 ? (mNullvalue = .NULL.)  &amp;&amp; Returns .NULL., bad test for null values</code>
-</examples>
+</example>
 </isnull>
 <ispen>
 <summary>
@@ -9880,13 +9781,13 @@ You cannot pass a non-current database alias to the ISREADONLY( ) function. To 
  <code language="X#">!EMPTY(DBC())</code>
 A cursor created with the SELECT – SQL command is always read-only.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLOSE DATABASES
 OPEN DATABASE (HOME(2) + 'data\testdata')
 USE customer    NOUPDATE  &amp;&amp; Open customer table read-only
 CLEAR
 ? ISREADONLY('customer')  &amp;&amp; Returns .T.</code>
-</examples>
+</example>
 </isreadonly>
 <isrlocked>
 <summary>
@@ -9948,10 +9849,10 @@ Logical
 <remarks>
 ISUPPER( ) returns true (.T.) if the first character in a character expression is an uppercase alphabetic character; otherwise, ISUPPER( ) returns false (.F.).
 </remarks>
-<examples>
+<example>
  <code language="X#">? ISUPPER('Redmond')  &amp;&amp; Displays .T.
 ? ISUPPER('redmond')  &amp;&amp; Displays .F.</code>
-</examples>
+</example>
 </isupper>
 
 
@@ -9995,7 +9896,7 @@ Character
 An index key expression is specified when an index tag or index file is created with INDEX. The index key expression determines how a table is displayed and accessed when the index tag or index file is opened as the master controlling index tag or file.
 For more information on creating index tags, index files, and index key expressions, see INDEX.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLOSE DATABASES
 OPEN DATABASE (HOME(2) + 'Data\testdata')
 USE Customer     &amp;&amp; Open customer table
@@ -10008,7 +9909,7 @@ ELSE
 EXIT  &amp;&amp; Exit the loop when no more tags are found
 ENDIF
 ENDFOR</code>
-</examples>
+</example>
 </key>
 <keymatch>
 <summary>
@@ -10071,38 +9972,12 @@ Specifies the number of characters returned from the character expression. If nE
 <returns>
 Character. <b>LEFT( )</b> returns a character string.
 </returns>
-<examples>
+<example>
  <code language="X#">? LEFT('Redmond, WA', 4)          &amp;&amp; Displays the string, Redm.
 myString = LEFT('Redmond, WA', 4) &amp;&amp; Stores result in myString.
 ? myString                        &amp;&amp; Displays result in myString.</code>
-</examples>
+</example>
 </left>
-<leftc>
-<summary>
-Returns a specified number of characters from a character expression, starting with the leftmost character.
-</summary>
-<param name="cExpression">
-
-Specifies the character expression from which <b>LEFTC( )</b> returns characters.
-
-</param>
-<param name="nExpression">
-
-Specifies the number of characters returned from the character expression. If nExpression is greater than the length of cExpression, all of the character expression is returned. The empty string is returned if nExpression is negative or 0.
-</param>
-<returns>
-Character
-</returns>
-<remarks>
-
-<b>LEFTC( )</b> is designed for expressions containing double-byte characters. If the expression contains only single-byte characters, <b>LEFTC( )</b> is equivalent to <b>LEFT( )</b>.
-
-<b>LEFTC( )</b> returns a specified number of characters from a character expression containing any combination of single-byte and double-byte characters.
-
-<b>LEFTC( )</b> is identical to <b>SUBSTRC( )</b> with a starting position of 1.
-This function is useful for manipulating double-byte character sets for languages such as Hiragana and Katakana.
-</remarks>
-</leftc>
 <len>
 <summary>
 Determines the number of characters in a character expression, indicating the length of the expression.
@@ -10114,7 +9989,7 @@ Specifies the character expression for which <b>LEN( )</b> returns the number o
 <returns>
 Numeric. <b>LEN( )</b> returns the number of characters in a character expression.
 </returns>
-<examples>
+<example>
  <code language="X#">CLEAR
 OPEN DATABASE (HOME(2) + 'Data\testdata')
 USE Customer
@@ -10122,27 +9997,8 @@ USE Customer
 ?? LEN(contact)
 ? 'Width of cust_id field: '
 ?? LEN(cust_id)</code>
-</examples>
+</example>
 </len>
-<lenc>
-<summary>
-Returns the number of characters in a character expression or memo field.
-</summary>
-<param name="cExpression">
-
-Specifies the character expression for which <b>LENC( )</b> returns the number of characters.
-</param>
-<returns>
-Numeric
-</returns>
-<remarks>
-
-<b>LENC( )</b> is designed for expressions containing double-byte characters. If the expression contains only single-byte characters, <b>LENC( )</b> is equivalent to <b>LEN( )</b>.
-
-<b>LENC( )</b> returns the number of characters in a character expression or memo field containing any combination of single-byte and double-byte characters.
-This function is useful for manipulating double-byte character sets for languages such as Hiragana and Katakana.
-</remarks>
-</lenc>
 <like>
 <summary>
 Determines if a character expression matches another character expression.
@@ -10165,7 +10021,7 @@ Logical
 
 <b>SET COMPATIBLE</b> determines how <b>LIKE( )</b> evaluates cExpression1 and cExpression2. If <b>SET COMPATIBLE</b> is set to ON or DB4, cExpression1 and cExpression2 have all trailing blanks removed before they are compared. If <b>SET COMPATIBLE</b> is set to OFF or FOXPLUS, any trailing blanks in cExpression1 and cExpression2 are used in the comparison.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLOSE DATABASES
 OPEN DATABASE (HOME(2) + 'Data\testdata')
 USE products  &amp;&amp; Open Products table
@@ -10176,34 +10032,8 @@ SCAN FOR LIKE('Ch*', prod_name)
 ? prod_name
 ENDSCAN
 USE</code>
-</examples>
+</example>
 </like>
-<likec>
-<summary>
-Determines whether a character expression matches another character expression.
-</summary>
-<param name="cExpression1">
-
-Specifies the character expression that <b>LIKEC( )</b> compares with cExpression2. cExpression1 can contain wild cards such as * and ?. A question mark (?) matches any single character in cExpression2 and an asterisk (*) matches any number of characters. You can mix any number of wild cards in any combination in cExpression1.
-
-</param>
-<param name="cExpression2">
-
-Specifies the character expression <b>LIKEC( )</b> compares with cExpression1. cExpression2 must match cExpression1 character for character in order for <b>LIKE(</b> <b>)</b> to return true (.T.).
-</param>
-<returns>
-Logical
-</returns>
-<remarks>
-
-<b>LIKEC( )</b> is designed for expressions containing double-byte characters. If the expression contains only single-byte characters, LIKEC( ) is equivalent to LIKE( ).
-
-<b>LIKEC( )</b> determines if a character expression matches another character expression. <b>LIKEC( )</b> returns true (.T.) if cExpression1 matches cExpression2; otherwise, it returns false (.F.).
-
-<b>SET COMPATIBLE</b> determines how <b>LIKEC( )</b> compares blanks in cExpression1 and cExpression2. If <b>SET COMPATIBLE</b> is set to ON or DB4, all trailing blanks are removed from cExpression1 and cExpression2 before they are compared. If <b>SET COMPATIBLE</b> is set to OFF or FOXPLUS, any trailing blanks in cExpression1 and cExpression2 are used in the comparison.
-This function is useful for manipulating double-byte character sets for languages such as Hiragana and Katakana.
-</remarks>
-</likec>
 <lineno>
 <summary>
 Returns the line number of a line being executed in a program relative to the first line of the main program.
@@ -10216,7 +10046,7 @@ Program lines are counted starting from the top of the program. Comment lines, c
 By default, line numbers are returned relative to the beginning of the main program. If a procedure is called, line numbering continues from the top of the calling program.
 LINENO( ) is useful for debugging programs. You can set a breakpoint to stop program execution at a specific line number by opening the Breakpoints window, setting the Type to 'Break when expression is true' and adding codeLINENO( ) = nExpression/code in the Expression textbox.
 </remarks>
-<examples>
+<example>
  <code language="X#">ON ERROR DO bug_proc WITH LINENO( )
 BRWS  &amp;&amp; Causes an error
 ON ERROR
@@ -10225,7 +10055,7 @@ PROCEDURE bug_proc
 PARAMETERS gnBadLine
 WAIT WINDOW 'Error occurred at line: ' + ALLTRIM(STR(gnBadLine))
 RETURN</code>
-</examples>
+</example>
 </lineno>
 <loadpicture>
 <summary>
@@ -10397,7 +10227,7 @@ Never ever then reassign the same reference a second time (overwriting the first
 BTW: It doesn’t matter what interface you are using.
 The error seems to stem from VFP’s Image class instance.
 </remarks>
-<examples>
+<example>
 The following example shows that both interfaces (<b>Picture</b> and <b>IPicture</b>) of a COM image instance can be assigned to VFP’s <b>Image.PictureVal property</b>:
 
 <code language="X#">PUBLIC goPic AS Object, goIPic AS Object
@@ -10532,7 +10362,7 @@ ENDIF
 RETURN m.lnHDC
 ENDFUNC
 </code>
-</examples>
+</example>
 </loadpicture>
 <locfile>
 <summary>
@@ -10602,7 +10432,7 @@ Switching SET MULTILOCKS from ON to OFF or from OFF to ON implicitly performs UN
 Tables can be closed with USE, CLEAR ALL, or CLOSE DATABASES.
 For more information about record and file locking and sharing tables on a network, see Programming for Shared Access.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLOSE DATABASES
 OPEN DATABASE (HOME(2) + 'data\testdata')
 SET REPROCESS TO 3 AUTOMATIC
@@ -10618,7 +10448,7 @@ USE customer  &amp;&amp; Open Customer table
 UNLOCK IN customer
 UNLOCK IN employee
 SET EXCLUSIVE &amp;gcOldExc</code>
-</examples>
+</example>
 </lock>
 <log>
 <summary>
@@ -10634,12 +10464,12 @@ Numeric
 <remarks>
 The base for the natural logarithm is the constant e. The number of decimal places returned in the result is specified with SET DECIMALS.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLEAR
 ? LOG(1)  &amp;&amp; Displays 0.00
 STORE EXP(2) TO gneSquare
 ? LOG(gneSquare)  &amp;&amp; Displays 2.00</code>
-</examples>
+</example>
 </log>
 <log10>
 <summary>
@@ -10655,13 +10485,13 @@ Numeric
 <remarks>
 The base for the common logarithm is 10. The number of decimal places returned in the result is specified with SET DECIMALS.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLEAR
 ? LOG10(10)  &amp;&amp; Displays 1.00
 STORE 100 TO gnBaseTen
 ? LOG10(gnBaseTen)  &amp;&amp; Displays 2.00
 ? LOG10(gnBaseTen^2)  &amp;&amp; Displays 4.00</code>
-</examples>
+</example>
 </log10>
 <lookup>
 <summary>
@@ -10676,13 +10506,13 @@ If LOOKUP( ) does not find the search expression, it returns a blank value the 
 If you use LOOKUP( ) to search a parent table, record pointers in all related child tables are moved to the related records.
 This function cannot be optimized with Rushmore Query Optimization.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLOSE DATABASES
 OPEN DATABASE (HOME(2) + 'data\testdata')
 USE customer ORDER company  &amp;&amp; Open Customer table
 CLEAR
 @ 2,2 SAY LOOKUP(contact, 'Ernst Handel', company, 'company')</code>
-</examples>
+</example>
 </lookup>
 <lower>
 <summary>
@@ -10698,11 +10528,11 @@ Character
 <remarks>
 LOWER( ) converts all uppercase letters (A – Z) in the character expression to lowercase (a – z). All other characters in the character expression remain unchanged.
 </remarks>
-<examples>
+<example>
  <code language="X#">STORE 'FOX' TO gcName
 CLEAR
 ? LOWER(gcName)  &amp;&amp; Displays fox</code>
-</examples>
+</example>
 </lower>
 <ltrim>
 <summary>
@@ -10728,13 +10558,13 @@ Character or Varbinary. <b>LTRIM( ) </b>returns the specified expression withou
 
 <b>LTRIM( ) </b>is particularly useful for removing the leading spaces that are inserted when you use the <b>STR( )</b> function to convert a <b>Numeric</b> value to a <b>Character</b> string.
 </remarks>
-<examples>
+<example>
  <code language="X#">STORE 'Redmond' TO gcCity
 STORE '   Washington' TO gcState
 CLEAR
 ? gcCity, gcState  &amp;&amp; Displays Redmond   Washington
 ? gcCity, LTRIM(gcState)  &amp;&amp; Displays Redmond Washington</code>
-</examples>
+</example>
 </ltrim>
 <lupdate>
 <summary>
@@ -10747,13 +10577,13 @@ Date
 This function is useful in update procedures.
 LUPDATE( ) queries Windows to determine the date a table was last updated. However, the last two digits of the year the table was last updated are stored the table header.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLOSE DATABASES
 OPEN DATABASE (HOME(2) + 'data\testdata')
 USE customer  &amp;&amp; Open Customer table
 CLEAR
 ? LUPDATE( )  &amp;&amp; Displays date of last update</code>
-</examples>
+</example>
 </lupdate>
 <maketransactable>
 <summary>
@@ -10787,7 +10617,7 @@ Evaluates a set of expressions and returns the expression with the maximum value
 <returns>
 Character, Numeric, Currency, Double, Float, Date, or DateTime
 </returns>
-<examples>
+<example>
  <code language="X#">CLOSE DATABASES
 CREATE TABLE Random (cValue N(3))
 FOR nItem = 1 TO 10  &amp;&amp; Append 10 records,
@@ -10804,7 +10634,7 @@ gnMaximum = MAX(gnMaximum, cValue)
 ENDSCAN
 ? 'The minimum value is: ', gnMinimum  &amp;&amp; Display minimum value
 ? 'The maximum value is: ', gnMaximum  &amp;&amp; Display maximum value</code>
-</examples>
+</example>
 </max>
 <mcol>
 <summary>
@@ -10904,7 +10734,7 @@ Character
 <remarks>
 If SET CENTURY is OFF, the character expression is returned in a month dd, yy format. If SET CENTURY is ON, the format is month dd, yyyy.
 </remarks>
-<examples>
+<example>
  <code language="X#">SET CENTURY OFF
 CLEAR
 ? Longdate({^1998-02-16})  &amp;&amp; Displays Monday, February 16, 98
@@ -10914,7 +10744,7 @@ SET CENTURY ON
 FUNCTION longdate
 PARAMETERS gdDate
 RETURN CDOW(gdDate) + ', ' + MDY(gdDate)</code>
-</examples>
+</example>
 </mdy>
 <memlines>
 <summary>
@@ -10930,7 +10760,7 @@ Numeric
 <remarks>
 The number of lines in a memo field is determined by the current value of SET MEMOWIDTH.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLOSE DATABASES
 CLEAR
 SET TALK OFF
@@ -10962,7 +10792,7 @@ gnLine = 1
 CLEAR
 ENDIF
 ENDSCAN</code>
-</examples>
+</example>
 </memlines>
 <memory>
 <summary>
@@ -10991,7 +10821,7 @@ Character
 <remarks>
 MENU( ) returns an empty string if no menu is active. Use the Menu Designer to create a menu and activate it.
 </remarks>
-<examples>
+<example>
  <code language="X#">*** Save this program as MENUEXAM.PRG in the default VFP directory.***
 CLEAR
 SET SYSMENU SAVE
@@ -11016,7 +10846,7 @@ WAIT WINDOW 'You chose ' + gcPad + ;
 IF gcPad = 'PADEXIT'
 SET SYSMENU TO DEFAULT
 ENDIF</code>
-</examples>
+</example>
 </menu>
 <message>
 <summary>
@@ -11028,7 +10858,7 @@ Character. <b>MESSAGE( )</b> returns the current error message as a character s
 <remarks>
 Unlike <b>ERROR( )</b>, <b>MESSAGE( )</b> is not reset by <b>RETURN</b> or <b>RETRY</b>.
 </remarks>
-<examples>
+<example>
  <code language="X#">ON ERROR DO Errhand
 *** The next line should generate an error ***
 USE Nodatabase
@@ -11037,7 +10867,7 @@ PROCEDURE Errhand
 ? 'Line of code with error: ' + MESSAGE(1)
 ? 'Error number: ' + STR(ERROR( ))
 ? 'Error message: ' + MESSAGE( )</code>
-</examples>
+</example>
 </message>
 <messagebox>
 <summary>
@@ -11113,7 +10943,7 @@ MESSAGEBOX("HELLO",68,"MyTitle",6000)
 MESSAGEBOX("HELLO",68,6000)
 MESSAGEBOX("HELLO",68,6000,"MyTitle")</code>
 </remarks>
-<examples>
+<example>
  <code language="X#">eMessageTitle = 'My Application'
 eMessageText = 'Record not found. Would you like to search again?'
 nDialogType = 4 + 16 + 256
@@ -11127,7 +10957,7 @@ WAIT WINDOW 'You chose Yes'
 CASE nAnswer = 7
 WAIT WINDOW 'You chose No'
 ENDCASE</code>
-</examples>
+</example>
 </messagebox>
 <min>
 <summary>
@@ -11136,7 +10966,7 @@ Evaluates a set of expressions and returns the expression with the minimum value
 <returns>
 Character, Numeric, Currency, Double, Float, Date, or DateTime
 </returns>
-<examples>
+<example>
  <code language="X#">CLOSE DATABASES
 CREATE TABLE Random (cValue N(3))
 FOR nItem = 1 TO 10  &amp;&amp; Append 10 records,
@@ -11153,25 +10983,8 @@ gnMaximum = MAX(gnMaximum, cValue)
 ENDSCAN
 ? 'The minimum value is: ', gnMinimum  &amp;&amp; Display minimum value
 ? 'The maximum value is: ', gnMaximum  &amp;&amp; Display maximum value</code>
-</examples>
+</example>
 </min>
-<minute>
-<summary>
-Returns the minute portion from a DateTime expression.
-</summary>
-<param name="tExpression">
-
-Specifies the DateTime expression from which the minute portion is returned.
-</param>
-<returns>
-Numeric
-</returns>
-<examples>
- <code language="X#">CLEAR
-? MINUTE(DATETIME( ))
-? MINUTE({^1998-02-16 10:42a})  &amp;&amp; Displays 42</code>
-</examples>
-</minute>
 <mline>
 <summary>
 Returns a specific line from a <b>Memo</b> field as a character string.
@@ -11201,7 +11014,7 @@ The <b>_MLINE </b>system variable is typically used for nNumberOfCharacters. <b>
 The length and number of the lines in a memo field are determined by the current value of <b>SET MEMOWIDTH</b> (the default line length is 50 characters). If a carriage return is encountered, no additional characters are returned. The current _WRAP setting determines how the memo field line is displayed.
 When searching a memo field for a character string, you can use <b>ATLINE( )</b> or <b>ATCLINE( )</b> to return the line number of the line in which the character string is found. Use this line number in <b>MLINE( )</b> to return the contents of the line from the memo field.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLEAR
 SET TALK OFF
 SET MEMOWIDTH TO 50
@@ -11237,7 +11050,7 @@ SET TALK ON
 CLOSE DATABASES
 ERASE tmemo.dbf
 ERASE tmemo.fpt</code>
-</examples>
+</example>
 </mline>
 <mod>
 <summary>
@@ -11258,14 +11071,14 @@ Numeric
 <remarks>
 The modulus function MOD( ) and the % operator return identical results.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLEAR
 ? MOD(36,10)  &amp;&amp; Displays 6
 ? MOD((4*9), (90/9))  &amp;&amp; Displays 6
 ? MOD(25.250,5.0)  &amp;&amp; Displays 0.250
 ? IIF(MOD(YEAR(DATE( )), 4) = 0, 'Summer Olympics this year';
 , 'No Summer Olympics this year')</code>
-</examples>
+</example>
 </mod>
 <month>
 <summary>
@@ -11286,14 +11099,14 @@ Numeric
 <remarks>
 MONTH( ) returns a number from 1 through 12. January is month 1, and December is month 12.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLEAR
 ? DATE( )  &amp;&amp; Displays today's date
 ? MONTH(DATE( ))  &amp;&amp; Displays the month number
 STORE {^1998-05-03} TO gdBuy
 STORE MONTH(gdBuy + 31) TO gdMonth
 ? gdMonth  &amp;&amp; Displays 6</code>
-</examples>
+</example>
 </month>
 <mrkbar>
 <summary>
@@ -11343,7 +11156,7 @@ Logical
 Use SET MARK OF to mark or unmark a menu title.
 If the specified menu title is marked, MRKPAD( ) returns true (.T.); otherwise, MRKPAD( ) returns false (.F.).
 </remarks>
-<examples>
+<example>
  <code language="X#">*** Name this program MARKPAD.PRG ***
 CLEAR
 SET SYSMENU SAVE
@@ -11374,7 +11187,7 @@ glMarkPad= ! glMarkPad
 IF gcPad = 'PADEXIT'
 SET SYSMENU TO DEFAULT
 ENDIF</code>
-</examples>
+</example>
 </mrkpad>
 <mrow>
 <summary>
@@ -11410,28 +11223,6 @@ If the mouse pointer is positioned outside the user-defined window or if no mous
 Using the <b>MROW( )</b> function without the optional argument 0 may affect the behavior of code on forms when the <b>Form</b> <b>AllowOutput</b> property IS set to false (.F.). For example, the placement of a shortcut menu that is defined in the <b>RightClick</b> event may not display in the proper location if you use the <b>MROW( )</b> and <b>MCOL( )</b> functions to determine where the menu is displayed. In this case, be sure to include 0 in the <b>MROW( )</b> and <b>MCOL( )</b> functions.
 </remarks>
 </mrow>
-<mton>
-<summary>
-Returns a Numeric value from a Currency expression.
-</summary>
-<param name="mExpression">
-
-Specifies a Currency expression whose value MTON( ) returns. mExpression must evaluate to a valid Currency value or X# generates an error.
-Currency values are created by placing a dollar sign ($) prefix immediately before a Numeric value.
-</param>
-<returns>
-Numeric type. MTON( ) returns a value of Numeric type with four decimal places.
-</returns>
-<examples>
- <code language="X#">STORE $24.95 TO gyMoney  &amp;&amp; Creates a currency type memory variable
-CLEAR
-? "gyMoney is type: "
-?? TYPE('gyMoney')  &amp;&amp; Displays Y, currency type value
-gyMoney = MTON(gyMoney)     &amp;&amp;  Converts gyMoney to a numeric value
-? "gyMoney is now type: "
-?? TYPE('gyMoney')  &amp;&amp; Displays N, numeric type value</code>
-</examples>
-</mton>
 <mwindow>
 <summary>
 Returns the name of the window over which the mouse pointer is positioned.
@@ -11566,27 +11357,6 @@ To ensure a correct comparison, use:
  <code language="X#">? NORMALIZE(MyFilter) == SET("FILTER")  &amp;&amp; .T."</code>
 </remarks>
 </normalize>
-<ntom>
-<summary>
-Returns a Currency value from a Numeric expression.
-</summary>
-<param name="nExpression">
-
-Specifies a numeric expression whose Currency value NTOM( ) returns. If nExpression has more than four decimal places, it is rounded to four decimal places. If nExpression has less than four decimals places, it is padded with zeros until four decimal places are created.
-</param>
-<returns>
-Currency type. NTOM( ) returns a value of Currency type with four decimal places.
-</returns>
-<examples>
- <code language="X#">STORE 24.95 TO gnNumeric  &amp;&amp; Creates a numeric type memory variable
-CLEAR
-? "gnNumeric is type: "
-?? TYPE('gnNumeric')  &amp;&amp; Displays N, numeric type value
-gnNumeric= NTOM(gnNumeric)     &amp;&amp;  Converts gnNumeric to a currency value
-? "gnNumeric is now type: "
-?? TYPE('gnNumeric')  &amp;&amp; Displays Y, currency type value</code>
-</examples>
-</ntom>
 <numlock>
 <summary>
 Returns the current mode of the NUM LOCK key or sets the mode of the NUM LOCK key on or off.
@@ -11601,7 +11371,7 @@ Logical
 <remarks>
 NUMLOCK( ) returns true (.T.) if the NUM LOCK key is on (pressing a key on the numeric keypad returns a number), or false (.F.) if NUM LOCK is off (pressing a key on the numeric keypad moves the cursor).
 </remarks>
-<examples>
+<example>
  <code language="X#">gcOldLock = NUMLOCK( )  &amp;&amp; Save original setting
 WAIT WINDOW 'Press a key to turn Num Lock on'
 = NUMLOCK(.T.)  &amp;&amp; Turn Num Lock on
@@ -11609,7 +11379,7 @@ WAIT WINDOW 'Press a key to turn Num Lock off'
 = NUMLOCK(!NUMLOCK( ))  &amp;&amp; Toggle Num Lock to the opposite value
 WAIT WINDOW 'Press a key to restore original Num Lock setting'
 = NUMLOCK(gcOldLock)     &amp;&amp; Return to original setting</code>
-</examples>
+</example>
 </numlock>
 <nvl>
 <summary>
@@ -11621,12 +11391,12 @@ Character, Date, DateTime, Numeric, Currency, Logical, or the null value
 <remarks>
 Use NVL( ) to remove null values from calculations or operations where null values are not supported or are not relevant.
 </remarks>
-<examples>
+<example>
  <code language="X#">STORE .NULL. TO glMyNull  &amp;&amp; A memory variable containing the null value
 CLEAR
 ? NVL(.T., glMyNull)  &amp;&amp; Displays .T.
 ? NVL(glMyNull, glMyNull)  &amp;&amp; Displays .NULL.</code>
-</examples>
+</example>
 </nvl>
 <objnum>
 <summary>
@@ -11642,7 +11412,7 @@ You can use @ ... GET and @ ...EDIT to create controls, sometimes called objects
 <br />
 
 </remarks>
-<examples>
+<example>
 The following example creates a window and places radio buttons in the window so you can move the record pointer through an open table. If a table isn't open, the Open dialog is displayed so you can select a table to open.<br />
 <br />
 
@@ -11796,7 +11566,7 @@ ENDIF
 
 
 
-</examples>
+</example>
 </objnum>
 <objtoclient>
 <summary>
@@ -11827,7 +11597,7 @@ Numeric
 <b>OBJTOCLIENT( )</b> returns the position or dimension of a control or object relative to the client area of the form on which it resides. For example, a control or object can be placed on a page in a page frame, and the page frame is placed on a form. The <b>Top</b>, <b>Left</b>, <b>Width</b>, and <b>Height</b> properties return the position or dimension of a control or object relative to the page on which it is placed. However, you can use <b>OBJTOCLIENT( )</b> to determine the position or dimension of a control or object relative to the form on which the page is placed.
 The value returned by <b>OBJTOCLIENT( )</b> is in pixels.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLEAR
 STORE _DBLCLICK TO gnDblClick  &amp;&amp; Save double-click value
 STORE 0.05 TO _DBLCLICK  &amp;&amp; Make double-click unlikely
@@ -11954,7 +11724,7 @@ CLEAR
 (ThisForm.pgfPageFrame1.Page2.chkCheckBox2,4)))
 ENDCASE
 ENDDEFINE</code>
-</examples>
+</example>
 </objtoclient>
 <objvar>
 <summary>
@@ -11995,14 +11765,14 @@ Numeric
 
 <b>OCCURS( )</b> returns 0 (zero) if cSearchExpression isn't found within cExpressionSearched.
 </remarks>
-<examples>
+<example>
  <code language="X#">STORE 'abracadabra' TO gcstring
 CLEAR
 ? OCCURS('a', gcstring)  &amp;&amp; Displays 5
 ? OCCURS('b', gcstring)  &amp;&amp; Displays 2
 ? OCCURS('c', gcstring)  &amp;&amp; Displays 1
 ? OCCURS('e', gcstring)  &amp;&amp; Displays 0</code>
-</examples>
+</example>
 </occurs>
 <oemtoansi>
 <summary>
@@ -12052,7 +11822,7 @@ The data type of the value <b>OLDVAL( )</b> returns is determined by the expres
 <b>OLDVAL( )</b> can return .NULL., even for a field declared as NOT NULL and with SET NULL OFF.
 The original field values are returned for the table or cursor open in the currently selected work area if <b>OLDVAL( )</b> is issued without the optional cTableAlias or nWorkArea arguments.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLOSE DATABASES
 CLEAR
 * Create new table and add blank record
@@ -12077,7 +11847,7 @@ cTemp=OLDVAL("cLastName", "employee")
 * Close and delete example table file
 USE
 DELETE FILE employee.dbf</code>
-</examples>
+</example>
 </oldval>
 <on>
 <summary>
@@ -12107,7 +11877,7 @@ Character
 <remarks>
 When an event occurs that is trapped by one of the event-handling commands, the command assigned by the event-handling command executes. <b>ON( )</b> returns the command you assigned to an event-handling command. <b>ON( )</b> returns an empty string if a command isn't currently assigned to the event-handling command you specify.
 </remarks>
-<examples>
+<example>
  <code language="X#">ON ERROR DO errorhand
 ON KEY LABEL CTRL+F2 WAIT WINDOW 'You pressed ^F2'
 ON KEY LABEL ALT+Z DISPLAY MEMORY
@@ -12118,7 +11888,7 @@ CLEAR
 ON ERROR
 ON KEY LABEL CTRL+F2
 ON KEY LABEL ALT+Z</code>
-</examples>
+</example>
 </on>
 <order>
 <summary>
@@ -12146,13 +11916,13 @@ A table can have several index files open simultaneously. However, only one sing
 USE and SET INDEX both support opening more than one index with an index file list. A controlling index file or controlling tag can be designated in this index file list. SET ORDER can also be used to designate a controlling index or controlling tag.
 By default, ORDER( ) returns the controlling index file name or controlling tag name for the current work area. ORDER( ) returns the empty string if an order has not been set (SET ORDER TO is issued or there is no controlling index file or tag).
 </remarks>
-<examples>
+<example>
  <code language="X#">CLOSE DATABASES
 OPEN DATABASE (HOME(2) + 'Data\testdata')
 USE customer ORDER cust_id &amp;&amp; Opens Customer table
 ? ORDER( )  &amp;&amp; Displays CUST_ID
 ? ORDER('customer', 1)  &amp;&amp; Displays CUSTOMER.CDX</code>
-</examples>
+</example>
 </order>
 <os>
 <summary>
@@ -12212,11 +11982,11 @@ Character
 If you omit the optional argument, this function returns the underlying operating system name and its version number.
 Some nValues are not applicable to some operating systems. In such cases, the OS( ) function returns "0" or "", an empty string.
 </remarks>
-<examples>
+<example>
  <code language="X#">? OS( )
 ? OS(1)
 ? OS(2)</code>
-</examples>
+</example>
 </os>
 <pad>
 <summary>
@@ -12239,7 +12009,7 @@ A menu bar must be defined and active for PAD( ) to return a menu title. Menu b
 You can also use <b>PAD( )</b> with the X# system menu bar.
 PAD( ) (issued without any of its optional arguments) returns an empty string if a menu bar isn't defined and active or you issue <b>PAD( )</b> from the Command window.
 </remarks>
-<examples>
+<example>
  <code language="X#">*** Name this program PADEXAM.PRG ***
 CLEAR
 SET SYSMENU SAVE
@@ -12264,7 +12034,7 @@ WAIT WINDOW 'You chose ' + gcPad + ;
 IF gcPad = 'PADEXIT'
 SET SYSMENU TO DEFAULT
 ENDIF</code>
-</examples>
+</example>
 </pad>
 <padprompt>
 <summary>
@@ -12286,7 +12056,7 @@ br
 If a menu title was created using the backslash and less-than characters (\&lt;) to create an access key, or a backslash (\) to disable the menu title,
 PADPROMPT( ) returns only the text of the menu title; it doesn't include the special characters.
 </remarks>
-<examples>
+<example>
 
 <code language="X#">
 ? "System menu titles: "
@@ -12294,7 +12064,7 @@ FOR lnI = 1 TO CNTPAD("_msysmenu")
 ?? PADPROMPT( GETPAD( "_msysmenu", lnI), "_msysmenu") + " "
 NEXT
 </code>
-</examples>
+</example>
 </padprompt>
 <parameters>
 <summary>
@@ -12367,13 +12137,13 @@ Numeric
 <remarks>
 PAYMENT( ) assumes a constant periodic interest rate and assumes that payments are made at the end of each period.
 </remarks>
-<examples>
+<example>
  <code language="X#">STORE 100000 to gnPrincipal     &amp;&amp; $100,000 beginning principal
 STORE .105/12 TO gnInterest  &amp;&amp; 10.5% annual interest rate
 STORE (20*12) TO gnPayments     &amp;&amp; 20 years of monthly payments
 CLEAR
 ? PAYMENT(gnPrincipal, gnInterest, gnPayments)  &amp;&amp; Displays 998.38</code>
-</examples>
+</example>
 </payment>
 <pcol>
 <summary>
@@ -12389,11 +12159,11 @@ The value <b>PCOL( )</b> returns is relative to the current setting of the left
 <b>PCOL( )</b> is especially useful for relative addressing of printed text.
 You can use the $ operator in place of <b>PCOL( )</b>.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLEAR
 @ PROW( ), PCOL( )+12 SAY 'Contact person'
 @ PROW( ), $+12 SAY 'Contact person'</code>
-</examples>
+</example>
 </pcol>
 <pcount>
 <summary>
@@ -12522,13 +12292,13 @@ Numeric
 The numeric constant pi (3.141592) is the ratio of the circumference of a circle to its diameter.
 The number of decimal places displayed in the value returned by <b>PI( )</b> is determined by SET DECIMALS.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLEAR
 ? PI( ) &amp;&amp; Displays 3.14
 STORE 2.30 TO gnRadius
 STORE PI( ) * gnRadius^2 TO gnArea
 ? gnArea  &amp;&amp; Displays 16.6190</code>
-</examples>
+</example>
 </pi>
 <popup>
 <summary>
@@ -12570,7 +12340,7 @@ If you omit nWorkArea and cTableAlias, PRIMARY( ) checks the index tag in the c
 <returns>
 Logical
 </returns>
-<examples>
+<example>
  <code language="X#">CLOSE DATABASES
 SET PATH TO (HOME(2) + 'Data\')   &amp;&amp; Sets path to database
 OPEN DATABASE testdata  &amp;&amp; Open testdata database
@@ -12583,7 +12353,7 @@ ELSE
 EXIT  &amp;&amp; Exit the loop when no more tags are found
 ENDIF
 ENDFOR</code>
-</examples>
+</example>
 </primary>
 <printstatus>
 <summary>
@@ -12597,7 +12367,7 @@ In prior versions, if the printer or print device is online, PRINTSTATUS( ) retu
 <remarks>
 PRINTSTATUS( ) functions similarly to SYS(13). For more information, see SYS(13) - Printer Status.
 </remarks>
-<examples>
+<example>
  <code language="X#">? PRINTSTATUS( )
 *** Program Example ***
 STORE PRINTSTATUS( ) TO glReady
@@ -12606,7 +12376,7 @@ WAIT 'Make sure printer is attached and turned on!' WINDOW
 ELSE
 WAIT 'Printer is ready!' WINDOW
 ENDIF</code>
-</examples>
+</example>
 </printstatus>
 <prmbar>
 <summary>
@@ -12649,7 +12419,7 @@ Character
 Menu bars are created with DEFINE MENU, which creates the menu bar, and DEFINE PAD, which creates the menu titles in the menu bar. PRMPAD( ) also works with the X# menu system. A menu bar doesn't have to be active for PRMPAD( ) to return the text for a menu title.
 If a menu title was created using the backslash and less-than characters (\&lt;) to create an access key, or a backslash (\) to disable the menu title, PRMPAD( ) returns only the text of the menu title; it doesn't include the special characters.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLEAR
 SET TALK OFF
 STORE 'mnuExample' TO gcPopName
@@ -12663,7 +12433,7 @@ DEFINE PAD titleThree OF mnuExample PROMPT '\And this, too'
 ACTIVATE MENU mnuExample
 DEACTIVATE MENU mnuExample
 RELEASE MENU mnuExample</code>
-</examples>
+</example>
 </prmpad>
 <program>
 <summary>
@@ -12682,7 +12452,7 @@ Character or Numeric. <b>PROGRAM( )</b> returns a program name, the number of t
 <remarks>
 You can use <b>PROGRAM( )</b> to help your program recover from errors. The <b>PROGRAM( )</b> function is similar to SYS(16) - Executing Program File Name.
 </remarks>
-<examples>
+<example>
  <code language="X#">ON ERROR DO errhand WITH PROGRAM( )
 *** The next line should generate an error ***
 USE nodatabase
@@ -12690,7 +12460,7 @@ ON ERROR     &amp;&amp; Returns to system default error-handling routine
 PROCEDURE errhand
 PARAMETERS gcProgram
 WAIT 'An error occurred in the program ' + gcProgram WINDOW</code>
-</examples>
+</example>
 </program>
 <prompt>
 <summary>
@@ -12719,13 +12489,13 @@ Specifies the character expression from which <b>PROPER( )</b> returns a capita
 <returns>
 Character
 </returns>
-<examples>
+<example>
  <code language="X#">STORE 'X#' TO gcExpr1
 CLEAR
 ? PROPER(gcExpr1)  &amp;&amp; Displays "X#"
 STORE 'X#' TO gcExpr2
 ? PROPER(gcExpr2)  &amp;&amp; Displays "X#"</code>
-</examples>
+</example>
 </proper>
 <prow>
 <summary>
@@ -12740,10 +12510,10 @@ If you issue <b>EJECT</b>, X# resets <b>PROW( )</b> to 0.
 
 <b>PROW( )</b> is especially useful for relative addressing of printed text.
 </remarks>
-<examples>
+<example>
  <code language="X#">@ PROW( ), PCOL( ) + 12 SAY 'Contact person'
 @ PROW( ), $+12 SAY 'Contact person'</code>
-</examples>
+</example>
 </prow>
 <prtinfo>
 <summary>
@@ -12989,7 +12759,7 @@ Character
 <remarks>
 Use <b>PUTFILE( ) </b>to choose an existing file name or specify a new file name. <b>PUTFILE( )</b> returns the file name with its path. If you don't enter a file name, <b>PUTFILE( )</b> returns the default file name (specified with cFileName) and extension (specified by cFileExtensions). If you choose Cancel or press ESC, <b>PUTFILE( )</b> returns an empty string. You can use the file name that <b>PUTFILE( )</b> returns to name a file and save it to disk.
 </remarks>
-<examples>
+<example>
  <code language="X#">gcTableName = GETFILE('DBF', 'Open Table:')
 USE (gcTableName)
 gcDelimName = ALIAS( ) + '.DLM'
@@ -12999,7 +12769,7 @@ CANCEL
 ENDIF
 COPY TO (gcDelimFile) DELIMITED   &amp;&amp; Create delimited file
 MODIFY FILE (gcDelimFile) NOEDIT</code>
-</examples>
+</example>
 </putfile>
 <pv>
 <summary>
@@ -13026,13 +12796,13 @@ Numeric
 
 <b>PV( )</b> computes the present value of an investment based on a series of equal periodic payments at a constant periodic interest rate.
 </remarks>
-<examples>
+<example>
  <code language="X#">STORE 500 to gnPayment  &amp;&amp; Periodic payments made monthly
 STORE .075/12 TO gnInterest     &amp;&amp; 7.5% annual interest rate
 STORE 48 TO gnPeriods  &amp;&amp; Four years (48 months)
 CLEAR
 ? PV(gnPayment, gnInterest, gnPeriods)  &amp;&amp; Displays 20679.19</code>
-</examples>
+</example>
 </pv>
 <quarter>
 <summary>
@@ -13090,9 +12860,9 @@ If you use <b>RAISEEVENT( )</b> on a property, X# sets the property to itself. 
 Raising an event fails if you bind to an event, for example, using <b>BINDEVENT( )</b>, that has parameters that are passed by reference.
 X# disregards recursive <b>RAISEEVENT( )</b><b> </b>calls to an event from within the same raised event.
 </remarks>
-<examples>
+<example>
  <code language="X#">RAISEEVENT( Form1, "Activate" )</code>
-</examples>
+</example>
 </raiseevent>
 <rand>
 <summary>
@@ -13108,7 +12878,7 @@ If you omit nSeedValue, RAND( ) uses a default seed value of 100,001.
 <returns>
 Numeric
 </returns>
-<examples>
+<example>
  <code language="X#">CLOSE DATABASES
 CREATE TABLE Random (cValue N(3))
 FOR nItem = 1 TO 10  &amp;&amp; Append 10 records,
@@ -13129,7 +12899,7 @@ CLEAR
 gnLower = 1
 gnUpper = 10
 ? INT((gnUpper - gnLower + 1) * RAND( ) + gnLower)</code>
-</examples>
+</example>
 </rand>
 <rat>
 <summary>
@@ -13157,13 +12927,13 @@ RAT( ), the reverse of the AT( ) function, searches the character expression i
 RAT( ) returns an integer indicating the position of the first character in cSearchExpression in cExpressionSearched. RAT( ) returns 0 if cSearchExpression isn't found in cExpressionSearched, or if nOccurrence is greater than the number of times cSearchExpression occurs in cExpressionSearched.
 The search performed by RAT( ) is case-sensitive.
 </remarks>
-<examples>
+<example>
  <code language="X#">STORE 'abracadabra' TO string
 STORE 'a' TO find_str
 CLEAR
 ? RAT(find_str,string)  &amp;&amp; Displays 11
 ? RAT(find_str,string,3)  &amp;&amp; Displays 6</code>
-</examples>
+</example>
 </rat>
 <ratc>
 <summary>
@@ -13219,14 +12989,14 @@ If the search is successful, RATLINE( ) returns the number of the line where th
 The search performed by RATLINE( ) is case-sensitive.
 The line number that RATLINE() returns is determined by the value of SET MEMOWIDTH, even if cExpressionSearched isn't a memo field. For more information, see SET MEMOWIDTH.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLOSE DATABASES
 OPEN DATABASE (HOME(2) + 'data\testdata')
 USE employee  &amp;&amp; Opens Employee table
 STORE 'graduated' TO gcString
 STORE MLINE(notes, RATLINE(gcString, notes)) TO gnFileLine
 ? gnFileLine</code>
-</examples>
+</example>
 </ratline>
 <rdlevel>
 <summary>
@@ -13245,7 +13015,7 @@ Use RDLEVEL() to return the level of the current READ command. RDLEVEL() returns
 <br />
 
 </remarks>
-<examples>
+<example>
 In the following example, pressing CTRL+Z at any time displays the current READ level using RDLEVEL(). You can advance to the next READ level by pressing Enter or you can move back a READ level by pressing Esc. Note the use of the VALID clause with @ ... GET and a UDF to create nested READs.<br />
 <br />
 
@@ -13286,7 +13056,7 @@ RETURN ''
 
 
 
-</examples>
+</example>
 </rdlevel>
 <readkey>
 <summary>
@@ -13337,7 +13107,7 @@ Numeric
 The value RECCOUNT( ) returns isn't affected by SET DELETED and SET FILTER.
 RECCOUNT( ) without the optional arguments nWorkArea or cTableAlias returns the number of records in the table in the currently selected work area.
 </remarks>
-<examples>
+<example>
  <code language="X#">*** Check DISKSPACE before a SORT ***
 CLOSE DATABASES
 OPEN DATABASE (HOME(2) + 'Data\testdata')
@@ -13351,7 +13121,7 @@ WAIT WINDOW 'Sufficient diskspace to sort.'
 ELSE
 WAIT WINDOW 'Insufficient diskspace. Sort cannot be done.'
 ENDIF</code>
-</examples>
+</example>
 </reccount>
 <recno>
 <summary>
@@ -13377,7 +13147,7 @@ RECNO( ) issued without the optional arguments nWorkArea or cTableAlias returns
 If you have issued SEEK unsuccessfully in an indexed table, you can specify 0 for nWorkArea to use "soft seek" logic to return the record number of the closest matching record. RECNO(0) returns 0 if a close match cannot be found. X# generates an error message if you issue GO RECNO(0) when a close match isn't found.
 Avoid using RECNO( ) in the index expression for a table buffered cursor. Because RECNO( ) changes for new records when they are committed by TABLEUPDATE( ), index corruption could occur.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLOSE DATABASES
 OPEN DATABASE (HOME(2) + 'data\testdata')
 USE customer  &amp;&amp; Opens Customer table
@@ -13391,7 +13161,7 @@ CLEAR
 ? 'Closest matching company is ' + company
 ? 'Record number: ' + ALLTRIM(STR(RECNO( )))
 ENDIF</code>
-</examples>
+</example>
 </recno>
 <recsize>
 <summary>
@@ -13413,7 +13183,7 @@ Numeric
 
 <b>RECSIZE( )</b> issued without the optional arguments nWorkArea or cTableAlias returns the record size for the table in the currently selected work area.
 </remarks>
-<examples>
+<example>
  <code language="X#">*** Check DISKSPACE before a SORT ***
 CLOSE DATABASES
 OPEN DATABASE (HOME(2) + 'Data\testdata')
@@ -13427,7 +13197,7 @@ WAIT WINDOW 'Sufficient diskspace to sort.'
 ELSE
 WAIT WINDOW 'Insufficient diskspace. Sort cannot be done.'
 ENDIF</code>
-</examples>
+</example>
 </recsize>
 <refresh>
 <summary>
@@ -13487,7 +13257,7 @@ Character
 By default, RELATION( ) returns relational expressions for a specified table. If you do not specify a work area or alias, RELATION( ) returns relational expressions for the table in the currently selected work area. If no relations exist, it returns an empty string. For additional information about creating relations between tables, see SET RELATION.
 DISPLAY STATUS and LIST STATUS display relational expressions. Issue MODIFY DATABASE to display the Database Designer. This enables you to view and modify relations between tables in the current open database. Issue SET to display the Data Session window. This enables you to view and modify relations between free tables.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLOSE DATABASES
 OPEN DATABASE (HOME(2) + 'Data\testdata')
 USE customer IN 0 ORDER cust_id  &amp;&amp; Opens Customer table
@@ -13499,7 +13269,7 @@ SET RELATION TO cust_id INTO customer ADDITIVE
 ? RELATION(1)  &amp;&amp; Displays CUST_ID
 ? RELATION(2)  &amp;&amp; Displays EMP_ID
 ? RELATION(3)  &amp;&amp; Displays empty string</code>
-</examples>
+</example>
 </relation>
 <removeproperty>
 <summary>
@@ -13565,10 +13335,10 @@ Character
 <remarks>
 In X#, the maximum length of the resulting character string is restricted by the amount of available memory.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLEAR
 ? REPLICATE('HELLO ',4) &amp;&amp; Displays HELLO HELLO HELLO HELLO</code>
-</examples>
+</example>
 </replicate>
 <requery>
 <summary>
@@ -13612,14 +13382,14 @@ Specifies the intensity of the blue color component. nBlueValue can range from 0
 <remarks>
 The value returned by RGB( ) can be used to set color properties such as BackColor and ForeColor.
 </remarks>
-<examples>
+<example>
  <code language="X#">goMyForm = CREATEOBJECT('FORM')  &amp;&amp; Create a form
 goMyForm.Show  &amp;&amp; Display the form
 WAIT WINDOW 'Press a key to change the form color'
 goMyForm.BackColor=RGB(0,0,255)  &amp;&amp; Change the form background color
 WAIT WINDOW 'Press a key to release the form'
 RELEASE goMyForm  &amp;&amp; Release the form from memory</code>
-</examples>
+</example>
 </rgb>
 <rgbscheme>
 <summary>
@@ -13640,10 +13410,10 @@ Character
 <remarks>
 Use SCHEME( ) to return a traditional color pair or a color pair list from a color scheme. RGB color pairs use numeric values to specify colors. Traditional color pairs use letters to specify colors.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLEAR
 ? RGBSCHEME(4,3)</code>
-</examples>
+</example>
 </rgbscheme>
 <right>
 <summary>
@@ -13664,33 +13434,11 @@ Character
 <remarks>
 Characters are returned beginning with the last character on the right and continuing for a specified number of characters.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLEAR
 ? RIGHT('Redmond, WA', 2)  &amp;&amp; Displays WA</code>
-</examples>
+</example>
 </right>
-<rightc>
-<summary>
-Returns the specified number of rightmost characters from a character string.
-</summary>
-<param name="cExpression">
-
-Specifies the character expression whose rightmost characters are returned.
-
-</param>
-<param name="nCharacters">
-
-Specifies the number of characters returned from the character expression. RIGHTC( ) returns the entire character expression if nCharacters is greater than the length of cExpression. RIGHTC( ) returns an empty string if nCharacters is negative or 0.
-</param>
-<returns>
-Character
-</returns>
-<remarks>
-RIGHTC( ) is designed for expressions containing double-byte characters. If the expression contains only single-byte characters, RIGHTC( ) is equivalent to RIGHT( ).
-Characters are returned beginning with the last character on the right and continuing for nCharacters.
-This function is useful for manipulating double-byte character sets for languages such as Hiragana and Katakana.
-</remarks>
-</rightc>
 <rlock>
 <summary>
 Attempts to lock a table record or records.
@@ -13722,7 +13470,7 @@ Switching SET MULTILOCKS from ON to OFF or from OFF to ON implicitly performs UN
 To close tables, use USE, CLEAR ALL, or CLOSE DATABASES.
 For more information about record and file locking and sharing tables on a network, see Programming for Shared Access.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLOSE DATABASES
 OPEN DATABASE (HOME(2) + 'Data\testdata')
 SET REPROCESS TO 3 AUTOMATIC
@@ -13738,7 +13486,7 @@ USE customer  &amp;&amp; Open Customer table
 UNLOCK IN customer
 UNLOCK IN employee
 SET EXCLUSIVE &amp;gcOldExc</code>
-</examples>
+</example>
 </rlock>
 <round>
 <summary>
@@ -13761,7 +13509,7 @@ Numeric data type. <b>ROUND( )</b> returns a value rounded to the nearest decim
 
 <b>ROUND( )</b> disregards the number of decimal places specified by the <b>SET DECIMALS</b> command. To display a larger number of decimal places than specified by nDecimalPlaces in <b>ROUND( )</b>, use <b>SET FIXED ON</b> with <b>SET DECIMALS</b>.
 </remarks>
-<examples>
+<example>
  <code language="X#">SET DECIMALS TO 4
 SET FIXED ON
 CLEAR
@@ -13773,7 +13521,7 @@ CLEAR
 ? ROUND(1234.1962, -3)  &amp;&amp; Displays 1000.0000
 SET FIXED OFF
 SET DECIMALS TO 2</code>
-</examples>
+</example>
 </round>
 <row>
 <summary>
@@ -13792,7 +13540,7 @@ The special operator $ can be used in place of the ROW() function.<br />
 <br />
 
 </remarks>
-<examples>
+<example>
 
 
 
@@ -13812,7 +13560,7 @@ The special operator $ can be used in place of the ROW() function.<br />
 
 
 
-</examples>
+</example>
 </row>
 <rtod>
 <summary>
@@ -13829,13 +13577,13 @@ Numeric data type. RTOD( ) returns the number of degrees converted from the numb
 <remarks>
 To convert degrees to radians, use the DTOR( ) function.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLEAR
 ? RTOD(ACOS(0))  &amp;&amp; Displays 90.00
 STORE -1 to gnArcAngle
 ? RTOD(ACOS(gnArcAngle))  &amp;&amp; Displays 180.00
 ? RTOD(ACOS(SQRT(2)/2)) &amp;&amp; Displays 45.00</code>
-</examples>
+</example>
 </rtod>
 <rtrim>
 <summary>
@@ -13860,13 +13608,13 @@ Character or Varbinary. <b>RTRIM( )</b> returns the specified expression withou
 <remarks>
 You can use <b>RTRIM( )</b> to ensure that trailing spaces or leading and trailing zero (0) bytes are removed from data entered by a user. <b>RTRIM( )</b> is identical to <b>TRIM( )</b>.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLOSE DATABASES
 OPEN DATABASE (HOME(2) + 'Data\testdata')
 USE customer  &amp;&amp; Opens Customer table
 CLEAR
 ? 'The contact for '+ RTRIM(company) + ' is ' + contact</code>
-</examples>
+</example>
 </rtrim>
 <savepicture>
 <summary>
@@ -13904,9 +13652,9 @@ Specifies the position of one color pair in the color scheme, and SCHEME( ) ret
 <returns>
 Character
 </returns>
-<examples>
+<example>
  <code language="X#">? SCHEME(4,3)</code>
-</examples>
+</example>
 </scheme>
 <scols>
 <summary>
@@ -13920,23 +13668,6 @@ Numeric
 The value returned by SCOLS( ) depends on the current display mode. Display modes can be changed with SET DISPLAY.
 </remarks>
 </scols>
-<sec>
-<summary>
-Returns the seconds portion from a DateTime expression.
-</summary>
-<param name="tExpression">
-
-Specifies the DateTime expression from which SEC( ) returns the second. If tExpression contains only a date and not a time, X# adds a default time of 12:00:00 AM (if SET HOURS is 12) or 00:00:00 (if SET HOURS is 24) to tExpression to produce a valid DateTime value.
-</param>
-<returns>
-Numeric
-</returns>
-<examples>
- <code language="X#">CLEAR
-? SEC(DATETIME( ))
-? SEC({^2004-02-16 10:42:16AM})  &amp;&amp; Displays 16</code>
-</examples>
-</sec>
 <seconds>
 <summary>
 Returns the number of seconds that have elapsed since midnight.
@@ -13945,11 +13676,11 @@ Returns the number of seconds that have elapsed since midnight.
 SECONDS( )Return Value
 Numeric. <b>SECONDS( )</b> returns a numeric value in decimal format with a resolution of 1 millisecond. For versions of X# running on Windows NT 4.0 or later, <b>SECONDS( )</b> returns a resolution of 10 milliseconds.
 </returns>
-<examples>
+<example>
  <code language="X#">CLEAR
 ? SECONDS( )
 ? SECONDS( )/(60 * 60)</code>
-</examples>
+</example>
 </seconds>
 <seek>
 <summary>
@@ -13995,12 +13726,12 @@ You can use SEEK( ) on a table with an index order set, or if an index order is
 If you omit the nIndexNumber, IDXIndexFileName, and cTagName arguments, SEEK( ) uses the master controlling index or index tag to search for the index key.
 The SET KEY setting is ignored if SEEK( ) uses a non-active index.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLOSE DATABASES
 OPEN DATABASE (HOME(2) + 'Data\testdata')
 USE customer ORDER cust_id  &amp;&amp; Opens Customer table
 ? SEEK('CHOPS')  &amp;&amp; Returns .T., record found</code>
-</examples>
+</example>
 </seek>
 <select>
 <summary>
@@ -14017,7 +13748,7 @@ Numeric
 SELECT( ) returns the number of the current work area if SET COMPATIBLE is set to OFF. If SET COMPATIBLE is set to ON, SELECT( ) returns the number of the unused work area with the highest number.
 A work area can be selected (activated) with SELECT.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLOSE DATABASES
 SET COMPATIBLE ON
 OPEN DATABASE (HOME(2) + 'data\testdata')
@@ -14027,7 +13758,7 @@ SELECT 0  &amp;&amp; Unused work area
 USE orders  &amp;&amp; Opens Orders table
 CLEAR
 ? SELECT( )  &amp;&amp; Returns 3, lowest available work area</code>
-</examples>
+</example>
 </select>
 <set>
 <summary>
@@ -14602,7 +14333,7 @@ Logical
 <remarks>
 X# uses field state values to determine which fields in tables or cursors are updated. SETFLDSTATE( ) makes it possible for you to control which fields X# attempts to update, regardless of which fields have been modified in the table or cursor.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLOSE DATABASES
 SET MULTILOCKS ON  &amp;&amp; Must be on for table buffering
 SET PATH TO (HOME(2) + 'Data\')     &amp;&amp; Sets path to database
@@ -14616,7 +14347,7 @@ REPLACE cust_id    WITH '***'  &amp;&amp; Changes field contents
 = SETFLDSTATE('cust_id', 1)  &amp;&amp; Change the field status
 ? GETFLDSTATE('cust_id')  &amp;&amp; Displays 1, not modified
 = TABLEREVERT(.T.)  &amp;&amp; Discard all table changes</code>
-</examples>
+</example>
 </setfldstate>
 <setresultset>
 <summary>
@@ -14646,27 +14377,6 @@ However, even though the OLE DB Provider disregards all return values when a mar
 This statement creates and returns a rowset from the marked cursor, not the return value from <b>SETRESULTSET( )</b>.
 </remarks>
 </setresultset>
-<sign>
-<summary>
-Returns a numeric value of 1, –1, or 0 if the specified numeric expression evaluates to a positive, negative, or 0 value.
-</summary>
-<param name="nExpression">
-
-Specifies the numeric expression SIGN( ) evaluates. SIGN( ) returns 1 if nExpression evaluates to a positive number, –1 if nExpression evaluates to a negative number, and 0 if nExpression evaluates to 0.
-</param>
-<returns>
-Numeric
-</returns>
-<examples>
- <code language="X#">STORE 10 TO gnNum1
-STORE -10 TO gnNum2
-STORE 0 TO gnZero
-CLEAR
-? SIGN(gnNum1)  &amp;&amp; Displays 1
-? SIGN(gnNum2)  &amp;&amp; Displays -1
-? SIGN(gnZero)  &amp;&amp; Displays 0</code>
-</examples>
-</sign>
 <sin>
 <summary>
 Returns the sine of an angle.
@@ -14679,12 +14389,12 @@ nExpression is specified in radians. Use DTOR( ) to convert an angle from degre
 <returns>
 Numeric
 </returns>
-<examples>
+<example>
  <code language="X#">CLEAR
 ? SIN(0)  &amp;&amp; Displays 0.00
 ? SIN(PI( )/2)  &amp;&amp; Displays 1.00
 ? SIN(DTOR(90))  &amp;&amp; Displays 1.00</code>
-</examples>
+</example>
 </sin>
 <skpbar>
 <summary>
@@ -14741,11 +14451,11 @@ Character
 SOUNDEX( ) returns a four-character string. By comparing the results SOUNDEX( ) returns for two character expressions, you can determine if the two expressions are phonetically similar, indicating that they sound alike. This can be useful when searching for duplicate records in a table.
 SOUNDEX( ) isn't case sensitive and generally disregards vowels.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLEAR
 ? SOUNDEX('Smith') = SOUNDEX('Smyth')  &amp;&amp; Displays .T.
 ? SOUNDEX('Computer')  &amp;&amp; Displays C513</code>
-</examples>
+</example>
 </soundex>
 <space>
 <summary>
@@ -14772,11 +14482,11 @@ Specifies the active statement handle whose SQL statement is to be canceled.
 <returns>
 Numeric. <b>SQLCANCEL( )</b> returns 1 if the SQL statement is successfully canceled, – 1 if there is a connection level error, and – 2 if there is an environment level error.
 </returns>
-<examples>
+<example>
  <code language="X#">= SQLSETPROP(gnHandle, 'asynchronous', .T.)   &amp;&amp; To stop SQLEXEC( )
 = SQLEXEC(gnHandle, 'SELECT * FROM authors')
 = SQLCANCEL(gnHandle)   &amp;&amp; Wrong select statement, cancel</code>
-</examples>
+</example>
 </sqlcancel>
 <sqlcolumns>
 <summary>
@@ -14814,9 +14524,9 @@ Numeric or Logical. <b>SQLCOLUMNS( )</b> returns 1 if the cursor is successfull
 
 <b>SQLCOLUMNS( )</b> is one of the four functions that you can execute either synchronously or asynchronously. The Asynchronous setting of <b>SQLSETPROP( )</b> determines if these functions execute synchronously or asynchronously. In asynchronous mode, you must call <b>SQLCOLUMNS( )</b> repeatedly until a value other than false (.F.) (still executing) is returned.
 </remarks>
-<examples>
+<example>
  <code language="X#">= SQLCOLUMNS(gnHandle, 'authors', 'FOXPRO', 'MyCursor')</code>
-</examples>
+</example>
 </sqlcolumns>
 <sqlcommit>
 <summary>
@@ -14833,12 +14543,12 @@ Numeric. <b>SQLCOMMIT( )</b> returns 1 if the transaction is successfully commi
 If manual transactions are in effect (the <b>SQLSETPROP( )</b> Transactions property is set to Manual), you can send multiple updates to remote tables and commit all the updates with <b>SQLCOMMIT( )</b>.
 Updates can be rolled back with <b>SQLROLLBACK( )</b>.
 </remarks>
-<examples>
+<example>
  <code language="X#">= SQLSETPROP(gnHandle, 'Transactions', 2)  &amp;&amp; Manual transactions
 = SQLEXEC(gnHandle, "INSERT INTO authors (au_id, au_lname);
 VALUES ('aupoe', 'Poe')")  &amp;&amp; Modify the authors table
 = SQLCOMMIT(gnHandle)  &amp;&amp; Commit the changes</code>
-</examples>
+</example>
 </sqlcommit>
 <sqlconnect>
 <summary>
@@ -14898,7 +14608,7 @@ The <b>SQLCONNECT( )</b> and <b>SQLSTRINGCONNECT( )</b> functions return a num
 If you issue a statement such as codeSQLCONNECT(cConnectionName, .T.)/code, and a shared connection is already open with the same name, then the settings for that connection do not change to the settings stored for that connection in the database container (DBC). However, the new statement handle will use the statement settings from the DBC.
 You must disable the Open Database Connectivity (ODBC) login dialog box to support SQL pass through with Microsoft Transaction Server. To disable the ODBC login dialog box, use the statement codeSQLSETPROP(nStatementHandle, 'DispLogin', 3)/code, where cStatementHandle is the statement handle returned by <b>SQLCONNECT( )</b>. You can also disable the ODBC login dialog box in the Connection Designer.
 </remarks>
-<examples>
+<example>
 
 <b>Example 1</b>
 
@@ -14925,7 +14635,7 @@ SQLCONNECT( myDataSourceName, myUserID, myPassword, .T. )</code>
 Each of the following examples creates a new statement handle based on an existing shared connection.
  <code language="X#">SQLCONNECT( nStatementHandleValue )
 SQLCONNECT( myConnectionName, .T. )  </code>
-</examples>
+</example>
 </sqlconnect>
 <sqldisconnect>
 <summary>
@@ -14943,7 +14653,7 @@ Numeric. <b>SQLDISCONNECT( )</b> returns 1 if the connection is successfully te
 <b>SQLDISCONNECT( )</b> terminates a connection to a data source. You must supply the statement handle that <b>SQLCONNECT( )</b> returned when you established the connection.
 If you execute <b>SQLDISCONNECT( )</b> within an asynchronous function sequence or during a transaction, <b>SQLDISCONNECT( )</b> generates an error.
 </remarks>
-<examples>
+<example>
  <code language="X#">STORE SQLCONNECT('MyFoxSQLNT', '&lt;userid&gt;', '&lt;password&gt;') TO gnHandle
 IF gnHandle &lt;= 0
 = MESSAGEBOX('Cannot make connection', 16, 'SQL Connect Error')
@@ -14951,7 +14661,7 @@ ELSE
 = MESSAGEBOX('Connection made', 48, 'SQL Connect Message)
 = SQLDISCONNECT(gnHandle)
 ENDIF</code>
-</examples>
+</example>
 </sqldisconnect>
 <sqlexec>
 <summary>
@@ -15002,7 +14712,7 @@ If the SQL statement generates one result set, <b>SQLEXEC( )</b> stores the res
 
 <b>SQLEXEC( )</b> is one of the four functions that you can execute either synchronously or asynchronously. The Asynchronous setting of <b>SQLSETPROP( )</b> determines whether these functions execute synchronously or asynchronously. In asynchronous mode, you must call <b>SQLEXEC( )</b> repeatedly until it returns a value other than 0 (still executing).
 </remarks>
-<examples>
+<example>
 The following example shows various ways to use <b>SQLEXEC( )</b> to execute ad-hoc queries and to call or create stored procedures:
  <code language="X#">CLEAR
 LOCAL lnConn
@@ -15057,7 +14767,7 @@ ELSE
 ? "Unable to connect to SQL Server"
 ENDIF
 RETURN</code>
-</examples>
+</example>
 </sqlexec>
 <sqlgetprop>
 <summary>
@@ -15075,7 +14785,7 @@ Specifies the setting. For a list of the settings you can specify, see SQLSETPRO
 <returns>
 Character, Numeric, or Logical data type. SQLGETPROP( ) returns the current or default settings for an active connection. SQLGETPROP( ) returns -1 if a connection level occurs and -2 if an environment level error occurs.
 </returns>
-<examples>
+<example>
  <code language="X#">CLOSE ALL
 CLEAR ALL
 CLEAR
@@ -15088,7 +14798,7 @@ ELSE
 ALLTRIM(STR(nHandle)),0,"Connection Results")
 ENDIF
 =SQLDISCONNECT(nHandle)</code>
-</examples>
+</example>
 </sqlgetprop>
 <sqlidledisconnect>
 <summary>
@@ -15148,13 +14858,13 @@ SQLMORERESULTS( ) returns – 1 if a connection level error occurs, and returns
 SQLMORERESULTS( ) determines if more result sets are available from a SQL statement executed with SQLEXEC( ) in non-batch mode. If more result sets are available, they are copied to a X# cursor, one set at a time.
 SQLMORERESULTS( ) is one of the four functions that you can execute either synchronously or asynchronously. The asynchronous setting of SQLSETPROP( ) determines if these functions execute synchronously or asynchronously. In asynchronous mode, you must call SQLMORERESULTS( ) repeatedly until it returns a value other than 0 (still executing).
 </remarks>
-<examples>
+<example>
  <code language="X#">= SQLSETPROP(gnHandle, 'BatchMode', .F.)  &amp;&amp; Individual result sets
 = SQLEXEC(gnHandle, 'SELECT * FROM authors;
 SELECT * FROM titles')
 = SQLMORERES(gnHandle)  &amp;&amp; First result set
 = SQLMORERES(gnHandle)  &amp;&amp; Second result set</code>
-</examples>
+</example>
 </sqlmoreresults>
 <sqlprepare>
 <summary>
@@ -15182,14 +14892,14 @@ Numeric
 <remarks>
 SQLPREPARE( ) sends the SQL statement to the data source where it is compiled for faster execution. After the SQL statement is compiled, it can be executed with SQLEXEC( ). If SQLEXEC( ) is used to execute a SQL statement prepared with SQLPREPARE( ), only the statement handle is required in SQLEXEC( ).
 </remarks>
-<examples>
+<example>
  <code language="X#">gcAuthor = 'Smith'
 = SQLPREPARE(gnHandle, 'SELECT * FROM authors;   WHERE au_lname = ?gcAuthor')
 = SQLEXEC(gnHandle)
 ...
 gcAuthor = 'Jones'
 = SQLEXEC(gnHandle)</code>
-</examples>
+</example>
 </sqlprepare>
 <sqlrollback>
 <summary>
@@ -15206,12 +14916,12 @@ Numeric. SQLROLLBACK( ) returns 1 if the transaction is successfully rolled bac
 If manual transactions are in effect (the SQLSETPROP( ) transaction property is set to manual), you can send multiple updates to remote tables. The updates can all be rolled back with SQLROLLBACK( ).
 Updates can be committed with SQLCOMMIT( ).
 </remarks>
-<examples>
+<example>
  <code language="X#">= SQLSETPROP(gnHandle, 'Transactions', 2)  &amp;&amp; manual
 = SQLEXEC(gnHandle, "INSERT INTO authors (au_id, au_lname);
 VALUES ('aupoe', 'Poe')")
 = SQLROLLBACK(gnHandle)</code>
-</examples>
+</example>
 </sqlrollback>
 <sqlsetprop>
 <summary>
@@ -15288,7 +14998,7 @@ You can use SQLGETPROP( ) to return the current value for a specified setting.
 You must disable the Open Database Connectivity (ODBC) login dialog box to support SQL pass through with Microsoft Transaction Server. To disable the ODBC login dialog box, use the statement codeSQLSETPROP(cStatementHandle, 'DispLogin', 3)/code, where cStatementHandle is the statement handle returned by <b>SQLCONNECT( )</b>. You can also disable the ODBC login dialog box in the Connection Designer.
 The ConnectTimeOut option can be set only at the X# level and has no equivalent at the connection level. You can set all other options at either the connection or the X# level. Each option set at the X# level serves as a default value for subsequent connections.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLOSE ALL
 CLEAR ALL
 CLEAR
@@ -15304,7 +15014,7 @@ ELSE
 =MESSAGEBOX("No Connection",0,"Connection Results")
 ENDIF
 =SQLDISCONNECT(nHandle)</code>
-</examples>
+</example>
 </sqlsetprop>
 <sqlstringconnect>
 <summary>
@@ -15340,7 +15050,7 @@ The <b>SQLCONNECT( )</b> and <b>SQLSTRINGCONNECT( )</b> functions return a num
 <b>SQLSTRINGCONNECT( )</b> always creates a new connection when it successfully makes a connection. However, setting the lShared parameter determines whether you can share the connection later. If you specify a connection as shareable by setting lShared to True (.T.), you can share the connection later by calling <b>SQLCONNECT( )</b> and passing the numeric value of the connection handle as the first parameter. For more information, see SQLCONNECT( ) Function.
 You can use <b>SQLCONNECT( )</b> to obtain a new statement handle on a shared connection that was opened using <b>SQLSTRINGCONNECT( )</b>.
 </remarks>
-<examples>
+<example>
 
 <b>Example 1</b>
 
@@ -15377,7 +15087,7 @@ lnConnHandle=SQLSTRINGCONNECT(m.lcDSNLess)</code>
 Each of the following examples creates a new shared connection. In the first statement, the Select Connection or Data Source Dialog Box appears and <b>SQLSTRINGCONNECT( )</b> creates the resulting connection as shared.
  <code language="X#">SQLSTRINGCONNECT(.T.)
 SQLSTRINGCONNECT('myConnectionString', .T.)</code>
-</examples>
+</example>
 </sqlstringconnect>
 <sqltables>
 <summary>
@@ -15406,7 +15116,7 @@ Numeric. SQLTABLES( ) returns 1 if the cursor is successfully created, 0 if SQL
 <remarks>
 SQLTABLES( ) is one of the four functions that you can execute either synchronously or asynchronously. The setting of the SQLSETPROP( ) asynchronous option determines if these functions execute synchronously or asynchronously. In asynchronous mode, you must call SQLTABLES( ) repeatedly until it returns a value other than False (.F.), meaning the function is still executing.
 </remarks>
-<examples>
+<example>
  <code language="X#">STORE SQLCONNECT('MyFoxSQLNT', '&lt;userid&gt;', '&lt;password&gt;') TO gnConnHandle
 IF gnConnHandle &lt; 0
 = MESSAGEBOX('Cannot make connection', 16, 'SQL Connect Error')
@@ -15418,7 +15128,7 @@ SELECT mycursor
 LIST
 ENDIF
 ENDIF</code>
-</examples>
+</example>
 </sqltables>
 <sqrt>
 <summary>
@@ -15434,11 +15144,11 @@ Numeric
 <remarks>
 The number of decimal places in the value returned by SQRT( ) is the larger of the current decimal place setting and the number of decimal places contained in nExpression. The current decimal place setting is specified with SET DECIMALS.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLEAR
 ? SQRT(4)  &amp;&amp; Displays 2.00
 ? SQRT(2*SQRT(2))  &amp;&amp; Displays 1.68</code>
-</examples>
+</example>
 </sqrt>
 <srows>
 <summary>
@@ -15451,10 +15161,10 @@ Numeric
 <remarks>
 In X# for Windows, the value returned by SROWS( ) depends on the current display mode. The display mode can be changed with SET DISPLAY.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLEAR
 ? SROWS( )</code>
-</examples>
+</example>
 </srows>
 <str>
 <summary>
@@ -15625,7 +15335,7 @@ The Result data type is derived by the first parameter data type.
 The default is a case sensitive search in which delimiters must be found (no nFlag value).
 If cBeginDelim is an empty string, the search is conducted from the beginning of cSearchExpression to the first occurrence of cEndDelim. If cEndDelim is an empty string STREXTRACT( ) returns a string from nOccurrence of cBeginDelim to the end of cSearchExpression.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLEAR
 SET PATH TO (HOME(2) + 'Data\')   &amp;&amp;Set path to the customer table
 USE customer &amp;&amp; any table
@@ -15652,7 +15362,7 @@ ENDIF
 xmlproc(cContents, nLev+1)
 x = STREXTRACT(x, mterm)   &amp;&amp; get the rest of the xml
 ENDDO</code>
-</examples>
+</example>
 </strextract>
 <strtofile>
 <summary>
@@ -15737,7 +15447,7 @@ The case of cReplacement changes only if the string found is all uppercase, lowe
 Character or Varbinary.br
 <b>STRTRAN( )</b> returns the resulting character or varbinary string. The Result data type is derived by the first parameter data type.
 </returns>
-<examples>
+<example>
  
 <code language="X#">STORE 'abracadabra' TO gcString
 ? STRTRAN(gcString, 'a', 'z')
@@ -15746,7 +15456,7 @@ Character or Varbinary.br
 <code language="X#">? STRTRAN(gcString, 0h61, 0h7A)
 ? STRTRAN(0h + gcString, 'a', 0h7A)         &amp;&amp; This command shows parameters data type variability and returns varbinary string
 ? STRTRAN(0h1234567890, 0h5678, 0h876543)   &amp;&amp; Returns 0h123487654390</code>
-</examples>
+</example>
 </strtran>
 <stuff>
 <summary>
@@ -15774,7 +15484,7 @@ Specifies the replacement character expression. If cReplacement is the empty str
 <returns>
 Character
 </returns>
-<examples>
+<example>
  <code language="X#">STORE 'abcdefghijklm' TO gcString1
 STORE '12345' TO gcString2
 CLEAR
@@ -15784,40 +15494,8 @@ CLEAR
 ? STUFF(gcString1, 4, 1, gcString2)     &amp;&amp; replace and insert
 ? STUFF(gcString1, 4, 4, gcString2)     &amp;&amp; replace and delete
 ? STUFF(gcString1, 4, LEN(gcString1), gcString2)   &amp;&amp; replace, delete rest</code>
-</examples>
+</example>
 </stuff>
-<stuffc>
-<summary>
-Returns a character string created by replacing a specified number of characters in a character expression with another character expression.
-</summary>
-<param name="cExpression">
-
-Specify the character expression in which the replacement occurs.
-
-</param>
-<param name="nStartReplacement">
-
-Specifies the character position in cExpression where the replacement begins.
-
-</param>
-<param name="nCharactersReplaced">
-
-Specifies the number of characters to be replaced. If nCharactersReplaced is 0, the entire replacement string cReplacement is inserted into cExpression.
-
-</param>
-<param name="cReplacement">
-
-Specifies the replacement character expression. If cReplacement is the empty string, the number of characters specified by nCharactersReplaced are removed from cExpression.
-</param>
-<returns>
-Character
-</returns>
-<remarks>
-STUFFC( ) is designed for expressions containing double-byte characters. If the expression contains only single-byte characters, STUFFC( ) is equivalent to STUFF( ).
-STUFFC( ) returns a character string created by replacing a specified number of characters in a character expression with another character expression. The character expressions can consist of any combination of single-byte and double-byte characters.
-This function is useful for manipulating double-byte character sets for languages such as Hiragana and Katakana.
-</remarks>
-</stuffc>
 <substr>
 <summary>
 Returns a character string from the given character expression or memo field, starting at a specified position in the character expression or memo field and continuing for a specified number of characters.
@@ -15844,42 +15522,20 @@ Character. <b>SUBSTR( )</b> returns a character string.
 <remarks>
 When using <b>SUBSTR( )</b> with memo fields in a SQL <b>SELECT</b> command, include the <b>PADR( )</b> function in <b>SUBSTR( )</b> so that empty or variable length memo fields produce consistent results when converted to character strings.
 </remarks>
-<examples>
+<example>
  <code language="X#">STORE 'abcdefghijklm' TO myString
 CLEAR
 ? SUBSTR(myString, 1, 5)
 ? SUBSTR(myString, 6)  </code>
-</examples>
+</example>
 </substr>
-<substrc>
-<summary>
-Returns a character string from the given character expression or memo field.
-</summary>
-<param name="cExpression">
-
-Specifies the character expression or memo field from which the character string is returned.
-
-</param>
-<param name="nStartPosition">
-
-Specifies the position in the character expression or memo field cExpression from where the character string is returned. The first character of cExpression is position 1.
-If TALK is set to ON and nStartPosition is greater than the number of characters in cExpression, X# generates an error message. If TALK is set to OFF, the empty string is returned. 
-
-</param>
-<param name="nCharactersReturned">
-
-Specifies the number of characters to return from cExpression. If you omit nCharactersReturned, characters are returned until the end of the character expression is reached.
-</param>
-<returns>
-Character
-</returns>
-<remarks>
-SUBSTRC( ) is designed for expressions containing double-byte characters. If the expression contains only single-byte characters, SUBSTRC( ) is equivalent to SUBSTR( ).
-SUBSTRC( ) returns a character string from the given character expression or memo field. The character expression or memo field can contain any combination of single-byte and double-byte characters. 
-SUBSTRC( ) will not return a value for a memo field when issued in the Debug window. To return a value in the Debug window, place the memo field name within ALLTRIM( ), and place ALLTRIM( ) within SUBSTRC( ).
-This function is useful for manipulating double-byte character sets for languages such as Hiragana and Katakana.
-</remarks>
-</substrc>
+  <sys>
+    <summary>
+      Returns system information or sets its behavior.
+    </summary>
+    <param name="nSetting">Number of setting to query or change</param>
+    <param name="uNewValue">Optional new value for setting</param>
+  </sys>
 <sysmetric>
 <summary>
 Returns the size of the operating system's screen elements.
@@ -15998,7 +15654,7 @@ TABLEREVERT( ) does not return the record pointer to its original position.
 TABLEREVERT( ) operates on CursorAdapter objects in the same way as other buffered cursors.
 In X# 9.0, you cannot issue the TABLEREVERT( ) function when a TABLEUPDATE( ) is in operation.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLOSE DATABASES
 SET MULTILOCKS ON  &amp;&amp; Must be on for table buffering
 SET PATH TO (HOME(2) + 'data\')     &amp;&amp; Sets path to database
@@ -16014,7 +15670,7 @@ REPLACE cust_id    WITH '***'  &amp;&amp; Changes field contents
 = TABLEREVERT(.T.)  &amp;&amp; Discard all table changes
 ? 'Reverted cust_id value: '
 ?? cust_id  &amp;&amp; Displays reverted cust_id value</code>
-</examples>
+</example>
 </tablerevert>
 <tableupdate>
 <summary>
@@ -16137,7 +15793,7 @@ You can also modify data in the cursor. This functionality supports scenarios su
 In X# 9.0, you cannot issue the TABLEREVERT( ) Function when a TABLEUPDATE( ) is in operation.
 Typically, the CursorAdapter object uses the transaction management functionality provided by the ADO or ODBC API's and X# closes transactions when the TABLEUPDATE( ) function completes successfully. However, if you want to send transaction management commands directly to the backend, you can set the UseTransactions property of the CursorAdaptor object to False (.F.) and the CursorAdapter does not use transactions to send Insert, Update, or Delete commands.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLOSE DATABASES
 CREATE TABLE employee (cLastName C(10))
 SET MULTILOCKS ON  &amp;&amp; Must turn on for table buffering.
@@ -16152,7 +15808,7 @@ REPLACE cLastName WITH 'Jones'
 = TABLEUPDATE(.T.)  &amp;&amp; Commits changes.
 ? 'Updated cLastName value: '
 ?? cLastName  &amp;&amp; Displays current cLastName value (Jones).</code>
-</examples>
+</example>
 </tableupdate>
 <tag>
 <summary>
@@ -16182,7 +15838,7 @@ Character. <b>TAG( )</b> returns an index tag name as an uppercase character st
 Tags are index entries in compound index (.cdx) files created with the <b>INDEX</b> command. Single-entry index (.idx) files contain only one entry; therefore, <b>TAG( )</b> returns the file name for .idx files.
 A structural compound index (.cdx) file opens with its table automatically. You can open non-structural .cdx files and .idx index files for a table using the <b>INDEX</b> clause in the <b>USE</b> command or using the <b>SET INDEX</b> command.
 </remarks>
-<examples>
+<example>
 
 <code language="X#">CLOSE DATABASES
 OPEN DATABASE (HOME(2) + 'Data\TestData')
@@ -16191,7 +15847,7 @@ CLEAR
 FOR nCount = 1 TO TAGCOUNT()
 ? TAG(CDX(1),nCount)
 ENDFOR</code>
-</examples>
+</example>
 </tag>
 <tagcount>
 <summary>
@@ -16261,12 +15917,12 @@ Specifies the angle in radians for which TAN( ) returns the tangent. To convert
 <returns>
 Numeric
 </returns>
-<examples>
+<example>
  <code language="X#">CLEAR
 ? TAN(0)  &amp;&amp; Displays 0.00
 ? TAN(PI( )/4)  &amp;&amp; Displays 1.00
 ? TAN(PI( )*3/4)  &amp;&amp; Displays -1.00</code>
-</examples>
+</example>
 </tan>
 <target>
 <summary>
@@ -16282,7 +15938,7 @@ Returns the alias of the target table in another work area. nWorkArea specifies 
 <returns>
 Character
 </returns>
-<examples>
+<example>
  <code language="X#">CLOSE DATABASES
 OPEN DATABASE (HOME(2) + 'Data\testdata')
 USE orders IN 0 ORDER order_id
@@ -16291,7 +15947,7 @@ SELECT orders
 SET RELATION TO cust_id INTO customer
 ? TARGET(1)  &amp;&amp; Displays customer
 ? TARGET(2)  &amp;&amp; Empty string</code>
-</examples>
+</example>
 </target>
 <textmerge>
 <summary>
@@ -16323,7 +15979,7 @@ Character string. Represents the value of cExpression, the merged text.
 The cLeftDelim and cRightDelim parameters temporarily override any SET TEXTMERGE DELIMITERS values.
 The TEXTMERGE( ) function responds to current settings of SET TEXTMERGE SHOW | NOSHOW. 
 </remarks>
-<examples>
+<example>
  <code language="X#">SET TEXTMERGE OFF
 TEXT to myvar noshow &amp;&amp;textm
 this is a test   &lt;&lt;datetime()&gt;&gt;
@@ -16342,7 +15998,7 @@ if program(-1) &gt; 3
 return "THEEND*********"
 endif
 return textmerge(myvar)</code>
-</examples>
+</example>
 </textmerge>
 <time>
 <summary>
@@ -16459,12 +16115,12 @@ For binary values, <b>TRANSFORM( )</b> disregards format codes except for those
 <returns>
 Character data type. <b>TRANSFORM( )</b> returns character string from an expression in a format determined by a format code.
 </returns>
-<examples>
+<example>
  <code language="X#">STORE 12.34 TO gnPrice
 CLEAR
 ? TRANSFORM(gnPrice, '$$$$.99')  &amp;&amp; Displays $12.34
 ? TRANSFORM(_SCREEN)   &amp;&amp; Displays (Object)</code>
-</examples>
+</example>
 </transform>
 <trim>
 <summary>
@@ -16490,13 +16146,13 @@ Character or Varbinary. <b>TRIM( )</b> returns the specified expression without
 
 <b>TRIM( )</b> is identical to <b>RTRIM( )</b>.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLOSE DATABASES
 OPEN DATABASE (HOME(2) + 'Data\testdata')
 USE customer  &amp;&amp; Opens Customer table
 CLEAR
 ? 'The contact for '+ TRIM(company) + ' is ' + contact</code>
-</examples>
+</example>
 </trim>
 <ttoc>
 <summary>
@@ -16523,34 +16179,13 @@ When passing the value 1 or 3 as the second parameter, the character string retu
 <remarks>
 If an invalid value is passed as the second parameter, <b>TTOC( )</b> handles the invalid value as if it was a value of 1.
 </remarks>
-<examples>
+<example>
  <code language="X#">STORE DATETIME( ) TO gtDateTime
 ? "gtDateTime has type: "+TYPE('gtDateTime')
 gtDateTime = TTOC(gtDateTime)
 ? "gtDateTime is now type: "+TYPE('gtDateTime')</code>
-</examples>
+</example>
 </ttoc>
-<ttod>
-<summary>
-Returns a Date value from a DateTime expression.
-</summary>
-<param name="tExpression">
-
-Specifies a date and time expression from which TTOD( ) returns a Date value. tExpression must evaluate to a valid DateTime. If tExpression contains only a time, X# adds the default date of 12/30/1899 to tExpression and returns this default date.
-</param>
-<returns>
-Date
-</returns>
-<examples>
- <code language="X#">STORE DATETIME( ) TO gtDtime  &amp;&amp; Creates a Datetime type memory variable
-CLEAR
-? "gtDtime is type: "
-?? TYPE('gtDtime')  &amp;&amp; Displays T, Datetime type value
-gtDtime = TTOD(gtDtime)     &amp;&amp;  Converts gtDtime to a date value
-? "gtDtime is now type: "
-?? TYPE('gtDtime')  &amp;&amp; Displays D, character type value</code>
-</examples>
-</ttod>
 <txnlevel>
 <summary>
 Returns a numeric value indicating the current transaction level.
@@ -16563,7 +16198,7 @@ Numeric
 Use BEGIN TRANSACTION to create a transaction. Transactions are nested by issuing BEGIN TRANSACTION when another transaction is in progress. Transactions can be nested in this manner to five levels. Use TXNLEVEL( ) to determine the current transaction level.
 TXNLEVEL( ) returns a value from 0 to 5. TXNLEVEL( ) returns 0 if a transaction is not in progress.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLOSE DATABASES
 OPEN DATABASE (HOME(2) + 'Data\testdata')
 USE Customer     &amp;&amp; Open customer table
@@ -16577,7 +16212,7 @@ tLevel = ALLTRIM(STR(TXNLEVEL()))
 "Transaction Level")
 END TRANSACTION
 END TRANSACTION</code>
-</examples>
+</example>
 </txnlevel>
 <txtwidth>
 <summary>
@@ -16707,7 +16342,7 @@ You can also use the <b>TYPE( )</b> function to check if a memory variable is a
  <code language="X#">? TYPE("myarray[1]")#"U"</code>
 <b>TYPE( )</b> cannot be used to evaluate UDFs (user-defined functions).
 </remarks>
-<examples>
+<example>
  <code language="X#">CLOSE DATABASES
 OPEN DATABASE (HOME(2) + 'Data\testdata')
 USE customer  &amp;&amp; Opens Customer table
@@ -16722,7 +16357,7 @@ CLEAR
 ? TYPE('$19.99')  &amp;&amp; Displays Y
 ? TYPE('nTest')  &amp;&amp; Displays N
 ? TYPE('cTest')  &amp;&amp; Displays C</code>
-</examples>
+</example>
 </type>
 <unbindevents>
 <summary>
@@ -16784,7 +16419,7 @@ Unbinds all or specific Windows Message (Win Msg) events.
 If an event is occurring, and <b>UNBINDEVENTS( )</b> or the delegate method handling the event is called, the event and its delegate method finish running before <b>UNBINDEVENTS( )</b> unbinds the event.
 You can call the <b>AEVENTS( )</b> function retrieve information about all the events and delegate methods attached to a particular object.
 </remarks>
-<examples>
+<example>
  <code language="X#">PUBLIC oHandler
 oHandler=NEWOBJECT("myhandler")
 DO (_browser)
@@ -16795,7 +16430,7 @@ PROCEDURE myresize
 _obrowser.left = _SCREEN.Width - _obrowser.width
 RETURN
 ENDDEFINE</code>
-</examples>
+</example>
 </unbindevents>
 <unique>
 <summary>
@@ -16835,10 +16470,10 @@ Character
 <remarks>
 Each lowercase letter (a – z) in the character expression is converted to uppercase (A – Z) in the returned string. This is true for high-ASCII characters as well, even if the current font does not display them as lowercase accented characters.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLEAR
 ? UPPER('abcdefgh')  &amp;&amp; Displays ABCDEFGH</code>
-</examples>
+</example>
 </upper>
 <used>
 <summary>
@@ -16850,7 +16485,7 @@ Logical
 <remarks>
 USED( ) can determine if an alias is in use or if a table is open in a specific work area.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLOSE DATABASES
 OPEN DATABASE (HOME(2) + 'Data\testdata')
 SELECT A
@@ -16862,7 +16497,7 @@ USE employee  &amp;&amp; Opens Employee table
 ? USED('A')  &amp;&amp; Displays .T.
 ? USED('B')  &amp;&amp; Displays .T.
 ? USED(4)  &amp;&amp; Displays .F.</code>
-</examples>
+</example>
 </used>
 <val>
 <summary>
@@ -16876,14 +16511,14 @@ If the first character of cExpression is a dollar sign ($),<b>VAL( ) </b>returns
 <returns>
 Numeric or Currency data type. <b>VAL( )</b> returns the numbers in the character expression from left to right until a non-numeric character is encountered. Leading blanks are ignored. <b>VAL( )</b> returns 0 if the first character of the character expression is not a number, a dollar sign ($), a plus sign (+), or minus sign (-). You can control the result of VAL( ) by issuing the SET DECIMALS command before using the VAL( ) function.
 </returns>
-<examples>
+<example>
  <code language="X#">CLEAR
 STORE '12' TO A
 STORE '13' TO B
 ? VAL(A) + VAL(B)  &amp;&amp; Displays 25.00
 STORE '1.25E3' TO C
 ? 2 * VAL(C)  &amp;&amp; Displays 2500.00</code>
-</examples>
+</example>
 </val>
 <varread>
 <summary>
@@ -16904,7 +16539,7 @@ VARREAD() is identical to SYS(18). Both can be used to pass the current field or
 <br />
 
 </remarks>
-<examples>
+<example>
 
 
 
@@ -16956,7 +16591,7 @@ RETURN
 
 
 
-</examples>
+</example>
 </varread>
 <vartype>
 <summary>
@@ -17043,7 +16678,7 @@ Character, Numeric
 Use <b>VERSION( )</b> to conditionally execute version-specific portions of code.
 VERSION( ), VERSION(1), VERSION(3), and VERSION(4) return character strings; VERSION(2) and VERSION(5) return numeric values.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLEAR
 ? <b>VERSION( )</b>
 ? <b>VERSION(</b>1<b>)</b>
@@ -17051,7 +16686,7 @@ VERSION( ), VERSION(1), VERSION(3), and VERSION(4) return character strings; VE
 ? <b>VERSION(</b>3<b>)</b>
 ? <b>VERSION(</b>4<b>)</b>
 ? <b>VERSION(</b>5<b>)</b></code>
-</examples>
+</example>
 </version>
 <wborder>
 <summary>
@@ -17113,7 +16748,7 @@ Numeric
 <remarks>
 In X#, the value returned by WCOLS( ) depends on the font specified for the window. Many fonts can be displayed in a wide variety of sizes, and some are proportionally spaced. A column corresponds to the average width of a letter in the current font. For more information, see the Fonts Overview topic.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLEAR
 DO SendMesg WITH 'Message', WCOLS( ), WROWS( ) –1
 *** SendMesg ***
@@ -17122,7 +16757,7 @@ PARAMETERS gcMsg, gnCol, gnRow
 STORE (gnCol – LEN(gcMsg))/2 TO gnCol
 @ gnRow, gnCol SAY gcMsg
 RETURN</code>
-</examples>
+</example>
 </wcols>
 <wdockable>
 <summary>
@@ -17184,11 +16819,11 @@ Numeric type. WEEK( ) returns a number representing the week of the year.
 <remarks>
 WEEK( ) returns a number from 1 to 53 that represents the week of the year. For example, WEEK( ) returns 1 for the first week of the year, 2 for the second week of the year, and so on. Note that a week can be split between years — the first week of the year can be in the current year and the previous year.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLEAR
 ? WEEK(DATE( ))
 ? WEEK({^1998-02-16})  &amp;&amp; Displays 8</code>
-</examples>
+</example>
 </week>
 <wexist>
 <summary>
@@ -17206,7 +16841,7 @@ Logical
 <remarks>
 WEXIST( ) returns true (.T.) if the user-defined window you specify has been created with DEFINE WINDOW; otherwise WEXIST( ) returns false (.F.). The specified window does not have to be active or visible for WEXIST( ) to return true (.T.), but it must exist.
 </remarks>
-<examples>
+<example>
  <code language="X#">DEFINE WINDOW wScreen1 FROM 10,10 TO 20,69
 DEFINE WINDOW wScreen2 FROM 1,0 TO 19,79
 CLEAR
@@ -17215,7 +16850,7 @@ STORE 'wScreen2' TO gcWinName
 ? WEXIST('win_name')  &amp;&amp; Displays .F.
 ? WEXIST(gcWinName)  &amp;&amp; Displays .T.
 RELEASE WINDOWS wScreen1, wScreen2</code>
-</examples>
+</example>
 </wexist>
 <wfont>
 <summary>
@@ -17251,7 +16886,7 @@ WFONT( ) returns the current font, font size or font style for the active outpu
 <returns>
 Character and Numeric
 </returns>
-<examples>
+<example>
  <code language="X#">CLEAR
 DEFINE WINDOW wFontChar ;
 FROM 1,1 TO 3,35 ;
@@ -17272,7 +16907,7 @@ ACTIVATE SCREEN
 WAIT WINDOW
 RELEASE WINDOW wFontChar
 CLEAR</code>
-</examples>
+</example>
 </wfont>
 <window>
 <summary>
@@ -17286,7 +16921,7 @@ Character.
 <b>WINDOW( )</b> returns the empty string if output is being directed to the main X# window.
 This function is included for backward compatibility. You may use the WOUTPUT( ) function instead.
 </remarks>
-<examples>
+<example>
 
 <code language="X#">
 PUBLIC oForm
@@ -17300,7 +16935,7 @@ IIF( EMPTY( WINDOW()), "None", WINDOW())
 WAIT WINDOW "The default output window name should appear " + ;
 IIF( EMPTY( WINDOW()), "nowhere", "in the form " + WINDOW())
 </code>
-</examples>
+</example>
 </window>
 <wlast>
 <summary>
@@ -17403,13 +17038,13 @@ Character or Logical
 WONTOP( ) returns true (.T.) if the specified window is active. It returns false (.F.) if the window isn't active or doesn't exist.
 Historically in prior versions of X#, the Data Session window has always been referred to as the View window. Additionally, language used to control this window, such as <b>HIDE WINDOW</b>, <b>ACTIVATE WINDOW</b>, <b>WONTOP( )</b>, also refers to this window as the View window. X# continues to refer to the View window for the <b>WONTOP( ) </b>function.
 </remarks>
-<examples>
+<example>
  <code language="X#">IF NOT EMPTY(WONTOP( ))
 WAIT WINDOW 'Frontmost window: ' + WONTOP( )
 ELSE
 WAIT WINDOW 'No windows are open'
 ENDIF</code>
-</examples>
+</example>
 </wontop>
 <woutput>
 <summary>
@@ -17426,7 +17061,7 @@ Logical and Character
 <remarks>
 WOUTPUT( ) returns true (.T.) if the specified user-defined window is the active output window. WOUTPUT( ) returns false (.F.) if the window you specify doesn't exist or is a system window. The last user-defined window activated with ACTIVATE WINDOW is the active output window.
 </remarks>
-<examples>
+<example>
  <code language="X#">DEFINE WINDOW wOutput1 FROM 2,2 TO 12,32 TITLE 'Output Window'
 ACTIVATE WINDOW wOutput1
 WAIT WINDOW 'wOutput1 window: ' + WOUTPUT( )
@@ -17436,7 +17071,7 @@ WAIT WINDOW 'Output being directed to the main X# window'
 ELSE
 WAIT WINDOW 'Output window: ' + WOUTPUT( )
 ENDIF</code>
-</examples>
+</example>
 </woutput>
 <wparent>
 <summary>
@@ -17452,7 +17087,7 @@ Character
 <remarks>
 You can use DEFINE WINDOW to create a window and place it in a parent window. The child window becomes integrated with its parent window. For example, a child window defined and activated inside a parent window can't be moved outside the parent window. If the parent window is moved, the child window moves with it.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLEAR ALL
 CLEAR
 DEFINE WINDOW wParent ;
@@ -17466,7 +17101,7 @@ IN WINDOW wParent  &amp;&amp; Child window
 ACTIVATE WINDOW wChild
 WAIT WINDOW 'The parent window is ' + WPARENT( )
 RELEASE WINDOW wParent, wChild</code>
-</examples>
+</example>
 </wparent>
 <wread>
 <summary>
@@ -17555,12 +17190,12 @@ Logical
 WVISIBLE( ) returns true (.T.) if the specified window is shown or activated and isn't hidden. Windows are shown and activated with SHOW WINDOW and ACTIVATE WINDOW.
 WVISIBLE( ) returns false (.F.) if the window has not been activated, has been hidden with HIDE WINDOW, has been deactivated with DEACTIVATE WINDOW, or doesn't exist.
 </remarks>
-<examples>
+<example>
  <code language="X#">ACTIVATE WINDOW View
 ? WVISIBLE( "View" ) &amp;&amp; return .T.
 DEACTIVATE WINDOW View
 ? WVISIBLE( "View" ) &amp;&amp; return .F. </code>
-</examples>
+</example>
 </wvisible>
 <xmltocursor>
 <summary>
@@ -17823,9 +17458,9 @@ Numeric
 <remarks>
 YEAR( ) always returns the year with the century. The CENTURY setting (ON or OFF) doesn't affect the returned value.
 </remarks>
-<examples>
+<example>
  <code language="X#">CLEAR
 ? YEAR(DATE( ))</code>
-</examples>
+</example>
 </year>
-</Comments>
+</Runtimefunctions>

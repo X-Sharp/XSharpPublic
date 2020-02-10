@@ -1,3 +1,50 @@
+Below is a list of functions that are not available in the VFP Runtime(yet)
+For each of this functions there is already a "stub" in ToDo-A.prg, ToDo-B.prg etc.
+When you implement them then move them over to a source file with a meaningfull name.
+For example: AClass() and AMembers() describe objects, so they could be implemted in a source file Objects.prg
+and ATagInfo() describes cursor properties, so this could go into a file Cursor.prg etc.
+
+For each of the functions there is "lifted" documentation from the VFP help file in the file VFPDocs.Xml.
+Each function has its own entry inside this file. ACLASS is in the node <aclass>, ADATABASES in <adatabases> etc.
+
+We are using Sandcastle Help File Builder with a special plugin to document the code. 
+You must make sure that the parameter names in the code match the parameter names in the documentation.
+In the "lifted" documentation this not always right. Especially if the original docs contained the option to specify a workarea number or alias.
+In these cases the generated docs contain 2 parameters, where the function in XSharp.VFP has only one parameter.
+VFPDocs.Xml also contains docs for functions that are already implemented in XSharp.RT or XSHarp.Core. These docs can be ignored.
+
+At this moments all incomplete functions have 2 documentation tags: 
+  1) /// <summary>-- todo --</summary>
+  2) <include file="VFPDocs.xml" path="Runtimefunctions/candidate/*" />
+
+After the function has been implemented the first tag should be removed. The second tag has to be adjusted to point to VfpRuntimeDocs.XML:
+When writing a function we will move its docs to VfpRuntimeDocs.XML and we will check the docs to see if there are incorrect parameter names etc.
+We can also include tables in the <remarks> section when the original docs contained a table.
+A table must be written like this:
+      <list type="table">
+        <listheader>
+          <term>DEFINE</term>
+          <description>Description</description>
+        </listheader>
+        <item>
+          <term>SCOPE_TOP</term>
+          <description>The top scope.</description>
+        </item>
+        <item>
+          <term>SCOPE_BOTTOM</term>
+          <description>The bottom scope.</description>
+        </item>
+        <item>
+          <term>SCOPE_BOTH</term>
+          <description>The top and also the bottom scope. This is the <em>default</em>.</description>
+        </item>
+      </list>
+In theory you can also include tables in the <param> tags but that usually does not produce very nice documentation. 
+We think it is better to include the tables in the <remarks> section and to refer to that section in the <param> tag.
+
+List of functions that need work:
+=================================
+
 ACLASS( )
 ADATABASES( )
 ADBOBJECTS( )
@@ -57,13 +104,11 @@ DMY( )
 DODEFAULT( )
 DRIVETYPE( )
 DROPOFFLINE( )
-DTOT( )
 EVL( )
 EXECSCRIPT( )
 FIELD( )
 FILETOSTR( )
 FILTER( )
-FLDCOUNT( )
 FLDLIST( )
 FONTMETRIC( )
 FOR( )
@@ -87,7 +132,7 @@ GETWORDCOUNT( )
 GETWORDNUM( )
 GETCURSORADAPTER( )
 GOMONTH( )
-HOUR( )
+
 ID( )
 IDXCOLLATE( )
 IMESTATUS( )
@@ -96,26 +141,16 @@ INDEXSEEK( )
 INPUTBOX( )
 INSMODE( )
 ISBLANK( )
-ISCOLOR( )
 ISEXCLUSIVE( )
 ISFLOCKED( )
 ISMEMOFETCHED( )
-ISMOUSE( )
 ISNULL( )
 ISPEN( )
 ISREADONLY( )
 ISRLOCKED( )
 ISTRANSACTABLE( )
-JUSTDRIVE( )
-JUSTEXT( )
-JUSTFNAME( )
-JUSTPATH( )
-JUSTSTEM( )
 KEY( )
 KEYMATCH( )
-LEFTC( )
-LENC( )
-LIKEC( )
 LINENO( )
 LOADPICTURE( )
 LOCFILE( )
@@ -125,12 +160,10 @@ MAKETRANSACTABLE( )
 MDX( )
 MDY( )
 MESSAGEBOX( )
-MINUTE( )
-MTON( )
+
 NDX( )
 NEWOBJECT( )
 NORMALIZE( )
-NTOM( )
 NUMLOCK( )
 NVL( )
 OLDVAL( )
@@ -151,15 +184,13 @@ RELATION( )
 REMOVEPROPERTY( )
 REQUERY( )
 RGBSCHEME( )
-RIGHTC( )
 SAVEPICTURE( )
 SCHEME( )
-SEC( )
+
 SEEK( )
 SELECT( )
 SETFLDSTATE( )
 SETRESULTSET( )
-SIGN( )
 SQLCANCEL( )
 SQLCOLUMNS( )
 SQLCOMMIT( )
@@ -177,8 +208,7 @@ SQLTABLES( )
 STRCONV( )
 STREXTRACT( )
 STRTOFILE( )
-STUFFC( )
-SUBSTRC( )
+SYS( )
 SYSMETRIC( )
 TABLEREVERT( )
 TABLEUPDATE( )
@@ -188,7 +218,6 @@ TAGNO( )
 TARGET( )
 TEXTMERGE( )
 TTOC( )
-TTOD( )
 TXNLEVEL( )
 TXTWIDTH( )
 UNIQUE( )

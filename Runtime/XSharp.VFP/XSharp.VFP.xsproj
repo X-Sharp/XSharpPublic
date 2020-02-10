@@ -92,12 +92,26 @@
     <Compile Include="Classes\Collection.prg" />
     <Compile Include="Classes\Abstract.prg" />
     <Compile Include="Classes\Custom.prg" />
-    <Compile Include="MissingFunctionsD.prg" />
-    <Compile Include="MissingFunctionsC.prg" />
-    <Compile Include="MissingFunctionsB.prg" />
+    <Compile Include="NotSupported.prg" />
+    <Compile Include="ToDo-SQL.prg" />
+    <Compile Include="ToDo-TUVWX.prg" />
+    <Compile Include="ToDo-S.prg" />
+    <Compile Include="ToDo-QR.prg" />
+    <Compile Include="ToDo-NOP.prg" />
+    <Compile Include="ToDo-KLM.prg" />
+    <Compile Include="MiscFunctions.prg" />
+    <Compile Include="ToDo-HI.prg" />
+    <Compile Include="ToDo-G.prg" />
+    <Compile Include="DbFunctions.prg" />
+    <Compile Include="ToDo-EF.prg" />
+    <Compile Include="DateFunctions.prg" />
+    <Compile Include="ToDo-D.prg" />
+    <Compile Include="ToDo-C.prg" />
+    <Compile Include="ToDo-B.prg" />
     <Compile Include="Enums.prg" />
     <Compile Include="Functions.prg" />
-    <Compile Include="MissingFunctionsA.prg" />
+    <Compile Include="ToDo-A.prg" />
+    <Compile Include="NumericFunctions.prg" />
     <Compile Include="Properties\AssemblyInfo.prg">
       <SubType>Code</SubType>
     </Compile>
@@ -124,6 +138,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="functionsToImplement.txt" />
+    <None Include="VFPDocs.xml" />
     <None Include="VFPFileStructures\VFP26Form-2.pdf" />
     <None Include="VFPFileStructures\VFP26Form.pdf" />
     <None Include="VFPFileStructures\VFP26Menu.pdf" />

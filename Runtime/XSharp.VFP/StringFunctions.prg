@@ -86,40 +86,29 @@ FUNCTION JustStem(cPath AS STRING)
     ENDIF
     VAR result := Path.GetFileNameWithoutExtension(cPath)
     RETURN result
-#ifdef NOTREADY
 
-/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/at/*" />
-FUNCTION At(cSearchExpression AS STRING, cExpressionSearched AS STRING, nOccurrence := 1 AS DWORD) AS DWORD
-	LOCAL position := 0 AS DWORD
-	IF ( cExpressionSearched != NULL .AND. cSearchExpression != NULL )
-		IF cExpressionSearched:Length != 0 .AND. cSearchExpression:Length != 0
-            DO WHILE nOccurrence  > 0
-			    position := (DWORD) cExpressionSearched:IndexOf(cSearchExpression, (INT) position,StringComparison.Ordinal)
-                nOccurrence -= 1
-            ENDDO
-		END IF
-	ENDIF
-	RETURN position
-     
-/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/at_c/*" />
-FUNCTION At_C(cSearchExpression AS STRING, cExpressionSearched AS STRING, nOccurrence := 1 AS DWORD) AS DWORD
-	RETURN At(cSearchExpression, cExpressionSearched, nOccurrence)
+/// <include file="Runtimefunctions.xml" path="Runtimefunctions/leftc/*" />
+FUNCTION LeftC( cExpression AS STRING, nExpression AS DWORD) AS STRING
+    RETURN Left(cExpression, nExpression)
+
+/// <include file="Runtimefunctions.xml" path="Runtimefunctions/lenc/*" />
+FUNCTION LenC( cExpression AS STRING ) AS DWORD
+    RETURN SLen(cExpression)
+
+/// <include file="Runtimefunctions.xml" path="Runtimefunctions/likec/*" />
+FUNCTION LikeC( cExpression1, cExpression2) AS LOGIC
+    RETURN Like(cExpression1, cExpression2)
 
 
-/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/atc/*" />
-FUNCTION AtC(cSearchExpression AS STRING, cExpressionSearched AS STRING, nOccurrence := 1 AS DWORD) AS DWORD
-	LOCAL position := 0 AS DWORD
-	IF ( cExpressionSearched != NULL .AND. cSearchExpression != NULL )
-		IF cExpressionSearched:Length != 0 .AND. cSearchExpression:Length != 0
-            DO WHILE nOccurrence  > 0
-			    position := (DWORD) cExpressionSearched:IndexOf(cSearchExpression, (INT) position,StringComparison.OrdinalIgnoreCase)
-                nOccurrence -= 1
-            ENDDO
-		END IF
-	ENDIF
-	RETURN position
+/// <include file="Runtimefunctions.xml" path="Runtimefunctions/rightc/*" />
+FUNCTION RightC( cExpression AS STRING, nCharacters AS DWORD) AS STRING
+    RETURN Right(cExpression, nCharacters)
 
-/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/atcc/*" />
-FUNCTION AtCC(cSearchExpression AS STRING, cExpressionSearched AS STRING, nOccurrence := 1 AS DWORD) AS DWORD
-	RETURN AtC(cSearchExpression, cExpressionSearched, nOccurrence)
-#endif
+/// <include file="Runtimefunctions.xml" path="Runtimefunctions/stuffc/*" />
+FUNCTION StuffC( cExpression, nStartReplacement, nCharactersReplaced, cReplacement) AS STRING
+    RETURN Stuff(cExpression, nStartReplacement, nCharactersReplaced, cReplacement)
+    
+/// <include file="Runtimefunctions.xml" path="Runtimefunctions/substrc/*" />
+FUNCTION SubStrC(cExpression, nStartPosition , nCharactersReturned )
+    RETURN SubStr(cExpression, nStartPosition, nCharactersReturned)
+

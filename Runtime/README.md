@@ -1,4 +1,4 @@
-# XSharpPublic/VisualStudio
+# XSharpPublic/Runtime
 The Runtime Source in this folder is written in X# whenever possible.
 
 

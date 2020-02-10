@@ -49,7 +49,15 @@
           <para styleclass="Body Text">RemoveDeclareMethod</para>
         </td>
         <td>
-          <para styleclass="Body Text">If you used strong typing in VO you needed to add DEC LARE METHOD statements and/or DECLARE ACCESS and DECLARE ASSIGN. The X# compiler still recognizes these statements but no longer requires them</para>
+          <para styleclass="Body Text">If you used strong typing in VO you needed to add DECLARE METHOD statements and/or DECLARE ACCESS and DECLARE ASSIGN. The X# compiler still recognizes these statements but no longer requires them</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">RemoveExportLocalClause</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">This option removes the EXPORT LOCAL clause that may be included in method declarations in VO code, but is ignored in X#</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -65,7 +73,7 @@
           <para styleclass="Body Text">AddMissingConstructors</para>
         </td>
         <td>
-          <para styleclass="Body Text">VO allows you to declare a class without Init method / Constructor. In .Net this is also allowed., but then the compiler assumes you have a class with a constructor without parameters. <br/>This compiler option will automatically generate missing constructors. </para>
+          <para styleclass="Body Text">VO allows you to declare a class without Init method / Constructor. In .Net this is also allowed., but then the compiler assumes you have a class with a constructor without parameters. This option will automatically generate missing constructors. Note that also the X# compiler supports emitting missing constructors even if they are not specified in the code, when the /vo16 compatibility option is enable. So this Xporter option is not necessary anymore and has been depreciated. </para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -126,10 +134,26 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Body Text">Replace Resource Defines with Value</para>
+          <para styleclass="Body Text">Replace Resource Defines with Values</para>
         </td>
         <td>
           <para styleclass="Body Text">This controls the way that the numeric identifiers associated with menu options and control identifiers on forms are exported to the external resource files</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">Check For IVar and Property Conflicts</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">In Visual Objects, it is allowed to have ACCESS/ASSIGN methods that have the same name with IVars (usually INSTANCE vars) of the same class. This is not allowed in .Net, so if this option is enabled, the Xporter will detect this and will prefix the IVar names with an underscore ("_").</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Body Text">Ignore code inside #ifdef...#endif</para>
+        </td>
+        <td>
+          <para styleclass="Body Text">As a means of preparing Visual Objects code to be ported to X#, it is common practice to provide a VO version and a X# version of the same code in the VO version of the source code, surrounded by #ifdef __XSHARP__ ... #else ... #endif preprocessor directives. When this option is set, Xporter does not touch any code that is surrounded by those directives.</para>
         </td>
       </tr>
     </table></para>

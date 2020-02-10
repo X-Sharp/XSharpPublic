@@ -19,14 +19,14 @@
     <CSharpSource>$(RoslynSrc)Compilers\CSharp\Portable\</CSharpSource>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <AssemblyOriginatorKeyFile>$(Solutiondir)src\commmon\XSharp.snk</AssemblyOriginatorKeyFile>
-    <Langversion>7.3</Langversion>
+    <Langversion>latest</Langversion>
     <RoslynProjectType>XSharp</RoslynProjectType>
     <DeveloperBuild>true</DeveloperBuild>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <UseRoslynAnalyzers>false</UseRoslynAnalyzers>
     <GenerateMicrosoftCodeAnalysisCommitHashAttribute>false</GenerateMicrosoftCodeAnalysisCommitHashAttribute>
     <BinariesDir>$(Solutiondir)Binaries\$(Configuration)\</BinariesDir>
-    <GeneratedCompilerPath>$(Solutiondir)Binaries\Debug\net46\</GeneratedCompilerPath>
+    <GeneratedCompilerPath>$(Solutiondir)Binaries\$(Configuration)\net46\</GeneratedCompilerPath>
     <XscToolPath>$(BinariesDir)net46\</XscToolPath>
     <EnableBaseIntermediateOutputPathMismatchWarning>false</EnableBaseIntermediateOutputPathMismatchWarning>
   </PropertyGroup>

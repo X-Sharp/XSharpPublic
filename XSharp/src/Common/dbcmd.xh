@@ -164,9 +164,9 @@
 ***
 * Variations of the commands with IN or ALIAS clause
 ***
-#command APPEND BLANK <x:IN,ALIAS> <(a)>         	=>  (<(a)>) -> (DbAppend())
-#command PACK <x:IN,ALIAS> <(a)>    				=> (<(a)>) -> (DbPack())
-#command ZAP  <x:IN,ALIAS> <(a)>              	=> (<(a)>) -> (DbZap())
+#command APPEND BLANK <x:IN,ALIAS> <(a)>        =>  (<(a)>) -> (DbAppend())
+#command PACK <x:IN,ALIAS> <(a)>                => (<(a)>) -> (DbPack())
+#command ZAP  <x:IN,ALIAS> <(a)>                => (<(a)>) -> (DbZap())
 #command UNLOCK [RECORD <rcd>]  <x:IN,ALIAS> <(a)> => (<(a)>) -> (DbUnlock(<rcd>))
 #command COMMIT <x:IN,ALIAS> <(a)>                => (<(a)>) -> (DbCommit())
 
@@ -282,12 +282,12 @@
 ** Todo: IN <area> which should prefix the calls to DbSetRelation 
 
 
-#command CREATE <(file1)> 												;
-			[FROM <(file2)>]                              				;
-			[ALIAS <a>]                                                	;
-            [VIA <rdd>]                                                	;
-            [<new: NEW>]                                               	;
-   => _DbCreate( <(file1)>, <(file2)> , <rdd>, <.new.>, <(a)> )
+#command CREATE <(file1)>           ;
+            [FROM <(file2)>]        ;
+            [ALIAS <a>]             ;
+            [VIA <rdd>]             ;
+            [<NEW: NEW>]            ;
+            => _DbCreate( <(file1)>, <(file2)> , <rdd>, <.new.>, <(a)> )
 
 
 #command COPY STRUCTURE EXTENDED TO <(file)>                      		;
@@ -510,14 +510,14 @@
 #command CLOSE INDEXES          => DbClearIndex()
 
 
-#command SCAN                                                           ;
-         [FOR <FOR>]                                                    ;
-         [WHILE <WHILE>]                                                ;
-         [NEXT <NEXT>]                                                  ;
-         [RECORD <rec>]                                                 ;
-         [<rest:REST>]                                                  ;
-         [ALL]                                                          ;
-                                                                        ;
+#command SCAN              ;
+         [FOR <FOR>]       ;
+         [WHILE <WHILE>]   ;
+         [NEXT <NEXT>]     ;
+         [RECORD <rec>]    ;
+         [<rest:REST>]     ;
+         [ALL]             ;
+                           ;
       => IIF( <.FOR.>, DbLocate( <{FOR}>, <{WHILE}>, <NEXT>, <rec>, <.rest.> ), DbLocate( {||TRUE}, <{WHILE}>, <NEXT>, <rec>, <.rest.> ) ); DO WHILE found() 
 ** Todo FoxPro Nooptimize clause 
 

@@ -75,6 +75,7 @@
         <ProduceReferenceAssembly>true</ProduceReferenceAssembly>
       </PropertyGroup>
     </When>
+    <!-- Another of X# additions-->
    <When Condition="'$(RoslynProjectType)' == 'XSharp' ">
       <PropertyGroup>
         <_NeedRuntimeAssets>true</_NeedRuntimeAssets> 

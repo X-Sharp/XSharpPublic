@@ -12,7 +12,8 @@ USING System.Reflection
 FUNCTION Start() AS VOID
     TRY
         LOCAL hConn AS IntPtr
-        TestMsg05()
+        testPruntGrup()
+        //TestMsg05()
         // TestWriteError()
         //TestCdxCreate()
         //DbCloseAll()
@@ -187,6 +188,10 @@ FUNCTION Start() AS VOID
     END TRY
     RETURN
 
+    FUNCTION    testPruntGrup AS VOID
+    ? DbUseArea(,"DBFCDX","C:\test\PRINTGRP")
+? DbCloseArea()
+    RETURN
 FUNCTION    TestMsg05() AS VOID
     LOCAL aStruct AS ARRAY
     DbUseArea(,,"c:\download\FieldPutDescartes\msg05.DBF")

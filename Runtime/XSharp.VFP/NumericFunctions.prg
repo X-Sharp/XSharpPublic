@@ -8,16 +8,16 @@ USING System
 USING System.Collections.Generic
 USING System.Text
 
-/// <include file="Runtimefunctions.xml" path="Runtimefunctions/mton/*" />
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/mton/*" />
 FUNCTION MtoN( mExpression AS CURRENCY) AS FLOAT
     RETURN (FLOAT) mExpression
 
-/// <include file="Runtimefunctions.xml" path="Runtimefunctions/ntom/*" />
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/ntom/*" />
 FUNCTION NToM( nExpression AS FLOAT) AS CURRENCY
     RETURN (CURRENCY) nExpression
 
 
-/// <include file="Runtimefunctions.xml" path="Runtimefunctions/sign/*" />
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sign/*" />
 FUNCTION Sign( nExpression AS USUAL) AS LONG
     EnforceNumeric(nExpression)
     IF nExpression < 0

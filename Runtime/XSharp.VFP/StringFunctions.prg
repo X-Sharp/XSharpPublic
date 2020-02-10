@@ -87,28 +87,28 @@ FUNCTION JustStem(cPath AS STRING)
     VAR result := Path.GetFileNameWithoutExtension(cPath)
     RETURN result
 
-/// <include file="Runtimefunctions.xml" path="Runtimefunctions/leftc/*" />
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/leftc/*" />
 FUNCTION LeftC( cExpression AS STRING, nExpression AS DWORD) AS STRING
     RETURN Left(cExpression, nExpression)
 
-/// <include file="Runtimefunctions.xml" path="Runtimefunctions/lenc/*" />
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/lenc/*" />
 FUNCTION LenC( cExpression AS STRING ) AS DWORD
     RETURN SLen(cExpression)
 
-/// <include file="Runtimefunctions.xml" path="Runtimefunctions/likec/*" />
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/likec/*" />
 FUNCTION LikeC( cExpression1, cExpression2) AS LOGIC
     RETURN Like(cExpression1, cExpression2)
 
 
-/// <include file="Runtimefunctions.xml" path="Runtimefunctions/rightc/*" />
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/rightc/*" />
 FUNCTION RightC( cExpression AS STRING, nCharacters AS DWORD) AS STRING
     RETURN Right(cExpression, nCharacters)
 
-/// <include file="Runtimefunctions.xml" path="Runtimefunctions/stuffc/*" />
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/stuffc/*" />
 FUNCTION StuffC( cExpression, nStartReplacement, nCharactersReplaced, cReplacement) AS STRING
     RETURN Stuff(cExpression, nStartReplacement, nCharactersReplaced, cReplacement)
     
-/// <include file="Runtimefunctions.xml" path="Runtimefunctions/substrc/*" />
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/substrc/*" />
 FUNCTION SubStrC(cExpression, nStartPosition , nCharactersReturned )
     RETURN SubStr(cExpression, nStartPosition, nCharactersReturned)
 

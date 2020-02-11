@@ -3,14 +3,7 @@
 <topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>-ns</title>
   <keywords>
-    <keyword>BEGIN NAMESPACE</keyword>
-    <keyword>CLASS</keyword>
-    <keyword>DELEGATE</keyword>
-    <keyword>ENUM</keyword>
-    <keyword>INTERFACE</keyword>
     <keyword>-ns</keyword>
-    <keyword>STRUCTURE</keyword>
-    <keyword>VOSTRUCT</keyword>
   </keywords>
   <body>
     <header>
@@ -37,7 +30,6 @@
     <para styleclass="Normal">Namespace names must follow the same rules for program identifiers: they must begin with an uppercase or lowercase letter or an underscore, followed by zero or more uppercase or lowercase letters, numbers or underscores. All other characters are illegal, and will raise a compile-time error.</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">The default namespace is used for any declared types that do not have an explicit namespace in their name.</para>
-    <para styleclass="Normal"></para>
     <para styleclass="Heading3">To set this compiler option in the Visual Studio development environment:</para>
     <para styleclass="Normal"></para>
     <list id="5" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">

@@ -7,5 +7,7 @@
       <para styleclass="Heading1">X# Compiler Errors and Warnings</para>
     </header>
     <para styleclass="Normal">The complete list of X# Compiler errors and warnings is not included in this &quot;book like&quot; documentation but can be found in the CHM, Visual Studio Help and/or Webhelp</para>
+    <para styleclass="Normal">The compiler warnings with numbers &lt; 9000 are &quot;standard&quot; Roslyn (C#) compiler errors.</para>
+    <para styleclass="Normal">The compiler warnings with numbers &gt; 9000 are specific X# compiler errors.</para>
   </body>
 </topic>

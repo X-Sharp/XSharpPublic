@@ -15,7 +15,7 @@
     </list>
     <para styleclass="Body Text"><br/>We are convinced that you will find our license agreements fair and easy to work with.<br/>If you have any questions about the licenses, please contact us at <link displaytype="text" defaultstyle="true" type="weblink" href="mailto:info@xsharp.eu">info@xsharp.eu</link></para>
     <para styleclass="Body Text"></para>
-    <para styleclass="Body Text"><table styleclass="Default" rowcount="6" colcount="2">
+    <para styleclass="Body Text"><table styleclass="Default" rowcount="5" colcount="2">
       <tr style="vertical-align:top">
         <td style="vertical-align:middle; width:40%;">
           <para styleclass="Body Text"><text style="font-weight:bold;">Component &amp; Name</text></para>
@@ -66,22 +66,6 @@
         </td>
         <td>
           <para styleclass="Body Text">This license applies to the Antlr 4 source code that we have used and that you can find on <link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/antlr/antlr4" target="_blank">GitHub</link></para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td>
-          <para styleclass="Body Text">Our custom Compiler Source code<br/><link displaytype="text" defaultstyle="true" type="topiclink" href="XSharp-Compiler-Sourcecode-Lic">XSharp Compiler Source code License 1.0</link></para>
-        </td>
-        <td>
-          <para styleclass="Body Text">This license applies to our custom source code for the XSharp compiler.</para>
-          <para styleclass="Body Text">Only registered members of the FOX program can access this source code in our private repository on <link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpDev" target="_blank">GitHub</link></para>
-          <list id="7" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
-            <li styleclass="Body Text">Subscribers may download this code and make changes for internal use</li>
-            <li styleclass="Body Text">If you have a contribution that you want to see included in the main source you can send a pull request on GitHub</li>
-            <li styleclass="Body Text">XSharp decides which changes to the source code will be included in the main branch and which not</li>
-            <li styleclass="Body Text">If we accept your contribution and consider it a &quot;substantial&quot; change then we can recognize you as a Contributor</li>
-            <li styleclass="Body Text">Contributors are allowed to distribute the program under their own license</li>
-          </list>
         </td>
       </tr>
     </table></para>

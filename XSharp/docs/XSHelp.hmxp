@@ -189,6 +189,7 @@
       <config-value name="tidyxml">1</config-value>
       <config-value name="contents">XSharp</config-value>
       <config-value name="make3includeskin">OPT_PARENTHOME,OPT_TOPICFOOTER</config-value>
+      <config-group name="bookmarks"/>
     </config-group>
     <config-group name="pdf">
       <config-value name="style">0</config-value>
@@ -641,7 +642,7 @@
           <config-value name="lastexport">0</config-value>
         </config-group>
         <config-group name="report">
-          <config-value name="type">2</config-value>
+          <config-value name="type">6</config-value>
           <config-value name="sort">1</config-value>
           <config-value name="include">ALL</config-value>
         </config-group>
@@ -707,7 +708,6 @@
     <file href="Topics/*.xml" build="ALL" filetype="topic">
       <file-mod href="Stylesheet-for-Style-Test.xml"/>
       <file-mod href="X-Compiler-Errors.xml" build="CHM,HTML,HXS"/>
-      <file-mod href="X-Compiler-Warnings.xml" build="CHM,HTML,HXS"/>
       <file-mod href="X-Compiler-Errors-and-Warnings.xml" build="EBOOK,PDF,PRINT"/>
       <file-mod href="new-feat-PROCEDURE-inside-CLASS.xml"/>
       <file-mod href="Embedded_topics.xml"/>

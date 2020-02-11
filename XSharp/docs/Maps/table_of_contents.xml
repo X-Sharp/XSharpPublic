@@ -89,6 +89,15 @@
     <topicref type="topic" id="437495437296913" build="ALL" modified="2019-10-11T17:32:55.098Z" icon="0" href="__VsDialect">
       <caption translate="true">__VsDialect</caption>
     </topicref>
+    <topicref type="topic" id="438722038558015" build="ALL" modified="2020-02-11T08:53:07.090Z" icon="0" href="Command-translate">
+      <caption translate="true">__Translate</caption>
+    </topicref>
+    <topicref type="topic" id="438723430932855" build="ALL" modified="2020-02-11T09:02:33.842Z" icon="0" href="__IncludeTypeParameters">
+      <caption translate="true">__IncludeTypeParameters</caption>
+    </topicref>
+    <topicref type="topic" id="438725902211129" build="ALL" modified="2020-02-11T09:03:50.171Z" icon="0" href="__IncludeTypeParameterConstraints">
+      <caption translate="true">__IncludeTypeParameterConstraints</caption>
+    </topicref>
   </topicref>
   <topicref type="topic" id="423886812341331" build="ALL" modified="2019-06-14T18:30:32.542Z" icon="0" href="XSharp">
     <caption translate="true">X# Documentation</caption>
@@ -221,9 +230,6 @@
         </topicref>
         <topicref type="topic" id="428707437480530" build="ALL" modified="2017-05-15T21:45:58.606Z" icon="0" href="BSD">
           <caption translate="true">BSD</caption>
-        </topicref>
-        <topicref type="topic" id="428709558580474" build="ALL" modified="2017-05-15T21:52:31.315Z" icon="0" href="XSharp-Compiler-Sourcecode-Lic">
-          <caption translate="true">XSharp Compiler Sourcecode License</caption>
         </topicref>
       </topicref>
       <topicref type="topic" id="428708026773084" build="ALL" modified="2019-09-03T10:20:36.048Z" icon="0" href="Acknowledgements">
@@ -547,45 +553,6 @@
           <caption translate="true">User defined Types</caption>
         </topicref>
       </topicref>
-      <topicref type="topic" id="426775226856970" build="ALL" modified="2016-11-03T12:11:02.856Z" icon="0" href="Entities">
-        <caption translate="true">Entities</caption>
-        <topicref type="topic" id="426776567415478" build="ALL" modified="2016-11-03T15:22:42.763Z" icon="0" href="Namespace">
-          <caption translate="true">Namespace</caption>
-        </topicref>
-        <topicref type="topic" id="426775251694247" build="ALL" modified="2016-11-03T15:22:43.652Z" icon="0" href="Function2">
-          <caption translate="true">Function</caption>
-        </topicref>
-        <topicref type="topic" id="426775310271573" build="ALL" modified="2016-11-03T15:22:43.786Z" icon="0" href="Procedure2">
-          <caption translate="true">Procedure</caption>
-        </topicref>
-        <topicref type="topic" id="42677938318524" build="ALL" modified="2016-11-03T15:22:44.134Z" icon="0" href="Using3">
-          <caption translate="true">Using</caption>
-        </topicref>
-        <topicref type="topic" id="426777870630267" build="ALL" modified="2016-11-03T15:22:44.471Z" icon="0" href="Define">
-          <caption translate="true">Define</caption>
-        </topicref>
-        <topicref type="topic" id="426777643398607" build="ALL" modified="2016-11-14T21:24:27.615Z" icon="0" href="_DLL-Function">
-          <caption translate="true">_DLL</caption>
-        </topicref>
-      </topicref>
-      <topicref type="topic" id="426889550198328" build="ALL" modified="2016-11-14T21:20:52.721Z" icon="0" href="Parameters-and-others">
-        <caption translate="true">Parameters and others</caption>
-        <topicref type="topic" id="426886803522208" build="ALL" modified="2016-11-14T21:28:10.054Z" icon="0" href="Parameters">
-          <caption translate="true">Parameters</caption>
-        </topicref>
-        <topicref type="topic" id="426890278535084" build="ALL" modified="2016-11-14T21:27:53.150Z" icon="0" href="Attributes">
-          <caption translate="true">Attributes</caption>
-        </topicref>
-        <topicref type="topic" id="426890654559704" build="ALL" modified="2016-11-14T21:27:56.486Z" icon="0" href="Modifiers">
-          <caption translate="true">Modifiers</caption>
-        </topicref>
-        <topicref type="topic" id="426893403439562" build="ALL" modified="2016-11-15T10:34:51.882Z" icon="0" href="Arguments">
-          <caption translate="true">Arguments</caption>
-        </topicref>
-        <topicref type="topic" id="426895514881539" build="ALL" modified="2016-11-15T11:33:59.946Z" icon="0" href="Array-Indices">
-          <caption translate="true">Array Indices</caption>
-        </topicref>
-      </topicref>
       <topicref type="topic" id="423890220586711" build="ALL" modified="2016-01-19T20:51:14.267Z" icon="0" href="Literals">
         <caption translate="true">Literals</caption>
         <topicref type="topic" id="423887937208891" build="ALL" modified="2016-11-03T15:43:59.093Z" icon="0" href="CharLiterals">
@@ -615,80 +582,17 @@
         <topicref type="topic" id="423890264622123" build="ALL" modified="2016-11-03T15:45:09.293Z" icon="0" href="SymbolLiterals">
           <caption translate="true">Symbol Literals</caption>
         </topicref>
-      </topicref>
-      <topicref type="topic" id="423890044539152" build="ALL" modified="2016-01-19T21:16:41.371Z" icon="0" href="NameSpaces">
-        <caption translate="true">NameSpaces</caption>
-        <topicref type="topic" id="423886791199984" build="ALL" modified="2016-01-19T21:17:02.341Z" icon="0" href="USING">
-          <caption translate="true">USING</caption>
-        </topicref>
-        <topicref type="topic" id="423890475851258" build="ALL" modified="2016-01-19T21:17:02.457Z" icon="0" href="BEGIN-NAMESPACE">
-          <caption translate="true">BEGIN NAMESPACE</caption>
-        </topicref>
-      </topicref>
-      <topicref type="topic" id="42389704422360" build="ALL" modified="2016-01-19T21:35:35.315Z" icon="0" href="Identifiers">
-        <caption translate="true">Identifiers</caption>
-      </topicref>
-      <topicref type="topic" id="423887027128405" build="ALL" modified="2016-01-19T21:40:41.390Z" icon="0" href="Calling-Conventions">
-        <caption translate="true">Calling Conventions</caption>
-      </topicref>
-      <topicref type="topic" id="423889200092124" build="ALL" modified="2016-01-19T20:51:14.373Z" icon="0" href="Comments">
-        <caption translate="true">Comments</caption>
-      </topicref>
-      <topicref type="topic" id="425386471139560" build="ALL" modified="2016-06-17T11:15:44.425Z" icon="0" href="Compiler-Macros">
-        <caption translate="true">Compiler Macros</caption>
-      </topicref>
-      <topicref type="topic" id="426775124635299" build="ALL" modified="2016-11-03T12:48:43.200Z" icon="0" href="Pseudo-Functions">
-        <caption translate="true">Pseudo Functions</caption>
-      </topicref>
-      <topicref type="topic" id="423890338204503" build="ALL" modified="2019-10-15T13:46:32.053Z" icon="0" href="Expressions">
-        <caption translate="true">Expressions</caption>
-        <topicref type="topic" id="426895968187001" build="ALL" modified="2016-11-15T09:53:58.175Z" icon="0" href="Bound-Expressions">
-          <caption translate="true">Bound Expressions</caption>
-        </topicref>
-        <topicref type="topic" id="426892156794608" build="ALL" modified="2016-11-15T09:54:05.925Z" icon="0" href="Primary-Expressions">
-          <caption translate="true">Primary Expressions</caption>
-        </topicref>
-        <topicref type="topic" id="426894908055984" build="ALL" modified="2016-11-15T10:12:00.342Z" icon="0" href="Codeblocks">
-          <caption translate="true">Codeblocks</caption>
-        </topicref>
-        <topicref type="topic" id="423886881484677" build="ALL" modified="2016-01-19T21:34:53.491Z" icon="0" href="LINQ">
-          <caption translate="true">LINQ Expressions</caption>
-        </topicref>
-        <topicref type="topic" id="426895382962818" build="ALL" modified="2016-11-15T10:24:36.372Z" icon="0" href="Initializers2">
-          <caption translate="true">Initializers</caption>
-        </topicref>
-      </topicref>
-      <topicref type="topic" id="423889109101067" build="ALL" modified="2019-10-15T13:46:43.118Z" icon="0" href="Operators">
-        <caption translate="true">Operators</caption>
-        <topicref type="topic" id="423889867171741" build="ALL" modified="2019-08-09T13:02:56.793Z" icon="0" href="Binary_Operators">
-          <caption translate="true">Binary</caption>
-        </topicref>
-        <topicref type="topic" id="423887682890922" build="ALL" modified="2019-08-09T12:34:49.373Z" icon="0" href="Assignment_Operators">
-          <caption translate="true">Assignment operators</caption>
-        </topicref>
-        <topicref type="topic" id="42387974843972" build="ALL" modified="2019-08-09T12:34:54.498Z" icon="0" href="Logical_Operators">
-          <caption translate="true">Logical</caption>
-        </topicref>
-        <topicref type="topic" id="42390446934182" build="ALL" modified="2019-08-09T12:34:58.928Z" icon="0" href="Bitwise_Operators">
-          <caption translate="true">Bitwise</caption>
-        </topicref>
-        <topicref type="topic" id="42390595140805" build="ALL" modified="2019-08-09T12:35:04.309Z" icon="0" href="Relational_Operators">
-          <caption translate="true">Relational</caption>
-        </topicref>
-        <topicref type="topic" id="423889057077198" build="ALL" modified="2019-08-09T12:35:09.251Z" icon="0" href="Shift_Operators">
-          <caption translate="true">Shift</caption>
-        </topicref>
-        <topicref type="topic" id="423890249914780" build="ALL" modified="2019-08-09T12:35:14.296Z" icon="0" href="Unary_Operators">
-          <caption translate="true">Unary</caption>
-        </topicref>
-        <topicref type="topic" id="423888894934256" build="ALL" modified="2019-08-09T12:35:20.228Z" icon="0" href="Workarea_Operators">
-          <caption translate="true">Workarea</caption>
+        <topicref type="topic" id="438724356265916" build="ALL" modified="2020-02-11T08:51:51.838Z" icon="0" href="Escape-codes">
+          <caption translate="true">Escape codes</caption>
         </topicref>
       </topicref>
       <topicref type="topic" id="436906885634999" build="ALL" modified="2019-10-15T13:52:53.332Z" icon="0" href="Commands-by-Category">
         <caption translate="true">Commands and Statements</caption>
-        <topicref type="topic" id="43755519363475" build="ALL" modified="2019-10-15T14:02:49.225Z" icon="0" href="Blocks2">
-          <caption translate="true">Blocks</caption>
+        <topicref type="topic" id="42389704422360" build="ALL" modified="2016-01-19T21:35:35.315Z" icon="0" href="Identifiers">
+          <caption translate="true">Identifiers</caption>
+        </topicref>
+        <topicref type="topic" id="43755519363475" build="ALL" modified="2020-02-11T10:05:01.716Z" icon="0" href="Blocks2">
+          <caption translate="true">Blocks and Namespaces</caption>
           <topicref type="topic" id="423889269807360" build="ALL" modified="2019-10-15T14:08:49.096Z" icon="0" href="command_BEGIN-CHECKED">
             <caption translate="true">BEGIN (UN)CHECKED</caption>
           </topicref>
@@ -697,6 +601,9 @@
           </topicref>
           <topicref type="topic" id="423887192829292" build="ALL" modified="2019-10-15T14:08:54.154Z" icon="0" href="command_BEGIN-LOCK">
             <caption translate="true">BEGIN LOCK</caption>
+          </topicref>
+          <topicref type="topic" id="423890475851258" build="ALL" modified="2016-01-19T21:17:02.457Z" icon="0" href="BEGIN-NAMESPACE">
+            <caption translate="true">BEGIN NAMESPACE</caption>
           </topicref>
           <topicref type="topic" id="42389015641052" build="ALL" modified="2019-10-15T14:08:56.474Z" icon="0" href="command_BEGIN-SCOPE">
             <caption translate="true">BEGIN SCOPE</caption>
@@ -710,11 +617,14 @@
           <topicref type="topic" id="423890664256386" build="ALL" modified="2019-10-15T14:09:03.068Z" icon="0" href="command_BEGIN-USING">
             <caption translate="true">BEGIN USING</caption>
           </topicref>
+          <topicref type="topic" id="423886791199984" build="ALL" modified="2016-01-19T21:17:02.341Z" icon="0" href="USING">
+            <caption translate="true">USING</caption>
+          </topicref>
         </topicref>
         <topicref type="topic" id="436964307295986" modified="2019-09-26T11:11:01.222Z" icon="0" href="cmd_cat_comment">
           <caption translate="true">Comment</caption>
-          <topicref type="topic" id="384614496544850" modified="2019-09-26T11:11:05.991Z" icon="0" href="command_NOTE">
-            <caption translate="true">NOTE Command</caption>
+          <topicref type="topic" id="384614496544850" modified="2020-02-11T10:06:52.616Z" icon="0" href="command_NOTE">
+            <caption translate="true">Comments</caption>
           </topicref>
         </topicref>
         <topicref type="topic" id="436967444455831" build="ALL" modified="2019-09-24T13:44:42.151Z" icon="0" href="cmd_cat_concur">
@@ -1304,6 +1214,57 @@
           <topicref type="topic" id="384615064228400" build="ALL" modified="2019-09-24T14:19:49.149Z" icon="0" href="command_STATIC">
             <caption translate="true">STATIC Statement</caption>
           </topicref>
+        </topicref>
+      </topicref>
+      <topicref type="topic" id="423890338204503" build="ALL" modified="2019-10-15T13:46:32.053Z" icon="0" href="Expressions">
+        <caption translate="true">Expressions</caption>
+        <topicref type="topic" id="426895968187001" build="ALL" modified="2016-11-15T09:53:58.175Z" icon="0" href="Bound-Expressions">
+          <caption translate="true">Bound Expressions</caption>
+        </topicref>
+        <topicref type="topic" id="426892156794608" build="ALL" modified="2016-11-15T09:54:05.925Z" icon="0" href="Primary-Expressions">
+          <caption translate="true">Primary Expressions</caption>
+        </topicref>
+        <topicref type="topic" id="426894908055984" build="ALL" modified="2016-11-15T10:12:00.342Z" icon="0" href="Codeblocks">
+          <caption translate="true">Codeblocks</caption>
+        </topicref>
+        <topicref type="topic" id="423886881484677" build="ALL" modified="2016-01-19T21:34:53.491Z" icon="0" href="LINQ">
+          <caption translate="true">LINQ Expressions</caption>
+        </topicref>
+        <topicref type="topic" id="426895382962818" build="ALL" modified="2016-11-15T10:24:36.372Z" icon="0" href="Initializers2">
+          <caption translate="true">Initializers</caption>
+        </topicref>
+        <topicref type="topic" id="425386471139560" build="ALL" modified="2016-06-17T11:15:44.425Z" icon="0" href="Compiler-Macros">
+          <caption translate="true">Compiler Macros</caption>
+        </topicref>
+        <topicref type="topic" id="426775124635299" build="ALL" modified="2016-11-03T12:48:43.200Z" icon="0" href="Pseudo-Functions">
+          <caption translate="true">Pseudo Functions</caption>
+        </topicref>
+      </topicref>
+      <topicref type="topic" id="423889109101067" build="ALL" modified="2019-10-15T13:46:43.118Z" icon="0" href="Operators">
+        <caption translate="true">Operators</caption>
+        <topicref type="topic" id="423889867171741" build="ALL" modified="2019-08-09T13:02:56.793Z" icon="0" href="Binary_Operators">
+          <caption translate="true">Binary</caption>
+        </topicref>
+        <topicref type="topic" id="423887682890922" build="ALL" modified="2019-08-09T12:34:49.373Z" icon="0" href="Assignment_Operators">
+          <caption translate="true">Assignment operators</caption>
+        </topicref>
+        <topicref type="topic" id="42387974843972" build="ALL" modified="2019-08-09T12:34:54.498Z" icon="0" href="Logical_Operators">
+          <caption translate="true">Logical</caption>
+        </topicref>
+        <topicref type="topic" id="42390446934182" build="ALL" modified="2019-08-09T12:34:58.928Z" icon="0" href="Bitwise_Operators">
+          <caption translate="true">Bitwise</caption>
+        </topicref>
+        <topicref type="topic" id="42390595140805" build="ALL" modified="2019-08-09T12:35:04.309Z" icon="0" href="Relational_Operators">
+          <caption translate="true">Relational</caption>
+        </topicref>
+        <topicref type="topic" id="423889057077198" build="ALL" modified="2019-08-09T12:35:09.251Z" icon="0" href="Shift_Operators">
+          <caption translate="true">Shift</caption>
+        </topicref>
+        <topicref type="topic" id="423890249914780" build="ALL" modified="2019-08-09T12:35:14.296Z" icon="0" href="Unary_Operators">
+          <caption translate="true">Unary</caption>
+        </topicref>
+        <topicref type="topic" id="423888894934256" build="ALL" modified="2019-08-09T12:35:20.228Z" icon="0" href="Workarea_Operators">
+          <caption translate="true">Workarea</caption>
         </topicref>
       </topicref>
       <topicref type="topic" id="423891454294167" build="ALL" modified="2016-01-19T22:47:35.715Z" icon="0" href="X-Preprocessor-Directives">

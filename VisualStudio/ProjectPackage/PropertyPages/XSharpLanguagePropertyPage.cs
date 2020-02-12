@@ -117,7 +117,7 @@ namespace XSharp.Project
         public bool CS
         {
             get { return this.cs; }
-            //set { this.cs = value; this.IsDirty = true; }
+            set { this.cs = value; this.IsDirty = true; }
         }
 
         [Category(CatGeneral), DisplayName(OVFCaption), Description(OVFDescription)]

@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="14.0">
   <PropertyGroup>
     <!--Visual Studio will use the value of will use MinimumVisualStudioVersion to detect if a project needs to be updated.
     To allow the project to be loaded in multiple VS versions, conditionally check the project -->
     <MinimumVisualStudioVersion Condition="'$(VisualStudioVersion)' == '15.0'">15.0</MinimumVisualStudioVersion>
     <MinimumVisualStudioVersion Condition="'$(VisualStudioVersion)' != '15.0'">14.0</MinimumVisualStudioVersion>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">14.0</VisualStudioVersion>
-    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -25,11 +25,6 @@
     <TargetFrameworkMoniker>.NETFramework,Version=v4.6</TargetFrameworkMoniker>
     <TargetFrameworkProfile />
     <ProjectGuid>{16272550-75E6-4B9D-91E3-653BD141C755}</ProjectGuid>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
-    <SccProjectName>SAK</SccProjectName>
-    <SccLocalPath>SAK</SccLocalPath>
-    <SccAuxPath>SAK</SccAuxPath>
-    <SccProvider>SAK</SccProvider>
     <BootstrapperEnabled>true</BootstrapperEnabled>
     <IncludeDebugSymbolsInVSIXContainer>true</IncludeDebugSymbolsInVSIXContainer>
     <BaseOutputPath>$(SolutionDir)Binaries</BaseOutputPath>
@@ -77,9 +72,10 @@
     <VSSDKRoot Condition="'$(VSSDKRoot)'==''">$(registry:HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\VisualStudio\VSIP\14.0\@InstallDir)</VSSDKRoot>
     <VSSDKRoot Condition="'$(VSSDKRoot)'==''">$(registry:HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\VisualStudio\VSIP\14.0\@InstallDir)</VSSDKRoot>
     <VSSDKRoot Condition="'$(VSSDKRoot)'!='' and '$(VSSDKRoot.EndsWith(&quot;\&quot;))'=='false'">$(VSSDKRoot)\</VSSDKRoot>
+    <VsdConfigFile>$(OutputPath)\XSharpDebugger.vsdconfig</VsdConfigFile>
     <!--Root directory to Concord SDK install; includes the trailing backslash '\'.-->
     <ConcordSDKDir>$(VSSDKRoot)VisualStudioIntegration\</ConcordSDKDir>
-    <VsdConfigFile>$(OutputPath)\XSharpDebugger.vsdconfig</VsdConfigFile>
+    
   </PropertyGroup>
   <PropertyGroup>
     <StartAction>Program</StartAction>
@@ -107,6 +103,7 @@
     <Compile Include="Import\Importer.cs" />
     <Compile Include="Import\XSharpTypeProvider.cs" />
     <Compile Include="LocalVariable.cs" />
+    <Compile Include="ResultProvider\XSharpResultProvider.cs" />
     <Compile Include="TypeSystem.cs" />
     <Compile Include="Variable.cs" />
     <Compile Include="InspectionScope.cs" />
@@ -115,6 +112,7 @@
     <Compile Include="Utility.cs" />
   </ItemGroup>
   <ItemGroup>
+    <VsdConfigXmlFiles Include="ResultProvider\ResultProvider.vsdconfigxml" />
     <VsdConfigXmlFiles Include="ExpressionCompiler\ExpressionCompiler.vsdconfigxml" />
     <VsdConfigXmlFiles Include="Formatter\Formatter.vsdconfigxml" />
     <None Include="packages.config">
@@ -125,12 +123,12 @@
   <ItemGroup>
     <Reference Include="Microsoft.VisualStudio.Debugger.Engine, Version=1.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>$(DevEnvDir)\Microsoft.VisualStudio.Debugger.Engine.dll</HintPath>
+      <HintPath>VS14DLLs\Microsoft.VisualStudio.Debugger.Engine.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.Debugger.Metadata, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>$(DevEnvDir)\Remote Debugger\x86\Microsoft.VisualStudio.Debugger.Metadata.dll</HintPath>
+      <HintPath>VS14DLLs\Microsoft.VisualStudio.Debugger.Metadata.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
@@ -160,6 +158,8 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+    <Content Include="VS14DLLs\Microsoft.VisualStudio.Debugger.Engine.dll" />
+    <Content Include="VS14DLLs\Microsoft.VisualStudio.Debugger.Metadata.dll" />
     <Content Include="XSharp.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
@@ -173,10 +173,6 @@
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
   </ItemGroup>
-  <ItemGroup>
-    <Analyzer Include="..\..\packages\Microsoft.VisualStudio.SDK.Analyzers.15.8.36\analyzers\cs\Microsoft.VisualStudio.SDK.Analyzers.dll" />
-    <Analyzer Include="..\..\packages\Microsoft.VisualStudio.Threading.Analyzers.15.8.209\analyzers\cs\Microsoft.VisualStudio.Threading.Analyzers.dll" />
-  </ItemGroup>
   <PropertyGroup>
     <!--
     To specify a different registry root to register your package, uncomment the TargetRegistryRoot
@@ -188,16 +184,15 @@
   </PropertyGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />
-  <Import Project="$(ConcordSDKDir)Tools\Bin\Microsoft.VSDebugger.targets" />
-  <Import Project="..\..\packages\Microsoft.VisualStudio.Threading.Analyzers.15.8.209\build\Microsoft.VisualStudio.Threading.Analyzers.targets" Condition="Exists('..\..\packages\Microsoft.VisualStudio.Threading.Analyzers.15.8.168\build\Microsoft.VisualStudio.Threading.Analyzers.targets')" />
+    <Import Project="$(ConcordSDKDir)Tools\Bin\Microsoft.VSDebugger.targets" />
+
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\..\packages\Microsoft.VisualStudio.Threading.Analyzers.15.8.209\build\Microsoft.VisualStudio.Threading.Analyzers.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Microsoft.VisualStudio.Threading.Analyzers.15.8.168\build\Microsoft.VisualStudio.Threading.Analyzers.targets'))" />
-    <Error Condition="!Exists('..\..\packages\Microsoft.VisualStudio.SDK.Analyzers.15.8.36\build\Microsoft.VisualStudio.SDK.Analyzers.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Microsoft.VisualStudio.SDK.Analyzers.15.8.36\build\Microsoft.VisualStudio.SDK.Analyzers.targets'))" />
+    <Error Condition="!Exists('..\..\packages\Microsoft.VSSDK.Debugger.VSDConfigTool.16.4.1111102\build\Microsoft.VSSDK.Debugger.VSDConfigTool.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Microsoft.VSSDK.Debugger.VSDConfigTool.16.4.1111102\build\Microsoft.VSSDK.Debugger.VSDConfigTool.targets'))" />
   </Target>
-  <Import Project="..\..\packages\Microsoft.VisualStudio.SDK.Analyzers.15.8.36\build\Microsoft.VisualStudio.SDK.Analyzers.targets" Condition="Exists('..\..\packages\Microsoft.VisualStudio.SDK.Analyzers.15.8.36\build\Microsoft.VisualStudio.SDK.Analyzers.targets')" />
+  <Import Project="..\..\packages\Microsoft.VSSDK.Debugger.VSDConfigTool.16.4.1111102\build\Microsoft.VSSDK.Debugger.VSDConfigTool.targets" Condition="Exists('..\..\packages\Microsoft.VSSDK.Debugger.VSDConfigTool.16.4.1111102\build\Microsoft.VSSDK.Debugger.VSDConfigTool.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

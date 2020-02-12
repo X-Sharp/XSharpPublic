@@ -12,6 +12,7 @@
     <DefaultName>NUnitTestClassLibrary</DefaultName>
     <ProvideDefaultName>true</ProvideDefaultName>
     <RequiredFrameworkVersion>2.0</RequiredFrameworkVersion>
+    <PreviewImage>NUnitTestClassLibrary.png</PreviewImage>
     <LanguageTag Value="X#" />
     <PlatformTag Value="Windows" />
     <PlatformTag Value="Linux" />

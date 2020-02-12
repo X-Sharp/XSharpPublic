@@ -7,6 +7,7 @@
     This is a configuration file that tells the debug engine about the existence of our Expression
     Compiler component.  For documentation of the vsdconfigxml format see:
     https://github.com/Microsoft/ConcordExtensibilitySamples/wiki/Component-discovery-and-configuration
+    
 -->
 <Configuration xmlns="http://schemas.microsoft.com/vstudio/vsdconfig/2008">
 
@@ -18,7 +19,7 @@
     ComponentLevel="9991900" 
     AssemblyName="XSharpDebugger"
     Synchronized="true">   
-
+  <!-- By setting the ComponentLevel to 9991900, which is higher than the level of the C# Expression Compiler (9991500) we get called after the C# expression compiler-->
     <Class Name="XSharpDebugger.ExpressionCompiler.XSharpExpressionCompiler">
       <Implements>
         <InterfaceGroup>

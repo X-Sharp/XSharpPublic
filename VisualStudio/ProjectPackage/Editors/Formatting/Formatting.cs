@@ -13,11 +13,14 @@ using XSharpLanguage;
 using System.Linq;
 using System;
 using LanguageService.CodeAnalysis.XSharp;
+using Microsoft.VisualStudio.Project;
 
 namespace XSharp.Project
 {
     partial class CommandFilter
     {
+
+
 
         #region Keywords Definitions
         private static string[] _indentKeywords;
@@ -181,7 +184,7 @@ namespace XSharp.Project
 
 #if SMARTINDENT
 
-        private void copyWhiteSpaceFromPreviousLine( ITextEdit editSession, ITextSnapshotLine line)
+        private void copyWhiteSpaceFromPreviousLine(ITextEdit editSession, ITextSnapshotLine line)
         {
             // only copy the indentation from the previous line
             var text = line.GetText();
@@ -237,7 +240,7 @@ namespace XSharp.Project
                 {
                     if (!canIndentLine(line))
                     {
-                        copyWhiteSpaceFromPreviousLine( editSession, line);
+                        copyWhiteSpaceFromPreviousLine(editSession, line);
                     }
                     else
                     {
@@ -247,7 +250,7 @@ namespace XSharp.Project
                                 indentation = getDesiredIndentation(line, editSession, alignOnPrev);
                                 if (indentation == -1)
                                 {
-                                    copyWhiteSpaceFromPreviousLine( editSession, line);
+                                    copyWhiteSpaceFromPreviousLine(editSession, line);
                                 }
                                 else
                                 {
@@ -298,7 +301,7 @@ namespace XSharp.Project
             {
 #if TRACE
                 //
-                Stopwatch stopWatch = new Stopwatch();
+                System.Diagnostics.Stopwatch stopWatch = new System.Diagnostics.Stopwatch();
                 stopWatch.Start();
 #endif
                 //
@@ -865,15 +868,100 @@ namespace XSharp.Project
         /// <returns></returns>
         private IList<IToken> getTokensInLine(ITextSnapshotLine line)
         {
+            IList<IToken> tokens = new List<IToken>();
+            // Already been lexed ?
+            if (_buffer.Properties != null && _buffer.Properties.ContainsProperty(typeof(XSharpTokens)))
+            {
+                XSharpTokens xTokens = null;
+                xTokens = _buffer.Properties.GetProperty<XSharpTokens>(typeof(XSharpTokens));
+                if (!(xTokens == null || xTokens.TokenStream == null || xTokens.SnapShot == null))
+                {
+                    var allTokens = xTokens.TokenStream.GetTokens();
+                    if (allTokens != null)
+                    {
+                        if (xTokens.SnapShot.Version == _buffer.CurrentSnapshot.Version)
+                        {
+                            // Ok, use it
+                            int startIndex = -1;
+                            // Move to the line position
+                            for (int i = 0; i < allTokens.Count; i++)
+                            {
+                                if (allTokens[i].StartIndex >= line.Start.Position)
+                                {
+                                    startIndex = i;
+                                    break;
+                                }
+                            }
+                            if ( startIndex > -1 )
+                            {
+                                // Move to the end of line
+                                int currentLine = allTokens[startIndex].Line;
+                                do
+                                {
+                                    tokens.Add(allTokens[startIndex]);
+                                    startIndex++;
+
+                                } while ((startIndex < allTokens.Count) && (currentLine == allTokens[startIndex].Line));
+                                return tokens;
+                            }
+                        }
+                    }
+                }
+            }
+            // Ok, do it now
             var text = line.GetText();
-            return getTokens(text);
+            tokens = getTokens(text);
+            return tokens;
+            //
         }
 
         private IList<IToken> getTokensInLine(ITextSnapshot snapshot, int start, int length)
         {
+            IList<IToken> tokens = new List<IToken>();
+            // Already been lexed ?
+            if (_buffer.Properties != null && _buffer.Properties.ContainsProperty(typeof(XSharpTokens)))
+            {
+                XSharpTokens xTokens = null;
+                xTokens = _buffer.Properties.GetProperty<XSharpTokens>(typeof(XSharpTokens));
+                if (!(xTokens == null || xTokens.TokenStream == null || xTokens.SnapShot == null))
+                {
+                    var allTokens = xTokens.TokenStream.GetTokens();
+                    if (allTokens != null)
+                    {
+                        if (xTokens.SnapShot.Version == _buffer.CurrentSnapshot.Version)
+                        {
+                            // Ok, use it
+                            int startIndex = -1;
+                            // Move to the line position
+                            for (int i = 0; i < allTokens.Count; i++)
+                            {
+                                if (allTokens[i].StartIndex >= start)
+                                {
+                                    startIndex = i;
+                                    break;
+                                }
+                            }
+                            if (startIndex > -1)
+                            {
+                                // Move to the end of span
+                                int lastPosition = start + length;
+                                do
+                                {
+                                    tokens.Add(allTokens[startIndex]);
+                                    startIndex++;
+
+                                } while ((startIndex < allTokens.Count) && (allTokens[startIndex].StopIndex < lastPosition ));
+                                return tokens;
+                            }
+                        }
+                    }
+                }
+            }
+            //
             SnapshotSpan lineSpan = new SnapshotSpan(snapshot, start, length);
             var text = lineSpan.GetText();
-            return getTokens(text);
+            tokens = getTokens(text);
+            return tokens;
         }
 
 
@@ -1086,7 +1174,8 @@ namespace XSharp.Project
                 _noGotoDefinition = optionsPage.DisableGotoDefinition;
                 var languagePreferences = new LANGPREFERENCES3[1];
                 languagePreferences[0].guidLang = GuidStrings.guidLanguageService;
-                var result = textManager.GetUserPreferences4(pViewPrefs: null, pLangPrefs: languagePreferences, pColorPrefs: null);
+                int result = 0;
+                UIThread.DoOnUIThread( () => result = textManager.GetUserPreferences4(pViewPrefs: null, pLangPrefs: languagePreferences, pColorPrefs: null));
                 if (result == VSConstants.S_OK)
                 {
                     _indentStyle = languagePreferences[0].IndentStyle;
@@ -1313,21 +1402,36 @@ namespace XSharp.Project
 
         }
 
+        public XSharpParseOptions ParseOptions
+        {
+            get
+            {
+                XSharpParseOptions parseoptions;
+                if (_file != null)
+                {
+                    parseoptions = _file.Project.ParseOptions;
+                }
+                else
+                {
+                    parseoptions = XSharpParseOptions.Default;
+                }
+                return parseoptions;
+            }
+        }
+
         private IList<IToken> getTokens(string text)
         {
             IList<IToken> tokens;
             try
             {
                 string fileName;
-                XSharpParseOptions parseoptions;
+                XSharpParseOptions parseoptions = ParseOptions;
                 if (_file != null)
                 {
-                    parseoptions = _file.Project.ParseOptions;
                     fileName = _file.FullPath;
                 }
                 else
                 {
-                    parseoptions = XSharpParseOptions.Default;
                     fileName = "MissingFile.prg";
                 }
                 ITokenStream tokenStream;
@@ -1454,6 +1558,767 @@ namespace XSharp.Project
                 }
             }
             return keyword;
+        }
+        #endregion
+
+        #region New Formatting process
+        class FormattingContext
+        {
+            IList<IToken> allTokens;
+            int currentIndex;
+            int currentPosition;
+            public XSharpDialect Dialect { get; private set; }
+
+            public int CurrentIndex
+            {
+                get
+                {
+                    return currentIndex;
+                }
+
+                set
+                {
+                    currentIndex = value;
+                    if (currentIndex < allTokens.Count)
+                        currentPosition = allTokens[currentIndex].StartIndex;
+                    else
+                        currentPosition = -1;
+                }
+            }
+
+            public int CurrentPosition
+            {
+                get
+                {
+                    return currentPosition;
+                }
+
+            }
+
+            internal FormattingContext(CommandFilter cf, ITextSnapshot snapshot)
+            {
+                allTokens = cf.getTokensInLine(snapshot, 0, snapshot.Length);
+                if (allTokens.Count > 0)
+                {
+                    currentIndex = 0;
+                    currentPosition = allTokens[0].StartIndex;
+                }
+                else
+                {
+                    currentIndex = -1;
+                    currentPosition = -1;
+                }
+                //
+                Dialect = cf.ParseOptions.Dialect;
+            }
+
+            internal FormattingContext(IList<IToken> tokens, XSharpDialect dialect)
+            {
+                allTokens = tokens;
+                if (allTokens.Count > 0)
+                {
+                    currentIndex = 0;
+                    currentPosition = allTokens[0].StartIndex;
+                }
+                else
+                {
+                    currentIndex = -1;
+                    currentPosition = -1;
+                }
+                //
+                Dialect = dialect;
+            }
+
+            public void MoveTo(int positionToReach)
+            {
+                if (positionToReach == currentPosition)
+                    return;
+                if (positionToReach > currentPosition)
+                {
+                    for (int i = currentIndex; i < allTokens.Count; i++)
+                    {
+                        if (allTokens[i].StartIndex >= positionToReach)
+                        {
+                            currentPosition = allTokens[i].StartIndex;
+                            currentIndex = i;
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    for (int i = currentIndex; i >= 0; i--)
+                    {
+                        if (allTokens[i].StartIndex <= positionToReach)
+                        {
+                            currentPosition = allTokens[i].StartIndex;
+                            currentIndex = i;
+                            break;
+                        }
+                    }
+                }
+            }
+
+
+            public IToken GetFirstToken(bool ignoreSpaces)
+            {
+                IToken first = null;
+                if (currentPosition > -1)
+                {
+                    int currentLine = allTokens[currentIndex].Line;
+                    int start = currentIndex;
+                    while (start < allTokens.Count)
+                    {
+                        IToken token = allTokens[start];
+                        if (token.Line != currentLine)
+                        {
+                            break;
+                        }
+                        // skip whitespace tokens
+                        if (((token.Type == XSharpLexer.WS) && ignoreSpaces) ||
+                            (token.Type == XSharpLexer.EOS))
+                        {
+                            start++;
+                            continue;
+                        }
+                        else
+                        {
+                            first = token;
+                            break;
+                        }
+                    }
+                }
+                return first;
+            }
+
+            public IToken GetLastToken(bool ignoreSpaces)
+            {
+                IToken last = null;
+                if (currentPosition > -1)
+                {
+                    int currentLine = allTokens[currentIndex].Line;
+                    int start = currentIndex;
+                    IToken token = null;
+                    // Move to the end, and pass
+                    while (start < allTokens.Count)
+                    {
+                        token = allTokens[start];
+                        if (token.Line != currentLine)
+                        {
+                            break;
+                        }
+                        // skip whitespace tokens
+                        if (((token.Type == XSharpLexer.WS) && ignoreSpaces) ||
+                            (token.Type == XSharpLexer.EOS))
+                        {
+                            start++;
+                            continue;
+                        }
+                        last = token;
+                        start++;
+                    }
+                }
+                return last;
+            }
+
+            public IToken GetToken(bool ignoreSpaces, bool moveToNext, bool stayOnLine)
+            {
+                IToken first = null;
+                if (currentPosition > -1)
+                {
+                    int currentLine = allTokens[currentIndex].Line;
+                    int start = currentIndex;
+                    while (start < allTokens.Count)
+                    {
+                        IToken token = allTokens[start];
+                        if ( (token.Line != currentLine) && stayOnLine )
+                        {
+                            break;
+                        }
+                        // skip whitespace tokens
+                        if (((token.Type == XSharpLexer.WS) && ignoreSpaces) ||
+                            (token.Type == XSharpLexer.EOS))
+                        {
+                            start++;
+                            continue;
+                        }
+                        else
+                        {
+                            first = token;
+                            if (moveToNext)
+                                start++;
+                            break;
+                        }
+                    }
+                    //
+                    CurrentIndex = start;
+                }
+                return first;
+            }
+        }
+
+        /// <summary>
+        /// A RegionTag has a TagSpan ans a TagType
+        /// </summary>
+        class RegionTag
+        {
+            public Span TagSpan { get; }
+            public int TagType { get; set; }
+
+            public RegionTag(Span s, int t)
+            {
+                TagSpan = s;
+                TagType = t;
+            }
+        }
+
+        /// <summary>
+        /// A Region contains two RegionTag : Start and End
+        /// </summary>
+        class Region
+        {
+            public RegionTag Start { get; }
+            public RegionTag End { get; }
+
+            public Region(Span s, int st, Span e, int et)
+            {
+                Start = new RegionTag(s, st);
+                End = new RegionTag(e, et);
+            }
+
+            public Region(Span s, Span e, int st, int et) : this(s, st, e, et)
+            { }
+
+        }
+
+        private void FormatDocumentV2()
+        {
+            XSharpProjectPackage.Instance.DisplayOutPutMessage("CommandFilter.FormatDocumentV2() -->>");
+            if (!_buffer.CheckEditAccess())
+            {
+                // can't edit !
+                return;
+            }
+            // Read Settings
+            getEditorPreferences(TextView);
+
+            // Try to retrieve an already parsed list of Tags
+            if (_classifier != null)
+            {
+#if TRACE
+                //
+                System.Diagnostics.Stopwatch stopWatch = new System.Diagnostics.Stopwatch();
+                stopWatch.Start();
+#endif
+                //
+                #region Get and Sort Regions
+                ITextSnapshot snapshot = _classifier.Snapshot;
+                SnapshotSpan Span = new SnapshotSpan(snapshot, 0, snapshot.Length);
+                var classifications = _classifier.GetRegionTags();
+                // We cannot use SortedList, because we may have several Classification that start at the same position
+                List<ClassificationSpan> sortedTags = new List<ClassificationSpan>();
+                foreach (var tag in classifications)
+                {
+                    sortedTags.Add(tag);
+                }
+                sortedTags.Sort((a, b) => a.Span.Start.Position.CompareTo(b.Span.Start.Position));
+                // Now that Tags are sorted, we can use a stack to arrange them by pairs
+                Stack<RegionTag> regionStarts = new Stack<RegionTag>();
+                List<Region> regions = new List<Region>();
+                //
+                foreach (var tag in sortedTags)
+                {
+                    if (tag.ClassificationType.IsOfType(ColorizerConstants.XSharpRegionStartFormat))
+                    {
+                        int startTokenType = -1;
+                        if (tag is XsClassificationSpan)
+                            startTokenType = (tag as XsClassificationSpan).startTokenType;
+                        regionStarts.Push(new RegionTag(tag.Span.Span, startTokenType));
+                    }
+                    else if (tag.ClassificationType.IsOfType(ColorizerConstants.XSharpRegionStopFormat))
+                    {
+                        if (regionStarts.Count > 0)
+                        {
+                            var start2 = regionStarts.Pop();
+                            int endTokenType = -1;
+                            if (tag is XsClassificationSpan)
+                                endTokenType = (tag as XsClassificationSpan).endTokenType;
+                            regions.Add(new Region(start2.TagSpan, tag.Span.Span, start2.TagType, endTokenType));
+                        }
+                    }
+                }
+                // In order to try to speed up the formatting process, it would be good to have the regions sorted by their Start
+                regions.Sort((a, b) => a.Start.TagSpan.Start.CompareTo(b.Start.TagSpan.Start));
+
+                //Now, we have a list of Regions Start/Stop
+                #endregion
+                // wait until we can work
+                while (_buffer.EditInProgress)
+                {
+                    System.Threading.Thread.Sleep(100);
+                }
+                var editSession = _buffer.CreateEdit();
+                try
+                {
+                    FormattingContext context = null;
+                    // Already been lexed ?
+                    if (_buffer.Properties != null && _buffer.Properties.ContainsProperty(typeof(XSharpTokens)))
+                    {
+                        XSharpTokens xTokens = null;
+                        xTokens = _buffer.Properties.GetProperty<XSharpTokens>(typeof(XSharpTokens));
+                        if (!(xTokens == null || xTokens.TokenStream == null || xTokens.SnapShot == null))
+                        {
+                            var tokens = xTokens.TokenStream.GetTokens();
+                            // Ok, we have some tokens
+                            if (tokens != null)
+                            {
+                                // And they are the right ones
+                                if (xTokens.SnapShot.Version == _buffer.CurrentSnapshot.Version)
+                                {
+                                    // Ok, use it
+                                    context = new FormattingContext(tokens, this.ParseOptions.Dialect);
+                                }
+                            }
+                        }
+                    }
+                    // No Tokens....Ok, do the lexing now
+                    if (context == null)
+                        context = new FormattingContext(this, _buffer.CurrentSnapshot);
+                    //
+                    var lines = _buffer.CurrentSnapshot.Lines;
+                    int indentSize = 0;
+                    bool inComment = false;
+                    int lineContinue = 0;
+                    int prevIndentSize = 0;
+                    int continueOffset = _indentSize * _indentFactor;
+                    IToken prevstart = null;
+                    // We are more forward, line per line
+                    foreach (var snapLine in lines)
+                    {
+                        bool lineAfterAttributes = false;
+                        // Ignore Empty lines
+                        if (snapLine.Length > 0)
+                        {
+                            context.MoveTo(snapLine.Start);
+                            IToken start = context.GetFirstToken(true);
+                            if (start != null)
+                            {
+                                IToken end = context.GetLastToken(true);
+                                //
+                                if (lineContinue == 1)
+                                {
+                                    if (prevstart.Type != XSharpLexer.LBRKT)
+                                    {
+                                        indentSize = prevIndentSize + continueOffset;
+                                    }
+                                    else
+                                    {
+                                        lineAfterAttributes = true;
+                                    }
+
+                                }
+                                else if (lineContinue > 1)
+                                {
+                                    indentSize = prevIndentSize;
+                                }
+                                else
+                                {
+                                    indentSize = getDesiredIndentationInDocumentV2(context, snapLine, regions, out inComment);
+                                }
+                                prevstart = start;
+                                // Not in comment, Multiple line but not Attribute
+                                if (!inComment && (end.Type == XSharpLexer.SEMI))
+                                {
+                                    if (lineContinue == 0)
+                                    {
+                                        // Keep the previous Indentation
+                                        lineContinue = 1;
+                                        prevIndentSize = indentSize;
+                                    }
+                                    else if (lineContinue == 1)
+                                    {
+                                        if (!lineAfterAttributes)
+                                        {
+                                            lineContinue = 2;
+                                            prevIndentSize = indentSize;
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    lineContinue = 0;
+                                }
+                            }
+                        }
+                        if (canFormatLine(snapLine))
+                        {
+                            formatLineCaseV2(context, editSession, snapLine);
+                        }
+                        CommandFilterHelper.FormatLineIndent(this.TextView, editSession, snapLine, indentSize);
+                        
+                    }
+                }
+                finally
+                {
+                    if (editSession.HasEffectiveChanges)
+                    {
+                        editSession.Apply();
+                    }
+                    else
+                    {
+                        editSession.Cancel();
+                    }
+                }
+                //
+#if TRACE
+                stopWatch.Stop();
+                // Get the elapsed time as a TimeSpan value.
+                TimeSpan ts = stopWatch.Elapsed;
+
+                // Format and display the TimeSpan value.
+                string elapsedTime = string.Format("{0:00}h {1:00}m {2:00}.{3:00}s",
+                    ts.Hours, ts.Minutes, ts.Seconds,
+                    ts.Milliseconds / 10);
+                //
+                XSharpProjectPackage.Instance.DisplayOutPutMessage("FormatDocument : Done in " + elapsedTime);
+#endif
+            }
+            else
+                formatCaseForWholeBuffer();
+            //
+            XSharpProjectPackage.Instance.DisplayOutPutMessage("CommandFilter.FormatDocument() <<--");
+        }
+
+        private int getLineLengthV2(ITextSnapshot snapshot, int start)
+        {
+            int length = 0;
+            bool found = false;
+            char car;
+            int currrentPos = start;
+            int pos = 0;
+            bool mayContinue = false;
+            char[] newLine = Environment.NewLine.ToCharArray();
+            do
+            {
+                car = snapshot[currrentPos];
+                if (car == newLine[pos])
+                {
+                    if (pos == newLine.Length - 1)
+                    {
+                        if (!mayContinue)
+                        {
+                            found = true;
+                            break;
+                        }
+                        pos = 0;
+                    }
+                    else
+                        pos++;
+                }
+                else
+                {
+                    if (car == ';')
+                        mayContinue = true;
+                    else
+                        mayContinue = false;
+                    pos = 0;
+                }
+                //
+                currrentPos++;
+                if (currrentPos >= snapshot.Length)
+                {
+                    break;
+                }
+            } while (!found);
+            //
+            if (found)
+            {
+                length = (currrentPos - start + 1) - newLine.Length;
+            }
+            return length;
+        }
+
+        private int getDesiredIndentationInDocumentV2(FormattingContext context, ITextSnapshotLine snapLine, List<Region> regions, out bool inComment)
+        {
+            int indentValue = 0;
+            int mlCmtSpaces = 0;
+            //string openKeyword = "";
+            inComment = false;
+            //
+            //List<IMappingTagSpan<IClassificationTag>> tags = getTagsInLine(snapLine);
+            // In Tuple Regions, the items are :
+            // Item1 is Start
+            // Item2 is End
+            foreach (var region in regions)
+            {
+                // The line is before the current region, so skip
+                if (snapLine.End.Position < region.Start.TagSpan.Start)
+                {
+                    continue;
+                }
+                // The line is after the current region, so skip
+                if (snapLine.Start.Position > region.End.TagSpan.Start)
+                {
+                    continue;
+                }
+                // Get the opening keyword, at the beginning of the currently processed region
+                int startTokenType = region.Start.TagType;
+                int endTokenType = region.End.TagType; // Do we have a Closing Keyword ?
+                if (startTokenType == -1) // The parsing has not initialized it, do it now.
+                {
+                    int prevIndex = context.CurrentIndex;
+                    context.MoveTo(region.Start.TagSpan.Start);
+                    IToken openKeyword = context.GetFirstToken(true);
+                    if (openKeyword == null)
+                    {
+                        XSharpProjectPackage.Instance.DisplayOutPutMessage("FormatDocument : Error when moving in Tokens");
+                        continue; // This should never happen
+                    }
+                    startTokenType = openKeyword.Type;
+                    // save it for the next time...
+                    region.Start.TagType = startTokenType;
+                    context.CurrentIndex = prevIndex;
+                }
+                //
+                if ((snapLine.Start.Position <= region.Start.TagSpan.Start) && (snapLine.End.Position >= region.Start.TagSpan.Start))
+                {
+                    // We are on the line opening a Region
+                    // What kind of region ?
+                    // Skip comment and using regions
+                    switch (startTokenType)
+                    {
+                        case XSharpLexer.ML_COMMENT:
+                        case XSharpLexer.SL_COMMENT:
+                        case XSharpLexer.USING:
+                        case XSharpLexer.PP_INCLUDE:
+                        case XSharpLexer.PP_DEFINE:
+                        case XSharpLexer.PP_REGION:
+                            continue;
+                        case XSharpLexer.DEFINE:
+                            // Warning !! It could DEFINE CLASS in FOXPRO
+                            if (context.Dialect == XSharpDialect.FoxPro)
+                            {
+                                int prevIndex = context.CurrentIndex;
+                                context.CurrentIndex++;
+                                IToken openKeyword = context.GetFirstToken(true);
+                                if (openKeyword == null)
+                                {
+                                    XSharpProjectPackage.Instance.DisplayOutPutMessage("FormatDocument : Error when moving in Tokens");
+                                    continue; // This should never happen
+                                }
+                                context.CurrentIndex = prevIndex;
+                                if (openKeyword.Type != XSharpLexer.CLASS)
+                                    continue;
+                            }
+                            else
+                                continue;
+                            break;
+                        default:
+                            break;
+                    }
+                    // Move back keywords ( ELSE, ELSEIF, FINALLY, CATCH, RECOVER )
+                    switch (startTokenType)
+                    {
+                        case XSharpLexer.ELSE:
+                        case XSharpLexer.ELSEIF:
+                        case XSharpLexer.FINALLY:
+                        case XSharpLexer.CATCH:
+                        case XSharpLexer.RECOVER:
+                        case XSharpLexer.PP_ELSE:
+                            indentValue--;
+                            break;
+                    }
+                    // Some Users wants CASE/OTHERWISE to be aligned to the opening DO CASE
+                    // Check for a setting
+                    if (_alignDoCase)
+                    {
+                        // Move back keywords ( CASE, OTHERWISE )
+                        switch (startTokenType)
+                        {
+                            case XSharpLexer.CASE:
+                            case XSharpLexer.OTHERWISE:
+                                indentValue--;
+                                break;
+                        }
+                    }
+                }
+                else if ((snapLine.Start.Position > region.Start.TagSpan.Start) && (snapLine.End.Position < region.End.TagSpan.Start))
+                {
+                    // We are inside a Region
+                    // Comment or Using region ?
+                    switch (startTokenType)
+                    {
+                        case XSharpLexer.ML_COMMENT:
+                        case XSharpLexer.SL_COMMENT:
+                        case XSharpLexer.USING:
+                        case XSharpLexer.PP_INCLUDE:
+                        case XSharpLexer.PP_DEFINE:
+                        case XSharpLexer.PP_REGION:
+                            continue;
+                        case XSharpLexer.DEFINE:
+                            // Warning !! It could DEFINE CLASS in FOXPRO
+                            if (context.Dialect == XSharpDialect.FoxPro)
+                            {
+                                int prevIndex = context.CurrentIndex;
+                                context.CurrentIndex++;
+                                IToken openKeyword = context.GetFirstToken(true);
+                                if (openKeyword == null)
+                                {
+                                    XSharpProjectPackage.Instance.DisplayOutPutMessage("FormatDocument : Error when moving in Tokens");
+                                    continue; // This should never happen
+                                }
+                                context.CurrentIndex = prevIndex;
+                                if (openKeyword.Type != XSharpLexer.CLASS)
+                                    continue;
+                            }
+                            else
+                                continue;
+                            break;
+                        default:
+                            break;
+                    }
+                    // We are between the opening Keyword and the closing Keyword
+                    if (!_alignMethod)
+                    {
+
+                        indentValue++;
+                    }
+                    else
+                    {
+                        // no closing keyword
+                        switch (startTokenType)
+                        {
+                            case XSharpLexer.FUNCTION:
+                            case XSharpLexer.PROCEDURE:
+                            case XSharpLexer.CONSTRUCTOR:
+                            case XSharpLexer.DESTRUCTOR:
+                            case XSharpLexer.ASSIGN:
+                            case XSharpLexer.ACCESS:
+                            case XSharpLexer.METHOD:
+                            case XSharpLexer.OPERATOR:
+                                break;
+                            default:
+                                indentValue++;
+                                break;
+                        }
+                    }
+                    // Move back keywords ( ELSE, ELSEIF, FINALLY, CATCH, RECOVER )
+                    switch (startTokenType)
+                    {
+                        case XSharpLexer.ELSE:
+                        case XSharpLexer.ELSEIF:
+                        case XSharpLexer.FINALLY:
+                        case XSharpLexer.CATCH:
+                        case XSharpLexer.RECOVER:
+                        case XSharpLexer.PP_ELSE:
+                            indentValue--;
+                            break;
+                    }
+                }
+                else //if ((region.Item2.Start >= snapLine.Start.Position) && (region.Item2.End <= snapLine.End.Position))
+                {
+                    // We are on the closing Keyword
+                    if (!_alignMethod)
+                    {
+                        switch (startTokenType)
+                        {
+                            case XSharpLexer.FUNCTION:
+                            case XSharpLexer.PROCEDURE:
+                            case XSharpLexer.CONSTRUCTOR:
+                            case XSharpLexer.DESTRUCTOR:
+                            case XSharpLexer.ASSIGN:
+                            case XSharpLexer.ACCESS:
+                            case XSharpLexer.METHOD:
+                            case XSharpLexer.OPERATOR:
+                                // per Default
+                                indentValue++;
+                                //
+                                switch (endTokenType)
+                                {
+                                    case XSharpLexer.END:
+                                        // We may have an optionnal closing keyword indication
+                                        indentValue--;
+                                        break;
+                                }
+                                break;
+                        }
+                    }
+                    //
+                    if (!_alignDoCase)
+                    {
+                        // Don't indent
+                        // Move back keywords ( CASE, OTHERWISE )
+                        switch (startTokenType)
+                        {
+                            case XSharpLexer.CASE:
+                            case XSharpLexer.OTHERWISE:
+                                indentValue++;
+                                break;
+                        }
+                    }
+
+                }
+                //}
+                //}
+            }
+            //}
+            // This should NOT happen
+            if (indentValue < 0)
+            {
+                indentValue = 0;
+            }
+            //
+            return (indentValue * _indentSize) + mlCmtSpaces;
+        }
+
+        private void formatLineCaseV2(FormattingContext context, ITextEdit editSession, ITextSnapshotLine line)
+        {
+            if (XSharpProjectPackage.Instance.DebuggerIsRunning)
+            {
+                return;
+            }
+            if (!canFormatLine(line))
+            {
+                return;
+            }
+
+            getEditorPreferences(TextView);
+            if (_keywordCase == KeywordCase.None)
+            {
+                return;
+            }
+            XSharpProjectPackage.Instance.DisplayOutPutMessage($"CommandFilter.formatLineCaseV2({line.LineNumber + 1})");
+            //
+            context.MoveTo(line.Start);
+            IToken token = context.GetToken(true, true, true);
+            while ( token != null )
+            {
+                if (currentLine == line.LineNumber)
+                {
+                    // do not update tokens touching or after the caret
+                    // after typing String it was already uppercasing even when I wanted to type StringComparer
+                    // now we wait until the user has typed an extra character. That will trigger another session.
+                    // (in this case the C, but it could also be a ' ' or tab and then it would match the STRING keyword)
+                    int caretPos = this.TextView.Caret.Position.BufferPosition.Position;
+                    if ( token.StopIndex < caretPos - 1)
+                    {
+                        formatToken(editSession, 0, token);
+                    }
+                    else
+                    {
+                        // Come back later.
+                        registerLineForCaseSync(line.LineNumber);
+                        break;
+                    }
+                }
+                else
+                {
+                    formatToken(editSession, 0, token);
+                }
+                //
+                token = context.GetToken(true, true, true);
+            }
+            
         }
         #endregion
 

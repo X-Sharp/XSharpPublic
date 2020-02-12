@@ -1,6 +1,10 @@
-#using System.Windows.Forms
-#using System.Drawing
-#using System.Collections.Generic
+USING System.Windows.Forms
+USING System.Drawing
+USING System.Collections.Generic
+USING System.Reflection
+USING System.IO
+
+
 
 INTERNAL CLASS ToolBoxButton INHERIT Button
 	PROTECT oTemplate AS VOControlTemplate
@@ -19,6 +23,8 @@ INTERNAL CLASS ToolBoxButton INHERIT Button
 		SELF:Dock := DockStyle.Top
 		SELF:TextAlign := ContentAlignment.MiddleLeft
 		SELF:FlatStyle := FlatStyle.Flat
+		SELF:ImageAlign := ContentAlignment.MiddleLeft
+		SELF:TextImageRelation := TextImageRelation.ImageBeforeText
 	RETURN
 	ACCESS Template AS VOControlTemplate
 	RETURN SELF:oTemplate
@@ -53,6 +59,7 @@ CLASS ToolBox INHERIT Panel
 
 		LOCAL oTemplate AS VOControlTemplate
 		LOCAL oButton AS ToolBoxButton
+		LOCAL oImageList AS ImageList
 		LOCAL n AS INT
 
 		SELF:AutoScroll := TRUE
@@ -62,12 +69,23 @@ CLASS ToolBox INHERIT Panel
 			RETURN
 		ENDIF
 		
+		LOCAL oAssembly AS Assembly
+		oAssembly := TypeOf(System.Windows.Forms.Form):Assembly
+		oImageList := ImageList{}
+		oImageList:TransparentColor := Color.Fuchsia
+		
 		FOR n := VOWindowEditorTemplate.Count - 1 DOWNTO 0
 			oTemplate := VOWindowEditorTemplate.Get(n)
 			IF (!oTemplate:lUse .or. oTemplate:lForm) //.and. n != 0
 				LOOP
 			ENDIF
 			oButton := ToolBoxButton{oTemplate}
+			oImageList:Images:Add((Bitmap)Image.FromStream(oAssembly:GetManifestResourceStream(SELF:ImageNameFromTemplate(oTemplate))))
+			oButton:ImageList := oImageList
+			oButton:ImageIndex := oImageList:Images:Count - 1
+			oButton:Text := "   " + oButton:Text
+			
+			
 			oButton:Click += EventHandler{ SELF , @ButtonClicked() }
 			SELF:Controls:Add(oButton)
 		NEXT
@@ -111,6 +129,68 @@ CLASS ToolBox INHERIT Panel
 		SELF:SetViewMode(ViewMode.Form)
 		SELF:SelectPointer()
 	RETURN
+	PROTECTED METHOD ImageNameFromTemplate(oTemplate AS VOControlTemplate) AS STRING
+		LOCAL cRet AS STRING
+		LOCAL cClass AS STRING
+		cClass := oTemplate:cFullClass:ToUpperInvariant()
+		DO CASE 
+		CASE cClass:StartsWith("CONTROL:CUSTOMCONTROL:BBROWSER")
+			cRet := "System.Windows.Forms.DataGridView.bmp"
+		CASE cClass:StartsWith("CONTROL:TEXTCONTROL:BASELISTBOX:COMBOBOX")
+			cRet := "System.Windows.Forms.ComboBox.bmp"
+		CASE cClass:StartsWith("CONTROL:TEXTCONTROL:BASELISTBOX:LISTBOX")
+			cRet := "System.Windows.Forms.ListBox.bmp"
+		CASE cClass:StartsWith("CONTROL:COMMONCONTROL:LISTVIEW")
+			cRet := "System.Windows.Forms.ListView.bmp"
+		CASE cClass:StartsWith("CONTROL:COMMONCONTROL:TREEVIEW")
+			cRet := "System.Windows.Forms.TreeView.bmp"
+		CASE cClass:StartsWith("CONTROL:COMMONCONTROL:TABCONTROL")
+			cRet := "System.Windows.Forms.TabControl.bmp"
+		CASE cClass:StartsWith("CONTROL:TEXTCONTROL:MONTHCALENDAR")
+			cRet := "System.Windows.Forms.MonthCalendar.bmp"
+		CASE cClass:StartsWith("CONTROL:TEXTCONTROL:DATETIMEPICKER")
+			cRet := "System.Windows.Forms.DateTimePicker.bmp"
+		CASE cClass:StartsWith("CONTROL:COMMONCONTROL:PROGRESSBAR")
+			cRet := "System.Windows.Forms.ProgressBar.bmp"
+		CASE cClass:StartsWith("CONTROL:TEXTCONTROL:GROUPBOX") .or. ; 
+			cClass:StartsWith("CONTROL:TEXTCONTROL:RADIOBUTTONGROUP")
+			cRet := "System.Windows.Forms.GroupBox.bmp"
+		CASE cClass:StartsWith("CONTROL:TEXTCONTROL:FIXEDTEXT")
+			cRet := "System.Windows.Forms.Label.bmp"
+		CASE cClass:StartsWith("CONTROL:TEXTCONTROL:BUTTON:RADIOBUTTON")
+			cRet := "System.Windows.Forms.RadioButton.bmp"
+		CASE cClass:StartsWith("CONTROL:TEXTCONTROL:BUTTON:PUSHBUTTON")
+			cRet := "System.Windows.Forms.Button.bmp"
+		CASE cClass:StartsWith("CONTROL:COMMONCONTROL:ANIMATIONCONTROL")
+			cRet := "System.Windows.Forms.NotifyIcon.bmp"
+		CASE cClass:StartsWith("CONTROL:TEXTCONTROL:BUTTON:CHECKBOX")
+			cRet := "System.Windows.Forms.CheckBox.bmp"
+		CASE cClass:StartsWith("CONTROL:SCROLLBAR:VERTICALSCROLLBAR")
+			cRet := "System.Windows.Forms.VScrollBar.bmp"
+		CASE cClass:StartsWith("CONTROL:SCROLLBAR:HORIZONTALSCROLLBAR")
+			cRet := "System.Windows.Forms.HScrollBar.bmp"
+		CASE cClass:StartsWith("CONTROL:FIXEDBITMAP") .or. ;
+			cClass:StartsWith("CONTROL:FIXEDICON")
+			cRet := "System.Windows.Forms.PictureBox.bmp"
+		CASE cClass:StartsWith("CONTROL:TEXTCONTROL:EDIT:MULTILINEEDIT:RICHEDIT")
+			cRet := "System.Windows.Forms.RichTextBox.bmp"
+		CASE cClass:StartsWith("CONTROL:SCROLLBAR:SPINNER:HORIZONTALSPINNER") .or. ;
+			cClass:StartsWith("CONTROL:SCROLLBAR:SPINNER:VERTICALSPINNER")
+			cRet := "System.Windows.Forms.NumericUpDown.bmp"
+		CASE cClass:StartsWith("CONTROL:SCROLLBAR:SLIDER:VERTICALSLIDER") .or. ;
+			cClass:StartsWith("CONTROL:SCROLLBAR:SLIDER:HORIZONTALSLIDER")
+			cRet := "System.Windows.Forms.TrackBar.bmp"
+		CASE cClass:StartsWith("CONTROL:TEXTCONTROL:IPADDRESS") .or. ;
+			cClass:StartsWith("CONTROL:TEXTCONTROL:HOTKEYEDIT") .or. ;
+			cClass:StartsWith("CONTROL:TEXTCONTROL:EDIT:MULTILINEEDIT") .or. ;
+			cClass:StartsWith("CONTROL:TEXTCONTROL:EDIT:SINGLELINEEDIT") .or. ;
+			cClass:StartsWith("CONTROL:TEXTCONTROL:IPADDRESS")
+			cRet := "System.Windows.Forms.TextBox.bmp"
+		OTHERWISE
+			cRet := "System.Windows.Forms.Panel.bmp"
+		END CASE
+	RETURN cRet
+	
 	METHOD SetViewMode(eViewMode AS ViewMode) AS VOID
 		LOCAL n AS INT
 		IF eViewMode == ViewMode.Auto

@@ -2649,7 +2649,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     }
                     else
                     {
-                        list.Add(GenerateLiteral(token.Text));
+                        var id = _syntaxFactory.IdentifierName(SyntaxFactory.MakeIdentifier(token.Text.ToUpper()));
+                        list.Add(id);
                     }
                 }
 

@@ -59,7 +59,7 @@ STATIC CLASS WinFormsConverter
 			cPrg := cAppFolder + "\" + cFileName + ".prg"
 			oApp:AddModule(cFileName, ""):HasDesignerChild := TRUE
 
-			LOCAL oWriter AS StreamWriter
+			LOCAL oWriter := NULL AS StreamWriter
 			IF xPorter.ExportToXide
 				oWriter := StreamWriter{cPrg + ".wed" , FALSE , Encoding.Default}
 				oWriter:WriteLine(String.Format("DESIGNERSTART = Form,Form,{0}" , oMainWed:Name ) )

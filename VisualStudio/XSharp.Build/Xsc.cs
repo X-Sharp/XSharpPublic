@@ -481,6 +481,7 @@ namespace XSharp.Build
             var commandLine = new XSharpCommandLineBuilder(false);
             commandLine.AppendWhenTrue("/noconfig", base.Bag, nameof(NoConfig));
             commandLine.AppendWhenTrue("/shared", base.Bag, nameof(UseSharedCompilation));
+            commandLine.AppendWhenTrue("/cs", base.Bag, nameof(CS));
             return commandLine.ToString();
         }
 
@@ -679,7 +680,7 @@ namespace XSharp.Build
                 commandline.AppendSwitch("/ns:" + this.RootNameSpace);
             }
             commandline.AppendPlusOrMinusSwitch("/az", base.Bag, nameof(AZ));
-            //commandline.AppendPlusOrMinusSwitch("/cs", base.Bag, nameof(CS));
+            commandline.AppendPlusOrMinusSwitch("/cs", base.Bag, nameof(CS));
             commandline.AppendPlusOrMinusSwitch("/initlocals", base.Bag, nameof(InitLocals));
             commandline.AppendPlusOrMinusSwitch("/ins", base.Bag, nameof(INS));
             commandline.AppendPlusOrMinusSwitch("/lb", base.Bag, nameof(LB));

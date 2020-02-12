@@ -12,6 +12,7 @@
     <DefaultName>ClassLibrary</DefaultName>
     <ProvideDefaultName>true</ProvideDefaultName>
     <RequiredFrameworkVersion>2.0</RequiredFrameworkVersion>
+    <PreviewImage>ClassLibrary.png</PreviewImage>
     <LanguageTag Value="X#" />
     <PlatformTag Value="Windows" />
     <PlatformTag Value="Linux" />

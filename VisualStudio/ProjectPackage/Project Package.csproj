@@ -52,7 +52,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>$(BaseOutputPath)\$(Configuration)</OutputPath>
-    <DefineConstants>DEBUG;XSHARP; SMARTINDENT</DefineConstants>
+    <DefineConstants>DEBUG;XSHARP; SMARTINDENT;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
@@ -418,6 +418,20 @@
       <DependentUpon>XSharpSLEPropertyForm.cs</DependentUpon>
     </Compile>
     <Compile Include="PropertyPages\XSharpUITypeEditors.cs" />
+    <ZipProject Include="Templates\Projects\Windows\VOSdiApp\cavoded.tpl" />
+    <ZipProject Include="Templates\Projects\Windows\VOSdiApp\cavofed.tpl" />
+    <ZipProject Include="Templates\Projects\Windows\VOSdiApp\cavowed.tpl" />
+    <ZipProject Include="Templates\Projects\Windows\VOSdiApp\cctl6.man" />
+    <ZipProject Include="Templates\Projects\Windows\VOSdiApp\Help About.HELPABOUT.xsfrm" />
+    <ZipProject Include="Templates\Projects\Windows\VOSdiApp\SDI Menus.EmptySDIMenu.xsmnu" />
+    <ZipProject Include="Templates\Projects\Windows\VOSdiApp\SDI Menus.StandardSDIMenu.xsmnu" />
+    <ZipProject Include="Templates\Projects\Windows\VOMdiApp\cctl6.man" />
+    <ZipProject Include="Templates\Projects\Windows\VOMdiApp\Help About.HELPABOUT.xsfrm" />
+    <ZipProject Include="Templates\Projects\Windows\VOMdiApp\cavoded.tpl" />
+    <ZipProject Include="Templates\Projects\Windows\VOMdiApp\cavofed.tpl" />
+    <ZipProject Include="Templates\Projects\Windows\VOMdiApp\cavowed.tpl" />
+    <ZipProject Include="Templates\Projects\Windows\VOMdiApp\Standard Menus.EmptyShellMenu.xsmnu" />
+    <ZipProject Include="Templates\Projects\Windows\VOMdiApp\Standard Menus.StandardShellMenu.xsmnu" />
     <ZipProject Include="Templates\Projects\Test\TestNUnit\packages.config" />
     <ZipProject Include="Templates\Projects\Test\TestXUnit\packages.config" />
     <ZipItem Include="Templates\ProjectItems\WPF\WPFFlowDocument\WPFFlowDocument.vstemplate" />
@@ -452,9 +466,9 @@
     <ZipProject Include="Templates\Projects\Windows\Console\ConsoleApplication.png" />
     <ZipProject Include="Templates\Projects\Windows\WinFormApp\WinFormApp.png" />
     <ZipProject Include="Templates\Projects\Windows\WPFApplication\WPFApplication.png" />
-    <ZipProject Include="Templates\Projects\Windows\VulcanApp\VulcanApplication.png" />
-    <ZipProject Include="Templates\Projects\Windows\VulcanApp\VulcanApplication.vstemplate" />
-    <ZipProject Include="Templates\Projects\Windows\VulcanApp\Readme.txt" />
+    <ZipProject Include="Templates\Projects\Windows\VulcanConsole\VulcanConsole.png" />
+    <ZipProject Include="Templates\Projects\Windows\VulcanConsole\VulcanConsole.vstemplate" />
+    <ZipProject Include="Templates\Projects\Windows\VulcanConsole\Readme.txt" />
     <ZipItem Include="Templates\ProjectItems\WPF\WPFFlowDocument\WPFFlowDocument.png" />
     <ZipItem Include="Templates\ProjectItems\WPF\WPFPageFunction\WPFPageFunction.png" />
     <ZipItem Include="Templates\ProjectItems\WPF\WPFPage\WPFPage.png" />
@@ -506,6 +520,60 @@
     <ZipProject Include="Templates\Projects\Windows\VFPConsole\VFPConsole.vstemplate" />
     <ZipProject Include="Templates\Projects\Windows\VFPConsole\VFPConsole.xsproj" />
     <ZipProject Include="Templates\Projects\ClassLibraries\ClassLibraryCore\CoreClassLibrary.xsproj" />
+    <ZipProject Include="Templates\Projects\Windows\VOMdiApp\Help About.HelpAbout.rc" />
+    <ZipProject Include="Templates\Projects\Windows\VOMdiApp\Help About.POWXSHARPBMP.rc" />
+    <ZipProject Include="Templates\Projects\Windows\VOMdiApp\Help About.prg" />
+    <ZipProject Include="Templates\Projects\Windows\VOMdiApp\Standard Shell.Manifest.rc" />
+    <ZipProject Include="Templates\Projects\Windows\VOMdiApp\AssemblyInfo.prg" />
+    <ZipProject Include="Templates\Projects\Windows\VOMdiApp\cavowed.inf" />
+    <ZipProject Include="Templates\Projects\Windows\VOMdiApp\HelpAbt.BMP" />
+    <ZipProject Include="Templates\Projects\Windows\VOMdiApp\XSharp.ICO" />
+    <ZipProject Include="Templates\Projects\Windows\VOMdiApp\Standard Menus.EmptyShellMenu.rc" />
+    <ZipProject Include="Templates\Projects\Windows\VOMdiApp\Standard Menus.EmptyShellMenu_Accelerator.rc" />
+    <ZipProject Include="Templates\Projects\Windows\VOMdiApp\Standard Menus.prg" />
+    <ZipProject Include="Templates\Projects\Windows\VOMdiApp\Standard Menus.StandardShellMenu.rc" />
+    <ZipProject Include="Templates\Projects\Windows\VOMdiApp\Standard Menus.StandardShellMenu_Accelerator.rc" />
+    <ZipProject Include="Templates\Projects\Windows\VOMdiApp\Standard Menus.VS_VERSION_INFO.rc" />
+    <ZipProject Include="Templates\Projects\Windows\VOMdiApp\Standard Shell.IDI_STANDARDICON.rc" />
+    <ZipProject Include="Templates\Projects\Windows\VOMdiApp\Standard Shell.prg" />
+    <ZipProject Include="Templates\Projects\Windows\VOMdiApp\Start.prg" />
+    <ZipProject Include="Templates\Projects\Windows\VOMdiApp\VOMDIApp.png" />
+    <ZipProject Include="Templates\Projects\Windows\VOMdiApp\VOMDIApp.vstemplate" />
+    <ZipProject Include="Templates\Projects\Windows\VOMdiApp\VOMDIApp.xsproj" />
+    <ZipProject Include="Templates\Projects\Windows\VOSdiApp\AssemblyInfo.prg" />
+    <ZipProject Include="Templates\Projects\Windows\VOSdiApp\cavowed.inf" />
+    <ZipProject Include="Templates\Projects\Windows\VOSdiApp\Help About.HelpAbout.rc" />
+    <ZipProject Include="Templates\Projects\Windows\VOSdiApp\Help About.POWXSHARPBMP.rc" />
+    <ZipProject Include="Templates\Projects\Windows\VOSdiApp\Help About.prg" />
+    <ZipProject Include="Templates\Projects\Windows\VOSdiApp\HelpAbt.BMP" />
+    <ZipProject Include="Templates\Projects\Windows\VOSdiApp\SDI Menus.EmptySDIMenu.rc" />
+    <ZipProject Include="Templates\Projects\Windows\VOSdiApp\SDI Menus.EmptySDIMenu_Accelerator.rc" />
+    <ZipProject Include="Templates\Projects\Windows\VOSdiApp\SDI Menus.prg" />
+    <ZipProject Include="Templates\Projects\Windows\VOSdiApp\SDI Menus.StandardSDIMenu.rc" />
+    <ZipProject Include="Templates\Projects\Windows\VOSdiApp\SDI Menus.StandardSDIMenu_Accelerator.rc" />
+    <ZipProject Include="Templates\Projects\Windows\VOSdiApp\SDI Menus.VS_VERSION_INFO.rc" />
+    <ZipProject Include="Templates\Projects\Windows\VOSdiApp\Standard SDI.IDI_STANDARDICON.rc" />
+    <ZipProject Include="Templates\Projects\Windows\VOSdiApp\Standard SDI.prg" />
+    <ZipProject Include="Templates\Projects\Windows\VOSdiApp\Start.prg" />
+    <ZipProject Include="Templates\Projects\Windows\VOSdiApp\VOSdiApp.png" />
+    <ZipProject Include="Templates\Projects\Windows\VOSdiApp\VOSdiApp.vstemplate" />
+    <ZipProject Include="Templates\Projects\Windows\VOSdiApp\VOSDIApp.xsproj" />
+    <ZipProject Include="Templates\Projects\Windows\VOSdiApp\XSharp.ico" />
+    <ZipProject Include="Templates\Projects\Windows\VOSdiApp\Standard SDI.Manifest.rc" />
+    <ZipProject Include="Templates\Projects\Windows\VOMdiApp\Readme.txt" />
+    <ZipProject Include="Templates\Projects\Windows\VOSdiApp\Readme.txt" />
+    <ZipProject Include="Templates\Projects\Windows\XPPConsole\AssemblyInfo.prg" />
+    <ZipProject Include="Templates\Projects\Windows\XPPConsole\Program.prg" />
+    <ZipProject Include="Templates\Projects\Windows\XPPConsole\XPPConsole.png" />
+    <ZipProject Include="Templates\Projects\Windows\XPPConsole\XPPConsole.vstemplate" />
+    <ZipProject Include="Templates\Projects\Windows\XPPConsole\XPPConsole.xsproj" />
+    <ZipProject Include="Templates\Projects\ClassLibraries\ClassLibraryVulcan\AssemblyInfo.prg" />
+    <ZipProject Include="Templates\Projects\ClassLibraries\ClassLibraryVulcan\Class1.prg" />
+    <ZipProject Include="Templates\Projects\ClassLibraries\ClassLibraryVulcan\VulcanClassLibrary.png" />
+    <ZipProject Include="Templates\Projects\ClassLibraries\ClassLibraryVulcan\VulcanClassLibrary.vstemplate">
+      <SubType>Designer</SubType>
+    </ZipProject>
+    <ZipProject Include="Templates\Projects\ClassLibraries\ClassLibraryVulcan\VulcanClassLibrary.xsproj" />
     <Content Include="XSharp.png" />
     <VSCTCompile Include="XSharpProjectPackage.vsct">
       <ResourceName>Menus.ctmenu</ResourceName>
@@ -581,9 +649,9 @@
     <ZipItem Include="Templates\ProjectItems\Internal\SettingsInternal\Settings.settings">
     </ZipItem>
     <ZipProject Include="Templates\Projects\Windows\WinFormApp\App.config" />
-    <ZipProject Include="Templates\Projects\Windows\VulcanApp\AssemblyInfo.prg" />
-    <ZipProject Include="Templates\Projects\Windows\VulcanApp\Program.prg" />
-    <ZipProject Include="Templates\Projects\Windows\VulcanApp\VulcanApplication.xsproj" />
+    <ZipProject Include="Templates\Projects\Windows\VulcanConsole\AssemblyInfo.prg" />
+    <ZipProject Include="Templates\Projects\Windows\VulcanConsole\Program.prg" />
+    <ZipProject Include="Templates\Projects\Windows\VulcanConsole\VulcanConsole.xsproj" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>

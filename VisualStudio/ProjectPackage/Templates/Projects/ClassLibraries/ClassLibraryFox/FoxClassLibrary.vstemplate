@@ -12,10 +12,11 @@
     <DefaultName>ClassLibrary</DefaultName>
     <ProvideDefaultName>true</ProvideDefaultName>
     <RequiredFrameworkVersion>2.0</RequiredFrameworkVersion>
+    <PreviewImage>FoxClassLibrary.png</PreviewImage>
     <LanguageTag Value="X#" />
     <PlatformTag Value="Windows" />
     <ProjectTypeTag Value="Library" />
-
+    <ProjectTypeTag Value="VFP" />
   </TemplateData>
   <TemplateContent>
     <Project File="FoxClassLibrary.xsproj" ReplaceParameters="true">

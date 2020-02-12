@@ -23,7 +23,7 @@ USING LanguageService.CodeAnalysis.XSharp
 //return
 //
 BEGIN NAMESPACE XSharpModel
-	CLASS Parser
+	PARTIAL CLASS Parser
 		STATIC PROTECT oEntityMarkers AS Dictionary<STRING , STRING>
 		STATIC PROTECT oEntityVisibility AS Dictionary<STRING , STRING>
 		STATIC PROTECT oDirectives AS Dictionary<STRING , STRING>

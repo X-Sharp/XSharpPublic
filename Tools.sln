@@ -9,6 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Common\Constants.cs = Common\Constants.cs
 		Common\constants.prg = Common\constants.prg
 		VisualStudio\README.md = VisualStudio\README.md
+		Tools\SHFB\readme.txt = Tools\SHFB\readme.txt
 		Common\version.xh = Common\version.xh
 	EndProjectSection
 EndProject
@@ -27,6 +28,16 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShfDocChanger", "Tools\ShfDocChanger\ShfDocChanger.csproj", "{17C979AE-D2BD-4A9B-AE5C-71AF761F9500}"
 EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "VoDocLifter", "Tools\VODocLifter\VoDocLifter.xsproj", "{DEB5F78F-B72D-41B3-B726-D4E4E704257D}"
+EndProject
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "FoxDocLifter", "Tools\FoxDocLifter\FoxDocLifter.xsproj", "{FCB34B74-99C6-474C-8914-B56C1A4CF0C8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XSharpPlugin", "Tools\SHFB\XSharpPlugin\XSharpPlugin.csproj", "{9E903F77-F7C7-4440-8508-7A30A4FA43FD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SHFB", "SHFB", "{15CFBDC7-31AA-4D54-8FBE-08F1F1F6D0BF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XSharpSyntax", "Tools\SHFB\XSharpSyntax\XSharpSyntax.csproj", "{8E45C5BD-C5F7-4C00-8FB2-EC84413626D0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XSharpVs", "Tools\SHFB\XSharpVs\XSharpVs.csproj", "{770CC19A-4BF3-4755-A293-39E9B20739D7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -66,9 +77,30 @@ Global
 		{DEB5F78F-B72D-41B3-B726-D4E4E704257D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DEB5F78F-B72D-41B3-B726-D4E4E704257D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DEB5F78F-B72D-41B3-B726-D4E4E704257D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FCB34B74-99C6-474C-8914-B56C1A4CF0C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FCB34B74-99C6-474C-8914-B56C1A4CF0C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FCB34B74-99C6-474C-8914-B56C1A4CF0C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FCB34B74-99C6-474C-8914-B56C1A4CF0C8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9E903F77-F7C7-4440-8508-7A30A4FA43FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E903F77-F7C7-4440-8508-7A30A4FA43FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9E903F77-F7C7-4440-8508-7A30A4FA43FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9E903F77-F7C7-4440-8508-7A30A4FA43FD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8E45C5BD-C5F7-4C00-8FB2-EC84413626D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E45C5BD-C5F7-4C00-8FB2-EC84413626D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E45C5BD-C5F7-4C00-8FB2-EC84413626D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E45C5BD-C5F7-4C00-8FB2-EC84413626D0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{770CC19A-4BF3-4755-A293-39E9B20739D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{770CC19A-4BF3-4755-A293-39E9B20739D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{770CC19A-4BF3-4755-A293-39E9B20739D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{770CC19A-4BF3-4755-A293-39E9B20739D7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{9E903F77-F7C7-4440-8508-7A30A4FA43FD} = {15CFBDC7-31AA-4D54-8FBE-08F1F1F6D0BF}
+		{8E45C5BD-C5F7-4C00-8FB2-EC84413626D0} = {15CFBDC7-31AA-4D54-8FBE-08F1F1F6D0BF}
+		{770CC19A-4BF3-4755-A293-39E9B20739D7} = {15CFBDC7-31AA-4D54-8FBE-08F1F1F6D0BF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DA4165FA-4A05-4C65-81EC-8F3AE3D23F53}

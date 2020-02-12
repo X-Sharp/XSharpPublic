@@ -2892,7 +2892,7 @@ namespace XSharpLanguage
                 {
 #if TRACE
                         stopWatch.Stop();
-                        Support.Debug(String.Format("Retrieve current Type : Member cannot be null."));
+                        XSharpProjectPackage.Instance.DisplayOutPutMessage(String.Format("Retrieve current Type : Member cannot be null."));
 #endif
                     return null;
                 }
@@ -4644,7 +4644,7 @@ namespace XSharpLanguage
         /// <returns></returns>
         internal static IList<XVariable> GetLocals(this XTypeMember member, ITextSnapshot snapshot, int iCurrentLine, XSharpDialect dialect)
         {
-            var sourceWalker = new SourceWalker(member.File);
+            //var sourceWalker = new SourceWalker(member.File);
             // get the text of the member
             iCurrentLine = Math.Min(snapshot.LineCount - 1, iCurrentLine);
             // create a walker with just the contents of the current member

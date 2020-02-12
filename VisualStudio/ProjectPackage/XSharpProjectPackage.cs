@@ -555,9 +555,13 @@ namespace XSharp.Project
         public int OnShellPropertyChange(int propid, object var)
         {
             // A modal dialog has been opened. Editor Options ?
-            if (propid == (int)__VSSPROPID4.VSSPROPID_IsModal)
+            if (propid == (int)__VSSPROPID4.VSSPROPID_IsModal && var is Boolean)
             {
-                CommandFilter.InvalidateOptions();
+                // when modal window closes
+                if (!(Boolean) var)
+                {
+                    CommandFilter.InvalidateOptions();
+                }
             }
             return VSConstants.S_OK;
         }

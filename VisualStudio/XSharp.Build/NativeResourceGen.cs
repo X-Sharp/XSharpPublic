@@ -11,13 +11,14 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 using Microsoft.Win32;
-
 namespace XSharp.Build {
 
     public class NativeResourceCompiler : ToolTask {
 
         const string outputName = "NativeResources.res";
+        const string defines = "NativeResourceDefines.xh";
         static string InstallPath = String.Empty;
+        static string RootPath = String.Empty;
         /// <summary>
         /// Read XSharp Installation location from the Registry
         /// </summary>
@@ -30,17 +31,17 @@ namespace XSharp.Build {
 
             try
             {
-                InstallPath = (string)Registry.GetValue(node, XSharp.Constants.RegistryValue, "");
+                RootPath = (string)Registry.GetValue(node, XSharp.Constants.RegistryValue, "");
             }
             catch (Exception)
             {
                 // Registry entry not found  x64 ?
             }
-            if (string.IsNullOrEmpty(InstallPath))
+            if (string.IsNullOrEmpty(RootPath))
             {
-                InstallPath = @"C:\Program Files (x86)\XSharp";
+                RootPath = @"C:\Program Files (x86)\XSharp";
             }
-            InstallPath = System.IO.Path.Combine(InstallPath, "Bin");
+            InstallPath = System.IO.Path.Combine(RootPath, "Bin");
         }
 
         public NativeResourceCompiler() : base()
@@ -101,8 +102,8 @@ namespace XSharp.Build {
         protected override string GenerateCommandLineCommands() {
             StringBuilder cmdline = null;
             cmdline = new StringBuilder();
-            cmdline.Append("/i \"" + this.XSharpIncludedir + "\" /v /x ");
-            cmdline.Append("/fo \"" + this.outputFileName + "\"");
+            cmdline.Append($"/i \"{this.XSharpIncludedir}\" /v /x ");
+            cmdline.Append($"/fo \"{this.outputFileName}\"");
             if(EmitDebugInformation)
                 cmdline.Append(" /dDEBUG");
             else
@@ -135,15 +136,19 @@ namespace XSharp.Build {
             string Result = null;
             cmds = new StringBuilder();
             if (this.numberofInputFiles > 0) {
-                cmds.Append("#define __VERSION__ " + Constants.Version.Replace(".","")  + " \r\n");
-                foreach(var item in this.Sources) {
+                cmds.AppendLine("#define __VERSION__ " + Constants.FileVersion.Replace(".","") );
+                var rcinclude =this.NativeResourceInclude;
+                if (System.IO.File.Exists(rcinclude))
+                {
+                    cmds.AppendLine($"#include \"{rcinclude}\"");
+                }
+                // VS_VERSION_INFO and other defines that could be used for version resources
+                foreach (var item in this.Sources) {
                     try {
                         var fileName = item.GetMetadata("Fullpath");
                         if (System.IO.File.Exists(fileName))
                         {
-                            cmds.Append("#include \"");
-                            cmds.Append(fileName);
-                            cmds.Append("\"\r\n");
+                            cmds.AppendLine ($"#include \"{fileName}\"");
                         }
                     }
                     catch (Exception e) {
@@ -370,6 +375,16 @@ namespace XSharp.Build {
                 if (defincpath.EndsWith(@"\"))
                    defincpath = defincpath.Substring(0, defincpath.Length - 1);
                 return defincpath;
+            }
+        }
+        protected string NativeResourceInclude
+        {
+            get
+            {
+                string result = null;
+                result = Path.Combine(RootPath, "include");
+                result = Path.Combine(result, defines);
+                return result;
             }
         }
     }

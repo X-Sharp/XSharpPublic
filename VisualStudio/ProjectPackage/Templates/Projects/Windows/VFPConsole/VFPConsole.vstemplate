@@ -2,8 +2,9 @@
 <VSTemplate Version="3.0.0" Type="Project" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" xmlns:sdk="http://schemas.microsoft.com/developer/vstemplate-sdkextension/2010">
   <TemplateData>
     <Name>FoxPro Console Application</Name>
-    <Description>A project for creating a command-line application in the FoxPro Dialect.</Description>
+    <Description>A project for creating a X# command-line application in the FoxPro Dialect.</Description>
     <Icon>VFPConsole.png</Icon>
+    <PreviewImage>VFPConsole.png</PreviewImage>
     <TemplateID>XSharp.VFPConsole</TemplateID>
     <ProjectType>XSharp</ProjectType>
     <RequiredFrameworkVersion>2.0</RequiredFrameworkVersion>
@@ -15,6 +16,7 @@
     <LanguageTag Value="X#" />
     <PlatformTag Value="Windows" />
     <ProjectTypeTag Value="Console" />
+    <ProjectTypeTag Value="VFP" />
   </TemplateData>
   <TemplateContent>
     <Project File="VFPConsole.xsproj" ReplaceParameters="true">

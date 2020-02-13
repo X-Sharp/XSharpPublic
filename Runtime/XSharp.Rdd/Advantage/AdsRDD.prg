@@ -837,7 +837,7 @@ VIRTUAL METHOD Lock(lockInfo REF DbLockInfo) AS LOGIC
 RETURN TRUE
 
       /// <inheritdoc />
-VIRTUAL METHOD Unlock(recordID AS OBJECT) AS LOGIC
+VIRTUAL METHOD UnLock(recordID AS OBJECT) AS LOGIC
     LOCAL result AS DWORD
     LOCAL dwRecno := 0 AS DWORD
     TRY

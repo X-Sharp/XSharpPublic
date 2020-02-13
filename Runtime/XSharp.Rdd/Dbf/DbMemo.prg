@@ -22,7 +22,7 @@ CLASS DbMemo
 	PROPERTY Extension 	AS STRING 	GET _Extension
 	PROPERTY Version 	AS BYTE 	GET _Version
 	PROPERTY MemoType	AS BYTE		GET _Type
-	PROPERTY Owner		AS Workarea 	GET _oRDD SET _oRDD := VALUE
+	PROPERTY Owner		AS Workarea 	GET _oRdd SET _oRdd := value
 		
 	#endregion
 		

@@ -18,7 +18,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         INTERNAL CONSTRUCTOR(cName AS STRING, nCodePage AS INT)
             SELF:HasCombi := FALSE
-            SELF:ResourceName := upper(cName)+"_"+nCodePage:ToString()
+            SELF:ResourceName := Upper(cName)+"_"+nCodePage:ToString()
             SELF:WorkBuffer := BYTE[]{512}
             SWITCH Upper(cName)
             CASE "CZECH"
@@ -59,7 +59,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 SWITCH nCodePage
                 CASE 437
                 CASE 1252
-                    ResourceName := upper(cName)+"_"+nCodePage:ToString()
+                    ResourceName := Upper(cName)+"_"+nCodePage:ToString()
                 OTHERWISE
                     SELF:Unsupported(cName, nCodePage)
                 END SWITCH
@@ -190,7 +190,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 SELF:Unsupported(cName, nCodePage)
             END SWITCH
 	        VAR rm := System.Resources.ResourceManager{ "XSharp.RDD.VfpCollations", TYPEOF(Functions):Assembly }
-	        VAR obj := rm:GetObject(resourcename+"_COLLATE") 
+	        VAR obj := rm:GetObject(ResourceName+"_COLLATE") 
 	        IF obj != NULL
 		        VAR bytes := obj ASTYPE BYTE[]
 		        IF bytes != NULL
@@ -198,7 +198,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 		        ENDIF
 	        ENDIF
             IF SELF:HasCombi
-	            obj := rm:GetObject(resourcename+"_COMBI") 
+	            obj := rm:GetObject(ResourceName+"_COMBI") 
 	            IF obj != NULL
 		            VAR bytes := obj ASTYPE BYTE[]
 		            IF bytes != NULL
@@ -264,9 +264,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 ENDIF
             NEXT
             FOR nI := nTargetOffSet TO bytes:Length -1
-                Workbuffer[nI] := 0
+                WorkBuffer[nI] := 0
             NEXT
-            System.Array.Copy(Workbuffer, bytes, bytes:Length)            
+            System.Array.Copy(WorkBuffer, bytes, bytes:Length)            
             RETURN TRUE
 
         PRIVATE METHOD TranslateWorker(bSource AS BYTE, nTargetOffSet REF LONG) AS LOGIC
@@ -318,9 +318,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 ENDIF
             NEXT
             FOR nI := nTargetOffSet TO bytes:Length -1
-                Workbuffer[nI] := 0
+                WorkBuffer[nI] := 0
             NEXT
-            System.Array.Copy(Workbuffer, bytes, bytes:Length)            
+            System.Array.Copy(WorkBuffer, bytes, bytes:Length)            
             RETURN TRUE
 
     END CLASS

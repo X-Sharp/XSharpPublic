@@ -10,7 +10,7 @@ USING XSharp.RDD.Support
 BEGIN NAMESPACE XSharp.RDD
     /// <summary>DBFDBT RDD. For DBF/DBT. No index support at this level</summary>
     CLASS DBFDBT INHERIT DBF
-        PRIVATE _oDBtMemo AS DbtMemo
+        PRIVATE _oDbtMemo AS DBTMemo
         PROPERTY Encoding AS Encoding GET SUPER:_Encoding
 
         CONSTRUCTOR
@@ -42,24 +42,24 @@ BEGIN NAMESPACE XSharp.RDD
             LOCAL oResult AS OBJECT
             SWITCH nOrdinal
             CASE DbInfo.DBI_MEMOHANDLE
-                IF ( SELF:_oDbtMemo != NULL .AND. SELF:_oDBtMemo:_Open)
+                IF ( SELF:_oDbtMemo != NULL .AND. SELF:_oDbtMemo:_Open)
                     oResult := SELF:_oDbtMemo:_hFile
                 ELSE
                     oResult := IntPtr.Zero
                 ENDIF
                     
             CASE DbInfo.DBI_MEMOEXT
-                IF ( SELF:_oDbtMemo != NULL .AND. SELF:_oDBtMemo:_Open)
+                IF ( SELF:_oDbtMemo != NULL .AND. SELF:_oDbtMemo:_Open)
                     oResult := System.IO.Path.GetExtension(SELF:_oDbtMemo:_FileName)
                 ELSE
                     oResult := DBT_MEMOEXT
                 ENDIF
                 IF oNewValue IS STRING VAR strExt
-                    DbtMemo.DefExt := strExt
+                    DBTMemo.DefExt := strExt
                 ENDIF
             CASE DbInfo.DBI_MEMOBLOCKSIZE
                 oResult := SELF:_oDbtMemo:BlockSize
-            CASE DBInfo.DBI_MEMOFIELD
+            CASE DbInfo.DBI_MEMOFIELD
                 SELF:ForceRel()
                 oResult := ""
                 IF oNewValue != NULL
@@ -67,9 +67,9 @@ BEGIN NAMESPACE XSharp.RDD
                        LOCAL fldPos AS LONG
                        fldPos := Convert.ToInt32(oNewValue)
                        oResult := SELF:GetValue(fldPos)
-                    CATCH ex AS exception
+                    CATCH ex AS Exception
                         oResult := ""   
-                        SELF:_dbfError(ex, SubCodes.ERDD_DATATYPE, GenCode.EG_DATATYPE, "DBFDBT.Info")
+                        SELF:_dbfError(ex, Subcodes.ERDD_DATATYPE, Gencode.EG_DATATYPE, "DBFDBT.Info")
                     END TRY
                 ENDIF
 			CASE DbInfo.DBI_MEMOTYPE
@@ -96,7 +96,7 @@ BEGIN NAMESPACE XSharp.RDD
         INTERNAL _Open      AS LOGIC
         PROTECT _Shared     AS LOGIC
         PROTECT _ReadOnly   AS LOGIC
-        PROTECT _oRDD       AS DBF
+        PROTECT _oRdd       AS DBF
         PROTECT _blockSize  AS SHORT
         PROTECT _lockScheme AS DbfLocking
         PROPERTY Shared AS LOGIC GET _Shared
@@ -112,7 +112,7 @@ BEGIN NAMESPACE XSharp.RDD
             END GET
             
             SET 
-                SELF:_blockSize := VALUE
+                SELF:_blockSize := value
             END SET
             
         END PROPERTY
@@ -125,7 +125,7 @@ BEGIN NAMESPACE XSharp.RDD
             SUPER(oRDD)
             SELF:_oRdd := oRDD
             SELF:_hFile := F_ERROR
-            SELF:_Shared := SELF:_oRDD:_Shared
+            SELF:_Shared := SELF:_oRdd:_Shared
             SELF:_ReadOnly := SELF:_oRdd:_ReadOnly
             // We should read the MEMOBLOCK setting here : 512 Per default
             SELF:_blockSize := 0
@@ -152,7 +152,7 @@ BEGIN NAMESPACE XSharp.RDD
             LOCAL blockLen := 0 AS LONG
             LOCAL memoBlock := NULL AS BYTE[]
             //
-            blockNbr := SELF:_oRDD:_getMemoBlockNumber( nFldPos )
+            blockNbr := SELF:_oRdd:_getMemoBlockNumber( nFldPos )
             IF ( blockNbr > 0 )
                 // Get the raw Length of the Memo
                 blockLen := SELF:_getValueLength( nFldPos )
@@ -186,7 +186,7 @@ BEGIN NAMESPACE XSharp.RDD
             LOCAL blockNbr AS LONG
             LOCAL blockLen := 0 AS LONG
             // Where does the block start ?
-            blockNbr := SELF:_oRDD:_getMemoBlockNumber( nFldPos )
+            blockNbr := SELF:_oRdd:_getMemoBlockNumber( nFldPos )
             IF ( blockNbr > 0 ) 
                 // File Open ?
                 LOCAL isOk := ( SELF:_hFile != F_ERROR ) AS LOGIC
@@ -258,7 +258,7 @@ BEGIN NAMESPACE XSharp.RDD
             // Suppose we will have a new start of block
             newBlock := TRUE
             // Where are currently stored the datas ?
-            blockNbr := SELF:_oRDD:_getMemoBlockNumber( nFldPos )
+            blockNbr := SELF:_oRdd:_getMemoBlockNumber( nFldPos )
             IF ( blockNbr > 0 ) 
                 // Existing block ? What is it's current raw length ?
                 blockLen := SELF:_getValueLength( nFldPos )
@@ -281,7 +281,7 @@ BEGIN NAMESPACE XSharp.RDD
                     toAdd := SELF:BlockSize - toAdd
                     LOCAL dummy AS BYTE[]
                     dummy := BYTE[]{ toAdd }
-                    FWrite3( SELF:_hfile, dummy, (DWORD)toAdd )
+                    FWrite3( SELF:_hFile, dummy, (DWORD)toAdd )
                     // so, new size is
                     fileSize := (LONG)FTell( SELF:_hFile )
                 ENDIF
@@ -292,7 +292,7 @@ BEGIN NAMESPACE XSharp.RDD
                 FSeek3( SELF:_hFile, blockNbr * SELF:BlockSize, FS_SET )
             ENDIF
             // Ok, now write the Datas
-            isok := ( FWrite3( SELF:_hfile, memoBlock, (DWORD)memoBlock:Length ) == memoBlock:Length )
+            isOk := ( FWrite3( SELF:_hFile, memoBlock, (DWORD)memoBlock:Length ) == memoBlock:Length )
             IF isOk
                 // Don't forget to write an End Of Block terminator (1Ah) (Should it be two ??)
                 LOCAL eob := <BYTE>{0x1A} AS BYTE[]
@@ -313,7 +313,7 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             //
             IF !isOk
-                SELF:_oRDD:_DbfError( ERDD.WRITE, XSharp.Gencode.EG_WRITE )
+                SELF:_oRdd:_dbfError( ERDD.WRITE, XSharp.Gencode.EG_WRITE )
             ENDIF
             // Now, update the information in the DBF, look at PutValue() in the DbfDbt Class
             SELF:LastWrittenBlockNumber := blockNbr
@@ -333,7 +333,7 @@ BEGIN NAMESPACE XSharp.RDD
 
                 CATCH ex AS Exception
                     isOk := FALSE
-                    SELF:_oRDD:_dbfError(ex, SubCodes.ERDD_CLOSE_MEMO, GenCode.EG_CLOSE, "DBFDBT.CloseMemFile")
+                    SELF:_oRdd:_dbfError(ex, Subcodes.ERDD_CLOSE_MEMO, Gencode.EG_CLOSE, "DBFDBT.CloseMemFile")
 
                 END TRY
                 SELF:_hFile := F_ERROR
@@ -364,7 +364,7 @@ BEGIN NAMESPACE XSharp.RDD
                 //
                 SELF:_initContext()
             ELSE
-                SELF:_oRDD:_DbfError( ERDD.CREATE_MEMO, XSharp.Gencode.EG_CREATE )
+                SELF:_oRdd:_dbfError( ERDD.CREATE_MEMO, XSharp.Gencode.EG_CREATE )
             ENDIF
             //
             RETURN isOk
@@ -380,13 +380,13 @@ BEGIN NAMESPACE XSharp.RDD
                 _FileName := FPathName()
             ENDIF
 
-            SELF:_hFile     := Fopen(SELF:_FileName, info:FileMode)
+            SELF:_hFile     := FOpen(SELF:_FileName, info:FileMode)
             isOk := SELF:IsOpen
             IF isOk
                 // Per default, Block Size if 512
                 SELF:_initContext()
             ELSE
-                SELF:_oRDD:_DbfError( ERDD.OPEN_MEMO, XSharp.Gencode.EG_OPEN )
+                SELF:_oRdd:_dbfError( ERDD.OPEN_MEMO, XSharp.Gencode.EG_OPEN )
                 isOk := FALSE
             ENDIF
             //
@@ -413,7 +413,7 @@ BEGIN NAMESPACE XSharp.RDD
                  IF SELF:IsOpen
                     LOCAL _memoBlock AS BYTE[]
                     _memoBlock := BYTE[]{4}
-                    Array.Copy(BitConverter.GetBytes(VALUE),0, _memoBlock, 0, SIZEOF(LONG))
+                    Array.Copy(BitConverter.GetBytes(value),0, _memoBlock, 0, SIZEOF(LONG))
                     LOCAL savedPos := FSeek3(SELF:_hFile, 0, FS_RELATIVE ) AS LONG
                     FSeek3( SELF:_hFile, 0, FS_SET )
                     FWrite3( SELF:_hFile, _memoBlock, 4 )
@@ -437,7 +437,7 @@ BEGIN NAMESPACE XSharp.RDD
                     locked := FFLock( SELF:_hFile, (DWORD)nOffset, (DWORD)nLong )
                 CATCH ex AS Exception
                     locked := FALSE
-                    SELF:_oRDD:_dbfError(ex, SubCodes.ERDD_INIT_LOCK, GenCode.EG_LOCK_ERROR, "DBFDBT._tryLock")
+                    SELF:_oRdd:_dbfError(ex, Subcodes.ERDD_INIT_LOCK, Gencode.EG_LOCK_ERROR, "DBFDBT._tryLock")
                 END TRY
                 IF ( !locked )
                     nTries --
@@ -459,7 +459,7 @@ BEGIN NAMESPACE XSharp.RDD
                 unlocked := FFUnLock( SELF:_hFile, (DWORD)nOffset, (DWORD)nLong )
             CATCH ex AS Exception
                 unlocked := FALSE
-                SELF:_oRDD:_dbfError(ex, SubCodes.ERDD_UNLOCKED, GenCode.EG_UNLOCKED, "DBFDBT._unlock")
+                SELF:_oRdd:_dbfError(ex, Subcodes.ERDD_UNLOCKED, Gencode.EG_UNLOCKED, "DBFDBT._unlock")
 
             END TRY
             RETURN unlocked
@@ -467,15 +467,15 @@ BEGIN NAMESPACE XSharp.RDD
         VIRTUAL METHOD Zap() AS LOGIC
             IF SELF:IsOpen
                 IF SELF:Shared
-                    SELF:_oRDD:_dbfError(FException(), SubCodes.ERDD_SHARED, GenCode.EG_LOCK, "DbtMemo.Zap")
+                    SELF:_oRdd:_dbfError(FException(), Subcodes.ERDD_SHARED, Gencode.EG_LOCK, "DbtMemo.Zap")
                 ENDIF
                 IF ! FChSize(SELF:_hFile, DBTMemo.HeaderSize)
-                    SELF:_oRDD:_dbfError(FException(), SubCodes.ERDD_WRITE, GenCode.EG_WRITE, "DbtMemo.Zap")
+                    SELF:_oRdd:_dbfError(FException(), Subcodes.ERDD_WRITE, Gencode.EG_WRITE, "DbtMemo.Zap")
                 ENDIF
                 SELF:NextAvailableBlock := 1
                 RETURN SELF:Flush()
             ELSE
-                SELF:_oRDD:_dbfError(FException(), SubCodes.EDB_NOTABLE, GenCode.EG_NOTABLE, "DbtMemo.Zap")
+                SELF:_oRdd:_dbfError(FException(), Subcodes.EDB_NOTABLE, Gencode.EG_NOTABLE, "DbtMemo.Zap")
                 RETURN FALSE
             ENDIF
 

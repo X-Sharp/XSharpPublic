@@ -32,16 +32,16 @@ CLASS XSharp.XPP.Abstract
         ENDIF
 
     VIRTUAL METHOD HasIVar(cName AS STRING) AS LOGIC
-        RETURN IvarGetInfo(SELF, cName) != 0
+        RETURN IVarGetInfo(SELF, cName) != 0
 
     VIRTUAL METHOD NoIvarGet(cName) AS USUAL CLIPPER
-        IF XSharp.XPP.ClassObject.IsInstanceOfRuntimeClass(SELF)
+        IF XSharp.XPP.ClassObject.IsInstanceofRuntimeClass(SELF)
             RETURN XSharp.XPP.ClassObject.CallIVarGet(SELF, cName)
         ENDIF
         RETURN NIL
 
     VIRTUAL METHOD NoIvarPut(cName, uValue) AS USUAL CLIPPER
-        IF XSharp.XPP.ClassObject.IsInstanceOfRuntimeClass(SELF)
+        IF XSharp.XPP.ClassObject.IsInstanceofRuntimeClass(SELF)
             RETURN XSharp.XPP.ClassObject.CallIVarPut(SELF, cName, uValue)
         ENDIF
         RETURN NIL
@@ -51,7 +51,7 @@ CLASS XSharp.XPP.Abstract
         /// <param name="uValue">The value of an assignment. </param>
         /// <returns>The return value of the method is ignored.</returns>
     METHOD SetNoIVar(cName , uValue ) AS USUAL CLIPPER
-        RETURN SELF:NoIVarPut(cName, uValue)
+        RETURN SELF:NoIvarPut(cName, uValue)
         
         /// <summary>Handles access operations to undefined instance variables. </summary>
         /// <param name="cName">The fieldname to access.</param>
@@ -73,7 +73,7 @@ CLASS XSharp.XPP.Abstract
         IF ! SELF:inSend
             SELF:inSend := TRUE
             TRY
-                IF XSharp.XPP.ClassObject.IsInstanceOfRuntimeClass(SELF)
+                IF XSharp.XPP.ClassObject.IsInstanceofRuntimeClass(SELF)
                     RETURN XSharp.XPP.ClassObject.CallMethod(SELF, cMethod, _ARGS())
                 ENDIF
                 RETURN __InternalSend(SELF, cMethod,  _ARGS())
@@ -102,7 +102,7 @@ CLASS XSharp.XPP.Abstract
             RETURN oType:IsAssignableFrom(SELF:GetType())
         ELSEIF IsObject(uParent)
             IF ((OBJECT) uParent) IS System.Type 
-                otype := (System.Type) uParent
+                oType := (System.Type) uParent
                 RETURN oType:IsAssignableFrom(SELF:GetType())
             ENDIF
         ENDIF
@@ -124,14 +124,14 @@ CLASS XSharp.XPP.Abstract
         /// </remarks>
     VIRTUAL METHOD ClassDescribe(nInfo) AS ARRAY CLIPPER
         LOCAL aResult AS ARRAY
-        LOCAL otype   AS System.Type
+        LOCAL oType   AS System.Type
         LOCAL aFields AS ARRAY
         LOCAL aMethods AS ARRAY
         IF ! IsNumeric(nInfo)
             nInfo := CLASS_DESCR_ALL
         ENDIF
         aResult    := ArrayNew(4)
-        otype := SELF:GetType()
+        oType := SELF:GetType()
         aResult[1] := oType:Name
         IF oType:BaseType != NULL
             aResult[2] := {oType:BaseType:Name}
@@ -139,14 +139,14 @@ CLASS XSharp.XPP.Abstract
             aResult[2] := {}
         ENDIF
         VAR aFieldInfo := oType:GetFields()
-        aResult[3] := aFields := arrayNew(aFieldInfo:Length)
+        aResult[3] := aFields := ArrayNew(aFieldInfo:Length)
         FOR VAR nFld := 1 TO aFieldInfo:Length
             LOCAL oFld AS FieldInfo
             oFld := aFieldInfo[nFld]
-            aFields[nFld] := {oFld:Name, EnCodeFieldAttributes(oFld:Attributes), oFld:FieldType}
+            aFields[nFld] := {oFld:Name, EncodeFieldAttributes(oFld:Attributes), oFld:FieldType}
         NEXT
         VAR aMethodInfo := oType:GetMethods()
-        aResult[4] := aMethods := arrayNew(aMethodInfo:Length)
+        aResult[4] := aMethods := ArrayNew(aMethodInfo:Length)
         FOR VAR nMethod := 1 TO aFieldInfo:Length
             LOCAL oMeth AS MethodInfo
             oMeth := aMethodInfo[nMethod]

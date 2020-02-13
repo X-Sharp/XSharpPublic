@@ -24,7 +24,7 @@ FUNCTION BLOBDirectImport(nOldPointer, cSourceFile) AS USUAL CLIPPER
 
 		
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/blobdirectput/*" />
-FUNCTION BLOBDirectPut(nOldPointer, uBLOB) AS USUAL CLIPPER
+FUNCTION BLOBDirectPut(nOldPointer, uBlob) AS USUAL CLIPPER
 	RETURN VoDb.Info( BLOB_DIRECT_PUT, <OBJECT>{nOldPointer, uBlob} )
 	
 	
@@ -32,7 +32,7 @@ FUNCTION BLOBDirectPut(nOldPointer, uBLOB) AS USUAL CLIPPER
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/blobexport/*" />
 FUNCTION BLOBExport (nFieldPos, cTargetFile, kMode)  AS LOGIC CLIPPER
 	DbInfo( BLOB_NMODE, kMode )
-  	RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.FileGet( nfieldPos, cTargetFile ))
+  	RETURN _DbThrowErrorOnFailure(__FUNCTION__, VoDb.FileGet( nFieldPos, cTargetFile ))
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/blobget/*" />
 FUNCTION BLOBGet(nFieldPos, nStart, nCount)  AS USUAL CLIPPER

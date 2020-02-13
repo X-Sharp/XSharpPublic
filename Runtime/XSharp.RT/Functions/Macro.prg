@@ -48,8 +48,8 @@ FUNCTION MCompile(cString AS STRING, lAllowSingleQuotes AS LOGIC) AS XSharp._Cod
 		LOCAL lIsCodeblock  AS LOGIC
         LOCAL addsMemVars   AS LOGIC
         //cString := MPrepare(cString)
-		iResult := oMC:Compile(cString, lAllowSingleQuotes, oMod, OUT lIsCodeBlock, OUT addsMemVars)
-		oResult := XSharp._Codeblock{iResult, cString, lIsCodeBlock, addsMemVars}
+		iResult := oMC:Compile(cString, lAllowSingleQuotes, oMod, OUT lIsCodeblock, OUT addsMemVars)
+		oResult := XSharp._Codeblock{iResult, cString, lIsCodeblock, addsMemVars}
 		RETURN oResult
 	ENDIF
 	RETURN NULL_OBJECT	

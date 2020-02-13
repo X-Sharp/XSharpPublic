@@ -73,7 +73,7 @@ INTERNAL CLASS XSharp.MemGroup
 	EXPORT Allocated	AS DWORD	
 
 	CONSTRUCTOR(nID AS DWORD)
-		SELF:Id			:= nID
+		SELF:ID			:= nID
 		SELF:Allocated  := 0
 
 	METHOD Free() AS VOID
@@ -195,7 +195,7 @@ FUNCTION MemAtSpecial( ptrBuffer AS IntPtr, dwCount AS DWORD ) AS DWORD
 	ENDIF
 	VAR pBytes := (BYTE PTR) ptrBuffer:ToPointer()
 	LOCAL x AS DWORD
-	FOR X := 1 TO dwCount
+	FOR x := 1 TO dwCount
       IF pBytes[x] <= 13  // Note: indexer on PSZ class is 0-based
          ret := x       // Return value is 1-based
          EXIT

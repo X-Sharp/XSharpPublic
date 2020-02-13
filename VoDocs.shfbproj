@@ -25,19 +25,18 @@
       <DocumentationSource sourceFile="Binaries\Documentation\VOGUIClasses.dll" />
       <DocumentationSource sourceFile="Binaries\Documentation\VOInternetClasses.dll" />
       <DocumentationSource sourceFile="Binaries\Documentation\VORDDClasses.dll" />
-      <DocumentationSource sourceFile="Binaries\Documentation\VOReportClasses.dll" />
       <DocumentationSource sourceFile="Binaries\Documentation\VOSQLClasses.dll" />
       <DocumentationSource sourceFile="Docs\VOConsoleClasses_manual.xml" />
       <DocumentationSource sourceFile="Docs\VOGUIClasses_manual.xml" />
       <DocumentationSource sourceFile="Docs\VOInternetClasses_manual.xml" />
       <DocumentationSource sourceFile="Docs\VORDDClasses_manual.xml" />
-      <DocumentationSource sourceFile="Docs\VOReportClasses_manual.xml" />
       <DocumentationSource sourceFile="Docs\VOSQLClasses_manual.xml" />
       <DocumentationSource sourceFile="Docs\VOSystemClasses_manual.xml" />
       <DocumentationSource sourceFile="Docs\VOSDK_Classes.xml" />
+      <DocumentationSource sourceFile="Docs\SDKFunctionDocs.xml" />
     </DocumentationSources>
     <HelpTitle>X# Visual Objects SDK Documentation</HelpTitle>
-    <HelpFileVersion>2.1.0.0</HelpFileVersion>
+    <HelpFileVersion>2.3.0.0</HelpFileVersion>
     <NamingMethod>MemberName</NamingMethod>
     <ContentPlacement>AboveNamespaces</ContentPlacement>
     <RootNamespaceContainer>True</RootNamespaceContainer>
@@ -46,7 +45,7 @@
     <SdkLinkTarget>Blank</SdkLinkTarget>
     <HelpFileFormat>HtmlHelp1, MSHelpViewer, Website</HelpFileFormat>
     <SyntaxFilters>C#, X#</SyntaxFilters>
-    <PresentationStyle>VS2013Xs</PresentationStyle>
+    <PresentationStyle>VS2013XSharp</PresentationStyle>
     <CleanIntermediates>False</CleanIntermediates>
     <KeepLogFile>True</KeepLogFile>
     <DisableCodeBlockComponent>False</DisableCodeBlockComponent>
@@ -146,10 +145,13 @@
     <SourceCodeBasePath>c:\XSharp\DevRt\</SourceCodeBasePath>
     <WarnOnMissingSourceContext>False</WarnOnMissingSourceContext>
     <PlugInConfigurations>
+      <PlugInConfig id="XSharp Function Output" enabled="True">
+        <configuration />
+      </PlugInConfig>
     </PlugInConfigurations>
     <RootNamespaceTitle>X# Visual Objects SDK Documentation</RootNamespaceTitle>
     <CopyrightHref>https://www.xsharp.info/licensing/xsharp-open-software-license</CopyrightHref>
-    <CopyrightText>Copyright &amp;#169%3b 1993-2019 Computer Associates &amp;amp%3b XSharp BV, All rights reserved</CopyrightText>
+    <CopyrightText>Copyright &amp;#169%3b 1993-2020 Computer Associates &amp;amp%3b XSharp BV, All rights reserved</CopyrightText>
     <BuildLogFile>C:\XSharp\DevRt\Binaries\Obj\VOHelp\BuildLog.log</BuildLogFile>
     <CatalogProductId>VS</CatalogProductId>
     <CatalogVersion>100</CatalogVersion>
@@ -198,254 +200,6 @@ Most of this documentation has been automatically lifted from the Visual Objects
         <Filter entryType="Delegate" fullName="VO.__WCTopAppWndProcDelegate" filterName="__WCTopAppWndProcDelegate" isExposed="False" />
         <Filter entryType="Delegate" fullName="VO.__WCWndAppWndProcDelegate" filterName="__WCWndAppWndProcDelegate" isExposed="False" />
         <Filter entryType="Class" fullName="VO.__WindApp" filterName="__WindApp" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winADAPTER_STATUS.$DIM_Array_adapter_address" filterName="_winADAPTER_STATUS.$DIM_Array_adapter_address" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winAUXCAPS.$DIM_Array_szPname" filterName="_winAUXCAPS.$DIM_Array_szPname" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._WINBITMAPCOREINFO.$DIM_Array_bmciColors" filterName="_WINBITMAPCOREINFO.$DIM_Array_bmciColors" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._WINBITMAPINFO.$DIM_Array_bmiColors" filterName="_WINBITMAPINFO.$DIM_Array_bmiColors" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winBROWSEINFO" filterName="_winBROWSEINFO" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._WINCHARFORMAT.$DIM_Array_szFaceName" filterName="_WINCHARFORMAT.$DIM_Array_szFaceName" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winCHARFORMAT2.$DIM_Array_szFaceName" filterName="_winCHARFORMAT2.$DIM_Array_szFaceName" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winCNTINFO.$DIM_Array_szTtlBtnTxt" filterName="_winCNTINFO.$DIM_Array_szTtlBtnTxt" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._WINCOMMCONFIG.$DIM_Array_wcProviderData" filterName="_WINCOMMCONFIG.$DIM_Array_wcProviderData" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._WINCOMMPROP.$DIM_Array_wcProvChar" filterName="_WINCOMMPROP.$DIM_Array_wcProvChar" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._WINCONTEXT.$DIM_Array_ExtendedRegisters" filterName="_WINCONTEXT.$DIM_Array_ExtendedRegisters" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._wincpinfo.$DIM_Array_DefaultChar" filterName="_wincpinfo.$DIM_Array_DefaultChar" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._wincpinfo.$DIM_Array_LeadByte" filterName="_wincpinfo.$DIM_Array_LeadByte" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winDDEDATA.$DIM_Array_Value" filterName="_winDDEDATA.$DIM_Array_Value" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._WINDDEML_MSG_HOOK_DATA.$DIM_Array_Data" filterName="_WINDDEML_MSG_HOOK_DATA.$DIM_Array_Data" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winDDEPOKE.$DIM_Array_Value" filterName="_winDDEPOKE.$DIM_Array_Value" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winDdeup.$DIM_Array_rgb" filterName="_winDdeup.$DIM_Array_rgb" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._WINDEVMODE.$DIM_Array_dmDeviceName" filterName="_WINDEVMODE.$DIM_Array_dmDeviceName" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._WINDEVMODE.$DIM_Array_dmFormName" filterName="_WINDEVMODE.$DIM_Array_dmFormName" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winDIBSECTION.$DIM_Array_dsBitfields" filterName="_winDIBSECTION.$DIM_Array_dsBitfields" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._WINDVTARGETDEVICE.$DIM_Array_tdData" filterName="_WINDVTARGETDEVICE.$DIM_Array_tdData" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._WINEDITBALLOONTIP" filterName="_WINEDITBALLOONTIP" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winEMREXTSELECTCLIPRGN.$DIM_Array_RgnData" filterName="_winEMREXTSELECTCLIPRGN.$DIM_Array_RgnData" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winEMRFILLRGN.$DIM_Array_RgnData" filterName="_winEMRFILLRGN.$DIM_Array_RgnData" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winEMRFRAMERGN.$DIM_Array_RgnData" filterName="_winEMRFRAMERGN.$DIM_Array_RgnData" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winEMRGDICOMMENT.$DIM_Array_Data" filterName="_winEMRGDICOMMENT.$DIM_Array_Data" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winEMRINVERTRGN.$DIM_Array_RgnData" filterName="_winEMRINVERTRGN.$DIM_Array_RgnData" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winEMRPLGBLT.$DIM_Array_aptlDest" filterName="_winEMRPLGBLT.$DIM_Array_aptlDest" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winEMRPOLYDRAW.$DIM_Array_abTypes" filterName="_winEMRPOLYDRAW.$DIM_Array_abTypes" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winEMRPOLYDRAW.$DIM_Array_aptl" filterName="_winEMRPOLYDRAW.$DIM_Array_aptl" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winEMRPOLYDRAW16.$DIM_Array_abTypes" filterName="_winEMRPOLYDRAW16.$DIM_Array_abTypes" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winEMRPOLYDRAW16.$DIM_Array_apts" filterName="_winEMRPOLYDRAW16.$DIM_Array_apts" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winEMRPOLYLINE.$DIM_Array_aptl" filterName="_winEMRPOLYLINE.$DIM_Array_aptl" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winEMRPOLYLINE16.$DIM_Array_apts" filterName="_winEMRPOLYLINE16.$DIM_Array_apts" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winEMRPOLYPOLYLINE.$DIM_Array_aPolyCounts" filterName="_winEMRPOLYPOLYLINE.$DIM_Array_aPolyCounts" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winEMRPOLYPOLYLINE.$DIM_Array_aptl" filterName="_winEMRPOLYPOLYLINE.$DIM_Array_aptl" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winEMRPOLYPOLYLINE16.$DIM_Array_aPolyCounts" filterName="_winEMRPOLYPOLYLINE16.$DIM_Array_aPolyCounts" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winEMRPOLYPOLYLINE16.$DIM_Array_apts" filterName="_winEMRPOLYPOLYLINE16.$DIM_Array_apts" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winEMRPOLYTEXTOUT.$DIM_Array_aemrtext" filterName="_winEMRPOLYTEXTOUT.$DIM_Array_aemrtext" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winEMRSETPALETTEENTRIES.$DIM_Array_aPalEntries" filterName="_winEMRSETPALETTEENTRIES.$DIM_Array_aPalEntries" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._WINENHMETARECORD.$DIM_Array_dParm" filterName="_WINENHMETARECORD.$DIM_Array_dParm" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winENUMLOGFONT.$DIM_Array_elfFullName" filterName="_winENUMLOGFONT.$DIM_Array_elfFullName" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winENUMLOGFONT.$DIM_Array_elfStyle" filterName="_winENUMLOGFONT.$DIM_Array_elfStyle" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winENUMLOGFONTEX.$DIM_Array_elfFullName" filterName="_winENUMLOGFONTEX.$DIM_Array_elfFullName" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winENUMLOGFONTEX.$DIM_Array_elfScript" filterName="_winENUMLOGFONTEX.$DIM_Array_elfScript" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winENUMLOGFONTEX.$DIM_Array_elfStyle" filterName="_winENUMLOGFONTEX.$DIM_Array_elfStyle" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._WINEXCEPTION_RECORD.$DIM_Array_ExceptionInformation" filterName="_WINEXCEPTION_RECORD.$DIM_Array_ExceptionInformation" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winEXTLOGFONT.$DIM_Array_elfFullName" filterName="_winEXTLOGFONT.$DIM_Array_elfFullName" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winEXTLOGFONT.$DIM_Array_elfStyle" filterName="_winEXTLOGFONT.$DIM_Array_elfStyle" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winEXTLOGFONT.$DIM_Array_elfVendorId" filterName="_winEXTLOGFONT.$DIM_Array_elfVendorId" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winEXTLOGPEN.$DIM_Array_elpStyleEntry" filterName="_winEXTLOGPEN.$DIM_Array_elpStyleEntry" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winfd_set.$DIM_Array_fd_array" filterName="_winfd_set.$DIM_Array_fd_array" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winFIELDINFO.$DIM_Array_szFldBtnTxt" filterName="_winFIELDINFO.$DIM_Array_szFldBtnTxt" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winFIND_NAME_BUFFER.$DIM_Array_destination_addr" filterName="_winFIND_NAME_BUFFER.$DIM_Array_destination_addr" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winFIND_NAME_BUFFER.$DIM_Array_routing_info" filterName="_winFIND_NAME_BUFFER.$DIM_Array_routing_info" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winFIND_NAME_BUFFER.$DIM_Array_source_addr" filterName="_winFIND_NAME_BUFFER.$DIM_Array_source_addr" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._WINFLOATING_SAVE_AREA.$DIM_Array_RegisterArea" filterName="_WINFLOATING_SAVE_AREA.$DIM_Array_RegisterArea" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._WINFONTSIGNATURE.$DIM_Array_fsCsb" filterName="_WINFONTSIGNATURE.$DIM_Array_fsCsb" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._WINFONTSIGNATURE.$DIM_Array_fsUsb" filterName="_WINFONTSIGNATURE.$DIM_Array_fsUsb" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._WINGUID.$DIM_Array_Data4" filterName="_WINGUID.$DIM_Array_Data4" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._WINHANDLETABLE.$DIM_Array_objectHandle" filterName="_WINHANDLETABLE.$DIM_Array_objectHandle" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winHELPWININFO.$DIM_Array_rgchMember" filterName="_winHELPWININFO.$DIM_Array_rgchMember" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._WINIMAGE_ARCHIVE_MEMBER_HEADER.$DIM_Array__Date" filterName="_WINIMAGE_ARCHIVE_MEMBER_HEADER.$DIM_Array__Date" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._WINIMAGE_ARCHIVE_MEMBER_HEADER.$DIM_Array_EndHeader" filterName="_WINIMAGE_ARCHIVE_MEMBER_HEADER.$DIM_Array_EndHeader" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._WINIMAGE_ARCHIVE_MEMBER_HEADER.$DIM_Array_GroupID" filterName="_WINIMAGE_ARCHIVE_MEMBER_HEADER.$DIM_Array_GroupID" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._WINIMAGE_ARCHIVE_MEMBER_HEADER.$DIM_Array_Mode" filterName="_WINIMAGE_ARCHIVE_MEMBER_HEADER.$DIM_Array_Mode" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._WINIMAGE_ARCHIVE_MEMBER_HEADER.$DIM_Array_Name" filterName="_WINIMAGE_ARCHIVE_MEMBER_HEADER.$DIM_Array_Name" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._WINIMAGE_ARCHIVE_MEMBER_HEADER.$DIM_Array_Size" filterName="_WINIMAGE_ARCHIVE_MEMBER_HEADER.$DIM_Array_Size" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._WINIMAGE_ARCHIVE_MEMBER_HEADER.$DIM_Array_UserID" filterName="_WINIMAGE_ARCHIVE_MEMBER_HEADER.$DIM_Array_UserID" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._WINIMAGE_AUX_SYMBOL_TOKEN_DEF.$DIM_Array_rgbReserved" filterName="_WINIMAGE_AUX_SYMBOL_TOKEN_DEF.$DIM_Array_rgbReserved" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._WINIMAGE_DEBUG_MISC.$DIM_Array_Data" filterName="_WINIMAGE_DEBUG_MISC.$DIM_Array_Data" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._WINIMAGE_DEBUG_MISC.$DIM_Array_Reserved" filterName="_WINIMAGE_DEBUG_MISC.$DIM_Array_Reserved" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._WINIMAGE_DOS_HEADER.$DIM_Array_e_res" filterName="_WINIMAGE_DOS_HEADER.$DIM_Array_e_res" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._WINIMAGE_DOS_HEADER.$DIM_Array_e_res2" filterName="_WINIMAGE_DOS_HEADER.$DIM_Array_e_res2" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._WINIMAGE_IMPORT_BY_NAME.$DIM_Array_Name" filterName="_WINIMAGE_IMPORT_BY_NAME.$DIM_Array_Name" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._WINIMAGE_OPTIONAL_HEADER.$DIM_Array_DataDirectory" filterName="_WINIMAGE_OPTIONAL_HEADER.$DIM_Array_DataDirectory" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._WINIMAGE_RESOURCE_DIR_STRING_U.$DIM_Array_NameString" filterName="_WINIMAGE_RESOURCE_DIR_STRING_U.$DIM_Array_NameString" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._WINIMAGE_RESOURCE_DIRECTORY_STRING.$DIM_Array_NameString" filterName="_WINIMAGE_RESOURCE_DIRECTORY_STRING.$DIM_Array_NameString" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._WINIMAGE_ROM_OPTIONAL_HEADER.$DIM_Array_CprMask" filterName="_WINIMAGE_ROM_OPTIONAL_HEADER.$DIM_Array_CprMask" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._WINIMAGE_SECTION_HEADER.$DIM_Array_Name" filterName="_WINIMAGE_SECTION_HEADER.$DIM_Array_Name" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winIMAGE_SEPARATE_DEBUG_HEADER.$DIM_Array_Reserved" filterName="_winIMAGE_SEPARATE_DEBUG_HEADER.$DIM_Array_Reserved" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._WINIMAGE_VXD_HEADER.$DIM_Array_e32_res3" filterName="_WINIMAGE_VXD_HEADER.$DIM_Array_e32_res3" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winJOYCAPS.$DIM_Array_szOEMVxD" filterName="_winJOYCAPS.$DIM_Array_szOEMVxD" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winJOYCAPS.$DIM_Array_szPname" filterName="_winJOYCAPS.$DIM_Array_szPname" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winJOYCAPS.$DIM_Array_szRegKey" filterName="_winJOYCAPS.$DIM_Array_szRegKey" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winLANA_ENUM.$DIM_Array_lana" filterName="_winLANA_ENUM.$DIM_Array_lana" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._WinLineForwardList.$DIM_Array_ForwardList" filterName="_WinLineForwardList.$DIM_Array_ForwardList" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._WinLineReqMakeCall.$DIM_Array_szAppName" filterName="_WinLineReqMakeCall.$DIM_Array_szAppName" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._WinLineReqMakeCall.$DIM_Array_szCalledParty" filterName="_WinLineReqMakeCall.$DIM_Array_szCalledParty" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._WinLineReqMakeCall.$DIM_Array_szComment" filterName="_WinLineReqMakeCall.$DIM_Array_szComment" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._WinLineReqMakeCall.$DIM_Array_szDestAddress" filterName="_WinLineReqMakeCall.$DIM_Array_szDestAddress" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._WinLineReqMediaCall.$DIM_Array_szAppName" filterName="_WinLineReqMediaCall.$DIM_Array_szAppName" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._WinLineReqMediaCall.$DIM_Array_szCalledParty" filterName="_WinLineReqMediaCall.$DIM_Array_szCalledParty" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._WinLineReqMediaCall.$DIM_Array_szComment" filterName="_WinLineReqMediaCall.$DIM_Array_szComment" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._WinLineReqMediaCall.$DIM_Array_szDestAddress" filterName="_WinLineReqMediaCall.$DIM_Array_szDestAddress" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._WinLineReqMediaCall.$DIM_Array_szDeviceClass" filterName="_WinLineReqMediaCall.$DIM_Array_szDeviceClass" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._WinLineReqMediaCall.$DIM_Array_ucDeviceID" filterName="_WinLineReqMediaCall.$DIM_Array_ucDeviceID" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winLITEM.$DIM_Array_szID" filterName="_winLITEM.$DIM_Array_szID" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winLITEM.$DIM_Array_szUrl" filterName="_winLITEM.$DIM_Array_szUrl" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._WINLOCALESIGNATURE.$DIM_Array_lsCsbDefault" filterName="_WINLOCALESIGNATURE.$DIM_Array_lsCsbDefault" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._WINLOCALESIGNATURE.$DIM_Array_lsCsbSupported" filterName="_WINLOCALESIGNATURE.$DIM_Array_lsCsbSupported" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._WINLOCALESIGNATURE.$DIM_Array_lsUsb" filterName="_WINLOCALESIGNATURE.$DIM_Array_lsUsb" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winLOGCOLORSPACE.$DIM_Array_lcsFilename" filterName="_winLOGCOLORSPACE.$DIM_Array_lcsFilename" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winLOGFONT.$DIM_Array_lfFaceName" filterName="_winLOGFONT.$DIM_Array_lfFaceName" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winLOGPALETTE.$DIM_Array_palPalEntry" filterName="_winLOGPALETTE.$DIM_Array_palPalEntry" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winMENUITEMTEMPLATE.$DIM_Array_mtString" filterName="_winMENUITEMTEMPLATE.$DIM_Array_mtString" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._WINMESSAGE_RESOURCE_DATA.$DIM_Array_Blocks" filterName="_WINMESSAGE_RESOURCE_DATA.$DIM_Array_Blocks" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._WINMESSAGE_RESOURCE_ENTRY.$DIM_Array__Text" filterName="_WINMESSAGE_RESOURCE_ENTRY.$DIM_Array__Text" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._WINMETARECORD.$DIM_Array_rdParm" filterName="_WINMETARECORD.$DIM_Array_rdParm" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winmidievent.$DIM_Array_dwParms" filterName="_winmidievent.$DIM_Array_dwParms" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winmidihdr.$DIM_Array_dwReserved" filterName="_winmidihdr.$DIM_Array_dwReserved" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winMIDIINCAPS.$DIM_Array_szPname" filterName="_winMIDIINCAPS.$DIM_Array_szPname" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._WINMIDIOUTCAPS.$DIM_Array_szPname" filterName="_WINMIDIOUTCAPS.$DIM_Array_szPname" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winMIXERCAPS.$DIM_Array_szPname" filterName="_winMIXERCAPS.$DIM_Array_szPname" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winMIXERCONTROL.$DIM_Array_Bounds" filterName="_winMIXERCONTROL.$DIM_Array_Bounds" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winMIXERCONTROL.$DIM_Array_Metrics" filterName="_winMIXERCONTROL.$DIM_Array_Metrics" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winMIXERCONTROL.$DIM_Array_szName" filterName="_winMIXERCONTROL.$DIM_Array_szName" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winMIXERCONTROL.$DIM_Array_szShortName" filterName="_winMIXERCONTROL.$DIM_Array_szShortName" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winMIXERCONTROLDETAILS_LISTTEXT.$DIM_Array_szName" filterName="_winMIXERCONTROLDETAILS_LISTTEXT.$DIM_Array_szName" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winMIXERLINE.$DIM_Array_szName" filterName="_winMIXERLINE.$DIM_Array_szName" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winMIXERLINE.$DIM_Array_szShortName" filterName="_winMIXERLINE.$DIM_Array_szShortName" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winMMIOINFO.$DIM_Array_adwInfo" filterName="_winMMIOINFO.$DIM_Array_adwInfo" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winMONCBSTRUCT.$DIM_Array_Data" filterName="_winMONCBSTRUCT.$DIM_Array_Data" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winMONHSZSTRUCT.$DIM_Array_str" filterName="_winMONHSZSTRUCT.$DIM_Array_str" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winMULTIKEYHELP.$DIM_Array_szKeyphrase" filterName="_winMULTIKEYHELP.$DIM_Array_szKeyphrase" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winNAME_BUFFER.$DIM_Array_name" filterName="_winNAME_BUFFER.$DIM_Array_name" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winNCB.$DIM_Array_ncb_callname" filterName="_winNCB.$DIM_Array_ncb_callname" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winNCB.$DIM_Array_ncb_name" filterName="_winNCB.$DIM_Array_ncb_name" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winNCB.$DIM_Array_ncb_reserve" filterName="_winNCB.$DIM_Array_ncb_reserve" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winNCCALCSIZE_PARAMS.$DIM_Array_rgrc" filterName="_winNCCALCSIZE_PARAMS.$DIM_Array_rgrc" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winNMCBEDRAGBEGIN.$DIM_Array_szText" filterName="_winNMCBEDRAGBEGIN.$DIM_Array_szText" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winNMCBEENDEDIT.$DIM_Array_szText" filterName="_winNMCBEENDEDIT.$DIM_Array_szText" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winNMDATETIMEFORMAT.$DIM_Array_szDisplay" filterName="_winNMDATETIMEFORMAT.$DIM_Array_szDisplay" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winNOTIFYICONDATA.$DIM_Array_szInfo" filterName="_winNOTIFYICONDATA.$DIM_Array_szInfo" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winNOTIFYICONDATA.$DIM_Array_szInfoTitle" filterName="_winNOTIFYICONDATA.$DIM_Array_szInfoTitle" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winNOTIFYICONDATA.$DIM_Array_szTip" filterName="_winNOTIFYICONDATA.$DIM_Array_szTip" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._WINOFSTRUCT.$DIM_Array_szPathName" filterName="_WINOFSTRUCT.$DIM_Array_szPathName" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._WINOSVERSIONINFO.$DIM_Array_szCSDVersion" filterName="_WINOSVERSIONINFO.$DIM_Array_szCSDVersion" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._WINOSVERSIONINFOEX.$DIM_Array_szCSDVersion" filterName="_WINOSVERSIONINFOEX.$DIM_Array_szCSDVersion" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winPAINTSTRUCT.$DIM_Array_rgbReserved" filterName="_winPAINTSTRUCT.$DIM_Array_rgbReserved" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._WINparaformat.$DIM_Array_rgxTabs" filterName="_WINparaformat.$DIM_Array_rgxTabs" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winPARAFORMAT2.$DIM_Array_rgxTabs" filterName="_winPARAFORMAT2.$DIM_Array_rgxTabs" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._WINPERF_DATA_BLOCK.$DIM_Array_Signature" filterName="_WINPERF_DATA_BLOCK.$DIM_Array_Signature" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winPRINTER_NOTIFY_INFO.$DIM_Array_aData" filterName="_winPRINTER_NOTIFY_INFO.$DIM_Array_aData" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._WINPRIVILEGE_SET.$DIM_Array_Privilege" filterName="_WINPRIVILEGE_SET.$DIM_Array_Privilege" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winRAS_PARAMETERS.$DIM_Array_P_Key" filterName="_winRAS_PARAMETERS.$DIM_Array_P_Key" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winRAS_PORT_0.$DIM_Array_wszComputer" filterName="_winRAS_PORT_0.$DIM_Array_wszComputer" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winRAS_PORT_0.$DIM_Array_wszDeviceName" filterName="_winRAS_PORT_0.$DIM_Array_wszDeviceName" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winRAS_PORT_0.$DIM_Array_wszDeviceType" filterName="_winRAS_PORT_0.$DIM_Array_wszDeviceType" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winRAS_PORT_0.$DIM_Array_wszLogonDomain" filterName="_winRAS_PORT_0.$DIM_Array_wszLogonDomain" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winRAS_PORT_0.$DIM_Array_wszMediaName" filterName="_winRAS_PORT_0.$DIM_Array_wszMediaName" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winRAS_PORT_0.$DIM_Array_wszPortName" filterName="_winRAS_PORT_0.$DIM_Array_wszPortName" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winRAS_PORT_0.$DIM_Array_wszUserName" filterName="_winRAS_PORT_0.$DIM_Array_wszUserName" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winRAS_PPP_ATCP_RESULT.$DIM_Array_wszAddress" filterName="_winRAS_PPP_ATCP_RESULT.$DIM_Array_wszAddress" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winRAS_PPP_IPCP_RESULT.$DIM_Array_wszAddress" filterName="_winRAS_PPP_IPCP_RESULT.$DIM_Array_wszAddress" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winRAS_PPP_IPXCP_RESULT.$DIM_Array_wszAddress" filterName="_winRAS_PPP_IPXCP_RESULT.$DIM_Array_wszAddress" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winRAS_PPP_NBFCP_RESULT.$DIM_Array_szName" filterName="_winRAS_PPP_NBFCP_RESULT.$DIM_Array_szName" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winRAS_PPP_NBFCP_RESULT.$DIM_Array_wszWksta" filterName="_winRAS_PPP_NBFCP_RESULT.$DIM_Array_wszWksta" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winRAS_SECURITY_INFO.$DIM_Array_DeviceName" filterName="_winRAS_SECURITY_INFO.$DIM_Array_DeviceName" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winRAS_USER_0.$DIM_Array_szPhoneNumber" filterName="_winRAS_USER_0.$DIM_Array_szPhoneNumber" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winRASAMB.$DIM_Array_szNetBiosError" filterName="_winRASAMB.$DIM_Array_szNetBiosError" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._WINRASAUTODIALENTRY.$DIM_Array_zEntry" filterName="_WINRASAUTODIALENTRY.$DIM_Array_zEntry" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._WINRASCONN.$DIM_Array_szDeviceName" filterName="_WINRASCONN.$DIM_Array_szDeviceName" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._WINRASCONN.$DIM_Array_szDeviceType" filterName="_WINRASCONN.$DIM_Array_szDeviceType" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._WINRASCONN.$DIM_Array_szEntryName" filterName="_WINRASCONN.$DIM_Array_szEntryName" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._WINRASCONN.$DIM_Array_szPhonebook" filterName="_WINRASCONN.$DIM_Array_szPhonebook" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winRASCONNSTATUS.$DIM_Array_szDeviceName" filterName="_winRASCONNSTATUS.$DIM_Array_szDeviceName" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winRASCONNSTATUS.$DIM_Array_szDeviceType" filterName="_winRASCONNSTATUS.$DIM_Array_szDeviceType" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winRASCONNSTATUS.$DIM_Array_szPhoneNumber" filterName="_winRASCONNSTATUS.$DIM_Array_szPhoneNumber" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winRASCREDENTIALS.$DIM_Array_szDomain" filterName="_winRASCREDENTIALS.$DIM_Array_szDomain" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winRASCREDENTIALS.$DIM_Array_szPassword" filterName="_winRASCREDENTIALS.$DIM_Array_szPassword" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winRASCREDENTIALS.$DIM_Array_szUserName" filterName="_winRASCREDENTIALS.$DIM_Array_szUserName" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winRASDEVINFO.$DIM_Array_szDeviceName" filterName="_winRASDEVINFO.$DIM_Array_szDeviceName" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winRASDEVINFO.$DIM_Array_szDeviceType" filterName="_winRASDEVINFO.$DIM_Array_szDeviceType" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winRASDIALPARAMS.$DIM_Array_szCallbackNumber" filterName="_winRASDIALPARAMS.$DIM_Array_szCallbackNumber" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winRASDIALPARAMS.$DIM_Array_szDomain" filterName="_winRASDIALPARAMS.$DIM_Array_szDomain" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winRASDIALPARAMS.$DIM_Array_szEntryName" filterName="_winRASDIALPARAMS.$DIM_Array_szEntryName" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winRASDIALPARAMS.$DIM_Array_szPassword" filterName="_winRASDIALPARAMS.$DIM_Array_szPassword" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winRASDIALPARAMS.$DIM_Array_szPhoneNumber" filterName="_winRASDIALPARAMS.$DIM_Array_szPhoneNumber" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winRASDIALPARAMS.$DIM_Array_szUserName" filterName="_winRASDIALPARAMS.$DIM_Array_szUserName" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._WINRASEAPUSERIDENTITY.$DIM_Array_pbEapInfo" filterName="_WINRASEAPUSERIDENTITY.$DIM_Array_pbEapInfo" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._WINRASEAPUSERIDENTITY.$DIM_Array_szUserName" filterName="_WINRASEAPUSERIDENTITY.$DIM_Array_szUserName" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winRASENTRY.$DIM_Array_szAreaCode" filterName="_winRASENTRY.$DIM_Array_szAreaCode" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winRASENTRY.$DIM_Array_szAutodialDll" filterName="_winRASENTRY.$DIM_Array_szAutodialDll" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winRASENTRY.$DIM_Array_szAutodialFunc" filterName="_winRASENTRY.$DIM_Array_szAutodialFunc" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winRASENTRY.$DIM_Array_szCustomDialDll" filterName="_winRASENTRY.$DIM_Array_szCustomDialDll" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winRASENTRY.$DIM_Array_szDeviceName" filterName="_winRASENTRY.$DIM_Array_szDeviceName" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winRASENTRY.$DIM_Array_szDeviceType" filterName="_winRASENTRY.$DIM_Array_szDeviceType" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winRASENTRY.$DIM_Array_szDnsSuffix" filterName="_winRASENTRY.$DIM_Array_szDnsSuffix" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winRASENTRY.$DIM_Array_szLocalPhoneNumber" filterName="_winRASENTRY.$DIM_Array_szLocalPhoneNumber" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winRASENTRY.$DIM_Array_szPrerequisiteEntry" filterName="_winRASENTRY.$DIM_Array_szPrerequisiteEntry" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winRASENTRY.$DIM_Array_szPrerequisitePbk" filterName="_winRASENTRY.$DIM_Array_szPrerequisitePbk" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winRASENTRY.$DIM_Array_szScript" filterName="_winRASENTRY.$DIM_Array_szScript" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winRASENTRY.$DIM_Array_szX25Address" filterName="_winRASENTRY.$DIM_Array_szX25Address" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winRASENTRY.$DIM_Array_szX25Facilities" filterName="_winRASENTRY.$DIM_Array_szX25Facilities" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winRASENTRY.$DIM_Array_szX25PadType" filterName="_winRASENTRY.$DIM_Array_szX25PadType" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winRASENTRY.$DIM_Array_szX25UserData" filterName="_winRASENTRY.$DIM_Array_szX25UserData" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winRASENTRYDLG.$DIM_Array_szEntry" filterName="_winRASENTRYDLG.$DIM_Array_szEntry" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winRASENTRYNAME.$DIM_Array_szEntryName" filterName="_winRASENTRYNAME.$DIM_Array_szEntryName" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winRASENTRYNAME.$DIM_Array_szPhonebookPath" filterName="_winRASENTRYNAME.$DIM_Array_szPhonebookPath" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winRASNOUSER.$DIM_Array_szDomain" filterName="_winRASNOUSER.$DIM_Array_szDomain" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winRASNOUSER.$DIM_Array_szPassword" filterName="_winRASNOUSER.$DIM_Array_szPassword" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winRASNOUSER.$DIM_Array_szUserName" filterName="_winRASNOUSER.$DIM_Array_szUserName" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winRASPPPIP.$DIM_Array_szIpAddress" filterName="_winRASPPPIP.$DIM_Array_szIpAddress" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winRASPPPIP.$DIM_Array_szServerIpAddress" filterName="_winRASPPPIP.$DIM_Array_szServerIpAddress" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winRASPPPIPX.$DIM_Array_szIpxAddress" filterName="_winRASPPPIPX.$DIM_Array_szIpxAddress" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winRASPPPLCP.$DIM_Array_szReplyMessage" filterName="_winRASPPPLCP.$DIM_Array_szReplyMessage" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winRASPPPNBF.$DIM_Array_szNetBiosError" filterName="_winRASPPPNBF.$DIM_Array_szNetBiosError" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winRASPPPNBF.$DIM_Array_szWorkstationName" filterName="_winRASPPPNBF.$DIM_Array_szWorkstationName" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winRASSLIP.$DIM_Array_szIpAddress" filterName="_winRASSLIP.$DIM_Array_szIpAddress" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._WINRASSUBENTRY.$DIM_Array_szDeviceName" filterName="_WINRASSUBENTRY.$DIM_Array_szDeviceName" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._WINRASSUBENTRY.$DIM_Array_szDeviceType" filterName="_WINRASSUBENTRY.$DIM_Array_szDeviceType" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._WINRASSUBENTRY.$DIM_Array_szLocalPhoneNumber" filterName="_WINRASSUBENTRY.$DIM_Array_szLocalPhoneNumber" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winRemBRUSH.$DIM_Array_data" filterName="_winRemBRUSH.$DIM_Array_data" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winRemHBITMAP.$DIM_Array_data" filterName="_winRemHBITMAP.$DIM_Array_data" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winRemHENHMETAFILE.$DIM_Array_data" filterName="_winRemHENHMETAFILE.$DIM_Array_data" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winRemHGLOBAL.$DIM_Array_data" filterName="_winRemHGLOBAL.$DIM_Array_data" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winRemHMETAFILEPICT.$DIM_Array_data" filterName="_winRemHMETAFILEPICT.$DIM_Array_data" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winRemHPALETTE.$DIM_Array_data" filterName="_winRemHPALETTE.$DIM_Array_data" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winRGNDATA.$DIM_Array_Buffer" filterName="_winRGNDATA.$DIM_Array_Buffer" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winSAFEARRAY.$DIM_Array_rgsabound" filterName="_winSAFEARRAY.$DIM_Array_rgsabound" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winSCROLLBARINFO.$DIM_Array_rgstate" filterName="_winSCROLLBARINFO.$DIM_Array_rgstate" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winSECURITY_MESSAGE.$DIM_Array_Domain" filterName="_winSECURITY_MESSAGE.$DIM_Array_Domain" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winSECURITY_MESSAGE.$DIM_Array_UserName" filterName="_winSECURITY_MESSAGE.$DIM_Array_UserName" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winSESSION_BUFFER.$DIM_Array_local_name" filterName="_winSESSION_BUFFER.$DIM_Array_local_name" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winSESSION_BUFFER.$DIM_Array_remote_name" filterName="_winSESSION_BUFFER.$DIM_Array_remote_name" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winSHFILEINFO.$DIM_Array_szDisplayName" filterName="_winSHFILEINFO.$DIM_Array_szDisplayName" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winSHFILEINFO.$DIM_Array_szTypeName" filterName="_winSHFILEINFO.$DIM_Array_szTypeName" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._WINSID.$DIM_Array_SubAuthority" filterName="_WINSID.$DIM_Array_SubAuthority" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._WINSID_IDENTIFIER_AUTHORITY.$DIM_Array_Value" filterName="_WINSID_IDENTIFIER_AUTHORITY.$DIM_Array_Value" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._WINsockaddr.$DIM_Array_sa_data" filterName="_WINsockaddr.$DIM_Array_sa_data" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._WINsockaddr_in.$DIM_Array_sin_zero" filterName="_WINsockaddr_in.$DIM_Array_sin_zero" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winTBBUTTON.$DIM_Array_bReserved" filterName="_winTBBUTTON.$DIM_Array_bReserved" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._WINTIME_ZONE_INFORMATION.$DIM_Array_DaylightName" filterName="_WINTIME_ZONE_INFORMATION.$DIM_Array_DaylightName" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._WINTIME_ZONE_INFORMATION.$DIM_Array_StandardName" filterName="_WINTIME_ZONE_INFORMATION.$DIM_Array_StandardName" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._WINTOKEN_GROUPS.$DIM_Array_Groups" filterName="_WINTOKEN_GROUPS.$DIM_Array_Groups" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._WINTOKEN_PRIVILEGES.$DIM_Array_Privileges" filterName="_WINTOKEN_PRIVILEGES.$DIM_Array_Privileges" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._WINTOKEN_SOURCE.$DIM_Array_SourceName" filterName="_WINTOKEN_SOURCE.$DIM_Array_SourceName" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winTOOLTIPTEXT.$DIM_Array_szText" filterName="_winTOOLTIPTEXT.$DIM_Array_szText" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winTTPOLYCURVE.$DIM_Array_apfx" filterName="_winTTPOLYCURVE.$DIM_Array_apfx" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winWAVEINCAPS.$DIM_Array_szPname" filterName="_winWAVEINCAPS.$DIM_Array_szPname" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winWAVEOUTCAPS.$DIM_Array_szPname" filterName="_winWAVEOUTCAPS.$DIM_Array_szPname" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winWAVEOUTCAPSW.$DIM_Array_szPname" filterName="_winWAVEOUTCAPSW.$DIM_Array_szPname" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._WINWIN32_FIND_DATA.$DIM_Array_cAlternateFileName" filterName="_WINWIN32_FIND_DATA.$DIM_Array_cAlternateFileName" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._WINWIN32_FIND_DATA.$DIM_Array_cFileName" filterName="_WINWIN32_FIND_DATA.$DIM_Array_cFileName" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._WINWIN32_STREAM_ID.$DIM_Array_cStreamName" filterName="_WINWIN32_STREAM_ID.$DIM_Array_cStreamName" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winWSAData.$DIM_Array_szDescription" filterName="_winWSAData.$DIM_Array_szDescription" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO._winWSAData.$DIM_Array_szSystemStatus" filterName="_winWSAData.$DIM_Array_szSystemStatus" isExposed="False" />
         <Filter entryType="Class" fullName="VO.App" filterName="App" isExposed="True">
           <Filter entryType="Method" fullName="VO.App.__SetHelpWind" filterName="__SetHelpWind" isExposed="False" />
           <Filter entryType="Property" fullName="VO.App.__HelpCursor" filterName="__HelpCursor" isExposed="False" />
@@ -456,29 +210,9 @@ Most of this documentation has been automatically lifted from the Visual Objects
           <Filter entryType="Method" fullName="VO.AppWindow.__StatusMessageFromEvent" filterName="__StatusMessageFromEvent" isExposed="False" />
           <Filter entryType="Property" fullName="VO.AppWindow.__SysMenu" filterName="__SysMenu" isExposed="False" />
         </Filter>
-        <Filter entryType="Structure" fullName="VO.Array_win.$DIM_Array_Dimension" filterName="Array_win.$DIM_Array_Dimension" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO.bdCACQMDBINIT" filterName="bdCACQMDBINIT" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO.bdCACQMDBPROPS" filterName="bdCACQMDBPROPS" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO.bdCACQMINIT" filterName="bdCACQMINIT" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO.bdCACQMLSTDBINIT" filterName="bdCACQMLSTDBINIT" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO.bdCACQMQRYPROPS" filterName="bdCACQMQRYPROPS" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO.bdCADBAINIT" filterName="bdCADBAINIT" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO.bdCAQRMSAVENTFY" filterName="bdCAQRMSAVENTFY" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO.bdCARCCCTRLPROPS" filterName="bdCARCCCTRLPROPS" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO.bdCARCCINIT" filterName="bdCARCCINIT" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO.bdCAWBMINIT" filterName="bdCAWBMINIT" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO.bdCAWPAPPDEF" filterName="bdCAWPAPPDEF" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO.bdCAWPINIT" filterName="bdCAWPINIT" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO.bdCAWQMINIT" filterName="bdCAWQMINIT" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO.bdCAWRMADVISENTFY" filterName="bdCAWRMADVISENTFY" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO.bdCAWRMCREATEDEFINIT" filterName="bdCAWRMCREATEDEFINIT" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO.bdCAWRMCREATEVWINIT" filterName="bdCAWRMCREATEVWINIT" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO.bdCAWRMINIT" filterName="bdCAWRMINIT" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO.bdCAWRMPREVIEWNTFY" filterName="bdCAWRMPREVIEWNTFY" isExposed="False" />
         <Filter entryType="Class" fullName="VO.Bitmap" filterName="Bitmap" isExposed="True">
           <Filter entryType="Method" fullName="VO.Bitmap.__SetHandle" filterName="__SetHandle" isExposed="False" />
         </Filter>
-        <Filter entryType="Structure" fullName="VO.Block_win.$DIM_Array_dwReserved" filterName="Block_win.$DIM_Array_dwReserved" isExposed="False" />
         <Filter entryType="Class" fullName="VO.Brush" filterName="Brush" isExposed="True">
           <Filter entryType="Method" fullName="VO.Brush.__SetBrushOrg" filterName="__SetBrushOrg" isExposed="False" />
         </Filter>
@@ -487,44 +221,6 @@ Most of this documentation has been automatically lifted from the Visual Objects
           <Filter entryType="Method" fullName="VO.Button.__SetImage" filterName="__SetImage" isExposed="False" />
           <Filter entryType="Method" fullName="VO.Button.__Update" filterName="__Update" isExposed="False" />
         </Filter>
-        <Filter entryType="Structure" fullName="VO.CACQMDBINIT" filterName="CACQMDBINIT" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO.CACQMDBINIT.$DIM_Array_dwXFutureUse" filterName="CACQMDBINIT.$DIM_Array_dwXFutureUse" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO.CACQMDBPROPS" filterName="CACQMDBPROPS" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO.CACQMDBPROPS.$DIM_Array_dwXFutureUse" filterName="CACQMDBPROPS.$DIM_Array_dwXFutureUse" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO.CACQMINIT" filterName="CACQMINIT" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO.CACQMINIT.$DIM_Array_dwXFutureUse" filterName="CACQMINIT.$DIM_Array_dwXFutureUse" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO.CACQMLSTDBINIT" filterName="CACQMLSTDBINIT" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO.CACQMQRYPROPS" filterName="CACQMQRYPROPS" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO.CACQMQRYPROPS.$DIM_Array_dwXFutureUse" filterName="CACQMQRYPROPS.$DIM_Array_dwXFutureUse" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO.CACQMQRYPROPS.$DIM_Array_lfFaceName" filterName="CACQMQRYPROPS.$DIM_Array_lfFaceName" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO.CADBAINIT" filterName="CADBAINIT" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO.CADBAINIT.$DIM_Array_dwXFutureUse" filterName="CADBAINIT.$DIM_Array_dwXFutureUse" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO.CALLBACKTYPEDATA" filterName="CALLBACKTYPEDATA" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO.CARCCCTRLPROPS" filterName="CARCCCTRLPROPS" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO.CARCCCTRLPROPS.$DIM_Array_ColorRef" filterName="CARCCCTRLPROPS.$DIM_Array_ColorRef" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO.CARCCCTRLPROPS.$DIM_Array_dwXFutureUse" filterName="CARCCCTRLPROPS.$DIM_Array_dwXFutureUse" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO.CARCCCTRLPROPS.$DIM_Array_hFont" filterName="CARCCCTRLPROPS.$DIM_Array_hFont" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO.CARCCCTRLPROPS.$DIM_Array_lfFaceName" filterName="CARCCCTRLPROPS.$DIM_Array_lfFaceName" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO.CARCCCTRLPROPS.$DIM_Array_lfFaceName2" filterName="CARCCCTRLPROPS.$DIM_Array_lfFaceName2" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO.CARCCINIT" filterName="CARCCINIT" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO.CARCCINIT.$DIM_Array_dwXFutureUse" filterName="CARCCINIT.$DIM_Array_dwXFutureUse" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO.CAWBMINIT" filterName="CAWBMINIT" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO.CAWBMINIT.$DIM_Array_dwXFutureUse" filterName="CAWBMINIT.$DIM_Array_dwXFutureUse" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO.CAWPAPPDEF" filterName="CAWPAPPDEF" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO.CAWPAPPDEF.$DIM_Array_dwXFutureUse" filterName="CAWPAPPDEF.$DIM_Array_dwXFutureUse" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO.CAWPINIT" filterName="CAWPINIT" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO.CAWPINIT.$DIM_Array_dwXFutureUse" filterName="CAWPINIT.$DIM_Array_dwXFutureUse" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO.CAWQMINIT" filterName="CAWQMINIT" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO.CAWQMINIT.$DIM_Array_dwXFutureUse" filterName="CAWQMINIT.$DIM_Array_dwXFutureUse" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO.CAWRMADVISENTFY" filterName="CAWRMADVISENTFY" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO.CAWRMCREATEDEFINIT" filterName="CAWRMCREATEDEFINIT" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO.CAWRMCREATEDEFINIT.$DIM_Array_dwXFutureUse" filterName="CAWRMCREATEDEFINIT.$DIM_Array_dwXFutureUse" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO.CAWRMCREATEVWINIT" filterName="CAWRMCREATEVWINIT" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO.CAWRMCREATEVWINIT.$DIM_Array_dwXFutureUse" filterName="CAWRMCREATEVWINIT.$DIM_Array_dwXFutureUse" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO.CAWRMINIT" filterName="CAWRMINIT" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO.CAWRMINIT.$DIM_Array_dwXFutureUse" filterName="CAWRMINIT.$DIM_Array_dwXFutureUse" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO.CAWRMPREVIEWNTFY" filterName="CAWRMPREVIEWNTFY" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO.CAWRMSAVENTFY" filterName="CAWRMSAVENTFY" isExposed="False" />
         <Filter entryType="Class" fullName="VO.CEmail" filterName="CEmail" isExposed="True">
           <Filter entryType="Method" fullName="VO.CEmail.__CreateCommands" filterName="__CreateCommands" isExposed="False" />
           <Filter entryType="Method" fullName="VO.CEmail.__CreateContentType" filterName="__CreateContentType" isExposed="False" />
@@ -600,8 +296,6 @@ Most of this documentation has been automatically lifted from the Visual Objects
           <Filter entryType="Method" fullName="VO.CPop.__GetScanList" filterName="__GetScanList" isExposed="False" />
           <Filter entryType="Method" fullName="VO.CPop.__ListMail" filterName="__ListMail" isExposed="False" />
         </Filter>
-        <Filter entryType="Structure" fullName="VO.CQMQUERYFILE" filterName="CQMQUERYFILE" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO.CQMSQLSTRING" filterName="CQMSQLSTRING" isExposed="False" />
         <Filter entryType="Class" fullName="VO.CSession" filterName="CSession" isExposed="True">
           <Filter entryType="Method" fullName="VO.CSession.__DelStatus" filterName="__DelStatus" isExposed="False" />
           <Filter entryType="Method" fullName="VO.CSession.__DelStatusObject" filterName="__DelStatusObject" isExposed="False" />
@@ -799,7 +493,6 @@ Most of this documentation has been automatically lifted from the Visual Objects
           <Filter entryType="Method" fullName="VO.DialogWindow.__SubClassForDragList" filterName="__SubClassForDragList" isExposed="False" />
           <Filter entryType="Field" fullName="VO.DialogWindow.__lpfnOldDlgProc" filterName="__lpfnOldDlgProc" isExposed="False" />
         </Filter>
-        <Filter entryType="Structure" fullName="VO.DISPLAYOPTIONS" filterName="DISPLAYOPTIONS" isExposed="False" />
         <Filter entryType="Class" fullName="VO.DragDropServer" filterName="DragDropServer" isExposed="True">
           <Filter entryType="Method" fullName="VO.DragDropServer.__DragAppendFiles" filterName="__DragAppendFiles" isExposed="False" />
           <Filter entryType="Method" fullName="VO.DragDropServer.__DragCreateMemHandle" filterName="__DragCreateMemHandle" isExposed="False" />
@@ -812,8 +505,6 @@ Most of this documentation has been automatically lifted from the Visual Objects
           <Filter entryType="Property" fullName="VO.Edit.__ForceModFlag2True" filterName="__ForceModFlag2True" isExposed="False" />
           <Filter entryType="Property" fullName="VO.Edit.__NoNotify" filterName="__NoNotify" isExposed="False" />
         </Filter>
-        <Filter entryType="Structure" fullName="VO.EDITOPTIONS" filterName="EDITOPTIONS" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO.EXECUTIONOPTIONS" filterName="EXECUTIONOPTIONS" isExposed="False" />
         <Filter entryType="Class" fullName="VO.ExplorerWindow" filterName="ExplorerWindow" isExposed="True">
           <Filter entryType="Method" fullName="VO.ExplorerWindow.__FocusLV" filterName="__FocusLV" isExposed="False" />
           <Filter entryType="Method" fullName="VO.ExplorerWindow.__FocusTV" filterName="__FocusTV" isExposed="False" />
@@ -821,8 +512,6 @@ Most of this documentation has been automatically lifted from the Visual Objects
         <Filter entryType="Class" fullName="VO.FieldSpec" filterName="FieldSpec" isExposed="True">
           <Filter entryType="Method" fullName="VO.FieldSpec.__GetHLRange" filterName="__GetHLRange" isExposed="False" />
         </Filter>
-        <Filter entryType="Structure" fullName="VO.File_win.$DIM_Array_Name" filterName="File_win.$DIM_Array_Name" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO.FILENAME" filterName="FILENAME" isExposed="False" />
         <Filter entryType="Class" fullName="VO.FileSpec" filterName="FileSpec" isExposed="True">
           <Filter entryType="Method" fullName="VO.FileSpec.__DefaultFullPath" filterName="__DefaultFullPath" isExposed="False" />
           <Filter entryType="Method" fullName="VO.FileSpec.__FullPathAcc" filterName="__FullPathAcc" isExposed="False" />
@@ -904,7 +593,6 @@ Most of this documentation has been automatically lifted from the Visual Objects
         <Filter entryType="Class" fullName="VO.MenuCommandEvent" filterName="MenuCommandEvent" isExposed="True">
           <Filter entryType="Method" fullName="VO.MenuCommandEvent.__SetMenu" filterName="__SetMenu" isExposed="False" />
         </Filter>
-        <Filter entryType="Structure" fullName="VO.Metrics.$DIM_Array_dwReserved" filterName="Metrics.$DIM_Array_dwReserved" isExposed="False" />
         <Filter entryType="Class" fullName="VO.MonthCalendar" filterName="MonthCalendar" isExposed="True">
           <Filter entryType="Method" fullName="VO.MonthCalendar.__GetColor" filterName="__GetColor" isExposed="False" />
           <Filter entryType="Method" fullName="VO.MonthCalendar.__SetColor" filterName="__SetColor" isExposed="False" />
@@ -914,13 +602,6 @@ Most of this documentation has been automatically lifted from the Visual Objects
           <Filter entryType="Method" fullName="VO.MultiMediaContainer.__ResizeMCIWnd" filterName="__ResizeMCIWnd" isExposed="False" />
           <Filter entryType="Property" fullName="VO.MultiMediaContainer.__Value" filterName="__Value" isExposed="False" />
         </Filter>
-        <Filter entryType="Structure" fullName="VO.N_win.$DIM_Array_LongName" filterName="N_win.$DIM_Array_LongName" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO.N_win.$DIM_Array_ShortName" filterName="N_win.$DIM_Array_ShortName" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO.NotifyData_win.$DIM_Array_adwData" filterName="NotifyData_win.$DIM_Array_adwData" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO.NOTSPECIFIED" filterName="NOTSPECIFIED" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO.NOTWINDOW" filterName="NOTWINDOW" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO.OleDragEventInfo" filterName="OleDragEventInfo" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO.OleProps" filterName="OleProps" isExposed="False" />
         <Filter entryType="Class" fullName="VO.OrderSpec" filterName="OrderSpec" isExposed="True">
           <Filter entryType="Method" fullName="VO.OrderSpec.__OpenDb" filterName="__OpenDb" isExposed="False" />
           <Filter entryType="Method" fullName="VO.OrderSpec.__OrderSetInfo" filterName="__OrderSetInfo" isExposed="False" />
@@ -936,7 +617,6 @@ Most of this documentation has been automatically lifted from the Visual Objects
         <Filter entryType="Class" fullName="VO.ProgressBar" filterName="ProgressBar" isExposed="True">
           <Filter entryType="Property" fullName="VO.ProgressBar.__Value" filterName="__Value" isExposed="False" />
         </Filter>
-        <Filter entryType="Structure" fullName="VO.QRTCALLBACK" filterName="QRTCALLBACK" isExposed="False" />
         <Filter entryType="Class" fullName="VO.RadioButtonGroup" filterName="RadioButtonGroup" isExposed="True">
           <Filter entryType="Method" fullName="VO.RadioButtonGroup.__AlreadyHasFocus" filterName="__AlreadyHasFocus" isExposed="False" />
           <Filter entryType="Method" fullName="VO.RadioButtonGroup.__IsElement" filterName="__IsElement" isExposed="False" />
@@ -954,17 +634,6 @@ Most of this documentation has been automatically lifted from the Visual Objects
           <Filter entryType="Method" fullName="VO.ReportQueue.__ReportParameters" filterName="__ReportParameters" isExposed="False" />
           <Filter entryType="Method" fullName="VO.ReportQueue.__TerminateCAQRT" filterName="__TerminateCAQRT" isExposed="False" />
         </Filter>
-        <Filter entryType="Structure" fullName="VO.RETCALLBACK" filterName="RETCALLBACK" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO.RETCONTINUE" filterName="RETCONTINUE" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO.RETFILE" filterName="RETFILE" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO.RETFILETYPEDATA" filterName="RETFILETYPEDATA" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO.RetLoadVw" filterName="RetLoadVw" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO.RETQUERY" filterName="RETQUERY" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO.RETQUERYTYPEDATA" filterName="RETQUERYTYPEDATA" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO.RETREPORT" filterName="RETREPORT" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO.RETRPTPROPERTIES" filterName="RETRPTPROPERTIES" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO.RETRPTSTYLE" filterName="RETRPTSTYLE" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO.RetVwProperties" filterName="RetVwProperties" isExposed="False" />
         <Filter entryType="Class" fullName="VO.RichEdit" filterName="RichEdit" isExposed="True">
           <Filter entryType="Method" fullName="VO.RichEdit.__GetValue" filterName="__GetValue" isExposed="False" />
           <Filter entryType="Property" fullName="VO.RichEdit.__StreamPos" filterName="__StreamPos" isExposed="False" />
@@ -992,7 +661,6 @@ Most of this documentation has been automatically lifted from the Visual Objects
           <Filter entryType="Property" fullName="VO.SingleLineEdit.__FSLength" filterName="__FSLength" isExposed="False" />
           <Filter entryType="Property" fullName="VO.SingleLineEdit.__Value" filterName="__Value" isExposed="False" />
         </Filter>
-        <Filter entryType="Structure" fullName="VO.smpte_win.$DIM_Array_pad" filterName="smpte_win.$DIM_Array_pad" isExposed="False" />
         <Filter entryType="Class" fullName="VO.SplitWindow" filterName="SplitWindow" isExposed="True">
           <Filter entryType="Method" fullName="VO.SplitWindow.__ResizeSplitView" filterName="__ResizeSplitView" isExposed="False" />
           <Filter entryType="Property" fullName="VO.SplitWindow.__SplitView" filterName="__SplitView" isExposed="False" />
@@ -1090,8 +758,6 @@ Most of this documentation has been automatically lifted from the Visual Objects
           <Filter entryType="Property" fullName="VO.StatusBarItem.__Edge" filterName="__Edge" isExposed="False" />
           <Filter entryType="Property" fullName="VO.StatusBarItem.__Icon" filterName="__Icon" isExposed="False" />
         </Filter>
-        <Filter entryType="Structure" fullName="VO.strColor" filterName="strColor" isExposed="False" />
-        <Filter entryType="Structure" fullName="VO.strucPictureFuncFlags" filterName="strucPictureFuncFlags" isExposed="False" />
         <Filter entryType="Class" fullName="VO.SysLink" filterName="SysLink" isExposed="False">
           <Filter entryType="Constructor" fullName="VO.SysLink.#ctor" filterName=".ctor" isExposed="True" />
         </Filter>
@@ -1106,7 +772,6 @@ Most of this documentation has been automatically lifted from the Visual Objects
           <Filter entryType="Method" fullName="VO.TabControl.__GetSymbolFromIndex" filterName="__GetSymbolFromIndex" isExposed="False" />
           <Filter entryType="Method" fullName="VO.TabControl.__GetSymbolFromPage" filterName="__GetSymbolFromPage" isExposed="False" />
         </Filter>
-        <Filter entryType="Structure" fullName="VO.Target_win.$DIM_Array_szPname" filterName="Target_win.$DIM_Array_szPname" isExposed="False" />
         <Filter entryType="Class" fullName="VO.TextControl" filterName="TextControl" isExposed="True">
           <Filter entryType="Method" fullName="VO.TextControl.__GetText" filterName="__GetText" isExposed="False" />
           <Filter entryType="Method" fullName="VO.TextControl.__InitTextMetrics" filterName="__InitTextMetrics" isExposed="False" />
@@ -1144,7 +809,6 @@ Most of this documentation has been automatically lifted from the Visual Objects
         <Filter entryType="Class" fullName="VO.TreeViewItem" filterName="TreeViewItem" isExposed="True">
           <Filter entryType="Property" fullName="VO.TreeViewItem.__TreeViewControl" filterName="__TreeViewControl" isExposed="False" />
         </Filter>
-        <Filter entryType="Structure" fullName="VO.WCColor" filterName="WCColor" isExposed="False" />
         <Filter entryType="Class" fullName="VO.WCError" filterName="WCError" isExposed="False" />
         <Filter entryType="Class" fullName="VO.Window" filterName="Window" isExposed="True">
           <Filter entryType="Method" fullName="VO.Window.__AddAlign" filterName="__AddAlign" isExposed="False" />
@@ -1530,21 +1194,31 @@ The Runtime will also respect these implicit namespaces, so CreateInstance(#DbSe
   <PropertyGroup>
     <PreBuildEvent>
     </PreBuildEvent>
-    <PostBuildEvent>copy XsVOSDK.chm c:\XSharp\Dev\XSharp\Binaries\Help
-makecab XsVoSdk.mshc XsVoSdk.cab /V1
-copy XsVOSDK.mshc c:\XSharp\Dev\XSharp\Binaries\Help
-copy XsVOSDK.cab c:\XSharp\Dev\XSharp\Binaries\Help</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="XSharp.Core">
       <HintPath>Binaries\Documentation\XSharp.Core.dll</HintPath>
     </Reference>
+    <Reference Include="XSharp.Data">
+      <HintPath>Binaries\Documentation\XSharp.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="XSharp.Rdd">
+      <HintPath>Binaries\Documentation\XSharp.Rdd.dll</HintPath>
+    </Reference>
     <Reference Include="XSharp.RT">
       <HintPath>Binaries\Documentation\XSharp.RT.dll</HintPath>
     </Reference>
+    <Reference Include="XSharp.VFP">
+      <HintPath>Binaries\Documentation\XSharp.VFP.dll</HintPath>
+    </Reference>
     <Reference Include="XSharp.VO">
       <HintPath>Binaries\Documentation\XSharp.VO.dll</HintPath>
+    </Reference>
+    <Reference Include="XSharp.XPP">
+      <HintPath>Binaries\Documentation\XSharp.XPP.dll</HintPath>
     </Reference>
   </ItemGroup>
 </Project>

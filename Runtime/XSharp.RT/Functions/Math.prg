@@ -22,9 +22,11 @@ FUNCTION Abs(nValue AS USUAL) AS USUAL
         uRet := Math.Abs( (INT64) nValue )
     ELSEIF nValue:IsDecimal
         uRet := Math.Abs( (Decimal) nValue)
-    ELSEIF nValue:isInteger
+    ELSEIF nValue:IsCurrency
+        uRet := __Currency{Math.Abs( (Decimal) (__Currency) nValue)}
+    ELSEIF nValue:IsInteger
         uRet := Math.Abs( (INT) nValue )
-    ELSEIF nValue:IsFLoat
+    ELSEIF nValue:IsFloat
         uRet := AbsFloat( nValue )
     ELSE
         THROW  Error.ArgumentError( __ENTITY__, NAMEOF(nValue), "Argument not numeric",1)
@@ -33,18 +35,18 @@ FUNCTION Abs(nValue AS USUAL) AS USUAL
     
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/acot/*" />	
 FUNCTION ACot(nNum AS USUAL) AS FLOAT
-    RETURN 2 * Math.ATan(1) + Math.ATan( (REAL8) nNum)
+    RETURN 2 * Math.Atan(1) + Math.Atan( (REAL8) nNum)
     
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/atan/*" />	
 FUNCTION ATan(nNum AS USUAL) AS FLOAT
-    RETURN Math.ATan((REAL8)nNum)
+    RETURN Math.Atan((REAL8)nNum)
 
 
 FUNCTION ACos(nNum AS USUAL) AS FLOAT
     RETURN Math.Acos((REAL8) nNum)
 
 FUNCTION ASin(nNum AS USUAL) AS FLOAT
-    RETURN Math.ASin((REAL8) nNum)
+    RETURN Math.Asin((REAL8) nNum)
 
 FUNCTION Atan2(nY as USUAL, nX AS USUAL) AS FLOAT
     RETURN Math.Atan2((REAL8) nY, (REAL8) nX)
@@ -64,14 +66,14 @@ FUNCTION Ceil(nNumber AS USUAL) AS USUAL
     LOCAL result AS USUAL
     IF nNumber:IsInteger
         result := nNumber
-    ELSEIF nNumber:IsDecimal
+    ELSEIF nNumber:IsDecimal .OR. nNumber:IsCurrency
         LOCAL d AS decimal
         d := (decimal) nNumber
         d := Math.Ceiling(d)
-        IF d <= int32.MaxValue .AND. d >= int32.MinValue
-            result := COnvert.ToInt32(d)
-        ELSEIF d <= int64.MaxValue .AND. d >= int64.MinValue
-            result := COnvert.ToInt64(d)
+        IF d <= Int32.MaxValue .AND. d >= Int32.MinValue
+            result := Convert.ToInt32(d)
+        ELSEIF d <= Int64.MaxValue .AND. d >= Int64.MinValue
+            result := Convert.ToInt64(d)
         ELSE
             result := d
         ENDIF
@@ -80,10 +82,10 @@ FUNCTION Ceil(nNumber AS USUAL) AS USUAL
         LOCAL r8 AS REAL8
         r8 := (FLOAT) nNumber
         r8 := Math.Ceiling(r8)
-        IF r8 <= int32.MaxValue .AND. r8 >= int32.MinValue
-            result := COnvert.ToInt32(r8)
-        ELSEIF r8 <= int64.MaxValue .AND. r8 >= int64.MinValue
-            result := COnvert.ToInt64(r8)
+        IF r8 <= Int32.MaxValue .AND. r8 >= Int32.MinValue
+            result := Convert.ToInt32(r8)
+        ELSEIF r8 <= Int64.MaxValue .AND. r8 >= Int64.MinValue
+            result := Convert.ToInt64(r8)
         ELSE
             result := r8
         ENDIF
@@ -98,7 +100,7 @@ FUNCTION Cos(nNum AS USUAL) AS FLOAT
     
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/cot/*" />	
 FUNCTION Cot(nNum AS USUAL) AS FLOAT
-    RETURN 2 * Math.ATan( 1 ) + Math.ATan( (REAL8)nNum)
+    RETURN 2 * Math.Atan( 1 ) + Math.Atan( (REAL8)nNum)
     
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/exp/*" />	
 FUNCTION Exp(nExponent AS USUAL) AS FLOAT
@@ -109,14 +111,14 @@ FUNCTION Floor(nNum AS USUAL) AS USUAL
     LOCAL result AS USUAL
     IF nNum:IsInteger
         result := nNum
-    ELSEIF nNum:IsDecimal
+    ELSEIF nNum:IsDecimal .OR. nNum:IsCurrency
         LOCAL d AS decimal
         d := (decimal) nNum
         d := Math.Floor(d)
-        IF d <= int32.MaxValue .AND. d >= int32.MinValue
-            result := COnvert.ToInt32(d)
-        ELSEIF d <= int64.MaxValue .AND. d >= int64.MinValue
-            result := COnvert.ToInt64(d)
+        IF d <= Int32.MaxValue .AND. d >= Int32.MinValue
+            result := Convert.ToInt32(d)
+        ELSEIF d <= Int64.MaxValue .AND. d >= Int64.MinValue
+            result := Convert.ToInt64(d)
         ELSE
             result := d
         ENDIF
@@ -125,10 +127,10 @@ FUNCTION Floor(nNum AS USUAL) AS USUAL
         LOCAL r8 AS REAL8
         r8 := (FLOAT) nNum
         r8 := Math.Floor(r8)
-        IF r8 <= int32.MaxValue .AND. r8 >= int32.MinValue
-            result := COnvert.ToInt32(r8)
-        ELSEIF r8 <= int64.MaxValue .AND. r8 >= int64.MinValue
-            result := COnvert.ToInt64(r8)
+        IF r8 <= Int32.MaxValue .AND. r8 >= Int32.MinValue
+            result := Convert.ToInt32(r8)
+        ELSEIF r8 <= Int64.MaxValue .AND. r8 >= Int64.MinValue
+            result := Convert.ToInt64(r8)
         ELSE
             result := r8
         ENDIF
@@ -143,7 +145,7 @@ FUNCTION Integer(nValue AS USUAL) AS USUAL
     LOCAL result AS USUAL
     IF nValue:IsInteger
         result := nValue
-    ELSEIF nValue:IsFloat .OR. nValue:IsDecimal
+    ELSEIF nValue:IsFractional
         IF nValue > 0.0
             result := Floor(nValue)
         ELSE
@@ -223,16 +225,16 @@ FUNCTION Round(nNumber AS USUAL,siDecimals AS INT) AS USUAL
         r8 := r8 * ( 10 ^ siDecimals )
         
         IF r8 < 0
-            isLong	:= r8 >= Int32.MinValue 
-            isInt64 := r8 >= Int64.MinValue 
+            IsLong	:= r8 >= Int32.MinValue 
+            IsInt64 := r8 >= Int64.MinValue 
         ELSE
-            isLong  := r8 <= Int32.MaxValue
-            isInt64 := r8 <= Int64.MaxValue 
+            IsLong  := r8 <= Int32.MaxValue
+            IsInt64 := r8 <= Int64.MaxValue 
         ENDIF
         siDecimals := 0   
     ENDIF
     
-    IF isLong .OR. IsInt64
+    IF IsLong .OR. IsInt64
         siDecimals := 0
     ENDIF
     
@@ -256,7 +258,7 @@ FUNCTION Sin(nNum AS USUAL) AS FLOAT
     
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/sqrt/*" />	
 FUNCTION SQrt(nNumber AS USUAL) AS FLOAT
-    RETURN Math.SQrt((REAL8)nNumber)
+    RETURN Math.Sqrt((REAL8)nNumber)
     
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/tan/*" />
 FUNCTION Tan(nNum AS USUAL) AS FLOAT

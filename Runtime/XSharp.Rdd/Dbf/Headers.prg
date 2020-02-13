@@ -34,11 +34,11 @@ INTERNAL CLASS FptHeader
 
     INTERNAL PROPERTY BlockSize AS WORD
         GET
-            RETURN FoxToWord(buffer, OFFSET_BLOCKSIZE)
+            RETURN FoxToWord(Buffer, OFFSET_BLOCKSIZE)
         END GET
         SET
-            IF VALUE >= FPTMemo.MIN_FOXPRO_BLOCKSIZE
-                WordToFox(VALUE, Buffer, OFFSET_BLOCKSIZE)
+            IF value >= FPTMemo.MIN_FOXPRO_BLOCKSIZE
+                WordToFox(value, Buffer, OFFSET_BLOCKSIZE)
             ELSE
                 WordToFox(0, Buffer, OFFSET_BLOCKSIZE)
             ENDIF
@@ -46,28 +46,28 @@ INTERNAL CLASS FptHeader
     END PROPERTY
     INTERNAL PROPERTY NextFree AS DWORD
         GET
-            RETURN FoxToDword(buffer, OFFSET_NEXTFREE)
+            RETURN FoxToDword(Buffer, OFFSET_NEXTFREE)
         END GET
         SET
-            DwordToFox(VALUE, buffer, OFFSET_NEXTFREE)
+            DWordToFox(value, Buffer, OFFSET_NEXTFREE)
         END SET
     END PROPERTY
     INTERNAL PROPERTY UnUsed AS WORD
         GET
-            RETURN FoxToWord(buffer, OFFSET_UNUSED)
+            RETURN FoxToWord(Buffer, OFFSET_UNUSED)
         END GET
         SET
-            WordToFox(VALUE, buffer, OFFSET_UNUSED)
+            WordToFox(value, Buffer, OFFSET_UNUSED)
         END SET
     END PROPERTY
 
     INTERNAL METHOD Read(hFile AS IntPtr) AS LOGIC
         FSeek3(hFile, FOXHEADER_OFFSET, FS_SET)
-        RETURN Fread3(hFile, buffer, FOXHEADER_LENGTH) == FOXHEADER_LENGTH
+        RETURN FRead3(hFile, Buffer, FOXHEADER_LENGTH) == FOXHEADER_LENGTH
 
     INTERNAL METHOD Write(hFile AS IntPtr) AS LOGIC
         FSeek3(hFile, FOXHEADER_OFFSET, FS_SET)
-        RETURN FWrite3(hFile, buffer, FOXHEADER_LENGTH) == FOXHEADER_LENGTH
+        RETURN FWrite3(hFile, Buffer, FOXHEADER_LENGTH) == FOXHEADER_LENGTH
 
 
 END CLASS
@@ -110,31 +110,31 @@ INTERNAL CLASS FlexHeader
 
     INTERNAL PROPERTY Size AS DWORD GET FLEXHEADER_LENGTH
 
-    INTERNAL PROPERTY AltBlockSize  AS WORD  GET BuffToWord(SELF:buffer, OFFSET_BLOCKSIZE)  SET WordToBuff(VALUE, SELF:Buffer, OFFSET_BLOCKSIZE)
-    INTERNAL PROPERTY MajorVersion  AS BYTE  GET SELF:Buffer[OFFSET_MAJOR]                  SET SELF:Buffer[OFFSET_MAJOR] := VALUE
-    INTERNAL PROPERTY MinorVersion  AS BYTE  GET SELF:Buffer[OFFSET_MINOR]                  SET SELF:Buffer[OFFSET_MINOR] := VALUE
-    INTERNAL PROPERTY IndexDefect   AS LOGIC GET SELF:Buffer[OFFSET_DEFECT] == 0            SET SELF:Buffer[OFFSET_DEFECT] := IIF(VALUE,1,0)
-    INTERNAL PROPERTY IndexLength   AS LONG  GET BuffToLong(SELF:buffer, OFFSET_INDEXLEN )  SET LongToBuff(VALUE, SELF:buffer, OFFSET_INDEXLEN )
-    INTERNAL PROPERTY IndexLocation AS LONG  GET BuffToLong(SELF:buffer, OFFSET_INDEXLOC )  SET LongToBuff(VALUE, SELF:buffer, OFFSET_INDEXLOC )
-    INTERNAL PROPERTY Root          AS LONG  GET BuffToLong(SELF:buffer, OFFSET_ROOT )      SET LongToBuff(VALUE, SELF:buffer, OFFSET_ROOT )
-    INTERNAL PROPERTY UpdateCount   AS LONG  GET BuffToLong(SELF:buffer, OFFSET_UPDATE )    SET LongToBuff(VALUE, SELF:buffer, OFFSET_UPDATE )
+    INTERNAL PROPERTY AltBlockSize  AS WORD  GET BuffToWord(SELF:Buffer, OFFSET_BLOCKSIZE)  SET WordToBuff(value, SELF:Buffer, OFFSET_BLOCKSIZE)
+    INTERNAL PROPERTY MajorVersion  AS BYTE  GET SELF:Buffer[OFFSET_MAJOR]                  SET SELF:Buffer[OFFSET_MAJOR] := value
+    INTERNAL PROPERTY MinorVersion  AS BYTE  GET SELF:Buffer[OFFSET_MINOR]                  SET SELF:Buffer[OFFSET_MINOR] := value
+    INTERNAL PROPERTY IndexDefect   AS LOGIC GET SELF:Buffer[OFFSET_DEFECT] == 0            SET SELF:Buffer[OFFSET_DEFECT] := IIF(value,1,0)
+    INTERNAL PROPERTY IndexLength   AS LONG  GET BuffToLong(SELF:Buffer, OFFSET_INDEXLEN )  SET LongToBuff(value, SELF:Buffer, OFFSET_INDEXLEN )
+    INTERNAL PROPERTY IndexLocation AS LONG  GET BuffToLong(SELF:Buffer, OFFSET_INDEXLOC )  SET LongToBuff(value, SELF:Buffer, OFFSET_INDEXLOC )
+    INTERNAL PROPERTY Root          AS LONG  GET BuffToLong(SELF:Buffer, OFFSET_ROOT )      SET LongToBuff(value, SELF:Buffer, OFFSET_ROOT )
+    INTERNAL PROPERTY UpdateCount   AS LONG  GET BuffToLong(SELF:Buffer, OFFSET_UPDATE )    SET LongToBuff(value, SELF:Buffer, OFFSET_UPDATE )
     INTERNAL PROPERTY Signature     AS STRING
         // We can use System.Text.Encoding.ASCII because the flexfile header has no special characters
         GET
             RETURN System.Text.Encoding.ASCII:GetString(SELF:Buffer,0, 9)
         END GET
         SET
-            VAR bytes := System.Text.Encoding.ASCII:GetBytes(VALUE)
+            VAR bytes := System.Text.Encoding.ASCII:GetBytes(value)
             System.Array.Copy(bytes,0, Buffer, OFFSET_SIGNATURE, LEN_SIGNATURE)
         END SET
     END PROPERTY
     INTERNAL METHOD Read(hFile AS IntPtr) AS LOGIC
         FSeek3(hFile, FLEXHEADER_OFFSET, FS_SET)
-        RETURN Fread3(hFile, buffer, FLEXHEADER_LENGTH) == FLEXHEADER_LENGTH
+        RETURN FRead3(hFile, Buffer, FLEXHEADER_LENGTH) == FLEXHEADER_LENGTH
 
     INTERNAL METHOD Write(hFile AS IntPtr) AS LOGIC
         FSeek3(hFile, FLEXHEADER_OFFSET, FS_SET)
-        RETURN FWrite3(hFile, buffer, FLEXHEADER_LENGTH) == FLEXHEADER_LENGTH
+        RETURN FWrite3(hFile, Buffer, FLEXHEADER_LENGTH) == FLEXHEADER_LENGTH
 
     INTERNAL PROPERTY Valid AS LOGIC
         GET

@@ -40,12 +40,12 @@ FUNCTION MBAtC2(cMBSearch AS STRING,cMBTarget AS STRING) AS DWORD
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mbatline/*" />
 /// <remarks><note type="tip">This function is the same as AtLine() since .Net has unicode strings</note></remarks>
 FUNCTION MBAtLine(cMBSearch AS STRING,cMBTarget AS STRING) AS LONGINT
-	RETURN (LONG) AtLine(cMBSearch, cMBTarget)   
+	RETURN (LONG) ATLine(cMBSearch, cMBTarget)   
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mbatline2/*" />
 /// <remarks><note type="tip">This function is the same as AtLine2() since .Net has unicode strings</note></remarks>
 FUNCTION MBAtLine2(cMBSearch AS STRING,cMBTarget AS STRING) AS DWORD
-	RETURN AtLine2(cMBSearch, cMBTarget)   
+	RETURN ATLine2(cMBSearch, cMBTarget)   
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mbleft/*" />
 /// <remarks><note type="tip">This function is the same as Left() since .Net has unicode strings</note></remarks>
@@ -75,7 +75,7 @@ FUNCTION MBRat2(cMBSearch AS STRING,cMBTarget AS STRING) AS DWORD
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mbrat3/*" />
 /// <remarks><note type="tip">This function is the same as Rat3() since .Net has unicode strings</note></remarks>
 FUNCTION MBRat3(cMBSearch AS STRING,cMBTarget AS STRING,wOffset AS DWORD) AS DWORD
-	RETURN RAt3(cMBSearch, cMBTarget, wOffSet)
+	RETURN RAt3(cMBSearch, cMBTarget, wOffset)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/mbright/*" />
 /// <remarks><note type="tip">This function is the same as Right() since .Net has unicode strings</note></remarks>

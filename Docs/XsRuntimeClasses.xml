@@ -6,6 +6,11 @@
   This compiler generated class contains all the functions, globals and defines that are defined in the XSharp.Core assembly.
   </summary>
   </member>
+  <member name="T:XSharp.Data.Functions">
+  <summary>
+  This compiler generated class contains all the functions, globals and defines that are defined in the XSharp.Data assembly.
+  </summary>
+  </member>
   <member name="T:XSharp.RT.Functions">
   <summary>
   This compiler generated class contains all the functions, globals and defines that are defined in the XSharp.RT assembly.

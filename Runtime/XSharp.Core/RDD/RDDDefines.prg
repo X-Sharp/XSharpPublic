@@ -44,6 +44,9 @@ DEFINE DBS_LEN					:= DbFieldInfo.DBS_LEN
 DEFINE DBS_DEC					:= DbFieldInfo.DBS_DEC	
 /// <exclude />
 DEFINE DBS_ALIAS				:= DbFieldInfo.DBS_ALIAS
+/// <exclude />
+DEFINE DBS_FLAGS				:= DbFieldInfo.DBS_FLAGS
+
 DEFINE DBS_ALEN                 := 4  // XBase++ has this define
 
 /// <exclude />
@@ -654,121 +657,121 @@ DEFINE RDT_HIDDEN          :=  8
 
 
 /// <exclude />
-DEFINE RDDI_ISDBF             := RDDInfo.RDDI_ISDBF        /* Does this RDD support DBFs? */
+DEFINE RDDI_ISDBF             := RddInfo.RDDI_ISDBF        /* Does this RDD support DBFs? */
 /// <exclude />
-DEFINE RDDI_CANPUTREC         := RDDInfo.RDDI_CANPUTREC    /* Can this RDD Put Records? */
+DEFINE RDDI_CANPUTREC         := RddInfo.RDDI_CANPUTREC    /* Can this RDD Put Records? */
 /// <exclude />
-DEFINE RDDI_DELIMITER         := RDDInfo.RDDI_DELIMITER    /* The field delimiter (as a string) */
+DEFINE RDDI_DELIMITER         := RddInfo.RDDI_DELIMITER    /* The field delimiter (as a string) */
 /// <exclude />
-DEFINE RDDI_SEPARATOR         := RDDInfo.RDDI_SEPARATOR    /* The record separator (as a string) */
+DEFINE RDDI_SEPARATOR         := RddInfo.RDDI_SEPARATOR    /* The record separator (as a string) */
 							  
 /// <exclude />
-DEFINE RDDI_TABLEEXT          := RDDInfo.RDDI_TABLEEXT     /* Default data file's file extension */
+DEFINE RDDI_TABLEEXT          := RddInfo.RDDI_TABLEEXT     /* Default data file's file extension */
 /// <exclude />
-DEFINE RDDI_MEMOEXT           := RDDInfo.RDDI_MEMOEXT      /* Default memo file's file extension */
+DEFINE RDDI_MEMOEXT           := RddInfo.RDDI_MEMOEXT      /* Default memo file's file extension */
 /// <exclude />
-DEFINE RDDI_ORDBAGEXT         := RDDInfo.RDDI_ORDBAGEXT    /* Default multi tag index's file extension */
+DEFINE RDDI_ORDBAGEXT         := RddInfo.RDDI_ORDBAGEXT    /* Default multi tag index's file extension */
 /// <exclude />
-DEFINE RDDI_ORDEREXT          := RDDInfo.RDDI_ORDEREXT     /* default single tag index's file extension */
+DEFINE RDDI_ORDEREXT          := RddInfo.RDDI_ORDEREXT     /* default single tag index's file extension */
 /// <exclude />
-DEFINE RDDI_ORDSTRUCTEXT      := RDDInfo.RDDI_ORDSTRUCTEXT /* default single tag index's file extension */
+DEFINE RDDI_ORDSTRUCTEXT      := RddInfo.RDDI_ORDSTRUCTEXT /* default single tag index's file extension */
 							  
 /// <exclude />
-DEFINE RDDI_LOCAL             := RDDInfo.RDDI_LOCAL        /* Local file access? */
+DEFINE RDDI_LOCAL             := RddInfo.RDDI_LOCAL        /* Local file access? */
 /// <exclude />
-DEFINE RDDI_REMOTE            := RDDInfo.RDDI_REMOTE       /* Remote table access? */
+DEFINE RDDI_REMOTE            := RddInfo.RDDI_REMOTE       /* Remote table access? */
 /// <exclude />
-DEFINE RDDI_CONNECTION        := RDDInfo.RDDI_CONNECTION   /* Get/Set default connection */
+DEFINE RDDI_CONNECTION        := RddInfo.RDDI_CONNECTION   /* Get/Set default connection */
 /// <exclude />
-DEFINE RDDI_TABLETYPE         := RDDInfo.RDDI_TABLETYPE    /* Type of table file */
+DEFINE RDDI_TABLETYPE         := RddInfo.RDDI_TABLETYPE    /* Type of table file */
 /// <exclude />
-DEFINE RDDI_MEMOTYPE          := RDDInfo.RDDI_MEMOTYPE     /* Type of MEMO file DB_MEMO_*: DBT, SMT, FPT(FP,SIX3,FLEXIII) */
+DEFINE RDDI_MEMOTYPE          := RddInfo.RDDI_MEMOTYPE     /* Type of MEMO file DB_MEMO_*: DBT, SMT, FPT(FP,SIX3,FLEXIII) */
 /// <exclude />
-DEFINE RDDI_LARGEFILE         := RDDInfo.RDDI_LARGEFILE    /* Is large file size (>=4GB) supported */
+DEFINE RDDI_LARGEFILE         := RddInfo.RDDI_LARGEFILE    /* Is large file size (>=4GB) supported */
 /// <exclude />
-DEFINE RDDI_LOCKSCHEME        := RDDInfo.RDDI_LOCKSCHEME   /* Locking scheme used by RDD */
+DEFINE RDDI_LOCKSCHEME        := RddInfo.RDDI_LOCKSCHEME   /* Locking scheme used by RDD */
 /// <exclude />
-DEFINE RDDI_RECORDMAP         := RDDInfo.RDDI_RECORDMAP    /* Does RDD support record map functionality? */
+DEFINE RDDI_RECORDMAP         := RddInfo.RDDI_RECORDMAP    /* Does RDD support record map functionality? */
 /// <exclude />
-DEFINE RDDI_ENCRYPTION        := RDDInfo.RDDI_ENCRYPTION   /* Does RDD support encryption */
+DEFINE RDDI_ENCRYPTION        := RddInfo.RDDI_ENCRYPTION   /* Does RDD support encryption */
 /// <exclude />
-DEFINE RDDI_TRIGGER           := RDDInfo.RDDI_TRIGGER      /* Get/Set default trigger function */
+DEFINE RDDI_TRIGGER           := RddInfo.RDDI_TRIGGER      /* Get/Set default trigger function */
 /// <exclude />
-DEFINE RDDI_AUTOLOCK          := RDDInfo.RDDI_AUTOLOCK     /* automatic locking on update */
+DEFINE RDDI_AUTOLOCK          := RddInfo.RDDI_AUTOLOCK     /* automatic locking on update */
 
 /* index parameters */
 /// <exclude />
-DEFINE RDDI_STRUCTORD           := RDDInfo.RDDI_STRUCTORD    /* Are structural indexes supported */
+DEFINE RDDI_STRUCTORD           := RddInfo.RDDI_STRUCTORD    /* Are structural indexes supported */
 /// <exclude />
-DEFINE RDDI_STRICTREAD          := RDDInfo.RDDI_STRICTREAD   /* Flag for avoiding RDD hierarchy and using a bigger buffer when indexing */
+DEFINE RDDI_STRICTREAD          := RddInfo.RDDI_STRICTREAD   /* Flag for avoiding RDD hierarchy and using a bigger buffer when indexing */
 /// <exclude />
-DEFINE RDDI_STRICTSTRUCT        := RDDInfo.RDDI_STRICTSTRUCT /* Flag for strict structural order checking */
+DEFINE RDDI_STRICTSTRUCT        := RddInfo.RDDI_STRICTSTRUCT /* Flag for strict structural order checking */
 /// <exclude />
-DEFINE RDDI_OPTIMIZE            := RDDInfo.RDDI_OPTIMIZE     /* Flag for whether to use query optimization */
+DEFINE RDDI_OPTIMIZE            := RddInfo.RDDI_OPTIMIZE     /* Flag for whether to use query optimization */
 /// <exclude />
-DEFINE RDDI_FORCEOPT            := RDDInfo.RDDI_FORCEOPT     /* Flag for forcing linear optimization */
+DEFINE RDDI_FORCEOPT            := RddInfo.RDDI_FORCEOPT     /* Flag for forcing linear optimization */
 /// <exclude />
-DEFINE RDDI_AUTOOPEN            := RDDInfo.RDDI_AUTOOPEN     /* Flag for automatically opening structural indexes */
+DEFINE RDDI_AUTOOPEN            := RddInfo.RDDI_AUTOOPEN     /* Flag for automatically opening structural indexes */
 /// <exclude />
-DEFINE RDDI_AUTOORDER           := RDDInfo.RDDI_AUTOORDER    /* When a structural index is opened, the order to be set */
+DEFINE RDDI_AUTOORDER           := RddInfo.RDDI_AUTOORDER    /* When a structural index is opened, the order to be set */
 /// <exclude />
-DEFINE RDDI_AUTOSHARE           := RDDInfo.RDDI_AUTOSHARE    /* When a network is detected, open the index shared, otherwise open exclusively */
+DEFINE RDDI_AUTOSHARE           := RddInfo.RDDI_AUTOSHARE    /* When a network is detected, open the index shared, otherwise open exclusively */
 /// <exclude />
-DEFINE RDDI_MULTITAG            := RDDInfo.RDDI_MULTITAG     /* Does RDD support multi tag in index file */
+DEFINE RDDI_MULTITAG            := RddInfo.RDDI_MULTITAG     /* Does RDD support multi tag in index file */
 /// <exclude />
-DEFINE RDDI_SORTRECNO           := RDDInfo.RDDI_SORTRECNO    /* Is record number part of key in sorting */
+DEFINE RDDI_SORTRECNO           := RddInfo.RDDI_SORTRECNO    /* Is record number part of key in sorting */
 /// <exclude />
-DEFINE RDDI_MULTIKEY            := RDDInfo.RDDI_MULTIKEY     /* Does custom orders support repeated keys? */
+DEFINE RDDI_MULTIKEY            := RddInfo.RDDI_MULTIKEY     /* Does custom orders support repeated keys? */
 
 /* memo parameters */
 /// <exclude />
-DEFINE RDDI_MEMOBLOCKSIZE       := RDDInfo.RDDI_MEMOBLOCKSIZE   /* Memo File's block size */
+DEFINE RDDI_MEMOBLOCKSIZE       := RddInfo.RDDI_MEMOBLOCKSIZE   /* Memo File's block size */
 /// <exclude />
-DEFINE RDDI_MEMOVERSION         := RDDInfo.RDDI_MEMOVERSION     /* sub version of memo file */
+DEFINE RDDI_MEMOVERSION         := RddInfo.RDDI_MEMOVERSION     /* sub version of memo file */
 /// <exclude />
-DEFINE RDDI_MEMOGCTYPE          := RDDInfo.RDDI_MEMOGCTYPE      /* type of garbage collector used by GC */
+DEFINE RDDI_MEMOGCTYPE          := RddInfo.RDDI_MEMOGCTYPE      /* type of garbage collector used by GC */
 /// <exclude />
-DEFINE RDDI_MEMOREADLOCK        := RDDInfo.RDDI_MEMOREADLOCK    /* use read lock in memo file access */
+DEFINE RDDI_MEMOREADLOCK        := RddInfo.RDDI_MEMOREADLOCK    /* use read lock in memo file access */
 /// <exclude />
-DEFINE RDDI_MEMOREUSE           := RDDInfo.RDDI_MEMOREUSE       /* reuse free space on write */
+DEFINE RDDI_MEMOREUSE           := RddInfo.RDDI_MEMOREUSE       /* reuse free space on write */
 /// <exclude />
-DEFINE RDDI_BLOB_SUPPORT        := RDDInfo.RDDI_BLOB_SUPPORT    /* can support BLOB files directly */
+DEFINE RDDI_BLOB_SUPPORT        := RddInfo.RDDI_BLOB_SUPPORT    /* can support BLOB files directly */
 
 /* misc */
 /// <exclude />
-DEFINE RDDI_PENDINGTRIGGER      := RDDInfo.RDDI_PENDINGTRIGGER    /* set pending trigger for next open operation */
+DEFINE RDDI_PENDINGTRIGGER      := RddInfo.RDDI_PENDINGTRIGGER    /* set pending trigger for next open operation */
 /// <exclude />
-DEFINE RDDI_PENDINGPASSWORD     := RDDInfo.RDDI_PENDINGPASSWORD   /* set pending password for next open operation */
+DEFINE RDDI_PENDINGPASSWORD     := RddInfo.RDDI_PENDINGPASSWORD   /* set pending password for next open operation */
 /// <exclude />
-DEFINE RDDI_PASSWORD            := RDDInfo.RDDI_PASSWORD          /* Get/Set default password */
+DEFINE RDDI_PASSWORD            := RddInfo.RDDI_PASSWORD          /* Get/Set default password */
 /// <exclude />
-DEFINE RDDI_LOCKRETRY           := RDDInfo.RDDI_LOCKRETRY         /* Get/Set record and file lock timeout value */
+DEFINE RDDI_LOCKRETRY           := RddInfo.RDDI_LOCKRETRY         /* Get/Set record and file lock timeout value */
 /// <exclude />
-DEFINE RDDI_DIRTYREAD           := RDDInfo.RDDI_DIRTYREAD         /* Get/Set index dirty read flag */
+DEFINE RDDI_DIRTYREAD           := RddInfo.RDDI_DIRTYREAD         /* Get/Set index dirty read flag */
 /// <exclude />
-DEFINE RDDI_INDEXPAGESIZE       := RDDInfo.RDDI_INDEXPAGESIZE     /* Get/Set default index page size */
+DEFINE RDDI_INDEXPAGESIZE       := RddInfo.RDDI_INDEXPAGESIZE     /* Get/Set default index page size */
 /// <exclude />
-DEFINE RDDI_DECIMALS            := RDDInfo.RDDI_DECIMALS          /* Get/Set default number of decimal places for numeric fields if it's undefined */
+DEFINE RDDI_DECIMALS            := RddInfo.RDDI_DECIMALS          /* Get/Set default number of decimal places for numeric fields if it's undefined */
 /// <exclude />
-DEFINE RDDI_SETHEADER           := RDDInfo.RDDI_SETHEADER         /* DBF header updating modes */
+DEFINE RDDI_SETHEADER           := RddInfo.RDDI_SETHEADER         /* DBF header updating modes */
 
 /* SQL */
 /// <exclude />
-DEFINE RDDI_CONNECT             := RDDInfo.RDDI_CONNECT         /* connect to database */
+DEFINE RDDI_CONNECT             := RddInfo.RDDI_CONNECT         /* connect to database */
 /// <exclude />
-DEFINE RDDI_DISCONNECT          := RDDInfo.RDDI_DISCONNECT      /* disconnect from database */
+DEFINE RDDI_DISCONNECT          := RddInfo.RDDI_DISCONNECT      /* disconnect from database */
 /// <exclude />
-DEFINE RDDI_EXECUTE             := RDDInfo.RDDI_EXECUTE         /* execute SQL statement */
+DEFINE RDDI_EXECUTE             := RddInfo.RDDI_EXECUTE         /* execute SQL statement */
 /// <exclude />
-DEFINE RDDI_ERROR               := RDDInfo.RDDI_ERROR           /* error number */
+DEFINE RDDI_ERROR               := RddInfo.RDDI_ERROR           /* error number */
 /// <exclude />
-DEFINE RDDI_ERRORNO             := RDDInfo.RDDI_ERRORNO         /* error description */
+DEFINE RDDI_ERRORNO             := RddInfo.RDDI_ERRORNO         /* error description */
 /// <exclude />
-DEFINE RDDI_INSERTID            := RDDInfo.RDDI_INSERTID        /* last auto insert ID */
+DEFINE RDDI_INSERTID            := RddInfo.RDDI_INSERTID        /* last auto insert ID */
 /// <exclude />
-DEFINE RDDI_AFFECTEDROWS        := RDDInfo.RDDI_AFFECTEDROWS    /* number of affected rows after UPDATE */
+DEFINE RDDI_AFFECTEDROWS        := RddInfo.RDDI_AFFECTEDROWS    /* number of affected rows after UPDATE */
 /// <exclude />
-DEFINE RDDI_QUERY               := RDDInfo.RDDI_QUERY           /* last executed query */ 
+DEFINE RDDI_QUERY               := RddInfo.RDDI_QUERY           /* last executed query */ 
 
 /*
 /* "V" field types * /
@@ -839,81 +842,81 @@ DEFINE FPTIT_SIX_ARRAY    0x8000      /* ARRAY * /
 /// <include file="CoreComments.xml" path="Comments/RDDError/*" />
 DEFINE EDB                 := Subcodes.EDB
 /// <include file="CoreComments.xml" path="Comments/RDDError/*" />
-DEFINE EDB_SEEK            := SubCodes.EDB_SEEK          
+DEFINE EDB_SEEK            := Subcodes.EDB_SEEK          
 /// <include file="CoreComments.xml" path="Comments/RDDError/*" />
-DEFINE EDB_SKIP            := SubCodes.EDB_SKIP          
+DEFINE EDB_SKIP            := Subcodes.EDB_SKIP          
 /// <include file="CoreComments.xml" path="Comments/RDDError/*" />
-DEFINE EDB_GOTO            := SubCodes.EDB_GOTO          
+DEFINE EDB_GOTO            := Subcodes.EDB_GOTO          
 /// <include file="CoreComments.xml" path="Comments/RDDError/*" />
-DEFINE EDB_SETRELATION     := SubCodes.EDB_SETRELATION   
+DEFINE EDB_SETRELATION     := Subcodes.EDB_SETRELATION   
 /// <include file="CoreComments.xml" path="Comments/RDDError/*" />
-DEFINE EDB_USE             := SubCodes.EDB_USE           
+DEFINE EDB_USE             := Subcodes.EDB_USE           
 /// <include file="CoreComments.xml" path="Comments/RDDError/*" />
-DEFINE EDB_CREATEINDEX     := SubCodes.EDB_CREATEINDEX   
+DEFINE EDB_CREATEINDEX     := Subcodes.EDB_CREATEINDEX   
 /// <include file="CoreComments.xml" path="Comments/RDDError/*" />
-DEFINE EDB_SETORDER        := SubCodes.EDB_SETORDER      
+DEFINE EDB_SETORDER        := Subcodes.EDB_SETORDER      
 /// <include file="CoreComments.xml" path="Comments/RDDError/*" />
-DEFINE EDB_SETINDEX        := SubCodes.EDB_SETINDEX      
+DEFINE EDB_SETINDEX        := Subcodes.EDB_SETINDEX      
 /// <include file="CoreComments.xml" path="Comments/RDDError/*" />
-DEFINE EDB_FIELDNAME       := SubCodes.EDB_FIELDNAME     
+DEFINE EDB_FIELDNAME       := Subcodes.EDB_FIELDNAME     
 /// <include file="CoreComments.xml" path="Comments/RDDError/*" />
-DEFINE EDB_BADALIAS        := SubCodes.EDB_BADALIAS      
+DEFINE EDB_BADALIAS        := Subcodes.EDB_BADALIAS      
 /// <include file="CoreComments.xml" path="Comments/RDDError/*" />
-DEFINE EDB_DUPALIAS        := SubCodes.EDB_DUPALIAS      
+DEFINE EDB_DUPALIAS        := Subcodes.EDB_DUPALIAS      
 /// <include file="CoreComments.xml" path="Comments/RDDError/*" />
-DEFINE EDB_SETFILTER       := SubCodes.EDB_SETFILTER     
+DEFINE EDB_SETFILTER       := Subcodes.EDB_SETFILTER     
 /// <include file="CoreComments.xml" path="Comments/RDDError/*" />
-DEFINE EDB_CYCLICREL       := SubCodes.EDB_CYCLICREL     
+DEFINE EDB_CYCLICREL       := Subcodes.EDB_CYCLICREL     
 /// <include file="CoreComments.xml" path="Comments/RDDError/*" />
-DEFINE EDB_CREATETABLE     := SubCodes.EDB_CREATETABLE   
+DEFINE EDB_CREATETABLE     := Subcodes.EDB_CREATETABLE   
 /// <include file="CoreComments.xml" path="Comments/RDDError/*" />
-DEFINE EDB_RDDNOTFOUND     := SubCodes.EDB_RDDNOTFOUND   
+DEFINE EDB_RDDNOTFOUND     := Subcodes.EDB_RDDNOTFOUND   
 // RESERVED EDB + 16
 /// <include file="CoreComments.xml" path="Comments/RDDError/*" />
-DEFINE EDB_FIELDINDEX      := SubCodes.EDB_FIELDINDEX   
+DEFINE EDB_FIELDINDEX      := Subcodes.EDB_FIELDINDEX   
 /// <include file="CoreComments.xml" path="Comments/RDDError/*" />
-DEFINE EDB_SELECT          := SubCodes.EDB_SELECT       
+DEFINE EDB_SELECT          := Subcodes.EDB_SELECT       
 /// <include file="CoreComments.xml" path="Comments/RDDError/*" />
-DEFINE EDB_SYMSELECT       := SubCodes.EDB_SYMSELECT    
+DEFINE EDB_SYMSELECT       := Subcodes.EDB_SYMSELECT    
 /// <include file="CoreComments.xml" path="Comments/RDDError/*" />
-DEFINE EDB_TOTAL           := SubCodes.EDB_TOTAL        
+DEFINE EDB_TOTAL           := Subcodes.EDB_TOTAL        
 /// <include file="CoreComments.xml" path="Comments/RDDError/*" />
-DEFINE EDB_RECNO           := SubCodes.EDB_RECNO        
+DEFINE EDB_RECNO           := Subcodes.EDB_RECNO        
 /// <include file="CoreComments.xml" path="Comments/RDDError/*" />
-DEFINE EDB_EXPRESSION      := SubCodes.EDB_EXPRESSION   
+DEFINE EDB_EXPRESSION      := Subcodes.EDB_EXPRESSION   
 /// <include file="CoreComments.xml" path="Comments/RDDError/*" />
-DEFINE EDB_EXPR_WIDTH      := SubCodes.EDB_EXPR_WIDTH   
+DEFINE EDB_EXPR_WIDTH      := Subcodes.EDB_EXPR_WIDTH   
 // RESERVED EDB + 24 - 29
 /// <include file="CoreComments.xml" path="Comments/RDDError/*" />
-DEFINE EDB_DRIVERLOAD      := SubCodes.EDB_DRIVERLOAD      
+DEFINE EDB_DRIVERLOAD      := Subcodes.EDB_DRIVERLOAD      
 /// <include file="CoreComments.xml" path="Comments/RDDError/*" />
-DEFINE EDB_PARAM           := SubCodes.EDB_PARAM           
+DEFINE EDB_PARAM           := Subcodes.EDB_PARAM           
 /// <include file="CoreComments.xml" path="Comments/RDDError/*" />
-DEFINE EDB_NOAREAS         := SubCodes.EDB_NOAREAS         
+DEFINE EDB_NOAREAS         := Subcodes.EDB_NOAREAS         
 /// <include file="CoreComments.xml" path="Comments/RDDError/*" />
-DEFINE EDB_NOMEM           := SubCodes.EDB_NOMEM           
+DEFINE EDB_NOMEM           := Subcodes.EDB_NOMEM           
 /// <include file="CoreComments.xml" path="Comments/RDDError/*" />
-DEFINE EDB_NOFIELDS        := SubCodes.EDB_NOFIELDS        
+DEFINE EDB_NOFIELDS        := Subcodes.EDB_NOFIELDS        
 /// <include file="CoreComments.xml" path="Comments/RDDError/*" />
-DEFINE EDB_BAD_ERROR_INFO  := SubCodes.EDB_BAD_ERROR_INFO  
+DEFINE EDB_BAD_ERROR_INFO  := Subcodes.EDB_BAD_ERROR_INFO  
 /// <include file="CoreComments.xml" path="Comments/RDDError/*" />
-DEFINE EDB_WRONGFIELDNAME  := SubCodes.EDB_WRONGFIELDNAME  
+DEFINE EDB_WRONGFIELDNAME  := Subcodes.EDB_WRONGFIELDNAME  
 /// <include file="CoreComments.xml" path="Comments/RDDError/*" />
-DEFINE EDB_ORDDESTROY      := SubCodes.EDB_ORDDESTROY      
+DEFINE EDB_ORDDESTROY      := Subcodes.EDB_ORDDESTROY      
 /// <include file="CoreComments.xml" path="Comments/RDDError/*" />
-DEFINE EDB_NOINITFUNCTION  := SubCodes.EDB_NOINITFUNCTION  
+DEFINE EDB_NOINITFUNCTION  := Subcodes.EDB_NOINITFUNCTION  
 /// <include file="CoreComments.xml" path="Comments/RDDError/*" />
-DEFINE EDB_ERRORINIT       := SubCodes.EDB_ERRORINIT       
+DEFINE EDB_ERRORINIT       := Subcodes.EDB_ERRORINIT       
 /// <include file="CoreComments.xml" path="Comments/RDDError/*" />
-DEFINE EDB_DBSTRUCT        := SubCodes.EDB_DBSTRUCT        
+DEFINE EDB_DBSTRUCT        := Subcodes.EDB_DBSTRUCT        
 
 /// <include file="CoreComments.xml" path="Comments/RDDError/*" />
-DEFINE EDB_NOTABLE         := SubCodes.EDB_NOTABLE       
+DEFINE EDB_NOTABLE         := Subcodes.EDB_NOTABLE       
 /// <include file="CoreComments.xml" path="Comments/RDDError/*" />
-DEFINE EDB_NOORDER         := SubCodes.EDB_NOORDER       
+DEFINE EDB_NOORDER         := Subcodes.EDB_NOORDER       
 
 /// <include file="CoreComments.xml" path="Comments/RDDError/*" />
-DEFINE EDB_ASSERTION       := SubCodes.EDB_ASSERTION     
+DEFINE EDB_ASSERTION       := Subcodes.EDB_ASSERTION     
 
 // Xbase++ defines for DbScope()
 /// <include file="CoreComments.xml" path="Comments/ScopeInfo/*" />

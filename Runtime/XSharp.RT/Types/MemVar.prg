@@ -14,10 +14,10 @@ USING System.Threading
 // Class that holds the memvars for a certain level on the callstack
 [DebuggerDisplay("Level:{Depth}")];	
 INTERNAL CLASS XSharp.MemVarLevel                     
-	PROPERTY Variables AS Dictionary<STRING, MEMVAR> AUTO    
+	PROPERTY Variables AS Dictionary<STRING, XSharp.MemVar> AUTO    
 	PROPERTY Depth AS INT AUTO GET PRIVATE SET
 	CONSTRUCTOR (nDepth AS INT)              
-		Variables   := Dictionary<STRING, MEMVAR>{StringComparer.OrdinalIgnoreCase}
+		Variables   := Dictionary<STRING, XSharp.MemVar>{StringComparer.OrdinalIgnoreCase}
 		Depth       := nDepth
 		RETURN
 
@@ -37,7 +37,7 @@ INTERNAL CLASS XSharp.MemVarLevel
 
 	PROPERTY SELF[Name AS STRING] AS XSharp.MemVar
 		GET                     
-			IF Variables:TryGetValue(name, OUT VAR oMemVar)
+			IF Variables:TryGetValue(Name, OUT VAR oMemVar)
 				RETURN oMemVar
 			ENDIF
 			RETURN NULL
@@ -78,7 +78,7 @@ PUBLIC CLASS XSharp.MemVar
     PRIVATE STATIC ThreadList := ThreadLocal< MemVarThreadInfo >{ {=> MemVarThreadInfo{} }}  AS ThreadLocal< MemVarThreadInfo >
     PRIVATE STATIC PROPERTY Info       AS MemVarThreadInfo          GET ThreadList:Value
 	PRIVATE STATIC PROPERTY Privates   AS Stack <MemVarLevel>       GET Info:Levels
-    PRIVATE STATIC PROPERTY Depth      AS INT GET Info:Depth        SET Info:Depth := VALUE
+    PRIVATE STATIC PROPERTY Depth      AS INT GET Info:Depth        SET Info:Depth := value
 	PRIVATE STATIC PROPERTY Current    AS MemVarLevel GET IIF (Privates:Count > 0, Privates:Peek(), NULL)
 
 	
@@ -125,30 +125,30 @@ PUBLIC CLASS XSharp.MemVar
 		
 	
 	STATIC METHOD GetHigherLevelPrivate(name AS STRING) AS XSharp.MemVar
-		FOREACH VAR previous IN privates    
-			IF previous!= current .AND. previous:TryGetValue(name, OUT VAR oMemVar)
+		FOREACH VAR previous IN Privates    
+			IF previous!= Current .AND. previous:TryGetValue(name, OUT VAR oMemVar)
 				RETURN oMemVar
 			ENDIF   
 		NEXT		
 		RETURN NULL	
 
     
-	STATIC METHOD PrivatePut(name AS STRING, VALUE AS USUAL) AS LOGIC
+	STATIC METHOD PrivatePut(name AS STRING, uValue AS USUAL) AS LOGIC
 		CheckCurrent()      
-		IF current:TryGetValue(name, OUT VAR oMemVar)
-			oMemVar:Value := VALUE
+		IF Current:TryGetValue(name, OUT VAR oMemVar)
+			oMemVar:Value := uValue
 			RETURN TRUE			
 		ENDIF
         oMemVar := GetHigherLevelPrivate(name)
         IF oMemVar != NULL
-        	oMemVar:Value := VALUE
+        	oMemVar:Value := uValue
         	RETURN TRUE
         ENDIF
 		RETURN FALSE	
 
 	
 	STATIC METHOD PrivateFind(name AS STRING) AS XSharp.MemVar
-		IF current != NULL .AND. current:TryGetValue(name, OUT VAR oMemVar)
+		IF Current != NULL .AND. Current:TryGetValue(name, OUT VAR oMemVar)
 			RETURN oMemVar
 		ENDIF   
         RETURN GetHigherLevelPrivate(name)
@@ -160,7 +160,7 @@ PUBLIC CLASS XSharp.MemVar
 		IF oMemVar == NULL
 			oMemVar := PublicFind(name)
             IF oMemVar != NULL
-                publics:Remove(oMemVar:Name)
+                Publics:Remove(oMemVar:Name)
             ENDIF
         ELSE
             LOCAL level AS MemVarLevel
@@ -179,16 +179,16 @@ PUBLIC CLASS XSharp.MemVar
 		VAR _TempPrivates := List<STRING>{}  
 		IF lCurrentOnly                         
 			IF Current != NULL
-				_TempPrivates:AddRange(current:Keys)			
+				_TempPrivates:AddRange(Current:Keys)			
 			ENDIF
 		ELSE
-			FOREACH VAR previous IN privates 
+			FOREACH VAR previous IN Privates 
 				IF _TempPrivates:Count == 0
 					_TempPrivates:AddRange(previous:Keys)
 				ELSE
 					FOREACH VAR key IN previous:Keys
-						IF !_tempPrivates:Contains(key)	
-							_tempPrivates:Add(key)
+						IF !_TempPrivates:Contains(key)	
+							_TempPrivates:Add(key)
 						ENDIF
 					NEXT
 				ENDIF
@@ -327,11 +327,11 @@ PUBLIC CLASS XSharp.MemVar
 		
 				
     
-	STATIC METHOD PublicPut(name AS STRING, VALUE AS USUAL) AS LOGIC
+	STATIC METHOD PublicPut(name AS STRING, uValue AS USUAL) AS LOGIC
 		VAR oMemVar := PublicFind(name)
 		IF oMemVar != NULL
             BEGIN LOCK oMemVar
-			    oMemVar:Value := VALUE
+			    oMemVar:Value := uValue
             END LOCK
 			RETURN TRUE			
 		ENDIF  

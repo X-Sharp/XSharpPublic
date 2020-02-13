@@ -35,13 +35,13 @@ CLASS XSharp.OleDateTime
 		END GET
 	    SET
 		    LOCAL dNew  AS DateTime
-		    dNew  := VALUE:ToDateTime()
+		    dNew  := value:ToDateTime()
 		    dt := System.DateTime{dNew:Year, dNew:Month, dNew:Day, dt:Hour, dt:Minute, dt:Second, dt:Millisecond}
 		    RETURN 
         END SET
     END PROPERTY
     /// <summary>The value as a .Net DateTime type.</summary>
-	PROPERTY DateTime AS System.DateTime GET dt SET dt := VALUE
+	PROPERTY DateTime AS System.DateTime GET dt SET dt := value
 	/// <summary>Construct an OleDateTime object</summary>
 	CONSTRUCTOR() 
 		dt := DateTime.MinValue
@@ -69,7 +69,7 @@ CLASS XSharp.OleDateTime
         END GET
         SET 
 		    LOCAL sTime AS TimeSpan
-		    sTime := TimeSpan.Parse(VALUE)
+		    sTime := TimeSpan.Parse(value)
 		    dt := System.DateTime{dt:Year, dt:Month, dt:Day, sTime:Hours, sTime:Minutes, sTime:Seconds, sTime:Milliseconds}
 		    RETURN
          END SET
@@ -81,7 +81,7 @@ CLASS XSharp.OleDateTime
         END GET
         SET 
 		    LOCAL sTime AS TimeSpan
-		    sTime := TimeSpan.FromDays( (REAL8) VALUE)
+		    sTime := TimeSpan.FromDays( (REAL8) value)
 		    dt := System.DateTime{dt:Year, dt:Month, dt:Day, sTime:Hours, sTime:Minutes, sTime:Seconds, sTime:Milliseconds}
 		    RETURN 
         END SET
@@ -97,11 +97,11 @@ CLASS XSharp.OleDateTime
 	OVERRIDE METHOD ToString() AS STRING
 		RETURN dt:ToString()
     /// <exclude/>
-	STATIC OPERATOR IMPLICIT(odt AS OleDateTime) AS DateTime
+	STATIC OPERATOR IMPLICIT(oDt AS OleDateTime) AS DateTime
 		RETURN oDt:DateTime
     /// <exclude/>
-	STATIC OPERATOR IMPLICIT(odt AS DateTime) AS OleDateTime
-		RETURN OleDateTime{oDT}
+	STATIC OPERATOR IMPLICIT(oDt AS DateTime) AS OleDateTime
+		RETURN OleDateTime{oDt}
 
 		
 END CLASS

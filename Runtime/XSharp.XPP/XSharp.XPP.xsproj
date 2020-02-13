@@ -10,7 +10,7 @@
     <Dialect>XPP</Dialect>
     <OutputName>XSharp.XPP</OutputName>
     <AZ>false</AZ>
-    <CS>false</CS>
+    <CS>true</CS>
     <LB>false</LB>
     <OVF>false</OVF>
     <Unsafe>true</Unsafe>
@@ -21,12 +21,14 @@
     <IncludePaths>$(CommonInclude)</IncludePaths>
     <Nostandarddefs>true</Nostandarddefs>
     <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
-    <NamedArgs>False</NamedArgs>
+    <NamedArgs>false</NamedArgs>
     <StartupObject />
     <ApplicationIcon />
     <NoWin32Manifest>False</NoWin32Manifest>
-    <Memvar>False</Memvar>
-    <Undeclared>False</Undeclared>
+    <Memvar>false</Memvar>
+    <Undeclared>false</Undeclared>
+    <StandardDefs />
+    <InitLocals>false</InitLocals>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -63,8 +65,8 @@
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <UseSharedCompilation>true</UseSharedCompilation>
-    <DisabledWarnings>162,171,553,1591</DisabledWarnings>
-    <DocumentationFile>XSharp.VO.Xml</DocumentationFile>
+    <DisabledWarnings>162,171,553,1591,169,1573,649</DisabledWarnings>
+    <DocumentationFile>XSharp.XPP.Xml</DocumentationFile>
     <CommandLineOption>/noclipcall</CommandLineOption>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.targets" />

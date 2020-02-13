@@ -6,19 +6,19 @@
 USING System
 USING System.Collections.Generic
 USING XSharp.RDD.Support
-USING System.io
+USING System.IO
 
 BEGIN NAMESPACE XSharp.RDD.CDX
     /// <summary>
     /// List of OrderBags (an Orderbag = CDX file)
     /// </summary>
     INTERNAL CLASS CdxOrderBagList
-        PRIVATE _oRdd AS DbfCdx
+        PRIVATE _oRdd AS DBFCDX
         PRIVATE _bags AS List<CdxOrderBag>
         
         INTERNAL PROPERTY CurrentOrder AS CdxTag AUTO
         
-        CONSTRUCTOR(oRdd AS DbfCdx)
+        CONSTRUCTOR(oRdd AS DBFCDX)
             _oRdd := oRdd
             _bags := List<CdxOrderBag>{}
             RETURN
@@ -40,7 +40,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                         SELF:CurrentOrder:GoTop()
                     ENDIF
                     IF lStructural
-                        SELF:_oRDD:Header:HasTags |= DbfTableFlags.HasStructuralCDX
+                        SELF:_oRdd:Header:HasTags |= DBFTableFlags.HasStructuralCDX
                     ENDIF
                 ENDIF
                 RETURN TRUE
@@ -50,12 +50,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PRIVATE METHOD _CreateBag(info AS DbOrderCreateInfo) AS CdxOrderBag
             // Create new OrderBag on disk 
             LOCAL oBag AS CdxOrderBag
-            oBag := CdxOrderBag{_oRDD}
+            oBag := CdxOrderBag{_oRdd}
             oBag:CreateBag(info:BagName)
             VAR cBag := oBag:FullPath
-            VAR cDbf := SELF:_oRDD:FullPath
+            VAR cDbf := SELF:_oRdd:FullPath
             info:BagName := oBag:FullPath
-            VAR lStructural := String.Compare(Path.GetFileNameWithoutExtension(cDBF), Path.GetFileNameWithoutExtension(cBag),StringComparison.OrdinalIgnoreCase) == 0
+            VAR lStructural := String.Compare(Path.GetFileNameWithoutExtension(cDbf), Path.GetFileNameWithoutExtension(cBag),StringComparison.OrdinalIgnoreCase) == 0
             oBag:Structural := lStructural
             _bags:Add(oBag)
             RETURN oBag
@@ -65,7 +65,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 //
                 TRY
                     IF String.IsNullOrEmpty(info:BagName)
-                        info:BagName := Path.ChangeExtension(_oRDD:FullPath, CdxOrderBag.CDX_EXTENSION)
+                        info:BagName := Path.ChangeExtension(_oRdd:FullPath, CdxOrderBag.CDX_EXTENSION)
                     ENDIF
                     IF File(info:BagName)
                         info:BagName := FPathName()
@@ -92,13 +92,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                         LOCAL oI AS DbOrderInfo
                         oI := DbOrderInfo{}
                         oI:BagName := info:BagName
-                        oi:Order   := info:Order
-                        lOk := SELF:Focus(oi)
+                        oI:Order   := info:Order
+                        lOk := SELF:Focus(oI)
                     ENDIF
                     RETURN lOk
                     
                 CATCH ex AS Exception
-                    SELF:_oRdd:_dbfError(ex, SubCodes.EDB_CREATEINDEX,GenCode.EG_CORRUPTION,  "CdxOrderBagList.Create") 
+                    SELF:_oRdd:_dbfError(ex, Subcodes.EDB_CREATEINDEX,Gencode.EG_CORRUPTION,  "CdxOrderBagList.Create") 
                     RETURN FALSE
                 END TRY
             
@@ -164,7 +164,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 VAR bag := oTag:OrderBag
                 RETURN bag:Destroy(oTag)
             ELSE
-                SELF:_oRdd:_dbfError( SubCodes.EDB_ORDDESTROY,GenCode.EG_ARG,   "CdxOrderBagList.Destroy", "Order "+orderInfo:Order:ToString()+" does not exist")
+                SELF:_oRdd:_dbfError( Subcodes.EDB_ORDDESTROY,Gencode.EG_ARG,   "CdxOrderBagList.Destroy", "Order "+orderInfo:Order:ToString()+" does not exist")
             ENDIF
             RETURN FALSE
             
@@ -252,9 +252,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN NULL
 
         METHOD FindOrder(orderinfo AS DbOrderInfo) AS CdxTag
-            IF orderInfo:Order IS STRING VAR name
+            IF orderinfo:Order IS STRING VAR name
                 RETURN FindOrderByName(orderinfo:BagName, name)
-            ELSEIF orderInfo:Order IS LONG VAR number
+            ELSEIF orderinfo:Order IS LONG VAR number
                 IF number > 0
                     FOREACH oBag AS CdxOrderBag IN _bags
                         IF number <= oBag:Tags:Count
@@ -263,6 +263,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                             number -= oBag:Tags:Count
                         ENDIF
                     NEXT
+                ELSE
+                    RETURN SELF:CurrentOrder
                 ENDIF
             ENDIF
             RETURN NULL

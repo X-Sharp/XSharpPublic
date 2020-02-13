@@ -74,7 +74,7 @@ CLASS XSharp.OleAutoObject
 	CONSTRUCTOR(oObject AS OBJECT, _type AS System.Type)
 		SELF()
 		oComObject	:=  OleUnWrapObject(oObject)
-		oType		:= _Type
+		oType		:= _type
 		lOk			:= oComObject != NULL
 		RETURN
 			
@@ -150,8 +150,8 @@ CLASS XSharp.OleAutoObject
 		ENDIF
 		RETURN 0
 			
-	ASSIGN dwFuncs(dwNew AS LONG) 
-		SELF:_liFuncs := dwNew
+	ASSIGN dwFuncs(value AS LONG) 
+		SELF:_liFuncs := value
 		RETURN
 			
 	    /// <exclude />   
@@ -225,7 +225,7 @@ CLASS XSharp.OleAutoObject
 					uResult := XSharp.__Date{oD}
 				ELSE
 					oDt := (DateTime) oObject
-					uResult := oDT
+					uResult := oDt
 				ENDIF
 			ELSE
 				IF t:IsCOMObject

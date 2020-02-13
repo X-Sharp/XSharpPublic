@@ -22,20 +22,20 @@ BEGIN NAMESPACE XSharp.RDD.NTX
     INTERNAL PARTIAL SEALED CLASS NtxOrder
     
         // Methods for Creating Indices
-        PUBLIC METHOD Create(createInfo AS DBORDERCREATEINFO ) AS LOGIC
-            LOCAL ordCondInfo AS DBORDERCONDINFO
+        PUBLIC METHOD Create(createInfo AS DbOrderCreateInfo ) AS LOGIC
+            LOCAL ordCondInfo AS DbOrderCondInfo
             LOCAL isOk AS LOGIC
-            LOCAL orderInfo AS DBORDERINFO
+            LOCAL orderInfo AS DbOrderInfo
             LOCAL hasForCond AS LOGIC
             LOCAL num AS WORD
             
             ordCondInfo := SELF:_oRdd:_OrderCondInfo
-            IF string.IsNullOrEmpty(createInfo:BagName)
-                SELF:_oRDD:_dbfError(  SubCodes.EDB_CREATEINDEX, GenCode.EG_ARG,"OrdCreate", "Missing Orderbag Name")
+            IF String.IsNullOrEmpty(createInfo:BagName)
+                SELF:_oRdd:_dbfError(  Subcodes.EDB_CREATEINDEX, Gencode.EG_ARG,"OrdCreate", "Missing Orderbag Name")
                 RETURN FALSE
             ENDIF
             isOk := SELF:_oRdd:GoCold()
-            orderInfo := DBORDERINFO{}
+            orderInfo := DbOrderInfo{}
             IF !ordCondInfo:Scoped
                 orderInfo:AllTags := TRUE
                 SELF:_oRdd:OrderListDelete(orderInfo)
@@ -54,24 +54,24 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             IF ordCondInfo != NULL .AND. ordCondInfo:ForExpression != NULL
                 SELF:_ForExpr := ordCondInfo:ForExpression
             ELSE
-                SELF:_ForExpr := string.Empty
+                SELF:_ForExpr := String.Empty
             ENDIF
             SELF:_oRdd:__Goto(1)
             IF ! SELF:EvaluateExpressions()
                 RETURN FALSE
             ENDIF
             SELF:_orderName := (STRING)createInfo:Order
-            IF string.IsNullOrEmpty(SELF:_orderName)
+            IF String.IsNullOrEmpty(SELF:_orderName)
                 SELF:_orderName := Path.GetFileNameWithoutExtension(createInfo:BagName)
             ENDIF
             IF !isOk .OR. SELF:_keySize == 0
                 SELF:Close()
-                SELF:_oRdd:_dbfError( SubCodes.ERDD_NULLKEY, GenCode.EG_DATAWIDTH,createInfo:BagName)
+                SELF:_oRdd:_dbfError( Subcodes.ERDD_NULLKEY, Gencode.EG_DATAWIDTH,createInfo:BagName)
                 RETURN FALSE
             ENDIF
             IF SELF:_keySize > 0
-                SELF:_currentvalue   := RddKeyData{_KeySize}
-                SELF:_newvalue       := RddKeyData{_KeySize}
+                SELF:_currentvalue   := RddKeyData{_keySize}
+                SELF:_newvalue       := RddKeyData{_keySize}
             ENDIF
             
             // 8 Bytes : PrevPage (4 bytes) + Recno (4 bytes)
@@ -95,11 +95,11 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             SELF:_HPLocking := FALSE
             IF ordCondInfo:Active
                 SELF:_Descending := ordCondInfo:Descending
-                IF hasForCond .AND. !string.IsNullOrEmpty(ordCondInfo:ForExpression)
+                IF hasForCond .AND. !String.IsNullOrEmpty(ordCondInfo:ForExpression)
                     SELF:_Conditional := TRUE
                 ENDIF
             ENDIF
-            SELF:fileName := createInfo:BagName
+            SELF:FileName := createInfo:BagName
             
             TRY
                 SELF:_hFile    := FCreate( SELF:FullPath) 
@@ -109,7 +109,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 SELF:_hFile := F_ERROR
             CATCH
                 SELF:Close()
-                SELF:_oRdd:_dbfError( SubCodes.ERDD_CREATE_ORDER, GenCode.EG_CREATE,createInfo:BagName)
+                SELF:_oRdd:_dbfError( Subcodes.ERDD_CREATE_ORDER, Gencode.EG_CREATE,createInfo:BagName)
                 RETURN FALSE
             END TRY
             // To create an index we want to open the NTX NOT shared and NOT readonly
@@ -117,11 +117,11 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             openInfo := SELF:_oRdd:_OpenInfo:Clone()
             openInfo:Shared   := FALSE
             openInfo:ReadOnly := FALSE
-            SELF:_hFile    := Fopen(SELF:FullPath, openInfo:FileMode)
+            SELF:_hFile    := FOpen(SELF:FullPath, openInfo:FileMode)
             
             IF SELF:_hFile == F_ERROR
                 SELF:Close()
-                SELF:_oRdd:_dbfError( SubCodes.ERDD_CREATE_ORDER, GenCode.EG_CREATE, createInfo:BagName)
+                SELF:_oRdd:_dbfError( Subcodes.ERDD_CREATE_ORDER, Gencode.EG_CREATE, createInfo:BagName)
                 RETURN FALSE
             ENDIF
             TRY
@@ -135,9 +135,9 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 SELF:_maxLockTries  := 99 //(LONG)XSharp.RuntimeState.LockTries
                 SELF:_tagNumber     := 1
                 IF  XSharp.RuntimeState.NewIndexLock 
-                    SELF:_lockOffset := LOCKOFFSET_NEW
+                    SELF:_LockOffset := LOCKOFFSET_NEW
                 ELSE
-                    SELF:_lockOffset := LOCKOFFSET_OLD
+                    SELF:_LockOffset := LOCKOFFSET_OLD
                 ENDIF
                 IF  XSharp.RuntimeState.HPLocking
                     SELF:_HPLocking := TRUE
@@ -240,7 +240,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             
             
             
-        PRIVATE METHOD _CondCreate(ordCondInfo AS DBORDERCONDINFO ) AS LOGIC
+        PRIVATE METHOD _CondCreate(ordCondInfo AS DbOrderCondInfo ) AS LOGIC
             LOCAL leadingOrder  := NULL AS NtxOrder
             LOCAL lUseOrder     := FALSE AS LOGIC
             LOCAL hasWhile      := FALSE AS LOGIC
@@ -283,7 +283,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             ENDIF
             SELF:_oRdd:__Goto(record)
             // IF record is EOF then do nothing
-            IF !SELF:_oRdd:_isValid .AND. !SELF:_oRdd:_Eof
+            IF !SELF:_oRdd:_isValid .AND. !SELF:_oRdd:_EoF
                 SELF:_oRdd:__Goto(start)
                 SELF:ClearStack()
                 RETURN FALSE
@@ -305,15 +305,15 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                     IF ! SELF:_EvalBlock(ordCondInfo:WhileBlock, TRUE)
                         EXIT
                     ENDIF
-	    	ENDIF
+	    	    ENDIF
                 IF SELF:_Conditional
                     includeRecord := SELF:_EvalBlock(ordCondInfo:ForBlock, TRUE)
                 ENDIF
                 IF includeRecord
                    IF !SELF:_keyUpdate( SELF:_RecNo, TRUE)
                        EXIT
-	            ENDIF
-		ENDIF
+	                ENDIF
+		        ENDIF
                 IF hasEvalBlock
                     IF count >= ordCondInfo:StepSize
                         IF ! SELF:_EvalBlock(ordCondInfo:EvalBlock,FALSE)
@@ -331,10 +331,10 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                     nextRecord := SELF:_RecNo + 1
                 ENDIF
                 SELF:_oRdd:__Goto( nextRecord)
-                IF todo != 0 .AND. done >= todo
+                IF toDo != 0 .AND. done >= toDo
                     EXIT
                 ENDIF
-                IF SELF:_oRdd:_Eof 
+                IF SELF:_oRdd:_EoF 
                     EXIT
                 ENDIF
             ENDDO
@@ -357,7 +357,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             SELF:ClearStack()
             RETURN TRUE
             
-        PRIVATE METHOD _EvalBlock(oBlock AS ICodeBlock, lMustBeLogic AS LOGIC) AS LOGIC
+        PRIVATE METHOD _EvalBlock(oBlock AS ICodeblock, lMustBeLogic AS LOGIC) AS LOGIC
             LOCAL isOk  := FALSE AS LOGIC
             LOCAL error := FALSE AS LOGIC
             TRY
@@ -374,7 +374,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 isOk := FALSE
             END TRY
             IF error
-                SELF:_oRdd:_dbfError( SubCodes.ERDD_KEY_EVAL,GenCode.EG_DATATYPE, SELF:fileName)
+                SELF:_oRdd:_dbfError( Subcodes.ERDD_KEY_EVAL,Gencode.EG_DATATYPE, SELF:FileName)
             ENDIF
             RETURN isOk
 	    
@@ -403,14 +403,14 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             evalCount := 1
             SELF:_levelsCount := 1
             IF SELF:_SingleField != -1
-                fType := SELF:_oRdd:_Fields[SELF:_SingleField]:fieldType
+                fType := SELF:_oRdd:_Fields[SELF:_SingleField]:FieldType
             // 'C', 'N', 'D', 'L'
             SWITCH fType
             CASE DbFieldType.Character
             CASE DbFieldType.Number
             CASE DbFieldType.Date
             CASE DbFieldType.Logic
-                sourceIndex := SELF:_oRdd:_Fields[SELF:_SingleField]:OffSet
+                sourceIndex := SELF:_oRdd:_Fields[SELF:_SingleField]:Offset
             OTHERWISE
                 fType := 0
             END SWITCH
@@ -418,9 +418,9 @@ BEGIN NAMESPACE XSharp.RDD.NTX
 	    	sourceIndex := -1
             ENDIF
             
-            sorting := RddSortHelper{SELF:_oRDD, sortInfo, lRecCount}
+            sorting := RddSortHelper{SELF:_oRdd, sortInfo, lRecCount}
             sortInfo:Items[0]:Length := SELF:_keySize
-            IF SELF:_KeyExprType == __UsualType.String .OR. SELF:_KeyExprType == __UsualType.LOGIC
+            IF SELF:_keyExprType == __UsualType.String .OR. SELF:_keyExprType == __UsualType.Logic
                 lAscii := FALSE
                 sortInfo:Items[0]:Flags := DbSortFlags.Default
             ELSE
@@ -489,14 +489,14 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             RETURN result
             
             // IRddSortWriter Interface, used by RddSortHelper
-        PUBLIC METHOD WriteSorted(si AS DbSortInfo , record AS SortRecord) AS LOGIC
+        METHOD IRddSortWriter.WriteSorted(si AS DbSortInfo , record AS SortRecord) AS LOGIC
             SELF:_oneItem:PageNo    := 0
             SELF:_oneItem:Recno     := record:Recno
             SELF:_oneItem:KeyBytes  := record:Data
             RETURN SELF:_placeItem(SELF:_oneItem)
             
             
-        INTERNAL METHOD _CreateUnique(ordCondInfo AS DBORDERCONDINFO ) AS LOGIC
+        INTERNAL METHOD _CreateUnique(ordCondInfo AS DbOrderCondInfo ) AS LOGIC
             LOCAL Ok AS LOGIC
             Ok := SELF:_CreateEmpty()
             IF Ok

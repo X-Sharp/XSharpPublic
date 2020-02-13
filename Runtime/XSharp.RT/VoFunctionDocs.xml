@@ -7164,10 +7164,12 @@
     <param name="aStruct">
       An array containing field descriptions in the format returned by DBStruct().<br/>
       &#0009;This argument does not apply to DBF files.  It is intended for use with file formats that do not store field descriptions.  For example, if you use an RDD that supports SDF or delimited files, you can use this argument to define the file structure, which can then be used with other commands or functions to access the field descriptions.  Here is an example of this argument:<br/>
-      &#0009;<code>{"First", "C", 35, 0};</code><br/>
-      &#0009;<code>{"Last", "C", 35, 0};</code><br/>
-      &#0009;<code>{"Birthday", "D", 8, 0}}</code><br/>
-      &#0009;<code>? First&#0009;&#0009;&#0009;&#0009;&#0009;// Return: Josie</code>
+      <code language="X#">
+      &#0009;{"First", "C", 35, 0};<br/>
+      &#0009;{"Last", "C", 35, 0};<br/>
+      &#0009;{"Birthday", "D", 8, 0}}<br/>
+      &#0009;? First&#0009;&#0009;&#0009;&#0009;&#0009;// Return: Josie
+        </code>
     </param>
     <param name="cDelim">The delimiter for fields within a delimited database file.  If you are using one of the supplied RDDs for processing .DBF files , the delimiter should be a NULL_STRING, which is the default if the argument is omitted. </param>
     <param name="acRDDs">A one-dimensional array with the names of RDDs from which the main RDD inherits special functionality.  This allows you to use RDDs with special capabilities, like encryption or decryption, in different work areas with different database drivers.  These RDDs overlay special functions of the main RDD (specified with the &lt;cDriver&gt; argument).  If multiple RDDs (specified with this argument) implement the same function, the function associated with the last RDD in the list takes precedence.  If &lt;aRDDs&gt; is omitted, no additional RDDs are assumed.</param>
@@ -18762,7 +18764,7 @@
 
     <param name="cSearch">The substring for which to search.</param>
     <param name="cTarget">The string in which to search.</param>
-    <param name="dwOffset">The position in the string at which to start searching.  A value of zero (0) specifies the first byte.</param>
+    <param name="dwOffSet">The position in the string at which to start searching.  A value of zero (0) specifies the first byte.</param>
     <returns>
       The position of &lt;cSearch&gt; within &lt;cTarget&gt;.  If &lt;cSearch&gt; is not found, RAt3() returns 0.
     </returns>

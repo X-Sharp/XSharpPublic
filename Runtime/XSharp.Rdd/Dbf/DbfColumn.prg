@@ -13,34 +13,34 @@ USING XSharp.RDD.Enums
 USING XSharp.RDD.Support
 BEGIN NAMESPACE XSharp.RDD
     /// <summary>Class for DBF Column reading / writing </summary>
-    CLASS DbfColumn INHERIT RDDFieldInfo
+    CLASS DbfColumn INHERIT RddFieldInfo
         INTERNAL NullBit        := -1 AS LONG
         INTERNAL LengthBit      := -1 AS LONG
         INTERNAL OffSetInHeader := -1 as LONG
         INTERNAL RDD        AS XSharp.RDD.DBF
 
-        STATIC METHOD Create(oInfo AS RDDFieldInfo, oRDD AS XSharp.RDD.DBF) AS DbfColumn
+        STATIC METHOD Create(oInfo AS RddFieldInfo, oRDD AS XSharp.RDD.DBF) AS DbfColumn
             // Commented out types are Harbour specific
             SWITCH oInfo:FieldType
-            CASE DBFieldType.Character   // C
-            CASE DbFieldType.Varchar     // 'V'
+            CASE DbFieldType.Character   // C
+            CASE DbFieldType.VarChar     // 'V'
             CASE DbFieldType.VarBinary   // 'Q'
                 RETURN DbfCharacterColumn{oInfo,oRDD}
-            CASE DBFieldType.Date        // D
+            CASE DbFieldType.Date        // D
                 RETURN DbfDateColumn{oInfo,oRDD}
-            CASE DBFieldType.Number      // N
+            CASE DbFieldType.Number      // N
             CASE DbFieldType.Float          // 'F'
                 RETURN DbfNumericColumn{oInfo,oRDD}
-            CASE DBFieldType.Memo        // M
+            CASE DbFieldType.Memo        // M
             CASE DbFieldType.Picture        // 'P'
             CASE DbFieldType.General        // 'G'
             CASE DbFieldType.Blob           // 'W'
                 RETURN DbfMemoColumn{oInfo,oRDD}
-            CASE DBFieldType.Logic       // L
+            CASE DbFieldType.Logic       // L
                 RETURN DbfLogicColumn{oInfo,oRDD}
-            CASE DBFieldType.Integer    // 'I' 
-            //CASE DBFieldType.Integer2   // '2' 
-            //CASE DBFieldType.Integer4   // '4'
+            CASE DbFieldType.Integer    // 'I' 
+            //CASE DbFieldType.Integer2   // '2' 
+            //CASE DbFieldType.Integer4   // '4'
                 IF oInfo:IsAutoIncrement
                     RETURN DbfAutoIncrementColumn{oInfo,oRDD}
                 ENDIF
@@ -49,7 +49,7 @@ BEGIN NAMESPACE XSharp.RDD
             //   RETURN DbfAutoIncrementColumn{oInfo}
             CASE DbFieldType.Double         // 'B'
             //CASE DbFieldType.Double8        // '8'
-                RETURN DBFDoubleColumn{oInfo,oRDD}
+                RETURN DbfDoubleColumn{oInfo,oRDD}
             CASE DbFieldType.Currency		// 'Y'
             //CASE DbFieldType.CurrencyDouble	// 'Z'
                 RETURN DbfCurrencyColumn{oInfo,oRDD}
@@ -69,7 +69,7 @@ BEGIN NAMESPACE XSharp.RDD
 
 
         STATIC METHOD Create(oField REF DbfField, oRDD AS XSharp.RDD.DBF, nHeaderOffSet as LONG) AS DbfColumn
-            LOCAL oInfo AS RDDFieldInfo
+            LOCAL oInfo AS RddFieldInfo
             LOCAL oColumn as DbfColumn
             oInfo        := RddFieldInfo{oField:Name, oField:Type, oField:Len, oField:Dec, oField:Offset, oField:Flags}
             oColumn      := DbfColumn.Create(oInfo, oRDD)
@@ -99,7 +99,7 @@ BEGIN NAMESPACE XSharp.RDD
 
         PROTECTED METHOD _GetString(buffer AS BYTE[]) AS STRING
             // The default implementation returns the part of the buffer as a string
-            RETURN SELF:RDD:_Encoding:GetString(buffer, SELF:OffSet, SELF:Length)
+            RETURN SELF:RDD:_Encoding:GetString(buffer, SELF:Offset, SELF:Length)
 
         VIRTUAL METHOD GetValue(buffer AS BYTE[]) AS OBJECT
             IF SELF:IsNull()
@@ -221,13 +221,19 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN
 
        OVERRIDE METHOD InitValue(buffer AS BYTE[]) AS VOID
-            IF SELF:IsVarLength
-                buffer[SELF:OffSet + SELF:Length-1] := 0
+            IF SELF:IsVarLength 
+                buffer[SELF:Offset + SELF:Length-1] := 0
+            ELSEIF SELF:IsUnicode
+                VAR str := STRING{' ',SELF:Length /2}
+                System.Buffer.BlockCopy(str:ToCharArray(),0, buffer, SELF:Offset, SELF:Length)
             ENDIF
             RETURN
 
        OVERRIDE METHOD EmptyValue() AS OBJECT
-           RETURN STRING{ ' ', SELF:length }
+           IF SELF:IsUnicode
+                RETURN STRING{ ' ', SELF:Length /2 }
+           ENDIF
+           RETURN STRING{ ' ', SELF:Length }
 
        OVERRIDE METHOD PutValue(oValue AS OBJECT, buffer AS BYTE[]) AS LOGIC
             LOCAL str AS STRING
@@ -242,15 +248,23 @@ BEGIN NAMESPACE XSharp.RDD
             ELSEIF oValue IS STRING
                 str := (STRING) oValue
             ELSE
-                SELF:RDD:_dbfError(SubCodes.ERDD_DATATYPE, EG_DATATYPE)
+                SELF:RDD:_dbfError(Subcodes.ERDD_DATATYPE, EG_DATATYPE)
                 RETURN FALSE
             ENDIF
-            IF str:Length < SELF:length .AND. ! SELF:IsVarLength
-                str := str:PadRight(SELF:length,' ')
+            IF str:Length < SELF:Length .AND. ! SELF:IsVarLength
+                IF SELF:IsBinary
+                    str := str:PadRight(SELF:Length,'\0')
+                ELSEIF SELF:IsUnicode
+                    str := str:PadRight(SELF:Length/2,' ')
+                ELSE
+                    str := str:PadRight(SELF:Length,' ')
+                ENDIF
             ENDIF
             IF SELF:IsBinary
                 LOCAL nLen := Math.Min(SELF:Length, str:Length) AS LONG
                 System.Text.Encoding.Default:GetBytes(str, 0, nLen, buffer, SELF:Offset)
+            ELSEIF SELF:IsUnicode
+                System.Buffer.BlockCopy(str:ToCharArray(),0, buffer, SELF:Offset, SELF:Length)
             ELSE
                 SELF:_PutString(buffer, str)
             ENDIF
@@ -261,10 +275,10 @@ BEGIN NAMESPACE XSharp.RDD
                         SELF:RDD:_NullColumn:SetBit(SELF:LengthBit, FALSE)
                     ELSE
                         SELF:RDD:_NullColumn:SetBit(SELF:LengthBit, TRUE)
-                        buffer[SELF:OffSet + SELF:Length-1] := (BYTE) str:Length
+                        buffer[SELF:Offset + SELF:Length-1] := (BYTE) str:Length
                     ENDIF
                 ELSE
-                    buffer[SELF:OffSet + SELF:Length-1] := (BYTE) Math.Max(str:Length, SELF:Length-1)
+                    buffer[SELF:Offset + SELF:Length-1] := (BYTE) Math.Max(str:Length, SELF:Length-1)
                 ENDIF
             ENDIF
             RETURN TRUE
@@ -282,7 +296,11 @@ BEGIN NAMESPACE XSharp.RDD
                 RETURN NULL
             ENDIF
             IF SELF:IsBinary
-                result := System.Text.Encoding.Default:GetString(buffer, SELF:OffSet, SELF:Length)
+                result := System.Text.Encoding.Default:GetString(buffer, SELF:Offset, SELF:Length)
+            ELSEIF SELF:IsUnicode
+                VAR chars := CHAR[]{SELF:Length /2}
+                System.Buffer.BlockCopy(buffer, SELF:Offset, chars, 0, SELF:Length)
+                result := STRING{chars}
             ELSE
                 result := SUPER:_GetString(buffer)
             ENDIF
@@ -293,15 +311,15 @@ BEGIN NAMESPACE XSharp.RDD
                     LOCAL lSet AS LOGIC
                     lSet := SELF:RDD:_NullColumn:GetBit(SELF:LengthBit)
                     IF lSet
-                        len := buffer[SELF:OffSet + SELF:Length-1]
+                        len := buffer[SELF:Offset + SELF:Length-1]
                     ENDIF
                 ENDIF
                 IF !String.IsNullOrEmpty(result)
-                    result := result:SubString(0, len)
+                    result := result:Substring(0, len)
                 ENDIF
             ELSE
                 IF String.IsNullOrEmpty(result)
-                    result := STRING{ ' ', SELF:length }
+                    result := STRING{ ' ', SELF:Length }
                 ENDIF
             ENDIF
             RETURN result
@@ -363,7 +381,7 @@ BEGIN NAMESPACE XSharp.RDD
                 SELF:_PutString(buffer, str)
                 RETURN TRUE
             ENDIF
-            SELF:RDD:_dbfError(SubCodes.ERDD_DATATYPE, EG_DATATYPE)
+            SELF:RDD:_dbfError(Subcodes.ERDD_DATATYPE, EG_DATATYPE)
             RETURN FALSE
 
 
@@ -371,7 +389,7 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN DbDate{0,0,0}
 
         OVERRIDE METHOD Validate() AS LOGIC
-            RETURN SELF:Length == 8  .AND.  SELF:Decimals == 0 
+            RETURN SUPER:Validate()
 
 
     END CLASS
@@ -410,14 +428,15 @@ BEGIN NAMESPACE XSharp.RDD
                 buffer[SELF:Offset] := IIF( logicValue, (BYTE)'T', (BYTE)'F' )
                 RETURN TRUE
             ENDIF
-            SELF:RDD:_dbfError(SubCodes.ERDD_DATATYPE, EG_DATATYPE)
+            SELF:RDD:_dbfError(Subcodes.ERDD_DATATYPE, EG_DATATYPE)
             RETURN FALSE
 
        OVERRIDE METHOD EmptyValue() AS OBJECT
             RETURN FALSE
 
        OVERRIDE METHOD Validate() AS LOGIC
-            RETURN SELF:Length == 1  .AND.  SELF:Decimals == 0 
+            RETURN SUPER:Validate()
+
     END CLASS
 
     /// <summary>Class for reading / writing Numeric Columns</summary>
@@ -522,19 +541,19 @@ BEGIN NAMESPACE XSharp.RDD
                 SELF:ClearNullValue()
             ENDIF
             IF ! SELF:GetNumber(oValue, OUT r8Value)
-                SELF:RDD:_dbfError(SubCodes.ERDD_DATATYPE, EG_DATATYPE)
+                SELF:RDD:_dbfError(Subcodes.ERDD_DATATYPE, EG_DATATYPE)
                 RETURN FALSE
             ENDIF
-            VAR numformat := SELF:RDD:_NumFormat
+            VAR numformat := SELF:RDD:_numformat
             numformat:NumberDecimalDigits := SELF:Decimals
             LOCAL str AS STRING
-            str := R8Value:ToString("F", numformat)
+            str := r8Value:ToString("F", numformat)
             LOCAL lDataWidthError := FALSE AS LOGIC
-            IF str:Length > length 
-                str := STRING{'*', length}
+            IF str:Length > Length 
+                str := STRING{'*', Length}
                 lDataWidthError := TRUE
             ELSE
-                str := str:PadLeft(length,' ')
+                str := str:PadLeft(Length,' ')
             ENDIF
             SELF:_PutString(buffer, str)
             IF lDataWidthError
@@ -578,14 +597,14 @@ BEGIN NAMESPACE XSharp.RDD
             IF SELF:Length == 10
                 result  := (LONG) SELF:_GetNumericValue(buffer)
             ELSE
-                result := BuffToLong(buffer, SELF:OffSet)
+                result := BuffToLong(buffer, SELF:Offset)
             ENDIF
             RETURN result
 
         OVERRIDE METHOD InitValue(buffer AS BYTE[]) AS VOID
             IF SELF:Length == 4
                 VAR data := BitConverter.GetBytes((LONG) 0)
-                Array.Copy(data, 0, buffer, SELF:OffSet, SELF:Length)
+                Array.Copy(data, 0, buffer, SELF:Offset, SELF:Length)
             ENDIF
             RETURN
 
@@ -593,12 +612,12 @@ BEGIN NAMESPACE XSharp.RDD
             // oValue is the memo block number
             LOCAL intValue AS LONG
             IF ! SELF:GetNumber(oValue, OUT intValue)
-                SELF:RDD:_dbfError(SubCodes.ERDD_DATATYPE, EG_DATATYPE)
+                SELF:RDD:_dbfError(Subcodes.ERDD_DATATYPE, EG_DATATYPE)
                 RETURN FALSE
             ENDIF
             IF SELF:Length == 4
                 VAR data := BitConverter.GetBytes(intValue)
-                Array.Copy(data, 0, buffer, SELF:OffSet, SELF:Length)
+                Array.Copy(data, 0, buffer, SELF:Offset, SELF:Length)
             ELSE
                 LOCAL strValue AS STRING
                 IF intValue == 0
@@ -632,9 +651,9 @@ BEGIN NAMESPACE XSharp.RDD
                 RETURN NULL
             ENDIF
             IF SELF:Length == 4
-                result := BuffToLong(buffer, SELF:OffSet)
+                result := BuffToLong(buffer, SELF:Offset)
             ELSEIF Length == 2
-                result := BuffToShort(buffer, SELF:OffSet)
+                result := BuffToShort(buffer, SELF:Offset)
             ELSE
                 result := 0
             ENDIF
@@ -643,11 +662,11 @@ BEGIN NAMESPACE XSharp.RDD
         OVERRIDE METHOD InitValue(buffer AS BYTE[]) AS VOID
             IF SELF:Length == 4
                 VAR data := BitConverter.GetBytes((LONG) 0)
-                Array.Copy(data, 0, buffer, SELF:OffSet, SELF:Length)
+                Array.Copy(data, 0, buffer, SELF:Offset, SELF:Length)
 
             ELSEIF SELF:Length == 2
                 VAR data := BitConverter.GetBytes((SHORT) 0)
-                Array.Copy(data, 0, buffer, SELF:OffSet, SELF:Length)
+                Array.Copy(data, 0, buffer, SELF:Offset, SELF:Length)
 
             ENDIF
             RETURN
@@ -661,15 +680,15 @@ BEGIN NAMESPACE XSharp.RDD
                 SELF:ClearNullValue()
             ENDIF
             IF ! SELF:GetNumber(oValue, OUT intValue)
-                SELF:RDD:_dbfError(SubCodes.ERDD_DATATYPE, EG_DATATYPE)
+                SELF:RDD:_dbfError(Subcodes.ERDD_DATATYPE, EG_DATATYPE)
                 RETURN FALSE
             ENDIF
             IF SELF:Length == 4
                 VAR data := BitConverter.GetBytes(intValue)
-                Array.Copy(data, 0, buffer, SELF:OffSet, SELF:Length)
+                Array.Copy(data, 0, buffer, SELF:Offset, SELF:Length)
             ELSEIF SELF:Length == 2
                 VAR data := BitConverter.GetBytes((SHORT) intValue)
-                Array.Copy(data, 0, buffer, SELF:OffSet, SELF:Length)
+                Array.Copy(data, 0, buffer, SELF:Offset, SELF:Length)
             ENDIF
             RETURN TRUE
 
@@ -744,12 +763,12 @@ BEGIN NAMESPACE XSharp.RDD
             IF SELF:IsNull()
                 RETURN NULL
             ENDIF
-            result := BitConverter.ToDouble(buffer, SELF:offset)
+            result := BitConverter.ToDouble(buffer, SELF:Offset)
             RETURN DbFloat{result,-1,-1}
 
         OVERRIDE METHOD InitValue(buffer AS BYTE[]) AS VOID
             VAR data := BitConverter.GetBytes((REAL8) 0)
-            Array.Copy(data, 0, buffer, SELF:OffSet, SELF:Length)
+            Array.Copy(data, 0, buffer, SELF:Offset, SELF:Length)
             RETURN
 
         OVERRIDE METHOD PutValue(oValue AS OBJECT, buffer AS BYTE[]) AS LOGIC
@@ -761,15 +780,15 @@ BEGIN NAMESPACE XSharp.RDD
                 SELF:ClearNullValue()
             ENDIF
             IF ! SELF:GetNumber(oValue, OUT r8Value)
-                SELF:RDD:_dbfError(SubCodes.ERDD_DATATYPE, EG_DATATYPE)
+                SELF:RDD:_dbfError(Subcodes.ERDD_DATATYPE, EG_DATATYPE)
                 RETURN FALSE
             ENDIF
             VAR data := BitConverter.GetBytes(r8Value)
-            Array.Copy(data, 0, buffer, SELF:OffSet, SELF:Length)
+            Array.Copy(data, 0, buffer, SELF:Offset, SELF:Length)
             RETURN TRUE
 
        OVERRIDE METHOD EmptyValue() AS OBJECT
-            RETURN DbFLoat{0,-1,-1}
+            RETURN DbFloat{0,-1,-1}
 
         OVERRIDE METHOD Validate() AS LOGIC
             RETURN SELF:Length == 8
@@ -788,7 +807,7 @@ BEGIN NAMESPACE XSharp.RDD
             IF SELF:IsNull()
                 RETURN NULL
             ENDIF
-            tmp := BitConverter.ToInt64(buffer, SELF:offset)
+            tmp := BitConverter.ToInt64(buffer, SELF:Offset)
             result := (decimal) (tmp/ (10 ^ SELF:Decimals))
             RETURN result
 
@@ -803,12 +822,12 @@ BEGIN NAMESPACE XSharp.RDD
                 SELF:ClearNullValue()
             ENDIF
             IF ! SELF:GetNumber(oValue, OUT currValue)
-                SELF:RDD:_dbfError(SubCodes.ERDD_DATATYPE, EG_DATATYPE)
+                SELF:RDD:_dbfError(Subcodes.ERDD_DATATYPE, EG_DATATYPE)
                 RETURN FALSE
             ENDIF
             i64Value := (INT64) (currValue * (System.Decimal) (10^ SELF:Decimals))
             VAR data := BitConverter.GetBytes(i64Value)
-            Array.Copy(data, 0, buffer, SELF:OffSet, SELF:Length)
+            Array.Copy(data, 0, buffer, SELF:Offset, SELF:Length)
             RETURN TRUE
 
 
@@ -860,9 +879,9 @@ BEGIN NAMESPACE XSharp.RDD
             IF SELF:IsNull()
                 RETURN NULL
             ENDIF
-            result := DateTime.Minvalue
-            VAR julian  := System.BitConverter.ToInt32(buffer, SELF:OffSet)
-            VAR milsecs := System.BitConverter.ToInt32(buffer, SELF:OffSet+4)
+            result := DateTime.MinValue
+            VAR julian  := System.BitConverter.ToInt32(buffer, SELF:Offset)
+            VAR milsecs := System.BitConverter.ToInt32(buffer, SELF:Offset+4)
             IF julian == 0 .AND. milsecs == 0
                 RETURN result
             ENDIF
@@ -915,7 +934,7 @@ BEGIN NAMESPACE XSharp.RDD
                 dt := DateTime{oDate:Year, oDate:Month, oDate:Day}
                 empty := oDate:IsEmpty
             ELSE
-                SELF:RDD:_dbfError(SubCodes.ERDD_DATATYPE, EG_DATATYPE)
+                SELF:RDD:_dbfError(Subcodes.ERDD_DATATYPE, EG_DATATYPE)
                 RETURN FALSE
             ENDIF
             IF empty
@@ -924,9 +943,9 @@ BEGIN NAMESPACE XSharp.RDD
                 VAR iJulian  := SELF:_dateTimeToJulian(dt)
                 VAR milisecs := 1000 * dt:Second + dt:Minute * 1000 * 60 + dt:Hour * 1000 * 60 * 60
                 VAR data := BitConverter.GetBytes(iJulian)
-                Array.Copy(data, 0, buffer, SELF:OffSet, 4)
+                Array.Copy(data, 0, buffer, SELF:Offset, 4)
                 data := BitConverter.GetBytes(milisecs)
-                Array.Copy(data, 0, buffer, SELF:OffSet+4, 4)
+                Array.Copy(data, 0, buffer, SELF:Offset+4, 4)
             ENDIF
 
             RETURN TRUE
@@ -934,8 +953,8 @@ BEGIN NAMESPACE XSharp.RDD
 
         OVERRIDE METHOD InitValue(buffer AS BYTE[]) AS VOID
             VAR data := BitConverter.GetBytes((LONG) 0)
-            Array.Copy(data, 0, buffer, SELF:OffSet, 4)
-            Array.Copy(data, 0, buffer, SELF:OffSet+4, 4)
+            Array.Copy(data, 0, buffer, SELF:Offset, 4)
+            Array.Copy(data, 0, buffer, SELF:Offset+4, 4)
             RETURN
 
         OVERRIDE METHOD EmptyValue() AS OBJECT
@@ -969,7 +988,7 @@ BEGIN NAMESPACE XSharp.RDD
 
         OVERRIDE METHOD PutValue(oValue AS OBJECT, buffer AS BYTE[]) AS LOGIC
             // Write the bits to the buffer, ignore oValue
-            SELF:BitArray:CopyTo(data, 0)
+            SELF:bitArray:CopyTo(data, 0)
             System.Array.Copy(data, 0, buffer, SELF:Offset, SELF:Length)
             RETURN FALSE
 

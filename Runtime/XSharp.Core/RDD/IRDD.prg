@@ -148,9 +148,9 @@ INTERFACE XSharp.RDD.IRdd
 	/// <summary>Retrieve and optionally change information about a column.</summary>
     /// <param name="nFldPos">The ONE based position of the field in the database file structure.</param>
     /// <param name="nOrdinal">Specifies the type of information.</param>
-    /// <param name="oNewValue">If specified (not null), then this parameter is used to change the value of a setting.</param>
+    /// <param name="oValue">If specified (not null), then this parameter is used to change the value of a setting.</param>
     /// <returns>The current value for the property indicated with &lt;nOrdinal&gt;</returns>
-	METHOD FieldInfo(nFldPos AS LONG, nOrdinal AS LONG, oNewValue AS OBJECT) AS OBJECT
+	METHOD FieldInfo(nFldPos AS LONG, nOrdinal AS LONG, oValue AS OBJECT) AS OBJECT
 
 	/// <summary>Retrieve a column name based on its ONE based column number.</summary>
 	/// <param name="nFldPos">The ONE based position of the column whose name you want to obtain.</param>
@@ -160,7 +160,7 @@ INTERFACE XSharp.RDD.IRdd
 	/// <summary>Retrieve the field information for a column based on its ONE based column number.</summary>
     /// <param name="nFldPos">The ONE based position of the column whose info you want to obtain.</param>
     /// <returns>The Field information for the specified field.</returns>
-    METHOD GetField(nFldPos AS LONG) AS RDDFieldInfo
+    METHOD GetField(nFldPos AS LONG) AS RddFieldInfo
 	// Read & Write		
 
     /// <summary>Get a value for the specified column.</summary>	
@@ -221,7 +221,7 @@ INTERFACE XSharp.RDD.IRdd
 	/// <summary>Perform a lock.</summary>
 	/// <param name="uiMode">An object specifying the kind of lock to acquire.</param>
     /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
-	METHOD Lock(uiMode REF DBLOCKINFO)		AS LOGIC 
+	METHOD Lock(uiMode REF DbLockInfo)		AS LOGIC 
 
 	/// <summary>Release locks.</summary>
 	/// <param name="oRecId">The row number to unlock.  This argument is provided for drivers that support multiple row locks.  By convention, a value of zero indicates that all rows should be unlocked.</param>
@@ -260,33 +260,33 @@ INTERFACE XSharp.RDD.IRdd
     /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
 	METHOD OrderDestroy(info AS DbOrderInfo) AS LOGIC    	
 
-	/// <summary>Retrieve information about the current index.</summary>
+	/// <summary>Retrieve information about an index.</summary>
 	/// <param name="info">An object containing information about the order to retrieve the info for.</param>
 	/// <param name="nOrdinal">Specifies the type of information to retrieve.</param>
     /// <returns>The requested value for the specified index.</returns>
 	METHOD OrderInfo(nOrdinal AS DWORD, info AS DbOrderInfo) AS OBJECT
 
-	/// <summary>Open an index file and add to the list of open indexes for the current workarea.</summary>
+	/// <summary>Open an index file and add to the list of open indexes for the current Workarea.</summary>
 	/// <param name="info">An object containing information about the orderlist (file)  to add.</param>
     /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
 	METHOD OrderListAdd(info AS DbOrderInfo) AS LOGIC
 
-	/// <summary>Close an index file and remove it from the list of open indexes for the current workarea.</summary>
+	/// <summary>Close an index file and remove it from the list of open indexes for the current Workarea.</summary>
 	/// <param name="info"></param>
 	/// <param name="info">An object containing information about the orderlist (file) to delete.</param>
     /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
 	METHOD OrderListDelete(info AS DbOrderInfo) AS LOGIC
 
-	/// <summary>Set focus to another index in the list open indexes for the current workarea.</summary>
+	/// <summary>Set focus to another index in the list open indexes for the current Workarea.</summary>
 	/// <param name="info">An object containing information about the order to select.</param>
     /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
 	METHOD OrderListFocus(info AS DbOrderInfo) AS LOGIC
 
-	/// <summary>Rebuild all indexes for the current workarea.</summary>
+	/// <summary>Rebuild all indexes for the current Workarea.</summary>
     /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
 	METHOD OrderListRebuild() AS LOGIC 
 
-	/// <summary>Perform a seek operation on the current selected index for the current workarea.</summary>
+	/// <summary>Perform a seek operation on the current selected index for the current Workarea.</summary>
 	/// <param name="info">An object containing containing the necessary seek information.</param>
     /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
     /// <remarks>The result of the actial seek operation is stored in the Found property of the RDD and the EOF property.</remarks>
@@ -371,16 +371,22 @@ INTERFACE XSharp.RDD.IRdd
 	/// <param name="sBlock">The code block to evaluate.</param>
 	METHOD EvalBlock(oBlock AS ICodeblock)			AS OBJECT	
 
-	// Info
 	/// <summary>Retrieve and optionally change information about a work area.</summary>
-	METHOD Info(nOrdinal AS LONG, oNewValue AS OBJECT) AS OBJECT
+    /// <param name="nOrdinal">Specifies the type of information.</param>
+    /// <param name="oValue">If specified (not null), then this parameter is used to change the value of a setting.</param>
+
+	METHOD Info(nOrdinal AS LONG, oValue AS OBJECT) AS OBJECT
+	
 	/// <summary>Retrieve and optionally change information about a row.</summary>
+    /// <param name="nOrdinal">Specifies the type of information.</param>
+    /// <param name="oRecid">If specified (not null), then this parameter is used to specify for which object to retrieve the info.</param>
+    /// <param name="oValue">If specified (not null), then this parameter is used to change the value of a setting.</param>
 	METHOD RecInfo( nOrdinal AS LONG, oRecID AS OBJECT, oNewValue AS OBJECT) AS OBJECT  
 
 	// Properties
 	/// <summary>Retrieve the alias name.</summary>
 	PROPERTY Alias 		AS STRING	GET SET
-	/// <summary>Retrieve the workarea number.</summary>
+	/// <summary>Retrieve the Workarea number.</summary>
 	PROPERTY Area		AS DWORD	GET SET
 	/// <summary>Is the table at the logical beginning-of-file.</summary>
 	PROPERTY BoF 		AS LOGIC	GET
@@ -390,9 +396,9 @@ INTERFACE XSharp.RDD.IRdd
     PROPERTY Driver     AS STRING	GET
 	/// <summary>Is the table at the logical end-of-file.</summary>
     PROPERTY EoF 		AS LOGIC	GET
-	/// <summary>Is the workarea opened Exclusively</summary>
+	/// <summary>Is the Workarea opened Exclusively</summary>
 	PROPERTY Exclusive	AS LOGIC	GET
-	/// <summary>The # of fields in the current workarea.</summary>
+	/// <summary>The # of fields in the current Workarea.</summary>
 	PROPERTY FieldCount AS LONG		GET 
 	/// <summary>The filter condition as a string.</summary>
 	PROPERTY FilterText	AS STRING	GET 
@@ -404,7 +410,7 @@ INTERFACE XSharp.RDD.IRdd
 	PROPERTY RecId		AS OBJECT	GET		// Does not have to be numeric. 
 	/// <summary>The physical row identifier at the current cursor position.</summary>
 	PROPERTY RecNo		AS LONG		GET   
-	/// <summary>Is the current workarea opened Shared?</summary>
+	/// <summary>Is the current Workarea opened Shared?</summary>
 	PROPERTY Shared		AS LOGIC	GET
 	
 END INTERFACE	

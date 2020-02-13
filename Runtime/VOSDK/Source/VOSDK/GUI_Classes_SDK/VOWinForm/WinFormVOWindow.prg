@@ -33,7 +33,7 @@
 
         RETURN
 
-    PROPERTY VOWindowHost AS WinFormVOWindowHost GET winFormVOWindowHost SET winFormVOWindowHost := VALUE
+    PROPERTY VOWindowHost AS WinFormVOWindowHost GET winFormVOWindowHost SET winFormVOWindowHost := value
         
     PROTECTED METHOD OnActivated(e AS System.EventArgs) AS VOID
         SUPER:OnActivated(e)

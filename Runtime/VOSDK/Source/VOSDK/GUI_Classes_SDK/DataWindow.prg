@@ -38,7 +38,7 @@
 	PROTECT symBrowserClass AS SYMBOL
 	// protect hLastControl as ptr
 	EXPORT symFormDialog AS SYMBOL
-	PROTECT dwDialogStyle  AS DWORD //SE-070906
+	PROTECT dwDialogStyle  AS DWORD        //SE-070906
 	
 	
 	//PP-030828 Strong typing
@@ -121,11 +121,12 @@ METHOD __AdjustSurface() AS LOGIC STRICT
 				strucClientRect:bottom -= oToolBar:Size:Height
 			ENDIF
 		ENDIF
-		
-		MoveWindow(SELF:__FormWindow:Handle(), strucClientRect:left, strucClientRect:top, ;
-			strucClientRect:right - strucClientRect:left, ;
-			strucClientRect:bottom - strucClientRect:top, FALSE)
-	ENDIF
+		if !empty(self:__FormWindow)
+			MoveWindow(self:__FormWindow:Handle(), strucClientRect.left, strucClientRect.top, ;
+				strucClientRect.right - strucClientRect.left, ;
+				strucClientRect.bottom - strucClientRect.top, FALSE)
+		endif
+    	ENDIF
 	
 	RETURN TRUE
 	
@@ -354,20 +355,16 @@ METHOD __AutoLayout() AS DataWindow STRICT
 	
 
 METHOD __CheckConditionalControls() AS DataWindow STRICT 
-	//PP-030828 Strong typing
-	LOCAL idx, iLen AS DWORD
-    LOCAL oControl AS Control
-
-	iLen := ALen(aControls)
-	FOR idx :=1 TO iLen
-        oControl := aControls[idx] 
-        IF (oControl:Status != NULL_OBJECT)
+	LOCAL lInvalid as LOGIC
+	lInvalid := FALSE
+	FOREACH oControl as Control in aControls
+        	IF (oControl:Status != NULL_OBJECT)
+			lInvalid := TRUE
 			EXIT
 		ENDIF
 	NEXT
 	
-	//if !IsNil(oHLStatus) .or. (AScan(aControls,{|oControl| oControl:Status != NULL_OBJECT}) != 0)
-	IF !IsNil(oHLStatus) .OR. (idx != (iLen+1))
+	IF !IsNil(oHLStatus) .OR. lInValid
 		SELF:DisableConditionalControls()
 	ELSE
 		SELF:EnableConditionalControls()
@@ -510,17 +507,12 @@ METHOD __EnableHelpCursor(lEnabled AS LOGIC) AS Window STRICT
 
 METHOD __FindControl(symName AS SYMBOL) AS Control STRICT 
 	//SE-060526
-	LOCAL dwI, dwCount AS DWORD
-	LOCAL oControl AS Control
 	
-	dwCount := ALen(aControls)
-	FOR dwI := 1 UPTO dwCount
-		oControl := aControls[dwI]
+	FOREACH oControl as Control in aControls
 		IF oControl:NameSym == SymName
 			RETURN oControl
 		ENDIF
-	NEXT  // dwI
-	//ENDIF
+	NEXT  
 	
 	RETURN NULL_OBJECT
 	
@@ -609,8 +601,8 @@ METHOD __GetOLEObject(symMethod AS SYMBOL) AS DataWindow STRICT
 		ENDIF
 		oOle:RePaint()
 	ELSE
-		MessageBox(0, String2Psz(ResourceString{IDS_NOINSERT}:VALUE),;
-			String2Psz(ResourceString{IDS_OLERUNTIME}:VALUE),;
+		MessageBox(0, String2Psz(ResourceString{IDS_NOINSERT}:Value),;
+			String2Psz(ResourceString{IDS_OLERUNTIME}:Value),;
 			_OR(MB_OK, MB_ICONHAND))
 	ENDIF
 #endif
@@ -618,36 +610,31 @@ METHOD __GetOLEObject(symMethod AS SYMBOL) AS DataWindow STRICT
 	
 
 METHOD __HandleScrolling(oEvent AS OBJECT) AS DataWindow STRICT 
-	//PP-030828 Strong typing
-	LOCAL oControl AS OBJECT
-	
-	
-	
-	DO CASE
-	CASE IsInstanceOf(oEvent, #ScrollEvent)
-		oControl := oEvent:Scrollbar
-	CASE IsInstanceOf(oEvent, #SpinnerEvent)
-		oControl := oEvent:Spinner
-	CASE IsInstanceOf(oEvent, #SliderEvent)
-		oControl := oEvent:Slider
-	ENDCASE
-	
-	IF (oControl != NULL_OBJECT)
-		oControl:ThumbPosition := oEvent:Position
-		oControl:Modified := TRUE // assume its modified
-		SELF:__DoValidate(oControl)
-	ENDIF
-	
-	RETURN SELF
-	
+    //PP-030828 Strong typing
+    LOCAL oControl as OBJECT
+    DO CASE
+    CASE IsInstanceOf(oEvent, #ScrollEvent)
+        oControl := oEvent:Scrollbar
+    CASE IsInstanceOf(oEvent, #SpinnerEvent)
+        oControl := oEvent:Spinner
+    CASE IsInstanceOf(oEvent, #SliderEvent)
+        oControl := oEvent:Slider
+    ENDCASE
+    
+    IF (oControl != null_object)
+        oControl:ThumbPosition := oEvent:Position
+        oControl:Modified := true // assume its modified
+        self:__DoValidate(oControl)
+    ENDIF
+    
+    RETURN self
+    
 
 METHOD __RegisterFieldLinks(oDataServer AS DataServer) AS LOGIC STRICT 
 	//PP-030828 Strong typing
 	LOCAL oDC AS Control
 	LOCAL dwIndex, dwControls AS DWORD
 	LOCAL siDF AS SHORTINT
-	
-	
 	dwControls := ALen(aControls)
 	IF dwControls > 0
 		FOR dwIndex := 1 UPTO dwControls
@@ -684,44 +671,41 @@ METHOD __RegisterSubform(oSubForm AS OBJECT) AS DataWindow STRICT
 	
 
 METHOD __Scatter() AS DataWindow STRICT 
-	//PP-030828 Strong typing
-	
-	
-	IF (sCurrentView == #FormView)
-		ASend(aControls, #__Scatter)
-		lRecordDirty := FALSE
-		SELF:PreValidate()
-	ELSEIF (oGBrowse != NULL_OBJECT)
-		Send(oGBrowse, #__RefreshData)
-		lRecordDirty := FALSE
-		SELF:PreValidate()
-	ENDIF
-	
-	RETURN SELF
-	
+    //PP-030828 Strong typing
+    
+    IF (sCurrentView == #FormView)
+        ASend(aControls, #__Scatter)
+        lRecordDirty := FALSE
+        self:PreValidate()
+    ELSEIF (oGBrowse != null_object)
+        Send(oGBrowse, #__RefreshData)
+        lRecordDirty := FALSE
+        self:PreValidate()
+    ENDIF
+    
+    RETURN self
+    
 
 METHOD __SetupDataControl(oDC AS Control) AS DataWindow STRICT 
-	//PP-030828 Strong typing
-	
-	
-	IF IsInstanceOfUsual(oDC, #RadioButtonGroup)
-		AAdd(aRadioGroups, oDC)
-	ENDIF
-	
-	oFormFrame:AddControl(oDC)
-	AAdd(aControls, oDC)
-	
-	RETURN SELF
-	
+    //PP-030828 Strong typing
+
+    IF IsInstanceOfUsual(oDC, #RadioButtonGroup)
+        AAdd(aRadioGroups, oDC)
+    ENDIF
+    
+    oFormFrame:AddControl(oDC)
+    AAdd(aControls, oDC)
+    
+    RETURN self
+    
 
 METHOD __SetupNonDataControl(oDC AS Control) AS DataWindow STRICT 
-	//PP-030828 Strong typing
-	
-	
-	oFormFrame:AddControl(oDC)
-	
-	RETURN SELF
-	
+    //PP-030828 Strong typing
+    
+    oFormFrame:AddControl(oDC)
+    
+    RETURN self
+    
 
 METHOD __StatusMessage(uDescription AS USUAL, nMode AS LONGINT) AS DataWindow STRICT 
 	//PP-030828 Strong typing
@@ -760,12 +744,13 @@ ACCESS __SubForm AS LOGIC STRICT
 METHOD __Unlink() AS LOGIC STRICT 
 	//PP-030828 Strong typing
 	
-	
 	IF oAttachedServer == NULL_OBJECT
 		RETURN FALSE
 	ENDIF
-	//PP-030909 Bug BF 021206. See control:__unlink()
-	AEval(aControls, {|oDC| oDC:__Unlink()})
+    
+	FOREACH oDC AS Control in aControls
+        	oDC:__Unlink(NIL)
+	NEXT  
 	IF oGBrowse != NULL_OBJECT
 		oGBrowse:__Unlink()
 	ENDIF
@@ -819,9 +804,7 @@ METHOD __UnRegisterSubform(oSubForm AS OBJECT) AS DataWindow STRICT
 	//PP-030828 Strong typing
 	//SE-060526
 	LOCAL dwI, dwCount AS DWORD
-	
-	
-	
+    
 	dwCount := ALen(aSubforms)
 	FOR dwI := 1 UPTO dwCount
 		IF aSubforms[dwI] == oSubForm
@@ -855,8 +838,7 @@ METHOD __UpdateCurrent() AS DataWindow STRICT
 	//PP-030828 Strong typing
 	LOCAL oColumn AS OBJECT
 	
-	
-	IF (sCurrentView == #FormView)
+    IF (sCurrentView == #FormView)
 		IF (IsInstanceOf(oDCCurrentControl, #Control) .AND. oDCCurrentControl:Modified)
 			SELF:__DoValidate(oDCCurrentControl)
 		ENDIF
@@ -928,8 +910,8 @@ METHOD __VerifyDataServer(oDataServer AS USUAL) AS LOGIC STRICT
 	RETURN TRUE
 	
 METHOD Activate (oEvent)
-    //SE-070906
-    IF dwDialogStyle > 0
+	//SE-120204
+	IF SELF:dwDialogStyle > 0
 	    IF (oSurface != NULL_OBJECT)
 		    WCAppSetDialogWindow(oSurface:Handle())
 	    ENDIF	
@@ -1312,7 +1294,7 @@ METHOD SetContextMenu(oNewMenu AS Menu, symView AS SYMBOL) AS VOID
 
 ACCESS Controls 
 	// DHer: 18/12/2008
-RETURN SELF:aControls
+	RETURN SELF:aControls
 
 METHOD ControlFocusChange(oControlFocusChangeEvent) 
 	//PP-040524 S.Ebert
@@ -1684,15 +1666,11 @@ METHOD EnableDragDropClient(lEnable, lSurfaceOnly)
    RETURN SUPER:EnableDragDropClient(lEnable)
 
 METHOD EnableStatusBar(lEnable) 
-	
-	
-	SUPER:EnableStatusBar(lEnable)
-	
-	oFormFrame:__ResizeParent()
-	//self:__AdjustSurFace()
-	//self:__AdjustForm()
-	
-	RETURN SELF:StatusBar
+      SUPER:EnableStatusBar(lEnable)
+
+   oFormFrame:__ResizeParent()
+  
+   RETURN SELF:StatusBar
 	
 
 METHOD EnableToolTips(lEnable) 
@@ -1948,9 +1926,9 @@ CONSTRUCTOR(oOwner, oSource, nResourceID, nDialogStyle)
 	LOCAL oObject AS OBJECT
 	
 	DEFAULT(@oOwner, GetAppObject())
-	//SE-070906
+	//SE-120204
 	IF IsLong(nDialogStyle)
-	   dwDialogStyle := nDialogStyle
+	   dwDialogStyle := _OR(LONG(nDialogStyle), WS_DLGFRAME)
 	ENDIF     
 	
 	IF dwDialogStyle > 0
@@ -1969,7 +1947,8 @@ CONSTRUCTOR(oOwner, oSource, nResourceID, nDialogStyle)
 		ELSEIF IsInstanceOf(oObject, #DataWindow) // .or. IsInstanceOf(oObject, #ToolBar)
 			// Create sub form if wr're a regular DataWindow
 			DEFAULT(@nResourceID, 0)
-			lSubForm := (dwDialogStyle = 0)
+			lSubForm := ! SELF:IsDialog() //SE-120419 //!IsInstanceOf(SELF, #DataDialog)
+    
 			SUPER(oOwner, FALSE, FALSE)
 		ELSEIF IsInstanceOf(oObject, #ChildAppWindow)
 			SUPER(oOwner)
@@ -2020,7 +1999,7 @@ CONSTRUCTOR(oOwner, oSource, nResourceID, nDialogStyle)
 		hwnd := oFormFrame:Handle()
 	ELSE
 		oFormFrame := __FormFrame{SELF, oResID, !IsInstanceOf(oImp, #__DDIMP)}
-	ENDIF
+    ENDIF
 	oSurface := oFormFrame:GetDialogWindow()
 	
 	IF ( SELF:Background != NULL_OBJECT )
@@ -2149,10 +2128,8 @@ METHOD MoveTo(oPoint)
 
 METHOD Notify(kNotification, uDescription) 
 	LOCAL oTB AS OBJECT
-	LOCAL i, iLen AS INT
 	LOCAL lThisRecDeleted AS LOGIC
 	LOCAL oDF AS DataField
-    LOCAL oControl AS Control
 	
 	SWITCH (INT) kNotification
 	CASE NOTIFYCOMPLETION
@@ -2186,13 +2163,11 @@ METHOD Notify(kNotification, uDescription)
 	CASE NOTIFYFIELDCHANGE
 		lRecordDirty := TRUE
 		IF (sCurrentView == #FormView)
-			iLen := INT(ALen(aControls))
-			FOR i:= 1 TO iLen
-                oControl := aControls[i] 
-                oDF := oControl:__DataField
-                IF (oDF != NULL_OBJECT) .AND. (oDF:NameSym == uDescription)
-                    oControl:__Scatter()
-                ENDIF
+			FOREACH oControl as Control in aControls
+                		oDF := oControl:__DataField
+		                IF (oDF != NULL_OBJECT) .AND. (oDF:NameSym == uDescription)
+                		    oControl:__Scatter()
+		                ENDIF
 			NEXT
 			// RvdH 060529 This is done in the DataBrowser:Notify as well
 			//ELSEIF (sCurrentView == #BrowseView)
@@ -2219,10 +2194,10 @@ METHOD Notify(kNotification, uDescription)
 		SELF:__Unlink()
 		
 	CASE NOTIFYRECORDCHANGE
-    CASE NOTIFYGOBOTTOM
-    CASE NOTIFYGOTOP
-    CASE NOTIFYDELETE
-    CASE NOTIFYAPPEND
+	CASE NOTIFYGOBOTTOM
+	CASE NOTIFYGOTOP
+	CASE NOTIFYDELETE
+	CASE NOTIFYAPPEND
 		// record position has changed
 		lThisRecDeleted:=IVarGet(oAttachedServer,#Deleted)
 		// Disable or enable controls depending on deletion state
@@ -2240,7 +2215,10 @@ METHOD Notify(kNotification, uDescription)
 		SELF:__Scatter()
 		
 		IF (kNotification == NOTIFYAPPEND)
-			AEval(aControls,{ |oControl| oControl:PerformValidations() }) //Set HLStatus for all controls
+	            //Set HLStatus for all controls
+	            FOREACH oControl AS Control in aControls
+	                oControl:PerformValidations()
+	            NEXT  
 		ENDIF
 	END SWITCH
 	
@@ -2539,7 +2517,7 @@ METHOD SetAlignStartSize(oSize)
 	RETURN SELF
 
 METHOD SetDialog(lResizable, lMaximizeBox, lMinimizeBox)
-   //SE-070906 
+   //SE-120204
    //can be used in PreInit() method or befor super:init()
    IF hWnd == NULL_PTR
    	
@@ -2609,7 +2587,7 @@ METHOD Show(nShowState)
 	IF SELF:lValidFlag
 		IF !lSubForm
 			// Show oFormFrame as SHOWNORMAL in case data window is shown iconized
-			IF dwDialogStyle = 0
+            IF self:dwDialogStyle = 0   //SE-120204
 				SUPER:Show(nShowState)
 				oFormFrame:Show(SHOWNORMAL)
 			ELSE // DataDialog
@@ -2704,7 +2682,7 @@ ASSIGN Status(oStatus)
 	
 
 ACCESS StatusBar
-    //SE-070906
+    //SE-120204
 	 IF dwDialogStyle > 0
 		 // Support of a StatusBar a DataDialog - Window
 	    RETURN oStatusBar
@@ -2712,7 +2690,7 @@ ACCESS StatusBar
 	 RETURN SUPER:StatusBar
 	 
 ASSIGN StatusBar(oNewStatusBar)
-    //SE-070906
+    //SE-120204
 	 IF dwDialogStyle > 0
 		 // Support of a StatusBar a DataDialog - Window
 	    oStatusBar := oNewStatusBar
@@ -2723,8 +2701,7 @@ ASSIGN StatusBar(oNewStatusBar)
 
 
 METHOD StatusOK() 
-	LOCAL dwInvalidControl, iLen AS DWORD
-	
+    
 	
 	oDCInvalidControl := NULL_OBJECT
 	oDCInvalidColumn := NULL_OBJECT
@@ -2736,15 +2713,13 @@ METHOD StatusOK()
 		SELF:__UpdateCurrent()
 		IF !oAttachedServer:EOF //Don't validate the EOF record
 			IF (sCurrentView == #FormView)
-				iLen := ALen(aControls)
-				FOR dwInvalidControl := 1 TO iLen
-					IF (aControls[dwInvalidControl]:Status != NULL_OBJECT)
-						EXIT
+				FOREACH oControl as Control in aControls
+                    			IF (oControl:Status != null_object)
+						oDCInvalidControl := oControl
+			                        exit
 					ENDIF
 				NEXT
-				//dwInvalidControl := AScan(aControls, {|oControl| oControl:Status != NULL_OBJECT})
-				IF (dwInvalidControl != (iLen+1))
-					oDCInvalidControl := aControls[dwInvalidControl]
+				IF oDCInvalidControl != NULL_OBJECT
 					IF (oHLStatus := oDCInvalidControl:Status) == NULL_OBJECT
 						oHLStatus := HyperLabel{#InvalidControl, #RecInvalid}
 					ENDIF
@@ -2994,11 +2969,11 @@ METHOD ViewAs(symViewType)
 			
 			// If there are some "normal" controls (not subforms) set focus, etc
 		ELSEIF ALen(aControls) > 0
-            oControl := aControls[1] 
-            oControl:SetFocus()
-            IF IsInstanceOf(oControl, #SingleLineEdit) .AND. IsWindowEnabled(oControl:Handle())
-                PostMessage(oControl:Handle(), EM_SETSEL, 0, -1)
-			ENDIF
+            		oControl := aControls[1] 
+            		oControl:SetFocus()
+            		IF IsInstanceOf(oControl, #SingleLineEdit) .AND. IsWindowEnabled(oControl:Handle())
+                		PostMessage(oControl:Handle(), EM_SETSEL, 0, -1)
+            		ENDIF
 		ENDIF
 		oFormFrame:ViewAs(FALSE) // view as form
 		sCurrentView := #FormView

@@ -15,22 +15,27 @@ FUNCTION CreateObject(cClassName, _args ) AS OBJECT CLIPPER
     // The pseudo function _ARGS() returns the Clipper arguments array
     RETURN CreateInstance(_ARGS())
 
+/// <include file="VFPDocs.xml" path="Runtimefunctions/createobjectex/*" />
+FUNCTION CreateObjectEx(cClsIdOrcProgId, cComputerName , cIID ) AS OBJECT CLIPPER
+    // The pseudo function _ARGS() returns the Clipper arguments array
+    RETURN CreateInstance(_ARGS())
+
 
 PROCEDURE RddInit() AS VOID _INIT3
     // Make sure that the VFP dialect has the DBFVFP driver as default RDD
     RddSetDefault("DBFVFP")
-    RuntimeState.SetValue(Set.FOXCOLLATE,"")
-    RuntimeState.SetValue(Set.MEMOWIDTH, 50)
-    RuntimeState.SetValue(Set.NEAR, FALSE)
-    RuntimeState.SetValue(Set.SQLANSI, FALSE)
-    RuntimeState.SetValue(Set.FOXLOCK, TRUE)
-    RuntimeState.SetValue(Set.EOF, TRUE)
+    RuntimeState.SetValue(Set.FoxCollate,"")
+    RuntimeState.SetValue(Set.MemoWidth, 50)
+    RuntimeState.SetValue(Set.Near, FALSE)
+    RuntimeState.SetValue(Set.SqlAnsi, FALSE)
+    RuntimeState.SetValue(Set.FoxLock, TRUE)
+    RuntimeState.SetValue(Set.Eof, TRUE)
     RETURN 
 
 
 
 Function SetFoxCollation(cCollation as STRING) AS STRING
-local cOld := RuntimeState.GetValue<STRING>(Set.FOXCOLLATE) AS STRING
+local cOld := RuntimeState.GetValue<STRING>(Set.FoxCollate) AS STRING
 local aAllowed as STRING[]
 LOCAL lOk := FALSE as LOGIC
 LOCAL cValue := cCollation as STRING
@@ -43,7 +48,7 @@ FOREACH VAR cEnum in aAllowed
     ENDIF
 NEXT
 IF lOk
-    RuntimeState.SetValue(Set.FOXCOLLATE,cValue)
+    RuntimeState.SetValue(Set.FoxCollate,cValue)
 ELSE
     local oError as Error
     oError := Error.ArgumentError(__FUNCTION__, nameof(cCollation), 1, {cCollation})

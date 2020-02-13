@@ -59,7 +59,7 @@ FUNCTION XMLDocSetAction( nDocHandle AS INT64, cNode AS STRING, bCallback AS COD
     LOCAL nActions  AS LONG
     oDoc := XDocument.GetDocument(nDocHandle)
     IF oDoc != NULL_OBJECT
-        nActions := oDoc:SetAction(cNode, bCallBack)
+        nActions := oDoc:SetAction(cNode, bCallback)
     ELSE
         nActions := 0
     ENDIF
@@ -133,7 +133,7 @@ IF nDocHandle != -1
     VAR errors := XDocument.GetErrorsForDocument(nDocHandle)
     VAR aResult := {}
     FOREACH VAR error IN errors
-        aadd(aResult, error:ToArray())
+        AAdd(aResult, error:ToArray())
     NEXT
     RETURN aResult
 ELSEIF nErrHandle != -1
@@ -146,7 +146,7 @@ ELSE
     VAR errors := XDocument.GetErrors()
     VAR aResult := {}
     FOREACH VAR error IN errors
-        aadd(aResult, error:ToArray())
+        AAdd(aResult, error:ToArray())
     NEXT
     RETURN aResult
 ENDIF
@@ -218,10 +218,10 @@ FUNCTION XMLGetAttribute( nTagHandle AS INT64, cAttributeName AS STRING ) AS STR
     LOCAL aAttributes AS ARRAY
     IF XMLGetTag(nTagHandle, REF aTag)
         IF IsArray(aTag)
-            IF Alen(aTag) >= XMLTAG_ATTRIB .AND. IsArray(aTag[XMLTAG_ATTRIB])
+            IF ALen(aTag) >= XMLTAG_ATTRIB .AND. IsArray(aTag[XMLTAG_ATTRIB])
                 aAttributes := aTag[XMLTAG_ATTRIB]
                 FOREACH element AS ARRAY IN aAttributes
-                    IF String.Compare(element[TAGATTR_NAME], cAttributename, TRUE) == 0
+                    IF String.Compare(element[TAGATTR_NAME], cAttributeName, TRUE) == 0
                         RETURN element[TAGATTR_VALUE]
                     ENDIF
                 NEXT
@@ -300,7 +300,7 @@ FUNCTION XMLSelectNodes(nDocHandle AS INT64, cSelect AS STRING, aTagHandles OUT 
 
 
 FUNCTION XmlDocExplainErrorMessage(nId AS LONG) AS STRING
-SWITCH nID
+SWITCH nId
 
 CASE  XMLDOC_ERROR_NO_ERROR         ; RETURN "no error"
 CASE  XMLDOC_ERROR_OUT_OF_MEMORY    ; RETURN "not enough memory "

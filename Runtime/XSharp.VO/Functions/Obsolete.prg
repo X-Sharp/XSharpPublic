@@ -58,7 +58,7 @@ FUNCTION DynShrink() AS DWORD
 	
 /// <exclude/>
 [Obsolete( "'DynSize()' is not supported and always returns 0" )] ;
-FUNCTION DynSize() AS DWORD
+FUNCTION DynSize(dwPages AS DWORD) AS DWORD
 	RETURN 0
 	
 	
@@ -304,7 +304,7 @@ FUNCTION Multi2Wide(c AS STRING) AS STRING
 /// <exclude/>
 [Obsolete( "'Wide2Multi()' is not supported always returns the original string" )];
 FUNCTION Wide2Multi(cBstr AS STRING) AS STRING
-	RETURN cBStr
+	RETURN cBstr
 	
 /// <exclude/>
 [Obsolete( "'OldSpaceFreeString()' is not supported and has no effect" )] ;
@@ -474,7 +474,7 @@ FUNCTION CreateGCDump(pDump AS IntPtr,nValType AS DWORD) AS DWORD
 /// <exclude/>
 [Obsolete( "'DBToSB()' is not supported" )] ;
 FUNCTION DBToSB(c AS STRING) AS STRING
-	RETURN string.Empty 
+	RETURN String.Empty 
 	
 /// <exclude/>
 [Obsolete( "'ToHira()' is not supported" )] ;
@@ -576,7 +576,7 @@ FUNCTION APageCount(a AS ARRAY) AS DWORD
 	
 /// <exclude/>
 [Obsolete( "'ArrayGetPtr()' is not supported and always returns IntPtr.Zero" )] ;
-FUNCTION ArrayGetPtr(a AS ARRAY,dwEl AS DWORD) AS intPtr
+FUNCTION ArrayGetPtr(a AS ARRAY,dwEl AS DWORD) AS IntPtr
 	RETURN IntPtr.Zero
 	
 	
@@ -662,13 +662,13 @@ FUNCTION UnDeclareClass(symClass AS SYMBOL) AS INT
 	
 /// <exclude/>
 [Obsolete];
-FUNCTION DeclareMethod(symClass AS SYMBOL,symMeth AS SYMBOL,nType AS DWORD,pFunc AS IntPTR,nArgs AS DWORD) AS INT
+FUNCTION DeclareMethod(symClass AS SYMBOL,symMeth AS SYMBOL,nType AS DWORD,pFunc AS IntPtr,nArgs AS DWORD) AS INT
 	RETURN 0   
 
 
 /// <exclude/>
 [Obsolete];
-FUNCTION FunctionSym2Ptr(symFunc AS SYMBOL) AS IntPTR
+FUNCTION FunctionSym2Ptr(symFunc AS SYMBOL) AS IntPtr
 	RETURN IntPtr.Zero
 	
 /// <exclude/>
@@ -748,7 +748,7 @@ FUNCTION SBTODB(c AS STRING) AS STRING
 
 /// <exclude/>
 [ObsoleteAttribute( "'SysObject()' is not supported", TRUE )] ;
-FUNCTION SysObject() AS USUAL
+FUNCTION SysObject(o) AS OBJECT CLIPPER
    RETURN NIL
 
 

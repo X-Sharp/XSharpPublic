@@ -37,7 +37,7 @@ FUNCTION Eval( uCodeBlock AS USUAL, args PARAMS USUAL[] ) AS USUAL
 	LOCAL result AS USUAL
 	IF uCodeBlock:IsNil
 		THROW Error.NullArgumentError(__ENTITY__, NAMEOF(uCodeBlock), 1)
-	ELSEIF ! uCodeBlock:IsCodeBlock
+	ELSEIF ! uCodeBlock:IsCodeblock
 		result := Eval( (OBJECT) uCodeBlock, args )
 	ELSE 
 		result := Eval( (CODEBLOCK) uCodeBlock, args )
@@ -84,7 +84,7 @@ FUNCTION CParamCount(oCodeBlock AS CODEBLOCK) AS DWORD
 
 /// <exclude/>
 FUNCTION __CanEval(uValue AS USUAL) AS LOGIC 
-	IF uValue:isCodeBlock .AND. uValue != NULL_CODEBLOCK
+	IF uValue:IsCodeblock .AND. uValue != NULL_CODEBLOCK
 		RETURN TRUE
 	ENDIF
 	IF uValue:IsObject .AND. IsMethod(uValue, "Eval")

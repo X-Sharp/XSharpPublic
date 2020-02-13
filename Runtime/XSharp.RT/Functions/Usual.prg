@@ -60,7 +60,7 @@ FUNCTION IsByRef(uVal AS USUAL) AS LOGIC
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/iscodeblock/*" />
 FUNCTION IsCodeBlock(uValue AS USUAL) AS LOGIC
-	RETURN uValue:IsCodeBlock
+	RETURN uValue:IsCodeblock
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/isdate/*" />
 FUNCTION IsDate(uValue AS USUAL) AS LOGIC
@@ -83,13 +83,22 @@ FUNCTION IsDateTime(uVal AS USUAL) AS LOGIC
 FUNCTION IsDecimal(uVal AS USUAL) AS LOGIC
 	RETURN uVal:IsDecimal
 
+
+/// <summary>
+/// Determine if a value is a Currency.
+/// </summary>
+/// <param name="uVal">The value to examine.</param>
+/// <returns>TRUE if the value is a DECIMAL data type; otherwise, FALSE. </returns>
+FUNCTION IsCurrency(uVal AS USUAL) AS LOGIC
+	RETURN uVal:IsCurrency
+
 /// <summary>
 /// Determine if a value is a Decimal or a Float
 /// </summary>
 /// <param name="uVal">The value to examine.</param>
-/// <returns>TRUE if the value is a DECIMAL or FLOAT data type; otherwise, FALSE. </returns>
+/// <returns>TRUE if the value is a DECIMAL, CURRENCY or FLOAT data type; otherwise, FALSE. </returns>
 FUNCTION IsFractional(uVal AS USUAL) AS LOGIC
-	RETURN uVal:IsFloat .OR. uVal:IsDecimal
+	RETURN uVal:IsFractional
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/isfloat/*" />
 FUNCTION IsFloat(uValue AS USUAL) AS LOGIC

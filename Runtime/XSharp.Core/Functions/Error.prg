@@ -8,7 +8,7 @@
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/errstring/*" />
 FUNCTION ErrString(dwNewReturnCode AS DWORD) AS STRING
 	LOCAL cResource AS STRING
-	IF dwNewReturnCode > XSharp.GenCode.EG_MAX
+	IF dwNewReturnCode > XSharp.Gencode.EG_MAX
 		cResource := "RT_MSG_ERR_UNKNOWN"
 	ELSE
 		cResource := "RT_MSG_ERR_" + dwNewReturnCode:ToString()
@@ -56,7 +56,7 @@ FUNCTION TypeString( nType AS DWORD ) AS STRING
       ret := "SYMBOL"
    CASE  __UsualType.Byte
       ret := "BYTE"
-   CASE  __UsualType.Shortint
+   CASE  __UsualType.ShortInt
       ret := "SHORTINT"
    CASE  __UsualType.Word
       ret := "WORD"
@@ -84,6 +84,8 @@ FUNCTION TypeString( nType AS DWORD ) AS STRING
       ret := "DATETIME"
    CASE  __UsualType.Decimal
       ret := "DECIMAL"
+   CASE  __UsualType.Currency
+      ret := "CURRENCY"
    CASE  __UsualType.Memo
       ret := "MEMO"
    CASE  __UsualType.Invalid

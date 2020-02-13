@@ -27,12 +27,12 @@ CLASS XSharp.XPP.DataObject INHERIT XSharp.XPP.Abstract
         aResult := Super:ClassDescribe(CLASS_DESCR_ALL)
         IF nInfo == CLASS_DESCR_ALL .or. nInfo == CLASS_DESCR_MEMBERS
             FOREACH var fld in _fields
-                aadd(aResult[3], {fld:Key, VAR_INSTANCE+CLASS_EXPORTED, typeof(USUAL)})
+                AAdd(aResult[3], {fld:Key, VAR_INSTANCE+CLASS_EXPORTED, typeof(USUAL)})
             NEXT
         ENDIF
         IF nInfo == CLASS_DESCR_ALL .or. nInfo == CLASS_DESCR_METHODS
             FOREACH var met in _methods
-                aadd(aResult[4], {met:Key, METHOD_INSTANCE+CLASS_EXPORTED, met:Value, NIL, typeof(USUAL)})
+                AAdd(aResult[4], {met:Key, METHOD_INSTANCE+CLASS_EXPORTED, met:Value, NIL, typeof(USUAL)})
             NEXT
         ENDIF
         SWITCH nInfo

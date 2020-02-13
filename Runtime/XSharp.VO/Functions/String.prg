@@ -98,8 +98,8 @@ FUNCTION Crypt(bSource AS BYTE[],bKey AS BYTE[]) AS BYTE[]
         bCurrent  := bSource[nPos]  ~ bKey[nKeyPos]
         uiCode1   := (WORD) (uiCode1 ~ (uiCode1 >> 8))
         uiRotate  := (WORD) (uiCode1 & 0x0F)
-        uiCode1   := (WORD) ((uiCode1 >> uiRotate)  | (uiCode1 << (16 - UiRotate)))
-        uiCode1   := (WORD) (uICode1 ~ uiCode2)
+        uiCode1   := (WORD) ((uiCode1 >> uiRotate)  | (uiCode1 << (16 - uiRotate)))
+        uiCode1   := (WORD) (uiCode1 ~ uiCode2)
         uiCode1   += 0x10
         uiCounter := (WORD) (uiCode1 & 0x1E)
         uiCounter += 2

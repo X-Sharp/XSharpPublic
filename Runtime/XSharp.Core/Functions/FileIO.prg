@@ -20,15 +20,15 @@ USING System.Runtime.ConstrainedExecution
 FUNCTION FRename( cOldFile AS STRING , cNewFile AS STRING) AS LOGIC
 	LOCAL renamed := FALSE AS LOGIC
 	TRY
-        XSharp.IO.File.clearErrorState()
+        XSharp.IO.File.ClearErrorState()
         IF System.IO.File.Exists(cOldFile)
 		    System.IO.File.Move(cOldFile, cNewFile)
 	        renamed := TRUE
         ELSE
-            THROW FileNotfoundException { cOldFile }
+            THROW FileNotFoundException { cOldFile }
         ENDIF
 	CATCH e AS Exception
-		XSharp.IO.File.setErrorState(e)
+		XSharp.IO.File.SetErrorState(e)
 	END TRY
 	RETURN renamed
 	
@@ -37,15 +37,15 @@ FUNCTION FRename( cOldFile AS STRING , cNewFile AS STRING) AS LOGIC
 FUNCTION FErase(cFileName AS STRING) AS LOGIC
 	LOCAL isDeleted := FALSE AS LOGIC
 	TRY
-        XSharp.IO.File.clearErrorState()
+        XSharp.IO.File.ClearErrorState()
         IF System.IO.File.Exists(cFileName)
 		    System.IO.File.Delete(cFileName)
 		    isDeleted := TRUE
         ELSE
-            THROW FileNotfoundException { cFileName }
+            THROW FileNotFoundException { cFileName }
         ENDIF
 	CATCH e AS Exception
-		XSharp.IO.File.setErrorState(e)
+		XSharp.IO.File.SetErrorState(e)
 	END TRY
 	RETURN isDeleted
 	
@@ -59,11 +59,11 @@ FUNCTION FCopy(cSourceFile AS STRING,cTargetFile AS STRING) AS LOGIC
 FUNCTION FCopy(cSourceFile AS STRING,cTargetFile AS STRING, lOverWrite AS LOGIC) AS LOGIC
 	LOCAL IsCopied := FALSE AS LOGIC
 	TRY
-        XSharp.IO.File.clearErrorState()
+        XSharp.IO.File.ClearErrorState()
 		System.IO.File.Copy(cSourceFile,cTargetFile,lOverWrite)
 		IsCopied := TRUE
 	CATCH e AS Exception
-		XSharp.IO.File.setErrorState(e)
+		XSharp.IO.File.SetErrorState(e)
 	END TRY
 	RETURN IsCopied
 	
@@ -91,7 +91,7 @@ FUNCTION _SplitPath(cPath AS STRING, cDrive OUT STRING,cDir OUT STRING,cName OUT
 	nPos := cPath:IndexOf(Path.VolumeSeparatorChar)
 	IF nPos > 0
 		cDrive := cPath:Substring(0, nPos+1)
-		cPath  := cPath:SubString(nPos + 1)
+		cPath  := cPath:Substring(nPos + 1)
 	ENDIF
 	
 	IF cPath:Trim() != ""

@@ -10,7 +10,7 @@
     <Dialect>Core</Dialect>
     <OutputName>XSharp.Core</OutputName>
     <AZ>true</AZ>
-    <CS>false</CS>
+    <CS>true</CS>
     <LB>false</LB>
     <OVF>false</OVF>
     <Unsafe>false</Unsafe>
@@ -24,6 +24,8 @@
     <IncludePaths>$(CommonInclude)</IncludePaths>
     <Nostandarddefs>true</Nostandarddefs>
     <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
+    <StandardDefs />
+    <InitLocals>false</InitLocals>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -144,6 +146,8 @@
     <Compile Include="Types\ErrorEnums.prg" />
     <Compile Include="Types\Interfaces.prg" />
     <Compile Include="Types\MacroSupport.prg" />
+    <Compile Include="Types\Streams.prg" />
+    <Compile Include="Types\UsualType.prg" />
     <Compile Include="Types\WrappedException.prg" />
   </ItemGroup>
   <ItemGroup>
@@ -261,12 +265,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <PreBuildEvent />
     <PostBuildEvent />
-    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+    <RunPostBuildEvent />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <PreBuildEvent />
     <PostBuildEvent />
-    <RunPostBuildEvent>Always</RunPostBuildEvent>
+    <RunPostBuildEvent />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
     <PreBuildEvent>copy $(Solutiondir)Runtime\XSharp.RT\VoFunctionDocs.xml $(Solutiondir)Runtime\XSharp.Core\VoFunctionDocs.xml &gt;NUL</PreBuildEvent>

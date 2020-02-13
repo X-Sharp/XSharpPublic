@@ -26,7 +26,7 @@ BEGIN NAMESPACE XSharp.RDD
                 
             
             #REGION Order Support 
-            VIRTUAL METHOD OrderCreate(orderInfo AS DBORDERCREATEINFO ) AS LOGIC
+            VIRTUAL METHOD OrderCreate(orderInfo AS DbOrderCreateInfo ) AS LOGIC
 		        VAR useMemoryStream := FSize(SELF:_hFile) < Int32.MaxValue .AND. ! SELF:_Shared
 		        IF useMemoryStream
 			        FConvertToMemoryStream(SELF:_hFile)
@@ -37,7 +37,7 @@ BEGIN NAMESPACE XSharp.RDD
 		        ENDIF
 		        RETURN result
                 
-            VIRTUAL METHOD OrderDestroy(orderInfo AS DBORDERINFO ) AS LOGIC
+            VIRTUAL METHOD OrderDestroy(orderInfo AS DbOrderInfo ) AS LOGIC
                 RETURN SUPER:OrderDestroy(orderInfo)
                 
             METHOD OrderCondition(info AS DbOrderCondInfo) AS LOGIC
@@ -74,18 +74,18 @@ BEGIN NAMESPACE XSharp.RDD
                 BEGIN LOCK SELF
                     IF SELF:Shared 
                         // Error !! Cannot be written !
-                        SELF:_DbfError( ERDD.SHARED, XSharp.Gencode.EG_SHARED )
+                        SELF:_dbfError( ERDD.SHARED, XSharp.Gencode.EG_SHARED )
                         RETURN FALSE
                     ENDIF
-	        IF SELF:_Readonly
-	            SELF:_DbfError( ERDD.READONLY, XSharp.Gencode.EG_READONLY)
+	        IF SELF:_ReadOnly
+	            SELF:_dbfError( ERDD.READONLY, XSharp.Gencode.EG_READONLY)
 	            RETURN FALSE
 	        ENDIF
                     SELF:GoCold()
                     RETURN SELF:_indexList:Rebuild()
                 END LOCK
                 
-            OVERRIDE METHOD OrderInfo(nOrdinal AS DWORD , info AS DBORDERINFO ) AS OBJECT
+            OVERRIDE METHOD OrderInfo(nOrdinal AS DWORD , info AS DbOrderInfo ) AS OBJECT
                 LOCAL result AS LONG
                 LOCAL workOrder AS NtxOrder
                 LOCAL orderPos AS LONG
@@ -95,7 +95,7 @@ BEGIN NAMESPACE XSharp.RDD
                 workOrder := NULL
                 orderPos := SELF:_indexList:FindOrder(info)
                 IF orderPos <= 0
-                    IF info:IsEmpty
+                    IF info:IsEmpty .OR. orderPos == 0
                         workOrder := SELF:CurrentOrder
                     ELSE
                         workOrder := NULL
@@ -211,7 +211,7 @@ BEGIN NAMESPACE XSharp.RDD
                 ENDIF
             CASE DBOI_LOCKOFFSET
                     IF workOrder != NULL
-                        info:Result := workOrder:_lockOffset
+                        info:Result := workOrder:_LockOffset
                     ELSE
                         info:Result := 0
                 ENDIF
@@ -226,7 +226,7 @@ BEGIN NAMESPACE XSharp.RDD
                             info:Result := SELF:EvalBlock(workOrder:KeyCodeBlock)
                         CATCH ex AS Exception
                             isOk := FALSE
-                            SELF:_dbfError(ex, SubCodes.EDB_EXPRESSION, GenCode.EG_SYNTAX, "DBFNTX.OrderInfo")
+                            SELF:_dbfError(ex, Subcodes.EDB_EXPRESSION, Gencode.EG_SYNTAX, "DBFNTX.OrderInfo")
                         END TRY
                         IF !isOk
                             info:Result := NULL
@@ -283,22 +283,22 @@ BEGIN NAMESPACE XSharp.RDD
                 LOCAL currentRelation := SELF:_RelInfoPending AS DbRelInfo
                 SELF:_RelInfoPending := NULL
                 VAR oParent := (DBF) currentRelation:Parent 
-                IF oParent:_EOF
+                IF oParent:_EoF
                     //
-                    isOk := SELF:Goto( 0 )
+                    isOk := SELF:GoTo( 0 )
                 ELSE
                     isOk := SELF:RelEval( currentRelation )
 
-                    IF isOk .AND. !((DBF)currentRelation:Parent):_Eof
+                    IF isOk .AND. !((DBF)currentRelation:Parent):_EoF
                         TRY
-                            LOCAL seekInfo AS DBSEEKINFO
+                            LOCAL seekInfo AS DbSeekInfo
                             seekInfo := DbSeekInfo{}
                             seekInfo:Value := SELF:_EvalResult
                             seekInfo:SoftSeek := FALSE
                             isOk := SELF:Seek(seekInfo)
                             
                         CATCH ex AS InvalidCastException
-                            SELF:_dbfError(ex, SubCodes.ERDD_DATATYPE,GenCode.EG_DATATYPE,  "DBFNTX.ForceRel") 
+                            SELF:_dbfError(ex, Subcodes.ERDD_DATATYPE,Gencode.EG_DATATYPE,  "DBFNTX.ForceRel") 
 
                         END TRY
                     ENDIF
@@ -340,7 +340,7 @@ BEGIN NAMESPACE XSharp.RDD
                 RETURN SUPER:Close()
             END LOCK
             
-        PUBLIC OVERRIDE METHOD Create( openInfo AS DBOPENINFO ) AS LOGIC
+        PUBLIC OVERRIDE METHOD Create( openInfo AS DbOpenInfo ) AS LOGIC
             LOCAL isOk AS LOGIC
             
             isOk := SUPER:Create(openInfo)
@@ -372,10 +372,10 @@ BEGIN NAMESPACE XSharp.RDD
         #REGION Move
         
         INTERNAL METHOD ReadRecord() AS LOGIC
-            RETURN SELF:_ReadRecord()
+            RETURN SELF:_readRecord()
             
             
-        PUBLIC METHOD Seek(seekInfo AS DBSEEKINFO ) AS LOGIC
+        PUBLIC METHOD Seek(seekInfo AS DbSeekInfo ) AS LOGIC
             LOCAL isOk AS LOGIC
             
             isOk := FALSE
@@ -385,7 +385,7 @@ BEGIN NAMESPACE XSharp.RDD
                     isOk := index:Seek(seekInfo)
                 ENDIF
                 IF  !isOk 
-                    SELF:_DbfError(SubCodes.ERDD_DATATYPE, GenCode.EG_NOORDER )
+                    SELF:_dbfError(Subcodes.ERDD_DATATYPE, Gencode.EG_NOORDER )
                 ENDIF
         SELF:_CheckEofBof()
             END LOCK
@@ -417,7 +417,7 @@ BEGIN NAMESPACE XSharp.RDD
             
         METHOD __Goto(nRec AS LONG) AS LOGIC
             // Skip without reset of topstack
-            RETURN SUPER:Goto(nRec)
+            RETURN SUPER:GoTo(nRec)
             
         METHOD GoTo(nRec AS LONG) AS LOGIC
     local result as LOGIC    
@@ -425,7 +425,7 @@ BEGIN NAMESPACE XSharp.RDD
     IF SELF:CurrentOrder != NULL
         SELF:CurrentOrder:ClearStack() // force to reseek later
     ENDIF
-    result := SUPER:Goto(nRec)
+    result := SUPER:GoTo(nRec)
     RETURN result
             
             

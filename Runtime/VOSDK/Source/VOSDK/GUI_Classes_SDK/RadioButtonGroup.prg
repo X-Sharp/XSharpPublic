@@ -280,5 +280,8 @@ ASSIGN Value(uNewValue)
 
 	RETURN 
 
+ACCESS Values AS ARRAY
+	RETURN aValues
+
 END CLASS
 

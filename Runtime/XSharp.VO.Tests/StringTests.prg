@@ -142,6 +142,12 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal( "0,000",   Str(0.0 , -1 , 3) )
 			Assert.Equal( "0,100",   Str(0.1 , -1 , 3) )
 			Assert.Equal( "-0,100",  Str(-0.1 , -1 , 3) )
+
+			Assert.Equal( "  123"	, Str(FloatFormat(123 , 5, 0)) )
+			Assert.Equal( "   123"	, Str(FloatFormat(123 , 6, 0)) )
+			Assert.Equal( " 123,5"	, Str(FloatFormat(123.456 , 6, 1) ) )
+			Assert.Equal( "123,46"	, Str(FloatFormat(123.456 , 6, 2) ) )
+			Assert.Equal( " 123,46"	, Str(FloatFormat(123.456 , 7, 2) ) )
 			
 	
 			SetDecimalSep(exact)

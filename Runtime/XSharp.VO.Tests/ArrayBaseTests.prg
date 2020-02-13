@@ -43,9 +43,9 @@ BEGIN NAMESPACE XSharp.VO.Tests
                 SET
                     SWITCH index
                     CASE 0
-                        FirstName := VALUE
+                        FirstName := value
                     CASE 1
-                        LastName := VALUE
+                        LastName := value
                     END SWITCH
                     RETURN 
                 END SET
@@ -63,9 +63,9 @@ BEGIN NAMESPACE XSharp.VO.Tests
                 SET
                     SWITCH name:ToLower()
                     CASE "firstname"
-                        FirstName := VALUE
+                        FirstName := value
                     CASE "lastname"
-                        LastName := VALUE
+                        LastName := value
                     END SWITCH
                     RETURN 
                 END SET

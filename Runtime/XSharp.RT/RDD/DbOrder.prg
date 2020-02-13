@@ -3,8 +3,8 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
-USING XSharp.Rdd.Support
-USING XSharp.Rdd
+USING XSharp.RDD.Support
+USING XSharp.RDD
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbclearordercondition/*" />
 FUNCTION DBClearOrderCondition()  AS LOGIC
     
@@ -18,7 +18,7 @@ FUNCTION DbReindex() AS LOGIC
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbseek/*" />
 FUNCTION DbSeek(uKey, lSoftSeek, lLast) AS LOGIC CLIPPER
-	LOCAL dbsci     AS DBSCOPEINFO
+	LOCAL dbsci     AS DbScopeInfo
 	LOCAL lRet      AS LOGIC
 	
 	DEFAULT(REF lSoftSeek, SetSoftSeek())
@@ -149,9 +149,9 @@ FUNCTION OrdCondSet(cForCondition, cbForCondition, lAll, cbWhileCondition, cbEva
 	dbOrdCondInfo := DbOrderCondInfo{}
 
 	
-    dbOrdCondInfo:ForBlock := VoDb.ValidBlock(cbForCondition)
-    dbOrdCondInfo:WhileBlock := VoDb.ValidBlock(cbWhileCondition)
-	dbOrdCondInfo:EvalBlock := VoDb.ValidBlock(cbEval)
+    dbOrdCondInfo:ForBlock    := VoDb.ValidBlock(cbForCondition)
+    dbOrdCondInfo:WhileBlock  := VoDb.ValidBlock(cbWhileCondition)
+	dbOrdCondInfo:EvalBlock   := VoDb.ValidBlock(cbEval)
 	IF !cForCondition:IsNil
         dbOrdCondInfo:ForExpression := cForCondition
         IF dbOrdCondInfo:ForBlock == NULL
@@ -218,6 +218,12 @@ FUNCTION OrdCreate(cIndexFile, cOrder, cKeyValue, cbKeyValue, lUnique) AS LOGIC 
   			DoError("OrdCreate")
         ENDIF
         cbKey := cbKeyValue
+        VAR sKey := cbKey:ToString():Trim()
+        IF sKey:StartsWith("{||") .AND. sKey:EndsWith("}")
+            sKey := sKey:Substring(3, sKey:Length-4):Trim()
+        ENDIF
+        cKeyValue := sKey
+
 	ELSE
 		IF cbKeyValue:IsNil
 			cbKeyValue := &( "{||" + cKeyValue + "}" )
@@ -259,7 +265,7 @@ FUNCTION OrdFor(uOrder, cIndexFile, cFor) AS USUAL CLIPPER
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ordkey/*" />
 FUNCTION OrdKey(uOrder, cIndexFile) AS USUAL CLIPPER
 	LOCAL xKey  := NIL    AS USUAL
-	IF !VODBOrderInfo(DBOI_EXPRESSION, cIndexFile, uOrder, REF xKey)
+	IF !VoDbOrderInfo(DBOI_EXPRESSION, cIndexFile, uOrder, REF xKey)
 		xKey := ""
 	ENDIF
 	RETURN xKey
@@ -277,8 +283,8 @@ FUNCTION OrdKeyDel(uOrder, cIndexFile, xVal) AS USUAL CLIPPER
 FUNCTION OrdKeyGoto    (nKeyNo) AS LOGIC CLIPPER
 	LOCAL lRetCode  AS LOGIC
 	IF nKeyNo:IsNumeric
-		DbGotop()
-		DBSKIP(nKeyno - 1)
+		DbGoTop()
+		DbSkip(nKeyNo - 1)
 		lRetCode := TRUE
     ELSE
         lRetCode := FALSE
@@ -309,7 +315,7 @@ FUNCTION OrdKeyVal(uOrder,cIndexFile) AS USUAL CLIPPER
 /// <returns>OrdCount() returns the number of open indexes as a numeric value.
 /// When no index is open or when no file is open in the current workarea, the return value is 0. </returns>
 FUNCTION OrdCount() AS DWORD
-    RETURN IIF (Used(), DBOrderInfo(DBOI_ORDERCOUNT),0)	
+    RETURN IIF (Used(), DbOrderInfo(DBOI_ORDERCOUNT),0)	
 
 /// <summary>Return a list of all tag names for the current work area. </summary>
 /// <returns>OrdList() returns a one dimensional array holding strings with the tag names of all open indexes.
@@ -320,7 +326,7 @@ FUNCTION OrdList() AS ARRAY STRICT
 	aResult := {}                
 	nCount := OrdCount()
 	FOR nIndex := 1 UPTO nCount
-		AAdd(aResult, DBOrderInfo(DBOI_NAME, ,nIndex) )
+		AAdd(aResult, DbOrderInfo(DBOI_NAME, ,nIndex) )
 	NEXT
 	RETURN aResult
 
@@ -341,7 +347,7 @@ FUNCTION __OrdListClear()  AS LOGIC STRICT
 	LOCAL cDBF      AS STRING
 	LOCAL cAlias    AS STRING
 	LOCAL lShare    AS LOGIC
-	LOCAL aRDD      AS ARRAY
+	LOCAL aRdd      AS ARRAY
 	LOCAL rdds      AS _RddList
 	LOCAL i         AS DWORD
 	
@@ -350,17 +356,17 @@ FUNCTION __OrdListClear()  AS LOGIC STRICT
 		rdds   := DbInfo(DBI_RDD_LIST)
 		
 		aRdd := {}
-		FOR i := 1 TO rdds:uiRDDCount
+		FOR i := 1 TO rdds:uiRddCount
 			AAdd(aRdd, rdds:atomRddName[i] )
 		NEXT
 		
 		lShare := DbInfo(DBI_SHARED)
-		cAlias := ALIAS()
-		lOpen := RDDINFO(_SET_AUTOOPEN)
-		RDDINFO(_SET_AUTOOPEN, .F.)
-		DBCLOSEAREA()
-		lRet := DBUSEAREA(.F., aRdd, cDBF, cAlias, lShare)
-		RDDINFO(_SET_AUTOOPEN, lOpen)
+		cAlias := Alias()
+		lOpen := RddInfo(_SET_AUTOOPEN)
+		RddInfo(_SET_AUTOOPEN, .F.)
+		DbCloseArea()
+		lRet := DbUseArea(.F., aRdd, cDBF, cAlias, lShare)
+		RddInfo(_SET_AUTOOPEN, lOpen)
 	ELSE
 		lRet := .F.
 	ENDIF
@@ -439,18 +445,18 @@ FUNCTION DbSetScope(nScope AS LONG, uValue AS USUAL) AS LOGIC
         SWITCH nScope
         CASE SCOPE_TOP
             OrdScope(TOPSCOPE,uValue)
-            lResult := XSharp.RuntimeState:LastRDDError == NULL
+            lResult := XSharp.RuntimeState:LastRddError == NULL
                
         CASE SCOPE_BOTTOM
             OrdScope(BOTTOMSCOPE, uValue)
-            lResult := XSharp.RuntimeState:LastRDDError == NULL
+            lResult := XSharp.RuntimeState:LastRddError == NULL
                 
         CASE SCOPE_BOTH
         OTHERWISE
             OrdScope(TOPSCOPE,uValue)
-            lResult := XSharp.RuntimeState:LastRDDError == NULL
+            lResult := XSharp.RuntimeState:LastRddError == NULL
             OrdScope(BOTTOMSCOPE, uValue)
-            lResult := lResult .AND. (XSharp.RuntimeState:LastRDDError == NULL)
+            lResult := lResult .AND. (XSharp.RuntimeState:LastRddError == NULL)
         END SWITCH
     CATCH AS Exception
         lResult := FALSE
@@ -476,18 +482,18 @@ FUNCTION DbClearScope(uScope) AS LOGIC CLIPPER
         SWITCH (LONG) uScope
         CASE SCOPE_TOP
             OrdScope(TOPSCOPE,NIL)
-            lResult := XSharp.RuntimeState:LastRDDError == NULL
+            lResult := XSharp.RuntimeState:LastRddError == NULL
                 
         CASE SCOPE_BOTTOM
             OrdScope(BOTTOMSCOPE, NIL)
-            lResult := XSharp.RuntimeState:LastRDDError == NULL
+            lResult := XSharp.RuntimeState:LastRddError == NULL
 
         CASE SCOPE_BOTH        
         OTHERWISE   // SCOPE_BOTH is default in Xbase++
             OrdScope(TOPSCOPE,NIL)
-            lResult := XSharp.RuntimeState:LastRDDError == NULL
+            lResult := XSharp.RuntimeState:LastRddError == NULL
             OrdScope(BOTTOMSCOPE, NIL)
-            lResult := lResult .AND. (XSharp.RuntimeState:LastRDDError == NULL)
+            lResult := lResult .AND. (XSharp.RuntimeState:LastRddError == NULL)
         END SWITCH
     CATCH AS Exception
         lResult := FALSE

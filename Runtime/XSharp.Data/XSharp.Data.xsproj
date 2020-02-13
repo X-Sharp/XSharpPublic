@@ -1,0 +1,138 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.Default.props" />
+  <Import Project="..\Runtime.Targets" />
+  <PropertyGroup>
+    <ProjectGuid>db9ad987-ebd9-4f0c-8604-608a9028585c</ProjectGuid>
+    <RootNamespace>XSharp.Data</RootNamespace>
+    <AssemblyName>XSharp.Data</AssemblyName>
+    <Name>XSharp.Data</Name>
+    <Dialect>Core</Dialect>
+    <OutputName>XSharp.Data</OutputName>
+    <XSharpProjectversion>2.0.6.2</XSharpProjectversion>
+    <MemVar>false</MemVar>
+    <Undeclared>false</Undeclared>
+    <IncludePaths>$(CommonInclude)</IncludePaths>
+    <Nostandarddefs>true</Nostandarddefs>
+    <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
+    <AZ>false</AZ>
+    <CS>true</CS>
+    <LB>false</LB>
+    <NamedArgs>true</NamedArgs>
+    <OVF>false</OVF>
+    <Unsafe>false</Unsafe>
+    <INS>false</INS>
+    <NS>false</NS>
+    <StandardDefs />
+    <InitLocals>false</InitLocals>
+    <VO1>false</VO1>
+    <VO2>true</VO2>
+    <VO3>true</VO3>
+    <VO4>false</VO4>
+    <VO5>false</VO5>
+    <VO6>false</VO6>
+    <VO7>false</VO7>
+    <VO8>false</VO8>
+    <VO9>false</VO9>
+    <VO10>false</VO10>
+    <VO11>false</VO11>
+    <VO12>false</VO12>
+    <VO13>false</VO13>
+    <VO14>false</VO14>
+    <VO15>false</VO15>
+    <VO16>false</VO16>
+    <XPP1>false</XPP1>
+    <FOX1>false</FOX1>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <EmitDebugInformation>true</EmitDebugInformation>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <UseSharedCompilation>true</UseSharedCompilation>
+    <DisabledWarnings>162</DisabledWarnings>
+    <SignAssembly>true</SignAssembly>
+    <DelaySign>false</DelaySign>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <EmitDebugInformation>false</EmitDebugInformation>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <UseSharedCompilation>true</UseSharedCompilation>
+    <DisabledWarnings>162</DisabledWarnings>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
+    <EmitDebugInformation>true</EmitDebugInformation>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <UseSharedCompilation>true</UseSharedCompilation>
+    <DisabledWarnings>162,171,553,1591</DisabledWarnings>
+    <DocumentationFile>XSharp.Core.Xml</DocumentationFile>
+    <CommandLineOption>/noclipcall</CommandLineOption>
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.targets" />
+  <ItemGroup>
+    <Reference Include="mscorlib" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ISQLFactory.prg" />
+    <Compile Include="Properties\AssemblyInfo.prg">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="..\..\Common\commonAssemblyInfo.prg">
+      <Link>Properties\commonAssemblyInfo.prg</Link>
+    </Compile>
+    <Compile Include="..\..\Common\constants.prg">
+      <Link>Properties\constants.prg</Link>
+    </Compile>
+    <Compile Include="SqlFactoryAbstract.prg" />
+    <Compile Include="SqlFactoryODBC.prg" />
+    <Compile Include="SqlFactorySQLServer.prg" />
+    <Compile Include="Win32.prg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\XSharp.Core\XSharp.Core.xsproj">
+      <Name>XSharp.Core</Name>
+      <Project>{535dff14-efb7-43f5-a4e1-71c1c4280040}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->
+  <ProjectExtensions>
+    <ProjectCapabilities>
+      <ProjectConfigurationsDeclaredAsItems />
+    </ProjectCapabilities>
+  </ProjectExtensions>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <PreBuildEvent />
+    <PostBuildEvent />
+    <RunPostBuildEvent />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <PreBuildEvent />
+    <PostBuildEvent />
+    <RunPostBuildEvent />
+  </PropertyGroup>
+</Project>

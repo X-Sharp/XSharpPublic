@@ -10,7 +10,7 @@
     <Dialect>Vulcan</Dialect>
     <OutputName>XSharp.RT</OutputName>
     <AZ>false</AZ>
-    <CS>false</CS>
+    <CS>true</CS>
     <LB>false</LB>
     <OVF>false</OVF>
     <Unsafe>true</Unsafe>
@@ -24,6 +24,8 @@
     <IncludePaths>$(CommonInclude)</IncludePaths>
     <Nostandarddefs>true</Nostandarddefs>
     <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
+    <StandardDefs />
+    <InitLocals>false</InitLocals>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -60,7 +62,7 @@
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <UseSharedCompilation>true</UseSharedCompilation>
-    <DisabledWarnings>162,171,553,1591</DisabledWarnings>
+    <DisabledWarnings>162,171,553,1591,169,1573,649</DisabledWarnings>
     <DocumentationFile>XSharp.RT.Xml</DocumentationFile>
     <CommandLineOption>/noclipcall</CommandLineOption>
   </PropertyGroup>
@@ -125,6 +127,7 @@
     <Compile Include="Types\CodeBlock.prg" />
     <Compile Include="Types\ArrayBase.prg" />
     <Compile Include="Types\CompilerServices.prg" />
+    <Compile Include="Types\Currency.prg" />
     <Compile Include="Types\Date.prg" />
     <Compile Include="Types\Float.prg" />
     <Compile Include="Types\Interfaces.prg" />

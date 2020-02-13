@@ -437,23 +437,64 @@ METHOD Destroy()
 
 	RETURN NIL
 
+METHOD FocusNextPage() AS LOGIC
+	// Set the focus to the next possible page of the tab control	
+	LOCAL iPageCount	AS INT
+	LOCAL iPageNo,iOld	AS INT
+	LOCAL lChanged		AS LOGIC
 
-METHOD GetTabBoundingBox(symTabName) 
-	LOCAL strucRect IS _winRect
-	LOCAL oOrigin	AS Point
-	LOCAL oSize		AS Dimension
+	IF (iPageCount:=INT(_CAST,ALen(aPages))) > 0
+		iPageNo := TabCtrl_GetCurSel( SELF:Handle() ) // Note: API is 0-based
+		iOld 	:= iPageNo
+		IF iPageNo = iPageCount-1	
+			iPageNo := 0
+		ELSE
+			++iPageNo
+		ENDIF
 
-	
-
-	IF LOGIC(_CAST, TabCtrl_GetItemRect(SELF:Handle(), SELF:__GetIndexFromSymbol(symTabName),  @strucRect))
-		oOrigin := Point{strucRect:top, strucRect:left}
-		oOrigin := __WCConvertPoint(SELF, oOrigin)
-		oSize := Dimension{strucRect:right - strucRect:left, strucRect:bottom - strucRect:top}
-
-		RETURN BoundingBox{oOrigin, oSize}
+		IF iOld != iPageNo
+			SELF:SelectTab(SELF:GetPageSymbol(iPageNo))
+			lChanged := TRUE
+		ENDIF
 	ENDIF
 
-	RETURN NULL_OBJECT
+RETURN lChanged
+
+
+METHOD FocusPreviousPage()   AS LOGIC
+	// Set the focus to the previous possible page of the tab control	
+	LOCAL iPageCount	AS INT
+	LOCAL iPageNo,iOld	AS INT
+	LOCAL lChanged		AS LOGIC
+
+	IF (iPageCount:=INT(_CAST,ALen(aPages))) > 0
+		iPageNo := TabCtrl_GetCurSel( SELF:Handle() ) // Note: API is 0-based
+		iOld 	:= iPageNo
+		IF iPageNo = 0
+			iPageNo := iPageCount-1
+		ELSE
+			--iPageNo
+		ENDIF
+
+		IF iOld != iPageNo
+			SELF:SelectTab(SELF:GetPageSymbol(iPageNo))
+			lChanged := TRUE
+		ENDIF
+	ENDIF
+
+RETURN lChanged
+
+
+METHOD FocusTab(symTabName AS SYMBOL) AS VOID
+    LOCAL iIndex as int
+	
+    iIndex := self:__GetIndexFromSymbol(symTabName)
+    IF iIndex > -1
+        TabCtrl_SetCurFocus(self:Handle(), dword(_cast,iIndex))
+        self:__FocusPage(dword(_cast,iIndex))
+    ENDIF
+	
+RETURN 
 
 METHOD GetCaption(symTabName) 
 	//RvdH 070124
@@ -476,6 +517,74 @@ METHOD GetCaption(symTabName)
 	ENDIF
 
 	RETURN cReturn
+
+METHOD GetPage(symPageName as USUAL)  AS Window
+   // Returns the window object of a tabpage
+		
+	LOCAL dwPage	AS DWORD
+	LOCAL oWindow	AS Window
+	LOCAL wI,wJ	AS DWORD
+	
+	IF IsString(symPageName)
+		symPageName := String2Symbol(symPageName)
+	ENDIF
+
+	IF IsNumeric(symPageName)
+		dwPage := symPageName
+		
+	ELSEIF IsSymbol(symPageName)
+		wJ := ALen(aPages)
+		FOR wI:=1 UPTO wJ
+			IF aPages[wI,1] = symPageName
+				dwPage := wI
+				EXIT
+			ENDIF
+		NEXT
+		
+	ENDIF
+	
+	IF dwPage > 0
+		oWindow := aPages[dwPage,3]
+	ENDIF
+
+	RETURN oWindow	
+
+
+METHOD GetPageSymbol(uPageName AS USUAL) AS SYMBOL
+	// Returns the symbolic name of a page in the tab control
+	LOCAL symPageName	AS SYMBOL
+	
+	IF IsNumeric(uPageName)
+		symPageName := self:__GetSymbolFromIndex(dword(_cast,uPageName)) // Note: API is 0-based
+		
+	ELSEIF IsString(uPageName)
+		symPageName := String2Symbol(uPageName)
+		
+	ELSE
+		
+		symPageName := SYMBOL(_CAST,uPageName)
+	ENDIF
+
+	RETURN symPageName	
+	
+
+METHOD GetTabBoundingBox(symTabName) 
+	LOCAL strucRect IS _winRect
+	LOCAL oOrigin	AS Point
+	LOCAL oSize		AS Dimension
+
+	
+
+	IF LOGIC(_CAST, TabCtrl_GetItemRect(SELF:Handle(), SELF:__GetIndexFromSymbol(symTabName),  @strucRect))
+		oOrigin := Point{strucRect:top, strucRect:left}
+		oOrigin := __WCConvertPoint(SELF, oOrigin)
+		oSize := Dimension{strucRect:right - strucRect:left, strucRect:bottom - strucRect:top}
+
+		RETURN BoundingBox{oOrigin, oSize}
+	ENDIF
+
+	RETURN NULL_OBJECT
+
 METHOD GetTabImage (symTabName) 
 	//RvdH 070124
 	LOCAL nIndex AS INT
@@ -655,6 +764,12 @@ METHOD PadTabs(dwWidth, dwHeight)
 	TabCtrl_SetPadding(SELF:Handle(), dwWidth, dwHeight)
 
 	RETURN NIL
+
+
+ACCESS Pages AS ARRAY
+	// Returns a 2-dim Array with informations of the pages of the tab control
+	RETURN aPages
+	
 
 METHOD RemoveTabImage(nImageIndex) 
 

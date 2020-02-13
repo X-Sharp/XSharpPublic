@@ -1566,6 +1566,7 @@ namespace XSharp.Project
         {
             IList<IToken> allTokens;
             int currentIndex;
+            int prevIndex;
             int currentPosition;
             public XSharpDialect Dialect { get; private set; }
 
@@ -1601,11 +1602,13 @@ namespace XSharp.Project
                 if (allTokens.Count > 0)
                 {
                     currentIndex = 0;
+                    prevIndex = 0;
                     currentPosition = allTokens[0].StartIndex;
                 }
                 else
                 {
                     currentIndex = -1;
+                    prevIndex = -1;
                     currentPosition = -1;
                 }
                 //
@@ -1618,11 +1621,13 @@ namespace XSharp.Project
                 if (allTokens.Count > 0)
                 {
                     currentIndex = 0;
+                    prevIndex = 0;
                     currentPosition = allTokens[0].StartIndex;
                 }
                 else
                 {
                     currentIndex = -1;
+                    prevIndex = -1;
                     currentPosition = -1;
                 }
                 //
@@ -1631,32 +1636,33 @@ namespace XSharp.Project
 
             public void MoveTo(int positionToReach)
             {
+                this.prevIndex = this.currentIndex;
                 if (positionToReach == currentPosition)
                     return;
-                if (positionToReach > currentPosition)
+                //
+                int newPos = binarySearch(0, allTokens.Count - 1, positionToReach);
+                if ( newPos > -1 )
                 {
-                    for (int i = currentIndex; i < allTokens.Count; i++)
-                    {
-                        if (allTokens[i].StartIndex >= positionToReach)
-                        {
-                            currentPosition = allTokens[i].StartIndex;
-                            currentIndex = i;
-                            break;
-                        }
-                    }
+                    currentIndex = newPos;
+                    currentPosition = allTokens[newPos].StartIndex;
+                            
                 }
                 else
                 {
-                    for (int i = currentIndex; i >= 0; i--)
-                    {
-                        if (allTokens[i].StartIndex <= positionToReach)
-                        {
-                            currentPosition = allTokens[i].StartIndex;
-                            currentIndex = i;
-                            break;
-                        }
-                    }
+                    currentIndex = -1;
+                    currentPosition = -1;    
                 }
+            }
+
+            public void MoveToNext()
+            {
+                this.prevIndex = this.currentIndex;
+                this.CurrentIndex++;
+            }
+
+            public void MoveBack()
+            {
+                this.currentIndex = this.prevIndex;
             }
 
 
@@ -1721,7 +1727,7 @@ namespace XSharp.Project
                 return last;
             }
 
-            public IToken GetToken(bool ignoreSpaces, bool moveToNext, bool stayOnLine)
+            public IToken GetToken(bool ignoreSpaces)
             {
                 IToken first = null;
                 if (currentPosition > -1)
@@ -1731,10 +1737,6 @@ namespace XSharp.Project
                     while (start < allTokens.Count)
                     {
                         IToken token = allTokens[start];
-                        if ( (token.Line != currentLine) && stayOnLine )
-                        {
-                            break;
-                        }
                         // skip whitespace tokens
                         if (((token.Type == XSharpLexer.WS) && ignoreSpaces) ||
                             (token.Type == XSharpLexer.EOS))
@@ -1745,8 +1747,6 @@ namespace XSharp.Project
                         else
                         {
                             first = token;
-                            if (moveToNext)
-                                start++;
                             break;
                         }
                     }
@@ -1754,6 +1754,32 @@ namespace XSharp.Project
                     CurrentIndex = start;
                 }
                 return first;
+            }
+
+            private int binarySearch( int left, int right, int toReach)
+            {
+                if (right >= left)
+                {
+                    int middle = left + (right - left) / 2;
+
+                    // If the element is present at the 
+                    // middle itself 
+                    if (allTokens[middle].StartIndex == toReach)
+                        return middle;
+
+                    // If element is smaller than middle, then 
+                    // it can only be present in left subarray 
+                    if (allTokens[middle].StartIndex > toReach)
+                        return binarySearch( left, middle - 1, toReach);
+
+                    // Else the element can only be present 
+                    // in right subarray 
+                    return binarySearch( middle + 1, right, toReach);
+                }
+
+                // We reach here when element is not present 
+                // in array 
+                return -1;
             }
         }
 
@@ -2098,15 +2124,14 @@ namespace XSharp.Project
                             // Warning !! It could DEFINE CLASS in FOXPRO
                             if (context.Dialect == XSharpDialect.FoxPro)
                             {
-                                int prevIndex = context.CurrentIndex;
-                                context.CurrentIndex++;
+                                context.MoveToNext();
                                 IToken openKeyword = context.GetFirstToken(true);
                                 if (openKeyword == null)
                                 {
                                     XSharpProjectPackage.Instance.DisplayOutPutMessage("FormatDocument : Error when moving in Tokens");
                                     continue; // This should never happen
                                 }
-                                context.CurrentIndex = prevIndex;
+                                context.MoveBack();
                                 if (openKeyword.Type != XSharpLexer.CLASS)
                                     continue;
                             }
@@ -2159,15 +2184,14 @@ namespace XSharp.Project
                             // Warning !! It could DEFINE CLASS in FOXPRO
                             if (context.Dialect == XSharpDialect.FoxPro)
                             {
-                                int prevIndex = context.CurrentIndex;
-                                context.CurrentIndex++;
+                                context.MoveToNext();
                                 IToken openKeyword = context.GetFirstToken(true);
                                 if (openKeyword == null)
                                 {
                                     XSharpProjectPackage.Instance.DisplayOutPutMessage("FormatDocument : Error when moving in Tokens");
                                     continue; // This should never happen
                                 }
-                                context.CurrentIndex = prevIndex;
+                                context.MoveBack();
                                 if (openKeyword.Type != XSharpLexer.CLASS)
                                     continue;
                             }
@@ -2290,7 +2314,10 @@ namespace XSharp.Project
             XSharpProjectPackage.Instance.DisplayOutPutMessage($"CommandFilter.formatLineCaseV2({line.LineNumber + 1})");
             //
             context.MoveTo(line.Start);
-            IToken token = context.GetToken(true, true, true);
+            IToken token = context.GetToken(true);
+            int workOnLine = -1;
+            if ( token != null )
+                workOnLine = token.Line;
             while ( token != null )
             {
                 if (currentLine == line.LineNumber)
@@ -2316,7 +2343,16 @@ namespace XSharp.Project
                     formatToken(editSession, 0, token);
                 }
                 //
-                token = context.GetToken(true, true, true);
+                context.MoveToNext();
+                token = context.GetToken(true);
+                if (token != null)
+                {
+                    if (token.Line != workOnLine)
+                    {
+                        context.MoveBack();
+                        token = null;
+                    }
+                }
             }
             
         }

@@ -261,10 +261,10 @@ namespace XSharpDocs
                 {
                     editFileForMSHV(fileName, filetype);
                 }
-                else if (format == HelpFileFormats.Website)
-                {
-                    editWebsiteToc(fileName);
-                }
+                //else if (format == HelpFileFormats.Website)
+                //{
+                //    editWebsiteToc(fileName);
+                //}
                 counter++;
                 if(counter % 500 == 0)
                 {

@@ -34,17 +34,17 @@ FUNCTION _VO_Sprintf( format AS STRING,  args PARAMS OBJECT[] ) AS STRING
 		DO CASE
 			CASE format:StartsWith("%V1s%V2s%V3s")
 				format := format:Substring(13)
-				hasvars := TRUE
+				hasVars := TRUE
 			CASE format:StartsWith("%V1s%V2s")
 				format := format:Substring(9)
-				hasvars := TRUE
+				hasVars := TRUE
 			CASE format:StartsWith("%V1s")
 				format := format:Substring(5)
-				hasvars := TRUE
+				hasVars := TRUE
 			OTHERWISE
-				hasvars := FALSE
+				hasVars := FALSE
 		ENDCASE
-		IF hasvars
+		IF hasVars
 			LOCAL elements AS STRING[]
 			elements := format:Split(<STRING>{"%s"},StringSplitOptions.None)
 			format   := ""
@@ -65,8 +65,8 @@ FUNCTION __CavoStr( resid AS DWORD ) AS STRING
 	// convert the id to the enum and get its name
 	LOCAL strId  AS STRING
 	LOCAL strMessage AS STRING
-	strId := Enum.GetName( TYPEOF(VOErrors) , resId)
-	IF !string.IsNullOrEmpty(strId)
+	strId := Enum.GetName( TYPEOF(VOErrors) , resid)
+	IF !String.IsNullOrEmpty(strId)
 			strMessage := Messages.GetString( strId )
 			IF String.IsNullOrEmpty( strMessage )
 				strMessage := ": canot load string resource '" + strId + "'"
@@ -145,7 +145,7 @@ INTERNAL CLASS Messages
 			BEGIN LOCK _lock
 				IF _instance == NULL
 					_instance := _generic
-					_instancename := "generic"
+					_instanceName := "generic"
 				ENDIF
 			END LOCK
 		ENDIF

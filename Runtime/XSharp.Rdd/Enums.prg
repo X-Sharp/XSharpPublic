@@ -130,7 +130,16 @@ BEGIN NAMESPACE XSharp.RDD
     
  
     STATIC CLASS CodePageExtensions
-        STATIC METHOD ToCodePage(SELF headerCodePage AS DBFHeaderCodePage) AS OsCodePage
+        STATIC METHOD UsesFlags(SELF version AS DBFVersion) AS LOGIC
+            SWITCH version
+            CASE DBFVersion.VisualFoxPro
+            CASE DBFVersion.VisualFoxProAutoIncrement
+            CASE DBFVersion.VisualFoxProVarChar
+                RETURN TRUE
+            END SWITCH
+            RETURN FALSE
+
+        STATIC METHOD ToCodePage(SELF headerCodePage AS DbfHeaderCodepage) AS OsCodepage
             SWITCH headerCodePage
             CASE DbfHeaderCodepage.CP_DBF_DOS_US        ; RETURN OsCodepage.CP_INI_DOS_US        
             CASE DbfHeaderCodepage.CP_DBF_DOS_MAZOVIA   ; RETURN OsCodepage.CP_INI_DOS_MAZOVIA   
@@ -166,7 +175,7 @@ BEGIN NAMESPACE XSharp.RDD
                     
             END SWITCH
                 
-        STATIC METHOD ToHeaderCodePage(SELF codePage AS OsCodePage) AS DbfHeaderCodePage
+        STATIC METHOD ToHeaderCodePage(SELF codePage AS OsCodepage) AS DbfHeaderCodepage
             SWITCH codePage
             CASE OsCodepage.CP_INI_DOS_US       ; RETURN DbfHeaderCodepage.CP_DBF_DOS_US         
             CASE OsCodepage.CP_INI_DOS_MAZOVIA  ; RETURN DbfHeaderCodepage.CP_DBF_DOS_MAZOVIA    
@@ -195,7 +204,7 @@ BEGIN NAMESPACE XSharp.RDD
                 RETURN DbfHeaderCodepage.CP_DBF_DOS_US 
         END SWITCH
 
-        STATIC METHOD IsAnsi (SELF codePage AS DBFHeaderCodePage) AS LOGIC
+        STATIC METHOD IsAnsi (SELF codePage AS DbfHeaderCodepage) AS LOGIC
             SWITCH codePage
             CASE DbfHeaderCodepage.CP_DBF_WIN_EEUROPEAN
             CASE DbfHeaderCodepage.CP_DBF_WIN_RUSSIAN

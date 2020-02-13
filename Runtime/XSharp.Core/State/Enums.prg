@@ -88,7 +88,7 @@ DEFINE MDY      := DateCountry.MDY
 /// <include file="CoreComments.xml" path="Comments/DateCountry/*" />
 DEFINE YMD      := DateCountry.YMD
 /// <include file="CoreComments.xml" path="Comments/DateCountry/*" />
-DEFINE TAIWAN   := DateCountry.TAIWAN
+DEFINE TAIWAN   := DateCountry.Taiwan
 
 #endregion
 

@@ -343,7 +343,7 @@ FUNCTION _Val(cNumber AS STRING) AS OBJECT
         pos += 1
     NEXT
     IF pos < cNumber:Length
-        cNumber := cNumber:SubString(0, pos)
+        cNumber := cNumber:Substring(0, pos)
     ENDIF
     IF cNumber:IndexOfAny(<CHAR> {'.'}) > -1
         LOCAL r8Result := 0 AS REAL8
@@ -367,7 +367,7 @@ FUNCTION _Val(cNumber AS STRING) AS OBJECT
             style := NumberStyles.Integer
         ENDIF
         IF System.Int64.TryParse(cNumber, style, ConversionHelpers.usCulture, OUT iResult)
-            IF iResult < Int32.MaxValue .AND. iResult > int32.MinValue
+            IF iResult < Int32.MaxValue .AND. iResult > Int32.MinValue
                 RETURN (INT) iResult
             ENDIF
             RETURN iResult

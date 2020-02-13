@@ -294,6 +294,9 @@ BEGIN NAMESPACE MacroCompilerTest
         //EvalMacro(mc, "{|foo| bar := 10}")
         //EvalMacro(mc, "{|foo| bar := 10,foo}")
         //wait
+        EvalMacro(mc, "{|| 1+(2+3))))}")
+        EvalMacro(mc, "1+(2+3)))")
+        wait
 
         RunTests(mc)
         wait
@@ -329,8 +332,12 @@ BEGIN NAMESPACE MacroCompilerTest
 
     FUNCTION RunTests(mc AS XSharp.Runtime.MacroCompiler) AS VOID
         Console.WriteLine("Running tests ...")
-  
-        TestParse(mc, e"{|a,b| +a[++b] += 100, a[2]}", "{|a, b|((+a((++b)))+='100'), a('2')}")
+
+        TestParse(mc, e"{|a,b| +a[++b] += 100, a[2]}", "{|a, b|RETURN (((+a((++b)))+='100'), a('2'))}")
+
+        TestMacro(mc, e"{|v|(v := upper(v), left(v,3))}", Args("ABCDE"), "ABC", typeof(STRING))
+        TestMacro(mc, e"{|l, v|iif (l, (v := upper(v), left(v,3)), (v := lower(v), left(v,4))) }", Args(TRUE, "ABCDE"), "ABC", typeof(STRING))
+        TestMacro(mc, e"{|l, v|iif (l, (v := upper(v), left(v,3)), (v := lower(v), left(v,4))) }", Args(FALSE, "ABCDE"), "abcd", typeof(STRING))
         TestMacro(mc, e"{|a,b| asdgfafd(123) }", Args(), NULL, NULL,ErrorCode.NotAMethod)
 
         mc:Options:UndeclaredVariableResolution := VariableResolution.Error
@@ -347,7 +354,6 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, e"{|o| eval({|a| eval({|q|q*q},a)+1 },o) }", Args(5), 26, typeof(INT))
         TestMacro(mc, e"{|o| eval( iif(o, {||42},{||-42})) }", Args(TRUE), 42, typeof(INT))
         TestMacro(mc, e"{|o| eval( iif(o, {||42},{||-42})) }", Args(FALSE), -42, typeof(INT))
-        
         
         mc:Options:UndeclaredVariableResolution := VariableResolution.TreatAsFieldOrMemvar
         TestMacro(mc, e"{|| eval({||true}) }", Args(), true, typeof(logic))
@@ -705,6 +711,9 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, e"{|a,b| a == b }", Args((INT64)1,(INT)1) ,true, typeof(LOGIC))
         TestMacro(mc, e"{|a,b| a == b }", Args((INT)1,(UINT64)1) ,true, typeof(LOGIC))
         TestMacro(mc, e"{|a,b| a == b }", Args((INT64)1,(UINT64)1) ,true, typeof(LOGIC))
+        TestMacro(mc, "{|| date():gettype():FullName }", Args(), "XSharp.__Date", typeof(string))
+        TestMacro(mc, "{|| datetime():gettype():FullName }", Args(), "System.DateTime", typeof(string))
+        TestMacro(mc, "{|| alen(array()) }", Args(), 0, typeof(dword))
 
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___MemVarGet, "MyMemVarGet")
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___MemVarPut, "MyMemVarPut")
@@ -755,6 +764,10 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, e"{|| M->NAME := \"Nikos\"}", Args(), "MemVarPut(NAME):Nikos", typeof(STRING))
         TestMacro(mc, e"{|| @@M->NAME}", Args(), "FieldGet(M,NAME)", typeof(STRING))
         TestMacro(mc, e"{|| @@M->NAME := \"Nikos\"}", Args(), "FieldSet(M,NAME):Nikos", typeof(STRING))
+        TestMacro(mc, e"{|| BASE->NIKOS == BASE->NIKOS}", Args(), true, typeof(logic))
+        TestMacro(mc, e"{|| (BASE)->(NIKOS) == (BASE)->(NIKOS)}", Args(), true, typeof(logic))
+        TestMacro(mc, e"{|| (BASE)->(NIKOS)}", Args(), "BASE->FieldGet(NIKOS)", typeof(string))
+        TestMacro(mc, e"{|a| a := (BASE)->(NIKOS)}", Args(), "BASE->FieldGet(NIKOS)", typeof(string))
 
         mc:Options:UndeclaredVariableResolution := VariableResolution.TreatAsFieldOrMemvar
         Compilation.Override(WellKnownMembers.XSharp_RT_Functions___VarGet, "MyVarGet")
@@ -765,42 +778,6 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, e"{|| CODE+SET}", Args(), "VarGet(CODE)VarGet(SET)", typeof(STRING))
         TestMacro(mc, e"{|| LONG}", Args(), "VarGet(LONG)", typeof(STRING))
 
-        // FoxPro dot access
-        TestMacro(mc, e"{|| testclass{}.NString((byte)1) }", Args(), "child", typeof(STRING))
-        TestMacro(mc, e"{|a| a := testclass{}, a.prop }", Args(), 0, typeof(INT))
-        TestMacro(mc, e"{|| tsi.v1 }", Args(), 1, typeof(INT))
-        TestMacro(mc, e"{|| tci.v1 := 10, tci.v1++, tci.v1 }", Args(), 11, typeof(INT))
-        TestMacro(mc, e"{|| DEVS.NIKOS}", Args(), "FieldGet(DEVS,NIKOS)", typeof(STRING))
-        TestMacro(mc, e"{|| DEVS.NIKOS := \"123\"}", Args(), "FieldSet(DEVS,NIKOS):123", typeof(STRING))
-        TestMacro(mc, e"{|| M.NAME}", Args(), "MemVarGet(NAME)", typeof(STRING))
-        TestMacro(mc, e"{|| M.NAME := \"Nikos\"}", Args(), "MemVarPut(NAME):Nikos", typeof(STRING))
-        TestMacro(mc, e"{|| @@M.NAME}", Args(), "FieldGet(M,NAME)", typeof(STRING))
-        TestMacro(mc, e"{|| @@M.NAME := \"Nikos\"}", Args(), "FieldSet(M,NAME):Nikos", typeof(STRING))
-        TestMacro(mc, e"{|| Alltrim('abc')}", Args(), "MyAlltrim()", typeof(STRING))
-
-        // FoxPro literal dates and datetimes. For simplicity we return them all as DateTime
-        TestMacro(mc, e"{|| {^ 2019-12-31}", Args(), DateTime{2019,12,31}, typeof(DateTime))
-        TestMacro(mc, e"{|| {^ 2019-12-31 11:12:13}", Args(), DateTime{2019,12,31,11,12,13}, typeof(DateTime))
-        TestMacro(mc, e"{|| {^ 2019-12-31 11:12:13AM}", Args(), DateTime{2019,12,31,11,12,13}, typeof(DateTime))
-        TestMacro(mc, e"{|| {^ 2019-12-31 11:12:13PM}", Args(), DateTime{2019,12,31,23,12,13}, typeof(DateTime))
-        TestMacro(mc, e"{|| {^ 2019-12-31 11:12:13 PM}", Args(), DateTime{2019,12,31,23,12,13}, typeof(DateTime))
-        // ForPro Logical operators, only works when main app is in FoxPro mode.
-        TestMacro(mc, e"{|a,b| a AND b }", Args(TRUE, TRUE), TRUE, typeof(LOGIC))
-        TestMacro(mc, e"{|a,b| a AND b }", Args(FALSE, TRUE), FALSE,typeof(LOGIC))
-        TestMacro(mc, e"{|a,b| a AND b }", Args(TRUE, FALSE), FALSE,typeof(LOGIC))
-        TestMacro(mc, e"{|a,b| a AND b }", Args(FALSE, FALSE), FALSE,typeof(LOGIC))
-        TestMacro(mc, e"{|a,b| a OR b }", Args(TRUE, TRUE), TRUE,typeof(LOGIC))
-        TestMacro(mc, e"{|a,b| a OR b }", Args(FALSE, TRUE), TRUE,typeof(LOGIC))
-        TestMacro(mc, e"{|a,b| a OR b }", Args(TRUE, FALSE), TRUE,typeof(LOGIC))
-        TestMacro(mc, e"{|a,b| a OR b }", Args(FALSE, FALSE), FALSE,typeof(LOGIC))
-        TestMacro(mc, e"{|a,b| NOT a }", Args(TRUE, TRUE), FALSE,typeof(LOGIC))
-        TestMacro(mc, e"{|a,b| NOT a }", Args(FALSE, TRUE), TRUE,typeof(LOGIC))
-        TestMacro(mc, e"{|a,b| NOT b }", Args(TRUE, FALSE), TRUE,typeof(LOGIC))
-        TestMacro(mc, e"{|a,b| NOT b }", Args(FALSE, FALSE), TRUE,typeof(LOGIC))
-        TestMacro(mc, e"{|a,b| a XOR b }", Args(TRUE, FALSE), TRUE,typeof(LOGIC))
-        TestMacro(mc, e"{|a,b| a XOR b }", Args(FALSE, TRUE), TRUE,typeof(LOGIC))
-        TestMacro(mc, e"{|a,b| a XOR b }", Args(TRUE, FALSE), TRUE,typeof(LOGIC))
-        TestMacro(mc, e"{|a,b| a XOR b }", Args(FALSE, FALSE), FALSE,typeof(LOGIC))
         // Normal logical operators
         TestMacro(mc, e"{|a,b| a .AND. b }", Args(TRUE, TRUE), TRUE, typeof(LOGIC))
         TestMacro(mc, e"{|a,b| a .AND. b }", Args(FALSE, TRUE), FALSE,typeof(LOGIC))
@@ -841,6 +818,7 @@ BEGIN NAMESPACE MacroCompilerTest
         ELSE
             TotalFails += 1
             Console.WriteLine("[FAIL] ({0} != {1})", res, val)
+            wait
         END
         RETURN FALSE
 
@@ -892,6 +870,7 @@ BEGIN NAMESPACE MacroCompilerTest
             ELSE
                 TotalFails += 1
                 Console.WriteLine("[FAIL] (res = {0}, type = {1}, no error)", res, res?:GetType())
+                wait
             END
             RETURN FALSE
         CATCH e AS CompilationError
@@ -902,6 +881,7 @@ BEGIN NAMESPACE MacroCompilerTest
             ELSE
                 TotalFails += 1
                 Console.WriteLine("[FAIL] ({0})", e:Message)
+                wait
             END
             RETURN FALSE
 /*        catch e as Exception

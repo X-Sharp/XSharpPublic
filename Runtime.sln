@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.106
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29728.190
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{1C0880F5-74CF-4618-9856-D89B3FCB6DA3}"
 	ProjectSection(SolutionItems) = preProject
@@ -33,6 +33,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Runtime\Runtime.Targets = Runtime\Runtime.Targets
 		Runtime\VOSDK\Source\SharedSource\SDKAssemblyinfo.prg = Runtime\VOSDK\Source\SharedSource\SDKAssemblyinfo.prg
 		Common\version.xh = Common\version.xh
+		Runtime\VOSDK\Source\VOSDK\VOSDK.Targets = Runtime\VOSDK\Source\VOSDK\VOSDK.Targets
 		Common\XSharpDefs.xh = Common\XSharpDefs.xh
 	EndProjectSection
 EndProject
@@ -48,7 +49,7 @@ Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharp.VO.Latebound.Tests",
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VOSDK", "VOSDK", "{FABD1B90-611A-48D5-9D69-BC148E103030}"
 	ProjectSection(SolutionItems) = preProject
-		Runtime\VOSDK\Source\SharedSource\BuildNumber.h = Runtime\VOSDK\Source\SharedSource\BuildNumber.h
+		Runtime\VOSDK\Source\SharedSource\SDKBuildNumber.h = Runtime\VOSDK\Source\SharedSource\SDKBuildNumber.h
 	EndProjectSection
 EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "VOConsoleClasses", "Runtime\VOSDK\Source\VOSDK\Console_Classes_SDK\VOConsoleClasses.xsproj", "{D0A5DA23-00B5-41FD-8564-96246B1E222F}"
@@ -85,8 +86,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Macrocompiler", "Macrocompi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MacroCompiler", "Runtime\MacroCompiler\MacroCompiler.csproj", "{EB3F3142-07F7-48CA-B38D-F611C45A9511}"
 EndProject
-Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "MacroCompiler.Example", "Runtime\MacroCompiler.Example\MacroCompiler.Example.xsproj", "{CEA6079A-EFF1-4AE7-ACDC-EBAFC1555B02}"
-EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "AdsTest", "Runtime\AdsTest\AdsTest.xsproj", "{7A247F83-D97E-42FB-94D0-3ECD299038CC}"
 EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "RddTests", "Runtime\RddTests\RddTests.xsproj", "{98B12B1A-D7B0-457A-B3BC-D7FA3C440264}"
@@ -94,6 +93,14 @@ EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSSQLClasses", "Runtime\VOSDK\Source\VOSDK\SQL_Unicode_SDK\XSSQLClasses.xsproj", "{91816960-EB2D-4E4A-AE67-4EDC5BD38940}"
 EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "SqlTest", "SqlTest\SqlTest.xsproj", "{21B3548E-ADA0-4137-ABC2-4FC256598E14}"
+EndProject
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharp.Data", "Runtime\XSharp.Data\XSharp.Data.xsproj", "{DB9AD987-EBD9-4F0C-8604-608A9028585C}"
+EndProject
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "MacroCompiler.Example", "Runtime\MacroCompiler.Example\MacroCompiler.Example.xsproj", "{CEA6079A-EFF1-4AE7-ACDC-EBAFC1555B02}"
+EndProject
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "MacroCompiler.ExampleFox", "Runtime\MacroCompiler.ExampleFox\MacroCompiler.ExampleFox.xsproj", "{F088D39A-3B54-428F-A28C-4C5411650E17}"
+EndProject
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharp.VFP.Tests", "Runtime\XSharp.VFP.Tests\XSharp.VFP.Tests.xsproj", "{1F9D1D4F-4CDE-4331-9EF8-D6A1D413CC6D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -223,11 +230,6 @@ Global
 		{EB3F3142-07F7-48CA-B38D-F611C45A9511}.Documentation|Any CPU.ActiveCfg = Debug|Any CPU
 		{EB3F3142-07F7-48CA-B38D-F611C45A9511}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EB3F3142-07F7-48CA-B38D-F611C45A9511}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CEA6079A-EFF1-4AE7-ACDC-EBAFC1555B02}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CEA6079A-EFF1-4AE7-ACDC-EBAFC1555B02}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CEA6079A-EFF1-4AE7-ACDC-EBAFC1555B02}.Documentation|Any CPU.ActiveCfg = Debug|Any CPU
-		{CEA6079A-EFF1-4AE7-ACDC-EBAFC1555B02}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CEA6079A-EFF1-4AE7-ACDC-EBAFC1555B02}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7A247F83-D97E-42FB-94D0-3ECD299038CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7A247F83-D97E-42FB-94D0-3ECD299038CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7A247F83-D97E-42FB-94D0-3ECD299038CC}.Documentation|Any CPU.ActiveCfg = Debug|Any CPU
@@ -249,6 +251,30 @@ Global
 		{21B3548E-ADA0-4137-ABC2-4FC256598E14}.Documentation|Any CPU.ActiveCfg = Debug|Any CPU
 		{21B3548E-ADA0-4137-ABC2-4FC256598E14}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{21B3548E-ADA0-4137-ABC2-4FC256598E14}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DB9AD987-EBD9-4F0C-8604-608A9028585C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DB9AD987-EBD9-4F0C-8604-608A9028585C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB9AD987-EBD9-4F0C-8604-608A9028585C}.Documentation|Any CPU.ActiveCfg = Documentation|Any CPU
+		{DB9AD987-EBD9-4F0C-8604-608A9028585C}.Documentation|Any CPU.Build.0 = Documentation|Any CPU
+		{DB9AD987-EBD9-4F0C-8604-608A9028585C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DB9AD987-EBD9-4F0C-8604-608A9028585C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CEA6079A-EFF1-4AE7-ACDC-EBAFC1555B02}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CEA6079A-EFF1-4AE7-ACDC-EBAFC1555B02}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CEA6079A-EFF1-4AE7-ACDC-EBAFC1555B02}.Documentation|Any CPU.ActiveCfg = Debug|Any CPU
+		{CEA6079A-EFF1-4AE7-ACDC-EBAFC1555B02}.Documentation|Any CPU.Build.0 = Debug|Any CPU
+		{CEA6079A-EFF1-4AE7-ACDC-EBAFC1555B02}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CEA6079A-EFF1-4AE7-ACDC-EBAFC1555B02}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F088D39A-3B54-428F-A28C-4C5411650E17}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F088D39A-3B54-428F-A28C-4C5411650E17}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F088D39A-3B54-428F-A28C-4C5411650E17}.Documentation|Any CPU.ActiveCfg = Debug|Any CPU
+		{F088D39A-3B54-428F-A28C-4C5411650E17}.Documentation|Any CPU.Build.0 = Debug|Any CPU
+		{F088D39A-3B54-428F-A28C-4C5411650E17}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F088D39A-3B54-428F-A28C-4C5411650E17}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1F9D1D4F-4CDE-4331-9EF8-D6A1D413CC6D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F9D1D4F-4CDE-4331-9EF8-D6A1D413CC6D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F9D1D4F-4CDE-4331-9EF8-D6A1D413CC6D}.Documentation|Any CPU.ActiveCfg = Documentation|Any CPU
+		{1F9D1D4F-4CDE-4331-9EF8-D6A1D413CC6D}.Documentation|Any CPU.Build.0 = Documentation|Any CPU
+		{1F9D1D4F-4CDE-4331-9EF8-D6A1D413CC6D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F9D1D4F-4CDE-4331-9EF8-D6A1D413CC6D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -275,11 +301,14 @@ Global
 		{3A771F0E-9400-4A19-8663-C71567EBFA29} = {3DA9803B-3850-4448-ADA9-DE41C81522DE}
 		{85C34669-1B88-42BE-87BC-6734EA2ECE7A} = {AAA2A7F4-2856-4404-9B77-09D7AF56DE9D}
 		{EB3F3142-07F7-48CA-B38D-F611C45A9511} = {3A990509-B444-4341-A665-5FDA3E8748BD}
-		{CEA6079A-EFF1-4AE7-ACDC-EBAFC1555B02} = {3A990509-B444-4341-A665-5FDA3E8748BD}
 		{7A247F83-D97E-42FB-94D0-3ECD299038CC} = {AAA2A7F4-2856-4404-9B77-09D7AF56DE9D}
 		{98B12B1A-D7B0-457A-B3BC-D7FA3C440264} = {AAA2A7F4-2856-4404-9B77-09D7AF56DE9D}
 		{91816960-EB2D-4E4A-AE67-4EDC5BD38940} = {FABD1B90-611A-48D5-9D69-BC148E103030}
 		{21B3548E-ADA0-4137-ABC2-4FC256598E14} = {AAA2A7F4-2856-4404-9B77-09D7AF56DE9D}
+		{DB9AD987-EBD9-4F0C-8604-608A9028585C} = {3DA9803B-3850-4448-ADA9-DE41C81522DE}
+		{CEA6079A-EFF1-4AE7-ACDC-EBAFC1555B02} = {3A990509-B444-4341-A665-5FDA3E8748BD}
+		{F088D39A-3B54-428F-A28C-4C5411650E17} = {3A990509-B444-4341-A665-5FDA3E8748BD}
+		{1F9D1D4F-4CDE-4331-9EF8-D6A1D413CC6D} = {AAA2A7F4-2856-4404-9B77-09D7AF56DE9D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EF30CE30-FC9E-4FC7-B9F0-DCA49411ACFC}

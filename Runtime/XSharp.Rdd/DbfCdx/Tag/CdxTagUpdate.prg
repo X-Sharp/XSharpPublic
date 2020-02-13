@@ -21,7 +21,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
     INTERNAL PARTIAL SEALED CLASS CdxTag
         // Methods for updating (adding, inserting, deleting) keys into indices
         PRIVATE METHOD _UpdateError(ex AS Exception, strFunction AS STRING, strMessage AS STRING) AS VOID
-            SELF:RDD:_dbfError(ERDD.CREATE_ORDER, GenCode.EG_CORRUPTION, strFunction, strMessage+" for "+SELF:Filename+" "+SELF:OrderName )
+            SELF:RDD:_dbfError(ERDD.CREATE_ORDER, Gencode.EG_CORRUPTION, strFunction, strMessage+" for "+SELF:FileName+" "+SELF:OrderName )
             RETURN
             
         INTERNAL METHOD NewLeafPage() AS CdxLeafPage
@@ -79,7 +79,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             // And also when the last key on a leaf page changes then this may trigger updates on the
             // branche pages above it.
             TRY
-                DO WHILE action:Type != CdxActionType.OK
+                DO WHILE action:Type != CdxActionType.Ok
                     SWITCH action:Type
                         CASE CdxActionType.AddKey
                         // Called during index creation
@@ -147,7 +147,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 oPage:SetEmptyRoot()
                 SELF:OrderBag:FlushPages()
                 SELF:ClearStack()
-                RETURN CdxAction.OK
+                RETURN CdxAction.Ok
             ENDIF
             // remove from linked list of pages
             // Establish Link between our Left and Right
@@ -180,8 +180,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         PRIVATE METHOD DeleteFromParent(action AS CdxAction) AS CdxAction
             VAR oPage   := SELF:GetPage(action:PageNo) 
-            VAR oParent := SELF:Stack:GetParent(oPage) ASTYPE CdxbranchPage
-            VAR result := CdxAction.OK
+            VAR oParent := SELF:Stack:GetParent(oPage) ASTYPE CdxBranchPage
+            VAR result := CdxAction.Ok
 
             IF oParent != NULL_OBJECT
                 // this can be the top level. In that case we should not get here at all
@@ -199,7 +199,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN result
 
         INTERNAL METHOD FindParent(oPage AS CdxTreePage) AS CdxBranchPage
-            VAR oParent   := SELF:Stack:Getparent(oPage) ASTYPE  CdxBranchPage
+            VAR oParent   := SELF:Stack:GetParent(oPage) ASTYPE  CdxBranchPage
             IF oParent == NULL
                 // walk the whole level to find the page above this one
                 FOREACH VAR oLoop IN oPage:CurrentLevel
@@ -240,7 +240,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             VAR result    := CdxAction.Ok
             VAR oLast     := oPage:LastNode
             LOCAL oGrandParent := NULL AS CdxBranchPage
-            IF oPArent == NULL_OBJECT
+            IF oParent == NULL_OBJECT
 
                 #ifdef TESTCDX
                     oPage:Debug("Changeparent could not find new parent")
@@ -274,7 +274,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     
                     // when the last key of the parent was changed then
                     // we need to propagate that to the top
-                    IF result:Type == CdxActionType.OK
+                    IF result:Type == CdxActionType.Ok
                         IF nPos == oParent:NumKeys -1
                             oGrandParent := (CdxBranchPage) SELF:Stack:GetParent(oParent)
                         ENDIF
@@ -282,7 +282,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 ELSE
                     // Should no longer happen since we now pass 2 pages
                     result := SELF:AddToParent(oParent, action)
-                    IF result:Type == CdxActionType.OK
+                    IF result:Type == CdxActionType.Ok
                         oGrandParent := (CdxBranchPage) SELF:Stack:GetParent(oParent)
                     ENDIF
                 ENDIF
@@ -306,7 +306,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 VAR tmp := CdxAction.AddBranch(oParent, oPage:PageNo, oLast:Recno,oLast:KeyBytes )
                 result := SELF:AddBranch(tmp)
                 IF ! result.IsOk()
-                    RETURN SELF:Doaction(result)
+                    RETURN SELF:DoAction(result)
                 ENDIF
             ENDIF
             // determine position where to insert the page
@@ -514,7 +514,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     
                 #endif
                 action := CdxAction.ChangeParent(oPageL, oPageR)
-                action := SELF:Doaction(action)
+                action := SELF:DoAction(action)
                 SELF:AdjustStack(oPageL, oPageR, oPageL:NumKeys)
                 
             ENDIF
@@ -530,7 +530,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             VAR page := SELF:Stack:Top:Page ASTYPE CdxLeafPage
             IF page IS CdxLeafPage VAR leaf
                 action := leaf:Add(action:Recno, action:Key)
-                IF action:Type == CdxActionType.OK
+                IF action:Type == CdxActionType.Ok
                     SELF:Stack:Top:Pos++
                 ENDIF
             ELSE
@@ -543,14 +543,14 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 RETURN leaf:Delete(action:Pos)
             ENDIF
             _UpdateError(NULL,"CdxTag.DeleteKey","Page is not a Leaf page")
-            RETURN CdxAction.OK
+            RETURN CdxAction.Ok
 
         INTERNAL METHOD InsertKey(action AS CdxAction) AS CdxAction
             IF SELF:GetPage(action:PageNo) IS CdxLeafPage VAR leaf
                 RETURN leaf:Insert(action:Pos, action:Recno, action:Key)
             ENDIF
             _UpdateError(NULL,"CdxTag.AddKey","Page is not a Leaf page")
-            RETURN CdxAction.OK
+            RETURN CdxAction.Ok
 
             
 
@@ -605,7 +605,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL result AS CdxAction
             // Only allocate page when we think that it does not fit.
             // To be safe we assume expanding takes 1 byte per key + we want the new key to fit as well
-            IF oPageL:FreeSpace > (oPageL:DataBytes + SELF:KeyLength + leaves:Count +1)
+            IF oPageL:Freespace > (oPageL:DataBytes + SELF:KeyLength + leaves:Count +1)
                 SELF:SetLeafProperties(oPageL)
                 oPageL:SetLeaves(leaves, 0, leaves:Count)
                 result := oPageL:Insert(action:Pos, action:Recno, action:Key)
@@ -656,10 +656,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 RETURN FALSE
             ENDIF
             SELF:_saveCurrentKey(recordNo, SELF:_newvalue)
-            SELF:_locate(SELF:_newValue:Key, SELF:_keySize, SearchMode.Right, SELF:_rootPage, recordNo)
+            SELF:_locate(SELF:_newvalue:Key, SELF:_keySize, SearchMode.Right, SELF:_rootPage, recordNo)
             VAR page := SELF:Stack:Top:Page
             VAR pos  := SELF:Stack:Top:Pos
-            SELF:DoAction(CdxAction.InsertKey(page, pos, SELF:_newValue:Recno, SELF:_newValue:Key))
+            SELF:DoAction(CdxAction.InsertKey(page, pos, SELF:_newvalue:Recno, SELF:_newvalue:Key))
             RETURN TRUE
 
         INTERNAL METHOD SetCustom() AS LOGIC
@@ -672,8 +672,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF ! SELF:_Custom
                 RETURN FALSE
             ENDIF
-            SELF:_saveCurrentKey(recordNo, SELF:_currentValue)
-            VAR recno := SELF:_goRecord(SELF:_currentValue:Key, SELF:_keySize, recordNo)
+            SELF:_saveCurrentKey(recordNo, SELF:_currentvalue)
+            VAR recno := SELF:_goRecord(SELF:_currentvalue:Key, SELF:_keySize, recordNo)
             IF recno == recordNo
                 VAR page := SELF:Stack:Top:Page
                 VAR pos  := SELF:Stack:Top:Pos
@@ -685,29 +685,29 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PRIVATE METHOD _keyUpdate(recordNo AS LONG , lNewRecord AS LOGIC ) AS LOGIC
             TRY
                 IF SELF:Shared
-                    SELF:XLock()
+                    SELF:Xlock()
                 ENDIF
                 //? System.Threading.Thread.CurrentThread.ManagedThreadId:ToString(), "Keyupdate", recordNo
                 SELF:_saveCurrentKey(recordNo, SELF:_newvalue)
                 IF lNewRecord .AND. ! _newvalue:ForCond
                     // New record and it does not meet the for condition, so no need to update or delete anything
-                    SELF:_newValue:CopyTo(SELF:_currentValue)
+                    SELF:_newvalue:CopyTo(SELF:_currentvalue)
                     RETURN TRUE
                 ENDIF
                 LOCAL changed := FALSE AS LOGIC
-                changed := SELF:_newValue:ForCond != SELF:_currentValue:ForCond
+                changed := SELF:_newvalue:ForCond != SELF:_currentvalue:ForCond
                 IF !lNewRecord
                     // find and delete existing key
                     IF ! changed
-                        changed := SELF:__Compare(SELF:_newValue:Key, SELF:_currentValue:Key, SELF:_keySize) != 0
+                        changed := SELF:__Compare(SELF:_newvalue:Key, SELF:_currentvalue:Key, SELF:_keySize) != 0
                     ENDIF
                     IF changed
                         SELF:Stack:Clear()
                     ENDIF
-                    IF _currentValue:ForCond
-                        VAR recno := SELF:_goRecord(SELF:_currentValue:Key, SELF:_keySize, recordNo)
+                    IF _currentvalue:ForCond
+                        VAR recno := SELF:_goRecord(SELF:_currentvalue:Key, SELF:_keySize, recordNo)
                         IF ! SELF:Stack:Empty  .OR. recno  != 0
-                            IF changed .AND. _currentValue:ForCond .AND. recno == recordNo
+                            IF changed .AND. _currentvalue:ForCond .AND. recno == recordNo
                                 VAR page := SELF:Stack:Top:Page
                                 VAR pos  := SELF:Stack:Top:Pos
                                 SELF:DoAction(CdxAction.DeleteKey(page, pos))
@@ -715,7 +715,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                         ELSE
                             IF !SELF:Unique .AND. !SELF:_Conditional .AND. !SELF:Custom
                                 // do not throw an error but ignore the fact that the record was missing
-                                //SELF:_oRdd:_dbfError( SubCodes.ERDD_KEY_NOT_FOUND, GenCode.EG_DATATYPE,SELF:fileName)
+                                //SELF:_oRdd:_dbfError( Subcodes.ERDD_KEY_NOT_FOUND, Gencode.EG_DATATYPE,SELF:fileName)
                                 NOP
                             ENDIF
                         ENDIF
@@ -725,19 +725,19 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     // new record or changed record, so insert the new key in the tree
                     SELF:ClearStack()
                     IF SELF:Unique
-                        IF SELF:_locate(SELF:_newValue:Key, SELF:_keySize, SearchMode.Left, SELF:_rootPage,recordNo)  == 0
+                        IF SELF:_locate(SELF:_newvalue:Key, SELF:_keySize, SearchMode.Left, SELF:_rootPage,recordNo)  == 0
                             VAR page := SELF:Stack:Top:Page
                             VAR pos  := SELF:Stack:Top:Pos
-                            SELF:DoAction(CdxAction.InsertKey(page, pos, SELF:_newValue:Recno, SELF:_newValue:Key))
+                            SELF:DoAction(CdxAction.InsertKey(page, pos, SELF:_newvalue:Recno, SELF:_newvalue:Key))
                         ELSE
                             SELF:ClearStack()
                         ENDIF
                     ELSE
-                        SELF:_locate(SELF:_newValue:Key, SELF:_keySize, SearchMode.Right, SELF:_rootPage,recordNo)
+                        SELF:_locate(SELF:_newvalue:Key, SELF:_keySize, SearchMode.Right, SELF:_rootPage,recordNo)
                         IF !SELF:Stack:Empty
                             VAR page := SELF:Stack:Top:Page
                             VAR pos  := SELF:Stack:Top:Pos
-                            SELF:DoAction(CdxAction.InsertKey(page, pos, SELF:_newValue:Recno, SELF:_newValue:Key))
+                            SELF:DoAction(CdxAction.InsertKey(page, pos, SELF:_newvalue:Recno, SELF:_newvalue:Key))
                         ELSE
                             RETURN FALSE
                         ENDIF
@@ -745,7 +745,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     SELF:ClearStack()
                     SELF:_Hot := TRUE
                 ENDIF
-                SELF:_newValue:CopyTo(SELF:_currentValue)
+                SELF:_newvalue:CopyTo(SELF:_currentvalue)
                 RETURN TRUE
             FINALLY
                 IF SELF:Shared

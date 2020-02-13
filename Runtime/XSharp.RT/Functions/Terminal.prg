@@ -84,7 +84,7 @@ FUNCTION SetPos( iRow AS INT, iCol AS INT ) AS VOID
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/_wait/*" />
  FUNCTION _wait() AS STRING STRICT
-   RETURN _wait( __CavoStr(VoErrors.TMSG_PRESSANYKEY))
+   RETURN _wait( __CavoStr(VOErrors.TMSG_PRESSANYKEY))
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/_wait/*" />
 FUNCTION _wait( uValuePrompt AS STRING ) AS STRING
@@ -125,7 +125,7 @@ FUNCTION ShowArray  (aTest as array, cName := "" as STRING) AS VOID
         cOut := cName + "[" + NTrim(i) + "]"
         x    := aTest[i]
 
-        IF x:isArray
+        IF x:IsArray
             cOutTemp := cOut
         ENDIF
 
@@ -134,7 +134,7 @@ FUNCTION ShowArray  (aTest as array, cName := "" as STRING) AS VOID
         cOut += " ("
         cOut += ValType(x)
         cOut += ")"
-        Qout(cOut)
+        QOut(cOut)
 
         IF x:IsArray
             ShowArray(x, cOutTemp)

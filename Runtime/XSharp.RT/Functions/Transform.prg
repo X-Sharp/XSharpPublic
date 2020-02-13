@@ -7,7 +7,7 @@
 USING System.Text
 
 
-INTERNAL STATIC CLASS TransFormHelpers
+INTERNAL STATIC CLASS TransformHelpers
     [Flags] ;
     ENUM TransformPictures
         MEMBER None        := 0
@@ -32,10 +32,10 @@ INTERNAL STATIC CLASS TransFormHelpers
             IF iFuncLen < 0
                 // No space delimiter so we assume the whole length
                 iFuncLen := cSayPicture:Length-1
-                cFunc    := cSayPicture:SubString(1):ToUpper()
+                cFunc    := cSayPicture:Substring(1):ToUpper()
             ELSE
-                cPic  := cSayPicture:SubString(iFuncLen+2):Trim()
-                cFunc := cSayPicture:SubString(1, iFuncLen):ToUpper()
+                cPic  := cSayPicture:Substring(iFuncLen+2):Trim()
+                cFunc := cSayPicture:Substring(1, iFuncLen):ToUpper()
             ENDIF
         ELSE
             cPic := cSayPicture
@@ -66,13 +66,13 @@ INTERNAL STATIC CLASS TransFormHelpers
                 IF wValueIdx > wValueLen
                     EXIT
                 ENDIF
-                IF TransFormHelpers.IsPictureLiteral(c'C', cSayPicture[ w]) 
+                IF TransformHelpers.IsPictureLiteral(c'C', cSayPicture[ w]) 
                     LOOP
                 ENDIF
                 sb:Append(cValue[ wValueIdx-1])
             NEXT
             IF wValueIdx < wValueLen
-                sb:Append(cValue:SubString( wValueIdx+1))
+                sb:Append(cValue:Substring( wValueIdx+1))
             ENDIF
             cString := sb:ToString()
         ELSE
@@ -134,16 +134,16 @@ INTERNAL STATIC CLASS TransFormHelpers
         
         IF cFunc:Contains("X") .AND. cTempValue:EndsWith("DB")
             lNegative	:= TRUE
-            cTempValue	:= cTempValue:SubString(0, wValueLen-2):Trim()
+            cTempValue	:= cTempValue:Substring(0, wValueLen-2):Trim()
             wValueLen	:= cTempValue:Length
         ELSEIF cFunc:Contains("C") .AND. cTempValue:EndsWith("CR")
-            cTempValue := cTempValue:SubString(0, wValueLen-2):Trim()
+            cTempValue := cTempValue:Substring(0, wValueLen-2):Trim()
             wValueLen := cTempValue:Length
         ENDIF
         IF (cFunc:Contains(")") .OR. cFunc:Contains("(")) ;
             .AND. cTempValue:StartsWith("(") .AND. cTempValue:EndsWith(")")
             lNegative := TRUE
-            cTempValue := cTempValue:SubString(1, wValueLen-2)
+            cTempValue := cTempValue:Substring(1, wValueLen-2)
             wValueLen := cTempValue:Length
         ENDIF
         IF cFunc:Contains("D")
@@ -154,13 +154,13 @@ INTERNAL STATIC CLASS TransFormHelpers
             LOCAL cDate 	  := "" AS STRING
             aMDY  := INT[,]{3,2}
             cDateFormat:=GetDateFormat()
-            aMDY[1,1] := cDateformat:IndexOf("MM")
+            aMDY[1,1] := cDateFormat:IndexOf("MM")
             aMDY[1,2] :=2
-            aMDY[2,1] := cDateformat:IndexOf("DD")
+            aMDY[2,1] := cDateFormat:IndexOf("DD")
             aMDY[2,2] :=2
-            aMDY[3,1] := cDateformat:IndexOf("YYYY")
+            aMDY[3,1] := cDateFormat:IndexOf("YYYY")
             IF aMDY[3,1] == -1
-                aMDY[3,1] := cDateformat:IndexOf("YY")
+                aMDY[3,1] := cDateFormat:IndexOf("YY")
                 aMDY[3,2] :=2
             ELSE
                 aMDY[3,2] :=4
@@ -180,7 +180,7 @@ INTERNAL STATIC CLASS TransFormHelpers
                 NEXT
             NEXT
             FOR w:=1 UPTO 3
-                cDate += cValue:SubString(aMDY[w,1],aMDY[w,2])
+                cDate += cValue:Substring(aMDY[w,1],aMDY[w,2])
             NEXT
             uRetVal := Val(cDate)
             RETURN uRetVal
@@ -221,16 +221,16 @@ INTERNAL STATIC CLASS TransFormHelpers
                     EXIT
                 ENDIF
                 cChar := cTempValue[(INT) wValueIdx-1]
-                IF cChar == cDecimal .AND. ! lDecimalfound
+                IF cChar == cDecimal .AND. ! lDecimalFound
                     IF Empty(cNumString) .AND. lNullable
                         uRetVal := NIL
                     ELSE
                         uRetVal := Val(cNumString)
                     ENDIF
                     cNumString := ""
-                    lDecimalfound := TRUE
+                    lDecimalFound := TRUE
                 ENDIF
-                IF !TransFormHelpers.IsPictureLiteral(c'N', cPic[(INT) w-1])
+                IF !TransformHelpers.IsPictureLiteral(c'N', cPic[(INT) w-1])
                     IF Char.IsDigit(cChar)
                         cNumString += cChar:ToString()
                     ELSEIF cChar == c'-'
@@ -239,7 +239,7 @@ INTERNAL STATIC CLASS TransFormHelpers
                 ENDIF
             NEXT
             IF wValueIdx < wValueLen
-                cNumString +=  cTempValue:SubString(wValueIdx, wValueLen-wValueIdx )
+                cNumString +=  cTempValue:Substring(wValueIdx, wValueLen-wValueIdx )
             ENDIF
             
             IF lDecimalFound
@@ -260,7 +260,7 @@ INTERNAL STATIC CLASS TransFormHelpers
             ENDIF
         ENDIF
         IF lNegative
-            uRetval := -uRetVal
+            uRetVal := -uRetVal
         ENDIF
         RETURN uRetVal
         
@@ -294,11 +294,11 @@ INTERNAL STATIC CLASS TransFormHelpers
                 aTemp[4] := "YES"
                 aTemp[5] := "Y"
             ELSE
-                aTemp[1] := SetLiteral(VOErrors.RT_MSG_Long_True)
+                aTemp[1] := SetLiteral(VOErrors.RT_MSG_LONG_TRUE)
                 aTemp[2] := ".T."
-                aTemp[3] := SetLiteral(VOErrors.RT_MSG_Short_True)
-                aTemp[4] := SetLiteral(VOErrors.RT_MSG_Long_Yes)
-                aTemp[5] := SetLiteral(VOErrors.RT_MSG_Short_Yes)
+                aTemp[3] := SetLiteral(VOErrors.RT_MSG_SHORT_TRUE)
+                aTemp[4] := SetLiteral(VOErrors.RT_MSG_LONG_YES)
+                aTemp[5] := SetLiteral(VOErrors.RT_MSG_SHORT_YES)
             ENDIF
             
             IF cPic == ""
@@ -315,8 +315,8 @@ INTERNAL STATIC CLASS TransFormHelpers
                         IF nValIdx > nValueLen
                             EXIT
                         ENDIF
-                        IF Instr(cPic:SubString(n-1,1),"YL")
-                            cChar := cValue:SubString(nValIdx-1,1)
+                        IF Instr(cPic:Substring(n-1,1),"YL")
+                            cChar := cValue:Substring(nValIdx-1,1)
                             nTemp := Array.IndexOf(aTemp, Upper(cChar) )+1
                             IF nTemp > 0
                                 lRet := .T.
@@ -325,7 +325,7 @@ INTERNAL STATIC CLASS TransFormHelpers
                         ENDIF
                     NEXT
                 ELSE
-                    cChar := cValue:SubString(0,1)
+                    cChar := cValue:Substring(0,1)
                     nTemp := Array.IndexOf( aTemp, Upper(cChar) )+1
                     IF nTemp > 0
                         lRet := .T.
@@ -341,14 +341,14 @@ INTERNAL STATIC CLASS TransFormHelpers
         
         
         
-    STATIC METHOD MergeValueAndTemplate(cType AS CHAR, cValue AS STRING, cTemplate AS STRING, nPictures AS TransFormPictures) AS STRING
+    STATIC METHOD MergeValueAndTemplate(cType AS CHAR, cValue AS STRING, cTemplate AS STRING, nPictures AS TransformPictures) AS STRING
         LOCAL result := cTemplate:ToCharArray() AS CHAR[]
         LOCAL nSrc   := 0 AS INT
         LOCAL nTempl := 0 AS INT
         LOCAL nDest  := __ARRAYBASE__ AS INT
         LOCAL nSrcLen := cValue:Length AS INT
         LOCAL nDestLen:= cTemplate:Length AS INT
-        LOCAL lBritish := nPictures:HasFlag(TransFormPictures:British) AS LOGIC
+        LOCAL lBritish := nPictures:HasFlag(TransformPictures:British) AS LOGIC
         DO WHILE nSrc < nSrcLen .AND. nDest -__ARRAYBASE__ < nDestLen 
             VAR templChar := cTemplate[nTempl++]
             VAR srcChar   := cValue[nSrc]
@@ -404,7 +404,7 @@ INTERNAL STATIC CLASS TransFormHelpers
                     ELSEIF nPictures:HasFlag(TransformPictures:Upper) .OR. templChar == c'!'
                         result[nDest++] := Char.ToUpper(srcChar)
                         nSrc++
-                    ELSEIF nPictures:HasFlag(TransFormPictures:ZeroBlank) .AND. cType == c'N' .AND. srcChar == c'0'
+                    ELSEIF nPictures:HasFlag(TransformPictures:ZeroBlank) .AND. cType == c'N' .AND. srcChar == c'0'
                         LOCAL lHasDig := FALSE AS LOGIC
                         FOR VAR x := __ARRAYBASE__ TO nDest
                             IF Char.IsDigit(result[x])
@@ -418,7 +418,7 @@ INTERNAL STATIC CLASS TransFormHelpers
                             result[nDest++] := c' '
                         ENDIF
                         nSrc++
-                    ELSEIF nPictures:HasFlag(TransFormPictures:YesNo) .AND. cType == c'L'
+                    ELSEIF nPictures:HasFlag(TransformPictures:YesNo) .AND. cType == c'L'
                         result[nDest++] := TransformHelpers.GetLogicLiteral(srcChar == c'T', TRUE)
                         nSrc++
                     ELSE
@@ -429,7 +429,7 @@ INTERNAL STATIC CLASS TransFormHelpers
             ENDIF
         ENDDO
         // any remaining templ chars can be copied to the end of the string
-//      IF nPictures:HasFlag(TransFormPictures:NonTemplate) .OR. cType == c'N'
+//      IF nPictures:HasFlag(TransformPictures:NonTemplate) .OR. cType == c'N'
             DO WHILE nTempl < nDestLen .AND. nDest <= nDestLen
                 VAR templChar := cTemplate[nTempl++]
                 IF IsPictureLiteral(cType,templChar)
@@ -489,7 +489,7 @@ INTERNAL STATIC CLASS TransFormHelpers
         LOCAL cValue   AS STRING
         LOCAL cTemplate AS STRING
         cTemplate := TransformHelpers.ParseTemplate(cPicture, OUT VAR nPicFunc )
-        IF nPicFunc:HasFlag(TransFormPictures.British)
+        IF nPicFunc:HasFlag(TransformPictures.British)
            cTemplate := IIF(SetCentury(), "DD/MM/YYYY", "DD/MM/YY") 
         ELSEIF String.IsNullOrEmpty(cTemplate)
             cTemplate := GetDateFormat()
@@ -606,11 +606,11 @@ INTERNAL STATIC CLASS TransFormHelpers
         CASE fTemp == 0.0
             cTemp		:= Str2(fTemp , (DWORD) nWhole )
         CASE fTemp < 0.0
-                IF nWhole <= 1
-                    cTemp   := "*"
-                ELSE
-                    fTemp	:= -fTemp:CastToInt64()
-                    cTemp	:= Str2(fTemp , (DWORD) nWhole  )
+            IF nWhole <= 1
+                cTemp   := "*"
+            ELSE
+                fTemp	:= -fTemp:CastToInt64()
+                cTemp	:= Str2(fTemp , (DWORD) nWhole - 1  )
             ENDIF
         OTHERWISE
                 fTemp := fTemp:CastToInt64()
@@ -629,7 +629,7 @@ INTERNAL STATIC CLASS TransFormHelpers
                 cReturn := ConversionHelpers.FormatNumber((REAL8) nValue, nLength, nDecimal)
             ENDIF
             
-            IF nPicFunc:HasFLag(TransformPictures.ZeroBlank ) 
+            IF nPicFunc:HasFlag(TransformPictures.ZeroBlank ) 
                 IF nValue == 0
                     IF cOrigTemplate:Length != 0
                        cReturn := Space((DWORD) cOrigTemplate:Length)
@@ -705,33 +705,34 @@ INTERNAL STATIC CLASS TransFormHelpers
             ENDIF
             FOREACH cChar AS CHAR IN cPicture
                 SWITCH cChar
-        CASE c'B' ; CASE c'b'
-                nPicFunc |= TransformPictures.Left
-        CASE c'C' ; CASE c'c'
-                nPicFunc |= TransformPictures.Credit
-        CASE c'D' ; CASE c'd'
-                nPicFunc |= TransformPictures.Date
-        CASE c'E' ; CASE c'e'
-                nPicFunc |= TransformPictures.British
-        CASE c'R' ; CASE c'r'
-                nPicFunc |= TransformPictures.NonTemplate
-        CASE c'X' ; CASE c'x'
-                nPicFunc |= TransformPictures.Debit
-        CASE c'Z' ; CASE c'z'
+                CASE c'B' ; CASE c'b'
+                     nPicFunc |= TransformPictures.Left
+                CASE c'C' ; CASE c'c'
+                     nPicFunc |= TransformPictures.Credit
+                CASE c'D' ; CASE c'd'
+                     nPicFunc |= TransformPictures.Date
+                CASE c'E' ; CASE c'e'
+                     nPicFunc |= TransformPictures.British
+                CASE c'R' ; CASE c'r'
+                     nPicFunc |= TransformPictures.NonTemplate
+                CASE c'X' ; CASE c'x'
+                     nPicFunc |= TransformPictures.Debit
+                CASE c'Z' ; CASE c'z'
                     nPicFunc |= TransformPictures.ZeroBlank
                 CASE c'('
                     nPicFunc |= TransformPictures.ParenLeft
                 CASE c')'
                     nPicFunc |= TransformPictures.ParenRight
                 CASE c'!'
-                nPicFunc |= TransformPictures.Upper
-        CASE c'Y'; CASE c'y'
+                    nPicFunc |= TransformPictures.Upper
+                CASE c'Y'; CASE c'y'
                     nPicFunc |= TransformPictures.YesNo
                 CASE c' '
                 CASE c'\t'
                     done := TRUE
                 OTHERWISE
-                    cTemplate += cChar:ToString()            
+                    //cTemplate += cChar:ToString()
+                    NOP // ignore non function chars in the function part
                 END SWITCH
                 IF done
                     EXIT
@@ -747,34 +748,35 @@ INTERNAL STATIC CLASS TransFormHelpers
         
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/transform/*" />     
 FUNCTION Transform( uValue AS DATE, cSayPicture AS STRING ) AS STRING
-    RETURN TransFormHelpers.TransformD(uValue, cSayPicture)	
+    RETURN TransformHelpers.TransformD(uValue, cSayPicture)	
     
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/transform/*" />     
 FUNCTION Transform( uValue AS LOGIC, cSayPicture AS STRING ) AS STRING
-    RETURN TransFormHelpers.TransformL(uValue, cSayPicture)
+    RETURN TransformHelpers.TransformL(uValue, cSayPicture)
     
 // /// <summary>Convert any value into a formatted string.</summary>        
 //FUNCTION Transform( nValue AS LONG, cPicture AS STRING ) AS STRING
-//    RETURN TransFormHelpers.TransformN( nValue, cPicture, TRUE)
+//    RETURN TransformHelpers.TransformN( nValue, cPicture, TRUE)
 //    
 // /// <summary>Convert any value into a formatted string.</summary>        
 //FUNCTION Transform( nValue AS INT64, cPicture AS STRING ) AS STRING
-//    RETURN TransFormHelpers.TransformN( nValue, cPicture, TRUE)
+//    RETURN TransformHelpers.TransformN( nValue, cPicture, TRUE)
     
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/transform/*" />     
 FUNCTION Transform( uValue AS FLOAT, cSayPicture AS STRING ) AS STRING
-    RETURN TransFormHelpers.TransformN( uValue, cSayPicture, FALSE)
+    RETURN TransformHelpers.TransformN( uValue, cSayPicture, FALSE)
     
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/transform/*" />     
 FUNCTION Transform(uValue AS STRING, cSayPicture AS STRING) AS STRING
-    RETURN TransFormHelpers.TransformS(uValue, cSayPicture)
+    RETURN TransformHelpers.TransformS(uValue, cSayPicture)
     
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/transform/*" />       
 FUNCTION Transform( uValue AS USUAL, cSayPicture AS STRING ) AS STRING
     LOCAL ret AS USUAL
-    SWITCH uValue:_UsualType
+    SWITCH uValue:_usualType
     CASE __UsualType.Float
     CASE __UsualType.Decimal
+    CASE __UsualType.Currency
         ret := TransformHelpers.TransformN( (FLOAT) uValue, cSayPicture , FALSE)
     CASE __UsualType.Int64
     CASE __UsualType.Long
@@ -803,7 +805,7 @@ FUNCTION Unformat( 	cFormatString	AS STRING,  cSayPicture AS STRING, cType AS ST
 LOCAL uRetVal		AS USUAL
 LOCAL lNullable     AS LOGIC
 
-IF SLen(CType) == 2
+IF SLen(cType) == 2
     lNullable := Right(cType, 1) == "0"
 ELSE
     lNullable := FALSE
@@ -813,13 +815,13 @@ cType		:= Upper(Left(cType, 1))
 cSayPicture := Upper( cSayPicture )
 SWITCH cType[0]
 CASE c'N'
-    uRetVal := TransFormHelpers.UnformatN(cFormatString, cSayPicture, lNullable)
+    uRetVal := TransformHelpers.UnformatN(cFormatString, cSayPicture, lNullable)
 CASE c'C'
-    uRetVal := TransFormHelpers.UnformatC(cFormatString, cSayPicture, lNullable)
+    uRetVal := TransformHelpers.UnformatC(cFormatString, cSayPicture, lNullable)
 CASE c'L'
-    uRetVal := TransFormHelpers.UnformatL(cFormatString, cSayPicture, lNullable)
+    uRetVal := TransformHelpers.UnformatL(cFormatString, cSayPicture, lNullable)
 CASE c'D'
-    uRetVal := TransFormHelpers.UnformatD(cFormatString, cSayPicture, lNullable)
+    uRetVal := TransformHelpers.UnformatD(cFormatString, cSayPicture, lNullable)
 OTHERWISE
     uRetVal := NIL
 END SWITCH

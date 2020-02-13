@@ -88,7 +88,7 @@ METHOD Close() 			AS LOGIC
 				isOk := SUPER:Close() .AND. isOk
 			CATCH ex AS Exception
 				isOk := FALSE
-				SELF:_txtError(ex, SubCodes.ERDD_CLOSE_FILE,GenCode.EG_CLOSE,  "TEXTRDD.Close") 
+				SELF:_txtError(ex, Subcodes.ERDD_CLOSE_FILE,Gencode.EG_CLOSE,  "TEXTRDD.Close") 
 				
 			END TRY
 			SELF:_hFile := F_ERROR
@@ -102,7 +102,7 @@ METHOD Create(info AS DbOpenInfo) AS LOGIC
 METHOD Open(info AS DbOpenInfo) AS LOGIC
 	LOCAL isOK AS LOGIC
     //
-	isOk := FALSE
+	isOK := FALSE
 	SELF:_OpenInfo := info
     // We do not assume an extension, should we do that ?
 
@@ -126,7 +126,7 @@ METHOD Open(info AS DbOpenInfo) AS LOGIC
 			codePage := XSharp.RuntimeState.DosCodePage
 		ENDIF        
 		SELF:_Encoding := System.Text.Encoding.GetEncoding( codePage ) 
-        isOk := TRUE
+        isOK := TRUE
         SELF:_Reccount := SELF:_GetLastRec()
 	ELSE
         // Error or just FALSE ?
@@ -134,7 +134,7 @@ METHOD Open(info AS DbOpenInfo) AS LOGIC
 		LOCAL ex := FException() AS Exception
 		SELF:_txtError( ex, ERDD.OPEN_FILE, XSharp.Gencode.EG_OPEN )
 	ENDIF
-    RETURN isOk
+    RETURN isOK
 	
     //
 	// Filtering and Scoping 
@@ -215,7 +215,7 @@ INTERNAL METHOD _txtError(ex AS Exception, iGenCode AS DWORD, iSubCode AS DWORD,
 		strMessage := ex:Message
 	ENDIF
 	oError:Description := IIF(strMessage == NULL , "", strMessage)
-	RuntimeState.LastRDDError := oError
+	RuntimeState.LastRddError := oError
     //
 	THROW oError
 

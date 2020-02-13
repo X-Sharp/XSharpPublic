@@ -30,7 +30,7 @@ METHOD __SetMCColor(oColor AS Color, dwColorID AS DWORD) AS Color STRICT
 	SendMessage(SELF:Handle(), DTM_SETMCCOLOR, dwColorID, oColor:ColorRef)
 	RETURN oColor
 
-ASSIGN __Value(uValue AS USUAL)  STRICT 
+ASSIGN __Value(uValue AS USUAL)   
 	//PP-030828 Strong typing
 	//SE-040929 DTS_SHOWNONE Workaround
 
@@ -65,11 +65,11 @@ ASSIGN DateRange(oNewRange)
 	dates[2]:wDay := WORD(Day(oNewRange:Max))
 	dates[2]:wMonth := WORD(Month(oNewRange:Max))
 	dates[2]:wYear := WORD(Year(oNewRange:Max))
-   // RvdH 090212 This makes sure that every time on the Max-Date is valid 
-   dates[2]:wHour := 32
-   dates[2]:wMinute := 59
-   dates[2]:wSecond := 59
-   dates[2]:wMilliseconds := 999
+	// RvdH 090212 This makes sure that every time on the Max-Date is valid 
+	dates[2]:wHour := 32
+	dates[2]:wMinute := 59
+	dates[2]:wSecond := 59
+	dates[2]:wMilliseconds := 999
 
 
 	SendMessage(SELF:handle(), DTM_SETRANGE, _OR(GDTR_MIN, GDTR_MAX), LONGINT(_CAST, @dates[1]))
@@ -137,6 +137,7 @@ ASSIGN MCTrailingTextColor(oColor)
 
 ACCESS NullFormat
     RETURN SELF:lNullFormat
+    
 METHOD ParentNotify(nCode, lParam) 
    //SE-040929 For a correct focus after closing the calender
 
@@ -257,6 +258,18 @@ ACCESS Value
 	ELSE	
 		SELF:uValue := SELF:SelectedDate
 	ENDIF
+
+ACCESS IsNone  AS LOGIC
+   //SE-120210
+   LOCAL sDate IS _winSYSTEMTIME 
+   
+   RETURN (SendMessage(SELF:Handle(), DTM_GETSYSTEMTIME, 0, LONGINT(_CAST, @sDate)) == GDT_NONE) 
+
+
+ACCESS IsTimePicker AS LOGIC
+	RETURN  _And( GetWindowLong(SELF:Handle(), GWL_STYLE) , DTS_TIMEFORMAT) > 0  .or. ;
+			_And( GetWindowLong(SELF:Handle(), GWL_STYLE) , DTS_UPDOWN    ) > 0
+
 
 RETURN SUPER:Value
 	

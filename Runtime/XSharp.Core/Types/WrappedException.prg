@@ -10,7 +10,7 @@ CLASS XSharp.Internal.WrappedException INHERIT Exception
 	PROPERTY @@Value AS OBJECT GET _value
 	
 	/// <summary></summary>	
-    CONSTRUCTOR(VALUE AS OBJECT)
-		_value := VALUE
+    CONSTRUCTOR(@@Value AS OBJECT)
+		_value := @@Value
 	
 END CLASS

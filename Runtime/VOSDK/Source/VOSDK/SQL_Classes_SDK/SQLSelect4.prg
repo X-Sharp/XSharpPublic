@@ -49,13 +49,13 @@ METHOD NoIVarGet( symFieldName )
 	#ENDIF
 	RETURN SELF:GetData( symFieldName )
 
-METHOD NoIVarPut( symFieldName,VALUE ) 
+METHOD NoIVarPut( symFieldName,uValue ) 
 
 	#IFDEF __DEBUG__
 		__SQLOutputDebug( "** SQLSelect:NoIVarPut( "+AsString( symFieldName )+" )" )
 	#ENDIF
 
-	RETURN SELF:FIELDPUT( symFieldName, VALUE )
+	RETURN SELF:FIELDPUT( symFieldName, uValue )
 
 
 
@@ -366,7 +366,7 @@ METHOD SetTimeStamp( uFieldPos, cTimestamp )
 		SELF:Error( oErr )
 		RETURN NIL
 	ENDIF
-    LOCAL oCol := aSQLColumns[nIndex] as SqlColumn
+    	LOCAL oCol := aSQLColumns[nIndex] as SqlColumn
 	nODBCType := oCol:ODBCType
 	IF ( nODBCType != SQL_TIMESTAMP )
 		oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__BADFLD ), #SetTimeStamp  )
@@ -586,7 +586,6 @@ METHOD UpdateKey()
 	LOCAL oUpdate       AS SQLStatement
 	LOCAL aDataBuffer   AS ARRAY
 	LOCAL nTemp         AS INT
-//	LOCAL nCount    := 0 AS INT
 	LOCAL oCol			  AS SqlColumn
 	LOCAL cQuote		  AS STRING
 	//RvdH 050413 Centralized building the Update Statement
@@ -607,8 +606,8 @@ METHOD UpdateKey()
 
 	FOR nIndex := 1 TO ALen( aIndexCol )
 		nTemp   := aIndexCol[nIndex]
-		oCol 		:= aSQLColumns[nTemp]
-      cUpdate   += cQuote + oCol:ColName + cQuote +__GetDataValuePSZ( oCol,aDataBuffer[nTemp], TRUE, TRUE  )
+		oCol 	:= aSQLColumns[nTemp]
+      		cUpdate   += cQuote + oCol:ColName + cQuote +__GetDataValuePSZ( oCol,aDataBuffer[nTemp], TRUE, TRUE  )
 		IF nIndex != ALen( aIndexCol )
 			cUpdate += " and "
 		ENDIF
@@ -638,8 +637,6 @@ METHOD UpdateVal()
 	LOCAL cUpdate       AS STRING
 	LOCAL oUpdate       AS SQLStatement
 	LOCAL lRet          AS LOGIC
-	//LOCAL nRecno        AS LONGINT
-//	LOCAL nCount   := 0 AS INT
 	//RvdH 050413 Centralized building the Update Statement
 	cUpdate := SELF:__BuildUpdateStmt()
 
@@ -656,7 +653,6 @@ METHOD UpdateVal()
 
 	SELF:__PrepareStmtOptions( oUpdate )
 	oUpdate:SQLString := SELF:PreExecute( oUpdate:SQLString )
-	//nRecno := SELF:Recno
 	lRet := oUpdate:Execute()
 
 	IF !lRet

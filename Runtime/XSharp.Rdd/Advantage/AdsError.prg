@@ -17,17 +17,17 @@ USING XSharp.RDD.Support
 /// The AdsRDD class. 
 /// </summary>
 CLASS XSharp.ADS.AdsError INHERIT RddError
-    PRIVATE _Msg AS STRING
+    PRIVATE _msg AS STRING
     CONSTRUCTOR(msg AS STRING, dwGenCode AS DWORD, dwSubCode AS DWORD, cDriver AS STRING, dwSeverity AS DWORD, strFunction AS STRING, strFile AS STRING)
         SUPER(msg)
-        SELF:_msg         := Msg
+        SELF:_msg         := msg
         SELF:SubCode      := dwSubCode
         SELF:Gencode      := dwGenCode
         SELF:SubSystem    := cDriver
         SELF:Severity     := dwSeverity
         SELF:FuncSym      := strFunction
         SELF:FileName     := strFile
-     PROPERTY SubCodeText AS STRING GET _Msg
+     PROPERTY SubCodeText AS STRING GET _msg
         
         
 END CLASS

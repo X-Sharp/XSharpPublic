@@ -39,13 +39,13 @@ CLASS XSharp.ADS.AXSQLRDD INHERIT ADSRDD
 
 	/// <inheritdoc />
     VIRTUAL METHOD Info(uiOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT
-        IF (uiOrdinal == DBInfo.DBI_GET_ACE_STMT_HANDLE )
+        IF (uiOrdinal == DbInfo.DBI_GET_ACE_STMT_HANDLE )
             RETURN SELF:_hStatement
         ENDIF
         RETURN SUPER:Info(uiOrdinal, oNewValue)
 
 	/// <inheritdoc />
-    VIRTUAL METHOD Open(openInfo AS DBOPENINFO) AS LOGIC
+    VIRTUAL METHOD Open(openInfo AS DbOpenInfo) AS LOGIC
         LOCAL sName AS string
         LOCAL query AS object
 
@@ -55,7 +55,7 @@ CLASS XSharp.ADS.AXSQLRDD INHERIT ADSRDD
             RETURN FALSE
         ENDIF
         query := NULL_OBJECT
-        IF CoreDb.RDDInfo(_SET_SQL_QUERY, REF query) .and. query is STRING
+        IF CoreDb.RddInfo(_SET_SQL_QUERY, REF query) .and. query is STRING
             sName := (STRING) query
         ELSE
             IF (openInfo:Extension != ".DBF")
@@ -92,7 +92,7 @@ CLASS XSharp.ADS.AXSQLRDD INHERIT ADSRDD
             SELF:_CheckError(ACE.AdsStmtSetTableCollation(SELF:_hStatement, SELF:_Collation),EG_OPEN,"AdsStmtSetTableCollation")
         ENDIF
         LOCAL password := NULL_OBJECT AS OBJECT
-        IF CoreDb.RDDInfo(_SET_SQL_TABLE_PASSWORDS, ref password) .and. password is object[] var oInfo
+        IF CoreDb.RddInfo(_SET_SQL_TABLE_PASSWORDS, ref password) .and. password is object[] var oInfo
             FOREACH var element in oInfo
                 var oSub := (object[]) element
                 VAR cTableName := (String) oSub[0]
@@ -119,10 +119,10 @@ CLASS XSharp.ADS.AXSQLRDD INHERIT ADSRDD
 	    LOCAL afileName AS CHAR[]
 	    afileName := CHAR[]{length}
         SELF:_CheckError(ACE.AdsGetTableFilename(SELF:_Table, ACE.ADS_FULLPATHNAME, afileName, REF length),EG_OPEN,"AdsGetTableFilename")
-    	SELF:_FileName := STRING {aFileName,0, length}
+    	SELF:_FileName := STRING {afileName,0, length}
         SELF:_Encoding := Encoding.GetEncoding(IIF (charset == ACE.ADS_ANSI, RuntimeState.WinCodePage,RuntimeState.DosCodePage))
         SELF:Alias   := openInfo:Alias
-	    SELF:Area    := openInfo:WorkArea
+	    SELF:Area    := openInfo:Workarea
         RETURN SUPER:RecordMovement()
  
 
@@ -130,7 +130,7 @@ CLASS XSharp.ADS.AXSQLRDD INHERIT ADSRDD
    VIRTUAL METHOD RecInfo( uiOrdinal AS INT, iRecID AS OBJECT, oNewValue AS OBJECT) AS OBJECT
     LOCAL isLive AS BYTE
     LOCAL recNum AS DWORD
-    IF uiOrdinal != DBRecordInfo.DBRI_UPDATED  
+    IF uiOrdinal != DbRecordInfo.DBRI_UPDATED  
         RETURN SUPER:RecInfo(uiOrdinal, iRecID, oNewValue)
     ENDIF
     IF ACEUNPUB.AdsSqlPeekStatement(SUPER:_Table, OUT isLive) == 0 .AND. isLive == 0

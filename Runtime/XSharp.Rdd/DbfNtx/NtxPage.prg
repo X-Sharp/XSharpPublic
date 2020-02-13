@@ -47,14 +47,14 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         PROTECTED _Bytes AS BYTE[]
         
         // Current Page Number = Page Offset
-		INTERNAL PROPERTY PageOffset AS LONG GET SELF:_Offset SET SELF:_Offset := VALUE
+		INTERNAL PROPERTY PageOffset AS LONG GET SELF:_Offset SET SELF:_Offset := value
         // The locationof the next page in case this is part of the unused pages list
-        INTERNAL PROPERTY NextPage   AS LONG GET SELF[ 0]:PageNo SET SELF[ 0]:PageNo := VALUE
+        INTERNAL PROPERTY NextPage   AS LONG GET SELF[ 0]:PageNo SET SELF[ 0]:PageNo := value
 
 		// Bytes of the Page (1024)
         INTERNAL PROPERTY Bytes AS BYTE[] GET SELF:_Bytes
         
-        INTERNAL PROPERTY Hot AS LOGIC GET SELF:_Hot SET SELF:_Hot := VALUE
+        INTERNAL PROPERTY Hot AS LOGIC GET SELF:_Hot SET SELF:_Hot := value
 
         INTERNAL METHOD Clear() AS VOID
             SELF:_Bytes := BYTE[]{NTXPAGE_SIZE}
@@ -76,7 +76,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             
             SET
                 TRY
-                    Array.Copy(BitConverter.GetBytes( VALUE), 0, SELF:_bytes, 0, 2)
+                    Array.Copy(BitConverter.GetBytes( value), 0, SELF:_Bytes, 0, 2)
                 CATCH 
                     THROW // Debug.WriteLine( "Ntx Error : " + e:Message )
                 END TRY
@@ -97,7 +97,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             
             SET
                 TRY
-                    Array.Copy(BitConverter.GetBytes( VALUE), 0, SELF:_bytes, 2, sizeof(WORD))
+                    Array.Copy(BitConverter.GetBytes( value), 0, SELF:_Bytes, 2, sizeof(WORD))
                 CATCH 
                     THROW //Debug.WriteLine( "Ntx Error : " + e:Message )
                 END TRY
@@ -167,7 +167,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 RETURN FALSE
             ENDIF
             TRY
-                isOk := SELF:_order:WritePage(SELF)
+                isOk := SELF:_Order:WritePage(SELF)
                 SELF:_Hot := FALSE
             CATCH 
                 isOk := FALSE
@@ -178,14 +178,14 @@ BEGIN NAMESPACE XSharp.RDD.NTX
 		// Retrieve the Record/Item offset from start of Page
         INTERNAL METHOD GetRef( pos AS LONG ) AS WORD
             TRY
-                RETURN BitConverter.ToUInt16(SELF:_bytes, (pos+1) * 2)
+                RETURN BitConverter.ToUInt16(SELF:_Bytes, (pos+1) * 2)
             CATCH //Exception
                 RETURN 0
             END TRY
             
         // Set the Record/Item offset from start of Page
         INTERNAL  METHOD SetRef(pos AS LONG , newValue AS WORD ) AS VOID
-            Array.Copy(BitConverter.GetBytes( newValue), 0, SELF:_bytes, (pos+1) * 2, 2)
+            Array.Copy(BitConverter.GetBytes( newValue), 0, SELF:_Bytes, (pos+1) * 2, 2)
             SELF:Hot := TRUE
 
        INTERNAL METHOD InitRefs(uiMaxEntry AS WORD , uiEntrySize AS WORD ) AS VOID
@@ -193,8 +193,8 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             SELF:Write( )
             offSet := (uiMaxEntry + 2) * 2
             FOR VAR i := 0 TO uiMaxEntry
-                SELF:SetRef(i, offset)
-                offset += uiEntrySize
+                SELF:SetRef(i, offSet)
+                offSet += uiEntrySize
             NEXT
             NodeCount := 0
             FirstKeyOffSet := uiMaxEntry * 2 + 4
@@ -202,7 +202,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         INTERNAL METHOD Dump(keyLen AS WORD) AS STRING
             VAR sb := System.Text.StringBuilder{}
             VAR item := NtxPageNode{keyLen,SELF}
-            sb:AppendLine(String.Format("Page {0}, # of keys: {1}", SELF:PageOffSet, SELF:NodeCount))
+            sb:AppendLine(String.Format("Page {0}, # of keys: {1}", SELF:PageOffset, SELF:NodeCount))
             FOR VAR i := 0 TO SELF:NodeCount-1
                 item:Pos := i
                 sb:AppendLine(String.Format("Item {0,2}, Page {1,6} Record {2,4} : {3} ", i, item:PageNo, item:Recno, item:KeyText))

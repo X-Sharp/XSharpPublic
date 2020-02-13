@@ -7,20 +7,20 @@
 USING XSharp.RDD.Support
 BEGIN NAMESPACE XSharp.RDD
 /// <summary>SDF RDD. For reading and writing text files.</summary>
-CLASS SDF INHERIT TEXTRDD  
+    CLASS SDF INHERIT TEXTRDD  
 
-VIRTUAL PROPERTY Driver AS STRING GET "SDF"
+        VIRTUAL PROPERTY Driver AS STRING GET "SDF"
 
-    METHOD _GetLastRec as LONG
-    Local dwPos as DWORD
-    local dwLen as LONG
-    local nCount as LONG
-    dwPos := FTell(SELF:_hFile)
-    dwLen := FSeek3(SELF:_hFile, 0, FS_END)
-    nCount := dwLen / SELF:_RecordLength
-    FSeek3(SELF:_hFile, (LONG) dwPos, FS_SET)
-    RETURN nCount
+        METHOD _GetLastRec AS LONG
+            LOCAL dwPos AS DWORD
+            LOCAL dwLen AS LONG
+            LOCAL nCount AS LONG
+            dwPos := FTell(SELF:_hFile)
+            dwLen := FSeek3(SELF:_hFile, 0, FS_END)
+            nCount := dwLen / SELF:_RecordLength
+            FSeek3(SELF:_hFile, (LONG) dwPos, FS_SET)
+            RETURN nCount
 
 
-END CLASS
+    END CLASS
 END NAMESPACE

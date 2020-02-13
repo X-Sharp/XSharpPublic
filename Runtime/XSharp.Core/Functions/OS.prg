@@ -39,7 +39,7 @@ FUNCTION SetEnv(cVar AS STRING,cValue AS STRING) AS LOGIC
 FUNCTION SetEnv(cVar AS STRING,cValue AS STRING,lAppend AS LOGIC) AS LOGIC
 	LOCAL result AS LOGIC
 	TRY
-        XSharp.IO.File.clearErrorState()
+        XSharp.IO.File.ClearErrorState()
 
 		IF lAppend
 			LOCAL cOldValue AS STRING
@@ -52,7 +52,7 @@ FUNCTION SetEnv(cVar AS STRING,cValue AS STRING,lAppend AS LOGIC) AS LOGIC
 		System.Environment.SetEnvironmentVariable(cVar, cValue)
 		result := System.Environment.GetEnvironmentVariable(cVar) == cValue
 	CATCH e AS Exception
-		XSharp.IO.File.setErrorState(e)
+		XSharp.IO.File.SetErrorState(e)
 		result := FALSE
 	END TRY
 	RETURN result   
@@ -74,7 +74,7 @@ FUNCTION CurDir() AS STRING
 	LOCAL cDir AS STRING
 	LOCAL index AS INT
 	cDir := System.Environment.CurrentDirectory
-	index := cDir:Indexof(Path.VolumeSeparatorChar)
+	index := cDir:IndexOf(Path.VolumeSeparatorChar)
 	IF index > 0
 		cDir := cDir:Substring(index+1)
 	ENDIF
@@ -135,7 +135,7 @@ FUNCTION DiskFree(cDrive AS STRING) AS INT64
         cDrive := cDrive:Substring(0,1)+":"
     ENDIF
     TRY
-        XSharp.IO.File.clearErrorState()
+        XSharp.IO.File.ClearErrorState()
 	    result :=  DriveInfo{cDrive}:TotalFreeSpace
     CATCH e AS Exception
         XSharp.IO.File.SetErrorState(e)
@@ -221,7 +221,7 @@ FUNCTION LockTries(nValue AS DWORD) AS DWORD
 FUNCTION DirChange(pszDir AS STRING) AS INT
 	LOCAL result AS INT
 	TRY
-       XSharp.IO.File.clearErrorState()
+       XSharp.IO.File.ClearErrorState()
 		IF Directory.Exists(pszDir)
 			Directory.SetCurrentDirectory(pszDir)
 			result := 0
@@ -229,7 +229,7 @@ FUNCTION DirChange(pszDir AS STRING) AS INT
 			result := 3 // Path not found
 		ENDIF
 	CATCH e AS Exception
-		XSharp.IO.File.setErrorState(e)
+		XSharp.IO.File.SetErrorState(e)
         result := (INT) RuntimeState.FileError
 	END TRY
 	RETURN result
@@ -238,7 +238,7 @@ FUNCTION DirChange(pszDir AS STRING) AS INT
 FUNCTION DirMake(pszNewDir AS STRING) AS INT
 	LOCAL result AS INT
 	TRY
-        XSharp.IO.File.clearErrorState()
+        XSharp.IO.File.ClearErrorState()
 		IF !Directory.Exists(pszNewDir)
 			Directory.CreateDirectory(pszNewDir)
 			result := 0
@@ -246,7 +246,7 @@ FUNCTION DirMake(pszNewDir AS STRING) AS INT
 			result := 183 // ERROR_ALREADY_EXISTS 
 		ENDIF
 	CATCH e AS Exception
-		XSharp.IO.File.setErrorState(e)
+		XSharp.IO.File.SetErrorState(e)
         result := (INT) RuntimeState.FileError
 	END TRY
 	RETURN result
@@ -255,7 +255,7 @@ FUNCTION DirMake(pszNewDir AS STRING) AS INT
 FUNCTION DirRemove(pszDirName AS STRING) AS INT
 	LOCAL result AS INT
 	TRY
-        XSharp.IO.File.clearErrorState()
+        XSharp.IO.File.ClearErrorState()
 		IF Directory.Exists(pszDirName)
 			Directory.Delete(pszDirName,FALSE)
 			result := 0
@@ -263,7 +263,7 @@ FUNCTION DirRemove(pszDirName AS STRING) AS INT
 			result := 2 // Cannot find file 
 		ENDIF
 	CATCH e AS Exception
-		XSharp.IO.File.setErrorState(e)
+		XSharp.IO.File.SetErrorState(e)
         result := (INT) RuntimeState.FileError
 	END TRY
 	RETURN result
@@ -325,7 +325,7 @@ FUNCTION TruePath( cFile AS STRING ) AS STRING PASCAL
     IF nPos = 0
         cPath := cFile
     ELSE
-        cPath := cFile:SubString(0, (INT) nPos)
+        cPath := cFile:Substring(0, (INT) nPos)
     ENDIF
 
     RETURN cPath

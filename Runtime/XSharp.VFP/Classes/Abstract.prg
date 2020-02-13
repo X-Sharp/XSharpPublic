@@ -35,7 +35,7 @@ BEGIN NAMESPACE XSharp.VFP
             VAR met := oProp:GetGetMethod(TRUE)
             VAR nVis := IIF(met:IsPublic,1 ,IIF(met:IsPrivate,3,2))
             
-            VAR VfpProperty :=VfpProperty{oProp:Name, NIL, nVis}
+            VAR vfpProperty :=VfpProperty{oProp:Name, NIL, nVis}
             _Properties:Add(vfpProperty:Name, vfpProperty)
         NEXT
         RETURN

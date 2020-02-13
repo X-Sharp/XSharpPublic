@@ -14,6 +14,12 @@ namespace XSharp.MacroCompiler.Syntax
     {
         internal virtual bool IsConstant { get => false; }
     }
+    abstract internal partial class Stmt : Node
+    {
+    }
+    internal partial class ReturnStmt : Stmt
+    {
+    }
     abstract internal partial class Expr : Node
     {
         internal override bool IsConstant { get => Symbol.IsConstant(); }

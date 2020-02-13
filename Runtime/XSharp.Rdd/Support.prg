@@ -7,20 +7,20 @@
 USING System
 USING System.Collections
 USING System.Text
-USING XSharp.Rdd.Support
+USING XSharp.RDD.Support
 USING System.Diagnostics
 BEGIN NAMESPACE XSharp.RDD
 
     INTERNAL STRUCT ScopeInfo
         INTERNAL Buffer AS BYTE[]
-        INTERNAL VALUE  AS OBJECT
+        INTERNAL Value  AS OBJECT
         INTERNAL Size   AS LONG
-        INTERNAL PROPERTY IsSet  AS LOGIC GET VALUE != NULL
+        INTERNAL PROPERTY IsSet  AS LOGIC GET Value != NULL
         INTERNAL METHOD Clear() AS VOID
-            VALUE := NULL
+            Value := NULL
             Size  := 0
             RETURN
-        INTERNAL METHOD SetBuffer(nSIze AS LONG) AS VOID
+        INTERNAL METHOD SetBuffer(nSize AS LONG) AS VOID
             SELF:Buffer := BYTE[]{ nSize }
             RETURN
     END STRUCT
@@ -31,7 +31,7 @@ BEGIN NAMESPACE XSharp.RDD
         
     END ENUM
 
-	PUBLIC CLASS SortRecord
+	INTERNAL CLASS SortRecord
 		PRIVATE _data AS BYTE[]
 		PRIVATE _Recno AS LONG
         INTERNAL PROPERTY Duplicate AS LOGIC AUTO

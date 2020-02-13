@@ -10,18 +10,22 @@
     <Dialect>FoxPro</Dialect>
     <OutputName>XSharp.VFP</OutputName>
     <AZ>false</AZ>
-    <CS>false</CS>
+    <CS>true</CS>
     <LB>false</LB>
     <OVF>false</OVF>
     <Unsafe>true</Unsafe>
     <INS>false</INS>
     <NS>true</NS>
     <VulcanCompatibleResources>True</VulcanCompatibleResources>
-    <NamedArgs />
+    <NamedArgs>false</NamedArgs>
     <XSharpProjectversion>2.0.5.0</XSharpProjectversion>
     <IncludePaths>$(CommonInclude)</IncludePaths>
     <Nostandarddefs>true</Nostandarddefs>
     <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
+    <StandardDefs />
+    <MemVar>false</MemVar>
+    <Undeclared>false</Undeclared>
+    <InitLocals>false</InitLocals>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -59,7 +63,7 @@
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <UseSharedCompilation>true</UseSharedCompilation>
-    <DisabledWarnings>162,171,553,1591</DisabledWarnings>
+    <DisabledWarnings>162,171,553,1591,169,1573,649</DisabledWarnings>
     <DocumentationFile>XSharp.VFP.Xml</DocumentationFile>
     <CommandLineOption>/noclipcall</CommandLineOption>
   </PropertyGroup>
@@ -88,17 +92,37 @@
     <Compile Include="Classes\Collection.prg" />
     <Compile Include="Classes\Abstract.prg" />
     <Compile Include="Classes\Custom.prg" />
+    <Compile Include="NotSupported.prg" />
+    <Compile Include="ToDo-SQL.prg" />
+    <Compile Include="ToDo-TUVWX.prg" />
+    <Compile Include="ToDo-S.prg" />
+    <Compile Include="ToDo-QR.prg" />
+    <Compile Include="ToDo-NOP.prg" />
+    <Compile Include="ToDo-KLM.prg" />
+    <Compile Include="MiscFunctions.prg" />
+    <Compile Include="ToDo-HI.prg" />
+    <Compile Include="ToDo-G.prg" />
+    <Compile Include="DbFunctions.prg" />
+    <Compile Include="ToDo-EF.prg" />
+    <Compile Include="DateFunctions.prg" />
+    <Compile Include="ToDo-D.prg" />
+    <Compile Include="ToDo-C.prg" />
+    <Compile Include="ToDo-B.prg" />
     <Compile Include="Enums.prg" />
     <Compile Include="Functions.prg" />
+    <Compile Include="ToDo-A.prg" />
+    <Compile Include="NumericFunctions.prg" />
     <Compile Include="Properties\AssemblyInfo.prg">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="StringFunctions.prg" />
     <Compile Include="SystemVariables.prg" />
     <Compile Include="TextOutPut.prg" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Classes" />
     <Folder Include="Properties\" />
+    <Folder Include="VFPFileStructures\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\XSharp.Core\XSharp.Core.xsproj">
@@ -113,7 +137,25 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="WhatToDoWith.txt" />
+    <None Include="functionsToImplement.txt" />
+    <None Include="VFPDocs.xml" />
+    <None Include="VFPFileStructures\VFP26Form-2.pdf" />
+    <None Include="VFPFileStructures\VFP26Form.pdf" />
+    <None Include="VFPFileStructures\VFP26Menu.pdf" />
+    <None Include="VFPFileStructures\VFP26Project-2.pdf" />
+    <None Include="VFPFileStructures\VFP26Project.pdf" />
+    <None Include="VFPFileStructures\VFP26Report-2.pdf" />
+    <None Include="VFPFileStructures\VFP26Report.pdf" />
+    <None Include="VFPFileStructures\VFP60Dbc2.pdf" />
+    <None Include="VFPFileStructures\VFP6Dbc.pdf" />
+    <None Include="VFPFileStructures\VFP6Form.pdf" />
+    <None Include="VFPFileStructures\VFP6Form2.pdf" />
+    <None Include="VFPFileStructures\VFP6Menu.pdf" />
+    <None Include="VFPFileStructures\VFP6Project.pdf" />
+    <None Include="VFPFileStructures\VFP6Project2.pdf" />
+    <None Include="VFPFileStructures\VFP6Report.pdf" />
+    <None Include="VFPFileStructures\VFP6Report2.pdf" />
+    <None Include="VfpRuntimeDocs.xml" />
   </ItemGroup>
   <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->
   <ProjectExtensions>

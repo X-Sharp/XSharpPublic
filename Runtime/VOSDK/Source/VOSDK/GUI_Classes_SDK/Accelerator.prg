@@ -134,6 +134,13 @@ METHOD Destroy()
    RETURN NIL
 
 
+ACCESS Empty  AS LOGIC
+   //SE-120216
+   IF hAccel == NULL_PTR
+      RETURN (ALen(aAccels) == 0)
+   ENDIF
+   RETURN FALSE
+
 METHOD Handle() AS PTR
 	//SE-060525
 

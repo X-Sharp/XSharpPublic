@@ -59,6 +59,11 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal("1234 AB", Transform("1234ab", "@R! 9999 AA"))
 			Assert.Equal("1234 AB", Transform("1234ab", "@R 9999 !!"))
 
+			Assert.Equal("ABCDEF", Transform("AbcdeF", "@!"))
+			Assert.Equal("ABCDEF", Transform("AbcdeF", "@LLL!LLL"))
+			Assert.Equal("ABCDEF", Transform("AbcdeF", "@A!L"))
+			Assert.Equal("ABC", Transform("AbcdeF", "@! AAA"))
+
 		[Fact, Trait("Category", "TransForm")];
 		METHOD TransformLongTest() AS VOID 
 			SetDecimalSep('.')
@@ -82,6 +87,11 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			SetDecimalSep(',')
 			SetThousandSep('.')
 			Assert.Equal("1.234", Transform(1234, "9,999"))
+
+			Assert.Equal("***,**", Transform(-188.96, "999.99"))
+			Assert.Equal("***,**%", Transform(-188.96, "@RE 999.99%"))
+			Assert.Equal("188,96", Transform(188.96, "999.99"))
+			Assert.Equal("***,**", Transform(1188.96, "999.99"))
 
 
 		[Fact, Trait("Category", "TransForm")];

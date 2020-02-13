@@ -147,12 +147,20 @@ FUNCTION VoDbEof() AS LOGIC
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbeval/*" /> 
 /// <seealso cref="M:XSharp.CoreDb.Eval(XSharp.ICodeblock,XSharp.ICodeblock,XSharp.ICodeblock,System.Object,System.Object,System.Boolean)"  />
 FUNCTION VoDbEval(cbExecute AS USUAL,cbForCondition AS USUAL,cbWhileCondition AS USUAL,nNext AS USUAL,nRecord AS USUAL,lRest AS LOGIC) AS LOGIC
-    RETURN VoDb.Eval(VoDb.ValidBlock(cbExecute), VoDb.ValidBlock(cbForCondition), VoDb.ValidBlock(cbWhileCondition), nNext, nRecord, lRest)
+    cbExecute           := VoDb.ValidBlock(cbExecute, {||NIL})
+    cbForCondition      := VoDb.ValidBlock(cbForCondition)
+    cbWhileCondition    := VoDb.ValidBlock(cbWhileCondition)
+    RETURN VoDb.Eval(VoDb.ValidBlock(cbExecute), cbForCondition, cbWhileCondition, nNext, nRecord, lRest)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbfieldget/*" /> 
 /// <seealso cref="M:XSharp.CoreDb.FieldGet(System.UInt32,System.Object@)"  />
 FUNCTION VoDbFieldGet(wFieldPos AS DWORD,ptrRetVal REF USUAL) AS LOGIC
     RETURN VoDb.FieldGet(wFieldPos, REF ptrRetVal)
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbfieldget/*" /> 
+/// <seealso cref="M:XSharp.CoreDb.FieldGet(System.UInt32,System.Object@)"  />
+FUNCTION VoDbFieldGetBytes(wFieldPos AS DWORD,ptrRetVal REF BYTE[]) AS LOGIC
+    RETURN VoDb.FieldGetBytes(wFieldPos, REF ptrRetVal)
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbfieldinfo/*" /> 
@@ -170,6 +178,12 @@ FUNCTION VoDbFieldInfo(kInfoType AS DWORD,wFieldPos AS DWORD,uValue AS USUAL) AS
 /// <seealso cref="M:XSharp.CoreDb.FieldPut(System.UInt32,System.Object)"  />
 FUNCTION VoDbFieldPut(wFieldPos AS DWORD,uNewValue AS USUAL) AS LOGIC
     RETURN VoDb.FieldPut(wFieldPos, uNewValue)
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbfieldput/*" /> 
+/// <seealso cref="M:XSharp.CoreDb.FieldPut(System.UInt32,System.Object)"  />
+FUNCTION VoDbFieldPutBytes(wFieldPos AS DWORD,uNewValue AS BYTE[]) AS LOGIC
+    RETURN VoDb.FieldPutBytes(wFieldPos, uNewValue)
+
 
 /// <inheritdoc cref="M:XSharp.CoreDb.FileGet(System.UInt32,System.String)"  />
 /// <seealso cref="M:XSharp.CoreDb.FileGet(System.UInt32,System.String)"  />
@@ -215,7 +229,7 @@ FUNCTION VoDbGoBottom() AS LOGIC
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbgoto/*" />     
 /// <seealso cref="M:XSharp.CoreDb.Goto(System.Object)"  />
 FUNCTION VoDbGoto(uRecId AS USUAL) AS LOGIC
-    RETURN VoDb.Goto(uRecID)
+    RETURN VoDb.Goto(uRecId)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbgotop/*" />          
 /// <seealso cref="M:XSharp.CoreDb.GoTop"  />        
@@ -401,7 +415,7 @@ FUNCTION VoDbRelation(wRelation AS DWORD, pszRelation REF STRING) AS LOGIC
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbrlock/*" />
 /// <seealso cref="M:XSharp.CoreDb.RLock(System.Object)"  />
-FUNCTION VoDbRlock(uRecID AS USUAL) AS LOGIC
+FUNCTION VoDbRlock(uRecId AS USUAL) AS LOGIC
     RETURN VoDb.RLock(uRecId)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbseek/*" />
@@ -469,13 +483,13 @@ FUNCTION VoDbSkip(liRecords AS LONG) AS LOGIC
     
 /// <inheritdoc cref="M:XSharp.CoreDb.SkipScope(System.Int32,XSharp.RDD.Support.DbScopeInfo)"  />  
 /// <seealso cref="M:XSharp.CoreDb.SkipScope(System.Int32,XSharp.RDD.Support.DbScopeInfo)"  />  
-FUNCTION VoDbSkipScope(nRecords AS LONG,scope AS DBSCOPEINFO) AS LOGIC 
+FUNCTION VoDbSkipScope(nRecords AS LONG,scope AS DbScopeInfo) AS LOGIC 
     RETURN VoDb.SkipScope(nRecords, scope) 
 
-/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbsort/*" />   
-/// <seealso cref="M:XSharp.CoreDb.Sort(System.UInt32,XSharp._FieldNames,XSharp.ICodeblock,XSharp.ICodeblock,System.Object,System.Object,System.Boolean,XSharp._FieldNames)"  />
 /// <param name="fldNames">List of field names to copy</param>
 /// <param name="fnSortNames">List of field names to sort on</param>
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbsort/*" />   
+/// <seealso cref="M:XSharp.CoreDb.Sort(System.UInt32,XSharp._FieldNames,XSharp.ICodeblock,XSharp.ICodeblock,System.Object,System.Object,System.Boolean,XSharp._FieldNames)"  />
 FUNCTION VoDbSort(nDest AS DWORD,fldNames AS _FieldNames,cbForCondition AS USUAL,cbWhileCondition AS USUAL, nNext AS USUAL,nRecord AS USUAL,lRest AS LOGIC,fnSortNames AS _FieldNames) AS LOGIC
     RETURN VoDb.Sort(nDest, fldNames, VoDb.ValidBlock(cbForCondition), VoDb.ValidBlock(cbWhileCondition), nNext, nRecord, lRest, fnSortNames)
 
@@ -498,13 +512,13 @@ FUNCTION VoDbTransRec(nDest AS DWORD,fldNames AS _FieldNames) AS LOGIC
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbunlock/*" /> 
 /// <remarks> <inheritdoc cref="M:XSharp.CoreDb.Unlock(System.Object)"  />
 /// <br/><br/> <note type="tip">The difference between VoDbUnlock and CoreDb.UnLock is that VoDbUnlock takes USUAL parameters</note></remarks>
-FUNCTION VoDbUnlock(uRecID AS USUAL) AS LOGIC
-    RETURN VoDb.UnLock( uRecID)
+FUNCTION VoDbUnlock(uRecId AS USUAL) AS LOGIC
+    RETURN VoDb.Unlock( uRecId)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbunlockall/*" /> 
 /// <seealso cref="M:XSharp.CoreDb.OrdBagExt"  /> 
 FUNCTION VoDbUnLockAll() AS LOGIC
-    RETURN VoDb.UnLockAll()
+    RETURN VoDb.UnlockAll()
 
 /// <overloads>
 /// <summary>

@@ -9,34 +9,34 @@ USING System
 USING System.Collections.Generic
 USING System.Text
 USING XSharp.RDD
-USING XSharp.RDD.ENums
+USING XSharp.RDD.Enums
 USING XSharp.RDD.Support
 
 CLASS XSharp.ADS.ADSMemo INHERIT BaseMemo
-    PRIVATE oRDD AS ADSRDD 
+    PRIVATE oRdd AS ADSRDD 
     
-    CONSTRUCTOR(oArea AS WorkArea)
+    CONSTRUCTOR(oArea AS Workarea)
         SUPER(oArea)
         oRdd := oArea ASTYPE ADSRDD
     #region Helpers    
-    PROPERTY Table AS IntPtr GET oRDD:_Table
+    PROPERTY Table AS IntPtr GET oRdd:_Table
     
     PRIVATE METHOD _CheckError(nResult AS DWORD) AS LOGIC
-        RETURN SELF:oRDD:_CheckError(nResult)
+        RETURN SELF:oRdd:_CheckError(nResult)
     PRIVATE METHOD Unsupported(strFunctionName AS STRING) AS LOGIC
-        SELF:oRDD:UnSupported(strFunctionName )
+        SELF:oRdd:Unsupported(strFunctionName )
         RETURN FALSE
     #endregion        
     /// <summary>This method is not supported by the AdsMemo class </summary>
     #region Supported
     VIRTUAL METHOD Flush() 			AS LOGIC
-        RETURN oRDD:Flush()
+        RETURN oRdd:Flush()
         
         /// <inheritdoc />
     METHOD GetValueLength(nFldPos AS LONG) AS LONG
         LOCAL fld AS RddFieldInfo
         LOCAL dwField := (DWORD) nFldPos +1 AS DWORD
-        fld := SELF:oRDD:_Fields[nFldPos]
+        fld := SELF:oRdd:_Fields[nFldPos]
         IF fld:FieldType == DbFieldType.Memo
             SELF:_CheckError(ACE.AdsGetFieldLength(SELF:Table, dwField,OUT VAR dwLen))
             RETURN (LONG) dwLen

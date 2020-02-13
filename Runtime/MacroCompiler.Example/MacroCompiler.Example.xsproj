@@ -12,7 +12,7 @@
     <Name>MacroCompiler.Example</Name>
     <Nologo>true</Nologo>
     <GenerateFullPaths>true</GenerateFullPaths>
-    <Dialect>FoxPro</Dialect>
+    <Dialect>VO</Dialect>
     <OutputName>MacroCompilerTest</OutputName>
     <StartupObject />
     <ApplicationIcon />
@@ -73,7 +73,6 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <UseSharedCompilation>false</UseSharedCompilation>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.targets" />
   <ItemGroup>

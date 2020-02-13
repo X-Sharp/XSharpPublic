@@ -21,6 +21,7 @@ namespace XSharp.MacroCompiler
         // Configuration
         MacroOptions _options;
         bool AllowMissingSyntax { get { return _options.AllowMissingSyntax; } }
+        bool AllowExtraneousSyntax { get { return _options.AllowExtraneousSyntax; } }
 
         // State
         int _index = 0;
@@ -82,6 +83,16 @@ namespace XSharp.MacroCompiler
         bool Expect(TokenType c)
         {
             if (La() == c)
+            {
+                Consume();
+                return true;
+            }
+            return false;
+        }
+
+        bool ExpectAny(params TokenType[] c)
+        {
+            if (c.Contains(La()))
             {
                 Consume();
                 return true;
@@ -292,16 +303,18 @@ namespace XSharp.MacroCompiler
                 case TokenType.INVALID_NUMBER:
                     throw Error(Lt(), ErrorCode.InvalidNumber);
                 case TokenType.ARRAY:
-                case TokenType.CODEBLOCK:
                 case TokenType.DATE:
+                case TokenType.DATETIME:
+                    if (TokenAttr.IsSoftKeyword(La()) && La(2) == TokenType.LPAREN)
+                        return ParseFieldAlias() ?? ParseNameOrCtorCallOrSpecialFunc(ParseTypeSuffix(ParseQualifiedName()));
+                    return ParseNativeTypeOrCast(new NativeTypeExpr(ConsumeAndGet()));
+                case TokenType.CODEBLOCK:
                 case TokenType.FLOAT:
                 case TokenType.PSZ:
                 case TokenType.SYMBOL:
                 case TokenType.USUAL:
-                    return ParseNativeTypeOrCast(new NativeTypeExpr(ConsumeAndGet()));
                 case TokenType.BYTE:
                 case TokenType.CHAR:
-                case TokenType.DATETIME:
                 case TokenType.DECIMAL:
                 case TokenType.DWORD:
                 case TokenType.DYNAMIC:
@@ -688,9 +701,11 @@ namespace XSharp.MacroCompiler
 
             var l = ParseExprList();
 
+            if (AllowExtraneousSyntax) while (ExpectAny(TokenType.RPAREN)) { }
+
             Require(Expect(TokenType.RCURLY) || AllowMissingSyntax, ErrorCode.Expected, "}");
 
-            return new Codeblock(p, l);
+            return new Codeblock(p, new ReturnStmt(l));
         }
 
         internal Codeblock ParseMacro()
@@ -701,7 +716,10 @@ namespace XSharp.MacroCompiler
 
             var l = ParseExprList();
             if (l != null)
-                return RequireEnd(new Codeblock(null, l), ErrorCode.Unexpected, Lt());
+            {
+                if (AllowExtraneousSyntax) while (ExpectAny(TokenType.RPAREN)) { }
+                return RequireEnd(new Codeblock(null, new ReturnStmt(l)), ErrorCode.Unexpected, Lt());
+            }
 
             return null;
         }
@@ -722,6 +740,17 @@ namespace XSharp.MacroCompiler
             Require(Expect(TokenType.LPAREN), ErrorCode.Expected, "(");
 
             var e = Require(ParseExpression(), ErrorCode.Expected, "expression");
+            if (La() == TokenType.COMMA)
+            {
+                var elements = new List<Expr>();
+                elements.Add(e);
+                while (Expect(TokenType.COMMA))
+                {
+                    e = Require(ParseExpression(), ErrorCode.Expected, "expression");
+                    elements.Add(e);
+                }
+                e = new ExprList(elements);
+            }
 
             Require(Expect(TokenType.RPAREN) || AllowMissingSyntax, ErrorCode.Expected, ")");
 

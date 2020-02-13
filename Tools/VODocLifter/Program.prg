@@ -5,17 +5,22 @@ USING System.Text
 using SYstem.Xml
 using System.Reflection
 
-global oCore as Assembly
+global aAssemblies as List<Assembly>
 global oRT   as Assembly
 global oVO   as Assembly
 
 BEGIN NAMESPACE ConsoleApplication8
 
 	FUNCTION Start() AS VOID STRICT
-        local oRdr := VoDocReader{} as VoDocReader
-        oCore  := System.Reflection.Assembly.LoadFrom("c:\XSharp\DevRt\Binaries\Documentation\XSharp.Core.dll")
-        oRT    := System.Reflection.Assembly.LoadFrom("c:\XSharp\DevRt\Binaries\Documentation\XSharp.RT.dll")
-        oVO    := System.Reflection.Assembly.LoadFrom("c:\XSharp\DevRt\Binaries\Documentation\XSharp.VO.dll")
+        LOCAL oRdr := VoDocReader{} AS VoDocReader
+        aAssemblies := List<Assembly>{}
+        aAssemblies:Add(System.Reflection.Assembly.LoadFrom("c:\XSharp\DevRt\Binaries\Documentation\VOWin32APILibrary.dll"))
+        aAssemblies:Add(System.Reflection.Assembly.LoadFrom("c:\XSharp\DevRt\Binaries\Documentation\VOSystemClasses.dll"))
+        aAssemblies:Add(System.Reflection.Assembly.LoadFrom("c:\XSharp\DevRt\Binaries\Documentation\VORDDClasses.dll"))
+        aAssemblies:Add(System.Reflection.Assembly.LoadFrom("c:\XSharp\DevRt\Binaries\Documentation\VOSQLClasses.dll"))
+        aAssemblies:Add(System.Reflection.Assembly.LoadFrom("c:\XSharp\DevRt\Binaries\Documentation\VOGUIClasses.dll"))
+        aAssemblies:Add(System.Reflection.Assembly.LoadFrom("c:\XSharp\DevRt\Binaries\Documentation\VOReportClasses.dll"))
+        aAssemblies:Add(System.Reflection.Assembly.LoadFrom("c:\XSharp\DevRt\Binaries\Documentation\VOInterNetClasses.dll"))
         oRdr:Read()
 	
 END NAMESPACE 
@@ -25,9 +30,11 @@ END NAMESPACE
 CLASS VoDocReader
     PROTECT oDoc 	AS XmlDocument
     PROTECT cPath   AS STRING
+    PROTECT cFile   AS STRING
     protect currentSection as string
     protect CurrentLines as List<String>
-    protect Title   as List<String>
+    PROTECT cTitle AS STRING
+    PROTECT Title   AS List<STRING>
     protect Arguments as List<String>
     protect Returns as List<String>
     protect Description as List<String>
@@ -35,30 +42,48 @@ CLASS VoDocReader
     protect Syntax as List<String>
     protect Examples as List<String>
     protect SeeAlso as List<String>
-    protect output as stringBuilder
+    PROTECT Ignore AS List<STRING>
+    PROTECT output AS stringBuilder
     protect inCode as LOGIC
+    PROTECT inList AS LOGIC
     CONSTRUCTOR()
         cPath := "c:\XSharp\VOHelp\Cavo\CavoRef\Topics"
 
     METHOD Read() AS VOID STRICT
-        var files := System.IO.Directory.GetFiles(cPath, "Function_*.xml")
+        VAR files := System.IO.Directory.GetFiles(cPath, "*.xml")
         output := StringBuilder{}
         output:AppendLine(e"<?xml version=\"1.0\" encoding=\"utf-8\"?>")
-        output:AppendLine("<Runtimefunctions>")
-        foreach var sFile in files
-            processfile(sFile)
-        next
-        output:AppendLine("</Runtimefunctions>")
+        output:AppendLine("<doc><members>")
+        FOREACH VAR sFile IN files
+            VAR sFileName := System.IO.Path.GetFileName(sFile):ToLower()
+            DO CASE
+            CASE sFilename:StartsWith("class")
+                NOP
+            CASE sFilename:StartsWith("method")
+                NOP
+            CASE sFilename:StartsWith("a_")
+                NOP
+            CASE sFilename:StartsWith("export")
+                NOP
+            OTHERWISE
+                LOOP
+            ENDCASE
+            console.WriteLine(sFile)
+            processFile(sFile)
+        NEXT
+        
+        output:AppendLine("</members></doc>")
         var result := output:ToString()
         result := result:Replace("&lt;%APP%&gt;","X#")
         result := result:Replace("&lt;%app%&gt;","X#")
-        System.IO.File.WriteAllText("c:\XSharp\DevRt\Runtime\XSharp.RT\VoFunctionDocs.xml",result)
+        System.IO.File.WriteAllText("c:\XSharp\DevRt\Docs\SDKFunctionDocs.xml",result)
         console.Write("done")
-        
+        console.ReadLine()
 
     method processfile(sFile as string) as void
         var oDoc := System.Xml.XmlDocument{}
-        var reader := System.IO.StreamReader{sFile,TRUE}
+        VAR reader := System.IO.StreamReader{sFile,TRUE}
+        cFile       := sFile
         Title       := List<String>{}
         Arguments   := List<String>{}
         Returns     := List<String>{}
@@ -66,19 +91,20 @@ CLASS VoDocReader
         Notes       := List<String>{}
         Syntax      := List<String>{}
         Examples    := List<String>{}
-        SeeAlso     := List<String>{}
+        SeeAlso     := List<STRING>{}
+        Ignore      := List<STRING>{}
         CurrentLines := Title
         oDoc:Load(reader)
         reader:Close()
         SELF:WalkNode(oDoc)
         sFile := System.IO.Path.GetFileNameWithoutExtension(sFile):ToLower()
         sFile := sFile:Replace("function_","")
-        output:AppendLine("<"+sFile+">")
+        output:AppendLine(e"<member name=\""+cTitle+e"\">")
         DumpSection(Title, "summary")
         DumpParameters(Arguments)
         DumpSection(Returns,"returns")
         local hasNotes := false as logic
-        foreach var sLine in Notes
+        FOREACH VAR sLine IN Notes
             if sLine != "<br/>"
                 if (! hasNotes)
                     Description:Add(e"<note type=\"tip\">")
@@ -94,7 +120,7 @@ CLASS VoDocReader
         //DumpSection("Syntax", Syntax,"")
         DumpSection(Examples,"example")
         DumpSection(Seealso,"")
-        output:AppendLine("</"+sFile+">")
+        output:AppendLine("</member>")
 
         
     METHOD WalkNode(oNode AS XmlNode) AS VOID
@@ -108,7 +134,9 @@ CLASS VoDocReader
 		    SELF:WalkNode((XMlNode) oChild)
             if oChild:Name == "para"
                 ProcessPara(oChild)
-            endif
+            ELSEIF oChild:Name == "title"
+                ProcessTitle(oChild)
+            ENDIF
 	    NEXT
 	    RETURN
 
@@ -124,11 +152,18 @@ CLASS VoDocReader
                 if oText:Name == "tab"
                     cLine += "&#0009;"
                 endif
-                var atts := oText:Attributes
+                IF oText:Name == "br"
+                    cLine += "<br/>"+environment.NewLine
+                ENDIF
+                VAR atts := oText:Attributes
                 foreach att as XmlAttribute in atts
                     if att:Name:ToLower() == "styleclass"
                         switch att:Value
-                        case "Heading1"
+                        CASE "Heading1"
+                            IF SELF:InList
+                                SELF:InList := FALSE
+                                SELF:CurrentLines:Add("</list>")
+                            ENDIF
                             switch oText:InnerText:ToLower()
                                 case "syntax"
                                     CurrentLines := Syntax
@@ -136,33 +171,68 @@ CLASS VoDocReader
                                     CurrentLines := Arguments
                                 case "returns"
                                     CurrentLines := Returns
-                                case "description"
-                                    CurrentLines := Description
+                                CASE "description"
+                                    IF Title:Count == 0
+                                        CurrentLines := Title
+                                    ELSE
+                                        CurrentLines := Description
+                                     ENDIF
                                 case "notes"
+                                CASE "note"
                                     CurrentLines := Notes
-                                case "examples"
+                                CASE "examples"
+                                case "example"
                                     CurrentLines := Examples
                                 case "prototype"
                                     CurrentLines := Syntax
                                 case "seealso"
                                 case "see also"
                                     CurrentLines := SeeAlso
-                            end switch
+                                CASE "class"
+                                CASE "properties"
+                                CASE "methods"
+                                    CurrentLines := Ignore
+                                CASE "purpose"
+                                    NOP
+                                OTHERWISE
+                                   NOP
+                            END SWITCH
                         case "Normal"
                             cLine += oText:InnerXML
-                        case "List"
+                        CASE "List"
                             cLine += oText:InnerXML
                         case "Code Example"
                             lCode := TRUE
                             cLine += oText:InnerXML
-                        otherwise
+                        OTHERWISE
+
                             cLine += oText:InnerXML
                         end switch
                     endif
                 next
-            next
+            NEXT
+            DO WHILE cLine:EndsWith("&#0009;")
+                cLine := cLine:Substring(0,cLine:Length-"&#0009;":Length)
+            ENDDO
+
+            IF currentLines == SELF:Description
+                IF cLine:ToLower():Contains( "&#0009;description")
+                    SELF:inList := TRUE
+                    VAR cPref := cLine:Substring(0, cLine:IndexOf("&#0009;description",StringComparison.OrdinalIgnoreCase))
+                    cLine := e"<list type=\"table\">\r\n<listheader><term>"+cPref+"</term><description>Description</description></listheader>"
+                ELSEIF SELF:inList .AND. cLine:Contains("&#0009;")
+                    DO WHILE cLine:Contains("&#0009;&#0009;")
+                        cLine := cLine:Replace("&#0009;&#0009;","&#0009;")
+                    ENDDO
+                    cLine := "<item><term>"+cLine:Replace("&#0009;","</term><description>")+"</description></item>"
+                ELSEIF SELF:inList
+                    SELF:InList := FALSE
+                    CurrentLines:Add("</list>")
+                ENDIF
+            ENDIF
+            cLine := cLine:Replace("&#0009;<br/>","<br/>")
             IF ! String.IsNullOrEmpty(cLine)
-                if lCode
+                IF lCode
                     cLine := "<code>"+cLine+"</code>"
                 endif
                 if !cLine:Contains("uses the PASCAL calling convention")
@@ -174,6 +244,76 @@ CLASS VoDocReader
         ENDIF
 
     METHOD ProcessTitle(oNode AS XmlNode) AS VOID
+        cTitle := oNode:InnerText:Replace(":","."):Trim()
+        IF cTitle:EndsWith("Access/Assign",StringComparison.OrdinalIgnoreCase)
+            cTitle := "P:"+cTitle:Replace("Access/Assign","")
+            cTitle := cTitle:Replace("access/assign","")
+        ELSEIF cTitle:EndsWith("Access",StringComparison.OrdinalIgnoreCase)
+            cTitle := "P:"+cTitle:Replace("Access","")
+            cTitle := cTitle:Replace("access","")
+        ELSEIF cTitle:EndsWith("Assign",StringComparison.OrdinalIgnoreCase)
+            cTitle := "P:"+cTitle:Replace("Assign","")
+            cTitle := cTitle:Replace("assign","")
+        ELSEIF cTitle:EndsWith("Class",StringComparison.OrdinalIgnoreCase)
+            cTitle := "T:"+cTitle:Replace("Class","")
+            cTitle := cTitle:Replace("class","")
+            
+        ELSEIF cTitle:EndsWith("Export",StringComparison.OrdinalIgnoreCase)
+            cTitle := "F:"+cTitle:Replace("Export","")
+            cTitle := cTitle:Replace("export","")
+        ELSEIF cTitle:EndsWith("Method",StringComparison.OrdinalIgnoreCase)
+            cTitle := "M:"+cTitle:Replace("Method",""):Replace("()","")
+            cTitle := cTitle:Replace("method","")
+        ELSEIF cFile:IndexOf("class_",Stringcomparison.OrdinalIgnoreCase) >= 0
+            cTitle := "T:"+cTitle
+        ELSE
+            cTitle := "M:"+cTitle:Replace("()","")
+        ENDIF
+        cTitle := cTitle:Trim()
+        IF cTitle:EndsWith(".Init")
+            cTitle := cTitle:Replace(".Init",".#ctor")
+        ENDIF
+        LOCAL cClass, cMember,cParams AS STRING
+        IF ! cTitle:StartsWith("T:")
+            cClass  := cTitle:Substring(2)
+            cClass  := cClass:Substring(0, cClass:IndexOf("."))
+            cClass  := "VO."+cClass
+            cMember := cTitle:Substring(cTitle:IndexOf(".")+1)
+            cParams := ""
+            FOREACH VAR oAsm IN aAssemblies
+                VAR oType := oAsm:GetType(cClass,FALSE,TRUE)
+                IF oType != NULL
+                    cClass := oType:FullName
+                    LOCAL oMembers := oType:GetMember(cMember:Replace("#","."),BindingFlags.IgnoreCase+BindingFlags.Public+BindingFlags.Instance) AS MemberInfo[]
+                    IF oMembers != NULL .AND. oMembers:Length > 0
+                        VAR oMember := oMembers[1]
+                        cMember := oMember:Name
+                        IF oMember IS ConstructorInfo VAR ctor
+                            FOREACH param AS parameterinfo IN ctor:GetParameters()
+                                IF cParams:Length > 0
+                                    cParams += ","
+                                ENDIF
+                                cParams += param:ParameterType:FullName:Replace("&","@")
+                            NEXT
+                        ELSEIF oMember IS MethodInfo VAR met
+                            FOREACH param AS parameterinfo IN met:GetParameters()
+                                IF cParams:Length > 0
+                                    cParams += ","
+                                ENDIF
+                                cParams += param:ParameterType:FullName:Replace("&","@")
+                            NEXT
+                        ENDIF
+                    ENDIF
+                ENDIF
+            NEXT
+            IF cParams:Length > 0
+                cParams := "("+cParams+")"
+            ENDIF
+            cTitle := cTitle:Substring(0,2)+cClass+"."+cMember:Replace(".","#")+cParams
+        ELSE
+                cTitle := cTitle:Substring(0,2)+"VO."+cTitle:Substring(2)
+            
+        ENDIF
         RETURN
 
     Method DumpSection(lines as List<String>, tag as string) as void
@@ -181,121 +321,144 @@ CLASS VoDocReader
         local aTemp as List<String>
         local lHasCode := FALSE as LOGIC
         aTemp := List<string>{}
-        if (lines == SeeAlso)
+        IF (lines == SeeAlso)
+            /*
             foreach var c in Lines
                 var aElements := c:Split(',',StringSplitOptions.RemoveEmptyEntries)
                 foreach var s in aElements
-                    var sElement := s:Trim():Replace("()","")
-                    var type := oVO:GetType("XSharp.VO.Functions")
-                    var funcs := type:GetMember(sElement,BindingFlags.IgnoreCase+BindingFlags.Static+BindingFlags.Public)
-                    if funcs:Length == 0
-                        type := oRT:GetType("XSharp.RT.Functions")
-                        funcs := type:GetMember(sElement,BindingFlags.IgnoreCase+BindingFlags.Static+BindingFlags.Public)
-                    endif
-                    if funcs:Length == 0
-                        type := oCore:GetType("XSharp.Core.Functions")
-                        funcs := type:GetMember(sElement,BindingFlags.IgnoreCase+BindingFlags.Static+BindingFlags.Public)
-                    endif
-                    if funcs:Length > 1
-                        local proto as string
-                        // /// <seealso cref='M:XSharp.Core.Functions.L2Bin(System.Int32)' >L2Bin</seealso>
-                        proto := "O:"+type:FullName+"."+funcs[1]:Name
-                        var sLine := "<seealso cref='"+proto+"'>"+sElement+" Overload</seealso>"
-                        output:AppendLine(sLine)
-                    elseif funcs:Length == 1
-                        local funcinfo := (System.Reflection.MethodInfo) funcs[1] as System.Reflection.MethodInfo
-                        local proto as string
-                        // /// <seealso cref='M:XSharp.Core.Functions.L2Bin(System.Int32)' >L2Bin</seealso>
-                        proto := "M:"+type:FullName+"."+funcinfo:Name
-                        var pars := funcinfo:GetParameters()
-                        if pars:Length > 0
-                            proto += "("
-                            local first := true as logic
-                            foreach p as ParameterInfo in pars
-                                if ! first
-                                    proto += ","
-                                endif
-                                var partype := p:ParameterType:FullName
-                                if !String.IsNullOrEmpty(partype)
-                                    partype := partype:Replace("&","@")
-                                    proto += partype
-                                endif
-                                first := false
-                            next
-                            proto += ")"
-                        endif
-                        var sLine := "<seealso cref='"+proto+"'>"+sElement+"</seealso>"
-                        output:AppendLine(sLine)
-                    else
-                        var sLine := "<seealso>"+sElement:Trim()+"</seealso>"
+                    VAR sElement := s:Trim():Replace("()","")
+                    FOREACH oAsm AS Assembly IN aAssemblies
+                        VAR type := oVO:GetType("XSharp.VO.Functions")
+                        IF funcs:Length > 1
+                            LOCAL proto AS STRING
+                            // /// <seealso cref='M:XSharp.Core.Functions.L2Bin(System.Int32)' >L2Bin</seealso>
+                            proto := "O:"+type:FullName+"."+funcs[1]:Name
+                            VAR sLine := "<seealso cref='"+proto+"'>"+sElement+" Overload</seealso>"
+                            output:AppendLine(sLine)
+                        ELSEIF funcs:Length == 1
+                            LOCAL funcinfo := (System.Reflection.MethodInfo) funcs[1] AS System.Reflection.MethodInfo
+                            LOCAL proto AS STRING
+                            // /// <seealso cref='M:XSharp.Core.Functions.L2Bin(System.Int32)' >L2Bin</seealso>
+                            proto := "M:"+type:FullName+"."+funcinfo:Name
+                            VAR pars := funcinfo:GetParameters()
+                            IF pars:Length > 0
+                                proto += "("
+                                LOCAL first := TRUE AS LOGIC
+                                FOREACH p AS ParameterInfo IN pars
+                                    IF ! first
+                                        proto += ","
+                                    ENDIF
+                                    VAR partype := p:ParameterType:FullName
+                                    IF !String.IsNullOrEmpty(partype)
+                                        partype := partype:Replace("&","@")
+                                        proto += partype
+                                    ENDIF
+                                    first := FALSE
+                                NEXT
+                                proto += ")"
+                            ENDIF
+                            VAR sLine := "<seealso cref='"+proto+"'>"+sElement+"</seealso>"
+                            output:AppendLine(sLine)
+                        ELSE
+                        VAR sLine := "<seealso>"+sElement:Trim()+"</seealso>"
                         output:AppendLine(sLine)
                     endif
                 next
             next
             RETURN
-        endif
+                    */
+        ENDIF
         IF ! String.IsNullOrEmpty(tag)
-            output:AppendLine("<"+tag+">")
-            foreach var c in lines
-                var cLine := c:Trim()
-                cLine := cLine:Replace("</code><code>","")
-                if ! String.IsNullOrEmpty(cLine:Trim())
-                    if lastIsCode .and. cLine:StartsWith("<code>")
-                        cLine := cLine:Replace("<code>","")
-                    endif
-                    LastIsCode := cLine:Contains("<code>") .or. cLine:Contains("</code>")
-                    lHasCode := lHasCode .or. LastIsCode
-                endif
-                aTemp:Add(cLine)
-            next
-            if lHasCode 
-                local i as long
-                FOR i := 0 to aTemp:Count-1
-                    local sLine as string
-                    sLine := aTemp[i]
-                    if i < aTemp:Count-1 .and. sLine:Contains("</code>")
-                        LOCAL sNext as STRING
-                        sNext := aTemp[i+1]
-                        if sNext:Contains("<code>") .or. sNext:Contains("</code>")
-                           sLine := sLine:Replace("</code>", "")
-                        endif    
-                    endif
-                    aTemp[i] := sLine
+            VAR cTemp := ""
+            FOREACH VAR c IN lines
+                cTemp += c
+            NEXT
+            IF cTemp:Trim():Length > 0
+                output:AppendLine("<"+tag+">")
+                SELF:inList := FALSE
+                FOREACH VAR c IN lines
+                    VAR cLine := c:Trim()
+                    IF cLine:Contains("<list")
+                        SELF:inList := TRUE
+                    ENDIF
+                    IF cLine:Contains("</list>")
+                        SELF:inList := FALSE
+                    ENDIF
+                    cLine := cLine:Replace("</code><code>","")
+                    IF ! String.IsNullOrEmpty(cLine:Trim())
+                        IF lastIsCode .AND. cLine:StartsWith("<code>")
+                            cLine := cLine:Replace("<code>","")
+                        ENDIF
+                        LastIsCode := cLine:Contains("<code>") .OR. cLine:Contains("</code>")
+                        lHasCode := lHasCode .OR. LastIsCode
+                    ENDIF
+                    aTemp:Add(cLine)
                 NEXT
-            ENDIF
-            foreach var s in aTemp
-                var sLine := s
-                if sLine:Contains("<code>")
-                    sLine := sLine:Replace("<code>",e"<code language=\"X#\">")
-                endif
-                output:AppendLine(sLine)
-            next
-            output:AppendLine("</"+tag+">")
-        endif
+                IF lHasCode 
+                    LOCAL i AS LONG
+                    FOR i := 0 TO aTemp:Count-1
+                        LOCAL sLine AS STRING
+                        sLine := aTemp[i]
+                        IF i < aTemp:Count-1 .AND. sLine:Contains("</code>")
+                            LOCAL sNext AS STRING
+                            sNext := aTemp[i+1]
+                            IF sNext:Contains("<code>") .OR. sNext:Contains("</code>")
+                               sLine := sLine:Replace("</code>", "")
+                            ENDIF    
+                        ENDIF
+                        aTemp[i] := sLine
+                    NEXT
+                ENDIF
+                FOREACH VAR s IN aTemp
+                    VAR sLine := s
+                    IF sLine:Contains("<code>")
+                        sLine := sLine:Replace("<code>",e"<code language=\"X#\">")
+                    ENDIF
+                    output:AppendLine(sLine)
+                NEXT
+                IF SELF:inList
+                    output:AppendLine("</list>")
+                    SELF:inList := FALSE
+                ENDIF
+                output:AppendLine("</"+tag+">")
+            endif
+        ENDIF
 
     Method DumpParameters(lines as List<String>) as void
         local lastLine := "" as string
-        FOREACH line as string in lines
+        FOREACH aline AS STRING IN lines
+            VAR line := aline:Replace('"','\'')
             var index := line:IndexOf("&#0009;")
-            if (index >= 0)
-                var name   := line:Substring(0, index)
+            VAR name := line
+            IF (index >= 0)
+                name   := line:Substring(0, index)
                 name := name:replace("&lt;","")
                 name := name:replace("&gt;",""):Trim()
-                var desc    := line:Substring(index+7)
-                if String.IsNullOrEmpty(name) .or. name:StartsWith("<code>")
-                    if lastline:EndsWith("</param>")
+                VAR desc    := line:Substring(index+7)
+                WHILE desc:StartsWith("&#0009;")
+                    desc := desc:Substring(7)
+                END
+                IF String.IsNullOrEmpty(name) .OR. name:StartsWith("<code>")
+                    IF lastline:EndsWith("</param>")
                         lastline := lastline:Replace("</param>","")
-                    endif
+                    ENDIF
                     lastline += "<br/>"+Environment.NewLine+"&#0009;"+name+desc+"</param>"
-                else
+                ELSE
+                    IF lastline:IndexOf("<param") == -1 .AND.  lastline:Trim():Length > 0
+                        lastline := "<param>"+lastline
+                    ENDIF
                     output:AppendLine(lastline)
                     lastline := e"<param name=\""+name+e"\">"+desc+"</param>"
-                endif
-            endif
+                ENDIF
+            endif            
         next
-        if ! String.IsNullOrEmpty(lastline)
+        IF ! String.IsNullOrEmpty(lastline)
+            IF lastline:IndexOf("<param") == -1 .AND.  lastline:Trim():Length > 0
+                lastline := "<param>"+lastline
+            ENDIF
             output:AppendLine(lastline)
         endif
 
 END CLASS
+
 

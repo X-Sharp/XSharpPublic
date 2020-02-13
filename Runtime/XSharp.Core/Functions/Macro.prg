@@ -12,7 +12,7 @@ USING System.Text
 /// <returns>The type of the currently defined MacroCompiler. This may be NULL if no type has been set yet and no macros have been compiled.</returns>
 /// <seealso cref="T:XSharp.IMacroCompiler"/>
 FUNCTION GetMacroCompiler () AS System.Type
-	RETURN XSharp.RuntimeState._macroCompilerType
+	RETURN XSharp.RuntimeState._macrocompilerType
 	
 /// <summary>
 /// Set the type of the class that must be used to compile macros
@@ -21,9 +21,9 @@ FUNCTION GetMacroCompiler () AS System.Type
 /// <returns>The type of the previously defined MacroCompiler. This may be NULL if no type has been set yet and no macros have been compiled.</returns>
 /// <seealso cref="T:XSharp.IMacroCompiler"/>
 FUNCTION SetMacroCompiler (oCompiler AS System.Type) AS System.Type
-VAR old := XSharp.RuntimeState._macroCompilerType
-XSharp.RuntimeState._macroCompilerType := oCompiler
-XSharp.RuntimeState._macroCompiler := NULL
+VAR old := XSharp.RuntimeState._macrocompilerType
+XSharp.RuntimeState._macrocompilerType := oCompiler
+XSharp.RuntimeState._macrocompiler := NULL
 RETURN old
 
 
@@ -35,9 +35,9 @@ RETURN old
 /// <returns>The previously defined MacroCompiler. This may be NULL if no compiler has been set yet and no macros have been compiled.</returns>
 /// <seealso cref="T:XSharp.IMacroCompiler"/>
 FUNCTION SetMacroCompiler (oCompiler AS IMacroCompiler) AS IMacroCompiler
-VAR old := XSharp.RuntimeState._macroCompiler
-XSharp.RuntimeState._macroCompiler := oCompiler
-XSharp.RuntimeState._macroCompilerType := oCompiler:GetType()
+VAR old := XSharp.RuntimeState._macrocompiler
+XSharp.RuntimeState._macrocompiler := oCompiler
+XSharp.RuntimeState._macrocompilerType := oCompiler:GetType()
 RETURN old
 
 
@@ -51,7 +51,7 @@ RETURN old
 /// <seealso cref="T:XSharp.MacroCompilerResolveAmbiguousMatch"/>
 
 FUNCTION SetMacroDuplicatesResolver(resolver as MacroCompilerResolveAmbiguousMatch) AS MacroCompilerResolveAmbiguousMatch
-    VAR old := XSharp.RuntimeState._macroResolver
+    VAR old := XSharp.RuntimeState._macroresolver
     XSharp.RuntimeState.MacroResolver := resolver
     RETURN old
     

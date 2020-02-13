@@ -23,7 +23,7 @@ FUNCTION MemoTran(cTarget ,cReplaceHardCR ,cReplaceSoftCR ) AS STRING CLIPPER
       THROW Error.ArgumentError( __ENTITY__, nameof(cReplaceSoftCR), 3, <OBJECT>{ cReplaceSoftCR } )
    ENDIF
    LOCAL cSrc := cTarget AS STRING
-    cSrc := cSrc:Replace( RuntimeState.EOL, cReplaceHardCR )
+    cSrc := cSrc:Replace( RuntimeState.Eol, cReplaceHardCR )
 	cSrc := cSrc:Replace( e"\0x8D\n" , cReplaceSoftCR)
 	RETURN cSrc
 	
@@ -39,10 +39,10 @@ FUNCTION MLCount(cString ,nLineLength ,nTabsize ,lWrap ) AS DWORD CLIPPER
 		THROW Error.DataTypeError( "MLCount", NAMEOF(nLineLength), 2, <OBJECT>{ nLineLength } )
 	ENDIF
 	
-	IF nTabSize == NIL
-		nTabSize := MemoHelpers.STD_TAB_WIDTH
-	ELSEIF !nTabSize:IsNumeric
-		THROW Error.DataTypeError( "MLCount", NAMEOF(nTabSize), 3, <OBJECT>{ nTabSize } )
+	IF nTabsize == NIL
+		nTabsize := MemoHelpers.STD_TAB_WIDTH
+	ELSEIF !nTabsize:IsNumeric
+		THROW Error.DataTypeError( "MLCount", NAMEOF(nTabsize), 3, <OBJECT>{ nTabsize } )
 	ENDIF
 	
 	IF lWrap == NIL

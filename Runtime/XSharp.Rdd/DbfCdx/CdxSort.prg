@@ -9,7 +9,7 @@ USING System
 USING System.Collections
 USING System.Collections.Generic
 USING System.Text
-USING XSharp.Rdd.Support
+USING XSharp.RDD.Support
 USING XSharp.RDD.Enums
 USING XSharp.RDD
 BEGIN NAMESPACE XSharp.RDD.CDX
@@ -42,8 +42,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF x:Recno == y:Recno
                 RETURN 0
             ENDIF
-            dataBuffer  := x:data
-            dataBuffer2 := y:data
+            dataBuffer  := x:Data
+            dataBuffer2 := y:Data
             diff        := 0
             iLen        := SELF:_sortInfo:Items[0]:Length
             // comparison using string rules
@@ -77,8 +77,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF x:Recno == y:Recno
                 RETURN 0
             ENDIF
-            dataBuffer  := x:data
-            dataBuffer2 := y:data
+            dataBuffer  := x:Data
+            dataBuffer2 := y:Data
             diff        := 0
             iLen        := SELF:_sortInfo:Items[0]:Length
             // Binary comparison

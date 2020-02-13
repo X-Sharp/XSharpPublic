@@ -237,7 +237,7 @@ FUNCTION AsString(uValue AS USUAL) AS STRING
                 result := "{[0000000000]0x00000000}"
             ELSE
                 VAR cHashCode := String.Format("{0:X8}", aValue:GetHashCode())
-                result := "{["+STRING.Format("{0:D10}",aValue:Length)+"]0x"+cHashCode+"}"
+                result := "{["+String.Format("{0:D10}",aValue:Length)+"]0x"+cHashCode+"}"
             ENDIF
 
         CASE uValue:IsObject
@@ -263,7 +263,7 @@ FUNCTION AsSymbol(uValue AS USUAL) AS SYMBOL
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/descend/*" />
 FUNCTION Descend(uValue AS USUAL) AS USUAL
-    IF uValue:isString
+    IF uValue:IsString
         RETURN _descendingString( (STRING) uValue)
     ELSEIF uValue:IsLogic
         RETURN ! (LOGIC) uValue
@@ -273,6 +273,10 @@ FUNCTION Descend(uValue AS USUAL) AS USUAL
         RETURN 0 - (INT64) uValue
     ELSEIF uValue:IsFloat
         RETURN 0 - (__Float) uValue
+    ELSEIF uValue:IsDecimal
+        RETURN 0 - (Decimal) uValue
+    ELSEIF uValue:IsCurrency
+        RETURN 0 - (__Currency) uValue
     ELSEIF uValue:IsDate
         RETURN 5231808 - (DWORD)(DATE) uValue 
     ENDIF
@@ -300,12 +304,14 @@ FUNCTION DescendA(uValue REF USUAL) AS USUAL
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ntrim/*" />
 FUNCTION NTrim(nNum AS USUAL) AS STRING
     LOCAL ret AS STRING
-    SWITCH nNum:_UsualType
-    CASE __usualType.Int64
-    CASE __usualType.Long
+    SWITCH nNum:_usualType
+    CASE __UsualType.Int64
+    CASE __UsualType.Long
       ret := ConversionHelpers.FormatNumber( (INT64) nNum, (INT) RuntimeState.Digits, 0):Trim()
     CASE __UsualType.Date
       ret := AsString( nNum )
+    CASE __UsualType.Currency
+      ret := ((__Currency) (nNum)):ToString()
     CASE __UsualType.Float
     CASE __UsualType.Decimal
       ret := ConversionHelpers.AdjustDecimalSeparator(_Str1(  (FLOAT) nNum )):Trim()
@@ -336,7 +342,7 @@ FUNCTION PadC( uValue AS USUAL, nLength AS INT, cFillChar := " " AS STRING ) AS 
 
     IF uValue:IsNil
         ret := ""
-    ELSEIF uValue:isNumeric
+    ELSEIF uValue:IsNumeric
         ret := NTrim( uValue)
     ELSE
         ret := uValue:ToString()
@@ -429,6 +435,12 @@ FUNCTION Str(nNumber ,nLength ,nDecimals ) AS STRING CLIPPER
     	END IF
 
     	RETURN cRet
+    ELSEIF nNumber:IsFloat
+        LOCAL oFloat AS FLOAT
+        oFloat := nNumber
+        IF oFloat:Digits != -1 .and. IsNil(nLength)
+        	nLength := oFloat:Digits
+        END IF
     END IF
 
     LOCAL result AS STRING
@@ -482,7 +494,7 @@ FUNCTION _Str(nValue ,uLen ,uDec ) AS STRING CLIPPER
         ELSE
             dwLen := (DWORD) nLen
         ENDIF
-        IF nValue:IsFloat
+        IF nValue:IsFractional
             RETURN _Str2(nValue, dwLen)
         ELSE
             RETURN ConversionHelpers.FormatNumber((INT64) nValue, nLen,0)
@@ -496,7 +508,7 @@ FUNCTION _Str(nValue ,uLen ,uDec ) AS STRING CLIPPER
         ENDIF
         nLen := uLen
         nDec := uDec
-        IF nValue:IsFLoat
+        IF nValue:IsFractional
             nLen := uLen
             IF nLen < 0
                 dwLen := System.UInt32.MaxValue
@@ -568,7 +580,7 @@ FUNCTION StrZero(nNumber AS USUAL,nLength AS INT) AS STRING
       THROW Error.DataTypeError( __FUNCTION__, NAMEOF(nNumber),1,nNumber)
     ENDIF
     LOCAL cValue := Str2(nNumber, (DWORD) nLength) AS STRING
-    RETURN _padZero(cValue)
+    RETURN _PadZero(cValue)
 
 
 
@@ -609,7 +621,7 @@ FUNCTION Str1(fNumber AS USUAL) AS STRING
     ENDIF
 
 INTERNAL FUNCTION _Str1(f AS FLOAT) AS STRING
-    VAR nDecimals := f:decimals
+    VAR nDecimals := f:Decimals
     VAR nDigits   := f:Digits
 
     SWITCH (Double)f
@@ -652,7 +664,7 @@ INTERNAL FUNCTION _Str2(f AS FLOAT,dwLen AS DWORD) AS STRING
    ELSEIF dwLen  != UInt32.MaxValue
       dwLen := Math.Min( dwLen, MAXDIGITS )
    ENDIF
-   VAR nDecimals := f:decimals
+   VAR nDecimals := f:Decimals
     IF nDecimals < 0 .OR. RuntimeState.DigitsFixed
         nDecimals := (SHORT) RuntimeState.Decimals
     ENDIF
@@ -812,7 +824,7 @@ INTERNAL FUNCTION _VOVal(cNumber AS STRING) AS USUAL
         cPrev := c
     NEXT
     IF pos < cNumber:Length
-        cNumber := cNumber:SubString(0, pos)
+        cNumber := cNumber:Substring(0, pos)
     ENDIF
     IF cNumber:IndexOf('-') == 0 .and. cNumber:Length > 2 .and. cNumber[1] == ' '
         cNumber := "-" + cNumber:Substring(1):Trim()

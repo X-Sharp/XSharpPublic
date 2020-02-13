@@ -406,6 +406,14 @@ METHOD StatusMessage(oHL, nType)
 	RETURN NIL
 	
 
+ACCESS SystemMenu AS SystemMenu
+	RETURN oSysMenu
+	
+
+ASSIGN SystemMenu (oMenu AS SystemMenu)  
+	oSysMenu := oMenu
+    RETURN
+	
 METHOD WarningMessage(aPlace1, aPlace2) 
 	RETURN WarningBox{SELF, aPlace1, aPlace2}:Show()
 

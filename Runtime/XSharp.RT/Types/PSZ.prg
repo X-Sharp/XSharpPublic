@@ -18,7 +18,7 @@ BEGIN NAMESPACE XSharp
 	STRUCTURE __Psz IMPLEMENTS  IEquatable<__Psz>
 		PRIVATE _value AS BYTE PTR
 		/// <exclude />	
-		STATIC PROPERTY _NULL_PSZ AS __Psz GET (__Psz) IntPtr.zero
+		STATIC PROPERTY _NULL_PSZ AS __Psz GET (__Psz) IntPtr.Zero
 		PRIVATE STATIC _pszList AS List< IntPtr>
 		INTERNAL STATIC METHOD RegisterPsz(pszToRegister AS PSZ) AS VOID
 			IF _pszList == NULL
@@ -26,7 +26,7 @@ BEGIN NAMESPACE XSharp
 				AppDomain.CurrentDomain:ProcessExit += System.EventHandler{ NULL, @__FreePSZs() }
 			ENDIF
 			IF !_pszList:Contains(pszToRegister:Address)
-				_pszList:add(pszToRegister:Address)
+				_pszList:Add(pszToRegister:Address)
 			ENDIF
 			RETURN
 		
@@ -68,7 +68,7 @@ BEGIN NAMESPACE XSharp
 	
 		/// <exclude />	
 		METHOD DebuggerString() AS STRING
-			RETURN IIF( _value == NULL_PTR, "NULL_PSZ", e"\""+ tostring() +  e"\"" )
+			RETURN IIF( _value == NULL_PTR, "NULL_PSZ", e"\""+ SELF:ToString() +  e"\"" )
 		
 		/// <exclude />	
 		METHOD Equals( p AS PSZ ) AS LOGIC
@@ -196,7 +196,7 @@ BEGIN NAMESPACE XSharp
 			END GET
 			SET
                 IF IsValid
-				    _value[index + __ARRAYBASE__] := VALUE
+				    _value[index + __ARRAYBASE__] := value
                 ENDIF
 			END SET
 		END PROPERTY

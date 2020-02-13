@@ -69,4 +69,4 @@ INTERNAL _DLL FUNCTION GetModuleHandleW( name AS STRING ) AS IntPtr PASCAL:Kerne
 /// <returns>
 /// </returns>
 FUNCTION MBSubstr(c AS USUAL,iStart AS USUAL,wLen AS USUAL) AS STRING
-	RETURN Substr(c, iStart, wLen)
+	RETURN SubStr(c, iStart, wLen)

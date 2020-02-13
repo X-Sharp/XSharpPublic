@@ -34,7 +34,7 @@ BEGIN NAMESPACE XSharp.RDD
         INTERNAL STATIC PROPERTY ResourceManager AS System.Resources.ResourceManager
         
             GET
-                IF (OBJECT.ReferenceEquals(resourceMan, NULL))
+                IF (Object.ReferenceEquals(resourceMan, NULL))
                     LOCAL temp := System.Resources.ResourceManager{"XSharp.RDD.VfpCollations", typeof(VfpCollations):Assembly} AS System.Resources.ResourceManager
                     resourceMan := temp
                 ENDIF
@@ -54,7 +54,7 @@ BEGIN NAMESPACE XSharp.RDD
             END GET
         
             SET
-                resourceCulture := VALUE
+                resourceCulture := value
             END SET
         END PROPERTY
         

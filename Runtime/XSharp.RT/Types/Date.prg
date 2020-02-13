@@ -34,10 +34,10 @@ BEGIN NAMESPACE XSharp
 		// for date calculation we use the Value PROPERTY which returns a System.DateTime type
 		// Note that the Vulcan type uses a datetime which takes 8 bytes. We only use 4 bytes
 		#region fields
-			[FieldOffSet(00)] PRIVATE _ymd   AS System.Int32
-			[FieldOffSet(00)] PRIVATE _year  AS System.UInt16
-			[FieldOffSet(02)] PRIVATE _month AS System.Byte
-			[FieldOffSet(03)] PRIVATE _day   AS System.Byte
+			[FieldOffset(00)] PRIVATE _ymd   AS System.Int32
+			[FieldOffset(00)] PRIVATE _year  AS System.UInt16
+			[FieldOffset(02)] PRIVATE _month AS System.Byte
+			[FieldOffset(03)] PRIVATE _day   AS System.Byte
 		#endregion
 
 		#region STATIC fields
@@ -48,13 +48,13 @@ BEGIN NAMESPACE XSharp
 			/// <exclude />
 			CONST  CLIPPER_MAX_DATE := 4606840U AS DWORD	// 7900-12-31
 			/// <exclude />
-			STATIC INITONLY _dtCalc AS Datetime
+			STATIC INITONLY _dtCalc AS DateTime
 
 		#endregion
 
 		#region datetime conversions
             /// <summary>Return DATE value as DateTime.</summary>
-			PUBLIC PROPERTY @@Value AS System.DateTime
+			PUBLIC PROPERTY Value AS System.DateTime
 				GET
 					IF (_ymd == 0)
 						RETURN System.DateTime.MinValue
@@ -62,10 +62,10 @@ BEGIN NAMESPACE XSharp
 					RETURN System.DateTime{_year, _month, _day}
 				END GET
 				SET
-				    IF VALUE != DateTime.MinValue
-					    _year  := (WORD) VALUE:Year
-					    _month := (BYTE) VALUE:Month
-					    _day   := (BYTE) VALUE:Day
+				    IF value != DateTime.MinValue
+					    _year  := (WORD) value:Year
+					    _month := (BYTE) value:Month
+					    _day   := (BYTE) value:Day
 				    ELSE
 					    _ymd := 0
 				    ENDIF
@@ -268,9 +268,9 @@ BEGIN NAMESPACE XSharp
 			/// <inheritdoc />
 			OVERRIDE METHOD Equals(o AS OBJECT) AS LOGIC
 				IF o != NULL
-					IF o:getType() == TYPEOF(DATE)
+					IF o:GetType() == TYPEOF(DATE)
 						RETURN SELF:Equals(  (DATE) o)
-					ELSEIF o:getType() == TYPEOF(System.DateTime)
+					ELSEIF o:GetType() == TYPEOF(System.DateTime)
 						RETURN SELF:Equals( DATE{ (System.DateTime) o})
 					ENDIF
 				ENDIF
@@ -292,7 +292,7 @@ BEGIN NAMESPACE XSharp
 				// convert to julian date like vo
 				// # of days since 1-1-1901 + 2415386
 				LOCAL nDays AS DWORD
-				nDays := (DWORD) (dValue:Value - _dtCalc):Days + CLIPPER_MIN_DATE
+				nDays := (DWORD) (dvalue:Value - _dtCalc):Days + CLIPPER_MIN_DATE
 				RETURN nDays
 
 

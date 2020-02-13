@@ -1,6 +1,6 @@
 [General]
 PROJECT = Runtime
-IDEVersion = 1.20
+IDEVersion = 1.23
 OutputFolder = %ProjectPath%\Bin\
 Description = 
 GUID = 3A2B95E7-CF54-4E77-B22D-FDA94582BA81
@@ -34,7 +34,7 @@ DefaultPropertiesGuid = E02D3177-9FE5-4634-BC3D-B9108BC76452
 
 ; ************** APPLICATION XSharp.Core *************
 Application = XSharp.Core
-IDEVersion = 1.20
+IDEVersion = 1.23
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -304,11 +304,6 @@ FileGUID = 6BD4B854-95EB-4F2E-93EC-D59C7CB530CC
 FileFileGroup = D79F4103-5B82-4C94-86C4-A7543E998712
 FileType = Code
 CopyToBin = 0
-File = %AppPath%\State\DateCountryEnum.prg
-FileGUID = 9FF5EEDE-37A6-4D78-B12D-518361A408A5
-FileFileGroup = 254874FE-A644-4991-960B-CB734F219E12
-FileType = Code
-CopyToBin = 0
 File = %AppPath%\Types\MacroSupport.prg
 FileGUID = 66EA32F3-9A56-4E50-843B-AF492FECB826
 FileFileGroup = EFAF6477-C5E6-44EA-B161-0FEA5E8915C6
@@ -316,6 +311,31 @@ FileType = Code
 CopyToBin = 0
 File = %AppPath%\Types\Dialect.prg
 FileGUID = 8B70BDE2-3EF7-454D-AAF3-4A8B275A84E5
+FileFileGroup = EFAF6477-C5E6-44EA-B161-0FEA5E8915C6
+FileType = Code
+CopyToBin = 0
+File = %AppPath%\RDD\RDDNotifications.prg
+FileGUID = 15605A07-C41F-45EB-9049-05C69F37D226
+FileFileGroup = D79F4103-5B82-4C94-86C4-A7543E998712
+FileType = Code
+CopyToBin = 0
+File = %AppPath%\RDD\RDDWrapper.prg
+FileGUID = 75A04090-D036-46DA-980D-81286ABAD293
+FileFileGroup = D79F4103-5B82-4C94-86C4-A7543E998712
+FileType = Code
+CopyToBin = 0
+File = %AppPath%\State\Enums.prg
+FileGUID = 928F9C13-367F-4439-A6ED-4292F7A7DF85
+FileFileGroup = 254874FE-A644-4991-960B-CB734F219E12
+FileType = Code
+CopyToBin = 0
+File = %AppPath%\Types\Streams.prg
+FileGUID = 83921E09-E69A-4305-8DCA-E9C2BA0E2561
+FileFileGroup = EFAF6477-C5E6-44EA-B161-0FEA5E8915C6
+FileType = Code
+CopyToBin = 0
+File = %AppPath%\Types\UsualType.prg
+FileGUID = 0E56D540-55B4-4A14-91F7-43873D8A3A2F
 FileFileGroup = EFAF6477-C5E6-44EA-B161-0FEA5E8915C6
 FileType = Code
 CopyToBin = 0
@@ -471,7 +491,7 @@ ENDApplication = XSharp.Core
 
 ; ************** APPLICATION XSharp.VO *************
 Application = XSharp.VO
-IDEVersion = 1.20
+IDEVersion = 1.23
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -655,7 +675,7 @@ ENDApplication = XSharp.VO
 
 ; ************** APPLICATION Xide.Tests *************
 Application = Xide.Tests
-IDEVersion = 1.20
+IDEVersion = 1.23
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -663,7 +683,7 @@ Target = 0
 Platform = x86
 Language = XSharp
 Runtime = CLR4
-Dialect = Vulcan
+Dialect = VO
 Folder = %ProjectPath%\Runtime\XideTests\Xide.Tests\
 PrgSubFolder = 
 ResourcesSubFolder = 
@@ -772,7 +792,7 @@ ENDApplication = Xide.Tests
 
 ; ************** APPLICATION Xide.Unit *************
 Application = Xide.Unit
-IDEVersion = 1.20
+IDEVersion = 1.23
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -887,7 +907,7 @@ ENDApplication = Xide.Unit
 
 ; ************** APPLICATION XSharp.Core.Tests *************
 Application = XSharp.Core.Tests
-IDEVersion = 1.20
+IDEVersion = 1.23
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -1036,7 +1056,7 @@ ENDApplication = XSharp.Core.Tests
 
 ; ************** APPLICATION XSharp.VO.Tests *************
 Application = XSharp.VO.Tests
-IDEVersion = 1.20
+IDEVersion = 1.23
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -1217,7 +1237,7 @@ ENDApplication = XSharp.VO.Tests
 
 ; ************** APPLICATION CoreTests *************
 Application = CoreTests
-IDEVersion = 1.20
+IDEVersion = 1.23
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -1324,7 +1344,7 @@ ENDApplication = CoreTests
 
 ; ************** APPLICATION xLibrary *************
 Application = xLibrary
-IDEVersion = 1.20
+IDEVersion = 1.23
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -1430,7 +1450,7 @@ ENDApplication = xLibrary
 
 ; ************** APPLICATION XSharp.Rdd *************
 Application = XSharp.Rdd
-IDEVersion = 1.20
+IDEVersion = 1.23
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -1946,7 +1966,7 @@ ENDApplication = XSharp.Rdd
 
 ; ************** APPLICATION XSharp.VO.Latebound.Tests *************
 Application = XSharp.VO.Latebound.Tests
-IDEVersion = 1.20
+IDEVersion = 1.23
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -1954,7 +1974,7 @@ Target = 2
 Platform = AnyCPU
 Language = XSharp
 Runtime = CLR4
-Dialect = Vulcan
+Dialect = VO
 Folder = C:\xSharp\DevRt\Runtime\XSharp.VO.Latebound.Tests\
 PrgSubFolder = 
 ResourcesSubFolder = 
@@ -2055,7 +2075,7 @@ ENDApplication = XSharp.VO.Latebound.Tests
 
 ; ************** APPLICATION VulcanTests *************
 Application = VulcanTests
-IDEVersion = 1.20
+IDEVersion = 1.23
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -2304,7 +2324,7 @@ ENDApplication = VulcanTests
 
 ; ************** APPLICATION XSharp.Rdd.Tests *************
 Application = XSharp.Rdd.Tests
-IDEVersion = 1.20
+IDEVersion = 1.23
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -2361,7 +2381,7 @@ ReferenceProject = 33BBF3DF-FCE7-4CDC-959E-A09A9C237855,1,0,XSharp.Rdd
 ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
 ReferenceProject = 0D5205A3-6D8B-4632-BC88-DA84484B1FFA,1,0,Xide.Unit
 ReferenceProject = F345BAB5-72C2-4BCF-8685-78C901E0382B,1,0,XSharp.RT
-ReferenceGAC = CLR4,XSharp.MacroCompiler,1,0,2.0.0.0
+ReferenceGAC = CLR4,XSharp.MacroCompiler,1,0,2.1.0.0
 [XSharp.Rdd.Tests Resources]
 [XSharp.Rdd.Tests Native Resources]
 [XSharp.Rdd.Tests License files]
@@ -2426,7 +2446,7 @@ ENDApplication = XSharp.Rdd.Tests
 
 ; ************** APPLICATION XSharp.RT *************
 Application = XSharp.RT
-IDEVersion = 1.20
+IDEVersion = 1.23
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -2716,6 +2736,21 @@ FileGUID = F47E5199-9003-4AF1-957A-F4B5A33FBEBD
 FileFileGroup = 00DD17A9-70A3-4038-B43D-95D6279140D4
 FileType = Code
 CopyToBin = 0
+File = %AppPath%\Functions\Set.prg
+FileGUID = 80D742E8-24FE-4A96-B89E-21158969179F
+FileFileGroup = 00DD17A9-70A3-4038-B43D-95D6279140D4
+FileType = Code
+CopyToBin = 0
+File = %AppPath%\Types\NestedMacros.prg
+FileGUID = AEE2B9A6-57D7-4057-92DC-1EF5C02F067E
+FileFileGroup = C27AABE3-AC76-41E9-91FF-ABB00CCCD821
+FileType = Code
+CopyToBin = 0
+File = %AppPath%\Types\Currency.prg
+FileGUID = 0AD6D1F1-0785-4900-A79F-7C1C64E3CCC9
+FileFileGroup = C27AABE3-AC76-41E9-91FF-ABB00CCCD821
+FileType = Code
+CopyToBin = 0
 [XSharp.RT References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
@@ -2785,7 +2820,7 @@ ENDApplication = XSharp.RT
 
 ; ************** APPLICATION XSharp.XPP *************
 Application = XSharp.XPP
-IDEVersion = 1.20
+IDEVersion = 1.23
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
@@ -2830,10 +2865,6 @@ FileType = Code
 CopyToBin = 0
 File = %AppPath%\Abstract.prg
 FileGUID = FE6BC7A6-C285-4660-9B0F-9C495567DB80
-FileType = Code
-CopyToBin = 0
-File = %AppPath%\Aliases.prg
-FileGUID = 4B8ECC6F-24C7-41A7-B45D-CA68FAC67710
 FileType = Code
 CopyToBin = 0
 File = %AppPath%\Defines.prg
@@ -2960,7 +2991,7 @@ ENDApplication = XSharp.XPP
 
 ; ************** APPLICATION MacroCompiler *************
 Application = MacroCompiler
-IDEVersion = 1.20
+IDEVersion = 1.23
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 

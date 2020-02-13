@@ -18,7 +18,6 @@ indent_style = space
 # Code files
 [*.{cs,csx,vb,vbx,prg,prgx,vh.xh,xs,rc}]
 # use utf8 with byte order mark
-charset = latin1
 insert_final_newline = true
 trim_trailing_whitespace =  true
 indent_size = 4

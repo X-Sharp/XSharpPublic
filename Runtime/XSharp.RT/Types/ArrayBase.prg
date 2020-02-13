@@ -49,7 +49,7 @@ BEGIN NAMESPACE XSharp
 			ENDIF
 			FOREACH element AS OBJECT IN elements
 				IF element == NULL
-					_internalList:add(SELF:DefaultValue)
+					_internalList:Add(SELF:DefaultValue)
 				ELSEIF element IS T
 					_internalList:Add( (T) element)
 				ELSE
@@ -98,7 +98,7 @@ BEGIN NAMESPACE XSharp
 			IF nCount == 0
 				RETURN aResult
             ENDIF
-			FOR VAR I := 0 TO nCount-1
+			FOR VAR i := 0 TO nCount-1
 				aResult:_internalList[i] := _internalList[i]
 			NEXT
 			RETURN aResult
@@ -139,7 +139,7 @@ BEGIN NAMESPACE XSharp
 			type := TYPEOF(T)
 			aProps := type:GetProperties(BindingFlags.IgnoreCase | BindingFlags.Instance | BindingFlags.Public)
             FOREACH oProp AS PropertyInfo IN aProps
-                IF !oProp:Name:Tolower() == "item"
+                IF !oProp:Name:ToLower() == "item"
                     LOOP
                 ENDIF
                 LOCAL pars := oProp:GetIndexParameters() AS ParameterInfo[]
@@ -178,7 +178,7 @@ BEGIN NAMESPACE XSharp
 					IF index > _internalList:Count-1
 						THROW ArgumentOutOfRangeException{}
 					ENDIF
-					_internalList[index] := VALUE
+					_internalList[index] := value
 				ENDIF
 			END SET
 		END PROPERTY
@@ -214,12 +214,12 @@ BEGIN NAMESPACE XSharp
 				    oElement := _internalList[index ]
                     IF oElement IS IIndexedProperties
                         VAR oIndex := (IIndexedProperties) oElement
-                        oIndex[index2] := VALUE
+                        oIndex[index2] := value
                     ENDIF
 					LOCAL oProp    AS PropertyInfo
                     oProp    := __GetIndexer(TRUE)
                     IF oProp != NULL
-                        oProp:SetValue(oElement, OOPHelpers.VOConvert(VALUE, oProp:PropertyType), <OBJECT>{index2} )
+                        oProp:SetValue(oElement, OOPHelpers.VOConvert(value, oProp:PropertyType), <OBJECT>{index2} )
                         RETURN
                     ENDIF
                     THROW ArgumentException{"Indexed property missing for type: "+oElement:GetType():FullName}
@@ -259,16 +259,16 @@ BEGIN NAMESPACE XSharp
 				    oElement := _internalList[index ]
                     IF oElement IS IIndexedProperties
                         VAR oIndex := (IIndexedProperties) oElement
-                        oIndex[name] := VALUE
+                        oIndex[name] := value
                     ENDIF
 					LOCAL oProp    AS PropertyInfo
                     oProp    := __GetIndexer(FALSE)
                     IF oProp != NULL
-                        oProp:SetValue(oElement, OOPHelpers.VOConvert(VALUE, oProp:PropertyType), <OBJECT>{name} )
+                        oProp:SetValue(oElement, OOPHelpers.VOConvert(value, oProp:PropertyType), <OBJECT>{name} )
                         RETURN
                     ENDIF
 					oProp	 := __GetProperty( name)
-					oProp:SetValue(oElement, NULL, VALUE)
+					oProp:SetValue(oElement, NULL, value)
 				ENDIF
 			END SET
 		END PROPERTY
@@ -334,7 +334,7 @@ BEGIN NAMESPACE XSharp
 			#endregion
         /// <inheritdoc />
 		PUBLIC OVERRIDE METHOD ToString() AS STRING
-			RETURN string.Format("[{0}]",_internalList:Count)
+			RETURN String.Format("[{0}]",_internalList:Count)
 
 		INTERNAL METHOD Sort(startIndex AS INT, count AS INT, comparer AS IComparer<T>) AS VOID
             IF startIndex <= 0
@@ -378,7 +378,7 @@ BEGIN NAMESPACE XSharp
 
 		INTERNAL METHOD CheckLock AS LOGIC
 			IF SELF:_islocked
-				THROW Error{Gencode.EG_Protection}
+				THROW Error{Gencode.EG_PROTECTION}
 			ENDIF
 			RETURN ! SELF:_islocked
 
@@ -399,7 +399,7 @@ BEGIN NAMESPACE XSharp
 					LOCAL oActType AS System.Type
 					oActType := o:GetType()
 					nArg := a:_internalList:IndexOf(u)+1
-					oErr := Error{GenCode.EG_DATATYPE}
+					oErr := Error{Gencode.EG_DATATYPE}
 					oErr:Arg := "Array Element : "+nArg:ToString()
 					oErr:Description := "Cannot convert array element " +nArg:ToString() + " from type "+oActType:ToString()+" to type "+TYPEOF(T):ToString()
 					THROW oErr

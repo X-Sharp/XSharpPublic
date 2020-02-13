@@ -71,7 +71,7 @@ INTERNAL FUNCTION BuffToLong(buffer AS BYTE[], nOffSet AS LONG) AS LONG
     
 INTERNAL FUNCTION LongToBuff(liValue AS LONG, buffer AS BYTE[], nOffSet AS LONG) AS LONG
     LOCAL nValue := LongStruct{} AS LongStruct
-    nValue:LongValue := liValue
+    nValue:longValue := liValue
     buffer[nOffSet+0] := nValue:b1
     buffer[nOffSet+1] := nValue:b2
     buffer[nOffSet+2] := nValue:b3
@@ -98,7 +98,7 @@ INTERNAL FUNCTION FoxToDword(buffer AS BYTE[], nOffSet AS LONG) AS DWORD
     
 INTERNAL FUNCTION LongToFox(liValue AS LONG, buffer AS BYTE[], nOffSet AS LONG) AS LONG
     LOCAL nValue := LongStruct{} AS LongStruct
-    nValue:LongValue := liValue
+    nValue:longValue := liValue
     buffer[nOffSet+0] := nValue:b4
     buffer[nOffSet+1] := nValue:b3
     buffer[nOffSet+2] := nValue:b2

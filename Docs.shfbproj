@@ -33,18 +33,34 @@
       <DocumentationSource sourceFile="Binaries\Documentation\XSharp.VO.dll" />
       <DocumentationSource sourceFile="Binaries\Documentation\XSharp.XPP.XML" />
       <DocumentationSource sourceFile="Binaries\Documentation\XSharp.XPP.dll" />
+      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.Data.dll" />
+      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.Data.xml" />
+      <DocumentationSource sourceFile="Binaries\Documentation\VOSystemClasses.dll" />
+      <DocumentationSource sourceFile="Binaries\Documentation\VOConsoleClasses.dll" />
+      <DocumentationSource sourceFile="Binaries\Documentation\VOGUIClasses.dll" />
+      <DocumentationSource sourceFile="Binaries\Documentation\VOInternetClasses.dll" />
+      <DocumentationSource sourceFile="Binaries\Documentation\VORDDClasses.dll" />
+      <DocumentationSource sourceFile="Binaries\Documentation\VOSQLClasses.dll" />
+      <DocumentationSource sourceFile="Docs\VOConsoleClasses_manual.xml" />
+      <DocumentationSource sourceFile="Docs\VOGUIClasses_manual.xml" />
+      <DocumentationSource sourceFile="Docs\VOInternetClasses_manual.xml" />
+      <DocumentationSource sourceFile="Docs\VORDDClasses_manual.xml" />
+      <DocumentationSource sourceFile="Docs\VOSQLClasses_manual.xml" />
+      <DocumentationSource sourceFile="Docs\VOSystemClasses_manual.xml" />
+      <DocumentationSource sourceFile="Docs\VOSDK_Classes.xml" />
+      <DocumentationSource sourceFile="Docs\SDKFunctionDocs.xml" />
     </DocumentationSources>
     <HelpTitle>X# Runtime Reference</HelpTitle>
-    <HelpFileVersion>2.2.0.0</HelpFileVersion>
+    <HelpFileVersion>2.3.0.0</HelpFileVersion>
     <NamingMethod>MemberName</NamingMethod>
     <ContentPlacement>AboveNamespaces</ContentPlacement>
     <RootNamespaceContainer>True</RootNamespaceContainer>
     <NamespaceGrouping>True</NamespaceGrouping>
     <Preliminary>False</Preliminary>
     <SdkLinkTarget>Blank</SdkLinkTarget>
-    <HelpFileFormat>HtmlHelp1, MSHelpViewer, Website</HelpFileFormat>
+    <HelpFileFormat>HtmlHelp1</HelpFileFormat>
     <SyntaxFilters>C#, X#</SyntaxFilters>
-    <PresentationStyle>VS2013Xs</PresentationStyle>
+    <PresentationStyle>VS2013XSharp</PresentationStyle>
     <CleanIntermediates>False</CleanIntermediates>
     <KeepLogFile>True</KeepLogFile>
     <DisableCodeBlockComponent>False</DisableCodeBlockComponent>
@@ -92,10 +108,7 @@
           <Filter entryType="Property" fullName="XSharp.__Psz._NULL_PSZ" filterName="_NULL_PSZ" isExposed="False" />
           <Filter entryType="Property" fullName="XSharp.__Psz.Address" filterName="Address" isExposed="False" />
           <Filter entryType="Property" fullName="XSharp.__Psz.IsEmpty" filterName="IsEmpty" isExposed="False" />
-          <Filter entryType="Property" fullName="XSharp.__Psz.IsNull" filterName="IsNull" isExposed="False" />
-          <Filter entryType="Property" fullName="XSharp.__Psz.Item" filterName="Item" isExposed="False" />
-          <Filter entryType="Property" fullName="XSharp.__Psz.Length" filterName="Length" isExposed="False" />
-        </Filter>
+s          <Filter entryType="Property" fullName="XSharp.__Psz.IsNull" filterName="IsNull" isExposed="False" /><Filter entryType="Property" fullName="XSharp.__Psz.Item" filterName="Item" isExposed="False" /><Filter entryType="Property" fullName="XSharp.__Psz.Length" filterName="Length" isExposed="False" /></Filter>
         <Filter entryType="Structure" fullName="XSharp.__Symbol" filterName="__Symbol" isExposed="True">
           <Filter entryType="Method" fullName="XSharp.__Symbol.Clone" filterName="Clone" isExposed="False" />
           <Filter entryType="Method" fullName="XSharp.__Symbol.CompareTo" filterName="CompareTo" isExposed="False" />
@@ -165,19 +178,21 @@
         <Filter entryType="Class" fullName="XSharp.OleDateTime" filterName="OleDateTime" isExposed="True">
           <Filter entryType="Operator" fullName="XSharp.OleDateTime.op_Implicit" filterName="op_Implicit" isExposed="False" />
         </Filter>
-        <Filter entryType="Class" fullName="XSharp.RuntimeState" filterName="RuntimeState" isExposed="True">
-          <Filter entryType="Method" fullName="XSharp.RuntimeState.PopCurrentWorkarea" filterName="PopCurrentWorkarea" isExposed="False" />
-          <Filter entryType="Method" fullName="XSharp.RuntimeState.PushCurrentWorkarea" filterName="PushCurrentWorkarea" isExposed="False" />
-        </Filter>
         <Filter entryType="Class" fullName="XSharp.StringHelpers" filterName="StringHelpers" isExposed="False" />
         <Filter entryType="Enumeration" fullName="XSharp.VOErrors" filterName="VOErrors" isExposed="False" />
       </Filter>
-      <Filter entryType="Namespace" fullName="XSharp.ADS" isExposed="False">
-        <Filter entryType="Class" fullName="XSharp.ADS.ACE" filterName="ACE" isExposed="True" />
-        <Filter entryType="Class" fullName="XSharp.ADS.ACE32" filterName="ACE32" isExposed="True" />
-        <Filter entryType="Class" fullName="XSharp.ADS.ACE64" filterName="ACE64" isExposed="True" />
-        <Filter entryType="Delegate" fullName="XSharp.ADS.CallbackFn" filterName="CallbackFn" isExposed="True" />
-        <Filter entryType="Delegate" fullName="XSharp.ADS.CallbackFn101" filterName="CallbackFn101" isExposed="True" />
+      <Filter entryType="Namespace" fullName="XSharp.ADS" isExposed="True">
+        <Filter entryType="Class" fullName="XSharp.ADS.ACE32" filterName="ACE32" isExposed="False" />
+        <Filter entryType="Class" fullName="XSharp.ADS.ACE64" filterName="ACE64" isExposed="False" />
+        <Filter entryType="Class" fullName="XSharp.ADS.ACEUNPUB32" filterName="ACEUNPUB32" isExposed="False" />
+        <Filter entryType="Class" fullName="XSharp.ADS.ACEUNPUB64" filterName="ACEUNPUB64" isExposed="False" />
+        <Filter entryType="Class" fullName="XSharp.ADS.AdsCharacterColumn" filterName="AdsCharacterColumn" isExposed="False" />
+        <Filter entryType="Class" fullName="XSharp.ADS.AdsColumn" filterName="AdsColumn" isExposed="False" />
+        <Filter entryType="Class" fullName="XSharp.ADS.AdsError" filterName="AdsError" isExposed="False" />
+        <Filter entryType="Class" fullName="XSharp.ADS.AdsDateColumn" filterName="AdsDateColumn" isExposed="False" />
+        <Filter entryType="Class" fullName="XSharp.ADS.AdsLogicColumn" filterName="AdsLogicColumn" isExposed="False" />
+        <Filter entryType="Class" fullName="XSharp.ADS.AdsMemoColumn" filterName="AdsMemoColumn" isExposed="False" />
+        <Filter entryType="Class" fullName="XSharp.ADS.AdsNumericColumn" filterName="AdsNumericColumn" isExposed="False" />
       </Filter>
       <Filter entryType="Namespace" fullName="XSharp.Core" isExposed="True">
         <Filter entryType="Class" fullName="XSharp.Core.Functions" filterName="Functions" isExposed="True">
@@ -597,24 +612,7 @@
           <Filter entryType="Field" fullName="XSharp.Core.Functions.SMT_DEFBLOCKSIZE" filterName="SMT_DEFBLOCKSIZE" isExposed="False" />
         </Filter>
       </Filter>
-      <Filter entryType="Namespace" fullName="XSharp.RDD" isExposed="False">
-        <Filter entryType="Structure" fullName="XSharp.RDD.DbDate" filterName="DbDate" isExposed="True" />
-        <Filter entryType="Enumeration" fullName="XSharp.RDD.DbfHeaderCodepage" filterName="DbfHeaderCodepage" isExposed="True" />
-        <Filter entryType="Structure" fullName="XSharp.RDD.DbFloat" filterName="DbFloat" isExposed="True" />
-        <Filter entryType="Enumeration" fullName="XSharp.RDD.DbfLockingModel" filterName="DbfLockingModel" isExposed="True" />
-        <Filter entryType="Enumeration" fullName="XSharp.RDD.ERDD" filterName="ERDD" isExposed="True" />
-        <Filter entryType="Class" fullName="XSharp.RDD.Functions" filterName="Functions" isExposed="True" />
-        <Filter entryType="Interface" fullName="XSharp.RDD.IMemo" filterName="IMemo" isExposed="True" />
-        <Filter entryType="Interface" fullName="XSharp.RDD.IOrder" filterName="IOrder" isExposed="True" />
-        <Filter entryType="Interface" fullName="XSharp.RDD.IRdd" filterName="IRdd" isExposed="True" />
-        <Filter entryType="Enumeration" fullName="XSharp.RDD.OsCodepage" filterName="OsCodepage" isExposed="True" />
-        <Filter entryType="Class" fullName="XSharp.RDD.RddError" filterName="RddError" isExposed="True" />
-        <Filter entryType="Class" fullName="XSharp.RDD.RegisteredRDD" filterName="RegisteredRDD" isExposed="True" />
-        <Filter entryType="Class" fullName="XSharp.RDD.SortRecord" filterName="SortRecord" isExposed="True" />
-        <Filter entryType="Class" fullName="XSharp.RDD.Workarea" filterName="Workarea" isExposed="True" />
-        <Filter entryType="Class" fullName="XSharp.RDD.WorkAreas" filterName="WorkAreas" isExposed="True" />
-        <Filter entryType="Class" fullName="XSharp.RDD.WrapperRDD" filterName="WrapperRDD" isExposed="True" />
-      </Filter>
+      <Filter entryType="Namespace" fullName="XSharp.RDD" isExposed="True" />
       <Filter entryType="Namespace" fullName="XSharp.RT" isExposed="True">
         <Filter entryType="Class" fullName="XSharp.RT.Functions" filterName="Functions" isExposed="True">
           <Filter entryType="Method" fullName="XSharp.RT.Functions.$Exit" filterName="$Exit" isExposed="False" />
@@ -915,22 +913,1018 @@
           <Filter entryType="Method" fullName="XSharp.XPP.Functions.$Init3" filterName="$Init3" isExposed="False" />
         </Filter>
       </Filter>
+      <Filter entryType="Namespace" fullName="VO" isExposed="True">
+        <Filter entryType="Delegate" fullName="VO.__CellEditProcDelegate" filterName="__CellEditProcDelegate" isExposed="False" />
+        <Filter entryType="Class" fullName="VO.__DDImp" filterName="__DDImp" isExposed="False" />
+        <Filter entryType="Class" fullName="VO.__DocApp" filterName="__DocApp" isExposed="False" />
+        <Filter entryType="Delegate" fullName="VO.__DrawFldDataDelegate" filterName="__DrawFldDataDelegate" isExposed="False" />
+        <Filter entryType="Class" fullName="VO.__ExplorerLV" filterName="__ExplorerLV" isExposed="False" />
+        <Filter entryType="Class" fullName="VO.__ExplorerTV" filterName="__ExplorerTV" isExposed="False" />
+        <Filter entryType="Class" fullName="VO.__ForeignWindow" filterName="__ForeignWindow" isExposed="False" />
+        <Filter entryType="Class" fullName="VO.__FormattedString" filterName="__FormattedString" isExposed="False" />
+        <Filter entryType="Class" fullName="VO.__FormDialogWindow" filterName="__FormDialogWindow" isExposed="False" />
+        <Filter entryType="Class" fullName="VO.__FormFrame" filterName="__FormFrame" isExposed="False" />
+        <Filter entryType="Delegate" fullName="VO.__PrinterAbortProcDelegate" filterName="__PrinterAbortProcDelegate" isExposed="False" />
+        <Filter entryType="Delegate" fullName="VO.__SetChildFontProcDelegate" filterName="__SetChildFontProcDelegate" isExposed="False" />
+        <Filter entryType="Class" fullName="VO.__SplitView" filterName="__SplitView" isExposed="False" />
+        <Filter entryType="Delegate" fullName="VO.__StdFileHookDelegate" filterName="__StdFileHookDelegate" isExposed="False" />
+        <Filter entryType="Class" fullName="VO.__VOToolBarChild" filterName="__VOToolBarChild" isExposed="False" />
+        <Filter entryType="Class" fullName="VO.__VOToolBarExtraBitmap" filterName="__VOToolBarExtraBitmap" isExposed="False" />
+        <Filter entryType="Class" fullName="VO.__VOToolBarTipText" filterName="__VOToolBarTipText" isExposed="False" />
+        <Filter entryType="Class" fullName="VO.__VOToolBarUpdate" filterName="__VOToolBarUpdate" isExposed="False" />
+        <Filter entryType="Delegate" fullName="VO.__WCControlProcDelegate" filterName="__WCControlProcDelegate" isExposed="False" />
+        <Filter entryType="Structure" fullName="VO.__WCDialog_VARS" filterName="__WCDialog_VARS" isExposed="False" />
+        <Filter entryType="Delegate" fullName="VO.__WCDocAppWndProcDelegate" filterName="__WCDocAppWndProcDelegate" isExposed="False" />
+        <Filter entryType="Delegate" fullName="VO.__WCDragListDialogProcDelegate" filterName="__WCDragListDialogProcDelegate" isExposed="False" />
+        <Filter entryType="Structure" fullName="VO.__WCDropFiles" filterName="__WCDropFiles" isExposed="False" />
+        <Filter entryType="Delegate" fullName="VO.__WCGBChildProcDelegate" filterName="__WCGBChildProcDelegate" isExposed="False" />
+        <Filter entryType="Delegate" fullName="VO.__WCGBNotifyProcDelegate" filterName="__WCGBNotifyProcDelegate" isExposed="False" />
+        <Filter entryType="Delegate" fullName="VO.__WCQueryCloseEnumFuncDelegate" filterName="__WCQueryCloseEnumFuncDelegate" isExposed="False" />
+        <Filter entryType="Delegate" fullName="VO.__WCShellWndProcDelegate" filterName="__WCShellWndProcDelegate" isExposed="False" />
+        <Filter entryType="Delegate" fullName="VO.__WCTimerProcDelegate" filterName="__WCTimerProcDelegate" isExposed="False" />
+        <Filter entryType="Delegate" fullName="VO.__WCTopAppWndProcDelegate" filterName="__WCTopAppWndProcDelegate" isExposed="False" />
+        <Filter entryType="Delegate" fullName="VO.__WCWndAppWndProcDelegate" filterName="__WCWndAppWndProcDelegate" isExposed="False" />
+        <Filter entryType="Class" fullName="VO.__WindApp" filterName="__WindApp" isExposed="False" />
+        <Filter entryType="Class" fullName="VO.App" filterName="App" isExposed="True">
+          <Filter entryType="Method" fullName="VO.App.__SetHelpWind" filterName="__SetHelpWind" isExposed="False" />
+          <Filter entryType="Property" fullName="VO.App.__HelpCursor" filterName="__HelpCursor" isExposed="False" />
+          <Filter entryType="Property" fullName="VO.App.__HelpWndHandle" filterName="__HelpWndHandle" isExposed="False" />
+          <Filter entryType="Property" fullName="VO.App.__WindowCount" filterName="__WindowCount" isExposed="False" />
+        </Filter>
+        <Filter entryType="Class" fullName="VO.AppWindow" filterName="AppWindow" isExposed="True">
+          <Filter entryType="Method" fullName="VO.AppWindow.__StatusMessageFromEvent" filterName="__StatusMessageFromEvent" isExposed="False" />
+          <Filter entryType="Property" fullName="VO.AppWindow.__SysMenu" filterName="__SysMenu" isExposed="False" />
+        </Filter>
+        <Filter entryType="Class" fullName="VO.Bitmap" filterName="Bitmap" isExposed="True">
+          <Filter entryType="Method" fullName="VO.Bitmap.__SetHandle" filterName="__SetHandle" isExposed="False" />
+        </Filter>
+        <Filter entryType="Class" fullName="VO.Brush" filterName="Brush" isExposed="True">
+          <Filter entryType="Method" fullName="VO.Brush.__SetBrushOrg" filterName="__SetBrushOrg" isExposed="False" />
+        </Filter>
+        <Filter entryType="Class" fullName="VO.Button" filterName="Button" isExposed="True">
+          <Filter entryType="Method" fullName="VO.Button.__GetImage" filterName="__GetImage" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.Button.__SetImage" filterName="__SetImage" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.Button.__Update" filterName="__Update" isExposed="False" />
+        </Filter>
+        <Filter entryType="Class" fullName="VO.CEmail" filterName="CEmail" isExposed="True">
+          <Filter entryType="Method" fullName="VO.CEmail.__CreateCommands" filterName="__CreateCommands" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.CEmail.__CreateContentType" filterName="__CreateContentType" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.CEmail.__GetContentInfo" filterName="__GetContentInfo" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.CEmail.__GetFileContentType" filterName="__GetFileContentType" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.CEmail.__IsBoundary" filterName="__IsBoundary" isExposed="False" />
+        </Filter>
+        <Filter entryType="Class" fullName="VO.ChildAppWindow" filterName="ChildAppWindow" isExposed="True">
+          <Filter entryType="Property" fullName="VO.ChildAppWindow.__Imp" filterName="__Imp" isExposed="False" />
+        </Filter>
+        <Filter entryType="Class" fullName="VO.CHttp" filterName="CHttp" isExposed="True">
+          <Filter entryType="Method" fullName="VO.CHttp.__GetUrl" filterName="__GetUrl" isExposed="False" />
+        </Filter>
+        <Filter entryType="Class" fullName="VO.CImap" filterName="CImap" isExposed="True">
+          <Filter entryType="Method" fullName="VO.CImap.__FetchExtract" filterName="__FetchExtract" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.CImap.__FetchToken" filterName="__FetchToken" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.CImap.__GetBody" filterName="__GetBody" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.CImap.__GetHeader" filterName="__GetHeader" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.CImap.__GetSize" filterName="__GetSize" isExposed="False" />
+        </Filter>
+        <Filter entryType="Class" fullName="VO.CINetDial" filterName="CINetDial" isExposed="True">
+          <Filter entryType="Method" fullName="VO.CINetDial.__IsModem" filterName="__IsModem" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.CINetDial.__Notify" filterName="__Notify" isExposed="False" />
+        </Filter>
+        <Filter entryType="Class" fullName="VO.CMailAbstract" filterName="CMailAbstract" isExposed="True">
+          <Filter entryType="Method" fullName="VO.CMailAbstract.__SendLine" filterName="__SendLine" isExposed="False" />
+        </Filter>
+        <Filter entryType="Class" fullName="VO.CMessage" filterName="CMessage" isExposed="True">
+          <Filter entryType="Method" fullName="VO.CMessage.__CheckAttachment" filterName="__CheckAttachment" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.CMessage.__DecodeContent" filterName="__DecodeContent" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.CMessage.__GetMailTime" filterName="__GetMailTime" isExposed="False" />
+        </Filter>
+        <Filter entryType="Class" fullName="VO.CNews" filterName="CNews" isExposed="True">
+          <Filter entryType="Method" fullName="VO.CNews.__GetFileName" filterName="__GetFileName" isExposed="False" />
+        </Filter>
+        <Filter entryType="Class" fullName="VO.CNNTP" filterName="CNNTP" isExposed="True">
+          <Filter entryType="Method" fullName="VO.CNNTP.__DecodeStatus" filterName="__DecodeStatus" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.CNNTP.__GetGroups" filterName="__GetGroups" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.CNNTP.__GetNews" filterName="__GetNews" isExposed="False" />
+        </Filter>
+        <Filter entryType="Class" fullName="VO.ComboBox" filterName="ComboBox" isExposed="True">
+          <Filter entryType="Method" fullName="VO.ComboBox.__EditChange" filterName="__EditChange" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.ComboBox.__InitTextMetrics" filterName="__InitTextMetrics" isExposed="False" />
+        </Filter>
+        <Filter entryType="Class" fullName="VO.ComboBoxExItem" filterName="ComboBoxExItem" isExposed="True">
+          <Filter entryType="Method" fullName="VO.ComboBoxExItem.__GetValues" filterName="__GetValues" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.ComboBoxExItem.__SetValues" filterName="__SetValues" isExposed="False" />
+        </Filter>
+        <Filter entryType="Class" fullName="VO.Control" filterName="Control" isExposed="True">
+          <Filter entryType="Method" fullName="VO.Control.__AddTool" filterName="__AddTool" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.Control.__EnsureVisibity" filterName="__EnsureVisibity" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.Control.__Gather" filterName="__Gather" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.Control.__GetDispInfo" filterName="__GetDispInfo" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.Control.__Scatter" filterName="__Scatter" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.Control.__SetColors" filterName="__SetColors" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.Control.__Timer" filterName="__Timer" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.Control.__ToolTipHandle" filterName="__ToolTipHandle" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.Control.__Unlink" filterName="__Unlink" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.Control.__Update" filterName="__Update" isExposed="False" />
+          <Filter entryType="Property" fullName="VO.Control.__ClassName" filterName="__ClassName" isExposed="False" />
+          <Filter entryType="Property" fullName="VO.Control.__DataField" filterName="__DataField" isExposed="False" />
+          <Filter entryType="Property" fullName="VO.Control.__FormSurface" filterName="__FormSurface" isExposed="False" />
+          <Filter entryType="Property" fullName="VO.Control.__GetDataFldPos" filterName="__GetDataFldPos" isExposed="False" />
+          <Filter entryType="Property" fullName="VO.Control.__Parent" filterName="__Parent" isExposed="False" />
+          <Filter entryType="Property" fullName="VO.Control.__Value" filterName="__Value" isExposed="False" />
+          <Filter entryType="Field" fullName="VO.Control.__ControlWindow" filterName="__ControlWindow" isExposed="False" />
+          <Filter entryType="Field" fullName="VO.Control.__lpfnDefaultProc" filterName="__lpfnDefaultProc" isExposed="False" />
+        </Filter>
+        <Filter entryType="Class" fullName="VO.ControlWindow" filterName="ControlWindow" isExposed="True">
+          <Filter entryType="Field" fullName="VO.ControlWindow.__lpfnDefaultProc" filterName="__lpfnDefaultProc" isExposed="False" />
+        </Filter>
+        <Filter entryType="Class" fullName="VO.CPop" filterName="CPop" isExposed="True">
+          <Filter entryType="Method" fullName="VO.CPop.__GetScanList" filterName="__GetScanList" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.CPop.__ListMail" filterName="__ListMail" isExposed="False" />
+        </Filter>
+        <Filter entryType="Class" fullName="VO.CSession" filterName="CSession" isExposed="True">
+          <Filter entryType="Method" fullName="VO.CSession.__DelStatus" filterName="__DelStatus" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.CSession.__DelStatusObject" filterName="__DelStatusObject" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.CSession.__GetStatusContext" filterName="__GetStatusContext" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.CSession.__SetStatus" filterName="__SetStatus" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.CSession.__SetStatusObject" filterName="__SetStatusObject" isExposed="False" />
+        </Filter>
+        <Filter entryType="Class" fullName="VO.CSmtp" filterName="CSmtp" isExposed="True">
+          <Filter entryType="Method" fullName="VO.CSmtp.__StartData" filterName="__StartData" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.CSmtp.__StopSending" filterName="__StopSending" isExposed="False" />
+        </Filter>
+        <Filter entryType="Class" fullName="VO.CSocket" filterName="CSocket" isExposed="True">
+          <Filter entryType="Method" fullName="VO.CSocket.__ConnectThread" filterName="__ConnectThread" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.CSocket.__Linger" filterName="__Linger" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.CSocket.__ReceiveBuf" filterName="__ReceiveBuf" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.CSocket.__SendRaw" filterName="__SendRaw" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.CSocket.__SetErrorVars" filterName="__SetErrorVars" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.CSocket.__SetOptions" filterName="__SetOptions" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.CSocket.__Start" filterName="__Start" isExposed="False" />
+        </Filter>
+        <Filter entryType="Class" fullName="VO.CStorage" filterName="CStorage" isExposed="True">
+          <Filter entryType="Method" fullName="VO.CStorage.__CreateNewID" filterName="__CreateNewID" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.CStorage.__StreamDecode" filterName="__StreamDecode" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.CStorage.__StreamEncode" filterName="__StreamEncode" isExposed="False" />
+        </Filter>
+        <Filter entryType="Class" fullName="VO.Cursor" filterName="Cursor" isExposed="True">
+          <Filter entryType="Method" fullName="VO.Cursor.__Update" filterName="__Update" isExposed="False" />
+        </Filter>
+        <Filter entryType="Class" fullName="VO.DataBrowser" filterName="DataBrowser" isExposed="True">
+          <Filter entryType="Method" fullName="VO.DataBrowser.__AddColumn" filterName="__AddColumn" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataBrowser.__AutoLayout" filterName="__AutoLayout" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataBrowser.__AutoResize" filterName="__AutoResize" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataBrowser.__BeginEditField" filterName="__BeginEditField" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataBrowser.__BuildBuffer" filterName="__BuildBuffer" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataBrowser.__BuildNewBuffer" filterName="__BuildNewBuffer" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataBrowser.__BuildRecord" filterName="__BuildRecord" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataBrowser.__BuildRecordDescription" filterName="__BuildRecordDescription" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataBrowser.__ClearBuffers" filterName="__ClearBuffers" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataBrowser.__DeferNotify" filterName="__DeferNotify" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataBrowser.__DeltaBuildBuffer" filterName="__DeltaBuildBuffer" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataBrowser.__DeltaBuildBufferDown" filterName="__DeltaBuildBufferDown" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataBrowser.__DeltaBuildBufferUp" filterName="__DeltaBuildBufferUp" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataBrowser.__DeltaRebuildBufferDown" filterName="__DeltaRebuildBufferDown" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataBrowser.__DeltaRebuildBufferUp" filterName="__DeltaRebuildBufferUp" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataBrowser.__DestroyEditField" filterName="__DestroyEditField" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataBrowser.__EditDispatch" filterName="__EditDispatch" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataBrowser.__EnableNotify" filterName="__EnableNotify" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataBrowser.__EnableSelection" filterName="__EnableSelection" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataBrowser.__EndEditField" filterName="__EndEditField" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataBrowser.__FieldChange" filterName="__FieldChange" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataBrowser.__FillRecord" filterName="__FillRecord" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataBrowser.__FindColumn" filterName="__FindColumn" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataBrowser.__GetColumn" filterName="__GetColumn" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataBrowser.__GetRecordAtRecNo" filterName="__GetRecordAtRecNo" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataBrowser.__GetRecordNo" filterName="__GetRecordNo" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataBrowser.__IsDataServerEmpty" filterName="__IsDataServerEmpty" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataBrowser.__IsFocusRecordInView" filterName="__IsFocusRecordInView" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataBrowser.__NewFocusField" filterName="__NewFocusField" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataBrowser.__NewFocusRecord" filterName="__NewFocusRecord" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataBrowser.__NotifyChanges" filterName="__NotifyChanges" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataBrowser.__RecordChange" filterName="__RecordChange" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataBrowser.__RecordDelete" filterName="__RecordDelete" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataBrowser.__RefreshBuffer" filterName="__RefreshBuffer" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataBrowser.__RefreshData" filterName="__RefreshData" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataBrowser.__RefreshField" filterName="__RefreshField" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataBrowser.__RegisterFieldLinks" filterName="__RegisterFieldLinks" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataBrowser.__SetMaxFTHeight" filterName="__SetMaxFTHeight" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataBrowser.__StatusOK" filterName="__StatusOK" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataBrowser.__TestForBottom" filterName="__TestForBottom" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataBrowser.__TestForTop" filterName="__TestForTop" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataBrowser.__Unlink" filterName="__Unlink" isExposed="False" />
+          <Filter entryType="Property" fullName="VO.DataBrowser.__ContainerChildWnd" filterName="__ContainerChildWnd" isExposed="False" />
+          <Filter entryType="Property" fullName="VO.DataBrowser.__LastChar" filterName="__LastChar" isExposed="False" />
+          <Filter entryType="Property" fullName="VO.DataBrowser.__NotifyWindow" filterName="__NotifyWindow" isExposed="False" />
+        </Filter>
+        <Filter entryType="Class" fullName="VO.DataColumn" filterName="DataColumn" isExposed="True">
+          <Filter entryType="Method" fullName="VO.DataColumn.__DrawCellData" filterName="__DrawCellData" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataColumn.__Gather" filterName="__Gather" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataColumn.__Scatter" filterName="__Scatter" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataColumn.__SetFldColor" filterName="__SetFldColor" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataColumn.__UnLink" filterName="__UnLink" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataColumn.__Update" filterName="__Update" isExposed="False" />
+          <Filter entryType="Property" fullName="VO.DataColumn.__BtnBkgdBrsh" filterName="__BtnBkgdBrsh" isExposed="False" />
+          <Filter entryType="Property" fullName="VO.DataColumn.__BtnBkgdLoc" filterName="__BtnBkgdLoc" isExposed="False" />
+          <Filter entryType="Property" fullName="VO.DataColumn.__BtnClr" filterName="__BtnClr" isExposed="False" />
+          <Filter entryType="Property" fullName="VO.DataColumn.__BtnClrLoc" filterName="__BtnClrLoc" isExposed="False" />
+          <Filter entryType="Property" fullName="VO.DataColumn.__DataField" filterName="__DataField" isExposed="False" />
+          <Filter entryType="Property" fullName="VO.DataColumn.__FieldInfo" filterName="__FieldInfo" isExposed="False" />
+          <Filter entryType="Property" fullName="VO.DataColumn.__Font" filterName="__Font" isExposed="False" />
+          <Filter entryType="Property" fullName="VO.DataColumn.__FontLoc" filterName="__FontLoc" isExposed="False" />
+          <Filter entryType="Property" fullName="VO.DataColumn.__HorzAlignment" filterName="__HorzAlignment" isExposed="False" />
+          <Filter entryType="Property" fullName="VO.DataColumn.__Offset" filterName="__Offset" isExposed="False" />
+          <Filter entryType="Property" fullName="VO.DataColumn.__Owner" filterName="__Owner" isExposed="False" />
+          <Filter entryType="Property" fullName="VO.DataColumn.__Picture" filterName="__Picture" isExposed="False" />
+          <Filter entryType="Property" fullName="VO.DataColumn.__Size" filterName="__Size" isExposed="False" />
+          <Filter entryType="Property" fullName="VO.DataColumn.__TtlBkgdBrsh" filterName="__TtlBkgdBrsh" isExposed="False" />
+          <Filter entryType="Property" fullName="VO.DataColumn.__TtlBkgdLoc" filterName="__TtlBkgdLoc" isExposed="False" />
+          <Filter entryType="Property" fullName="VO.DataColumn.__TtlClr" filterName="__TtlClr" isExposed="False" />
+          <Filter entryType="Property" fullName="VO.DataColumn.__TtlClrLoc" filterName="__TtlClrLoc" isExposed="False" />
+          <Filter entryType="Property" fullName="VO.DataColumn.__TxtBkgdBrsh" filterName="__TxtBkgdBrsh" isExposed="False" />
+          <Filter entryType="Property" fullName="VO.DataColumn.__TxtBkgdLoc" filterName="__TxtBkgdLoc" isExposed="False" />
+          <Filter entryType="Property" fullName="VO.DataColumn.__TxtClr" filterName="__TxtClr" isExposed="False" />
+          <Filter entryType="Property" fullName="VO.DataColumn.__TxtClrLoc" filterName="__TxtClrLoc" isExposed="False" />
+          <Filter entryType="Property" fullName="VO.DataColumn.__Type" filterName="__Type" isExposed="False" />
+        </Filter>
+        <Filter entryType="Class" fullName="VO.DataListView" filterName="DataListView" isExposed="True">
+          <Filter entryType="Method" fullName="VO.DataListView.__AutoLayout" filterName="__AutoLayout" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataListView.__AutoResize" filterName="__AutoResize" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataListView.__CacheHint" filterName="__CacheHint" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataListView.__FillCacheItem" filterName="__FillCacheItem" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataListView.__FindItem" filterName="__FindItem" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataListView.__GetDispInfo" filterName="__GetDispInfo" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataListView.__GetServerPos" filterName="__GetServerPos" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataListView.__ItemChanged" filterName="__ItemChanged" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataListView.__NotifyChanges" filterName="__NotifyChanges" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataListView.__RecordChange" filterName="__RecordChange" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataListView.__RefreshData" filterName="__RefreshData" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataListView.__RefreshField" filterName="__RefreshField" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataListView.__SetServerPos" filterName="__SetServerPos" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataListView.__StatusOK" filterName="__StatusOK" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataListView.__Unlink" filterName="__Unlink" isExposed="False" />
+          <Filter entryType="Property" fullName="VO.DataListView.__GetServerCount" filterName="__GetServerCount" isExposed="False" />
+        </Filter>
+        <Filter entryType="Class" fullName="VO.DataServer" filterName="DataServer" isExposed="True">
+          <Filter entryType="Method" fullName="VO.DataServer.__ClearLocks" filterName="__ClearLocks" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataServer.__SetupLocks" filterName="__SetupLocks" isExposed="False" />
+          <Filter entryType="Property" fullName="VO.DataServer.__Clients" filterName="__Clients" isExposed="False" />
+        </Filter>
+        <Filter entryType="Class" fullName="VO.DataWindow" filterName="DataWindow" isExposed="True">
+          <Filter entryType="Method" fullName="VO.DataWindow.__AdjustForm" filterName="__AdjustForm" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataWindow.__AdjustSurface" filterName="__AdjustSurface" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataWindow.__AutoCreateBrowser" filterName="__AutoCreateBrowser" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataWindow.__AutoLayout" filterName="__AutoLayout" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataWindow.__CheckConditionalControls" filterName="__CheckConditionalControls" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataWindow.__CheckRecordStatus" filterName="__CheckRecordStatus" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataWindow.__Delete" filterName="__Delete" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataWindow.__DoValidate" filterName="__DoValidate" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataWindow.__EnableHelpCursor" filterName="__EnableHelpCursor" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataWindow.__FindControl" filterName="__FindControl" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataWindow.__FindFieldSpec" filterName="__FindFieldSpec" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataWindow.__FindHyperLabel" filterName="__FindHyperLabel" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataWindow.__Gather" filterName="__Gather" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataWindow.__GetFormSurface" filterName="__GetFormSurface" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataWindow.__GetOLEObject" filterName="__GetOLEObject" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataWindow.__HandleScrolling" filterName="__HandleScrolling" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataWindow.__RegisterFieldLinks" filterName="__RegisterFieldLinks" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataWindow.__RegisterSubform" filterName="__RegisterSubform" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataWindow.__Scatter" filterName="__Scatter" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataWindow.__SetupDataControl" filterName="__SetupDataControl" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataWindow.__SetupNonDataControl" filterName="__SetupNonDataControl" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataWindow.__StatusMessage" filterName="__StatusMessage" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataWindow.__Unlink" filterName="__Unlink" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataWindow.__UnRegisterDataControl" filterName="__UnRegisterDataControl" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataWindow.__UnRegisterSubform" filterName="__UnRegisterSubform" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataWindow.__UpdateActiveObject" filterName="__UpdateActiveObject" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataWindow.__UpdateCurrent" filterName="__UpdateCurrent" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataWindow.__UpdateStatus" filterName="__UpdateStatus" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DataWindow.__VerifyDataServer" filterName="__VerifyDataServer" isExposed="False" />
+          <Filter entryType="Property" fullName="VO.DataWindow.__aRadioGroups" filterName="__aRadioGroups" isExposed="False" />
+          <Filter entryType="Property" fullName="VO.DataWindow.__FormWindow" filterName="__FormWindow" isExposed="False" />
+          <Filter entryType="Property" fullName="VO.DataWindow.__SubForm" filterName="__SubForm" isExposed="False" />
+        </Filter>
+        <Filter entryType="Class" fullName="VO.DateTimePicker" filterName="DateTimePicker" isExposed="True">
+          <Filter entryType="Method" fullName="VO.DateTimePicker.__Gather" filterName="__Gather" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DateTimePicker.__GetMCColor" filterName="__GetMCColor" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DateTimePicker.__SetMCColor" filterName="__SetMCColor" isExposed="False" />
+          <Filter entryType="Property" fullName="VO.DateTimePicker.__Value" filterName="__Value" isExposed="False" />
+        </Filter>
+        <Filter entryType="Class" fullName="VO.DbError" filterName="DbError" isExposed="False" />
+        <Filter entryType="Class" fullName="VO.DbFileSpec" filterName="DbFileSpec" isExposed="True">
+          <Filter entryType="Method" fullName="VO.DbFileSpec.__MemFullPath" filterName="__MemFullPath" isExposed="False" />
+        </Filter>
+        <Filter entryType="Class" fullName="VO.DbServer" filterName="DbServer" isExposed="True">
+          <Filter entryType="Method" fullName="VO.DbServer.__AcceptSelectiveRelation" filterName="__AcceptSelectiveRelation" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DbServer.__BuildDataField" filterName="__BuildDataField" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DbServer.__ClearChildRelation" filterName="__ClearChildRelation" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DbServer.__ClearLocks" filterName="__ClearLocks" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DbServer.__DbServerEval" filterName="__DbServerEval" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DbServer.__GenerateStatusHL" filterName="__GenerateStatusHL" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DbServer.__InitRecordBuf" filterName="__InitRecordBuf" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DbServer.__Notify" filterName="__Notify" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DbServer.__NotifyBufferFlush" filterName="__NotifyBufferFlush" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DbServer.__OptimisticFlush" filterName="__OptimisticFlush" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DbServer.__OptimisticFlushNoLock" filterName="__OptimisticFlushNoLock" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DbServer.__ProcessConcurrency" filterName="__ProcessConcurrency" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DbServer.__RLockVerify" filterName="__RLockVerify" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DbServer.__SetAlias" filterName="__SetAlias" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DbServer.__SetStatusHL" filterName="__SetStatusHL" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DbServer.__SetupLocks" filterName="__SetupLocks" isExposed="False" />
+        </Filter>
+        <Filter entryType="Class" fullName="VO.DDEMC" filterName="DDEMC" isExposed="False" />
+        <Filter entryType="Class" fullName="VO.DialogWindow" filterName="DialogWindow" isExposed="True">
+          <Filter entryType="Method" fullName="VO.DialogWindow.__Close" filterName="__Close" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DialogWindow.__SetupDataControl" filterName="__SetupDataControl" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DialogWindow.__SubClassForDragList" filterName="__SubClassForDragList" isExposed="False" />
+          <Filter entryType="Field" fullName="VO.DialogWindow.__lpfnOldDlgProc" filterName="__lpfnOldDlgProc" isExposed="False" />
+        </Filter>
+        <Filter entryType="Class" fullName="VO.DragDropServer" filterName="DragDropServer" isExposed="True">
+          <Filter entryType="Method" fullName="VO.DragDropServer.__DragAppendFiles" filterName="__DragAppendFiles" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DragDropServer.__DragCreateMemHandle" filterName="__DragCreateMemHandle" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.DragDropServer.__GetKeyState" filterName="__GetKeyState" isExposed="False" />
+        </Filter>
+        <Filter entryType="Class" fullName="VO.DrawObject" filterName="DrawObject" isExposed="True">
+          <Filter entryType="Method" fullName="VO.DrawObject.__SetWindow" filterName="__SetWindow" isExposed="False" />
+        </Filter>
+        <Filter entryType="Class" fullName="VO.Edit" filterName="Edit" isExposed="True">
+          <Filter entryType="Property" fullName="VO.Edit.__ForceModFlag2True" filterName="__ForceModFlag2True" isExposed="False" />
+          <Filter entryType="Property" fullName="VO.Edit.__NoNotify" filterName="__NoNotify" isExposed="False" />
+        </Filter>
+        <Filter entryType="Class" fullName="VO.ExplorerWindow" filterName="ExplorerWindow" isExposed="True">
+          <Filter entryType="Method" fullName="VO.ExplorerWindow.__FocusLV" filterName="__FocusLV" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.ExplorerWindow.__FocusTV" filterName="__FocusTV" isExposed="False" />
+        </Filter>
+        <Filter entryType="Class" fullName="VO.FieldSpec" filterName="FieldSpec" isExposed="True">
+          <Filter entryType="Method" fullName="VO.FieldSpec.__GetHLRange" filterName="__GetHLRange" isExposed="False" />
+        </Filter>
+        <Filter entryType="Class" fullName="VO.FileSpec" filterName="FileSpec" isExposed="True">
+          <Filter entryType="Method" fullName="VO.FileSpec.__DefaultFullPath" filterName="__DefaultFullPath" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.FileSpec.__FullPathAcc" filterName="__FullPathAcc" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.FileSpec.__SetDrive" filterName="__SetDrive" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.FileSpec.__SetFileExt" filterName="__SetFileExt" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.FileSpec.__SetFileName" filterName="__SetFileName" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.FileSpec.__SetFilePath" filterName="__SetFilePath" isExposed="False" />
+        </Filter>
+        <Filter entryType="Class" fullName="VO.FixedBitmap" filterName="FixedBitmap" isExposed="True">
+          <Filter entryType="Method" fullName="VO.FixedBitmap.__SetImage" filterName="__SetImage" isExposed="False" />
+        </Filter>
+        <Filter entryType="Class" fullName="VO.FixedIcon" filterName="FixedIcon" isExposed="True">
+          <Filter entryType="Method" fullName="VO.FixedIcon.__SetImage" filterName="__SetImage" isExposed="False" />
+        </Filter>
+        <Filter entryType="Class" fullName="VO.FixedImage" filterName="FixedImage" isExposed="True">
+          <Filter entryType="Method" fullName="VO.FixedImage.__SetImage" filterName="__SetImage" isExposed="False" />
+        </Filter>
+        <Filter entryType="Class" fullName="VO.FixedText" filterName="FixedText" isExposed="True">
+          <Filter entryType="Method" fullName="VO.FixedText.__SetColors" filterName="__SetColors" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.FixedText.__SetText" filterName="__SetText" isExposed="False" />
+        </Filter>
+        <Filter entryType="Delegate" fullName="VO.FolderDialogCallBackDelegate" filterName="FolderDialogCallBackDelegate" isExposed="False" />
+        <Filter entryType="Class" fullName="VO.Font" filterName="Font" isExposed="True">
+          <Filter entryType="Property" fullName="VO.Font.__FontCharSet" filterName="__FontCharSet" isExposed="False" />
+          <Filter entryType="Property" fullName="VO.Font.__FontFaceName" filterName="__FontFaceName" isExposed="False" />
+          <Filter entryType="Property" fullName="VO.Font.__FontHeight" filterName="__FontHeight" isExposed="False" />
+          <Filter entryType="Property" fullName="VO.Font.__FontPitchAndFamily" filterName="__FontPitchAndFamily" isExposed="False" />
+          <Filter entryType="Property" fullName="VO.Font.__PointSize" filterName="__PointSize" isExposed="False" />
+        </Filter>
+        <Filter entryType="Class" fullName="VO.FSError" filterName="FSError" isExposed="False" />
+        <Filter entryType="Class" fullName="VO.HelpDisplay" filterName="HelpDisplay" isExposed="True">
+          <Filter entryType="Method" fullName="VO.HelpDisplay.__CallHelp" filterName="__CallHelp" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.HelpDisplay.__VerifyHelp" filterName="__VerifyHelp" isExposed="False" />
+        </Filter>
+        <Filter entryType="Class" fullName="VO.HiddenWndClass" filterName="HiddenWndClass" isExposed="False" />
+        <Filter entryType="Class" fullName="VO.HLError" filterName="HLError" isExposed="False" />
+        <Filter entryType="Class" fullName="VO.HotKeyEdit" filterName="HotKeyEdit" isExposed="True">
+          <Filter entryType="Method" fullName="VO.HotKeyEdit.__SetRule" filterName="__SetRule" isExposed="False" />
+        </Filter>
+        <Filter entryType="Delegate" fullName="VO.INTStatusCallback_Delegate" filterName="INTStatusCallback_Delegate" isExposed="False" />
+        <Filter entryType="Class" fullName="VO.IPAddress" filterName="IPAddress" isExposed="True">
+          <Filter entryType="Method" fullName="VO.IPAddress.__SetText" filterName="__SetText" isExposed="False" />
+          <Filter entryType="Property" fullName="VO.IPAddress.__Value" filterName="__Value" isExposed="False" />
+        </Filter>
+        <Filter entryType="Class" fullName="VO.IpcClient" filterName="IpcClient" isExposed="True">
+          <Filter entryType="Method" fullName="VO.IpcClient.__UpdateClient" filterName="__UpdateClient" isExposed="False" />
+        </Filter>
+        <Filter entryType="Class" fullName="VO.IpcClientErrorEvent" filterName="IpcClientErrorEvent" isExposed="False" />
+        <Filter entryType="Class" fullName="VO.IpcServer" filterName="IpcServer" isExposed="True">
+          <Filter entryType="Method" fullName="VO.IpcServer.__FindTopic" filterName="__FindTopic" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.IpcServer.__WCAddTopicToList" filterName="__WCAddTopicToList" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.IpcServer.__WCFindItem" filterName="__WCFindItem" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.IpcServer.__WCGetTopicFromList" filterName="__WCGetTopicFromList" isExposed="False" />
+        </Filter>
+        <Filter entryType="Class" fullName="VO.ListBox" filterName="ListBox" isExposed="True">
+          <Filter entryType="Method" fullName="VO.ListBox.__AddItem" filterName="__AddItem" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.ListBox.__FindDisplayValue" filterName="__FindDisplayValue" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.ListBox.__FindRetValue" filterName="__FindRetValue" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.ListBox.__Update" filterName="__Update" isExposed="False" />
+          <Filter entryType="Property" fullName="VO.ListBox.__CurrentItemNo" filterName="__CurrentItemNo" isExposed="False" />
+          <Filter entryType="Property" fullName="VO.ListBox.__Value" filterName="__Value" isExposed="False" />
+        </Filter>
+        <Filter entryType="Class" fullName="VO.ListView" filterName="ListView" isExposed="True">
+          <Filter entryType="Method" fullName="VO.ListView.__CreateDragImageList" filterName="__CreateDragImageList" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.ListView.__GetColumnFromIndex" filterName="__GetColumnFromIndex" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.ListView.__GetColumnIndexFromSymbol" filterName="__GetColumnIndexFromSymbol" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.ListView.__SetItem" filterName="__SetItem" isExposed="False" />
+          <Filter entryType="Property" fullName="VO.ListView.__SortRoutineName" filterName="__SortRoutineName" isExposed="False" />
+        </Filter>
+        <Filter entryType="Class" fullName="VO.ListViewColumn" filterName="ListViewColumn" isExposed="True">
+          <Filter entryType="Property" fullName="VO.ListViewColumn.__Owner" filterName="__Owner" isExposed="False" />
+          <Filter entryType="Property" fullName="VO.ListViewColumn.__ValueList" filterName="__ValueList" isExposed="False" />
+        </Filter>
+        <Filter entryType="Class" fullName="VO.ListViewItem" filterName="ListViewItem" isExposed="True">
+          <Filter entryType="Property" fullName="VO.ListViewItem.__ColumnTextList" filterName="__ColumnTextList" isExposed="False" />
+          <Filter entryType="Property" fullName="VO.ListViewItem.__ColumnValueList" filterName="__ColumnValueList" isExposed="False" />
+          <Filter entryType="Property" fullName="VO.ListViewItem.__lParam" filterName="__lParam" isExposed="False" />
+        </Filter>
+        <Filter entryType="Class" fullName="VO.MenuCommandEvent" filterName="MenuCommandEvent" isExposed="True">
+          <Filter entryType="Method" fullName="VO.MenuCommandEvent.__SetMenu" filterName="__SetMenu" isExposed="False" />
+        </Filter>
+        <Filter entryType="Class" fullName="VO.MonthCalendar" filterName="MonthCalendar" isExposed="True">
+          <Filter entryType="Method" fullName="VO.MonthCalendar.__GetColor" filterName="__GetColor" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.MonthCalendar.__SetColor" filterName="__SetColor" isExposed="False" />
+          <Filter entryType="Property" fullName="VO.MonthCalendar.__Value" filterName="__Value" isExposed="False" />
+        </Filter>
+        <Filter entryType="Class" fullName="VO.MultiMediaContainer" filterName="MultiMediaContainer" isExposed="True">
+          <Filter entryType="Method" fullName="VO.MultiMediaContainer.__ResizeMCIWnd" filterName="__ResizeMCIWnd" isExposed="False" />
+          <Filter entryType="Property" fullName="VO.MultiMediaContainer.__Value" filterName="__Value" isExposed="False" />
+        </Filter>
+        <Filter entryType="Class" fullName="VO.OrderSpec" filterName="OrderSpec" isExposed="True">
+          <Filter entryType="Method" fullName="VO.OrderSpec.__OpenDb" filterName="__OpenDb" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.OrderSpec.__OrderSetInfo" filterName="__OrderSetInfo" isExposed="False" />
+        </Filter>
+        <Filter entryType="Class" fullName="VO.Printer" filterName="Printer" isExposed="True">
+          <Filter entryType="Method" fullName="VO.Printer.__GetDC" filterName="__GetDC" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.Printer.__ResetDCFlags" filterName="__ResetDCFlags" isExposed="False" />
+        </Filter>
+        <Filter entryType="Class" fullName="VO.PrinterErrorEvent" filterName="PrinterErrorEvent" isExposed="False" />
+        <Filter entryType="Class" fullName="VO.PrintingDevice" filterName="PrintingDevice" isExposed="True">
+          <Filter entryType="Method" fullName="VO.PrintingDevice.__FillDevMode" filterName="__FillDevMode" isExposed="False" />
+        </Filter>
+        <Filter entryType="Class" fullName="VO.ProgressBar" filterName="ProgressBar" isExposed="True">
+          <Filter entryType="Property" fullName="VO.ProgressBar.__Value" filterName="__Value" isExposed="False" />
+        </Filter>
+        <Filter entryType="Class" fullName="VO.RadioButtonGroup" filterName="RadioButtonGroup" isExposed="True">
+          <Filter entryType="Method" fullName="VO.RadioButtonGroup.__AlreadyHasFocus" filterName="__AlreadyHasFocus" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.RadioButtonGroup.__IsElement" filterName="__IsElement" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.RadioButtonGroup.__SetOn" filterName="__SetOn" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.RadioButtonGroup.__Update" filterName="__Update" isExposed="False" />
+          <Filter entryType="Property" fullName="VO.RadioButtonGroup.__Value" filterName="__Value" isExposed="False" />
+        </Filter>
+        <Filter entryType="Class" fullName="VO.RCError" filterName="RCError" isExposed="False" />
+        <Filter entryType="Class" fullName="VO.ReportQueue" filterName="ReportQueue" isExposed="True">
+          <Filter entryType="Method" fullName="VO.ReportQueue.__CreateDefinerWindow" filterName="__CreateDefinerWindow" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.ReportQueue.__ExecuteNow" filterName="__ExecuteNow" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.ReportQueue.__InitCAQRT" filterName="__InitCAQRT" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.ReportQueue.__OneReportLess" filterName="__OneReportLess" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.ReportQueue.__QorExecute" filterName="__QorExecute" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.ReportQueue.__ReportParameters" filterName="__ReportParameters" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.ReportQueue.__TerminateCAQRT" filterName="__TerminateCAQRT" isExposed="False" />
+        </Filter>
+        <Filter entryType="Class" fullName="VO.RichEdit" filterName="RichEdit" isExposed="True">
+          <Filter entryType="Method" fullName="VO.RichEdit.__GetValue" filterName="__GetValue" isExposed="False" />
+          <Filter entryType="Property" fullName="VO.RichEdit.__StreamPos" filterName="__StreamPos" isExposed="False" />
+          <Filter entryType="Property" fullName="VO.RichEdit.__Value" filterName="__Value" isExposed="False" />
+        </Filter>
+        <Filter entryType="Class" fullName="VO.ScrollBar" filterName="ScrollBar" isExposed="True">
+          <Filter entryType="Method" fullName="VO.ScrollBar.__SetColors" filterName="__SetColors" isExposed="False" />
+          <Filter entryType="Property" fullName="VO.ScrollBar.__Type" filterName="__Type" isExposed="False" />
+          <Filter entryType="Property" fullName="VO.ScrollBar.__Value" filterName="__Value" isExposed="False" />
+        </Filter>
+        <Filter entryType="Structure" fullName="VO.SelfPtr" filterName="SelfPtr" isExposed="False" />
+        <Filter entryType="Class" fullName="VO.ShellWindow" filterName="ShellWindow" isExposed="True">
+          <Filter entryType="Method" fullName="VO.ShellWindow.__AdjustClient" filterName="__AdjustClient" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.ShellWindow.__AssociateAccel" filterName="__AssociateAccel" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.ShellWindow.__RemoveChildToolBar" filterName="__RemoveChildToolBar" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.ShellWindow.__SetChildToolBar" filterName="__SetChildToolBar" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.ShellWindow.__UseChildMenu" filterName="__UseChildMenu" isExposed="False" />
+          <Filter entryType="Property" fullName="VO.ShellWindow.__ActualMenu" filterName="__ActualMenu" isExposed="False" />
+        </Filter>
+        <Filter entryType="Class" fullName="VO.SingleLineEdit" filterName="SingleLineEdit" isExposed="True">
+          <Filter entryType="Method" fullName="VO.SingleLineEdit.__Update" filterName="__Update" isExposed="False" />
+          <Filter entryType="Property" fullName="VO.SingleLineEdit.__AllowSelection" filterName="__AllowSelection" isExposed="False" />
+          <Filter entryType="Property" fullName="VO.SingleLineEdit.__CurPos" filterName="__CurPos" isExposed="False" />
+          <Filter entryType="Property" fullName="VO.SingleLineEdit.__EditString" filterName="__EditString" isExposed="False" />
+          <Filter entryType="Property" fullName="VO.SingleLineEdit.__FSLength" filterName="__FSLength" isExposed="False" />
+          <Filter entryType="Property" fullName="VO.SingleLineEdit.__Value" filterName="__Value" isExposed="False" />
+        </Filter>
+        <Filter entryType="Class" fullName="VO.SplitWindow" filterName="SplitWindow" isExposed="True">
+          <Filter entryType="Method" fullName="VO.SplitWindow.__ResizeSplitView" filterName="__ResizeSplitView" isExposed="False" />
+          <Filter entryType="Property" fullName="VO.SplitWindow.__SplitView" filterName="__SplitView" isExposed="False" />
+        </Filter>
+        <Filter entryType="Class" fullName="VO.SQLConnection" filterName="SQLConnection" isExposed="True">
+          <Filter entryType="Method" fullName="VO.SQLConnection.__AllocConnect" filterName="__AllocConnect" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.SQLConnection.__AllocEnv" filterName="__AllocEnv" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.SQLConnection.__CheckActiveStmts" filterName="__CheckActiveStmts" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.SQLConnection.__CheckIdentQuoteChar" filterName="__CheckIdentQuoteChar" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.SQLConnection.__CheckPositionOps" filterName="__CheckPositionOps" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.SQLConnection.__CheckQE" filterName="__CheckQE" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.SQLConnection.__CheckScrollable" filterName="__CheckScrollable" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.SQLConnection.__CloseExtraStmt" filterName="__CloseExtraStmt" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.SQLConnection.__Free" filterName="__Free" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.SQLConnection.__FreeConnect" filterName="__FreeConnect" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.SQLConnection.__FreeEnv" filterName="__FreeEnv" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.SQLConnection.__GenerateSqlError" filterName="__GenerateSqlError" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.SQLConnection.__GetExtraStmt" filterName="__GetExtraStmt" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.SQLConnection.__RegisterStmt" filterName="__RegisterStmt" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.SQLConnection.__Transact" filterName="__Transact" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.SQLConnection.__UnregisterStmt" filterName="__UnregisterStmt" isExposed="False" />
+        </Filter>
+        <Filter entryType="Class" fullName="VO.SQLSelect" filterName="SQLSelect" isExposed="True">
+          <Filter entryType="Method" fullName="VO.SQLSelect.__AllocStmt" filterName="__AllocStmt" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.SQLSelect.__BuildUpdateStmt" filterName="__BuildUpdateStmt" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.SQLSelect.__CopyDataBuffer" filterName="__CopyDataBuffer" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.SQLSelect.__CopySQLError" filterName="__CopySQLError" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.SQLSelect.__FigureScrollUpdateType" filterName="__FigureScrollUpdateType" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.SQLSelect.__FindTableName" filterName="__FindTableName" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.SQLSelect.__ForceOpen" filterName="__ForceOpen" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.SQLSelect.__FreeStmt" filterName="__FreeStmt" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.SQLSelect.__GetColIndex" filterName="__GetColIndex" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.SQLSelect.__GetCursorName" filterName="__GetCursorName" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.SQLSelect.__GetFieldName" filterName="__GetFieldName" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.SQLSelect.__GetLongData" filterName="__GetLongData" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.SQLSelect.__GetUpdateKey" filterName="__GetUpdateKey" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.SQLSelect.__GetUpdateStmt" filterName="__GetUpdateStmt" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.SQLSelect.__GetUpdateVal" filterName="__GetUpdateVal" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.SQLSelect.__GoCold" filterName="__GoCold" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.SQLSelect.__InitColumnDesc" filterName="__InitColumnDesc" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.SQLSelect.__InitColValue" filterName="__InitColValue" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.SQLSelect.__MemFree" filterName="__MemFree" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.SQLSelect.__PrepareStmtOptions" filterName="__PrepareStmtOptions" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.SQLSelect.__PutLongData" filterName="__PutLongData" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.SQLSelect.__RecCount" filterName="__RecCount" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.SQLSelect.__Reset" filterName="__Reset" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.SQLSelect.__SetCursorName" filterName="__SetCursorName" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.SQLSelect.__SetNullData" filterName="__SetNullData" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.SQLSelect.__SetRecordFlags" filterName="__SetRecordFlags" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.SQLSelect.__SetScrollOptions" filterName="__SetScrollOptions" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.SQLSelect.__SkipCursor" filterName="__SkipCursor" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.SQLSelect.__UpdateLongData" filterName="__UpdateLongData" isExposed="False" />
+        </Filter>
+        <Filter entryType="Class" fullName="VO.SQLStatement" filterName="SQLStatement" isExposed="True">
+          <Filter entryType="Method" fullName="VO.SQLStatement.__AllocStmt" filterName="__AllocStmt" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.SQLStatement.__FreeParameters" filterName="__FreeParameters" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.SQLStatement.__FreeStmt" filterName="__FreeStmt" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.SQLStatement.__GenerateSQLError" filterName="__GenerateSQLError" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.SQLStatement.__Reset" filterName="__Reset" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.SQLStatement.__SetDefaultStatementOptions" filterName="__SetDefaultStatementOptions" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.SQLStatement.__SetParameters" filterName="__SetParameters" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.SQLStatement.__SetScrollOptions" filterName="__SetScrollOptions" isExposed="False" />
+          <Filter entryType="Property" fullName="VO.SQLStatement.__Params" filterName="__Params" isExposed="False" />
+        </Filter>
+        <Filter entryType="Class" fullName="VO.SQLTable" filterName="SQLTable" isExposed="True">
+          <Filter entryType="Method" fullName="VO.SQLTable.__AcceptSelectiveRelation" filterName="__AcceptSelectiveRelation" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.SQLTable.__BuildSQLString" filterName="__BuildSQLString" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.SQLTable.__StripStatement" filterName="__StripStatement" isExposed="False" />
+        </Filter>
+        <Filter entryType="Class" fullName="VO.StandardFileDialog" filterName="StandardFileDialog" isExposed="True">
+          <Filter entryType="Method" fullName="VO.StandardFileDialog.__AddFilter" filterName="__AddFilter" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.StandardFileDialog.__ClearFilters" filterName="__ClearFilters" isExposed="False" />
+          <Filter entryType="Property" fullName="VO.StandardFileDialog.__Flags" filterName="__Flags" isExposed="False" />
+        </Filter>
+        <Filter entryType="Class" fullName="VO.StandardFolderDialog" filterName="StandardFolderDialog" isExposed="True">
+          <Filter entryType="Property" fullName="VO.StandardFolderDialog.__StartFolder" filterName="__StartFolder" isExposed="False" />
+        </Filter>
+        <Filter entryType="Class" fullName="VO.StatusBar" filterName="StatusBar" isExposed="True">
+          <Filter entryType="Method" fullName="VO.StatusBar.__AutoSize" filterName="__AutoSize" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.StatusBar.__BuildItems" filterName="__BuildItems" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.StatusBar.__GetBorderWidths" filterName="__GetBorderWidths" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.StatusBar.__GetItemFromSymbol" filterName="__GetItemFromSymbol" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.StatusBar.__GetItemWidth" filterName="__GetItemWidth" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.StatusBar.__GetKeyState" filterName="__GetKeyState" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.StatusBar.__GetSymbolFromItem" filterName="__GetSymbolFromItem" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.StatusBar.__GetText" filterName="__GetText" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.StatusBar.__InitItems" filterName="__InitItems" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.StatusBar.__SetKeyState" filterName="__SetKeyState" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.StatusBar.__SetSystemItemWidths" filterName="__SetSystemItemWidths" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.StatusBar.__ToggleKeyState" filterName="__ToggleKeyState" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.StatusBar.__UpdateKeyStates" filterName="__UpdateKeyStates" isExposed="False" />
+          <Filter entryType="Property" fullName="VO.StatusBar.__IsTopAligned" filterName="__IsTopAligned" isExposed="False" />
+        </Filter>
+        <Filter entryType="Class" fullName="VO.StatusBarItem" filterName="StatusBarItem" isExposed="True">
+          <Filter entryType="Property" fullName="VO.StatusBarItem.__Edge" filterName="__Edge" isExposed="False" />
+          <Filter entryType="Property" fullName="VO.StatusBarItem.__Icon" filterName="__Icon" isExposed="False" />
+        </Filter>
+        <Filter entryType="Class" fullName="VO.SysLink" filterName="SysLink" isExposed="False">
+          <Filter entryType="Constructor" fullName="VO.SysLink.#ctor" filterName=".ctor" isExposed="True" />
+        </Filter>
+        <Filter entryType="Class" fullName="VO.TabControl" filterName="TabControl" isExposed="True">
+          <Filter entryType="Method" fullName="VO.TabControl.__AdjustPage" filterName="__AdjustPage" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.TabControl.__CalcNewDimension" filterName="__CalcNewDimension" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.TabControl.__FocusPage" filterName="__FocusPage" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.TabControl.__GetIndexFromPage" filterName="__GetIndexFromPage" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.TabControl.__GetIndexFromSymbol" filterName="__GetIndexFromSymbol" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.TabControl.__GetPageFromIndex" filterName="__GetPageFromIndex" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.TabControl.__GetPageFromSymbol" filterName="__GetPageFromSymbol" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.TabControl.__GetSymbolFromIndex" filterName="__GetSymbolFromIndex" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.TabControl.__GetSymbolFromPage" filterName="__GetSymbolFromPage" isExposed="False" />
+        </Filter>
+        <Filter entryType="Class" fullName="VO.TextControl" filterName="TextControl" isExposed="True">
+          <Filter entryType="Method" fullName="VO.TextControl.__GetText" filterName="__GetText" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.TextControl.__InitTextMetrics" filterName="__InitTextMetrics" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.TextControl.__RescalCntlB" filterName="__RescalCntlB" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.TextControl.__SetColors" filterName="__SetColors" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.TextControl.__SetText" filterName="__SetText" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.TextControl.__Update" filterName="__Update" isExposed="False" />
+        </Filter>
+        <Filter entryType="Class" fullName="VO.ToolBar" filterName="ToolBar" isExposed="True">
+          <Filter entryType="Method" fullName="VO.ToolBar.__CreateToolBar" filterName="__CreateToolBar" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.ToolBar.__FindExtraBitMap" filterName="__FindExtraBitMap" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.ToolBar.__FindTipText" filterName="__FindTipText" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.ToolBar.__FindToolBar" filterName="__FindToolBar" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.ToolBar.__FindToolBarHandle" filterName="__FindToolBarHandle" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.ToolBar.__SetParent" filterName="__SetParent" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.ToolBar.__TryDeferAction" filterName="__TryDeferAction" isExposed="False" />
+          <Filter entryType="Property" fullName="VO.ToolBar.__ButtonStyle" filterName="__ButtonStyle" isExposed="False" />
+          <Filter entryType="Property" fullName="VO.ToolBar.__IsRebar" filterName="__IsRebar" isExposed="False" />
+          <Filter entryType="Property" fullName="VO.ToolBar.__IsTopAligned" filterName="__IsTopAligned" isExposed="False" />
+        </Filter>
+        <Filter entryType="Class" fullName="VO.TopAppWindow" filterName="TopAppWindow" isExposed="True">
+          <Filter entryType="Method" fullName="VO.TopAppWindow.__ResizeChild" filterName="__ResizeChild" isExposed="False" />
+        </Filter>
+        <Filter entryType="Class" fullName="VO.TreeView" filterName="TreeView" isExposed="True">
+          <Filter entryType="Method" fullName="VO.TreeView.__CreateDragImageList" filterName="__CreateDragImageList" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.TreeView.__Expand" filterName="__Expand" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.TreeView.__GetHandleFromSymbol" filterName="__GetHandleFromSymbol" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.TreeView.__GetSymbolFromHandle" filterName="__GetSymbolFromHandle" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.TreeView.__GetValueFromSymbol" filterName="__GetValueFromSymbol" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.TreeView.__RemoveByHandle" filterName="__RemoveByHandle" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.TreeView.__RemoveBySymbol" filterName="__RemoveBySymbol" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.TreeView.__UpdateValue" filterName="__UpdateValue" isExposed="False" />
+          <Filter entryType="Property" fullName="VO.TreeView.__SortRoutineName" filterName="__SortRoutineName" isExposed="False" />
+        </Filter>
+        <Filter entryType="Class" fullName="VO.TreeViewItem" filterName="TreeViewItem" isExposed="True">
+          <Filter entryType="Property" fullName="VO.TreeViewItem.__TreeViewControl" filterName="__TreeViewControl" isExposed="False" />
+        </Filter>
+        <Filter entryType="Class" fullName="VO.WCError" filterName="WCError" isExposed="False" />
+        <Filter entryType="Class" fullName="VO.Window" filterName="Window" isExposed="True">
+          <Filter entryType="Method" fullName="VO.Window.__AddAlign" filterName="__AddAlign" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.Window.__AddTool" filterName="__AddTool" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.Window.__AlignControls" filterName="__AlignControls" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.Window.__AssociateAccel" filterName="__AssociateAccel" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.Window.__Close" filterName="__Close" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.Window.__CommandFromEvent" filterName="__CommandFromEvent" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.Window.__CreateSelfBitmap" filterName="__CreateSelfBitmap" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.Window.__DestroyChildren" filterName="__DestroyChildren" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.Window.__DestroyWnd" filterName="__DestroyWnd" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.Window.__EnableHelpCursor" filterName="__EnableHelpCursor" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.Window.__FilterHelpCursor" filterName="__FilterHelpCursor" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.Window.__GetDC" filterName="__GetDC" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.Window.__GetMyOleObjects" filterName="__GetMyOleObjects" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.Window.__GetPaintRect" filterName="__GetPaintRect" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.Window.__HandleListItemDrag" filterName="__HandleListItemDrag" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.Window.__HandlePointer" filterName="__HandlePointer" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.Window.__HelpFilter" filterName="__HelpFilter" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.Window.__InCursorHelpMode" filterName="__InCursorHelpMode" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.Window.__PreMenuCommand" filterName="__PreMenuCommand" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.Window.__PrePreMenuCommand" filterName="__PrePreMenuCommand" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.Window.__ProcessHelp" filterName="__ProcessHelp" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.Window.__ProcessHelpCursor" filterName="__ProcessHelpCursor" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.Window.__ProcessToolTip" filterName="__ProcessToolTip" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.Window.__ReleaseDC" filterName="__ReleaseDC" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.Window.__SetBrushNeeded" filterName="__SetBrushNeeded" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.Window.__SetDCInitialized" filterName="__SetDCInitialized" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.Window.__SetFont" filterName="__SetFont" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.Window.__SetPenNeeded" filterName="__SetPenNeeded" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.Window.__SetSelfAssoAccel" filterName="__SetSelfAssoAccel" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.Window.__SetSelfMenu" filterName="__SetSelfMenu" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.Window.__Timer" filterName="__Timer" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.Window.__ToolTipHandle" filterName="__ToolTipHandle" isExposed="False" />
+          <Filter entryType="Method" fullName="VO.Window.__UpdateTrayIcon" filterName="__UpdateTrayIcon" isExposed="False" />
+          <Filter entryType="Property" fullName="VO.Window.__Cursor" filterName="__Cursor" isExposed="False" />
+          <Filter entryType="Property" fullName="VO.Window.__Parent" filterName="__Parent" isExposed="False" />
+        </Filter>
+      </Filter>
+      <Filter entryType="Namespace" fullName="VOConsoleClasses" isExposed="False" />
+      <Filter entryType="Namespace" fullName="VOGUIClasses" isExposed="False">
+        <Filter entryType="Class" fullName="VOGUIClasses.Functions" filterName="Functions" isExposed="True">
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.$Exit" filterName="$Exit" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.$Init1" filterName="$Init1" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.$Init3" filterName="$Init3" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__CellEditProc" filterName="__CellEditProc" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__ConvertBrush" filterName="__ConvertBrush" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__ConvertHatch" filterName="__ConvertHatch" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__DBCSEnabled" filterName="__DBCSEnabled" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__DdecallbackProc" filterName="__DdecallbackProc" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__Dispatch_DrawItem" filterName="__Dispatch_DrawItem" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__Dispatch_MeasureItem" filterName="__Dispatch_MeasureItem" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__Dispatch_MenuChar" filterName="__Dispatch_MenuChar" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__DlgDirSelectEx" filterName="__DlgDirSelectEx" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__DrawFldData" filterName="__DrawFldData" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__GetDFCaption" filterName="__GetDFCaption" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__GetFSDefaultLength" filterName="__GetFSDefaultLength" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__GetRTFValue" filterName="__GetRTFValue" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__InitClassPointer" filterName="__InitClassPointer" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__InitFunctionPointer" filterName="__InitFunctionPointer" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__InitTheme" filterName="__InitTheme" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__LoadCallback" filterName="__LoadCallback" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__LoadComDlgDLL" filterName="__LoadComDlgDLL" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__LoadContainerDLL" filterName="__LoadContainerDLL" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__LoadMSVFWDll" filterName="__LoadMSVFWDll" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__LoadShellDll" filterName="__LoadShellDll" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__LoadSplitWindowDLL" filterName="__LoadSplitWindowDLL" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__LoadThemeDll" filterName="__LoadThemeDll" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__LoadWinSpoolDLL" filterName="__LoadWinSpoolDLL" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__OleDropTargetCallback" filterName="__OleDropTargetCallback" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__OleStatusCallback" filterName="__OleStatusCallback" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__PrinterAbortProc" filterName="__PrinterAbortProc" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__SaveCallBack" filterName="__SaveCallBack" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__SetAppObject" filterName="__SetAppObject" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__SetChildFontProc" filterName="__SetChildFontProc" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__SetRTFValue" filterName="__SetRTFValue" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__ShowControlProc" filterName="__ShowControlProc" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__ShowLastError" filterName="__ShowLastError" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__StdFileHook" filterName="__StdFileHook" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__WCAddIpcObjectToConv" filterName="__WCAddIpcObjectToConv" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__WCAddPrinterToArray" filterName="__WCAddPrinterToArray" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__WCAddServerToHsz" filterName="__WCAddServerToHsz" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__WCControlProc" filterName="__WCControlProc" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__WCConvertIcon" filterName="__WCConvertIcon" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__WCConvertPoint" filterName="__WCConvertPoint" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__WCConvertPointer" filterName="__WCConvertPointer" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__WCDeleteCriticalSections" filterName="__WCDeleteCriticalSections" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__WCDelIpcObjectFromConv" filterName="__WCDelIpcObjectFromConv" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__WCDelPrinterFromArray" filterName="__WCDelPrinterFromArray" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__WCDelServerFromHsz" filterName="__WCDelServerFromHsz" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__WCDialogProc" filterName="__WCDialogProc" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__WCDIBFromBitmap" filterName="__WCDIBFromBitmap" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__WCDocAppWndProc" filterName="__WCDocAppWndProc" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__WCDragListDialogProc" filterName="__WCDragListDialogProc" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__WCGBChildProc" filterName="__WCGBChildProc" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__WCGBNotifyProc" filterName="__WCGBNotifyProc" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__WCGetBrushColor" filterName="__WCGetBrushColor" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__WCGetControlByHandle" filterName="__WCGetControlByHandle" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__WCGetHConvFromConv" filterName="__WCGetHConvFromConv" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__WCGetHszFromHsz" filterName="__WCGetHszFromHsz" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__WCGetIpcObjectFromConv" filterName="__WCGetIpcObjectFromConv" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__WCGetMenuByHandle" filterName="__WCGetMenuByHandle" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__WCGetObjectByHandle" filterName="__WCGetObjectByHandle" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__WCGetObjectByProperty" filterName="__WCGetObjectByProperty" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__WCGetOrigin" filterName="__WCGetOrigin" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__WCGetPictureCoordinates" filterName="__WCGetPictureCoordinates" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__WCGetPrinterFromArray" filterName="__WCGetPrinterFromArray" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__WCGetProperty" filterName="__WCGetProperty" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__WCGetServerFromHsz" filterName="__WCGetServerFromHsz" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__WCGetTopLeftPoint" filterName="__WCGetTopLeftPoint" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__WCGetWindowByHandle" filterName="__WCGetWindowByHandle" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__WCGetWindowMenuPosition" filterName="__WCGetWindowMenuPosition" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__WCGetWindowObjectByHandle" filterName="__WCGetWindowObjectByHandle" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__WCInitCriticalSections" filterName="__WCInitCriticalSections" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__WCIsTrueTypeEnabled" filterName="__WCIsTrueTypeEnabled" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__WCLogicalBackgroundBrush" filterName="__WCLogicalBackgroundBrush" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__WCLogicalBrush" filterName="__WCLogicalBrush" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__WCLogicalPen" filterName="__WCLogicalPen" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__WCPaletteSize" filterName="__WCPaletteSize" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__WCQueryCloseEnumFunc" filterName="__WCQueryCloseEnumFunc" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__WCRegisterControl" filterName="__WCRegisterControl" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__WCRegisterCustomControl" filterName="__WCRegisterCustomControl" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__WCRegisterMenu" filterName="__WCRegisterMenu" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__WCRegisterMMContWindow" filterName="__WCRegisterMMContWindow" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__WCRegisterProperty" filterName="__WCRegisterProperty" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__WCRegisterTimer" filterName="__WCRegisterTimer" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__WCSelfPtr2Object" filterName="__WCSelfPtr2Object" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__WCSelfPtrAlloc" filterName="__WCSelfPtrAlloc" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__WCSelfPtrFree" filterName="__WCSelfPtrFree" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__WCSetROP" filterName="__WCSetROP" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__WCShellWndProc" filterName="__WCShellWndProc" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__WCStretchDibBlt" filterName="__WCStretchDibBlt" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__WCTimerProc" filterName="__WCTimerProc" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__WCTopAppWndProc" filterName="__WCTopAppWndProc" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__WCUnregisterClasses" filterName="__WCUnregisterClasses" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__WCUnRegisterControl" filterName="__WCUnRegisterControl" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__WCUnregisterMenu" filterName="__WCUnregisterMenu" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__WCUnRegisterProperty" filterName="__WCUnRegisterProperty" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__WCUnregisterTimer" filterName="__WCUnregisterTimer" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__WCUseTrueTypeOnly" filterName="__WCUseTrueTypeOnly" isExposed="False" />
+          <Filter entryType="Method" fullName="VOGUIClasses.Functions.__WCWndAppWndProc" filterName="__WCWndAppWndProc" isExposed="False" />
+          <Filter entryType="Field" fullName="VOGUIClasses.Functions.__WCCSApp" filterName="__WCCSApp" isExposed="False" />
+          <Filter entryType="Field" fullName="VOGUIClasses.Functions.__WCCustomControlClass" filterName="__WCCustomControlClass" isExposed="False" />
+          <Filter entryType="Field" fullName="VOGUIClasses.Functions.__WCDocAppWindowClass" filterName="__WCDocAppWindowClass" isExposed="False" />
+          <Filter entryType="Field" fullName="VOGUIClasses.Functions.__WCGBNotifyWindowClass" filterName="__WCGBNotifyWindowClass" isExposed="False" />
+          <Filter entryType="Field" fullName="VOGUIClasses.Functions.__WCMMContWindowClass" filterName="__WCMMContWindowClass" isExposed="False" />
+          <Filter entryType="Field" fullName="VOGUIClasses.Functions.__WCSALLFILES" filterName="__WCSALLFILES" isExposed="False" />
+          <Filter entryType="Field" fullName="VOGUIClasses.Functions.__WCSAREAINDEX" filterName="__WCSAREAINDEX" isExposed="False" />
+          <Filter entryType="Field" fullName="VOGUIClasses.Functions.__WCSAREAINDEXLAST" filterName="__WCSAREAINDEXLAST" isExposed="False" />
+          <Filter entryType="Field" fullName="VOGUIClasses.Functions.__WCSCAPAINTLOADFAILED" filterName="__WCSCAPAINTLOADFAILED" isExposed="False" />
+          <Filter entryType="Field" fullName="VOGUIClasses.Functions.__WCSCHANGINGVIEW" filterName="__WCSCHANGINGVIEW" isExposed="False" />
+          <Filter entryType="Field" fullName="VOGUIClasses.Functions.__WCSCHGDISCARD" filterName="__WCSCHGDISCARD" isExposed="False" />
+          <Filter entryType="Field" fullName="VOGUIClasses.Functions.__WCSCNOAUTOMATION" filterName="__WCSCNOAUTOMATION" isExposed="False" />
+          <Filter entryType="Field" fullName="VOGUIClasses.Functions.__WCSCREATECTLFAILED" filterName="__WCSCREATECTLFAILED" isExposed="False" />
+          <Filter entryType="Field" fullName="VOGUIClasses.Functions.__WCSCREATEDLGFAILED" filterName="__WCSCREATEDLGFAILED" isExposed="False" />
+          <Filter entryType="Field" fullName="VOGUIClasses.Functions.__WCSDATADIALOG" filterName="__WCSDATADIALOG" isExposed="False" />
+          <Filter entryType="Field" fullName="VOGUIClasses.Functions.__WCSDATAWINDOW" filterName="__WCSDATAWINDOW" isExposed="False" />
+          <Filter entryType="Field" fullName="VOGUIClasses.Functions.__WCSDBROWSEROBJECT" filterName="__WCSDBROWSEROBJECT" isExposed="False" />
+          <Filter entryType="Field" fullName="VOGUIClasses.Functions.__WCSDELETEDRECORD" filterName="__WCSDELETEDRECORD" isExposed="False" />
+          <Filter entryType="Field" fullName="VOGUIClasses.Functions.__WCSDELETEFAILED" filterName="__WCSDELETEFAILED" isExposed="False" />
+          <Filter entryType="Field" fullName="VOGUIClasses.Functions.__WCSDELETEFAILEDMSG" filterName="__WCSDELETEFAILEDMSG" isExposed="False" />
+          <Filter entryType="Field" fullName="VOGUIClasses.Functions.__WCSDSNOTOPEN" filterName="__WCSDSNOTOPEN" isExposed="False" />
+          <Filter entryType="Field" fullName="VOGUIClasses.Functions.__WCSDWUNTITLED" filterName="__WCSDWUNTITLED" isExposed="False" />
+          <Filter entryType="Field" fullName="VOGUIClasses.Functions.__WCSERROR" filterName="__WCSERROR" isExposed="False" />
+          <Filter entryType="Field" fullName="VOGUIClasses.Functions.__WCSERROR2" filterName="__WCSERROR2" isExposed="False" />
+          <Filter entryType="Field" fullName="VOGUIClasses.Functions.__WCShellWindowClass" filterName="__WCShellWindowClass" isExposed="False" />
+          <Filter entryType="Field" fullName="VOGUIClasses.Functions.__WCSHOSTDATABROWSER" filterName="__WCSHOSTDATABROWSER" isExposed="False" />
+          <Filter entryType="Field" fullName="VOGUIClasses.Functions.__WCSHOSTDATAWINDOW" filterName="__WCSHOSTDATAWINDOW" isExposed="False" />
+          <Filter entryType="Field" fullName="VOGUIClasses.Functions.__WCSHOSTVOAPP" filterName="__WCSHOSTVOAPP" isExposed="False" />
+          <Filter entryType="Field" fullName="VOGUIClasses.Functions.__WCSINFOBOX" filterName="__WCSINFOBOX" isExposed="False" />
+          <Filter entryType="Field" fullName="VOGUIClasses.Functions.__WCSINTERFACEERROR" filterName="__WCSINTERFACEERROR" isExposed="False" />
+          <Filter entryType="Field" fullName="VOGUIClasses.Functions.__WCSIPCITEMNOTFOUND" filterName="__WCSIPCITEMNOTFOUND" isExposed="False" />
+          <Filter entryType="Field" fullName="VOGUIClasses.Functions.__WCSIPCOUTOFMEMORY" filterName="__WCSIPCOUTOFMEMORY" isExposed="False" />
+          <Filter entryType="Field" fullName="VOGUIClasses.Functions.__WCSIPCSERVERNOTFOUND" filterName="__WCSIPCSERVERNOTFOUND" isExposed="False" />
+          <Filter entryType="Field" fullName="VOGUIClasses.Functions.__WCSIPCTOPICNOTFOUND" filterName="__WCSIPCTOPICNOTFOUND" isExposed="False" />
+          <Filter entryType="Field" fullName="VOGUIClasses.Functions.__WCSLIBRARYNAME" filterName="__WCSLIBRARYNAME" isExposed="False" />
+          <Filter entryType="Field" fullName="VOGUIClasses.Functions.__WCSLOADLIBRARYERROR" filterName="__WCSLOADLIBRARYERROR" isExposed="False" />
+          <Filter entryType="Field" fullName="VOGUIClasses.Functions.__WCSNOOLESUPPORT" filterName="__WCSNOOLESUPPORT" isExposed="False" />
+          <Filter entryType="Field" fullName="VOGUIClasses.Functions.__WCSPICTURETFYN" filterName="__WCSPICTURETFYN" isExposed="False" />
+          <Filter entryType="Field" fullName="VOGUIClasses.Functions.__WCSPICTUREYN" filterName="__WCSPICTUREYN" isExposed="False" />
+          <Filter entryType="Field" fullName="VOGUIClasses.Functions.__WCSPRINTERNODISKSPACE" filterName="__WCSPRINTERNODISKSPACE" isExposed="False" />
+          <Filter entryType="Field" fullName="VOGUIClasses.Functions.__WCSTEXTBOX" filterName="__WCSTEXTBOX" isExposed="False" />
+          <Filter entryType="Field" fullName="VOGUIClasses.Functions.__WCSTYPEERROR" filterName="__WCSTYPEERROR" isExposed="False" />
+          <Filter entryType="Field" fullName="VOGUIClasses.Functions.__WCSUNKNOWN" filterName="__WCSUNKNOWN" isExposed="False" />
+          <Filter entryType="Field" fullName="VOGUIClasses.Functions.__WCSUNKNOWNSTATUS" filterName="__WCSUNKNOWNSTATUS" isExposed="False" />
+          <Filter entryType="Field" fullName="VOGUIClasses.Functions.__WCSUNKNOWNSTATUSMSG" filterName="__WCSUNKNOWNSTATUSMSG" isExposed="False" />
+          <Filter entryType="Field" fullName="VOGUIClasses.Functions.__WCSWARNING" filterName="__WCSWARNING" isExposed="False" />
+          <Filter entryType="Field" fullName="VOGUIClasses.Functions.__WCTimerObjects" filterName="__WCTimerObjects" isExposed="False" />
+          <Filter entryType="Field" fullName="VOGUIClasses.Functions.__WCTOOLBAROFFSET" filterName="__WCTOOLBAROFFSET" isExposed="False" />
+          <Filter entryType="Field" fullName="VOGUIClasses.Functions.__WCToolTipOffset" filterName="__WCToolTipOffset" isExposed="False" />
+          <Filter entryType="Field" fullName="VOGUIClasses.Functions.__WCTopAppWindowClass" filterName="__WCTopAppWindowClass" isExposed="False" />
+          <Filter entryType="Field" fullName="VOGUIClasses.Functions.__WCWndAppWindowClass" filterName="__WCWndAppWindowClass" isExposed="False" />
+        </Filter>
+      </Filter>
+      <Filter entryType="Namespace" fullName="VOInternetClasses" isExposed="False">
+        <Filter entryType="Class" fullName="VOInternetClasses.Functions" filterName="Functions" isExposed="True">
+          <Filter entryType="Method" fullName="VOInternetClasses.Functions.$Exit" filterName="$Exit" isExposed="False" />
+          <Filter entryType="Method" fullName="VOInternetClasses.Functions.$Init1" filterName="$Init1" isExposed="False" />
+          <Filter entryType="Method" fullName="VOInternetClasses.Functions.$Init3" filterName="$Init3" isExposed="False" />
+          <Filter entryType="Method" fullName="VOInternetClasses.Functions.__AdJustPath" filterName="__AdJustPath" isExposed="False" />
+          <Filter entryType="Method" fullName="VOInternetClasses.Functions.__Array2StrList" filterName="__Array2StrList" isExposed="False" />
+          <Filter entryType="Method" fullName="VOInternetClasses.Functions.__CheckUUEncode" filterName="__CheckUUEncode" isExposed="False" />
+          <Filter entryType="Method" fullName="VOInternetClasses.Functions.__CreateAddressList" filterName="__CreateAddressList" isExposed="False" />
+          <Filter entryType="Method" fullName="VOInternetClasses.Functions.__DecodeAtom" filterName="__DecodeAtom" isExposed="False" />
+          <Filter entryType="Method" fullName="VOInternetClasses.Functions.__DecodeB64" filterName="__DecodeB64" isExposed="False" />
+          <Filter entryType="Method" fullName="VOInternetClasses.Functions.__DecodeField" filterName="__DecodeField" isExposed="False" />
+          <Filter entryType="Method" fullName="VOInternetClasses.Functions.__DecodeQP" filterName="__DecodeQP" isExposed="False" />
+          <Filter entryType="Method" fullName="VOInternetClasses.Functions.__DecodeQPrintable" filterName="__DecodeQPrintable" isExposed="False" />
+          <Filter entryType="Method" fullName="VOInternetClasses.Functions.__DecodeUU" filterName="__DecodeUU" isExposed="False" />
+          <Filter entryType="Method" fullName="VOInternetClasses.Functions.__EncodeField" filterName="__EncodeField" isExposed="False" />
+          <Filter entryType="Method" fullName="VOInternetClasses.Functions.__FormatAddress" filterName="__FormatAddress" isExposed="False" />
+          <Filter entryType="Method" fullName="VOInternetClasses.Functions.__GetAddressList" filterName="__GetAddressList" isExposed="False" />
+          <Filter entryType="Method" fullName="VOInternetClasses.Functions.__GetDate" filterName="__GetDate" isExposed="False" />
+          <Filter entryType="Method" fullName="VOInternetClasses.Functions.__GetFileData" filterName="__GetFileData" isExposed="False" />
+          <Filter entryType="Method" fullName="VOInternetClasses.Functions.__GetFileName" filterName="__GetFileName" isExposed="False" />
+          <Filter entryType="Method" fullName="VOInternetClasses.Functions.__GetFullPath" filterName="__GetFullPath" isExposed="False" />
+          <Filter entryType="Method" fullName="VOInternetClasses.Functions.__GetMailInfo" filterName="__GetMailInfo" isExposed="False" />
+          <Filter entryType="Method" fullName="VOInternetClasses.Functions.__GetNextAddress" filterName="__GetNextAddress" isExposed="False" />
+          <Filter entryType="Method" fullName="VOInternetClasses.Functions.__GetTime" filterName="__GetTime" isExposed="False" />
+          <Filter entryType="Method" fullName="VOInternetClasses.Functions.__GetTimeZoneDiff" filterName="__GetTimeZoneDiff" isExposed="False" />
+          <Filter entryType="Method" fullName="VOInternetClasses.Functions.__GetToken" filterName="__GetToken" isExposed="False" />
+          <Filter entryType="Method" fullName="VOInternetClasses.Functions.__GoodFileName" filterName="__GoodFileName" isExposed="False" />
+          <Filter entryType="Method" fullName="VOInternetClasses.Functions.__ParseAddress" filterName="__ParseAddress" isExposed="False" />
+          <Filter entryType="Method" fullName="VOInternetClasses.Functions.__SaveAs" filterName="__SaveAs" isExposed="False" />
+          <Filter entryType="Method" fullName="VOInternetClasses.Functions.__StrList2Array" filterName="__StrList2Array" isExposed="False" />
+          <Filter entryType="Method" fullName="VOInternetClasses.Functions.__UUDecodeMail" filterName="__UUDecodeMail" isExposed="False" />
+        </Filter>
+      </Filter>
+      <Filter entryType="Namespace" fullName="VORDDClasses" isExposed="False">
+        <Filter entryType="Class" fullName="VORDDClasses.Functions" filterName="Functions" isExposed="False">
+          <Filter entryType="Method" fullName="VORDDClasses.Functions.DBFDebug" filterName="DBFDebug" isExposed="True" />
+          <Filter entryType="Method" fullName="VORDDClasses.Functions.DbGetDefaultLockMode" filterName="DbGetDefaultLockMode" isExposed="True" />
+          <Filter entryType="Method" fullName="VORDDClasses.Functions.DbSetDefaultLockMode" filterName="DbSetDefaultLockMode" isExposed="True" />
+          <Filter entryType="Method" fullName="VORDDClasses.Functions.DbSetRestoreWorkarea" filterName="DbSetRestoreWorkarea" isExposed="True" />
+          <Filter entryType="Field" fullName="VORDDClasses.Functions.BUFFER_BLOB_VALUE" filterName="BUFFER_BLOB_VALUE" isExposed="True" />
+          <Filter entryType="Field" fullName="VORDDClasses.Functions.BUFFER_IS_BLOB" filterName="BUFFER_IS_BLOB" isExposed="True" />
+          <Filter entryType="Field" fullName="VORDDClasses.Functions.BUFFER_IS_CHANGED" filterName="BUFFER_IS_CHANGED" isExposed="True" />
+          <Filter entryType="Field" fullName="VORDDClasses.Functions.BUFFER_VALUE" filterName="BUFFER_VALUE" isExposed="True" />
+          <Filter entryType="Field" fullName="VORDDClasses.Functions.DBCCOFF" filterName="DBCCOFF" isExposed="True" />
+          <Filter entryType="Field" fullName="VORDDClasses.Functions.DBCCON" filterName="DBCCON" isExposed="True" />
+          <Filter entryType="Field" fullName="VORDDClasses.Functions.DBCCREADONLY" filterName="DBCCREADONLY" isExposed="True" />
+          <Filter entryType="Field" fullName="VORDDClasses.Functions.DBCCUPDATE" filterName="DBCCUPDATE" isExposed="True" />
+          <Filter entryType="Field" fullName="VORDDClasses.Functions.DBEXCLUSIVE" filterName="DBEXCLUSIVE" isExposed="True" />
+          <Filter entryType="Field" fullName="VORDDClasses.Functions.DBREADONLY" filterName="DBREADONLY" isExposed="True" />
+          <Filter entryType="Field" fullName="VORDDClasses.Functions.DBREADWRITE" filterName="DBREADWRITE" isExposed="True" />
+          <Filter entryType="Field" fullName="VORDDClasses.Functions.DBSCOPEALL" filterName="DBSCOPEALL" isExposed="True" />
+          <Filter entryType="Field" fullName="VORDDClasses.Functions.DBSCOPEREST" filterName="DBSCOPEREST" isExposed="True" />
+          <Filter entryType="Field" fullName="VORDDClasses.Functions.DBSELECTIONBOF" filterName="DBSELECTIONBOF" isExposed="True" />
+          <Filter entryType="Field" fullName="VORDDClasses.Functions.DBSELECTIONEMPTY" filterName="DBSELECTIONEMPTY" isExposed="True" />
+          <Filter entryType="Field" fullName="VORDDClasses.Functions.DBSELECTIONEOF" filterName="DBSELECTIONEOF" isExposed="True" />
+          <Filter entryType="Field" fullName="VORDDClasses.Functions.DBSELECTIONFOUND" filterName="DBSELECTIONFOUND" isExposed="True" />
+          <Filter entryType="Field" fullName="VORDDClasses.Functions.DBSELECTIONNULL" filterName="DBSELECTIONNULL" isExposed="True" />
+          <Filter entryType="Field" fullName="VORDDClasses.Functions.DBSHARED" filterName="DBSHARED" isExposed="True" />
+          <Filter entryType="Field" fullName="VORDDClasses.Functions.ORD_KEYCOUNT" filterName="ORD_KEYCOUNT" isExposed="True" />
+          <Filter entryType="Field" fullName="VORDDClasses.Functions.ORD_KEYDEC" filterName="ORD_KEYDEC" isExposed="True" />
+          <Filter entryType="Field" fullName="VORDDClasses.Functions.ORD_KEYEXPR" filterName="ORD_KEYEXPR" isExposed="True" />
+          <Filter entryType="Field" fullName="VORDDClasses.Functions.ORD_KEYINFO" filterName="ORD_KEYINFO" isExposed="True" />
+          <Filter entryType="Field" fullName="VORDDClasses.Functions.ORD_KEYSIZE" filterName="ORD_KEYSIZE" isExposed="True" />
+          <Filter entryType="Field" fullName="VORDDClasses.Functions.ORD_KEYTYPE" filterName="ORD_KEYTYPE" isExposed="True" />
+        </Filter>
+      </Filter>
+      <Filter entryType="Namespace" fullName="VOReportClasses" isExposed="False" />
+      <Filter entryType="Namespace" fullName="VOSQLClasses" isExposed="False">
+        <Filter entryType="Class" fullName="VOSQLClasses.Functions" filterName="Functions" isExposed="False">
+          <Filter entryType="Method" fullName="VOSQLClasses.Functions._SLen" filterName="_SLen" isExposed="True" />
+          <Filter entryType="Method" fullName="VOSQLClasses.Functions.DToCSQL" filterName="DToCSQL" isExposed="True" />
+          <Filter entryType="Method" fullName="VOSQLClasses.Functions.InitGlobals" filterName="InitGlobals" isExposed="True" />
+          <Filter entryType="Method" fullName="VOSQLClasses.Functions.MakeTimeStamp" filterName="MakeTimeStamp" isExposed="True" />
+          <Filter entryType="Method" fullName="VOSQLClasses.Functions.SQL_LEN_DATA_AT_EXEC" filterName="SQL_LEN_DATA_AT_EXEC" isExposed="True" />
+          <Filter entryType="Method" fullName="VOSQLClasses.Functions.SQLConnectErrorMsg" filterName="SQLConnectErrorMsg" isExposed="True" />
+          <Filter entryType="Method" fullName="VOSQLClasses.Functions.SqlDeleteWhiteSpace" filterName="SqlDeleteWhiteSpace" isExposed="True" />
+          <Filter entryType="Method" fullName="VOSQLClasses.Functions.SQLDropMyConnection" filterName="SQLDropMyConnection" isExposed="True" />
+          <Filter entryType="Method" fullName="VOSQLClasses.Functions.SQLGetDataSources" filterName="SQLGetDataSources" isExposed="True" />
+          <Filter entryType="Method" fullName="VOSQLClasses.Functions.SQLGetMyConnection" filterName="SQLGetMyConnection" isExposed="True" />
+          <Filter entryType="Method" fullName="VOSQLClasses.Functions.SQLOpenConnection" filterName="SQLOpenConnection" isExposed="True" />
+          <Filter entryType="Method" fullName="VOSQLClasses.Functions.SQLSetConnection" filterName="SQLSetConnection" isExposed="True" />
+          <Filter entryType="Method" fullName="VOSQLClasses.Functions.SqlSetStmtConcurrency" filterName="SqlSetStmtConcurrency" isExposed="True" />
+          <Filter entryType="Method" fullName="VOSQLClasses.Functions.SqlSetStmtCursorType" filterName="SqlSetStmtCursorType" isExposed="True" />
+          <Filter entryType="Method" fullName="VOSQLClasses.Functions.SqlSetStmtSimulateCursor" filterName="SqlSetStmtSimulateCursor" isExposed="True" />
+          <Filter entryType="Method" fullName="VOSQLClasses.Functions.SQLThrowOutOfMemoryError" filterName="SQLThrowOutOfMemoryError" isExposed="True" />
+          <Filter entryType="Method" fullName="VOSQLClasses.Functions.SQLType2CType" filterName="SQLType2CType" isExposed="True" />
+          <Filter entryType="Field" fullName="VOSQLClasses.Functions._assert" filterName="_assert" isExposed="True" />
+          <Filter entryType="Field" fullName="VOSQLClasses.Functions.MAX_COLNAME_SIZE" filterName="MAX_COLNAME_SIZE" isExposed="True" />
+          <Filter entryType="Field" fullName="VOSQLClasses.Functions.MAX_CONNECT_INFO_STRING" filterName="MAX_CONNECT_INFO_STRING" isExposed="True" />
+          <Filter entryType="Field" fullName="VOSQLClasses.Functions.MAX_LONGVARCHAR" filterName="MAX_LONGVARCHAR" isExposed="True" />
+          <Filter entryType="Field" fullName="VOSQLClasses.Functions.MAX_LONGVARCHAR_EXT" filterName="MAX_LONGVARCHAR_EXT" isExposed="True" />
+          <Filter entryType="Field" fullName="VOSQLClasses.Functions.SQL_BLANK_CHARACTER" filterName="SQL_BLANK_CHARACTER" isExposed="True" />
+          <Filter entryType="Field" fullName="VOSQLClasses.Functions.SQL_DATA_BUFFER" filterName="SQL_DATA_BUFFER" isExposed="True" />
+          <Filter entryType="Field" fullName="VOSQLClasses.Functions.SQL_DATA_DELETE" filterName="SQL_DATA_DELETE" isExposed="True" />
+          <Filter entryType="Field" fullName="VOSQLClasses.Functions.SQL_DATA_NULL" filterName="SQL_DATA_NULL" isExposed="True" />
+          <Filter entryType="Field" fullName="VOSQLClasses.Functions.SQL_LOGICAL_FALSE" filterName="SQL_LOGICAL_FALSE" isExposed="True" />
+          <Filter entryType="Field" fullName="VOSQLClasses.Functions.SQL_LOGICAL_TRUE" filterName="SQL_LOGICAL_TRUE" isExposed="True" />
+          <Filter entryType="Field" fullName="VOSQLClasses.Functions.SQL_RELOP_AND" filterName="SQL_RELOP_AND" isExposed="True" />
+          <Filter entryType="Field" fullName="VOSQLClasses.Functions.SQL_RELOP_CLOSEP" filterName="SQL_RELOP_CLOSEP" isExposed="True" />
+          <Filter entryType="Field" fullName="VOSQLClasses.Functions.SQL_RELOP_NOT" filterName="SQL_RELOP_NOT" isExposed="True" />
+          <Filter entryType="Field" fullName="VOSQLClasses.Functions.SQL_RELOP_OPENP" filterName="SQL_RELOP_OPENP" isExposed="True" />
+          <Filter entryType="Field" fullName="VOSQLClasses.Functions.SQL_RELOP_OR" filterName="SQL_RELOP_OR" isExposed="True" />
+          <Filter entryType="Field" fullName="VOSQLClasses.Functions.SQL_SC_UPD_AUTO" filterName="SQL_SC_UPD_AUTO" isExposed="True" />
+          <Filter entryType="Field" fullName="VOSQLClasses.Functions.SQL_SC_UPD_CURSOR" filterName="SQL_SC_UPD_CURSOR" isExposed="True" />
+          <Filter entryType="Field" fullName="VOSQLClasses.Functions.SQL_SC_UPD_KEY" filterName="SQL_SC_UPD_KEY" isExposed="True" />
+          <Filter entryType="Field" fullName="VOSQLClasses.Functions.SQL_SC_UPD_VALUE" filterName="SQL_SC_UPD_VALUE" isExposed="True" />
+          <Filter entryType="Field" fullName="VOSQLClasses.Functions.SQL_TYPE_UNKNOWN" filterName="SQL_TYPE_UNKNOWN" isExposed="True" />
+        </Filter>
+      </Filter>
+      <Filter entryType="Namespace" fullName="VOSystemClasses" isExposed="False">
+        <Filter entryType="Class" fullName="VOSystemClasses.Functions" filterName="Functions" isExposed="False">
+          <Filter entryType="Field" fullName="VOSystemClasses.Functions.ccFile" filterName="ccFile" isExposed="True" />
+          <Filter entryType="Field" fullName="VOSystemClasses.Functions.ccNone" filterName="ccNone" isExposed="True" />
+          <Filter entryType="Field" fullName="VOSystemClasses.Functions.ccOptimistic" filterName="ccOptimistic" isExposed="True" />
+          <Filter entryType="Field" fullName="VOSystemClasses.Functions.ccRepeatable" filterName="ccRepeatable" isExposed="True" />
+          <Filter entryType="Field" fullName="VOSystemClasses.Functions.ccStable" filterName="ccStable" isExposed="True" />
+          <Filter entryType="Field" fullName="VOSystemClasses.Functions.ccUser" filterName="ccUser" isExposed="True" />
+          <Filter entryType="Field" fullName="VOSystemClasses.Functions.DBC_ASCENDING" filterName="DBC_ASCENDING" isExposed="True" />
+          <Filter entryType="Field" fullName="VOSystemClasses.Functions.DBC_DUPLICATE" filterName="DBC_DUPLICATE" isExposed="True" />
+          <Filter entryType="Field" fullName="VOSystemClasses.Functions.DBC_FIELDSPEC" filterName="DBC_FIELDSPEC" isExposed="True" />
+          <Filter entryType="Field" fullName="VOSystemClasses.Functions.DBC_FOREXP" filterName="DBC_FOREXP" isExposed="True" />
+          <Filter entryType="Field" fullName="VOSystemClasses.Functions.DBC_INDEXNAME" filterName="DBC_INDEXNAME" isExposed="True" />
+          <Filter entryType="Field" fullName="VOSystemClasses.Functions.DBC_INDEXPATH" filterName="DBC_INDEXPATH" isExposed="True" />
+          <Filter entryType="Field" fullName="VOSystemClasses.Functions.DBC_KEYEXP" filterName="DBC_KEYEXP" isExposed="True" />
+          <Filter entryType="Field" fullName="VOSystemClasses.Functions.DBC_NAME" filterName="DBC_NAME" isExposed="True" />
+          <Filter entryType="Field" fullName="VOSystemClasses.Functions.DBC_ORDERS" filterName="DBC_ORDERS" isExposed="True" />
+          <Filter entryType="Field" fullName="VOSystemClasses.Functions.DBC_SYMBOL" filterName="DBC_SYMBOL" isExposed="True" />
+          <Filter entryType="Field" fullName="VOSystemClasses.Functions.DBC_TAGNAME" filterName="DBC_TAGNAME" isExposed="True" />
+          <Filter entryType="Field" fullName="VOSystemClasses.Functions.MAXDIRNAME" filterName="MAXDIRNAME" isExposed="True" />
+          <Filter entryType="Field" fullName="VOSystemClasses.Functions.MAXDRIVENAME" filterName="MAXDRIVENAME" isExposed="True" />
+          <Filter entryType="Field" fullName="VOSystemClasses.Functions.MAXEXTNAME" filterName="MAXEXTNAME" isExposed="True" />
+          <Filter entryType="Field" fullName="VOSystemClasses.Functions.MAXFILENAME" filterName="MAXFILENAME" isExposed="True" />
+          <Filter entryType="Field" fullName="VOSystemClasses.Functions.NOTIFYAPPEND" filterName="NOTIFYAPPEND" isExposed="True" />
+          <Filter entryType="Field" fullName="VOSystemClasses.Functions.NOTIFYCLEARRELATION" filterName="NOTIFYCLEARRELATION" isExposed="True" />
+          <Filter entryType="Field" fullName="VOSystemClasses.Functions.NOTIFYCLOSE" filterName="NOTIFYCLOSE" isExposed="True" />
+          <Filter entryType="Field" fullName="VOSystemClasses.Functions.NOTIFYCOMPLETION" filterName="NOTIFYCOMPLETION" isExposed="True" />
+          <Filter entryType="Field" fullName="VOSystemClasses.Functions.NOTIFYCONCURRENCYCONTROLMODE" filterName="NOTIFYCONCURRENCYCONTROLMODE" isExposed="True" />
+          <Filter entryType="Field" fullName="VOSystemClasses.Functions.NOTIFYDELETE" filterName="NOTIFYDELETE" isExposed="True" />
+          <Filter entryType="Field" fullName="VOSystemClasses.Functions.NOTIFYFIELDCHANGE" filterName="NOTIFYFIELDCHANGE" isExposed="True" />
+          <Filter entryType="Field" fullName="VOSystemClasses.Functions.NOTIFYFILECHANGE" filterName="NOTIFYFILECHANGE" isExposed="True" />
+          <Filter entryType="Field" fullName="VOSystemClasses.Functions.NOTIFYGOBOTTOM" filterName="NOTIFYGOBOTTOM" isExposed="True" />
+          <Filter entryType="Field" fullName="VOSystemClasses.Functions.NOTIFYGOTOP" filterName="NOTIFYGOTOP" isExposed="True" />
+          <Filter entryType="Field" fullName="VOSystemClasses.Functions.NOTIFYINTENTTOMOVE" filterName="NOTIFYINTENTTOMOVE" isExposed="True" />
+          <Filter entryType="Field" fullName="VOSystemClasses.Functions.NOTIFYRECORDCHANGE" filterName="NOTIFYRECORDCHANGE" isExposed="True" />
+          <Filter entryType="Field" fullName="VOSystemClasses.Functions.NOTIFYRELATIONCHANGE" filterName="NOTIFYRELATIONCHANGE" isExposed="True" />
+          <Filter entryType="Field" fullName="VOSystemClasses.Functions.TYPE_MULTIMEDIA" filterName="TYPE_MULTIMEDIA" isExposed="True" />
+        </Filter>
+      </Filter>
     </ApiFilter>
     <NamespaceSummaries>
       <NamespaceSummaryItem name="(global)" isDocumented="True" />
-      <NamespaceSummaryItem name="XSharp" isDocumented="True">This namespace contains the classes and structures that are used to implement the XBase types, such as USUAL, SYMBOL DATE and FLOAT</NamespaceSummaryItem>
-      <NamespaceSummaryItem name="XSharp.Internal" isDocumented="True">This namespace contains types (classes and attributes) used by the compiler. These are normally not used in End users  (your) code</NamespaceSummaryItem>
-      <NamespaceSummaryItem name="XSharp.IO" isDocumented="True">This namespace contains types used in the (low level) File IO</NamespaceSummaryItem>
-      <NamespaceSummaryItem name="XSharp.VO" isDocumented="True">This namespace contains the Functions class that implements the Runtime functions available in XSharp.VO.DLL</NamespaceSummaryItem>
-      <NamespaceSummaryItem name="XSharp (Group)" isGroup="True" isDocumented="True">The XSharp Namespaces contain types and functions  implemented in the XSharp runtime</NamespaceSummaryItem>
-      <NamespaceSummaryItem name="XSharp.RDD (Group)" isGroup="True" isDocumented="True">The XSharp.RDD group contains namespaces that are related to the XSharp RDD System</NamespaceSummaryItem>
-      <NamespaceSummaryItem name="XSharp.RDD" isDocumented="True">This namespace contains types used by the RDD system</NamespaceSummaryItem>
-      <NamespaceSummaryItem name="XSharp.RDD.Enums" isDocumented="True">This namespace contains enumerated types used by the RDD system</NamespaceSummaryItem>
-      <NamespaceSummaryItem name="XSharp.Core" isDocumented="True">This namespace contains the Functions class that implements the Runtime functions available in XSharp.Core DLL</NamespaceSummaryItem>
-      <NamespaceSummaryItem name="XSharp.RT" isDocumented="True">This namespace contains the Functions class that implements the Runtime functions available in XSharp.RT.DLL</NamespaceSummaryItem>
-      <NamespaceSummaryItem name="XSharp.XPP" isDocumented="True">This namespace contains the Functions class that implements the Runtime functions available in XSharp.XPP.DLL</NamespaceSummaryItem>
-      <NamespaceSummaryItem name="XSharp.VFP" isDocumented="True">This namespace contains the Functions class that implements the Runtime functions available in XSharp.VFP DLL</NamespaceSummaryItem>
-      <NamespaceSummaryItem name="XSharp.RDD.Support" isDocumented="True">This namespace contains several helper types used by the RDD system</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="Advantage" isDocumented="True">This namespace contains the exposed RDDs for Advantage.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="XSharp" isDocumented="True">This namespace contains the classes and structures that are used to implement the XBase types, such as USUAL, SYMBOL DATE and FLOAT.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="XSharp.Internal" isDocumented="True">This namespace contains types (classes and attributes) used by the compiler. These are normally not used in End users  (your) code.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="XSharp.IO" isDocumented="True">This namespace contains types used in the (low level) File IO.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="XSharp.VO" isDocumented="True">This namespace contains the Functions class that implements the Runtime functions available in XSharp.VO.DLL.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="XSharp (Group)" isGroup="True" isDocumented="True">The XSharp Namespaces contain types and functions  implemented in the XSharp runtime.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="XSharp.RDD (Group)" isGroup="True" isDocumented="True">The XSharp.RDD group contains namespaces that are related to the XSharp RDD System.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="XSharp.RDD" isDocumented="True">This namespace contains types used by the RDD system.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="XSharp.RDD.Enums" isDocumented="True">This namespace contains enumerated types used by the RDD system.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="XSharp.Core" isDocumented="True">This namespace contains the Functions class that implements the Runtime functions available in XSharp.Core DLL.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="XSharp.RT" isDocumented="True">This namespace contains the Functions class that implements the Runtime functions available in XSharp.RT.DLL.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="XSharp.XPP" isDocumented="True">This namespace contains the Functions class that implements the Runtime functions available in XSharp.XPP.DLL.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="XSharp.VFP" isDocumented="True">This namespace contains the Functions class that implements the Runtime functions available in XSharp.VFP DLL.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="XSharp.RDD.Support" isDocumented="True">This namespace contains several helper types used by the RDD system.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="XSharp.ADS" isDocumented="True">This namespace contains several types used by the Advantage RDDs in the RDD system.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="XSharp.Data" isDocumented="True">This namespace contains several types used in the XSharp runtime to access data through the Ado.Net Data providers.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="VO" isDocumented="True">The VO Namespace contains all the VO SDK Classes, such as DbServer, DataWindow, SQLSelect etc.&lt;br/&gt;
+If you enable the compiler option to search inside "Implicit Namespaces" (/ins) then you will not have to include a USING VO statement in your code. &lt;br/&gt;The compiler will then automatically find the classes. &lt;br/&gt;
+The Runtime will also respect these implicit namespaces, so CreateInstance(#DbServer) will also be able to find the DbServer class inside the VO namespace.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="XSharp" isDocumented="True">The XSharp namespace holds the new classes that are used in Hybrid applications, such as ChildWinForm, VOWinFormApp etc. These classes were originally created by Paul Piko for Vulcan.Net and are included with his permission.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="VOGUIClasses" isDocumented="True">The VOGUIClasses namespaces contains the functions class with the functions and defines from the VOGUIClasses assembly</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="VOInternetClasses" isDocumented="True">The VOInternetClasses namespaces contains the functions class with the functions and defines from the VOInternetClasses assembly</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="VORDDClasses" isDocumented="True">The VORDDClasses namespaces contains the functions class with the functions and defines from the VORDDClasses assembly</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="VOSQLClasses" isDocumented="True">The VOSQLClasses namespaces contains the functions class with the functions and defines from the VOSQLClasses assembly</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="VOSystemClasses" isDocumented="True">The VOSystemClasses namespaces contains the functions class with the functions and defines from the VOSystemClasses assembly</NamespaceSummaryItem>
     </NamespaceSummaries>
     <ComponentConfigurations>
       <ComponentConfig id="Syntax Component" enabled="True">
@@ -959,20 +1953,21 @@
           </configurations>
         </component>
       </ComponentConfig>
-<ComponentConfig id="Code Block Component" enabled="True"><component id="Code Block Component">
-  <basePath value="{@HtmlEncProjectFolder}" />
-  <outputPaths>{@HelpFormatOutputPaths}</outputPaths>
-  <allowMissingSource value="true" />
-  <removeRegionMarkers value="true" />
-  <colorizer syntaxFile="{@SHFBFolder}PresentationStyles\Colorizer\highlight.xml" styleFile="{@SHFBFolder}PresentationStyles\Colorizer\highlight.xsl" stylesheet="{@SHFBFolder}PresentationStyles\Colorizer\highlight.css" scriptFile="{@SHFBFolder}PresentationStyles\Colorizer\highlight.js" disabled="{@DisableCodeBlockComponent}" language="none" tabSize="0" numberLines="false" outlining="true" keepSeeTags="true" defaultTitle="true" />
-</component></ComponentConfig>
-<ComponentConfig id="API Token Resolution" enabled="True"><component id="API Token Resolution">{@TokenFiles}
-<replace elements="/*//token" item="string(.)" /></component></ComponentConfig>
-<ComponentConfig id="Comments Index Data (ESENT Cache)" enabled="True"><component id="Comments Index Data (ESENT Cache)"><index name="comments" value="/doc/members/member" key="@name" cache="30" localCacheSize="2500" frameworkCachePath="{@LocalDataFolder}Cache\CommentsIndexCache" projectCachePath="{@WorkingFolder}CommentsIndexCache">
+      <ComponentConfig id="API Token Resolution" enabled="True">
+        <component id="API Token Resolution">{@TokenFiles}
+<replace elements="/*//token" item="string(.)" /></component>
+      </ComponentConfig>
+      <ComponentConfig id="Comments Index Data (ESENT Cache)" enabled="True">
+        <component id="Comments Index Data (ESENT Cache)">
+          <index name="comments" value="/doc/members/member" key="@name" cache="30" localCacheSize="2500" frameworkCachePath="{@LocalDataFolder}Cache\CommentsIndexCache" projectCachePath="{@WorkingFolder}CommentsIndexCache">
 	{@FrameworkCommentList}
 	{@CommentFileList}
-</index><copy name="comments" source="*" target="/document/comments" /></component></ComponentConfig>
-<ComponentConfig id="Resolve Reference Links (ESENT Cache)" enabled="True"><component id="Resolve Reference Links (ESENT Cache)">{@HRefFormat}
+</index>
+          <copy name="comments" source="*" target="/document/comments" />
+        </component>
+      </ComponentConfig>
+      <ComponentConfig id="Resolve Reference Links (ESENT Cache)" enabled="True">
+        <component id="Resolve Reference Links (ESENT Cache)">{@HRefFormat}
 <locale value="{@Locale}" /><linkTarget value="{@SdkLinkTarget}" /><helpOutput format="HtmlHelp1"><msdnContentIdCache path="{@LocalDataFolder}Cache\MsdnContentId.cache" cachePath="{@LocalDataFolder}Cache\ESentMsdnContentIdCache" localCacheSize="2500" /><targets base="{@FrameworkReflectionDataFolder}" recurse="true" files="*.xml" type="{@HtmlSdkLinkType}" id="FrameworkTargets" cachePath="{@LocalDataFolder}Cache\ESentFrameworkTargetCache" localCacheSize="2500">
 		{@ReferenceLinkNamespaceFiles}
 	</targets><targets files="reflection.xml" type="Local" id="ProjectTargets" cachePath="" localCacheSize="2500" noReload="true" /></helpOutput><helpOutput format="MSHelpViewer"><msdnContentIdCache path="{@LocalDataFolder}Cache\MsdnContentId.cache" cachePath="{@LocalDataFolder}Cache\ESentMsdnContentIdCache" localCacheSize="2500" /><targets base="{@FrameworkReflectionDataFolder}" recurse="true" files="*.xml" type="{@MSHelpViewerSdkLinkType}" id="FrameworkTargets" cachePath="{@LocalDataFolder}Cache\ESentFrameworkTargetCache" localCacheSize="2500">
@@ -983,8 +1978,14 @@
 		{@ReferenceLinkNamespaceFiles}
 	</targets><targets files="reflection.xml" type="Local" id="ProjectTargets" cachePath="" localCacheSize="2500" noReload="true" /></helpOutput><helpOutput format="Markdown"><msdnContentIdCache path="{@LocalDataFolder}Cache\MsdnContentId.cache" cachePath="{@LocalDataFolder}Cache\ESentMsdnContentIdCache" localCacheSize="2500" /><targets base="{@FrameworkReflectionDataFolder}" recurse="true" files="*.xml" type="{@WebsiteSdkLinkType}" id="FrameworkTargets" cachePath="{@LocalDataFolder}Cache\ESentFrameworkTargetCache" localCacheSize="2500">
 		{@ReferenceLinkNamespaceFiles}
-	</targets><targets files="reflection.xml" type="Local" id="ProjectTargets" cachePath="" localCacheSize="2500" noReload="true" /></helpOutput></component></ComponentConfig>
-<ComponentConfig id="IntelliSense Component" enabled="True"><component id="IntelliSense Component"><output includeNamespaces="true" namespacesFile="Namespaces" folder="{@OutputFolder}" boundedCapacity="100" /></component></ComponentConfig></ComponentConfigurations>
+	</targets><targets files="reflection.xml" type="Local" id="ProjectTargets" cachePath="" localCacheSize="2500" noReload="true" /></helpOutput></component>
+      </ComponentConfig>
+      <ComponentConfig id="IntelliSense Component" enabled="True">
+        <component id="IntelliSense Component">
+          <output includeNamespaces="true" namespacesFile="Namespaces" folder="{@OutputFolder}" boundedCapacity="100" />
+        </component>
+      </ComponentConfig>
+    </ComponentConfigurations>
     <MissingTags>AutoDocumentCtors, AutoDocumentDispose</MissingTags>
     <TransformComponentArguments>
       <Argument Key="logoFile" Value="" />
@@ -1010,10 +2011,13 @@
     <SourceCodeBasePath>c:\XSharp\DevRt\</SourceCodeBasePath>
     <WarnOnMissingSourceContext>False</WarnOnMissingSourceContext>
     <PlugInConfigurations>
+      <PlugInConfig id="XSharp Function Output" enabled="True">
+        <configuration />
+      </PlugInConfig>
     </PlugInConfigurations>
     <RootNamespaceTitle>X# Runtime Reference</RootNamespaceTitle>
     <CopyrightHref>https://www.xsharp.info/licensing/xsharp-open-software-license</CopyrightHref>
-    <CopyrightText>Copyright &amp;#169%3b 2015-2019 XSharp BV, All rights reserved</CopyrightText>
+    <CopyrightText>Copyright &amp;#169%3b 2015-2020 XSharp BV, All rights reserved</CopyrightText>
     <BuildLogFile>C:\XSharp\DevRt\Binaries\Obj\Help\BuildLog.log</BuildLogFile>
     <CatalogProductId>VS</CatalogProductId>
     <CatalogVersion>100</CatalogVersion>
@@ -1034,6 +2038,7 @@ The XSharp runtime has a couple of these classes:&amp;lt%3bbr/&amp;gt%3b
 &amp;lt%3bitem&amp;gt%3bXSharp.VO.Functions&amp;lt%3b/item&amp;gt%3b
 &amp;lt%3bitem&amp;gt%3bXSharp.XPP.Functions&amp;lt%3b/item&amp;gt%3b
 &amp;lt%3bitem&amp;gt%3bXSharp.VFP.Functions&amp;lt%3b/item&amp;gt%3b
+&amp;lt%3bitem&amp;gt%3bXSharp.Data.Functions&amp;lt%3b/item&amp;gt%3b
 &amp;lt%3b/list&amp;gt%3b
 There is no need to do anything special when writing code. The compiler will automatically resolve function calls, such as:
 &amp;lt%3bc&amp;gt%3bLeft%28cString,10%29 &amp;lt%3b/c&amp;gt%3b and will generate the following output  &amp;lt%3bc&amp;gt%3bXSharp.Core.Functions.Left%28cString,10%29&amp;lt%3b/c&amp;gt%3b.

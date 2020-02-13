@@ -150,8 +150,10 @@ METHOD AppendRow( lForce )
 		IF oData:ValueChanged
 			oColumn 		:= aSQLColumns[nIndex]
 			nODBCType  	:= oColumn:ODBCType
-			IF nODBCType = SQL_LONGVARCHAR .OR. nODBCType = SQL_LONGVARBINARY  .OR. nODBCType = SQL_WLONGVARCHAR
-				// For Long fields we save the data to aLongData and we write a dummy space character
+         IF SqlIsLongType(nODBCType)
+            // For Long fields we save the data to aLongData and we write a dummy space character
+            // We cannnot write a NULL because the column may be mandatory
+            // We will overwrit the space below 
 				cValue := "' '"
 				AAdd( aLongData, { nIndex, oData:LongValue } )
 				nLongData++
@@ -164,7 +166,7 @@ METHOD AppendRow( lForce )
 				sValues += ","
 			ENDIF
 			sInsert +=  cQuote + oColumn:ColName  + cQuote
-			IF ( oData:Null )
+         IF ( oData:@@Null )
 				sValues += "NULL"
 			ELSE
 				sValues += cValue
@@ -255,7 +257,7 @@ METHOD BindColumn( i )
    
 	oCol := SELF:aSQLColumns[i]
 	nODBCType := oCol:ODBCType
-	IF nODBCType = SQL_LONGVARCHAR .OR. nODBCType = SQL_LONGVARBINARY  .OR. nODBCType = SQL_WLONGVARCHAR
+   IF SqlIsLongType(nODBCType)
 		RETURN FALSE
 	ENDIF
 	oData := SELF:aSQLData[i]
@@ -569,13 +571,6 @@ METHOD Delete()
 
 	RETURN TRUE
 
-//METHOD Destroy() AS VOID
-//	SELF:__MemFree()
-//	//IF ! InCollect()
-//    UnRegisterAxit( SELF )
-//    //ENDIF
-//    RETURN 
-    
 METHOD DirectSkip( nSkip ) 
 	LOCAL lRet          AS LOGIC
 	LOCAL lRowCount     AS DWORD // dcaton 070206 was LONGINT

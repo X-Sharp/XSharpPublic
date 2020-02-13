@@ -13,7 +13,7 @@ USING System.Text
 
 BEGIN NAMESPACE XSharp.VFP
 
-    CLASS Collection INHERIT Vfp.Abstract IMPLEMENTS  IEnumerable
+    CLASS Collection INHERIT VFP.Abstract IMPLEMENTS  IEnumerable
         PRIVATE aItems AS List<OBJECT>
         PRIVATE aDict  AS SortedList<STRING, OBJECT>
         PRIVATE initialized AS LOGIC
@@ -27,7 +27,7 @@ BEGIN NAMESPACE XSharp.VFP
             
         METHOD AddObject(oValue AS OBJECT, cKey := "" AS STRING, oBefore := NIL AS USUAL, oAfter:= NIL AS USUAL) AS LOGIC
             LOCAL nPos      AS LONG
-            IF Initialized
+            IF initialized
             IF aDict != NULL_OBJECT
                 IF String.IsNullOrEmpty(cKey)
                     // Error
@@ -67,7 +67,7 @@ BEGIN NAMESPACE XSharp.VFP
                 ENDIF
             ENDIF
         ELSE
-            Initialized := TRUE
+            initialized := TRUE
             IF ! String.IsNullOrEmpty(cKey)
                 aDict   := SortedList<STRING, OBJECT>{}
                 SELF:KeySort := 2

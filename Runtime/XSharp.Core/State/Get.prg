@@ -8,7 +8,7 @@ USING XSharp
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/getamext/*" />
 FUNCTION GetAMExt() AS STRING
-	GETSTATE STRING Set.AmExt 
+	GETSTATE STRING Set.AmExt
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setampm/*" />
 FUNCTION GetAmPm() AS LOGIC
@@ -72,7 +72,7 @@ FUNCTION GetPMExt() AS STRING
 	
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/gettimesep/*" />
 FUNCTION GetTimeSep() AS DWORD
-	GETSTATE DWORD Set.TimeSep
+	GETSTATE DWORD Set.Timesep
 	
 	/// <summary>
 	/// Returns TimeZone difference for current timezone in Hours
@@ -80,7 +80,7 @@ FUNCTION GetTimeSep() AS DWORD
 	/// <returns>
 	/// </returns>
 FUNCTION GetTimeZoneDiff() AS INT
-	RETURN TimeZoneInfo.Local.BaseUtcOffSet:Hours
+	RETURN TimeZoneInfo.Local.BaseUtcOffset:Hours
 
 FUNCTION GetYield AS LOGIC
 	RETURN SetYield()

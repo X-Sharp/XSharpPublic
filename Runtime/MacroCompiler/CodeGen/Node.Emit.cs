@@ -13,6 +13,58 @@ namespace XSharp.MacroCompiler.Syntax
     {
         internal virtual void Emit(ILGenerator ilg) { throw new InternalError(); }
     }
+    abstract internal partial class Stmt : Node
+    {
+        internal Codeblock Codeblock;
+        internal List<Action> FinallyClauses;
+        internal virtual void EmitStmt(ILGenerator ilg) { throw new InternalError(); }
+        internal sealed override void Emit(ILGenerator ilg)
+        {
+            if (RequireExceptionHandling)
+            {
+                FinallyClauses = new List<Action>();
+                ilg.BeginExceptionBlock();
+            }
+            EmitStmt(ilg);
+            if (RequireExceptionHandling)
+            {
+                if (FinallyClauses.Count > 0)
+                {
+                    ilg.BeginFinallyBlock();
+                    foreach (var a in FinallyClauses) a();
+                }
+                ilg.EndExceptionBlock();
+            }
+        }
+    }
+    internal partial class ReturnStmt : Stmt
+    {
+        internal override void EmitStmt(ILGenerator ilg)
+        {
+            bool isVoid = true;
+            if (Expr != null)
+            {
+                isVoid &= Expr.Datatype.NativeType == NativeType.Void;
+                Expr.Emit(ilg, true);
+            }
+            if (Symbol != null)
+            {
+                if (isVoid)
+                {
+                    EmitDefault(ilg, (TypeSymbol)Symbol);
+                }
+                if (RequireExceptionHandling)
+                {
+                    if (Codeblock.Symbol == null)
+                    {
+                        var temp = ilg.DeclareLocal(((TypeSymbol)Symbol).Type);
+                        Codeblock.Symbol = new LocalSymbol((TypeSymbol)Symbol, temp.LocalIndex);
+                    }
+                    Codeblock.Symbol.EmitSet(ilg);
+                }
+            }
+        }
+    }
     abstract internal partial class Expr : Node
     {
         internal virtual void Emit(ILGenerator ilg, bool preserve) { throw new InternalError(); }
@@ -476,35 +528,48 @@ namespace XSharp.MacroCompiler.Syntax
         {
             var push = Compilation.Get(WellKnownMembers.XSharp_RT_Functions___pushWorkarea) as MethodSymbol;
             var pop = Compilation.Get(WellKnownMembers.XSharp_RT_Functions___popWorkarea) as MethodSymbol;
-            var temp = preserve ? ilg.DeclareLocal(Datatype.Type) : null;
+            var dirty = ilg.DeclareLocal(Compilation.Get(NativeType.Boolean).Type);
             Alias.Emit(ilg);
             ilg.Emit(OpCodes.Call, push.Method);
-            ilg.BeginExceptionBlock();
+            ilg.Emit(OpCodes.Ldc_I4_1);
+            ilg.Emit(OpCodes.Stloc, dirty.LocalIndex);
             Field.Emit(ilg, preserve);
-            if (preserve) ilg.Emit(OpCodes.Stloc, temp.LocalIndex);
-            ilg.BeginFinallyBlock();
+            ilg.Emit(OpCodes.Ldc_I4_0);
+            ilg.Emit(OpCodes.Stloc, dirty.LocalIndex);
             ilg.Emit(OpCodes.Call, pop.Method);
-            ilg.EndExceptionBlock();
-            if (preserve) ilg.Emit(OpCodes.Ldloc, temp.LocalIndex);
+            Stmt.FinallyClauses.Add(() => {
+                var skip = ilg.DefineLabel();
+                ilg.Emit(OpCodes.Ldloc, dirty.LocalIndex);
+                ilg.Emit(OpCodes.Brfalse_S, skip);
+                ilg.Emit(OpCodes.Call, pop.Method);
+                ilg.MarkLabel(skip);
+            });
         }
         internal override void EmitSet(ILGenerator ilg, bool preserve)
         {
             var push = Compilation.Get(WellKnownMembers.XSharp_RT_Functions___pushWorkarea) as MethodSymbol;
             var pop = Compilation.Get(WellKnownMembers.XSharp_RT_Functions___popWorkarea) as MethodSymbol;
-            var temp = preserve ? ilg.DeclareLocal(Datatype.Type) : null;
+            var dirty = ilg.DeclareLocal(Compilation.Get(NativeType.Boolean).Type);
             var v = ilg.DeclareLocal(Compilation.Get(NativeType.Usual).Type);
             ilg.Emit(OpCodes.Stloc, v.LocalIndex);
             Alias.Emit(ilg);
             ilg.Emit(OpCodes.Call, push.Method);
-            ilg.BeginExceptionBlock();
+            ilg.Emit(OpCodes.Ldc_I4_1);
+            ilg.Emit(OpCodes.Stloc, dirty.LocalIndex);
             ilg.Emit(OpCodes.Ldloc, v.LocalIndex);
             Field.EmitSet(ilg, preserve);
-            if (preserve) ilg.Emit(OpCodes.Stloc, temp.LocalIndex);
-            ilg.BeginFinallyBlock();
+            ilg.Emit(OpCodes.Ldc_I4_0);
+            ilg.Emit(OpCodes.Stloc, dirty.LocalIndex);
             ilg.Emit(OpCodes.Call, pop.Method);
-            ilg.EndExceptionBlock();
-            if (preserve) ilg.Emit(OpCodes.Ldloc, temp.LocalIndex);
+            Stmt.FinallyClauses.Add(() => {
+                var skip = ilg.DefineLabel();
+                ilg.Emit(OpCodes.Ldloc, dirty.LocalIndex);
+                ilg.Emit(OpCodes.Brfalse_S, skip);
+                ilg.Emit(OpCodes.Call, pop.Method);
+                ilg.MarkLabel(skip);
+            });
         }
+        internal void EmitFinallyBlock() { }
     }
     internal partial class RuntimeIdExpr : Expr
     {
@@ -602,16 +667,9 @@ namespace XSharp.MacroCompiler.Syntax
                 ilg.Emit(OpCodes.Conv_I4);
                 PCount.EmitSet(ilg);
             }
-            bool isVoid = true;
-            if (Body != null)
-            {
-                isVoid &= Body.Datatype.NativeType == NativeType.Void;
-                Body.Emit(ilg,true);
-            }
-            if (isVoid)
-            {
-                EmitDefault(ilg,(TypeSymbol)Symbol);
-            }
+            Body.Codeblock = this;
+            Body.Emit(ilg);
+            if (Symbol != null) Symbol.EmitGet(ilg);
             ilg.Emit(OpCodes.Ret);
         }
     }

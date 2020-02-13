@@ -7,9 +7,9 @@
 USING XSharp.RDD
 USING XSharp.RDD.Support
 USING System.Collections.Generic
-USING SYstem.Linq
+USING System.Linq
 
-/// <summary>The VoDb class extendes the CoreDb class with methods that take usual parameters or return usual values.<br/>
+/// <summary>The VoDb class extends the CoreDb class with methods that take usual parameters or return usual values.<br/>
 /// All other methods are identical and inherited from the CoreDb class.</summary>
 PARTIAL CLASS XSharp.VoDb INHERIT XSharp.CoreDb
 /// <inheritdoc cref='M:XSharp.CoreDb.BlobInfo(System.UInt32,System.UInt32,System.Object@)'/>
@@ -25,16 +25,16 @@ STATIC METHOD BlobInfo(nOrdinal AS DWORD,nPos AS DWORD,uValue AS USUAL) AS LOGIC
     RETURN CoreDb.BlobInfo(nOrdinal, nPos, (OBJECT) uValue)
 
 /// <inheritdoc cref='M:XSharp.CoreDb.FieldInfo(System.UInt32,System.UInt32,System.Object@)'/>
-STATIC METHOD FieldInfo(nOrdinal AS DWORD,nPos AS DWORD,ptrRet REF USUAL) AS LOGIC
-    LOCAL oRet := ptrRet AS OBJECT
+STATIC METHOD FieldInfo(nOrdinal AS DWORD,nFldPos AS DWORD,oValue REF USUAL) AS LOGIC
+    LOCAL oRet := oValue AS OBJECT
     LOCAL result AS LOGIC
-    result := CoreDb.FieldInfo(nOrdinal, nPos, REF oRet)
-    ptrRet := oRet
+    result := CoreDb.FieldInfo(nOrdinal, nFldPos, REF oRet)
+    oValue := oRet
     RETURN result
 
 /// <inheritdoc cref="M:XSharp.CoreDb.FieldInfo(System.UInt32,System.UInt32,System.Object)"/>
-STATIC METHOD FieldInfo(nOrdinal AS DWORD,nPos AS DWORD,uValue AS USUAL) AS LOGIC
-    RETURN CoreDb.FieldInfo(nOrdinal, nPos, (OBJECT) uValue)
+STATIC METHOD FieldInfo(nOrdinal AS DWORD,nFldPos AS DWORD,oValue AS USUAL) AS LOGIC
+    RETURN CoreDb.FieldInfo(nOrdinal, nFldPos, (OBJECT) oValue)
     
 /// <inheritdoc cref="M:XSharp.CoreDb.FieldGet(System.UInt32,System.Object@)"/>
 STATIC METHOD FieldGet(nPos AS DWORD,uRet REF USUAL) AS LOGIC
@@ -47,38 +47,47 @@ STATIC METHOD FieldGet(nPos AS DWORD,uRet REF USUAL) AS LOGIC
 /// <inheritdoc cref="M:XSharp.CoreDb.Info(System.UInt32,System.Object)"/>
 /// <remarks> <inheritdoc cref="M:XSharp.CoreDb.Info(System.UInt32,System.Object)"/>
 /// <br/><br/> <note type="tip">The difference between VoDb.Info and CoreDb.Info is that VoDb.Info takes a USUAL parameter</note></remarks>
-STATIC METHOD Info(nOrdinal AS DWORD,ptrRet REF USUAL) AS LOGIC
-    LOCAL oRet := ptrRet AS OBJECT
+STATIC METHOD Info(nOrdinal AS DWORD,oValue REF USUAL) AS LOGIC
+    LOCAL oRet := oValue AS OBJECT
     LOCAL result AS LOGIC
+    IF oValue:IsArray
+        LOCAL aValue := oValue AS ARRAY
+        oRet := (OBJECT[]) aValue
+    ENDIF
     result := CoreDb.Info(nOrdinal, REF oRet)
-    ptrRet := oRet
+    oValue := oRet
     RETURN result
 
 /// <inheritdoc cref='M:XSharp.CoreDb.Info(System.UInt32,System.Object)'/>
 /// <remarks> <inheritdoc cref='M:XSharp.CoreDb.Info(System.UInt32,System.Object)'/>
 /// <br/><br/> <note type="tip">The difference between VoDb.Info and CoreDb.Info is that VoDb.Info takes a USUAL parameter</note></remarks>
-STATIC METHOD Info(nOrdinal AS DWORD,uValue AS USUAL) AS LOGIC
-    RETURN CoreDb.Info(nOrdinal, (OBJECT) uValue)
+STATIC METHOD Info(nOrdinal AS DWORD,oValue AS USUAL) AS LOGIC
+    IF oValue:IsArray
+        LOCAL aValue := oValue AS ARRAY
+        oValue := (OBJECT[]) aValue
+    ENDIF
+
+    RETURN CoreDb.Info(nOrdinal, (OBJECT) oValue)
 
 /// <inheritdoc cref='M:XSharp.CoreDb.OrderInfo(System.UInt32,System.String,System.Object,System.Object@)'/>
 /// <remarks> <inheritdoc cref='M:XSharp.CoreDb.OrderInfo(System.UInt32,System.String,System.Object,System.Object@)'/>
 /// <br/><br/> <note type="tip">The difference between VoDb.OrderInfo and CoreDb.OrderInfo is that VoDb.Info takes a USUAL parameter</note></remarks>
-STATIC METHOD OrderInfo(nOrdinal AS DWORD,cBagName AS STRING,uOrder AS OBJECT,uRet REF USUAL) AS LOGIC
-    LOCAL oRet := uRet AS OBJECT   
+STATIC METHOD OrderInfo(nOrdinal AS DWORD,cBagName AS STRING,uOrder AS OBJECT,oValue REF USUAL) AS LOGIC
+    LOCAL oRet := oValue AS OBJECT   
     LOCAL result AS LOGIC
     result := CoreDb.OrderInfo(nOrdinal, cBagName,  uOrder, REF oRet)
     IF oRet == NULL
-        uRet := NIL
+        oValue := NIL
     ELSE
-        uRet := oRet
+        oValue := oRet
     ENDIF
     RETURN result
 
 /// <inheritdoc cref="M:XSharp.CoreDb.OrderInfo(System.UInt32,System.String,System.Object,System.Object)" />
 /// <remarks> <inheritdoc cref='M:XSharp.CoreDb.OrderInfo(System.UInt32,System.String,System.Object,System.Object)'/>
 /// <br/><br/> <note type="tip">The difference between VoDb.OrderInfo and CoreDb.OrderInfo is that VoDb.Info takes a USUAL parameter</note></remarks>
-STATIC METHOD OrderInfo(nOrdinal AS DWORD,cBagName AS STRING,uOrder AS OBJECT,uValue AS USUAL) AS LOGIC
-    RETURN CoreDb.OrderInfo(nOrdinal, cBagName,  uOrder, (OBJECT) uValue)
+STATIC METHOD OrderInfo(nOrdinal AS DWORD,cBagName AS STRING,uOrder AS OBJECT,oValue AS USUAL) AS LOGIC
+    RETURN CoreDb.OrderInfo(nOrdinal, cBagName,  uOrder, (OBJECT) oValue)
 
 /// <inheritdoc cref='M:XSharp.CoreDb.RddInfo(System.UInt32,System.Object@)'/>
 /// <remarks> <inheritdoc cref='M:XSharp.CoreDb.RddInfo(System.UInt32,System.Object@)'/>
@@ -99,18 +108,18 @@ STATIC METHOD RddInfo(nOrdinal AS DWORD,uValue AS USUAL) AS LOGIC
 /// <inheritdoc cref='M:XSharp.CoreDb.RecordInfo(System.UInt32,System.Object,System.Object@)'/>
 /// <remarks> <inheritdoc cref='M:XSharp.CoreDb.RecordInfo(System.UInt32,System.Object,System.Object@)'/>
 /// <br/><br/> <note type="tip">The difference between VoDb.RecordInfo and CoreDb.RecordInfo is that VoDb.RecordInfo takes a USUAL parameter</note></remarks>
-STATIC METHOD RecordInfo(nOrdinal AS DWORD,uRecId AS USUAL,uRet REF USUAL) AS LOGIC
-    LOCAL oRet := uRet AS OBJECT
+STATIC METHOD RecordInfo(nOrdinal AS DWORD,oRecID AS USUAL,oValue REF USUAL) AS LOGIC
+    LOCAL oRet := oValue AS OBJECT
     LOCAL lResult AS LOGIC
-    lResult := CoreDb.RecordInfo(nOrdinal, uRecID, REF oRet)
-    uRet := oRet
+    lResult := CoreDb.RecordInfo(nOrdinal, oRecID, REF oRet)
+    oValue := oRet
     RETURN lResult
     
 /// <inheritdoc cref='M:XSharp.CoreDb.RecordInfo(System.UInt32,System.Object,System.Object)'/>
 /// <remarks> <inheritdoc cref='M:XSharp.CoreDb.RecordInfo(System.UInt32,System.Object,System.Object)'/>
 /// <br/><br/> <note type="tip">The difference between VoDb.RecordInfo and CoreDb.RecordInfo is that VoDb.RecordInfo takes a USUAL parameter</note></remarks>
-STATIC METHOD RecordInfo(nOrdinal AS DWORD,uRecId AS USUAL,uRet AS USUAL) AS LOGIC
-    RETURN CoreDb.RecordInfo(nOrdinal, uRecID,  (OBJECT) uRet)
+STATIC METHOD RecordInfo(nOrdinal AS DWORD,oRecID AS USUAL,oValue AS USUAL) AS LOGIC
+    RETURN CoreDb.RecordInfo(nOrdinal, oRecID,  (OBJECT) oValue)
 
    
 /// <inheritdoc cref='M:XSharp.CoreDb.Select(System.UInt32,System.UInt32@)'/>
@@ -124,12 +133,12 @@ STATIC METHOD Select(nNew AS DWORD,riOld REF USUAL) AS LOGIC
     RETURN lResult
 
  
-/// <inheritdoc cref='M:XSharp.CoreDb.SetFilter(XSharp.ICodeBlock,System.String)'/>
+/// <inheritdoc cref='M:XSharp.CoreDb.SetFilter(XSharp.ICodeblock,System.String)'/>
 /// <remarks> <note type="tip">The difference between VoDb.SetFilter and CoreDb.SetFilter is that VoDb.SetFilter takes a USUAL parameter</note></remarks>
 STATIC METHOD SetFilter(oBlock AS USUAL,cFilter AS STRING) AS LOGIC
-    LOCAL cb AS ICodeBlock
-    IF oBlock:IsCodeBlock
-       cb := (ICodeBlock) oBlock
+    LOCAL cb AS ICodeblock
+    IF oBlock:IsCodeblock
+       cb := (ICodeblock) oBlock
     ELSE
         cb := NULL
     ENDIF
@@ -139,9 +148,9 @@ STATIC METHOD SetFilter(oBlock AS USUAL,cFilter AS STRING) AS LOGIC
     INTERNAL STATIC METHOD ParamError(cFuncSym AS STRING, dwArgNum  AS DWORD ,   dwArgType AS DWORD) AS Error 
     
         LOCAL oError    AS Error
-        oError := Error{RuntimeState.LastRDDError}
+        oError := Error{RuntimeState.LastRddError}
         oError:SubSystem    := "DBCMD"
-        oError:GenCode      := EG_ARG
+        oError:Gencode      := EG_ARG
         oError:Severity     := ES_ERROR
         oError:CanDefault   := .F.
         oError:CanRetry     := .T.
@@ -151,24 +160,25 @@ STATIC METHOD SetFilter(oBlock AS USUAL,cFilter AS STRING) AS LOGIC
         oError:FuncSym      := cFuncSym
         RETURN oError
         
-    INTERNAL STATIC METHOD DBCMDError(cFuncSym AS STRING)  AS Error 
+    INTERNAL STATIC METHOD DbCmdError(cFuncSym AS STRING)  AS Error 
         LOCAL oError    AS Error
-        oError := Error{RuntimeState.LastRDDError}	
-        oError:GenCode      := EG_NOTABLE
+        oError := Error{RuntimeState.LastRddError}	
+        oError:Gencode      := EG_NOTABLE
         oError:SubCode      := EDB_NOTABLE
         oError:SubSystem    := "DBCMD"
         oError:Severity     := ES_ERROR
         oError:FuncSym      := cFuncSym
         oError:CanDefault   := .T.
         RETURN oError
-        
+
+
     INTERNAL STATIC METHOD AllocFieldNames(aStru AS ARRAY) AS _FieldNames
         VAR aNames := List<STRING>{}
         FOREACH aField AS USUAL IN aStru
             IF aField:IsArray
                 aNames:Add(Upper(aField[DBS_NAME]))
             ELSE
-                aNames:Add(upper(aField))
+                aNames:Add(Upper(aField))
             ENDIF
         NEXT
         RETURN _FieldNames{aNames}
@@ -178,13 +188,13 @@ STATIC METHOD SetFilter(oBlock AS USUAL,cFilter AS STRING) AS LOGIC
         LOCAL aNew      AS ARRAY
         LOCAL cName     AS STRING
         LOCAL aStruct   AS ARRAY
-        LOCAL adbStruct AS ARRAY
+        LOCAL aDbStruct AS ARRAY
         LOCAL nFields, i AS INT
         LOCAL siPos     AS DWORD
         LOCAL siSelect  AS DWORD
         LOCAL aFldList  AS ARRAY
         
-        adbStruct := DbStruct()
+        aDbStruct := DbStruct()
         aStruct   := {}
         aFldList := {}
         
@@ -194,7 +204,7 @@ STATIC METHOD SetFilter(oBlock AS USUAL,cFilter AS STRING) AS LOGIC
             nFields    := (INT) FCount()
             siSelect   := VoDb.GetSelect()
             FOR i := 1 TO nFields
-                cName := adbStruct[i, DBS_NAME]
+                cName := aDbStruct[i, DBS_NAME]
                 AAdd(aFldList, {siSelect, FieldPos(cName)})
                 AAdd(aStruct, aDbStruct[i])
                 AAdd(aNames, cName)
@@ -209,14 +219,14 @@ STATIC METHOD SetFilter(oBlock AS USUAL,cFilter AS STRING) AS LOGIC
             nFields := (INT)FCount()
             siSelect := VoDb.GetSelect()
             FOR i := 1 TO nFields
-                cName := adbStruct[i, DBS_NAME]
+                cName := aDbStruct[i, DBS_NAME]
                 IF AScan(aNames, {|c| c == cName}) > 0
                     AAdd(aFldList, {siSelect, FieldPos(cName)})
                     AAdd(aStruct, aDbStruct[i])
                 ENDIF
             NEXT
         ENDIF
-        siSelect := SELECT(cAlias)
+        siSelect := @@Select(cAlias)
         aDbStruct := DbStruct()
         nFields := (INT)Len(aNames)
         
@@ -254,11 +264,11 @@ STATIC METHOD SetFilter(oBlock AS USUAL,cFilter AS STRING) AS LOGIC
             nType := ARRAY
         ELSEIF xDriver:IsString
             IF SLen(xDriver) = 0
-                xDriver := RDDSetDefault()
+                xDriver := RddSetDefault()
             ENDIF
             nType := STRING
         ELSE
-            xDriver := RDDSetDefault()
+            xDriver := RddSetDefault()
             nType := STRING
         ENDIF
         
@@ -266,7 +276,7 @@ STATIC METHOD SetFilter(oBlock AS USUAL,cFilter AS STRING) AS LOGIC
             aRdds := xDriver
         ELSEIF nType == STRING
             aRdds := {}
-            xDriver := upper(xDriver)
+            xDriver := Upper(xDriver)
             SWITCH (STRING) xDriver
             CASE "DBFNTX"
             CASE "DBFMEMO"
@@ -340,12 +350,12 @@ STATIC METHOD SetFilter(oBlock AS USUAL,cFilter AS STRING) AS LOGIC
         cName   := Trim(Upper(cName))
         RETURN cName
 
-    INTERNAL STATIC METHOD ValidBlock(uBlock AS USUAL) AS ICodeblock
+    INTERNAL STATIC METHOD ValidBlock(uBlock AS USUAL, bDef := NULL AS ICodeblock) AS ICodeblock
         LOCAL oBlock    := uBlock   AS OBJECT
         IF oBlock IS ICodeblock
             RETURN (ICodeblock) oBlock
         ENDIF
-        RETURN NULL  
+        RETURN bDef
 
 INTERNAL STATIC METHOD  FieldList(aStruct AS ARRAY, aNames AS ARRAY, aMatch AS ARRAY) AS ARRAY 
 	

@@ -72,19 +72,19 @@ STATIC CLASS XSharp.Internal.CompilerServices
         LOCAL counters  := INT[]{ranks} as INT[]
         LOCAL bounds    := INT[]{ranks} as INT[]
         FOR VAR i := 1 to ranks
-            bounds[i] := A:GetLength(i-1)
+            bounds[i] := a:GetLength(i-1)
         NEXT
         StringArrayInitHelper(a, counters, bounds, ranks)
         RETURN
 
     PRIVATE STATIC METHOD StringArrayInitHelper( s as System.Array, counters as  int[] , bounds as int[], rank as int) AS VOID
         if  rank == 1
-            for var x:= 1 UPTO  Bounds[1] STEP 1
+            FOR VAR x:= 1 UPTO  bounds[1] STEP 1
                 counters[rank] := x -1             // the counters array must be 0 based
                 s:SetValue( "", counters )
             NEXT
         else
-            for var x := 1 UPTO  Bounds[rank]  STEP 1
+            FOR VAR x := 1 UPTO  bounds[rank]  STEP 1
                 counters[rank] := x -1          // the counters array must be 0 based
                 StringArrayInitHelper( s, counters, bounds, rank - 1 )
             NEXT

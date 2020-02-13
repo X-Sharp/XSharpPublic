@@ -16,12 +16,12 @@ USING System.Text
 #command DOINAREA <uArea> <func>  => ;
     LOCAL nArea := _Select(<uArea>)  AS DWORD ; ; 
     IF nArea != 0; ;
-        VAR nOld := RuntimeState.CurrentWorkArea; ;
+        VAR nOld := RuntimeState.CurrentWorkarea; ;
         TRY ;  ;
-            RuntimeState.CurrentWorkArea := nArea; ;
+            RuntimeState.CurrentWorkarea := nArea; ;
             RETURN <FUNC> ; ; 
         FINALLY;  ;
-            RuntimeState.CurrentWorkArea := nOld ; ;
+            RuntimeState.CurrentWorkarea := nOld ; ;
         END TRY; ;
     ENDIF; ;
     THROW _NoAlias( <uArea> )  
@@ -40,7 +40,7 @@ FUNCTION _DbThrowErrorOnFailure(funcName AS STRING, resultToCheck AS LOGIC) AS L
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/alias0/*" />
 FUNCTION Alias0() AS STRING
-   LOCAL oRDD := VoDb.CWA("Alias0", FALSE) AS IRDD
+   LOCAL oRDD := VoDb.CWA("Alias0", FALSE) AS IRdd
     IF oRDD != NULL
         RETURN oRDD:Alias
     ENDIF                            
@@ -57,7 +57,7 @@ FUNCTION Bof(uArea AS USUAL) AS LOGIC
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbf/*" />
 FUNCTION DBF() AS STRING
-    RETURN VoDb.DBF()
+    RETURN VoDb.Dbf()
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbf/*" />
 FUNCTION DBF(uArea AS USUAL) AS STRING
@@ -99,7 +99,7 @@ FUNCTION DbZap(uArea AS USUAL) AS LOGIC STRICT
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbunlockall/*" />
 FUNCTION DbUnLockAll() AS LOGIC STRICT
-	RETURN VoDb.UnLockAll()
+	RETURN VoDb.UnlockAll()
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/deleted/*" />
@@ -169,7 +169,7 @@ FUNCTION FieldPos(cFieldName AS STRING) AS DWORD
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fieldpos/*" />
 FUNCTION FieldPos(cFieldName AS STRING, nArea AS DWORD) AS DWORD
-    LOCAL oRDD := RuntimeState.WorkAreas:GetRDD(nArea) AS IRDD
+    LOCAL oRDD := RuntimeState.Workareas:GetRDD(nArea) AS IRdd
     IF oRDD != NULL_OBJECT
         RETURN (DWORD) oRDD:FieldIndex(cFieldName) 
     ENDIF
@@ -203,8 +203,7 @@ FUNCTION LastRec() AS DWORD
 FUNCTION LastRec(uArea AS USUAL) AS DWORD
     DOINAREA uArea LastRec()
 
-/// <summary>
-/// </summary>
+/// <summary>Refresh the buffer for the current workarea, discarding any changes that were made.</summary>
 /// <returns>
 /// </returns>
 FUNCTION DbBuffRefresh() AS LOGIC STRICT
@@ -356,7 +355,7 @@ FUNCTION RecSize(uArea AS USUAL) AS LONG
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/rlock/*" />
 FUNCTION RLock() AS LOGIC STRICT
-	RETURN VoDb.Rlock(NULL)
+	RETURN VoDb.RLock(NULL)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/rlock/*" />
 FUNCTION RLock(uArea AS USUAL) AS LOGIC STRICT
@@ -367,10 +366,10 @@ FUNCTION RLock(cRecordNumberList AS STRING, uArea AS USUAL) AS LOGIC STRICT
 	LOCAL aRecords  AS STRING[]
     LOCAL nSelect   AS DWORD
     LOCAL lOk       AS LOGIC
-    IF String.IsNullOrWhitespace(cRecordNumberList)
+    IF String.IsNullOrWhiteSpace(cRecordNumberList)
         RETURN FALSE
     ENDIF
-    aRecords := cRecordNumberList:Split(<CHAR>{','},StringSplitoptions.RemoveEmptyEntries)
+    aRecords := cRecordNumberList:Split(<CHAR>{','},StringSplitOptions.RemoveEmptyEntries)
     nSelect := DbGetSelect()
     DbSelectArea(uArea)
     lOk := TRUE
@@ -390,7 +389,7 @@ FUNCTION RLock(cRecordNumberList AS STRING, uArea AS USUAL) AS LOGIC STRICT
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/used/*" />
 FUNCTION Used() AS LOGIC
-    RETURN RuntimeState.Workareas:CurrentWorkArea != NULL
+    RETURN RuntimeState.Workareas:CurrentWorkarea != NULL
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/used/*" />
@@ -403,10 +402,10 @@ FUNCTION Used(uArea AS USUAL) AS LOGIC
 FUNCTION DoError (cSymFunc AS STRING, nTries:= 0 AS INT) AS OBJECT
 	LOCAL oError    AS Error
     LOCAL bBlock    AS ICodeblock
-    IF RuntimeState.LastRDDError IS Error
-	    oError         := (Error) RuntimeState.LastRDDError
-    ELSEIF RuntimeState.LastRDDError != NULL_OBJECT
-        oError         := Error{RuntimeState.LastRDDError}
+    IF RuntimeState.LastRddError IS Error
+	    oError         := (Error) RuntimeState.LastRddError
+    ELSEIF RuntimeState.LastRddError != NULL_OBJECT
+        oError         := Error{RuntimeState.LastRddError}
     ELSE
         oError  := Error{"Unknown Error occurred" }
     ENDIF

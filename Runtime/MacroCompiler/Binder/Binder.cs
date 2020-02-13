@@ -57,6 +57,7 @@ namespace XSharp.MacroCompiler
         internal Type DelegateType;
         internal List<_Codeblock> NestedCodeblocks;
         internal bool CreatesAutoVars = false;
+        internal Stack<Stmt> StmtStack = new Stack<Stmt>();
 
         protected Binder(Type objectType, Type delegateType, MacroOptions options)
         {

@@ -55,7 +55,7 @@ FUNCTION _MSave(cFileName AS STRING, cSkel AS STRING, lLike AS LOGIC) AS VOID
                 ENDIF
                 cVar := _PrivateNext()
             ENDDO  
-        oMemWriter:CLose()
+        oMemWriter:Close()
     ENDIF 
     RETURN
 
@@ -157,7 +157,7 @@ INTERNAL CLASS MemWriter
         LOCAL wType 	AS DWORD
         LOCAL cVarName 	AS STRING
         LOCAL wArrayEl 	AS DWORD             
-        LOCAL writeName AS Action
+        LOCAL WriteName AS Action
         wType    := UsualType(uVal)
         IF !String.IsNullOrEmpty(cVar)
             cVarName := cVar
@@ -167,46 +167,47 @@ INTERNAL CLASS MemWriter
         ENDIF
         
         SWITCH wType
-            CASE __UsualType.STRING
-                WriteByte(__UsualType.STRING)
+            CASE __UsualType.String
+                WriteByte(__UsualType.String)
                 WriteName()
                 WriteStr(uVal)
                 
-            CASE __UsualType.LONG
-                WriteByte(__UsualType.LONG)
+            CASE __UsualType.Long
+                WriteByte(__UsualType.Long)
                 WriteName()
                 WriteBytes(L2Bin(uVal))
                 
-        CASE __UsualType.DATE
-            CASE __UsualType.DATETIME
-                WriteByte(__UsualType.DATE)
+        CASE __UsualType.Date
+            CASE __UsualType.DateTime
+                WriteByte(__UsualType.Date)
                 WriteName()
                 WriteBytes(Date2Bin(uVal))
                 
-            CASE __UsualType.FLOAT
+            CASE __UsualType.Float
             CASE __UsualType.Decimal
-                WriteByte(__UsualType.FLOAT)
+            CASE __UsualType.Currency
+                WriteByte(__UsualType.Float)
                 WriteName()
                 WriteBytes(F2Bin(uVal))
                 
-            CASE __UsualType.LOGIC
-                WriteByte(__UsualType.LOGIC)
+            CASE __UsualType.Logic
+                WriteByte(__UsualType.Logic)
                 WriteName()
                 WriteByte(IIF(uVal,1,0))
                 
-            CASE __UsualType.SYMBOL
-                WriteByte(__UsualType.SYMBOL)
+            CASE __UsualType.Symbol
+                WriteByte(__UsualType.Symbol)
                 WriteName()
                 WriteStr(Symbol2String(uVal))
                 
-            CASE __UsualType.ARRAY
+            CASE __UsualType.Array
                 wArrayEl := AScan(aArrayList, uVal)
                 IF wArrayEl =0
-                    WriteByte(__UsualType.ARRAY)
+                    WriteByte(__UsualType.Array)
                     WriteName()
                     WriteArr(uVal)
                     ELSE
-                        WriteByte(__UsualType.ARRAY +0x80)
+                        WriteByte(__UsualType.Array +0x80)
                         WriteName()
                     WriteBytes(W2Bin((WORD) wArrayEl))
                 ENDIF
@@ -214,23 +215,23 @@ INTERNAL CLASS MemWriter
             CASE OBJECT
                 wArrayEl := AScan(aObjectList, uVal)
                 IF wArrayEl =0
-                    WriteByte(__UsualType.OBJECT)
+                    WriteByte(__UsualType.Object)
                     WriteName()
                     WriteObj(uVal)
                     ELSE
-                        WriteByte(__UsualType.OBJECT +0x80)
+                        WriteByte(__UsualType.Object +0x80)
                         WriteName()
                     WriteBytes(W2Bin((WORD) wArrayEl))
                 ENDIF
                 
             CASE PTR
-                WriteByte(__UsualType.PTR)
+                WriteByte(__UsualType.Ptr)
                 WriteName()
                 WriteBytes(Ptr2Bin(uVal))
                 WriteBytes(W2Bin(WORD(_GetMRandID())))
                 
             OTHERWISE
-                WriteByte(__UsualType.VOID)
+                WriteByte(__UsualType.Void)
                 WriteName()
                 
         END SWITCH
@@ -247,7 +248,7 @@ INTERNAL CLASS MemWriter
             WriteStr(ClassName(oVar))
             AAdd(SELF:aObjectList, oVar)
                 
-            aIVarList :=IVarList(oVar)
+            aIVarList :=IvarList(oVar)
             nLen :=ALen(aIVarList)
             WriteBytes(W2Bin(WORD(nLen)))
                 
@@ -350,46 +351,46 @@ INTERNAL CLASS MemReader
         LOCAL uValue AS USUAL
         LOCAL wLen AS WORD
         SWITCH wType
-            CASE __UsualType.STRING
+            CASE __UsualType.String
                 uValue := SELF:ReadString()
                 
-            CASE __UsualType.LONG
+            CASE __UsualType.Long
                 uValue :=Bin2L(SELF:ReadBytes(4))
                 
-            CASE __UsualType.DATE
+            CASE __UsualType.Date
                 uValue :=Bin2Date(SELF:ReadBytes(4))
                 
-            CASE __UsualType.FLOAT
+            CASE __UsualType.Float
                 uValue :=Bin2F(SELF:ReadBytes(12))
                 
-            CASE __UsualType.LOGIC
+            CASE __UsualType.Logic
                 uValue := ReadByte() != 0
                 
-            CASE __UsualType.SYMBOL
+            CASE __UsualType.Symbol
                 uValue := String2Symbol(SELF:ReadString())
                 
-            CASE __UsualType.ARRAY     
+            CASE __UsualType.Array     
                 wLen := SELF:ReadWord()
                 uValue := SELF:ReadArray(wLen)
                 
-            CASE __UsualType.ARRAY +0x80
+            CASE __UsualType.Array +0x80
                 wLen := SELF:ReadWord()
                 uValue :=aArrayList[wLen]
                 
-            CASE __UsualType.OBJECT
+            CASE __UsualType.Object
                 uValue :=SELF:ReadObject(SELF:ReadString())
                 
-            CASE __UsualType.OBJECT +0x80    
+            CASE __UsualType.Object +0x80    
                 wLen := SELF:ReadWord()
                 uValue :=aObjectList[wLen]
                 
-            CASE __UsualType.PTR
+            CASE __UsualType.Ptr
                 uValue :=Bin2Ptr(SELF:ReadBytes(4))
                 IF SELF:ReadWord() <>_GetMRandID()
                     uValue :=NULL_PTR
                 ENDIF
                 
-        CASE __UsualType.VOID
+        CASE __UsualType.Void
         OTHERWISE
                 uValue :=NIL
                 
@@ -450,7 +451,7 @@ INTERNAL CLASS MemReader
         aObjectList :={}
         
         IF cMask != NULL
-            SELF:lUseMask := TRUE
+            SELF:lUsemask := TRUE
             SELF:cMask    := Upper(cMask)
             SELF:lInclude := lInclude
         ENDIF
@@ -475,7 +476,7 @@ INTERNAL CLASS MemReader
         DO WHILE wType <>ASC_EOF
             cVar    := ReadString():ToUpper()
             uValue  := ReadValue(wType)   
-            IF lUseMask    
+            IF lUsemask    
                 lPut := _Like(SELF:cMask, cVar) == SELF:lInclude
             ENDIF
             IF lPut        		
@@ -513,7 +514,7 @@ INTERNAL CLASS MemReader
             nType   := SELF:ReadByte()
             cType	:= Chr(_AND(nType,127))
             SELF:ReadBytes(4) // pad
-            IF lUseMask    
+            IF lUsemask    
                 lPut := _Like(SELF:cMask, cVar ) == SELF:lInclude
             ENDIF
             

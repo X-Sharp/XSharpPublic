@@ -9,11 +9,11 @@ USING XSharp.RDD.Support
 /// <summary>Base Memo class. Does not implement anything. </summary>
 /// <seealso cref="T:XSharp.RDD.IMemo"/>
 CLASS XSharp.RDD.BaseMemo IMPLEMENTS IMemo
-    PROTECTED _oArea AS WorkArea
+    PROTECTED _oArea AS Workarea
     
     /// <summary>Create the BaseMemo object</summary>
     /// <param name="oArea">Workarea object that 'owns' this memo object </param>
-    CONSTRUCTOR(oArea AS WorkArea)
+    CONSTRUCTOR(oArea AS Workarea)
         _oArea := oArea
         
     VIRTUAL PROPERTY LastWrittenBlockNumber AS LONG AUTO GET SET

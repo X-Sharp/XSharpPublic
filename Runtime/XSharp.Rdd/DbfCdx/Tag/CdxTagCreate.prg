@@ -23,10 +23,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL hasForCond AS LOGIC
             SELF:_ordCondInfo := SELF:_oRdd:_OrderCondInfo:Clone()
             #ifdef SHOWTIMES
-            ? DateTime.Now, "Create", createInfo:Order, "# of records", SELF:_oRDD:RecCount
+            ? DateTime.Now, "Create", createInfo:Order, "# of records", SELF:_oRdd:RecCount
             #endif
-            IF string.IsNullOrEmpty(createInfo:BagName)
-                SELF:_oRDD:_dbfError(  SubCodes.EDB_CREATEINDEX, GenCode.EG_ARG,"OrdCreate", "Missing Orderbag Name")
+            IF String.IsNullOrEmpty(createInfo:BagName)
+                SELF:_oRdd:_dbfError(  Subcodes.EDB_CREATEINDEX, Gencode.EG_ARG,"OrdCreate", "Missing Orderbag Name")
                 RETURN FALSE
             ENDIF
             isOk := SELF:_oRdd:GoCold()
@@ -45,26 +45,26 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF _ordCondInfo  != NULL .AND. _ordCondInfo :ForExpression != NULL
                 SELF:_ForExpr := _ordCondInfo :ForExpression
             ELSE
-                SELF:_ForExpr := string.Empty
+                SELF:_ForExpr := String.Empty
             ENDIF
             SELF:_oRdd:__Goto(1)
             IF ! SELF:EvaluateExpressions()
                 RETURN FALSE
             ENDIF
             SELF:_orderName := (STRING)createInfo:Order
-            IF string.IsNullOrEmpty(SELF:_orderName)
-                SELF:_oRDD:_dbfError( GenCode.EG_ARG, SubCodes.EDB_CREATEINDEX)
+            IF String.IsNullOrEmpty(SELF:_orderName)
+                SELF:_oRdd:_dbfError( Gencode.EG_ARG, Subcodes.EDB_CREATEINDEX)
             ENDIF
             SELF:_orderName := SELF:_orderName:ToUpper()
 
             IF !isOk .OR. SELF:_keySize == 0
                 SELF:Close()
-                SELF:_oRDD:_dbfError(  SubCodes.EDB_CREATEINDEX, GenCode.EG_ARG,"OrdCreate", "Missing Order Name")
+                SELF:_oRdd:_dbfError(  Subcodes.EDB_CREATEINDEX, Gencode.EG_ARG,"OrdCreate", "Missing Order Name")
                 RETURN FALSE
             ENDIF
             // now verify if the order already exists in the bag and when so, then delete it from the orderbag
             FOREACH VAR tag IN SELF:OrderBag:Tags
-                IF string.Compare(tag:OrderName, SELF:OrderName, StringComparison.OrdinalIgnoreCase) == 0
+                IF String.Compare(tag:OrderName, SELF:OrderName, StringComparison.OrdinalIgnoreCase) == 0
                     SELF:OrderBag:Destroy(tag)
                     EXIT
                 ENDIF
@@ -80,22 +80,25 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:_Descending := FALSE
             SELF:_Custom := _ordCondInfo:Custom
             IF _ordCondInfo :Active
-                SELF:_Descending := _ordCondInfo :Descending
-                IF hasForCond .AND. !string.IsNullOrEmpty(_ordCondInfo :ForExpression)
+                SELF:_Descending := _ordCondInfo:Descending
+                IF hasForCond .AND. !String.IsNullOrEmpty(_ordCondInfo:ForExpression)
                     SELF:_Conditional := TRUE
                 ENDIF
             ENDIF
             isOk := SELF:_Build()
             SELF:_bag:FlushPages()
-            Gc.Collect()
+            GC.Collect()
             RETURN isOk
 
 
         INTERNAL METHOD Rebuild() AS LOGIC
-            SELF:_ordCondInfo := DbOrderCondInfo{}
-            SELF:_ordCondInfo:Descending := SELF:_Descending
+
+
+            SELF:_ordCondInfo               := DbOrderCondInfo{}
+            SELF:_ordCondInfo:Descending    := SELF:_Descending
+            SELF:_ordCondInfo:Custom        := SELF:_Custom
             SELF:_ordCondInfo:ForExpression := SELF:_ForExpr
-            SELF:_ordCondInfo:Compile(SELF:_oRDD)
+            SELF:_ordCondInfo:Compile(SELF:_oRdd)
             SELF:_ordCondInfo:Active := TRUE
             SELF:_ordCondInfo:Validate()
             RETURN SELF:_Build()
@@ -105,7 +108,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL ic AS CdxSortCompare
             IF ! SELF:_HeaderCreate()
                 SELF:Close()
-                SELF:_oRdd:_dbfError(GenCode.EG_CREATE,  SubCodes.ERDD_WRITE,"OrdCreate", "Could not write Header ")
+                SELF:_oRdd:_dbfError(Gencode.EG_CREATE,  Subcodes.ERDD_WRITE,"OrdCreate", "Could not write Header ")
                 RETURN FALSE
             ENDIF
             #ifdef SHOWTIMES
@@ -157,9 +160,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PRIVATE METHOD _sortGetRecord() AS LOGIC
             // Get Key Values
             SELF:_oRdd:ReadRecord()
-            VAR result := getKeyValue(_sorter:SourceIndex, _newValue:Key)
+            VAR result := getKeyValue(_sorter:SourceIndex, _newvalue:Key)
             IF result
-                _sorter:Add(SortRecord{_newValue:Key, SELF:_RecNo})
+                _sorter:Add(SortRecord{_newvalue:Key, SELF:_RecNo})
             ENDIF
             RETURN result
 
@@ -195,15 +198,15 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             VAR type := SELF:_oRdd:_getUsualType(toConvert)
             SWITCH type
             CASE __UsualType.String
-                SELF:_sourceKeySize := SELF:_keySize := (WORD) ((STRING)toConvert):Length
+                SELF:_sourcekeySize := SELF:_keySize := (WORD) ((STRING)toConvert):Length
             CASE __UsualType.Long
             CASE __UsualType.Float
             CASE __UsualType.Date
-                SELF:_sourceKeySize := SELF:_keySize := 8      // all stored as numeric
+                SELF:_sourcekeySize := SELF:_keySize := 8      // all stored as numeric
             CASE __UsualType.Logic
-                SELF:_sourceKeySize := SELF:_keySize := 1
+                SELF:_sourcekeySize := SELF:_keySize := 1
             OTHERWISE
-                SELF:_sourceKeySize := SELF:_keySize := 0
+                SELF:_sourcekeySize := SELF:_keySize := 0
                 RETURN FALSE
             END SWITCH
             
@@ -252,7 +255,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             SELF:_oRdd:__Goto(record)
             // IF record is EOF then do nothing
-            IF !SELF:_oRdd:_isValid .AND. !SELF:_oRdd:_Eof
+            IF !SELF:_oRdd:_isValid .AND. !SELF:_oRdd:_EoF
                 SELF:_oRdd:__Goto(start)
                 SELF:ClearStack()
                 RETURN FALSE
@@ -269,12 +272,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     RETURN result
                 ENDIF
             ENDIF
-            IF hasWhile .OR. hasEvalBlock .OR. todo != 0 .OR. lUseOrder .OR. ! SELF:_Conditional
+            IF hasWhile .OR. hasEvalBlock .OR. toDo != 0 .OR. lUseOrder .OR. ! SELF:_Conditional
                 LOCAL cbSkip AS @@Func<LONG>
                 IF lUseOrder
-                    cbSKip := { => leadingOrder:_getNextKey(SkipDirection.Forward)}
+                    cbSkip := { => leadingOrder:_getNextKey(SkipDirection.Forward)}
                 ELSE
-                    cbSKip := { =>SELF:_RecNo + 1}
+                    cbSkip := { =>SELF:_RecNo + 1}
                 ENDIF
                 DO WHILE TRUE
                     IF hasWhile
@@ -304,15 +307,15 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     done++
                     nextRecord := cbSkip()
                     SELF:_oRdd:__Goto( nextRecord)
-                    IF todo != 0 .AND. done >= todo
+                    IF toDo != 0 .AND. done >= toDo
                         EXIT
                     ENDIF
-                    IF SELF:_oRdd:_Eof 
+                    IF SELF:_oRdd:_EoF 
                         EXIT
                     ENDIF
                 ENDDO
             ELSE
-                DO WHILE !_oRdd:_Eof
+                DO WHILE !_oRdd:_EoF
                     // Only conditions, nothing else
                     includeRecord := SELF:_EvalBlock(ordCondInfo:ForBlock, TRUE)
                     IF includeRecord
@@ -332,7 +335,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:Flush()
             RETURN TRUE
 
-        PRIVATE METHOD _EvalBlock(oBlock AS ICodeBlock, lMustBeLogic AS LOGIC) AS LOGIC
+        PRIVATE METHOD _EvalBlock(oBlock AS ICodeblock, lMustBeLogic AS LOGIC) AS LOGIC
             LOCAL isOk  := FALSE AS LOGIC
             LOCAL error := FALSE AS LOGIC
             TRY
@@ -349,7 +352,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 isOk := FALSE
             END TRY
             IF error
-                SELF:_oRdd:_dbfError( SubCodes.ERDD_KEY_EVAL,GenCode.EG_DATATYPE, SELF:fileName)
+                SELF:_oRdd:_dbfError( Subcodes.ERDD_KEY_EVAL,Gencode.EG_DATATYPE, SELF:FileName)
             ENDIF
             RETURN isOk
             
@@ -357,29 +360,29 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL fType  := 0 AS DbFieldType
             LOCAL sortInfo AS DbSortInfo
             sortInfo := DbSortInfo{0,1}     // 0 trans items, 1 sort item
-            SELF:_sorter := CdxSortHelper{SELF:_oRDD, sortInfo, lRecCount, SELF}
+            SELF:_sorter := CdxSortHelper{SELF:_oRdd, sortInfo, lRecCount, SELF}
             IF SELF:_SingleField != -1
-                fType := SELF:_oRdd:_Fields[SELF:_SingleField]:fieldType
+                fType := SELF:_oRdd:_Fields[SELF:_SingleField]:FieldType
                 // 'C', 'N', 'D', 'L'
                 SWITCH fType
                 CASE DbFieldType.Character
                 CASE DbFieldType.Number
                 CASE DbFieldType.Date
                 CASE DbFieldType.Logic
-                    SELF:_sorter:SourceIndex := SELF:_oRdd:_Fields[SELF:_SingleField]:OffSet
+                    SELF:_sorter:SourceIndex := SELF:_oRdd:_Fields[SELF:_SingleField]:Offset
                 OTHERWISE
                     fType := 0
                     SELF:_sorter:SourceIndex := -1
                 END SWITCH
 	        ELSE
-	    	    SELF:_sorter:sourceIndex := -1
+	    	    SELF:_sorter:SourceIndex := -1
             ENDIF
             sortInfo:Items[0]:Length := SELF:_keySize
-            IF SELF:_KeyExprType == __UsualType.String .OR. SELF:_KeyExprType == __UsualType.LOGIC
-                SELF:_sorter:AScii := FALSE
+            IF SELF:_KeyExprType == __UsualType.String .OR. SELF:_KeyExprType == __UsualType.Logic
+                SELF:_sorter:Ascii := FALSE
                 sortInfo:Items[0]:Flags := DbSortFlags.Default
             ELSE
-                SELF:_sorter:AScii := TRUE
+                SELF:_sorter:Ascii := TRUE
                 sortInfo:Items[0]:Flags := DbSortFlags.Ascii
             ENDIF
             sortInfo:Items[0]:OffSet := 0
@@ -394,7 +397,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             evalCount := 0
             lRecCount := SELF:_oRdd:RecCount
             // create sorthelper 
-            SELF:_initSort(lRecCount)
+            SELF:_InitSort(lRecCount)
             IF lRecCount == 0
                 RETURN TRUE
             ENDIF
@@ -421,14 +424,14 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN result
             
             // IRddSortWriter Interface, used by RddSortHelper
-        PUBLIC METHOD WriteSorted(si AS DbSortInfo , record AS SortRecord) AS LOGIC
+        PUBLIC METHOD IRddSortWriter.WriteSorted(si AS DbSortInfo , record AS SortRecord) AS LOGIC
             RETURN _sorter:AddRecord(record:Recno, record:Data, record:Duplicate)
             
         INTERNAL METHOD _CreateUnique(ordCondInfo AS DbOrderCondInfo ) AS LOGIC
-            LOCAL LRecCount AS LONG
+            LOCAL lRecCount AS LONG
             lRecCount := SELF:_oRdd:RecCount
             // create sorthelper
-            SELF:_initSort(lRecCount)
+            SELF:_InitSort(lRecCount)
             SELF:_sorter:Unique := SELF:_Unique
             IF ordCondInfo:Active
                 RETURN SELF:_CondCreate(ordCondInfo)
@@ -438,7 +441,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 IF ! _ordCondInfo:Custom
                     REPEAT
                         SELF:_oRdd:GoTo(SELF:_RecNo + 1)
-                        IF ! SELF:_sortGetRecord()
+                        IF SELF:_oRdd:EoF .OR. ! SELF:_sortGetRecord()
                             EXIT
                         ENDIF
                     UNTIL ! SELF:_oRdd:_isValid
@@ -476,7 +479,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             VAR action := CdxAction.AddKey(nRecno, data)
             action := _tag:DoAction(action)
-            IF action:Type != CdxActionType.OK
+            IF action:Type != CdxActionType.Ok
                 Error("CdxSortHelper.AddRecord","Could not add record to leaf")
                 RETURN FALSE
             ENDIF
@@ -521,7 +524,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN TRUE
 
         PRIVATE METHOD Error(strFunction AS STRING, strMessage AS STRING) AS VOID
-            SELF:_tag:RDD:_dbfError(ERDD.CREATE_ORDER, GenCode.EG_CORRUPTION, strFunction, strMessage)
+            SELF:_tag:RDD:_dbfError(ERDD.CREATE_ORDER, Gencode.EG_CORRUPTION, strFunction, strMessage)
             RETURN
 
     END CLASS

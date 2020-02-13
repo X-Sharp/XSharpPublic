@@ -12,7 +12,7 @@ USING System.ComponentModel
 USING System.Runtime.ConstrainedExecution
 USING System.Runtime.InteropServices
 USING System.Collections.Generic
-
+USING XSharp.Data
 CLASS SqlConnection
 	#region IVars
 	// VO Compatible Ivars
@@ -38,7 +38,7 @@ CLASS SqlConnection
 	// DotNet Specific Ivars
 	PROTECT oNetConn         AS DbConnection
 	PROTECT oTransaction     AS DbTransaction
-	PRIVATE oFactory         AS ISqlFactory 
+	PRIVATE oFactory         AS XSharp.Data.ISqlFactory 
 	#endregion
 	#region static ivars
 	
@@ -52,7 +52,7 @@ CLASS SqlConnection
 	
 	#region Constructors and Destructors
 	CONSTRUCTOR ( cConnStr, cUserID, cPassword )
-        SELF:oFactory := GetSqlFactory()
+        SELF:oFactory := XSharp.Data.Functions.GetSqlFactory()
 		aStmts := List<SqlStatement>{}
 		oErrInfo := SQLErrorInfo{}
 		IF IsString( cUserID )
@@ -252,6 +252,9 @@ CLASS SqlConnection
 	METHOD DriverConnect( hWindow, nDriverCompletion, cConnStrIn )
         LOCAL cResult AS STRING
         LOCAL lRet    AS LOGIC
+        IF IsNil(cConnStrIn)
+            cConnStrIn := SELF:cConnectString
+        ENDIF
 		cResult  := SELF:oFactory:DriverConnect(hWindow, nDriverCompletion, cConnStrIn)
         IF ! empty(cResult)
             SELF:cConnectString := cResult        
@@ -714,7 +717,7 @@ CLASS SqlConnection
 		END GET
 		SET 
 			SELF:DisConnect()
-			SELF:cConnectString := VALUE
+			SELF:cConnectString := value
 			SELF:_ParseConnectionString()
 		END SET
 	END PROPERTY
@@ -743,7 +746,7 @@ CLASS SqlConnection
 		END GET
 		SET 
 			IF  !SELF:Connected
-				SELF:cAuthString := VALUE
+				SELF:cAuthString := value
 			ELSE
 				SELF:__GenerateSqlError( __CavoStr( __CAVOSTR_SQLCLASS__CONNECTED ), #Password )
 				oErrInfo:Throw()
@@ -751,7 +754,7 @@ CLASS SqlConnection
 		END SET
 	END PROPERTY
 	
-	PROPERTY Factory    AS ISqlFactory 
+	PROPERTY Factory    AS XSharp.Data.ISqlFactory 
 		GET
 			RETURN oFactory
 		END GET

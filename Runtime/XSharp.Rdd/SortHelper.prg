@@ -8,12 +8,12 @@ USING System
 USING System.Collections
 USING System.Collections.Generic
 USING System.Text
-USING XSharp.Rdd.Support
+USING XSharp.RDD.Support
 
 BEGIN NAMESPACE XSharp.RDD
 
     INTERNAL INTERFACE IRddSortWriter
-        METHOD WriteSorted( sortInfo AS DBSORTINFO , obj AS SortRecord ) AS LOGIC
+        METHOD WriteSorted( sortInfo AS DbSortInfo , obj AS SortRecord ) AS LOGIC
     
 	END INTERFACE
             
@@ -26,7 +26,7 @@ BEGIN NAMESPACE XSharp.RDD
         INTERNAL PROPERTY SortInfo AS DbSortInfo GET _sortInfo
         
         INTERNAL CONSTRUCTOR( rdd AS DBF, sortInfo AS DbSortInfo , len AS LONG )
-            SELF:_oRDD      := rdd
+            SELF:_oRdd      := rdd
             SELF:_sortInfo := sortInfo
             SELF:_dataBuffer := List<SortRecord>{len}
             
@@ -42,7 +42,7 @@ BEGIN NAMESPACE XSharp.RDD
                 RETURN TRUE
                 
             CATCH ex AS Exception
-                SELF:_oRdd:_dbfError(ex, SubCodes.ERDD_SORT_SORT,GenCode.EG_CORRUPTION,  "RddSortHelper.Sort") 
+                SELF:_oRdd:_dbfError(ex, Subcodes.ERDD_SORT_SORT,Gencode.EG_CORRUPTION,  "RddSortHelper.Sort") 
                 
                 RETURN FALSE
             END TRY
@@ -56,7 +56,7 @@ BEGIN NAMESPACE XSharp.RDD
                 RETURN TRUE
                 
             CATCH ex AS Exception
-                SELF:_oRdd:_dbfError(ex, SubCodes.ERDD_SORT_END,GenCode.EG_WRITE,  "RddSortHelper.Write") 
+                SELF:_oRdd:_dbfError(ex, Subcodes.ERDD_SORT_END,Gencode.EG_WRITE,  "RddSortHelper.Write") 
                 RETURN FALSE
             END TRY
             

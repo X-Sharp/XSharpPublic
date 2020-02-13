@@ -221,122 +221,122 @@ END NAMESPACE
 #region Gencode Defines
 /// <exclude />
 
-DEFINE EG_UNKNOWN        := GenCode.EG_UNKNOWN
+DEFINE EG_UNKNOWN        := Gencode.EG_UNKNOWN
 /// <exclude />
-DEFINE EG_ARG            := GenCode.EG_ARG
+DEFINE EG_ARG            := Gencode.EG_ARG
 /// <exclude />
-DEFINE EG_BOUND          := GenCode.EG_BOUND
+DEFINE EG_BOUND          := Gencode.EG_BOUND
 /// <exclude />
-DEFINE EG_STROVERFLOW    := GenCode.EG_STROVERFLOW
+DEFINE EG_STROVERFLOW    := Gencode.EG_STROVERFLOW
 /// <exclude />
-DEFINE EG_NUMOVERFLOW    := GenCode.EG_NUMOVERFLOW
+DEFINE EG_NUMOVERFLOW    := Gencode.EG_NUMOVERFLOW
 /// <exclude />
-DEFINE EG_ZERODIV        := GenCode.EG_ZERODIV
+DEFINE EG_ZERODIV        := Gencode.EG_ZERODIV
 /// <exclude />
-DEFINE EG_NUMERR         := GenCode.EG_NUMERR
+DEFINE EG_NUMERR         := Gencode.EG_NUMERR
 /// <exclude />
-DEFINE EG_SYNTAX         := GenCode.EG_SYNTAX
+DEFINE EG_SYNTAX         := Gencode.EG_SYNTAX
 /// <exclude />
-DEFINE EG_COMPLEXITY     := GenCode.EG_COMPLEXITY
+DEFINE EG_COMPLEXITY     := Gencode.EG_COMPLEXITY
 /// <exclude />
-DEFINE EG_MEMOVERFLOW    := GenCode.EG_MEMOVERFLOW
+DEFINE EG_MEMOVERFLOW    := Gencode.EG_MEMOVERFLOW
 /// <exclude />
-DEFINE EG_SEQUENCE       := GenCode.EG_SEQUENCE
+DEFINE EG_SEQUENCE       := Gencode.EG_SEQUENCE
 /// <exclude />
-DEFINE EG_MEM            := GenCode.EG_MEM
+DEFINE EG_MEM            := Gencode.EG_MEM
 /// <exclude />
-DEFINE EG_NOFUNC         := GenCode.EG_NOFUNC
+DEFINE EG_NOFUNC         := Gencode.EG_NOFUNC
 /// <exclude />
-DEFINE EG_NOMETHOD       := GenCode.EG_NOMETHOD
+DEFINE EG_NOMETHOD       := Gencode.EG_NOMETHOD
 /// <exclude />
-DEFINE EG_NOVAR          := GenCode.EG_NOVAR
+DEFINE EG_NOVAR          := Gencode.EG_NOVAR
 /// <exclude />
-DEFINE EG_NOALIAS        := GenCode.EG_NOALIAS
+DEFINE EG_NOALIAS        := Gencode.EG_NOALIAS
 /// <exclude />
-DEFINE EG_NOVARMETHOD    := GenCode.EG_NOVARMETHOD
+DEFINE EG_NOVARMETHOD    := Gencode.EG_NOVARMETHOD
 /// <exclude />
-DEFINE EG_BADALIAS       := GenCode.EG_BADALIAS
+DEFINE EG_BADALIAS       := Gencode.EG_BADALIAS
 /// <exclude />
-DEFINE EG_DUPALIAS       := GenCode.EG_DUPALIAS
+DEFINE EG_DUPALIAS       := Gencode.EG_DUPALIAS
 /// <exclude />
-DEFINE EG_NULLVAR        := GenCode.EG_NULLVAR
+DEFINE EG_NULLVAR        := Gencode.EG_NULLVAR
 /// <exclude />
-DEFINE EG_CREATE         := GenCode.EG_CREATE
+DEFINE EG_CREATE         := Gencode.EG_CREATE
 /// <exclude />
-DEFINE EG_OPEN           := GenCode.EG_OPEN
+DEFINE EG_OPEN           := Gencode.EG_OPEN
 /// <exclude />
-DEFINE EG_CLOSE          := GenCode.EG_CLOSE
+DEFINE EG_CLOSE          := Gencode.EG_CLOSE
 /// <exclude />
-DEFINE EG_READ           := GenCode.EG_READ
+DEFINE EG_READ           := Gencode.EG_READ
 /// <exclude />
-DEFINE EG_WRITE          := GenCode.EG_WRITE
+DEFINE EG_WRITE          := Gencode.EG_WRITE
 /// <exclude />
-DEFINE EG_PRINT          := GenCode.EG_PRINT
+DEFINE EG_PRINT          := Gencode.EG_PRINT
 /// <exclude />
-DEFINE EG_NOATOM         := GenCode.EG_NOATOM
+DEFINE EG_NOATOM         := Gencode.EG_NOATOM
 /// <exclude />
-DEFINE EG_NOCLASS        := GenCode.EG_NOCLASS
+DEFINE EG_NOCLASS        := Gencode.EG_NOCLASS
 /// <exclude />
-DEFINE EG_WRONGCLASS     := GenCode.EG_WRONGCLASS
+DEFINE EG_WRONGCLASS     := Gencode.EG_WRONGCLASS
 /// <exclude />
-DEFINE EG_REFERENCE      := GenCode.EG_REFERENCE
+DEFINE EG_REFERENCE      := Gencode.EG_REFERENCE
 /// <exclude />
-DEFINE EG_UNSUPPORTED    := GenCode.EG_UNSUPPORTED
+DEFINE EG_UNSUPPORTED    := Gencode.EG_UNSUPPORTED
 /// <exclude />
-DEFINE EG_LIMIT          := GenCode.EG_LIMIT
+DEFINE EG_LIMIT          := Gencode.EG_LIMIT
 /// <exclude />
-DEFINE EG_CORRUPTION     := GenCode.EG_CORRUPTION
+DEFINE EG_CORRUPTION     := Gencode.EG_CORRUPTION
 /// <exclude />
-DEFINE EG_DATATYPE       := GenCode.EG_DATATYPE
+DEFINE EG_DATATYPE       := Gencode.EG_DATATYPE
 /// <exclude />
-DEFINE EG_DATAWIDTH      := GenCode.EG_DATAWIDTH
+DEFINE EG_DATAWIDTH      := Gencode.EG_DATAWIDTH
 /// <exclude />
-DEFINE EG_NOTABLE        := GenCode.EG_NOTABLE
+DEFINE EG_NOTABLE        := Gencode.EG_NOTABLE
 /// <exclude />
-DEFINE EG_NOORDER        := GenCode.EG_NOORDER
+DEFINE EG_NOORDER        := Gencode.EG_NOORDER
 /// <exclude />
-DEFINE EG_SHARED         := GenCode.EG_SHARED
+DEFINE EG_SHARED         := Gencode.EG_SHARED
 /// <exclude />
-DEFINE EG_UNLOCKED       := GenCode.EG_UNLOCKED
+DEFINE EG_UNLOCKED       := Gencode.EG_UNLOCKED
 /// <exclude />
-DEFINE EG_READONLY       := GenCode.EG_READONLY
+DEFINE EG_READONLY       := Gencode.EG_READONLY
 /// <exclude />
-DEFINE EG_APPENDLOCK     := GenCode.EG_APPENDLOCK
+DEFINE EG_APPENDLOCK     := Gencode.EG_APPENDLOCK
 /// <exclude />
-DEFINE EG_LOCK           := GenCode.EG_LOCK
+DEFINE EG_LOCK           := Gencode.EG_LOCK
 /// <exclude />
-DEFINE EG_LOCK_ERROR     := GenCode.EG_LOCK_ERROR
+DEFINE EG_LOCK_ERROR     := Gencode.EG_LOCK_ERROR
 /// <exclude />
-DEFINE EG_LOCK_TIMEOUT   := GenCode.EG_LOCK_TIMEOUT
+DEFINE EG_LOCK_TIMEOUT   := Gencode.EG_LOCK_TIMEOUT
 /// <exclude />
-DEFINE EG_STACK          := GenCode.EG_STACK
+DEFINE EG_STACK          := Gencode.EG_STACK
 /// <exclude />
-DEFINE EG_EVALSTACK      := GenCode.EG_EVALSTACK
+DEFINE EG_EVALSTACK      := Gencode.EG_EVALSTACK
 /// <exclude />
-DEFINE EG_ERRORBLOCK     := GenCode.EG_ERRORBLOCK
+DEFINE EG_ERRORBLOCK     := Gencode.EG_ERRORBLOCK
 /// <exclude />
-DEFINE EG_PROTECTION     := GenCode.EG_PROTECTION
+DEFINE EG_PROTECTION     := Gencode.EG_PROTECTION
 /// <exclude />
-DEFINE EG_BADPTR         := GenCode.EG_BADPTR
+DEFINE EG_BADPTR         := Gencode.EG_BADPTR
 /// <exclude />
-DEFINE EG_BADPAGEFAULT   := GenCode.EG_BADPAGEFAULT
+DEFINE EG_BADPAGEFAULT   := Gencode.EG_BADPAGEFAULT
 /// <exclude />
-DEFINE EG_ERRORBUILD     := GenCode.EG_ERRORBUILD
+DEFINE EG_ERRORBUILD     := Gencode.EG_ERRORBUILD
 /// <exclude />
-DEFINE EG_DYNPTR         := GenCode.EG_DYNPTR
+DEFINE EG_DYNPTR         := Gencode.EG_DYNPTR
 /// <exclude />
-DEFINE EG_INACCESSIBLETYPE	:= GenCode.EG_INACCESSIBLETYPE
+DEFINE EG_INACCESSIBLETYPE	:= Gencode.EG_INACCESSIBLETYPE
 /// <exclude />
-DEFINE EG_AMBIGUOUSMETHOD	:= GenCode.EG_AMBIGUOUSMETHOD
+DEFINE EG_AMBIGUOUSMETHOD	:= Gencode.EG_AMBIGUOUSMETHOD
 /// <exclude />
-DEFINE EG_SEND_MISSINGARG	:= GenCode.EG_SEND_MISSINGARG
+DEFINE EG_SEND_MISSINGARG	:= Gencode.EG_SEND_MISSINGARG
 /// <exclude />
-DEFINE EG_SEND_TOOMANYARGS	:= GenCode.EG_SEND_TOOMANYARGS
+DEFINE EG_SEND_TOOMANYARGS	:= Gencode.EG_SEND_TOOMANYARGS
 /// <exclude />
-DEFINE EG_EXCEPTION			:= GenCode.EG_EXCEPTION
+DEFINE EG_EXCEPTION			:= Gencode.EG_EXCEPTION
 /// <exclude />
 
-DEFINE EG_MAX            := GenCode.EG_MAX
+DEFINE EG_MAX            := Gencode.EG_MAX
 
 
 #endregion

@@ -9,7 +9,7 @@ USING System.Collections.Generic
 USING System.Text
 
 BEGIN NAMESPACE XSharp.RDD
-
+    /// <summary>Error subclass used by the RDD system.</summary>
     CLASS RddError INHERIT Error
         CONSTRUCTOR()
             RETURN
@@ -18,7 +18,7 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN
         CONSTRUCTOR(ex AS Exception, dwGencode AS DWORD, dwSubCode AS DWORD)
             SUPER(ex)
-            SELF:GenCode := dwGenCode
+            SELF:Gencode := dwGencode
             SELF:SubCode := dwSubCode
             RETURN
         CONSTRUCTOR(dwGencode AS DWORD, dwSubCode AS DWORD)
@@ -26,17 +26,17 @@ BEGIN NAMESPACE XSharp.RDD
             
         STATIC METHOD PostArgumentError( funcName AS STRING, subcode AS DWORD, argName AS STRING, argNum AS DWORD, args AS OBJECT[] ) AS VOID
             LOCAL e AS Error
-            e := Error.ArgumentError(funcName, argname,argNum, args)
+            e := Error.ArgumentError(funcName, argName,argNum, args)
             e:SubSystem := "DBCMD"
             e:Severity := ES_ERROR
-            e:GenCode := EG_ARG
+            e:Gencode := EG_ARG
             e:SubCode := subcode
             THROW e
         STATIC METHOD PostNoTableError( funcName AS STRING ) AS RddError
             LOCAL e := RddError{} AS RddError
             e:SubSystem := "DBCMD"
             e:Severity := 2
-            e:GenCode := EG_NOTABLE
+            e:Gencode := EG_NOTABLE
             e:SubCode := EDB_NOTABLE
             e:FuncSym := funcName
             THROW e
@@ -45,7 +45,7 @@ BEGIN NAMESPACE XSharp.RDD
             e := RddError{}
             e:SubSystem := "DBCMD"
             e:Severity := ES_ERROR
-            e:GenCode := gencode
+            e:Gencode := gencode
             e:SubCode := subcode
             e:FuncSym := funcName
             THROW e

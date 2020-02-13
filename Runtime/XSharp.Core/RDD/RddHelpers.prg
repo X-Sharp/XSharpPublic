@@ -8,14 +8,19 @@ USING System.Collections.Generic
 USING System.Reflection
 #define XSHARPRDD "XSharp.Rdd"  // Make sure this is the same as the file name for XSharp.Rdd (includin the case)
 BEGIN NAMESPACE XSharp.RDD
-            
+    /// <summary>This class is used to register RDD names with the matching System.Types</summary>
     CLASS RegisteredRDD
-        PROPERTY AssemblyName   AS STRING AUTO 
-        PROPERTY Assembly       AS Assembly AUTO 
+        /// <summary>Name of the assembly where the RDD is defined.</summary>
+        PROPERTY AssemblyName   AS STRING AUTO
+        /// <summary>Assembly object where the RDD is defined</summary>
+        PROPERTY Assembly       AS Assembly AUTO
+        /// <summary>'Common' name of the RDD</summary>
         PROPERTY RddName        AS STRING AUTO
+        /// <summary>Type of the RDD</summary>
         PROPERTY RddType        AS System.Type AUTO
+        /// <summary>Fully qualified type name of the RDD</summary>
         PROPERTY TypeName       AS STRING AUTO
-        STATIC PRIVATE rDDs     AS Dictionary<STRING, RegisteredRDD>
+        STATIC PRIVATE RDDs     AS Dictionary<STRING, RegisteredRDD>
         
         CONSTRUCTOR(cRDDName AS STRING, oType AS System.Type)
             SELF:RddName        := cRDDName
@@ -31,7 +36,7 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN    
             
         STATIC CONSTRUCTOR()
-            rDDs    := Dictionary<STRING, RegisteredRDD>{StringComparer.OrdinalIgnoreCase}
+            RDDs    := Dictionary<STRING, RegisteredRDD>{StringComparer.OrdinalIgnoreCase}
             RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "CAVODBF", "XSharp.RDD.DBF"})          // Just DBF
             RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "DBF",     "XSharp.RDD.DBF"})          // Just DBF
             RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "DBFDBT",  "XSharp.RDD.DBFDBT"})       // DBF + DBT
@@ -44,37 +49,41 @@ BEGIN NAMESPACE XSharp.RDD
             //RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "DBFSMT",  "XSharp.RDD.DBFSMT"})       // DBF + SMT
             //RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "DBFNSX",  "XSharp.RDD.DBFNSX"})       // DBF + SMT + NSX
             
-            RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "ADSADT",    "XSharp.ADS.ADSADT"})       // ADSADT
-            RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "AXDBFCDX",  "XSharp.ADS.AXDBFCDX"})       // ADS DBFCDX
-            RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "AXDBFNTX",  "XSharp.ADS.AXDBFNTX"})       // ADS DBFNTX
-            RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "AXDBFVFP",  "XSharp.ADS.AXDBFVFP"})       // ADS AXDBFVFP
+            RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "ADSADT",    "Advantage.ADSADT"})       // ADSADT
+            RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "AXDBFCDX",  "Advantage.AXDBFCDX"})       // ADS DBFCDX
+            RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "AXDBFNTX",  "Advantage.AXDBFNTX"})       // ADS DBFNTX
+            RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "AXDBFVFP",  "Advantage.AXDBFVFP"})       // ADS AXDBFVFP
             
-            RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "AXSQLCDX",  "XSharp.ADS.AXSQLCDX"})       // SQL CDX
-            RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "AXSQLNTX",  "XSharp.ADS.AXSQLNTX"})       // SQL NTX
-            RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "AXSQLVFP",  "XSharp.ADS.AXSQLVFP"})       // SQL VFP
-            RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "AXSQLADT",  "XSharp.ADS.AXSQLADT"})       // SQL ADT
+            RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "AXSQLCDX",  "Advantage.AXSQLCDX"})       // SQL CDX
+            RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "AXSQLNTX",  "Advantage.AXSQLNTX"})       // SQL NTX
+            RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "AXSQLVFP",  "Advantage.AXSQLVFP"})       // SQL VFP
+            RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "AXSQLADT",  "Advantage.AXSQLADT"})       // SQL ADT
 
-            RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "Advantage.ADSADT",    "XSharp.ADS.ADSADT"})         // ADSADT
-            RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "Advantage.AXDBFCDX",  "XSharp.ADS.AXDBFCDX"})       // ADS DBFCDX
-            RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "Advantage.AXDBFNTX",  "XSharp.ADS.AXDBFNTX"})       // ADS DBFNTX
-            RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "Advantage.AXDBFVFP",  "XSharp.ADS.AXDBFVFP"})       // ADS AXDBFVFP
+            RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "Advantage.ADSADT",    "Advantage.ADSADT"})         // ADSADT
+            RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "Advantage.AXDBFCDX",  "Advantage.AXDBFCDX"})       // ADS DBFCDX
+            RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "Advantage.AXDBFNTX",  "Advantage.AXDBFNTX"})       // ADS DBFNTX
+            RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "Advantage.AXDBFVFP",  "Advantage.AXDBFVFP"})       // ADS AXDBFVFP
 
-            RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "Advantage.AXSQLCDX",  "XSharp.ADS.AXSQLCDX"})       // ADS DBFCDX
-            RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "Advantage.AXSQLNTX",  "XSharp.ADS.AXSQLNTX"})       // ADS DBFNTX
-            RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "Advantage.AXSQLVFP",  "XSharp.ADS.AXSQLVFP"})       // ADS AXDBFVFP
-            RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "Advantage.AXSQLADT",  "XSharp.ADS.AXSQLADT"})       // ADS AXDBFVFP
+            RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "Advantage.AXSQLCDX",  "Advantage.AXSQLCDX"})       // ADS DBFCDX
+            RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "Advantage.AXSQLNTX",  "Advantage.AXSQLNTX"})       // ADS DBFNTX
+            RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "Advantage.AXSQLVFP",  "Advantage.AXSQLVFP"})       // ADS AXDBFVFP
+            RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "Advantage.AXSQLADT",  "Advantage.AXSQLADT"})       // ADS AXDBFVFP
             
             
             RETURN
-            
+
+        /// <summary>Locate an entry for a particular RDD name</summary>
+        /// <returns>NULL when no RDD registration found.</returns>
         STATIC METHOD Find(cRddName AS STRING) AS RegisteredRDD
             IF RDDs:ContainsKey(cRddName)
                 RETURN (RegisteredRDD) RDDs:Item[cRddName]
             ENDIF
             RETURN NULL
             
+        /// <summary>Add a registration for a new RDD.</summary>
+        /// <returns>FALSE when the RDD name is already registered, TRUE when the registration succeeded.</returns>
         STATIC METHOD Add(oRDD AS RegisteredRDD) AS LOGIC
-            LOCAL cRddname AS STRING
+            LOCAL cRddName AS STRING
             cRddName := oRDD:RddName
             IF RDDs:ContainsKey(cRddName)
                 RETURN FALSE
@@ -82,17 +91,18 @@ BEGIN NAMESPACE XSharp.RDD
             RDDs:Add(cRddName, oRDD)
             RETURN TRUE
             
+        /// <summary> try to resolve the RDD </summary>
         METHOD Load() AS VOID
             IF SELF:RddType == NULL 
                 IF SELF:Assembly == NULL
                     SELF:Assembly := AssemblyHelper.Load(SELF:AssemblyName)
                 ENDIF
-                IF (SELF:Assembly != NULL)
+                IF SELF:Assembly != NULL
                     SELF:RddType := SELF:Assembly:GetType(SELF:TypeName)
                 ENDIF
             ENDIF
             
-            END CLASS
+    END CLASS
             
 END NAMESPACE
 

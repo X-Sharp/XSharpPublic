@@ -24,7 +24,7 @@ INTERNAL STATIC METHOD IsNested(cTemp AS STRING) AS LOGIC
             CASE '\t'
                 LOOP
             CASE '|' 
-                IF ! InString
+                IF ! inString
                     nCount++
                     IF nCount > 2
                         RETURN TRUE
@@ -43,7 +43,7 @@ INTERNAL STATIC METHOD IsNested(cTemp AS STRING) AS LOGIC
                 ENDIF
             CASE '['
                 IF ! inString
-                    IF IsBlockedString(lastchar)
+                    IF IsBlockedString(lastChar)
                         inString := TRUE
                         endChar := ']'
                     ENDIF
@@ -103,7 +103,7 @@ INTERNAL STATIC METHOD Expand(cMacro AS STRING) AS STRING
                 ENDIF                
             CASE '['
                 IF ! inString 
-                    IF IsBlockedString(lastchar)
+                    IF IsBlockedString(lastChar)
                         inString := TRUE
                         endChar := ']'
                     ENDIF
@@ -164,7 +164,7 @@ INTERNAL STATIC METHOD Expand(cMacro AS STRING) AS STRING
     RETURN sb:ToString()
 
 INTERNAL STATIC METHOD ConvertToExtended(cMacro AS STRING) AS STRING
-    LOCAL sb AS stringbuilder
+    LOCAL sb AS StringBuilder
     LOCAL hasSpecial := FALSE AS LOGIC
     sb := StringBuilder{cMacro:Length*2}
     FOREACH VAR c IN cMacro

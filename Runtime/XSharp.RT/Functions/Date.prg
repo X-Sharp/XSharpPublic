@@ -56,7 +56,7 @@ FUNCTION Day(dDate AS DATE) AS DWORD
 FUNCTION DoW(dDate AS DATE) AS DWORD
 	LOCAL day := 0  AS DWORD
 	IF ! dDate:IsEmpty
-		LOCAL dt := dDate AS Datetime
+		LOCAL dt := dDate AS DateTime
 		day := (DWORD) (dt:DayOfWeek	+1  )
 	ENDIF
 	RETURN day
@@ -114,6 +114,9 @@ FUNCTION Month(dDate AS DATE) AS DWORD
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/stod/*" />
 FUNCTION SToD(cDate AS STRING) AS DATE
+	IF cDate != NULL .and. cDate:Length > 8
+		cDate := cDate:Substring(0, 8)
+	END IF
 	RETURN SToDt(cDate)
 
 
@@ -134,8 +137,8 @@ FUNCTION @@Date(dwYear AS DWORD,dwMonth AS DWORD,dwDay AS DWORD) AS DATE
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/tstring/*" />     
 FUNCTION TString(nSeconds AS USUAL) AS STRING
 	IF nSeconds:IsNil
-		RETURN XSharp.Core.Functions.Tstring( (DWORD) 0 )
-	ELSEIF nSeconds:IsFLoat
+		RETURN XSharp.Core.Functions.TString( (DWORD) 0 )
+	ELSEIF nSeconds:IsFractional
 		RETURN XSharp.Core.Functions.TString ( (FLOAT) nSeconds)
 	ELSEIF nSeconds:IsInteger
 		RETURN XSharp.Core.Functions.TString ( (DWORD) nSeconds)

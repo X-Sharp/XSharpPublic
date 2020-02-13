@@ -92,10 +92,13 @@ ACCESS ThumbPosition
    RETURN SendMessage(SELF:Handle(), UDM_GETPOS32, 0, 0)
 
 ASSIGN ThumbPosition(nThumbPosition) 
+   	LOCAL liThumbPos AS LONG	
 	IF !IsLong(nThumbPosition)
 		WCError{#ThumbPosition, #Spinner, __WCSTypeError, nThumbPosition, 1}:Throw()
 	ENDIF
-	SendMessage(SELF:Handle(), UDM_SETPOS32, 0, nThumbPosition)
+	liThumbPos := nThumbPosition
+	 
+	SendMessage(SELF:Handle(), UDM_SETPOS32, 0, liThumbPos)
 
 	RETURN 
 

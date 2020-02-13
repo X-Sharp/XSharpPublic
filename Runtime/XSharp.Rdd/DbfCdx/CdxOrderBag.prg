@@ -31,7 +31,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL _PageList  AS CdxPageList
         INTERNAL PROPERTY Shared    AS LOGIC GET _OpenInfo:Shared
         INTERNAL PROPERTY ReadOnly  AS LOGIC GET _OpenInfo:ReadOnly
-        INTERNAL _oRDD              AS DBFCDX
+        INTERNAL _oRdd              AS DBFCDX
         INTERNAL _root              AS CdxFileHeader
         INTERNAL _tagList           AS CdxTagList
         INTERNAL CONST CDXPAGE_SIZE := 512 AS WORD
@@ -46,9 +46,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL PROPERTY Tags AS IList<CdxTag> GET IIF(_tagList == NULL, NULL, _tagList:Tags)
         INTERNAL PROPERTY Structural AS LOGIC AUTO
         INTERNAL PROPERTY Root      AS CdxFileHeader GET _root
-        INTERNAL PROPERTY Encoding AS System.Text.Encoding GET _oRDD:_Encoding
+        INTERNAL PROPERTY Encoding AS System.Text.Encoding GET _oRdd:_Encoding
         INTERNAL CONSTRUCTOR(oRDD AS DBFCDX )
-            SUPER( oRdd )
+            SUPER( oRDD )
             SELF:_oRdd     := oRDD
             SELF:_PageList := CdxPageList{SELF}
             SELF:_OpenInfo := oRDD:_OpenInfo
@@ -185,14 +185,14 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL cFullName AS STRING
             LOCAL cDbf      AS STRING
             cFullName := cBagName
-            cDbf      := SELF:_oRDD:_FileName
-            VAR cExt  := GetIndexExtFromDbfExt(cDBF)
+            cDbf      := SELF:_oRdd:_FileName
+            VAR cExt  := GetIndexExtFromDbfExt(cDbf)
             IF String.IsNullOrEmpty(cFullName)
-                cFullName := Path.ChangeExtension(cDBF, cExt)
+                cFullName := Path.ChangeExtension(cDbf, cExt)
             ELSEIF String.IsNullOrEmpty(Path.GetExtension(cFullName))
-                cFullName := Path.ChangeExtension(cFullname, cExt)
+                cFullName := Path.ChangeExtension(cFullName, cExt)
             ELSEIF String.Compare(cDbf, cFullName, StringComparison.OrdinalIgnoreCase) == 0
-                 cFullName := Path.ChangeExtension(cFullname, cExt)
+                 cFullName := Path.ChangeExtension(cFullName, cExt)
             ENDIF
             cPath := Path.GetDirectoryName(cFullName)
             IF String.IsNullOrEmpty(cPath)
@@ -208,6 +208,10 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
             SELF:FullPath := cFullName
             SELF:_hFile    := FCreate(cFullName)
+//            IF !SELF:_OpenInfo:Shared
+//                FConvertToMemoryStream(SELF:_hFile)
+//            ENDIF
+
             #ifdef USE_STREAM
             SELF:_stream    := FGetStream(SELF:_hFile)
             #endif
@@ -215,12 +219,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             // Allocate Root Page
             _root   := CdxFileHeader{SELF}
             _root:Initialize()
-            _pageList:Add(_root)
+            _PageList:Add(_root)
             SELF:Write(_root)
             // taglist page
             VAR buffer := SELF:AllocBuffer()
             _tagList := CdxTagList{SELF,  _root:RootPage, buffer, _root:KeySize}
-            _taglist:InitBlank(NULL)
+            _tagList:InitBlank(NULL)
             SELF:Write(_tagList)
             // we now have a 
             RETURN TRUE
@@ -270,11 +274,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             cFullName := cFileName := info:BagName
             IF String.IsNullOrEmpty(Path.GetExtension(cFullName))
                 VAR cExt  := GetIndexExtFromDbfExt(cFullName)
-                cFullName := Path.ChangeExtension(cFullname, cExt)
+                cFullName := Path.ChangeExtension(cFullName, cExt)
             ENDIF
             cPath := Path.GetDirectoryName(cFullName)
             IF String.IsNullOrEmpty(cPath)
-                cPath := SELF:_oRDD:_FileName
+                cPath := SELF:_oRdd:_FileName
                 cPath := Path.GetDirectoryName(cPath)
                 cFullName := Path.Combine(cPath, cFileName)
             ENDIF
@@ -282,12 +286,15 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 RETURN FALSE
             ENDIF
             SELF:FullPath := cFullName
-            SELF:_openInfo := _oRdd:_OpenInfo
-            SELF:_hFile    := FOpen(cFullName, _openInfo:FileMode)
+            SELF:_OpenInfo := _oRdd:_OpenInfo
+            SELF:_hFile    := FOpen(cFullName, _OpenInfo:FileMode)
             SELF:_Encoding := _oRdd:_Encoding
             IF SELF:_hFile == F_ERROR
                 RETURN FALSE
             ENDIF
+//            IF !SELF:_OpenInfo:Shared
+//                FConvertToMemoryStream(SELF:_hFile)
+//            ENDIF
             #ifdef USE_STREAM
             SELF:_stream   := FGetStream(SELF:_hFile)
             #endif
@@ -312,11 +319,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF String.IsNullOrEmpty(cExt)
                 cFileName := Path.ChangeExtension(cFileName, CDX_EXTENSION)
             ENDIF
-            IF string.Compare(SELF:FullPath, cFileName, StringComparison.OrdinalIgnoreCase) == 0
+            IF String.Compare(SELF:FullPath, cFileName, StringComparison.OrdinalIgnoreCase) == 0
                 RETURN TRUE
             ENDIF
             VAR cPath := Path.GetDirectoryName(cFileName)
-            IF string.IsNullOrEmpty(cPath)
+            IF String.IsNullOrEmpty(cPath)
                 IF String.Compare(Path.GetFileName(FullPath), cFileName, StringComparison.OrdinalIgnoreCase) == 0
                     RETURN TRUE
                 ENDIF
@@ -368,7 +375,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 nPage := SELF:_root:FreeList
                 VAR oPage := SELF:_PageList:GetPage(nPage, 0, NULL)
                 IF oPage IS CdxTreePage VAR tPage
-                    nNext := tpage:NextFree
+                    nNext := tPage:NextFree
                     IF nNext == -1
                         nNext := 0
                     ENDIF
@@ -405,9 +412,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 isOk := SELF:_stream:Read(buffer, 0, Buffer:Length) == Buffer:Length
             #else
     			FSeek3( SELF:_hFile, nPage, SeekOrigin.Begin )
-	    		isOk :=  FRead3(SELF:_hFile, buffer, (DWORD) Buffer:Length) == (DWORD) Buffer:Length
+	    		isOk :=  FRead3(SELF:_hFile, buffer, (DWORD) buffer:Length) == (DWORD) buffer:Length
             #endif
-            RETURN IsOk
+            RETURN isOk
  
         METHOD Read(oPage AS CdxPage) AS LOGIC
             LOCAL isOk AS LOGIC
@@ -418,7 +425,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 			    FSeek3( SELF:_hFile, oPage:PageNo, SeekOrigin.Begin )
 			    isOk :=  FRead3(SELF:_hFile, oPage:Buffer, (DWORD) oPage:Buffer:Length) == (DWORD) oPage:Buffer:Length 
             #endif
-            RETURN IsOk
+            RETURN isOk
 
         METHOD Write(oPage AS CdxPage) AS LOGIC
             LOCAL isOk AS LOGIC
@@ -442,7 +449,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ELSE
                 isOk := TRUE
             ENDIF
-            RETURN IsOk
+            RETURN isOk
 
 
 
@@ -457,7 +464,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
            RETURN page
   
          METHOD SetPage(page AS CdxPage) AS VOID
-            SELF:_PageList:SetPage(Page:PageNo, page)
+            SELF:_PageList:SetPage(page:PageNo, page)
 
         #region properties
 
@@ -514,7 +521,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             UNTIL result
             //Debout32( "Locked " +nOffSet:ToString()+" "+nLen:ToString())
 
-        PRIVATE METHOD _UnLock(nOffSet AS INT64, nLen AS INT64) AS LOGIC
+        PRIVATE METHOD _Unlock(nOffSet AS INT64, nLen AS INT64) AS LOGIC
             VAR res := FFUnLock64(SELF:_hFile, nOffSet, nLen)
             //IF ! res
             //    ? "Unlock failed",nOffset:ToString("X"), nLen:ToString("X"),ProcName(1)
@@ -587,7 +594,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PRIVATE CONST FoxSLockOfs		:= 0x7ffffffe AS INT64
         PRIVATE CONST FoxSLockLen		:= 1 AS DWORD
 
-        PRIVATE METHOD _SlockFox() AS VOID
+        PRIVATE METHOD _SLockFox() AS VOID
             SELF:_LockRetry(FoxSLockOfs, FoxSLockLen,"S")
             RETURN 
 
@@ -636,14 +643,14 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN randVal
 
 
-        PRIVATE METHOD _SlockComix() AS VOID
+        PRIVATE METHOD _SLockComix() AS VOID
             //Debout32("_SlockComix() ")
             IF ++_sLockGate >= SLockGateCount
                 _sLockGate := 0
                 SELF:_LockRetry(ComixXLockOfs, 1,"S")
-                SELF:_UnLock(ComixXLockOfs, 1)
+                SELF:_Unlock(ComixXLockOfs, 1)
             ENDIF
-            SELF:_sLockOffSet := RandNum()
+            SELF:_sLockOffSet := randNum()
             SELF:_LockRetry( _OR(ComixSLockOfs, _sLockOffSet),1,"S")
  
         PRIVATE METHOD _xLockComix() AS VOID

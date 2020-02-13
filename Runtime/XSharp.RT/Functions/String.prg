@@ -10,7 +10,7 @@ FUNCTION SEval(cString ,cbBlock ,nStart ,nCount ) AS STRING CLIPPER
 	IF ! cString:IsString
 		THROW Error.ArgumentError( __FUNCTION__, NAMEOF(cString), 1, <OBJECT>{ cString} )
 	ENDIF
-	IF ! cbBlock:IsCodeBlock .OR. cbBlock == NULL_CODEBLOCK
+	IF ! cbBlock:IsCodeblock .OR. cbBlock == NULL_CODEBLOCK
 		THROW Error.ArgumentError( __FUNCTION__, NAMEOF(cbBlock), 2, <OBJECT>{ cbBlock} )
 	ENDIF
 	IF nStart == NIL
@@ -290,7 +290,7 @@ FUNCTION SubStr(cTarget ,nStart ,nCount ) AS STRING CLIPPER
 	ENDIF
 	VAR start := (INT) nStart 
 	VAR strValue := (STRING) cTarget 
-	IF nCount:isNil
+	IF nCount:IsNil
 		LOCAL nLen AS INT
 		nLen := strValue:Length
 		IF start < 0

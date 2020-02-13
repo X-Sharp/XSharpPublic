@@ -35,7 +35,7 @@ CONSTRUCTOR(sName)
 		rsCaption := ResourceString{__WCSLibraryName}
 		rsFormat := ResourceString{__WCSLoadLibraryError}
 		sMessage := VO_Sprintf(rsFormat:value, sName)
-		MessageBox(0, String2Psz(sMessage), String2Psz(rsCaption:VALUE), _OR(MB_TASKMODAL, _OR(MB_ICONHAND,MB_OK)))
+		MessageBox(0, String2Psz(sMessage), String2Psz(rsCaption:Value), _OR(MB_TASKMODAL, _OR(MB_ICONHAND,MB_OK)))
 	ENDIF
 
 	

@@ -21,7 +21,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PROPERTY Encoding as System.Text.Encoding GET _bag:Encoding
 
         INTERNAL CONSTRUCTOR( bag AS CdxOrderBag , nPage AS Int32 , buffer AS BYTE[], nKeyLen AS WORD)
-            SUPER(bag, nPage, buffer, nkeyLen)
+            SUPER(bag, nPage, buffer, nKeyLen)
 
 	    INTERNAL CONSTRUCTOR( bag AS CdxOrderBag , page AS CdxPage, keyLen AS WORD)
             SUPER(bag  , page:PageNo, page:Buffer, keyLen)
@@ -41,7 +41,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             _tags:Sort( { tagX, tagY => tagX:Page - tagY:Page} ) 
             RETURN _tags
 
-        PROPERTY Tags AS IList<cdxTag> GET _tags
+        PROPERTY Tags AS IList<CdxTag> GET _tags
 
         INTERNAL METHOD Initialize(keyLength AS WORD) AS VOID
             SUPER:Initialize(keyLength)
@@ -51,7 +51,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         INTERNAL METHOD Remove(oTag AS CdxTag) AS LOGIC
             LOCAL found := FALSE AS LOGIC
-            IF _Tags:Contains(oTag)
+            IF _tags:Contains(oTag)
                 _tags:Remove(oTag)
                 found := TRUE
             ELSE
@@ -71,7 +71,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PRIVATE METHOD _WriteTags(tags AS List<CdxTag>) AS LOGIC
             VAR aTags := tags:ToArray()
             IF aTags:Length > 1
-                System.Array.Sort(aTags,  { x,y => IIF (x:OrderName < y:Ordername , -1, 1)})
+                System.Array.Sort(aTags,  { x,y => IIF (x:OrderName < y:OrderName , -1, 1)})
             ENDIF
             VAR dbytes := SELF:DataBytes  
             VAR rbits  := SELF:RecordBits 
@@ -82,11 +82,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:RecordBits := rbits  
             SELF:RecnoMask  := mask   
             FOREACH VAR tag IN aTags
-                VAR bytes := BYTE[]{ keyLength}
+                VAR bytes := BYTE[]{ SELF:KeyLength}
                 VAR name := tag:OrderName
             	// Be sure to fill the Buffer with 0
-				MemSet( bytes, 0, keyLength, 0)
-                SELF:Encoding:GetBytes( name, 0, Math.Min(keyLength,name:Length), bytes, 0)
+				MemSet( bytes, 0, KeyLength, 0)
+                SELF:Encoding:GetBytes( name, 0, Math.Min(KeyLength,name:Length), bytes, 0)
 				_hot := TRUE
 
                 LOCAL action := SELF:Add(tag:Header:PageNo, bytes) AS CdxAction
@@ -111,8 +111,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN TRUE
 
         METHOD Add(oTag AS CdxTag) AS LOGIC
-            SELF:_Tags:Add(oTag)
-            SELF:_WriteTags(_Tags)
+            SELF:_tags:Add(oTag)
+            SELF:_WriteTags(_tags)
             RETURN TRUE
     END CLASS
 END NAMESPACE 

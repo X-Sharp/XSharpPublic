@@ -411,7 +411,7 @@ METHOD FieldValidate( uFieldPos, uValue )
 		oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__BADFLD ), #FieldValidate )
 	ELSE
 		oStmt:__ErrInfo:ErrorFlag := FALSE
-        local oDF := aDataFields[nIndex] as DataField
+        	local oDF := aDataFields[nIndex] as DataField
 		lRet := oDF:__FieldSpec:PerformValidations( uValue )
 		IF !lRet
 			IF oDF:__FieldSpec:Status != NULL_OBJECT
@@ -480,6 +480,11 @@ METHOD GetData( iCol )
 		aData := aSQLData
 	ENDIF
 	oData := aData[nIndex]
+	IF SqlIsLongType(nODBCType)    
+		IF !oData:HasValue
+	      		SELF:__GetLongData( nODBCType, nIndex )
+	   	ENDIF         
+	ENDIF
 	IF SELF:lEof .OR. oData:Null
 		#IFDEF __DEBUG__
 			__SQLOutputDebug( "**          :GetData IS NULL" )
@@ -525,7 +530,7 @@ METHOD GetData( iCol )
 		cVal  := Mem2String( pTemp, nLen )
 		xVal  := Val( cVal )
 		IF UsualType( xVal ) = FLOAT
-            LOCAL oDF := SELF:DataField( nIndex ) as DataField
+            		LOCAL oDF := SELF:DataField( nIndex ) as DataField
 			nDec := oDF:__FieldSpec:Decimals
 			xVal := Round( xVal, nDec )
 		ENDIF

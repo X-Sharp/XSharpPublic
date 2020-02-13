@@ -6,7 +6,7 @@
 
 PROCEDURE InitCollation INIT3
     SetCollation(XppCollations.System)
-    SET(Set.CharSet, CHARSET_ANSI)
+    @@Set(Set.CharSet, CHARSET_ANSI)
     RETURN
 
 

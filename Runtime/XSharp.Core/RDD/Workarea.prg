@@ -28,14 +28,14 @@ BEGIN NAMESPACE XSharp.RDD
 		PUBLIC _FileName		AS STRING
 		/// <summary>List of Fields</summary>
 		PUBLIC _Fields		    AS RddFieldInfo[]
-        PRIVATE _fieldNames     AS Dictionary<STRING, INT>
+        PROTECTED _fieldNames   AS Dictionary<STRING, INT>
         PRIVATE _currentField   AS LONG
 		/// <summary>Is at BOF ?</summary>
-		PUBLIC _Bof			    AS LOGIC	
+		PUBLIC _BoF			    AS LOGIC	
 		/// <summary>Is at bottom ?</summary>
 		PUBLIC _Bottom		    AS LOGIC	
 		/// <summary>Is at EOF ?</summary>
-		PUBLIC _Eof			    AS LOGIC	
+		PUBLIC _EoF			    AS LOGIC	
 		/// <summary>Result of last SEEK operation</summary>
 		PUBLIC _Found			AS LOGIC	
 		/// <summary>Is at top?</summary>
@@ -109,7 +109,7 @@ BEGIN NAMESPACE XSharp.RDD
 			SELF:_Alias		 := String.Empty
 			SELF:_RecordBuffer := NULL
 			SELF:_Disposed   := FALSE
-            SELF:_FieldNames := Dictionary<STRING, INT>{Stringcomparer.OrdinalIgnoreCase}
+            SELF:_fieldNames := Dictionary<STRING, INT>{StringComparer.OrdinalIgnoreCase}
 		/// <exclude />	
 		DESTRUCTOR()
 			SELF:Dispose(FALSE)
@@ -155,7 +155,7 @@ BEGIN NAMESPACE XSharp.RDD
                   isOk := SELF:GoTop()
                 ENDIF
             ENDIF
-            DO WHILE isOk .AND. ! SELF:_Eof 
+            DO WHILE isOk .AND. ! SELF:_EoF 
                 IF cbWhile != NULL
                     IF ! (LOGIC) SELF:EvalBlock(cbWhile)
                         EXIT
@@ -167,7 +167,10 @@ BEGIN NAMESPACE XSharp.RDD
                    lRecordOk := TRUE
                 ENDIF
                 IF lRecordOk .AND. cbEval != NULL
-                    isOk := (LOGIC) SELF:EvalBlock(cbEval)
+                    VAR oResult := SELF:EvalBlock(cbEval)
+                    IF oResult IS LOGIC
+                        isOk := (LOGIC) oResult
+                    ENDIF
                 ENDIF
                 IF lLimit
                     nRecno -= 1
@@ -220,14 +223,14 @@ BEGIN NAMESPACE XSharp.RDD
 				IF !SELF:SkipFilter(lToSkip)
 					RETURN FALSE
 				ENDIF              
-				IF SELF:_BOF .OR. SELF:_EOF
+				IF SELF:_BoF .OR. SELF:_EoF
 					EXIT
 				ENDIF
 			ENDDO
 			IF lToSkip < 0
-				SELF:_EOF := FALSE		
+				SELF:_EoF := FALSE		
 			ELSE
-				SELF:_Bof := FALSE
+				SELF:_BoF := FALSE
 			ENDIF
 			RETURN TRUE	
 			
@@ -256,7 +259,7 @@ BEGIN NAMESPACE XSharp.RDD
             recordHidden:= TRUE 
             result      := TRUE 
             
-            DO WHILE !SELF:_Eof .AND. ! SELF:_Bof
+            DO WHILE !SELF:_EoF .AND. ! SELF:_BoF
                 // Check deleted first, that is easier and has less overhead
                 IF fRtDeleted
                     recordHidden := SELF:Deleted
@@ -274,15 +277,15 @@ BEGIN NAMESPACE XSharp.RDD
                 ENDIF
              ENDDO
              IF result
-                IF fromTop .AND. SELF:_Eof
-                    SELF:_BOF := TRUE
-                ELSEIF fromBottom .AND. SELF:_Bof
-                    SELF:_EOF := TRUE
-                ELSEIF SELF:_Bof .AND. nToSkip < 0
+                IF fromTop .AND. SELF:_EoF
+                    SELF:_BoF := TRUE
+                ELSEIF fromBottom .AND. SELF:_BoF
+                    SELF:_EoF := TRUE
+                ELSEIF SELF:_BoF .AND. nToSkip < 0
                     // note that this will recurse!
                     result := SELF:GoTop()
-                    SELF:_Bof := TRUE
-                    SELF:_Eof := FALSE
+                    SELF:_BoF := TRUE
+                    SELF:_EoF := FALSE
                 ENDIF
              ENDIF
             RETURN result
@@ -304,8 +307,8 @@ BEGIN NAMESPACE XSharp.RDD
             cbWhile := _ScopeInfo:WhileBlock
             cbFor   := _ScopeInfo:ForBlock
             IF SELF:_ScopeInfo:RecId != NULL
-                result     := SELF:GotoId(SELF:_ScopeInfo:RecId)
-                lContinue  := ! SELF:_Eof
+                result     := SELF:GoToId(SELF:_ScopeInfo:RecId)
+                lContinue  := ! SELF:_EoF
                 IF lContinue
                     IF cbWhile != NULL
                         lContinue := (LOGIC) SELF:EvalBlock(cbWhile)
@@ -317,7 +320,7 @@ BEGIN NAMESPACE XSharp.RDD
                     ENDIF
                 ENDIF
             ELSEIF nextCnt > 0
-                DO WHILE lContinue .AND. ! SELF:_Eof .AND. nToSkip != 0 .AND. result
+                DO WHILE lContinue .AND. ! SELF:_EoF .AND. nToSkip != 0 .AND. result
                     result := SELF:Skip(1)
                      IF cbWhile != NULL
                         lContinue := (LOGIC) SELF:EvalBlock(cbWhile)
@@ -337,7 +340,7 @@ BEGIN NAMESPACE XSharp.RDD
                     lContinue := nextCnt > 0
                 ENDDO
             ELSEIF SELF:_ScopeInfo:Rest
-                DO WHILE ! SELF:_Eof .AND. nToSkip != 0 .AND. result
+                DO WHILE ! SELF:_EoF .AND. nToSkip != 0 .AND. result
                     result := SELF:Skip(1)
                     IF cbWhile != NULL
                         lContinue := (LOGIC) SELF:EvalBlock(cbWhile)
@@ -360,7 +363,7 @@ BEGIN NAMESPACE XSharp.RDD
                 ENDDO
             ELSE
                 result := SELF:GoTop()
-                DO WHILE ! SELF:_Eof .AND. nToSkip != 0 .AND. result
+                DO WHILE ! SELF:_EoF .AND. nToSkip != 0 .AND. result
                     IF cbFor != NULL
                         lFound := (LOGIC) SELF:EvalBlock(cbFor)
                     ELSE
@@ -374,7 +377,7 @@ BEGIN NAMESPACE XSharp.RDD
                     ENDIF
                 ENDDO
             ENDIF
-            SELF:_Found := lFound .AND. ! SELF:_Eof
+            SELF:_Found := lFound .AND. ! SELF:_EoF
             RETURN result
             
 			/// <inheritdoc />
@@ -414,7 +417,7 @@ BEGIN NAMESPACE XSharp.RDD
 			IF SELF:_Parents > 0
 				//
 				LOCAL max AS DWORD
-				max := Workareas.MaxWorkAreas //<- what's wrong here ??
+				max := Workareas.MaxWorkareas //<- what's wrong here ??
 				FOR VAR i := 1 TO max
 					VAR rdd := XSharp.RuntimeState.Workareas:GetRDD( (DWORD)i )
 					VAR wk := rdd ASTYPE Workarea
@@ -483,7 +486,7 @@ BEGIN NAMESPACE XSharp.RDD
 			
 		VIRTUAL METHOD SetFieldExtent( fieldCount AS LONG ) AS LOGIC
             SELF:_Fields        := RddFieldInfo[]{ fieldCount }
-			SELF:_fieldNames	:= Dictionary<STRING, INT>{Stringcomparer.OrdinalIgnoreCase}
+			SELF:_fieldNames	:= Dictionary<STRING, INT>{StringComparer.OrdinalIgnoreCase}
             SELF:_RecordLength  := 1 // 1 for DELETED
             SELF:_currentField  := 0
             RETURN TRUE
@@ -510,7 +513,7 @@ BEGIN NAMESPACE XSharp.RDD
                 IF _currentField > 0
                     LOCAL lastField AS RddFieldInfo
                     lastField := SELF:_Fields[_currentField -1]
-                    info:OffSet := lastField:Offset + lastField:Length
+                    info:Offset := lastField:Offset + lastField:Length
                 ELSE
                     info:Offset := 1
                 ENDIF
@@ -572,13 +575,23 @@ BEGIN NAMESPACE XSharp.RDD
 		VIRTUAL METHOD FieldInfo(nFldPos AS LONG, nOrdinal AS LONG, oNewValue AS OBJECT) AS OBJECT
             // Note that nFldPos is 1 based
             IF SELF:_FieldIndexValidate(nFldPos)
-                LOCAL ofld AS RddFieldInfo
-                ofld := SELF:_Fields[nFldPos-1]
+                LOCAL oFld AS RddFieldInfo
+                oFld := SELF:_Fields[nFldPos-1]
                 SWITCH nOrdinal
                 CASE DbFieldInfo.DBS_NAME
-                    RETURN ofld:Name
+                    RETURN oFld:Name
                 CASE DbFieldInfo.DBS_TYPE
-                    RETURN oFld:FieldType:ToString():Substring(0,1)
+                    VAR cVar := Chr( (BYTE) oFld:FieldType)
+                    IF oFld:Flags != DBFFieldFlags.None
+                        cVar += ":"
+                        cVar += IIF(oFld:Flags:HasFlag(DBFFieldFlags.Nullable),"N","")
+                        cVar += IIF(oFld:Flags:HasFlag(DBFFieldFlags.Binary),"B","")
+                        cVar += IIF(oFld:Flags:HasFlag(DBFFieldFlags.AutoIncrement),"+","")
+                        cVar += IIF(oFld:Flags:HasFlag(DBFFieldFlags.Compressed),"Z","")
+                        cVar += IIF(oFld:Flags:HasFlag(DBFFieldFlags.Unicode),"U","")
+                        cVar += IIF(oFld:Flags:HasFlag(DBFFieldFlags.Encrypted),"E","")
+                    ENDIF
+                    RETURN cVar
                 CASE DbFieldInfo.DBS_LEN
                     RETURN oFld:Length
                 CASE DbFieldInfo.DBS_DEC
@@ -589,7 +602,7 @@ BEGIN NAMESPACE XSharp.RDD
                         IF _fieldNames:ContainsValue(nFldPos-1)
                             // Should always be the case, but better safe than sorry
                             FOREACH VAR pair IN SELF:_fieldNames
-                                IF pair:value == nFldPos-1
+                                IF pair:Value == nFldPos-1
                                     SELF:_fieldNames:Remove(pair:Key)
                                     EXIT
                                 ENDIF
@@ -611,14 +624,18 @@ BEGIN NAMESPACE XSharp.RDD
                     ELSE
                         RETURN oFld:Name
                     ENDIF
+                CASE DbFieldInfo.DBS_FLAGS
+                    RETURN oFld:Flags
+                CASE DbFieldInfo.DBS_STRUCT
+                    RETURN oFld
                 CASE DbFieldInfo.DBS_PROPERTIES
-                    RETURN 5
+                    RETURN DbFieldInfo.DBS_ALIAS
                 END SWITCH
             ENDIF
             RETURN NULL
 
 			
-		VIRTUAL METHOD GetField(nFldPos AS INT) AS RDDFieldInfo
+		VIRTUAL METHOD GetField(nFldPos AS INT) AS RddFieldInfo
 			IF SELF:_FieldIndexValidate(nFldPos)
 				RETURN SELF:_Fields[nFldPos-1]
 			ENDIF          
@@ -793,13 +810,13 @@ BEGIN NAMESPACE XSharp.RDD
 				/// <inheritdoc />
 			VIRTUAL METHOD RelEval(relinfo AS DbRelInfo) AS LOGIC
                 // Evaluate block in the Area of the Parent
-                VAR originalArea := XSharp.RuntimeState.CurrentWorkArea
+                VAR originalArea := XSharp.RuntimeState.CurrentWorkarea
                 SELF:_EvalResult := NULL
                 TRY
-                    XSharp.RuntimeState.CurrentWorkArea := relinfo:Parent:Area
+                    XSharp.RuntimeState.CurrentWorkarea := relinfo:Parent:Area
                     SELF:_EvalResult := relinfo:Parent:EvalBlock(relinfo:Block)
                 FINALLY
-                    XSharp.RuntimeState.CurrentWorkArea := originalArea
+                    XSharp.RuntimeState.CurrentWorkarea := originalArea
                 END TRY
                 RETURN SELF:_EvalResult != NULL
 				
@@ -850,7 +867,7 @@ BEGIN NAMESPACE XSharp.RDD
                 ENDIF
                 IF info:Scope:RecId != NULL
                     nRecno := Convert.ToInt32(info:Scope:RecId)
-                    result := SELF:Goto(nRecno)
+                    result := SELF:GoTo(nRecno)
                     lLimit := TRUE
                 ELSEIF info:Scope:NextCount != 0
                     lLimit := TRUE
@@ -864,7 +881,7 @@ BEGIN NAMESPACE XSharp.RDD
                         result := SELF:GoTop()
                     ENDIF
                 ENDIF
-                DO WHILE result .AND. ! SELF:_Eof 
+                DO WHILE result .AND. ! SELF:_EoF 
                     IF cbWhile != NULL
                         IF ! (LOGIC) SELF:EvalBlock(cbWhile)
                             EXIT
@@ -892,7 +909,7 @@ BEGIN NAMESPACE XSharp.RDD
 				
 				/// <inheritdoc />
 			VIRTUAL METHOD TransRec(info AS DbTransInfo) AS LOGIC
-                LOCAL oDest  AS IRDD
+                LOCAL oDest  AS IRdd
                 LOCAL result AS LOGIC
                 LOCAL oValue AS OBJECT
                 oDest := info:Destination
@@ -950,14 +967,14 @@ BEGIN NAMESPACE XSharp.RDD
 				IF oC != NULL
 					LOCAL isBlock       AS LOGIC
                     LOCAL addsMemvars   AS LOGIC
-					oBlock := oC:Compile(sBlock, TRUE, oType:Module, OUT isBlock, OUT addsMemVars)
+					oBlock := oC:Compile(sBlock, TRUE, oType:Module, OUT isBlock, OUT addsMemvars)
                     // Convert to _CodeBlock when needed
-                    IF oBlock IS XSharp.RuntimeCodeBlock
+                    IF oBlock IS XSharp.RuntimeCodeblock
                         IF (oCbType == NULL)
                             FindCbType()
                         ENDIF
                         IF oCbType != NULL
-                            oBlock := (ICodeBlock) Activator.CreateInstance(oCbType, <OBJECT>{oBlock, sBlock, isBlock, addsMemVars})
+                            oBlock := (ICodeblock) Activator.CreateInstance(oCbType, <OBJECT>{oBlock, sBlock, isBlock, addsMemvars})
                         ENDIF
                     ENDIF
 				ENDIF
@@ -969,17 +986,17 @@ BEGIN NAMESPACE XSharp.RDD
 			/// <inheritdoc />
 		VIRTUAL METHOD EvalBlock(oBlock AS ICodeblock) AS OBJECT
 				LOCAL currentWk AS DWORD
-				currentWk := XSharp.RuntimeState.Workareas:CurrentWorkAreaNO
-                // Only switch workarea when needed
+				currentWk := XSharp.RuntimeState.Workareas:CurrentWorkareaNO
+                // Only switch Workarea when needed
                 SELF:_EvalResult := NULL
                 IF currentWk != SELF:Area
 				    TRY
-					    XSharp.RuntimeState.CurrentWorkArea := SELF:Area
+					    XSharp.RuntimeState.CurrentWorkarea := SELF:Area
                         SELF:_EvalResult := oBlock:EvalBlock()
                     CATCH
                         THROW
 				    FINALLY
-					    XSharp.RuntimeState.Workareas:CurrentWorkAreaNO := currentWk
+					    XSharp.RuntimeState.Workareas:CurrentWorkareaNO := currentWk
                     END TRY
                 ELSE
                     SELF:_EvalResult := oBlock:EvalBlock()
@@ -1024,9 +1041,9 @@ BEGIN NAMESPACE XSharp.RDD
 				CASE DbInfo.DBI_GETLOCKARRAY
 					oResult := <DWORD>{}
 				CASE DbInfo.DBI_BOF           
-					oResult := SELF:_BOF
+					oResult := SELF:_BoF
 				CASE DbInfo.DBI_EOF           
-					oResult := SELF:_EOF   
+					oResult := SELF:_EoF   
 				CASE DbInfo.DBI_DBFILTER
                     IF SELF:_FilterInfo != NULL
 					    oResult := SELF:_FilterInfo:FilterText
@@ -1061,22 +1078,22 @@ BEGIN NAMESPACE XSharp.RDD
 			THROW NotImplementedException{__ENTITY__}
 			
 			/// <inheritdoc />
-		VIRTUAL PROPERTY Alias AS STRING GET _Alias SET _Alias := VALUE
+		VIRTUAL PROPERTY Alias AS STRING GET _Alias SET _Alias := value
 		
 		/// <inheritdoc />
-		VIRTUAL PROPERTY Area AS DWORD GET _Area SET _Area := VALUE 
+		VIRTUAL PROPERTY Area AS DWORD GET _Area SET _Area := value 
 		
 		/// <inheritdoc />
-		VIRTUAL PROPERTY BoF AS LOGIC GET _Bof
+		VIRTUAL PROPERTY BoF AS LOGIC GET _BoF
 		
 		/// <inheritdoc />
 		VIRTUAL PROPERTY Deleted AS LOGIC GET FALSE
 		
 		/// <inheritdoc />
-		VIRTUAL PROPERTY Driver AS STRING GET "WORKAREA"
+		VIRTUAL PROPERTY Driver AS STRING GET "Workarea"
 		
 		/// <inheritdoc />
-		VIRTUAL PROPERTY EoF AS LOGIC GET _Eof
+		VIRTUAL PROPERTY EoF AS LOGIC GET _EoF
 		
 		/// <inheritdoc />
 		VIRTUAL PROPERTY Exclusive AS LOGIC GET FALSE
@@ -1088,7 +1105,7 @@ BEGIN NAMESPACE XSharp.RDD
 		VIRTUAL PROPERTY FilterText AS STRING GET _FilterInfo?:FilterText
 		
 		/// <inheritdoc />
-		VIRTUAL PROPERTY Found AS LOGIC GET _Order:Found SET _Order:Found := VALUE
+		VIRTUAL PROPERTY Found AS LOGIC GET _Order:Found SET _Order:Found := value
 		
 		
 		/// <inheritdoc />

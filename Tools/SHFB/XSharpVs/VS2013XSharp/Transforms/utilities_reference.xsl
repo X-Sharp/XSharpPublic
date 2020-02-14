@@ -107,13 +107,13 @@
 						</parameter>
 					</includeAttribute>
 				</link>
-				<link rel="stylesheet" type="text/css">
+				<!--<link rel="stylesheet" type="text/css">
 					<includeAttribute name="href" item="stylePath">
 						<parameter>
 							<include item="brandingLocaleCss" />
 						</parameter>
 					</includeAttribute>
-				</link>
+				</link>-->
 				<script type="text/javascript">
 					<includeAttribute name="src" item="scriptPath">
 						<parameter>
@@ -610,6 +610,19 @@
 						<xsl:when test="$g_apiSubSubGroup='operator' and (apidata/@name='Explicit' or apidata/@name='Implicit')">
 							<xsl:text>&#xa0;</xsl:text>
 							<span class="languageSpecificText">
+								<span class="vb">
+									<xsl:choose>
+										<xsl:when test="apidata/@name='Explicit'">
+											<xsl:text>Narrowing</xsl:text>
+										</xsl:when>
+										<xsl:when test="apidata/@name='Implicit'">
+											<xsl:text>Widening</xsl:text>
+										</xsl:when>
+										<xsl:otherwise>
+											<xsl:value-of select="apidata/@name"/>
+										</xsl:otherwise>
+									</xsl:choose>
+								</span>
 								<span class="nu">
 									<xsl:value-of select="apidata/@name"/>
 								</span>
@@ -2337,7 +2350,14 @@
 
 	<xsl:template match="specialization" mode="link" name="t_specializationLink">
 		<span class="languageSpecificText">
-			<span class="nu">&lt;</span>
+			<span class="cs">&lt;</span>
+			<span class="vb">
+				<xsl:text>(Of </xsl:text>
+			</span>
+			<span class="cpp">&lt;</span>
+			<span class="fs">&lt;'</span>
+			<span class="xs">&lt;'</span>
+			<span class="nu">(</span>
 		</span>
 		<xsl:for-each select="*">
 			<xsl:apply-templates select="." mode="link"/>
@@ -2346,7 +2366,12 @@
 			</xsl:if>
 		</xsl:for-each>
 		<span class="languageSpecificText">
-			<span class="nu">&gt;</span>
+			<span class="cs">&gt;</span>
+			<span class="vb">)</span>
+			<span class="cpp">&gt;</span>
+			<span class="fs">&gt;</span>
+			<span class="xs">&gt;</span>
+			<span class="nu">)</span>
 		</span>
 	</xsl:template>
 
@@ -2363,7 +2388,14 @@
 
 	<xsl:template match="specialization" mode="decorated" name="t_specializationDecorated">
 		<span class="languageSpecificText">
-			<span class="nu">&lt;</span>	
+			<span class="cs">&lt;</span>
+			<span class="vb">
+				<xsl:text>(Of </xsl:text>
+			</span>
+			<span class="cpp">&lt;</span>
+			<span class="fs">&lt;'</span>
+			<span class="xs">&lt;'</span>
+			<span class="nu">(</span>
 		</span>
 		<xsl:for-each select="*">
 			<xsl:apply-templates select="." mode="decorated"/>
@@ -2372,7 +2404,12 @@
 			</xsl:if>
 		</xsl:for-each>
 		<span class="languageSpecificText">
-			<span class="nu">&gt;</span>
+			<span class="cs">&gt;</span>
+			<span class="vb">)</span>
+			<span class="cpp">&gt;</span>
+			<span class="fs">&gt;</span>
+			<span class="xs">&gt;</span>
+			<span class="nu">)</span>
 		</span>
 	</xsl:template>
 
@@ -2433,10 +2470,25 @@
 
 	<xsl:template match="arrayOf" mode="link" name="t_arrayOfLink">
 		<xsl:param name="qualified" select="false()"/>
+		<span class="languageSpecificText">
+			<span class="cpp">array&lt;</span>
+		</span>
 		<xsl:apply-templates mode="link">
 			<xsl:with-param name="qualified" select="$qualified"/>
 		</xsl:apply-templates>
 		<span class="languageSpecificText">
+			<span class="cpp">
+				<xsl:if test="number(@rank) &gt; 1">
+					<xsl:text>,</xsl:text>
+					<xsl:value-of select="@rank"/>
+				</xsl:if>
+				<xsl:text>&gt;</xsl:text>
+			</span>
+			<span class="vb">
+				<xsl:text>(</xsl:text>
+				<xsl:if test="number(@rank) &gt; 1">,</xsl:if>
+				<xsl:text>)</xsl:text>
+			</span>
 			<span class="nu">
 				<xsl:text>[</xsl:text>
 				<xsl:if test="number(@rank) &gt; 1">,</xsl:if>
@@ -2454,9 +2506,24 @@
 	</xsl:template>
 
 	<xsl:template match="arrayOf" mode="decorated" name="t_arrayOfDecorated">
+		<span class="languageSpecificText">
+			<span class="cpp">array&lt;</span>
+		</span>
 		<xsl:apply-templates select="type|arrayOf|pointerTo|referenceTo|template|specialization|templates"
 												 mode="decorated"/>
 		<span class="languageSpecificText">
+			<span class="cpp">
+				<xsl:if test="number(@rank) &gt; 1">
+					<xsl:text>,</xsl:text>
+					<xsl:value-of select="@rank"/>
+				</xsl:if>
+				<xsl:text>&gt;</xsl:text>
+			</span>
+			<span class="vb">
+				<xsl:text>(</xsl:text>
+				<xsl:if test="number(@rank) &gt; 1">,</xsl:if>
+				<xsl:text>)</xsl:text>
+			</span>
 			<span class="nu">
 				<xsl:text>[</xsl:text>
 				<xsl:if test="number(@rank) &gt; 1">,</xsl:if>
@@ -2484,6 +2551,11 @@
 	<xsl:template match="pointerTo" mode="decorated" name="t_pointerToDecorated">
 		<xsl:apply-templates select="type|arrayOf|pointerTo|referenceTo|template|specialization|templates"
 												 mode="decorated"/>
+		<span class="languageSpecificText">
+			<span class="cpp">
+				<xsl:text>*</xsl:text>
+			</span>
+		</span>
 	</xsl:template>
 
 	<!-- ======================================================================================== -->
@@ -2493,6 +2565,9 @@
 		<xsl:apply-templates mode="link">
 			<xsl:with-param name="qualified" select="$qualified"/>
 		</xsl:apply-templates>
+		<span class="languageSpecificText">
+			<span class="cpp">%</span>
+		</span>
 	</xsl:template>
 
 	<xsl:template match="referenceTo" mode="plain" name="t_referenceToPlain">
@@ -2503,6 +2578,9 @@
 	<xsl:template match="referenceTo" mode="decorated" name="t_referenceToDecorated">
 		<xsl:apply-templates select="type|arrayOf|pointerTo|referenceTo|template|specialization|templates"
 												 mode="decorated"/>
+		<span class="languageSpecificText">
+			<span class="cpp">%</span>
+		</span>
 	</xsl:template>
 
 	<!-- ======================================================================================== -->

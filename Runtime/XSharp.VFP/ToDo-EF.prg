@@ -61,19 +61,6 @@ FUNCTION For( nIndexNumber , uArea) AS STRING
     THROW NotImplementedException{}
     RETURN ""
     
-/// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/forceext/*" />
-
-FUNCTION ForceExt( cFileName, cExtension ) AS STRING
-    THROW NotImplementedException{}
-    RETURN ""
-
-/// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/forcepath/*" />
-
-FUNCTION ForcePath( cFileName, cPath ) AS STRING
-    THROW NotImplementedException{}
-    RETURN ""
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/fullpath/*" />

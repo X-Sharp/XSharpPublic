@@ -1225,8 +1225,6 @@ RETURN ret
 
 
     // Fields
-    // Set the Number of Fields the AddField Method will add
-    /// <inheritdoc />
 METHOD SetFieldExtent( fieldCount AS LONG ) AS LOGIC
 	SELF:_HasMemo := FALSE
 RETURN SUPER:SetFieldExtent(fieldCount)

@@ -11,11 +11,12 @@ USING XSharp.RDD.Support
 USING System.Text
 USING System.Diagnostics
 
+/// <summary>Base class for all advantage SQL RDDs.</summary>
 [DebuggerDisplay("AXDBFVFP ({Alias,nq})")];
 CLASS XSharp.ADS.AXSQLRDD INHERIT ADSRDD
      PUBLIC _hStatement AS System.IntPtr
 
-	/// <summary>Create instande of RDD </summary>
+	/// <summary>Create instance of the RDD </summary>
     CONSTRUCTOR()
         SELF:_hStatement := System.IntPtr.Zero
         SUPER:_Driver := "AXSQLRDD"

@@ -186,7 +186,7 @@ GLOBAL aDdeConv:={} AS ARRAY //Table of Conversation handles and IPC objects (Cl
 
 GLOBAL aDdeServer:={} AS ARRAY //Table of Servers objects and Server handles
 
-FUNCTION __WCAddIpcObjectToConv(hConv AS PTR, oIpc AS OBJECT) AS VOID
+INTERNAL FUNCTION __WCAddIpcObjectToConv(hConv AS PTR, oIpc AS OBJECT) AS VOID
    //SE-060526
 	LOCAL dwI, dwCount AS DWORD
 
@@ -203,7 +203,7 @@ FUNCTION __WCAddIpcObjectToConv(hConv AS PTR, oIpc AS OBJECT) AS VOID
 	AAdd(aDdeConv, {hConv, oIpc})
 
 	RETURN
- FUNCTION __WCAddServerToHsz(dwHsz AS PTR, oServer AS IpcServer) AS VOID
+ INTERNAL FUNCTION __WCAddServerToHsz(dwHsz AS PTR, oServer AS IpcServer) AS VOID
 	//SE-060526
 	LOCAL dwI, dwCount AS DWORD
 
@@ -220,7 +220,7 @@ FUNCTION __WCAddIpcObjectToConv(hConv AS PTR, oIpc AS OBJECT) AS VOID
 
 	RETURN
 
-FUNCTION __WCDelIpcObjectFromConv(hConv AS PTR) AS VOID
+INTERNAL FUNCTION __WCDelIpcObjectFromConv(hConv AS PTR) AS VOID
    //SE-060526
 	LOCAL dwI, dwCount AS DWORD
 
@@ -236,7 +236,7 @@ FUNCTION __WCDelIpcObjectFromConv(hConv AS PTR) AS VOID
 
 	RETURN
 
-FUNCTION __WCDelServerFromHsz(dwHsz AS PTR) AS VOID
+INTERNAL FUNCTION __WCDelServerFromHsz(dwHsz AS PTR) AS VOID
 	//SE-060526
 	LOCAL dwI, dwCount AS DWORD
 
@@ -252,7 +252,7 @@ FUNCTION __WCDelServerFromHsz(dwHsz AS PTR) AS VOID
 
 	RETURN
 
-FUNCTION __WCGetHConvFromConv(oIpc AS OBJECT) AS PTR
+INTERNAL FUNCTION __WCGetHConvFromConv(oIpc AS OBJECT) AS PTR
 	//SE-060526
 	LOCAL dwI, dwCount AS DWORD
 
@@ -267,7 +267,7 @@ FUNCTION __WCGetHConvFromConv(oIpc AS OBJECT) AS PTR
 	RETURN NULL_PTR
 
 
-FUNCTION __WCGetHszFromHsz(oIpc AS OBJECT) AS PTR
+INTERNAL FUNCTION __WCGetHszFromHsz(oIpc AS OBJECT) AS PTR
    //SE-060526
 	LOCAL dwI, dwCount AS DWORD
 
@@ -281,7 +281,7 @@ FUNCTION __WCGetHszFromHsz(oIpc AS OBJECT) AS PTR
 
 	RETURN NULL_PTR
 
-FUNCTION __WCGetIpcObjectFromConv(hConv AS PTR) AS OBJECT
+INTERNAL FUNCTION __WCGetIpcObjectFromConv(hConv AS PTR) AS OBJECT
    //SE-060526
 	LOCAL dwI, dwCount AS DWORD
 
@@ -295,7 +295,7 @@ FUNCTION __WCGetIpcObjectFromConv(hConv AS PTR) AS OBJECT
 
 	RETURN NULL_OBJECT
 
-FUNCTION __WCGetServerFromHsz(dwHsz AS PTR) AS OBJECT
+INTERNAL FUNCTION __WCGetServerFromHsz(dwHsz AS PTR) AS OBJECT
    //SE-060526
 	LOCAL dwI, dwCount AS DWORD
 

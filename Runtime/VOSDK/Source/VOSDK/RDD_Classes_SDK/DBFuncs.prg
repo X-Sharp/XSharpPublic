@@ -1,4 +1,4 @@
-FUNCTION __GetFldPos( uField AS USUAL, wFieldCount AS DWORD ) AS DWORD STRICT
+INTERNAL FUNCTION __GetFldPos( uField AS USUAL, wFieldCount AS DWORD ) AS DWORD STRICT
 	LOCAL dwPos AS DWORD
    //SE-060527
 	IF IsNumeric( uField )
@@ -16,7 +16,7 @@ FUNCTION __GetFldPos( uField AS USUAL, wFieldCount AS DWORD ) AS DWORD STRICT
 
    RETURN dwPos
 
-FUNCTION __DBSAPPEND( lRelease AS LOGIC, nTries := 1 AS DWORD ) AS LOGIC STRICT
+INTERNAL FUNCTION __DBSAPPEND( lRelease AS LOGIC, nTries := 1 AS DWORD ) AS LOGIC STRICT
 	LOCAL lOk := FALSE AS LOGIC
    //SE-060527
    DO WHILE nTries > 0
@@ -33,7 +33,7 @@ FUNCTION __DBSAPPEND( lRelease AS LOGIC, nTries := 1 AS DWORD ) AS LOGIC STRICT
    ENDIF
 	RETURN lOk
 
-FUNCTION __DBSCommit( nTries := 1 AS DWORD) AS LOGIC STRICT
+INTERNAL FUNCTION __DBSCommit( nTries := 1 AS DWORD) AS LOGIC STRICT
 	LOCAL lOk := FALSE AS LOGIC
    //SE-060527
    DO WHILE nTries > 0
@@ -50,7 +50,7 @@ FUNCTION __DBSCommit( nTries := 1 AS DWORD) AS LOGIC STRICT
 	ENDDO
 	RETURN lOk
 
-FUNCTION __DBSDBAPP( cFile, aFields, uCobFor, uCobWhile,  ;
+INTERNAL FUNCTION __DBSDBAPP( cFile, aFields, uCobFor, uCobWhile,  ;
 		nNext, nRec, lRest, cDriver, aRDD, aStruct ) AS LOGIC  CLIPPER
 	//SE-060601
 	LOCAL cobOldErrFunc AS USUAL
@@ -119,7 +119,7 @@ FUNCTION __DBSDBAPP( cFile, aFields, uCobFor, uCobWhile,  ;
 
 	RETURN lRetCode
 
-FUNCTION __DBSDBAPPDELIM( cFile, cDelim, aFields,	uCobFor, uCobWhile,   ;
+INTERNAL FUNCTION __DBSDBAPPDELIM( cFile, cDelim, aFields,	uCobFor, uCobWhile,   ;
 		nNext, nRec, lRest, aStruct ) AS LOGIC  CLIPPER
 	//SE-060601
 	LOCAL cobOldErrFunc 	AS USUAL
@@ -189,7 +189,7 @@ FUNCTION __DBSDBAPPDELIM( cFile, cDelim, aFields,	uCobFor, uCobWhile,   ;
 
 	RETURN lRetCode
 
-FUNCTION __DBSDBAPPSDF( cFile, aFields, uCobFor, uCobWhile,  ;
+INTERNAL FUNCTION __DBSDBAPPSDF( cFile, aFields, uCobFor, uCobWhile,  ;
 		nNext, nRec, lRest, aStruct ) AS LOGIC  CLIPPER
 	//SE-060601
 	LOCAL cobOldErrFunc AS USUAL
@@ -261,7 +261,7 @@ FUNCTION __DBSDBAPPSDF( cFile, aFields, uCobFor, uCobWhile,  ;
 
 	RETURN lRetCode
 
-FUNCTION __DBSDBCopy( cFile, aFields, uCobFor,	uCobWhile, nNext, nRec,	lRest,  ;
+INTERNAL FUNCTION __DBSDBCopy( cFile, aFields, uCobFor,	uCobWhile, nNext, nRec,	lRest,  ;
 		cDriver, aRDD, aStruct ) AS LOGIC  CLIPPER
 	//SE-060601
 	LOCAL cobOldErrFunc AS USUAL
@@ -342,7 +342,7 @@ FUNCTION __DBSDBCopy( cFile, aFields, uCobFor,	uCobWhile, nNext, nRec,	lRest,  ;
 
 	RETURN lRetCode
 
-FUNCTION __DBSDBCOPYDELIM( cFile, cDelim, aFields, uCobFor, uCobWhile, nNext,  ;
+INTERNAL FUNCTION __DBSDBCOPYDELIM( cFile, cDelim, aFields, uCobFor, uCobWhile, nNext,  ;
 		nRec, lRest, aStruct ) AS LOGIC  CLIPPER
 	//SE-060601
 	LOCAL cobOldErrFunc AS USUAL
@@ -415,7 +415,7 @@ FUNCTION __DBSDBCOPYDELIM( cFile, cDelim, aFields, uCobFor, uCobWhile, nNext,  ;
 
 	RETURN lRetCode
 
-FUNCTION __DBSDBCOPYSDF( cFile, aFields, uCobFor, uCobWhile, nNext,  ;
+INTERNAL FUNCTION __DBSDBCOPYSDF( cFile, aFields, uCobFor, uCobWhile, nNext,  ;
 		nRec, lRest, aStruct ) AS LOGIC  CLIPPER
 	//SE-060601
 	LOCAL cobOldErrFunc AS USUAL
@@ -486,7 +486,7 @@ FUNCTION __DBSDBCOPYSDF( cFile, aFields, uCobFor, uCobWhile, nNext,  ;
 
 	RETURN lRetCode
 	
-FUNCTION __DBSDBINFO( nOrdinal AS DWORD , xNewVal := NIL AS USUAL, nTries := 1 AS DWORD) AS USUAL STRICT
+INTERNAL FUNCTION __DBSDBINFO( nOrdinal AS DWORD , xNewVal := NIL AS USUAL, nTries := 1 AS DWORD) AS USUAL STRICT
    //SE-060601 
    LOCAL lOk := FALSE AS LOGIC
    DO WHILE nTries > 0
@@ -501,7 +501,7 @@ FUNCTION __DBSDBINFO( nOrdinal AS DWORD , xNewVal := NIL AS USUAL, nTries := 1 A
    ENDIF
 	RETURN xNewVal
 
-FUNCTION __DBSDBJOIN( cAlias, cFile, aFields, uCobFor, cRDD ) AS LOGIC  CLIPPER
+INTERNAL FUNCTION __DBSDBJOIN( cAlias, cFile, aFields, uCobFor, cRDD ) AS LOGIC  CLIPPER
 	LOCAL dwFrom1 AS DWORD
 	LOCAL dwFrom2 AS DWORD
 	LOCAL dwTo AS DWORD
@@ -567,7 +567,7 @@ FUNCTION __DBSDBJOIN( cAlias, cFile, aFields, uCobFor, cRDD ) AS LOGIC  CLIPPER
 
 	RETURN lRetCode
 
-FUNCTION __DBSDBOrderInfo( nOrdinal AS DWORD, cBagName := NULL_STRING AS STRING, uOrder:= NIL AS USUAL, ;
+INTERNAL FUNCTION __DBSDBOrderInfo( nOrdinal AS DWORD, cBagName := NULL_STRING AS STRING, uOrder:= NIL AS USUAL, ;
 	xNewVal := NIL AS USUAL, nTries := 1 AS DWORD) AS USUAL STRICT
 	//SE-060527
 	LOCAL lKeyVal   AS LOGIC
@@ -605,7 +605,7 @@ FUNCTION __DBSDBOrderInfo( nOrdinal AS DWORD, cBagName := NULL_STRING AS STRING,
 	ENDIF
 
 	RETURN xNewVal
-FUNCTION __DBSDBSORT( cFile, aFields, uCobFor, uCobWhile, nNext, nRec, lRest,  ;
+INTERNAL FUNCTION __DBSDBSORT( cFile, aFields, uCobFor, uCobWhile, nNext, nRec, lRest,  ;
 		aStruct, cRDD ) AS LOGIC  CLIPPER
 	//SE-060601
 	LOCAL dwFrom 			AS DWORD
@@ -664,7 +664,7 @@ FUNCTION __DBSDBSORT( cFile, aFields, uCobFor, uCobWhile, nNext, nRec, lRest,  ;
 
 	RETURN TRUE
 
-FUNCTION __DBSDBTOTAL( cFile, bKey, aFields, uCobFor, uCobWhile, nNext, nRec,  ;
+INTERNAL FUNCTION __DBSDBTOTAL( cFile, bKey, aFields, uCobFor, uCobWhile, nNext, nRec,  ;
 		lRest, aStruct, cRDD ) AS LOGIC  CLIPPER
 	//SE-060601
 	LOCAL oError AS USUAL
@@ -789,7 +789,7 @@ FUNCTION __DBSDBTOTAL( cFile, bKey, aFields, uCobFor, uCobWhile, nNext, nRec,  ;
 
 	RETURN lRetCode
 
-FUNCTION __DBSDBUPDATE( cAlias, uCobKey, lRand, bReplace ) AS LOGIC  CLIPPER
+INTERNAL FUNCTION __DBSDBUPDATE( cAlias, uCobKey, lRand, bReplace ) AS LOGIC  CLIPPER
 	LOCAL dwTo AS DWORD
 	LOCAL dwFrom AS DWORD
 	LOCAL kEval AS USUAL
@@ -829,7 +829,7 @@ FUNCTION __DBSDBUPDATE( cAlias, uCobKey, lRand, bReplace ) AS LOGIC  CLIPPER
 	RETURN lRetCode
 
 
-FUNCTION __DBSFLock( nTries := 1 AS DWORD) AS LOGIC STRICT
+INTERNAL FUNCTION __DBSFLock( nTries := 1 AS DWORD) AS LOGIC STRICT
    LOCAL lOk := FALSE AS LOGIC
    //SE-060527
    DO WHILE nTries > 0
@@ -846,7 +846,7 @@ FUNCTION __DBSFLock( nTries := 1 AS DWORD) AS LOGIC STRICT
 	ENDDO
 
 	RETURN lOk
-FUNCTION __DBSGoTop( nTries := 1 AS DWORD) AS LOGIC STRICT
+INTERNAL FUNCTION __DBSGoTop( nTries := 1 AS DWORD) AS LOGIC STRICT
    LOCAL lOk := FALSE AS LOGIC
    //SE-060527
    DO WHILE nTries > 0
@@ -866,7 +866,7 @@ FUNCTION __DBSGoTop( nTries := 1 AS DWORD) AS LOGIC STRICT
    ENDIF
 	RETURN lOk
 
-FUNCTION __DBSGoBottom( nTries := 1 AS DWORD) AS LOGIC STRICT
+INTERNAL FUNCTION __DBSGoBottom( nTries := 1 AS DWORD) AS LOGIC STRICT
 	LOCAL lOk := FALSE AS LOGIC
    //SE-060527
    DO WHILE nTries > 0
@@ -887,7 +887,7 @@ FUNCTION __DBSGoBottom( nTries := 1 AS DWORD) AS LOGIC STRICT
    ENDIF
 	RETURN lOk
 
-FUNCTION __DBSOrdListAdd( cBag AS STRING, xOrder AS USUAL, nTries  := 1 AS DWORD) AS LOGIC STRICT
+INTERNAL FUNCTION __DBSOrdListAdd( cBag AS STRING, xOrder AS USUAL, nTries  := 1 AS DWORD) AS LOGIC STRICT
 	LOCAL lOk := FALSE AS LOGIC
    //SE-060527
    DO WHILE nTries > 0
@@ -907,7 +907,7 @@ FUNCTION __DBSOrdListAdd( cBag AS STRING, xOrder AS USUAL, nTries  := 1 AS DWORD
    ENDIF
 	RETURN lOk
 
-FUNCTION __DBSOrdListClear( cBag AS STRING, xOrder AS USUAL, nTries := 1 AS DWORD ) AS LOGIC STRICT
+INTERNAL FUNCTION __DBSOrdListClear( cBag AS STRING, xOrder AS USUAL, nTries := 1 AS DWORD ) AS LOGIC STRICT
 	LOCAL lOk := FALSE AS LOGIC
 	//SE-060527
    DO WHILE nTries > 0
@@ -927,7 +927,7 @@ FUNCTION __DBSOrdListClear( cBag AS STRING, xOrder AS USUAL, nTries := 1 AS DWOR
    ENDIF
 	RETURN lOk
 
-FUNCTION __DBSRLock( n AS USUAL, nTries := 1 AS DWORD) AS LOGIC STRICT
+INTERNAL FUNCTION __DBSRLock( n AS USUAL, nTries := 1 AS DWORD) AS LOGIC STRICT
 	 LOCAL lOk := FALSE AS LOGIC
 	//PP-040416 Issue 12766 First parameter must be usual
 	//SE-060527
@@ -946,7 +946,7 @@ FUNCTION __DBSRLock( n AS USUAL, nTries := 1 AS DWORD) AS LOGIC STRICT
 
 	RETURN lOk
 
-FUNCTION __DBSSeek( xValue AS USUAL, lSoft AS USUAL, lLast AS USUAL, nTries  := 1 AS DWORD) AS LOGIC STRICT
+INTERNAL FUNCTION __DBSSeek( xValue AS USUAL, lSoft AS USUAL, lLast AS USUAL, nTries  := 1 AS DWORD) AS LOGIC STRICT
    //SE-060527
    //RvdH 080611 Changed lLast from USUAL to LOGIC and changed the way 
    //            in which lLast is passed to the RDD.
@@ -976,7 +976,7 @@ FUNCTION __DBSSeek( xValue AS USUAL, lSoft AS USUAL, lLast AS USUAL, nTries  := 
 
 	RETURN lRet
 
-FUNCTION __DBSSetSelect(dwNew AS DWORD) AS DWORD STRICT
+INTERNAL FUNCTION __DBSSetSelect(dwNew AS DWORD) AS DWORD STRICT
    //SE-060527
    IF __glRestoreWorkarea
       RETURN VODBSetSelect(LONGINT(dwNew))
@@ -985,7 +985,7 @@ FUNCTION __DBSSetSelect(dwNew AS DWORD) AS DWORD STRICT
 
 STATIC GLOBAL __glRestoreWorkarea := FALSE AS LOGIC //SE-060527
 
-FUNCTION __DBSFieldGet( wPos AS DWORD ) AS USUAL
+INTERNAL FUNCTION __DBSFieldGet( wPos AS DWORD ) AS USUAL
 	LOCAL xRetVal AS USUAL
 
 	IF ! VODBFieldGet( wPos, REF xRetVal )
@@ -994,7 +994,7 @@ FUNCTION __DBSFieldGet( wPos AS DWORD ) AS USUAL
 
 	RETURN xRetVal
 
-FUNCTION __IsBlob( nField AS INT ) AS LOGIC
+INTERNAL FUNCTION __IsBlob( nField AS INT ) AS LOGIC
 	LOCAL lRetCode AS LOGIC
 	LOCAL uVal AS USUAL
 
@@ -1004,7 +1004,7 @@ FUNCTION __IsBlob( nField AS INT ) AS LOGIC
 
 	RETURN lRetCode
 
-FUNCTION __IterateForFieldAssign( acbExpression AS ARRAY, aFields AS ARRAY ) AS VOID
+INTERNAL FUNCTION __IterateForFieldAssign( acbExpression AS ARRAY, aFields AS ARRAY ) AS VOID
 	LOCAL n AS DWORD
 	LOCAL nLen AS DWORD
 	LOCAL xValue AS USUAL
@@ -1025,7 +1025,7 @@ FUNCTION __IterateForFieldAssign( acbExpression AS ARRAY, aFields AS ARRAY ) AS 
 		ENDIF
 	NEXT
 	RETURN
-FUNCTION __IterateForSum( acbExpression AS ARRAY, aResults AS ARRAY ) AS VOID
+INTERNAL FUNCTION __IterateForSum( acbExpression AS ARRAY, aResults AS ARRAY ) AS VOID
 	LOCAL wLen AS DWORD
 	LOCAL w AS DWORD
 
@@ -1035,7 +1035,7 @@ FUNCTION __IterateForSum( acbExpression AS ARRAY, aResults AS ARRAY ) AS VOID
 	NEXT
 	RETURN
 
-FUNCTION __MakeErrObj( nTries ) AS USUAL  CLIPPER
+INTERNAL FUNCTION __MakeErrObj( nTries ) AS USUAL  CLIPPER
 	LOCAL oError AS OBJECT
 
 	oError := ErrorBuild( _VODBErrInfoPtr( ) )
@@ -1083,11 +1083,11 @@ FUNCTION DbSetRestoreWorkarea(lEnable := NIL AS USUAL) AS LOGIC STRICT
 
    RETURN lOldValue
 
-FUNCTION __DBSErrorBlock() AS USUAL CLIPPER
+INTERNAL FUNCTION __DBSErrorBlock() AS USUAL CLIPPER
    RETURN ErrorBlock( { | oErr | _Break( oErr ) } )
 
 //  UH 11/12/2000
-FUNCTION __ConstructUniqueAlias ( cFileName AS STRING ) AS SYMBOL STRICT
+INTERNAL FUNCTION __ConstructUniqueAlias ( cFileName AS STRING ) AS SYMBOL STRICT
 	LOCAL cTryNewAlias AS STRING
 	LOCAL w AS DWORD
 	IF SLen(cFileName) == 0
@@ -1103,7 +1103,7 @@ FUNCTION __ConstructUniqueAlias ( cFileName AS STRING ) AS SYMBOL STRICT
 
 	RETURN String2Symbol( cTryNewAlias )
 
-FUNCTION __DBSGoTo( n AS LONGINT, nTries := 1 AS DWORD) AS LOGIC STRICT
+INTERNAL FUNCTION __DBSGoTo( n AS LONGINT, nTries := 1 AS DWORD) AS LOGIC STRICT
    LOCAL lOk := FALSE AS LOGIC
    //SE-060527
    DO WHILE nTries > 0
@@ -1124,7 +1124,7 @@ FUNCTION __DBSGoTo( n AS LONGINT, nTries := 1 AS DWORD) AS LOGIC STRICT
    ENDIF
 	RETURN lOk
 
-FUNCTION __DBSSkip( n AS LONGINT, nTries := 1 AS DWORD) AS LOGIC STRICT
+INTERNAL FUNCTION __DBSSkip( n AS LONGINT, nTries := 1 AS DWORD) AS LOGIC STRICT
 	LOCAL lOk := FALSE AS LOGIC
    //SE-060527
    DO WHILE nTries > 0
@@ -1146,7 +1146,7 @@ FUNCTION __DBSSkip( n AS LONGINT, nTries := 1 AS DWORD) AS LOGIC STRICT
 	RETURN lOk
 
 
-FUNCTION __CheckFieldType(uValue REF USUAL, aField AS ARRAY, uError REF USUAL) AS LOGIC  PASCAL
+INTERNAL FUNCTION __CheckFieldType(uValue REF USUAL, aField AS ARRAY, uError REF USUAL) AS LOGIC  PASCAL
     //SE-080609 Type checking for DBServer:Fieldput() and NoIvarGet() 
     LOCAL dwType AS DWORD
     LOCAL cType  AS STRING

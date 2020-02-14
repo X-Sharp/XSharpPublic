@@ -182,10 +182,10 @@ STATIC FUNCTION __WCRegisterDocAppWindow(hInst AS PTR) AS LOGIC
 	RETURN lretVal
 
 #ifdef __VULCAN__
-   DELEGATE __WCDocAppWndProcDelegate( hWnd AS PTR, uMsg AS DWORD, wParam AS DWORD, lParam AS LONGINT ) AS LONGINT
+   INTERNAL DELEGATE __WCDocAppWndProcDelegate( hWnd AS PTR, uMsg AS DWORD, wParam AS DWORD, lParam AS LONGINT ) AS LONGINT
 #endif
 
-FUNCTION __WCDocAppWndProc(hWnd AS PTR, uMsg AS DWORD, wParam AS DWORD, lParam AS LONGINT) AS LONGINT /* WINCALL */
+INTERNAL FUNCTION __WCDocAppWndProc(hWnd AS PTR, uMsg AS DWORD, wParam AS DWORD, lParam AS LONGINT) AS LONGINT /* WINCALL */
 	LOCAL oWindow AS Window
 	LOCAL strucCreateStruct AS _WinCreateStruct
 	LOCAL strucMDICreateStruct AS _WinMDICreateStruct
@@ -207,5 +207,5 @@ FUNCTION __WCDocAppWndProc(hWnd AS PTR, uMsg AS DWORD, wParam AS DWORD, lParam A
 
 
 #region defines
-DEFINE __WCDocAppWindowClass := "DocAppWindow"
+INTERNAL DEFINE __WCDocAppWindowClass := "DocAppWindow"
 #endregion

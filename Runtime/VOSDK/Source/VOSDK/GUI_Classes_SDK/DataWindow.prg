@@ -3007,8 +3007,8 @@ FUNCTION UseColonInAutoLayoutCaptions(lUse AS LOGIC) AS VOID
     glUseColonInAutoLayoutCaptions := lUse
 RETURN
 
-FUNCTION __GetDFCaption (oDF AS DataField, arUsedKeys AS ARRAY)  AS STRING
-	//FUNCTION __GetDFCaption (oDF, fldIndex, arUsedKeys)
+INTERNAL FUNCTION __GetDFCaption (oDF AS DataField, arUsedKeys AS ARRAY)  AS STRING
+	//INTERNAL FUNCTION __GetDFCaption (oDF, fldIndex, arUsedKeys)
 	//RvdH 041123 Strong Typing. Also removed fldIndex parameter. Was never passed.
 	LOCAL cText 	AS STRING
 	LOCAL cHotKey 	AS STRING
@@ -3059,7 +3059,7 @@ FUNCTION __GetDFCaption (oDF AS DataField, arUsedKeys AS ARRAY)  AS STRING
 	
 	RETURN cText
 	
-FUNCTION __GetFSDefaultLength(oFS AS USUAL) AS INT
+INTERNAL FUNCTION __GetFSDefaultLength(oFS AS USUAL) AS INT
 	LOCAL liRetVal, liExtra AS LONGINT
 	LOCAL uType AS USUAL
 	LOCAL cFunction AS STRING

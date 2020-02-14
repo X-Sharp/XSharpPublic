@@ -606,15 +606,15 @@ METHOD ShowModal(lActive)
 	
 END CLASS
 
-_DLL FUNCTION CreateDialogParamW(hInstance AS PTR, lpTemplateName AS PSZ,;
+INTERNAL _DLL FUNCTION CreateDialogParamW(hInstance AS PTR, lpTemplateName AS PSZ,;
 		hWndParent AS PTR, lpDialogFunc AS PTR,;
 		dwInitParam AS LONG) AS PTR PASCAL:USER32.CreateDialogParamW
 	
 #ifdef __VULCAN__
-   DELEGATE __SetChildFontProcDelegate( hWnd AS PTR, lParam AS LONGINT ) AS LOGIC
+   INTERNAL DELEGATE __SetChildFontProcDelegate( hWnd AS PTR, lParam AS LONGINT ) AS LOGIC
 #endif	
 	
-FUNCTION __SetChildFontProc (hWnd AS PTR, lParam AS LONGINT) AS LOGIC /* WINCALL */
+INTERNAL FUNCTION __SetChildFontProc (hWnd AS PTR, lParam AS LONGINT) AS LOGIC /* WINCALL */
 	//LIUHO01@12/21/95: callBack function for ChangeFont Method
 	LOCAL ptrBuf AS PTR
 	LOCAL cBuf AS STRING
@@ -676,7 +676,7 @@ FUNCTION __SetChildFontProc (hWnd AS PTR, lParam AS LONGINT) AS LOGIC /* WINCALL
    INTERNAL DELEGATE __ShowControlProcDelegate( hWnd AS PTR, lParam AS LONGINT ) AS LOGIC
 #endif
 	
-FUNCTION __ShowControlProc (hWnd AS PTR, lParam AS LONGINT) AS LOGIC /* WINCALL */
+INTERNAL FUNCTION __ShowControlProc (hWnd AS PTR, lParam AS LONGINT) AS LOGIC /* WINCALL */
 	IF GetParent(hWnd) == DWORD(_CAST,lParam)
 		ShowWindow (hWnd, 1)
 	ENDIF
@@ -687,7 +687,7 @@ FUNCTION __ShowControlProc (hWnd AS PTR, lParam AS LONGINT) AS LOGIC /* WINCALL 
    INTERNAL DELEGATE __WCDialogProcDelegate(hWnd AS PTR, uMsg AS DWORD, wParam AS DWORD, lParam AS LONGINT) AS LONGINT
 #endif	
 	
-FUNCTION __WCDialogProc(hWnd AS PTR, uMsg AS DWORD, wParam AS DWORD, lParam AS LONGINT) AS LONGINT /* WINCALL */
+INTERNAL FUNCTION __WCDialogProc(hWnd AS PTR, uMsg AS DWORD, wParam AS DWORD, lParam AS LONGINT) AS LONGINT /* WINCALL */
 	LOCAL lRetValue := 0L AS LONGINT
 	LOCAL oDialogWindow AS DialogWindow
 	
@@ -712,11 +712,11 @@ FUNCTION __WCDialogProc(hWnd AS PTR, uMsg AS DWORD, wParam AS DWORD, lParam AS L
 	RETURN lRetValue
 
 #ifdef __VULCAN__
-   DELEGATE __WCDragListDialogProcDelegate( hWnd AS PTR, uMsg AS DWORD, wParam AS DWORD, lParam AS LONGINT ) AS LONGINT
+   INTERNAL DELEGATE __WCDragListDialogProcDelegate( hWnd AS PTR, uMsg AS DWORD, wParam AS DWORD, lParam AS LONGINT ) AS LONGINT
 #endif
 	
 	// used to subclass dialogs with draglist, in order to correctly return values
-FUNCTION __WCDragListDialogProc(hWnd AS PTR, uMsg AS DWORD, wParam AS DWORD, lParam AS LONGINT) AS LONGINT /* WINCALL */
+INTERNAL FUNCTION __WCDragListDialogProc(hWnd AS PTR, uMsg AS DWORD, wParam AS DWORD, lParam AS LONGINT) AS LONGINT /* WINCALL */
 	LOCAL oDialogWindow AS DialogWindow
    oDialogWindow := (DialogWindow) __WcGetWindowByHandle(hWnd)
 	IF (oDialogWindow != NULL_OBJECT) .AND. (oDialogWindow:__lpfnOldDlgProc != NULL_PTR)

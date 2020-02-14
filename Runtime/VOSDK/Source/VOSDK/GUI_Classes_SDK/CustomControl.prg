@@ -8,7 +8,7 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle, lDataAware)
 
 END CLASS
 
-PROCEDURE __WCRegisterCustomControl _INIT3
+INTERNAL PROCEDURE __WCRegisterCustomControl _INIT3
 	LOCAL wc IS _WINWNDclass
 	wc:style := _OR(CS_DBLCLKS, CS_GLOBALCLASS)
 #ifdef __VULCAN__
@@ -33,5 +33,5 @@ PROCEDURE __WCRegisterCustomControl _INIT3
 
 
 #region defines
-DEFINE __WCCustomControlClass := "_VOCustomControl"
+INTERNAL DEFINE __WCCustomControlClass := "_VOCustomControl"
 #endregion

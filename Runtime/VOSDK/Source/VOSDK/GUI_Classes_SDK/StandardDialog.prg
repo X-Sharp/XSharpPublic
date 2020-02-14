@@ -1049,7 +1049,7 @@ METHOD Show()
 
 END CLASS
 
-VOSTRUCT _winBROWSEINFO
+INTERNAL VOSTRUCT _winBROWSEINFO
 	MEMBER hwndOwner AS PTR
 	MEMBER pidlRoot AS PTR
 	MEMBER pszDisplayName AS PSZ
@@ -1059,7 +1059,7 @@ VOSTRUCT _winBROWSEINFO
 	MEMBER lPARAM AS LONGINT
 	MEMBER iImage AS INT
 
-FUNCTION __LoadComDlgDLL()
+INTERNAL FUNCTION __LoadComDlgDLL()
 	LOCAL hDll AS PTR
 	LOCAL rsFormat AS ResourceString
 
@@ -1093,13 +1093,13 @@ STATIC GLOBAL gpfnChooseFont AS TChooseFont PTR
 STATIC GLOBAL gpfnCommDlgExtendedError AS TCommDlgExtendedError PTR
 STATIC GLOBAL gpfnGetOpenFileName AS TGetOpenFileName PTR
 STATIC GLOBAL gpfnGetSaveFileName AS TGetSaveFileName PTR
-GLOBAL gpfnPrintDlg AS TPrintDlg PTR
+INTERNAL GLOBAL gpfnPrintDlg AS TPrintDlg PTR
 
 #ifdef __VULCAN__
-   DELEGATE __StdFileHookDelegate( hWnd AS PTR, msg AS DWORD, wParam AS DWORD, lParam AS LONGINT ) AS LOGIC
+   INTERNAL DELEGATE __StdFileHookDelegate( hWnd AS PTR, msg AS DWORD, wParam AS DWORD, lParam AS LONGINT ) AS LOGIC
 #endif
 
-FUNCTION __StdFileHook(hWnd AS PTR, msg AS DWORD, wParam AS DWORD, lParam AS LONGINT) AS LOGIC /* WINCALL */
+INTERNAL FUNCTION __StdFileHook(hWnd AS PTR, msg AS DWORD, wParam AS DWORD, lParam AS LONGINT) AS LOGIC /* WINCALL */
 	LOCAL oStdFileDlg AS OBJECT
 	LOCAL sOFN AS _winOPENFILENAME
 	LOCAL liRet AS LONGINT
@@ -1141,7 +1141,7 @@ FUNCTION __StdFileHook(hWnd AS PTR, msg AS DWORD, wParam AS DWORD, lParam AS LON
 	RETURN FALSE
 
 #ifdef __VULCAN__
-   DELEGATE FolderDialogCallBackDelegate( hWnd AS PTR, uMsg AS DWORD, lParam AS LONGINT, lpData AS LONGINT ) AS INT
+   INTERNAL DELEGATE FolderDialogCallBackDelegate( hWnd AS PTR, uMsg AS DWORD, lParam AS LONGINT, lpData AS LONGINT ) AS INT
 #endif
 
 FUNCTION FolderDialogCallBack(hWnd AS PTR, uMsg AS DWORD, lParam AS LONGINT, lpData AS LONGINT) AS INT /* CALLBACK */

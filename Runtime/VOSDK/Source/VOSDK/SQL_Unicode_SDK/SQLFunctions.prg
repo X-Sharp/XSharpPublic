@@ -6,15 +6,8 @@
 
 USING System.Reflection
 using System.Data
-[Obsolete];
-FUNCTION __SQLMaxStringSize( nValue )
-	RETURN 0
 
-[Obsolete];
-FUNCTION __SQLMaxDisplaySize( nValue )
-	RETURN 0
-
-FUNCTION __GetSymString( uString AS USUAL ) AS STRING STRICT
+INTERNAL FUNCTION __GetSymString( uString AS USUAL ) AS STRING STRICT
 	LOCAL nType AS DWORD
 	LOCAL cRet  AS STRING
 	nType := UsualType( uString )
@@ -28,70 +21,13 @@ FUNCTION __GetSymString( uString AS USUAL ) AS STRING STRICT
 	END SWITCH
 	RETURN cRet
 
-[Obsolete];
-FUNCTION __AdjustString( c AS STRING ) AS STRING STRICT
-	LOCAL nLen	AS DWORD
-	LOCAL nSize	AS DWORD
-	
-	nLen  := SLen( c )
-	nSize := PszLen( String2Psz( c ) )
-	IF nSize < nLen
-		c := SubStr3( c, 1, nSize )
-	ENDIF
-	RETURN c
 
-[Obsolete];
-FUNCTION __GetNULLDataValue( nODBCType AS SHORTINT, lNullAsBlank AS LOGIC ) AS USUAL PASCAL
-	LOCAL xRet AS USUAL
-	IF lNullAsBlank
-		SWITCH nODBCType 
-		CASE SQL_DATE
-			xRet := NULL_DATE
-			
-		CASE SQL_VARCHAR
-			xRet := NULL_STRING
-		END SWITCH
-	ENDIF
-	
-	RETURN xRet
-
-[Obsolete];
-FUNCTION __CheckNULLDataValue( xValue AS USUAL, nODBCType AS SHORTINT ) AS LOGIC PASCAL
-	LOCAL lRet AS LOGIC
-	IF IsNil( xValue )
-		lRet := TRUE
-	ELSE
-		IF IsString( xValue ) .AND. NULL_STRING = xValue
-			lRet := TRUE
-			
-		ELSEIF IsDate( xValue ) .AND. NULL_DATE = xValue
-			lRet := TRUE
-		ENDIF
-	ENDIF
-	
-	RETURN lRet
-
-
-[Obsolete];
-FUNCTION __CheckHandles( hEnv AS USUAL, hDbc AS USUAL, hStmt AS USUAL ) AS LOGIC STRICT
-	LOCAL lRet  AS LOGIC
-	IF IsPtr( hEnv ) .AND. IsPtr( hDbc ) .AND. IsPtr( hStmt )
-		lRet := TRUE
-	ENDIF
-	RETURN lRet
 
 FUNCTION DToCSQL( dDate AS DATE ) AS STRING
 	LOCAL dDT           AS DateTime
 	dDT := dDate
 	RETURN dDT:ToString("yyyy-MM-dd")
 
-[Obsolete];
-FUNCTION MakeTimeStamp( dDate, nSeconds )
-	RETURN ""
-
-[Obsolete];
-FUNCTION  SQL_LEN_DATA_AT_EXEC( nLength AS INT ) AS INT STRICT
-	RETURN -nLength + SQL_LEN_DATA_AT_EXEC_OFFSET
 
 
 

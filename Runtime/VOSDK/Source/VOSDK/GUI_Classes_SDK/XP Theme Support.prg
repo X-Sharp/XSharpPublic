@@ -1,9 +1,9 @@
-PROCEDURE __InitTheme() _INIT3
+INTERNAL PROCEDURE __InitTheme() _INIT3
 	//PP-030909
 	__LoadThemeDll()
 	RETURN
 
-FUNCTION __LoadThemeDll() AS LOGIC STRICT
+INTERNAL FUNCTION __LoadThemeDll() AS LOGIC STRICT
 	//PP-030909
 	LOCAL hModule AS PTR
    LOCAL oVers	AS WinDLLVersion
@@ -41,7 +41,7 @@ FUNCTION __LoadThemeDll() AS LOGIC STRICT
 
 	RETURN glThemeDLLLoaded
 
-FUNCTION AllocUnicodeString(cValue AS STRING) AS PTR STRICT
+INTERNAL FUNCTION AllocUnicodeString(cValue AS STRING) AS PTR STRICT
    LOCAL pUnicodeString AS PTR
 	LOCAL dwSize         AS DWORD
 

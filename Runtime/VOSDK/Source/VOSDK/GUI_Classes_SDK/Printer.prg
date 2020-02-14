@@ -413,10 +413,10 @@ ACCESS WindowArea
 END CLASS
 
 #ifdef __VULCAN__
-   DELEGATE __PrinterAbortProcDelegate( hDCPrinter AS PTR, _Code AS INT ) AS LOGIC
+   INTERNAL DELEGATE __PrinterAbortProcDelegate( hDCPrinter AS PTR, _Code AS INT ) AS LOGIC
 #endif  
 
-FUNCTION __PrinterAbortProc(hDCPrinter AS PTR, _Code AS INT) AS LOGIC /* WINCALL */
+INTERNAL FUNCTION __PrinterAbortProc(hDCPrinter AS PTR, _Code AS INT) AS LOGIC /* WINCALL */
 	LOCAL oPri AS Printer
 
 	oPri :=__WCGetPrinterFromArray(hDCPrinter)
@@ -434,7 +434,7 @@ FUNCTION __PrinterAbortProc(hDCPrinter AS PTR, _Code AS INT) AS LOGIC /* WINCALL
 
 STATIC GLOBAL aPrinterhDCPrinter AS ARRAY
 
-FUNCTION __WCAddPrinterToArray(hDCPrinter AS PTR, oPrinter AS Printer) AS VOID
+INTERNAL FUNCTION __WCAddPrinterToArray(hDCPrinter AS PTR, oPrinter AS Printer) AS VOID
 	//SE-060526
 	LOCAL dwI, dwCount AS DWORD
 
@@ -451,7 +451,7 @@ FUNCTION __WCAddPrinterToArray(hDCPrinter AS PTR, oPrinter AS Printer) AS VOID
 
 	RETURN
 
-FUNCTION __WCDelPrinterFromArray(hDCPrinter AS PTR) AS VOID
+INTERNAL FUNCTION __WCDelPrinterFromArray(hDCPrinter AS PTR) AS VOID
 	//SE-060526
 	LOCAL dwI, dwCount AS DWORD
 
@@ -467,7 +467,7 @@ FUNCTION __WCDelPrinterFromArray(hDCPrinter AS PTR) AS VOID
 
 	RETURN
 
-FUNCTION __WCGetPrinterFromArray(hDCPrinter AS PTR) AS OBJECT
+INTERNAL FUNCTION __WCGetPrinterFromArray(hDCPrinter AS PTR) AS OBJECT
 	//SE-060526
 	LOCAL dwI, dwCount AS DWORD
 

@@ -197,6 +197,10 @@ BEGIN NAMESPACE XSharp.RDD
 
         #region Creation
         /// <inheritdoc />			
+        METHOD SetFieldExtent(fieldCount AS LONG)	AS LOGIC
+            RETURN oRdd:SetFieldExtent(fieldCount)
+            
+        /// <inheritdoc />			
         METHOD AddField(info AS RddFieldInfo)	AS LOGIC
             RETURN oRdd:AddField(info)
             

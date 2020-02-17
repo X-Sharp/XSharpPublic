@@ -5709,5 +5709,8 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="WRN_IllegalPPOption" xml:space="preserve">
     <value>Unrecognized or unsupported #pragma option value '{0}'</value>
   </data>
-
+  <data name="ERR_CaseDifference" xml:space="preserve">
+    <value>The base class '{0}' declares a {1} '{2}' that differs from this {1} '{3}' only in case.</value>
+  </data>
+  
 </root>

@@ -62,6 +62,40 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     overriddenMethod = null;
                 }
             }
+            else if (XSharpString.CaseSensitive && !this.DeclarationModifiers.HasFlag(DeclarationModifiers.New) &&
+                (this.DeclarationModifiers.HasFlag(DeclarationModifiers.Virtual) || this.DeclarationModifiers.HasFlag(DeclarationModifiers.Override)))
+            {
+                // check if we have a base type and if the base type has a method with the same name but different casing
+                var baseType = this.ContainingType.BaseTypeNoUseSiteDiagnostics;
+                var members = baseType.GetMembersUnordered().Where(member =>
+                    member.Kind == SymbolKind.Method && member.IsVirtual && String.Equals(member.Name, this.Name, StringComparison.OrdinalIgnoreCase));
+                if (members.Count() > 0)
+                {
+                    foreach (var member in members)
+                    {
+                        var metSym = member as MethodSymbol;
+                        bool equalSignature = metSym.ParameterCount == this.ParameterCount && this.ReturnType == metSym.ReturnType;
+                        if (equalSignature)
+                        {
+                            var thisTypes = this.ParameterTypes;
+                            var theirTypes = metSym.ParameterTypes;
+                            for (int i = 0; i < thisTypes.Length; i++)
+                            {
+                                if (thisTypes[i] != theirTypes[i])
+                                {
+                                    equalSignature = false;
+                                    break;
+                                }
+                            }
+                        }
+                        if (equalSignature)
+                        {
+                            diagnostics.Add(ErrorCode.ERR_CaseDifference, location, baseType.Name, "method", member.Name, this.Name);
+                        }
+
+                    }
+                }
+            }
             if ((object)overriddenMethod != null)
                 _overrideState = 2;  // checked and has a (correct) override
             else

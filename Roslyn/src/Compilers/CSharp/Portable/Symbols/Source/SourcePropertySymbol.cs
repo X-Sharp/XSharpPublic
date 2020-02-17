@@ -16,7 +16,11 @@ using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 #endif
 namespace Microsoft.CodeAnalysis.CSharp.Symbols
 {
+#if XSHARP
+    internal sealed partial class SourcePropertySymbol : PropertySymbol, IAttributeTargetSymbol
+#else
     internal sealed class SourcePropertySymbol : PropertySymbol, IAttributeTargetSymbol
+#endif
     {
         private const string DefaultIndexerName = "Item";
 
@@ -317,6 +321,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 	            else /*if (this.IsVirtual)*/ {
 	                _modifiers &= ~DeclarationModifiers.Override;
 	            }
+                validateProperty(overriddenOrImplementedProperty, diagnostics,location);
 #endif
             }
 

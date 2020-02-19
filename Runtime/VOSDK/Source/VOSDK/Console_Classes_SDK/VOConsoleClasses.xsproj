@@ -12,6 +12,17 @@
     <XSharpProjectversion>2.0.5.0</XSharpProjectversion>
     <Includepaths>$(Solutiondir)Common</Includepaths>
     <Nostandarddefs>false</Nostandarddefs>
+    <VO15>false</VO15>
+    <FOX1>false</FOX1>
+    <VO14>false</VO14>
+    <VO5>false</VO5>
+    <VO6>false</VO6>
+    <VO7>false</VO7>
+    <VO2>false</VO2>
+    <VO4>false</VO4>
+    <VO8>false</VO8>
+    <VO9>false</VO9>
+    <VO10>false</VO10>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
   </PropertyGroup>
@@ -37,11 +48,6 @@
     <ProjectReference Include="..\..\..\..\XSharp.RT\XSharp.RT.xsproj">
       <Name>XSharp.RT</Name>
       <Project>{ef8d2bf2-e81a-479a-ba4f-294c4c348b66}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\Win32_API_Library_SDK\VOWin32APILibrary.xsproj">
-      <Name>VOWin32APILibrary</Name>
-      <Project>{6c93866f-1894-4e82-9aca-55927cae914a}</Project>
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>

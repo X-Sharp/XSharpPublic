@@ -12384,7 +12384,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot assign to &apos;{0}&apos; because it is a &apos;{1}&apos;.
+        ///   Looks up a localized string similar to Should not assign to &apos;{0}&apos; because it is a &apos;{1}&apos;.
         /// </summary>
         internal static string WRN_AssgReadonlyLocalCause {
             get {

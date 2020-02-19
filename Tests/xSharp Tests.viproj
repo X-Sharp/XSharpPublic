@@ -77650,7 +77650,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C710 - Problems casting numeric values to LOGIC
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 43A04886-532C-4DC6-A4FB-751288B40D7A
 ; ************** APPLICATION C711 - Problem with signed / unsigned arithmetic results *************
 Application = C711 - Problem with signed / unsigned arithmetic results
 IDEVersion = 1.06
@@ -77658,7 +77658,7 @@ GalleryName =
 GalleryPage = 
 GalleryDefaultName = 
 Target = 0
-Platform = AnyCPU
+Platform = x86
 Language = XSharp
 Runtime = CLR4
 Dialect = VO
@@ -77693,8 +77693,8 @@ FileType = Code
 CopyToBin = 0
 [C711 - Problem with signed / unsigned arithmetic results References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,XSharp.Core,1,0,2.1.0.0
-ReferenceGAC = CLR4,XSharp.RT,1,0,2.1.0.0
+ReferenceGAC = XSharp.Core,1,0,2.1.0.0
+ReferenceGAC = XSharp.RT,1,0,2.1.0.0
 [C711 - Problem with signed / unsigned arithmetic results Resources]
 [C711 - Problem with signed / unsigned arithmetic results Native Resources]
 [C711 - Problem with signed / unsigned arithmetic results License files]
@@ -77706,14 +77706,14 @@ ImplicitNamespace=0
 VO1=0
 VO2=0
 VO3=0
-VO4=0
+VO4=1
 VO5=0
 VO6=0
 VO7=0
 VO8=0
 VO9=0
 VO10=0
-VO11=0
+VO11=1
 VO12=0
 VO13=0
 VO14=0

@@ -584,8 +584,29 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                 resultLeft = CreateConversion(left, best.LeftConversion, signature.LeftType, diagnostics);
                 resultRight = CreateConversion(right, best.RightConversion, signature.RightType, diagnostics);
+#if XSHARP
+                var tempResultType = resultType;
+                if (!resultOperatorKind.IsComparison() && resultType.IsIntegralType())
+                {
+                    tempResultType = VOEffectiveResultType(left, right);
+                }
+                if (opType != VOOperatorType.Cast && left.Type != right.Type)
+                {
+                    if (BindVOBinaryOperatorVo11(node, resultOperatorKind, ref left, ref right, ref tempResultType, diagnostics))
+                    {
+                        resultLeft = left;
+                        resultRight = right;
+                    }
+                }
+#endif
                 resultConstant = FoldBinaryOperator(node, resultOperatorKind, resultLeft, resultRight, resultType.SpecialType, diagnostics, ref compoundStringLength);
 #if XSHARP
+
+                if (resultType != tempResultType && resultConstant != null )
+                {
+                    resultConstant = XsConvertConstant(resultConstant, tempResultType.SpecialType);
+                }
+                resultType = tempResultType;
                 // we have changed FoldBinaryOperator to return an Int64 or UInt64 for 2 Int32 or 2 UInt32 operators
                 // when the result does not fit
                 // In that case, leave from here and return the folded constant.
@@ -612,31 +633,16 @@ namespace Microsoft.CodeAnalysis.CSharp
 
 
 #if XSHARP
-            if (opType == VOOperatorType.Cast)
+
+            if (opType == VOOperatorType.Cast && resultType != leftType)// C277 ByteValue >> 2 should not return int but byte.
             {
-                if (resultType != leftType ) // C277 ByteValue >> 2 should not return int but byte.
+                if (!result.Syntax.XIsVoCast)
                 {
-                    if ( !result.Syntax.XIsVoCast)
-                        result = new BoundConversion(node, result, Conversion.ImplicitNumeric, false, false, null, leftType) { WasCompilerGenerated = true };
-                    else
-                        result = new BoundConversion(node, result, Conversion.ImplicitNumeric, false, false, null, rightType) { WasCompilerGenerated = true };
+                    result = new BoundConversion(node, result, Conversion.ImplicitNumeric, false, false, null, leftType) { WasCompilerGenerated = true };
                 }
-            }
-            else
-            {
-                if (resultType.IsIntegralType() && leftType.IsIntegralType() && rightType.IsIntegralType())
-                {
-                    // common situation for binary operators: the result of the operator is larger than the types of the LHS and RHS
-                    // in that case we choose the largest of LHS and RHS and make the resulttype equal to the largest type.
-                    var largest = rightType;
-                    if (largest.SpecialType.SizeInBytes() < leftType.SpecialType.SizeInBytes())
-                    { 
-                        largest = leftType;
-                    }
-                    if (resultType.SpecialType.SizeInBytes() > largest.SpecialType.SizeInBytes())
-                    { 
-                        result = new BoundConversion(node, result, Conversion.ImplicitNumeric, false, false, null, largest) { WasCompilerGenerated = true };
-                    }
+                else
+                { 
+                    result = new BoundConversion(node, result, Conversion.ImplicitNumeric, false, false, null, rightType) { WasCompilerGenerated = true };
                 }
             }
  

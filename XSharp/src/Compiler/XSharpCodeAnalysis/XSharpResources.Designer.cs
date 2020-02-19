@@ -15126,15 +15126,6 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to #pragma directive is not (yet) supported, directive is ignored.
-        /// </summary>
-        internal static string WRN_PreProcessorNoPragma {
-            get {
-                return ResourceManager.GetString("WRN_PreProcessorNoPragma", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Pre-processor: {0}.
         /// </summary>
         internal static string WRN_PreProcessorWarning {

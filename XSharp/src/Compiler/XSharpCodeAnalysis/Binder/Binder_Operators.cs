@@ -1076,6 +1076,118 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
         }
 
+        private TypeSymbol VOEffectiveResultType(BoundExpression left, BoundExpression right)
+        {
+            var leftType = left.Type;
+            var rightType = right.Type;
+            if (leftType == rightType || right.ConstantValue != null)
+            {
+                return leftType;
+            }
+            if (left.ConstantValue != null)
+            {
+                return rightType;
+            }
+            var resultType = leftType;
+            var leftSpecial = leftType.SpecialType;
+            var rightSpecial = rightType.SpecialType;
+            if (Compilation.Options.VOArithmeticConversions)
+            {
+                if (leftSpecial == SpecialType.System_UInt32 || leftSpecial == SpecialType.System_Int32) // DWORD, * -> DWORD and INT32 ,* ->INT32
+                {
+                    resultType = leftType;
+                }
+                else if (rightSpecial == SpecialType.System_Int32)   // *, INT32 ->INT32
+                {
+                    resultType = rightType;
+                }
+                else if (leftSpecial == SpecialType.System_Int16 && rightSpecial == SpecialType.System_UInt32)   // INT16, DWORD ,INT32
+                {
+                    resultType = Compilation.GetSpecialType(SpecialType.System_Int32);
+                }
+                else if (rightSpecial == SpecialType.System_UInt32)   // *, DWORD ->DWORD
+                {
+                    resultType = rightType;
+                }
+                else if (leftSpecial == SpecialType.System_Int16)   // INT16, * -> INT16
+                {
+                    resultType = leftType;
+                }
+                else if (rightSpecial == SpecialType.System_Int16)   // *, INT16 ->INT16
+                {
+                    resultType = rightType;
+                }
+                else if (leftSpecial == SpecialType.System_UInt16)   // WORD, * -> WORD
+                {
+                    resultType = leftType;
+                }
+                else if (rightSpecial == SpecialType.System_UInt16)   // *, WORD ->WORD
+                {
+                    resultType = rightType;
+                }
+            }
+            else
+            {
+                // convert to largest type with preference for LHS type
+                var bytesLHS = leftSpecial.SizeInBytes();
+                var bytesRHS = rightSpecial.SizeInBytes();
+                if (bytesLHS >= bytesRHS )
+                {
+                    resultType = leftType;
+                }
+                else
+                {
+                    resultType = rightType;
+
+                }
+            }
+            return resultType;
+        }
+        private bool BindVOBinaryOperatorVo11(BinaryExpressionSyntax node, BinaryOperatorKind kind, 
+            ref BoundExpression left, ref BoundExpression right, ref TypeSymbol resultType, DiagnosticBag diagnostics)
+        {
+            var leftType = left.Type;
+            var rightType = right.Type;
+            if (leftType == null || rightType == null || ! leftType.IsIntegralType() || ! rightType.IsIntegralType())
+                return false;
+            bool result = false;
+            var effectiveType = VOEffectiveResultType(left, right);
+            if (leftType != effectiveType)
+            {
+                left = CreateConversion(left, Conversion.ImplicitNumeric, effectiveType, diagnostics);
+                result = true;
+            }
+            if (rightType != effectiveType)
+            {
+                right = CreateConversion(right, Conversion.ImplicitNumeric, effectiveType, diagnostics);
+                result = true;
+            }
+            resultType = kind.IsComparison() ? resultType : effectiveType;
+            return result;
+        }
+        ConstantValue XsConvertConstant(ConstantValue constant, SpecialType specialType)
+        {
+            unchecked
+            {
+                switch (specialType)
+                {
+                    case SpecialType.System_Int32:
+                        return ConstantValue.Create((int)constant.Int64Value);
+                    case SpecialType.System_UInt32:
+                        return ConstantValue.Create((uint)constant.Int64Value);
+                    case SpecialType.System_Int16:
+                        return ConstantValue.Create((short)constant.Int64Value);
+                    case SpecialType.System_UInt16:
+                        return ConstantValue.Create((ushort)constant.Int64Value);
+                    case SpecialType.System_UInt64:
+                        return ConstantValue.Create((ulong)constant.Int64Value);
+                    case SpecialType.System_Int64:
+                        return ConstantValue.Create((long)constant.Int64Value);
+                }
+            }
+            return constant;
+        }
+
     }
 }
 

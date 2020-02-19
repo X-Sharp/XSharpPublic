@@ -44,47 +44,108 @@ namespace Microsoft.CodeAnalysis.CSharp
                     break;
             }
         }
-        private void VOCheckSignedUnsigned(BoundExpression expr, BoundConversion conversion)
+        private void VOCheckSignedUnsigned(BoundExpression expr1, BoundExpression expr2)
         {
             // These checks will only be performed when /vo4 Signed-Unsigned conversions is selected
             // That is the only situation where an implicitNumeric conversion is performed.
             // We Check for integral types only
-            if ( _compilation.Options.VOSignedUnsignedConversion &&
-                conversion.Operand.Type != null && conversion.Type != null)
+            expr1 = StripImplicitCasts(expr1);
+            expr2 = StripImplicitCasts(expr2);
+            if ( _compilation.Options.VOSignedUnsignedConversion && expr1.Type != expr2.Type && expr1.Type.IsIntegralType() && expr2.Type.IsIntegralType())
             {
-                var type = conversion.Type;
-                var opType = conversion.Operand.Type;
-                var opKind = conversion.Operand.Kind;
-                if (type.SpecialType.IsIntegralType() &&
-                    opType.SpecialType.IsIntegralType() &&
-                    opKind != BoundKind.Literal &&
-                    opKind != BoundKind.UnaryOperator &&
-                    opKind != BoundKind.BinaryOperator &&               // Binary operators are often merged to 64 bits
-                    expr.Syntax.Kind() != SyntaxKind.CastExpression)
-                //  Unary operators will be handled in the next level
-
+                bool ok = false;
+                if (expr2.ConstantValue != null)
                 {
-                    // Find sources that do not fit in the target
-                    if (opType.SpecialType.SizeInBytes() > type.SpecialType.SizeInBytes())
+                    if (expr2.ConstantValue.SpecialType.IsSignedIntegralType())
                     {
-                        Error(ErrorCode.WRN_ConversionMayLeadToLossOfData, expr, conversion.Operand.Type, conversion.Type);
-                    }
-                    else if (opType.SpecialType.SizeInBytes() == type.SpecialType.SizeInBytes())
-                    {
-                        // Generate warning about signed / unsigned conversions
-                        if (opType.SpecialType.IsSignedIntegralType() != type.SpecialType.IsSignedIntegralType())
+                        var value = expr2.ConstantValue.Int64Value;
+                        switch (expr1.Type.SpecialType)
                         {
-                            Error(ErrorCode.WRN_SignedUnSignedConversion, expr, conversion.Operand.Type, conversion.Type);
+                            case SpecialType.System_SByte:
+                                ok = value >= sbyte.MinValue && value <= sbyte.MaxValue;
+                                break;
+                            case SpecialType.System_Int16:
+                                ok = value >= short.MinValue && value <= short.MaxValue;
+                                break;
+                            case SpecialType.System_Int32:
+                                ok = value >= int.MinValue && value <= int.MaxValue;
+                                break;
+                            case SpecialType.System_Int64:
+                                ok = true;
+                                break;
+                            case SpecialType.System_Byte:
+                                ok = value >= 0 && value <= byte.MaxValue;
+                                break;
+                            case SpecialType.System_UInt16:
+                                ok = value >= 0 && value <= ushort.MaxValue;
+                                break;
+                            case SpecialType.System_UInt32:
+                                ok = value >= 0 && value <= uint.MaxValue;
+                                break;
+                            case SpecialType.System_UInt64:
+                                ok = value >= 0 ;
+                                break;
+                            default:
+                                ok = false;
+                                break;
                         }
+                        if (ok)
+                            return;
                     }
-                    // Optype.Size < Type.Size, only a problem when Optype is Signed and Type is Unsiged
-                    else if (opType.SpecialType.IsSignedIntegralType() && !type.SpecialType.IsSignedIntegralType())
+                    else
                     {
-                        Error(ErrorCode.WRN_SignedUnSignedConversion, expr, conversion.Operand.Type, conversion.Type);
+                        var value = expr2.ConstantValue.UInt64Value;
+                        switch (expr1.Type.SpecialType)
+                        {
+                            case SpecialType.System_SByte:
+                                ok = value <= (ulong)sbyte.MaxValue;
+                                break;
+                            case SpecialType.System_Int16:
+                                ok = value <= (ulong) short.MaxValue;
+                                break;
+                            case SpecialType.System_Int32:
+                                ok = value <= int.MaxValue;
+                                break;
+                            case SpecialType.System_Byte:
+                                ok = value <= byte.MaxValue;
+                                break;
+                            case SpecialType.System_UInt16:
+                                ok = value <= ushort.MaxValue;
+                                break;
+                            case SpecialType.System_UInt32:
+                                ok = value <= uint.MaxValue;
+                                break;
+                            case SpecialType.System_UInt64:
+                                ok = true;
+                                break;
+                            case SpecialType.System_Int64:
+                                ok = value < (ulong)long.MaxValue;
+                                break;
+                            default:
+                                ok = false;
+                                break;
+                        }
+                        if (ok)
+                            return;
                     }
                 }
 
+                // Find sources that do not fit in the target
+                if (expr1.Type.SpecialType.SizeInBytes() > expr2.Type.SpecialType.SizeInBytes())
+                {
+                    Error(ErrorCode.WRN_ConversionMayLeadToLossOfData, expr1, expr1.Type, expr2.Type);
+                }
+                else if (expr1.Type.SpecialType.SizeInBytes() == expr2.Type.SpecialType.SizeInBytes())
+                {
+                   Error(ErrorCode.WRN_SignedUnSignedConversion, expr1, expr1.Type, expr2.Type);
+                }
+                // Optype.Size < Type.Size, only a problem when Optype is Signed and Type is Unsiged
+                else if (expr1.Type.SpecialType.IsSignedIntegralType() && !expr2.Type.SpecialType.IsSignedIntegralType())
+                {
+                    Error(ErrorCode.WRN_SignedUnSignedConversion, expr1, expr1.Type, expr2.Type);
+                }
             }
+
         }
     }
 }

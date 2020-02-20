@@ -5849,11 +5849,8 @@
         <caption translate="true">XS9999</caption>
       </topicref>
     </topicref>
-    <navref href="XsRuntime.chm::\XsRuntime.hhc" build="ALL" id="432597435536033" modified="2018-06-08T13:40:36.423Z" merge="runtime">
-      <caption translate="true">XsRuntime.chm::\XsRuntime.hhc</caption>
-    </navref>
-    <navref href="XsVOSDK.chm::\XsVOSDK.hhc" build="ALL" id="433915860445969" modified="2018-10-18T14:04:49.281Z" merge="runtime">
-      <caption translate="true">XsVOSDK.chm::\XsVOSDK.hhc</caption>
+    <navref href="XSharpRef.chm::\XSharpRef.hhc" build="ALL" id="432597435536033" modified="2018-06-08T13:40:36.423Z" merge="runtime">
+      <caption translate="true">XSharpRef.chm::\XSharpRef.hhc</caption>
     </navref>
     <topicref type="topic" id="424249573402452" build="ALL" modified="2016-02-24T19:47:40.194Z" icon="0" href="X-Examples">
       <caption translate="true">X# Examples</caption>

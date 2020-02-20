@@ -26,7 +26,7 @@
     <para styleclass="Normal">SET DIGITFIXED is functionally equivalent to SetDigitFixed(). &#160;</para>
     <para styleclass="Body Text"><snippet src="__IncludeLibRT" inline="false"/></para>
         <para styleclass="Heading1"><text>See Also</text></para>
-    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetDigitFixed.htm" domain="XsRuntime.chm">SetDigitFixed()</link></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetDigitFixed.htm" domain="XSharpRef.chm">SetDigitFixed()</link></para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

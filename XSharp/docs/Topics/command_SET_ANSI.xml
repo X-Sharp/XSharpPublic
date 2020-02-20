@@ -26,6 +26,6 @@
     <para styleclass="Normal">SET ANSI is functionally equivalent to SetAnsi().</para>
     <para styleclass="Body Text"><snippet src="__IncludeLibRt" inline="false"/></para>
     <para styleclass="Heading1">See Also</para>
-    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetAnsi.htm" domain="XsRuntime.chm">SetAnsi()</link></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetAnsi.htm" domain="XSharpRef.chm">SetAnsi()</link></para>
   </body>
 </topic>

@@ -10,7 +10,6 @@
       <para styleclass="Heading1">-vo11<tab />Compatible numeric conversions </para>
     </header>
     <para styleclass="Normal">The -vo11 option enables Visual Objects compatible arithmetic conversions.</para>
-    <para styleclass="Normal"><text style="font-weight:bold; color:#ff0000;">This option is not supported yet in the current version of the compiler</text></para>
     <para styleclass="Heading2">Syntax</para>
     <para styleclass="Code with box">-vo11[+|-]</para>
     <para styleclass="Heading2">Arguments</para>

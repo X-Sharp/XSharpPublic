@@ -12,6 +12,12 @@ USING System.Collections.Generic
 USING System.Text
 USING System.IO
 
+INTERNAL STATIC CLASS PathHelpers
+    INTERNAL STATIC PROPERTY PathChar AS STRING AUTO
+    STATIC CONSTRUCTOR()
+        PathChar := Path.DirectorySeparatorChar:ToString()
+END CLASS
+
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/addbs/*" />
 /// <seealso cref='M:XSharp.VFP.Functions.DefaultExt(System.String)' />
@@ -24,10 +30,9 @@ FUNCTION AddBs (cPath AS STRING) AS STRING
     IF String.IsNullOrEmpty(cPath)
         RETURN ""
     ENDIF
-    VAR delim := Path.DirectorySeparatorChar:ToString()
     cPath := cPath:TrimEnd()
-    IF ! cPath.EndsWith(delim)
-        cPath += delim
+    IF ! cPath.EndsWith(PathHelpers.PathChar)
+        cPath += PathHelpers.PathChar
     ENDIF
     RETURN cPath
 
@@ -83,7 +88,7 @@ FUNCTION JustDrive(cPath AS STRING) AS STRING
         RETURN ""
     ENDIF
     VAR result := System.IO.Directory.GetDirectoryRoot(cPath)
-    result := result:Replace(Path.DirectorySeparatorChar:ToString(),"")
+    result := result:Replace(PathHelpers.PathChar,"")
     RETURN result
     
 
@@ -124,10 +129,10 @@ FUNCTION JustPath(cPath AS STRING) AS STRING
     IF String.IsNullOrEmpty(cPath)
         RETURN ""
     ENDIF
-    LOCAL cPathChar := Path.DirectorySeparatorChar:ToString() AS STRING
     LOCAL result := cPath AS STRING
-    IF result:IndexOf(cPathChar) >= 0
-        result := result:Substring(0, result:LastIndexOf(cPathChar) -1)
+    LOCAL nPos := result:LastIndexOf(PathHelpers.PathChar) as LONG
+    IF  nPos >= 0
+        result := result:Substring(0, nPos )
     ENDIF
     RETURN result
 

@@ -4,6 +4,8 @@
 // See License.txt in the project root for license information.
 //
 
+// Please note that this code code expects zero based arrays
+
 USING System.Runtime.InteropServices
 USING System.IO
 USING System.Text
@@ -97,7 +99,7 @@ INTERNAL METHOD _SetEOF(lNewValue as LOGIC) AS VOID
 PRIVATE METHOD _AllocateBuffers() AS VOID
 	SELF:_RecordBuffer  := BYTE[]{ SELF:_RecordLength}
 	SELF:_BlankBuffer   := BYTE[]{ SELF:_RecordLength}
-	FOR VAR  i := __ARRAYBASE__ TO SELF:_RecordLength - (1 -__ARRAYBASE__)
+	FOR VAR  i := 0 TO SELF:_RecordLength - 1 
 		SELF:_BlankBuffer[i] := 0x20 // space
 	NEXT
 	FOREACH oFld AS RddFieldInfo IN _Fields
@@ -108,7 +110,7 @@ PRIVATE METHOD _AllocateBuffers() AS VOID
 	
 CONSTRUCTOR()
 	SELF:_hFile := F_ERROR
-	SELF:_Header := DbfHeader{} // DbfHeader is a Structure, so the object is already created, no ?
+	SELF:_Header := DbfHeader{} 
 	SELF:_Header:initialize()
 	SELF:_Locks     := List<LONG>{}
 	SELF:_numformat := (NumberFormatInfo) culture:NumberFormat:Clone()
@@ -1146,10 +1148,7 @@ PRIVATE METHOD _readFieldsHeader() AS LOGIC
 		
 		SELF:SetFieldExtent( fieldCount )
 		LOCAL nStart AS INT
-		nStart := 1
-		IF __ARRAYBASE__ == 0
-			nStart -= 1
-		ENDIF
+		nStart := 0
 		FOR VAR i := nStart TO fieldCount - ( 1 - nStart )
 			local nPos := i*DbfField.SIZE as LONG
 			Array.Copy(fieldsBuffer, nPos, currentField:Buffer, 0, DbfField.SIZE )
@@ -1165,7 +1164,6 @@ PRIVATE METHOD _readFieldsHeader() AS LOGIC
         // Allocate the Buffer to read Records
 		SELF:_RecordLength := SELF:_Header:RecordLen
 		SELF:_AllocateBuffers()
-		
 	ENDIF
 RETURN isOK
 
@@ -1477,12 +1475,8 @@ RETURN __UsualType.Object
 
 
 INTERNAL VIRTUAL METHOD _GetColumn(nFldPos AS LONG) AS DbfColumn
-	LOCAL nArrPos := nFldPos AS LONG
-	IF __ARRAYBASE__ == 0
-		nArrPos -= 1
-    ENDIF
+	LOCAL nArrPos := nFldPos -1 AS LONG
     IF nArrPos >= 0 .AND. nArrPos < SELF:_Fields:Length
-    //
         RETURN (DbfColumn) SELF:_Fields[ nArrPos ]
     ENDIF
     SELF:_dbfError(EDB_FIELDINDEX, EG_ARG)
@@ -2715,8 +2709,8 @@ METHOD initialize() AS VOID
 	PUBLIC Buffer		 AS BYTE[]
 
 METHOD ClearFlags() AS VOID
-    SELF:Offset := 0
     System.Array.Clear(Buffer, OFFSET_FLAGS, SIZE-OFFSET_FLAGS)
+    RETURN
 	
 PROPERTY Name		 AS STRING
 	GET

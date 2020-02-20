@@ -20,7 +20,7 @@ CLASS DBFVFP INHERIT DBFCDX
 		
 	PROPERTY Driver         AS STRING GET "DBFVFP"
     PROPERTY DbcName        AS STRING AUTO
-    PROPERTY DbcPosition    AS INT GET 32 + SELF:_Fields:Length  * 32 +1
+    PROPERTY DbcPosition    AS INT GET DbfHeader.SIZE + SELF:_Fields:Length  * DbfField.SIZE +1
 
     PUBLIC OVERRIDE METHOD Create( openInfo AS DbOpenInfo ) AS LOGIC
 	LOCAL isOk AS LOGIC
@@ -130,7 +130,9 @@ CLASS DBFVFP INHERIT DBFCDX
         lOk := SUPER:Open(info)
         XSharp.RuntimeState.AutoOpen := lOld
         IF lOk
-            SELF:_ReadDbcInfo()
+            IF SELF:_Header:Version:IsVfp()
+                SELF:_ReadDbcInfo()
+            ENDIF
             IF XSharp.RuntimeState.AutoOpen
                 SELF:OpenProductionIndex(info)
             ENDIF

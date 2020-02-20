@@ -1095,7 +1095,7 @@ PRIVATE METHOD _readHeader() AS LOGIC
 	IF ! SELF:IsOpen
 		RETURN FALSE
 	ENDIF
-    isOK := FRead3(SELF:_hFile, SELF:_Header:Buffer, DbfHeader.SIZE) == DbfHeader.SIZE 
+    isOK := SELF:_Header:Read(SELF:_hFile)
     //
 	IF isOK 
 		SELF:_HeaderLength := SELF:_Header:HeaderLen
@@ -1195,24 +1195,14 @@ PROTECTED METHOD _writeHeader() AS LOGIC
     // Really ?
 	IF SELF:_Header:isHot 
 		IF SELF:_ReadOnly 
-        // Error !! Cannot be written !
+            // Error !! Cannot be written !
 			SELF:_dbfError( ERDD.READONLY, XSharp.Gencode.EG_READONLY )
 			RETURN FALSE
 		ENDIF
-    // Update the Date/Time information
-		LOCAL dtInfo AS DateTime
-		dtInfo := DateTime.Now
-		SELF:_Header:Year := (BYTE)(dtInfo:Year % 100)
-		SELF:_Header:Month := (BYTE)dtInfo:Month
-		SELF:_Header:Day := (BYTE)dtInfo:Day
-    // Update the number of records
+        // Update the number of records
 		SELF:_Header:RecCount := SELF:_RecCount
-    // Now Write
-    // Go Top
-		FSeek3( SELF:_hFile, 0, FS_SET )
-    // Write just the File Header
 		TRY
-			ret := ( FWrite3( SELF:_hFile, SELF:_Header:Buffer, (DWORD)DbfHeader.SIZE ) == (DWORD)DbfHeader.SIZE )
+            ret := SELF:_Header:Write(SELF:_hFile)
 		CATCH ex AS Exception
 			SELF:_dbfError( ex, ERDD.WRITE, XSharp.Gencode.EG_WRITE )
 			ret := FALSE
@@ -2516,6 +2506,31 @@ RETURN
     
     */
 
+METHOD Read(hFile as IntPtr) AS LOGIC
+    VAR nPos := FTell(hFile)
+    FSeek3(hFile, 0, FS_SET)
+    VAR Ok := FRead3(hFile, SELF:Buffer, DbfHeader.SIZE) == DbfHeader.SIZE
+    IF Ok
+        FSeek3(hFile, (LONG) nPos, FS_SET)
+    ENDIF
+    RETURN Ok
+
+METHOD Write(hFile as IntPtr) AS LOGIC
+	LOCAL dtInfo AS DateTime
+	dtInfo := DateTime.Now
+    // Update the Date/Time information
+	SELF:Year   := (BYTE)(dtInfo:Year % 100)
+	SELF:Month  := (BYTE)dtInfo:Month
+	SELF:Day    := (BYTE)dtInfo:Day
+
+    VAR nPos := FTell(hFile)
+    FSeek3(hFile, 0, FS_SET)
+    VAR Ok := FWrite3(hFile, SELF:Buffer, DbfHeader.SIZE) == DbfHeader.SIZE
+    IF Ok
+        FSeek3(hFile, (LONG) nPos, FS_SET)
+        SELF:isHot := FALSE
+    ENDIF
+    RETURN Ok
 
 
 END CLASS

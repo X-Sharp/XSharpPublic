@@ -586,11 +586,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                 resultRight = CreateConversion(right, best.RightConversion, signature.RightType, diagnostics);
 #if XSHARP
                 var tempResultType = resultType;
-                if (!resultOperatorKind.IsComparison() && resultType.IsIntegralType())
-                {
-                    tempResultType = VOEffectiveResultType(left, right);
-                }
-                if (opType != VOOperatorType.Cast && left.Type != right.Type)
+                
+                if (opType != VOOperatorType.Cast )
                 {
                     if (BindVOBinaryOperatorVo11(node, resultOperatorKind, ref left, ref right, ref tempResultType, diagnostics))
                     {

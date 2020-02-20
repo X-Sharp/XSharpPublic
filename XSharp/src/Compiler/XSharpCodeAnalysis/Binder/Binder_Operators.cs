@@ -1076,19 +1076,22 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
         }
 
-        private TypeSymbol VOEffectiveResultType(BoundExpression left, BoundExpression right)
+        private bool VOEffectiveResultType(BoundExpression left, BoundExpression right, ref TypeSymbol resultType)
         {
             var leftType = left.Type;
             var rightType = right.Type;
+            if (!leftType.IsIntegralType() || !rightType.IsIntegralType() || !resultType.IsIntegralType())
+            {
+                return false;
+            }
             if (leftType == rightType || right.ConstantValue != null)
             {
-                return leftType;
+                return false;
             }
             if (left.ConstantValue != null)
             {
-                return rightType;
+                return false;
             }
-            var resultType = leftType;
             var leftSpecial = leftType.SpecialType;
             var rightSpecial = rightType.SpecialType;
             if (Compilation.Options.VOArithmeticConversions)
@@ -1141,7 +1144,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                 }
             }
-            return resultType;
+            return true;
         }
         private bool BindVOBinaryOperatorVo11(BinaryExpressionSyntax node, BinaryOperatorKind kind, 
             ref BoundExpression left, ref BoundExpression right, ref TypeSymbol resultType, DiagnosticBag diagnostics)
@@ -1151,7 +1154,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (leftType == null || rightType == null || ! leftType.IsIntegralType() || ! rightType.IsIntegralType())
                 return false;
             bool result = false;
-            var effectiveType = VOEffectiveResultType(left, right);
+            TypeSymbol effectiveType = resultType;
+            if (!VOEffectiveResultType(left, right, ref effectiveType))
+                return false;
             if (leftType != effectiveType)
             {
                 left = CreateConversion(left, Conversion.ImplicitNumeric, effectiveType, diagnostics);

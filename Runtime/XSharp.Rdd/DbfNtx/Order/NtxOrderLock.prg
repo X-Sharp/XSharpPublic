@@ -94,7 +94,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 ENDIF
                 seed := (seed * 1221 + 1) % ParkingLot:LOT_SIZE 
                 SELF:_parkPlace := seed
-                IF !SELF:_lockBytes( ~(SELF:_parkPlace + ParkingLot.TOKEN_AREA), 1)
+                IF !SELF:_lockBytes( (DWORD) ~(SELF:_parkPlace + ParkingLot.TOKEN_AREA), 1)
                     RETURN FALSE
                 ENDIF
             ENDDO

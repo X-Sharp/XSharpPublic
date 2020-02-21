@@ -310,7 +310,34 @@ BEGIN NAMESPACE XSharp.VO.Tests
             Assert.Equal(DateTime(2001,1,2,3,4), DateTime{2001,1,2,3,4,0})
             Assert.Equal(DateTime(2001,1,2,3,4,5), DateTime{2001,1,2,3,4,5})
             RETURN
+		[Fact, Trait("Category", "Date")];
+		METHOD OperatorTest() AS VOID
+			local d1 as Date
+            local d2 as Date
+            local u as usual
+            local f as float
+            d1 := 2020.02.01
+            d2 := 2020.01.01
+            Assert.Equal(31, d1 - d2)
+            Assert.Equal(-31, d2 - d1)
+            d2 := d1 - 1
+            Assert.Equal(2020.01.31, d2)
+            d2 := d1 + 1
+            Assert.Equal(2020.02.02, d2)
+            d2++
+            Assert.Equal(2020.02.03, d2)
+            d2--
+            Assert.Equal(2020.02.02, d2)
+            f := 1
+            d2 -= f
+            Assert.Equal(2020.02.01, d2)
+            u := 1
+            Assert.Equal((DATE) 2020.01.31, (DATE) (d2 - u))
+            u := 2020.01.01
+            Assert.Equal(31 , (INT) (d2 - u))
+            
 
+		RETURN
 
 	END CLASS
 END NAMESPACE // XSharp.Runtime.Tests

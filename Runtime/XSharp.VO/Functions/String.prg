@@ -95,7 +95,7 @@ FUNCTION Crypt(bSource AS BYTE[],bKey AS BYTE[]) AS BYTE[]
         IF nKeyPos > keyLen
             nKeyPos := 1
         ENDIF
-        bCurrent  := bSource[nPos]  ~ bKey[nKeyPos]
+        bCurrent  := (BYTE) (bSource[nPos]  ~ bKey[nKeyPos])
         uiCode1   := (WORD) (uiCode1 ~ (uiCode1 >> 8))
         uiRotate  := (WORD) (uiCode1 & 0x0F)
         uiCode1   := (WORD) ((uiCode1 >> uiRotate)  | (uiCode1 << (16 - uiRotate)))
@@ -116,7 +116,7 @@ FUNCTION Crypt(bSource AS BYTE[],bKey AS BYTE[]) AS BYTE[]
             uiCode2 := (WORD)( (uiCode2 & 0xFF00) | bNibble ) 
             uiCounter--
         ENDDO
-        bDest[nPos] := bCurrent ~ bNibble
+        bDest[nPos] := (BYTE) (bCurrent ~ bNibble)
         nPos ++
         nKeyPos++
     ENDDO

@@ -74,9 +74,16 @@ CLASS Console
         END SET
     END PROPERTY
     
-    PROPERTY TextAttribute AS WORD ;
-        GET (WORD) System.Console.ForegroundColor ;
-        SET System.Console.ForegroundColor  := (ConsoleColor) VALUE
+    PROPERTY TextAttribute AS WORD
+    GET
+        RETURN (WORD)System.Console.ForegroundColor | (WORD)(System.Console.BackgroundColor) << 4
+    END GET
+    SET
+        System.Console.ForegroundColor := (ConsoleColor) (WORD)(VALUE & 0x000F)
+        System.Console.BackgroundColor := (ConsoleColor) (WORD)((VALUE >> 4) & 0x000F)
+    END SET
+    END PROPERTY
+
     
     PROPERTY Title AS STRING ;
         GET System.Console.Title ;

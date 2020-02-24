@@ -145,7 +145,7 @@ METHOD Directory (cFile, nFlags)
     DEFAULT(@cFile, "*.*")
 
     //  UH 05/25/2000
-    DEFAULT(@nFlags, INTERNET_FLAG_RELOAD + INTERNET_FLAG_RESYNCHRONIZE)
+    DEFAULT(@nFlags, _OR(INTERNET_FLAG_RELOAD , INTERNET_FLAG_RESYNCHRONIZE))
 
     IF SELF:hConnect = NULL_PTR
         RETURN aRet
@@ -348,7 +348,7 @@ METHOD OpenFile(cRemoteFile, nAccess, nFlags)
     LOCAL n         AS DWORD
     LOCAL nContxt   AS DWORD
 
-    DEFAULT(@nFlags, FTP_TRANSFER_TYPE_BINARY + INTERNET_FLAG_RELOAD)
+    DEFAULT(@nFlags, _OR(FTP_TRANSFER_TYPE_BINARY , INTERNET_FLAG_RELOAD))
     DEFAULT(@nAccess, 0)
     DEFAULT(@cRemoteFile, "")
 

@@ -5,6 +5,7 @@
 //
 
 BEGIN NAMESPACE XSharp.ADS
+/// <summary>List of possible Advantage Error codes</summary>
 ENUM AceError AS WORD
 	MEMBER SUCCESS := ACE.AE_SUCCESS
 	MEMBER ALLOCATION_FAILED := ACE.AE_ALLOCATION_FAILED
@@ -215,6 +216,7 @@ ENUM AceError AS WORD
 	MEMBER ILLEGAL_EVENT_COMMAND := ACE.AE_ILLEGAL_EVENT_COMMAND
 	MEMBER KEY_CANNOT_BE_NULL := ACE.AE_KEY_CANNOT_BE_NULL
 END ENUM
+/// <summary>List of possible Trigger event codes</summary>
 
 ENUM AceTrigEvent AS DWORD
     MEMBER INSERT := ACE.ADS_TRIGEVENT_INSERT 
@@ -222,6 +224,7 @@ ENUM AceTrigEvent AS DWORD
     MEMBER DELETE := ACE.ADS_TRIGEVENT_DELETE
 END ENUM
 
+/// <summary>List of possible Trigger type codes</summary>
 ENUM AceTrigType  AS DWORD
     MEMBER BEFORE       := ACE.ADS_TRIGTYPE_BEFORE 
     MEMBER INSTEADOF    := ACE.ADS_TRIGTYPE_INSTEADOF 
@@ -229,7 +232,7 @@ ENUM AceTrigType  AS DWORD
     MEMBER CONFLICTON   := ACE.ADS_TRIGTYPE_CONFLICTON 
 END ENUM
 
-
+/// <summary>List of possible Trigger option codes</summary>
 ENUM AceTrigOptions AS DWORD
     MEMBER NO_VALUES            := ACE.ADS_TRIGOPTIONS_NO_VALUES 
     MEMBER WANT_VALUES          := ACE.ADS_TRIGOPTIONS_WANT_VALUES 
@@ -239,6 +242,7 @@ ENUM AceTrigOptions AS DWORD
 END ENUM
 
 
+/// <summary>List of possible Validation codes</summary>
 ENUM AceValidate AS WORD
 	MEMBER NO           := ACE.ADS_NO_VALIDATE 
 	MEMBER NO_SAVE      := ACE.ADS_VALIDATE_NO_SAVE 
@@ -246,6 +250,18 @@ ENUM AceValidate AS WORD
 	MEMBER APPEND_FAIL  := ACE.ADS_VALIDATE_APPEND_FAIL 
 	MEMBER RETURN_ERROR := ACE.ADS_VALIDATE_RETURN_ERROR 
 END ENUM
+
+
+/// <summary>
+/// List of possible character types and collations. <br/>
+/// </summary>
+/// <remarks>
+/// The collations with VFP in their name match the Visual FoxPro collations. <br/>
+/// CI in the name means Case Insensitive <br/>
+/// AS in the name means Accent Sensitive <br/>
+/// BIN in the name means Binary <br/>
+/// The names match the entries in "adscollate.adt "
+/// </remarks>
 
 PUBLIC ENUM AdsCharTypes AS WORD
 	MEMBER ADS_ANSI := 1
@@ -318,6 +334,7 @@ PUBLIC ENUM AdsCharTypes AS WORD
 	MEMBER SLOVAK_VFP_CI_AS_895
 END ENUM
 
+/// <summary>List of possible field types.</summary>
 PUBLIC ENUM AdsFieldType
     MEMBER LOGICAL              := ACE.ADS_LOGICAL 
     MEMBER NUMERIC              := ACE.ADS_NUMERIC 
@@ -349,9 +366,8 @@ PUBLIC ENUM AdsFieldType
     MEMBER NMEMO                := ACE.ADS_NMEMO  
 END ENUM
 
-END NAMESPACE
 
-
+/// <exclude/>
 STATIC CLASS AdsEnumExtensions
 
     STATIC METHOD IsBinary(SELF type AS AdsFieldType ) AS LOGIC
@@ -374,3 +390,4 @@ STATIC CLASS AdsEnumExtensions
 
 
 END CLASS
+END NAMESPACE

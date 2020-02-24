@@ -431,7 +431,7 @@ METHOD UpdateTools()
 
 END CLASS
 
-PROCEDURE __WCRegisterOleContWindow _INIT3
+INTERNAL PROCEDURE __WCRegisterOleContWindow _INIT3
 	LOCAL wc IS _WINWNDclass
 
 	wc:style 		:= _OR(CS_DBLCLKS, CS_GLOBALCLASS)

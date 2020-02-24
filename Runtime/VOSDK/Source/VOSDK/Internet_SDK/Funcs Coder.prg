@@ -84,7 +84,7 @@ STATIC FUNCTION __CheckQPEncodeWord(cText AS STRING, dwMaxChars REF DWORD, dwPos
 	dwPos--
 
 	RETURN lEncoded
-FUNCTION __DecodeAtom(cValue AS STRING, lDecoded REF LOGIC) AS STRING STRICT
+INTERNAL FUNCTION __DecodeAtom(cValue AS STRING, lDecoded REF LOGIC) AS STRING STRICT
    //SE-070425
    LOCAL dwPos    AS DWORD
    LOCAL cCharSet AS STRING
@@ -111,7 +111,7 @@ FUNCTION __DecodeAtom(cValue AS STRING, lDecoded REF LOGIC) AS STRING STRICT
       
    RETURN cValue
 
-FUNCTION __DecodeField(cValue AS STRING, lFoldedEncode REF LOGIC) AS STRING STRICT
+INTERNAL FUNCTION __DecodeField(cValue AS STRING, lFoldedEncode REF LOGIC) AS STRING STRICT
    //SE-040705
    //see RFC 2047
    //SE-080513
@@ -157,7 +157,7 @@ FUNCTION __DecodeField(cValue AS STRING, lFoldedEncode REF LOGIC) AS STRING STRI
    ENDDO
 
    RETURN cRet
-FUNCTION __EncodeField(cValue AS STRING, dwCurrentLineLen AS DWORD) AS STRING STRICT
+INTERNAL FUNCTION __EncodeField(cValue AS STRING, dwCurrentLineLen AS DWORD) AS STRING STRICT
    //SE-070419
    //see RFC 2047 
    LOCAL dwMaxlength    AS DWORD 
@@ -212,14 +212,14 @@ FUNCTION __EncodeField(cValue AS STRING, dwCurrentLineLen AS DWORD) AS STRING ST
    RETURN cResult 
    
    
-FUNCTION __FormatAddress(cAddress AS STRING, cName AS STRING) AS STRING STRICT
+INTERNAL FUNCTION __FormatAddress(cAddress AS STRING, cName AS STRING) AS STRING STRICT
    //SE-040701
    cAddress := "<" + cAddress + ">"
    IF ! Empty(cName)
       cAddress := e"\"" + cName + e"\" " + cAddress
    ENDIF
    RETURN  cAddress
-FUNCTION __GetAddressList(cList AS STRING) AS ARRAY STRICT
+INTERNAL FUNCTION __GetAddressList(cList AS STRING) AS ARRAY STRICT
    LOCAL dwPos    AS DWORD
    LOCAL aList    AS ARRAY
    LOCAL cAddress AS STRING
@@ -242,7 +242,7 @@ FUNCTION __GetAddressList(cList AS STRING) AS ARRAY STRICT
    RETURN aList
 
 
-FUNCTION __GetMailInfo(cSection AS STRING, cToken AS STRING, lRemoveSpace AS LOGIC)  AS STRING STRICT
+INTERNAL FUNCTION __GetMailInfo(cSection AS STRING, cToken AS STRING, lRemoveSpace AS LOGIC)  AS STRING STRICT
    // SE-190407
    // cSection should begin with the first charactor of a line, otherwise a correct token search can't be granted.
    // cToken must be found a the beginning of a line.
@@ -315,7 +315,7 @@ FUNCTION __GetMailInfo(cSection AS STRING, cToken AS STRING, lRemoveSpace AS LOG
    
 	RETURN cRet //AllTrim(cRet)
 
-FUNCTION __GetNextAddress(cBuffer AS STRING, dwPosition REF DWORD) AS STRING STRICT
+INTERNAL FUNCTION __GetNextAddress(cBuffer AS STRING, dwPosition REF DWORD) AS STRING STRICT
    //SE-070611 
     LOCAL lEscaped       AS LOGIC
     LOCAL lQuoted        AS LOGIC
@@ -400,7 +400,7 @@ FUNCTION __GetNextAddress(cBuffer AS STRING, dwPosition REF DWORD) AS STRING STR
 	
 	RETURN NULL_STRING
 
-FUNCTION __ParseAddress(cBuffer AS STRING, cName REF STRING) AS STRING STRICT
+INTERNAL FUNCTION __ParseAddress(cBuffer AS STRING, cName REF STRING) AS STRING STRICT
    //SE-040701
    //SE-070420
    //  RFC 1036: " ... three permissible forms are:
@@ -986,7 +986,7 @@ FUNCTION QPEncode(cText AS STRING, lEncodeSpace := FALSE AS LOGIC) AS STRING STR
 
     RETURN cResult
 
-FUNCTION __CreateAddressList(cSection AS STRING, aList AS ARRAY, lSectionAlways := FALSE AS LOGIC) AS STRING STRICT
+INTERNAL FUNCTION __CreateAddressList(cSection AS STRING, aList AS ARRAY, lSectionAlways := FALSE AS LOGIC) AS STRING STRICT
    //SE-070419
    LOCAL dwI       AS DWORD
    LOCAL dwCount   AS DWORD

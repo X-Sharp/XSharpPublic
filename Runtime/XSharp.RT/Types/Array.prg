@@ -244,8 +244,8 @@ BEGIN NAMESPACE XSharp
             RETURN __Array{a}
 
         INTERNAL STATIC METHOD Copy(aSource AS ARRAY,aTarget AS ARRAY,;
-            start AS DWORD, sourceLen AS DWORD, offSet AS DWORD, targetLen AS DWORD ) AS VOID
-            LOCAL x AS DWORD
+            start AS LONG, sourceLen AS LONG, offSet AS LONG, targetLen AS LONG ) AS VOID
+            LOCAL x AS LONG
             // Adjust
             start-=1
             offSet-=1
@@ -253,7 +253,7 @@ BEGIN NAMESPACE XSharp
             targetLen-=1
             IF start < sourceLen
                 FOR x := start UPTO sourceLen
-                    aTarget:_internalList[(INT) offSet] := aSource:_internalList[(INT) x]
+                    aTarget:_internalList[offSet] := aSource:_internalList[ x]
                     offSet++
                     IF offSet > targetLen
                         EXIT
@@ -261,7 +261,7 @@ BEGIN NAMESPACE XSharp
                 NEXT
             ELSE
                 FOR x := start DOWNTO sourceLen
-                    aTarget:_internalList[(INT) offSet] := aSource:_internalList[(INT) x]
+                    aTarget:_internalList[offSet] := aSource:_internalList[x]
                     offSet++
                     IF offSet > targetLen
                         EXIT

@@ -483,7 +483,7 @@ BEGIN NAMESPACE XSharp.RDD
                 ENDIF
 			ENDIF
 			RETURN TRUE
-			
+	    /// <summary>Set the Number of Fields the AddField Method will add.</summary>
 		VIRTUAL METHOD SetFieldExtent( fieldCount AS LONG ) AS LOGIC
             SELF:_Fields        := RddFieldInfo[]{ fieldCount }
 			SELF:_fieldNames	:= Dictionary<STRING, INT>{StringComparer.OrdinalIgnoreCase}

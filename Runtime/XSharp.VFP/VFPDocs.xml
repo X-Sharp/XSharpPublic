@@ -7507,40 +7507,6 @@ You can create filtered indexes in X#. If you include the optional FOR lExpressi
 <b>USE</b> and <b>SET INDEX</b> both support an index file name list that makes it possible for you to open multiple index files for a table. Any combination of single-entry index file names, structural compound, or independent compound index file names can be included in the index file name list. <b>FOR( )</b> is similar to SYS(2021) and is provided for compatibility with dBASE IV.
 </remarks>
 </for>
-<forceext>
-<summary>
-Returns a string with the old file name extension replaced by a new extension.
-</summary>
-<param name="cFileName">
-
- Specifies the file name (with or without a path or extension), which will get a new extension.
-
-</param>
-<param name="cExtension">
-
- Specifies the new extension (without a period) for cFileName.
-</param>
-<returns>
-Character
-</returns>
-</forceext>
-<forcepath>
-<summary>
-Returns a file name with a new path name substituted for the old one.
-</summary>
-<param name="cFileName">
-
- Specifies the file name (with or without a path or extension), which will get a new path.
-
-</param>
-<param name="cPath">
-
- Specifies the new path for cFileName.
-</param>
-<returns>
-Character
-</returns>
-</forcepath>
 <found>
 <summary>
 Determines whether the most recently executed <b>CONTINUE</b>, <b>FIND</b>, <b>LOCATE</b>, or <b>SEEK</b> command was successful or if the record pointer was moved in a related table.
@@ -8704,46 +8670,7 @@ Character data type. <b>HOME( )</b> returns the names of specific X# and Visual 
 ? 'X# user documents subdirectory: ', HOME(8)</code>
 </example>
 </home>
-<icase>
-<summary>
-Evaluates the results from a list of conditions.
-</summary>
-<param name="lCondition">
 
-Specifies a condition as a logical expression to evaluate.
-If lCondition evaluates to False (.F.), <b>ICASE( )</b> continues to evaluate the next condition and returns the corresponding eResult for that condition if it evaluates to True (.T.). If lCondition evaluates to null (.NULL.), X# treats lCondition as if it evaluated to False (.F.). 
-
-</param>
-<param name="eResult">
-
-Specifies a result to return if lCondition evaluates to True (.T.).
-
-</param>
-<param name="eOtherwiseResult">
-
-Contains the result returned if all conditions evaluate to False (.F.).
-</param>
-<returns>
-
-<b>ICASE( )</b> returns the first eResult as soon as lCondition evaluates to True (.T.). 
-If all conditions evaluate to False (.F.), <b>ICASE( )</b> returns eOtherwiseResult.
-If eOtherwiseResult is omitted, and all conditions evaluate to False (.F.), <b>ICASE( )</b> returns null (.NULL.).
-</returns>
-<remarks>
-You must always pass a set of two parameters to <b>ICASE( )</b>. If you pass an odd number of parameters, the last parameter is treated as the return value for eOtherwiseResult.
-You can pass up to 100 pairs of parameters for <b>ICASE( )</b>.
-If you use a long <b>ICASE( )</b> expression in a filter expression, such as in a <b>FOR</b> or <b>WHERE</b> clause, make sure that <b>SYS(3055)</b> is set to an appropriate complexity level to avoid generating an error. For more information, see SYS(3055) - FOR and WHERE Clause Complexity.
-</remarks>
-<example>
-The following example demonstrates different scenarios using <b>ICASE( )</b> to evaluate expressions and returning certain values based on the results of those expressions.
-The following line of code displays "First is true" because the first expression evaluates to True (.T.).
- <code language="X#">? ICASE(1+1=2,"First is true",1+1=3,"Second is false","None are true")</code>
-The following line of code displays "Second is true" because the first expression evaluates to False (.F.), but the second expression evaluates to True (.T.).
- <code language="X#">? ICASE(1+2=2,"First is false",1+2=3,"Second is true","None are true")</code>
-The following line of code displays "None are true", which is the last result specified, because the first and second expressions evaluate to False (.F.).
- <code language="X#">? ICASE(1+2=2,"First is false",1+1=3,"Second is false","None are true")</code>
-</example>
-</icase>
 <idxcollate>
 <summary>
 Returns the collating sequence for an index or index tag.

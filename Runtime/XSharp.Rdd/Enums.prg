@@ -216,7 +216,14 @@ BEGIN NAMESPACE XSharp.RDD
                 RETURN SetAnsi()        
             END SWITCH
             RETURN FALSE
- 
+        STATIC METHOD IsVfp (SELF version as DBFVersion) AS LOGIC
+            SWITCH version
+            CASE DBFVersion.VisualFoxPro
+            CASE DBFVersion.VisualFoxProAutoIncrement
+            CASE DBFVersion.VisualFoxProVarChar
+                RETURN TRUE
+            END SWITCH
+            RETURN FALSE
     END CLASS    
     
     

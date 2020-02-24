@@ -208,7 +208,7 @@ ASSIGN Size(oNewDim)
 
 END CLASS
 
-FUNCTION __LoadMSVFWDll()
+INTERNAL FUNCTION __LoadMSVFWDll()
 	LOCAL hDll AS PTR
 	LOCAL rsFormat AS ResourceString
 
@@ -227,7 +227,7 @@ FUNCTION __LoadMSVFWDll()
 
 	RETURN (glMSVFWDllLoaded := TRUE)
 
-PROCEDURE __WCRegisterMMContWindow _INIT3
+INTERNAL PROCEDURE __WCRegisterMMContWindow _INIT3
 	LOCAL wc IS _WINWNDclass
 
 	wc:style := _OR(CS_DBLCLKS, CS_GLOBALCLASS)
@@ -260,7 +260,7 @@ FUNCTION TMCIWndCreate(hwndParent AS PTR, hInstance AS PTR, dwStyle AS DWORD, sz
 
 
 #region defines
-DEFINE __WCMMContWindowClass := "_VOMMContainer"
+INTERNAL DEFINE __WCMMContWindowClass := "_VOMMContainer"
 DEFINE MM_AVI := 2
 DEFINE MM_BMP := 1
 DEFINE MM_UNKNOWN := 0

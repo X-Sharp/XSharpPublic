@@ -25,7 +25,6 @@ BEGIN NAMESPACE XSharp
         #region STATIC fields
         /// <exclude />
         PUBLIC STATIC _NIL AS __Usual
-        PRIVATE STATIC dialect as XSharpDialect
         #endregion
 
         #region PRIVATE fields
@@ -37,8 +36,7 @@ BEGIN NAMESPACE XSharp
         #region constructors
         /// <exclude />
         STATIC CONSTRUCTOR
-            dialect := RuntimeState.Dialect 
-            IF dialect == XSharpDialect.FoxPro
+            IF RuntimeState.Dialect  == XSharpDialect.FoxPro
                 _NIL := __Usual{__UsualType.Logic,FALSE}
             ELSE
                 _NIL := __Usual{__UsualType.Void}
@@ -2544,7 +2542,7 @@ BEGIN NAMESPACE XSharp
         [DebuggerStepThroughAttribute];
         STATIC METHOD ToObject(u AS __Usual) AS OBJECT
              IF !u:_initialized
-                IF dialect == XSharpDialect.FoxPro
+                IF RuntimeState.Dialect  == XSharpDialect.FoxPro
                     RETURN FALSE
                 ELSE
                     RETURN NULL
@@ -2768,7 +2766,7 @@ BEGIN NAMESPACE XSharp
             GET
               IF SELF:IsArray
                  RETURN  SELF:_arrayValue:__GetElement(index)
-              ELSEIF SELF:IsString .and. dialect == XSharpDialect.XPP .and. index:Length == 1
+              ELSEIF SELF:IsString .and. RuntimeState.Dialect  == XSharpDialect.XPP .and. index:Length == 1
                     VAR s := SELF:_stringValue
                     var i := index[1]
                     IF i>= 0 .AND. i < s:Length
@@ -2784,8 +2782,8 @@ BEGIN NAMESPACE XSharp
                       RETURN props[pos]
                   ENDIF
               ENDIF
-
-              THROW InvalidCastException{VO_Sprintf(VOErrors.USUALNOTINDEXED, typeof(IIndexedProperties):FullName)}
+              var message := typeof(IIndexedProperties):FullName + " ( actual type='" + SELF:ValType + "', dialect=" + RuntimeState.Dialect :ToString()+", index length=" + index:Length:ToString()+")"
+              THROW InvalidCastException{VO_Sprintf(VOErrors.USUALNOTINDEXED, message)}
             END GET
             SET
               IF SELF:IsArray
@@ -2819,7 +2817,7 @@ BEGIN NAMESPACE XSharp
                     VAR a := SELF:_arrayValue
                     RETURN a:__GetElement(index)
                 ENDIF
-                IF SELF:IsString .and. dialect == XSharpDialect.XPP
+                IF SELF:IsString .and. RuntimeState.Dialect == XSharpDialect.XPP
                     VAR s := SELF:_stringValue
                     IF index >= 0 .AND. index < s:Length
                         RETURN s:Substring(index, 1)
@@ -2883,7 +2881,7 @@ BEGIN NAMESPACE XSharp
             IF lhs:IsString
                 RETURN __StringEquals( lhs:_stringValue, rhs)
             ELSEIF lhs:IsNil
-                IF dialect == XSharpDialect.FoxPro
+                IF RuntimeState.Dialect  == XSharpDialect.FoxPro
                     // Fox throws an error
                     THROW BinaryError("<>", __CavoStr(VOErrors.ARGSINCOMPATIBLE), TRUE, lhs, rhs)
                 ELSE
@@ -2912,7 +2910,7 @@ BEGIN NAMESPACE XSharp
             /// <summary>This method is used by the compiler for code that does an inexact comparison.</summary>
         STATIC METHOD __InexactNotEquals( lhs AS __Usual, rhs AS STRING ) AS LOGIC
             IF lhs:IsNil 
-                IF dialect == XSharpDialect.FoxPro
+                IF RuntimeState.Dialect  == XSharpDialect.FoxPro
                     THROW BinaryError("<>", __CavoStr(VOErrors.ARGSINCOMPATIBLE), TRUE, lhs, rhs)
                 ELSE
                     RETURN TRUE         // one is NIL so notequals returns TRUE

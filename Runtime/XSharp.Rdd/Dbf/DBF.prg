@@ -4,6 +4,8 @@
 // See License.txt in the project root for license information.
 //
 
+// Please note that this code code expects zero based arrays
+
 USING System.Runtime.InteropServices
 USING System.IO
 USING System.Text
@@ -97,7 +99,7 @@ INTERNAL METHOD _SetEOF(lNewValue as LOGIC) AS VOID
 PRIVATE METHOD _AllocateBuffers() AS VOID
 	SELF:_RecordBuffer  := BYTE[]{ SELF:_RecordLength}
 	SELF:_BlankBuffer   := BYTE[]{ SELF:_RecordLength}
-	FOR VAR  i := __ARRAYBASE__ TO SELF:_RecordLength - (1 -__ARRAYBASE__)
+	FOR VAR  i := 0 TO SELF:_RecordLength - 1 
 		SELF:_BlankBuffer[i] := 0x20 // space
 	NEXT
 	FOREACH oFld AS RddFieldInfo IN _Fields
@@ -108,7 +110,7 @@ PRIVATE METHOD _AllocateBuffers() AS VOID
 	
 CONSTRUCTOR()
 	SELF:_hFile := F_ERROR
-	SELF:_Header := DbfHeader{} // DbfHeader is a Structure, so the object is already created, no ?
+	SELF:_Header := DbfHeader{} 
 	SELF:_Header:initialize()
 	SELF:_Locks     := List<LONG>{}
 	SELF:_numformat := (NumberFormatInfo) culture:NumberFormat:Clone()
@@ -1095,7 +1097,7 @@ PRIVATE METHOD _readHeader() AS LOGIC
 	IF ! SELF:IsOpen
 		RETURN FALSE
 	ENDIF
-    isOK := FRead3(SELF:_hFile, SELF:_Header:Buffer, DbfHeader.SIZE) == DbfHeader.SIZE 
+    isOK := SELF:_Header:Read(SELF:_hFile)
     //
 	IF isOK 
 		SELF:_HeaderLength := SELF:_Header:HeaderLen
@@ -1146,10 +1148,7 @@ PRIVATE METHOD _readFieldsHeader() AS LOGIC
 		
 		SELF:SetFieldExtent( fieldCount )
 		LOCAL nStart AS INT
-		nStart := 1
-		IF __ARRAYBASE__ == 0
-			nStart -= 1
-		ENDIF
+		nStart := 0
 		FOR VAR i := nStart TO fieldCount - ( 1 - nStart )
 			local nPos := i*DbfField.SIZE as LONG
 			Array.Copy(fieldsBuffer, nPos, currentField:Buffer, 0, DbfField.SIZE )
@@ -1165,7 +1164,6 @@ PRIVATE METHOD _readFieldsHeader() AS LOGIC
         // Allocate the Buffer to read Records
 		SELF:_RecordLength := SELF:_Header:RecordLen
 		SELF:_AllocateBuffers()
-		
 	ENDIF
 RETURN isOK
 
@@ -1195,24 +1193,14 @@ PROTECTED METHOD _writeHeader() AS LOGIC
     // Really ?
 	IF SELF:_Header:isHot 
 		IF SELF:_ReadOnly 
-        // Error !! Cannot be written !
+            // Error !! Cannot be written !
 			SELF:_dbfError( ERDD.READONLY, XSharp.Gencode.EG_READONLY )
 			RETURN FALSE
 		ENDIF
-    // Update the Date/Time information
-		LOCAL dtInfo AS DateTime
-		dtInfo := DateTime.Now
-		SELF:_Header:Year := (BYTE)(dtInfo:Year % 100)
-		SELF:_Header:Month := (BYTE)dtInfo:Month
-		SELF:_Header:Day := (BYTE)dtInfo:Day
-    // Update the number of records
+        // Update the number of records
 		SELF:_Header:RecCount := SELF:_RecCount
-    // Now Write
-    // Go Top
-		FSeek3( SELF:_hFile, 0, FS_SET )
-    // Write just the File Header
 		TRY
-			ret := ( FWrite3( SELF:_hFile, SELF:_Header:Buffer, (DWORD)DbfHeader.SIZE ) == (DWORD)DbfHeader.SIZE )
+            ret := SELF:_Header:Write(SELF:_hFile)
 		CATCH ex AS Exception
 			SELF:_dbfError( ex, ERDD.WRITE, XSharp.Gencode.EG_WRITE )
 			ret := FALSE
@@ -1225,8 +1213,6 @@ RETURN ret
 
 
     // Fields
-    // Set the Number of Fields the AddField Method will add
-    /// <inheritdoc />
 METHOD SetFieldExtent( fieldCount AS LONG ) AS LOGIC
 	SELF:_HasMemo := FALSE
 RETURN SUPER:SetFieldExtent(fieldCount)
@@ -1489,12 +1475,8 @@ RETURN __UsualType.Object
 
 
 INTERNAL VIRTUAL METHOD _GetColumn(nFldPos AS LONG) AS DbfColumn
-	LOCAL nArrPos := nFldPos AS LONG
-	IF __ARRAYBASE__ == 0
-		nArrPos -= 1
-    ENDIF
+	LOCAL nArrPos := nFldPos -1 AS LONG
     IF nArrPos >= 0 .AND. nArrPos < SELF:_Fields:Length
-    //
         RETURN (DbfColumn) SELF:_Fields[ nArrPos ]
     ENDIF
     SELF:_dbfError(EDB_FIELDINDEX, EG_ARG)
@@ -2518,6 +2500,31 @@ RETURN
     
     */
 
+METHOD Read(hFile as IntPtr) AS LOGIC
+    VAR nPos := FTell(hFile)
+    FSeek3(hFile, 0, FS_SET)
+    VAR Ok := FRead3(hFile, SELF:Buffer, DbfHeader.SIZE) == DbfHeader.SIZE
+    IF Ok
+        FSeek3(hFile, (LONG) nPos, FS_SET)
+    ENDIF
+    RETURN Ok
+
+METHOD Write(hFile as IntPtr) AS LOGIC
+	LOCAL dtInfo AS DateTime
+	dtInfo := DateTime.Now
+    // Update the Date/Time information
+	SELF:Year   := (BYTE)(dtInfo:Year % 100)
+	SELF:Month  := (BYTE)dtInfo:Month
+	SELF:Day    := (BYTE)dtInfo:Day
+
+    VAR nPos := FTell(hFile)
+    FSeek3(hFile, 0, FS_SET)
+    VAR Ok := FWrite3(hFile, SELF:Buffer, DbfHeader.SIZE) == DbfHeader.SIZE
+    IF Ok
+        FSeek3(hFile, (LONG) nPos, FS_SET)
+        SELF:isHot := FALSE
+    ENDIF
+    RETURN Ok
 
 
 END CLASS
@@ -2702,8 +2709,8 @@ METHOD initialize() AS VOID
 	PUBLIC Buffer		 AS BYTE[]
 
 METHOD ClearFlags() AS VOID
-    SELF:Offset := 0
     System.Array.Clear(Buffer, OFFSET_FLAGS, SIZE-OFFSET_FLAGS)
+    RETURN
 	
 PROPERTY Name		 AS STRING
 	GET

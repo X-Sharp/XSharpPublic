@@ -174,7 +174,7 @@ CLASS XSharp.CoreDb
                     sb:Append('_')
                 ENDIF
             NEXT
-            cAlias := sb:ToString():ToUpper()
+            cAlias := sb:ToString():ToUpperInvariant()
             IF lMakeUnique
                 LOCAL cTemp := cAlias AS STRING
                 LOCAL nCounter := 0 AS LONG
@@ -524,9 +524,9 @@ CLASS XSharp.CoreDb
         VAR Workareas := RuntimeState.Workareas
         RuntimeState.LastRddError := NULL
         IF String.IsNullOrEmpty( cName )
-            RddError.PostArgumentError( __FUNCTION__, (DWORD) EDB_USE, nameof(cName), 1, <OBJECT>{ cName } )
+            RddError.PostArgumentError( __FUNCTION__, EDB_USE, nameof(cName), 1, <OBJECT>{ cName } )
         ELSEIF aStruct == NULL
-            RddError.PostArgumentError( __FUNCTION__, (DWORD) EDB_USE, nameof(aStruct), 2 ,NULL)
+            RddError.PostArgumentError( __FUNCTION__, EDB_USE, nameof(aStruct), 2 ,NULL)
         ELSEIF lNew && ! ( ret := CoreDb.Select( 0, REF uiOldArea ) )
             RddError.PostError( __FUNCTION__, EG_CREATE, EDB_NOAREAS )
         ELSE
@@ -540,20 +540,29 @@ CLASS XSharp.CoreDb
             Workareas:CloseArea(uiNewArea)
         ENDIF
         Workareas:CurrentWorkareaNO := uiNewArea
-        IF ret .AND. String.IsNullOrEmpty( cAlias ) && ! ( ret := CoreDb.AliasFromFilename( cName, cAlias ,!lKeep) )
-            RddError.PostArgumentError( __FUNCTION__, (DWORD) EDB_BADALIAS, nameof(cAlias), 5, <OBJECT>{ cAlias } )
-        ENDIF   
-        IF ret .AND. ! ( ret := CoreDb.IsAliasUnused( cAlias ) )
-            RddError.PostArgumentError( __FUNCTION__, (DWORD) EDB_DUPALIAS, nameof(cAlias), 5, <OBJECT>{ cAlias } )
+        IF ret .AND. String.IsNullOrEmpty( cAlias ) 
+            ret := CoreDb.AliasFromFilename( cName, REF cAlias ,!lKeep)
+            IF ! ret
+                RddError.PostArgumentError( __FUNCTION__, EDB_BADALIAS, nameof(cAlias), 5, <OBJECT>{ cAlias } )
+            ENDIF
+        ENDIF
+        IF ret
+            cAlias := cAlias:ToUpperInvariant()
+        ENDIF
+        IF ret 
+            ret := CoreDb.IsAliasUnused( cAlias )
+            IF ! ret
+                RddError.PostArgumentError( __FUNCTION__, EDB_DUPALIAS, nameof(cAlias), 5, <OBJECT>{ cAlias } )
+            ENDIF
         ENDIF
         // Now all arguments are valid. So lets create the RDD Object and try to create the file
         LOCAL oRdd AS IRdd
         oRdd := CoreDb.CreateRDDInstance(rddType, cAlias)
         IF oRdd == NULL
-            RddError.PostArgumentError( __FUNCTION__, (DWORD) EDB_DRIVERLOAD, nameof(rddType), 3, <OBJECT>{ rddType } )
+            RddError.PostArgumentError( __FUNCTION__, EDB_DRIVERLOAD, nameof(rddType), 3, <OBJECT>{ rddType } )
             ret := FALSE
         ELSEIF ! CoreDb.IsAliasUnused( cAlias )
-            RddError.PostArgumentError( __FUNCTION__, (DWORD) EDB_DUPALIAS, nameof(cAlias), 4, <OBJECT>{ cAlias } )
+            RddError.PostArgumentError( __FUNCTION__, EDB_DUPALIAS, nameof(cAlias), 4, <OBJECT>{ cAlias } )
             ret := FALSE
         ELSE
             IF ! String.IsNullOrEmpty( cDelim )
@@ -2116,6 +2125,7 @@ CLASS XSharp.CoreDb
                     ret := FALSE
                 END TRY   
             ENDIF
+            cAlias := cAlias:ToUpperInvariant()
             IF lNew
                 area := Workareas:FindEmptyArea(TRUE)
                 IF area > Workareas.MaxWorkareas  .OR. area == 0

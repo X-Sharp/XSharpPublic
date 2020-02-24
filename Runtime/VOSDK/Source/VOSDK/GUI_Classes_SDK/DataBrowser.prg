@@ -1046,7 +1046,7 @@ CLASS DataBrowser INHERIT Control
 
 	// Turn off old mode
       DO CASE
-      CASE iSelectionStyle == SSSINGLESELECTION
+      CASE iSelectionStyle == ssSingleSelection
 		// Turn off single selections if any
             strucRC := PCALL(gpfnCntSelRecGet, hwnd)
             IF strucRC != NULL_PTR
@@ -1054,7 +1054,7 @@ CLASS DataBrowser INHERIT Control
             ENDIF
             PCALL(gpfnCntStyleClear, hwnd, CTS_SINGLESEL)
 
-      CASE iSelectionStyle == SSEXTENDEDSELECTION
+      CASE iSelectionStyle == ssExtendedSelection
 		// Turn off multiple selections if any
             strucRC := PCALL(gpfnCntRecHeadGet, hwnd)
             WHILE strucRC != NULL_PTR
@@ -1065,7 +1065,7 @@ CLASS DataBrowser INHERIT Control
             ENDDO
             PCALL(gpfnCntStyleClear, hwnd, CTS_EXTENDEDSEL)
 
-      CASE iSelectionStyle == SSBLOCKSELECTION
+      CASE iSelectionStyle == ssBlockSelection
             strucRC := PCALL(gpfnCntRecHeadGet, hwnd)
             WHILE strucRC != NULL_PTR
                IF PCALL(gpfnCntIsRecSelected, hwnd, strucRC)
@@ -1081,13 +1081,13 @@ CLASS DataBrowser INHERIT Control
       DO CASE
 		//case kStyle==ssNoSelection
 		//Do nothing
-      CASE kStyle==SSSINGLESELECTION
+      CASE kStyle==ssSingleSelection
             PCALL(gpfnCntStyleSet, hwnd, CTS_SINGLESEL)
 
-      CASE kStyle==SSEXTENDEDSELECTION
+      CASE kStyle==ssExtendedSelection
             PCALL(gpfnCntStyleSet, hwnd, CTS_EXTENDEDSEL)
 
-      CASE kStyle==SSBLOCKSELECTION
+      CASE kStyle==ssBlockSelection
          PCALL(gpfnCntStyleSet, hwnd, CTS_BLOCKSEL)
       ENDCASE
 
@@ -2697,7 +2697,7 @@ CLASS DataBrowser INHERIT Control
       PCALL(gpfnCntAttribSet, hwnd, CA_APPSPLITABLE)
       PCALL(gpfnCntRangeExSet, hwnd, 0, 0)
 
-      SELF:__EnableSelection(SSSINGLESELECTION)
+      SELF:__EnableSelection(ssSingleSelection)
 
       SELF:EnableColumnMove()
       SELF:EnableColumnReSize()
@@ -3002,7 +3002,7 @@ CLASS DataBrowser INHERIT Control
 
       IF IsNil(kStyle)
          PCALL(gpfnCntStyleClear, hwnd, CTS_READONLY)
-         kStyle:=GBSCONTROL3D
+         kStyle:=gbsControl3d
       ENDIF
 
       SWITCH (INT) kStyle
@@ -4834,7 +4834,7 @@ STATIC FUNCTION TCntVScrollPosExSet(hCntWnd AS PTR, lPosition AS LONGINT) AS VOI
    STATIC FUNCTION TCntVScrollPosSet(hCntWnd AS PTR, nPosition AS SHORTINT) AS VOID STRICT
    RETURN
 
-INTERNAL FUNCTION __DrawFldData(hWnd AS PTR, strucFieldInfo AS _WinFieldInfo, strucRecordCore AS _WinRecordCore, ;
+   FUNCTION __DrawFldData(hWnd AS PTR, strucFieldInfo AS _WinFieldInfo, strucRecordCore AS _WinRecordCore, ;
    ptrData AS PTR, hDC AS PTR, iX AS INT, iY AS INT, dwOptions AS DWORD, ;
    ptrRect AS _WINRECT, pszData AS /*PSZ*/ PTR, dwLength AS DWORD) AS INT /* CALLBACK */
    
@@ -4858,7 +4858,7 @@ INTERNAL FUNCTION __DrawFldData(hWnd AS PTR, strucFieldInfo AS _WinFieldInfo, st
 
    RETURN 1
 
-   INTERNAL FUNCTION __LoadContainerDLL()
+   FUNCTION __LoadContainerDLL()
    LOCAL hDll AS PTR
    LOCAL rsFormat AS ResourceString
 
@@ -4960,12 +4960,12 @@ INTERNAL FUNCTION __DrawFldData(hWnd AS PTR, strucFieldInfo AS _WinFieldInfo, st
 
    RETURN (glContainerDllLoaded := TRUE)
    #ifdef __VULCAN__
-      INTERNAL DELEGATE __CellEditProcDelegate( hWnd AS PTR, uMsg AS DWORD, wParam AS DWORD, lParam AS LONGINT ) AS INT
-      INTERNAL DELEGATE __DrawFldDataDelegate( hWnd AS PTR, strucFieldInfo AS _WinFieldInfo, strucRecordCore AS _WinRecordCore, ptrData AS PTR, hDC AS PTR, iX AS INT, iY AS INT, dwOptions AS DWORD, ptrRect AS _WINRECT, pszData AS /*PSZ*/ PTR, dwLength AS DWORD ) AS INT
-      INTERNAL DELEGATE __WCGBChildProcDelegate( hWnd AS PTR, uMsg AS DWORD, wParam AS DWORD, lParam AS LONGINT ) AS LONGINT
+      DELEGATE __CellEditProcDelegate( hWnd AS PTR, uMsg AS DWORD, wParam AS DWORD, lParam AS LONGINT ) AS INT
+      DELEGATE __DrawFldDataDelegate( hWnd AS PTR, strucFieldInfo AS _WinFieldInfo, strucRecordCore AS _WinRecordCore, ptrData AS PTR, hDC AS PTR, iX AS INT, iY AS INT, dwOptions AS DWORD, ptrRect AS _WINRECT, pszData AS /*PSZ*/ PTR, dwLength AS DWORD ) AS INT
+      DELEGATE __WCGBChildProcDelegate( hWnd AS PTR, uMsg AS DWORD, wParam AS DWORD, lParam AS LONGINT ) AS LONGINT
    #endif
 
-INTERNAL FUNCTION __WCGBChildProc(hWnd AS PTR, uMsg AS DWORD, wParam AS DWORD, lParam AS LONGINT) AS LONGINT /* WINCALL */
+FUNCTION __WCGBChildProc(hWnd AS PTR, uMsg AS DWORD, wParam AS DWORD, lParam AS LONGINT) AS LONGINT /* WINCALL */
    LOCAL oBrowser AS OBJECT
    LOCAL i AS INT
 
@@ -4995,10 +4995,10 @@ INTERNAL FUNCTION __WCGBChildProc(hWnd AS PTR, uMsg AS DWORD, wParam AS DWORD, l
    RETURN CallWindowProc(pfGBChildProcOrg, hWnd, uMsg, wParam, lParam)
    
    #ifdef __VULCAN__
-      INTERNAL DELEGATE __WCGBNotifyProcDelegate( hWnd AS PTR, uMsg AS DWORD, wParam AS DWORD, lParam AS LONGINT ) AS LONGINT
+      DELEGATE __WCGBNotifyProcDelegate( hWnd AS PTR, uMsg AS DWORD, wParam AS DWORD, lParam AS LONGINT ) AS LONGINT
    #endif
 
-   INTERNAL FUNCTION __WCGBNotifyProc(hWnd AS PTR, uMsg AS DWORD, wParam AS DWORD, lParam AS LONGINT) AS LONGINT /* WINCALL */
+   FUNCTION __WCGBNotifyProc(hWnd AS PTR, uMsg AS DWORD, wParam AS DWORD, lParam AS LONGINT) AS LONGINT /* WINCALL */
    LOCAL oControl AS Control
    LOCAL strucCreateStruct AS _WinCreateStruct
    LOCAL p AS SelfPtr
@@ -5063,7 +5063,7 @@ RETURN pAddr
 // causes the return value of CallWindowProc() to be limited to 0 or 1, which causes all sorts of problems
 // when an int is returned.  There is no reason to type this callback as returning a logic, since CallWindowProc()
 // really returns INT as documented in MSDN.	
-INTERNAL FUNCTION __CellEditProc(hWnd AS PTR, uMsg AS DWORD, wParam AS DWORD, lParam AS LONGINT) AS /* LOGIC */ INT //_WINCALL
+FUNCTION __CellEditProc(hWnd AS PTR, uMsg AS DWORD, wParam AS DWORD, lParam AS LONGINT) AS /* LOGIC */ INT //_WINCALL
 LOCAL oControl AS Control
 LOCAL oOwner AS OBJECT
 LOCAL lpfnDefaultProc AS PTR
@@ -5092,11 +5092,11 @@ RETURN 1 // TRUE
 
 #region defines
 DEFINE GBSSBLEFT := 1
-DEFINE GBSSBMIDDLE := 2
-DEFINE GBSSBRIGHT := 3
-DEFINE SSBLOCKSELECTION      := 3
-DEFINE SSEXTENDEDSELECTION := 2
-DEFINE SSNOSELECTION         := 0
-DEFINE SSSINGLESELECTION     := 1
-INTERNAL DEFINE __WCGBNotifyWindowClass := "GBNotifyContext"
+   DEFINE GBSSBMIDDLE := 2
+   DEFINE GBSSBRIGHT := 3
+   DEFINE ssBlockSelection      := 3
+   DEFINE ssExtendedSelection := 2
+   DEFINE ssNoSelection         := 0
+   DEFINE ssSingleSelection     := 1
+DEFINE __WCGBNotifyWindowClass := "GBNotifyContext"
 #endregion

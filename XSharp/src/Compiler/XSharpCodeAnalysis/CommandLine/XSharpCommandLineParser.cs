@@ -310,7 +310,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case "vo11":    // VO arithmetic conversions
                     options.Vo11 = positive;
                     encode = true;
-                    OptionNotImplemented(diagnostics, oldname, "VO compatible arithmetic conversions");
                     break;
                 case "vo12":    // Clipper integer divisions
                     options.Vo12 = positive;

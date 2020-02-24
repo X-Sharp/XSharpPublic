@@ -20,7 +20,7 @@ namespace LanguageService.CodeAnalysis {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class XSharpResources {
@@ -2830,6 +2830,15 @@ namespace LanguageService.CodeAnalysis {
         internal static string ERR_CantUseVoidInArglist {
             get {
                 return ResourceManager.GetString("ERR_CantUseVoidInArglist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The base class &apos;{0}&apos; declares a {1} &apos;{2}&apos; that differs from this {1} &apos;{3}&apos; only in case..
+        /// </summary>
+        internal static string ERR_CaseDifference {
+            get {
+                return ResourceManager.GetString("ERR_CaseDifference", resourceCulture);
             }
         }
         
@@ -12375,7 +12384,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot assign to &apos;{0}&apos; because it is a &apos;{1}&apos;.
+        ///   Looks up a localized string similar to Should not assign to &apos;{0}&apos; because it is a &apos;{1}&apos;.
         /// </summary>
         internal static string WRN_AssgReadonlyLocalCause {
             get {
@@ -15113,15 +15122,6 @@ namespace LanguageService.CodeAnalysis {
         internal static string WRN_PossibleMistakenNullStatement_Title {
             get {
                 return ResourceManager.GetString("WRN_PossibleMistakenNullStatement_Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to #pragma directive is not (yet) supported, directive is ignored.
-        /// </summary>
-        internal static string WRN_PreProcessorNoPragma {
-            get {
-                return ResourceManager.GetString("WRN_PreProcessorNoPragma", resourceCulture);
             }
         }
         

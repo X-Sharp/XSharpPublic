@@ -27,7 +27,7 @@
     <para styleclass="Normal">SET DESCENDING is functionally equivalent to OrdDescend(). &#160;</para>
     <para styleclass="Body Text"><snippet src="__IncludeLibRT" inline="false"/></para>
     <para styleclass="Heading1">See Also</para>
-    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_OrdDescend.htm" domain="XsRuntime.chm">OrdDescend()</link></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_OrdDescend.htm" domain="XSharpRef.chm">OrdDescend()</link></para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

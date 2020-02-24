@@ -1624,7 +1624,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         ERR_PreProcessorError = 9003,
         WRN_PreProcessorWarning = 9004,
         ERR_PreProcessorRecursiveRule = 9005,
-        WRN_PreProcessorNoPragma = 9006,
+        //WRN_PreProcessorNoPragma = 9006,
         ERR_FeatureNotAvailableInDialect = 9007,
         ERR_UntypedArrayNotAvailableInDialect = 9008,
         ERR_TypedParametersWithClipperCallingConvention = 9009,
@@ -1715,6 +1715,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         WRN_UndeclaredVariableLatebound = 9094,
         ERR_CurrencyTypeNotSupported = 9095,
         WRN_IllegalPPOption = 9096,
+        ERR_CaseDifference = 9097,
 
         // XPP dialect Error messages
         ERR_XPPMultipleInheritance = 9200,

@@ -5566,13 +5566,10 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
     <value>Passing a NULL pointer to a REF variable is allowed (with /vo7) but strongly discouraged. You MUST make sure that the function being called does a check for NULL pointers for the REF parameter.</value>
   </data>
   <data name="WRN_AssgReadonlyLocalCause" xml:space="preserve">
-    <value>Cannot assign to '{0}' because it is a '{1}'</value>
+    <value>Should not assign to '{0}' because it is a '{1}'</value>
   </data>
   <data name="WRN_AssignmentOperatorExpected" xml:space="preserve">
     <value>Assignment operator ':=' expected.</value>
-  </data>
-  <data name="WRN_PreProcessorNoPragma" xml:space="preserve">
-    <value>#pragma directive is not (yet) supported, directive is ignored</value>
   </data>
   <data name="ERR_InterfaceImplementationDifferentCallingConvention" xml:space="preserve">
     <value>Interface method {0} and implementation {1} have different calling conventions.</value>
@@ -5709,5 +5706,8 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="WRN_IllegalPPOption" xml:space="preserve">
     <value>Unrecognized or unsupported #pragma option value '{0}'</value>
   </data>
-
+  <data name="ERR_CaseDifference" xml:space="preserve">
+    <value>The base class '{0}' declares a {1} '{2}' that differs from this {1} '{3}' only in case.</value>
+  </data>
+  
 </root>

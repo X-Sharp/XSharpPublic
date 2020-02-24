@@ -213,7 +213,6 @@
                 case ErrorCode.WRN_TypeParameterSameAsOuterMethodTypeParameter:
                 case ErrorCode.WRN_UnsafeImplied:
                 case ErrorCode.WRN_PreProcessorWarning:
-                case ErrorCode.WRN_PreProcessorNoPragma:
                 case ErrorCode.WRN_DuplicateDefineDiff:
                 case ErrorCode.WRN_DuplicateDefineSame:
                 case ErrorCode.WRN_ImplicitParentConstructorInitializer:

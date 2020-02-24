@@ -23,7 +23,7 @@
     <para styleclass="Normal">SET DRIVER is functionally equivalent to DBSetDriver(). &#160;</para>
     <para styleclass="Body Text"><snippet src="__IncludeLibRt" inline="false"/></para>
     <para styleclass="Heading1">See Also</para>
-    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbSetDriver.htm" domain="XsRuntime.chm">DbSetDriver()</link></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbSetDriver.htm" domain="XSharpRef.chm">DbSetDriver()</link></para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

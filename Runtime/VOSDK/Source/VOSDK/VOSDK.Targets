@@ -63,7 +63,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
-	<DisabledWarnings>165,9032,170,618,9068,9020,108,9043</DisabledWarnings>
+	<DisabledWarnings>165,9032,170,618,9068,9020,9021,108,9043</DisabledWarnings>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'" Label="Configuration">
     <EmitDebugInformation>true</EmitDebugInformation>

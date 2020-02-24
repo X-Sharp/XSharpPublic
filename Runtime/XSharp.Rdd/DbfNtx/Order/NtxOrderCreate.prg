@@ -102,28 +102,12 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             SELF:FileName := createInfo:BagName
             
             TRY
-                SELF:_hFile    := FCreate( SELF:FullPath) 
-                IF SELF:_hFile != F_ERROR 
-                    FClose( SELF:_hFile )
-                ENDIF
-                SELF:_hFile := F_ERROR
+                SELF:_hFile    := FCreate2( SELF:FullPath,_OR(FC_NORMAL, FO_EXCLUSIVE)) 
             CATCH
                 SELF:Close()
                 SELF:_oRdd:_dbfError( Subcodes.ERDD_CREATE_ORDER, Gencode.EG_CREATE,createInfo:BagName)
                 RETURN FALSE
             END TRY
-            // To create an index we want to open the NTX NOT shared and NOT readonly
-            LOCAL openInfo AS DbOpenInfo
-            openInfo := SELF:_oRdd:_OpenInfo:Clone()
-            openInfo:Shared   := FALSE
-            openInfo:ReadOnly := FALSE
-            SELF:_hFile    := FOpen(SELF:FullPath, openInfo:FileMode)
-            
-            IF SELF:_hFile == F_ERROR
-                SELF:Close()
-                SELF:_oRdd:_dbfError( Subcodes.ERDD_CREATE_ORDER, Gencode.EG_CREATE, createInfo:BagName)
-                RETURN FALSE
-            ENDIF
             TRY
                 IF !SELF:Shared
                     FConvertToMemoryStream(SELF:_hFile)

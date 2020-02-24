@@ -8,7 +8,7 @@
 USING System
 USING XSharp.RDD 
 
-
+/// <summary>This class allows to open the proprietry ADT format using the Advantage driver</summary> 
 CLASS XSharp.ADS.ADSADT INHERIT ADSRDD
 CONSTRUCTOR()
 	SUPER()
@@ -17,6 +17,7 @@ CONSTRUCTOR()
 	SELF:_MaxKeySize := ACE.ADS_MAX_KEY_LENGTH
 END CLASS
 
+/// <summary>This class allows to open the proprietry ADT format with SQL Syntax using the Advantage driver</summary> 
 CLASS XSharp.ADS.AXSQLADT INHERIT AXSQLRDD 
 CONSTRUCTOR()
 	SUPER()

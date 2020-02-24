@@ -11,21 +11,14 @@
     <OutputName>XSharp.RDD</OutputName>
     <AZ>true</AZ>
     <CS>true</CS>
-    <LB>false</LB>
-    <OVF>false</OVF>
-    <Unsafe>false</Unsafe>
     <INS>true</INS>
-    <NS>false</NS>
+    <NamedArgs>true</NamedArgs>
     <VulcanCompatibleResources>False</VulcanCompatibleResources>
     <XSharpProjectversion>2.0.5.0</XSharpProjectversion>
-    <NamedArgs>true</NamedArgs>
-    <MemVar>false</MemVar>
-    <Undeclared>false</Undeclared>
     <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
     <IncludePaths>$(CommonInclude)</IncludePaths>
     <Nostandarddefs>true</Nostandarddefs>
     <StandardDefs />
-    <InitLocals>false</InitLocals>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>

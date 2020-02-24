@@ -1046,7 +1046,7 @@ CLASS DataBrowser INHERIT Control
 
 	// Turn off old mode
       DO CASE
-      CASE iSelectionStyle == SSSINGLESELECTION
+      CASE iSelectionStyle == ssSingleSelection
 		// Turn off single selections if any
             strucRC := PCALL(gpfnCntSelRecGet, hwnd)
             IF strucRC != NULL_PTR
@@ -1054,7 +1054,7 @@ CLASS DataBrowser INHERIT Control
             ENDIF
             PCALL(gpfnCntStyleClear, hwnd, CTS_SINGLESEL)
 
-      CASE iSelectionStyle == SSEXTENDEDSELECTION
+      CASE iSelectionStyle == ssExtendedSelection
 		// Turn off multiple selections if any
             strucRC := PCALL(gpfnCntRecHeadGet, hwnd)
             WHILE strucRC != NULL_PTR
@@ -1065,7 +1065,7 @@ CLASS DataBrowser INHERIT Control
             ENDDO
             PCALL(gpfnCntStyleClear, hwnd, CTS_EXTENDEDSEL)
 
-      CASE iSelectionStyle == SSBLOCKSELECTION
+      CASE iSelectionStyle == ssBlockSelection
             strucRC := PCALL(gpfnCntRecHeadGet, hwnd)
             WHILE strucRC != NULL_PTR
                IF PCALL(gpfnCntIsRecSelected, hwnd, strucRC)
@@ -1081,13 +1081,13 @@ CLASS DataBrowser INHERIT Control
       DO CASE
 		//case kStyle==ssNoSelection
 		//Do nothing
-      CASE kStyle==SSSINGLESELECTION
+      CASE kStyle==ssSingleSelection
             PCALL(gpfnCntStyleSet, hwnd, CTS_SINGLESEL)
 
-      CASE kStyle==SSEXTENDEDSELECTION
+      CASE kStyle==ssExtendedSelection
             PCALL(gpfnCntStyleSet, hwnd, CTS_EXTENDEDSEL)
 
-      CASE kStyle==SSBLOCKSELECTION
+      CASE kStyle==ssBlockSelection
          PCALL(gpfnCntStyleSet, hwnd, CTS_BLOCKSEL)
       ENDCASE
 
@@ -2697,7 +2697,7 @@ CLASS DataBrowser INHERIT Control
       PCALL(gpfnCntAttribSet, hwnd, CA_APPSPLITABLE)
       PCALL(gpfnCntRangeExSet, hwnd, 0, 0)
 
-      SELF:__EnableSelection(SSSINGLESELECTION)
+      SELF:__EnableSelection(ssSingleSelection)
 
       SELF:EnableColumnMove()
       SELF:EnableColumnReSize()
@@ -3002,7 +3002,7 @@ CLASS DataBrowser INHERIT Control
 
       IF IsNil(kStyle)
          PCALL(gpfnCntStyleClear, hwnd, CTS_READONLY)
-         kStyle:=GBSCONTROL3D
+         kStyle:=gbsControl3d
       ENDIF
 
       SWITCH (INT) kStyle
@@ -5092,11 +5092,11 @@ RETURN 1 // TRUE
 
 #region defines
 DEFINE GBSSBLEFT := 1
-DEFINE GBSSBMIDDLE := 2
-DEFINE GBSSBRIGHT := 3
-DEFINE SSBLOCKSELECTION      := 3
-DEFINE SSEXTENDEDSELECTION := 2
-DEFINE SSNOSELECTION         := 0
-DEFINE SSSINGLESELECTION     := 1
+   DEFINE GBSSBMIDDLE := 2
+   DEFINE GBSSBRIGHT := 3
+   DEFINE ssBlockSelection      := 3
+   DEFINE ssExtendedSelection := 2
+   DEFINE ssNoSelection         := 0
+   DEFINE ssSingleSelection     := 1
 DEFINE __WCGBNotifyWindowClass := "GBNotifyContext"
 #endregion

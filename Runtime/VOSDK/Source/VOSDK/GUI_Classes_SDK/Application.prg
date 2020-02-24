@@ -310,14 +310,14 @@ METHOD SetMdiClientWindow(hNewMdiClientWnd)
 	RETURN NIL
 END CLASS
 
-GLOBAL gatomVOObjPtr AS DWORD
-GLOBAL gdwDragListMsg AS DWORD
-GLOBAL glCAPaintInit := FALSE AS LOGIC
+INTERNAL GLOBAL gatomVOObjPtr AS DWORD
+INTERNAL GLOBAL gdwDragListMsg AS DWORD
+INTERNAL GLOBAL glCAPaintInit := FALSE AS LOGIC
 
-GLOBAL gpfnInitCommonControlsEx AS InitCommonControlsEx PTR
+INTERNAL GLOBAL gpfnInitCommonControlsEx AS InitCommonControlsEx PTR
 GLOBAL gsymBrowserDef AS SYMBOL
 
-PROCEDURE __InitFunctionPointer() _INIT3
+INTERNAL PROCEDURE __InitFunctionPointer() _INIT3
 	LOCAL icex IS _winINITCOMMONCONTROLSEX
 
 	//SE-070411

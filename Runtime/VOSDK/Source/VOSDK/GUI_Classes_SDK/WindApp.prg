@@ -138,10 +138,10 @@ STATIC FUNCTION __WCRegisterWndAppWindow(hInst AS PTR) AS LOGIC
 	RETURN lretVal
 	
 #ifdef __VULCAN__
-   DELEGATE __WCWndAppWndProcDelegate( hWnd AS PTR, uMsg AS DWORD, wParam AS DWORD, lParam AS LONGINT ) AS LONGINT
+   INTERNAL DELEGATE __WCWndAppWndProcDelegate( hWnd AS PTR, uMsg AS DWORD, wParam AS DWORD, lParam AS LONGINT ) AS LONGINT
 #endif	
 
-FUNCTION __WCWndAppWndProc(hWnd AS PTR, uMsg AS DWORD, wParam AS DWORD, lParam AS LONGINT) AS LONGINT /* WINCALL */
+INTERNAL FUNCTION __WCWndAppWndProc(hWnd AS PTR, uMsg AS DWORD, wParam AS DWORD, lParam AS LONGINT) AS LONGINT /* WINCALL */
 	LOCAL oWindow AS Window
 	LOCAL strucCreateStruct AS _WinCreateStruct
 
@@ -161,5 +161,5 @@ FUNCTION __WCWndAppWndProc(hWnd AS PTR, uMsg AS DWORD, wParam AS DWORD, lParam A
 
 
 #region defines
-DEFINE __WCWndAppWindowClass	:= "WndAppWindow"
+INTERNAL DEFINE __WCWndAppWindowClass	:= "WndAppWindow"
 #endregion

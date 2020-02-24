@@ -509,7 +509,7 @@ END CLASS
 
 
 #ifdef __VULCAN__
-   DELEGATE INTStatusCallback_Delegate( hInternet AS PTR, dwContext AS DWORD, dwInternetStatus AS DWORD, pStatusInformation AS PTR, dwStatusInfoLength AS DWORD ) AS VOID
+   INTERNAL DELEGATE INTStatusCallback_Delegate( hInternet AS PTR, dwContext AS DWORD, dwInternetStatus AS DWORD, pStatusInformation AS PTR, dwStatusInfoLength AS DWORD ) AS VOID
 #endif
 
 FUNCTION INTStatusCallback( hInternet           AS PTR, ;

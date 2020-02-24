@@ -3929,7 +3929,9 @@ BEGIN NAMESPACE XSharp.ADS
     INTERNAL DELEGATE _delSetStringD(hObj AS IntPtr, lFieldOrdinal AS DWORD, strBuf AS STRING, ulLen AS DWORD ) AS DWORD 
     INTERNAL DELEGATE _delSetStringS(hObj AS IntPtr, strFldName AS STRING, strBuf AS STRING, ulLen AS DWORD ) AS DWORD 
     INTERNAL DELEGATE _delW (w AS WORD) AS DWORD
+    /// <summary>Delegate used by some advantage progress functions</summary>
     PUBLIC DELEGATE CallbackFn(usPercentDone AS WORD, ulCallbackID AS DWORD) AS DWORD 
+    /// <summary>Delegate used by some advantage progress functions</summary>
     PUBLIC DELEGATE CallbackFn101(usPercentDone AS WORD, qCallbackID AS INT64) AS DWORD
     
 END NAMESPACE

@@ -10,7 +10,9 @@ USING System.Collections.Generic
 USING System.Text
 
 BEGIN NAMESPACE XSharp
-  /// <summary>This enum is used to describe the type of USUAL values in the X# Runtime. It is based on the original USUAL type values in the VO runtime.</summary>
+  /// <summary>This enum is used to describe the type of USUAL values in the X# Runtime.
+  /// It is based on the original USUAL type values in the VO runtime and has been extended with some additional type numbers.
+  /// </summary>
   ENUM __UsualType AS BYTE
         // These numbers must match with the types defined in the compiler
         // They also match with the USUAL types in VO (BaseType.h)

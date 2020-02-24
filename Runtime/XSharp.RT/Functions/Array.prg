@@ -627,9 +627,9 @@ FUNCTION ATail<T>(aTarget AS __ArrayBase<T>) AS T WHERE T IS NEW()
     
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/acopy/*" /> 
 FUNCTION ACopy(aSource ,aTarget ,nStart ,nCount ,nTargetPos ) AS ARRAY CLIPPER
-    LOCAL sourceLen  AS DWORD
-    LOCAL start AS DWORD
-    LOCAL count AS DWORD
+    LOCAL sourceLen  AS LONG
+    LOCAL start AS LONG
+    LOCAL count AS LONG
     IF !aSource:IsArray
         THROW Error.ArgumentError( __FUNCTION__, NAMEOF(aSource), 1, <OBJECT>{ aSource } )
     ENDIF
@@ -638,13 +638,13 @@ FUNCTION ACopy(aSource ,aTarget ,nStart ,nCount ,nTargetPos ) AS ARRAY CLIPPER
         THROW Error.ArgumentError( __FUNCTION__, NAMEOF(aTarget), 2, <OBJECT>{ aTarget } )
     ENDIF
     start := 1
-    sourceLen  := ALen(aSource)
+    sourceLen  := (LONG) ALen(aSource)
     IF pCount() > 2
         IF nStart:IsNumeric
             start := nStart
         ELSEIF nStart:IsNil
             IF pCount() >= 4 .and. nCount:IsNumeric .and. nCount < 0
-                start := ALen(aSource)
+                start := (LONG) ALen(aSource) -1
             ELSE
                 start := 1
             END IF
@@ -669,8 +669,8 @@ FUNCTION ACopy(aSource ,aTarget ,nStart ,nCount ,nTargetPos ) AS ARRAY CLIPPER
             sourceLen := Math.Max(1, start+count-1)
         ENDIF
     ENDIF
-    LOCAL offSet		:= 1 AS DWORD
-    LOCAL targetLen	:= ALen(aTarget) AS DWORD
+    LOCAL offSet		:= 1 AS LONG
+    LOCAL targetLen	    := (LONG) ALen(aTarget) AS LONG
     IF pCount() > 4 .and. .not. nTargetPos:IsNil
         IF nTargetPos:IsNumeric
             offSet := nTargetPos

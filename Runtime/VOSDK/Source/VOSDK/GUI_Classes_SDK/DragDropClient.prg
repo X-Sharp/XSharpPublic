@@ -116,21 +116,21 @@ ACCESS Owner
 	RETURN oParent
 END CLASS
 
-GLOBAL glShellDllLoaded := FALSE AS LOGIC
+INTERNAL GLOBAL glShellDllLoaded := FALSE AS LOGIC
 
 	// Function Declarations
-GLOBAL gpfnDragAcceptFiles AS TDragAcceptFiles PTR
-GLOBAL gpfnDragFinish AS TDragFinish PTR
-GLOBAL gpfnDragQueryFile AS TDragQueryFile PTR
+INTERNAL GLOBAL gpfnDragAcceptFiles AS TDragAcceptFiles PTR
+INTERNAL GLOBAL gpfnDragFinish AS TDragFinish PTR
+INTERNAL GLOBAL gpfnDragQueryFile AS TDragQueryFile PTR
 //GLOBAL gpfnDragQueryPoint AS TDragQueryPoint PTR
 	// the following are used by StandardFolderDialog
-GLOBAL gpfnSHBrowseForFolder AS TSHBrowseForFolder PTR
-GLOBAL gpfnShell_NotifyIcon AS TShell_NotifyIcon PTR
+INTERNAL GLOBAL gpfnSHBrowseForFolder AS TSHBrowseForFolder PTR
+INTERNAL GLOBAL gpfnShell_NotifyIcon AS TShell_NotifyIcon PTR
 
 //GLOBAL gpfnSHGetMalloc AS TSHGetMalloc PTR
-GLOBAL gpfnSHGetPathFromIDList AS TSHGetPathFromIDList PTR
+INTERNAL GLOBAL gpfnSHGetPathFromIDList AS TSHGetPathFromIDList PTR
 	// tray icon
-FUNCTION __LoadShellDll()
+INTERNAL FUNCTION __LoadShellDll()
 	LOCAL hDll AS PTR
 	LOCAL rsFormat AS ResourceString
 
@@ -156,13 +156,13 @@ FUNCTION __LoadShellDll()
 
 	RETURN (glShellDllLoaded := TRUE)
 
-FUNCTION TDragAcceptFiles(hWnd AS PTR, fAccept AS LOGIC) AS VOID STRICT
+INTERNAL FUNCTION TDragAcceptFiles(hWnd AS PTR, fAccept AS LOGIC) AS VOID STRICT
 	RETURN
 
-FUNCTION TDragFinish(hDrop AS PTR) AS VOID STRICT
+INTERNAL FUNCTION TDragFinish(hDrop AS PTR) AS VOID STRICT
 	RETURN
 	
-FUNCTION TDragQueryFile(hDrop AS PTR, iFile AS DWORD, lpszFile AS PSZ, cch AS DWORD) AS DWORD STRICT
+INTERNAL FUNCTION TDragQueryFile(hDrop AS PTR, iFile AS DWORD, lpszFile AS PSZ, cch AS DWORD) AS DWORD STRICT
 	//SYSTEM
 	RETURN 0
 
@@ -170,16 +170,16 @@ FUNCTION TDragQueryFile(hDrop AS PTR, iFile AS DWORD, lpszFile AS PSZ, cch AS DW
 	////SYSTEM
 	//RETURN FALSE
 //
-FUNCTION TSHBrowseForFolder(bi AS PTR) AS PTR STRICT
+INTERNAL FUNCTION TSHBrowseForFolder(bi AS PTR) AS PTR STRICT
 	//SYSTEM
 	RETURN NULL_PTR
 
-FUNCTION TShell_NotifyIcon(dwMessage AS DWORD, lpData AS _winNOTIFYICONDATA) AS LOGIC STRICT
+INTERNAL FUNCTION TShell_NotifyIcon(dwMessage AS DWORD, lpData AS _winNOTIFYICONDATA) AS LOGIC STRICT
 	//SYSTEM
 	RETURN FALSE
 
 
-FUNCTION TSHGetPathFromIDList(pidl AS PTR, pszDisplayName AS PSZ) AS LOGIC STRICT
+INTERNAL FUNCTION TSHGetPathFromIDList(pidl AS PTR, pszDisplayName AS PSZ) AS LOGIC STRICT
 	//SYSTEM
 	RETURN FALSE
 

@@ -258,6 +258,7 @@ ACCESS Value
 	ELSE	
 		SELF:uValue := SELF:SelectedDate
 	ENDIF
+    RETURN SUPER:Value
 
 ACCESS IsNone  AS LOGIC
    //SE-120210
@@ -271,7 +272,7 @@ ACCESS IsTimePicker AS LOGIC
 			_And( GetWindowLong(SELF:Handle(), GWL_STYLE) , DTS_UPDOWN    ) > 0
 
 
-RETURN SUPER:Value
+
 	
 END CLASS
 

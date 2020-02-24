@@ -804,6 +804,7 @@ METHOD Undo()
 
 END CLASS
 
+/// <exclude/>
 VOSTRUCT strucPictureFuncFlags
 	MEMBER lLeftJust AS LOGIC
 	MEMBER lDispCR AS LOGIC

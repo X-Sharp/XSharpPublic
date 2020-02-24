@@ -139,7 +139,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			VoDbInfo(DBI_DB_VERSION , REF u)
 			Assert.True(SLen(u) > 1)
 			VoDbInfo(DBI_ALIAS , REF u)
-			Assert.Equal("test" , u)
+			Assert.Equal("TEST" , u)
 			
 			VoDbInfo(DBI_BOF , REF u)
 			Assert.Equal(TRUE , (LOGIC) u)

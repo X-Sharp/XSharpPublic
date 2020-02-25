@@ -188,7 +188,6 @@ GLOBAL aDdeConv:={} AS ARRAY //Table of Conversation handles and IPC objects (Cl
 /// <exclude/>
 GLOBAL aDdeServer:={} AS ARRAY //Table of Servers objects and Server handles
 
-/// <exclude/>
 FUNCTION __WCAddIpcObjectToConv(hConv AS PTR, oIpc AS OBJECT) AS VOID
    //SE-060526
 	LOCAL dwI, dwCount AS DWORD
@@ -206,8 +205,7 @@ FUNCTION __WCAddIpcObjectToConv(hConv AS PTR, oIpc AS OBJECT) AS VOID
 	AAdd(aDdeConv, {hConv, oIpc})
 
 	RETURN
- /// <exclude/>
-FUNCTION __WCAddServerToHsz(dwHsz AS PTR, oServer AS IpcServer) AS VOID
+ FUNCTION __WCAddServerToHsz(dwHsz AS PTR, oServer AS IpcServer) AS VOID
 	//SE-060526
 	LOCAL dwI, dwCount AS DWORD
 
@@ -224,7 +222,6 @@ FUNCTION __WCAddServerToHsz(dwHsz AS PTR, oServer AS IpcServer) AS VOID
 
 	RETURN
 
-/// <exclude/>
 FUNCTION __WCDelIpcObjectFromConv(hConv AS PTR) AS VOID
    //SE-060526
 	LOCAL dwI, dwCount AS DWORD
@@ -241,7 +238,6 @@ FUNCTION __WCDelIpcObjectFromConv(hConv AS PTR) AS VOID
 
 	RETURN
 
-/// <exclude/>
 FUNCTION __WCDelServerFromHsz(dwHsz AS PTR) AS VOID
 	//SE-060526
 	LOCAL dwI, dwCount AS DWORD
@@ -258,7 +254,6 @@ FUNCTION __WCDelServerFromHsz(dwHsz AS PTR) AS VOID
 
 	RETURN
 
-/// <exclude/>
 FUNCTION __WCGetHConvFromConv(oIpc AS OBJECT) AS PTR
 	//SE-060526
 	LOCAL dwI, dwCount AS DWORD
@@ -274,7 +269,6 @@ FUNCTION __WCGetHConvFromConv(oIpc AS OBJECT) AS PTR
 	RETURN NULL_PTR
 
 
-/// <exclude/>
 FUNCTION __WCGetHszFromHsz(oIpc AS OBJECT) AS PTR
    //SE-060526
 	LOCAL dwI, dwCount AS DWORD
@@ -289,7 +283,6 @@ FUNCTION __WCGetHszFromHsz(oIpc AS OBJECT) AS PTR
 
 	RETURN NULL_PTR
 
-/// <exclude/>
 FUNCTION __WCGetIpcObjectFromConv(hConv AS PTR) AS OBJECT
    //SE-060526
 	LOCAL dwI, dwCount AS DWORD
@@ -304,7 +297,6 @@ FUNCTION __WCGetIpcObjectFromConv(hConv AS PTR) AS OBJECT
 
 	RETURN NULL_OBJECT
 
-/// <exclude/>
 FUNCTION __WCGetServerFromHsz(dwHsz AS PTR) AS OBJECT
    //SE-060526
 	LOCAL dwI, dwCount AS DWORD

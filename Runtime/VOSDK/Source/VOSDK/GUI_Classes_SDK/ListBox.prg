@@ -726,7 +726,6 @@ ASSIGN TextValue(cNewText)
 
 END CLASS
 
-/// <exclude/>
 _DLL FUNCTION __DlgDirSelectEx( hDlg AS PTR, lpString AS PSZ, nCOunt AS INT,;
 	nIDListBox AS INT) AS LOGIC PASCAL:USER32.DlgDirSelectExA
 

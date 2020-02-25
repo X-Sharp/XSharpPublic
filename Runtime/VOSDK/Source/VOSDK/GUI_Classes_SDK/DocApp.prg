@@ -185,7 +185,6 @@ STATIC FUNCTION __WCRegisterDocAppWindow(hInst AS PTR) AS LOGIC
    DELEGATE __WCDocAppWndProcDelegate( hWnd AS PTR, uMsg AS DWORD, wParam AS DWORD, lParam AS LONGINT ) AS LONGINT
 #endif
 
-/// <exclude/>
 FUNCTION __WCDocAppWndProc(hWnd AS PTR, uMsg AS DWORD, wParam AS DWORD, lParam AS LONGINT) AS LONGINT /* WINCALL */
 	LOCAL oWindow AS Window
 	LOCAL strucCreateStruct AS _WinCreateStruct
@@ -208,5 +207,5 @@ FUNCTION __WCDocAppWndProc(hWnd AS PTR, uMsg AS DWORD, wParam AS DWORD, lParam A
 
 
 #region defines
-DEFINE  __WCDocAppWindowClass := "DocAppWindow"
+DEFINE __WCDocAppWindowClass := "DocAppWindow"
 #endregion

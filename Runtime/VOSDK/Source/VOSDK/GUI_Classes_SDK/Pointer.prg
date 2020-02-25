@@ -84,7 +84,6 @@ METHOD Show()
 
 END CLASS
 
-/// <exclude/>
 FUNCTION __WCConvertPointer(pointerType AS INT) AS PSZ
 	LOCAL retVal AS PTR
 

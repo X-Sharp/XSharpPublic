@@ -1,6 +1,5 @@
 STATIC GLOBAL nMaxStringSize := 0x1000  AS DWORD  //MAX_LONGVARCHAR   AS DWORD
 
-/// <exclude/>
 FUNCTION __SQLMaxStringSize( nValue )
    //  JSP 09/05/2000
    //  STATIC LOCAL nMaxStringSize := 10000    //MAX_LONGVARCHAR  AS DWORD
@@ -12,7 +11,6 @@ FUNCTION __SQLMaxStringSize( nValue )
 
 STATIC GLOBAL nMaxDispSize := 256  AS DWORD
 
-/// <exclude/>
 FUNCTION __SQLMaxDisplaySize( nValue )
 
    IF IsNumeric( nValue )
@@ -21,7 +19,6 @@ FUNCTION __SQLMaxDisplaySize( nValue )
 
    RETURN nMaxDispSize
 
-/// <exclude/>
 FUNCTION __GetSymString( uString AS USUAL ) AS STRING STRICT
    LOCAL nType AS DWORD
    LOCAL cRet  AS STRING
@@ -38,7 +35,6 @@ FUNCTION __GetSymString( uString AS USUAL ) AS STRING STRICT
    END SWITCH
    RETURN cRet
 
-/// <exclude/>
 FUNCTION __GetStringFromODBCType( ODBCType AS SHORTINT ) AS STRING STRICT
    LOCAL cType     AS STRING
 
@@ -77,7 +73,6 @@ FUNCTION __GetStringFromODBCType( ODBCType AS SHORTINT ) AS STRING STRICT
 
    RETURN cType
 
-/// <exclude/>
 FUNCTION __AdjustString( c AS STRING ) AS STRING STRICT
    LOCAL nLen	AS DWORD
    LOCAL nSize	AS DWORD
@@ -90,7 +85,6 @@ FUNCTION __AdjustString( c AS STRING ) AS STRING STRICT
    RETURN c
 
 
-/// <exclude/>
 FUNCTION __CheckHandles( hEnv AS USUAL, hDbc AS USUAL, hStmt AS USUAL ) AS LOGIC STRICT
    LOCAL lRet  AS LOGIC
 
@@ -149,7 +143,6 @@ FUNCTION  SQL_LEN_DATA_AT_EXEC( nLength AS INT ) AS INT STRICT
    RETURN -nLength + SQL_LEN_DATA_AT_EXEC_OFFSET
 
 
-/// <exclude/>
 FUNCTION __SQLOutputDebug( cMsg AS STRING) AS VOID STRICT
    LOCAL I AS DWORD
     LOCAL cLine AS STRING
@@ -277,7 +270,6 @@ FUNCTION SQLThrowOutOfMemoryError() AS VOID STRICT
 FUNCTION _SLen( c AS STRING ) AS SHORTINT STRICT
    RETURN SHORTINT( _CAST, SLen( c ) )
 
-/// <exclude/>
 FUNCTION __GetDataValuePSZ( oSQLColumn AS SQLColumn, oSQLData AS SqlData, lEqual AS LOGIC, lUseIS AS LOGIC )
    LOCAL sValue                AS STRING
    LOCAL cTemp		       AS STRING
@@ -432,7 +424,6 @@ FUNCTION SQLType2CType( nODBCType AS SHORTINT ) AS SHORTINT STRICT
 
    RETURN nType
 
-/// <exclude/>
 FUNCTION __ODBCType2FSpec( nODBCType AS SHORTINT, nPrecision REF DWORD, nScale REF SHORT ) AS STRING  PASCAL  // dcaton 070206 was nScale REF INT
     IF SqlIsLongType( nODBCType )
         nPrecision := 10
@@ -446,7 +437,7 @@ FUNCTION __ODBCType2FSpec( nODBCType AS SHORTINT, nPrecision REF DWORD, nScale R
 
     RETURN __GetStringFromODBCType( nODBCType )
 
-
+/// <exclude/>
 UNION SqlData_Union
     MEMBER bVal  AS BYTE
     MEMBER siVal AS SHORTINT

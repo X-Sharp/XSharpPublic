@@ -348,7 +348,6 @@ METHOD UpdateTopic(cTopic, cItem)
 
 END CLASS
 
-/// <exclude/>
 FUNCTION __DdecallbackProc(wType AS WORD, wFmt AS WORD, hConv AS PTR, hsz1 AS PTR, hsz2 AS PTR, hData AS PTR, dwData1 AS DWORD, dwData2 AS DWORD) AS LONGINT /* WINCALL */
 	LOCAL oIpcEvent AS IpcEvent
 	LOCAL oIPCObject AS OBJECT

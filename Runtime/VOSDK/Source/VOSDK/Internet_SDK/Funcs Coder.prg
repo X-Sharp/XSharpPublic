@@ -84,7 +84,6 @@ STATIC FUNCTION __CheckQPEncodeWord(cText AS STRING, dwMaxChars REF DWORD, dwPos
 	dwPos--
 
 	RETURN lEncoded
-/// <exclude/>
 FUNCTION __DecodeAtom(cValue AS STRING, lDecoded REF LOGIC) AS STRING STRICT
    //SE-070425
    LOCAL dwPos    AS DWORD
@@ -112,7 +111,6 @@ FUNCTION __DecodeAtom(cValue AS STRING, lDecoded REF LOGIC) AS STRING STRICT
       
    RETURN cValue
 
-/// <exclude/>
 FUNCTION __DecodeField(cValue AS STRING, lFoldedEncode REF LOGIC) AS STRING STRICT
    //SE-040705
    //see RFC 2047
@@ -159,7 +157,6 @@ FUNCTION __DecodeField(cValue AS STRING, lFoldedEncode REF LOGIC) AS STRING STRI
    ENDDO
 
    RETURN cRet
-/// <exclude/>
 FUNCTION __EncodeField(cValue AS STRING, dwCurrentLineLen AS DWORD) AS STRING STRICT
    //SE-070419
    //see RFC 2047 
@@ -215,7 +212,6 @@ FUNCTION __EncodeField(cValue AS STRING, dwCurrentLineLen AS DWORD) AS STRING ST
    RETURN cResult 
    
    
-/// <exclude/>
 FUNCTION __FormatAddress(cAddress AS STRING, cName AS STRING) AS STRING STRICT
    //SE-040701
    cAddress := "<" + cAddress + ">"
@@ -223,7 +219,6 @@ FUNCTION __FormatAddress(cAddress AS STRING, cName AS STRING) AS STRING STRICT
       cAddress := e"\"" + cName + e"\" " + cAddress
    ENDIF
    RETURN  cAddress
-/// <exclude/>
 FUNCTION __GetAddressList(cList AS STRING) AS ARRAY STRICT
    LOCAL dwPos    AS DWORD
    LOCAL aList    AS ARRAY
@@ -247,7 +242,6 @@ FUNCTION __GetAddressList(cList AS STRING) AS ARRAY STRICT
    RETURN aList
 
 
-/// <exclude/>
 FUNCTION __GetMailInfo(cSection AS STRING, cToken AS STRING, lRemoveSpace AS LOGIC)  AS STRING STRICT
    // SE-190407
    // cSection should begin with the first charactor of a line, otherwise a correct token search can't be granted.
@@ -321,7 +315,6 @@ FUNCTION __GetMailInfo(cSection AS STRING, cToken AS STRING, lRemoveSpace AS LOG
    
 	RETURN cRet //AllTrim(cRet)
 
-/// <exclude/>
 FUNCTION __GetNextAddress(cBuffer AS STRING, dwPosition REF DWORD) AS STRING STRICT
    //SE-070611 
     LOCAL lEscaped       AS LOGIC
@@ -407,7 +400,6 @@ FUNCTION __GetNextAddress(cBuffer AS STRING, dwPosition REF DWORD) AS STRING STR
 	
 	RETURN NULL_STRING
 
-/// <exclude/>
 FUNCTION __ParseAddress(cBuffer AS STRING, cName REF STRING) AS STRING STRICT
    //SE-040701
    //SE-070420
@@ -533,8 +525,6 @@ FUNCTION __ParseAddress(cBuffer AS STRING, cName REF STRING) AS STRING STRICT
    ENDDO
 	
 	RETURN cAddress
-
-/// <exclude/>
 STATIC FUNCTION __QPEncodeWord(cText AS STRING, dwResultlen AS DWORD) AS STRING STRICT
    //SE-070611 
    //RFC-2047 page 6
@@ -996,7 +986,6 @@ FUNCTION QPEncode(cText AS STRING, lEncodeSpace := FALSE AS LOGIC) AS STRING STR
 
     RETURN cResult
 
-/// <exclude/>
 FUNCTION __CreateAddressList(cSection AS STRING, aList AS ARRAY, lSectionAlways := FALSE AS LOGIC) AS STRING STRICT
    //SE-070419
    LOCAL dwI       AS DWORD

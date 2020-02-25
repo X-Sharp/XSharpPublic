@@ -5,7 +5,6 @@
 //INTERNAL VOSTRUCT __ptr
 //	MEMBER p AS PTR
 
-/// <exclude/>
 FUNCTION __SetAppObject(oNewApp AS App) AS App STRICT
 
 #ifdef __VULCAN__
@@ -22,7 +21,6 @@ FUNCTION __SetAppObject(oNewApp AS App) AS App STRICT
 
 	RETURN oApp
 
-/// <exclude/>
 FUNCTION __WCConvertPoint(oWindow AS OBJECT, oPoint AS Point) AS Point STRICT
     //SE-080520 optimized version 
     LOCAL sRect  IS _WINRECT
@@ -63,9 +61,7 @@ STATIC GLOBAL __WCCoordinateSystem := WCCartesianCoordinates AS LOGIC
    // out of scope, and we don't have to worry about the timing of the garbage collector and the
    // invocation of window finalizers.
    
-/// <exclude/>
    STATIC GLOBAL __WCCSHDC := OBJECT{} AS OBJECT
-/// <exclude/>
    GLOBAL __WCCSApp := OBJECT{} AS OBJECT
 #else
 STATIC GLOBAL __WCCopyright := "Copyright (C) 1993-1995 Computer Associates International Inc." AS STRING
@@ -75,10 +71,8 @@ STATIC GLOBAL __WCCSHDC IS _winRTL_CRITICAL_SECTION
 STATIC GLOBAL __WCCSMenu IS _winRTL_CRITICAL_SECTION
 STATIC GLOBAL __WCCSTimer IS _winRTL_CRITICAL_SECTION
 #endif
-/// <exclude/>
 STATIC GLOBAL __WCDCCurHDCOwner AS Window
 
-/// <exclude/>
 FUNCTION __WCDeleteCriticalSections()
    #ifndef __VULCAN__
 	DeleteCriticalSection(@__WCCSMenu)
@@ -88,7 +82,6 @@ FUNCTION __WCDeleteCriticalSections()
 	#endif   
 	RETURN NIL
 
-/// <exclude/>
 FUNCTION __WCDIBFromBitmap(hbm AS PTR) AS PTR STRICT
 	LOCAL bm IS _winBITMAP
 	LOCAL bi IS _winBITMAPINFOHEADER
@@ -194,7 +187,6 @@ FUNCTION __WCDIBFromBitmap(hbm AS PTR) AS PTR STRICT
 
 	RETURN hdib
 
-/// <exclude/>
 FUNCTION __WCGetBrushColor(oBrush AS Brush) AS DWORD
 	LOCAL strucLogBrush IS _WinLogBrush
 
@@ -205,7 +197,6 @@ FUNCTION __WCGetBrushColor(oBrush AS Brush) AS DWORD
 
 // New generic function that returns an object from a handle, assuming
 // it is registered as property
-/// <exclude/>
 FUNCTION __WCGetObjectByProperty(hWnd AS PTR) AS OBJECT STRICT
 	LOCAL oObject AS OBJECT
 	LOCAL strucSelf AS SelfPtr
@@ -216,7 +207,6 @@ FUNCTION __WCGetObjectByProperty(hWnd AS PTR) AS OBJECT STRICT
 	RETURN oObject
 
 // This function now returns a Control
-/// <exclude/>
 FUNCTION __WCGetControlByHandle(hWnd AS PTR) AS Control STRICT
 	LOCAL oObject AS OBJECT
 	oObject := __WCGetObjectByProperty(hWnd)
@@ -225,7 +215,6 @@ FUNCTION __WCGetControlByHandle(hWnd AS PTR) AS Control STRICT
    ENDIF
 	RETURN NULL_OBJECT
 
-/// <exclude/>
 FUNCTION __WCGetMenuByHandle(hMenu AS PTR) AS Menu STRICT
 	LOCAL dwIndex, iLen AS DWORD
 	LOCAL oMenu AS OBJECT
@@ -254,7 +243,6 @@ FUNCTION __WCGetMenuByHandle(hMenu AS PTR) AS Menu STRICT
 FUNCTION GetObjectByHandle(hwnd AS PTR) AS OBJECT STRICT
    RETURN __WCGetObjectByHandle(hwnd)
 
-/// <exclude/>
 FUNCTION __WCGetOrigin(oObject AS OBJECT) AS Point STRICT
 	LOCAL hWnd AS PTR
 	LOCAL oParent AS OBJECT
@@ -288,7 +276,6 @@ FUNCTION __WCGetOrigin(oObject AS OBJECT) AS Point STRICT
 
 	RETURN __WCConvertPoint(oParent, Point{point:x, point:y})
 
-/// <exclude/>
 FUNCTION __WCGetPictureCoordinates(hWnd AS PTR, hDCPrinter AS PTR, lpRC AS _winRect) AS VOID STRICT
 	//LOCAL pt IS _winPoint
 	LOCAL hDCTemp:= GetDC(hWnd) AS PTR
@@ -348,7 +335,6 @@ FUNCTION __WCGetPictureCoordinates(hWnd AS PTR, hDCPrinter AS PTR, lpRC AS _winR
 	//ENDIF
   	RETURN
 
-/// <exclude/>
 FUNCTION __WCGetTopLeftPoint(oControl AS OBJECT) AS Point STRICT
 	LOCAL oPoint AS Point
 	IF __WCCoordinateSystem // Cartesian Coordinate System
@@ -358,7 +344,6 @@ FUNCTION __WCGetTopLeftPoint(oControl AS OBJECT) AS Point STRICT
 	//else Windows Coordinate System
 	RETURN oControl:Origin
 
-/// <exclude/>
 FUNCTION __WCGetWindowByHandle(hWnd AS PTR) AS Window STRICT
 	LOCAL strucSelfPtr AS SelfPtr
 	IF IsWindow(hWnd)
@@ -368,7 +353,6 @@ FUNCTION __WCGetWindowByHandle(hWnd AS PTR) AS Window STRICT
 
 	RETURN NULL_OBJECT
 
-/// <exclude/>
 FUNCTION __WCGetWindowMenuPosition(hMenu AS PTR) AS INT STRICT
 	// Used in CAVOOLE to retrieve window menu position for in-place activation
 	LOCAL o AS Menu
@@ -378,12 +362,10 @@ FUNCTION __WCGetWindowMenuPosition(hMenu AS PTR) AS INT STRICT
 	ENDIF
 	RETURN -1
 
-/// <exclude/>
 FUNCTION __WCGetWindowObjectByHandle(hWnd AS PTR) AS OBJECT STRICT
 	// Wrapper for compatibility only
 	RETURN __WCGetControlByHandle(hWnd)
 
-/// <exclude/>
 PROCEDURE __WCInitCriticalSections() _INIT1
 #ifdef __VULCAN__
    AppDomain.CurrentDomain:ProcessExit += System.EventHandler{ NULL, @GUIExit() }
@@ -396,11 +378,9 @@ PROCEDURE __WCInitCriticalSections() _INIT1
 #endif	
   	RETURN
 
-/// <exclude/>
 FUNCTION __WCIsTrueTypeEnabled() AS LOGIC
 	RETURN GetProfileInt(PSZ(_CAST, "TrueType"), PSZ(_CAST, "TTEnable"), 1) == 1
 
-/// <exclude/>
 FUNCTION __WCLogicalBackgroundBrush(oWindow AS Window, strucLogBrush AS _WinLogBrush) AS PTR STRICT
 	LOCAL hBr AS PTR
 	LOCAL oBrush AS Brush
@@ -446,7 +426,6 @@ FUNCTION __WCLogicalBackgroundBrush(oWindow AS Window, strucLogBrush AS _WinLogB
 	RETURN hBr
 
 
-/// <exclude/>
 FUNCTION __WCLogicalBrush(oBrush AS Brush, strucLogBrush AS _WinLogBrush) AS VOID STRICT
 	IF oBrush==NULL_OBJECT
 		strucLogBrush:lbColor := Color{ColorBlack}:ColorRef
@@ -457,7 +436,6 @@ FUNCTION __WCLogicalBrush(oBrush AS Brush, strucLogBrush AS _WinLogBrush) AS VOI
 	ENDIF
 	RETURN
 
-/// <exclude/>
 FUNCTION __WCLogicalPen(oPen AS pen, strucLogPen AS _WinLogPen) AS VOID STRICT
 	IF oPen == NULL_OBJECT
 		strucLogPen:lopnStyle := PS_Solid
@@ -470,8 +448,6 @@ FUNCTION __WCLogicalPen(oPen AS pen, strucLogPen AS _WinLogPen) AS VOID STRICT
 	RETURN
 
 STATIC GLOBAL __WCMenuList := {} AS ARRAY
-
-/// <exclude/>
 FUNCTION __WCPaletteSize(pIH AS PTR) AS DWORD STRICT
 	LOCAL pbi AS _winBITMAPINFOHEADER
 	LOCAL iNumCol AS DWORD
@@ -491,14 +467,12 @@ FUNCTION __WCPaletteSize(pIH AS PTR) AS DWORD STRICT
 
 	RETURN  iNumCol * _SIZEOF(_winRGBQUAD)
 
-/// <exclude/>
 FUNCTION __WCRegisterControl(oControl AS Control) AS VOID
 	LOCAL strucSelf AS SelfPtr
 	strucSelf := __WCSelfPtrAlloc(oControl)
 	__WCRegisterProperty(oControl:Handle(), strucSelf)
 	RETURN 
 
-/// <exclude/>
 FUNCTION __WCRegisterMenu(oObject AS Menu, hMenu AS PTR) AS VOID
 	LOCAL idx, iLen AS DWORD
 	LOCAL p AS PTR PTR// as SelfPtr
@@ -557,7 +531,6 @@ FUNCTION __WCRegisterMenu(oObject AS Menu, hMenu AS PTR) AS VOID
 
 	RETURN
 
-/// <exclude/>
 FUNCTION __WCRegisterTimer(oNew AS OBJECT) AS VOID STRICT
 	LOCAL idx, iLen AS DWORD
 	
@@ -623,7 +596,6 @@ FUNCTION __WCRegisterTimer(oNew AS OBJECT) AS VOID STRICT
 
 	RETURN
 
-/// <exclude/>
 FUNCTION __WCSetROP(hDC AS PTR, rop AS DWORD) AS PTR STRICT
 	LOCAL hLastRop AS PTR
 
@@ -645,11 +617,9 @@ STATIC GLOBAL __WCTimerObjectID AS DWORD
 /*STATIC*/ GLOBAL __WCTimerObjects := {} AS ARRAY
 
 #ifdef __VULCAN__
-/// <exclude/>
    DELEGATE __WCTimerProcDelegate( hWnd AS PTR, uMsg AS DWORD, idEvent AS DWORD, dwTime AS DWORD ) AS VOID
 #endif
 
-/// <exclude/>
 FUNCTION __WCTimerProc(hWnd AS PTR, uMsg AS DWORD, idEvent AS DWORD, dwTime AS DWORD) AS VOID /* WINCALL */
 	LOCAL i, iLen AS INT
 	LOCAL oObject AS OBJECT
@@ -692,7 +662,6 @@ FUNCTION __WCTimerProc(hWnd AS PTR, uMsg AS DWORD, idEvent AS DWORD, dwTime AS D
 
 	RETURN
 
-/// <exclude/>
 FUNCTION __WCUnregisterClasses()
 	LOCAL hInst AS PTR
 
@@ -708,12 +677,10 @@ FUNCTION __WCUnregisterClasses()
   	RETURN NIL
 
 
-/// <exclude/>
 FUNCTION __WCUnRegisterControl(hwndCtl AS PTR) AS VOID
    __WCUnRegisterProperty(hwndCtl) // This also frees the memory of the SelfPtr structure
 	RETURN
 
-/// <exclude/>
 FUNCTION __WCUnregisterTimer(oDel AS OBJECT) AS VOID STRICT
 	LOCAL idx, iLen AS DWORD
 	
@@ -758,7 +725,6 @@ FUNCTION __WCUnregisterTimer(oDel AS OBJECT) AS VOID STRICT
 
 	RETURN
 
-/// <exclude/>
 FUNCTION __WCUseTrueTypeOnly() AS LOGIC
 
 	RETURN GetProfileInt(PSZ(_CAST, "TrueType"), PSZ(_CAST, "TTOnly"), 0) == 1
@@ -794,7 +760,6 @@ FUNCTION GetFocusedObject() AS OBJECT STRICT
 
 	RETURN __WCGetObjectByHandle(GetFocus())
 
-/// <exclude/>
 FUNCTION __WCGetObjectByHandle(hWnd AS PTR) AS OBJECT STRICT
 	LOCAL w  AS Window
    LOCAL c  AS Control
@@ -924,7 +889,6 @@ FUNCTION WCNewControlsAvailable() AS LOGIC
 FUNCTION WCSetCoordinateSystem(system AS LOGIC) AS LOGIC
 	RETURN __WCCoordinateSystem := system
 
-/// <exclude/>
 FUNCTION __WCStretchDibBlt(hdc AS PTR, x AS INT, y AS INT, dx AS INT, dy AS INT, hdib AS PTR) AS LOGIC STRICT
 	LOCAL pBuf AS PSZ
 	LOCAL lRet AS LONGINT
@@ -943,7 +907,6 @@ FUNCTION __WCStretchDibBlt(hdc AS PTR, x AS INT, y AS INT, dx AS INT, dy AS INT,
 	RETURN (lRet > 0)
 
 
-/// <exclude/>
 FUNCTION __WCUnregisterMenu(oObject AS Menu) AS VOID
 // 	LOCAL idx := 1, iDel:= 0 , iLen, i, iEnd, iStart AS INT
 // 	LOCAL p AS PTR PTR
@@ -1100,7 +1063,6 @@ FUNCTION WCMoveWindow(oObject AS OBJECT, oPoint AS Point, oDimension AS Dimensio
 
 // Three new functions that manage SelfPtr objects
 
-/// <exclude/>
 FUNCTION __WCSelfPtrAlloc(oObject AS OBJECT) AS  SelfPtr
 	LOCAL strucSelfPtr AS SelfPtr
 
@@ -1115,7 +1077,6 @@ FUNCTION __WCSelfPtrAlloc(oObject AS OBJECT) AS  SelfPtr
 #endif	
    RETURN strucSelfPtr
    
-/// <exclude/>
 FUNCTION __WCSelfPtrFree(ptrSelfPtr AS SelfPtr) AS LOGIC
    LOCAL lOk := FALSE AS LOGIC
 	IF (ptrSelfPtr != NULL_PTR)
@@ -1130,7 +1091,6 @@ FUNCTION __WCSelfPtrFree(ptrSelfPtr AS SelfPtr) AS LOGIC
 	ENDIF
    RETURN lOk
 
-/// <exclude/>
 FUNCTION __WCSelfPtr2Object( p AS SelfPtr) AS OBJECT
    LOCAL oObject AS OBJECT
    IF p != NULL_PTR .and. MemCheckPtr(PTR(_CAST, p), _SIZEOF(SelfPtr))
@@ -1147,14 +1107,12 @@ FUNCTION __WCSelfPtr2Object( p AS SelfPtr) AS OBJECT
    
    
 // Three new functions that manage the properties 
-/// <exclude/>
 FUNCTION __WCRegisterProperty(hWnd AS PTR, hSelf AS SelfPtr) AS LOGIC
    IF (hWnd != NULL_PTR)
 	   RETURN SetProp(hWnd, PSZ(_CAST, gatomVOObjPtr), hSelf)
 	ENDIF
 	RETURN FALSE
 
-/// <exclude/>
 FUNCTION __WCUnRegisterProperty(hWnd AS PTR) AS LOGIC
 	LOCAL strucSelf AS SelfPtr
    IF (hWnd != NULL_PTR)
@@ -1166,7 +1124,6 @@ FUNCTION __WCUnRegisterProperty(hWnd AS PTR) AS LOGIC
    ENDIF
 	RETURN FALSE
 
-/// <exclude/>
 FUNCTION __WCGetProperty(hwnd AS PTR) AS SelfPtr
 	IF (hWnd != NULL_PTR)
 	   RETURN GetProp(hwnd, PSZ(_CAST, gatomVOObjPtr))

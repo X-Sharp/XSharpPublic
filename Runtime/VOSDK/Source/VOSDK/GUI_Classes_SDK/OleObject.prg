@@ -431,7 +431,6 @@ METHOD UpdateTools()
 
 END CLASS
 
-/// <exclude/>
 PROCEDURE __WCRegisterOleContWindow _INIT3
 	LOCAL wc IS _WINWNDclass
 

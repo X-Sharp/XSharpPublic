@@ -26,7 +26,6 @@ FUNCTION __CheckUUEncode	(c AS STRING)		AS DWORD STRICT
 
 	RETURN nRet
 
-/// <exclude/>
 FUNCTION __DecodeB64(cPath AS STRING, cFile AS STRING, cMail AS STRING) AS DWORD STRICT
 
 	LOCAL nRet      AS DWORD
@@ -75,7 +74,6 @@ FUNCTION __DecodeB64(cPath AS STRING, cFile AS STRING, cMail AS STRING) AS DWORD
 	RETURN nRet
 
 
-/// <exclude/>
 FUNCTION __DecodeQP (cMailPart AS STRING, hfOut AS PTR)  AS DWORD    STRICT
 	LOCAL nRet			AS DWORD
 	LOCAL cPart			AS STRING
@@ -114,7 +112,6 @@ FUNCTION __DecodeQP (cMailPart AS STRING, hfOut AS PTR)  AS DWORD    STRICT
 
 	RETURN nRet
 
-/// <exclude/>
 FUNCTION __DecodeQPrintable(cPath AS STRING, cFile AS STRING, cMail AS STRING) AS DWORD STRICT
 
 	LOCAL nRet      AS DWORD
@@ -149,7 +146,6 @@ FUNCTION __DecodeQPrintable(cPath AS STRING, cFile AS STRING, cMail AS STRING) A
 	RETURN nRet
 
 
-/// <exclude/>
 FUNCTION __DecodeUU(cText AS STRING, hfOut AS PTR)    AS DWORD STRICT
 	LOCAL cLine     AS STRING
 	LOCAL nRet	    AS DWORD
@@ -228,7 +224,6 @@ STATIC FUNCTION __FixDate   (pft AS _WINFILETIME) AS VOID STRICT
 	RETURN
 
 
-/// <exclude/>
 FUNCTION __GetDate(pTime AS _WINFILETIME) AS DATE STRICT
 	LOCAL dRet    AS DATE
 	LOCAL ftLocal IS _WINFILETIME
@@ -244,7 +239,6 @@ FUNCTION __GetDate(pTime AS _WINFILETIME) AS DATE STRICT
 
 	RETURN dRet
 
-/// <exclude/>
 FUNCTION __GetFileData(pData AS _WINWIN32_FIND_DATA) AS ARRAY STRICT
 
    LOCAL aTemp AS ARRAY
@@ -283,7 +277,6 @@ FUNCTION __GetFileData(pData AS _WINWIN32_FIND_DATA) AS ARRAY STRICT
 
 
 
-/// <exclude/>
 FUNCTION __GetFileName(cFile AS STRING) AS STRING STRICT
 	LOCAL dwPos AS DWORD
 
@@ -295,7 +288,6 @@ FUNCTION __GetFileName(cFile AS STRING) AS STRING STRICT
 
 	RETURN SubStr2(cFile, dwPos + 1)
 
-/// <exclude/>
 FUNCTION __GetFullPath(cPath AS STRING, cFile AS STRING)	AS STRING STRICT
 	//SE-040622
 	LOCAL dwPos	AS DWORD
@@ -315,7 +307,6 @@ FUNCTION __GetFullPath(cPath AS STRING, cFile AS STRING)	AS STRING STRICT
 	ENDIF
 
 	RETURN cFile
-/// <exclude/>
 FUNCTION __GetTime(pTime AS _WINFILETIME) AS STRING STRICT
 
    LOCAL cRet    AS STRING
@@ -343,7 +334,6 @@ FUNCTION __GetTime(pTime AS _WINFILETIME) AS STRING STRICT
    ENDIF
    RETURN cRet
 
-/// <exclude/>
 FUNCTION __GetTimeZoneDiff() AS STRING STRICT
 
 	LOCAL tzi		IS _WINTIME_ZONE_INFORMATION
@@ -376,7 +366,6 @@ FUNCTION __GetTimeZoneDiff() AS STRING STRICT
 
 	RETURN cRet
 
-/// <exclude/>
 FUNCTION __GetToken(cText AS STRING, cStart AS STRING, cStop AS STRING, lStopNotRequired := FALSE AS LOGIC) AS STRING STRICT
 	//SE-040627
 	LOCAL cRet		AS STRING
@@ -409,7 +398,6 @@ FUNCTION __GetToken(cText AS STRING, cStart AS STRING, cStop AS STRING, lStopNot
 
 	RETURN cRet
 
-/// <exclude/>
 FUNCTION __GoodFileName(cAttachName AS STRING) AS STRING STRICT
     LOCAL pName AS BYTE PTR
     LOCAL x, len AS INT
@@ -458,7 +446,6 @@ FUNCTION __GoodFileName(cAttachName AS STRING) AS STRING STRICT
 	#endif
 	RETURN cAttachName
 
-/// <exclude/>
 FUNCTION __SaveAs(cPath AS STRING, cFile AS STRING, cMail AS STRING) AS DWORD STRICT
 
 	LOCAL nRet      AS DWORD
@@ -484,7 +471,6 @@ FUNCTION __SaveAs(cPath AS STRING, cFile AS STRING, cMail AS STRING) AS DWORD ST
 
 	RETURN nRet
 
-/// <exclude/>
 FUNCTION __StrList2Array(cList AS STRING, cDelimiter := ", " AS STRING) AS ARRAY STRICT
 	//SE-040628
 	LOCAL dwPos	  AS DWORD
@@ -514,7 +500,6 @@ FUNCTION __StrList2Array(cList AS STRING, cDelimiter := ", " AS STRING) AS ARRAY
 
 	RETURN aRet
 
-/// <exclude/>
 FUNCTION __UUDecodeMail  (cPath AS STRING, cFile AS STRING, cMail AS STRING) AS DWORD STRICT
 	LOCAL nPos      AS DWORD
 	LOCAL nStop     AS DWORD
@@ -960,7 +945,6 @@ FUNCTION WinSockInit()
 
 
 
-/// <exclude/>
 FUNCTION __Array2StrList(aList AS ARRAY, cDelimiter := ", " AS STRING) AS STRING STRICT
 	//SE-040628
 	LOCAL cRet    AS STRING
@@ -1071,7 +1055,6 @@ FUNCTION SMTPSendMail       (cServerIP      AS STRING,;
 
 /// <exclude/>
 GLOBAL wsaData  	IS _WinWSAData
-/// <exclude/>
 FUNCTION __AdJustPath(cPath AS USUAL) AS STRING
     // Updated to better handle UNC paths
     IF IsString(cPath)

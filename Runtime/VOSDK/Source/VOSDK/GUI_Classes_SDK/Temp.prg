@@ -1,8 +1,6 @@
-/// <exclude/>
 FUNCTION __DBCSEnabled() AS LOGIC
 	RETURN LOGIC(_CAST, GetSystemMetrics(SM_DBCSENABLED))
 
-/// <exclude/>
 FUNCTION __ShowLastError()
 	LOCAL dwErr AS DWORD
 	LOCAL lpMsgBuf AS PSZ

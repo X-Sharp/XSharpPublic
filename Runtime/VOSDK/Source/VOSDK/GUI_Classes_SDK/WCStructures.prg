@@ -1,4 +1,3 @@
-/// <exclude/>
 VOSTRUCT __WCDropFiles
 	// Liuho01@05/09/96: Undocumented data structure necessary for creating
 	//							a win32 Drop File Source application
@@ -44,7 +43,6 @@ VOSTRUCT WCColor
 	MEMBER bRed 	AS BYTE
 	MEMBER bNotUsed AS BYTE
 
-/// <exclude/>
 VOSTRUCT __WCDialog_VARS
 	//LIUHO01@01/05/96:		Used to Buffer Data which will be passed to __SetChildFontProc
 	//						CallBack function

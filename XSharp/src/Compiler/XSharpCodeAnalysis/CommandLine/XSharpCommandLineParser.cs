@@ -186,6 +186,27 @@ namespace Microsoft.CodeAnalysis.CSharp
                             case "xsharp.vfp.dll":
                                 options.TargetDLL = XSharpTargetDLL.VFP;
                                 break;
+                            case "vowin32apilibrary.dll":
+                                options.TargetDLL = XSharpTargetDLL.VOWin32Api;
+                                break;
+                            case "vosystemclasses.dll":
+                                options.TargetDLL = XSharpTargetDLL.VOSystemClasses;
+                                break;
+                            case "vorddclasses.dll":
+                                options.TargetDLL = XSharpTargetDLL.VORDDClasses;
+                                break;
+                            case "vosqlclasses.dll":
+                                options.TargetDLL = XSharpTargetDLL.VOSQLClasses;
+                                break;
+                            case "voguiclasses.dll":
+                                options.TargetDLL = XSharpTargetDLL.VOGuiClasses;
+                                break;
+                            case "vointernetclasses.dll":
+                                options.TargetDLL = XSharpTargetDLL.VOInternetClasses;
+                                break;
+                            case "voconsoleclasses.dll":
+                                options.TargetDLL = XSharpTargetDLL.VOConsoleClasses;
+                                break;
                             default:
                                 options.TargetDLL = XSharpTargetDLL.Other;
                                 break;

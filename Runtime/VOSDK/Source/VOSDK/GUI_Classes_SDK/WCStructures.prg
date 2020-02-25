@@ -1,4 +1,4 @@
-INTERNAL VOSTRUCT __WCDropFiles
+VOSTRUCT __WCDropFiles
 	// Liuho01@05/09/96: Undocumented data structure necessary for creating
 	//							a win32 Drop File Source application
 	//PP-031006 Bug 98. Changed wSize to DWORD as per Platform SDK
@@ -17,7 +17,8 @@ VOSTRUCT SelfPtr
 	//member oObject as ptr
 	//member ptrNext as __WCDCItem
 
-INTERNAL VOSTRUCT strColor
+/// <exclude/>
+VOSTRUCT strColor
 	MEMBER s1 AS DWORD
 	MEMBER s2 AS DWORD
 	MEMBER s3 AS DWORD
@@ -34,13 +35,15 @@ INTERNAL VOSTRUCT strColor
 	MEMBER s14 AS DWORD
 	MEMBER s15 AS DWORD
 	MEMBER s16 AS DWORD
-INTERNAL VOSTRUCT WCColor
+
+/// <exclude/>
+VOSTRUCT WCColor
 	MEMBER bBlue 	AS BYTE
 	MEMBER bGreen 	AS BYTE
 	MEMBER bRed 	AS BYTE
 	MEMBER bNotUsed AS BYTE
 
-INTERNAL VOSTRUCT __WCDialog_VARS
+VOSTRUCT __WCDialog_VARS
 	//LIUHO01@01/05/96:		Used to Buffer Data which will be passed to __SetChildFontProc
 	//						CallBack function
 	MEMBER hFont AS PTR // handle to the new font

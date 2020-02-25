@@ -7,7 +7,7 @@
 USING System.Reflection
 using System.Data
 
-INTERNAL FUNCTION __GetSymString( uString AS USUAL ) AS STRING STRICT
+FUNCTION __GetSymString( uString AS USUAL ) AS STRING STRICT
 	LOCAL nType AS DWORD
 	LOCAL cRet  AS STRING
 	nType := UsualType( uString )

@@ -1649,9 +1649,9 @@ METHOD VerticalScroll(oScrollEvent)
 END CLASS
 
 #ifdef __VULCAN__
-   INTERNAL DELEGATE __WCControlProcDelegate( hWnd AS PTR, umsg AS DWORD, wParam AS DWORD, lParam AS LONGINT) AS LONGINT
-   
-INTERNAL FUNCTION Get__WCControlProcPtr() AS PTR
+   DELEGATE __WCControlProcDelegate( hWnd AS PTR, umsg AS DWORD, wParam AS DWORD, lParam AS LONGINT) AS LONGINT
+    /// <exclude/>
+   FUNCTION Get__WCControlProcPtr() AS PTR
       STATIC LOCAL WCControlProcDelegate AS __WCControlProcDelegate
       IF WCControlProcDelegate == NULL
          WCControlProcDelegate := __WCControlProcDelegate{ NULL, @__WCControlProc() }
@@ -1659,11 +1659,11 @@ INTERNAL FUNCTION Get__WCControlProcPtr() AS PTR
       RETURN System.Runtime.InteropServices.Marshal.GetFunctionPointerForDelegate( (System.Delegate) WCControlProcDelegate )
          
 #else
-INTERNAL FUNCTION Get__WCControlProcPtr() AS PTR
+   FUNCTION Get__WCControlProcPtr() AS PTR
       RETURN @__WCControlProc()
 #endif
 
-INTERNAL FUNCTION __WCControlProc(hWnd AS PTR, umsg AS DWORD, wParam AS DWORD, lParam AS LONGINT) AS LONGINT /* WINCALL */
+FUNCTION __WCControlProc(hWnd AS PTR, umsg AS DWORD, wParam AS DWORD, lParam AS LONGINT) AS LONGINT /* WINCALL */
 
 
 	LOCAL oControl AS Control

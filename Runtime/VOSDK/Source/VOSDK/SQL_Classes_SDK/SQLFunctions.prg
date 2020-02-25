@@ -1,16 +1,17 @@
-INTERNAL FUNCTION __SQLMaxStringSize( nValue )
+STATIC GLOBAL nMaxStringSize := 0x1000  AS DWORD  //MAX_LONGVARCHAR   AS DWORD
+
+FUNCTION __SQLMaxStringSize( nValue )
    //  JSP 09/05/2000
    //  STATIC LOCAL nMaxStringSize := 10000    //MAX_LONGVARCHAR  AS DWORD
-   STATIC LOCAL nMaxStringSize := 0x1000  AS DWORD  //MAX_LONGVARCHAR   AS DWORD
-
    IF IsNumeric( nValue )
       nMaxStringSize := nValue
    ENDIF
 
    RETURN nMaxStringSize
 
-INTERNAL FUNCTION __SQLMaxDisplaySize( nValue )
-   STATIC LOCAL nMaxDispSize := 256  AS DWORD
+STATIC GLOBAL nMaxDispSize := 256  AS DWORD
+
+FUNCTION __SQLMaxDisplaySize( nValue )
 
    IF IsNumeric( nValue )
       nMaxDispSize := nValue
@@ -18,7 +19,7 @@ INTERNAL FUNCTION __SQLMaxDisplaySize( nValue )
 
    RETURN nMaxDispSize
 
-INTERNAL FUNCTION __GetSymString( uString AS USUAL ) AS STRING STRICT
+FUNCTION __GetSymString( uString AS USUAL ) AS STRING STRICT
    LOCAL nType AS DWORD
    LOCAL cRet  AS STRING
 
@@ -34,7 +35,7 @@ INTERNAL FUNCTION __GetSymString( uString AS USUAL ) AS STRING STRICT
    END SWITCH
    RETURN cRet
 
-INTERNAL FUNCTION __GetStringFromODBCType( ODBCType AS SHORTINT ) AS STRING STRICT
+FUNCTION __GetStringFromODBCType( ODBCType AS SHORTINT ) AS STRING STRICT
    LOCAL cType     AS STRING
 
    SWITCH ODBCType
@@ -72,7 +73,7 @@ INTERNAL FUNCTION __GetStringFromODBCType( ODBCType AS SHORTINT ) AS STRING STRI
 
    RETURN cType
 
-INTERNAL FUNCTION __AdjustString( c AS STRING ) AS STRING STRICT
+FUNCTION __AdjustString( c AS STRING ) AS STRING STRICT
    LOCAL nLen	AS DWORD
    LOCAL nSize	AS DWORD
 
@@ -84,7 +85,7 @@ INTERNAL FUNCTION __AdjustString( c AS STRING ) AS STRING STRICT
    RETURN c
 
 
-INTERNAL FUNCTION __CheckHandles( hEnv AS USUAL, hDbc AS USUAL, hStmt AS USUAL ) AS LOGIC STRICT
+FUNCTION __CheckHandles( hEnv AS USUAL, hDbc AS USUAL, hStmt AS USUAL ) AS LOGIC STRICT
    LOCAL lRet  AS LOGIC
 
    IF IsPtr( hEnv ) .AND. IsPtr( hDbc ) .AND. IsPtr( hStmt )
@@ -142,7 +143,7 @@ FUNCTION  SQL_LEN_DATA_AT_EXEC( nLength AS INT ) AS INT STRICT
    RETURN -nLength + SQL_LEN_DATA_AT_EXEC_OFFSET
 
 
-INTERNAL FUNCTION __SQLOutputDebug( cMsg AS STRING) AS VOID STRICT
+FUNCTION __SQLOutputDebug( cMsg AS STRING) AS VOID STRICT
    LOCAL I AS DWORD
     LOCAL cLine AS STRING
     FOR i := 1 TO SLen(cMsg) STEP 200
@@ -154,30 +155,31 @@ INTERNAL FUNCTION __SQLOutputDebug( cMsg AS STRING) AS VOID STRICT
     NEXT
    RETURN
 
+STATIC GLOBAL nSqlSetStmtConcurrencyValue := __CAVO_SQL_CONCURRENCY AS INT
 FUNCTION SqlSetStmtConcurrency( nNew ) AS INT
-   STATIC nValue := __CAVO_SQL_CONCURRENCY AS INT
    LOCAL nResult AS INT
-   nResult := nValue
+   nResult := nSqlSetStmtConcurrencyValue
    IF IsNumeric( nNew )
-      nValue := nNew
+      nSqlSetStmtConcurrencyValue := nNew
    ENDIF
    RETURN nResult
+
+STATIC GLOBAL nSqlSetStmtCursorTypeValue := __CAVO_SQL_CURSOR_TYPE AS INT
 
 FUNCTION SqlSetStmtCursorType( nNew ) AS INT
-   STATIC nValue := __CAVO_SQL_CURSOR_TYPE AS INT
    LOCAL nResult AS INT
-   nResult := nValue
+   nResult := nSqlSetStmtCursorTypeValue
    IF IsNumeric( nNew )
-      nValue := nNew
+      nSqlSetStmtCursorTypeValue := nNew
    ENDIF
    RETURN nResult
 
+STATIC GLOBAL nSqlSetStmtSimulateCursor := __CAVO_SQL_SIMULATE_CURSOR  AS INT
 FUNCTION SqlSetStmtSimulateCursor( nNew ) AS INT
-   STATIC nValue := __CAVO_SQL_SIMULATE_CURSOR  AS INT
    LOCAL nResult AS INT
-   nResult := nValue
+   nResult := nSqlSetStmtSimulateCursor
    IF IsNumeric( nNew )
-      nValue := nNew
+      nSqlSetStmtSimulateCursor := nNew
    ENDIF
    RETURN nResult
 
@@ -268,7 +270,7 @@ FUNCTION SQLThrowOutOfMemoryError() AS VOID STRICT
 FUNCTION _SLen( c AS STRING ) AS SHORTINT STRICT
    RETURN SHORTINT( _CAST, SLen( c ) )
 
-INTERNAL FUNCTION __GetDataValuePSZ( oSQLColumn AS SQLColumn, oSQLData AS SqlData, lEqual AS LOGIC, lUseIS AS LOGIC )
+FUNCTION __GetDataValuePSZ( oSQLColumn AS SQLColumn, oSQLData AS SqlData, lEqual AS LOGIC, lUseIS AS LOGIC )
    LOCAL sValue                AS STRING
    LOCAL cTemp		       AS STRING
    LOCAL sVal                  AS STRING
@@ -422,7 +424,7 @@ FUNCTION SQLType2CType( nODBCType AS SHORTINT ) AS SHORTINT STRICT
 
    RETURN nType
 
-INTERNAL FUNCTION __ODBCType2FSpec( nODBCType AS SHORTINT, nPrecision REF DWORD, nScale REF SHORT ) AS STRING  PASCAL  // dcaton 070206 was nScale REF INT
+FUNCTION __ODBCType2FSpec( nODBCType AS SHORTINT, nPrecision REF DWORD, nScale REF SHORT ) AS STRING  PASCAL  // dcaton 070206 was nScale REF INT
     IF SqlIsLongType( nODBCType )
         nPrecision := 10
     ELSE
@@ -435,8 +437,8 @@ INTERNAL FUNCTION __ODBCType2FSpec( nODBCType AS SHORTINT, nPrecision REF DWORD,
 
     RETURN __GetStringFromODBCType( nODBCType )
 
-
-INTERNAL UNION SqlData_Union
+/// <exclude/>
+UNION SqlData_Union
     MEMBER bVal  AS BYTE
     MEMBER siVal AS SHORTINT
     MEMBER liVal AS LONGINT

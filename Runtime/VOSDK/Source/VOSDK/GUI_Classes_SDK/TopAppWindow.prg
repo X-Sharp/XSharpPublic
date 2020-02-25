@@ -113,10 +113,10 @@ STATIC FUNCTION __WCRegisterTopAppWindow(hInst AS PTR) AS LOGIC
 	RETURN lretVal
 	
 #ifdef __VULCAN__
-   INTERNAL DELEGATE __WCTopAppWndProcDelegate( hWnd AS PTR, uMsg AS DWORD, wParam AS DWORD, lParam AS LONGINT ) AS LONGINT
+   DELEGATE __WCTopAppWndProcDelegate( hWnd AS PTR, uMsg AS DWORD, wParam AS DWORD, lParam AS LONGINT ) AS LONGINT
 #endif	
 
-INTERNAL FUNCTION __WCTopAppWndProc(hWnd AS PTR, uMsg AS DWORD, wParam AS DWORD, lParam AS LONGINT) AS LONGINT /* WINCALL */
+FUNCTION __WCTopAppWndProc(hWnd AS PTR, uMsg AS DWORD, wParam AS DWORD, lParam AS LONGINT) AS LONGINT /* WINCALL */
 	LOCAL oWindow AS Window
 	LOCAL strucCreateStruct AS _WinCreateStruct
 
@@ -141,5 +141,5 @@ INTERNAL FUNCTION __WCTopAppWndProc(hWnd AS PTR, uMsg AS DWORD, wParam AS DWORD,
 
 
 #region defines
-INTERNAL DEFINE __WCTopAppWindowClass := "TopAppWindow"
+DEFINE __WCTopAppWindowClass := "TopAppWindow"
 #endregion

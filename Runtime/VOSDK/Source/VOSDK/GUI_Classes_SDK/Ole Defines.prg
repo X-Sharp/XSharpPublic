@@ -1,4 +1,5 @@
-INTERNAL VOSTRUCT OleProps
+/// <exclude/>
+VOSTRUCT OleProps
 	MEMBER dwSelector AS DWORD
 	MEMBER fAllowInPlace AS LOGIC
 	MEMBER fActivateOnDblClk AS LOGIC
@@ -8,7 +9,7 @@ INTERNAL VOSTRUCT OleProps
 	MEMBER fIsActive AS LOGIC
 	MEMBER fAllowDocView AS LOGIC
 
-INTERNAL FUNCTION __OleDropTargetCallback(DragInfo AS OleDragEventInfo) AS LOGIC /* WINCALL */
+FUNCTION __OleDropTargetCallback(DragInfo AS OleDragEventInfo) AS LOGIC /* WINCALL */
 	LOCAL oAppWnd   AS AppWindow
 	LOCAL oWnd      AS OBJECT
 	LOCAL oOleDragEvent AS OleDragEvent
@@ -48,7 +49,7 @@ INTERNAL FUNCTION __OleDropTargetCallback(DragInfo AS OleDragEventInfo) AS LOGIC
 	ENDIF
 	RETURN lRet
 
-INTERNAL FUNCTION __OleStatusCallback(hwnd AS PTR, StatusMsg AS PSZ) AS DWORD /* WINCALL */
+FUNCTION __OleStatusCallback(hwnd AS PTR, StatusMsg AS PSZ) AS DWORD /* WINCALL */
 	LOCAL oShellWindow AS OBJECT
 
 	oShellWindow := __WCGetWindowByHandle(hwnd)

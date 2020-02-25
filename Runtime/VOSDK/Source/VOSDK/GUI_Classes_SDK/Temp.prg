@@ -1,7 +1,7 @@
-INTERNAL FUNCTION __DBCSEnabled() AS LOGIC
+FUNCTION __DBCSEnabled() AS LOGIC
 	RETURN LOGIC(_CAST, GetSystemMetrics(SM_DBCSENABLED))
 
-INTERNAL FUNCTION __ShowLastError()
+FUNCTION __ShowLastError()
 	LOCAL dwErr AS DWORD
 	LOCAL lpMsgBuf AS PSZ
 
@@ -15,7 +15,8 @@ INTERNAL FUNCTION __ShowLastError()
 	LocalFree(lpMsgBuf)
 	RETURN NIL
 
-INTERNAL _DLL FUNC DragObject(hDesktop AS PTR, hWnd AS PTR, uFlags AS DWORD, dw AS DWORD, hCursor AS PTR);
+/// <exclude/>
+_DLL FUNC DragObject(hDesktop AS PTR, hWnd AS PTR, uFlags AS DWORD, dw AS DWORD, hCursor AS PTR);
 	AS DWORD PASCAL:USER32.DragObject
 
 // FUNCTION MyMakeLong(wLow AS WORD, wHigh AS WORD) AS LONG

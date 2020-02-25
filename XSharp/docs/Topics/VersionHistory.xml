@@ -13,11 +13,9 @@
     <para styleclass="Heading1">Changes in 2.3.1.0 (Bandol GA 2.3a)</para>
     <para styleclass="Heading1"><text styleclass="Heading2">Compiler</text></para>
     <list id="86" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Body Text">Added support for compiler option <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo11">/vo11</link></li>
+      <li styleclass="Body Text">When compiling in case sensitive mode, the compiler now checks to see if a child class declares a method that only differs from a method in its parent class by case</li>
     </list>
     <list id="87" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Body Text">The compiler now no longer throws a warning about mixing signed and unsigned types in assignments and binary operators when constants are involved and the value of the constant can be safely casted to the type of the other operand or when the constant can be safely assigned.</li>
-      <li styleclass="Body Text">When compiling in case sensitive mode, the compiler now checks to see if a child class declares a method that only differs from a method in its parent class by case</li>
       <li styleclass="Body Text">The warning message about assigning to a foreach iterator variable has been changed from &quot;Cannot assign&quot; to &quot;Should not assign&quot;</li>
       <li styleclass="Body Text">#pragma warnings was not working with the xs1234 syntax but only with numbers. This has been corrected</li>
     </list>
@@ -27,6 +25,7 @@
       <li styleclass="Body Text">Added the SetFieldExtent method to the IRdd interface</li>
       <li styleclass="Body Text">The USUAL type no longer &quot;caches&quot; the dialect setting</li>
       <li styleclass="Body Text">Fixed some problems with ACopy() with skipped or negative arguments.</li>
+      <li styleclass="Body Text">The return value for Alias() is now in upper case.</li>
     </list>
     <para styleclass="Heading1"><text styleclass="Heading2">VO SDK </text></para>
     <list id="87" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -45,8 +44,6 @@
     <list id="87" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">Fixed a problem in keyword case synchronization that could corrupt the editor contents.</li>
     </list>
-    <para styleclass="Heading1"></para>
-    <para styleclass="Normal"></para>
     <para styleclass="Heading1">Changes in 2.3.0.0 (Bandol GA 2.3)</para>
     <para styleclass="Heading1"><text styleclass="Heading2">Compiler</text></para>
     <list id="86" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="" style="text-align:left; text-indent:-13px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:13px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:48px left,96px left,144px left,192px left,240px left ; font-family:Symbol; font-size:11pt; color:#000000;">

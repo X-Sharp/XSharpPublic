@@ -30,7 +30,12 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         public SyntaxTriviaList GetLeadingTrivia(CSharpSyntaxNode parent, CompilationUnitSyntax cu)
         {
             var list = new SyntaxTriviaList();
-            if (cu == null || !cu.HasDocComments)
+            if (cu == null || cu.XTokens == null)
+            {
+                return list;
+            }
+            var options = ((CSharpParseOptions)cu.SyntaxTree.Options);
+            if (! cu.HasDocComments && options.TargetDLL == XSharpTargetDLL.Other)
             {
                 return list;
             }
@@ -58,14 +63,56 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     startindex--;
                 }
                 // when compiling the runtime we generate blank xml comments for enum members, defines and double underscores without xml comments
-                if (sb.Length == 0 && ((CSharpParseOptions)cu.SyntaxTree.Options).TargetDLL != XSharpTargetDLL.Other)
+                
+                if (sb.Length == 0 && options.TargetDLL != XSharpTargetDLL.Other)
                 {
-                    if (this is XSharpParser.EnummemberContext ||
-                        this is XSharpParser.VodefineContext ||
-                        (this is XSharpParser.IEntityContext
-                            && ((XSharpParser.IEntityContext) this).ShortName.StartsWith("__")))
+                    XSharpParser.IEntityContext entity = null;
+                    if (this is XSharpParser.EntityContext ec)
                     {
-                        sb.Append("/// <summary></summary>");
+                        if (ec.GetChild(0) is XSharpParser.IEntityContext iec)
+                        {
+                            entity = iec;
+                        }
+                    }
+                    if (this is XSharpParser.ClassmemberContext cmc)
+                    {
+                        if (cmc.GetChild(0) is XSharpParser.IEntityContext iec)
+                        {
+                            entity = iec;
+                        }
+                    }
+                    if (entity == null && this is XSharpParser.FoxclassmemberContext fmc)
+                    {
+                        if (fmc.GetChild(0) is XSharpParser.IEntityContext iec)
+                        {
+                            entity = iec;
+                        }
+                    }
+                    if (entity == null && this is XSharpParser.XppclassMemberContext xmc)
+                    {
+                        if (xmc.GetChild(0) is XSharpParser.IEntityContext iec)
+                        {
+                            entity = iec;
+
+                        }
+                    }
+                    if (entity == null && this is XSharpParser.IEntityContext ec2)
+                    {
+                        entity = ec2;
+
+                    }
+                    if (entity != null && entity.ShortName.StartsWith("__"))
+                    {
+                        sb.Append("/// <exclude/>");
+                    }
+
+                    if (this is XSharpParser.EnummemberContext ||
+                        this is XSharpParser.VodefineContext )
+                    {
+                        if (sb.Length == 0)
+                        {
+                            sb.Append("/// <summary></summary>");
+                        }
                     }
                 }
                 if (sb.Length > 0)

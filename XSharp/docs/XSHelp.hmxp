@@ -37,9 +37,9 @@
           <export-task name="Publish as HXS" format="HXS">
             <task-config-group name="settings">
               <task-config-value name="outputfile">..\Binaries\Help\XSharp.mshc</task-config-value>
-              <task-config-value name="deletetemp">1</task-config-value>
+              <task-config-value name="deletetemp">0</task-config-value>
               <task-config-value name="make2include">HXS</task-config-value>
-              <task-config-value name="make2status">*</task-config-value>
+              <task-config-value name="make2status">(Complete)</task-config-value>
             </task-config-group>
           </export-task>
         </export-tasks>
@@ -179,7 +179,7 @@
       <config-value name="historykeepdeletedfiles">0</config-value>
       <config-value name="vcsmanuallycheckout">0</config-value>
       <config-value name="make2include">HXS</config-value>
-      <config-value name="make2status">*</config-value>
+      <config-value name="make2status">(Complete)</config-value>
       <config-value name="lastedited">-1</config-value>
       <config-group name="spellcheck">
         <config-value name="project">0</config-value>
@@ -638,7 +638,7 @@
     <config-group name="user">
       <config-group name="robert">
         <config-group name="project">
-          <config-value name="lastexport">0</config-value>
+          <config-value name="lastexport">2</config-value>
         </config-group>
         <config-group name="report">
           <config-value name="type">6</config-value>
@@ -686,7 +686,7 @@
       <config-value name="namespace">XSharp</config-value>
       <config-value name="uniqueid">XSharp</config-value>
       <config-value name="outputfile">..\Binaries\Help\XSharp.mshc</config-value>
-      <config-value name="deletetemp">1</config-value>
+      <config-value name="deletetemp">0</config-value>
     </config-group>
     <config-group name="print">
       <config-value name="include">PRINT</config-value>
@@ -740,6 +740,9 @@
       <file-mod href="X-Walkthroughs.xml"/>
       <file-mod href="__ByRef.xml"/>
       <file-mod href="__TextRDD.xml"/>
+      <file-mod href="command_SET_ANSI.xml" build="CHM,HTML,PDF"/>
+      <file-mod href="command_SET_EXACT.xml" build="CHM,HTML,PDF"/>
+      <file-mod href="cmd_cat_set.xml" build="CHM,HTML,PDF"/>
     </file>
     <file href="Baggage/*.*" build="ALL" filetype="baggage"/>
   </project-files>

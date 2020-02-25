@@ -232,7 +232,7 @@
           <caption translate="true">BSD</caption>
         </topicref>
       </topicref>
-      <topicref type="topic" id="428708026773084" build="ALL" modified="2019-09-03T10:20:36.048Z" icon="0" href="Acknowledgements">
+      <topicref type="topic" id="428708026773084" build="ALL" modified="2020-02-25T17:03:05.673Z" icon="0" href="Acknowledgements">
         <caption translate="true">Acknowledgements</caption>
       </topicref>
       <topicref type="topic" id="428724207686309" build="ALL" modified="2017-05-17T10:00:44.864Z" icon="0" href="Who-is-the-X-team">
@@ -638,9 +638,6 @@
           <topicref type="topic" id="384614716522422" build="ALL" modified="2019-09-24T13:46:33.730Z" icon="0" href="command_UNLOCK">
             <caption translate="true">UNLOCK Command</caption>
           </topicref>
-          <topicref type="topic" id="385415468003728" build="ALL" modified="2019-09-24T13:46:33.735Z" icon="0" href="command_USE">
-            <caption translate="true">USE Command</caption>
-          </topicref>
         </topicref>
         <topicref type="topic" id="436905850607204" build="ALL" modified="2019-09-24T13:44:42.157Z" icon="0" href="cmd_cat_Database">
           <caption translate="true">Database</caption>
@@ -683,17 +680,8 @@
           <topicref type="topic" id="436965452119672" build="ALL" modified="2019-09-24T14:15:51.768Z" icon="0" href="command_DELETE">
             <caption translate="true">DELETE Command</caption>
           </topicref>
-          <topicref type="topic" id="436964392330070" build="ALL" modified="2019-09-24T14:15:51.773Z" icon="0" href="command_DELETE_TAG">
-            <caption translate="true">DELETE TAG Command</caption>
-          </topicref>
-          <topicref type="topic" id="436968418695031" build="ALL" modified="2019-09-24T14:15:51.779Z" icon="0" href="command_FIND">
-            <caption translate="true">FIND Command</caption>
-          </topicref>
           <topicref type="topic" id="436966502892146" build="ALL" modified="2019-09-24T14:15:51.784Z" icon="0" href="command_GO">
             <caption translate="true">GO Command</caption>
-          </topicref>
-          <topicref type="topic" id="436966281789646" build="ALL" modified="2019-09-24T14:15:51.790Z" icon="0" href="command_INDEX">
-            <caption translate="true">INDEX Command</caption>
           </topicref>
           <topicref type="topic" id="436965560095848" build="ALL" modified="2019-09-24T14:15:51.795Z" icon="0" href="command_JOIN">
             <caption translate="true">JOIN Command</caption>
@@ -707,14 +695,8 @@
           <topicref type="topic" id="436964499571576" build="ALL" modified="2019-09-24T14:15:51.810Z" icon="0" href="command_RECALL">
             <caption translate="true">RECALL Command</caption>
           </topicref>
-          <topicref type="topic" id="436965840141424" build="ALL" modified="2019-09-24T14:15:51.816Z" icon="0" href="command_REINDEX">
-            <caption translate="true">REINDEX Command</caption>
-          </topicref>
           <topicref type="topic" id="436964775577943" build="ALL" modified="2019-09-24T14:15:51.821Z" icon="0" href="command_REPLACE">
             <caption translate="true">REPLACE Command</caption>
-          </topicref>
-          <topicref type="topic" id="436967949140943" build="ALL" modified="2019-09-24T14:15:51.827Z" icon="0" href="command_SEEK">
-            <caption translate="true">SEEK Command</caption>
           </topicref>
           <topicref type="topic" id="436967563823030" build="ALL" modified="2019-09-24T14:15:51.832Z" icon="0" href="command_SELECT">
             <caption translate="true">SELECT Command</caption>
@@ -722,17 +704,11 @@
           <topicref type="topic" id="436967282935349" build="ALL" modified="2019-09-24T14:15:51.837Z" icon="0" href="command_SET_DELETED">
             <caption translate="true">SET DELETED Command</caption>
           </topicref>
-          <topicref type="topic" id="436966329100851" build="ALL" modified="2019-09-24T14:15:51.844Z" icon="0" href="command_SET_DESCENDING">
-            <caption translate="true">SET DESCENDING Command</caption>
-          </topicref>
           <topicref type="topic" id="436966462679483" build="ALL" modified="2019-09-24T14:15:51.850Z" icon="0" href="command_SET_DRIVER">
             <caption translate="true">SET DRIVER Command</caption>
           </topicref>
           <topicref type="topic" id="436964458216359" build="ALL" modified="2019-09-24T14:15:51.855Z" icon="0" href="command_SET_FILTER">
             <caption translate="true">SET FILTER Command</caption>
-          </topicref>
-          <topicref type="topic" id="436964459026741" build="ALL" modified="2019-09-24T14:15:51.860Z" icon="0" href="command_SET_INDEX">
-            <caption translate="true">SET INDEX Command</caption>
           </topicref>
           <topicref type="topic" id="436965469408273" build="ALL" modified="2019-09-24T14:15:59.749Z" icon="0" href="command_SET_MEMOBLOCK">
             <caption translate="true">SET MEMOBLOCK Command</caption>
@@ -740,26 +716,8 @@
           <topicref type="topic" id="436966554635745" build="ALL" modified="2019-09-24T14:15:59.760Z" icon="0" href="command_SET_OPTIMIZE">
             <caption translate="true">SET OPTIMIZE Command</caption>
           </topicref>
-          <topicref type="topic" id="436965760914770" build="ALL" modified="2019-09-24T14:15:59.767Z" icon="0" href="command_SET_ORDER">
-            <caption translate="true">SET ORDER Command</caption>
-          </topicref>
           <topicref type="topic" id="436967275368455" build="ALL" modified="2019-09-24T14:15:59.772Z" icon="0" href="command_SET_RELATION">
             <caption translate="true">SET RELATION Command</caption>
-          </topicref>
-          <topicref type="topic" id="436968331221065" build="ALL" modified="2019-09-24T14:15:59.777Z" icon="0" href="command_SET_SCOPE">
-            <caption translate="true">SET SCOPE Command</caption>
-          </topicref>
-          <topicref type="topic" id="436965134966613" build="ALL" modified="2019-09-24T14:15:59.784Z" icon="0" href="command_SET_SCOPEBOTTOM">
-            <caption translate="true">SET SCOPEBOTTOM Command</caption>
-          </topicref>
-          <topicref type="topic" id="436967115691796" build="ALL" modified="2019-09-24T14:15:59.790Z" icon="0" href="command_SET_SCOPETOP">
-            <caption translate="true">SET SCOPETOP Command</caption>
-          </topicref>
-          <topicref type="topic" id="436965801737185" build="ALL" modified="2019-09-24T14:15:59.795Z" icon="0" href="command_SET_SOFTSEEK">
-            <caption translate="true">SET SOFTSEEK Command</caption>
-          </topicref>
-          <topicref type="topic" id="436965973735763" build="ALL" modified="2019-09-24T14:15:59.801Z" icon="0" href="command_SET_UNIQUE">
-            <caption translate="true">SET UNIQUE Command</caption>
           </topicref>
           <topicref type="topic" id="436965926570940" build="ALL" modified="2019-09-24T14:15:59.806Z" icon="0" href="command_SKIP">
             <caption translate="true">SKIP Command</caption>
@@ -823,17 +781,11 @@
             <topicref type="topic" id="436996135072412" build="ALL" modified="2019-09-24T14:17:26.205Z" icon="0" href="command_EVENT">
               <caption translate="true">EVENT Statement</caption>
             </topicref>
-            <topicref type="topic" id="437477339534916" build="ALL" modified="2019-10-09T20:22:15.950Z" icon="0" href="command_FUNCTION">
-              <caption translate="true">FUNCTION Statement</caption>
-            </topicref>
             <topicref type="topic" id="38462307661086" build="ALL" modified="2019-09-24T14:17:26.223Z" icon="0" href="command_METHOD">
               <caption translate="true">METHOD Statement</caption>
             </topicref>
             <topicref type="topic" id="436998671179174" build="ALL" modified="2019-09-24T14:17:26.230Z" icon="0" href="command_OPERATOR">
               <caption translate="true">OPERATOR Statement</caption>
-            </topicref>
-            <topicref type="topic" id="437477867731321" build="ALL" modified="2019-10-09T20:22:32.561Z" icon="0" href="command_PROCEDURE">
-              <caption translate="true">PROCEDURE Statement</caption>
             </topicref>
             <topicref type="topic" id="436996775134688" build="ALL" modified="2019-09-24T14:17:26.244Z" icon="0" href="command_PROPERTY">
               <caption translate="true">PROPERTY Statement</caption>
@@ -909,45 +861,45 @@
             <caption translate="true">VOSTRUCT Statement</caption>
           </topicref>
         </topicref>
-        <topicref type="topic" id="436968382800624" build="ALL" modified="2019-09-24T13:44:42.172Z" icon="0" href="cmd_cat_set">
+        <topicref type="topic" id="436968382800624" build="CHM,HTML,PDF" modified="2020-02-25T16:41:41.872Z" icon="0" href="cmd_cat_set">
           <caption translate="true">Environment</caption>
-          <topicref type="topic" id="384613507102286" build="ALL" modified="2019-09-24T14:17:44.030Z" icon="0" href="command_SET_ANSI">
+          <topicref type="topic" id="384613507102286" build="CHM,HTML,PDF" modified="2020-02-25T16:41:31.799Z" icon="0" href="command_SET_ANSI">
             <caption translate="true">SET ANSI Command</caption>
           </topicref>
-          <topicref type="topic" id="43700395884884" build="ALL" modified="2019-09-24T14:17:44.037Z" icon="0" href="command_SET_CENTURY">
+          <topicref type="topic" id="43700395884884" build="CHM,HTML,PDF" modified="2020-02-25T16:41:31.807Z" icon="0" href="command_SET_CENTURY">
             <caption translate="true">SET CENTURY Command</caption>
           </topicref>
-          <topicref type="topic" id="436985524344551" build="ALL" modified="2019-09-24T14:17:44.043Z" icon="0" href="command_SET_DATE">
+          <topicref type="topic" id="436985524344551" build="CHM,HTML,PDF" modified="2020-02-25T16:41:31.814Z" icon="0" href="command_SET_DATE">
             <caption translate="true">SET DATE Command</caption>
           </topicref>
-          <topicref type="topic" id="385413837929920" build="ALL" modified="2019-09-24T14:17:44.049Z" icon="0" href="command_SET_DATE_FORMAT">
+          <topicref type="topic" id="385413837929920" build="CHM,HTML,PDF" modified="2020-02-25T16:41:31.820Z" icon="0" href="command_SET_DATE_FORMAT">
             <caption translate="true">SET DATE FORMAT Command</caption>
           </topicref>
-          <topicref type="topic" id="384613069718970" build="ALL" modified="2019-09-24T14:17:44.056Z" icon="0" href="command_SET_DECIMALS">
+          <topicref type="topic" id="384613069718970" build="CHM,HTML,PDF" modified="2020-02-25T16:41:31.826Z" icon="0" href="command_SET_DECIMALS">
             <caption translate="true">SET DECIMALS Command</caption>
           </topicref>
-          <topicref type="topic" id="385414395175438" build="ALL" modified="2019-09-24T14:17:44.062Z" icon="0" href="command_SET_DEFAULT">
+          <topicref type="topic" id="385414395175438" build="CHM,HTML,PDF" modified="2020-02-25T16:41:31.834Z" icon="0" href="command_SET_DEFAULT">
             <caption translate="true">SET DEFAULT Command</caption>
           </topicref>
-          <topicref type="topic" id="384614063710025" build="ALL" modified="2019-09-24T14:17:44.067Z" icon="0" href="command_SET_DIGITFIXED">
+          <topicref type="topic" id="384614063710025" build="CHM,HTML,PDF" modified="2020-02-25T16:41:31.841Z" icon="0" href="command_SET_DIGITFIXED">
             <caption translate="true">SET DIGITFIXED Command</caption>
           </topicref>
-          <topicref type="topic" id="384612814452770" build="ALL" modified="2019-09-24T14:17:44.073Z" icon="0" href="command_SET_DIGITS">
+          <topicref type="topic" id="384612814452770" build="CHM,HTML,PDF" modified="2020-02-25T16:41:31.847Z" icon="0" href="command_SET_DIGITS">
             <caption translate="true">SET DIGITS Command</caption>
           </topicref>
-          <topicref type="topic" id="385414484815343" build="ALL" modified="2019-09-24T14:17:44.079Z" icon="0" href="command_SET_DRIVER">
+          <topicref type="topic" id="385414484815343" build="CHM,HTML,PDF" modified="2020-02-25T16:41:31.853Z" icon="0" href="command_SET_DRIVER">
             <caption translate="true">SET DRIVER Command</caption>
           </topicref>
-          <topicref type="topic" id="385412955773853" build="ALL" modified="2019-09-24T14:17:44.085Z" icon="0" href="command_SET_EPOCH">
+          <topicref type="topic" id="385412955773853" build="CHM,HTML,PDF" modified="2020-02-25T16:41:31.859Z" icon="0" href="command_SET_EPOCH">
             <caption translate="true">SET EPOCH Command</caption>
           </topicref>
-          <topicref type="topic" id="384613116326190" build="ALL" modified="2019-09-24T14:17:44.091Z" icon="0" href="command_SET_EXACT">
+          <topicref type="topic" id="384613116326190" build="CHM,HTML,PDF" modified="2020-02-25T16:41:31.865Z" icon="0" href="command_SET_EXACT">
             <caption translate="true">SET EXACT Command</caption>
           </topicref>
-          <topicref type="topic" id="384612443430574" build="ALL" modified="2019-09-24T14:17:44.097Z" icon="0" href="command_SET_FIXED">
+          <topicref type="topic" id="384612443430574" build="CHM,HTML,PDF" modified="2020-02-25T16:41:31.873Z" icon="0" href="command_SET_FIXED">
             <caption translate="true">SET FIXED Command</caption>
           </topicref>
-          <topicref type="topic" id="385413402566730" build="ALL" modified="2019-09-24T14:17:44.103Z" icon="0" href="command_SET_PATH">
+          <topicref type="topic" id="385413402566730" build="CHM,HTML,PDF" modified="2020-02-25T16:41:31.879Z" icon="0" href="command_SET_PATH">
             <caption translate="true">SET PATH Command</caption>
           </topicref>
         </topicref>
@@ -977,9 +929,6 @@
         </topicref>
         <topicref type="topic" id="436966805247382" build="ALL" modified="2019-09-24T13:44:42.182Z" icon="0" href="cmd_cat_index">
           <caption translate="true">Index/Order</caption>
-          <topicref type="topic" id="385413109794967" build="ALL" modified="2019-09-24T14:18:33.327Z" icon="0" href="command_CLOSE">
-            <caption translate="true">CLOSE Command</caption>
-          </topicref>
           <topicref type="topic" id="385413327814999" build="ALL" modified="2019-09-24T14:18:33.339Z" icon="0" href="command_DELETE_TAG">
             <caption translate="true">DELETE TAG Command</caption>
           </topicref>
@@ -1000,9 +949,6 @@
           </topicref>
           <topicref type="topic" id="384614110631580" build="ALL" modified="2019-09-24T14:18:33.380Z" icon="0" href="command_SET_INDEX">
             <caption translate="true">SET INDEX Command</caption>
-          </topicref>
-          <topicref type="topic" id="385415017973126" build="ALL" modified="2019-09-24T14:18:33.387Z" icon="0" href="command_SET_OPTIMIZE">
-            <caption translate="true">SET OPTIMIZE Command</caption>
           </topicref>
           <topicref type="topic" id="384614321325935" build="ALL" modified="2019-09-24T14:18:33.393Z" icon="0" href="command_SET_ORDER">
             <caption translate="true">SET ORDER Command</caption>
@@ -1167,21 +1113,6 @@
             <caption translate="true">YIELD Statement</caption>
           </topicref>
         </topicref>
-        <topicref type="topic" id="436966329416659" build="ALL" modified="2019-09-24T13:44:42.209Z" icon="0" href="cmd_cat_rtdecl">
-          <caption translate="true">Runtime Declaration</caption>
-          <topicref type="topic" id="384612342121699" build="ALL" modified="2019-09-24T14:19:34.447Z" icon="0" href="command_DECLARE">
-            <caption translate="true">DECLARE Statement</caption>
-          </topicref>
-          <topicref type="topic" id="385413433586111" build="ALL" modified="2019-09-24T14:19:34.454Z" icon="0" href="command_PARAMETERS">
-            <caption translate="true">PARAMETERS Statement</caption>
-          </topicref>
-          <topicref type="topic" id="384612252964058" build="ALL" modified="2019-09-24T14:19:34.462Z" icon="0" href="command_PUBLIC">
-            <caption translate="true">PUBLIC Statement</caption>
-          </topicref>
-          <topicref type="topic" id="384615704509378" build="ALL" modified="2019-09-24T14:19:34.471Z" icon="0" href="command_RELEASE">
-            <caption translate="true">RELEASE Command</caption>
-          </topicref>
-        </topicref>
         <topicref type="topic" id="43688506710440" build="ALL" modified="2019-09-24T13:44:42.214Z" icon="0" href="cmd_cat_terminal">
           <caption translate="true">Terminal Window</caption>
           <topicref type="topic" id="436965716006732" build="ALL" modified="2019-09-24T14:19:41.732Z" icon="0" href="command_QUESTION">
@@ -1207,9 +1138,6 @@
           </topicref>
           <topicref type="topic" id="384615072995608" build="ALL" modified="2019-09-24T14:19:49.132Z" icon="0" href="command_LOCAL">
             <caption translate="true">LOCAL Statement</caption>
-          </topicref>
-          <topicref type="topic" id="384612997845759" build="ALL" modified="2019-09-24T14:19:49.142Z" icon="0" href="command_MEMVAR">
-            <caption translate="true">MEMVAR Statement</caption>
           </topicref>
           <topicref type="topic" id="384615064228400" build="ALL" modified="2019-09-24T14:19:49.149Z" icon="0" href="command_STATIC">
             <caption translate="true">STATIC Statement</caption>

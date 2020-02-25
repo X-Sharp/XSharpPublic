@@ -1650,7 +1650,7 @@ END CLASS
 
 #ifdef __VULCAN__
    DELEGATE __WCControlProcDelegate( hWnd AS PTR, umsg AS DWORD, wParam AS DWORD, lParam AS LONGINT) AS LONGINT
-   
+    /// <exclude/>
    FUNCTION Get__WCControlProcPtr() AS PTR
       STATIC LOCAL WCControlProcDelegate AS __WCControlProcDelegate
       IF WCControlProcDelegate == NULL
@@ -1663,7 +1663,6 @@ END CLASS
       RETURN @__WCControlProc()
 #endif
 
-/// <exclude/>
 FUNCTION __WCControlProc(hWnd AS PTR, umsg AS DWORD, wParam AS DWORD, lParam AS LONGINT) AS LONGINT /* WINCALL */
 
 

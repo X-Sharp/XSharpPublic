@@ -1645,7 +1645,6 @@ STATIC FUNCTION __GetMyEnv() AS USUAL STRICT
 	ENDIF
 	RETURN hEnv
 
-/// <exclude/>
 FUNCTION __RemoveConnection( hDbc )
 	LOCAL nIndex       AS DWORD
 	LOCAL lRet         AS LOGIC

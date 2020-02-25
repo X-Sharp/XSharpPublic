@@ -3007,7 +3007,6 @@ FUNCTION UseColonInAutoLayoutCaptions(lUse AS LOGIC) AS VOID
     glUseColonInAutoLayoutCaptions := lUse
 RETURN
 
-/// <exclude/>
 FUNCTION __GetDFCaption (oDF AS DataField, arUsedKeys AS ARRAY)  AS STRING
 	LOCAL cText 	AS STRING
 	LOCAL cHotKey 	AS STRING
@@ -3058,7 +3057,6 @@ FUNCTION __GetDFCaption (oDF AS DataField, arUsedKeys AS ARRAY)  AS STRING
 	
 	RETURN cText
 	
-/// <exclude/>
 FUNCTION __GetFSDefaultLength(oFS AS USUAL) AS INT
 	LOCAL liRetVal, liExtra AS LONGINT
 	LOCAL uType AS USUAL

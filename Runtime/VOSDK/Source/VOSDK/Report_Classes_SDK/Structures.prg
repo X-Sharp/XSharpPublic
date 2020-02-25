@@ -782,10 +782,12 @@ VOSTRUCT CAWRMPREVIEWNTFY ALIGN 1
 	MEMBER dwExtension AS DWORD
 	MEMBER BD IS bdCAWRMPREVIEWNTFY
 
+/// <exclude/>
 UNION RETFILETYPEDATA
 	MEMBER rFileName IS FILENAME
 	MEMBER hFileHandle AS PTR // handle for FILEHANDLE case
 					// storage handles not implemented yet
+/// <exclude/>
 UNION RETQUERYTYPEDATA
     MEMBER rNotSpecified AS NOTSPECIFIED
 	MEMBER rCqmQueryFile AS CqmQueryFile
@@ -793,6 +795,7 @@ UNION RETQUERYTYPEDATA
 
 	MEMBER hQueryHandle AS DWORD // handle of a CQM query for CQMQUERY
 
+/// <exclude/>
 UNION CALLBACKTYPEDATA
 	MEMBER rNotWindow IS NOTWINDOW
 	MEMBER rCallback IS QRTCALLBACK

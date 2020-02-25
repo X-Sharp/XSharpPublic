@@ -9,7 +9,6 @@ VOSTRUCT OleProps
 	MEMBER fIsActive AS LOGIC
 	MEMBER fAllowDocView AS LOGIC
 
-/// <exclude/>
 FUNCTION __OleDropTargetCallback(DragInfo AS OleDragEventInfo) AS LOGIC /* WINCALL */
 	LOCAL oAppWnd   AS AppWindow
 	LOCAL oWnd      AS OBJECT
@@ -50,7 +49,6 @@ FUNCTION __OleDropTargetCallback(DragInfo AS OleDragEventInfo) AS LOGIC /* WINCA
 	ENDIF
 	RETURN lRet
 
-/// <exclude/>
 FUNCTION __OleStatusCallback(hwnd AS PTR, StatusMsg AS PSZ) AS DWORD /* WINCALL */
 	LOCAL oShellWindow AS OBJECT
 

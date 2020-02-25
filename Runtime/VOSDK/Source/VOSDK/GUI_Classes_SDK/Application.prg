@@ -322,7 +322,6 @@ GLOBAL gpfnInitCommonControlsEx AS InitCommonControlsEx PTR
 /// <exclude/>
 GLOBAL gsymBrowserDef AS SYMBOL
 
-/// <exclude/>
 PROCEDURE __InitFunctionPointer() _INIT3
 	LOCAL icex IS _winINITCOMMONCONTROLSEX
 

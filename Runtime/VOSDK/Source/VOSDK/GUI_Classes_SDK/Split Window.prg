@@ -868,7 +868,6 @@ STATIC FUNCTION TSpltStyleGet(hWnd AS PTR) AS DWORD STRICT
 	//SYSTEM
 	RETURN 0
 
-/// <exclude/>
 FUNCTION __LoadSplitWindowDLL()
 	LOCAL hDll AS PTR
 	LOCAL rsFormat AS ResourceString

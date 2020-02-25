@@ -416,7 +416,6 @@ END CLASS
    DELEGATE __PrinterAbortProcDelegate( hDCPrinter AS PTR, _Code AS INT ) AS LOGIC
 #endif  
 
-/// <exclude/>
 FUNCTION __PrinterAbortProc(hDCPrinter AS PTR, _Code AS INT) AS LOGIC /* WINCALL */
 	LOCAL oPri AS Printer
 
@@ -435,7 +434,6 @@ FUNCTION __PrinterAbortProc(hDCPrinter AS PTR, _Code AS INT) AS LOGIC /* WINCALL
 
 STATIC GLOBAL aPrinterhDCPrinter AS ARRAY
 
-/// <exclude/>
 FUNCTION __WCAddPrinterToArray(hDCPrinter AS PTR, oPrinter AS Printer) AS VOID
 	//SE-060526
 	LOCAL dwI, dwCount AS DWORD
@@ -453,7 +451,6 @@ FUNCTION __WCAddPrinterToArray(hDCPrinter AS PTR, oPrinter AS Printer) AS VOID
 
 	RETURN
 
-/// <exclude/>
 FUNCTION __WCDelPrinterFromArray(hDCPrinter AS PTR) AS VOID
 	//SE-060526
 	LOCAL dwI, dwCount AS DWORD
@@ -470,7 +467,6 @@ FUNCTION __WCDelPrinterFromArray(hDCPrinter AS PTR) AS VOID
 
 	RETURN
 
-/// <exclude/>
 FUNCTION __WCGetPrinterFromArray(hDCPrinter AS PTR) AS OBJECT
 	//SE-060526
 	LOCAL dwI, dwCount AS DWORD

@@ -1,10 +1,8 @@
-/// <exclude/>
 PROCEDURE __InitTheme() _INIT3
 	//PP-030909
 	__LoadThemeDll()
 	RETURN
 
-/// <exclude/>
 FUNCTION __LoadThemeDll() AS LOGIC STRICT
 	//PP-030909
 	LOCAL hModule AS PTR
@@ -114,7 +112,7 @@ STATIC FUNCTION _OpenThemeData( hWnd AS PTR, lpcwstr AS PTR ) AS PTR PASCAL
    RETURN 0
 
 STATIC FUNCTION _SetThemeAppProperties( dwFlags AS DWORD ) AS VOID PASCAL
-   RETURN 
+   RETURN   
    
 STATIC FUNCTION _SetWindowTheme( hWnd AS PTR, SubAppName AS PTR, SubIdList AS PTR ) AS PTR PASCAL
    RETURN 0   

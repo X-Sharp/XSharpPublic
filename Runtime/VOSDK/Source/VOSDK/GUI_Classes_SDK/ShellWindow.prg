@@ -647,7 +647,6 @@ STATIC FUNCTION _VOOLERegisterStatusCallback(pCallBackFunc AS PTR) AS LOGIC STRI
    DELEGATE __WCQueryCloseEnumFuncDelegate( hWnd AS PTR, lParam AS LONGINT ) AS LONGINT
 #endif
 	
-/// <exclude/>
 FUNCTION __WCQueryCloseEnumFunc(hWnd AS PTR, lParam AS LONGINT) AS LONGINT /* WINCALL */
 	RETURN SendMessage(hWnd, WM_QueryEndSession, 0, 0)
 	
@@ -655,7 +654,6 @@ FUNCTION __WCQueryCloseEnumFunc(hWnd AS PTR, lParam AS LONGINT) AS LONGINT /* WI
    DELEGATE __WCShellWndProcDelegate( hWnd AS PTR, uMsg AS DWORD, wParam AS DWORD, lParam AS LONGINT ) AS LONGINT
 #endif	
 	
-/// <exclude/>
 FUNCTION __WCShellWndProc(hWnd AS PTR, uMsg AS DWORD, wParam AS DWORD, lParam AS LONGINT) AS LONGINT /* WINCALL */
 	LOCAL oWindow AS Window
 	LOCAL strucCreateStruct AS _WinCreateStruct
@@ -678,5 +676,5 @@ FUNCTION __WCShellWndProc(hWnd AS PTR, uMsg AS DWORD, wParam AS DWORD, lParam AS
 DEFINE TBL_CHILD := 0
 DEFINE TBL_SHELL := 1
 DEFINE TBL_SHELLBAND := 2
-DEFINE  __WCShellWindowClass := "ShellWindow"
+DEFINE __WCShellWindowClass := "ShellWindow"
 #endregion

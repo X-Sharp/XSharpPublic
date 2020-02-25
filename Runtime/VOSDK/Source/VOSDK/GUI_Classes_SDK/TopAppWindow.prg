@@ -141,5 +141,5 @@ FUNCTION __WCTopAppWndProc(hWnd AS PTR, uMsg AS DWORD, wParam AS DWORD, lParam A
 
 
 #region defines
-DEFINE  __WCTopAppWindowClass := "TopAppWindow"
+DEFINE __WCTopAppWindowClass := "TopAppWindow"
 #endregion

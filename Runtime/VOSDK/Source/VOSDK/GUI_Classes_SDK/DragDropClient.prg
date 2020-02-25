@@ -134,7 +134,6 @@ GLOBAL gpfnShell_NotifyIcon AS TShell_NotifyIcon PTR
 /// <exclude/>
 GLOBAL gpfnSHGetPathFromIDList AS TSHGetPathFromIDList PTR
 	// tray icon
-/// <exclude/>
 FUNCTION __LoadShellDll()
 	LOCAL hDll AS PTR
 	LOCAL rsFormat AS ResourceString

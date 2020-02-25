@@ -1645,6 +1645,7 @@ STATIC FUNCTION __GetMyEnv() AS USUAL STRICT
 	ENDIF
 	RETURN hEnv
 
+/// <exclude/>
 FUNCTION __RemoveConnection( hDbc )
 	LOCAL nIndex       AS DWORD
 	LOCAL lRet         AS LOGIC
@@ -1707,6 +1708,7 @@ STATIC FUNCTION __SetMyDefConn( oConn )
 STATIC GLOBAL aInfoString 	AS ARRAY
 STATIC GLOBAL aInfoWord 	AS ARRAY
 STATIC GLOBAL aInfoDWord 	AS ARRAY
+/// <exclude/>
 PROCEDURE InitGlobals _INIT1
 	// Initialize
 	aInfoString := {     ;

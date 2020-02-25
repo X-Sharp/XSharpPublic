@@ -49,7 +49,8 @@ ACCESS ServerName
 
 END CLASS
 
-INTERNAL VOSTRUCT OleDragEventInfo
+/// <exclude/>
+VOSTRUCT OleDragEventInfo
         MEMBER hDocWnd AS PTR
         MEMBER dwDragEvent AS DWORD
         MEMBER pDataObject AS PTR

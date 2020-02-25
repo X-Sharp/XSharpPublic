@@ -463,7 +463,8 @@ METHOD UpdateDevMode()
 
 END CLASS
 
-INTERNAL FUNCTION __LoadWinSpoolDLL()
+/// <exclude/>
+FUNCTION __LoadWinSpoolDLL()
 	LOCAL hDll AS PTR
 	LOCAL rsFormat AS ResourceString
 

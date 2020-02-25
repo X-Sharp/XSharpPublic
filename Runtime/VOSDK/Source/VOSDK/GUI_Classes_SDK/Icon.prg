@@ -83,7 +83,7 @@ ACCESS Size
 
 END CLASS
 
-INTERNAL FUNCTION __WCConvertIcon(iconType AS INT) AS PTR STRICT
+FUNCTION __WCConvertIcon(iconType AS INT) AS PTR STRICT
 	LOCAL retVal AS PTR
 
 	SWITCH iconType

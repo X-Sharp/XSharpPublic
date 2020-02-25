@@ -103,7 +103,7 @@ ASSIGN ConcurrencyControl( nMode)
             newMode := ccRepeatable
         CASE "CCFILE"
             newMode := ccFile
-        OTHERWISE
+        OTHERWISE 
             BREAK DbError{ SELF, #ConcurrencyControl, EG_ARG, ;
                 __CavoStr( __CAVOSTR_DBFCLASS_BADCONCURRENCYASSIGN ), nMode, "nMode" }
         END SWITCH

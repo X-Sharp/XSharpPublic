@@ -579,7 +579,8 @@ METHOD Dispatch(oEvent)
 	
 END CLASS
 
-INTERNAL FUNCTION __Dispatch_DrawItem(oEvent AS @@event, oWindow AS OBJECT) AS LONGINT STRICT
+/// <exclude/>
+FUNCTION __Dispatch_DrawItem(oEvent AS @@event, oWindow AS OBJECT) AS LONGINT STRICT
 	LOCAL struDrawItem AS _winDRAWITEMSTRUCT
 	LOCAL oControl AS OBJECT
 	
@@ -596,7 +597,8 @@ INTERNAL FUNCTION __Dispatch_DrawItem(oEvent AS @@event, oWindow AS OBJECT) AS L
 	ENDIF
 	RETURN 0L
 	
-INTERNAL FUNCTION __Dispatch_MeasureItem(oEvent AS @@event, oWindow AS OBJECT) AS LONGINT STRICT
+/// <exclude/>
+FUNCTION __Dispatch_MeasureItem(oEvent AS @@event, oWindow AS OBJECT) AS LONGINT STRICT
 	LOCAL struMeasureItem AS _winMEASUREITEMSTRUCT
 	LOCAL oControl AS OBJECT
 	LOCAL hFromHwnd AS PTR
@@ -621,7 +623,8 @@ INTERNAL FUNCTION __Dispatch_MeasureItem(oEvent AS @@event, oWindow AS OBJECT) A
 	ENDIF
 	RETURN 0L
 	
-INTERNAL FUNCTION __Dispatch_MenuChar(oEvent AS @@event, oWindow AS OBJECT) AS LONGINT STRICT
+/// <exclude/>
+FUNCTION __Dispatch_MenuChar(oEvent AS @@event, oWindow AS OBJECT) AS LONGINT STRICT
 	//PP-040317 Issue 12743
 	LOCAL oControl AS OBJECT
 	LOCAL lRetVal AS LONGINT

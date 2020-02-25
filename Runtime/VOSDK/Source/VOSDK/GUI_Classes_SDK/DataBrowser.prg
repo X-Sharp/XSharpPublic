@@ -4834,7 +4834,8 @@ STATIC FUNCTION TCntVScrollPosExSet(hCntWnd AS PTR, lPosition AS LONGINT) AS VOI
    STATIC FUNCTION TCntVScrollPosSet(hCntWnd AS PTR, nPosition AS SHORTINT) AS VOID STRICT
    RETURN
 
-   FUNCTION __DrawFldData(hWnd AS PTR, strucFieldInfo AS _WinFieldInfo, strucRecordCore AS _WinRecordCore, ;
+   /// <exclude/>
+FUNCTION __DrawFldData(hWnd AS PTR, strucFieldInfo AS _WinFieldInfo, strucRecordCore AS _WinRecordCore, ;
    ptrData AS PTR, hDC AS PTR, iX AS INT, iY AS INT, dwOptions AS DWORD, ;
    ptrRect AS _WINRECT, pszData AS /*PSZ*/ PTR, dwLength AS DWORD) AS INT /* CALLBACK */
    
@@ -4858,7 +4859,8 @@ STATIC FUNCTION TCntVScrollPosExSet(hCntWnd AS PTR, lPosition AS LONGINT) AS VOI
 
    RETURN 1
 
-   FUNCTION __LoadContainerDLL()
+   /// <exclude/>
+    FUNCTION __LoadContainerDLL()
    LOCAL hDll AS PTR
    LOCAL rsFormat AS ResourceString
 
@@ -4965,6 +4967,7 @@ STATIC FUNCTION TCntVScrollPosExSet(hCntWnd AS PTR, lPosition AS LONGINT) AS VOI
       DELEGATE __WCGBChildProcDelegate( hWnd AS PTR, uMsg AS DWORD, wParam AS DWORD, lParam AS LONGINT ) AS LONGINT
    #endif
 
+   /// <exclude/>
 FUNCTION __WCGBChildProc(hWnd AS PTR, uMsg AS DWORD, wParam AS DWORD, lParam AS LONGINT) AS LONGINT /* WINCALL */
    LOCAL oBrowser AS OBJECT
    LOCAL i AS INT
@@ -4998,7 +5001,8 @@ FUNCTION __WCGBChildProc(hWnd AS PTR, uMsg AS DWORD, wParam AS DWORD, lParam AS 
       DELEGATE __WCGBNotifyProcDelegate( hWnd AS PTR, uMsg AS DWORD, wParam AS DWORD, lParam AS LONGINT ) AS LONGINT
    #endif
 
-   FUNCTION __WCGBNotifyProc(hWnd AS PTR, uMsg AS DWORD, wParam AS DWORD, lParam AS LONGINT) AS LONGINT /* WINCALL */
+      /// <exclude/>
+FUNCTION __WCGBNotifyProc(hWnd AS PTR, uMsg AS DWORD, wParam AS DWORD, lParam AS LONGINT) AS LONGINT /* WINCALL */
    LOCAL oControl AS Control
    LOCAL strucCreateStruct AS _WinCreateStruct
    LOCAL p AS SelfPtr
@@ -5019,6 +5023,7 @@ FUNCTION __WCGBChildProc(hWnd AS PTR, uMsg AS DWORD, wParam AS DWORD, lParam AS 
    ENDIF
    RETURN DefWindowProc(hWnd, uMsg, wParam, lParam)
 
+   /// <exclude/>
    STATIC FUNCTION __WCRegisterGBNotifyWindow(hInst AS PTR) AS LOGIC
    STATIC LOCAL lretVal AS LOGIC
    LOCAL wc IS _WINWNDclass
@@ -5046,7 +5051,8 @@ FUNCTION __WCGBChildProc(hWnd AS PTR, uMsg AS DWORD, wParam AS DWORD, lParam AS 
    RETURN lretVal
 
 
-   STATIC FUNCTION __GetProcAddress(cProcname AS STRING)	AS	PTR
+   /// <exclude/>
+STATIC FUNCTION __GetProcAddress(cProcname AS STRING)	AS	PTR
 LOCAL pAddr AS PTR
 pAddr := GetProcAddress(ghContainerDLL, String2Psz(cProcname))
 IF pAddr == NULL_PTR
@@ -5063,6 +5069,7 @@ RETURN pAddr
 // causes the return value of CallWindowProc() to be limited to 0 or 1, which causes all sorts of problems
 // when an int is returned.  There is no reason to type this callback as returning a logic, since CallWindowProc()
 // really returns INT as documented in MSDN.	
+/// <exclude/>
 FUNCTION __CellEditProc(hWnd AS PTR, uMsg AS DWORD, wParam AS DWORD, lParam AS LONGINT) AS /* LOGIC */ INT //_WINCALL
 LOCAL oControl AS Control
 LOCAL oOwner AS OBJECT

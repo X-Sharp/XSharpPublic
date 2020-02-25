@@ -133,7 +133,8 @@ ASSIGN Parent (oWindow)
 
 END CLASS
 
-INTERNAL FUNCTION __ConvertHatch(hatchStyle AS INT) AS INT STRICT
+/// <exclude/>
+FUNCTION __ConvertHatch(hatchStyle AS INT) AS INT STRICT
 	LOCAL retVal AS INT
 
 	SWITCH hatchStyle
@@ -153,7 +154,8 @@ INTERNAL FUNCTION __ConvertHatch(hatchStyle AS INT) AS INT STRICT
 
 	RETURN retVal
 
-INTERNAL FUNCTION __ConvertBrush(brushType AS INT) AS INT STRICT
+/// <exclude/>
+FUNCTION __ConvertBrush(brushType AS INT) AS INT STRICT
 	LOCAL retVal AS INT
 
 	SWITCH brushType 

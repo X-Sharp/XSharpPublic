@@ -1,4 +1,5 @@
-﻿INTERNAL FUNCTION __CheckUUEncode	(c AS STRING)		AS DWORD STRICT
+﻿/// <exclude/>
+FUNCTION __CheckUUEncode	(c AS STRING)		AS DWORD STRICT
 	LOCAL nRet		AS DWORD
 	LOCAL cTemp		AS STRING
 	LOCAL cBefore	AS STRING
@@ -25,7 +26,8 @@
 
 	RETURN nRet
 
-INTERNAL FUNCTION __DecodeB64(cPath AS STRING, cFile AS STRING, cMail AS STRING) AS DWORD STRICT
+/// <exclude/>
+FUNCTION __DecodeB64(cPath AS STRING, cFile AS STRING, cMail AS STRING) AS DWORD STRICT
 
 	LOCAL nRet      AS DWORD
 	LOCAL hfOut     AS PTR
@@ -73,7 +75,8 @@ INTERNAL FUNCTION __DecodeB64(cPath AS STRING, cFile AS STRING, cMail AS STRING)
 	RETURN nRet
 
 
-INTERNAL FUNCTION __DecodeQP (cMailPart AS STRING, hfOut AS PTR)  AS DWORD    STRICT
+/// <exclude/>
+FUNCTION __DecodeQP (cMailPart AS STRING, hfOut AS PTR)  AS DWORD    STRICT
 	LOCAL nRet			AS DWORD
 	LOCAL cPart			AS STRING
 	LOCAL cDecode		AS STRING
@@ -111,7 +114,8 @@ INTERNAL FUNCTION __DecodeQP (cMailPart AS STRING, hfOut AS PTR)  AS DWORD    ST
 
 	RETURN nRet
 
-INTERNAL FUNCTION __DecodeQPrintable(cPath AS STRING, cFile AS STRING, cMail AS STRING) AS DWORD STRICT
+/// <exclude/>
+FUNCTION __DecodeQPrintable(cPath AS STRING, cFile AS STRING, cMail AS STRING) AS DWORD STRICT
 
 	LOCAL nRet      AS DWORD
 	LOCAL nSize     AS DWORD
@@ -145,7 +149,8 @@ INTERNAL FUNCTION __DecodeQPrintable(cPath AS STRING, cFile AS STRING, cMail AS 
 	RETURN nRet
 
 
-INTERNAL FUNCTION __DecodeUU(cText AS STRING, hfOut AS PTR)    AS DWORD STRICT
+/// <exclude/>
+FUNCTION __DecodeUU(cText AS STRING, hfOut AS PTR)    AS DWORD STRICT
 	LOCAL cLine     AS STRING
 	LOCAL nRet	    AS DWORD
 	LOCAL nPos 		AS DWORD
@@ -223,7 +228,8 @@ STATIC FUNCTION __FixDate   (pft AS _WINFILETIME) AS VOID STRICT
 	RETURN
 
 
-INTERNAL FUNCTION __GetDate(pTime AS _WINFILETIME) AS DATE STRICT
+/// <exclude/>
+FUNCTION __GetDate(pTime AS _WINFILETIME) AS DATE STRICT
 	LOCAL dRet    AS DATE
 	LOCAL ftLocal IS _WINFILETIME
 	LOCAL sysTime IS _WINSYSTEMTIME
@@ -238,7 +244,8 @@ INTERNAL FUNCTION __GetDate(pTime AS _WINFILETIME) AS DATE STRICT
 
 	RETURN dRet
 
-INTERNAL FUNCTION __GetFileData(pData AS _WINWIN32_FIND_DATA) AS ARRAY STRICT
+/// <exclude/>
+FUNCTION __GetFileData(pData AS _WINWIN32_FIND_DATA) AS ARRAY STRICT
 
    LOCAL aTemp AS ARRAY
    LOCAL cTemp AS STRING
@@ -276,7 +283,8 @@ INTERNAL FUNCTION __GetFileData(pData AS _WINWIN32_FIND_DATA) AS ARRAY STRICT
 
 
 
-INTERNAL FUNCTION __GetFileName(cFile AS STRING) AS STRING STRICT
+/// <exclude/>
+FUNCTION __GetFileName(cFile AS STRING) AS STRING STRICT
 	LOCAL dwPos AS DWORD
 
 	IF (dwPos := RAt2("\", cFile)) = 0
@@ -287,7 +295,8 @@ INTERNAL FUNCTION __GetFileName(cFile AS STRING) AS STRING STRICT
 
 	RETURN SubStr2(cFile, dwPos + 1)
 
-INTERNAL FUNCTION __GetFullPath(cPath AS STRING, cFile AS STRING)	AS STRING STRICT
+/// <exclude/>
+FUNCTION __GetFullPath(cPath AS STRING, cFile AS STRING)	AS STRING STRICT
 	//SE-040622
 	LOCAL dwPos	AS DWORD
 
@@ -306,7 +315,8 @@ INTERNAL FUNCTION __GetFullPath(cPath AS STRING, cFile AS STRING)	AS STRING STRI
 	ENDIF
 
 	RETURN cFile
-INTERNAL FUNCTION __GetTime(pTime AS _WINFILETIME) AS STRING STRICT
+/// <exclude/>
+FUNCTION __GetTime(pTime AS _WINFILETIME) AS STRING STRICT
 
    LOCAL cRet    AS STRING
    //LOCAL ftLocal IS _WINFILETIME
@@ -333,7 +343,8 @@ INTERNAL FUNCTION __GetTime(pTime AS _WINFILETIME) AS STRING STRICT
    ENDIF
    RETURN cRet
 
-INTERNAL FUNCTION __GetTimeZoneDiff() AS STRING STRICT
+/// <exclude/>
+FUNCTION __GetTimeZoneDiff() AS STRING STRICT
 
 	LOCAL tzi		IS _WINTIME_ZONE_INFORMATION
 	LOCAL dwZone	AS DWORD
@@ -365,7 +376,8 @@ INTERNAL FUNCTION __GetTimeZoneDiff() AS STRING STRICT
 
 	RETURN cRet
 
-INTERNAL FUNCTION __GetToken(cText AS STRING, cStart AS STRING, cStop AS STRING, lStopNotRequired := FALSE AS LOGIC) AS STRING STRICT
+/// <exclude/>
+FUNCTION __GetToken(cText AS STRING, cStart AS STRING, cStop AS STRING, lStopNotRequired := FALSE AS LOGIC) AS STRING STRICT
 	//SE-040627
 	LOCAL cRet		AS STRING
 	LOCAL dwPos		AS DWORD
@@ -397,7 +409,8 @@ INTERNAL FUNCTION __GetToken(cText AS STRING, cStart AS STRING, cStop AS STRING,
 
 	RETURN cRet
 
-INTERNAL FUNCTION __GoodFileName(cAttachName AS STRING) AS STRING STRICT
+/// <exclude/>
+FUNCTION __GoodFileName(cAttachName AS STRING) AS STRING STRICT
     LOCAL pName AS BYTE PTR
     LOCAL x, len AS INT
     LOCAL b AS BYTE
@@ -445,7 +458,8 @@ INTERNAL FUNCTION __GoodFileName(cAttachName AS STRING) AS STRING STRICT
 	#endif
 	RETURN cAttachName
 
-INTERNAL FUNCTION __SaveAs(cPath AS STRING, cFile AS STRING, cMail AS STRING) AS DWORD STRICT
+/// <exclude/>
+FUNCTION __SaveAs(cPath AS STRING, cFile AS STRING, cMail AS STRING) AS DWORD STRICT
 
 	LOCAL nRet      AS DWORD
 	LOCAL cFName    AS STRING
@@ -470,7 +484,8 @@ INTERNAL FUNCTION __SaveAs(cPath AS STRING, cFile AS STRING, cMail AS STRING) AS
 
 	RETURN nRet
 
-INTERNAL FUNCTION __StrList2Array(cList AS STRING, cDelimiter := ", " AS STRING) AS ARRAY STRICT
+/// <exclude/>
+FUNCTION __StrList2Array(cList AS STRING, cDelimiter := ", " AS STRING) AS ARRAY STRICT
 	//SE-040628
 	LOCAL dwPos	  AS DWORD
 	LOCAL dwStart AS DWORD
@@ -499,7 +514,8 @@ INTERNAL FUNCTION __StrList2Array(cList AS STRING, cDelimiter := ", " AS STRING)
 
 	RETURN aRet
 
-INTERNAL FUNCTION __UUDecodeMail  (cPath AS STRING, cFile AS STRING, cMail AS STRING) AS DWORD STRICT
+/// <exclude/>
+FUNCTION __UUDecodeMail  (cPath AS STRING, cFile AS STRING, cMail AS STRING) AS DWORD STRICT
 	LOCAL nPos      AS DWORD
 	LOCAL nStop     AS DWORD
 	LOCAL nRet      AS DWORD
@@ -805,7 +821,7 @@ FUNCTION HostName() AS STRING STRICT
 
 	RETURN cRet
 
-INTERNAL FUNCTION IFXFtpFindFirstFile(hConnect AS PTR,;
+FUNCTION IFXFtpFindFirstFile(hConnect AS PTR,;
 		lpszFile AS PSZ,;
 		lpfd AS _WINWIN32_FIND_DATA, ;
 		dwFlags AS DWORD, ;
@@ -944,7 +960,8 @@ FUNCTION WinSockInit()
 
 
 
-INTERNAL FUNCTION __Array2StrList(aList AS ARRAY, cDelimiter := ", " AS STRING) AS STRING STRICT
+/// <exclude/>
+FUNCTION __Array2StrList(aList AS ARRAY, cDelimiter := ", " AS STRING) AS STRING STRICT
 	//SE-040628
 	LOCAL cRet    AS STRING
 	LOCAL dwI     AS DWORD
@@ -962,7 +979,7 @@ INTERNAL FUNCTION __Array2StrList(aList AS ARRAY, cDelimiter := ", " AS STRING) 
 	RETURN cRet
 
 
-INTERNAL PROCEDURE LibInit() _INIT3
+PROCEDURE LibInit() _INIT3
 	IF WinSockInit()
 #ifdef __VULCAN__
        AppDomain.CurrentDomain:ProcessExit += System.EventHandler{ NULL, @WinSockExitHandler() }
@@ -1052,8 +1069,10 @@ FUNCTION SMTPSendMail       (cServerIP      AS STRING,;
 
 	RETURN lRet
 
-INTERNAL GLOBAL wsaData  	IS _WinWSAData
-INTERNAL FUNCTION __AdJustPath(cPath AS USUAL) AS STRING
+/// <exclude/>
+GLOBAL wsaData  	IS _WinWSAData
+/// <exclude/>
+FUNCTION __AdJustPath(cPath AS USUAL) AS STRING
     // Updated to better handle UNC paths
     IF IsString(cPath)
        IF Right(cPath,  1) != "\"

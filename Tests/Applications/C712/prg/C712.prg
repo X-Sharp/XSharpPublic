@@ -16,6 +16,6 @@ PROC xAssertTrue(l AS LOGIC)
 IF l
 	? "Assertion passed"
 ELSE
-	THROW Exception{"Incorrect result"}
+	THROW Exception{"Incorrect result"}     
 END IF
 

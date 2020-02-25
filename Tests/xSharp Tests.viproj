@@ -77757,7 +77757,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C711 - Problem with signed / unsigned arithmetic results
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 43A04886-532C-4DC6-A4FB-751288B40D7A
 ; ************** APPLICATION C712 - Problem with SHORTINT CAST arithmetic *************
 Application = C712 - Problem with SHORTINT CAST arithmetic
 IDEVersion = 1.06

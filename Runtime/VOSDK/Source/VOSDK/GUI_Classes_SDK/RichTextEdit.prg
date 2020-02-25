@@ -992,7 +992,8 @@ ASSIGN Value(uNewValue)
 	RETURN SELF:__Value := uNewValue
 END CLASS
 
-INTERNAL FUNCTION __GetRTFValue(dwCookie AS DWORD, pbBuff AS BYTE PTR, cb AS LONGINT, pcb AS LONGINT PTR) AS DWORD /* WINCALL */
+/// <exclude/>
+FUNCTION __GetRTFValue(dwCookie AS DWORD, pbBuff AS BYTE PTR, cb AS LONGINT, pcb AS LONGINT PTR) AS DWORD /* WINCALL */
 	LOCAL oRTFEdit AS RichEdit
 	LOCAL pStreamPos AS BYTE PTR
 
@@ -1012,7 +1013,8 @@ INTERNAL FUNCTION __GetRTFValue(dwCookie AS DWORD, pbBuff AS BYTE PTR, cb AS LON
 
 	RETURN 0
 
-INTERNAL FUNCTION __LoadCallback(dwCookie AS DWORD, pbBuff AS BYTE PTR, cb AS LONGINT, pcb AS LONGINT PTR) AS DWORD /* WINCALL */
+/// <exclude/>
+FUNCTION __LoadCallback(dwCookie AS DWORD, pbBuff AS BYTE PTR, cb AS LONGINT, pcb AS LONGINT PTR) AS DWORD /* WINCALL */
 
 	LONGINT(pcb) := LONGINT(FRead3(PTR(_CAST, dwCookie), pbBuff, DWORD(cb)))
 
@@ -1022,12 +1024,14 @@ INTERNAL FUNCTION __LoadCallback(dwCookie AS DWORD, pbBuff AS BYTE PTR, cb AS LO
 
 	RETURN 0
 
-INTERNAL FUNCTION __SaveCallBack(dwCookie AS DWORD, pbBuff AS BYTE PTR, cb AS LONGINT, pcb AS LONGINT PTR) AS DWORD /* WINCALL */
+/// <exclude/>
+FUNCTION __SaveCallBack(dwCookie AS DWORD, pbBuff AS BYTE PTR, cb AS LONGINT, pcb AS LONGINT PTR) AS DWORD /* WINCALL */
 	LONGINT(pcb) := LONGINT(FWrite3(PTR(_CAST, dwCookie), pbBuff, DWORD(cb)))
 
 	RETURN 0
 
-INTERNAL FUNCTION __SetRTFValue(dwCookie AS DWORD, pbBuff AS BYTE PTR, cb AS LONGINT, pcb AS LONGINT PTR) AS DWORD /* WINCALL */
+/// <exclude/>
+FUNCTION __SetRTFValue(dwCookie AS DWORD, pbBuff AS BYTE PTR, cb AS LONGINT, pcb AS LONGINT PTR) AS DWORD /* WINCALL */
 	LOCAL oRTFEdit AS RichEdit
 	LOCAL pStreamPos AS BYTE PTR
 	LOCAL liBytesLeft AS LONGINT

@@ -263,6 +263,7 @@ METHOD SetTop(nItemNumber)
 	
 END CLASS
 
+/// <exclude/>
 GLOBAL DIM LBMessages [11,2] AS DWORD
 	
 	

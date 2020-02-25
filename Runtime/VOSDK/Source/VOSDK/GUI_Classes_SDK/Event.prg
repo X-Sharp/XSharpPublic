@@ -2465,5 +2465,6 @@ ACCESS UnknownAction  AS LOGIC STRICT
 
 END CLASS
 
-INTERNAL PROCEDURE __InitClassPointer _INIT3
+/// <exclude/>
+PROCEDURE __InitClassPointer _INIT3
 RETURN

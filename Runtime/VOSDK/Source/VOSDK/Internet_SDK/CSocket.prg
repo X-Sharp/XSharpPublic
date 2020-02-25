@@ -1126,6 +1126,7 @@ METHOD InternetStatus( nContext, nStatus, xStatus, nStatusLength )
 
 END CLASS
 
+/// <exclude/>
 INTERNAL VOSTRUCT _THREAD_DATA
 	MEMBER nRC AS INT
 	MEMBER nSize AS INT

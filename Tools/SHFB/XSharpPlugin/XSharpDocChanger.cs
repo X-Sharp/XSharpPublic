@@ -20,6 +20,8 @@ namespace XSharpDocs
         const string TitleFunctionClassPageNew = "Functions, Globals and Defines";
         const string listMethodNew = "Functions";
         const string listFieldsNew = "Globals and Defines";
+        const string Global = "Global";
+        const string Define = "Define";
 
         //useful for Regex
         const string anyString = ".*";
@@ -33,7 +35,7 @@ namespace XSharpDocs
         const string TitleRemoveTagEnd = "script";
 
         const string TitleRemoveFunctions = "Functions"; //removes the functions before the . in function class methods and function class fields
-        const string TitleFieldOld = " Field"; // The space is important! first occurence is removed
+        const string TitleFieldOld = " Field"; // The space is important! first occurrence is removed
         const string TitleMethodOld = "Method";
 
         const string TitleFunctionFieldsPageOld = "Functions Fields";
@@ -104,16 +106,14 @@ namespace XSharpDocs
         {
             // Check which modes all need to be compiled
             string basePath = builder.WorkingFolder;
-            if(format == HelpFileFormats.Website)
-                basePath = builder.OutputFolder;
-            string htmlHelp1Path = @"\Output\HtmlHelp1";
-            string MsHelpViewerPath = @"\Output\MsHelpViewer";
-            string websitePath = "";
-             string htmlPath = @"\html";
+            string htmlHelp1Path = @"Output\HtmlHelp1";
+            string MsHelpViewerPath = @"Output\MsHelpViewer";
+            string websitePath = @"Output\Website";
+            string htmlPath = "html";
             if(format == HelpFileFormats.HtmlHelp1)
             {
                 builder.ReportProgress("Editing htmlHelp1 files...");
-                string htmlFolderPath = basePath + htmlHelp1Path + htmlPath;
+                string htmlFolderPath = Path.Combine(basePath, htmlHelp1Path, htmlPath);
                 string[] hhcPaths = Directory.GetFiles(basePath, "*.hhc", SearchOption.TopDirectoryOnly);
                 string[] hhkPaths = Directory.GetFiles(basePath, "*.hhk", SearchOption.TopDirectoryOnly);
 
@@ -157,8 +157,8 @@ namespace XSharpDocs
             if(format == HelpFileFormats.MSHelpViewer)
             {
                 builder.ReportProgress("Editing MsHelpViewer files...");
-                string htmlFolderPath = basePath + MsHelpViewerPath + htmlPath;
-                if(Directory.Exists(htmlFolderPath))
+                string htmlFolderPath = Path.Combine(basePath, MsHelpViewerPath, htmlPath);
+                if (Directory.Exists(htmlFolderPath))
                 {
                     builder.ReportProgress("  Editing html topic pages...");
                     XSharpDocChanger.editHtmlFolder(builder, htmlFolderPath, format);
@@ -173,7 +173,7 @@ namespace XSharpDocs
             if(format == HelpFileFormats.Website)
             {
                 builder.ReportProgress("Editing Website files...");
-                string htmlFolderPath = basePath + websitePath + htmlPath;
+                string htmlFolderPath = Path.Combine(basePath, websitePath, htmlPath);
                 if(Directory.Exists(htmlFolderPath))
                 {
                     builder.ReportProgress("  Editing html topic pages...");
@@ -234,22 +234,25 @@ namespace XSharpDocs
         {
             string[] htmlFilesPaths = Directory.GetFiles(path, "*.htm", SearchOption.TopDirectoryOnly);
             // Then we classify the Files into different types
-            List<Tuple<string, FileType>> filesWithType = new List<Tuple<string, FileType>>(htmlFilesPaths.Length);
+            var filesWithType = new List<Tuple<string, FileType,string >>(htmlFilesPaths.Length);
             foreach(string htmlFilePath in htmlFilesPaths)
             {
                 string htmlFileName = htmlFilePath.Remove(0, path.Length + 1);// +1 comes from backslash character in the path ending.
                 htmlFileName = htmlFileName.Remove(htmlFileName.Length - 4); // remove the .htm at the end of the string.
                 FileType htmlType = findFileType(htmlFileName);
-                //if (htmlType != FileType.other)
-                //{
-                //    Console.WriteLine(htmlFileName + "  |  " + htmlType);
-                //}
-                Tuple<string, FileType> fileWithType = new Tuple<string, FileType>(htmlFilePath, htmlType);
+                string strType = "";
+                if (htmlType  == FileType.singleField)
+                {
+                    var contents = File.ReadAllText(htmlFilePath);
+                    strType = determineFieldType(contents);
+                }
+                var fileWithType = new Tuple<string, FileType,string>(htmlFilePath, htmlType,strType);
+
                 filesWithType.Add(fileWithType);
             }
             //edit each html page
             int counter = 0;
-            foreach(Tuple<string, FileType> fileWithType in filesWithType)
+            foreach(var fileWithType in filesWithType)
             {
                 string fileName = fileWithType.Item1;
                 FileType filetype = fileWithType.Item2;
@@ -259,13 +262,9 @@ namespace XSharpDocs
                 editForTypeNames(fileWithType.Item1);
                 if (format == HelpFileFormats.MSHelpViewer)
                 {
-                    editFileForMSHV(fileName, filetype);
+                    editFileForMSHV(fileName, filetype,fileWithType.Item3 );
                 }
-                //else if (format == HelpFileFormats.Website)
-                //{
-                //    editWebsiteToc(fileName);
-                //}
-                counter++;
+                 counter++;
                 if(counter % 500 == 0)
                 {
                     builder.ReportProgress("   Adjusted {0} pages", counter);
@@ -339,39 +338,75 @@ namespace XSharpDocs
             writer.Close();
             return;
         }
+
+        static string determineFieldType(string folder, string fileName)
+        {
+            folder = Path.Combine(folder, "html");
+            fileName = Path.Combine(folder, fileName + ".htm");
+            if (File.Exists(fileName))
+            {
+                var contents = File.ReadAllText(fileName);
+                return determineFieldType(contents);
+            }
+            return "";
+        }
+        static string determineFieldType(string topic)
+        {
+            string strType;
+            if (topic.IndexOf("GLOBAL</span>") >= 0)
+                strType = Global;
+            else
+                strType = Define;
+            return strType;
+        }
         static private void replaceTitle(string path, FileType type)
         {
             string fileWhole = File.ReadAllText(path);
             string titleLeft = "<h1>";
             string titleRight = "</h1>";
+            string titleLeft2 = "<title>";
+            string titleRight2 = "</title>";
             string newFileWhole = fileWhole;
             string pattern;
             if(type == FileType.listOfFields)
             {
                 pattern = titleLeft + TitleFunctionFieldsPageOld + titleRight;
                 newFileWhole = Regex.Replace(fileWhole, pattern, titleLeft + TitleFunctionFieldsPageNew + titleRight);
+                pattern = titleLeft2 + TitleFunctionFieldsPageOld + titleRight2;
+                newFileWhole = Regex.Replace(newFileWhole, pattern, titleLeft2 + TitleFunctionFieldsPageNew + titleRight2);
+
             }
             else if(type == FileType.listOfMethod)
             {
                 pattern = titleLeft + TitleFunctionMethodsPageOld + titleRight;
                 newFileWhole = Regex.Replace(fileWhole, pattern, titleLeft + TitleFunctionMethodsPageNew + titleRight);
+                pattern = titleLeft2 + TitleFunctionMethodsPageOld + titleRight2;
+                newFileWhole = Regex.Replace(newFileWhole, pattern, titleLeft2 + TitleFunctionMethodsPageNew + titleRight2);
             }
             else if(type == FileType.ClassDefinition)
             {
                 pattern = titleLeft + TitleFunctionClassPageOld + titleRight;
                 newFileWhole = Regex.Replace(fileWhole, pattern, titleLeft + TitleFunctionClassPageNew + titleRight);
+                pattern = titleLeft2 + TitleFunctionClassPageOld + titleRight2;
+                newFileWhole = Regex.Replace(newFileWhole, pattern, titleLeft2 + TitleFunctionClassPageNew + titleRight2);
             }
             else if(type == FileType.singleField)
             {
+                string strType = determineFieldType(fileWhole);
                 pattern = titleLeft + "Functions." + groupedAnyString + "Field" + titleRight;
-                newFileWhole = Regex.Replace(fileWhole, pattern, titleLeft + "$1" + titleRight);
+                newFileWhole = Regex.Replace(fileWhole, pattern, titleLeft + "$1" + strType +titleRight);
+                pattern = titleLeft2 + "Functions." + groupedAnyString + "Field" + titleRight2;
+                newFileWhole = Regex.Replace(newFileWhole, pattern, titleLeft2 + "$1" + strType + titleRight2);
             }
             else if(type == FileType.singleMethod)
             {
                 pattern = titleLeft + "Functions." + groupedAnyString + "Method" + groupedAnyString + titleRight;
                 newFileWhole = Regex.Replace(fileWhole, pattern, titleLeft + "$1" + "Function" + "$2" + titleRight);
+                pattern = titleLeft2 + "Functions." + groupedAnyString + "Method" + groupedAnyString + titleRight2;
+                newFileWhole = Regex.Replace(newFileWhole, pattern, titleLeft2+ "$1" + "Function" + "$2" + titleRight2);
+
             }
-            if(newFileWhole == fileWhole)
+            if (newFileWhole == fileWhole)
             {
                 Console.WriteLine("Could not edit Title for file: {0}", path);
                 return;
@@ -432,20 +467,20 @@ namespace XSharpDocs
             return;
         }
 
-        static  string replaceHhcTocField(string original, string oldField, string newField)
+        static  string replaceHhcTocField(string original, string oldField, string newField, string strType ="")
         {
             string pattern = hhcTocStart + oldField + hhcTocEnd;
             string newPattern = hhcTocStart + newField + hhcTocEnd;
             string output = Regex.Replace(original, pattern, newPattern);
             return output;
         }
-        static  string editHhcTocField(string original, FileType type)
+        static  string editHhcTocField(string original, FileType type,string strType="")
         {
             string output = original;
             if(type == FileType.singleField)
             {
                 var regex = new Regex(Regex.Escape(TitleFieldOld), RegexOptions.RightToLeft | RegexOptions.IgnoreCase);//Remove the first occurrence of 'Field'
-                output = regex.Replace(output, string.Empty, 1);
+                output = regex.Replace(output, " "+strType, 1);
             }
             else if(type == FileType.singleMethod)
             {
@@ -454,7 +489,7 @@ namespace XSharpDocs
             }
             return output;
         }
-        static  string changeHhcTocField(string original, FileType type)
+        static  string changeHhcTocField(string original, FileType type, string strType)
         {
             string output = original;
             switch(type)
@@ -462,38 +497,48 @@ namespace XSharpDocs
                 case FileType.ClassDefinition: output = replaceHhcTocField(original, TitleFunctionClassPageOld, TitleFunctionClassPageNew); break;
                 case FileType.listOfFields: output = replaceHhcTocField(original, TitleFunctionFieldsPageOld, TitleFunctionFieldsPageNew); break;
                 case FileType.listOfMethod: output = replaceHhcTocField(original, TitleFunctionMethodsPageOld, TitleFunctionMethodsPageNew); break;
-                case FileType.singleField: output = editHhcTocField(original, type); break;
+                case FileType.singleField: output = editHhcTocField(original, type,strType); break;
                 case FileType.singleMethod: output = editHhcTocField(original, type); break;
                 case FileType.other: break;
             }
             return output;
         }
-        static  FileType classifyHhcTocField(string line)
+        static  FileType classifyHhcTocField(string line, string folder, out string strType)
         {
+            strType = "";
             if(Regex.IsMatch(line, hhcTocTypeStart + hhcTocTypeMiddle + groupedAnyString + hhcTocTypeEnd))
             {
                 string fileName = Regex.Replace(line, anyString + hhcTocTypeStart + hhcTocTypeMiddle + groupedAnyString + hhcTocTypeEnd + anyString, "$1");
-                return findFileType(fileName);
+                var res = findFileType(fileName);
+                if (res == FileType.singleField)
+                {
+                    strType = determineFieldType(folder, fileName);
+                }
+                return res;
             }
-            else return FileType.other;
+            return FileType.other;
         }
         static public void editHhc(string path)
         {
             string[] fileLines = File.ReadAllLines(path);
-            List<Tuple<int, FileType>> noAndTypes = new List<Tuple<int, FileType>>();
+            string folder = Path.GetDirectoryName(path);
+            folder = Path.Combine(folder, @"Output\HtmlHelp1");
+
+            var noAndTypes = new List<Tuple<int, FileType,string>>();
             int i = 0;
             foreach(string line in fileLines)
             {
                 if(line.Contains(hhcTocTypeStart) && line.Contains(hhcTocTypeEnd))
                 {
-                    Tuple<int, FileType> noAndType = new Tuple<int, FileType>(i - 1, classifyHhcTocField(line)); // We need to edit the previous line!
+                    string strType;
+                    var noAndType = new Tuple<int, FileType,string>(i - 1, classifyHhcTocField(line, folder, out strType),strType); // We need to edit the previous line!
                     noAndTypes.Add(noAndType);
                 }
                 i++;
             }
-            foreach(Tuple<int, FileType> noAndType in noAndTypes)
+            foreach(var noAndType in noAndTypes)
             {
-                string output = changeHhcTocField(fileLines[noAndType.Item1], noAndType.Item2);
+                string output = changeHhcTocField(fileLines[noAndType.Item1], noAndType.Item2, noAndType.Item3);
                 if(fileLines[noAndType.Item1] == output && noAndType.Item2 != FileType.other)
                 {
                     Console.WriteLine("Could not edit the hhc field of {2} on line {0} of type {1}", noAndType.Item1, noAndType.Item2, path);
@@ -509,16 +554,22 @@ namespace XSharpDocs
             writer.Close();
             return;
         }
-        static  FileType classifyHhkField(string line)
+        static  FileType classifyHhkField(string line, string folder, out string strType)
         {
+            strType = "";
             if(Regex.IsMatch(line, hhkTypeStart + groupedAnyString + hhkTypeEnd))
             {
                 string fileName = Regex.Replace(line, anyString + hhkTypeStart + groupedAnyString + hhkTypeEnd + anyString, "$1");
-                return findFileType(fileName);
+                var res = findFileType(fileName);
+                if (res == FileType.singleField)
+                {
+                    strType = determineFieldType(folder, fileName);
+                }
+                return res;
             }
             else return FileType.other;
         }
-        static  string editHhkField(string original, FileType type)
+        static  string editHhkField(string original, FileType type, string strType)
         {
             string output = original;
             if(type == FileType.singleField)
@@ -526,7 +577,7 @@ namespace XSharpDocs
                 var regex = new Regex(Regex.Escape(hhkFieldMethodPrefix));// Remove the first occurence of 'Functions.
                 output = regex.Replace(output, string.Empty, 1);
                 regex = new Regex(Regex.Escape(hhkFieldPostfix), RegexOptions.RightToLeft | RegexOptions.IgnoreCase);//Remove the first occurrence of 'Field'
-                output = regex.Replace(output, string.Empty, 1);
+                output = regex.Replace(output, " "+strType, 1);
             }
             else if(type == FileType.singleMethod)
             {
@@ -541,14 +592,14 @@ namespace XSharpDocs
             }
             return output;
         }
-        static  string changeHhkField(string original, FileType type)
+        static  string changeHhkField(string original, FileType type, string strType)
         {
             string output = original;
             switch(type)
             {
-                case FileType.singleField: output = editHhkField(original, type); break;
-                case FileType.singleMethod: output = editHhkField(original, type); break;
-                case FileType.ClassDefinition: output = editHhkField(original, type); break;
+                case FileType.singleField: output = editHhkField(original, type,strType); break;
+                case FileType.singleMethod: output = editHhkField(original, type,""); break;
+                case FileType.ClassDefinition: output = editHhkField(original, type,""); break;
                 case FileType.listOfFields: output = replaceHhcTocField(original, hhkFieldPageOld, TitleFunctionFieldsPageNew); break;
                 case FileType.listOfMethod: output = replaceHhcTocField(original, hhkMethodPageOld, TitleFunctionMethodsPageNew); break;
                 case FileType.other: break;
@@ -558,18 +609,21 @@ namespace XSharpDocs
         static public void editHhk(string path)
         {
             string[] fileLines = File.ReadAllLines(path);
-            List<Tuple<int, FileType>> noAndTypes = new List<Tuple<int, FileType>>();
+            string folder = Path.GetDirectoryName(path);
+            folder = Path.Combine(folder, @"Output\HtmlHelp1");
+            var noAndTypes = new List<Tuple<int, FileType,string>>();
             int i = 0;
             foreach(string line in fileLines)
             {
                 if(line.Contains(hhkTypeStart) && line.Contains(hhkTypeEnd))
                 {
-                    Tuple<int, FileType> noAndType = new Tuple<int, FileType>(i - 1, classifyHhkField(line)); // We need to edit the previous line!
+                    string strType;
+                    Tuple<int, FileType,string> noAndType = new Tuple<int, FileType,string>(i - 1, classifyHhkField(line, folder, out strType),strType); // We need to edit the previous line!
                     noAndTypes.Add(noAndType);
                 }
                 else if(line.Contains(hhkSpecialCase) || line.Contains(hhkSpecialCaseReplace)) //make sure it is also working if we run it a second time.
                 {
-                    Tuple<int, FileType> noAndType = new Tuple<int, FileType>(i - 1, FileType.ClassDefinition); // We need to edit the previous line!
+                    Tuple<int, FileType,string> noAndType = new Tuple<int, FileType,string>(i - 1, FileType.ClassDefinition,""); // We need to edit the previous line!
                     noAndTypes.Add(noAndType);
                     string temp = Regex.Replace(line, hhkSpecialCase, hhkSpecialCaseReplace);// inplace editing is a bit easier for the see also line.
                     if(temp == fileLines[i])
@@ -583,9 +637,9 @@ namespace XSharpDocs
                 }
                 i++;
             }
-            foreach(Tuple<int, FileType> noAndType in noAndTypes)
+            foreach(var noAndType in noAndTypes)
             {
-                string output = changeHhkField(fileLines[noAndType.Item1], noAndType.Item2);
+                string output = changeHhkField(fileLines[noAndType.Item1], noAndType.Item2, noAndType.Item3);
                 if(fileLines[noAndType.Item1] == output && noAndType.Item2 != FileType.other)
                 {
                     Console.WriteLine("Could not edit the hhk field of {2} on line {0} of type {1}", noAndType.Item1, noAndType.Item2, path);
@@ -631,7 +685,7 @@ namespace XSharpDocs
         //    builder.ReportProgress("   Finished adjusting {0} pages", counter);
         //    return;
         //}
-        static  void editFileForMSHV(string path, FileType type)
+        static  void editFileForMSHV(string path, FileType type, string strType)
         {
             string fileText = File.ReadAllText(path);
             string newText = fileText;
@@ -646,11 +700,11 @@ namespace XSharpDocs
                         // replace keywords
                         string checkCopy = newText;
                         pattern = MSHVKeywordStart + "Functions." + safeGroupedAnyString + " field" + MSHVKeywordEnd;
-                        newText = Regex.Replace(newText, pattern, MSHVKeywordStart + "$1" + MSHVKeywordEnd);
+                        newText = Regex.Replace(newText, pattern, MSHVKeywordStart + "$1"+" " +strType + MSHVKeywordEnd);
                         pattern = MSHVKeywordStart + safeGroupedAnyString + " field" + MSHVKeywordEnd;
-                        newText = Regex.Replace(newText, pattern, MSHVKeywordStart + "$1" + MSHVKeywordEnd);
+                        newText = Regex.Replace(newText, pattern, MSHVKeywordStart + "$1" + " " + strType + MSHVKeywordEnd);
                         pattern = MSHVKeywordStartTwo + safeGroupedAnyString + " field" + MSHVKeywordEnd;
-                        newText = Regex.Replace(newText, pattern, MSHVKeywordStartTwo + "$1" + MSHVKeywordEnd);
+                        newText = Regex.Replace(newText, pattern, MSHVKeywordStartTwo + "$1" + " " + strType + MSHVKeywordEnd);
                         if(checkCopy == newText) { Console.WriteLine("Could not edit keywords of {0} of type {1}", path, type); }
                         break;
                     }
@@ -723,70 +777,70 @@ namespace XSharpDocs
             writer.Close();
             return;
         }
-        static public void editWebsiteToc(string path)
-        {
-            string text = File.ReadAllText(path);
-            string[] seperatingChars = { "<div class=\"leftNav\" id=\"leftNav\">", "<div class=\"topicContent\" id=\"TopicContent\">" };
-            string[] seperatedText = text.Split(seperatingChars, StringSplitOptions.RemoveEmptyEntries);
-            bool edited = false;
-            // if the length is not good 
-            if(seperatedText.Length != 3)
-            {
-                if(!path.Contains("GeneralError") && !path.Contains("PageNotFound"))
-                {
-                    Console.WriteLine("Could not find table for webiste topics for file: {0}", path);
-                }
-                return;
-            }
-            string toc = seperatedText[1];
-            //adjust the tags:
-            string[] seperateTags = Regex.Split(toc, "(?=<)");
-            for(int i = 0; i < seperateTags.Length; i++)
-            {
-                string tag = seperateTags[i];
-                // find type of the title (if it matches the pattern)
-                Match match = Regex.Match(tag, "/(\\w*)\\.htm");
-                if(match.Success)
-                {
-                    string tagReference = match.Groups[1].Value;
-                    FileType tocItemType = findFileType(tagReference);
-                    if(tocItemType != FileType.other) { edited = true; }
-                    else { continue; }
-                    //edit accordingly
-                    string newTag = editWebsiteTocItem(tag, tocItemType);
-                    if(newTag == tag)
-                    {
-                        Console.WriteLine("Could not replace a websiteTocItem of type: {0} for file {1}", tocItemType, path);
-                    }
-                    seperateTags[i] = newTag;
-                }
-            }
-            if(!edited) { return; }
-            string newToc = string.Join("", seperateTags);
-            var writer = new StreamWriter(path);
-            writer.Write(seperatedText[0]);
-            writer.Write("<div class=\"leftNav\" id=\"leftNav\">");
-            writer.Write(newToc);
-            writer.Write("<div class=\"topicContent\" id=\"TopicContent\">");
-            writer.Write(seperatedText[2]);
-            writer.Close();
-            return;
-        }
-        static  string editWebsiteTocItem(string tag, FileType tocItemType)
-        {
-            string newTag = tag;
-            switch(tocItemType)
-            {
-                case FileType.ClassDefinition: newTag = Regex.Replace(tag, ">" + TitleFunctionClassPageOld, ">" + TitleFunctionClassPageNew); break;
-                case FileType.listOfFields: newTag = Regex.Replace(tag, ">" + TitleFunctionFieldsPageOld, ">" + TitleFunctionFieldsPageNew); break;
-                case FileType.listOfMethod: newTag = Regex.Replace(tag, ">" + TitleFunctionMethodsPageOld, ">" + TitleFunctionMethodsPageNew); break;
-                case FileType.singleField: newTag = Regex.Replace(tag, ">" + "([a-zA-z0-9_\\(\\)]*)" + " Field", ">" + "$1"); break;
-                case FileType.singleMethod: newTag = Regex.Replace(tag, ">" + "([a-zA-z0-9_\\(\\)]*)" + " Method", ">" + "$1" + " Function"); break;
-                case FileType.other: return newTag;
-            }
+        //static public void editWebsiteToc(string path)
+        //{
+        //    string text = File.ReadAllText(path);
+        //    string[] seperatingChars = { "<div class=\"leftNav\" id=\"leftNav\">", "<div class=\"topicContent\" id=\"TopicContent\">" };
+        //    string[] seperatedText = text.Split(seperatingChars, StringSplitOptions.RemoveEmptyEntries);
+        //    bool edited = false;
+        //    // if the length is not good 
+        //    if(seperatedText.Length != 3)
+        //    {
+        //        if(!path.Contains("GeneralError") && !path.Contains("PageNotFound"))
+        //        {
+        //            Console.WriteLine("Could not find table for webiste topics for file: {0}", path);
+        //        }
+        //        return;
+        //    }
+        //    string toc = seperatedText[1];
+        //    //adjust the tags:
+        //    string[] seperateTags = Regex.Split(toc, "(?=<)");
+        //    for(int i = 0; i < seperateTags.Length; i++)
+        //    {
+        //        string tag = seperateTags[i];
+        //        // find type of the title (if it matches the pattern)
+        //        Match match = Regex.Match(tag, "/(\\w*)\\.htm");
+        //        if(match.Success)
+        //        {
+        //            string tagReference = match.Groups[1].Value;
+        //            FileType tocItemType = findFileType(tagReference);
+        //            if(tocItemType != FileType.other) { edited = true; }
+        //            else { continue; }
+        //            //edit accordingly
+        //            string newTag = editWebsiteTocItem(tag, tocItemType);
+        //            if(newTag == tag)
+        //            {
+        //                Console.WriteLine("Could not replace a websiteTocItem of type: {0} for file {1}", tocItemType, path);
+        //            }
+        //            seperateTags[i] = newTag;
+        //        }
+        //    }
+        //    if(!edited) { return; }
+        //    string newToc = string.Join("", seperateTags);
+        //    var writer = new StreamWriter(path);
+        //    writer.Write(seperatedText[0]);
+        //    writer.Write("<div class=\"leftNav\" id=\"leftNav\">");
+        //    writer.Write(newToc);
+        //    writer.Write("<div class=\"topicContent\" id=\"TopicContent\">");
+        //    writer.Write(seperatedText[2]);
+        //    writer.Close();
+        //    return;
+        //}
+        //static  string editWebsiteTocItem(string tag, FileType tocItemType)
+        //{
+        //    string newTag = tag;
+        //    switch(tocItemType)
+        //    {
+        //        case FileType.ClassDefinition: newTag = Regex.Replace(tag, ">" + TitleFunctionClassPageOld, ">" + TitleFunctionClassPageNew); break;
+        //        case FileType.listOfFields: newTag = Regex.Replace(tag, ">" + TitleFunctionFieldsPageOld, ">" + TitleFunctionFieldsPageNew); break;
+        //        case FileType.listOfMethod: newTag = Regex.Replace(tag, ">" + TitleFunctionMethodsPageOld, ">" + TitleFunctionMethodsPageNew); break;
+        //        case FileType.singleField: newTag = Regex.Replace(tag, ">" + "([a-zA-z0-9_\\(\\)]*)" + " Field", ">" + "$1"); break;
+        //        case FileType.singleMethod: newTag = Regex.Replace(tag, ">" + "([a-zA-z0-9_\\(\\)]*)" + " Method", ">" + "$1" + " Function"); break;
+        //        case FileType.other: return newTag;
+        //    }
 
-            return newTag;
-        }
+        //    return newTag;
+        //}
         //static public void editForWebsiteFolder(BuildProcess builder, string path)
         //{
         //    string[] htmlFilesPaths = Directory.GetFiles(path, "*.htm", SearchOption.TopDirectoryOnly);

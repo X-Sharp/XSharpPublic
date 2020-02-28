@@ -34,6 +34,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XSharpPlugin", "Tools\SHFB\XSharpPlugin\XSharpPlugin.csproj", "{9E903F77-F7C7-4440-8508-7A30A4FA43FD}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SHFB", "SHFB", "{15CFBDC7-31AA-4D54-8FBE-08F1F1F6D0BF}"
+	ProjectSection(SolutionItems) = preProject
+		Tools\SHFB\SHFB.Targets = Tools\SHFB\SHFB.Targets
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XSharpSyntax", "Tools\SHFB\XSharpSyntax\XSharpSyntax.csproj", "{8E45C5BD-C5F7-4C00-8FB2-EC84413626D0}"
 EndProject

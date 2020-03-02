@@ -1900,7 +1900,7 @@ VIRTUAL METHOD Info(nOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT
 	CASE DbInfo.DBI_LASTUPDATE
 		oResult := SELF:_Header:LastUpdate
 	CASE DbInfo.DBI_GETHEADERSIZE
-		oResult := SELF:_Header:HeaderLen
+		oResult := (LONG) SELF:_Header:HeaderLen
 	CASE DbInfo.DBI_CODEPAGE
 	CASE DbInfo.DBI_DOSCODEPAGE
 	CASE DbInfo.DBI_CODEPAGE_HB

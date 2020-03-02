@@ -1064,7 +1064,8 @@ FUNCTION _Like(sWildCard AS STRING, sSource AS STRING) AS LOGIC
 /// <summary>Determine if a string matches a wildcard pattern (like the wildcard pattern for the DIR command in the OS).</summary>
 /// <param name="sWildCard">The wildcard to use. '*' matches 0 or more characters until the next non-wildcard character, '?' matches any character, all other characters must match exactly.</param>
 /// <param name="sSource">The string to examine.</param>
-/// <remarks>This function is case INsensitive. If you want to do a case sensitive compare, use _Like()</remarks>
+/// <remarks>This function is case INsensitive in all dialects except FoxPro.
+/// If you want to do a case sensitive compare in these dialects, use _Like()</remarks>
 /// <seealso cref='M:XSharp.Core.Functions._Like(System.String,System.String)' >_Like</seealso>
 FUNCTION Like(sWildCard AS STRING, sSource AS STRING) AS LOGIC
     IF XSharp.RuntimeState.Dialect == XSharpDialect.FoxPro

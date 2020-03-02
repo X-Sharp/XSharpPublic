@@ -714,7 +714,7 @@ CLASS XSharp.CoreDb
         /// <summary>Return the number of fields in the current Workarea</summary>
 
     STATIC METHOD FCount() AS DWORD
-        LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
+        LOCAL oRdd := CoreDb.CWA(__FUNCTION__,FALSE) AS IRdd
         IF (oRdd != NULL)
             RETURN (DWORD) oRdd:FieldCount
         ENDIF
@@ -1023,8 +1023,10 @@ CLASS XSharp.CoreDb
 
     STATIC METHOD  Header() AS LONG
         LOCAL oValue := NULL AS OBJECT
-	    CoreDb.Info(DBI_GETHEADERSIZE, REF oValue)
-        RETURN (LONG) oValue
+	    IF CoreDb.Info(DBI_GETHEADERSIZE, REF oValue)
+            RETURN (LONG) oValue
+        ENDIF
+        RETURN 0
         
         /// <summary>
         /// Retrieve information about a work area.
@@ -1047,15 +1049,17 @@ CLASS XSharp.CoreDb
 
     STATIC METHOD Info(nOrdinal AS DWORD,oValue REF OBJECT) AS LOGIC
         TRY
-            LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
-            IF (nOrdinal == DBI_RDD_OBJECT)
-                oValue := oRdd
-            ELSEIF (nOrdinal == DBI_RDD_LIST)
-                oValue := _RddList{(Workarea) oRdd}
-            ELSE
-                oValue := oRdd:Info((INT) nOrdinal, oValue)
+            LOCAL oRdd := CoreDb.CWA(__FUNCTION__, FALSE) AS IRdd
+            IF oRdd != null
+                IF (nOrdinal == DBI_RDD_OBJECT)
+                    oValue := oRdd
+                ELSEIF (nOrdinal == DBI_RDD_LIST)
+                    oValue := _RddList{(Workarea) oRdd}
+                ELSE
+                    oValue := oRdd:Info((INT) nOrdinal, oValue)
+                ENDIF
+                RETURN TRUE
             ENDIF
-            RETURN TRUE
         CATCH e AS Exception
             Fail(e)
         END TRY
@@ -1556,8 +1560,10 @@ CLASS XSharp.CoreDb
         /// <summary>Return the record length in the current Workarea</summary>
         STATIC METHOD RecSize AS LONG
             LOCAL nSize := NULL AS OBJECT
-            CoreDb.Info(DbInfo.DBI_GETRECSIZE, REF nSize)
-            RETURN (LONG) nSize
+            IF CoreDb.Info(DbInfo.DBI_GETRECSIZE, REF nSize)
+                RETURN (LONG) nSize
+            ENDIF
+            RETURN 0
 
         /// <summary>
         /// Return the current record number.

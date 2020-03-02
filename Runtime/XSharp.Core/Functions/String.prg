@@ -1067,5 +1067,7 @@ FUNCTION _Like(sWildCard AS STRING, sSource AS STRING) AS LOGIC
 /// <remarks>This function is case INsensitive. If you want to do a case sensitive compare, use _Like()</remarks>
 /// <seealso cref='M:XSharp.Core.Functions._Like(System.String,System.String)' >_Like</seealso>
 FUNCTION Like(sWildCard AS STRING, sSource AS STRING) AS LOGIC
+    IF XSharp.RuntimeState.Dialect == XSharpDialect.FoxPro
+        RETURN _Like(sWildCard, sSource)
+    ENDIF
     RETURN _Like(Upper(sWildCard), Upper(sSource))
-

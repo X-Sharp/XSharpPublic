@@ -187,8 +187,10 @@ FUNCTION Found(uArea AS USUAL) AS LOGIC
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/header/*" />
 FUNCTION Header() AS LONG
     LOCAL oValue := NULL AS OBJECT
-	VoDb.Info(DBI_GETHEADERSIZE, REF oValue)
-    RETURN (LONG) oValue
+    IF VoDb.Info(DBI_GETHEADERSIZE, REF oValue)
+        RETURN Convert.ToInt32(oValue)
+    ENDIF
+    RETURN 0
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/header/*" />
 FUNCTION Header(uArea AS USUAL) AS LONG 

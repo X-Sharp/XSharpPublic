@@ -330,7 +330,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 set { flags = setFlag(flags, EntityFlags.ParameterAssign, value); }
             }
 
-            private Dictionary<string, MemVarFieldInfo> Fields = null;
+            internal Dictionary<string, MemVarFieldInfo> Fields = null;
             internal MemVarFieldInfo AddField(string Name, string Alias,XSharpParserRuleContext context)
             {
                 if (Fields == null)
@@ -986,19 +986,38 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 #if !VSPARSER
     public class MemVarFieldInfo
     {
-        enum vartype
+        internal enum vartype
         {
             Memvar,
             Field,
             ClipperParameter,
+            MacroMemvar
         }
         private readonly vartype _varType;
+        internal vartype VarType => _varType;
         public string Name { get; private set; }
         public string Alias { get; private set; }
-        public string FullName => Alias != null ? Alias + "->" + Name : Name;
-        public bool IsField => _varType == vartype.Field;
+        public string FullName
+        {
+            get
+            {
+                if (VarType == vartype.MacroMemvar)
+                {
+                    var name = Name.Substring(0, Name.IndexOf(":") );
+                    return Alias + "->" + name;
+                }
+                if (Alias != null)
+                {
+                    return Alias + "->" + Name;
+                }
+                else
+                {
+                    return Name;
+                }
+            }
+        }
+
         public bool IsClipperParameter=> _varType == vartype.ClipperParameter;
-        public bool IsMemvar => _varType == vartype.Memvar;
         public bool IsFileWidePublic { get; private set; }
         public bool IsParameter { get; set; }
         public bool IsWritten { get; set; }
@@ -1011,6 +1030,10 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             {
                 switch (alias.ToUpper())
                 {
+                    case "&":
+                        _varType = vartype.MacroMemvar;
+                        Alias = XSharpSpecialNames.MemVarPrefix;
+                        break;
                     case "M":
                     case "MEMV":
                     case "MEMVA":

@@ -660,14 +660,14 @@ fielddecl          : FIELD Fields+=identifierName (COMMA Fields+=identifierName)
 xbasedecl           : T=(MEMVAR|PARAMETERS|LPARAMETERS)      // MEMVAR  Foo, Bar or PARAMETERS Foo, Bar
                       Vars+=identifierName (COMMA Vars+=identifierName)*
                       end=eos
-                    | T=(PRIVATE | PUBLIC)
+                    | T=(PRIVATE | PUBLIC) 
                       XVars+=xbasevar (COMMA XVars+=xbasevar)*   // PRIVATE Foo := 123,  PUBLIC Bar
-                      end=eos
-                   // FoxPro dimension statement
-                   | T=(DIMENSION|DECLARE) DimVars += dimensionVar (COMMA DimVars+=dimensionVar)*    end=eos 
+                      end=eos 
+                    // FoxPro dimension statement
+                    | T=(DIMENSION|DECLARE) DimVars += dimensionVar (COMMA DimVars+=dimensionVar)*    end=eos 
                     ;
 
-xbasevar            : Id=identifierName (Op=assignoperator Expression=expression)?
+xbasevar            : (Amp=AMP)?  Id=identifierName (Op=assignoperator Expression=expression)?
                     ;
 
 dimensionVar        : Id=identifierName  ( LBRKT ArraySub=arraysub RBRKT | LPAREN ArraySub=arraysub RPAREN ) (AS DataType=datatype)?
@@ -802,8 +802,7 @@ aliasExpression     : MEMVAR ALIAS VarName=identifier                           
                     // !(CUSTOMER)->(Eof()) .and. SomeOtherCondition
                     // Because the subrule with LPAREN and RPAREN is listed first then only Eof() will be evaluated in the workarea.
                     | ( Id=identifier | LPAREN Alias=expression RPAREN)
-                       ALIAS ( (LPAREN Expr=expression RPAREN)
-                      | Expr=expression )                                     #aliasedExpr          // id -> expr   or (expr) -> expr 
+                       ALIAS ( (LPAREN Expr=expression RPAREN) | Expr=expression )  #aliasedExpr          // id -> expr   or (expr) -> expr 
                     ;
 
 // Initializers

@@ -882,6 +882,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_DynamicVariablesNotAllowed));
             }
+            else
+            {
+                foreach (var memvar in context._XVars)
+                {
+                    if (memvar.Amp != null)
+                    {
+                        _parseErrors.Add(new ParseErrorData(memvar, ErrorCode.ERR_UnexpectedCharacter, memvar.Amp.Text));
+                    }
+                }
+
+            }
         }
 
 

@@ -138,6 +138,12 @@
       </topicref>
       <topicref type="topic" id="432589452071368" build="ALL" modified="2018-06-07T18:01:46.553Z" icon="0" href="Installation">
         <caption translate="true">Installation</caption>
+        <topicref type="topic" id="438956553692236" build="ALL" modified="2020-03-05T13:05:01.795Z" icon="0" href="Installer-Command-Line-options">
+          <caption translate="true">Installer Command Line options</caption>
+        </topicref>
+        <topicref type="topic" id="438957336026538" build="ALL" modified="2020-03-05T14:08:23.582Z" icon="0" href="UnInstaller-Command-Line-optio">
+          <caption translate="true">UnInstaller Command Line options</caption>
+        </topicref>
       </topicref>
       <topicref type="topic" id="423886741980303" build="ALL" modified="2017-05-17T10:10:08.820Z" icon="0" href="New-features">
         <caption translate="true">New language features </caption>
@@ -328,6 +334,9 @@
     </topicref>
     <topicref type="topic" id="423890627480191" modified="2019-10-11T16:38:23.952Z" icon="0" href="X-Walkthroughs">
       <caption translate="true">X# Walkthroughs</caption>
+    </topicref>
+    <topicref type="topic" id="438952407173799" build="ALL" modified="2020-03-05T09:34:53.261Z" icon="0" href="Building-XSharp-apps-with-Visu">
+      <caption translate="true">Building XSharp apps with Visual Studio and/or MsBuild</caption>
     </topicref>
     <topicref type="topic" id="423890127319554" build="ALL" modified="2016-01-19T22:41:45.448Z" icon="0" href="Visual-Studio-Integration">
       <caption translate="true">Using X# in Visual Studio</caption>

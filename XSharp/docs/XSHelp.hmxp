@@ -42,6 +42,14 @@
               <task-config-value name="make2status">(Complete)</task-config-value>
             </task-config-group>
           </export-task>
+          <export-task name="Publish as RTF" format="RTF">
+            <task-config-group name="settings">
+              <task-config-value name="outputfile">XSHelp_manual.docx</task-config-value>
+              <task-config-value name="template">$(HMSYS)Templates\Word\Word-Template-Simple-A4.docx</task-config-value>
+              <task-config-value name="make5include">PRINT</task-config-value>
+              <task-config-value name="make5status">*</task-config-value>
+            </task-config-group>
+          </export-task>
         </export-tasks>
       </export-task-group>
     </export-task-groups>
@@ -81,7 +89,7 @@
         <style-set media="screen" type="text">font-family:Verdana; font-size:10pt; letter-spacing:-1px;</style-set>
       </styleclass>
       <styleclass name="Code Example" parentclass="Normal" shortcut="24643">
-        <style-set media="screen" type="para">margin-top:24px; margin-right:24px; margin-bottom:24px; margin-left:24px; border-style:single; border-width:1px; padding:10px;</style-set>
+        <style-set media="screen" type="para">margin-top:24px; margin-right:24px; margin-bottom:24px; margin-left:24px;</style-set>
         <style-set media="screen" type="text">font-family:Consolas; font-size:10pt;</style-set>
       </styleclass>
       <styleclass name="Code with box" parentclass="Code Example" shortcut="16507">
@@ -189,6 +197,8 @@
       <config-value name="tidyxml">1</config-value>
       <config-value name="contents">XSharp</config-value>
       <config-value name="make3includeskin">OPT_PARENTHOME,OPT_TOPICFOOTER</config-value>
+      <config-value name="make5include">PRINT</config-value>
+      <config-value name="make5status">*</config-value>
     </config-group>
     <config-group name="pdf">
       <config-value name="style">0</config-value>
@@ -638,7 +648,7 @@
     <config-group name="user">
       <config-group name="robert">
         <config-group name="project">
-          <config-value name="lastexport">2</config-value>
+          <config-value name="lastexport">0</config-value>
         </config-group>
         <config-group name="report">
           <config-value name="type">6</config-value>
@@ -694,7 +704,10 @@
       <config-value name="colortext">0</config-value>
       <config-value name="insertseealso">0</config-value>
       <config-value name="insertseealsostyle">-1</config-value>
-      <config-value name="tocname">Table of Contents</config-value>
+    </config-group>
+    <config-group name="rtf">
+      <config-value name="outputfile">XSHelp_manual.docx</config-value>
+      <config-value name="template">$(HMSYS)Templates\Word\Word-Template-Simple-A4.docx</config-value>
     </config-group>
     <variables>
       <variable id="TXTVERSION" type="text" translate="true">Bandol (2.3.1)</variable>

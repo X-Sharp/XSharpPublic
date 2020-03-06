@@ -598,9 +598,14 @@ namespace XSharpLanguage
                 {
                     if (XSharpTokenTools.isGenerated(typeInfo.Value))
                         continue;
+
                     TypeAnalysis typeAnalysis = new TypeAnalysis(typeInfo.Value.GetTypeInfo());
                     String realTypeName = typeAnalysis.Name;
-                    // Nested Type ?
+                    if (IsHiddenName(realTypeName))
+                    {
+                       continue;
+                    }
+                        // Nested Type ?
                     if (realTypeName.Contains("+"))
                     {
                         realTypeName = realTypeName.Replace('+', '.');
@@ -640,22 +645,22 @@ namespace XSharpLanguage
 
         private bool IsHiddenName(string realTypeName)
         {
-            if (realTypeName.Length > 2 && realTypeName.StartsWith("__"))
+            if (realTypeName.Length > 2 && realTypeName.StartsWith("__", StringComparison.Ordinal) && _optionsPage.HideAdvancemembers)
                 return true;
             if (realTypeName.Length > 4)
             {
                 // event add
-                if (realTypeName.StartsWith("add_"))
+                if (realTypeName.StartsWith("add_",StringComparison.Ordinal))
                     return true;
                 // property get
-                if (realTypeName.StartsWith("get_"))
+                if (realTypeName.StartsWith("get_", StringComparison.Ordinal))
                     return true;
                 // property set
-                if (realTypeName.StartsWith("set_"))
+                if (realTypeName.StartsWith("set_", StringComparison.Ordinal))
                     return true;
             }
             // event remove
-            if (realTypeName.Length > 7 && realTypeName.StartsWith("remove_"))
+            if (realTypeName.Length > 7 && realTypeName.StartsWith("remove_", StringComparison.Ordinal))
                 return true;
             return false;
         }
@@ -853,6 +858,7 @@ namespace XSharpLanguage
             //
             XType Owner = parent as XType;
             //
+            bool hideAdvanced = _optionsPage.HideAdvancemembers;
             foreach (XTypeMember elt in Owner.Members.Where(e => nameStartsWith(e.Name, startWith)))
             {
                 if (elt.Kind == Kind.Constructor)
@@ -862,6 +868,10 @@ namespace XSharpLanguage
                 if (elt.Visibility < minVisibility)
                     continue;
                 //
+                if (IsHiddenName(elt.Name))
+                {
+                    continue;
+                }
                 ImageSource icon = _provider.GlyphService.GetGlyph(elt.getGlyphGroup(), elt.getGlyphItem());
                 String toAdd = "";
                 if ((elt.Kind == Kind.Method) || (elt.Kind == Kind.Function) || (elt.Kind == Kind.Procedure))
@@ -930,6 +940,10 @@ namespace XSharpLanguage
             foreach (XTypeMember elt in xType.Members.Where(x => nameStartsWith(x.Name, startWith)))
             {
                 bool add = true;
+                if (IsHiddenName(elt.Name))
+                {
+                    continue;
+                }
                 switch (elt.Kind)
                 {
                     case Kind.EnumMember:
@@ -983,10 +997,15 @@ namespace XSharpLanguage
                 members = sType.GetMembers();
             }
             //
+            bool hideAdvanced = _optionsPage.HideAdvancemembers;
             foreach (var member in members.Where(x => nameStartsWith(x.Name, startWith)))
             {
                 if (XSharpTokenTools.isGenerated(member))
                     continue;
+                if (IsHiddenName(member.Name))
+                {
+                   continue;
+                }
                 try
                 {
                     MemberAnalysis analysis = new MemberAnalysis(member);
@@ -2213,7 +2232,9 @@ namespace XSharpLanguage
         public static bool isGenerated(System.Type type)
         {
             var att = type.GetCustomAttribute(typeof(CompilerGeneratedAttribute));
-            return att != null;
+            if (att != null)
+                return true;
+            return type.Name.IndexOf("$", StringComparison.Ordinal) > -1;
         }
         public static bool isGenerated(MemberInfo m)
         {
@@ -2915,7 +2936,7 @@ namespace XSharpLanguage
             {
                 currentToken = tokenList[currentPos];
                 // Remove the @@ marker
-                if (currentToken.StartsWith("@@"))
+                if (currentToken.StartsWith("@@",StringComparison.Ordinal))
                     currentToken = currentToken.Substring(2);
                 //
                 var lastToken = currentToken;

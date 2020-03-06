@@ -168,7 +168,7 @@ FUNCTION Buffer(dwSize AS DWORD) AS STRING
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/chareven/*" />
 FUNCTION CharEven(cString AS STRING) AS STRING
 	LOCAL evenChars:=NULL AS STRING
-    LOCAL c := cString as STRING
+    LOCAL c := cString AS STRING
 	IF ( !String.IsNullOrEmpty(c) ) 
 		//local chars  := c:ToCharArray() as char[]
 		LOCAL isEven := FALSE AS  LOGIC
@@ -214,7 +214,7 @@ FUNCTION CharMix(cOdd AS STRING,cEven AS STRING) AS STRING
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/charodd/*" />
 FUNCTION CharOdd(cString AS STRING) AS STRING
 	LOCAL oddChars:=NULL AS STRING
-    LOCAL c := cString as STRING
+    LOCAL c := cString AS STRING
 	IF ( !String.IsNullOrEmpty(c) ) 
 		//local chars  := c:ToCharArray() as char[]
 		LOCAL isOdd  := TRUE AS  LOGIC
@@ -978,17 +978,19 @@ FUNCTION IsXDigit(pszString AS STRING) AS LOGIC
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/isspace/*" />
 FUNCTION IsSpace(pszString AS STRING) AS LOGIC
-	LOCAL ret := FALSE AS LOGIC
-	switch (int) pszString[0]
-		CASE 9
-        CASE 10
-        CASE 11
-        CASE 12
-        CASE 13
-        CASE 32
-            ret := true
-    end switch
-	RETURN ret
+    LOCAL ret := FALSE AS LOGIC
+    IF .not. String.IsNullOrEmpty(pszString)
+        SWITCH (INT) pszString[0]
+            CASE 9
+            CASE 10
+            CASE 11
+            CASE 12
+            CASE 13
+            CASE 32
+                ret := TRUE
+        END SWITCH
+    ENDIF
+    RETURN ret
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/isupper/*" />
 FUNCTION IsUpper(pszString AS STRING) AS LOGIC

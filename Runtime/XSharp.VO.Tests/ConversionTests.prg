@@ -74,6 +74,21 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal("1,23459999990", Str(f, 30,11):Trim() )  
 			Assert.Equal("1,234599999900", Str(f, 30,12):Trim() )  
 
+			Assert.Equal("00010", StrZero(10,5) )
+			Assert.Equal("10", StrZero(10,2) )
+			Assert.Equal("*", StrZero(10,1) )
+
+			Assert.Equal("-0010", StrZero(-10,5) )
+			Assert.Equal("-010", StrZero(-10,4) )
+			Assert.Equal("-10", StrZero(-10,3) )
+			Assert.Equal("**", StrZero(-10,2) )
+			Assert.Equal("*", StrZero(-10,1) )
+
+			Assert.Equal("-00123,123", StrZero(-123.123,10,3) )
+			Assert.Equal("-123,123", StrZero(-123.123,8,3) )
+			Assert.Equal("-00123,1", StrZero(-123.123,8,1) )
+			Assert.Equal("-0123,1", StrZero(-123.123,7,1) )
+
 		[Fact, Trait("Category", "Val")];
 		METHOD ValTest() AS VOID
 			LOCAL u AS USUAL
@@ -182,6 +197,34 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal(1.0, (FLOAT) Val("1,000.1") )
 			Assert.Equal(1.0, (FLOAT) Val("1,001.1") )
 		RETURN
+
+//		[Fact, Trait("Category", "Val")];
+		#warning Need to add test back when "https://github.com/X-Sharp/XSharpPublic/issues/321" is fixed
+		METHOD ValTests_fixed() AS VOID
+			LOCAL deci,thou,digit,decimal,fixed_,digitfixed AS USUAL
+			deci := SetDecimalSep(Asc("."))
+			thou := SetThousandSep(Asc(","))
+			digit := SetDigit(12)
+			decimal := SetDecimal(3)
+			fixed_ := SetFixed(TRUE)
+			digitfixed := SetDigitFixed(TRUE)
+			
+			Assert.Equal( "*.**", Transform(12.34, "9.99") ) // "1..3", "*.**" in VO
+			Assert.Equal( "1234567890", AsString(Val("1234567890")) ) // "1234567890.000", "1234567890" in VO
+			Assert.Equal( "-123456789", AsString(Val("- 123456789")) ) // "-123456789.000", "-123456789" in VO
+			Assert.Equal( "-123.4567" , AsString(Val(" - 123.4567")) ) // "-123.457", "-123.4567" in VO
+			Assert.Equal( "  12345678901234567000", Str(Val("12345678901234567890"),22,-1) )  // "12345678901234567000.0", "  12345678901234567000" in VO
+			Assert.Equal( " -12345678901234567000", Str(Val("-12345678901234567890"),22,-1) ) // "-12345678901234567000.", " -12345678901234567000" in VO
+			Assert.Equal( "2147483648", AsString(Val(" 0X80000000")) ) // "2147483648.000", "2147483648" in VO
+
+			SetDecimalSep(deci)
+			SetThousandSep(thou)
+			SetDigit(digit)
+			SetDecimal(decimal)
+			SetFixed(fixed_)
+			SetDigitFixed(digitfixed)
+		RETURN
+
 
 	END CLASS
 END NAMESPACE // XSharp.Runtime.Tests

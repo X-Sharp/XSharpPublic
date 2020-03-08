@@ -47,6 +47,7 @@ FUNCTION Start(asParams AS STRING[]) AS VOID
     oOptions:ReplaceResourceDefinesWithValues := TRUE
     oOptions:CheckForIVarAndPropertyConflicts := FALSE
     oOptions:IgnoreCodeInside_ifdef_endif := TRUE
+    oOptions:RemoveONLYEARLYpragmas := TRUE
 	xPorter.Options := oOptions
 
 	ReadIni()
@@ -258,6 +259,7 @@ STRUCTURE xPorterOptions
     EXPORT ReplaceResourceDefinesWithValues AS LOGIC
     EXPORT CheckForIVarAndPropertyConflicts AS LOGIC
     EXPORT IgnoreCodeInside_ifdef_endif AS LOGIC
+    EXPORT RemoveONLYEARLYpragmas AS LOGIC
 END STRUCTURE
 
 INTERFACE IProgressBar
@@ -2315,6 +2317,10 @@ CLASS EntityDescriptor
 		cLineUpper := cLine:ToUpper():Trim()
 
 		IF cLineUpper:StartsWith("VTRACE") .OR. cLineUpper:StartsWith("VMETHOD")
+			cLine := "// " + cLine
+			RETURN cLine
+		ENDIF
+		IF xPorter.Options:RemoveONLYEARLYpragmas .and. cLineUpper:StartsWith("~") .and. cLineUpper:Contains("ONLYEARLY") .and. .not. oLine:lInBlockComment
 			cLine := "// " + cLine
 			RETURN cLine
 		ENDIF

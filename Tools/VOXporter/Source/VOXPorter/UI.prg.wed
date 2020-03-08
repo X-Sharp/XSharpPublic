@@ -7,7 +7,7 @@ MinimizeBox=False
 Name=xPorterUI
 Text=VO-xPorter beta 0.11
 Location=100 , 100
-ClientSize=656 , 434
+ClientSize=656 , 446
 CancelButton=153D9C9E-3903-4495-BFF7-E3B798C34B58
 ControlVisibility=Protect
 ControlPrefix=o
@@ -22,7 +22,7 @@ SUBCONTROLSSTART
   GUID=153D9C9E-3903-4495-BFF7-E3B798C34B58
   Name=ExitButton
   Text=Exit
-  Location=528 , 402
+  Location=528 , 415
   Size=119 , 23
   TabIndex=4
   Anchor=Bottom,Right
@@ -32,7 +32,7 @@ SUBCONTROLSSTART
   GUID=43DDAD22-77E9-4243-B131-324A702D58B6
   Name=GroupBox3
   Text=Progress
-  Location=11 , 314
+  Location=11 , 327
   Size=636 , 79
   TabIndex=3
   Anchor=Top,Bottom,Left,Right
@@ -62,7 +62,7 @@ SUBCONTROLSSTART
   GUID=C15241BB-E532-4721-ACA1-A203BEE709DE
   Name=xPortButton
   Text=xPort!
-  Location=392 , 402
+  Location=392 , 415
   Size=119 , 23
   TabIndex=2
   Anchor=Bottom,Right
@@ -73,7 +73,7 @@ SUBCONTROLSSTART
   Name=GroupBox2
   Text=xPort
   Location=11 , 7
-  Size=370 , 303
+  Size=370 , 314
   TabIndex=0
   Anchor=Top,Bottom,Left,Right
   SUBCONTROLSSTART
@@ -116,7 +116,7 @@ SUBCONTROLSSTART
     AutoSize=True
     Name=GenerateWindowsForms
     Text=Generate Windows.Forms forms out of WED binaries
-    Location=18 , 272
+    Location=18 , 284
     Size=289 , 18
     TabIndex=14
     
@@ -125,14 +125,14 @@ SUBCONTROLSSTART
     AutoSize=True
     Name=CheckNotOverwriteProjectFiles
     Text=Do not overwrite project files if they already exist
-    Location=18 , 250
+    Location=18 , 261
     Size=266 , 18
     TabIndex=13
     
     CONTROL=System.Windows.Forms.TextBox
     GUID=F70B4F7F-AEFC-4919-90B1-60E84FF0644C
     Name=TextAppName
-    Location=203 , 216
+    Location=203 , 225
     Size=154 , 20
     TabIndex=12
     Anchor=Top,Left,Right
@@ -143,7 +143,7 @@ SUBCONTROLSSTART
     AutoSize=True
     Name=LabelSource2
     Text=App / library name:
-    Location=203 , 198
+    Location=203 , 207
     Size=99 , 17
     TabIndex=11
     Anchor=Top,Left,Right
@@ -151,7 +151,7 @@ SUBCONTROLSSTART
     CONTROL=System.Windows.Forms.TextBox
     GUID=8E3A8325-CFFF-4495-82AA-246AD6A51608
     Name=TextSolutionName
-    Location=18 , 216
+    Location=18 , 225
     Size=154 , 20
     TabIndex=10
     TextChanged=Other_TextChanged
@@ -161,7 +161,7 @@ SUBCONTROLSSTART
     AutoSize=True
     Name=LabelSource1
     Text=Solution name:
-    Location=18 , 198
+    Location=18 , 207
     Size=80 , 17
     TabIndex=9
     
@@ -169,7 +169,7 @@ SUBCONTROLSSTART
     GUID=42DD4799-E7F7-43C2-9D6E-5067DA137318
     Name=ButtonOutput
     Text=...
-    Location=328 , 173
+    Location=328 , 179
     Size=27 , 20
     TabIndex=8
     Anchor=Top,Right
@@ -179,7 +179,7 @@ SUBCONTROLSSTART
     GUID=EEC7CEE9-6036-4FE5-AA7B-E4C2D5A0D546
     Name=ButtonSource
     Text=...
-    Location=328 , 131
+    Location=328 , 134
     Size=27 , 20
     TabIndex=5
     Anchor=Top,Right
@@ -188,7 +188,7 @@ SUBCONTROLSSTART
     CONTROL=System.Windows.Forms.TextBox
     GUID=A384E921-7167-4AB7-85E9-D41AF2FD5ED4
     Name=TextOutput
-    Location=18 , 173
+    Location=18 , 179
     Size=303 , 20
     TabIndex=7
     Anchor=Top,Left,Right
@@ -199,7 +199,7 @@ SUBCONTROLSSTART
     AutoSize=True
     Name=Label2
     Text=Output folder:
-    Location=18 , 155
+    Location=18 , 161
     Size=73 , 17
     TabIndex=6
     
@@ -208,14 +208,14 @@ SUBCONTROLSSTART
     AutoSize=True
     Name=LabelSource
     Text=Source folder:
-    Location=18 , 113
+    Location=18 , 116
     Size=75 , 17
     TabIndex=3
     
     CONTROL=System.Windows.Forms.TextBox
     GUID=6682F52D-19EE-4C2E-B4D0-4D259947CEA9
     Name=TextSource
-    Location=18 , 131
+    Location=18 , 134
     Size=303 , 20
     TabIndex=4
     Anchor=Top,Left,Right
@@ -261,7 +261,7 @@ SUBCONTROLSSTART
   Name=GroupBox1
   Text=xPort options
   Location=392 , 7
-  Size=255 , 303
+  Size=255 , 314
   TabIndex=1
   Anchor=Top,Right
   SUBCONTROLSSTART
@@ -300,7 +300,7 @@ SUBCONTROLSSTART
     IntegralHeight=False
     Name=OptionsList
     Location=15 , 36
-    Size=222 , 254
+    Size=222 , 266
     TabIndex=4
  
  SUBCONTROLSEND

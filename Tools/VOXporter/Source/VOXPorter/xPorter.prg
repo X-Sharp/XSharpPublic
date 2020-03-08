@@ -506,6 +506,15 @@ CLASS xPorter
 		IF oModule:Generated
 			xPorter.Message("  Generating module :" , oModule:Name)
 			File.WriteAllLines(cOutputFolder + "\" + oModule:PathValidName, oCode:GetContents() , System.Text.Encoding.Default)
+			TRY
+				LOCAL sCode AS StringBuilder
+				sCode := StringBuilder{}
+				FOREACH cLine AS STRING IN oCode:GetContents()
+					sCode:Append(cLine)
+					sCode:Append(CRLF)
+				NEXT
+				Clipboard.SetText(sCode:ToString())
+			END TRY
 		END IF
 	RETURN TRUE
 

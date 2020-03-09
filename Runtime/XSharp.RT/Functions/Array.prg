@@ -722,7 +722,15 @@ FUNCTION AFill(aTarget AS ARRAY,uValue := NIL AS USUAL, nStart := NIL AS USUAL, 
         END IF
         
         FOR LOCAL x := nStart AS INT UPTO nStart + nCount - 1
-            aTarget[(DWORD) x] := uValue
+            IF XSharp.RuntimeState.Dialect == XSharpDialect.FoxPro
+                if IsArray(aTarget[(DWORD) x])
+                    AFill(aTarget[(DWORD) x], uValue)
+                ELSE
+                    aTarget[(DWORD) x] := uValue
+                ENDIF
+            ELSE
+                aTarget[(DWORD) x] := uValue
+            ENDIF
         NEXT
     ENDIF
     RETURN aTarget

@@ -2924,6 +2924,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             if (GenerateClipCallFunc(context, name))
                                 return;
                         }
+
+                        if (CurrentEntity is XP.MethodContext mc)
+                        {
+                            if (mc.T.Token.Type == XP.ACCESS || mc.T.Token.Type == XP.ASSIGN)
+                            {
+                                if (name == XSharpIntrinsicNames.PCount || name == XSharpIntrinsicNames.ArgCount)
+                                {
+                                    if (GenerateClipCallFunc(context, XSharpIntrinsicNames.ArgCount))
+                                        return;
+                                }
+                            }
+                        }
+
                         expr = GenerateLiteral("", 0).WithAdditionalDiagnostics(
                             new SyntaxDiagnosticInfo(ErrorCode.ERR_OnlySupportedForClipperCallingConvention, ins.Identifier.Text));
                         context.Put(expr);                        

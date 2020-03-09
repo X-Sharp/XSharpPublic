@@ -6,21 +6,24 @@ FUNCTION Start() AS VOID
 	xAssert( o:TestMethod(1,2) == 2)
 	xAssert( o:TestMethod() == 0)
 
-	xAssert( o:TestAccess1 == 0)
-	xAssert( o:TestAccess2 == 0)
-
+	xAssert( o:TestAccess1[1] == 1)
+	xAssert( o:TestAccess2[1] == 1)
+    o:TestAssign  := 10
 	xAssert( o:TestAccess1["A"] > 0)
 RETURN
 
 CLASS TestClass
 	ACCESS TestAccess1(a)
-		? pcount()
+		? pcount(),a
 	RETURN pcount()
 	ACCESS TestAccess2(a) CLIPPER
-		? pcount()
+		? pcount(),a
+	RETURN pcount()
+	Assign TestAccess2(b,a) CLIPPER
+		? pcount(),a,b
 	RETURN pcount()
 	ASSIGN TestAssign(n) CLIPPER
-		? pcount()
+		? pcount(),n                          
 	RETURN
 	
 	METHOD TestMethod(a,b,c) CLIPPER

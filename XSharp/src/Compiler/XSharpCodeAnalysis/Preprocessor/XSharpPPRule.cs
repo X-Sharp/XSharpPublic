@@ -1022,7 +1022,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             return true;
         }
-        internal bool matchToken(PPMatchToken mToken, ref int iRule, int iLastRule, ref int iSource, IList<XSharpToken> tokens, PPMatchRange[] matchInfo, IList<XSharpToken> matchedWithToken)
+        internal bool matchToken(PPMatchToken mToken, ref int iRule, int iLastRule, ref int iSource, IList<XSharpToken> tokens,
+            PPMatchRange[] matchInfo, IList<XSharpToken> matchedWithToken)
         {
             XSharpToken sourceToken = tokens[iSource];
             XSharpToken ruleToken = mToken.Token;
@@ -1059,7 +1060,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         iLastUsed = trimHiddenTokens(tokens, iSource, iLastUsed);
 
                         matchInfo[mToken.Index].SetPos(iSource, iLastUsed);
-                        iSource = iLastUsed+1;
+                        iSource = iLastUsed + 1;
                         iRule += 1;
                     }
 
@@ -1148,7 +1149,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     var first = tokens[iSource];
                     var nextpos = first.Position + first.FullWidth;
                     iEnd = iSource + 1;
-                    while (iEnd < tokens.Count )
+                    while (iEnd < tokens.Count)
                     {
                         first = tokens[iEnd];
                         if (first.Position > nextpos)
@@ -1160,7 +1161,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     }
                     iEnd -= 1;
                     matchInfo[mToken.Index].SetPos(iSource, iEnd);
-                    iSource = iEnd+1;
+                    iSource = iEnd + 1;
                     iRule += 1;
                     found = true;                    // matches anything until the end of the list
                     break;
@@ -1174,17 +1175,27 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     found = true;                    // matches anything until the end of the list
                     break;
                 case PPTokenType.MatchExtended:
-                    // either match a single token or a token in parentheses
+                    // either match a single token, a token in parentheses
                     int iStart = iSource;
                     var lastType = 0;
                     var level = 0;
                     var done = false;
                     var consumed = 0;
                     var iend = -1;
-                    if ( matchAmpersandToken(tokens, iStart, ref iend))
+                    if (matchAmpersandToken(tokens, iStart, ref iend))
                     {
                         matchInfo[mToken.Index].SetPos(iStart, iend);
                         iSource = iend + 1;
+                    }
+                    else if (matchFileName(tokens, iStart, ref iend))
+                    {
+                        matchInfo[mToken.Index].SetPos(iStart, iend);
+                        iSource = iend + 1;
+                    }
+                    else if (tokens[iStart].IsStringConst())
+                    {
+                        matchInfo[mToken.Index].SetPos(iStart, iStart);
+                        iSource = iSource + 1;
                     }
                     else
                     {
@@ -1244,7 +1255,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     var children = matchInfo[mToken.Index].Children;
                     PPMatchRange[] copyMatchInfo = new PPMatchRange[matchInfo.Length];
                     Array.Copy(matchInfo, copyMatchInfo, matchInfo.Length);
-                    while (iChild < optional.Length && iSource < tokens.Count )
+                    while (iChild < optional.Length && iSource < tokens.Count)
                     {
                         var mchild = optional[iChild];
                         if (!matchToken(mchild, ref iChild, matchInfo.Length, ref iSource, tokens, copyMatchInfo, matchedWithToken))
@@ -1615,6 +1626,104 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             return false;
         }
+
+        bool matchFileName(IList<XSharpToken> tokens, int start, ref int end)
+        {
+            if (start >= tokens.Count - 2)
+                return false;
+            int current = start;
+            var t1 = tokens[start];
+            var t2 = tokens[start + 1];
+            var t3 = tokens[start + 2];
+            if (t1.Type == XSharpLexer.ID && t2.Type == XSharpLexer.COLON && t2.Position == t1.Position + 1)          // C: .....
+            {
+                current = start + 2;
+            }
+            else if (t1.Type == XSharpLexer.DOT && t2.Type == XSharpLexer.BACKSLASH && t2.Position == t1.Position + 1)    // .\ .... 
+            {
+                current = start + 2;
+            }
+            else if (t1.Type == XSharpLexer.DOT && t2.Type == XSharpLexer.DOT && t3.Type == XSharpLexer.BACKSLASH
+                && t2.Position == t1.Position + 1 && t3.Position == t2.Position + 1)    // ..\ .....
+            {
+                current = start + 3;
+            }
+            else if (t1.Type == XSharpLexer.BACKSLASH && t2.Type == XSharpLexer.BACKSLASH && t3.Type == XSharpLexer.ID
+                && t2.Position == t1.Position + 1 && t3.Position == t2.Position + 1)    // \\Computer\ID .....
+            {
+                if (start < tokens.Count-5)
+                {
+                    var t4 = tokens[start + 3];
+                    var t5 = tokens[start + 4];
+                    if (t4.Type == XSharpLexer.BACKSLASH && t5.Type == XSharpLexer.ID || XSharpLexer.IsKeyword(t5.Type))
+                    {
+                        current = start + 5;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+            }
+            else
+            {
+                return false;
+            }
+            bool hasdot = false;
+            bool done = false;
+            XSharpToken last = tokens[current - 1];
+            while (current < tokens.Count && !done)
+            {
+                // embedded whitespace exits the loop
+                if (tokens[current].Position > (last.Position + last.Text.Length))
+                {
+                    break;
+                }
+                bool ok;
+                switch (tokens[current].Type)
+                {
+                    case XSharpLexer.BACKSLASH:
+                        ok = true;
+                        break;
+                    case XSharpLexer.ID:
+                        ok = true;
+                        if (hasdot)
+                            done = true;
+                        break;
+                    case XSharpLexer.DOT:
+                        if (hasdot)
+                            ok = false;
+                        else
+                            ok = true;
+                        hasdot = true;
+                        break;
+                    default:        // Part of the path may match a keyword, such as C:\Date\String\FileName.Dbf
+                        if (XSharpLexer.IsKeyword(tokens[current].Type))
+                        {
+                            ok = true;
+                            if (hasdot)
+                                done = true;
+                        }
+                        else
+                        {
+                            ok = false;
+                        }
+                        break;
+                }
+                if (ok)
+                {
+                    end = current;
+                    last = tokens[current];
+                    current++;
+                }
+                else
+                {
+                    done = true;
+                }
+            }
+            return true;
+        }
+
         void stringifySingleResult(PPResultToken rule, IList<XSharpToken> tokens, PPMatchRange range, IList<XSharpToken> result)
         {
             XSharpToken newToken;

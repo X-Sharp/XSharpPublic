@@ -530,7 +530,22 @@ namespace Microsoft.CodeAnalysis.CSharp
                         expr = CheckValue(methodGroup.InstanceOpt, BindValueKind.RValue, newDiag);
                         if (expr.Kind != BoundKind.BadExpression)
                         {
+                            newDiag.Clear();
+                            foreach (var error in diagnostics.AsEnumerable())
+                            {
+                                bool suppress = false;
+                                var loc = error.Location;
+                                if (loc.IsInSource )
+                                {
+                                    var start = loc.GetLineSpan().StartLinePosition;
+                                    var curLine = expr.Syntax.Location.GetLineSpan().StartLinePosition;
+                                    suppress = (start == curLine);
+                                }
+                                if (!suppress)
+                                    newDiag.Add(error);
+                            }
                             diagnostics.Clear();
+                            diagnostics.AddRange(newDiag);
                         }
                     }
                 }

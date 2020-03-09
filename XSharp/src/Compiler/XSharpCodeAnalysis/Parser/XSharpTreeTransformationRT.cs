@@ -1081,7 +1081,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         if (memvar.Amp != null)     
                         {
                             // PUBLIC &cVarName or PRIVATE &cVarName
-                            varname = memvar.Id.Get<ExpressionSyntax>();
+                            varname = getMacroNameExpression(memvar.Id);
                         }
                         else
                         {
@@ -1760,8 +1760,27 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             return null;
         }
-        
-  
+
+
+        private ExpressionSyntax getMacroNameExpression(XP.IdentifierNameContext nameContext)
+        {
+            string name = nameContext.GetText();
+            int pos = name.IndexOf('.');
+            if (pos == -1)
+            {
+                return nameContext.Get<IdentifierNameSyntax>();
+            }
+            var baseName = name.Substring(0, pos);
+            var addition = name.Substring(pos + 1);
+            var lhs = SyntaxFactory.IdentifierName(SyntaxFactory.Identifier(baseName));
+            var rhs = GenerateLiteral(addition);
+            var expr = _syntaxFactory.BinaryExpression(SyntaxKind.AddExpression,
+                lhs, SyntaxFactory.MakeToken(SyntaxKind.PlusToken), rhs);
+            return expr;
+
+        }
+
+
         public override void ExitAssignmentExpression([NotNull] XP.AssignmentExpressionContext context)
         {
             // when /vo12 is used then for the types .ASSIGN_DIV add conversion for the LHS and RHS to Double
@@ -1802,7 +1821,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var id = macro.Name.Get<IdentifierNameSyntax>();
                 if (context.Op.Type == XP.ASSIGN_OP)
                 {
-                    expr = GenerateMemVarPut(id, right);
+                   expr = GenerateMemVarPut(getMacroNameExpression(macro.Name), right);
                 }
                 else
                 {
@@ -4156,7 +4175,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitMacroName([NotNull] XP.MacroNameContext context)
         {
             // &identifierName
-            var id = context.Name.Get<IdentifierNameSyntax>();
+            var id = getMacroNameExpression(context.Name);
             var expr = GenerateMemVarGet(id);
             context.Put(expr);
             return;
@@ -4184,7 +4203,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 // aa:&Name  Expr must evaluate to a string which is the ivar name
             */
             var left = context.Left.Get<ExpressionSyntax>();
-            var right = context.Name.Get<IdentifierNameSyntax>();
+            var right = getMacroNameExpression(context.Name);
             var args = MakeArgumentList(MakeArgument(left), MakeArgument(right));
             string methodName = _options.XSharpRuntime ? XSharpQualifiedFunctionNames.IVarGet : VulcanQualifiedFunctionNames.IVarGet;
             var ivarget = GenerateMethodCall(methodName, args, true);

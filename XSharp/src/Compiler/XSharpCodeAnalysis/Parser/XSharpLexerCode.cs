@@ -303,6 +303,12 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
         void parseId()
         {
+            bool allowDot = false;
+            if (Options.SupportsMemvars && _lastToken.Type == AMP && _lastToken.Position == _startCharIndex-1 )
+            {
+                // macro-ed name can have dot, such as PUBLIC &varName.10 which would result in __MemVarDecl(varName+"10",...)
+                allowDot = true;
+            }
             parseType(ID);
             if (La_1 == '@' && La_2 == '@')
             {
@@ -316,9 +322,14 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     || (c >= '\u00F8' && c <= '\u02FF') || (c >= '\u0370' && c <= '\u037D')
                     || (c >= '\u037F' && c <= '\u1FFF') || (c >= '\u200C' && c <= '\u200D')
                     || c == '\u00B7' || (c >= '\u0300' && c <= '\u036F') || (c >= '\u203F' && c <= '\u2040')
+                    || (c == '.' && allowDot) 
                     )
             {
                 parseOne();
+                if (c == '.')
+                {
+                    allowDot = false;
+                }
                 c = La_1;
             }
         }

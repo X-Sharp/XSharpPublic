@@ -279,6 +279,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     break;
                 case XSharpParser.STRING_CONST:
                 case XSharpParser.INTERPOLATED_STRING_CONST:
+                case XSharpParser.BRACKETED_STRING_CONST:
                 case XSharpParser.INCOMPLETE_STRING_CONST:
                     r = SyntaxFactory.Literal(SyntaxFactory.WS, text, StringValue(text), SyntaxFactory.WS);
                     if (text.StartsWith("'") && ! options.Dialect.AllowStringsWithSingleQuotes())
@@ -1031,6 +1032,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.ESCAPED_STRING_CONST:
                 case XSharpParser.INTERPOLATED_STRING_CONST:
                 case XSharpParser.INCOMPLETE_STRING_CONST:
+                case XSharpParser.BRACKETED_STRING_CONST:
                     return true;
                 default:
                     return false;
@@ -1182,6 +1184,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.STRING_CONST:
                 case XSharpParser.ESCAPED_STRING_CONST:
                 case XSharpParser.INCOMPLETE_STRING_CONST:
+                case XSharpParser.BRACKETED_STRING_CONST:
                     r = SyntaxKind.StringLiteralExpression;
                     break;
                 case XSharpParser.INTERPOLATED_STRING_CONST:
@@ -1607,18 +1610,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             var token = expr.GetLiteralToken();
             if (token != null)
-            { 
-                switch (token.Type)
-                {
-                    case XSharpParser.CHAR_CONST:
-                    case XSharpParser.STRING_CONST:
-                    case XSharpParser.ESCAPED_STRING_CONST:
-                    case XSharpParser.INTERPOLATED_STRING_CONST:
-                    case XSharpParser.INCOMPLETE_STRING_CONST:
-                        return true;
-                    default:
-                        break;
-                }
+            {
+                return token.IsStringConst();
             }
             return false;
         }

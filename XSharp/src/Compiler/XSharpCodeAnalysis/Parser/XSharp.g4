@@ -464,6 +464,7 @@ attributes          : ( AttrBlk+=attributeBlock )+
                     ;
 
 attributeBlock      : LBRKT Target=attributeTarget? Attributes+=attribute (COMMA Attributes+=attribute)* RBRKT
+                    | String=BRACKETED_STRING_CONST
                     ;
 
 attributeTarget     : Token=(ID | CLASS | CONSTRUCTOR | DELEGATE | ENUM | EVENT | FIELD | INTERFACE | METHOD | PROPERTY  | RETURN | STRUCTURE ) COLON
@@ -1038,6 +1039,7 @@ literalValue        : Token=
                     | ESCAPED_STRING_CONST
                     | INTERPOLATED_STRING_CONST
                     | INCOMPLETE_STRING_CONST
+                    | BRACKETED_STRING_CONST
                     | SYMBOL_CONST
                     | HEX_CONST
                     | BIN_CONST

@@ -482,6 +482,10 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             {
                 parseOne(CHAR_CONST);
             }
+            else if (La_1 == '[')
+            {
+                parseOne(BRACKETED_STRING_CONST);
+            }
             else
             {
                 if (La_1 == 'E' || La_1 == 'e')
@@ -497,6 +501,10 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             }
             {
                 int q = La_1;
+                if (_tokenType == BRACKETED_STRING_CONST)
+                {
+                    q = ']';
+                }
                 parseOne();
                 bool allow_esc = parseType() == CHAR_CONST ?
                     La_1 == '\\' && La_3 == q : parseType() != STRING_CONST;
@@ -617,7 +625,25 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         parseOne(RCURLY);
                         break;
                     case '[':
-                        parseOne(LBRKT);
+                        switch (LastToken)
+                        {
+                            case ID:
+                            case RPAREN:
+                            case RCURLY:
+                            case RBRKT:
+                                parseOne(LBRKT);
+                                break;
+                            default:
+                                if (StartOfLine(LastToken) || IsKeyword(LastToken) || _currentLineIsPreprocessorDefinition)
+                                {
+                                    parseOne(LBRKT);
+                                }
+                                else
+                                {
+                                    parseString();
+                                }
+                                break;
+                        }
                         break;
                     case ']':
                         parseOne(RBRKT);
@@ -2221,5 +2247,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         }
     }
 }
+
+
 
 

@@ -809,12 +809,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     case XP.INVALID_NUMBER:
                         type = _objectType;
                         break;
-
-                    case XP.STRING_CONST:
-                    case XP.ESCAPED_STRING_CONST:
-                    case XP.INTERPOLATED_STRING_CONST:
-                    case XP.INCOMPLETE_STRING_CONST:
-                        type = stringType;
+                    case XP.CHAR_CONST:
+                        type = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.CharKeyword));
+                        break;
+                    default:
+                        if (token.IsStringConst())
+                        {
+                            type = stringType;
+                        }
                         break;
 
                 }
@@ -4347,6 +4349,33 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitAttributeBlock([NotNull] XP.AttributeBlockContext context)
         {
+            if (context.String != null && context.CsNode == null)
+            {
+                // take the string and parse it as an attribute block
+                string source = context.String.Text;
+                var lexer = XSharpLexer.Create(source, _fileName, _options);
+                lexer.Options = _options;
+                var tokens = lexer.GetTokenStream();
+                var attparser = new XSharpParser(tokens) { Options = _options };
+                try
+                {
+                    attparser.ErrorHandler = new XSharpErrorStrategy();
+                    var attblock = attparser.attributeBlock();
+                    var walker = new ParseTreeWalker();
+                    walker.Walk(this, attblock);
+                    var list = attblock.CsNode as AttributeListSyntax;
+                    context.Put(list);
+                    if (list.Attributes.Count == 0)
+                    {
+                        context.AddError(new ParseErrorData(context, ErrorCode.ERR_BadAttributeArgument, source));
+                    }
+                    return;
+                }
+                catch
+                {
+                    context.AddError(new ParseErrorData(context, ErrorCode.ERR_BadAttributeArgument, source));
+                }
+            }
             var attributes = _pool.AllocateSeparated<AttributeSyntax>();
             foreach (var attrCtx in context._Attributes)
             {
@@ -4355,7 +4384,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     attributes.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
                 }
                 attributes.Add(attrCtx.Get<AttributeSyntax>());
-            }
+            } 
             context.Put(MakeAttributeList(
                 context.Target?.Get<AttributeTargetSpecifierSyntax>(),
                 attributes));

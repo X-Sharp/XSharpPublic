@@ -1702,22 +1702,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         {
                             // single token
                             var token = tokens[start];
-                            switch (token.Type)
+                            if (token.IsStringConst())
                             {
-                                case XSharpLexer.CHAR_CONST:
-                                case XSharpLexer.STRING_CONST:
-                                case XSharpLexer.ESCAPED_STRING_CONST:
-                                case XSharpLexer.INTERPOLATED_STRING_CONST:
-                                    result.Add(token);
-                                    break;
-                                default:
-                                    newToken = new XSharpToken(token, XSharpLexer.STRING_CONST, token.Text)
-                                    {
-                                        Text = "\"" + token.Text + "\"",
-                                        Channel = XSharpLexer.DefaultTokenChannel
-                                    };
-                                    result.Add(newToken);
-                                    break;
+                                result.Add(token);
+                            }
+                            else
+                            {
+                                newToken = new XSharpToken(token, XSharpLexer.STRING_CONST, token.Text)
+                                {
+                                    Text = "\"" + token.Text + "\"",
+                                    Channel = XSharpLexer.DefaultTokenChannel
+                                };
+                                result.Add(newToken);
                             }
                         }
                         else

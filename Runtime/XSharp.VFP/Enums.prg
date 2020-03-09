@@ -48,7 +48,7 @@ ENUM XSharp.FoxCollations
 END ENUM
 
 /// <exclude/>
-ENUM XSharp.VFP.PropertyVisibilty
+ENUM XSharp.VFP.PropertyVisibility
    MEMBER Public    := 1
    MEMBER Protected := 2
    MEMBER Hidden    := 3

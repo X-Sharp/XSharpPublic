@@ -27,12 +27,6 @@ FUNCTION ADBObjects(ArrayName, cSetting)
 
 
 /// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/addproperty/*" />
-FUNCTION AddProperty (oObjectName, cPropertyName, eNewValue )
-    THROW NotImplementedException{}
-    RETURN FALSE
-
-/// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/aelement/*" />
 FUNCTION Aelement (ArrayName, nRowSubscript , nColumnSubscript)
     THROW NotImplementedException{}

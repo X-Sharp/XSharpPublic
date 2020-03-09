@@ -39,12 +39,6 @@ FUNCTION Relation( nRelationNumber , uArea) AS STRING
     THROW NotImplementedException{}
     RETURN ""
 
-/// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/removeproperty/*" />
-
-FUNCTION RemoveProperty( oObjectName, cPropertyName ) AS LOGIC
-    THROW NotImplementedException{}
-    RETURN FALSE
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/requery/*" />

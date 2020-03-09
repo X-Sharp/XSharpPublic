@@ -55,8 +55,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 	
 		[Fact, Trait("Category", "Str")];
 		METHOD StrTests() AS VOID
-			LOCAL exact,thou,digit,decimal,fixed_,digitfixed AS USUAL
-			exact := SetDecimalSep(Asc("."))
+			LOCAL deci,thou,digit,decimal,fixed_,digitfixed AS USUAL
+			deci := SetDecimalSep(Asc("."))
 			thou := SetThousandSep(Asc(","))
 			digit := SetDigit(6)
 			decimal := SetDecimal(3)
@@ -150,7 +150,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal( " 123,46"	, Str(FloatFormat(123.456 , 7, 2) ) )
 			
 	
-			SetDecimalSep(exact)
+			SetDecimalSep(deci)
 			SetThousandSep(thou)
 			SetDigit(digit)
 			SetDecimal(decimal)

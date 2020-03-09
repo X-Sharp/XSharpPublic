@@ -15,6 +15,7 @@ FUNCTION Start( ) AS VOID
 	USE "C:\String\Date\test.dbf" 
 	USE Foo Alias Bar
 	USE ("somestring")
+	USE Date.String
 	CLOSE
 	
 	

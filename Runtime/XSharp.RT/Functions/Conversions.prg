@@ -352,7 +352,7 @@ FUNCTION PadC( uValue AS USUAL, nLength AS INT, cFillChar := " " AS STRING ) AS 
     IF retlen > nLength
         ret := ret:Remove( nLength )
     ELSE
-        VAR leftSpace := Space((DWORD) ( nLength - retlen ) / 2)
+        VAR leftSpace := System.String{cFillChar[0], ( nLength - retlen ) / 2}
         ret := leftSpace+ret
         ret := ret:PadRight( nLength, cFillChar[0] )
     ENDIF

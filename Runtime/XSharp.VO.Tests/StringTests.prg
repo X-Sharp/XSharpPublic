@@ -288,17 +288,20 @@ BEGIN NAMESPACE XSharp.VO.Tests
                 Assert.Equal("a         ", PadR(u,10))
                 Assert.Equal("a         ", Pad(u,10))
                 Assert.Equal("    a     ", PadC(u,10))
+                Assert.Equal("----a-----", PadC(u,10,"-"))
                 Assert.Equal("         a", PadL(u,10))
                 u := 1
                 Assert.Equal("1         ", PadR(u,10))
                 Assert.Equal("1         ", Pad(u,10))
                 Assert.Equal("    1     ", PadC(u,10))
+                Assert.Equal("====1=====", PadC(u,10,"="))
                 Assert.Equal("         1", PadL(u,10))
                 u := 1.23
                 SetDecimalSep(Asc("."))
                 Assert.Equal("1.23      ", PadR(u,10))
                 Assert.Equal("1.23      ", Pad(u,10))
                 Assert.Equal("   1.23   ", PadC(u,10))
+                Assert.Equal("...1.23...", PadC(u,10,"."))
                 Assert.Equal("      1.23", PadL(u,10))
 
 	END CLASS

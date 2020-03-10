@@ -93,21 +93,7 @@ FUNCTION GetPrinter( ) AS STRING
 FUNCTION GetResultSet( ) AS LONG
     THROW NotImplementedException{}
     RETURN 0
-
-/// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/getwordcount/*" />
-
-FUNCTION GetWordCount( cString, cDelimiters ) AS LONG
-    THROW NotImplementedException{}
-    RETURN 0
     
-
-/// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/getwordnum/*" />
-
-FUNCTION GetWordNum( cString, nIndex, cDelimiters) AS STRING
-    THROW NotImplementedException{}
-    RETURN ""
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/gomonth/*" />

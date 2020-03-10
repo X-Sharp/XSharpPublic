@@ -4525,6 +4525,8 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
 -linkresource:&lt;resinfo&gt;       Link the specified resource to this assembly
                               (Short form: -linkres) Where the resinfo format
                               is &lt;file&gt;[,&lt;string name&gt;[,public|private]]
+-usenativeversion             Do not generate a managed version resource from Assembly attributes 
+                              but use the native version supplied in the unmanaged versioninfo resource.
 
                         - CODE GENERATION -
 -debug[+|-]                   Emit debugging information

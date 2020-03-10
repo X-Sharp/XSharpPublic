@@ -93,7 +93,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool AllowUnsafe { get; internal set; } = false;
         public bool UndeclaredMemVars { get; internal set; } = false;
         public CompilerOption ExplicitOptions { get ; internal set; } = CompilerOption.None;
-
+        public bool UseNativeVersion { get; internal set; } = false;
         public string PreviousArgument { get; internal set; } = string.Empty;
         public TextWriter ConsoleOutput { get; internal set; }
     }

@@ -53,6 +53,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool HasRuntime { get { return this.Dialect.HasRuntime(); } }
 
         public XSharpTargetDLL TargetDLL { get; private set; }
+        public bool UseNativeVersion { get; private set; } = false;
 
         public RuntimeAssemblies RuntimeAssemblies ;
         public bool XSharpRuntime => RuntimeAssemblies.HasFlag(RuntimeAssemblies.XSharpRT) |
@@ -205,6 +206,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             MemVars = opt.MemVars;
             //InitLocals = opt.InitLocals;
             AllowUnsafe = opt.AllowUnsafe;
+            UseNativeVersion = opt.UseNativeVersion;
         }
 
         internal CSharpCompilationOptions WithXSharpSpecificOptions(XSharpSpecificCompilationOptions opt)

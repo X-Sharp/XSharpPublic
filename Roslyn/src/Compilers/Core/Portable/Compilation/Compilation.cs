@@ -1253,7 +1253,11 @@ namespace Microsoft.CodeAnalysis
                         // Applications use a default manifest if one is not specified.
                         if (manifestContents == null)
                         {
+#if XSHARP
+                            manifestContents = typeof(Compilation).GetTypeInfo().Assembly.GetManifestResourceStream("LanguageService.CodeAnalysis.default.win32manifest");
+#else
                             manifestContents = typeof(Compilation).GetTypeInfo().Assembly.GetManifestResourceStream("Microsoft.CodeAnalysis.Resources.default.win32manifest");
+#endif
                         }
                     }
                     else
@@ -1427,6 +1431,9 @@ namespace Microsoft.CodeAnalysis
                     break;
                 case Win32ResourceForm.RES:
                     moduleBeingBuilt.Win32Resources = MakeWin32ResourceList(win32Resources, diagnostics);
+#if XSHARP
+                    moduleBeingBuilt.Win32Resources = AdjustWin32VersionAndManifestResources(moduleBeingBuilt.Win32Resources,diagnostics);
+#endif
                     break;
                 default:
                     diagnostics.Add(MessageProvider.CreateDiagnostic(MessageProvider.ERR_BadWin32Resource, NoLocation.Singleton, CodeAnalysisResources.UnrecognizedResourceFileFormat));
@@ -1486,9 +1493,9 @@ namespace Microsoft.CodeAnalysis
             }
         }
 
-        #endregion
+#endregion
 
-        #region Emit
+#region Emit
 
         /// <summary>
         /// Constructs the module serialization properties out of the compilation options of this compilation.
@@ -2792,7 +2799,7 @@ namespace Microsoft.CodeAnalysis
             return _features.TryGetValue(p, out v) ? v : null;
         }
 
-        #endregion
+#endregion
 
         private ConcurrentDictionary<SyntaxTree, SmallConcurrentSetOfInts> _lazyTreeToUsedImportDirectivesMap;
         private static readonly Func<SyntaxTree, SmallConcurrentSetOfInts> s_createSetCallback = t => new SmallConcurrentSetOfInts();
@@ -2903,7 +2910,7 @@ namespace Microsoft.CodeAnalysis
             return result;
         }
 
-        #region Logging Helpers
+#region Logging Helpers
 
         // Following helpers are used when logging ETW events. These helpers are invoked only if we are running
         // under an ETW listener that has requested 'verbose' logging. In other words, these helpers will never
@@ -2923,9 +2930,9 @@ namespace Microsoft.CodeAnalysis
             return string.Format("{0}: {1} {2} -> {3} {4}", this.AssemblyName, source.TypeKind.ToString(), source.Name, destination.TypeKind.ToString(), destination.Name);
         }
 
-        #endregion
+#endregion
 
-        #region Declaration Name Queries
+#region Declaration Name Queries
 
         /// <summary>
         /// Return true if there is a source declaration symbol name that meets given predicate.
@@ -2955,7 +2962,7 @@ namespace Microsoft.CodeAnalysis
         public abstract IEnumerable<ISymbol> GetSymbolsWithName(string name, SymbolFilter filter = SymbolFilter.TypeAndMember, CancellationToken cancellationToken = default(CancellationToken));
 #pragma warning restore RS0026 // Do not add multiple public overloads with optional parameters
 
-        #endregion
+#endregion
 
         internal void MakeMemberMissing(WellKnownMember member)
         {

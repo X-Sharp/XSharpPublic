@@ -86,6 +86,7 @@
     <Compile Include="Classes\Custom.prg" />
     <Compile Include="Classes\Abstract.prg" />
     <Compile Include="ClassFunctions.prg" />
+    <Compile Include="GetWord.prg" />
     <Compile Include="NotSupported.prg" />
     <Compile Include="ToDo-SQL.prg" />
     <Compile Include="ToDo-TUVWX.prg" />

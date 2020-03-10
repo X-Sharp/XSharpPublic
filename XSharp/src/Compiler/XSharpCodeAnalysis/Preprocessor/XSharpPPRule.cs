@@ -1192,7 +1192,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         matchInfo[mToken.Index].SetPos(iStart, iend);
                         iSource = iend + 1;
                     }
-                    else if (tokens[iStart].IsStringConst())
+                    else if (XSharpLexer.IsString(tokens[iStart].Type))
                     {
                         matchInfo[mToken.Index].SetPos(iStart, iStart);
                         iSource = iSource + 1;
@@ -1811,7 +1811,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         {
                             // single token
                             var token = tokens[start];
-                            if (token.IsStringConst())
+                            if (XSharpLexer.IsString(token.Type))
                             {
                                 result.Add(token);
                             }

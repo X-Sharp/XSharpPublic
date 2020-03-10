@@ -176,12 +176,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return r;
         }
 
-        public static SyntaxToken SyntaxKeywordIdentifier(this IToken token)
-        {
-            var r = SyntaxFactory.MakeIdentifier(token.Text.ToLower());
-            r.XNode = new XTerminalNodeImpl(token);
-            return r;
-        }
+        //public static SyntaxToken SyntaxKeywordIdentifier(this IToken token)
+        //{
+        //    var r = SyntaxFactory.MakeIdentifier(token.Text.ToLower());
+        //    r.XNode = new XTerminalNodeImpl(token);
+        //    return r;
+        //}
 
         public static SyntaxToken SyntaxNativeType(this IToken token)
         {
@@ -1006,91 +1006,76 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return r;
         }
 
-        public static bool MustBeCleared(this IToken token)
-        {
-            // This is used to determine in the Start() function which locals and globals must be cleared.
-            switch (token.Type)
-            {
-                case XSharpParser.ARRAY:            // clear with null
-                case XSharpParser.CODEBLOCK:        // clear with null
-                case XSharpParser.DYNAMIC:          // clear with null
-                case XSharpParser.OBJECT:           // clear with null
-                case XSharpParser.PSZ:              // clear with 0
-                case XSharpParser.STRING:           // clear with null
-                case XSharpParser.USUAL:            // default(__Usual)
-                    return true;
-                default:
-                    return false;
-            }
-        }
-        public static bool IsStringConst(this IToken token)
-        {
-            switch (token.Type)
-            {
-                case XSharpParser.CHAR_CONST:
-                case XSharpParser.STRING_CONST:
-                case XSharpParser.ESCAPED_STRING_CONST:
-                case XSharpParser.INTERPOLATED_STRING_CONST:
-                case XSharpParser.INCOMPLETE_STRING_CONST:
-                case XSharpParser.BRACKETED_STRING_CONST:
-                    return true;
-                default:
-                    return false;
-            }
-        }
-        public static bool IsNull(this IToken token)
-        {
-            switch (token.Type)
-            {
-                case XSharpParser.NULL:
-                case XSharpParser.NULL_ARRAY:
-                case XSharpParser.NULL_CODEBLOCK:
-                case XSharpParser.NULL_DATE:
-                case XSharpParser.NULL_OBJECT:
-                case XSharpParser.NULL_PSZ:
-                case XSharpParser.NULL_PTR:
-                case XSharpParser.NULL_STRING:
-                case XSharpParser.NULL_SYMBOL:
-                    return true;
-                default:
-                    return false;
-            }
-        }
+        //public static bool MustBeCleared(this IToken token)
+        //{
+        //    // This is used to determine in the Start() function which locals and globals must be cleared.
+        //    switch (token.Type)
+        //    {
+        //        case XSharpParser.ARRAY:            // clear with null
+        //        case XSharpParser.CODEBLOCK:        // clear with null
+        //        case XSharpParser.DYNAMIC:          // clear with null
+        //        case XSharpParser.OBJECT:           // clear with null
+        //        case XSharpParser.PSZ:              // clear with 0
+        //        case XSharpParser.STRING:           // clear with null
+        //        case XSharpParser.USUAL:            // default(__Usual)
+        //            return true;
+        //        default:
+        //            return false;
+        //    }
+        //}
+        //public static bool IsNull(this IToken token)
+        //{
+        //    switch (token.Type)
+        //    {
+        //        case XSharpParser.NULL:
+        //        case XSharpParser.NULL_ARRAY:
+        //        case XSharpParser.NULL_CODEBLOCK:
+        //        case XSharpParser.NULL_DATE:
+        //        case XSharpParser.NULL_OBJECT:
+        //        case XSharpParser.NULL_PSZ:
+        //        case XSharpParser.NULL_PTR:
+        //        case XSharpParser.NULL_STRING:
+        //        case XSharpParser.NULL_SYMBOL:
+        //            return true;
+        //        default:
+        //            return false;
+        //    }
+        //}
 
-        public static SyntaxKind OrderingKind(this IToken token)
-        {
-            SyntaxKind r;
-            switch (token.Type)
-            {
-                case XSharpParser.ASCENDING:
-                    r = SyntaxKind.AscendingOrdering;
-                    break;
-                case XSharpParser.DESCENDING:
-                    r = SyntaxKind.DescendingOrdering;
-                    break;
-                default:
-                    throw new InvalidOperationException();
-            }
-            return r;
-        }
+        //public static SyntaxKind OrderingKind(this IToken token)
+        //{
+        //    SyntaxKind r;
+        //    switch (token.Type)
+        //    {
+        //        case XSharpParser.ASCENDING:
+        //            r = SyntaxKind.AscendingOrdering;
+        //            break;
+        //        case XSharpParser.DESCENDING:
+        //            r = SyntaxKind.DescendingOrdering;
+        //            break;
+        //        default:
+        //            throw new InvalidOperationException();
+        //    }
+        //    return r;
+        //}
 
-        public static SyntaxKind SwitchLabelKind(this IToken token)
-        {
-            SyntaxKind r;
-            switch (token.Type)
-            {
-                case XSharpParser.CASE:
-                    r = SyntaxKind.CaseSwitchLabel;
-                    break;
-                case XSharpParser.DEFAULT:
-                case XSharpParser.OTHERWISE:
-                    r = SyntaxKind.DefaultSwitchLabel;
-                    break;
-                default:
-                    throw new InvalidOperationException();
-            }
-            return r;
-        }
+        //public static SyntaxKind SwitchLabelKind(this IToken token)
+        //{
+        //    SyntaxKind r;
+        //    switch (token.Type)
+        //    {
+        //        case XSharpParser.CASE:
+        //            r = SyntaxKind.CaseSwitchLabel;
+        //            break;
+        //        case XSharpParser.DEFAULT:
+        //        case XSharpParser.OTHERWISE:
+        //            r = SyntaxKind.DefaultSwitchLabel;
+        //            break;
+        //        default:
+        //            throw new InvalidOperationException();
+        //    }
+        //    return r;
+        //}
 
         public static SyntaxKind ConstraintKind(this IToken token)
         {
@@ -1150,22 +1135,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
 
 
-        public static SyntaxKind ExpressionKind(this IToken token)
-        {
-            SyntaxKind r;
-            switch (token.Type)
-            {
-                case XSharpParser.CHECKED:
-                    r = SyntaxKind.CheckedExpression;
-                    break;
-                case XSharpParser.UNCHECKED:
-                    r = SyntaxKind.UncheckedExpression;
-                    break;
-                default:
-                    throw new InvalidOperationException();
-            }
-            return r;
-        }
+        //public static SyntaxKind ExpressionKind(this IToken token)
+        //{
+        //    SyntaxKind r;
+        //    switch (token.Type)
+        //    {
+        //        case XSharpParser.CHECKED:
+        //            r = SyntaxKind.CheckedExpression;
+        //            break;
+        //        case XSharpParser.UNCHECKED:
+        //            r = SyntaxKind.UncheckedExpression;
+        //            break;
+        //        default:
+        //            throw new InvalidOperationException();
+        //    }
+        //    return r;
+        //}
 
         public static SyntaxKind ExpressionKindLiteral(this IToken token)
         {
@@ -1611,39 +1596,39 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var token = expr.GetLiteralToken();
             if (token != null)
             {
-                return token.IsStringConst();
+                return XSharpLexer.IsString(token.Type);
             }
             return false;
         }
-        public static bool IsLiteral(this IParseTree expr)
-        {
-            var token = expr.GetLiteralToken();
-            return token != null;
-        }
-        public static bool IsLiteralExpression(this IParseTree expr)
-        {
-            var e = expr as XSharpParser.ExpressionContext;
-            if (e == null)
-                return false;
-            if (e is XSharpParser.PrefixExpressionContext pfe)
-            {
-                return pfe.Expr.IsLiteralExpression();
-           }
-           if (e is XSharpParser.PrimaryExpressionContext primex)
-           {
-                var pr = primex.Expr as XSharpParser.PrimaryContext;
-                if (pr is XSharpParser.VoConversionExpressionContext voconv)
-                {
-                    return voconv.Expr.IsLiteralExpression();
-                }
-                if (pr is XSharpParser.VoCastExpressionContext vocast)
-                {
-                    return vocast.Expr.IsLiteralExpression();
-                }
-                return (pr is XSharpParser.LiteralExpressionContext);
-            }
-            return expr.IsLiteral();
-        }
+        //public static bool IsLiteral(this IParseTree expr)
+        //{
+        //    var token = expr.GetLiteralToken();
+        //    return token != null;
+        //}
+        //public static bool IsLiteralExpression(this IParseTree expr)
+        //{
+        //    var e = expr as XSharpParser.ExpressionContext;
+        //    if (e == null)
+        //        return false;
+        //    if (e is XSharpParser.PrefixExpressionContext pfe)
+        //    {
+        //        return pfe.Expr.IsLiteralExpression();
+        //   }
+        //   if (e is XSharpParser.PrimaryExpressionContext primex)
+        //   {
+        //        var pr = primex.Expr as XSharpParser.PrimaryContext;
+        //        if (pr is XSharpParser.VoConversionExpressionContext voconv)
+        //        {
+        //            return voconv.Expr.IsLiteralExpression();
+        //        }
+        //        if (pr is XSharpParser.VoCastExpressionContext vocast)
+        //        {
+        //            return vocast.Expr.IsLiteralExpression();
+        //        }
+        //        return (pr is XSharpParser.LiteralExpressionContext);
+        //    }
+        //    return expr.IsLiteral();
+        //}
         public static bool IsIdentifier(this ParserRuleContext context)
         {
             return context.Start == context.Stop && context.Start.Type == XSharpParser.ID;

@@ -813,7 +813,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         type = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.CharKeyword));
                         break;
                     default:
-                        if (token.IsStringConst())
+                        if (XSharpLexer.IsString(token.Type))
                         {
                             type = stringType;
                         }

@@ -50,6 +50,21 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             return false;
         }
 
+        public static bool IsString(int iToken)
+        {
+            switch (iToken)
+            {
+                case CHAR_CONST:
+                case STRING_CONST:
+                case ESCAPED_STRING_CONST:
+                case INTERPOLATED_STRING_CONST:
+                case INCOMPLETE_STRING_CONST:
+                case TEXT_STRING_CONST:
+                case BRACKETED_STRING_CONST: 
+                    return true;
+            }
+            return false;
+        }
 
         public static bool IsComment(int iToken)
         {
@@ -166,9 +181,14 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         void parseOne(int type)
         {
             parseType(type);
+            parseOne();
+        }
+        void parseOne()
+        {
             _textSb.Append((char)La_1);
             InputStream.Consume();
         }
+
         void parseFoxProDate()
         {
             // parse {^2019-01-04}
@@ -228,12 +248,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             return;
         }
 
-        void parseOne()
-        {
-            _textSb.Append((char)La_1);
-            InputStream.Consume();
-        }
-
+ 
         void parseToEol()
         {
             while (La_1 != TokenConstants.Eof && La_1 != '\r' && La_1 != '\n')

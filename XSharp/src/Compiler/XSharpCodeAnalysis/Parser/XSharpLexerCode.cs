@@ -510,7 +510,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             }
             else if (La_1 == '[')
             {
-                parseOne(BRACKETED_STRING_CONST);
+                parseType(BRACKETED_STRING_CONST);
             }
             else
             {
@@ -525,38 +525,35 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         parseOne();
                 }
             }
+            int q = La_1;
+            if (_tokenType == BRACKETED_STRING_CONST)
             {
-                int q = La_1;
-                if (_tokenType == BRACKETED_STRING_CONST)
+                q = ']';
+            }
+            parseOne();
+            bool allow_esc = parseType() == CHAR_CONST ?
+                La_1 == '\\' && La_3 == q : parseType() != STRING_CONST;
+            bool esc = false;
+            bool eos = false;
+            while (! eos)
+            {
+                switch (La_1)
                 {
-                    q = ']';
+                    case TokenConstants.Eof:
+                    case 10:        // \n 
+                    case 13:        // \r
+                        eos= true;
+                        parseType(INCOMPLETE_STRING_CONST);
+                        break;
+                    default:
+                        if (La_1 == q && ! esc)
+                        {
+                            eos = true;
+                        }
+                        esc = allow_esc && !esc && La_1 == '\\';
+                        parseOne();
+                        break;
                 }
-                parseOne();
-                bool allow_esc = parseType() == CHAR_CONST ?
-                    La_1 == '\\' && La_3 == q : parseType() != STRING_CONST;
-                bool esc = false;
-                bool eos = false;
-                while (! eos)
-                {
-                    switch (La_1)
-                    {
-                        case TokenConstants.Eof:
-                        case 10:        // \n 
-                        case 13:        // \r
-                            eos= true;
-                            parseType(INCOMPLETE_STRING_CONST);
-                            break;
-                        default:
-                            if (La_1 == q && ! esc)
-                            {
-                                eos = true;
-                            }
-                            esc = allow_esc && !esc && La_1 == '\\';
-                            parseOne();
-                            break;
-                    }
-                }
-                    
             }
         }
 
@@ -668,6 +665,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                                 {
                                     parseString();
                                 }
+                                //parseOne(LBRKT); 
                                 break;
                         }
                         break;

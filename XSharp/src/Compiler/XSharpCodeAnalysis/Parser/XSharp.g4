@@ -877,6 +877,7 @@ datatype            : ARRAY OF TypeName=typeName                                
                     ;
 
 arrayRank           : LBRKT (Commas+=COMMA)* RBRKT
+                    | String=BRACKETED_STRING_CONST
                     ;
 
 typeName            : NativeType=nativeType

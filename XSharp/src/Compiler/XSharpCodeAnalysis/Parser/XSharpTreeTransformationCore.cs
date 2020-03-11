@@ -7791,17 +7791,47 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitArrayRank([NotNull] XP.ArrayRankContext context)
         {
             var sizes = _pool.AllocateSeparated<ExpressionSyntax>();
+            bool hasError = false;
+            char errorchar = '\0'; 
             var omittedArraySizeExpressionInstance = _syntaxFactory.OmittedArraySizeExpression(SyntaxFactory.MakeToken(SyntaxKind.OmittedArraySizeExpressionToken));
-            foreach (var comma in context._Commas)
+            if (context.String != null)
             {
-                sizes.Add(omittedArraySizeExpressionInstance);
-                sizes.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
+                string text = context.String.Text;
+                for (int i = 1; i < text.Length - 1; i++)
+                {
+                    char c = text[i];
+                    if (c == ',')
+                    {
+                        sizes.Add(omittedArraySizeExpressionInstance);
+                        sizes.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
+                    }
+                    else if (!char.IsWhiteSpace(c))
+                    {
+                        errorchar = text[i];
+                        hasError = true;
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                foreach (var comma in context._Commas)
+                {
+                    sizes.Add(omittedArraySizeExpressionInstance);
+                    sizes.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
+                }
+
             }
             sizes.Add(omittedArraySizeExpressionInstance);
-            context.Put(_syntaxFactory.ArrayRankSpecifier(
+            var ars = _syntaxFactory.ArrayRankSpecifier(
                 SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
                 sizes,
-                SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken)));
+                SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken));
+            if (hasError)
+            {
+                ars = ars.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_UnexpectedCharacter, errorchar));
+            }
+            context.Put(ars);
             _pool.Free(sizes);
         }
 

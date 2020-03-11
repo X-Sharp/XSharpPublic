@@ -4526,7 +4526,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
                               (Short form: -linkres) Where the resinfo format
                               is &lt;file&gt;[,&lt;string name&gt;[,public|private]]
 -usenativeversion             Do not generate a managed version resource from Assembly attributes 
-                              but use the native version supplied in the unmanaged versioninfo resource.
+                              but use the native version resource supplied in the Win32 resource file.
 
                         - CODE GENERATION -
 -debug[+|-]                   Emit debugging information

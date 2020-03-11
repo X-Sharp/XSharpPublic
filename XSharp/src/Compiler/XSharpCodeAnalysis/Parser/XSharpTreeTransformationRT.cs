@@ -1815,7 +1815,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 return;
             }
 
-            if (macro != null)
+            if (macro != null && _options.SupportsMemvars)
             {
                 ExpressionSyntax expr;
                 var id = macro.Name.Get<IdentifierNameSyntax>();
@@ -4188,9 +4188,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitMacroName([NotNull] XP.MacroNameContext context)
         {
             // &identifierName
-            var id = getMacroNameExpression(context.Name);
-            var expr = GenerateMemVarGet(id);
-            context.Put(expr);
+            context.SetSequencePoint();
+            if (_options.SupportsMemvars && context.Name.GetText().IndexOf(".") > 0)
+            {
+                var id = getMacroNameExpression(context.Name);
+                var expr = GenerateMemVarGet(id);
+                context.Put(expr);
+            }
+            else
+            {
+                var name = context.Name.Get<IdentifierNameSyntax>();
+                var args = MakeArgumentList(MakeArgument(name));
+                string methodName = _options.XSharpRuntime ? XSharpQualifiedFunctionNames.Evaluate : VulcanQualifiedFunctionNames.Evaluate;
+                var expr = GenerateMethodCall(methodName, args, true);
+                context.Put(expr);
+            }
             return;
         }
         public override void ExitAccessMemberLate([NotNull] XP.AccessMemberLateContext context)

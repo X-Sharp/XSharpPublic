@@ -28,6 +28,17 @@ FUNCTION Set(nDefine, newValue) AS USUAL CLIPPER
         RETURN NIL
     ENDIF
     nSetting := nDefine
+
+    IF nSetting == Set.DateFormat .and. PCount() > 1 
+        // Special handling, because we want to keep DateFormat, DateFormatNet and DateFormatEmpty in sync
+        RETURN SetDateFormat((STRING) newValue)
+    ENDIF
+    IF nSetting == Set.CharSet .AND. PCount() > 1
+        // Map SET_CHARSET to SetAnsi
+        RETURN SetAnsi(newValue == 0)  // Ansi = 0, Oem == 1
+    ENDIF
+
+
     state := XSharp.RuntimeState.GetInstance()
     IF state:Settings:ContainsKey(nSetting)
         oOld := state:Settings[nSetting]
@@ -47,11 +58,7 @@ FUNCTION Set(nDefine, newValue) AS USUAL CLIPPER
                 END TRY
             ENDIF
         ENDIF
-        // Map SET_CHARSET to SetAnsi
-        IF nSetting == _SET_CHARSET .AND. IsNumeric(newValue)
-            state:Settings[Set.Ansi] := newValue == 0  // Ansi = 0, Oem == 1
-        ENDIF
-    ENDIF
+     ENDIF
     RETURN oOld
             
     

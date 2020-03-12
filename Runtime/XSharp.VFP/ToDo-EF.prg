@@ -18,12 +18,7 @@ FUNCTION ExecScript( cExpression , eParameter1, eParameter2) AS USUAL
     THROW NotImplementedException{}
     RETURN NIL
 
-/// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/field/*" />
 
-FUNCTION Field( uField , uArea, nFlag) AS STRING
-    THROW NotImplementedException{}
-    RETURN ""
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/filetostr/*" />
@@ -32,12 +27,7 @@ FUNCTION FileToStr(cFileName ) AS STRING
     THROW NotImplementedException{}
     RETURN ""
 
-/// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/filter/*" />
 
-FUNCTION Filter( uArea )
-    THROW NotImplementedException{}
-    RETURN ""
 
 
 /// <summary>-- todo --</summary>
@@ -54,12 +44,7 @@ FUNCTION FontMetric( nAttribute , cFontName, nFontSize , cFontStyle) AS LONG
     THROW NotImplementedException{}
     RETURN 0
 
-/// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/for/*" />
 
-FUNCTION For( nIndexNumber , uArea) AS STRING
-    THROW NotImplementedException{}
-    RETURN ""
     
 
 /// <summary>-- todo --</summary>

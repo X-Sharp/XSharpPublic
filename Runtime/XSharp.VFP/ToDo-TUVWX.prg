@@ -19,33 +19,8 @@ FUNCTION TableUpdate( nRows , lForce , uArea , cErrorArray) AS LOGIC
     THROW NotImplementedException{}
     RETURN FALSE
 
-/// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/tag/*" />
 
-FUNCTION Tag( CDXFileName, nTagNumber, uArea) AS STRING
-    THROW NotImplementedException{}
-    RETURN ""
 
-/// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/tagcount/*" />
-
-FUNCTION TagCount( CDXFileName , uArea) AS LONG
-    THROW NotImplementedException{}
-    RETURN 0
-
-/// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/tagno/*" />
-
-FUNCTION TagNo( IndexName , CDXFileName , uArea ) AS LONG
-    THROW NotImplementedException{}
-    RETURN 0
-
-/// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/target/*" />
-
-FUNCTION Target( nRelationshipNumber , uArea ) AS STRING
-    THROW NotImplementedException{}
-    RETURN ""
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/textmerge/*" />

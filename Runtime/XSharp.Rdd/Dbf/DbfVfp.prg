@@ -143,6 +143,9 @@ CLASS DBFVFP INHERIT DBFCDX
     METHOD Info(nOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT
         IF nOrdinal == DbFieldInfo.DBS_PROPERTIES
            RETURN DbFieldInfo.DBS_FLAGS
+        ELSEIF nOrdinal == DbFieldInfo.DBS_CAPTION
+            // todo
+            
         ENDIF
         RETURN SUPER:Info(nOrdinal, oNewValue)
 

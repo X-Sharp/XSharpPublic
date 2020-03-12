@@ -5,12 +5,7 @@
 //
 
 
-/// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/ndx/*" />
 
-FUNCTION Ndx( nIndexNumber , uArea ) AS STRING
-    THROW NotImplementedException{}
-    RETURN ""
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/newobject/*" />
@@ -47,12 +42,6 @@ FUNCTION OldVal( cExpression , uArea ) AS USUAL
     THROW NotImplementedException{}
     RETURN NIL
 
-/// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/order/*" />
-
-FUNCTION Order( uArea, nPath) AS STRING
-    THROW NotImplementedException{}
-    RETURN ""
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/payment/*" />
@@ -70,7 +59,7 @@ FUNCTION PCol( ) AS LONG
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/primary/*" />
-
+// Note needs Database Container support
 FUNCTION Primary( nIndexNumber, uArea) AS LOGIC
     THROW NotImplementedException{}
     RETURN FALSE

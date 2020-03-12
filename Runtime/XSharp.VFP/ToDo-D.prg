@@ -46,12 +46,7 @@ FUNCTION DefaultExt( cFileName, cDefault )
     THROW NotImplementedException{}
     RETURN ""
 
-/// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/descending/*" />
 
-FUNCTION Descending( uIndex, uArea)
-    THROW NotImplementedException{}
-    RETURN FALSE
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/difference/*" />

@@ -128,7 +128,7 @@ CLASS XSharp.VFP.Empty
         IF _Properties:ContainsKey((STRING) cName)
             _Properties[(STRING) cName] := uValue
         ELSE
-            AddProperty(cName, uValue)
+            THROW PropertyNotFoundException{cName}
         ENDIF
         RETURN uValue
         
@@ -155,13 +155,6 @@ CLASS XSharp.VFP.Empty
         ENDIF
         
     #endregion
-    INTERNAL CLASS PropertyNotFoundException INHERIT Exception
-        PUBLIC PROPERTY PropertyName AS STRING AUTO GET PRIVATE SET
-        INTERNAL CONSTRUCTOR(name as STRING)
-            SUPER("Property "+name+" not found")
-            SELF:PropertyName := name
-            RETURN
-    END CLASS
 
     INTERNAL CLASS EmptyDebugView
         PRIVATE _value AS Empty
@@ -189,4 +182,12 @@ CLASS XSharp.VFP.Empty
 
     END CLASS
 
+END CLASS
+
+PUBLIC CLASS XSharp.VFP.PropertyNotFoundException INHERIT Exception
+    PUBLIC PROPERTY PropertyName AS STRING AUTO GET PRIVATE SET
+    PUBLIC CONSTRUCTOR(name as STRING)
+        SUPER("Property '"+name+"' not found")
+        SELF:PropertyName := name
+        RETURN
 END CLASS

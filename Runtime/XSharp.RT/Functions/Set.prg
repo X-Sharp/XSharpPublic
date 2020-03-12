@@ -29,13 +29,35 @@ FUNCTION Set(nDefine, newValue) AS USUAL CLIPPER
     ENDIF
     nSetting := nDefine
 
-    IF nSetting == Set.DateFormat .and. PCount() > 1 
-        // Special handling, because we want to keep DateFormat, DateFormatNet and DateFormatEmpty in sync
-        RETURN SetDateFormat((STRING) newValue)
-    ENDIF
-    IF nSetting == Set.CharSet .AND. PCount() > 1
-        // Map SET_CHARSET to SetAnsi
-        RETURN SetAnsi(newValue == 0)  // Ansi = 0, Oem == 1
+    IF PCount() > 1
+        SWITCH nSetting
+        CASE Set.DateFormat 
+            // Special handling, because we want to keep DateFormat, DateFormatNet and DateFormatEmpty in sync
+            RETURN SetDateFormat((STRING) newValue)
+        CASE Set.CharSet 
+            // Map SET_CHARSET to SetAnsi
+            RETURN SetAnsi(newValue == 0)  // Ansi = 0, Oem == 1
+        CASE Set.Ansi 
+            // Map SET_CHARSET to SetAnsi
+            RETURN SetAnsi(newValue )  
+        CASE Set.Century
+            // Keep date format in sync
+            RETURN SetCentury(newValue )  
+        CASE Set.DateCountry
+            RETURN SetDateCountry(newValue )  
+        CASE Set.DecimalSep
+            RETURN SetDecimalSep(newValue)
+        CASE Set.ThousandSep
+            RETURN SetThousandSep(newValue)
+        CASE Set.Epoch
+            RETURN SetEpoch(newValue)
+        CASE Set.Collation
+            RETURN SetCollation(newValue)
+        CASE Set.NatDLL
+            RETURN SetNatDLL(newValue)
+        CASE Set.International
+            RETURN SetInternational(newValue)
+        END SWITCH 
     ENDIF
 
 

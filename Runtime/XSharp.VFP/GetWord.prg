@@ -5,9 +5,7 @@ USING System.Text
 BEGIN NAMESPACE XSharp.VFP
     DELEGATE __IsInDelimiterArray(tc2Check AS Char) AS LOGIC
     DELEGATE __GetWordCountActive(tcString AS STRING) AS LONG
-	/// <summary>
-    /// The Class1 class.
-    /// </summary>
+	
     DEFINE Asc_A_Low := 097 && Asc_A + 32
     DEFINE Asc_Z_Low := 122 && Asc_Z + 32
 
@@ -17,7 +15,7 @@ BEGIN NAMESPACE XSharp.VFP
         METHOD IsDelimiter(tc2Check AS Char) AS LOGIC
         METHOD SetStru() AS VOID
     END INTERFACE
-           
+               
     CLASS GetVfpDefault
         PUBLIC CONST _cSpace := c' '    AS Char && _Chr(ASC_BLANK)  Chr(032)[0]
         PUBLIC CONST _c_LinF := c'\n'   AS Char && _Chr(ASC_LF)     Chr(010)[0]
@@ -301,6 +299,7 @@ BEGIN NAMESPACE XSharp.VFP
         PUBLIC cRawStr AS STRING
         PUBLIC iMethod := 0 AS INT
         PUBLIC lAuto := .t. AS LOGIC
+        PRIVATE CONST Delimiters := e" \n\t" AS STRING
         
         ///implemented as lazy loading in :SetActive, perhaps more DotNetStyle
         ///would be a property or access method creating an instance in member location slot
@@ -371,7 +370,7 @@ BEGIN NAMESPACE XSharp.VFP
                     ENDIF
                     SELF:oActiveObjc :=  (OBJECT) SELF:oSingleChar 
                 CASE 22
-                    SELF:cRawStr := __GetDelimiters()
+                    SELF:cRawStr := Delimiters
                     IF ReferenceEquals(SELF:oVfpDefault, NULL)
                         SELF:oVfpDefault := GetVfpDefault{SELF}
                     ENDIF
@@ -408,78 +407,69 @@ BEGIN NAMESPACE XSharp.VFP
 
 	END CLASS
 
-/// <include file="VFPDocs.xml" path="Runtimefunctions/getwordcount/*" />
-    STATIC FUNCTION GetDefaultHandler()  AS GetWordHandler
-        LOCAL loSrch := GetWordHandler{} AS GetWordHandler
-        loSrch:iMethod := 22    && Sidestepping check on cRawStr
-        loSrch:SetActive()
-        RETURN loSrch
 
-    /// <summary>-- todo --</summary>
-    /// <include file="VFPDocs.xml" path="Runtimefunctions/getwordcount/*" />
-
-    FUNCTION GetWordCount( tcString AS STRING) AS LONG
-        LOCAL loSrch := GetDefaultHandler() AS GetWordHandler
-        RETURN loSrch:oActiveObjc:GetWordCount( tcString)
-
-    /// <summary>-- todo --</summary>
-    /// <include file="VFPDocs.xml" path="Runtimefunctions/getwordcount/*" />
-
-    FUNCTION GetWordCount( tcString AS STRING, tcDelimiters AS STRING) AS LONG
-        LOCAL lnRefSwitch := 0 AS INT
-        LOCAL lcTrack := "" AS STRING
-        RETURN GetWordCount( tcString , tcDelimiters, lnRefSwitch, lcTrack)
-
-    /// <summary>-- todo --</summary>
-    /// <include file="VFPDocs.xml" path="Runtimefunctions/getwordcount/*" />
-
-    FUNCTION GetWordCount( tcString AS STRING, tcDelimiters AS STRING, tnSwitch REF INT, tcTrack REF STRING) AS LONG
-        *-- Checked: throws on .Null.
-        *-- when moving class based optimized, presearch optimization times are avoided
-        *-- so no systematic error to do up front when checking efficiency
-        LOCAL lnReturn AS INT
-        LOCAL loSrch := GetWordHandler{} AS GetWordHandler
-        IF tnSwitch<0
-               loSrch:iMethod := tnSwitch
-        ENDIF            
-        = loSrch:SetDelimiter(tcDelimiters)
-        tnSwitch := loSrch:iMethod
-        tnSwitch := loSrch:iMethod
-        tcTrack := loSrch:oActiveObjc:GetType():Name
-        lnReturn := loSrch:oActiveObjc:GetWordCount(tcString)
-        RETURN lnReturn
-
-    /// <summary>-- todo --</summary>
-    /// <include file="VFPDocs.xml" path="Runtimefunctions/getwordnum/*" />
-
-    FUNCTION GetWordNum( tcString AS STRING, tnIndex AS INT) AS STRING
-        LOCAL loSrch := GetDefaultHandler() AS GetWordHandler
-        RETURN loSrch:oActiveObjc:GetWordNum( tcString, tnIndex)
-
-    /// <summary>-- todo --</summary>
-    /// <include file="VFPDocs.xml" path="Runtimefunctions/getwordnum/*" />
-
-    FUNCTION GetWordNum( tcString AS STRING, tnIndex AS INT, tcDelimiters AS STRING) AS STRING
-        *-- Checked: throws on .Null.
-        LOCAL lnRefSwitch := 0 AS INT
-        LOCAL lcTrack := "" AS STRING
-        RETURN  GetWordNum( tcString, tnIndex, tcDelimiters, lnRefSwitch, lcTrack)
-
-    /// <summary>-- todo --</summary>
-    /// <include file="VFPDocs.xml" path="Runtimefunctions/getwordnum/*" />
-
-    FUNCTION GetWordNum( tcString AS STRING, tnIndex AS INT, tcDelimiters AS STRING, tnSwitch REF INT, tcTrack REF STRING) AS STRING
-        *-- Checked: throws on .Null., lcReturn still here to debug
-        LOCAL lcReturn AS STRING
-        LOCAL loSrch AS GetWordHandler
-        loSrch := GetWordHandler {}
-        = loSrch:SetDelimiter(tcDelimiters)
-        tnSwitch := loSrch:iMethod
-        tcTrack := loSrch:oActiveObjc:GetType():Name
-        lcReturn := loSrch:oActiveObjc:GetWordNum(tcString, tnIndex)
-        RETURN lcReturn
-
-    STATIC FUNCTION __GetDelimiters() AS STRING
-    RETURN Space(1) + Chr(10) + Chr(9) && + Chr(13) CarriageReturn not included IN vfp9!
- 
 END NAMESPACE // XSharp.VFP
+
+
+/// <include file="VFPDocs.xml" path="Runtimefunctions/getwordcount/*" />
+STATIC FUNCTION GetDefaultHandler()  AS GetWordHandler
+    LOCAL loSrch := GetWordHandler{} AS GetWordHandler
+    loSrch:iMethod := 22    && Sidestepping check on cRawStr
+    loSrch:SetActive()
+    RETURN loSrch
+
+/// <include file="VFPDocs.xml" path="Runtimefunctions/getwordcount/*" />
+FUNCTION GetWordCount( tcString AS STRING) AS LONG
+    LOCAL loSrch := GetDefaultHandler() AS GetWordHandler
+    RETURN loSrch:oActiveObjc:GetWordCount( tcString)
+
+/// <include file="VFPDocs.xml" path="Runtimefunctions/getwordcount/*" />
+FUNCTION GetWordCount( tcString AS STRING, tcDelimiters AS STRING) AS LONG
+    LOCAL lnRefSwitch := 0 AS INT
+    LOCAL lcTrack := "" AS STRING
+    RETURN GetWordCount( tcString , tcDelimiters, lnRefSwitch, lcTrack)
+
+/// <include file="VFPDocs.xml" path="Runtimefunctions/getwordcount/*" />
+FUNCTION GetWordCount( tcString AS STRING, tcDelimiters AS STRING, tnSwitch REF INT, tcTrack REF STRING) AS LONG
+    *-- Checked: throws on .Null.
+    *-- when moving class based optimized, presearch optimization times are avoided
+    *-- so no systematic error to do up front when checking efficiency
+    LOCAL lnReturn AS INT
+    LOCAL loSrch := GetWordHandler{} AS GetWordHandler
+    IF tnSwitch<0
+            loSrch:iMethod := tnSwitch
+    ENDIF            
+    = loSrch:SetDelimiter(tcDelimiters)
+    tnSwitch := loSrch:iMethod
+    tnSwitch := loSrch:iMethod
+    tcTrack := loSrch:oActiveObjc:GetType():Name
+    lnReturn := loSrch:oActiveObjc:GetWordCount(tcString)
+    RETURN lnReturn
+
+/// <include file="VFPDocs.xml" path="Runtimefunctions/getwordnum/*" />
+FUNCTION GetWordNum( tcString AS STRING, tnIndex AS INT) AS STRING
+    LOCAL loSrch := GetDefaultHandler() AS GetWordHandler
+    RETURN loSrch:oActiveObjc:GetWordNum( tcString, tnIndex)
+
+/// <include file="VFPDocs.xml" path="Runtimefunctions/getwordnum/*" />
+FUNCTION GetWordNum( tcString AS STRING, tnIndex AS INT, tcDelimiters AS STRING) AS STRING
+    *-- Checked: throws on .Null.
+    LOCAL lnRefSwitch := 0 AS INT
+    LOCAL lcTrack := "" AS STRING
+    RETURN  GetWordNum( tcString, tnIndex, tcDelimiters, lnRefSwitch, lcTrack)
+
+/// <include file="VFPDocs.xml" path="Runtimefunctions/getwordnum/*" />
+FUNCTION GetWordNum( tcString AS STRING, tnIndex AS INT, tcDelimiters AS STRING, tnSwitch REF INT, tcTrack REF STRING) AS STRING
+    *-- Checked: throws on .Null., lcReturn still here to debug
+    LOCAL lcReturn AS STRING
+    LOCAL loSrch AS GetWordHandler
+    loSrch := GetWordHandler {}
+    = loSrch:SetDelimiter(tcDelimiters)
+    tnSwitch := loSrch:iMethod
+    tcTrack := loSrch:oActiveObjc:GetType():Name
+    lcReturn := loSrch:oActiveObjc:GetWordNum(tcString, tnIndex)
+    RETURN lcReturn
+
+    //STATIC FUNCTION __GetDelimiters() AS STRING
+    //RETURN e" \n\t"
+    //RETURN Space(1) + Chr(10) + Chr(9) && + Chr(13) CarriageReturn not included IN vfp9!

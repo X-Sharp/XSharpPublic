@@ -32,12 +32,7 @@ FUNCTION Refresh( nRecords , nRecordOffset , uArea ) AS LONG
     THROW NotImplementedException{}
     RETURN 0
 
-/// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/relation/*" />
 
-FUNCTION Relation( nRelationNumber , uArea) AS STRING
-    THROW NotImplementedException{}
-    RETURN ""
 
 
 /// <summary>-- todo --</summary>

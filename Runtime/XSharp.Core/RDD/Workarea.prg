@@ -579,6 +579,7 @@ BEGIN NAMESPACE XSharp.RDD
                 oFld := SELF:_Fields[nFldPos-1]
                 SWITCH nOrdinal
                 CASE DbFieldInfo.DBS_NAME
+                CASE DbFieldInfo.DBS_CAPTION
                     RETURN oFld:Name
                 CASE DbFieldInfo.DBS_TYPE
                     VAR cVar := Chr( (BYTE) oFld:FieldType)

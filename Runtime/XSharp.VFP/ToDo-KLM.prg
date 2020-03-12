@@ -4,12 +4,7 @@
 // See License.txt in the project root for license information.
 //
 
-/// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/key/*" />
 
-FUNCTION Key( uIndex, uArea) AS STRING
-    THROW NotImplementedException{}
-    RETURN ""
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/keymatch/*" />
@@ -62,12 +57,6 @@ FUNCTION MakeTransactable( uArea ) AS LOGIC
     THROW NotImplementedException{}
     RETURN FALSE
     
-/// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/mdx/*" />
-
-FUNCTION Mdx( nIndexNumber , uArea) AS STRING
-    THROW NotImplementedException{}
-    RETURN ""
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/mdy/*" />

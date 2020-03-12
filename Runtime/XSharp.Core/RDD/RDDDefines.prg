@@ -46,9 +46,10 @@ DEFINE DBS_DEC					:= DbFieldInfo.DBS_DEC
 DEFINE DBS_ALIAS				:= DbFieldInfo.DBS_ALIAS
 /// <exclude />
 DEFINE DBS_FLAGS				:= DbFieldInfo.DBS_FLAGS
-
+/// <exclude />
 DEFINE DBS_ALEN                 := 4  // XBase++ has this define
-
+/// <exclude />
+DEFINE DBS_CAPTION              := DbFieldInfo.DBS_CAPTION
 /// <exclude />
 DEFINE DBS_ISNULL               := DbFieldInfo.DBS_ISNULL  
 /// <exclude />
@@ -342,6 +343,9 @@ DEFINE DBOI_ISCOND 		:= DbOrder_Info.DBOI_ISCOND 			// Logic : Does the order ha
 DEFINE DBOI_ISDESC 		:= DbOrder_Info.DBOI_ISDESC 			// Logic : Is the order DESCENDing? 
 /// <exclude />
 DEFINE DBOI_UNIQUE 		:= DbOrder_Info.DBOI_UNIQUE 			// Logic : Does the order have the UNIQUE attribute?
+
+/// <exclude />
+DEFINE DBOI_COLLATION 	:= DbOrder_Info.DBOI_COLLATION 			// String : Collation for CDX
 
 
 /* Clipper 5.3-level constants */

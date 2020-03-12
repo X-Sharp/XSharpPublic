@@ -1260,6 +1260,7 @@ METHOD FieldInfo(nFldPos AS LONG, nOrdinal AS LONG, oNewValue AS OBJECT) AS OBJE
 			SWITCH nOrdinal
             // These are handled in the parent class and also take care of aliases etc.
 			CASE DbFieldInfo.DBS_NAME
+			CASE DbFieldInfo.DBS_CAPTION
 			CASE DbFieldInfo.DBS_LEN
 			CASE DbFieldInfo.DBS_DEC
 			CASE DbFieldInfo.DBS_TYPE

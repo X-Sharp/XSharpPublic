@@ -19,12 +19,6 @@ FUNCTION Capslock (lExpression)
     THROW NotImplementedException{}
     RETURN FALSE
 
-/// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/cdx/*" />
-
-FUNCTION  Cdx (nIndexNumber , uArea)
-    THROW NotImplementedException{}
-    RETURN ""
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/ceiling/*" />
@@ -47,12 +41,7 @@ FUNCTION CpConvert ( nCurrentCodePage, nNewCodePage, cExpression)
     THROW NotImplementedException{}
     RETURN ""
 
-/// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/cpdbf/*" />
 
-FUNCTION CpDbf( uArea) AS LONG
-    THROW NotImplementedException{}
-    RETURN 0
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/cpdbf/*" />

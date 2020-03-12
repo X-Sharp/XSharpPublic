@@ -791,6 +791,7 @@ FUNCTION AReplicate(xFill AS USUAL,nElements AS DWORD) AS ARRAY
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/asort/*" /> 
 FUNCTION ASort(aTarget AS ARRAY, nStart := NIL AS USUAL,nCount := NIL AS USUAL,cbOrder := NIL AS USUAL) AS ARRAY 
     LOCAL nLen AS DWORD
+    LOCAL oBlock as OBJECT
     DEFAULT( REF nStart, 1 )
     
     nLen := ALen(aTarget) 
@@ -822,13 +823,17 @@ FUNCTION ASort(aTarget AS ARRAY, nStart := NIL AS USUAL,nCount := NIL AS USUAL,c
     
     
     IF cbOrder != NIL
-        VAR ok := cbOrder:IsCodeblock
-        IF ok
+        IF cbOrder:IsCodeblock
             VAR cb := (CODEBLOCK) cbOrder
-            ok := cb:PCount() >= 2
-            IF ! ok
+            IF cb:PCount() < 2
                 THROW Error.ArgumentError( __FUNCTION__, nameof(cbOrder), "ASort Codeblock must have at least 2 arguments" )
             ENDIF
+        ELSEIF cbOrder:IsObject
+            IF ! IsMethod(cbOrder, "Eval")
+                THROW Error.ArgumentError( __FUNCTION__, nameof(cbOrder), "ASort Sort Object must have an Eval method" )
+            ENDIF
+            oBlock := cbOrder
+            cbOrder := {|a,b|  Send(oBlock,"Eval",a,b) }
         ELSE
             THROW Error.ArgumentError( __FUNCTION__, nameof(cbOrder), 4, <OBJECT>{ cbOrder } )
         ENDIF

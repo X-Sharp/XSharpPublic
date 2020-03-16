@@ -559,6 +559,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
         private IToken parseTextLine()
         {
+            // parse a complete line into a TEST_STRING_CONST after \ or \\
             while (La_1 != TokenConstants.Eof && La_1 != '\r' && La_1 != '\n')
                 parseOne();
             parseType(TEXT_STRING_CONST);
@@ -610,6 +611,30 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             }
             return t;
         }
+
+        private void handleSpecialFunctions()
+        {
+            // Handle function names that are the same as keywords
+            switch (LastToken)
+            {
+                case FOR:                               // For ()  
+                case FIELD:                             // Field()
+                    if (Dialect == XSharpDialect.FoxPro)
+                    {
+                        _lastToken.Type = ID;           
+                    }
+                    break;
+                case DATETIME:                          // DateTime (....)
+                case ARRAY:                             // Array (...)
+                    _lastToken.Type = ID;
+                    break;
+            }
+        }
+        private void handleSpecialClasses()
+        {
+            // Handle class names that are the same as keywords
+        }
+
         public override IToken NextToken()
         {
             XSharpToken t;
@@ -630,6 +655,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 {
                     case '(':
                         parseOne(LPAREN);
+                        handleSpecialFunctions();
                         break;
                     case ')':
                         parseOne(RPAREN);
@@ -642,6 +668,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         else
                         { 
                             parseOne(LCURLY);
+                            handleSpecialClasses();
                         }
                         break;
                     case '}':
@@ -688,7 +715,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         { 
                             if (La_1 == '\\')
                                 parseOne(BACKBACKSLASH);
-                            // todo: In FoxPro dialect this 'eats' the whole line and makes this a TEXT_STRING_CONST
                             _onTextLine = true;
                         }
                         break;

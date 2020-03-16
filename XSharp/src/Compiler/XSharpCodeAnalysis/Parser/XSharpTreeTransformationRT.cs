@@ -3014,7 +3014,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             // Date (aParam) will then be seen as a voconversion expression
             // Date() without and with 3 parameters exist in the Runtime
-            // and Array() may be called with and without parameters.
+            // For(..), Array(..), DateTime(..) are detected in the Lexer rule handleSpecialFunctions()
             var token = context.XFunc.Token;
             var args = context.ArgList?.Get<ArgumentListSyntax>();
             if (args == null)

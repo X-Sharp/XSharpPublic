@@ -328,6 +328,24 @@
       <topicref type="topic" id="43751617983780" build="ALL" modified="2019-10-13T14:23:20.303Z" icon="0" href="Workarea-Events">
         <caption translate="true">Workarea Events</caption>
       </topicref>
+      <topicref type="topic" id="439026050242369" build="ALL" modified="2020-03-12T09:38:57.852Z" icon="0" href="Dialect-(in)compatibilities">
+        <caption translate="true">Dialect (in)compatibilities</caption>
+        <topicref type="topic" id="439025467054172" build="ALL" modified="2020-03-12T10:14:13.832Z" icon="0" href="compat-VO">
+          <caption translate="true">VO</caption>
+        </topicref>
+        <topicref type="topic" id="439024961363839" build="ALL" modified="2020-03-12T10:14:19.268Z" icon="0" href="compat-Vulcan">
+          <caption translate="true">Vulcan.NET</caption>
+        </topicref>
+        <topicref type="topic" id="439024612084612" build="ALL" modified="2020-03-12T10:14:23.198Z" icon="0" href="compat-Xbase">
+          <caption translate="true">Xbase++</caption>
+        </topicref>
+        <topicref type="topic" id="439024830311287" build="ALL" modified="2020-03-12T10:14:26.600Z" icon="0" href="compat-FoxPro">
+          <caption translate="true">FoxPro</caption>
+        </topicref>
+        <topicref type="topic" id="439024339327177" build="ALL" modified="2020-03-12T10:14:29.685Z" icon="0" href="compat-Harbour">
+          <caption translate="true">Harbour</caption>
+        </topicref>
+      </topicref>
     </topicref>
     <topicref type="topic" id="428725168955982" build="ALL" modified="2017-05-17T09:41:40.642Z" icon="0" href="X-Scripting">
       <caption translate="true">X# Scripting</caption>
@@ -1466,6 +1484,9 @@
         </topicref>
         <topicref type="topic" id="423894071853707" build="ALL" modified="2016-01-20T09:47:54.682Z" icon="0" href="opt-unsafe">
           <caption translate="true">-unsafe</caption>
+        </topicref>
+        <topicref type="topic" id="439024877839012" build="ALL" modified="2020-03-12T09:52:40.407Z" icon="0" href="Opt-usenativeversion">
+          <caption translate="true">-usenativeversion</caption>
         </topicref>
         <topicref type="topic" id="423892780785481" build="ALL" modified="2016-01-20T09:47:55.759Z" icon="0" href="opt-utf8output">
           <caption translate="true">-utf8output</caption>

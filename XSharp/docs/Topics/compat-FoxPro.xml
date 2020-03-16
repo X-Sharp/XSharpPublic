@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>Differences with FoxPro</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">Differences with FoxPro</para>
+    </header>
+    <para styleclass="Heading2">Compiler</para>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal">The preprocessor in FoxPro translates #defines inside bracketed strings. X# does not touch the contents of bracketed strings in the preprocessor</li>
+    </list>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

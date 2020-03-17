@@ -623,7 +623,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             TypeSymbol declType = BindVariableType(node.Declaration, diagnostics, typeSyntax, ref isConst, isVar: out isVar, alias: out alias);
 
 #if XSHARP
-            if (declType.IsPointerType() && Compilation.Options.VOResolveTypedFunctionPointersToPtr)
+            if (declType.IsPointerType() && Compilation.Options.HasOption(CompilerOption.ResolveTypedFunctionPointersToPtr,node))
             {
                 var pt = declType as PointerTypeSymbol;
                 // Check if pointing at Method

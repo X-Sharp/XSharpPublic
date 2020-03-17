@@ -99,14 +99,14 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             get
             {
-#if DEBUG
+#if DEBUG && ! XSHARP
                 _attributes |= BoundNodeAttributes.WasCompilerGeneratedIsChecked;
 #endif
                 return (_attributes & BoundNodeAttributes.CompilerGenerated) != 0;
             }
             internal set
             {
-#if DEBUG
+#if DEBUG && ! XSHARP
                 Debug.Assert((_attributes & BoundNodeAttributes.WasCompilerGeneratedIsChecked) == 0,
                     "compiler generated flag should not be set after reading it");
 #endif
@@ -128,7 +128,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         //       and instead have a special method to do resetting.
         public void ResetCompilerGenerated(bool newCompilerGenerated)
         {
-#if DEBUG
+#if DEBUG && ! XSHARP
             Debug.Assert((_attributes & BoundNodeAttributes.WasCompilerGeneratedIsChecked) == 0,
                 "compiler generated flag should not be set after reading it");
 #endif

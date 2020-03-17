@@ -22,7 +22,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         internal TypeSymbol GetVOGlobalType(CSharpCompilation compilation, TypeSyntax typeSyntax, Binder binder, ConsList<FieldSymbol> fieldsBeingBound)
         {
             var xNode = this.SyntaxNode.XNode;
-            if (compilation.Options.VOResolveTypedFunctionPointersToPtr)
+            if (compilation.Options.HasOption(CompilerOption.ResolveTypedFunctionPointersToPtr,this.SyntaxNode))
             {
                 if (xNode is XP.ClassvarContext &&
                     xNode.Parent is XP.ClassVarListContext)

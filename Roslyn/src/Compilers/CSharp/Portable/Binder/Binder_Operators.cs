@@ -582,9 +582,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                 Debug.Assert((object)signature.LeftType != null);
                 Debug.Assert((object)signature.RightType != null);
 
-                resultLeft = CreateConversion(left, best.LeftConversion, signature.LeftType, diagnostics);
-                resultRight = CreateConversion(right, best.RightConversion, signature.RightType, diagnostics);
 #if XSHARP
+                resultLeft = CreateConversion(left.Syntax, left, best.LeftConversion, false,true,signature.LeftType,diagnostics);
+                resultRight = CreateConversion(right.Syntax, right, best.RightConversion, false, true, signature.RightType, diagnostics);
                 var tempResultType = resultType;
                 
                 if (BindVOBinaryOperatorVo11(node, resultOperatorKind, ref left, ref right, ref tempResultType, diagnostics))
@@ -609,6 +609,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return new BoundLiteral(node, resultConstant, Compilation.GetSpecialType(resultConstant.SpecialType)) { WasCompilerGenerated = true } ;
                 }
 #else			
+                resultLeft = CreateConversion(left, best.LeftConversion, signature.LeftType, diagnostics);
+                resultRight = CreateConversion(right, best.RightConversion, signature.RightType, diagnostics);
                 resultConstant = FoldBinaryOperator(node, resultOperatorKind, resultLeft, resultRight, resultType.SpecialType, diagnostics, ref compoundStringLength);
                 
 #endif
@@ -2496,7 +2498,22 @@ namespace Microsoft.CodeAnalysis.CSharp
             UnaryOperatorKind resultOperatorKind = signature.Kind;
             var resultMethod = signature.Method;
             var resultConstant = FoldUnaryOperator(node, resultOperatorKind, resultOperand, resultType.SpecialType, diagnostics);
-
+#if XSHARP
+            BoundExpression res = new BoundUnaryOperator(
+                node,
+                resultOperatorKind.WithOverflowChecksIfApplicable(CheckOverflowAtRuntime),
+                resultOperand,
+                resultConstant,
+                resultMethod,
+                resultKind,
+                resultType);
+            if (resultType != operand.Type)
+            {
+                res = CreateConversion(res, operand.Type, diagnostics);
+                res.WasCompilerGenerated = true;
+            }
+            return res;
+#else
             return new BoundUnaryOperator(
                 node,
                 resultOperatorKind.WithOverflowChecksIfApplicable(CheckOverflowAtRuntime),
@@ -2505,6 +2522,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 resultMethod,
                 resultKind,
                 resultType);
+#endif
         }
 
         private ConstantValue FoldEnumUnaryOperator(

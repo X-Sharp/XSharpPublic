@@ -94,7 +94,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 case EOS:                             // SyntaxKind.SemicolonToken:
                 case RPAREN:                          // SyntaxKind.CloseParenToken:
                 case RBRKT:                           // SyntaxKind.CloseBracketToken:
-                case LCURLY:                          // SyntaxKind.OpenBraceToken:
+                //case LCURLY:                          // SyntaxKind.OpenBraceToken:    Disabled because this should be allowed (TYPE) { => dosomething() }
                 case RCURLY:                          // SyntaxKind.CloseBraceToken:
                 case COMMA:                           // SyntaxKind.CommaToken:
                 case ASSIGN:                          // SyntaxKind.EqualsToken:

@@ -345,8 +345,14 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case CompilerOption.NullStrings: // vo2
                     return CheckOption(option, VONullStrings, context, options);
 
+                case CompilerOption.SignedUnsignedConversion: // vo4
+                    return CheckOption(option, VOSignedUnsignedConversion, context, options);
+
                 case CompilerOption.ClipperCallingConvention: // vo5
                     return CheckOption(option, VOClipperCallingConvention, context, options);
+
+                case CompilerOption.ResolveTypedFunctionPointersToPtr: // vo6
+                    return CheckOption(option, VOResolveTypedFunctionPointersToPtr, context, options);
 
                 case CompilerOption.ImplicitCastsAndConversions: // vo7
                     return CheckOption(option, VOImplicitCastsAndConversions, context, options);
@@ -354,11 +360,18 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case CompilerOption.AllowMissingReturns: // vo9
                     return CheckOption(option, VOAllowMissingReturns, context, options);
 
+                case CompilerOption.ArithmeticConversions: // vo11
+                    return CheckOption(option, VOArithmeticConversions, context, options);
+
                 case CompilerOption.ClipperIntegerDivisions: // vo12
                     return CheckOption(option, VOClipperIntegerDivisions, context, options);
 
+                case CompilerOption.StringComparisons: // vo13
+                    return CheckOption(option, VOStringComparisons, context, options);
+
                 case CompilerOption.FloatConstants: // vo14
                     return CheckOption(option, VOFloatConstants, context, options);
+
             }
             return false;
         }

@@ -157,7 +157,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 if (dstType == SpecialType.System_UInt16)
                     return Conversion.Identity;
-                if (Compilation.Options.VOSignedUnsignedConversion) // vo4
+                if (Compilation.Options.HasOption(CompilerOption.SignedUnsignedConversion, sourceExpression.Syntax)) // vo4
                 {
                     if (dstType == SpecialType.System_Byte)
                         return Conversion.ImplicitNumeric;
@@ -200,7 +200,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return Conversion.Identity;
                 }
             }
-            if (Compilation.Options.VOSignedUnsignedConversion) // vo4
+            if (Compilation.Options.HasOption(CompilerOption.SignedUnsignedConversion, sourceExpression.Syntax)) // vo4
             {
                 // This compiler option only applies to numeric types
                 if (srcType.IsNumericType() && dstType.IsNumericType())

@@ -13,7 +13,7 @@ namespace Microsoft.CodeAnalysis.CSharp
     {
         BoundExpression XsCreateConversionNonIntegralNumeric(TypeSymbol targetType, BoundExpression expression, DiagnosticBag diagnostics, Conversion conversion)
         {
-            if (Compilation.Options.VOArithmeticConversions)
+            if (Compilation.Options.HasOption(CompilerOption.ArithmeticConversions, expression.Syntax))
             {
                 // call Convert.To..() to round the result
                 var mem = Compilation.GetWellKnownTypeMember(WellKnownMember.System_Convert__ToInt32Double);
@@ -48,7 +48,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             else
             {
                 // call (type) Expression to truncate the result
-                return CreateConversion(expression.Syntax, expression, conversion, false, targetType, diagnostics);
+                var result = CreateConversion(expression.Syntax, expression, conversion, false, targetType, diagnostics);
+                result.WasCompilerGenerated = true;
+                return result;
             }
 
         }
@@ -67,19 +69,22 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         BoundExpression XsHandleExplicitConversion(TypeSymbol targetType, BoundExpression expression, DiagnosticBag diagnostics, Conversion conversion)
         {
-            if (conversion.IsExplicit)
+            if (conversion.IsExplicit && expression.Type != targetType)
             {
                 // silently convert integral types
                 if (CheckImplicitCast(expression.Type, targetType, expression.Syntax, diagnostics) || conversion.IsNullable)
                 {
+                    BoundExpression result;
                     if (targetType.IsIntegralType() && expression.Type.IsIntegralType())
                     {
-                        return CreateConversion(expression.Syntax, expression, conversion, false, targetType, diagnostics);
+                        result=  CreateConversion(expression.Syntax, expression, conversion, false, targetType, diagnostics);
                     }
                     else
                     {
-                        return XsCreateConversionNonIntegralNumeric(targetType, expression, diagnostics, conversion);
+                        result = XsCreateConversionNonIntegralNumeric(targetType, expression, diagnostics, conversion);
                     }
+                    result.WasCompilerGenerated = true;
+                    return result;
 
                 }
             }
@@ -99,7 +104,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
             }
 
-            if (this.Compilation.Options.VOSignedUnsignedConversion)
+            if (Compilation.Options.HasOption(CompilerOption.SignedUnsignedConversion, expression.Syntax))
                 return;
 
             if (targetType.SpecialType.IsIntegralType() && expression.Type.SpecialType.IsIntegralType() && targetType != expression.Type)
@@ -181,19 +186,22 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
                 if (! ok)
                 {
+                    var sourceType = expression.Type;
+                    var sourceSize = sourceType.SpecialType.SizeInBytes();
+                    var targetSize = targetType.SpecialType.SizeInBytes();
                     // Find sources that do not fit in the target
-                    if (expression.Type.SpecialType.SizeInBytes() > targetType.SpecialType.SizeInBytes())
+                    if (sourceSize > targetSize)
                     {
                         // Narrowing conversion from '{0}' to '{1}' may lead to loss of data or overflow errors
                         Error(diagnostics, ErrorCode.WRN_ConversionMayLeadToLossOfData, expression.Syntax, expression.Type, targetType);
                     }
-                    else if (targetType.SpecialType.SizeInBytes() == targetType.SpecialType.SizeInBytes())
+                    else if (sourceSize == targetSize && expression.Type != targetType)
                     {
                         //Signed/unsigned conversions from '{0}' to '{1}' may lead to loss of data or overflow errors
                         Error(diagnostics, ErrorCode.WRN_SignedUnSignedConversion, expression.Syntax, expression.Type, targetType);
                     }
                     // lhs.Size < rhs.Size, only a problem when lhs is Signed and rhs is Unsiged
-                    else if (expression.Type.SpecialType.IsSignedIntegralType() && !targetType.SpecialType.IsSignedIntegralType())
+                    else if (sourceSize < targetSize && sourceType.SpecialType.IsSignedIntegralType() && !targetType.SpecialType.IsSignedIntegralType())
                     {
                         // Signed / unsigned conversions from '{0}' to '{1}' may lead to loss of data or overflow errors
                         Error(diagnostics, ErrorCode.WRN_SignedUnSignedConversion, expression.Syntax, expression.Type, targetType);

@@ -94,6 +94,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (expr.Type.SpecialType != specialType)
             {
                 expr = CreateConversion(expr, Compilation.GetSpecialType(specialType), diagnostics);
+                expr.WasCompilerGenerated = true;
                 if (expr.HasErrors)
                 {
                     Error(diagnostics, ErrorCode.ERR_CannotConvertArrayIndexAccess, expr.Syntax, type, Compilation.GetSpecialType(SpecialType.System_Int32));
@@ -138,6 +139,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         if (arg.Type.SpecialType != specialType)
                         {
                             newarg = CreateConversion(arg, Compilation.GetSpecialType(specialType), diagnostics);
+                            newarg.WasCompilerGenerated = true;
                             if (newarg.HasErrors)
                             {
                                 Error(diagnostics, ErrorCode.ERR_CannotConvertArrayIndexAccess, arg.Syntax, arg.Type, Compilation.GetSpecialType(SpecialType.System_Int32));
@@ -148,6 +150,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         if (Compilation.Options.Dialect != XSharpDialect.Vulcan)
                         { 
                             newarg = SubtractIndex(newarg, diagnostics,specialType);
+                            newarg.WasCompilerGenerated = true;
                         }
                         argsBuilder.Add(newarg);
                     }

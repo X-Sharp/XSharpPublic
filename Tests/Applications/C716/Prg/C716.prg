@@ -3,7 +3,14 @@
 FUNCTION Start() AS VOID
 	LOCAL c AS STRING
 	c := "1 + 2"
-	? c
-	? &(c) // OK
-	? &c   // Unhandled Exception: XSharp.Error: Variable does not exist
+	XAssert( &(c) == 3)
+	XAssert( &c == 3)	
 RETURN
+
+
+PROC xAssert(l AS LOGIC)
+IF l
+	? "Assertion passed"
+ELSE
+	THROW Exception{"Incorrect result"}
+END IF

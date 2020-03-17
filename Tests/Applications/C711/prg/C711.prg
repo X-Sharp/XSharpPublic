@@ -3,7 +3,7 @@
 FUNCTION Start() AS VOID
 	LOCAL n AS INT	
 	LOCAL d AS DWORD
-	LOCAL u AS USUAL
+	LOCAL u AS USUAL   
 	n := -2
 	d := 1
 	u := n + d
@@ -17,7 +17,7 @@ FUNCTION Start() AS VOID
 	?
 	? (n + d) // UInt32.MaxValue in ×#, -1 in VO & Vulcan
 	? (n + d):GetType():tostring() // DWORD in X#, INT in Vulcan (and in VO)
-	xAssert(AsString(d + n) == "-1")
+	xAssert(AsString(n + d) == "-1")
 	
 	? (d + n) // -1 in ×#, UInt32.MaxValue in VO & Vulcan
 	? (d + n):GetType():tostring() // INT in X#, DWORD in Vulcan (and in VO)

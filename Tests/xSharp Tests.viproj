@@ -75401,7 +75401,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C692 - Compiler hungs with UDC
 
-ApplicationGroup = 7D1C4D98-F0BB-48B3-932B-B3AECEE395BA
+ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
 ; ************** APPLICATION C693 - Internal compiler error with incorrect Axit() syntax *************
 Application = C693 - Internal compiler error with incorrect Axit() syntax
 IDEVersion = 1.06

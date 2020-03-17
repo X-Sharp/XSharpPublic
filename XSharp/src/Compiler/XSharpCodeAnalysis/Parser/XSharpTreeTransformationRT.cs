@@ -3000,7 +3000,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 else if (XSharpString.Equals(methodName, XSharpIntrinsicNames.AxitMethod))
                 {
-                    context.Put(GenerateNIL());
+                    var result = GenerateNIL();
+                    result = result.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_CallingFinalizeDeprecated));
+                    context.Put(result);
                     return;
                 }
             }

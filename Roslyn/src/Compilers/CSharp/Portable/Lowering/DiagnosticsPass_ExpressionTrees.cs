@@ -115,9 +115,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                 Error(ErrorCode.ERR_ExpressionTreeContainsAssignment, node);
             }
 
-#if XSHARP
-            VOCheckSignedUnsigned(node.Left, node.Right);
-#endif
             return base.VisitAssignmentOperator(node);
         }
 

@@ -49,21 +49,26 @@ namespace Microsoft.CodeAnalysis.CSharp
         private string GetTypedPtrName(IXParseTree xNode)
         {
             // GLobals and Instance variables are all of type ClassvarContext
-            if (xNode is XP.ClassvarContext && xNode.Parent is XP.ClassVarListContext)
+            if (xNode is XP.ClassvarContext && xNode.Parent is XP.ClassVarListContext cvl)
             {
-                var cvl = xNode.Parent as XP.ClassVarListContext;
                 var pdtc = cvl.DataType as XP.PtrDatatypeContext;
                 if (pdtc != null)
                     return pdtc.TypeName.GetText();
 
             }
             // Locals are of type LocalVarContext
-            else if (xNode is XP.LocalvarContext)
+            else if (xNode is XP.LocalvarContext lvc)
             {
-                var lvc = xNode as XP.LocalvarContext;
                 var pdtc = lvc.DataType as XP.PtrDatatypeContext;
                 if (pdtc != null)
                     return pdtc.TypeName.GetText();
+            }
+            else if (xNode is XP.VostructmemberContext smc)
+            {
+                var pdtc = smc.DataType as XP.PtrDatatypeContext;
+                if (pdtc != null)
+                    return pdtc.TypeName.GetText();
+
             }
             return null;
         }

@@ -43,6 +43,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
                     }
                 }
+                if (xNode is XP.VostructmemberContext smc)
+                {
+                    var dt = smc.DataType;
+                    if (dt is XP.PtrDatatypeContext)
+                    {
+                        // So we have a global as typed ptr
+                        // change the type from typed ptr to just ptr
+                        var ptrdtc = dt as XP.PtrDatatypeContext;
+                        if (ptrdtc.TypeName.Name != null)           // User Define Typename PTR
+                        {
+                            string name = ptrdtc.TypeName.Name.GetText();
+                            // Lookup name ?
+                            return compilation.GetSpecialType(SpecialType.System_IntPtr);
+                        }
+                    }
+                }
             }
             TypeSymbol type = null;
             if (xNode is XP.VodefineContext && ! this.IsConst)

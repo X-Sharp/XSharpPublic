@@ -77,13 +77,70 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             }
             if (InputStream.La(la) == RPAREN)
             {
-                // if there is a DOT or COLON after the RPAREN then return false
                 var c = InputStream.La(la + 1);
-                if (c == DOT || c == COLON)
+                return CanFollowCast(c);
+            }
+            return true;
+        }
+
+        private bool CanFollowCast(int c)
+        {
+            // This code is derived from the Roslyn code for CanFollowCast() In LanguageParser.Cs
+            switch (c)
+            {
+                // the case order is the same as that method
+                case ASTYPE:                          // SyntaxKind.AsKeyword:
+                case IS:                              // SyntaxKind.IsKeyword:
+                case EOS:                             // SyntaxKind.SemicolonToken:
+                case RPAREN:                          // SyntaxKind.CloseParenToken:
+                case RBRKT:                           // SyntaxKind.CloseBracketToken:
+                case LCURLY:                          // SyntaxKind.OpenBraceToken:
+                case RCURLY:                          // SyntaxKind.CloseBraceToken:
+                case COMMA:                           // SyntaxKind.CommaToken:
+                case ASSIGN:                          // SyntaxKind.EqualsToken:
+                case ASSIGN_ADD:                      // SyntaxKind.PlusEqualsToken:
+                case ASSIGN_SUB:                      // SyntaxKind.MinusEqualsToken:
+                case ASSIGN_MUL:                      // SyntaxKind.AsteriskEqualsToken:
+                case ASSIGN_DIV:                      // SyntaxKind.SlashEqualsToken:
+                case ASSIGN_MOD:                      // SyntaxKind.PercentEqualsToken:
+                case ASSIGN_BITAND:                   // SyntaxKind.AmpersandEqualsToken:
+                case ASSIGN_XOR:                      // SyntaxKind.CaretEqualsToken:
+                case ASSIGN_BITOR:                    // SyntaxKind.BarEqualsToken:
+                case ASSIGN_LSHIFT:                   // SyntaxKind.LessThanLessThanEqualsToken:
+                case ASSIGN_RSHIFT:                   // SyntaxKind.GreaterThanGreaterThanEqualsToken:
+                case QMARK:                           // SyntaxKind.QuestionToken:
+                case COLON:                           // SyntaxKind.ColonToken:
+                case OR:                              // SyntaxKind.BarBarToken:
+                case AND:                             // SyntaxKind.AmpersandAmpersandToken:
+                case PIPE:                            // SyntaxKind.BarToken
+                case TILDE:                           // SyntaxKind.CaretToken:
+                case AMP:                             // SyntaxKind.AmpersandToken:
+                case EQ:                              // Unique in VO
+                case EEQ:                             // SyntaxKind.EqualsEqualsToken:
+                case NEQ:                             // SyntaxKind.ExclamationEqualsToken:
+                case LT:                              // SyntaxKind.LessThanToken:
+                case LTE:                             // SyntaxKind.LessThanEqualsToken:
+                case GT:                              // SyntaxKind.GreaterThanToken:
+                case GTE:                             // SyntaxKind.GreaterThanEqualsToken:
+                case LSHIFT:                          // SyntaxKind.LessThanLessThanToken:
+                case RSHIFT:                          // SyntaxKind.GreaterThanGreaterThanToken:
+                case PLUS:                            // SyntaxKind.PlusToken:
+                case MINUS:                           // SyntaxKind.MinusToken:
+                case MULT:                            // SyntaxKind.AsteriskToken:
+                case DIV:                             // SyntaxKind.SlashToken:
+                case MOD:                             // SyntaxKind.PercentToken:
+                case DEC:                             // SyntaxKind.PlusPlusToken:
+                case INC:                             // SyntaxKind.MinusMinusToken:
+                case LBRKT:                           // SyntaxKind.OpenBracketToken:
+                case DOT:                             // SyntaxKind.DotToken:
+                                                      // SyntaxKind.MinusGreaterThanToken     used for pointer type in C#
+                case DEFAULT:                         // SyntaxKind.QuestionQuestionToken:
+                case Eof:                             // SyntaxKind.EndOfFileToken:     
                     return false;
             }
             return true;
         }
+
         bool validExpressionStmt()
         {
             var la = InputStream.La(2);

@@ -587,17 +587,14 @@ namespace Microsoft.CodeAnalysis.CSharp
 #if XSHARP
                 var tempResultType = resultType;
                 
-                if (opType != VOOperatorType.Cast )
+                if (BindVOBinaryOperatorVo11(node, resultOperatorKind, ref left, ref right, ref tempResultType, diagnostics))
                 {
-                    if (BindVOBinaryOperatorVo11(node, resultOperatorKind, ref left, ref right, ref tempResultType, diagnostics))
-                    {
-                        resultLeft = left;
-                        resultRight = right;
-                    }
+                    resultLeft = left;
+                    resultRight = right;
                 }
-#endif
+
                 resultConstant = FoldBinaryOperator(node, resultOperatorKind, resultLeft, resultRight, resultType.SpecialType, diagnostics, ref compoundStringLength);
-#if XSHARP
+
 
                 if (resultType != tempResultType && resultConstant != null )
                 {
@@ -611,6 +608,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     return new BoundLiteral(node, resultConstant, Compilation.GetSpecialType(resultConstant.SpecialType)) { WasCompilerGenerated = true } ;
                 }
+#else			
+                resultConstant = FoldBinaryOperator(node, resultOperatorKind, resultLeft, resultRight, resultType.SpecialType, diagnostics, ref compoundStringLength);
+                
 #endif
             }
 
@@ -628,22 +628,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                     resultType,
                     hasErrors);
 
-
-#if XSHARP
-
-            if (opType == VOOperatorType.Cast && resultType != leftType)// C277 ByteValue >> 2 should not return int but byte.
-            {
-                if (!result.Syntax.XIsVoCast)
-                {
-                    result = new BoundConversion(node, result, Conversion.ImplicitNumeric, false, false, null, leftType) { WasCompilerGenerated = true };
-                }
-                else
-                { 
-                    result = new BoundConversion(node, result, Conversion.ImplicitNumeric, false, false, null, rightType) { WasCompilerGenerated = true };
-                }
-            }
- 
-#endif
             return result;
 
         }

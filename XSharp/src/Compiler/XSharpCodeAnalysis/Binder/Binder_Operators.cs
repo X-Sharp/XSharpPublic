@@ -26,7 +26,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             NotEqualsUsual,
             SubtractString,
             UsualOther,
-            Cast,
+            Bitwise,
             PSZCompare,
             SymbolCompare,
             LogicCompare
@@ -391,6 +391,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return BindVOSymbolCompare(node, diagnostics, ref left, ref right);
                 case VOOperatorType.LogicCompare:
                     return BindVOLogicCompare(node, diagnostics, ref left, ref right);
+                case VOOperatorType.Bitwise:
+                    break;
 
             }
             return null;
@@ -580,7 +582,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     case SyntaxKind.BitwiseAndExpression:
                     case SyntaxKind.BitwiseOrExpression:
                     case SyntaxKind.BitwiseNotExpression:
-                        opType = VOOperatorType.Cast;
+                        opType = VOOperatorType.Bitwise;
                         break;
                     case SyntaxKind.AddExpression:
                     case SyntaxKind.SubtractExpression:
@@ -1076,7 +1078,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
         }
 
-        private bool VOEffectiveResultType(BoundExpression left, BoundExpression right, ref TypeSymbol resultType)
+        private bool VODetermineResultType(BinaryOperatorKind kind, BoundExpression left, BoundExpression right, ref TypeSymbol resultType)
         {
             var leftType = left.Type;
             var rightType = right.Type;
@@ -1086,7 +1088,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             if (leftType == rightType || right.ConstantValue != null)
             {
-                return false;
+                if (kind.IsComparison())
+                    return false;
+
             }
             if (left.ConstantValue != null)
             {
@@ -1149,20 +1153,22 @@ namespace Microsoft.CodeAnalysis.CSharp
         private bool BindVOBinaryOperatorVo11(BinaryExpressionSyntax node, BinaryOperatorKind kind, 
             ref BoundExpression left, ref BoundExpression right, ref TypeSymbol resultType, DiagnosticBag diagnostics)
         {
+            if (kind.IsShift())
+                return false;
             var leftType = left.Type;
             var rightType = right.Type;
             if (leftType == null || rightType == null || ! leftType.IsIntegralType() || ! rightType.IsIntegralType())
                 return false;
             bool result = false;
             TypeSymbol effectiveType = resultType;
-            if (!VOEffectiveResultType(left, right, ref effectiveType))
+            if (!VODetermineResultType(kind, left, right, ref effectiveType))
                 return false;
-            if (leftType != effectiveType)
+            if (leftType != effectiveType && left.ConstantValue == null)
             {
                 left = CreateConversion(left, Conversion.ImplicitNumeric, effectiveType, diagnostics);
                 result = true;
             }
-            if (rightType != effectiveType)
+            if (rightType != effectiveType && right.ConstantValue == null)
             {
                 right = CreateConversion(right, Conversion.ImplicitNumeric, effectiveType, diagnostics);
                 result = true;

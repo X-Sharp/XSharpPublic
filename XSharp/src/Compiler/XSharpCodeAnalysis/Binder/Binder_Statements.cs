@@ -52,6 +52,155 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
 
         }
+
+        BoundExpression XsHandleNullPsz(TypeSymbol targetType, BoundExpression expression)
+        {
+            if (Compilation.Options.HasRuntime && targetType == Compilation.PszType())
+            {
+                if (IsNullNode(expression))
+                {
+                    return PszFromNull(expression);
+                }
+            }
+            return null;
+        }
+
+        BoundExpression XsHandleExplicitConversion(TypeSymbol targetType, BoundExpression expression, DiagnosticBag diagnostics, Conversion conversion)
+        {
+            if (conversion.IsExplicit)
+            {
+                // silently convert integral types
+                if (CheckImplicitCast(expression.Type, targetType, expression.Syntax, diagnostics) || conversion.IsNullable)
+                {
+                    if (targetType.IsIntegralType() && expression.Type.IsIntegralType())
+                    {
+                        return CreateConversion(expression.Syntax, expression, conversion, false, targetType, diagnostics);
+                    }
+                    else
+                    {
+                        return XsCreateConversionNonIntegralNumeric(targetType, expression, diagnostics, conversion);
+                    }
+
+                }
+            }
+            return null;
+        }
+
+        void XsCheckConversionForAssignment(TypeSymbol targetType, BoundExpression expression, DiagnosticBag diagnostics, bool isDefaultParameter = false, bool isRefAssignment = false)
+        {
+            if (expression.Kind == BoundKind.UnboundLambda)
+            {
+                if (targetType.IsDelegateType())
+                {
+                    if (expression.Syntax.XIsCodeBlock && !Compilation.Options.MacroScript)
+                    {
+                        Error(diagnostics, ErrorCode.ERR_LamdaWithCodeblockSyntax, expression.Syntax, targetType);
+                    }
+                }
+            }
+
+            if (this.Compilation.Options.VOSignedUnsignedConversion)
+                return;
+
+            if (targetType.SpecialType.IsIntegralType() && expression.Type.SpecialType.IsIntegralType() && targetType != expression.Type)
+            {
+                var rhsType = expression.Type;
+                bool ok = false;
+                if (expression.ConstantValue != null)
+                {
+                    if (expression.ConstantValue.SpecialType.IsSignedIntegralType())
+                    {
+                        var value = expression.ConstantValue.Int64Value;
+                        switch (targetType.SpecialType)
+                        {
+                            case SpecialType.System_SByte:
+                                ok = value >= sbyte.MinValue && value <= sbyte.MaxValue;
+                                break;
+                            case SpecialType.System_Int16:
+                                ok = value >= short.MinValue && value <= short.MaxValue;
+                                break;
+                            case SpecialType.System_Int32:
+                                ok = value >= int.MinValue && value <= int.MaxValue;
+                                break;
+                            case SpecialType.System_Int64:
+                                ok = true;
+                                break;
+                            case SpecialType.System_Byte:
+                                ok = value >= 0 && value <= byte.MaxValue;
+                                break;
+                            case SpecialType.System_UInt16:
+                                ok = value >= 0 && value <= ushort.MaxValue;
+                                break;
+                            case SpecialType.System_UInt32:
+                                ok = value >= 0 && value <= uint.MaxValue;
+                                break;
+                            case SpecialType.System_UInt64:
+                                ok = value >= 0;
+                                break;
+                            default:
+                                ok = false;
+                                break;
+                        }
+                        if (ok)
+                            return;
+                    }
+                    else
+                    {
+                        var value = expression.ConstantValue.UInt64Value;
+                        switch (targetType.SpecialType)
+                        {
+                            case SpecialType.System_SByte:
+                                ok = value <= (ulong)sbyte.MaxValue;
+                                break;
+                            case SpecialType.System_Int16:
+                                ok = value <= (ulong)short.MaxValue;
+                                break;
+                            case SpecialType.System_Int32:
+                                ok = value <= int.MaxValue;
+                                break;
+                            case SpecialType.System_Byte:
+                                ok = value <= byte.MaxValue;
+                                break;
+                            case SpecialType.System_UInt16:
+                                ok = value <= ushort.MaxValue;
+                                break;
+                            case SpecialType.System_UInt32:
+                                ok = value <= uint.MaxValue;
+                                break;
+                            case SpecialType.System_UInt64:
+                                ok = true;
+                                break;
+                            case SpecialType.System_Int64:
+                                ok = value < (ulong)long.MaxValue;
+                                break;
+                            default:
+                                ok = false;
+                                break;
+                        }
+                    }
+                }
+                if (! ok)
+                {
+                    // Find sources that do not fit in the target
+                    if (expression.Type.SpecialType.SizeInBytes() > targetType.SpecialType.SizeInBytes())
+                    {
+                        // Narrowing conversion from '{0}' to '{1}' may lead to loss of data or overflow errors
+                        Error(diagnostics, ErrorCode.WRN_ConversionMayLeadToLossOfData, expression.Syntax, expression.Type, targetType);
+                    }
+                    else if (targetType.SpecialType.SizeInBytes() == targetType.SpecialType.SizeInBytes())
+                    {
+                        //Signed/unsigned conversions from '{0}' to '{1}' may lead to loss of data or overflow errors
+                        Error(diagnostics, ErrorCode.WRN_SignedUnSignedConversion, expression.Syntax, expression.Type, targetType);
+                    }
+                    // lhs.Size < rhs.Size, only a problem when lhs is Signed and rhs is Unsiged
+                    else if (expression.Type.SpecialType.IsSignedIntegralType() && !targetType.SpecialType.IsSignedIntegralType())
+                    {
+                        // Signed / unsigned conversions from '{0}' to '{1}' may lead to loss of data or overflow errors
+                        Error(diagnostics, ErrorCode.WRN_SignedUnSignedConversion, expression.Syntax, expression.Type, targetType);
+                    }
+                }
+            }
+        }
     }
 }
 

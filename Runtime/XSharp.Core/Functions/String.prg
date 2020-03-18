@@ -146,7 +146,7 @@ FUNCTION ATLine2(cSearch AS STRING,cTarget AS STRING) AS DWORD
 /// </returns>
 FUNCTION B64EncFile(c AS STRING) AS STRING
 	THROW NotImplementedException{}
-	RETURN String.Empty   
+	//RETURN String.Empty   
 
 /// <summary>This function is not implemented yet</summary>
 /// <param name="cIn"></param>
@@ -154,7 +154,7 @@ FUNCTION B64EncFile(c AS STRING) AS STRING
 /// </returns>
 FUNCTION B64EncString(cIn AS STRING) AS STRING
 	THROW NotImplementedException{}
-	RETURN String.Empty   
+	//RETURN String.Empty   
 
 
 
@@ -622,7 +622,7 @@ FUNCTION ProperA(cName REF STRING) AS STRING
 /// </returns>
 FUNCTION QPEncString(cIn AS STRING) AS STRING
 	THROW NotImplementedException{}
-	RETURN String.Empty   
+	//RETURN String.Empty   
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/rat/*" />
@@ -798,7 +798,7 @@ INTERNAL FUNCTION _SoundExChar( c AS CHAR ) AS CHAR
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/strevaluate/*" />
 FUNCTION StrEvaluate(cString AS STRING) AS STRING
 	THROW NotImplementedException{}
-	RETURN String.Empty   
+	//RETURN String.Empty   
 
 
 
@@ -897,7 +897,7 @@ FUNCTION UpperA(cString REF STRING) AS STRING
 /// </returns>
 FUNCTION UUDecodeLine(cLine AS STRING,hfOut AS IntPtr) AS DWORD
 	THROW NotImplementedException{}
-RETURN 0   
+//RETURN 0   
 
 /// <summary>This function is not implemented yet</summary>
 /// <param name="c"></param>
@@ -905,7 +905,7 @@ RETURN 0
 /// </returns>
 FUNCTION UUEncFile(c AS STRING) AS STRING
 	THROW NotImplementedException{}
-	RETURN String.Empty   
+	//RETURN String.Empty   
 
 /// <summary>This function is not implemented yet</summary>
 /// <param name="c"></param>
@@ -913,7 +913,7 @@ FUNCTION UUEncFile(c AS STRING) AS STRING
 /// </returns>
 FUNCTION UUEncLine(c AS STRING) AS STRING
 	THROW NotImplementedException{}
-	RETURN String.Empty   
+	//RETURN String.Empty   
 
 
 

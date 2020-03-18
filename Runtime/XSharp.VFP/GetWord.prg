@@ -1,7 +1,8 @@
 USING System
 USING System.Collections.Generic
 USING System.Text
-
+// make sure this is compiled early bound !
+#pragma options ("lb", off)
 BEGIN NAMESPACE XSharp.VFP
     DELEGATE __IsInDelimiterArray(tc2Check AS Char) AS LOGIC
     DELEGATE __GetWordCountActive(tcString AS STRING) AS LONG
@@ -16,7 +17,7 @@ BEGIN NAMESPACE XSharp.VFP
         METHOD SetStru() AS VOID
     END INTERFACE
                
-    CLASS GetVfpDefault
+    CLASS GetVfpDefault IMPLEMENTS IGetWord
         PUBLIC CONST _cSpace := c' '    AS Char && _Chr(ASC_BLANK)  Chr(032)[0]
         PUBLIC CONST _c_LinF := c'\n'   AS Char && _Chr(ASC_LF)     Chr(010)[0]
         PUBLIC CONST _c__Tab := c'\t'   AS Char && _Chr(ASC_Tab)    Chr(009)[0]
@@ -109,7 +110,7 @@ BEGIN NAMESPACE XSharp.VFP
         END Constructor
     END CLASS
 
-    CLASS GetDotNetWhite INHERIT GetVfpDefault
+    INTERNAL CLASS GetDotNetWhite INHERIT GetVfpDefault
 
         OVERRIDE METHOD IsDelimiter(tc2Check AS Char) AS LOGIC
             RETURN System:Char:IsWhiteSpace(tc2Check)
@@ -118,7 +119,7 @@ BEGIN NAMESPACE XSharp.VFP
             SUPER(toParent)
     END CLASS
     
-    CLASS GetSingle INHERIT GetVfpDefault
+    INTERNAL CLASS GetSingle INHERIT GetVfpDefault
         *-- Single delimiter Comparison options        
         PUBLIC cCmp AS Char
         
@@ -133,7 +134,7 @@ BEGIN NAMESPACE XSharp.VFP
             SUPER(toParent)
     END CLASS
     
-    CLASS GetSingleOpt INHERIT GetSingle
+    INTERNAL CLASS GetSingleOpt INHERIT GetSingle
         // Direct call to Char:Equals without calling IsDelimiter gives sizable boost
         OVERRIDE METHOD GetWordCount(tcString AS STRING) AS LONG
             // Start with a Word?
@@ -204,7 +205,7 @@ BEGIN NAMESPACE XSharp.VFP
 
     END CLASS
     
-    CLASS GetMultiple INHERIT GetVfpDefault
+    INTERNAL CLASS GetMultiple INHERIT GetVfpDefault
         *-- if not single char, DotNetWhite or VfpWhite:
         PRIVATE CONST _c_A126 := (Char) 126 AS Char && _Chr(ASC_Z_Low)  Chr(126)[0], cut off ~ TO be safe on 1 off
         PRIVATE CONST _i_ArSz := 135 AS INT
@@ -264,13 +265,13 @@ BEGIN NAMESPACE XSharp.VFP
             SUPER(toParent)
     END CLASS
     
-    CLASS GetMoreLanguage INHERIT GetMultiple
+    INTERNAL CLASS GetMoreLanguage INHERIT GetMultiple
         *-- exchange with Range for Greek or Cyrillic alphabet
         PRIVATE CONST _c_Up_A := c'A'    AS Char && _Chr(ASC_A)      Chr(065)[0]
         PRIVATE CONST _c_Up_Z := c'Z'    AS Char && _Chr(ASC_Z)      Chr(090)[0]
         PRIVATE CONST _c_Lw_a := c'a'    AS Char && _Chr(ASC_A_Low)  Chr(097)[0]
         PRIVATE CONST _c_Lw_z := c'z'    AS Char && _Chr(ASC_Z_Low)  Chr(122)[0]
-
+        
         OVERRIDE METHOD IsDelimiter(tc2Check AS Char) AS LOGIC
             *-- even better would be 1 Compare, then checking against known numeric range,
             *-- or checking several ranges, perhaps even adding DotNet.IsWhiteSpace into the fray
@@ -281,12 +282,12 @@ BEGIN NAMESPACE XSharp.VFP
                 RETURN .f.
             ELSEIF  tc2Check:CompareTo(_c_Up_A)>=0 .and. tc2Check:CompareTo(_c_Up_Z)<=0
                 RETURN .f.
-            ELSEIF  .t. && SELF:isVfpWhiteSwitchChar(tc2Check)
+            ELSE //IF  .t. && SELF:isVfpWhiteSwitchChar(tc2Check)
                 /// Flag Check Version???
                 RETURN .t.
             ENDIF
-            RETURN  SELF:hcCmp:ContainsKey(tc2Check)
-
+            //RETURN  SELF:hcCmp:ContainsKey(tc2Check)
+        
         CONSTRUCTOR(toParent AS GetWordHandler) AS VOID
             SUPER(toParent)
     END CLASS
@@ -304,12 +305,12 @@ BEGIN NAMESPACE XSharp.VFP
         ///implemented as lazy loading in :SetActive, perhaps more DotNetStyle
         ///would be a property or access method creating an instance in member location slot
         ///when accessed and still .Null.
-        PUBLIC oVfpDefault := NULL AS GetVfpDefault
-        PUBLIC oDotWhiteSp := NULL AS GetDotNetWhite
-        PUBLIC oSingleChar := NULL AS GetSingle
-        PUBLIC oSingle_Opt := NULL AS GetSingleOpt
-        PUBLIC oMultipleCs := NULL AS GetMultiple
-        PUBLIC oActiveObjc := NULL AS OBJECT && IGetWord AS common INTERFACE would be cleaner
+        PRIVATE STATIC oVfpDefault := NULL AS GetVfpDefault
+        PRIVATE STATIC oDotWhiteSp := NULL AS GetDotNetWhite
+        PRIVATE STATIC oSingleChar := NULL AS GetSingle
+        PRIVATE STATIC oSingle_Opt := NULL AS GetSingleOpt
+        PRIVATE STATIC oMultipleCs := NULL AS GetMultiple
+        INTERNAL oActiveObjc := NULL AS IGetWord && IGetWord AS common INTERFACE would be cleaner
         
         *-- plus a few special methods to set different delimiters,
         *-- causing the object to "reoptimize" the code used to analyze/extract the string (
@@ -353,36 +354,36 @@ BEGIN NAMESPACE XSharp.VFP
             // Different ways to check for .Null.? 
             SWITCH SELF:iMethod
                 CASE  -4
-                    IF ReferenceEquals(SELF:oDotWhiteSp, NULL)
-                        SELF:oDotWhiteSp := GetDotNetWhite{SELF}
+                    IF oDotWhiteSp == NULL
+                        oDotWhiteSp := GetDotNetWhite{SELF}
                     ENDIF
-                    SELF:oActiveObjc :=  (OBJECT) SELF:oDotWhiteSp
+                    SELF:oActiveObjc :=  oDotWhiteSp
                 CASE  1
                     *if !Self:oSingle_Opt != null
                     *if Self:oSingle_Opt is null
-                    IF ReferenceEquals(SELF:oSingle_Opt, NULL)
-                        SELF:oSingle_Opt := GetSingleOpt{SELF}
+                    IF oSingle_Opt == NULL
+                        oSingle_Opt := GetSingleOpt{SELF}
                     ENDIF
-                    SELF:oActiveObjc :=  (OBJECT) SELF:oSingle_Opt
+                    SELF:oActiveObjc :=  oSingle_Opt
                 CASE  3
-                    IF ReferenceEquals(SELF:oSingleChar, NULL)
-                        SELF:oSingleChar := GetSingle{SELF}
+                    IF oSingleChar == NULL
+                        oSingleChar := GetSingle{SELF}
                     ENDIF
-                    SELF:oActiveObjc :=  (OBJECT) SELF:oSingleChar 
+                    SELF:oActiveObjc :=  oSingleChar 
                 CASE 22
                     SELF:cRawStr := Delimiters
-                    IF ReferenceEquals(SELF:oVfpDefault, NULL)
-                        SELF:oVfpDefault := GetVfpDefault{SELF}
+                    IF oVfpDefault == NULL
+                        oVfpDefault := GetVfpDefault{SELF}
                     ENDIF
-                    SELF:oActiveObjc := (OBJECT) SELF:oVfpDefault &&
+                    SELF:oActiveObjc := oVfpDefault &&
                 * case 34
                     * Hook for additional Char sets like Greek, Cyrillic...
                     * self:IsDelimiter := Self:isViaDictGuarded
                 OTHERWISE
-                    IF ReferenceEquals(SELF:oMultipleCs, NULL)
-                        SELF:oMultipleCs := GetMultiple{SELF}
+                    IF oMultipleCs == NULL
+                        oMultipleCs := GetMultiple{SELF}
                     ENDIF
-                    SELF:oActiveObjc := (OBJECT) SELF:oMultipleCs
+                    SELF:oActiveObjc := oMultipleCs
                 END SWITCH
                 IF SELF:lAuto
                     *-- better imp via additional interface for 3(1)&37, 22/4 don't need empty method

@@ -23,8 +23,10 @@ INTERNAL FUNCTION _DoInArea<T>(uArea as Usual, action as @@Func<T>, defaultValue
     ENDIF 
     RETURN (T) (Object) (newArea)->(action()) 
 
-
-
+// The last 2 params in the function calls below determine the error message generated when the uArea parameter
+// is an non existing alias
+// The number should match the position of the uArea parameter in the parameter list of the original parameters list
+//
 
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/cdx/*" />

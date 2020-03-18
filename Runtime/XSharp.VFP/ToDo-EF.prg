@@ -9,14 +9,14 @@
 
 FUNCTION EVL( eExpression1, eExpression2 ) AS USUAL
     THROW NotImplementedException{}
-    RETURN NIL
+    // RETURN NIL
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/execscript/*" />
 
 FUNCTION ExecScript( cExpression , eParameter1, eParameter2) AS USUAL
     THROW NotImplementedException{}
-    RETURN NIL
+    // RETURN NIL
 
 
 
@@ -25,7 +25,7 @@ FUNCTION ExecScript( cExpression , eParameter1, eParameter2) AS USUAL
 
 FUNCTION FileToStr(cFileName ) AS STRING
     THROW NotImplementedException{}
-    RETURN ""
+    // RETURN ""
 
 
 
@@ -35,14 +35,14 @@ FUNCTION FileToStr(cFileName ) AS STRING
 
 FUNCTION FldList( ) AS USUAL
     THROW NotImplementedException{}
-    RETURN NIL
+    // RETURN NIL
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/fontmetric/*" />
 
 FUNCTION FontMetric( nAttribute , cFontName, nFontSize , cFontStyle) AS LONG
     THROW NotImplementedException{}
-    RETURN 0
+    // RETURN 0
 
 
     
@@ -52,13 +52,13 @@ FUNCTION FontMetric( nAttribute , cFontName, nFontSize , cFontStyle) AS LONG
 
 FUNCTION FullPath( cFileName1 , uPath) AS STRING
     THROW NotImplementedException{}
-    RETURN ""
+    // RETURN ""
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/fv/*" />
 
 FUNCTION FV( nPayment, nInterestRate, nPeriods ) AS FLOAT
     THROW NotImplementedException{}
-    RETURN 0.0
+    // RETURN 0.0
 
 

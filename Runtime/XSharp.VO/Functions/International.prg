@@ -137,7 +137,7 @@ FUNCTION SetAppLocaleID(uiNewLocale AS DWORD) AS DWORD
 /// </returns>
 FUNCTION SetClipCompFunc(pFunc AS OBJECT) AS IntPtr
 	THROW NotImplementedException{}
-	RETURN IntPtr.Zero
+	//RETURN IntPtr.Zero
 
 
 /// <summary>This function is not implemented yet</summary>
@@ -146,7 +146,7 @@ FUNCTION SetClipCompFunc(pFunc AS OBJECT) AS IntPtr
 /// </returns>
 FUNCTION SetWinCompFlags(n AS OBJECT) AS LONG
 	THROW NotImplementedException{}
-	RETURN 0   
+	//RETURN 0   
 
 /// <summary>This function is not implemented yet</summary>
 /// <summary>
@@ -156,7 +156,7 @@ FUNCTION SetWinCompFlags(n AS OBJECT) AS LONG
 /// </returns>
 FUNCTION SetWinCompFunc(pFunc AS OBJECT) AS IntPtr
 	THROW NotImplementedException{}
-	RETURN IntPtr.Zero
+	//RETURN IntPtr.Zero
 
 /// <exclude />
 [Obsolete];
@@ -172,7 +172,7 @@ FUNCTION NationExit() AS INT
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/nversion/*" />
 FUNCTION NVersion() AS STRING
 	THROW NotImplementedException{}
-	RETURN String.Empty 
+	//RETURN String.Empty 
 
 /// <exclude />
 FUNCTION MAKELANGID( p AS WORD, s AS WORD ) AS WORD

@@ -8,91 +8,91 @@
 
 FUNCTION GetAutoIncValue( nDataSessionNumber )
     THROW NotImplementedException{}
-    RETURN 0
+    // RETURN 0
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/getcolor/*" />
 
 FUNCTION GetColor( nDefaultColorNumber )
     THROW NotImplementedException{}
-    RETURN 0
+    // RETURN 0
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/getcp/*" />
 
 FUNCTION GetCp( nCodePage , cText , cDialogTitle )
     THROW NotImplementedException{}
-    RETURN 0
+    // RETURN 0
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/getcursoradapter/*" />
 
 FUNCTION GetCursorAdapter( cAlias )
     THROW NotImplementedException{}
-    RETURN NULL
+    // RETURN NULL
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/getdir/*" />
 
 FUNCTION GetDir( cDirectory , cText , cCaption , nFlags , lRootOnly) AS STRING
     THROW NotImplementedException{}
-    RETURN ""
+    // RETURN ""
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/getfile/*" />
 
 FUNCTION GetFile( cFileExtensions , cText , cOpenButtonCaption,nButtonType, cTitleBarCaption ) AS STRING
     THROW NotImplementedException{}
-    RETURN ""
+    // RETURN ""
     
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/getfldstate/*" />
 
 FUNCTION GetFldState( uField , uArea) AS USUAL
     THROW NotImplementedException{}
-   RETURN NIL
+   // RETURN NIL
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/getfont/*" />
 
 FUNCTION GetFont( cFontName , nFontSize , cFontStyle , nFontCharSet) AS USUAL
     THROW NotImplementedException{}
-    RETURN NIL
+    // RETURN NIL
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/getnextmodified/*" />
 
 FUNCTION GetNextModified( nRecordNumber , uArea , lNoFire)
     THROW NotImplementedException{}
-    RETURN 0
+    // RETURN 0
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/getobject/*" />
 
 FUNCTION GetObject( uType , cClassName) AS OBJECT
     THROW NotImplementedException{}
-    RETURN NULL_OBJECT
+    // RETURN NULL_OBJECT
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/getpict/*" />
 
 FUNCTION GetPict( cFileExtensions , cFileNameCaption , cOpenButtonCaption) AS STRING
     THROW NotImplementedException{}
-    RETURN ""
+    // RETURN ""
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/getprinter/*" />
 
 FUNCTION GetPrinter( ) AS STRING
     THROW NotImplementedException{}
-    RETURN ""
+    // RETURN ""
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/getresultset/*" />
 
 FUNCTION GetResultSet( ) AS LONG
     THROW NotImplementedException{}
-    RETURN 0
+    // RETURN 0
     
 
 /// <summary>-- todo --</summary>
@@ -100,4 +100,4 @@ FUNCTION GetResultSet( ) AS LONG
 
 FUNCTION GoMonth( uExpression , nNumberOfMonths) AS USUAL
     THROW NotImplementedException{}
-    RETURN NIL
+    // RETURN NIL

@@ -1,5 +1,5 @@
 #include "BuildNumber.h"
-DEFINE PROVIDERVERSION := "XSharp.CodeDom.XSharpCodeDomProvider,XSharpCodeDomProvider, Version="+VERSION_NUMBER_STR+", Culture=neutral, PublicKeyToken=ed555a0467764586, ProcessorArchitecture=MSIL" AS STRING
+DEFINE PROVIDERVERSION := "XSharp.CodeDom.XSharpCodeDomProvider,XSharpCodeDomProvider, Version="+VERSION_NUMBER+", Culture=neutral, PublicKeyToken=ed555a0467764586, ProcessorArchitecture=MSIL" AS STRING
 USING System.Collections.Generic
 USING System.Xml     
 USING STATIC System.Console

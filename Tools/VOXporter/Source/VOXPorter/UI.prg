@@ -44,7 +44,7 @@ CLASS xPorterUI INHERIT System.Windows.Forms.Form IMPLEMENTS IProgressBar
 
 		SELF:InitializeForm()
 		
-		SELF:Text := "VO-xPorter version "+VERSION_NUMBER_STR
+		SELF:Text := "VO-xPorter version "+VERSION_NUMBER
 		
 		LOCAL oType AS Type
 		oType := TypeOf(xPorterOptions)

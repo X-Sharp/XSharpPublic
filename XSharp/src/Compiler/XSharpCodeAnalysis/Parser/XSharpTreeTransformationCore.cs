@@ -3292,7 +3292,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             else if (dataType != null && ! isDim && candefault)
             {
-                initExpr = GenerateInitializer(dataType);
+                if (_options.HasOption(CompilerOption.InitLocals, context, PragmaOptions))
+                {
+                    initExpr = GenerateInitializer(dataType);
+                }
             }
             context.Put(GenerateVariable(context.Id.Get<SyntaxToken>(), initExpr));
         }
@@ -3307,6 +3310,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             else
                 context.SetSequencePoint(context.P, context.end);
             var isInInterface = context.isInInterface();
+            var isInStruct = context.isInStructure();
             var mods = context.Modifiers?.GetList<SyntaxToken>() ?? DefaultMethodModifiers(isInInterface, context.isInStructure());
             if (context.ExplicitIface != null)
             {
@@ -3389,9 +3393,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (context.ParamList == null || context.ParamList._Params.Count == 0)
             {
                 var initValue = context.Initializer.Get<ExpressionSyntax>();
-                if (initValue == null && (context.Auto != null || emulateAuto) )
+                if (initValue == null && (context.Auto != null || emulateAuto) && ! isInStruct)
                 {
-                    initValue = GenerateInitializer(context.Type);
+                    if (_options.HasOption(CompilerOption.InitLocals, context, PragmaOptions))
+                    {
+                        initValue = GenerateInitializer(context.Type);
+                    }
                 }
                 var initializer = initValue == null ? null :
                     _syntaxFactory.EqualsValueClause(SyntaxFactory.MakeToken(SyntaxKind.EqualsToken), initValue) ;
@@ -5523,7 +5530,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 staticName = XSharpSpecialNames.StaticLocalFieldNamePrefix + CurrentEntity.ShortName+"$"+context.Id.Get<SyntaxToken>().Text + UniqueNameSuffix;
                 if (initExpr == null)
                 {
-                    initExpr = GenerateInitializer(context.DataType);
+                    if (_options.HasOption(CompilerOption.InitLocals, context, PragmaOptions))
+                    {
+                        initExpr = GenerateInitializer(context.DataType);
+                    }
                 }
                 simpleInit = (initExpr is LiteralExpressionSyntax);
                 ClassEntities.Peek().Members.Add(

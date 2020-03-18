@@ -612,11 +612,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
                 if (options.Dialect == XSharpDialect.FoxPro)
                 {
-                    if (!!options.ExplicitOptions.HasFlag(CompilerOption.Vo9))
+                    if (!options.ExplicitOptions.HasFlag(CompilerOption.Vo9))
                     {
                         options.Vo9 = true;             // generate default return values
                     }
-                    if (!!options.ExplicitOptions.HasFlag(CompilerOption.InitLocals))
+                    if (!options.ExplicitOptions.HasFlag(CompilerOption.InitLocals))
                     {
                         options.InitLocals = true;
                     }

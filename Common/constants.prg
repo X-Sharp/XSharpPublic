@@ -12,9 +12,9 @@ BEGIN NAMESPACE XSharp
         INTERNAL CONST RegCompany           := REG_COMPANY_NAME		    AS STRING
         INTERNAL CONST Product              := PRODUCT				    AS STRING
         INTERNAL CONST ProductName          := PRODUCT_NAME			    AS STRING
-        INTERNAL CONST Version              := VERSION_NUMBER_STR		AS STRING
-        INTERNAL CONST FileVersion          := FILEVERSION_NUMBER_STR	AS STRING
-        INTERNAL CONST InformationalVersion := INFORMATIONAL_NUMBER_STR	AS STRING
+        INTERNAL CONST Version              := VERSION_NUMBER           AS STRING
+        INTERNAL CONST FileVersion          := FILEVERSION_NUMBER    	AS STRING
+        INTERNAL CONST InformationalVersion := INFORMATIONAL_NUMBER    	AS STRING
         INTERNAL CONST Copyright            := COPYRIGHT_STR			AS STRING
         
         INTERNAL CONST RegistryKey := "Software\" + RegCompany + "\" + Product			AS STRING

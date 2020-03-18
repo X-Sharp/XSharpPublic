@@ -6,8 +6,9 @@
 #using System.Runtime.InteropServices
 #using System.Security
 
-#include "SDKBuildNumber.h"     
-
+#include "BuildNumber.h"    
+#undef  COPYRIGHT_STR
+#define COPYRIGHT_STR "Copyright © 1993-2020 Computer Associates & XSharp BV, All rights reserved"
 
 [assembly: AssemblyConfigurationAttribute( ASSEMBLY_CONFIGURATION )]
 [assembly: AssemblyCompanyAttribute( COMPANY_NAME )]
@@ -16,9 +17,9 @@
 [assembly: ComVisibleAttribute( FALSE )] 
 [assembly: CLSCompliant( FALSE )]
 //[assembly: AllowPartiallyTrustedCallersAttribute()]
-[assembly: AssemblyVersionAttribute( VERSION_NUMBER_STR )]
-[assembly: AssemblyInformationalVersionAttribute( INFORMATIONAL_NUMBER_STR )]
-[assembly: AssemblyFileVersionAttribute( FILEVERSION_NUMBER_STR )]
+[assembly: AssemblyVersionAttribute( VERSION_NUMBER )]
+[assembly: AssemblyInformationalVersionAttribute( INFORMATIONAL_NUMBER )]
+[assembly: AssemblyFileVersionAttribute( FILEVERSION_NUMBER )]
 #ifdef __XSHARP_RT__
 [assembly: ImplicitNamespaceAttribute( "VO" )]
 #else

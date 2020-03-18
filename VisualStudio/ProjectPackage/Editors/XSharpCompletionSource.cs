@@ -623,7 +623,7 @@ namespace XSharpLanguage
 
                     //
                     ImageSource icon = _provider.GlyphService.GetGlyph(typeAnalysis.GlyphGroup, typeAnalysis.GlyphItem);
-                    if (!compList.Add(new XSCompletion(realTypeName, realTypeName, typeAnalysis.Description, icon, null, Kind.Class)))
+                    if (!compList.Add(new XSCompletion(realTypeName, realTypeName, typeAnalysis.Description, icon, null, Kind.Class,"")))
                         break;
                 }
             }
@@ -670,7 +670,7 @@ namespace XSharpLanguage
             foreach (var kw in XSharpTypes.Get().Where(ti => nameStartsWith(ti.FullName, startWith)))
             {
                 ImageSource icon = _provider.GlyphService.GetGlyph(kw.getGlyphGroup(), kw.getGlyphItem());
-                compList.Add(new XSCompletion(kw.Name, kw.Name, kw.Description, icon, null, Kind.Keyword));
+                compList.Add(new XSCompletion(kw.Name, kw.Name, kw.Description, icon, null, Kind.Keyword,""));
             }
         }
 
@@ -698,7 +698,7 @@ namespace XSharpLanguage
                         if (dotPos > 0)
                             realTypeName = realTypeName.Substring(0, dotPos);
                         ImageSource icon = _provider.GlyphService.GetGlyph(typeInfo.getGlyphGroup(), typeInfo.getGlyphItem());
-                        if (!compList.Add(new XSCompletion(realTypeName, realTypeName, typeInfo.Description, icon, null, Kind.Class)))
+                        if (!compList.Add(new XSCompletion(realTypeName, realTypeName, typeInfo.Description, icon, null, Kind.Class,"")))
                             break;
                     }
                 }
@@ -727,7 +727,7 @@ namespace XSharpLanguage
                 if (dotPos > 0)
                     realTypeName = realTypeName.Substring(0, dotPos);
                 ImageSource icon = _provider.GlyphService.GetGlyph(typeInfo.getGlyphGroup(), typeInfo.getGlyphItem());
-                if (!compList.Add(new XSCompletion(realTypeName, realTypeName, typeInfo.Description, icon, null, Kind.Class)))
+                if (!compList.Add(new XSCompletion(realTypeName, realTypeName, typeInfo.Description, icon, null, Kind.Class,"")))
                     break;
             }
         }
@@ -755,7 +755,7 @@ namespace XSharpLanguage
                 if (dotPos > 0)
                     realNamespace = realNamespace.Substring(0, dotPos);
                 //
-                if (!compList.Add(new XSCompletion(realNamespace, realNamespace, "Namespace " + nameSpace, icon, null, Kind.Namespace)))
+                if (!compList.Add(new XSCompletion(realNamespace, realNamespace, "Namespace " + nameSpace, icon, null, Kind.Namespace,"")))
                     break;
             }
             //
@@ -795,7 +795,7 @@ namespace XSharpLanguage
                 // Then remove it
                 if (dotPos > 0)
                     realNamespace = realNamespace.Substring(0, dotPos);
-                if (!compList.Add(new XSCompletion(realNamespace, realNamespace, nameSpace.Description, icon, null, Kind.Namespace)))
+                if (!compList.Add(new XSCompletion(realNamespace, realNamespace, nameSpace.Description, icon, null, Kind.Namespace,"")))
                     break;
             }
         }
@@ -811,7 +811,7 @@ namespace XSharpLanguage
             {
                 //
                 ImageSource icon = _provider.GlyphService.GetGlyph(paramVar.getGlyphGroup(), paramVar.getGlyphItem());
-                if (!compList.Add(new XSCompletion(paramVar.Name, paramVar.Name, paramVar.Description, icon, null, Kind.Parameter)))
+                if (!compList.Add(new XSCompletion(paramVar.Name, paramVar.Name, paramVar.Description, icon, null, Kind.Parameter,"")))
                     break;
             }
             // Then, look for Locals
@@ -819,7 +819,7 @@ namespace XSharpLanguage
             {
                 //
                 ImageSource icon = _provider.GlyphService.GetGlyph(localVar.getGlyphGroup(), localVar.getGlyphItem());
-                if (!compList.Add(new XSCompletion(localVar.Name, localVar.Name, localVar.Description, icon, null, Kind.Local)))
+                if (!compList.Add(new XSCompletion(localVar.Name, localVar.Name, localVar.Description, icon, null, Kind.Local,"")))
                     break;
             }
             // Ok, now look for Members of the Owner of the member... So, the class a Method
@@ -831,7 +831,7 @@ namespace XSharpLanguage
                 foreach (var member in classElement.Members.Where(m => m.Kind == Kind.Field && nameStartsWith(m.Name, startWith)))
                 {
                     ImageSource icon = _provider.GlyphService.GetGlyph(member.getGlyphGroup(), member.getGlyphItem());
-                    if (!compList.Add(new XSCompletion(member.Name, member.Name, member.Description, icon, null, Kind.Field)))
+                    if (!compList.Add(new XSCompletion(member.Name, member.Name, member.Description, icon, null, Kind.Field,"")))
                         break;
                 }
             }
@@ -878,7 +878,7 @@ namespace XSharpLanguage
                 {
                     toAdd = "(";
                 }
-                if (!compList.Add(new XSCompletion(elt.Name, elt.Name + toAdd, elt.Description, icon, null, elt.Kind)))
+                if (!compList.Add(new XSCompletion(elt.Name, elt.Name + toAdd, elt.Description, icon, null, elt.Kind,elt.Value)))
                     break;
             }
             // Hummm, we should call for Owner of the Owner.. Super !
@@ -970,7 +970,7 @@ namespace XSharpLanguage
                 {
                     toAdd = "(";
                 }
-                if (!compList.Add(new XSCompletion(elt.Name, elt.Name + toAdd, elt.Description, icon, null, elt.Kind)))
+                if (!compList.Add(new XSCompletion(elt.Name, elt.Name + toAdd, elt.Description, icon, null, elt.Kind,elt.Value)))
                     break;
             }
         }
@@ -1039,7 +1039,7 @@ namespace XSharpLanguage
                         }
                         //
                         ImageSource icon = _provider.GlyphService.GetGlyph(analysis.GlyphGroup, imgI);
-                        if (!compList.Add(new XSCompletion(analysis.Name, analysis.Name + toAdd, analysis.Description, icon, null, analysis.Kind)))
+                        if (!compList.Add(new XSCompletion(analysis.Name, analysis.Name + toAdd, analysis.Description, icon, null, analysis.Kind,analysis.Value)))
                             break;
                     }
                 }
@@ -1080,7 +1080,7 @@ namespace XSharpLanguage
                 // Fill enum members
                 foreach (string name in sType.GetEnumNames())
                 {
-                    if (!compList.Add(new XSCompletion(name, name, "", icon, null, Kind.EnumMember)))
+                    if (!compList.Add(new XSCompletion(name, name, "", icon, null, Kind.EnumMember,"")))
                         break;
                 }
 
@@ -2172,10 +2172,13 @@ namespace XSharpLanguage
     public class XSCompletion : Completion
     {
         public XSharpModel.Kind Kind { get; set; }
-        public XSCompletion(string displayText, string insertionText, string description, ImageSource iconSource, string iconAutomationText, XSharpModel.Kind kind)
+        public string Value { get; set; }
+        public XSCompletion(string displayText, string insertionText, string description, 
+            ImageSource iconSource, string iconAutomationText, XSharpModel.Kind kind, string value)
             : base(displayText, insertionText, description, iconSource, iconAutomationText)
         {
             Kind = kind;
+            Value = value;
         }
 
         public override string Description
@@ -2200,6 +2203,10 @@ namespace XSharpLanguage
                 else
                 {
                     desc = base.Description;
+                }
+                if (!String.IsNullOrEmpty(Value))
+                {
+                    desc += " := " + Value;
                 }
                 //
                 return desc;

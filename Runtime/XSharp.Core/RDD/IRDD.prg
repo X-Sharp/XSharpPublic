@@ -130,6 +130,11 @@ INTERFACE XSharp.RDD.IRdd
 	METHOD SetScope(info AS DbScopeInfo)	AS LOGIC
 		
 	// Fields                          
+	/// <summary>Set the Number of Fields the AddField Method will add.</summary>
+    /// <param name="fieldCount">Number of fields that will be added.</param>
+    /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>
+	METHOD SetFieldExtent(fieldCount AS LONG ) AS LOGIC
+
 	/// <summary>Add a column.</summary>
     /// <param name="info">RddFieldInfo object.</param>
     /// <returns><include file="CoreComments.xml" path="Comments/TrueOrFalse/*" /></returns>

@@ -9,6 +9,7 @@ VOSTRUCT __WCDropFiles
 	MEMBER fInNonClientArea AS LOGIC	//window's non-client area
 	MEMBER fUnicode AS LOGIC			// are the pathnames in Unicaode?
 
+/// <exclude/>
 VOSTRUCT SelfPtr
 	MEMBER ptrSelf AS PTR
 
@@ -16,6 +17,7 @@ VOSTRUCT SelfPtr
 	//member oObject as ptr
 	//member ptrNext as __WCDCItem
 
+/// <exclude/>
 VOSTRUCT strColor
 	MEMBER s1 AS DWORD
 	MEMBER s2 AS DWORD
@@ -33,6 +35,8 @@ VOSTRUCT strColor
 	MEMBER s14 AS DWORD
 	MEMBER s15 AS DWORD
 	MEMBER s16 AS DWORD
+
+/// <exclude/>
 VOSTRUCT WCColor
 	MEMBER bBlue 	AS BYTE
 	MEMBER bGreen 	AS BYTE

@@ -1,7 +1,16 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+
 USING System.Collections.Generic
+USING System.Diagnostics
 
-
-
+/// <summary>
+/// The Xbase++ DataObject class.
+/// </summary>
+[DebuggerTypeProxy(TYPEOF(DataObjectDebugView))];
 CLASS XSharp.XPP.DataObject INHERIT XSharp.XPP.Abstract
     PRIVATE _fields  AS Dictionary<STRING, USUAL>
     PRIVATE _methods AS Dictionary<STRING, USUAL>
@@ -16,6 +25,7 @@ CLASS XSharp.XPP.DataObject INHERIT XSharp.XPP.Abstract
             RETURN TRUE
         ENDIF
         RETURN FALSE
+
     OVERRIDE METHOD ClassDescribe(uInfo) AS ARRAY CLIPPER
         local aResult as ARRAY
         local nInfo as LONG
@@ -63,7 +73,7 @@ CLASS XSharp.XPP.DataObject INHERIT XSharp.XPP.Abstract
     /// test for the existence of an instance variable added via NoIvarPut(). In addition, the method :classDescribe() also reflects
     /// dynamic instance variables. 
     /// </remarks>
-    OVERRIDE METHOD NoIvarPut(cName, uValue) AS USUAL CLIPPER
+    OVERRIDE METHOD NoIvarPut(cName AS USUAL, uValue AS USUAL) AS USUAL STRICT
         SELF:_fields[cName] := uValue
         RETURN uValue
 
@@ -77,7 +87,7 @@ CLASS XSharp.XPP.DataObject INHERIT XSharp.XPP.Abstract
     /// defined in a DataObject. This works irrespective of whether the member was added dynamically, or was defined
     /// statically in a class derived from DataObject. 
     /// </remarks>
-    OVERRIDE METHOD NoIvarGet(cName) AS USUAL CLIPPER
+    OVERRIDE METHOD NoIvarGet(cName AS USUAL) AS USUAL STRICT
         IF SELF:_fields:ContainsKey(cName)
             RETURN SELF:_fields[cName]
         ENDIF
@@ -148,6 +158,30 @@ CLASS XSharp.XPP.DataObject INHERIT XSharp.XPP.Abstract
         ENDIF
         RETURN NIL
 
+    INTERNAL CLASS DataObjectDebugView
+        PRIVATE _value AS XSharp.XPP.DataObject
+        PRIVATE PROPERTY _count as INT GET _value:_fields:Count
+        INTERNAL CONSTRUCTOR (d AS XSharp.XPP.DataObject)
+            _value := d
 
+        [DebuggerBrowsable(DebuggerBrowsableState.Collapsed)] ;
+        [DebuggerDisplay("Count = {_count}", Type:="Dynamic Properties")];
+        PUBLIC PROPERTY Properties AS IList<Prop>
+        GET
+            VAR result := List<Prop>{}
+            FOREACH var item in _value:_fields
+                result:Add( Prop{} {Name := item:Key, @@Value := item:Value})
+            NEXT
+            RETURN result
+        END GET
+        END PROPERTY
+
+        [DebuggerDisplay("{Name,nq} = {Value}", Type:="Dynamic Property")];
+        INTERNAL CLASS Prop
+            INTERNAL PROPERTY Name     AS STRING AUTO
+            INTERNAL PROPERTY @@Value  AS USUAL AUTO
+        END CLASS
+
+    END CLASS
 
 END CLASS

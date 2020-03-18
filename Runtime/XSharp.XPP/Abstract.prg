@@ -5,7 +5,7 @@
 //
 
 USING System.Reflection
-CLASS XSharp.XPP.Abstract 
+ABSTRACT CLASS XSharp.XPP.Abstract 
     PRIVATE inSend := FALSE AS LOGIC
     
     /// <summary>Retrieves the name of the class an object belongs to.</summary>
@@ -34,13 +34,13 @@ CLASS XSharp.XPP.Abstract
     VIRTUAL METHOD HasIVar(cName AS STRING) AS LOGIC
         RETURN IVarGetInfo(SELF, cName) != 0
 
-    VIRTUAL METHOD NoIvarGet(cName) AS USUAL CLIPPER
+    VIRTUAL METHOD NoIvarGet(cName AS USUAL) AS USUAL STRICT
         IF XSharp.XPP.ClassObject.IsInstanceofRuntimeClass(SELF)
             RETURN XSharp.XPP.ClassObject.CallIVarGet(SELF, cName)
         ENDIF
         RETURN NIL
 
-    VIRTUAL METHOD NoIvarPut(cName, uValue) AS USUAL CLIPPER
+    VIRTUAL METHOD NoIvarPut(cName AS USUAL, uValue AS USUAL) AS USUAL STRICT
         IF XSharp.XPP.ClassObject.IsInstanceofRuntimeClass(SELF)
             RETURN XSharp.XPP.ClassObject.CallIVarPut(SELF, cName, uValue)
         ENDIF
@@ -50,13 +50,13 @@ CLASS XSharp.XPP.Abstract
         /// <param name="cName">The fieldname to assign.</param>
         /// <param name="uValue">The value of an assignment. </param>
         /// <returns>The return value of the method is ignored.</returns>
-    METHOD SetNoIVar(cName , uValue ) AS USUAL CLIPPER
+    METHOD SetNoIVar(cName AS USUAL , uValue  AS USUAL) AS USUAL STRICT
         RETURN SELF:NoIvarPut(cName, uValue)
         
         /// <summary>Handles access operations to undefined instance variables. </summary>
         /// <param name="cName">The fieldname to access.</param>
         /// <returns></returns>
-    METHOD GetNoIVar(cName ) AS USUAL CLIPPER
+    METHOD GetNoIVar(cName AS USUAL ) AS USUAL STRICT
         RETURN SELF:NoIvarGet(cName)
         
         /// <summary>Handles calls to undefined methods.</summary>

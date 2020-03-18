@@ -148,7 +148,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL PROPERTY RightPtr AS Int32 GET _rightPtr ; 
             SET _SetLong(CDXBRANCH_OFFSET_RIGHTPTR, value),  _rightPtr := value
 
-        INTERNAL PROPERTY LastNode AS CdxPageNode GET IIF(SELF:NumKeys == 0, NULL, SELF[SELF:NumKeys-1])
+        INTERNAL PROPERTY LastNode AS CdxPageNode GET IIF(SELF:NumKeys == 0, NULL, SELF[(WORD) (SELF:NumKeys-1)])
         
         INTERNAL PROPERTY MaxKeys AS LONG GET _maxKeys
         

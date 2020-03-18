@@ -11,21 +11,12 @@
     <OutputName>XSharp.Core</OutputName>
     <AZ>true</AZ>
     <CS>true</CS>
-    <LB>false</LB>
-    <OVF>false</OVF>
-    <Unsafe>false</Unsafe>
-    <INS>false</INS>
-    <NS>false</NS>
     <VulcanCompatibleResources>True</VulcanCompatibleResources>
     <XSharpProjectversion>2.0.6.2</XSharpProjectversion>
-    <NamedArgs>false</NamedArgs>
-    <MemVar>false</MemVar>
-    <Undeclared>false</Undeclared>
     <IncludePaths>$(CommonInclude)</IncludePaths>
     <Nostandarddefs>true</Nostandarddefs>
     <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
     <StandardDefs />
-    <InitLocals>false</InitLocals>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -37,7 +28,7 @@
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <UseSharedCompilation>true</UseSharedCompilation>
-    <DisabledWarnings>162</DisabledWarnings>
+	<DisabledWarnings />
     <SignAssembly>true</SignAssembly>
     <DelaySign>false</DelaySign>
   </PropertyGroup>
@@ -51,7 +42,7 @@
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <UseSharedCompilation>true</UseSharedCompilation>
-    <DisabledWarnings>162</DisabledWarnings>
+	<DisabledWarnings />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
     <EmitDebugInformation>true</EmitDebugInformation>
@@ -62,7 +53,7 @@
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <UseSharedCompilation>true</UseSharedCompilation>
-    <DisabledWarnings>162,171,553,1591</DisabledWarnings>
+    <DisabledWarnings>171,553,1591</DisabledWarnings>
     <DocumentationFile>XSharp.Core.Xml</DocumentationFile>
     <CommandLineOption>/noclipcall</CommandLineOption>
   </PropertyGroup>

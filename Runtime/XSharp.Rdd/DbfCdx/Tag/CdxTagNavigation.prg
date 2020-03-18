@@ -611,13 +611,13 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 SELF:ClearStack()
                 RETURN 0
             ENDIF
-            SELF:PushPage(page, page:NumKeys-1)
+            SELF:PushPage(page, (WORD) (page:NumKeys-1))
             IF page IS CdxBranchPage VAR branchPage
                 LOCAL nChildPage AS LONG
                 nChildPage := branchPage:GetChildPage(page:NumKeys-1)
                 RETURN SELF:_locateLast(nChildPage)
             ENDIF
-            VAR node := page[page:NumKeys-1]
+            VAR node := page[(WORD) (page:NumKeys-1)]
             SELF:_saveCurrentRecord(node)
             RETURN node:Recno
 
@@ -653,7 +653,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 CASE SearchMode.Right
                     foundPos := page:FindKey(keyBuffer, recNo, keyLength)
                     IF page IS CdxBranchPage .AND. foundPos >= nodeCount
-                        foundPos := nodeCount-1
+                        foundPos := (WORD) (nodeCount-1)
                     ENDIF
                     node:Pos := foundPos
                 CASE SearchMode.Left
@@ -662,14 +662,14 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     maxPos := nodeCount
                     VAR found := FALSE 
                     DO WHILE minPos < maxPos
-                        foundPos := (minPos + maxPos) / 2
+                        foundPos := (WORD) ((minPos + maxPos) / 2)
                         node:Pos := foundPos
                         VAR cmp := SELF:__Compare(node:KeyBytes, keyBuffer, keyLength)
                         IF cmp >= 0
                             found := TRUE
                         ENDIF
                         IF cmp  < 0
-                            minPos := foundPos + 1
+                            minPos := (WORD) (foundPos + 1)
                         ELSE
                             maxPos := foundPos
                         ENDIF
@@ -698,7 +698,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     ENDIF
                 CASE SearchMode.Bottom
                     IF nodeCount > 0
-                        foundPos := nodeCount-1
+                        foundPos := (WORD) (nodeCount-1)
                         node:Pos := foundPos
                     ELSE
                         foundPos := 0

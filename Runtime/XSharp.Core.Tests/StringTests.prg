@@ -120,9 +120,9 @@ BEGIN NAMESPACE XSharp.Core.Tests
 	[Fact, Trait("Category", "String")];
 	METHOD HardCRTest() AS VOID
 		LOCAL s AS STRING
-		s := "aaa" + ((CHAR) 141):ToString() +chr(10)+ "bbb"
-		Assert.Equal(1U, MlCount1(s))
-		Assert.Equal(2U, MlCount1(HardCR(s)))
+		s := "aaa" + ((CHAR) 141):ToString() +Chr(10)+ "bbb"
+		Assert.Equal(1U, MLCount1(s))
+		Assert.Equal(2U, MLCount1(HardCR(s)))
 	
 
 	[Fact, Trait("Category", "String")];
@@ -159,6 +159,8 @@ BEGIN NAMESPACE XSharp.Core.Tests
 	Assert.Equal(TRUE,IsSpace(e"\v"))
 	Assert.Equal(TRUE,IsSpace(e"\n"))
 	Assert.Equal(FALSE,IsSpace("A"))
+	Assert.Equal(FALSE,IsSpace(""))
+	Assert.Equal(FALSE,IsSpace(NULL))
 
 
 	[Fact, Trait("Category", "String")];
@@ -167,13 +169,13 @@ BEGIN NAMESPACE XSharp.Core.Tests
 		LOCAL s := "Hello World" AS STRING
 		LOCAL unassigned		 AS STRING		                  
 							  
-		Assert.Equal("",left(s,0))
-		Assert.Equal("H",left(s,1))
-		Assert.Equal("Hello World",left(s,99))
+		Assert.Equal("",Left(s,0))
+		Assert.Equal("H",Left(s,1))
+		Assert.Equal("Hello World",Left(s,99))
 
-		Assert.Equal(NULL,left(unassigned,0))
-		Assert.Equal(NULL,left(unassigned,1))
-		Assert.Equal(NULL,left(unassigned,99))
+		Assert.Equal(NULL,Left(unassigned,0))
+		Assert.Equal(NULL,Left(unassigned,1))
+		Assert.Equal(NULL,Left(unassigned,99))
 				
 	RETURN
 
@@ -182,7 +184,7 @@ BEGIN NAMESPACE XSharp.Core.Tests
 		Assert.Equal("hello world",Lower("Hello World"))
 		Assert.Equal(NULL,Lower(NULL))
 		VAR s := "Hello World"
-		lowerA(s)
+		LowerA(s)
 		Assert.Equal("hello world",s)
 	RETURN
 
@@ -225,9 +227,9 @@ BEGIN NAMESPACE XSharp.Core.Tests
 	[Fact, Trait("Category", "String")];
 	METHOD RAtTest() AS VOID
 		Assert.Equal((DWORD)14,RAt("or","the world according to me"))
-		Assert.Equal((DWORD)0,Rat(NULL,NULL))
-		Assert.Equal((DWORD)0,Rat("or",NULL))
-		Assert.Equal((DWORD)0,Rat(NULL,"the world"))
+		Assert.Equal((DWORD)0,RAt(NULL,NULL))
+		Assert.Equal((DWORD)0,RAt("or",NULL))
+		Assert.Equal((DWORD)0,RAt(NULL,"the world"))
 	RETURN
 
 
@@ -240,16 +242,16 @@ BEGIN NAMESPACE XSharp.Core.Tests
 	  Assert.Equal(3U, RAtLine("line", cSource) )
 	  Assert.Equal(2U, RAtLine("second line", cSource) )
 
-	  Assert.Equal(3U, RAtLine2("line", cSource) )
-	  Assert.Equal(2U, RAtLine2("second line", cSource) )
+	  Assert.Equal(3U, RATLine2("line", cSource) )
+	  Assert.Equal(2U, RATLine2("second line", cSource) )
 	  RETURN
 
 	[Fact, Trait("Category", "String")];
 	METHOD RAt2Test() AS VOID
 		Assert.Equal((DWORD)14,RAt2("or","the world according to me"))
-		Assert.Equal((DWORD)0,Rat2(NULL,NULL))
-		Assert.Equal((DWORD)0,Rat2("or",NULL))
-		Assert.Equal((DWORD)0,Rat2(NULL,"the world"))
+		Assert.Equal((DWORD)0,RAt2(NULL,NULL))
+		Assert.Equal((DWORD)0,RAt2("or",NULL))
+		Assert.Equal((DWORD)0,RAt2(NULL,"the world"))
 	RETURN
 
 	[Fact, Trait("Category", "String")];
@@ -330,7 +332,7 @@ BEGIN NAMESPACE XSharp.Core.Tests
 		LOCAL s:="Hello World" AS STRING
 		Assert.Equal("HELLO WORLD",Upper(s))
 		Assert.Equal(NULL,Upper(NULL))
-		upperA(s)
+		UpperA(s)
 		Assert.Equal("HELLO WORLD",s)
 	RETURN
 
@@ -344,25 +346,25 @@ BEGIN NAMESPACE XSharp.Core.Tests
    
    [Fact, Trait("Category", "String")];
    METHOD CharMixTest() AS VOID
-	  Assert.Equal("1234567890", CHarMix("13579","24680"))
-	  Assert.Equal("", CHarMix("","24680"))
-	  Assert.Equal("12", CHarMix("1","24680"))
-	  Assert.Equal("", CHarMix("13579",""))
-	  Assert.Equal("1232527292", CHarMix("13579","2"))
+	  Assert.Equal("1234567890", CharMix("13579","24680"))
+	  Assert.Equal("", CharMix("","24680"))
+	  Assert.Equal("12", CharMix("1","24680"))
+	  Assert.Equal("", CharMix("13579",""))
+	  Assert.Equal("1232527292", CharMix("13579","2"))
 
 	  RETURN
    [Fact, Trait("Category", "Memo")];
    METHOD AtLineTest() AS VOID
 	  LOCAL test AS STRING
 	  test := e"first line\r\nsecond line\r\nthird line"
-	  Assert.Equal(1U, AtLine("first", test))
-	  Assert.Equal(2U, AtLine("second", test))
-	  Assert.Equal(3U, AtLine("third", test))
-	  Assert.Equal(0U, AtLine("fourth", test))
-	  Assert.Equal(1U, AtCLine("First", test))
-	  Assert.Equal(2U, AtCLine("Second", test))
-	  Assert.Equal(3U, AtCLine("Third", test))
-	  Assert.Equal(0U, AtCLine("Fourth", test))
+	  Assert.Equal(1U, ATLine("first", test))
+	  Assert.Equal(2U, ATLine("second", test))
+	  Assert.Equal(3U, ATLine("third", test))
+	  Assert.Equal(0U, ATLine("fourth", test))
+	  Assert.Equal(1U, ATCLine("First", test))
+	  Assert.Equal(2U, ATCLine("Second", test))
+	  Assert.Equal(3U, ATCLine("Third", test))
+	  Assert.Equal(0U, ATCLine("Fourth", test))
 	 
 	  RETURN
 
@@ -371,13 +373,13 @@ BEGIN NAMESPACE XSharp.Core.Tests
 	  LOCAL test AS STRING
 	  test := e"first line\r\nsecond line\r\nthird line"
 	  Assert.Equal(3U, MemLines(test))     
-	  Assert.Equal(3U, MlCount1(test))     
+	  Assert.Equal(3U, MLCount1(test))     
 	  Assert.Equal(0U, MemLines(""))
 	  Assert.Equal(1U, MemLines(" "))
-	  Assert.Equal(0U, MlCount1(""))
-	  Assert.Equal(1U, MlCount1(" "))
+	  Assert.Equal(0U, MLCount1(""))
+	  Assert.Equal(1U, MLCount1(" "))
 	  Assert.Equal(0U, MemLines(NULL))  
-	  Assert.Equal(0U, MlCount1(NULL))  
+	  Assert.Equal(0U, MLCount1(NULL))  
 	  RETURN
 
 
@@ -386,7 +388,7 @@ BEGIN NAMESPACE XSharp.Core.Tests
 	METHOD MemoTest() AS VOID
 		LOCAL sToWrite := "test" AS STRING
 		MemoWrit("MemoTest.txt", sToWrite)
-		VAR sText := MemORead("MemoTest.txt")
+		VAR sText := MemoRead("MemoTest.txt")
 		Assert.Equal(sToWrite, sText)
 		
 

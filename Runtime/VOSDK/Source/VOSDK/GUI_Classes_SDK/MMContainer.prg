@@ -251,8 +251,9 @@ PROCEDURE __WCRegisterMMContWindow _INIT3
 
 STATIC GLOBAL glMSVFWDllLoaded := FALSE AS LOGIC
 
+/// <exclude/>
 GLOBAL gpfnMCWWndCreate AS TMCIWndCreate PTR
-
+/// <exclude/>
 FUNCTION TMCIWndCreate(hwndParent AS PTR, hInstance AS PTR, dwStyle AS DWORD, szFile AS PSZ) AS PTR STRICT
 	//SYSTEM
 	RETURN NULL_PTR

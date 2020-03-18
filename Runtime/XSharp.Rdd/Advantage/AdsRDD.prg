@@ -15,7 +15,7 @@ USING XSharp.RDD.Support
 USING System.Diagnostics
  
 /// <summary>
-/// The AdsRDD class. 
+/// The base AdsRDD class from which all Advantage RDDs for X# inherit.
 /// </summary>
 [DebuggerDisplay("AdsRDD ({Alias,nq})")];
 CLASS XSharp.ADS.ADSRDD INHERIT Workarea
@@ -505,7 +505,7 @@ VIRTUAL METHOD GoTop() AS LOGIC
 RETURN SELF:RecordMovement()
 
     /// <inheritdoc />
-VIRTUAL METHOD GoTo(lRec AS DWORD) AS LOGIC
+VIRTUAL METHOD GoTo(lRec AS LONG) AS LOGIC
     SELF:_CheckError(ACE.AdsGetRecordNum(SELF:_Table, ACE.ADS_IGNOREFILTERS, OUT VAR recordnum),EG_READ)
     IF recordnum == lRec
         SELF:_CheckError(ACE.AdsAtEOF(SELF:_Table, OUT VAR atEOF),EG_READ)
@@ -515,15 +515,15 @@ VIRTUAL METHOD GoTo(lRec AS DWORD) AS LOGIC
             SELF:_CheckError(ACE.AdsRefreshRecord(SELF:_Table),EG_READ)
         ENDIF
     ELSE
-        SELF:_CheckError(ACE.AdsGotoRecord(SELF:_Table, lRec),EG_READ)
+        SELF:_CheckError(ACE.AdsGotoRecord(SELF:_Table, (DWORD) lRec),EG_READ)
     ENDIF
 RETURN SELF:RecordMovement()
 
     /// <inheritdoc />
 VIRTUAL METHOD GoToId(oRecnum AS OBJECT) AS LOGIC
-    LOCAL recNum AS DWORD
+    LOCAL recNum AS LONG
     TRY
-        recNum := System.Convert.ToUInt32(oRecnum)
+        recNum := System.Convert.ToInt32(oRecnum)
     CATCH e AS Exception
         SELF:ADSERROR(ERDD.DATATYPE, XSharp.Gencode.EG_DATATYPE, "GoToId",e:Message)
         RETURN FALSE
@@ -742,10 +742,6 @@ PRIVATE PROPERTY CurrentOrder AS System.IntPtr
 END PROPERTY
 
   /// <inheritdoc />
-PROPERTY BOF AS LOGIC GET SUPER:_BoF
-  /// <inheritdoc />
-PROPERTY EOF AS LOGIC GET SUPER:_EoF
-  /// <inheritdoc />
 PROPERTY Found AS LOGIC GET SUPER:_Found
 INTERNAL PROPERTY IsADT AS LOGIC GET _TableType == ACE.ADS_ADT
 VIRTUAL PROPERTY Driver AS STRING GET _Driver
@@ -772,7 +768,7 @@ PROPERTY Deleted AS LOGIC
     END GET 
 END PROPERTY
 
-PROPERTY Reccount AS LONG
+PROPERTY RecCount AS LONG
     GET
         SELF:_CheckError(ACE.AdsGetRecordCount(SELF:_Table, ACE.ADS_IGNOREFILTERS, OUT VAR dwCount),EG_READ)
         RETURN (LONG) dwCount
@@ -837,7 +833,7 @@ VIRTUAL METHOD Lock(lockInfo REF DbLockInfo) AS LOGIC
 RETURN TRUE
 
       /// <inheritdoc />
-VIRTUAL METHOD Unlock(recordID AS OBJECT) AS LOGIC
+VIRTUAL METHOD UnLock(recordID AS OBJECT) AS LOGIC
     LOCAL result AS DWORD
     LOCAL dwRecno := 0 AS DWORD
     TRY

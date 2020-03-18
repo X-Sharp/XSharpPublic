@@ -1,4 +1,5 @@
-﻿FUNCTION __CheckUUEncode	(c AS STRING)		AS DWORD STRICT
+﻿/// <exclude/>
+FUNCTION __CheckUUEncode	(c AS STRING)		AS DWORD STRICT
 	LOCAL nRet		AS DWORD
 	LOCAL cTemp		AS STRING
 	LOCAL cBefore	AS STRING
@@ -1052,6 +1053,7 @@ FUNCTION SMTPSendMail       (cServerIP      AS STRING,;
 
 	RETURN lRet
 
+/// <exclude/>
 GLOBAL wsaData  	IS _WinWSAData
 FUNCTION __AdJustPath(cPath AS USUAL) AS STRING
     // Updated to better handle UNC paths

@@ -3008,8 +3008,6 @@ FUNCTION UseColonInAutoLayoutCaptions(lUse AS LOGIC) AS VOID
 RETURN
 
 FUNCTION __GetDFCaption (oDF AS DataField, arUsedKeys AS ARRAY)  AS STRING
-	//FUNCTION __GetDFCaption (oDF, fldIndex, arUsedKeys)
-	//RvdH 041123 Strong Typing. Also removed fldIndex parameter. Was never passed.
 	LOCAL cText 	AS STRING
 	LOCAL cHotKey 	AS STRING
 	LOCAL dwI, dwCount AS DWORD

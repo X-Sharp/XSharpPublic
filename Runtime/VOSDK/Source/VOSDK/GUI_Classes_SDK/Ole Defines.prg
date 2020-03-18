@@ -1,3 +1,4 @@
+/// <exclude/>
 VOSTRUCT OleProps
 	MEMBER dwSelector AS DWORD
 	MEMBER fAllowInPlace AS LOGIC

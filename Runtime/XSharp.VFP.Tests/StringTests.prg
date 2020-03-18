@@ -18,7 +18,7 @@ BEGIN NAMESPACE XSharp.VFP.Tests
 		[Fact, Trait("Category", "String")];
 		METHOD JustFunctionTests() AS VOID
             Assert.Equal("C:", JustDrive("C:\Folder\test.txt") )
-            Assert.Equal(".txt", JustExt("C:\Folder\test.txt") )
+            Assert.Equal("txt", JustExt("C:\Folder\test.txt") )
             Assert.Equal("C:\Folder", JustPath("C:\Folder\test.txt") )
             Assert.Equal("test.txt", JustFName("C:\Folder\test.txt") )
             Assert.Equal("test", JustStem("C:\Folder\test.txt") )

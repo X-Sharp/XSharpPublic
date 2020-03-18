@@ -59,11 +59,6 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         PRIVATE _firstPageOffset AS LONG
         PRIVATE _fileSize AS LONG
         PRIVATE _stack AS RddStack[]
-        PRIVATE _HPLocking AS LOGIC
-        PRIVATE _readLocks AS LONG
-        PRIVATE _writeLocks AS LONG
-        PRIVATE _tagNumber AS INT
-        PRIVATE _maxLockTries AS INT
         PRIVATE _orderName AS STRING
         PRIVATE _fileName AS STRING
         PRIVATE _fullPath AS STRING
@@ -78,10 +73,8 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         PRIVATE _levelsCount AS LONG
         PRIVATE _midItem AS NtxNode
         PRIVATE _outPageNo AS LONG
-        PRIVATE _parkPlace AS LONG
         PRIVATE getKeyValue AS ValueBlock       // Delegate to calculate the key
         
-        INTERNAL _LockOffset AS LONG
         #endregion
         #region properties
         INTERNAL PROPERTY Expression AS STRING GET _KeyExpr
@@ -216,9 +209,8 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             ELSE
                 SELF:_orderName := SELF:_Header:OrdName:ToUpper()
             ENDIF
-            IF SELF:_Header:Signature:HasFlag(NtxHeaderFlags.HpLock)
-                SELF:_HPLocking := TRUE
-            ENDIF
+            SELF:_initLockValues()
+            SELF:_HPLocking := SELF:_Header:Signature:HasFlag(NtxHeaderFlags.HpLock)
             
             // Copy locking scheme from DBF.
             
@@ -228,11 +220,6 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             ELSE
                 SELF:_LockOffset:= LOCKOFFSET_OLD
             ENDIF
-            // NTX has only one Tag index
-            SELF:_tagNumber := 1
-            SELF:_maxLockTries := 99 //(LONG)XSharp.RuntimeState.LockTries
-            SELF:_readLocks := 0
-            
             isOk := TRUE
             IF SELF:_HPLocking .AND. SELF:Shared
                 //DO

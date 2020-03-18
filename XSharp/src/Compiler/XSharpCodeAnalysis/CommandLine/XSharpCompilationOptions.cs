@@ -139,11 +139,21 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case CompilerOption.ImplicitCastsAndConversions: // vo7
                     return CheckOption(option, VOImplicitCastsAndConversions, syntax);
 
+                case CompilerOption.CompatibleIIF:  // vo10
+                    return CheckOption(option, VOCompatibleIIF, syntax);
+
                 case CompilerOption.ArithmeticConversions: // vo11
                     return CheckOption(option, VOArithmeticConversions, syntax);
 
                 case CompilerOption.StringComparisons: // vo13
                     return CheckOption(option, VOStringComparisons, syntax);
+
+                // other options are not handled or only handled during parsing
+                case CompilerOption.ClipperCallingConvention:   // Vo5
+                case CompilerOption.AllowMissingReturns:   // Vo9
+                case CompilerOption.ClipperIntegerDivisions:   // Vo12
+                case CompilerOption.FloatConstants: // vo14
+                    return false;
 
             }
             return false;

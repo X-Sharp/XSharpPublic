@@ -333,44 +333,35 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case CompilerOption.InitLocals: // initlocals
                     return CheckOption(option, InitLocals, context, options);
 
-                case CompilerOption.LateBinding:  // lb is handled in cde generation
-                    return false;
-
                 case CompilerOption.MemVars: // memvar
                     return CheckOption(option, MemVars, context, options);
 
-                case CompilerOption.UndeclaredMemVars: // memvar
+                case CompilerOption.UndeclaredMemVars: // undeclared
                     return CheckOption(option, UndeclaredMemVars, context, options);
 
                 case CompilerOption.NullStrings: // vo2
                     return CheckOption(option, VONullStrings, context, options);
 
-                case CompilerOption.SignedUnsignedConversion: // vo4
-                    return CheckOption(option, VOSignedUnsignedConversion, context, options);
-
                 case CompilerOption.ClipperCallingConvention: // vo5
                     return CheckOption(option, VOClipperCallingConvention, context, options);
-
-                case CompilerOption.ResolveTypedFunctionPointersToPtr: // vo6
-                    return CheckOption(option, VOResolveTypedFunctionPointersToPtr, context, options);
-
-                case CompilerOption.ImplicitCastsAndConversions: // vo7
-                    return CheckOption(option, VOImplicitCastsAndConversions, context, options);
 
                 case CompilerOption.AllowMissingReturns: // vo9
                     return CheckOption(option, VOAllowMissingReturns, context, options);
 
-                case CompilerOption.ArithmeticConversions: // vo11
-                    return CheckOption(option, VOArithmeticConversions, context, options);
-
                 case CompilerOption.ClipperIntegerDivisions: // vo12
                     return CheckOption(option, VOClipperIntegerDivisions, context, options);
 
-                case CompilerOption.StringComparisons: // vo13
-                    return CheckOption(option, VOStringComparisons, context, options);
-
                 case CompilerOption.FloatConstants: // vo14
                     return CheckOption(option, VOFloatConstants, context, options);
+
+                case CompilerOption.LateBinding:  // lb is handled in cde generation
+                case CompilerOption.SignedUnsignedConversion: // vo4
+                case CompilerOption.ResolveTypedFunctionPointersToPtr: // vo6
+                case CompilerOption.ImplicitCastsAndConversions: // vo7
+                case CompilerOption.CompatibleIIF:  // vo10
+                case CompilerOption.ArithmeticConversions: // vo11
+                case CompilerOption.StringComparisons: // vo13
+                    return false; // not handled during parsing
 
             }
             return false;

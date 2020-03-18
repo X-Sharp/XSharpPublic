@@ -1161,8 +1161,9 @@ namespace XSharpLanguage
         private Modifiers _visibility;
         private Kind _kind;
         private bool _isStatic;
-        private String _typeName;
+        private string _typeName;
         private List<ParamInfo> _parameters;
+        private string _value;
 
         /// <summary>
         /// Process a MemberInfo in order to provide usable informations ( TypeName, Glyph, ... )
@@ -1255,12 +1256,22 @@ namespace XSharpLanguage
                             if (field.Attributes.HasFlag(FieldAttributes.InitOnly))
                                 this.Kind = Kind.VODefine;
                             else if (field.Attributes.HasFlag(FieldAttributes.Literal))
+                            {
                                 this.Kind = Kind.VODefine;
+                                var value = System.Convert.ChangeType(field.GetValue(null), field.FieldType);
+                                _value = value.ToString();
+                            }
                             else
                                 this.Kind = Kind.VOGlobal;
                         }
+                        declType = field.DeclaringType;
+                        if (declType.IsEnum)
+                        {
+                            var value = System.Convert.ChangeType(field.GetValue(null), declType.GetEnumUnderlyingType());
+                            _value = value.ToString();
+                        }
                     }
-
+                    
                     //
                     this._isStatic = field.IsStatic;
                     //
@@ -1531,21 +1542,10 @@ namespace XSharpLanguage
             }
         }
 
-        public bool IsInitialized
-        {
-            get
-            {
-                return (this.Name != null);
-            }
-        }
+        public bool IsInitialized => this.Name != null;
 
-        public string Name
-        {
-            get
-            {
-                return _name;
-            }
-        }
+        public string Name => _name;
+        public string Value => _value;
 
         public String Description
         {
@@ -1567,18 +1567,7 @@ namespace XSharpLanguage
                 //
                 if ((this.Kind != Kind.Field) && (this.Kind != Kind.Constructor))
                 {
-                    if (this.Kind == Kind.VODefine)
-                    {
-                        desc += _optionsPage.Define() + " ";
-                    }
-                    else if (this.Kind == Kind.VOGlobal)
-                    {
-                        desc += _optionsPage.Global() + " ";
-                    }
-                    else
-                    {
-                        desc += _optionsPage.formatKeyword(this.Kind) + " ";
-                    }
+                   desc += _optionsPage.formatKeyword(this.Kind) + " ";
                 }
                 desc += this.Prototype;
                 //
@@ -4408,21 +4397,9 @@ namespace XSharpLanguage
                 }
                 else
                 {
-                    if (this.SystemElement is TypeInfo)
+                    if (this.SystemElement != null)
                     {
-                        cType = new CompletionType(((TypeInfo)this.SystemElement).DeclaringType);
-                    }
-                    else if (this.SystemElement is MemberInfo)
-                    {
-                        cType = new CompletionType(((MemberInfo)this.SystemElement).DeclaringType);
-                    }
-                    else if (this.SystemElement is PropertyInfo)
-                    {
-                        cType = new CompletionType(((PropertyInfo)this.SystemElement).DeclaringType);
-                    }
-                    else if (this.SystemElement is FieldInfo)
-                    {
-                        cType = new CompletionType(((FieldInfo)this.SystemElement).DeclaringType);
+                        cType = new CompletionType(this.SystemElement.DeclaringType);
                     }
                 }
                 return cType;

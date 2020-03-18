@@ -14,7 +14,7 @@ DEFINE BOUNDARY_START            := CRLF + BOUNDARY_DELIMITER
 DEFINE BOUNDARY_VO               := "===" + BOUNDARY_VO_ID + "==="
 DEFINE BOUNDARY_VO_ID            := "Visual_Objects_BOUNDARY"
 DEFINE CHARSET_ISO               := "iso-8859-"
-DEFINE CHARSET_ISO1              := '"'+CHARSET_ISO + '1"'
+DEFINE CHARSET_ISO1              := e"\""+CHARSET_ISO + e"1\""
 DEFINE CHARSET_USASCII           := "us-ascii"
 DEFINE CHARSET_UTF8              := "utf-8"
 DEFINE CLOSING_CONNECTION        := 4
@@ -81,7 +81,7 @@ DEFINE TAB                       := _CHR(9)
 DEFINE TEMP_ATTACHMENT           := "attachment"
 DEFINE TEMP_BCC                  := "Bcc:"
 DEFINE TEMP_BOUNDARY             := "boundary="
-DEFINE TEMP_BOUND                := TEMP_BOUNDARY + '"'
+DEFINE TEMP_BOUND                := TEMP_BOUNDARY + e"\""
 DEFINE TEMP_CC                   := "Cc:"
 DEFINE TEMP_CHARSET              := "charset="
 DEFINE TEMP_CONTENT              := "Content-Type:"

@@ -512,7 +512,7 @@ INTERNAL CLASS MemReader
             cVar	:= Chr(wType)+SELF:ReadBytes(10)
             cVar 	:= Left(cVar,At(Chr(0),cVar)-1):ToUpper()
             nType   := SELF:ReadByte()
-            cType	:= Chr(_AND(nType,127))
+            cType	:= Chr(_AND(nType,127U))
             SELF:ReadBytes(4) // pad
             IF lUsemask    
                 lPut := _Like(SELF:cMask, cVar ) == SELF:lInclude

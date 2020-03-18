@@ -11,7 +11,7 @@
 
 FUNCTION KeyMatch(eIndexKey , nIndexNumber , uArea)  AS LOGIC
     THROW NotImplementedException{}
-    RETURN FALSE
+    // RETURN FALSE
 
 
 /// <summary>-- todo --</summary>
@@ -19,14 +19,14 @@ FUNCTION KeyMatch(eIndexKey , nIndexNumber , uArea)  AS LOGIC
 
 FUNCTION LineNo(nPos ) AS LONG
     THROW NotImplementedException{}
-    RETURN 0
+    // RETURN 0
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/loadpicture/*" />
 
 FUNCTION LoadPicture( cFileName ) AS OBJECT
     THROW NotImplementedException{}
-    RETURN NULL_OBJECT
+    // RETURN NULL_OBJECT
     
 
 /// <summary>-- todo --</summary>
@@ -34,28 +34,28 @@ FUNCTION LoadPicture( cFileName ) AS OBJECT
 
 FUNCTION LocFile( cFileName , cFileExtensions , cFileNameCaption ) AS STRING
     THROW NotImplementedException{}
-    RETURN ""
+    // RETURN ""
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/lock/*" />
 
 FUNCTION Lock( cRecordNumberList, uArea) AS LOGIC
     THROW NotImplementedException{}
-    RETURN FALSE
+    // RETURN FALSE
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/lookup/*" />
 
 FUNCTION Lookup( ReturnField, eSearchExpression, SearchedField , cTagName) AS USUAL
     THROW NotImplementedException{}
-    RETURN NIL
+    // RETURN NIL
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/maketransactable/*" />
 
 FUNCTION MakeTransactable( uArea ) AS LOGIC
     THROW NotImplementedException{}
-    RETURN FALSE
+    // RETURN FALSE
     
 
 /// <summary>-- todo --</summary>
@@ -63,13 +63,13 @@ FUNCTION MakeTransactable( uArea ) AS LOGIC
 
 FUNCTION Mdy( uExpression ) AS STRING
     THROW NotImplementedException{}
-    RETURN ""
+    // RETURN ""
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/messagebox/*" />
 
 FUNCTION MessageBox( eMessageText , nDialogBoxType , cTitleBarText, nTimeout) AS LONG
     THROW NotImplementedException{}
-    RETURN 0
+    // RETURN 0
 
 

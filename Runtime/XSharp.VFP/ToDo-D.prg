@@ -8,7 +8,7 @@
 
 FUNCTION DBAlias ()
     THROW NotImplementedException{}
-    RETURN ""
+    // RETURN ""
 
 
 /// <summary>-- todo --</summary>
@@ -16,35 +16,35 @@ FUNCTION DBAlias ()
 
 FUNCTION DBC( )
     THROW NotImplementedException{}
-    RETURN ""
+    // RETURN ""
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/dbgetprop/*" />
 
 FUNCTION DbGetProp( cName, cType, cProperty) 
     THROW NotImplementedException{}
-    RETURN NIL
+    // RETURN NIL
     
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/dbsetprop/*" />
 
 FUNCTION DbSetProp(cName, cType, cProperty, ePropertyValue )
     THROW NotImplementedException{}
-    RETURN FALSE
+    // RETURN FALSE
     
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/dbused/*" />
 
 FUNCTION DbUsed( cDatabaseName )
     THROW NotImplementedException{}
-    RETURN FALSE
+    // RETURN FALSE
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/defaultext/*" />
 
 FUNCTION DefaultExt( cFileName, cDefault )
     THROW NotImplementedException{}
-    RETURN ""
+    // RETURN ""
 
 
 
@@ -53,35 +53,35 @@ FUNCTION DefaultExt( cFileName, cDefault )
 
 FUNCTION Difference( cExpression1, cExpression2 )
     THROW NotImplementedException{}
-    RETURN 0
+    // RETURN 0
     
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/displaypath/*" />
 
 FUNCTION DisplayPath( cFilename, nMaxLength )
     THROW NotImplementedException{}
-    RETURN ""
+    // RETURN ""
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/dmy/*" />
 
 FUNCTION DMY( uExpression )
     THROW NotImplementedException{}
-    RETURN ""
+    // RETURN ""
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/drivetype/*" />
 
 FUNCTION DriveType( cDrive )
     THROW NotImplementedException{}
-    RETURN 0
+    // RETURN 0
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/dropoffline/*" />
 
 FUNCTION DropOffLine( cViewName )
     THROW NotImplementedException{}
-    RETURN FALSE
+    // RETURN FALSE
 
 
 

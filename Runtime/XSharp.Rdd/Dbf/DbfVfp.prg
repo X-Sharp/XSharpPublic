@@ -140,14 +140,14 @@ CLASS DBFVFP INHERIT DBFCDX
         
         RETURN lOk
 
-    METHOD Info(nOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT
+    METHOD FieldInfo(nFldPos AS LONG, nOrdinal AS LONG, oNewValue AS OBJECT) AS OBJECT
+
         IF nOrdinal == DbFieldInfo.DBS_PROPERTIES
            RETURN DbFieldInfo.DBS_FLAGS
         ELSEIF nOrdinal == DbFieldInfo.DBS_CAPTION
-            // todo
-            
+            nOrdinal := DbFieldInfo.DBS_ALIAS
         ENDIF
-        RETURN SUPER:Info(nOrdinal, oNewValue)
+        RETURN SUPER:FieldInfo(nFldPos, nOrdinal, oNewValue)
 
     PROTECTED METHOD _ReadDbcInfo() AS VOID
         LOCAL nPos := SELF:DbcPosition AS LONG
@@ -184,7 +184,11 @@ CLASS DBFVFP INHERIT DBFCDX
         cFile := System.IO.Path.GetFileNameWithoutExtension(SELF:_FileName)
         lOld := XSharp.RuntimeState.AutoOpen
         XSharp.RuntimeState.AutoOpen := FALSE
-        lOk := oDbc:Open(oi)
+        TRY
+            lOk := oDbc:Open(oi)
+        CATCH as Exception
+            lOk := FALSE
+        END TRY
         XSharp.RuntimeState.AutoOpen := lOld
         IF lOk
             nType := oDbc:FieldIndex("OBJECTTYPE")

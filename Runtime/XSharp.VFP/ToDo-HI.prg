@@ -10,7 +10,7 @@
 
 FUNCTION Id( ) AS STRING
     THROW NotImplementedException{}
-    RETURN ""
+    // RETURN ""
 
 
 
@@ -19,7 +19,7 @@ FUNCTION Id( ) AS STRING
 
 FUNCTION ImeStatus( nExpression ) AS LONG
     THROW NotImplementedException{}
-    RETURN 0
+    // RETURN 0
 
 
 /// <summary>-- todo --</summary>
@@ -27,35 +27,35 @@ FUNCTION ImeStatus( nExpression ) AS LONG
 
 FUNCTION InDbc( cDatabaseObjectName, cType ) AS LOGIC
     THROW NotImplementedException{}
-    RETURN FALSE
+    // RETURN FALSE
     
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/indexseek/*" />
 
 FUNCTION IndexSeek( eExpression , lMovePointer , uArea, uIndex) AS LOGIC
     THROW NotImplementedException{}
-    RETURN FALSE
+    // RETURN FALSE
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/inputbox/*" />
 
 FUNCTION InputBox( cInputPrompt , cDialogCaption , cDefaultValue , nTimeout ,cTimeoutValue,cCancelValue) AS STRING
     THROW NotImplementedException{}
-    RETURN ""
+    // RETURN ""
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/insmode/*" />
 
 FUNCTION InsMode( lExpression ) AS LOGIC
     THROW NotImplementedException{}
-    RETURN FALSE
+    // RETURN FALSE
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/isblank/*" />
 
 FUNCTION IsBlank( eExpression) AS LOGIC
     THROW NotImplementedException{}
-    RETURN FALSE
+    // RETURN FALSE
 
 
 /// <summary>-- todo --</summary>
@@ -63,7 +63,7 @@ FUNCTION IsBlank( eExpression) AS LOGIC
 
 FUNCTION IsExclusive( uArea, nType) AS LOGIC
     THROW NotImplementedException{}
-    RETURN FALSE
+    // RETURN FALSE
 
 
 
@@ -72,7 +72,7 @@ FUNCTION IsExclusive( uArea, nType) AS LOGIC
 
 FUNCTION IsMemoFetched( uField , uArea) AS LOGIC
     THROW NotImplementedException{}
-    RETURN FALSE
+    // RETURN FALSE
 
 
 /// <summary>-- todo --</summary>
@@ -80,14 +80,14 @@ FUNCTION IsMemoFetched( uField , uArea) AS LOGIC
 
 FUNCTION IsNull( eExpression ) AS LOGIC
     THROW NotImplementedException{}
-    RETURN FALSE
+    // RETURN FALSE
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/ispen/*" />
 
 FUNCTION IsPen( ) AS LOGIC
     THROW NotImplementedException{}
-    RETURN FALSE
+    // RETURN FALSE
 
 
 /// <summary>-- todo --</summary>
@@ -95,5 +95,5 @@ FUNCTION IsPen( ) AS LOGIC
 
 FUNCTION IsTransactable( uArea ) AS LOGIC
     THROW NotImplementedException{}
-    RETURN FALSE
+    // RETURN FALSE
 

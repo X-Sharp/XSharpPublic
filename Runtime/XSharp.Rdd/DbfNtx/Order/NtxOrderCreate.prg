@@ -90,9 +90,8 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             SELF:_Unique := createInfo:Unique
             SELF:_Conditional := FALSE
             SELF:_Descending := FALSE
-            SELF:_writeLocks := 0
             SELF:_Partial := ordCondInfo:Scoped
-            SELF:_HPLocking := FALSE
+            SELF:_initLockValues()
             IF ordCondInfo:Active
                 SELF:_Descending := ordCondInfo:Descending
                 IF hasForCond .AND. !String.IsNullOrEmpty(ordCondInfo:ForExpression)
@@ -116,16 +115,6 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             
                 SELF:_midItem                       := NtxNode{SELF:_keySize}
                 SELF:_oneItem                       := NtxNode{SELF:_keySize}
-                SELF:_maxLockTries  := 99 //(LONG)XSharp.RuntimeState.LockTries
-                SELF:_tagNumber     := 1
-                IF  XSharp.RuntimeState.NewIndexLock 
-                    SELF:_LockOffset := LOCKOFFSET_NEW
-                ELSE
-                    SELF:_LockOffset := LOCKOFFSET_OLD
-                ENDIF
-                IF  XSharp.RuntimeState.HPLocking
-                    SELF:_HPLocking := TRUE
-                ENDIF
                 IF !SELF:_HeaderCreate(ordCondInfo:Scoped)
                     isOk := FALSE
                     RETURN FALSE
@@ -176,8 +165,8 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             IF  XSharp.RuntimeState.NewIndexLock 
                 SELF:_Header:Signature |= NtxHeaderFlags.NewLock
             ENDIF
-            IF  XSharp.RuntimeState.HPLocking
-                SELF:_Header:Signature |= NtxHeaderFlags.Partial
+            IF SELF:_HPLocking
+                SELF:_Header:Signature |= NtxHeaderFlags.HpLock
             ENDIF
 	    RETURN SELF:_Header:Write()
 	    

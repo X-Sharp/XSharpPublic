@@ -421,7 +421,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
             LOCAL u1 AS USUAL
             LOCAL u2 AS USUAL
             u1 := -1
-            u2 := (IntPtr) -2
+            u2 := (IntPtr) (-2)
             Assert.Equal(FALSE, u1 == u2)
             Assert.Equal(TRUE, u1 != u2)
             Assert.Equal(TRUE, u1 > u2)

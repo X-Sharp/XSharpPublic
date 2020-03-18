@@ -324,7 +324,7 @@ BEGIN NAMESPACE XSharp.IO
 			IF oStream != NULL_OBJECT
 				TRY
                     ClearErrorState()
-					iResult := oStream:Read(pBuffer,0,(INT) dwCount)
+					iResult := oStream:Read(pBuffer,0,(INT) dwCount)  
 				CATCH e AS Exception
 					SetErrorState(e)
 				END TRY
@@ -525,7 +525,7 @@ BEGIN NAMESPACE XSharp.IO
                  RETURN 
             ENDIF
             THROW Error{"Could not convert stream, source stream is not a Memory Stream"}
-			RETURN 
+			//RETURN 
 
 	END CLASS
 	

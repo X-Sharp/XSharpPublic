@@ -803,9 +803,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             BEGIN UNCHECKED
                 LOCAL shift AS INT
                 shift     := SELF:LenShift & 0xFF
-                wValue:b1 := (BYTE) dupCount << shift
+                wValue:b1 := (BYTE) (dupCount << shift)
                 wValue:b2 := trailCount
-                wValue:wordValue := wValue:wordValue << shift
+                wValue:wordValue := (WORD) (wValue:wordValue << shift)
                 RETURN wValue:wordValue
             END UNCHECKED
 
@@ -813,9 +813,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
        PRIVATE METHOD _getDupTrail(wData AS WORD, dupCount OUT BYTE, trailCount OUT BYTE) AS VOID
             LOCAL shift AS INT
             shift := SELF:LenShift & 0xFF
-            wValue:wordValue := wData >> shift
+            wValue:wordValue := (WORD) (wData >> shift)
             trailCount := wValue:b2
-            dupCount   := wValue:b1 >> shift
+            dupCount   := (BYTE) (wValue:b1 >> shift)
             RETURN 
             
 

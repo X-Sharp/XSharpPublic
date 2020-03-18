@@ -32,7 +32,7 @@
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <UseSharedCompilation>true</UseSharedCompilation>
-    <DisabledWarnings/>
+    <DisabledWarnings />
     <SignAssembly>true</SignAssembly>
     <DelaySign>false</DelaySign>
   </PropertyGroup>
@@ -46,7 +46,7 @@
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <UseSharedCompilation>true</UseSharedCompilation>
-    <DisabledWarnings/>
+    <DisabledWarnings />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
     <EmitDebugInformation>true</EmitDebugInformation>
@@ -131,6 +131,7 @@
     <None Include="Collations\Spanish.collation" />
     <None Include="Collations\Swedish.collation" />
     <None Include="Collations\User.collation" />
+    <None Include="XPPComments.Xml" />
     <None Include="WhatToDoWith.txt" />
   </ItemGroup>
   <ItemGroup>

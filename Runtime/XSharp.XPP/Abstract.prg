@@ -34,13 +34,13 @@ ABSTRACT CLASS XSharp.XPP.Abstract
     VIRTUAL METHOD HasIVar(cName AS STRING) AS LOGIC
         RETURN IVarGetInfo(SELF, cName) != 0
 
-    VIRTUAL METHOD NoIvarGet(cName AS USUAL) AS USUAL STRICT
+    VIRTUAL METHOD NoIvarGet(cName AS STRING) AS USUAL STRICT
         IF XSharp.XPP.ClassObject.IsInstanceofRuntimeClass(SELF)
             RETURN XSharp.XPP.ClassObject.CallIVarGet(SELF, cName)
         ENDIF
         RETURN NIL
 
-    VIRTUAL METHOD NoIvarPut(cName AS USUAL, uValue AS USUAL) AS USUAL STRICT
+    VIRTUAL METHOD NoIvarPut(cName AS STRING, uValue AS USUAL) AS USUAL STRICT
         IF XSharp.XPP.ClassObject.IsInstanceofRuntimeClass(SELF)
             RETURN XSharp.XPP.ClassObject.CallIVarPut(SELF, cName, uValue)
         ENDIF
@@ -59,15 +59,11 @@ ABSTRACT CLASS XSharp.XPP.Abstract
     METHOD GetNoIVar(cName AS USUAL ) AS USUAL STRICT
         RETURN SELF:NoIvarGet(cName)
         
-        /// <summary>Handles calls to undefined methods.</summary>
-        /// <param name="cName">The methodname to call.</param>
-        /// <param name="uParams">The parameters to send to the method.</param>
-        /// <returns>The return value will be interpreted as the return value of the called undefined method. </returns>
-        /// <remarks>If an undefined method is called, a runtime error is raised.
-        /// However, when :noMethod() is declared in the class, the runtime error will not occur.
-        /// Instead, program execution is directed to this method. The parameter <paramref name="cName" /> contains the name of the undefined method,
-        /// followed by the parameters the callee has passed to the method call.</remarks>
-    VIRTUAL METHOD NoMethod(uParams) AS USUAL CLIPPER
+    /// <summary>Handles calls to undefined methods.</summary>
+    /// <param name="uParams">The parameters to send to the method.</param>
+    /// <returns>The return value will be interpreted as the return value of the called undefined method. </returns>
+    /// <remarks>If an undefined method is called, a runtime error is raised.</remarks>
+    VIRTUAL METHOD NoMethod(cName, uParams) AS USUAL CLIPPER
         LOCAL cMethod AS STRING
         cMethod := RuntimeState.NoMethod
         IF ! SELF:inSend
@@ -85,16 +81,16 @@ ABSTRACT CLASS XSharp.XPP.Abstract
         ENDIF
 
     /// <summary>Receives notifications from DatabaseEngines </summary>
-        /// <param name="nEvent">This parameter receives a numeric value that corresponds with a constant listed in APPEVENT.CH.</param>
-        /// <param name="nNotification">The second parameter identifies the situation for which an object is notified. The file DMLB.CH lists define constants that can be used to test in a program which situation occurred. </param>
-        /// <remarks>There is no need in X# to include the header files. The defines are included as part of the X# runtime.</remarks>
+    /// <param name="nEvent">This parameter receives a numeric value that corresponds with a constant listed in APPEVENT.CH.</param>
+    /// <param name="nNotification">The second parameter identifies the situation for which an object is notified. The file DMLB.CH lists define constants that can be used to test in a program which situation occurred. </param>
+    /// <remarks>There is no need in X# to include the header files. The defines are included as part of the X# runtime.</remarks>
     METHOD Notify(nEvent, nNotification) AS USUAL CLIPPER
         RETURN SELF
         
-        /// <summary>Checks if an object belongs to or is derived from a particular class.</summary>
-        /// <param name="uParent">A character string containing the name of the class an object belongs to or is derived from. Alternatively, the class object (System.Type) can be passed instead of the class name.</param>
-        /// <returns>The method returns .T. (true) if the object executing the method belongs to or is derived from the specified class. </returns>
-        /// <remarks>This method is used to check if an unknown object has features of a known class. This is especially useful for event driven programming or when classes are inherited from other classes.</remarks>
+    /// <summary>Checks if an object belongs to or is derived from a particular class.</summary>
+    /// <param name="uParent">A character string containing the name of the class an object belongs to or is derived from. Alternatively, the class object (System.Type) can be passed instead of the class name.</param>
+    /// <returns>The method returns .T. (true) if the object executing the method belongs to or is derived from the specified class. </returns>
+    /// <remarks>This method is used to check if an unknown object has features of a known class. This is especially useful for event driven programming or when classes are inherited from other classes.</remarks>
     METHOD IsDerivedFrom(uParent) AS LOGIC CLIPPER
         LOCAL oType AS System.Type
         IF IsString(uParent)
@@ -106,30 +102,21 @@ ABSTRACT CLASS XSharp.XPP.Abstract
                 RETURN oType:IsAssignableFrom(SELF:GetType())
             ENDIF
         ENDIF
-        RETURN FALSE
+        RETURN FALSE 
         
-        /// <summary>Reflects the class definition of a class.</summary>
-        /// <returns>If <paramref name="nInfo" /> is omitted or set to CLASS_DESCR_ALL, an array with four elements is returned.
-        /// They contain the information resulting from passing one of the following constants to this method.</returns>
-        /// <param name="nInfo">A constant from must be used for this parameter.
-        /// It defaults to CLASS_DESCR_ALL and defines the type of information included in the return value. </param>
-        /// <remarks>The constants are included in XSharp.XPP.DLL and you do not need to include Class.CH anymore. <br/>
-        /// Allowed constants are: <br/>
-        /// - CLASS_DESCR_ALL<br/>
-        /// - CLASS_DESCR_CLASSNAME<br/>
-        /// - CLASS_DESCR_SUPERCLASSES<br/>
-        /// - CLASS_DESCR_MEMBERS<br/>
-        /// - CLASS_DESCR_METHODS<br/>
-        /// - CLASS_DESCR_SUPERDETAILS : this is not supported in X#.<br/>
-        /// </remarks>
-    VIRTUAL METHOD ClassDescribe(nInfo) AS ARRAY CLIPPER
+    /// <include file="XPPComments.xml" path="Comments/ClassDescribe/*" />
+    VIRTUAL METHOD ClassDescribe(uInfo) AS ARRAY CLIPPER
         LOCAL aResult AS ARRAY
         LOCAL oType   AS System.Type
         LOCAL aFields AS ARRAY
         LOCAL aMethods AS ARRAY
-        IF ! IsNumeric(nInfo)
+        LOCAL nInfo as USUAL
+        IF ! IsNumeric(uInfo)
             nInfo := CLASS_DESCR_ALL
+        ELSE
+            nInfo := uInfo
         ENDIF
+        // we always build the whole array and return a sub array when not all the info is needed.
         aResult    := ArrayNew(4)
         oType := SELF:GetType()
         aResult[1] := oType:Name

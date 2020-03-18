@@ -2,6 +2,30 @@
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
 <topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Building XSharp apps with Visual Studio and/or MsBuild</title>
+  <keywords>
+    <keyword>.g.prg</keyword>
+    <keyword>.rc</keyword>
+    <keyword>.sln</keyword>
+    <keyword>.xsproj</keyword>
+    <keyword>Compile</keyword>
+    <keyword>COMReference</keyword>
+    <keyword>CreateXSharpManifestResourceName</keyword>
+    <keyword>GAC</keyword>
+    <keyword>HintPath</keyword>
+    <keyword>LastXSharpNativeResourceResponseFile.Rsp&quot;</keyword>
+    <keyword>LastXSharpResponseFile.Rsp</keyword>
+    <keyword>machine.config</keyword>
+    <keyword>Native Resource compiler</keyword>
+    <keyword>NativeResourceCompiler</keyword>
+    <keyword>ProjectReference</keyword>
+    <keyword>Reference</keyword>
+    <keyword>referenced assemblies</keyword>
+    <keyword>solution file</keyword>
+    <keyword>TargetFrameworkVersion</keyword>
+    <keyword>Xsc</keyword>
+    <keyword>XSharp project file</keyword>
+    <keyword>XSHARPDEV</keyword>
+  </keywords>
   <body>
     <header>
       <para styleclass="Heading1">Building XSharp apps with Visual Studio and/or MsBuild</para>

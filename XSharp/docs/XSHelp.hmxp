@@ -42,14 +42,6 @@
               <task-config-value name="make2status">(Complete)</task-config-value>
             </task-config-group>
           </export-task>
-          <export-task name="Publish as RTF" format="RTF">
-            <task-config-group name="settings">
-              <task-config-value name="outputfile">XSHelp_manual.docx</task-config-value>
-              <task-config-value name="template">$(HMSYS)Templates\Word\Word-Template-Simple-A4.docx</task-config-value>
-              <task-config-value name="make5include">PRINT</task-config-value>
-              <task-config-value name="make5status">*</task-config-value>
-            </task-config-group>
-          </export-task>
         </export-tasks>
       </export-task-group>
     </export-task-groups>

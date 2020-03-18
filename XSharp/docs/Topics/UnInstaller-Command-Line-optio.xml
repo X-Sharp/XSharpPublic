@@ -2,6 +2,13 @@
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
 <topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>UnInstaller Command Line options</title>
+  <keywords>
+    <keyword>/log</keyword>
+    <keyword>/norestart</keyword>
+    <keyword>/silent</keyword>
+    <keyword>/suppressmsgboxes</keyword>
+    <keyword>/verysilent</keyword>
+  </keywords>
   <body>
     <header>
       <para styleclass="Heading1">UnInstaller Command Line options</para>

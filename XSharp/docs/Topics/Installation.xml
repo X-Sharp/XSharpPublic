@@ -2,11 +2,14 @@
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
 <topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Installation</title>
+  <keywords>
+    <keyword>component</keyword>
+    <keyword>folders</keyword>
+    <keyword>Installation</keyword>
+  </keywords>
   <body>
     <header>
-      <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Heading1" style="font-family:Symbol; font-size:16pt; color:#0000ff;">
-        <li styleclass="Heading1">Installation</li>
-      </list>
+      <para styleclass="Heading1">Installation</para>
     </header>
     <para styleclass="Normal">When you install XSharp you will find the following folders on your machine.</para>
     <para styleclass="Normal"></para>
@@ -67,13 +70,13 @@
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td style="width:562px;">
+        <td style="width:562px; height:86px;">
           <para styleclass="Normal">Extension</para>
         </td>
-        <td style="width:143px;">
+        <td style="width:143px; height:86px;">
           <para styleclass="Normal">main</para>
         </td>
-        <td style="width:666px;">
+        <td style="width:666px; height:86px;">
           <para styleclass="Normal">The components that must be installed inside Visual Studio for the X# project system and Language support. </para>
           <para styleclass="Normal">If you want to reinstall the project systems you should run the deployvs&lt;num&gt;.cmd &#160;files in the Uninst folder. These files were created at install time and match your specific configuration of Visual Studio versions.</para>
         </td>

@@ -295,7 +295,7 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
             IF hIndex == IntPtr.Zero
                 info:Result := ""
             ELSE
-                num   := SELF:oRDD:_MaxKeySize + 1
+                num   := (WORD)(SELF:oRDD:_MaxKeySize + 1)
                 chars := CHAR[]{num}
             
                 SELF:_CheckError(ACE.AdsExtractKey(hIndex, chars, REF num), EG_CORRUPTION)
@@ -487,7 +487,7 @@ CLASS XSharp.ADS.ADSIndex INHERIT BaseIndex
                 // Only select the current index when we do not already have an index activated.
                 // So opening the second index file will keep focus on the first index
                 IF SELF:Index == IntPtr.Zero .AND. wLength > 0
-                    wCurrent := numIndexes +1
+                    wCurrent := (WORD)(numIndexes +1)
                     LOCAL hIndex AS IntPtr
                     SELF:_CheckError(ACE.AdsGetIndexHandleByOrder(SELF:Table, wCurrent, OUT hIndex ),EG_OPEN)
                     SELF:Index := hIndex

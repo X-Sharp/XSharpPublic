@@ -595,9 +595,9 @@ FUNCTION ClassCreate(cClassName , aSuperClasses , aMember , aMethod ) AS USUAL C
          DbUnlock() 
       ENDIF 
       RETURN lLocked 
-
+      RETURN NULL
     */
-   RETURN NULL
+   
 
 
 

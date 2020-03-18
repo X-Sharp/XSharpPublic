@@ -3,7 +3,6 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
-#include "buildnumber.h"
 using System.Reflection
 using System.Runtime.CompilerServices
 USING XSharp.Internal

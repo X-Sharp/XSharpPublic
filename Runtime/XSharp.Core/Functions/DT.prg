@@ -116,7 +116,14 @@ FUNCTION Days(nSeconds AS REAL8) AS INT
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/seconds/*" />
 FUNCTION Seconds() AS REAL8
 	VAR dt := DateTime.Now
-	RETURN dt:Hour * 3600 + dt:Minute * 60 + dt:Second + Math.Round( (REAL8) dt:Millisecond/1000,2)
+    LOCAL result as REAL8
+    result := dt:Hour * 3600 + dt:Minute * 60 + dt:Second + (REAL8) (dt:Millisecond)/1000.0
+    IF XSharp.RuntimeState.Dialect == XSharpDialect.FoxPro
+        result := Math.Round(result,3)
+    ELSE
+        result := Math.Round(result,2)
+    ENDIF
+	RETURN result
 
 
 

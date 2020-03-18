@@ -519,13 +519,13 @@ STATIC METHOD  OleSend(oComObject AS OBJECT, oType AS System.Type, cName AS STRI
 						lOk    := TRUE
 					CATCH AS ArgumentException
 						THROW Error.VOError(EG_ARG,  cMethod, cMethod, 1, <OBJECT>{args})
-						lOk := FALSE                                  
+						//lOk := FALSE                                  
 					CATCH AS TargetException
 						THROW Error.VOError(EG_ARG,  cMethod, cMethod, 1, <OBJECT>{args} )
-						lOk := FALSE                                  
+						//lOk := FALSE                                  
 					CATCH AS MissingMethodException
 						THROW Error.VOError(EG_NOMETHOD,  cMethod, "cName", 2, <OBJECT>{cName}  )
-						lOk := FALSE                                  
+						//lOk := FALSE                                  
 					CATCH AS Exception
 						lOk := FALSE              
 					END TRY

@@ -548,7 +548,7 @@ INTERNAL STATIC CLASS OOPHelpers
             ENDIF
             THROW // rethrow exception
         END TRY
-		IF SendHelper(oObject, "NoIVarGet", <USUAL>{String2Symbol(cIVar)}, OUT VAR result)
+		IF SendHelper(oObject, "NoIVarGet", <USUAL>{cIVar}, OUT VAR result)
 			RETURN result
 		END IF
 		VAR oError := Error.VOError( EG_NOVARMETHOD, IIF( lSelf, __ENTITY__, __ENTITY__ ), NAMEOF(cIVar), 2, <OBJECT>{oObject, cIVar} )
@@ -573,7 +573,7 @@ INTERNAL STATIC CLASS OOPHelpers
 			    propInfo:SetValue(oObject,oValue , NULL)
 			    RETURN
 		    ENDIF
-		    IF SendHelper(oObject, "NoIVarPut", <USUAL>{String2Symbol(cIVar), oValue})
+		    IF SendHelper(oObject, "NoIVarPut", <USUAL>{cIVar, oValue})
 			    RETURN
 		    END IF
 		    VAR oError :=  Error.VOError( EG_NOVARMETHOD, IIF( lSelf, __ENTITY__, __ENTITY__ ), NAMEOF(cIVar), 2, <OBJECT>{oObject, cIVar, oValue, lSelf})

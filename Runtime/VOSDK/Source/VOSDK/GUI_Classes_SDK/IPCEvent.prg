@@ -182,8 +182,10 @@ CONSTRUCTOR(wT, wF, hC, h1, h2, hD, dwD1, dwD2, oIpc)
 
 END CLASS
 
+/// <exclude/>
 GLOBAL aDdeConv:={} AS ARRAY //Table of Conversation handles and IPC objects (Clients or servers)
 
+/// <exclude/>
 GLOBAL aDdeServer:={} AS ARRAY //Table of Servers objects and Server handles
 
 FUNCTION __WCAddIpcObjectToConv(hConv AS PTR, oIpc AS OBJECT) AS VOID

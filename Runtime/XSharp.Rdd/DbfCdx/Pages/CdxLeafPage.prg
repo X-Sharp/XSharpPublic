@@ -176,7 +176,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             VAR bits            := CdxHelpers.GetBits(SELF:KeyLength)
             // base dupCountMask, trailCountMNask, numbitsRecno and other info are based on keylength 
             SELF:DataBytes      := IIF (bits > 12, 5, IIF( bits > 8, 4, 3))
-            SELF:RecordBits     := (SELF:DataBytes << 3) - (bits << 1)
+            SELF:RecordBits     := (BYTE) ((SELF:DataBytes << 3) - (bits << 1))
             SELF:DuplicateBits  := SELF:TrailingBits  := bits
             SELF:TrailingMask   := SELF:DuplicateMask := (BYTE) (( 1 << bits  ) - 1)
             SELF:RecnoMask      := (1 << SELF:RecordBits) -1
@@ -352,7 +352,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             END GET
         END PROPERTY
 
-        INTERNAL PROPERTY LastNode AS CdxPageNode GET IIF(SELF:NumKeys == 0, NULL, SELF[SELF:NumKeys-1])
+        INTERNAL PROPERTY LastNode AS CdxPageNode GET IIF(SELF:NumKeys == 0, NULL, SELF[(WORD) (SELF:NumKeys-1)])
         INTERNAL PROPERTY Leaves    AS IList<CdxLeaf>
             GET
                 _ExpandLeaves(FALSE)
@@ -519,7 +519,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 IF nDupCount != nextLeaf:Dup
                     //Debug("Adjusted next leaf dup from ", nextLeaf:Dup, "to", nDupCount)
                     VAR diff        := nDupCount - nextLeaf:Dup
-                    SELF:Freespace  += diff
+                    SELF:Freespace  += (WORD) diff
                     nextLeaf:Dup    := nDupCount
                 ENDIF
 #ifdef TESTCDX
@@ -743,7 +743,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:ClearRecordsAndKeys()
 
             LOCAL nKey   := 0 AS INT
-            LOCAL nStart := CDXLEAF_HEADERLEN + SELF:Freespace AS WORD
+            LOCAL nStart := (WORD) (CDXLEAF_HEADERLEN + SELF:Freespace)  AS WORD
             FOREACH leaf AS CdxLeaf IN list
                 VAR nDup   := leaf:Dup
                 VAR nTrail := leaf:Trail
@@ -762,7 +762,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 IF nBytesToCopy != 0
                     System.Array.Copy(leaf:Key, nDup, _buffer, nStart-nBytesToCopy,  nBytesToCopy)
                 ENDIF
-                SELF:Freespace := SELF:Freespace -  (nBytesToCopy + SELF:DataBytes)
+                SELF:Freespace := (WORD)  (SELF:Freespace -  (nBytesToCopy + SELF:DataBytes))
                 nStart  -= nBytesToCopy  
                 nKey    += 1
             NEXT
@@ -803,9 +803,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             BEGIN UNCHECKED
                 LOCAL shift AS INT
                 shift     := SELF:LenShift & 0xFF
-                wValue:b1 := (BYTE) dupCount << shift
+                wValue:b1 := (BYTE) (dupCount << shift)
                 wValue:b2 := trailCount
-                wValue:wordValue := wValue:wordValue << shift
+                wValue:wordValue := (WORD) (wValue:wordValue << shift)
                 RETURN wValue:wordValue
             END UNCHECKED
 
@@ -813,9 +813,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
        PRIVATE METHOD _getDupTrail(wData AS WORD, dupCount OUT BYTE, trailCount OUT BYTE) AS VOID
             LOCAL shift AS INT
             shift := SELF:LenShift & 0xFF
-            wValue:wordValue := wData >> shift
+            wValue:wordValue := (WORD) (wData >> shift)
             trailCount := wValue:b2
-            dupCount   := wValue:b1 >> shift
+            dupCount   := (BYTE) (wValue:b1 >> shift)
             RETURN 
             
 
@@ -856,7 +856,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     ENDIF
                NEXT
            ENDIF
-           RETURN SELF:NumKeys+1
+           RETURN (WORD) (SELF:NumKeys+1)
 
        INTERNAL METHOD Dump AS STRING
             LOCAL sb AS StringBuilder

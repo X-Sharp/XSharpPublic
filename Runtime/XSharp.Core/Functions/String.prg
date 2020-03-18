@@ -146,7 +146,7 @@ FUNCTION ATLine2(cSearch AS STRING,cTarget AS STRING) AS DWORD
 /// </returns>
 FUNCTION B64EncFile(c AS STRING) AS STRING
 	THROW NotImplementedException{}
-	RETURN String.Empty   
+	//RETURN String.Empty   
 
 /// <summary>This function is not implemented yet</summary>
 /// <param name="cIn"></param>
@@ -154,7 +154,7 @@ FUNCTION B64EncFile(c AS STRING) AS STRING
 /// </returns>
 FUNCTION B64EncString(cIn AS STRING) AS STRING
 	THROW NotImplementedException{}
-	RETURN String.Empty   
+	//RETURN String.Empty   
 
 
 
@@ -168,7 +168,7 @@ FUNCTION Buffer(dwSize AS DWORD) AS STRING
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/chareven/*" />
 FUNCTION CharEven(cString AS STRING) AS STRING
 	LOCAL evenChars:=NULL AS STRING
-    LOCAL c := cString as STRING
+    LOCAL c := cString AS STRING
 	IF ( !String.IsNullOrEmpty(c) ) 
 		//local chars  := c:ToCharArray() as char[]
 		LOCAL isEven := FALSE AS  LOGIC
@@ -214,7 +214,7 @@ FUNCTION CharMix(cOdd AS STRING,cEven AS STRING) AS STRING
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/charodd/*" />
 FUNCTION CharOdd(cString AS STRING) AS STRING
 	LOCAL oddChars:=NULL AS STRING
-    LOCAL c := cString as STRING
+    LOCAL c := cString AS STRING
 	IF ( !String.IsNullOrEmpty(c) ) 
 		//local chars  := c:ToCharArray() as char[]
 		LOCAL isOdd  := TRUE AS  LOGIC
@@ -622,7 +622,7 @@ FUNCTION ProperA(cName REF STRING) AS STRING
 /// </returns>
 FUNCTION QPEncString(cIn AS STRING) AS STRING
 	THROW NotImplementedException{}
-	RETURN String.Empty   
+	//RETURN String.Empty   
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/rat/*" />
@@ -798,7 +798,7 @@ INTERNAL FUNCTION _SoundExChar( c AS CHAR ) AS CHAR
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/strevaluate/*" />
 FUNCTION StrEvaluate(cString AS STRING) AS STRING
 	THROW NotImplementedException{}
-	RETURN String.Empty   
+	//RETURN String.Empty   
 
 
 
@@ -897,7 +897,7 @@ FUNCTION UpperA(cString REF STRING) AS STRING
 /// </returns>
 FUNCTION UUDecodeLine(cLine AS STRING,hfOut AS IntPtr) AS DWORD
 	THROW NotImplementedException{}
-RETURN 0   
+//RETURN 0   
 
 /// <summary>This function is not implemented yet</summary>
 /// <param name="c"></param>
@@ -905,7 +905,7 @@ RETURN 0
 /// </returns>
 FUNCTION UUEncFile(c AS STRING) AS STRING
 	THROW NotImplementedException{}
-	RETURN String.Empty   
+	//RETURN String.Empty   
 
 /// <summary>This function is not implemented yet</summary>
 /// <param name="c"></param>
@@ -913,7 +913,7 @@ FUNCTION UUEncFile(c AS STRING) AS STRING
 /// </returns>
 FUNCTION UUEncLine(c AS STRING) AS STRING
 	THROW NotImplementedException{}
-	RETURN String.Empty   
+	//RETURN String.Empty   
 
 
 
@@ -978,17 +978,19 @@ FUNCTION IsXDigit(pszString AS STRING) AS LOGIC
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/isspace/*" />
 FUNCTION IsSpace(pszString AS STRING) AS LOGIC
-	LOCAL ret := FALSE AS LOGIC
-	switch (int) pszString[0]
-		CASE 9
-        CASE 10
-        CASE 11
-        CASE 12
-        CASE 13
-        CASE 32
-            ret := true
-    end switch
-	RETURN ret
+    LOCAL ret := FALSE AS LOGIC
+    IF .not. String.IsNullOrEmpty(pszString)
+        SWITCH (INT) pszString[0]
+            CASE 9
+            CASE 10
+            CASE 11
+            CASE 12
+            CASE 13
+            CASE 32
+                ret := TRUE
+        END SWITCH
+    ENDIF
+    RETURN ret
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/isupper/*" />
 FUNCTION IsUpper(pszString AS STRING) AS LOGIC
@@ -1064,8 +1066,11 @@ FUNCTION _Like(sWildCard AS STRING, sSource AS STRING) AS LOGIC
 /// <summary>Determine if a string matches a wildcard pattern (like the wildcard pattern for the DIR command in the OS).</summary>
 /// <param name="sWildCard">The wildcard to use. '*' matches 0 or more characters until the next non-wildcard character, '?' matches any character, all other characters must match exactly.</param>
 /// <param name="sSource">The string to examine.</param>
-/// <remarks>This function is case INsensitive. If you want to do a case sensitive compare, use _Like()</remarks>
+/// <remarks>This function is case INsensitive in all dialects except FoxPro.
+/// If you want to do a case sensitive compare in these dialects, use _Like()</remarks>
 /// <seealso cref='M:XSharp.Core.Functions._Like(System.String,System.String)' >_Like</seealso>
 FUNCTION Like(sWildCard AS STRING, sSource AS STRING) AS LOGIC
+    IF XSharp.RuntimeState.Dialect == XSharpDialect.FoxPro
+        RETURN _Like(sWildCard, sSource)
+    ENDIF
     RETURN _Like(Upper(sWildCard), Upper(sSource))
-

@@ -148,13 +148,11 @@ CLASS XSharp.RuntimeState
 	/// <summary>The current compiler setting for the VO11 compiler option.</summary>
     /// <include file="CoreComments.xml" path="Comments/CompilerOptions/*" />
     /// <value>The default vale for this option is 'False'.</value>
-    /// <seealso cref="F:XSharp.Set.Optionvo11" />
 	STATIC PROPERTY CompilerOptionVO11 AS LOGIC AUTO
  
 	/// <summary>The current compiler setting for the VO13 compiler option.</summary>
     /// <include file="CoreComments.xml" path="Comments/CompilerOptions/*" />
     /// <value>The default vale for this option is 'False'.</value>
-    /// <seealso cref="F:XSharp.Set.Optionvo13" />
 	STATIC PROPERTY CompilerOptionVO13 AS LOGIC AUTO
 	/// <summary>Gets / Sets the current Workarea number.</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
@@ -165,24 +163,20 @@ CLASS XSharp.RuntimeState
     /// <summary>The current compiler setting for the OVF compiler option.</summary>
     /// <include file="CoreComments.xml" path="Comments/CompilerOptions/*" />
     /// <value>The default vale for this option is 'False'.</value>
-    /// <seealso cref="F:XSharp.Set.Optionovf" />
 	STATIC PROPERTY CompilerOptionOVF AS LOGIC AUTO
 
     /// <summary>The current compiler setting for the X# Dialect.</summary>
     /// <include file="CoreComments.xml" path="Comments/CompilerOptions/*" />
     /// <value>The default vale for the Dialect is 'Core'.</value>
-    /// <seealso cref="F:XSharp.Set.Dialect" />
 	STATIC PROPERTY Dialect AS XSharpDialect  AUTO
 
 	/// <summary>The current compiler setting for the FOVF compiler option.</summary>
     /// <include file="CoreComments.xml" path="Comments/CompilerOptions/*" />
     /// <value>The default vale for this option is 'False'.</value>
-    /// <seealso cref="F:XSharp.Set.Optionovf" />
 	STATIC PROPERTY CompilerOptionFOVF AS LOGIC AUTO
 
 	/// <summary>The System.Reflection.Module for the main application.</summary>
     /// <include file="CoreComments.xml" path="Comments/CompilerOptions/*" />
-    /// <seealso cref="F:XSharp.Set.AppModule" />
     STATIC PROPERTY AppModule AS  System.Reflection.Module AUTO
 	#endregion
 
@@ -289,7 +283,7 @@ CLASS XSharp.RuntimeState
     /// <note>This value is 'per thread' </note></remarks>
     /// <seealso cref="P:XSharp.RuntimeState.DateCountry" />
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-    /// <seealso cref="M:XSharp.Core.Functions.SetDateFormat" />
+    /// <seealso cref="M:XSharp.Core.Functions.GetDateFormat" />
     /// <seealso cref="M:XSharp.Core.Functions.SetDateFormat(System.String)" />
     /// <seealso cref="F:XSharp.Set.DateFormat" />
     STATIC PROPERTY DateFormat AS STRING ;
@@ -446,8 +440,8 @@ CLASS XSharp.RuntimeState
 
 	/// <summary>Current SetInternational Setting.</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
-    /// <seealso cref="M:XSharp.RT.Functions.SetInternational" />
-    /// <seealso cref="M:XSharp.RT.Functions.SetInternational(System.String)" />
+    /// <seealso cref="M:XSharp.Core.Functions.SetInternational" />
+    /// <seealso cref="M:XSharp.Core.Functions.SetInternational(System.String)" />
     /// <seealso cref="F:XSharp.Set.Intl" />
      STATIC PROPERTY International AS CollationMode ;
         GET GetValue<CollationMode>(Set.Intl);
@@ -933,9 +927,9 @@ CLASS XSharp.RuntimeState
             VAR strRHS := RuntimeState.WinEncoding:GetString(aRHS, 0, nLen)
             RETURN String.Compare(strLHS, strRHS)
         OTHERWISE
-            RETURN XSharp.StringHelpers.CompareOrdinal(aLHS, aRHS, nLen)
+            NOP
         END SWITCH
-        RETURN 0
+        RETURN XSharp.StringHelpers.CompareOrdinal(aLHS, aRHS, nLen)
 END CLASS
 
 

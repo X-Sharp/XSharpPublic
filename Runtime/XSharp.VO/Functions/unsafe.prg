@@ -448,7 +448,7 @@ CLASS VOBitmaps
         LOCAL i AS DWORD
             
         IF lpBmpInfo:biClrUsed != 0
-            lpPalInfo := (BITMAPINFOHEADER PTR) MemAlloc( (WORD)lpBmpInfo:biSize + (WORD)lpBmpInfo:biClrUsed * sizeof(WORD) )
+            lpPalInfo := (BITMAPINFOHEADER PTR) MemAlloc((DWORD)  (WORD)lpBmpInfo:biSize + (WORD)lpBmpInfo:biClrUsed * sizeof(WORD) )
                 
             IF lpPalInfo != IntPtr.Zero
                 MemCopy( lpPalInfo, lpBmpInfo, sizeof( BITMAPINFOHEADER ) ) // *lpPalInfo := *lpBmpInfo;

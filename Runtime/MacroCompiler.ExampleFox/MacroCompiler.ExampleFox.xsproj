@@ -21,7 +21,7 @@
     <AZ>false</AZ>
     <CS>false</CS>
     <LB>true</LB>
-    <NamedArgs>False</NamedArgs>
+    <NamedArgs>false</NamedArgs>
     <OVF>false</OVF>
     <Unsafe>false</Unsafe>
     <INS>false</INS>
@@ -47,6 +47,7 @@
     <Nostandarddefs>false</Nostandarddefs>
     <AssemblyOriginatorKeyFile>$(Solutiondir)common\xsharp.snk</AssemblyOriginatorKeyFile>
     <NoWin32Manifest>False</NoWin32Manifest>
+    <StandardDefs />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>x86</PlatformTarget>

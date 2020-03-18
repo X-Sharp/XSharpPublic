@@ -123,19 +123,17 @@ CLASS XSharp.VFP.Empty
         
     #endregion
     
-    /// <inheritdoc cref='XSharp.XPP.DataObject.NoIvarPut(XSharp.__Usual,XSharp.__Usual)' >
-    VIRTUAL METHOD NoIvarPut(cName AS USUAL, uValue AS USUAL) AS USUAL STRICT
-        IF _Properties:ContainsKey((STRING) cName)
-            _Properties[(STRING) cName] := uValue
+    VIRTUAL METHOD NoIvarPut(cName AS STRING, uValue AS USUAL) AS USUAL STRICT
+        IF _Properties:ContainsKey( cName)
+            _Properties[cName] := uValue
         ELSE
             THROW PropertyNotFoundException{cName}
         ENDIF
         RETURN uValue
         
-    /// <inheritdoc cref='XSharp.XPP.DataObject.NoIvarGet(XSharp.__Usual)' >
-    VIRTUAL METHOD NoIvarGet(cName AS USUAL) AS USUAL STRICT
-        IF _Properties:ContainsKey((STRING) cName)
-            RETURN _Properties[(STRING) cName]
+    VIRTUAL METHOD NoIvarGet(cName AS STRING) AS USUAL STRICT
+        IF _Properties:ContainsKey(cName)
+            RETURN _Properties[cName]
         ENDIF
         RETURN NIL
         

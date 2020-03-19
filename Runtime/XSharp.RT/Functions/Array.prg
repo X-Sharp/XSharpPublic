@@ -627,9 +627,9 @@ FUNCTION ATail<T>(aTarget AS __ArrayBase<T>) AS T WHERE T IS NEW()
     
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/acopy/*" /> 
 FUNCTION ACopy(aSource ,aTarget ,nStart ,nCount ,nTargetPos ) AS ARRAY CLIPPER
-    LOCAL sourceLen  AS DWORD
-    LOCAL start AS DWORD
-    LOCAL count AS DWORD
+    LOCAL sourceLen  AS LONG
+    LOCAL start AS LONG
+    LOCAL count AS LONG
     IF !aSource:IsArray
         THROW Error.ArgumentError( __FUNCTION__, NAMEOF(aSource), 1, <OBJECT>{ aSource } )
     ENDIF
@@ -638,13 +638,13 @@ FUNCTION ACopy(aSource ,aTarget ,nStart ,nCount ,nTargetPos ) AS ARRAY CLIPPER
         THROW Error.ArgumentError( __FUNCTION__, NAMEOF(aTarget), 2, <OBJECT>{ aTarget } )
     ENDIF
     start := 1
-    sourceLen  := ALen(aSource)
+    sourceLen  := (LONG) ALen(aSource)
     IF pCount() > 2
         IF nStart:IsNumeric
             start := nStart
         ELSEIF nStart:IsNil
             IF pCount() >= 4 .and. nCount:IsNumeric .and. nCount < 0
-                start := ALen(aSource)
+                start := (LONG) ALen(aSource) -1
             ELSE
                 start := 1
             END IF
@@ -669,8 +669,8 @@ FUNCTION ACopy(aSource ,aTarget ,nStart ,nCount ,nTargetPos ) AS ARRAY CLIPPER
             sourceLen := Math.Max(1, start+count-1)
         ENDIF
     ENDIF
-    LOCAL offSet		:= 1 AS DWORD
-    LOCAL targetLen	:= ALen(aTarget) AS DWORD
+    LOCAL offSet		:= 1 AS LONG
+    LOCAL targetLen	    := (LONG) ALen(aTarget) AS LONG
     IF pCount() > 4 .and. .not. nTargetPos:IsNil
         IF nTargetPos:IsNumeric
             offSet := nTargetPos
@@ -722,7 +722,15 @@ FUNCTION AFill(aTarget AS ARRAY,uValue := NIL AS USUAL, nStart := NIL AS USUAL, 
         END IF
         
         FOR LOCAL x := nStart AS INT UPTO nStart + nCount - 1
-            aTarget[(DWORD) x] := uValue
+            IF XSharp.RuntimeState.Dialect == XSharpDialect.FoxPro
+                if IsArray(aTarget[(DWORD) x])
+                    AFill(aTarget[(DWORD) x], uValue)
+                ELSE
+                    aTarget[(DWORD) x] := uValue
+                ENDIF
+            ELSE
+                aTarget[(DWORD) x] := uValue
+            ENDIF
         NEXT
     ENDIF
     RETURN aTarget
@@ -783,6 +791,7 @@ FUNCTION AReplicate(xFill AS USUAL,nElements AS DWORD) AS ARRAY
     /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/asort/*" /> 
 FUNCTION ASort(aTarget AS ARRAY, nStart := NIL AS USUAL,nCount := NIL AS USUAL,cbOrder := NIL AS USUAL) AS ARRAY 
     LOCAL nLen AS DWORD
+    LOCAL oBlock as OBJECT
     DEFAULT( REF nStart, 1 )
     
     nLen := ALen(aTarget) 
@@ -814,13 +823,17 @@ FUNCTION ASort(aTarget AS ARRAY, nStart := NIL AS USUAL,nCount := NIL AS USUAL,c
     
     
     IF cbOrder != NIL
-        VAR ok := cbOrder:IsCodeblock
-        IF ok
+        IF cbOrder:IsCodeblock
             VAR cb := (CODEBLOCK) cbOrder
-            ok := cb:PCount() >= 2
-            IF ! ok
+            IF cb:PCount() < 2
                 THROW Error.ArgumentError( __FUNCTION__, nameof(cbOrder), "ASort Codeblock must have at least 2 arguments" )
             ENDIF
+        ELSEIF cbOrder:IsObject
+            IF ! IsMethod(cbOrder, "Eval")
+                THROW Error.ArgumentError( __FUNCTION__, nameof(cbOrder), "ASort Sort Object must have an Eval method" )
+            ENDIF
+            oBlock := cbOrder
+            cbOrder := {|a,b|  Send(oBlock,"Eval",a,b) }
         ELSE
             THROW Error.ArgumentError( __FUNCTION__, nameof(cbOrder), 4, <OBJECT>{ cbOrder } )
         ENDIF

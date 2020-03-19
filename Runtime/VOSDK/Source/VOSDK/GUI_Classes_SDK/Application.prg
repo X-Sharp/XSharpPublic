@@ -310,11 +310,16 @@ METHOD SetMdiClientWindow(hNewMdiClientWnd)
 	RETURN NIL
 END CLASS
 
+/// <exclude/>
 GLOBAL gatomVOObjPtr AS DWORD
+/// <exclude/>
 GLOBAL gdwDragListMsg AS DWORD
+/// <exclude/>
 GLOBAL glCAPaintInit := FALSE AS LOGIC
 
+/// <exclude/>
 GLOBAL gpfnInitCommonControlsEx AS InitCommonControlsEx PTR
+/// <exclude/>
 GLOBAL gsymBrowserDef AS SYMBOL
 
 PROCEDURE __InitFunctionPointer() _INIT3

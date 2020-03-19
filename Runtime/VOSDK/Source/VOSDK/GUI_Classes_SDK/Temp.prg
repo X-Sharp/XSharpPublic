@@ -15,6 +15,7 @@ FUNCTION __ShowLastError()
 	LocalFree(lpMsgBuf)
 	RETURN NIL
 
+/// <exclude/>
 _DLL FUNC DragObject(hDesktop AS PTR, hWnd AS PTR, uFlags AS DWORD, dw AS DWORD, hCursor AS PTR);
 	AS DWORD PASCAL:USER32.DragObject
 

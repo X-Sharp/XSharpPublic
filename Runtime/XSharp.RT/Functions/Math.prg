@@ -52,10 +52,10 @@ FUNCTION Atan2(nY as USUAL, nX AS USUAL) AS FLOAT
     RETURN Math.Atan2((REAL8) nY, (REAL8) nX)
 
 FUNCTION DToR(nDegrees as USUAL) AS REAL8
-    RETURN (Real8) nDegrees / 360 * Math.PI
+    RETURN (Real8) nDegrees / 180.0 * Math.PI
 
 FUNCTION RToD(nRadian as USUAL) AS REAL8
-    RETURN ((REAL8) nRadian / Math.PI) * 360.0
+    RETURN ((REAL8) nRadian / Math.PI) * 180.0
 
 
 FUNCTION PI() AS REAL8

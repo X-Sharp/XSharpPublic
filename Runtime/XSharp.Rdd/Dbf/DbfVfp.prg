@@ -20,7 +20,7 @@ CLASS DBFVFP INHERIT DBFCDX
 		
 	PROPERTY Driver         AS STRING GET "DBFVFP"
     PROPERTY DbcName        AS STRING AUTO
-    PROPERTY DbcPosition    AS INT GET 32 + SELF:_Fields:Length  * 32 +1
+    PROPERTY DbcPosition    AS INT GET DbfHeader.SIZE + SELF:_Fields:Length  * DbfField.SIZE +1
 
     PUBLIC OVERRIDE METHOD Create( openInfo AS DbOpenInfo ) AS LOGIC
 	LOCAL isOk AS LOGIC
@@ -130,7 +130,9 @@ CLASS DBFVFP INHERIT DBFCDX
         lOk := SUPER:Open(info)
         XSharp.RuntimeState.AutoOpen := lOld
         IF lOk
-            SELF:_ReadDbcInfo()
+            IF SELF:_Header:Version:IsVfp()
+                SELF:_ReadDbcInfo()
+            ENDIF
             IF XSharp.RuntimeState.AutoOpen
                 SELF:OpenProductionIndex(info)
             ENDIF
@@ -138,11 +140,14 @@ CLASS DBFVFP INHERIT DBFCDX
         
         RETURN lOk
 
-    METHOD Info(nOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT
+    METHOD FieldInfo(nFldPos AS LONG, nOrdinal AS LONG, oNewValue AS OBJECT) AS OBJECT
+
         IF nOrdinal == DbFieldInfo.DBS_PROPERTIES
            RETURN DbFieldInfo.DBS_FLAGS
+        ELSEIF nOrdinal == DbFieldInfo.DBS_CAPTION
+            nOrdinal := DbFieldInfo.DBS_ALIAS
         ENDIF
-        RETURN SUPER:Info(nOrdinal, oNewValue)
+        RETURN SUPER:FieldInfo(nFldPos, nOrdinal, oNewValue)
 
     PROTECTED METHOD _ReadDbcInfo() AS VOID
         LOCAL nPos := SELF:DbcPosition AS LONG
@@ -179,7 +184,11 @@ CLASS DBFVFP INHERIT DBFCDX
         cFile := System.IO.Path.GetFileNameWithoutExtension(SELF:_FileName)
         lOld := XSharp.RuntimeState.AutoOpen
         XSharp.RuntimeState.AutoOpen := FALSE
-        lOk := oDbc:Open(oi)
+        TRY
+            lOk := oDbc:Open(oi)
+        CATCH as Exception
+            lOk := FALSE
+        END TRY
         XSharp.RuntimeState.AutoOpen := lOld
         IF lOk
             nType := oDbc:FieldIndex("OBJECTTYPE")

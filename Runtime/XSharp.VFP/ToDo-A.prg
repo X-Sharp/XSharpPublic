@@ -10,100 +10,94 @@
 /// <include file="VFPDocs.xml" path="Runtimefunctions/aclass/*" />
 FUNCTION AClass(ArrayName, oExpression)
     THROW NotImplementedException{}
-    RETURN 0 
+    //RETURN 0 
      
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/adatabases/*" />
 FUNCTION ADatabases(ArrayName) 
     THROW NotImplementedException{}
-    RETURN 0
+    //RETURN 0
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/adbobjects/*" />
 FUNCTION ADBObjects(ArrayName, cSetting)
     THROW NotImplementedException{}
-    RETURN 0
+    //RETURN 0
 
 
-
-/// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/addproperty/*" />
-FUNCTION AddProperty (oObjectName, cPropertyName, eNewValue )
-    THROW NotImplementedException{}
-    RETURN FALSE
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/aelement/*" />
 FUNCTION Aelement (ArrayName, nRowSubscript , nColumnSubscript)
     THROW NotImplementedException{}
-    RETURN 0
+    //RETURN 0
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/agetfileversion/*" />
 FUNCTION AGetFileVersion (ArrayName, cFileName)
     THROW NotImplementedException{}
-    RETURN 0
+    //RETURN 0
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/alines/*" />
 FUNCTION ALines (ArrayName, cExpression , nFlags , cParseChar , cParseChar2 )
     THROW NotImplementedException{}
-    RETURN 0
+    //RETURN 0
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/amembers/*" />
 FUNCTION AMembers (ArrayName, oObjectNameOrClassName , nArrayContentsID , cFlags)
     THROW NotImplementedException{}
-    RETURN 0
+    //RETURN 0
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/anetresources/*" />
 FUNCTION ANetResources (ArrayName, cNetworkName, nResourceType)
     THROW NotImplementedException{}
-    RETURN 0
+    //RETURN 0
 
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/aprinters/*" />
 FUNCTION APrinters (ArrayName , nValue)
     THROW NotImplementedException{}
-    RETURN 0
+    //RETURN 0
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/asessions/*" />
 FUNCTION ASessions (ArrayName)
     THROW NotImplementedException{}
-    RETURN 0
+    //RETURN 0
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/asqlhandles/*" />
 FUNCTION ASqlHandles (ArrayName , nStatementHandle)
     THROW NotImplementedException{}
-    RETURN 0
+    //RETURN 0
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/astackinfo/*" />
 FUNCTION AStackInfo (ArrayName )
     THROW NotImplementedException{}
-    RETURN 0
+    //RETURN 0
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/asubscript/*" />
 FUNCTION ASubScript (ArrayName, nElementNumber, nSubscript )
     THROW NotImplementedException{}
-    RETURN 0
+    //RETURN 0
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/ataginfo/*" />
 FUNCTION ATagInfo (ArrayName ,cCDXName , uArea )
     THROW NotImplementedException{}
-    RETURN 0
+    //RETURN 0
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/aused/*" />
 FUNCTION AUsed (ArrayName , nDataSessionNumber , cTableName )
     THROW NotImplementedException{}
-    RETURN 0
+    //RETURN 0
 
 
 

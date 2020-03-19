@@ -116,18 +116,22 @@ ACCESS Owner
 	RETURN oParent
 END CLASS
 
+/// <exclude/>
 GLOBAL glShellDllLoaded := FALSE AS LOGIC
 
-	// Function Declarations
+/// <exclude/>
 GLOBAL gpfnDragAcceptFiles AS TDragAcceptFiles PTR
+/// <exclude/>
 GLOBAL gpfnDragFinish AS TDragFinish PTR
+/// <exclude/>
 GLOBAL gpfnDragQueryFile AS TDragQueryFile PTR
-//GLOBAL gpfnDragQueryPoint AS TDragQueryPoint PTR
-	// the following are used by StandardFolderDialog
+/// <exclude/>
 GLOBAL gpfnSHBrowseForFolder AS TSHBrowseForFolder PTR
+/// <exclude/>
 GLOBAL gpfnShell_NotifyIcon AS TShell_NotifyIcon PTR
 
 //GLOBAL gpfnSHGetMalloc AS TSHGetMalloc PTR
+/// <exclude/>
 GLOBAL gpfnSHGetPathFromIDList AS TSHGetPathFromIDList PTR
 	// tray icon
 FUNCTION __LoadShellDll()

@@ -9,7 +9,7 @@ USING System.Collections.Generic
 USING System.Text
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/mton/*" />
-FUNCTION MtoN( mExpression AS CURRENCY) AS FLOAT
+FUNCTION MToN( mExpression AS CURRENCY) AS FLOAT
     RETURN (FLOAT) mExpression
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/ntom/*" />

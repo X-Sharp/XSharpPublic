@@ -177,7 +177,7 @@ INTERNAL CLASS MemWriter
                 WriteName()
                 WriteBytes(L2Bin(uVal))
                 
-        CASE __UsualType.Date
+            CASE __UsualType.Date
             CASE __UsualType.DateTime
                 WriteByte(__UsualType.Date)
                 WriteName()
@@ -218,9 +218,9 @@ INTERNAL CLASS MemWriter
                     WriteByte(__UsualType.Object)
                     WriteName()
                     WriteObj(uVal)
-                    ELSE
-                        WriteByte(__UsualType.Object +0x80)
-                        WriteName()
+                ELSE
+                    WriteByte(__UsualType.Object +0x80)
+                    WriteName()
                     WriteBytes(W2Bin((WORD) wArrayEl))
                 ENDIF
                 
@@ -351,44 +351,44 @@ INTERNAL CLASS MemReader
         LOCAL uValue AS USUAL
         LOCAL wLen AS WORD
         SWITCH wType
-            CASE __UsualType.String
-                uValue := SELF:ReadString()
+        CASE __UsualType.String
+            uValue := SELF:ReadString()
                 
-            CASE __UsualType.Long
-                uValue :=Bin2L(SELF:ReadBytes(4))
+        CASE __UsualType.Long
+            uValue :=Bin2L(SELF:ReadBytes(4))
                 
-            CASE __UsualType.Date
-                uValue :=Bin2Date(SELF:ReadBytes(4))
+        CASE __UsualType.Date
+            uValue :=Bin2Date(SELF:ReadBytes(4))
                 
-            CASE __UsualType.Float
-                uValue :=Bin2F(SELF:ReadBytes(12))
+        CASE __UsualType.Float
+            uValue :=Bin2F(SELF:ReadBytes(12))
                 
-            CASE __UsualType.Logic
-                uValue := ReadByte() != 0
+        CASE __UsualType.Logic
+            uValue := ReadByte() != 0
                 
-            CASE __UsualType.Symbol
-                uValue := String2Symbol(SELF:ReadString())
+        CASE __UsualType.Symbol
+            uValue := String2Symbol(SELF:ReadString())
                 
-            CASE __UsualType.Array     
-                wLen := SELF:ReadWord()
-                uValue := SELF:ReadArray(wLen)
+        CASE __UsualType.Array     
+            wLen := SELF:ReadWord()
+            uValue := SELF:ReadArray(wLen)
                 
-            CASE __UsualType.Array +0x80
-                wLen := SELF:ReadWord()
-                uValue :=aArrayList[wLen]
+        CASE __UsualType.Array +0x80
+            wLen := SELF:ReadWord()
+            uValue :=aArrayList[wLen]
                 
-            CASE __UsualType.Object
-                uValue :=SELF:ReadObject(SELF:ReadString())
+        CASE __UsualType.Object
+            uValue :=SELF:ReadObject(SELF:ReadString())
                 
-            CASE __UsualType.Object +0x80    
-                wLen := SELF:ReadWord()
-                uValue :=aObjectList[wLen]
+        CASE __UsualType.Object +0x80    
+            wLen := SELF:ReadWord()
+            uValue :=aObjectList[wLen]
                 
-            CASE __UsualType.Ptr
-                uValue :=Bin2Ptr(SELF:ReadBytes(4))
-                IF SELF:ReadWord() <>_GetMRandID()
-                    uValue :=NULL_PTR
-                ENDIF
+        CASE __UsualType.Ptr
+            uValue :=Bin2Ptr(SELF:ReadBytes(4))
+            IF SELF:ReadWord() <>_GetMRandID()
+                uValue :=NULL_PTR
+            ENDIF
                 
         CASE __UsualType.Void
         OTHERWISE
@@ -493,7 +493,7 @@ INTERNAL CLASS MemReader
         LOCAL nType AS BYTE
         LOCAL lPut := TRUE AS LOGIC
         
-        //Clipper type mem file
+        // Clipper type mem file, this has a diffent file format
         // file format is as follows
         // name,  11 bytes nul terminated (Clipper var name is 10 chars max)
         // type,  1  byte   ox80 ored with either "C", "N", "D" or "L"
@@ -512,39 +512,41 @@ INTERNAL CLASS MemReader
             cVar	:= Chr(wType)+SELF:ReadBytes(10)
             cVar 	:= Left(cVar,At(Chr(0),cVar)-1):ToUpper()
             nType   := SELF:ReadByte()
-            cType	:= Chr(_AND(nType,127))
+            cType	:= Chr(_AND(nType,127U))
             SELF:ReadBytes(4) // pad
             IF lUsemask    
                 lPut := _Like(SELF:cMask, cVar ) == SELF:lInclude
             ENDIF
             
-            DO CASE
-                CASE cType ="C" //String
-                    nLen:=Bin2W(SELF:ReadBytes(2))
-                    SELF:ReadBytes(14) //Class and pad
-                    IF lPut
-                        MemVarPut(cVar, SELF:ReadBytes(nLen-1))
-                    ENDIF
+            SWITCH cType
+            CASE "C" //String
+                nLen:=Bin2W(SELF:ReadBytes(2))
+                SELF:ReadBytes(14) //Class and pad
+                IF lPut
+                    MemVarPut(cVar, SELF:ReadBytes(nLen-1))
+                ENDIF
                 SELF:ReadBytes(1) //nul byte
-                CASE cType ="N" //Real8
-                    SELF:ReadBytes(16) //Len, Dec, Class and pad
-                    IF lPut
-                        MemVarPut(cVar, Bin2Real8(SELF:ReadBytes(8)))
-                    ENDIF
-                CASE cType ="L" //Logic
-                    SELF:ReadBytes(16) //Len, Dec, Class and pad
-                    IF lPut
-                        MemVarPut(cVar, ReadByte() != 0)  
-                    ENDIF
-                CASE cType ="D" //Date
-                    SELF:ReadBytes(16) //Len, Dec, Class and pad
-                    IF lPut            
-                        VAR r8 := Bin2Real8(SELF:ReadBytes(8))
-                        MemVarPut(cVar, Bin2Date(L2Bin(LONGINT(r8))))
-                    ENDIF
-                OTHERWISE
-                BREAK
-            ENDCASE
+            CASE "N" //Real8
+                SELF:ReadBytes(16) //Len, Dec, Class and pad
+                IF lPut
+                    MemVarPut(cVar, Bin2Real8(SELF:ReadBytes(8)))
+                ENDIF
+            CASE "L" //Logic
+                SELF:ReadBytes(16) //Len, Dec, Class and pad
+                IF lPut
+                    MemVarPut(cVar, ReadByte() != 0)  
+                ENDIF
+            CASE "D" //Date
+                SELF:ReadBytes(16) //Len, Dec, Class and pad
+                IF lPut            
+                    VAR r8 := Bin2Real8(SELF:ReadBytes(8))
+                    MemVarPut(cVar, Bin2Date(L2Bin(LONGINT(r8))))
+                ENDIF
+            OTHERWISE
+                VAR error := Error{"Unknown type '"+cType+"' for memory variable '"+cVar+"'. Expected types are 'CDLN'"}
+                error:FileName := cFileName
+                THROW error
+            END SWITCH
             wType  := SELF:ReadByte()
         ENDDO
         

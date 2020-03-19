@@ -138,7 +138,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			VoDbInfo(DBI_DB_VERSION , REF u)
 			Assert.True(SLen(u) > 1)
 			VoDbInfo(DBI_ALIAS , REF u)
-			Assert.Equal("test" , u)
+			Assert.Equal("TEST" , u)
 			
 			VoDbInfo(DBI_BOF , REF u)
 			Assert.Equal(TRUE , (LOGIC) u)
@@ -2261,6 +2261,81 @@ RETURN
 			Assert.Equal(67, (INT)FileInfo{cDbf + ".dbf"}:Length)
 		RETURN
 			
+
+		[Fact, Trait("Category", "DBF")];
+		METHOD TestBofWithOrdScope() AS VOID
+			LOCAL cDbf AS STRING
+
+			cDbf := GetTempFileName()
+			RddSetDefault("DBFCDX")
+
+			CreateDatabase(cDbf, {{"CFIELD","C",1,0}} , {"S","S","N","N","N","S","S"})
+			DbCreateIndex(cDbf , "CFIELD")
+			DbCloseArea()
+
+			DbUseArea( TRUE ,,cDBF )		
+			
+			OrdScope(TOPSCOPE, "S")
+			OrdScope(BOTTOMSCOPE, "S")	
+			
+			LOCAL cTest := "" AS STRING
+			DbGoTop() 
+			DO WHILE ! Eof() 
+				cTest += AsString(RecNo())
+				DbSkip ( 1 ) 		
+			ENDDO   
+			cTest += AsString(RecNo())
+
+			Assert.Equal("12678" , cTest)
+
+			Assert.Equal(8 , (INT)RecNo())
+			Assert.True(Eof())
+			Assert.False(Bof())
+			
+			DbSkip(-1)
+			Assert.Equal(7 , (INT)RecNo())
+			Assert.False(Eof())
+			Assert.False(Bof())
+			DbSkip(-1)
+			Assert.Equal(6 , (INT)RecNo())
+			Assert.False(Eof())
+			Assert.False(Bof())
+			DbSkip(-1)
+			Assert.Equal(2 , (INT)RecNo())
+			Assert.False(Eof())
+			Assert.False(Bof())
+			DbSkip(-1)
+			Assert.Equal(1 , (INT)RecNo())
+			Assert.False(Eof())
+			Assert.False(Bof())
+			DbSkip(-1)
+			Assert.Equal(1 , (INT)RecNo())
+			Assert.False(Eof())
+			Assert.True(Bof())
+			
+			DbCloseArea()
+		RETURN
+
+
+		[Fact, Trait("Category", "DBF")];
+		METHOD TestOrdScopeReturnValue() AS VOID
+			LOCAL cDbf AS STRING
+			cDbf := GetTempFileName()
+			RddSetDefault("DBFCDX")
+
+			CreateDatabase(cDbf, {{"CFIELD","C",1,0}} , {"S","S","N"})
+			DbCreateIndex(cDbf , "CFIELD")
+			DbCloseArea()
+
+			DbUseArea( TRUE ,,cDBF )		
+			Assert.True(OrdScope(TOPSCOPE, "S") == NIL)
+			Assert.True(OrdScope(BOTTOMSCOPE, "S") == NIL)
+			Assert.Equal("S", OrdScope(TOPSCOPE, "N"))
+			Assert.Equal("S", OrdScope(BOTTOMSCOPE, "N"))
+			DbCloseArea()
+		RETURN
+
+
 
 		STATIC PRIVATE METHOD GetTempFileName() AS STRING
             STATIC nCounter AS LONG

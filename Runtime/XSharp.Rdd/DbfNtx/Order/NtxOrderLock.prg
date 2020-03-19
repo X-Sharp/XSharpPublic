@@ -17,24 +17,48 @@ USING XSharp.RDD.Support
 
 BEGIN NAMESPACE XSharp.RDD.NTX
 
-    INTERNAL ENUM ParkingLot
-        MEMBER SPACES_SIZE := 1024                              // 1K of token space
-        MEMBER GATE_SIZE := 1
-        MEMBER LOT_SIZE := SPACES_SIZE + GATE_SIZE              // All elements, including spaces and gate
-        
-        MEMBER TOKEN_AREA := 1                                  // parking space tokens
-        MEMBER ROOT_GATE := TOKEN_AREA + SPACES_SIZE + 1        // root parking lot gate
-        MEMBER ROOT_LOT := ROOT_GATE + GATE_SIZE                // root parking lot
-    END ENUM
 
     INTERNAL PARTIAL SEALED CLASS NtxOrder
         // Methods for NTX Locking
-    
-        PRIVATE METHOD _genSeed() AS LONG
+
+        #region Constants
+        INTERNAL CONST SPACES_SIZE  := 1024 AS INT                             // 1K of token space
+        INTERNAL CONST GATE_SIZE    := 1 AS INT
+        INTERNAL CONST LOT_SIZE     := SPACES_SIZE + GATE_SIZE AS DWORD        // All elements, including spaces and gate
+        INTERNAL CONST TOKEN_AREA   := 1   AS DWORD                            // parking space tokens
+        INTERNAL CONST ROOT_GATE    := TOKEN_AREA + SPACES_SIZE + 1  AS DWORD  // root parking lot gate
+        INTERNAL CONST ROOT_LOT     := ROOT_GATE + GATE_SIZE AS DWORD          // root parking lot
+        #endregion
+
+        #region Locking Fields
+        PRIVATE _HPLocking AS LOGIC
+        PRIVATE _readLocks AS LONG
+        PRIVATE _writeLocks AS LONG
+        PRIVATE _tagNumber AS DWORD
+        PRIVATE _maxLockTries AS INT
+        PRIVATE _parkPlace AS DWORD
+        INTERNAL _LockOffset AS LONG
+        #endregion
+
+        PRIVATE METHOD _initLockValues() as VOID
+            // NTX has only one Tag index
+            SELF:_tagNumber := 1
+            SELF:_maxLockTries := 99 //(LONG)XSharp.RuntimeState.LockTries
+            SELF:_readLocks := 0
+            SELF:_writeLocks := 0
+            IF  XSharp.RuntimeState.NewIndexLock 
+                SELF:_LockOffset := LOCKOFFSET_NEW
+            ELSE
+                SELF:_LockOffset := LOCKOFFSET_OLD
+            ENDIF
+            SELF:_HPLocking := XSharp.RuntimeState.HPLocking
+            
+
+        PRIVATE METHOD _genSeed() AS DWORD
             LOCAL dateTime AS DateTime
             
             dateTime := DateTime{Environment.TickCount}
-            RETURN ((dateTime:Hour * 60 + dateTime:Minute) * 60 + dateTime:Second) * 100 + dateTime:Millisecond
+            RETURN (DWORD)  (dateTime:Hour * 360000 + dateTime:Minute * 6000 + dateTime:Second * 100 + dateTime:Millisecond)
             
         PRIVATE METHOD _lockBytes( nOffset AS DWORD, nLong AS DWORD , retries AS DWORD ) AS LOGIC
             LOCAL isOk AS LOGIC
@@ -68,22 +92,22 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             END TRY
             RETURN unlocked
             
-        PRIVATE METHOD _lockGate( tag AS INT ) AS LOGIC
+        PRIVATE METHOD _lockGate( tag AS DWORD ) AS LOGIC
             LOCAL count AS DWORD
             LOCAL isOk AS LOGIC
-            LOCAL liOffSet AS LONG
+            LOCAL dwOffSet AS DWORD
             
             count := 0
             isOk := FALSE
-            liOffSet := ~ SELF:_getParkLotGate( tag )
+            dwOffSet := SELF:_getParkLotGate( tag )
             DO WHILE count++ < SELF:_maxLockTries  .AND. !isOk
-                isOk := SELF:_lockBytes((DWORD)liOffSet, 1)
+                isOk := SELF:_lockBytes(dwOffSet, 1)
             ENDDO
             RETURN isOk
             
         PRIVATE METHOD _lockInit() AS LOGIC
             LOCAL tries AS LONG
-            LOCAL seed AS LONG
+            LOCAL seed AS DWORD
             tries := 0
             seed := 0
             SELF:_parkPlace := 0
@@ -92,9 +116,9 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 IF seed <= 0
                     seed := 1
                 ENDIF
-                seed := (seed * 1221 + 1) % ParkingLot:LOT_SIZE 
+                seed := (seed * 1221 + 1) % LOT_SIZE 
                 SELF:_parkPlace := seed
-                IF !SELF:_lockBytes( ~(SELF:_parkPlace + ParkingLot.TOKEN_AREA), 1)
+                IF !SELF:_lockBytes(  ~(SELF:_parkPlace + TOKEN_AREA), 1)
                     RETURN FALSE
                 ENDIF
             ENDDO
@@ -102,28 +126,30 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             RETURN TRUE            
             
             
-        PRIVATE METHOD _getParkLotPlace( place AS LONG ) AS LONG
-            RETURN ParkingLot.ROOT_LOT + ParkingLot:LOT_SIZE * place
+        PRIVATE METHOD _getParkLotPlace( place AS DWORD ) AS DWORD
+            RETURN (DWORD) (ROOT_LOT + LOT_SIZE * place)
             
-        PRIVATE METHOD _getParkLotGate( tagNumber AS LONG ) AS LONG
-            RETURN ParkingLot.ROOT_GATE + ParkingLot:LOT_SIZE * tagNumber
+        PRIVATE METHOD _getParkLotGate( tagNumber AS DWORD ) AS DWORD
+            LOCAL dwResult as DWORD
+            dwResult := ROOT_GATE + LOT_SIZE * tagNumber
+            RETURN ~dwResult
             
         PRIVATE METHOD _lockExit() AS LOGIC
-            RETURN SELF:_unlockBytes( (DWORD)~(SELF:_parkPlace + 1), 1)
+            RETURN SELF:_unlockBytes( (~(SELF:_parkPlace + 1)), 1)
             
         PRIVATE METHOD _TryReadLock() AS LOGIC
             LOCAL result AS LOGIC
-            LOCAL liOffSet AS LONG
+            LOCAL dwOffSet AS DWORD
             
             result := FALSE
             IF _lockGate(SELF:_tagNumber)
-                liOffSet := ~(SELF:_getParkLotPlace(SELF:_tagNumber) + SELF:_parkPlace)
-                IF !SELF:_lockBytes((DWORD)liOffSet, 1)
-                    SELF:_unlockBytes( (DWORD)~SELF:_getParkLotGate( SELF:_tagNumber ), 1)
+                dwOffSet := ~(SELF:_getParkLotPlace(SELF:_tagNumber) + SELF:_parkPlace)
+                IF !SELF:_lockBytes(dwOffSet, 1)
+                    SELF:_unlockBytes( SELF:_getParkLotGate( SELF:_tagNumber ), 1)
                     SELF:_lockExit()
                     SELF:_lockInit()
                 ELSE
-                    SELF:_unlockBytes( (DWORD)~SELF:_getParkLotGate( SELF:_tagNumber ), 1)
+                    SELF:_unlockBytes( SELF:_getParkLotGate( SELF:_tagNumber ), 1)
                     result := TRUE
                 ENDIF
             ENDIF
@@ -131,31 +157,31 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             
             
         PRIVATE METHOD _tryReadUnLock() AS LOGIC
-            LOCAL liOffSet AS LONG
-            liOffSet := ~( SELF:_getParkLotPlace(SELF:_tagNumber) + SELF:_parkPlace )
-            RETURN SELF:_unlockBytes( (DWORD)liOffSet, 1)
+            LOCAL dwOffSet AS DWORD
+            dwOffSet := ~( SELF:_getParkLotPlace(SELF:_tagNumber) + SELF:_parkPlace )
+            RETURN SELF:_unlockBytes( dwOffSet, 1)
             
             
         PRIVATE METHOD _tryWriteUnLock() AS LOGIC
-            LOCAL liOffSet AS LONG
-            liOffSet := ~( SELF:_getParkLotPlace(SELF:_tagNumber) + ParkingLot.LOT_SIZE )
-            RETURN SELF:_unlockBytes( (DWORD)liOffSet, 1)
+            LOCAL dwOffSet AS DWORD
+            dwOffSet := ~( SELF:_getParkLotPlace(SELF:_tagNumber) + LOT_SIZE )
+            RETURN SELF:_unlockBytes( dwOffSet, 1)
             
         PRIVATE METHOD _TryWriteLock() AS LOGIC
-            LOCAL liOffSet AS LONG
+            LOCAL dwOffSet AS DWORD
             LOCAL maxTries AS DWORD
             LOCAL isOk AS LOGIC
             
-            liOffSet := 0
+            dwOffSet := 0
             maxTries := 990
             isOk := FALSE
             IF SELF:_lockGate( SELF:_tagNumber )
                 DO WHILE maxTries++ < SELF:_maxLockTries .AND. !isOk
-                    liOffSet := ~( SELF:_getParkLotPlace(SELF:_tagNumber) + ParkingLot.LOT_SIZE )
-                    isOk := SELF:_lockBytes((DWORD)liOffSet, ParkingLot.LOT_SIZE)
+                    dwOffSet := ~( SELF:_getParkLotPlace(SELF:_tagNumber) + LOT_SIZE )
+                    isOk := SELF:_lockBytes(dwOffSet, LOT_SIZE)
                 ENDDO
                 IF !isOk
-                    SELF:_unlockBytes( (DWORD)~SELF:_getParkLotGate( SELF:_tagNumber ), 1)
+                    SELF:_unlockBytes( SELF:_getParkLotGate( SELF:_tagNumber ), 1)
                 ENDIF
             ENDIF
             RETURN isOk

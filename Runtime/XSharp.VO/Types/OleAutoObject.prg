@@ -84,14 +84,14 @@ CLASS XSharp.OleAutoObject
 			
 	// ? oObject:Property
 	    /// <exclude />   
-    METHOD NoIVarGet(cName ) AS USUAL CLIPPER
+    METHOD NoIVarGet(cName AS STRING ) AS USUAL STRICT
 		LOCAL oRet AS OBJECT
 		oRet := OleAutoObject.__OleIvarGet(oComObject,oType, cName, NULL)
 		RETURN OleAutoObject.OleWrapObject(oRet, lDateTimeAsDate)
 			
 		// oObject:Property := Value
 	    /// <exclude />   
-	METHOD NoIvarPut(cName, uValue) AS VOID CLIPPER
+	METHOD NoIvarPut(cName AS STRING, uValue AS USUAL) AS VOID STRICT
 		OleAutoObject.__OleIVarPut(oComObject, oType, cName , uValue, NULL)
 		RETURN 
 			
@@ -519,13 +519,13 @@ STATIC METHOD  OleSend(oComObject AS OBJECT, oType AS System.Type, cName AS STRI
 						lOk    := TRUE
 					CATCH AS ArgumentException
 						THROW Error.VOError(EG_ARG,  cMethod, cMethod, 1, <OBJECT>{args})
-						lOk := FALSE                                  
+						//lOk := FALSE                                  
 					CATCH AS TargetException
 						THROW Error.VOError(EG_ARG,  cMethod, cMethod, 1, <OBJECT>{args} )
-						lOk := FALSE                                  
+						//lOk := FALSE                                  
 					CATCH AS MissingMethodException
 						THROW Error.VOError(EG_NOMETHOD,  cMethod, "cName", 2, <OBJECT>{cName}  )
-						lOk := FALSE                                  
+						//lOk := FALSE                                  
 					CATCH AS Exception
 						lOk := FALSE              
 					END TRY

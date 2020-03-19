@@ -186,7 +186,7 @@ CLASS DataBrowser INHERIT Control
 
       RETURN lRC
 
-   METHOD __AutoLayout() AS VOID STRICT 
+METHOD __AutoLayout() AS VOID STRICT 
     //SE-081212 optimized
     //PP-030828 Strong typing
       LOCAL iFields, iStart, iBegin, iEnd AS INT
@@ -256,13 +256,12 @@ CLASS DataBrowser INHERIT Control
 
       RETURN
 
-   METHOD __AutoResize() AS VOID STRICT 
+METHOD __AutoResize() AS VOID STRICT 
       IF SELF:ValidateControl()
          WCMoveWindow(SELF, Point{0,0}, oParent:CanvasArea:Size, TRUE)
       ENDIF
 
       RETURN
-
    METHOD __BeginEditField(hWin AS PTR, dwChar AS DWORD) AS VOID STRICT 
 	//PP-030828 Strong typing
       LOCAL dw AS DWORD
@@ -4834,7 +4833,7 @@ STATIC FUNCTION TCntVScrollPosExSet(hCntWnd AS PTR, lPosition AS LONGINT) AS VOI
    STATIC FUNCTION TCntVScrollPosSet(hCntWnd AS PTR, nPosition AS SHORTINT) AS VOID STRICT
    RETURN
 
-   FUNCTION __DrawFldData(hWnd AS PTR, strucFieldInfo AS _WinFieldInfo, strucRecordCore AS _WinRecordCore, ;
+FUNCTION __DrawFldData(hWnd AS PTR, strucFieldInfo AS _WinFieldInfo, strucRecordCore AS _WinRecordCore, ;
    ptrData AS PTR, hDC AS PTR, iX AS INT, iY AS INT, dwOptions AS DWORD, ;
    ptrRect AS _WINRECT, pszData AS /*PSZ*/ PTR, dwLength AS DWORD) AS INT /* CALLBACK */
    
@@ -4998,7 +4997,7 @@ FUNCTION __WCGBChildProc(hWnd AS PTR, uMsg AS DWORD, wParam AS DWORD, lParam AS 
       DELEGATE __WCGBNotifyProcDelegate( hWnd AS PTR, uMsg AS DWORD, wParam AS DWORD, lParam AS LONGINT ) AS LONGINT
    #endif
 
-   FUNCTION __WCGBNotifyProc(hWnd AS PTR, uMsg AS DWORD, wParam AS DWORD, lParam AS LONGINT) AS LONGINT /* WINCALL */
+FUNCTION __WCGBNotifyProc(hWnd AS PTR, uMsg AS DWORD, wParam AS DWORD, lParam AS LONGINT) AS LONGINT /* WINCALL */
    LOCAL oControl AS Control
    LOCAL strucCreateStruct AS _WinCreateStruct
    LOCAL p AS SelfPtr
@@ -5046,7 +5045,7 @@ FUNCTION __WCGBChildProc(hWnd AS PTR, uMsg AS DWORD, wParam AS DWORD, lParam AS 
    RETURN lretVal
 
 
-   STATIC FUNCTION __GetProcAddress(cProcname AS STRING)	AS	PTR
+STATIC FUNCTION __GetProcAddress(cProcname AS STRING)	AS	PTR
 LOCAL pAddr AS PTR
 pAddr := GetProcAddress(ghContainerDLL, String2Psz(cProcname))
 IF pAddr == NULL_PTR

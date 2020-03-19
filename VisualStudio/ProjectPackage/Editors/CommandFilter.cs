@@ -1062,7 +1062,7 @@ namespace XSharp.Project
                 if (!_completionSession.IsDismissed)
                     return false;
             }
-
+            getEditorPreferences(TextView);
             SnapshotPoint caret = TextView.Caret.Position.BufferPosition;
             if (cursorIsAfterSLComment(caret))
                 return false;

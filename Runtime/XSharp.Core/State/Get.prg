@@ -39,7 +39,7 @@ FUNCTION GetAnsi() AS LOGIC
 	/// </returns>
 FUNCTION GetChunkBase64(b1 AS BYTE,b2 AS BYTE,b3 AS BYTE,nPad AS INT) AS STRING
 	THROW NotImplementedException{}
-	RETURN String.Empty   
+	//RETURN String.Empty   
 	
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/getcurpath/*" />
 FUNCTION GetCurPath() AS STRING
@@ -58,7 +58,7 @@ FUNCTION GetDefaultDir() AS STRING
 /// <summary>This function is not implemented yet</summary>
 FUNCTION GetMimType(c AS STRING) AS STRING
 	THROW NotImplementedException{}
-	RETURN String.Empty   
+	//RETURN String.Empty   
 	
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/getnatdll/*" />
 FUNCTION GetNatDLL() AS STRING

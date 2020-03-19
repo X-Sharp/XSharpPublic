@@ -1,16 +1,17 @@
+STATIC GLOBAL nMaxStringSize := 0x1000  AS DWORD  //MAX_LONGVARCHAR   AS DWORD
+
 FUNCTION __SQLMaxStringSize( nValue )
    //  JSP 09/05/2000
    //  STATIC LOCAL nMaxStringSize := 10000    //MAX_LONGVARCHAR  AS DWORD
-   STATIC LOCAL nMaxStringSize := 0x1000  AS DWORD  //MAX_LONGVARCHAR   AS DWORD
-
    IF IsNumeric( nValue )
       nMaxStringSize := nValue
    ENDIF
 
    RETURN nMaxStringSize
 
+STATIC GLOBAL nMaxDispSize := 256  AS DWORD
+
 FUNCTION __SQLMaxDisplaySize( nValue )
-   STATIC LOCAL nMaxDispSize := 256  AS DWORD
 
    IF IsNumeric( nValue )
       nMaxDispSize := nValue
@@ -154,30 +155,31 @@ FUNCTION __SQLOutputDebug( cMsg AS STRING) AS VOID STRICT
     NEXT
    RETURN
 
+STATIC GLOBAL nSqlSetStmtConcurrencyValue := __CAVO_SQL_CONCURRENCY AS INT
 FUNCTION SqlSetStmtConcurrency( nNew ) AS INT
-   STATIC nValue := __CAVO_SQL_CONCURRENCY AS INT
    LOCAL nResult AS INT
-   nResult := nValue
+   nResult := nSqlSetStmtConcurrencyValue
    IF IsNumeric( nNew )
-      nValue := nNew
+      nSqlSetStmtConcurrencyValue := nNew
    ENDIF
    RETURN nResult
+
+STATIC GLOBAL nSqlSetStmtCursorTypeValue := __CAVO_SQL_CURSOR_TYPE AS INT
 
 FUNCTION SqlSetStmtCursorType( nNew ) AS INT
-   STATIC nValue := __CAVO_SQL_CURSOR_TYPE AS INT
    LOCAL nResult AS INT
-   nResult := nValue
+   nResult := nSqlSetStmtCursorTypeValue
    IF IsNumeric( nNew )
-      nValue := nNew
+      nSqlSetStmtCursorTypeValue := nNew
    ENDIF
    RETURN nResult
 
+STATIC GLOBAL nSqlSetStmtSimulateCursor := __CAVO_SQL_SIMULATE_CURSOR  AS INT
 FUNCTION SqlSetStmtSimulateCursor( nNew ) AS INT
-   STATIC nValue := __CAVO_SQL_SIMULATE_CURSOR  AS INT
    LOCAL nResult AS INT
-   nResult := nValue
+   nResult := nSqlSetStmtSimulateCursor
    IF IsNumeric( nNew )
-      nValue := nNew
+      nSqlSetStmtSimulateCursor := nNew
    ENDIF
    RETURN nResult
 
@@ -435,7 +437,7 @@ FUNCTION __ODBCType2FSpec( nODBCType AS SHORTINT, nPrecision REF DWORD, nScale R
 
     RETURN __GetStringFromODBCType( nODBCType )
 
-
+/// <exclude/>
 UNION SqlData_Union
     MEMBER bVal  AS BYTE
     MEMBER siVal AS SHORTINT

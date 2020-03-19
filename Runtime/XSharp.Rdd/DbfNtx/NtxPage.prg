@@ -191,13 +191,13 @@ BEGIN NAMESPACE XSharp.RDD.NTX
        INTERNAL METHOD InitRefs(uiMaxEntry AS WORD , uiEntrySize AS WORD ) AS VOID
             LOCAL offSet AS WORD
             SELF:Write( )
-            offSet := (uiMaxEntry + 2) * 2
+            offSet := (WORD) ((uiMaxEntry + 2) * 2)
             FOR VAR i := 0 TO uiMaxEntry
                 SELF:SetRef(i, offSet)
                 offSet += uiEntrySize
             NEXT
             NodeCount := 0
-            FirstKeyOffSet := uiMaxEntry * 2 + 4
+            FirstKeyOffSet := (WORD) (uiMaxEntry * 2 + 4)
 
         INTERNAL METHOD Dump(keyLen AS WORD) AS STRING
             VAR sb := System.Text.StringBuilder{}

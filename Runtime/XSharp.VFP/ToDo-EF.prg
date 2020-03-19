@@ -9,35 +9,25 @@
 
 FUNCTION EVL( eExpression1, eExpression2 ) AS USUAL
     THROW NotImplementedException{}
-    RETURN NIL
+    // RETURN NIL
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/execscript/*" />
 
 FUNCTION ExecScript( cExpression , eParameter1, eParameter2) AS USUAL
     THROW NotImplementedException{}
-    RETURN NIL
+    // RETURN NIL
 
-/// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/field/*" />
 
-FUNCTION Field( uField , uArea, nFlag) AS STRING
-    THROW NotImplementedException{}
-    RETURN ""
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/filetostr/*" />
 
 FUNCTION FileToStr(cFileName ) AS STRING
     THROW NotImplementedException{}
-    RETURN ""
+    // RETURN ""
 
-/// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/filter/*" />
 
-FUNCTION Filter( uArea )
-    THROW NotImplementedException{}
-    RETURN ""
 
 
 /// <summary>-- todo --</summary>
@@ -45,48 +35,30 @@ FUNCTION Filter( uArea )
 
 FUNCTION FldList( ) AS USUAL
     THROW NotImplementedException{}
-    RETURN NIL
+    // RETURN NIL
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/fontmetric/*" />
 
 FUNCTION FontMetric( nAttribute , cFontName, nFontSize , cFontStyle) AS LONG
     THROW NotImplementedException{}
-    RETURN 0
+    // RETURN 0
 
-/// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/for/*" />
 
-FUNCTION For( nIndexNumber , uArea) AS STRING
-    THROW NotImplementedException{}
-    RETURN ""
     
-/// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/forceext/*" />
-
-FUNCTION ForceExt( cFileName, cExtension ) AS STRING
-    THROW NotImplementedException{}
-    RETURN ""
-
-/// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/forcepath/*" />
-
-FUNCTION ForcePath( cFileName, cPath ) AS STRING
-    THROW NotImplementedException{}
-    RETURN ""
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/fullpath/*" />
 
 FUNCTION FullPath( cFileName1 , uPath) AS STRING
     THROW NotImplementedException{}
-    RETURN ""
+    // RETURN ""
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/fv/*" />
 
 FUNCTION FV( nPayment, nInterestRate, nPeriods ) AS FLOAT
     THROW NotImplementedException{}
-    RETURN 0.0
+    // RETURN 0.0
 
 

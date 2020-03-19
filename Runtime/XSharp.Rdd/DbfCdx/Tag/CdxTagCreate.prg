@@ -173,7 +173,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:_Header:RootPage   := 0
             SELF:_Header:KeySize    := _keySize
             SELF:_Header:KeyExprPos := 0
-            SELF:_Header:KeyExprLen := (WORD) _KeyExpr:Length + 1
+            SELF:_Header:KeyExprLen := (WORD) (_KeyExpr:Length + 1)
             SELF:_Header:ForExprPos := SELF:_Header:KeyExprLen 
             SELF:_Header:KeyExpression := _KeyExpr
             VAR options := CdxOptions.Compact + CdxOptions.Tag

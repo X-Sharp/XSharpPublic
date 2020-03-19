@@ -1179,6 +1179,7 @@ namespace XSharp.Project
                 if (result == VSConstants.S_OK)
                 {
                     _indentStyle = languagePreferences[0].IndentStyle;
+                    optionsPage.HideAdvancemembers = languagePreferences[0].fHideAdvancedAutoListMembers != 0;
                 }
                 _tabSize = textView.Options.GetTabSize();
                 _indentSize = textView.Options.GetIndentSize();

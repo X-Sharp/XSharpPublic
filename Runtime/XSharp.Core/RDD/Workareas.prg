@@ -81,7 +81,7 @@ CLASS Workareas
 	#endregion
     /// <exclude />
 	CONSTRUCTOR()
-		Aliases 			:= Dictionary<STRING, DWORD>{ (INT) MaxWorkareas}
+		Aliases 			:= Dictionary<STRING, DWORD>{ (INT) MaxWorkareas, StringComparer.OrdinalIgnoreCase}
 		RDDs				:= IRdd[]{MaxWorkareas}   
 		iCurrentWorkarea	:= 1
         WorkareaStack       := Stack<DWORD>{}
@@ -148,7 +148,7 @@ CLASS Workareas
 					VAR oRdd := RDDs[ nArea]
 					TRY
 						lResult := oRdd:Close()
-						Aliases:Remove(oRdd:Alias:ToUpperInvariant())
+						Aliases:Remove(oRdd:Alias)
                         Workareas._Remove(oRdd)
 					CATCH e AS Exception
 						lResult			:= FALSE  
@@ -170,7 +170,6 @@ CLASS Workareas
         
 	///<summary> Return 1 based Workarea Number for Alias or 0 when no found</summary>
 	PUBLIC METHOD FindAlias(sAlias AS STRING) AS DWORD
-		sAlias := sAlias:ToUpperInvariant()
 		BEGIN LOCK RDDs 
 			IF Aliases:ContainsKey(sAlias)
 				RETURN Aliases[sAlias]

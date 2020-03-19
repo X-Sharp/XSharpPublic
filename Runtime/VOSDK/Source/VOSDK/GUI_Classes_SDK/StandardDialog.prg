@@ -756,11 +756,11 @@ METHOD Show()
 		ENDIF
 		bi:ulFlags := dwType
 #ifdef __VULCAN__
-      LOCAL d AS FolderDialogCallBackDelegate
-      d := FolderDialogCallBackDelegate{ NULL, @FolderDialogCallBack() }
+      LOCAL d AS __FolderDialogCallBackDelegate
+      d := __FolderDialogCallBackDelegate{ NULL, @__FolderDialogCallBack() }
 		bi:lpfn := Marshal.GetFunctionPointerForDelegate( (System.Delegate) d )
 #else
-		bi:lpfn := @FolderDialogCallBack()
+		bi:lpfn := @__FolderDialogCallBack()
 #endif
 
       p :=__WCSelfPtrAlloc(SELF)
@@ -1049,6 +1049,7 @@ METHOD Show()
 
 END CLASS
 
+/// <exclude/>
 VOSTRUCT _winBROWSEINFO
 	MEMBER hwndOwner AS PTR
 	MEMBER pidlRoot AS PTR
@@ -1093,6 +1094,7 @@ STATIC GLOBAL gpfnChooseFont AS TChooseFont PTR
 STATIC GLOBAL gpfnCommDlgExtendedError AS TCommDlgExtendedError PTR
 STATIC GLOBAL gpfnGetOpenFileName AS TGetOpenFileName PTR
 STATIC GLOBAL gpfnGetSaveFileName AS TGetSaveFileName PTR
+/// <exclude/>
 GLOBAL gpfnPrintDlg AS TPrintDlg PTR
 
 #ifdef __VULCAN__
@@ -1141,10 +1143,10 @@ FUNCTION __StdFileHook(hWnd AS PTR, msg AS DWORD, wParam AS DWORD, lParam AS LON
 	RETURN FALSE
 
 #ifdef __VULCAN__
-   DELEGATE FolderDialogCallBackDelegate( hWnd AS PTR, uMsg AS DWORD, lParam AS LONGINT, lpData AS LONGINT ) AS INT
+   DELEGATE __FolderDialogCallBackDelegate( hWnd AS PTR, uMsg AS DWORD, lParam AS LONGINT, lpData AS LONGINT ) AS INT
 #endif
 
-FUNCTION FolderDialogCallBack(hWnd AS PTR, uMsg AS DWORD, lParam AS LONGINT, lpData AS LONGINT) AS INT /* CALLBACK */
+FUNCTION __FolderDialogCallBack(hWnd AS PTR, uMsg AS DWORD, lParam AS LONGINT, lpData AS LONGINT) AS INT /* CALLBACK */
 	//PP-030910 suggestion from S Ebert
 	//PP-040418 Issue 12715 removed STATIC from LOCAL declaration
 	//PP-040421 Issue 12801 GC was moving object

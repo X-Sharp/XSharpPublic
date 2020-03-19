@@ -66,14 +66,14 @@ INTERNAL STRUCTURE DoubleStruct
     METHOD SaveToIndex(buffer AS BYTE[]) AS VOID
         SELF:Reverse()
         IF _AND(b1, 0x80) != 0
-            SELF:b1 :=(BYTE) ~SELF:b1
-            SELF:b2 :=(BYTE) ~SELF:b2
-            SELF:b3 :=(BYTE) ~SELF:b3
-            SELF:b4 :=(BYTE) ~SELF:b4
-            SELF:b5 :=(BYTE) ~SELF:b5
-            SELF:b6 :=(BYTE) ~SELF:b6
-            SELF:b7 :=(BYTE) ~SELF:b7
-            SELF:b8 :=(BYTE) ~SELF:b8
+            SELF:b1 := ~SELF:b1     
+            SELF:b2 := ~SELF:b2 
+            SELF:b3 := ~SELF:b3 
+            SELF:b4 := ~SELF:b4 
+            SELF:b5 := ~SELF:b5 
+            SELF:b6 := ~SELF:b6 
+            SELF:b7 := ~SELF:b7 
+            SELF:b8 := ~SELF:b8 
         ELSE
             b1 |= 0x80
         ENDIF

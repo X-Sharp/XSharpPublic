@@ -9,23 +9,15 @@
     <Name>XSharp.VO</Name>
     <Dialect>Vulcan</Dialect>
     <OutputName>XSharp.VO</OutputName>
-    <AZ>false</AZ>
     <CS>true</CS>
-    <LB>false</LB>
-    <OVF>false</OVF>
     <Unsafe>true</Unsafe>
-    <INS>false</INS>
     <NS>true</NS>
     <VulcanCompatibleResources>True</VulcanCompatibleResources>
     <XSharpProjectversion>2.0.6.2</XSharpProjectversion>
     <IncludePaths>$(CommonInclude)</IncludePaths>
     <Nostandarddefs>true</Nostandarddefs>
     <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
-    <NamedArgs>false</NamedArgs>
     <StandardDefs />
-    <MemVar>false</MemVar>
-    <Undeclared>false</Undeclared>
-    <InitLocals>false</InitLocals>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -37,7 +29,7 @@
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <UseSharedCompilation>true</UseSharedCompilation>
-    <DisabledWarnings>162,553</DisabledWarnings>
+    <DisabledWarnings/>
     <SignAssembly>true</SignAssembly>
     <DelaySign>false</DelaySign>
   </PropertyGroup>
@@ -51,7 +43,7 @@
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <UseSharedCompilation>true</UseSharedCompilation>
-    <DisabledWarnings>162,553</DisabledWarnings>
+    <DisabledWarnings/>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
     <EmitDebugInformation>true</EmitDebugInformation>
@@ -62,7 +54,7 @@
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <UseSharedCompilation>true</UseSharedCompilation>
-    <DisabledWarnings>162,171,553,1591,169,1573,649</DisabledWarnings>
+    <DisabledWarnings>171,1591,169,1573,649</DisabledWarnings>
     <DocumentationFile>XSharp.VO.Xml</DocumentationFile>
     <CommandLineOption>/noclipcall</CommandLineOption>
   </PropertyGroup>

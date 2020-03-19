@@ -63,10 +63,10 @@ FUNCTION SetCentury(lNewSetting AS LOGIC) AS LOGIC
         IF ! cFormat:Contains("YYYY")
             cFormat := cFormat:Replace( "YY", "YYYY" )
         ENDIF
-        ELSE
-            IF cFormat:Contains("YYYY")
-                cFormat := cFormat:Replace( "YYYY", "YY" )
-            ENDIF
+      ELSE
+        IF cFormat:Contains("YYYY")
+            cFormat := cFormat:Replace( "YYYY", "YY" )
+        ENDIF
       ENDIF
       
       SetDateFormat( cFormat )

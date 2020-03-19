@@ -650,7 +650,7 @@ namespace XSharpColorizer
         }
 
 
-        private ClassificationSpan ClassifyToken(IToken token, IList<ClassificationSpan> regionTags, ITextSnapshot snapshot)
+        private ClassificationSpan ClassifyToken(IToken token, IList<ClassificationSpan> regionTags, ITextSnapshot snapshot,IToken lastToken)
         {
             var tokenType = token.Type;
             ClassificationSpan result = null;
@@ -710,6 +710,12 @@ namespace XSharpColorizer
                             case XSharpLexer.INTERPOLATED_STRING_CONST:
                             case XSharpLexer.INCOMPLETE_STRING_CONST:
                                 type = xsharpStringType;
+                                break;
+                            case XSharpLexer.BRACKETED_STRING_CONST:
+                                if (lastToken != null && lastToken.Type != XSharpLexer.LPAREN && lastToken.Type != XSharpLexer.COMMA)
+                                {
+                                    type = xsharpStringType;
+                                }
                                 break;
                             case XSharpLexer.TEXT_STRING_CONST:
                                 type = xsharpTextType;
@@ -1006,6 +1012,7 @@ namespace XSharpColorizer
                 newtags = new XClassificationSpans();
                 //texttags = new XClassificationSpans();
                 keywordContext = null;
+                IToken lastToken = null;
                 for (var iToken = 0; iToken < tokenStream.Size; iToken++)
                 {
                     var token = tokenStream.Get(iToken);
@@ -1036,7 +1043,7 @@ namespace XSharpColorizer
                         continue;
                     }
 
-                    var span = ClassifyToken(token, regionTags, snapshot);
+                    var span = ClassifyToken(token, regionTags, snapshot,lastToken);
                     if ((span != null) )
                     {
                         // don't forget the current one
@@ -1076,6 +1083,10 @@ namespace XSharpColorizer
                                     break;
                             }
                         }
+                    }
+                    if (token.Channel != XSharpLexer.Hidden)
+                    {
+                        lastToken = token;
                     }
                 }
                 // Orphan End ?

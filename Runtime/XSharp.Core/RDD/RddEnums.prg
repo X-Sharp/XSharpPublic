@@ -77,6 +77,9 @@ BEGIN NAMESPACE XSharp.RDD.Enums
         /// <summary>Harbour extension: Returns the step value for autoincrement fields.</summary>
 		MEMBER DBS_STEP				:= 13
 
+        /// <summary>Foxpro extension: Returns the field caption.</summary>
+		MEMBER DBS_CAPTION 		    := 14
+
         /// <summary>Gets a BLOB value.</summary>
 		MEMBER DBS_BLOB_GET			:= 101
         /// <summary>Unlike memo fields maintained in .DBT files, BLOB files allow you to store many different types of data in memo fields. This returns type type of the BLOB as a single character string.</summary>
@@ -412,6 +415,10 @@ BEGIN NAMESPACE XSharp.RDD.Enums
         /// <summary>Alias for DBOI_BAGEXT</summary>
 		MEMBER DBOI_INDEXEXT  	:= 8	
 		
+        /// <summary>FoxPro CDX Index collation</summary>
+		MEMBER DBOI_COLLATION  	:= 10
+
+
 		// 14-19 missing
         /// <summary>String: The full path to the index file (Bag)</summary>
 		MEMBER DBOI_FULLPATH 	:= 20   

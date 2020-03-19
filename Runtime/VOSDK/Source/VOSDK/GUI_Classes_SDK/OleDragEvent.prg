@@ -49,6 +49,7 @@ ACCESS ServerName
 
 END CLASS
 
+/// <exclude/>
 VOSTRUCT OleDragEventInfo
         MEMBER hDocWnd AS PTR
         MEMBER dwDragEvent AS DWORD

@@ -1594,7 +1594,12 @@ BEGIN NAMESPACE XSharpModel
 
 				END DO
 				// End of Line
-
+                if oInfo != null .and. (oInfo:eType == EntityType._Define .or. oInfo:eType == EntityType._EnumMember) .and. nAfterColonEquals > 0
+                    if nAfterColonEquals < cLine:Length
+                        var cValue := cLine:Substring(nAfterColonEquals)
+                        oInfo:cValue := cValue:Trim()
+                    endif
+                endif
 				// Going back to read the next line
 			NEXT
 			// Check on exit
@@ -1888,6 +1893,7 @@ BEGIN NAMESPACE XSharpModel
 		PROPERTY cShortClassName AS STRING AUTO
 		PROPERTY cTypedClassName AS STRING AUTO
 		PROPERTY cClassNamespace AS STRING AUTO
+        PROPERTY cValue         AS STRING AUTO
 		PROPERTY aParams AS List<EntityParamsObject> AUTO
 		PROPERTY nStartLine AS INT  AUTO
 		PROPERTY nOffSet AS INT AUTO

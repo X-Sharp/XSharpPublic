@@ -1,3 +1,4 @@
+ 
 CLASS __VOToolBarChild  INHERIT VObject
 	//RvdH 0702056 Added to replace Child Toolbar Subarray items
 	EXPORT NameSym 				AS SYMBOL

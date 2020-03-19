@@ -26,7 +26,7 @@ CLASS CSession
     PROTECT lStatus             AS LOGIC
 
     #ifdef __VULCAN__
-       STATIC HIDDEN callbackDelegate AS INTStatusCallback_Delegate
+       STATIC HIDDEN callbackDelegate AS __INTStatusCallback_Delegate
     #endif
     //RvdH 100216 Moved GLOBAL and Lock structure to Session Class
     STATIC EXPORT oLock := OBJECT{}        AS OBJECT
@@ -106,7 +106,7 @@ METHOD __SetStatus        (h)
             AAdd(agStatus, {h, SELF} )
 #ifdef __VULCAN__
             IF callbackDelegate == NULL
-                callbackDelegate := INTStatusCallback_Delegate{ NULL, @INTStatusCallback() }
+                callbackDelegate := __INTStatusCallback_Delegate{ NULL, @INTStatusCallback() }
             ENDIF
             InternetSetStatusCallback( h, System.Runtime.InteropServices.Marshal.GetFunctionPointerForDelegate( (System.Delegate) callbackDelegate ) )
 #else
@@ -509,7 +509,7 @@ END CLASS
 
 
 #ifdef __VULCAN__
-   DELEGATE INTStatusCallback_Delegate( hInternet AS PTR, dwContext AS DWORD, dwInternetStatus AS DWORD, pStatusInformation AS PTR, dwStatusInfoLength AS DWORD ) AS VOID
+   DELEGATE __INTStatusCallback_Delegate( hInternet AS PTR, dwContext AS DWORD, dwInternetStatus AS DWORD, pStatusInformation AS PTR, dwStatusInfoLength AS DWORD ) AS VOID
 #endif
 
 FUNCTION INTStatusCallback( hInternet           AS PTR, ;

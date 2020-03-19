@@ -75,11 +75,11 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             ENDIF
             
             // 8 Bytes : PrevPage (4 bytes) + Recno (4 bytes)
-            SELF:_entrySize := SELF:_keySize +  8
+            SELF:_entrySize := (WORD) (SELF:_keySize +  8)
             
-            num := (  ( BUFF_SIZE - 4) / (SELF:_keySize + 10))
-            SELF:_halfPage :=  (num - 1) / 2
-            SELF:_MaxEntry := SELF:_halfPage * 2
+            num := (WORD) (  ( BUFF_SIZE - 4) / (SELF:_keySize + 10))
+            SELF:_halfPage :=  (WORD) ((num - 1) / 2)
+            SELF:_MaxEntry := (WORD) (SELF:_halfPage * 2)
             SELF:_firstPageOffset := BUFF_SIZE
             SELF:_fileSize := 0
             SELF:_nextUnusedPageOffset := 0
@@ -90,9 +90,8 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             SELF:_Unique := createInfo:Unique
             SELF:_Conditional := FALSE
             SELF:_Descending := FALSE
-            SELF:_writeLocks := 0
             SELF:_Partial := ordCondInfo:Scoped
-            SELF:_HPLocking := FALSE
+            SELF:_initLockValues()
             IF ordCondInfo:Active
                 SELF:_Descending := ordCondInfo:Descending
                 IF hasForCond .AND. !String.IsNullOrEmpty(ordCondInfo:ForExpression)
@@ -102,28 +101,12 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             SELF:FileName := createInfo:BagName
             
             TRY
-                SELF:_hFile    := FCreate( SELF:FullPath) 
-                IF SELF:_hFile != F_ERROR 
-                    FClose( SELF:_hFile )
-                ENDIF
-                SELF:_hFile := F_ERROR
+                SELF:_hFile    := FCreate2( SELF:FullPath,_OR(FC_NORMAL, FO_EXCLUSIVE)) 
             CATCH
                 SELF:Close()
                 SELF:_oRdd:_dbfError( Subcodes.ERDD_CREATE_ORDER, Gencode.EG_CREATE,createInfo:BagName)
                 RETURN FALSE
             END TRY
-            // To create an index we want to open the NTX NOT shared and NOT readonly
-            LOCAL openInfo AS DbOpenInfo
-            openInfo := SELF:_oRdd:_OpenInfo:Clone()
-            openInfo:Shared   := FALSE
-            openInfo:ReadOnly := FALSE
-            SELF:_hFile    := FOpen(SELF:FullPath, openInfo:FileMode)
-            
-            IF SELF:_hFile == F_ERROR
-                SELF:Close()
-                SELF:_oRdd:_dbfError( Subcodes.ERDD_CREATE_ORDER, Gencode.EG_CREATE, createInfo:BagName)
-                RETURN FALSE
-            ENDIF
             TRY
                 IF !SELF:Shared
                     FConvertToMemoryStream(SELF:_hFile)
@@ -132,16 +115,6 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             
                 SELF:_midItem                       := NtxNode{SELF:_keySize}
                 SELF:_oneItem                       := NtxNode{SELF:_keySize}
-                SELF:_maxLockTries  := 99 //(LONG)XSharp.RuntimeState.LockTries
-                SELF:_tagNumber     := 1
-                IF  XSharp.RuntimeState.NewIndexLock 
-                    SELF:_LockOffset := LOCKOFFSET_NEW
-                ELSE
-                    SELF:_LockOffset := LOCKOFFSET_OLD
-                ENDIF
-                IF  XSharp.RuntimeState.HPLocking
-                    SELF:_HPLocking := TRUE
-                ENDIF
                 IF !SELF:_HeaderCreate(ordCondInfo:Scoped)
                     isOk := FALSE
                     RETURN FALSE
@@ -192,8 +165,8 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             IF  XSharp.RuntimeState.NewIndexLock 
                 SELF:_Header:Signature |= NtxHeaderFlags.NewLock
             ENDIF
-            IF  XSharp.RuntimeState.HPLocking
-                SELF:_Header:Signature |= NtxHeaderFlags.Partial
+            IF SELF:_HPLocking
+                SELF:_Header:Signature |= NtxHeaderFlags.HpLock
             ENDIF
 	    RETURN SELF:_Header:Write()
 	    

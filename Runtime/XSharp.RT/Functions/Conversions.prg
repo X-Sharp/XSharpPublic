@@ -352,7 +352,7 @@ FUNCTION PadC( uValue AS USUAL, nLength AS INT, cFillChar := " " AS STRING ) AS 
     IF retlen > nLength
         ret := ret:Remove( nLength )
     ELSE
-        VAR leftSpace := Space((DWORD) ( nLength - retlen ) / 2)
+        VAR leftSpace := System.String{cFillChar[0], ( nLength - retlen ) / 2}
         ret := leftSpace+ret
         ret := ret:PadRight( nLength, cFillChar[0] )
     ENDIF
@@ -563,7 +563,12 @@ FUNCTION __Str(n AS USUAL,nLen AS USUAL, nDec AS USUAL) AS STRING
 
 INTERNAL FUNCTION _PadZero(cValue AS STRING) AS STRING
     LOCAL iLen := 	cValue:Length AS INT
-    RETURN cValue:TrimStart():PadLeft((INT) iLen, c'0')
+    cValue := cValue:TrimStart()
+    IF cValue:Length > 1 .and. cValue[0] == '-'
+    	cValue := cValue:Substring(1)
+        RETURN "-" + cValue:PadLeft((INT) iLen - 1, c'0')
+    END IF
+    RETURN cValue:PadLeft((INT) iLen, c'0')
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/strzero/*" />

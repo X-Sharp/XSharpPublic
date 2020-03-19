@@ -12,6 +12,7 @@ USING XSharp.RDD
 USING XSharp.RDD.Enums
 USING XSharp.RDD.Support
 
+/// <summary>Advantage Memo support.</summary>
 CLASS XSharp.ADS.ADSMemo INHERIT BaseMemo
     PRIVATE oRdd AS ADSRDD 
     

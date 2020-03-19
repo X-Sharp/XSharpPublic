@@ -476,6 +476,7 @@ ASSIGN TextValue(cNewCaption)
 
 END CLASS
 
+/// <exclude/>
 VOSTRUCT _WINEDITBALLOONTIP
 	//PP-030902
 	MEMBER cbStruct AS DWORD

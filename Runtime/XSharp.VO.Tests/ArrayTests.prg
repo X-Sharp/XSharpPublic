@@ -159,7 +159,15 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal( 0, (INT) a[1])
 			Assert.Equal( 8, (INT) a[6])
 
+			a := {8,2,1,4,3,0}
+			ASort(a , 0 , 100,IntegerSorter{})
+			Assert.Equal( 0, (INT) a[1])
+			Assert.Equal( 8, (INT) a[6])
 
+			ASort(a , 0 , 100,{|a,b| b < a})
+			Assert.Equal( 0, (INT) a[6])
+			Assert.Equal( 8, (INT) a[1])
+        
 		[Trait("Category", "Array")];
 		[Fact];
 		METHOD AscanTest() AS VOID
@@ -477,4 +485,9 @@ BEGIN NAMESPACE XSharp.VO.Tests
 	
 
 	END CLASS
+    CLASS IntegerSorter
+        METHOD Eval(a,b)
+            RETURN a <= b
+
+    END CLASS
 END NAMESPACE // XSharp.Runtime.Tests

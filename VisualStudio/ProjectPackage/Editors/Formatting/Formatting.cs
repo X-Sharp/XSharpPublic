@@ -1289,7 +1289,7 @@ namespace XSharp.Project
                                     if (startToken != null)
                                     {
                                         // The startToken is a list of possible tokens
-                                        specialIndentValue = alignToSpecificTokens(line, new List<string> { startToken });
+                                        specialIndentValue = alignToSpecificTokens(line, new List<string>( startToken.Split( new char[]{',' } ) ) );
                                         // The can be aligned to SWITCH/DO CASE or indented
                                         if (!_alignDoCase)
                                         {

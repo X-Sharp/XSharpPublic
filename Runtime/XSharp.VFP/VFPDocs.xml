@@ -4962,17 +4962,12 @@
       Returns a specified word from a string.
     </summary>
     <param name="cString">
-
       Specifies the string to be evaluated
-
     </param>
     <param name="nIndex">
-
       Specifies the index position of the word to be returned. For example, if nIndex is 3, <b>GetWordNum( )</b> returns the third word (if cString contains three or more words).
-
     </param>
     <param name="cDelimiters">
-
       Optional. Specifies one or more optional characters used to separate words in cString. The default delimiters are space, tab, carriage return, and line feed. Note that <b>GetWordNum( )</b> uses each of the characters in cDelimiters as individual delimiters, not the entire string as a single delimiter.
     </param>
     <returns>

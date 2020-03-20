@@ -41,6 +41,7 @@ namespace XSharp.Project
         internal const string MemVarCaption = "Enable Memvar support";
         internal const string UndeclaredCaption = "Enable Undeclared variables support";
         internal const string InitLocalsCaption = "Initialize Local variables";
+        internal const string UseNativeVersionCaption = "Prefer native resource over managed resource";
 
         internal const string CSDescription = "Enable/Disable case sensitivity (/cs)";
         internal const string AZDescription = "Use Zero Based Arrays (/az)";
@@ -51,6 +52,7 @@ namespace XSharp.Project
         internal const string OVFDescription = "Check for Overflow and Underflow for numeric expressions, like the CHECKED keyword. (/ovf)";
         internal const string UnsafeDescription = "Allow Unsafe code inside this assembly (/unsafe)";
         internal const string InitLocalsDescription = "Automatically initialize local variables without initialization expression. Please note that for locals of type string the initial value will depend on the 'Initialize strings' setting from the Dialect page.(/initlocals)";
+        internal const string UseNativeVersionDescription = "When your application includes a native resource, use this native resource and do not generate a resource based on the global assembly properties such as AssemblyTitle, AssemblyVersion etc (/usenativeversion)";
 
         internal const string NoStdDefCaption = "Suppress standard header file";
         internal const string NoStdDefDescription = "Suppress inclusion of the standard header file (XSharpDefs.xh) in every file (/nostddef)";
@@ -83,6 +85,7 @@ namespace XSharp.Project
         private string standarddefs;
         private bool memvar;
         private bool undeclared;
+        private bool usenativeversion;
 
         #endregion Fields
 
@@ -104,6 +107,13 @@ namespace XSharp.Project
         {
             get { return this.@unsafe; }
             set { this.@unsafe = value; this.IsDirty = true; }
+        }
+        [Category(CatGeneral), DisplayName(UseNativeVersionCaption), Description(UseNativeVersionDescription)]
+
+        public bool UseNativeVersion
+        {
+            get { return this.usenativeversion; }
+            set { this.usenativeversion = value; this.IsDirty = true; }
         }
 
         [Category(CatGeneral), DisplayName(AZCaption), Description(AZDescription)]
@@ -313,6 +323,7 @@ namespace XSharp.Project
             lb = getPrjLogic(nameof(LB), false);
             ovf = getPrjLogic(nameof(OVF), false);
             @unsafe = getPrjLogic(nameof(Unsafe), false);
+            usenativeversion = getPrjLogic(nameof(UseNativeVersion), false);
 
             ins = getPrjLogic(nameof(INS), false);
             ns = getPrjLogic(nameof(NS), false);
@@ -347,6 +358,7 @@ namespace XSharp.Project
             this.ProjectMgr.SetProjectProperty(nameof(NamedArgs), this.namedargs.ToString().ToLower());
             this.ProjectMgr.SetProjectProperty(nameof(OVF), this.ovf.ToString().ToLower());
             this.ProjectMgr.SetProjectProperty(nameof(Unsafe), this.@unsafe.ToString().ToLower());
+            this.ProjectMgr.SetProjectProperty(nameof(UseNativeVersion), this.usenativeversion.ToString().ToLower());
 
 
             this.ProjectMgr.SetProjectProperty(nameof(INS), this.ins.ToString().ToLower());

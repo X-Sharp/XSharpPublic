@@ -439,7 +439,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
                     // when /vo4 is enabled then we may end up having duplicate candidates
                     // we decide here which one takes precedence
-                    if (Compilation.Options.VOSignedUnsignedConversion)
+                    if (Compilation.Options.HasOption(CompilerOption.SignedUnsignedConversion, left.Syntax))
                     {
 #region Integral Binary Operators
                         if (left.Type.IsIntegralType() && right.Type.IsIntegralType()

@@ -401,10 +401,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             case "memvars":
                             case "undeclared":
                             case "vo2":     // Initialize string variables with empty strings
+                            case "vo4":     // SignedUnsignedConversion
                             case "vo5":     // Implicit Clipper Calling convention
+                            case "vo6":     // ResolveTypedFunctionPointersToPtr
                             case "vo7":     // Implicit Casts and Conversions
                             case "vo9":     // Allow missing return statements or missing return values
+                            case "vo10":     // Compatible IIF
+                            case "vo11":    // ArithmeticConversions
                             case "vo12":    // Clipper Integer divisions
+                            case "vo13":    // StringComparisons
                             case "vo14":    // Embed real constants as float
                                 context.Pragma = new PragmaOption(context, state, CompilerOptionDecoder.Decode(opt));
                                 break;

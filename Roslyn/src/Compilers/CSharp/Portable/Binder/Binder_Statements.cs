@@ -623,7 +623,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             TypeSymbol declType = BindVariableType(node.Declaration, diagnostics, typeSyntax, ref isConst, isVar: out isVar, alias: out alias);
 
 #if XSHARP
-            if (declType.IsPointerType() && Compilation.Options.VOResolveTypedFunctionPointersToPtr)
+            if (declType.IsPointerType() && Compilation.Options.HasOption(CompilerOption.ResolveTypedFunctionPointersToPtr,node))
             {
                 var pt = declType as PointerTypeSymbol;
                 // Check if pointing at Method
@@ -1701,27 +1701,14 @@ namespace Microsoft.CodeAnalysis.CSharp
                 diagnostics = new DiagnosticBag();
             }
 #if XSHARP
-            if (Compilation.Options.HasRuntime && targetType == Compilation.PszType())
-            {
-                if (IsNullNode(expression))
-                {
-                    return PszFromNull(expression);
-                }
-            }
+            var xsresult = XsHandleNullPsz(targetType, expression);
+            if (xsresult != null)
+                return xsresult;
 #endif
 
             HashSet<DiagnosticInfo> useSiteDiagnostics = null;
 #if XSHARP
-            if (expression.Kind == BoundKind.UnboundLambda)
-            {
-                if (targetType.IsDelegateType())
-                {
-                    if (expression.Syntax.XIsCodeBlock && !Compilation.Options.MacroScript)
-                    {
-                        Error(diagnostics, ErrorCode.ERR_LamdaWithCodeblockSyntax, expression.Syntax, targetType);
-                    }
-                }
-            }
+            XsCheckConversionForAssignment(targetType, expression, diagnostics, isDefaultParameter, isRefAssignment);
 #endif
             var conversion = this.Conversions.ClassifyConversionFromExpression(expression, targetType, ref useSiteDiagnostics);
             diagnostics.Add(expression.Syntax, useSiteDiagnostics);
@@ -1743,23 +1730,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                 // if someone says "void M(string s = 123) {}". We will report
                 // a special error in the default parameter binder.
 #if XSHARP
-                if (conversion.IsExplicit )
+                xsresult = XsHandleExplicitConversion(targetType, expression, diagnostics, conversion);
+                if (xsresult != null)
                 {
-                    // silently convert integral types
-                    if (CheckImplicitCast(expression.Type, targetType, expression.Syntax, diagnostics) || conversion.IsNullable)
-                    { 
-                        if (targetType.IsIntegralType() && expression.Type.IsIntegralType())
-                        {
-                            return CreateConversion(expression.Syntax, expression, conversion, false, targetType, diagnostics);
-                        }
-                        else
-                        {
-							return XsCreateConversionNonIntegralNumeric(targetType, expression, diagnostics,conversion);
-						}
-
-                    }
+                    return xsresult;
                 }
-
 #endif
 
                 if (!isDefaultParameter)

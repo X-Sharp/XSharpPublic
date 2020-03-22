@@ -127,11 +127,34 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case CompilerOption.UndeclaredMemVars:
                     return CheckOption(option, UndeclaredMemVars, syntax);
 
-                case CompilerOption.NullStrings:
+                case CompilerOption.NullStrings:    // vo2
                     return CheckOption(option, VONullStrings, syntax);
 
-                case CompilerOption.ImplicitCastsAndConversions:
+                case CompilerOption.SignedUnsignedConversion: // vo4
+                    return CheckOption(option, VOSignedUnsignedConversion, syntax);
+
+                case CompilerOption.ResolveTypedFunctionPointersToPtr: // vo6
+                    return CheckOption(option, VOResolveTypedFunctionPointersToPtr, syntax);
+
+                case CompilerOption.ImplicitCastsAndConversions: // vo7
                     return CheckOption(option, VOImplicitCastsAndConversions, syntax);
+
+                case CompilerOption.CompatibleIIF:  // vo10
+                    return CheckOption(option, VOCompatibleIIF, syntax);
+
+                case CompilerOption.ArithmeticConversions: // vo11
+                    return CheckOption(option, VOArithmeticConversions, syntax);
+
+                case CompilerOption.StringComparisons: // vo13
+                    return CheckOption(option, VOStringComparisons, syntax);
+
+                // other options are not handled or only handled during parsing
+                case CompilerOption.ClipperCallingConvention:   // Vo5
+                case CompilerOption.AllowMissingReturns:   // Vo9
+                case CompilerOption.ClipperIntegerDivisions:   // Vo12
+                case CompilerOption.FloatConstants: // vo14
+                    return false;
+
             }
             return false;
         }

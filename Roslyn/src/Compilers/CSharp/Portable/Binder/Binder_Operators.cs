@@ -587,7 +587,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 #if XSHARP
                 var tempResultType = resultType;
                 
-                if (opType != VOOperatorType.Cast )
+                if (opType != VOOperatorType.Bitwise )
                 {
                     if (BindVOBinaryOperatorVo11(node, resultOperatorKind, ref left, ref right, ref tempResultType, diagnostics))
                     {
@@ -631,7 +631,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
 #if XSHARP
 
-            if (opType == VOOperatorType.Cast && resultType != leftType)// C277 ByteValue >> 2 should not return int but byte.
+            if (opType == VOOperatorType.Bitwise && resultType != leftType)// C277 ByteValue >> 2 should not return int but byte.
             {
                 if (!result.Syntax.XIsVoCast)
                 {
@@ -2512,7 +2512,22 @@ namespace Microsoft.CodeAnalysis.CSharp
             UnaryOperatorKind resultOperatorKind = signature.Kind;
             var resultMethod = signature.Method;
             var resultConstant = FoldUnaryOperator(node, resultOperatorKind, resultOperand, resultType.SpecialType, diagnostics);
-
+#if XSHARP
+            BoundExpression res = new BoundUnaryOperator(
+                node,
+                resultOperatorKind.WithOverflowChecksIfApplicable(CheckOverflowAtRuntime),
+                resultOperand,
+                resultConstant,
+                resultMethod,
+                resultKind,
+                resultType);
+            if (resultType != operand.Type)
+            {
+                res = CreateConversion(res, operand.Type, diagnostics);
+                res.WasCompilerGenerated = true;
+            }
+            return res;
+#else
             return new BoundUnaryOperator(
                 node,
                 resultOperatorKind.WithOverflowChecksIfApplicable(CheckOverflowAtRuntime),
@@ -2521,6 +2536,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 resultMethod,
                 resultKind,
                 resultType);
+#endif
         }
 
         private ConstantValue FoldEnumUnaryOperator(

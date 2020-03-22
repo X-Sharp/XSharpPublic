@@ -114,6 +114,11 @@ Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "TestFullMacroCompiler", "sr
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XSharpVSParser", "src\Compiler\XSharpCodeAnalysis\XSharpVSParser.csproj", "{9F37697B-9FCA-4D91-B8E4-AA34880CFD88}"
+	ProjectSection(ProjectDependencies) = postProject
+		{4B45CA0C-03A0-400F-B454-3D4BCB16AF38} = {4B45CA0C-03A0-400F-B454-3D4BCB16AF38}
+		{9508F118-F62E-4C16-A6F4-7C3B56E166AD} = {9508F118-F62E-4C16-A6F4-7C3B56E166AD}
+		{7B774ABC-83A0-4FD8-91FB-1DBE8829765B} = {7B774ABC-83A0-4FD8-91FB-1DBE8829765B}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution

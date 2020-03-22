@@ -51,6 +51,10 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             // we don't worry here about the correct order of () and []. The parser rule takes care of that.
             if (InputStream.La(1) != LPAREN)
                 return false;
+            if (InputStream.La(3) == RPAREN && XSharpLexer.IsType(InputStream.La(2)) )
+            {
+                return true;
+            }
             int nestedlevel = 1;
             int la = 2;
             while (true)
@@ -94,7 +98,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 case EOS:                             // SyntaxKind.SemicolonToken:
                 case RPAREN:                          // SyntaxKind.CloseParenToken:
                 case RBRKT:                           // SyntaxKind.CloseBracketToken:
-                case LCURLY:                          // SyntaxKind.OpenBraceToken:
+                //case LCURLY:                          // SyntaxKind.OpenBraceToken:    Disabled because this should be allowed (TYPE) { => dosomething() }
                 case RCURLY:                          // SyntaxKind.CloseBraceToken:
                 case COMMA:                           // SyntaxKind.CommaToken:
                 case ASSIGN:                          // SyntaxKind.EqualsToken:

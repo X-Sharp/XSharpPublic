@@ -641,7 +641,7 @@ BEGIN NAMESPACE XSharp.RDD
         PRIVATE METHOD WriteFiller(nToWrite AS DWORD, lDeleted AS LOGIC) AS VOID
             LOCAL filler AS BYTE[]
             LOCAL fillByte AS BYTE
-            fillByte := IIF(lDeleted, 0xF0, 0xAF)
+            fillByte := (BYTE) IIF(lDeleted, 0xF0, 0xAF)
             filler := BYTE[]{(LONG) nToWrite}
             FOR VAR i := 0 TO nToWrite-1
                 filler[i] := fillByte

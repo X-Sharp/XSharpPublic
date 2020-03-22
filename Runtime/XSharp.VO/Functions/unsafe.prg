@@ -162,7 +162,7 @@ CLASS VOBitmaps
         IF hWnd == IntPtr.Zero
             hWnd := GetFocus()
         ENDIF
-        LOCAL wOperation := IIF( stretch, STRETCHDIB, SETDIB ) AS WORD
+        LOCAL wOperation := (WORD) IIF( stretch, STRETCHDIB, SETDIB ) AS WORD
         IF oBitMap:InitDIB( hWnd,  wOperation, cTitle, cFileName )
             oBitMap:PaintDIB( hWnd, wOperation, cFileName )
             bRet := TRUE
@@ -471,7 +471,7 @@ END CLASS
     
 #endregion
 
-STATIC CLASS Win32
+INTERNAL STATIC CLASS Win32
      CONST SW_SHOWNORMAL  := 1 AS LONG 
     [DllImport("kernel32.dll", CharSet := CharSet.Ansi )];
     STATIC INTERNAL METHOD WinExec(lpCmdLine AS STRING, uCmdShow AS DWORD) AS DWORD   

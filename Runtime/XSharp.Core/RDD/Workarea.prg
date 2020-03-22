@@ -1008,6 +1008,7 @@ BEGIN NAMESPACE XSharp.RDD
 		VIRTUAL METHOD Info(nOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT
 			LOCAL oResult AS OBJECT
 			// todo check basic implementation
+         
 			SWITCH nOrdinal
 			    CASE DbInfo.DBI_ISDBF
 				CASE DbInfo.DBI_CANPUTREC
@@ -1018,7 +1019,7 @@ BEGIN NAMESPACE XSharp.RDD
 				CASE DbInfo.DBI_SHARED
 					oResult := SELF:_Shared
 				CASE DbInfo.DBI_ISREADONLY
-                CASE DbInfo.DBI_READONLY
+				CASE DbInfo.DBI_READONLY
 					oResult := SELF:_ReadOnly
 				CASE DbInfo.DBI_GETDELIMITER
 					oResult := SELF:_Delimiter

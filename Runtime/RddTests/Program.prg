@@ -11,8 +11,17 @@ USING System.Reflection
 [STAThread];      
 FUNCTION Start() AS VOID
     TRY
-        LOCAL hConn AS IntPtr
-        testPruntGrup()
+        local a as array
+        local i as int
+        DbUseArea(TRUE, "DBFVFP", "c:\temp\FoxData\Northwind\customers.dbf")
+        ? CpDbf()
+        for i := 1 to TagCount()
+            ? i, "tag", Tag(,i), "for", @@For(i), "Key", Key(i), "Collate", IdxCollate(,i)
+        next
+        for i := 1 to FCOunt()
+            ? i, @@Field(i,,0), @@Field(i,,1)
+        next
+        //testPruntGrup()
         //TestMsg05()
         // TestWriteError()
         //TestCdxCreate()

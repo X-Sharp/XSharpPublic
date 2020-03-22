@@ -41,6 +41,8 @@
     <VO14>false</VO14>
     <VO15>true</VO15>
     <VO16>true</VO16>
+    <XSharpProjectversion>2.3.1.0</XSharpProjectversion>
+    <Nostandarddefs>false</Nostandarddefs>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>x86</PlatformTarget>
@@ -59,8 +61,6 @@
     <DelaySign>false</DelaySign>
     <AssemblyOriginatorKeyFile />
     <PPO>false</PPO>
-    <NoStandardDefs>false</NoStandardDefs>
-    <IncludePaths />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -77,24 +77,23 @@
     <Reference Include="mscorlib" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="VulcanRT">
-      <SpecificVersion>false</SpecificVersion>
-    </Reference>
-    <Reference Include="VulcanRTFuncs">
-      <SpecificVersion>false</SpecificVersion>
-    </Reference>
-    <Reference Include="VulcanVOConsoleClasses">
-      <SpecificVersion>false</SpecificVersion>
-    </Reference>
-    <Reference Include="VulcanVOWin32APILibrary">
-      <SpecificVersion>false</SpecificVersion>
-    </Reference>
-    <Reference Include="SDK_Defines.dll">
-      <Name>SDK_Defines.dll</Name>
-      <AssemblyName>SDK_Defines.dll.dll</AssemblyName>
-      <SpecificVersion>false</SpecificVersion>
+    <Reference Include="XSharp.Core, Version=2.1.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586">
+      <Name>XSharp.Core</Name>
+      <AssemblyName>XSharp.Core.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
-      <HintPath>..\\SDK_Defines.dll</HintPath>
+    </Reference>
+    <Reference Include="XSharp.RT, Version=2.1.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586">
+      <Name>XSharp.RT</Name>
+      <AssemblyName>XSharp.RT.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="XSharp.VO, Version=2.1.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586">
+      <Name>XSharp.VO</Name>
+      <AssemblyName>XSharp.VO.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>

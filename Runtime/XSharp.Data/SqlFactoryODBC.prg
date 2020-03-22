@@ -82,7 +82,7 @@ CLASS XSharp.Data.OdbcFactory INHERIT XSharp.Data.AbstractSqlFactory
         
         IF cConnectionString IS STRING
             cConnect  := (STRING) cConnectionString
-            nSize     := (SHORT) SLen( cConnect ) + 1 
+            nSize     := (SHORT) (SLen( cConnect ) + 1 )
         ELSE
             cConnect  := ""
             nSize     := 0

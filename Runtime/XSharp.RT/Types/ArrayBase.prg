@@ -9,7 +9,7 @@ USING System.Linq
 USING System.Diagnostics
 USING System.Reflection
 USING XSharp
-BEGIN NAMESPACE XSharp
+BEGIN NAMESPACE XSharp 
 	/// <summary>Internal type that implements the new TYPED ARRAY type.<br/>
 	/// This type has methods and properties that normally are never directly called from user code.
 	/// </summary>

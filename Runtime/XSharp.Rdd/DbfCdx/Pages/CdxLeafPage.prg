@@ -175,7 +175,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:ClearRecordsAndKeys()
             VAR bits            := CdxHelpers.GetBits(SELF:KeyLength)
             // base dupCountMask, trailCountMNask, numbitsRecno and other info are based on keylength 
-            SELF:DataBytes      := IIF (bits > 12, 5, IIF( bits > 8, 4, 3))
+            SELF:DataBytes      := (BYTE) IIF (bits > 12, 5, IIF( bits > 8, 4, 3))
             SELF:RecordBits     := (BYTE) ((SELF:DataBytes << 3) - (bits << 1))
             SELF:DuplicateBits  := SELF:TrailingBits  := bits
             SELF:TrailingMask   := SELF:DuplicateMask := (BYTE) (( 1 << bits  ) - 1)

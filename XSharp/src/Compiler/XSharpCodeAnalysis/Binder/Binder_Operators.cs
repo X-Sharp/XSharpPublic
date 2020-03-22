@@ -72,7 +72,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 				
                 else if (targetType.SpecialType.IsSignedIntegralType() != sourceType.SpecialType.IsSignedIntegralType())
                 {
-                    if (!Compilation.Options.VOSignedUnsignedConversion)
+                    if (!Compilation.Options.HasOption(CompilerOption.SignedUnsignedConversion,syntax))
                     { 
                         var distinguisher = new SymbolDistinguisher(this.Compilation, sourceType, targetType);
                         Error(diagnostics, ErrorCode.WRN_SignedUnSignedConversion, syntax, distinguisher.First, distinguisher.Second);

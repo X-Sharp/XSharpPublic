@@ -582,19 +582,22 @@ namespace Microsoft.CodeAnalysis.CSharp
                 Debug.Assert((object)signature.LeftType != null);
                 Debug.Assert((object)signature.RightType != null);
 
+                resultLeft = CreateConversion(left, best.LeftConversion, signature.LeftType, diagnostics);
+                resultRight = CreateConversion(right, best.RightConversion, signature.RightType, diagnostics);
 #if XSHARP
-                resultLeft = CreateConversion(left.Syntax, left, best.LeftConversion, false,true,signature.LeftType,diagnostics);
-                resultRight = CreateConversion(right.Syntax, right, best.RightConversion, false, true, signature.RightType, diagnostics);
                 var tempResultType = resultType;
                 
-                if (BindVOBinaryOperatorVo11(node, resultOperatorKind, ref left, ref right, ref tempResultType, diagnostics))
+                if (opType != VOOperatorType.Bitwise )
                 {
-                    resultLeft = left;
-                    resultRight = right;
+                    if (BindVOBinaryOperatorVo11(node, resultOperatorKind, ref left, ref right, ref tempResultType, diagnostics))
+                    {
+                        resultLeft = left;
+                        resultRight = right;
+                    }
                 }
-
+#endif
                 resultConstant = FoldBinaryOperator(node, resultOperatorKind, resultLeft, resultRight, resultType.SpecialType, diagnostics, ref compoundStringLength);
-
+#if XSHARP
 
                 if (resultType != tempResultType && resultConstant != null )
                 {
@@ -608,11 +611,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     return new BoundLiteral(node, resultConstant, Compilation.GetSpecialType(resultConstant.SpecialType)) { WasCompilerGenerated = true } ;
                 }
-#else			
-                resultLeft = CreateConversion(left, best.LeftConversion, signature.LeftType, diagnostics);
-                resultRight = CreateConversion(right, best.RightConversion, signature.RightType, diagnostics);
-                resultConstant = FoldBinaryOperator(node, resultOperatorKind, resultLeft, resultRight, resultType.SpecialType, diagnostics, ref compoundStringLength);
-                
 #endif
             }
 
@@ -630,6 +628,22 @@ namespace Microsoft.CodeAnalysis.CSharp
                     resultType,
                     hasErrors);
 
+
+#if XSHARP
+
+            if (opType == VOOperatorType.Bitwise && resultType != leftType)// C277 ByteValue >> 2 should not return int but byte.
+            {
+                if (!result.Syntax.XIsVoCast)
+                {
+                    result = new BoundConversion(node, result, Conversion.ImplicitNumeric, false, false, null, leftType) { WasCompilerGenerated = true };
+                }
+                else
+                { 
+                    result = new BoundConversion(node, result, Conversion.ImplicitNumeric, false, false, null, rightType) { WasCompilerGenerated = true };
+                }
+            }
+ 
+#endif
             return result;
 
         }

@@ -48,9 +48,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             else
             {
                 // call (type) Expression to truncate the result
-                var result = CreateConversion(expression.Syntax, expression, conversion, false, targetType, diagnostics);
-                result.WasCompilerGenerated = true;
-                return result;
+                return CreateConversion(expression.Syntax, expression, conversion, false, targetType, diagnostics);
             }
 
         }
@@ -107,13 +105,16 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (Compilation.Options.HasOption(CompilerOption.SignedUnsignedConversion, expression.Syntax))
                 return;
 
-            if (targetType.SpecialType.IsIntegralType() && expression.Type.SpecialType.IsIntegralType() && targetType != expression.Type)
+            var rhsType = expression.Type;
+            if (targetType != rhsType && 
+                targetType.SpecialType.IsIntegralType() &&
+                rhsType.SpecialType.IsIntegralType() 
+                )
             {
-                var rhsType = expression.Type;
                 bool ok = false;
                 if (expression.ConstantValue != null)
                 {
-                    if (expression.ConstantValue.SpecialType.IsSignedIntegralType())
+                    if (rhsType.SpecialType.IsSignedIntegralType())
                     {
                         var value = expression.ConstantValue.Int64Value;
                         switch (targetType.SpecialType)

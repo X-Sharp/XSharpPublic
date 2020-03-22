@@ -3290,12 +3290,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 context.Initializer.SetSequencePoint();
             }
-            else if (dataType != null && ! isDim && candefault)
+            else if (dataType != null && !isDim && candefault)
             {
-                if (_options.HasOption(CompilerOption.InitLocals, context, PragmaOptions))
-                {
-                    initExpr = GenerateInitializer(dataType);
-                }
+                // no filtering on InitLocals here. That is done inside GenerateInitializer
+                initExpr = GenerateInitializer(dataType);
             }
             context.Put(GenerateVariable(context.Id.Get<SyntaxToken>(), initExpr));
         }
@@ -3395,10 +3393,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var initValue = context.Initializer.Get<ExpressionSyntax>();
                 if (initValue == null && (context.Auto != null || emulateAuto) && ! isInStruct)
                 {
-                    if (_options.HasOption(CompilerOption.InitLocals, context, PragmaOptions))
-                    {
-                        initValue = GenerateInitializer(context.Type);
-                    }
+                	// no filtering on InitLocals here. That is done inside GenerateInitializer
+            		initValue = GenerateInitializer(context.Type);
                 }
                 var initializer = initValue == null ? null :
                     _syntaxFactory.EqualsValueClause(SyntaxFactory.MakeToken(SyntaxKind.EqualsToken), initValue) ;
@@ -5523,6 +5519,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             if (_options.HasOption(CompilerOption.InitLocals, context, PragmaOptions) && initExpr == null)
             {
+                // no filtering on InitLocals here. That is done inside GenerateInitializer
                 initExpr = GenerateInitializer(context.DataType);
             }
             if (isStatic)
@@ -5530,10 +5527,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 staticName = XSharpSpecialNames.StaticLocalFieldNamePrefix + CurrentEntity.ShortName+"$"+context.Id.Get<SyntaxToken>().Text + UniqueNameSuffix;
                 if (initExpr == null)
                 {
-                    if (_options.HasOption(CompilerOption.InitLocals, context, PragmaOptions))
-                    {
-                        initExpr = GenerateInitializer(context.DataType);
-                    }
+                	// no filtering on InitLocals here. That is done inside GenerateInitializer
+                    initExpr = GenerateInitializer(context.DataType);
                 }
                 simpleInit = (initExpr is LiteralExpressionSyntax);
                 ClassEntities.Peek().Members.Add(
@@ -7340,7 +7335,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var expr = context.Expr.Get<ExpressionSyntax>();
             expr = MakeCastTo(context.Type.Get<TypeSyntax>(), expr);
             // If the expression is part of a CHECKED or UNCHECKED
-            // Syntax then there is no need to explicitly add the Checked
+            // Syntax then there is no need to explicitely add the Checked
             // for example C578: 
             // DEFINE d2 := unchecked ((WORD) -1)
             if (_options.HasRuntime  && _options.TargetDLL  == XSharpTargetDLL.Other && !(context.Parent is XP.CheckedExpressionContext))

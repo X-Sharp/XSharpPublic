@@ -502,18 +502,7 @@ namespace XSharp.Project
                     //
                     if ((this.Kind != XSharpModel.Kind.Field) && (this.Kind != XSharpModel.Kind.Constructor))
                     {
-                        if (this.Kind == XSharpModel.Kind.VODefine)
-                        {
-                            temp = new Run(_optionsPage.Define() + " ");
-                        }
-                        else if (this.Kind == XSharpModel.Kind.VOGlobal)
-                        {
-                            temp = new Run(_optionsPage.Global() + " ");
-                        }
-                        else
-                        {
-                            temp = new Run(this.Kind.ToString() + " ");
-                        }
+                        temp = new Run(_optionsPage.formatKeyword(this.Kind) + " ");
                         temp.Foreground = this.kwBrush;
                         content.Add(temp);
                     }
@@ -572,26 +561,62 @@ namespace XSharp.Project
                         temp.Foreground = this.kwBrush;
                         content.Add(temp);
                         temp = new Run(this.TypeName);
-                        temp.Foreground = this.kwBrush;
+                        temp.Foreground = this.txtBrush;
                         content.Add(temp);
                     }
+                    if (!String.IsNullOrEmpty(this.Value))
+                    {
+                        temp = new Run(" := " + this.Value);
+                        temp.Foreground = this.txtBrush;
+                        content.Add(temp);
+                    }
+
                     //
                     return content;
                 }
             }
         }
 
-        internal class QuickInfoTypeMember
+        internal class QuickInfoBase
         {
-            XSharpModel.XTypeMember typeMember;
-            Brush kwBrush;
-            Brush txtBrush;
+            internal Brush kwBrush;
+            internal Brush txtBrush;
 
-            internal QuickInfoTypeMember(XSharpModel.XTypeMember tm, Brush kw, Brush txt)
+            internal QuickInfoBase(Brush kw, Brush txt)
             {
-                this.typeMember = tm;
                 this.kwBrush = kw;
                 this.txtBrush = txt;
+            }
+
+            internal void AddVarInfo(List<Inline> list, XVariable var)
+            {
+                Run temp;
+                temp = new Run(var.Name + " ");
+                temp.Foreground = txtBrush;
+                list.Add(temp);
+                temp = new Run(_optionsPage.formatKeyword(var.ParamTypeDesc) + " ");
+                temp.Foreground = this.kwBrush;
+                list.Add(temp);
+                temp = new Run(var.TypeName);
+                temp.Foreground = this.txtBrush;
+                list.Add(temp);
+                if (var.IsArray)
+                {
+                    temp = new Run("[] ");
+                    temp.Foreground = this.txtBrush;
+                    list.Add(temp);
+                }
+            }
+
+        }
+
+        internal class QuickInfoTypeMember : QuickInfoBase
+        {
+            XSharpModel.XTypeMember typeMember;
+ 
+            internal QuickInfoTypeMember(XSharpModel.XTypeMember tm, Brush kw, Brush txt) : base(kw,txt)
+            {
+                this.typeMember = tm;
             }
 
             public List<Inline> WPFDescription
@@ -620,7 +645,12 @@ namespace XSharp.Project
                     //
                     if (this.typeMember.Kind != XSharpModel.Kind.Field)
                     {
-                        temp = new Run(_optionsPage.formatKeyword(this.typeMember.Kind) + " ");
+                        string kind = this.typeMember.Kind.ToString();
+                        if (kind.StartsWith("vo",StringComparison.OrdinalIgnoreCase))
+                        {
+                            kind = kind.Substring(2);
+                        }
+                        temp = new Run(_optionsPage.formatKeyword(kind) + " ");
                         temp.Foreground = this.kwBrush;
                         content.Add(temp);
                     }
@@ -653,15 +683,7 @@ namespace XSharp.Project
                                 temp.Foreground = txtBrush;
                                 vars.Add(temp);
                             }
-                            temp = new Run(var.Name + " ");
-                            temp.Foreground = txtBrush;
-                            vars.Add(temp);
-                            temp = new Run(_optionsPage.formatKeyword(var.ParamTypeDesc) + " ");
-                            temp.Foreground = this.kwBrush;
-                            vars.Add(temp);
-                            temp = new Run(var.TypeName);
-                            temp.Foreground = this.kwBrush;
-                            vars.Add(temp);
+                            AddVarInfo(vars, var);
                         }
                         temp = new Run(this.typeMember.Kind == XSharpModel.Kind.Constructor ? "}" : ")");
                         temp.Foreground = this.kwBrush;
@@ -673,16 +695,21 @@ namespace XSharp.Project
                     content.Add(temp);
                     content.AddRange(vars);
                     //
-                    if (this.typeMember.Kind.HasReturnType())
+                    if (this.typeMember.Kind.HasReturnType() && !String.IsNullOrEmpty(this.typeMember.TypeName))
                     {
-                        temp = new Run(" "+ _optionsPage.As());
+                        temp = new Run(" " + _optionsPage.As());
                         temp.Foreground = this.kwBrush;
                         content.Add(temp);
                         temp = new Run(this.typeMember.TypeName);
-                        temp.Foreground = this.kwBrush;
+                        temp.Foreground = this.txtBrush;
                         content.Add(temp);
                     }
-                    //
+                    if (!String.IsNullOrEmpty(this.typeMember.Value))
+                    {
+                        temp = new Run(" := " + this.typeMember.Value);
+                        temp.Foreground = this.txtBrush;
+                        content.Add(temp);
+                    }
                     return content;
                 }
             }
@@ -690,17 +717,13 @@ namespace XSharp.Project
         }
 
 
-        internal class QuickInfoVariable
+        internal class QuickInfoVariable : QuickInfoBase
         {
             XSharpModel.XVariable xVar;
-            Brush kwBrush;
-            Brush txtBrush;
 
-            internal QuickInfoVariable(XSharpModel.XVariable var, Brush kw, Brush txt)
+            internal QuickInfoVariable(XSharpModel.XVariable var, Brush kw, Brush txt) : base(kw,txt)
             {
                 this.xVar = var;
-                this.kwBrush = kw;
-                this.txtBrush = txt;
             }
 
             public List<Inline> WPFDescription
@@ -723,47 +746,11 @@ namespace XSharp.Project
                         content.Add(temp);
                     }
                     //
-                    content.AddRange(this.WPFPrototype);
-                    //
-                    if (this.xVar.IsTyped)
-                    {
-                        temp = new Run(" "+ _optionsPage.formatKeyword(this.xVar.ParamTypeDesc.TrimStart()) + " ");
-                        temp.Foreground = this.kwBrush;
-                        content.Add(temp);
-                        //
-                        temp = new Run(this.xVar.TypeName);
-                        temp.Foreground = this.kwBrush;
-                        content.Add(temp);
-                        if (this.xVar.IsArray)
-                        {
-                            temp = new Run("[] ");
-                            temp.Foreground = this.kwBrush;
-                            content.Add(temp);
-                        }
-                    }
-                    //
+                    AddVarInfo(content, xVar);
                     return content;
                 }
 
             }
-
-            public List<Inline> WPFPrototype
-            {
-                get
-                {
-                    List<Inline> content = new List<Inline>();
-                    Run temp;
-                    //
-                    temp = new Run(this.xVar.Name);
-                    temp.Foreground = this.txtBrush;
-                    content.Add(temp);
-                    //
-                    return content;
-                }
-            }
-
-
-
 
         }
 
@@ -846,16 +833,23 @@ namespace XSharp.Project
         }
         internal static string formatKeyword(this OptionsPages.IntellisenseOptionsPage page,  Kind keyword)
         {
+            switch (keyword)
+            {
+                case Kind.VODefine:
+                    return page.formatKeyword("define");
+                case Kind.VOGlobal:
+                    return page.formatKeyword("global");
+                case Kind.VODLL:
+                    return page.formatKeyword("_dll function");
+            }
             return page.formatKeyword(keyword.ToString());
         }
         internal static string formatKeyword(this OptionsPages.IntellisenseOptionsPage page,  string keyword)
         {
             return page.SyncKeyword(keyword);
-        }
+        } 
         internal static string As(this OptionsPages.IntellisenseOptionsPage page) => page.formatKeyword("AS ");
         internal static string Static(this OptionsPages.IntellisenseOptionsPage page) => page.formatKeyword("STATIC");
-        internal static string Define(this OptionsPages.IntellisenseOptionsPage page) => page.formatKeyword("DEFINE");
-        internal static string Global(this OptionsPages.IntellisenseOptionsPage page) => page.formatKeyword("GLOBAL");
         internal static string Local(this OptionsPages.IntellisenseOptionsPage page) => page.formatKeyword("LOCAL");
         internal static string Parameter(this OptionsPages.IntellisenseOptionsPage page) => page.formatKeyword("PARAMETER");
         internal static string Usual(this OptionsPages.IntellisenseOptionsPage page) => page.formatKeyword("USUAL");

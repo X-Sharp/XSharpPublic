@@ -9,7 +9,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 #using System.Reflection
 #using System.Runtime.InteropServices
-#include "version.xh"
+
 [assembly: AssemblyTitleAttribute( "XSharpCodeModel" )]
 [assembly: AssemblyDescriptionAttribute( "XSharpCodeModel" )]
 

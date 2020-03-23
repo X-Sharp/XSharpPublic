@@ -6,7 +6,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 #using System.Reflection
 #using System.Runtime.InteropServices
-#include "version.xh"
+#include "constants.prg"
+#include "commonassemblyinfo.prg"
 [assembly: AssemblyTitleAttribute( "XSharp.XPorter" )]
 [assembly: AssemblyDescriptionAttribute( "XSharp.XPorter" )]
 

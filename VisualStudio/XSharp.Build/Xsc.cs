@@ -304,6 +304,13 @@ namespace XSharp.Build
             get { return base.GetBoolParameterWithDefault(nameof(ReportAnalyzer), false); }
         }
 
+        public bool UseNativeVersion
+        {
+            set { base.Bag[nameof(UseNativeVersion)] = value; }
+            get { return (bool)base.Bag[nameof(UseNativeVersion)]; }
+
+        }
+
         public bool VulcanCompatibleResources
         {
             set { base.Bag[nameof(VulcanCompatibleResources)] = value; }
@@ -684,6 +691,7 @@ namespace XSharp.Build
             commandline.AppendPlusOrMinusSwitch("/initlocals", base.Bag, nameof(InitLocals));
             commandline.AppendPlusOrMinusSwitch("/ins", base.Bag, nameof(INS));
             commandline.AppendPlusOrMinusSwitch("/lb", base.Bag, nameof(LB));
+            commandline.AppendPlusOrMinusSwitch("/usenativeversion", base.Bag, nameof(UseNativeVersion));
             commandline.AppendPlusOrMinusSwitch("/namedarguments", base.Bag, nameof(NamedArgs));
             if (Dialect.ToLower() != "core" && Dialect.ToLower() != "vulcan")
             {

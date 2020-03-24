@@ -269,6 +269,7 @@ Copyright (c) XSharp B.V.  All Rights Reserved
 	    TreatWarningsAsErrors="$(TreatWarningsAsErrors)"
 	    UseSharedCompilation="$(UseSharedCompilation)"
 	    Utf8Output="$(Utf8Output)"
+      UseNativeVersion="$(UseNativeVersion)"
 	    VulcanCompatibleResources="$(VulcanCompatibleResources)"
 	    VsSessionGuid="$(VsSessionGuid)"
 	    WarningLevel="$(WarningLevel)"

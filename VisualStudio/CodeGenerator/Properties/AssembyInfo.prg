@@ -9,7 +9,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 #using System.Reflection
 #using System.Runtime.InteropServices
-#include "version.xh"
+
 [assembly: AssemblyTitleAttribute( "XSharp.CodeGenerator" )]
 [assembly: AssemblyDescriptionAttribute( "XSharp.CodeGenerator - Originally part of XIDE" )]
 

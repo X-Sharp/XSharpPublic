@@ -598,9 +598,14 @@ namespace XSharpLanguage
                 {
                     if (XSharpTokenTools.isGenerated(typeInfo.Value))
                         continue;
+
                     TypeAnalysis typeAnalysis = new TypeAnalysis(typeInfo.Value.GetTypeInfo());
                     String realTypeName = typeAnalysis.Name;
-                    // Nested Type ?
+                    if (IsHiddenName(realTypeName))
+                    {
+                       continue;
+                    }
+                        // Nested Type ?
                     if (realTypeName.Contains("+"))
                     {
                         realTypeName = realTypeName.Replace('+', '.');
@@ -618,7 +623,7 @@ namespace XSharpLanguage
 
                     //
                     ImageSource icon = _provider.GlyphService.GetGlyph(typeAnalysis.GlyphGroup, typeAnalysis.GlyphItem);
-                    if (!compList.Add(new XSCompletion(realTypeName, realTypeName, typeAnalysis.Description, icon, null, Kind.Class)))
+                    if (!compList.Add(new XSCompletion(realTypeName, realTypeName, typeAnalysis.Description, icon, null, Kind.Class,"")))
                         break;
                 }
             }
@@ -640,22 +645,22 @@ namespace XSharpLanguage
 
         private bool IsHiddenName(string realTypeName)
         {
-            if (realTypeName.Length > 2 && realTypeName.StartsWith("__"))
+            if (realTypeName.Length > 2 && realTypeName.StartsWith("__", StringComparison.Ordinal) && _optionsPage.HideAdvancemembers)
                 return true;
             if (realTypeName.Length > 4)
             {
                 // event add
-                if (realTypeName.StartsWith("add_"))
+                if (realTypeName.StartsWith("add_",StringComparison.Ordinal))
                     return true;
                 // property get
-                if (realTypeName.StartsWith("get_"))
+                if (realTypeName.StartsWith("get_", StringComparison.Ordinal))
                     return true;
                 // property set
-                if (realTypeName.StartsWith("set_"))
+                if (realTypeName.StartsWith("set_", StringComparison.Ordinal))
                     return true;
             }
             // event remove
-            if (realTypeName.Length > 7 && realTypeName.StartsWith("remove_"))
+            if (realTypeName.Length > 7 && realTypeName.StartsWith("remove_", StringComparison.Ordinal))
                 return true;
             return false;
         }
@@ -665,7 +670,7 @@ namespace XSharpLanguage
             foreach (var kw in XSharpTypes.Get().Where(ti => nameStartsWith(ti.FullName, startWith)))
             {
                 ImageSource icon = _provider.GlyphService.GetGlyph(kw.getGlyphGroup(), kw.getGlyphItem());
-                compList.Add(new XSCompletion(kw.Name, kw.Name, kw.Description, icon, null, Kind.Keyword));
+                compList.Add(new XSCompletion(kw.Name, kw.Name, kw.Description, icon, null, Kind.Keyword,""));
             }
         }
 
@@ -693,7 +698,7 @@ namespace XSharpLanguage
                         if (dotPos > 0)
                             realTypeName = realTypeName.Substring(0, dotPos);
                         ImageSource icon = _provider.GlyphService.GetGlyph(typeInfo.getGlyphGroup(), typeInfo.getGlyphItem());
-                        if (!compList.Add(new XSCompletion(realTypeName, realTypeName, typeInfo.Description, icon, null, Kind.Class)))
+                        if (!compList.Add(new XSCompletion(realTypeName, realTypeName, typeInfo.Description, icon, null, Kind.Class,"")))
                             break;
                     }
                 }
@@ -722,7 +727,7 @@ namespace XSharpLanguage
                 if (dotPos > 0)
                     realTypeName = realTypeName.Substring(0, dotPos);
                 ImageSource icon = _provider.GlyphService.GetGlyph(typeInfo.getGlyphGroup(), typeInfo.getGlyphItem());
-                if (!compList.Add(new XSCompletion(realTypeName, realTypeName, typeInfo.Description, icon, null, Kind.Class)))
+                if (!compList.Add(new XSCompletion(realTypeName, realTypeName, typeInfo.Description, icon, null, Kind.Class,"")))
                     break;
             }
         }
@@ -750,7 +755,7 @@ namespace XSharpLanguage
                 if (dotPos > 0)
                     realNamespace = realNamespace.Substring(0, dotPos);
                 //
-                if (!compList.Add(new XSCompletion(realNamespace, realNamespace, "Namespace " + nameSpace, icon, null, Kind.Namespace)))
+                if (!compList.Add(new XSCompletion(realNamespace, realNamespace, "Namespace " + nameSpace, icon, null, Kind.Namespace,"")))
                     break;
             }
             //
@@ -790,7 +795,7 @@ namespace XSharpLanguage
                 // Then remove it
                 if (dotPos > 0)
                     realNamespace = realNamespace.Substring(0, dotPos);
-                if (!compList.Add(new XSCompletion(realNamespace, realNamespace, nameSpace.Description, icon, null, Kind.Namespace)))
+                if (!compList.Add(new XSCompletion(realNamespace, realNamespace, nameSpace.Description, icon, null, Kind.Namespace,"")))
                     break;
             }
         }
@@ -806,7 +811,7 @@ namespace XSharpLanguage
             {
                 //
                 ImageSource icon = _provider.GlyphService.GetGlyph(paramVar.getGlyphGroup(), paramVar.getGlyphItem());
-                if (!compList.Add(new XSCompletion(paramVar.Name, paramVar.Name, paramVar.Description, icon, null, Kind.Parameter)))
+                if (!compList.Add(new XSCompletion(paramVar.Name, paramVar.Name, paramVar.Description, icon, null, Kind.Parameter,"")))
                     break;
             }
             // Then, look for Locals
@@ -814,7 +819,7 @@ namespace XSharpLanguage
             {
                 //
                 ImageSource icon = _provider.GlyphService.GetGlyph(localVar.getGlyphGroup(), localVar.getGlyphItem());
-                if (!compList.Add(new XSCompletion(localVar.Name, localVar.Name, localVar.Description, icon, null, Kind.Local)))
+                if (!compList.Add(new XSCompletion(localVar.Name, localVar.Name, localVar.Description, icon, null, Kind.Local,"")))
                     break;
             }
             // Ok, now look for Members of the Owner of the member... So, the class a Method
@@ -826,7 +831,7 @@ namespace XSharpLanguage
                 foreach (var member in classElement.Members.Where(m => m.Kind == Kind.Field && nameStartsWith(m.Name, startWith)))
                 {
                     ImageSource icon = _provider.GlyphService.GetGlyph(member.getGlyphGroup(), member.getGlyphItem());
-                    if (!compList.Add(new XSCompletion(member.Name, member.Name, member.Description, icon, null, Kind.Field)))
+                    if (!compList.Add(new XSCompletion(member.Name, member.Name, member.Description, icon, null, Kind.Field,"")))
                         break;
                 }
             }
@@ -853,6 +858,7 @@ namespace XSharpLanguage
             //
             XType Owner = parent as XType;
             //
+            bool hideAdvanced = _optionsPage.HideAdvancemembers;
             foreach (XTypeMember elt in Owner.Members.Where(e => nameStartsWith(e.Name, startWith)))
             {
                 if (elt.Kind == Kind.Constructor)
@@ -862,13 +868,17 @@ namespace XSharpLanguage
                 if (elt.Visibility < minVisibility)
                     continue;
                 //
+                if (IsHiddenName(elt.Name))
+                {
+                    continue;
+                }
                 ImageSource icon = _provider.GlyphService.GetGlyph(elt.getGlyphGroup(), elt.getGlyphItem());
                 String toAdd = "";
                 if ((elt.Kind == Kind.Method) || (elt.Kind == Kind.Function) || (elt.Kind == Kind.Procedure))
                 {
                     toAdd = "(";
                 }
-                if (!compList.Add(new XSCompletion(elt.Name, elt.Name + toAdd, elt.Description, icon, null, elt.Kind)))
+                if (!compList.Add(new XSCompletion(elt.Name, elt.Name + toAdd, elt.Description, icon, null, elt.Kind,elt.Value)))
                     break;
             }
             // Hummm, we should call for Owner of the Owner.. Super !
@@ -930,6 +940,10 @@ namespace XSharpLanguage
             foreach (XTypeMember elt in xType.Members.Where(x => nameStartsWith(x.Name, startWith)))
             {
                 bool add = true;
+                if (IsHiddenName(elt.Name))
+                {
+                    continue;
+                }
                 switch (elt.Kind)
                 {
                     case Kind.EnumMember:
@@ -956,7 +970,7 @@ namespace XSharpLanguage
                 {
                     toAdd = "(";
                 }
-                if (!compList.Add(new XSCompletion(elt.Name, elt.Name + toAdd, elt.Description, icon, null, elt.Kind)))
+                if (!compList.Add(new XSCompletion(elt.Name, elt.Name + toAdd, elt.Description, icon, null, elt.Kind,elt.Value)))
                     break;
             }
         }
@@ -983,10 +997,15 @@ namespace XSharpLanguage
                 members = sType.GetMembers();
             }
             //
+            bool hideAdvanced = _optionsPage.HideAdvancemembers;
             foreach (var member in members.Where(x => nameStartsWith(x.Name, startWith)))
             {
                 if (XSharpTokenTools.isGenerated(member))
                     continue;
+                if (IsHiddenName(member.Name))
+                {
+                   continue;
+                }
                 try
                 {
                     MemberAnalysis analysis = new MemberAnalysis(member);
@@ -1020,7 +1039,7 @@ namespace XSharpLanguage
                         }
                         //
                         ImageSource icon = _provider.GlyphService.GetGlyph(analysis.GlyphGroup, imgI);
-                        if (!compList.Add(new XSCompletion(analysis.Name, analysis.Name + toAdd, analysis.Description, icon, null, analysis.Kind)))
+                        if (!compList.Add(new XSCompletion(analysis.Name, analysis.Name + toAdd, analysis.Description, icon, null, analysis.Kind,analysis.Value)))
                             break;
                     }
                 }
@@ -1061,7 +1080,7 @@ namespace XSharpLanguage
                 // Fill enum members
                 foreach (string name in sType.GetEnumNames())
                 {
-                    if (!compList.Add(new XSCompletion(name, name, "", icon, null, Kind.EnumMember)))
+                    if (!compList.Add(new XSCompletion(name, name, "", icon, null, Kind.EnumMember,"")))
                         break;
                 }
 
@@ -1142,8 +1161,9 @@ namespace XSharpLanguage
         private Modifiers _visibility;
         private Kind _kind;
         private bool _isStatic;
-        private String _typeName;
+        private string _typeName;
         private List<ParamInfo> _parameters;
+        private string _value;
 
         /// <summary>
         /// Process a MemberInfo in order to provide usable informations ( TypeName, Glyph, ... )
@@ -1236,12 +1256,22 @@ namespace XSharpLanguage
                             if (field.Attributes.HasFlag(FieldAttributes.InitOnly))
                                 this.Kind = Kind.VODefine;
                             else if (field.Attributes.HasFlag(FieldAttributes.Literal))
+                            {
                                 this.Kind = Kind.VODefine;
+                                var value = System.Convert.ChangeType(field.GetValue(null), field.FieldType);
+                                _value = value.ToString();
+                            }
                             else
                                 this.Kind = Kind.VOGlobal;
                         }
+                        declType = field.DeclaringType;
+                        if (declType.IsEnum)
+                        {
+                            var value = System.Convert.ChangeType(field.GetValue(null), declType.GetEnumUnderlyingType());
+                            _value = value.ToString();
+                        }
                     }
-
+                    
                     //
                     this._isStatic = field.IsStatic;
                     //
@@ -1512,21 +1542,10 @@ namespace XSharpLanguage
             }
         }
 
-        public bool IsInitialized
-        {
-            get
-            {
-                return (this.Name != null);
-            }
-        }
+        public bool IsInitialized => this.Name != null;
 
-        public string Name
-        {
-            get
-            {
-                return _name;
-            }
-        }
+        public string Name => _name;
+        public string Value => _value;
 
         public String Description
         {
@@ -1548,18 +1567,7 @@ namespace XSharpLanguage
                 //
                 if ((this.Kind != Kind.Field) && (this.Kind != Kind.Constructor))
                 {
-                    if (this.Kind == Kind.VODefine)
-                    {
-                        desc += _optionsPage.Define() + " ";
-                    }
-                    else if (this.Kind == Kind.VOGlobal)
-                    {
-                        desc += _optionsPage.Global() + " ";
-                    }
-                    else
-                    {
-                        desc += _optionsPage.formatKeyword(this.Kind) + " ";
-                    }
+                   desc += _optionsPage.formatKeyword(this.Kind) + " ";
                 }
                 desc += this.Prototype;
                 //
@@ -2164,10 +2172,13 @@ namespace XSharpLanguage
     public class XSCompletion : Completion
     {
         public XSharpModel.Kind Kind { get; set; }
-        public XSCompletion(string displayText, string insertionText, string description, ImageSource iconSource, string iconAutomationText, XSharpModel.Kind kind)
+        public string Value { get; set; }
+        public XSCompletion(string displayText, string insertionText, string description, 
+            ImageSource iconSource, string iconAutomationText, XSharpModel.Kind kind, string value)
             : base(displayText, insertionText, description, iconSource, iconAutomationText)
         {
             Kind = kind;
+            Value = value;
         }
 
         public override string Description
@@ -2193,6 +2204,10 @@ namespace XSharpLanguage
                 {
                     desc = base.Description;
                 }
+                if (!String.IsNullOrEmpty(Value))
+                {
+                    desc += " := " + Value;
+                }
                 //
                 return desc;
             }
@@ -2213,7 +2228,9 @@ namespace XSharpLanguage
         public static bool isGenerated(System.Type type)
         {
             var att = type.GetCustomAttribute(typeof(CompilerGeneratedAttribute));
-            return att != null;
+            if (att != null)
+                return true;
+            return type.Name.IndexOf("$", StringComparison.Ordinal) > -1;
         }
         public static bool isGenerated(MemberInfo m)
         {
@@ -2915,7 +2932,7 @@ namespace XSharpLanguage
             {
                 currentToken = tokenList[currentPos];
                 // Remove the @@ marker
-                if (currentToken.StartsWith("@@"))
+                if (currentToken.StartsWith("@@",StringComparison.Ordinal))
                     currentToken = currentToken.Substring(2);
                 //
                 var lastToken = currentToken;
@@ -3265,171 +3282,180 @@ namespace XSharpLanguage
             return cType;
         }
 
-
+        static List<string> nestedSearches = new List<string>();
         static public CompletionElement FindIdentifier(XTypeMember member, string name, ref CompletionType cType,
             Modifiers visibility, string currentNS, ITextSnapshot snapshot, int currentLine, XSharpDialect dialect)
         {
             XElement element;
             CompletionElement foundElement = null;
-            if (cType.IsEmpty())
+            if (nestedSearches.Contains(name,StringComparer.OrdinalIgnoreCase))
             {
-                cType = new CompletionType(member.Parent);
+                return null;
             }
-            WriteOutputMessage($"--> FindIdentifier in {cType.FullName}, {name} ");
-            element = member.Parameters.Where(x => StringEquals(x.Name, name)).FirstOrDefault();
-            if (element == null)
+            int nestedLevel = nestedSearches.Count();
+            try
             {
-                // then Locals
-                element = member.GetLocals(snapshot, currentLine, dialect).Where(x => StringEquals(x.Name, name)).LastOrDefault();
+                nestedSearches.Add(name);
+                if (cType.IsEmpty())
+                {
+                    cType = new CompletionType(member.Parent);
+                }
+                WriteOutputMessage($"--> FindIdentifier in {cType.FullName}, {name} ");
+                element = member.Parameters.Where(x => StringEquals(x.Name, name)).FirstOrDefault();
                 if (element == null)
                 {
-                    // We can have a Property/Field of the current CompletionType
-                    if (!cType.IsEmpty())
+                    // then Locals
+                    element = member.GetLocals(snapshot, currentLine, dialect).Where(x => StringEquals(x.Name, name)).LastOrDefault();
+                    if (element == null)
                     {
-                        cType = SearchPropertyOrFieldIn(cType, name, visibility, out foundElement);
-                        if (foundElement != null)
+                        // We can have a Property/Field of the current CompletionType
+                        if (!cType.IsEmpty())
                         {
-                            element = foundElement.XSharpElement;
-                        }
+                            cType = SearchPropertyOrFieldIn(cType, name, visibility, out foundElement);
+                            if (foundElement != null)
+                            {
+                                element = foundElement.XSharpElement;
+                            }
 
-                    }
-                    // Find Defines and globals in this file
-                    if (element == null && cType.IsEmpty() && member.File.GlobalType != null)
-                    {
-                        element = member.File.GlobalType.Members.Where(x => StringEquals(x.Name, name)).FirstOrDefault();
-                    }
-                    if (element == null)
-                    {
-                        var type = member.File.Project.Lookup(XSharpModel.XType.GlobalName, true);
-                        if (type != null)
-                        {
-                            element = type.Members.Where(x => StringEquals(x.Name, name)).FirstOrDefault();
                         }
-                    }
-                    if (element == null)
-                    {
-                        // Now, search for a Global in external Assemblies
-                        //
-                        cType = SearchGlobalFieldIn(member.File, name, out foundElement);
+                        // Find Defines and globals in this file
+                        if (element == null && cType.IsEmpty() && member.File.GlobalType != null)
+                        {
+                            element = member.File.GlobalType.Members.Where(x => StringEquals(x.Name, name)).FirstOrDefault();
+                        }
+                        if (element == null)
+                        {
+                            var type = member.File.Project.Lookup(XSharpModel.XType.GlobalName, true);
+                            if (type != null)
+                            {
+                                element = type.Members.Where(x => StringEquals(x.Name, name)).FirstOrDefault();
+                            }
+                        }
+                        if (element == null)
+                        {
+                            // Now, search for a Global in external Assemblies
+                            //
+                            cType = SearchGlobalFieldIn(member.File, name, out foundElement);
+                        }
                     }
                 }
-            }
-            if (element != null)
-            {
-                if (element is XVariable)
+                if (element != null)
                 {
-                    XVariable xVar = element as XVariable;
-                    if (xVar.TypeName == XVariable.VarType)
+                    if (element is XVariable)
                     {
-                        // Variable is declared as VAR or IMPLIED
-                        // Let's try to resolve
-                        int searchAt = xVar.VarDefinition.LastMeaningPos;
-                        if (searchAt > -1)
+                        XVariable xVar = element as XVariable;
+                        if (xVar.TypeName == XVariable.VarType)
                         {
-                            if (xVar.VarDefinition.Status == WordStatus.Literal)
+                            // Variable is declared as VAR or IMPLIED
+                            // Let's try to resolve
+                            int searchAt = xVar.VarDefinition.LastMeaningPos;
+                            if (searchAt > -1)
                             {
-                                switch (xVar.VarDefinition.SubStatus)
+                                if (xVar.VarDefinition.Status == WordStatus.Literal)
                                 {
-                                    case WordSubStatus.LiteralInt:
-                                        xVar.TypeName = "INT";
-                                        break;
-                                    case WordSubStatus.LiteralDouble:
-                                        xVar.TypeName = "REAL8";
-                                        break;
-                                    case WordSubStatus.LiteralString:
-                                        xVar.TypeName = "STRING";
-                                        break;
+                                    switch (xVar.VarDefinition.SubStatus)
+                                    {
+                                        case WordSubStatus.LiteralInt:
+                                            xVar.TypeName = "INT";
+                                            break;
+                                        case WordSubStatus.LiteralDouble:
+                                            xVar.TypeName = "REAL8";
+                                            break;
+                                        case WordSubStatus.LiteralString:
+                                            xVar.TypeName = "STRING";
+                                            break;
+                                    }
                                 }
-                            }
-                            else
-                            {
-                                bool found = false;
-                                int triggerPoint = searchAt - 1; // xVar.Interval.Start + searchAt - xVar.Range.StartColumn;
-                                IToken _stopToken;
-                                List<String> tokenList = XSharpTokenTools.GetTokenList(triggerPoint, xVar.Range.StartLine, snapshot, out _stopToken, false, xVar.File, false, member);
-                                if (tokenList.Count > 0)
+                                else
                                 {
-                                    if (tokenList.Count == 1)
+                                    bool found = false;
+                                    int triggerPoint = searchAt - 1; // xVar.Interval.Start + searchAt - xVar.Range.StartColumn;
+                                    IToken _stopToken;
+                                    List<String> tokenList = XSharpTokenTools.GetTokenList(triggerPoint, xVar.Range.StartLine, snapshot, out _stopToken, false, xVar.File, false, member);
+                                    if (tokenList.Count > 0)
                                     {
-                                        string token = tokenList[0].ToLower();
-                                        if ((token == "true") || (token == "false"))
+                                        if (tokenList.Count == 1)
                                         {
-                                            xVar.TypeName = "LOGIC";
-                                            found = true;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        // find assignment and trim "oObject = " or "oObject := " from the tokenlist
-                                        int pos = -1;
-                                        for (int i = 0; i < tokenList.Count; i++)
-                                        {
-                                            if (tokenList[i] == ":=" || tokenList[i] == "=") // assign operation
+                                            string token = tokenList[0].ToLower();
+                                            if ((token == "true") || (token == "false"))
                                             {
-                                                pos = i;
-                                                break;
+                                                xVar.TypeName = "LOGIC";
+                                                found = true;
                                             }
                                         }
-                                        if (pos >= 0)
+                                        else
                                         {
-                                            for (int i = pos; i >= 0; i--)
+                                            // find assignment and trim "oObject = " or "oObject := " from the tokenlist
+                                            int pos = -1;
+                                            for (int i = 0; i < tokenList.Count; i++)
                                             {
-                                                tokenList.RemoveAt(i);
-                                            }
-                                        }
-                                    }
-                                    if (!found)
-                                    {
-                                        // Try to Handle Inline Array initialization
-                                        if ((tokenList.Count == 3) && (tokenList[0] == "<") && (tokenList[2] == ">"))
-                                        {
-                                            // Remove the closing Chevron
-                                            tokenList.RemoveAt(2);
-                                            // Remove the opening Chevron
-                                            tokenList.RemoveAt(0);
-                                            // Add [] add the end of "what should be the type"
-                                            tokenList[0] += "[]";
-                                        }
-                                        //
-                                        cType = XSharpTokenTools.RetrieveType(xVar.File, tokenList, member, currentNS, null, out foundElement, snapshot, currentLine, dialect);
-                                        if (foundElement != null)
-                                        {
-                                            // Let's set the Std Type for this VAR
-                                            xVar.TypeName = foundElement.ReturnType.FullName;
-                                            // and now, correct it
-                                            if (foundElement.IsGeneric)
-                                            {
-                                                if (xVar.VarDefinition.AfterIn)
+                                                if (tokenList[i] == ":=" || tokenList[i] == "=") // assign operation
                                                 {
-                                                    // Get the underlying Enumerated Type
-                                                    CompletionType enumType = foundElement.EnumeratorType;
-                                                    if (!enumType.IsEmpty())
+                                                    pos = i;
+                                                    break;
+                                                }
+                                            }
+                                            if (pos >= 0)
+                                            {
+                                                for (int i = pos; i >= 0; i--)
+                                                {
+                                                    tokenList.RemoveAt(i);
+                                                }
+                                            }
+                                        }
+                                        if (!found)
+                                        {
+                                            // Try to Handle Inline Array initialization
+                                            if ((tokenList.Count == 3) && (tokenList[0] == "<") && (tokenList[2] == ">"))
+                                            {
+                                                // Remove the closing Chevron
+                                                tokenList.RemoveAt(2);
+                                                // Remove the opening Chevron
+                                                tokenList.RemoveAt(0);
+                                                // Add [] add the end of "what should be the type"
+                                                tokenList[0] += "[]";
+                                            }
+                                            //
+                                            cType = XSharpTokenTools.RetrieveType(xVar.File, tokenList, member, currentNS, null, out foundElement, snapshot, currentLine, dialect);
+                                            if (foundElement != null)
+                                            {
+                                                // Let's set the Std Type for this VAR
+                                                xVar.TypeName = foundElement.ReturnType.FullName;
+                                                // and now, correct it
+                                                if (foundElement.IsGeneric)
+                                                {
+                                                    if (xVar.VarDefinition.AfterIn)
                                                     {
-                                                        int numParam = 0;
-                                                        string genName = enumType.FullName;
-                                                        // Per default
-                                                        xVar.TypeName = foundElement.GenericTypeName;
-                                                        // Now, try to resolve T, or TKey, TValue, ...
-                                                        int index = genName.IndexOf('<');
-                                                        if (index != -1)
+                                                        // Get the underlying Enumerated Type
+                                                        CompletionType enumType = foundElement.EnumeratorType;
+                                                        if (!enumType.IsEmpty())
                                                         {
-                                                            // Extract the Generic params
-                                                            genName = genName.Substring(index);
-                                                            String[] items = genName.Split(',');
-                                                            numParam = items.Length;
-                                                            // Compare with the value that we have
-                                                            items = foundElement.GenericTypeName.Split(',');
-                                                            if (numParam == items.Length)
+                                                            int numParam = 0;
+                                                            string genName = enumType.FullName;
+                                                            // Per default
+                                                            xVar.TypeName = foundElement.GenericTypeName;
+                                                            // Now, try to resolve T, or TKey, TValue, ...
+                                                            int index = genName.IndexOf('<');
+                                                            if (index != -1)
                                                             {
-                                                                xVar.TypeName = enumType.FullName.Substring(0, index) + "<" + foundElement.GenericTypeName + ">";
+                                                                // Extract the Generic params
+                                                                genName = genName.Substring(index);
+                                                                String[] items = genName.Split(',');
+                                                                numParam = items.Length;
+                                                                // Compare with the value that we have
+                                                                items = foundElement.GenericTypeName.Split(',');
+                                                                if (numParam == items.Length)
+                                                                {
+                                                                    xVar.TypeName = enumType.FullName.Substring(0, index) + "<" + foundElement.GenericTypeName + ">";
+                                                                }
                                                             }
                                                         }
-                                                    }
-                                                    else
-                                                    {
+                                                        else
+                                                        {
 
+                                                        }
+                                                        //   xVar.TypeName = foundElement.GenericTypeName;
                                                     }
-                                                    //   xVar.TypeName = foundElement.GenericTypeName;
                                                 }
                                             }
                                         }
@@ -3437,15 +3463,22 @@ namespace XSharpLanguage
                                 }
                             }
                         }
+                        cType = new CompletionType((XVariable)element, currentNS);
+                        foundElement = new CompletionElement(element);
                     }
-                    cType = new CompletionType((XVariable)element, currentNS);
-                    foundElement = new CompletionElement(element);
-                }
-                else
-                {
-                    cType = new CompletionType((XElement)element);
-                    foundElement = new CompletionElement(element);
+                    else
+                    {
+                        cType = new CompletionType((XElement)element);
+                        foundElement = new CompletionElement(element);
 
+                    }
+                }
+            }
+            finally
+            {
+                while (nestedSearches.Count > nestedLevel)
+                {
+                    nestedSearches.Remove(nestedSearches.Last());
                 }
             }
             return foundElement;
@@ -4371,21 +4404,9 @@ namespace XSharpLanguage
                 }
                 else
                 {
-                    if (this.SystemElement is TypeInfo)
+                    if (this.SystemElement != null)
                     {
-                        cType = new CompletionType(((TypeInfo)this.SystemElement).DeclaringType);
-                    }
-                    else if (this.SystemElement is MemberInfo)
-                    {
-                        cType = new CompletionType(((MemberInfo)this.SystemElement).DeclaringType);
-                    }
-                    else if (this.SystemElement is PropertyInfo)
-                    {
-                        cType = new CompletionType(((PropertyInfo)this.SystemElement).DeclaringType);
-                    }
-                    else if (this.SystemElement is FieldInfo)
-                    {
-                        cType = new CompletionType(((FieldInfo)this.SystemElement).DeclaringType);
+                        cType = new CompletionType(this.SystemElement.DeclaringType);
                     }
                 }
                 return cType;

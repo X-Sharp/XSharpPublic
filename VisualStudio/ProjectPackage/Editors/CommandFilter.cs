@@ -405,6 +405,20 @@ namespace XSharp.Project
             if (line.Length == 0)
                 return;
             var tokens = getTokensInLine(line);
+            if ( tokens.Count > 0 )
+            {
+                if ( tokens[0].StartIndex < lineStart )
+                {
+                    // The Tokens are coming from a single-line parsing
+                    // StartIndex is relative to the beginning of line
+                }
+                else
+                {
+                    // The Tokens comes from a full-source parsing
+                    // StartIndex is relative to the beginning of file
+                    lineStart = 0;
+                }
+            }
             foreach (var token in tokens)
             {
                 if (currentLine == line.LineNumber)
@@ -1048,7 +1062,7 @@ namespace XSharp.Project
                 if (!_completionSession.IsDismissed)
                     return false;
             }
-
+            getEditorPreferences(TextView);
             SnapshotPoint caret = TextView.Caret.Position.BufferPosition;
             if (cursorIsAfterSLComment(caret))
                 return false;

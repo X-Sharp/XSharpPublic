@@ -10,7 +10,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Common\Constants.cs = Common\Constants.cs
 		Common\constants.prg = Common\constants.prg
 		VisualStudio\README.md = VisualStudio\README.md
-		Common\version.xh = Common\version.xh
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Project Package", "VisualStudio\ProjectPackage\Project Package.csproj", "{F4ADEBDB-CD20-4532-B4E3-FE7424F5369C}"

@@ -65,13 +65,13 @@
 						</parameter>
 					</includeAttribute>
 				</link>
-				<link rel="stylesheet" type="text/css">
+				<!--<link rel="stylesheet" type="text/css">
 					<includeAttribute name="href" item="stylePath">
 						<parameter>
 							<include item="brandingLocaleCss" />
 						</parameter>
 					</includeAttribute>
-				</link>
+				</link>-->
 				<script type="text/javascript">
 					<includeAttribute name="src" item="scriptPath">
 						<parameter>

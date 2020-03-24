@@ -71,6 +71,10 @@ namespace XSharp.CodeDom
             // or nullableDatatype
             // they all have a TypeName
             XSharpParser.TypeNameContext tn = null;
+            if (context == null)
+            {
+                return new XCodeTypeReference("USUAL");
+            }
             var sName = context.GetText();
             if (context is XSharpParser.PtrDatatypeContext)
             {

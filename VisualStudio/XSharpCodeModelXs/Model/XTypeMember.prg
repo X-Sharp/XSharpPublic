@@ -48,7 +48,10 @@ BEGIN NAMESPACE XSharpModel
 						oVar:ParamType := oParam:nParamType
 						result:AddParameter(oVar)
 					NEXT
-				ENDIF
+                ENDIF
+                IF oElement:eType == EntityType._Define .or. oElement:eType == EntityType._EnumMember
+                    result:Value := oElement:cValue
+                ENDIF
 				RETURN result
 
 
@@ -167,7 +170,10 @@ BEGIN NAMESPACE XSharpModel
 					ELSE
 						vars := "(" + SELF:ParameterList + ")"
 					ENDIF 
-				ENDIF
+                ENDIF
+                IF SELF:Kind == Kind.VODefine .OR. SELF:Kind == Kind.EnumMember
+                    vars := " "+SELF:Value
+                ENDIF
 				IF ( SELF:Kind == Kind.@@Constructor )
 					desc := SELF:Parent:FullName + vars
 				ELSE
@@ -206,7 +212,7 @@ BEGIN NAMESPACE XSharpModel
 		END PROPERTY
 
 		PROPERTY TypeName AS STRING GET SELF:_typeName
-
+        PROPERTY Value    AS STRING AUTO
 		#endregion
 	END CLASS
 

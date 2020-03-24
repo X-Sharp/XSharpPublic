@@ -124,7 +124,7 @@
     <value>Application Icon</value>
   </data>
   <data name="ApplicationIconDescription" xml:space="preserve">
-    <value>Sets the .ico file to use as your application icon.</value>
+    <value>Sets the .ico file to use as your application icon. Please note that if your application contains native resources then this value will be ignored. (/win32icon)</value>
   </data>
   <data name="AssemblyName" xml:space="preserve">
     <value>Assembly Name</value>
@@ -136,7 +136,7 @@
     <value>Default Namespace</value>
   </data>
   <data name="DefaultNamespaceDescription" xml:space="preserve">
-    <value>Specifies the default namespace for added items, such as classes, that are added via the Add New Item Dialog Box.</value>
+    <value>Specifies the default namespace for added items, such as classes, that are added via the Add New Item Dialog Box.(/rootnamespace:)</value>
   </data>
   <data name="GeneralCaption" xml:space="preserve">
     <value>General</value>
@@ -178,7 +178,9 @@
     <value>Startup Object</value>
   </data>
   <data name="StartupObjectDescription" xml:space="preserve">
-    <value>The name of the class that contains the static Start method that you want called when you launch your application. The default for X# applications is the Start function inside the compiler generated Functions class. You can override this setting by specifying another classname here.</value>
+    <value>The name of the class that contains the static Start method that you want called when you launch your application. 
+    The default for X# applications is the Start function inside the compiler generated Functions class. 
+    You can override this setting by specifying another classname here. (/main:)</value>
   </data>
   <data name="TargetFrameworkMoniker" xml:space="preserve">
     <value>Target Framework Moniker</value>

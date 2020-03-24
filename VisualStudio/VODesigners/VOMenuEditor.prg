@@ -1389,6 +1389,8 @@ INTERNAL METHOD AdjustName(cName AS STRING) AS STRING
 			ELSE
 				cRet += cChar
 			ENDIF
+		CASE nAsc == 8211 // long hyphen
+			cRet += "_"
 		CASE (nAsc >= 65 .and. nAsc <= 90) .or. cChar == "_" .or. nAsc > 128
 			cRet += cChar
 		OTHERWISE

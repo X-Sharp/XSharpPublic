@@ -11,7 +11,9 @@ USING System.Reflection
 [STAThread];      
 FUNCTION Start() AS VOID
     TRY
-        BofAndScope()
+        testDelimWrite()
+        //testUnique3()
+        //BofAndScope()
         //testPruntGrup()
         //TestMsg05()
         // TestWriteError()
@@ -187,6 +189,80 @@ FUNCTION Start() AS VOID
         ErrorDialog(e)
     END TRY
     RETURN
+
+Function TestDelimWrite() as VOID
+    DbUseArea(TRUE,"DBFNTX", "c:\cavo28SP3\Samples\Gstutor\customer.dbf")
+    DbCopyDelim("C:\test\test.txt",'"')
+    DbCopySDF("C:\test\test.sdf")
+    DbCopy("C:\test\test.csv",,,,,,,"CSV")
+    DbCopy("C:\test\test.tsv",,,,,,,"TSV")
+    RETURN
+
+FUNCTION testUnique3() AS VOID
+	LOCAL cDbf AS STRING	
+	LOCAL aValues AS ARRAY
+	LOCAL i AS INT
+
+	RddSetDefault ( "DBFNTX" )
+	
+	cDbf := "C:\TEST\foo"
+	FErase ( cDbf + ".ntx" )
+	FErase ( cDbf + ".cdx" )
+	
+	aValues := { "g1" , "o5" , "g2", "g1" , "g8" , "g1"}
+	
+	? DbCreate( cDBF , { { "LAST" , "C" , 20 , 0 } })
+	? DbUseArea( ,,cDBF , , TRUE )  // open shared               
+	
+	FOR i := 1 UPTO ALen ( aValues )
+		DbAppend()
+		FieldPut ( 1 , aValues [ i ] )
+	NEXT
+	
+	DbCreateOrder ( "ORDER1" , cDbf , "upper(LAST)" , { || Upper ( _Field->LAST) } , TRUE) // Unique
+	? "DBOI_UNIQUE", DbOrderInfo(DBOI_UNIQUE) // TRUE, correct
+	
+	? "Records in UNIQUE order:" // shows all 6, should be 4 only
+	DbGoTop()
+	DO WHILE .not. Eof()
+		? RecNo(), FieldGet(1)
+		DbSkip()
+	END DO
+	DbCloseArea()
+
+	DbUseArea( ,,cDBF , , FALSE )    // open not shared
+	DbSetIndex(cDbf)
+	? "DBOI_UNIQUE", DbOrderInfo(DBOI_UNIQUE)  // TRUE, correct
+	? "Now pack or zap or reindex"
+
+	DbPack()
+//	DBZap()
+//	DbReindex()
+
+	? "DBOI_UNIQUE", DbOrderInfo(DBOI_UNIQUE)  // TRUE, correct
+	? "Records in UNIQUE order:" // now does not show any records, wrong
+	DbGoTop()
+	DO WHILE .not. Eof()
+		? RecNo(), FieldGet(1)
+		DbSkip()
+	END DO
+	DbCloseArea()
+
+	? "--------------------------"   
+	? "Close and reopen dbf + cdx"
+	? "--------------------------"
+
+	DbUseArea( ,,cDBF , , FALSE ) // FALSE, wrong
+	DbSetIndex(cDbf)
+	? "DBOI_UNIQUE", DbOrderInfo(DBOI_UNIQUE)
+	? "Records in UNIQUE order:" // again no records
+	DbGoTop()
+	DO WHILE .not. Eof()
+		? RecNo(), FieldGet(1)
+		DbSkip()
+	END DO
+	DbCloseArea()
+RETURN
 
 FUNCTION BofAndScope() AS VOID STRICT
 	LOCAL cDBF AS STRING 

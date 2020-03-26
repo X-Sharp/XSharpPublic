@@ -8051,7 +8051,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     else
                     {
                         format = expr.Substring(pos);
-                        expr = expr.Substring(0, pos).ToUpper();
+                        expr = expr.Substring(0, pos);
                     }
                 }
                 res = ParseSubExpression(expr, out extra);

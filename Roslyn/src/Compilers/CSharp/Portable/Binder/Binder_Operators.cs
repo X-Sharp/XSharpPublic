@@ -2521,10 +2521,32 @@ namespace Microsoft.CodeAnalysis.CSharp
                 resultMethod,
                 resultKind,
                 resultType);
-            if (resultType != operand.Type)
+            if (resultType != operand.Type )
             {
-                res = CreateConversion(res, operand.Type, diagnostics);
-                res.WasCompilerGenerated = true;
+                var newType = VOGetType(operand);
+                if (resultOperatorKind.HasFlag(UnaryOperatorKind.UnaryMinus))
+                {
+                    switch (newType.SpecialType)
+                    {
+                        case SpecialType.System_Byte:
+                            newType = this.Compilation.GetSpecialType(SpecialType.System_Int16);
+                            break;
+                        case SpecialType.System_UInt16:
+                            newType = Compilation.GetSpecialType(SpecialType.System_Int32);
+                            break;
+                        case SpecialType.System_UInt32:
+                            newType = Compilation.GetSpecialType(SpecialType.System_Int64);
+                            break;
+                        case SpecialType.System_UInt64:
+                            newType = Compilation.GetSpecialType(SpecialType.System_Double);
+                            break;
+                    }
+                }
+                if (newType != resultType)
+                {
+                    res = CreateConversion(res, newType, diagnostics);
+                    res.WasCompilerGenerated = true;
+                }
             }
             return res;
 #else

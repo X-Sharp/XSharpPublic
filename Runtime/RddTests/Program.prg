@@ -11,16 +11,7 @@ USING System.Reflection
 [STAThread];      
 FUNCTION Start() AS VOID
     TRY
-        local a as array
-        local i as int
-        DbUseArea(TRUE, "DBFVFP", "c:\temp\FoxData\Northwind\customers.dbf")
-        ? CpDbf()
-        for i := 1 to TagCount()
-            ? i, "tag", Tag(,i), "for", @@For(i), "Key", Key(i), "Collate", IdxCollate(,i)
-        next
-        for i := 1 to FCOunt()
-            ? i, @@Field(i,,0), @@Field(i,,1)
-        next
+        BofAndScope()
         //testPruntGrup()
         //TestMsg05()
         // TestWriteError()
@@ -197,6 +188,85 @@ FUNCTION Start() AS VOID
     END TRY
     RETURN
 
+FUNCTION BofAndScope() AS VOID STRICT
+	LOCAL cDBF AS STRING 
+	RddSetDefault ( "DBFNTX" ) 
+
+	cDBF := "C:\test\mydbf" 
+	FErase(cDbf + ".dbf")
+	FErase(cDbf + ".cdx")
+	
+	DbCreate(cDbf, {{"CFIELD", "C" , 1, 0}})
+	DbUseArea(TRUE,, cDbf)
+	DbAppend();FieldPut(1 , "S")
+	DbAppend();FieldPut(1 , "S")
+	DbAppend();FieldPut(1 , "N")
+	DbAppend();FieldPut(1 , "N")
+	DbAppend();FieldPut(1 , "N")
+	DbAppend();FieldPut(1 , "S")
+	DbAppend();FieldPut(1 , "S")
+	DbCreateIndex(cDbf , "CFIELD")
+	DbCloseArea()
+	
+	
+	? DbUseArea( TRUE ,,cDBF )		
+	DbSetIndex(cDbf )
+	? OrdScope(TOPSCOPE, "S")
+	? OrdScope(BOTTOMSCOPE, "S")	
+	?
+	
+	DbGoTop() 
+	? "Performing DKSkip(+1) until EoF()"
+	DO WHILE ! Eof() 
+		? "recno", RecNo(), FieldGet(1)
+		DbSkip ( 1 ) 		
+	ENDDO   
+	
+	
+	? "Recno:" , RecNo() , "Eof:" , Eof() , "Bof:" , Bof()
+	
+	// activate the DBGoBOttom() and the bof() below
+	// behaves as expected after the DBSkip(-1)
+	
+	// DbGoBottom()  
+	
+	? 
+	? "Performing DKSkip(-1) until BoF()"
+	DO WHILE ! Bof()
+		DbSkip ( -1 ) 
+		? "recno", RecNo(), FieldGet(1)
+		? "Bof" , Bof() // TRUE after the first DBSkip ( -1 ) 
+	ENDDO 			
+	
+	? "Eof", Eof()
+	DbCloseArea()
+RETURN
+RETURN
+
+FUNCTION ScopeTestOldValue() AS VOID STRICT
+	LOCAL cDBF AS STRING 
+	RddSetDefault ( "DBFNTX" ) 
+
+	cDBF := "C:\test\mydbf" 
+	FErase(cDbf + ".dbf")
+	FErase(cDbf + ".cdx")
+	
+	DbCreate(cDbf, {{"CFIELD", "C" , 1, 0}})
+	DbUseArea(TRUE,, cDbf)
+	DbAppend();FieldPut(1 , "S")
+	DbAppend();FieldPut(1 , "S")
+	DbAppend();FieldPut(1 , "N")
+	DbCreateIndex(cDbf , "CFIELD")
+	DbCloseArea()
+	
+	DbUseArea( TRUE ,,cDBF )
+    DbSetIndex(cDbf)
+	? OrdScope(TOPSCOPE, "S")
+	? OrdScope(BOTTOMSCOPE, "S")
+	? OrdScope(TOPSCOPE, "N")
+	? OrdScope(BOTTOMSCOPE, "N")
+	DbCloseArea()
+RETURN
     FUNCTION    testPruntGrup AS VOID
     ? DbUseArea(,"DBFCDX","C:\test\PRINTGRP")
 ? DbCloseArea()

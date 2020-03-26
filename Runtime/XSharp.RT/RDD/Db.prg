@@ -735,7 +735,10 @@ FUNCTION FieldPutArea(dwWorkArea AS DWORD, symField AS SYMBOL, uNewValue AS USUA
     
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/lupdate/*" />  
 FUNCTION LUpdate()  AS DATE STRICT
-    RETURN DbInfo(DBI_LASTUPDATE)
+    IF Used()
+        RETURN DbInfo(DBI_LASTUPDATE)
+    ENDIF
+    RETURN NULL_DATE
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/lupdate/*" />  
 FUNCTION LUpdate(uArea AS USUAL)  AS DATE STRICT

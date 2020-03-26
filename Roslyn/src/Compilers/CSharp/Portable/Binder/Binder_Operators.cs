@@ -630,19 +630,38 @@ namespace Microsoft.CodeAnalysis.CSharp
 
 
 #if XSHARP
-
-            if (opType == VOOperatorType.Bitwise && resultType != leftType)// C277 ByteValue >> 2 should not return int but byte.
+            if (opType == VOOperatorType.Bitwise)
             {
-                if (!result.Syntax.XIsVoCast)
+                if (resultType != leftType )// C277 ByteValue >> 2 should not return int but byte.
                 {
-                    result = new BoundConversion(node, result, Conversion.ImplicitNumeric, false, false, null, leftType) { WasCompilerGenerated = true };
-                }
-                else
-                { 
-                    result = new BoundConversion(node, result, Conversion.ImplicitNumeric, false, false, null, rightType) { WasCompilerGenerated = true };
+                    if (!result.Syntax.XIsVoCast)
+                    {
+                        result = new BoundConversion(node, result, Conversion.ImplicitNumeric, false, false, null, leftType) { WasCompilerGenerated = true };
+                    }
+                    else
+                    {
+                        result = new BoundConversion(node, result, Conversion.ImplicitNumeric, false, false, null, rightType) { WasCompilerGenerated = true };
+                    }
                 }
             }
- 
+            else
+            {
+                if (resultType.IsIntegralType() && leftType.IsIntegralType() && rightType.IsIntegralType())
+                {
+                    // common situation for binary operators: the result of the operator is larger than the types of the LHS and RHS
+                    // in that case we choose the largest of LHS and RHS and make the result type equal to the largest type.
+                    var largest = rightType;
+                    if (largest.SpecialType.SizeInBytes() < leftType.SpecialType.SizeInBytes())
+                    {
+                        largest = leftType;
+                    }
+                    if (resultType.SpecialType.SizeInBytes() > largest.SpecialType.SizeInBytes())
+                    {
+                        result = new BoundConversion(node, result, Conversion.ImplicitNumeric, false, false, null, largest) { WasCompilerGenerated = true };
+                    }
+                }
+            }
+
 #endif
             return result;
 

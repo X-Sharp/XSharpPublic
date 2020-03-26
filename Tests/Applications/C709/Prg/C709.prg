@@ -5,22 +5,22 @@ CLASS TestClass1
 	RETURN "Called" + NoMethod() + AsString(uParam)
 	METHOD NoIVarGet(cName)
 		? cName
-	RETURN cName + "VALUE"
+	RETURN upper(cName) + "VALUE"
 END CLASS
 
 CLASS TestClass2
 	METHOD NoIvarPut(cName, uValue)
 		? cName + AsString(uValue)
-	RETURN cName + AsString(uValue)
+	RETURN upper(cName) + AsString(uValue)
 END CLASS
 CLASS TestClass3 INHERIT TestClass1
 END CLASS	
 
 FUNCTION Start() AS VOID
 	LOCAL u AS USUAL
-	LOCAL o AS Object
+	LOCAL o AS OBJECT
 	LOCAL o1 AS testclass3              
-	u := TestClass3{}
+	u := TestClass3{}                            
 	o := u
 	o1 := u
 	? u:Nothing(123)

@@ -78501,7 +78501,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = R705 PCall to type pointers inside structures
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 43A04886-532C-4DC6-A4FB-751288B40D7A
 ; ************** APPLICATION C717 - Problem with BYTE arithmetic in RETURN statement expressions *************
 Application = C717 - Problem with BYTE arithmetic in RETURN statement expressions
 IDEVersion = 1.06
@@ -78544,9 +78544,9 @@ FileType = Code
 CopyToBin = 0
 [C717 - Problem with BYTE arithmetic in RETURN statement expressions References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = XSharp.Core,1,0,2.1.0.0
-ReferenceGAC = XSharp.VO,1,0,2.1.0.0
-ReferenceGAC = XSharp.RT,1,0,2.1.0.0
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,1
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,1
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.VO.dll,1,1
 [C717 - Problem with BYTE arithmetic in RETURN statement expressions Resources]
 [C717 - Problem with BYTE arithmetic in RETURN statement expressions Native Resources]
 [C717 - Problem with BYTE arithmetic in RETURN statement expressions License files]
@@ -78565,7 +78565,7 @@ VO7=0
 VO8=0
 VO9=0
 VO10=0
-VO11=0
+VO11=1
 VO12=0
 VO13=0
 VO14=0
@@ -78609,7 +78609,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   Optimize=0
 ENDApplication = C717 - Problem with BYTE arithmetic in RETURN statement expressions
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 43A04886-532C-4DC6-A4FB-751288B40D7A
 ; ************** APPLICATION C718 - Problems with using  "- <DWORD>" *************
 Application = C718 - Problems with using  "- <DWORD>"
 IDEVersion = 1.06

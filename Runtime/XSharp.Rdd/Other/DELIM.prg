@@ -72,7 +72,7 @@ BEGIN NAMESPACE XSharp.RDD
                     if hasDelimiter
                         oSb:Append(_Delimiter)
                     endif
-                    oSb:Append(sValue:Replace(_Separator,""))
+                    oSb:Append(sValue:Replace(_Delimiter,""))
                     if hasDelimiter
                         oSb:Append(_Delimiter)
                     endif

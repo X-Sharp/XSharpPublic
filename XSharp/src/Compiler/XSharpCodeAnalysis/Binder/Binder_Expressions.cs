@@ -904,8 +904,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                         warning = ErrorCode.WRN_UndeclaredCursor;
                     }
                 }
-
-                if (Compilation.Options.HasOption(CompilerOption.UndeclaredMemVars,node) || declared || isFoxMemberAccess)
+                if (node.Parent is InvocationExpressionSyntax)
+                {
+                    expression = null;
+                }
+                else if (Compilation.Options.HasOption(CompilerOption.UndeclaredMemVars, node) || declared || isFoxMemberAccess)
                 {
                     if (get.Length == 1 && set.Length == 1 && get[0] is MethodSymbol && set[0] is MethodSymbol)
                     {

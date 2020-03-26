@@ -2543,7 +2543,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (resultType != operand.Type )
             {
                 var newType = VOGetType(operand);
-                if (resultOperatorKind.HasFlag(UnaryOperatorKind.UnaryMinus))
+                if (resultOperatorKind.IsUnaryMinus())
                 {
                     switch (newType.SpecialType)
                     {

@@ -24,7 +24,15 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:_sortInfo := helper:SortInfo
 
         VIRTUAL METHOD Compare(x AS SortRecord , y AS SortRecord) AS LONG
-            RETURN 0
+            LOCAL diff AS LONG
+            IF x:Recno < y:Recno
+                diff := -1
+                y:Duplicate := TRUE
+            ELSE
+                diff := 1
+                x:Duplicate := TRUE
+            ENDIF
+            return diff
 
     END CLASS
     
@@ -49,14 +57,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             // comparison using string rules
             diff := RuntimeState.StringCompare(dataBuffer, dataBuffer2, iLen)
             IF diff == 0
-                IF x:Recno < y:Recno
-                    diff := -1
-                ELSE
-                    diff := 1
-                    y:Duplicate := TRUE
-                ENDIF
+                diff := SUPER:Compare(x,y)
             ENDIF
-            
             RETURN diff
             
             
@@ -89,12 +91,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 ENDIF
             NEXT
             IF diff == 0
-                IF x:Recno < y:Recno
-                    diff := -1
-                ELSE
-                    diff := 1
-                    y:Duplicate := TRUE
-                ENDIF
+                diff := SUPER:Compare(x,y)
             ENDIF
             RETURN diff
             

@@ -134,7 +134,7 @@ CLASS XSharp.CoreDb
         IF CoreDb.BuildTrans( info, fldNames, oRdd, oDest )
             info:Flags |= DbTransInfoFlags.SameStructure
             LOCAL oCanPutRec AS OBJECT
-            oCanPutRec := oRdd:Info(DbInfo.DBI_CANPUTREC, NULL)
+            oCanPutRec := oDest:Info(DbInfo.DBI_CANPUTREC, NULL)
             IF oCanPutRec IS LOGIC .AND. (LOGIC) oCanPutRec 
                 info:Flags |= DbTransInfoFlags.CanPutRec
             ENDIF

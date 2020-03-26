@@ -6,8 +6,12 @@
 
 USING XSharp.RDD.Support
 USING System.Text
+USING System.Collections.Generic
+USING System.Globalization
+USING XSharp.RDD.Enums
+
 BEGIN NAMESPACE XSharp.RDD
-/// <summary>DELIM RDD. For reading and writing delimited files.</summary>
+/// <summary>Abstract TextRDD. For reading and writing delimited files and SDF files.</summary>
 ABSTRACT CLASS TEXTRDD INHERIT Workarea
     PROTECT INTERNAL _Encoding      AS Encoding
 	PROTECT _Hot            AS LOGIC
@@ -15,8 +19,19 @@ ABSTRACT CLASS TEXTRDD INHERIT Workarea
     PROTECT _BufferValid    AS LOGIC
     PROTECT _Reccount       AS LONG
     PROTECT _Recno          AS LONG
+    PROTECT _fieldData      AS OBJECT[]
+    PROTECT _numformat      AS NumberFormatInfo
+    PROTECT _Buffer         AS BYTE[]
+    PROTECT _Writing        as LOGIC
+    PROTECT _RecordSeparator as STRING
+    
+    STATIC PRIVATE  culture := CultureInfo.InvariantCulture AS CultureInfo
     PROTECT PROPERTY IsOpen AS LOGIC GET SELF:_hFile != F_ERROR
 	INTERNAL _OpenInfo		AS DbOpenInfo // current dbOpenInfo structure in OPEN/CREATE method
+
+    ABSTRACT PROTECTED METHOD _GetLastRec()  as LONG
+    ABSTRACT PROTECTED METHOD _WriteRecord() AS LOGIC
+
 
 	CONSTRUCTOR
 		SUPER()                     
@@ -24,7 +39,14 @@ ABSTRACT CLASS TEXTRDD INHERIT Workarea
 		SELF:_TransRec 		:= TRUE
 		SELF:_RecordLength 	:= 0
 		SELF:_Delimiter		:= e"\""
-		SELF:_Separator		:= ","    
+		SELF:_Separator		:= ","
+        SELF:_fieldData     := OBJECT[]{0}
+    	SELF:_numformat := (NumberFormatInfo) culture:NumberFormat:Clone()
+	    SELF:_numformat:NumberDecimalSeparator := "."
+        SELF:_Buffer        := Byte[]{512}
+        SELF:_Writing       := FALSE
+        SELF:_Separator     := ","
+        SELF:_RecordSeparator := CRLF
 
 METHOD GoBottom() AS LOGIC
     IF SELF:IsOpen
@@ -33,6 +55,8 @@ METHOD GoBottom() AS LOGIC
         RETURN TRUE
 	ENDIF
     RETURN FALSE
+
+
 METHOD GoTop() AS LOGIC
     IF SELF:IsOpen
 		BEGIN LOCK SELF
@@ -61,23 +85,92 @@ METHOD SkipRaw(nToSkip AS INT) AS LOGIC
 
 
 METHOD AddField(info AS RddFieldInfo) AS LOGIC
-	THROW NotImplementedException{}
-
-
+	RETURN SUPER:AddField(info)
 
 METHOD Append(lReleaseLock AS LOGIC) AS LOGIC
-	THROW NotImplementedException{}
+	LOCAL isOK as LOGIC
+    isOK := SELF:GoCold()
+    IF isOK
+        SELF:_fieldData := OBJECT[]{SELF:_Fields:Length}
+    ENDIF
+    RETURN isOK
 
  
+PROTECTED METHOD _GetFieldValue(oField as RddFieldInfo, oValue as OBJECT) AS STRING
+    LOCAL sValue := "" as STRING
+        SWITCH oField:FieldType
+        CASE DbFieldType.Character   // C
+        CASE DbFieldType.VarChar     // 'V'
+        CASE DbFieldType.VarBinary   // 'Q'
+            sValue := oValue:ToString():TrimEnd()
+        CASE DbFieldType.Date
+            if oValue IS IDate var oDate
+                VAR oDt := DateTime{oDate:Year, oDate:Month, oDate:Day}
+                sValue := DtToS(oDt)
+
+            elseif oValue is DateTime var oDt
+                sValue := DtToS(oDt)
+            else
+                SELF:_txtError(Subcodes.ERDD_DATATYPE, EG_DATATYPE)
+            endif
+        CASE DbFieldType.DateTime      // 'T'
+            local oDt as DateTime
+            if oValue IS IDate var oDate
+                oDt := DateTime{oDate:Year, oDate:Month, oDate:Day}
+            elseif oValue is DateTime var oDt2
+                oDt := oDt2
+            else
+                SELF:_txtError(Subcodes.ERDD_DATATYPE, EG_DATATYPE)
+            endif
+            sValue := DtToS(oDt)
+        CASE DbFieldType.Logic
+                    
+            IF oValue is LOGIC VAR logValue
+                sValue := iif(logValue,"T","F") 
+            ELSE
+                SELF:_txtError(Subcodes.ERDD_DATATYPE, EG_DATATYPE)
+            ENDIF
+        CASE DbFieldType.Number         // 'N'
+        CASE DbFieldType.Float          // 'F'
+        CASE DbFieldType.Double         // 'B'
+        CASE DbFieldType.Currency		// 'Y'
+        CASE DbFieldType.Integer        // 'I'
+            _numformat:NumberDecimalDigits :=   oField:Decimals
+            IF oValue is IFloat VAR flValue
+                sValue := flValue:Value:ToString("F", _numformat)
+            ELSEIF oValue is LONG VAR longValue
+                sValue := longValue:ToString("F", _numformat)
+            ELSEIF oValue is REAL8 VAR r8Value
+                sValue :=  r8Value:ToString("F", _numformat)
+            ELSE
+                SELF:_txtError(Subcodes.ERDD_DATATYPE, EG_DATATYPE)
+            ENDIF
+            IF sValue:Length > oField:Length
+                sValue := STRING{'*', oField:Length}
+             ENDIF
+        Otherwise
+            // Skip column contents
+            NOP
+        END SWITCH
+    return sValue
+
+    Protected Method _WriteString(strValue as STRING) AS LOGIC
+        if strValue:Length > SELF:_Buffer:Length
+            SELF:_Buffer := Byte[]{strValue:Length }
+        ENDIF
+        SELF:_Encoding:GetBytes(strValue, 0, strValue:Length, _Buffer, 0)
+        RETURN FWrite3(SELF:_hFile, _Buffer, (DWORD) strValue:Length) == (DWORD) strValue:Length
+       
+
 
 METHOD Close() 			AS LOGIC  
 	LOCAL isOk := FALSE AS LOGIC
 	IF SELF:IsOpen
 		isOk := SELF:GoCold()
-    //
+        IF SELF:_Writing
+	        FWrite(SELF:_hFile,_chr(26),1)
+        ENDIF
 		IF isOk 
-			SELF:UnLock(0)
-        //
 			IF !SELF:_ReadOnly
 				SELF:Flush()
 			ENDIF
@@ -95,9 +188,47 @@ METHOD Close() 			AS LOGIC
 		ENDIF
 	ENDIF
 RETURN isOk
+
+
+PRIVATE METHOD _DetermineCodePage() AS LOGIC
+    LOCAL codePage AS LONG
+    IF XSharp.RuntimeState.Ansi
+		SELF:_Ansi := TRUE
+		codePage := XSharp.RuntimeState.WinCodePage
+	ELSE
+		SELF:_Ansi := FALSE
+		codePage := XSharp.RuntimeState.DosCodePage
+	ENDIF        
+	SELF:_Encoding := System.Text.Encoding.GetEncoding( codePage ) 
+    return TRUE
+    
 /// <inheritdoc />
 METHOD Create(info AS DbOpenInfo) AS LOGIC  
-	THROW NotImplementedException{}
+	LOCAL isOK AS LOGIC
+	isOK := FALSE
+	IF SELF:_Fields:Length == 0 
+		RETURN FALSE
+	ENDIF
+	SELF:_OpenInfo := info
+	SELF:_OpenInfo:FileName := System.IO.Path.ChangeExtension( SELF:_OpenInfo:FileName, SELF:_OpenInfo:Extension )
+    //
+	SELF:_Hot := FALSE
+	SELF:_FileName := SELF:_OpenInfo:FileName
+	SELF:_Alias := SELF:_OpenInfo:Alias
+	SELF:_Shared := SELF:_OpenInfo:Shared
+	SELF:_ReadOnly := SELF:_OpenInfo:ReadOnly
+    //
+	SELF:_hFile    := FCreate2( SELF:_FileName, FO_EXCLUSIVE)
+   	IF SELF:IsOpen
+        isOK := SELF:_DetermineCodePage()
+    ELSE
+		isOK := FALSE
+		LOCAL ex := FException() AS Exception
+		SELF:_txtError( ex, ERDD.CREATE_FILE, XSharp.Gencode.EG_CREATE )
+    ENDIF
+    SELF:_Writing  := TRUE
+RETURN isOK
+
 /// <inheritdoc />
 METHOD Open(info AS DbOpenInfo) AS LOGIC
 	LOCAL isOK AS LOGIC
@@ -116,17 +247,8 @@ METHOD Open(info AS DbOpenInfo) AS LOGIC
 	SELF:_Shared := SELF:_OpenInfo:Shared
 	SELF:_ReadOnly := SELF:_OpenInfo:ReadOnly
 	SELF:_hFile    := FOpen(SELF:_FileName, SELF:_OpenInfo:FileMode)
-	LOCAL codePage AS LONG
 	IF SELF:IsOpen
-        IF XSharp.RuntimeState.Ansi
-			SELF:_Ansi := TRUE
-			codePage := XSharp.RuntimeState.WinCodePage
-		ELSE
-			SELF:_Ansi := FALSE
-			codePage := XSharp.RuntimeState.DosCodePage
-		ENDIF        
-		SELF:_Encoding := System.Text.Encoding.GetEncoding( codePage ) 
-        isOK := TRUE
+        isOK := SELF:_DetermineCodePage()
         SELF:_Reccount := SELF:_GetLastRec()
 	ELSE
         // Error or just FALSE ?
@@ -149,25 +271,70 @@ METHOD Open(info AS DbOpenInfo) AS LOGIC
 //	METHOD FieldIndex(fieldName AS STRING) AS LONG 
 //  METHOD FieldInfo(nFldPos AS LONG, nOrdinal AS LONG, oNewValue AS OBJECT) AS OBJECT
 //	METHOD FieldName(nFldPos AS LONG) AS STRING 
-/// <inheritdoc />
-METHOD GetValue(nFldPos AS INT) AS OBJECT
-	THROW NotImplementedException{}
+
 // METHOD GetValueFile(nFldPos AS INT, fileName AS STRING) AS LOGIC
 
 //	METHOD GetValueLength(nFldPos AS INT) AS INT
 /// <inheritdoc />
 METHOD Flush() 			AS LOGIC
-	THROW NotImplementedException{}
-/// <inheritdoc />
-METHOD GoCold()			AS LOGIC
-	THROW NotImplementedException{}
+    RETURN FFlush(SELF:_hFile)
+
 /// <inheritdoc />
 
+
+METHOD GoCold()			AS LOGIC
+	IF SELF:_Hot
+        SELF:_WriteRecord()
+		SELF:_Hot := FALSE
+    ENDIF
+    RETURN TRUE
+
+/// <inheritdoc />
+METHOD GetValue(nFldPos AS INT) AS OBJECT
+    // Subclass fills the _fieldData list
+	if nFldPos <= _fieldData:Length
+        return _fieldData[nFldPos -1]
+    endif
+    RETURN NULL
+
+/// <inheritdoc />
 METHOD PutValue(nFldPos AS INT, oValue AS OBJECT) AS LOGIC
-	THROW NotImplementedException{}
+    // Subclass persists the _fieldData list
+    IF nFldPos <= _fieldData:Length
+        SELF:_fieldData[nFldPos-1] := oValue
+        SELF:_Hot := TRUE
+    ENDIF
+    RETURN TRUE
 
 METHOD Info(nOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT
-	THROW NotImplementedException{}
+	SWITCH nOrdinal
+    CASE DBI_ISDBF
+        return FALSE
+    CASE DBI_GETHEADERSIZE
+        return 0
+    case DBI_FILEHANDLE
+        return SELF:_hFile
+    CASE DBI_FULLPATH
+        return SELF:_FileName
+    case DBI_SETDELIMITER
+        var result := SELF:_Delimiter
+        IF oNewValue IS STRING
+            SELF:_Delimiter := (STRING) oNewValue
+        ENDIF
+        RETURN result
+    case DBI_SEPARATOR
+        var result := SELF:_Separator
+        IF oNewValue IS STRING
+            SELF:_Separator := (STRING) oNewValue
+        ENDIF
+        RETURN result
+        
+    case DBI_GETDELIMITER
+        return SELF:_Delimiter
+    CASE DBI_CANPUTREC
+        RETURN FALSE
+    END SWITCH
+    return SUPER:Info(nOrdinal, oNewValue)
 
 	// Properties
 
@@ -219,7 +386,6 @@ INTERNAL METHOD _txtError(ex AS Exception, iGenCode AS DWORD, iSubCode AS DWORD,
     //
 	THROW oError
 
-    ABSTRACT METHOD _GetLastRec as LONG
 
 
 

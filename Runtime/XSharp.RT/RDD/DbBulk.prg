@@ -299,13 +299,13 @@ FUNCTION DbCopy(cTargetFile, acFields, cbForCondition, cbWhileCondition, nNext, 
 				THROW VoDb.ParamError(__FUNCTION__, ARRAY, 2)
 			ENDIF
 			
-			DbCreate( cTargetFile, aStruct, cDriver,, __UniqueAlias(cTargetFile),,,acRDDs)
+			DbCreate( cTargetFile, aStruct, cDriver,TRUE, __UniqueAlias(cTargetFile),,,acRDDs)
 			
 			IF ( !lAnsi ) .AND. ( DbInfo(DBI_ISANSI) )
 				SetAnsi(.T.)
 			ENDIF
 			
-			DbUseArea(.T., cDriver, cTargetFile, __UniqueAlias(cTargetFile),,,,,acRDDs)
+			//DbUseArea(.T., cDriver, cTargetFile, __UniqueAlias(cTargetFile),,,,,acRDDs)
 			
 			VoDbSelect(siFrom, REF siTo)
 			

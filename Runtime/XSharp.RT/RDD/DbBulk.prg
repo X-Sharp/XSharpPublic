@@ -148,7 +148,7 @@ FUNCTION DbApp(cSourceFile, acFields, cbForCondition, cbWhileCondition,nNext, nR
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbappdelim/*" />
-FUNCTION DbAppDelim(cSourceFile, cDelim, acFields, cbForCondition, cbWhileCondition, nNext,nRecord, lRest,aStruct)AS LOGIC CLIPPER
+FUNCTION DbAppDelim(cSourceFile, cDelim, acFields, cbForCondition, cbWhileCondition, nNext,nRecord, lRest,aStruct) AS LOGIC CLIPPER
 	
 	LOCAL siTo          AS DWORD
 	LOCAL siPos         AS DWORD
@@ -179,8 +179,11 @@ FUNCTION DbAppDelim(cSourceFile, cDelim, acFields, cbForCondition, cbWhileCondit
 		ENDIF
 		
 		lDbfAnsi := DbInfo(DBI_ISANSI)
+        IF cDelim:IsNil
+            cDelim := RuntimeState.StringDelimiter
+        END
 		
-		DbCreate(cSourceFile, aStruct, "DELIM", .T., __UniqueAlias(cSourceFile), cDelim, .T.)
+		DbCreate(cSourceFile, aStruct, RuntimeState.DelimRDD, .T., __UniqueAlias(cSourceFile), cDelim, .T.)
 		
 		IF ( !lAnsi .AND. lDbfAnsi)
 			SetAnsi(.T.)
@@ -420,8 +423,12 @@ FUNCTION DbCopyDelim (cTargetFile, cDelim, acFields, cbForCondition, cbWhileCond
 		ENDIF
 		
 		lDbfAnsi := DbInfo(DBI_ISANSI)
-		
-		DbCreate(cTargetFile, aStruct, "DELIM", .T., __UniqueAlias(cTargetFile), cDelim)
+
+        IF cDelim:IsNil
+            cDelim := RuntimeState.StringDelimiter
+        END
+
+		DbCreate(cTargetFile, aStruct, RuntimeState.DelimRDD, .T., __UniqueAlias(cTargetFile), cDelim)
 		
 		IF ( !lAnsi .AND. lDbfAnsi)
 			SetAnsi(.T.)

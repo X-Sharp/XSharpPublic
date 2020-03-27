@@ -1061,7 +1061,7 @@ METHOD Open(info AS XSharp.RDD.Support.DbOpenInfo) AS LOGIC
 
 	IF SELF:IsOpen
 //        IF !SELF:_OpenInfo:Shared
-//            FCOnvertToMemoryStream(SELF:_hFile)
+//            FConvertToMemoryStream(SELF:_hFile)
 //        ENDIF
 		isOK := SELF:_readHeader()
 		IF isOK 

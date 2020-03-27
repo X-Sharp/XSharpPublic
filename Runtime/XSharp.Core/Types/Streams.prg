@@ -184,7 +184,7 @@ BEGIN NAMESPACE XSharp.IO
 
         #region Construct the filestream
         STATIC METHOD CreateFileStream (path AS STRING, mode AS FileMode, faccess AS FileAccess, share AS FileShare, bufferSize AS LONG, options AS FileOptions) AS FileStream
-            IF System.Environment.OSVersion:Platform == System.PlatformID.Win32NT
+            IF System.Environment.OSVersion:Platform == System.PlatformID.Win32NT .AND. share != FileShare.None
                 RETURN CreateXsFileStream(path, mode, faccess, share, bufferSize, options)
             ELSE
                 RETURN FileStream{path, mode, faccess, share, bufferSize, options}

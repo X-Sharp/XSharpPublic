@@ -7,102 +7,178 @@ using System.Collections.Generic
 using System.Text
 USING XSharp.RDD.Support
 USING XSharp.RDD.Enums
+USING System.Diagnostics
+
 BEGIN NAMESPACE XSharp.RDD
     /// <summary>TSV RDD. For reading and writing tab delimited files.</summary>
+    [DebuggerDisplay("TSV ({Alias,nq})")];
     CLASS TSV INHERIT CSV
         CONSTRUCTOR
             SUPER()
             SELF:_Separator := Chr(9)
+            SELF:_lHasHeader := TRUE
     END CLASS
 
     /// <summary>CSV RDD. For reading and writing semicolon delimited files.</summary>
+    [DebuggerDisplay("CSV ({Alias,nq})")];
     CLASS CSV INHERIT DELIM
         CONSTRUCTOR
             SUPER()
             SELF:_Separator := ";"
-
-    METHOD Create(info AS DbOpenInfo) AS LOGIC
-        local lOk as LOGIC
-        LOCAL oSb as StringBuilder
-        lOk := SUPER:Create(info)
-        IF lOk
-            // Write field headers to CSV file.
-            oSb := StringBuilder{}
-            FOREACH var fld in SELF:_Fields
-                if String.IsNullOrEmpty(fld:Alias)
-                    oSb:Append(fld:Name)
-                else
-                    oSb:Append(fld:Alias)
-                endif
-                oSb:Append(SELF:_Separator)
-            NEXT
-            var result := oSb:ToString()
-            result := result:Substring(0, result:Length-1) +SELF:_RecordSeparator
-            SELF:_WriteString(result)
-        ENDIF
-        RETURN lOk
+            SELF:_lHasHeader := TRUE
     END CLASS
 
 
 /// <summary>DELIM RDD. For reading and writing delimited files.</summary>
+    [DebuggerDisplay("DELIM ({Alias,nq})")];
     CLASS DELIM INHERIT TEXTRDD
+        PROTECT _oSb as StringBuilder
+        PROTECT _lHasHeader as LOGIC
         CONSTRUCTOR
             SUPER()
+            _oSb := StringBuilder{}
+            SELF:_Delimiter := RuntimeState.StringDelimiter
+            SELF:_Separator := RuntimeState.FieldDelimiter
+            SELF:_lHasHeader := FALSE
 
         VIRTUAL PROPERTY Driver AS STRING GET "DELIM" 
 
+        PROTECTED METHOD _readRecord() AS LOGIC STRICT
+            IF _BufferValid .Or. SELF:_EoF
+                return true
+            endif
+            var cLine    := FReadLine(SELF:_hFile, 4096)
+            var inString := FALSE
+            var cDelim   := SELF:_Delimiter[0]
+            var cSep     := SELF:_Separator[0]
+            var nIndex   := 0
+            var newField := FALSE
+            local oValue as OBJECT
+            _oSb:Clear()
+            // now parse the line
+            foreach var c in cLine
+                if c == cDelim
+                    inString := ! inString
+                elseif c == cSep .and. ! inString
+                    newField := TRUE
+                else
+                    _oSb:Append(c)
+                endif
+                if newField
+                    oValue := SELF:_getFieldValue(_Fields[nIndex], _oSb:ToString())
+                    SELF:_fieldData [nIndex] := oValue
+                    newField := FALSE
+                    _oSb:Clear()
+                    nIndex += 1
+                endif
+            next
+            oValue := SELF:_getFieldValue(_Fields[nIndex], _oSb:ToString())
+            SELF:_fieldData [nIndex] := oValue
+            nIndex += 1
+            if nIndex < SELF:_Fields:Length
+                SELF:_EoF := TRUE
+                RETURN FALSE
+            ENDIF
+            _BufferValid := TRUE
+            RETURN TRUE
 
-        PROTECTED METHOD _WriteRecord() AS LOGIC STRICT
-            LOCAL oSb as StringBuilder
+        PROTECTED METHOD _writeRecord() AS LOGIC STRICT
             LOCAL nIndex as LONG
             LOCAL hasDelimiter as LOGIC
-            oSb := StringBuilder{}
+            _oSb:Clear()
             nIndex := 0
             hasDelimiter := ! String.IsNullOrEmpty(SELF:_Delimiter)
             FOREACH var oField in SELF:_Fields
                 var oValue := SELF:_fieldData[nIndex]
-                var sValue := SELF:_GetFieldValue(oField, oValue)
+                VAR sValue := SELF:_getFieldString(oField, oValue)
                 if nIndex > 0
-                    oSb:Append(SELF:_Separator)
+                    _oSb:Append(SELF:_Separator)
                 endif
                 SWITCH oField:FieldType
                 CASE DbFieldType.Character   // C
                 CASE DbFieldType.VarChar     // 'V'
                 CASE DbFieldType.VarBinary   // 'Q'
                     if hasDelimiter
-                        oSb:Append(_Delimiter)
+                        _oSb:Append(_Delimiter)
                     endif
-                    oSb:Append(sValue:Replace(_Delimiter,""))
+                    _oSb:Append(sValue:Replace(_Delimiter,""))
                     if hasDelimiter
-                        oSb:Append(_Delimiter)
+                        _oSb:Append(_Delimiter)
                     endif
                 CASE DbFieldType.Number         // 'N'
                 CASE DbFieldType.Float          // 'F'
                 CASE DbFieldType.Double         // 'B'
                 CASE DbFieldType.Currency		// 'Y'
                 CASE DbFieldType.Integer        // 'I'
-                    oSb:Append(sValue:Trim())
+                    _oSb:Append(sValue:Trim())
                 Otherwise
-                    oSb:Append(sValue:Replace(_Separator,""))
+                    _oSb:Append(sValue:Replace(_Separator,""))
                 END SWITCH
                 nIndex += 1
             NEXT
-            oSb:Append(SELF:_RecordSeparator)
-            SELF:_WriteString(oSb:ToString())
+            _oSb:Append(SELF:_RecordSeparator)
+            SELF:_WriteString(_oSb:ToString())
             RETURN TRUE
 
-        PROTECTED METHOD _GetLastRec AS LONG
+        PROTECTED METHOD _getLastRec AS LONG
             LOCAL dwPos     AS DWORD
             LOCAL nCount := 0 AS LONG
+            LOCAL buffer    AS BYTE[]
             dwPos := FTell(SELF:_hFile)
             FSeek3(SELF:_hFile, 0, FS_SET)
+            buffer := BYTE[]{4096}
+            VAR afterCR := FALSE
             DO WHILE ! FEof(SELF:_hFile)
-                nCount++
-                FReadLine(SELF:_hFile, 4096)
+                VAR numRead := FRead3(SELF:_hFile, buffer, 4096)
+                FOR VAR i := 0 TO numRead-1
+                    SWITCH buffer[i]
+                    CASE 13 // CR
+                       nCount++
+                       afterCR := TRUE
+                    CASE 10 // LF
+                        IF ! afterCR
+                            nCount++
+                        ENDIF
+                        afterCR := FALSE
+                    OTHERWISE
+                        afterCR := FALSE
+                    END SWITCH
+                NEXT                    
             ENDDO
             FSeek3(SELF:_hFile, (LONG) dwPos, FS_SET)
+            // Suppress last line when it has a length of 0
+            IF SELF:_lHasHeader
+                nCount --
+            ENDIF
             RETURN nCount
 
+
+    METHOD Create(info AS DbOpenInfo) AS LOGIC
+        local lOk as LOGIC
+        lOk := SUPER:Create(info)
+        IF lOk .and. _lHasHeader
+            // Write field headers to CSV file.
+            _oSb:Clear()
+            FOREACH var fld in SELF:_Fields
+                if String.IsNullOrEmpty(fld:Alias)
+                    _oSb:Append(fld:Name)
+                else
+                    _oSb:Append(fld:Alias)
+                endif
+                _oSb:Append(SELF:_Separator)
+            NEXT
+            var result := _oSb:ToString()
+            result := result:Substring(0, result:Length-1) +SELF:_RecordSeparator
+            SELF:_WriteString(result)
+        ENDIF
+        RETURN lOk
+    METHOD GoTop() AS LOGIC
+        local lOk as LOGIC
+        lOk := SUPER:GoTop()
+        IF lOk .and. SELF:_lHasHeader
+            FReadLine(SELF:_hFile, 4096)
+        ENDIF
+        RETURN lOk
     END CLASS
 END NAMESPACE
 

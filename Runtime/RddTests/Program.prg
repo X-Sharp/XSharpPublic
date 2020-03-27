@@ -191,12 +191,57 @@ FUNCTION Start() AS VOID
     RETURN
 
 Function TestDelimWrite() as VOID
-    DbUseArea(TRUE,"DBFNTX", "c:\cavo28SP3\Samples\Gstutor\customer.dbf")
-    DbCopyDelim("C:\test\test.txt",'"')
-    DbCopySDF("C:\test\test.sdf")
-    DbCopy("C:\test\test.csv",,,,,,,"CSV")
-    DbCopy("C:\test\test.tsv",,,,,,,"TSV")
+    local f as float
+    SetExclusive(TRUE)
+    RddSetDefault("DBFNTX")
+    DbUseArea(TRUE,"DBFNTX", "c:\Test\TEST10K.DBF")
+    ? "Writing"
+    f := Seconds()
+    RuntimeState.Eof := FALSE
+    DbCopyDelim("C:\test\test10k.txt",'"')
+    ? "TXT", Seconds() - f
+    f := Seconds()
+    RuntimeState.DelimRDD := "CSV"
+    DbCopyDelim("C:\test\test10k.csv",'"')
+    ? "CSV",Seconds() - f
+    f := Seconds()
+    RuntimeState.DelimRDD := "TSV"
+    DbCopyDelim("C:\test\test10k.tsv",'"')
+    ? "TSV",Seconds() - f
+    f := Seconds()
+    DbCopySDF("C:\test\test10k.sdf")
+    ? "SDF", Seconds() - f
+    f := Seconds()
+    DbCopyStruct("c:\Test\TESTEmpty.DBF")
+    SetAnsi(TRUE)
+    DbUseArea(FALSE,"DBFNTX", "c:\Test\TESTEmpty.DBF","TEST",FALSE)
+    FConvertToMemoryStream(DbInfo(DBI_FILEHANDLE))
+    f := Seconds()
+    ? "Reading"
+    DbZap()
+    f := Seconds()
+    DbAppSdf("C:\test\test10k.sdf")
+    ? "SDF", Seconds() - f
+    DbZap()
+    RuntimeState.DelimRDD := "DELIM"
+    DbAppDelim("C:\test\test10k.txt",'"')
+    ? "TXT", Seconds() - f
+//    DbZap()
+//    f := Seconds()
+//    RuntimeState.DelimRDD := "CSV"
+//    DbAppDelim("C:\test\test10k.csv",'"')
+//    ? "CSV", Seconds() - f
+//    DbZap()
+//    f := Seconds()
+//    DbAppSdf("C:\test\test10k.sdf")
+//    ? "SDF", Seconds() - f
+    DbCloseAll()
     RETURN
+Function ShowRec() as LOGIC
+    if Recno() % 1000 == 0
+        ?  "."
+    ENDIF
+    RETURN TRUE
 
 FUNCTION testUnique3() AS VOID
 	LOCAL cDbf AS STRING	

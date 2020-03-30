@@ -334,13 +334,13 @@ BEGIN NAMESPACE XSharp
             GET
                 SWITCH SELF:_flags:UsualType
                 CASE __UsualType.Void
-                    return false
+                    RETURN FALSE
                 CASE __UsualType.Logic
                     RETURN SELF:_flags:Initialized
                 CASE __UsualType.Object
                     RETURN SELF:_refData != NULL
                 OTHERWISE
-                    return TRUE
+                    RETURN TRUE
                 END SWITCH
             END GET
         END PROPERTY
@@ -1297,7 +1297,7 @@ BEGIN NAMESPACE XSharp
                     SWITCH rhs:_usualType
                     CASE __UsualType.Long		; RETURN lhs:_intValue + rhs:_intValue
                     CASE __UsualType.Int64		; RETURN lhs:_intValue + rhs:_i64Value
-                    CASE __UsualType.Float		; RETURN lhs:_intValue + rhs:_r8Value
+                    CASE __UsualType.Float		; RETURN FLOAT{(REAL8)lhs:_intValue + rhs:_r8Value, rhs:_width, rhs:_decimals}
                     CASE __UsualType.Currency	; RETURN lhs:_intValue + rhs:_currencyValue
                     CASE __UsualType.Decimal	; RETURN lhs:_intValue + rhs:_decimalValue
                     OTHERWISE					; NOP // error below
@@ -1307,7 +1307,7 @@ BEGIN NAMESPACE XSharp
                     SWITCH rhs:_usualType
                     CASE __UsualType.Long		; RETURN lhs:_i64Value + rhs:_intValue
                     CASE __UsualType.Int64		; RETURN lhs:_i64Value + rhs:_i64Value
-                    CASE __UsualType.Float		; RETURN lhs:_i64Value + rhs:_r8Value
+                    CASE __UsualType.Float		; RETURN FLOAT{(REAL8)lhs:_i64Value + rhs:_r8Value, rhs:_width, rhs:_decimals}
                     CASE __UsualType.Currency	; RETURN lhs:_i64Value + rhs:_currencyValue
                     CASE __UsualType.Decimal	; RETURN lhs:_i64Value + rhs:_decimalValue
                     OTHERWISE					; NOP // error below
@@ -1317,7 +1317,7 @@ BEGIN NAMESPACE XSharp
                     SWITCH rhs:_usualType
                     CASE __UsualType.Long		; RETURN FLOAT{lhs:_r8Value + rhs:_intValue, lhs:_width, lhs:_decimals}
                     CASE __UsualType.Int64		; RETURN FLOAT{lhs:_r8Value + rhs:_i64Value, lhs:_width, lhs:_decimals}
-                    CASE __UsualType.Float		; RETURN FLOAT{lhs:_r8Value + rhs:_r8Value, lhs:_width, lhs:_decimals}
+                    CASE __UsualType.Float		; RETURN FLOAT{lhs:_r8Value + rhs:_r8Value, Math.Max(lhs:_width, rhs:_width), Math.Max(lhs:_decimals,rhs:_decimals) }
                     CASE __UsualType.Currency	; RETURN FLOAT{lhs:_r8Value + rhs:_currencyValue, lhs:_width, lhs:_decimals}
                     CASE __UsualType.Decimal	; RETURN FLOAT{lhs:_r8Value + (REAL8) rhs:_decimalValue, lhs:_width, lhs:_decimals}
                     OTHERWISE					; NOP // error below
@@ -1388,7 +1388,7 @@ BEGIN NAMESPACE XSharp
                     SWITCH rhs:_usualType
                     CASE __UsualType.Long		; RETURN lhs:_intValue - rhs:_intValue
                     CASE __UsualType.Int64		; RETURN lhs:_intValue - rhs:_i64Value
-                    CASE __UsualType.Float		; RETURN lhs:_intValue - rhs:_r8Value
+                    CASE __UsualType.Float		; RETURN FLOAT{(REAL8)lhs:_intValue - rhs:_r8Value, rhs:_width, rhs:_decimals}
                     CASE __UsualType.Currency	; RETURN lhs:_intValue - rhs:_currencyValue
                     CASE __UsualType.Decimal	; RETURN lhs:_intValue - rhs:_decimalValue
                     OTHERWISE					; NOP // error below
@@ -1397,7 +1397,7 @@ BEGIN NAMESPACE XSharp
                     SWITCH rhs:_usualType
                     CASE __UsualType.Long		; RETURN lhs:_i64Value - rhs:_intValue
                     CASE __UsualType.Int64		; RETURN lhs:_i64Value - rhs:_i64Value
-                    CASE __UsualType.Float		; RETURN lhs:_i64Value - rhs:_r8Value
+                    CASE __UsualType.Float		; RETURN FLOAT{(REAL8)lhs:_i64Value - rhs:_r8Value, rhs:_width, rhs:_decimals}
                     CASE __UsualType.Currency	; RETURN lhs:_i64Value - rhs:_currencyValue
                     CASE __UsualType.Decimal	; RETURN lhs:_i64Value - rhs:_decimalValue
                     OTHERWISE					; NOP // error below
@@ -1406,7 +1406,7 @@ BEGIN NAMESPACE XSharp
                     SWITCH rhs:_usualType
                     CASE __UsualType.Long		; RETURN FLOAT{lhs:_r8Value - rhs:_intValue ,lhs:_width, lhs:_decimals}
                     CASE __UsualType.Int64		; RETURN FLOAT{lhs:_r8Value - rhs:_i64Value ,lhs:_width, lhs:_decimals}
-                    CASE __UsualType.Float		; RETURN FLOAT{lhs:_r8Value - rhs:_r8Value	,lhs:_width, lhs:_decimals}
+                    CASE __UsualType.Float		; RETURN FLOAT{lhs:_r8Value - rhs:_r8Value, Math.Max(lhs:_width, rhs:_width), Math.Max(lhs:_decimals,rhs:_decimals) }
                     CASE __UsualType.Currency	; RETURN FLOAT{lhs:_r8Value - rhs:_currencyValue,lhs:_width, lhs:_decimals}
                     CASE __UsualType.Decimal	; RETURN FLOAT{lhs:_r8Value - (REAL8) rhs:_decimalValue ,lhs:_width, lhs:_decimals}
                     OTHERWISE					; NOP // error below
@@ -2768,7 +2768,7 @@ BEGIN NAMESPACE XSharp
                  RETURN  SELF:_arrayValue:__GetElement(index)
               ELSEIF SELF:IsString .and. RuntimeState.Dialect  == XSharpDialect.XPP .and. index:Length == 1
                     VAR s := SELF:_stringValue
-                    var i := index[1]
+                    VAR i := index[1]
                     IF i>= 0 .AND. i < s:Length
                         RETURN s:Substring(i, 1)
                     ENDIF
@@ -2782,7 +2782,7 @@ BEGIN NAMESPACE XSharp
                       RETURN props[pos]
                   ENDIF
               ENDIF
-              var message := typeof(IIndexedProperties):FullName + " ( actual type='" + SELF:ValType + "', dialect=" + RuntimeState.Dialect :ToString()+", index length=" + index:Length:ToString()+")"
+              VAR message := typeof(IIndexedProperties):FullName + " ( actual type='" + SELF:ValType + "', dialect=" + RuntimeState.Dialect :ToString()+", index length=" + index:Length:ToString()+")"
               THROW InvalidCastException{VO_Sprintf(VOErrors.USUALNOTINDEXED, message)}
             END GET
             SET

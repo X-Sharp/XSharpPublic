@@ -114,7 +114,7 @@
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-cs">-cs</link></para>
         </td>
         <td>
-          <para styleclass="Normal"><text style="color:#ff0000;">Specifies that the compiler should use case-sensitive type names </text></para>
+          <para styleclass="Normal"><text style="color:#000000;">Specifies that the compiler should use case-sensitive type names </text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -650,7 +650,7 @@
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo11">-vo11</link></para>
         </td>
         <td>
-          <para styleclass="Normal"><text style="color:#ff0000;">Enables Visual Objects compatible arithmetic conversions </text></para>
+          <para styleclass="Normal"><text style="color:#000000;">Enables Visual Objects compatible arithmetic conversions </text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -698,7 +698,7 @@
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-w">-w</link></para>
         </td>
         <td>
-          <para styleclass="Normal">This option is not supported. use <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-nowarn">-NoWarn</link> in stead</para>
+          <para styleclass="Normal">This option is not supported. use <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-nowarn">-nowarn</link> in stead</para>
         </td>
       </tr>
       <tr style="vertical-align:top">

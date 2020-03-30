@@ -18,7 +18,6 @@
     </list>
     <para styleclass="Heading2">RDD System</para>
     <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="List1">The Text RDDs (SDF and DELIM) are not included yet</li>
       <li styleclass="List1">Query Optimization (Rushmore) is not supported yet</li>
     </list>
     <para styleclass="List1"></para>

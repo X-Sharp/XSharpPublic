@@ -441,8 +441,20 @@ namespace Microsoft.CodeAnalysis.CSharp
             // If user-defined conversions could occur here, we would need to check for ObsoleteAttribute.
             Debug.Assert((object)builder.CollectionConversion.Method == null,
                 "Conversion from collection expression to collection type should not be user-defined");
+#if XSHARP
+            if (collectionExpr.Type is ArrayTypeSymbol ats && ats.ElementType == Compilation.UsualType())
+            {
+                ; // ok
+            }
+            else
+            {
+                Debug.Assert((object)builder.CurrentConversion.Method == null,
+                    "Conversion from Current property type to element type should not be user-defined");
+            }
+#else
             Debug.Assert((object)builder.CurrentConversion.Method == null,
                 "Conversion from Current property type to element type should not be user-defined");
+#endif
             Debug.Assert((object)builder.EnumeratorConversion.Method == null,
                 "Conversion from GetEnumerator return type to System.Object should not be user-defined");
 

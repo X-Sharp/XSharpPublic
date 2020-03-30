@@ -266,6 +266,33 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			u += 1
 			d += 1
 			Assert.Equal((DATE) u,  d)
+			
+			LOCAL u1,u2 AS USUAL
+			LOCAL dwSep, dwDigit AS DWORD
+			dwSep := SetDecimalSep(Asc(","))
+			dwDigit := SetDigit(5)
+
+			u1 := 2
+			u2 := 1.234
+			Assert.Equal("3,234", AsString(u1 + u2))
+			Assert.Equal("-0,766", AsString(u2 - u1))
+			Assert.Equal("0,766", AsString(u1 - u2))
+
+			u1 := (INT64)2
+			u2 := 1.234
+			Assert.Equal("3,234", AsString(u1 + u2))
+			Assert.Equal("-0,766", AsString(u2 - u1))
+			Assert.Equal("0,766", AsString(u1 - u2))
+
+			u1 := 2.0000
+			u2 := 1.234
+			Assert.Equal("3,2340", AsString(u1 + u2))
+			Assert.Equal("-0,7660", AsString(u2 - u1))
+			Assert.Equal("0,7660", AsString(u1 - u2))
+
+			SetDecimalSep(dwSep)
+			SetDigit(dwDigit)
+			
 
 		[Fact, Trait("Category", "Usual")];
 		METHOD UsualSubOperatorTests() AS VOID

@@ -297,10 +297,10 @@ BEGIN NAMESPACE XSharp.RDD
                         IF SELF:HasMemo
                             IF oValue == NULL .OR. oValue IS STRING VAR cValue .AND. cValue:Length == 0
                                 VAR oldValue := oColumn:GetValue(SELF:_RecordBuffer)
-                                IF (INT) oldValue != 0
+                                IF oldValue != NULL
                                     SELF:_oFptMemo:DeleteBlock((INT) oldValue)
                                 ENDIF
-                                RETURN oColumn:PutValue(0, SELF:_RecordBuffer)
+                                RETURN oColumn:PutValue(NULL, SELF:_RecordBuffer)
                             ENDIF
                             LOCAL bData AS BYTE[]
                             bData := SELF:EncodeValue(oValue)

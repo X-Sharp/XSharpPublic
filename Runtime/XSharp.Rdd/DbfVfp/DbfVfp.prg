@@ -8,9 +8,11 @@ USING XSharp.RDD.Enums
 USING XSharp.RDD.Support
 USING System.IO
 USING System.Collections.Generic
+USING System.Diagnostics
 
 BEGIN NAMESPACE XSharp.RDD
 /// <summary>DBFVFP RDD. DBFCDX with support for the FoxPro field types.</summary>
+[DebuggerDisplay("DBFVFP ({Alias,nq})")];
 CLASS DBFVFP INHERIT DBFCDX
     PRIVATE CONST VFP_BACKLINKSIZE := 263 AS LONG
 	CONSTRUCTOR()
@@ -94,6 +96,7 @@ CLASS DBFVFP INHERIT DBFCDX
             ENDIF
             IF String.Compare(fld:Name, _NULLFLAGS, TRUE) == 0
                 nullFld := fld
+                fld:Name := _NULLFLAGS
             ENDIF
         NEXT
         IF nullFld != NULL
@@ -254,7 +257,7 @@ CLASS DBFVFP INHERIT DBFCDX
         ENDIF
         RETURN isOk
 
-    OVERRIDE PROTECTED METHOD _readRecord() AS LOGIC
+    OVERRIDE PROTECTED METHOD _readRecord() AS LOGIC 
         LOCAL lOk AS LOGIC
         lOk := SUPER:_readRecord()
         IF lOk .AND. SELF:_NullColumn != NULL

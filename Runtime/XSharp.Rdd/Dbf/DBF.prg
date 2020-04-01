@@ -75,6 +75,19 @@ PARTIAL CLASS DBF INHERIT Workarea IMPLEMENTS IRddSortWriter
     PROTECT PROPERTY HasMemo AS LOGIC GET SELF:_HasMemo
     PROTECT PROPERTY Memo AS BaseMemo GET (BaseMemo) SELF:_Memo
 
+
+PROTECTED METHOD ConvertToMemory() AS LOGIC
+     IF !SELF:_OpenInfo:Shared
+        FConvertToMemoryStream(SELF:_hFile)
+        IF SELF:_Memo IS DBTMemo VAR dbtmemo
+            FConvertToMemoryStream(dbtmemo:_hFile)
+        ELSEIF SELF:_Memo IS FPTMemo VAR fptmemo
+            FConvertToMemoryStream(fptmemo:_hFile)
+        ENDIF
+        RETURN TRUE
+     ENDIF
+     RETURN FALSE
+
 INTERNAL METHOD _CheckEofBof() AS VOID
     IF SELF:RecCount == 0
         SELF:_SetEOF(TRUE)
@@ -1235,6 +1248,9 @@ RETURN isOK
 PROTECT OVERRIDE METHOD _checkFields(info AS RddFieldInfo) AS LOGIC
     // FieldName
 	info:Name := info:Name:ToUpper():Trim()
+    IF String.Compare(info:Name, _NULLFLAGS,TRUE) == 0
+        info:Name := _NULLFLAGS
+    ENDIF
 	IF info:Name:Length > 10 
 		info:Name := info:Name:Substring(0,10)
 	ENDIF

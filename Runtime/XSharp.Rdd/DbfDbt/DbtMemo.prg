@@ -1,150 +1,35 @@
-//
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
-// See License.txt in the project root for license information.
-//
+﻿// AbstractMemo.prg
+// Created by    : robert
+// Creation Date : 4/1/2020 10:21:25 AM
+// Created for   : 
+// WorkStation   : ARTEMIS
+
+
+USING System
+USING System.Collections.Generic
 USING System.Text
 USING XSharp.RDD.Enums
 USING XSharp.RDD.Support
 
 BEGIN NAMESPACE XSharp.RDD
-    /// <summary>DBFDBT RDD. For DBF/DBT. No index support at this level</summary>
-    CLASS DBFDBT INHERIT DBF
-        PRIVATE _oDbtMemo AS DBTMemo
-        PROPERTY Encoding AS Encoding GET SUPER:_Encoding
-
-        CONSTRUCTOR
-            SUPER()
-            SELF:_Memo := _oDbtMemo := DBTMemo{SELF}
-            
-        VIRTUAL PROPERTY Driver AS STRING GET "DBFDBT"
-        // Return the memo content as STRING
-        METHOD GetValue(nFldPos AS LONG) AS OBJECT
-            LOCAL buffer AS BYTE[]
-            // not a memo ?
-            IF SELF:_isMemoField( nFldPos )
-                // At this level, the return value is the raw Data, in BYTE[]
-                buffer := (BYTE[])SUPER:GetValue(nFldPos)
-                IF ( buffer != NULL )
-                    LOCAL str AS STRING
-                    str :=  SELF:Encoding:GetString(buffer)
-                    // Convert to String and return
-                    RETURN str
-                ELSE
-                    // No Memo ?!, Empty String
-                    RETURN String.Empty
-                ENDIF
-            ENDIF
-            RETURN SUPER:GetValue(nFldPos)
-
-        /// <inheritdoc />
-        VIRTUAL METHOD Info(nOrdinal AS INT, oNewValue AS OBJECT) AS OBJECT
-            LOCAL oResult AS OBJECT
-            SWITCH nOrdinal
-            CASE DbInfo.DBI_MEMOHANDLE
-                IF ( SELF:_oDbtMemo != NULL .AND. SELF:_oDbtMemo:_Open)
-                    oResult := SELF:_oDbtMemo:_hFile
-                ELSE
-                    oResult := IntPtr.Zero
-                ENDIF
-                    
-            CASE DbInfo.DBI_MEMOEXT
-                IF ( SELF:_oDbtMemo != NULL .AND. SELF:_oDbtMemo:_Open)
-                    oResult := System.IO.Path.GetExtension(SELF:_oDbtMemo:_FileName)
-                ELSE
-                    oResult := DBT_MEMOEXT
-                ENDIF
-                IF oNewValue IS STRING VAR strExt
-                    DBTMemo.DefExt := strExt
-                ENDIF
-            CASE DbInfo.DBI_MEMOBLOCKSIZE
-                oResult := SELF:_oDbtMemo:BlockSize
-            CASE DbInfo.DBI_MEMOFIELD
-                SELF:ForceRel()
-                oResult := ""
-                IF oNewValue != NULL
-                    TRY
-                       LOCAL fldPos AS LONG
-                       fldPos := Convert.ToInt32(oNewValue)
-                       oResult := SELF:GetValue(fldPos)
-                    CATCH ex AS Exception
-                        oResult := ""   
-                        SELF:_dbfError(ex, Subcodes.ERDD_DATATYPE, Gencode.EG_DATATYPE, "DBFDBT.Info")
-                    END TRY
-                ENDIF
-			CASE DbInfo.DBI_MEMOTYPE
-                oResult := DB_MEMO_DBT
-            CASE DbInfo.DBI_MEMOVERSION
-                oResult := DB_MEMOVER_STD
-            OTHERWISE
-                oResult := SUPER:Info(nOrdinal, oNewValue)
-            END SWITCH
-            RETURN oResult
-            
-            
-     END CLASS
-            
-            
-            
-            
-        /// <summary>DBT Memo class. Implements the DBT support.</summary>
-        // See https://www.clicketyclick.dk/databases/xbase/format/dbt.html#DBT_STRUCT/
+      /// <summary>DBT Memo class. Implements the DBT support.</summary>
+    // See https://www.clicketyclick.dk/databases/xbase/format/dbt.html#DBT_STRUCT/
     //
-    INTERNAL CLASS DBTMemo INHERIT BaseMemo IMPLEMENTS IMemo
-        INTERNAL _hFile	    AS IntPtr
-        INTERNAL _FileName  AS STRING
-        INTERNAL _Open      AS LOGIC
-        PROTECT _Shared     AS LOGIC
-        PROTECT _ReadOnly   AS LOGIC
-        PROTECT _oRdd       AS DBF
-        PROTECT _blockSize  AS SHORT
-        PROTECT _lockScheme AS DbfLocking
-        PROPERTY Shared AS LOGIC GET _Shared
-        PROTECTED PROPERTY IsOpen AS LOGIC GET SELF:_hFile != F_ERROR  .AND. SELF:_hFile != IntPtr.Zero      
+    INTERNAL CLASS DBTMemo INHERIT AbstractMemo IMPLEMENTS IMemo
 
         STATIC PROPERTY DefExt AS STRING AUTO
         STATIC CONSTRUCTOR
             DefExt := DBT_MEMOEXT
-        
-        VIRTUAL PROPERTY BlockSize 	 AS SHORT
-            GET 
-                RETURN SELF:_blockSize
-            END GET
-            
-            SET 
-                SELF:_blockSize := value
-            END SET
-            
-        END PROPERTY
-        
-        
         
         INTERNAL CONST HeaderSize := 512 AS LONG
         
         CONSTRUCTOR (oRDD AS DBF)
             SUPER(oRDD)
             SELF:_oRdd := oRDD
-            SELF:_hFile := F_ERROR
-            SELF:_Shared := SELF:_oRdd:_Shared
-            SELF:_ReadOnly := SELF:_oRdd:_ReadOnly
-            // We should read the MEMOBLOCK setting here : 512 Per default
-            SELF:_blockSize := 0
-            
             
         VIRTUAL PROTECTED METHOD _initContext() AS VOID
             SELF:_blockSize := DBT_DEFBLOCKSIZE
             SELF:_lockScheme:Initialize( DbfLockingModel.Clipper52 )
-            SELF:_Open  := TRUE
-            
-            
-            /// <inheritdoc />
-        METHOD Flush() 			AS LOGIC
-            LOCAL isOk AS LOGIC
-            isOk := ( SELF:_hFile != F_ERROR )
-            IF isOk
-                isOk := FFlush( SELF:_hFile )
-            ENDIF
-            RETURN isOk
             
             /// <inheritdoc />
         METHOD GetValue(nFldPos AS INT) AS OBJECT
@@ -246,10 +131,8 @@ BEGIN NAMESPACE XSharp.RDD
             IF ( str == NULL )
                 memoBlock := (BYTE[])oValue
             ELSE
-                LOCAL encoding AS Encoding //ASCIIEncoding
                 memoBlock := BYTE[]{str:Length}
-                encoding := SELF:_oRdd:_Encoding 
-                encoding:GetBytes( str, 0, str:Length, memoBlock, 0 )
+                SELF:Encoding:GetBytes( str, 0, str:Length, memoBlock, 0 )
             ENDIF
             // Now, calculate where we will write the Datas
             LOCAL blockNbr AS LONG
@@ -313,7 +196,7 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             //
             IF !isOk
-                SELF:_oRdd:_dbfError( ERDD.WRITE, XSharp.Gencode.EG_WRITE )
+                SELF:Error( FException(), ERDD.WRITE, XSharp.Gencode.EG_WRITE ,"DBTMemo.PutValue")
             ENDIF
             // Now, update the information in the DBF, look at PutValue() in the DbfDbt Class
             SELF:LastWrittenBlockNumber := blockNbr
@@ -323,35 +206,15 @@ BEGIN NAMESPACE XSharp.RDD
         VIRTUAL METHOD PutValueFile(nFldPos AS INT, fileName AS STRING) AS LOGIC
             THROW NotImplementedException{}
             
-            /// <inheritdoc />
-        VIRTUAL METHOD CloseMemFile( ) AS LOGIC
-            LOCAL isOk := FALSE AS LOGIC
-            IF SELF:IsOpen
-                //
-                TRY
-                    isOk := FClose( SELF:_hFile )
-
-                CATCH ex AS Exception
-                    isOk := FALSE
-                    SELF:_oRdd:_dbfError(ex, Subcodes.ERDD_CLOSE_MEMO, Gencode.EG_CLOSE, "DBFDBT.CloseMemFile")
-
-                END TRY
-                SELF:_hFile := F_ERROR
-                SELF:_Open  := FALSE
-            ENDIF
-            RETURN isOk
+        
             
             /// <inheritdoc />
         VIRTUAL METHOD CreateMemFile(info AS DbOpenInfo) AS LOGIC
-            LOCAL isOk AS LOGIC
-            SELF:_FileName  := info:FileName
-            SELF:_FileName  := System.IO.Path.ChangeExtension( SELF:_FileName, DefExt )
-            SELF:_Shared    := info:Shared
-            SELF:_ReadOnly  := info:ReadOnly
-            //
-            SELF:_hFile     := FCreate( SELF:_FileName) 
-            isOk := SELF:IsOpen
+            LOCAL isOk      AS LOGIC
+            SELF:Extension := DefExt
+            isOk := SUPER:CreateMemFile(info)
             IF isOk
+
                 // Per default, Header Block Size if 512
                 LOCAL memoHeader AS BYTE[]
                 LOCAL nextBlock AS LONG
@@ -364,7 +227,7 @@ BEGIN NAMESPACE XSharp.RDD
                 //
                 SELF:_initContext()
             ELSE
-                SELF:_oRdd:_dbfError( ERDD.CREATE_MEMO, XSharp.Gencode.EG_CREATE )
+                SELF:Error( FException(), ERDD.CREATE_MEMO, XSharp.Gencode.EG_CREATE ,"DBTMemo.CreateMemFile")
             ENDIF
             //
             RETURN isOk
@@ -372,21 +235,12 @@ BEGIN NAMESPACE XSharp.RDD
             /// <inheritdoc />
         VIRTUAL METHOD OpenMemFile(info AS DbOpenInfo ) AS LOGIC
             LOCAL isOk AS LOGIC
-            SELF:_FileName  := info:FileName
-            SELF:_FileName  := System.IO.Path.ChangeExtension( SELF:_FileName, DefExt )
-            SELF:_Shared    := info:Shared
-            SELF:_ReadOnly  := info:ReadOnly
-            IF File(_FileName)
-                _FileName := FPathName()
-            ENDIF
-
-            SELF:_hFile     := FOpen(SELF:_FileName, info:FileMode)
-            isOk := SELF:IsOpen
+            SELF:Extension  := DefExt
+            isOk := SUPER:OpenMemFile(info)
             IF isOk
-                // Per default, Block Size if 512
                 SELF:_initContext()
             ELSE
-                SELF:_oRdd:_dbfError( ERDD.OPEN_MEMO, XSharp.Gencode.EG_OPEN )
+                SELF:Error( FException(), ERDD.OPEN_MEMO, XSharp.Gencode.EG_OPEN ,"DBTMemo.OpenMemFile")
                 isOk := FALSE
             ENDIF
             //
@@ -437,7 +291,7 @@ BEGIN NAMESPACE XSharp.RDD
                     locked := FFLock( SELF:_hFile, (DWORD)nOffset, (DWORD)nLong )
                 CATCH ex AS Exception
                     locked := FALSE
-                    SELF:_oRdd:_dbfError(ex, Subcodes.ERDD_INIT_LOCK, Gencode.EG_LOCK_ERROR, "DBFDBT._tryLock")
+                    SELF:Error(ex, Subcodes.ERDD_INIT_LOCK, Gencode.EG_LOCK_ERROR, "DBTMemo._tryLock")
                 END TRY
                 IF ( !locked )
                     nTries --
@@ -459,7 +313,7 @@ BEGIN NAMESPACE XSharp.RDD
                 unlocked := FFUnLock( SELF:_hFile, (DWORD)nOffset, (DWORD)nLong )
             CATCH ex AS Exception
                 unlocked := FALSE
-                SELF:_oRdd:_dbfError(ex, Subcodes.ERDD_UNLOCKED, Gencode.EG_UNLOCKED, "DBFDBT._unlock")
+                SELF:Error(ex, Subcodes.ERDD_UNLOCKED, Gencode.EG_UNLOCKED, "DBFDBT._unlock")
 
             END TRY
             RETURN unlocked
@@ -467,22 +321,20 @@ BEGIN NAMESPACE XSharp.RDD
         VIRTUAL METHOD Zap() AS LOGIC
             IF SELF:IsOpen
                 IF SELF:Shared
-                    SELF:_oRdd:_dbfError(FException(), Subcodes.ERDD_SHARED, Gencode.EG_LOCK, "DbtMemo.Zap")
+                    SELF:Error(FException(), Subcodes.ERDD_SHARED, Gencode.EG_LOCK, "DBTMemo.Zap")
                 ENDIF
                 IF ! FChSize(SELF:_hFile, DBTMemo.HeaderSize)
-                    SELF:_oRdd:_dbfError(FException(), Subcodes.ERDD_WRITE, Gencode.EG_WRITE, "DbtMemo.Zap")
+                    SELF:Error(FException(), Subcodes.ERDD_WRITE, Gencode.EG_WRITE, "DBTMemo.Zap")
                 ENDIF
                 SELF:NextAvailableBlock := 1
                 RETURN SELF:Flush()
             ELSE
-                SELF:_oRdd:_dbfError(FException(), Subcodes.EDB_NOTABLE, Gencode.EG_NOTABLE, "DbtMemo.Zap")
+                SELF:Error(FException(), Subcodes.EDB_NOTABLE, Gencode.EG_NOTABLE, "DBTMemo.Zap")
                 RETURN FALSE
             ENDIF
 
             
       END CLASS    
     
-    
-    
-    
-END NAMESPACE
+END NAMESPACE    
+

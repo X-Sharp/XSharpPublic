@@ -837,6 +837,12 @@ BEGIN NAMESPACE XSharp.RDD
         OVERRIDE METHOD Validate() AS LOGIC
             RETURN SELF:Length == 8
 
+        OVERRIDE METHOD InitValue(buffer AS BYTE[]) AS VOID
+            VAR blank := BYTE[]{SELF:Length}
+            System.Array.Copy(blank, 0, buffer, SELF:Offset, SELF:Length)
+            RETURN
+
+
     END CLASS
 
     /// <summary>Class for reading / writing DateTime Columns. </summary>

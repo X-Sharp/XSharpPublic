@@ -414,15 +414,22 @@ END STRUCTURE
 
 /// <summary>Helper class for the RDD system to store field information</summary> 
 CLASS RddFieldInfo
+    /// <summary>Name, normally max 10 characters</summary>
 	PUBLIC Name 		AS STRING
+    /// <summary>Field Type</summary>
 	PUBLIC FieldType 	AS DbFieldType
+    /// <summary>Physical length in the table</summary>
 	PUBLIC Length 		AS LONG
+    /// <summary>Decimal positions</summary>
 	PUBLIC Decimals 	AS LONG
+    /// <summary>Alternative name, no length limit. This is the Caption for VFP fields</summary>
 	PUBLIC Alias 		AS STRING
+    /// <summary>Flags, such as Nullable, AutoIncrement, Binary etc.</summary>
     PUBLIC Flags        AS DBFFieldFlags
+    /// <summary>Offset in the record buffer for DBF fields.</summary>
 	PUBLIC Offset       AS LONG
     
-     /// <summary>Construct a RddFieldInfo object.</summary>
+    /// <summary>Construct a RddFieldInfo object.</summary>
 	CONSTRUCTOR(sName AS STRING, sType AS STRING, nLength AS LONG, nDecimals AS LONG, nOffSet := -1 AS LONG)
 		Name 		:= sName
 		Length 		:= nLength
@@ -480,7 +487,7 @@ CLASS RddFieldInfo
 		SELF:Flags      := oInfo:Flags
 		SELF:Offset     := oInfo:Offset
 		IF SELF:FieldType:HasDecimals()  .OR. SELF:FieldType == DbFieldType.Character  // Support for char fields > 255 characters
-        	   SELF:Decimals 	:= oInfo:Decimals
+        	SELF:Decimals 	:= oInfo:Decimals
 		ENDIF
 		SELF:Validate()
        
@@ -503,6 +510,7 @@ CLASS RddFieldInfo
                 SELF:Decimals := 0
             CASE DbFieldType.Currency
                 SELF:Length   := 8
+                SELF:Decimals := 4
             CASE DbFieldType.Memo
                 SELF:Decimals := 0
         END SWITCH
@@ -573,6 +581,7 @@ STATIC CLASS RDDExtensions
         CASE DbFieldType.Double
         CASE DbFieldType.Float
         CASE DbFieldType.Number
+        CASE DbFieldType.Currency
             RETURN TRUE
         END SWITCH
         RETURN FALSE

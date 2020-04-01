@@ -585,7 +585,7 @@ BEGIN NAMESPACE XSharp.RDD
                     VAR cVar := Chr( (BYTE) oFld:FieldType)
                     IF oFld:Flags != DBFFieldFlags.None
                         cVar += ":"
-                        cVar += IIF(oFld:Flags:HasFlag(DBFFieldFlags.Nullable),"N","")
+                        cVar += IIF(oFld:Flags:HasFlag(DBFFieldFlags.Nullable),"0","")
                         cVar += IIF(oFld:Flags:HasFlag(DBFFieldFlags.Binary),"B","")
                         cVar += IIF(oFld:Flags:HasFlag(DBFFieldFlags.AutoIncrement),"+","")
                         cVar += IIF(oFld:Flags:HasFlag(DBFFieldFlags.Compressed),"Z","")

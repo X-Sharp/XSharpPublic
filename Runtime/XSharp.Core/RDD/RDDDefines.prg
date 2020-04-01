@@ -6,7 +6,7 @@
 USING XSharp
 USING XSharp.RDD.Enums
 
-DEFINE _NULLFLAGS := "_NULLFLAGS" 
+DEFINE _NULLFLAGS := "_NullFlags" 
 
 // RecInfo defines
 /// <exclude />

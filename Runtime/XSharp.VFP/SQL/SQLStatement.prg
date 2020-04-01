@@ -192,10 +192,83 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
             nAreas += 1
             cursorName := SELF:CursorName+nAreas:ToString()
         UNTIL !oDataReader:NextResult()
-        
         RETURN result
 
-    METHOD CreateWorkarea(oSchema AS DataTable, oDataReader AS DbDataReader, cCursorName AS STRING) AS LOGIC
+    METHOD GetTables(cType AS STRING, cCursorName AS STRING) AS LOGIC
+        SELF:CursorName := cCursorName
+        VAR types := cType:Split(",":ToCharArray(),StringSplitOptions.RemoveEmptyEntries)
+        VAR list  := List<STRING>{}
+        FOREACH VAR type IN types
+            VAR sType := type
+            IF sType:StartsWith("'")
+                sType := sType:Replace("'","")
+            ELSEIF sType:StartsWith(e"\"")
+                sType := sType:Replace(e"\"","")
+            ENDIF
+            list:Add(sType)
+        NEXT
+
+        LOCAL oTable := SELF:Connection:NetConnection:GetSchema("MetadataCollections",NULL) AS DataTable
+        LOCAL nRestrictions := 3 AS LONG
+        FOREACH oRow AS DataRow IN oTable:Rows
+			IF String.Compare( (STRING)oRow:Item["CollectionName"], "Tables", StringComparison.OrdinalIgnoreCase) == 0
+				nRestrictions := (INT) oRow:Item["NumberOfRestrictions"] 
+				EXIT
+			ENDIF
+        NEXT        
+        LOCAL filter AS STRING[]
+        filter := STRING[]{nRestrictions}
+        LOCAL oTables AS List<DataTable>
+        oTables := List<DataTable>{}
+        
+        oTable := SELF:Connection:NetConnection:GetSchema("Tables", filter)
+        oTables:Add(oTable)
+        oTable := SELF:Connection:NetConnection:GetSchema("Views", filter)
+        oTables:Add(oTable)
+        
+        LOCAL aStruct AS ARRAY
+        aStruct := ArrayNew(5)
+        aStruct[1] := {"TABLE_CAT","C:0",128,0}
+        aStruct[2] := {"TABLE_SCHEM","C:0",128,0}
+        aStruct[3] := {"TABLE_NAME","C:0",128,0}
+        aStruct[4] := {"TABLE_TYPE","C:0",32,0}
+        aStruct[5] := {"REMARKS","C:0",254,0}
+        VAR cTemp := System.IO.Path.GetTempFileName()
+        DbCreate(cTemp, aStruct, "DBFVFP")
+        VoDbUseArea(TRUE, "DBFVFPSQL",cTemp,cCursorName,FALSE,FALSE)
+        LOCAL oRDD AS IRdd
+        oRDD := (IRdd) DbInfo(DbInfo.DBI_RDD_OBJECT)
+        
+        LOCAL nCol := ((DataColumn) oTable:Columns["Table_Type"]):Ordinal
+        FOREACH VAR oT IN oTables
+            FOREACH oRow AS DataRow IN oT:Rows
+                LOCAL match AS LOGIC
+                VAR data := oRow:ItemArray
+                IF list:Count == 0
+                    match := TRUE
+                ELSE
+                    match := FALSE
+                    LOCAL element := (STRING) data[nCol+1] AS STRING
+                    FOREACH VAR type IN list
+                        IF String.Compare(element, type, TRUE) == 0
+                            match := TRUE
+                            EXIT
+                        ENDIF
+                    NEXT
+                ENDIF
+                IF match
+                    oRDD:Append(TRUE)
+                    FOR VAR nFld := 1 TO 5
+                        oRDD:PutValue(nFld, data[nFld])
+                    NEXT
+                ENDIF
+            NEXT
+       NEXT
+       RETURN TRUE        
+            
+
+
+    STATIC METHOD CreateWorkarea(oSchema AS DataTable, oDataReader AS DbDataReader, cCursorName AS STRING) AS LOGIC
         LOCAL aStruct AS ARRAY
         LOCAL nFields AS LONG
         LOCAL aFieldNames AS List<STRING>
@@ -213,30 +286,68 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
         VoDbUseArea(TRUE, "DBFVFPSQL",cTemp,cCursorName,FALSE,FALSE)
         LOCAL oRDD AS IRdd
         oRDD := (IRdd) DbInfo(DbInfo.DBI_RDD_OBJECT)
-        // Set column Aliases to the original column name
-//        FOR VAR nFld := 1 TO oRDD:FieldCount
-//            oRDD:FieldInfo(nFld, DBS_ALIAS, aStruct[nFld, DBS_ALIAS])
-//        NEXT
-        VAR data := OBJECT[]{oSchema:Rows:Count}
-        DO WHILE oDataReader:Read()
-            oRDD:Append(TRUE)
-            oDataReader:GetValues(data)
-            FOR VAR nFld := 1 UPTO nFields
-                oRDD:PutValue(nFld, data[nFld])
-            NEXT
-        ENDDO
+        LOCAL oMIGet := NULL AS MethodInfo 
+        // DBFVFPSQL has a method SetData to set all the values of the current row.
+        oMIGet := oRDD:GetType():GetMethod("GetData", BindingFlags.Instance+BindingFlags.IgnoreCase+BindingFlags.Public)
+        IF oMIGet != NULL
+            DO WHILE oDataReader:Read()
+                oRDD:Append(TRUE)
+                VAR data := (OBJECT[]) oMIGet:Invoke(oRDD, NULL)
+                oDataReader:GetValues(data)
+            ENDDO
+        ELSE
+            VAR data := OBJECT[]{oSchema:Rows:Count+1}  // 1 extra for the NullFlags
+            DO WHILE oDataReader:Read()
+                oRDD:Append(TRUE)
+                oDataReader:GetValues(data)
+                FOR VAR nFld := 1 UPTO nFields
+                    oRDD:PutValue(nFld, data[nFld])
+                NEXT
+            ENDDO
+        ENDIF
         RETURN TRUE
    
 
 
 
-    METHOD SchemaRowToFieldInfo(schemaRow AS DataRow,aFieldNames AS IList<STRING>) AS ARRAY
+    STATIC METHOD SchemaRowToFieldInfo(schemaRow AS DataRow,aFieldNames AS IList<STRING>) AS ARRAY
         VAR cColumnName := schemaRow["ColumnName"]:ToString( )
         VAR fieldType  := DotNetType2DbfType(schemaRow)
         VAR cFldName   := SQLSupport.CleanupColumnName(cColumnName)
-	    cFldName	    := SQLSupport.FieldNameCheck(cFldName, aFieldNames)
+	    cFldName	   := MakeFieldNameUnique(cFldName, aFieldNames)
         RETURN {cFldName, fieldType:Item1, fieldType:Item2,fieldType:Item3, cColumnName}
-    
+
+    STATIC METHOD MakeFieldNameUnique(cName AS STRING, aFldNames AS IList<STRING> ) AS STRING
+		LOCAL dwPos, dwFld AS LONG
+		LOCAL cNewname		 AS STRING
+		IF Empty(cName)
+			dwFld := 0
+			dwPos := 1
+			DO WHILE dwPos >= 0
+				++dwFld
+				cName := "FLD"+StrZero(dwFld,3,0)
+				dwPos := aFldNames:IndexOf(cName:ToUpper())
+			ENDDO
+		ELSE
+			// remove column prefixes
+			dwPos := cName:IndexOf(".")+1
+			IF dwPos > 0
+				cName := cName:Substring(dwPos)
+			ENDIF
+			// remove embedded spaces
+			cName 	:= StrTran(cName, " ", "_"):ToUpper()
+			cNewname := Left(cName,10)
+			dwFld 	:= 1
+			DO WHILE aFldNames:IndexOf(cNewname) >= 0
+				++dwFld
+                VAR tmp := dwFld:ToString()
+				cNewname := cName:Substring(0, 10 - tmp:Length)+tmp
+			ENDDO
+			cName 	:= cNewname
+		ENDIF
+		aFldNames:Add(cName)
+		RETURN cName
+
             
     STATIC METHOD DotNetType2DbfType(schemaRow AS DataRow) AS Tuple<STRING,LONG,LONG>
 		LOCAL nLen, nDec AS LONG

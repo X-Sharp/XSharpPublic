@@ -145,7 +145,7 @@ CLASS XSharp.CoreDb
         ENDIF
         info:Scope:ForBlock     := uCobFor
         info:Scope:WhileBlock   := uCobWhile
-        IF nNext != NULL
+        IF nNext IS LONG
             TRY
                 info:Scope:NextCount := Convert.ToInt32(nNext)
             CATCH e AS Exception
@@ -155,7 +155,9 @@ CLASS XSharp.CoreDb
         ELSE
             info:Scope:NextCount := 0
         ENDIF
-        info:Scope:RecId := nRecno
+        IF nRecno IS LONG
+            info:Scope:RecId := nRecno
+        ENDIF
         info:Scope:Rest  := lRest     
         RETURN
         /// <exclude />   

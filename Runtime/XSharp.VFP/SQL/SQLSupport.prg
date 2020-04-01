@@ -240,6 +240,8 @@ INTERNAL STATIC CLASS XSharp.VFP.SQLSupport
         RETURN result
 
         
+    // This method is located here so we can keep the  a table with oldname - newname pairs, so we do not have
+    // to do this over and over again.
     STATIC METHOD  CleanupColumnName( cColumnName AS  STRING ) AS STRING
 		LOCAL sb AS System.Text.StringBuilder
 		LOCAL lLastWasOk AS LOGIC
@@ -297,38 +299,8 @@ INTERNAL STATIC CLASS XSharp.VFP.SQLSupport
 		ENDIF
 		aFieldNames:Add(cColumnName, cResult)
 		RETURN cResult
-    STATIC METHOD FieldNameCheck(cName AS STRING, aFldNames AS IList<STRING> ) AS STRING
-		LOCAL dwPos, dwFld AS LONG
-		LOCAL cNewname		 AS STRING
-		IF Empty(cName)
-			dwFld := 0
-			dwPos := 1
-			DO WHILE dwPos >= 0
-				++dwFld
-				cName := "FLD"+StrZero(dwFld,3,0)
-				dwPos := aFldNames:IndexOf(cName:ToUpper())
-			ENDDO
-		ELSE
-			// remove column prefixes
-			dwPos := cName:IndexOf(".")+1
-			IF dwPos > 0
-				cName := cName:Substring(dwPos)
-			ENDIF
-			// remove embedded spaces
-			cName 	:= StrTran(cName, " ", "_"):ToUpper()
-			cNewname := Left(cName,10)
-			dwFld 	:= 1
-			DO WHILE aFldNames:IndexOf(cNewname) >= 0
-				++dwFld
-                VAR tmp := dwFld:ToString()
-				cNewname := cName:Substring(0, 10 - tmp:Length)+tmp
-			ENDDO
-			cName 	:= cNewname
-		ENDIF
-		aFldNames:Add(cName)
-		RETURN cName
 
-
- 
+    
+  
 END CLASS
 

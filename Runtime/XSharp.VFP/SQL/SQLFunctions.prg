@@ -86,17 +86,17 @@ FUNCTION SqlColumns( nStatementHandle, cTableName, cType, cCursorName) AS USUAL
 /// <include file="VFPDocs.xml" path="Runtimefunctions/sqlcommit/*" />
 
 FUNCTION SqlCommit( nStatementHandle ) AS LONG
+    CheckStatementHandle(nStatementHandle)
     THROW NotImplementedException{}
     // RETURN 0
 
-/// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/sqlconnect/*" />
 
 
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/sqldisconnect/*" />
-FUNCTION SqlDisconnect( nStatementHandle AS LONG) AS LONG
+FUNCTION SqlDisconnect( nStatementHandle) AS LONG
     LOCAL oStmt AS XSharp.VFP.SQLStatement
+    CheckStatementHandle(nStatementHandle)    
     oStmt := SQLSupport.FindStatement(nStatementHandle)
     IF oStmt != NULL
         SQLSupport.RemoveStatement(nStatementHandle)
@@ -111,9 +111,7 @@ FUNCTION SqlExec( nStatementHandle , cSQLCommand , cCursorName, aCountInfo) AS L
     LOCAL oStmt AS XSharp.VFP.SQLStatement
     LOCAL aInfo AS ARRAY
     LOCAL prepared := FALSE AS LOGIC
-    IF !IsLong(nStatementHandle)
-        THROW Error{"Number or type of parameters is not correct"}
-    ENDIF
+    CheckStatementHandle(nStatementHandle)    
     IF ! IsString(cCursorName)
         cCursorName := "SQLRESULT"
     ENDIF
@@ -143,6 +141,7 @@ FUNCTION SqlExec( nStatementHandle , cSQLCommand , cCursorName, aCountInfo) AS L
     
 /// <include file="VFPDocs.xml" path="Runtimefunctions/sqlgetprop/*" />
 FUNCTION SqlGetProp( nStatementHandle, cSetting ) AS USUAL
+    CheckStatementHandle(nStatementHandle)    
     RETURN SQLSupport.GetSetProperty(nStatementHandle, cSetting,NULL)
     // RETURN NIL
 
@@ -150,6 +149,7 @@ FUNCTION SqlGetProp( nStatementHandle, cSetting ) AS USUAL
 /// <include file="VFPDocs.xml" path="Runtimefunctions/sqlidledisconnect/*" />
 
 FUNCTION SqlIdleDisconnect( nStatementHandle) AS LONG
+    CheckStatementHandle(nStatementHandle)    
     THROW NotImplementedException{}
     // RETURN 0
 
@@ -157,13 +157,15 @@ FUNCTION SqlIdleDisconnect( nStatementHandle) AS LONG
 /// <include file="VFPDocs.xml" path="Runtimefunctions/sqlmoreresults/*" />
 
 FUNCTION SqlMoreResults( nStatementHandle , cCursorName , aCountInfo) AS LONG
+    CheckStatementHandle(nStatementHandle)    
     THROW NotImplementedException{}
     // RETURN 0
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/sqlprepare/*" />
 FUNCTION SqlPrepare( nStatementHandle, cSQLCommand, cCursorName) AS LONG
     LOCAL oStmt AS XSharp.VFP.SQLStatement
-    IF !IsLong(nStatementHandle) .OR. ! IsString(cSQLCommand)
+    CheckStatementHandle(nStatementHandle)    
+    IF ! IsString(cSQLCommand)
         THROW Error{"Number or type of parameters is not correct"}
     ENDIF
     IF ! IsString(cCursorName)
@@ -180,20 +182,42 @@ FUNCTION SqlPrepare( nStatementHandle, cSQLCommand, cCursorName) AS LONG
 /// <include file="VFPDocs.xml" path="Runtimefunctions/sqlrollback/*" />
 
 FUNCTION SqlRollBack( nStatementHandle ) AS LONG
+    CheckStatementHandle(nStatementHandle)    
     THROW NotImplementedException{}
     // RETURN 0
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/sqlsetprop/*" />
 FUNCTION SqlSetProp( nStatementHandle, cSetting , eExpression) AS LONG
+    CheckStatementHandle(nStatementHandle)    
     RETURN (INT) SQLSupport.GetSetProperty(nStatementHandle, cSetting,eExpression)
 
 
 
-/// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/sqltables/*" />
-
 FUNCTION SqlTables( nStatementHandle , cTableTypes , cCursorName) AS LONG
-    THROW NotImplementedException{}
-    // RETURN 0
+    LOCAL oStmt AS XSharp.VFP.SQLStatement
+    CheckStatementHandle(nStatementHandle)    
+    oStmt := SQLSupport.FindStatement(nStatementHandle)
+    IF oStmt != NULL
+       IF ! IsString(cTableTypes)
+           cTableTypes := ""
+       ENDIF
+       IF ! IsString(cCursorName)
+            cCursorName := "SQLRESULT"
+        ENDIF        
+        oStmt:GetTables(cTableTypes, cCursorName)
+        RETURN 1
+    ENDIF
+    RETURN -1
+
+
+
+STATIC FUNCTION CheckStatementHandle(nStatementHandle) AS LOGIC
+    IF !IsLong(nStatementHandle)
+        THROW Error{"Number or type of parameters is not correct"}
+    ENDIF
+    RETURN TRUE
+
+
 
 

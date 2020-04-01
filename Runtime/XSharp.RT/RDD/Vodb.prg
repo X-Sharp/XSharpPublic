@@ -5,6 +5,7 @@
 //
 
 USING XSharp.RDD
+USING XSharp.RDD.Enums
 USING XSharp.RDD.Support
 USING System.Collections.Generic
 USING System.Linq
@@ -326,10 +327,25 @@ STATIC METHOD SetFilter(oBlock AS USUAL,cFilter AS STRING) AS LOGIC
 
     INTERNAL STATIC METHOD ArrayToFieldInfo(aStruct AS ARRAY) AS RddFieldInfo[]
         VAR oList := List<RddFieldInfo>{}
-        FOREACH aField AS USUAL IN aStruct
+        VAR nullable := 0
+        VAR hasnullfield := FALSE
+        FOREACH aField AS ARRAY IN aStruct
             VAR oFld := RddFieldInfo{(STRING) aField[DBS_NAME], (STRING) aField[DBS_TYPE], (LONG)aField[DBS_LEN], (LONG)aField[DBS_DEC]}
+            IF oFld:IsNullable
+                nullable += 1
+            ENDIF
+            IF oFld:FieldType == DbFieldType.NullFlags
+                hasnullfield := TRUE
+            ENDIF
+            IF ALen(aField) >= DBS_ALIAS
+                oFld:Alias := aField[DBS_ALIAS]
+            ENDIF
             oList:Add(oFld)
         NEXT
+        IF nullable != 0 .AND. ! hasnullfield
+            VAR oFld := RddFieldInfo{_NULLFLAGS,"0", (nullable+7) % 8, 0}
+            oList:Add(oFld)
+        ENDIF
         RETURN oList:ToArray()
         
     INTERNAL STATIC METHOD OrdScopeNum(nScope)  AS INT CLIPPER

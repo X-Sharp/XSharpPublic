@@ -13,24 +13,22 @@ FUNCTION SqlConnect(uSource , cUserID , cPassword , lShared) AS LONG
     // uSource may be either a DSN or a nStatementHandle
     LOCAL nHandle := -1 AS LONG
     LOCAL cSource AS STRING
-    LOCAL oConnection AS XSharp.VFP.SQLConnection
+    LOCAL oStmt AS XSharp.VFP.SQLStatement
     IF IsNumeric(uSource)
         IF ! IsNil(cUserID) .OR. ! IsNil(cPassword) .OR. ! IsNil(lShared)
            THROW Error{"Number or type of parameters is not correct"}
         ENDIF
         nHandle     := uSource
-        oConnection := SQLSupport.FindConnection(nHandle)
-        IF oConnection == NULL_OBJECT
-            THROW Error{"Connection Handle ("+nHandle:ToString()+") is invalid"}
+        oStmt := SQLSupport.FindStatement(nHandle)
+        IF oStmt == NULL_OBJECT
+            THROW Error{"Statement Handle ("+nHandle:ToString()+") is invalid"}
         ENDIF
         // This should open a connection automatically since the previous connection as already validated
-        IF ! oConnection:Shared
-            THROW Error{"Connection Handle ("+nHandle:ToString()+") is not a shared connection"}
+        IF ! oStmt:Connection:Shared
+            THROW Error{"Statement Handle ("+nHandle:ToString()+") does not have a shared connection"}
         ENDIF
-        oConnection := XSharp.VFP.SQLConnection{oConnection:ConnectionString, oConnection:Shared}
-        IF oConnection:Connected
-            nHandle := SQLSupport.AddConnection(oConnection)
-        ENDIF
+        oStmt := XSharp.VFP.SQLStatement{oStmt:Connection}
+        SQLSupport.AddStatement(oStmt)
 
     ELSEIF IsString(uSource)
         // if one or more parameters are missing then the connect dialog is shown
@@ -38,10 +36,8 @@ FUNCTION SqlConnect(uSource , cUserID , cPassword , lShared) AS LONG
         IF ! IsString(cUserID) ; cUserID := "" ; ENDIF
         IF ! IsString(cPassword) ; cPassword := "" ; ENDIF
         IF ! IsLogic(lShared) ; lShared := TRUE ; ENDIF
-        oConnection := XSharp.VFP.SQLConnection{cSource, cUserID, cPassword, lShared}
-        IF oConnection:Connected
-            nHandle := SQLSupport.AddConnection(oConnection)
-        ENDIF
+        oStmt := XSharp.VFP.SQLStatement{cSource, cUserID, cPassword, lShared}
+        nHandle := SQLSupport.AddStatement(oStmt)
     ENDIF
     RETURN nHandle
     
@@ -53,18 +49,18 @@ FUNCTION SqlStringConnect( uSharedOrConnectString, lSharable) AS LONG
     // in FoxPro when passing lShared as TRUE then the "Select Connection or Data Source Dialog Box"  is shown
     // This is the normal 'DriverConnect' dialog for ODBC drivers
     LOCAL nHandle := -1 AS LONG
-    LOCAL oConnection AS XSharp.VFP.SQLConnection
+    LOCAL oStmt AS XSharp.VFP.SQLStatement
     IF IsLogic(uSharedOrConnectString)
         // show connection string dialog
-       oConnection := XSharp.VFP.SQLConnection{"", uSharedOrConnectString}
+       oStmt := XSharp.VFP.SQLStatement{"", uSharedOrConnectString}
     ELSEIF IsString(uSharedOrConnectString)
        IF ! IsLogic(lSharable) ; lSharable := TRUE ; ENDIF
-       oConnection := XSharp.VFP.SQLConnection{uSharedOrConnectString,lSharable}
+       oStmt := XSharp.VFP.SQLStatement{uSharedOrConnectString,lSharable}
     ELSE
        THROW Error{"Number or type of parameters is not correct"}
     ENDIF
-    IF oConnection:Connected
-        nHandle := SQLSupport.AddConnection(oConnection)
+    IF oStmt:Connected
+        nHandle := SQLSupport.AddStatement(oStmt)
     ENDIF
     RETURN nHandle
   
@@ -100,27 +96,54 @@ FUNCTION SqlCommit( nStatementHandle ) AS LONG
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/sqldisconnect/*" />
 FUNCTION SqlDisconnect( nStatementHandle AS LONG) AS LONG
-    LOCAL oConnection AS XSharp.VFP.SQLConnection
-    oConnection := SQLSupport.FindConnection(nStatementHandle)
-    IF oConnection != NULL
-        SQLSupport.RemoveObject(nStatementHandle)
-        oConnection:DisConnect()
+    LOCAL oStmt AS XSharp.VFP.SQLStatement
+    oStmt := SQLSupport.FindStatement(nStatementHandle)
+    IF oStmt != NULL
+        SQLSupport.RemoveStatement(nStatementHandle)
+        oStmt:DisConnect()
         RETURN 1
     ENDIF
     RETURN -1
 
-/// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/sqlexec/*" />
 
 FUNCTION SqlExec( nStatementHandle , cSQLCommand , cCursorName, aCountInfo) AS LONG
-    THROW NotImplementedException{}
-    // RETURN 0
+    LOCAL oStmt AS XSharp.VFP.SQLStatement
+    LOCAL aInfo AS ARRAY
+    LOCAL prepared := FALSE AS LOGIC
+    IF !IsLong(nStatementHandle)
+        THROW Error{"Number or type of parameters is not correct"}
+    ENDIF
+    IF ! IsString(cCursorName)
+        cCursorName := "SQLRESULT"
+    ENDIF
+    oStmt := SQLSupport.FindStatement(nStatementHandle)
+    IF oStmt != NULL
+        IF !IsString(cSQLCommand)
+            IF ! oStmt:Prepared
+                THROW Error{"SQL Statement parameter is required for non prepared SQL Statements"}
+            ENDIF
+            prepared := TRUE
+        ENDIF
+        LOCAL result AS LONG
+        aInfo := {}
+        IF prepared
+            result := oStmt:Execute(aInfo)
+        ELSE
+            result := oStmt:Execute(cSQLCommand, cCursorName, aInfo)
+        ENDIF
+        
+        IF IsArray(aCountInfo)
+            ASize(aCountInfo, ALen(aInfo))
+            ACopy(aInfo, aCountInfo)
+        ENDIF
+        RETURN result
+    ENDIF
+    RETURN 0
     
-/// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/sqlgetprop/*" />
-
 FUNCTION SqlGetProp( nStatementHandle, cSetting ) AS USUAL
-    THROW NotImplementedException{}
+    RETURN SQLSupport.GetSetProperty(nStatementHandle, cSetting,NULL)
     // RETURN NIL
 
 /// <summary>-- todo --</summary>
@@ -137,12 +160,21 @@ FUNCTION SqlMoreResults( nStatementHandle , cCursorName , aCountInfo) AS LONG
     THROW NotImplementedException{}
     // RETURN 0
 
-/// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/sqlprepare/*" />
-
 FUNCTION SqlPrepare( nStatementHandle, cSQLCommand, cCursorName) AS LONG
-    THROW NotImplementedException{}
-    // RETURN 0
+    LOCAL oStmt AS XSharp.VFP.SQLStatement
+    IF !IsLong(nStatementHandle) .OR. ! IsString(cSQLCommand)
+        THROW Error{"Number or type of parameters is not correct"}
+    ENDIF
+    IF ! IsString(cCursorName)
+        cCursorName := "SQLRESULT"
+    ENDIF
+    oStmt := SQLSupport.FindStatement(nStatementHandle)
+    IF oStmt != NULL
+        VAR result := oStmt:Prepare(cSQLCommand, cCursorName)
+        RETURN result
+    ENDIF
+    RETURN 0
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/sqlrollback/*" />
@@ -151,12 +183,9 @@ FUNCTION SqlRollBack( nStatementHandle ) AS LONG
     THROW NotImplementedException{}
     // RETURN 0
 
-/// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/sqlsetprop/*" />
-
 FUNCTION SqlSetProp( nStatementHandle, cSetting , eExpression) AS LONG
-    THROW NotImplementedException{}
-    // RETURN 0
+    RETURN (INT) SQLSupport.GetSetProperty(nStatementHandle, cSetting,eExpression)
 
 
 

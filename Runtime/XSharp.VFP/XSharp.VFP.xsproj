@@ -86,8 +86,11 @@
     <Compile Include="Classes\Custom.prg" />
     <Compile Include="Classes\Abstract.prg" />
     <Compile Include="ClassFunctions.prg" />
+    <Compile Include="Defines.prg" />
     <Compile Include="GetWord.prg" />
     <Compile Include="NotSupported.prg" />
+    <Compile Include="SQL\SQLStatement.prg" />
+    <Compile Include="SQL\SQLEnums.prg" />
     <Compile Include="SQL\SQLSupport.prg" />
     <Compile Include="SQL\SQLConnection.prg" />
     <Compile Include="SQL\SQLFunctions.prg" />
@@ -115,9 +118,12 @@
     <Compile Include="StringFunctions.prg" />
     <Compile Include="SystemVariables.prg" />
     <Compile Include="TextOutPut.prg" />
+    <Compile Include="UIFunctions.prg" />
+    <Compile Include="UI\AutoCloseMessageBox.prg" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Classes" />
+    <Folder Include="UI" />
     <Folder Include="SQL" />
     <Folder Include="Properties\" />
     <Folder Include="VFPFileStructures\" />

@@ -56,6 +56,8 @@ BEGIN NAMESPACE XSharp.RDD
                     VAR result := _rows[nRow][nFldPos -1]
                     IF result != DBNull.Value
                         RETURN result
+                    ELSE
+                        RETURN NULL
                     ENDIF
                 ENDIF
             ENDIF
@@ -70,6 +72,9 @@ BEGIN NAMESPACE XSharp.RDD
                 ENDIF
             ENDIF
             RETURN SUPER:PutValue(nFldPos, oValue)
+
+        METHOD GetData() AS OBJECT[]
+            RETURN SELF:_rows[SELF:_RecNo -1] 
 
         METHOD Close() AS LOGIC
             LOCAL lOk AS LOGIC

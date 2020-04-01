@@ -239,6 +239,7 @@ BEGIN NAMESPACE XSharp.RDD
             LOCAL str AS STRING
             IF SELF:IsNullable
                 IF oValue == NULL
+                    SELF:InitValue(buffer)                      
                     RETURN SELF:SetNullValue()
                 ENDIF
                 SELF:ClearNullValue()
@@ -359,6 +360,7 @@ BEGIN NAMESPACE XSharp.RDD
         OVERRIDE METHOD PutValue(oValue AS OBJECT, buffer AS BYTE[]) AS LOGIC
             IF SELF:IsNullable
                 IF oValue == NULL
+                    SELF:InitValue(buffer)                    
                     RETURN SELF:SetNullValue()
                 ENDIF
                 SELF:ClearNullValue()
@@ -420,6 +422,7 @@ BEGIN NAMESPACE XSharp.RDD
        OVERRIDE METHOD PutValue(oValue AS OBJECT, buffer AS BYTE[]) AS LOGIC
             IF SELF:IsNullable
                 IF oValue == NULL
+                    SELF:InitValue(buffer)
                     RETURN SELF:SetNullValue()
                 ENDIF
                 SELF:ClearNullValue()
@@ -536,6 +539,7 @@ BEGIN NAMESPACE XSharp.RDD
             LOCAL r8Value AS REAL8
             IF SELF:IsNullable
                 IF oValue == NULL
+                    SELF:InitValue(buffer)                    
                     RETURN SELF:SetNullValue()
                 ENDIF
                 SELF:ClearNullValue()
@@ -611,6 +615,15 @@ BEGIN NAMESPACE XSharp.RDD
         OVERRIDE METHOD PutValue(oValue AS OBJECT, buffer AS BYTE[]) AS LOGIC
             // oValue is the memo block number
             LOCAL intValue AS LONG
+            IF oValue == NULL
+                IF SELF:IsNullable
+                    SELF:InitValue(buffer)                    
+                    RETURN SELF:SetNullValue()
+                ENDIF
+            ELSE
+                SELF:InitValue(buffer)
+                RETURN TRUE
+            ENDIF            
             IF ! SELF:GetNumber(oValue, OUT intValue)
                 SELF:RDD:_dbfError(Subcodes.ERDD_DATATYPE, EG_DATATYPE)
                 RETURN FALSE
@@ -675,6 +688,7 @@ BEGIN NAMESPACE XSharp.RDD
             LOCAL intValue AS LONG
             IF SELF:IsNullable
                 IF oValue == NULL
+                    SELF:InitValue(buffer)                    
                     RETURN SELF:SetNullValue()
                 ENDIF
                 SELF:ClearNullValue()
@@ -775,6 +789,7 @@ BEGIN NAMESPACE XSharp.RDD
             LOCAL r8Value AS REAL8
             IF SELF:IsNullable
                 IF oValue == NULL
+                    SELF:InitValue(buffer)
                     RETURN SELF:SetNullValue()
                 ENDIF
                 SELF:ClearNullValue()
@@ -817,6 +832,7 @@ BEGIN NAMESPACE XSharp.RDD
             LOCAL i64Value AS System.Int64
             IF SELF:IsNullable
                 IF oValue == NULL
+                    SELF:InitValue(buffer)
                     RETURN SELF:SetNullValue()
                 ENDIF
                 SELF:ClearNullValue()
@@ -929,6 +945,7 @@ BEGIN NAMESPACE XSharp.RDD
             LOCAL dt AS DateTime
             IF SELF:IsNullable
                 IF oValue == NULL
+                    SELF:InitValue(buffer)
                     RETURN SELF:SetNullValue()
                 ENDIF
                 SELF:ClearNullValue()
@@ -945,6 +962,7 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             IF empty
                 SELF:InitValue(buffer)
+                SELF:SetNullValue()
             ELSE
                 VAR iJulian  := SELF:_dateTimeToJulian(dt)
                 VAR milisecs := 1000 * dt:Second + dt:Minute * 1000 * 60 + dt:Hour * 1000 * 60 * 60
@@ -958,11 +976,11 @@ BEGIN NAMESPACE XSharp.RDD
 
 
         OVERRIDE METHOD InitValue(buffer AS BYTE[]) AS VOID
-            VAR data := BitConverter.GetBytes((LONG) 0)
+            VAR data := BitConverter.GetBytes((LONG) 0x20202020)
             Array.Copy(data, 0, buffer, SELF:Offset, 4)
             Array.Copy(data, 0, buffer, SELF:Offset+4, 4)
             RETURN
-
+  
         OVERRIDE METHOD EmptyValue() AS OBJECT
             RETURN DateTime.MinValue
 

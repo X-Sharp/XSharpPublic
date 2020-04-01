@@ -259,8 +259,10 @@ CLASS DBFVFP INHERIT DBFCDX
 
     OVERRIDE PROTECTED METHOD _readRecord() AS LOGIC 
         LOCAL lOk AS LOGIC
+        LOCAL lMustReadNull AS LOGIC
+        lMustReadNull := ! SELF:_BufferValid
         lOk := SUPER:_readRecord()
-        IF lOk .AND. SELF:_NullColumn != NULL
+        IF lOk .AND. SELF:_NullColumn != NULL .AND. lMustReadNull
             SELF:_NullColumn:GetValue(SELF:_RecordBuffer)
         ENDIF
         RETURN lOk

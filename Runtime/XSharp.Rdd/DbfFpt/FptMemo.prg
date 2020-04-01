@@ -217,11 +217,15 @@ BEGIN NAMESPACE XSharp.RDD
         PRIVATE METHOD WriteFiller(nToWrite AS DWORD, lDeleted AS LOGIC) AS VOID
             LOCAL filler AS BYTE[]
             LOCAL fillByte AS BYTE
-            fillByte := (BYTE) IIF(lDeleted, 0xF0, 0xAF)
+            LOCAL lIsVfp   AS LOGIC
+            lIsVfp   := SELF:_oRdd IS DBFVFP
+            fillByte := (BYTE) IIF(lDeleted, 0xF0, IIF(lIsVfp, 0x00, 0xAF))
             filler := BYTE[]{(LONG) nToWrite}
-            FOR VAR i := 0 TO nToWrite-1
-                filler[i] := fillByte
-            NEXT
+            IF fillByte != 0x00
+                FOR VAR i := 0 TO nToWrite-1
+                    filler[i] := fillByte
+                NEXT
+            ENDIF
             IF FWrite3(SELF:_hFile, filler, nToWrite) != nToWrite
                 SELF:Error(FException(), Subcodes.ERDD_WRITE, Gencode.EG_WRITE, "FPTMemo.WriteFiller")
             ENDIF

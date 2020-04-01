@@ -29,7 +29,8 @@ INTERNAL PROCEDURE RddInit() AS VOID _INIT3
     RuntimeState.SetValue(Set.Near, FALSE)
     RuntimeState.SetValue(Set.SqlAnsi, FALSE)
     RuntimeState.SetValue(Set.FoxLock, TRUE)
-    RuntimeState.SetValue(Set.Eof, TRUE)
+    RuntimeState.Eof :=  TRUE
+    RuntimeState.MemoBlockSize := 64
     RETURN 
 
 

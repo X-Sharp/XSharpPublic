@@ -619,7 +619,7 @@ INTERNAL FUNCTION RuntimeStateDefaultValue(nSet AS XSharp.Set) AS OBJECT
              RETURN 10U         
 
         CASE Set.MemoBlockSize
-            RETURN 32U
+            RETURN (WORD) 32
 
         CASE Set.Epoch       
         CASE Set.EpochCent   

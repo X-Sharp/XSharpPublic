@@ -194,6 +194,17 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
         UNTIL !oDataReader:NextResult()
         RETURN result
 
+    METHOD GetNumRestrictions(cCollectionName AS STRING) AS LONG
+        LOCAL nRestrictions := 0 AS LONG
+        LOCAL oTable := SELF:Connection:NetConnection:GetSchema("MetadataCollections",NULL) AS DataTable
+        FOREACH oRow AS DataRow IN oTable:Rows
+			IF String.Compare( (STRING)oRow:Item["CollectionName"], cCollectionName, StringComparison.OrdinalIgnoreCase) == 0
+				nRestrictions := (INT) oRow:Item["NumberOfRestrictions"] 
+				EXIT
+			ENDIF
+        NEXT        
+        RETURN nRestrictions  
+
     METHOD GetTables(cType AS STRING, cCursorName AS STRING) AS LOGIC
         SELF:CursorName := cCursorName
         VAR types := cType:Split(",":ToCharArray(),StringSplitOptions.RemoveEmptyEntries)
@@ -208,21 +219,20 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
             list:Add(sType)
         NEXT
 
-        LOCAL oTable := SELF:Connection:NetConnection:GetSchema("MetadataCollections",NULL) AS DataTable
-        LOCAL nRestrictions := 3 AS LONG
-        FOREACH oRow AS DataRow IN oTable:Rows
-			IF String.Compare( (STRING)oRow:Item["CollectionName"], "Tables", StringComparison.OrdinalIgnoreCase) == 0
-				nRestrictions := (INT) oRow:Item["NumberOfRestrictions"] 
-				EXIT
-			ENDIF
-        NEXT        
+        
         LOCAL filter AS STRING[]
-        filter := STRING[]{nRestrictions}
         LOCAL oTables AS List<DataTable>
+        LOCAL oTable AS DataTable
+        LOCAL nRestrictions AS LONG
         oTables := List<DataTable>{}
         
+        nRestrictions := GetNumRestrictions("Tables") 
+        filter := STRING[]{nRestrictions}
         oTable := SELF:Connection:NetConnection:GetSchema("Tables", filter)
         oTables:Add(oTable)
+        
+        nRestrictions := GetNumRestrictions("Views")
+        filter := STRING[]{nRestrictions}
         oTable := SELF:Connection:NetConnection:GetSchema("Views", filter)
         oTables:Add(oTable)
         

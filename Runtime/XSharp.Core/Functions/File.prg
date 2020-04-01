@@ -38,7 +38,9 @@ USING System.Text
     /// <summary>FOpen() Open Mode: Open for writing</summary>
 	DEFINE FO_WRITE       := 1  
     /// <summary>FOpen() Open Mode: Open for reading or writing</summary>
-	DEFINE FO_READWRITE   := 2  
+	DEFINE FO_READWRITE   := 2
+    ///  <summary>FOpen() Open Mode: UnBuffered. Added to FO_READ, FO_WRITE and FO_READWRITE</summary>
+    DEFINE FO_UNBUFFERED  := 10
 	
 	// FOPEN() sharing modes (combine with open mode using +)
     /// <summary>FOpen() Sharing Mode: Compatibility mode (default)</summary>
@@ -111,53 +113,57 @@ BEGIN NAMESPACE XSharp.IO
 		PROPERTY FileAccess		AS FileAccess AUTO 
 		PROPERTY Attributes	    AS DWORD AUTO
 		PROPERTY FileShare		AS FileShare AUTO
+        PROPERTY UnBuffered     AS LOGIC AUTO
 		
 		CONSTRUCTOR(dwMode AS DWORD, dwAttribs AS DWORD)
 			// Wildcard
-			IF (DWORD)_AND(dwMode, FXO_WILD) == FXO_WILD
-				lWild := TRUE
+			IF _AND(dwMode, FXO_WILD) == FXO_WILD 
+				SELF:lWild := TRUE
 				dwMode := dwMode - FXO_WILD
 			ELSE
-				lWild := FALSE
+				SELF:lWild := FALSE
 			ENDIF
-			Attributes := dwAttribs
-			
+			SELF:Attributes := dwAttribs
+            VAR nMode := _AND(dwMode , 0x0F)    // Get lobyte
+            IF nMode >= FO_UNBUFFERED // check for Unbuffered / Buffered
+               SELF:UnBuffered := TRUE
+            ENDIF
 			// Access
-			FileAccess	:= FileAccess.Read
-			IF (DWORD)_AND(dwMode,FO_READWRITE) == FO_READWRITE
-				FileAccess	:= FileAccess.ReadWrite
-			ELSEIF (DWORD)_AND(dwMode,FO_WRITE) == FO_WRITE
-				FileAccess	:= FileAccess.Write
+			
+			IF _AND(dwMode,FO_READWRITE) == FO_READWRITE
+				SELF:FileAccess	:= FileAccess.ReadWrite
+			ELSEIF _AND(dwMode,FO_WRITE) == FO_WRITE
+				SELF:FileAccess	:= FileAccess.Write
+            ELSE
+                SELF:FileAccess	:= FileAccess.Read
 			ENDIF
 			// Create
-			FileMode := FileMode.Open
-			FileShare  := FileShare.ReadWrite
+			SELF:FileMode := FileMode.Open
+			SELF:FileShare  := FileShare.ReadWrite
 			IF _AND(dwMode,FO_CREATE) == FO_CREATE
-				FileMode	:= FileMode.Create
-				FileAccess	:= FileAccess.ReadWrite
-                FileShare   := FileShare.None
+				SELF:FileMode	:= FileMode.Create
+				SELF:FileAccess	:= FileAccess.ReadWrite
+                SELF:FileShare   := FileShare.None
                 RETURN
 			ENDIF
 			
 			LOCAL dwTempMode AS DWORD
-			dwTempMode := (DWORD)_OR(OF_SHARE_DENY_WRITE, OF_SHARE_DENY_READ, OF_SHARE_DENY_NONE)
-			dwTempMode := (DWORD)_AND(dwMode,dwTempMode)
+			dwTempMode := _OR(OF_SHARE_DENY_WRITE, OF_SHARE_DENY_READ, OF_SHARE_DENY_NONE)
+			dwTempMode := _AND(dwMode,dwTempMode)
 			
 			SWITCH dwTempMode 
 				CASE FO_DENYNONE
-					FileShare  := FileShare.ReadWrite
+				CASE FO_COMPAT
+					SELF:FileShare  := FileShare.ReadWrite
 				
 				CASE FO_DENYWRITE
-					FileShare  := FileShare.Read
+					SELF:FileShare  := FileShare.Read
 				
 				CASE FO_DENYREAD
-					FileShare  := FileShare.Write
+					SELF:FileShare  := FileShare.Write
 				
 				CASE FO_EXCLUSIVE
-					FileShare  := FileShare.None
-				
-				CASE FO_COMPAT
-					FileShare  := FileShare.ReadWrite
+					SELF:FileShare  := FileShare.None
 				
 			END SWITCH
 			RETURN
@@ -226,7 +232,11 @@ BEGIN NAMESPACE XSharp.IO
 			LOCAL oStream := NULL AS FileStream
 			TRY
                 ClearErrorState()
-                	oStream := XsFileStream.CreateFileStream(cFile, oMode:FileMode, oMode:FileAccess, oMode:FileShare, 16*1024,FileOptions.RandomAccess)
+                IF oMode:UnBuffered
+                    oStream := FileStream{cFile, oMode:FileMode, oMode:FileAccess, oMode:FileShare, 1,FileOptions.RandomAccess}
+                ELSE
+                    oStream := XsFileStream.CreateFileStream(cFile, oMode:FileMode, oMode:FileAccess, oMode:FileShare, 16*1024,FileOptions.RandomAccess)
+                ENDIF
  
 			CATCH e AS Exception
 				System.Diagnostics.Trace.WriteLine(e:Message)

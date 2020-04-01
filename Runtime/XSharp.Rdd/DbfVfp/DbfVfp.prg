@@ -14,7 +14,7 @@ BEGIN NAMESPACE XSharp.RDD
 /// <summary>DBFVFP RDD. DBFCDX with support for the FoxPro field types.</summary>
 [DebuggerDisplay("DBFVFP ({Alias,nq})")];
 CLASS DBFVFP INHERIT DBFCDX
-    PRIVATE CONST VFP_BACKLINKSIZE := 263 AS LONG
+    PRIVATE CONST VFP_BACKLINKSIZE := 262 AS LONG
 	CONSTRUCTOR()
 		SUPER()
 		SELF:_AllowedFieldTypes := "BCDFGILMNPQTVWY0"
@@ -75,6 +75,18 @@ CLASS DBFVFP INHERIT DBFCDX
         ELSE
             SELF:_Header:Version := DBFVersion.VisualFoxPro
         ENDIF
+        // Set Flags
+        SELF:_Header:HasTags := DBFTableFlags.None
+        IF SELF:_HasMemo
+            SELF:_Header:HasTags |= DBFTableFlags.HasMemoField
+        ENDIF
+        IF SELF:_indexList != NULL .AND. SELF:_indexList:Count > 0
+            VAR orderBag := SELF:_indexList:First
+            IF orderBag != NULL .AND. orderBag:Structural
+                SELF:_Header:HasTags |= DBFTableFlags.HasStructuralCDX
+            ENDIF
+        ENDIF
+        
         SELF:_Header:HeaderLen += VFP_BACKLINKSIZE
         SELF:_HeaderLength   += VFP_BACKLINKSIZE
         SELF:_writeHeader()

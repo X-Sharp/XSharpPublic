@@ -77,7 +77,7 @@
       Specifies the name of the array in which the names are placed.
     </param>
     <param name="cSetting">
-      Specifies the names to place in the variable array. The table in remarks lists the values for cSetting and the corresponding names placed in the array:
+      Specifies the names to place in the variable array. The table in the remarks section lists the values for cSetting and the corresponding names placed in the array:
     </param>
     <returns>
       Numeric
@@ -1201,8 +1201,10 @@
       up to the length of the longest value. The appropriate operation is then performed between those values.
     </returns>
     <remarks>
-      <note>You can specify a maximum of 26 values. The specified values must have the same type. If the specified expressions are not integers, 
-      they are converted to integers before performing the operation.</note><br/>
+      <note>
+        You can specify a maximum of 26 values. The specified values must have the same type. If the specified expressions are not integers,
+        they are converted to integers before performing the operation.
+      </note><br/>
       <b>BitAnd( )</b> compares each bit in eExpressionN to the corresponding bit in eExpressionN+1. If the bits in eExpressionN and eExpressionN+1 are both 1, 
       the corresponding result bit is set to 1; otherwise, the corresponding result bit is set to 0.<br/>
       The following table shows the result of a bitwise AND operation on corresponding eExpressionN and eExpressionN+1 bits:
@@ -1912,7 +1914,7 @@
       CreateObjectEx( ) supports creation of new early-bound objects. 
       However, it is also possible that your X# component is passed an object that you want to call via early-binding. 
       You can use the GETINTERFACE( ) support on existing COM objects.<br/><br/>
-      For additional information about using X# to create Automation servers, see Sharing Information and Adding OLE.<br/>
+      For additional information about using X# to create Automation servers, see Sharing Information and Adding OLE.
     </remarks>
     <example>
        <code language="X#">
@@ -1940,9 +1942,11 @@
       Logical
     </returns>
     <remarks>
-      CREATEOFFLINE( ) returns a logical true (.T.) if the existing view is successfully taken offline; otherwise false (.F.) is returned.
-      An offline view is opened with USE. When an offline view is open, you can append records or make changes to records in the offline view. However, you cannot use the CREATE TRIGGER, INSERT, PACK or ZAP commands in an offline view. After making changes to the offline view, you can update the data on the server with your changes by opening the offline view with USE and including the ONLINE clause.
-      You cannot refresh the contents of an offline view with data from the server until the offline view has been opened with USE and the ONLINE clause.
+      CreateOffline( ) returns a logical true (.T.) if the existing view is successfully taken offline; otherwise false (.F.) is returned.<br/>
+      An offline view is opened with USE. When an offline view is open, you can append records or make changes to records in the offline view.
+      However, you cannot use the CREATE TRIGGER, INSERT, PACK or ZAP commands in an offline view. After making changes to the offline view,
+      you can update the data on the server with your changes by opening the offline view with USE and including the ONLINE clause.<br/>
+      You cannot refresh the contents of an offline view with data from the server until the offline view has been opened with USE and the ONLINE clause.<br/>
       Use DROPOFFLINE( ) to take the offline view back online.
     </remarks>
   </createoffline>
@@ -1957,14 +1961,13 @@
     </param>
     <param name="cFlags">
 
-      If the binary character representation specified with cExpression was generated using an 8 byte data type (currency or double, for example), include cFlags to control the type of value returned by CTOBIN( ).
-
+      If the binary character representation specified with cExpression was generated using an 8 byte data type (currency or double, for example),
+      include cFlags to control the type of value returned by CToBin( ).
     </param>
     <returns>
       Numeric. <b>CTOBIN( )</b> returns a numeric value from a binary character expression.
     </returns>
     <remarks>
-      cFlags:
       <list type="table">
         <listheader>
           <term>cFlags</term>
@@ -2016,8 +2019,9 @@
           <description>Prevents the sign bit of number from being toggled (BitXOR).</description>
         </item>
       </list>
-
-      The cFlags parameter is a character expression. The 'R' and 'S' settings are additive while the others are mutually exclusive. Character settings can be passed in either upper or lower case (e.g., 'R' or 'r'). Specifying a value of '1', '2' or '4' is not required, but is available as a convenience to provide feedback for the length of cExpression.<br/>
+      The cFlags parameter is a character expression. The 'R' and 'S' settings are additive while the others are mutually exclusive.
+      Character settings can be passed in either upper or lower case (e.g., 'R' or 'r'). Specifying a value of '1', '2' or '4' is not required,
+      but is available as a convenience to provide feedback for the length of cExpression.<br/>
       The following examples show various uses of the cFlags parameter.
        <code language="X#">
         ? CTOBIN("A")&amp;&amp; same as CTOBIN("A","1")
@@ -2025,7 +2029,9 @@
         ? CTOBIN(BinToc(12.34,"8"),"B")
         ? CTOBIN(BinToc(PI(),"BR"),"NRS")
       </code>
-      You can use CTOBIN( ) to convert a binary character representation created with BinToc( ) to its integer value. CTOBIN( ) can also be used when working with Win32 API routines where you might need to convert to or from a Win32 struct member. The 'R' and 'S' settings allow you to use CTOBIN ( ) to work more efficiently with these scenarios.
+      You can use CToBin( ) to convert a binary character representation created with BinToc( ) to its integer value.
+      CToBin( ) can also be used when working with Win32 API routines where you might need to convert to or from a Win32 struct member.
+      The 'R' and 'S' settings allow you to use CToBin ( ) to work more efficiently with these scenarios.
     </remarks>
   </ctobin>
   <ctot>
@@ -2040,13 +2046,22 @@
       DateTime data type. CTOT( ) returns a DateTime value from a character expression.
     </returns>
     <remarks>
-      <note>CTOT() can create ambiguous DateTime values and generates a compilation error when SET STRICTDATE is set to 2. To create nonambiguous Date values, use the DATETIME( ) function instead.</note>
+      <note>
+        CToT() can create ambiguous DateTime values and generates a compilation error when SET STRICTDATE is set to 2.
+        To create nonambiguous Date values, use the DATETIME( ) function instead.
+      </note>
       X# supports the native SQL Datatypes Datetime and Smalldatetime, which are returned in 24 hour format in SQL XML.
       <note>The CTOT() function does not address the 19 different ways that T-SQL Convert() function returns datetime and smalldatetime values.</note>
-      To convert date formats from Access, SQL Server, Visual Studio, and XML, you must call the appropriate SET DATE setting to interpret DateTime strings properly. However, if an uppercase T is in the XML date string, X# overrides the current date setting by internally calling SET DATE YMD and restores the current date setting when exiting CTOT( ).
-      <note>CTOT( ) resolves these dates to the limits of precision of the X# DateTime data type. Therefore, precision can be lost when using CTOT( ) with certain formats. The X# DateTime data type does not support milliseconds or time zones.</note>
+      To convert date formats from Access, SQL Server, Visual Studio, and XML, you must call the appropriate SET DATE setting to interpret DateTime strings properly.
+      However, if an uppercase T is in the XML date string, X# overrides the current date setting by internally calling SET DATE YMD
+      and restores the current date setting when exiting CToT( ).
+      <note>
+        CToT( ) resolves these dates to the limits of precision of the X# DateTime data type.
+        Therefore, precision can be lost when using CToT( ) with certain formats. The X# DateTime data type does not support milliseconds or time zones.
+      </note>
       CTOT( ) respects the setting of the SET CENTURY command. For more information, see SET CENTURY Command.<br/><br/>
-      The following examples show how CTOT( ) handles DateTime values from different sources. In all examples, CTOT( ) converts the DateTime values correctly without needing to call SET DATE YMD.
+      The following examples show how CToT( ) handles DateTime values from different sources.
+      In all examples, CToT( ) converts the DateTime values correctly without needing to call SET DATE YMD.
       Access 2000 XML date format
        <code language="X#">
         * 2000-10-24T13:30:00 (24-hour format is exported from Access,
@@ -2109,8 +2124,10 @@
         <item>
           <term>ADORecordset</term>
           <description>O</description>
-          <description>Contains an object reference to the ActiveX Data Object (ADO) Recordset associated with the cursor. 
-          Not valid for cursors that are not based on ADO Recordsets. Read-only.</description>
+          <description>
+            Contains an object reference to the ActiveX Data Object (ADO) Recordset associated with the cursor.
+            Not valid for cursors that are not based on ADO Recordsets. Read-only.
+          </description>
         </item>
         <item>
           <term>AllowSimultaneousFetch</term>
@@ -2138,7 +2155,8 @@
           <term>BatchUpdateCount</term>
           <description>N</description>
           <description>
-            Contains the number of update statements sent to the remote data source for buffered tables. The default value is 1. Adjusting this value can greatly increase update performance.<br/>
+            Contains the number of update statements sent to the remote data source for buffered tables. The default value is 1.
+            Adjusting this value can greatly increase update performance.<br/>
             Read/write.
           </description>
         </item>
@@ -2223,8 +2241,10 @@
           <description>
             Contains the number of rows fetched at a time from the remote tables. 
             The default is 100 rows. Setting FetchSize to –1 retrieves the complete result set, limited by the MaxRecords setting.
-            <note>Progressive fetching holds the connection until all rows are retrieved. 
-            Use caution coding with FetchSize if ShareConnection is True (.T.).</note>
+            <note>
+              Progressive fetching holds the connection until all rows are retrieved.
+              Use caution coding with FetchSize if ShareConnection is True (.T.).
+            </note>
             Read/write.
           </description>
         </item>
@@ -2256,7 +2276,8 @@
           <term>MaxRecords*</term>
           <description>N</description>
           <description>
-            The maximum number of rows fetched when result sets are returned. The default value is – 1 (all rows are returned). A value of 0 specifies that the view is executed but no results are fetched.<br/>
+            The maximum number of rows fetched when result sets are returned. The default value is – 1 (all rows are returned).
+            A value of 0 specifies that the view is executed but no results are fetched.<br/>
             Read/write.
           </description>
         </item>
@@ -2292,7 +2313,8 @@
           <term>Refresh</term>
           <description>N</description>
           <description>
-            Contains a numeric value that indicates the refresh setting for an individual cursor in the current data session or an initial refresh value for newly opened cursors in the current data session.
+            Contains a numeric value that indicates the refresh setting for an individual cursor
+            in the current data session or an initial refresh value for newly opened cursors in the current data session.
           </description>
         </item>
         <item>
@@ -2350,7 +2372,8 @@
           <term>UpdateNameList</term>
           <description>C</description>
           <description>
-            A comma delimited list of remote field names and the local field names assigned to the cursor. Use this option to specify valid Visual FoxPro names for fields in the cursor that have invalid Visual FoxPro field names.<br/>
+            A comma delimited list of remote field names and the local field names assigned to the cursor.
+            Use this option to specify valid Visual FoxPro names for fields in the cursor that have invalid Visual FoxPro field names.<br/>
             Read/write.
           </description>
         </item>
@@ -2367,7 +2390,9 @@
           <term>UseMemoSize*</term>
           <description>N</description>
           <description>
-            The minimum size, in bytes, for result columns to return in memo fields. For example, if the width of a column result is greater than the value of UseMemoSize, the column result is stored in a memo field. UseMemoSize may vary from 1 to 255; the default value is 255.<br/>
+            The minimum size, in bytes, for result columns to return in memo fields.
+            For example, if the width of a column result is greater than the value of UseMemoSize, the column result is stored in a memo field.
+            UseMemoSize may vary from 1 to 255; the default value is 255.<br/>
             Read/write.
           </description>
         </item>
@@ -2377,22 +2402,30 @@
           <description>
             The WHERE clause for updates to tables. WhereType can specify the following values:<br/>
             1 or DB_KEY (from FOXPRO.H). The WHERE clause used to update tables consists of only the primary fields specified with the KeyFieldList property.<br/>
-            2 or DB_KEYANDUPDATABLE (from FOXPRO.H). The WHERE clause used to update tables consists of the primary fields specified with the KeyFieldList property and any updatable fields.<br/>
-            3 or DB_KEYANDMODIFIED (from FOXPRO.H) (default). The WHERE clause used to update tables consists of the primary fields specified with the KeyFieldList property and any other fields that are modified.<br/>
-            4 or DB_KEYANDTIMESTAMP (from FOXPRO.H). The WHERE clause used to update tables consists of the primary fields specified with the KeyFieldList property and a comparison of the time stamps.<br/>
+            2 or DB_KEYANDUPDATABLE (from FOXPRO.H). The WHERE clause used to update tables
+            consists of the primary fields specified with the KeyFieldList property and any updatable fields.<br/>
+            3 or DB_KEYANDMODIFIED (from FOXPRO.H) (default). The WHERE clause used to update tables
+            consists of the primary fields specified with the KeyFieldList property and any other fields that are modified.<br/>
+            4 or DB_KEYANDTIMESTAMP (from FOXPRO.H). The WHERE clause used to update tables
+            consists of the primary fields specified with the KeyFieldList property and a comparison of the time stamps.<br/>
             Read/write.
           </description>
         </item>
       </list>
-
-      * The value returned by this property is significant only for remote views; if you get this property for local views, the <b>CURSORGETPROP( )</b> function returns the default value.
+      * The value returned by this property is significant only for remote views;
+      if you get this property for local views, the <b>CursorGetProp( )</b> function returns the default value.
     </remarks>
     <example>
-      When a cursor is opened, the default value for the AutoIncError property is read from the session default value, which is the current default data session setting. The following example shows how you can retrieve the default AutoIncError value for each session by specifying 0 (default session) as the last parameter:
+      When a cursor is opened, the default value for the AutoIncError property is read from the session default value,
+      which is the current default data session setting.
+      The following example shows how you can retrieve the default AutoIncError value for each session by specifying 0 (default session) as the last parameter:
        <code language="X#">CURSORGETPROP("AutoIncError", 0) </code>
-      The default session is used when opening a new private data session or cursor. The following example shows how you can retrieve the cursor or table AutoIncError setting for each table by using the nWorkArea or cTableAlias parameter as the last parameter:
+      The default session is used when opening a new private data session or cursor.
+      The following example shows how you can retrieve the cursor or table AutoIncError setting for each table
+      by using the nWorkArea or cTableAlias parameter as the last parameter:
        <code language="X#">CURSORGETPROP("AutoIncError", nWorkArea | cTableAlias)</code>
-      The following example opens a "Customer" table in the "Testdata" database and uses <b>CURSORGETPROP( )</b> to display the buffering mode for the table and the name of the database in which the table is contained:
+      The following example opens a "Customer" table in the "Testdata" database and uses <b>CursorGetProp( )</b> to display the buffering mode for the table
+      and the name of the database in which the table is contained:
        <code language="X#">
         CLOSE DATABASES
         CLEAR
@@ -2413,110 +2446,239 @@
 
     </param>
     <param name="eExpression">
-
-      Specifies the value for the property you specify with cProperty. If you omit eExpression, the property is set to its default value.
-      The following table lists the properties you can specify for cProperty and a description of the values eExpression can assume.
-      eExpression values
-      AllowSimultaneousFetch
-      Applies when using remote views, a shared connection, and to cursors created using ODBC.
-      .T. - Permit similarly configured cursors sharing the connection to fetch rows simultaneously.
-      .F. - Do not permit similarly configured cursors sharing the connection to fetch rows simultaneously.
-      AutoIncError
-      .T. - Generate an error message when attempting to insert or update values in a field that uses automatically incrementing field values.
-      .F. - Does not generate an error message but does not use the value specified when attempting to insert or update the value in a field that uses automatically incrementing field values, which uses the appropriate incremented value.
-      Applies to cursors and sessions.
-      BatchUpdateCount*
-      Specifies the number of update statements to send to the remote data source for buffered tables. The default value is 1. Adjusting this value can greatly increase update performance when using automatic updating.
-      Buffering
-      1 – Sets row and table buffering off. Record locking and data writing are identical to earlier FoxPro versions. (Default)
-      2 – Sets pessimistic row buffering on.
-      3 – Sets optimistic row buffering on.
-      4 – Sets pessimistic table buffering on.
-      5 – Sets optimistic table buffering on. <b>SET MULTILOCKS</b> must be <b>ON</b> for all Buffering modes except 1 (off).
-      CompareMemo
-      .T. - Include memo fields of type Memo, General, or Picture in the <b>WHERE</b> clause for updates.
-      .F. – Do not include memo fields in the WHERE clause for updates.
-      Applies when automatic updating is used.
-      FetchAsNeeded
-      .T. – Fetch records only when needed, such as when record pointer moves to a row that has not been fetched.
-      .F. – Fetch additional data during idle time.
-      FetchAsNeeded does not apply when progressive fetching is disabled (FetchSize is -1).
-      FetchMemo*
-      .T. – Fetch memo fields with the view results.
-      .F. – Do not fetch memo fields with the view results.
-      FetchSize*
-      Specifies the number of rows progressively fetched from the remote table result set. The default value is 100 rows. Setting FetchSize to –1 retrieves the complete result set, limited by the MaxRecords setting.
-      Progressive fetching holds the connection until all rows are retrieved. Use caution coding with FetchSize if ShareConnection is True (.T.).
-      KeyFieldList
-      Specifies a comma-delimited list of primary fields for the cursor. No default. You must include a list of field names for updates to work when using automatic updating.
-      MapBinary
-      .T. - At the session level, SQL Pass-Through maps SQL_BINARY, SQL_VARBINARY, and SQL_LONGVARBINARY ODBC types to <b>Varbinary</b> or <b>Blob</b> data type.
-      For remote views, the <b>CREATE SQL VIEW</b> command maps the SQL_LONGVARBINARY ODBC data source type to <b>Blob</b> type, and it maps SQL_BINARY and SQL_VARBINARY ODBC data source types to <b>Varbinary</b> type when the precision of the corresponding column in the data source is less than or equal to 254 bytes. When precision is greater than 254 bytes, these types map to <b>Blob</b> type.
-      .F. - SQL Pass-Through maps SQL_BINARY and SQL_VARBINARY ODBC types to <b>Character</b> type. (Default)
-      For remote views, the <b>CREATE SQL VIEW</b> command maps SQL_BINARY and SQL_VARBINARY ODBC data source types to <b>Memo</b> type.
-      <b>MapBinary</b> is read/write for nWorkArea set to 0, read-only for SQL Pass-Through cursors, and invalid for table cursors (nWorkArea equal to or greater than 1).
-      MapVarchar
-      .T. - At the session level, SQL Pass-Through maps SQL_WVARCHAR and SQL_VARCHAR ODBC types to <b>Varchar</b> type.
-      For remote views, <b>CREATE SQL VIEW</b> command maps SQL_WVARCHAR and SQL_VARCHAR ODBC data source types to <b>Varchar</b> type.
-      .F. - SQL Pass-Through maps SQL_WVARCHAR and SQL_VARCHAR ODBC types to <b>Character</b> type. (Default)
-      For remote views, <b>CREATE SQL VIEW</b> command maps SQL_WVARCHAR and SQL_VARCHAR ODBC data source types to <b>Character</b> type.
-      <b>MapVarchar</b> is read/write for nWorkArea set to 0, read-only for SQL Pass-Through cursors, and invalid for table cursors (nWorkArea equal to or greater than 1).
-      MaxRecords*
-      Specifies the maximum number of rows fetched when returning result sets. The default value is – 1, and all rows are returned. A value of 0 specifies that the view is executed but no results are fetched.
-      ParameterList
-      Specifies a semi-colon delimited list of view parameters and parameter types. For views only.
-      Prepared
-      .T. - Prepare SQL statements for subsequent <b>REQUERY( )</b> function calls.
-      .F. - Do not prepare SQL statements for subsequent <b>REQUERY( )</b> calls. (Default).
-      <b>REQUERY( )</b> is used to retrieve data again for a SQL view. For additional information about preparing SQL statements, see SQLPREPARE( ) Function.
-      Refresh
-      Specifies a numeric refresh value for an individual cursor in the current data session or an initial refresh value for newly opened cursors in the current data session.
-      Use the SET DATASESSION Command to select a specific data session, and use the cTableAlias or nWorkArea parameter to specify a specific cursor. Use nWorkArea = 0 to change the initial refresh value for all newly opened cursors. Any cursors that are already open will not be affected by the new refresh setting.
-      SET REFRESH Command allows you to specify a global refresh value. By default, the CURSORSETPROP( ) Refresh setting is -2, which indicates that the current global SET REFRESH value is used. The global SET REFRESH value is specified with its second parameter, nSeconds2.
-      You can set the CURSORSETPROP( ) Refresh setting to the same values as the nSeconds2 parameter in SET REFRESH.
-      <b>Note</b>   The  CURSORSETPROP( ) Refresh setting will be ignored if the nSeconds2 parameter is currently set to zero in the SET REFRESH command.
-      SendUpdates
-      .T. – Specifies that a SQL update query is sent to update tables when an update is made using the view.
-      .F. – Specifies that a SQL update query is not sent to update tables.
-      Tables
-      Specifies a comma-delimited list of the names of remote tables. No default. You must include a list of table names for updates to work when using automatic updating.
-      UpdatableFieldList
-      Specifies a comma-delimited list of fields in the view. This list can include fields from local and remote tables. You must include a list of fields for updates to work when using automatic updating.
-      UpdateNameList
-      Specifies a comma-delimited list of remote field names and the local field names assigned to the cursor. Use this option to specify valid X# names for fields in the cursor that have invalid X# field names.
-      UpdateType
-      1 – Update old data with new data. (Default)
-      2 – Update by deleting old data and inserting new data.
-      UseMemoSize*
-      Specifies the minimum size in bytes for result columns to return in memo fields. For example, if the width of a column result is greater than the value of UseMemoSize, the column result is stored in a memo field. UseMemoSize can vary from 1 to 255 bytes. The default value is 255 bytes.
-      WhereType
-      The <b>WHERE</b> clause for updates to remote tables. WhereType can assume the following values:
-      1 or <b>DB_KEY</b> (from FOXPRO.H). The WHERE clause used to update remote tables consists of only the primary fields specified with the KeyFieldList property.
-      2 or <b>DB_KEYANDUPDATABLE</b> (from FOXPRO.H). The WHERE clause used to update remote tables consists of the primary fields specified with the KeyFieldList property and any updatable fields.
-      3 or <b>DB_KEYANDMODIFIED</b> (from FOXPRO.H). The WHERE clause used to update remote tables consists of the primary fields specified with the KeyFieldList property and any other fields that are modified. (Default)
-      4 or <b>DB_KEYANDTIMESTAMP</b> (from FOXPRO.H). The <b>WHERE</b> clause used to update remote tables consists of the primary fields specified with the KeyFieldList property and a comparison of the time stamps.
-      * This property is primarily used for remote views; setting it has no effect on local views. However, you can preset this property for local views that will be upsized.
-
+      Specifies the value for the property you specify with cProperty. If you omit eExpression, the property is set to its default value.<br/>
+      The table in the remarks section lists the properties you can specify for cProperty and a description of the values eExpression can assume.
     </param>
     <param name="cTableAlias">
-
-      Specifies the alias of the table or cursor for which the property is set.
-
-    </param>
-    <param name="nWorkArea">
-
-      Specifies the work area of the table or cursor for which the property is set. If you specify 0 for nWorkArea, <b>CURSORSETPROP( )</b> sets the environment setting used for all subsequent tables or cursors.
+      Specifies the alias of the table or cursor for which the property is set or specifies the work area of the table or cursor for which the property is set. <br/>
+      If you specify 0 for nWorkArea, <b>CursorSetProp( )</b> sets the environment setting used for all subsequent tables or cursors.<br/>
       Buffering is not applied to tables that are opened implicitly, for example, using SQL INSERT/UPDATE/DELETE commands.
     </param>
     <returns>
-      Logical data type. <b>CURSORSETPROP( )</b> returns True (.T.) if X# successfully sets the property you specify. X# generates an error if the property you specify cannot be set.
+      Logical data type. <b>CursorSetProp( )</b> returns True (.T.) if X# successfully sets the property you specify.
+      X# generates an error if the property you specify cannot be set.
     </returns>
     <remarks>
-      The setting of the Buffering property for <b>CURSORSETPROP( )</b> determines how X# performs record locking and update buffering. For additional information about record locking and update buffering, see How to: Buffer Data.
-      The setting of the WhereType property for <b>CURSORSETPROP( )</b> determines how updates are performed on remote tables. For additional information about remote table updates, see Developing Databases.
-      You can use <b>CURSORSETPROP( )</b> to override the FetchSize property in the <b>SQLSETPROP( )</b> function for a cursor. This property is inherited from the cursor's connection handle by default.
-      Use <b>CURSORGETPROP( )</b> to return the current property settings for a X# table or a cursor created for a table.
-      If <b>CURSORSETPROP( )</b> is issued without the optional cTableAlias or nWorkArea arguments, the property setting is specified for the open table or cursor in the currently selected work area.
+      The setting of the Buffering property for <b>CursorSetProp( )</b> determines how X# performs record locking and update buffering.
+      For additional information about record locking and update buffering, see How to: Buffer Data.<br/>
+      The setting of the WhereType property for <b>CursorSetProp( )</b> determines how updates are performed on remote tables.
+      For additional information about remote table updates, see Developing Databases.<br/>
+      You can use <b>CursorSetProp( )</b> to override the FetchSize property in the <b>SQLSETPROP( )</b> function for a cursor.
+      This property is inherited from the cursor's connection handle by default.<br/>
+      Use <b>CursorGetProp( )</b> to return the current property settings for a X# table or a cursor created for a table.<br/>
+      If <b>CursorSetProp( )</b> is issued without the optional cTableAlias or nWorkArea arguments,
+      the property setting is specified for the open table or cursor in the currently selected work area.
+      <list type="table">
+        <listheader>
+          <term>Property</term>
+          <desdription>eExpression values</desdription>
+        </listheader>
+        <item>
+          <term>AllowSimultaneousFetch</term>
+          <description>
+            Applies when using remote views, a shared connection, and to cursors created using ODBC.<br/>
+            .T. - Permit similarly configured cursors sharing the connection to fetch rows simultaneously.<br/>
+      .F. - Do not permit similarly configured cursors sharing the connection to fetch rows simultaneously.
+          </description>
+        </item>
+        <item>
+          <term>AutoIncError</term>
+          <description>
+            .T. - Generate an error message when attempting to insert or update values in a field that uses automatically incrementing field values.<br/>
+            .F. - Does not generate an error message but does not use the value specified when attempting to insert or update the value in a field
+            that uses automatically incrementing field values, which uses the appropriate incremented value.<br/>
+      Applies to cursors and sessions.
+          </description>
+        </item>
+        <item>
+          <term>BatchUpdateCount*</term>
+          <description>
+            Specifies the number of update statements to send to the remote data source for buffered tables.
+            The default value is 1. Adjusting this value can greatly increase update performance when using automatic updating.
+          </description>
+        </item>
+        <item>
+          <term>Buffering</term>
+          <description>
+            1 – Sets row and table buffering off. Record locking and data writing are identical to earlier FoxPro versions. (Default)<br/>
+            2 – Sets pessimistic row buffering on.<br/>
+            3 – Sets optimistic row buffering on.<br/>
+            4 – Sets pessimistic table buffering on.<br/>
+            5 – Sets optimistic table buffering on. <b>Set multilocs</b> must be <b>on</b> for all Buffering modes except 1 (off).
+          </description>
+        </item>
+        <item>
+          <term>CompareMemo</term>
+          <description>
+            .T. - Include memo fields of type Memo, General, or Picture in the <b>Where</b> clause for updates.<br/>
+            .F. – Do not include memo fields in the WHERE clause for updates.<br/>
+      Applies when automatic updating is used.
+          </description>
+        </item>
+        <item>
+          <term>FetchAsNeeded</term>
+          <description>
+            .T. – Fetch records only when needed, such as when record pointer moves to a row that has not been fetched.<br/>
+            .F. – Fetch additional data during idle time.<br/>
+            <note name="Note">FetchAsNeeded does not apply when progressive fetching is disabled (FetchSize is -1).</note>
+          </description>
+        </item>
+        <item>
+          <term>FetchMemo*</term>
+          <description>
+            .T. – Fetch memo fields with the view results.<br/>
+      .F. – Do not fetch memo fields with the view results.
+          </description>
+        </item>
+        <item>
+          <term>FetchSize*</term>
+          <description>
+            Specifies the number of rows progressively fetched from the remote table result set. The default value is 100 rows.
+            Setting FetchSize to –1 retrieves the complete result set, limited by the MaxRecords setting.<br/>
+            <note name="Note">
+              Progressive fetching holds the connection until all rows are retrieved.
+              Use caution coding with FetchSize if ShareConnection is True (.T.).
+            </note>
+          </description>
+        </item>
+        <item>
+          <term>KeyFieldList</term>
+          <description>
+            Specifies a comma-delimited list of primary fields for the cursor. No default.
+            You must include a list of field names for updates to work when using automatic updating.
+          </description>
+        </item>
+        <item>
+          <term>KeyFieldList</term>
+          <description>
+            Specifies a comma-delimited list of primary fields for the cursor. No default.
+            You must include a list of field names for updates to work when using automatic updating.
+          </description>
+        </item>
+        <item>
+          <term>MapBinary</term>
+          <description>
+            .T. - At the session level, SQL Pass-Through maps SQL_BINARY, SQL_VARBINARY,
+            and SQL_LONGVARBINARY ODBC types to <b>Varbinary</b> or <b>Blob</b> data type.<br/>
+            For remote views, the <b>Create SQL View</b> command maps the SQL_LONGVARBINARY ODBC data source type to <b>Blob</b> type,
+            and it maps SQL_BINARY and SQL_VARBINARY ODBC data source types to <b>Varbinary</b> type when the precision of the corresponding column
+            in the data source is less than or equal to 254 bytes. When precision is greater than 254 bytes, these types map to <b>Blob</b> type.<br/>
+            .F. - SQL Pass-Through maps SQL_BINARY and SQL_VARBINARY ODBC types to <b>Character</b> type. (Default)<br/>
+            For remote views, the <b>Create SQL View</b> command maps SQL_BINARY and SQL_VARBINARY ODBC data source types to <b>Memo</b> type.<br/>
+            <note name="Note">
+      <b>MapBinary</b> is read/write for nWorkArea set to 0, read-only for SQL Pass-Through cursors, and invalid for table cursors (nWorkArea equal to or greater than 1).
+            </note>
+          </description>
+        </item>
+        <item>
+          <term>MapVarchar</term>
+          <description>
+            .T. - At the session level, SQL Pass-Through maps SQL_WVARCHAR and SQL_VARCHAR ODBC types to <b>Varchar</b> type.<br/>
+            For remote views, <b>Create SQL View</b> command maps SQL_WVARCHAR and SQL_VARCHAR ODBC data source types to <b>Varchar</b> type.<br/>
+            .F. - SQL Pass-Through maps SQL_WVARCHAR and SQL_VARCHAR ODBC types to Character type. (Default)<br/>
+            For remote views, <b>Create SQL View</b> command maps SQL_WVARCHAR and SQL_VARCHAR ODBC data source types to <b>Character</b> type.<br/>
+            <note name="Note">
+      <b>MapVarchar</b> is read/write for nWorkArea set to 0, read-only for SQL Pass-Through cursors, and invalid for table cursors (nWorkArea equal to or greater than 1).
+            </note>
+          </description>
+        </item>
+        <item>
+          <term>MaxRecords*</term>
+          <description>
+            Specifies the maximum number of rows fetched when returning result sets. The default value is – 1, and all rows are returned.
+            A value of 0 specifies that the view is executed but no results are fetched.
+          </description>
+        </item>
+        <item>
+          <term>ParameterList</term>
+          <description>Specifies a semi-colon delimited list of view parameters and parameter types. For views only.</description>
+        </item>
+        <item>
+          <term>Prepared</term>
+          <description>
+            .T. - Prepare SQL statements for subsequent <b>Requery( )</b> function calls.<br/>
+            .F. - Do not prepare SQL statements for subsequent <b>Requery( )</b> calls. (Default).<br/>
+            <b>Requery( )</b> is used to retrieve data again for a SQL view.
+            For additional information about preparing SQL statements, see SQLPREPARE( ) Function.
+          </description>
+        </item>
+        <item>
+          <term>Refresh</term>
+          <description>
+            Specifies a numeric refresh value for an individual cursor in the current data session or an initial refresh value for newly opened cursors
+            in the current data session.<br/>
+            Use the SET DATASESSION Command to select a specific data session, and use the cTableAlias or nWorkArea parameter to specify a specific cursor.
+            Use nWorkArea = 0 to change the initial refresh value for all newly opened cursors.
+            Any cursors that are already open will not be affected by the new refresh setting.<br/>
+            SET REFRESH Command allows you to specify a global refresh value. By default, the CursorSetProp( ) Refresh setting is -2,
+            which indicates that the current global SET REFRESH value is used. The global SET REFRESH value is specified with its second parameter, nSeconds2.<br/>
+            You can set the CursorSetProp( ) Refresh setting to the same values as the nSeconds2 parameter in SET REFRESH.<br/>
+            <note name="Note">The CursorSetProp( ) Refresh setting will be ignored if the nSeconds2 parameter is currently set to zero in the SET REFRESH command.</note>
+          </description>
+        </item>
+        <item>
+          <term>SendUpdates</term>
+          <description>
+            .T. – Specifies that a SQL update query is sent to update tables when an update is made using the view.<br/>
+      .F. – Specifies that a SQL update query is not sent to update tables.
+          </description>
+        </item>
+        <item>
+          <term>Tables</term>
+          <description>
+            Specifies a comma-delimited list of the names of remote tables. No default.
+            You must include a list of table names for updates to work when using automatic updating.
+          </description>
+        </item>
+        <item>
+          <term>UpdateableFieldList</term>
+          <description>
+            Specifies a comma-delimited list of fields in the view. This list can include fields from local and remote tables.
+            You must include a list of fields for updates to work when using automatic updating.
+          </description>
+        </item>
+        <item>
+          <term>UpdateNameList</term>
+          <description>
+            Specifies a comma-delimited list of remote field names and the local field names assigned to the cursor.
+            Use this option to specify valid Visual FoxPro names for fields in the cursor that have invalid Visual FoxPro field names.
+          </description>
+        </item>
+        <item>
+          <term>UpdateType</term>
+          <description>
+            1 – Update old data with new data. (Default)<br/>
+      2 – Update by deleting old data and inserting new data.
+          </description>
+        </item>
+        <item>
+          <term>UseMemoSize*</term>
+          <description>
+            Specifies the minimum size in bytes for result columns to return in memo fields.
+            For example, if the width of a column result is greater than the value of UseMemoSize, the column result is stored in a memo field.
+            UseMemoSize can vary from 1 to 255 bytes.<br/>
+            The default value is 255 bytes.
+          </description>
+        </item>
+        <item>
+          <term>WhereType</term>
+          <description>
+            The <b>Where</b> clause for updates to remote tables. WhereType can assume the following values:<br/>
+            1 or <b>DB_KEY</b> (from FOXPRO.H). The <b>Where</b> clause used to update remote tables consists of only the primary fields specified with the KeyFieldList property.<br/>
+            2 or <b>DB_KEYANDUPDATABLE</b> (from FOXPRO.H). The <b>Where</b> clause used to update remote tables
+            consists of the primary fields specified with the KeyFieldList property and any updatable fields.<br/>
+            3 or <b>DB_KEYANDMODIFIED</b> (from FOXPRO.H). The <b>Where</b> clause used to update remote tables
+            consists of the primary fields specified with the KeyFieldList property and any other fields that are modified. (Default)<br/>
+            4 or <b>DB_KEYANDTIMESTAMP</b> (from FOXPRO.H). The <b>Where</b> clause used to update remote tables
+            consists of the primary fields specified with the KeyFieldList property and a comparison of the time stamps.
+          </description>
+        </item>
+      </list>
+      * This property is primarily used for remote views; setting it has no effect on local views. However, you can preset this property for local views that will be upsized.
+
+
+
+
     </remarks>
     <example>
       When a cursor is opened, the default value for the AutoIncError property is read from the session default value, which is the current default data session setting. The following example shows how you can set the default AutoIncError value for each session by specifying 0 (default session) as the last parameter:
@@ -2785,8 +2947,8 @@
       Returns field values directly from disk for a table or a remote data source.
     </summary>
     <param name="cExpression">
-
-      Specifies an expression whose value CURVAL( ) returns from a table or a remote data source. cExpression is typically a field or an expression consisting of a set of fields from the table or remote data source.
+      Specifies an expression whose value CurVal( ) returns from a table or a remote data source.
+      cExpression is typically a field or an expression consisting of a set of fields from the table or remote data source.
 
     </param>
     <param name="uArea">
@@ -2798,9 +2960,13 @@
       Character, Currency, Date, DateTime, Double, Float, Logical, Numeric, or Memo
     </returns>
     <remarks>
-      The field values returned by CURVAL( ) and OLDVAL( ) can be compared to determine if another user on a network changed the field values while the fields were being edited. CURVAL( ) and OLDVAL( ) can only return different values when optimistic row or table buffering is enabled. Optimistic row or table buffering is enabled with CURSORSETPROP( ).
-      If you are working with a view in a multiuser environment, the values returned by CURVAL() might not be up to date unless you call the REFRESH() function first. Data returned by a view is buffered, and the CURVAL() function reads values from the buffer. However, if other users have changed data in the underlying tables for the view, the buffered data is not updated until the REFRESH() function is called.
-      CURVAL( ) returns field values for the current record, and the return value data type is determined by the expression you specify with cExpression.
+      The field values returned by CurVal( ) and OLDVAL( ) can be compared to determine if another user on a network changed the field values
+      while the fields were being edited. CurVal( ) and OLDVAL( ) can only return different values when optimistic row or table buffering is enabled.
+      Optimistic row or table buffering is enabled with CursorSetProp( ).<br/>
+      If you are working with a view in a multiuser environment, the values returned by CurVal() might not be up to date unless you call the REFRESH() function first.
+      Data returned by a view is buffered, and the CurVal() function reads values from the buffer.
+      However, if other users have changed data in the underlying tables for the view, the buffered data is not updated until the REFRESH() function is called.<br/>
+      CurVal( ) returns field values for the current record, and the return value data type is determined by the expression you specify with cExpression.<br/>
       The value is returned for the table or cursor open in the currently selected work area if CURVAL( ) is issued without the optional cTableAlias or nWorkArea arguments.
     </remarks>
     <example>
@@ -2868,112 +3034,290 @@
   </dbc>
   <dbgetprop>
     <summary>
-      Retrieves the value of a property for the current database or for fields, named connections, tables, or views in the current database.
-      You must open the database before you can retrieve its properties or those of its connections, tables, views, or fields. However, you do not need to open a table or view before retrieving its properties.
+      Retrieves the value of a property for the current database or for fields, named connections, tables, or views in the current database.<br/>
+      <note name="Note">
+        You must open the database before you can retrieve its properties or those of its connections, tables, views, or fields.
+        However, you do not need to open a table or view before retrieving its properties.
+      </note>
     </summary>
     <param name="cName">
-
-      Specifies the name of the current open database or the field, named connection, table, or view in the current open database for which <b>DBGETPROP( )</b> returns information.
-      To return information about a field in a table or a view, preface the name of the field with the name of the table or view containing the field. For example, to return information about the codecustid/code field in the codecustomer/code table, specify the following for cName:
+      Specifies the name of the current open database or the field, named connection, table,
+      or view in the current open database for which <b>DBGETPROP( )</b> returns information.<br/>
+      To return information about a field in a table or a view, preface the name of the field with the name of the table or view containing the field.
+      For example, to return information about the codecustid/code field in the codecustomer/code table, specify the following for cName:
        <code language="X#">customer.custid</code>
 
     </param>
     <param name="cType">
 
-      Specifies whether cName is the current database, or a field, named connection, table, or view in the current database. The following table lists the values for cType.
-      CONNECTION
-      cName is a named connection in the current database.
-      DATABASE
-      cName is the current database.
-      FIELD
-      cName is a field in the current database.
-      TABLE
-      cName is a table in the current database.
-      VIEW
-      cName is a view in the current database.
+      Specifies whether cName is the current database, or a field, named connection, table, or view in the current database.
+      The table in the remarks section lists the values for cType.
 
     </param>
     <param name="cProperty">
 
-      Specifies the name of the property for which <b>DBGETPROP( )</b> returns information.
-      The following tables list the values you can specify for cProperty, the return value types, and descriptions of each property. Each description includes the read and write privileges for each property. If a property is read-only, its value cannot be changed with <b>DBSETPROP( )</b>.
+      Specifies the name of the property for which <b>DBGETPROP( )</b> returns information.<br/>
+      The tables in the remarks section list the values you can specify for cProperty, the return value types, and descriptions of each property.
+      Each description includes the read and write privileges for each property. If a property is read-only, its value cannot be changed with <b>DBSETPROP( )</b>.
+    </param>
+    <returns>
+      Character, Numeric, or Logical data type. <b>DBGETPROP( )</b> returns the value for the specified property.
+    </returns>
+    <remarks>
+      For more information about setting property values, see DBSETPROP( ) Function.
+      <list type="table">
+        <listheader>
+          <term>cType</term>
+          <description>Description</description>
+        </listheader>
+        <item>
+          <term>Connection</term>
+          <description>cName is a named connection in the current database.</description>
+        </item>
+        <item>
+          <term>Database</term>
+          <description>Name is the current database.</description>
+        </item>
+        <item>
+          <term>Field</term>
+          <description>cName is a field in the current database.</description>
+        </item>
+        <item>
+          <term>Table</term>
+          <description>cName is a table in the current database.</description>
+        </item>
+        <item>
+          <term>View</term>
+          <description>
+            cName is a view in the current database.
+          </description>
+        </item>
+      </list>
       <b>Connection properties</b>
-
-      Asynchronous
-      L
-      The connection mode. (Default) False (.F.) specifies a synchronous connection. True (.T.) specifies an asynchronous connection.
-      Read/write.
-      BatchMode
+      <list>
+        <listheader>
+          <term>cProperty</term>
+          <description>Type</description>
+          <description>Description</description>
+        </listheader>
+        <item>
+          <term>Asynchronous</term>
+          <description>L</description>
+          <description>
+            The connection mode. (Default) False (.F.) specifies a synchronous connection. True (.T.) specifies an asynchronous connection.<br/>
+          </description>
+        </item>
+        <item>
+          <term>BatchMode</term>
+          <description>L</description>
+          <description>
       The batch-processing mode. (Default) True (.T.) specifies the connection that operates in batch mode.
-      Comment
-      The text of the connection comment.
-      ConnectString
-      The login connection string.
-      ConnectTimeout
-      N
-      The connection timeout interval in seconds. The default is 0 (wait indefinitely).
-      Database
-      The name of the server database specified with the DATABASE clause in the CREATE CONNECTION command or in the Connection Designer.
-      DataSource
-      The name of the data source as defined in the Odbc.ini file.
-      DisconnectRollback
-      Specifies if a pending transaction is committed or rolled back when SQLDISCONNECT( ) is called for the last connection handle.
-      The default is false (.F.), indicating that a pending transaction is committed when SQLDISCONNECT( ) is called for the last connection handle.
-      Specify true (.T.) to roll back a pending transaction when SQLDISCONNECT( ) is called for the last connection handle.
+          </description>
+        </item>
+        <item>
+          <term>Comment</term>
+          <description>C</description>
+          <description>The text of the connection comment.</description>
+        </item>
+        <item>
+          <term>ConnectString</term>
+          <description>C</description>
+          <description>The login connection string.</description>
+        </item>
+        <item>
+          <term>ConnectTimeout</term>
+          <description>N</description>
+          <description>The connection timeout interval in seconds. The default is 0 (wait indefinitely).</description>
+        </item>
+        <item>
+          <term>Database</term>
+          <description>C</description>
+          <description>The name of the server database specified with the DATABASE clause in the CREATE CONNECTION command or in the Connection Designer.</description>
+        </item>
+        <item>
+          <term>DataSource</term>
+          <description>C</description>
+          <description>The name of the data source as defined in the Odbc.ini file.</description>
+        </item>
+        <item>
+          <term>DisconnectRollback</term>
+          <description>L</description>
+          <description>
+            Specifies if a pending transaction is committed or rolled back when SQLDISCONNECT( ) is called for the last connection handle.<br/>
+            The default is false (.F.), indicating that a pending transaction is committed when SQLDISCONNECT( ) is called for the last connection handle.<br/>
+            Specify true (.T.) to roll back a pending transaction when SQLDISCONNECT( ) is called for the last connection handle.<br/>
       Connections with automatic transaction processing are not affected by this setting.
-      DispLogin
-      Contains a numeric value that determines when the ODBC Login dialog box is displayed. DispLogin may assume the following values:
-      1 or DB_PROMPTCOMPLETE (from Foxpro.h). 1 is the default.
-      2 or DB_PROMPTALWAYS (from Foxpro.h).
-      3 or DB_PROMPTNEVER (from Foxpro.h).
-      If 1 or DB_PROMPTCOMPLETE is specified, X# displays the ODBC Login dialog box only if any required information is missing.
-      If 2 or DB_PROMPTALWAYS is specified, the ODBC Login dialog box is always displayed, allowing you to change settings before connecting.
-      If 3 or DB_PROMPTNEVER is specified, the ODBC Login dialog box is not displayed and X# generates an error if the required login information is not available.
-      DispWarnings
-      Contains a logical value that determines if non-trappable warnings from the remote table, ODBC, or X# are displayed. (Default) True (.T.) specifies that non-trappable errors are displayed.
-      IdleTimeout
-      The idle timeout interval in minutes. Timeout is checked no more than once per minute, therefore it is possible that active connections might deactivate one or two minutes later after the specified time interval has elapsed. The default value is 0 (wait indefinitely).
-      PacketSize
-      The size of the network packet used by the connection. Adjusting this value can improve performance. The default value is 4096 bytes (4K).
-      PassWord
-      The connection password.
-      QueryTimeout
-      The query timeout interval in seconds. The default value is 0 (wait indefinitely).
-      Transactions
-      Contains a numeric value that determines how the connection manages transactions on the remote table. Transactions may assume the following values:
-      1 or DB_TRANSAUTO (from Foxpro.h). 1 is the default. Transaction processing for the remote table is handled automatically.
+          </description>
+        </item>
+        <item>
+          <term>DispLogin</term>
+          <description>N</description>
+          <description>
+            Contains a numeric value that determines when the ODBC Login dialog box is displayed. DispLogin may assume the following values:<br/>
+            1 or DB_PROMPTCOMPLETE (from Foxpro.h). 1 is the default.<br/>
+            2 or DB_PROMPTALWAYS (from Foxpro.h).<br/>
+            3 or DB_PROMPTNEVER (from Foxpro.h).<br/>
+            If 1 or DB_PROMPTCOMPLETE is specified, X# displays the ODBC Login dialog box only if any required information is missing.<br/>
+            If 2 or DB_PROMPTALWAYS is specified, the ODBC Login dialog box is always displayed, allowing you to change settings before connecting.<br/>
+            If 3 or DB_PROMPTNEVER is specified, the ODBC Login dialog box is not displayed and
+            X# generates an error if the required login information is not available.
+          </description>
+        </item>
+        <item>
+          <term>DispWarnings</term>
+          <description>L</description>
+          <description>
+            Contains a logical value that determines if non-trappable warnings from the remote table,
+            ODBC, or X# are displayed. (Default) True (.T.) specifies that non-trappable errors are displayed.
+          </description>
+        </item>
+        <item>
+          <term>IdleTimeout </term>
+          <description>N</description>
+          <description>
+            The idle timeout interval in minutes. Timeout is checked no more than once per minute,
+            therefore it is possible that active connections might deactivate one or two minutes later after the specified time interval has elapsed.
+            The default value is 0 (wait indefinitely).
+          </description>
+        </item>
+        <item>
+          <term>PacketSize</term>
+          <description>N</description>
+          <description>
+            The size of the network packet used by the connection.
+            Adjusting this value can improve performance. The default value is 4096 bytes (4K).
+          </description>
+        </item>
+        <item>
+          <term>PassWord</term>
+          <description>C</description>
+          <description>The connection password.</description>
+        </item>
+        <item>
+          <term>QueryTimeout</term>
+          <description>N</description>
+          <description>The query timeout interval in seconds. The default value is 0 (wait indefinitely).</description>
+        </item>
+        <item>
+          <term>Transactions</term>
+          <description>N</description>
+          <description>
+            Contains a numeric value that determines how the connection manages transactions on the remote table. Transactions may assume the following values:<br/>
+            1 or DB_TRANSAUTO (from Foxpro.h). 1 is the default. Transaction processing for the remote table is handled automatically.<br/>
       2 or DB_TRANSMANUAL (from Foxpro.h). Transaction processing is handled manually through SQLCOMMIT( ) and SQLROLLBACK( ).
-      UserId
-      The user identification.
-      WaitTime
-      The amount of time in milliseconds that elapses before X# checks whether the SQL statement has completed executing. The default is 100 milliseconds.
+          </description>
+        </item>
+        <item>
+          <term>UserId</term>
+          <description>C</description>
+          <description>The user identification.</description>
+        </item>
+        <item>
+          <term>WaitTime</term>
+          <description>N</description>
+          <description>
+            The amount of time in milliseconds that elapses before X# checks whether the SQL statement has completed executing.
+            The default is 100 milliseconds.
+          </description>
+        </item>
+      </list>
+      <note name="Note">All of these are read/write</note><br/><br/>
       <b>Database properties</b>
-      The text of the database comment.
-      DBCEventFileName
-      Relative path and filename of external program file containing DBC Events code.
-      DBCEvents
-      Enabled state of DBC Events. Set to True (.T.) to enable.
-      Version
-      The database version number.
+      <list>
+        <listheader>
+          <term>cProperty</term>
+          <description>Type</description>
+          <description>Description</description>
+        </listheader>
+        <item>
+          <term>Comment</term>
+          <description>C</description>
+          <description>
+            The text of the database comment.<br/>
+            Read/write.
+          </description>
+        </item>
+        <item>
+          <term>DBCEventFileName</term>
+          <description>C</description>
+          <description>Relative path and filename of external program file containing DBC Events code.</description>
+        </item>
+        <item>
+          <term>DBCEvents</term>
+          <description>L</description>
+          <description>Enabled state of DBC Events. Set to True (.T.) to enable.</description>
+        </item>
+        <item>
+          <term>Version</term>
+          <description>N</description>
+          <description>
+            The database version number.<br/>
       Read-only.
+          </description>
+        </item>
+      </list>
+      <br/><br/>
       <b>Field properties for tables</b>
-      Caption
-      The field caption. If an equal sign (=) precedes the value of this property, X# evaluates the value as an expression. Otherwise, it is treated as a string literal.
+      <list>
+        <listheader>
+          <term>cProperty</term>
+          <description>Type</description>
+          <description>Description</description>
+        </listheader>
+        <item>
+          <term>Caption</term>
+          <description>C</description>
+          <description>
+            The field caption. If an equal sign (=) precedes the value of this property, X# evaluates the value as an expression.
+            Otherwise, it is treated as a string literal.
+          </description>
+        </item>
+        <item>
+          <term>Comment</term>
+          <description>C</description>
+          <description>
       The text of the field comment.
-      DefaultValue
-      The field default value.
-      DisplayClass
-      Name of the class used for field mapping.
-      DisplayClassLibrary
+          </description>
+        </item>
+        <item>
+          <term>DefaultValue</term>
+          <description>C</description>
+          <description>The field default value.</description>
+        </item>
+        <item>
+          <term>DisplayClass</term>
+          <description>C</description>
+          <description>Name of the class used for field mapping.</description>
+        </item>
+        <item>
+          <term>DisplayClassLibrary</term>
+          <description>C</description>
+          <description>
       Path to the class library specified with the <b>DisplayClass</b> property.
-      Format
-      The field display format. See the Format Property for a list of format settings.
-      InputMask
-      The field input format. See the InputMask Property for a list of input mask settings.
-      RuleExpression
-      The field rule expression.
-      RuleText
-      The field rule error text.
+          </description>
+        </item>
+        <item>
+          <term>Format</term>
+          <description>C</description>
+          <description>The field display format. See the Format Property for a list of format settings.</description>
+        </item>
+        <item>
+          <term>InputMask</term>
+          <description>C</description>
+          <description>The field input format. See the InputMask Property for a list of input mask settings.</description>
+        </item>
+        <item>
+          <term>RuleExpression</term>
+          <description>C</description>
+          <description>The field rule expression.</description>
+        </item>
+        <item>
+          <term>RuleText</term>
+          <description>C</description>
+          <description>The field rule error text.</description>
+        </item>
+      </list>
+      <note name="Note">All of these are read/write</note><br/><br/>
       <b>Field properties for views</b>
       DataType
       The data type for a field in a view. Initially set to the data type for the field in the data source.
@@ -3054,12 +3398,7 @@
       3 or DB_KEYANDMODIFIED (from Foxpro.h) (default). The WHERE clause used to update remote tables consists of the primary fields specified with the <b>KeyFieldList</b> property and any other fields that are modified.
       4 or DB_KEYANDTIMESTAMP (from Foxpro.h). The WHERE clause used to update remote tables consists of the primary fields specified with the <b>KeyFieldList</b> property and a comparison of the time stamps.
       For more information about the <b>WhereType</b> property, see Managing Updates by Using Views.
-    </param>
-    <returns>
-      Character, Numeric, or Logical data type. <b>DBGETPROP( )</b> returns the value for the specified property.
-    </returns>
-    <remarks>
-      For more information about setting property values, see DBSETPROP( ) Function.
+
     </remarks>
     <example>
        <code language="X#">

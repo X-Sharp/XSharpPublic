@@ -36,31 +36,23 @@ INTERNAL CLASS XSharp.VFP.SQLConnection
     PROPERTY ConnectBusy        AS LOGIC  GET _oNetConnection:State == ConnectionState.Executing .OR. _oNetConnection:State == ConnectionState.Fetching
 
     PROPERTY Shared             AS LOGIC AUTO GET SET
-    PROPERTY DataSource         AS STRING AUTO GET SET
+    PRIVATE _DataSource         AS STRING
+    PROPERTY DataSource         AS STRING
+        GET
+            IF SQLReflection.GetPropertyValue(SELF:NetConnection, "DataSource", OUT VAR result)
+                RETURN (STRING) result
+            ENDIF
+            RETURN _DataSource
+        END GET
+        SET
+            _DataSource := Value
+            SQLReflection.SetPropertyValue(SELF:NetConnection, "DataSource", value)
+        END SET
+    END PROPERTY
     PROPERTY UserId             AS STRING AUTO GET SET
     PROPERTY Password           AS STRING AUTO GET SET
     PROPERTY ConnectionString   AS STRING AUTO GET SET
-    PROPERTY ODBChdbc   AS IntPtr
-        GET
-            IF SELF:_oNetConnection IS OdbcConnection
-                LOCAL oDConn := (OdbcConnection) _oNetConnection AS OdbcConnection
-                LOCAL oProp  := oDConn:GetType():GetProperty("ConnectionHandle", BindingFlags.NonPublic | BindingFlags.Instance) AS PropertyInfo
-                IF oProp != NULL_OBJECT
-                    LOCAL oHandle AS OBJECT
-                    LOCAL oHandleType AS System.Type
-                    oHandle := oProp:GetValue(oDConn)
-                    oHandleType := oHandle:GetType()
-                    LOCAL oMethod AS MethodInfo
-                    oMethod := oHandleType:GetMethod("DangerousGetHandle")
-                    IF oMethod != NULL
-                        RETURN oMethod:Invoke(oHandle,NULL)
-                    ENDIF
-                        
-                ENDIF
-            ENDIF
-            RETURN IntPtr.Zero    
-        END GET
-    END PROPERTY
+    PROPERTY ODBChdbc   AS DbConnection GET SELF:NetConnection
 
     METHOD _SetDefaults() AS VOID
         SELF:UserId     := ""

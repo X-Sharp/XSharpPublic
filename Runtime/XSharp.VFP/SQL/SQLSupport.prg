@@ -300,7 +300,5 @@ INTERNAL STATIC CLASS XSharp.VFP.SQLSupport
 		aFieldNames:Add(cColumnName, cResult)
 		RETURN cResult
 
-    
-  
 END CLASS
 

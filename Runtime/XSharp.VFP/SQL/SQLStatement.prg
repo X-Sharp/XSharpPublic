@@ -226,82 +226,7 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
         NEXT        
         RETURN nRestrictions  
 
-    METHOD GetTables(cType AS STRING, cCursorName AS STRING) AS LOGIC
-        SELF:CursorName := cCursorName
-        VAR types := cType:Split(",":ToCharArray(),StringSplitOptions.RemoveEmptyEntries)
-        VAR list  := List<STRING>{}
-        FOREACH VAR type IN types
-            VAR sType := type
-            IF sType:StartsWith("'")
-                sType := sType:Replace("'","")
-            ELSEIF sType:StartsWith(e"\"")
-                sType := sType:Replace(e"\"","")
-            ENDIF
-            list:Add(sType)
-        NEXT
-
-        
-        LOCAL filter AS STRING[]
-        LOCAL oTables AS List<DataTable>
-        LOCAL oTable AS DataTable
-        LOCAL nRestrictions AS LONG
-        oTables := List<DataTable>{}
-        
-        nRestrictions := GetNumRestrictions("Tables") 
-        filter := STRING[]{nRestrictions}
-        oTable := SELF:Connection:NetConnection:GetSchema("Tables", filter)
-        oTables:Add(oTable)
-        
-        nRestrictions := GetNumRestrictions("Views")
-        filter := STRING[]{nRestrictions}
-        oTable := SELF:Connection:NetConnection:GetSchema("Views", filter)
-        oTables:Add(oTable)
-        
-        LOCAL aStruct AS ARRAY
-        aStruct := ArrayNew(5)
-        aStruct[1] := {"TABLE_CAT","C:0",128,0}
-        aStruct[2] := {"TABLE_SCHEM","C:0",128,0}
-        aStruct[3] := {"TABLE_NAME","C:0",128,0}
-        aStruct[4] := {"TABLE_TYPE","C:0",32,0}
-        aStruct[5] := {"REMARKS","C:0",254,0}
-        VAR cTemp := System.IO.Path.GetTempFileName()
-        DbCreate(cTemp, aStruct, "DBFVFP")
-        VAR nArea := _SelectString(cCursorName)
-        IF nArea != 0
-            DbCloseArea()
-        ENDIF
-        VoDbUseArea(TRUE, "DBFVFPSQL",cTemp,cCursorName,FALSE,FALSE)
-        LOCAL oRDD AS IRdd
-        oRDD := (IRdd) DbInfo(DbInfo.DBI_RDD_OBJECT)
-        
-        LOCAL nCol := ((DataColumn) oTable:Columns["Table_Type"]):Ordinal
-        FOREACH VAR oT IN oTables
-            FOREACH oRow AS DataRow IN oT:Rows
-                LOCAL match AS LOGIC
-                VAR data := oRow:ItemArray
-                IF list:Count == 0
-                    match := TRUE
-                ELSE
-                    match := FALSE
-                    LOCAL element := (STRING) data[nCol+1] AS STRING
-                    FOREACH VAR type IN list
-                        IF String.Compare(element, type, TRUE) == 0
-                            match := TRUE
-                            EXIT
-                        ENDIF
-                    NEXT
-                ENDIF
-                IF match
-                    oRDD:Append(TRUE)
-                    FOR VAR nFld := 1 TO 5
-                        oRDD:PutValue(nFld, data[nFld])
-                    NEXT
-                ENDIF
-            NEXT
-       NEXT
-       RETURN TRUE        
-            
-
+ 
     
     STATIC METHOD CreateWorkarea(oSchema AS DataTable, oDataReader AS DbDataReader, cCursorName AS STRING) AS LOGIC
         LOCAL aStruct AS ARRAY
@@ -354,6 +279,156 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
    
 
 
+    #region MetaData
+   METHOD GetTables(cType AS STRING, cCursorName AS STRING) AS LOGIC
+        SELF:CursorName := cCursorName
+        VAR types := cType:Split(",":ToCharArray(),StringSplitOptions.RemoveEmptyEntries)
+        VAR list  := List<STRING>{}
+        FOREACH VAR type IN types
+            VAR sType := type
+            IF sType:StartsWith("'")
+                sType := sType:Replace("'","")
+            ELSEIF sType:StartsWith(e"\"")
+                sType := sType:Replace(e"\"","")
+            ENDIF
+            list:Add(sType)
+        NEXT
+        
+        LOCAL filter AS STRING[]
+        LOCAL oTables AS List<DataTable>
+        LOCAL oTable AS DataTable
+        LOCAL nRestrictions AS LONG
+        oTables := List<DataTable>{}
+        
+        nRestrictions := GetNumRestrictions("Tables") 
+        filter := STRING[]{nRestrictions}
+        oTable := SELF:Connection:NetConnection:GetSchema("Tables", filter)
+        oTables:Add(oTable)
+        
+        nRestrictions := GetNumRestrictions("Views")
+        filter := STRING[]{nRestrictions}
+        oTable := SELF:Connection:NetConnection:GetSchema("Views", filter)
+        oTables:Add(oTable)
+        
+        LOCAL aStruct AS ARRAY
+        aStruct := ArrayNew(5)
+        aStruct[1] := {"TABLE_CAT","C:0",128,0}
+        aStruct[2] := {"TABLE_SCHEM","C:0",128,0}
+        aStruct[3] := {"TABLE_NAME","C:0",128,0}
+        aStruct[4] := {"TABLE_TYPE","C:0",32,0}
+        aStruct[5] := {"REMARKS","C:0",254,0}
+        VAR cTemp := System.IO.Path.GetTempFileName()
+        DbCreate(cTemp, aStruct, "DBFVFP")
+        VAR nArea := _SelectString(cCursorName)
+        IF nArea != 0
+            DbCloseArea()
+        ENDIF
+        VoDbUseArea(TRUE, "DBFVFPSQL",cTemp,cCursorName,FALSE,FALSE)
+        LOCAL oRDD AS IRdd
+        oRDD := (IRdd) DbInfo(DbInfo.DBI_RDD_OBJECT)
+        FOREACH VAR oT IN oTables
+            FOREACH oRow AS DataRow IN oT:Rows
+                VAR oValues := SELF:Connection:Factory:GetMetaDataTableValues(oRow)
+                VAR match := TRUE
+                IF list:Count > 0
+                    match := list:Contains((STRING) oValues[4])
+                ENDIF
+                IF match
+                    oRDD:Append(TRUE)
+                    FOR VAR nFld := 1 TO 5
+                        oRDD:PutValue(nFld, oValues[nFld])
+                    NEXT
+                ENDIF
+            NEXT
+       NEXT
+       RETURN TRUE
+
+   METHOD GetColumnsFox(cTableName AS STRING, cCursorName AS STRING) AS LOGIC
+        SELF:_oNetCommand:CommandText := "Select * from "+cTableName+" where 1 = 0"
+        VAR oDataReader := SELF:_oNetCommand:ExecuteReader()
+        VAR oSchema := oDataReader:GetSchemaTable()
+        VAR aFieldNames := List<STRING>{}
+        VAR aStruct := ArrayNew(4)
+        aStruct[1] := {"FIELD_NAME", "C", 14,0}
+        aStruct[2] := {"FIELD_TYPE", "C", 1,0}
+        aStruct[3] := {"FIELD_LEN", "N", 3,0}
+        aStruct[4] := {"FIELD_DEC", "N", 3,0}
+        VAR cTemp := System.IO.Path.GetTempFileName()
+        DbCreate(cTemp, aStruct, "DBFVFP")
+        VoDbUseArea(TRUE, "DBFVFPSQL",cTemp,cCursorName,FALSE,FALSE)
+        LOCAL oRDD AS IRdd
+        oRDD := (IRdd) DbInfo(DbInfo.DBI_RDD_OBJECT)
+        FOREACH schemaRow AS DataRow IN oSchema:Rows
+            VAR fieldInfo    := VfpFieldInfo.FromSchema(schemaRow, aFieldNames)
+            oRDD:Append(TRUE)
+            oRDD:PutValue(1, fieldInfo:FieldName)
+            oRDD:PutValue(2, Left(fieldInfo:Type,1))
+            oRDD:PutValue(3, fieldInfo:Length)
+            oRDD:PutValue(4, fieldInfo:Decimals)
+            oRDD:GoCold()
+        NEXT
+        RETURN TRUE        
+        
+   METHOD GetColumnsNative(cTableName AS STRING, cCursorName AS STRING) AS LOGIC
+        LOCAL filter AS STRING[]
+        LOCAL oTable AS DataTable
+        LOCAL nRestrictions AS LONG
+        nRestrictions := GetNumRestrictions("Columns") 
+        filter := STRING[]{nRestrictions}
+        filter[3] := cTableName
+        oTable := SELF:Connection:NetConnection:GetSchema("Columns", filter)
+        LOCAL aStruct AS ARRAY
+        aStruct := ArrayNew(19)
+        aStruct[1] := {"TABLE_CAT","C:0",128,0}
+        aStruct[2] := {"TABLE_SCHE","C:0",128,0}
+        aStruct[3] := {"TABLE_NAME","C",128,0}
+        aStruct[4] := {"COLUMN_NAM","C",128,0}
+        aStruct[5] := {"DATA_TYPE","I",4,0}
+        aStruct[6] := {"TYPE_NAME","C",128,0}
+        aStruct[7] := {"COLUMN_SIZ","I:0",4,0}
+        aStruct[8] := {"BUFFER_LEN","I:0",4,0}
+        aStruct[9] := {"DECIMAL_DI","I:0",4,0}
+        aStruct[10] := {"NUM_PREC_R","I:0",4,0}
+        aStruct[11] := {"NULLABLE","I",4,0}
+        aStruct[12] := {"REMARKS","C:0",254,0}
+        aStruct[13] := {"COLUMN_DEF","M:0",4,0}
+        aStruct[14] := {"SQL_DATA_T","I",4,0}
+        aStruct[15] := {"SQL_DATETI","I:0",4,0}
+        aStruct[16] := {"CHAR_OCTET","I:0",4,0}
+        aStruct[17] := {"ORDINAL_PO","I",4,0}
+        aStruct[18] := {"IS_NULLABL","C:0",254,0}
+        aStruct[19] := {"SS_DATA_TY","I:0",4,0}
+        VAR cTemp := System.IO.Path.GetTempFileName()
+        DbCreate(cTemp, aStruct, "DBFVFP")
+        VAR nArea := _SelectString(cCursorName)
+        IF nArea != 0
+            DbCloseArea()
+        ENDIF
+        VoDbUseArea(TRUE, "DBFVFPSQL",cTemp,cCursorName,FALSE,FALSE)
+        LOCAL oRDD AS IRdd
+        oRDD := (IRdd) DbInfo(DbInfo.DBI_RDD_OBJECT)
+        FOREACH oRow AS DataRow IN oTable:Rows
+            oRDD:Append(TRUE)
+            VAR oValues := SELF:Connection:Factory:GetMetaDataColumnValues(oRow)
+            FOR VAR i := 1 TO oValues:Length
+                oRDD:PutValue(i, oValues[i])
+            NEXT
+         NEXT
+       RETURN TRUE        
+
+   METHOD GetColumns(cTableName AS STRING, cType AS STRING, cCursorName AS STRING) AS LOGIC
+        SELF:CursorName := cCursorName
+        IF String.IsNullOrEmpty(cTableName) .OR. String.IsNullOrEmpty(cType)
+            RETURN FALSE
+        ENDIF
+        SWITCH cType
+        CASE "FOXPRO"
+            RETURN GetColumnsFox(cTableName, cCursorName)
+        CASE "NATIVE"
+            RETURN GetColumnsNative(cTableName, cCursorName)
+        END SWITCH
+        RETURN FALSE
+    #endregion
 
 
    
@@ -533,5 +608,6 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
 		    RETURN cName            
     END CLASS
     INTERNAL DELEGATE SqlGetData() AS OBJECT[]
-        
+
+
 END CLASS

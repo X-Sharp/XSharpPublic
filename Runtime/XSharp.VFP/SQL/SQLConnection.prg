@@ -18,6 +18,8 @@ USING System.Reflection
 INTERNAL CLASS XSharp.VFP.SQLConnection
     PROTECT _oNetConnection AS DbConnection
     PROTECT _oFactory       AS ISqlFactory
+    PROTECT _aStatements     AS IList<SQLStatement>
+
     PROPERTY Factory        AS ISqlFactory GET _oFactory
     PROPERTY NetConnection      AS DbConnection GET _oNetConnection
     PROPERTY State              AS ConnectionState GET _oNetConnection:State
@@ -60,6 +62,7 @@ INTERNAL CLASS XSharp.VFP.SQLConnection
         SELF:DataSource := ""
         SELF:Shared     := FALSE
         SELF:_oFactory  := SQLSupport.Factory
+        SELF:_aStatements := List<SQLStatement>{}
 
 
 
@@ -151,6 +154,23 @@ INTERNAL CLASS XSharp.VFP.SQLConnection
             RETURN TRUE
         ENDIF
         RETURN FALSE
+        
+    METHOD AddStatement(oStmt AS SQLStatement) AS LOGIC
+        IF !_aStatements:Contains(oStmt)
+            _aStatements:Add(oStmt)
+            RETURN TRUE
+        ENDIF
+        RETURN FALSE
 
+    METHOD RemoveStatement(oStmt AS SQLStatement) AS LOGIC
+        IF _aStatements:Contains(oStmt)
+            _aStatements:Remove(oStmt)
+            IF _aStatements:Count == 0
+                SELF:Close()
+            ENDIF
+            RETURN TRUE
+        ENDIF
+        RETURN FALSE
+        
 
 END CLASS

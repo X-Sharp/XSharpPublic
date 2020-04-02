@@ -30,6 +30,8 @@ ABSTRACT CLASS XSharp.Data.AbstractSqlFactory IMPLEMENTS XSharp.Data.ISqlFactory
 
     PROPERTY CanCreateDataSourceEnumerator AS LOGIC GET oInstance:CanCreateDataSourceEnumerator
 
+    
+
 
     CONSTRUCTOR
         oInstance := NULL
@@ -127,7 +129,10 @@ ABSTRACT CLASS XSharp.Data.AbstractSqlFactory IMPLEMENTS XSharp.Data.ISqlFactory
     METHOD AfterOpen(oDataReader AS DbDataReader) AS DbDataReader
         RETURN oDataReader
 
- 
+    ABSTRACT METHOD GetMetaDataColumnValues(oRow AS DataRow) AS OBJECT[]
+
+    ABSTRACT METHOD GetMetaDataTableValues(oRow AS DataRow) AS OBJECT[]
+
 
 
 END CLASS

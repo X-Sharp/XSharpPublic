@@ -21,6 +21,8 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
     PROTECT _oConnection    AS SQLConnection
     PROTECT _oNetCommand    AS DbCommand
     PROTECT _oTransaction   AS DbTransaction
+    PROTECT _oLastDataReader AS DbDataReader
+    PROTECT _nextCursorNo    AS LONG
     
     PROPERTY Connected          AS LOGIC GET Connection:State == System.Data.ConnectionState.Open
     PROPERTY Connection         AS SQLConnection GET _oConnection
@@ -33,57 +35,38 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
     PROPERTY Password           AS STRING GET Connection:Password   
     PROPERTY Shared             AS LOGIC  GET Connection:Shared             SET Connection:Shared := Value
     PROPERTY ConnectionString   AS STRING GET Connection:ConnectionString   
-    PROPERTY ODBChdbc           AS IntPtr GET SELF:Connection:ODBChdbc
-    
+    PROPERTY ODBChdbc           AS DbConnection GET SELF:Connection:NetConnection
+    PROPERTY ODBChstmt          AS DbCommand    GET _oNetCommand
     PROPERTY DisconnectRollback AS LOGIC AUTO GET SET
     PROPERTY DispWarnings       AS LOGIC AUTO GET SET
     PROPERTY IdleTimeout        AS LONG  AUTO GET SET
-    PROPERTY PacketSize         AS LONG  AUTO GET SET
+    PRIVATE _PacketSize         AS LONG
+    PROPERTY PacketSize         AS LONG
+        GET
+            IF SQLReflection.GetPropertyValue(SELF:Connection:NetConnection, "PacketSize", OUT VAR result)
+                RETURN (LONG) result
+            ENDIF
+            RETURN _PacketSize
+            
+        END GET
+        SET
+            _PacketSize := value
+            SQLReflection.SetPropertyValue(SELF:Connection:NetConnection, "PacketSize", value)
+            RETURN
+
+    END SET
+    END PROPERTY
     PROPERTY QueryTimeOut       AS LONG  GET _oNetCommand:CommandTimeout SET _oNetCommand:CommandTimeout := Value
     PROPERTY TransactionMode    AS LONG  AUTO GET SET
     PROPERTY WaitTime           AS LONG  AUTO GET SET
     PROPERTY Prepared           AS LOGIC AUTO GET PRIVATE SET
     PROPERTY CursorName         AS STRING AUTO GET SET
 
-    PROPERTY ODBChstmt AS IntPtr
-        GET
-            IF SELF:_oNetCommand IS OdbcCommand
-                LOCAL oDCommand := (OdbcCommand) _oNetCommand AS OdbcCommand
-                LOCAL oFld AS FieldInfo
-                LOCAL oType AS System.Type
-                oType := oDCommand:GetType():UnderlyingSystemType
-                oFld := oType:GetField("_cmdWrapper", BindingFlags.NonPublic | BindingFlags.Instance) 
-                IF oFld != NULL_OBJECT
-                    LOCAL oWrap AS OBJECT
-                    LOCAL oWrapType AS System.Type
-                    oWrap := oFld:GetValue(oDCommand)
-                    IF oWrap != NULL
-                        oWrapType  := oWrap:GetType()
-                        LOCAL oProp := oWrapType:GetProperty("StatementHandle", BindingFlags.NonPublic | BindingFlags.Instance) AS PropertyInfo
-                        IF oProp != NULL
-                            LOCAL oHandle AS OBJECT
-                            LOCAL oHandleType AS System.Type
-                            oHandle := oProp:GetValue(oWrap, NULL)
-                            oHandleType := oHandle:GetType()
-                            LOCAL oMethod AS MethodInfo
-                            oMethod := oHandleType:GetMethod("DangerousGetHandle")
-                            IF oMethod != NULL
-                                RETURN oMethod:Invoke(oHandle,NULL)
-                            ENDIF
-                        ENDIF
-                    ENDIF                        
-                ENDIF
-            ENDIF
-            RETURN IntPtr.Zero    
-        END GET
-    END PROPERTY
-
-
 
     METHOD SetDefaults() AS VOID
         SELF:Shared             := FALSE
         SELF:Asynchronous       := FALSE
-        SELF:BatchMode          := FALSE
+        SELF:BatchMode          := TRUE
         SELF:DisconnectRollback := FALSE
         SELF:DispWarnings       := FALSE
         SELF:IdleTimeout        := 0
@@ -95,6 +78,7 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
         SELF:_oNetCommand       := NULL
         SELF:_oConnection       := NULL
         SELF:_oTransaction      := NULL
+
 
 
     PRIVATE METHOD _AllocateCommand() AS VOID
@@ -167,32 +151,65 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
         SELF:CursorName := cCursorName
         VAR tables := SELF:CopyToCursor()
         CopyToInfo(tables, aInfo)
-        RETURN 1
+        IF ALen(tables) > 0
+            RETURN (LONG) ALen(tables)
+        ENDIF
+        RETURN 0
         
     METHOD Execute(aInfo AS ARRAY) AS LONG
         VAR tables := SELF:CopyToCursor()
         CopyToInfo(tables, aInfo)
-        RETURN 1
+        IF ALen(tables) > 0
+            RETURN (LONG) ALen(tables)
+        ENDIF
+        RETURN 0
 
     PRIVATE METHOD CopyToInfo(aResult, aInfo AS ARRAY) AS VOID
         ASize(aInfo, ALen(aResult))
         ACopy(aResult, aInfo)
         RETURN
 
+    
     METHOD CopyToCursor() AS ARRAY
         VAR oDataReader := SELF:_oNetCommand:ExecuteReader()
-        VAR cursorName := SELF:CursorName
-        LOCAL nAreas   := 0 AS LONG
+        RETURN CopyToCursor(oDataReader, 0)
+
+    METHOD CopyToCursor(oDataReader AS DbDataReader, cursorNo AS LONG) AS ARRAY
         LOCAL result   := {} AS ARRAY
-        REPEAT
+        _oLastDataReader := NULL_OBJECT
+        DO WHILE TRUE
+            VAR cursorName := SELF:CursorName
+            IF cursorNo != 0
+                cursorName += cursorNo:ToString()
+            ENDIF
     		oDataReader := SELF:Connection:Factory:AfterOpen(oDataReader)
             VAR oSchema := oDataReader:GetSchemaTable()
             CreateWorkarea(oSchema, oDataReader, cursorName)
             AAdd(result, {cursorName, RecCount()})
-            nAreas += 1
-            cursorName := SELF:CursorName+nAreas:ToString()
-        UNTIL !oDataReader:NextResult()
+            cursorNo += 1
+            IF ! SELF:BatchMode
+                _oLastDataReader := oDataReader
+                _nextCursorNo    := cursorNo
+                EXIT
+            ENDIF
+            oDataReader:NextResult()
+        ENDDO
         RETURN result
+
+    METHOD MoreResults(cursorName AS STRING, aInfo AS ARRAY) AS LONG
+        IF !String.IsNullOrEmpty(cursorName)
+            SELF:CursorName := cursorName
+            SELF:_nextCursorNo := 0
+        ENDIF
+        IF _oLastDataReader != NULL .AND. _oLastDataReader:NextResult()
+            VAR tables := CopyToCursor(_oLastDataReader, _nextCursorNo)
+            CopyToInfo(tables, aInfo)
+            IF ALen(tables) > 0
+                RETURN (LONG) ALen(tables)
+            ENDIF
+        ENDIF
+        RETURN 0
+    
 
     METHOD GetNumRestrictions(cCollectionName AS STRING) AS LONG
         LOCAL nRestrictions := 0 AS LONG
@@ -245,6 +262,10 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
         aStruct[5] := {"REMARKS","C:0",254,0}
         VAR cTemp := System.IO.Path.GetTempFileName()
         DbCreate(cTemp, aStruct, "DBFVFP")
+        VAR nArea := _SelectString(cCursorName)
+        IF nArea != 0
+            DbCloseArea()
+        ENDIF
         VoDbUseArea(TRUE, "DBFVFPSQL",cTemp,cCursorName,FALSE,FALSE)
         LOCAL oRDD AS IRdd
         oRDD := (IRdd) DbInfo(DbInfo.DBI_RDD_OBJECT)
@@ -277,7 +298,7 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
        RETURN TRUE        
             
 
-
+    
     STATIC METHOD CreateWorkarea(oSchema AS DataTable, oDataReader AS DbDataReader, cCursorName AS STRING) AS LOGIC
         LOCAL aStruct AS ARRAY
         LOCAL nFields AS LONG
@@ -293,6 +314,10 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
         nFields := aStruct:Count
         VAR cTemp := System.IO.Path.GetTempFileName()
         DbCreate(cTemp, aStruct, "DBFVFP")
+        VAR nArea := _SelectString(cCursorName)
+        IF nArea != 0
+            DbCloseArea()
+        ENDIF
         VoDbUseArea(TRUE, "DBFVFPSQL",cTemp,cCursorName,FALSE,FALSE)
         LOCAL oRDD AS IRdd
         oRDD := (IRdd) DbInfo(DbInfo.DBI_RDD_OBJECT)
@@ -300,16 +325,21 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
         // DBFVFPSQL has a method SetData to set all the values of the current row.
         oMIGet := oRDD:GetType():GetMethod("GetData", BindingFlags.Instance+BindingFlags.IgnoreCase+BindingFlags.Public)
         IF oMIGet != NULL
+            VAR GetData := (SqlGetData) oMIGet:CreateDelegate(typeof(SqlGetData), oRDD) 
             DO WHILE oDataReader:Read()
                 oRDD:Append(TRUE)
-                VAR data := (OBJECT[]) oMIGet:Invoke(oRDD, NULL)
+                // Get the data array from the workarea
+                VAR data := GetData()
+                // and fetch its values. This automatically updates the array that is owned by the RDD
                 oDataReader:GetValues(data)
             ENDDO
         ELSE
             VAR data := OBJECT[]{oSchema:Rows:Count+1}  // 1 extra for the NullFlags
             DO WHILE oDataReader:Read()
                 oRDD:Append(TRUE)
+                // use our local data array
                 oDataReader:GetValues(data)
+                // and write the values to the RDD
                 FOR VAR nFld := 1 UPTO nFields
                     oRDD:PutValue(nFld, data[nFld])
                 NEXT
@@ -486,5 +516,6 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
             
         ENDIF
 		RETURN result
+    DELEGATE SqlGetData() AS OBJECT[]
         
 END CLASS

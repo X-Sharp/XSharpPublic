@@ -92,6 +92,7 @@
     <Compile Include="Defines.prg" />
     <Compile Include="GetWord.prg" />
     <Compile Include="NotSupported.prg" />
+    <Compile Include="SQL\SQLReflection.prg" />
     <Compile Include="SQL\SQLStatement.prg" />
     <Compile Include="SQL\SQLEnums.prg" />
     <Compile Include="SQL\SQLSupport.prg" />

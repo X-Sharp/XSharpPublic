@@ -6,7 +6,7 @@
 USING System.Collections.Generic 
 USING System
 USING XSharp.VFP
-
+USING XSharp.Data
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/sqlconnect/*" />
 FUNCTION SqlConnect(uSource , cUserID , cPassword , lShared) AS LONG
@@ -130,11 +130,7 @@ FUNCTION SqlExec( nStatementHandle , cSQLCommand , cCursorName, aCountInfo) AS L
         ELSE
             result := oStmt:Execute(cSQLCommand, cCursorName, aInfo)
         ENDIF
-        
-        IF IsArray(aCountInfo)
-            ASize(aCountInfo, ALen(aInfo))
-            ACopy(aInfo, aCountInfo)
-        ENDIF
+        CopyResults(aCountInfo, aInfo)
         RETURN result
     ENDIF
     RETURN 0
@@ -153,13 +149,23 @@ FUNCTION SqlIdleDisconnect( nStatementHandle) AS LONG
     THROW NotImplementedException{}
     // RETURN 0
 
-/// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/sqlmoreresults/*" />
 
 FUNCTION SqlMoreResults( nStatementHandle , cCursorName , aCountInfo) AS LONG
+    LOCAL oStmt AS XSharp.VFP.SQLStatement
     CheckStatementHandle(nStatementHandle)    
-    THROW NotImplementedException{}
-    // RETURN 0
+    IF ! IsString(cCursorName)
+        cCursorName := ""       // Empty so the previous name is kept
+    ENDIF
+    oStmt := SQLSupport.FindStatement(nStatementHandle)
+    IF oStmt != NULL
+        LOCAL aInfo := {} AS ARRAY
+        VAR result := oStmt:MoreResults(cCursorName, aInfo)
+        CopyResults(aCountInfo, aInfo)
+        RETURN result
+    ENDIF
+    RETURN 0
+        
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/sqlprepare/*" />
 FUNCTION SqlPrepare( nStatementHandle, cSQLCommand, cCursorName) AS LONG
@@ -221,3 +227,37 @@ STATIC FUNCTION CheckStatementHandle(nStatementHandle) AS LOGIC
 
 
 
+FUNCTION SqlSetProvider(uProvider) AS ISqlFactory
+    LOCAL oResult := SQLSupport.Factory
+    IF IsString(uProvider)
+        LOCAL cProvider AS STRING
+        LOCAL oFactory  := NULL_OBJECT AS ISqlFactory
+        cProvider := (STRING) uProvider
+        cProvider := cProvider:ToLower()
+        IF cProvider:StartsWith("odbc")
+            oFactory := XSharp.Data.OdbcFactory{}
+        ELSEIF cProvider:StartsWith("oledb")
+            oFactory := XSharp.Data.OleDbFactory{}
+        ELSEIF cProvider:StartsWith("sql")
+           oFactory := XSharp.Data.SqlServerFactory{}
+        ENDIF
+        IF oFactory != NULL_OBJECT
+            SQLSupport.Factory := (ISqlFactory) oFactory
+        ENDIF
+    ELSEIF IsObject(uProvider)
+        LOCAL oFactory AS OBJECT
+        oFactory := uProvider
+        IF oFactory IS ISqlFactory VAR oDataFactory
+            SQLSupport.Factory := oDataFactory
+        ENDIF
+    ENDIF
+    RETURN oResult
+
+
+STATIC FUNCTION CopyResults(aCountInfo AS USUAL, aInfo AS ARRAY) AS VOID
+    IF IsArray(aCountInfo)
+        ASize(aCountInfo, ALen(aInfo))
+        IF ALen(aInfo) > 0
+            ACopy(aInfo, aCountInfo)
+        ENDIF
+    ENDIF

@@ -75,29 +75,11 @@ FUNCTION SQLCANCEL( nStatementHandle) AS LONG
     THROW NotImplementedException{}
     // RETURN 0
 
-/// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/sqlcolumns/*" />
-
-FUNCTION SqlColumns( nStatementHandle, cTableName, cType, cCursorName) AS USUAL
-    THROW NotImplementedException{}
-    // RETURN NIL
-
-/// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/sqlcommit/*" />
-
-FUNCTION SqlCommit( nStatementHandle ) AS LONG
-    CheckStatementHandle(nStatementHandle)
-    THROW NotImplementedException{}
-    // RETURN 0
-
-
 
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/sqldisconnect/*" />
 FUNCTION SqlDisconnect( nStatementHandle) AS LONG
-    LOCAL oStmt AS XSharp.VFP.SQLStatement
-    CheckStatementHandle(nStatementHandle)    
-    oStmt := SQLSupport.FindStatement(nStatementHandle)
+    VAR oStmt := GetStatement(nStatementHandle)    
     IF oStmt != NULL
         SQLSupport.RemoveStatement(nStatementHandle)
         oStmt:DisConnect()
@@ -108,15 +90,13 @@ FUNCTION SqlDisconnect( nStatementHandle) AS LONG
 /// <include file="VFPDocs.xml" path="Runtimefunctions/sqlexec/*" />
 
 FUNCTION SqlExec( nStatementHandle , cSQLCommand , cCursorName, aCountInfo) AS LONG
-    LOCAL oStmt AS XSharp.VFP.SQLStatement
     LOCAL aInfo AS ARRAY
     LOCAL prepared := FALSE AS LOGIC
-    CheckStatementHandle(nStatementHandle)    
-    IF ! IsString(cCursorName)
-        cCursorName := "SQLRESULT"
-    ENDIF
-    oStmt := SQLSupport.FindStatement(nStatementHandle)
+    VAR oStmt := GetStatement(nStatementHandle)    
     IF oStmt != NULL
+        IF ! IsString(cCursorName)
+            cCursorName := "SQLRESULT"
+        ENDIF
         IF !IsString(cSQLCommand)
             IF ! oStmt:Prepared
                 THROW Error{"SQL Statement parameter is required for non prepared SQL Statements"}
@@ -135,30 +115,23 @@ FUNCTION SqlExec( nStatementHandle , cSQLCommand , cCursorName, aCountInfo) AS L
     ENDIF
     RETURN 0
     
-/// <include file="VFPDocs.xml" path="Runtimefunctions/sqlgetprop/*" />
-FUNCTION SqlGetProp( nStatementHandle, cSetting ) AS USUAL
-    CheckStatementHandle(nStatementHandle)    
-    RETURN SQLSupport.GetSetProperty(nStatementHandle, cSetting,NULL)
-    // RETURN NIL
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/sqlidledisconnect/*" />
 
 FUNCTION SqlIdleDisconnect( nStatementHandle) AS LONG
-    CheckStatementHandle(nStatementHandle)    
+    GetStatement(nStatementHandle)    
     THROW NotImplementedException{}
     // RETURN 0
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/sqlmoreresults/*" />
 
 FUNCTION SqlMoreResults( nStatementHandle , cCursorName , aCountInfo) AS LONG
-    LOCAL oStmt AS XSharp.VFP.SQLStatement
-    CheckStatementHandle(nStatementHandle)    
-    IF ! IsString(cCursorName)
-        cCursorName := ""       // Empty so the previous name is kept
-    ENDIF
-    oStmt := SQLSupport.FindStatement(nStatementHandle)
+    VAR oStmt := GetStatement(nStatementHandle)    
     IF oStmt != NULL
+        IF ! IsString(cCursorName)
+            cCursorName := ""       // Empty so the previous name is kept
+        ENDIF
         LOCAL aInfo := {} AS ARRAY
         VAR result := oStmt:MoreResults(cCursorName, aInfo)
         CopyResults(aCountInfo, aInfo)
@@ -169,60 +142,25 @@ FUNCTION SqlMoreResults( nStatementHandle , cCursorName , aCountInfo) AS LONG
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/sqlprepare/*" />
 FUNCTION SqlPrepare( nStatementHandle, cSQLCommand, cCursorName) AS LONG
-    LOCAL oStmt AS XSharp.VFP.SQLStatement
-    CheckStatementHandle(nStatementHandle)    
-    IF ! IsString(cSQLCommand)
-        THROW Error{"Number or type of parameters is not correct"}
-    ENDIF
-    IF ! IsString(cCursorName)
-        cCursorName := "SQLRESULT"
-    ENDIF
-    oStmt := SQLSupport.FindStatement(nStatementHandle)
+    VAR oStmt := GetStatement(nStatementHandle)    
     IF oStmt != NULL
+        IF ! IsString(cSQLCommand)
+            THROW Error{"Number or type of parameters is not correct"}
+        ENDIF
+        IF ! IsString(cCursorName)
+            cCursorName := "SQLRESULT"
+        ENDIF
         VAR result := oStmt:Prepare(cSQLCommand, cCursorName)
         RETURN result
     ENDIF
     RETURN 0
 
-/// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/sqlrollback/*" />
 
-FUNCTION SqlRollBack( nStatementHandle ) AS LONG
-    CheckStatementHandle(nStatementHandle)    
-    THROW NotImplementedException{}
-    // RETURN 0
-
-/// <include file="VFPDocs.xml" path="Runtimefunctions/sqlsetprop/*" />
-FUNCTION SqlSetProp( nStatementHandle, cSetting , eExpression) AS LONG
-    CheckStatementHandle(nStatementHandle)    
-    RETURN (INT) SQLSupport.GetSetProperty(nStatementHandle, cSetting,eExpression)
-
-
-
-/// <include file="VFPDocs.xml" path="Runtimefunctions/sqltables/*" />
-FUNCTION SqlTables( nStatementHandle , cTableTypes , cCursorName) AS LONG
-    LOCAL oStmt AS XSharp.VFP.SQLStatement
-    CheckStatementHandle(nStatementHandle)    
-    oStmt := SQLSupport.FindStatement(nStatementHandle)
-    IF oStmt != NULL
-       IF ! IsString(cTableTypes)
-           cTableTypes := ""
-       ENDIF
-       IF ! IsString(cCursorName)
-            cCursorName := "SQLRESULT"
-        ENDIF        
-        oStmt:GetTables(cTableTypes, cCursorName)
-        RETURN 1
-    ENDIF
-    RETURN -1
-
-
-
-STATIC FUNCTION CheckStatementHandle(nStatementHandle) AS LOGIC
+INTERNAL FUNCTION GetStatement(nStatementHandle) AS XSharp.VFP.SQLStatement
     IF !IsLong(nStatementHandle)
         THROW Error{"Number or type of parameters is not correct"}
     ENDIF
-    RETURN TRUE
+    RETURN SQLSupport.FindStatement(nStatementHandle)
 
 
 
@@ -261,3 +199,82 @@ STATIC FUNCTION CopyResults(aCountInfo AS USUAL, aInfo AS ARRAY) AS VOID
             ACopy(aInfo, aCountInfo)
         ENDIF
     ENDIF
+
+
+#region Transaction Support
+/// <include file="VFPDocs.xml" path="Runtimefunctions/sqlcommit/*" />
+FUNCTION SqlCommit( nStatementHandle ) AS LONG
+    VAR oStmt := GetStatement(nStatementHandle)
+    IF oStmt != NULL .AND. oStmt:Commit()
+       RETURN 1
+    ENDIF    
+    RETURN 0
+
+/// <include file="VFPDocs.xml" path="Runtimefunctions/sqlrollback/*" />
+FUNCTION SqlRollBack( nStatementHandle ) AS LONG
+    VAR oStmt := GetStatement(nStatementHandle)    
+    IF oStmt != NULL .AND. oStmt:Rollback()
+       RETURN 1
+    ENDIF    
+    RETURN 0
+
+#endregion
+
+#region Properties
+
+/// <include file="VFPDocs.xml" path="Runtimefunctions/sqlgetprop/*" />
+FUNCTION SqlGetProp( nStatementHandle, cSetting ) AS USUAL
+    GetStatement(nStatementHandle)    
+    RETURN SQLSupport.GetSetProperty(nStatementHandle, cSetting,NULL)
+
+
+/// <include file="VFPDocs.xml" path="Runtimefunctions/sqlsetprop/*" />
+FUNCTION SqlSetProp( nStatementHandle, cSetting , eExpression) AS LONG
+    GetStatement(nStatementHandle)    
+    RETURN (INT) SQLSupport.GetSetProperty(nStatementHandle, cSetting,eExpression)
+
+#endregion
+
+
+
+#region MetaData
+
+/// <include file="VFPDocs.xml" path="Runtimefunctions/sqltables/*" />
+FUNCTION SqlTables( nStatementHandle , cTableTypes , cCursorName) AS LONG
+    VAR oStmt := GetStatement(nStatementHandle)    
+    IF oStmt != NULL
+       IF ! IsString(cTableTypes)
+           cTableTypes := ""
+       ENDIF
+       IF ! IsString(cCursorName)
+            cCursorName := "SQLRESULT"
+        ENDIF        
+        oStmt:GetTables(cTableTypes, cCursorName)
+        RETURN 1
+    ENDIF
+    RETURN -1
+
+/// <include file="VFPDocs.xml" path="Runtimefunctions/sqlcolumns/*" />
+FUNCTION SqlColumns( nStatementHandle, cTableName, cType, cCursorName) AS USUAL
+    VAR oStmt := GetStatement(nStatementHandle)    
+    IF oStmt != NULL
+       IF ! IsString(cTableName)
+           cTableName := ""
+       ENDIF
+       IF ! IsString(cType)
+           cType := "FOXPRO"
+       ENDIF
+       IF Upper(cType) != "FOXPRO"  .AND. Upper(cType) != "NATIVE"
+            THROW Error{"Incorrect value for cType. Expected 'FOXPRO' or 'NATIVE'. Default is 'FOXPRO'"}
+       ENDIF
+       IF ! IsString(cCursorName)
+            cCursorName := "SQLRESULT"
+       ENDIF        
+       oStmt:GetColumns(cTableName, cType, cCursorName)
+       RETURN 1
+    ENDIF
+    RETURN -1
+
+
+#endregion
+

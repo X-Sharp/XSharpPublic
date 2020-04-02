@@ -18,8 +18,6 @@ INTERFACE XSharp.Data.ISqlFactory
     /// <summary>Return the name of the factory.</summary>
     PROPERTY Name      AS STRING GET
 
-    PROPERTY MetadataColumns AS STRING[] GET
-
     /// <summary>Does the factory support datasource enumeration.</summary>
     PROPERTY CanCreateDataSourceEnumerator AS LOGIC GET
 
@@ -110,7 +108,8 @@ INTERFACE XSharp.Data.ISqlFactory
     /// <returns>The datareader as should be used by the SqlSelect class.</returns>
     METHOD AfterOpen(oDataReader AS DbDataReader) AS DbDataReader
 
-    
+    METHOD GetMetaDataColumnValues(oRow AS DataRow) AS OBJECT[]
+    METHOD GetMetaDataTableValues(oRow AS DataRow) AS OBJECT[]
 
 END INTERFACE    
 

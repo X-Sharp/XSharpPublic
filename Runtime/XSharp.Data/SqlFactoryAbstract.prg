@@ -26,6 +26,7 @@ ABSTRACT CLASS XSharp.Data.AbstractSqlFactory IMPLEMENTS XSharp.Data.ISqlFactory
     PROTECTED oInstance AS System.Data.Common.DbProviderFactory
 
     PROPERTY QuoteChar AS STRING GET ""
+    PROPERTY Name      AS STRING GET "AbstractFactory"
 
     PROPERTY CanCreateDataSourceEnumerator AS LOGIC GET oInstance:CanCreateDataSourceEnumerator
 
@@ -104,7 +105,7 @@ ABSTRACT CLASS XSharp.Data.AbstractSqlFactory IMPLEMENTS XSharp.Data.ISqlFactory
 
     /// <inheritdoc />
     METHOD GetName(oConn AS DbConnection) AS STRING
-        RETURN "ODBC"
+        RETURN oConn:GetType():FullName
 
     /// <inheritdoc />
     METHOD DriverConnect(hWindow AS OBJECT, uCompletion AS OBJECT, cConnectionString AS OBJECT) AS STRING

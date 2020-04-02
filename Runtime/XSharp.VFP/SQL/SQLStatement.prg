@@ -86,6 +86,7 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
         SELF:_oNetCommand:Connection := SELF:Connection:NetConnection
         SELF:_oNetCommand:CommandText := "Select 1"
         SELF:_oNetCommand:ExecuteNonQuery()
+        _oConnection:AddStatement(SELF)
         RETURN 
 
     
@@ -135,6 +136,7 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
                 SELF:Connection:Close()
             ENDIF
         ENDIF
+        _oConnection:RemoveStatement(SELF)
         _oNetCommand := NULL
         _oConnection := NULL
         RETURN TRUE
@@ -192,7 +194,9 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
                 _nextCursorNo    := cursorNo
                 EXIT
             ENDIF
-            oDataReader:NextResult()
+            IF ! oDataReader:NextResult()
+                EXIT
+            ENDIF
         ENDDO
         RETURN result
 

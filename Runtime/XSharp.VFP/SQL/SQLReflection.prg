@@ -11,18 +11,12 @@
 
 
 USING System
-USING System.Collections.Generic
-USING System.Text
-USING XSharp.Data
-USING System.Data.Common
-USING XSharp.VFP
-USING System.Data
 USING System.Reflection
 
 
 
 INTERNAL STATIC CLASS XSharp.VFP.SQLReflection
-
+    #region Find Metadata
     STATIC METHOD GetMemberInType(oType AS System.Type,cMemberName AS STRING, memberType AS MemberTypes) AS MemberInfo
         VAR aMembers := oType:GetMember(cMemberName)
         FOREACH VAR oMember IN aMembers
@@ -72,7 +66,8 @@ INTERNAL STATIC CLASS XSharp.VFP.SQLReflection
             RETURN (FieldInfo) oField
         ENDIF
         RETURN NULL
-
+   #endregion
+    #region Get/Set methods
     STATIC METHOD GetFieldValue(oObject AS OBJECT, cName AS STRING, oValue OUT OBJECT) AS LOGIC
         oValue := NULL
         VAR oField := GetField(oObject, cName)
@@ -91,24 +86,25 @@ INTERNAL STATIC CLASS XSharp.VFP.SQLReflection
 
     STATIC METHOD SetPropertyValue(oObject AS OBJECT, cName AS STRING, oValue AS OBJECT) AS LOGIC
         VAR oProp := GetProperty(oObject, cName)
-        IF oProp != NULL
+        IF oProp != NULL .AND. oProp:CanWrite
             oProp:SetValue(oObject, oValue, NULL)
         ENDIF
-        RETURN oProp != NULL        
+        RETURN oProp != NULL .AND. oProp:CanWrite
 
     STATIC METHOD SetFieldValue(oObject AS OBJECT, cName AS STRING, oValue AS OBJECT) AS LOGIC
         VAR oField := GetField(oObject, cName)
-        IF oField != NULL
+        IF oField != NULL .AND. ! oField:IsInitOnly .AND. ! oField:IsLiteral
             oField:SetValue(oObject, oValue)
         ENDIF
-        RETURN oField != NULL
+        RETURN oField != NULL .AND. ! oField:IsInitOnly .AND. ! oField:IsLiteral
 
     STATIC METHOD InvokeMethod(oObject AS OBJECT, cName AS STRING, oValue OUT OBJECT, aParams PARAMS OBJECT[] )
         oValue := NULL
         VAR oMethod := GetMethod(oObject, cName)
-        IF oMethod != NULL
+        IF oMethod != NULL 
             oValue := oMethod:Invoke(oObject, aParams)
         ENDIF
         RETURN oMethod != NULL
+    #endregion
 END CLASS
 

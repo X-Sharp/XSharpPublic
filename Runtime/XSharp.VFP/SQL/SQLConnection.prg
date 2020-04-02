@@ -29,10 +29,7 @@ INTERNAL CLASS XSharp.VFP.SQLConnection
             RETURN _oNetConnection:ConnectionTimeout
         END GET
         SET
-            LOCAL oProp := _oNetConnection:GetType():GetProperty("ConnectionTimeout") AS System.Reflection.PropertyInfo
-            IF oProp != NULL .AND. oProp:CanWrite
-                oProp:SetValue(_oNetConnection:ConnectionTimeout, Value)
-            ENDIF
+            SQLReflection.SetPropertyValue(SELF:NetConnection, "ConnectionTimeout", value)
         END SET
     END PROPERTY       
     PROPERTY ConnectBusy        AS LOGIC  GET _oNetConnection:State == ConnectionState.Executing .OR. _oNetConnection:State == ConnectionState.Fetching

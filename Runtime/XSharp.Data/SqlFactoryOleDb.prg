@@ -14,36 +14,25 @@ USING System.Runtime.InteropServices
 /// <summary>This is the class that implements a Factory to access data through the Ado.Net Microsoft SQL Server classes.</summary>
 
 
-CLASS XSharp.Data.SqlServerFactory INHERIT XSharp.Data.AbstractSqlFactory
+CLASS XSharp.Data.OleDbFactory INHERIT XSharp.Data.AbstractSqlFactory
 
     /// <inheritdoc />
     PROPERTY QuoteChar AS STRING GET chr(34)
-    PROPERTY Name      AS STRING GET "SqlServerFactory"
-
+    PROPERTY Name      AS STRING GET "OleDbFactory"
+    
     CONSTRUCTOR
         SUPER()
-        oInstance := System.Data.SqlClient.SqlClientFactory.Instance
+        oInstance := System.Data.OleDb.OleDbFactory.Instance
 
 
     /// <inheritdoc />
     METHOD GetName(oConn AS DbConnection) AS STRING
-        RETURN "SQL"
+        RETURN "OleDb"
 
     /// <inheritdoc />
     METHOD DriverConnect(hWindow AS OBJECT, uCompletion AS OBJECT, cConnectionString AS OBJECT) AS STRING
 
-        LOCAL oODBC AS OdbcFactory
-        LOCAL cResult AS STRING
-        oODBC := OdbcFactory{}
-        cConnectionString := "Driver=SQL Server"
-        cResult := oODBC:DriverConnect(hWindow, Win32.SQL_DRIVER_PROMPT, cConnectionString)
-        IF String.IsNullOrEmpty(cResult)
-            RETURN cResult
-        ENDIF
-        VAR oBuilder := oODBC:CreateConnectionStringBuilder()
-        oBuilder:ConnectionString := cResult
-        oBuilder:Remove("Driver")
-        RETURN oBuilder:ToString()
+        RETURN ""
 
 END CLASS
 

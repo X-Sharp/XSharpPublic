@@ -18,6 +18,7 @@ CLASS XSharp.Data.OdbcFactory INHERIT XSharp.Data.AbstractSqlFactory
 
     /// <inheritdoc />
     PROPERTY QuoteChar AS STRING GET ""
+    PROPERTY Name      AS STRING GET "OdbcFactory"
 
     CONSTRUCTOR
         SUPER()

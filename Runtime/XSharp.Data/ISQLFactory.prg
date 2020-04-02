@@ -15,6 +15,8 @@ INTERFACE XSharp.Data.ISqlFactory
 
     /// <summary>Return the quote character for table and column names.</summary>
     PROPERTY QuoteChar AS STRING GET
+    /// <summary>Return the name of the factory.</summary>
+    PROPERTY Name      AS STRING GET
 
     /// <summary>Does the factory support datasource enumeration.</summary>
     PROPERTY CanCreateDataSourceEnumerator AS LOGIC GET

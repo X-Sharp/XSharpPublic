@@ -13,6 +13,7 @@ USING System.Diagnostics
 #pragma options ("az", ON)
 BEGIN NAMESPACE XSharp.RDD
     /// <summary>DBFVFPSQL RDD. DBFCDX with support for the FoxPro field types and a List of Object values as backing collection for the data.</summary>
+
     [DebuggerDisplay("DBFVFPSQL ({Alias,nq})")];
     CLASS DBFVFPSQL INHERIT DBFVFP
         PROTECT _rows   AS List <OBJECT[]>
@@ -83,7 +84,7 @@ BEGIN NAMESPACE XSharp.RDD
         METHOD GetData() AS OBJECT[]
             RETURN SELF:_rows[SELF:_RecNo -1] 
 
-        METHOD Close() AS LOGIC
+        OVERRIDE METHOD Close() AS LOGIC
             LOCAL lOk AS LOGIC
             LOCAL cFileName := SELF:_FileName AS STRING
             LOCAL cMemoName := "" AS STRING
@@ -100,9 +101,14 @@ BEGIN NAMESPACE XSharp.RDD
                 ENDIF
             ENDIF
             RETURN lOk
-    END CLASS
+
+    OVERRIDE METHOD Info(uiOrdinal AS LONG, oNewValue AS OBJECT) AS OBJECT
+        IF uiOrdinal == DbInfo.DBI_CANPUTREC
+            RETURN FALSE
+        ENDIF
+        RETURN SUPER:Info(uiOrdinal, oNewValue)
         
-  
+    END CLASS  
 
 END NAMESPACE
 

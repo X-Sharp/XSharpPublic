@@ -13,7 +13,6 @@ USING System.Diagnostics
 #pragma options ("az", ON)
 BEGIN NAMESPACE XSharp.RDD
     /// <summary>DBFVFPSQL RDD. DBFCDX with support for the FoxPro field types and a List of Object values as backing collection for the data.</summary>
-    /// <remarks>At this moment this class assumes that the file is either newly created or opened with 0 rows of data</remarks>
     [DebuggerDisplay("DBFVFPSQL ({Alias,nq})")];
     CLASS DBFVFPSQL INHERIT DBFVFP
         PROTECT _rows   AS List <OBJECT[]>
@@ -35,22 +34,30 @@ BEGIN NAMESPACE XSharp.RDD
 
         OVERRIDE METHOD Open(info AS DbOpenInfo) AS LOGIC
             VAR lResult := SUPER:Open(info)
+            VAR nFlds   := SELF:FieldCount
             IF lResult
-                SELF:ConvertToMemory()
+               SELF:ConvertToMemory()
             ENDIF
+            FOR VAR nI := 1 TO SELF:_RecCount
+                SUPER:GoTo(nI)
+                VAR aData := OBJECT[]{nFlds}
+                _rows:Add(aData)
+                FOR VAR nFld := 1 TO nFlds
+                    aData[nFld-1] := SUPER:GetValue(nFld)
+                NEXT
+            NEXT
             RETURN lResult
-
 
         OVERRIDE METHOD Append(lReleaseLock AS LOGIC) AS LOGIC
             VAR lResult := SUPER:Append(lReleaseLock)
             IF lResult
-                VAR aData := OBJECT[]{SELF:_Fields:Length}
+                VAR aData := OBJECT[]{SELF:FieldCount}
                 _rows:Add(aData)
             ENDIF
             RETURN lResult
 
 		OVERRIDE METHOD GetValue(nFldPos AS INT) AS OBJECT
-            IF nFldPos > 0 .AND. nFldPos <= SELF:_Fields:Length
+            IF nFldPos > 0 .AND. nFldPos <= SELF:FieldCount
                 IF SELF:_RecNo <= _rows:Count .AND. SELF:_RecNo > 0
                     VAR nRow := SELF:_RecNo -1
                     VAR result := _rows[nRow][nFldPos -1]
@@ -64,7 +71,7 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN SUPER:GetValue(nFldPos)
 
         OVERRIDE METHOD PutValue(nFldPos AS INT, oValue AS OBJECT) AS LOGIC
-            IF nFldPos > 0 .AND. nFldPos <= SELF:_Fields:Length
+            IF nFldPos > 0 .AND. nFldPos <= SELF:FieldCount
                 IF SELF:_RecNo <= _rows:Count .AND. SELF:_RecNo > 0
                     VAR nRow := SELF:_RecNo -1
                     _rows[nRow][nFldPos -1] := oValue
@@ -85,9 +92,11 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             lOk := SUPER:Close()
             IF lOk
-                FErase(cFileName)
-                IF ! String.IsNullOrEmpty(cMemoName)
-                    FErase(cMemoName)
+                IF File(cFileName)
+                    FErase(FPathName())
+                ENDIF
+                IF ! String.IsNullOrEmpty(cMemoName) .AND. File(cMemoName)
+                    FErase(FPathName())
                 ENDIF
             ENDIF
             RETURN lOk

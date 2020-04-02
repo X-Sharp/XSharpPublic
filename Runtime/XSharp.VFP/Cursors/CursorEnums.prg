@@ -5,7 +5,7 @@
 //
 
 
-INTERNAL STATIC CLASS XSharp.VFP.CursorProperty 
+STATIC CLASS XSharp.VFP.CursorProperty 
     CONST ADOBookmark               := "adobookmark" AS STRING
     CONST ADOCodePage               := "adocodepage" AS STRING
     CONST ADORecordset              := "adorecordset" AS STRING

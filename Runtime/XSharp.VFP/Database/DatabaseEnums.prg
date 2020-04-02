@@ -5,7 +5,7 @@
 //
 
 
-INTERNAL STATIC CLASS XSharp.VFP.DBProperty
+STATIC CLASS XSharp.VFP.DBProperty
     // Connection properties
     CONST Asynchronous              := "asynchronous" AS STRING
     CONST BatchMode                 := "batchmode" AS STRING

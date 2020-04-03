@@ -906,8 +906,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 //			DBSetIndex ( cDbf )
 			DbSetOrder(1)
 			Assert.Equal( (INT) DbOrderInfo( DBOI_KEYCOUNT ) , 20)
-			Assert.Equal( (INT) OrdScope(TOPSCOPE, 5) , 5) // NULL
-			Assert.Equal( (INT) OrdScope(BOTTOMSCOPE, 10) , 10) // NULL
+			Assert.Equal( (INT) OrdScope(TOPSCOPE, 5) , 0) // returns previous scope
+			Assert.Equal( (INT) OrdScope(BOTTOMSCOPE, 10) , 0) // returns previous scope
 			DbGoTop()
 			
 			Assert.Equal( (INT) DbOrderInfo( DBOI_KEYCOUNT ) , 6) // still 20 - but must be 6
@@ -1141,6 +1141,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			LOCAL u AS USUAL
 			u := "A"
 			VoDbOrderInfo( DBOI_SCOPETOP, "", NIL, REF u )
+			u := "A"
 			VoDbOrderInfo( DBOI_SCOPEBOTTOM, "", NIL, REF u )
 		
 			DbGoTop()
@@ -1203,8 +1204,9 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			// ? "Setting scope"
 			LOCAL u AS USUAL
 			u := "A"
-			VoDbOrderInfo( DBOI_SCOPETOP, "", NIL, REF u )
-			VoDbOrderInfo( DBOI_SCOPEBOTTOM, "", NIL, REF u )
+			VoDbOrderInfo( DBOI_SCOPETOP, "", NIL,  REF u )
+			u := "A"
+			VoDbOrderInfo( DBOI_SCOPEBOTTOM, "", NIL,  REF u )
 		
 			DbGoTop()
 			Assert.Equal(4 , (INT)RecNo())

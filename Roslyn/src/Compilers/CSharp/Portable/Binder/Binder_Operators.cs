@@ -585,11 +585,13 @@ namespace Microsoft.CodeAnalysis.CSharp
                 resultLeft = CreateConversion(left, best.LeftConversion, signature.LeftType, diagnostics);
                 resultRight = CreateConversion(right, best.RightConversion, signature.RightType, diagnostics);
 #if XSHARP
-                var tempResultType = resultType;
+                // when we het here then the types for resultLeft and resultRight are adjusted to the operator that was 
+                // found. So when we add a byte and a word then the type of both operands is usually an Int32
+                var expectedResultType = resultType;
                 
                 if (opType != VOOperatorType.Bitwise )
                 {
-                    if (BindVOBinaryOperatorVo11(node, resultOperatorKind, ref left, ref right, ref tempResultType, diagnostics))
+                    if (BindVOBinaryOperatorVo11(node, resultOperatorKind, ref left, ref right, ref expectedResultType, diagnostics))
                     {
                         resultLeft = left;
                         resultRight = right;
@@ -599,17 +601,14 @@ namespace Microsoft.CodeAnalysis.CSharp
                 resultConstant = FoldBinaryOperator(node, resultOperatorKind, resultLeft, resultRight, resultType.SpecialType, diagnostics, ref compoundStringLength);
 #if XSHARP
 
-                if (resultType != tempResultType && resultConstant != null )
+                if (resultType != expectedResultType && resultConstant != null )
                 {
-                    resultConstant = XsConvertConstant(resultConstant, tempResultType.SpecialType);
+                    resultConstant = XsConvertConstant(resultConstant, expectedResultType.SpecialType);
                 }
-                resultType = tempResultType;
-                // we have changed FoldBinaryOperator to return an Int64 or UInt64 for 2 Int32 or 2 UInt32 operators
-                // when the result does not fit
-                // In that case, leave from here and return the folded constant.
+                resultType = expectedResultType;
                 if (resultType.SpecialType != SpecialType.None && resultConstant != null && !resultConstant.IsBad && resultConstant.SpecialType != resultType.SpecialType )
                 {
-                    return new BoundLiteral(node, resultConstant, Compilation.GetSpecialType(resultConstant.SpecialType)) { WasCompilerGenerated = true } ;
+                    return new BoundLiteral(node, resultConstant, Compilation.GetSpecialType(resultType.SpecialType)) { WasCompilerGenerated = true } ;
                 }
 #endif
             }
@@ -646,7 +645,8 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             else
             {
-                if (resultType.IsIntegralType() && leftType.IsIntegralType() && rightType.IsIntegralType())
+                // do not update the type for folded constants
+                if (result.ConstantValue == null && resultType.IsIntegralType() && leftType.IsIntegralType() && rightType.IsIntegralType() )
                 {
                     // common situation for binary operators: the result of the operator is larger than the types of the LHS and RHS
                     // in that case we choose the largest of LHS and RHS and make the result type equal to the largest type.

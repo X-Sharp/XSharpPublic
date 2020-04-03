@@ -611,19 +611,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         { 
                             if (leftType != rightType && leftType.IsIntegralType() && rightType.IsIntegralType())
                             {
-                               if (leftType.SpecialType.SizeInBytes() < 4)
-                               {
-                                    // when adding a constant to a word or short
-                                    // cast the constant to the LHS
-                                    if (rightType.SpecialType.SizeInBytes() > leftType.SpecialType.SizeInBytes())
-                                    {
-                                        if (right.ConstantValue != null)
-                                        {
-                                            right = new BoundConversion(right.Syntax, right, Conversion.ImplicitNumeric, false, false, right.ConstantValue, leftType) { WasCompilerGenerated = true };
-                                        }
-                                    }
-                                }
-                               else if (xnode != null  && xnode.Parent is XSharpParser.VodefineContext)
+                               if (xnode != null  && xnode.Parent is XSharpParser.VodefineContext)
                                {
                                     // convert RHS to type of LHS inside a VODefine
                                     right = new BoundConversion(right.Syntax, right, Conversion.ImplicitNumeric, false, false, right.ConstantValue, leftType) { WasCompilerGenerated = true };
@@ -1115,98 +1103,177 @@ namespace Microsoft.CodeAnalysis.CSharp
             return expression.Type;
         }
 		
-        private bool VODetermineResultType(BoundExpression left, BoundExpression right, ref TypeSymbol resultType)
+        private bool AdjustTypeAccordingToVORules(BoundExpression left, BoundExpression right, ref TypeSymbol expectedResultType)
         {
             var leftType = left.Type;
             var rightType = right.Type;
-            if (!leftType.IsIntegralType() || !rightType.IsIntegralType() || !resultType.IsIntegralType())
-            {
-                return false;
-            }
-            if (leftType == rightType || right.ConstantValue != null)
-            {
-                return false;
-            }
-            if (left.ConstantValue != null)
-            {
-                return false;
-            }
+            Debug.Assert(leftType.IsIntegralType());
+            Debug.Assert(rightType.IsIntegralType());
+            Debug.Assert(expectedResultType.IsIntegralType());
             var leftSpecial = leftType.SpecialType;
             var rightSpecial = rightType.SpecialType;
+            var bytesLHS = leftSpecial.SizeInBytes();
+            var bytesRHS = rightSpecial.SizeInBytes();
+
             if (Compilation.Options.HasOption(CompilerOption.ArithmeticConversions,left.Syntax))
             {
-                if (leftSpecial == SpecialType.System_UInt32 || leftSpecial == SpecialType.System_Int32) // DWORD, * -> DWORD and INT32 ,* ->INT32
+                /*
+                LHS		RHS		= RESULT
+                -------------------------
+                BYTE	BYTE	= BYTE       	 // Largest of the 2 types
+                BYTE	WORD	= WORD			 // When same size then LHS type
+                BYTE	SHORT	= SHORT
+                BYTE	DWORD	= DWORD
+                BYTE	INT		= INT
+
+                WORD	BYTE	= DWORD (or INT?)// largest of the 2 types. 
+                WORD	WORD	= WORD           // When same size then signed type
+                WORD	SHORT	= SHORT          // Exception: WORD  BYTE = DWORD (prefer unsigned)
+                WORD	DWORD	= DWORD          // And WORD SHORT = SHORT
+                WORD	INT		= INT
+
+                SHORT	BYTE	= SHORT			 // largest of the 2 types. 
+                SHORT	WORD	= SHORT			 // When same size then LHS type
+                SHORT	SHORT	= SHORT
+                SHORT	DWORD	= DWORD
+                SHORT	INT		= INT
+
+                INT		BYTE	= INT			 // largest of the 2 types. 			
+                INT		WORD	= INT			 // When same size then LHS type
+                INT		SHORT	= INT
+                INT		DWORD	= INT
+                INT		INT		= INT
+
+                DWORD	BYTE	= DWORD			 // largest of the 2 types. 			
+                DWORD	WORD	= DWORD			 // When same size then LHS type
+                DWORD	SHORT	= DWORD
+                DWORD	DWORD	= DWORD
+                DWORD	INT		= DWORD
+
+                */
+                if (bytesLHS == bytesRHS)
                 {
-                    resultType = leftType;
+                    expectedResultType = leftType;
+                    if (bytesLHS ==2)
+                    {
+                        // WORD   SHORT  = SHORT
+                        // SHORT  WORD   = SHORT
+                        expectedResultType = Compilation.GetSpecialType(SpecialType.System_Int16);
+                    }
                 }
-                else if (rightSpecial == SpecialType.System_Int32)   // *, INT32 ->INT32
+                else if (bytesLHS > bytesRHS)
                 {
-                    resultType = rightType;
+                    expectedResultType = leftType;
+                    if (leftSpecial == SpecialType.System_UInt16 && rightSpecial == SpecialType.System_Byte)
+                    {
+                        // WORD BYTE = DWORD
+                        expectedResultType = Compilation.GetSpecialType(SpecialType.System_UInt32);
+                    }
                 }
-                else if (leftSpecial == SpecialType.System_Int16 && rightSpecial == SpecialType.System_UInt32)   // INT16, DWORD ,INT32
+                else
                 {
-                    resultType = Compilation.GetSpecialType(SpecialType.System_Int32);
-                }
-                else if (rightSpecial == SpecialType.System_UInt32)   // *, DWORD ->DWORD
-                {
-                    resultType = rightType;
-                }
-                else if (leftSpecial == SpecialType.System_Int16)   // INT16, * -> INT16
-                {
-                    resultType = leftType;
-                }
-                else if (rightSpecial == SpecialType.System_Int16)   // *, INT16 ->INT16
-                {
-                    resultType = rightType;
-                }
-                else if (leftSpecial == SpecialType.System_UInt16)   // WORD, * -> WORD
-                {
-                    resultType = leftType;
-                }
-                else if (rightSpecial == SpecialType.System_UInt16)   // *, WORD ->WORD
-                {
-                    resultType = rightType;
+                    expectedResultType = rightType;
                 }
             }
             else
             {
                 // convert to largest type with preference for LHS type
-                var bytesLHS = leftSpecial.SizeInBytes();
-                var bytesRHS = rightSpecial.SizeInBytes();
                 if (bytesLHS >= bytesRHS )
                 {
-                    resultType = leftType;
+                    expectedResultType = leftType;
                 }
                 else
                 {
-                    resultType = rightType;
+                    expectedResultType = rightType;
 
                 }
             }
             return true;
         }
+
+        private TypeSymbol GetNeededConstantValueType(ConstantValue constant)
+        {
+            SpecialType resultType = constant.SpecialType;
+            if (resultType.IsUnsignedIntegralType())
+            {
+                UInt64 value = constant.UInt64Value;
+                if (value <= byte.MaxValue)
+                    resultType = SpecialType.System_Byte;
+                else if (value <= ushort.MaxValue)
+                    resultType = SpecialType.System_UInt16;
+                else if (value <= uint.MaxValue)
+                    resultType = SpecialType.System_UInt32;
+                else
+                    resultType = SpecialType.System_UInt64;
+
+            }
+            else if (resultType.IsSignedIntegralType())
+            {
+                Int64 value = constant.Int64Value;
+                if (value <= sbyte.MaxValue && value >= sbyte.MinValue)
+                    resultType = SpecialType.System_SByte;
+                else if (value <= short.MaxValue && value >= short.MinValue)
+                    resultType = SpecialType.System_Int16;
+                else if (value <= int.MaxValue && value >= int.MinValue)
+                    resultType = SpecialType.System_Int32;
+                else
+                    resultType = SpecialType.System_Int64;
+            }
+            else
+            {
+                ; // string, char, float literals etc should remain untouched
+            }
+            return Compilation.GetSpecialType(resultType);
+        }
+
         private bool BindVOBinaryOperatorVo11(BinaryExpressionSyntax node, BinaryOperatorKind kind, 
             ref BoundExpression left, ref BoundExpression right, ref TypeSymbol resultType, DiagnosticBag diagnostics)
         {
             var leftType = left.Type;
             var rightType = right.Type;
-            if (leftType == null || rightType == null || ! leftType.IsIntegralType() || ! rightType.IsIntegralType())
+
+            if (leftType == null || rightType == null || ! leftType.IsIntegralType() || ! rightType.IsIntegralType()
+                || !resultType.IsIntegralType() || kind.IsComparison())
+                return false;
+
+            if (left.ConstantValue != null && ! (left.Syntax is CastExpressionSyntax)) // do not adjust types when there is a cast in the code
+            {
+                leftType = GetNeededConstantValueType(left.ConstantValue);
+                if (leftType != left.Type)
+                {
+                    left = CreateConversion(left, Conversion.ImplicitNumeric, leftType, diagnostics);
+                    left.WasCompilerGenerated = true;
+                }
+            }
+            if (right.ConstantValue != null && !(right.Syntax is CastExpressionSyntax))
+            {
+                rightType = GetNeededConstantValueType(right.ConstantValue);
+                if (rightType != right.Type)
+                {
+                    right = CreateConversion(right, Conversion.ImplicitNumeric, rightType, diagnostics);
+                    right.WasCompilerGenerated = true;
+                }
+            }
+
+            TypeSymbol expectedResultType = resultType;
+            if (leftType == rightType && resultType == leftType)
+                return false;
+
+            if (!AdjustTypeAccordingToVORules(left, right, ref expectedResultType))
                 return false;
             bool result = false;
-            TypeSymbol effectiveType = resultType;
-            if (!VODetermineResultType(left, right, ref effectiveType))
-                return false;
-            if (leftType != effectiveType && left.ConstantValue == null)
+            // Create conversions to make the operands of the 
+            if (leftType != expectedResultType)
             {
-                left = CreateConversion(left, Conversion.ImplicitNumeric, effectiveType, diagnostics);
+                left = CreateConversion(left, Conversion.ImplicitNumeric, expectedResultType, diagnostics);
                 result = true;
             }
-            if (rightType != effectiveType && right.ConstantValue == null)
+            if (rightType != expectedResultType)
             {
-                right = CreateConversion(right, Conversion.ImplicitNumeric, effectiveType, diagnostics);
+                right = CreateConversion(right, Conversion.ImplicitNumeric, expectedResultType, diagnostics);
                 result = true;
             }
-            resultType = kind.IsComparison() ? resultType : effectiveType;
+            resultType = expectedResultType;
             return result;
         }
         ConstantValue XsConvertConstant(ConstantValue constant, SpecialType specialType)
@@ -1215,18 +1282,22 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 switch (specialType)
                 {
-                    case SpecialType.System_Int32:
-                        return ConstantValue.Create((int)constant.Int64Value);
-                    case SpecialType.System_UInt32:
-                        return ConstantValue.Create((uint)constant.Int64Value);
+                    case SpecialType.System_SByte:
+                        return ConstantValue.Create((sbyte)constant.Int64Value);
+                    case SpecialType.System_Byte:
+                        return ConstantValue.Create((byte)constant.Int64Value);
                     case SpecialType.System_Int16:
                         return ConstantValue.Create((short)constant.Int64Value);
                     case SpecialType.System_UInt16:
                         return ConstantValue.Create((ushort)constant.Int64Value);
-                    case SpecialType.System_UInt64:
-                        return ConstantValue.Create((ulong)constant.Int64Value);
+                    case SpecialType.System_Int32:
+                        return ConstantValue.Create((int)constant.Int64Value);
+                    case SpecialType.System_UInt32:
+                        return ConstantValue.Create((uint)constant.Int64Value);
                     case SpecialType.System_Int64:
                         return ConstantValue.Create((long)constant.Int64Value);
+                    case SpecialType.System_UInt64:
+                        return ConstantValue.Create((ulong)constant.Int64Value);
                 }
             }
             return constant;

@@ -8,8 +8,8 @@ USING System.Collections.Generic
 USING System.Linq
 USING System.Text
 USING XUnit
-
-
+// These test require late binding, that is why we enable late binding for this file only
+#pragma options ("lb", ON)
 
 BEGIN NAMESPACE XSharp.VO.Tests
 	
@@ -20,7 +20,7 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		[Fact, Trait("Category", "OOP")];
 		METHOD CreateInstanceTests() AS VOID
 			LOCAL oObject AS OBJECT
-            LOCAL oObject2 AS TestStrong
+            LOCAL oObject2 AS TestStrong 
 			/// note that vulcan does not return true for IsClassOf(#Tester, "Object")
 			oObject := CreateInstance(#Tester)
 			Assert.NotEqual(NULL_OBJECT, oObject)

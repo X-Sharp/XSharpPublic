@@ -49,6 +49,9 @@ namespace Microsoft.CodeAnalysis.CSharp
 #if XSHARP
         public static bool IsUnaryMinus(this UnaryOperatorKind kind)
         {
+            kind = kind & ~UnaryOperatorKind.Checked;
+            kind = kind & ~UnaryOperatorKind.Lifted;
+
             switch (kind)
             {
                 case UnaryOperatorKind.IntUnaryMinus:
@@ -57,12 +60,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case UnaryOperatorKind.DoubleUnaryMinus:
                 case UnaryOperatorKind.DecimalUnaryMinus:
                 case UnaryOperatorKind.UserDefinedUnaryMinus:
-                case UnaryOperatorKind.LiftedIntUnaryMinus:
-                case UnaryOperatorKind.LiftedLongUnaryMinus:
-                case UnaryOperatorKind.LiftedFloatUnaryMinus:
-                case UnaryOperatorKind.LiftedDoubleUnaryMinus:
-                case UnaryOperatorKind.LiftedDecimalUnaryMinus:
-                case UnaryOperatorKind.LiftedUserDefinedUnaryMinus:
                 case UnaryOperatorKind.DynamicUnaryMinus:
                     return true;
             }

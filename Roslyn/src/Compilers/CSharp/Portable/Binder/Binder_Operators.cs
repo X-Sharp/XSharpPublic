@@ -465,6 +465,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         private BoundExpression BindSimpleBinaryOperator(BinaryExpressionSyntax node, DiagnosticBag diagnostics,
             BoundExpression left, BoundExpression right, ref int compoundStringLength)
         {
+#if XSHARP
+            return BindXsSimpleBinaryOperator(node, diagnostics, left, right, ref compoundStringLength);
+#else
             BinaryOperatorKind kind = SyntaxKindToBinaryOperatorKind(node.Kind());
 
             // If either operand is bad, don't try to do binary operator overload resolution; that would just
@@ -521,22 +524,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             // The comparison "x == null" should produce an ambiguity error rather
             // that being bound as !x.HasValue. 
             //
-#if XSHARP
-            VOOperatorType opType = NeedsVOOperator(node, ref left, ref right);
 
-            if (opType != VOOperatorType.None)
-            {
-                var res =  BindVOBinaryOperator(node, diagnostics, ref left, ref right, ref compoundStringLength,opType);
-                if (res != null)
-                    return res;
-            }
-
-            // Logical Operators on USUALS require a conversion
-            AdjustVOUsualLogicOperands(node, ref left, ref right, diagnostics);
-            leftType = left.Type;
-            rightType = right.Type;
-
-#endif
             LookupResultKind resultKind;
             ImmutableArray<MethodSymbol> originalUserDefinedOperators;
             BinaryOperatorSignature signature;
@@ -584,33 +572,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                 resultLeft = CreateConversion(left, best.LeftConversion, signature.LeftType, diagnostics);
                 resultRight = CreateConversion(right, best.RightConversion, signature.RightType, diagnostics);
-#if XSHARP
-                // when we het here then the types for resultLeft and resultRight are adjusted to the operator that was 
-                // found. So when we add a byte and a word then the type of both operands is usually an Int32
-                var expectedResultType = resultType;
-                
-                if (opType != VOOperatorType.Bitwise )
-                {
-                    if (BindVOBinaryOperatorVo11(node, resultOperatorKind, ref left, ref right, ref expectedResultType, diagnostics))
-                    {
-                        resultLeft = left;
-                        resultRight = right;
-                    }
-                }
-#endif
                 resultConstant = FoldBinaryOperator(node, resultOperatorKind, resultLeft, resultRight, resultType.SpecialType, diagnostics, ref compoundStringLength);
-#if XSHARP
-
-                if (resultType != expectedResultType && resultConstant != null )
-                {
-                    resultConstant = XsConvertConstant(resultConstant, expectedResultType.SpecialType);
-                }
-                resultType = expectedResultType;
-                if (resultType.SpecialType != SpecialType.None && resultConstant != null && !resultConstant.IsBad && resultConstant.SpecialType != resultType.SpecialType )
-                {
-                    return new BoundLiteral(node, resultConstant, Compilation.GetSpecialType(resultType.SpecialType)) { WasCompilerGenerated = true } ;
-                }
-#endif
             }
 
             hasErrors = hasErrors || resultConstant != null && resultConstant.IsBad;
@@ -628,43 +590,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                     hasErrors);
 
 
-#if XSHARP
-            if (opType == VOOperatorType.Bitwise)
-            {
-                if (resultType != leftType )// C277 ByteValue >> 2 should not return int but byte.
-                {
-                    if (!result.Syntax.XIsVoCast)
-                    {
-                        result = new BoundConversion(node, result, Conversion.ImplicitNumeric, false, false, null, leftType) { WasCompilerGenerated = true };
-                    }
-                    else
-                    {
-                        result = new BoundConversion(node, result, Conversion.ImplicitNumeric, false, false, null, rightType) { WasCompilerGenerated = true };
-                    }
-                }
-            }
-            else
-            {
-                // do not update the type for folded constants
-                if (result.ConstantValue == null && resultType.IsIntegralType() && leftType.IsIntegralType() && rightType.IsIntegralType() )
-                {
-                    // common situation for binary operators: the result of the operator is larger than the types of the LHS and RHS
-                    // in that case we choose the largest of LHS and RHS and make the result type equal to the largest type.
-                    var largest = rightType;
-                    if (largest.SpecialType.SizeInBytes() < leftType.SpecialType.SizeInBytes())
-                    {
-                        largest = leftType;
-                    }
-                    if (resultType.SpecialType.SizeInBytes() > largest.SpecialType.SizeInBytes())
-                    {
-                        result = new BoundConversion(node, result, Conversion.ImplicitNumeric, false, false, null, largest) { WasCompilerGenerated = true };
-                    }
-                }
-            }
-
-#endif
             return result;
-
+#endif
         }
 		
         private bool BindSimpleBinaryOperatorParts(BinaryExpressionSyntax node, DiagnosticBag diagnostics, BoundExpression left, BoundExpression right, BinaryOperatorKind kind,

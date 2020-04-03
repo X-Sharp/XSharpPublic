@@ -4191,7 +4191,7 @@
     <param name="dwMinute">The number of minutes, up to 59.</param>
     <param name="dwSeconds">The number of minutes, up to 59.</param>
     <returns>
-      A time that corresponds to the passed arguments.
+      A (military) time that corresponds to the passed arguments in the format HH:MM:SS without AM/PM notation
     </returns>
     <remarks>
     </remarks>

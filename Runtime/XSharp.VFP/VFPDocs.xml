@@ -3319,86 +3319,387 @@
       </list>
       <note name="Note">All of these are read/write</note><br/><br/>
       <b>Field properties for views</b>
-      DataType
-      The data type for a field in a view. Initially set to the data type for the field in the data source.
-      To specify a different data type for a field with <b>DBSETPROP( )</b>, use the syntax for creating fields in CREATE TABLE – SQL.
-      For example, to change the data type of an integer field named iCost in a table named Mytable to numeric type with width 4 and 2 decimal places, use
-      DBSETPROP('mytable.icost', 'field', ; 'DataType', 'N(4,2)')
-      You can also include the NOCPTRANS clause to prevent translation of character and memo fields to a different code page.
-      Read/write for remote views.
-      KeyField
-      Contains True (.T.) if the field is specified in an index key expression; otherwise, contains False (.F.).
-      Updatable
-      Contains True (.T.) if the field can be updated; otherwise, contains False (.F.).
-      UpdateName
-      The name of the field used when data in the field is updated to the remote table. By default, the remote table field name.
-      <b>Table properties</b>
-      The text of the table comment.
-      DeleteTrigger
-      The Delete trigger expression.
-      InsertTrigger
-      The Insert trigger expression.
-      The relative path with respect to the DBC to the table including the name of the file.
-      PrimaryKey
-      The tag name of the primary key.
-      The row rule expression.
-      The row rule error text.
-      UpdateTrigger
-      The Update trigger expression.
-      <b>View properties</b>
-      AllowSimultaneousFetch
-      Applies when using remote views, a shared connection, and to cursors created using ODBC.
-      AllowSimultaneousFetch contains True (.T.) when similarly configured cursors sharing the connection are permitted to fetch rows simultaneously.
-      Otherwise, AllowSimultaneousFetch contains False (.F.) when fetching rows simultaneously is not permitted.
-      This property is available in X# 8.0 and later. Views created in X# 8.0 and later are not compatible with earlier versions. Calling the <b>VALIDATE DATABASE</b> command in a version prior to X# 8.0 on a database container with remote views created or modified in X# 8.0 and later generate an error. Calling the codeVALIDATE DATABASE RECOVER/code in a version prior to X# 8.0 removes the <b>AllowSimultaneousFetch</b> property from any such views.
-      BatchUpdateCount
-      The number of update statements sent to the back end for views. 1 is the default. Adjusting this value can greatly increase update performance.
-      The text of the view comment.
-      CompareMemo
-      Contains true (.T.) (default) if memo fields (of type Memo, General, or Picture, or, for remote views, type Timestamp) are included in the WHERE clause for updates; otherwise, contains false (.F.).
-      ConnectName
-      The named connection used when the view is opened.
-      FetchAsNeeded
-      If True (.T.), data is fetched only when needed, such as when record pointer moves to a row that has not been fetched.
-      If False (.F.), additional data is fetched during idle time. (Default)
-      FetchAsNeeded does not apply when progressive fetching is disabled (FetchSize is -1).
-      FetchMemo
-      Contains true (.T.) (default) if memo and general fields are fetched with the view results; otherwise, contains false (.F.).
-      Use the ISMEMOFETCHED( ) Function to determine if the memo field has been fetched.
-      Contains the number of records fetched at a time from the remote tables. The default is 100 records. Setting FetchSize to –1 retrieves the complete result set, limited by the MaxRecords setting.
-      Progressive fetching holds the connection until all rows are retrieved. Use caution coding with FetchSize if ShareConnection is True (.T.).
-      The maximum number of records fetched when result sets are returned. The default is – 1 (all rows are returned). A value of 0 specifies that the view is executed but no results are fetched.
-      Offline
-      Contains true (.T.) if the view is an offline view.
-      ParameterList
-      The WHERE clause parameters. The format for the parameters is ''ParameterName1, 'Type1'; ParameterName2, 'Type2'; ...'' where Type is a one of the following characters specifying the parameter type:
-      C – Character  D – Date  T – DateTime  N – Numeric  F – Floating  B – Double  I – Integer  Y – Currency  L - Logical
-      For example, ''MyParam1, 'C' '' specifies a single character type parameter named MyParam1.
-      For more information about creating parameterized views, see How to: Create Parameterized Views.
-      Prepared
-      Contains True (.T.) if SQL statements are prepared for subsequent <b>REQUERY( )</b> function calls. <b>REQUERY( )</b> is used to retrieve data again for a SQL view. See SQLPREPARE( ) for additional information about preparing SQL statements. The default is false (.F.).
-      The rule text expression displayed when an error occurs when data is edited in a Browse or Edit window.
-      SendUpdates
-      Contains true (.T.) if a SQL update query is sent to update remote tables; otherwise, contains false (.F.) (default).
-      Contains true (.T.) if the view can share its connection handle with other connections; otherwise, contains false (.F.).
-      SourceType
-      The view source. SourceType may assume the following values: 1 - The view uses local tables.
-      2 - The view uses remote tables.
-      The SQL statement executed when the view is opened.
-      Tables
-      A comma-delimited list of the names of the tables.
-      UpdateType
-      The update type. Valid values are: 1 or DB_UPDATE (from Foxpro.h). The old data is updated with the new data (default).
-      2 or DB_DELETEINSERT (from Foxpro.h). The old data is deleted and the new data is inserted.
-      UseMemoSize
-      The minimum size (in bytes) for which result columns are returned in memo fields. For example, if the width of a column result is greater than the value of UseMemoSize, the column result is stored in a memo field. UseMemoSize may vary from 1 to 255; the default value is 255.
-      WhereType
-      The WHERE clause for updates to remote tables. WhereType may assume the following values: 1 or DB_KEY (from Foxpro.h). The WHERE clause used to update remote tables consists of only the primary fields specified with the <b>KeyFieldList</b> property.
-      2 or DB_KEYANDUPDATABLE (from Foxpro.h). The WHERE clause used to update remote tables consists of the primary fields specified with the <b>KeyFieldList</b> property and any updatable fields.
-      3 or DB_KEYANDMODIFIED (from Foxpro.h) (default). The WHERE clause used to update remote tables consists of the primary fields specified with the <b>KeyFieldList</b> property and any other fields that are modified.
-      4 or DB_KEYANDTIMESTAMP (from Foxpro.h). The WHERE clause used to update remote tables consists of the primary fields specified with the <b>KeyFieldList</b> property and a comparison of the time stamps.
-      For more information about the <b>WhereType</b> property, see Managing Updates by Using Views.
+      <list>
+        <listheader>
+          <term>cProperty</term>
+          <description>Type</description>
+          <description>Description</description>
+        </listheader>
+        <item>
+          <term>Caption</term>
+          <description>C</description>
+          <description>
+            The field caption. If an equal sign (=) precedes the value of this property,
+            Visual FoxPro evaluates the value as an expression. Otherwise, it is treated as a string literal.
+          </description>
+        </item>
+        <item>
+          <term>Comment</term>
+          <description>C</description>
+          <description>The text of the field comment.</description>
+        </item>
+        <item>
+          <term>DataType</term>
+          <description>C</description>
+          <description>
+            The data type for a field in a view. Initially set to the data type for the field in the data source.<br/>
+            To specify a different data type for a field with <b>DBSETPROP( )</b>, use the syntax for creating fields in CREATE TABLE – SQL.<br/>
+            For example, to change the data type of an integer field named iCost in a table named Mytable to numeric type with width 4 and 2 decimal places,
+            use DBSETPROP('mytable.icost', 'field', ; 'DataType', 'N(4,2)')<br/>
+            You can also include the NOCPTRANS clause to prevent translation of character and memo fields to a different code page.<br/>
+            Read/write for remote views.
+          </description>
+        </item>
+        <item>
+          <term>DisplayClass</term>
+          <description>C</description>
+          <description>Name of the class used for field mapping.</description>
+        </item>
+        <item>
+          <term>DisplayClassLibrary</term>
+          <description>C</description>
+          <description>
+            Path to the class library specified with the <b>DisplayClass</b> property.
+          </description>
+        </item>
+        <item>
+          <term>DefaultValue</term>
+          <description>C</description>
+          <description>The field default value</description>
+        </item>
+        <item>
+          <term>KeyField</term>
+          <description>L</description>
+          <description>Contains True (.T.) if the field is specified in an index key expression; otherwise, contains False (.F.).</description>
+        </item>
+        <item>
+          <term>RuleExpression</term>
+          <description>C</description>
+          <description>The field rule expression.</description>
+        </item>
+        <item>
+          <term>RuleText</term>
+          <description>C</description>
+          <description>The field rule error text.</description>
+        </item>
+        <item>
+          <term>Updatable</term>
+          <description>L</description>
+          <description>Contains True (.T.) if the field can be updated; otherwise, contains False (.F.).</description>
+        </item>
+        <item>
+          <term>UpdateName</term>
+          <description>C</description>
+          <description>The name of the field used when data in the field is updated to the remote table. By default, the remote table field name.</description>
+        </item>
+      </list>
+      <note name="Note">All of these are read/write</note><br/><br/>
 
+      <b>Table properties</b>
+      <list>
+        <listheader>
+          <term>cProperty</term>
+          <description>Type</description>
+          <description>Description</description>
+        </listheader>
+        <item>
+          <term>Comment</term>
+          <description>C</description>
+          <description>
+            The text of the table comment.<br/>
+            Read/write.
+          </description>
+        </item>
+        <item>
+          <term>DeleteTrigger</term>
+          <description>C</description>
+          <description>
+            The Delete trigger expression.<br/>
+            Read-only.
+          </description>
+        </item>
+        <item>
+          <term>InsertTrigger</term>
+          <description>C</description>
+          <description>
+            The Insert trigger expression.<br/>
+            Read-only.
+          </description>
+        </item>
+        <item>
+          <term>Path</term>
+          <description>C</description>
+          <description>
+            The relative path with respect to the DBC to the table including the name of the file.<br/>
+            Read-only.
+          </description>
+        </item>
+        <item>
+          <term>PrimaryKey</term>
+          <description>C</description>
+          <description>
+            The tag name of the primary key.<br/>
+            Read-only.
+          </description>
+        </item>
+        <item>
+          <term>RuleExpression</term>
+          <description>C</description>
+          <description>
+            The row rule expression.<br/>
+            Read-only.
+          </description>
+        </item>
+        <item>
+          <term>RuleText</term>
+          <description>C</description>
+          <description>
+            The row rule error text.<br/>
+            Read-only.
+          </description>
+        </item>
+        <item>
+          <term>UpdateTrigger</term>
+          <description>C</description>
+          <description>
+            The Update trigger expression.<br/>
+            Read-only.
+          </description>
+        </item>
+      </list><br/><br/>
+
+      <b>View properties</b>
+      <list>
+        <listheader>
+          <term>cProperty</term>
+          <description>Type</description>
+          <description>Description</description>
+        </listheader>
+        <item>
+          <term>AllowSimultaneousFetch</term>
+          <description>L</description>
+          <description>
+            Applies when using remote views, a shared connection, and to cursors created using ODBC.<br/>
+            AllowSimultaneousFetch contains True (.T.) when similarly configured cursors sharing the connection are permitted to fetch rows simultaneously.<br/>
+            Otherwise, AllowSimultaneousFetch contains False (.F.) when fetching rows simultaneously is not permitted.
+            <note name="Note">
+              This property is available in X# 8.0 and later. Views created in X# 8.0 and later are not compatible with earlier versions.
+              Calling the <b>VALIDATE DATABASE</b> command in a version prior to X# 8.0 on a database container with remote views created or modified in X# 8.0
+              and later generate an error. Calling the codeVALIDATE DATABASE RECOVER/code in a version prior to X# 8.0 removes the <b>AllowSimultaneousFetch</b>
+              property from any such views.
+            </note>
+          </description>
+        </item>
+        <item>
+          <term>BatchUpdateCount</term>
+          <description>N</description>
+          <description>
+            The number of update statements sent to the back end for views. 1 is the default.
+            Adjusting this value can greatly increase update performance.<br/>
+            Read/write.
+          </description>
+        </item>
+        <item>
+          <term>Comment</term>
+          <description>C</description>
+          <description>
+            The text of the view comment.<br/>
+            Read/write.
+          </description>
+        </item>
+        <item>
+          <term>CompareMemo</term>
+          <description>L</description>
+          <description>
+            Contains true (.T.) (default) if memo fields (of type Memo, General, or Picture, or, for remote views, type Timestamp)
+            are included in the WHERE clause for updates; otherwise, contains false (.F.).<br/>
+            Read/write.
+          </description>
+        </item>
+        <item>
+          <term>ConnectName</term>
+          <description>C</description>
+          <description>
+            The named connection used when the view is opened.<br/>
+            Read-only.
+          </description>
+        </item>
+        <item>
+          <term>FetchAsNeeded</term>
+          <description>L</description>
+          <description>
+            If True (.T.), data is fetched only when needed, such as when record pointer moves to a row that has not been fetched.<br/>
+            If False (.F.), additional data is fetched during idle time. (Default)<br/>
+            <note name="note">FetchAsNeeded does not apply when progressive fetching is disabled (FetchSize is -1).</note><br/>
+            Read/write.
+          </description>
+        </item>
+        <item>
+          <term>FetchMemo</term>
+          <description>L</description>
+          <description>
+            Contains true (.T.) (default) if memo and general fields are fetched with the view results; otherwise, contains false (.F.).<br/>
+            Use the ISMEMOFETCHED( ) Function to determine if the memo field has been fetched.<br/>
+            Read/write.
+          </description>
+        </item>
+        <item>
+          <term>FetchSize</term>
+          <description>N</description>
+          <description>
+            Contains the number of records fetched at a time from the remote tables. The default is 100 records.
+            Setting FetchSize to –1 retrieves the complete result set, limited by the MaxRecords setting.<br/>
+            <note name="Note">
+              Progressive fetching holds the connection until all rows are retrieved.
+              Use caution coding with FetchSize if ShareConnection is True (.T.).
+            </note><br/>
+            Read/write.
+          </description>
+        </item>
+        <item>
+          <term>MaxRecords</term>
+          <description>N</description>
+          <description>
+            The maximum number of records fetched when result sets are returned. The default is – 1 (all rows are returned).<br/>
+            A value of 0 specifies that the view is executed but no results are fetched.<br/>
+            Read/write.
+          </description>
+        </item>
+        <item>
+          <term>Offline</term>
+          <description>L</description>
+          <description>
+            Contains true (.T.) if the view is an offline view.<br/>
+            Read-only.
+          </description>
+        </item>
+        <item>
+          <term>ParameterList</term>
+          <description>C</description>
+          <description>
+            The WHERE clause parameters. The format for the parameters is ''ParameterName1, 'Type1'; ParameterName2, 'Type2'; ...'' where Type
+            is a one of the following characters specifying the parameter type:<br/>
+            C – Character  D – Date  T – DateTime  N – Numeric  F – Floating  B – Double  I – Integer  Y – Currency  L - Logical<br/>
+            For example, ''MyParam1, 'C' '' specifies a single character type parameter named MyParam1.<br/>
+            For more information about creating parameterized views, see How to: Create Parameterized Views.<br/>
+            Read/write.
+          </description>
+        </item>
+        <item>
+          <term>Prepared</term>
+          <description>L</description>
+          <description>
+            Contains True (.T.) if SQL statements are prepared for subsequent <b>REQUERY( )</b> function calls.
+            <b>REQUERY( )</b> is used to retrieve data again for a SQL view. See SQLPREPARE( ) for additional information about preparing SQL statements.
+            The default is false (.F.).<br/>
+            The rule text expression displayed when an error occurs when data is edited in a Browse or Edit window.<br/>
+            Read/write.
+          </description>
+        </item>
+        <item>
+          <term>RuleExpression</term>
+          <description>C</description>
+          <description>
+            The row rule expression.<br/>
+            Read/write.
+          </description>
+        </item>
+        <item>
+          <term>RuleText</term>
+          <description>C</description>
+          <description>
+            The rule text expression displayed when an error occurs when data is edited in a Browse or Edit window.<br/>
+            Read/write.
+          </description>
+        </item>
+        <item>
+          <term>SendUpdates</term>
+          <description>L</description>
+          <description>
+            Contains true (.T.) if a SQL update query is sent to update remote tables; otherwise, contains false (.F.) (default).<br/>
+            Read/write.
+          </description>
+        </item>
+        <item>
+          <term>ShareConnection</term>
+          <description>L</description>
+          <description>
+            Contains true (.T.) if a SQL update query is sent to update remote tables; otherwise, contains false (.F.) (default).<br/>
+            Read/write.
+          </description>
+        </item>
+        <item>
+          <term>ShareType</term>
+          <description>L</description>
+          <description>
+            Contains true (.T.) if the view can share its connection handle with other connections; otherwise, contains false (.F.).<br/>
+            Read/write.
+          </description>
+        </item>
+        <item>
+          <term>SourceType</term>
+          <description>N</description>
+          <description>
+            The view source. SourceType may assume the following values:<br/>
+            1 - The view uses local tables.<br/>
+            2 - The view uses remote tables.<br/>
+            Read-only.
+          </description>
+        </item>
+        <item>
+          <term>SQL</term>
+          <description>C</description>
+          <description>
+            The SQL statement executed when the view is opened.<br/>
+            Read/write.
+          </description>
+        </item>
+        <item>
+          <term>Tables</term>
+          <description>C</description>
+          <description>
+            A comma-delimited list of the names of the tables.<br/>
+            Read/write.
+          </description>
+        </item>
+        <item>
+          <term>UpdateType</term>
+          <description>N</description>
+          <description>
+            The update type. Valid values are:<br/>
+            1 or DB_UPDATE (from Foxpro.h). The old data is updated with the new data (default).<br/>
+            2 or DB_DELETEINSERT (from Foxpro.h). The old data is deleted and the new data is inserted.<br/>
+            Read/write.
+          </description>
+        </item>
+        <item>
+          <term>UseMemoSize</term>
+          <description>N</description>
+          <description>
+            The minimum size (in bytes) for which result columns are returned in memo fields.
+            For example, if the width of a column result is greater than the value of UseMemoSize, the column result is stored in a memo field.
+            UseMemoSize may vary from 1 to 255; the default value is 255.<br/>
+            Read/write.
+          </description>
+        </item>
+        <item>
+          <term>WhereType</term>
+          <description>N</description>
+          <description>
+            The WHERE clause for updates to remote tables. WhereType may assume the following values:<br/>
+            1 or DB_KEY (from Foxpro.h). The WHERE clause used to update remote tables consists of 
+            only the primary fields specified with the <b>KeyFieldList</b> property.<br/>
+            2 or DB_KEYANDUPDATABLE (from Foxpro.h). The WHERE clause used to update remote tables consists of the primary fields specified 
+            with the <b>KeyFieldList</b> property and any updatable fields.<br/>
+            3 or DB_KEYANDMODIFIED (from Foxpro.h) (default). The WHERE clause used to update remote tables consists of the primary fields specified 
+            with the <b>KeyFieldList</b> property and any other fields that are modified.<br/>
+            4 or DB_KEYANDTIMESTAMP (from Foxpro.h). The WHERE clause used to update remote tables consists of the primary fields specified 
+            with the <b>KeyFieldList</b> property and a comparison of the time stamps.<br/>
+            For more information about the <b>WhereType</b> property, see Managing Updates by Using Views.<br/>
+            Read/write.
+          </description>
+        </item>
+      </list>
     </remarks>
     <example>
        <code language="X#">
@@ -3406,10 +3707,10 @@
         CLEAR
         OPEN DATABASE (HOME(2) + 'Data\testdata')
         * Displays the primary key field
-        cResults = DBGETPROP("customer", "Table", "PrimaryKey")
+        cResults = DbGetProp("customer", "Table", "PrimaryKey")
         =MESSAGEBOX(cResults)   &amp;&amp; Displays    'cust_id'
         * Displays comments for the field 'cust_id'
-        cResults = DBGETPROP("customer.cust_id", "Field", "Comment")
+        cResults = DbGetProp("customer.cust_id", "Field", "Comment")
         IF LEN(ALLTRIM(cResults)) = 0
         =MESSAGEBOX("No Comment for this field." + CHR(13) + ;
         CHR (13) + "Use DBSETPROP( ) to add comments.")
@@ -3425,7 +3726,7 @@
     </summary>
     <param name="cName">
 
-      Specifies the name of the current open database or the field, named connection, table, or view in the current open database for which <b>DBGETPROP( )</b> returns information.
+      Specifies the name of the current open database or the field, named connection, table, or view in the current open database for which <b>DbGetProp( )</b> returns information.
       To set a property for a field in a table or a view, preface the name of the field with the name of the table or view containing the field. For example, to set a property for the codecustid/code field in the codecustomer/code table, specify the following for cName:
        <code language="X#">customer.custid</code>
 

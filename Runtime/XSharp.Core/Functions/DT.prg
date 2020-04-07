@@ -33,7 +33,7 @@ FUNCTION ElapTime(cStartTime AS STRING,cEndTime AS STRING) AS STRING
 	nStart := Secs(cStartTime)
 	nEnd   := Secs(cEndTime)
 	IF nStart > nEnd
-		nDiff := 86400 + nEnd - nStart
+		nDiff := 86400U + nEnd - nStart
 	ELSE
 		nDiff := nEnd - nStart
 	ENDIF

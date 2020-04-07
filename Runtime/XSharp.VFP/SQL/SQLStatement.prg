@@ -237,8 +237,8 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
         aStruct := ArrayNew( (DWORD) nFields)
         nFields := 1
         FOREACH schemaRow AS DataRow IN oSchema:Rows
-            VAR fieldInfo    := VfpFieldInfo.FromSchema(schemaRow, aFieldNames)
-            aStruct[nFields] := {fieldInfo:FieldName, fieldInfo:Type, fieldInfo:Length, fieldInfo:Decimals, fieldInfo:ColumnName}
+            VAR fieldInfo    := FromSchema(schemaRow, aFieldNames)
+            aStruct[nFields] := {fieldInfo:Name, fieldInfo:FieldTypeStr, fieldInfo:Length, fieldInfo:Decimals, fieldInfo:ColumnName, fieldInfo}
             nFields++
         NEXT
         nFields := aStruct:Count
@@ -251,6 +251,13 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
         VoDbUseArea(TRUE, "DBFVFPSQL",cTemp,cCursorName,FALSE,FALSE)
         LOCAL oRDD AS IRdd
         oRDD := (IRdd) DbInfo(DbInfo.DBI_RDD_OBJECT)
+
+        FOR VAR nI := 1 TO ALen(aStruct)
+            LOCAL fieldInfo AS DbColumnInfo
+            fieldInfo := aStruct[nI, 6]
+            oRDD:FieldInfo(nI, DBS_COLUMNINFO, fieldInfo)
+        NEXT
+
         LOCAL oMIGet := NULL AS MethodInfo 
         // DBFVFPSQL has a method SetData to set all the values of the current row.
         oMIGet := oRDD:GetType():GetMethod("GetData", BindingFlags.Instance+BindingFlags.IgnoreCase+BindingFlags.Public)
@@ -359,10 +366,10 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
         LOCAL oRDD AS IRdd
         oRDD := (IRdd) DbInfo(DbInfo.DBI_RDD_OBJECT)
         FOREACH schemaRow AS DataRow IN oSchema:Rows
-            VAR fieldInfo    := VfpFieldInfo.FromSchema(schemaRow, aFieldNames)
+            VAR fieldInfo    := FromSchema(schemaRow, aFieldNames)
             oRDD:Append(TRUE)
-            oRDD:PutValue(1, fieldInfo:FieldName)
-            oRDD:PutValue(2, Left(fieldInfo:Type,1))
+            oRDD:PutValue(1, fieldInfo:Name)
+            oRDD:PutValue(2, Left(fieldInfo:FieldTypeStr,1))
             oRDD:PutValue(3, fieldInfo:Length)
             oRDD:PutValue(4, fieldInfo:Decimals)
             oRDD:GoCold()
@@ -432,182 +439,175 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
 
 
    
-    [DebuggerDisplay("{FieldName,nq} ({Type,nq} {Length} {Decimals})")];
-    INTERNAL CLASS VfpFieldInfo
-        PROPERTY ColumnName AS STRING   AUTO GET PRIVATE SET
-        PROPERTY FieldName  AS STRING   AUTO GET PRIVATE SET
-        PROPERTY Type       AS STRING   AUTO GET PRIVATE SET
-        PROPERTY Length     AS LONG     AUTO GET PRIVATE SET
-        PROPERTY Decimals   AS LONG     AUTO GET PRIVATE SET
-        PRIVATE CONSTRUCTOR(cType AS STRING, nLength AS LONG, nDecimals AS LONG)
-            SELF:Type := cType
-            SELF:Length := nLength
-            SELF:Decimals := nDecimals
-            RETURN
-            
-        STATIC METHOD FromSchema(schemaRow AS DataRow, aFieldNames AS IList<STRING>) AS VfpFieldInfo
-		    LOCAL nLen, nDec AS LONG
-		    LOCAL cType AS STRING
-		    LOCAL oType	AS System.Type
-		    LOCAL TC AS TypeCode
-            LOCAL result AS VfpFieldInfo
-            oType   := (Type) schemaRow["DataType"]
-		    TC      := Type.GetTypeCode(oType)
-		    nDec    := 0
-		    SWITCH TC
-		    CASE TypeCode.String 
-			    cType   := "C"
-			    nLen    := (Int32)schemaRow["ColumnSize"]
-			    // Automatically Convert Long Strings to Memos
-			    IF nLen  > 255 .OR. nLen < 0
-				    nLen    := 4
-				    cType   := "M"
-                ENDIF
-                result := VfpFieldInfo{cType,nLen ,0 }
-			
-		    CASE TypeCode.Boolean
-			    result := VfpFieldInfo{"L",1 ,0 }
-
-            CASE TypeCode.Decimal
-		        result := VfpFieldInfo{"Y",16 ,4 }
-		    CASE TypeCode.Double
-            CASE TypeCode.Single
-			    nDec := 1
-			    nLen := 10
-			    nDec := Convert.ToInt32(schemaRow:Item["NumericScale"])
-			    nLen := Convert.ToInt32(schemaRow:Item["NumericPrecision"])
-                IF nLen == 0
-				    // I have seen a case where nDec == 31 and nLen == 0
-				    // Fix this to something usefull
-				    nDec := 2
-				    nLen := 10
-			    ELSEIF nDec == 127
-				    //IF nLen == 38 .AND. oProviderType = ProviderType.Oracle // Standardvalue for calculated fields in oracle-queries, cutting decimals leads to wrong results in that case
-				    //	nDec := 10
-				    //ELSE
-					    nDec := 0 // Overflow abfangen
-				    //ENDIF
-			    ENDIF
-            result := VfpFieldInfo{"N",nLen ,nDec }
-			
-		    CASE TypeCode.Int32		// -2147483647 - 2147483648 (2^31)
-                IF (LOGIC)schemaRow["IsAutoIncrement"]
-                    result := VfpFieldInfo{"I:+",4 ,0}
-                ELSE
-                    result := VfpFieldInfo{"I",4 ,0}
-                ENDIF
-               
-		    CASE TypeCode.Int64		// - 9223372036854775807 - 9223372036854775808 (2^63)
-                result := VfpFieldInfo{"N",21 ,0}
-                
-		    CASE TypeCode.Int16	// -32767 - 32768 (2^15)
-                result := VfpFieldInfo{"N",6 ,0}
-                
-		    CASE TypeCode.Byte
-                result := VfpFieldInfo{"N",4 ,0}
-                
-		    CASE TypeCode.SByte	// 0 - 255 	(2^8)
-                result := VfpFieldInfo{"N",3 ,0}
-                
-		    CASE TypeCode.UInt16	// 0 - 65535 (2^16)
-                result := VfpFieldInfo{"N",5 ,0}
-                
-		    CASE TypeCode.UInt32		// 0 - 4294836225 (2^32)
-                result := VfpFieldInfo{"N",10 ,0}
-                
-		    CASE TypeCode.UInt64	// 0 - 18445618199572250625 (2^64)
-			    nLen := 20
-                result := VfpFieldInfo{"N",nLen ,0}
-			
-		    CASE TypeCode.DateTime
-			    cType   := "T"
-			    nLen 	:= 8
-                result  := VfpFieldInfo{cType,nLen ,0}
-			
-		    CASE TypeCode.Object
-			    LOCAL lIsDate := FALSE AS LOGIC
-			    LOCAL oMems AS MethodInfo[]
-			    LOCAL lFound := FALSE AS LOGIC
-			    // check to see if the datatype has a dbType
-			    oMems := oType:GetMethods(BindingFlags.Public|BindingFlags.Static)
-			    FOREACH oMem AS MethodInfo IN oMems
-				    IF oMem:ReturnType == TypeOf(System.DateTime)  .AND. String.Compare(oMem:Name, "op_Explicit", StringComparison.OrdinalIgnoreCase) == 0
-					    lIsDate := TRUE
-					    lFound  := TRUE
-					    EXIT
-				    ENDIF
-			    NEXT
-			    IF ! lFound
-				    LOCAL cTypeName AS STRING
-				    cTypeName := oType:Name:ToUpperInvariant()
-				    lIsDate     := cTypeName:Contains("DATE") 
-			    ENDIF
-			    IF lIsDate
-				    cType   := "D"
-				    nLen 	:= 8
-			    ELSE
-				    cType 	:= "C"
-				    nLen 	:= 10
-			    ENDIF
-                result := VfpFieldInfo{cType,nLen ,0}
-			
-		    OTHERWISE
-			    cType := "C"
-			    nLen 	:= (Int32)schemaRow["ColumnSize"]
-			    IF nLen <= 0
-				    cType := "M"
-                    nLen  := 4
-			    ENDIF
-                result := VfpFieldInfo{cType,nLen ,0}
-			
-            END SWITCH
-            IF (LOGIC)schemaRow["AllowDBNull"]
-                cType := result:Type
-                IF cType:Contains(":")
-                    cType += "0"
-                ELSE
-                    cType += ":0"
-                ENDIF
-                result:Type := cType
-            
+    STATIC METHOD FromSchema(schemaRow AS DataRow, aFieldNames AS IList<STRING>) AS XSharp.RDD.DbColumnInfo
+		LOCAL nLen, nDec AS LONG
+		LOCAL cType AS STRING
+		LOCAL oType	AS System.Type
+		LOCAL TC AS TypeCode
+        LOCAL result AS DbColumnInfo
+        LOCAL columnName AS STRING
+        columnName   := schemaRow["ColumnName"]:ToString( )
+        oType   := (Type) schemaRow["DataType"]
+		TC      := Type.GetTypeCode(oType)
+		nDec    := 0
+		SWITCH TC
+		CASE TypeCode.String 
+			cType   := "C"
+			nLen    := (Int32)schemaRow["ColumnSize"]
+			// Automatically Convert Long Strings to Memos
+			IF nLen  > 255 .OR. nLen < 0
+				nLen    := 4
+				cType   := "M"
             ENDIF
-            result:ColumnName   := schemaRow["ColumnName"]:ToString( )
-            VAR cFldName        := SQLSupport.CleanupColumnName(result:ColumnName)
-            result:FieldName    := MakeFieldNameUnique(cFldName, aFieldNames)
-		    RETURN result
+            result := DbColumnInfo{columnName,cType,nLen ,0 }
+			
+		CASE TypeCode.Boolean
+			result := DbColumnInfo{columnName,"L",1 ,0 }
+
+        CASE TypeCode.Decimal
+		    result := DbColumnInfo{columnName,"Y",16 ,4 }
+            result:NumericScale     := 16
+            result:NumericPrecision := 4
             
-        STATIC METHOD MakeFieldNameUnique(cName AS STRING, aFldNames AS IList<STRING> ) AS STRING
-		    LOCAL dwPos, dwFld AS LONG
-		    LOCAL cNewname		 AS STRING
-		    IF Empty(cName)
-			    dwFld := 0
-			    dwPos := 1
-			    DO WHILE dwPos >= 0
-				    ++dwFld
-				    cName := "FLD"+StrZero(dwFld,3,0)
-				    dwPos := aFldNames:IndexOf(cName:ToUpper())
-			    ENDDO
-		    ELSE
-			    // remove column prefixes
-			    dwPos := cName:IndexOf(".")+1
-			    IF dwPos > 0
-				    cName := cName:Substring(dwPos)
-			    ENDIF
-			    // remove embedded spaces
-			    cName 	:= StrTran(cName, " ", "_"):ToUpper()
-			    cNewname := Left(cName,10)
-			    dwFld 	:= 1
-			    DO WHILE aFldNames:IndexOf(cNewname) >= 0
-				    ++dwFld
-                    VAR tmp := dwFld:ToString()
-				    cNewname := cName:Substring(0, 10 - tmp:Length)+tmp
-			    ENDDO
-			    cName 	:= cNewname
-		    ENDIF
-		    aFldNames:Add(cName)
-		    RETURN cName            
-    END CLASS
-    INTERNAL DELEGATE SqlGetData() AS OBJECT[]
+		CASE TypeCode.Double
+        CASE TypeCode.Single
+			nDec := 1
+			nLen := 10
+            VAR nScale := Convert.ToInt32(schemaRow:Item["NumericScale"])
+            VAR nPrec  := Convert.ToInt32(schemaRow:Item["NumericPrecision"])
+			nDec := nScale
+			nLen := nPrec
+            IF nLen == 0
+				// I have seen a case where nDec == 31 and nLen == 0
+				// Fix this to something usefull
+				nDec := 2
+				nLen := 10
+			ELSEIF nDec == 127
+				//IF nLen == 38 .AND. oProviderType = ProviderType.Oracle // Standardvalue for calculated fields in oracle-queries, cutting decimals leads to wrong results in that case
+				//	nDec := 10
+				//ELSE
+					nDec := 0 // Overflow abfangen
+				//ENDIF
+			ENDIF
+            result := DbColumnInfo{columnName,"N",nLen ,nDec }
+            result:NumericScale     := nScale
+            result:NumericPrecision := nPrec
+			
+		CASE TypeCode.Int32		// -2147483647 - 2147483648 (2^31)
+            IF (LOGIC)schemaRow["IsAutoIncrement"]
+                result := DbColumnInfo{columnName,"I",4 ,0}
+                result:Flags |= DBFFieldFlags.AutoIncrement
+            ELSE
+                result := DbColumnInfo{columnName,"I",4 ,0}
+            ENDIF
+               
+		CASE TypeCode.Int64		// - 9223372036854775807 - 9223372036854775808 (2^63)
+            result := DbColumnInfo{columnName,"N",21 ,0}
+                
+		CASE TypeCode.Int16	// -32767 - 32768 (2^15)
+            result := DbColumnInfo{columnName,"N",6 ,0}
+                
+		CASE TypeCode.Byte
+            result := DbColumnInfo{columnName,"N",4 ,0}
+                
+		CASE TypeCode.SByte	// 0 - 255 	(2^8)
+            result := DbColumnInfo{columnName,"N",3 ,0}
+                
+		CASE TypeCode.UInt16	// 0 - 65535 (2^16)
+            result := DbColumnInfo{columnName,"N",5 ,0}
+                
+		CASE TypeCode.UInt32		// 0 - 4294836225 (2^32)
+            result := DbColumnInfo{columnName,"N",10 ,0}
+                
+		CASE TypeCode.UInt64	// 0 - 18445618199572250625 (2^64)
+			nLen := 20
+            result := DbColumnInfo{columnName,"N",nLen ,0}
+			
+		CASE TypeCode.DateTime
+			cType   := "T"
+			nLen 	:= 8
+            result  := DbColumnInfo{columnName,cType,nLen ,0}
+			
+		CASE TypeCode.Object
+			LOCAL lIsDate := FALSE AS LOGIC
+			LOCAL oMems AS MethodInfo[]
+			LOCAL lFound := FALSE AS LOGIC
+			// check to see if the datatype has a dbType
+			oMems := oType:GetMethods(BindingFlags.Public|BindingFlags.Static)
+			FOREACH oMem AS MethodInfo IN oMems
+				IF oMem:ReturnType == TypeOf(System.DateTime)  .AND. String.Compare(oMem:Name, "op_Explicit", StringComparison.OrdinalIgnoreCase) == 0
+					lIsDate := TRUE
+					lFound  := TRUE
+					EXIT
+				ENDIF
+			NEXT
+			IF ! lFound
+				LOCAL cTypeName AS STRING
+				cTypeName := oType:Name:ToUpperInvariant()
+				lIsDate     := cTypeName:Contains("DATE") 
+			ENDIF
+			IF lIsDate
+				cType   := "D"
+				nLen 	:= 8
+			ELSE
+				cType 	:= "C"
+				nLen 	:= 10
+			ENDIF
+            result := DbColumnInfo{columnName,cType,nLen ,0}
+			
+		OTHERWISE
+			cType := "C"
+			nLen 	:= (Int32)schemaRow["ColumnSize"]
+			IF nLen <= 0
+				cType := "M"
+                nLen  := 4
+			ENDIF
+            result := DbColumnInfo{columnName,cType,nLen ,0}
+			
+        END SWITCH
+        IF (LOGIC)schemaRow["AllowDBNull"]
+            result:Flags |= DBFFieldFlags.Nullable
+        ENDIF
+        VAR cFldName        := SQLSupport.CleanupColumnName(columnName)
+        result:ColumnName   := columnName
+        result:Name         := MakeFieldNameUnique(cFldName, aFieldNames)
+        result:Alias        := result:Name
+        result:DotNetType   := oType
+		RETURN result
+
+   STATIC METHOD MakeFieldNameUnique(cName AS STRING, aFldNames AS IList<STRING> ) AS STRING
+        LOCAL dwPos, dwFld AS LONG
+        LOCAL cNewname		 AS STRING
+        IF String.IsNullOrEmpty(cName)
+            dwFld := 0
+            dwPos := 1
+            DO WHILE dwPos >= 0
+                ++dwFld
+                cName := "FLD"+dwFld:ToString():PadLeft(3,c'0')
+                dwPos := aFldNames:IndexOf(cName:ToUpper())
+            ENDDO
+        ELSE
+            // remove column prefixes
+            dwPos := cName:IndexOf(".")+1
+            IF dwPos > 0
+                cName := cName:Substring(dwPos)
+            ENDIF
+            // remove embedded spaces
+            cName 	:= cName:Replace(" ", "_"):ToUpper()
+            cNewname := Left(cName,10)
+            dwFld 	:= 1
+            DO WHILE aFldNames:IndexOf(cNewname) >= 0
+                ++dwFld
+                VAR tmp := dwFld:ToString()
+                cNewname := cName:Substring(0, 10 - tmp:Length)+tmp
+            ENDDO
+            cName 	:= cNewname
+        ENDIF
+        aFldNames:Add(cName)
+    RETURN cName            
+
+
 
 
 END CLASS
+INTERNAL DELEGATE SqlGetData() AS OBJECT[]

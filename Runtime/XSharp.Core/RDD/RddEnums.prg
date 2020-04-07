@@ -79,6 +79,8 @@ BEGIN NAMESPACE XSharp.RDD.Enums
 
         /// <summary>Foxpro extension: Returns the field caption.</summary>
 		MEMBER DBS_CAPTION 		    := 14
+        /// <summary>SQL extension: Returns the object with the complete column information.</summary>
+		MEMBER DBS_COLUMNINFO       := 15
 
         /// <summary>Gets a BLOB value.</summary>
 		MEMBER DBS_BLOB_GET			:= 101

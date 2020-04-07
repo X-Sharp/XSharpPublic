@@ -480,6 +480,11 @@ CLASS RddFieldInfo
 		RETURN
 
     CONSTRUCTOR(oInfo AS RddFieldInfo)
+        SUPER()
+        SELF:CopyValues(oInfo)
+		SELF:Validate()
+
+    METHOD CopyValues(oInfo AS RddFieldInfo) AS VOID
  		SELF:Name 		:= oInfo:Name                                
 		SELF:FieldType 	:= oInfo:FieldType
 		SELF:Length 	:= oInfo:Length
@@ -489,7 +494,8 @@ CLASS RddFieldInfo
 		IF SELF:FieldType:HasDecimals()  .OR. SELF:FieldType == DbFieldType.Character  // Support for char fields > 255 characters
         	SELF:Decimals 	:= oInfo:Decimals
 		ENDIF
-		SELF:Validate()
+        RETURN    
+
        
     /// <summary>Clone a RddFieldInfo object.</summary>        
 	METHOD Clone() AS RddFieldInfo

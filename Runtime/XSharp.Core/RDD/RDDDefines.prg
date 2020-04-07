@@ -51,6 +51,8 @@ DEFINE DBS_ALEN                 := 4  // XBase++ has this define
 /// <exclude />
 DEFINE DBS_CAPTION              := DbFieldInfo.DBS_CAPTION
 /// <exclude />
+DEFINE DBS_COLUMNINFO           := DbFieldInfo.DBS_COLUMNINFO
+/// <exclude />
 DEFINE DBS_ISNULL               := DbFieldInfo.DBS_ISNULL  
 /// <exclude />
 DEFINE DBS_COUNTER              := DbFieldInfo.DBS_COUNTER 

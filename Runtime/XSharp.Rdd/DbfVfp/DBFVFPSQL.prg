@@ -10,13 +10,14 @@ USING System.IO
 USING System.Collections.Generic
 USING System.Data
 USING System.Diagnostics
-#pragma options ("az", ON)
+
 BEGIN NAMESPACE XSharp.RDD
     /// <summary>DBFVFPSQL RDD. DBFCDX with support for the FoxPro field types and a List of Object values as backing collection for the data.</summary>
 
     [DebuggerDisplay("DBFVFPSQL ({Alias,nq})")];
     CLASS DBFVFPSQL INHERIT DBFVFP
         PROTECT _rows   AS List <OBJECT[]>
+        PROTECT _columns AS DbColumnInfo[]
         #region Overridden properties
         OVERRIDE PROPERTY Driver AS STRING GET "DBFVFPSQL"
         #endregion
@@ -26,6 +27,13 @@ BEGIN NAMESPACE XSharp.RDD
             _rows := List<OBJECT[]> {}
             RETURN
 
+        /// <inheritdoc />  
+        OVERRIDE METHOD SetFieldExtent(nFields AS LONG) AS LOGIC
+            VAR result := SUPER:SetFieldExtent(nFields)
+            SELF:_columns := DbColumnInfo[]{nFields}
+            RETURN result
+
+		/// <inheritdoc />
         OVERRIDE METHOD Create(info AS DbOpenInfo) AS LOGIC
             VAR lResult := SUPER:Create(info)
             IF lResult
@@ -33,6 +41,7 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             RETURN lResult
 
+		/// <inheritdoc />
         OVERRIDE METHOD Open(info AS DbOpenInfo) AS LOGIC
             VAR lResult := SUPER:Open(info)
             VAR nFlds   := SELF:FieldCount
@@ -49,6 +58,7 @@ BEGIN NAMESPACE XSharp.RDD
             NEXT
             RETURN lResult
 
+		/// <inheritdoc />
         OVERRIDE METHOD Append(lReleaseLock AS LOGIC) AS LOGIC
             VAR lResult := SUPER:Append(lReleaseLock)
             IF lResult
@@ -57,7 +67,8 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             RETURN lResult
 
-		OVERRIDE METHOD GetValue(nFldPos AS INT) AS OBJECT
+		/// <inheritdoc />
+        OVERRIDE METHOD GetValue(nFldPos AS INT) AS OBJECT
             IF nFldPos > 0 .AND. nFldPos <= SELF:FieldCount
                 IF SELF:_RecNo <= _rows:Count .AND. SELF:_RecNo > 0
                     VAR nRow := SELF:_RecNo -1
@@ -71,6 +82,7 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             RETURN SUPER:GetValue(nFldPos)
 
+        /// <inheritdoc />
         OVERRIDE METHOD PutValue(nFldPos AS INT, oValue AS OBJECT) AS LOGIC
             IF nFldPos > 0 .AND. nFldPos <= SELF:FieldCount
                 IF SELF:_RecNo <= _rows:Count .AND. SELF:_RecNo > 0
@@ -84,6 +96,7 @@ BEGIN NAMESPACE XSharp.RDD
         METHOD GetData() AS OBJECT[]
             RETURN SELF:_rows[SELF:_RecNo -1] 
 
+        /// <inheritdoc />
         OVERRIDE METHOD Close() AS LOGIC
             LOCAL lOk AS LOGIC
             LOCAL cFileName := SELF:_FileName AS STRING
@@ -102,12 +115,27 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             RETURN lOk
 
+    /// <inheritdoc />
     OVERRIDE METHOD Info(uiOrdinal AS LONG, oNewValue AS OBJECT) AS OBJECT
         IF uiOrdinal == DbInfo.DBI_CANPUTREC
             RETURN FALSE
         ENDIF
         RETURN SUPER:Info(uiOrdinal, oNewValue)
-        
+
+    /// <inheritdoc />
+    OVERRIDE METHOD FieldInfo(nFldPos AS LONG, nOrdinal AS LONG, oNewValue AS OBJECT) AS OBJECT
+        LOCAL result AS OBJECT
+        IF nOrdinal == DBS_COLUMNINFO .AND. nFldPos <= SELF:_Fields:Length .AND. nFldPos > 0
+            result := _columns[nFldPos-1] 
+            IF oNewValue IS DbColumnInfo VAR column
+                SELF:_columns[nFldPos-1] := column
+            ENDIF
+            RETURN result
+        ENDIF
+                
+        RETURN SUPER:FieldInfo(nFldPos, nOrdinal, oNewValue)
+
+
     END CLASS  
 
 END NAMESPACE

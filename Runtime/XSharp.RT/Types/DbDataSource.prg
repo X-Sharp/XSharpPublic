@@ -7,6 +7,7 @@
 USING System.Collections
 USING System.Collections.Generic
 USING XSharp.RDD
+USING XSharp.RDD.Support
 USING System.ComponentModel
 
 DELEGATE XSharp.DbNotifyFieldChange( recordNumer AS INT , column AS INT) AS VOID
@@ -15,24 +16,33 @@ DELEGATE XSharp.DbNotifyFieldChange( recordNumer AS INT , column AS INT) AS VOID
 CLASS XSharp.DbDataSource IMPLEMENTS IBindingList
     PROTECTED _fieldList     AS List<DbField>
     PROTECTED _oRDD          AS IRdd
-    PROTECTED _readOnly      AS LOGIC 
-    EVENT FieldChanged  AS DbNotifyFieldChange
+    PROTECTED _readOnly      AS LOGIC
+    PROTECTED _records       AS Dictionary<LONG, DbRecord>
+    PROTECTED _index         AS LONG
+    PROTECTED _allowSort     AS LOGIC
+    PROTECTED _sorted        AS LOGIC
+    PROTECTED _indexFile     AS STRING
+    EVENT FieldChanged       AS DbNotifyFieldChange
     
     CONSTRUCTOR(oRDD AS IRdd)
     _oRDD       := oRDD
     _readOnly   := (LOGIC) oRDD:Info(DBI_READONLY,NULL)
+    _records    := Dictionary<LONG, DbRecord>{}
+    _index      := -1
+    _allowSort  := TRUE
+    _sorted     := FALSE
     RETURN
-
+  
     #region IBindingList implementation
         PROPERTY AllowEdit      AS LOGIC GET !_readOnly
         PROPERTY AllowNew       AS LOGIC GET !_readOnly
         PROPERTY AllowRemove    AS LOGIC GET !_readOnly
-        PROPERTY IsSorted       AS LOGIC GET FALSE
-        PROPERTY SortDirection  AS ListSortDirection  GET ListSortDirection.Ascending
-        PROPERTY SortProperty   AS PropertyDescriptor GET NULL
+        PROPERTY IsSorted       AS LOGIC GET _sorted
+        PROPERTY SortDirection  AS ListSortDirection  AUTO
+        PROPERTY SortProperty   AS PropertyDescriptor AUTO
         PROPERTY SupportsChangeNotification AS LOGIC GET TRUE
-        PROPERTY SupportsSorting AS LOGIC GET FALSE
-        PROPERTY SupportsSearching AS LOGIC GET FALSE
+        PROPERTY SupportsSorting    AS LOGIC GET _allowSort SET _allowSort := value
+        PROPERTY SupportsSearching  AS LOGIC GET FALSE
 
 
         PROPERTY IsReadOnly AS LOGIC GET _readOnly
@@ -49,8 +59,74 @@ CLASS XSharp.DbDataSource IMPLEMENTS IBindingList
             ENDIF
             RETURN NULL
 
+        PRIVATE METHOD findFieldName(property AS PropertyDescriptor) AS STRING
+            FOREACH VAR oFld IN SELF:_fieldList
+                IF String.Compare(oFld:Caption, property:Name,TRUE) == 0
+                    IF oFld:CanSort
+                        RETURN oFld:Name
+                    ELSE
+                        RETURN ""
+                    ENDIF
+                ENDIF
+            NEXT
+            RETURN "Recno()"
+        
+
         METHOD ApplySort(property AS PropertyDescriptor, direction AS ListSortDirection) AS VOID
-            THROW NotImplementedException{}            
+            LOCAL fldName AS STRING
+            LOCAL lDescending AS LOGIC
+            lDescending  := direction == ListSortDirection.Descending
+            fldName := SELF:findFieldName(property)
+            IF String.IsNullOrEmpty(fldName)
+                RETURN
+            ENDIF
+            IF property != SELF:SortProperty
+                // check to see if the index is already there
+                VAR nOrder := SELF:orderNo(fldName)
+                IF nOrder > 0
+                    SELF:setOrder(fldName, lDescending)
+                ELSE
+                    SELF:createOrder(fldName, lDescending)
+                 ENDIF
+            ELSE
+                SELF:setOrder(fldName, lDescending)
+            ENDIF
+            SELF:_records:Clear()
+            SELF:GoTop()
+            SELF:SortDirection := direction
+            SELF:SortProperty  := property
+            SELF:_sorted  := TRUE
+            
+        PRIVATE METHOD createOrder(fldName AS STRING, lDesc AS LOGIC) AS LOGIC
+            VAR cond := DbOrderCondInfo{}
+            IF String.IsNullOrEmpty(_indexFile )
+                _indexFile := System.IO.Path.GetTempFileName()
+                FErase(_indexFile)
+                _indexFile := System.IO.Path.GetFileNameWithoutExtension(_indexFile)
+            ENDIF
+            VAR info := DbOrderCreateInfo{}
+            info:BagName 		:= _indexFile
+            info:Order			:= fldName:Replace("()","")
+            info:Expression     := fldName
+            cond:Descending     := lDesc
+            info:OrdCondInfo 	:= cond
+            RETURN SELF:_oRDD:OrderCreate(info)
+                
+        PRIVATE METHOD setOrder(cName AS STRING, lDesc AS LOGIC) AS LOGIC
+            VAR info := DbOrderInfo{}
+            info:Order   := cName:Replace("()","")
+            info:Result  := NULL
+            SELF:_oRDD:OrderListFocus(info)
+            info:Result  := lDesc
+            SELF:_oRDD:OrderInfo(DBOI_ISDESC, info)
+            RETURN TRUE
+            
+        PRIVATE METHOD orderNo(cName AS STRING) AS LONG
+            VAR info := DbOrderInfo{}
+            info:Order   := cName:Replace("()","")
+            info:Result  := NULL
+            RETURN (LONG) SELF:_oRDD:OrderInfo(DBOI_NUMBER, info)
+        
 
         METHOD Find(property AS PropertyDescriptor, key AS OBJECT) AS LONG
             THROW NotImplementedException{}
@@ -74,9 +150,11 @@ CLASS XSharp.DbDataSource IMPLEMENTS IBindingList
     PROPERTY FullName   AS STRING GET (STRING) _oRDD:Info(DBI_FULLPATH,NULL)
     
     METHOD GoTop() AS LOGIC
+        SELF:_index := 0
         RETURN SELF:_oRDD:GoTop()
     
     METHOD Skip() AS LOGIC
+        SELF:_index += 1
         RETURN SELF:_oRDD:Skip(1)
     
     INTERNAL PROPERTY Current AS DbRecord GET DbRecord{SELF:RecNo,SELF} 
@@ -103,12 +181,11 @@ CLASS XSharp.DbDataSource IMPLEMENTS IBindingList
     VIRTUAL PROPERTY IsFixedSize AS LOGIC GET FALSE
     
     VIRTUAL METHOD Remove(item AS OBJECT) AS VOID
-        IF item IS DbRecord  VAR record
-            SELF:RemoveAt(record:RecNo)
-        ENDIF
+       
         
     VIRTUAL METHOD RemoveAt(index AS INT) AS VOID
-        SELF:GoTo(index+1)
+        LOCAL oRec := ( DbRecord) SELF[index] AS DbRecord
+        SELF:GoTo(oRec:RecNo)
         IF SELF:_oRDD:Deleted
             SELF:_oRDD:Recall()
         ELSE
@@ -125,15 +202,20 @@ CLASS XSharp.DbDataSource IMPLEMENTS IBindingList
     VIRTUAL PROPERTY  SELF[index AS INT] AS OBJECT
         GET
             LOCAL record AS DbRecord
-            LOCAL recno := _oRDD:RecNo AS INT
-            LOCAL repos := FALSE AS LOGIC
-            repos := (recno != index+1 )
-            IF repos 
-                _oRDD:GoTo( index+1 ) 
-            ENDIF
-            record := SELF:Current
-            IF repos 
-                _oRDD:GoTo( recno )
+            IF SELF:_records:ContainsKey(index)
+                record := SELF:_records[index]
+                SELF:_oRDD:GoTo(record:RecNo)
+                SELF:_index := index
+            ELSE
+                IF SELF:_index == -1
+                    SELF:_oRDD:GoTop()
+                    SELF:_oRDD:Skip(index)
+                ELSE
+                    SELF:_oRDD:Skip(index - SELF:_index)
+                ENDIF
+                SELF:_index := index
+                record := SELF:Current
+                SELF:_records:Add(index, record)
             ENDIF
             RETURN record
         END GET
@@ -164,6 +246,7 @@ CLASS XSharp.DbDataSource IMPLEMENTS IBindingList
         RETURN SELF:_oRDD:FieldName(fieldNo)
     
     METHOD GoTo(nRec AS LONG) AS LOGIC
+        SELF:_index := -1
         RETURN SELF:_oRDD:GoTo(nRec)
     
     INTERNAL METHOD OnFieldChange(recno AS INT, fieldNo AS INT) AS VOID

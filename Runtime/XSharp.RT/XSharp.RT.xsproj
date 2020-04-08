@@ -84,6 +84,7 @@
     <Compile Include="Functions\Codeblock.prg" />
     <Compile Include="Functions\CompilerSupport.prg" />
     <Compile Include="Functions\Conversions.prg" />
+    <Compile Include="Functions\DbData.prg" />
     <Compile Include="Functions\MemVarSave.prg" />
     <Compile Include="Functions\Debugging.prg" />
     <Compile Include="Functions\DiskIO.prg" />
@@ -112,7 +113,6 @@
     <Compile Include="RDD\Blob.prg" />
     <Compile Include="RDD\Db.prg" />
     <Compile Include="RDD\DbBulk.prg" />
-    <Compile Include="RDD\DbData.prg" />
     <Compile Include="RDD\Dbfunctions.prg" />
     <Compile Include="RDD\DbOrder.prg" />
     <Compile Include="RDD\Vodb.prg" />

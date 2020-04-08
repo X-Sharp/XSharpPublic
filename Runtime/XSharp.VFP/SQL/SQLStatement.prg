@@ -498,11 +498,9 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
             result:NumericPrecision := nPrec
 			
 		CASE TypeCode.Int32		// -2147483647 - 2147483648 (2^31)
+            result := DbColumnInfo{columnName,"I",4 ,0}
             IF (LOGIC)schemaRow["IsAutoIncrement"]
-                result := DbColumnInfo{columnName,"I",4 ,0}
                 result:Flags |= DBFFieldFlags.AutoIncrement
-            ELSE
-                result := DbColumnInfo{columnName,"I",4 ,0}
             ENDIF
                
 		CASE TypeCode.Int64		// - 9223372036854775807 - 9223372036854775808 (2^63)
@@ -532,33 +530,39 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
 			nLen 	:= 8
             result  := DbColumnInfo{columnName,cType,nLen ,0}
 			
-		CASE TypeCode.Object
-			LOCAL lIsDate := FALSE AS LOGIC
-			LOCAL oMems AS MethodInfo[]
-			LOCAL lFound := FALSE AS LOGIC
-			// check to see if the datatype has a dbType
-			oMems := oType:GetMethods(BindingFlags.Public|BindingFlags.Static)
-			FOREACH oMem AS MethodInfo IN oMems
-				IF oMem:ReturnType == TypeOf(System.DateTime)  .AND. String.Compare(oMem:Name, "op_Explicit", StringComparison.OrdinalIgnoreCase) == 0
-					lIsDate := TRUE
-					lFound  := TRUE
-					EXIT
-				ENDIF
-			NEXT
-			IF ! lFound
-				LOCAL cTypeName AS STRING
-				cTypeName := oType:Name:ToUpperInvariant()
-				lIsDate     := cTypeName:Contains("DATE") 
-			ENDIF
-			IF lIsDate
-				cType   := "D"
-				nLen 	:= 8
-			ELSE
-				cType 	:= "C"
-				nLen 	:= 10
-			ENDIF
-            result := DbColumnInfo{columnName,cType,nLen ,0}
-			
+        CASE TypeCode.Object
+            IF oType == typeof(BYTE[])
+			    cType   := "P"
+			    nLen 	:= 4
+                result  := DbColumnInfo{columnName,cType,nLen ,0}
+           
+            ELSE
+			    LOCAL lIsDate := FALSE AS LOGIC
+			    LOCAL oMems AS MethodInfo[]
+			    LOCAL lFound := FALSE AS LOGIC
+			    // check to see if the datatype has a dbType
+			    oMems := oType:GetMethods(BindingFlags.Public|BindingFlags.Static)
+			    FOREACH oMem AS MethodInfo IN oMems
+				    IF oMem:ReturnType == TypeOf(System.DateTime)  .AND. String.Compare(oMem:Name, "op_Explicit", StringComparison.OrdinalIgnoreCase) == 0
+					    lIsDate := TRUE
+					    lFound  := TRUE
+					    EXIT
+				    ENDIF
+			    NEXT
+			    IF ! lFound
+				    LOCAL cTypeName AS STRING
+				    cTypeName := oType:Name:ToUpperInvariant()
+				    lIsDate     := cTypeName:Contains("DATE") 
+			    ENDIF
+			    IF lIsDate
+				    cType   := "D"
+				    nLen 	:= 8
+			    ELSE
+				    cType 	:= "C"
+				    nLen 	:= 10
+			    ENDIF
+                result := DbColumnInfo{columnName,cType,nLen ,0}
+            ENDIF			
 		OTHERWISE
 			cType := "C"
 			nLen 	:= (Int32)schemaRow["ColumnSize"]

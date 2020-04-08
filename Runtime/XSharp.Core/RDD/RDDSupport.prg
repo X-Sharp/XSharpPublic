@@ -536,6 +536,27 @@ CLASS RddFieldInfo
     PROPERTY IsUnicode          AS LOGIC GET SELF:Flags:HasFlag(DBFFieldFlags.Unicode)
     PROPERTY IsEncrypted        AS LOGIC GET SELF:Flags:HasFlag(DBFFieldFlags.Encrypted)
     PROPERTY IsCompressed       AS LOGIC GET SELF:Flags:HasFlag(DBFFieldFlags.Compressed)
+    PROPERTY CanSort            AS LOGIC
+        GET
+            SWITCH SELF:FieldType
+            CASE DbFieldType.Character
+            CASE DbFieldType.Date
+            CASE DbFieldType.DateTime
+            CASE DbFieldType.Number
+            CASE DbFieldType.Logic
+            CASE DbFieldType.Currency
+            CASE DbFieldType.Integer
+                RETURN TRUE
+            OTHERWISE
+                IF SELF:IsBinary .OR. SELF:IsVarLength
+                    RETURN FALSE
+                ENDIF
+            END SWITCH
+            RETURN FALSE
+                
+        END GET
+    END PROPERTY
+    
 
 END CLASS
 

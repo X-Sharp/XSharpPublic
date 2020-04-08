@@ -23,6 +23,7 @@ CLASS XSharp.DbField
     PROPERTY Caption    AS STRING GET SELF:Info:ColumnName
     PROPERTY Column     AS INT GET SELF:Info:Ordinal
     PROPERTY ReadOnly   AS LOGIC GET SELF:Info:IsAutoIncrement
+    PROPERTY CanSort    AS LOGIC GET SELF:Info:CanSort
     #endregion
 END CLASS
 

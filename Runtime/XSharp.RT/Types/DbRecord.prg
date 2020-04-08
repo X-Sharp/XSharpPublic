@@ -56,8 +56,10 @@ CLASS XSharp.DbRecord IMPLEMENTS INotifyPropertyChanged
         RETURN
 
     #region properties
-    
+
+    [ReadOnly(TRUE)];
     PROPERTY  RecNo AS INT AUTO
+    [ReadOnly(TRUE)];
     PROPERTY  Deleted      AS LOGIC
         GET
             LOCAL lRes AS LOGIC

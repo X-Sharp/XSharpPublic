@@ -18,6 +18,7 @@ BEGIN NAMESPACE XSharp.RDD
     CLASS DBFVFPSQL INHERIT DBFVFP
         PROTECT _rows   AS List <OBJECT[]>
         PROTECT _columns AS DbColumnInfo[]
+        PROTECT _inIndex AS LOGIC
         #region Overridden properties
         OVERRIDE PROPERTY Driver AS STRING GET "DBFVFPSQL"
         #endregion
@@ -71,12 +72,28 @@ BEGIN NAMESPACE XSharp.RDD
         OVERRIDE METHOD GetValue(nFldPos AS INT) AS OBJECT
             IF nFldPos > 0 .AND. nFldPos <= SELF:FieldCount
                 IF SELF:_RecNo <= _rows:Count .AND. SELF:_RecNo > 0
+                    VAR oFld := SELF:_Fields[nFldPos-1]
                     VAR nRow := SELF:_RecNo -1
                     VAR result := _rows[nRow][nFldPos -1]
-                    IF result != DBNull.Value
-                        RETURN result
+                    IF SELF:_inIndex
+                        IF result != DBNull.Value
+                            IF oFld:FieldType == DbFieldType.Character
+                                VAR strResult := (STRING) result
+                                RETURN strResult:PadRight(oFld:Length)
+                            ENDIF
+                            RETURN result
+                        ELSE
+                            IF oFld:FieldType == DbFieldType.Character
+                                RETURN STRING{' ', oFld:Length}
+                            ENDIF
+                            RETURN NULL
+                        ENDIF
                     ELSE
-                        RETURN NULL
+                        IF result != DBNull.Value
+                            RETURN result
+                        ELSE
+                            RETURN NULL
+                        ENDIF
                     ENDIF
                 ENDIF
             ENDIF
@@ -134,6 +151,17 @@ BEGIN NAMESPACE XSharp.RDD
         ENDIF
                 
         RETURN SUPER:FieldInfo(nFldPos, nOrdinal, oNewValue)
+    OVERRIDE METHOD OrderCreate(orderInfo AS DbOrderCreateInfo ) AS LOGIC
+        SELF:_inIndex := TRUE
+        VAR result := SUPER:OrderCreate(orderInfo)
+        SELF:_inIndex := FALSE
+        RETURN result
+
+    OVERRIDE METHOD OrderListRebuild() AS LOGIC
+        SELF:_inIndex := TRUE
+        VAR result := SUPER:OrderListRebuild()
+        SELF:_inIndex := FALSE
+        RETURN result
 
 
     END CLASS  

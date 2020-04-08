@@ -19,6 +19,7 @@ CLASS XSharp.RDD.DbColumnInfo INHERIT RddFieldInfo
     PROPERTY NumericScale   AS LONG AUTO
     PROPERTY NumericPrecision AS LONG AUTO
     PROPERTY Description    AS STRING AUTO
+    PROPERTY Ordinal        AS LONG AUTO
     
     CONSTRUCTOR(sName AS STRING, sType AS STRING, nLength AS LONG, nDecimals AS LONG, nOffSet := -1 AS LONG)
         SUPER(sName, sType, nLength, nDecimals)

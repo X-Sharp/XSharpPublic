@@ -112,7 +112,7 @@
     <Compile Include="RDD\Blob.prg" />
     <Compile Include="RDD\Db.prg" />
     <Compile Include="RDD\DbBulk.prg" />
-    <Compile Include="RDD\DbDataTable.prg" />
+    <Compile Include="RDD\DbData.prg" />
     <Compile Include="RDD\Dbfunctions.prg" />
     <Compile Include="RDD\DbOrder.prg" />
     <Compile Include="RDD\Vodb.prg" />
@@ -123,7 +123,10 @@
     <Compile Include="Types\CompilerServices.prg" />
     <Compile Include="Types\Currency.prg" />
     <Compile Include="Types\Date.prg" />
+    <Compile Include="Types\DbDataSource.prg" />
     <Compile Include="Types\DbDataTable.prg" />
+    <Compile Include="Types\DbField.prg" />
+    <Compile Include="Types\DbRecord.prg" />
     <Compile Include="Types\Float.prg" />
     <Compile Include="Types\Interfaces.prg" />
     <Compile Include="Types\MemVar.prg" />

@@ -47,15 +47,15 @@ BEGIN NAMESPACE XSharp.RDD
             VAR nFlds   := SELF:FieldCount
             IF lResult
                SELF:ConvertToMemory()
-            ENDIF
-            FOR VAR nI := 1 TO SELF:_RecCount
-                SUPER:GoTo(nI)
-                VAR aData := OBJECT[]{nFlds}
-                _rows:Add(aData)
-                FOR VAR nFld := 1 TO nFlds
-                    aData[nFld-1] := SUPER:GetValue(nFld)
+                FOR VAR nI := 1 TO SELF:_RecCount
+                    SUPER:GoTo(nI)
+                    VAR aData := OBJECT[]{nFlds}
+                    _rows:Add(aData)
+                    FOR VAR nFld := 1 TO nFlds
+                        aData[nFld-1] := SUPER:GetValue(nFld)
+                    NEXT
                 NEXT
-            NEXT
+            ENDIF
             RETURN lResult
 
 		/// <inheritdoc />

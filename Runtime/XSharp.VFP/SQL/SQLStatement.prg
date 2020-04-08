@@ -237,8 +237,9 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
         aStruct := ArrayNew( (DWORD) nFields)
         nFields := 1
         FOREACH schemaRow AS DataRow IN oSchema:Rows
-            VAR fieldInfo    := FromSchema(schemaRow, aFieldNames)
-            aStruct[nFields] := {fieldInfo:Name, fieldInfo:FieldTypeStr, fieldInfo:Length, fieldInfo:Decimals, fieldInfo:ColumnName, fieldInfo}
+            VAR fieldInfo     := FromSchema(schemaRow, aFieldNames)
+            fieldInfo:Ordinal := nFields
+            aStruct[nFields]  := {fieldInfo:Name, fieldInfo:FieldTypeStr, fieldInfo:Length, fieldInfo:Decimals, fieldInfo:ColumnName, fieldInfo}
             nFields++
         NEXT
         nFields := aStruct:Count
@@ -475,6 +476,9 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
 			nLen := 10
             VAR nScale := Convert.ToInt32(schemaRow:Item["NumericScale"])
             VAR nPrec  := Convert.ToInt32(schemaRow:Item["NumericPrecision"])
+            IF nScale == 255
+                nScale := 2
+            ENDIF
 			nDec := nScale
 			nLen := nPrec
             IF nLen == 0
@@ -488,7 +492,7 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
 				//ELSE
 					nDec := 0 // Overflow abfangen
 				//ENDIF
-			ENDIF
+            ENDIF
             result := DbColumnInfo{columnName,"N",nLen ,nDec }
             result:NumericScale     := nScale
             result:NumericPrecision := nPrec
@@ -610,4 +614,5 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
 
 
 END CLASS
+
 INTERNAL DELEGATE SqlGetData() AS OBJECT[]

@@ -492,7 +492,7 @@ METHOD Print(oPrintingDevice, oRange)
 		strucPrintDlg:hPrintTemplate := NULL_PTR
 		strucPrintDlg:hSetupTemplate := NULL_PTR
 
-		IF !__LoadComDlgDLL() .OR. ! LOGIC(_CAST, PCALL(gpfnPrintDlg, @strucPrintDlg))
+		IF !PrintDlg( @strucPrintDlg)
 			RETURN FALSE
 		ENDIF
 

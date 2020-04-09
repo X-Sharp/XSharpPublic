@@ -378,8 +378,9 @@ PROCEDURE __WCInitCriticalSections() _INIT1
 #endif	
   	RETURN
 
-FUNCTION __WCIsTrueTypeEnabled() AS LOGIC
-	RETURN GetProfileInt(PSZ(_CAST, "TrueType"), PSZ(_CAST, "TTEnable"), 1) == 1
+//FUNCTION __WCIsTrueTypeEnabled() AS LOGIC
+//	//RETURN GetProfileInt(PSZ(_CAST, "TrueType"), PSZ(_CAST, "TTEnable"), 1) == 1
+//    RETURN TRUE
 
 FUNCTION __WCLogicalBackgroundBrush(oWindow AS Window, strucLogBrush AS _WinLogBrush) AS PTR STRICT
 	LOCAL hBr AS PTR
@@ -725,9 +726,10 @@ FUNCTION __WCUnregisterTimer(oDel AS OBJECT) AS VOID STRICT
 
 	RETURN
 
-FUNCTION __WCUseTrueTypeOnly() AS LOGIC
-
-	RETURN GetProfileInt(PSZ(_CAST, "TrueType"), PSZ(_CAST, "TTOnly"), 0) == 1
+//FUNCTION __WCUseTrueTypeOnly() AS LOGIC
+//
+//	//RETURN GetProfileInt(PSZ(_CAST, "TrueType"), PSZ(_CAST, "TTOnly"), 0) == 1
+//    RETURN TRUE
 
 STATIC GLOBAL Ctl3DEnabledFlag AS LOGIC
 

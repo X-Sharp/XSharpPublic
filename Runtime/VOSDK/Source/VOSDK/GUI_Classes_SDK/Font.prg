@@ -209,15 +209,7 @@ CONSTRUCTOR(kFont, oDimension, sTypeFace)
 
 	lfWeight := __WCNormalWeight
 
-	IF __WCIsTrueTypeEnabled()
-		IF __WCUseTrueTypeOnly()
-			lfOutPrecision := OUT_TT_ONLY_PRECIS
-		ELSE
-			lfOutPrecision := OUT_TT_PRECIS
-		ENDIF
-	ELSE
-		lfOutPrecision := OUT_RASTER_PRECIS
-	ENDIF
+	lfOutPrecision      := OUT_TT_PRECIS
 
 	lfQuality 			:= DRAFT_QUALITY
 	lfClipPrecision 	:= CLIP_STROKE_PRECIS

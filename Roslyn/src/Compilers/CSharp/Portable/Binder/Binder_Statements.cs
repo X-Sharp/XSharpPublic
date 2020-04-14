@@ -2685,7 +2685,13 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 conversion = this.Conversions.ClassifyConversionFromExpression(argument, returnType, ref useSiteDiagnostics);
             }
-
+#if XSHARP
+            if (!conversion.IsImplicit && Conversions.XsIsImplicitBinaryOperator(argument, returnType, this))
+            {
+                conversion = Conversion.ImplicitNumeric;
+            }
+            
+#endif
             diagnostics.Add(syntax, useSiteDiagnostics);
 
             if (!argument.HasAnyErrors)

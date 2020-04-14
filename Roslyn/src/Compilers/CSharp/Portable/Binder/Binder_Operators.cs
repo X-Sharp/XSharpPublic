@@ -465,9 +465,6 @@ namespace Microsoft.CodeAnalysis.CSharp
         private BoundExpression BindSimpleBinaryOperator(BinaryExpressionSyntax node, DiagnosticBag diagnostics,
             BoundExpression left, BoundExpression right, ref int compoundStringLength)
         {
-#if XSHARP
-            return BindXsSimpleBinaryOperator(node, diagnostics, left, right, ref compoundStringLength);
-#else
             BinaryOperatorKind kind = SyntaxKindToBinaryOperatorKind(node.Kind());
 
             // If either operand is bad, don't try to do binary operator overload resolution; that would just
@@ -524,7 +521,26 @@ namespace Microsoft.CodeAnalysis.CSharp
             // The comparison "x == null" should produce an ambiguity error rather
             // that being bound as !x.HasValue. 
             //
+#if XSHARP
+            VOOperatorType opType = NeedsVOOperator(node, ref left, ref right);
 
+            if (opType != VOOperatorType.None)
+            {
+                var res =  BindVOBinaryOperator(node, diagnostics, ref left, ref right, ref compoundStringLength,opType);
+                if (res != null)
+                    return res;
+            }
+            bool integralTypes = leftType != null && rightType != null &&
+                leftType.IsIntegralType() && rightType.IsIntegralType();
+            if (! integralTypes)
+            {
+                // Logical Operators on USUALS require a conversion
+                AdjustVOUsualLogicOperands(node, ref left, ref right, diagnostics);
+                leftType = left.Type;
+                rightType = right.Type;
+            }
+
+#endif
             LookupResultKind resultKind;
             ImmutableArray<MethodSymbol> originalUserDefinedOperators;
             BinaryOperatorSignature signature;
@@ -572,7 +588,26 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                 resultLeft = CreateConversion(left, best.LeftConversion, signature.LeftType, diagnostics);
                 resultRight = CreateConversion(right, best.RightConversion, signature.RightType, diagnostics);
+#if XSHARP
+
+                var expectedResultType = resultType;
+                
+#endif
                 resultConstant = FoldBinaryOperator(node, resultOperatorKind, resultLeft, resultRight, resultType.SpecialType, diagnostics, ref compoundStringLength);
+#if XSHARP
+                if (integralTypes && resultConstant != null && resultConstant.SpecialType.IsIntegralType() && expectedResultType.IsIntegralType())
+                {
+                    if (resultType != expectedResultType)
+                    {
+                        resultConstant = XsConvertConstant(resultConstant, expectedResultType.SpecialType);
+                    }
+                    else if (resultConstant.SpecialType.SizeInBytes() > expectedResultType.SpecialType.SizeInBytes())
+                    {
+                        expectedResultType = Compilation.GetSpecialType(resultConstant.SpecialType);
+                    }
+                }
+                resultType = expectedResultType;
+#endif
             }
 
             hasErrors = hasErrors || resultConstant != null && resultConstant.IsBad;
@@ -590,8 +625,22 @@ namespace Microsoft.CodeAnalysis.CSharp
                     hasErrors);
 
 
-            return result;
+#if XSHARP
+            if (Compilation.Options.Dialect != XSharpDialect.Core && integralTypes && resultConstant == null)
+            {
+                // SHORT(_CAST, expression) has been converted to a _AND() operation. In that case we want the type of the RHS of the operation.
+                var chosenType = leftType;
+                if (resultLeft.ConstantValue != null || result.Syntax.XIsVoCast)
+                    chosenType = rightType;
+
+                if (resultType.IsIntegralType() && resultType != chosenType)// C277 ByteValue >> 2 should not return int but byte.
+                {
+                    result = new BoundConversion(node, result, Conversion.ImplicitNumeric, false, false, null, chosenType) { WasCompilerGenerated = true };
+                }
+            }
+
 #endif
+            return result;
         }
 		
         private bool BindSimpleBinaryOperatorParts(BinaryExpressionSyntax node, DiagnosticBag diagnostics, BoundExpression left, BoundExpression right, BinaryOperatorKind kind,

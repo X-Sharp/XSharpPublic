@@ -70,7 +70,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (conversion.IsExplicit && expression.Type != targetType)
             {
                 // silently convert integral types
-                if (CheckImplicitCast(expression.Type, targetType, expression.Syntax, diagnostics) || conversion.IsNullable)
+                if (XsHasImplicitCast(expression , targetType, diagnostics) || conversion.IsNullable)
                 {
                     BoundExpression result;
                     if (targetType.IsIntegralType() && expression.Type.IsIntegralType())
@@ -184,6 +184,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                                 break;
                         }
                     }
+                }
+                if (! ok)
+                {
+                    ok = Conversions.XsIsImplicitBinaryOperator(expression, targetType,this);
                 }
                 if (! ok)
                 {

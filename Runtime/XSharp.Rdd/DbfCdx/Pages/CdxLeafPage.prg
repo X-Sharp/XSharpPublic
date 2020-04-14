@@ -422,7 +422,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 VAR prevkey := _leaves[SELF:NumKeys-1]:Key
                 nDupCount   := _getDupCount(prevkey, key, nTrailCount)
             ENDIF
-            VAR nBytesNeeded := SELF:KeyLength - nDupCount - nTrailCount  + SELF:DataBytes 
+            LOCAL nBytesNeeded := SELF:KeyLength - nDupCount - nTrailCount  + SELF:DataBytes  AS WORD
             IF SELF:Freespace < nBytesNeeded 
                 //Debug( "triggers SplitLeaf", "Rec", recno)
                 SELF:Write()
@@ -752,7 +752,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 		        ELSE
 		            NOP // The dup and trail values are already stored in the leaves
                 ENDIF
-                VAR nBytesToCopy := SELF:KeyLength - nDup - nTrail
+                LOCAL nBytesToCopy := SELF:KeyLength - nDup - nTrail AS WORD
                 IF SELF:Freespace < (SELF:DataBytes + nBytesToCopy)
                     VAR action := CdxAction.SplitLeaf(SELF, -1, NULL, 0)
                     SELF:_leaves := list

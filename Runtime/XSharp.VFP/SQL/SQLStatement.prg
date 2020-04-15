@@ -11,6 +11,7 @@ USING System.Text
 USING System.Data.Common
 USING System.Data
 USING System.Diagnostics
+USING System.Threading
 USING XSharp.VFP
 USING System.Reflection
 USING XSharp.RDD
@@ -18,10 +19,14 @@ USING XSharp.RDD.Enums
 
 
 INTERNAL CLASS XSharp.VFP.SQLStatement
-    PROTECT _oConnection    AS SQLConnection
-    PROTECT _oNetCommand    AS DbCommand
+    PROTECT _oConnection     AS SQLConnection
+    PROTECT _oNetCommand     AS DbCommand
     PROTECT _oLastDataReader AS DbDataReader
     PROTECT _nextCursorNo    AS LONG
+    PROTECT _aSyncState      AS AsyncState
+    PROTECT _oThread         AS Thread
+    PROTECT _aQueryResult    AS ARRAY
+    PROTECT _aResult         AS IList<IRdd>
     
     PROPERTY Connected          AS LOGIC GET Connection:State == System.Data.ConnectionState.Open
     PROPERTY Connection         AS SQLConnection GET _oConnection
@@ -78,8 +83,7 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
         SELF:WaitTime           := 100
         SELF:_oNetCommand       := NULL
         SELF:_oConnection       := NULL
-
-
+        SELF:_aSyncState        := AsyncState.Idle
 
     PRIVATE METHOD _AllocateCommand() AS VOID
         SELF:_oNetCommand := SELF:Connection:Factory:CreateCommand()
@@ -93,9 +97,10 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
             _oLastDataReader := NULL
         ENDIF
 
-    PRIVATE METHOD _CreateWorkarea(oSchema AS DataTable, oDataReader AS DbDataReader, cCursorName AS STRING) AS LOGIC
-        LOCAL aStruct AS ARRAY
+
+    PRIVATE METHOD CreateFile(oSchema AS DataTable, cCursorName AS STRING) AS IRdd
         LOCAL nFields AS LONG
+        LOCAL aStruct AS ARRAY
         LOCAL aFieldNames AS List<STRING>
         nFields := oSchema:Rows:Count
         aFieldNames := List<STRING>{}
@@ -123,8 +128,16 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
             fieldInfo := aStruct[nI, 6]
             oRDD:FieldInfo(nI, DBS_COLUMNINFO, fieldInfo)
         NEXT
+        RETURN oRDD
+       
 
+
+
+
+    PRIVATE METHOD _CopyFromReaderToRDD(oDataReader AS DbDataReader, oRDD AS IRdd) AS LOGIC
         LOCAL oMIGet := NULL AS MethodInfo 
+        VAR nFields := oRDD:FieldCount
+        VAR nCounter := 0 
         // DBFVFPSQL has a method SetData to set all the values of the current row.
         oMIGet := oRDD:GetType():GetMethod("GetData", BindingFlags.Instance+BindingFlags.IgnoreCase+BindingFlags.Public)
         IF oMIGet != NULL
@@ -135,9 +148,15 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
                 VAR data := GetData()
                 // and fetch its values. This automatically updates the array that is owned by the RDD
                 oDataReader:GetValues(data)
+                IF SELF:Asynchronous .AND. ++nCounter % 100 == 0
+                    IF SELF:_aSyncState == AsyncState.Cancelling
+                        EXIT
+                    ENDIF
+                ENDIF
+                    
             ENDDO
         ELSE
-            VAR data := OBJECT[]{oSchema:Rows:Count+1}  // 1 extra for the NullFlags
+            VAR data := OBJECT[]{nFields+1}  // 1 extra for the NullFlags
             DO WHILE oDataReader:Read()
                 oRDD:Append(TRUE)
                 // use our local data array
@@ -146,8 +165,20 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
                 FOR VAR nFld := 1 UPTO nFields
                     oRDD:PutValue(nFld, data[nFld])
                 NEXT
+                IF SELF:Asynchronous .AND. ++nCounter % 100 == 0
+                    IF SELF:_aSyncState == AsyncState.Cancelling
+                        EXIT
+                    ENDIF
+                ENDIF
             ENDDO
         ENDIF
+        RETURN TRUE
+
+
+    PRIVATE METHOD _CreateWorkarea(oSchema AS DataTable, oDataReader AS DbDataReader, cCursorName AS STRING) AS LOGIC
+        LOCAL oRDD AS IRdd
+        oRDD := SELF:CreateFile(oSchema, cCursorName)
+        SELF:_CopyFromReaderToRDD(oDataReader, oRDD)
         RETURN TRUE
 
 
@@ -205,6 +236,23 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
         RETURN TRUE
 
 
+
+    METHOD Cancel AS LOGIC
+        IF SELF:_aSyncState == AsyncState.Executing
+            BEGIN LOCK SELF
+                SELF:_aSyncState := AsyncState.Cancelling
+            END LOCK
+            DO WHILE SELF:_aSyncState == AsyncState.Cancelling
+                System.Threading.Thread.Sleep(100)
+            ENDDO
+            SELF:ThreadComplete() 
+            BEGIN LOCK SELF
+                SELF:_aSyncState := AsyncState.Idle
+            END LOCK
+            RETURN TRUE
+        ENDIF
+        RETURN FALSE
+        
     METHOD Commit AS LOGIC
         SELF:_CloseReader()
         RETURN SELF:Connection:CommitTransaction()
@@ -240,42 +288,160 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
         SELF:CursorName := cCursorName
         RETURN 1
 
+
+    PRIVATE METHOD _SaveResult(aInfo AS ARRAY) AS LONG
+        CopyToInfo(_aQueryResult, aInfo)
+        IF ALen(_aQueryResult) > 0
+            RETURN (LONG) ALen(_aQueryResult)
+        ENDIF
+        RETURN 0
+
+    METHOD _AsyncExecuteResult(aInfo AS ARRAY) AS LONG
+        IF SELF:Asynchronous
+            SWITCH SELF:_aSyncState
+            CASE AsyncState.Executing
+                RETURN 0
+            CASE AsyncState.Ready
+                SELF:ThreadComplete()
+                RETURN SELF:_SaveResult(aInfo)
+            CASE AsyncState.Idle
+            CASE AsyncState.Cancelled
+                SELF:CopyToCursorAsync()
+                RETURN SELF:_SaveResult(aInfo)
+            CASE AsyncState.Exception
+                RETURN -1
+            CASE AsyncState.Cancelling
+                RETURN 0
+            END SWITCH
+        ENDIF
+        RETURN 0
     METHOD Execute(cCommand AS STRING, cCursorName AS STRING, aInfo AS ARRAY) AS LONG
         SELF:BeginTransaction()
         SELF:_oNetCommand:CommandText := cCommand
         SELF:CursorName := cCursorName
-        VAR tables := SELF:CopyToCursor()
-        CopyToInfo(tables, aInfo)
-        IF ALen(tables) > 0
-            RETURN (LONG) ALen(tables)
+        IF SELF:Asynchronous
+            RETURN SELF:_AsyncExecuteResult(aInfo)
+        ELSE
+            SELF:CopyToCursor()
         ENDIF
-        RETURN 0
+        RETURN SELF:_SaveResult(aInfo)        
+
         
     METHOD Execute(aInfo AS ARRAY) AS LONG
         SELF:BeginTransaction()
-        VAR tables := SELF:CopyToCursor()
-        CopyToInfo(tables, aInfo)
-        IF ALen(tables) > 0
-            RETURN (LONG) ALen(tables)
+        IF SELF:Asynchronous
+            RETURN SELF:_AsyncExecuteResult(aInfo)
+        ELSE
+            SELF:CopyToCursor()
         ENDIF
-        RETURN 0
+        RETURN SELF:_SaveResult(aInfo)        
 
-    PRIVATE METHOD CopyToInfo(aResult, aInfo AS ARRAY) AS VOID
-        ASize(aInfo, ALen(aResult))
-        ACopy(aResult, aInfo)
+    PRIVATE METHOD CopyToInfo(aResult AS ARRAY, aInfo AS ARRAY) AS VOID
+        IF aResult != NULL_ARRAY
+            ASize(aInfo, ALen(aResult))
+            IF ALen(aInfo) > 0
+                ACopy(aResult, aInfo)
+            ENDIF
+        ELSE
+            ASize(aInfo, 0)
+        ENDIF
         RETURN
 
-    
-    METHOD CopyToCursor() AS ARRAY STRICT
-        IF SELF:_ReturnsRows(SELF:_oNetCommand:CommandText)
+
+    METHOD BackgroundWorker(o AS OBJECT) AS VOID STRICT
+        LOCAL aResults := List<IRdd>{}
+        TRY
             VAR oDataReader := SELF:_oNetCommand:ExecuteReader()
-            RETURN CopyToCursor(oDataReader, 0)
+            LOCAL cursorNo := 0 AS LONG
+            BEGIN LOCK SELF
+                SELF:_oLastDataReader := oDataReader
+            END LOCK
+            DO WHILE TRUE
+                VAR oSchema := oDataReader:GetSchemaTable()
+                VAR cursorName := SELF:CursorName
+                IF cursorNo != 0
+                    cursorName += cursorNo:ToString()
+                ENDIF
+                LOCAL oRDD AS IRdd
+                oRDD := SELF:CreateFile(oSchema, cursorName)
+                SELF:_CopyFromReaderToRDD(oDataReader, oRDD)
+                aResults:Add(oRDD)
+                IF SELF:_aSyncState == AsyncState.Cancelling
+                    EXIT
+                ENDIF
+                IF ! oDataReader:NextResult()
+                    EXIT
+                ENDIF
+            ENDDO
+            BEGIN LOCK SELF
+                SELF:_aResult    := aResults
+                IF SELF:_aSyncState == AsyncState.Executing
+                    SELF:_aSyncState := AsyncState.Ready
+                ENDIF
+            END LOCK
+        CATCH e AS Exception
+            BEGIN LOCK SELF
+                SELF:_CloseReader()
+                SELF:_aSyncState := AsyncState.Exception
+                IF SELF:_oThread:ThreadState == ThreadState.Running
+                    SELF:_oThread:Abort()
+                ENDIF
+                SELF:_oThread := NULL
+            END LOCK
+        END TRY
+         RETURN
+
+    METHOD ThreadComplete() AS VOID STRICT
+        SELF:_aQueryResult := {}
+        IF SELF:_aResult == NULL
+            SELF:_aSyncState := AsyncState.Idle
+            RETURN
+        ENDIF
+        VAR aRDDs := SELF:_aResult
+        SELF:_aResult := NULL
+        FOREACH oRdd AS IRdd IN aRDDs
+            VAR name := oRdd:Alias
+            VAR count := oRdd:RecCount
+            AAdd(SELF:_aQueryResult, {name, count})
+            VAR nArea := RuntimeState.Workareas.FindAlias(name)
+            IF nArea > 0
+                RuntimeState.Workareas.CloseArea(nArea)
+            ELSE
+                nArea := RuntimeState.Workareas.FindEmptyArea(TRUE)
+            ENDIF
+            RuntimeState.Workareas.SetArea(nArea, oRdd)
+        NEXT
+        IF SELF:_aSyncState == AsyncState.Ready
+            SELF:_aSyncState := AsyncState.Idle
+        ENDIF
+        
+    PRIVATE METHOD CopyToCursorAsync() AS VOID
+        IF SELF:_ReturnsRows(SELF:_oNetCommand:CommandText)
+            _aQueryResult := {}
+            IF SELF:_aSyncState == AsyncState.Idle
+                BEGIN LOCK SELF
+                    SELF:_CloseReader()
+                    _oThread := Thread{BackgroundWorker}
+                    SELF:_aSyncState := AsyncState.Executing
+                    _oThread:Start(SELF)
+                END LOCK
+            ENDIF
         ELSE
             VAR result := SELF:_oNetCommand:ExecuteNonQuery()
-            RETURN {{"", result}}
+            _aQueryResult := {{"", result}}
         ENDIF
 
-    METHOD CopyToCursor(oDataReader AS DbDataReader, cursorNo AS LONG) AS ARRAY
+    
+    PRIVATE METHOD CopyToCursor() AS VOID
+        IF SELF:_ReturnsRows(SELF:_oNetCommand:CommandText)
+            VAR oDataReader := SELF:_oNetCommand:ExecuteReader()
+            CopyToCursor(oDataReader, 0)
+        ELSE
+            VAR result := SELF:_oNetCommand:ExecuteNonQuery()
+            _aQueryResult := {{"", result}}
+        ENDIF
+
+    PRIVATE METHOD CopyToCursor(oDataReader AS DbDataReader, cursorNo AS LONG) AS VOID
         LOCAL result   := {} AS ARRAY
         _oLastDataReader := NULL_OBJECT
         DO WHILE TRUE
@@ -297,7 +463,11 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
                 EXIT
             ENDIF
         ENDDO
-        RETURN result
+        _aQueryResult := result
+        RETURN 
+
+
+
 
     METHOD MoreResults(cursorName AS STRING, aInfo AS ARRAY) AS LONG
         IF !String.IsNullOrEmpty(cursorName)
@@ -305,18 +475,15 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
             SELF:_nextCursorNo := 0
         ENDIF
         IF _oLastDataReader != NULL .AND. _oLastDataReader:NextResult()
-            VAR tables := CopyToCursor(_oLastDataReader, _nextCursorNo)
-            CopyToInfo(tables, aInfo)
-            IF ALen(tables) > 0
-                RETURN (LONG) ALen(tables)
-            ENDIF
+            CopyToCursor(_oLastDataReader, _nextCursorNo)
+            RETURN SELF:_SaveResult(aInfo)
         ENDIF
         ASize(aInfo,1)
         aInfo[1] := {{0, -1}}
         RETURN 0
     
 
-    METHOD GetNumRestrictions(cCollectionName AS STRING) AS LONG
+    PRIVATE METHOD GetNumRestrictions(cCollectionName AS STRING) AS LONG
         LOCAL nRestrictions := 0 AS LONG
         LOCAL oTable := SELF:Connection:NetConnection:GetSchema("MetadataCollections",NULL) AS DataTable
         FOREACH oRow AS DataRow IN oTable:Rows
@@ -326,10 +493,6 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
 			ENDIF
         NEXT        
         RETURN nRestrictions  
-
- 
-    
-   
 
 
     #region MetaData
@@ -660,8 +823,18 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
     RETURN cName            
 
 
-
-
 END CLASS
 
 INTERNAL DELEGATE SqlGetData() AS OBJECT[]
+
+INTERNAL ENUM XSharp.VFP.AsyncState
+    MEMBER Idle         := 0
+    MEMBER Executing    := 1
+    MEMBER Ready        := 2
+    MEMBER Cancelling   := 3
+    MEMBER Cancelled    := 4
+    MEMBER Exception    := 5
+END ENUM
+    
+
+

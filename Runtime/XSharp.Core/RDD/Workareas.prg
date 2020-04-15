@@ -31,7 +31,13 @@ CLASS Workareas
     STATIC METHOD _Add(oRDD AS IRdd, oWA AS Workareas) AS Guid
         VAR oGuid := Guid.NewGuid()
         BEGIN LOCK _AllRDDs
-            _AllRDDs.Add(oRDD, oWA)
+            IF _AllRDDs:ContainsKey(oRDD)
+                // this can happen when a RDD was created in a backgroundthread
+                // and is moved to the main thread for example
+                _AllRDDs[oRDD] := oWA
+            ELSE
+                _AllRDDs.Add(oRDD, oWA)
+            ENDIF
         END LOCK
         RETURN oGuid
 

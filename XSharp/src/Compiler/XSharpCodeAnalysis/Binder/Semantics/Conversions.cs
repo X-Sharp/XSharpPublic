@@ -237,6 +237,8 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 var leftType = binop.Left.Type;
                 var rightType = binop.Left.Type;
+                if (leftType == rightType && leftType != targetType)
+                    return false;
                 var size = targetType.SpecialType.SizeInBytes();
                 if (binop.Left is BoundConversion)
                 {

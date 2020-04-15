@@ -488,24 +488,24 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 VAR prevLeaf := _leaves[_leaves:Count-1]
                 VAR prevkey := prevLeaf:Key
                 nDupCount := SELF:_getDupCount(prevkey, key,  nTrailCount)
-                leaf := CdxLeaf{recno, key, nDupCount, nTrailCount}
+                leaf := CdxLeaf{recno, key,  nDupCount, nTrailCount}
                 _leaves:Add(leaf)
 #ifdef TESTCDX
                 ValidateLeaves(prevLeaf, leaf)
 #endif
-                SELF:Freespace -= (nBytesNeeded-nDupCount)
+                SELF:Freespace := SELF:Freespace - (nBytesNeeded-nDupCount)
                 last := TRUE
             ELSEIF nPos == 0
                 nDupCount       := 0
-                SELF:Freespace  -= (nBytesNeeded-nDupCount)
+                SELF:Freespace  := SELF:Freespace - nBytesNeeded
                 leaf := CdxLeaf{recno, key,nDupCount,nTrailCount}
                 _leaves:Insert(nPos, leaf)
                 adjustNext      := TRUE
             ELSE // nPos > 0 .AND. nPos < _leaves:Count
                 VAR prevLeaf    := _leaves[nPos-1]
                 nDupCount       := SELF:_getDupCount(prevLeaf:Key, key,  nTrailCount)
-                SELF:Freespace  -= (nBytesNeeded-nDupCount)
-                leaf := CdxLeaf{recno, key,nDupCount,nTrailCount}
+                SELF:Freespace  := SELF:Freespace- (nBytesNeeded-nDupCount)
+                leaf := CdxLeaf{recno, key, nDupCount,nTrailCount}
 
                 _leaves:Insert(nPos, leaf)
 #ifdef TESTCDX

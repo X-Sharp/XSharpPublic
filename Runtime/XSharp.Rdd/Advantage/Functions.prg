@@ -154,13 +154,13 @@ FUNCTION AX_SetServerType( lUseRemoteServer AS LOGIC, lUseInternetServer AS LOGI
     LOCAL ulRetCode AS DWORD
     
     usServerTypes := 0
-    IF( lUseRemoteServer )
+    IF lUseRemoteServer 
         usServerTypes :=  _OR( usServerTypes, ACE.ADS_REMOTE_SERVER )
     ENDIF
-    IF( lUseInternetServer )
+    IF lUseInternetServer 
         usServerTypes :=  _OR( usServerTypes, ACE.ADS_AIS_SERVER )
     ENDIF
-    IF( lUseLocalServer )
+    IF lUseLocalServer 
         usServerTypes :=  _OR( usServerTypes, ACE.ADS_LOCAL_SERVER )
     ENDIF
     
@@ -186,17 +186,17 @@ FUNCTION AX_Transaction( iAction AS INT) AS LOGIC // Transaction call
     usInTrans := 0
     
     SWITCH iAction
-        CASE AX_BEGIN_TRANSACTION
-            ulRetVal := ACE.AdsBeginTransaction( 0 )
-        CASE AX_COMMIT_TRANSACTION
-            ulRetVal := ACE.AdsCommitTransaction( 0 )
-        CASE AX_ROLLBACK_TRANSACTION
-            ulRetVal := ACE.AdsRollbackTransaction( 0 )
-        CASE AX_ISACTIVE_TRANSACTION
-            ulRetVal := ACE.AdsInTransaction( 0, REF usInTrans )
-            RETURN ( ulRetVal == 0 .AND. usInTrans != 0 )
-        OTHERWISE
-            ulRetVal := 1
+    CASE AX_BEGIN_TRANSACTION
+        ulRetVal := ACE.AdsBeginTransaction( 0 )
+    CASE AX_COMMIT_TRANSACTION
+        ulRetVal := ACE.AdsCommitTransaction( 0 )
+    CASE AX_ROLLBACK_TRANSACTION
+        ulRetVal := ACE.AdsRollbackTransaction( 0 )
+    CASE AX_ISACTIVE_TRANSACTION
+        ulRetVal := ACE.AdsInTransaction( 0, REF usInTrans )
+        RETURN ( ulRetVal == 0 .AND. usInTrans != 0 )
+    OTHERWISE
+        ulRetVal := 1
     END SWITCH
     
     RETURN  ulRetVal == 0 
@@ -220,10 +220,10 @@ FUNCTION AX_UsingClientServer( ) AS LOGIC
     IF CoreDb.Info(DBI_FULLPATH , REF oFileName)
         strFileName := (STRING) oFileName
         ulRetCode := ACE.AdsFindConnection(  strFileName , OUT ConnectionHandle )
-        IF (ulRetCode == 0)
+        IF ulRetCode == 0
             ulRetCode := ACE.AdsGetConnectionType( ConnectionHandle, OUT usServerType )
         ENDIF
-        IF (ulRetCode == 0)
+        IF ulRetCode == 0
             RETURN ( usServerType == ACE.ADS_REMOTE_SERVER ) .OR. ( usServerType == ACE.ADS_AIS_SERVER )
         ENDIF
     ENDIF

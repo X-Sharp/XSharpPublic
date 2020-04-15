@@ -28,7 +28,7 @@ FUNCTION SqlConnect(uSource , cUserID , cPassword , lShared) AS LONG
             THROW Error{"Statement Handle ("+nHandle:ToString()+") does not have a shared connection"}
         ENDIF
         oStmt := XSharp.VFP.SQLStatement{oStmt:Connection}
-        SQLSupport.AddStatement(oStmt)
+        nHandle := SQLSupport.AddStatement(oStmt)
 
     ELSEIF IsString(uSource)
         // if one or more parameters are missing then the connect dialog is shown
@@ -43,7 +43,6 @@ FUNCTION SqlConnect(uSource , cUserID , cPassword , lShared) AS LONG
     
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/sqlstringconnect/*" />
-
 FUNCTION SqlStringConnect( uSharedOrConnectString, lSharable) AS LONG
     //  uSharedOrConnectString may be either lShared or a connection string
     // in FoxPro when passing lShared as TRUE then the "Select Connection or Data Source Dialog Box"  is shown
@@ -78,18 +77,25 @@ FUNCTION SQLCANCEL( nStatementHandle) AS LONG
 
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/sqldisconnect/*" />
-FUNCTION SqlDisconnect( nStatementHandle) AS LONG
-    VAR oStmt := GetStatement(nStatementHandle)    
-    IF oStmt != NULL
-        SQLSupport.RemoveStatement(nStatementHandle)
-        oStmt:DisConnect()
+FUNCTION SqlDisconnect( nStatementHandle AS LONG) AS LONG
+    IF nStatementHandle > 0
+        VAR oStmt := GetStatement(nStatementHandle)    
+        IF oStmt != NULL
+            SQLSupport.RemoveStatement(nStatementHandle)
+            oStmt:DisConnect()
+            RETURN 1
+        ENDIF
+    ELSEIF nStatementHandle == 0
+        FOREACH oStmt AS SQLStatement IN SQLSupport.GetStatements()
+            SQLSupport.RemoveStatement(oStmt:Handle)
+            oStmt:DisConnect()
+        NEXT
         RETURN 1
     ENDIF
     RETURN -1
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/sqlexec/*" />
-
-FUNCTION SqlExec( nStatementHandle , cSQLCommand , cCursorName, aCountInfo) AS LONG
+FUNCTION SqlExec( nStatementHandle AS LONG, cSQLCommand := NIL AS USUAL, cCursorName := NIL AS USUAL, aCountInfo := NIL AS USUAL) AS LONG
     LOCAL aInfo AS ARRAY
     LOCAL prepared := FALSE AS LOGIC
     VAR oStmt := GetStatement(nStatementHandle)    
@@ -276,5 +282,34 @@ FUNCTION SqlColumns( nStatementHandle, cTableName, cType, cCursorName) AS USUAL
     RETURN -1
 
 
+
+/// <include file="VFPDocs.xml" path="Runtimefunctions/asqlhandles/*" />
+FUNCTION ASqlHandles (ArrayName , nStatementHandle) AS DWORD
+    LOCAL aResult AS ARRAY
+    IF IsNumeric(nStatementHandle)
+        VAR oStmt := GetStatement(nStatementHandle)
+        VAR oConn := oStmt:Connection
+        aResult := {}
+        FOREACH VAR oStmt2 IN oConn:Statements
+            AAdd(aResult, oStmt2:Handle)
+        NEXT
+    ELSE
+        aResult := {}
+        FOREACH oStmt AS SQLStatement IN SQLSupport.GetStatements()
+            AAdd(aResult, oStmt:Handle)
+        NEXT
+    ENDIF
+    IF ALen(aResult) > 0
+        ASize(ArrayName, ALen(aResult))
+        ACopy(aResult, ArrayName)
+    ENDIF
+    RETURN ALen(aResult)
+    
+    
+
+
 #endregion
+
+
+
 

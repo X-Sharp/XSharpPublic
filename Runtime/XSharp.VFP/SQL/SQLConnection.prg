@@ -7,6 +7,7 @@
 
 USING System
 USING System.Collections.Generic
+USING System.Runtime.InteropServices
 USING System.Text
 USING System.Data.Common
 USING System.Data
@@ -52,7 +53,7 @@ INTERNAL CLASS XSharp.VFP.SQLConnection
     PROPERTY Password           AS STRING AUTO GET SET
     PROPERTY ConnectionString   AS STRING AUTO GET SET
     PROPERTY ODBChdbc   AS DbConnection GET SELF:NetConnection
-
+    PROPERTY Statements AS IList<SQLStatement> GET SELF:_aStatements
     METHOD _SetDefaults() AS VOID
         SELF:UserId     := ""
         SELF:Password   := ""
@@ -106,11 +107,13 @@ INTERNAL CLASS XSharp.VFP.SQLConnection
                 SELF:ConnectionString     := cConnStr
                 oConn:Open()
             CATCH AS Exception
-                cConnStr := SELF:Factory:DriverConnect(NULL, SQLSupport.DispLogin, cConnStr)    
+                cConnStr := SELF:Factory:DriverConnect(Win32.GetParentWindow(), SQLSupport.DispLogin, cConnStr)
                 oConn:ConnectionString    := cConnStr
                 SELF:ConnectionString     := cConnStr
                 oBuilder:ConnectionString := cConnStr
-                oConn:Open()
+                IF ! String.IsNullOrEmpty(cConnStr)
+                    oConn:Open()
+                ENDIF
             END TRY
             IF oConn:State == System.Data.ConnectionState.Open
                 SELF:Factory:AfterConnect(oConn)
@@ -171,3 +174,25 @@ INTERNAL CLASS XSharp.VFP.SQLConnection
         
 
 END CLASS
+
+
+
+BEGIN NAMESPACE XSharp.Vfp
+    INTERNAL STATIC CLASS Win32
+        [DllImport("USER32.dll", CharSet := CharSet.Ansi)];
+        INTERNAL STATIC METHOD GetActiveWindow() AS IntPtr PASCAL
+        
+        [DllImport("USER32.dll", CharSet := CharSet.Ansi)];
+        INTERNAL STATIC METHOD GetDesktopWindow() AS IntPtr PASCAL
+
+        INTERNAL STATIC METHOD GetParentWindow() AS IntPtr
+            LOCAL hResult AS IntPtr
+            hResult := GetActiveWindow()
+            IF hResult == IntPtr.Zero
+                hResult := GetDesktopWindow()
+            ENDIF
+            RETURN hResult
+
+    END CLASS
+
+END NAMESPACE

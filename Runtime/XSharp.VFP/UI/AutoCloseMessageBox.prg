@@ -37,22 +37,23 @@ INTERNAL CLASS XSharp.VFP.AutoCloseMessageBox
         RETURN
         
     PUBLIC STATIC METHOD Show(text AS STRING ,caption := "XSharp" AS STRING , timeout := 1000 AS INT,;
-        buttons AS MessageBoxButtons, nIcon   AS MessageBoxIcon, ;
-        nDefault AS MessageBoxDefaultButton, defaultResult := DialogResult.None AS DialogResult ) AS DialogResult 
+        buttons := MessageBoxButtons.OK AS MessageBoxButtons, nIcon   := MessageBoxIcon.None AS MessageBoxIcon, ;
+        nDefault := MessageBoxDefaultButton.Button1 AS MessageBoxDefaultButton, ;
+        defaultResult := DialogResult.None AS DialogResult ) AS DialogResult 
         
         RETURN AutoCloseMessageBox{caption, timeout,  { capt, btns => MessageBox.Show(text, capt, buttons, nIcon, nDefault) },;
             buttons, nIcon, nDefault, defaultResult }:_result
         
     PUBLIC STATIC METHOD Show(owner AS IWin32Window , text AS STRING , caption := "XSharp" AS STRING, timeout := 1000 AS INT, ;
-        buttons AS MessageBoxButtons, nIcon   AS MessageBoxIcon, ;
-        nDefault AS MessageBoxDefaultButton, defaultResult := DialogResult.None AS DialogResult ) AS DialogResult  
+        buttons := MessageBoxButtons.OK AS MessageBoxButtons, nIcon  := MessageBoxIcon.None AS MessageBoxIcon, ;
+        nDefault := MessageBoxDefaultButton.Button1 AS MessageBoxDefaultButton, defaultResult := DialogResult.None AS DialogResult ) AS DialogResult  
         RETURN AutoCloseMessageBox{caption, timeout, {capt, btns => MessageBox.Show(owner, text, capt, buttons, nIcon, nDefault)} ,;
             buttons, nIcon, nDefault, defaultResult}:_result
         
         
 END CLASS
 INTERNAL STATIC CLASS Win32Api
-	PRIVATE STATIC CLASS UnsafeNativeMethods
+	INTERNAL STATIC CLASS UnsafeNativeMethods
 		INTERNAL DELEGATE EnumChildProc(hWnd AS IntPtr , lParam AS IntPtr ) AS LOGIC
 
         [DllImport("user32.dll", CharSet := CharSet.Auto, SetLastError := TRUE)] ;

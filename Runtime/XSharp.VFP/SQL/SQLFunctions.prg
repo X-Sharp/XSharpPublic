@@ -70,10 +70,13 @@ FUNCTION SqlStringConnect( uSharedOrConnectString, lSharable) AS LONG
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/sqlcancel/*" />
 
-FUNCTION SQLCANCEL( nStatementHandle) AS LONG
-    THROW NotImplementedException{}
-    // RETURN 0
-
+FUNCTION SQLCANCEL( nStatementHandle AS LONG) AS LONG
+    VAR oStmt := GetStatement(nStatementHandle)    
+    IF oStmt != NULL
+        oStmt:Cancel()
+        RETURN 1
+    ENDIF
+    RETURN -1
 
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/sqldisconnect/*" />
@@ -104,7 +107,7 @@ FUNCTION SqlExec( nStatementHandle AS LONG, cSQLCommand := NIL AS USUAL, cCursor
             cCursorName := "SQLRESULT"
         ENDIF
         IF !IsString(cSQLCommand)
-            IF ! oStmt:Prepared
+            IF ! oStmt:Prepared .AND. ! oStmt:Asynchronous
                 THROW Error{"SQL Statement parameter is required for non prepared SQL Statements"}
             ENDIF
             prepared := TRUE
@@ -114,7 +117,7 @@ FUNCTION SqlExec( nStatementHandle AS LONG, cSQLCommand := NIL AS USUAL, cCursor
         IF prepared
             result := oStmt:Execute(aInfo)
         ELSE
-            result := oStmt:Execute(cSQLCommand, cCursorName, aInfo)
+            result := oStmt:Execute(cSQLCommand, cCursorName,aInfo)
         ENDIF
         CopyResults(aCountInfo, aInfo)
         RETURN result

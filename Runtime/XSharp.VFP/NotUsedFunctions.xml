@@ -9378,27 +9378,6 @@
       Character
     </returns>
   </space>
-  <sqlcancel>
-    <summary>
-      Requests cancellation of an executing SQL statement.
-
-      <b>SQLCANCEL( )</b> cancels the execution of <b>SQLCOLUMNS( )</b>, <b>SQLEXEC( )</b>, <b>SQLMORERESULTS( )</b>, and <b>SQLTABLES( )</b> in asynchronous mode. To establish asynchronous mode, use the <b>SQLSETPROP( )</b> function.
-    </summary>
-    <param name="nStatementHandle">
-
-      Specifies the active statement handle whose SQL statement is to be canceled.
-    </param>
-    <returns>
-      Numeric. <b>SQLCANCEL( )</b> returns 1 if the SQL statement is successfully canceled, – 1 if there is a connection level error, and – 2 if there is an environment level error.
-    </returns>
-    <example>
-       <code language="X#">
-        = SQLSETPROP(gnHandle, 'asynchronous', .T.)   &amp;&amp; To stop SQLEXEC( )
-        = SQLEXEC(gnHandle, 'SELECT * FROM authors')
-        = SQLCANCEL(gnHandle)   &amp;&amp; Wrong select statement, cancel
-      </code>
-    </example>
-  </sqlcancel>
   <sqrt>
     <summary>
       Returns the square root of the specified numeric expression.

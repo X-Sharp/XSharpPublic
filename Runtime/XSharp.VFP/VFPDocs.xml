@@ -7761,6 +7761,27 @@
       This statement creates and returns a rowset from the marked cursor, not the return value from <b>SetRESULTSet( )</b>.
     </remarks>
   </setresultset>
+  <sqlcancel>
+    <summary>
+      Requests cancellation of an executing SQL statement.
+
+      <b>SQLCANCEL( )</b> cancels the execution of <b>SQLCOLUMNS( )</b>, <b>SQLEXEC( )</b>, <b>SQLMORERESULTS( )</b>, and <b>SQLTABLES( )</b> in asynchronous mode. To establish asynchronous mode, use the <b>SQLSETPROP( )</b> function.
+    </summary>
+    <param name="nStatementHandle">
+
+      Specifies the active statement handle whose SQL statement is to be canceled.
+    </param>
+    <returns>
+      Numeric. <b>SQLCANCEL( )</b> returns 1 if the SQL statement is successfully canceled, – 1 if there is a connection level error, and – 2 if there is an environment level error.
+    </returns>
+    <example>
+       <code language="X#">
+        = SQLSETPROP(gnHandle, 'asynchronous', .T.)   &amp;&amp; To stop SQLEXEC( )
+        = SQLEXEC(gnHandle, 'SELECT * FROM authors')
+        = SQLCANCEL(gnHandle)   &amp;&amp; Wrong select statement, cancel
+      </code>
+    </example>
+  </sqlcancel>
   <sqlcolumns>
     <summary>
       Stores a list of column names and information about each column for the specified data source table to a X# cursor.
@@ -8087,7 +8108,6 @@
       Allows a SQL pass-through connection or connections to be temporarily disconnected.
     </summary>
     <param name="nStatementHandle">
-
       Specifies the statement handle of the connection to be temporarily disconnected.
       Specify 0 for nStatementHandle to temporarily disconnect all active connections.
     </param>

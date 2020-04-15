@@ -67,10 +67,8 @@ FUNCTION SqlStringConnect( uSharedOrConnectString, lSharable) AS LONG
 
 
 
-/// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/sqlcancel/*" />
-
-FUNCTION SQLCANCEL( nStatementHandle AS LONG) AS LONG
+FUNCTION SqlCancel( nStatementHandle AS LONG) AS LONG
     VAR oStmt := GetStatement(nStatementHandle)    
     IF oStmt != NULL
         oStmt:Cancel()

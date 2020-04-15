@@ -45,6 +45,8 @@ INTERFACE XSharp.Data.ISqlFactory
     /// <summary>Create a datasource enumerator object.</summary>
     METHOD CreateDataSourceEnumerator() AS DbDataSourceEnumerator
 
+
+
     /// <summary>This method gets called before connecting. This allows to adjust the connection string.</summary>
     /// <returns>The connection string that may be altered by the factory.</returns>
     /// <param name="cString">Connection String.</param>

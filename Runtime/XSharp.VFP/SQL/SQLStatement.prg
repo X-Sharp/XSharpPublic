@@ -20,7 +20,6 @@ USING XSharp.RDD.Enums
 INTERNAL CLASS XSharp.VFP.SQLStatement
     PROTECT _oConnection    AS SQLConnection
     PROTECT _oNetCommand    AS DbCommand
-    PROTECT _oTransaction   AS DbTransaction
     PROTECT _oLastDataReader AS DbDataReader
     PROTECT _nextCursorNo    AS LONG
     
@@ -29,18 +28,19 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
     PROPERTY Asynchronous       AS LOGIC  AUTO GET SET
     PROPERTY BatchMode          AS LOGIC  AUTO GET SET
     PROPERTY ConnectBusy        AS LOGIC  GET Connection:ConnectBusy
-    PROPERTY ConnectionTimeOut  AS LONG   GET Connection:ConnectionTimeOut  SET Connection:ConnectionTimeOut := Value
-    PROPERTY DataSource         AS STRING GET Connection:DataSource         SET Connection:DataSource := Value
-    PROPERTY Handle             AS LONG   AUTO GET SET
-    PROPERTY UserId             AS STRING GET Connection:UserId     
-    PROPERTY Password           AS STRING GET Connection:Password   
-    PROPERTY Shared             AS LOGIC  GET Connection:Shared             SET Connection:Shared := Value
     PROPERTY ConnectionString   AS STRING GET Connection:ConnectionString   
-    PROPERTY ODBChdbc           AS DbConnection GET SELF:Connection:NetConnection
-    PROPERTY ODBChstmt          AS DbCommand    GET _oNetCommand
+    PROPERTY ConnectionTimeOut  AS LONG   GET Connection:ConnectionTimeOut  SET Connection:ConnectionTimeOut := Value
+    PROPERTY CursorName         AS STRING AUTO GET SET
+    PROPERTY DataSource         AS STRING GET Connection:DataSource         SET Connection:DataSource := Value
     PROPERTY DisconnectRollback AS LOGIC AUTO GET SET
     PROPERTY DispWarnings       AS LOGIC AUTO GET SET
+    PROPERTY Handle             AS LONG   AUTO GET SET
     PROPERTY IdleTimeout        AS LONG  AUTO GET SET
+    PROPERTY ODBChdbc           AS DbConnection GET SELF:Connection:NetConnection
+    PROPERTY ODBChstmt          AS DbCommand    GET _oNetCommand
+    PROPERTY Password           AS STRING GET Connection:Password   
+    PROPERTY Shared             AS LOGIC  GET Connection:Shared             SET Connection:Shared := Value
+    PROPERTY UserId             AS STRING GET Connection:UserId     
     PRIVATE _PacketSize         AS LONG
     PROPERTY PacketSize         AS LONG
         GET
@@ -57,11 +57,11 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
 
     END SET
     END PROPERTY
+    PROPERTY Prepared           AS LOGIC AUTO GET PRIVATE SET
     PROPERTY QueryTimeOut       AS LONG  GET _oNetCommand:CommandTimeout SET _oNetCommand:CommandTimeout := Value
     PROPERTY TransactionMode    AS LONG  AUTO GET SET
+    PROPERTY UsesTransaction    AS LOGIC GET SELF:TransactionMode == DB_TRANSMANUAL
     PROPERTY WaitTime           AS LONG  AUTO GET SET
-    PROPERTY Prepared           AS LOGIC AUTO GET PRIVATE SET
-    PROPERTY CursorName         AS STRING AUTO GET SET
 
 
     METHOD SetDefaults() AS VOID
@@ -78,158 +78,22 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
         SELF:WaitTime           := 100
         SELF:_oNetCommand       := NULL
         SELF:_oConnection       := NULL
-        SELF:_oTransaction      := NULL
 
 
 
     PRIVATE METHOD _AllocateCommand() AS VOID
         SELF:_oNetCommand := SELF:Connection:Factory:CreateCommand()
         SELF:_oNetCommand:Connection := SELF:Connection:NetConnection
-        SELF:_oNetCommand:CommandText := "Select 1"
-        SELF:_oNetCommand:ExecuteNonQuery()
         _oConnection:AddStatement(SELF)
-        RETURN 
-
-    
-    CONSTRUCTOR(cDataSource AS STRING, cUser AS STRING, cPassword AS STRING, lShared AS LOGIC)
-        SELF:SetDefaults()
-        _oConnection    := SQLConnection{cDataSource, cUser, cPassword, lShared}
-        SELF:_AllocateCommand()
-        RETURN 
+        RETURN
         
-
-    CONSTRUCTOR(cConnectionString AS STRING, lShared AS LOGIC)
-        _oConnection := SQLConnection{cConnectionString, lShared}
-        SELF:_AllocateCommand()
-        RETURN
-
-    CONSTRUCTOR(oConnection AS SQLConnection)
-        _oConnection := oConnection
-        SELF:_AllocateCommand()
-        RETURN
-
-    METHOD Commit AS LOGIC
-        IF SELF:_oTransaction != NULL
-            SELF:_oTransaction:Commit()
-            SELF:_oTransaction := NULL
-            RETURN TRUE
+    PRIVATE METHOD _CloseReader() AS VOID
+        IF _oLastDataReader != NULL
+            _oLastDataReader:Close()
+            _oLastDataReader := NULL
         ENDIF
-        RETURN FALSE
 
-    METHOD Rollback AS LOGIC
-        IF SELF:_oTransaction != NULL
-            SELF:_oTransaction:Rollback()
-            SELF:_oTransaction := NULL
-            RETURN TRUE
-        ENDIF
-        RETURN FALSE
-
-
-    METHOD DisConnect AS LOGIC
-        IF SELF:Connected
-            IF SELF:DisconnectRollback
-                SELF:Rollback()
-            ELSE
-                SELF:Commit()
-            ENDIF
-            _oNetCommand:Dispose()
-            IF ! SELF:Connection:Shared
-                SELF:Connection:Close()
-            ENDIF
-        ENDIF
-        _oConnection:RemoveStatement(SELF)
-        _oNetCommand := NULL
-        _oConnection := NULL
-        RETURN TRUE
-
-    METHOD Prepare(cCommand AS STRING, cCursorName AS STRING) AS LONG
-        SELF:_oNetCommand:CommandText := cCommand
-        SELF:_oNetCommand:Prepare()
-        SELF:Prepared := TRUE
-        SELF:CursorName := cCursorName
-        RETURN 1
-
-    METHOD Execute(cCommand AS STRING, cCursorName AS STRING, aInfo AS ARRAY) AS LONG
-        SELF:_oNetCommand:CommandText := cCommand
-        SELF:CursorName := cCursorName
-        VAR tables := SELF:CopyToCursor()
-        CopyToInfo(tables, aInfo)
-        IF ALen(tables) > 0
-            RETURN (LONG) ALen(tables)
-        ENDIF
-        RETURN 0
-        
-    METHOD Execute(aInfo AS ARRAY) AS LONG
-        VAR tables := SELF:CopyToCursor()
-        CopyToInfo(tables, aInfo)
-        IF ALen(tables) > 0
-            RETURN (LONG) ALen(tables)
-        ENDIF
-        RETURN 0
-
-    PRIVATE METHOD CopyToInfo(aResult, aInfo AS ARRAY) AS VOID
-        ASize(aInfo, ALen(aResult))
-        ACopy(aResult, aInfo)
-        RETURN
-
-    
-    METHOD CopyToCursor() AS ARRAY
-        VAR oDataReader := SELF:_oNetCommand:ExecuteReader()
-        RETURN CopyToCursor(oDataReader, 0)
-
-    METHOD CopyToCursor(oDataReader AS DbDataReader, cursorNo AS LONG) AS ARRAY
-        LOCAL result   := {} AS ARRAY
-        _oLastDataReader := NULL_OBJECT
-        DO WHILE TRUE
-            VAR cursorName := SELF:CursorName
-            IF cursorNo != 0
-                cursorName += cursorNo:ToString()
-            ENDIF
-    		oDataReader := SELF:Connection:Factory:AfterOpen(oDataReader)
-            VAR oSchema := oDataReader:GetSchemaTable()
-            CreateWorkarea(oSchema, oDataReader, cursorName)
-            AAdd(result, {cursorName, RecCount()})
-            cursorNo += 1
-            IF ! SELF:BatchMode
-                _oLastDataReader := oDataReader
-                _nextCursorNo    := cursorNo
-                EXIT
-            ENDIF
-            IF ! oDataReader:NextResult()
-                EXIT
-            ENDIF
-        ENDDO
-        RETURN result
-
-    METHOD MoreResults(cursorName AS STRING, aInfo AS ARRAY) AS LONG
-        IF !String.IsNullOrEmpty(cursorName)
-            SELF:CursorName := cursorName
-            SELF:_nextCursorNo := 0
-        ENDIF
-        IF _oLastDataReader != NULL .AND. _oLastDataReader:NextResult()
-            VAR tables := CopyToCursor(_oLastDataReader, _nextCursorNo)
-            CopyToInfo(tables, aInfo)
-            IF ALen(tables) > 0
-                RETURN (LONG) ALen(tables)
-            ENDIF
-        ENDIF
-        RETURN 0
-    
-
-    METHOD GetNumRestrictions(cCollectionName AS STRING) AS LONG
-        LOCAL nRestrictions := 0 AS LONG
-        LOCAL oTable := SELF:Connection:NetConnection:GetSchema("MetadataCollections",NULL) AS DataTable
-        FOREACH oRow AS DataRow IN oTable:Rows
-			IF String.Compare( (STRING)oRow:Item["CollectionName"], cCollectionName, StringComparison.OrdinalIgnoreCase) == 0
-				nRestrictions := (INT) oRow:Item["NumberOfRestrictions"] 
-				EXIT
-			ENDIF
-        NEXT        
-        RETURN nRestrictions  
-
- 
-    
-    STATIC METHOD CreateWorkarea(oSchema AS DataTable, oDataReader AS DbDataReader, cCursorName AS STRING) AS LOGIC
+    PRIVATE METHOD _CreateWorkarea(oSchema AS DataTable, oDataReader AS DbDataReader, cCursorName AS STRING) AS LOGIC
         LOCAL aStruct AS ARRAY
         LOCAL nFields AS LONG
         LOCAL aFieldNames AS List<STRING>
@@ -285,6 +149,186 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
             ENDDO
         ENDIF
         RETURN TRUE
+
+
+    PRIVATE METHOD _ReturnsRows(cCommand AS STRING) AS LOGIC
+        LOCAL cStmts := cCommand:Split(";":ToCharArray()) AS STRING[]
+        LOCAL aParts := cStmts[cStmts:Length]:Split(" ()":ToCharArray()) AS STRING[]
+        IF aParts:Length > 0
+            LOCAL cWord := aParts[1]:ToLower() AS STRING
+            SWITCH cWord
+            CASE "select"
+            CASE "execute"
+                RETURN TRUE
+            // dml
+            CASE "insert"
+            CASE "delete"
+            CASE "update"
+            // ddl
+            CASE "create"
+            CASE "drop"
+            CASE "alter"
+                RETURN FALSE
+            OTHERWISE
+                RETURN TRUE  //? 
+            END SWITCH
+        ENDIF
+        RETURN FALSE
+
+
+    
+    CONSTRUCTOR(cDataSource AS STRING, cUser AS STRING, cPassword AS STRING, lShared AS LOGIC)
+        SELF:SetDefaults()
+        _oConnection    := SQLConnection{cDataSource, cUser, cPassword, lShared}
+        SELF:_AllocateCommand()
+        RETURN 
+        
+
+    CONSTRUCTOR(cConnectionString AS STRING, lShared AS LOGIC)
+        _oConnection := SQLConnection{cConnectionString, lShared}
+        SELF:_AllocateCommand()
+        RETURN
+
+    CONSTRUCTOR(oConnection AS SQLConnection)
+        _oConnection := oConnection
+        SELF:_AllocateCommand()
+        RETURN
+
+
+    METHOD BeginTransaction AS LOGIC
+        IF SELF:UsesTransaction
+            IF SELF:Connection:Transaction == NULL
+                SELF:Connection:BeginTransaction()
+            ENDIF
+            SELF:_oNetCommand:Transaction := SELF:Connection:Transaction
+        ENDIF
+        RETURN TRUE
+
+
+    METHOD Commit AS LOGIC
+        SELF:_CloseReader()
+        RETURN SELF:Connection:CommitTransaction()
+
+    METHOD Rollback AS LOGIC
+        SELF:_CloseReader()
+        RETURN SELF:Connection:RollbackTransaction()
+
+
+    METHOD DisConnect AS LOGIC
+        SELF:_CloseReader()
+        IF SELF:Connected
+            IF SELF:DisconnectRollback
+                SELF:Rollback()
+            ELSE
+                SELF:Commit()
+            ENDIF
+            _oNetCommand:Dispose()
+            IF ! SELF:Connection:Shared
+                SELF:Connection:Close()
+            ENDIF
+        ENDIF
+        _oConnection:RemoveStatement(SELF)
+        _oNetCommand := NULL
+        _oConnection := NULL
+        RETURN TRUE
+
+    METHOD Prepare(cCommand AS STRING, cCursorName AS STRING) AS LONG
+        SELF:_CloseReader()
+        SELF:_oNetCommand:CommandText := cCommand
+        SELF:_oNetCommand:Prepare()
+        SELF:Prepared := TRUE
+        SELF:CursorName := cCursorName
+        RETURN 1
+
+    METHOD Execute(cCommand AS STRING, cCursorName AS STRING, aInfo AS ARRAY) AS LONG
+        SELF:BeginTransaction()
+        SELF:_oNetCommand:CommandText := cCommand
+        SELF:CursorName := cCursorName
+        VAR tables := SELF:CopyToCursor()
+        CopyToInfo(tables, aInfo)
+        IF ALen(tables) > 0
+            RETURN (LONG) ALen(tables)
+        ENDIF
+        RETURN 0
+        
+    METHOD Execute(aInfo AS ARRAY) AS LONG
+        SELF:BeginTransaction()
+        VAR tables := SELF:CopyToCursor()
+        CopyToInfo(tables, aInfo)
+        IF ALen(tables) > 0
+            RETURN (LONG) ALen(tables)
+        ENDIF
+        RETURN 0
+
+    PRIVATE METHOD CopyToInfo(aResult, aInfo AS ARRAY) AS VOID
+        ASize(aInfo, ALen(aResult))
+        ACopy(aResult, aInfo)
+        RETURN
+
+    
+    METHOD CopyToCursor() AS ARRAY STRICT
+        IF SELF:_ReturnsRows(SELF:_oNetCommand:CommandText)
+            VAR oDataReader := SELF:_oNetCommand:ExecuteReader()
+            RETURN CopyToCursor(oDataReader, 0)
+        ELSE
+            VAR result := SELF:_oNetCommand:ExecuteNonQuery()
+            RETURN {{"", result}}
+        ENDIF
+
+    METHOD CopyToCursor(oDataReader AS DbDataReader, cursorNo AS LONG) AS ARRAY
+        LOCAL result   := {} AS ARRAY
+        _oLastDataReader := NULL_OBJECT
+        DO WHILE TRUE
+            VAR cursorName := SELF:CursorName
+            IF cursorNo != 0
+                cursorName += cursorNo:ToString()
+            ENDIF
+    		oDataReader := SELF:Connection:Factory:AfterOpen(oDataReader)
+            VAR oSchema := oDataReader:GetSchemaTable()
+            SELF:_CreateWorkarea(oSchema, oDataReader, cursorName)
+            AAdd(result, {cursorName, RecCount()})
+            cursorNo += 1
+            IF ! SELF:BatchMode
+                _oLastDataReader := oDataReader
+                _nextCursorNo    := cursorNo
+                EXIT
+            ENDIF
+            IF ! oDataReader:NextResult()
+                EXIT
+            ENDIF
+        ENDDO
+        RETURN result
+
+    METHOD MoreResults(cursorName AS STRING, aInfo AS ARRAY) AS LONG
+        IF !String.IsNullOrEmpty(cursorName)
+            SELF:CursorName := cursorName
+            SELF:_nextCursorNo := 0
+        ENDIF
+        IF _oLastDataReader != NULL .AND. _oLastDataReader:NextResult()
+            VAR tables := CopyToCursor(_oLastDataReader, _nextCursorNo)
+            CopyToInfo(tables, aInfo)
+            IF ALen(tables) > 0
+                RETURN (LONG) ALen(tables)
+            ENDIF
+        ENDIF
+        ASize(aInfo,1)
+        aInfo[1] := {{0, -1}}
+        RETURN 0
+    
+
+    METHOD GetNumRestrictions(cCollectionName AS STRING) AS LONG
+        LOCAL nRestrictions := 0 AS LONG
+        LOCAL oTable := SELF:Connection:NetConnection:GetSchema("MetadataCollections",NULL) AS DataTable
+        FOREACH oRow AS DataRow IN oTable:Rows
+			IF String.Compare( (STRING)oRow:Item["CollectionName"], cCollectionName, StringComparison.OrdinalIgnoreCase) == 0
+				nRestrictions := (INT) oRow:Item["NumberOfRestrictions"] 
+				EXIT
+			ENDIF
+        NEXT        
+        RETURN nRestrictions  
+
+ 
+    
    
 
 

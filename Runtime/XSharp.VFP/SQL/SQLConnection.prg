@@ -17,14 +17,15 @@ USING XSharp.Data
 USING System.Reflection
 
 INTERNAL CLASS XSharp.VFP.SQLConnection
-    PROTECT _oNetConnection AS DbConnection
-    PROTECT _oFactory       AS ISqlFactory
-    PROTECT _aStatements     AS IList<SQLStatement>
+    PROTECT _oNetConnection     AS DbConnection
+    PROTECT _oTransaction       AS DbTransaction
+    PROTECT _oFactory           AS ISqlFactory
+    PROTECT _aStatements        AS IList<SQLStatement>
 
-    PROPERTY Factory        AS ISqlFactory GET _oFactory
+    PROPERTY Factory            AS ISqlFactory GET _oFactory
     PROPERTY NetConnection      AS DbConnection GET _oNetConnection
     PROPERTY State              AS ConnectionState GET _oNetConnection:State
-    
+    PROPERTY Transaction        AS DbTransaction GET _oTransaction
     PROPERTY ConnectionTimeOut  AS LONG
         GET
             RETURN _oNetConnection:ConnectionTimeout
@@ -171,7 +172,30 @@ INTERNAL CLASS XSharp.VFP.SQLConnection
             RETURN TRUE
         ENDIF
         RETURN FALSE
-        
+
+    METHOD BeginTransaction() AS LOGIC
+        IF SELF:_oTransaction == NULL
+            SELF:_oTransaction := _oNetConnection:BeginTransaction()
+            RETURN TRUE
+        ENDIF
+        RETURN FALSE
+
+    METHOD CommitTransaction() AS LOGIC
+        IF SELF:_oTransaction != NULL
+            SELF:_oTransaction:Commit()
+            SELF:_oTransaction := _oNetConnection:BeginTransaction()
+            RETURN TRUE
+        ENDIF
+        RETURN FALSE
+
+    METHOD RollbackTransaction() AS LOGIC
+        IF SELF:_oTransaction != NULL
+            SELF:_oTransaction:Rollback()
+            SELF:_oTransaction := _oNetConnection:BeginTransaction()
+            RETURN TRUE
+        ENDIF
+        RETURN FALSE
+
 
 END CLASS
 

@@ -85,7 +85,7 @@ INTERFACE XSharp.Data.ISqlFactory
     /// <param name="nCompletion">A numeric value that indicates what can be changed. For example SQL_DRIVER_PROMPT or SQL_DRIVER_COMPLETE. See the ODBC Docs for more info.</param>
     /// <param name="cConnectionString">A connection string that indicates the start values for the dialog.</param>
     /// <returns>The connection string that is the result of the dialog.</returns>
-    METHOD DriverConnect(hWindow AS OBJECT, nCompletion AS OBJECT, cConnectionString AS OBJECT) AS STRING
+    METHOD DriverConnect(hWindow AS IntPtr, nCompletion AS OBJECT, cConnectionString AS OBJECT) AS STRING
 
     /// <summary>This method is called after a transaction was committed.</summary>
     METHOD EnhanceException(oEx AS System.Exception)  AS System.Exception

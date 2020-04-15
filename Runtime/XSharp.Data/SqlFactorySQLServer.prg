@@ -102,7 +102,7 @@ CLASS XSharp.Data.SqlServerFactory INHERIT XSharp.Data.AbstractSqlFactory
         RETURN "SQL"
 
     /// <inheritdoc />
-    METHOD DriverConnect(hWindow AS OBJECT, uCompletion AS OBJECT, cConnectionString AS OBJECT) AS STRING
+    METHOD DriverConnect(hWindow AS IntPtr, uCompletion AS OBJECT, cConnectionString AS OBJECT) AS STRING
         LOCAL oODBC AS OdbcFactory
         LOCAL cResult AS STRING
         oODBC := OdbcFactory{}

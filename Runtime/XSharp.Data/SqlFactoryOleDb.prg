@@ -9,6 +9,7 @@ USING System.Data.SqlClient
 USING System.Data.Common
 USING System.Reflection
 USING System.Text
+USING System.Runtime.CompilerServices
 USING System.Runtime.InteropServices
 
 /// <summary>This is the class that implements a Factory to access data through the Ado.Net Microsoft SQL Server classes.</summary>
@@ -31,9 +32,33 @@ CLASS XSharp.Data.OleDbFactory INHERIT XSharp.Data.AbstractSqlFactory
         RETURN "OleDb"
 
     /// <inheritdoc />
-    METHOD DriverConnect(hWindow AS OBJECT, uCompletion AS OBJECT, cConnectionString AS OBJECT) AS STRING
-
+    METHOD DriverConnect(hWindow AS IntPtr, uCompletion AS OBJECT, cConnectionString AS OBJECT) AS STRING
+        LOCAL cTemp AS STRING
+        cTemp := System.IO.Path.GetTempFileName()
+        FErase(cTemp)
+        cTemp := System.IO.Path.ChangeExtension(cTemp,".UDL")
+        FClose(FCreate2(cTemp,FC_NORMAL))
+        VAR startInfo := System.Diagnostics.ProcessStartInfo{}
+        startInfo:FileName := cTemp
+        VAR process := System.Diagnostics.Process.Start(startInfo)
+        LOCAL hDialog := Win32.FindWindow("#32770",NULL) AS IntPtr
+        IF hDialog != IntPtr.Zero
+            IF hWindow == IntPtr.Zero
+                hWindow := Win32.GetParentWindow()
+            ENDIF
+            Win32.SetParent(hDialog, hWindow)
+        ENDIF
+        process:WaitForExit()
+        VAR lines := System.IO.File.ReadAllLines(cTemp)
+        FErase(cTemp)
+        FOREACH VAR line IN lines
+            IF line:ToLower():StartsWith("provider=")
+                RETURN line
+            ENDIF
+        NEXT
         RETURN ""
+        
+        
 
         
     METHOD GetMetaDataColumnValues(oRow AS DataRow) AS OBJECT[]
@@ -81,4 +106,5 @@ CLASS XSharp.Data.OleDbFactory INHERIT XSharp.Data.AbstractSqlFactory
         RETURN result
 
 END CLASS
+
 

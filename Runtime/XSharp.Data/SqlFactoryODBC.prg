@@ -48,14 +48,13 @@ CLASS XSharp.Data.OdbcFactory INHERIT XSharp.Data.AbstractSqlFactory
         RETURN oDataReader
 
     /// <inheritdoc />
-    METHOD DriverConnect(hWindow AS object, uCompletion AS object, cConnectionString AS object) AS STRING
+    METHOD DriverConnect(hWindow AS IntPtr, uCompletion AS OBJECT, cConnectionString AS OBJECT) AS STRING
         LOCAL nRetCode      AS INT
         LOCAL cConnect      AS STRING
         LOCAL sbResult      AS StringBuilder
         LOCAL cResult       AS STRING
         LOCAL nCompletion   AS WORD
         LOCAL nSize		  	AS SHORTINT
-        LOCAL hWnd          AS IntPtr
         LOCAL hEnv          AS IntPtr
         LOCAL hDBc          AS IntPtr
         LOCAL nBytes        AS SHORT
@@ -69,17 +68,8 @@ CLASS XSharp.Data.OdbcFactory INHERIT XSharp.Data.AbstractSqlFactory
             nCompletion := Win32.SQL_DRIVER_PROMPT
         END TRY
         sbResult := StringBuilder{Win32.SQL_MAX_MESSAGE_LENGTH}
-        IF hWindow IS IntPtr
-            hWnd := (IntPtr) hWindow
-        ELSEIF hWindow IS System.Int32
-            hWnd := IntPtr{(System.Int32) hWindow}
-        ELSEIF hWindow IS System.Int64
-            hWnd := IntPtr{(System.Int64) hWindow}
-        ELSE
-            hWnd := Win32.GetActiveWindow()
-        ENDIF
-        IF hWnd == IntPtr.Zero
-            hWnd := Win32.GetDesktopWindow()
+        IF hWindow == IntPtr.Zero
+            hWindow := Win32.GetParentWindow()
         ENDIF
         
         IF cConnectionString IS STRING
@@ -93,7 +83,7 @@ CLASS XSharp.Data.OdbcFactory INHERIT XSharp.Data.AbstractSqlFactory
         nRetCode := Win32.SQLAllocEnv( OUT hEnv ) 
         nRetCode := Win32.SQLAllocConnect( hEnv, OUT hDBc )
         nRetCode := Win32.SQLDriverConnect( 	hDBc,                    ;
-                                        hWnd,                    ;
+                                        hWindow,                    ;
                                         cConnect,               ;
                                         nSize    , ;
                                         sbResult,              ;

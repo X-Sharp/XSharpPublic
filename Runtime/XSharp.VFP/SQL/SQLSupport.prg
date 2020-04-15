@@ -46,13 +46,20 @@ INTERNAL STATIC CLASS XSharp.VFP.SQLSupport
             RETURN element:Value
         ENDIF
         RETURN NULL
+
+    STATIC METHOD GetStatements() AS IList<SQLStatement>
+        LOCAL aResult := List<SQLStatement>{} AS IList<SQLStatement>
+        FOREACH VAR oElement IN Cache:Values
+            aResult:Add(oElement:Value)
+        NEXT
+        RETURN aResult
     
-        
     STATIC METHOD AddStatement(oStmt AS SQLStatement) AS LONG
         VAR element := HandleCacheElement{}
         element:Number := ++UniqueId
         element:Value  := oStmt
         Cache:Add(element:Number, element)
+        oStmt:Handle := element:Number
         RETURN element:Number
         
 
@@ -300,5 +307,8 @@ INTERNAL STATIC CLASS XSharp.VFP.SQLSupport
 		aFieldNames:Add(cColumnName, cResult)
 		RETURN cResult
 
+
+
+    
 END CLASS
 

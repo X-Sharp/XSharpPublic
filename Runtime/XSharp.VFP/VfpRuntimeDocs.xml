@@ -341,7 +341,7 @@
         ?? Type('gyMoney')  &amp;&amp; Displays N, numeric type value
       </code>
     </example>
-    <seealso cref='M:XSharp.VFP.Functions.NToM(XSharp.__Float)' />
+    <seealso cref='M:XSharp.VFP.Functions.NtoM(XSharp.__Float)' />
   </mton>
   <ntom>
     <summary>
@@ -365,7 +365,7 @@
         ?? Type('gnNumeric')  &amp;&amp; Displays Y, currency type value
       </code>
     </example>
-    <seealso cref='M:XSharp.VFP.Functions.MToN(XSharp.__Currency)' />
+    <seealso cref='M:XSharp.VFP.Functions.MtoN(XSharp.__Currency)' />
   </ntom>
   <sign>
     <summary>
@@ -488,4 +488,28 @@
        <code language="X#">? ICase(1+2=2,"First is false",1+1=3,"Second is false","None are true")</code>
     </example>
   </icase>
+  <asqlhandles>
+    <summary>
+      Stores numeric references to all active SQL connection statement handles in an array.
+    </summary>
+    <param name="ArrayName">
+      Specifies the array to store statement handle information in.
+      In contrary to VFP the array must exist when calling this function. If the array is not large enough to store the information,
+      X# increases the array size automatically. If the array is larger than necessary, X# truncates the array.
+    </param>
+    <param name="nStatementHandle">
+      Populates the array with statement handles that use the same shared connection, including nStatementHandle.
+    </param>
+    <returns>
+      Numeric. <b>ASQLHandles( )</b> returns the number of statement handles in use. If no statement handles are available,
+      <b>ASQLHandles( )</b> returns 0 and does not modify the array.
+    </returns>
+    <remarks>
+      You can use references to statement handles in other X# SQL functions, such as <b>SQLEXEC( )</b> and <b>SQLDISCONNECT( )</b>.
+      For more information, see SQLEXEC( ) Function and SQLDISCONNECT( ) Function.
+      You can create and return new statement handles using the <b>SQLCONNECT( )</b> and <b>SQLSTRINGCONNECT( )</b> functions.
+      For more information, see SQLCONNECT( ) Function and SQLSTRINGCONNECT( ) Function.
+    </remarks>
+  </asqlhandles>
+
 </Runtimefunctions>

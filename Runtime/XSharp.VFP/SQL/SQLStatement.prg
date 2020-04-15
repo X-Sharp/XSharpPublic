@@ -31,6 +31,7 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
     PROPERTY ConnectBusy        AS LOGIC  GET Connection:ConnectBusy
     PROPERTY ConnectionTimeOut  AS LONG   GET Connection:ConnectionTimeOut  SET Connection:ConnectionTimeOut := Value
     PROPERTY DataSource         AS STRING GET Connection:DataSource         SET Connection:DataSource := Value
+    PROPERTY Handle             AS LONG   AUTO GET SET
     PROPERTY UserId             AS STRING GET Connection:UserId     
     PROPERTY Password           AS STRING GET Connection:Password   
     PROPERTY Shared             AS LOGIC  GET Connection:Shared             SET Connection:Shared := Value

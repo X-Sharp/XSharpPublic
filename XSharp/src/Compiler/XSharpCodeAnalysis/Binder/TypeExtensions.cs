@@ -241,5 +241,105 @@ namespace Microsoft.CodeAnalysis.CSharp
                 return true;
             return false;
         }
+        static internal TypeSymbol LargestOperand(this BoundBinaryOperator binop, Compilation compilation)
+        {
+            if (binop.OperatorKind.IsComparison() || !binop.Type.IsIntegralType())
+                return binop.Type;
+
+            var left = binop.Left;
+            var right = binop.Right;
+            if (left is BoundConversion lconv)
+            {
+                left = lconv.Operand;
+            }
+            if (right is BoundConversion rconv)
+            {
+                right = rconv.Operand;
+            }
+            var leftType = left.Type;
+            var rightType = right.Type;
+            if (left is BoundBinaryOperator binopl)
+                leftType = binopl.LargestOperand(compilation) ;
+            if (right is BoundBinaryOperator binopr)
+                rightType = binopr.LargestOperand(compilation);
+            if (left is BoundLiteral)
+                leftType = left.ConstantType(compilation);
+            if (right is BoundLiteral)
+                rightType = right.ConstantType(compilation);
+
+            var leftSize = leftType.SpecialType.SizeInBytes();
+            var rightSize = rightType.SpecialType.SizeInBytes();
+            if (leftSize >= rightSize)
+                return leftType;
+            return rightType;
+        }
+
+        static internal TypeSymbol ConstantType(this BoundExpression expression, Compilation compilation)
+        {
+            var type = expression.Type;
+            var stype = type.SpecialType;
+            if (expression.ConstantValue == null)
+                return type;
+            if (!expression.ConstantValue.IsIntegral)
+                return type;
+            if (type.SpecialType.IsSignedIntegralType())
+            {
+                var value = expression.ConstantValue.Int64Value;
+                if (value == 0)
+                    stype = SpecialType.System_Byte;
+                else if (value < 0)
+                {
+                    if (value >= sbyte.MinValue)
+                        stype = SpecialType.System_SByte;
+                    else if (value >= short.MinValue)
+                        stype = SpecialType.System_Int16;
+                    else if (value >= int.MinValue)
+                        stype = SpecialType.System_Int32;
+                    else
+                        stype = SpecialType.System_Int64;
+                }
+                // > 0
+                else
+                {
+                    if (value <= sbyte.MaxValue)
+                        stype = SpecialType.System_SByte;
+                    else if (value <= byte.MaxValue)
+                        stype = SpecialType.System_Byte;
+                    else if (value <= short.MaxValue)
+                        stype = SpecialType.System_Int16;
+                    else if (value <= ushort.MaxValue)
+                        stype = SpecialType.System_UInt16;
+                    else if (value <= int.MaxValue)
+                        stype = SpecialType.System_Int32;
+                    else if (value <= uint.MaxValue)
+                        stype = SpecialType.System_UInt32;
+                    else
+                        stype = SpecialType.System_Int64;
+                }
+            }
+            else
+            {
+                // UnSigned
+                var uvalue = expression.ConstantValue.UInt64Value;
+                if (uvalue <= (ulong)sbyte.MaxValue)
+                    stype = SpecialType.System_SByte;
+                else if (uvalue <= (ulong)byte.MaxValue)
+                    stype = SpecialType.System_Byte;
+                else if (uvalue <= (ulong)short.MaxValue)
+                    stype = SpecialType.System_Int16;
+                else if (uvalue <= (ulong)ushort.MaxValue)
+                    stype = SpecialType.System_UInt16;
+                else if (uvalue <= (ulong)int.MaxValue)
+                    stype = SpecialType.System_Int32;
+                else if (uvalue <= (ulong)uint.MaxValue)
+                    stype = SpecialType.System_UInt32;
+                else if (uvalue <= (ulong)long.MaxValue)
+                    stype = SpecialType.System_Int64;
+                else
+                    stype = SpecialType.System_UInt64;
+
+            }
+            return (TypeSymbol) compilation.GetSpecialType(stype);
+        }
     }
 }

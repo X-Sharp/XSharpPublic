@@ -114,76 +114,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                 bool ok = false;
                 if (expression.ConstantValue != null)
                 {
-                    if (rhsType.SpecialType.IsSignedIntegralType())
-                    {
-                        var value = expression.ConstantValue.Int64Value;
-                        switch (targetType.SpecialType)
-                        {
-                            case SpecialType.System_SByte:
-                                ok = value >= sbyte.MinValue && value <= sbyte.MaxValue;
-                                break;
-                            case SpecialType.System_Int16:
-                                ok = value >= short.MinValue && value <= short.MaxValue;
-                                break;
-                            case SpecialType.System_Int32:
-                                ok = value >= int.MinValue && value <= int.MaxValue;
-                                break;
-                            case SpecialType.System_Int64:
-                                ok = true;
-                                break;
-                            case SpecialType.System_Byte:
-                                ok = value >= 0 && value <= byte.MaxValue;
-                                break;
-                            case SpecialType.System_UInt16:
-                                ok = value >= 0 && value <= ushort.MaxValue;
-                                break;
-                            case SpecialType.System_UInt32:
-                                ok = value >= 0 && value <= uint.MaxValue;
-                                break;
-                            case SpecialType.System_UInt64:
-                                ok = value >= 0;
-                                break;
-                            default:
-                                ok = false;
-                                break;
-                        }
-                        if (ok)
-                            return;
-                    }
-                    else
-                    {
-                        var value = expression.ConstantValue.UInt64Value;
-                        switch (targetType.SpecialType)
-                        {
-                            case SpecialType.System_SByte:
-                                ok = value <= (ulong)sbyte.MaxValue;
-                                break;
-                            case SpecialType.System_Int16:
-                                ok = value <= (ulong)short.MaxValue;
-                                break;
-                            case SpecialType.System_Int32:
-                                ok = value <= int.MaxValue;
-                                break;
-                            case SpecialType.System_Byte:
-                                ok = value <= byte.MaxValue;
-                                break;
-                            case SpecialType.System_UInt16:
-                                ok = value <= ushort.MaxValue;
-                                break;
-                            case SpecialType.System_UInt32:
-                                ok = value <= uint.MaxValue;
-                                break;
-                            case SpecialType.System_UInt64:
-                                ok = true;
-                                break;
-                            case SpecialType.System_Int64:
-                                ok = value < (ulong)long.MaxValue;
-                                break;
-                            default:
-                                ok = false;
-                                break;
-                        }
-                    }
+                    // warnings for literals that are too big are generated later
+                    ok = true;
                 }
                 if (! ok)
                 {
@@ -194,22 +126,32 @@ namespace Microsoft.CodeAnalysis.CSharp
                     var sourceType = expression.Type;
                     var sourceSize = sourceType.SpecialType.SizeInBytes();
                     var targetSize = targetType.SpecialType.SizeInBytes();
-                    // Find sources that do not fit in the target
-                    if (sourceSize > targetSize)
+
+                    if (sourceSize > targetSize && expression is BoundBinaryOperator binop)
                     {
-                        // Narrowing conversion from '{0}' to '{1}' may lead to loss of data or overflow errors
-                        Error(diagnostics, ErrorCode.WRN_ConversionMayLeadToLossOfData, expression.Syntax, expression.Type, targetType);
+                        // determine size of smallest of the operands
+                        sourceType = binop.LargestOperand(this.Compilation);
+                        sourceSize = sourceType.SpecialType.SizeInBytes();
                     }
-                    else if (sourceSize == targetSize && expression.Type != targetType)
+                    if (sourceType != targetType && !expression.Syntax.HasErrors)
                     {
-                        //Signed/unsigned conversions from '{0}' to '{1}' may lead to loss of data or overflow errors
-                        Error(diagnostics, ErrorCode.WRN_SignedUnSignedConversion, expression.Syntax, expression.Type, targetType);
-                    }
-                    // lhs.Size < rhs.Size, only a problem when lhs is Signed and rhs is Unsiged
-                    else if (sourceSize < targetSize && sourceType.SpecialType.IsSignedIntegralType() && !targetType.SpecialType.IsSignedIntegralType())
-                    {
-                        // Signed / unsigned conversions from '{0}' to '{1}' may lead to loss of data or overflow errors
-                        Error(diagnostics, ErrorCode.WRN_SignedUnSignedConversion, expression.Syntax, expression.Type, targetType);
+                        // Find sources that do not fit in the target
+                        if (sourceSize > targetSize)
+                        {
+                            // Narrowing conversion from '{0}' to '{1}' may lead to loss of data or overflow errors
+                            Error(diagnostics, ErrorCode.WRN_ConversionMayLeadToLossOfData, expression.Syntax, expression.Type, targetType);
+                        }
+                        else if (sourceSize == targetSize)
+                        {
+                            //Signed/unsigned conversions from '{0}' to '{1}' may lead to loss of data or overflow errors
+                            Error(diagnostics, ErrorCode.WRN_SignedUnSignedConversion, expression.Syntax, expression.Type, targetType);
+                        }
+                        // lhs.Size < rhs.Size, only a problem when lhs is Signed and rhs is Unsiged
+                        else if (sourceSize < targetSize && sourceType.SpecialType.IsSignedIntegralType() && !targetType.SpecialType.IsSignedIntegralType())
+                        {
+                            // Signed / unsigned conversions from '{0}' to '{1}' may lead to loss of data or overflow errors
+                            Error(diagnostics, ErrorCode.WRN_SignedUnSignedConversion, expression.Syntax, expression.Type, targetType);
+                        }
                     }
                 }
             }

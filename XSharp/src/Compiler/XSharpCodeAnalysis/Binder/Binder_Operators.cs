@@ -13,6 +13,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.PooledObjects;
 using Roslyn.Utilities;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
+using Microsoft.CodeAnalysis.CSharp;
 namespace Microsoft.CodeAnalysis.CSharp
 {
     internal partial class Binder
@@ -50,41 +51,22 @@ namespace Microsoft.CodeAnalysis.CSharp
                 return true;
             }
             if (Conversions.XsIsImplicitBinaryOperator(expression, targetType,this))
+            {
                 return true;
+            }
 
+            if (expression is BoundBinaryOperator binop)
+            {
+                sourceType = binop.LargestOperand(this.Compilation);
+            }
+            if (sourceType == targetType)
+            {
+                return true;
+            }
             if (targetType.IsIntegralType() && sourceType.IsIntegralType())
             {
-                // warning assign to smaller type
-                int sourceSize = sourceType.SpecialType.SizeInBytes();
-                int targetSize = targetType.SpecialType.SizeInBytes();
-                if (targetSize < sourceSize)
-                {
-                    if (!Compilation.Options.HasOption(CompilerOption.ImplicitCastsAndConversions, syntax))
-                    { 
-                        var distinguisher = new SymbolDistinguisher(this.Compilation, sourceType, targetType);
-                        Error(diagnostics, ErrorCode.WRN_ImplicitCast, syntax, distinguisher.First, distinguisher.Second);
-                    }
-                }
-                else if (targetSize == sourceSize  )
-                {
-                    if (!Compilation.Options.HasOption(CompilerOption.SignedUnsignedConversion, syntax))
-                    {
-                        var distinguisher = new SymbolDistinguisher(this.Compilation, sourceType, targetType);
-                        Error(diagnostics, ErrorCode.WRN_SignedUnSignedConversion, syntax, distinguisher.First, distinguisher.Second);
-                    }
-
-                }
-				
-                else if (targetType.SpecialType.IsSignedIntegralType() != sourceType.SpecialType.IsSignedIntegralType())
-                {
-                    if (!Compilation.Options.HasOption(CompilerOption.SignedUnsignedConversion,syntax))
-                    { 
-                        var distinguisher = new SymbolDistinguisher(this.Compilation, sourceType, targetType);
-                        Error(diagnostics, ErrorCode.WRN_SignedUnSignedConversion, syntax, distinguisher.First, distinguisher.Second);
-                    }
-
-                }
-                return true;
+                // implicit casts are allowed when the compiler option is enabled
+                return Compilation.Options.HasOption(CompilerOption.ImplicitCastsAndConversions, syntax);
             }
             return false;
         }
@@ -698,6 +680,8 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return index;
         }
+
+
         public TypeSymbol VOGetType(BoundExpression expr)
         {
             if (expr.Kind == BoundKind.Literal )
@@ -727,23 +711,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             return Compilation.GetSpecialType(SpecialType.System_Double);
                     }
                 }
-
-                if (lit.ConstantValue.Discriminator == ConstantValueTypeDiscriminator.Int32)
-                {
-                    var val = lit.ConstantValue.Int32Value;
-                    if (val >= byte.MinValue && val <= byte.MaxValue)
-                        return Compilation.GetSpecialType(SpecialType.System_Byte);
-                    else if (val >= short.MinValue && val <= short.MaxValue)
-                        return Compilation.GetSpecialType(SpecialType.System_Int16);
-                }
-                if (lit.ConstantValue.Discriminator == ConstantValueTypeDiscriminator.UInt32)
-                {
-                    var val = lit.ConstantValue.UInt32Value;
-                    if (val >= byte.MinValue && val <= byte.MaxValue)
-                        return Compilation.GetSpecialType(SpecialType.System_Byte);
-                    else if (val >= ushort.MinValue && val <= ushort.MaxValue)
-                        return Compilation.GetSpecialType(SpecialType.System_UInt16);
-                }
+                return lit.ConstantType(Compilation);
             }
             else if (expr.Kind ==BoundKind.UnaryOperator)
             {
@@ -770,6 +738,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                     type = Compilation.GetSpecialType(SpecialType.System_Boolean);
                 }
                 return type;
+            }
+            else if (expr is BoundBinaryOperator binop)
+            {
+                return binop.LargestOperand(this.Compilation);
             }
             return expr.Type;
         }
@@ -846,8 +818,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                     if (syntaxes.Length > 0)
                     {
                         var syntaxNode = syntaxes[0].GetSyntax() as CSharpSyntaxNode;
-                        var lvc = syntaxNode.XNode as LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser.LocalvarContext;
-                        if (lvc.As.Type == LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser.AS)
+                        var lvc = syntaxNode.XNode as XSharpParser.LocalvarContext;
+                        if (lvc.As.Type == XSharpParser.AS)
                         {
                             return expr;
                         }
@@ -951,75 +923,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
             }
         }
-        private static object FoldXsCheckedIntegralBinaryOperator(BinaryOperatorKind kind, ConstantValue valueLeft, ConstantValue valueRight, ref SpecialType resultType)
-        {
-            checked
-            {
-                Debug.Assert(valueLeft != null);
-                Debug.Assert(valueRight != null);
-                Int64 result;
-                UInt64 result2;
-                switch (kind)
-                {
-                    case BinaryOperatorKind.IntAddition:
-                        result = (long)valueLeft.Int32Value + (long)valueRight.Int32Value;
-                        if (result <= Int32.MaxValue && result >= Int32.MinValue)
-                            return (Int32)result;
-                        resultType = SpecialType.System_Int64;
-                        return result;
-                    case BinaryOperatorKind.LongAddition:
-                        return valueLeft.Int64Value + valueRight.Int64Value;
-                    case BinaryOperatorKind.UIntAddition:
-                        result2 = (ulong)valueLeft.UInt32Value + (ulong)valueRight.UInt32Value;
-                        if (result2 <= UInt32.MaxValue && result2 >= UInt32.MinValue)
-                            return (UInt32)result2;
-                        resultType = SpecialType.System_UInt64;
-                        return result2;
-                    case BinaryOperatorKind.ULongAddition:
-                        return valueLeft.UInt64Value + valueRight.UInt64Value;
-                    case BinaryOperatorKind.IntSubtraction:
-                        result =  (long)valueLeft.Int32Value - (long)valueRight.Int32Value;
-                        if (result <= Int32.MaxValue && result >= Int32.MinValue)
-                            return (Int32)result;
-                        resultType = SpecialType.System_Int64;
-                        return result;
-
-                    case BinaryOperatorKind.LongSubtraction:
-                        return valueLeft.Int64Value - valueRight.Int64Value;
-                    case BinaryOperatorKind.UIntSubtraction:
-                        result2 = (ulong) valueLeft.UInt32Value - (ulong)valueRight.UInt32Value;
-                        if (result2 <= UInt32.MaxValue && result2 >= UInt32.MinValue)
-                            return (UInt32)result2;
-                        resultType = SpecialType.System_UInt64;
-                        return result2;
-                    case BinaryOperatorKind.ULongSubtraction:
-                        return valueLeft.UInt64Value - valueRight.UInt64Value;
-                    case BinaryOperatorKind.IntMultiplication:
-                        result = (long) valueLeft.Int32Value * (long)valueRight.Int32Value;
-                        if (result <= Int32.MaxValue && result >= Int32.MinValue)
-                            return (Int32)result;
-                        resultType = SpecialType.System_Int64;
-                        return result;
-
-                    case BinaryOperatorKind.LongMultiplication:
-                        return valueLeft.Int64Value * valueRight.Int64Value;
-                    case BinaryOperatorKind.UIntMultiplication:
-                        result2 = (ulong) valueLeft.UInt32Value * (ulong)valueRight.UInt32Value;
-                        if (result2 <= UInt32.MaxValue && result2 >= UInt32.MinValue)
-                            return (UInt32)result2;
-                        resultType = SpecialType.System_UInt64;
-                        return result2;
-                    case BinaryOperatorKind.ULongMultiplication:
-                        return valueLeft.UInt64Value * valueRight.UInt64Value;
-                    case BinaryOperatorKind.IntDivision:
-                        return valueLeft.Int32Value / valueRight.Int32Value;
-                    case BinaryOperatorKind.LongDivision:
-                        return valueLeft.Int64Value / valueRight.Int64Value;
-                }
-
-                return null;
-            }
-        }
         private static object FoldXsUncheckedIntegralBinaryOperator(BinaryOperatorKind kind, ConstantValue valueLeft, ConstantValue valueRight, ref SpecialType resultType)
         {
             unchecked
@@ -1094,133 +997,6 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
         }
 		
-        private TypeSymbol VOGetInnerType(BoundExpression expression)
-        {
-            if (expression is BoundBinaryOperator binop)
-            {
-                return VOGetInnerType(binop.Left);
-            }
-            if (expression is BoundConversion conv)
-            {
-                if (conv.Operand is BoundConversion && conv.WasCompilerGenerated)
-                    return VOGetInnerType(conv.Operand);
-            }
-            return expression.Type;
-        }
-		
- 
-        private bool mustChangeConstantValue(BoundExpression expression, ref TypeSymbol result)
-        {
-            if (expression.ConstantValue == null )
-                return false;
-            if (expression.Syntax is CastExpressionSyntax)
-                return false;
-            ConstantValue constant = expression.ConstantValue;
-            if (constant.IsBad)
-                return false;
-            SpecialType resultType = constant.SpecialType;
-            if (resultType.IsUnsignedIntegralType())
-            {
-                UInt64 value = constant.UInt64Value;
-                if (value <= byte.MaxValue)
-                    resultType = SpecialType.System_Byte;
-                else if (value <= ushort.MaxValue)
-                    resultType = SpecialType.System_UInt16;
-                else if (value <= uint.MaxValue)
-                    resultType = SpecialType.System_UInt32;
-                else
-                    resultType = SpecialType.System_UInt64;
-
-            }
-            else if (resultType.IsSignedIntegralType())
-            {
-                Int64 value = constant.Int64Value;
-                if (value <= sbyte.MaxValue && value >= sbyte.MinValue)
-                    resultType = SpecialType.System_SByte;
-                else if (value <= short.MaxValue && value >= short.MinValue)
-                    resultType = SpecialType.System_Int16;
-                else if (value <= int.MaxValue && value >= int.MinValue)
-                    resultType = SpecialType.System_Int32;
-                else
-                    resultType = SpecialType.System_Int64;
-            }
-            else
-            {
-                ; // string, char, float literals etc should remain untouched
-                return false;
-            }
-            if (resultType != constant.SpecialType)
-            {
-                result = Compilation.GetSpecialType(resultType);
-            }
-            return (resultType != constant.SpecialType);
-        }
-
-        private bool BindVOBinaryOperatorVo11(BinaryExpressionSyntax node, BinaryOperatorKind kind, 
-            ref BoundExpression left, ref BoundExpression right, ref TypeSymbol resultType, DiagnosticBag diagnostics)
-        {
-            var leftType = left.Type;
-            var rightType = right.Type;
-
-            if (leftType == null || rightType == null || ! leftType.IsIntegralType() || ! rightType.IsIntegralType()
-                || !resultType.IsIntegralType() || kind.IsComparison())
-                return false;
-            bool leftConst = left.ConstantValue != null;
-            bool rightConst = right.ConstantValue != null;
-            TypeSymbol expectedResultType = resultType;
-            if ((leftConst && ! rightConst)  || (rightConst && ! leftConst))    // only "scale down" constants when not both are a constant
-            {
-                if (leftConst && mustChangeConstantValue(left, ref leftType))
-                {
-                    left = CreateConversion(left, Conversion.ImplicitNumeric, leftType, diagnostics);
-                    left.WasCompilerGenerated = true;
-                    if (expectedResultType.SpecialType.SizeInBytes() > rightType.SpecialType.SizeInBytes())
-                        expectedResultType = rightType;
-                }
-                if (rightConst && mustChangeConstantValue(right, ref rightType))
-                {
-                    right = CreateConversion(right, Conversion.ImplicitNumeric, rightType, diagnostics);
-                    right.WasCompilerGenerated = true;
-                    if (expectedResultType.SpecialType.SizeInBytes() > leftType.SpecialType.SizeInBytes())
-                        expectedResultType = leftType;
-                }
-
-            }
-
-            if (leftType == rightType && resultType == leftType)
-                return false;
-
-            bool result = false;
-            // Create conversions to make the operands of the 
-            if (leftType != expectedResultType)
-            {
-                bool canconvert = true;
-                if (left.ConstantValue != null)
-                {
-                    canconvert = CheckConstantBounds(expectedResultType.SpecialType, left.ConstantValue);
-                }
-                if (canconvert)
-                {
-                    left= CreateConversion(left, Conversion.ImplicitNumeric, expectedResultType, diagnostics);
-                    result = true;
-                }
-            }
-            if (rightType != expectedResultType)
-            {
-                bool canconvert = true;
-                if (right.ConstantValue != null)
-                {
-                    canconvert = CheckConstantBounds(expectedResultType.SpecialType, right.ConstantValue);
-                }
-                if (canconvert)
-                {
-                    right = CreateConversion(right, Conversion.ImplicitNumeric, expectedResultType, diagnostics);
-                    result = true;
-                }
-            }
-            resultType = expectedResultType;
-            return result;
-        }
         ConstantValue XsConvertConstant(ConstantValue constant, SpecialType specialType)
         {
             unchecked

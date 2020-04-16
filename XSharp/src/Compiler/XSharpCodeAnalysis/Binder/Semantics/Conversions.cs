@@ -235,65 +235,13 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             if (expression is BoundBinaryOperator binop && targetType.SpecialType.IsIntegralType())
             {
-                var leftType = binop.Left.Type;
-                var rightType = binop.Left.Type;
-                if (leftType == rightType && leftType != targetType)
-                    return false;
-                var size = targetType.SpecialType.SizeInBytes();
-                if (binop.Left is BoundConversion)
-                {
-                    leftType = ((BoundConversion)binop.Left).Operand.Type;
-                }
-                if (binop.Right is BoundConversion)
-                {
-                    rightType = ((BoundConversion)binop.Right).Operand.Type;
-                }
-                if (leftType == null || rightType == null)
-                {
-                    return false;
-                }
-                if (!leftType.IsIntegralType() || !rightType.IsIntegralType())
-                {
-                    return false;
-                }
-                var leftSize = leftType.SpecialType.SizeInBytes();
-                var rightSize = rightType.SpecialType.SizeInBytes();
-
-                // we assume that the size of the constant is OK
-                if (binop.Left.ConstantValue != null)
-                {
-                    if (rightType == targetType)
-                        return true;
-                    if (binder != null)
-                        leftType = binder.VOGetType(binop.Left);
-                    else
-                        return false;
-                    leftSize = leftType.SpecialType.SizeInBytes();
-                }
-                if (binop.Right.ConstantValue != null)
-                {
-                    if (leftType == targetType)
-                        return true;
-                    if (binder != null)
-                        rightType = binder.VOGetType(binop.Right);
-                    else
-                        return false;
-                    rightSize = rightType.SpecialType.SizeInBytes();
-                }
-
-
-                // recurse into nested binary operations
-                if (XsIsImplicitBinaryOperator(binop.Left, targetType, binder) && (rightSize < size || rightType == targetType))
-                    return true;
-
-                if (XsIsImplicitBinaryOperator(binop.Right, targetType, binder) && (leftSize < size || leftType == targetType))
-                    return true;
-
-                // this will happen if the operands are not a binary operand 
-                if (leftSize <= size && rightSize <= size)
+                var type = binop.LargestOperand(this.Compilation);
+                if (type == targetType)
                 {
                     return true;
                 }
+                if (type.IsIntegralType() && type.SpecialType.SizeInBytes() <= targetType.SpecialType.SizeInBytes())
+                    return true;
             }
             return false;
         }

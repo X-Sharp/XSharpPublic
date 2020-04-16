@@ -259,6 +259,10 @@ CLASS DbOrderInfo
             IF Order == NULL 
                 RETURN String.IsNullOrEmpty(BagName)
             ENDIF
+            // VFP NIL is represented by a logic FALSE
+            IF Order IS LOGIC VAR lValue .AND. ! lValue
+                RETURN String.IsNullOrEmpty(BagName)
+            ENDIF
             RETURN FALSE
         END GET
     END PROPERTY

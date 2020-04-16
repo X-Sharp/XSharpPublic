@@ -9,7 +9,9 @@ USING System.Data
 USING XSharp.Data
 
 /// <summary>This interface declares the common behavior for all XSharp Data Factory classes.</summary>
-
+/// <seealso cref="M:XSharp.VFP.Functions.SqlSetFactory(XSharp.__Usual)">SqlSetFactory()</seealso>
+/// <seealso cref="M:XSharp.Data.Functions.SetSqlFactory(XSharp.Data.ISqlFactory)">SetSqlFactory()</seealso>
+/// <seealso cref="M:XSharp.Data.Functions.GetSqlFactory">GetSqlFactory()</seealso>
 
 INTERFACE XSharp.Data.ISqlFactory
 
@@ -116,15 +118,24 @@ INTERFACE XSharp.Data.ISqlFactory
 END INTERFACE    
 
 
-/// <summary>Set the default factory.</summary>
+/// <summary>Set a new default SQL factory.</summary>
+/// <seealso cref="T:XSharp.Data.ISqlFactory">ISqlFactory</seealso>
+/// <seealso cref="M:XSharp.VFP.Functions.SqlSetFactory(XSharp.__Usual)">SqlSetFactory()</seealso>
+/// <seealso cref="M:XSharp.Data.Functions.GetSqlFactory">GetSqlFactory()</seealso>
+/// <param name="oFactory">New default factory</param>
+/// <returns>The current default factory.</returns>
 FUNCTION SetSqlFactory(oFactory AS ISqlFactory) AS ISqlFactory
     LOCAL oOld AS ISqlFactory
     oOld := XSharp.Data.AbstractSqlFactory.DefaultFactory
     XSharp.Data.AbstractSqlFactory.DefaultFactory := oFactory
     RETURN oOld
 
-/// <summary>Retrieve the default factory.</summary>
-FUNCTION GetSqlFactory() AS ISqlFactory 
+/// <summary>Retrieve the default SQL factory.</summary>
+/// <seealso cref="T:XSharp.Data.ISqlFactory">ISqlFactory</seealso>
+/// <seealso cref="M:XSharp.VFP.Functions.SqlSetFactory(XSharp.__Usual)">SqlSetFactory()</seealso>
+/// <seealso cref="M:XSharp.Data.Functions.SetSqlFactory(XSharp.Data.ISqlFactory)">SetSqlFactory()</seealso>
+/// <returns>The current default factory.</returns>
+FUNCTION GetSqlFactory() AS ISqlFactory STRICT
     LOCAL oOld AS ISqlFactory
     oOld := XSharp.Data.AbstractSqlFactory.DefaultFactory
     RETURN oOld

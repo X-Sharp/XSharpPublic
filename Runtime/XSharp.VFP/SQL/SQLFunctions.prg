@@ -193,7 +193,9 @@ INTERNAL FUNCTION GetStatement(nStatementHandle AS LONG) AS XSharp.VFP.SQLStatem
 
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/sqlsetfactory/*" />
-
+/// <seealso cref="T:XSharp.Data.ISqlFactory">ISqlFactory</seealso>
+/// <seealso cref="M:XSharp.Data.Functions.SetSqlFactory(XSharp.Data.ISqlFactory)">SetSqlFactory()</seealso>
+/// <seealso cref="M:XSharp.Data.Functions.GetSqlFactory">GetSqlFactory()</seealso>
 FUNCTION SqlSetFactory(uFactory := NIL AS USUAL) AS ISqlFactory
     LOCAL oResult := SQLSupport.Factory
     IF IsString(uFactory)

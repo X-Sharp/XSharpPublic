@@ -115,7 +115,7 @@ namespace Microsoft.CodeAnalysis.CompilerServer
                 try
                 {
 #if XSHARP
-                    if (pipeName != null && pipeName.EndsWith("::CS"))
+                    if (pipeName != null && pipeName.EndsWith("__CS"))
                     {
                         XSharpString.CaseSensitive = true;
                     }

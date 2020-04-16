@@ -537,7 +537,7 @@ namespace Microsoft.CodeAnalysis.CommandLine
             var basePipeName = GetBasePipeName(compilerExeDirectory);
 #if XSHARP
             if (XSharpString.CaseSensitive)
-                basePipeName += "::CS";
+                basePipeName += "__CS";
 #endif
             // Prefix with username and elevation
             bool isAdmin = false;

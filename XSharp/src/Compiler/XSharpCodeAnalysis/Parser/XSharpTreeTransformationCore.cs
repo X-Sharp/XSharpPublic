@@ -7873,8 +7873,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.Put(context.LiteralArray.Get<ExpressionSyntax>());
         }
 
-        protected ExpressionSyntax CreateInterPolatedStringExpression([NotNull] string text)
+        protected ExpressionSyntax CreateInterPolatedStringExpression(IToken token)
         {
+            string text = token.Text;
             bool extended = false;
             // cut off i" and ", could also be ei" and ie"
             if (text[1] == '"')
@@ -8051,7 +8052,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         expr = expr.Substring(0, pos);
                     }
                 }
-                res = ParseSubExpression(expr, out extra);
+                res = ParseSubExpression(expr, out extra, token);
                 if (!String.IsNullOrEmpty(format))
                 {
                     format = format.Trim();
@@ -8162,7 +8163,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             switch (context.Token.Type)
             {
                 case XP.INTERPOLATED_STRING_CONST:
-                    context.Put(CreateInterPolatedStringExpression(context.Token.Text));
+                    context.Put(CreateInterPolatedStringExpression(context.Token));
                     return;
                 case XP.DATE_CONST:
                     elements = DecodeDateConst(context.Token.Text);
@@ -8927,7 +8928,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         #endregion
 
         #region ExpressionParser
-        protected ExpressionSyntax ParseSubExpression(string expression, out string extraText)
+        protected ExpressionSyntax ParseSubExpression(string expression, out string extraText, IToken starttoken)
         {
             // do not include the standard defs here. These have already been processed at the file level
             var options = _options.WithNoStdDef(true);
@@ -8939,6 +8940,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 tokenStream = lexer.GetTokenStream();
                 tokenStream.Fill();
+                // adjust token positions
+                foreach (var token in tokenStream.GetTokens())
+                {
+                    if (token is XSharpToken xtoken)
+                    {
+                        xtoken.Line = starttoken.Line;
+                        xtoken.Column += starttoken.Column;
+                    }
+                }
                 if (lexer.HasPreprocessorTokens )
                 {
                     var pp = new XSharpPreprocessor(lexer, tokenStream, options, _fileName, Encoding.Unicode, Text.SourceHashAlgorithm.Sha256, parseErrors);
@@ -8959,7 +8969,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 tokenStream.Fill();
             }
             var parser = new XSharpParser(tokenStream);
-            XSharpParserRuleContext tree = null; ;
+            XSharpParserRuleContext tree = null;
+
             try
             {
                 tree = parser.expression();

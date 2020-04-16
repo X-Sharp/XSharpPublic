@@ -44,6 +44,26 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         internal XSharpToken(int type) : base(type)
         {
         }
+        internal XSharpToken(int type, XSharpToken token) : base(type)
+        {
+            line = token.Line;
+            Column = token.Column;
+            source = token.source;
+            StartIndex = token.StartIndex;
+            StopIndex = token.StopIndex;
+            SourceSymbol = token;
+
+        }
+        internal XSharpToken(int type, string text, XSharpToken token) : base(type, text)
+        {
+            line = token.Line;
+            Column = token.Column;
+            source = token.source;
+            StartIndex = token.StartIndex;
+            StopIndex = token.StopIndex;
+            SourceSymbol = token;
+        }
+
         internal XSharpToken(Tuple<ITokenSource, ICharStream> source, int type, int channel, int start, int stop) :
             base(source, type, channel, start, stop)
         {

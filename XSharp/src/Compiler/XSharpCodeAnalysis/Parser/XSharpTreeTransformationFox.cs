@@ -843,7 +843,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (delimitersOk && hasDelim)
             {
                 sourceText = ReplaceFoxTextDelimiters(sourceText);
-                stringExpr = CreateInterPolatedStringExpression(sourceText);
+                var token = new XSharpToken(XSharpParser.TEXT, sourceText);
+                token.Line = context.Start.Line;
+                token.Column = context.Start.Column;
+                stringExpr = CreateInterPolatedStringExpression(token);
             }
             else
             {
@@ -900,7 +903,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (delimitersOk)
             {
                 sourceText = ReplaceFoxTextDelimiters(sourceText);
-                expr = CreateInterPolatedStringExpression(sourceText);
+                var token = new XSharpToken(XSharpParser.TEXT, sourceText);
+                token.Line = context.Start.Line;
+                token.Column = context.Start.Column;
+                expr = CreateInterPolatedStringExpression(token);
             }
             else
             {

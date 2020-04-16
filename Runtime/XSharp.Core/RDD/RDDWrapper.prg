@@ -160,7 +160,7 @@ BEGIN NAMESPACE XSharp.RDD
             
         /// <inheritdoc />			
         METHOD Open(info AS DbOpenInfo)			AS LOGIC
-            RETURN oRdd:Zap()
+            RETURN oRdd:Open(info)
 
         #endregion
         //-------------------------------------------------------

@@ -90,7 +90,7 @@
           <description>Name placed in array</description>
         </listheader>
         <item>
-          <term>CONNECTION</term>
+          <term>Connection</term>
           <description>Connection names</description>
         </item>
         <item>
@@ -98,11 +98,11 @@
           <description>Table relationships</description>
         </item>
         <item>
-          <term>TABLE</term>
+          <term>Table</term>
           <description>Table names</description>
         </item>
         <item>
-          <term>VIEW</term>
+          <term>View</term>
           <description>View names</description>
         </item>
       </list>
@@ -135,7 +135,7 @@
         * Open sample testdata database
         Open Database (HOME(2) + 'Data\testdata')
         * Function call with cSetting for table names
-        =ADBObjects(gaTables, "TABLE")
+        =ADBObjects(gaTables, "Table")
         * Displays array gaTables created by ADBObjects( ) function
         Display MEMORY LIKE gaTables
       </code>
@@ -756,9 +756,10 @@
       Stores numeric references to all active SQL connection statement handles in an array.
     </summary>
     <param name="ArrayName">
-      Specifies the name of an array to store statement handle information.
-      If the array you specify does not exist, X# creates the array automatically. If the array exists and is not large enough to store the information,
-      X# increases the array size automatically. If the array is larger than necessary, X# truncates the array.
+      Specifies the array to store statement handle information.
+      Unlike VFO you cannot pass an array name, but you will have to create the array yourself. 
+      If the array is not large enough to store the information, then X# increases the array size automatically. 
+      If the array is larger than necessary, X# truncates the array.
     </param>
     <param name="nStatementHandle">
       Populates the array with statement handles that use the same shared connection, including nStatementHandle.
@@ -768,10 +769,10 @@
       <b>ASQLHandles( )</b> returns 0 and does not modify the array.
     </returns>
     <remarks>
-      You can use references to statement handles in other X# SQL functions, such as <b>SQLEXEC( )</b> and <b>SQLDISCONNECT( )</b>.
-      For more information, see SQLEXEC( ) Function and SQLDISCONNECT( ) Function.
-      You can create and return new statement handles using the <b>SQLCONNECT( )</b> and <b>SQLSTRINGCONNECT( )</b> functions.
-      For more information, see SQLCONNECT( ) Function and SQLSTRINGCONNECT( ) Function.
+      You can use references to statement handles in other X# SQL functions, such as <b>SqlExec( )</b> and <b>SqlDisconnect( )</b>.
+      For more information, see SqlExec( ) Function and SqlDisconnect( ) Function.
+      You can create and return new statement handles using the <b>SqlConnect( )</b> and <b>SqlStringConnect( )</b> functions.
+      For more information, see SqlConnect( ) Function and SqlStringConnect( ) Function.
     </remarks>
   </asqlhandles>
   <astackinfo>
@@ -1078,11 +1079,11 @@
       <b>AUsed( )</b> returns the number of rows in the array, which is identical to the number of tables open in the data session.<br/>
       <br/>
       <b>AUsed( )</b> creates a two-dimensional array and places the aliases of tables open for the data session in the first column of the array. The second column of the array contains the tables' corresponding work area numbers.<br/>
-      The table aliases are placed into the array in reverse order that they were opened in. For example, the first array element contains the alias of the last table opened, and the last array element contains the alias of the first table opened. This ordering is useful when using <b>TABLEUPDATE( )</b> on views that contain views. For example:<br/>
+      The table aliases are placed into the array in reverse order that they were opened in. For example, the first array element contains the alias of the last table opened, and the last array element contains the alias of the first table opened. This ordering is useful when using <b>TableUPDATE( )</b> on views that contain views. For example:<br/>
        <code language="X#">
         For x = 1 TO AUsed(aTableAliases,1)
         IF CursorGetProp( "Buffering", aTableAliases(x) ) &gt; 1 &amp;&amp; Buffered
-        ? TABLEUPDATE( 0, .T., aTableAliases(x) )
+        ? TableUPDATE( 0, .T., aTableAliases(x) )
         ENDIF
         Next
       </code>
@@ -2169,7 +2170,7 @@
           <term>CompareMemo</term>
           <description>L</description>
           <description>
-            Contains True (.T.) if WHERE clause for updates includes memo fields of type Memo, General, or Picture. (Default).<br/>
+            Contains True (.T.) if Where clause for updates includes memo fields of type Memo, General, or Picture. (Default).<br/>
             Otherwise, contains False (.F.).<br/>
             For views only.<br/>
             Read/write.
@@ -2287,7 +2288,7 @@
           <description>L</description>
           <description>
             Contains True (.T.) if SQL statements are prepared for subsequent REQUERY( ) function calls. Otherwise, contains False (.F.). (Default).<br/>
-            REQUERY( ) is used to retrieve data again for a SQL view. See SQLPREPARE( ) for additional information about preparing SQL statements. For views only.<br/>
+            REQUERY( ) is used to retrieve data again for a SQL view. See SqlPrepare( ) for additional information about preparing SQL statements. For views only.<br/>
             Read/write.
           </description>
         </item>
@@ -2393,13 +2394,13 @@
           <term>WhereType</term>
           <description>N</description>
           <description>
-            The WHERE clause for updates to tables. WhereType can specify the following values:<br/>
-            1 or DB_KEY (from FOXPRO.H). The WHERE clause used to update tables consists of only the primary fields specified with the KeyFieldList property.<br/>
-            2 or DB_KEYANDUPDATABLE (from FOXPRO.H). The WHERE clause used to update tables
+            The Where clause for updates to tables. WhereType can specify the following values:<br/>
+            1 or DB_KEY (from Foxpro.H). The Where clause used to update tables consists of only the primary fields specified with the KeyFieldList property.<br/>
+            2 or DB_KEYANDUPDATable (from Foxpro.H). The Where clause used to update tables
             consists of the primary fields specified with the KeyFieldList property and any updatable fields.<br/>
-            3 or DB_KEYANDMODIFIED (from FOXPRO.H) (default). The WHERE clause used to update tables
+            3 or DB_KEYANDMODIFIED (from Foxpro.H) (default). The Where clause used to update tables
             consists of the primary fields specified with the KeyFieldList property and any other fields that are modified.<br/>
-            4 or DB_KEYANDTIMESTAMP (from FOXPRO.H). The WHERE clause used to update tables
+            4 or DB_KEYANDTIMESTAMP (from Foxpro.H). The Where clause used to update tables
             consists of the primary fields specified with the KeyFieldList property and a comparison of the time stamps.<br/>
             Read/write.
           </description>
@@ -2454,7 +2455,7 @@
       For additional information about record locking and update buffering, see How to: Buffer Data.<br/>
       The setting of the WhereType property for <b>CursorSetProp( )</b> determines how updates are performed on remote tables.
       For additional information about remote table updates, see Developing Databases.<br/>
-      You can use <b>CursorSetProp( )</b> to override the FetchSize property in the <b>SQLSetPROP( )</b> function for a cursor.
+      You can use <b>CursorSetProp( )</b> to override the FetchSize property in the <b>SqlSetProp( )</b> function for a cursor.
       This property is inherited from the cursor's connection handle by default.<br/>
       Use <b>CursorGetProp( )</b> to return the current property settings for a X# table or a cursor created for a table.<br/>
       If <b>CursorSetProp( )</b> is issued without the optional cTableAlias or nWorkArea arguments,
@@ -2502,7 +2503,7 @@
           <term>CompareMemo</term>
           <description>
             .T. - Include memo fields of type Memo, General, or Picture in the <b>Where</b> clause for updates.<br/>
-            .F. – Do not include memo fields in the WHERE clause for updates.<br/>
+            .F. – Do not include memo fields in the Where clause for updates.<br/>
             Applies when automatic updating is used.
           </description>
         </item>
@@ -2590,7 +2591,7 @@
             .T. - Prepare SQL statements for subsequent <b>Requery( )</b> function calls.<br/>
             .F. - Do not prepare SQL statements for subsequent <b>Requery( )</b> calls. (Default).<br/>
             <b>Requery( )</b> is used to retrieve data again for a SQL view.
-            For additional information about preparing SQL statements, see SQLPREPARE( ) Function.
+            For additional information about preparing SQL statements, see SqlPrepare( ) Function.
           </description>
         </item>
         <item>
@@ -2655,12 +2656,12 @@
           <term>WhereType</term>
           <description>
             The <b>Where</b> clause for updates to remote tables. WhereType can assume the following values:<br/>
-            1 or <b>DB_KEY</b> (from FOXPRO.H). The <b>Where</b> clause used to update remote tables consists of only the primary fields specified with the KeyFieldList property.<br/>
-            2 or <b>DB_KEYANDUPDATABLE</b> (from FOXPRO.H). The <b>Where</b> clause used to update remote tables
+            1 or <b>DB_KEY</b> (from Foxpro.H). The <b>Where</b> clause used to update remote tables consists of only the primary fields specified with the KeyFieldList property.<br/>
+            2 or <b>DB_KEYANDUPDATable</b> (from Foxpro.H). The <b>Where</b> clause used to update remote tables
             consists of the primary fields specified with the KeyFieldList property and any updatable fields.<br/>
-            3 or <b>DB_KEYANDMODIFIED</b> (from FOXPRO.H). The <b>Where</b> clause used to update remote tables
+            3 or <b>DB_KEYANDMODIFIED</b> (from Foxpro.H). The <b>Where</b> clause used to update remote tables
             consists of the primary fields specified with the KeyFieldList property and any other fields that are modified. (Default)<br/>
-            4 or <b>DB_KEYANDTIMESTAMP</b> (from FOXPRO.H). The <b>Where</b> clause used to update remote tables
+            4 or <b>DB_KEYANDTIMESTAMP</b> (from Foxpro.H). The <b>Where</b> clause used to update remote tables
             consists of the primary fields specified with the KeyFieldList property and a comparison of the time stamps.
           </description>
         </item>
@@ -2870,7 +2871,7 @@
 
       <b>CURSORTOXML( )</b> output adheres to the cursor index order, <b>Set Fields TO</b>, and current filter settings. However, it does not preserve the cursor location. After the calling <b>CURSORTOXML( )</b>, if all records are output, the cursor record pointer reports <b>EOF</b>. If not all records are output, it points to the last record output to XML.
       The resulting XML from <b>CURSORTOXML( )</b> contains the same scale as the exported table if the table contains <b>Double</b> data type values. For example, if a <b>Double</b> column is created with a scale of 6 using the following codem the resulting XML contains six digits to the right of the decimal point:
-       <code language="X#">Create TABLE test (col1 b(6))</code>
+       <code language="X#">Create Table test (col1 b(6))</code>
       When you use the <b>CURSORTOXML( )</b> function to export a table or cursor to XML, the root node is always called "VFPData", regardless of the output format.
       For <b>Date</b> types only, you can export "EMPTY" <b>Date</b> and <b>DateTime</b> types using <b>CURSORTOXML( )</b>. However, the XML schema validation might fail because "EMPTY" is not valid for these types in an XML schema definition (XSD) schema. This is an issue only if a schema is required, and the resulting XML is validated against an XML parser that can interpret XSD schemas. To work around this issue, you might need to change the data to a nonempty representation by calling the appropriate <b>Select</b> statement and use <b>CURSORTOXML( )</b> on the created cursor. For example, you can change the empty <b>Date</b> or <b>DateTime</b> values to .<b>NULL.</b>:
        <code language="X#">Select orderid, EVL(shippeddate,.NULL.) as ShippedDate From orders</code>
@@ -2957,7 +2958,7 @@
        <code language="X#">
         Close Databases
         Clear
-        Create TABLE mytable FREE (cDigit C(10))
+        Create Table mytable FREE (cDigit C(10))
         * Store original value
         Insert Into mytable (cDigit) VALUES ("One")
         Set MULTILOCKS ON        &amp;&amp; Allow optimistic table buffering
@@ -2965,7 +2966,7 @@
         Replace cDigit WITH "Two"    &amp;&amp; New value
         ? "Current value: " + CurVal("cDigit", "mytable")
         ? "Old value: " + OLDVAL("cDigit", "mytable")
-        = TABLEUPDATE(.T.)       &amp;&amp; Commit changes made to table
+        = TableUPDATE(.T.)       &amp;&amp; Commit changes made to table
         ? "Table changes committed"
         ? "New current value: " + CurVal("cDigit", "mytable")
         ? "New old value: " + OLDVAL("cDigit", "mytable")
@@ -3112,7 +3113,7 @@
         <item>
           <term>Database</term>
           <description>C</description>
-          <description>The name of the server database specified with the Database clause in the Create CONNECTION command or in the Connection Designer.</description>
+          <description>The name of the server database specified with the Database clause in the Create Connection command or in the Connection Designer.</description>
         </item>
         <item>
           <term>DataSource</term>
@@ -3123,9 +3124,9 @@
           <term>DisconnectRollback</term>
           <description>L</description>
           <description>
-            Specifies if a pending transaction is committed or rolled back when SQLDISCONNECT( ) is called for the last connection handle.<br/>
-            The default is false (.F.), indicating that a pending transaction is committed when SQLDISCONNECT( ) is called for the last connection handle.<br/>
-            Specify true (.T.) to roll back a pending transaction when SQLDISCONNECT( ) is called for the last connection handle.<br/>
+            Specifies if a pending transaction is committed or rolled back when SqlDisconnect( ) is called for the last connection handle.<br/>
+            The default is false (.F.), indicating that a pending transaction is committed when SqlDisconnect( ) is called for the last connection handle.<br/>
+            Specify true (.T.) to roll back a pending transaction when SqlDisconnect( ) is called for the last connection handle.<br/>
             Connections with automatic transaction processing are not affected by this setting.
           </description>
         </item>
@@ -3184,7 +3185,7 @@
           <description>
             Contains a numeric value that determines how the connection manages transactions on the remote table. Transactions may assume the following values:<br/>
             1 or DB_TRANSAUTO (from Foxpro.h). 1 is the default. Transaction processing for the remote table is handled automatically.<br/>
-            2 or DB_TRANSMANUAL (from Foxpro.h). Transaction processing is handled manually through SQLCOMMIT( ) and SQLROLLBACK( ).
+            2 or DB_TRANSMANUAL (from Foxpro.h). Transaction processing is handled manually through SqlCommit( ) and SqlRollBack( ).
           </description>
         </item>
         <item>
@@ -3325,7 +3326,7 @@
           <description>C</description>
           <description>
             The data type for a field in a view. Initially set to the data type for the field in the data source.<br/>
-            To specify a different data type for a field with <b>DbSetProp( )</b>, use the syntax for creating fields in Create TABLE – SQL.<br/>
+            To specify a different data type for a field with <b>DbSetProp( )</b>, use the syntax for creating fields in Create Table – SQL.<br/>
             For example, to change the data type of an integer field named iCost in a table named Mytable to numeric type with width 4 and 2 decimal places,
             use DbSetProp('mytable.icost', 'field', ; 'DataType', 'N(4,2)')<br/>
             You can also include the NOCPTRANS clause to prevent translation of character and memo fields to a different code page.<br/>
@@ -3494,7 +3495,7 @@
           <description>L</description>
           <description>
             Contains true (.T.) (default) if memo fields (of type Memo, General, or Picture, or, for remote views, type Timestamp)
-            are included in the WHERE clause for updates; otherwise, contains false (.F.).<br/>
+            are included in the Where clause for updates; otherwise, contains false (.F.).<br/>
             Read/write.
           </description>
         </item>
@@ -3559,7 +3560,7 @@
           <term>ParameterList</term>
           <description>C</description>
           <description>
-            The WHERE clause parameters. The format for the parameters is ''ParameterName1, 'Type1'; ParameterName2, 'Type2'; ...'' where Type
+            The Where clause parameters. The format for the parameters is ''ParameterName1, 'Type1'; ParameterName2, 'Type2'; ...'' where Type
             is a one of the following characters specifying the parameter type:<br/>
             C – Character  D – Date  T – DateTime  N – Numeric  F – Floating  B – Double  I – Integer  Y – Currency  L - Logical<br/>
             For example, ''MyParam1, 'C' '' specifies a single character type parameter named MyParam1.<br/>
@@ -3572,7 +3573,7 @@
           <description>L</description>
           <description>
             Contains True (.T.) if SQL statements are prepared for subsequent <b>REQUERY( )</b> function calls.
-            <b>REQUERY( )</b> is used to retrieve data again for a SQL view. See SQLPREPARE( ) for additional information about preparing SQL statements.
+            <b>REQUERY( )</b> is used to retrieve data again for a SQL view. See SqlPrepare( ) for additional information about preparing SQL statements.
             The default is false (.F.).<br/>
             The rule text expression displayed when an error occurs when data is edited in a Browse or Edit window.<br/>
             Read/write.
@@ -3668,14 +3669,14 @@
           <term>WhereType</term>
           <description>N</description>
           <description>
-            The WHERE clause for updates to remote tables. WhereType may assume the following values:<br/>
-            1 or DB_KEY (from Foxpro.h). The WHERE clause used to update remote tables consists of
+            The Where clause for updates to remote tables. WhereType may assume the following values:<br/>
+            1 or DB_KEY (from Foxpro.h). The Where clause used to update remote tables consists of
             only the primary fields specified with the <b>KeyFieldList</b> property.<br/>
-            2 or DB_KEYANDUPDATABLE (from Foxpro.h). The WHERE clause used to update remote tables consists of the primary fields specified
+            2 or DB_KEYANDUPDATable (from Foxpro.h). The Where clause used to update remote tables consists of the primary fields specified
             with the <b>KeyFieldList</b> property and any updatable fields.<br/>
-            3 or DB_KEYANDMODIFIED (from Foxpro.h) (default). The WHERE clause used to update remote tables consists of the primary fields specified
+            3 or DB_KEYANDMODIFIED (from Foxpro.h) (default). The Where clause used to update remote tables consists of the primary fields specified
             with the <b>KeyFieldList</b> property and any other fields that are modified.<br/>
-            4 or DB_KEYANDTIMESTAMP (from Foxpro.h). The WHERE clause used to update remote tables consists of the primary fields specified
+            4 or DB_KEYANDTIMESTAMP (from Foxpro.h). The Where clause used to update remote tables consists of the primary fields specified
             with the <b>KeyFieldList</b> property and a comparison of the time stamps.<br/>
             For more information about the <b>WhereType</b> property, see Managing Updates by Using Views.<br/>
             Read/write.
@@ -4521,7 +4522,7 @@
     </returns>
     <remarks>
       GetCp( ) returns 0 if you exit the Code Page dialog box by pressing Esc, choosing the Cancel button, or choosing Close from the Control menu.<br/>
-      The code pages listed in the Code Page dialog box are determined by FOXPRO.INT, the X# International code page support file.<br/>
+      The code pages listed in the Code Page dialog box are determined by Foxpro.INT, the X# International code page support file.<br/>
       You can include GetCp( ) in commands such as MODIFY COMMAND, Append From, and COPY TO that support the AS nCodePage clause. <br/>
       The Code Page dialog box is displayed, making it possible for you to specify the code page of the file opened, appended, or created.<br/>
       Because no code page 0 exists, you must trap for 0 in case the user chooses Esc, the Cancel button, or Close from the Control menu.
@@ -4810,7 +4811,7 @@
     </remarks>
     <examples>
       The following example demonstrates how you can use GetFldState( ) to determine if the contents of a field have changed. MULTILOCKS is set to ON, a requirement for table buffering. The codecustomer/code table in the codetestdata/code database is opened, and CursorSetProp( ) is then used to set the buffering mode to optimistic table buffering (5).
-      GetFldState( ) is issued to display a value (1) corresponding to the unmodified state of the codecust_id/code field before it is modified. The codecust_id/code field is modified with Replace, and GetFldState( ) is issued again to display a value (2) corresponding to the modified state of the codecust_id/code field. TABLEREVERT( ) is used to return the table to its original state, and GetFldState( ) is issued again to display a value (1) corresponding to the original state of the codecust_id/code field.
+      GetFldState( ) is issued to display a value (1) corresponding to the unmodified state of the codecust_id/code field before it is modified. The codecust_id/code field is modified with Replace, and GetFldState( ) is issued again to display a value (2) corresponding to the modified state of the codecust_id/code field. TableREVERT( ) is used to return the table to its original state, and GetFldState( ) is issued again to display a value (1) corresponding to the original state of the codecust_id/code field.
        <code language="X#">
         Close Databases
         Clear
@@ -4826,7 +4827,7 @@
         nState=<b>GetFldState(</b>"cust_id"<b>)</b>
         DO DisplayState WITH nState, "After Replace"
         * Discard table changes and display state
-        = TABLEREVERT(.T.)        &amp;&amp; Discard all table changes
+        = TableREVERT(.T.)        &amp;&amp; Discard all table changes
         nState=<b>GetFldState(</b>"cust_id"<b>)</b>
         DO DisplayState WITH nState, "After Revert"
         PROCEDURE DisplayState
@@ -4842,8 +4843,8 @@
        <code language="X#">
         Set MULTILOCKS ON
         Create Database example
-        Create TABLE customer (cust_id C(6),state C(2) DEFAULT "FL")
-        Close TABLES
+        Create Table customer (cust_id C(6),state C(2) DEFAULT "FL")
+        Close TableS
         Use customer
         =CursorSetProp("Buffering",5,"customer")
         Append Blank
@@ -5050,7 +5051,7 @@
         Set MULTILOCKS ON
         =CursorSetProp("Buffering", 5, "customer")
         * Increase MAXORDAMT by 10% for customers in Mexico.
-        UPDATE Customer Set MaxOrdAmt=MaxOrdAmt * 1.1 WHERE Country = "Mexico"
+        UPDATE Customer Set MaxOrdAmt=MaxOrdAmt * 1.1 Where Country = "Mexico"
         * Start with the first modified record.
         lnCurRec = <b>GetNextModified</b>(0)
         * DO until all modified records are processed.
@@ -5060,7 +5061,7 @@
         * Process modified row here.
         ? Customer.Company, Customer.MaxOrdAmt
         IF Customer.MaxOrdAmt &gt; 8500
-        =TABLEREVERT(.F.)
+        =TableREVERT(.F.)
         ENDIF
         ?? Customer.MaxOrdAmt
         * Get the next modified record from here.
@@ -5069,7 +5070,7 @@
         EXIT
         ENDIF
         ENDDO
-        =TABLEREVERT(.T.)  &amp;&amp; Restore sample data and discard all changes.
+        =TableREVERT(.T.)  &amp;&amp; Restore sample data and discard all changes.
       </code>
     </example>
   </getnextmodified>
@@ -5184,10 +5185,12 @@
           <description>.emf</description>
         </item>
       </list>
-      <note name="Note">In X#, cursor, animated cursor, and icon files can be used as graphics files. For example, you can specify an animated cursor file for the 
-      Picture property for the Image control (however, the Image control displays the static representation of the cursor).></note>
+      <note name="Note">
+        In X#, cursor, animated cursor, and icon files can be used as graphics files. For example, you can specify an animated cursor file for the
+        Picture property for the Image control (however, the Image control displays the static representation of the cursor).>
+      </note>
       Use the Clear RESOURCES command to clear all cached graphic files, including .gif and .jpg files.<br/>
-      
+
       cFileExtensions can take the following forms:
       <list type="bullet">
         <term>If cFileExtensions contains a single extension (for example, .bmp), only files with that extension are displayed.</term>
@@ -5412,17 +5415,17 @@
     <param name="cType">
 
       Specifies the database object type of cDatabaseObjectName. The following table lists the values for cType and the corresponding database object type.
-      CONNECTION
+      Connection
       Named connection
       Field
       Field
       Index
       Index
-      TABLE
       Table
-      VIEW
+      Table
+      View
       SQL View
-      The CONNECTION, Field, Index, TABLE, and VIEW settings cannot be abbreviated.
+      The Connection, Field, Index, Table, and View settings cannot be abbreviated.
     </param>
     <returns>
       Logical
@@ -5434,11 +5437,11 @@
        <code language="X#">
         Close Databases
         Create Database mydbc  &amp;&amp; Creates a new database
-        Create TABLE mytable (field1 C(10)) &amp;&amp; Automatically added to database
+        Create Table mytable (field1 C(10)) &amp;&amp; Automatically added to database
         ? 'MyTable in the database? '
-        ?? INDBC('mytable', 'TABLE')  &amp;&amp; Returns .T.
+        ?? INDBC('mytable', 'Table')  &amp;&amp; Returns .T.
         Close Databases
-        DELETE Database mydbc DELETETABLES
+        DELETE Database mydbc DELETETableS
       </code>
     </example>
   </indbc>
@@ -5628,7 +5631,7 @@
     </remarks>
     <example>
        <code language="X#">
-        Create TABLE mytable FREE (myfield C(20))
+        Create Table mytable FREE (myfield C(20))
         Append Blank  &amp;&amp; Add new blank record
         Clear
         ? ISBlank(myfield)  &amp;&amp; Displays .T.
@@ -5833,18 +5836,18 @@
     </summary>
     <param name="nWorkArea">
 
-      Specifies the work area of the free table or free cursor for which ISTRANSACTABLE( ) determines if transactions are supported.
+      Specifies the work area of the free table or free cursor for which ISTRANSACTable( ) determines if transactions are supported.
 
     </param>
     <param name="cAlias">
 
-      Specifies the alias of the table or cursor for which ISTRANSACTABLE( ) determines if transactions are supported.
+      Specifies the alias of the table or cursor for which ISTRANSACTable( ) determines if transactions are supported.
     </param>
     <returns>
       Logical. Returns a logical true (.T.) if a free table or free cursor supports transactions, otherwise a logical false (.F.) is returned.
     </returns>
     <remarks>
-      Use the MAKETRANSACTABLE( ) Function to allow a free table or free cursor to support transactions.
+      Use the MAKETRANSACTable( ) Function to allow a free table or free cursor to support transactions.
     </remarks>
   </istransactable>
   <isupper>
@@ -6416,14 +6419,14 @@
       Specifies the alias of the table or cursor for which transactions will be supported.
     </param>
     <returns>
-      Logical. Returns a logical true (.T.) if MAKETRANSACTABLE( ) was able to make the free table or cursor support transactions, otherwise a logical false (.F.) is returned.
+      Logical. Returns a logical true (.T.) if MAKETRANSACTable( ) was able to make the free table or cursor support transactions, otherwise a logical false (.F.) is returned.
     </returns>
     <remarks>
-      A free table is a table that has not been added to a database with the ADD TABLE Command. A free cursor is a cursor that is created from a free table or with the Create CURSOR - SQL Command.
-      When MAKETRANSACTABLE( ) is used to make a free table or free cursor support transactions, you can use the BEGIN TRANSACTION, END TRANSACTION, and ROLLBACK commands for the free table or free cursor. Use the ISTRANSACTABLE( ) function to determine if a free table or free cursor supports transactions.
-      When MAKETRANSACTABLE( ) is used to make a free table or free cursor support transactions, the free table or free cursor supports transactions in all work areas and data sessions in which it is opened. MAKETRANSACTABLE( ) makes all open instances of a free table or free cursor support transactions, including those in other data sessions within a single instance of VFP.
+      A free table is a table that has not been added to a database with the ADD Table Command. A free cursor is a cursor that is created from a free table or with the Create CURSOR - SQL Command.
+      When MAKETRANSACTable( ) is used to make a free table or free cursor support transactions, you can use the BEGIN TRANSACTION, END TRANSACTION, and ROLLBACK commands for the free table or free cursor. Use the ISTRANSACTable( ) function to determine if a free table or free cursor supports transactions.
+      When MAKETRANSACTable( ) is used to make a free table or free cursor support transactions, the free table or free cursor supports transactions in all work areas and data sessions in which it is opened. MAKETRANSACTable( ) makes all open instances of a free table or free cursor support transactions, including those in other data sessions within a single instance of VFP.
       If a free table that does not support transactions is open in more than one data session, the free table cannot be made to support transactions. However, you can open a free table that already supports transactions in additional data sessions.
-      If row buffering is enabled, then a table update is performed if the free table or free cursor has pending changes before the free table or free cursor is made to support transactions. You cannot use MAKETRANSACTABLE( ) to enable transactions for a free table that has table buffering enabled.
+      If row buffering is enabled, then a table update is performed if the free table or free cursor has pending changes before the free table or free cursor is made to support transactions. You cannot use MAKETRANSACTable( ) to enable transactions for a free table that has table buffering enabled.
       To disable transactions for a free table, you must close the free table in all data sessions.
     </remarks>
   </maketransactable>
@@ -6774,7 +6777,7 @@
 
       <b>OLDVAL( )</b> returns original field values for records in a X# table or cursor that has row or table buffering enabled with <b>CursorSetProp( )</b>.
       If a table in a database or a cursor has validation rules, <b>OLDVAL( )</b> does not require that row or table buffering be enabled in order to return original field values.
-      If the record pointer is moved to a different record when row buffering is enabled, or if <b>TABLEUPDATE( )</b> is issued to commit changes to the record, or there is some other action that causes an update, such as ending a transaction, the fields are updated and the original field values are no longer available.
+      If the record pointer is moved to a different record when row buffering is enabled, or if <b>TableUPDATE( )</b> is issued to commit changes to the record, or there is some other action that causes an update, such as ending a transaction, the fields are updated and the original field values are no longer available.
       The data type of the value <b>OLDVAL( )</b> returns is determined by the expression you specify with cExpression.
       <b>OLDVAL( )</b> can return .NULL., even for a field declared as NOT NULL and with Set NULL OFF.
       The original field values are returned for the table or cursor open in the currently selected work area if <b>OLDVAL( )</b> is issued without the optional cTableAlias or nWorkArea arguments.
@@ -6784,7 +6787,7 @@
         Close Databases
         Clear
         * Create new table and add blank record
-        Create TABLE employee (cLastName C(10))
+        Create Table employee (cLastName C(10))
         Append Blank
         * Insert initial value
         Insert Into employee (cLastName) VALUES ("Smith")
@@ -6800,7 +6803,7 @@
         cTemp=OLDVAL("cLastName", "employee")
         =MESSAGEBOX("Original cLastName value: "+ cTemp, 0, "Results")
         * Update table and display final value
-        =TABLEUPDATE(.T.)
+        =TableUPDATE(.T.)
         =MESSAGEBOX("Final cLastName value: "+ cLastName, 0, "Results")
         * Close and delete example table file
         Use
@@ -7729,7 +7732,7 @@
         ? GetFldState('cust_id')  &amp;&amp; Returns 2, field modified
         = SetFLDSTATE('cust_id', 1)  &amp;&amp; Change the field status
         ? GetFldState('cust_id')  &amp;&amp; Displays 1, not modified
-        = TABLEREVERT(.T.)  &amp;&amp; Discard all table changes
+        = TableREVERT(.T.)  &amp;&amp; Discard all table changes
       </code>
     </example>
   </setfldstate>
@@ -7764,21 +7767,22 @@
   <sqlcancel>
     <summary>
       Requests cancellation of an executing SQL statement.
-
-      <b>SQLCANCEL( )</b> cancels the execution of <b>SQLCOLUMNS( )</b>, <b>SQLEXEC( )</b>, <b>SQLMORERESULTS( )</b>, and <b>SQLTABLES( )</b> in asynchronous mode. To establish asynchronous mode, use the <b>SQLSETPROP( )</b> function.
     </summary>
+    <remarks>
+      <b>SqlCancel( )</b> cancels the execution of <b>SqlColumns( )</b>, <b>SqlExec( )</b>, <b>SqlMoreResults( )</b>, and <b>SqlTables( )</b> in asynchronous mode.
+      To establish asynchronous mode, use the <b>SqlSetProp( )</b> function.
+    </remarks>
     <param name="nStatementHandle">
-
       Specifies the active statement handle whose SQL statement is to be canceled.
     </param>
     <returns>
-      Numeric. <b>SQLCANCEL( )</b> returns 1 if the SQL statement is successfully canceled, – 1 if there is a connection level error, and – 2 if there is an environment level error.
+      Numeric. <b>SqlCancel( )</b> returns 1 if the SQL statement is successfully canceled, – 1 if there is a connection level error, and – 2 if there is an environment level error.
     </returns>
     <example>
        <code language="X#">
-        = SQLSETPROP(gnHandle, 'asynchronous', .T.)   &amp;&amp; To stop SQLEXEC( )
-        = SQLEXEC(gnHandle, 'SELECT * FROM authors')
-        = SQLCANCEL(gnHandle)   &amp;&amp; Wrong select statement, cancel
+        = SqlSetProp(gnHandle, 'asynchronous', .T.)   &amp;&amp; To stop SqlExec( )
+        = SqlExec(gnHandle, 'SELECT * FROM authors')
+        = SqlCancel(gnHandle)   &amp;&amp; Wrong select statement, cancel
       </code>
     </example>
   </sqlcancel>
@@ -7787,39 +7791,59 @@
       Stores a list of column names and information about each column for the specified data source table to a X# cursor.
     </summary>
     <param name="nStatementHandle">
-
       Specifies an active statement handle.
-
     </param>
     <param name="cTableName">
-
-      Specifies the name of the table from which the column names are returned. TableName can contain the wildcard characters ? and *. The question mark (?) matches any single character and the asterisk (*) matches any number of characters.
-      FOXPRO | NATIVE
-      Specifies the format for the column information in the result set. Be sure to enclose FOXPRO or NATIVE in quotation marks. The NATIVE format option stores column information for tables in the same format as the data source. The FOXPRO format option stores the column information in the same format as that used for the X# table or cursor that would be created if you imported the data source table into X#. If you omit FOXPRO or NATIVE, the format option defaults to FOXPRO.
-      The following table shows the columns in the result set for the FOXPRO format.
-      Field_name
-      Column name
-      Field_type
-      Column data type
-      Field_len
-      Column length
-      Field_dec
-      Number of decimal places
-      The columns in the result set for the NATIVE format depend on the data source. If the table you specify with cTableName does not exist and the format is set to NATIVE, <b>SQLCOLUMNS( )</b> returns true (.T.) and creates an empty table or cursor. If the table you specify with cTableName does not exist and the format is set to FOXPRO, <b>SQLCOLUMNS( )</b> returns false (.F.).
+      Specifies the name of the table from which the column names are returned. TableName can contain the wildcard characters ? and *.
+      The question mark (?) matches any single character and the asterisk (*) matches any number of characters.<br/>
+    </param>
+    <param name="cType">
+      This specifies the format for the column information in the result set. The value must be either "Foxpro" or "Native"<br/>      
+      The Native format option stores column information for tables in the same format as the data source. The Foxpro format option stores the column information
+      in the same format as that used for the X# table or cursor that would be created if you imported the data source table into X#. If you omit Foxpro or Native,
+      the format option defaults to Foxpro.<br/>
+      The table in the remarks section shows the columns in the result set for the Foxpro format.
     </param>
     <param name="cCursorName">
-
       Specifies the name of the X# cursor for the result set. If you do not include a cursor name, X# uses the default name SQLRESULT.
     </param>
     <returns>
-      Numeric or Logical. <b>SQLCOLUMNS( )</b> returns 1 if the cursor is successfully created, 0 if <b>SQLCOLUMNS( )</b> is still executing, – 1 if a connection level error occurs, and – 2 if an environment level error occurs.
+      Numeric or Logical. <b>SqlColumns( )</b> returns 1 if the cursor is successfully created, 0 if <b>SqlColumns( )</b> is still executing,
+      – 1 if a connection level error occurs, and – 2 if an environment level error occurs.
     </returns>
     <remarks>
-
-      <b>SQLCOLUMNS( )</b> is one of the four functions that you can execute either synchronously or asynchronously. The Asynchronous setting of <b>SQLSetPROP( )</b> determines if these functions execute synchronously or asynchronously. In asynchronous mode, you must call <b>SQLCOLUMNS( )</b> repeatedly until a value other than false (.F.) (still executing) is returned.
+      <b>SqlColumns( )</b> is one of the four functions that you can execute either synchronously or asynchronously.
+      The Asynchronous setting of <b>SqlSetProp( )</b> determines if these functions execute synchronously or asynchronously. In asynchronous mode,
+      you must call <b>SqlColumns( )</b> repeatedly until a value other than false (.F.) (still executing) is returned.
+      <br/>
+      <list type="table">
+        <listheader>
+          <term>Column name</term>
+          <description>Description</description>
+        </listheader>
+        <item>
+          <term>Field_name</term>
+          <description>Column name</description>
+        </item>
+        <item>
+          <term>Field_type</term>
+          <description>Column data type</description>
+        </item>
+        <item>
+          <term>Field_len</term>
+          <descripition>Column length</descripition>
+        </item>
+        <item>
+          <term>Field_dec</term>
+          <description>Number of decimal places</description>
+        </item>
+      </list>
+      The columns in the result set for the Native format depend on the data source. If the table you specify with cTableName does not exist and the format is set
+      to Native, <b>SqlColumns( )</b> returns true (.T.) and creates an empty table or cursor. If the table you specify with cTableName does not exist and the
+      format is set to Foxpro, <b>SqlColumns( )</b> returns false (.F.).
     </remarks>
     <example>
-       <code language="X#">= SQLCOLUMNS(gnHandle, 'authors', 'FOXPRO', 'MyCursor')</code>
+       <code language="X#">= SqlColumns(gnHandle, 'authors', 'Foxpro', 'MyCursor')</code>
     </example>
   </sqlcolumns>
   <sqlcommit>
@@ -7827,108 +7851,119 @@
       Commits a transaction.
     </summary>
     <param name="nStatementHandle">
-
-      Specifies the statement handle to the data source returned by <b>SQLCONNECT( )</b>.
+      Specifies the statement handle to the data source returned by <b>SqlConnect( )</b>.
     </param>
     <returns>
-      Numeric. <b>SQLCOMMIT( )</b> returns 1 if the transaction is successfully committed; otherwise, it returns -1. If <b>SQLCOMMIT( )</b> returns -1, you can use <b>AERROR( )</b> to determine why the transaction could not be committed.
+      Numeric. <b>SqlCommit( )</b> returns 1 if the transaction is successfully committed; otherwise, it returns -1. If <b>SqlCommit( )</b> returns -1, you can use
+      <b>AError( )</b> to determine why the transaction could not be committed.
     </returns>
     <remarks>
-      If manual transactions are in effect (the <b>SQLSetPROP( )</b> Transactions property is set to Manual), you can send multiple updates to remote tables and commit all the updates with <b>SQLCOMMIT( )</b>.
-      Updates can be rolled back with <b>SQLROLLBACK( )</b>.
+      If manual transactions are in effect (the <b>SqlSetProp( )</b> Transactions property is set to Manual), you can send multiple updates to remote tables and
+      commit all the updates with <b>SqlCommit( )</b>.<br/>
+      Updates can be rolled back with <b>SqlRollBack( )</b>.
     </remarks>
     <example>
        <code language="X#">
-        = SQLSetPROP(gnHandle, 'Transactions', 2)  &amp;&amp; Manual transactions
-        = SQLEXEC(gnHandle, "Insert Into authors (au_id, au_lname);
+        = SqlSetProp(gnHandle, 'Transactions', 2)  &amp;&amp; Manual transactions
+        = SqlExec(gnHandle, "Insert Into authors (au_id, au_lname);
         VALUES ('aupoe', 'Poe')")  &amp;&amp; Modify the authors table
-        = SQLCOMMIT(gnHandle)  &amp;&amp; Commit the changes
+        = SqlCommit(gnHandle)  &amp;&amp; Commit the changes
       </code>
     </example>
   </sqlcommit>
   <sqlconnect>
     <summary>
       Establishes a connection to a data source. There are two versions of the syntax.
-      <code>SQLCONNECT([nStatementHandle])</code>
-      <code>SQLCONNECT([cConnectionName | cDataSourceName [, cUserID [, cPassword ]][, lShared]])</code>
-
+      <code>
+        SqlConnect([nStatementHandle])
+        SqlConnect([cConnectionName | cDataSourceName [, cUserID [, cPassword ]][, lShared]])
+      </code>
     </summary>
     <param name="uSource">
-      This can be either a <b>nStatementHandle</b>, which specifies that a new statement handle be created for the underlying shared connection that is represented by nStatementHandle. The new statement handle uses the settings provided from nStatementHandle instead of using the default settings.
-      You cannot create a new statement handle for a connection that is not shared. X# generates an error if you attempt to create a new statement handle against a nonshared connection.
-      You can also use <b>SQLCONNECT( )</b> to obtain a new statement handle on a shared connection that was opened using <b>SQLSTRINGCONNECT( )</b>.<br/>
-      It can also <b>cConnectionName</b> which specifies a named connection created by the <b>Create CONNECTION</b> command.
-      When using <b>Create CONNECTION</b> or the Connection Designer to create a named connection, you can configure the connection by specifying a data source name, user ID, and password. When using the named connection in <b>SQLCONNECT( )</b> as cConnectionName, you can pass values different from those in the named connection for the optional cUserID and cPassword parameters. These passed values are used instead of the user ID and password in the named connection specified by cConnectionName.
-      For example, suppose you create a named connection called codemyNamedConnection/code using <b>Create CONNECTION</b> or the Connection Designer and specify the values codemyUserID/code and codemyPassword/code for the named connection. For <b>SQLCONNECT( )</b>, you can specify codemyNamedConnection/code as cConnectionName and then specify codemyAltUserID/code and codemyAltPassword/code as an alternate user ID and password as in the following code:
-       <code language="X#">SQLCONNECT("myNamedConnection", "myAltUserID", "myAltPassword")</code>
-      However, if you create a named connection using a connection string with <b>Create CONNECTION</b> or the Connection Designer, use the named connection in <b>SQLCONNECT( )</b>, and attempt to pass optional user ID and password parameters to <b>SQLCONNECT( )</b>, X# generates the appropriate message.
+      This can be either a <b>nStatementHandle</b>, which specifies that a new statement handle be created for the underlying shared connection that is represented
+      by nStatementHandle. The new statement handle uses the settings provided from nStatementHandle instead of using the default settings.
+      You cannot create a new statement handle for a connection that is not shared.
+      X# generates an error if you attempt to create a new statement handle against a nonshared connection.
+      You can also use <b>SqlConnect( )</b> to obtain a new statement handle on a shared connection that was opened using <b>SqlStringConnect( )</b>.<br/>
+      It can also <b>cConnectionName</b> which specifies a named connection created by the <b>Create Connection</b> command.<br/>
+      When using <b>Create Connection</b> or the Connection Designer to create a named connection, you can configure the connection by specifying a data source name,
+      user ID, and password. When using the named connection in <b>SqlConnect( )</b> as cConnectionName, you can pass values different from those in
+      the named connection for the optional cUserID and cPassword parameters. These passed values are used instead of the user ID and password in the named
+      connection specified by cConnectionName.<br/>
+      For example, suppose you create a named connection called codemyNamedConnection/code using <b>Create Connection</b> or the Connection Designer and specify
+      the values codemyUserID/code and codemyPassword/code for the named connection. For <b>SqlConnect( )</b>, you can specify codemyNamedConnection/code as
+      cConnectionName and then specify codemyAltUserID/code and codemyAltPassword/code as an alternate user ID and password as in the following code:
+       <code language="X#">SqlConnect("myNamedConnection", "myAltUserID", "myAltPassword")</code>
+      However, if you create a named connection using a connection string with <b>Create Connection</b> or the Connection Designer, use the named connection in
+      <b>SqlConnect( )</b>, and attempt to pass optional user ID and password parameters to <b>SqlConnect( )</b>, X# generates the appropriate message.<br/>
       When creating a new shared connection, the cConnectionName parameter refers to a named connection in the current database container (DBC).
-      When creating a new statement handle based on an existing shared connection, the cConnectionName parameter refers to a previous connection opened in shared mode.
-      If you use the cConnectionName parameter without the lShared parameter or with lShared parameter as False (.F.), you will always create a new connection that is not shared.
-      When using cConnectionName, if lShared is True (.T.) and the named connection is already open in shared mode, the user name and password provided should match those previously used. Otherwise, X# generates the appropriate message.<br/>
+      When creating a new statement handle based on an existing shared connection, the cConnectionName parameter refers
+      to a previous connection opened in shared mode.<br/>
+      If you use the cConnectionName parameter without the lShared parameter or with lShared parameter as False (.F.),
+      you will always create a new connection that is not shared.<br/>
+      When using cConnectionName, if lShared is True (.T.) and the named connection is already open in shared mode,
+      the user name and password provided should match those previously used. Otherwise, X# generates the appropriate message.<br/>
       Finally this parameter can be <b>cDataSourceName</b>, a name of a data source as defined in your Odbc.ini file.
-      You can also choose a data source from the Select Connection or Data Source Dialog Box, which appears when you call <b>SQLCONNECT( )</b> without any additional arguments or with only the lShared parameter.
+      You can also choose a data source from the Select Connection or Data Source Dialog Box, which appears when you call <b>SqlConnect( )</b>
+      without any additional arguments or with only the lShared parameter.
     </param>
     <param name="cUserID">
-
       Specifies the user identifier used to log on to the data source.
-
     </param>
     <param name="cPassword">
-
       Specifies the password for gaining access to the data source.
-
     </param>
     <param name="lShared">
-
-      Specifies whether or not to create a shared connection.
-      lShared
-      False (.F.)
-      <b>SQLCONNECT( )</b> does not create a shared connection. (Default)
-      True (.T.)
-      <b>SQLCONNECT( )</b> creates a shared connection.
+      Specifies whether or not to create a shared connection.<br/>
+      False (.F.) - <b>SqlConnect( )</b> does not create a shared connection. (Default)<br/>
+      True (.T.) - <b>SqlConnect( )</b> creates a shared connection.
     </param>
     <returns>
-      Numeric data type. <b>SQLCONNECT( )</b> returns a positive nonzero numeric value as the statement handle if you successfully connect to the data source. <b>SQLCONNECT( )</b> returns –1 if it cannot make the connection.
+      Numeric data type. <b>SqlConnect( )</b> returns a positive nonzero numeric value as the statement handle if you successfully connect to the data source.
+      <b>SqlConnect( )</b> returns –1 if it cannot make the connection.<br/>
       You should store this statement handle in a memory variable and use the variable in subsequent function calls that require a connection handle.
     </returns>
     <remarks>
-      The <b>SQLCONNECT( )</b> and <b>SQLSTRINGCONNECT( )</b> functions return a numeric value as the statement handle rather than a connection handle. You cannot obtain a connection handle directly. You can still set and get connection properties using the <b>SQLSetPROP( )</b> and <b>SQLGETPROP( )</b> functions by passing the statement handle for that connection and the string, "Shared", as arguments. All other SQL functions use a statement handle instead of a connection handle.
-      If you issue a statement such as codeSQLCONNECT(cConnectionName, .T.)/code, and a shared connection is already open with the same name, then the settings for that connection do not change to the settings stored for that connection in the database container (DBC). However, the new statement handle will use the statement settings from the DBC.
-      You must disable the Open Database Connectivity (ODBC) login dialog box to support SQL pass through with Microsoft Transaction Server. To disable the ODBC login dialog box, use the statement codeSQLSetPROP(nStatementHandle, 'DispLogin', 3)/code, where cStatementHandle is the statement handle returned by <b>SQLCONNECT( )</b>. You can also disable the ODBC login dialog box in the Connection Designer.
+      The <b>SqlConnect( )</b> and <b>SqlStringConnect( )</b> functions return a numeric value as the statement handle rather than a connection handle.
+      You cannot obtain a connection handle directly. You can still set and get connection properties using the <b>SqlSetProp( )</b> and <b>SqlGetProp( )</b>
+      functions by passing the statement handle for that connection and the string, "Shared", as arguments. All other SQL functions use a statement handle
+      instead of a connection handle.<br/>
+      If you issue a statement such as codeSqlConnect(cConnectionName, .T.)/code, and a shared connection is already open with the same name, then the settings
+      for that connection do not change to the settings stored for that connection in the database container (DBC). However, the new statement handle will use
+      the statement settings from the DBC.<br/>
+      You must disable the Open Database Connectivity (ODBC) login dialog box to support SQL pass through with Microsoft Transaction Server.
+      To disable the ODBC login dialog box, use the statement codeSqlSetProp(nStatementHandle, 'DispLogin', 3)/code, where cStatementHandle is the statement
+      handle returned by <b>SqlConnect( )</b>. You can also disable the ODBC login dialog box in the Connection Designer.
     </remarks>
     <example>
-
-      <b>Example 1</b>
-
-      The following example assumes that an ODBC data source called MyFoxSQLNT exists and is available. <b>SQLCONNECT( )</b> returns a numeric value, which is stored to a variable named codegnConnHandle/code.
-      If you successfully connect to the data source, <b>SQLCONNECT( )</b> returns a positive number, a dialog box appears, and <b>SQLDISCONNECT( )</b> is called to disconnect from the data source.
-      If you cannot connect to the data source, <b>SQLCONNECT( )</b> returns a negative number and displays a message.
+      <b>Example 1</b><br/>
+      The following example assumes that an ODBC data source called MyFoxSQLNT exists and is available. <b>SqlConnect( )</b> returns a numeric value,
+      which is stored to a variable named codegnConnHandle/code.<br/>
+      If you successfully connect to the data source, <b>SqlConnect( )</b> returns a positive number, a dialog box appears, and <b>SqlDisconnect( )</b> is called
+      to disconnect from the data source.<br/>
+      If you cannot connect to the data source, <b>SqlConnect( )</b> returns a negative number and displays a message.
        <code language="X#">
-        STORE SQLCONNECT('MyFoxSQLNT', 'myUserID', 'myPassword') TO gnConnHandle
+        STORE SqlConnect('MyFoxSQLNT', 'myUserID', 'myPassword') TO gnConnHandle
         IF gnConnHandle &lt;= 0
         = MESSAGEBOX('Cannot make connection', 16, 'SQL Connect Error')
         ELSE
         = MESSAGEBOX('Connection made', 48, 'SQL Connect Message')
-        = SQLDISCONNECT(gnHandle)
+        = SqlDisconnect(gnHandle)
         ENDIF
       </code>
-
-      <b>Example 2</b>
-
-      Each of the following examples create new shared connections. The Choose Data Source Dialog Box appears, and <b>SQLCONNECT( )</b> creates the resulting connection as shared.
+      <b>Example 2</b><br/>
+      Each of the following examples create new shared connections. The Choose Data Source Dialog Box appears,
+      and <b>SqlConnect( )</b> creates the resulting connection as shared.
        <code language="X#">
-        SQLCONNECT(.T.)
-        SQLCONNECT( myConnectionName, .T. )
-        SQLCONNECT( myDataSourceName, myUserID, myPassword, .T. )
+        SqlConnect(.T.)
+        SqlConnect( myConnectionName, .T. )
+        SqlConnect( myDataSourceName, myUserID, myPassword, .T. )
       </code>
-
-      <b>Example 3</b>
-
+      <b>Example 3</b><br/>
       Each of the following examples creates a new statement handle based on an existing shared connection.
        <code language="X#">
-        SQLCONNECT( nStatementHandleValue )
-        SQLCONNECT( myConnectionName, .T. )
+        SqlConnect( nStatementHandleValue )
+        SqlConnect( myConnectionName, .T. )
       </code>
     </example>
   </sqlconnect>
@@ -7937,25 +7972,26 @@
       Terminates a connection to a data source.
     </summary>
     <param name="nStatementHandle">
-
-      Specifies the statement handle to the data source returned by <b>SQLCONNECT( )</b>. <br/> 
+      Specifies the statement handle to the data source returned by <b>SqlConnect( )</b>. <br/>
       Specify 0 for nStatementHandle to terminate all active connections.
-  </param>
+    </param>
     <returns>
-      Numeric. <b>SQLDISCONNECT( )</b> returns 1 if the connection is successfully terminated, – 1 if there is a connection level error, and – 2 if there is an environment level error.
+      Numeric. <b>SqlDisconnect( )</b> returns 1 if the connection is successfully terminated, – 1 if there is a connection level error,
+      and – 2 if there is an environment level error.
     </returns>
     <remarks>
-      <b>SQLDISCONNECT( )</b> terminates a connection to a data source. You must supply the statement handle that <b>SQLCONNECT( )</b> returned when you established the connection.
-      If you execute <b>SQLDISCONNECT( )</b> within an asynchronous function sequence or during a transaction, <b>SQLDISCONNECT( )</b> generates an error.
+      <b>SqlDisconnect( )</b> terminates a connection to a data source. You must supply the statement handle that <b>SqlConnect( )</b> returned
+      when you established the connection.<br/>
+      If you execute <b>SqlDisconnect( )</b> within an asynchronous function sequence or during a transaction, <b>SqlDisconnect( )</b> generates an error.
     </remarks>
     <example>
        <code language="X#">
-        STORE SQLCONNECT('MyFoxSQLNT', '&lt;userid&gt;', '&lt;password&gt;') TO gnHandle
+        STORE SqlConnect('MyFoxSQLNT', '&lt;userid&gt;', '&lt;password&gt;') TO gnHandle
         IF gnHandle &lt;= 0
         = MESSAGEBOX('Cannot make connection', 16, 'SQL Connect Error')
         ELSE
         = MESSAGEBOX('Connection made', 48, 'SQL Connect Message)
-        = SQLDISCONNECT(gnHandle)
+        = SqlDisconnect(gnHandle)
         ENDIF
       </code>
     </example>
@@ -7965,54 +8001,89 @@
       Sends a SQL statement to the data source, where the statement is processed.
     </summary>
     <param name="nStatementHandle">
-
-      Specifies the statement handle to the data source returned by the <b>SQLCONNECT( )</b> function. For more information, see SQLCONNECT( ) Function.
-
+      Specifies the statement handle to the data source returned by the <b>SqlConnect( )</b> function. For more information, see SqlConnect( ) Function.
     </param>
     <param name="cSQLCommand">
-
-      Specifies the SQL statement passed to the data source.
-      The SQL statement can contain a parameterized WHERE clause, which creates a parameterized view. You must define all parameters in the WHERE clause before issuing <b>SQLEXEC( )</b>. For example, if the parameters are variables, the variables must be created and initialized before <b>SQLEXEC( )</b> is issued. For more information about parameterized views, see How to: Create Parameterized Views.
-      You can include expressions in the SQL statement. X# evaluates all expressions in the SQL statement that you pass before sending them to the data source. X# can evaluate memory variable names, function calls, and expressions enclosed in parentheses as parameter values.
-
+      Specifies the SQL statement passed to the data source.<br/>
+      The SQL statement can contain a parameterized Where clause, which creates a parameterized view. You must define all parameters in the Where clause before
+      issuing <b>SqlExec( )</b>. For example, if the parameters are variables, the variables must be created and initialized before <b>SqlExec( )</b> is issued.
+      For more information about parameterized views, see How to: Create Parameterized Views.<br/>
+      You can include expressions in the SQL statement. X# evaluates all expressions in the SQL statement that you pass before sending them to the data source.
+      X# can evaluate memory variable names, function calls, and expressions enclosed in parentheses as parameter values.
     </param>
     <param name="cCursorName">
-
-      Specifies the name of the X# cursor to which the result set is sent. If you don't include a cursor name, X# uses the default name SQLRESULT.
+      Specifies the name of the X# cursor to which the result set is sent. If you don't include a cursor name, X# uses the default name SQLRESULT.<br/>
       For multiple result sets, new cursor names are derived by appending an incremented number to the name of the first cursor.
-
     </param>
     <param name="aCountInfo">
-
-      Specifies the name of the array to populate with row count information. If the array doesn’t exist, it is created. The array has two columns: 1 – Alias, 2 –Count.
-      0
-      Character
-      Indicates that SQL command did not return any results. Either no records were returned or the SQL command failed before results could be returned. (final <b>SQLMORERESULTS</b> call) or execution failed before any result could be processed. Can be only on the first row. Count column for the row contains value -1.
-      Non-empty uppercase string
-      Alias of the cursor – target for the record fetch operation. The Count column for the row contains the number of fetched records or -1 if fetch failed. If Count is -1, cursor may not have been created. During asynchronous execution, the fetch process for a cursor can be split between multiple SQLMORERESULTS or SQLEXEC calls; each call returns its own fetch count for the cursor.
-      Empty String
-      Indicates that the SQL command (Insert, UPDATE, or DELETE) did not return a result set.
-      Number of affected or fetched records.
-      Integer
-      Indicates the number of affected records as returned by the ODBC SQLRowCount function. Returns -1 if the number of records is unavailable.
+      Specifies the name of the array to populate with row count information. If the array doesn’t exist, it is created.
+      The array has two columns: 1 – Alias, 2 –Count.
     </param>
     <returns>
-      Numeric data type. <b>SQLEXEC( )</b> returns the number of result sets if there is more than one. <b>SQLEXEC( )</b> returns 0 if it is still executing and returns 1 when it has finished executing. <b>SQLEXEC( )</b> returns –1 if a connection level error occurs.
+      Numeric data type. <b>SqlExec( )</b> returns the number of result sets if there is more than one. <b>SqlExec( )</b> returns 0 if it is still executing
+      and returns 1 when it has finished executing. <b>SqlExec( )</b> returns –1 if a connection level error occurs.
     </returns>
     <remarks>
-      If the SQL statement you want to pass is quite long, check to see if it exceeds the maximum length of a string literal in X#, which is 255 characters. Longer strings will cause a "Command contains unrecognized phrase/keyword" error. However, you can pass long SQL statements if you break them up into several concatenated literals. For example:
+      If the SQL statement you want to pass is quite long, check to see if it exceeds the maximum length of a string literal in X#, which is 255 characters.
+      Longer strings will cause a "Command contains unrecognized phrase/keyword" error. However, you can pass long SQL statements if you break them up into several
+      concatenated literals. For example:
        <code language="X#">
-        lnRetVal = SQLEXEC(lnHandle, "Select &lt;long list of fields&gt; " + ;
+        lnRetVal = SqlExec(lnHandle, "Select &lt;long list of fields&gt; " + ;
         "From &lt;several tables&gt; " + ;
-        "WHERE &lt;complex filter expression&gt;")
+        "Where &lt;complex filter expression&gt;")
       </code>
-      If <b>SQLEXEC( )</b> is used to execute a SQL statement prepared with <b>SQLPREPARE( )</b>, only the connection handle argument nStatementHandle is required. The cSQLCommand and CursorName arguments should be omitted. For more information, see SQLPREPARE( ) Function.
-      If the SQL statement generates one result set, <b>SQLEXEC( )</b> stores the result set to the specified X# cursor. If the SQL statement generates two or more result sets, you can name each result set by setting the connection's BatchMode property to False (.F.) using the SQLSetPROP( ) function and changing the cursor name each time you call the SQLMORERESULTS( ) function. Otherwise, SQLEXEC( ) names each result set by appending sequential numbers to the name of the first one.
-
-      <b>SQLEXEC( )</b> is one of the four functions that you can execute either synchronously or asynchronously. The Asynchronous setting of <b>SQLSetPROP( )</b> determines whether these functions execute synchronously or asynchronously. In asynchronous mode, you must call <b>SQLEXEC( )</b> repeatedly until it returns a value other than 0 (still executing).
+      If <b>SqlExec( )</b> is used to execute a SQL statement prepared with <b>SqlPrepare( )</b>, only the connection handle argument nStatementHandle is required.
+      The cSQLCommand and CursorName arguments should be omitted. For more information, see SqlPrepare( ) Function.<br/>
+      If the SQL statement generates one result set, <b>SqlExec( )</b> stores the result set to the specified X# cursor.
+      If the SQL statement generates two or more result sets, you can name each result set by setting the connection's BatchMode property to False (.F.)
+      using the SqlSetProp( ) function and changing the cursor name each time you call the SqlMoreResults( ) function. Otherwise, SqlExec( ) names each result
+      set by appending sequential numbers to the name of the first one.<br/>
+      <b>SqlExec( )</b> is one of the four functions that you can execute either synchronously or asynchronously.
+      The Asynchronous setting of <b>SqlSetProp( )</b> determines whether these functions execute synchronously or asynchronously.
+      In asynchronous mode, you must call <b>SqlExec( )</b> repeatedly until it returns a value other than 0 (still executing).
+      <list type="table">
+        <listheader>
+          <term>Column</term>
+          <description>Array contents</description>
+          <description>Data type</description>
+          <description>Description</description>
+        </listheader>
+        <item>
+          <term>Alias</term>
+          <description>0</description>
+          <description>Character</description>
+          <description>
+            Indicates that SQL command did not return any results. Either no records were returned or the SQL command failed before results could be returned.
+            (final <b>SqlMoreResults</b> call) or execution failed before any result could be processed. Can be only on the first row.
+            Count column for the row contains value -1.
+          </description>
+        </item>
+        <item>
+          <term></term>
+          <description>Non-empty uppercase string</description>
+          <description>Character</description>
+          <description>
+            Alias of the cursor – target for the record fetch operation. The Count column for the row contains the number of fetched records or -1 if fetch failed.
+            If Count is -1, cursor may not have been created. During asynchronous execution, the fetch process for a cursor can be split between multiple
+            SqlMoreResults or SqlExec calls; each call returns its own fetch count for the cursor.
+          </description>
+        </item>
+        <item>
+          <term></term>
+          <description>Character</description>
+          <description>Empty String</description>
+          <description>Indicates that the SQL command (Insert, UPDATE, or DELETE) did not return a result set.</description>
+        </item>
+        <item>
+          <term>Count</term>
+          <description>Number of affected or fetched records.</description>
+          <description>Integer</description>
+          <description>Indicates the number of affected records as returned by the ODBC SQLRowCount function. Returns -1 if the number of records is unavailable.</description>
+        </item>
+      </list>
     </remarks>
     <example>
-      The following example shows various ways to use <b>SQLEXEC( )</b> to execute ad-hoc queries and to call or create stored procedures:
+      The following example shows various ways to use <b>SqlExec( )</b> to execute ad-hoc queries and to call or create stored procedures:
        <code language="X#">
         Clear
         LOCAL lnConn
@@ -8021,48 +8092,48 @@
         lnPercent = 50
         lnOutput = 0
         * Make connection, assuming a local trusted connection.
-        lnConn = SQLCONNECT('local')
+        lnConn = SqlConnect('local')
         IF m.lnConn &gt; 0  &amp;&amp; Success.
         * Set the active database to PUBS.
-        SQLEXEC(m.lnConn, 'use pubs')
+        SqlExec(m.lnConn, 'use pubs')
         * Execute Select statement.
-        SQLEXEC(m.lnConn, 'Select * From authors', 'PubAuthors')
+        SqlExec(m.lnConn, 'Select * From authors', 'PubAuthors')
         BROWSE
 
         * Execute Insert statement, get value of identity field.
-        SQLEXEC(m.lnConn, "Insert Into JOBS (job_desc, min_lvl, max_lvl);
+        SqlExec(m.lnConn, "Insert Into JOBS (job_desc, min_lvl, max_lvl);
         VALUES ('Developer',75,150)")
-        SQLEXEC(m.lnConn, "Select SCOPE_IDENTITY()", "job_id")
+        SqlExec(m.lnConn, "Select SCOPE_IDENTITY()", "job_id")
         ? "ID for added Job is " + LTRIM(STR(job_id.exp))
         * Execute DELETE statement. Get number of records affected.
-        SQLEXEC(m.lnConn, "DELETE From JOBS WHERE job_desc ='Developer'")
-        SQLEXEC(m.lnConn, "Select @@ROWCOUNT", 'rowcount')
+        SqlExec(m.lnConn, "DELETE From JOBS Where job_desc ='Developer'")
+        SqlExec(m.lnConn, "Select @@ROWCOUNT", 'rowcount')
         ? rowcount.exp, "record(s) deleted"
         * Call a stored procedure with no parameters.
-        SQLEXEC(m.lnConn, 'sp_who', 'activeusers')
+        SqlExec(m.lnConn, 'sp_who', 'activeusers')
         BROWSE
         * Execute stored procedure with an INPUT parameter.
-        SQLEXEC(m.lnConn, 'exec byroyalty ?lnPercent','HalfOffAuthors')
+        SqlExec(m.lnConn, 'exec byroyalty ?lnPercent','HalfOffAuthors')
 
         * Create temp stored procedure with OUTPUT parameter and call it.
-        SQLEXEC(m.lnConn, "Create PROCEDURE #MyProc @outparam int OUTPUT AS;
+        SqlExec(m.lnConn, "Create PROCEDURE #MyProc @outparam int OUTPUT AS;
         Select @outparam=100")
-        SQLEXEC(m.lnConn, "exec #myProc ?@lnOutput")
+        SqlExec(m.lnConn, "exec #myProc ?@lnOutput")
         ? m.lnOutput
 
         * Create a temp stored procedure with INPUT and OUTPUT parameters
         * and call it.
-        SQLEXEC(m.lnConn, "Create PROCEDURE #MyProc2 " + ;
+        SqlExec(m.lnConn, "Create PROCEDURE #MyProc2 " + ;
         "@inputparam INT, " + ;
         "@outparam int OUTPUT " + ;
         "AS Set @outparam=@inputparam*10")
-        SQLEXEC(m.lnConn, "exec #myProc2 ?lnPercent, ?@lnOutput")
+        SqlExec(m.lnConn, "exec #myProc2 ?lnPercent, ?@lnOutput")
         ? m.lnOutput
         * Get version information.
-        SQLEXEC(m.lnConn, 'Select @@VERSION','SQLVersion1')
+        SqlExec(m.lnConn, 'Select @@VERSION','SQLVersion1')
         ? STRTRAN(SQLVersion1.Exp,CHR(0))
         * Disconnect.
-        SQLDISCONNECT(m.lnConn)
+        SqlDisconnect(m.lnConn)
         ELSE
         ? "Unable to connect to SQL Server"
         ENDIF
@@ -8075,31 +8146,30 @@
       Retrieves the current or default settings for an active connection.
     </summary>
     <param name="nStatementHandle">
-
-      Specifies the statement handle to the data source returned by SQLCONNECT( ). If you specify 0 for nStatementHandle, SQLGETPROP( ) returns the environment setting.
-
+      Specifies the statement handle to the data source returned by SqlConnect( ).
+      If you specify 0 for nStatementHandle, SqlGetProp( ) returns the environment setting.
     </param>
     <param name="cSetting">
-
-      Specifies the setting. For a list of the settings you can specify, see SQLSetPROP( ) Function.
+      Specifies the setting. For a list of the settings you can specify, see SqlSetProp( ) Function.
     </param>
     <returns>
-      Character, Numeric, or Logical data type. SQLGETPROP( ) returns the current or default settings for an active connection. SQLGETPROP( ) returns -1 if a connection level occurs and -2 if an environment level error occurs.
+      Character, Numeric, or Logical data type. SqlGetProp( ) returns the current or default settings for an active connection.
+      SqlGetProp( ) returns -1 if a connection level occurs and -2 if an environment level error occurs.
     </returns>
     <example>
        <code language="X#">
         Close ALL
         Clear ALL
         Clear
-        nHandle=SQLCONNECT()
+        nHandle=SqlConnect()
         IF nHandle &gt; 0
-        cSource= SQLGETPROP(nHandle, "datasource")
+        cSource= SqlGetProp(nHandle, "datasource")
         =MESSAGEBOX("Current Data Source = "+cSource,0,"Connection Results")
         ELSE
         =MESSAGEBOX("Connection Error = " + ;
         ALLTRIM(STR(nHandle)),0,"Connection Results")
         ENDIF
-        =SQLDISCONNECT(nHandle)
+        =SqlDisconnect(nHandle)
       </code>
     </example>
   </sqlgetprop>
@@ -8112,13 +8182,16 @@
       Specify 0 for nStatementHandle to temporarily disconnect all active connections.
     </param>
     <returns>
-      Numeric.
-      1 is returned if SQLIDLEDISCONNECT( ) successfully temporarily disconnects the SQL pass-through connection or connections.
-      -1 is returned if SQLIDLEDISCONNECT( ) was unable to temporarily disconnect the SQL pass-through connection or connections.
+      Numeric. <br/>
+      1 is returned if SqlIdleDisconnect( ) successfully temporarily disconnects the SQL pass-through connection or connections.
+      -1 is returned if SqlIdleDisconnect( ) was unable to temporarily disconnect the SQL pass-through connection or connections.
     </returns>
     <remarks>
-      The function fails (returns -1) if the statement handle is busy or a connection is in manual commit mode. The AERROR( ) Function can be used to obtain information about the cause of the error.
-      A temporarily disconnected connection is automatically restored as soon as it is needed to perform an operation; the original connection string is used. The ODBC ODBChstmt property returns 0 if the statement handle is temporarily released and the ODBChdbc property returns 0 if the connection is temporarily disconnected. A shared connection is temporarily disconnected as soon as all its statement handles are temporarily disconnected (released).
+      The function fails (returns -1) if the statement handle is busy or a connection is in manual commit mode.
+      The AError( ) Function can be used to obtain information about the cause of the error.<br/>
+      A temporarily disconnected connection is automatically restored as soon as it is needed to perform an operation; the original connection string is used.
+      The ODBC ODBChstmt property returns 0 if the statement handle is temporarily released and the ODBChdbc property returns 0 if the connection is temporarily
+      disconnected. A shared connection is temporarily disconnected as soon as all its statement handles are temporarily disconnected (released).
     </remarks>
   </sqlidledisconnect>
   <sqlmoreresults>
@@ -8126,84 +8199,110 @@
       Copies another result set to a X# cursor if more result sets are available.
     </summary>
     <param name="nStatementHandle">
-
-      Specifies the statement handle to the data source returned by SQLCONNECT( ).
-
+      Specifies the statement handle to the data source returned by SqlConnect( ).
     </param>
     <param name="cCursorName">
-
-      Specifies the name of the X# cursor to which the result set is sent. If you do not include a cursor name, X# uses the default name SQLRESULT.
+      Specifies the name of the X# cursor to which the result set is sent. If you do not include a cursor name, X# uses the default name SQLRESULT.<br/>
       For multiple result sets, new cursor names are derived by appending an incremented number to the name of the first cursor.
-
     </param>
     <param name="">
-
-      Specifies the name of the array to populate with row count information. If the array doesn’t exist, it is created. The array has two columns: 1 – Alias, 2 –Count.
-      0
-      Character
-      Indicates that SQL command did not return any results. Either no records were returned or the SQL command failed before results could be returned. (final <b>SQLMORERESULTS</b> call) or execution failed before any result could be processed. Can be only on the first row. Count column for the row contains value -1.
-      Non-empty uppercase string
-      Alias of the cursor – target for the record fetch operation. The Count column for the row contains the number of fetched records or -1 if fetch failed. If Count is -1, cursor may not have been created. During asynchronous execution, the fetch process for a cursor can be split between multiple SQLMORERESULTS or SQLEXEC calls; each call returns its own fetch count for the cursor.
-      Empty String
-      Indicates that the SQL command (Insert, UPDATE, or DELETE) did not return a result set.
-      Number of affected or fetched records.
-      Integer
-      Indicates the number of affected records as returned by the ODBC SQLRowCount function.
-      Returns -1 if the number of records is unavailable.
-
+      Specifies the name of the array to populate with row count information. If the array doesn’t exist, it is created.
+      The array has two columns: 1 – Alias, 2 –Count.
     </param>
     <returns>
-      Numeric. SQLMORERESULTS( ) returns 0 if the SQL statement is still executing, returns 1 if it is finished executing, and returns 2 if no more data is found. In non-batch mode, SQLMORERESULTS( ) should be called after each successful SQLEXEC( ) call until SQLMORERESULTS( ) returns 2 (no more data found). The setting of the SQLSetPROP( ) batch mode option determines whether SQLEXEC( ) executes a SQL statement in batch or non-batch mode.
-      SQLMORERESULTS( ) returns – 1 if a connection level error occurs, and returns – 2 if an environment level error occurs.
+      Numeric. SqlMoreResults( ) returns 0 if the SQL statement is still executing, returns 1 if it is finished executing, and returns 2 if no more data is found. In non-batch mode, SqlMoreResults( ) should be called after each successful SqlExec( ) call until SqlMoreResults( ) returns 2 (no more data found). The setting of the SqlSetProp( ) batch mode option determines whether SqlExec( ) executes a SQL statement in batch or non-batch mode.
+      SqlMoreResults( ) returns – 1 if a connection level error occurs, and returns – 2 if an environment level error occurs.
     </returns>
     <remarks>
-      SQLMORERESULTS( ) determines if more result sets are available from a SQL statement executed with SQLEXEC( ) in non-batch mode. If more result sets are available, they are copied to a X# cursor, one set at a time.
-      SQLMORERESULTS( ) is one of the four functions that you can execute either synchronously or asynchronously. The asynchronous setting of SQLSetPROP( ) determines if these functions execute synchronously or asynchronously. In asynchronous mode, you must call SQLMORERESULTS( ) repeatedly until it returns a value other than 0 (still executing).
+      SqlMoreResults( ) determines if more result sets are available from a SQL statement executed with SqlExec( ) in non-batch mode.
+      If more result sets are available, they are copied to a X# cursor, one set at a time.<br/>
+      SqlMoreResults( ) is one of the four functions that you can execute either synchronously or asynchronously.
+      The asynchronous setting of SqlSetProp( ) determines if these functions execute synchronously or asynchronously.
+      In asynchronous mode, you must call SqlMoreResults( ) repeatedly until it returns a value other than 0 (still executing).<br/>
+      <list type="table">
+        <listheader>
+          <term>Column</term>
+          <description>Array contents</description>
+          <description>Data type</description>
+          <description>Description</description>
+        </listheader>
+        <item>
+          <term>Alias</term>
+          <description>0</description>
+          <description>Character</description>
+          <description>
+            Indicates that SQL command did not return any results. Either no records were returned or the SQL command failed before results could be returned.
+            (final <b>SqlMoreResults</b> call) or execution failed before any result could be processed. Can be only on the first row.
+            Count column for the row contains value -1.
+          </description>
+        </item>
+        <item>
+          <term></term>
+          <description>Non-empty uppercase string</description>
+          <description>Character</description>
+          <description>
+            Alias of the cursor – target for the record fetch operation. The Count column for the row contains the number of fetched records or -1 if fetch failed.
+            If Count is -1, cursor may not have been created. During asynchronous execution, the fetch process for a cursor can be split between multiple
+            SqlMoreResults or SqlExec calls; each call returns its own fetch count for the cursor.
+          </description>
+        </item>
+        <item>
+          <term></term>
+          <description>Character</description>
+          <description>Empty String</description>
+          <description>Indicates that the SQL command (Insert, UPDATE, or DELETE) did not return a result set.</description>
+        </item>
+        <item>
+          <term>Count</term>
+          <description>Number of affected or fetched records.</description>
+          <description>Integer</description>
+          <description>Indicates the number of affected records as returned by the ODBC SQLRowCount function. Returns -1 if the number of records is unavailable.</description>
+        </item>
+      </list>
     </remarks>
     <example>
        <code language="X#">
-        = SQLSetPROP(gnHandle, 'BatchMode', .F.)  &amp;&amp; Individual result sets
-        = SQLEXEC(gnHandle, 'Select * From authors;
+        = SqlSetProp(gnHandle, 'BatchMode', .F.)  &amp;&amp; Individual result sets
+        = SqlExec(gnHandle, 'Select * From authors;
         Select * From titles')
-        = SQLMORERES(gnHandle)  &amp;&amp; First result set
-        = SQLMORERES(gnHandle)  &amp;&amp; Second result set
+        = SqlMoreRes(gnHandle)  &amp;&amp; First result set
+        = SqlMoreRes(gnHandle)  &amp;&amp; Second result set
       </code>
     </example>
   </sqlmoreresults>
   <sqlprepare>
     <summary>
-      Prepares a SQL statement for remote execution by SQLEXEC( ).
+      Prepares a SQL statement for remote execution by SqlExec( ).
     </summary>
     <param name="nStatementHandle">
-
-      Specifies the statement handle to the data source returned by SQLCONNECT( ).
-
+      Specifies the statement handle to the data source returned by SqlConnect( ).
     </param>
     <param name="cSQLCommand">
-
-      Specifies the SQL statement passed to the data source.
-      The SQL statement can contain a parameterized WHERE clause, which creates a parameterized view. All parameters in the WHERE clause must be defined before SQLPREPARE( ) is issued. For example, if the parameters are variables, the variables must be created and initialized before SQLPREPARE( ) is issued. For more information about parameterized views, see How to: Create Parameterized Views.
-
+      Specifies the SQL statement passed to the data source.<br/>
+      The SQL statement can contain a parameterized Where clause, which creates a parameterized view. All parameters in the Where clause must be defined before
+      SqlPrepare( ) is issued. For example, if the parameters are variables, the variables must be created and initialized before SqlPrepare( ) is issued.
+      For more information about parameterized views, see How to: Create Parameterized Views.
     </param>
     <param name="cCursorName">
-
-      Specifies the name of the X# cursor to which the result set is sent. If you don't include a cursor name, X# uses the default name SQLRESULT.
+      Specifies the name of the X# cursor to which the result set is sent. If you don't include a cursor name, X# uses the default name SQLRESULT.<br/>
       For multiple result sets, new cursor names are derived by appending an incremented number to the name of the first cursor.
     </param>
     <returns>
       Numeric
     </returns>
     <remarks>
-      SQLPREPARE( ) sends the SQL statement to the data source where it is compiled for faster execution. After the SQL statement is compiled, it can be executed with SQLEXEC( ). If SQLEXEC( ) is used to execute a SQL statement prepared with SQLPREPARE( ), only the statement handle is required in SQLEXEC( ).
+      SqlPrepare( ) sends the SQL statement to the data source where it is compiled for faster execution. After the SQL statement is compiled,
+      it can be executed with SqlExec( ). If SqlExec( ) is used to execute a SQL statement prepared with SqlPrepare( ),
+      only the statement handle is required in SqlExec( ).
     </remarks>
     <example>
        <code language="X#">
         gcAuthor = 'Smith'
-        = SQLPREPARE(gnHandle, 'Select * From authors;   WHERE au_lname = ?gcAuthor')
-        = SQLEXEC(gnHandle)
+        = SqlPrepare(gnHandle, 'Select * From authors;   Where au_lname = ?gcAuthor')
+        = SqlExec(gnHandle)
         ...
         gcAuthor = 'Jones'
-        = SQLEXEC(gnHandle)
+        = SqlExec(gnHandle)
       </code>
     </example>
   </sqlprepare>
@@ -8212,108 +8311,211 @@
       Cancels any changes made during the current transaction.
     </summary>
     <param name="nStatementHandle">
-
-      Specifies the statement handle to the data source returned by SQLCONNECT( ).
+      Specifies the statement handle to the data source returned by SqlConnect( ).
     </param>
     <returns>
-      Numeric. SQLROLLBACK( ) returns 1 if the transaction is successfully rolled back; otherwise, it returns -1. If SQLROLLBACK( ) returns -1, you can use AERROR( ) to determine why the transaction could not be rolled back.
+      Numeric. SqlRollBack( ) returns 1 if the transaction is successfully rolled back; otherwise, it returns -1.
+      If SqlRollBack( ) returns -1, you can use AError( ) to determine why the transaction could not be rolled back.
     </returns>
     <remarks>
-      If manual transactions are in effect (the SQLSetPROP( ) transaction property is set to manual), you can send multiple updates to remote tables. The updates can all be rolled back with SQLROLLBACK( ).
-      Updates can be committed with SQLCOMMIT( ).
+      If manual transactions are in effect (the SqlSetProp( ) transaction property is set to manual), you can send multiple updates to remote tables.
+      The updates can all be rolled back with SqlRollBack( ).<br/>
+      Updates can be committed with SqlCommit( ).
     </remarks>
     <example>
        <code language="X#">
-        = SQLSetPROP(gnHandle, 'Transactions', 2)  &amp;&amp; manual
-        = SQLEXEC(gnHandle, "Insert Into authors (au_id, au_lname);
+        = SqlSetProp(gnHandle, 'Transactions', 2)  &amp;&amp; manual
+        = SqlExec(gnHandle, "Insert Into authors (au_id, au_lname);
         VALUES ('aupoe', 'Poe')")
-        = SQLROLLBACK(gnHandle)
+        = SqlRollBack(gnHandle)
       </code>
     </example>
   </sqlrollback>
+  <sqlsetfactory>
+    <summary>
+      This function allows you to choose the Ado.Net provider that is used for the subsequent <b>SqlConnect()</b> or <b>SqlStringConnect()</b> calls.
+    </summary>
+    <param name="uFactory">
+      This is either the name of a built-in SQL Factory as a string. Valid values are at this moment: "ODBC", "OLEDB" and "SQLSERVER". <br/>
+      You can also pass an object that implements ISqlFactory. This object is then used to create the connection, its commands etc.<br/>
+      If you do not pass this parameter then you can retrieve the current factory.
+    </param>
+    <returns>
+      The currently installed SqlFactory class.
+    </returns>
+  </sqlsetfactory>
   <sqlsetprop>
     <summary>
-      Specifies settings for an active connection. You can use SQLSetPROP( ) to specify settings at the connection level. To specify X# default settings at the environment level, include 0 as the statement handle.
+      Specifies settings for an active connection. You can use SqlSetProp( ) to specify settings at the connection level.
+      To specify application default settings at the environment level, include 0 as the statement handle.
     </summary>
     <param name="nStatementHandle">
-
-      Specifies the statement handle to the data source returned by SQLCONNECT( ).
-
+      Specifies the statement handle to the data source returned by SqlConnect( ).
     </param>
     <param name="cSetting">
-
-      Specifies the setting. The following table lists the values for cSetting.
-      Asynchronous
-      Specifies whether result sets are returned synchronously (False (.F.), the default), or asynchronously (True (.T.)). Read/write.
-      BatchMode
-      Specifies whether SQLEXEC( ) returns result sets all at once (True (.T.), the default), or individually with SQLMORERESULTS( ) (False (.F.)).  Read/write.
-      ConnectBusy
-      Contains True (.T.) if a shared connection is busy; otherwise contains False (.F.).  Read-only.
-      ConnectString
-      The login connection string.  Read-only.
-      ConnectTimeOut
-      Specifies the time to wait (in seconds) before returning a connection time-out error. If you specify 0, the wait is indefinite and a time-out error is never returned. ConnectTimeOut can be 0 to 600. The default is 15.  Read/write.
-      DataSource
-      The name of the data source as defined in the ODBC.INI file.  Read/write.
-      DisconnectRollback
-      Specifies if a pending transaction is committed or rolled back when SQLDISCONNECT( ) is called for the last connection handle.
-      The default is false (.F.), indicating that a pending transaction is committed when SQLDISCONNECT( ) is called for the last connection handle.
-      Specify true (.T.) to roll back a pending transaction when SQLDISCONNECT( ) is called for the last connection handle.
-      Connections with automatic transaction processing are not affected by this setting.
-      DispLogin
-      Contains a numeric value that determines when the ODBC Login dialog box is displayed. DispLogin may assume the following values:
-      1 or DB_PROMPTCOMPLETE (from FOXPRO.H).1 is the default.
-      2 or DB_PROMPTALWAYS (from FOXPRO.H).
-      3 or DB_PROMPTNEVER (from FOXPRO.H).
-      If 1 or DB_PROMPTCOMPLETE is specified, X# displays the ODBC Login dialog box only if any required information is missing.
-      If 2 or DB_PROMPTALWAYS is specified, the ODBC Login dialog box is always displayed, making it possible for you to change settings before connecting.
-      If 3 or DB_PROMPTNEVER is specified, the ODBC Login dialog box isn't displayed and X# generates an error if the required login information isn't available. Read/write.
-      DispWarnings
-      Specifies if error messages are displayed (True (.T.)) or are not displayed (False (.F.), the default).  Read/write.
-      IdleTimeout
-      The idle timeout interval in minutes. Active connections are deactivated after the specified time interval. The default value is 0 (wait indefinitely).  Read/write.
-      ODBChdbc
-      The internal ODBC connection handle, which may be used by external library files (FLL files) to call ODBC.  Read-only.
-      ODBChstmt
-      The internal ODBC statement handle, which may be used by external library files (FLL files) to call ODBC.  Read-only.
-      PacketSize
-      The size of the network packet used by the connection. Adjusting this value can improve performance. The default value is 4096 bytes (4K).  Read/write
-      Password
-      The connection password.  Read-only.
-      QueryTimeOut
-      Specifies the time to wait (in seconds) before returning a general time-out error. If you specify 0 (the default), the wait is indefinite and a time-out error is never returned. QueryTimeOut can be 0 to 600.  Read/write.
-      Shared
-      Specifies whether the underlying connection is a shared connection (True (.T.)), or not (False (.F.)).
-      Transactions
-      Contains a numeric value that determines how the connection manages transactions on the remote table. Transactions may assume the following values:
-      1 or DB_TRANSAUTO (from FOXPRO.H).1 is the default. Transaction processing for the remote table is automatically handled.
-      2 or DB_TRANSMANUAL (from FOXPRO.H). Transaction processing is handled manually through SQLCOMMIT( ) and SQLROLLBACK( ). Read/write.
-      UserId
-      The user identification. Read-only.
-      WaitTime
-      The amount of time in milliseconds that elapses before X# checks if the SQL statement has completed executing. The default is 100 milliseconds.  Read/write.
-
+      Specifies the setting. The table in the remarks section lists the values for cSetting.
     </param>
     <param name="eExpression">
-
       Specifies the value for the setting you designate with cSetting. If you omit eExpression, the default value is restored for the setting.
     </param>
     <returns>
-      Numeric data type. SQLSetPROP( ) returns 1 if it is successful. Otherwise, it returns – 1 if a connection level error occurs or – 2 if an environment level error occurs.
+      Numeric data type. SqlSetProp( ) returns 1 if it is successful.
+      Otherwise, it returns – 1 if a connection level error occurs or – 2 if an environment level error occurs.
     </returns>
     <remarks>
-      You can use SQLGETPROP( ) to return the current value for a specified setting.
-      You must disable the Open Database Connectivity (ODBC) login dialog box to support SQL pass through with Microsoft Transaction Server. To disable the ODBC login dialog box, use the statement codeSQLSetPROP(cStatementHandle, 'DispLogin', 3)/code, where cStatementHandle is the statement handle returned by <b>SQLCONNECT( )</b>. You can also disable the ODBC login dialog box in the Connection Designer.
-      The ConnectTimeOut option can be set only at the X# level and has no equivalent at the connection level. You can set all other options at either the connection or the X# level. Each option set at the X# level serves as a default value for subsequent connections.
+      You can use SqlGetProp( ) to return the current value for a specified setting.<br/>
+      You must disable the Open Database Connectivity (ODBC) login dialog box to support SQL pass through with Microsoft Transaction Server.
+      To disable the ODBC login dialog box, use the statement codeSqlSetProp(cStatementHandle, 'DispLogin', 3)/code, where cStatementHandle is
+      the statement handle returned by <b>SqlConnect( )</b>. You can also disable the ODBC login dialog box in the Connection Designer.<br/>
+      The ConnectTimeOut option can be set only at the application level and has no equivalent at the connection level. You can set all other options at either the
+      connection or the application level. Each option set at the application level serves as a default value for subsequent connections.<br/>
+      <list type="table">
+        <listheader>
+          <item>Setting</item>
+          <description>Description</description>
+          <description>Read/Write</description>
+        </listheader>
+        <item>
+          <term>Asynchronous</term>
+          <description>Specifies whether result sets are returned synchronously (False (.F.), the default), or asynchronously (True (.T.)). </description>
+          <description>Read/write</description>
+        </item>
+        <item>
+          <term>BatchMode</term>
+          <description>
+            Specifies whether SqlExec( ) returns result sets all at once (True (.T.), the default),
+            or individually with SqlMoreResults( ) (False (.F.)). 
+          </description>
+          <description>Read/write</description>
+        </item>
+        <item>
+          <term>ConnectBusy</term>
+          <description>Contains True (.T.) if a shared connection is busy; otherwise contains False (.F.).</description>
+          <description>Read-only</description>
+        </item>
+        <item>
+          <term>ConnectString</term>
+          <description>The login connection string.</description>
+          <description>Read-only</description>
+        </item>
+        <item>
+          <term>ConnectTimeOut</term>
+          <description>
+            Specifies the time to wait (in seconds) before returning a connection time-out error.
+            If you specify 0, the wait is indefinite and a time-out error is never returned. ConnectTimeOut can be 0 to 600. The default is 15.
+          </description>
+          <description>Read/write</description>
+        </item>
+        <item>
+          <term>DataSource</term>
+          <description>The name of the data source as defined in the ODBC.INI file for ODBC connections. </description>
+          <description>Read/write</description>
+        </item>
+        <item>
+          <term>DisconnectRollback</term>
+          <description>
+            Specifies if a pending transaction is committed or rolled back when SqlDisconnect( ) is called for the last connection handle.<br/>
+            The default is false (.F.), indicating that a pending transaction is committed when SqlDisconnect( ) is called for the last connection handle.<br/>
+            Specify true (.T.) to roll back a pending transaction when SqlDisconnect( ) is called for the last connection handle.<br/>
+            Connections with automatic transaction processing are not affected by this setting.
+            <description>Read/write</description>
+          </description>
+        </item>
+        <item>
+          <term>DispLogin</term>
+          <description>
+            Contains a numeric value that determines when the ODBC Login dialog box is displayed. DispLogin may assume the following values:<br/>
+            1 or DB_PROMPTCOMPLETE (from Foxpro.H).1 is the default.<br/>
+            2 or DB_PROMPTALWAYS (from Foxpro.H).<br/>
+            3 or DB_PROMPTNEVER (from Foxpro.H).<br/>
+            If 1 or DB_PROMPTCOMPLETE is specified, X# displays the ODBC Login dialog box only if any required information is missing.<br/>
+            If 2 or DB_PROMPTALWAYS is specified, the ODBC Login dialog box is always displayed, making it possible for you to change settings before connecting.<br/>
+            If 3 or DB_PROMPTNEVER is specified, the ODBC Login dialog box isn't displayed and X# generates an error if the required login information isn't available. Read/write.
+          </description>
+          <description>Read/write</description>
+        </item>
+        <item>
+          <term>DispWarnings</term>
+          <description>Specifies if error messages are displayed (True (.T.)) or are not displayed (False (.F.), the default).  </description>
+          <description>Read/write</description>
+        </item>
+        <item>
+          <term>IdleTimeout</term>
+          <description>
+            The idle timeout interval in minutes. Active connections are deactivated after the specified time interval.
+            The default value is 0 (wait indefinitely).  
+          </description>
+          <description>Read/write</description>
+        </item>
+        <item>
+          <term>ODBChdbc</term>
+          <description>The internal Ado.Net DbConnection object.</description>
+          <description>Read-only</description>
+        </item>
+        <item>
+          <term>ODBChstmt</term>
+          <description>The internal Ado.Net DbCommand object.</description>
+          <description>Read-only</description>
+        </item>
+        <item>
+          <term>PacketSize</term>
+          <description>
+            The size of the network packet used by the connection. Adjusting this value can improve performance.
+            The default value is 4096 bytes (4K).<br/>
+            Changing this property does not work for all providers.
+          </description>
+          <description>Read/write</description>
+        </item>
+        <item>
+          <term>Password</term>
+          <description>The connection password. When you create a connection with the Login dialog then this password is not always available.</description>
+          <description>Read-only</description>
+        </item>
+        <item>
+          <term>QueryTimeOut</term>
+          <description>
+            Specifies the time to wait (in seconds) before returning a general time-out error. If you specify 0 (the default),
+            the wait is indefinite and a time-out error is never returned. QueryTimeOut can be 0 to 600.  
+          </description>
+          <description>Read/write</description>
+        </item>
+        <item>
+          <term>Shared</term>
+          <description>Specifies whether the underlying connection is a shared connection (True (.T.)), or not (False (.F.)).</description>
+          <description>Read-only</description>
+        </item>
+        <item>
+          <term>Transactions</term>
+          <description>
+            Contains a numeric value that determines how the connection manages transactions on the remote table. Transactions may assume the following values:<br/>
+            1 or DB_TRANSAUTO (from Foxpro.H).1 is the default. Transaction processing for the remote table is automatically handled.<br/>
+            2 or DB_TRANSMANUAL (from Foxpro.H). Transaction processing is handled manually through SqlCommit( ) and SqlRollBack( ). <br/>
+          </description>
+          <description>Read/write</description>
+        </item>
+        <item>
+          <term>UserId</term>
+          <description>The user identification. When you create a connection with the Login dialog then this UserId is not always available.</description>
+          <description>Read-only</description>
+        </item>
+        <item>
+          <term>WaitTime</term>
+          <description>
+            The amount of time in milliseconds that elapses before X# checks if the SQL statement has completed executing.
+            The default is 100 milliseconds.  
+          </description>
+          <description>Read/write</description>
+        </item>
+      </list>
     </remarks>
     <example>
        <code language="X#">
         Close ALL
         Clear ALL
         Clear
-        nHandle=SQLCONNECT()
+        nHandle=SqlConnect()
         IF nHandle &gt; 0
-        nSet=SQLSetPROP(nHandle, "PacketSize", 2048 )
+        nSet=SqlSetProp(nHandle, "PacketSize", 2048 )
         IF nSet &gt; 0
         =MESSAGEBOX("PacketSize was set to 2048",0,"Connection Results")
         ELSE
@@ -8322,7 +8524,7 @@
         ELSE
         =MESSAGEBOX("No Connection",0,"Connection Results")
         ENDIF
-        =SQLDISCONNECT(nHandle)
+        =SqlDisconnect(nHandle)
       </code>
     </example>
   </sqlsetprop>
@@ -8332,51 +8534,51 @@
     </summary>
     <param name="uSharedOrConnectString">
       This parameter can be either <b>lShared</b> in which case it specifies whether to create a shared connection. <br/>
-      When a logic parameter is used then a dialog will be shown to create a SQL connection.
-      lShared
-      False (.F.)
-      <b>SQLSTRINGCONNECT( )</b> does not create a shared connection. (Default)
-      True (.T.)
-      <b>SQLSTRINGCONNECT( )</b> creates a shared connection. <br/>
-      But the parameter can also specify <b>cConnectString</b>, which specifies the data source connection string required by some Open Database Connectivity (ODBC) drivers. X# passes the connection string to the ODBC driver. For more information about data source connection strings, see your ODBC driver documentation.
-      You can also choose a data source from the Select Connection or Data Source Dialog Box, which appears when you call <b>SQLSTRINGCONNECT( )</b> without cConnectString.
-
+      When a logic parameter is used then a dialog will be shown to create a SQL connection.<br/>
+      False (.F.)- <b>SqlStringConnect( )</b> does not create a shared connection. (Default)<br/>
+      True (.T.) - <b>SqlStringConnect( )</b> creates a shared connection. <br/>
+      But the parameter can also specify <b>cConnectString</b>, which specifies the data source connection string required by the Ado.Net connection object. 
+      X# passes the connection string to the Ado.Net DBConnect object. For more information about data source connection strings,
+      see your Ado.Net documentation.<br/>
+      You can also choose a data source from the Select Connection or Data Source Dialog Box, which appears when you
+      call <b>SqlStringConnect( )</b> without cConnectString.
     </param>
     <param name="lSharable">
-
       Specifies if the data source specified with cConnectString has a shared connection.
     </param>
     <returns>
-      Numeric data type. <b>SQLSTRINGCONNECT( )</b> returns a positive nonzero numeric value as the statement handle if you successfully connect to the data source. <b>SQLSTRINGCONNECT( )</b> returns –1 if it cannot make the connection.
+      Numeric data type. <b>SqlStringConnect( )</b> returns a positive nonzero numeric value as the statement handle if you successfully connect to the data source.
+      <b>SqlStringConnect( )</b> returns –1 if it cannot make the connection.<br/>
       You should store this statement handle in a memory variable and use the variable in subsequent function calls that require a connection handle.
     </returns>
     <remarks>
-      The <b>SQLCONNECT( )</b> and <b>SQLSTRINGCONNECT( )</b> functions return a numeric value as the statement handle rather than a connection handle. You cannot obtain a connection handle directly. You can still set and get connection properties using the <b>SQLSetPROP( )</b> and <b>SQLGETPROP( )</b> functions by passing the statement handle for that connection and the string, "Shared", as arguments. All other SQL functions use a statement handle instead of a connection handle.
-
-      <b>SQLSTRINGCONNECT( )</b> always creates a new connection when it successfully makes a connection. However, setting the lShared parameter determines whether you can share the connection later. If you specify a connection as shareable by setting lShared to True (.T.), you can share the connection later by calling <b>SQLCONNECT( )</b> and passing the numeric value of the connection handle as the first parameter. For more information, see SQLCONNECT( ) Function.
-      You can use <b>SQLCONNECT( )</b> to obtain a new statement handle on a shared connection that was opened using <b>SQLSTRINGCONNECT( )</b>.
+      The <b>SqlConnect( )</b> and <b>SqlStringConnect( )</b> functions return a numeric value as the statement handle rather than a connection handle.
+      You cannot obtain a connection handle directly. You can still set and get connection properties using the <b>SqlSetProp( )</b> and <b>SqlGetProp( )</b>
+      functions by passing the statement handle for that connection and the string, "Shared", as arguments. All other SQL functions use a statement
+      handle instead of a connection handle.<br/>
+      <b>SqlStringConnect( )</b> always creates a new connection when it successfully makes a connection.
+      However, setting the lShared parameter determines whether you can share the connection later. If you specify a connection as shareable
+      by setting lShared to True (.T.), you can share the connection later by calling <b>SqlConnect( )</b> and passing the numeric value of the connection handle
+      as the first parameter. For more information, see SqlConnect( ) Function.<br/>
+      You can use <b>SqlConnect( )</b> to obtain a new statement handle on a shared connection that was opened using <b>SqlStringConnect( )</b>.
     </remarks>
     <example>
-
-      <b>Example 1</b>
-
-      The following example assumes that an ODBC data source called MyFoxSQLNT exists and is available. <b>SQLSTRINGCONNECT( )</b> returns a numeric value, which is stored to a variable named codegnHandle/code.
-      If you successfully connect to the data source, <b>SQLSTRINGCONNECT( )</b> returns a positive number, a dialog box appears, and <b>SQLDISCONNECT( )</b> is called to disconnect from the data source.
-      If you cannot connect to the data source, <b>SQLSTRINGCONNECT( )</b> returns a negative number and displays a message.
+      <b>Example 1</b><br/>
+      The following example assumes that an ODBC data source called MyFoxSQLNT exists and is available. <b>SqlStringConnect( )</b> returns a numeric value, which is stored to a variable named codegnHandle/code.
+      If you successfully connect to the data source, <b>SqlStringConnect( )</b> returns a positive number, a dialog box appears, and <b>SqlDisconnect( )</b> is called to disconnect from the data source.
+      If you cannot connect to the data source, <b>SqlStringConnect( )</b> returns a negative number and displays a message.
        <code language="X#">
-        STORE SQLSTRINGCONNECT('dsn=MyFoxSQLNT;uid=myUserID;pwd=myPassword')
-        TO gnConnHandle
+        STORE SqlStringConnect('dsn=MyFoxSQLNT;uid=myUserID;pwd=myPassword') TO gnConnHandle
         IF gnConnHandle &lt; 0
         = MESSAGEBOX('Cannot make connection', 16, 'SQL Connect Error')
         ELSE
         = MESSAGEBOX('Connection made', 48, 'SQL Connect Message')
-        = SQLDISCONNECT(gnHandle)
+        = SqlDisconnect(gnHandle)
         ENDIF
       </code>
 
-      <b>Example 2</b>
-
-      The following examples show how you can use the <b>SQLSTRINGCONNECT( )</b> function without a Data Source Name (DSN).
+      <b>Example 2</b><br/>
+      The following examples show how you can use the <b>SqlStringConnect( )</b> function without a Data Source Name (DSN).
        <code language="X#">lcDSNLess="driver = SQL Server;server=&lt;servername&gt;;uid=&lt;userid&gt;;pwd=&lt;password&gt;"</code>
       -or-
        <code language="X#">lcDSNLess="driver = {SQL Server};server=&lt;servername&gt;;uid=&lt;userid&gt;;pwd=&lt;password&gt;" </code>
@@ -8389,15 +8591,13 @@
         + "Database=PUBS;" ;
         + "WSID=&lt;machine name or userid&gt;;" ;
         + "APP=MicroX(R) Sample App"
-        lnConnHandle=SQLSTRINGCONNECT(m.lcDSNLess)
+        lnConnHandle=SqlStringConnect(m.lcDSNLess)
       </code>
-
-      <b>Example 3</b>
-
-      Each of the following examples creates a new shared connection. In the first statement, the Select Connection or Data Source Dialog Box appears and <b>SQLSTRINGCONNECT( )</b> creates the resulting connection as shared.
+      <b>Example 3</b><br/>
+      Each of the following examples creates a new shared connection. In the first statement, the Select Connection or Data Source Dialog Box appears and <b>SqlStringConnect( )</b> creates the resulting connection as shared.
        <code language="X#">
-        SQLSTRINGCONNECT(.T.)
-        SQLSTRINGCONNECT('myConnectionString', .T.)
+        SqlStringConnect(.T.)
+        SqlStringConnect('myConnectionString', .T.)
       </code>
     </example>
   </sqlstringconnect>
@@ -8406,36 +8606,37 @@
       Stores the names of tables in a data source to a X# cursor.
     </summary>
     <param name="nStatementHandle">
-
-      Specifies the statement handle to the data source returned by SQLCONNECT( ).
-
+      Specifies the statement handle to the data source returned by SqlConnect( ).
     </param>
     <param name="cTableTypes">
-
-      Specifies one or more table types. Valid table types are 'TABLE,' 'VIEW,' 'SYSTEM TABLE,' or any valid data source-specific table type identifier. If you include a list of table types, separate the table types with commas.
-      All table names in the data source are selected if you omit cTableTypes or if cTableTypes is the empty string.
-      The table type you specify must be delimited with single quotation marks. The following example demonstrates how to specify the 'VIEW' and 'SYSTEM TABLE' table types as a string literal.
-       <code language="X#">? SQLTABLES(handle, "'VIEW', 'SYSTEM TABLE'", "mydbresult")</code>
-
+      Specifies one or more table types. Valid table types are 'Table,' 'View,' 'System Table,' or any valid data source-specific table type identifier. 
+      If you include a list of table types, separate the table types with commas.<br/>
+      All table names in the data source are selected if you omit cTableTypes or if cTableTypes is the empty string.<br/>
+      The table type you specify must be delimited with single quotation marks. The following example demonstrates how to specify the 'View' 
+      and 'System Table' table types as a string literal.<br/>
+       <code language="X#">? SqlTables(handle, "'View', 'System Table'", "mydbresult")</code>
     </param>
     <param name="cCursorName">
-
-      Specifies the name of the X# cursor to which the result set is sent. If you don't include a cursor name, X# uses the default name SQLRESULT. The structure of the results depends on the internal SQLTABLES( ) function for the ODBC Handle.
+      Specifies the name of the X# cursor to which the result set is sent. If you don't include a cursor name, X# uses the default name SQLRESULT.
+      The structure of the results depends on the internal SqlTables( ) function for the ODBC Handle.
     </param>
     <returns>
-      Numeric. SQLTABLES( ) returns 1 if the cursor is successfully created, 0 if SQLTABLES( ) is still executing, – 1 if a connection level error occurs, and – 2 if an environment level error occurs.
+      Numeric. SqlTables( ) returns 1 if the cursor is successfully created, 0 if SqlTables( ) is still executing, – 1 if a connection level error occurs,
+      and – 2 if an environment level error occurs.
     </returns>
     <remarks>
-      SQLTABLES( ) is one of the four functions that you can execute either synchronously or asynchronously. The setting of the SQLSetPROP( ) asynchronous option determines if these functions execute synchronously or asynchronously. In asynchronous mode, you must call SQLTABLES( ) repeatedly until it returns a value other than False (.F.), meaning the function is still executing.
+      SqlTables( ) is one of the four functions that you can execute either synchronously or asynchronously.
+      The setting of the SqlSetProp( ) asynchronous option determines if these functions execute synchronously or asynchronously.
+      In asynchronous mode, you must call SqlTables( ) repeatedly until it returns a value other than False (.F.), meaning the function is still executing.
     </remarks>
     <example>
        <code language="X#">
-        STORE SQLCONNECT('MyFoxSQLNT', '&lt;userid&gt;', '&lt;password&gt;') TO gnConnHandle
+        STORE SqlConnect('MyFoxSQLNT', '&lt;userid&gt;', '&lt;password&gt;') TO gnConnHandle
         IF gnConnHandle &lt; 0
         = MESSAGEBOX('Cannot make connection', 16, 'SQL Connect Error')
         ELSE
         = MESSAGEBOX('Connection made', 48, 'SQL Connect Message')
-        STORE SQLTABLES(gnConnHandle, 'TABLE', 'mycursor') TO nTables
+        STORE SqlTables(gnConnHandle, 'Table', 'mycursor') TO nTables
         IF nTables = 1
         Select mycursor
         LIST
@@ -8766,14 +8967,14 @@
       Specifies the work area of the table or cursor in which the changes are discarded.
     </param>
     <returns>
-      Numeric data type. TABLEREVERT( ) returns the number of records for which changes were discarded.
+      Numeric data type. TableREVERT( ) returns the number of records for which changes were discarded.
     </returns>
     <remarks>
-      TABLEREVERT( ) cannot discard changes made to a table or cursor that does not have row or table buffering enabled. If you issue TABLEREVERT( ) and row or table buffering is not enabled, X# generates an error message. Use CursorSetProp( ) to enable or disable row and table buffering.
-      Changes are discarded in the table or cursor open in the currently selected work area if TABLEREVERT( ) is issued without the optional cTableAlias or nWorkArea arguments.
-      TABLEREVERT( ) does not return the record pointer to its original position.
-      TABLEREVERT( ) operates on CursorAdapter objects in the same way as other buffered cursors.
-      In X# 9.0, you cannot issue the TABLEREVERT( ) function when a TABLEUPDATE( ) is in operation.
+      TableREVERT( ) cannot discard changes made to a table or cursor that does not have row or table buffering enabled. If you issue TableREVERT( ) and row or table buffering is not enabled, X# generates an error message. Use CursorSetProp( ) to enable or disable row and table buffering.
+      Changes are discarded in the table or cursor open in the currently selected work area if TableREVERT( ) is issued without the optional cTableAlias or nWorkArea arguments.
+      TableREVERT( ) does not return the record pointer to its original position.
+      TableREVERT( ) operates on CursorAdapter objects in the same way as other buffered cursors.
+      In X# 9.0, you cannot issue the TableREVERT( ) function when a TableUPDATE( ) is in operation.
     </remarks>
     <example>
        <code language="X#">
@@ -8789,7 +8990,7 @@
         Replace cust_id    WITH '***'  &amp;&amp; Changes field contents
         ? 'New cust_id value: '
         ?? cust_id  &amp;&amp; Displays new cust_id value
-        = TABLEREVERT(.T.)  &amp;&amp; Discard all table changes
+        = TableREVERT(.T.)  &amp;&amp; Discard all table changes
         ? 'Reverted cust_id value: '
         ?? cust_id  &amp;&amp; Displays reverted cust_id value
       </code>
@@ -8814,8 +9015,8 @@
       Commit changes made to the table or cursor in the same manner as when nRows = 1. However, an error does not occur when a change cannot be committed. X# continues to process any remaining records in the table or cursor.
       If cErrorArray is included, an array containing error information is created when an error occurs.
       For compatibility with previous X# applications, the nRows parameter also accepts False (.F.) and True (.T.) instead of 0 and 1 respectively.
-      When specifying 0 or 1 for nRows, the record pointer remains on the record where changes could not be committed. To determine why the changes could not be committed, use the AERROR( ) function.
-      When working with <b>CursorAdapter</b> objects and specifying 1 or 2 for nRows, all changes made to the cursor in the following <b>CursorAdapter</b> events must be committed during the same call to <b>TABLEUPDATE( )</b> unless an error occurs:
+      When specifying 0 or 1 for nRows, the record pointer remains on the record where changes could not be committed. To determine why the changes could not be committed, use the AError( ) function.
+      When working with <b>CursorAdapter</b> objects and specifying 1 or 2 for nRows, all changes made to the cursor in the following <b>CursorAdapter</b> events must be committed during the same call to <b>TableUPDATE( )</b> unless an error occurs:
       <b>BeforeInsert</b>
 
       <b>AfterInsert</b>
@@ -8833,7 +9034,7 @@
       False (.F.)
       Commits changes to the table or cursor, starting with the first record and continuing towards the end of the table or cursor. (Default)
       True (.T.)
-      Overwrites any changes made to the table or cursor by another user on a network. The <b>WHERE</b> clause uses only key fields.
+      Overwrites any changes made to the table or cursor by another user on a network. The <b>Where</b> clause uses only key fields.
       When working with <b>CursorAdapter</b> objects, X# passes the value of lForce to the following <b>CursorAdapter</b> events:
       BeforeCursorUpdate
 
@@ -8858,30 +9059,30 @@
     <param name="cErrorArray">
 
       Specifies the name of an array created when nRows = 2 and changes to a record cannot be committed. The array contains a single column containing the record numbers of the records for which changes could not be committed. If you include an array name, you must include either a table or cursor alias cTableAlias or a work area number nWorkArea.
-      If an error other than a simple commit error occurs while updating records, the first element of cErrorArray will contain –1, and you can then use <b>AERROR( )</b> to determine the why the changes could not be committed.
+      If an error other than a simple commit error occurs while updating records, the first element of cErrorArray will contain –1, and you can then use <b>AError( )</b> to determine the why the changes could not be committed.
       X# passes the value of cErrorArray, when it exists, to the <b>CursorAdapter</b> AfterCursorUpdate event.
     </param>
     <returns>
-      Logical data type. <b>TABLEUPDATE( )</b> returns True (.T.) if changes to all records are committed.
-      Otherwise, <b>TABLEUPDATE( )</b> returns False (.F.) indicating a failure. An ON ERROR routine isn't executed. The AERROR( ) function can be used to retrieve information about the cause of the failure.
-      <b>TABLEUPDATE( )</b> always returns True (.T.) when you are updating data, using Table Buffering, and updating the table or tables in the data source from multiple clients when setting <b>BatchUpdateCount</b> to a value greater than 1. Therefore, avoid setting <b>BatchUpdateCount</b> to a value greater than 1 in these scenarios.
+      Logical data type. <b>TableUPDATE( )</b> returns True (.T.) if changes to all records are committed.
+      Otherwise, <b>TableUPDATE( )</b> returns False (.F.) indicating a failure. An ON ERROR routine isn't executed. The AError( ) function can be used to retrieve information about the cause of the failure.
+      <b>TableUPDATE( )</b> always returns True (.T.) when you are updating data, using Table Buffering, and updating the table or tables in the data source from multiple clients when setting <b>BatchUpdateCount</b> to a value greater than 1. Therefore, avoid setting <b>BatchUpdateCount</b> to a value greater than 1 in these scenarios.
     </returns>
     <remarks>
 
-      <b>TABLEUPDATE( )</b> cannot commit changes made to a table or cursor that does not have row or table buffering enabled. If you issue <b>TABLEUPDATE( )</b> and row or table buffering is not enabled, X# generates an error message. However, <b>TABLEUPDATE( )</b> can still commit changes to a table or cursor that has validation rules. To enable or disable row and table buffering, use <b>CursorSetProp( )</b>.
-      Changes are committed to the table or cursor open in the currently selected work area if <b>TABLEUPDATE( )</b> is issued without the optional cTableAlias or nWorkArea arguments.
-      If table buffering is used and multiple records are updated, <b>TABLEUPDATE( )</b> moves the record pointer to the last record updated.
-      Calling <b>TABLEUPDATE( )</b> for a local table or view that does not use key fields generates a long <b>WHERE</b> clause to find the update row. The default number of fields supported in the <b>WHERE</b> clause is 40. If you receive the error SQL: Statement too long (Error 1812), you should either use a key field for the update or increase the complexity of the <b>WHERE</b> clause with SYS(3055). If you use the <b>SYS(3055)</b> function, increase its value to a number that is eight times the number of fields in the table as shown in the following example:
+      <b>TableUPDATE( )</b> cannot commit changes made to a table or cursor that does not have row or table buffering enabled. If you issue <b>TableUPDATE( )</b> and row or table buffering is not enabled, X# generates an error message. However, <b>TableUPDATE( )</b> can still commit changes to a table or cursor that has validation rules. To enable or disable row and table buffering, use <b>CursorSetProp( )</b>.
+      Changes are committed to the table or cursor open in the currently selected work area if <b>TableUPDATE( )</b> is issued without the optional cTableAlias or nWorkArea arguments.
+      If table buffering is used and multiple records are updated, <b>TableUPDATE( )</b> moves the record pointer to the last record updated.
+      Calling <b>TableUPDATE( )</b> for a local table or view that does not use key fields generates a long <b>Where</b> clause to find the update row. The default number of fields supported in the <b>Where</b> clause is 40. If you receive the error SQL: Statement too long (Error 1812), you should either use a key field for the update or increase the complexity of the <b>Where</b> clause with SYS(3055). If you use the <b>SYS(3055)</b> function, increase its value to a number that is eight times the number of fields in the table as shown in the following example:
        <code language="X#">SYS(3055, 8 * MIN(40, FCOUNT( ))</code>
-      When performing a batched <b>TABLEUPDATE( )</b> operation, due to the way that Open Database Connectivity (ODBC) behaves, X# is unable to detect conflicts when no error is generated by the server, yet nothing is updated, for example, no row matches the <b>WHERE</b> clause. This can occur when you use WhereType set to DB_KEYANDUPDATABLE, DB_KEYANDMODIFIED, or DB_KEYANDTIMESTAMP, and another user has changed one of the underlying values in the <b>WHERE</b> clause such that the row is not found by the update statement.
+      When performing a batched <b>TableUPDATE( )</b> operation, due to the way that Open Database Connectivity (ODBC) behaves, X# is unable to detect conflicts when no error is generated by the server, yet nothing is updated, for example, no row matches the <b>Where</b> clause. This can occur when you use WhereType set to DB_KEYANDUPDATable, DB_KEYANDMODIFIED, or DB_KEYANDTIMESTAMP, and another user has changed one of the underlying values in the <b>Where</b> clause such that the row is not found by the update statement.
 
       <b>Interaction with CursorAdapter Objects</b>   The following behaviors apply when working with <b>CursorAdapter</b> objects:
 
-      <b>TABLEUPDATE( )</b> operates only on the cursor associated with the <b>CursorAdapter</b> object.
+      <b>TableUPDATE( )</b> operates only on the cursor associated with the <b>CursorAdapter</b> object.
 
-      <b>TABLEUPDATE( )</b> executes commands according to the data source type and those stored in the <b>CursorAdapter</b> <b>InsertCmd</b>, <b>UpdateCmd</b>, or <b>DeleteCmd</b> properties against the current cursor row or rows as appropriate.
+      <b>TableUPDATE( )</b> executes commands according to the data source type and those stored in the <b>CursorAdapter</b> <b>InsertCmd</b>, <b>UpdateCmd</b>, or <b>DeleteCmd</b> properties against the current cursor row or rows as appropriate.
 
-      <b>TABLEUPDATE( )</b> passes the value of codeGetFldState(1)/code to the following <b>CursorAdapter</b> events of each row affected:
+      <b>TableUPDATE( )</b> passes the value of codeGetFldState(1)/code to the following <b>CursorAdapter</b> events of each row affected:
 
       BeforeInsert
 
@@ -8892,7 +9093,7 @@
       BeforeDelete
 
       For more information about <b>GetFldState( )</b>, see GetFldState( ) Function.
-      The successful completion of <b>TABLEUPDATE( )</b> resets the field states according to usual <b>TABLEUPDATE( )</b><b> </b>behavior.
+      The successful completion of <b>TableUPDATE( )</b> resets the field states according to usual <b>TableUPDATE( )</b><b> </b>behavior.
       When table buffering is enabled, you can move away from the current record in the following <b>CursorAdapter</b> events:
 
       BeforeInsert
@@ -8913,13 +9114,13 @@
       AfterDelete
 
       You can also modify data in the cursor. This functionality supports scenarios such as retrieving the autoincrement value from the base table and inserting it into the cursor. When this scenario occurs, the <b>CursorAdapter</b> object should automatically return to the record whose changes are about to be committed after the event has occurred and commit the changes.
-      In X# 9.0, you cannot issue the TABLEREVERT( ) Function when a TABLEUPDATE( ) is in operation.
-      Typically, the CursorAdapter object uses the transaction management functionality provided by the ADO or ODBC API's and X# closes transactions when the TABLEUPDATE( ) function completes successfully. However, if you want to send transaction management commands directly to the backend, you can set the UseTransactions property of the CursorAdaptor object to False (.F.) and the CursorAdapter does not use transactions to send Insert, Update, or Delete commands.
+      In X# 9.0, you cannot issue the TableREVERT( ) Function when a TableUPDATE( ) is in operation.
+      Typically, the CursorAdapter object uses the transaction management functionality provided by the ADO or ODBC API's and X# closes transactions when the TableUPDATE( ) function completes successfully. However, if you want to send transaction management commands directly to the backend, you can set the UseTransactions property of the CursorAdaptor object to False (.F.) and the CursorAdapter does not use transactions to send Insert, Update, or Delete commands.
     </remarks>
     <example>
        <code language="X#">
         Close Databases
-        Create TABLE employee (cLastName C(10))
+        Create Table employee (cLastName C(10))
         Set MULTILOCKS ON  &amp;&amp; Must turn on for table buffering.
         = CursorSetProp('Buffering', 5, 'employee' )  &amp;&amp; Enable table buffering.
         Insert Into employee (cLastName) VALUES ('Smith')
@@ -8929,7 +9130,7 @@
         Replace cLastName WITH 'Jones'
         ? 'New cLastName value: '
         ?? cLastName  &amp;&amp; Displays new cLastName value (Jones).
-        = TABLEUPDATE(.T.)  &amp;&amp; Commits changes.
+        = TableUPDATE(.T.)  &amp;&amp; Commits changes.
         ? 'Updated cLastName value: '
         ?? cLastName  &amp;&amp; Displays current cLastName value (Jones).
       </code>
@@ -9535,7 +9736,7 @@
         Insert Into Test (mField) VALUES ("456789")
         CursorSetProp("Buffering",5)
         CursorSetProp("keyfieldlist",'cField')
-        UPDATE Test Set mField = "XXXXXXX" WHERE cField &lt; 3
+        UPDATE Test Set mField = "XXXXXXX" Where cField &lt; 3
         STRTOFILE(XMLUPDATEGRAM(),'xmlupdate.txt')
         MODIFY FILE xmlupdate.txt
         RETURN

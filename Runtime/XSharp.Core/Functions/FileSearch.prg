@@ -57,7 +57,7 @@ INTERNAL STATIC CLASS XSharp.FileSearch
                     foundEntries:Add(file)
                 NEXT
     
-                IF (attributes & FA_DIRECTORY) == FA_DIRECTORY
+                IF (attributes & FA_DIRECTORY) == (DWORD) FA_DIRECTORY
                     LOCAL directories := oDirInfo:GetDirectories(cMask) AS FileSystemInfo[]
                     VAR selectedDirs := FROM DirectoryInfo IN directories WHERE (DirectoryInfo:Attributes & (FileAttributes) (attributes + FA_NORMAL) ) != 0 SELECT DirectoryInfo
                     FOREACH directory AS DirectoryInfo IN selectedDirs

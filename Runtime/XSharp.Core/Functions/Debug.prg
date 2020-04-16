@@ -87,9 +87,12 @@ FUNCTION ProcName(wActivation AS INT) AS STRING
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/errorstack/*" />
 FUNCTION ErrorStack(wActivation := 1 AS DWORD) AS STRING
 	LOCAL oStackTrace AS System.Diagnostics.StackTrace
-	LOCAL cResult := "" AS STRING
-
 	oStackTrace := System.Diagnostics.StackTrace{TRUE}
+    RETURN ErrorStack(oStackTrace, wActivation)
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/errorstack/*" />
+FUNCTION ErrorStack(oStackTrace AS System.Diagnostics.StackTrace, wActivation := 1 AS DWORD) AS STRING
+	LOCAL cResult := "" AS STRING
 	IF wActivation + 1 <= oStackTrace:FrameCount - 1
 		FOR VAR i := wActivation + 1 UPTO (oStackTrace:FrameCount - 1)
 			VAR oFrame := oStackTrace:GetFrame((INT)i)
@@ -112,10 +115,10 @@ FUNCTION ErrorStack(wActivation := 1 AS DWORD) AS STRING
 	RETURN cResult
 
 
+
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/altd/*" />
 /// <param name="nMode">This parameter is ignored in X#</param>
-/// <returns>
-/// </returns>
 /// <remarks>This function is inlined by the compiler </remarks>
 FUNCTION AltD() AS VOID
 	IF System.Diagnostics.Debugger.IsAttached

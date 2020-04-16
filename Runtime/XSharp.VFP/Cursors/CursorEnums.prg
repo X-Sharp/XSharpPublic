@@ -4,7 +4,7 @@
 // See License.txt in the project root for license information.
 //
 
-
+/// <exclude />
 STATIC CLASS XSharp.VFP.CursorProperty 
     CONST ADOBookmark               := "adobookmark" AS STRING
     CONST ADOCodePage               := "adocodepage" AS STRING

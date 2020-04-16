@@ -4,7 +4,7 @@
 // See License.txt in the project root for license information.
 //
 
-
+/// <exclude />
 STATIC CLASS XSharp.VFP.DBProperty
     // Connection properties
     CONST Asynchronous              := "asynchronous" AS STRING

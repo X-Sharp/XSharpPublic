@@ -117,7 +117,7 @@ BEGIN NAMESPACE XSharp.IO
 		
 		CONSTRUCTOR(dwMode AS DWORD, dwAttribs AS DWORD)
 			// Wildcard
-			IF _AND(dwMode, FXO_WILD) == FXO_WILD 
+			IF _AND(dwMode, FXO_WILD) == (DWORD) FXO_WILD 
 				SELF:lWild := TRUE
 				dwMode := dwMode - FXO_WILD
 			ELSE
@@ -130,9 +130,9 @@ BEGIN NAMESPACE XSharp.IO
             ENDIF
 			// Access
 			
-			IF _AND(dwMode,FO_READWRITE) == FO_READWRITE
+			IF _AND(dwMode,FO_READWRITE) == (DWORD) FO_READWRITE
 				SELF:FileAccess	:= FileAccess.ReadWrite
-			ELSEIF _AND(dwMode,FO_WRITE) == FO_WRITE
+			ELSEIF _AND(dwMode,FO_WRITE) == (DWORD) FO_WRITE
 				SELF:FileAccess	:= FileAccess.Write
             ELSE
                 SELF:FileAccess	:= FileAccess.Read
@@ -140,7 +140,7 @@ BEGIN NAMESPACE XSharp.IO
 			// Create
 			SELF:FileMode := FileMode.Open
 			SELF:FileShare  := FileShare.ReadWrite
-			IF _AND(dwMode,FO_CREATE) == FO_CREATE
+			IF _AND(dwMode,FO_CREATE) == (DWORD) FO_CREATE
 				SELF:FileMode	:= FileMode.Create
 				SELF:FileAccess	:= FileAccess.ReadWrite
                 SELF:FileShare   := FileShare.None

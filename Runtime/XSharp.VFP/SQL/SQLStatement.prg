@@ -380,10 +380,11 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
                 ENDIF
             END LOCK
         CATCH e AS Exception
+            RuntimeState.LastRddError := Error{e}
             BEGIN LOCK SELF
                 SELF:_CloseReader()
                 SELF:_aSyncState := AsyncState.Exception
-                IF SELF:_oThread:ThreadState == ThreadState.Running
+                IF SELF:_oThread:ThreadState == System.Threading.ThreadState.Running
                     SELF:_oThread:Abort()
                 ENDIF
                 SELF:_oThread := NULL
@@ -433,13 +434,18 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
 
     
     PRIVATE METHOD CopyToCursor() AS VOID
-        IF SELF:_ReturnsRows(SELF:_oNetCommand:CommandText)
-            VAR oDataReader := SELF:_oNetCommand:ExecuteReader()
-            CopyToCursor(oDataReader, 0)
-        ELSE
-            VAR result := SELF:_oNetCommand:ExecuteNonQuery()
-            _aQueryResult := {{"", result}}
-        ENDIF
+        TRY
+            IF SELF:_ReturnsRows(SELF:_oNetCommand:CommandText)
+                VAR oDataReader := SELF:_oNetCommand:ExecuteReader()
+                CopyToCursor(oDataReader, 0)
+            ELSE
+                VAR result := SELF:_oNetCommand:ExecuteNonQuery()
+                _aQueryResult := {{"", result}}
+            ENDIF
+        CATCH e AS Exception
+            RuntimeState.LastRddError := Error{e}
+            _aQueryResult := {{"", -1}}
+        END TRY
 
     PRIVATE METHOD CopyToCursor(oDataReader AS DbDataReader, cursorNo AS LONG) AS VOID
         LOCAL result   := {} AS ARRAY

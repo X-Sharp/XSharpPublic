@@ -229,7 +229,15 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             LanguageVersion = LanguageVersion.CSharp7_3;
         }
+        internal CSharpParseOptions WithNoStdDef(bool nostddef)
+        {
+            if (this.NoStdDef == nostddef)
+                return this;
+            var result = new CSharpParseOptions(this);
+            result.NoStdDef = nostddef;
+            return result;
 
+        }
         public void SetXSharpSpecificOptions(CSharpParseOptions opt)
         {
             ArrayZero = opt.ArrayZero;

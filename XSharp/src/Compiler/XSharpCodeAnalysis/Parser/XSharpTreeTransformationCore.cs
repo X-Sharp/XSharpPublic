@@ -8929,7 +8929,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         #region ExpressionParser
         protected ExpressionSyntax ParseSubExpression(string expression, out string extraText)
         {
-            var lexer = XSharpLexer.Create(expression, _fileName, _options);
+            // do not include the standard defs here. These have already been processed at the file level
+            var options = _options.WithNoStdDef(true);
+            var lexer = XSharpLexer.Create(expression, _fileName, options);
             var parseErrors = ParseErrorData.NewBag();
             extraText = null;
             BufferedTokenStream tokenStream;
@@ -8937,14 +8939,25 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 tokenStream = lexer.GetTokenStream();
                 tokenStream.Fill();
+                if (lexer.HasPreprocessorTokens )
+                {
+                    var pp = new XSharpPreprocessor(lexer, tokenStream, options, _fileName, Encoding.Unicode, Text.SourceHashAlgorithm.Sha256, parseErrors);
+                    var ppTokens = pp.PreProcess();
+                    tokenStream = new CommonTokenStream(new XSharpListTokenSource(lexer, ppTokens));
+                    tokenStream.Fill();
+                }
+                else
+                {
+                    tokenStream = new CommonTokenStream(new XSharpListTokenSource(lexer, tokenStream.tokens));
+                    tokenStream.Fill();
+                }
             }
             catch (Exception e)
             {
                 parseErrors.Add(new ParseErrorData(_fileName, ErrorCode.ERR_Internal, e.Message, e.StackTrace));
                 tokenStream = new BufferedTokenStream(new XSharpListTokenSource(lexer, new List<IToken>()));
+                tokenStream.Fill();
             }
-            tokenStream = new CommonTokenStream(new XSharpListTokenSource(lexer, tokenStream.tokens));
-            tokenStream.Fill();
             var parser = new XSharpParser(tokenStream);
             XSharpParserRuleContext tree = null; ;
             try

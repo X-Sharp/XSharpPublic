@@ -1140,7 +1140,7 @@ CLASS XSharp.CoreDb
         scopeinfo:ForBlock := uCobFor
         scopeinfo:WhileBlock := uCobWhile
         scopeinfo:Rest:= lRest
-        scopeinfo:RecId := uRecId
+        scopeinfo:RecId := IIF(uRecId IS LONG, uRecId, NULL)
         scopeinfo:NextCount := nNext
         BEFOREMOVE 
         result := oRdd:SetScope(scopeinfo)

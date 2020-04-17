@@ -68,6 +68,20 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             RETURN lResult
 
+        VIRTUAL METHOD FieldIndex(fieldName AS STRING) AS INT
+            LOCAL result AS INT
+            result := SUPER:FieldIndex(fieldName)
+            IF result == 0
+                FOR VAR nI := 1 TO SELF:_columns:Length
+                    VAR column := SELF:_columns[nI-1]
+                    IF column != NULL .AND. String.Compare(column:ColumnName, fieldName, TRUE) == 0
+                        result := nI
+                        EXIT
+                    ENDIF
+                NEXT
+            ENDIF
+            RETURN result
+
 		/// <inheritdoc />
         OVERRIDE METHOD GetValue(nFldPos AS INT) AS OBJECT
             IF nFldPos > 0 .AND. nFldPos <= SELF:FieldCount
@@ -75,22 +89,15 @@ BEGIN NAMESPACE XSharp.RDD
                     VAR oFld := SELF:_Fields[nFldPos-1]
                     VAR nRow := SELF:_RecNo -1
                     VAR result := _rows[nRow][nFldPos -1]
-                    IF SELF:_inIndex
-                        IF result != DBNull.Value
-                            IF oFld:FieldType == DbFieldType.Character
-                                VAR strResult := (STRING) result
-                                RETURN strResult:PadRight(oFld:Length)
-                            ENDIF
-                            RETURN result
-                        ELSE
-                            IF oFld:FieldType == DbFieldType.Character
-                                RETURN STRING{' ', oFld:Length}
-                            ENDIF
-                            RETURN NULL
+                    IF result != DBNull.Value
+                        IF oFld:FieldType == DbFieldType.Character
+                            VAR strResult := (STRING) result
+                            RETURN strResult:PadRight(oFld:Length)
                         ENDIF
+                        RETURN result
                     ELSE
-                        IF result != DBNull.Value
-                            RETURN result
+                        IF SELF:_inIndex .AND. oFld:FieldType == DbFieldType.Character
+                            RETURN STRING{' ', oFld:Length}
                         ELSE
                             RETURN NULL
                         ENDIF

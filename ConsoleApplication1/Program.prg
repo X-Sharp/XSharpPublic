@@ -308,9 +308,9 @@ RETURN
 FUNCTION testConnect()
 LOCAL handle AS LONG
 TRY
-    ? sqlSetprop(0, SqlProperty.ConnectTimeOut, 1)
-    ? SqlSetProp(0, SqlProperty.DispLogin,DB_PROMPTCOMPLETE)
-    handle := SqlStringConnect("Dsn=Northwind;uid=sa;pwd=test",FALSE)
+    ? sqlSetprop(0, SqlProperty.ConnectTimeOut, 1) 
+    ? SqlSetProp(0, "Displ",DB_PROMPTCOMPLETE)
+    handle := SqlStringConnect("Dsn=Northwind;",FALSE)
     IF handle > 0
         SqlExec(handle, "Select * from customers","Customers")
         SCAN

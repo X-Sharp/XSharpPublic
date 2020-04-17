@@ -32,7 +32,7 @@ INTERNAL STATIC CLASS XSharp.VFP.SQLSupport
     STATIC PRIVATE INITONLY cAllowed AS STRING
     STATIC PRIVATE DefaultValues AS Dictionary<STRING, OBJECT>
 
-    STATIC INTERNAL DispLogin := DB_PROMPTCOMPLETE AS LONG
+    STATIC INTERNAL PROPERTY DispLogin AS LONG GET (LONG) GetDefault(SQLProperty.DispLogin)
     
     STATIC CONSTRUCTOR
         Cache    := Dictionary<LONG, HandleCacheElement>{}
@@ -186,12 +186,6 @@ INTERNAL STATIC CLASS XSharp.VFP.SQLSupport
                 //IF 2 or DB_PROMPTALWAYS IS specified, the ODBC Login dialog box IS always displayed, making it possible FOR you TO change settings before connecting.
                 //IF 3 or DB_PROMPTNEVER IS specified, the ODBC Login dialog box isn't displayed and Visual FoxPro generates an error if the required login information isn't available. Read/write.
                 result := SQLSupport.DispLogin
-                IF newValue IS LONG VAR newVal
-                    IF newVal == DB_PROMPTCOMPLETE .OR. newVal == DB_PROMPTALWAYS .OR. newVal == DB_PROMPTNEVER
-                        SQLSupport.DispLogin := newVal
-                        result := 1
-                    ENDIF
-                ENDIF
                     
  
            CASE SQLProperty.DispWarnings

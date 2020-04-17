@@ -109,6 +109,10 @@ INTERNAL CLASS XSharp.VFP.SQLConnection
 		END TRY
 		RETURN oConn
 
+    INTERNAL CONST SQL_DRIVER_NOPROMPT	:=	0 AS WORD
+    INTERNAL CONST SQL_DRIVER_COMPLETE	:=	1 AS WORD
+    INTERNAL CONST SQL_DRIVER_PROMPT	:=	2 AS WORD
+    INTERNAL CONST SQL_DRIVER_COMPLETE_REQUIRED	:=	3 AS WORD
 
     METHOD Connect(cConnStr AS STRING) AS DbConnection
         LOCAL oConn := NULL AS DbConnection
@@ -127,7 +131,19 @@ INTERNAL CLASS XSharp.VFP.SQLConnection
                 SELF:ConnectionString     := cConnStr
                 oConn:Open()
             CATCH AS Exception
-                cConnStr := SELF:Factory:DriverConnect(Win32.GetParentWindow(), SQLSupport.DispLogin, cConnStr)
+                LOCAL nLogin AS LONG
+                nLogin := SQLSupport.DispLogin
+                SWITCH nLogin
+                CASE DB_PROMPTCOMPLETE
+                    nLogin := SQL_DRIVER_COMPLETE
+                CASE DB_PROMPTALWAYS
+                    nLogin := SQL_DRIVER_PROMPT
+                CASE DB_PROMPTNEVER
+                    nLogin := SQL_DRIVER_NOPROMPT
+                OTHERWISE
+                    nLogin := SQL_DRIVER_COMPLETE
+                END SWITCH
+                cConnStr := SELF:Factory:DriverConnect(Win32.GetParentWindow(), nLogin, cConnStr)
                 oConn:ConnectionString    := cConnStr
                 SELF:ConnectionString     := cConnStr
                 oBuilder:ConnectionString := cConnStr
@@ -150,8 +166,6 @@ INTERNAL CLASS XSharp.VFP.SQLConnection
                 IF oBuilder:ContainsKey("dsn")
                     SELF:DataSource   := oBuilder["dsn"]
                 ENDIF
-            ELSE
-                oConn := NULL
             ENDIF
         CATCH e AS Exception
             oConn := NULL

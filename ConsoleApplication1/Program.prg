@@ -306,14 +306,21 @@ RETURN
 
 
 FUNCTION testConnect()
-LOCAL hStmt AS LONG
-hStmt := SqlStringConnect("DSN=Northwind;Integrated Security=Yes;")
-? SqlGetProp(hStmt, SqlProperty.ConnectString)
-SqlExec(hStmt, "select * from customers","customers")
-SCAN
-    ? customers.CustomerId, customers.CompanyName, customers.ContactName
-END SCAN
-SqlDisconnect(hStmt)
+LOCAL handle AS LONG
+TRY
+    ? sqlSetprop(0, SqlProperty.ConnectTimeOut, 1)
+    ? SqlSetProp(0, SqlProperty.DispLogin,DB_PROMPTCOMPLETE)
+    handle := SqlStringConnect("Dsn=Northwind;uid=sa;pwd=test",FALSE)
+    IF handle > 0
+        SqlExec(handle, "Select * from customers","Customers")
+        SCAN
+            ? Customers.CustomerId, Customers.CompanyName
+        ENDSCAN
+    endif
+CATCH e AS Exception
+    ? e:ToString()
+END TRY
 WAIT
+
 RETURN
 

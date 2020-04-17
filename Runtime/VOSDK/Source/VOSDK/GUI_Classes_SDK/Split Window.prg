@@ -876,22 +876,22 @@ FUNCTION __LoadSplitWindowDLL()
 		RETURN TRUE
 	ENDIF
 
-	hDll := LoadLibrary(PSZ(_CAST, "CATO3SPL.DLL"))
+	hDll := LoadLibrary(String2Psz( "CATO3SPL.DLL"))
 	IF (hDll == NULL_PTR)
 		rsFormat := ResourceString{__WCSLoadLibraryError}
 		WCError{#LoadSplitWindowDLL, #SplitWindow, VO_Sprintf(rsFormat:value, "CATO3SPL.DLL"),,,FALSE}:Throw()
 		RETURN FALSE
 	ENDIF
 
-	gpfnSpltColorSet 		:= GetProcAddress(hDll, PSZ(_CAST, "SpltColorSet"))
-	gpfnSpltPaneAssocGet := GetProcAddress(hDll, PSZ(_CAST, "SpltPaneAssocGet"))
-	gpfnSpltPaneAssocSet := GetProcAddress(hDll, PSZ(_CAST, "SpltPaneAssocSet"))
-	gpfnSpltPaneExtGet 	:= GetProcAddress(hDll, PSZ(_CAST, "SpltPaneExtGet"))
-	gpfnSpltPaneExtSet 	:= GetProcAddress(hDll, PSZ(_CAST, "SpltPaneExtSet"))
-	gpfnSpltPaneShow 		:= GetProcAddress(hDll, PSZ(_CAST, "SpltPaneShow"))
-	gpfnSpltStyleGet 		:= GetProcAddress(hDll, PSZ(_CAST, "SpltStyleGet"))
-	gpfnSpltLayout 		:= GetProcAddress(hDll, PSZ(_CAST, "SpltLayout"))
-	gpfnSpltDeferPaint 	:= GetProcAddress(hDll, PSZ(_CAST, "SpltDeferPaint"))
-	gpfnSpltEndDeferPaint := GetProcAddress(hDll, PSZ(_CAST, "SpltEndDeferPaint"))
+	gpfnSpltColorSet 		:= GetProcAddress(hDll, String2Psz( "SpltColorSet"))
+	gpfnSpltPaneAssocGet := GetProcAddress(hDll, String2Psz("SpltPaneAssocGet"))
+	gpfnSpltPaneAssocSet := GetProcAddress(hDll, String2Psz("SpltPaneAssocSet"))
+	gpfnSpltPaneExtGet 	:= GetProcAddress(hDll, String2Psz( "SpltPaneExtGet"))
+	gpfnSpltPaneExtSet 	:= GetProcAddress(hDll, String2Psz( "SpltPaneExtSet"))
+	gpfnSpltPaneShow 		:= GetProcAddress(hDll, String2Psz( "SpltPaneShow"))
+	gpfnSpltStyleGet 		:= GetProcAddress(hDll, String2Psz( "SpltStyleGet"))
+	gpfnSpltLayout 		:= GetProcAddress(hDll, String2Psz( "SpltLayout"))
+	gpfnSpltDeferPaint 	:= GetProcAddress(hDll, String2Psz( "SpltDeferPaint"))
+	gpfnSpltEndDeferPaint := GetProcAddress(hDll, String2Psz( "SpltEndDeferPaint"))
 
 	RETURN (glSplitDllLoaded := TRUE)

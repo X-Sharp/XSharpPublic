@@ -235,13 +235,29 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             if (expression is BoundBinaryOperator binop && targetType.SpecialType.IsIntegralType())
             {
-                var type = binop.LargestOperand(this.Compilation);
-                if (type == targetType)
+                var sourceType = binop.LargestOperand(this.Compilation);
+                if (sourceType == targetType)
                 {
                     return true;
                 }
-                if (type.IsIntegralType() && type.SpecialType.SizeInBytes() <= targetType.SpecialType.SizeInBytes())
-                    return true;
+                if (sourceType.IsIntegralType())
+                {
+                    var sourceSize = sourceType.SpecialType.SizeInBytes();
+                    var targetSize = targetType.SpecialType.SizeInBytes();
+                    if (sourceSize < targetSize)
+                    {
+                        return true;
+                    }
+                    else if (sourceSize > targetSize)
+                    {
+                        return false;
+                    }
+                    // same size, but different type. Only allowed when SignedUnsignedConversion is active
+                    else if (Compilation.Options.HasOption(CompilerOption.SignedUnsignedConversion, expression.Syntax)) // vo4
+                    {
+                        return true;
+                    }
+                }
             }
             return false;
         }

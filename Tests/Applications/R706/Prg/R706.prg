@@ -4,5 +4,9 @@ FUNCTION Start AS VOID
 ? i"{__DIALECT__}"
 ? i"{__SRCLOC__}"
 ? __SRCLOC__ 
-RETURN
+RETURN       
+
+
+FUNCTION test AS STRING
+	RETURN [123]
 

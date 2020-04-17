@@ -683,6 +683,10 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                             case RBRKT:
                                 parseOne(LBRKT);
                                 break;
+                            case RETURN:
+                            case GET:
+                                parseString();
+                                break;
                             default:
                                 if (StartOfLine(LastToken) || IsKeyword(LastToken) || _currentLineIsPreprocessorDefinition)
                                 {

@@ -46,22 +46,7 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
     PROPERTY Password           AS STRING GET Connection:Password   
     PROPERTY Shared             AS LOGIC  GET Connection:Shared             SET Connection:Shared := Value
     PROPERTY UserId             AS STRING GET Connection:UserId     
-    PRIVATE _PacketSize         AS LONG
-    PROPERTY PacketSize         AS LONG
-        GET
-            IF SQLReflection.GetPropertyValue(SELF:Connection:NetConnection, "PacketSize", OUT VAR result)
-                RETURN (LONG) result
-            ENDIF
-            RETURN _PacketSize
-            
-        END GET
-        SET
-            _PacketSize := value
-            SQLReflection.SetPropertyValue(SELF:Connection:NetConnection, "PacketSize", value)
-            RETURN
-
-    END SET
-    END PROPERTY
+    PROPERTY PacketSize         AS LONG   GET Connection:PacketSize SET Connection:PacketSize := Value
     PROPERTY Prepared           AS LOGIC AUTO GET PRIVATE SET
     PROPERTY QueryTimeOut       AS LONG  GET _oNetCommand:CommandTimeout SET _oNetCommand:CommandTimeout := Value
     PROPERTY TransactionMode    AS LONG  AUTO GET SET
@@ -70,20 +55,21 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
 
 
     METHOD SetDefaults() AS VOID
-        SELF:Asynchronous       := FALSE
-        SELF:BatchMode          := TRUE
-        SELF:DisconnectRollback := FALSE
-        SELF:DispWarnings       := FALSE
-        SELF:IdleTimeout        := 0
-        SELF:PacketSize         := 4096
+        SELF:Asynchronous       := (LOGIC) SQLSupport.GetDefault(SQLProperty.Asynchronous)
+        SELF:BatchMode          := (LOGIC) SQLSupport.GetDefault(SQLProperty.BatchMode)
+        SELF:DisconnectRollback := (LOGIC) SQLSupport.GetDefault(SQLProperty.DisconnectRollback)
+        SELF:DispWarnings       := (LOGIC) SQLSupport.GetDefault(SQLProperty.DispWarnings)
+        SELF:IdleTimeout        := (LONG) SQLSupport.GetDefault(SQLProperty.IdleTimeout)
+        SELF:PacketSize         := (LONG) SQLSupport.GetDefault(SQLProperty.PacketSize)
         SELF:Prepared           := FALSE
-        SELF:TransactionMode    := DB_TRANSAUTO
-        SELF:WaitTime           := 100
+        SELF:TransactionMode    := (LONG) SQLSupport.GetDefault(SQLProperty.Transactions)
+        SELF:WaitTime           := (LONG) SQLSupport.GetDefault(SQLProperty.WaitTime)
         SELF:_aSyncState        := AsyncState.Idle
 
     PRIVATE METHOD _AllocateCommand() AS VOID
         SELF:_oNetCommand := SELF:Connection:Factory:CreateCommand()
         SELF:_oNetCommand:Connection := SELF:Connection:NetConnection
+        SELF:_oNetCommand:CommandTimeout := SELF:QueryTimeOut
         _oConnection:AddStatement(SELF)
         RETURN
         

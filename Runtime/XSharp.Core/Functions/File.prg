@@ -616,8 +616,12 @@ FUNCTION FFLock64(ptrHandle AS IntPtr,offset AS INT64, length AS INT64) AS LOGIC
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fflush/*" />
 /// <include file="CoreComments.xml" path="Comments/File/*" />
 FUNCTION FFlush(ptrHandle AS IntPtr) AS LOGIC
-	RETURN XSharp.IO.File.Flush(ptrHandle, TRUE)
+	RETURN XSharp.IO.File.Flush(ptrHandle, FALSE)
 
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fflush/*" />
+/// <include file="CoreComments.xml" path="Comments/File/*" />
+FUNCTION FFlush(ptrHandle AS IntPtr, lCommit AS LOGIC) AS LOGIC
+	RETURN XSharp.IO.File.Flush(ptrHandle, lCommit)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ffunlock/*" />
 /// <inheritdoc cref="M:XSharp.Core.Functions.FFLock(System.IntPtr,System.UInt32,System.UInt32)" />"

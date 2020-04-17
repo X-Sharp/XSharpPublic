@@ -63,7 +63,7 @@ PARTIAL CLASS DBF INHERIT Workarea IMPLEMENTS IRddSortWriter
 	PROTECT _Hot            AS LOGIC
 	PROTECT _lockScheme     AS DbfLocking
 	PROTECT _NewRecord      AS LOGIC
-    PROTECT INTERNAL _NullColumn    AS DbfNullColumn // Column definition for _NullFlags, used in DBFVFP driver
+    PROTECT INTERNAL _NullColumn    AS DbfNullColumn            // Column definition for _NullFlags, used in DBFVFP driver
     PROTECT INTERNAL _NullCount      := 0 AS LONG   // to count the NULL and Length bits for DBFVFP
 	
     PROTECT INTERNAL PROPERTY FullPath AS STRING GET _FileName
@@ -1395,8 +1395,8 @@ VIRTUAL PROTECTED METHOD _writeRecord() AS LOGIC
 					SELF:_Header:isHot := TRUE
 					IF SELF:Shared 
 						SELF:_writeHeader()
+                        FFlush(SELF:_hFile, FALSE)
 					ENDIF
-                    FFlush(SELF:_hFile)
 				CATCH ex AS Exception
 					SELF:_dbfError( ex, ERDD.WRITE, XSharp.Gencode.EG_WRITE )
 				END TRY

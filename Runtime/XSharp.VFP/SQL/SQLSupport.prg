@@ -101,14 +101,37 @@ INTERNAL STATIC CLASS XSharp.VFP.SQLSupport
         ENDIF
         RETURN FALSE
 
+    STATIC METHOD GetPropertyName(cProperty AS STRING) AS STRING
+        LOCAL oType     := Typeof(SQLProperty) AS System.Type
+        LOCAL aFields   := oType:GetFields() AS FieldInfo[]
+        LOCAL aNames    := List<STRING>{} AS List<STRING>
+        FOREACH VAR oFld IN aFields
+            IF oFld:IsLiteral .AND. oFld:Name:StartsWith(cProperty, StringComparison.OrdinalIgnoreCase) 
+                aNames:Add(oFld:Name)
+            ENDIF
+        NEXT
+        IF aNames:Count == 1
+            cProperty := aNames[0]
+        ELSE
+            cProperty := ""
+        ENDIF
+        RETURN cProperty
+
     STATIC METHOD GetSetProperty(nHandle AS LONG, cProperty AS STRING, newValue := NULL AS OBJECT) AS OBJECT
         LOCAL oStmt AS XSharp.VFP.SQLStatement
         LOCAL result := NULL AS OBJECT
+        LOCAL cNewProp AS STRING
+        cNewProp := GetPropertyName(cProperty)
+        IF String.IsNullOrEmpty(cNewProp)
+            THROW Error{"Unknown property : '"+cProperty+"', or the property name is not long enough to be distinctive"}
+        ENDIF
+        cProperty := cNewProp
         IF nHandle == 0 // Default values
             IF DefaultValues:ContainsKey(cProperty)
                 result := DefaultValues[cProperty]
                 IF newValue != NULL
                     DefaultValues[cProperty] := newValue
+                    result := 1
                 ENDIF
             ENDIF
             RETURN result
@@ -273,6 +296,8 @@ INTERNAL STATIC CLASS XSharp.VFP.SQLSupport
                    oStmt:WaitTime := newVal
                     result := 1
                 ENDIF
+        OTHERWISE 
+            result := -1            
         END SWITCH
         RETURN result
 

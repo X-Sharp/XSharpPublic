@@ -70,7 +70,6 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
 
 
     METHOD SetDefaults() AS VOID
-        SELF:Shared             := FALSE
         SELF:Asynchronous       := FALSE
         SELF:BatchMode          := TRUE
         SELF:DisconnectRollback := FALSE
@@ -78,11 +77,8 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
         SELF:IdleTimeout        := 0
         SELF:PacketSize         := 4096
         SELF:Prepared           := FALSE
-        SELF:QueryTimeOut       := 0
         SELF:TransactionMode    := DB_TRANSAUTO
         SELF:WaitTime           := 100
-        SELF:_oNetCommand       := NULL
-        SELF:_oConnection       := NULL
         SELF:_aSyncState        := AsyncState.Idle
 
     PRIVATE METHOD _AllocateCommand() AS VOID
@@ -209,19 +205,21 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
 
     
     CONSTRUCTOR(cDataSource AS STRING, cUser AS STRING, cPassword AS STRING, lShared AS LOGIC)
-        SELF:SetDefaults()
         _oConnection    := SQLConnection{cDataSource, cUser, cPassword, lShared}
+        SELF:SetDefaults()
         SELF:_AllocateCommand()
         RETURN 
         
 
     CONSTRUCTOR(cConnectionString AS STRING, lShared AS LOGIC)
         _oConnection := SQLConnection{cConnectionString, lShared}
+        SELF:SetDefaults()
         SELF:_AllocateCommand()
         RETURN
 
     CONSTRUCTOR(oConnection AS SQLConnection)
         _oConnection := oConnection
+        SELF:SetDefaults()
         SELF:_AllocateCommand()
         RETURN
 

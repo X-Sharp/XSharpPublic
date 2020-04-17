@@ -35,6 +35,22 @@ INTERNAL CLASS XSharp.VFP.SQLConnection
         END SET
     END PROPERTY       
     PROPERTY ConnectBusy        AS LOGIC  GET _oNetConnection:State == ConnectionState.Executing .OR. _oNetConnection:State == ConnectionState.Fetching
+    PRIVATE _PacketSize         AS LONG
+    PROPERTY PacketSize         AS LONG
+        GET
+            IF SQLReflection.GetPropertyValue(NetConnection, "PacketSize", OUT VAR result)
+                RETURN (LONG) result
+            ENDIF
+            RETURN _PacketSize
+            
+        END GET
+        SET
+            _PacketSize := value
+            SQLReflection.SetPropertyValue(NetConnection, "PacketSize", value)
+            RETURN
+
+    END SET
+    END PROPERTY
 
     PROPERTY Shared             AS LOGIC AUTO GET SET
     PRIVATE _DataSource         AS STRING
@@ -102,6 +118,9 @@ INTERNAL CLASS XSharp.VFP.SQLConnection
 		    oBuilder := SELF:Factory:CreateConnectionStringBuilder()
 		    oBuilder:ConnectionString := cConnStr
             oConn := SELF:Factory:CreateConnection()
+            SELF:ConnectionTimeOut := (LONG) SQLSupport.GetDefault(SQLProperty.ConnectTimeOut)
+            SELF:PacketSize        := (LONG) SQLSupport.GetDefault(SQLProperty.PacketSize)
+            
 		    cConnStr := oBuilder:ToString()
             TRY
                 oConn:ConnectionString := cConnStr

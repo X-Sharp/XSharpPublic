@@ -30,6 +30,7 @@ INTERNAL STATIC CLASS XSharp.VFP.SQLSupport
     STATIC INTERNAL Factory AS ISqlFactory
     STATIC PRIVATE INITONLY aFieldNames AS System.Collections.Generic.Dictionary<STRING, STRING>
     STATIC PRIVATE INITONLY cAllowed AS STRING
+    STATIC PRIVATE DefaultValues AS Dictionary<STRING, OBJECT>
 
     STATIC INTERNAL DispLogin := DB_PROMPTCOMPLETE AS LONG
     
@@ -39,6 +40,32 @@ INTERNAL STATIC CLASS XSharp.VFP.SQLSupport
         Factory  := XSharp.Data.Functions.GetSqlFactory()
 		cAllowed   := "ABCDEFGHIJKLMNOPQRSTUVWXYZ_0123456789_abcdefghijklmnopqrstuvwxyz"	
 		aFieldNames := System.Collections.Generic.Dictionary<STRING, STRING>{}
+        DefaultValues := Dictionary<STRING, OBJECT>{StringComparer.OrdinalIgnoreCase}
+        DefaultValues.Add(SQLProperty.Asynchronous       ,FALSE)
+        DefaultValues.Add(SQLProperty.BatchMode          ,TRUE)
+        DefaultValues.Add(SQLProperty.ConnectBusy        ,FALSE)
+        DefaultValues.Add(SQLProperty.ConnectString      ,"")
+        DefaultValues.Add(SQLProperty.ConnectTimeOut     ,15)
+        DefaultValues.Add(SQLProperty.DataSource         ,"")
+        DefaultValues.Add(SQLProperty.DisconnectRollback ,FALSE)
+        DefaultValues.Add(SQLProperty.DispLogin          ,DB_PROMPTCOMPLETE)
+        DefaultValues.Add(SQLProperty.DispWarnings       ,FALSE)
+        DefaultValues.Add(SQLProperty.IdleTimeout        ,0)
+        //DefaultValues.Add(SQLProperty.ODBChdbc           ,NULL)
+        //DefaultValues.Add(SQLProperty.ODBChstmt          ,NULL)
+        DefaultValues.Add(SQLProperty.PacketSize         ,4096)
+        //DefaultValues.Add(SQLProperty.Password           ,"")
+        DefaultValues.Add(SQLProperty.QueryTimeOut       ,0)
+        //DefaultValues.Add(SQLProperty.Shared             ,
+        DefaultValues.Add(SQLProperty.Transactions       ,DB_TRANSAUTO)
+        //DefaultValues.Add(SQLProperty.UserId             ,"")
+        DefaultValues.Add(SQLProperty.WaitTime           ,100)
+
+    STATIC METHOD GetDefault(sDef AS STRING) AS OBJECT
+        IF DefaultValues:ContainsKey(sDef)
+            RETURN DefaultValues[sDef]
+        ENDIF
+        RETURN NULL
         
     STATIC METHOD FindStatement(nId AS LONG) AS OBJECT
         IF Cache:ContainsKey(nId)
@@ -77,6 +104,15 @@ INTERNAL STATIC CLASS XSharp.VFP.SQLSupport
     STATIC METHOD GetSetProperty(nHandle AS LONG, cProperty AS STRING, newValue := NULL AS OBJECT) AS OBJECT
         LOCAL oStmt AS XSharp.VFP.SQLStatement
         LOCAL result := NULL AS OBJECT
+        IF nHandle == 0 // Default values
+            IF DefaultValues:ContainsKey(cProperty)
+                result := DefaultValues[cProperty]
+                IF newValue != NULL
+                    DefaultValues[cProperty] := newValue
+                ENDIF
+            ENDIF
+            RETURN result
+        ENDIF
         oStmt := FindStatement(nHandle)
         IF oStmt == NULL_OBJECT
             RETURN -1

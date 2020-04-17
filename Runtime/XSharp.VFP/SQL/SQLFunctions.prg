@@ -264,7 +264,6 @@ FUNCTION SqlRollBack( nStatementHandle AS LONG) AS LONG
 /// <seealso cref="M:XSharp.VFP.Functions.SqlSetProp(System.Int32,System.String,XSharp.__Usual)">SqlSetProp()</seealso>
 
 FUNCTION SqlGetProp( nStatementHandle AS LONG, cSetting AS STRING ) AS USUAL
-    GetStatement(nStatementHandle)    
     RETURN SQLSupport.GetSetProperty(nStatementHandle, cSetting,NULL)
 
 
@@ -272,7 +271,6 @@ FUNCTION SqlGetProp( nStatementHandle AS LONG, cSetting AS STRING ) AS USUAL
 /// <seealso cref="M:XSharp.VFP.Functions.SqlConnect(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">SqlConnect()</seealso>
 /// <seealso cref="M:XSharp.VFP.Functions.SqlGetProp(System.Int32,System.String)">SqlGetProp()</seealso>
 FUNCTION SqlSetProp( nStatementHandle AS LONG, cSetting AS STRING, eExpression AS USUAL) AS LONG
-    GetStatement(nStatementHandle)    
     RETURN (INT) SQLSupport.GetSetProperty(nStatementHandle, cSetting,eExpression)
 
 #endregion

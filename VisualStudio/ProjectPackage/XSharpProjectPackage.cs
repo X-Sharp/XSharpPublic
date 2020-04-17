@@ -269,7 +269,7 @@ namespace XSharp.Project
             base.SolutionListeners.Add(new ModelScannerEvents(this));
             await base.InitializeAsync(cancellationToken, progress);
             await JoinableTaskFactory.SwitchToMainThreadAsync();
-            _uiThread = new UIThread();
+            initUITHread();
              XSharpProjectPackage.instance = this;
              XSharpModel.XSolution.OutputWindow = this;
              this.RegisterProjectFactory(new XSharpProjectFactory(this));
@@ -328,7 +328,11 @@ namespace XSharp.Project
         }
 
         internal static string VsVersion;
-
+        void initUITHread()
+        {
+            if (_uiThread == null)
+            _uiThread = new UIThread();
+        }
         internal async void StartLanguageService()
         {
             if (_xsLangService == null)
@@ -392,7 +396,7 @@ namespace XSharp.Project
             return Ok;
         }
 
-        private async void validateVulcanEditors()
+        private void validateVulcanEditors()
         {
             // check Vulcan Source code editor keys
             bool Ok = true;
@@ -408,9 +412,7 @@ namespace XSharp.Project
             {
                 int result = 0;
                 Guid tempGuid = Guid.Empty;
-                Task<SVsUIShell> t = await GetServiceAsync(typeof(SVsUIShell)) as Task<SVsUIShell>;
-                Assumes.Present(t);
-                IVsUIShell VsUiShell = (IVsUIShell)t.Result;
+                IVsUIShell VsUiShell = GetService(typeof(SVsUIShell)) as IVsUIShell;
                 ErrorHandler.ThrowOnFailure(VsUiShell.ShowMessageBox(0, ref tempGuid, "File Associations",
                     "The Vulcan file associations must be changed.\nPlease run setup again\n\n" +
                     "Failure to do so may result in unexpected behavior inside Visual Studio",
@@ -543,6 +545,7 @@ namespace XSharp.Project
 
         public void Terminate()
         {
+            initUITHread();
             _uiThread.MustBeCalledFromUIThread();
             var shell = this.GetService(typeof(SVsShell)) as IVsShell;
             if (shell != null)
@@ -574,6 +577,7 @@ namespace XSharp.Project
         private void RegisterDebuggerEvents()
         {
             int hr;
+            initUITHread();
             _uiThread.MustBeCalledFromUIThread();
             m_debugger = this.GetService(typeof(SVsShellDebugger)) as IVsDebugger;
             if (m_debugger != null)
@@ -588,6 +592,7 @@ namespace XSharp.Project
         private void UnRegisterDebuggerEvents()
         {
             int hr;
+            initUITHread();
             _uiThread.MustBeCalledFromUIThread();
             if (m_debugger != null)
             {

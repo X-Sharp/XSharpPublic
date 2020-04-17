@@ -46,8 +46,8 @@ namespace Microsoft.VisualStudio.Project
 
         private int currentIndent;
         private IVsOutputWindowPane outputWindowPane;
-        private string errorString = SR.GetString(SR.Error, CultureInfo.CurrentUICulture);
-        private string warningString = SR.GetString(SR.Warning, CultureInfo.CurrentUICulture);
+       // private string errorString = SR.GetString(SR.Error, CultureInfo.CurrentUICulture);
+        //private string warningString = SR.GetString(SR.Warning, CultureInfo.CurrentUICulture);
         private TaskProvider taskProvider;
         private IVsHierarchy hierarchy;
         private IServiceProvider serviceProvider;
@@ -67,17 +67,9 @@ namespace Microsoft.VisualStudio.Project
             get { return this.serviceProvider; }
         }
 
-        public string WarningString
-        {
-            get { return this.warningString; }
-            set { this.warningString = value; }
-        }
+        public string WarningString { get; set; } = SR.GetString(SR.Warning, CultureInfo.CurrentUICulture);
 
-        public string ErrorString
-        {
-            get { return this.errorString; }
-            set { this.errorString = value; }
-        }
+        public string ErrorString { get; set; } = SR.GetString(SR.Error, CultureInfo.CurrentUICulture);
 
         /// <summary>
         /// When the build is not a "design time" (background or secondary) build this is True

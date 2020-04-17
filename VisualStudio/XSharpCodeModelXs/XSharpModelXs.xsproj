@@ -8,7 +8,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>XSharpCodeModel</RootNamespace>
     <AssemblyName>XSharpModel</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <Name>XSharpModelXs</Name>
     <Nologo>true</Nologo>
     <GenerateFullPaths>true</GenerateFullPaths>
@@ -44,6 +44,9 @@
     <XSharpProjectversion>2.0.5.0</XSharpProjectversion>
     <Includepaths>$(SolutionDir)\Common</Includepaths>
     <Nostandarddefs>true</Nostandarddefs>
+    <NoWin32Manifest>False</NoWin32Manifest>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
@@ -82,30 +85,26 @@
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.targets" />
   <ItemGroup>
-    <Reference Include="EnvDTE">
+    <Reference Include="EnvDTE, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <Name>EnvDTE</Name>
-      <SpecificVersion>False</SpecificVersion>
       <AssemblyName>EnvDTE.dll</AssemblyName>
-      <HintPath>..\..\..\..\Program Files (x86)\Common Files\Microsoft Shared\MSEnv\PublicAssemblies\EnvDTE.dll</HintPath>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+      <HintPath>..\..\packages\EnvDTE.8.0.2\lib\net10\EnvDTE.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp">
       <Name>Microsoft.CSharp</Name>
       <SpecificVersion>False</SpecificVersion>
       <AssemblyName>Microsoft.CSharp.dll</AssemblyName>
     </Reference>
-    <Reference Include="Microsoft.VisualStudio.Shell.14.0">
-      <Name>Microsoft.VisualStudio.Shell.14.0</Name>
-      <SpecificVersion>False</SpecificVersion>
-      <AssemblyName>Microsoft.VisualStudio.Shell.14.0.dll</AssemblyName>
-      <Private>True</Private>
-      <HintPath>..\..\..\..\Program Files (x86)\Microsoft Visual Studio 14.0\VSSDK\VisualStudioIntegration\Common\Assemblies\v4.0\Microsoft.VisualStudio.Shell.14.0.dll</HintPath>
-    </Reference>
     <Reference Include="mscorlib" />
     <Reference Include="System" />
-    <Reference Include="System.Collections.Immutable, Version=1.2.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Collections.Immutable.1.5.0\lib\portable-net45+win8+wp8+wpa81\System.Collections.Immutable.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="System.Collections.Immutable, Version=1.2.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Name>System.Collections.Immutable</Name>
+      <AssemblyName>System.Collections.Immutable.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>False</Private>
+      <HintPath>..\..\packages\System.Collections.Immutable.1.5.0\lib\netstandard2.0\System.Collections.Immutable.dll</HintPath>
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
@@ -113,19 +112,25 @@
       <AssemblyName>System.Drawing.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
+    <Reference Include="System.Reflection.Metadata, Version=1.4.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Name>System.Reflection.Metadata</Name>
+      <AssemblyName>System.Reflection.Metadata.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+      <HintPath>..\..\packages\System.Reflection.Metadata.1.6.0\lib\netstandard2.0\System.Reflection.Metadata.dll</HintPath>
+    </Reference>
     <Reference Include="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
       <Name>System.Windows.Forms</Name>
       <AssemblyName>System.Windows.Forms.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="System.Xml" />
-    <Reference Include="VsLangProj">
-      <Name>VsLangProj</Name>
+    <Reference Include="VSLangProj, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Name>VSLangProj</Name>
+      <AssemblyName>VSLangProj.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
-      <AssemblyName>VsLangProj.dll</AssemblyName>
-      <HintPath>..\..\..\..\Program Files (x86)\Common Files\Microsoft Shared\MSEnv\PublicAssemblies\VsLangProj.dll</HintPath>
       <Private>True</Private>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>..\..\packages\VSLangProj.7.0.3301\lib\net10\VSLangProj.dll</HintPath>
     </Reference>
     <Reference Include="XSharp.VSParser, Version=2.0.0.8, Culture=neutral, PublicKeyToken=ed555a0467764586">
       <Name>XSharp.VSParser</Name>
@@ -136,10 +141,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\Common\commonAssemblyInfo.prg" >
+    <Compile Include="..\..\Common\commonAssemblyInfo.prg">
       <Link>Properties\commonAssemblyInfo.prg</Link>
     </Compile>
-	
     <Compile Include="..\..\Common\constants.prg">
       <Link>Properties\constants.prg</Link>
     </Compile>

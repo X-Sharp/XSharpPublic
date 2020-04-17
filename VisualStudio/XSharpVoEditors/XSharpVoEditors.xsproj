@@ -8,7 +8,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>XSharp.VOEditors</RootNamespace>
     <AssemblyName>XSharpVoEditors</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <Name>XSharp.VoEditors</Name>
     <Nologo>true</Nologo>
     <GenerateFullPaths>true</GenerateFullPaths>
@@ -46,6 +46,7 @@
     <IntermediateOutputPath>$(SolutionDir)Binaries\obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
     <OutputPath>$(SolutionDir)Binaries\$(Configuration)\</OutputPath>
     <AssemblyOriginatorKeyFile>$(SolutionDir)Common\XSharp.snk</AssemblyOriginatorKeyFile>
+    <NoWin32Manifest>False</NoWin32Manifest>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
@@ -93,10 +94,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\Common\commonAssemblyInfo.prg" >
+    <Compile Include="..\..\Common\commonAssemblyInfo.prg">
       <Link>Properties\commonAssemblyInfo.prg</Link>
     </Compile>
-	
     <Compile Include="..\..\Common\constants.prg">
       <Link>Properties\constants.prg</Link>
     </Compile>

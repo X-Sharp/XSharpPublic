@@ -2542,11 +2542,7 @@ BEGIN NAMESPACE XSharp
         [DebuggerStepThroughAttribute];
         STATIC METHOD ToObject(u AS __Usual) AS OBJECT
              IF !u:_initialized
-                IF RuntimeState.Dialect  == XSharpDialect.FoxPro
-                    RETURN FALSE
-                ELSE
-                    RETURN NULL
-                ENDIF
+                 RETURN NULL
              ENDIF
             SWITCH u:_usualType
             CASE __UsualType.Array		; RETURN u:_arrayValue

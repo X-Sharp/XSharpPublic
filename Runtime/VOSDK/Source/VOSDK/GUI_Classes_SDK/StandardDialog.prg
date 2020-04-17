@@ -152,7 +152,7 @@ CONSTRUCTOR(oColor)
 	LOCAL oDefColor AS Color
 	
 
-	__LoadComDlgDLL()
+	//__LoadComDlgDLL()
 
 	SUPER()
 	oDefColor := Color{COLORBLACK}
@@ -377,7 +377,7 @@ CONSTRUCTOR(uOwner, cInitPath)
 	LOCAL sFilters AS STRING
 	LOCAL pVersionInfo IS _WINOSVERSIONINFO
 
-	__LoadComDlgDLL()
+	//__LoadComDlgDLL()
 
 	SUPER()
 	IF !IsNil(uOwner)
@@ -879,7 +879,7 @@ ASSIGN FontColor(oNewCol)
 CONSTRUCTOR(uOwner) 
 	
 
-	__LoadComDlgDLL()
+	//__LoadComDlgDLL()
 
 	IF !IsNil(uOwner)
 		IF !IsInstanceOfUsual(uOwner,#Window) .AND. IsInstanceOfUsual( uOwner,#Printer)
@@ -1061,41 +1061,10 @@ VOSTRUCT _winBROWSEINFO
 	MEMBER iImage AS INT
 
 FUNCTION __LoadComDlgDLL()
-//	LOCAL hDll AS PTR
-//	LOCAL rsFormat AS ResourceString
-//
-//	IF glComDlgDllLoaded
-//		RETURN TRUE
-//	ENDIF
-//
-//    hDll := LoadLibrary(String2Psz( "COMDLG32.DLL"))
-//	IF (hDll == NULL_PTR)
-//		rsFormat := ResourceString{__WCSLoadLibraryError}
-//		WCError{#__LoadComDlgDLL, #StandardDialog, VO_Sprintf(rsFormat:value, "COMDLG32.DLL"),,,FALSE}:Throw()
-//		RETURN FALSE
-//	ENDIF
-//
-//    gpfnPrintDlg                := GetProcAddress(hDll, String2Psz( "PrintDlgA"))
-//    gpfnChooseColor             := GetProcAddress(hDll, String2Psz( "ChooseColorA"))
-//    gpfnGetOpenFileName         := GetProcAddress(hDll, String2Psz( "GetOpenFileNameA"))
-//    gpfnGetSaveFileName         := GetProcAddress(hDll, String2Psz( "GetSaveFileNameA"))
-//    gpfnCommDlgExtendedError    := GetProcAddress(hDll, String2Psz( "CommDlgExtendedError"))
-//    gpfnChooseFont              := GetProcAddress(hDll, String2Psz( "ChooseFontA"))
-//  	glComDlgDllLoaded := TRUE
+    // no longer needed in .Net
 	RETURN TRUE
 
 
-//STATIC GLOBAL glComDlgDllLoaded := FALSE AS LOGIC
-//
-////function declaration
-//STATIC GLOBAL gpfnChooseColor AS TChooseColor PTR
-//STATIC GLOBAL gpfnChooseFont AS TChooseFont PTR
-//
-//STATIC GLOBAL gpfnCommDlgExtendedError AS TCommDlgExtendedError PTR
-//STATIC GLOBAL gpfnGetOpenFileName AS TGetOpenFileName PTR
-//STATIC GLOBAL gpfnGetSaveFileName AS TGetSaveFileName PTR
-/// <exclude/>
-//GLOBAL gpfnPrintDlg AS TPrintDlg PTR
 
 #ifdef __VULCAN__
    DELEGATE __StdFileHookDelegate( hWnd AS PTR, msg AS DWORD, wParam AS DWORD, lParam AS LONGINT ) AS LOGIC
@@ -1162,29 +1131,6 @@ FUNCTION __FolderDialogCallBack(hWnd AS PTR, uMsg AS DWORD, lParam AS LONGINT, l
 
 	RETURN 0
 
-STATIC FUNCTION TChooseColor(lpcc AS _winCHOOSECOLOR) AS LOGIC STRICT
-	//SYSTEM
-	RETURN FALSE
-
-STATIC FUNCTION TChooseFont(lpcf AS _winCHOOSEFONT) AS LOGIC STRICT
-	//SYSTEM
-	RETURN FALSE
-
-STATIC FUNCTION TCommDlgExtendedError() AS DWORD STRICT
-	//SYSTEM
-	RETURN 0
-
-STATIC FUNCTION TGetOpenFileName(lpofn AS _winOPENFILENAME) AS LOGIC STRICT
-	//SYSTEM
-	RETURN FALSE
-
-STATIC FUNCTION TGetSaveFileName(lpofn AS _winOPENFILENAME) AS LOGIC STRICT
-	//SYSTEM
-	RETURN FALSE
-
-FUNCTION TPrintDlg(lppd AS PTR) AS LOGIC STRICT
-	//SYSTEM
-	RETURN FALSE
 
 
 

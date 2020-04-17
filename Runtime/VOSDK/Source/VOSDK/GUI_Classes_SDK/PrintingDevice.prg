@@ -1,4 +1,5 @@
 USING System.Runtime.InteropServices
+USING Microsoft.Win32
 CLASS PrintingDevice INHERIT VObject
 	PROTECT cDriver AS STRING
 	PROTECT cDevice AS STRING
@@ -222,27 +223,24 @@ METHOD GetDevMode()
 	RETURN pDevMode
 
 CONSTRUCTOR(uName) 
-	//LOCAL ptrTemp AS PTR
-	LOCAL cTemp AS STRING
-	LOCAL wTemp1 AS DWORD
-	LOCAL wTemp2 AS DWORD
-
-	__LoadWinSpoolDLL()
+	LOCAL cTemp     AS STRING
 
 	SUPER()
 
 	
 
 	IF IsNil(uName)
-        //		ptrTemp := MemAlloc(256)
-        //        IF GetProfileString(String2Psz("windows"), String2Psz("Device"), String2Psz(_CHR(0)), ptrTemp, 256) == 0
-        //			RETURN
-        //		ENDIF
-        //		cTemp := Psz2String(ptrTemp)
-		//MemFree(ptrTemp)
-        LOCAL oTemp := Microsoft.Win32.Registry.GetValue("HKEY_CURRENT_USER\Software\Microsoft\Windows NT\CurrentVersion\Windows","Device","") AS OBJECT
-        IF oTemp IS STRING VAR strTemp
-            cTemp := strTemp
+        LOCAL oKey AS  RegistryKey
+        LOCAL cSKey AS STRING
+        oKey := Registry.CurrentUser:OpenSubKey( "SOFTWARE\Microsoft\Windows NT\CurrentVersion\Windows\SessionDefaultDevices") 
+        IF okey != NULL_OBJECT
+            FOREACH csubKeyName AS STRING IN okey:GetSubKeyNames()
+                cSKey := csubKeyName
+            NEXT
+            cTemp  := (STRING) Registry.GetValue("HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Windows\SessionDefaultDevices\" + cSKey ,"Device","")
+        ENDIF
+        IF Empty(cDevice)
+            cTemp := (STRING) Registry.GetValue("HKEY_CURRENT_USER\Software\Microsoft\Windows NT\CurrentVersion\Windows","Device","") 
         ENDIF
 	ELSE
 		IF !IsString(uName)
@@ -251,24 +249,16 @@ CONSTRUCTOR(uName)
 		cTemp:=uName
 	ENDIF
 
-	wTemp1 := At2(",", cTemp) //position of first comma
-
-	IF (wTemp1 != 0)
-		cDevice := SubStr3(cTemp, 1, wTemp1-1) //extract device
-		wTemp2 := At3(",", cTemp, wTemp1+1) //Position of second comma
-
-		IF (wTemp2 != 0)
-			cDriver := SubStr3(cTemp, wTemp1+1, wTemp2-wTemp1-1) //extract driver
-			wTemp1 := wTemp2
-			wTemp2 := SLen(cTemp)
-
-			IF (wTemp2 > wTemp1)
-				cPort := SubStr3(cTemp, wTemp1+1, wTemp2-wTemp1) //rest of string is port
-			ENDIF
-		ENDIF
-	ENDIF
-
-	lValid := Win32.OpenPrinter( cDevice, PTR(_CAST, @hPrinter), NULL_PTR)
+    LOCAL sParts AS STRING[]
+    sParts := cTemp:Split(",":ToCharArray())
+    SELF:cDevice := sParts[1]
+    IF sParts:Length > 1
+        SELF:cDriver := sParts[2]
+    ENDIF
+    IF sParts:Length > 2
+        SELF:cPort := sParts[3]
+    ENDIF
+	lValid := Win32.OpenPrinter( SELF:cDevice, REF hPrinter, NULL_PTR)
 	isize := _SIZEOF(_winDEVMODE)
 
 	SELF:__FillDevMode()
@@ -409,7 +399,7 @@ METHOD SetUp()
 	pd:lpfnPrintHook := NULL_PTR
 	pd:lpPrintTemplateName := NULL_PTR
 
-	IF !__LoadComDlgDLL() .OR. !PrintDlg( @pd)
+	IF !PrintDlg( @pd)
 		//PP-030505 Bug:122
 		lValid := FALSE
 		lRetVal := FALSE
@@ -478,7 +468,7 @@ INTERNAL STATIC CLASS Win32
 	pDevModeInput AS _winDEVMODE, fMode AS DWORD) AS LONGINT STRICT
 
     [DllImport("WinSpool.drv", SetLastError := TRUE, EntryPoint := "OpenPrinterA", CharSet := CharSet.Ansi)];
-    STATIC EXTERN METHOD OpenPrinter(pPrinterName AS STRING, phPrinter AS PTR, pDefault AS _winPRINTER_DEFAULTS) AS LOGIC STRICT
+    STATIC EXTERN METHOD OpenPrinter(pPrinterName AS STRING, phPrinter REF PTR, pDefault AS _winPRINTER_DEFAULTS) AS LOGIC STRICT
 END CLASS
 
 

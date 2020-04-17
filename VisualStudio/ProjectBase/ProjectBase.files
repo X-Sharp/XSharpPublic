@@ -8,34 +8,6 @@
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <AllowedAssemblyPrefix>$(AllowedAssemblyPrefix);Microsoft.Internal</AllowedAssemblyPrefix>
   </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="EnvDTE80">
-      <HintPath>EnvDTE80.dll</HintPath>
-      <Name>EnvDTE80</Name>
-      <SpecificVersion>False</SpecificVersion>
-      <Aliases>global</Aliases>
-    </Reference>
-    <Reference Include="Microsoft.Build">
-      <Aliases>global</Aliases>
-    </Reference>
-    <Reference Include="Microsoft.Build.Framework">
-      <Aliases>global</Aliases>
-    </Reference>
-    <Reference Include="Microsoft.Build.Utilities.v4.0">
-      <Aliases>global</Aliases>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.VSHelp"/>
-    <Reference Include="Microsoft.VisualStudio.Shell.Design" />
-    <Reference Include="Microsoft.VisualStudio.ProjectAggregator" />
-    <Reference Include="VsLangProj" />
-    <Reference Include="VSLangProj80, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-    <Reference Include="System.Design">
-      <Aliases>global</Aliases>
-    </Reference>
-    <Reference Include="System.Xml" />
-    <Reference Include="System.Core">
-    </Reference>
-  </ItemGroup>
 
   <!-- Provide a default value for $(ProjectBasePath) -->
   <PropertyGroup>

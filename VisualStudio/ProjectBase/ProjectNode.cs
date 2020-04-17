@@ -2466,7 +2466,7 @@ namespace Microsoft.VisualStudio.Project
         /// <param name="output"></param>
         /// <param name="target"></param>
         /// <param name="coda"></param>
-        internal virtual void BuildAsync(uint vsopts, ConfigCanonicalName configCanonicalName, IVsOutputWindowPane output, string target, MSBuildCoda coda)
+        internal virtual void StartAsyncBuild(uint vsopts, ConfigCanonicalName configCanonicalName, IVsOutputWindowPane output, string target, MSBuildCoda coda)
         {
             bool engineLogOnlyCritical = BuildPrelude(output);
             MSBuildCoda fullCoda = (res, instance) =>

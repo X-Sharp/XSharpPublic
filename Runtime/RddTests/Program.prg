@@ -11,7 +11,8 @@ USING System.Reflection
 [STAThread];      
 FUNCTION Start() AS VOID
     TRY
-        testDelimWrite()
+        testAppend()
+        //testDelimWrite()
         //testUnique3()
         //BofAndScope()
         //testPruntGrup()
@@ -189,6 +190,45 @@ FUNCTION Start() AS VOID
         ErrorDialog(e)
     END TRY
     RETURN
+
+FUNCTION TestAppend( ) AS VOID
+LOCAL i AS DWORD 
+LOCAL aFields AS ARRAY
+LOCAL cDbf, cPfad AS STRING  
+LOCAL f AS FLOAT 
+                     
+    RddSetDefault( "dbfcdx" )
+    
+
+	cPfad := "C:\TEST\"	
+
+	cDBF := cPfad + "Foo.dbf"
+
+
+	aFields := { { "LAST" , "C" , 10 , 0 } } 
+    
+	//SetExclusive ( TRUE )  
+    // 10000 in 0.5 secs	      
+    SetExclusive ( FALSE )   
+	// 10000 in 0.95 secs	 
+	
+	? DbCreate( cDBF , AFields) 
+	? DbUseArea( ,,cDBF )	
+
+	f := Seconds()
+		
+	FOR i := 1 UPTO 10000
+		DbAppend() 
+		FieldPut ( 1 , PadL ( i , 10 , "0" ) )
+						
+	NEXT 
+
+	? "Elapsed:" , Seconds() - f
+	
+	DbCloseArea()
+	
+RETURN 
+
 
 Function TestDelimWrite() as VOID
     local f as float
@@ -1001,7 +1041,7 @@ FUNCTION DoWork( oParam AS OBJECT ) AS VOID
     nSleep                          := 10 //* nParam
     DbUseArea( TRUE, "DBFCDX", "c:\temp\test.dbf", "TEST", TRUE, FALSE )
     DbCargo(Error{})
-    FOR nI := 1 UPTO 100
+    FOR nI := 1 UPTO 1000
         nSleep                          := Rand(0) * 100
         System.Console.WriteLine( NTrim(nParam) + " -> " + NTrim(nI) + " Sleep: " + NTrim( nSleep ) )
         TEST->DbAppend()
@@ -1088,9 +1128,9 @@ FUNCTION TestThreading() AS VOID
              TEST->DbCreateOrder( "ORDER1",, "Str(FIELD1,10)", {|| Str( _FIELD->FIELD1,10 ) }, FALSE )
             TEST->DbCommit( )
             TEST->DbCloseArea()
-            oThread1          := System.Threading.Thread{ DoWork }  
+            oThread1          := System.Threading.Thread{ DoWork2 }  
             oThread1:Start( 1 )
-            oThread2          := System.Threading.Thread{ DoWork}
+            oThread2          := System.Threading.Thread{ DoWork2}
             oThread2:Start( 2 )  
             oThread1:Join()
             oThread2:Join()

@@ -7,7 +7,6 @@ USING XSharp.Data
 
 FUNCTION Start() AS VOID STRICT
     LOCAL oConn AS SqlConnection
-    LOCAL oStmt AS SqlStatement
     LOCAL oSel AS SqlSelect
     //SetSqlFactory(SqlServerFactory{})
     //oConn := SqlOpenConnection()

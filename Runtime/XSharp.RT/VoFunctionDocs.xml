@@ -10858,11 +10858,15 @@
     </summary>
 
     <param name="ptrHandle">The handle of the open file you want to flush.</param>
+    <param name="lCommit">When you pass TRUE for this parameter then also all intermediate buffers are flushed.</param>
     <returns>
     </returns>
     <remarks>
       FFlush() writes buffers to disk, thus releasing the memory used by those buffers.<br/>
-      If files are being shared in a multi-user or multi-tasking environment, FFlush() allows each user to see the latest contents of the file.  By flushing data from memory, FFlush() can also protect against possible data loss due to a system crash.
+      If files are being shared in a multi-user or multi-tasking environment, FFlush() allows each user to see the latest contents of the file.  
+      By flushing data from memory, FFlush() can also protect against possible data loss due to a system crash.
+      Calling the method overload with 2 parameters and a second parameter with the value TRUE will significantly slow down your apps!
+      The overload with 1 parameter works the same as calling FFlush() with a value of FALSE for the second parameter.
     </remarks>
     <example>
       This example uses FFlush() to flush data automatically after waiting for a key press:

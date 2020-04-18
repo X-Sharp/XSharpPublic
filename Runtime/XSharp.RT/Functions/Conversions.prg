@@ -320,27 +320,20 @@ FUNCTION DescendA(uValue REF USUAL) AS USUAL
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ntrim/*" />
 FUNCTION NTrim(nNum AS USUAL) AS STRING
     LOCAL ret AS STRING
-    LOCAL save AS LOGIC
-    save := RuntimeState.Fixed
-    TRY
-        RuntimeState.Fixed := FALSE
-        SWITCH nNum:_usualType
-        CASE __UsualType.Int64
-        CASE __UsualType.Long
-          ret := ConversionHelpers.FormatNumber( (INT64) nNum, (INT) RuntimeState.Digits, 0):Trim()
-        CASE __UsualType.Date
-          ret := AsString( nNum )
-        CASE __UsualType.Currency
-          ret := ((__Currency) (nNum)):ToString()
-        CASE __UsualType.Float
-        CASE __UsualType.Decimal
-          ret := ConversionHelpers.AdjustDecimalSeparator(_Str1(  (FLOAT) nNum )):Trim()
-        OTHERWISE
-          THROW Error.DataTypeError( __FUNCTION__, NAMEOF(nNum), 1, nNum)
-       END SWITCH
-   FINALLY
-        RuntimeState.Fixed := save
-   END TRY
+    SWITCH nNum:_usualType
+    CASE __UsualType.Int64
+    CASE __UsualType.Long
+      ret := ConversionHelpers.FormatNumber( (INT64) nNum, (INT) RuntimeState.Digits, 0):Trim()
+    CASE __UsualType.Date
+      ret := AsString( nNum )
+    CASE __UsualType.Currency
+      ret := ((__Currency) (nNum)):ToString()
+    CASE __UsualType.Float
+    CASE __UsualType.Decimal
+      ret := ConversionHelpers.AdjustDecimalSeparator(_Str1(  (FLOAT) nNum )):Trim()
+    OTHERWISE
+      THROW Error.DataTypeError( __FUNCTION__, NAMEOF(nNum), 1, nNum)
+   END SWITCH
    RETURN ret
 
 
@@ -687,7 +680,7 @@ FUNCTION Str2(fNumber AS FLOAT,dwLength AS DWORD) AS STRING
 
 
 INTERNAL FUNCTION _Str2(f AS FLOAT,dwLen AS DWORD) AS STRING
-  IF dwLen == 0 
+  IF dwLen == 0 .OR. RuntimeState.DigitsFixed
       dwLen := (DWORD) RuntimeState.Digits
    ELSEIF dwLen  != UInt32.MaxValue
       dwLen := Math.Min( dwLen, MAXDIGITS )
@@ -749,21 +742,8 @@ FUNCTION _Str3(f AS FLOAT,dwLen AS DWORD,dwDec AS DWORD) AS STRING
  IF dwDec > 0 .AND. dwLen != UInt32.MaxValue .and. !lUnspecifiedDecimals .AND. ( dwLen < ( dwDec + 2 ) )
       RETURN STRING{ c'*', (INT) dwLen }
    ENDIF
-   LOCAL strResult := ConversionHelpers.FormatNumber(f, (INT) dwLen, (INT) dwDec) AS STRING
-   IF lUnspecifiedDecimals .AND. strResult:IndexOf(".") > 0
-        // VO removes '0' and '.' at the end
-        strResult := strResult:TrimEnd()
-        LOCAL cLast AS CHAR
-        cLast := strResult[strResult:Length-1]
-        DO WHILE cLast == '0' .OR. cLast == '.'
-            strResult := strResult:Substring(0, strResult:Length-1)
-            IF cLast == '.'
-                EXIT
-            ENDIF
-            cLast := strResult[strResult:Length-1]
-        ENDDO
-   ENDIF
-   RETURN strResult
+   RETURN ConversionHelpers.FormatNumber(f, (INT) dwLen, (INT) dwDec)
+
 
 /// <inheritdoc cref="M:XSharp.RT.Functions.Val(System.String)" />
 /// <returns>The numeric value as a FLOAT.</returns>
@@ -993,3 +973,4 @@ FUNCTION Bin2F(cFloat AS STRING) AS FLOAT
 FUNCTION F2Bin(fValue AS FLOAT) AS STRING
     RETURN Real82Bin(fValue:Value)+ e"\0\0" + W2Bin((WORD)fValue:Decimals)
     
+

@@ -50,7 +50,7 @@
       <DocumentationSource sourceFile="Binaries\Documentation\VOGUIClasses.XML" />
     </DocumentationSources>
     <HelpTitle>X# Runtime and VO SDK Reference</HelpTitle>
-    <HelpFileVersion>2.3.2.0</HelpFileVersion>
+    <HelpFileVersion>2.4.0.0</HelpFileVersion>
     <NamingMethod>MemberName</NamingMethod>
     <ContentPlacement>AboveNamespaces</ContentPlacement>
     <RootNamespaceContainer>True</RootNamespaceContainer>
@@ -66,8 +66,7 @@
     <IndentHtml>False</IndentHtml>
     <BuildAssemblerVerbosity>OnlyWarningsAndErrors</BuildAssemblerVerbosity>
     <VisibleItems>Attributes, ExplicitInterfaceImplementations, ProtectedInternalAsProtected, PublicCompilerGenerated, NonBrowsable</VisibleItems>
-    <ApiFilter>
-    </ApiFilter>
+    <ApiFilter/>
     <NamespaceSummaries>
       <NamespaceSummaryItem name="(global)" isDocumented="True" />
       <NamespaceSummaryItem name="Advantage" isDocumented="True">This namespace contains the exposed RDDs for Advantage.</NamespaceSummaryItem>
@@ -79,19 +78,21 @@
       <NamespaceSummaryItem name="XSharp.RDD (Group)" isGroup="True" isDocumented="True">The XSharp.RDD group contains namespaces that are related to the XSharp RDD System.</NamespaceSummaryItem>
       <NamespaceSummaryItem name="XSharp.RDD" isDocumented="True">This namespace contains types used by the RDD system.</NamespaceSummaryItem>
       <NamespaceSummaryItem name="XSharp.RDD.Enums" isDocumented="True">This namespace contains enumerated types used by the RDD system.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="XSharp.RDD.Support" isDocumented="True">This namespace contains several helper types used by the RDD system.</NamespaceSummaryItem>
       <NamespaceSummaryItem name="XSharp.Core" isDocumented="True">This namespace contains the Functions class that implements the Runtime functions available in XSharp.Core DLL.</NamespaceSummaryItem>
       <NamespaceSummaryItem name="XSharp.RT" isDocumented="True">This namespace contains the Functions class that implements the Runtime functions available in XSharp.RT.DLL.</NamespaceSummaryItem>
       <NamespaceSummaryItem name="XSharp.XPP" isDocumented="True">This namespace contains the Functions class that implements the Runtime functions available in XSharp.XPP.DLL.</NamespaceSummaryItem>
       <NamespaceSummaryItem name="XSharp.VFP" isDocumented="True">This namespace contains the Functions class that implements the Runtime functions available in XSharp.VFP DLL.</NamespaceSummaryItem>
-      <NamespaceSummaryItem name="XSharp.RDD.Support" isDocumented="True">This namespace contains several helper types used by the RDD system.</NamespaceSummaryItem>
       <NamespaceSummaryItem name="XSharp.ADS" isDocumented="True">This namespace contains several types used by the Advantage RDDs in the RDD system.</NamespaceSummaryItem>
       <NamespaceSummaryItem name="XSharp.Data" isDocumented="True">This namespace contains several types used in the XSharp runtime to access data through the Ado.Net Data providers.</NamespaceSummaryItem>
       <NamespaceSummaryItem name="VO" isDocumented="True">
         The VO Namespace contains all the VO SDK Classes, such as DbServer, DataWindow, SQLSelect etc.&lt;br/&gt;
-        If you enable the compiler option to search inside "Implicit Namespaces" (/ins) then you will not have to include a USING VO statement in your code. &lt;br/&gt;The compiler will then automatically find the classes. &lt;br/&gt;
+        If you enable the compiler option to search inside "Implicit Namespaces" (/ins) then you will not have to include a USING VO statement in your code. &lt;br/&gt;
+        The compiler will then automatically find the classes. &lt;br/&gt;
         The Runtime will also respect these implicit namespaces, so CreateInstance(#DbServer) will also be able to find the DbServer class inside the VO namespace.
       </NamespaceSummaryItem>
-      <NamespaceSummaryItem name="XSharp" isDocumented="True">The XSharp namespace holds the new classes that are used in Hybrid applications, such as ChildWinForm, VOWinFormApp etc. These classes were originally created by Paul Piko for Vulcan.Net and are included with his permission.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="XSharp" isDocumented="True">The XSharp namespace holds the new classes that are used in Hybrid applications, such as ChildWinForm, VOWinFormApp etc. 
+      These classes were originally created by Paul Piko for Vulcan.Net and are included with his permission.</NamespaceSummaryItem>
       <NamespaceSummaryItem name="VOGUIClasses" isDocumented="True">The VOGUIClasses namespaces contains the functions class with the functions and defines from the VOGUIClasses assembly</NamespaceSummaryItem>
       <NamespaceSummaryItem name="VOInternetClasses" isDocumented="True">The VOInternetClasses namespaces contains the functions class with the functions and defines from the VOInternetClasses assembly</NamespaceSummaryItem>
       <NamespaceSummaryItem name="VORDDClasses" isDocumented="True">The VORDDClasses namespaces contains the functions class with the functions and defines from the VORDDClasses assembly</NamespaceSummaryItem>
@@ -175,7 +176,7 @@
     </TransformComponentArguments>
     <HtmlSdkLinkType>Msdn</HtmlSdkLinkType>
     <BinaryTOC>True</BinaryTOC>
-    <IncludeFavorites>False</IncludeFavorites>
+    <IncludeFavorites>True</IncludeFavorites>
     <WebsiteSdkLinkType>Msdn</WebsiteSdkLinkType>
     <AppendMarkdownFileExtensionsToUrls>False</AppendMarkdownFileExtensionsToUrls>
     <FeedbackEMailAddress>info%40xsharp.eu</FeedbackEMailAddress>

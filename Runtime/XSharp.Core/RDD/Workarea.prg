@@ -520,11 +520,7 @@ BEGIN NAMESPACE XSharp.RDD
                 SELF:_Fields[ SELF:_currentField] := info 
 
                 // the alias could be an empty string !
-                IF !String.IsNullOrEmpty(info:Alias) 
-                    SELF:_fieldNames:Add(info:Alias:Trim(), SELF:_currentField)
-                ELSE
-                    SELF:_fieldNames:Add(info:Name:Trim(), SELF:_currentField)
-                ENDIF
+                SELF:_fieldNames:Add(info:Name:Trim(), SELF:_currentField)
                 SELF:_currentField++
                 SELF:_RecordLength += (WORD)info:Length
               ELSE

@@ -135,7 +135,6 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
                         EXIT
                     ENDIF
                 ENDIF
-                    
             ENDDO
         ELSE
             VAR data := OBJECT[]{nFields+1}  // 1 extra for the NullFlags
@@ -227,7 +226,7 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
                 SELF:_aSyncState := AsyncState.Cancelling
             END LOCK
             DO WHILE SELF:_aSyncState == AsyncState.Cancelling
-                System.Threading.Thread.Sleep(100)
+                System.Threading.Thread.Sleep(500)
             ENDDO
             SELF:ThreadComplete() 
             BEGIN LOCK SELF
@@ -361,6 +360,8 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
                 SELF:_aResult    := aResults
                 IF SELF:_aSyncState == AsyncState.Executing
                     SELF:_aSyncState := AsyncState.Ready
+                ELSEIF SELF:_aSyncState == AsyncState.Cancelling
+                    SELF:_aSyncState := AsyncState.Cancelled
                 ENDIF
             END LOCK
         CATCH e AS Exception
@@ -551,6 +552,7 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
 
    METHOD GetColumnsFox(cTableName AS STRING, cCursorName AS STRING) AS LOGIC
         SELF:_oNetCommand:CommandText := "Select * from "+cTableName+" where 1 = 0"
+        SELF:_CloseReader()
         VAR oDataReader := SELF:_oNetCommand:ExecuteReader()
         VAR oSchema := oDataReader:GetSchemaTable()
         VAR aFieldNames := List<STRING>{}
@@ -582,6 +584,7 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
         nRestrictions := GetNumRestrictions("Columns") 
         filter := STRING[]{nRestrictions}
         filter[3] := cTableName
+        SELF:_CloseReader()
         oTable := SELF:Connection:NetConnection:GetSchema("Columns", filter)
         LOCAL aStruct AS ARRAY
         aStruct := ArrayNew(19)
@@ -627,7 +630,7 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
         IF String.IsNullOrEmpty(cTableName) .OR. String.IsNullOrEmpty(cType)
             RETURN FALSE
         ENDIF
-        SWITCH cType
+        SWITCH cType:ToUpper()
         CASE "FOXPRO"
             RETURN GetColumnsFox(cTableName, cCursorName)
         CASE "NATIVE"
@@ -794,7 +797,7 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
             ENDDO
         ELSE
             // remove column prefixes
-            dwPos := cName:IndexOf(".")+1
+            dwPos := cName:IndexOf(".")+1 
             IF dwPos > 0
                 cName := cName:Substring(dwPos)
             ENDIF
@@ -805,7 +808,12 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
             DO WHILE aFldNames:IndexOf(cNewname) >= 0
                 ++dwFld
                 VAR tmp := dwFld:ToString()
-                cNewname := cName:Substring(0, 10 - tmp:Length)+tmp
+                VAR len := tmp:Length
+                IF cName:Length + len <= 10
+                    cNewname := cName + tmp
+                ELSE
+                    cNewname := cName:Substring(0, 10 - tmp:Length)+tmp
+                ENDIF
             ENDDO
             cName 	:= cNewname
         ENDIF

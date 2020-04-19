@@ -115,6 +115,9 @@ BEGIN NAMESPACE XSharpModel
 				ENDIF
 				// Also Check into the Functions Class for Globals/Defines/...
 				result := Lookup("Functions." + typeName, assemblies)
+            CATCH e AS Exception
+                XSolution.WriteException(e)
+                result := NULL
 			FINALLY
 				WriteOutputMessage("<-- FindType() "+typename+" " + IIF(result != NULL, result:FullName, "* not found *"))
 			END TRY

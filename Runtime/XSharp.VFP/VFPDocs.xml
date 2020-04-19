@@ -8418,8 +8418,8 @@
             The default is false (.F.), indicating that a pending transaction is committed when SqlDisconnect( ) is called for the last connection handle.<br/>
             Specify true (.T.) to roll back a pending transaction when SqlDisconnect( ) is called for the last connection handle.<br/>
             Connections with automatic transaction processing are not affected by this setting.
-            <description>Read/write</description>
           </description>
+          <description>Read/write</description>
         </item>
         <item>
           <term>DispLogin</term>

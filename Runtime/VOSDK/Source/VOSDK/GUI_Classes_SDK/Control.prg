@@ -746,7 +746,7 @@ METHOD Dispatch(oEvent)
 			oParent:Drop(DragEvent{oEvt, SELF})
 		ENDIF
 		IF __LoadShellDll()
-			PCALL(gpfnDragFinish, PTR(_CAST, oEvt:wParam))
+			DragFinish( PTR(_CAST, oEvt:wParam))
 		ENDIF
 		RETURN 1L
 		

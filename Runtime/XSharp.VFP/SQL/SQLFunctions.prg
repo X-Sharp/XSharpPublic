@@ -312,8 +312,10 @@ FUNCTION SqlColumns( nStatementHandle AS LONG, cTableName := NIL AS USUAL, cType
        ENDIF
        IF ! IsString(cType)
            cType := "FOXPRO"
+       ELSE
+            cType := Upper(cType):Trim()
        ENDIF
-       IF Upper(cType) != "FOXPRO"  .AND. Upper(cType) != "NATIVE"
+       IF cType != "FOXPRO"  .AND. cType != "NATIVE"
             THROW Error{"Incorrect value for cType. Expected 'FOXPRO' or 'NATIVE'. Default is 'FOXPRO'"}
        ENDIF
        IF ! IsString(cCursorName)

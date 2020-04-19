@@ -18,9 +18,10 @@ BEGIN NAMESPACE XSharp.RDD
     CLASS DBFVFPSQL INHERIT DBFVFP
         PROTECT _rows   AS List <OBJECT[]>
         PROTECT _columns AS DbColumnInfo[]
-        PROTECT _inIndex AS LOGIC
+        PROTECT _padStrings AS LOGIC
         #region Overridden properties
         OVERRIDE PROPERTY Driver AS STRING GET "DBFVFPSQL"
+
         #endregion
 
         CONSTRUCTOR()
@@ -90,13 +91,13 @@ BEGIN NAMESPACE XSharp.RDD
                     VAR nRow := SELF:_RecNo -1
                     VAR result := _rows[nRow][nFldPos -1]
                     IF result != DBNull.Value
-                        IF oFld:FieldType == DbFieldType.Character
+                        IF oFld:FieldType == DbFieldType.Character .AND. _padStrings
                             VAR strResult := (STRING) result
                             RETURN strResult:PadRight(oFld:Length)
                         ENDIF
                         RETURN result
                     ELSE
-                        IF SELF:_inIndex .AND. oFld:FieldType == DbFieldType.Character
+                        IF SELF:_padStrings .AND. oFld:FieldType == DbFieldType.Character
                             RETURN STRING{' ', oFld:Length}
                         ELSE
                             RETURN NULL
@@ -159,15 +160,15 @@ BEGIN NAMESPACE XSharp.RDD
                 
         RETURN SUPER:FieldInfo(nFldPos, nOrdinal, oNewValue)
     OVERRIDE METHOD OrderCreate(orderInfo AS DbOrderCreateInfo ) AS LOGIC
-        SELF:_inIndex := TRUE
+        SELF:_padStrings := TRUE
         VAR result := SUPER:OrderCreate(orderInfo)
-        SELF:_inIndex := FALSE
+        SELF:_padStrings := FALSE
         RETURN result
 
     OVERRIDE METHOD OrderListRebuild() AS LOGIC
-        SELF:_inIndex := TRUE
+        SELF:_padStrings := TRUE
         VAR result := SUPER:OrderListRebuild()
-        SELF:_inIndex := FALSE
+        SELF:_padStrings := FALSE
         RETURN result
 
 

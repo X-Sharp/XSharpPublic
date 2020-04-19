@@ -241,20 +241,23 @@ namespace Microsoft.CodeAnalysis.CSharp
                 return true;
             return false;
         }
-        static internal TypeSymbol LargestOperand(this BoundBinaryOperator binop, Compilation compilation)
+        static internal TypeSymbol LargestOperand(this BoundBinaryOperator binop, Compilation compilation, bool checkConversions = true)
         {
             if (binop.OperatorKind.IsComparison() || !binop.Type.IsIntegralType())
                 return binop.Type;
 
             var left = binop.Left;
             var right = binop.Right;
-            if (left is BoundConversion lconv)
+            if (checkConversions)
             {
-                left = lconv.Operand;
-            }
-            if (right is BoundConversion rconv)
-            {
-                right = rconv.Operand;
+                if (left is BoundConversion lconv)
+                {
+                    left = lconv.Operand;
+                }
+                if (right is BoundConversion rconv)
+                {
+                    right = rconv.Operand;
+                }
             }
             var leftType = left.Type;
             var rightType = right.Type;

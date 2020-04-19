@@ -498,10 +498,7 @@ BEGIN NAMESPACE XSharp
 			/// <exclude />
             [MethodImpl(MethodImplOptions.AggressiveInlining)];
 			METHOD Subtract(days AS DWORD) AS DATE
-				LOCAL i64days AS INT64
-				i64days := days
-				i64days := - i64days
-				RETURN SELF:Add(i64days)
+				RETURN SELF:Add(-days)
 
 			/// <exclude />
             [MethodImpl(MethodImplOptions.AggressiveInlining)];

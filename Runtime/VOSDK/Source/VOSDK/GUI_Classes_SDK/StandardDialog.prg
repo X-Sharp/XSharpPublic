@@ -770,10 +770,10 @@ METHOD Show()
         
 		bi:iImage := 0
 
-		pidl := PCALL(gpfnSHBrowseForFolder, @bi)
+		pidl := SHBrowseForFolder( @bi)
 		IF (pidl != NULL_PTR)
 			sResult := Psz2String(bi:pszDisplayName)
-			lRet := PCALL(gpfnSHGetPathFromIDList, pidl, bi:pszDisplayName)
+			lRet := SHGetPathFromIDList( pidl, bi:pszDisplayName)
 			IF lRet
 				sResult := Psz2String(bi:pszDisplayName)
 			ENDIF

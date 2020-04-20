@@ -391,7 +391,7 @@ BEGIN NAMESPACE FabToolsNS
 	        // Now Remove the Extension
 	        wPos := RAt( ".", cResult )
 	        IF ( wPos > 0 )
-		        cResult := SubStr( cResult, 1, (INT) wPos - 1 )
+		        cResult := SubStr( cResult, 1, wPos - 1 )
 	        ENDIF
         RETURN cResult
 

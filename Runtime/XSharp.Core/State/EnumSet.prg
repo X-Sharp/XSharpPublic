@@ -74,8 +74,9 @@ BEGIN NAMESPACE XSharp
         MEMBER Math			:= 57	// INT
         MEMBER International:= 58	// STRING
         MEMBER DateCountry  := 59	// INT
+        MEMBER DefaultDir   := 60  // STRING
 
-        // 60 - 69 unused
+        // 61 - 69 unused
 
         // X# helper state
         MEMBER EpochCent     := 70		// Numeric
@@ -316,6 +317,10 @@ DEFINE _SET_DATECOUNTRY		:= Set.DateCountry
 DEFINE _SET_DICT			:= Set.Dict			
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
 DEFINE _SET_INTL			:= Set.Intl		
+
+/// <include file="CoreComments.xml" path="Comments/Set/*" />
+DEFINE _SET_DEFAULTDIR      := Set.DefaultDir
+
 
 
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
@@ -571,7 +576,6 @@ INTERNAL FUNCTION RuntimeStateDefaultValue(nSet AS XSharp.Set) AS OBJECT
 
         CASE Set.Hboutloginfo
         CASE Set.Path        	
-        CASE Set.Default	 	
         CASE Set.AltFile     	
         CASE Set.Device      	
         CASE Set.ExtraFile   	
@@ -590,7 +594,9 @@ INTERNAL FUNCTION RuntimeStateDefaultValue(nSet AS XSharp.Set) AS OBJECT
         CASE Set.Language
         CASE Set.Timeformat
             RETURN String.Empty
-
+        CASE Set.Default
+        CASE Set.DefaultDir
+            RETURN System.Environment.CurrentDirectory
 
         CASE Set.DirSeparator
             RETURN System.IO.Path.DirectorySeparatorChar:ToString()

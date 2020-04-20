@@ -774,6 +774,11 @@
       You can create and return new statement handles using the <b>SqlConnect( )</b> and <b>SqlStringConnect( )</b> functions.
       For more information, see SqlConnect( ) Function and SqlStringConnect( ) Function.
     </remarks>
+    <seealso cref="O:XSharp.VFP.Functions.SqlConnect">SqlConnect()</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.SqlStringConnect">SqlStringConnect()</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.SqlGetProp">SqlGetProp()</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.SqlSetProp">SqlSetProp()</seealso>
+
   </asqlhandles>
   <astackinfo>
     <summary>
@@ -2683,9 +2688,9 @@
         * Set buffering mode and store logical result
         lSuccess=CursorSetProp("Buffering", 5, "Customer")
         IF lSuccess = .T.
-        =MESSAGEBOX("Operation successful!",0,"Operation Status")
+        =MessageBox("Operation successful!",0,"Operation Status")
         ELSE
-        =MESSAGEBOX("Operation NOT successful!",0,"Operation Status")
+        =MessageBox("Operation NOT successful!",0,"Operation Status")
         ENDIF
       </code>
     </example>
@@ -3691,14 +3696,14 @@
         Open Database (HOME(2) + 'Data\testdata')
         * Displays the primary key field
         cResults = DbGetProp("customer", "Table", "PrimaryKey")
-        =MESSAGEBOX(cResults)   &amp;&amp; Displays    'cust_id'
+        =MessageBox(cResults)   &amp;&amp; Displays    'cust_id'
         * Displays comments for the field 'cust_id'
         cResults = DbGetProp("customer.cust_id", "Field", "Comment")
         IF LEN(ALLTRIM(cResults)) = 0
-        =MESSAGEBOX("No Comment for this field." + CHR(13) + ;
+        =MessageBox("No Comment for this field." + CHR(13) + ;
         CHR (13) + "Use DbSetProp( ) to add comments.")
         ELSE
-        =MESSAGEBOX("Cust_id field comments: " + cRESULTS)
+        =MessageBox("Cust_id field comments: " + cRESULTS)
         ENDIF
       </code>
     </example>
@@ -4834,9 +4839,9 @@
         PARAMETER nState,cOperation
         DO CASE
         CASE nState=1
-        =MESSAGEBOX("Field has not been modified",0,cOperation)
+        =MessageBox("Field has not been modified",0,cOperation)
         OTHERWISE
-        =MESSAGEBOX("Field has been modified",0,cOperation)
+        =MessageBox("Field has been modified",0,cOperation)
         ENDCASE
       </code>
       The following example shows the difference in behavior between fields with and without default values.
@@ -6499,8 +6504,8 @@
     <param name="eMessageText">
 
       Specifies the text that appears in the dialog box. You can also specify any valid X# function, object, or data type instead of eMessageText. The maximum amount of text you can specify is 1024 characters.
-      X# converts object references to the string, "(Object)". If you specify a function that evaluates to a noncharacter value, X# automatically uses the <b>TRANSForM( )</b> function to provide the character equivalent. In the following example, a character type date is returned and passed to <b>MESSAGEBOX( )</b>:
-       <code language="X#">MESSAGEBOX(DATE())</code>
+      X# converts object references to the string, "(Object)". If you specify a function that evaluates to a noncharacter value, X# automatically uses the <b>TRANSForM( )</b> function to provide the character equivalent. In the following example, a character type date is returned and passed to <b>MessageBox( )</b>:
+       <code language="X#">MessageBox(DATE())</code>
       To move a portion of the message to the next line in the dialog box, use a carriage return, CHR(13), in eMessageText. The height and width of the dialog box increases as needed to contain eMessageText.
 
     </param>
@@ -6539,7 +6544,7 @@
       Specifies the number of milliseconds X# displays eMessageText without input from the keyboard or the mouse before clearing eMessageText. You can specify any valid timeout value. A value of less than 1 never times out until user enters input and behaves the same as omitting the nTimeout parameter.
     </param>
     <returns>
-      Numeric data type. <b>MESSAGEBOX( )</b> returns a value that indicates which button was chosen in the dialog box. The following table lists the values <b>MESSAGEBOX( )</b> returns for each button.
+      Numeric data type. <b>MessageBox( )</b> returns a value that indicates which button was chosen in the dialog box. The following table lists the values <b>MessageBox( )</b> returns for each button.
       1
       OK
       2
@@ -6556,16 +6561,16 @@
       No
       In dialog boxes with a Cancel button, pressing Esc to exit the dialog box returns the same value (2) as choosing Cancel.
 
-      <b>MESSAGEBOX( )</b> returns a value of -1 when a timeout occurs.
+      <b>MessageBox( )</b> returns a value of -1 when a timeout occurs.
     </returns>
     <remarks>
-      The shortest abbreviation for <b>MESSAGEBOX( )</b> is <b>MESSAGEB( )</b>.
-      The <b>MESSAGEBOX( )</b> function uses smart parameters in that the parameter type determines which parameter is used. The first parameter is required and is always eMessageText. However, the optional second parameter can be nDialogBoxType if the type is <b>Numeric</b> or cTitleBarText if type is <b>Character</b>. The nTimeout parameter is always assumed for the second optional numeric parameter passed. Valid examples include:
+      The shortest abbreviation for <b>MessageBox( )</b> is <b>MESSAGEB( )</b>.
+      The <b>MessageBox( )</b> function uses smart parameters in that the parameter type determines which parameter is used. The first parameter is required and is always eMessageText. However, the optional second parameter can be nDialogBoxType if the type is <b>Numeric</b> or cTitleBarText if type is <b>Character</b>. The nTimeout parameter is always assumed for the second optional numeric parameter passed. Valid examples include:
        <code language="X#">
-        MESSAGEBOX("HELLO","MyTitle",68,6000)
-        MESSAGEBOX("HELLO",68,"MyTitle",6000)
-        MESSAGEBOX("HELLO",68,6000)
-        MESSAGEBOX("HELLO",68,6000,"MyTitle")
+        MessageBox("HELLO","MyTitle",68,6000)
+        MessageBox("HELLO",68,"MyTitle",6000)
+        MessageBox("HELLO",68,6000)
+        MessageBox("HELLO",68,6000,"MyTitle")
       </code>
     </remarks>
     <example>
@@ -6576,7 +6581,7 @@
         *  4 = Yes and No buttons
         *  16 = Stop sign icon
         *  256 = Second button is default
-        nAnswer = MESSAGEBOX(eMessageText, nDialogType, eMessageTitle)
+        nAnswer = MessageBox(eMessageText, nDialogType, eMessageTitle)
         DO CASE
         CASE nAnswer = 6
         WAIT WINDOW 'You chose Yes'
@@ -6795,16 +6800,16 @@
         Set MULTILOCKS ON  &amp;&amp; Allow table buffering
         =CursorSetProp("Buffering", 5, "employee" )  &amp;&amp; Enable table buffering
         * Display initial value
-        =MESSAGEBOX("Original cLastName value: "+ cLastName, 0, "Results")
+        =MessageBox("Original cLastName value: "+ cLastName, 0, "Results")
         * Change record value and display results
         Replace cLastName WITH "Jones"
-        =MESSAGEBOX("Modified cLastName value: "+ cLastName, 0, "Results")
+        =MessageBox("Modified cLastName value: "+ cLastName, 0, "Results")
         * Store the old value of the field to cTemp variable and display results
         cTemp=OLDVAL("cLastName", "employee")
-        =MESSAGEBOX("Original cLastName value: "+ cTemp, 0, "Results")
+        =MessageBox("Original cLastName value: "+ cTemp, 0, "Results")
         * Update table and display final value
         =TableUPDATE(.T.)
-        =MESSAGEBOX("Final cLastName value: "+ cLastName, 0, "Results")
+        =MessageBox("Final cLastName value: "+ cLastName, 0, "Results")
         * Close and delete example table file
         Use
         DELETE FILE employee.dbf
@@ -7785,6 +7790,10 @@
         = SqlCancel(gnHandle)   &amp;&amp; Wrong select statement, cancel
       </code>
     </example>
+    <seealso cref="O:XSharp.VFP.Functions.SqlConnect">SqlConnect()</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.SqlStringConnect">SqlStringConnect()</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.SqlExec">SqlExec()</seealso>
+
   </sqlcancel>
   <sqlcolumns>
     <summary>
@@ -7845,6 +7854,12 @@
     <example>
        <code language="X#">= SqlColumns(gnHandle, 'authors', 'Foxpro', 'MyCursor')</code>
     </example>
+    <seealso cref="O:XSharp.VFP.Functions.SqlConnect">SqlConnect()</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.SqlStringConnect">SqlStringConnect()</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.SqlGetProp">SqlGetProp()</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.SqlSetProp">SqlSetProp()</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.SqlTables">SqlTables()</seealso>
+
   </sqlcolumns>
   <sqlcommit>
     <summary>
@@ -7870,48 +7885,43 @@
         = SqlCommit(gnHandle)  &amp;&amp; Commit the changes
       </code>
     </example>
+    <seealso cref="O:XSharp.VFP.Functions.SqlConnect">SqlConnect()</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.SqlStringConnect">SqlStringConnect()</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.SqlSetProp">SqlSetProp()</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.SqlRollBack">SqlRollBack()</seealso>
+
   </sqlcommit>
+  <sqlconnectoverload>
+    <overloads>
+      <summary>
+        There are 2 different overloads for the <b>SqlConnect( )</b> function.
+        You can either pass a datasource, userid and password, or pass the handle of an existing (shared) statement.
+      </summary>
+      <seealso cref="O:XSharp.VFP.Functions.SqlDisconnect">SqlDisconnect()</seealso>
+      <seealso cref="O:XSharp.VFP.Functions.SqlStringConnect">SqlStringConnect()</seealso>
+      <seealso cref="O:XSharp.VFP.Functions.SqlGetProp">SqlGetProp()</seealso>
+      <seealso cref="O:XSharp.VFP.Functions.SqlSetProp">SqlSetProp()</seealso>
+      <seealso cref="O:XSharp.VFP.Functions.SqlExec">SqlExec()</seealso>
+      <seealso cref="O:XSharp.VFP.Functions.SqlSetFactory">SqlSetFactory()</seealso>
+    </overloads>
+    </sqlconnectoverload>
   <sqlconnect>
     <summary>
-      Establishes a connection to a data source. There are two versions of the syntax.
-      <code>
-        SqlConnect([nStatementHandle])
-        SqlConnect([cConnectionName | cDataSourceName [, cUserID [, cPassword ]][, lShared]])
-      </code>
+      Establishes a connection to a data source. 
     </summary>
-    <param name="uSource">
-      This can be either a <b>nStatementHandle</b>, which specifies that a new statement handle be created for the underlying shared connection that is represented
+    <param name="nStatementHandle">
+      This specifies that a new statement handle be created for the underlying shared connection that is represented
       by nStatementHandle. The new statement handle uses the settings provided from nStatementHandle instead of using the default settings.
       You cannot create a new statement handle for a connection that is not shared.
-      X# generates an error if you attempt to create a new statement handle against a nonshared connection.
-      You can also use <b>SqlConnect( )</b> to obtain a new statement handle on a shared connection that was opened using <b>SqlStringConnect( )</b>.<br/>
-      It can also <b>cConnectionName</b> which specifies a named connection created by the <b>Create Connection</b> command.<br/>
-      When using <b>Create Connection</b> or the Connection Designer to create a named connection, you can configure the connection by specifying a data source name,
-      user ID, and password. When using the named connection in <b>SqlConnect( )</b> as cConnectionName, you can pass values different from those in
-      the named connection for the optional cUserID and cPassword parameters. These passed values are used instead of the user ID and password in the named
-      connection specified by cConnectionName.<br/>
-      For example, suppose you create a named connection called codemyNamedConnection/code using <b>Create Connection</b> or the Connection Designer and specify
-      the values codemyUserID/code and codemyPassword/code for the named connection. For <b>SqlConnect( )</b>, you can specify codemyNamedConnection/code as
-      cConnectionName and then specify codemyAltUserID/code and codemyAltPassword/code as an alternate user ID and password as in the following code:
-       <code language="X#">SqlConnect("myNamedConnection", "myAltUserID", "myAltPassword")</code>
-      However, if you create a named connection using a connection string with <b>Create Connection</b> or the Connection Designer, use the named connection in
-      <b>SqlConnect( )</b>, and attempt to pass optional user ID and password parameters to <b>SqlConnect( )</b>, X# generates the appropriate message.<br/>
-      When creating a new shared connection, the cConnectionName parameter refers to a named connection in the current database container (DBC).
-      When creating a new statement handle based on an existing shared connection, the cConnectionName parameter refers
-      to a previous connection opened in shared mode.<br/>
-      If you use the cConnectionName parameter without the lShared parameter or with lShared parameter as False (.F.),
-      you will always create a new connection that is not shared.<br/>
-      When using cConnectionName, if lShared is True (.T.) and the named connection is already open in shared mode,
-      the user name and password provided should match those previously used. Otherwise, X# generates the appropriate message.<br/>
-      Finally this parameter can be <b>cDataSourceName</b>, a name of a data source as defined in your Odbc.ini file.
-      You can also choose a data source from the Select Connection or Data Source Dialog Box, which appears when you call <b>SqlConnect( )</b>
-      without any additional arguments or with only the lShared parameter.
+    </param>
+    <param name="cDataSourceName">
+      This specifies an ODBC Datasource name. For non ODBC connections we recomment you use <b>SqlStringConnect()</b> to connect.
     </param>
     <param name="cUserID">
-      Specifies the user identifier used to log on to the data source.
+      Specifies the user identifier used to log on to the data source. This may be omitted if a userid/password is stored with the ODBC Datasource.
     </param>
     <param name="cPassword">
-      Specifies the password for gaining access to the data source.
+      Specifies the password for gaining access to the data source. This may be omitted if a userid/password is stored with the ODBC Datasource.
     </param>
     <param name="lShared">
       Specifies whether or not to create a shared connection.<br/>
@@ -7945,9 +7955,9 @@
        <code language="X#">
         STORE SqlConnect('MyFoxSQLNT', 'myUserID', 'myPassword') TO gnConnHandle
         IF gnConnHandle &lt;= 0
-        = MESSAGEBOX('Cannot make connection', 16, 'SQL Connect Error')
+        = MessageBox('Cannot make connection', 16, 'SQL Connect Error')
         ELSE
-        = MESSAGEBOX('Connection made', 48, 'SQL Connect Message')
+        = MessageBox('Connection made', 48, 'SQL Connect Message')
         = SqlDisconnect(gnHandle)
         ENDIF
       </code>
@@ -7966,6 +7976,12 @@
         SqlConnect( myConnectionName, .T. )
       </code>
     </example>
+    <seealso cref="O:XSharp.VFP.Functions.SqlDisconnect">SqlDisconnect()</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.SqlStringConnect">SqlStringConnect()</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.SqlGetProp">SqlGetProp()</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.SqlSetProp">SqlSetProp()</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.SqlExec">SqlExec()</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.SqlSetFactory">SqlSetFactory()</seealso>
   </sqlconnect>
   <sqldisconnect>
     <summary>
@@ -7988,13 +8004,16 @@
        <code language="X#">
         STORE SqlConnect('MyFoxSQLNT', '&lt;userid&gt;', '&lt;password&gt;') TO gnHandle
         IF gnHandle &lt;= 0
-        = MESSAGEBOX('Cannot make connection', 16, 'SQL Connect Error')
+        = MessageBox('Cannot make connection', 16, 'SQL Connect Error')
         ELSE
-        = MESSAGEBOX('Connection made', 48, 'SQL Connect Message)
+        = MessageBox('Connection made', 48, 'SQL Connect Message)
         = SqlDisconnect(gnHandle)
         ENDIF
       </code>
     </example>
+    <seealso cref="O:XSharp.VFP.Functions.SqlConnect">SqlConnect()</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.SqlStringConnect">SqlStringConnect()</seealso>
+
   </sqldisconnect>
   <sqlexec>
     <summary>
@@ -8010,13 +8029,14 @@
       For more information about parameterized views, see How to: Create Parameterized Views.<br/>
       You can include expressions in the SQL statement. X# evaluates all expressions in the SQL statement that you pass before sending them to the data source.
       X# can evaluate memory variable names, function calls, and expressions enclosed in parentheses as parameter values.
+      <note type="tip">Parameterized queries are not yet supported in X#</note>
     </param>
     <param name="cCursorName">
       Specifies the name of the X# cursor to which the result set is sent. If you don't include a cursor name, X# uses the default name SQLRESULT.<br/>
       For multiple result sets, new cursor names are derived by appending an incremented number to the name of the first cursor.
     </param>
     <param name="aCountInfo">
-      Specifies the name of the array to populate with row count information. If the array doesn’t exist, it is created.
+      Specifies an array to populate with row count information. The array is resized to hold all result sets.
       The array has two columns: 1 – Alias, 2 –Count.
     </param>
     <returns>
@@ -8140,6 +8160,10 @@
         RETURN
       </code>
     </example>
+    <seealso cref="O:XSharp.VFP.Functions.SqlPrepare">SqlPrepare()</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.SqlConnect">SqlConnect()</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.SqlStringConnect">SqlStringConnect()</seealso>
+
   </sqlexec>
   <sqlgetprop>
     <summary>
@@ -8164,14 +8188,18 @@
         nHandle=SqlConnect()
         IF nHandle &gt; 0
         cSource= SqlGetProp(nHandle, "datasource")
-        =MESSAGEBOX("Current Data Source = "+cSource,0,"Connection Results")
+        =MessageBox("Current Data Source = "+cSource,0,"Connection Results")
         ELSE
-        =MESSAGEBOX("Connection Error = " + ;
+        =MessageBox("Connection Error = " + ;
         ALLTRIM(STR(nHandle)),0,"Connection Results")
         ENDIF
         =SqlDisconnect(nHandle)
       </code>
     </example>
+    <seealso cref="O:XSharp.VFP.Functions.SqlConnect">SqlConnect()</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.SqlStringConnect">SqlStringConnect()</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.SqlSetProp">SqlSetProp()</seealso>
+
   </sqlgetprop>
   <sqlidledisconnect>
     <summary>
@@ -8269,6 +8297,12 @@
         = SqlMoreRes(gnHandle)  &amp;&amp; Second result set
       </code>
     </example>
+    <seealso cref="O:XSharp.VFP.Functions.SqlConnect">SqlConnect()</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.SqlStringConnect">SqlStringConnect()</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.SqlExec">SqlExec()</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.SqlGetProp">SqlGetProp()</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.SqlSetProp">SqlSetProp()</seealso>
+
   </sqlmoreresults>
   <sqlprepare>
     <summary>
@@ -8281,7 +8315,7 @@
       Specifies the SQL statement passed to the data source.<br/>
       The SQL statement can contain a parameterized Where clause, which creates a parameterized view. All parameters in the Where clause must be defined before
       SqlPrepare( ) is issued. For example, if the parameters are variables, the variables must be created and initialized before SqlPrepare( ) is issued.
-      For more information about parameterized views, see How to: Create Parameterized Views.
+      <note type="tip">Parameterized queries are not yet supported in X#</note>
     </param>
     <param name="cCursorName">
       Specifies the name of the X# cursor to which the result set is sent. If you don't include a cursor name, X# uses the default name SQLRESULT.<br/>
@@ -8305,6 +8339,10 @@
         = SqlExec(gnHandle)
       </code>
     </example>
+    <seealso cref="O:XSharp.VFP.Functions.SqlExec">SqlExec()</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.SqlConnect">SqlConnect()</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.SqlStringConnect">SqlStringConnect()</seealso>
+
   </sqlprepare>
   <sqlrollback>
     <summary>
@@ -8330,19 +8368,25 @@
         = SqlRollBack(gnHandle)
       </code>
     </example>
+    <seealso cref="O:XSharp.VFP.Functions.SqlConnect">SqlConnect()</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.SqlStringConnect">SqlStringConnect()</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.SqlSetProp">SqlSetProp()</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.SqlCommit">SqlCommit()</seealso>
+
   </sqlrollback>
   <sqlsetfactory>
     <summary>
       This function allows you to choose the Ado.Net provider that is used for the subsequent <b>SqlConnect()</b> or <b>SqlStringConnect()</b> calls.
     </summary>
-    <param name="uFactory">
-      This is either the name of a built-in SQL Factory as a string. Valid values are at this moment: "ODBC", "OLEDB" and "SQLSERVER". <br/>
-      You can also pass an object that implements ISqlFactory. This object is then used to create the connection, its commands etc.<br/>
-      If you do not pass this parameter then you can retrieve the current factory.
-    </param>
+    <param name="cFactory">This is the name of a built-in SQL Factory as a string. Valid values are at this moment: "ODBC", "OLEDB" and "SQLSERVER".</param>
+    <param name="oFactory">An object that implements ISqlFactory. This object is then used to create the connection, its commands etc.</param>
     <returns>
       The currently installed SqlFactory class.
     </returns>
+    <seealso cref="T:XSharp.Data.ISqlFactory">ISqlFactory</seealso>
+    <seealso cref="O:XSharp.Data.Functions.SetSqlFactory">SetSqlFactory()</seealso>
+    <seealso cref="O:XSharp.Data.Functions.GetSqlFactory">GetSqlFactory()</seealso>
+
   </sqlsetfactory>
   <sqlsetprop>
     <summary>
@@ -8517,34 +8561,54 @@
         IF nHandle &gt; 0
         nSet=SqlSetProp(nHandle, "PacketSize", 2048 )
         IF nSet &gt; 0
-        =MESSAGEBOX("PacketSize was set to 2048",0,"Connection Results")
+        =MessageBox("PacketSize was set to 2048",0,"Connection Results")
         ELSE
-        =MESSAGEBOX("Error setting PacketSize",0,"Connection Results")
+        =MessageBox("Error setting PacketSize",0,"Connection Results")
         ENDIF
         ELSE
-        =MESSAGEBOX("No Connection",0,"Connection Results")
+        =MessageBox("No Connection",0,"Connection Results")
         ENDIF
         =SqlDisconnect(nHandle)
       </code>
     </example>
+    <seealso cref="O:XSharp.VFP.Functions.SqlConnect">SqlConnect()</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.SqlStringConnect">SqlStringConnect()</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.SqlGetProp">SqlGetProp()</seealso>
+
   </sqlsetprop>
+  <sqlstringconnectoverload>
+    <overloads>
+      <summary>
+        There are 3 different overloads for the <b>SqlStringConnect( )</b> function. You can either pass a connection string ,
+        in which case the runtime tries to connect to the datasource with that string.
+        If you don't specify a connection string then a dialog will be shown where you can choose a connection.
+        The logic parameter indicates if the connection that you open will be shareable or not.
+      </summary>
+      <seealso cref="O:XSharp.VFP.Functions.SqlDisconnect">SqlDisconnect()</seealso>
+      <seealso cref="O:XSharp.VFP.Functions.SqlConnect">SqlConnect()</seealso>
+      <seealso cref="O:XSharp.VFP.Functions.SqlExec">SqlExec()</seealso>
+      <seealso cref="O:XSharp.VFP.Functions.SqlGetProp">SqlGetProp()</seealso>
+      <seealso cref="O:XSharp.VFP.Functions.SqlSetProp">SqlSetProp()</seealso>
+      <seealso cref="O:XSharp.VFP.Functions.SqlSetFactory">SqlSetFactory()</seealso>
+
+    </overloads>
+  </sqlstringconnectoverload>
   <sqlstringconnect>
     <summary>
       Establishes a connection to a data source using a connection string.
     </summary>
-    <param name="uSharedOrConnectString">
-      This parameter can be either <b>lShared</b> in which case it specifies whether to create a shared connection. <br/>
-      When a logic parameter is used then a dialog will be shown to create a SQL connection.<br/>
-      False (.F.)- <b>SqlStringConnect( )</b> does not create a shared connection. (Default)<br/>
-      True (.T.) - <b>SqlStringConnect( )</b> creates a shared connection. <br/>
-      But the parameter can also specify <b>cConnectString</b>, which specifies the data source connection string required by the Ado.Net connection object. 
+    <param name="cConnectString">
+      This specifies the data source connection string required by the Ado.Net connection object. 
       X# passes the connection string to the Ado.Net DBConnect object. For more information about data source connection strings,
       see your Ado.Net documentation.<br/>
       You can also choose a data source from the Select Connection or Data Source Dialog Box, which appears when you
-      call <b>SqlStringConnect( )</b> without cConnectString.
+      call <b>SqlStringConnect( )</b> with an empty connection string, or by passing the overload that only takes the lShared parameter.
     </param>
-    <param name="lSharable">
-      Specifies if the data source specified with cConnectString has a shared connection.
+    <param name="lShared">
+      Specifies if the data source specified with cConnectString has a shared connection. True (.T.) = Shared, False (.F.) = Exclusive, this is the Default.
+    </param>
+    <param name="lShared">
+      Specifies if the data source that will be opened should be shared or not. True (.T.) = Shared, False (.F.) = Exclusive, this is the Default.
     </param>
     <returns>
       Numeric data type. <b>SqlStringConnect( )</b> returns a positive nonzero numeric value as the statement handle if you successfully connect to the data source.
@@ -8570,9 +8634,9 @@
        <code language="X#">
         STORE SqlStringConnect('dsn=MyFoxSQLNT;uid=myUserID;pwd=myPassword') TO gnConnHandle
         IF gnConnHandle &lt; 0
-        = MESSAGEBOX('Cannot make connection', 16, 'SQL Connect Error')
+        = MessageBox('Cannot make connection', 16, 'SQL Connect Error')
         ELSE
-        = MESSAGEBOX('Connection made', 48, 'SQL Connect Message')
+        = MessageBox('Connection made', 48, 'SQL Connect Message')
         = SqlDisconnect(gnHandle)
         ENDIF
       </code>
@@ -8600,6 +8664,12 @@
         SqlStringConnect('myConnectionString', .T.)
       </code>
     </example>
+    <seealso cref="O:XSharp.VFP.Functions.SqlDisconnect">SqlDisconnect()</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.SqlConnect">SqlConnect()</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.SqlExec">SqlExec()</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.SqlGetProp">SqlGetProp()</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.SqlSetProp">SqlSetProp()</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.SqlSetFactory">SqlSetFactory()</seealso>
   </sqlstringconnect>
   <sqltables>
     <summary>
@@ -8633,9 +8703,9 @@
        <code language="X#">
         STORE SqlConnect('MyFoxSQLNT', '&lt;userid&gt;', '&lt;password&gt;') TO gnConnHandle
         IF gnConnHandle &lt; 0
-        = MESSAGEBOX('Cannot make connection', 16, 'SQL Connect Error')
+        = MessageBox('Cannot make connection', 16, 'SQL Connect Error')
         ELSE
-        = MESSAGEBOX('Connection made', 48, 'SQL Connect Message')
+        = MessageBox('Connection made', 48, 'SQL Connect Message')
         STORE SqlTables(gnConnHandle, 'Table', 'mycursor') TO nTables
         IF nTables = 1
         Select mycursor
@@ -8644,6 +8714,12 @@
         ENDIF
       </code>
     </example>
+    <seealso cref="O:XSharp.VFP.Functions.SqlConnect">SqlConnect()</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.SqlStringConnect">SqlStringConnect()</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.SqlColumns">SqlColumns()</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.SqlGetProp">SqlGetProp()</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.SqlSetProp">SqlSetProp()</seealso>
+
   </sqltables>
   <strconv>
     <summary>
@@ -9368,10 +9444,10 @@
         Clear
         BEGIN TRANSACTION
         tLevel = ALLTRIM(STR(TXNLEVEL()))
-        =MESSAGEBOX("Current Transaction: " + tLevel, 0, "Transaction Level")
+        =MessageBox("Current Transaction: " + tLevel, 0, "Transaction Level")
         BEGIN TRANSACTION
         tLevel = ALLTRIM(STR(TXNLEVEL()))
-        =MESSAGEBOX("Current Transaction: " + tLevel, 0, ;
+        =MessageBox("Current Transaction: " + tLevel, 0, ;
         "Transaction Level")
         END TRANSACTION
         END TRANSACTION

@@ -9,80 +9,62 @@ USING XSharp.VFP
 USING XSharp.Data
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/sqlconnect/*" />
-/// <seealso cref="M:XSharp.VFP.Functions.SqlDisconnect(System.Int32)">SqlDisconnect()</seealso>
-/// <seealso cref="M:XSharp.VFP.Functions.SqlStringConnect(XSharp.__Usual,XSharp.__Usual)">SqlStringConnect()</seealso>
-/// <seealso cref="M:XSharp.VFP.Functions.SqlGetProp(System.Int32,System.String)">SqlGetProp()</seealso>
-/// <seealso cref="M:XSharp.VFP.Functions.SqlSetProp(System.Int32,System.String,XSharp.__Usual)">SqlSetProp()</seealso>
-/// <seealso cref="M:XSharp.VFP.Functions.SqlExec(System.Int32,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">SqlExec()</seealso>
+/// <include file="VFPDocs.xml" path="Runtimefunctions/sqlconnectoverload/*" />
+FUNCTION SqlConnect(nStatementHandle AS LONG) AS LONG
+    LOCAL oStmt AS XSharp.VFP.SQLStatement
+    oStmt := SQLSupport.FindStatement(nStatementHandle)
+    IF oStmt == NULL_OBJECT
+        THROW Error{"Statement Handle ("+nStatementHandle:ToString()+") is invalid"}
+    ENDIF
+    // This should open a connection automatically since the previous connection as already validated
+    IF ! oStmt:Connection:Shared
+        THROW Error{"Statement Handle ("+nStatementHandle:ToString()+") does not have a shared connection"}
+    ENDIF
+    oStmt := XSharp.VFP.SQLStatement{oStmt:Connection}
+    nStatementHandle := SQLSupport.AddStatement(oStmt)
 
-FUNCTION SqlConnect(uSource AS USUAL, cUserID := NIL AS USUAL, cPassword := NIL AS USUAL, lShared := NIL AS USUAL) AS LONG
-    // uSource may be either a DSN or a nStatementHandle
+    RETURN nStatementHandle
+
+
+/// <include file="VFPDocs.xml" path="Runtimefunctions/sqlconnect/*" />
+FUNCTION SqlConnect(cDataSourceName AS STRING, cUserID := NIL AS USUAL, cPassword := NIL AS USUAL, lShared := NIL AS USUAL) AS LONG
     LOCAL nHandle := -1 AS LONG
     LOCAL cSource AS STRING
     LOCAL oStmt AS XSharp.VFP.SQLStatement
-    IF IsNumeric(uSource)
-        IF ! IsNil(cUserID) .OR. ! IsNil(cPassword) .OR. ! IsNil(lShared)
-           THROW Error{"Number or type of parameters is not correct"}
-        ENDIF
-        nHandle     := uSource
-        oStmt := SQLSupport.FindStatement(nHandle)
-        IF oStmt == NULL_OBJECT
-            THROW Error{"Statement Handle ("+nHandle:ToString()+") is invalid"}
-        ENDIF
-        // This should open a connection automatically since the previous connection as already validated
-        IF ! oStmt:Connection:Shared
-            THROW Error{"Statement Handle ("+nHandle:ToString()+") does not have a shared connection"}
-        ENDIF
-        oStmt := XSharp.VFP.SQLStatement{oStmt:Connection}
-        nHandle := SQLSupport.AddStatement(oStmt)
-
-    ELSEIF IsString(uSource)
-        // if one or more parameters are missing then the connect dialog is shown
-        cSource := uSource
-        IF ! IsString(cUserID) ; cUserID := "" ; ENDIF
-        IF ! IsString(cPassword) ; cPassword := "" ; ENDIF
-        IF ! IsLogic(lShared) ; lShared := TRUE ; ENDIF
-        oStmt := XSharp.VFP.SQLStatement{cSource, cUserID, cPassword, lShared}
-        nHandle := SQLSupport.AddStatement(oStmt)
-    ENDIF
+    // if one or more parameters are missing then the connect dialog is shown
+    cSource := cDataSourceName
+    IF ! IsString(cUserID) ; cUserID := "" ; ENDIF
+    IF ! IsString(cPassword) ; cPassword := "" ; ENDIF
+    IF ! IsLogic(lShared) ; lShared := FALSE ; ENDIF
+    oStmt := XSharp.VFP.SQLStatement{cSource, cUserID, cPassword, lShared}
+    nHandle := SQLSupport.AddStatement(oStmt)
     RETURN nHandle
+
     
 
-/// <include file="VFPDocs.xml" path="Runtimefunctions/sqlstringconnect/*" />
-/// <seealso cref="M:XSharp.VFP.Functions.SqlDisconnect(System.Int32)">SqlDisconnect()</seealso>
-/// <seealso cref="M:XSharp.VFP.Functions.SqlConnect(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">SqlConnect()</seealso>
-/// <seealso cref="M:XSharp.VFP.Functions.SqlExec(System.Int32,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">SqlExec()</seealso>
-/// <seealso cref="M:XSharp.VFP.Functions.SqlGetProp(System.Int32,System.String)">SqlGetProp()</seealso>
-/// <seealso cref="M:XSharp.VFP.Functions.SqlSetProp(System.Int32,System.String,XSharp.__Usual)">SqlSetProp()</seealso>
+/// <include file="VFPDocs.xml" path="Runtimefunctions/sqlstringconnect/*" /> 
+/// <include file="VFPDocs.xml" path="Runtimefunctions/sqlstringconnectoverload/*" />
+FUNCTION SqlStringConnect( lShared AS LOGIC) AS LONG
+    RETURN SqlStringConnect("", lShared)
+  
 
-FUNCTION SqlStringConnect( uSharedOrConnectString , lSharable) AS LONG
-    //  uSharedOrConnectString may be either lShared or a connection string
-    // in FoxPro when passing lShared as TRUE then the "Select Connection or Data Source Dialog Box"  is shown
-    // This is the normal 'DriverConnect' dialog for ODBC drivers
+/// <include file="VFPDocs.xml" path="Runtimefunctions/sqlstringconnect/*" />
+FUNCTION SqlStringConnect( cConnectString AS STRING, lShared AS LOGIC) AS LONG
     LOCAL nHandle := -1 AS LONG
     LOCAL oStmt AS XSharp.VFP.SQLStatement
-    IF IsLogic(uSharedOrConnectString)
-        // show connection string dialog
-       oStmt := XSharp.VFP.SQLStatement{"", uSharedOrConnectString}
-    ELSEIF IsString(uSharedOrConnectString)
-       IF ! IsLogic(lSharable) ; lSharable := TRUE ; ENDIF
-       oStmt := XSharp.VFP.SQLStatement{uSharedOrConnectString,lSharable}
-    ELSE
-       THROW Error{"Number or type of parameters is not correct"}
-    ENDIF
+    oStmt := XSharp.VFP.SQLStatement{cConnectString,lShared}
     IF oStmt:Connected
         nHandle := SQLSupport.AddStatement(oStmt)
     ENDIF
     RETURN nHandle
-  
-    
+
+/// <include file="VFPDocs.xml" path="Runtimefunctions/sqlstringconnect/*" />
+FUNCTION SqlStringConnect( cConnectString AS STRING) AS LONG
+    RETURN SqlStringConnect(cConnectString, FALSE) 
 
 
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/sqlcancel/*" />
-/// <seealso cref="M:XSharp.VFP.Functions.SqlConnect(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">SqlConnect()</seealso>
-/// <seealso cref="M:XSharp.VFP.Functions.SqlExec(System.Int32,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">SqlExec()</seealso>
-/// <seealso cref="M:XSharp.VFP.Functions.SqlSetProp(System.Int32,System.String,XSharp.__Usual)">SqlSetProp()</seealso>
 FUNCTION SqlCancel( nStatementHandle AS LONG) AS LONG
     VAR oStmt := GetStatement(nStatementHandle)    
     IF oStmt != NULL
@@ -93,8 +75,6 @@ FUNCTION SqlCancel( nStatementHandle AS LONG) AS LONG
 
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/sqldisconnect/*" />
-/// <seealso cref="M:XSharp.VFP.Functions.SqlStringConnect(XSharp.__Usual,XSharp.__Usual)">SqlStringConnect()</seealso>
-/// <seealso cref="M:XSharp.VFP.Functions.SqlConnect(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">SqlConnect()</seealso>
 FUNCTION SqlDisconnect( nStatementHandle AS LONG) AS LONG
     IF nStatementHandle > 0
         VAR oStmt := GetStatement(nStatementHandle)    
@@ -105,27 +85,22 @@ FUNCTION SqlDisconnect( nStatementHandle AS LONG) AS LONG
         ENDIF
     ELSEIF nStatementHandle == 0
         FOREACH oStmt AS SQLStatement IN SQLSupport.GetStatements()
-            SQLSupport.RemoveStatement(oStmt:Handle)
+            SQLSupport.RemoveStatement(oStmt:Handle) 
             oStmt:DisConnect()
         NEXT
-        RETURN 1
+        RETURN 1 
     ENDIF
-    RETURN -1
-
+    RETURN -1  
+     
 /// <include file="VFPDocs.xml" path="Runtimefunctions/sqlexec/*" />
-/// <seealso cref="M:XSharp.VFP.Functions.SqlPrepare(System.Int32,System.String,XSharp.__Usual)">SqlPrepare()</seealso>
-/// <seealso cref="M:XSharp.VFP.Functions.SqlConnect(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">SqlConnect()</seealso>
-FUNCTION SqlExec( nStatementHandle AS LONG, cSQLCommand := NIL AS USUAL, cCursorName := NIL AS USUAL, aCountInfo := NIL AS USUAL) AS LONG
+FUNCTION SqlExec( nStatementHandle AS LONG, cSQLCommand := "" AS STRING, cCursorName := "SQLRESULT" AS STRING, aCountInfo := NULL_ARRAY  AS ARRAY) AS LONG
     LOCAL aInfo AS ARRAY
     LOCAL prepared := FALSE AS LOGIC
     VAR oStmt := GetStatement(nStatementHandle)    
-    IF oStmt != NULL
-        IF ! IsString(cCursorName)
-            cCursorName := "SQLRESULT"
-        ENDIF
-        IF !IsString(cSQLCommand)
+    IF oStmt != NULL 
+        IF String.IsNullOrEmpty(cSQLCommand)
             IF ! oStmt:Prepared .AND. ! oStmt:Asynchronous
-                THROW Error{"SQL Statement parameter is required for non prepared SQL Statements"}
+                THROW Error{"SQL Command parameter is required for non prepared SQL Statements"}
             ENDIF
             prepared := TRUE
         ENDIF
@@ -136,10 +111,14 @@ FUNCTION SqlExec( nStatementHandle AS LONG, cSQLCommand := NIL AS USUAL, cCursor
         ELSE
             result := oStmt:Execute(cSQLCommand, cCursorName,aInfo)
         ENDIF
-        CopyResults(aCountInfo, aInfo)
+        IF aCountInfo != NULL_ARRAY
+            CopyResults(aCountInfo, aInfo)
+        ENDIF
         RETURN result
     ENDIF
     RETURN 0
+
+
     
 
 /// <summary>-- todo --</summary>
@@ -151,10 +130,6 @@ FUNCTION SqlIdleDisconnect( nStatementHandle AS LONG) AS LONG
     // RETURN 0
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/sqlmoreresults/*" />
-/// <seealso cref="M:XSharp.VFP.Functions.SqlConnect(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">SqlConnect()</seealso>
-/// <seealso cref="M:XSharp.VFP.Functions.SqlExec(System.Int32,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">SqlExec()</seealso>
-/// <seealso cref="M:XSharp.VFP.Functions.SqlGetProp(System.Int32,System.String)">SqlGetProp()</seealso>
-/// <seealso cref="M:XSharp.VFP.Functions.SqlSetProp(System.Int32,System.String,XSharp.__Usual)">SqlSetProp()</seealso>
 FUNCTION SqlMoreResults( nStatementHandle AS LONG, cCursorName := NIL AS USUAL , aCountInfo := NIL AS USUAL) AS LONG
     VAR oStmt := GetStatement(nStatementHandle)    
     IF oStmt != NULL
@@ -163,23 +138,20 @@ FUNCTION SqlMoreResults( nStatementHandle AS LONG, cCursorName := NIL AS USUAL ,
         ENDIF
         LOCAL aInfo := {} AS ARRAY
         VAR result := oStmt:MoreResults(cCursorName, aInfo)
-        CopyResults(aCountInfo, aInfo)
+        IF IsArray(aCountInfo)
+            CopyResults(aCountInfo, aInfo)
+        ENDIF
         RETURN result
     ENDIF
     RETURN 0
         
 
-/// <include file="VFPDocs.xml" path="Runtimefunctions/sqlprepare/*" />
-/// <seealso cref="M:XSharp.VFP.Functions.SqlExec(System.Int32,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">SqlExec()</seealso>
-/// <seealso cref="M:XSharp.VFP.Functions.SqlConnect(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">SqlConnect()</seealso>
-FUNCTION SqlPrepare( nStatementHandle AS LONG, cSQLCommand AS STRING, cCursorName := NIL AS USUAL) AS LONG
+/// <include file="VFPDocs.xml" path="Runtimefunctions/sqlprepare/*" /> 
+FUNCTION SqlPrepare( nStatementHandle AS LONG, cSQLCommand AS STRING, cCursorName := "SQLRESULT" AS STRING) AS LONG
     VAR oStmt := GetStatement(nStatementHandle)    
     IF oStmt != NULL
-        IF ! IsString(cSQLCommand)
-            THROW Error{"Number or type of parameters is not correct"}
-        ENDIF
-        IF ! IsString(cCursorName)
-            cCursorName := "SQLRESULT"
+        IF String.IsNullOrEmpty(cSQLCommand)
+            THROW Error{"The SQL Command parameter is mandatory"}
         ENDIF
         VAR result := oStmt:Prepare(cSQLCommand, cCursorName)
         RETURN result
@@ -193,50 +165,46 @@ INTERNAL FUNCTION GetStatement(nStatementHandle AS LONG) AS XSharp.VFP.SQLStatem
 
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/sqlsetfactory/*" />
-/// <seealso cref="T:XSharp.Data.ISqlFactory">ISqlFactory</seealso>
-/// <seealso cref="M:XSharp.Data.Functions.SetSqlFactory(XSharp.Data.ISqlFactory)">SetSqlFactory()</seealso>
-/// <seealso cref="M:XSharp.Data.Functions.GetSqlFactory">GetSqlFactory()</seealso>
-FUNCTION SqlSetFactory(uFactory := NIL AS USUAL) AS ISqlFactory
+
+FUNCTION SqlSetFactory() AS ISqlFactory
+    RETURN SQLSupport.Factory
+
+/// <include file="VFPDocs.xml" path="Runtimefunctions/sqlsetfactory/*" />
+FUNCTION SqlSetFactory(cFactory AS STRING ) AS ISqlFactory
     LOCAL oResult := SQLSupport.Factory
-    IF IsString(uFactory)
-        LOCAL cProvider AS STRING
-        LOCAL oFactory  := NULL_OBJECT AS ISqlFactory
-        cProvider := (STRING) uFactory
-        cProvider := cProvider:ToLower()
-        IF cProvider:StartsWith("odbc")
-            oFactory := XSharp.Data.OdbcFactory{}
-        ELSEIF cProvider:StartsWith("oledb")
-            oFactory := XSharp.Data.OleDbFactory{}
-        ELSEIF cProvider:StartsWith("sql")
-           oFactory := XSharp.Data.SqlServerFactory{}
-        ENDIF
-        IF oFactory != NULL_OBJECT
-            SQLSupport.Factory := (ISqlFactory) oFactory
-        ENDIF
-    ELSEIF IsObject(uFactory)
-        LOCAL oFactory AS OBJECT
-        oFactory := uFactory
-        IF oFactory IS ISqlFactory VAR oDataFactory
-            SQLSupport.Factory := oDataFactory
-        ENDIF
+    LOCAL oFactory  := NULL_OBJECT AS ISqlFactory
+    cFactory := cFactory:ToLower()
+    IF cFactory:StartsWith("odbc")
+        oFactory := XSharp.Data.OdbcFactory{}
+    ELSEIF cFactory:StartsWith("oledb")
+        oFactory := XSharp.Data.OleDbFactory{}
+    ELSEIF cFactory:StartsWith("sql")
+        oFactory := XSharp.Data.SqlServerFactory{}
+    ENDIF
+    IF oFactory != NULL_OBJECT
+        SQLSupport.Factory := (ISqlFactory) oFactory
     ENDIF
     RETURN oResult
 
 
-STATIC FUNCTION CopyResults(aCountInfo AS USUAL, aInfo AS ARRAY) AS VOID
-    IF IsArray(aCountInfo)
-        ASize(aCountInfo, ALen(aInfo))
-        IF ALen(aInfo) > 0
-            ACopy(aInfo, aCountInfo)
-        ENDIF
+
+/// <include file="VFPDocs.xml" path="Runtimefunctions/sqlsetfactory/*" />
+FUNCTION SqlSetFactory(oFactory AS ISqlFactory) AS ISqlFactory
+    LOCAL oResult := SQLSupport.Factory
+    IF oFactory != NULL 
+        SQLSupport.Factory := oFactory
+    ENDIF
+    RETURN oResult
+
+STATIC FUNCTION CopyResults(aCountInfo AS ARRAY, aInfo AS ARRAY) AS VOID
+    ASize(aCountInfo, ALen(aInfo))
+    IF ALen(aInfo) > 0
+        ACopy(aInfo, aCountInfo)
     ENDIF
 
 
 #region Transaction Support
 /// <include file="VFPDocs.xml" path="Runtimefunctions/sqlcommit/*" />
-/// <seealso cref="M:XSharp.VFP.Functions.SqlConnect(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">SqlConnect()</seealso>
-/// <seealso cref="M:XSharp.VFP.Functions.SqlSetProp(System.Int32,System.String,XSharp.__Usual)">SqlSetProp()</seealso>
-/// <seealso cref="M:XSharp.VFP.Functions.SqlRollBack(System.Int32)">SqlRollBack()</seealso>
 FUNCTION SqlCommit( nStatementHandle AS LONG) AS LONG
     VAR oStmt := GetStatement(nStatementHandle)
     IF oStmt != NULL .AND. oStmt:Commit()
@@ -245,9 +213,6 @@ FUNCTION SqlCommit( nStatementHandle AS LONG) AS LONG
     RETURN 0
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/sqlrollback/*" />
-/// <seealso cref="M:XSharp.VFP.Functions.SqlConnect(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">SqlConnect()</seealso>
-/// <seealso cref="M:XSharp.VFP.Functions.SqlSetProp(System.Int32,System.String,XSharp.__Usual)">SqlSetProp()</seealso>
-/// <seealso cref="M:XSharp.VFP.Functions.SqlCommit(System.Int32)">SqlCommit()</seealso>
 FUNCTION SqlRollBack( nStatementHandle AS LONG) AS LONG
     VAR oStmt := GetStatement(nStatementHandle)    
     IF oStmt != NULL .AND. oStmt:Rollback()
@@ -260,16 +225,12 @@ FUNCTION SqlRollBack( nStatementHandle AS LONG) AS LONG
 #region Properties
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/sqlgetprop/*" />
-/// <seealso cref="M:XSharp.VFP.Functions.SqlConnect(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">SqlConnect()</seealso>
-/// <seealso cref="M:XSharp.VFP.Functions.SqlSetProp(System.Int32,System.String,XSharp.__Usual)">SqlSetProp()</seealso>
 
 FUNCTION SqlGetProp( nStatementHandle AS LONG, cSetting AS STRING ) AS USUAL
     RETURN SQLSupport.GetSetProperty(nStatementHandle, cSetting,NULL)
 
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/sqlsetprop/*" />
-/// <seealso cref="M:XSharp.VFP.Functions.SqlConnect(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">SqlConnect()</seealso>
-/// <seealso cref="M:XSharp.VFP.Functions.SqlGetProp(System.Int32,System.String)">SqlGetProp()</seealso>
 FUNCTION SqlSetProp( nStatementHandle AS LONG, cSetting AS STRING, eExpression AS USUAL) AS LONG
     RETURN (INT) SQLSupport.GetSetProperty(nStatementHandle, cSetting,eExpression)
 
@@ -279,48 +240,24 @@ FUNCTION SqlSetProp( nStatementHandle AS LONG, cSetting AS STRING, eExpression A
 
 #region MetaData
 
-/// <include file="VFPDocs.xml" path="Runtimefunctions/sqltables/*" />
-/// <seealso cref="M:XSharp.VFP.Functions.SqlColumns(System.Int32,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">SqlColumns()</seealso>
-/// <seealso cref="M:XSharp.VFP.Functions.SqlConnect(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">SqlConnect()</seealso>
-/// <seealso cref="M:XSharp.VFP.Functions.SqlGetProp(System.Int32,System.String)">SqlGetProp()</seealso>
-/// <seealso cref="M:XSharp.VFP.Functions.SqlSetProp(System.Int32,System.String,XSharp.__Usual)">SqlSetProp()</seealso>
+/// <include file="VFPDocs.xml" path="Runtimefunctions/sqltables/*" /> 
 
-FUNCTION SqlTables( nStatementHandle AS LONG , cTableTypes:= NIL AS USUAL , cCursorName := NIL AS USUAL) AS LONG
+FUNCTION SqlTables( nStatementHandle AS LONG , cTableTypes:= "" AS STRING, cCursorName := "SQLRESULT" AS STRING) AS LONG
     VAR oStmt := GetStatement(nStatementHandle)    
     IF oStmt != NULL
-       IF ! IsString(cTableTypes)
-           cTableTypes := "" 
-       ENDIF
-       IF ! IsString(cCursorName)
-            cCursorName := "SQLRESULT"
-        ENDIF        
         oStmt:GetTables(cTableTypes, cCursorName)
         RETURN 1
     ENDIF
     RETURN -1
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/sqlcolumns/*" />
-/// <seealso cref="M:XSharp.VFP.Functions.SqlConnect(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">SqlConnect()</seealso>
-/// <seealso cref="M:XSharp.VFP.Functions.SqlGetProp(System.Int32,System.String)">SqlGetProp()</seealso>
-/// <seealso cref="M:XSharp.VFP.Functions.SqlSetProp(System.Int32,System.String,XSharp.__Usual)">SqlSetProp()</seealso>
-/// <seealso cref="M:XSharp.VFP.Functions.SqlTables(System.Int32,XSharp.__Usual,XSharp.__Usual)">SqlTables()</seealso>
-FUNCTION SqlColumns( nStatementHandle AS LONG, cTableName := NIL AS USUAL, cType:= NIL AS USUAL, cCursorName:= NIL AS USUAL) AS USUAL
+FUNCTION SqlColumns( nStatementHandle AS LONG, cTableName := "" AS STRING, cType:= "FOXPRO" AS STRING, cCursorName:= "SQLRESULT" AS STRING) AS USUAL
     VAR oStmt := GetStatement(nStatementHandle)    
     IF oStmt != NULL
-       IF ! IsString(cTableName)
-           cTableName := ""
-       ENDIF
-       IF ! IsString(cType)
-           cType := "FOXPRO"
-       ELSE
-            cType := Upper(cType):Trim()
-       ENDIF
+       cType := cType:Trim():ToUpper()
        IF cType != "FOXPRO"  .AND. cType != "NATIVE"
             THROW Error{"Incorrect value for cType. Expected 'FOXPRO' or 'NATIVE'. Default is 'FOXPRO'"}
        ENDIF
-       IF ! IsString(cCursorName)
-            cCursorName := "SQLRESULT"
-       ENDIF        
        oStmt:GetColumns(cTableName, cType, cCursorName)
        IF Used(cCursorName) .AND. RecCount(cCursorName) > 0
            RETURN 1
@@ -333,9 +270,6 @@ FUNCTION SqlColumns( nStatementHandle AS LONG, cTableName := NIL AS USUAL, cType
 
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/asqlhandles/*" />
-/// <seealso cref="M:XSharp.VFP.Functions.SqlConnect(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)">SqlConnect()</seealso>
-/// <seealso cref="M:XSharp.VFP.Functions.SqlGetProp(System.Int32,System.String)">SqlGetProp()</seealso>
-/// <seealso cref="M:XSharp.VFP.Functions.SqlSetProp(System.Int32,System.String,XSharp.__Usual)">SqlSetProp()</seealso>
 FUNCTION ASqlHandles (ArrayName AS ARRAY, nStatementHandle := NIL AS USUAL) AS DWORD
     LOCAL aResult AS ARRAY
     IF IsNumeric(nStatementHandle)

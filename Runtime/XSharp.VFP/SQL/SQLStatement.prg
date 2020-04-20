@@ -434,7 +434,7 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
 
     PRIVATE METHOD CopyToCursor(oDataReader AS DbDataReader, cursorNo AS LONG) AS VOID
         LOCAL result   := {} AS ARRAY
-        _oLastDataReader := NULL_OBJECT
+        _oLastDataReader := oDataReader
         DO WHILE TRUE
             VAR cursorName := SELF:CursorName
             IF cursorNo != 0

@@ -341,7 +341,7 @@
         ?? Type('gyMoney')  &amp;&amp; Displays N, numeric type value
       </code>
     </example>
-    <seealso cref='M:XSharp.VFP.Functions.NtoM(XSharp.__Float)' />
+    <seealso cref='M:XSharp.VFP.Functions.NToM(XSharp.__Float)' />
   </mton>
   <ntom>
     <summary>
@@ -365,7 +365,7 @@
         ?? Type('gnNumeric')  &amp;&amp; Displays Y, currency type value
       </code>
     </example>
-    <seealso cref='M:XSharp.VFP.Functions.MtoN(XSharp.__Currency)' />
+    <seealso cref='M:XSharp.VFP.Functions.MToN(XSharp.__Currency)' />
   </ntom>
   <sign>
     <summary>

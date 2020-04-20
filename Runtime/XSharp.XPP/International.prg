@@ -11,7 +11,7 @@ USING System.Reflection
 /// <param name="nCollation">the numeric identifier for the collation table to be selected. Must be one of the values from the XppCollations enum of a simple number</param>
 /// <returns>The numeric identifier of the active collation table </returns>
 /// <seealso cref='T:XSharp.XPP.XppCollations' />
-/// <seealso cref='M:XSharp.XPP.Functions.SetCollationTable(XSharp.__Usual,XSharp.__Usual)' />
+/// <seealso cref='O:XSharp.XPP.Functions.SetCollationTable' />
 FUNCTION SetCollation(nCollation) AS LONG
     LOCAL nOld := @@Set(Set.Collation) AS LONG
     IF PCount() > 0 .AND. IsNumeric(nCollation)
@@ -26,7 +26,7 @@ FUNCTION SetCollation(nCollation) AS LONG
 /// The ASCII value of a character plus 1 defines the array element that contains the weighing factor for that character. </param>
 /// <returns>a one dimensional array holding the weighing factors of characters for the active collation. </returns>
 /// <seealso cref='T:XSharp.XPP.XppCollations' />
-/// <seealso cref='M:XSharp.XPP.Functions.SetCollation(XSharp.__Usual)' />
+/// <seealso cref='O:XSharp.XPP.Functions.SetCollation' />
 FUNCTION SetCollationTable(nCollation, aTable) AS ARRAY
     LOCAL liEnum AS LONG
     LOCAL aCollation AS ARRAY

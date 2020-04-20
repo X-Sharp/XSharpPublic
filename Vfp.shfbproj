@@ -1087,9 +1087,4 @@ More information about that program can be found at our website as well.&amp;lt%
   <ItemGroup>
     <Folder Include="Docs\" />
   </ItemGroup>
-  <ItemGroup>
-    <Reference Include="XSharp.MacroCompiler">
-      <HintPath>Binaries\Debug\XSharp.MacroCompiler.dll</HintPath>
-    </Reference>
-  </ItemGroup>
 </Project>

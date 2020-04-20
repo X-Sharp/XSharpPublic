@@ -9,9 +9,9 @@ USING System.Data
 USING XSharp.Data
 
 /// <summary>This interface declares the common behavior for all XSharp Data Factory classes.</summary>
-/// <seealso cref="M:XSharp.VFP.Functions.SqlSetFactory(XSharp.__Usual)">SqlSetFactory()</seealso>
-/// <seealso cref="M:XSharp.Data.Functions.SetSqlFactory(XSharp.Data.ISqlFactory)">SetSqlFactory()</seealso>
-/// <seealso cref="M:XSharp.Data.Functions.GetSqlFactory">GetSqlFactory()</seealso>
+/// <seealso cref="O:XSharp.VFP.Functions.SqlSetFactory">SqlSetFactory()</seealso>
+/// <seealso cref="O:XSharp.Data.Functions.SetSqlFactory">SetSqlFactory()</seealso>
+/// <seealso cref="O:XSharp.Data.Functions.GetSqlFactory">GetSqlFactory()</seealso>
 
 INTERFACE XSharp.Data.ISqlFactory
 
@@ -120,8 +120,8 @@ END INTERFACE
 
 /// <summary>Set a new default SQL factory.</summary>
 /// <seealso cref="T:XSharp.Data.ISqlFactory">ISqlFactory</seealso>
-/// <seealso cref="M:XSharp.VFP.Functions.SqlSetFactory(XSharp.__Usual)">SqlSetFactory()</seealso>
-/// <seealso cref="M:XSharp.Data.Functions.GetSqlFactory">GetSqlFactory()</seealso>
+/// <seealso cref="O:XSharp.VFP.Functions.SqlSetFactory">SqlSetFactory()</seealso>
+/// <seealso cref="O:XSharp.Data.Functions.SetSqlFactory">SetSqlFactory()</seealso>
 /// <param name="oFactory">New default factory</param>
 /// <returns>The current default factory.</returns>
 FUNCTION SetSqlFactory(oFactory AS ISqlFactory) AS ISqlFactory
@@ -132,8 +132,8 @@ FUNCTION SetSqlFactory(oFactory AS ISqlFactory) AS ISqlFactory
 
 /// <summary>Retrieve the default SQL factory.</summary>
 /// <seealso cref="T:XSharp.Data.ISqlFactory">ISqlFactory</seealso>
-/// <seealso cref="M:XSharp.VFP.Functions.SqlSetFactory(XSharp.__Usual)">SqlSetFactory()</seealso>
-/// <seealso cref="M:XSharp.Data.Functions.SetSqlFactory(XSharp.Data.ISqlFactory)">SetSqlFactory()</seealso>
+/// <seealso cref="O:XSharp.VFP.Functions.SqlSetFactory">SqlSetFactory()</seealso>
+/// <seealso cref="O:XSharp.Data.Functions.SetSqlFactory">SetSqlFactory()</seealso>
 /// <returns>The current default factory.</returns>
 FUNCTION GetSqlFactory() AS ISqlFactory STRICT
     LOCAL oOld AS ISqlFactory

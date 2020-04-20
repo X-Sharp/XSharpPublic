@@ -1555,8 +1555,14 @@ namespace XSharp.Project
             {
                 this.BuildProject.Save();
             }
-
         }
+
+        public override int Save(string fileToBeSaved, int remember, uint formatIndex)
+        {
+            this.UpdateProjectVersion();
+            return base.Save(fileToBeSaved, remember, formatIndex);
+        }
+
         protected virtual internal bool ResetDependencies()
         {
             bool bMoved = false;
@@ -2002,14 +2008,28 @@ namespace XSharp.Project
             int result;
             bool dialectVO = false;
             silent = (__VSUPGRADEPROJFLAGS)grfUpgradeFlags == __VSUPGRADEPROJFLAGS.UPF_SILENTMIGRATE;
+            bool ok = true;
+            // we have added a projectversion property to makes checks easier in the future
+            if (ok)
+            {
+                var vers = this.BuildProject.Properties.Where(p => string.Compare(p.Name, ProjectVersion, StringComparison.OrdinalIgnoreCase) == 0).FirstOrDefault();
+                if (vers != null)
+                {
+                    ok = vers.UnevaluatedValue == Constants.FileVersion;
+                    if (!ok)
+                    {
+                        ok = String.Compare(vers.UnevaluatedValue, "2.0.1.0") >= 0;
+                    }
+                    if (ok)
+                    {
+                        return VSConstants.S_OK;
+                    }
+                }
+            }
             StringWriter backup = new StringWriter();
             BuildProject.Save(backup);
             var str = backup.ToString();
             var str2 = System.Text.RegularExpressions.Regex.Replace(str, "anycpu", "AnyCPU", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
-            bool ok = true;
-            // we have added a projectversion property to makes checks easier in the future
-            if (str.IndexOf(ProjectVersion, StringComparison.OrdinalIgnoreCase) == -1)
-                ok = false;
             if (str2 != str)
             {
                 ok = false;
@@ -2081,20 +2101,6 @@ namespace XSharp.Project
                     dialectVO = true;
                 }
             }
-            if (ok)
-            {
-                var vers = this.BuildProject.Properties.Where(p => string.Compare(p.Name, ProjectVersion, StringComparison.OrdinalIgnoreCase) == 0).FirstOrDefault();
-                if (vers != null)
-                {
-                    ok = vers.UnevaluatedValue == Constants.FileVersion;
-                    if (!ok)
-                    {
-                        ok = String.Compare(vers.UnevaluatedValue, "2.0.1.0") >= 0;
-                    }
-                }
-                else
-                    ok = false;
-            }
             if (!ok)
             {
                 FixProjectFile(BuildProject.FullPath, dialectVO);
@@ -2138,6 +2144,18 @@ namespace XSharp.Project
             }
             return false;
         }
+
+        private void UpdateProjectVersion()
+        {
+            var xml = BuildProject.Xml;
+            var groups = xml.PropertyGroups.ToList();
+            var grp = groups.Where(g => g.Condition.Trim().Length == 0).FirstOrDefault();
+            if (grp != null)
+            {
+                addProperty(grp, ProjectVersion, Constants.FileVersion);
+            }
+        }
+
         private void FixProjectFile(string filename, bool dialectVO)
         {
             bool changed = false;
@@ -2245,8 +2263,6 @@ namespace XSharp.Project
             var grp = groups.Where(g => g.Condition.Trim().Length == 0).FirstOrDefault();
             if (grp != null)
             {
-                if (addProperty(grp, ProjectVersion, Constants.FileVersion))
-                    changed = true;
                 if (! String.IsNullOrEmpty(debugInclude))
                 {
                     if (addProperty(grp, IncludePaths, debugInclude))
@@ -2281,6 +2297,7 @@ namespace XSharp.Project
                         File.Copy(filename, backupName, true);
                     }
                 }
+                UpdateProjectVersion();
                 BuildProject.Xml.Save(filename);
                 BuildProject.ReevaluateIfNecessary();
                 //this.Reload();

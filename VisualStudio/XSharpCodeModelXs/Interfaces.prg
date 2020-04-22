@@ -5,8 +5,8 @@
 //
 USING LanguageService.CodeAnalysis
 USING LanguageService.CodeAnalysis.XSharp
-USING Microsoft.VisualStudio.Shell
-USING Microsoft.VisualStudio.Shell.TableManager
+//USING Microsoft.VisualStudio.Shell
+//USING Microsoft.VisualStudio.Shell.TableManager
 USING System
 USING System.Collections.Generic
 USING System.Linq

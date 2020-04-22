@@ -188,7 +188,9 @@ CLASS AssemblyInfo
 						VAR lastTerminatorIndex := text:Substring(0, pdbIndex).LastIndexOf('\0')
 						RETURN text:Substring(lastTerminatorIndex + 1, pdbIndex - lastTerminatorIndex + 3)
 					ENDIF
-				ENDIF
+                ENDIF
+            CATCH e AS Exception
+                XSolution.WriteException(e)
 			FINALLY
 				WriteOutputMessage("<-- FindPDBName : "+fileName)
 			END TRY
@@ -281,6 +283,8 @@ CLASS AssemblyInfo
 				ELSE
 					// FileName does not exist. No need to change the failedAssemblies list
 				ENDIF
+            CATCH e AS Exception
+                XSolution.WriteException(e)
 			FINALLY
 				WriteOutputMessage("<-- LoadAssemblyFromFile : "+fileName)
 			END TRY
@@ -469,7 +473,9 @@ CLASS AssemblyInfo
 						XSolution.WriteException(e)
 						SELF:_clearInfo()
 					END TRY
-				ENDIF
+                ENDIF
+            CATCH e AS Exception
+                XSolution.WriteException(e)
 			FINALLY
 				WriteOutputMessage("<-- AssemblyInfo.UpdateAssembly load types from assembly "+SELF:FileName )
 			END TRY

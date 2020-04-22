@@ -111,7 +111,9 @@ CLASS Workareas
 				IF RDDs[nArea] != NULL
 					VAR oRdd := RDDs[nArea]
 					TRY
-						lResult := lResult .AND. oRdd:Close()
+                        IF ! oRdd:Close()
+						    lResult := FALSE
+                        ENDIF
 					CATCH e AS Exception
 						lResult := FALSE
 						RuntimeState.LastRddError  := e

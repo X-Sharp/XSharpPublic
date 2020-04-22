@@ -19,7 +19,7 @@
     <OutputName>CodeGenerator</OutputName>
     <VulcanCompatibleResources>False</VulcanCompatibleResources>
     <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
-    <XSharpProjectversion>2.3.1.0</XSharpProjectversion>
+    <XSharpProjectversion>2.4.0.0</XSharpProjectversion>
     <Includepaths>$(Solutiondir)Common</Includepaths>
     <Nostandarddefs>false</Nostandarddefs>
     <OutputPath>$(Solutiondir)Binaries\$(Configuration)\</OutputPath>
@@ -86,14 +86,12 @@
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\Common\commonAssemblyInfo.prg" >
+    <Compile Include="..\..\Common\commonAssemblyInfo.prg">
       <Link>Properties\commonAssemblyInfo.prg</Link>
     </Compile>
-	
     <Compile Include="..\..\Common\constants.prg">
       <Link>Properties\constants.prg</Link>
     </Compile>
-  
     <Compile Include="Properties\AssembyInfo.prg" />
     <Compile Include="XIDE_Buffer.prg" />
     <Compile Include="XIDE_CodeGenerator.prg" />

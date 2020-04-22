@@ -38,7 +38,7 @@ namespace Microsoft.Ddue.Tools
         /// This is used to create a new instance of the syntax generator
         /// </summary>
         [SyntaxGeneratorExport("X#", LanguageName, StyleIdName, AlternateIds = "XSharp, xs",
-          SortOrder = 100, Version = AssemblyInfo.ProductVersion, Copyright = AssemblyInfo.Copyright,
+          SortOrder = 100, Version = XSharp.Constants.ProductVersion, Copyright = XSharp.Constants.Copyright,
           Description = "Generates X# declaration syntax sections")]
         public sealed class Factory : ISyntaxGeneratorFactory
         {

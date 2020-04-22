@@ -13,7 +13,7 @@ USING XSharp.RDD.Support
 USING XSharp.RDD.Enums
 
 /// <summary>This class describes extended information for a field in a workarea, for fields that come from a SQL backend.</summary>
-[DebuggerDisplay("{ColumnName,nq} ({FieldTypeStr,nq} {Length} {Decimals})")];
+[DebuggerDisplay("{ColumnName,nq} #{Ordinal} ({FieldTypeStr,nq} {Length} {Decimals}), ")];
 CLASS XSharp.RDD.DbColumnInfo INHERIT RddFieldInfo
     /// <summary>Column Name</summary>
     PROPERTY ColumnName     AS STRING AUTO

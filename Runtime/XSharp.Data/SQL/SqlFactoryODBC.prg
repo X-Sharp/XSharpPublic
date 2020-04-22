@@ -17,38 +17,41 @@ USING System.Runtime.InteropServices
 CLASS XSharp.Data.OdbcFactory INHERIT XSharp.Data.AbstractSqlFactory
 
     /// <inheritdoc />
-    PROPERTY QuoteChar AS STRING GET ""
-    PROPERTY Name      AS STRING GET "OdbcFactory"
+    PRIVATE quotes AS STRING
+    OVERRIDE PROPERTY QuoteChar AS STRING GET quotes
+    /// <inheritdoc />
+    OVERRIDE PROPERTY Name      AS STRING GET "OdbcFactory"
 
     CONSTRUCTOR
         SUPER()
         oInstance := System.Data.Odbc.OdbcFactory.Instance
-
+        VAR oCmdBuilder := oInstance:CreateCommandBuilder()
+        quotes := oCmdBuilder:QuotePrefix+";"+oCmdBuilder:QuoteSuffix
 
     /// <inheritdoc />
-    METHOD GetName(oConn AS DbConnection) AS STRING
+    OVERRIDE METHOD GetName(oConn AS DbConnection) AS STRING
         RETURN "ODBC"
 
 
     /// <inheritdoc />
-    METHOD EnhanceException(oEx AS System.Exception)  AS System.Exception
+    OVERRIDE METHOD EnhanceException(oEx AS System.Exception)  AS System.Exception
         RETURN oEx
 
     /// <inheritdoc />
-    METHOD HandleSpecialValue(oValue AS OBJECT, oFS AS OBJECT, lDateTimeAsDate AS LOGIC) AS OBJECT
+    OVERRIDE METHOD HandleSpecialValue(oValue AS OBJECT, oFS AS OBJECT, lDateTimeAsDate AS LOGIC) AS OBJECT
         RETURN oValue
 
     /// <inheritdoc />
-    METHOD TranslateStatement(cStatement AS STRING) AS STRING
+    OVERRIDE METHOD TranslateStatement(cStatement AS STRING) AS STRING
         RETURN cStatement
 
 
     /// <inheritdoc />
-    METHOD AfterOpen(oDataReader AS DbDataReader) AS DbDataReader
+    OVERRIDE METHOD AfterOpen(oDataReader AS DbDataReader) AS DbDataReader
         RETURN oDataReader
 
     /// <inheritdoc />
-    METHOD DriverConnect(hWindow AS IntPtr, uCompletion AS OBJECT, cConnectionString AS OBJECT) AS STRING
+    OVERRIDE METHOD DriverConnect(hWindow AS IntPtr, uCompletion AS OBJECT, cConnectionString AS OBJECT) AS STRING
         LOCAL nRetCode      AS INT
         LOCAL cConnect      AS STRING
         LOCAL sbResult      AS StringBuilder
@@ -101,8 +104,8 @@ CLASS XSharp.Data.OdbcFactory INHERIT XSharp.Data.AbstractSqlFactory
         nRetCode := Win32.SQLFreeEnv( hEnv )
         RETURN cResult
 
-       
-    METHOD GetMetaDataColumnValues(oRow AS DataRow) AS OBJECT[]
+      /// <inheritdoc />
+    OVERRIDE METHOD GetMetaDataColumnValues(oRow AS DataRow) AS OBJECT[]
 
         VAR result := OBJECT[]{19}                      // 
         result[01] := oRow["TABLE_CAT"]                 // aStruct[1] := {"TABLE_CAT","C:0",128,0}
@@ -126,7 +129,8 @@ CLASS XSharp.Data.OdbcFactory INHERIT XSharp.Data.AbstractSqlFactory
         result[19] := oRow["SS_DATA_TYPE"]              // aStruct[19] := {"SS_DATA_TY","I:0",4,0}
         RETURN result
 
-    METHOD GetMetaDataTableValues(oRow AS DataRow) AS OBJECT[]
+    /// <inheritdoc />
+    OVERRIDE METHOD GetMetaDataTableValues(oRow AS DataRow) AS OBJECT[]
         VAR result := OBJECT[]{5}
         result[1] := oRow["TABLE_CAT"]
         result[2] := oRow["TABLE_SCHEM"]

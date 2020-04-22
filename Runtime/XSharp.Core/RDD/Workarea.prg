@@ -622,7 +622,7 @@ BEGIN NAMESPACE XSharp.RDD
                         RETURN oFld:Name
                     ENDIF
                 CASE DbFieldInfo.DBS_COLUMNINFO
-                    RETURN DbColumnInfo{oFld}
+                    RETURN DbColumnInfo{oFld} {Ordinal := nFldPos}
                 CASE DbFieldInfo.DBS_FLAGS
                     RETURN oFld:Flags
                 CASE DbFieldInfo.DBS_STRUCT

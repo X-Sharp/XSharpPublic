@@ -2,7 +2,13 @@
 if /i "%1" == "Debug" goto Ok
 if /i "%1" == "Public" goto Ok
 if /i "%1" == "Release" goto Ok
+if /i "%1" == "All" goto All
 goto Error
+:All
+call Build Public
+call Build Debug
+call Build Release
+Goto End
 :Ok
 rem call findmsbuild.cmd
 if "%VSINSTALLDIR%" == "" goto NotFound

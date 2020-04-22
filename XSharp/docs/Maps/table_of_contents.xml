@@ -349,48 +349,48 @@
     </topicref>
     <topicref type="topic" id="423890127319554" build="ALL" modified="2016-01-19T22:41:45.448Z" icon="0" href="Visual-Studio-Integration">
       <caption translate="true">Using X# in Visual Studio</caption>
-      <topicref type="topic" id="423888586335039" build="ALL" modified="2019-01-27T16:06:55.467Z" icon="0" href="Project-System">
+      <topicref type="topic" id="423888586335039" modified="2020-04-21T20:52:17.586Z" icon="0" href="Project-System">
         <caption translate="true">Project System</caption>
-        <topicref type="topic" id="42386764973040" build="ALL" modified="2016-01-19T21:24:53.694Z" icon="0" href="Source-code-Items">
+        <topicref type="topic" id="42386764973040" modified="2020-04-21T20:52:17.598Z" icon="0" href="Source-code-Items">
           <caption translate="true">Source code Items</caption>
         </topicref>
-        <topicref type="topic" id="423886862409427" build="ALL" modified="2016-01-19T21:24:53.893Z" icon="0" href="Forms">
+        <topicref type="topic" id="423886862409427" modified="2020-04-21T20:52:17.605Z" icon="0" href="Forms">
           <caption translate="true">Forms</caption>
         </topicref>
-        <topicref type="topic" id="423887693907857" build="ALL" modified="2016-01-19T21:24:53.961Z" icon="0" href="Other-Item-types">
+        <topicref type="topic" id="423887693907857" modified="2020-04-21T20:52:17.613Z" icon="0" href="Other-Item-types">
           <caption translate="true">Other Item types</caption>
         </topicref>
-        <topicref type="topic" id="423889199749481" build="ALL" modified="2016-01-19T21:24:53.624Z" icon="0" href="Project-Properties">
+        <topicref type="topic" id="423889199749481" modified="2020-04-21T20:52:17.620Z" icon="0" href="Project-Properties">
           <caption translate="true">Project Properties</caption>
         </topicref>
-        <topicref type="topic" id="423887085079505" build="ALL" modified="2016-01-19T21:24:53.759Z" icon="0" href="Resources">
+        <topicref type="topic" id="423887085079505" modified="2020-04-21T20:52:17.628Z" icon="0" href="Resources">
           <caption translate="true">Resources</caption>
         </topicref>
-        <topicref type="topic" id="423889093227394" build="ALL" modified="2016-01-19T21:24:53.825Z" icon="0" href="Settings">
+        <topicref type="topic" id="423889093227394" modified="2020-04-21T20:52:17.635Z" icon="0" href="Settings">
           <caption translate="true">Settings</caption>
         </topicref>
       </topicref>
-      <topicref type="topic" id="423888873133831" build="ALL" modified="2019-01-27T16:07:00.430Z" icon="0" href="Source-Code-Editor">
+      <topicref type="topic" id="423888873133831" modified="2020-04-21T20:52:27.269Z" icon="0" href="Source-Code-Editor">
         <caption translate="true">Source Code Editor</caption>
-        <topicref type="topic" id="423887361540682" build="ALL" modified="2016-01-19T21:24:54.093Z" icon="0" href="Keyword-Coloring">
+        <topicref type="topic" id="423887361540682" modified="2020-04-21T20:52:27.276Z" icon="0" href="Keyword-Coloring">
           <caption translate="true">Keyword Coloring</caption>
         </topicref>
-        <topicref type="topic" id="423896290118079" build="ALL" modified="2016-01-20T10:13:42.757Z" icon="0" href="Highlighting-Errors">
+        <topicref type="topic" id="423896290118079" modified="2020-04-21T20:52:27.283Z" icon="0" href="Highlighting-Errors">
           <caption translate="true">Highlighting Errors</caption>
         </topicref>
-        <topicref type="topic" id="423889358133456" build="ALL" modified="2016-01-19T21:24:54.159Z" icon="0" href="Regions">
+        <topicref type="topic" id="423889358133456" modified="2020-04-21T20:52:27.290Z" icon="0" href="Regions">
           <caption translate="true">Regions</caption>
         </topicref>
-        <topicref type="topic" id="423889781598128" build="ALL" modified="2016-01-19T21:24:54.228Z" icon="0" href="Blocks">
+        <topicref type="topic" id="423889781598128" modified="2020-04-21T20:52:27.298Z" icon="0" href="Blocks">
           <caption translate="true">Blocks</caption>
         </topicref>
-        <topicref type="topic" id="423888278218038" build="ALL" modified="2016-01-19T21:24:54.294Z" icon="0" href="Parameter-Tips">
+        <topicref type="topic" id="423888278218038" modified="2020-04-21T20:52:27.305Z" icon="0" href="Parameter-Tips">
           <caption translate="true">Parameter Tips</caption>
         </topicref>
-        <topicref type="topic" id="423887688675988" build="ALL" modified="2016-01-19T21:24:54.361Z" icon="0" href="Quick-Info">
+        <topicref type="topic" id="423887688675988" modified="2020-04-21T20:52:27.313Z" icon="0" href="Quick-Info">
           <caption translate="true">Quick Info</caption>
         </topicref>
-        <topicref type="topic" id="423888640134134" build="ALL" modified="2016-01-19T21:24:54.427Z" icon="0" href="Code-Completion">
+        <topicref type="topic" id="423888640134134" modified="2020-04-21T20:52:27.320Z" icon="0" href="Code-Completion">
           <caption translate="true">Code Completion</caption>
         </topicref>
       </topicref>
@@ -403,79 +403,79 @@
           <caption translate="true">Item Templates</caption>
         </topicref>
       </topicref>
-      <topicref type="topic" id="423887105698173" build="ALL" modified="2019-01-31T09:48:27.343Z" icon="0" href="Debugger">
+      <topicref type="topic" id="423887105698173" modified="2020-04-21T20:58:41.469Z" icon="0" href="Debugger">
         <caption translate="true">Debugger</caption>
       </topicref>
     </topicref>
     <topicref type="topic" id="423889242125195" build="ALL" modified="2019-01-27T16:06:07.284Z" icon="0" href="X-Programming-guide">
       <caption translate="true">X# Programming guide</caption>
-      <topicref type="topic" id="423891170408015" build="ALL" modified="2019-01-31T09:46:42.769Z" icon="0" href="Quick-Start">
+      <topicref type="topic" id="423891170408015" modified="2020-04-21T14:52:56.452Z" icon="0" href="Quick-Start">
         <caption translate="true">Quick Start</caption>
       </topicref>
-      <topicref type="topic" id="423890630286744" build="ALL" modified="2019-01-31T09:46:42.784Z" icon="0" href="Arrays">
+      <topicref type="topic" id="423890630286744" modified="2020-04-21T14:52:56.462Z" icon="0" href="Arrays">
         <caption translate="true">Arrays</caption>
       </topicref>
-      <topicref type="topic" id="423888812622405" build="ALL" modified="2019-01-31T09:46:42.797Z" icon="0" href="Classes-and-Structures">
+      <topicref type="topic" id="423888812622405" modified="2020-04-21T14:52:56.470Z" icon="0" href="Classes-and-Structures">
         <caption translate="true">Classes and Structures</caption>
       </topicref>
       <topicref type="topic" id="428997435733357" build="ALL" modified="2019-01-31T09:46:42.812Z" icon="0" href="Codeblock_-Lambda-and-Anonymou">
         <caption translate="true">Codeblock, Lambda and Anonymous Method Expressions</caption>
       </topicref>
-      <topicref type="topic" id="423890322729183" build="ALL" modified="2019-01-31T09:46:42.826Z" icon="0" href="Delegates">
+      <topicref type="topic" id="423890322729183" modified="2020-04-21T14:53:08.743Z" icon="0" href="Delegates">
         <caption translate="true">Delegates</caption>
       </topicref>
-      <topicref type="topic" id="423890157788231" build="ALL" modified="2019-01-31T09:46:42.841Z" icon="0" href="Enumeration-Types">
+      <topicref type="topic" id="423890157788231" modified="2020-04-21T14:53:08.753Z" icon="0" href="Enumeration-Types">
         <caption translate="true">Enumeration Types</caption>
       </topicref>
-      <topicref type="topic" id="423889529120510" build="ALL" modified="2019-01-31T09:46:42.854Z" icon="0" href="Events">
+      <topicref type="topic" id="423889529120510" modified="2020-04-21T14:53:08.767Z" icon="0" href="Events">
         <caption translate="true">Events</caption>
       </topicref>
-      <topicref type="topic" id="423890144002277" build="ALL" modified="2019-01-31T09:46:42.868Z" icon="0" href="Exceptions-and-Exception-Handl">
+      <topicref type="topic" id="423890144002277" build="ALL" modified="2020-04-21T14:58:59.688Z" icon="0" href="Exceptions-and-Exception-Handl">
         <caption translate="true">Exceptions and Exception Handling</caption>
       </topicref>
-      <topicref type="topic" id="423887634112346" build="ALL" modified="2019-01-31T09:46:42.880Z" icon="0" href="File-System-and-the-Registry">
+      <topicref type="topic" id="423887634112346" modified="2020-04-21T14:53:08.785Z" icon="0" href="File-System-and-the-Registry">
         <caption translate="true">File System and the Registry</caption>
       </topicref>
-      <topicref type="topic" id="423887518590729" build="ALL" modified="2019-01-31T09:46:42.892Z" icon="0" href="Generics">
+      <topicref type="topic" id="423887518590729" modified="2020-04-21T14:53:08.801Z" icon="0" href="Generics">
         <caption translate="true">Generics</caption>
       </topicref>
-      <topicref type="topic" id="423888716547497" build="ALL" modified="2019-01-31T09:46:42.904Z" icon="0" href="Indexers">
+      <topicref type="topic" id="423888716547497" modified="2020-04-21T14:53:08.809Z" icon="0" href="Indexers">
         <caption translate="true">Indexers</caption>
       </topicref>
-      <topicref type="topic" id="423887935410958" build="ALL" modified="2019-01-31T09:46:42.916Z" icon="0" href="Interfaces">
+      <topicref type="topic" id="423887935410958" modified="2020-04-21T14:53:08.822Z" icon="0" href="Interfaces">
         <caption translate="true">Interfaces</caption>
       </topicref>
-      <topicref type="topic" id="423888497357636" build="ALL" modified="2019-01-31T09:46:42.928Z" icon="0" href="Interoperability">
+      <topicref type="topic" id="423888497357636" modified="2020-04-21T14:53:22.080Z" icon="0" href="Interoperability">
         <caption translate="true">Interoperability</caption>
       </topicref>
-      <topicref type="topic" id="423888175410133" build="ALL" modified="2019-01-31T09:46:42.940Z" icon="0" href="LINQ-Query-Expressions">
+      <topicref type="topic" id="423888175410133" modified="2020-04-21T14:53:22.090Z" icon="0" href="LINQ-Query-Expressions">
         <caption translate="true">LINQ Query Expressions</caption>
       </topicref>
       <topicref type="topic" id="434895842246435" build="ALL" modified="2019-01-31T09:46:42.954Z" icon="0" href="Memory-Variables">
         <caption translate="true">Memory Variables</caption>
       </topicref>
-      <topicref type="topic" id="42389463199336" build="ALL" modified="2019-01-31T09:46:42.966Z" icon="0" href="Namespaces2">
+      <topicref type="topic" id="42389463199336" modified="2020-04-21T14:53:22.103Z" icon="0" href="Namespaces2">
         <caption translate="true">Namespaces</caption>
       </topicref>
-      <topicref type="topic" id="423889985895203" build="ALL" modified="2019-01-31T09:46:42.980Z" icon="0" href="Nullable-Types">
+      <topicref type="topic" id="423889985895203" modified="2020-04-21T14:53:34.303Z" icon="0" href="Nullable-Types">
         <caption translate="true">Nullable Types</caption>
       </topicref>
-      <topicref type="topic" id="423890724030365" build="ALL" modified="2019-01-31T09:46:42.993Z" icon="0" href="Statements_-Expressions-and-Op">
+      <topicref type="topic" id="423890724030365" modified="2020-04-21T14:53:34.315Z" icon="0" href="Statements_-Expressions-and-Op">
         <caption translate="true">Statements, Expressions and Operators</caption>
       </topicref>
-      <topicref type="topic" id="423888819569735" build="ALL" modified="2019-01-31T09:46:43.007Z" icon="0" href="Strings">
+      <topicref type="topic" id="423888819569735" modified="2020-04-21T14:53:34.324Z" icon="0" href="Strings">
         <caption translate="true">Strings</caption>
       </topicref>
-      <topicref type="topic" id="42388775368697" build="ALL" modified="2019-01-31T09:46:43.020Z" icon="0" href="Types">
+      <topicref type="topic" id="42388775368697" modified="2020-04-21T14:53:34.333Z" icon="0" href="Types">
         <caption translate="true">Types</caption>
       </topicref>
-      <topicref type="topic" id="423888708711938" build="ALL" modified="2019-01-31T09:46:43.033Z" icon="0" href="Unsafe-Code-and-Pointers">
+      <topicref type="topic" id="423888708711938" modified="2020-04-21T14:53:34.344Z" icon="0" href="Unsafe-Code-and-Pointers">
         <caption translate="true">Unsafe Code and Pointers</caption>
       </topicref>
-      <topicref type="topic" id="423891384096573" build="ALL" modified="2019-01-31T09:46:43.047Z" icon="0" href="XML-Documentation-Comments">
+      <topicref type="topic" id="423891384096573" build="ALL" modified="2020-04-21T14:57:08.391Z" icon="0" href="XML-Documentation-Comments">
         <caption translate="true">XML Documentation Comments</caption>
       </topicref>
-      <topicref type="topic" id="437324895106794" build="ALL" modified="2019-09-24T16:40:41.768Z" icon="0" href="Strong-Typing">
+      <topicref type="topic" id="437324895106794" modified="2020-04-21T20:51:50.288Z" icon="0" href="Strong-Typing">
         <caption translate="true">Strong Typing</caption>
       </topicref>
     </topicref>

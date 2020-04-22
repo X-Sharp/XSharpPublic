@@ -162,7 +162,7 @@
           <para styleclass="Normal"></para>
           <para styleclass="Normal"><image src="RddClasses2.png" scale="100.00%" styleclass="Image Caption"></image></para>
           <para styleclass="Normal"></para>
-          <para styleclass="Body Text">As you can see there are now quite some nested classes inside the DbServer class. The &lt;&gt; class contains codeblocks that do not need to access local variables from functions or methods. &#160;In the DbServer class this class has some 25 methods, each of which is a codeblock.</para>
+          <para styleclass="Body Text">As you can see there are now quite some nested classes inside the DbServer class. The &lt;&gt;c class contains codeblocks that do not need to access local variables from functions or methods. &#160;In the DbServer class this class has some 25 methods, each of which is a codeblock.</para>
           <para styleclass="Body Text">The classes with the name &lt;&gt;c_DisplayClass&lt;nn&gt; contain codeblocks that need access to local variables from the function or method where they are defined.</para>
           <para styleclass="Body Text">The compiler has detected this and has moved the local variables out of the function/method and made them fields in a compiler generated class, so the codeblocks can access them. In Clipper and VO these were called &quot;detached locals&quot;.</para>
           <para styleclass="Body Text"></para>

@@ -7,5 +7,6 @@
       <para styleclass="Heading1">XSharp.Data</para>
     </header>
     <para styleclass="Normal">This DLL contains support code for .Net SQL based data access and for SQL based cursors (VFP)</para>
+    <para styleclass="Normal">The DLL also has data aware classes and functions that return DataTables or DataSources based on workareas/cursors</para>
   </body>
 </topic>

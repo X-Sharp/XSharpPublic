@@ -2,8 +2,8 @@
   "profiles": {
     "xsc": {
       "commandName": "Project",
-      "commandLineArgs": "@C602.rsp",
-      "workingDirectory": "C:\\Xsharp\\Dev\\Tests"
+      "commandLineArgs": "@c720.Rsp ",
+      "workingDirectory": "C:\\XSharp\\Dev\\tests"
     }
   }
 }

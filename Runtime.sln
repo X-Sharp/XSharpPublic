@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.28307.1062
+VisualStudioVersion = 15.0.28307.1082
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{1C0880F5-74CF-4618-9856-D89B3FCB6DA3}"
 	ProjectSection(SolutionItems) = preProject
@@ -33,7 +33,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Runtime\Runtime.Targets = Runtime\Runtime.Targets
 		Runtime\VOSDK\Source\SharedSource\SDKAssemblyinfo.prg = Runtime\VOSDK\Source\SharedSource\SDKAssemblyinfo.prg
 		Runtime\VOSDK\Source\VOSDK\VOSDK.Targets = Runtime\VOSDK\Source\VOSDK\VOSDK.Targets
+		Docs\VOSDK_Classes.xml = Docs\VOSDK_Classes.xml
 		Common\XSharpDefs.xh = Common\XSharpDefs.xh
+		Docs\XsRuntimeClasses.xml = Docs\XsRuntimeClasses.xml
 	EndProjectSection
 EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharp.Core.Tests", "Runtime\XSharp.Core.Tests\XSharp.Core.Tests.xsproj", "{A2376BBC-9FF4-47EB-BF57-913CBD850DAD}"
@@ -96,7 +98,7 @@ Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "MacroCompiler.ExampleFox", 
 EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharp.VFP.Tests", "Runtime\XSharp.VFP.Tests\XSharp.VFP.Tests.xsproj", "{1F9D1D4F-4CDE-4331-9EF8-D6A1D413CC6D}"
 EndProject
-Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "ConsoleApplication1", "ConsoleApplication1\ConsoleApplication1.xsproj", "{32AB85F9-BE37-46FC-8063-229AA373515A}"
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharp.ConsoleApplication1", "ConsoleApplication1\XSharp.ConsoleApplication1.xsproj", "{32AB85F9-BE37-46FC-8063-229AA373515A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

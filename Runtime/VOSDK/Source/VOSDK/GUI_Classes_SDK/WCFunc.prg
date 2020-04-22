@@ -796,10 +796,11 @@ FUNCTION GUIExit() AS VOID STRICT
 	__WCUnregisterClasses()
 	RETURN
 #endif
-
+/// <exclude/>
 FUNCTION IsCtl3dEnabled() AS LOGIC
 	RETURN Ctl3dEnabledFlag
 
+/// <exclude/>
 FUNCTION WCAppGetDialogWindow() AS PTR STRICT
 	LOCAL pRet AS PTR
 
@@ -808,7 +809,7 @@ FUNCTION WCAppGetDialogWindow() AS PTR STRICT
 	ENDIF
 
 	RETURN pRet
-
+/// <exclude/>
 FUNCTION WCAppSetDialogWindow(hDlg AS PTR) AS VOID STRICT
 
 	IF (oApp != NULL_OBJECT)
@@ -816,7 +817,7 @@ FUNCTION WCAppSetDialogWindow(hDlg AS PTR) AS VOID STRICT
 	ENDIF
 	RETURN
 
-
+/// <exclude/>
 FUNCTION WCDCAdd(oObject AS OBJECT) AS VOID STRICT
 #ifdef __VULCAN__
    BEGIN LOCK __WCCSHDC
@@ -837,7 +838,7 @@ FUNCTION WCDCAdd(oObject AS OBJECT) AS VOID STRICT
 #endif
 	RETURN
 
-
+/// <exclude/>
 FUNCTION WCDCClear() AS VOID STRICT
 
 #ifdef __VULCAN__
@@ -857,6 +858,7 @@ FUNCTION WCDCClear() AS VOID STRICT
 #endif
 	RETURN
 
+/// <exclude/>
 FUNCTION WCDCDelete(oObject AS OBJECT) AS VOID STRICT
 
 #ifdef __VULCAN__
@@ -877,17 +879,21 @@ FUNCTION WCDCDelete(oObject AS OBJECT) AS VOID STRICT
 	RETURN
 
 
+/// <exclude/>
 FUNCTION WCDCTop(oObject AS OBJECT) AS VOID STRICT
 
 	RETURN
 
+/// <exclude/>
 FUNCTION WCGetCoordinateSystem() AS LOGIC
 
 	RETURN __WCCoordinateSystem
 
+/// <exclude/>
 FUNCTION WCNewControlsAvailable() AS LOGIC
 	RETURN (gpfnInitCommonControlsEx != NULL_PTR)
 
+/// <exclude/>
 FUNCTION WCSetCoordinateSystem(system AS LOGIC) AS LOGIC
 	RETURN __WCCoordinateSystem := system
 
@@ -1032,6 +1038,7 @@ FUNCTION SetClassStyle(hWnd AS PTR, dwSetStyle AS DWORD, lEnable := TRUE AS LOGI
 
 	RETURN dwSetStyle
 
+/// <exclude/>
 FUNCTION WCMoveWindow(oObject AS OBJECT, oPoint AS Point, oDimension AS Dimension, bRepaint AS LOGIC) AS VOID
 	LOCAL strucPoint IS _winPOINT
 	LOCAL oParent AS OBJECT

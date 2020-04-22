@@ -434,6 +434,11 @@ CLASS RddFieldInfo
 	PUBLIC Offset       AS LONG
     
     /// <summary>Construct a RddFieldInfo object.</summary>
+    /// <param name="sName">Name</param>
+    /// <param name="sType">Type, may also contain flags in the form of a colon follwed by N,0,B,+,Z,E,U</param>
+    /// <param name="nLength">Length 'DBF style', so length in Buffer</param>
+    /// <param name="nDecimals">Number of decimals. </param>
+    /// <param name="nOffSet">Offset in record buffer (optional).</param>
 	CONSTRUCTOR(sName AS STRING, sType AS STRING, nLength AS LONG, nDecimals AS LONG, nOffSet := -1 AS LONG)
 		Name 		:= sName
 		Length 		:= nLength
@@ -471,7 +476,13 @@ CLASS RddFieldInfo
 		SELF:Offset := nOffSet
 		SELF:Validate()
 		RETURN
-    /// <summary>Construct a RddFieldInfo object.</summary>        
+    /// <summary>Construct a RddFieldInfo object.</summary>
+    /// <param name="sName">Name</param>
+    /// <param name="nType">Type</param>
+    /// <param name="nLength">Length 'DBF style', so length in Buffer</param>
+    /// <param name="nDecimals">Number of decimals. </param>
+    /// <param name="nOffSet">Offset in record buffer (optional)</param>
+    /// <param name="nFlags">Flags (optional)</param>
 	CONSTRUCTOR(sName AS STRING, nType AS DbFieldType, nLength AS LONG, nDecimals AS LONG, nOffSet := -1 AS LONG, nFlags := DBFFieldFlags.None AS DBFFieldFlags)
 		SELF:Name 		:= sName                                
 		SELF:FieldType 	:= nType
@@ -483,11 +494,15 @@ CLASS RddFieldInfo
 		SELF:Validate()
 		RETURN
 
+    /// <summary>Construct a RddFieldInfo object.</summary>
+    /// <param name="oInfo">Object to copy values from.</param>
     CONSTRUCTOR(oInfo AS RddFieldInfo)
         SUPER()
         SELF:CopyValues(oInfo)
 		SELF:Validate()
 
+   /// <summary>Copy values from one object to another.</summary>
+   /// <param name="oInfo">Object to copy values to.</param>
     METHOD CopyValues(oInfo AS RddFieldInfo) AS VOID
  		SELF:Name 		:= oInfo:Name                                
 		SELF:FieldType 	:= oInfo:FieldType
@@ -510,6 +525,7 @@ CLASS RddFieldInfo
     METHOD SameType(oFld AS RddFieldInfo) AS LOGIC
         RETURN SELF:FieldType == oFld:FieldType .AND. SELF:Length == oFld:Length .AND. SELF:Decimals == oFld:Decimals
 
+    /// <summary>Validate combinations of type, length and decimals.</summary>        
     VIRTUAL METHOD Validate() AS LOGIC
         SWITCH SELF:FieldType
             CASE DbFieldType.Date
@@ -529,17 +545,29 @@ CLASS RddFieldInfo
     OVERRIDE METHOD ToString() AS STRING
         RETURN SELF:Name+" ('"+SELF:FieldTypeStr+"',"+SELF:Length:ToString()+","+SELF:Decimals:ToString()+","+SELF:Flags:ToString("G")+")"
 
+    /// <summary>Field type as 1 character string.</summary>        
     PROPERTY FieldTypeStr       AS STRING GET ((CHAR) SELF:FieldType):ToString()
+    /// <summary>Is it a memo ?</summary>        
     PROPERTY IsMemo             AS LOGIC GET SELF:FieldType:IsMemo()
+    /// <summary>Is it binary ?</summary>        
     PROPERTY IsBinary           AS LOGIC GET SELF:FieldType:IsBinary() .OR. SELF:Flags:HasFlag(DBFFieldFlags.Binary)
+    /// <summary>Is it nullable ?</summary>        
     PROPERTY IsNullable         AS LOGIC GET SELF:Flags:HasFlag(DBFFieldFlags.Nullable)
+    /// <summary>Is it an autoincrement ?</summary>        
     PROPERTY IsAutoIncrement    AS LOGIC GET SELF:Flags:HasFlag(DBFFieldFlags.AutoIncrement)
+    /// <summary>Is it a standard Dbase 3 field (CDLMN) ?</summary>        
     PROPERTY IsStandard         AS LOGIC GET SELF:FieldType:IsStandard()
+    /// <summary>Is it a VFP extended field ?</summary>        
     PROPERTY IsVfp              AS LOGIC GET SELF:FieldType:IsVfp()
+    /// <summary>Is it a variable length field ?</summary>        
     PROPERTY IsVarLength        AS LOGIC GET SELF:FieldType:IsVarLength()
+    /// <summary>Is it a unicode text ?</summary>        
     PROPERTY IsUnicode          AS LOGIC GET SELF:Flags:HasFlag(DBFFieldFlags.Unicode)
+    /// <summary>Is it an encryped field (not implemented yet)?</summary>        
     PROPERTY IsEncrypted        AS LOGIC GET SELF:Flags:HasFlag(DBFFieldFlags.Encrypted)
+    /// <summary>Is it a  compressed field (not implemented yet) ?</summary>        
     PROPERTY IsCompressed       AS LOGIC GET SELF:Flags:HasFlag(DBFFieldFlags.Compressed)
+    /// <summary>Can the field be sorted?</summary>        
     PROPERTY CanSort            AS LOGIC
         GET
             SWITCH SELF:FieldType
@@ -550,6 +578,8 @@ CLASS RddFieldInfo
             CASE DbFieldType.Logic
             CASE DbFieldType.Currency
             CASE DbFieldType.Integer
+            CASE DbFieldType.Float
+            CASE DbFieldType.Double
                 RETURN TRUE
             OTHERWISE
                 IF SELF:IsBinary .OR. SELF:IsVarLength
@@ -564,7 +594,7 @@ CLASS RddFieldInfo
 
 END CLASS
 
-
+/// <exclude/>
 STATIC CLASS RDDExtensions
     STATIC METHOD IsMemo(SELF eType AS DbFieldType ) AS LOGIC
         SWITCH eType

@@ -1,4 +1,5 @@
-﻿CLASS XSharp.WinFormVOWindow INHERIT System.Windows.Forms.Form
+﻿/// <summary>This class is used to host a VO GUI Window in a Windows Forms UI Hierarchy</summary>
+CLASS XSharp.WinFormVOWindow INHERIT System.Windows.Forms.Form
     PRIVATE winFormVOWindowHost AS WinFormVOWindowHost
     PROTECT currentFocusHandle AS PTR
     STATIC PROTECT oApp AS App
@@ -10,7 +11,8 @@
     	    oApp := App{}
     	ENDIF
     	RETURN
-    	
+
+    /// <summary>Close a VO window and the form that it hosts</summary>
     STATIC METHOD CloseHostForm(window AS Window) AS VOID
         // This method receives a VO window
         // The VO window is normally hosted on a control, which in turn is on a form
@@ -33,6 +35,7 @@
 
         RETURN
 
+    /// <summary>Form that host the VO window</summary>
     PROPERTY VOWindowHost AS WinFormVOWindowHost GET winFormVOWindowHost SET winFormVOWindowHost := value
         
     PROTECTED METHOD OnActivated(e AS System.EventArgs) AS VOID

@@ -371,10 +371,12 @@ FUNCTION ApplicationExec(kExecType)
 
 	RETURN NIL
 
+/// <exclude/>
 FUNCTION InitCommonControlsEx(lpicex AS PTR) AS LOGIC STRICT
 	//SYSTEM
 	RETURN FALSE
 
+/// <exclude/>
 FUNCTION SetAccelerator(hWnd AS PTR, hAccel AS PTR) AS LOGIC STRICT
 
 	IF (oApp != NULL_OBJECT)

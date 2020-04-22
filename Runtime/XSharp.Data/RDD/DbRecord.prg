@@ -5,34 +5,32 @@
 //
 
 
-USING System.Collections
 USING System.Collections.Generic
-USING System.Linq
-USING XSharp.RDD
 USING System.ComponentModel
 
 
-/// <summary></summary>
+/// <summary>This class is used by the DbDataSource class to represent the records in a workarea.</summary>
+/// <remarks>The record class exposes the fields in the workarea as 'pseudo' properties of these fields.
+/// The DbRecord class also implements INotifyPropertychanged, so when the record is bound to a data aware control
+/// then this control will 'see' changes that were made to the record.
+/// </remarks>
 [TypeDescriptionProvider(typeof(DbRecordDescriptorProvider))];
 CLASS XSharp.DbRecord IMPLEMENTS INotifyPropertyChanged
     #region instance variables
     
     INTERNAL PROPERTY Datasource  AS DbDataSource AUTO
+    /// <inheritdoc/>
     EVENT PropertyChanged AS PropertyChangedEventHandler 
     
     #endregion
     
     #region construtors
-    /// TODO: Check back if this is needed 
-    CONSTRUCTOR( position AS INT)
-    SELF:RecNo := position
-    RETURN
-    /// Standard constructor, the record object know the server it belongs to and
-        /// the current record position, which is needed when we want to talk back to the dbf.
-        /// TODO: If the dbf uses indexes, we need a different mechanism to address the positioning 
-    ///       of the record position.
+    /// the current record position, which is needed when we want to talk back to the dbf.
+    /// <summary>Initializes a new instance of the DbRecord class</summary>
+    /// <param name="position">Ordinal position in the datasource</param>
+    /// <param name="source">Data source to which this object belongs</param>
     CONSTRUCTOR( position AS INT, source AS DbDataSource)
-    SELF(position)
+    SELF:RecNo := position
     SELF:Datasource := source
     /// The server implements an event which will be triggered if a column value is changed.
     /// This is the modern way to implement the Notify mechanism of the dataserver class. 
@@ -41,7 +39,8 @@ CLASS XSharp.DbRecord IMPLEMENTS INotifyPropertyChanged
     #endregion
 
     PRIVATE _previous AS LONG
-    METHOD SetPos() AS LOGIC
+    // Make sure the workarea is on the right row before updating
+    PRIVATE METHOD SetPos() AS LOGIC
         LOCAL changed  :=FALSE AS LOGIC
         _previous := SELF:Datasource:RecNo
         changed := (_previous != SELF:RecNo)
@@ -50,15 +49,17 @@ CLASS XSharp.DbRecord IMPLEMENTS INotifyPropertyChanged
         ENDIF
         RETURN changed
  
-
-    METHOD RestorePos() AS VOID
+    // restore position in workarea 
+    PRIVATE METHOD RestorePos() AS VOID
         SELF:Datasource:GoTo(SELF:_previous)
         RETURN
 
     #region properties
 
+    /// <summary>Record number in the workarea. Does not have to match the logical position in the list.</summary>
     [ReadOnly(TRUE)];
     PROPERTY  RecNo AS INT AUTO
+    /// <summary>Is the current record deleted ?</summary>
     [ReadOnly(TRUE)];
     PROPERTY  Deleted      AS LOGIC
         GET
@@ -73,6 +74,7 @@ CLASS XSharp.DbRecord IMPLEMENTS INotifyPropertyChanged
         END GET
     END PROPERTY
 
+    /// <summary>Read/Write fields in the workarea by name.</summary>
     PROPERTY SELF[fieldName AS STRING] AS OBJECT
         GET
             VAR fieldPos := SELF:Datasource:FieldIndex(fieldName)
@@ -84,6 +86,8 @@ CLASS XSharp.DbRecord IMPLEMENTS INotifyPropertyChanged
         END SET
     END PROPERTY
 
+
+    /// <summary>Read/Write fields in the workarea by position.</summary>
     PROPERTY SELF[fieldPos AS INT] AS OBJECT
         GET
             LOCAL value AS OBJECT
@@ -107,7 +111,7 @@ CLASS XSharp.DbRecord IMPLEMENTS INotifyPropertyChanged
             // we want to be informed again
             SELF:OnPropertyChanged(fieldPos)
             SELF:Datasource:FieldChanged += DbNotifyFieldChange{ SELF , @FieldChange() }
-            /// Repsotion the dbf to the record we have been on before moving to the expected one.
+            /// Reposition the dbf to the record we have been on before moving to the expected one.
             IF changed
                 SELF:RestorePos()
             ENDIF
@@ -118,27 +122,27 @@ CLASS XSharp.DbRecord IMPLEMENTS INotifyPropertyChanged
     #region methods
     /// Always a good idea to implement this.
     PUBLIC METHOD ToString() AS STRING STRICT
-        RETURN SELF:RecNo:ToString()
+        RETURN SELF:Datasource:Name+" "+SELF:RecNo:ToString()
         
-        /// This method will be called if somebody changes a column value inside the dbf server.
-            /// If the record number is the same as the one we're representing, the we raise the 
+    /// This method will be called if somebody changes a column value inside the dbf server.
+    /// If the record number is the same as the one we're representing, the we raise the 
     /// property changed event as one of our properties has changed.
-    METHOD FieldChange( recno AS INT , colno AS INT ) AS VOID
-    IF recno == SELF:RecNo
-        SELF:OnPropertyChanged(colno)
-    ENDIF
+    PRIVATE METHOD FieldChange( recno AS INT , colno AS INT ) AS VOID
+        IF recno == SELF:RecNo
+            SELF:OnPropertyChanged(colno)
+        ENDIF
     RETURN
     
     /// We are using this to signal the consuming components that a property has changed. 
         /// As the PropertyChangedEventArgs has to provide the name of the property changed, 
     /// we are usign the column name of inside the dbf server.
-    METHOD OnPropertyChanged(colno AS INT) AS VOID
+    PRIVATE METHOD OnPropertyChanged(colno AS INT) AS VOID
     IF SELF:PropertyChanged != NULL
         LOCAL args:=PropertyChangedEventArgs{SELF:Datasource:FieldName(colno)} AS PropertyChangedEventArgs 
         SELF:PropertyChanged(SELF,args)
     ENDIF
     
-    METHOD OnPropertyChanged(colname AS STRING ) AS VOID
+    PRIVATE METHOD OnPropertyChanged(colname AS STRING ) AS VOID
     IF SELF:PropertyChanged != NULL
         LOCAL args:=PropertyChangedEventArgs{colname} AS PropertyChangedEventArgs 
         SELF:PropertyChanged(SELF,args)
@@ -146,7 +150,6 @@ CLASS XSharp.DbRecord IMPLEMENTS INotifyPropertyChanged
     RETURN 
     #endregion    
 END CLASS
-
 
 
 INTERNAL CLASS XSharp.DbRecordDescriptorProvider INHERIT TypeDescriptionProvider
@@ -182,19 +185,20 @@ END CLASS
 
 INTERNAL CLASS XSharp.DbRecordDescriptor  INHERIT CustomTypeDescriptor
     #region instance variables
-    PRIVATE fields := List<DBFieldDescriptor>{} AS List<DBFieldDescriptor>
+    PRIVATE fields := List<DbFieldDescriptor>{} AS List<DbFieldDescriptor>
     #endregion
     #region constructors
     CONSTRUCTOR( parent AS ICustomTypeDescriptor, record AS DbRecord )
         SUPER(parent)
         FOREACH element AS DbField IN record:Datasource:Fields
-            fields:Add( DBFieldDescriptor{element} )
+            fields:Add( DbFieldDescriptor{element} )
         NEXT
         RETURN
     
     #endregion
     #region methods
 
+    /// Add standard properties (Recno & Deleted) to the fields to create a complete collection
     PRIVATE METHOD mergeProps(props AS PropertyDescriptorCollection) AS PropertyDescriptorCollection
         VAR list   := List<PropertyDescriptor>{}
         FOREACH VAR prop IN props
@@ -203,6 +207,7 @@ INTERNAL CLASS XSharp.DbRecordDescriptor  INHERIT CustomTypeDescriptor
         list:AddRange(SELF:fields)
         RETURN PropertyDescriptorCollection{list:ToArray()}
 
+    
     PUBLIC VIRTUAL METHOD GetProperties() AS PropertyDescriptorCollection STRICT
         VAR props := SUPER:GetProperties()
         RETURN SELF:mergeProps(props)

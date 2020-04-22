@@ -9,7 +9,7 @@
     <Name>VOGUIClasses</Name>
     <OutputName>VOGUIClasses</OutputName>
     <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
-    <XSharpProjectversion>2.0.5.0</XSharpProjectversion>
+    <XSharpProjectversion>2.4.0.0</XSharpProjectversion>
     <Includepaths>$(Solutiondir)Common</Includepaths>
     <Nostandarddefs>false</Nostandarddefs>
     <LB>true</LB>
@@ -188,27 +188,35 @@
     </None>
     <None Include="..\..\..\..\VoRedist\CATO3CNT.DLL">
       <Link>CATO3CNT.DLL</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="..\..\..\..\VoRedist\CATO3DAT.DLL">
       <Link>CATO3DAT.DLL</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="..\..\..\..\VoRedist\CATO3MSK.DLL">
       <Link>CATO3MSK.DLL</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="..\..\..\..\VoRedist\CATO3NBR.DLL">
       <Link>CATO3NBR.DLL</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="..\..\..\..\VoRedist\CATO3SBR.DLL">
       <Link>CATO3SBR.DLL</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="..\..\..\..\VoRedist\CATO3SPL.DLL">
       <Link>CATO3SPL.DLL</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="..\..\..\..\VoRedist\Cato3tbr.dll">
       <Link>Cato3tbr.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="..\..\..\..\VoRedist\CATO3TIM.DLL">
       <Link>CATO3TIM.DLL</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Resources\CAVOTB.BMP" />
     <None Include="Resources\HAND.CUR" />

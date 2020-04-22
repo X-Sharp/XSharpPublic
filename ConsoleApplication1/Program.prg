@@ -22,6 +22,7 @@ TRY
     //testHandles()
     //testAsynchronous()
     testConnect()
+    
 CATCH e AS Exception
     ? MessageBox(e:ToString(), MB_ICONSTOP+MB_OK,"An error has occurred")
 END TRY
@@ -246,7 +247,11 @@ IF oSource != NULL
     Browse(oSource)
 ELSE
     VAR err := XSharp.RuntimeState.LastRddError
-    MessageBox(err:ToString(),MB_YESNO,"Error")
+    IF err != NULL
+        MessageBox(err:ToString(),MB_YESNO,"Error")
+    ELSE
+        MessageBox("Workarea not in use" ,MB_OK+ MB_ICONSTOP ,"Error")
+    ENDIF
 ENDIF
 RETURN
 
@@ -288,7 +293,7 @@ VAR cConnectionString := "server=(LOCAL);trusted_connection=Yes;database=Northwi
 LOCAL aInfo := {} AS ARRAY
 LOCAL f := seconds() AS FLOAT
 SqlSetProp(nHandle, "Asynchronous", TRUE)
-VAR result := SqlExec(nHandle, "exec PPI_Db.dbo.ZoekProject 1, 9999, '' ,1", aInfo)
+VAR result := SqlExec(nHandle, "exec PPI_Db.dbo.ZoekProject 1, 9999, '' ,1", ,aInfo)
 VAR counter := 0
 DO WHILE result == 0
     counter += 1
@@ -308,14 +313,14 @@ RETURN
 FUNCTION testConnect()
 LOCAL handle AS LONG
 TRY
+    SqlSetFactory("ODBC")
     ? sqlSetprop(0, SqlProperty.ConnectTimeOut, 1) 
     ? SqlSetProp(0, "Displ",DB_PROMPTCOMPLETE)
-    handle := SqlStringConnect("Dsn=Northwind;",FALSE)
+    handle := SqlStringConnect("Dsn=Northwind;")
     IF handle > 0
         SqlExec(handle, "Select * from customers","Customers")
-        SCAN
-            ? Customers.CustomerId, Customers.CompanyName
-        ENDSCAN
+        SqlColumns(handle,"Customers","naTiVe")
+        Browse()
     endif
 CATCH e AS Exception
     ? e:ToString()

@@ -42,7 +42,6 @@
       <DocumentationSource sourceFile="Binaries\Documentation\VORDDClasses.dll" />
       <DocumentationSource sourceFile="Binaries\Documentation\VOSQLClasses.dll" />
       <DocumentationSource sourceFile="Docs\VOSDK_Classes.xml" />
-      <DocumentationSource sourceFile="Docs\SDKFunctionDocs.xml" />
       <DocumentationSource sourceFile="Binaries\Documentation\VOSystemClasses.XML" />
       <DocumentationSource sourceFile="Binaries\Documentation\VOSQLClasses.XML" />
       <DocumentationSource sourceFile="Binaries\Documentation\VORDDClasses.XML" />
@@ -66,7 +65,7 @@
     <IndentHtml>False</IndentHtml>
     <BuildAssemblerVerbosity>OnlyWarningsAndErrors</BuildAssemblerVerbosity>
     <VisibleItems>Attributes, ExplicitInterfaceImplementations, ProtectedInternalAsProtected, PublicCompilerGenerated, NonBrowsable</VisibleItems>
-    <ApiFilter/>
+    <ApiFilter />
     <NamespaceSummaries>
       <NamespaceSummaryItem name="(global)" isDocumented="True" />
       <NamespaceSummaryItem name="Advantage" isDocumented="True">This namespace contains the exposed RDDs for Advantage.</NamespaceSummaryItem>
@@ -287,10 +286,5 @@
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="Docs\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="XSharp.MacroCompiler">
-      <HintPath>Binaries\Debug\XSharp.MacroCompiler.dll</HintPath>
-    </Reference>
   </ItemGroup>
 </Project>

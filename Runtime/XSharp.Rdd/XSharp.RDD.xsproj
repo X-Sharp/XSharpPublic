@@ -14,7 +14,7 @@
     <INS>true</INS>
     <NamedArgs>true</NamedArgs>
     <VulcanCompatibleResources>False</VulcanCompatibleResources>
-    <XSharpProjectversion>2.0.5.0</XSharpProjectversion>
+    <XSharpProjectversion>2.4.0.0</XSharpProjectversion>
     <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
     <IncludePaths>$(CommonInclude)</IncludePaths>
     <Nostandarddefs>true</Nostandarddefs>
@@ -55,7 +55,7 @@
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <UseSharedCompilation>true</UseSharedCompilation>
-    <DisabledWarnings>9001;1591</DisabledWarnings>
+    <DisabledWarnings>9001;1591;1573</DisabledWarnings>
     <DocumentationFile>XSharp.Rdd.Xml</DocumentationFile>
     <CommandLineOption>/noclipcall</CommandLineOption>
   </PropertyGroup>
@@ -192,6 +192,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Ads.xml" />
     <None Include="DbfCdx\CdxReadme.txt" />
     <None Include="DbfCdx\Todo.txt" />
     <None Include="DbfNtx\NtxFormat.txt" />

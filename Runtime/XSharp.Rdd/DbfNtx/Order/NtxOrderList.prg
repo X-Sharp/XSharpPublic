@@ -42,8 +42,12 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 LOCAL ntxIndex := NULL AS NtxOrder
                 //
                 isOk := FALSE
-                 IF File(oi:BagName)
-                    oi:BagName := FPathName()
+                VAR cExt := System.IO.Path.GetExtension(filePath)
+                IF String.IsNullOrEmpty(cExt)
+                    filePath := System.IO.Path.ChangeExtension(filePath, NtxOrder.NTX_EXTENSION)
+                ENDIF
+                 IF File(filePath)
+                    filePath := FPathName()
                     TRY
 
                         IF SELF:_Orders:Count >= 16

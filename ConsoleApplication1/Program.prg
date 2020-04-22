@@ -12,7 +12,7 @@ USING System.Drawing
 FUNCTION Start() AS VOID STRICT
 TRY
     //TestProviders()
-    //TestProvidersStringConnect()
+    TestProvidersStringConnect()
     //TestBatch()
     //Test3Results()
     //testTransaction()
@@ -21,7 +21,8 @@ TRY
     // testDataTable()
     //testHandles()
     //testAsynchronous()
-    testConnect()
+    //testConnect()
+    //testRddBrowse()
     
 CATCH e AS Exception
     ? MessageBox(e:ToString(), MB_ICONSTOP+MB_OK,"An error has occurred")
@@ -329,3 +330,12 @@ WAIT
 
 RETURN
 
+
+
+FUNCTION testRddBrowse() AS VOID
+    DbUseArea(TRUE,"DBFNTX","c:\cavo28SP3\Samples\Gstutor\customer.dbf","Customer",TRUE,TRUE)
+    DbSetIndex("c:\cavo28SP3\Samples\Gstutor\CUSTNAME.NTX")
+    DbSetIndex("c:\cavo28SP3\Samples\Gstutor\CUSTNO.NTX")
+    DbSetOrder(1)
+    Browse()
+RETURN

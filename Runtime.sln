@@ -98,7 +98,7 @@ Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "MacroCompiler.ExampleFox", 
 EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharp.VFP.Tests", "Runtime\XSharp.VFP.Tests\XSharp.VFP.Tests.xsproj", "{1F9D1D4F-4CDE-4331-9EF8-D6A1D413CC6D}"
 EndProject
-Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharp.ConsoleApplication1", "ConsoleApplication1\XSharp.ConsoleApplication1.xsproj", "{32AB85F9-BE37-46FC-8063-229AA373515A}"
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "ConsoleApplication1", "ConsoleApplication1\ConsoleApplication1.xsproj", "{32AB85F9-BE37-46FC-8063-229AA373515A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -112,7 +112,10 @@ INTERFACE XSharp.Data.ISqlFactory
     /// <returns>The datareader as should be used by the SqlSelect class.</returns>
     METHOD AfterOpen(oDataReader AS DbDataReader) AS DbDataReader
 
+    /// <summary>Create an object array of column properties from the current datarow in the schema rowset</summary> 
     METHOD GetMetaDataColumnValues(oRow AS DataRow) AS OBJECT[]
+    
+    /// <summary>Create an object array of table properties from the current datarow in the schema rowset</summary>
     METHOD GetMetaDataTableValues(oRow AS DataRow) AS OBJECT[]
 
 END INTERFACE    

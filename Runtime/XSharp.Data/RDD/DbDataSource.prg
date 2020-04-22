@@ -25,7 +25,6 @@ CLASS XSharp.DbDataSource IMPLEMENTS IBindingList
     PROTECTED _shared        AS LOGIC
     PROTECTED _records       AS Dictionary<LONG, DbRecord>
     PROTECTED _index         AS LONG
-    PROTECTED _allowSort     AS LOGIC
     PROTECTED _sorted        AS LOGIC
     PROTECTED _indexFile     AS STRING
     INTERNAL EVENT FieldChanged       AS DbNotifyFieldChange
@@ -36,7 +35,7 @@ CLASS XSharp.DbDataSource IMPLEMENTS IBindingList
     _shared     := (LOGIC) oRDD:Info(DBI_SHARED,NULL)
     _records    := Dictionary<LONG, DbRecord>{}
     _index      := -1
-    _allowSort  := TRUE
+    SupportsSorting  := TRUE
     _sorted     := FALSE
     RETURN
   
@@ -56,7 +55,7 @@ CLASS XSharp.DbDataSource IMPLEMENTS IBindingList
         /// <inheritdoc/>
         PROPERTY SupportsChangeNotification AS LOGIC GET TRUE
         /// <inheritdoc/>
-        PROPERTY SupportsSorting    AS LOGIC GET _allowSort SET _allowSort := value
+        PROPERTY SupportsSorting    AS LOGIC AUTO
         /// <inheritdoc/>
         PROPERTY SupportsSearching  AS LOGIC GET FALSE
         /// <summary>TRUE when the workarea is readonly</summary>
@@ -69,9 +68,6 @@ CLASS XSharp.DbDataSource IMPLEMENTS IBindingList
         /// <inheritdoc/>
         METHOD AddNew() AS OBJECT STRICT
             IF SELF:_oRDD:Append(TRUE)
-                FOREACH VAR FLD IN SELF:Fields
-                    
-                NEXT
                 RETURN SELF:Current
             ENDIF
             RETURN NULL
@@ -100,7 +96,7 @@ CLASS XSharp.DbDataSource IMPLEMENTS IBindingList
             ENDIF
             IF property != SELF:SortProperty
                 // check to see if the index is already there
-                VAR nOrder := SELF:orderNo(fldName)
+                VAR nOrder := SELF:getOrder(fldName)
                 IF nOrder > 0
                     SELF:setOrder(fldName, lDescending)
                 ELSE
@@ -139,7 +135,7 @@ CLASS XSharp.DbDataSource IMPLEMENTS IBindingList
             SELF:_oRDD:OrderInfo(DBOI_ISDESC, info)
             RETURN TRUE
             
-        PRIVATE METHOD orderNo(cName AS STRING) AS LONG
+        PRIVATE METHOD getOrder(cName AS STRING) AS LONG
             VAR info := DbOrderInfo{}
             info:Order   := cName:Replace("()","")
             info:Result  := NULL
@@ -359,7 +355,7 @@ CLASS XSharp.DbDataSource IMPLEMENTS IBindingList
     INTERNAL PROPERTY Fields AS IEnumerable<DbField>
         GET
             IF _fieldList == NULL
-                SELF:GenerateFields()
+                SELF:generateFields()
             ENDIF
             RETURN _fieldList
         END GET
@@ -368,7 +364,7 @@ CLASS XSharp.DbDataSource IMPLEMENTS IBindingList
 
 
     /// Generate the meta data which will be used as source for generating the dynamic properties.
-    INTERNAL METHOD GenerateFields() AS VOID
+    PRIVATE METHOD generateFields() AS VOID
         _fieldList  := List<DbField>{}
         LOCAL f AS INT
         LOCAL fieldCount := SELF:_oRDD:FieldCount AS LONG
@@ -383,7 +379,7 @@ CLASS XSharp.DbDataSource IMPLEMENTS IBindingList
                 LOCAL nLen     AS LONG
                 
                 cType := (STRING) SELF:_oRDD:FieldInfo(f, DBS_TYPE, NULL)
-                nLen  := (LONG)   SELF:_oRDD:FieldInfo(f, DBS_DEC, NULL)
+                nLen  := (LONG)   SELF:_oRDD:FieldInfo(f, DBS_LEN, NULL)
                 nDec  := (LONG)   SELF:_oRDD:FieldInfo(f, DBS_DEC, NULL)
                 oInfo :=  DbColumnInfo{fieldName, cType, nLen, nDec}
                 oInfo:Ordinal := f

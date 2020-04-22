@@ -24,28 +24,37 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             RETURN
 
         METHOD Add(info AS DbOrderInfo, lStructural := FALSE AS LOGIC) AS LOGIC
-            LOCAL oBag AS CdxOrderBag
+            LOCAL oBag := NULL AS CdxOrderBag
+            LOCAL isOk := FALSE AS LOGIC
             // add Existing order bag to the list.
             // looks for bags through the normal paths
              IF File(info:BagName)
                 info:BagName := FPathName()
                 IF SELF:FindOrderBag(info:BagName) == NULL_OBJECT
-                    oBag := CdxOrderBag{_oRdd}
-                    oBag:Structural := lStructural
-                    _bags:Add(oBag)
-                    LOCAL lOk AS LOGIC
-                    lOk := oBag:Open(info)
-                    IF lOk .AND. XSharp.RuntimeState.AutoOrder != 0
-                        SELF:CurrentOrder := oBag:Tags[0]
-                        SELF:CurrentOrder:GoTop()
-                    ENDIF
-                    IF lStructural
-                        SELF:_oRdd:Header:HasTags |= DBFTableFlags.HasStructuralCDX
-                    ENDIF
+                    TRY
+                        oBag := CdxOrderBag{_oRdd}
+                        oBag:Structural := lStructural
+                        _bags:Add(oBag)
+                        isOk := oBag:Open(info)
+                        IF isOk .AND. XSharp.RuntimeState.AutoOrder != 0
+                            SELF:CurrentOrder := oBag:Tags[0]
+                            SELF:CurrentOrder:GoTop()
+                        ELSE
+                            _bags:Remove(oBag)
+                        ENDIF
+                        IF lStructural
+                            SELF:_oRdd:Header:HasTags |= DBFTableFlags.HasStructuralCDX
+                        ENDIF
+                    CATCH e AS Exception
+                        XSharp.RuntimeState.LastRddError := e
+                        IF oBag != NULL .AND. SELF:_bags:Contains(oBag)
+                            SELF:_bags:Remove(oBag)
+                        ENDIF
+                        isOk := FALSE
+                    END TRY
                 ENDIF
-                RETURN TRUE
             ENDIF
-            RETURN FALSE
+            RETURN isOk
 
         PRIVATE METHOD _CreateBag(info AS DbOrderCreateInfo) AS CdxOrderBag
             // Create new OrderBag on disk 

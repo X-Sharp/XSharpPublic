@@ -12,6 +12,7 @@
     <XSharpProjectversion>2.0.5.0</XSharpProjectversion>
     <Includepaths>$(Solutiondir)Common</Includepaths>
     <Nostandarddefs>false</Nostandarddefs>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <VO15>false</VO15>
     <FOX1>false</FOX1>
     <VO14>false</VO14>

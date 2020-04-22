@@ -128,7 +128,7 @@ BEGIN NAMESPACE XSharp.RDD
         MEMBER Unknown:=0
     END ENUM
     
- 
+    /// <exclude/>
     STATIC CLASS CodePageExtensions
         STATIC METHOD UsesFlags(SELF version AS DBFVersion) AS LOGIC
             SWITCH version

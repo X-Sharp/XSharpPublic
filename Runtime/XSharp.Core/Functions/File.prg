@@ -1030,7 +1030,7 @@ INTERNAL FUNCTION Bytes2Line(aBytes AS BYTE[], nBuffLen REF INT) AS STRING
 /// When there is already a buffer allocated for the file handle, and this buffer is large enough then the existing buffer is returned.
 /// When the size requested exceeds the size of the allocated buffer, or when no buffer exists, then a new byte array will be allocated.
 /// </remarks>
-/// <seealso cref="M:XSharp.Core.Functions.FClose(System.IntPtr)" />
+/// <seealso cref="O:XSharp.Core.Functions.FClose" />
 
 FUNCTION FGetBuffer(hFile AS IntPtr, nSize AS INT) AS BYTE[]
     RETURN XSharp.IO.File.GetBuffer(hFile, nSize)
@@ -1042,7 +1042,7 @@ FUNCTION FGetBuffer(hFile AS IntPtr, nSize AS INT) AS BYTE[]
 /// The Lifetime management of the stream should be left to the X# Runtime <br/>
 /// If you want to close the stream, please use the FClose() function </note>
 /// </remarks>
-/// <seealso cref="M:XSharp.Core.Functions.FClose(System.IntPtr)" />
+/// <seealso cref="O:XSharp.Core.Functions.FClose" />
 FUNCTION FGetStream(pFile AS IntPtr) AS Stream
     RETURN XSharp.IO.File.findStream(pFile)
 
@@ -1054,7 +1054,7 @@ FUNCTION FGetStream(pFile AS IntPtr) AS Stream
 /// The Lifetime management of the stream should be left to the X# Runtime <br/>
 /// If you want to close the stream, please use the FClose() function </note>
 /// </remarks>
-/// <seealso cref="M:XSharp.Core.Functions.FClose(System.IntPtr)" />
+/// <seealso cref="O:XSharp.Core.Functions.FClose" />
 FUNCTION FSize(pFile AS IntPtr) AS INT64
    VAR oStream := XSharp.IO.File.findStream(pFile)
     IF oStream != NULL

@@ -3749,6 +3749,7 @@ ACCESS WindowArea
     RETURN BoundingBox{oPoint, oDimension}
     END CLASS
     
+/// <exclude/>
 _DLL FUNCTION AnimateWindow(HWND AS PTR, dwTime AS DWORD, dwFlags AS DWORD) AS LOGIC PASCAL:User32.AnimateWindow
 
 

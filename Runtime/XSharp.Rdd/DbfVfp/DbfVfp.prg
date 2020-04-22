@@ -21,8 +21,8 @@ CLASS DBFVFP INHERIT DBFCDX
 		RETURN
 		
 	PROPERTY Driver         AS STRING GET "DBFVFP"
-    PROPERTY DbcName        AS STRING AUTO
-    PROPERTY DbcPosition    AS INT GET DbfHeader.SIZE + SELF:_Fields:Length  * DbfField.SIZE +1
+    INTERNAL PROPERTY DbcName        AS STRING AUTO
+    INTERNAL PROPERTY DbcPosition    AS INT GET DbfHeader.SIZE + SELF:_Fields:Length  * DbfField.SIZE +1
 
     PUBLIC OVERRIDE METHOD Create( openInfo AS DbOpenInfo ) AS LOGIC
 	LOCAL isOk AS LOGIC

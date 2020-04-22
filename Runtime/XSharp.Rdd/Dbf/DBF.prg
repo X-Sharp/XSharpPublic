@@ -990,7 +990,7 @@ RETURN isOK
 
 // Allow subclass (VFP) to set Extra flags
 PROTECTED VIRTUAL METHOD _checkField( dbffld REF DbfField) AS LOGIC
-RETURN dbffld:Type:IsStandard()
+    RETURN dbffld:Type:IsStandard()
 
 
     // Write the Fields Header, based on the _Fields List
@@ -1281,8 +1281,9 @@ METHOD FieldInfo(nFldPos AS LONG, nOrdinal AS LONG, oNewValue AS OBJECT) AS OBJE
 			CASE DbFieldInfo.DBS_DEC
 			CASE DbFieldInfo.DBS_TYPE
 			CASE DbFieldInfo.DBS_ALIAS
+			CASE DbFieldInfo.DBS_COLUMNINFO
 				oResult := SUPER:FieldInfo(nFldPos, nOrdinal, oNewValue)
-				
+
 			CASE DbFieldInfo.DBS_ISNULL
 			CASE DbFieldInfo.DBS_COUNTER
 			CASE DbFieldInfo.DBS_STEP
@@ -2552,56 +2553,58 @@ END CLASS
 
 
 END CLASS
-// Inpired by Harbour
+// Inspired by Harbour
+/// <summary>This structure holds the various settings for locking models</summary>
 STRUCTURE DbfLocking
-// Offset of the Locking
+    /// <summary>Offset of the Locking </summary>
 	PUBLIC Offset AS INT64
-// Length for File
+    /// <summary>Length for File locks </summary>
 	PUBLIC FileSize AS INT64
-// Length for Record
+    /// <summary>Length for Record locks </summary>
 	PUBLIC RecordSize AS LONG
-//
+    /// <summary>Direction of locking, used to calculate file lock offsets and record lock offsets</summary>
 	PUBLIC Direction AS LONG
-	
+
+/// <summary>Set various numbers based on a locking model.</summary>	
 METHOD Initialize( model AS DbfLockingModel ) AS VOID
 	SWITCH model
 	CASE DbfLockingModel.Clipper52
-		SELF:Offset := 1000000000
-		SELF:FileSize := 1000000000
+		SELF:Offset     := 1000000000
+		SELF:FileSize   := 1000000000
 		SELF:RecordSize := 1
-		SELF:Direction := 1
+		SELF:Direction  := 1
 	CASE DbfLockingModel.Clipper53
-		SELF:Offset := 1000000000
-		SELF:FileSize := 1000000000
+		SELF:Offset     := 1000000000
+		SELF:FileSize   := 1000000000
 		SELF:RecordSize := 1
-		SELF:Direction := 1
+		SELF:Direction  := 1
 	CASE DbfLockingModel.Clipper53Ext
-		SELF:Offset := 4000000000
-		SELF:FileSize := 294967295
+		SELF:Offset     := 4000000000
+		SELF:FileSize   := 294967295
 		SELF:RecordSize := 1
-		SELF:Direction := 1
+		SELF:Direction  := 1
 	CASE DbfLockingModel.FoxPro
-		SELF:Offset := 0x40000000
-		SELF:FileSize := 0x07ffffff
+		SELF:Offset     := 0x40000000
+		SELF:FileSize   := 0x07ffffff
 		SELF:RecordSize := 1
-		SELF:Direction := 2
+		SELF:Direction  := 2
 	CASE DbfLockingModel.FoxProExt
-		SELF:Offset := 0x7ffffffe
-		SELF:FileSize := 0x3ffffffd
+		SELF:Offset     := 0x7ffffffe
+		SELF:FileSize   := 0x3ffffffd
 		SELF:RecordSize := 1
-		SELF:Direction := -1
+		SELF:Direction  := -1
 	CASE DbfLockingModel.Harbour64
-		SELF:Offset := 0x7FFFFFFF00000001
-		SELF:FileSize := 0x7ffffffe
+		SELF:Offset     := 0x7FFFFFFF00000001
+		SELF:FileSize   := 0x7ffffffe
 		SELF:RecordSize := 1
-		SELF:Direction := 1
+		SELF:Direction  := 1
 	CASE DbfLockingModel.VoAnsi
 		SELF:Offset     := 0x80000000
 		SELF:FileSize   := 0x7fffffff
 		SELF:RecordSize := 1
-		SELF:Direction := 1
+		SELF:Direction  := 1
 	END SWITCH
-
+    /// <summary>File Lock offsets </summary>
     PROPERTY FileLockOffSet AS INT64
         GET
             VAR iOffset := SELF:Offset
@@ -2613,6 +2616,7 @@ METHOD Initialize( model AS DbfLockingModel ) AS VOID
             RETURN iOffset
         END GET
     END PROPERTY
+    /// <summary>Calculate the record offset based </summary>
     METHOD RecnoOffSet(recordNbr AS LONG, recSize AS LONG, headerLength AS LONG) AS INT64
 	    VAR iOffset := SELF:Offset
 	    IF SELF:Direction < 0 
@@ -2817,6 +2821,8 @@ PROPERTY HasTag		 AS BYTE;
 END STRUCTURE
 
 
+
+/*
     /// <summary>DBase 7 Field.</summary>
 [StructLayout(LayoutKind.Explicit)];
 STRUCTURE Dbf7Field
@@ -2837,7 +2843,7 @@ STRUCTURE Dbf7Field
 	[FieldOffset(44)] PUBLIC Reserved3	 AS LONG
 	
 END STRUCTURE
-
+*/
 END NAMESPACE
 
 

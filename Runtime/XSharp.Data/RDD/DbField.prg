@@ -4,35 +4,39 @@
 // See License.txt in the project root for license information.
 //
 
-USING System.Collections
-USING System.Collections.Generic
 USING XSharp.RDD
 USING System.ComponentModel
 
 
 
-/// <summary></summary>
+/// <summary>This class is used by the DbDataSource class to describe the fields in the workarea</summary>
 CLASS XSharp.DbField
     INTERNAL Info AS DbColumnInfo
+    /// <summary>Initializes a new instance of the DbField class</summary>
+    /// <param name="info">Column info on which this field is based.</param>
     CONSTRUCTOR( info AS DbColumnInfo)
     SELF:Info       := info
     
     #region properties
+    /// <summary>Dotnet datatype for the field</summary>
     PROPERTY DataType   AS System.Type GET SELF:Info:DotNetType
+    /// <summary>Name of the field</summary>
     PROPERTY Name       AS STRING GET SELF:Info:Name
+    /// <summary>Caption for the field</summary>
     PROPERTY Caption    AS STRING GET SELF:Info:ColumnName
+    /// <summary>Ordinal position of the field</summary>
     PROPERTY Column     AS INT GET SELF:Info:Ordinal
+    /// <summary>Is the field Readonly ?</summary>
     PROPERTY ReadOnly   AS LOGIC GET SELF:Info:IsAutoIncrement
+    /// <summary>Can the field be sorted ?</summary>
     PROPERTY CanSort    AS LOGIC GET SELF:Info:CanSort
     #endregion
 END CLASS
 
 
-/// <summary></summary>
-INTERNAL CLASS XSharp.DBFieldDescriptor INHERIT PropertyDescriptor
-    
+INTERNAL CLASS XSharp.DbFieldDescriptor INHERIT PropertyDescriptor
     PROTECTED _dbField AS DbField
-    
+
     #region constructors
     CONSTRUCTOR( dbField AS DbField )
     SUPER( dbField:Caption , Attribute[]{0} )

@@ -13,7 +13,7 @@
     <Unsafe>true</Unsafe>
     <NS>true</NS>
     <VulcanCompatibleResources>True</VulcanCompatibleResources>
-    <XSharpProjectversion>2.0.5.0</XSharpProjectversion>
+    <XSharpProjectversion>2.4.0.0</XSharpProjectversion>
     <IncludePaths>$(CommonInclude)</IncludePaths>
     <Nostandarddefs>true</Nostandarddefs>
     <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
@@ -64,15 +64,13 @@
     <Reference Include="mscorlib" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
       <Name>System.Windows.Forms</Name>
       <AssemblyName>System.Windows.Forms.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+      <HintPath>..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Windows.Forms.dll</HintPath>
     </Reference>
-    <Reference Include="System.Xml" />
-    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\Common\commonAssemblyInfo.prg">
@@ -84,7 +82,6 @@
     <Compile Include="Functions\Codeblock.prg" />
     <Compile Include="Functions\CompilerSupport.prg" />
     <Compile Include="Functions\Conversions.prg" />
-    <Compile Include="Functions\DbData.prg" />
     <Compile Include="Functions\MemVarSave.prg" />
     <Compile Include="Functions\Debugging.prg" />
     <Compile Include="Functions\DiskIO.prg" />
@@ -123,10 +120,6 @@
     <Compile Include="Types\CompilerServices.prg" />
     <Compile Include="Types\Currency.prg" />
     <Compile Include="Types\Date.prg" />
-    <Compile Include="Types\DbDataSource.prg" />
-    <Compile Include="Types\DbDataTable.prg" />
-    <Compile Include="Types\DbField.prg" />
-    <Compile Include="Types\DbRecord.prg" />
     <Compile Include="Types\Float.prg" />
     <Compile Include="Types\Interfaces.prg" />
     <Compile Include="Types\MemVar.prg" />

@@ -87,6 +87,7 @@ STATIC GLOBAL pfnCAPaintLastError  AS CAPaintLastError PTR
 STATIC GLOBAL pfnCAPaintShowErrors   AS CAPaintShowErrors PTR
 
 
+/// <exclude/>
 FUNCTION InitializeCAPaint() AS LOGIC STRICT
 
 	hCAPaint := LoadLibrary(String2Psz("CAPAINT.DLL"))
@@ -111,6 +112,7 @@ FUNCTION InitializeCAPaint() AS LOGIC STRICT
 
 	RETURN (hCAPaint != NULL_PTR)
 
+/// <exclude/>
 FUNCTION FreeCAPaint        ()  AS LOGIC STRICT
 	LOCAL lRet	AS LOGIC
 

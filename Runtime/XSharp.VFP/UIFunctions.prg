@@ -6,31 +6,26 @@
 
 USING System.Windows.Forms
 
-/// <include file="VFPDocs.xml" path="Runtimefunctions/messagebox/*" />
-FUNCTION MessageBox( eMessageText , nDialogBoxType , cTitleBarText, nTimeout) AS LONG
-    LOCAL cMessage, cTitle AS STRING
-    IF IsNil(eMessageText)
-          THROW Error{"Parameter eMessageText is missing. This parameter is mandatory"}
-    ENDIF
+
+
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/messagebox/*" />
+FUNCTION MessageBox( eMessageText AS USUAL, nDialogBoxType := 0 AS LONG, cTitleBarText := "" AS STRING,nTimeOut := 0 AS LONG) AS LONG
+    LOCAL cMessage AS STRING
     IF !IsString(eMessageText)
-          THROW Error{"Parameter eMessageText should be of type STRING"}
-    ENDIF
-    cMessage := eMessageText
-    IF IsString(cTitleBarText)
-        cTitle := cTitleBarText
+        cMessage := AsString(eMessageText)
     ELSE
-        cTitle := "XSharp"
+        cMessage := eMessageText    
+    ENDIF
+    IF String.IsNullOrEmpty(cTitleBarText)
+        cTitleBarText := System.IO.Path.GetFileNameWithoutExtension(System.Reflection.Assembly.GetEntryAssembly():Location)
     ENDIF
     LOCAL nButton := MessageBoxButtons.OK               AS MessageBoxButtons
     LOCAL nIcon   := MessageBoxIcon.None                AS MessageBoxIcon
     LOCAL nDefault := MessageBoxDefaultButton.Button1   AS MessageBoxDefaultButton
-    IF IsNumeric(nDialogBoxType)
-        LOCAL nType := nDialogBoxType AS LONG
-        nButton  := (MessageBoxButtons)         _AND(nType, 0x0F)
-        nIcon    := (MessageBoxIcon)            _AND(nType, 0xF0)
-        nDefault := (MessageBoxDefaultButton)   _AND(nType, 0xF00)
-    ENDIF
-    IF IsNumeric(nTimeout)
+    nButton  := (MessageBoxButtons)         _AND(nDialogBoxType, 0x0F)
+    nIcon    := (MessageBoxIcon)            _AND(nDialogBoxType, 0xF0)
+    nDefault := (MessageBoxDefaultButton)   _AND(nDialogBoxType, 0xF00)
+    IF nTimeout >= 1
         RETURN XSharp.VFP.AutoCloseMessageBox.Show(cMessage, cTitle, nTimeout, nButton, nIcon, nDefault)
     ENDIF
     RETURN System.Windows.Forms.MessageBox.Show(cMessage, cTitle, nButton, nIcon, nDefault)

@@ -24,8 +24,6 @@ FUNCTION ADBObjects(ArrayName, cSetting)
     THROW NotImplementedException{}
     //RETURN 0
 
-
-
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/aelement/*" />
 FUNCTION Aelement (ArrayName, nRowSubscript , nColumnSubscript)

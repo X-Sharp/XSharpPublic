@@ -15,7 +15,7 @@ FUNCTION CreateObject(cClassName, _args ) AS OBJECT CLIPPER
     // The pseudo function _ARGS() returns the Clipper arguments array
     RETURN CreateInstance(_ARGS())
 
-/// <include file="VFPDocs.xml" path="Runtimefunctions/createobjectex/*" />
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/createobjectex/*" />
 FUNCTION CreateObjectEx(cClsIdOrcProgId, cComputerName , cIID ) AS OBJECT CLIPPER
     // The pseudo function _ARGS() returns the Clipper arguments array
     RETURN CreateInstance(_ARGS())

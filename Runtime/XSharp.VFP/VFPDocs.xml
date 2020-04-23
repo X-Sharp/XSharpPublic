@@ -6092,17 +6092,17 @@
         goForm = CreateObject("Form")
         goForm.Show()
         * declare access to the _client_area_ of a window
-        DECLARE Integer GetDC IN UseR32 integer HWnd
+        DECLARE Integer GetDC IN User32 integer HWnd
         * hDC should be  0 (otherwise that's an error)!
         hDC = GetDC(goForm.HWnd)
         * render your image directly onto form's client area
         gIP.Render(m.hDC,0,0,100,100,0,gIP.Height,gIP.Width,- gIP.Height,NULL)
         * declare release function
-        DECLARE Integer ReleaseDC IN UseR32 integer HWnd, integer hDC
+        DECLARE Integer ReleaseDC IN User32 integer HWnd, integer hDC
         * next line should print 1 on the form's background >> "Okay"
         ? ReleaseDC(m.goForm.HWnd, m.hDC)
         * declare access to the _whole_ window
-        DECLARE Integer GetWindowDC IN UseR32 integer HWnd
+        DECLARE Integer GetWindowDC IN User32 integer HWnd
         * hDC now references form's caption an border areas as well!
         hDC = GetWindowDC(goForm.HWnd)
         * render out partially overwriting form's border and caption
@@ -6235,8 +6235,8 @@
         * retrieve dots per inch resolution
         * for VFP's _SCREEN device context
         DECLARE Integer GetDeviceCaps IN GDI32 integer hdc, integer nIndex
-        DECLARE Integer GetWindowDC IN UseR32 integer HWnd
-        DECLARE Integer ReleaseDC IN UseR32 integer HWnd, integer hDC
+        DECLARE Integer GetWindowDC IN User32 integer HWnd
+        DECLARE Integer ReleaseDC IN User32 integer HWnd, integer hDC
         * For simplicity, we assume X- and Y- dimensions
         * using the same DPI resolution.
         #DEFINE LOGPIXELSX 88 &amp;&amp; Logical pixels/inch in X
@@ -6258,8 +6258,8 @@
         * Retrieve hDC (handle DeviceContext) of window handle
         * tlChild = TRUE  := Use GetDC()
         * tlChild = FALSE := Use GetWindowDC()
-        DECLARE Integer GetDC IN UseR32 integer HWnd
-        DECLARE Integer GetWindowDC IN UseR32 integer HWnd
+        DECLARE Integer GetDC IN User32 integer HWnd
+        DECLARE Integer GetWindowDC IN User32 integer HWnd
         LOCAL lnHDC AS Integer
         IF m.tlChild
         lnHDC = GetDC(m.tnHWND)
@@ -6270,7 +6270,7 @@
         ENDFUNC
         FUNCTION ReleaseCanvas(tnHWND AS Integer, tnHDC AS Integer) AS Integer
         * Releases a borrowed hDC
-        DECLARE Integer ReleaseDC IN UseR32 integer HWnd, integer hDC
+        DECLARE Integer ReleaseDC IN User32 integer HWnd, integer hDC
         RETURN ReleaseDC(m.tnHWND, m.tnHDC)
         ENDFUNC
         * The following function is not bullert-proof, as it fails on forms with scrollbars (oForm.Scrollbars > 0)

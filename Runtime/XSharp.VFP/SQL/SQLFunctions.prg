@@ -196,7 +196,7 @@ FUNCTION SqlSetFactory(oFactory AS ISqlFactory) AS ISqlFactory
     ENDIF
     RETURN oResult
 
-STATIC FUNCTION CopyResults(aCountInfo AS ARRAY, aInfo AS ARRAY) AS VOID
+INTERNAL FUNCTION CopyResults(aCountInfo AS ARRAY, aInfo AS ARRAY) AS VOID
     ASize(aCountInfo, ALen(aInfo))
     IF ALen(aInfo) > 0
         ACopy(aInfo, aCountInfo)

@@ -171,3 +171,98 @@ FUNCTION StuffC( cExpression, nStartReplacement, nCharactersReplaced, cReplaceme
 FUNCTION SubStrC(cExpression, nStartPosition , nCharactersReturned ) AS STRING
     RETURN SubStr(cExpression, nStartPosition, nCharactersReturned)
 
+
+
+
+
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/ratc/*" />
+FUNCTION RAtC(cSearchExpression AS STRING , cExpressionSearched AS STRING , nOccurrence := 1 AS INT ) AS INT	
+	RETURN RAt(cSearchExpression , cExpressionSearched , nOccurrence )
+
+
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/rat/*" />
+FUNCTION RAt(cSearchExpression AS STRING , cExpressionSearched AS STRING , nOccurrence := 1 AS INT ) AS INT
+    LOCAL iPosition  AS INT
+    LOCAL i , dwPosition, dwOccurred AS INT
+    dwOccurred := 0
+ 	dwPosition := 0
+	IF ! String.IsNullOrEmpty(cExpressionSearched) .AND. ! String.IsNullOrEmpty(cSearchExpression) 		
+	
+		iPosition := cExpressionSearched:Length 
+
+		FOR i := 1 UPTO nOccurrence
+				
+     		IF ( iPosition := cExpressionSearched:LastIndexOf(cSearchExpression,iPosition,StringComparison.Ordinal) ) == -1 
+				EXIT 
+			ENDIF
+
+			dwOccurred++ 
+				
+
+			IF dwOccurred == nOccurrence
+				// Assign the found position before leaving the loop. 
+				dwPosition := iPosition + 1
+				EXIT 
+			ENDIF
+					
+			//  Doing always a   
+			//    
+			//  iPosition--
+			//    
+			//	, like the c# sources do, is not correct. 
+			//  That´s only necessary if the len of the search string 	
+			//  is 1.    
+
+			IF cSearchExpression:Length == 1 .AND. --iPosition < 0 
+				
+				// something like:  
+				//
+				// RAt("a","abracadabra", 12 )   
+				//
+				// ends up here. If you do not check the iPosition value 
+				// the next search loop would cause a exception.
+				//
+						 
+				EXIT
+			ENDIF
+		NEXT 
+	ENDIF 
+	RETURN dwPosition		
+							
+	
+
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/chrtranc/*" />
+FUNCTION ChrTranC( cSearchIn AS STRING , cSearchFor AS STRING, cReplaceWith  AS STRING ) AS STRING 
+	RETURN ChrTran( cSearchIn , cSearchFor , cReplaceWith )  
+
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/chrtran/*" />
+FUNCTION ChrTran( cSearchIn AS STRING , cSearchFor AS STRING, cReplaceWith  AS STRING ) AS STRING 
+    LOCAL cRetVal ,cReplaceChar AS STRING
+    LOCAL i AS INT  
+	cRetVal := "" 
+   
+	IF  cSearchIn != NULL  .AND. cSearchFor != NULL .AND. cReplaceWith != NULL	   
+
+		cRetVal := cSearchIn 
+	
+			
+		FOR i := 1 UPTO cSearchFor:Length
+
+			IF cReplaceWith:Length <= i-1
+				cReplaceChar := ""
+			ELSE
+				cReplaceChar := cReplaceWith[i-1]:ToString()
+			ENDIF 
+			
+		    cRetVal := cRetVal:Replace(cSearchFor[i-1]:ToString(), cReplaceChar )
+	//	    cRetVal := StrTran(cRetVal , cSearchFor[i-1]:ToString(), cReplaceChar , , SLen ( cRetVal ) )
+
+		NEXT           
+
+	ENDIF						
+	
+	RETURN cRetVal
+
+	
+
+

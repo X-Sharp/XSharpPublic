@@ -413,7 +413,7 @@ END NAMESPACE // XSharp.VFP
 
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/getwordcount/*" />
-STATIC FUNCTION GetDefaultHandler()  AS GetWordHandler
+INTERNAL FUNCTION GetDefaultWordHandler()  AS GetWordHandler
     LOCAL loSrch := GetWordHandler{} AS GetWordHandler
     loSrch:iMethod := 22    && Sidestepping check on cRawStr
     loSrch:SetActive()
@@ -421,7 +421,7 @@ STATIC FUNCTION GetDefaultHandler()  AS GetWordHandler
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/getwordcount/*" />
 FUNCTION GetWordCount( cString AS STRING) AS LONG
-    LOCAL loSrch := GetDefaultHandler() AS GetWordHandler
+    LOCAL loSrch := GetDefaultWordHandler() AS GetWordHandler
     RETURN loSrch:oActiveObjc:GetWordCount( cString)
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/getwordcount/*" />
@@ -448,7 +448,7 @@ INTERNAL FUNCTION GetWordCount( cString AS STRING, cDelimiters AS STRING, tnSwit
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/getwordnum/*" />
 FUNCTION GetWordNum( cString AS STRING, nIndex AS INT) AS STRING
-    LOCAL loSrch := GetDefaultHandler() AS GetWordHandler
+    LOCAL loSrch := GetDefaultWordHandler() AS GetWordHandler
     RETURN loSrch:oActiveObjc:GetWordNum( cString, nIndex)
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/getwordnum/*" />

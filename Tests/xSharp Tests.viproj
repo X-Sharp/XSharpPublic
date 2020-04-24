@@ -79046,7 +79046,7 @@ Target = 0
 Platform = AnyCPU
 Language = XSharp
 Runtime = CLR4
-Dialect = Core
+Dialect = VO
 Folder = %ProjectPath%\Applications\R706\
 PrgSubFolder = \Prg
 ResourcesSubFolder = \Resources
@@ -79078,6 +79078,8 @@ FileType = Code
 CopyToBin = 0
 [R706 - Crash for Preprocessor macro in interpolated string References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,1
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,1
 [R706 - Crash for Preprocessor macro in interpolated string Resources]
 [R706 - Crash for Preprocessor macro in interpolated string Native Resources]
 [R706 - Crash for Preprocessor macro in interpolated string License files]

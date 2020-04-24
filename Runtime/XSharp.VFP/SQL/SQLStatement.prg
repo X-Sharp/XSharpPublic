@@ -793,9 +793,14 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
 			nLen := 20
             result := DbColumnInfo{columnName,"N",nLen ,0}
 			
-		CASE TypeCode.DateTime
-			cType   := "T"
+        CASE TypeCode.DateTime
+            VAR nPrec  := Convert.ToInt32(schemaRow:Item["NumericPrecision"])
 			nLen 	:= 8
+            IF nPrec <= 10
+			    cType   := "D"
+            ELSE
+			    cType   := "T"
+            ENDIF
             result  := DbColumnInfo{columnName,cType,nLen ,0}
 			
         CASE TypeCode.Object

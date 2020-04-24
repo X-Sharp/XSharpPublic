@@ -91,7 +91,7 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
         FOREACH schemaRow AS DataRow IN oSchema:Rows
             VAR fieldInfo     := FromSchema(schemaRow, aFieldNames)
             fieldInfo:Ordinal := nFields
-            aStruct[nFields]  := {fieldInfo:Name, fieldInfo:FieldTypeStr, fieldInfo:Length, fieldInfo:Decimals, fieldInfo:ColumnName, fieldInfo}
+            aStruct[nFields]  := {fieldInfo:Name, fieldInfo:FieldTypeStr, fieldInfo:Length, fieldInfo:Decimals, fieldInfo:ColumnName, fieldInfo:Flags, fieldInfo}
             nFields++
         NEXT
         nFields := aStruct:Count
@@ -107,7 +107,7 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
 
         FOR VAR nI := 1 TO ALen(aStruct)
             LOCAL fieldInfo AS DbColumnInfo
-            fieldInfo := aStruct[nI, 6]
+            fieldInfo := aStruct[nI, 7]
             oRDD:FieldInfo(nI, DBS_COLUMNINFO, fieldInfo)
         NEXT
         RETURN oRDD

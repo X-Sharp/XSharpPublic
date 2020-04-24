@@ -331,6 +331,9 @@ STATIC METHOD SetFilter(oBlock AS USUAL,cFilter AS STRING) AS LOGIC
         VAR hasnullfield := FALSE
         FOREACH aField AS ARRAY IN aStruct
             VAR oFld := RddFieldInfo{(STRING) aField[DBS_NAME], (STRING) aField[DBS_TYPE], (LONG)aField[DBS_LEN], (LONG)aField[DBS_DEC]}
+            IF ALen(aField) >= DBS_FLAGS
+                oFld:Flags := (DBFFieldFlags) (LONG) aField[DBS_FLAGS]
+            ENDIF
             IF oFld:IsNullable
                 nullable += 1
             ENDIF

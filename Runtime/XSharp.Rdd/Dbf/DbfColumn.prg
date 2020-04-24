@@ -920,6 +920,9 @@ BEGIN NAMESPACE XSharp.RDD
             IF julian == 0x20202020 .AND. milsecs == 0x20202020
                 RETURN result
             ENDIF
+            IF milsecs > 0
+                milsecs += 1
+            ENDIF
             result := SELF:_julianToDateTime(julian)
             result := result.AddSeconds( (Int32) Math.Round ( (REAL8) milsecs / 1000.0))
             RETURN result
@@ -973,6 +976,9 @@ BEGIN NAMESPACE XSharp.RDD
             ELSE
                 VAR iJulian  := SELF:_dateTimeToJulian(dt)
                 VAR milisecs := 1000 * dt:Second + dt:Minute * 1000 * 60 + dt:Hour * 1000 * 60 * 60
+                IF milisecs > 0
+                    milisecs -= 1
+                ENDIF
                 VAR data := BitConverter.GetBytes(iJulian)
                 Array.Copy(data, 0, buffer, SELF:Offset, 4)
                 data := BitConverter.GetBytes(milisecs)

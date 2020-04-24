@@ -25,7 +25,8 @@ TRY
     //testRddBrowse()
     //testCopyTo()
     //testDbSetOrder()
-    testSqlParameters()
+    //testSqlParameters()
+    testPG()
     
 CATCH e AS Exception
     ? MessageBox(e:ToString(), MB_ICONSTOP+MB_OK,"An error has occurred")
@@ -364,15 +365,6 @@ FUNCTION testDbSetOrder() AS VOID
     RETURN
 
 
-    SqlSetFactory("ODBC")
-    ? sqlSetprop(0, SqlProperty.ConnectTimeOut, 1) 
-    ? SqlSetProp(0, "Displ",DB_PROMPTCOMPLETE)
-    handle := SqlStringConnect("Dsn=Northwind;")
-    IF handle > 0
-        //SqlColumns(handle,"Orders","native")
-        SqlExec(handle, "Select * from orders where CustomerId ='ALFKI'","orders")
-        COPY TO C:\Temp\Temp
-    ENDIF
 
 
 
@@ -395,6 +387,19 @@ FUNCTION TestSqlParameters AS VOID
         // Execute a query with a parameter. We accept both a ? and a : as start of parameter name
         ? SqlExec(handle, "Select * from orders where customerId = :CustomerId","orders")
         ? SqlGetprop(handle, SqlProperty.NativeCommand)
+        Browse()
+
+ENDIF
+
+
+FUNCTION TestPg()
+     SqlSetFactory("ODBC")
+     LOCAL handle := SqlStringConnect("Dsn=PG;")
+    IF handle > 0
+        // Declare local. Can be typed or untyped. A memvar would work as well.
+        // Execute a query with a parameter. We accept both a ? and a : as start of parameter name
+        ? SqlExec(handle, "Select * from test","test")
+        COPY TO C:\Temp\Temp
         Browse()
 
 ENDIF

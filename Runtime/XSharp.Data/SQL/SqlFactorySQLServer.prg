@@ -22,6 +22,12 @@ CLASS XSharp.Data.SqlServerFactory INHERIT XSharp.Data.AbstractSqlFactory
     /// <inheritdoc />
     OVERRIDE PROPERTY Name      AS STRING GET "SqlServerFactory"
 
+    /// <inheritdoc />
+    OVERRIDE PROPERTY ParameterPrefix AS CHAR GET '@'
+    /// <inheritdoc />
+    OVERRIDE PROPERTY ParameterNameInQuery AS LOGIC GET TRUE
+
+
     CONSTRUCTOR
         SUPER()
         oInstance := System.Data.SqlClient.SqlClientFactory.Instance

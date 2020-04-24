@@ -25,9 +25,17 @@ ABSTRACT CLASS XSharp.Data.AbstractSqlFactory IMPLEMENTS XSharp.Data.ISqlFactory
 
     PROTECTED oInstance AS System.Data.Common.DbProviderFactory
 
+    /// <inheritdoc />
     VIRTUAL PROPERTY QuoteChar AS STRING GET ""
+    /// <inheritdoc />
     VIRTUAL PROPERTY Name      AS STRING GET "AbstractFactory"
 
+    /// <inheritdoc />
+    VIRTUAL PROPERTY ParameterPrefix AS CHAR GET '?'
+    /// <inheritdoc />
+    VIRTUAL PROPERTY ParameterNameInQuery AS LOGIC GET FALSE
+
+    /// <inheritdoc />
     VIRTUAL PROPERTY CanCreateDataSourceEnumerator AS LOGIC GET oInstance:CanCreateDataSourceEnumerator
 
     

@@ -23,7 +23,9 @@ TRY
     //testAsynchronous()
     //testConnect()
     //testRddBrowse()
-    testCopyTo()
+    //testCopyTo()
+    //testDbSetOrder()
+    testSqlParameters()
     
 CATCH e AS Exception
     ? MessageBox(e:ToString(), MB_ICONSTOP+MB_OK,"An error has occurred")
@@ -347,7 +349,52 @@ FUNCTION TestCopyTo AS VOID
     ? SqlSetProp(0, "Displ",DB_PROMPTCOMPLETE)
     handle := SqlStringConnect("Dsn=Northwind;")
     IF handle > 0
-        SqlExec(handle, "Select * from customers","Customers")
+        //SqlColumns(handle,"Orders","native")
+        SqlExec(handle, "Select * from orders","orders")
         COPY TO C:\Temp\Temp
     ENDIF
 
+FUNCTION testDbSetOrder() AS VOID
+    RddSetDefault("DBFNTX")
+    DbCreate("test",{{"Name","C",10,0}})
+    DbUseArea(TRUE, "DBFNTX", "test")
+    ? DbSetOrder("test")
+    ? RuntimeState.LastRddError:ToString()
+    DbCloseArea()
+    RETURN
+
+
+    SqlSetFactory("ODBC")
+    ? sqlSetprop(0, SqlProperty.ConnectTimeOut, 1) 
+    ? SqlSetProp(0, "Displ",DB_PROMPTCOMPLETE)
+    handle := SqlStringConnect("Dsn=Northwind;")
+    IF handle > 0
+        //SqlColumns(handle,"Orders","native")
+        SqlExec(handle, "Select * from orders where CustomerId ='ALFKI'","orders")
+        COPY TO C:\Temp\Temp
+    ENDIF
+
+
+
+
+FUNCTION TestSqlParameters AS VOID
+    SqlSetFactory("ODBC")
+    ? sqlSetprop(0, SqlProperty.ConnectTimeOut, 1) 
+    ? SqlSetProp(0, "Displ",DB_PROMPTCOMPLETE)
+    //SQLSetFactory("SQL")
+    //LOCAL handle := SqlStringConnect("server=(LOCAL);trusted_connection=Yes;database=Northwind;")
+     SqlSetFactory("ODBC")
+     LOCAL handle := SqlStringConnect("Dsn=Northwind;")
+    IF handle > 0
+        // Declare local. Can be typed or untyped. A memvar would work as well.
+        LOCAL CustomerId = 'ALFKI'
+        // Create anonymous type. Has one property with the name CustomerId and value 'ALFKI'
+        VAR oParams := CLASS{CustomerId}
+        // Pass the parameters object to the backend
+        SqlParameters(handle, oParams)
+        // Execute a query with a parameter. We accept both a ? and a : as start of parameter name
+        ? SqlExec(handle, "Select * from orders where customerId = :CustomerId","orders")
+        ? SqlGetprop(handle, SqlProperty.NativeCommand)
+        Browse()
+
+ENDIF

@@ -225,6 +225,10 @@ INTERNAL STATIC CLASS XSharp.VFP.SQLSupport
                    oStmt:IdleTimeout := newVal
                     result := 1
                 ENDIF
+
+           CASE SQLProperty.NativeCommand
+                result := oStmt:ODBChstmt:CommandText
+
            CASE SQLProperty.ODBChdbc
                 // The INTERNAL ODBC connection handle, which may be used BY external library files (FLL files) TO CALL ODBC. Read-only.
                 result := oStmt:ODBChdbc

@@ -12,7 +12,7 @@ USING System.Drawing
 FUNCTION Start() AS VOID STRICT
 TRY
     //TestProviders()
-    TestProvidersStringConnect()
+    //TestProvidersStringConnect()
     //TestBatch()
     //Test3Results()
     //testTransaction()
@@ -23,6 +23,7 @@ TRY
     //testAsynchronous()
     //testConnect()
     //testRddBrowse()
+    testCopyTo()
     
 CATCH e AS Exception
     ? MessageBox(e:ToString(), MB_ICONSTOP+MB_OK,"An error has occurred")
@@ -235,7 +236,7 @@ RETURN
 FUNCTION DataError(sender AS OBJECT, e AS DataGridViewDataErrorEventArgs) AS VOID
 LOCAL ex AS exception
 ex := e:Exception
-MessageBox(ex:Message,"Invalid data")
+MessageBox(ex:Message,,"Invalid data")
 RETURN 
 
 
@@ -339,3 +340,14 @@ FUNCTION testRddBrowse() AS VOID
     DbSetOrder(1)
     Browse()
 RETURN
+
+FUNCTION TestCopyTo AS VOID
+    SqlSetFactory("ODBC")
+    ? sqlSetprop(0, SqlProperty.ConnectTimeOut, 1) 
+    ? SqlSetProp(0, "Displ",DB_PROMPTCOMPLETE)
+    handle := SqlStringConnect("Dsn=Northwind;")
+    IF handle > 0
+        SqlExec(handle, "Select * from customers","Customers")
+        COPY TO C:\Temp\Temp
+    ENDIF
+

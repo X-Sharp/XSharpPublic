@@ -125,9 +125,9 @@ BEGIN NAMESPACE XSharp.RDD.Enums
 		MEMBER DBI_GETHEADERSIZE	:= 3				
 		/// <summary>Date:    Last date RDD file updated  </summary> 
 		MEMBER DBI_LASTUPDATE		:= 4				
-		/// <summary>String:  Get default delimiter</summary> 
+		/// <summary>String:  Get default FIELD delimiter</summary> 
 		MEMBER DBI_GETDELIMITER		:= 5				
-		/// <summary>String:  Set default delimiter</summary> 
+		/// <summary>String:  Set default FIELD delimiter</summary> 
 		MEMBER DBI_SETDELIMITER		:= 6				
 		/// <summary>Numeric: Get record size </summary> 
 		MEMBER DBI_GETRECSIZE		:= 7				

@@ -10,6 +10,16 @@
     <header>
       <para styleclass="Heading1">Version History</para>
     </header>
+    <para styleclass="Heading1">Changes in 2.4.1.0 (Bandol GA 2.4a)</para>
+    <para styleclass="Heading1"><text styleclass="Heading2">Compiler</text></para>
+    <list id="89" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">Bracketed strings are now no longer supported in the Core dialect to avoid problems with single line external property declarations that contain attributes between the GET and SET keywords</li>
+      <li styleclass="Body Text">The PROPERTY keyword was not properly recognized after an EXTERN modifier</li>
+    </list>
+    <para styleclass="Heading1"><text styleclass="Heading2">Runtime</text></para>
+    <list id="89" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">Fixed a problem in the DELIM Rdd that would occur when using DbServer:AppendDelimited() and DbServer:CopyDelimited().</li>
+    </list>
     <para styleclass="Heading1">Changes in 2.4.0.0 (Bandol GA 2.4)</para>
     <para styleclass="Heading1"><text styleclass="Heading2">Compiler</text></para>
     <list id="89" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">

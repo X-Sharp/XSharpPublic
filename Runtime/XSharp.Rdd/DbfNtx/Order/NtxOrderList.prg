@@ -173,7 +173,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 SELF:_currentOrder := NULL
                 SELF:_focusNtx := SELF:FindOrder(oi)
                 isOk := FALSE
-                IF (SELF:_focusNtx >= 0)
+                IF (SELF:_focusNtx > 0)
                     isOk := SELF:_oRdd:GoCold()
                     IF currentOrder != NULL_OBJECT
                         currentOrder:SetOffLine()

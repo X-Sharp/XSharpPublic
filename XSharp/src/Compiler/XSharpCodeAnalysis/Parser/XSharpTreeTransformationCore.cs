@@ -3321,6 +3321,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 mods = m.ToList<SyntaxToken>();
                 _pool.Free(m);
             }
+            var isExtern = mods.Any((int) SyntaxKind.ExternKeyword);
             var type = context.Type?.Get<TypeSyntax>() ?? _getMissingType();
             type.XVoDecl = true;
             var atts = context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>();
@@ -3370,7 +3371,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             // check the accessor list. if none of the Gets/Sets have a body then generate a warning
             var emulateAuto = false;
-            if (context.Auto == null && context.Multi == null && !isInInterface && !mods.Any((int)SyntaxKind.AbstractKeyword))
+            if (context.Auto == null && context.Multi == null  && !isInInterface && !mods.Any((int)SyntaxKind.AbstractKeyword))
             {
                 // single line property
                 var hasBody = false;
@@ -3381,8 +3382,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         hasBody = true;
                         break;
                     }
+                    else if (accessor.ExpressionBody != null)
+                    {
+                        hasBody = true;
+                        break;
+                    }
                 }
-                if (!hasBody)
+                
+                if (!hasBody && ! isExtern)
                 {
                     emulateAuto = true;
                     accessorList = accessorList.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.WRN_GetSetMustHaveBody));
@@ -3520,19 +3527,33 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 context.Expr.SetSequencePoint();
             }
-            var decl = _syntaxFactory.AccessorDeclaration(context.Key.AccessorKind(),
-                attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
-                modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? EmptyList(),
-                keyword: context.Key.SyntaxKeyword(),
-                body: context.Key.Type == XP.GET ?
-                    (context.Expr == null ? null : MakeBlock(
-                        MakeList<StatementSyntax>(GenerateReturn(context.Expr.Get<ExpressionSyntax>())
-                        )))
-                    : (context.ExprList == null && !forceBody) ? null
-                    : MakeBlock(context.ExprList?.GetList<StatementSyntax>() ?? EmptyList<StatementSyntax>())
-                    ,
-                expressionBody: null,
-                semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+            var attList = context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>();
+            var mods = context.Modifiers?.GetList<SyntaxToken>() ?? EmptyList();
+            var key = context.Key.SyntaxKeyword();
+            var kind = context.Key.AccessorKind();
+            ArrowExpressionClauseSyntax expressionBody = null;
+            BlockSyntax body = null;
+            if (context.Key.Type == XP.GET)
+            {
+                if (context.Expr != null)
+                {
+                    expressionBody = _syntaxFactory.ArrowExpressionClause(
+                        SyntaxFactory.MakeToken(SyntaxKind.EqualsGreaterThanToken), context.Expr.Get<ExpressionSyntax>());
+                }
+            }
+            else // SET
+            {
+                if (context.ExprList != null)
+                {
+                    body = MakeBlock(context.ExprList.GetList<StatementSyntax>());
+                }
+                else if (forceBody)
+                {
+                    body = MakeBlock(EmptyList<StatementSyntax>());
+                }
+            }
+            var decl = _syntaxFactory.AccessorDeclaration(kind,attributeLists: attList,modifiers: mods,keyword: key,
+                body: body, expressionBody: expressionBody, semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
             context.Put(decl);
         }
 
@@ -4396,9 +4417,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitAttributeTarget([NotNull] XP.AttributeTargetContext context)
         {
-            switch (context.Token.Text.ToLower())
+            string target = context.Token.Text.ToLower();
+            switch (target)
             {
                 // Token=(ID | CLASS | CONSTRUCTOR | DELEGATE | ENUM | EVENT | FIELD | INTERFACE | METHOD | PROPERTY  | STRUCT )
+                case "parameter":
+                    target = "param";
+                    goto case "param";
                 case "assembly":
                 case "genericparameter":
                 case "module":
@@ -4411,10 +4436,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case "field":
                 case "interface":
                 case "method":
-                case "parameter":
+                case "param":
                 case "property":
                 case "struct":
-                    var id = SyntaxFactory.MakeIdentifier(context.Token.Text.ToLower());
+                    var id = SyntaxFactory.MakeIdentifier(target);
                     context.Put(_syntaxFactory.AttributeTargetSpecifier(id, SyntaxFactory.MakeToken(SyntaxKind.ColonToken)));
                     break;
                 default:

@@ -675,6 +675,11 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                         parseOne(RCURLY);
                         break;
                     case '[':
+                        if (this.Dialect == XSharpDialect.Core)
+                        {
+                            parseOne(LBRKT);
+                            break;
+                        }
                         switch (LastToken)
                         {
                             case ID:
@@ -1307,36 +1312,39 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
         public static bool IsModifier(int iToken)
         {
+            // Make sure this stays in sync with the various modifier rules in XSharp.g4
             switch (iToken)
-            {
-                case PUBLIC:
-                case EXPORT:
-                case PROTECTED:
-                case INTERNAL:
-                case PRIVATE:
-                case HIDDEN:
-                case UNSAFE:
-                case NEW:
-                case PARTIAL:
+            {   
                 case ABSTRACT:
+                case ASYNC:
+                case CONST:
+                case EXPORT:
+                case FIXED:
+                case HIDDEN:
+                case INITONLY:
+                case INSTANCE:
+                case INTERNAL:
+                case NEW:
+                case OVERRIDE:
+                case PARTIAL:
+                case PRIVATE:
+                case PROTECTED:
+                case PUBLIC:
                 case SEALED:
                 case STATIC:
+                case UNSAFE:
                 case VIRTUAL:
-                case OVERRIDE:
                 case VOLATILE:
-                case CONST:
-                case INITONLY:
-                case FIXED:
-                case INSTANCE:
-                case ASYNC:
-                    // Xbase++ modifiers
+
+                // Xbase++ modifiers
+
+                case CLASS:
+                case DEFERRED:
                 case FINAL:
                 case FREEZE:
+                case INLINE:
                 case INTRODUCE:
                 case SYNC:
-                case DEFERRED:
-                case CLASS:
-                case INLINE:
                     return true;
             }
             return false;

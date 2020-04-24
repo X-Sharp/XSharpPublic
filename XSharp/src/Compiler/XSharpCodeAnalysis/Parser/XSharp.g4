@@ -160,7 +160,7 @@ statementBlock      : (Stmts+=statement)*
 
 
 funcprocModifiers   : ( Tokens+=(STATIC | INTERNAL | PUBLIC | EXPORT | UNSAFE) )+
-                    ;
+                    ; // make sure all tokens are also in the IsModifier method inside XSharpLexerCode.cs
 
 
 using_              : USING (Static=STATIC)? (Alias=identifierName Op=assignoperator)? Name=name EOS
@@ -213,7 +213,7 @@ vounion             : (Modifiers=votypeModifiers)?
                     ;
 
 votypeModifiers     : ( Tokens+=(INTERNAL | PUBLIC | EXPORT | UNSAFE | STATIC ) )+
-                    ;
+                    ; // make sure all tokens are also in the IsModifier method inside XSharpLexerCode.cs
 
 
 namespace_          : BEGIN NAMESPACE Name=name e=eos
@@ -244,7 +244,7 @@ class_              : (Attributes=attributes)? (Modifiers=classModifiers)?
                     ;
 
 classModifiers      : ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN | ABSTRACT | SEALED | STATIC | UNSAFE | PARTIAL) )+
-                    ;
+                    ; // make sure all tokens are also in the IsModifier method inside XSharpLexerCode.cs
 
 
 
@@ -325,7 +325,7 @@ classvars           : (Attributes=attributes)? (Modifiers=classvarModifiers)?
                     ;
 
 classvarModifiers   : ( Tokens+=(INSTANCE| STATIC | CONST | INITONLY | PRIVATE | HIDDEN | PROTECTED | PUBLIC | EXPORT | INTERNAL | VOLATILE | UNSAFE | FIXED) )+
-                    ;
+                    ; // make sure all tokens are also in the IsModifier method inside XSharpLexerCode.cs
 
 classVarList        : Var+=classvar (COMMA Var+=classvar)* (As=(AS | IS) DataType=datatype)?
                     ;
@@ -363,7 +363,7 @@ propertyLineAccessor: Attributes=attributes? Modifiers=accessorModifiers?
                     ;
 
 accessorModifiers	: ( Tokens+=(PRIVATE | HIDDEN | PROTECTED | PUBLIC | EXPORT | INTERNAL ) )+
-                    ;
+                    ; // make sure all tokens are also in the IsModifier method inside XSharpLexerCode.cs
 
 expressionList	    : Exprs+=expression (COMMA Exprs+=expression)*
                     ;
@@ -409,7 +409,7 @@ constructorchain    : (SELF | SUPER)
                     ;
 
 constructorModifiers: ( Tokens+=( PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN | EXTERN | STATIC ) )+
-                    ;
+                    ; // make sure all tokens are also in the IsModifier method inside XSharpLexerCode.cs
 
 declare             : DECLARE (ACCESS | ASSIGN | METHOD )  .*? eos
                     ;
@@ -423,7 +423,7 @@ destructor          : (Attributes=attributes)? (Modifiers=destructorModifiers)?
                     ;
 
 destructorModifiers : ( Tokens+=EXTERN )+
-                    ;
+                    ; // make sure all tokens are also in the IsModifier method inside XSharpLexerCode.cs
 /*
     From the C# syntax guide:
     overloadable-unary-operator:  one of
@@ -453,12 +453,12 @@ operator_           : Attributes=attributes? Modifiers=operatorModifiers?
                      (END o1=OPERATOR EOS)?
                       
                     ;
-
+        
 operatorModifiers   : ( Tokens+=(PUBLIC | STATIC | EXTERN) )+
-                    ;
+                    ; // make sure all tokens are also in the IsModifier method inside XSharpLexerCode.cs
 
 memberModifiers     : ( Tokens+=(NEW | PRIVATE | HIDDEN | PROTECTED | PUBLIC | EXPORT | INTERNAL | STATIC | VIRTUAL | SEALED | ABSTRACT | ASYNC | UNSAFE | EXTERN | OVERRIDE) )+
-                    ;
+                    ; // make sure all tokens are also in the IsModifier method inside XSharpLexerCode.cs
 
 attributes          : ( AttrBlk+=attributeBlock )+
                     ;
@@ -1117,7 +1117,7 @@ xppclass           :  (Attributes=attributes)?                                //
                     ;
 
 xppclassModifiers   : ( Tokens+=(STATIC | FREEZE | FINAL) )+
-                    ;
+                    ; // make sure all tokens are also in the IsModifier method inside XSharpLexerCode.cs
 
 xppclassMember      : Member=xppmethodvis                           #xppclsvisibility
                     | Member=xppclassvars                           #xppclsvars
@@ -1150,7 +1150,8 @@ xppisin             : IS Id=identifier (IN SuperClass=identifier)?              
                     
 
 xppdeclareModifiers : ( Tokens+=( DEFERRED | FINAL | INTRODUCE | OVERRIDE | CLASS | SYNC ) )+
-                    ;
+                    ; // make sure all tokens are also in the IsModifier method inside XSharpLexerCode.cs
+
 
 xppclassvars        : (Modifiers=xppmemberModifiers)?                             // [CLASS] 
                       VAR Vars+=identifier                                        // VAR <VarName> 
@@ -1212,7 +1213,7 @@ xppinlineMethod     : (Attributes=attributes)?                               // 
                     ;
 
 xppmemberModifiers  : ( Tokens+=( CLASS | STATIC) )+
-                    ;
+                    ; // make sure all tokens are also in the IsModifier method inside XSharpLexerCode.cs
 
 
 

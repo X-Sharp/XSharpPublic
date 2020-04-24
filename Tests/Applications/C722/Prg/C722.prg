@@ -21,7 +21,7 @@ Note also that the second error message points to line 1, not to the correct lin
 PUBLIC INTERFACE ITest
     [DispId(0)]PROPERTY Timeout AS LONG;
     [MethodImpl(MethodImplOptions.PreserveSig | MethodImplOptions.InternalCall)][DispId(0)] GET;
-    [MethodImpl(MethodImplOptions.PreserveSig | MethodImplOptions.InternalCall)][DispId(0)][param: IN] SET 
+    [MethodImpl(MethodImplOptions.PreserveSig | MethodImplOptions.InternalCall)][DispId(0)][param: in] SET 
 END INTERFACE
 
 CLASS TestClass IMPLEMENTS ITest

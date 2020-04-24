@@ -62,9 +62,9 @@ BEGIN NAMESPACE XSharp.RDD
 		/// <summary>Current Record</summary>
 		PUBLIC _RecordBuffer	AS BYTE[]	
 		/// <summary>Field delimiter (for DELIM RDD)</summary>
-		PUBLIC _Delimiter	:= "" AS STRING	
-		/// <summary>Field separator (for DELIM RDD)</summary>
-		PUBLIC _Separator	:= ""  AS STRING	
+		PUBLIC _Delimiter	:= "," AS STRING	
+		/// <summary>String delimiter (for DELIM RDD)</summary>
+		PUBLIC _Separator	:= e"\""  AS STRING	        
 		/// <summary> Is the file opened ReadOnly ?</summary>
 		PUBLIC _ReadOnly		AS LOGIC	
 		/// <summary> Is the file opened Shared ?</summary>
@@ -1021,9 +1021,9 @@ BEGIN NAMESPACE XSharp.RDD
 					oResult := SELF:_ReadOnly
 				CASE DbInfo.DBI_GETDELIMITER
 					oResult := SELF:_Delimiter
-				CASE DbInfo.DBI_SEPARATOR
+				CASE DbInfo.DBI_SEPARATOR           // default FIELD delimiter
 					oResult := SELF:_Separator
-				CASE DbInfo.DBI_SETDELIMITER            
+				CASE DbInfo.DBI_SETDELIMITER        // default FIELD delimiter     
 					oResult := SELF:_Separator		
 					IF oNewValue != NULL .AND. oNewValue:GetType() == TYPEOF(STRING)
 						SELF:_Separator	:= (STRING) oNewValue

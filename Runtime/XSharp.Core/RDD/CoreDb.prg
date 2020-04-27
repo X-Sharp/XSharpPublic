@@ -1938,7 +1938,7 @@ CLASS XSharp.CoreDb
             // Could be FieldName / ACDB to indicate the sort method
             VAR parts := sortNames:Fields[nFld]:Split('/')
             IF parts:Length > 1
-                VAR part := parts[1]
+                VAR part := parts[1]    // second element !
                 IF part:IndexOf('A') > -1
                     info:Items[nFld]:Flags |= DbSortFlags.Default
                 ENDIF

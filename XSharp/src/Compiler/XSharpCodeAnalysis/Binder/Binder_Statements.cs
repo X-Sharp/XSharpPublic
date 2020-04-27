@@ -89,6 +89,73 @@ namespace Microsoft.CodeAnalysis.CSharp
             return null;
         }
 
+        bool xsValueFitsIn(ConstantValue value, SpecialType specialType)
+        {
+            if (!value.IsIntegral)
+                return false;
+            if (value.SpecialType.IsSignedIntegralType())
+            {
+                var i64Value = value.Int64Value;
+                switch (specialType)
+                {
+                    case SpecialType.System_SByte:
+                        return i64Value <= sbyte.MaxValue && i64Value >= sbyte.MinValue;
+                    case SpecialType.System_Byte:
+                        return i64Value <= byte.MaxValue && i64Value >= byte.MinValue;
+                    case SpecialType.System_Int16:
+                        return i64Value <= short.MaxValue && i64Value >= short.MinValue;
+                    case SpecialType.System_UInt16:
+                        return i64Value <= ushort.MaxValue && i64Value >= ushort.MinValue;
+                    case SpecialType.System_Int32:
+                        return i64Value <= int.MaxValue && i64Value >= int.MinValue;
+                    case SpecialType.System_UInt32:
+                        return i64Value <= uint.MaxValue && i64Value >= uint.MinValue;
+                    case SpecialType.System_UInt64:
+                        return i64Value > 0;
+                }
+                return true;
+            }
+            else
+            {
+                // unsigned
+                var u64Value = value.UInt64Value;
+                switch (specialType)
+                {
+                    case SpecialType.System_SByte:
+                        return u64Value <= (ulong) sbyte.MaxValue ;
+                    case SpecialType.System_Byte:
+                        return u64Value <= byte.MaxValue ;
+                    case SpecialType.System_Int16:
+                        return u64Value <= (ulong)short.MaxValue;
+                    case SpecialType.System_UInt16:
+                        return u64Value <= ushort.MaxValue ;
+                    case SpecialType.System_Int32:
+                        return u64Value <= int.MaxValue ;
+                    case SpecialType.System_UInt32:
+                        return u64Value <= uint.MaxValue ;
+                    case SpecialType.System_Int64:
+                        return u64Value > long.MaxValue;
+                }
+                return true;
+            }
+        }
+
+        bool XsLiteralIIfFitsInTarget(BoundConditionalOperator bco, TypeSymbol targetType)
+        {
+            var target = targetType.SpecialType;
+            var trueConst = bco.Consequence.ConstantValue;
+            var falseConst = bco.Alternative.ConstantValue;
+            if (trueConst == null || falseConst== null)
+            {
+                return false;
+            }
+            if (target.IsIntegralType())
+            {
+                return xsValueFitsIn(trueConst, target) && xsValueFitsIn(falseConst, target);
+            }
+            return false;
+        }
+
         void XsCheckConversionForAssignment(TypeSymbol targetType, BoundExpression expression, DiagnosticBag diagnostics, bool isDefaultParameter = false, bool isRefAssignment = false)
         {
             if (expression.Kind == BoundKind.UnboundLambda)
@@ -136,7 +203,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                     if (sourceType != targetType && !expression.Syntax.HasErrors)
                     {
                         // Find sources that do not fit in the target
-                        if (sourceSize > targetSize)
+                        if (expression is BoundConditionalOperator bco && XsLiteralIIfFitsInTarget(bco, targetType))
+                        {
+                            return; // ok
+                        }
+                        else if (sourceSize > targetSize)
                         {
                             // Narrowing conversion from '{0}' to '{1}' may lead to loss of data or overflow errors
                             Error(diagnostics, ErrorCode.WRN_ConversionMayLeadToLossOfData, expression.Syntax, expression.Type, targetType);
@@ -144,12 +215,13 @@ namespace Microsoft.CodeAnalysis.CSharp
                         else if (sourceSize == targetSize)
                         {
                             //Signed/unsigned conversions from '{0}' to '{1}' may lead to loss of data or overflow errors
-                            Error(diagnostics, ErrorCode.WRN_SignedUnSignedConversion, expression.Syntax, expression.Type, targetType);
+                             Error(diagnostics, ErrorCode.WRN_SignedUnSignedConversion, expression.Syntax, expression.Type, targetType);
                         }
                         // lhs.Size < rhs.Size, only a problem when lhs is Signed and rhs is Unsiged
                         else if (sourceSize < targetSize && sourceType.SpecialType.IsSignedIntegralType() && !targetType.SpecialType.IsSignedIntegralType())
                         {
                             // Signed / unsigned conversions from '{0}' to '{1}' may lead to loss of data or overflow errors
+
                             Error(diagnostics, ErrorCode.WRN_SignedUnSignedConversion, expression.Syntax, expression.Type, targetType);
                         }
                     }

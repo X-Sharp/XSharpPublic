@@ -280,16 +280,18 @@ namespace Microsoft.CodeAnalysis.CSharp
         static internal TypeSymbol ConstantType(this BoundExpression expression, Compilation compilation)
         {
             var type = expression.Type;
-            var stype = type.SpecialType;
             if (expression.ConstantValue == null)
                 return type;
             if (!expression.ConstantValue.IsIntegral)
                 return type;
+            var stype = type.SpecialType;
             if (type.SpecialType.IsSignedIntegralType())
             {
                 var value = expression.ConstantValue.Int64Value;
                 if (value == 0)
+                {
                     stype = SpecialType.System_Byte;
+                }
                 else if (value < 0)
                 {
                     if (value >= sbyte.MinValue)
@@ -304,12 +306,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                 // > 0
                 else
                 {
-                    if (value <= sbyte.MaxValue)
-                        stype = SpecialType.System_SByte;
-                    else if (value <= byte.MaxValue)
+                    // prefer unsigned types when < 32 bits
+                    if (value <= byte.MaxValue)
                         stype = SpecialType.System_Byte;
-                    else if (value <= short.MaxValue)
-                        stype = SpecialType.System_Int16;
                     else if (value <= ushort.MaxValue)
                         stype = SpecialType.System_UInt16;
                     else if (value <= int.MaxValue)
@@ -340,7 +339,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                     stype = SpecialType.System_Int64;
                 else
                     stype = SpecialType.System_UInt64;
-
             }
             return (TypeSymbol) compilation.GetSpecialType(stype);
         }

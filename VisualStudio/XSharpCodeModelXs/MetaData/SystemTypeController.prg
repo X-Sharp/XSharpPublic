@@ -68,7 +68,7 @@ BEGIN NAMESPACE XSharpModel
 			LOCAL result := NULL AS System.Type
 			TRY
 				WriteOutputMessage("--> FindType() "+typename)
-				IF typeName:EndsWith(">")
+				IF typeName:EndsWith(">") .AND.  typeName:Contains("<") .AND. typeName:Length > 2
 					IF typeName:Length <= (typeName:Replace(">", ""):Length + 1)
 						VAR elements := typeName:Split("<,>":ToCharArray(), System.StringSplitOptions.RemoveEmptyEntries)
 						VAR num := (elements:Length - 1)
@@ -115,6 +115,9 @@ BEGIN NAMESPACE XSharpModel
 				ENDIF
 				// Also Check into the Functions Class for Globals/Defines/...
 				result := Lookup("Functions." + typeName, assemblies)
+            CATCH e AS Exception
+                XSolution.WriteException(e)
+                result := NULL
 			FINALLY
 				WriteOutputMessage("<-- FindType() "+typename+" " + IIF(result != NULL, result:FullName, "* not found *"))
 			END TRY

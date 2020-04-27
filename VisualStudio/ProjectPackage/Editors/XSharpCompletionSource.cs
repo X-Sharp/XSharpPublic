@@ -1143,12 +1143,14 @@ namespace XSharpLanguage
                     Direction = "OUT";
                 }
                 else
+                {
                     Direction = "AS";
-                string type = p.ParameterType.FullName;
-                if (type == null)
-                    type = p.ParameterType.Name;
-                if (type != null && type.EndsWith("&"))
-                    Direction = "REF";
+                    string type = p.ParameterType.FullName;
+                    if (type == null)
+                        type = p.ParameterType.Name;
+                    if (type != null && type.EndsWith("&"))
+                        Direction = "REF";
+                }
 
                 this.TypeName = p.ParameterType.GetXSharpTypeName();
                 Optional = p.IsOptional;

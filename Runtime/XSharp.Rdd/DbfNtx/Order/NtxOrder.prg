@@ -731,11 +731,11 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             LOCAL cFile     AS STRING
             LOCAL sBlock    AS STRING
             VAR sRecords := System.Text.StringBuilder{}
-            cFile := SELF:_fileName+".DMP"
+            cFile := SELF:FullPath+".DMP"
             hDump := FCreate(cFile)
             IF hDump != F_ERROR
                 SELF:_PageList:DumpHandle := hDump
-                sBlock := SELF:_Header:Dump("Filedump for:"+SELF:_fileName)
+                sBlock := SELF:_Header:Dump("Filedump for: "+SELF:FullPath)
                 FWrite(hDump, sBlock)
                 _oRdd:GoTop()
                 sRecords:AppendLine("------------------------------")

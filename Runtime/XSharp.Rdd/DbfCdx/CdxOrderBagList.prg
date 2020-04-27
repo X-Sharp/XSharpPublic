@@ -17,7 +17,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PRIVATE _bags AS List<CdxOrderBag>
         
         INTERNAL PROPERTY CurrentOrder AS CdxTag AUTO
-        
+        INTERNAL PROPERTY First AS CdxOrderBag GET IIF(_bags:Count > 0, _bags[0], NULL)
         CONSTRUCTOR(oRdd AS DBFCDX)
             _oRdd := oRdd
             _bags := List<CdxOrderBag>{}

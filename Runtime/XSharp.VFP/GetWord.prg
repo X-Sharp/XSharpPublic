@@ -4,26 +4,26 @@ USING System.Text
 // make sure this is compiled early bound !
 #pragma options ("lb", off)
 BEGIN NAMESPACE XSharp.VFP
-    DELEGATE __IsInDelimiterArray(tc2Check AS Char) AS LOGIC
-    DELEGATE __GetWordCountActive(tcString AS STRING) AS LONG
+    INTERNAL DELEGATE __IsInDelimiterArray(tc2Check AS Char) AS LOGIC
+    INTERNAL DELEGATE __GetWordCountActive(tcString AS STRING) AS LONG
 	
-    DEFINE Asc_A_Low := 097 && Asc_A + 32
-    DEFINE Asc_Z_Low := 122 && Asc_Z + 32
+    INTERNAL DEFINE Asc_A_Low := 097 && Asc_A + 32
+    INTERNAL DEFINE Asc_Z_Low := 122 && Asc_Z + 32
 
-    INTERFACE IGetWord
+    INTERNAL INTERFACE IGetWord
         METHOD GetWordCount(tcString AS STRING) AS LONG
         METHOD GetWordNum(tcString AS STRING, tnWordNum AS INT) AS STRING
         METHOD IsDelimiter(tc2Check AS Char) AS LOGIC
         METHOD SetStru() AS VOID
     END INTERFACE
                
-    CLASS GetVfpDefault IMPLEMENTS IGetWord
-        PUBLIC CONST _cSpace := c' '    AS Char && _Chr(ASC_BLANK)  Chr(032)[0]
-        PUBLIC CONST _c_LinF := c'\n'   AS Char && _Chr(ASC_LF)     Chr(010)[0]
-        PUBLIC CONST _c__Tab := c'\t'   AS Char && _Chr(ASC_Tab)    Chr(009)[0]
+    INTERNAL CLASS GetVfpDefault IMPLEMENTS IGetWord
+        INTERNAL CONST _cSpace := c' '    AS Char && _Chr(ASC_BLANK)  Chr(032)[0]
+        INTERNAL CONST _c_LinF := c'\n'   AS Char && _Chr(ASC_LF)     Chr(010)[0]
+        INTERNAL CONST _c__Tab := c'\t'   AS Char && _Chr(ASC_Tab)    Chr(009)[0]
         * public const _c_CRet := c'\r'   as Char && _Chr(ASC_CR)     Chr(013)[0]
     
-        PUBLIC  oParent AS GetWordHandler
+        INTERNAL oParent AS GetWordHandler
 
         VIRTUAL METHOD GetWordCount(tcString AS STRING) AS LONG
             // Start with a Word?
@@ -211,8 +211,8 @@ BEGIN NAMESPACE XSharp.VFP
         PRIVATE CONST _i_ArSz := 135 AS INT
         PRIVATE CONST _i_ArOf := _i_ArSz - 2 AS INT
 
-        PUBLIC nInDict AS INT
-	    PUBLIC alFlg AS LOGIC[]
+        INTERNAL nInDict AS INT
+	    INTERNAL alFlg AS LOGIC[]
 	    PUBLIC hcCmp AS Dictionary <Char, BYTE>
         OVERRIDE METHOD IsDelimiter(tc2Check AS Char) AS LOGIC
             /// this way I don't have to care if lowest bits are filled via different encoding
@@ -292,7 +292,7 @@ BEGIN NAMESPACE XSharp.VFP
             SUPER(toParent)
     END CLASS
     
-	CLASS GetWordHandler
+	INTERNAL CLASS GetWordHandler
 	    /// Single
         /// lMany:
         /// todo: Check new dict+array vs. :clear
@@ -420,18 +420,17 @@ STATIC FUNCTION GetDefaultHandler()  AS GetWordHandler
     RETURN loSrch
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/getwordcount/*" />
-FUNCTION GetWordCount( tcString AS STRING) AS LONG
+FUNCTION GetWordCount( cString AS STRING) AS LONG
     LOCAL loSrch := GetDefaultHandler() AS GetWordHandler
-    RETURN loSrch:oActiveObjc:GetWordCount( tcString)
+    RETURN loSrch:oActiveObjc:GetWordCount( cString)
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/getwordcount/*" />
-FUNCTION GetWordCount( tcString AS STRING, tcDelimiters AS STRING) AS LONG
+FUNCTION GetWordCount( cString AS STRING, cDelimiters AS STRING) AS LONG
     LOCAL lnRefSwitch := 0 AS INT
     LOCAL lcTrack := "" AS STRING
-    RETURN GetWordCount( tcString , tcDelimiters, lnRefSwitch, lcTrack)
+    RETURN GetWordCount( cString , cDelimiters, REF lnRefSwitch, REF lcTrack)
 
-/// <include file="VFPDocs.xml" path="Runtimefunctions/getwordcount/*" />
-FUNCTION GetWordCount( tcString AS STRING, tcDelimiters AS STRING, tnSwitch REF INT, tcTrack REF STRING) AS LONG
+INTERNAL FUNCTION GetWordCount( cString AS STRING, cDelimiters AS STRING, tnSwitch REF INT, tcTrack REF STRING) AS LONG
     *-- Checked: throws on .Null.
     *-- when moving class based optimized, presearch optimization times are avoided
     *-- so no systematic error to do up front when checking efficiency
@@ -440,35 +439,34 @@ FUNCTION GetWordCount( tcString AS STRING, tcDelimiters AS STRING, tnSwitch REF 
     IF tnSwitch<0
             loSrch:iMethod := tnSwitch
     ENDIF            
-    = loSrch:SetDelimiter(tcDelimiters)
+    = loSrch:SetDelimiter(cDelimiters)
     tnSwitch := loSrch:iMethod
     tnSwitch := loSrch:iMethod
     tcTrack := loSrch:oActiveObjc:GetType():Name
-    lnReturn := loSrch:oActiveObjc:GetWordCount(tcString)
+    lnReturn := loSrch:oActiveObjc:GetWordCount(cString)
     RETURN lnReturn
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/getwordnum/*" />
-FUNCTION GetWordNum( tcString AS STRING, tnIndex AS INT) AS STRING
+FUNCTION GetWordNum( cString AS STRING, nIndex AS INT) AS STRING
     LOCAL loSrch := GetDefaultHandler() AS GetWordHandler
-    RETURN loSrch:oActiveObjc:GetWordNum( tcString, tnIndex)
+    RETURN loSrch:oActiveObjc:GetWordNum( cString, nIndex)
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/getwordnum/*" />
-FUNCTION GetWordNum( tcString AS STRING, tnIndex AS INT, tcDelimiters AS STRING) AS STRING
+FUNCTION GetWordNum( cString AS STRING, nIndex AS INT, cDelimiters AS STRING) AS STRING
     *-- Checked: throws on .Null.
     LOCAL lnRefSwitch := 0 AS INT
     LOCAL lcTrack := "" AS STRING
-    RETURN  GetWordNum( tcString, tnIndex, tcDelimiters, lnRefSwitch, lcTrack)
+    RETURN  GetWordNum( cString, nIndex, cDelimiters, REF lnRefSwitch, REF lcTrack)
 
-/// <include file="VFPDocs.xml" path="Runtimefunctions/getwordnum/*" />
-FUNCTION GetWordNum( tcString AS STRING, tnIndex AS INT, tcDelimiters AS STRING, tnSwitch REF INT, tcTrack REF STRING) AS STRING
+INTERNAL FUNCTION GetWordNum( cString AS STRING, nIndex AS INT, cDelimiters AS STRING, tnSwitch REF INT, tcTrack REF STRING) AS STRING
     *-- Checked: throws on .Null., lcReturn still here to debug
     LOCAL lcReturn AS STRING
     LOCAL loSrch AS GetWordHandler
     loSrch := GetWordHandler {}
-    = loSrch:SetDelimiter(tcDelimiters)
+    = loSrch:SetDelimiter(cDelimiters)
     tnSwitch := loSrch:iMethod
     tcTrack := loSrch:oActiveObjc:GetType():Name
-    lcReturn := loSrch:oActiveObjc:GetWordNum(tcString, tnIndex)
+    lcReturn := loSrch:oActiveObjc:GetWordNum(cString, nIndex)
     RETURN lcReturn
 
     //STATIC FUNCTION __GetDelimiters() AS STRING

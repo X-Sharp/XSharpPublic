@@ -26,12 +26,6 @@ FUNCTION Seek(eExpression , uArea , uIndex ) AS LOGIC
     THROW NotImplementedException{}
     // RETURN FALSE
 
-/// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/select/*" />
-
-FUNCTION Select( uSelect ) AS LONG
-    THROW NotImplementedException{}
-    // RETURN 0
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/setfldstate/*" />

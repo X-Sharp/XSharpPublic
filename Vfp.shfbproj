@@ -21,7 +21,8 @@
     <Language>en-US</Language>
     <DocumentationSources>
       <DocumentationSource sourceFile="Binaries\Documentation\XSharp.VFP.XML" />
-<DocumentationSource sourceFile="Binaries\Documentation\XSharp.VFP.dll" /></DocumentationSources>
+      <DocumentationSource sourceFile="Binaries\Documentation\XSharp.VFP.dll" />
+    </DocumentationSources>
     <HelpTitle>X# Runtime Reference</HelpTitle>
     <HelpFileVersion>2.2.3.0</HelpFileVersion>
     <NamingMethod>MemberName</NamingMethod>
@@ -32,7 +33,7 @@
     <SdkLinkTarget>Blank</SdkLinkTarget>
     <HelpFileFormat>HtmlHelp1</HelpFileFormat>
     <SyntaxFilters>C#, X#</SyntaxFilters>
-    <PresentationStyle>VS2013Xs</PresentationStyle>
+    <PresentationStyle>VS2013XSharp</PresentationStyle>
     <CleanIntermediates>False</CleanIntermediates>
     <KeepLogFile>True</KeepLogFile>
     <DisableCodeBlockComponent>False</DisableCodeBlockComponent>
@@ -1085,10 +1086,5 @@ More information about that program can be found at our website as well.&amp;lt%
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="Docs\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="XSharp.MacroCompiler">
-      <HintPath>Binaries\Debug\XSharp.MacroCompiler.dll</HintPath>
-    </Reference>
   </ItemGroup>
 </Project>

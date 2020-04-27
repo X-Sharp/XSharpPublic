@@ -27,13 +27,13 @@ BEGIN NAMESPACE XSharp
     /// <returns>The delegate should return 1 when it wants to use the first symbol and 2 when it wants to use the second symbol or 0 when it does not want to use either symbol</returns>
     /// <seealso cref="T:XSharp.IMacroCompiler2"/>
     /// <seealso cref="T:XSharp.IMacroCompiler2"/>
-    /// <seealso cref="M:XSharp.Core.Functions.SetMacroDuplicatesResolver(XSharp.MacroCompilerResolveAmbiguousMatch)"/>
+    /// <seealso cref="O:XSharp.Core.Functions.SetMacroDuplicatesResolver"/>
     DELEGATE MacroCompilerResolveAmbiguousMatch(m1 as MemberInfo, m2 as MemberInfo, args as System.Type[]) AS LONG
 
     /// <summary>
 	/// This interface extends the Macro compiler and adds a method that is called to decide between ambigous methods or constructors
 	/// </summary>
-	/// <seealso cref="M:XSharp.Core.Functions.SetMacroDuplicatesResolver(XSharp.MacroCompilerResolveAmbiguousMatch)"/>
+	/// <seealso cref="O:XSharp.Core.Functions.SetMacroDuplicatesResolver"/>
 	/// <seealso cref="T:XSharp.MacroCompilerResolveAmbiguousMatch"/>
 	INTERFACE IMacroCompiler2 INHERIT IMacroCompiler
         PROPERTY Resolver as MacroCompilerResolveAmbiguousMatch GET SET
@@ -42,8 +42,8 @@ BEGIN NAMESPACE XSharp
 	/// <summary>
 	/// This interface defines the Macro compiler subsystem
 	/// </summary>
-	/// <seealso cref="M:XSharp.Core.Functions.SetMacroCompiler(System.Type)"/>
-	/// <seealso cref="M:XSharp.Core.Functions.GetMacroCompiler"/>
+	/// <seealso cref="O:XSharp.Core.Functions.SetMacroCompiler"/>
+	/// <seealso cref="O:XSharp.Core.Functions.GetMacroCompiler"/>
 	/// <seealso cref="T:XSharp.ICodeblock"/>
 	INTERFACE IMacroCompiler
 		/// <summary>Compile a string into a runtime codeblock.</summary>

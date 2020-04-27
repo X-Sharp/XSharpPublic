@@ -919,8 +919,8 @@ RETURN
 			DbUseArea(,"DBFNTX",cDbf) // 20 records
 			DbSetIndex ( cDbf )
 			Assert.Equal( (INT) DbOrderInfo( DBOI_KEYCOUNT ) , 20)
-			Assert.Equal( (INT) OrdScope(TOPSCOPE, 5) , 5) // NULL
-			Assert.Equal( (INT) OrdScope(BOTTOMSCOPE, 10) , 10) // NULL
+			Assert.Equal( (INT) OrdScope(TOPSCOPE, 5) , 0) // returns the previous value
+			Assert.Equal( (INT) OrdScope(BOTTOMSCOPE, 10) , 0) // returns the previous value
 			DbGoTop()
 			
 			Assert.Equal( (INT) DbOrderInfo( DBOI_KEYCOUNT ) , 6) // still 20 - but must be 6
@@ -1099,8 +1099,9 @@ RETURN
 			// ? "Setting scope"
 			LOCAL u AS USUAL
 			u := "A"
-			VoDbOrderInfo( DBOI_SCOPETOP, "", NIL, REF u )
-			VoDbOrderInfo( DBOI_SCOPEBOTTOM, "", NIL, REF u )
+			VoDbOrderInfo( DBOI_SCOPETOP, "", NIL,  REF u )
+			u := "A"
+			VoDbOrderInfo( DBOI_SCOPEBOTTOM, "", NIL, REF  u )
 		
 			DbGoTop()
 			Assert.Equal(4 , (INT)RecNo())
@@ -1148,8 +1149,9 @@ RETURN
 			// ? "Setting scope"
 			LOCAL u AS USUAL
 			u := "A"
-			VoDbOrderInfo( DBOI_SCOPETOP, "", NIL, REF u )
-			VoDbOrderInfo( DBOI_SCOPEBOTTOM, "", NIL, REF u )
+			VoDbOrderInfo( DBOI_SCOPETOP, "", NIL,  REF u )
+			u := "A"
+			VoDbOrderInfo( DBOI_SCOPEBOTTOM, "", NIL,  REF u )
 		
 			DbGoTop()
 			Assert.Equal(4 , (INT)RecNo())
@@ -1656,8 +1658,9 @@ RETURN
 			// ? "Setting scope"
 			LOCAL u AS USUAL
 			u := "A"
-			VoDbOrderInfo( DBOI_SCOPETOP, "", NIL, REF u )
-			VoDbOrderInfo( DBOI_SCOPEBOTTOM, "", NIL, REF u )
+			VoDbOrderInfo( DBOI_SCOPETOP, "", NIL,  REF u )
+			u := "A"
+			VoDbOrderInfo( DBOI_SCOPEBOTTOM, "", NIL,  REF u )
 		
 			DbGoTop()
 			Assert.Equal(4 , (INT)RecNo())
@@ -1676,6 +1679,7 @@ RETURN
 		
 			u := NIL
 			VoDbOrderInfo( DBOI_SCOPETOPCLEAR, "", NIL, REF u )
+			u := NIL
 			VoDbOrderInfo( DBOI_SCOPEBOTTOMCLEAR, "", NIL, REF u )
 			DbGoTop() 
 		

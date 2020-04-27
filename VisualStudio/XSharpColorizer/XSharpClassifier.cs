@@ -213,29 +213,28 @@ namespace XSharpColorizer
         private void ClassifyCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             System.Diagnostics.Trace.WriteLine("-->> XSharpClassifier.ClassifyCompleted()");
-            if (e.Cancelled)
+            try
             {
-                return;
-            }
-            if (e.Error == null)
-            {
-                var snapshot = e.Result as ITextSnapshot;
-                if (snapshot != null)
+                if (e.Cancelled)
                 {
-                    triggerRepaint(snapshot);
-                    // if the buffer has changed in the mean time then restart the classification
-                    // because we have 'missed' the buffer_changed event because we were busy
-                    var newSnapshot = _buffer.CurrentSnapshot;
-                    if (newSnapshot.Version != snapshot.Version)
+                    return;
+                }
+                if (e.Error == null)
+                {
+                    var snapshot = e.Result as ITextSnapshot;
+                    if (snapshot != null)
                     {
-                        // buffer was changed, so restart
-                        try
+                        triggerRepaint(snapshot);
+                        // if the buffer has changed in the mean time then restart the classification
+                        // because we have 'missed' the buffer_changed event because we were busy
+                        var newSnapshot = _buffer.CurrentSnapshot;
+                        if (newSnapshot.Version != snapshot.Version)
                         {
-                            _bwClassify.RunWorkerAsync();
-                        }
-                        catch
-                        {
-
+                            // buffer was changed, so restart
+                            if (!_bwClassify.IsBusy)
+                            {
+                                _bwClassify.RunWorkerAsync();
+                            }
                         }
                     }
                     else
@@ -247,6 +246,10 @@ namespace XSharpColorizer
                         }
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Trace.WriteLine("<<-- Exception :" + ex.Message);
             }
             System.Diagnostics.Trace.WriteLine("<<-- XSharpClassifier.ClassifyCompleted()");
         }

@@ -23,7 +23,15 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             SELF:_sortInfo := info
 
         VIRTUAL METHOD Compare(x AS SortRecord , y AS SortRecord) AS LONG
-            RETURN 0
+            LOCAL diff AS LONG
+            IF x:Recno < y:Recno
+                diff := -1
+                y:Duplicate := TRUE
+            ELSE
+                diff := 1
+                x:Duplicate := TRUE
+            ENDIF
+            RETURN diff
 
     END CLASS
     
@@ -52,12 +60,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                     diff := -diff
                 ENDIF
             ELSE
-                IF x:Recno < y:Recno
-                    diff := -1
-                ELSE
-                    diff := 1
-                    y:Duplicate := TRUE
-                ENDIF
+                diff := SUPER:Compare(x,y)
             ENDIF
             
             RETURN diff
@@ -96,12 +99,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                     diff := -diff
                 ENDIF
             ELSE
-                IF x:Recno < y:Recno
-                    diff := -1
-                ELSE
-                    diff := 1
-                    y:Duplicate := TRUE
-                ENDIF
+                diff := SUPER:Compare(x,y)
             ENDIF
             RETURN diff
             

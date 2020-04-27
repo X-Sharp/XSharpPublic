@@ -28,6 +28,15 @@ BEGIN NAMESPACE XSharp.Data
         [DllImport("USER32.dll", CharSet := CharSet.Ansi)];
         INTERNAL STATIC METHOD GetDesktopWindow() AS IntPtr PASCAL
 
+        INTERNAL STATIC METHOD GetParentWindow() AS IntPtr
+            LOCAL hResult AS IntPtr
+            hResult := GetActiveWindow()
+            IF hResult == IntPtr.Zero
+                hResult := GetDesktopWindow()
+            ENDIF
+            RETURN hResult
+
+
         [DllImport("ODBC32.dll", EntryPoint := "SQLAllocEnv")];
         INTERNAL STATIC METHOD SQLAllocEnv(phenv OUT IntPtr) AS SHORTINT PASCAL
 
@@ -48,6 +57,15 @@ BEGIN NAMESPACE XSharp.Data
 
         [DllImport("ODBC32.dll")];
         INTERNAL STATIC METHOD SQLFreeEnv(henv AS IntPtr) AS SHORTINT PASCAL
+
+
+        [DllImport("user32.dll", CharSet := CharSet.Auto, SetLastError := TRUE)] ;
+		INTERNAL STATIC METHOD FindWindow(lpClassName AS STRING , lpWindowName AS STRING ) AS IntPtr
+
+
+        [DllImport("user32.dll", CharSet := CharSet.Auto, SetLastError := TRUE)] ;
+        INTERNAL STATIC METHOD SetParent( hWndChild AS IntPtr, hWndNewParent AS IntPtr) AS IntPtr 
+
 
 
     END CLASS

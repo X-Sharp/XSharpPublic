@@ -332,6 +332,24 @@ CLASS XSharp.RuntimeState
         GET GetValue<LOGIC>(Set.Deleted);
         SET SetValue<LOGIC>(Set.Deleted, value)
 
+	/// <summary>Name of the RDD uses for DELIM operations.</summary>
+    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
+    STATIC PROPERTY DelimRDD AS STRING ;
+        GET GetValue<STRING>(Set.DelimRDD);
+        SET SetValue<STRING>(Set.DelimRDD, value)
+
+	/// <summary>Field delimiters for DELIM operations.</summary>
+    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
+    STATIC PROPERTY FieldDelimiter AS STRING ;
+        GET GetValue<STRING>(Set.FieldDelimiter);
+        SET SetValue<STRING>(Set.FieldDelimiter, value)
+
+	/// <summary>String delimiters for DELIM operations.</summary>
+    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
+    STATIC PROPERTY StringDelimiter AS STRING ;
+        GET GetValue<STRING>(Set.Delimiters);
+        SET SetValue<STRING>(Set.Delimiters, value)
+
 	/// <summary>The default number of digits for new FLOAT values that are created without explicit decimals</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
     /// <seealso cref="M:XSharp.Core.Functions.SetDigit" />

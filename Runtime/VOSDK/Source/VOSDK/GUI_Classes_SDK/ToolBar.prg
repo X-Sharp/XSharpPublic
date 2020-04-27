@@ -916,7 +916,7 @@ METHOD Create()
 				dwRebarStyle := _OR(LONGINT(dwRebarStyle), CCS_NODIVIDER)
 			ENDIF
 
-			hWnd := CreateWindowEx(WS_EX_TOOLWINDOW, PSZ(_CAST, "ReBarWindow32"), PSZ(_CAST, "Toolbar"),;
+			hWnd := CreateWindowEx(WS_EX_TOOLWINDOW, String2Psz( "ReBarWindow32"), String2Psz( "Toolbar"),;
 				dwRebarStyle, 0, 0, 400, 30, SELF:Owner:Handle(), PTR(_CAST, 13001), _GetInst(), 0)
 
 			IF hWnd != NULL_PTR

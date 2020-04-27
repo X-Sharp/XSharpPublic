@@ -182,38 +182,38 @@ METHOD __GetItemWidth(symItemName AS SYMBOL) AS DWORD STRICT
 		// are to be used in each StatusBarItem in the correct quantity
 		DO CASE
 		CASE symItemName == #InsArea
-			IF GetTextExtentPoint32(_hDC, PSZ(_CAST, "INS"), 3, @strucSize1)
+			IF GetTextExtentPoint32(_hDC, String2Psz( "INS"), 3, @strucSize1)
 				dwReturnValue := DWORD(strucSize1:cx)
 			ENDIF
 
 		CASE symItemName == #CapsLockArea
-			IF GetTextExtentPoint32(_hDC, PSZ(_CAST, "CAPS"), 4, @strucSize1)
+			IF GetTextExtentPoint32(_hDC, String2Psz( "CAPS"), 4, @strucSize1)
 				dwReturnValue := DWORD(strucSize1:cx)
 			ENDIF
 
 		CASE symItemName == #NumLockArea
-			IF GetTextExtentPoint32(_hDC, PSZ(_CAST, "NUM"), 3, @strucSize1)
+			IF GetTextExtentPoint32(_hDC, String2Psz("NUM"), 3, @strucSize1)
 				dwReturnValue := DWORD(strucSize1:cx)
 			ENDIF
 
 		CASE symItemName == #ScrollLockArea
-			IF GetTextExtentPoint32(_hDC, PSZ(_CAST, "SCROLL"), 6, @strucSize1)
+			IF GetTextExtentPoint32(_hDC, String2Psz( "SCROLL"), 6, @strucSize1)
 				dwReturnValue := DWORD(strucSize1:cx)
 			ENDIF
 
 		CASE symItemName == #MemoryArea
-			IF GetTextExtentPoint32(_hDC, PSZ(_CAST, "8"), 1, @strucSize1) .AND. ;
-				GetTextExtentPoint32(_hDC, PSZ(_CAST, " K"), 2, @strucSize2)
+			IF GetTextExtentPoint32(_hDC, String2Psz( "8"), 1, @strucSize1) .AND. ;
+				GetTextExtentPoint32(_hDC, String2Psz(" K"), 2, @strucSize2)
 				dwReturnValue := DWORD(strucSize1:cx * 9 + strucSize2:cx)
 			ENDIF
 
 		CASE symItemName == #MessageArea
-			IF GetTextExtentPoint32(_hDC, PSZ(_CAST, "M"), 1, @strucSize1)
+			IF GetTextExtentPoint32(_hDC, String2Psz( "M"), 1, @strucSize1)
 				dwReturnValue := DWORD(strucSize1:cx * SBMINMESSAGE)
 			ENDIF
 
 		CASE symItemName == #PositionArea
-			IF GetTextExtentPoint32(_hDC, PSZ(_CAST, "8"), 1, @strucSize1)
+			IF GetTextExtentPoint32(_hDC, String2Psz( "8"), 1, @strucSize1)
 				dwReturnValue := DWORD(strucSize1:cx * 10)
 			ENDIF
 

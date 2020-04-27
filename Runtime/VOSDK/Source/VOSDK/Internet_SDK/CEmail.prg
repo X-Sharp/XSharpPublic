@@ -1,4 +1,4 @@
-﻿CLASS CEmail INHERIT CMessage
+CLASS CEmail INHERIT CMessage
 
 	PROTECT aDestList       AS ARRAY
 	PROTECT aCCList         AS ARRAY
@@ -121,7 +121,7 @@ METHOD __GetContentInfo(cPart AS STRING) AS DWORD STRICT
     SELF:cContentType := cTemp
     //RvdH 070125 Save charset, SE-070406
     SELF:cCharSet :=  __GetToken(cTemp, TEMP_CHARSET, ";", TRUE)
-    SELF:cCharSet := StrTran (SELF:cCharSet, '"')	// added this line KB 20-5-2010 because sometimes the charset is between quotes
+    SELF:cCharSet := StrTran (SELF:cCharSet, e"\"")	// added this line KB 20-5-2010 because sometimes the charset is between quotes
 
     cContent := Lower(__GetToken(cTemp, NULL_STRING, ";", TRUE))
     IF cContent = CONTENT_MULTIPART

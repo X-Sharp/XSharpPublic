@@ -518,13 +518,13 @@ CONSTRUCTOR(oOwner)
 	SUPER(oOwner)
 	
 	IF __WCRegisterShellWindow(_GetInst())
-		hWnd := CreateWindowEx (0, PSZ(_CAST, __WCShellWindowClass), PSZ(_CAST," "),;
+		hWnd := CreateWindowEx (0, PSZ(_CAST, __WCShellWindowClass), String2Psz(" "),;
 			_OR(WS_OverlappedWindow,WS_CLIPCHILDREN),;
 			CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, 0, 0, _GetInst(), ptrSelfPtr)
 		
 		strucClientCreate:idFirstChild := __WCMdiFirstChildID
 		
-		hwndClient := CreateWindowEx(WS_EX_CLIENTEDGE, PSZ(_CAST,"MDICLIENT"), NULL_PTR,;
+		hwndClient := CreateWindowEx(WS_EX_CLIENTEDGE, String2Psz("MDICLIENT"), NULL_PTR,;
 			_OR(WS_CHILD,WS_CLIPCHILDREN,WS_CLIPSIBLINGS,MDIS_AllChildStyles),;
 			0, 0, 0, 0, hWnd, 0x2000, _GetInst(), @strucClientCreate)
 		
@@ -632,7 +632,7 @@ STATIC FUNCTION __WCRegisterShellWindow(hInst AS PTR) AS LOGIC
 		wc:hIcon := LoadIcon(0, IDI_APPLICATION)
 		wc:hCursor := LoadCursor(0, IDC_ARROW)
 		wc:hbrBackground := (COLOR_3DFACE+1) //(COLOR_WINDOW + 1)
-		wc:lpszClassName := PSZ(_CAST,__WCShellWindowClass)
+		wc:lpszClassName := String2Psz(__WCShellWindowClass)
 		wc:cbWndExtra := 12
 		
 		lretVal := (RegisterClass(@wc)!=0)

@@ -275,7 +275,7 @@ ACCESS FileCount
 	//elseif uMsg==WM_DropFiles
 
 	IF (uMsg == WM_DROPFILES) .AND. __LoadShellDll()
-		RETURN PCALL(gpfnDragQueryFile, wParam, 0Xffffffff, NULL_PSZ, 0)
+		RETURN DragQueryFile( wParam, 0Xffffffff, NULL_PSZ, 0)
 	ENDIF
 
 	RETURN 0
@@ -294,10 +294,10 @@ METHOD FileName(nfile)
 	nfile--
 
 	IF ((uMsg == WM_DROPFILES) .OR. ((uMsg == WM_QUERYDROPOBJECT) .AND. (wParam != 0))) .AND. __LoadShellDll()
-		dwSize := PCALL(gpfnDragQueryFile, PTR(_CAST, wParam), nfile, NULL_PSZ, 0) + 1
+		dwSize := DragQueryFile( PTR(_CAST, wParam), nfile, NULL_PSZ, 0) + 1
 		IF (dwSize > 0)
 			pszBuf := MemAlloc(dwSize)
-			PCALL(gpfnDragQueryFile, PTR(_CAST, wParam), nfile, pszBuf, dwSize)
+			DragQueryFile( PTR(_CAST, wParam), nfile, pszBuf, dwSize)
 			cBuf := Psz2String(pszBuf)
 			MemFree(pszBuf)
 		ENDIF

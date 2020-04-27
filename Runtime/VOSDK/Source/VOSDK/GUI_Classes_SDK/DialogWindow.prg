@@ -606,10 +606,7 @@ METHOD ShowModal(lActive)
 	
 END CLASS
 
-_DLL FUNCTION CreateDialogParamW(hInstance AS PTR, lpTemplateName AS PSZ,;
-		hWndParent AS PTR, lpDialogFunc AS PTR,;
-		dwInitParam AS LONG) AS PTR PASCAL:USER32.CreateDialogParamW
-	
+
 #ifdef __VULCAN__
    DELEGATE __SetChildFontProcDelegate( hWnd AS PTR, lParam AS LONGINT ) AS LOGIC
 #endif	

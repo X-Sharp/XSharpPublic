@@ -37,6 +37,8 @@ namespace XSharp.Project
         private Dialect dialect;
         private bool vulcanCompatibleResources;
         private bool noWin32Manifest;
+        private bool usenativeversion;
+
         #endregion Fields
 
         #region Constants
@@ -47,6 +49,9 @@ namespace XSharp.Project
         internal const string captWin32Manifest = "Suppress default Win32 manifest";
         internal const string descWin32Manifest = "Suppress default Win32 manifest. You will have to supply your own Win32 manifest if you suppress the default one. (/nowin32manifest)";
         internal const string catResources = "Resources";
+        internal const string UseNativeVersionCaption = "Prefer native resource over managed resource";
+        internal const string UseNativeVersionDescription = "When your application includes a native resource, use this native resource and do not generate a resource based on the global assembly properties such as AssemblyTitle, AssemblyVersion etc (/usenativeversion)";
+
         #endregion
 
         #region Constructors
@@ -128,6 +133,14 @@ namespace XSharp.Project
             get { return this.noWin32Manifest; }
             set { this.noWin32Manifest = value; this.IsDirty = true; }
         }
+        [Category(catResources), DisplayName(UseNativeVersionCaption), Description(UseNativeVersionDescription)]
+
+        public bool UseNativeVersion
+        {
+            get { return this.usenativeversion; }
+            set { this.usenativeversion = value; this.IsDirty = true; }
+        }
+
 
 
         [ResourcesCategory(Resources.Application)]
@@ -262,6 +275,8 @@ namespace XSharp.Project
             this.applicationIcon = this.ProjectMgr.GetProjectProperty(nameof(ApplicationIcon), false);
             this.vulcanCompatibleResources = getCfgLogic(nameof(VulcanCompatibleResources), false);
             this.noWin32Manifest = getCfgLogic(nameof(NoWin32Manifest), false);
+            usenativeversion = getPrjLogic(nameof(UseNativeVersion), false);
+
             if (outputType != null && outputType.Length > 0)
             {
                 try
@@ -324,6 +339,8 @@ namespace XSharp.Project
             this.ProjectMgr.SetProjectProperty(nameof(Dialect), this.dialect.ToString());
             this.ProjectMgr.SetProjectProperty(nameof(VulcanCompatibleResources), this.vulcanCompatibleResources.ToString());
             this.ProjectMgr.SetProjectProperty(nameof(NoWin32Manifest), this.noWin32Manifest.ToString());
+            this.ProjectMgr.SetProjectProperty(nameof(UseNativeVersion), this.usenativeversion.ToString().ToLower());
+
             // reset properties for projectnode
             ((XSharpProjectNode)this.ProjectMgr).OutputFile = null;
             ((XSharpProjectNode)this.ProjectMgr).RootNameSpace = this.rootNamespace;

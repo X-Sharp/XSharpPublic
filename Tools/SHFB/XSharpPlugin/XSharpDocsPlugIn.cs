@@ -39,8 +39,8 @@ namespace XSharpDocs
     /// Plug-ins are singletons in nature.  The composition container will create instances as needed and will
     /// dispose of them when the container is disposed of.</remarks>
     [HelpFileBuilderPlugInExport("XSharp Function Output", IsConfigurable = false,
-      Version = "2020.01.28", Copyright = "Copyright © XSharp BV 2015-2020",
-      Description = "This plug-in is used to convert the documentation for X# functions from static methods in the functions class to 'normal' function documentation.")]
+    Version = XSharp.Constants.ProductVersion, Copyright = XSharp.Constants.Copyright,
+        Description = "This plug-in is used to convert the documentation for X# functions from static methods in the functions class to 'normal' function documentation.")]
 
     public sealed class XSharpDocsPlugIn : IPlugIn
     {

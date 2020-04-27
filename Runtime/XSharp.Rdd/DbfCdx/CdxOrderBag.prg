@@ -122,6 +122,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 // rewrite the taglist
                 SELF:_tagList:Remove(oParam)
                 // We do not Delete the pages from the tag. Comix also does not do that
+                IF SELF:_tagList:Tags:Count == 0
+                    SELF:_oRdd:_indexList:_CloseBag(SELF)
+                ENDIF
             ENDIF
             RETURN found
 
@@ -252,6 +255,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF ! SELF:_PageList:Flush(FALSE)
                 lOk := FALSE
             ENDIF
+            FConvertToFileStream(SELF:_hFile)
             IF ! FClose(SELF:_hFile)
                 lOk := FALSE
             ENDIF

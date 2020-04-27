@@ -52,7 +52,7 @@ FUNCTION GetDefault() AS STRING
 	
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/getdefaultdir/*" />
 FUNCTION GetDefaultDir() AS STRING
-	GETSTATE STRING Set.Default 
+	GETSTATE STRING Set.DefaultDir
 	
 	
 /// <summary>This function is not implemented yet</summary>

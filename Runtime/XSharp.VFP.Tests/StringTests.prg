@@ -105,20 +105,20 @@ BEGIN NAMESPACE XSharp.VFP.Tests
 
 		[Fact, Trait("Category", "String")];
 		METHOD At_Tests() AS VOID
-            Assert.Equal(9 , At("b", "abucabucbba", 3 )  )
-            Assert.Equal(6 , At("bu", "abucabucbba", 2 ) )
-            Assert.Equal(2 , At("bu", "abucabucbba", 1 ) )
-            Assert.Equal(0 , At("bu", "abucabucbba", 12 ))
+            Assert.Equal(9u , At("b", "abucabucbba", 3 )  )
+            Assert.Equal(6u , At("bu", "abucabucbba", 2 ) )
+            Assert.Equal(2u , At("bu", "abucabucbba", 1 ) )
+            Assert.Equal(0u , At("bu", "abucabucbba", 12 ))
             
-            Assert.Equal(9 , AtC("B", "abucabucbba", 3 )  )
-            Assert.Equal(6 , AtC("Bu", "abucabucbba", 2 ) )
-            Assert.Equal(2 , AtC("Bu", "abucabucbba", 1 ) )
-            Assert.Equal(0 , AtC("Bu", "abucabucbba", 12 ))
+            Assert.Equal(9u , AtC("B", "abucabucbba", 3 )  )
+            Assert.Equal(6u , AtC("Bu", "abucabucbba", 2 ) )
+            Assert.Equal(2u , AtC("Bu", "abucabucbba", 1 ) )
+            Assert.Equal(0u , AtC("Bu", "abucabucbba", 12 ))
             
-            Assert.Equal(0 , At("B", "abucabucbba", 2 ) )
-            Assert.Equal(0 , At("Bu", "abucabucbba", 2 ) )
-            Assert.Equal(0 , At("Bu", "abucabucbba", 1 ) )
-            Assert.Equal(0 , At("Bu", "abucabucbba", 12 ))
+            Assert.Equal(0u , At("B", "abucabucbba", 2 ) )
+            Assert.Equal(0u , At("Bu", "abucabucbba", 2 ) )
+            Assert.Equal(0u , At("Bu", "abucabucbba", 1 ) )
+            Assert.Equal(0u , At("Bu", "abucabucbba", 12 ))
 
 	END CLASS
 

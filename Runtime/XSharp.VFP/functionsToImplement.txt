@@ -98,7 +98,7 @@ DEFAULTEXT( )
 DESCENDING( )
 DIFFERENCE( )
 DisplayPath( )
-DMY( )
+DMY( )              // implemented
 DODEFAULT( )
 DRIVETYPE( )
 DROPOFFLINE( )
@@ -155,7 +155,7 @@ LOCK( )
 LOOKUP( )
 MAKETRANSACTABLE( )
 MDX( )              // needs testing
-MDY( )
+MDY( )              // implemented    
 MESSAGEBOX( )	    // implemented
 NDX( )              // needs testing
 NEWOBJECT( )

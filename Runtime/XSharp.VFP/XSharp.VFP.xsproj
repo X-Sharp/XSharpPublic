@@ -86,6 +86,7 @@
     <Compile Include="Classes\Custom.prg" />
     <Compile Include="Classes\Abstract.prg" />
     <Compile Include="ClassFunctions.prg" />
+    <Compile Include="BitFunctions.prg" />
     <Compile Include="Cursors\DbFunctions.prg" />
     <Compile Include="Cursors\CursorEnums.prg" />
     <Compile Include="Database\DatabaseEnums.prg" />

@@ -57,7 +57,7 @@ AMEMBERS( )
 ANETRESOURCES( )
 APRINTERS( )
 ASESSIONS( )
-ASQLHANDLES( )
+ASQLHANDLES( )	// implemented
 ASTACKINFO( )
 ASUBSCRIPT( )
 AT_C( )
@@ -156,7 +156,7 @@ LOOKUP( )
 MAKETRANSACTABLE( )
 MDX( )              // needs testing
 MDY( )
-MESSAGEBOX( )
+MESSAGEBOX( )	    // implemented
 NDX( )              // needs testing
 NEWOBJECT( )
 NORMALIZE( )
@@ -182,25 +182,23 @@ REQUERY( )
 RGBSCHEME( )
 SAVEPICTURE( )
 SCHEME( )
-
 SEEK( )
-SELECT( )
 SETFLDSTATE( )
 SETRESULTSET( )
-SQLCANCEL( )
-SQLCOLUMNS( )
-SQLCOMMIT( )
-SQLCONNECT( )
-SQLDISCONNECT( )
-SQLEXEC( )
-SQLGETPROP( )
+SQLCANCEL( )	// implemented
+SQLCOLUMNS( )	// implemented
+SQLCOMMIT( )	// implemented
+SQLCONNECT( )	// implemented
+SQLDISCONNECT( )	// implemented
+SQLEXEC( )	// implemented
+SQLGETPROP( )	// implemented
 SQLIDLEDISCONNECT( )
-SQLMORERESULTS( )
-SQLPREPARE( )
-SQLROLLBACK( )
-SQLSETPROP( )
-SQLSTRINGCONNECT( )
-SQLTABLES( )
+SQLMORERESULTS( )	// implemented
+SQLPREPARE( )	// implemented
+SQLROLLBACK( )	// implemented
+SQLSETPROP( )	// implemented
+SQLSTRINGCONNECT( )	// implemented
+SQLTABLES( )	// implemented
 STRCONV( )
 STREXTRACT( )
 STRTOFILE( )

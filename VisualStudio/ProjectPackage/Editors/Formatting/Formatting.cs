@@ -1581,7 +1581,7 @@ namespace XSharp.Project
                 set
                 {
                     currentIndex = value;
-                    if (currentIndex < allTokens.Count)
+                    if (currentIndex < allTokens.Count && currentIndex >= 0)
                         currentPosition = allTokens[currentIndex].StartIndex;
                     else
                         currentPosition = -1;

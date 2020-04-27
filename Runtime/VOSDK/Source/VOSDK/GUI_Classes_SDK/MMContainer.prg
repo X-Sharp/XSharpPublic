@@ -133,7 +133,7 @@ ASSIGN FileName(sNewVal)
 				SELF:__ResizeMCIWnd()
 			ENDIF
 		ELSE
-			MessageBox(0, String2Psz("MultiMedia File "+sNewVal+" does not exist!"), PSZ(_CAST, "Warning"), 0)
+			MessageBox(0, String2Psz("MultiMedia File "+sNewVal+" does not exist!"), String2Psz("Warning"), 0)
 		ENDIF
 	ENDIF
 

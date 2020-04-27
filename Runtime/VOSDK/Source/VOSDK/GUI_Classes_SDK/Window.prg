@@ -1306,7 +1306,7 @@ METHOD __UpdateTrayIcon(dwNIM,oTrayIcon,dwID,sToolTip)
         NID:szTip[dwTipLength] := 0
     ENDIF
     
-    RETURN PCALL(gpfnShell_NotifyIcon, DWORD(dwNIM), @NID)
+    RETURN Shell_NotifyIcon( DWORD(dwNIM), @NID)
     
     
 ACCESS Accelerator 
@@ -1825,7 +1825,7 @@ METHOD DeleteTrayIcon(dwID)
     NID:hWnd := SELF:handle()
     NID:uID := dwID
     
-    RETURN PCALL(gpfnShell_NotifyIcon, NIM_DELETE, @NID)
+    RETURN Shell_NotifyIcon( NIM_DELETE, @NID)
     
     
 METHOD Destroy() 
@@ -3357,7 +3357,7 @@ METHOD ShowBalloonTrayTip(oTrayIcon,dwID,sHeading,sToolTip,dwTimeOut,dwInfo)
     IF GetShellMajorVersion() >= 5
         nId:cbSize           := SizeOfNotifyIconData()
         nid:uTimeoutVersion:uTimeout := NOTIFYICON_VERSION
-        PCALL(gpfnShell_NotifyIcon, NIM_SETVERSION, @NID)
+        Shell_NotifyIcon( NIM_SETVERSION, @NID)
         
         nId:hWnd := SELF:handle()
         NID:uID := dwId
@@ -3388,7 +3388,7 @@ METHOD ShowBalloonTrayTip(oTrayIcon,dwID,sHeading,sToolTip,dwTimeOut,dwInfo)
             NID:szInfoTitle[64] := 0
         ENDIF
         
-        uReturn := PCALL(gpfnShell_NotifyIcon, NIM_MODIFY, @NID)
+        uReturn := Shell_NotifyIcon( NIM_MODIFY, @NID)
     ENDIF
     
     RETURN uReturn
@@ -3749,6 +3749,7 @@ ACCESS WindowArea
     RETURN BoundingBox{oPoint, oDimension}
     END CLASS
     
+/// <exclude/>
 _DLL FUNCTION AnimateWindow(HWND AS PTR, dwTime AS DWORD, dwFlags AS DWORD) AS LOGIC PASCAL:User32.AnimateWindow
 
 

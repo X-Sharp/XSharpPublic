@@ -64,4 +64,3 @@ ACCESS Value
 	RETURN sBuffer
 
 END CLASS
-

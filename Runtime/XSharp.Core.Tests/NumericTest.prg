@@ -22,7 +22,7 @@ BEGIN NAMESPACE XSharp.Core.Tests
 
 		[Fact, Trait("Category", "Numeric")];
 		METHOD DW2BINTest() AS VOID
-			Assert.Equal("    ",DW2Bin((DWORD) 32*256*256*256+32*256*256+32*256+32))
+			Assert.Equal("    ",DW2Bin(32*256*256*256+32*256*256+32*256+32))
 		RETURN
 
 		[Fact, Trait("Category", "Numeric")];

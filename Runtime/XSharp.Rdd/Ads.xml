@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<functions>
+  <ads>
+  <summary>See the ADS documentation for more information about this function.</summary>
+    <remarks>This function calls the method with the same name in the Avantage Client Engine.</remarks>
+    <returns>All methods in the Advantage Client Engine return either 0 for success or an error code. 
+    Most of the error numbers are defined in the AceError enumeration. 
+    You can call AdsGetLastError() to retrieve the message for the error code.</returns>
+    <seealso cref='T:XSharp.ADS.AceError'>AceError Enumeration</seealso>
+    <seealso cref='O:XSharp.RDD.Functions.AdsGetLastError'>AdsGetLastError Function</seealso>
+  </ads>
+</functions>
+

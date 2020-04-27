@@ -4,7 +4,7 @@
 // See License.txt in the project root for license information.
 //
 
-#using System.Windows.Forms
+using System.Windows.Forms
 
 #define MB_TOPMOST 0x40000
 
@@ -103,6 +103,7 @@ FUNCTION _wait( uValuePrompt AS STRING ) AS STRING
    END TRY
 
    RETURN retval
+   
 /// <exclude/>
 FUNCTION DoEvents() AS VOID
     System.Windows.Forms.Application.DoEvents()

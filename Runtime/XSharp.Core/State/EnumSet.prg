@@ -47,7 +47,7 @@ BEGIN NAMESPACE XSharp
         MEMBER Intensity   := 31		// LOGIC
         MEMBER Scoreboard  := 32		// LOGIC
         MEMBER Delimiters  := 33		// STRING
-        MEMBER DelimChars  := 34		// STRING
+        MEMBER DelimChars  := 34		// STRING   // note: used for @ Say .. GET in Clipper
         MEMBER Wrap        := 35		// LOGIC
         MEMBER Message     := 36		// INT
         MEMBER Mcenter     := 37		// LOGIC
@@ -74,8 +74,9 @@ BEGIN NAMESPACE XSharp
         MEMBER Math			:= 57	// INT
         MEMBER International:= 58	// STRING
         MEMBER DateCountry  := 59	// INT
+        MEMBER DefaultDir   := 60  // STRING
 
-        // 60 - 69 unused
+        // 61 - 69 unused
 
         // X# helper state
         MEMBER EpochCent     := 70		// Numeric
@@ -96,7 +97,11 @@ BEGIN NAMESPACE XSharp
         MEMBER FileError    := 87   // Last File error code
         MEMBER FileException:= 88   // Last File exception
 
-        // 89 - 97 unused
+        MEMBER DelimRDD         := 89
+        MEMBER FieldDelimiter   := 90
+        MEMBER RecordDelimiter  := 91
+
+        // 92 - 97 unused
         MEMBER Dict        := 98	// LOGIC
         MEMBER Intl        := 99	// CollationMode
 
@@ -312,6 +317,19 @@ DEFINE _SET_DATECOUNTRY		:= Set.DateCountry
 DEFINE _SET_DICT			:= Set.Dict			
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
 DEFINE _SET_INTL			:= Set.Intl		
+
+/// <include file="CoreComments.xml" path="Comments/Set/*" />
+DEFINE _SET_DEFAULTDIR      := Set.DefaultDir
+
+
+
+/// <include file="CoreComments.xml" path="Comments/Set/*" />
+DEFINE _SET_DELIMRDD         := Set.DelimRDD       
+/// <include file="CoreComments.xml" path="Comments/Set/*" />
+DEFINE _SET_FIELDDELIMITER   := Set.FieldDelimiter 
+/// <include file="CoreComments.xml" path="Comments/Set/*" />
+DEFINE _SET_RECORDDELIMITER  := Set.RecordDelimiter
+
 
 /// <include file="CoreComments.xml" path="Comments/Set/*" />
 DEFINE _SET_BLOB_CIRCULAR_ARRAY_REF := Set.BlobCircref
@@ -558,12 +576,10 @@ INTERNAL FUNCTION RuntimeStateDefaultValue(nSet AS XSharp.Set) AS OBJECT
 
         CASE Set.Hboutloginfo
         CASE Set.Path        	
-        CASE Set.Default	 	
         CASE Set.AltFile     	
         CASE Set.Device      	
         CASE Set.ExtraFile   	
         CASE Set.PrintFile   	
-        CASE Set.Delimiters  	
         CASE Set.DelimChars  	
         CASE Set.AmExt		
         CASE Set.PmExt	    
@@ -578,7 +594,9 @@ INTERNAL FUNCTION RuntimeStateDefaultValue(nSet AS XSharp.Set) AS OBJECT
         CASE Set.Language
         CASE Set.Timeformat
             RETURN String.Empty
-
+        CASE Set.Default
+        CASE Set.DefaultDir
+            RETURN System.Environment.CurrentDirectory
 
         CASE Set.DirSeparator
             RETURN System.IO.Path.DirectorySeparatorChar:ToString()
@@ -607,7 +625,7 @@ INTERNAL FUNCTION RuntimeStateDefaultValue(nSet AS XSharp.Set) AS OBJECT
              RETURN 10U         
 
         CASE Set.MemoBlockSize
-            RETURN 32U
+            RETURN (WORD) 32
 
         CASE Set.Epoch       
         CASE Set.EpochCent   
@@ -632,6 +650,18 @@ INTERNAL FUNCTION RuntimeStateDefaultValue(nSet AS XSharp.Set) AS OBJECT
 
         CASE Set.WinCodepage
             RETURN 1250L
+
+        CASE Set.FieldDelimiter
+            RETURN ","
+
+        CASE Set.Delimiters
+            RETURN e"\""
+
+        CASE Set.RecordDelimiter
+            RETURN CRLF
+
+        CASE Set.DelimRDD
+            RETURN "DELIM"
 
         // 180 - 197 Harbour extensions, no value yet
 //        MEMBER FILECASE       :=  182			

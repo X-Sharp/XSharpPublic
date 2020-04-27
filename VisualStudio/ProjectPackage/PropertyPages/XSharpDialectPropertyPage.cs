@@ -178,7 +178,7 @@ namespace XSharp.Project
         public bool VO11
         {
             get { return this.vo11; }
-            //set { this.vo11 = value; this.IsDirty = true; }
+            set { this.vo11 = value; this.IsDirty = true; }
         }
 
         [Category(CatNotCore),DisplayName(VO12Caption), Description(VO12Description)]

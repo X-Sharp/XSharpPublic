@@ -44,6 +44,12 @@ BEGIN NAMESPACE XSharp.RDD
             RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "DBFFPT",  "XSharp.RDD.DBFFPT"})       // DBF + FPT
             RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "DBFCDX",  "XSharp.RDD.DBFCDX"})       // DBF + FPT + CDX
             RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "DBFVFP",  "XSharp.RDD.DBFVFP"})       // DBF + FPT + CDX + VFP fields
+            RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "DBFVFPSQL","XSharp.RDD.DBFVFPSQL"})       // DBF + FPT + CDX + VFP fields
+            RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "DELIM",   "XSharp.RDD.DELIM"})         // DELIM
+            RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "SDF",     "XSharp.RDD.SDF"})           // SDF
+            RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "TSV",     "XSharp.RDD.TSV"})           // TSV = tab separated
+            RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "CSV",     "XSharp.RDD.CSV"})           // CSV = semi colon separated
+
             //RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "DBFMEMO", "XSharp.RDD.DBFMEMO"})      // DBF + NTX + DBV
             //RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "DBFBLOB", "XSharp.RDD.DBFBLOB"})      // DBV only
             //RegisteredRDD.Add( RegisteredRDD{XSHARPRDD, "DBFSMT",  "XSharp.RDD.DBFSMT"})       // DBF + SMT

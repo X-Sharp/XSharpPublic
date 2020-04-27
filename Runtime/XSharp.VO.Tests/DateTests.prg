@@ -300,8 +300,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
 		METHOD DateFunctionTest() AS VOID
             LOCAL dwToDay AS DWORD
 			Assert.Equal(DATE(), Today())
-			Assert.Equal(DATE(2010,3,4), Condate(2010,3,4))
-            dwToday := DWORD(_CAST , ToDay())
+			Assert.Equal(DATE(2010,3,4), ConDate(2010,3,4))
+            dwToday := DWORD(_CAST , Today())
 			Assert.Equal(DATE(dwToDay), Today())
 
             Assert.Equal(DateTime(), DateTime.Now)
@@ -312,10 +312,10 @@ BEGIN NAMESPACE XSharp.VO.Tests
             RETURN
 		[Fact, Trait("Category", "Date")];
 		METHOD OperatorTest() AS VOID
-			local d1 as Date
-            local d2 as Date
-            local u as usual
-            local f as float
+			LOCAL d1 AS DATE
+            LOCAL d2 AS DATE
+            LOCAL u AS USUAL
+            LOCAL f AS FLOAT
             d1 := 2020.02.01
             d2 := 2020.01.01
             Assert.Equal(31, d1 - d2)
@@ -335,9 +335,41 @@ BEGIN NAMESPACE XSharp.VO.Tests
             Assert.Equal((DATE) 2020.01.31, (DATE) (d2 - u))
             u := 2020.01.01
             Assert.Equal(31 , (INT) (d2 - u))
-            
-
 		RETURN
+
+		[Fact, Trait("Category", "Date")];
+		METHOD DateAddTests() AS VOID
+			LOCAL d AS DATE
+			LOCAL dw AS DWORD
+			LOCAL n AS INT
+			LOCAL uw AS UInt64
+			LOCAL u AS USUAL
+			
+            d := 2020.11.10
+            dw := 1
+            d := d + dw
+            Assert.Equal(2020.11.11, d)
+            d := d - dw
+            Assert.Equal(2020.11.10, d)
+            
+            n := 2
+            d := d + n
+            Assert.Equal(2020.11.12, d)
+            d := d - n
+            Assert.Equal(2020.11.10, d)
+            
+            uw := 3
+            d := d + uw
+            Assert.Equal(2020.11.13, d)
+            d := d - uw
+            Assert.Equal(2020.11.10, d)
+            
+            u := 4
+            d := d + u
+            Assert.Equal(2020.11.14, d)
+            d := d - u
+            Assert.Equal(2020.11.10, d)
+        RETURN
 
 	END CLASS
 END NAMESPACE // XSharp.Runtime.Tests

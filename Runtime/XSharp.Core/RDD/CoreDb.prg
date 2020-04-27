@@ -133,15 +133,19 @@ CLASS XSharp.CoreDb
         info:Destination := oDest
         IF CoreDb.BuildTrans( info, fldNames, oRdd, oDest )
             info:Flags |= DbTransInfoFlags.SameStructure
-            LOCAL oCanPutRec AS OBJECT
-            oCanPutRec := oRdd:Info(DbInfo.DBI_CANPUTREC, NULL)
-            IF oCanPutRec IS LOGIC .AND. (LOGIC) oCanPutRec 
-                info:Flags |= DbTransInfoFlags.CanPutRec
+            LOCAL oCanPutRecSource AS OBJECT
+            LOCAL oCanPutRecTarget AS OBJECT
+            oCanPutRecSource := oRdd:Info(DbInfo.DBI_CANPUTREC, NULL)
+            oCanPutRecTarget := oDest:Info(DbInfo.DBI_CANPUTREC, NULL)
+            IF oCanPutRecSource IS LOGIC .AND. oCanPutRecTarget IS LOGIC 
+                IF (LOGIC) oCanPutRecSource .and. (LOGIC) oCanPutRecTarget
+                    info:Flags |= DbTransInfoFlags.CanPutRec
+                ENDIF
             ENDIF
         ENDIF
         info:Scope:ForBlock     := uCobFor
         info:Scope:WhileBlock   := uCobWhile
-        IF nNext != NULL
+        IF nNext IS LONG
             TRY
                 info:Scope:NextCount := Convert.ToInt32(nNext)
             CATCH e AS Exception
@@ -151,7 +155,9 @@ CLASS XSharp.CoreDb
         ELSE
             info:Scope:NextCount := 0
         ENDIF
-        info:Scope:RecId := nRecno
+        IF nRecno IS LONG
+            info:Scope:RecId := nRecno
+        ENDIF
         info:Scope:Rest  := lRest     
         RETURN
         /// <exclude />   
@@ -1134,7 +1140,7 @@ CLASS XSharp.CoreDb
         scopeinfo:ForBlock := uCobFor
         scopeinfo:WhileBlock := uCobWhile
         scopeinfo:Rest:= lRest
-        scopeinfo:RecId := uRecId
+        scopeinfo:RecId := IIF(uRecId IS LONG, uRecId, NULL)
         scopeinfo:NextCount := nNext
         BEFOREMOVE 
         result := oRdd:SetScope(scopeinfo)

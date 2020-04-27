@@ -469,7 +469,7 @@ BEGIN NAMESPACE XSharp
 				ELSEIF days:IsNumeric
 					 RETURN SELF:Subtract( -(REAL8) days)
 				ELSEIF days:IsDate
-					 RETURN SELF:Subtract( (Date) days)
+					 RETURN SELF:Subtract( (DATE) days)
 				ELSE
 					THROW Error.ArgumentError(__ENTITY__,NAMEOF(days), 1, "Incompatible argument for Date:Subtract()", {days})
 				ENDIF
@@ -601,7 +601,7 @@ BEGIN NAMESPACE XSharp
 					RETURN RuntimeState.NullDateString
 				ENDIF
 				IF (s == NULL)
-					s := XSharp.RuntimeState.GetValue<String>(Set.DateFormatNet)
+					s := XSharp.RuntimeState.GetValue<STRING>(Set.DateFormatNet)
 				ENDIF
 				RETURN SELF:Value:ToString(s, fp)
 		#endregion

@@ -8,6 +8,8 @@ USING System.Runtime.InteropServices
 USING System.Runtime.CompilerServices
 USING System.Diagnostics
 
+
+
 BEGIN NAMESPACE XSharp
     // use explicit layout so we can compact the size into 12 bytes
     // Type is Immutable, so no settable properties
@@ -38,7 +40,7 @@ BEGIN NAMESPACE XSharp
             SELF:_decimals := -1
             
         /// <include file="RTComments.xml" path="Comments/Constructor/*" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)];        
+        [DebuggerStepThroughAttribute] [MethodImpl(MethodImplOptions.AggressiveInlining)];        
         CONSTRUCTOR (r8 AS REAL8, decimals AS INT)
             SELF:_value    := r8
             SELF:_length   := 0
@@ -127,16 +129,19 @@ BEGIN NAMESPACE XSharp
             
             
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
+        [DebuggerStepThroughAttribute];
         OPERATOR ==(lhs AS FLOAT, rhs AS FLOAT) AS LOGIC
             RETURN lhs:Equals(rhs)
             
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
+        [DebuggerStepThroughAttribute];
         OPERATOR !=(lhs AS FLOAT, rhs AS FLOAT) AS LOGIC
             RETURN ! lhs:Equals(rhs)
             #endregion
             
         #region Comparison Operators
         /// <include file="RTComments.xml" path="Comments/Operator/*" />
+        [DebuggerStepThroughAttribute];
         OPERATOR >(lhs AS FLOAT, rhs AS FLOAT) AS LOGIC
             LOCAL delta AS REAL8
             LOCAL diff  AS REAL8
@@ -149,6 +154,7 @@ BEGIN NAMESPACE XSharp
             
             
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
+        [DebuggerStepThroughAttribute];
         OPERATOR <(lhs AS FLOAT, rhs AS FLOAT) AS LOGIC
             LOCAL delta AS REAL8
             LOCAL diff  AS REAL8
@@ -160,12 +166,14 @@ BEGIN NAMESPACE XSharp
             RETURN diff < -delta
             
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
+        [DebuggerStepThroughAttribute];
         OPERATOR >=(lhs AS FLOAT, rhs AS FLOAT) AS LOGIC
             // call other operator methods for simplicity
             // we may want to optimize this later
             RETURN lhs > rhs .OR. lhs == rhs
             
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
+        [DebuggerStepThroughAttribute];
         OPERATOR <=(lhs AS FLOAT, rhs AS FLOAT) AS LOGIC
             // call other operator methods for simplicity
             // we may want to optimize this later
@@ -296,77 +304,94 @@ BEGIN NAMESPACE XSharp
             
         #region Numeric Operators
         /// <include file="RTComments.xml" path="Comments/Operator/*" />
+        [DebuggerStepThroughAttribute];
         OPERATOR +(fl  AS FLOAT) AS FLOAT
             RETURN fl
             
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
+        [DebuggerStepThroughAttribute];
         OPERATOR -(fl  AS FLOAT) AS FLOAT
             RETURN FLOAT{- fl:_value, fl:Digits, fl:Decimals}
             
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
+        [DebuggerStepThroughAttribute];
         OPERATOR+(lhs AS FLOAT, rhs AS FLOAT) AS FLOAT
             RETURN lhs:Add(rhs)
             
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
+        [DebuggerStepThroughAttribute];
         OPERATOR+(lhs AS FLOAT, rhs AS USUAL) AS FLOAT
             RETURN lhs:Add(rhs)
             
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
+        [DebuggerStepThroughAttribute];
         OPERATOR+(lhs AS USUAL, rhs AS FLOAT) AS FLOAT
             RETURN rhs:Add(lhs)
             
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
+        [DebuggerStepThroughAttribute];
         OPERATOR-(lhs AS FLOAT, rhs AS FLOAT) AS FLOAT
             RETURN lhs:Subtract(rhs)
             
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
+        [DebuggerStepThroughAttribute];
         OPERATOR-(lhs AS FLOAT, rhs AS USUAL) AS FLOAT
             RETURN lhs:Subtract(rhs)
             
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
+        [DebuggerStepThroughAttribute];
         OPERATOR-(lhs AS USUAL, rhs AS FLOAT) AS FLOAT
             // set decimals for LHS to 0, so max decmals is decimals right
             RETURN FLOAT{lhs, 0}:Subtract(rhs)		
             
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
+        [DebuggerStepThroughAttribute];
         OPERATOR*(lhs AS FLOAT, rhs AS FLOAT) AS FLOAT
             RETURN FLOAT{ lhs:_value * rhs:_value, lhs:Decimals + rhs:Decimals}
             
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
+        [DebuggerStepThroughAttribute];
         OPERATOR/(lhs AS FLOAT, rhs AS FLOAT) AS FLOAT
             RETURN FLOAT{ lhs:_value / rhs:_value, RuntimeState.Decimals}
             
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
+        [DebuggerStepThroughAttribute];
         OPERATOR%(lhs AS FLOAT, rhs AS FLOAT) AS FLOAT
             RETURN FLOAT{ lhs:_value % rhs:_value, RuntimeState.Decimals}
             
             #endregion
         #region Unary Operators
         /// <include file="RTComments.xml" path="Comments/Operator/*" />
+        [DebuggerStepThroughAttribute];
         OPERATOR ++ (fl  AS FLOAT) AS FLOAT
             RETURN FLOAT{fl:_value+1, fl:Digits, fl:Decimals}
             
             /// <include file="RTComments.xml" path="Comments/Operator/*" />
+        [DebuggerStepThroughAttribute];
         OPERATOR -- (fl  AS FLOAT) AS FLOAT
             RETURN FLOAT{fl:_value-1, fl:Digits, fl:Decimals}
             #endregion
             
         #region Explicit casts. Used inside Transform
         /// <exclude />	
+        [DebuggerStepThroughAttribute];
         METHOD CastToInt() AS INT
             RETURN (INT)(SELF:_value)
             
             /// <exclude />	
+        [DebuggerStepThroughAttribute];
         METHOD CastToInt64() AS INT64
             RETURN (INT64)(SELF:_value)
             
             #endregion
         #region Add and Subtract
         /// <exclude />	
+        [DebuggerStepThroughAttribute];
         METHOD Add(rhs AS FLOAT) AS FLOAT
             RETURN FLOAT{ SELF:_value + rhs:_value, Math.Max(SELF:_decimals, rhs:_decimals)}
             
             /// <exclude />	
+        [DebuggerStepThroughAttribute];
         METHOD Add(rhs AS USUAL) AS FLOAT
             LOCAL result AS FLOAT
             IF rhs:IsFloat
@@ -382,10 +407,12 @@ BEGIN NAMESPACE XSharp
             
             
             /// <exclude />	
+        [DebuggerStepThroughAttribute];
         METHOD Subtract(rhs AS FLOAT) AS FLOAT
             RETURN FLOAT{ SELF:_value - rhs:_value, Math.Max(SELF:_decimals, rhs:_decimals)}
             
             /// <exclude />	
+        [DebuggerStepThroughAttribute];
         METHOD Subtract(rhs AS USUAL) AS FLOAT
             LOCAL result AS FLOAT
             IF rhs:IsFloat
@@ -491,5 +518,5 @@ BEGIN NAMESPACE XSharp
             #endregion
             
     END STRUCTURE
-    
+     
 END NAMESPACE

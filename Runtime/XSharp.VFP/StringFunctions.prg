@@ -20,12 +20,12 @@ END CLASS
 
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/addbs/*" />
-/// <seealso cref='M:XSharp.VFP.Functions.DefaultExt(System.String)' />
-/// <seealso cref='M:XSharp.VFP.Functions.JustDrive(System.String)' />
-/// <seealso cref='M:XSharp.VFP.Functions.JustExt(System.String)' />
-/// <seealso cref='M:XSharp.VFP.Functions.JustFName(System.String)' />
-/// <seealso cref='M:XSharp.VFP.Functions.JustPath(System.String)' />
-/// <seealso cref='M:XSharp.VFP.Functions.JustStem(System.String)' />
+/// <seealso cref='O:XSharp.VFP.Functions.DefaultExt' />
+/// <seealso cref='O:XSharp.VFP.Functions.JustDrive' />
+/// <seealso cref='O:XSharp.VFP.Functions.JustExt' />
+/// <seealso cref='O:XSharp.VFP.Functions.JustFName' />
+/// <seealso cref='O:XSharp.VFP.Functions.JustPath' />
+/// <seealso cref='O:XSharp.VFP.Functions.JustStem' />
 FUNCTION AddBs (cPath AS STRING) AS STRING
     IF String.IsNullOrEmpty(cPath)
         RETURN ""

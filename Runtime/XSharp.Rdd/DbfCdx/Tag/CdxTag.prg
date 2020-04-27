@@ -199,7 +199,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             TRY
                 oKey := SELF:_oRdd:EvalBlock(SELF:_KeyCodeBlock)
             CATCH AS Exception
-                THROW
+                    THROW
             END TRY
             IF !evalOk
                 RETURN FALSE
@@ -216,7 +216,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDIF
 
             // If the Key Expression contains only a Field Name
-            SELF:_SingleField := SELF:_oRdd:FieldIndex(SELF:_KeyExpr) -1
+            
+            IF SELF:_oRdd IS DBFVFPSQL
+                SELF:_SingleField := -1
+            ELSE
+                SELF:_SingleField := SELF:_oRdd:FieldIndex(SELF:_KeyExpr) -1
+            ENDIF
             SELF:_SourceIndex := 0
             LOCAL isOk AS LOGIC
             IF SELF:_SingleField >= 0

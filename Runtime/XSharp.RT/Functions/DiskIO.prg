@@ -96,7 +96,7 @@ FUNCTION Directory(cFileSpec AS STRING, uAttributes := NIL AS USUAL) AS ARRAY
         local sPathSep as STRING
         sPathSep := System.IO.Path.DirectorySeparatorChar:ToString()
 	    IF System.IO.Directory.Exists(cFileSpec)
-            IF _AND( nAttr,FA_DIRECTORY ) != FA_DIRECTORY
+            IF _AND( nAttr,FA_DIRECTORY ) != (DWORD) FA_DIRECTORY
                 cFileSpec += sPathSep + "*.*"
             ENDIF
 	    ELSEIF cFileSpec:EndsWith(sPathSep)
@@ -122,7 +122,7 @@ FUNCTION Directory(cFileSpec AS STRING, uAttributes := NIL AS USUAL) AS ARRAY
 	
 	cFileMask := Path.GetFileName( cFileSpec )
 	LOCAL files AS STRING[]
-	IF _AND( nAttr,FA_DIRECTORY ) == FA_DIRECTORY
+	IF _AND( nAttr,FA_DIRECTORY ) == (DWORD) FA_DIRECTORY
 		DirectoryHelper.AddDirectoryInfo( aReturn, cFileSpec, nAttr , NULL)
     ENDIF
 	// File Info
@@ -142,7 +142,7 @@ FUNCTION Directory(cFileSpec AS STRING, uAttributes := NIL AS USUAL) AS ARRAY
 	
 	
 	// Directory info
-	IF _AND( nAttr, FA_DIRECTORY) == FA_DIRECTORY .AND. ( cFileSpec:Contains( "*" ) || cFileSpec:Contains( "?" ) )
+	IF _AND( nAttr, FA_DIRECTORY) == (DWORD) FA_DIRECTORY .AND. ( cFileSpec:Contains( "*" ) || cFileSpec:Contains( "?" ) )
 	    cPath := Path.GetDirectoryName( cFileSpec )
         VAR cName := Path.GetFileName( cFileSpec )
 		IF cPath != Path.GetPathRoot( cFileSpec ) .AND. ( cName == "*.*" || cName == "*" )
@@ -227,11 +227,11 @@ INTERNAL STATIC METHOD DecodeAttributes(attributes AS System.IO.FileAttributes, 
 		cAttribute += "R"
 	ENDIF
 	IF attributes:HasFlag(System.IO.FileAttributes.Hidden) 
-		lOk := lOk .AND. _AND(nAttr,FC_HIDDEN) == FC_HIDDEN
+		lOk := lOk .AND. _AND(nAttr,FC_HIDDEN) == (DWORD) FC_HIDDEN
 		cAttribute += "H"
 	ENDIF
 	IF attributes:HasFlag(System.IO.FileAttributes.System) 
-		lOk := lOk .AND. _AND(nAttr,FC_SYSTEM) == FC_SYSTEM
+		lOk := lOk .AND. _AND(nAttr,FC_SYSTEM) == (DWORD) FC_SYSTEM
 		cAttribute += "S"
 	ENDIF
 	IF attributes:HasFlag(System.IO.FileAttributes.Archive) 

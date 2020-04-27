@@ -6,7 +6,7 @@
 USING XSharp
 USING XSharp.RDD.Enums
 
-DEFINE _NULLFLAGS := "_NULLFLAGS" 
+DEFINE _NULLFLAGS := "_NullFlags" 
 
 // RecInfo defines
 /// <exclude />
@@ -50,6 +50,8 @@ DEFINE DBS_FLAGS				:= DbFieldInfo.DBS_FLAGS
 DEFINE DBS_ALEN                 := 4  // XBase++ has this define
 /// <exclude />
 DEFINE DBS_CAPTION              := DbFieldInfo.DBS_CAPTION
+/// <exclude />
+DEFINE DBS_COLUMNINFO           := DbFieldInfo.DBS_COLUMNINFO
 /// <exclude />
 DEFINE DBS_ISNULL               := DbFieldInfo.DBS_ISNULL  
 /// <exclude />

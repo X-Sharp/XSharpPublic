@@ -105,8 +105,7 @@ namespace XSharp.Project
             get { return this.@unsafe; }
             set { this.@unsafe = value; this.IsDirty = true; }
         }
-
-        [Category(CatGeneral), DisplayName(AZCaption), Description(AZDescription)]
+         [Category(CatGeneral), DisplayName(AZCaption), Description(AZDescription)]
         public bool AZ
         {
             get { return this.az; }

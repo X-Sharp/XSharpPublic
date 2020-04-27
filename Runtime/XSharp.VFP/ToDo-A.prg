@@ -69,11 +69,7 @@ FUNCTION ASessions (ArrayName)
     THROW NotImplementedException{}
     //RETURN 0
 
-/// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/asqlhandles/*" />
-FUNCTION ASqlHandles (ArrayName , nStatementHandle)
-    THROW NotImplementedException{}
-    //RETURN 0
+
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/astackinfo/*" />

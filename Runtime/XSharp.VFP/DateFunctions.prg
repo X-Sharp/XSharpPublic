@@ -65,7 +65,7 @@ FUNCTION Quarter( dExpression  AS DATE , nMonth  := 1 AS INT ) AS INT
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/quarter/*" />
 FUNCTION Quarter( tExpression  AS DateTime , nMonth  := 1 AS INT ) AS INT 
 	IF  ! (nMonth  > 0 .AND. nMonth  < 13 )
-		THROW ArgumentException { String.Format("nMonth param value is {0}, must be in the range 1-12", nMonth ), "nMonth" } 
+		THROW ArgumentException { String.Format(__VfpStr(VFPErrors.INVALID_RANGE), nameof(nMonth), nMonth , "1-12"), nameof(nMonth) } 
     ENDIF 
     
    	IF ((DATE) tExpression ):IsEmpty  
@@ -86,10 +86,10 @@ FUNCTION Week( dExpression AS DATE, nFirstWeek := 1 AS LONG, nFirstDayOfWeek := 
 FUNCTION Week( tExpression AS DateTime, nFirstWeek := 1 AS LONG, nFirstDayOfWeek := 1 AS LONG) AS LONG
     // validate parameters
 	IF  ! (nFirstWeek  >= 0 .AND. nFirstWeek  < 4 )
-		THROW ArgumentException { String.Format("{0} param value is {1}, must be in the range 0-3", nameof(nFirstWeek), nFirstWeek ), nameof(nFirstWeek) } 
+		THROW ArgumentException { String.Format(__VfpStr(VFPErrors.INVALID_RANGE), nameof(nFirstWeek), nFirstWeek ,"1-3"), nameof(nFirstWeek) } 
     ENDIF 
 	IF  ! (nFirstDayOfWeek >= 0 .AND. nFirstDayOfWeek  < 8 )
-		THROW ArgumentException { String.Format("{0} param value is {1}, must be in the range 0-7", nameof(nFirstDayOfWeek), nFirstDayOfWeek ), nameof(nFirstDayOfWeek) } 
+		THROW ArgumentException { String.Format(__VfpStr(VFPErrors.INVALID_RANGE), nameof(nFirstDayOfWeek), nFirstDayOfWeek,"0-7"), nameof(nFirstDayOfWeek) } 
     ENDIF
     LOCAL week AS CalendarWeekRule
     SWITCH nFirstWeek
@@ -113,3 +113,32 @@ FUNCTION Week( tExpression AS DateTime, nFirstWeek := 1 AS LONG, nFirstDayOfWeek
 
 
 
+
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/dmy/*" />
+FUNCTION MDY ( tExpression AS DateTime ) AS STRING 
+    RETURN MDY ( (DATE) tExpression  ) 
+
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/mdy/*" />
+FUNCTION MDY ( dExpression AS DATE ) AS STRING 
+
+	IF dExpression:IsEmpty
+		// Localized error text: "* invalid date *"
+		RETURN __VfpStr(VFPErrors.INVALID_DATE) 
+	ENDIF 	
+		
+	RETURN CMonth(dExpression) + " " + PadL(Day(dExpression), 2 , "0" )  + ", " + ;
+			IIF ( SetCentury() , dExpression:ToString("yyyy") , dExpression:ToString("yy")  )
+         
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/dmy/*" />
+FUNCTION DMY ( tExpression  AS DateTime ) AS STRING 
+RETURN DMY ( (DATE) tExpression   ) 
+
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/dmy/*" />
+FUNCTION DMY ( dExpression  AS DATE ) AS STRING 
+	IF dExpression:IsEmpty                  
+		// Localized error text: "* invalid date *"
+		RETURN __VfpStr(VFPErrors.INVALID_DATE) 
+	ENDIF 
+		
+	RETURN PadL(Day(dExpression), 2 , "0" ) + " " + CMonth(dExpression) + " " + ;
+			IIF ( SetCentury() , dExpression:ToString("yyyy") , dExpression:ToString("yy")  )

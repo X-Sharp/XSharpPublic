@@ -107,6 +107,9 @@ BEGIN NAMESPACE XSharp.VFP.Tests
                 Assert.Equal(Week(2013.01.05,3,1)  , 53)    // Sunday, 1st week has 7 days
            
 
+
+
+
 END CLASS
 
 END NAMESPACE

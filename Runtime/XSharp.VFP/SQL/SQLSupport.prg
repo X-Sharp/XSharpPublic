@@ -123,7 +123,8 @@ INTERNAL STATIC CLASS XSharp.VFP.SQLSupport
         LOCAL cNewProp AS STRING
         cNewProp := GetPropertyName(cProperty)
         IF String.IsNullOrEmpty(cNewProp)
-            THROW Error{"Unknown property : '"+cProperty+"', or the property name is not long enough to be distinctive"}
+            VAR cMessage := String.Format(__VfpStr(VFPErrors.PROPERTY_UNKNOWN), cProperty)
+            THROW Error{cMessage}
         ENDIF
         cProperty := cNewProp
         IF nHandle == 0 // Default values

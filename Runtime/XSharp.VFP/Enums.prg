@@ -53,3 +53,21 @@ ENUM XSharp.VFP.PropertyVisibility
    MEMBER Protected := 2
    MEMBER Hidden    := 3
 END ENUM
+
+
+
+ENUM XSharp.VFPErrors
+    // Make sure that the member names do not collide with the member names inside the VOErrors Enum
+    MEMBER XS_VFP_BASE   := 1
+    MEMBER INVALID_DATE
+    MEMBER INVALID_MONTH
+    MEMBER STATEMENT_HANDLE_INVALID
+    MEMBER STATEMENT_HANDLE_NOTSHARED
+    MEMBER COMMAND_PARAMETER_REQUIRED
+    MEMBER SQLCOLUMNS_CTYPE
+    MEMBER PROPERTY_UNKNOWN
+    MEMBER INVALID_RANGE
+
+
+END ENUM
+

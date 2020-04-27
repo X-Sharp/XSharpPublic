@@ -102,7 +102,9 @@ FUNCTION At(cSearchExpression AS STRING, cExpressionSearched AS STRING, nOccurre
 	IF ( cExpressionSearched != NULL .AND. cSearchExpression != NULL )
 		IF cExpressionSearched:Length != 0 .AND. cSearchExpression:Length != 0
             DO WHILE nOccurrence  > 0
-			    position := (DWORD) cExpressionSearched:IndexOf(cSearchExpression, (INT) position,StringComparison.Ordinal)
+                IF ( position := (DWORD) cExpressionSearched:IndexOf(cSearchExpression, (INT) position,StringComparison.Ordinal) + 1) == 0
+                    EXIT
+                ENDIF	
                 nOccurrence -= 1
             ENDDO
 		END IF
@@ -122,7 +124,9 @@ FUNCTION AtC(cSearchExpression AS STRING, cExpressionSearched AS STRING, nOccurr
 	IF ( cExpressionSearched != NULL .AND. cSearchExpression != NULL )
 		IF cExpressionSearched:Length != 0 .AND. cSearchExpression:Length != 0
             DO WHILE nOccurrence  > 0
-			    position := (DWORD) cExpressionSearched:IndexOf(cSearchExpression, (INT) position,StringComparison.OrdinalIgnoreCase)
+                IF ( position := (DWORD) cExpressionSearched:IndexOf(cSearchExpression, (INT) position,StringComparison.OrdinalIgnoreCase) + 1) == 0
+                    EXIT
+                ENDIF	
                 nOccurrence -= 1
             ENDDO
 		END IF

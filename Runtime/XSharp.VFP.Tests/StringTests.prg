@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (c) XSharp B.V.  All Rights Reserved.  
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
@@ -102,6 +102,23 @@ BEGIN NAMESPACE XSharp.VFP.Tests
         VAR y := Replicate ( "I", 200000 )
  
         VAR g := ChrTran( x ,"A" , "IE" ) 
+
+		[Fact, Trait("Category", "String")];
+		METHOD At_Tests() AS VOID
+            Assert.Equal(9 , At("b", "abucabucbba", 3 )  )
+            Assert.Equal(6 , At("bu", "abucabucbba", 2 ) )
+            Assert.Equal(2 , At("bu", "abucabucbba", 1 ) )
+            Assert.Equal(0 , At("bu", "abucabucbba", 12 ))
+            
+            Assert.Equal(9 , AtC("B", "abucabucbba", 3 )  )
+            Assert.Equal(6 , AtC("Bu", "abucabucbba", 2 ) )
+            Assert.Equal(2 , AtC("Bu", "abucabucbba", 1 ) )
+            Assert.Equal(0 , AtC("Bu", "abucabucbba", 12 ))
+            
+            Assert.Equal(0 , At("B", "abucabucbba", 2 ) )
+            Assert.Equal(0 , At("Bu", "abucabucbba", 2 ) )
+            Assert.Equal(0 , At("Bu", "abucabucbba", 1 ) )
+            Assert.Equal(0 , At("Bu", "abucabucbba", 12 ))
 
 	END CLASS
 

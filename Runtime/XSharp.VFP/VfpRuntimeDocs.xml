@@ -133,10 +133,16 @@
       At( ) searches the second character expression for the first occurrence of the first character expression. It then returns an integer indicating the position of the first character in the character expression found. If the character expression isn't found, At( ) returns 0.<br/>
       The search performed by At( ) is case-sensitive. To perform a search that isn't case-sensitive, use AtC( ).
     </remarks>
+    <seealso cref="O:XSharp.VFP.Functions.AtC">AtC Function</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.At_C">At_C Function</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.AtCC">AtCC Function</seealso>
+
   </at>
   <at_c>
     <summary>This is an alias for the At() function. X# works with unicode and the difference between single byte and multi byte characters does not exist in Unicode</summary>
-    <seealso cref="M:XSharp.VFP.Functions.At(System.String,System.String,System.UInt32)">At</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.At">At Function</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.AtC">AtC Function</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.AtCC">AtCC Function</seealso>
   </at_c>
   <atc>
     <summary>Returns the beginning numeric position of the first occurrence of a character expression or memo field within another character expression or memo field, without regard for the case of these two expressions.</summary>
@@ -150,10 +156,15 @@
       By default, AtcC( ) searches for the first occurrence of cSearchExpression (nOccurrence = 1). Including nOccurrence lets you search for additional occurrences of cSearchExpression in cExpressionSearched.
     </param>
     <returns>Numeric</returns>
+    <seealso cref="O:XSharp.VFP.Functions.At">At Function</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.At_C">At_C Function</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.AtCC">AtCC Function</seealso>
   </atc>
   <atcc>
     <summary>This is an alias for the AtC() function. X# works with unicode and the difference between single byte and multi byte characters does not exist in Unicode</summary>
-    <seealso cref="M:XSharp.VFP.Functions.AtC(System.String,System.String,System.UInt32)">AtC</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.At">At Function</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.AtC">AtC Function</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.At_C">At_C Function</seealso>
   </atcc>
   <cdx>
     <summary>
@@ -334,6 +345,35 @@
       For additional information on code pages and X#'s international support, see Code Pages Supported by X# and Developing International Applications.
     </remarks>
   </cpdbf>
+  <dmy>
+    <summary>
+      Returns a character expression in day-month-year format (for example, 31 May 1998) from a Date or DateTime expression. The month name isn't abbreviated.
+    </summary>
+    <param name="dExpression">
+      Specifies the Date expression from which <b>DMY( )</b> returns a character string in day-month-year format.
+    </param>
+    <param name="tExpression">
+      Specifies the DateTime expression from which <b>DMY( )</b> returns a character string in day-month-year format.
+    </param>
+    <returns>
+      Character
+    </returns>
+    <remarks>
+      If Set CENTURY is OFF, <b>DMY( )</b> returns a character string in a dd-Month-yy format (for example, 16 February 98).
+      If Set CENTURY is ON, the format is dd-Month-yyyy (for example, 16 February 1998).
+    </remarks>
+    <example>
+       <code language="X#">
+        Clear
+        Set CENTURY OFF
+        ? DMY(DATE( ))
+        Set CENTURY ON
+        ? DMY(DATE( ))
+      </code>
+    </example>
+    <seealso cref="O:XSharp.VFP.Functions.MDY">MDY() Function</seealso>
+  </dmy>
+
   <createobjectex>
     <summary>
       Creates an instance of a registered COM object (such as a X# Automation server) on a remote computer.
@@ -1118,6 +1158,38 @@
       In X# for Windows, when Set FullPath is ON, MDX( ) returns the path to the .cdx file with the .cdx file name. When Set FullPath is OFF, MDX( ) returns the drive the .cdx file resides on with the .cdx file name.
     </remarks>
   </mdx>
+  <mdy>
+    <summary>
+      Returns the specified date or datetime expression in month-day-year format with the name of the month spelled out.
+    </summary>
+    <param name="dExpression">
+      Specifies the date expression to return in month-day-year format.
+    </param>
+    <param name="tExpression">
+      Specifies the datetime expression to return in month-day-year format.
+    </param>
+    <returns>
+      Character
+    </returns>
+    <remarks>
+      If Set CENTURY is OFF, the character expression is returned in a month dd, yy format. If Set CENTURY is ON, the format is month dd, yyyy.
+    </remarks>
+    <example>
+       <code language="X#">
+        Set CENTURY OFF
+        Clear
+        ? Longdate({^1998-02-16})  &amp;&amp; Displays Monday, February 16, 98
+        Set CENTURY ON
+        ? Longdate({^1998-02-16})  &amp;&amp; Displays Monday, February 16, 1998
+        *** LongDate ***
+        FUNCTION longdate
+        PARAMETERS gdDate
+        RETURN CDOW(gdDate) + ', ' + MDY(gdDate)
+      </code>
+    </example>
+    <seealso cref="O:XSharp.VFP.Functions.DMY">DMY() Function</seealso>
+  </mdy>
+
   <messagebox>
     <summary>
       Displays a user-defined dialog box.

@@ -14,11 +14,13 @@ FUNCTION SqlConnect(nStatementHandle AS LONG) AS LONG
     LOCAL oStmt AS XSharp.VFP.SQLStatement
     oStmt := SQLSupport.FindStatement(nStatementHandle)
     IF oStmt == NULL_OBJECT
-        THROW Error{"Statement Handle ("+nStatementHandle:ToString()+") is invalid"}
+        VAR cMessage := String.Format(__VfpStr(VFPErrors.STATEMENT_HANDLE_INVALID), nStatementHandle)
+        THROW Error{cMessage}
     ENDIF
     // This should open a connection automatically since the previous connection as already validated
     IF ! oStmt:Connection:Shared
-        THROW Error{"Statement Handle ("+nStatementHandle:ToString()+") does not have a shared connection"}
+        VAR cMessage := String.Format(__VfpStr(VFPErrors.STATEMENT_HANDLE_NOTSHARED), nStatementHandle)
+        THROW Error{cMessage}
     ENDIF
     oStmt := XSharp.VFP.SQLStatement{oStmt:Connection}
     nStatementHandle := SQLSupport.AddStatement(oStmt)
@@ -100,7 +102,8 @@ FUNCTION SqlExec( nStatementHandle AS LONG, cSQLCommand := "" AS STRING, cCursor
     IF oStmt != NULL 
         IF String.IsNullOrEmpty(cSQLCommand)
             IF ! oStmt:Prepared .AND. ! oStmt:Asynchronous
-                THROW Error{"SQL Command parameter is required for non prepared SQL Statements"}
+                VAR cMessage := __VfpStr(VFPErrors.COMMAND_PARAMETER_REQUIRED)
+                THROW Error{cMessage}
             ENDIF
             prepared := TRUE
         ENDIF
@@ -151,7 +154,8 @@ FUNCTION SqlPrepare( nStatementHandle AS LONG, cSQLCommand AS STRING, cCursorNam
     VAR oStmt := GetStatement(nStatementHandle)    
     IF oStmt != NULL
         IF String.IsNullOrEmpty(cSQLCommand)
-            THROW Error{"The SQL Command parameter is mandatory"}
+            VAR cMessage := __VfpStr(VFPErrors.COMMAND_PARAMETER_REQUIRED)
+            THROW Error{cMessage}
         ENDIF
         VAR result := oStmt:Prepare(cSQLCommand, cCursorName)
         RETURN result
@@ -256,7 +260,8 @@ FUNCTION SqlColumns( nStatementHandle AS LONG, cTableName := "" AS STRING, cType
     IF oStmt != NULL
        cType := cType:Trim():ToUpper()
        IF cType != "FOXPRO"  .AND. cType != "NATIVE"
-            THROW Error{"Incorrect value for cType. Expected 'FOXPRO' or 'NATIVE'. Default is 'FOXPRO'"}
+            VAR cMessage := __VfpStr(VFPErrors.SQLCOLUMNS_CTYPE)
+            THROW Error{cMessage}
        ENDIF
        oStmt:GetColumns(cTableName, cType, cCursorName)
        IF Used(cCursorName) .AND. RecCount(cCursorName) > 0

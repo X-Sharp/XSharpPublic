@@ -2626,7 +2626,7 @@
       The resulting XML from <b>CURSORTOXML( )</b> contains the same scale as the exported table if the table contains <b>Double</b> data type values. For example, if a <b>Double</b> column is created with a scale of 6 using the following codem the resulting XML contains six digits to the right of the decimal point:
        <code language="X#">Create Table test (col1 b(6))</code>
       When you use the <b>CURSORTOXML( )</b> function to export a table or cursor to XML, the root node is always called "VFPData", regardless of the output format.
-      For <b>Date</b> types only, you can export "EMPTY" <b>Date</b> and <b>DateTime</b> types using <b>CURSORTOXML( )</b>. However, the XML schema validation might fail because "EMPTY" is not valid for these types in an XML schema definition (XSD) schema. This is an issue only if a schema is required, and the resulting XML is validated against an XML parser that can interpret XSD schemas. To work around this issue, you might need to change the data to a nonempty representation by calling the appropriate <b>Select</b> statement and use <b>CURSORTOXML( )</b> on the created cursor. For example, you can change the empty <b>Date</b> or <b>DateTime</b> values to .<b>NULL.</b>:
+      For <b>Date</b> types only, you can export "Empty" <b>Date</b> and <b>DateTime</b> types using <b>CURSORTOXML( )</b>. However, the XML schema validation might fail because "Empty" is not valid for these types in an XML schema definition (XSD) schema. This is an issue only if a schema is required, and the resulting XML is validated against an XML parser that can interpret XSD schemas. To work around this issue, you might need to change the data to a nonempty representation by calling the appropriate <b>Select</b> statement and use <b>CURSORTOXML( )</b> on the created cursor. For example, you can change the empty <b>Date</b> or <b>DateTime</b> values to .<b>NULL.</b>:
        <code language="X#">Select orderid, EVL(shippeddate,.NULL.) as ShippedDate From orders</code>
       You can also change the empty <b>Date</b> or <b>DateTime</b> to an appropriate representation for "empty":
        <code language="X#">
@@ -3617,33 +3617,6 @@
       If the filename exceeds nMaxLength, the result is the filename plus extension.
     </remarks>
   </displaypath>
-  <dmy>
-    <summary>
-      Returns a character expression in day-month-year format (for example, 31 May 1998) from a Date or DateTime expression. The month name isn't abbreviated.
-    </summary>
-    <param name="dExpression">
-      Specifies the Date expression from which <b>DMY( )</b> returns a character string in day-month-year format.
-    </param>
-    <param name="tExpression">
-      Specifies the DateTime expression from which <b>DMY( )</b> returns a character string in day-month-year format.
-    </param>
-    <returns>
-      Character
-    </returns>
-    <remarks>
-      If Set CENTURY is OFF, <b>DMY( )</b> returns a character string in a dd-Month-yy format (for example, 16 February 98).
-      If Set CENTURY is ON, the format is dd-Month-yyyy (for example, 16 February 1998).
-    </remarks>
-    <example>
-       <code language="X#">
-        Clear
-        Set CENTURY OFF
-        ? DMY(DATE( ))
-        Set CENTURY ON
-        ? DMY(DATE( ))
-      </code>
-    </example>
-  </dmy>
   <drivetype>
     <summary>
       Returns the type of the specified drive.
@@ -4768,10 +4741,12 @@
     </summary>
     <returns>
       GETPRINTER( )Return Value
-      Character. <b>GETPRINTER( )</b> returns the name of the selected printer. If you exit the Printer dialog box by pressing Esc or by clicking Cancel or Close, <b>GETPRINTER( )</b> returns an empty string.
+      Character. <b>GetPrinter( )</b> returns the name of the selected printer. If you exit the Printer dialog box by pressing
+      Esc or by clicking Cancel or Close, <b>GetPrinter( )</b> returns an empty string.
     </returns>
     <remarks>
-      The contents of the Printer dialog box can differ between versions of Windows. For example, the Printer dialog box might contain only the printer name or include a network path.
+      The contents of the Printer dialog box can differ between versions of Windows.
+      For example, the Printer dialog box might contain only the printer name or include a network path.
     </remarks>
     <example>
        <code language="X#">
@@ -4786,12 +4761,14 @@
       Retrieves the work area number of a cursor marked by <b>SetRESULTSet( )</b> in the current data session.
     </summary>
     <returns>
-      GETRESULTSet( )Return Value
-      Numeric. <b>GETRESULTSet( )</b> returns the work area number of the marked cursor in the current data session or zero (0) if no cursor is marked in the current data session.
+      GetResultSet( )Return Value<br/>
+      Numeric. <b>GetResultSet( )</b> returns the work area number of the marked cursor in the current data session or zero
+      (0) if no cursor is marked in the current data session.
     </returns>
     <remarks>
-
-      <b>GETRESULTSet( )</b> is supported in X# and the X# OLE DB Provider. You can use <b>GETRESULTSet( )</b> in a database container (DBC) stored procedure or send it to the X# OLE DB Provider, assuming that the cursor has been previously opened by the OLE DB Provider.
+      <b>GetResultSet( )</b> is supported in X# and the X# OLE DB Provider.
+      You can use <b>GetResultSet( )</b> in a database container (DBC) stored procedure or send it to the X# OLE DB Provider,
+      assuming that the cursor has been previously opened by the OLE DB Provider.
     </remarks>
   </getresultset>
 
@@ -4800,39 +4777,109 @@
       Turns the IME (Input Method Editor) window on or off or returns the current IME status.
     </summary>
     <param name="nExpression">
-
-      Turns the IME window on or off. The following table lists the values for nExpression and the corresponding state of the IME window.
-      0
-      Turns the IME window off.
-      1
-      Turns the IME window on.
-      If nExpression is omitted, <b>IMEStatus( )</b> returns the current IME status. The following table lists the values returned for the IME status. Use VERSION(3) to determine the current locale.
-      The following table lists the values returned for the IME status in the Japanese locale.
-      No IME installed
-      IME on
-      IME off
-      IME disabled
-      Hiragana mode (double-byte)
-      Katakana mode (double-byte)
-      Katakana mode (single-byte)
-      Alphanumeric mode (double-byte)
-      8
-      Alphanumeric mode (single-byte)
-      The following table lists the values returned for the IME status in the Korean locale.
-      Hangul mode (single-byte)
-      English mode (single-byte)
-      English mode (double-byte)
-      Hangul mode (double-byte)
-      Hanja conversion mode (Hangul + single-byte mode)
-      31
-      Hanja conversion mode (Hangul + double-byte mode)
+      Turns the IME window on or off. The table in the remarks section lists the values for
+      nExpression and the corresponding state of the IME window.
     </param>
     <returns>
       Numeric
     </returns>
     <remarks>
-      For more information, see Developing International Applications.
+      For more information, see Developing International Applications.<br/>
       This function is useful for manipulating double-byte character sets for languages such as Hiragana and Katakana.
+      <list type="table">
+        <listheader>
+          <term>nExpression</term>
+          <description>IME window action</description>
+        </listheader>
+        <item>
+          <term>0</term>
+          <description>Turns the IME window off.</description>
+        </item>
+        <item>
+          <term>1</term>
+          <description>Turns the IME window on.</description>
+        </item>
+      </list>
+      If nExpression is omitted, <b>ImeStatus( )</b> returns the current IME status.
+      The following table lists the values returned for the IME status. Use VERSION(3) to determine the current locale.<br/>
+      The following table lists the values returned for the IME status in the Japanese locale.
+      <list type="table">
+        <listheader>
+          <term>Return value</term>
+          <description>IME status</description>
+        </listheader>
+        <item>
+          <term>0</term>
+          <description>No IME installed</description>
+        </item>
+        <item>
+          <term>1</term>
+          <description>IME on</description>
+        </item>
+        <item>
+          <term>2</term>
+          <description>IME off</description>
+        </item>
+        <item>
+          <term>3</term>
+          <description>IME disabled</description>
+        </item>
+        <item>
+          <term>4</term>
+          <description>Hiragana mode (double-byte)</description>
+        </item>
+        <item>
+          <term>5</term>
+          <description>Katakana mode (double-byte)</description>
+        </item>
+        <item>
+          <term>6</term>
+          <description>Katakana mode (single-byte)</description>
+        </item>
+        <item>
+          <term>7</term>
+          <description>Alphanumeric mode (double-byte)</description>
+        </item>
+        <item>
+          <term>8</term>
+          <description>Alphanumeric mode (single-byte)</description>
+        </item>
+      </list>
+      The following table lists the values returned for the IME status in the Korean locale.
+      <list type="table">
+        <listheader>
+          <term>Return value</term>
+          <description>IME status</description>
+        </listheader>
+        <item>
+          <term>0</term>
+          <description>No IME installed</description>
+        </item>
+        <item>
+          <term>1</term>
+          <description>Hangul mode (single-byte)</description>
+        </item>
+        <item>
+          <term>2</term>
+          <description>English mode (single-byte)</description>
+        </item>
+        <item>
+          <term>11</term>
+          <description>English mode (double-byte)</description>
+        </item>
+        <item>
+          <term>15</term>
+          <description>Hangul mode (double-byte)</description>
+        </item>
+        <item>
+          <term>23</term>
+          <description>Hanja conversion mode (Hangul + single-byte mode)</description>
+        </item>
+        <item>
+          <term>31</term>
+          <description>Hanja conversion mode (Hangul + double-byte mode)</description>
+        </item>
+      </list>
     </remarks>
   </imestatus>
   <indbc>
@@ -5737,40 +5784,7 @@
     </remarks>
   </maketransactable>
   
-  <mdy>
-    <summary>
-      Returns the specified date or datetime expression in month-day-year format with the name of the month spelled out.
-    </summary>
-    <param name="dExpression">
-
-      Specifies the date expression to return in month-day-year format.
-
-    </param>
-    <param name="tExpression">
-
-      Specifies the datetime expression to return in month-day-year format.
-    </param>
-    <returns>
-      Character
-    </returns>
-    <remarks>
-      If Set CENTURY is OFF, the character expression is returned in a month dd, yy format. If Set CENTURY is ON, the format is month dd, yyyy.
-    </remarks>
-    <example>
-       <code language="X#">
-        Set CENTURY OFF
-        Clear
-        ? Longdate({^1998-02-16})  &amp;&amp; Displays Monday, February 16, 98
-        Set CENTURY ON
-        ? Longdate({^1998-02-16})  &amp;&amp; Displays Monday, February 16, 1998
-        *** LongDate ***
-        FUNCTION longdate
-        PARAMETERS gdDate
-        RETURN CDOW(gdDate) + ', ' + MDY(gdDate)
-      </code>
-    </example>
-  </mdy>
- 
+  
   
   <newobject>
     <summary>
@@ -6740,7 +6754,7 @@
     <remarks>
 
       <b>SetRESULTSet( )</b> is supported in X# and the X# OLE DB Provider. You can use <b>SetRESULTSet( )</b> in a database container (DBC) stored procedure or send it to the X# OLE DB Provider, assuming that the cursor has been previously opened by the OLE DB Provider. For example, suppose a previous command opens a cursor named MyCursor in the OLE DB Provider. The following line of code retrieves an ADO RecordSet for the cursor, MyCursor:
-       <code language="X#">oRecordSet = oConn.Execute("SetRESULTSet('MyCursor')")</code>
+       <code language="X#">oRecordSet = oConn.Execute("SetResultSet('MyCursor')")</code>
       By using <b>SetRESULTSet( )</b> to mark a cursor or table opened by the X# OLE DB Provider, you can retrieve a rowset created from the table or cursor from a database container (DBC) stored procedure. When the OLE DB Provider completes command execution, it creates a rowset from the marked cursor, if it exists, then clears the marker flag from the cursor.
       In this scenario, the OLE DB Provider disregards all other return values. For example, if a stored procedure contains a <b>RETURN</b> Value statement and a marked cursor, the OLE DB Provider does not return the value. Instead, it returns the marked cursor as a rowset to the calling application. When the rowset closes, the cursor also closes.
       However, even though the OLE DB Provider disregards all return values when a marked cursor exists, you can use <b>SetRESULTSet( )</b> with the <b>RETURN</b> command. For example:

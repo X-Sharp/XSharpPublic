@@ -63,13 +63,6 @@ FUNCTION DisplayPath( cFilename, nMaxLength )
     // RETURN ""
 
 /// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/dmy/*" />
-
-FUNCTION DMY( uExpression )
-    THROW NotImplementedException{}
-    // RETURN ""
-
-/// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/drivetype/*" />
 
 FUNCTION DriveType( cDrive )

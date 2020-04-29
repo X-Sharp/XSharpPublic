@@ -9,8 +9,9 @@ USING System.Reflection
 USING System.Runtime.Remoting
 USING System.Runtime.InteropServices
 USING System.Runtime.CompilerServices
-
+USING XSharp.Internal
 /// <summary>VO Compatible OLE Automation class</summary>
+[AllowLateBinding];
 [DebuggerDisplay( "Type= {__ComObject}", Type := "OleAutoObject" )];
 CLASS XSharp.OleAutoObject
 	PROTECTED oComObject AS OBJECT

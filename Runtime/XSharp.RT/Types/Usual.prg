@@ -13,6 +13,7 @@ BEGIN NAMESPACE XSharp
     /// <summary>Internal type that implements the VO Compatible USUAL type.<br/>
     /// This type has many operators and implicit converters that normally are never directly called from user code.
     /// </summary>
+    [AllowLateBinding];
     [StructLayout(LayoutKind.Sequential, Pack := 4)];
     [DebuggerDisplay("{Value,nq} ({_usualType})", Type := "USUAL")];
     [DebuggerTypeProxy(TYPEOF(UsualDebugView))];

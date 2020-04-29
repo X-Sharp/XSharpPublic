@@ -137,6 +137,16 @@ BEGIN NAMESPACE XSharp.Internal
 			RETURN
 		
 	END CLASS
+
+    /// <summary>
+	/// This class is used to mark type that allow LateBound calls without the need of the /lb compiler option
+	/// </summary>
+	[AttributeUsage(AttributeTargets.Class|AttributeTargets.Struct)];
+	SEALED CLASS AllowLateBindingAttribute INHERIT Attribute
+		CONSTRUCTOR()
+			SUPER()
+		
+	END CLASS
 	
 END NAMESPACE
 

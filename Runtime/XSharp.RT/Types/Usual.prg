@@ -2684,9 +2684,9 @@ BEGIN NAMESPACE XSharp
                 SWITCH SELF:_usualType
                 CASE __UsualType.Array		; RETURN "A"
                 CASE __UsualType.Codeblock	; RETURN "B"
-                CASE __UsualType.Currency	; RETURN "N"
+                CASE __UsualType.Currency	; RETURN "Y"
                 CASE __UsualType.Date		; RETURN "D"
-                CASE __UsualType.DateTime	; RETURN "D"
+                CASE __UsualType.DateTime	; RETURN "T"
                 CASE __UsualType.Decimal	; RETURN "N"
                 CASE __UsualType.Float		; RETURN "N"
                 CASE __UsualType.Int64		; RETURN "N"

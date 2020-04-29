@@ -5,6 +5,9 @@
 //
 
 USING System.Reflection
+USING XSharp.Internal
+
+[AllowLateBinding];
 ABSTRACT CLASS XSharp.XPP.Abstract 
     PRIVATE inSend := FALSE AS LOGIC
     

@@ -51,6 +51,9 @@
 **  [INDEX IndexFileList | ? [ORDER [nIndexNumber | IDXFileName | [TAG] TagName [OF CDXFileName] [ASCENDING | DESCENDING]]]]
 **  [CONNSTRING cConnectionString | nStatementHandle ]
 
+** FoxPro allows to close a workarea like this
+#command USE IN <(area)> => DbCloseArea(<(area)>)
+
 #command SET INDEX TO [ <(index1)> [, <(indexn)>]]                      ;
                                                                         ;
       => DbClearIndex()                                                 ;

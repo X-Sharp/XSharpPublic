@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>XS9096</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">WARNING XS9096</para>
+    </header>
+    <para styleclass="Body Text">Unrecognized or unsupported #pragma option value &apos;{0}&apos;</para>
+    <para styleclass="Body Text">This warning will be shown if you have a pragma with an unrecognized or unsupported option.</para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">Example</para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">#pragma options (&quot;ab&quot;, </text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">on</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">) &#160; </text><text style="font-weight:bold; font-style:italic; text-decoration:none; color:#339966;">// warning XS9096</text></para>
+  </body>
+</topic>

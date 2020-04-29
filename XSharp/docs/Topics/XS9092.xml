@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>XS9092</title>
+  <body>
+    <header>
+      <para styleclass="Heading1">Warning XS9092</para>
+    </header>
+    <para styleclass="Body Text">&apos;{0}&apos; has not been declared. Assuming this is a VARIABLE or a CURSOR.</para>
+    <para styleclass="Body Text">This warning will be shown when compiling in the FoxPro dialect for code in the following style</para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">? Customer.LastName &#160; </text><text style="font-weight:bold; font-style:italic; text-decoration:none; color:#339966;">// XS9092 &apos;Customer&apos; has not been declared. Assuming this is a VARIABLE or a CURSOR.</text></para>
+    <para styleclass="Body Text"><text style="font-weight:normal; font-style:normal; color:#000000;">when the /undeclared compiler option is enabled.</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">The compiler has no idea at compile time if </text><text style="font-weight:bold; font-style:normal; color:#000000;">Customer </text><text style="font-style:normal; color:#000000;">is the name of a memory variable or a cursor. This will be resolved at runtime or lead to a runtime error.</text></para>
+    <para styleclass="Body Text"><text style="font-style:normal; color:#000000;">If you declare a local variable in the code with the name &apos;Customer&apos; then the compiler will assume that Customer is an object with a LastName property.</text></para>
+  </body>
+</topic>

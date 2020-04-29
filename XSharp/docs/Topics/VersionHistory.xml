@@ -14,12 +14,26 @@
     <para styleclass="Heading1"><text styleclass="Heading2">Compiler</text></para>
     <list id="89" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">Bracketed strings are now no longer supported in the Core dialect to avoid problems with single line external property declarations that contain attributes between the GET and SET keywords</li>
-      <li styleclass="Body Text">The PROPERTY keyword was not properly recognized after an EXTERN modifier</li>
+      <li styleclass="Body Text">The PROPERTY keyword was not properly recognized after an EXTERN modifier.</li>
+      <li styleclass="Body Text">Fixed a XS9021 warning for a IIF expressions with 2 numeric constants</li>
+      <li styleclass="Body Text">In the FoxPro dialect late bound calls are now always allowed on certain types(even when the /lb compiler option is not enabled), such as USUAL and the Empty class. <br/>They WILL generate a new compiler warning (<link displaytype="text" defaultstyle="true" type="topiclink" href="XS9098">XS9098</link>).</li>
     </list>
     <para styleclass="Heading1"><text styleclass="Heading2">Runtime</text></para>
     <list id="89" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">Fixed a problem in the DELIM Rdd that would occur when using DbServer:AppendDelimited() and DbServer:CopyDelimited().</li>
+      <li styleclass="Body Text">Fixed a problem with DbSetOrder() returning TRUE even when the order was not found.</li>
+      <li styleclass="Body Text">Fixed a problem where the File() function would return FALSE when using wildcard characters</li>
+      <li styleclass="Body Text">SqlExec() now returns columns of type Date for SQL providers that have a separate Date type</li>
+      <li styleclass="Body Text">Workareas/Cursors created with SqlExec() now have the NULL flags, Binary flags etc. set properly according to the settings read from the backend.</li>
+      <li styleclass="Body Text">Fixed and added implementation of VFP functions (Gomonth, Quarter, ChrTran, At in various variations, RAt in various variations, DMY, MDY). Thanks Karl Heinz.</li>
+      <li styleclass="Body Text">First work on parameterized SQL functions. Not finished yet.</li>
+      <li styleclass="Body Text">Some types in the runtime are now marked with a special &quot;AllowLateBound&quot; attribute. These types will be accepted in the FoxPro dialect as candidates for compiling latebound even when the /lb compiler option is not enabled.</li>
     </list>
+    <para styleclass="Heading1"><text styleclass="Heading2">VOSDK</text></para>
+    <list id="89" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text">The Console classes assembly is now marked as AnyCpu.</li>
+    </list>
+    <para styleclass="Body Text"></para>
     <para styleclass="Heading1">Changes in 2.4.0.0 (Bandol GA 2.4)</para>
     <para styleclass="Heading1"><text styleclass="Heading2">Compiler</text></para>
     <list id="89" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">

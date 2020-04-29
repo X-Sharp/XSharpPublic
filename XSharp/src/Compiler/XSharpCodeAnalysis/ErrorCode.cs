@@ -1716,6 +1716,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         ERR_CurrencyTypeNotSupported = 9095,
         WRN_IllegalPPOption = 9096,
         ERR_CaseDifference = 9097,
+        WRN_UndeclaredMember = 9098,
 
         // XPP dialect Error messages
         ERR_XPPMultipleInheritance = 9200,

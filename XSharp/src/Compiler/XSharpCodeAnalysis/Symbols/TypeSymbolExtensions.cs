@@ -29,7 +29,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 return false;
             if (atype.ContainingAssembly.IsRT())
             {
-
                 return XSharpString.Equals(atype.Name, name);
             }
             return false;
@@ -197,6 +196,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 }
             }
             return false;
+        }
+
+        public static bool HasLateBindingAttribute(this TypeSymbol type)
+        {
+            if ((object)type != null)
+            {
+                var attrs = type.GetAttributes();
+                foreach (var attr in attrs)
+                {
+                    var atype = attr.AttributeClass;
+                    if (atype.IsOurAttribute(OurTypeNames.AllowLateBindingAttribute))
+                        return true;
+                }
+            }
+            return false;
+
         }
 
         public static ConstantValue GetVODefaultParameter(this ParameterSymbol param)

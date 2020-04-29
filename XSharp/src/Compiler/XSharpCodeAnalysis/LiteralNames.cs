@@ -22,6 +22,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string DefaultParameterAttribute = "DefaultParameterValueAttribute";
         internal const string ActualTypeAttribute = "ActualTypeAttribute";
         internal const string ClipperCallingConventionAttribute = "ClipperCallingConventionAttribute";
+        internal const string AllowLateBindingAttribute = "AllowLateBindingAttribute";
     }
     internal static class VulcanQualifiedTypeNames
     {

@@ -15452,6 +15452,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Type &apos;{0}&apos; does not have a {2} &apos;{1}&apos;. This gets resolved to a late bound {2} {3}..
+        /// </summary>
+        internal static string WRN_UndeclaredMember {
+            get {
+                return ResourceManager.GetString("WRN_UndeclaredMember", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Variable &apos;{0}&apos; has not been declared. Assuming this is a FIELD or a MEMVAR..
         /// </summary>
         internal static string WRN_UndeclaredVariable {

@@ -50,7 +50,10 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             // check for FoxPro late access, such as Customer.LastName
             var syntax = loweredReceiver.Syntax;
-            var nameExpr = _makeString(loweredReceiver.Syntax, name);
+            var allowLB = _compilation.Options.LateBindingOrFox(syntax);
+            if (!allowLB || loweredReceiver.HasDynamicType())
+                return null;
+            var nameExpr = _makeString(syntax, name);
             if (IsFoxAccessMember(loweredReceiver, out var areaName))
             {
                 string method = ReservedNames.FieldGetWaUndeclared;
@@ -59,20 +62,44 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var expr = _factory.StaticCall(_compilation.RuntimeFunctionsType(), method, areaExpr, nameExpr, exprUndeclared);
                 return expr;
             }
-            if (!_compilation.Options.HasOption(CompilerOption.LateBinding, syntax))
+            var constructedFrom = ((NamedTypeSymbol)loweredReceiver.Type).ConstructedFrom;
+            if (!allowLateBound(syntax, constructedFrom))
                 return null;
+            if (!_compilation.Options.HasOption(CompilerOption.LateBinding, syntax))
+            {
+                _diagnostics.Add(new CSDiagnostic(new CSDiagnosticInfo(ErrorCode.WRN_UndeclaredMember, constructedFrom, name,"property","access"), loweredReceiver.Syntax.Location));
+            }
+
             var usualType = _compilation.UsualType();
-            if (((NamedTypeSymbol)loweredReceiver.Type).ConstructedFrom == usualType)
+            if (constructedFrom == usualType)
+            {
                 loweredReceiver = _factory.StaticCall(usualType, ReservedNames.ToObject, loweredReceiver);
+            }
             loweredReceiver = MakeConversionNode(loweredReceiver, _compilation.GetSpecialType(SpecialType.System_Object), false);
             return _factory.StaticCall(_compilation.RuntimeFunctionsType(), ReservedNames.IVarGet, loweredReceiver, nameExpr);
+        }
 
 
+        bool allowLateBound(SyntaxNode syntax, TypeSymbol type)
+        {
+            bool allowLateBound = false;
+            if (_compilation.Options.Dialect.AllowLateBindingForTypesWithTheAttribute() && type.HasLateBindingAttribute() )
+            {
+                allowLateBound = true;
+            }
+            else
+            {
+                allowLateBound = _compilation.Options.HasOption(CompilerOption.LateBinding, syntax);
+            }
+            return allowLateBound;
         }
 
         public BoundExpression MakeVODynamicSetMember(BoundExpression loweredReceiver, string name, BoundExpression loweredValue)
         {
             var syntax = loweredReceiver.Syntax;
+            var allowLB = _compilation.Options.LateBindingOrFox(syntax);
+            if (!allowLB || loweredReceiver.HasDynamicType())
+                return null;
             var usualType = _compilation.UsualType();
             var value = loweredValue.Type == null ? new BoundDefaultExpression(syntax, usualType)
                 : MakeConversionNode(loweredValue, usualType, false);
@@ -86,10 +113,16 @@ namespace Microsoft.CodeAnalysis.CSharp
                 return expr;
             }
 
-            if (!_compilation.Options.HasOption(CompilerOption.LateBinding, syntax))
+            var constructedFrom = ((NamedTypeSymbol)loweredReceiver.Type).ConstructedFrom;
+            if (!allowLateBound (syntax, constructedFrom))
+            {
                 return null;
-
-            if (((NamedTypeSymbol)loweredReceiver.Type).ConstructedFrom == usualType)
+            }
+            if (!_compilation.Options.HasOption(CompilerOption.LateBinding, syntax))
+            {
+                _diagnostics.Add(new CSDiagnostic(new CSDiagnosticInfo(ErrorCode.WRN_UndeclaredMember, constructedFrom, name,"property","assign" ), loweredReceiver.Syntax.Location));
+            }
+            if ( constructedFrom == usualType)
             {
                 loweredReceiver = _factory.StaticCall(usualType, ReservedNames.ToObject, loweredReceiver);
             }
@@ -101,6 +134,11 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         public BoundExpression MakeVODynamicInvokeMember(BoundExpression loweredReceiver, string name,BoundDynamicInvocation node, ImmutableArray<BoundExpression> args)           
         {
+
+            if (!allowLateBound(loweredReceiver.Syntax, loweredReceiver.Type))
+                return null;
+            if (loweredReceiver.HasDynamicType())
+                return null;
             if (loweredReceiver.Type == _compilation.ArrayType())
             {
                 if (_compilation.Options.Dialect.AllowASend())
@@ -117,8 +155,13 @@ namespace Microsoft.CodeAnalysis.CSharp
             // loweredReceiver.Parent.Parent = InvocationExpression
             // loweredReceiver.Parent.Parent.Syntax.XNode = MethodCallContext
             //
-            var parent = loweredReceiver.Syntax?.Parent?.Parent;
-            var xnode = parent.XNode as XSharpParser.MethodCallContext;
+            var syntax = node.Syntax;
+            var xnode = syntax.XNode as XSharpParser.MethodCallContext;
+            if (!_compilation.Options.HasOption(CompilerOption.LateBinding, syntax))
+            {
+                _diagnostics.Add(new CSDiagnostic(new CSDiagnosticInfo(ErrorCode.WRN_UndeclaredMember, loweredReceiver.Type, name,"method","call"), syntax.Location));
+            }
+
             if (xnode != null && xnode.HasRefArguments)
             {
                 return RewriteLateBoundCallWithRefParams(loweredReceiver, name, node, args);

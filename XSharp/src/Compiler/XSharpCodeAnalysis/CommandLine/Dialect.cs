@@ -150,5 +150,15 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return false;
             }
         }
+        public static bool AllowLateBindingForTypesWithTheAttribute(this XSharpDialect dialect)
+        {
+            switch (dialect)
+            {
+                case XSharpDialect.FoxPro:
+                    return true;
+                default:
+                    return false;
+            }
+        }
     }
 }

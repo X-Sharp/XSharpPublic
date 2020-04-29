@@ -77,22 +77,21 @@ namespace Microsoft.CodeAnalysis.CSharp
                     // delegate invocation
                     var loweredExpression = VisitExpression(node.Expression);
 #if XSHARP
-                    if (_compilation.Options.HasRuntime && _compilation.Options.HasOption(CompilerOption.LateBinding, loweredExpression.Syntax)  && !loweredExpression.HasDynamicType())
-                    {
-                        return MakeVODynamicInvokeMember(loweredExpression, "Invoke", node, loweredArguments );
-                    }
+                    // Check for "allow late bound" is now inside MakeVODynamicInvokeMember
+
+                    var expr1 = MakeVODynamicInvokeMember(loweredExpression, "Invoke", node, loweredArguments);
+                    if (expr1 != null)
+                        return expr1;
 #endif
                     return _dynamicFactory.MakeDynamicInvocation(loweredExpression, loweredArguments, node.ArgumentNamesOpt, node.ArgumentRefKindsOpt, resultDiscarded).ToExpression();
             }
 
             Debug.Assert(loweredReceiver != null);
 #if XSHARP
-            if (_compilation.Options.LateBindingOrFox(node.Syntax) && !loweredReceiver.HasDynamicType())
-            {
-                var expr = MakeVODynamicInvokeMember(loweredReceiver, name, node, loweredArguments);
-                if (expr != null)
-                    return expr;
-            }
+            // Check for "allow late bound" is now inside MakeVODynamicInvokeMember
+            var expr = MakeVODynamicInvokeMember(loweredReceiver, name, node, loweredArguments);
+            if (expr != null)
+                return expr;
 #endif
             return _dynamicFactory.MakeDynamicMemberInvocation(
                 name,
@@ -1616,12 +1615,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             Debug.Assert(node.TypeArgumentsOpt.IsDefault);
             var loweredReceiver = VisitExpression(node.Receiver);
 #if XSHARP
-            if (_compilation.Options.LateBindingOrFox(node.Syntax) && !loweredReceiver.HasDynamicType())
-            {
-                var expr =  MakeVODynamicGetMember(loweredReceiver, node.Name);
-                if (expr != null)
-                    return expr;
-            }
+            // Check for "allow late bound" is now inside MakeVODynamicGetMember
+            var expr =  MakeVODynamicGetMember(loweredReceiver, node.Name);
+            if (expr != null)
+                return expr;
 #endif
             return _dynamicFactory.MakeDynamicGetMember(loweredReceiver, node.Name, node.Indexed).ToExpression();
         }

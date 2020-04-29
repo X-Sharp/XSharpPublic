@@ -49,12 +49,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                         var memberAccess = (BoundDynamicMemberAccess)left;
                         var loweredReceiver = VisitExpression(memberAccess.Receiver);
 #if XSHARP
-                        if (_compilation.Options.LateBindingOrFox(node.Syntax) && !loweredReceiver.HasDynamicType())
-                        {
-                            var expr = MakeVODynamicSetMember(loweredReceiver, memberAccess.Name, loweredRight);
-                            if (expr != null)
-                                return expr;
-                        }
+                        // Check for "allow late bound" is now inside MakeVODynamicSetMember
+                        var expr = MakeVODynamicSetMember(loweredReceiver, memberAccess.Name, loweredRight);
+                        if (expr != null)
+                            return expr;
 #endif
                         return _dynamicFactory.MakeDynamicSetMember(loweredReceiver, memberAccess.Name, loweredRight).ToExpression();
                     }
@@ -106,12 +104,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case BoundKind.DynamicMemberAccess:
                     var memberAccess = (BoundDynamicMemberAccess)rewrittenLeft;
 #if XSHARP
-                    if (_compilation.Options.LateBindingOrFox(syntax) && !memberAccess.Receiver.HasDynamicType())
-                    {
-                        var expr = MakeVODynamicSetMember(memberAccess.Receiver, memberAccess.Name, rewrittenRight);
-                        if (expr != null)
-                            return expr;
-                    }
+                    // Check for "allow late bound" is now inside MakeVODynamicSetMember
+                    var expr = MakeVODynamicSetMember(memberAccess.Receiver, memberAccess.Name, rewrittenRight);
+                    if (expr != null)
+                        return expr;
 #endif
                     return _dynamicFactory.MakeDynamicSetMember(
                         memberAccess.Receiver,

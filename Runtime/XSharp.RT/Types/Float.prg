@@ -18,6 +18,7 @@ BEGIN NAMESPACE XSharp
     /// </summary>
     /// <seealso cref="T:XSharp.IFloat"/>
     /// <seealso cref="T:XSharp.RDD.DbFloat"/>
+    [DebuggerDisplay("{ToDebugString(),nq}", Type := "FLOAT" )];
     [StructLayout(LayoutKind.Explicit, Pack := 4)];
     PUBLIC STRUCTURE __Float IMPLEMENTS IFloat, ;
         IConvertible,; 
@@ -25,9 +26,12 @@ BEGIN NAMESPACE XSharp
         IComparable<__Float>, ;
         IEquatable<__Float>, ;
         IComparable
-    
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         [FieldOffset(0)]  PRIVATE INITONLY _value AS REAL8
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         [FieldOffset(8)]  PRIVATE INITONLY _length AS SHORTINT
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         [FieldOffset(10)] PRIVATE INITONLY _decimals AS SHORTINT
         
         #region constructors
@@ -516,7 +520,11 @@ BEGIN NAMESPACE XSharp
         PUBLIC METHOD CompareTo(rhs AS OBJECT) AS INT
             RETURN SELF:CompareTo( (FLOAT) rhs)
             #endregion
-            
+
+        PUBLIC OVERRIDE METHOD ToDebugString() AS STRING
+            RETURN SELF:Value:ToString()
+
+
     END STRUCTURE
      
 END NAMESPACE

@@ -16,8 +16,8 @@ BEGIN NAMESPACE XSharp
     /// There are also some operators that handle implicit conversions between Symbols and Strings in your code.
     /// </summary>
     /// <include file="RTComments.xml" path="Comments/Symbol/*" />
-    [DebuggerDisplay("{_value,nq}",Type := "SYMBOL")];
-    [DebuggerTypeProxy(TYPEOF(SymbolDebugView))];
+    //[DebuggerTypeProxy(TYPEOF(SymbolDebugView))];
+    [DebuggerDisplay("{ToDebugString(),nq}",Type := "SYMBOL")];
     PUBLIC STRUCTURE __Symbol ;
     IMPLEMENTS IEqualityComparer<__Symbol>, ;
     IEquatable<__Symbol>,;
@@ -27,7 +27,9 @@ BEGIN NAMESPACE XSharp
     IConvertible
 
         #region fields
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         PRIVATE INITONLY _index		AS DWORD
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         PRIVATE STATIC _PszDict		AS Dictionary<DWORD, PSZ>
         #endregion
 
@@ -66,12 +68,13 @@ BEGIN NAMESPACE XSharp
             ENDIF
             RETURN __Symbol{0}
 
-
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         INTERNAL PROPERTY _value AS STRING
             GET
                 RETURN SymbolTable.GetString(SELF:_index)
             END GET
         END PROPERTY
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         INTERNAL STATIC PROPERTY PszDict AS Dictionary<DWORD, PSZ>
             GET
                 IF _PszDict == NULL
@@ -390,17 +393,18 @@ BEGIN NAMESPACE XSharp
             // Vulcan.Symbol
             //METHOD GetEnumerator() as IEnumerator
             //return SymbolTable.strings.GetEnumerator()
+            METHOD ToDebugString() AS STRING
+                RETURN SELF:_value
 
     #endregion
     END STRUCTURE
-        INTERNAL CLASS SymbolDebugView
-        PRIVATE _svalue AS SYMBOL
-            CONSTRUCTOR( s AS SYMBOL)
-        _svalue := s
-
-        [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)] ;
-        PUBLIC PROPERTY @@Value AS OBJECT GET _svalue:_value
-
-    END CLASS
+//        INTERNAL CLASS SymbolDebugView
+//        PRIVATE _svalue AS SYMBOL
+//            CONSTRUCTOR( s AS SYMBOL)
+//        _svalue := s
+//
+//        [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)] ;
+//        PUBLIC PROPERTY @@Value AS OBJECT GET _svalue:_value
+//    END CLASS
 
 END NAMESPACE

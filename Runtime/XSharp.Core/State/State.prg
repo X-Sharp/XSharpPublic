@@ -20,12 +20,13 @@ USING System.Runtime.CompilerServices
 
 CLASS XSharp.RuntimeState
 	// Static Fields
-	PRIVATE INITONLY STATIC initialState  AS RuntimeState 
+	PRIVATE INITONLY STATIC initialState  AS RuntimeState
+	PRIVATE INITONLY Thread AS Thread
 	// Static Methods and Constructor
 	private STATIC currentState := ThreadLocal<RuntimeState>{ {=>  initialState:Clone()},TRUE }  AS ThreadLocal<RuntimeState> 
 	STATIC CONSTRUCTOR
 		initialState	:= RuntimeState{TRUE}
-		
+
 	/// <summary>Retrieve the runtime state for the current thread</summary>
 	PUBLIC STATIC METHOD GetInstance() AS RuntimeState
 		RETURN currentState:Value
@@ -37,7 +38,7 @@ CLASS XSharp.RuntimeState
 
 	PRIVATE CONSTRUCTOR(initialize AS LOGIC)       
 		VAR oThread := Thread.CurrentThread
-		SELF:Name := "ThreadState for "+oThread:ManagedThreadId:ToString()
+        SELF:Thread := oThread
 		oSettings := Dictionary<XSharp.Set, OBJECT>{}
 		IF initialize
 			SELF:BreakLevel := 0
@@ -86,6 +87,9 @@ CLASS XSharp.RuntimeState
         END TRY
 	PRIVATE METHOD Clone() AS RuntimeState
 		LOCAL oNew AS RuntimeState
+        IF Thread.CurrentThread == initialState:Thread
+            RETURN initialState
+        ENDIF
 		oNew := RuntimeState{FALSE}		
 		BEGIN LOCK oSettings
 			// Copy all values from Current State to New state
@@ -97,7 +101,15 @@ CLASS XSharp.RuntimeState
 		
 	/// <summary>Retrieve state name</summary>
 	/// <returns>String value, such as "State for Thread 123"</returns>IDb
-	PUBLIC PROPERTY Name AS STRING AUTO
+	PUBLIC PROPERTY Name AS STRING
+    GET
+        IF SELF:Thread == NULL
+            RETURN "ThreadState for Unknown Thread"
+        ELSE
+            RETURN "ThreadState for "+SELF:Thread:ManagedThreadId:ToString()
+        ENDIF
+    END GET
+    END PROPERTY
 	/// <summary>Current Break Level. Gets set by compiler generated code for BEGIN SEQUENCE .. END constructs.</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
 	PUBLIC PROPERTY BreakLevel AS INT AUTO

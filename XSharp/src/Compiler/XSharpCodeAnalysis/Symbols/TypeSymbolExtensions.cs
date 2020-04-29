@@ -200,7 +200,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
         public static bool HasLateBindingAttribute(this TypeSymbol type)
         {
-            if ((object)type != null)
+            while ((object)type != null)
             {
                 var attrs = type.GetAttributes();
                 foreach (var attr in attrs)
@@ -209,6 +209,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     if (atype.IsOurAttribute(OurTypeNames.AllowLateBindingAttribute))
                         return true;
                 }
+                type = type.BaseTypeNoUseSiteDiagnostics;
             }
             return false;
 

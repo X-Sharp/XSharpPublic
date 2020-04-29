@@ -509,7 +509,14 @@ namespace Microsoft.CodeAnalysis.CSharp
                                     indexed: indexed,
                                     type: returnType,
                                     hasErrors: false);
-                            diagnostics.Add(ErrorCode.WRN_UndeclaredVariableLatebound,node.Location,leftType, propName, method);
+
+
+                            var hidewWarning = Compilation.Options.Dialect.AllowLateBindingForTypesWithTheAttribute() && leftType.HasLateBindingAttribute();
+                            if (!hidewWarning)
+                            {
+                                // when FoxPro dialect and the type is marked with "allowLateBound" then no need for the warning
+                                diagnostics.Add(ErrorCode.WRN_UndeclaredVariableLatebound, node.Location, leftType, propName, method);
+                            }
                             return result;
                         }
                     }

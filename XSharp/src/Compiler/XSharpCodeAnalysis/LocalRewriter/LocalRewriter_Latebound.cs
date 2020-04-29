@@ -26,10 +26,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var xNode = loweredReceiver.Syntax.XNode;
                 if (xNode?.Parent is XSharpParser.AccessMemberContext amc && amc.IsFox)
                 {
+                    areaName = amc.AreaName;
                     if (loweredReceiver is BoundCall && amc.Expr is XSharpParser.PrimaryExpressionContext pc
                         && pc.Expr is XSharpParser.NameExpressionContext)
                     {
-                        areaName = amc.AreaName;
                         return true;
                     }
                 }

@@ -11,6 +11,10 @@ USING System.Drawing
 
 FUNCTION Start() AS VOID STRICT
 TRY
+    DbUseArea(TRUE,"DBFCDX","c:\cavo28SP3\Samples\Email\EMAIL.DBF")
+    ? DbSetOrder(2)
+    ? DbOrderInfo(DBOI_ORDERCOUNT)
+    DbCloseArea()
     //TestProviders()
     //TestProvidersStringConnect()
     //TestBatch()
@@ -26,12 +30,27 @@ TRY
     //testCopyTo()
     //testDbSetOrder()
     //testSqlParameters()
-    testPG()
+    //testPG()
+    //testExec2()
+    //testFile()
     
 CATCH e AS Exception
     ? MessageBox(e:ToString(), MB_ICONSTOP+MB_OK,"An error has occurred")
 END TRY
 WAIT
+RETURN
+
+FUNCTION TestFile() AS VOID
+	? File("C:\temp\abc.def")	// T in X#
+	? File("C:\temp\???.def")	// F
+	? File("C:\temp\ab?.def")	// F
+	? File("C:\temp\*.def")		// F
+	? File("C:\temp\ab*.def")	// F
+
+	// those all return FALSE in VO
+	? File("C:\temp\ab*.*")	// F
+	? File("C:\temp\*.*")	// T
+	? File("C:\temp\*")	// T
 RETURN
 
 FUNCTION TestProviders() AS VOID STRICT
@@ -403,3 +422,17 @@ FUNCTION TestPg()
         Browse()
 
 ENDIF
+
+
+FUNCTION testExec2()
+     SqlSetFactory("ODBC")
+     LOCAL handle := SqlStringConnect("Dsn=Northwind;")
+    IF handle > 0
+         LOCAL aInfo := {} AS ARRAY
+        ? SqlExec(handle, "Select * from customers","test",aInfo)
+        ShowArray(aInfo)
+        ? SqlExec(handle, "Select * from categories","test",aInfo)
+        ShowArray(aInfo)
+ENDIF
+
+

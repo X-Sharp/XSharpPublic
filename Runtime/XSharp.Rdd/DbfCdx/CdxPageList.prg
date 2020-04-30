@@ -82,8 +82,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:_pages := Dictionary<LONG, CdxPage>{}
             SELF:_bag   := bag
             
-         DESTRUCTOR()
-            SELF:Flush(TRUE)
+//         DESTRUCTOR()
+//            SELF:Flush(TRUE)
 
         INTERNAL METHOD Update( pageNo AS LONG ) AS CdxPage
             LOCAL page AS CdxPage

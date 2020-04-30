@@ -100,3 +100,18 @@ FUNCTION __VfpStr( resid AS DWORD ) AS STRING
 		strMessage := "Cannot find string for error number "+resid:ToString()
 	ENDIF
 	RETURN strMessage
+
+
+
+
+/// <include file="VFPDocs.xml" path="Runtimefunctions/vartype/*" />
+FUNCTION VarType( eExpression AS USUAL) AS STRING
+    RETURN VarType(eExpression, FALSE)
+
+
+/// <include file="VFPDocs.xml" path="Runtimefunctions/vartype/*" />
+FUNCTION VarType( eExpression AS USUAL, lNullDataType AS LOGIC) AS STRING
+    IF IsNil(eExpression) .AND. ! lNullDataType
+        RETURN "X"
+    ENDIF
+    RETURN ValType(eExpression)

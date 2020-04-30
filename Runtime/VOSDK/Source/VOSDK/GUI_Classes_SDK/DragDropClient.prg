@@ -121,17 +121,17 @@ FUNCTION __LoadShellDll()
     RETURN TRUE
 
 /// <exclude/>
-_DLL FUNCTION DragAcceptFiles(hWnd AS PTR, fAccept AS LOGIC) AS VOID STRICT:Shell32.DragAcceptFiles
+_DLL FUNCTION DragAcceptFiles(hWnd AS PTR, fAccept AS LOGIC) AS VOID PASCAL:Shell32.DragAcceptFiles
 /// <exclude/>
-_DLL FUNCTION DragFinish(hDrop AS PTR) AS VOID STRICT:Shell32.DragFinish
+_DLL FUNCTION DragFinish(hDrop AS PTR) AS VOID PASCAL:Shell32.DragFinish
 /// <exclude/>
-_DLL FUNCTION DragQueryFile(hDrop AS PTR, iFile AS DWORD, lpszFile AS PSZ, cch AS DWORD) AS DWORD STRICT:Shell32.DragQueryFileA 
+_DLL FUNCTION DragQueryFile(hDrop AS PTR, iFile AS DWORD, lpszFile AS PSZ, cch AS DWORD) AS DWORD PASCAL:Shell32.DragQueryFileA 
 /// <exclude/>
-_DLL FUNCTION SHBrowseForFolder(bi AS PTR) AS PTR STRICT:Shell32.SHBrowseForFolderA
+_DLL FUNCTION SHBrowseForFolder(bi AS PTR) AS PTR PASCAL:Shell32.SHBrowseForFolderA
 /// <exclude/>
-_DLL FUNCTION Shell_NotifyIcon(dwMessage AS DWORD, lpData AS _winNOTIFYICONDATA) AS LOGIC STRICT:Shell32.Shell_NotifyIcon
+_DLL FUNCTION Shell_NotifyIcon(dwMessage AS DWORD, lpData AS _winNOTIFYICONDATA) AS LOGIC PASCAL:Shell32.Shell_NotifyIcon
 /// <exclude/>
-_DLL FUNCTION SHGetPathFromIDList(pidl AS PTR, pszDisplayName AS PSZ) AS LOGIC STRICT:Shell32.SHGetPathFromIDListA
+_DLL FUNCTION SHGetPathFromIDList(pidl AS PTR, pszDisplayName AS PSZ) AS LOGIC PASCAL:Shell32.SHGetPathFromIDListA
 
 #region defines
 DEFINE WM_DRAGSELECT := 0x022E

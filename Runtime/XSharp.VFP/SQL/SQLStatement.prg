@@ -30,6 +30,7 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
     PROTECT _aParams         AS IList<SQLParameter>
     PROTECT _returnsRows     AS LOGIC
     PROTECT _hasOutParams    AS LOGIC
+    PROTECT _lastException   AS System.Exception
     
     PROPERTY Connected          AS LOGIC GET Connection:State == System.Data.ConnectionState.Open
     PROPERTY Connection         AS SQLConnection GET _oConnection
@@ -44,6 +45,7 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
     PROPERTY DispWarnings       AS LOGIC AUTO GET SET
     PROPERTY Handle             AS LONG   AUTO GET SET
     PROPERTY IdleTimeout        AS LONG  AUTO GET SET
+    PROPERTY LastException      AS System.Exception GET _lastException
     PROPERTY ODBChdbc           AS DbConnection GET SELF:Connection:NetConnection
     PROPERTY ODBChstmt          AS DbCommand    GET _oNetCommand
     PROPERTY Password           AS STRING GET Connection:Password   
@@ -220,6 +222,7 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
             ENDIF
             SELF:_oNetCommand:Transaction := SELF:Connection:Transaction
         ENDIF
+        SELF:_lastException := NULL
         RETURN TRUE
 
 
@@ -278,6 +281,9 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
 
     PRIVATE METHOD _SaveResult(aInfo AS ARRAY) AS LONG
         CopyToInfo(_aQueryResult, aInfo)
+        IF SELF:_lastException != NULL
+            RETURN -1
+        ENDIF
         IF ALen(_aQueryResult) > 0
             RETURN (LONG) ALen(_aQueryResult)
         ENDIF
@@ -394,7 +400,7 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
 
 
     METHOD BackgroundWorker(o AS OBJECT) AS VOID STRICT
-        LOCAL aResults := List<IRdd>{}
+        LOCAL aResults := List<IRdd>{} AS List<IRdd>
         TRY
             VAR oDataReader := SELF:_oNetCommand:ExecuteReader()
             SELF:_WriteOutParameters()
@@ -428,8 +434,10 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
                 ENDIF
             END LOCK
         CATCH e AS Exception
+            SELF:_lastException := e
             RuntimeState.LastRddError := Error{e}
             BEGIN LOCK SELF
+                SELF:_lastException := e
                 SELF:_CloseReader()
                 SELF:_aSyncState := AsyncState.Exception
                 IF SELF:_oThread:ThreadState == System.Threading.ThreadState.Running
@@ -485,6 +493,7 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
     PRIVATE METHOD CopyToCursor() AS VOID
         TRY
             SELF:_CloseReader()
+            SELF:_lastException := NULL
             IF SELF:_ReturnsRows(SELF:_oNetCommand:CommandText)
                 VAR oDataReader := SELF:_oNetCommand:ExecuteReader()
                 SELF:_WriteOutParameters()
@@ -495,6 +504,7 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
                 _aQueryResult := {{"", result}}
             ENDIF
         CATCH e AS Exception
+            SELF:_lastException := e
             RuntimeState.LastRddError := Error{e}
             _aQueryResult := {{"", -1}}
         END TRY

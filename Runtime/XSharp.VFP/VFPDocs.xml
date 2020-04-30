@@ -4844,7 +4844,7 @@
           <term>8</term>
           <description>Alphanumeric mode (single-byte)</description>
         </item>
-      </list>
+      </list><br/>
       The following table lists the values returned for the IME status in the Korean locale.
       <list type="table">
         <listheader>
@@ -4887,30 +4887,45 @@
       Returns true (.T.) if the specified database object is in the current database; otherwise returns false (.F.).
     </summary>
     <param name="cDatabaseObjectName">
-
-      Specifies the name of a named connection, field, index, table, or SQL view for which INDBC( ) returns a logical value indicating whether or not the object is in the current database.
-
+      Specifies the name of a named connection, field, index, table, or SQL view for which InDbc( ) returns a logical value
+      indicating whether or not the object is in the current database.
     </param>
     <param name="cType">
-
-      Specifies the database object type of cDatabaseObjectName. The following table lists the values for cType and the corresponding database object type.
-      Connection
-      Named connection
-      Field
-      Field
-      Index
-      Index
-      Table
-      Table
-      View
-      SQL View
+      Specifies the database object type of cDatabaseObjectName.
+      The table in the remarks section lists the values for cType and the corresponding database object type.<br/>
       The Connection, Field, Index, Table, and View settings cannot be abbreviated.
     </param>
     <returns>
       Logical
     </returns>
     <remarks>
-      A database must be open and current when <b>INDBC( )</b> is issued; otherwise X# generates an error message.
+      A database must be open and current when <b>InDbc( )</b> is issued; otherwise X# generates an error message.
+      <list type="table">
+        <listheader>
+          <term>cType</term>
+          <description>Database object type</description>
+        </listheader>
+        <item>
+          <term>Connection</term>
+          <description>Named connection</description>
+        </item>
+        <item>
+          <term>Field</term>
+          <description>Field</description>
+        </item>
+        <item>
+          <term>Index</term>
+          <description>Index</description>
+        </item>
+        <item>
+          <term>Table</term>
+          <description>Table</description>
+        </item>
+        <item>
+          <term>View</term>
+          <description>SQL View</description>
+        </item>
+      </list>
     </remarks>
     <example>
        <code language="X#">
@@ -4918,9 +4933,9 @@
         Create Database mydbc  &amp;&amp; Creates a new database
         Create Table mytable (field1 C(10)) &amp;&amp; Automatically added to database
         ? 'MyTable in the database? '
-        ?? INDBC('mytable', 'Table')  &amp;&amp; Returns .T.
+        ?? InDbc('mytable', 'Table')  &amp;&amp; Returns .T.
         Close Databases
-        DELETE Database mydbc DELETETableS
+        Delete Database mydbc DeleteTables
       </code>
     </example>
   </indbc>
@@ -5003,23 +5018,28 @@
     <param name="cTimeoutValue">
 
       Specifies value to return if a timeout occurs. cTimeoutValue isn't returned if nTimeout is set to zero or is omitted.
-
     </param>
     <param name="cCancelValue">
-
-      Specifies a character value to return if the user exits the dialog box by choosing the <b>Cancel</b> button or pressing the Esc key.
+      Specifies a character value to return if the user exits the dialog box by choosing
+      the <b>Cancel</b> button or pressing the Esc key.
     </param>
     <remarks>
-      The dialog box displays an edit box and <b>OK</b> and <b>Cancel</b> buttons. The <b>OK</b> button returns the contents of the edit box. A timeout returns the text specified in cTimeoutValue or an empty string if cTimeoutValue is unspecified. The Cancel button or the Esc key returns the text specified in cCancelValue or an empty string if cCancelValue is unspecified.
+      The dialog box displays an edit box and <b>OK</b> and <b>Cancel</b> buttons.
+      The <b>OK</b> button returns the contents of the edit box.
+      A timeout returns the text specified in cTimeoutValue or an empty string if cTimeoutValue is unspecified.
+      The Cancel button or the Esc key returns the text specified in cCancelValue or an empty string if cCancelValue is unspecified.
        <code language="X#">
         Y = "Nothing at all"
-        Y = INPUTBOX("TypeHere","Input ",Y,5000)
+        Y = InputBox("TypeHere","Input ",Y,5000)
         &amp;&amp; Displays dialog box for 5 seconds,
       </code>
-      The following example displays a dialog box for five seconds and displays the return value in the main X# window. If the user clicks OK, the edit box returns the text which is either the default value, "Nothing at all," or user-specified text. If the user clicks Cancel or hits the Esc key, the edit box returns "Canceled." If the user waits the timeout period, the edit box closes and returns "Timed Out."
+      The following example displays a dialog box for five seconds and displays the return value in the main X# window.
+      If the user clicks OK, the edit box returns the text which is either the default value, "Nothing at all," or user-specified text.
+      If the user clicks Cancel or hits the Esc key, the edit box returns "Canceled." If the user waits the timeout period,
+      the edit box closes and returns "Timed Out."
        <code language="X#">
         Clear
-        Y = INPUTBOX("Type Here:", "Input Title",  ;
+        Y = InputBox("Type Here:", "Input Title",  ;
         "Nothing at all", 5000, 'Timed Out', 'Canceled')
         ? Y
       </code>
@@ -5030,22 +5050,24 @@
       Returns the current insert mode, or sets the insert mode on or off.
     </summary>
     <param name="lExpression">
-
-      Turns the insert mode on or off. INSMODE(.T.) turns the insert mode on and INSMODE(.F.) turns it off. A logical value corresponding to the insert mode setting before INSMODE(.T.) or INSMODE(.F.) was issued is returned.
+      Turns the insert mode on or off. InsMode(.T.) turns the insert mode on and InsMode(.F.) turns it off.
+      A logical value corresponding to the insert mode setting before InsMode(.T.) or InsMode(.F.) was issued is returned.
     </param>
     <returns>
       Logical
     </returns>
     <remarks>
-      If you omit the optional argument and the insert mode is on (characters are inserted before the cursor), INSMODE( ) returns true (.T.). If the insert mode is off (characters are overwritten at the insertion point), INSMODE( ) returns false (.F.).
+      If you omit the optional argument and the insert mode is on (characters are inserted before the cursor),
+      InsMode( ) returns true (.T.). If the insert mode is off (characters are overwritten at the insertion point),
+      InsMode( ) returns false (.F.).
     </remarks>
     <example>
        <code language="X#">
-        Set TALK ON
-        =INSMODE(.T.)  &amp;&amp; Set insert mode on
-        ? INSMODE( )
-        = INSMODE(!INSMODE( ))  &amp;&amp; Toggle insert mode to opposite state
-        ? INSMODE( )
+        Set TALK On
+        =InsMode(.T.)  &amp;&amp; Set insert mode on
+        ? InsMode( )
+        = InsMode(!InsMode( ))  &amp;&amp; Toggle insert mode to opposite state
+        ? InsMode( )
       </code>
     </example>
   </insmode>
@@ -5054,59 +5076,104 @@
       Determines whether an expression is blank.
     </summary>
     <param name="eExpression">
-
-      Specifies the expression for <b>ISBlank( )</b> to evaluate. eExpression can be a field in a table, a variable or array element, or an expression.
+      Specifies the expression for <b>IsBlank( )</b> to evaluate.
+      eExpression can be a field in a table, a variable or array element, or an expression.
     </param>
     <returns>
-      Logical. <b>ISBlank( )</b> returns True (.T.) if the expression eExpression is blank; otherwise, <b>ISBlank( )</b> returns False (.F.).
-
-      <b>ISBlank( )</b> returns True (.T.) for fields when those fields contain certain values. The following table lists the values that field types contain for <b>ISBlank( )</b> to return True.
-
-      <b>Blob</b>
-
-      Empty (0h) or contains only zero bytes, for example, 0h00, 0h000000, and so on
-
-      <b>Character</b>
-
-      Empty string, spaces, or no value, such as a newly appended blank record or cleared with <b>Blank</b>
-
-      <b>Date</b>
-
-      Blank date ({ / / }) or no value, such as a newly appended blank record or cleared with <b>Blank</b>
-
-      <b>DateTime</b>
-
-      Blank datetime ({ / / : : }) or no value, such as a newly appended blank record or cleared with <b>Blank</b>
-
-      <b>Float</b>
-
-      No value, such as a newly appended blank record or cleared with <b>Blank</b>
-
-      <b>General</b>
-
-      Empty, for example, no OLE object
-
-      <b>Logical</b>
-
-      No value, such as a newly appended blank record or cleared with <b>Blank</b>
-
-      <b>Memo</b>
-
-      Empty, for example, no memo contents
-
-      <b>Numeric</b>
-
-      No value, such as a newly appended blank record or cleared with <b>Blank</b>
-
-      <b>Varbinary</b>
-
-      Empty (0h) or contains only zero bytes, for example, 0h00, 0h000000, and so on
-      Expressions with <b>Currency</b>, <b>Integer</b>, or <b>Double</b> type are never blank; therefore, <b>ISBlank( )</b> always returns False (.F.) for these expression types.
+      Logical. <b>IsBlank( )</b> returns True (.T.) if the expression eExpression is blank; otherwise,
+      <b>IsBlank( )</b> returns False (.F.).<br/>
+      <b>IsBlank( )</b> returns True (.T.) for fields when those fields contain certain values.
+      The table below lists the values that field types contain for <b>IsBlank( )</b> to return True.
+      <list type="table">
+        <listheader>
+          <term>Data type</term>
+          <description>Values the field contains</description>
+        </listheader>
+        <item>
+          <term>
+            <b>Blob</b>
+          </term>
+          <description>Empty (0h) or contains only zero bytes, for example, 0h00, 0h000000, and so on</description>
+        </item>
+        <item>
+          <term>
+            <b>Character</b>
+          </term>
+          <description>
+            Empty string, spaces, or no value, such as a newly appended blank record or cleared with <b>Blank</b>
+          </description>
+        </item>
+        <item>
+          <term>
+            <b>Date</b>
+          </term>
+          <description>
+            Blank date ({ / / }) or no value, such as a newly appended blank record or cleared with <b>Blank</b>
+          </description>
+        </item>
+        <item>
+          <term>
+            <b>DateTime</b>
+          </term>
+          <description>
+            Blank datetime ({ / / : : }) or no value, such as a newly appended blank record or cleared with <b>Blank</b>
+          </description>
+        </item>
+        <item>
+          <term>
+            <b>Float</b>
+          </term>
+          <description>
+            No value, such as a newly appended blank record or cleared with <b>Blank</b>
+          </description>
+        </item>
+        <item>
+          <term>
+            <b>General</b>
+          </term>
+          <description>Empty, for example, no OLE object</description>
+        </item>
+        <item>
+          <term>
+            <b>Logical</b>
+          </term>
+          <description>
+            No value, such as a newly appended blank record or cleared with <b>Blank</b>
+          </description>
+        </item>
+        <item>
+          <term>
+            <b>Memo</b>
+          </term>
+          <description>Empty, for example, no memo contents</description>
+        </item>
+        <item>
+          <term>
+            <b>Numeric</b>
+          </term>
+          <description>
+            No value, such as a newly appended blank record or cleared with <b>Blank</b>
+          </description>
+        </item>
+        <item>
+          <term>
+            <b>Varbinary</b>
+          </term>
+          <description>Empty (0h) or contains only zero bytes, for example, 0h00, 0h000000, and so on</description>
+        </item>
+      </list>
+      <note name="Note">
+        Expressions with <b>Currency</b>, <b>Integer</b>, or <b>Double</b> type are never blank;
+        therefore, <b>IsBlank( )</b> always returns False (.F.) for these expression types.
+      </note>
     </returns>
     <remarks>
-      To create a blank record, use the <b>Append Blank</b> and <b>Blank</b> commands. You can also use <b>Blank</b> to clear data from fields in a record.
-
-      <b>ISBlank( ) </b>differs from <b>EMPTY( )</b> and <b>ISNULL( )</b>. For example, <b>EMPTY( )</b> returns True (.T.) if a character expression evaluates to empty, for example, it contains spaces, tabs, carriage returns, or line feeds. <b>ISBlank( )</b> returns True (.T.) if the character expression contains only the empty string ("") or spaces.
+      To create a blank record, use the <b>Append Blank</b> and <b>Blank</b> commands.
+      You can also use <b>Blank</b> to clear data from fields in a record.<br/>
+      <b>IsBlank( ) </b>differs from <b>Empty( )</b> and <b>IsNull( )</b>.
+      For example, <b>Empty( )</b> returns True (.T.) if a character expression evaluates to empty, for example,
+      it contains spaces, tabs, carriage returns, or line feeds.
+      <b>IsBlank( )</b> returns True (.T.) if the character expression contains only the empty string ("") or spaces.
     </remarks>
     <example>
        <code language="X#">
@@ -5123,52 +5190,58 @@
     <summary>
       Returns true (.T.) if a table or database is opened for exclusive use; otherwise, returns false (.F.).
     </summary>
-    <param name="cTableAlias">
-
-      Specifies the alias of the table for which the exclusive use status is returned. X# generates an error message if you specify a table alias that doesn't exist.
-
-    </param>
-    <param name="nWorkArea">
-
-      Specifies the work area of the table for which the exclusive use status is returned. ISEXCLUSIVE( ) returns false (.F.) if a table isn't open in the work area you specify.
-
-    </param>
-    <param name="cDatabaseName">
-
+    <param name="uArea">
+      Specifies the alias of the table for which the exclusive use status is returned.
+      X# generates an error message if you specify a table alias that doesn't exist.<br/>
+      Or<br/>
+      Specifies the work area of the table for which the exclusive use status is returned.
+      IsExclusive( ) returns false (.F.) if a table isn't open in the work area you specify.<br/>
+      Or<br/>
       Specifies the name of the database for which the exclusive use status is returned.
-
     </param>
     <param name="nType">
-
-      Specifies whether the exclusive status is returned for a table or a database. The following table lists the values for nType and the corresponding status returned.
-      1
-      Table
-      2
-      Database
+      Specifies whether the exclusive status is returned for a table or a database.
+      The table in the remarks section lists the values for nType and the corresponding status returned.<br/>
       To determine the exclusive status for a database, you must include nType with a value of 2.
     </param>
     <returns>
       Logical
     </returns>
     <remarks>
-      ISEXCLUSIVE( ) returns a value for the table open in the currently selected work area if you omit the optional cTableAlias, nWorkArea, or cDatabaseName arguments.
-      A table is opened for exclusive use by including the EXCLUSIVE keyword in Use, or by setting Set EXCLUSIVE to ON before the table is opened.
-      A database is opened for exclusive use by including the EXCLUSIVE keyword in Open Database.
+      IsExclusive( ) returns a value for the table open in the currently selected work area if you omit the optional cTableAlias,
+      nWorkArea, or cDatabaseName arguments.<br/>
+      A table is opened for exclusive use by including the Exclusive keyword in Use, or by setting Set Exclusive to
+      On before the table is opened.<br/>
+      A database is opened for exclusive use by including the Exclusive keyword in Open Database.
+      <list type="table">
+        <listheader>
+          <term>nType</term>
+          <description>Exclusive status returned</description>
+        </listheader>
+        <item>
+          <term>1</term>
+          <description>Table</description>
+        </item>
+        <item>
+          <term>2</term>
+          <description>Database</description>
+        </item>
+      </list>
     </remarks>
     <example>
        <code language="X#">
-        cExclusive = Set('EXCLUSIVE')
-        Set EXCLUSIVE OFF
-        Set PATH TO (HOME(2) + 'data\')
-        Open DATA testdata  &amp;&amp; Opens the test databsase
+        cExclusive = Set('Exclusive')
+        Set Exclusive Off
+        Set Path To (Home(2) + 'data\')
+        Open Data testdata  &amp;&amp; Opens the test databsase
         Use customer     &amp;&amp; Not opened exclusively
-        Use employee IN 0 EXCLUSIVE    &amp;&amp; Opened exclusively in another work area
-        IF ISEXCLUSIVE( )
+        Use employee IN 0 Exclusive    &amp;&amp; Opened exclusively in another work area
+        IF IsExclusive( )
         REIndex  &amp;&amp; Can only be done if table opened exclusively
         ELSE
-        WAIT WINDOW 'The table has to be exclusively opened'
+        Wait Window 'The table has to be exclusively opened'
         ENDIF
-        Set EXCLUSIVE &amp;cExclusive
+        Set Exclusive &amp;cExclusive
       </code>
     </example>
   </isexclusive>
@@ -5176,54 +5249,50 @@
     <summary>
       Determines if a memo field has been fetched during a delayed memo fetch.
     </summary>
-    <param name="cFieldName">
-
-      Specifies the name of the memo field for which the fetch status is returned.
-
+    <param name="uField">
+      Specifies the name of the memo field for which the fetch status is returned.<br/>
+      Or<br/>
+      Specifies the field number (based on the physical structure of the table or cursor)
+      of the memo field for which the fetch status is returned.
     </param>
-    <param name="nFieldNumber">
-
-      Specifies the field number (based on the physical structure of the table or cursor) of the memo field for which the fetch status is returned.
-
-    </param>
-    <param name="nWorkArea">
-
-      Specifies the work area of the table or cursor containing the memo field for which the fetch status is returned.
-
-    </param>
-    <param name="cTableAlias">
-
+    <param name="uArea">
+      Specifies the work area of the table or cursor containing the memo field for which the fetch status is returned.<br/>
+      Or<br/>
       Specifies the alias of the table or cursor containing the memo field for which the fetch status is returned.
     </param>
     <returns>
-      Logical. A logical true (.T.) is returned if the specified memo field has been fetched, otherwise a logical false (.F.) is returned. True (.T.) is always returned for local data. The null value (.NULL.) is returned for a cursor if the record pointer is positioned at the beginning or end of the cursor. Use the BOF( ) Function and the EOF( ) Function to determine if the record pointer is positioned at the beginning or end of the cursor.
+      Logical. A logical true (.T.) is returned if the specified memo field has been fetched, otherwise a logical false (.F.)
+      is returned. True (.T.) is always returned for local data. The null value (.NULL.) is returned for a cursor if
+      the record pointer is positioned at the beginning or end of the cursor. Use the BOF( ) Function and the EOF( ) Function
+      to determine if the record pointer is positioned at the beginning or end of the cursor.
     </returns>
     <remarks>
-      It can often take a while for a memo field fetch to occur with remote data, so you may choose to not download a memo field until it is absolutely needed.
-      The FetchMemo setting in the DbGetProp( ) Function and CursorGetProp( ) Function functions determine if a memo field is retrieved with View results or on demand. ISMEMOFETCHED( ) return true (.T.) when the memo field is fetched for delayed Memo data (FetchMemo=.F.).
-      ISMEMOFETCHED( ) works with both memo and general fields.
+      It can often take a while for a memo field fetch to occur with remote data,
+      so you may choose to not download a memo field until it is absolutely needed.
+      The FetchMemo setting in the DbGetProp( ) Function and CursorGetProp( )
+      Function functions determine if a memo field is retrieved with View results or on demand.
+      IsMemoFetched( ) return true (.T.) when the memo field is fetched for delayed Memo data (FetchMemo=.F.).<br/>
+      IsMemoFetched( ) works with both memo and general fields.
     </remarks>
   </ismemofetched>
   <isnull>
     <summary>
-      Returns true (.T.) if an expression evaluates to a null value; otherwise, ISNULL( ) returns false (.F.).
+      Returns true (.T.) if an expression evaluates to a null value; otherwise, IsNull( ) returns false (.F.).
     </summary>
     <param name="eExpression">
-
       Specifies the expression to evaluate.
     </param>
-    <returns>
-      Logical
-    </returns>
+    <returns>Logical</returns>
     <remarks>
-      Use ISNULL( ) to determine if the contents of a field, memory variable, or array element contains a null value, or if an expression evaluates to a null value.
+      Use IsNull( ) to determine if the contents of a field, memory variable, or array element contains a null value,
+      or if an expression evaluates to a null value.
     </remarks>
     <example>
        <code language="X#">
-        STORE .NULL. TO mNullvalue  &amp;&amp; Store a null value to a memory variable
+        Store .NULL. To mNullvalue  &amp;&amp; Store a null value to a memory variable
         Clear
         ? mNullvalue  &amp;&amp; Display the value of the memory variable
-        ? ISNULL(mNullvalue)  &amp;&amp; Returns .T., indicating a null value
+        ? IsNull(mNullvalue)  &amp;&amp; Returns .T., indicating a null value
         ? TYPE('mNullvalue')     &amp;&amp; Returns L, indicating a logical value
         ? (mNullvalue = .NULL.)  &amp;&amp; Returns .NULL., bad test for null values
       </code>
@@ -5234,8 +5303,8 @@
       Determines if the last Tablet PC mouse event was a pen tap.
     </summary>
     <remarks>
-      ISPEN( )Remarks
-      The ISPEN( ) function returns a logical true (.T.) if the last Tablet PC mouse event was a pen tap. A logical false (.F.) is returned if the last mouse event wasn't a pen tap.
+      The IsPen( ) function returns a logical true (.T.) if the last Tablet PC mouse event was a pen tap.
+      A logical false (.F.) is returned if the last mouse event wasn't a pen tap.
     </remarks>
   </ispen>
   <istransactable>
@@ -5243,19 +5312,17 @@
       Returns a logical value indicating if a free table or free cursor supports transactions.
     </summary>
     <param name="nWorkArea">
-
-      Specifies the work area of the free table or free cursor for which ISTRANSACTable( ) determines if transactions are supported.
-
+      Specifies the work area of the free table or free cursor for which IsTrancsactable( ) determines if transactions are supported.
     </param>
     <param name="cAlias">
-
-      Specifies the alias of the table or cursor for which ISTRANSACTable( ) determines if transactions are supported.
+      Specifies the alias of the table or cursor for which IsTrancsactable( ) determines if transactions are supported.
     </param>
     <returns>
-      Logical. Returns a logical true (.T.) if a free table or free cursor supports transactions, otherwise a logical false (.F.) is returned.
+      Logical. Returns a logical true (.T.) if a free table or free cursor supports transactions,
+      otherwise a logical false (.F.) is returned.
     </returns>
     <remarks>
-      Use the MAKETRANSACTable( ) Function to allow a free table or free cursor to support transactions.
+      Use the MakeTrancsactable( ) Function to allow a free table or free cursor to support transactions.
     </remarks>
   </istransactable>
   <isupper>
@@ -5263,51 +5330,61 @@
       Determines whether the first character in a character expression is an uppercase alphabetic character.
     </summary>
     <param name="cExpression">
-
-      Specifies the character expression that ISUPPER( ) evaluates. Any characters after the first character in icExpression/i are ignored.
+      Specifies the character expression that IsUpper( ) evaluates.
+      Any characters after the first character in icExpression/i are ignored.
     </param>
     <returns>
       Logical
     </returns>
     <remarks>
-      ISUPPER( ) returns true (.T.) if the first character in a character expression is an uppercase alphabetic character; otherwise, ISUPPER( ) returns false (.F.).
+      IsUpper( ) returns true (.T.) if the first character in a character expression is an uppercase alphabetic character;
+      otherwise, IsUpper( ) returns false (.F.).
     </remarks>
     <example>
        <code language="X#">
-        ? ISUPPER('Redmond')  &amp;&amp; Displays .T.
-        ? ISUPPER('redmond')  &amp;&amp; Displays .F.
+        ? IsUpper('Redmond')  &amp;&amp; Displays .T.
+        ? IsUpper('redmond')  &amp;&amp; Displays .F.
       </code>
     </example>
   </isupper>
-
   <keymatch>
     <summary>
       Searches an index tag or index file for an index key.
     </summary>
     <param name="eIndexKey">
-
-      Specifies the index key that KEYMATCH( ) searches for. The index keys in an index file or index tag are determined by the index expression. An index expression is specified when an index file or index tag is created with Index. KEY( ) and SYS(14) can be used to return the index expressions for index files and index tags. For more information on creating index files, index expressions, and index keys, see Index.
-      If you don't include any of the optional parameters, KEYMATCH( ) searches the master index file or master index tag for the index key you specify. If a master index file or index tag isn't in effect (for example, you've issued Set Order TO without any parameters to place the table in physical record order), X# generates an error message.
-
+      Specifies the index key that KeyMatch( ) searches for. The index keys in an index file or index tag are determined
+      by the index expression. An index expression is specified when an index file or index tag is created with Index.
+      KEY( ) and SYS(14) can be used to return the index expressions for index files and index tags.
+      For more information on creating index files, index expressions, and index keys, see Index.<br/>
+      If you don't include any of the optional parameters, KeyMatch( ) searches the master index file or master index tag
+      for the index key you specify. If a master index file or index tag isn't in effect (for example,
+      you've issued Set Order To without any parameters to place the table in physical record order), X# generates an error message.<br/>
     </param>
     <param name="nIndexNumber">
-
-      Specifies which index file or index tag is searched. nIndexNumber is typically an integer that starts at 1 and is increased by 1 to search additional index tags.
-      If nIndexNumber is 1, the master single-entry .idx index file or master index tag (if one is present) is searched.
-      As nIndexNumber increases, subsequent tags in the structural compound index (if one is present) are searched. The tags are searched in the order in which the tags were created in the structural compound index.
-      As nIndexNumber continues to increase and all the tags in the structural compound index have been searched, tags in any open independent compound indexes are then searched. The tags are searched in the order in which the tags were created in the independent compound indexes.
-      An error message is generated if nIndexNumber is greater than the total number of open single-entry .idx files and structural compound and independent compound index tags.
-
-      nWorkArea| cTableAlias
-      Searches index files or tags open in another work area. nWorkArea specifies the work area number and cTableAlias specifies the table alias. If you omit the work area and alias, KEYMATCH( ) searches index files or tags open for the table in the current work area.
+      Specifies which index file or index tag is searched.
+      nIndexNumber is typically an integer that starts at 1 and is increased by 1 to search additional index tags.<br/>
+      If nIndexNumber is 1, the master single-entry .idx index file or master index tag (if one is present) is searched.<br/>
+      As nIndexNumber increases, subsequent tags in the structural compound index (if one is present) are searched.
+      The tags are searched in the order in which the tags were created in the structural compound index.<br/>
+      As nIndexNumber continues to increase and all the tags in the structural compound index have been searched,
+      tags in any open independent compound indexes are then searched.
+      The tags are searched in the order in which the tags were created in the independent compound indexes.<br/>
+      An error message is generated if nIndexNumber is greater than the total number of open single-entry .idx files
+      and structural compound and independent compound index tags.
+    </param>
+    <param name="uArea">
+      Searches index files or tags open in another work area.
+      nWorkArea specifies the work area number and cTableAlias specifies the table alias.
+      If you omit the work area and alias, KeyMatch( ) searches index files or tags open for the table in the current work area.<br/>
       If no table has the alias you specify, X# generates an error message.
     </param>
     <returns>
       Logical
     </returns>
     <remarks>
-      KEYMATCH( ) searches an index tag or index file for a specific index key and returns true (.T.) if the index key is found; otherwise, KEYMATCH( ) returns false (.F.). KEYMATCH( ) can be used to prevent duplicate index keys.
-      KEYMATCH( ) returns the record pointer to the record on which it was originally positioned before KEYMATCH( ) was issued.
+      KeyMatch( ) searches an index tag or index file for a specific index key and returns true (.T.) if the index key is found; 
+      otherwise, KeyMatch( ) returns false (.F.). KeyMatch( ) can be used to prevent duplicate index keys.<br/>
+      KeyMatch( ) returns the record pointer to the record on which it was originally positioned before KeyMatch( ) was issued.
     </remarks>
   </keymatch>
   <lineno>
@@ -5318,19 +5395,25 @@
       Numeric
     </returns>
     <remarks>
-      Program lines are counted starting from the top of the program. Comment lines, continuation lines, and blank lines are included in the line number count. If a program is suspended during execution, LINENO( ) returns the number of the program line at which program execution was suspended. LINENO( ) returns 0 if a program is canceled.
-      By default, line numbers are returned relative to the beginning of the main program. If a procedure is called, line numbering continues from the top of the calling program.
-      LINENO( ) is useful for debugging programs. You can set a breakpoint to stop program execution at a specific line number by opening the Breakpoints window, setting the Type to 'Break when expression is true' and adding codeLINENO( ) = nExpression/code in the Expression textbox.
+      Program lines are counted starting from the top of the program. Comment lines, continuation lines, 
+      and blank lines are included in the line number count. If a program is suspended during execution, 
+      LineNo( ) returns the number of the program line at which program execution was suspended. 
+      LineNo( ) returns 0 if a program is canceled.<br/>
+      By default, line numbers are returned relative to the beginning of the main program. If a procedure is called, 
+      line numbering continues from the top of the calling program.<br/>
+      LineNo( ) is useful for debugging programs. You can set a breakpoint to stop program execution at a specific line number 
+      by opening the Breakpoints window, setting the Type to 'Break when expression is true' 
+      and adding codeLineNo( ) = nExpression/code in the Expression textbox.
     </remarks>
     <example>
        <code language="X#">
-        ON ERROR DO bug_proc WITH LINENO( )
+        On ERROR DO bug_proc WITH LineNo( )
         BRWS  &amp;&amp; Causes an error
-        ON ERROR
+        On ERROR
         *** Bug_Proc error handler ***
         PROCEDURE bug_proc
         PARAMETERS gnBadLine
-        WAIT WINDOW 'Error occurred at line: ' + ALLTRIM(STR(gnBadLine))
+        Wait Window 'Error occurred at line: ' + ALLTRIM(STR(gnBadLine))
         RETURN
       </code>
     </example>
@@ -5425,7 +5508,7 @@
       The following table lists all possible values of the <b>iPicture.Type property</b>:
       The most interesting method of the COM image object’s <b>iPicture interface</b> is <b>render()</b> which also works flawlessly only when called on the <b>iPicture interface</b>.
       The following table summarises the parameters of the <b>render() method</b>:
-      The method returns standard values like E_FAIL, E_INVALIDARG and E_OUTOFMEMORY, as well as S_OK, E_POINTER and CTL_E_INVALIDPROPERTYVALUE. These values are described on MSDN.
+      The method returns standard values like E_FAIL, E_INVALIDARG and E_OUToFMEMORY, as well as S_OK, E_POINTER and CTL_E_INVALIDPROPERTYVALUE. These values are described on MSDN.
       The render function has plenty of parameters. Some of them passing in pixel values, others HiMetric values.br
       <b>Example #3</b> has some useful conversions as well as other supporting functions and definitions.br
       To figure out how <b>render()</b> works try the VFP code below; type it in line by line into VFP’s command window:br
@@ -5772,14 +5855,14 @@
       Specifies the alias of the table or cursor for which transactions will be supported.
     </param>
     <returns>
-      Logical. Returns a logical true (.T.) if MAKETRANSACTable( ) was able to make the free table or cursor support transactions, otherwise a logical false (.F.) is returned.
+      Logical. Returns a logical true (.T.) if MakeTrancsactable( ) was able to make the free table or cursor support transactions, otherwise a logical false (.F.) is returned.
     </returns>
     <remarks>
       A free table is a table that has not been added to a database with the ADD Table Command. A free cursor is a cursor that is created from a free table or with the Create CURSOR - SQL Command.
-      When MAKETRANSACTable( ) is used to make a free table or free cursor support transactions, you can use the BEGIN TRANSACTION, END TRANSACTION, and ROLLBACK commands for the free table or free cursor. Use the ISTRANSACTable( ) function to determine if a free table or free cursor supports transactions.
-      When MAKETRANSACTable( ) is used to make a free table or free cursor support transactions, the free table or free cursor supports transactions in all work areas and data sessions in which it is opened. MAKETRANSACTable( ) makes all open instances of a free table or free cursor support transactions, including those in other data sessions within a single instance of VFP.
+      When MakeTrancsactable( ) is used to make a free table or free cursor support transactions, you can use the BEGIN TRANSACTIOn, END TRANSACTIOn, and ROLLBACK commands for the free table or free cursor. Use the IsTrancsactable( ) function to determine if a free table or free cursor supports transactions.
+      When MakeTrancsactable( ) is used to make a free table or free cursor support transactions, the free table or free cursor supports transactions in all work areas and data sessions in which it is opened. MakeTrancsactable( ) makes all open instances of a free table or free cursor support transactions, including those in other data sessions within a single instance of VFP.
       If a free table that does not support transactions is open in more than one data session, the free table cannot be made to support transactions. However, you can open a free table that already supports transactions in additional data sessions.
-      If row buffering is enabled, then a table update is performed if the free table or free cursor has pending changes before the free table or free cursor is made to support transactions. You cannot use MAKETRANSACTable( ) to enable transactions for a free table that has table buffering enabled.
+      If row buffering is enabled, then a table update is performed if the free table or free cursor has pending changes before the free table or free cursor is made to support transactions. You cannot use MakeTrancsactable( ) to enable transactions for a free table that has table buffering enabled.
       To disable transactions for a free table, you must close the free table in all data sessions.
     </remarks>
   </maketransactable>

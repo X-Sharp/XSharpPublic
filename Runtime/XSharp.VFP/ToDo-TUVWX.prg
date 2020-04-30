@@ -53,14 +53,6 @@ FUNCTION TxtWidth( cExpression , cFontName, nFontSize , cFontStyle) AS FLOAT
 
 
 /// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/savepicture/*" />
-
-FUNCTION VarType( eExpression , lNullDataType) AS STRING
-    THROW NotImplementedException{}
-    // RETURN ""
-
-
-/// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/xmltocursor/*" />
 
 FUNCTION XmlToCursor( eExpression , cCursorName , nFlags ) AS LONG

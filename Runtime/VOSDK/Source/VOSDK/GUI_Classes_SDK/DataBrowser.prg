@@ -1535,12 +1535,14 @@ METHOD __AutoResize() AS VOID STRICT
 
       RETURN
 
+   PRIVATE METHOD __ScatterColumns() AS VOID
+        FOREACH oCol AS DataColumn IN SELF:aColumn
+            oCol:__Scatter()
+        NEXT
    METHOD __RefreshData() AS VOID STRICT 
 	//PP-030828 Strong typing
-      
-
-      ASend(aColumn, #__Scatter)
-
+      SELF:__ScatterColumns()
+      //ASend(aColumn, #__Scatter)
       RETURN
 
    METHOD __RefreshField(uFieldName AS USUAL) AS DWORD 
@@ -2729,54 +2731,71 @@ METHOD __AutoResize() AS VOID STRICT
    METHOD Notify(kNotification, uDescription) 
       
 
-      DO CASE
-      CASE kNotification = NOTIFYCOMPLETION
+      SWITCH (INT) kNotification 
+      CASE NOTIFYCOMPLETION
             SELF:__NotifyChanges(GBNFY_COMPLETION)
          nOldRecordNum := oDataServer:Recno
-      CASE kNotification = NOTIFYINTENTTOMOVE
+      CASE NOTIFYINTENTTOMOVE
          RETURN SELF:__NotifyChanges(GBNFY_INTENTTOMOVE)
-      CASE kNotification = NOTIFYFILECHANGE
-            ASend(aColumn, #__Scatter)
+      CASE NOTIFYFILECHANGE
+            //ASend(aColumn, #__Scatter)
+            SELF:__ScatterColumns()
+
             SELF:__NotifyChanges(GBNFY_FILECHANGE)
-            ASend(aColumn, #__Scatter)
+            //ASend(aColumn, #__Scatter)
+            SELF:__ScatterColumns()
+
          nOldRecordNum := oDataServer:Recno
-      CASE kNotification = NOTIFYFIELDCHANGE
+      CASE NOTIFYFIELDCHANGE
             SELF:__RefreshField(uDescription)
          SELF:__NotifyChanges(GBNFY_FIELDCHANGE)
-      CASE kNotification = NOTIFYCLOSE
+      CASE NOTIFYCLOSE
          SELF:__Unlink()
-      CASE kNotification = NOTIFYRECORDCHANGE
-            ASend(aColumn, #__Scatter)
+      CASE NOTIFYRECORDCHANGE
+            //ASend(aColumn, #__Scatter)
+            SELF:__ScatterColumns()
+
 
             IF nOldRecordNum != oDataServer:Recno
                SELF:__NotifyChanges(GBNFY_RECORDCHANGE)
-               ASend(aColumn, #__Scatter)
+               //ASend(aColumn, #__Scatter)
+               SELF:__ScatterColumns()
+
             ELSE
                SELF:__NotifyChanges(GBNFY_FIELDCHANGE)
             ENDIF
          nOldRecordNum := oDataServer:Recno
-      CASE kNotification = NOTIFYGOBOTTOM
-            ASend(aColumn, #__Scatter)
+      CASE NOTIFYGOBOTTOM
+            //ASend(aColumn, #__Scatter)
+            SELF:__ScatterColumns()
             SELF:__NotifyChanges(GBNFY_DOGOEND)
-            ASend(aColumn, #__Scatter)
+            //ASend(aColumn, #__Scatter)
+            SELF:__ScatterColumns()
+
          nOldRecordNum := oDataServer:Recno
-      CASE kNotification = NOTIFYGOTOP
-            ASend(aColumn, #__Scatter)
+      CASE NOTIFYGOTOP
+            //ASend(aColumn, #__Scatter)
+            SELF:__ScatterColumns()
             SELF:__NotifyChanges(GBNFY_DOGOTOP)
-            ASend(aColumn, #__Scatter)
+            //ASend(aColumn, #__Scatter)
+            SELF:__ScatterColumns()
          nOldRecordNum := oDataServer:Recno
-      CASE kNotification = NOTIFYDELETE
-            ASend(aColumn, #__Scatter)
+      CASE NOTIFYDELETE
+            //ASend(aColumn, #__Scatter)
+            SELF:__ScatterColumns()
             SELF:__NotifyChanges(GBNFY_DODELETE)
-            ASend(aColumn, #__Scatter)
+            //ASend(aColumn, #__Scatter)
+            SELF:__ScatterColumns()
          nOldRecordNum := oDataServer:Recno
-      CASE kNotification = NOTIFYAPPEND
-            ASend(aColumn, #__Scatter)
+      CASE NOTIFYAPPEND
+            //ASend(aColumn, #__Scatter)
+            SELF:__ScatterColumns()
             SELF:__NotifyChanges(GBNFY_DONEWROW)
-            ASend(aColumn, #__Scatter)
+            //ASend(aColumn, #__Scatter)
+            SELF:__ScatterColumns()
             ASend(aColumn, #PerformValidations)
          nOldRecordNum := oDataServer:Recno
-      END CASE
+      END SWITCH
 
       RETURN NIL
 

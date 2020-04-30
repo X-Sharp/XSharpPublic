@@ -122,9 +122,21 @@ FUNCTION AX_SetCollation( strCollation AS STRING ) AS STRING
     RETURN (STRING) oldCollation
 
 /// <summary>Sets the connection handle for all successive table opens.</summary>
-PROCEDURE AX_SetConnectionHandle( lHandle AS DWORD ) 
-    CoreDb.RddInfo( _SET_CONNECTION_HANDLE, lHandle )
+/// <param name="nHandle">Connection handle that was returned by AdsConnect60</param>
+/// <seealso cref="O:XSharp.RDD.Functions.AdsConnect60">AdsConnect60 Function</seealso>
+/// <seealso cref='O:XSharp.RDD.Functions.AdsGetLastError'>AdsGetLastError FUNCTION</seealso>
+PROCEDURE AX_SetConnectionHandle( nHandle AS DWORD ) 
+    CoreDb.RddInfo( _SET_CONNECTION_HANDLE, nHandle )
     RETURN 
+
+/// <summary>Sets the connection handle for all successive table opens.</summary>
+/// <param name="ptrHandle">Connection handle that was returned by AdsConnect60</param>
+/// <seealso cref="O:XSharp.RDD.Functions.AdsConnect60">AdsConnect60 Function</seealso>
+/// <seealso cref='O:XSharp.RDD.Functions.AdsGetLastError'>AdsGetLastError FUNCTION</seealso>
+PROCEDURE AX_SetConnectionHandle( ptrHandle AS IntPtr ) 
+    CoreDb.RddInfo( _SET_CONNECTION_HANDLE, ptrHandle )
+    RETURN 
+
 
 /// <summary>Returns the Exact Key Position Flag.</summary>  
 FUNCTION AX_SetExactKeyPos( ) AS LOGIC
@@ -442,6 +454,7 @@ FUNCTION AdsContinue(hTable AS IntPtr , pbFound OUT WORD) AS DWORD
     
 
 /// <include file="ads.xml" path="functions/ads/*" />
+/// <seealso cref="O:XSharp.RDD.Functions.AX_SetConnectionHandle">AX_SetConnectionHandle Function</seealso>
 FUNCTION AdsConnect60(pucServerPath AS STRING , usServerTypes AS WORD, pucUserName AS STRING , pucPassword AS STRING , ulOptions AS DWORD, phConnect OUT IntPtr ) AS DWORD 
     RETURN ACE.AdsConnect60(pucServerPath, usServerTypes, pucUserName, pucPassword, ulOptions, OUT phConnect)
     

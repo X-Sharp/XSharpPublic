@@ -7,7 +7,7 @@
 /// <include file="VFPRuntimeDocs.xml" path="Runtimefunctions/addproperty/*" />
 FUNCTION AddProperty (oObjectName, cPropertyName, eNewValue )
     IF IsObject(oObjectName) .and. IsString(cPropertyName)
-        oObjectName:AddProperty(cPropertyName, eNewValue)
+        Send(oObjectName,#AddProperty,cPropertyName, eNewValue)
     ENDIF
     RETURN FALSE
 
@@ -15,7 +15,7 @@ FUNCTION AddProperty (oObjectName, cPropertyName, eNewValue )
 /// <include file="VFPRuntimeDocs.xml" path="Runtimefunctions/removeproperty/*" />
 FUNCTION RemoveProperty( oObjectName, cPropertyName ) AS LOGIC
     IF IsObject(oObjectName) .and. IsString(cPropertyName)
-        oObjectName:RemoveProperty(cPropertyName)
+        Send(oObjectName,#RemoveProperty,cPropertyName)
     ENDIF
     RETURN FALSE
 

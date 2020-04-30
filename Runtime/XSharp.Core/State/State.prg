@@ -6,6 +6,7 @@
 
 USING System.Collections.Generic
 USING System.Threading
+USING System.Diagnostics
 USING XSharp.RDD
 USING XSharp.RDD.Enums
 USING System.Runtime.CompilerServices
@@ -21,9 +22,10 @@ USING System.Runtime.CompilerServices
 CLASS XSharp.RuntimeState
 	// Static Fields
 	PRIVATE INITONLY STATIC initialState  AS RuntimeState
-	PRIVATE INITONLY Thread AS Thread
+	PRIVATE INITONLY _thread AS Thread
+	PRIVATE STATIC _shutdown := FALSE AS LOGIC  // To prevent creating state when shutting down
 	// Static Methods and Constructor
-	private STATIC currentState := ThreadLocal<RuntimeState>{ {=>  initialState:Clone()},TRUE }  AS ThreadLocal<RuntimeState> 
+	PRIVATE STATIC currentState := ThreadLocal<RuntimeState>{ {=>  initialState:Clone()},TRUE }  AS ThreadLocal<RuntimeState> 
 	STATIC CONSTRUCTOR
 		initialState	:= RuntimeState{TRUE}
 
@@ -31,6 +33,7 @@ CLASS XSharp.RuntimeState
 	PUBLIC STATIC METHOD GetInstance() AS RuntimeState
 		RETURN currentState:Value
 
+    [DebuggerBrowsable(DebuggerBrowsableState.Never)];
 	PRIVATE oSettings AS Dictionary<XSharp.Set, OBJECT>
     /// <summary>The dictionary that stores most of the settings in the runtime state. The key to the index is the number from the Set Enum</summary>
     /// <seealso cref="T:XSharp.Set" >Set Enum</seealso>
@@ -38,7 +41,7 @@ CLASS XSharp.RuntimeState
 
 	PRIVATE CONSTRUCTOR(initialize AS LOGIC)       
 		VAR oThread := Thread.CurrentThread
-        SELF:Thread := oThread
+        SELF:_thread := oThread
 		oSettings := Dictionary<XSharp.Set, OBJECT>{}
 		IF initialize
 			SELF:BreakLevel := 0
@@ -67,16 +70,18 @@ CLASS XSharp.RuntimeState
 		ENDIF
 		RETURN
     /// <exclude />
-	DESTRUCTOR()
-		// What do we need to clean ?
-		IF oSettings != NULL
-			oSettings:Clear()
-		ENDIF
+//	DESTRUCTOR()
+//		// What do we need to clean ?
+//        IF oSettings != NULL
+//			oSettings:Clear()
+//		ENDIF
+
 
     /// <summary>This method closes all open Workareas for all threads. It is automatically called ad shutdown.</summary>
     /// <remarks>It is usually better to manage the lifetime of your Workarea yourself in code, so don't trust on the runtime to close the Workareas.</remarks>
     STATIC METHOD CloseWorkareasForAllThreads() AS VOID
         TRY
+            _shutdown := TRUE   // prevent creating state when shutting down
             FOREACH VAR state IN currentState:Values
                 IF state:_Workareas != NULL
                     state:_Workareas:CloseAll()
@@ -87,7 +92,7 @@ CLASS XSharp.RuntimeState
         END TRY
 	PRIVATE METHOD Clone() AS RuntimeState
 		LOCAL oNew AS RuntimeState
-        IF Thread.CurrentThread == initialState:Thread
+        IF Thread.CurrentThread == initialState:_thread .OR. _shutdown
             RETURN initialState
         ENDIF
 		oNew := RuntimeState{FALSE}		
@@ -103,10 +108,10 @@ CLASS XSharp.RuntimeState
 	/// <returns>String value, such as "State for Thread 123"</returns>IDb
 	PUBLIC PROPERTY Name AS STRING
     GET
-        IF SELF:Thread == NULL
+        IF SELF:_thread == NULL
             RETURN "ThreadState for Unknown Thread"
         ELSE
-            RETURN "ThreadState for "+SELF:Thread:ManagedThreadId:ToString()
+            RETURN "ThreadState for Thread "+SELF:_thread:ManagedThreadId:ToString()
         ENDIF
     END GET
     END PROPERTY
@@ -124,6 +129,10 @@ CLASS XSharp.RuntimeState
 	/// <returns>The current value, or a default value of type T.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)];
 	PUBLIC STATIC METHOD GetValue<T> (nSetting AS XSharp.Set) AS T
+        IF _shutdown
+            // There is no RuntimeState when shutting down            
+            RETURN DEFAULT(T)
+        ENDIF
 		RETURN currentState:Value:_GetThreadValue<T>(nSetting);
 
 	/// <summary>Set a value for the state of the current Thread.</summary>
@@ -133,6 +142,10 @@ CLASS XSharp.RuntimeState
 	/// <returns>The previous value, or a default value of type T when the setting was not yetr defined.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)];
 	PUBLIC STATIC METHOD SetValue<T> (nSetting AS XSharp.Set, oValue AS T) AS T
+        IF _shutdown
+            // Suppress updating RuntimeState when shutting down
+            RETURN oValue
+        ENDIF
 		RETURN currentState:Value:_SetThreadValue<T>(nSetting, oValue)
     [MethodImpl(MethodImplOptions.AggressiveInlining)];
 	PRIVATE METHOD _GetThreadValue<T> (nSetting AS XSharp.Set) AS T
@@ -757,6 +770,7 @@ CLASS XSharp.RuntimeState
     STATIC METHOD PopCurrentWorkarea() AS DWORD
         RETURN RuntimeState.Workareas:PopCurrentWorkarea()
 
+    [DebuggerBrowsable(DebuggerBrowsableState.Never)];
 	PRIVATE _collationTable AS BYTE[]
     /// <summary>Current collation table.</summary>
     

@@ -138,7 +138,7 @@ CLASS XSharp.VFP.Empty
         ELSE
             THROW PropertyNotFoundException{cName}
         ENDIF
-        RETURN NIL
+        
         
     #region Implementations
     PROTECTED METHOD _GetProperty(cName AS STRING) AS USUAL

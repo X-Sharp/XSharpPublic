@@ -354,6 +354,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF SELF:HasTopScope
                 SELF:_ScopeSeek(DbOrder_Info.DBOI_SCOPETOP)
                 first := SELF:_findItemPos()
+                SELF:ClearStack()
             ENDIF
             IF last > first
                 RETURN last - first + 1

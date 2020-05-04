@@ -92,12 +92,13 @@ CONSTRUCTOR(oOwner)
 	oParent := oOwner
 	hOwner := oParent:Handle()  
 	//SE-070501 for better	Datawindow support
-	IF IsInstanceOf(oParent, #__FormFrame)
-		oParent := IVarGet(oParent, #DataWindow)
-	ELSEIF IsInstanceOf(oParent, #__FormDialogWindow)
-		oParent := IVarGet(oParent:Owner, #DataWindow) 
+	IF oParent IS __FormFrame  VAR oFF
+		oParent := oFF:DataWindow
+    ELSEIF oParent IS __FormDialogWindow 
+        VAR oFFr := (__FormFrame) oParent:Owner
+		oParent := oFFr:DataWindow 
 	ENDIF
-	IF oParent = NULL_OBJECT
+	IF oParent == NULL_OBJECT
 		oParent := oOwner
 	ENDIF    
 

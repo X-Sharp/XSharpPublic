@@ -306,6 +306,7 @@ Copyright (c) XSharp B.V.  All Rights Reserved
 	    XPP1="$(XPP1)" 
 	    XPP2="$(XPP2)" 
       FOX1="$(FOX1)" 
+      FOX2="$(FOX2)" 
     />
 
     <ItemGroup>

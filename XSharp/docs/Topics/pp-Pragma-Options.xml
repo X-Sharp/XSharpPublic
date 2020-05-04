@@ -26,9 +26,9 @@
     <para styleclass="Code with box">#pragma options( &quot;option&quot;, <text style="font-style:italic;">state</text> )</para>
     <para styleclass="NotesBox">Note: #pragma directives must appear between before the first entity or between entities and cannot appear in the middle of an entity</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">&quot;option&quot; can be one of the following</para>
+    <para styleclass="Normal">&quot;option&quot; can be one of the following (please note that not all compiler options can be used)</para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><table styleclass="Default" rowcount="12" colcount="2" style="width:auto; page-break-inside:avoid;">
+    <para styleclass="Normal"><table styleclass="Default" rowcount="18" colcount="2" style="width:auto; page-break-inside:avoid;">
       <tr style="vertical-align:top">
         <td style="width:95px;">
           <para styleclass="Normal"><text style="font-weight:bold;">Option</text></para>
@@ -87,10 +87,26 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="width:95px;">
+          <para styleclass="Normal">&quot;vo4&quot;</para>
+        </td>
+        <td style="width:1152px;">
+          <para styleclass="Normal">Implicit Signed / Unsigned conversions</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:95px;">
           <para styleclass="Normal">&quot;vo5&quot;</para>
         </td>
         <td style="width:1152px;">
           <para styleclass="Normal">Implicit Clipper Calling convention</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:95px;">
+          <para styleclass="Normal">&quot;vo6&quot;</para>
+        </td>
+        <td style="width:1152px;">
+          <para styleclass="Normal">Implicit pointer conversions</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -111,6 +127,22 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="width:95px;">
+          <para styleclass="Normal">&quot;vo10&quot;</para>
+        </td>
+        <td style="width:1152px;">
+          <para styleclass="Normal">Compatible IIF Behavior</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:95px;">
+          <para styleclass="Normal">&quot;vo11&quot;</para>
+        </td>
+        <td style="width:1152px;">
+          <para styleclass="Normal">Compatible numeric conversions</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:95px;">
           <para styleclass="Normal">&quot;vo12&quot;</para>
         </td>
         <td style="width:1152px;">
@@ -119,10 +151,26 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="width:95px;">
+          <para styleclass="Normal">&quot;vo13&quot;</para>
+        </td>
+        <td style="width:1152px;">
+          <para styleclass="Normal">Compatible String Comparisons</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:95px;">
           <para styleclass="Normal">&quot;vo14&quot;</para>
         </td>
         <td style="width:1152px;">
           <para styleclass="Normal">Embed real constants as float</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:95px;">
+          <para styleclass="Normal">&quot;fox2&quot;</para>
+        </td>
+        <td style="width:1152px;">
+          <para styleclass="Normal">Make local variables visible to the macro compiler</para>
         </td>
       </tr>
     </table></para>

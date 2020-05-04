@@ -33,7 +33,7 @@
       </tr>
     </table></para>
     <para styleclass="Heading2">XBase Compatibility</para>
-    <para styleclass="Heading2"><table styleclass="Default" rowcount="35" colcount="2">
+    <para styleclass="Heading2"><table styleclass="Default" rowcount="37" colcount="2">
       <thead style="vertical-align:top">
         <td>
           <para styleclass="Normal">Option</para>
@@ -72,6 +72,22 @@
         </td>
         <td>
           <para styleclass="Normal">Specifies that exceptions will be raised on invalid floating point operations </para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-fox1">-fox1</link></para>
+        </td>
+        <td>
+          <para styleclass="Body Text">Classes are assumed to inherit from the Custom class</para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-fox2">-fox2</link></para>
+        </td>
+        <td>
+          <para styleclass="Normal">Make local variables visible to the macro compiler</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -255,7 +271,7 @@
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo11">-vo11</link></para>
         </td>
         <td>
-          <para styleclass="Normal"><text style="color:#ff0000;">Enables Visual Objects compatible arithmetic conversions </text></para>
+          <para styleclass="Normal"><text style="color:#000000;">Enables Visual Objects compatible arithmetic conversions </text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">

@@ -6,7 +6,7 @@
     <header>
       <para styleclass="Heading1">-memvar</para>
     </header>
-    <para styleclass="Normal">The -<text styleclass="Body Text">memvar</text> option tells the compiler to enable the support for &#160;&apos;memory variables&apos;</para>
+    <para styleclass="Normal">The -<text styleclass="Body Text">memvar</text> option tells the compiler to enable the support for &#160;&apos;memory variables&apos;. This option is also needed in the FoxPro dialect if you want to make local variables visible to the macro compiler with the <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-fox2">-fox2</link> compilation option.</para>
     <para styleclass="Heading2">Syntax</para>
     <para styleclass="Code with box">-memvar [+ | -] &#160;</para>
     <para styleclass="Heading2">Arguments</para>

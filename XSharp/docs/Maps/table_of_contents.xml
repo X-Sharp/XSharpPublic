@@ -1326,8 +1326,11 @@
         <topicref type="topic" id="423893924419519" build="ALL" modified="2016-01-20T09:46:19.415Z" icon="0" href="opt-fovf">
           <caption translate="true">-fovf</caption>
         </topicref>
-        <topicref type="topic" id="437496107865154" build="ALL" modified="2019-10-11T17:27:11.402Z" icon="0" href="opt-vo1_2">
+        <topicref type="topic" id="437496107865154" build="ALL" modified="2020-05-04T09:20:15.015Z" icon="0" href="opt-fox1">
           <caption translate="true">-fox1</caption>
+        </topicref>
+        <topicref type="topic" id="439552545409530" build="ALL" modified="2020-05-04T09:20:29.759Z" icon="0" href="opt-fox2">
+          <caption translate="true">-fox2</caption>
         </topicref>
         <topicref type="topic" id="423892407757277" build="ALL" modified="2016-01-20T09:46:22.400Z" icon="0" href="opt-fullpaths">
           <caption translate="true">-fullpaths</caption>

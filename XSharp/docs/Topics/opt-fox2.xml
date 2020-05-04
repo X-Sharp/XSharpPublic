@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>-fox2</title>
+  <keywords>
+    <keyword>-fox2</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">-fox2<tab />Make local variables visible to the macro compiler</para>
+    </header>
+    <para styleclass="Normal">The -fox2 compiler option makes local variables visible to the macro compiler.</para>
+    <para styleclass="Normal">Normally at compile time the names of the local variables are discarded and local variables are translated into locations on the stack of the function or method.</para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal">When this compiler option is enabled, then the compiler generate additional code to register the names and locations of local variables with the runtime to ensure that they are visible to the macro compiler. </para>
+    <para styleclass="Normal">This also makes them available in parametrized SQL statements.</para>
+    <para styleclass="Heading2">Requirements</para>
+    <para styleclass="Normal">The -fox2 compiler options MUST be used together with the -memvar compiler option and the FoxPro dialect.</para>
+    <para styleclass="Heading2">Example</para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> oPerson := Person{} </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;"> Person</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> varName := &quot;oPerson&quot; </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">STRING</text><br/><tab /><text style="font-weight:bold; font-style:italic; color:#339966;">// this will only work when the compiler option fox2 is enabled</text><br/><tab /><text style="font-weight:bold; font-style:italic; color:#339966;">// because otherwise the macro compiler will not be able to &quot;see&quot; the oPerson variable.</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; ? &amp;varName..LastName &#160; </text></para>
+    <para styleclass="Body Text"><text style="font-weight:normal; font-style:normal; color:#000000;">or</text></para>
+    <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> nId &#160; := 100 </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">as</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; color:#ff0000;">LONG</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> hStmt := SqlStringConnect()</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> cStmt := &quot;Select * from Customers where CustomerId = ?nId&quot;</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:italic; color:#339966;">// SqlExec() will only be able to read the parameter nId when the compiler option fox2 is enabled</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;"> &#160; SqlExec(hStmt, cStmt)</text></para>
+    <para styleclass="Heading3">Please note</para>
+    <para styleclass="Body Text"><text style="font-weight:normal; font-style:normal; color:#000000;">The fox2 compiler option generates a significant amount of extra code in functions/methods with local variables. </text></para>
+    <para styleclass="Body Text"><text style="font-weight:normal; font-style:normal; color:#000000;">And, just like the description indicates, if exposes local variables to code outside of the local scope, which is not always a good idea, since that may introduce a hidden dependency on a name that is passed &quot;magically&quot; between 2 functions.</text></para>
+    <para styleclass="Body Text"><text style="font-weight:normal; font-style:normal; color:#000000;">It is only recommended &#160;for code that really needs this feature. </text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">You can use</text><link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Pragma-Options" style="font-weight:normal; font-style:normal; color:#000000;"> #pragma options</link><text style="font-weight:normal; font-style:normal; color:#000000;"> to enable / disable fox2 for some source files or even some functions </text></para>
+  </body>
+</topic>

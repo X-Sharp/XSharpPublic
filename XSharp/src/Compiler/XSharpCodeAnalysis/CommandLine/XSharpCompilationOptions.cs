@@ -22,6 +22,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         private bool VOImplicitCastsAndConversions;
         private bool MemVars;
         private bool UndeclaredMemVars;
+
         #endregion
 
         public bool MacroScript { get; private set; }
@@ -43,7 +44,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         //public bool XPPInheritFromAbstract { get; private set; } // Handled in the parser
         //public bool XPPUntypedmain { get; private set; } // Handled in the parser
         //public bool FoxInheritUnknown { get; private set; } // Handled in the parser
-
+        public bool FoxExposeLocals { get; private set; }
         public XSharpDialect Dialect { get; private set; }
         public bool ImplicitNameSpace { get; private set; }
         //bool InitLocals { get; set; }
@@ -84,7 +85,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 //XPPInheritFromAbstract = opt.Xpp1;        // Handled in the parser
                 //XPPUntypedmain= opt.Xpp2;                 // Handled in the parser
                 //FoxInheritUnknown= opt.Fox1;              // Handled in the parser
-
+                FoxExposeLocals = opt.Fox2;                 // Only needed in the parser ?
                 Dialect = opt.Dialect;
                 ImplicitNameSpace = opt.ImplicitNameSpace;
                 LateBinding = opt.LateBinding;
@@ -94,6 +95,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 RuntimeAssemblies = opt.RuntimeAssemblies;
                 //InitLocals = opt.InitLocals;
                 AllowUnsafe = opt.AllowUnsafe;
+               
                 
             }
         }
@@ -147,6 +149,9 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                 case CompilerOption.StringComparisons: // vo13
                     return CheckOption(option, VOStringComparisons, syntax);
+
+                case CompilerOption.FoxExposeLocals: // fox2
+                    return CheckOption(option, FoxExposeLocals, syntax);
 
                 // other options are not handled or only handled during parsing
                 case CompilerOption.ClipperCallingConvention:   // Vo5
@@ -224,6 +229,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             //VOFloatConstants = opt.VOFloatConstants; // vo14  // Handled in the parser
             //VOUntypedAllowed = opt.VOUntypedAllowed; // vo15  // Handled in the parser
             //VOClipperConstructors = opt.VOClipperConstructors; // vo16// Handled in the parser
+            FoxExposeLocals = opt.FoxExposeLocals;          // Only neeed in the parser ?
             ConsoleOutput = opt.ConsoleOutput;
             UndeclaredMemVars = opt.UndeclaredMemVars;
             MemVars = opt.MemVars;

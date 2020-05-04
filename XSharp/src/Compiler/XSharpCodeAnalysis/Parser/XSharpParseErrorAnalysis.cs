@@ -411,6 +411,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             case "vo12":    // Clipper Integer divisions
                             case "vo13":    // StringComparisons
                             case "vo14":    // Embed real constants as float
+                            case "fox2":    // Expose local names to macro compiler
                                 context.Pragma = new PragmaOption(context, state, CompilerOptionDecoder.Decode(opt));
                                 break;
                             default:

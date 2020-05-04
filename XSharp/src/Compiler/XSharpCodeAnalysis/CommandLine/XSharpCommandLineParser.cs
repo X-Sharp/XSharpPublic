@@ -371,6 +371,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                     options.Fox1 = positive;
                     encode = true;
                     break;
+                case "fox2":       // Make locals visible to macro compiler
+                    options.Fox2 = positive;
+                    encode = true;
+                    break;
                 case "unsafe":
                     options.AllowUnsafe = positive;
                     handled = false;    // there is also an 'unsafe' option in Roslyn
@@ -603,9 +607,29 @@ namespace Microsoft.CodeAnalysis.CSharp
                     AddDiagnostic(diagnostics, ErrorCode.ERR_CompilerOptionNotSupportedForDialect, "vo16", "Generate Clipper calling convention constructors for classes without constructor", options.Dialect.ToString());
                     options.Vo16 = false;
                 }
+                if (options.MemVars && options.ExplicitOptions.HasFlag(CompilerOption.MemVars))
+                {
+                    AddDiagnostic(diagnostics, ErrorCode.ERR_CompilerOptionNotSupportedForDialect, "memvars", "PRIVATE and or PUBLIC variables", options.Dialect.ToString());
+                    options.Vo16 = false;
+                }
             }
             else
             {
+                if (options.MemVars && options.ExplicitOptions.HasFlag(CompilerOption.MemVars) && !options.XSharpRTIncluded)
+                {
+                    AddDiagnostic(diagnostics, ErrorCode.ERR_IllegalCombinationOfCommandLineOptions, "/memvars requires the use of the X# Runtime", options.Dialect.ToString());
+                    options.MemVars = false;
+                }
+                if (options.UndeclaredMemVars && options.ExplicitOptions.HasFlag(CompilerOption.UndeclaredMemVars) && !options.XSharpRTIncluded)
+                {
+                    AddDiagnostic(diagnostics, ErrorCode.ERR_IllegalCombinationOfCommandLineOptions, "/undeclared requires the use of the X# Runtime", options.Dialect.ToString());
+                    options.UndeclaredMemVars = false;
+                }
+                if (options.Fox2 && options.ExplicitOptions.HasFlag(CompilerOption.Fox2) && !options.XSharpRTIncluded)
+                {
+                    AddDiagnostic(diagnostics, ErrorCode.ERR_IllegalCombinationOfCommandLineOptions, "/fox2 requires the use of the X# Runtime", options.Dialect.ToString());
+                    options.Fox2 = false;
+                }
                 if (!options.ExplicitOptions.HasFlag(CompilerOption.Vo15))
                 {
                     options.Vo15 = true;            // Untyped allowed
@@ -625,6 +649,18 @@ namespace Microsoft.CodeAnalysis.CSharp
                         options.Fox1 = true;             // inherit from Custom
                     }
                 }
+            }
+            if (options.Fox2)
+            {
+                // this requires the FoxPro dialect and Memvars enabled
+                if (newDialect != XSharpDialect.FoxPro || !options.MemVars)
+                {
+                    AddDiagnostic(diagnostics, ErrorCode.ERR_IllegalCombinationOfCommandLineOptions, "/fox2 must be combined with the FoxPro dialect and /memvars");
+                }
+            }
+            if (options.UndeclaredMemVars && ! options.MemVars)
+            {
+                AddDiagnostic(diagnostics, ErrorCode.ERR_IllegalCombinationOfCommandLineOptions, "/undeclared must be combined /memvars");
             }
             options.Dialect = newDialect;
            

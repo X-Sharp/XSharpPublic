@@ -316,7 +316,11 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             }
 
         }
-
+        public void ClearSequencePoint()
+        {
+            iBpStart = -1;
+            iBPLength = -1;
+        }
         public void SetSequencePoint()
         {
             SetSequencePoint(Start, Stop);

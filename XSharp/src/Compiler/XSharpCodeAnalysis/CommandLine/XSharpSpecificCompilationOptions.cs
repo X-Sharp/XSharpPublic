@@ -81,6 +81,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool Xpp1 { get; internal set; } = false;
         public bool Xpp2 { get; internal set; } = false;
         public bool Fox1 { get; internal set; } = false;
+        public bool Fox2 { get; internal set; } = false;
         public bool VulcanRTFuncsIncluded => RuntimeAssemblies.HasFlag(RuntimeAssemblies.VulcanRTFuncs);
         public bool VulcanRTIncluded => RuntimeAssemblies.HasFlag(RuntimeAssemblies.VulcanRT);
         public bool XSharpRTIncluded => RuntimeAssemblies.HasFlag(RuntimeAssemblies.XSharpRT);
@@ -174,14 +175,16 @@ namespace Microsoft.CodeAnalysis.CSharp
         Xpp1 = 1 << 17,
         Xpp2 = 1 << 18,
         Fox1 = 1 << 19,
-        InitLocals = 1 << 20,
-        NamedArgs = 1 << 21,
-        ArrayZero = 1 << 22,
-        LateBinding = 1 << 23,
-        ImplicitNamespace = 1 << 24,
-        MemVars = 1 << 25,
-        UndeclaredMemVars = 1 << 26,
-        ClrVersion = 1 << 27,
+        Fox2 = 1 << 20,
+        FoxExposeLocals = Fox2,
+        InitLocals = 1 << 21,
+        NamedArgs = 1 << 22,
+        ArrayZero = 1 << 23,
+        LateBinding = 1 << 24,
+        ImplicitNamespace = 1 << 25,
+        MemVars = 1 << 26,
+        UndeclaredMemVars = 1 << 27,
+        ClrVersion = 1 << 28,
         All = -1
 
     }
@@ -198,6 +201,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return CompilerOption.Overflow;
                 case "fox1":
                     return CompilerOption.Fox1;
+                case "fox2":
+                    return CompilerOption.Fox2;
                 case "initlocals":
                     return CompilerOption.InitLocals;
                 case "ins":

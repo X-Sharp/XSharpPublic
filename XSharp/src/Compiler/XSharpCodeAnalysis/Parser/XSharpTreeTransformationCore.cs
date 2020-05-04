@@ -8953,11 +8953,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         #endregion
 
         #region ExpressionParser
+
         protected ExpressionSyntax ParseSubExpression(string expression, out string extraText, IToken starttoken)
         {
             // do not include the standard defs here. These have already been processed at the file level
             var options = _options.WithNoStdDef(true);
-            var lexer = XSharpLexer.Create(expression, _fileName, options);
+            // add spaces to the offset of the first token in the result matches the offset of the "anchor"
+            var spaces = new string(' ', starttoken.StartIndex);
+            var lexer = XSharpLexer.Create(spaces+expression, _fileName, options);
             var parseErrors = ParseErrorData.NewBag();
             extraText = null;
             BufferedTokenStream tokenStream;
@@ -8965,15 +8968,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 tokenStream = lexer.GetTokenStream();
                 tokenStream.Fill();
-                // adjust token positions
-                foreach (var token in tokenStream.GetTokens())
-                {
-                    if (token is XSharpToken xtoken)
-                    {
-                        xtoken.Line = starttoken.Line;
-                        xtoken.Column += starttoken.Column;
-                    }
-                }
                 if (lexer.HasPreprocessorTokens )
                 {
                     var pp = new XSharpPreprocessor(lexer, tokenStream, options, _fileName, Encoding.Unicode, Text.SourceHashAlgorithm.Sha256, parseErrors);
@@ -8994,6 +8988,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 tokenStream.Fill();
             }
             var parser = new XSharpParser(tokenStream);
+            parser.Options = _options;
             XSharpParserRuleContext tree = null;
 
             try
@@ -9029,6 +9024,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     // add our current entity so there is a context for memvars and fields
                     transform.Entities.Push(this.CurrentEntity);
                     walker.Walk(transform, tree);
+                    walker.Walk(new XSharpClearSequences(), tree);
+
                 }
                 catch (Exception e)
                 {

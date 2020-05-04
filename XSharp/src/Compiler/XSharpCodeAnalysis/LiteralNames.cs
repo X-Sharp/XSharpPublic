@@ -207,6 +207,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string NIL = "._NIL";
         internal const string WrapRawExceptionVn = "._WrapRawException";
         internal const string WrapRawExceptionXs = ".WrapRawException";
+        internal const string LocalRegister = "__LocalRegister";
+        internal const string LocalUnRegister = "__LocalUnRegister";
     }
     internal static class VulcanQualifiedFunctionNames
     {

@@ -4592,7 +4592,8 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
 -vo14[+|-]                     Use Float Literals
 -vo15[+|-]                     Allow untyped Locals and return types (default = ON for VO/Vulcan)
 -vo16[+|-]                     Generate Clipper calling convention constructors for classes without constructor 
--fox1[+-]                      All FoxPro classes are assumed to inherit from the Custom class
+-fox1[+|-]                     All FoxPro classes are assumed to inherit from the Custom class
+-fox2[+|-]                     Make local variables visible to the macro compiler
 -xpp1[+|-]                     All classes inherit from the Abstract class (default = OFF)
 -memvar[+|-]                   Should memory variables (PUBLIC and PRIVATE variables) be supported. 
                                This only works for the VO, XPP and Harbour dialects.
@@ -5713,5 +5714,8 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   </data>
   <data name="WRN_UndeclaredMember" xml:space="preserve">
     <value>Type '{0}' does not have a {2} '{1}'. This gets resolved to a late bound {2} {3}.</value>
+  </data>
+  <data name="ERR_IllegalCombinationOfCommandLineOptions" xml:space="preserve">
+    <value>Illegal combination of commandline options: {0}.</value>
   </data>
 </root>

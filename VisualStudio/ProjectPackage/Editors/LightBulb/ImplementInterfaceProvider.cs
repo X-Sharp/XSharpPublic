@@ -161,7 +161,9 @@ namespace XSharp.Project.Editors.LightBulb
                         // Search for Implements
                         if (Keyword.Equals("implements"))
                         {
-                            return true;
+                            // Disable LightBulb
+                            return false;
+                            //return true;
                         }
                     }
                 }

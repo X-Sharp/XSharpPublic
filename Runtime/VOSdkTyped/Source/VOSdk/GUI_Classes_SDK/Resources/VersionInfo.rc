@@ -1,0 +1,6 @@
+// This file is needed to set the version information for the assembly
+// Because the assembly has native resources
+#define FILE_DESCRIPTION "GuiClasses"
+#define INTERNAL_NAME "GuiClasses"
+#define ORIGINAL_NAME "GuiClasses"
+#include "VersionResource.rc"

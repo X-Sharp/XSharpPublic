@@ -90,10 +90,10 @@ CLASS Console
         SET System.Console.Title := VALUE
     
     METHOD Wait AS STRING STRICT
-        local Info     as System.ConsoleKeyInfo
+        LOCAL info     AS System.ConsoleKeyInfo
         LOCAL cResult   AS STRING
         info := System.Console.ReadKey(TRUE)
-        cResult := Info:KeyChar:ToString()
+        cResult := info:KeyChar:ToString()
         SELF:Write(cResult)
         return cResult
         

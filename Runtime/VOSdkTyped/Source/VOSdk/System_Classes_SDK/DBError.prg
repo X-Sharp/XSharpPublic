@@ -1,7 +1,6 @@
 PARTIAL CLASS DbError   INHERIT Error
 
 CONSTRUCTOR( oOriginator, symMethod, wErrorType, oHLErrorMessage, uMisc1, uMisc2 )  
-    //RvdH 080609 Added call to super:Init to correctly fill the callstack
     SUPER()
 	SubSystem := "Database"
 	IF oOriginator# NIL
@@ -12,9 +11,9 @@ CONSTRUCTOR( oOriginator, symMethod, wErrorType, oHLErrorMessage, uMisc1, uMisc2
 		CallFuncSym := symMethod
 	ENDIF
 	IF wErrorType# NIL
-		GenCode := wErrorType
+		Gencode := wErrorType
 	ELSE
-		GenCode := EG_NOTABLE
+		Gencode := EG_NOTABLE
 	ENDIF
 	IF oHLErrorMessage# NIL
 		IF IsObject(oHLErrorMessage) .and. __Usual.ToObject(oHLErrorMessage) IS HyperLabel 
@@ -23,7 +22,7 @@ CONSTRUCTOR( oOriginator, symMethod, wErrorType, oHLErrorMessage, uMisc1, uMisc2
 			Description := oHLErrorMessage
 		ENDIF
 	ENDIF
-	IF GenCode = EG_ARG .OR. uMisc1 != NIL .OR. uMisc2 != NIL
+	IF Gencode = EG_ARG .OR. uMisc1 != NIL .OR. uMisc2 != NIL
 		Args := { uMisc1 }
 		Arg := uMisc2
 	ENDIF

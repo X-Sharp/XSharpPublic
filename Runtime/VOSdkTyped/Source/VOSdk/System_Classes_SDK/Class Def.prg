@@ -1,10 +1,18 @@
 #region defines
-DEFINE ccOptimistic			:= 1
-DEFINE ccNone				:= 0
-DEFINE ccStable				:= 2
-DEFINE ccRepeatable		:= 3
-DEFINE ccFile				:= 4
-DEFINE ccUser				:= 1000
+ENUM Concurrency
+    MEMBER None				:= 0
+    MEMBER Optimistic		:= 1
+    MEMBER Stable			:= 2
+    MEMBER Repeatable		:= 3
+    MEMBER File				:= 4
+    MEMBER User             := 1000
+END ENUM    
+DEFINE ccOptimistic			:= Concurrency.Optimistic
+DEFINE ccNone				:= Concurrency.None
+DEFINE ccStable				:= Concurrency.Stable
+DEFINE ccRepeatable		    := Concurrency.Repeatable
+DEFINE ccFile				:= Concurrency.File
+DEFINE ccUser				:= Concurrency.User
 DEFINE DBC_INDEXNAME	:= 1
 DEFINE DBC_INDEXPATH	:= 2
 DEFINE DBC_ORDERS		:= 3
@@ -16,19 +24,36 @@ DEFINE DBC_FOREXP		:= 5
 DEFINE DBC_SYMBOL		:= 1
 DEFINE DBC_NAME			:= 2
 DEFINE DBC_FIELDSPEC		:= 3
-DEFINE NOTIFYFIELDCHANGE :=  -1
-DEFINE NOTIFYCLEARRELATION :=  25
-DEFINE NOTIFYCLOSE :=  0
-DEFINE NOTIFYCOMPLETION :=  1
-DEFINE NOTIFYINTENTTOMOVE :=  2
-DEFINE NOTIFYRECORDCHANGE :=  3
-DEFINE NOTIFYGOBOTTOM :=  4
-DEFINE NOTIFYGOTOP :=  5
-DEFINE NOTIFYDELETE :=  6
-DEFINE NOTIFYAPPEND :=  7
-DEFINE NOTIFYFILECHANGE :=  10
-DEFINE NOTIFYRELATIONCHANGE :=  20
-DEFINE NOTIFYCONCURRENCYCONTROLMODE := 50
+
+ENUM Notify
+    MEMBER FieldChange :=  -1
+    MEMBER Close :=  0
+    MEMBER Completion :=  1
+    MEMBER IntentToMove :=  2
+    MEMBER RecordChange :=  3
+    MEMBER GoBottom :=  4
+    MEMBER GoTop :=  5
+    MEMBER Delete :=  6
+    MEMBER Append :=  7
+    MEMBER FileChange :=  10
+    MEMBER RelationChange :=  20
+    MEMBER ClearRelation :=  25
+    MEMBER ConcurrencyControlMode := 50
+END ENUM
+
+DEFINE NOTIFYFIELDCHANGE :=  Notify.FieldChange
+DEFINE NOTIFYCLEARRELATION :=  Notify.ClearRelation
+DEFINE NOTIFYCLOSE :=  Notify.Close
+DEFINE NOTIFYCOMPLETION :=  Notify.Completion
+DEFINE NOTIFYINTENTTOMOVE :=  Notify.IntentToMove
+DEFINE NOTIFYRECORDCHANGE :=  Notify.RecordChange
+DEFINE NOTIFYGOBOTTOM :=  Notify.GoBottom
+DEFINE NOTIFYGOTOP :=   Notify.GoTop
+DEFINE NOTIFYDELETE :=   Notify.Delete
+DEFINE NOTIFYAPPEND :=  Notify.Append
+DEFINE NOTIFYFILECHANGE :=  Notify.FileChange
+DEFINE NOTIFYRELATIONCHANGE := Notify.RelationChange
+DEFINE NOTIFYCONCURRENCYCONTROLMODE := Notify.ConcurrencyControlMode
 DEFINE TYPE_MULTIMEDIA := 42
 
 DEFINE MAXFILENAME      := 260

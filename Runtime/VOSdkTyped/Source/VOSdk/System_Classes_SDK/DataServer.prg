@@ -17,11 +17,11 @@ CONSTRUCTOR( )
 METHOD __ClearLocks( ) AS VOID STRICT 
     SWITCH nCCMode
     CASE ccStable
-        SELF:Unlock( nLastLock )
+        SELF:UnLock( nLastLock )
     CASE ccRepeatable
-        SELF:Unlock( )
+        SELF:UnLock( )
     CASE ccFile
-        SELF:Unlock( )
+        SELF:UnLock( )
     END SWITCH
 
     RETURN
@@ -37,7 +37,7 @@ METHOD __SetupLocks( ) AS VOID STRICT
         NOP
     CASE ccStable 
     CASE ccRepeatable
-        nLastLock := SELF:Recno
+        nLastLock := SELF:RecNo
         // Do not free locks in case user has other locks
         IF ! SELF:RLOCK( nLastLock )
             nLastLock := 0
@@ -143,7 +143,7 @@ ACCESS EoF AS LOGIC
 ACCESS FCount AS DWORD
     RETURN wFieldCount
 
-METHOD FIELDGET( nFieldPosition AS USUAL)  AS USUAL
+METHOD FieldGet( nFieldPosition AS USUAL)  AS USUAL
     RETURN NIL
 
 METHOD FieldGetFormatted( nFieldPosition  AS USUAL)  AS USUAL
@@ -166,7 +166,7 @@ METHOD FieldName( nFieldPosition AS USUAL )  AS STRING
 	METHOD FieldPos( nFieldPosition AS USUAL) AS DWORD
 		RETURN 0
 
-METHOD FIELDPUT( nFieldPosition AS USUAL, uValue  AS USUAL) AS USUAL
+METHOD FieldPut( nFieldPosition AS USUAL, uValue  AS USUAL) AS USUAL
     RETURN NIL
 
 	METHOD FieldSpec( nFieldPosition AS USUAL)  AS FieldSpec
@@ -197,7 +197,7 @@ METHOD FIELDPUT( nFieldPosition AS USUAL, uValue  AS USUAL) AS USUAL
 		ENDIF
 		RETURN TRUE
 
-	METHOD FLOCK( ) AS LOGIC STRICT
+	METHOD FLock( ) AS LOGIC STRICT
 		RETURN FALSE
 
 	METHOD GoBottom( ) AS LOGIC STRICT
@@ -223,18 +223,17 @@ METHOD FIELDPUT( nFieldPosition AS USUAL, uValue  AS USUAL) AS USUAL
 	ACCESS LastRec AS LONG
 		RETURN 0
 
-	ACCESS Name AS USUAL
-		// Usual becauce there may be a field "Name" as well
+	ACCESS Name AS STRING
 		IF SELF:oHyperLabel != NULL_OBJECT
 			RETURN oHyperLabel:Name
 		ENDIF
 		RETURN NULL_STRING
 
 	ACCESS NameSym as symbol
-    IF oHyperlabel != NULL_OBJECT
-        RETURN oHyperLabel:NameSym
-    ENDIF
-    RETURN NULL_STRING
+        IF oHyperLabel != NULL_OBJECT
+            RETURN oHyperLabel:NameSym
+        ENDIF
+        RETURN NULL_STRING
 
 METHOD NoIVarGet( symFieldName ) 
     RETURN SELF:FieldGet( symFieldName )
@@ -279,7 +278,7 @@ METHOD RegisterClient( oForm ) AS LOGIC CLIPPER
 	METHOD ResetNotification( ) AS LONG STRICT
     RETURN 0
 
-	METHOD RLOCK( nRecord ) AS LOGIC CLIPPER
+	METHOD RLock( nRecord ) AS LOGIC CLIPPER
     RETURN FALSE
 
 	METHOD RLockVerify( ) AS LOGIC STRICT
@@ -315,11 +314,11 @@ METHOD RegisterClient( oForm ) AS LOGIC CLIPPER
 	METHOD Skip( nRelativePosition ) AS LOGIC CLIPPER
 		RETURN FALSE
 
-	ACCESS Status AS USUAL
+	ACCESS Status AS HyperLabel
 		// Usual because there may be a field Status as well
 		RETURN oHLStatus
 
-	ASSIGN Status(oHl AS USUAL) 
+	ASSIGN Status(oHl AS HyperLabel) 
 		// Usual because there may be a field Status as well
 		IF IsInstanceOfUsual(oHl, #HyperLabel)
 			SELF:oHLStatus := oHl

@@ -126,7 +126,7 @@ METHOD __DefaultFullPath ()  AS STRING STRICT
 			ENDIF
 
 			IF !Empty(cTestPath)
-				IF InStr("\", cTestPath) .AND. RAt2("\", cTestPath) != SLen(cTestPath)
+				IF Instr("\", cTestPath) .AND. RAt2("\", cTestPath) != SLen(cTestPath)
 					cTestPath += "\"
 				ENDIF
 
@@ -333,7 +333,7 @@ ACCESS Attributes AS STRING
 	RETURN cRet
 
 METHOD Copy(oFSTarget AS FileSpec, lName := FALSE AS LOGIC)
-    RETURN SELF:Copy(oFsTarget:FullPath, lName)
+    RETURN SELF:Copy(oFSTarget:FullPath, lName)
 
 METHOD Copy(oFSTarget AS STRING, lName := FALSE AS LOGIC)       
 	//
@@ -406,9 +406,9 @@ METHOD Copy(oFSTarget AS STRING, lName := FALSE AS LOGIC)
 
 	CATCH e AS Error
 		// get some kind of description for the DOS error
-		IF e:OsCode != 0
-			e:Description := VO_Sprintf(__CAVOSTR_SYSLIB_DOS_ERROR, NTrim(e:OsCode) + ;
-				" (" + DosErrString(e:OsCode) + ")")
+		IF e:OSCode != 0
+			e:Description := VO_Sprintf(__CAVOSTR_SYSLIB_DOS_ERROR, NTrim(e:OSCode) + ;
+				" (" + DosErrString(e:OSCode) + ")")
 		ENDIF
 		SELF:oErrorInfo := e
 		lRetCode := FALSE
@@ -582,7 +582,7 @@ METHOD Find( )   AS LOGIC
 	LOCAL lRet  AS LOGIC
 	LOCAL cPath AS STRING
 
-	lRet := File(SELF:Fullpath)
+	lRet := File(SELF:FullPath)
 
 	IF !lRet
 		cPath := SELF:__DefaultFullPath()
@@ -644,7 +644,7 @@ CONSTRUCTOR(cFullPath := "" AS STRING)
 
 
 METHOD Move(oFSTarget AS FileSpec, lName:= FALSE AS LOGIC) AS LOGIC
-    RETURN SELF:Move(oFsTarget:FullPath, lName)
+    RETURN SELF:Move(oFSTarget:FullPath, lName)
 
 
 METHOD Move(oFSTarget AS STRING, lName:= FALSE AS LOGIC) AS LOGIC
@@ -654,7 +654,7 @@ METHOD Move(oFSTarget AS STRING, lName:= FALSE AS LOGIC) AS LOGIC
 	//        oFSTarget := FileSpec{ "A:\CUSTDATA\CUSTOMER.BAK" }     // specify new file
 	//        oFSSource:Move( oFSTarget )             // move the file
 	//
-	LOCAL oSelf         AS FILESPEC
+	LOCAL oSelf         AS FileSpec
 	LOCAL aFullPath     AS ARRAY
 	LOCAL cNewName      AS STRING
 	LOCAL cFileName     AS STRING
@@ -756,9 +756,9 @@ METHOD Move(oFSTarget AS STRING, lName:= FALSE AS LOGIC) AS LOGIC
 		ENDIF
 	CATCH oErr AS Error
 		// get some kind of description for the DOS error
-		IF oErr:OsCode != 0
-			oErr:Description := VO_Sprintf(__CAVOSTR_SYSLIB_DOS_ERROR, NTrim(oErr:OsCode) + ;
-				" (" + DosErrString(oErr:OsCode) + ")")
+		IF oErr:OSCode != 0
+			oErr:Description := VO_Sprintf(__CAVOSTR_SYSLIB_DOS_ERROR, NTrim(oErr:OSCode) + ;
+				" (" + DosErrString(oErr:OSCode) + ")")
 		ENDIF
 
 		SELF:oErrorInfo := oErr
@@ -852,7 +852,7 @@ METHOD PathUp( )     AS STRING
 	RETURN cFSPath
 
 METHOD Rename(oFSTarget AS FileSpec, lName := FALSE AS LOGIC) AS LOGIC
-        RETURN SELF:Rename(oFsTarget:FileName+oFsTarget:Extension, lName)
+        RETURN SELF:Rename(oFSTarget:FileName+oFSTarget:Extension, lName)
 
 METHOD Rename(oFSTarget AS STRING, lName := FALSE AS LOGIC) AS LOGIC
 	//
@@ -954,51 +954,6 @@ ACCESS TimeChanged  AS STRING
 	ENDIF
 
 	RETURN cRet
-
-END CLASS
-
-PARTIAL CLASS FSError           INHERIT Error   //359@003
-
-CONSTRUCTOR( oOriginator, symMethod, wErrorType, oHLErrorMessage, uMisc1, uMisc2 ) 
-    SUPER()
-	SELF:SubSystem := "FileSpec"
-	IF oOriginator# NIL
-		SELF:MethodSelf := oOriginator
-
-	ENDIF
-
-	IF symMethod# NIL
-		SELF:FuncSym := symMethod
-		SELF:CallFuncSym := symMethod
-
-	ENDIF
-
-	IF wErrorType# NIL
-		SELF:GenCode := wErrorType
-
-	ELSE
-		SELF:GenCode := EG_NOTABLE
-
-	ENDIF
-
-	IF oHLErrorMessage# NIL
-		IF IsObject( oHLErrorMessage) .and. __USual.ToObject(oHLErrorMessage) IS HyperLabel 
-			SELF:Description := ((HyperLabel)oHLErrorMessage):Description
-		ELSE
-			SELF:Description := oHLErrorMessage
-
-		ENDIF
-
-	ENDIF
-
-	IF GenCode = EG_ARG
-		SELF:Args := { uMisc1 }
-		SELF:Arg := uMisc2
-
-	ENDIF
-
-	SELF:Severity := ES_ERROR
-	RETURN 
 
 END CLASS
 

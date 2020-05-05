@@ -1,0 +1,34 @@
+#include "BuildNumber.h"
+#include "VOWin32APILibrary.vh"
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION FILEVERSION_NUMBER
+ PRODUCTVERSION VERSION_NUMBER
+ FILEFLAGSMASK 0x37L
+#ifdef _DEBUG
+ FILEFLAGS 0x3L // VS_FF_DEBUG + VS_FF_PRERELEASE
+#else
+ FILEFLAGS 0x0L // 
+#endif
+ FILEOS 0x00040000L
+ FILETYPE 0x2
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040704b0"
+        BEGIN
+            VALUE "CompanyName", COMPANY_NAME 
+            VALUE "FileDescription", FILE_DESCRIPTION
+            VALUE "FileVersion", FILEVERSION_NUMBER_STR
+            VALUE "InternalName", INTERNAL_NAME
+            VALUE "LegalCopyright", COPYRIGHT_STR
+            VALUE "OriginalFilename", ORIGINAL_NAME
+            VALUE "ProductName", PRODUCT_NAME
+            VALUE "ProductVersion", VERSION_NUMBER_STR
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x407, 1200
+    END
+END

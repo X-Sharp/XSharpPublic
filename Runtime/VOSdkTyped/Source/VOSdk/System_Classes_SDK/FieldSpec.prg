@@ -17,13 +17,13 @@ CLASS FieldSpec
 	//                      after a validation failure.
 	PROTECT oHyperLabel AS HyperLabel
 	PROTECT oHLStatus 	AS HyperLabel
-	PROTECT wType 			AS DWORD        //RvdH 070122 Changed from WORD to DWORD
+	PROTECT wType 			AS DWORD        
 	PROTECT cType 			AS STRING
 	PROTECT lNumeric 		AS LOGIC
 	PROTECT oHLType 		AS HyperLabel
-	PROTECT wLength 		AS DWORD				//RvdH 070122 Changed from WORD to DWORD
+	PROTECT wLength 		AS DWORD		
 	PROTECT oHLLength 	AS HyperLabel
-	PROTECT wDecimals 	AS DWORD         //RvdH 070122 Changed from WORD to DWORD
+	PROTECT wDecimals 	AS DWORD         
 	PROTECT lRequired 	AS LOGIC
 	PROTECT oHLRequired AS HyperLabel
 	PROTECT wMinLength 	AS DWORD
@@ -35,7 +35,6 @@ CLASS FieldSpec
 	PROTECT cPicture 		AS STRING
 	PROTECT lNullable AS LOGIC
 
-	//RvdH-030916 Strong typing
 	METHOD __GetHLRange  AS VOID STRICT 
 	IF IsNil(oHLRange)
 		IF IsNil(uMin) .AND. IsNil(uMax)
@@ -171,7 +170,7 @@ ACCESS Nullable  AS LOGIC
 ASSIGN Nullable( lNew AS LOGIC)                         
 	SELF:lNullable := lNew
 
-METHOD PerformValidations(uValue AS USUAL, arg)  AS LOGIC
+METHOD PerformValidations(uValue AS USUAL)  AS LOGIC
 	// Performs all the validations on the specified value: required field, data type compliance, range, etc.
 	// Returns a LOGIC indicating whether the validation succeeded.
 	// Also sets the STATUS to the appropriate HyperLabel for the validation rule that failed,
@@ -298,7 +297,7 @@ METHOD PerformValidations(uValue AS USUAL, arg)  AS LOGIC
 	ENDIF
 
 	// Check validation method or codeblock
-	IF !SELF:Validate(uValue, arg)
+	IF !SELF:Validate(uValue)
 		IF IsNil(oHLStatus)
 			IF IsNil(oHLValidation)
 				oHLValidation := HyperLabel{ #FieldSpecValidate, , VO_Sprintf(__CAVOSTR_DBFCLASS_INVALIDVALUE,oHyperLabel:Name) }
@@ -411,10 +410,10 @@ METHOD SetType( uType AS USUAL, oHL := NULL AS HyperLabel) AS VOID
 				wType=FLOAT .OR.;
 				wType=BYTE  .OR.;
 				wType=SHORTINT .OR.;
-				wtype=WORD  .OR.;
+				wType=WORD  .OR.;
 				wType=DWORD .OR.;
 				wType=REAL4 .OR.;
-				wtype=REAL8
+				wType=REAL8
 				cType := "N"
 			ELSEIF (wType == TYPE_MULTIMEDIA)
 				cType := "B"
@@ -627,7 +626,7 @@ END CLASS
 PARTIAL CLASS NumberFS INHERIT FieldSpec
 
 CONSTRUCTOR(oHLName := "__NumberFS" AS STRING, uLength := 12 AS DWORD, uDecimals := 2 AS DWORD)    
-    SELF( HyperLabel{oHlName}, uLength, uDecimals)
+    SELF( HyperLabel{oHLName}, uLength, uDecimals)
 
 CONSTRUCTOR(oHLName AS HyperLabel, uLength := 12 AS DWORD, uDecimals := 2 AS DWORD)    
 	SUPER(oHLName,"N",uLength,uDecimals)
@@ -654,7 +653,7 @@ CONSTRUCTOR( oHLName AS HyperLabel, uLength := 10 AS DWORD)
 
 END CLASS
 
-STATIC FUNCTION TypeAsString(wType AS DWORD) AS STRING
+INTERNAL FUNCTION TypeAsString(wType AS DWORD) AS STRING
 	IF wType = STRING
 		RETURN "string"
 	ELSEIF wType=DATE

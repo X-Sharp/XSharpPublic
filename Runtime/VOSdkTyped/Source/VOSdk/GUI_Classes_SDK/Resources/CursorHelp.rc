@@ -1,0 +1,12 @@
+#define ID_WCHELP     0xFFFF
+#define ID_WCHELPOFF  0xFFFD
+#define ID_WCHELPON   0xFFFE
+
+
+#include "VOWin32APILibrary.vh"
+CursorHelp ACCELERATORS
+	BEGIN
+		VK_F1, ID_WCHELP, VIRTKEY
+		VK_ESCAPE, ID_WCHELPOFF, VIRTKEY
+	END
+

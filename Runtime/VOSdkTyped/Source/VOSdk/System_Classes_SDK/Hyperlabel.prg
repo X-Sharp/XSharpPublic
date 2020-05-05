@@ -57,42 +57,8 @@ ACCESS NameSym AS SYMBOL
 	RETURN symName
 
 ASSIGN NameSym  (x AS SYMBOL)                 			
-	SELF:SymName := x
-	RETURN SELF:SymName
-
-END CLASS
-
-PARTIAL CLASS HLError   INHERIT Error
-
-CONSTRUCTOR( oOriginator, symMethod, wErrorType, oHLErrorMessage, uMisc1, uMisc2 )  
-    //RvdH 080609 Added call to super:Init to correctly fill the callstack
-    SUPER()
-	SELF:SubSystem := "HyperLabel"
-	IF oOriginator# NIL
-		SELF:MethodSelf := oOriginator
-	ENDIF
-	IF symMethod# NIL
-		SELF:FuncSym := symMethod
-		SELF:CallFuncSym := symMethod
-	ENDIF
-	IF wErrorType# NIL
-		SELF:GenCode := wErrorType
-	ELSE
-		SELF:GenCode := EG_NOTABLE
-	ENDIF
-	IF oHLErrorMessage# NIL
-        IF IsObject( oHLErrorMessage) .and. __Usual.ToObject(oHLErrorMessage) IS HyperLabel 
-
-			SELF:Description := ((HyperLabel)oHLErrorMessage):Description
-		ELSE
-			SELF:Description := oHLErrorMessage
-		ENDIF
-	ENDIF
-	IF GenCode = EG_ARG
-		SELF:Args := { uMisc1 }
-		SELF:Arg := uMisc2
-	ENDIF
-	SELF:Severity := ES_ERROR
+	SELF:symName := x
 	RETURN 
+
 END CLASS
 

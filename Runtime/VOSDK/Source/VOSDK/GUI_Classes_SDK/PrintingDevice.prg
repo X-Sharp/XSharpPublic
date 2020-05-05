@@ -239,7 +239,7 @@ CONSTRUCTOR(uName)
             NEXT
             cTemp  := (STRING) Registry.GetValue("HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Windows\SessionDefaultDevices\" + cSKey ,"Device","")
         ENDIF
-        IF Empty(cDevice)
+        IF Empty(cTemp)
             cTemp := (STRING) Registry.GetValue("HKEY_CURRENT_USER\Software\Microsoft\Windows NT\CurrentVersion\Windows","Device","") 
         ENDIF
 	ELSE

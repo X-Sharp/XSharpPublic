@@ -1,0 +1,61 @@
+DESIGNERSTART = VOWindowEditor,DATAWINDOW,DATAWINDOW1
+GUID=D7E09750-6F9B-4594-A8AD-2C5FC9C3D914
+  Name=DATAWINDOW1
+  Class=FORM:DATAWINDOW
+  Caption=DataWindow Caption
+  Order=0
+  Left=5
+  Width=420
+  Top=5
+  Height=320
+  Browseindex=0
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=0
+  Styles=1073741824
+  Exstyles=0
+  Property=HyperLabel=,DataWindow Caption
+  Property=HyperLabel=DATAWINDOW1
+SUBCONTROLSSTART
+CONTROL=SINGLELINEEDIT
+GUID=B17EA65F-001E-4112-AC08-F477D1D86436
+  Name=SingleLineEdit1
+  Class=CONTROL:TEXTCONTROL:EDIT:SINGLELINEEDIT
+  Caption=
+  Order=1000
+  Left=127
+  Width=121
+  Top=159
+  Height=65
+  Browseindex=0
+  Browsesize=17
+  Subform=No
+  Nosave=No
+  Deleted=0
+  Styles=1082196096
+  Exstyles=512
+  Property=HyperLabel=SingleLineEdit1
+CONTROL=CHECKBOX
+GUID=15BC1B76-2AB5-4FDF-967A-390EFC32291E
+  Name=CheckBox1
+  Class=CONTROL:TEXTCONTROL:BUTTON:CHECKBOX
+  Caption=CheckBox
+  Order=1000
+  Left=191
+  Width=121
+  Top=95
+  Height=17
+  Browseindex=0
+  Browsesize=17
+  Subform=No
+  Nosave=No
+  Deleted=0
+  Styles=1073807363
+  Exstyles=0
+  Property=HyperLabel=,CheckBox
+  Property=HyperLabel=CheckBox1
+SUBCONTROLSEND
+DESIGNEREND = DATAWINDOW1
+
+

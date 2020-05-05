@@ -1,0 +1,1 @@
+#define VULCAN_VOSDK_NAMESPACE "VO"

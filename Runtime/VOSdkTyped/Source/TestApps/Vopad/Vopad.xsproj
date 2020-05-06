@@ -2,18 +2,18 @@
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.Default.props" />
   <PropertyGroup>
-    <ProjectGuid>1ace06e9-81f8-4ab3-bda5-c6eff15e2267</ProjectGuid>
+    <ProjectGuid>58AA6767-5191-4F90-A756-4584A4C42279</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>VOMDIApp4</RootNamespace>
-    <AssemblyName>VOMDIApp</AssemblyName>
+    <RootNamespace>Vopad</RootNamespace>
+    <AssemblyName>Vopad</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
-    <Name>VOMDITyped</Name>
+    <Name>Vopad</Name>
     <Nologo>true</Nologo>
     <GenerateFullPaths>true</GenerateFullPaths>
     <Dialect>VO</Dialect>
     <LB>true</LB>
-    <OutputName>VOMDIApp</OutputName>
+    <OutputName>Vopad</OutputName>
     <StartupObject />
     <ApplicationIcon />
     <Prefer32Bit>True</Prefer32Bit>
@@ -40,10 +40,8 @@
     <VO14>false</VO14>
     <VO15>true</VO15>
     <VO16>true</VO16>
-    <NoStandardDefs>false</NoStandardDefs>
-    <IncludePaths />
     <XSharpProjectversion>2.4.0.0</XSharpProjectversion>
-    <NoWin32Manifest>False</NoWin32Manifest>
+    <Nostandarddefs>false</Nostandarddefs>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>x86</PlatformTarget>
@@ -55,8 +53,10 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <OutputPath>$(SolutionDir)$(Configuration)</OutputPath>
+    <IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\</IntermediateOutputPath>
     <UseSharedCompilation>true</UseSharedCompilation>
-    <DisabledWarnings>9032;9043;618;162;165;649;9025</DisabledWarnings>
+    <DisabledWarnings>9032;9043;618;162;649;9025</DisabledWarnings>
     <WarningLevel>4</WarningLevel>
     <PPO>false</PPO>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
@@ -66,12 +66,14 @@
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <EmitDebugInformation>false</EmitDebugInformation>
     <DebugType>pdbonly</DebugType>
+    <OutputPath>$(SolutionDir)$(Configuration)</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <UseSharedCompilation>true</UseSharedCompilation>
-    <DisabledWarnings>9032;9043;618;162;165;649;9025</DisabledWarnings>
+    <DisabledWarnings>9032;9043;618;162;649;9025</DisabledWarnings>
     <PPO>false</PPO>
+    <IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\</IntermediateOutputPath>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.targets" />
   <ItemGroup>
@@ -83,99 +85,111 @@
       <AssemblyName>System.Windows.Forms.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
-    <Reference Include="XSharp.Core">
-      <SpecificVersion>false</SpecificVersion>
-    </Reference>
-    <Reference Include="XSharp.RT">
-      <SpecificVersion>false</SpecificVersion>
-    </Reference>
-    <Reference Include="XSharp.VO">
-      <SpecificVersion>false</SpecificVersion>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Standard Menus.prg" />
-    <Compile Include="Standard Shell.prg" />
-    <Compile Include="Start.prg" />
-    <Compile Include="Help About.prg" />
-    <Compile Include="Properties\AssemblyInfo.prg" />
-  </ItemGroup>
-  <ItemGroup>
-    <NativeResource Include="Standard Menus.EmptyShellMenu.rc">
-      <DependentUpon>Standard Menus.prg</DependentUpon>
+    <Compile Include="PadShell.prg">
+      <SubType>Code</SubType>
+    </Compile>
+    <NativeResource Include="PadShell.IDI_VOPADICON.rc">
+      <DependentUpon>PadShell.prg</DependentUpon>
     </NativeResource>
-    <NativeResource Include="Standard Menus.EmptyShellMenu_Accelerator.rc">
-      <DependentUpon>Standard Menus.prg</DependentUpon>
+    <Compile Include="PadStart.prg">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PadHelp About.prg">
+      <SubType>Code</SubType>
+    </Compile>
+    <NativeResource Include="PadHelp About.HelpAbout.rc">
+      <DependentUpon>PadHelp About.prg</DependentUpon>
     </NativeResource>
-    <NativeResource Include="Standard Menus.StandardShellMenu.rc">
-      <DependentUpon>Standard Menus.prg</DependentUpon>
+    <NativeResource Include="PadHelp About.POWVOBMP.rc">
+      <DependentUpon>PadHelp About.prg</DependentUpon>
     </NativeResource>
-    <NativeResource Include="Standard Menus.StandardShellMenu_Accelerator.rc">
-      <DependentUpon>Standard Menus.prg</DependentUpon>
-    </NativeResource>
-    <NativeResource Include="Standard Menus.VS_VERSION_INFO.rc">
-      <DependentUpon>Standard Menus.prg</DependentUpon>
-    </NativeResource>
-    <NativeResource Include="Standard Shell.IDI_STANDARDICON.rc">
-      <DependentUpon>Standard Shell.prg</DependentUpon>
-    </NativeResource>
-    <NativeResource Include="Standard Shell.Manifest.rc">
-      <DependentUpon>Standard Shell.prg</DependentUpon>
-    </NativeResource>
-    <NativeResource Include="Help About.HelpAbout.rc">
-      <DependentUpon>Help About.prg</DependentUpon>
-    </NativeResource>
-    <NativeResource Include="Help About.POWXSHARPBMP.rc">
-      <DependentUpon>Help About.prg</DependentUpon>
-    </NativeResource>
-  </ItemGroup>
-  <ItemGroup>
-    <VOBinary Include="Standard Menus.StandardShellMenu.xsmnu">
-      <DependentUpon>Standard Menus.prg</DependentUpon>
+    <VOBinary Include="PadHelp About.HELPABOUT.xsfrm">
+      <DependentUpon>PadHelp About.prg</DependentUpon>
     </VOBinary>
-    <VOBinary Include="Standard Menus.EmptyShellMenu.xsmnu">
-      <DependentUpon>Standard Menus.prg</DependentUpon>
+    <Compile Include="PadWin.prg">
+      <SubType>Code</SubType>
+    </Compile>
+    <NativeResource Include="PadWin.oMarginDialog.rc">
+      <DependentUpon>PadWin.prg</DependentUpon>
+    </NativeResource>
+    <VOBinary Include="PadWin.oMarginDialog.xsfrm">
+      <DependentUpon>PadWin.prg</DependentUpon>
     </VOBinary>
-    <VOBinary Include="Help About.HELPABOUT.xsfrm">
-      <DependentUpon>Help About.prg</DependentUpon>
+    <Compile Include="PadMenus.prg">
+      <SubType>Code</SubType>
+    </Compile>
+    <NativeResource Include="PadMenus.StandardPadMenu_Accelerator.rc">
+      <DependentUpon>PadMenus.prg</DependentUpon>
+    </NativeResource>
+    <NativeResource Include="PadMenus.StandardPadMenu.rc">
+      <DependentUpon>PadMenus.prg</DependentUpon>
+    </NativeResource>
+    <NativeResource Include="PadMenus.VS_VERSION_INFO.rc">
+      <DependentUpon>PadMenus.prg</DependentUpon>
+    </NativeResource>
+    <VOBinary Include="PadMenus.StandardPadMenu.xsmnu">
+      <DependentUpon>PadMenus.prg</DependentUpon>
     </VOBinary>
+    <Compile Include="image.prg">
+      <SubType>Code</SubType>
+    </Compile>
+    <NativeResource Include="image.IMAGE.rc">
+      <DependentUpon>image.prg</DependentUpon>
+    </NativeResource>
+    <Compile Include="!Readme!.prg">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Manifest.prg">
+      <SubType>Code</SubType>
+    </Compile>
+    <NativeResource Include="Manifest.CREATEPROCESS_MANIFEST_RESOURCE_ID.rc">
+      <DependentUpon>Manifest.prg</DependentUpon>
+    </NativeResource>
     <None Include="Properties\cavowed.inf" />
+    <None Include="Properties\saswed.inf" />
+    <None Include="Properties\GSGWED.INF" />
     <None Include="Properties\cavowed.tpl" />
     <None Include="Properties\cavoded.tpl" />
     <None Include="Properties\cavofed.tpl" />
-    <None Include="Resources\XSharp.ICO" />
+    <None Include="Resources\VOPAD.ICO" />
     <None Include="Resources\HelpAbt.BMP" />
-    <None Include="Resources\cctl6.man" />
-    <None Include="Readme.txt" />
+    <None Include="Resources\VOPAD.BMP" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
     <Folder Include="Resources\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Runtime\MacroCompiler\MacroCompiler.csproj">
-      <Name>MacroCompiler (Macrocompiler\MacroCompiler)</Name>
-      <Project>{eb3f3142-07f7-48ca-b38d-f611c45a9511}</Project>
+    <ProjectReference Include="..\..\..\..\VOSDK\Source\VOSDK\Win32_API_Library_SDK\VOWin32APILibrary.xsproj">
+      <Name>VOWin32APILibrary</Name>
+      <Project>{6c93866f-1894-4e82-9aca-55927cae914a}</Project>
       <Private>True</Private>
     </ProjectReference>
-    <ProjectReference Include="..\Runtime\VOSdkTyped\Source\VOSdk\GUI_Classes_SDK\XSharpGUIClasses.xsproj">
+    <ProjectReference Include="..\..\..\..\XSharp.Core\XSharp.Core.xsproj">
+      <Name>XSharp.Core</Name>
+      <Project>{535dff14-efb7-43f5-a4e1-71c1c4280040}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\XSharp.RT\XSharp.RT.xsproj">
+      <Name>XSharp.RT</Name>
+      <Project>{ef8d2bf2-e81a-479a-ba4f-294c4c348b66}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\XSharp.VO\XSharp.VO.xsproj">
+      <Name>XSharp.VO</Name>
+      <Project>{06099c3d-1697-4eb1-9f53-8a9a50b9eacd}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\VOSdk\GUI_Classes_SDK\XSharpGUIClasses.xsproj">
       <Name>XSharpGUIClasses</Name>
       <Project>{051d166b-3886-43fb-a3c6-6c6846ea6df1}</Project>
       <Private>True</Private>
     </ProjectReference>
-    <ProjectReference Include="..\Runtime\VOSdkTyped\Source\VOSdk\RDD_Classes_SDK\XSharpRDDClasses.xsproj">
-      <Name>XSharpRDDClasses</Name>
-      <Project>{223be288-7390-48c2-8c3d-6742287962dc}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\Runtime\VOSdkTyped\Source\VOSdk\System_Classes_SDK\XSharpSystemClasses.xsproj">
+    <ProjectReference Include="..\..\VOSdk\System_Classes_SDK\XSharpSystemClasses.xsproj">
       <Name>XSharpSystemClasses</Name>
       <Project>{5ac3e55d-f2bd-45eb-9cc2-dd8bd36240ea}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\Runtime\XSharp.Rdd\XSharp.RDD.xsproj">
-      <Name>XSharp.RDD</Name>
-      <Project>{e83c6c8c-773f-4b01-a597-3d38398a9362}</Project>
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>

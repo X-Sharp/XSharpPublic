@@ -143,12 +143,14 @@ CONSTRUCTOR(oParentWindow, sFileName, lReadOnly, oServer)
 		SELF:Use(CreateInstance(#DBServer, sFileName, , lReadOnly))
 		SELF:Caption := sCaption + sFileName
 	ENDIF	
-
+    SELF:ViewForm()
 RETURN SELF
 
 method ViewForm() 
 	self:ToolBar:UnPressItem(IDM_StandardShellMenu_View_Table_ID)
 	self:ToolBar:PressItem(IDM_StandardShellMenu_View_Form_ID)
+	SELF:Menu:CheckItem(IDM_StandardShellMenu_View_Form_ID)
+    SELF:Menu:UnCheckItem(IDM_StandardShellMenu_View_Table_ID)
 	
 	return super:ViewForm()	
 
@@ -156,9 +158,10 @@ method ViewForm()
 
 
 method ViewTable() 
-	self:ToolBar:UnPressItem(IDM_StandardShellMenu_View_Form_ID)
+	SELF:ToolBar:UnPressItem(IDM_StandardShellMenu_View_Form_ID)
 	self:ToolBar:PressItem(IDM_StandardShellMenu_View_Table_ID)
-	
+	SELF:Menu:UnCheckItem(IDM_StandardShellMenu_View_Form_ID)
+    SELF:Menu:CheckItem(IDM_StandardShellMenu_View_Table_ID)
 	return super:ViewTable()
 	
 

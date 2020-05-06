@@ -1,26 +1,25 @@
-class TwoBmpButton inherit PushButton
-	protect oBmpUnpressed as Bitmap
-	protect oBmpPressed as Bitmap
+CLASS TwoBmpButton INHERIT PushButton
+	PROTECT oBmpUnpressed AS Bitmap
+	PROTECT oBmpPressed AS Bitmap
 	
 
-assign BmpPressed(oNewBmp) 
+ASSIGN BmpPressed(oNewBmp) 
 	oBmpPressed := oNewBmp
-	return nil
+	RETURN NIL
 
-assign BmpUnpressed(oNewBmp) 
+ASSIGN BmpUnpressed(oNewBmp) 
 	oBmpUnpressed := oNewBmp
-	self:Image := oBmpUnpressed
-	return nil
+	SELF:Image := oBmpUnpressed
+	RETURN NIL
 
-METHOD Dispatch(oEvt AS Event) AS LONG
+METHOD Dispatch(oEvt ) 
+  IF oEvt:uMsg == WM_LBUTTONDOWN
+    SELF:Image := oBmpPressed
+  ELSEIF oEvt:uMsg == WM_LBUTTONUP
+  	SELF:Image := oBmpUnPressed
+  ENDIF
 
-  if oEvt:uMsg == WM_LBUTTONDOWN
-    self:Image := oBmpPressed
-  elseif oEvt:uMsg == WM_LBUTTONUP
-  	self:Image := oBmpUnPressed
-  endif
-
-  return super:Dispatch(oEvt)	
+  RETURN SUPER:Dispatch(oEvt)	
 	
 
 

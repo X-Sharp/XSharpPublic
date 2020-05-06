@@ -27,6 +27,8 @@ CLASS VOListBox INHERIT System.Windows.Forms.ListBox IMPLEMENTS IVOControl, IVOC
 		SELF:ValueMember   := "Value"
 		SELF:DrawMode := DrawMode.OwnerDrawFixed
 		//SELF:DrawItem += SupportFunctions.listBox_DrawItem
+        SELF:oProperties:OnWndProc += OnWndProc
+
 		RETURN
 		
 	METHOD IncrementalSearch( ch AS Char) AS LOGIC
@@ -105,8 +107,7 @@ CLASS VOListBox INHERIT System.Windows.Forms.ListBox IMPLEMENTS IVOControl, IVOC
 		END GET
 	END PROPERTY
 	
-	VIRTUAL PROTECT METHOD WndProc(msg REF Message) AS VOID	
-		SUPER:WndProc(REF msg) 
+	METHOD OnWndProc(msg REF Message) AS VOID	
 		// Windows forms does not raise a mouse double click event for the right mouse button
 		IF SELF:Control == NULL_OBJECT
 			// do nothing

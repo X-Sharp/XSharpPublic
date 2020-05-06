@@ -12,13 +12,16 @@
 CLASS VOButton INHERIT System.Windows.Forms.Button IMPLEMENTS IVOControl, IVOControlInitialize
 
 	#include "PropControl.vh"
-
+    PROPERTY Button AS XSharp.VO.Button GET (XSharp.VO.Button) SELF:oProperties:Control
+        
 
 	METHOD Initialize AS VOID STRICT
 		SELF:Margin := Padding{0,0,0,0}
 		SELF:AutoSize := FALSE
-			SELF:FlatStyle := FlatStyle.System
-			RETURN
+		SELF:FlatStyle := FlatStyle.System
+        SELF:UseCompatibleTextRendering := FALSE
+
+		RETURN
 	
 	CONSTRUCTOR(Owner AS XSharp.VO.Control, dwStyle AS LONG, dwExStyle AS LONG)
 		oProperties := VOControlProperties{SELF, Owner, dwStyle, dwExStyle}
@@ -35,6 +38,7 @@ CLASS VOButton INHERIT System.Windows.Forms.Button IMPLEMENTS IVOControl, IVOCon
 		ENDIF
 
 
+	
 
 	PROPERTY DefaultButton AS LOGIC
 	GET
@@ -51,8 +55,8 @@ CLASS VOCheckBox INHERIT System.Windows.Forms.CheckBox IMPLEMENTS IVOControl, IV
 	
 	METHOD Initialize() AS VOID STRICT
 			SELF:UseCompatibleTextRendering := FALSE
-			SELF:FlatStyle := FlatStyle.System
 			SELF:Margin := Padding{0,0,0,0}
+			SELF:FlatStyle := FlatStyle.System
 		RETURN
 		
 	CONSTRUCTOR(Owner AS XSharp.VO.Control, dwStyle AS LONG, dwExStyle AS LONG)
@@ -138,6 +142,8 @@ CLASS VOGroupBox INHERIT System.Windows.Forms.GroupBox IMPLEMENTS IVOControl, IV
 		SELF:Margin := Padding{0}		
 		SELF:FlatStyle := FlatStyle.System
 		SELF:UseCompatibleTextRendering := FALSE
+        SELF:oProperties:OnWndProc += OnWndProc
+
 		RETURN
 		
 	CONSTRUCTOR(Owner AS XSharp.VO.Control, dwStyle AS LONG, dwExStyle AS LONG)
@@ -151,11 +157,9 @@ CLASS VOGroupBox INHERIT System.Windows.Forms.GroupBox IMPLEMENTS IVOControl, IV
 			SELF:TabStop := (_AND(oProperties:Style, WS_TABSTOP) == WS_TABSTOP)
 		ENDIF
 
-	VIRTUAL PROTECT METHOD WndProc(m REF Message) AS VOID
+	METHOD OnWndProc(m REF Message) AS VOID
 		IF (m:Msg == WM_NCHITTEST)
 			m:Result := (IntPtr)HTTRANSPARENT
-		ELSE
-			SUPER:WndProc(REF m)
 		ENDIF
 
 		

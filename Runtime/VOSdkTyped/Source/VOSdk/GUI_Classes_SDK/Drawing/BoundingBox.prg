@@ -62,9 +62,9 @@ PARTIAL CLASS BoundingBox INHERIT VObject
 		_Extent := Point{0,0}
 		
 	CONSTRUCTOR(oPoint AS USUAL, xPoint AS USUAL) 
-		IF IsInstanceOf(xPoint, #Dimension)
+		IF IsInstanceOfUsual(xPoint, #Dimension)
 			SELF((Point) oPoint, (Dimension) xPoint)
-		ELSEIF IsInstanceOf(xPoint, #Point)
+		ELSEIF IsInstanceOfUsual(xPoint, #Point)
 			SELF((Point) oPoint, (Point) xPoint)
 		ELSE
 			SELF()

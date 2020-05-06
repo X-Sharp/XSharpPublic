@@ -4,12 +4,13 @@
 // Each control has a reference to the VO control and a VOControlProperties object
 // Also some On..() methods have been implemented that call the event handles on the VO Window
 // class that owns the control
-#INCLUDE "VOWin32APILibrary.vh"
+
 #USING System.Windows.Forms
 
 CLASS VOTabControl INHERIT System.Windows.Forms.TabControl IMPLEMENTS IVOControl, IVOControlInitialize
 	#include "PropControl.vh"
 	EXPORT BounceFocus:= FALSE AS LOGIC
+    PROPERTY VOTab AS XSharp.VO.TabControl GET (XSharp.VO.TabControl) SELF:Control
 
 	METHOD Initialize AS VOID STRICT
 		SELF:ShowToolTips := TRUE
@@ -47,22 +48,17 @@ CLASS VOTabControl INHERIT System.Windows.Forms.TabControl IMPLEMENTS IVOControl
 	VIRTUAL PROTECTED METHOD OnKeyDown(ke AS KeyEventArgs) AS VOID
 		LOCAL oWindow AS Window
 		LOCAL oEvent AS ControlNotifyEvent
-		//LOCAL oDlg AS VOPanel
 		SUPER:OnKeyDown(ke)
-		// Only handle window events when we are on the active Window
-		//oDlg := Wc.AppGetDialogWindow()
-		//IF oDlg != NULL_OBJECT .and. oDlg:IsParentOf(SELF)
 			oEvent := ControlNotifyEvent{Control}
 			oWindow := (Window) SELF:Control:Owner
 			oWindow:TabKeyDown(oEvent)
-		//ENDIF
 		RETURN
 	
 	VIRTUAL PROTECTED METHOD OnSelected(e AS TabControlEventArgs) AS VOID
 		LOCAL oWindow AS Window
 		LOCAL oEvent AS ControlNotifyEvent
 		SUPER:OnSelected(e)
-		((XSharp.VO.TabControl)Control):__FocusPage( SELF:SelectedIndex)		
+		VOTab:__FocusPage( SELF:SelectedIndex)		
 		oEvent := ControlNotifyEvent{Control}
 		oEvent:NotifyCode := TCN_SELCHANGE
 		oWindow := (Window) SELF:Control:Owner
@@ -81,11 +77,11 @@ CLASS VOTabControl INHERIT System.Windows.Forms.TabControl IMPLEMENTS IVOControl
 		RETURN
 	VIRTUAL PROTECT METHOD OnVisibleChanged(e AS EventArgs) AS VOID
 		SUPER:OnVisibleChanged(e)
-		IF SELF:Visible
-			//FOREACH oTabPage AS System.Windows.Forms.TabPage IN SELF:TabPages
-			//	oTabPage:BackColor := VOPanel.DefBackColor
-			//NEXT
-		ENDIF
+//		IF SELF:Visible
+//			//FOREACH oTabPage AS System.Windows.Forms.TabPage IN SELF:TabPages
+//			//	oTabPage:BackColor := VOPanel.DefBackColor
+//			//NEXT
+//		ENDIF
 		
 	VIRTUAL PROTECT METHOD OnTabIndexChanged(e AS EventArgs) AS VOID
 		SUPER:OnTabIndexChanged(e)

@@ -312,7 +312,7 @@ CLASS StandardFileDialog INHERIT StandardDialog
 			sFilters := cAllFiles
 		ENDIF
 		oDlg:Filter := sFilters
-		oDlg:InitialDirectory := cInitPath
+		oDlg:InitialDirectory := System.IO.Path.GetDirectoryName(cInitPath)
 		oDlg:AddExtension := TRUE
 		oDlg:HelpRequest += HelpRequest
 		oDlg:AutoUpgradeEnabled := TRUE

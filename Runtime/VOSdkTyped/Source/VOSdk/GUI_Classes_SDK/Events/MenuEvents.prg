@@ -2,10 +2,10 @@
 
 
 
-#include "VOWin32APILibrary.vh"
+
 #USING System.Diagnostics
 
-PARTIAL CLASS MenuEvent INHERIT @@Event
+PARTIAL CLASS MenuEvent INHERIT @@Event IMPLEMENTS INamedEvent
 	PROTECT oMenu AS Menu
 	PROTECT nID AS LONG
 

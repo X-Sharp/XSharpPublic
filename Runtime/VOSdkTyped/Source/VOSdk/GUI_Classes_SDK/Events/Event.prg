@@ -1,8 +1,15 @@
 
 
-#include "VOWin32APILibrary.vh"
+
 #define SYSTEM_KEYCODE 0x20000000
 #USING System.Diagnostics
+
+INTERFACE INamedEvent
+    PROPERTY Name    AS STRING GET
+    PROPERTY NameSym AS SYMBOL GET
+    PROPERTY Window  AS Window GET
+END INTERFACE
+
 PARTIAL CLASS @@Event //inherit object
 	//RvdH 061218 Declared properties for performance
 	EXPORT hWnd 	AS PTR
@@ -63,13 +70,13 @@ PARTIAL CLASS MinMaxInfoEvent INHERIT @@Event
 		SUPER(m)
 
 
-	ACCESS MaxPosition AS POINT STRICT 
+	ACCESS MaxPosition AS Point STRICT 
 		LOCAL sMinMax AS _WINMINMAXINFO
 
 		sMinMax := PTR(_CAST, lParam)
 		RETURN Point{sMinMax:ptMaxPosition:X, sMinMax:ptMaxPosition:Y}
 
-	ASSIGN MaxPosition(oPoint AS point)  STRICT 
+	ASSIGN MaxPosition(oPoint AS Point)  STRICT 
 		LOCAL oMaxPos  AS Point
 		LOCAL sMinMax  AS _WINMINMAXINFO
 

@@ -1,5 +1,5 @@
 // DialogForm.prg
-#include "VOWin32APILibrary.vh"
+
 #using System.Windows.Forms
 #using System.ComponentModel
 CLASS VODialogForm INHERIT VOForm

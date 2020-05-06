@@ -445,15 +445,15 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		SELF:Destroy()
 		RETURN
 	
-	METHOD __CommandFromEvent(oEvent AS OBJECT) AS LOGIC STRICT 
+	METHOD __CommandFromEvent(oEvent AS INamedEvent) AS LOGIC STRICT 
 		LOCAL symNameSym AS SYMBOL
-		LOCAL oWindow AS Window
+		LOCAL oWindow AS OBJECT
 		LOCAL oReport AS OBJECT
 		LOCAL o AS OBJECT
 		
 		symNameSym := oEvent:NameSym
 		oWindow := SELF
-		IF IsInstanceOf(oWindow, #ShellWindow)
+		IF oWindow IS ShellWindow
 			oWindow := ((ShellWindow) oWindow):GetActiveChild()
 			IF oWindow == NULL_OBJECT
 				oWindow := SELF
@@ -466,8 +466,8 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 				Send(oWindow, symNameSym)
 				RETURN TRUE
 			ENDIF
-			IF IsAccess(oWindow, #Owner) .and. IsInstanceOfUsual(oWindow:Owner, #Window)
-				oWindow := oWindow:Owner
+			IF IsAccess(oWindow, #Owner) .AND. IsInstanceOfUsual(IVarGet(oWindow,#Owner), #Window)
+				oWindow := IVarGet(oWindow,#Owner)
 			ELSE
 				EXIT
 			ENDIF
@@ -477,7 +477,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 			IF IsInstanceOf(SELF, #ChildAppWindow)
 				oWindow:=SELF
 				DO WHILE IsInstanceOf(oWindow:Owner, #Window)
-					oWindow:=oWindow:Owner
+					oWindow:=IVarGet(oWindow,#Owner)
 				ENDDO
 				o := CreateInstance(symNameSym, oWindow)
 				o:show()
@@ -490,7 +490,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		ELSEIF IsClassOf(symNameSym, #ReportQueue)
 			oReport := CreateInstance(symNameSym, SELF)
 			IF (oReport != NULL_OBJECT)
-				oReport:Show()
+				Send(oReport,#Show)
 			ENDIF
 			RETURN TRUE
 		ENDIF
@@ -872,7 +872,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		RETURN oParent
 	
 
-	METHOD __PreMenuCommand(oMenuCommandEvent AS @@Event) AS USUAL STRICT 
+	METHOD __PreMenuCommand(oMenuCommandEvent AS MenuCommandEvent) AS USUAL STRICT 
 		
 		IF SELF:PreMenuCommand( oMenuCommandEvent)
 			RETURN SELF
@@ -1715,50 +1715,50 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 	METHOD GetAllChildren() AS ARRAY STRICT
 		LOCAL aRet AS ARRAY
 		aRet := {}
-//		// Add all MDI Children
-//		IF SELF:__IsValid .and. __Form:IsMDIContainer
-//			FOREACH form AS System.Windows.Forms.Form IN __Form:MdiChildren
-//				IF form is VOForm
-//					LOCAL oVoForm AS VOForm
-//					oVoForm := (VOForm)  form
-//					AADD(aRet,oVoForm:Window)
-//				ENDIF
-//			NEXT
-//		ENDIF
-//		// Add all subwindows on the surface
-//		IF SELF:__Surface != NULL_OBJECT
-//			FOREACH var control IN SELF:__Surface:Controls
-//				IF control is VOForm
-//					LOCAL oVoForm AS VOForm
-//					oVoForm := (VOForm)  control
-//					AADD(aRet,(USUAL) oVoForm:Window)
-//				ELSEIF control is VOMenu
-//					// Skip
-//					nop
-//				ELSEIF control is VOToolbar
-//					// Skip
-//					nop
-//				ELSEIF control is VOStatusStrip
-//					// Skip
-//					nop
-//				ELSEIF control is VOLabel
-//					// Skip
-//					nop
-//				ELSEIF control is IVOControl
-//					var oControl := control astype IVOControl
-//					aRet:Add(oControl:Control)
-//					// Kinder der Gruppe müssen auch mitkommen
-//					IF oControl is VOGroupBox
-//						LOCAL aGroupChilds AS List<IVOControl>
-//						var oGroup :=  control astype VOGroupBox
-//						aGroupChilds := oGroup:getAllChildren(null)
-//						FOREACH oc as IVOCOntrol IN aGroupChilds
-//							AADD(aRet,(USUAL) oC:Control)
-//						NEXT
-//					ENDIF
-//				ENDIF
-//			NEXT
-//		ENDIF		
+		// Add all MDI Children
+		IF SELF:__IsValid .AND. __Form:IsMDIContainer
+			FOREACH form AS System.Windows.Forms.Form IN __Form:MdiChildren
+				IF form IS VOForm
+					LOCAL oVoForm AS VOForm
+					oVoForm := (VOForm)  form
+					AADD(aRet,oVoForm:Window)
+				ENDIF
+			NEXT
+		ENDIF
+		// Add all subwindows on the surface
+		IF SELF:__Surface != NULL_OBJECT
+			FOREACH VAR control IN SELF:__Surface:Controls
+				IF control IS VOForm
+					LOCAL oVoForm AS VOForm
+					oVoForm := (VOForm)  control
+					AADD(aRet,(USUAL) oVoForm:Window)
+				ELSEIF control IS VOMenu
+					// Skip
+					NOP
+				ELSEIF control IS VOToolbar
+					// Skip
+					NOP
+				ELSEIF control IS VOStatusStrip
+					// Skip
+					NOP
+				ELSEIF control IS VOLabel
+					// Skip
+					NOP
+				ELSEIF control IS IVOControl
+					VAR oControl := control ASTYPE IVOControl
+					aRet:Add(oControl:Control)
+					// Kinder der Gruppe müssen auch mitkommen
+					IF oControl IS VOGroupBox
+						LOCAL aGroupChilds AS List<IVOControl>
+						VAR oGroup :=  control ASTYPE VOGroupBox
+						aGroupChilds := oGroup:getAllChildren(NULL)
+						FOREACH oc AS IVOCOntrol IN aGroupChilds
+							AADD(aRet,(USUAL) oC:Control)
+						NEXT
+					ENDIF
+				ENDIF
+			NEXT
+		ENDIF		
 		RETURN aRet
 	
 
@@ -2561,10 +2561,14 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 			SELF:oWnd:ResumeLayout()
 		ENDIF
 		RETURN
-	
+
+	METHOD OnMdiChildActivated(s AS OBJECT, e AS EventArgs) AS VOID
+		SELF:Activate(@@Event{})
+
 	METHOD Show(kShowState) 
 		DEFAULT(@kShowState, SHOWNORMAL)
-		IF SELF:__IsValid .AND. !oWnd:Visible
+		IF SELF:__IsValid
+            oWnd:SuspendLayout()
 			IF (NULL_STRING != cCaption)
 				oWnd:Text := cCaption
 			ENDIF
@@ -2572,6 +2576,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 			IF SELF:__Form:isMdiChild
 				LOCAL form AS System.Windows.Forms.Form
 				form := SELF:__Form:MdiParent
+				SELF:__Form:MdiChildActivate += OnMdiChildActivated
 				IF form != NULL
 					form := form:ActiveMdiChild
 					IF form != NULL .AND. form:WindowState == System.Windows.Forms.FormWindowState.Maximized
@@ -2603,7 +2608,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 				ENDIF
 				IF lChanged
 					oWnd:Location := oPoint
-				ENDIF
+                ENDIF
 			ENDIF	
 			lDelayAlignment := FALSE
 			FOREACH aElement AS ARRAY IN aDelayedAlignes
@@ -2616,13 +2621,10 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 			IF kShowState == SHOWCENTERED .AND. oWnd:Parent == NULL_OBJECT
 				oWnd:Center()
 			ENDIF
-			oWnd:Show()
-			// The DoEvents prevents that the menu in the Masken-Manager is shown
-			// Therefore, it is skipped there
-			IF !IsInstanceOf( SELF, "vpainter")
-				System.Windows.Forms.Application.DoEvents()
-			ENDIF
 			oWnd:ResumeReDraw()
+            oWnd:ResumeLayout()
+			oWnd:Show()
+
 		ENDIF	
 		RETURN NIL
 

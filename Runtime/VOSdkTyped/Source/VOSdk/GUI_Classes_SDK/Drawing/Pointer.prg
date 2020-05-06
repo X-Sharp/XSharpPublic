@@ -1,6 +1,6 @@
 
 
-#include "VOWin32APILibrary.vh"
+
 PARTIAL CLASS Pointer INHERIT VObject
 	PROTECT oCursor AS System.Windows.Forms.Cursor
 	ACCESS __Cursor AS System.Windows.Forms.Cursor

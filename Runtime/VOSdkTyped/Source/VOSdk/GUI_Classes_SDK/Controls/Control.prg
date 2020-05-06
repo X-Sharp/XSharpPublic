@@ -18,7 +18,6 @@ PARTIAL CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
 	
 	PROTECT oSize                AS Dimension
 	PROTECT oOrigin              AS Point
-	// protect oSpinner          as Spinner
 	PROTECT cWindowName          AS STRING
 	PROTECT cClassName           AS STRING
 	PROTECT dwStyle              AS LONG
@@ -89,11 +88,7 @@ PARTIAL CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
 	METHOD __AddTool(oControl AS Control) AS LOGIC STRICT 
 		RETURN oParent:__AddTool(oControl)
 	
-	ACCESS __ClassName AS STRING STRICT 
-		RETURN cClassName
 	
-	ASSIGN __ClassName(cNewName AS STRING)  STRICT 
-		cClassName:=cNewName
 	
 	ACCESS __DataField AS DataField STRICT 
 		RETURN oDataField
@@ -344,18 +339,18 @@ PARTIAL CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
 		
 		RETURN 
 	
-	METHOD Activate(oEvent AS @@Event) AS VOID STRICT
+	METHOD Activate(oEvent ) 
 		// Also empty in GUI Classes
 		RETURN 
 
 	METHOD AddChild(oC AS OBJECT) AS VOID STRICT
 		IF SELF:__IsValid
 			DO CASE
-			CASE IsInstanceOf(oC, #Control)
+			CASE oC IS Control
 				SELF:oCtrl:Controls:Add(((Control)oC):__Control)
-			CASE IsInstanceOf(oC, #DataWindow)
+			CASE oC IS DataWindow
 				SELF:oCtrl:Controls:Add(((DataWIndow) oC):__Frame)
-			CASE IsInstanceOf(oC, #Window)
+			CASE oC IS Window
 				SELF:oCtrl:Controls:Add(((Window) oC):__Surface)
 			ENDCASE
 			ENDIF
@@ -425,7 +420,7 @@ PARTIAL CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
 					oOwner:__Form:Controls:Add(oCtrl)
 				ELSEIF oType == typeof(VODataGridView)
 					oOwner:__Form:Controls:Add(oCtrl)
-					IF IsInstanceOf(oOwner, #DataWindow)
+					IF oOwner IS DataWindow
 						LOCAL oDataForm AS VODataForm
 						oDataForm := (VODataForm) oOwner:__Form
 						oDataForm:DataBrowser := oCtrl
@@ -474,13 +469,13 @@ PARTIAL CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
 				ELSE
 					nTabIndex   := -1
 					oDevPoint := Point{oOrigin:X, oOrigin:Y}
-					IF WC.CoordinateSystem == WC.CartesianCoordinates
-						oDevPoint:Y := oDevPoint:Y + oSize:Height
-					ENDIF
-					oDevPoint := WC.ConvertPoint(oFormSurface, oDevPoint)
+                    IF WC.CoordinateSystem == WC.CartesianCoordinates
+					    oDevPoint:Y := oDevPoint:Y - oSize:Height
+    					oDevPoint := WC.ConvertPoint(oFormSurface, oDevPoint)
+                    ENDIF
 				ENDIF
 				oOwner := oParent
-				DO WHILE oOwner != NULL_OBJECT .and. ! IsInstanceOf(oOwner, #Window)
+				DO WHILE oOwner != NULL_OBJECT .AND. ! (oOwner IS Window)
 					IF IsAccess(oOwner, #Owner)
 						oOwner := IVarGet(oOwner, #Owner)
 					ELSE
@@ -872,8 +867,7 @@ PARTIAL CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
 		
 		
 		
-		IF (IsInstanceOf(oFormSurface,#DialogWindow) .or. ;
-			IsInstanceOf(oFormSurface,#DataWindow))  .AND. ;
+		IF (oFormSurface IS DialogWindow .OR. oFormSurface IS DataWindow)  .AND. ;
 			(IsInstanceOfUsual(xID,#ResourceID) .OR. (IsLong(xID) .AND.;
 			IsNil(oDimension) .AND. IsNil(oPoint)))
 			
@@ -897,7 +891,7 @@ PARTIAL CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
 			//__lpfnDefaultProc := PTR(_CAST, GetWindowLong(oCtrl, GWL_WNDPROC))
 			//SetWindowLong(oCtrl, GWL_WNDPROC, LONGINT(_CAST, Get__WCControlProcPtr()))
 			
-		ELSEIF (IsInstanceOf(oFormSurface,#Window) .OR. IsInstanceOf(oFormSurface,#Control)) .AND. IsLong(xID)
+		ELSEIF (oFormSurface IS Window .OR. oFormSurface IS Control) .AND. IsLong(xID)
 			IF !IsInstanceOfUsual(oPoint,#Point)
 				WCError{#Init,#Control,__WCSTypeError,oPoint,3}:@@Throw()
 			ENDIF
@@ -926,11 +920,10 @@ PARTIAL CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
 			SELF:lDataAware:=lDataAware
 		ENDIF
 		
-		IF SELF:lDataAware .AND. !IsInstanceOf(SELF, #DataBrowser) .AND. IsMethod(oParent, #__SetUpDataControl)
+		IF SELF:lDataAware .AND. !(SELF IS DataBrowser) .AND. IsMethod(oParent, #__SetUpDataControl)
 			SELF:Create()
 			oParent:__SetupDataControl(SELF)
-		ELSEIF IsInstanceOf(oParent, #DataWindow) 
-			LOCAL oDw 	:= (DataWindow) oParent as DataWindow
+		ELSEIF oParent IS DataWindow VAR oDw
 			SELF:Create()
 			oDw:__SetupNonDataControl(SELF)
 		ELSE
@@ -942,20 +935,17 @@ PARTIAL CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
 
 	ACCESS IsEditable AS LOGIC
 		LOCAL lEditable	AS LOGIC
-		LOCAL oEdit    AS Edit
 		lEditable := FALSE
 		IF SELF:__IsValid 
 			IF oCtrl:Visible
 				IF oCtrl:Enabled
-					IF IsInstanceOf(SELF,#EDIT) .OR. ;
-						IsInstanceOf(SELF,#BASELISTBOX) .OR. ;
-						IsInstanceOf(SELF,#MONTHCALENDAR) .OR. ;
-						IsInstanceOf(SELF,#DATETIMEPICKER) .OR. ;
-						IsInstanceOf(SELF,#IPADDRESS)
+					IF  SELF IS BASELISTBOX .OR. ;
+					    SELF IS MONTHCALENDAR .OR. ;
+					    SELF IS DATETIMEPICKER .OR. ;
+						SELF IS IPADDRESS
 						lEditable := TRUE
 					ENDIF
-					IF IsInstanceOf(SELF,#EDIT)
-						oEdit := (Edit) SELF
+					IF SELF IS Edit VAR oEdit
 						IF oEdit:ReadOnly
 							lEditable := FALSE
 						ENDIF
@@ -972,7 +962,7 @@ PARTIAL CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
 		RETURN FALSE
 	
 	METHOD IsReadOnly() AS LOGIC STRICT
-		IF SELF:__IsValid .and. IsInstanceOf(SELF,#Edit)
+		IF SELF:__IsValid .AND. SELF IS Edit
 			RETURN ((VOTextBox) SELF:oCtrl):ReadOnly
 		ELSE
 			RETURN FALSE
@@ -1183,7 +1173,7 @@ PARTIAL CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
 	ASSIGN OwnerAlignment(iNewType AS USUAL) 
 	
 		IF ! Control.OwnerAlignmentHandledByWinForms(oCtrl, iNewType)
-			IF IsInstanceOf(oFormSurface, #Window)
+			IF oFormSurface IS Window
 				oFormSurface:__AddAlign(SELF, iNewType)
 			ELSE
 				oParent:__AddAlign(SELF, iNewType)
@@ -1347,7 +1337,7 @@ PARTIAL CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
 		RETURN SELF
 	
 
-	METHOD Show() 
+	METHOD Show() AS VOID 
 		
 		IF (oCtrl == NULL_OBJECT)
 			SELF:Create()
@@ -1356,7 +1346,7 @@ PARTIAL CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
 			oCtrl:Show()
 		ENDIF
 		
-		RETURN NIL
+		RETURN 
 	
 	
 	METHOD ShowToolTip() AS VOID STRICT

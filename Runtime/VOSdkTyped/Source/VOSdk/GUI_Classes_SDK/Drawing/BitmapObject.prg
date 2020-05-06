@@ -2,7 +2,7 @@
 
 
 
-#include "VOWin32APILibrary.vh"
+
 PARTIAL CLASS BitmapObject INHERIT ShapeObject
 	PROTECT oBitmap AS Bitmap
 

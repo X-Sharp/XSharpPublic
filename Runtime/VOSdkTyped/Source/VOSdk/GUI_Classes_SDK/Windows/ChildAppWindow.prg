@@ -14,7 +14,7 @@ CLASS ChildAppWindow INHERIT AppWindow
 	
 	CONSTRUCTOR(oOwner, lManaged, lImpl) 
 		LOCAL lMng AS LOGIC
-		IF IsInstanceOf(oOwner,#ShellWindow) // create an MDI child
+		IF IsInstanceOfUsual(oOwner,#ShellWindow) // create an MDI child
 			oShell := oOwner
 		ENDIF
 

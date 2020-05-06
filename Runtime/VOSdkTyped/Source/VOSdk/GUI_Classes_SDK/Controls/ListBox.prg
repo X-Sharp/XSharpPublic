@@ -1,6 +1,6 @@
 
 
-#include "VOWin32APILibrary.vh"
+
 CLASS ListBox INHERIT BaseListBox
 	PROTECT wSelectNum 		AS LONG
 

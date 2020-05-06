@@ -1,5 +1,5 @@
 
-#include "VOWin32APILibrary.vh"
+
 #ifdef DONOTCOMPILE
 
 PARTIAL CLASS OleControl INHERIT OleObject

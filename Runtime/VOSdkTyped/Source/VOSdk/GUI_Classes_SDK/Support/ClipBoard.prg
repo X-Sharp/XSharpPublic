@@ -1,6 +1,6 @@
 
 
-#include "VOWin32APILibrary.vh"
+
 #USING System.Collections.Specialized
 
 PARTIAL CLASS Clipboard INHERIT VObject

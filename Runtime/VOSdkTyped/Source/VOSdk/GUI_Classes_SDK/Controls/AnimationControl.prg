@@ -1,6 +1,6 @@
 
 
-#include "VOWin32APILibrary.vh"
+
 //Todo: Implement ANimationControl
 CLASS AnimationControl INHERIT Control
 	PROTECT oAVIFileSpec AS FileSpec

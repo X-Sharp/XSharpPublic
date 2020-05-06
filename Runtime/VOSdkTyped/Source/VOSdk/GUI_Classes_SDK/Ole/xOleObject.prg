@@ -1,6 +1,6 @@
 
 
-#include "VOWin32APILibrary.vh"
+
 #define __WCOleContWindowClass "_VOOLEContainer"
 
 #ifdef USE_OLEOBJECT

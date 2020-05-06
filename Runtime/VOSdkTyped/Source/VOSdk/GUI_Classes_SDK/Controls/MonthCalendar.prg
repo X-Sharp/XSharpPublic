@@ -1,5 +1,5 @@
 
-#include "VOWin32APILibrary.vh"
+
 PARTIAL CLASS DateRange INHERIT VObject
 	PROTECT dStartDate AS DATE
 	PROTECT dEndDate AS DATE

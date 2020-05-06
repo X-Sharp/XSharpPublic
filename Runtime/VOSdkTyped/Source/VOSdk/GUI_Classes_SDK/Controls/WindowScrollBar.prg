@@ -1,4 +1,4 @@
-#include "VOWin32APILibrary.vh"
+
 //Todo: WIndowScrollBar classes
 CLASS WindowHorizontalScrollBar INHERIT WindowScrollBar
 

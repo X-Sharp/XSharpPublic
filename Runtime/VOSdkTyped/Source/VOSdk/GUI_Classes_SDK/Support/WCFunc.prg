@@ -1,6 +1,6 @@
 
 
-#include "VOWin32APILibrary.vh"
+
 
 #using System.Runtime.InteropServices
 
@@ -22,7 +22,7 @@ DELEGATE TimerProcDelegate( hWnd AS PTR, uMsg AS DWORD, idEvent AS DWORD, dwTime
 PARTIAL STATIC CLASS WC
 
 
-	STATIC EXPORT CoordinateSystem := WC.CartesianCoordinates AS LOGIC
+	STATIC PROPERTY CoordinateSystem AS LOGIC AUTO
 	STATIC EXPORT INITONLY CartesianCoordinates := TRUE AS LOGIC 
 	STATIC EXPORT INITONLY WindowsCoordinates := FALSE AS LOGIC 
 
@@ -44,6 +44,7 @@ PARTIAL STATIC CLASS WC
 		TimerProcPtr        := System.Runtime.InteropServices.Marshal.GetFunctionPointerForDelegate( (System.Delegate) TimerProcDelegate )
 		TimerObjects		:= System.Collections.Generic.List<ITimer>{}
 		WC.CSApp := OBJECT{} 
+		//WC.CoordinateSystem := WC.CartesianCoordinates
 		//WC.CSHDC := OBJECT{}
 
 		RETURN
@@ -60,14 +61,13 @@ PARTIAL STATIC CLASS WC
 
 
 	STATIC METHOD ConvertPoint(oWindow AS OBJECT, oPoint AS Point) AS Point STRICT
-		//SE-080520 optimized version 
 		LOCAL sRect  := WINRECT{} AS WINRECT
 		LOCAL yCoord AS INT
 		
-		IF CoordinateSystem // Cartesian Coordinate System
-			IF oWindow == NULL_OBJECT .OR. IsInstanceOf(oWindow,#App)
+		IF CoordinateSystem == WC.CartesianCoordinates
+			IF oWindow == NULL_OBJECT .OR. oWindow IS App
 				yCoord := Win32.GetSystemMetrics(SM_CYSCREEN) - oPoint:Y
-			ELSEIF IsInstanceOf(oWindow,#Window)
+			ELSEIF oWindow IS Window
 				Win32.GetClientRect(oWindow:Handle(4), REF sRect)
 				yCoord :=  sRect:bottom - oPoint:Y
 			ELSE // The parent is a control 
@@ -248,11 +248,11 @@ PARTIAL STATIC CLASS WC
 		LOCAL point := WINPOINT{} AS WinPoint
 		LOCAL oControl AS Control
 		IF WC.CoordinateSystem == WC.WindowsCoordinates
-			IF IsInstanceOf(oObject, #Control)
-				RETURN ((Control)oObject):__Control:Location
-			ELSEIF IsInstanceOf(oObject, #Window)
+			IF oObject IS Control VAR oC
+				RETURN oC:__Control:Location
+			ELSEIF oObject IS Window VAR oWin
 				LOCAL oForm AS VOForm
-				oForm := ((Window)oObject):__Form
+				oForm := oWin:__Form
 				IF oForm != NULL_OBJECT
 					RETURN oForm:Location
 				ELSE
@@ -268,14 +268,14 @@ PARTIAL STATIC CLASS WC
 			point:y := rect:top
 		ENDIF
 
-		IF IsInstanceOf(oObject,#Control)
+		IF oObject IS Control
 			oControl := oObject
 			oParent := oControl:__FormSurface
 		ELSE
 			oParent := oObject:__Parent
 		ENDIF
 
-		IF oParent != NULL_OBJECT .AND. IsInstanceOf(oParent,#Window)
+		IF oParent != NULL_OBJECT .AND. oParent IS Window
 			hWnd := oParent:Handle(4)
 			Win32.ScreenToClient(hWnd, REF point)
 		ENDIF

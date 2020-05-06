@@ -665,12 +665,12 @@ CLASS TabControl INHERIT TextControl
 	METHOD SetTipText(symTabName AS SYMBOL, cText AS STRING) 
 		RETURN SELF:AddTipText(symTabName, cText)
 
-	METHOD Show() 
+	METHOD Show() AS VOID
 		SUPER:Show()
 		IF (oCurrentPage != NULL_OBJECT)
 			oCurrentPage:Show()
 		ENDIF
-		RETURN NIL
+		RETURN 
 		
 	PROPERTY TabCaption [symTabName AS SYMBOL] AS STRING GET SELF:GetCaption(symTabName) SET SELF:SetCaption(symTabName, Value)
 

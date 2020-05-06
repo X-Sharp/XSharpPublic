@@ -5,7 +5,7 @@ END CLASS
 #ifdef DONOTINCLUDE
 
 
-#include "VOWin32APILibrary.vh"
+
 PARTIAL CLASS DragDropClient INHERIT VObject
 	PROTECT hOwner AS PTR
 	PROTECT oParent AS Window

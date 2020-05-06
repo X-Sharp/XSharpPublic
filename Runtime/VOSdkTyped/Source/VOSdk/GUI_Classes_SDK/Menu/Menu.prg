@@ -1,6 +1,6 @@
 
 
-#include "VOWin32APILibrary.vh"
+
 #USING System.Reflection
 CLASS Menu INHERIT VObject
 	PROTECT oWindow			as Window

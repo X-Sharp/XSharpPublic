@@ -1,4 +1,4 @@
-#include "VOWin32APILibrary.vh"
+
 CLASS DataDialog INHERIT DataWindow 
 	CONSTRUCTOR(oOwner, oSource, nResourceID, nDialogStyle) 
 		// The only thing now left in this methods is that it sets 

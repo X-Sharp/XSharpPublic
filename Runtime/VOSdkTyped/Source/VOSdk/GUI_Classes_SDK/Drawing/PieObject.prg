@@ -1,6 +1,6 @@
 
 
-#include "VOWin32APILibrary.vh"
+
 PARTIAL CLASS PieObject INHERIT ShapeObject
 	PROTECT iAngle1 AS INT
 	PROTECT iAngle2 AS INT

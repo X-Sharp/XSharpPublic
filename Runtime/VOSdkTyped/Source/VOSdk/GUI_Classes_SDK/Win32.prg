@@ -3,7 +3,7 @@
 
 #USING System.Runtime.InteropServices
 #USING System.Text
-#include "VOWin32APILibrary.vh"
+
 
 
 STATIC CLASS Win32
@@ -171,8 +171,8 @@ STATIC CLASS Win32
 	STATIC METHOD DestroyWindow(hWnd AS IntPtr) AS LOGIC STRICT
 
 // Devexpress Controls have paint problems, when old win32 styles are modified
+	[DllImport("User32.dll")];
 	STATIC METHOD SetWindowLong(hwnd AS IntPtr, nIndex AS INT, dwNewLong AS LONG) AS LONG
-	RETURN dwNewLong 
 
 	[DllImport("User32.dll", CharSet:=CharSet.Unicode, EntryPoint := "SetWindowTextW", SetLastError := TRUE)];
 	STATIC METHOD SetWindowText(hwnd AS IntPtr, sText as STRING) AS LOGIC 

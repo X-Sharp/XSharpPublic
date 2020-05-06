@@ -1,5 +1,5 @@
 
-#include "VOWin32APILibrary.vh"
+
 PARTIAL CLASS CheckBox INHERIT Button
 	PROTECT lSavedChecked AS LOGIC
 
@@ -125,7 +125,7 @@ PARTIAL CLASS CheckBox INHERIT Button
 
 	ACCESS Value 
 		LOCAL uVal AS USUAL
-		IF IsInstanceOf(SELF:Owner, #DataWindow)
+		IF SELF:Owner IS DataWindow
 			uValue := SELF:Checked
 			uVal := SUPER:Value
 			IF IsString(uVal)

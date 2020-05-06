@@ -1,6 +1,6 @@
 // WindowExtensions.prg
 // Extensions to the windows class from Vewa and bBrowser
-#include "VOWin32APILibrary.vh"
+
 
 
 PARTIAL CLASS Window

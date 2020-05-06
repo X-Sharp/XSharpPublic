@@ -1,5 +1,5 @@
 
-#include "VOWin32APILibrary.vh"
+
 PARTIAL CLASS HotKey INHERIT VObject
 	CONSTRUCTOR(bKey, lAlt, lCtl, lShift, lExt) 
 		SUPER()
@@ -135,6 +135,7 @@ PARTIAL CLASS HotKeyEdit INHERIT TextControl
 		//IF !IsNil(kStyle)
 		//	dwStyle := _OR(dwStyle, kStyle)
 		//ENDIF
+		SELF:cClassName := HOTKEY_CLASS
 
 		IF !IsInstanceOfUsual(xID, #ResourceID)
 			SUPER(oOwner, xID, oPoint, oDimension, HOTKEY_CLASS, kStyle)
@@ -142,7 +143,6 @@ PARTIAL CLASS HotKeyEdit INHERIT TextControl
 			SUPER(oOwner, xID, oPoint, oDimension, , kStyle)
 		ENDIF
 
-		SELF:__ClassName := HOTKEY_CLASS
 
 		RETURN 
 

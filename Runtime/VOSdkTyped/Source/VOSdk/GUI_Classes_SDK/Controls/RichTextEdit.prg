@@ -1,7 +1,7 @@
 
 
 
-#include "VOWin32APILibrary.vh"
+
 
 //#define EM_FINDTEXTW			(WM_USER + 123)
 //#define EM_FINDTEXTEXW			(WM_USER + 124)
@@ -24,7 +24,7 @@ CLASS RichEdit INHERIT MultiLineEdit
 		ENDIF
 
 		SUPER(oOwner, xID, oPoint, oDimension, kStyle)
-		SELF:__ClassName := RICHEDIT_CLASS
+		SELF:cClassName := RICHEDIT_CLASS
 
 		Win32.SendMessage(oCtrl:Handle, EM_SETEVENTMASK, 0, LONGINT(_CAST, _OR(ENM_CHANGE, ENM_PROTECTED, ENM_SCROLL, ENM_SELCHANGE, ENM_UPDATE)))
 

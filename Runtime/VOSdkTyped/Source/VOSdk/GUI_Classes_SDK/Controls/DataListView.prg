@@ -1,6 +1,6 @@
 #include "VOSystemClasses.vh"
 
-#include "VOWin32APILibrary.vh"
+
 #using System.Windows.Forms
 CLASS DataListView INHERIT ListView
 	PROTECT oDLVServer AS DataServer

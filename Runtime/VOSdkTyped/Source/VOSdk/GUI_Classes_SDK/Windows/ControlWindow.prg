@@ -1,5 +1,5 @@
 
-#include "VOWin32APILibrary.vh"
+
 
 CLASS ControlWindow INHERIT Window
 	PROTECT oCtrl AS Control

@@ -1,5 +1,5 @@
 // ChildWinForm.prg
-#include "VOWin32APILibrary.vh"
+
 
 CLASS Vulcan.ChildWinForm INHERIT ChildAppWindow
 	PRIVATE form AS System.Windows.Forms.Form

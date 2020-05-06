@@ -1,6 +1,6 @@
 
 
-#include "VOWin32APILibrary.vh"
+
 #define __WCFixedPitch 1
 #define __WCVariablePitch 2
 #USING System.Runtime.InteropServices

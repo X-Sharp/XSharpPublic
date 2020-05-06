@@ -1,14 +1,4 @@
 // PropControl.vh
-	PUBLIC PROPERTY RanorexFlag AS STRING
-		GET
-			LOCAL ohilf AS XSharp.VO.Control 
-			IF SELF:Control != NULL
-				ohilf := SELF:Control
-				RETURN ASString(ohilf:NameSym)
-			ENDIF
-			RETURN ""
-		END GET
-	END PROPERTY
 	
 	PROTECTED oProperties AS VOControlProperties
 	PROPERTY ooProperties AS VOControlProperties GET oProperties

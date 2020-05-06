@@ -1,7 +1,7 @@
 
 
 
-#include "VOWin32APILibrary.vh"
+
 PARTIAL CLASS MultiMediaContainer INHERIT Control
 	PROTECT pBitmap AS PTR
 	PROTECT sMajorType AS STRING

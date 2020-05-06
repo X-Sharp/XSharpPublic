@@ -5,7 +5,7 @@
 
 #using System.Collections
 
-#include "VOWin32APILibrary.vh"
+
 
 CLASS Vulcan.VOWinFormApp INHERIT App
 	PRIVATE winForms := Hashtable{} as Hashtable

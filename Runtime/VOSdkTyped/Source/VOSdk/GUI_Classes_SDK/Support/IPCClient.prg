@@ -1,6 +1,6 @@
 
 
-#include "VOWin32APILibrary.vh"
+
 #ifdef __VULCAN__
    #using System.Runtime.InteropServices
 #endif

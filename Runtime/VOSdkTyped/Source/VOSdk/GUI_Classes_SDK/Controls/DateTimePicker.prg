@@ -1,5 +1,5 @@
 
-#include "VOWin32APILibrary.vh"
+
 #USING System.Windows.Forms
 #USING System.Runtime.InteropServices
 CLASS DateTimePicker INHERIT TextControl

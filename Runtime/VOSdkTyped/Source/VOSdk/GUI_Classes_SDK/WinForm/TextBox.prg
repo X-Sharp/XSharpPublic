@@ -4,7 +4,7 @@
 // 
 // Also some On..() methods have been implemented that call the event handlers on the VO Window
 // class that owns the control
-#INCLUDE "VOWin32APILibrary.vh"
+
 #USING System.Windows.Forms
 
 /*

@@ -7,7 +7,7 @@ CLASS HorizontalSelectionSlider INHERIT SelectionSlider
     METHOD OnControlCreated(oC AS System.Windows.Forms.Control) AS VOID
         VAR oControl := (System.Windows.Forms.TrackBar) oC
 		oControl:Orientation := System.Windows.Forms.Orientation.Horizontal
-		RETURN oControl
+		RETURN 
 
 	CONSTRUCTOR(oOwner, xID, oPoint, oDimension) 
 		SUPER(oOwner, xID, oPoint, oDimension)
@@ -22,7 +22,7 @@ CLASS HorizontalSlider INHERIT Slider
     METHOD OnControlCreated(oC AS System.Windows.Forms.Control) AS VOID
         VAR oControl := (System.Windows.Forms.TrackBar) oC
 		oControl:Orientation := System.Windows.Forms.Orientation.Horizontal
-		RETURN oControl
+		RETURN 
 
 	CONSTRUCTOR(oOwner, xID, oPoint, oDimension) 
 		SUPER(oOwner, xID, oPoint, oDimension)
@@ -187,7 +187,7 @@ CLASS VerticalSelectionSlider INHERIT SelectionSlider
     METHOD OnControlCreated(oC AS System.Windows.Forms.Control) AS VOID
         VAR oControl := (System.Windows.Forms.TrackBar) oC
 		oControl:Orientation := System.Windows.Forms.Orientation.Vertical
-		RETURN oControl
+		RETURN 
 
 	METHOD __CreateControl(liStyle AS LONG, liExStyle AS LONG) AS System.Windows.Forms.Control
 		RETURN SUPER:__CreateControl(liStyle| (LONG) TBS_VERT, liExStyle) 
@@ -205,7 +205,7 @@ CLASS VerticalSlider INHERIT Slider
     METHOD OnControlCreated(oC AS System.Windows.Forms.Control) AS VOID
         VAR oControl := (System.Windows.Forms.TrackBar) oC
 		oControl:Orientation := System.Windows.Forms.Orientation.Vertical
-		RETURN oControl
+		RETURN 
 
 	CONSTRUCTOR(oOwner, xID, oPoint, oDimension) 
 		SUPER(oOwner, xID, oPoint, oDimension)

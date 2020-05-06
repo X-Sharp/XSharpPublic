@@ -1,6 +1,6 @@
 
 
-#include "VOWin32APILibrary.vh"
+
 #using System.Collections.Generic
 CLASS ToolBar INHERIT Control
 
@@ -34,7 +34,7 @@ CLASS ToolBar INHERIT Control
 		oControl:ShowToolTips := TRUE
 		oControl:Wrappable := FALSE
 		oControl:ButtonClick += ButtonClick
-		RETURN oControl
+		RETURN 
 	
 	
 	VIRTUAL METHOD ButtonClick (Sender AS OBJECT, e AS System.Windows.Forms.ToolBarButtonClickEventArgs) AS VOID
@@ -1221,6 +1221,7 @@ CLASS ToolBar INHERIT Control
 		DEFAULT(@oDimension, Dimension{})
 		DEFAULT(@lEnableBands, TRUE)
 		Default(@nButtonSize, 16)
+		SELF:cClassName := TOOLBARCLASSNAME
 
 
 		aUpdates	:= LIst<ToolBarUpdate>{}
@@ -1253,7 +1254,6 @@ CLASS ToolBar INHERIT Control
 			
 			oOrigin 	:= Point{oPoint:X, oPoint:Y}
 			oSize 		:= Dimension{oDimension:Width, oDimension:Height}
-			SELF:__ClassName := TOOLBARCLASSNAME
 		ELSE
 			// ToolBar is being created with a parent, calling super:Init() is safe
 			SUPER(oOwner, xID, oPoint, oDimension, TOOLBARCLASSNAME)

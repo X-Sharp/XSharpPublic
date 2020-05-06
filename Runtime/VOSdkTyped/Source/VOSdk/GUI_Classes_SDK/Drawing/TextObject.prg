@@ -1,13 +1,13 @@
 
 
-#include "VOWin32APILibrary.vh"
+
 PARTIAL CLASS TextObject INHERIT DrawObject
 	PROTECT oFont  AS Font
 	PROTECT oColor AS Color
 	PROTECT cText  AS STRING
 
 
-	CONSTRUCTOR(oPoint AS Point, cText AS STRING, oFont AS Font, oColor AS Color) 
+	CONSTRUCTOR(oPoint AS Point, cText := NULL_STRING AS STRING, oFont := NULL_OBJECT AS Font, oColor := NULL_OBJECT AS Color) 
 		LOCAL dwColor AS DWORD
 		SUPER(oPoint)
 

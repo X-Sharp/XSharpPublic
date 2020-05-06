@@ -1,5 +1,5 @@
 
-#include "VOWin32APILibrary.vh"
+
 CLASS IPAddress INHERIT TextControl
 
     PROPERTY ControlType AS ControlType  GET ControlType.IPAddress

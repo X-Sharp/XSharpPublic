@@ -1,5 +1,5 @@
 
-#include "VOWin32APILibrary.vh"
+
 #USING System.Windows.Forms
 FUNCTION __DBCSEnabled() AS LOGIC
 	//RETURN LOGIC(_CAST, GetSystemMetrics(SM_DBCSENABLED))

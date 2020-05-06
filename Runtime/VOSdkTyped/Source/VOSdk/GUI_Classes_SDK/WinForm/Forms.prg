@@ -5,7 +5,7 @@
 // The VOForm class is the common parent class for all the form classes.
 // The VODataWinForm class has a (VO)Panel{} that acts as the surface 
 // in the standard VO GU classes
-#include "VOWin32APILibrary.vh"
+
 
 #USING System.Windows.Forms
 #USING System.Reflection
@@ -18,7 +18,6 @@ CLASS VOForm INHERIT Form IMPLEMENTS IVOForm
 	PROTECT oToolTip	AS VOToolTip
 	PROTECT _lIsClosing AS LOGIC
 	STATIC PRIVATE oSmallIconFieldInfo AS FieldInfo
-	PROPERTY Ranorexflag AS STRING AUTO
 	#endregion
 
 
@@ -92,8 +91,6 @@ CLASS VOForm INHERIT Form IMPLEMENTS IVOForm
 	
 	STATIC METHOD GetFirstEditableChild(oParent AS System.Windows.Forms.Control)
 		FOREACH oC AS System.Windows.Forms.Control IN oParent:Controls
-			LOCAL oType AS System.Type
-			oType := oC:GetType()
 			IF oC:CanSelect .AND. !  oc IS VOButton 
 				RETURN oC
 			ENDIF

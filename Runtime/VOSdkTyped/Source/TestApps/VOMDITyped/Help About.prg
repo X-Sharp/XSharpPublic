@@ -47,26 +47,27 @@ METHOD PostInit(oParent,uExtra)
 	oDCAboutText:CurrentText := _CHR(13)+" VOMDIApp4"+_CHR(13)+_CHR(13);
 		+" X# Version "+sVer+_CHR(13)+_CHR(13);
 		+" Copyright (c) XSharp BV 2015-2020"
+	VAR point := oCCPushButton1:Origin
+    point:x := SELF:oDCFixedBitmap1:Origin:x
 		
 	IF IsThemeEnabled()
 		s := "Visit <A HREF="+_CHR(34)+;
 			"http://www.xsharp.info"+_CHR(34)+">X#</A> on the web!"
-		oSysLink := SysLink{SELF, -1, Point{10,5}, Dimension{300,20}, s}
+		oSysLink := SysLink{SELF, -1, point, Dimension{300,20}, s}
 		oSysLink:Show()
 	ELSE
-		
 		s := "Visit X# on the web:"
-		oFT1 := FixedText{SELF, -1, Point{10,25}, dimension{200,20}, s}
+		oFT1 := FixedText{SELF, -1, point, dimension{200,20}, s}
 		oFT1:show()
 
 		oFont1 := Font{,8,"Microsoft Sans Serif"}
 		oFont1:Underline := TRUE
-		
-		oHL1 := HyperLink{SELF,-1,point{190,25},dimension{0,0},"http://www.xsharp.info"}
+		point:x := SELF:oDCAboutText:Origin:x
+		oHL1 := HyperLink{SELF,-1,point,dimension{300,20},"www.xsharp.info"}
+		oHL1:size := dimension{300,20}
+		//oHL1:textcolor := color{COLORBLUE}
+		//oHL1:font():underline := TRUE
 		oHL1:font(oFont1)
-		oHL1:size := dimension{150,20}
-		oHL1:textcolor := color{COLORBLUE}
-		oHL1:font():underline := TRUE
 		oHL1:show()
 	
 	ENDIF

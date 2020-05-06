@@ -19,6 +19,11 @@ CLASS Button INHERIT TextControl
         
 		RETURN 
 
+    ASSIGN Caption(cNewText AS STRING)
+        IF SELF:oImage == NULL
+            SUPER:Caption := cNewText
+        ENDIF
+
 
 	ACCESS __Button AS VOButton
 		RETURN (VOButton) oCtrl
@@ -34,16 +39,25 @@ CLASS Button INHERIT TextControl
 		IF oNewImage IS ButtonImageList VAR oBIL
 			oImage := oNewImage
 			SELF:__Button:Image := oBIL:Image:__Image
-            SELF:__Button:ImageAlign := ContentAlignment.MiddleRight
-			return true
+		    SELF:__Button:FlatStyle := FlatStyle.Standard
+            SELF:__Button:Text := ""
+			RETURN TRUE
 		ELSEIF oNewImage IS Bitmap VAR oBM
 			oImage := oNewImage
-			self:__Button:Image := oBM:__Image
-			self:__Button:Invalidate()
-			return true
+			SELF:__Button:Image := oBM:__Image
+		    SELF:__Button:FlatStyle := FlatStyle.Standard
+            SELF:__Button:Text := ""
+
+			RETURN TRUE
 		ENDIF
 		
 		RETURN FALSE
+
+
+    METHOD Dispatch (oEvent)
+        
+        RETURN SUPER:Dispatch(oEvent)
+
 
 	METHOD __Update() AS VOID STRICT
 		//PP-030828 Strong typing

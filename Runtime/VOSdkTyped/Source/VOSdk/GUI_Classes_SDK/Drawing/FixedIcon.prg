@@ -20,7 +20,7 @@ PARTIAL CLASS FixedIcon INHERIT FixedImage
 		SELF:SetStyle(SS_ICON)
 		oImage := oIcon
 		SELF:__Label:Image := oImage
-
+        SELF:__Label:FlatStyle := System.Windows.Forms.FlatStyle.Flat
 		RETURN oIcon
 
 

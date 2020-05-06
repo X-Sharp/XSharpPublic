@@ -58,7 +58,7 @@ CLASS FixedText INHERIT TextControl
 		ENDIF
 		RETURN cNewText
 
-	METHOD OnPaint (e AS System.Windows.Forms.PaintEventArgs)
+	METHOD OnPaint (e AS System.Windows.Forms.PaintEventArgs) AS LOGIC
 		LOCAL liSSStyle AS LONG
 		LOCAL dwDrawStyle AS System.Windows.Forms.TextFormatFlags
 		LOCAL oRect AS System.Drawing.Rectangle

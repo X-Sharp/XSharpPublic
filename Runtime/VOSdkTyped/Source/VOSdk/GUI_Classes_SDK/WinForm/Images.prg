@@ -1,4 +1,4 @@
-#include "VOWin32APILibrary.vh"
+
 
 #USING System.Windows.Forms
 CLASS VOTrayIcon INHERIT VObject

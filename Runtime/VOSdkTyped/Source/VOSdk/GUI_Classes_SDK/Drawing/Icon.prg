@@ -1,6 +1,6 @@
 
 
-#include "VOWin32APILibrary.vh"
+
 PARTIAL CLASS Icon INHERIT VObject
 	PROTECT oIcon AS System.Drawing.Icon
 

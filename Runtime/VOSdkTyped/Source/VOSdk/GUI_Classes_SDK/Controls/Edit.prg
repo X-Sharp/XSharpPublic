@@ -1,6 +1,6 @@
 
 
-#include "VOWin32APILibrary.vh"
+
 #using System.Reflection
 CLASS Edit INHERIT TextControl
 	PROTECT lNoNotify AS LOGIC
@@ -744,7 +744,7 @@ CLASS SpinnerEdit INHERIT SingleLineEdit
 		IF oProp != NULL_OBJECT
 			oTextBox := oProp:GetValue(oSpinner,NULL)
 		ENDIF
-		RETURN oSpinner
+		RETURN 
 
 	ACCESS __TextBox AS System.Windows.Forms.TextBox
 		RETURN SELF:oTextBox

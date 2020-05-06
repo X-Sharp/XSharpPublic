@@ -1,5 +1,5 @@
 
-#include "VOWin32APILibrary.vh"
+
 
 PARTIAL CLASS Bitmap INHERIT VObject
 	PROTECT oImage AS System.Drawing.Image

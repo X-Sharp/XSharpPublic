@@ -1,6 +1,6 @@
 
 
-#include "VOWin32APILibrary.vh"
+
 PARTIAL CLASS Brush INHERIT VObject
 	PROTECT oBrush   AS System.Drawing.Brush
 	PROTECT _hParent AS IntPtr

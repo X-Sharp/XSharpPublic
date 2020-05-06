@@ -1,7 +1,7 @@
 
 
 
-#include "VOWin32APILibrary.vh"
+
 
 [Obsolete];
 CLASS __SplitView INHERIT Control

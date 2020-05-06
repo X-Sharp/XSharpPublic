@@ -3,7 +3,7 @@
 // The dialog is also created and destroyed to read the 'real' positions of the controls
 // The structures are copied from the WIN32 API Lib
 
-#include "VOWin32APILibrary.vh"
+
 
 
 #USING System.Runtime.InteropServices
@@ -61,10 +61,8 @@ CLASS ResourceDialog INHERIT ResourceReader
 		LOCAL hWnd AS IntPtr
 		LOCAL hOwner AS IntPtr
 		IF SELF:IsValid
-			IF IsInstanceOf(oOwner, #Window)
-				LOCAL oWindow AS Window
-				oWindow := oOwner
-				DO WHILE IsInstanceOf(oWindow:Owner, #Window)
+			IF oOwner IS Window VAR oWindow
+				DO WHILE oWindow:Owner IS Window
 					oWindow := oWindow:Owner
 				ENDDO
 				hOwner := oWindow:Handle()

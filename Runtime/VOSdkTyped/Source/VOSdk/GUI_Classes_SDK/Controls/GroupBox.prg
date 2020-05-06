@@ -1,5 +1,5 @@
 
-#include "VOWin32APILibrary.vh"
+
 CLASS GroupBox INHERIT TextControl
 
 

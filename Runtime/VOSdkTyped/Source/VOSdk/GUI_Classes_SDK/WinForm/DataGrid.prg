@@ -1,7 +1,7 @@
 // DataGrid.prg
 // This file contains subclasses from classes in System.Windows.Forms for the DataGrid Control
 
-#INCLUDE "VOWin32APILibrary.vh"
+
 #USING System.Windows.Forms
 #using System.Drawing
 #using System.Collections.Generic

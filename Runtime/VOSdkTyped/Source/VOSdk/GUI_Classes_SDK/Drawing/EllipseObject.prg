@@ -1,7 +1,7 @@
 
 
 
-#include "VOWin32APILibrary.vh"
+
 PARTIAL CLASS EllipseObject INHERIT ShapeObject
 
 	CONSTRUCTOR(oPoint AS Point, oDimension AS Dimension) 

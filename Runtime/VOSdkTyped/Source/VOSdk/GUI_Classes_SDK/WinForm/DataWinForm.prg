@@ -1,5 +1,5 @@
 // DataForm.prg
-#INCLUDE "VOWin32APILibrary.vh"
+
 #using System.Windows.Forms
 #using System.Drawing
 #define INSIDEFORMBORDER 5
@@ -101,20 +101,6 @@ CLASS VODataForm INHERIT VOChildAppForm
 	
 	PROPERTY DataWindow AS XSharp.VO.DataWindow GET (DataWindow) Window
 
-	// Dirty Access Using Latebound Code for the validation of reccounts after selections in Ranorex. I am sorry. This has to be implemented on the Winforms-Layer and time is a factor.
-//	PROPERTY RanorexRecCount AS STRING
-//		GET
-//			LOCAL cRet:= "-1" AS STRING
-//			LOCAL oVoWin := SELF:DataWindow AS DataWindow
-//			IF oVoWin!= NULL .AND. oVoWin:Server != NULL .AND. ismethod(oVoWin:Server, "getSqlState") .AND. isAccess(oVoWin:Server, "Connection") .AND. oVoWin:Server:Connection != NULL .AND. isInstanceOf(oVoWin:Server:Connection,"SQLConnection")
-//				LOCAL cState := oVoWin:Server:GetSQLState( "count(1)", TRUE, FALSE ) AS STRING
-//				LOCAL oConn := oVoWin:Server:Connection AS OBJECT
-//				cRet := AsString(oConn:DoSimpleSelect(cState))
-//			ENDIF
-//			RETURN cRet
-//		END GET
-//	END PROPERTY
-		
 
 	PROPERTY StatusBar AS VOStatusStrip
 		GET
@@ -151,13 +137,14 @@ CLASS VODataForm INHERIT VOChildAppForm
 	END PROPERTY
 #endregion
 
+
 	CONSTRUCTOR(oWindow AS Window, oOwner AS Form, oRes AS ResourceDialog)
 		SUPER(oWindow, oOwner)
 		SELF:oResDlg := oRes 
 		SELF:Text := "DataWinForm"
-		oFramePanel := VOFramePanel{SELF, oWindow}							
+		oFramePanel := GuiFactory.Instance:CreateFramePanel(SELF, oWindow)
 		SELF:Controls:Add(oFramePanel)
-		oSurfacePanel := VoSurfacePanel{oWindow}
+		oSurfacePanel := GuiFactory.Instance:CreateSurfacePanel(oWindow)
 		
 		oFramePanel:Controls:Add(oSurfacePanel)
 		IF oRes != NULL_OBJECT
@@ -213,10 +200,7 @@ CLASS VODataForm INHERIT VOChildAppForm
 		LOCAL oLoc       AS System.Drawing.Point
 		SELF:SuspendLayout()
 		IF SELF:lSubForm
-			//IF ! SELF:lInBrowseView			
-			//	oInnerSize := oSurfacePanel:Size
-			//	SELF:oFramePanel:Size := oInnerSize
-			//ENDIF
+			NOP
 		ELSE	
 			oLoc       := SELF:Location
 			oOuterSize := SELF:Size
@@ -241,7 +225,7 @@ CLASS VODataForm INHERIT VOChildAppForm
 			SELF:Size := oOuterSize
 			SELF:Location := oLoc
 		ENDIF
-		SELF:ResumeLayout(TRUE)		
+		SELF:ResumeLayout()		
 		RETURN
 
 	METHOD ChangeFormSize(oDim AS Size) AS VOID

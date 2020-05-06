@@ -3,7 +3,7 @@
 // Unicode GUI Classes
 // Also some On..() methods have been implemented that call the event handles on the VO Window
 // class that owns the control
-#INCLUDE "VOWin32APILibrary.vh"
+
 #USING System.Windows.Forms
 #USING System.Reflection
 #using System.Collections.Generic

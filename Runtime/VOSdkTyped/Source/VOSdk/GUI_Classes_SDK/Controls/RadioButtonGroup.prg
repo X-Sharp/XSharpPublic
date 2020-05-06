@@ -1,5 +1,5 @@
 
-#include "VOWin32APILibrary.vh"
+
 
 PARTIAL CLASS RadioButtonGroup INHERIT GroupBox
 	PROTECT wPressedButton AS DWORD
@@ -220,12 +220,12 @@ PARTIAL CLASS RadioButtonGroup INHERIT GroupBox
 
 		RETURN 
 
-	METHOD Show() 
+	METHOD Show()  AS VOID
 		SUPER:Show()
 	//	FOREACH oC AS System.Windows.Forms.Control IN SELF:oCtrl:Controls
 	//		oC:Visible := TRUE
 	//	NEXT
-		RETURN SELF
+		RETURN 
 
 	ACCESS TextValue AS STRING
 		LOCAL cRetVal AS STRING

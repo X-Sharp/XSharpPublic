@@ -17,7 +17,7 @@ CLASS DialogWindow INHERIT Window IMPLEMENTS ILastFocus
 
 	STATIC METHOD GetShell(oWin AS OBJECT) AS ShellWindow
 		DO WHILE oWin != NULL_OBJECT
-			IF IsInstanceOf(oWin, #ShellWindow)
+			IF oWin IS ShellWindow
 				EXIT
 			ENDIF
 			IF IsAccess(oWin, #Owner)
@@ -32,14 +32,11 @@ CLASS DialogWindow INHERIT Window IMPLEMENTS ILastFocus
 		LOCAL oDlg AS VODialogForm
         oDlg := GuiFactory.Instance:CreateDialogWindow(SELF, SELF:oResourceDialog)
 		// Set owner window and prevent from showing on the taskbar
-		IF IsInstanceOf(SELF:Owner, #Window)
+		IF SELF:Owner IS Window
 			LOCAL oShell as ShellWindow
 			oShell := GetShell(SELF:Owner)
 			IF oShell != NULL_OBJECT
 				oDlg:Owner := oShell:__Form
-				IF isInstanceof(SELF,"run_MdiWindow")
-					oDlg:MdiParent := oShell:__Form
-				ENDIF
 			ENDIF
 			oDlg:ShowInTaskbar := FALSE
 		ENDIF
@@ -62,7 +59,6 @@ CLASS DialogWindow INHERIT Window IMPLEMENTS ILastFocus
 		ELSE
 			oDlg:ControlBox := FALSE
 		ENDIF
-		oDlg:RanorexFlag := SELF:GetType():FullName		
 		RETURN oDlg
 
 	METHOD __Close(oEvent AS @@Event) AS VOID STRICT 
@@ -89,7 +85,7 @@ CLASS DialogWindow INHERIT Window IMPLEMENTS ILastFocus
 		RETURN oSurface
 	
 	METHOD __SetupDataControl(oDC AS Control) AS VOID 
-		IF IsInstanceOfUsual(oDC, #RadioButtonGroup)
+		IF oDC IS RadioButtonGroup
 			AAdd(aRadioGroups, oDC)
 		ENDIF
 		RETURN 
@@ -117,9 +113,9 @@ CLASS DialogWindow INHERIT Window IMPLEMENTS ILastFocus
 		SUPER:ButtonClick(oControlEvent)
 		
 		oButton := oCE:Control
-		IF IsInstanceOf(oButton, #Button)
+		IF oButton IS Button
 			oButton:Modified := TRUE // assume its modified
-			IF IsInstanceOf(oButton, #RadioButton)
+			IF oButton IS RadioButton
 				//SE-060526
 				dwCount := ALen(aRadioGroups)
 				FOR dwI := 1 UPTO dwCount
@@ -326,7 +322,7 @@ CLASS DialogWindow INHERIT Window IMPLEMENTS ILastFocus
 	
 	METHOD ShowModal(lActive AS LOGIC) 
 		LOCAL oShell AS ShellWindow
-		IF IsInstanceOf(SELF:Owner, #Window)
+		IF SELF:Owner IS Window
 			oShell := GetShell(SELF:Owner)
 		ENDIF	
 		IF lActive

@@ -1,7 +1,7 @@
 
 #include "VOSystemClasses.vh"
 
-#include "VOWin32APILibrary.vh"
+
 // This class emulates the VO Databrowser using the DotNet DataGridView
 // Some remarks that may not be obvious to others
 // The databrowser is attached to a server, but does NOT always include the current record of that server
@@ -64,7 +64,7 @@ CLASS DataBrowser INHERIT XSharp.VO.Control
 	PROTECT oDataServer        AS DataServer
 	PROTECT oTextPointer       AS Pointer
 	PROTECT VScrollBar		   AS VScrollBar
-	PROTECT oScrollBarManager   AS DataBrowserScrollBarManager
+	INTERNAL oScrollBarManager   AS DataBrowserScrollBarManager
 	PROTECT iScrollOffSet		AS LONG
 	PROTECT lInEvent			AS LONG
 	PROTECT oRowDict			AS System.Collections.Generic.Dictionary<INT, VODataGridViewRow>
@@ -161,7 +161,7 @@ CLASS DataBrowser INHERIT XSharp.VO.Control
 		SELF:VScrollBar:Parent	:= oGrid		
 		SELF:oScrollBarManager	:= DataBrowserScrollBarManager{SELF, SELF:VScrollBar, oGrid}
 
-		RETURN oC
+		RETURN 
 
 
 	#region Vertical Scrollbar operation
@@ -571,7 +571,7 @@ CLASS DataBrowser INHERIT XSharp.VO.Control
 
 			oWindow := (Window) SELF:Owner        
 			
-			IF IsInstanceOf(oWindow, #DataWindow) //vor die Loop gesetzt, da sich das Ergebnis in der Loop nicht ändert
+			IF oWindow IS DataWindow //vor die Loop gesetzt, da sich das Ergebnis in der Loop nicht ändert
 				oDatawin := (DataWindow) oWindow
 			ELSE
 				oDatawin := NULL_OBJECT
@@ -2000,7 +2000,6 @@ CLASS DataBrowser INHERIT XSharp.VO.Control
 	CONSTRUCTOR(oOwner, xID, oPoint, oDimension) 
 		LOCAL oBB AS BoundingBox
 		LOCAL oWin AS Window
-		LOCAL oDataWin AS DataWindow
 		LOCAL nHeight AS LONG
 		IF !IsInstanceOfUsual(oOwner,#Window)
 			WCError{#Init,#DataBrowser,__WCSTypeError,oOwner,1}:@@Throw()
@@ -2019,12 +2018,8 @@ CLASS DataBrowser INHERIT XSharp.VO.Control
 			oDimension	:= Dimension{oBB:Width,oBB:Height-nHeight}
 		ENDIF
 
-		IF IsInstanceOf(oWin, #DataWindow) 
-			oDataWin := (DataWindow) oWin
-			oWin := oDataWin
-		ENDIF
 
-		SUPER(oWin, xID, oPoint, oDimension, CONTAINER_CLASS, CTS_SPLITBAR)
+		SUPER(oWin, xID, oPoint, oDimension, CONTAINER_CLASS)
 
 		iBufferGranularity := INT(_CAST, QueryRTRegInt("Browser", "Granularity"))
 		IF (iBufferGranularity == 0)
@@ -2373,7 +2368,7 @@ CLASS DataBrowser INHERIT XSharp.VO.Control
 
 		RETURN SELF
 
-	METHOD Show() 
+	METHOD Show() AS VOID
 		IF oDataServer != NULL_OBJECT
 			IF !lIsShown
 				SELF:__BuildBuffer()
@@ -2384,7 +2379,7 @@ CLASS DataBrowser INHERIT XSharp.VO.Control
 		SUPER:Show()
 		SELF:SetFocus()
 
-		RETURN SELF
+		RETURN 
 
 	METHOD SuspendUpdate()   AS VOID STRICT
 		
@@ -2533,7 +2528,7 @@ CLASS DataBrowser INHERIT XSharp.VO.Control
 
 END CLASS
 
-PARTIAL CLASS DataColumn INHERIT VObject
+CLASS DataColumn INHERIT VObject
 	PROTECT iDataField AS INT
 
 	PROTECT lModified AS LOGIC
@@ -3365,7 +3360,7 @@ END CLASS
 #define VSCROLLMAX	1000
 #define VSCROLLOFFSET 100
 
-CLASS DataBrowserScrollBarManager
+INTERNAL CLASS DataBrowserScrollBarManager
 	// This class manages the synchronization between the visible position in the grid and the scrollbar value
 	// The Scrollbar has its range set to 0-1000
 	// There are a couple of situations that make this special

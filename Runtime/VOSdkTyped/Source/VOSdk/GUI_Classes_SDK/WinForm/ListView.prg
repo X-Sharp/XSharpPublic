@@ -4,7 +4,7 @@
 // Also some On..() methods have been implemented that call the event handles on the VO Window
 // class that owns the control
 
-#INCLUDE "VOWin32APILibrary.vh"
+
 #USING System.Windows.Forms
   
 CLASS VOListView INHERIT System.Windows.Forms.ListView IMPLEMENTS IVOControl, IVOControlInitialize
@@ -26,29 +26,6 @@ CLASS VOListView INHERIT System.Windows.Forms.ListView IMPLEMENTS IVOControl, IV
 			SELF:TabStop := (_AND(oProperties:Style, WS_TABSTOP) == WS_TABSTOP)
 		ENDIF
 
-VIRTUAL PROPERTY RanorexSelectedText AS STRING
-	GET
-		RETURN SELF:Text
-	END GET
-	SET
-		LOCAL cText := value AS STRING
-		LOCAL lSet := FALSE AS LOGIC
-		cText := UPPER(cText)
-		FOREACH IMPLIED oItem IN SELF:Items
-			IF oItem is VOListViewItem
-				LOCAL oTypedItem AS VOListViewItem
-				oTypedItem := (VOListViewItem) oItem
-				IF !lSet .AND. oTypedItem:Text:ToUpper():StartsWith(cText)
-					oItem:Selected := TRUE
-					lSet := TRUE
-				ELSE
-					oItem:Selected := FALSE
-				ENDIF
-			ENDIF
-		NEXT
-		SUPER:Text := Value
-	END SET
-	END PROPERTY
 	
 	
 	#region Event Handlers		

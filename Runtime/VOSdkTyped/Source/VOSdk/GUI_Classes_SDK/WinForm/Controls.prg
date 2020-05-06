@@ -4,7 +4,7 @@
 // Each control has a reference to the VO control and a VOControlProperties object
 // Also some On..() methods have been implemented that call the event handles on the VO Window
 // class that owns the control
-#INCLUDE "VOWin32APILibrary.vh"
+
 #USING System.Windows.Forms
 #using System.Drawing
 #using System.Collections.Generic
@@ -208,36 +208,6 @@ CLASS VOGroupBox INHERIT System.Windows.Forms.GroupBox IMPLEMENTS IVOControl, IV
 					ENDIF
 				NEXT
 			ENDIF
-			// RadioButtons hängen direkt an der RadioButtonGroup. Deshalb müssen diese auch direkt in der Control-Collection der Gruppe verschoben werden.
-			IF IsInstanceOf(SELF:Control,"run_rbg")
-				IF lWasMoved
-					FOREACH oC AS System.Windows.Forms.Control IN SELF:Controls
-						IF oC != SELF
-							oLocChild  := oC:Location
-							IF oLocChild:X >= 0 .and. oLocChild:Y >= 0 .and. oC:Width+oLocChild:X <= SELF:Width .and. oLocChild:Y + oC:Height <= SELF:Height
-								oC:Location := System.Drawing.Point{oLocChild:X, oLocChild:Y + 5 + nOffset}
-								lWasMoved := TRUE
-								IF IsAccess(((OBJECT)oC), #Control) .AND. IsAssign(((OBJECT)oC):Control, #WasMoved)
-									((OBJECT)oC):Control:WasMoved := TRUE
-								ENDIF
-							ENDIF
-						ENDIF
-					NEXT
-				ELSEIF !Empty(SELF:Text)
-					FOREACH oC AS System.Windows.Forms.Control IN SELF:Controls
-						IF oC != SELF
-							oLocChild  := oC:Location
-							IF oLocChild:X >= 0 .and. oLocChild:Y >= 0 .and. oC:Width+oLocChild:X <= SELF:Width .and. oLocChild:Y + oC:Height <= SELF:Height
-								oC:Location := System.Drawing.Point{oLocChild:X, oLocChild:Y + 2 + nOffset}
-								lWasMoved := TRUE
-								IF IsAccess(((OBJECT)oC), #Control) .AND. IsAssign(((OBJECT)oC):Control, #WasMoved)
-									((OBJECT)oC):Control:WasMoved := TRUE
-								ENDIF
-							ENDIF
-						ENDIF
-					NEXT
-				ENDIF
-			ENDIF
 			SELF:lMoved := lWasMoved
 		ENDIF
 		RETURN
@@ -314,6 +284,7 @@ CLASS VOLabel INHERIT System.Windows.Forms.Label IMPLEMENTS IVOControl, IVOContr
 	METHOD Initialize() AS VOID STRICT
 		SELF:Margin := Padding{0,0,0,0}
 		SELF:UseCompatibleTextRendering := FALSE
+        	SELF:ResizeRedraw := TRUE
 		
 	CONSTRUCTOR(Owner AS XSharp.VO.Control, dwStyle AS LONG, dwExStyle AS LONG)
 		oProperties := VOControlProperties{SELF, Owner, dwStyle, dwExStyle}
@@ -513,8 +484,8 @@ END CLASS
 
 	PROTECTED METHOD OnValueChanged (e AS EventArgs) AS VOID
 	    SUPER:OnValueChanged(e)
-		LOCAL oWindow AS Window
-		oWindow := (Window) SELF:Control:Owner
+        //	LOCAL oWindow AS Window
+        //	oWindow := (Window) SELF:Control:Owner
 		//oWindow:DateTimeSelectionChanged(DateTimeSelectionEvent{SELF:Control})
 		RETURN
 

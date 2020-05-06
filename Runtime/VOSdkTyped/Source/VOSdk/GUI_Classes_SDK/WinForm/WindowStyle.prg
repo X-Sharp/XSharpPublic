@@ -1,6 +1,6 @@
 // WindowStyle.prg
 
-#include "VOWin32APILibrary.vh"
+
 
 #USING System.Text
 INTERNAL CLASS WindowStyle

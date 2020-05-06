@@ -1,7 +1,7 @@
 
 
 
-#include "VOWin32APILibrary.vh"
+
 #using System.Drawing.Printing
 #using System.Reflection
 CLASS PrintingDevice INHERIT VObject

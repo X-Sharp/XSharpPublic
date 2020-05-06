@@ -1,7 +1,7 @@
 // ControlEvent.prg
 
 
-#include "VOWin32APILibrary.vh"
+
 #USING System.Diagnostics
 
 
@@ -50,7 +50,7 @@ PARTIAL CLASS ComboBoxExEndEditEvent INHERIT ControlNotifyEvent
 	*/
 END CLASS
 
-PARTIAL CLASS ControlEvent INHERIT @@Event
+PARTIAL CLASS ControlEvent INHERIT @@Event IMPLEMENTS INamedEvent
 	PROTECTED oControl   AS XSharp.VO.Control
 	
 	PROPERTY Control     AS XSharp.VO.Control GET oControl

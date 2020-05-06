@@ -4,7 +4,7 @@
 //  
 // Also some On..() methods have been implemented that call the event handlers on the VO Window
 // class that owns the control
-#INCLUDE "VOWin32APILibrary.vh"
+
 #USING System.Windows.Forms
 
 
@@ -177,29 +177,6 @@ CLASS VOListBox INHERIT System.Windows.Forms.ListBox IMPLEMENTS IVOControl, IVOC
 	END SET
 		END PROPERTY
 
-
-	VIRTUAL PROPERTY RanorexSelectedText AS STRING
-	GET
-		RETURN SELF:Text
-	END GET
-	SET
-		LOCAL cText := value AS STRING
-		cText := UPPER(cText)
-		FOREACH IMPLIED oItem IN SELF:Items
-			IF oItem is ListBoxItemValue
-				LOCAL oTypedItem AS ListBoxItemValue
-				oTypedItem := (ListBoxItemValue) oItem
-				IF oTypedItem:ToString():ToUpper():StartsWith(cText)
-					SELF:SelectedItem := oItem
-					EXIT
-				ENDIF
-			ENDIF
-		NEXT
-		SUPER:Text := Value
-	END SET
-	END PROPERTY
-
-
 	
 END CLASS
 
@@ -217,27 +194,6 @@ CLASS VOComboBox INHERIT System.Windows.Forms.ComboBox IMPLEMENTS IVOControl, IV
 		SELF:FlatStyle		:= FlatStyle.System
 		SELF:Margin			:= Padding{0,0,0,0}
 		RETURN
-
-	VIRTUAL PROPERTY RanorexSelectedText AS STRING
-	GET
-		RETURN SELF:Text
-	END GET
-	SET
-		LOCAL cText := value AS STRING
-		cText := UPPER(cText)
-		FOREACH IMPLIED oItem IN SELF:Items
-			IF oItem is ListBoxItemValue
-				LOCAL oTypedItem AS ListBoxItemValue
-				oTypedItem := (ListBoxItemValue) oItem
-				IF oTypedItem:ToString():ToUpper():StartsWith(cText)
-					SELF:SelectedItem := oItem
-					EXIT
-				ENDIF
-			ENDIF
-		NEXT
-		SUPER:Text := Value
-	END SET
-	END PROPERTY
 
 
 	PROPERTY Text AS STRING

@@ -1,4 +1,4 @@
-#INCLUDE "VOWin32APILibrary.vh"
+
 #USING System.Windows.Forms
 
 CLASS VOHtmlEditorControl INHERIT WebBrowser IMPLEMENTS IVOControl

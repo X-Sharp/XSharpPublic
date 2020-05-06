@@ -1,5 +1,5 @@
 // Panel.prg
-#INCLUDE "VOWin32APILibrary.vh"
+
 #USING System.Windows.Forms
 #USING System.ComponentModel
 #using System.Diagnostics
@@ -163,29 +163,17 @@ CLASS VOPanel INHERIT System.Windows.Forms.Panel
 			aControls := System.Windows.Forms.Control[]{SELF:Controls:Count}
 			SELF:Controls:CopyTo(aControls,0)
 			FOREACH oC AS System.Windows.Forms.Control IN aControls
-				LOCAL oType AS System.Type
-				oType := oC:GetType()
 				IF oC is VOGroupBox
 					oGroup := (VOGroupBox) oC
 					IF ! SELF:SuppressMovingControls
 						oGroup:FindChildren()
 					ENDIF
-					IF IsInstanceOf(oGroup:Control,"run_rbg")
-						IF lSortGroups
-							nKey := (oGroup:Location:Y + oGroup:Height)*10000 + oGroup:Location:X // untere kante berechnen (oben>unten , links > rechts)
-							DO WHILE SELF:_aRBGroups:ContainsKey(nKey)
-								nKey++
-							ENDDO
-							SELF:_aRBGroups:Add(nKey,oGroup)
-						ENDIF
-					ELSE
 						IF lSortGroups
 							nKey := (oGroup:Location:Y + oGroup:Height)*10000 + oGroup:Location:X // untere kante berechnen (oben>unten , links > rechts)
 							DO WHILE SELF:_aGroups:ContainsKey(nKey)
 								nKey++
 							ENDDO
 							SELF:_aGroups:Add(nKey,oGroup)
-						ENDIF
 					ENDIF
 				ELSEIF oc is VOPanel
 					((VOPanel) oC):Prepare()
@@ -220,19 +208,11 @@ CLASS VOPanel INHERIT System.Windows.Forms.Panel
 		FOREACH oC AS System.Windows.Forms.Control IN SELF:Controls
 			IF oc is VOGroupBox
 				oGroup := (VOGroupBox) oC
-				IF IsInstanceOf(oGroup:Control,"run_rbg")
-					nKey := ((oGroup:Location:Y + oGroup:Height)*10000 + oGroup:Location:X)*(-1) // untere kante berechnen (oben>unten , links > rechts)
-					DO WHILE SELF:_aRBGroups:ContainsKey(nKey)
-						nKey++
-					ENDDO
-					SELF:_aRBGroups:Add(nKey,oGroup)
-				ELSE
 					nKey := ((oGroup:Location:Y + oGroup:Height)*10000 + oGroup:Location:X)*(-1) // untere kante berechnen (oben>unten , links > rechts)
 					DO WHILE SELF:_aGroups:ContainsKey(nKey)
 						nKey++
 					ENDDO
 					SELF:_aGroups:Add(nKey,oGroup)
-				ENDIF
 			ENDIF
 			IF oc is VOFramePanel
 				LOCAL oframe := (VOFramePanel) oC

@@ -1,4 +1,4 @@
-#include "VOWin32APILibrary.vh"
+
 PARTIAL CLASS FixedBitmap INHERIT FixedImage
 	PROTECT hInst AS IntPtr
 	
@@ -10,12 +10,12 @@ PARTIAL CLASS FixedBitmap INHERIT FixedImage
 
 	CONSTRUCTOR(uOwner, uID, uPoint, uDimension, uResID) 
 		SUPER(uOwner, uID, uPoint, uDimension, uResID)
-		IF IsInstanceOf(uID , #ResourceID)
+		IF IsInstanceOfUsual(uID , #ResourceID)
 			LOCAL oResID AS ResourceID
 			oResID := uID
 			hInst := oResID:Handle()
 		ENDIF
-		IF IsInstanceOf(uResID , #ResourceID)
+		IF IsInstanceOfUsual(uResID , #ResourceID)
 			SELF:__SetImage(uResID)
 		ENDIF
 		RETURN 

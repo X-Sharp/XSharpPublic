@@ -44,6 +44,7 @@ CLASS GuiFactory
             oRes := VOSpinnerTextBox{owner, liStyle, liExStyle}
 
         CASE ControlType.FixedText
+        CASE ControlType.HyperLink
             oRes := VOOwnerDrawnLabel{owner, liStyle, liExStyle}
 
         CASE ControlType.Panel
@@ -117,6 +118,10 @@ CLASS GuiFactory
         METHOD CreateSurfacePanel(Owner AS XSharp.VO.Control, dwStyle AS LONG, dwExStyle AS LONG) AS VOSurfacePanel
             RETURN VOSurfacePanel{Owner, dwStyle, dwExStyle}
 
+
+        METHOD CreateFramePanel(oOwner AS VODataForm, oWindow AS Window) AS VOFramePanel
+            RETURN VOFramePanel{oOwner, oWindow}
+
         METHOD CreateDialogWindow(oWindow AS Window, oRes AS ResourceDialog) AS VoDialogForm
             RETURN VoDialogForm{oWindow, oRes}
 
@@ -171,5 +176,6 @@ ENUM ControlType
     MEMBER DataBrowser
     MEMBER DataListView
     MEMBER MonthCalendar
+    MEMBER HyperLink
 END ENUM    
 

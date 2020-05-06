@@ -25,10 +25,18 @@ CLASS AppWindow INHERIT Window
 		RETURN
 	
 
-	//[Obsolete];
-	//ACCESS __SysMenu AS XSharp.VO.Menu STRICT 
-	//	RETURN NULL_OBJECT
-	
+    METHOD Activate(oEvent)
+        SUPER:Activate(oEvent)
+        IF SELF:__Form:IsMdiChild
+            VAR oShell  := SELF:__Form:ParentForm
+            oSHell:Menu := SELF:__Form:Menu
+        ENDIF
+        
+    METHOD DeActive(oEvent)
+        SUPER:DeActivate(oEvent)
+        IF SELF:__Form:IsMdiChild
+        ENDIF
+
 
 	METHOD Default(oEvent) 
 		RETURN SELF

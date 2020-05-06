@@ -1,5 +1,5 @@
 // Properties.prg
-#INCLUDE "VOWin32APILibrary.vh"
+
 
 #using System.Windows.Forms
 #using System.ComponentModel
@@ -170,9 +170,6 @@ CLASS VOControlProperties INHERIT VOProperties
 	
 	METHOD OnKeyDown(s AS OBJECT, e AS KeyEventArgs) AS VOID	
 		IF SELF:Control != NULL_OBJECT
-			//LOCAL oDlg AS VOPanel
-			//oDlg := Wc.AppGetDialogWindow()
-			//IF oDlg != NULL_OBJECT .and. oDlg:IsParentOf(SELF:oWFC)
 				LOCAL k AS KeyEvent
 				k := KeyEvent{e}
 				SELF:Control:EventReturnValue := 0
@@ -180,7 +177,6 @@ CLASS VOControlProperties INHERIT VOProperties
 				IF SELF:Window != NULL_OBJECT .AND. SELF:Control:EventReturnValue == 0
 					SELF:Window:KeyDown(k)					
 				ENDIF
-			//ENDIF
 		ENDIF
 		RETURN		
 	

@@ -2,7 +2,7 @@
 // This file contains a subclass of the Windows.Forms.Treeview control
 // Also some On..() methods have been implemented that call the event handles on the VO Window
 // class that owns the control
-#INCLUDE "VOWin32APILibrary.vh"
+
 #USING System.Windows.Forms
 #using System.Collections.Generic
 

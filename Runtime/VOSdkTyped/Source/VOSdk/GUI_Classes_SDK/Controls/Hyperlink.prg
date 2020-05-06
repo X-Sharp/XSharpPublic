@@ -1,5 +1,5 @@
 
-#include "VOWin32APILibrary.vh"
+
 CLASS CurHand INHERIT Pointer
 
 	CONSTRUCTOR () 
@@ -9,68 +9,20 @@ CLASS CurHand INHERIT Pointer
 END CLASS
 
 PARTIAL CLASS HyperLink INHERIT FixedText
-	// Another generous contribution from S Ebert
-	PROTECT _oPointer AS Pointer
 
+    PROPERTY Controltype AS Controltype GET Controltype.Label
 
-    PROPERTY ControlType AS ControlType GET ControlType.Panel
+    METHOD OnControlCreated(oC AS System.Windows.Forms.Control) AS VOID
+        VAR oLabel := (VOLabel) oC
+        oLabel:Click += Clicked
 
-	METHOD Dispatch(oEvent) 
-		//Todo
-		//LOCAL oEvt  AS @@Event
-		//LOCAL nMsg  AS DWORD
-		//LOCAL sRect IS _WinRect
-		//LOCAL hDc, hFont AS PTR
+    METHOD Clicked(sender AS OBJECT, e AS EventArgs) AS VOID
+       SELF:OpenLink()
+        RETURN
 
-		//oEvt := oEvent
-		//nMsg := oEvt:uMsg
-
-		//DO CASE
-		//CASE nMsg == WM_SETCURSOR .AND. LoWord(DWORD(_CAST,oEvt:lParam)) == HTClient
-		//	Win32.SetCursor(_oPointer:Handle())
-		//	SELF:EventReturnValue := 1L
-		//	RETURN 1L
-		//CASE nMsg == WM_LBUTTONDOWN .OR. (nMsg == WM_KEYDOWN .AND. (oEvt:wParam == 32 .OR. oEvt:wParam == VK_RETURN))
-		//	SELF:OpenLink()
-		//	SELF:EventReturnValue := 0L
-		//	RETURN 1L
-		//CASE nMsg == WM_PAINT
-		//	IF SELF:lUseDrawText
-		//		SUPER:Dispatch(oEvt)
-		//	ELSE
-		//		CallWindowProc(SELF:__lpfnDefaultProc, hWnd, nMsg, oEvt:wParam, oEvt:lParam)
-		//	ENDIF
-		//	IF hWnd == GetFocus()
-		//		hDc   := GetDC(hwnd)
-		//		hFont := SendMessage(hWnd, WM_GETFONT, 0, 0)
-		//		IF hFont != NULL_PTR
-		//			SelectObject(hDc, hFont)
-		//			GetTextExtentPoint32(hDc, String2Psz(SELF:Caption), INT(SLen(SELF:Caption)), (_winSIZE PTR) @sRect:Right)
-		//			sRect:Right  += 1
-		//			sRect:Bottom += 1
-		//			DrawFocusRect(hDc, @sRect)
-		//		ENDIF
-		//		ReleaseDC(hwnd, hDc)
-		//	ENDIF
-		//	SELF:EventReturnValue := 0L
-		//	RETURN 1L
-		//CASE nMsg == WM_KILLFOCUS  .OR. nMsg == WM_SETFOCUS
-		//	InvalidateRect(hWnd, NULL_PTR, FALSE)
-		//CASE nMsg == WM_GETDLGCODE
-		//	IF HiWord(GetKeyState(VK_RETURN)) > 0
-		//		SELF:EventReturnValue := DLGC_WANTALLKEYS
-		//	ELSE
-		//		SELF:EventReturnValue := IIF(hWnd == GetFocus(), DLGC_DEFPUSHBUTTON, DLGC_UNDEFPUSHBUTTON)
-		//	ENDIF
-		//	RETURN 1L
-		//ENDCASE
-
-		RETURN SUPER:Dispatch(oEvent)
-
-	CONSTRUCTOR(oOwner, xID, oPoint, oDimension, cText) 
+    CONSTRUCTOR(oOwner, xID, oPoint, oDimension, cText) 
 		SUPER(oOwner, xID, oPoint, oDimension, cText )
-		SELF:Setstyle(SS_NOTIFY, TRUE)
-		_oPointer := CurHand{}
+        oCtrl:Cursor := System.Windows.Forms.Cursors.Hand
 		RETURN 
 
 	METHOD OpenLink() 
@@ -79,22 +31,25 @@ PARTIAL CLASS HyperLink INHERIT FixedText
 END CLASS
 
 FUNCTION ShellOpen(oWindow AS Window, cFile AS STRING) AS VOID STRICT
-	//SE-080603
-	/*  LOCAL hWnd AS PTR 
+	LOCAL hWnd AS PTR 
 
 	cFile := AllTrim(Lower(cFile))
 	IF At2("@",cFile)>1
-	IF ! cFile = "mailto:"
-	cFile := "mailto:" + cFile
-	ENDIF
+	    IF ! cFile = "mailto:"
+	        cFile := "mailto:" + cFile
+	    ENDIF
 	ENDIF
 	IF ! Empty(cFile)
-	IF oWindow != NULL_OBJECT
-	hWnd := oWindow:Handle()
-	ELSE 
-	hWnd := NULL_PTR //Desktop
-	ENDIF 
-	ShellExecute(hWnd, String2Psz("open"), String2Psz(cFile), NULL_PSZ, NULL_PSZ, SW_SHOWNORMAL)
-	ENDIF
-	*/	RETURN
+	    IF oWindow != NULL_OBJECT
+	        hWnd := oWindow:Handle()
+	    ELSE 
+	        hWnd := NULL_PTR //Desktop
+	    ENDIF 
+	    ShellExecute(hWnd, "open", cFile, NULL, NULL, SW_SHOWNORMAL)
+    ENDIF
+	RETURN
+
+_DLL FUNCTION ShellExecute( hWnd AS PTR, lpOperation AS STRING, lpFile AS STRING,;
+	lpParameters AS STRING, lpDirectory AS STRING, nShowCmd AS INT) AS PTR PASCAL:SHELL32.ShellExecuteA ANSI
+
 

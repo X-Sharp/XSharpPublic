@@ -1,4 +1,4 @@
-#include "VOWin32APILibrary.vh"
+
 PARTIAL CLASS ProgressBar INHERIT Control
 	PROTECT dwOldPosition	AS LONG
 

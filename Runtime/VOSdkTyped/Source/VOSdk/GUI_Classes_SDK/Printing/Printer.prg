@@ -1,6 +1,6 @@
 
 
-#include "VOWin32APILibrary.vh"
+
 CLASS Printer INHERIT Window
 	PROTECT oPerr AS PrinterErrorEvent
 	PROTECT lprValid AS LOGIC

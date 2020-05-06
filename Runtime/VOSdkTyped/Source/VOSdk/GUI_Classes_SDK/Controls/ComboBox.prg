@@ -1,6 +1,6 @@
 
 
-#include "VOWin32APILibrary.vh"
+
 CLASS ComboBox INHERIT ListBox
 	PROTECT liComboType AS LONG	// BOXSIMPLE, BOXDROPDOWN or BOXDROPDOWNLIST
 
@@ -40,7 +40,7 @@ CLASS ComboBox INHERIT ListBox
 			
 			SELF:Modified		:= FALSE
 		ENDIF
-		RETURN SELF
+		RETURN 
 
 	ASSIGN CurrentText(cNewText AS STRING) 
 		LOCAL cCurrentText AS STRING
@@ -117,6 +117,7 @@ CLASS ComboBox INHERIT ListBox
 
 	CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kComboType, kStyle) 
 		LOCAL dwStyle AS LONG
+		SELF:cClassName := "ComboBox"
 		SUPER(oOwner, xID, oPoint, oDimension, kStyle)
 
 		IF !IsNil(kComboType)
@@ -158,7 +159,6 @@ CLASS ComboBox INHERIT ListBox
 			ENDCASE				
 			SELF:__SetComboStyle()
 		ENDIF
-		SELF:__ClassName := "ComboBox"
 
 		RETURN 
 

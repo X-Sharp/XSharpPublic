@@ -7,7 +7,7 @@ END CLASS
 #ifdef DONOTINCLUDE
 
 
-#include "VOWin32APILibrary.vh"
+
 PARTIAL CLASS DragDropServer INHERIT VObject
 	PROTECT oParent AS Window
 	//Liuho01 05-15-96 for DragDraopServer

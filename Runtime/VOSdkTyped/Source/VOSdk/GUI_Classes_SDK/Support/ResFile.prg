@@ -1,5 +1,5 @@
 
-#include "VOWin32APILibrary.vh"
+
 PARTIAL CLASS ResourceFile INHERIT VObject
 	PROTECT hLib AS IntPtr
 

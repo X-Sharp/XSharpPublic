@@ -57,7 +57,6 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 		ENDIF
 		SELF:oSurface := oDw:Surface
 		SELF:oFrame	  := oDw:Frame
-		oDw:RanorexFlag := SELF:GetType():FullName
 		RETURN oDw
 
 	ACCESS __DataForm AS VODataForm 
@@ -68,8 +67,9 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 		RETURN SELF:oFrame 
 
 
+	[Obsolete];
 	METHOD __AdjustForm() AS VOID STRICT 
-		__DataForm:AdjustFrameSize()
+		//Resizing happens automatically in the DataWinForm class
 		RETURN 
 
 	[Obsolete];
@@ -142,7 +142,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 		SELF:oSurface:SuspendLayout()
 		
 		//RvdH 070415 limited iMMaxWidth to half the width of the desktop (and not two third)
-		//iMaxWidth := System.Windows.Forms.Screen.GetWorkingArea(__Form):Width /2
+		iMaxWidth := System.Windows.Forms.Screen.GetWorkingArea(__Form):Width /2
 		
 		__DataForm:AutoLayout := TRUE
 		__DataForm:ResetMinSize()
@@ -524,11 +524,11 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 		LOCAL oControl AS OBJECT
 		
 		DO CASE
-		CASE IsInstanceOf(oEvent, #ScrollEvent)
+		CASE oEvent IS ScrollEvent
 			oControl := ((ScrollEvent)oEvent):ScrollBar
-		CASE IsInstanceOf(oEvent, #SpinnerEvent)
+		CASE oEvent IS SpinnerEvent
 			oControl := ((SpinnerEvent)oEvent):Spinner
-		CASE IsInstanceOf(oEvent, #SliderEvent)
+		CASE oEvent IS SliderEvent
 			oControl := ((SliderEvent)oEvent):Slider
 		ENDCASE
 		
@@ -752,7 +752,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 		
 		
 		IF (sCurrentView == #FormView)
-			IF (IsInstanceOf(oDCCurrentControl, #Control) .AND. oDCCurrentControl:Modified)
+			IF oDCCurrentControl IS Control VAR oC  .AND. oC:Modified
 				SELF:__DoValidate(oDCCurrentControl)
 			ENDIF
 		ELSEIF (sCurrentView == #BrowseView) .AND. IsAccess(oGBrowse, #CurrentColumn)
@@ -1507,9 +1507,6 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 		SUPER:EnableStatusBar(lEnable)
 
 		// No need to resize. __DataForm handles this 
-		//__DataForm:ResizeParent()		
-		//SELF:__AdjustSurFace()
-		//self:__AdjustForm()
 		RETURN SELF:StatusBar
 	
 
@@ -1531,7 +1528,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 		RETURN SELF
 	
 
-	METHOD FIELDGET(uFieldID) 
+	METHOD FieldGet(uFieldID AS USUAL)  AS USUAL
 		LOCAL oError AS USUAL
 		LOCAL oFieldObject AS OBJECT
 		LOCAL uValue AS USUAL
@@ -1573,7 +1570,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 		RETURN uRetVal
 	
 
-	METHOD FIELDPUT(uFieldId, uNewValue) 
+	METHOD FieldPut(uFieldId AS USUAL, uNewValue AS USUAL) AS USUAL
 		// Retrieves the current value of the indicated string
 		// uFieldPosition is numeric, symbol or string: the field position as numeric,
 		// or the field name as a symbol or a string
@@ -1741,21 +1738,21 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 				SUPER(NIL, FALSE)
 				lTopApp := TRUE
 				// lQuitOnClose := true
-			ELSEIF IsInstanceOf(oObject, #ShellWindow)
+			ELSEIF oObject IS ShellWindow
 				SUPER(oOwner, TRUE)
-			ELSEIF IsInstanceOf(oObject, #DataWindow) 
+			ELSEIF oObject IS DataWindow
 				// Create sub form if we're a regular DataWindow
 				Default(@nResourceID, 0)
 				lSubForm := (dwDialogStyle = 0)
 				oDwOwner := oOwner
 				SUPER(oOwner, FALSE, FALSE)
-			ELSEIF IsInstanceOf(oObject, #ChildAppWindow)
+			ELSEIF oObject IS ChildAppWindow
 				SUPER(oOwner)
-			ELSEIF IsInstanceOf(oObject, #TopAppWindow)
+			ELSEIF oObject IS TopAppWindow
 				SUPER(oOwner)
-			ELSEIF IsInstanceOf(oObject, #DialogWindow)
+			ELSEIF oObject IS DialogWindow
 				SUPER(oOwner, TRUE)
-			ELSEIF IsInstanceOf(oObject, #Window)
+			ELSEIF oObject IS Window
 				// <XXX> invalid Owner - throw error
 				WCError{#Init,#DataWindow,__WCSTypeError,oOwner,1}:@@Throw()
 			ELSE
@@ -1859,7 +1856,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 	
 	ASSIGN Menu(oNewMenu AS XSharp.VO.Menu) 
 		SUPER:Menu := oNewMenu
-		IF !IsInstanceOf(oParent, #SHELLWINDOW)
+		IF oParent IS ShellWindow
 			// No need to resize. __DataForm handles this 
 			//__DataForm:ResizeParent()
 		ENDIF
@@ -2207,12 +2204,6 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 		RETURN 
 	
 
-	//METHOD Resize(oResizeEvent) 
-	//	SUPER:Resize(oResizeEvent)
-	//	//SELF:__AdjustForm()
-	//	RETURN SELF
-	
-
 	METHOD Seek(uValue, lSoftSeek) 
 		LOCAL lRetCode AS LOGIC
 		IF oAttachedServer!=NULL_OBJECT
@@ -2311,11 +2302,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 		ELSE
 			SELF:__DataForm:ShowSubForm()
 		ENDIF		
-		IF (SELF:ToolBar != NULL_OBJECT)
-			//BringWindowToTop(SELF:ToolBar:Handle())
-		ENDIF
 		
-		//SELF:__AdjustForm()
 		
 		RETURN SELF
 	
@@ -2470,18 +2457,9 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 			//	SELF:__DataForm:ToolBar := NULL_OBJECT
 		ENDIF		
 		// No need to resize. __DataForm handles this 
-		//__DataForm:__ResizeParent()
 		RETURN 
 	
 
-	METHOD ToolBarHeightChanged(oControlNotifyEvent) 
-		
-		
-		SUPER:ToolBarHeightChanged(oControlNotifyEvent)
-		
-		//SELF:__AdjustForm()
-		RETURN SELF
-	
 
 	METHOD Undo() 
 		

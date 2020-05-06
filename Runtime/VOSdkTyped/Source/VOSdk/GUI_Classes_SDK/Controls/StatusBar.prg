@@ -1,6 +1,6 @@
 
 
-#include "VOWin32APILibrary.vh"
+
 #define SBGRIPSIZE 15
 #define SBMAXITEMS 255
 #define SBMAXMESSAGE 512
@@ -697,12 +697,12 @@ CLASS StatusBar INHERIT Control
 		NEXT
 		RETURN uValue
 
-	METHOD Show() 
+	METHOD Show()  AS VOID
 		SUPER:Show()
 		SELF:RefreshMemoryDisplay()
 		SELF:__UpdateKeyStates()
 
-		RETURN SELF
+		RETURN 
 
 	ACCESS TextValue  AS STRING
 		RETURN SELF:__GetText()

@@ -1,6 +1,6 @@
 
 
-#include "VOWin32APILibrary.vh"
+
 CLASS FixedText INHERIT TextControl
 	PROTECT _dwDrawStyle AS DWORD
 	PROTECT _dwMargin	 AS DWORD

@@ -1,6 +1,6 @@
 
 
-#include "VOWin32APILibrary.vh"
+
 PARTIAL CLASS RectangleObject INHERIT ShapeObject
 
 

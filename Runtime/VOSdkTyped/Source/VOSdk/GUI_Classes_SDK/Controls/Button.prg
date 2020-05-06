@@ -1,5 +1,5 @@
 
-#include "VOWin32APILibrary.vh"
+
 #USING System.Windows.Forms
 using System.Drawing
 CLASS Button INHERIT TextControl
@@ -31,16 +31,13 @@ CLASS Button INHERIT TextControl
 		RETURN oImage
 
 	METHOD __SetImage(oNewImage AS VObject)  AS LOGIC
-		IF oNewImage is ButtonImageList
-			LOCAL oBIL AS ButtonImageList
+		IF oNewImage IS ButtonImageList VAR oBIL
 			oImage := oNewImage
-			oBIL := (ButtonImageList) oNewImage
 			SELF:__Button:Image := oBIL:Image:__Image
+            SELF:__Button:ImageAlign := ContentAlignment.MiddleRight
 			return true
-		ELSEIF oNewImage is Bitmap
-			LOCAL oBM AS Bitmap
+		ELSEIF oNewImage IS Bitmap VAR oBM
 			oImage := oNewImage
-			oBM := (Bitmap) oNewImage
 			self:__Button:Image := oBM:__Image
 			self:__Button:Invalidate()
 			return true
@@ -74,7 +71,7 @@ CLASS Button INHERIT TextControl
 			SELF:Modified := .F. 
 			SELF:ValueChanged := !(uOldValue == AsString(uValue))
 		ENDIF
-		RETURN SELF
+		RETURN 
 
 	METHOD AsString () 
 		RETURN "#"+Symbol2String(ClassName(SELF))+":"+SELF:Caption
@@ -94,7 +91,7 @@ CLASS Button INHERIT TextControl
 		RETURN 
 
 	ACCESS ImageList 
-		IF IsInstanceOf(oImage, #ImageList)
+		IF oImage IS ImageList
 			RETURN oImage
 		ENDIF
 		RETURN NULL_OBJECT

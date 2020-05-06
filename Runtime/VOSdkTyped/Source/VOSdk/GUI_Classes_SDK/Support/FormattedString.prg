@@ -1,6 +1,6 @@
 
 DEFINE DEFAULT_STRING_TEMPL_SIZE := 128
-#include "VOWin32APILibrary.vh"
+
 PARTIAL CLASS __FormattedString
 	PROTECT oEditOwner AS SingleLineEdit
 	PROTECT sPicture AS STRING

@@ -1,6 +1,6 @@
 
 
-#include "VOWin32APILibrary.vh"
+
 CLASS CustomControl INHERIT Control
 	// Custom Control is based on a Panel
 

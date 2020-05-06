@@ -153,10 +153,7 @@ CLASS TextControl INHERIT Control
 		RETURN 
 
 	METHOD Create() AS System.Windows.Forms.Control 
-		SUPER:Create() 
-		//SELF:__InitTextMetrics()
-
-		RETURN oCtrl
+		RETURN SUPER:Create() 
 
 	ACCESS CurrentText AS STRING
 		RETURN SELF:__GetText()

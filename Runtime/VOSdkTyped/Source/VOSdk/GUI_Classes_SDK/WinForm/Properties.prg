@@ -85,13 +85,27 @@ CLASS VOProperties
 
 END CLASS
 
+
+DELEGATE WndProc(msg REF Message) AS VOID
+
 CLASS VOControlProperties INHERIT VOProperties
 	EXPORT oWFC AS System.Windows.Forms.Control 
 	EXPORT Control AS XSharp.VO.Control 
 	EXPORT Window AS XSharp.VO.Window
 	PROTECT _lHandleDoubleClickThroughMouseUp AS LOGIC
-	
-	
+
+    PUBLIC EVENT OnWndProc AS WndProc
+
+
+    METHOD Dispatch(m REF Message) AS VOID
+        IF OnWndProc != NULL
+            OnWndProc(m)
+        ENDIF
+        VAR oEvent := Event{REF m}
+        SELF:Control:Dispatch( oEvent)
+        SELF:Window:Dispatch( oEvent)
+
+
 	ACCESS ModifierKeys AS Keys
 		RETURN System.Windows.Forms.Control.ModifierKeys
 	
@@ -122,6 +136,7 @@ CLASS VOControlProperties INHERIT VOProperties
 		oWFC:MouseUp	+= OnMouseUp
 		oWFC:MouseMove  += OnMouseMove
 		oWFC:HelpRequested += OnHelpRequested
+        
 
 		// Handle Treeview and Listbox Doubleclicks through the actual doubleclick-event (and SinglelineEdits)
 		// Because DoubleClicks on Treeviews (allg. Voreinstellungen) and Listviews (Multifelder) weren't responding

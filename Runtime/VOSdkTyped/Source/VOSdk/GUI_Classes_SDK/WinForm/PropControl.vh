@@ -30,3 +30,9 @@
 
 	PUBLIC METHOD RevertEventPosition(p AS System.Drawing.Point) AS System.Drawing.Point
 		RETURN SELF:oProperties:RevertEventPosition(p)
+
+	VIRTUAL PROTECT METHOD WndProc(m REF Message) AS VOID
+		SUPER:WndProc(REF m)
+        SELF:oProperties:Dispatch(REF m)
+        RETURN
+        

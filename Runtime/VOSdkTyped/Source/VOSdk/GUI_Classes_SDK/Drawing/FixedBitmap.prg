@@ -35,7 +35,7 @@ PARTIAL CLASS FixedBitmap INHERIT FixedImage
 			SELF:Create()
 		ENDIF
 		SELF:__Label:Image := oImg
-		
+		SELF:__Label:FlatStyle := System.Windows.Forms.FlatStyle.Flat
 
 		RETURN oBitmap
 END CLASS

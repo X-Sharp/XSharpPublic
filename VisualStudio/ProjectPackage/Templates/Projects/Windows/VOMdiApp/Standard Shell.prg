@@ -29,6 +29,19 @@ METHOD DoOpenFile(cFileName, lReadOnly)
 
 RETURN SELF	
 
+
+
+METHOD Drop(oDragEvent) 
+LOCAL nNumFiles := oDragEvent:FileCount
+	LOCAL nFile AS INT
+	
+	FOR nFile := 1 TO nNumFiles
+		IF File(oDragEvent:FileName(nFile))
+			SELF:DoOpenFile(oDragEvent:FileName(nFile))
+		ENDIF
+	NEXT
+    RETURN NIL 
+	
 METHOD FileExit() 
 
 	SELF:EndWindow()
@@ -59,9 +72,7 @@ CONSTRUCTOR( oOwnerApp )
 	
 	SetDeleted(true)
 
-#ifdef __APPWIZ__MODDRAGDROP	
-  self:EnableDragDropClient()
-#endif
+	self:EnableDragDropClient()
 
 	oSB := self:EnableStatusBar()
 	oSB:DisplayTime()

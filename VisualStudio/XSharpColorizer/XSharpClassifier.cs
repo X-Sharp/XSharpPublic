@@ -236,15 +236,17 @@ namespace XSharpColorizer
                                 _bwClassify.RunWorkerAsync();
                             }
                         }
-                    }
-                    else
-                    {
-                        triggerRepaint(snapshot);
-                        if (!_bwBuildModel.IsBusy)
+                        else
                         {
-                            _bwBuildModel.RunWorkerAsync();
+                            triggerRepaint(snapshot);
+                            if (!_bwBuildModel.IsBusy)
+                            {
+                                _bwBuildModel.RunWorkerAsync();
+                            }
+
                         }
                     }
+
                 }
             }
             catch (Exception ex)

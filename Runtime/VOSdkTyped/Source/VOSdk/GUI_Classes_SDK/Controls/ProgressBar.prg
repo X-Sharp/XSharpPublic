@@ -1,5 +1,5 @@
 
-PARTIAL CLASS ProgressBar INHERIT Control
+CLASS ProgressBar INHERIT Control
 	PROTECT dwOldPosition	AS LONG
 
     PROPERTY ControlType AS ControlType GET ControlType.ProgressBar

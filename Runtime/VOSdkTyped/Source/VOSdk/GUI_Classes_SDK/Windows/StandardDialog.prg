@@ -2,7 +2,7 @@
 
 
 
-PARTIAL CLASS OpenDialog INHERIT StandardFileDialog
+CLASS OpenDialog INHERIT StandardFileDialog
 	
 	PROTECT oOpen AS System.Windows.Forms.OpenFileDialog
 	

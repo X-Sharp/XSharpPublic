@@ -1,7 +1,7 @@
 
 DEFINE DEFAULT_STRING_TEMPL_SIZE := 128
 
-PARTIAL CLASS __FormattedString
+CLASS __FormattedString
 	PROTECT oEditOwner AS SingleLineEdit
 	PROTECT sPicture AS STRING
 	PROTECT sTemplate AS STRING

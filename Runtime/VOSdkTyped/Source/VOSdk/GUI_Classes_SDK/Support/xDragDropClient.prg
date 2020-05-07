@@ -1,12 +1,41 @@
-PARTIAL CLASS DragDropClient INHERIT VObject
-	CONSTRUCTOR()
+CLASS DragDropClient INHERIT VObject
+
+    PROTECT oWindow AS Window
+    PROTECT oForm   AS System.Windows.Forms.Form
+	CONSTRUCTOR(oOwner AS Window)
 		SUPER()
+        SELF:oWindow := oOwner
+        SELF:oForm   := SELF:oWindow:__Form
+        SELF:oForm:DragEnter += OnDragEnter
+        SELF:oForm:DragOver  += OnDragOver
+        SELF:oForm:DragDrop  += OnDragDrop
+        SELF:oForm:DragLeave += OnDragLeave
+
+    METHOD Destroy() AS USUAL CLIPPER
+        IF SELF:oForm != NULL_OBJECT
+            SELF:oForm:DragEnter -= OnDragEnter
+            SELF:oForm:DragOver  -= OnDragOver
+            SELF:oForm:DragDrop  -= OnDragDrop
+            SELF:oForm:DragLeave -= OnDragLeave
+        ENDIF
+        RETURN SELF
+        
+    PRIVATE METHOD OnDragEnter(sender AS OBJECT, e AS System.Windows.Forms.DragEventArgs) AS VOID
+        RETURN 
+    PRIVATE METHOD OnDragOver(sender AS OBJECT, e AS System.Windows.Forms.DragEventArgs) AS VOID
+        RETURN 
+    PRIVATE METHOD OnDragDrop(sender AS OBJECT, e AS System.Windows.Forms.DragEventArgs) AS VOID
+        RETURN 
+    PRIVATE METHOD OnDragLeave(sender AS OBJECT, e AS EventArgs) AS VOID
+        RETURN 
+
+
 END CLASS
 #ifdef DONOTINCLUDE
 
 
 
-PARTIAL CLASS DragDropClient INHERIT VObject
+CLASS DragDropClient INHERIT VObject
 	PROTECT hOwner AS PTR
 	PROTECT oParent AS Window
 	//SE-060520

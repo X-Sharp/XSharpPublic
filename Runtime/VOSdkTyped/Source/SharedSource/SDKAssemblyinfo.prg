@@ -20,7 +20,7 @@
 [assembly: AssemblyVersionAttribute( VERSION_NUMBER )]
 [assembly: AssemblyInformationalVersionAttribute( INFORMATIONAL_NUMBER )]
 [assembly: AssemblyFileVersionAttribute( FILEVERSION_NUMBER )]
-[assembly: ImplicitNamespaceAttribute( "XSharp" )]
+[assembly: ImplicitNamespaceAttribute( "XSharp.VO" )]
 [assembly: AllowPartiallyTrustedCallersAttribute()]
 [assembly: SecurityRulesAttribute (SecurityRuleSet.Level1)]
 

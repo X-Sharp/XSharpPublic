@@ -3,7 +3,7 @@
 
 
 
-PARTIAL CLASS BitmapObject INHERIT ShapeObject
+CLASS BitmapObject INHERIT ShapeObject
 	PROTECT oBitmap AS Bitmap
 
 	CONSTRUCTOR(oPoint AS Point, oDimension AS Dimension, oBitmap AS Bitmap) 

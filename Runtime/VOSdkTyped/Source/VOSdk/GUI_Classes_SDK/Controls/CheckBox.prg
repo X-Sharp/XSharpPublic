@@ -1,6 +1,6 @@
 
 
-PARTIAL CLASS CheckBox INHERIT Button
+CLASS CheckBox INHERIT Button
 	PROTECT lSavedChecked AS LOGIC
 
     PROPERTY ControlType AS ControlType GET ControlType.CheckBox

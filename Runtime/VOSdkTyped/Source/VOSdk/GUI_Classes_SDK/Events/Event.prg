@@ -10,14 +10,14 @@ INTERFACE INamedEvent
     PROPERTY Window  AS Window GET
 END INTERFACE
 
-PARTIAL CLASS @@Event //inherit object
+CLASS @@Event //inherit object
 	//RvdH 061218 Declared properties for performance
-	EXPORT hWnd 	AS PTR
+	EXPORT hWnd 	AS IntPtr
 	EXPORT uMsg 	AS DWORD
 	EXPORT wParam 	AS DWORD
 	EXPORT lParam 	AS LONGINT
 	EXPORT oWindow AS OBJECT 
-	ACCESS Handle AS PTR STRICT 
+	ACCESS Handle AS IntPtr
 		RETURN hWnd
 
 
@@ -63,7 +63,7 @@ PARTIAL CLASS @@Event //inherit object
 
 END CLASS
 
-PARTIAL CLASS MinMaxInfoEvent INHERIT @@Event                          
+CLASS MinMaxInfoEvent INHERIT @@Event                          
 
 	[DebuggerStepThrough];
 	CONSTRUCTOR(m REF System.Windows.Forms.Message)
@@ -136,7 +136,7 @@ PARTIAL CLASS MinMaxInfoEvent INHERIT @@Event
 	
 END CLASS
 
-PARTIAL CLASS ResizeEvent INHERIT @@Event
+CLASS ResizeEvent INHERIT @@Event
 
 	[DebuggerStepThrough];
 	CONSTRUCTOR() STRICT
@@ -161,7 +161,7 @@ PARTIAL CLASS ResizeEvent INHERIT @@Event
 
 END CLASS
 
-PARTIAL CLASS FocusChangeEvent INHERIT @@Event
+CLASS FocusChangeEvent INHERIT @@Event
 	PROTECT lGotFocus AS LOGIC
 	PROPERTY GotFocus AS LOGIC GET lGotFocus
 	CONSTRUCTOR() STRICT
@@ -176,7 +176,7 @@ END CLASS
 
 
 
-PARTIAL CLASS HelpRequestEvent INHERIT @@Event
+CLASS HelpRequestEvent INHERIT @@Event
 	
 	PROPERTY HelpType		AS LONG AUTO
 	PROPERTY HelpContext	AS STRING GET SELF:HyperLabel:HelpContext
@@ -188,16 +188,12 @@ PARTIAL CLASS HelpRequestEvent INHERIT @@Event
 	
 	CONSTRUCTOR(e AS System.Windows.Forms.HelpEventArgs, sender AS OBJECT)
 		SUPER()
-		IF typeof(IVOControl):IsAssignableFrom (sender:GetType())
-			LOCAL oC AS IVOControl
-			oC := (IVOCOntrol) sender
+		IF sender IS IVOControl VAR oC
 			SELF:oControl := oC:Control
 			SELF:oWindow  := oControl:Owner
 			SELF:HyperLabel := oControl:HyperLabel 
 			SELF:HelpType	:= HELPCONTROL
-		ELSEIF typeof(IVOForm):IsAssignableFrom(sender:GetType())
-			LOCAL oW AS IVOForm
-			oW := (IVOForm) sender
+		ELSEIF sender IS IVOForm  VAR oW
 			oWindow := oW:Window
 			SELF:HyperLabel := oWindow:HyperLabel 
 			SELF:HelpType	:= HELPWINDOW
@@ -264,7 +260,7 @@ PARTIAL CLASS HelpRequestEvent INHERIT @@Event
 END CLASS
 
 
-PARTIAL CLASS AppCommandEvent INHERIT @@Event
+CLASS AppCommandEvent INHERIT @@Event
 
 	#region static methods
 	STATIC METHOD Get_Flags_lParam(lParam AS DWORD) AS WORD
@@ -330,7 +326,7 @@ END CLASS
 
 
 
-PARTIAL CLASS DragEvent INHERIT @@Event
+CLASS DragEvent INHERIT @@Event
 	PROTECT Args AS System.Windows.Forms.DragEventArgs
 	PROTECT oControl AS Control
 	ACCESS Control AS OBJECT STRICT
@@ -479,7 +475,7 @@ END CLASS
 
 
 
-PARTIAL CLASS ExposeEvent INHERIT @@Event
+CLASS ExposeEvent INHERIT @@Event
 	PROTECT Args AS System.Windows.Forms.PaintEventArgs
 	CONSTRUCTOR( e AS System.Windows.Forms.PaintEventArgs)
 		SUPER()
@@ -530,7 +526,7 @@ END CLASS
 
 
 
-PARTIAL CLASS MouseEvent INHERIT @@Event
+CLASS MouseEvent INHERIT @@Event
 	PROTECT me AS System.Windows.Forms.MouseEventArgs
 	PROTECT keys AS System.Windows.Forms.Keys
 	[DebuggerStepThrough];
@@ -581,7 +577,7 @@ PARTIAL CLASS MouseEvent INHERIT @@Event
 
 END CLASS
 
-PARTIAL CLASS MoveEvent INHERIT @@Event
+CLASS MoveEvent INHERIT @@Event
 	[DebuggerStepThrough];
 	CONSTRUCTOR()
 		SUPER()

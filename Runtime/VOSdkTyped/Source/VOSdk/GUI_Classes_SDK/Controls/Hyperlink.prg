@@ -8,7 +8,7 @@ CLASS CurHand INHERIT Pointer
 
 END CLASS
 
-PARTIAL CLASS HyperLink INHERIT FixedText
+CLASS HyperLink INHERIT FixedText
 
     PROPERTY Controltype AS Controltype GET Controltype.Label
 
@@ -49,7 +49,7 @@ FUNCTION ShellOpen(oWindow AS Window, cFile AS STRING) AS VOID STRICT
     ENDIF
 	RETURN
 
-_DLL FUNCTION ShellExecute( hWnd AS PTR, lpOperation AS STRING, lpFile AS STRING,;
-	lpParameters AS STRING, lpDirectory AS STRING, nShowCmd AS INT) AS PTR PASCAL:SHELL32.ShellExecuteA ANSI
+_DLL FUNCTION ShellExecute( hWnd AS IntPtr, lpOperation AS STRING, lpFile AS STRING,;
+	lpParameters AS STRING, lpDirectory AS STRING, nShowCmd AS INT) AS IntPtr PASCAL:SHELL32.ShellExecuteA ANSI
 
 

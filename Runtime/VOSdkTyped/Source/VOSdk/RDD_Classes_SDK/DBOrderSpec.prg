@@ -173,7 +173,7 @@ ASSIGN Add( lLogic )
 		SELF:lAdd := lLogic
 		SELF:lIsCond := TRUE
 	ENDIF
-	RETURN SELF:lAdd
+	RETURN 
 
 ACCESS All          
 	RETURN SELF:lAll
@@ -188,7 +188,7 @@ ASSIGN All( lLogic )
 
 	ENDIF
 
-	RETURN SELF:lAll
+	RETURN 
 
 ACCESS AutoOpen     
 	RETURN SELF:lAutoOpen
@@ -213,7 +213,7 @@ ASSIGN Current( lLogic )
 
 	ENDIF
 
-	RETURN SELF:lCurrent
+	RETURN 
 
 ACCESS Custom           
 	RETURN SELF:lCustom
@@ -229,7 +229,7 @@ ASSIGN Custom( lLogic )
 
 	ENDIF
 
-	RETURN SELF:lCustom
+	RETURN 
 
 ACCESS DBF          
 	//
@@ -252,7 +252,7 @@ ASSIGN Descend( lLogic )
 
 	ENDIF
 
-	RETURN SELF:lDescend
+	RETURN 
 
 ACCESS EvalBlock    
 	RETURN SELF:uEvalBlock
@@ -268,7 +268,7 @@ ASSIGN EvalBlock( cbCodeBlock )
 
 	ENDIF
 
-	RETURN SELF:uEvalBlock
+	RETURN 
 
 ACCESS FileName         
 	RETURN SELF:cFileName
@@ -301,7 +301,7 @@ ASSIGN FileName( cName )
 
 	ENDIF
 
-	RETURN SELF:cFileName
+	RETURN 
 
 ACCESS ForBlock     
 	RETURN SELF:uForBlock
@@ -317,7 +317,7 @@ ASSIGN ForBlock( cbCodeBlock )
 
 	ENDIF
 
-	RETURN SELF:uForBlock
+	RETURN 
 
 ACCESS ForCond      
 	RETURN SELF:uForCond
@@ -333,7 +333,7 @@ ASSIGN ForCond( cForCondition )
 
 	ENDIF
 
-	RETURN SELF:uForCond
+	RETURN 
 
 ACCESS HPLock       
 	RETURN SELF:lHPLock
@@ -347,7 +347,7 @@ ASSIGN HPLock( lLogic )
 
 	SELF:lHPLock := lLogic
 
-	RETURN SELF:lHPLock
+	RETURN 
 
 CONSTRUCTOR( oDBFS )      
 	//
@@ -389,7 +389,7 @@ ASSIGN Interval( nDWord )
 		SELF:nStep := nDWord
 		SELF:lIsCond := TRUE
 	ENDIF
-	RETURN SELF:nStep
+	RETURN 
 
 ACCESS IsCond           
 	RETURN SELF:lIsCond
@@ -401,7 +401,7 @@ ASSIGN IsCond( lLogic )
 	ELSE
 		SELF:lIsCond := lLogic
 	ENDIF
-	RETURN SELF:lIsCond
+	RETURN 
 
 ACCESS KeyInfo      
 	RETURN SELF:aKeyInfo
@@ -429,7 +429,7 @@ ASSIGN NoOptimize( lLogic )
 		SELF:lNoOpt := lLogic
 		SELF:lIsCond := TRUE
 	ENDIF
-	RETURN SELF:lNoOpt
+	RETURN 
 
 METHOD OrderAdd( oFS, uOrder )    
 	LOCAL lRetCode      AS LOGIC
@@ -551,7 +551,7 @@ ASSIGN OrderBlock( cbCodeBlock )
 	ELSE
 		SELF:cbOrdExpr := cbCodeBlock
 	ENDIF
-	RETURN SELF:cbOrdExpr
+	RETURN
 
 METHOD OrderCreate( oFS, cOrder, cKeyValue, cbKeyValue, lUnique ) 
 	LOCAL lRetCode      AS LOGIC
@@ -798,7 +798,7 @@ ASSIGN OrderExpr( cExpression )
 	ELSE
 		SELF:cOrdExpr := cExpression
 	ENDIF
-	RETURN SELF:cOrdExpr
+	RETURN 
 
 ACCESS OrderName        
 	RETURN SELF:cOrdName
@@ -849,7 +849,7 @@ ASSIGN Rest( lLogic )
 		SELF:lRest := lLogic
 		SELF:lIsCond := TRUE
 	ENDIF
-	RETURN SELF:lRest
+	RETURN 
 
 ACCESS Start        
 	RETURN SELF:nStart
@@ -862,7 +862,7 @@ ASSIGN Start( nDWord )
 		SELF:nStart := nDWord
 		SELF:lIsCond := TRUE
 	ENDIF
-	RETURN SELF:nStart
+	RETURN 
 
 ACCESS StrictRead   
 	RETURN SELF:lStrictRead
@@ -877,7 +877,7 @@ ASSIGN Unique( lLogic )
 	ELSE
 		SELF:lUnique := lLogic
 	ENDIF
-	RETURN SELF:lUnique
+	RETURN 
 
 ACCESS WhileBlock   
 	RETURN SELF:uWhileBlock
@@ -890,6 +890,6 @@ ASSIGN WhileBlock( cbCodeBlock )
 		SELF:uWhileBlock := cbCodeBlock
 		SELF:lIsCond := TRUE
 	ENDIF
-	RETURN SELF:uWhileBlock
+	RETURN 
 END CLASS
 

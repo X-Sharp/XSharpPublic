@@ -1,6 +1,6 @@
 
 
-PARTIAL CLASS Pen INHERIT VObject
+CLASS Pen INHERIT VObject
 	HIDDEN hPen AS System.Drawing.Pen
 
 METHOD Destroy() AS USUAL CLIPPER

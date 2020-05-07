@@ -8,7 +8,7 @@
 
 #using System.ComponentModel
 
-CLASS Vulcan.WinFormVOWindowHost INHERIT Component
+CLASS XSharp.VO.WinFormVOWindowHost INHERIT Component
 	PRIVATE components := NULL AS System.ComponentModel.IContainer
 	PRIVATE window AS Window
 	PRIVATE windowClassName AS STRING

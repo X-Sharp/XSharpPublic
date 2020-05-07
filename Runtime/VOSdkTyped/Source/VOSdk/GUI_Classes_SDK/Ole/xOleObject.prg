@@ -5,7 +5,7 @@
 
 #ifdef USE_OLEOBJECT
 
-PARTIAL CLASS OleObject INHERIT Control
+CLASS OleObject INHERIT Control
 	PROTECT ObjHandle AS PTR
 	// protect lFocused as logic
 	PROTECT lCreated 	AS LOGIC

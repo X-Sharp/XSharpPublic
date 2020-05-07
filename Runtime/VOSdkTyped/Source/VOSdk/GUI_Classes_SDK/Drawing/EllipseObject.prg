@@ -2,7 +2,7 @@
 
 
 
-PARTIAL CLASS EllipseObject INHERIT ShapeObject
+CLASS EllipseObject INHERIT ShapeObject
 
 	CONSTRUCTOR(oPoint AS Point, oDimension AS Dimension) 
 		SUPER(oPoint, oDimension)

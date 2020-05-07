@@ -1,5 +1,5 @@
 
-PARTIAL CLASS PushButton INHERIT Button
+CLASS PushButton INHERIT Button
 
     PROPERTY ControlType AS ControlType GET ControlType.Button
 

@@ -79,7 +79,6 @@ CLASS RichEdit INHERIT MultiLineEdit
 		RETURN __RichEdit:CanPaste(System.Windows.Forms.DataFormats.GetFormat(dwClipboardFormat))
 
 	METHOD EnableAdvancedTypography(lEnable) 
-		//PP-030910 from S Ebert
 		LOCAL dwOption AS DWORD
 
 		IF IsLogic(lEnable) .AND. ! lEnable

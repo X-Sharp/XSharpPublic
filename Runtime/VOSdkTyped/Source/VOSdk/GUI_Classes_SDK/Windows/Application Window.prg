@@ -31,11 +31,8 @@ CLASS AppWindow INHERIT Window
             VAR oShell  := SELF:__Form:ParentForm
             oSHell:Menu := SELF:__Form:Menu
         ENDIF
+        RETURN NIL
         
-    METHOD DeActive(oEvent)
-        SUPER:DeActivate(oEvent)
-        IF SELF:__Form:IsMdiChild
-        ENDIF
 
 
 	METHOD Default(oEvent) 
@@ -134,9 +131,7 @@ CLASS AppWindow INHERIT Window
 	
 
 	METHOD EnableHorizontalScroll(lEnable := TRUE AS LOGIC) AS VOID
-		IF TYPEOF(VOAppForm):IsAssignableFrom(oWnd:GetType())
-			LOCAL oAppForm AS VOAppForm
-			oAppForm := (VOAppForm) oWnd
+		IF oWnd IS VOAppForm VAR oAppForm 
 			oAppForm:EnableHorizontalScroll(lEnable)
 		ENDIF
 		RETURN 
@@ -195,9 +190,7 @@ CLASS AppWindow INHERIT Window
 	
 
 	METHOD EnableVerticalScroll(lEnable:= TRUE AS LOGIC) AS VOID
-		IF SELF:__IsValid .and. TypeOf(VOAppForm):IsAssignableFrom(oWnd:GetType())
-			LOCAL oAppForm AS VOAppForm
-			oAppForm := (VOAppForm) oWnd
+		IF SELF:__IsValid .AND. oWnd IS VOAppForm VAR oAppForm
 			oAppForm:EnableVerticalScroll(lEnable)
 		ENDIF
 		RETURN 

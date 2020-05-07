@@ -1,7 +1,7 @@
 // Event_Printer.prg
 #using System.Diagnostics
 
-PARTIAL CLASS PrinterErrorEvent INHERIT @@Event
+CLASS PrinterErrorEvent INHERIT @@Event
 	ACCESS ErrorType AS DWORD STRICT 
 		RETURN wParam
 
@@ -11,7 +11,7 @@ PARTIAL CLASS PrinterErrorEvent INHERIT @@Event
 		RETURN 
 END CLASS
 
-PARTIAL CLASS PrinterExposeEvent INHERIT @@Event
+CLASS PrinterExposeEvent INHERIT @@Event
 	ACCESS ExposedArea AS OBJECT STRICT 
 		RETURN oWindow
 

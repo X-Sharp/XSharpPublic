@@ -9,29 +9,37 @@
 
 
 CLASS VOListBox INHERIT System.Windows.Forms.ListBox IMPLEMENTS IVOControl, IVOControlInitialize
+
+#region fields    
 	PROTECTED lBusy AS LOGIC
 	PROTECTED _lNoVerticalScrollBar:= FALSE AS LOGIC
 	PROTECTED searchString := STRING.Empty AS STRING
 	PROTECTED lastKeyPressTime := DateTime.MinValue AS DateTime
+#endregion
 
+#region properties
 	PROPERTY ListBox AS XSharp.VO.ListBox 
 		GET 
-    		RETURN SELF:COntrol ASTYPE XSharp.VO.ListBox
+    		RETURN (XSharp.VO.ListBox) SELF:Control 
 		END GET
-	END PROPERTY
+    END PROPERTY
 
+
+#endregion
 	#include "PropControl.vh"
 
+
+#region Helper methods
 	METHOD Initialize AS VOID STRICT
-		SELF:DisplayMember := "DisplayValue"
-		SELF:ValueMember   := "Value"
-		SELF:DrawMode := DrawMode.OwnerDrawFixed
+		SELF:DisplayMember         := "DisplayValue"
+		SELF:ValueMember           := "Value"
+		SELF:DrawMode              := DrawMode.OwnerDrawFixed
 		//SELF:DrawItem += SupportFunctions.listBox_DrawItem
         SELF:oProperties:OnWndProc += OnWndProc
 
 		RETURN
 		
-	METHOD IncrementalSearch( ch AS Char) AS LOGIC
+	METHOD IncrementalSearch( ch AS CHAR) AS LOGIC
 		LOCAL nItem AS INT
 		IF (DateTime.Now - lastKeyPressTime > TimeSpan{0, 0, 1})
 			searchString := ch:ToString()
@@ -54,11 +62,6 @@ CLASS VOListBox INHERIT System.Windows.Forms.ListBox IMPLEMENTS IVOControl, IVOC
 		ENDIF		
 
 
-	VIRTUAL PROTECTED METHOD OnKeyPress(e AS KeyPressEventArgs) AS VOID
-		SUPER:OnKeyPress(e)
-		e:handled := SELF:IncrementalSearch(e:KeyChar)
-		RETURN
-
 	CONSTRUCTOR(Owner AS XSharp.VO.Control, dwStyle AS LONG, dwExStyle AS LONG)
 		SELF(Owner, dwStyle, dwExStyle, FALSE)
 				
@@ -75,7 +78,7 @@ CLASS VOListBox INHERIT System.Windows.Forms.ListBox IMPLEMENTS IVOControl, IVOC
 		SELF:Initialize()
 		SELF:SetVisualStyle()
 		
-	METHOD SetVisualStyle AS VOID STRICT
+	OVERRIDE METHOD SetVisualStyle AS VOID STRICT
 		IF oProperties != NULL_OBJECT
 			LOCAL dwStyle AS LONG
 			dwStyle := oProperties:Style
@@ -95,7 +98,12 @@ CLASS VOListBox INHERIT System.Windows.Forms.ListBox IMPLEMENTS IVOControl, IVOC
 			ENDIF
 		ENDIF
 
-	VIRTUAL PROTECTED PROPERTY CreateParams AS System.Windows.Forms.CreateParams 
+
+#endregion
+
+#region Windows Forms Method and Property overrides    
+
+    VIRTUAL PROTECTED PROPERTY CreateParams AS System.Windows.Forms.CreateParams 
 		GET
 			LOCAL IMPLIED result := SUPER:CreateParams
 
@@ -106,26 +114,34 @@ CLASS VOListBox INHERIT System.Windows.Forms.ListBox IMPLEMENTS IVOControl, IVOC
 			RETURN result
 		END GET
 	END PROPERTY
-	
-	METHOD OnWndProc(msg REF Message) AS VOID	
-		// Windows forms does not raise a mouse double click event for the right mouse button
-		IF SELF:Control == NULL_OBJECT
-			// do nothing
-		ELSEIF (msg:Msg == WM_RBUTTONDBLCLK) 
-			LOCAL me AS MouseEventArgs
-			me := MouseEventArgs{MouseButtons.Right, 2, LOWORD((DWORD) msg:LParam:ToInt32()), HIWORD((DWORD) msg:LParam:ToInt32()), 0}
-			SELF:Control:MouseButtonDoubleClick(MouseEvent{me, System.Windows.Forms.Control.ModifierKeys})				
-		ELSEIF (msg:Msg == WM_MBUTTONDBLCLK) 
-			LOCAL me AS MouseEventArgs
-			me := MouseEventArgs{MouseButtons.Middle, 2, LOWORD((DWORD) msg:LParam:ToInt32()), HIWORD((DWORD) msg:LParam:ToInt32()), 0}
-			SELF:Control:MouseButtonDoubleClick(MouseEvent{me, System.Windows.Forms.Control.ModifierKeys})				
-		ELSEIF (msg:Msg == WM_XBUTTONDBLCLK) 
-			LOCAL me AS MouseEventArgs
-			me := MouseEventArgs{MouseButtons.XButton1, 2, LOWORD((DWORD) msg:LParam:ToInt32()), HIWORD((DWORD) msg:LParam:ToInt32()), 0}
-			SELF:Control:MouseButtonDoubleClick(MouseEvent{me, System.Windows.Forms.Control.ModifierKeys})				
-		ENDIF
+
+
+    // Override Text property to handle empty listox
+	VIRTUAL PROPERTY Text AS STRING
+	GET
+		LOCAL cRetVal AS STRING
+		TRY
+			IF SELF:SelectedIndices:Count == 0 .OR. SELF:SelectedItems:Count == 0 .OR. SELF:Items:Count == 0
+				cRetVal := String.Empty
+			ENDIF
+			cRetVal := SUPER:Text
+		CATCH
+			RETURN String.Empty
+		END TRY
+		RETURN cRetVal 
+	END GET
+	SET
+		SUPER:Text := Value
+	END SET
+	END PROPERTY
+
+
+	VIRTUAL PROTECTED METHOD OnKeyPress(e AS KeyPressEventArgs) AS VOID
+		SUPER:OnKeyPress(e)
+		e:handled := SELF:IncrementalSearch(e:KeyChar)
 		RETURN
-	
+
+
 	PROTECT METHOD OnMouseDoubleClick(e AS MouseEventArgs) AS VOID	
 		LOCAL oWindow AS Window
 		LOCAL oEvent AS ControlEvent
@@ -159,24 +175,30 @@ CLASS VOListBox INHERIT System.Windows.Forms.ListBox IMPLEMENTS IVOControl, IVOC
 		ENDIF
 		SUPER:OnSelectedIndexChanged(e)	// This also triggers the Event Handlers
 		RETURN
-		
-	VIRTUAL PROPERTY Text AS STRING
-	GET
-		LOCAL cRetVal AS STRING
-		TRY
-			IF SELF:SelectedIndices:Count == 0 .or. SELF:SelectedItems:Count == 0 .or. SELF:Items:Count == 0
-				cRetVal := STRING.Empty
-			ENDIF
-			cRetVal := SUPER:Text
-		CATCH
-			RETURN STRING.Empty
-		END TRY
-		RETURN cRetVal
-	END GET
-	SET
-		SUPER:Text := Value
-	END SET
-		END PROPERTY
+
+#endregion
+
+
+    // This gets called from the WndProc event handler
+	VIRTUAL METHOD OnWndProc(msg REF Message) AS VOID	
+		// Windows forms does not raise a mouse double click event for the right mouse button
+		IF SELF:Control == NULL_OBJECT
+			// do nothing
+		ELSEIF (msg:Msg == WM_RBUTTONDBLCLK) 
+			LOCAL me AS MouseEventArgs
+			me := MouseEventArgs{MouseButtons.Right, 2, LOWORD((DWORD) msg:LParam:ToInt32()), HIWORD((DWORD) msg:LParam:ToInt32()), 0}
+			SELF:Control:MouseButtonDoubleClick(MouseEvent{me, System.Windows.Forms.Control.ModifierKeys})				
+		ELSEIF (msg:Msg == WM_MBUTTONDBLCLK) 
+			LOCAL me AS MouseEventArgs
+			me := MouseEventArgs{MouseButtons.Middle, 2, LOWORD((DWORD) msg:LParam:ToInt32()), HIWORD((DWORD) msg:LParam:ToInt32()), 0}
+			SELF:Control:MouseButtonDoubleClick(MouseEvent{me, System.Windows.Forms.Control.ModifierKeys})				
+		ELSEIF (msg:Msg == WM_XBUTTONDBLCLK) 
+			LOCAL me AS MouseEventArgs
+			me := MouseEventArgs{MouseButtons.XButton1, 2, LOWORD((DWORD) msg:LParam:ToInt32()), HIWORD((DWORD) msg:LParam:ToInt32()), 0}
+			SELF:Control:MouseButtonDoubleClick(MouseEvent{me, System.Windows.Forms.Control.ModifierKeys})				
+		ENDIF
+		RETURN
+	
 
 	
 END CLASS

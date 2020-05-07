@@ -1,7 +1,7 @@
 // ChildWinForm.prg
 
 
-CLASS Vulcan.ChildWinForm INHERIT ChildAppWindow
+CLASS XSharp.VO.ChildWinForm INHERIT ChildAppWindow
 	PRIVATE form AS System.Windows.Forms.Form
 	PRIVATE currentControl AS System.Windows.Forms.Control
 	

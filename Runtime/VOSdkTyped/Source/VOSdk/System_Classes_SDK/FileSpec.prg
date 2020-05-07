@@ -420,7 +420,7 @@ METHOD Copy(oFSTarget AS STRING, lName := FALSE AS LOGIC)
 
 ACCESS DateChanged AS DATE                 
 	LOCAL cPath AS STRING
-	LOCAL dRet	AS DATE
+	LOCAL dRet	:= NULL_DATE AS DATE
 
 	cPath := SELF:__FullPathAcc()
 	IF cPath != NULL_STRING
@@ -474,7 +474,7 @@ ASSIGN Drive(cDrive AS STRING)
 		SELF:cFSDrive := NULL_STRING
 	ENDIF
 
-	RETURN SELF:cFSDrive
+	RETURN 
 
 ACCESS ErrInfo AS Error 
 	RETURN SELF:oErrorInfo
@@ -515,7 +515,7 @@ ASSIGN Extension(cExtension  AS STRING)
 
 	ENDIF
 
-	RETURN SELF:cFSExtension
+	RETURN 
 
 ACCESS FileName   AS STRING                   
 	//
@@ -630,8 +630,8 @@ ASSIGN FullPath(cFullPath  AS STRING)
 		SELF:cFSExtension   := NULL_STRING
 
 	ENDIF
-
-	RETURN SELF:__FullPathAcc()
+    SELF:__FullPathAcc()
+	RETURN 
 
 
 CONSTRUCTOR(cFullPath := "" AS STRING)              
@@ -923,7 +923,7 @@ METHOD Rename(oFSTarget AS STRING, lName := FALSE AS LOGIC) AS LOGIC
 	RETURN lRetCode
 
 ACCESS Size    AS DWORD                     
-	LOCAL dwSize    AS DWORD
+	LOCAL dwSize  := 0  AS DWORD
 	LOCAL cPath     AS STRING
 
 	cPath := SELF:__FullPathAcc()

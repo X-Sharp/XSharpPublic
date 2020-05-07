@@ -50,21 +50,20 @@ scrollbars are shown on the framepanel
 
 
 CLASS VODataForm INHERIT VOChildAppForm
+#region Fields
 	PROTECT oSurfacePanel	AS VoSurfacePanel		// This is the place where the controls are drawn
-	PROTECT oFramePanel		AS VOFramePanel				// This is a panel on which the Surface sits. When the window is too small this panel will show the scrollbars
+	PROTECT oFramePanel		AS VOFramePanel			// This is a panel on which the Surface sits. When the window is too small this panel will show the scrollbars
 	PROTECT oToolBar		AS VOToolBar			
 	PROTECT oStatusBar		AS VOStatusStrip
 	PROTECT oResDlg			AS ResourceDialog
-	PROTECT lSubForm		AS LOGIC
-	PROTECT lAutoLayout		AS LOGIC
 	PROTECT lInBrowseView   AS LOGIC
 	PROTECT oDataBrowser	AS System.Windows.Forms.Control
-
+#endregion
 #region Properties
 	PROPERTY Origin			AS XSharp.VO.Point  GET SELF:Location SET SELF:Location := Value
 	PROPERTY Surface		AS VoSurfacePanel	GET oSurfacePanel
 	PROPERTY Frame          AS VOFramePanel		GET oFramePanel
-	PROPERTY AutoLayout	 AS LOGIC GET lAutoLayout SET lAutoLayout := VALUE
+	PROPERTY AutoLayout	    AS LOGIC AUTO       GET SET 
 	
 	PROPERTY DataBrowser AS System.Windows.Forms.Control
 		GET
@@ -73,8 +72,8 @@ CLASS VODataForm INHERIT VOChildAppForm
 		SET
 			IF oDataBrowser != Value
 				IF oDataBrowser != NULL_OBJECT
-					oDataBrowser:GotFocus -= OnBrowserGotFocus
-					oDataBrowser:LostFocus -= OnBrowserLostFocus
+					oDataBrowser:GotFocus   -= OnBrowserGotFocus
+					oDataBrowser:LostFocus  -= OnBrowserLostFocus
 				ENDIF				
 				oDataBrowser := Value
 				IF oDataBrowser != NULL_OBJECT
@@ -82,24 +81,15 @@ CLASS VODataForm INHERIT VOChildAppForm
 					oDataBrowser:Visible := FALSE		
 					oDataBrowser:Dock := DockStyle.Fill
 					oDataBrowser:BringToFront()
-					oDataBrowser:GotFocus += OnBrowserGotFocus
-					oDataBrowser:LostFocus += OnBrowserLostFocus
+					oDataBrowser:GotFocus   += OnBrowserGotFocus
+					oDataBrowser:LostFocus  += OnBrowserLostFocus
 				ENDIF
 			ENDIF
 			SELF:AdjustSizes()
 		END SET
 	END PROPERTY
-	
-	PRIVATE METHOD OnBrowserGotFocus(sender AS OBJECT, e AS EventArgs) AS VOID
-		IF SELF:lSubForm .and. SELF:Window != NULL_OBJECT
-			SELF:Window:Activate(Event{})
-		ENDIF
-	PRIVATE METHOD OnBrowserLostFocus(sender AS OBJECT, e AS EventArgs) AS VOID
-		IF SELF:lSubForm .and. SELF:Window != NULL_OBJECT
-			SELF:Window:Deactivate(Event{})
-		ENDIF
-	
-	PROPERTY DataWindow AS XSharp.VO.DataWindow GET (DataWindow) Window
+
+    PROPERTY DataWindow AS XSharp.VO.DataWindow GET (DataWindow) Window
 
 
 	PROPERTY StatusBar AS VOStatusStrip
@@ -117,7 +107,7 @@ CLASS VODataForm INHERIT VOChildAppForm
 		END SET
 	END PROPERTY
 
-	PROPERTY SubForm	AS LOGIC	GET lSubForm SET lSubForm := Value
+	PROPERTY SubForm	AS LOGIC	AUTO GET SET 
 
 	PROPERTY ToolBar AS VOToolBar
 		GET
@@ -138,28 +128,60 @@ CLASS VODataForm INHERIT VOChildAppForm
 #endregion
 
 
+
+#region Winforms event handlers	
+	PRIVATE METHOD OnBrowserGotFocus(sender AS OBJECT, e AS EventArgs) AS VOID
+		IF SELF:SubForm .AND. SELF:Window != NULL_OBJECT
+			SELF:Window:Activate(Event{})
+        ENDIF
+        
+	PRIVATE METHOD OnBrowserLostFocus(sender AS OBJECT, e AS EventArgs) AS VOID
+		IF SELF:SubForm .AND. SELF:Window != NULL_OBJECT
+			SELF:Window:Deactivate(Event{})
+		ENDIF
+#endregion	
+
+
+
 	CONSTRUCTOR(oWindow AS Window, oOwner AS Form, oRes AS ResourceDialog)
 		SUPER(oWindow, oOwner)
 		SELF:oResDlg := oRes 
 		SELF:Text := "DataWinForm"
+        // Form owns the frame
 		oFramePanel := GuiFactory.Instance:CreateFramePanel(SELF, oWindow)
 		SELF:Controls:Add(oFramePanel)
-		oSurfacePanel := GuiFactory.Instance:CreateSurfacePanel(oWindow)
-		
+        // Frame owns the surface
+        oSurfacePanel := GuiFactory.Instance:CreateSurfacePanel(oWindow)
 		oFramePanel:Controls:Add(oSurfacePanel)
 		IF oRes != NULL_OBJECT
-			oSurfacePanel:Size			  := oRes:Size
-			oSurfacePanel:MinimumSize     := oRes:Size
+			oSurfacePanel:Size			:= oRes:Size
+			oSurfacePanel:MinimumSize   := oRes:Size
 		ELSE
-			oSurfacePanel:Size     := SELF:ClientRectangle:Size
+			oSurfacePanel:Size          := SELF:ClientRectangle:Size
 		ENDIF
 		oFramePanel:Size := oSurfacePanel:Size
-		oSurfacePanel:AutoSize := TRUE
-		oSurfacePanel:Text := "Surface"
-		oFramePanel:Text := "Frame"
 		SELF:AdjustFrameSize()
 
+#region Winforms Method overrides
+	OVERRIDE PROTECT METHOD OnShown(e AS EventArgs) AS VOID STRICT
+		FOREACH oC AS System.Windows.Forms.Control IN SELF:Surface:Controls
+			IF oC IS VOButton VAR oVOB
+				IF oVOB:DefaultButton
+					SELF:AcceptButton := oVOB
+				ENDIF
+			ENDIF
+		NEXT
+		SUPER:OnShown(e)
 
+	OVERRIDE PROTECT METHOD OnSizeChanged(e AS EventArgs ) AS VOID
+		SUPER:OnSizeChanged(e)
+		IF SELF:Visible
+			AdjustSizes()
+		ENDIF
+		RETURN
+
+#endregion
+#region Other methods to preproduce the VO DataWIndow behavior
 
 
 	METHOD AdjustSizes() AS VOID STRICT
@@ -167,7 +189,7 @@ CLASS VODataForm INHERIT VOChildAppForm
 		// This is called when resizing and/or when toolbar or statusbar is shown
 		// it recalculates the size of the framepanel
 		SELF:SuspendLayout()
-		IF ! lSubForm
+		IF ! SELF:SubForm
 			oSize := SELF:ClientRectangle:Size
 			IF oToolBar != NULL_OBJECT
 				oSize:Height -= oToolBar:Height
@@ -175,7 +197,6 @@ CLASS VODataForm INHERIT VOChildAppForm
 			ELSE
 				SELF:oFramePanel:Location := System.Drawing.Point{0,0}
 			ENDIF
-
 			IF oStatusBar != NULL_OBJECT //.and. oStatusBar:Visible
 				oSize:Height -= oStatusBar:Height
 			ENDIF
@@ -199,7 +220,7 @@ CLASS VODataForm INHERIT VOChildAppForm
 		LOCAL nBordX, nBordY AS LONG
 		LOCAL oLoc       AS System.Drawing.Point
 		SELF:SuspendLayout()
-		IF SELF:lSubForm
+		IF SELF:SubForm
 			NOP
 		ELSE	
 			oLoc       := SELF:Location
@@ -235,7 +256,7 @@ CLASS VODataForm INHERIT VOChildAppForm
 
 	METHOD CreateSubForm(nResourceID AS LONG, oResDlg AS ResourceDialog) AS LOGIC
 		LOCAL oItem AS ResourceDialogItem
-		lSubForm := TRUE
+		SELF:SubForm := TRUE
 		oItem := oResDlg:GetDlgItem(nResourceID)
 		IF oItem != NULL_OBJECT
 			SELF:oFramePanel:Location	 := oItem:Origin
@@ -253,22 +274,6 @@ CLASS VODataForm INHERIT VOChildAppForm
 	METHOD ResetMinSize() AS VOID
 		RETURN 		
 		
-	VIRTUAL PROTECT METHOD OnShown(e AS EventArgs) AS VOID STRICT
-		FOREACH oC AS System.Windows.Forms.Control IN SELF:Surface:Controls
-			IF TYPEOF(VOButton):IsAssignableFrom(oC:GetType())
-				IF ((VoButton) (oC)):DefaultButton
-					SELF:AcceptButton := (VoButton) oC
-				ENDIF
-			ENDIF
-		NEXT
-		SUPER:OnShown(e)
-
-	PROTECTED METHOD OnSizeChanged(e AS EventArgs ) AS VOID
-		SUPER:OnSizeChanged(e)
-		IF SELF:Visible
-			AdjustSizes()
-		ENDIF
-		RETURN
 
 	METHOD HideSubForm () AS VOID STRICT
 		SELF:Frame:Visible	:= FALSE
@@ -336,7 +341,6 @@ CLASS VODataForm INHERIT VOChildAppForm
 	        Win32.SendMessage(SELF:Surface:Handle, WM_SETREDRAW, 0, 0)
 		ENDIF
 
-
 	PUBLIC METHOD ResumeRedraw AS VOID
 		IF SELF:lInBrowseView
 	        Win32.SendMessage(SELF:Frame:Handle, WM_SETREDRAW, 1, 0)
@@ -345,6 +349,6 @@ CLASS VODataForm INHERIT VOChildAppForm
 		ENDIF
 		SELF:Refresh()
     
-
+#endregion
 
 END CLASS

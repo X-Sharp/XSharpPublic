@@ -82,9 +82,7 @@ CLASS VODataGridView INHERIT System.Windows.Forms.DataGridView IMPLEMENTS IVOCon
 			LOCAL cCelldata AS STRING
 			IF SELF:EditingControl != NULL
 				oEditControl := SELF:EditingControl
-				IF typeof(System.Windows.Forms.TextBox):isAssignableFrom(oEditControl:getType())
-					LOCAL oTextbox AS System.Windows.Forms.Textbox
-					oTextbox := (System.Windows.Forms.TextBox) oEditControl
+				IF oEditControl IS System.Windows.Forms.TextBox VAR oTextbox
 					cCelldata := oTextbox:SelectedText
 				ELSE
 					cCelldata := oEditControl:Text

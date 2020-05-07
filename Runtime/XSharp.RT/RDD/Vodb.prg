@@ -126,10 +126,10 @@ STATIC METHOD RecordInfo(nOrdinal AS DWORD,oRecID AS USUAL,oValue AS USUAL) AS L
 /// <inheritdoc cref='M:XSharp.CoreDb.Select(System.UInt32,System.UInt32@)'/>
 /// <remarks> <inheritdoc cref='M:XSharp.CoreDb.Select(System.UInt32,System.UInt32@)'/>
 /// <br/><br/> <note type="tip">The difference between VoDb.Select and CoreDb.Select is that VoDb.Select takes a USUAL parameter</note></remarks>
-STATIC METHOD Select(nNew AS DWORD,riOld REF USUAL) AS LOGIC
+STATIC METHOD Select(nNew AS DWORD,riOld OUT USUAL) AS LOGIC
     LOCAL nOld := 0 AS DWORD
     LOCAL lResult AS LOGIC
-    lResult := CoreDb.Select(nNew, REF nOld)
+    lResult := CoreDb.Select(nNew, OUT nOld)
     riOld := nOld
     RETURN lResult
 

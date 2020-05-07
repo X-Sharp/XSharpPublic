@@ -753,7 +753,7 @@ CLASS StatusBar INHERIT Control
 	
 END CLASS
 
-PARTIAL CLASS StatusBarItem INHERIT VObject
+CLASS StatusBarItem INHERIT VObject
 	PROTECT symItemName AS SYMBOL
 	PROTECT nWidth      AS INT
 	PROTECT dwStyle     AS LONG
@@ -804,7 +804,7 @@ PARTIAL CLASS StatusBarItem INHERIT VObject
 
 END CLASS
 
-PARTIAL CLASS StatusBarKeyItem INHERIT StatusBarItem
+CLASS StatusBarKeyItem INHERIT StatusBarItem
 	PROTECT cKeyText AS STRING
 
 	CONSTRUCTOR(symName, nWidth, kStyle, oIcon) 

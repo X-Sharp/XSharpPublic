@@ -1,7 +1,7 @@
 
 
 
-PARTIAL CLASS Icon INHERIT VObject
+CLASS Icon INHERIT VObject
 	PROTECT oIcon AS System.Drawing.Icon
 
 	ACCESS __Icon AS System.Drawing.Icon

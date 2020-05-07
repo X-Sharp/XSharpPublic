@@ -16,7 +16,7 @@ STATIC CLASS Win32
 	STATIC METHOD MulDiv(nNumber AS INT, nNumerator AS INT, nDenominator AS INT)AS INT 
 		
 	[DllImport("kernel32.dll", CharSet:=CharSet.Unicode, EntryPoint := "WinExecW", SetLastError := TRUE)];
-	STATIC METHOD WinExec(lpCmdLine AS PTR, uCmdShow AS DWORD) AS DWORD PASCAL
+	STATIC METHOD WinExec(lpCmdLine AS STRING, uCmdShow AS DWORD) AS DWORD PASCAL
 
 	[DllImport("kernel32.dll", CharSet:=CharSet.Unicode, EntryPoint := "FindResourceW", SetLastError := TRUE)];
 	STATIC METHOD FindResource(hModule AS IntPtr, lpName AS STRING, lpType AS INT) AS IntPtr 
@@ -125,11 +125,11 @@ STATIC CLASS Win32
 	STATIC METHOD CreateWindowEx(dwExStyle AS DWORD, lpClasssName AS STRING, lpWindowName AS STRING,;
 		dwStyle AS DWORD, x AS INT, y AS INT, nWidth AS INT,;
 		nHeight AS INT, hwndParent AS IntPtr, hMenu AS IntPtr,;
-		hInstance AS PTR, lpParam AS PTR) AS IntPtr
+		hInstance AS IntPtr, lpParam AS PTR) AS IntPtr
 
 
 	[DllImport("User32.dll", CharSet:=CharSet.Ansi, EntryPoint := "DefWindowProcA", SetLastError := TRUE)];
-	STATIC METHOD DefWindowProc(hWnd AS PTR, Msg AS DWORD, wParam AS DWORD,lParam AS LONG ) AS LONG 
+	STATIC METHOD DefWindowProc(hWnd AS IntPtr, Msg AS DWORD, wParam AS DWORD,lParam AS LONG ) AS LONG 
 
 
 	[DllImport("User32.dll", SetLastError := TRUE)];
@@ -152,7 +152,7 @@ STATIC CLASS Win32
 	STATIC INTERNAL METHOD ClientToScreen(hWnd AS IntPtr, oPoint REF WINPOINT) AS LOGIC STRICT
 
 	[DllImport("User32.dll")];
-	STATIC METHOD LoadAccelerators( hInstance AS IntPtr, lpTableName AS PSZ) AS PTR 
+	STATIC METHOD LoadAccelerators( hInstance AS IntPtr, lpTableName AS PSZ) AS IntPtr 
 
 	[DllImport("User32.dll")];
 	STATIC INTERNAL METHOD CopyAcceleratorTable( hAccelSrc AS IntPtr, lpAccelDst AS _winAccel,	cAccelEntries AS INT) AS INT 
@@ -242,7 +242,7 @@ STATIC CLASS Win32
 	STATIC METHOD SendMessage(hwnd AS IntPtr, Msg AS INT, wParam AS IntPtr, lParam AS IntPtr) AS IntPtr 
 
 	[DllImport("User32.dll")];
-	STATIC METHOD PostMessage(hwnd AS PTR, Msg AS DWORD, wParam AS DWORD, lParam AS LONG) AS LOGIC 
+	STATIC METHOD PostMessage(hwnd AS IntPtr, Msg AS DWORD, wParam AS DWORD, lParam AS LONG) AS LOGIC 
 		
 	[DllImport("User32.dll")];
 	STATIC METHOD LoadCursor(hInstance AS IntPtr, lpCursorName AS STRING) AS IntPtr
@@ -252,8 +252,8 @@ STATIC CLASS Win32
 	[DllImport("User32.dll")];
 	STATIC METHOD SetTimer(hwnd AS IntPtr, nIDEvent AS DWORD, uElapse AS DWORD, lpTimerFunc AS PTR) AS DWORD		
 
-	[DllImport("User32.dll", SetLastError := TRUE)];
-	STATIC INTERNAL METHOD RegisterClass(lpWndClass AS _winWNDCLASS) AS WORD 
+//	[DllImport("User32.dll", SetLastError := TRUE)];
+//	STATIC INTERNAL METHOD RegisterClass(lpWndClass AS _winWNDCLASS) AS WORD 
 
 
 	[DllImport("User32.dll")];
@@ -314,10 +314,10 @@ STATIC CLASS Win32
 		
 		
 	[DllImport("GDI32.dll")];
-	STATIC METHOD SetTextColor(hdc AS PTR, crColor AS DWORD) AS DWORD 
+	STATIC METHOD SetTextColor(hdc AS IntPtr, crColor AS DWORD) AS DWORD 
 
 	[DllImport("GDI32.dll")];
-	STATIC METHOD SetBkColor(hdc AS PTR, crColor AS DWORD) AS DWORD 
+	STATIC METHOD SetBkColor(hdc AS IntPtr, crColor AS DWORD) AS DWORD 
 
 
 
@@ -387,30 +387,30 @@ INTERNAL VOSTRUCT _winRECT
 	MEMBER bottom AS LONGINT
 
 
-INTERNAL VOSTRUCT _winWNDCLASS
-	MEMBER style         AS DWORD
-	MEMBER lpfnWndProc   AS PTR
-	MEMBER cbClsExtra    AS INT
-	MEMBER cbWndExtra    AS INT
-	MEMBER hInstance     AS PTR
-	MEMBER hIcon         AS PTR
-	MEMBER hCursor       AS PTR
-	MEMBER hbrBackground AS PTR
-	MEMBER lpszMenuName  AS PSZ
-	MEMBER lpszClassName AS PSZ
-	
-INTERNAL VOSTRUCT _winCREATESTRUCT
-	MEMBER lpCreateParams AS PTR
-	MEMBER hInstance      AS PTR
-	MEMBER hMenu          AS PTR
-	MEMBER hwndParent     AS PTR
-	MEMBER cy             AS INT
-	MEMBER cx             AS INT
-	MEMBER y              AS INT
-	MEMBER x              AS INT
-	MEMBER style          AS LONGINT
-	MEMBER lpszName       AS PSZ
-	MEMBER lpszClass      AS PSZ	
+//INTERNAL VOSTRUCT _winWNDCLASS
+//	MEMBER style         AS DWORD
+//	MEMBER lpfnWndProc   AS PTR
+//	MEMBER cbClsExtra    AS INT
+//	MEMBER cbWndExtra    AS INT
+//	MEMBER hInstance     AS PTR
+//	MEMBER hIcon         AS PTR
+//	MEMBER hCursor       AS PTR
+//	MEMBER hbrBackground AS PTR
+//	MEMBER lpszMenuName  AS PSZ
+//	MEMBER lpszClassName AS PSZ
+//	
+//INTERNAL VOSTRUCT _winCREATESTRUCT
+//	MEMBER lpCreateParams AS PTR
+//	MEMBER hInstance      AS PTR
+//	MEMBER hMenu          AS PTR
+//	MEMBER hwndParent     AS PTR
+//	MEMBER cy             AS INT
+//	MEMBER cx             AS INT
+//	MEMBER y              AS INT
+//	MEMBER x              AS INT
+//	MEMBER style          AS LONGINT
+//	MEMBER lpszName       AS PSZ
+//	MEMBER lpszClass      AS PSZ	
 	
 INTERNAL VOSTRUCT _winLOGBRUSH
 	MEMBER lbStyle AS DWORD

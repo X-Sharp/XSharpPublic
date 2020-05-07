@@ -5,7 +5,7 @@
 CLASS AnimationControl INHERIT Control
 	PROTECT oAVIFileSpec AS FileSpec
 	PROTECT resID AS ResourceID
-	PROTECT hInstance AS PTR
+	PROTECT hInstance AS IntPtr
     PROPERTY ControlType AS ControlType GET ControlType.Label
 
 	CONSTRUCTOR(oOwner, xID, oPoint, oDimension, oFileSpec, kStyle, hInst) 

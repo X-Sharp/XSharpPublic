@@ -93,14 +93,14 @@ CLASS Edit INHERIT TextControl
 		RETURN _AND(dwStyle,ES_PASSWORD)!=0
 
 	ACCESS Margins  AS Dimension
-		LOCAL nLeft AS LONG
-		LOCAL nTop AS LONG
 		IF SELF:ValidateControl()
-			nLeft := __TextBox:Margin:Left
-			nTop  := __TextBox:Margin:Top
-		ENDIF
+			VAR nLeft := __TextBox:Margin:Left
+			VAR nTop  := __TextBox:Margin:Top
+            RETURN Dimension{nLeft, nTop}
+        ENDIF
+        RETURN Dimension{0, 0}
 
-		RETURN Dimension{nLeft, nTop}
+		
 	
 	ASSIGN Margins(oNewMargins AS Dimension) 
 		IF SELF:ValidateControl()

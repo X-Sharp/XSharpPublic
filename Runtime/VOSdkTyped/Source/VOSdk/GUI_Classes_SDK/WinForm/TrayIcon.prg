@@ -2,13 +2,13 @@
 
 #USING System.Windows.Forms
 CLASS VOTrayIcon INHERIT VObject
-	PROTECT Window AS Window
-	PROTECT oIcon AS NotifyIcon
-	PROTECT nID AS LONG
+	PROTECT Window  AS Window
+	PROTECT oIcon   AS NotifyIcon
+	PROTECT nID     AS LONG
 	
 	PROPERTY ID		 AS LONG   GET nID
 	PROPERTY Text	 AS STRING GET oIcon:Text SET oIcon:Text := Value
-	PROPERTY IMage   AS System.Drawing.Icon GET oIcon:Icon SET oIcon:Icon := Value
+	PROPERTY Image   AS System.Drawing.Icon GET oIcon:Icon SET oIcon:Icon := Value
 	
 	CONSTRUCTOR(oWin AS Window , lID AS LONG)
 		SUPER()
@@ -25,6 +25,8 @@ CLASS VOTrayIcon INHERIT VObject
 		oIcon:Visible := FALSE
 		oIcon:Dispose()
 		RETURN SELF	
+
+#region Windows Forms Event Handlers
 
 	PROTECTED METHOD OnMouseClick(s AS OBJECT, e AS MouseEventArgs) AS VOID	
 		SELF:Window:TrayIconClicked(SELF:ID, e:Button == MouseButtons.Right, FALSE)
@@ -48,6 +50,7 @@ CLASS VOTrayIcon INHERIT VObject
 		SELF:Window:TrayIconBalloonClicked(SELF:ID)
 		RETURN
 
+#endregion
 
 	METHOD Show() AS VOID STRICT
 		SELF:oIcon:Visible := TRUE

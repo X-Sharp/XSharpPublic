@@ -284,7 +284,6 @@ CLASS ShellWindow INHERIT AppWindow
 	METHOD GetPreviousChildForm(oChild AS VOForm) AS VOForm STRICT
 		LOCAL oMdi AS System.Windows.Forms.MdiClient
 		LOCAL i, nstartindex, nCount AS INT
-		LOCAL oRet AS VoForm
 		IF SELF:__IsClientValid
 			oMdi := SELF:oWndClient
 			IF oMdi:Controls:Contains(oChild)
@@ -295,8 +294,7 @@ CLASS ShellWindow INHERIT AppWindow
 					// Modulo-Ring, endet wenn gültiges Form gefunden (Return in Schleife) oder Startindex erreicht
 					i := (nstartindex + 1) % nCount
 					DO WHILE i!=nstartindex
-						IF TypeOf(VoForm):isAssignableFrom(oMdi:Controls[i]:GetType())
-							oRet := (VoForm) oMdi:Controls[i]
+						IF oMdi:Controls[i] IS VoForm VAR oRet
 							IF oRet:Visible
 								RETURN oRet
 							ENDIF

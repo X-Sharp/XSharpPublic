@@ -2,8 +2,8 @@
 
 
 
-PARTIAL CLASS ImageList INHERIT VObject
-	PROTECT hDragWindow AS PTR
+CLASS ImageList INHERIT VObject
+	PROTECT hDragWindow AS IntPtr
 	PROTECT iDragYOffset AS INT
 	PROTECT oImageList AS System.Windows.Forms.ImageList
 	
@@ -99,7 +99,7 @@ PARTIAL CLASS ImageList INHERIT VObject
 
 		RETURN TRUE
 
-	METHOD Handle() AS PTR STRICT
+	METHOD Handle() AS IntPtr STRICT
 		RETURN oImageList:Handle
 
 	ACCESS ImageCount AS LONG

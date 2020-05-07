@@ -1,7 +1,7 @@
 
 
 
-PARTIAL CLASS RectangleObject INHERIT ShapeObject
+CLASS RectangleObject INHERIT ShapeObject
 
 
 	CONSTRUCTOR(oPoint as USUAl, oDimension as USUAl, oPen as USUAl, oBrush as USUAl) 

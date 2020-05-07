@@ -1,7 +1,7 @@
 
 
 
-PARTIAL CLASS EventContext INHERIT VObject
+CLASS EventContext INHERIT VObject
 
 //METHOD Destroy() AS USUAL STRICT
 	//SUPER:Destroy()

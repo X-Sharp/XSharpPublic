@@ -756,7 +756,7 @@ CLASS TreeView INHERIT TextControl
 END CLASS
 
 [DebuggerDisplay( "{symName}" )] ;
-PARTIAL CLASS TreeViewItem INHERIT VObject
+CLASS TreeViewItem INHERIT VObject
 	PROTECT symName AS SYMBOL
 	PROTECT uValue AS USUAL
 	PROTECT nOverlayImage AS INT

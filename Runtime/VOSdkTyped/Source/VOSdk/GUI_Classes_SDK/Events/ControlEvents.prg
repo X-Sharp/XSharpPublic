@@ -5,7 +5,7 @@
 #USING System.Diagnostics
 
 
-PARTIAL CLASS ComboBoxExEndEditEvent INHERIT ControlNotifyEvent
+CLASS ComboBoxExEndEditEvent INHERIT ControlNotifyEvent
 	CONSTRUCTOR(oC AS Control) STRICT
 		SUPER(oC)
 	/*
@@ -50,7 +50,7 @@ PARTIAL CLASS ComboBoxExEndEditEvent INHERIT ControlNotifyEvent
 	*/
 END CLASS
 
-PARTIAL CLASS ControlEvent INHERIT @@Event IMPLEMENTS INamedEvent
+CLASS ControlEvent INHERIT @@Event IMPLEMENTS INamedEvent
 	PROTECTED oControl   AS XSharp.VO.Control
 	
 	PROPERTY Control     AS XSharp.VO.Control GET oControl
@@ -83,7 +83,7 @@ PARTIAL CLASS ControlEvent INHERIT @@Event IMPLEMENTS INamedEvent
 END CLASS
 
 
-PARTIAL CLASS ControlFocusChangeEvent INHERIT ControlEvent
+CLASS ControlFocusChangeEvent INHERIT ControlEvent
 	PROTECT lGotFocus AS LOGIC
 	PROPERTY GotFocus AS LOGIC GET lGotFocus
 	
@@ -99,7 +99,7 @@ PARTIAL CLASS ControlFocusChangeEvent INHERIT ControlEvent
 
 END CLASS
 
-PARTIAL CLASS ControlNotifyEvent INHERIT ControlEvent
+CLASS ControlNotifyEvent INHERIT ControlEvent
 	EXPORT NotifyCode AS DWORD 
 	[DebuggerStepThrough];
 	CONSTRUCTOR(oC AS Control)
@@ -114,7 +114,7 @@ PARTIAL CLASS ControlNotifyEvent INHERIT ControlEvent
 END CLASS
 
 
-PARTIAL CLASS DateTimeSelectionEvent INHERIT ControlEvent
+CLASS DateTimeSelectionEvent INHERIT ControlEvent
 
 	[DebuggerStepThrough];
 	CONSTRUCTOR(loControl AS XSharp.VO.Control)
@@ -140,7 +140,7 @@ PARTIAL CLASS DateTimeSelectionEvent INHERIT ControlEvent
 END CLASS
 
 
-PARTIAL CLASS EditFocusChangeEvent INHERIT ControlFocusChangeEvent
+CLASS EditFocusChangeEvent INHERIT ControlFocusChangeEvent
 	[DebuggerStepThrough];
 	CONSTRUCTOR(loControl AS XSharp.VO.Control, lFocus AS LOGIC)
 		SUPER(loControl, lFocus)
@@ -151,7 +151,7 @@ PARTIAL CLASS EditFocusChangeEvent INHERIT ControlFocusChangeEvent
 
 END CLASS
 
-PARTIAL CLASS MonthCalSelectionEvent INHERIT ControlEvent
+CLASS MonthCalSelectionEvent INHERIT ControlEvent
 	PROTECT _lExplicit AS LOGIC
 
 	[DebuggerStepThrough];
@@ -172,7 +172,7 @@ END CLASS
 
 
 
-PARTIAL CLASS RichEditProtectEvent INHERIT ControlNotifyEvent
+CLASS RichEditProtectEvent INHERIT ControlNotifyEvent
 	//Todo
 	CONSTRUCTOR(oC AS Control) STRICT
 		SUPER(oC)
@@ -205,7 +205,7 @@ PARTIAL CLASS RichEditProtectEvent INHERIT ControlNotifyEvent
 	*/
 END CLASS
 
-PARTIAL CLASS RichEditSelectionEvent INHERIT ControlNotifyEvent
+CLASS RichEditSelectionEvent INHERIT ControlNotifyEvent
 	//Todo
 	CONSTRUCTOR(oC AS Control) STRICT
 		SUPER(oC)
@@ -242,7 +242,7 @@ PARTIAL CLASS RichEditSelectionEvent INHERIT ControlNotifyEvent
 END CLASS
 
 
-PARTIAL CLASS ScrollEvent INHERIT @@Event
+CLASS ScrollEvent INHERIT @@Event
 	//Todo
 	PROPERTY ScrollBar AS ScrollBar Auto
 	PROPERTY Position AS LONG Auto
@@ -251,7 +251,7 @@ END CLASS
 
 
 
-PARTIAL CLASS SliderEvent INHERIT @@Event
+CLASS SliderEvent INHERIT @@Event
 	//Todo
 	PROPERTY Slider AS Slider Auto
 	PROPERTY Position AS LONG Auto
@@ -259,7 +259,7 @@ PARTIAL CLASS SliderEvent INHERIT @@Event
 
 END CLASS
 
-PARTIAL CLASS SpinnerEvent INHERIT @@Event
+CLASS SpinnerEvent INHERIT @@Event
 	//Todo
 	PROPERTY Spinner AS Spinner Auto
 	PROPERTY Position AS LONG Auto
@@ -384,7 +384,7 @@ RETURN SELF:Position
 END CLASS
 
 
-PARTIAL CLASS SysLinkSelectEvent INHERIT ControlNotifyEvent
+CLASS SysLinkSelectEvent INHERIT ControlNotifyEvent
 	//Todo
 	CONSTRUCTOR(oC AS Control)
 		SUPER(oC)

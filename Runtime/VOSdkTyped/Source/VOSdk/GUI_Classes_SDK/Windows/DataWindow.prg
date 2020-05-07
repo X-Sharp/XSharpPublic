@@ -360,7 +360,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 		// available for viewing. If SET DELETE is set to ON, the record will not be shown
 		// in subsequent browsing of the DataServer.
 		
-		LOCAL lRetCode AS LOGIC
+		LOCAL lRetCode := FALSE AS LOGIC
 		
 		oHLStatus:= NULL_OBJECT // assume success
 		IF oAttachedserver!=NULL_OBJECT
@@ -837,7 +837,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 
 	METHOD Append() CLIPPER
 		// Adds new record to DataWindow
-		LOCAL lRetCode AS LOGIC
+		LOCAL lRetCode := FALSE AS LOGIC
 		
 		oHLStatus := NULL_OBJECT // assume success
 		IF (oAttachedServer != NULL_OBJECT) .AND. SELF:__CheckRecordStatus()
@@ -946,7 +946,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 	
 
 	METHOD Cancel() 
-		LOCAL lRetCode AS LOGIC
+		LOCAL lRetCode := FALSE AS LOGIC
 		lRetCode := TRUE
 		IF IsMethod(oAttachedServer,#Refresh)
 			lRetCode := Send(oAttachedServer,#Refresh)
@@ -1087,7 +1087,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 	
 
 	METHOD Commit() 
-		LOCAL lRetCode AS LOGIC
+		LOCAL lRetCode := FALSE AS LOGIC
 		
 		oHLStatus:= NULL_OBJECT // assume success
 		IF oAttachedServer!=NULL_OBJECT .AND. SELF:__CheckRecordStatus()
@@ -1370,7 +1370,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 	
 
 	METHOD DeleteValidated 
-		LOCAL lRetCode AS LOGIC
+		LOCAL lRetCode := FALSE AS LOGIC
 		
 		oHLStatus:= NULL_OBJECT // assume success
 		IF oAttachedServer!=NULL_OBJECT .AND. SELF:__CheckRecordStatus()
@@ -1485,23 +1485,15 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 			lControlsEnabled := TRUE
 		ENDIF
 		RETURN SELF
-	#ifdef DONOTINCLUDE
-	METHOD EnableDragDropClient(lEnable, lSurfaceOnly) 
-		//	// Todo ?
-		IF IsLogic(lSurfaceOnly) .AND. lSurfaceOnly
-			IF oSurface != NULL_OBJECT
-				//		oSurface:EnableDragDropClient(lEnable)
-			ENDIF         
-			RETURN SELF
-		ENDIF
-		IF lSubForm
-			//oFormFrame:EnableDragDropClient(lEnable) 
-			RETURN SELF
-		ENDIF
-		
-		RETURN SUPER:EnableDragDropClient(lEnable)
-	#endif
-	METHOD EnableStatusBar(lEnable AS LOGIC) AS StatusBar
+
+	METHOD EnableDragDropClient(lEnable AS LOGIC, lSurfaceOnly := TRUE AS LOGIC)
+        SELF:__Surface:AllowDrop := TRUE
+
+		SUPER:EnableDragDropClient(lEnable)
+
+
+
+    METHOD EnableStatusBar(lEnable AS LOGIC) AS StatusBar
 		
 		
 		SUPER:EnableStatusBar(lEnable)
@@ -1531,7 +1523,6 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 	METHOD FieldGet(uFieldID AS USUAL)  AS USUAL
 		LOCAL oError AS USUAL
 		LOCAL oFieldObject AS OBJECT
-		LOCAL uValue AS USUAL
         LOCAL uRetVal := NIL AS USUAL
 		
 		BEGIN SEQUENCE
@@ -1555,11 +1546,11 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 					uRetVal := NIL
 				ENDIF
 			ELSEIF oFieldObject IS CheckBox VAR cb
-				uValue := cb:Checked
+				uRetVal := cb:Checked
 			ELSEIF oFieldObject IS RadioButton VAR rb
-				uValue := rb:Pressed
+				uRetVal := rb:Pressed
 			ELSE
-				uValue := oFieldObject:Value
+				uRetVal := oFieldObject:Value
 			ENDIF
 			
 		RECOVER USING oError
@@ -1636,7 +1627,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 	
 
 	METHOD GoBottom() CLIPPER
-		LOCAL lRetCode AS LOGIC
+		LOCAL lRetCode := FALSE AS LOGIC
 		
 		oHLStatus:=NULL_OBJECT // assume success
 		IF oAttachedServer!=NULL_OBJECT .AND. SELF:__CheckRecordStatus() // send data to Server
@@ -1649,7 +1640,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 	
 
 	METHOD GoTo( nRecNo ) 
-		LOCAL lRetCode AS LOGIC
+		LOCAL lRetCode := FALSE AS LOGIC
 		
 		oHLStatus:=NULL_OBJECT // assume success
 		IF(oAttachedServer!=NULL_OBJECT .AND. SELF:lValidFlag)
@@ -1664,7 +1655,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 	
 
 	METHOD GoTop() CLIPPER
-		LOCAL lRetCode AS LOGIC
+		LOCAL lRetCode := FALSE AS LOGIC
 		
 		oHLStatus:=NULL_OBJECT // assume success
 		IF oAttachedServer!=NULL_OBJECT .AND. SELF:__CheckRecordStatus() // send data to Server
@@ -2205,7 +2196,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 	
 
 	METHOD Seek(uValue, lSoftSeek) 
-		LOCAL lRetCode AS LOGIC
+		LOCAL lRetCode := FALSE AS LOGIC
 		IF oAttachedServer!=NULL_OBJECT
 			oHLStatus := NULL_OBJECT // assume success
 			IF SELF:__CheckRecordStatus()
@@ -2249,7 +2240,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 	
 
 	METHOD SetRelation( oDWChild, uRelation, cRelation ) 
-		LOCAL lRetCode AS LOGIC
+		LOCAL lRetCode := FALSE AS LOGIC
 		
 		oHLStatus:=NULL_OBJECT // assume success
 		IF oAttachedServer!=NULL_OBJECT .AND. SELF:lValidFlag
@@ -2264,7 +2255,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 	
 
 	METHOD SetSelectiveRelation( oDWChild, uRelation, cRelation ) 
-		LOCAL lRetCode AS LOGIC
+		LOCAL lRetCode := FALSE AS LOGIC
 		
 		
 		oHLStatus := NULL_OBJECT // assume success
@@ -2325,7 +2316,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 
 
 	METHOD Skip(uRelativePosition) 
-		LOCAL lRetCode AS LOGIC
+		LOCAL lRetCode := FALSE AS LOGIC
 		
 		oHLStatus := NULL_OBJECT // assume success
 		IF oAttachedServer != NULL_OBJECT .AND. SELF:__CheckRecordStatus()
@@ -2339,7 +2330,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 	
 
 	METHOD SkipNext() CLIPPER
-		LOCAL lRetCode AS LOGIC
+		LOCAL lRetCode := FALSE AS LOGIC
 		
 		
 		lRetCode := SELF:Skip(1)
@@ -2488,7 +2479,7 @@ CLASS DataWindow INHERIT ChildAppWindow IMPLEMENTS ILastFocus
 	
 
 	METHOD Use(oDataServer) 
-		LOCAL lRetCode AS LOGIC
+		LOCAL lRetCode := FALSE AS LOGIC
 		
 		IF lDeferUse .AND. IsInstanceOfUsual(oDataServer, #DATAServer)
 			oDeferUseServer := oDataServer

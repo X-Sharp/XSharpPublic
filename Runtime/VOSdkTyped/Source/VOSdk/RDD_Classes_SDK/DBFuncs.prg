@@ -200,7 +200,7 @@ FUNCTION __DBSDBAPPSDF( cFile, aFields, uCobFor, uCobWhile,  ;
 	//SE-060601
 	LOCAL cobOldErrFunc AS USUAL
 	LOCAL oError AS USUAL
-	LOCAL lBreak AS LOGIC
+	LOCAL lBreak := FALSE  AS LOGIC
 	// LOCAL dwFrom AS DWORD  dcaton 070430 never used
 	LOCAL dwTo AS DWORD
 	// LOCAL siPos AS DWORD   dcaton 070430 never used
@@ -273,7 +273,7 @@ FUNCTION __DBSDBCopy( cFile, aFields, uCobFor,	uCobWhile, nNext, nRec,	lRest,  ;
 	//SE-060601
 	LOCAL cobOldErrFunc AS USUAL
 	LOCAL oError AS USUAL
-	LOCAL lBreak AS LOGIC
+	LOCAL lBreak  := FALSE AS LOGIC
 	LOCAL dwFrom AS DWORD
 	LOCAL dwTo AS DWORD
 	LOCAL lRetCode AS LOGIC
@@ -321,7 +321,7 @@ FUNCTION __DBSDBCopy( cFile, aFields, uCobFor,	uCobWhile, nNext, nRec,	lRest,  ;
 			BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
 		ENDIF
 
-		VoDbSelect( dwFrom, REF dwTo )
+		VoDbSelect( dwFrom, OUT dwTo )
 
       cobOldErrFunc := ErrorBlock( { | oErr | _Break( oErr ) } )
 		BEGIN SEQUENCE
@@ -355,7 +355,7 @@ FUNCTION __DBSDBCOPYDELIM( cFile, cDelim, aFields, uCobFor, uCobWhile, nNext,  ;
 	//SE-060601
 	LOCAL cobOldErrFunc AS USUAL
 	LOCAL oError AS USUAL
-	LOCAL lBreak AS LOGIC
+	LOCAL lBreak := FALSE AS LOGIC
 	LOCAL dwFrom AS DWORD
 	LOCAL dwTo AS DWORD
 	// LOCAL siPos AS DWORD   dcaton 070430 never used
@@ -398,7 +398,7 @@ FUNCTION __DBSDBCOPYDELIM( cFile, cDelim, aFields, uCobFor, uCobWhile, nNext,  ;
 		SetAnsi( TRUE )
 	ENDIF
 
-	VoDbSelect( dwFrom, REF dwTo )
+	VoDbSelect( dwFrom, OUT dwTo )
 
 	cobOldErrFunc := ErrorBlock( { | oErr | _Break( oErr ) } )
 	BEGIN SEQUENCE
@@ -429,7 +429,7 @@ FUNCTION __DBSDBCOPYSDF( cFile, aFields, uCobFor, uCobWhile, nNext,  ;
 	//SE-060601
 	LOCAL cobOldErrFunc AS USUAL
 	LOCAL oError AS USUAL
-	LOCAL lBreak AS LOGIC
+	LOCAL lBreak  := FALSE AS LOGIC
 	LOCAL dwFrom AS DWORD
 	LOCAL dwTo AS DWORD
 	// LOCAL siPos AS DWORD     dcaton 070430 never used
@@ -470,7 +470,7 @@ FUNCTION __DBSDBCOPYSDF( cFile, aFields, uCobFor, uCobWhile, nNext,  ;
 		SetAnsi( TRUE )
 	ENDIF
 
-	VoDbSelect( dwFrom, REF dwTo )
+	VoDbSelect( dwFrom, OUT dwTo )
 
 	cobOldErrFunc := ErrorBlock( { | oErr | _Break( oErr ) } )
 	BEGIN SEQUENCE
@@ -548,7 +548,7 @@ FUNCTION __DBSDBJOIN( cAlias, cFile, aFields, uCobFor, cRDD ) AS LOGIC  CLIPPER
 		BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
 	ENDIF
 
-	VoDbSelect( dwFrom1, REF dwTo )
+	VoDbSelect( dwFrom1, OUT dwTo )
 
 	pJoinList:uiDestSel := dwTo
 
@@ -655,7 +655,7 @@ FUNCTION __DBSDBSORT( cFile, aFields, uCobFor, uCobWhile, nNext, nRec, lRest,  ;
 		BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
 	ENDIF
 
-	VoDbSelect( dwFrom, REF dwTo )
+	VoDbSelect( dwFrom, OUT dwTo )
 
 	lRetCode := VoDbSort( dwTo, fnFieldNames, uCobFor, uCobWhile, nNext, nRec, lRest, fnSortNames )
 	IF ! lRetCode
@@ -683,7 +683,7 @@ FUNCTION __DBSDBTOTAL( cFile, bKey, aFields, uCobFor, uCobWhile, nNext, nRec,  ;
 		lRest, aStruct, cRDD ) AS LOGIC  CLIPPER
 	//SE-060601
 	LOCAL oError AS USUAL
-   LOCAL lBreak AS LOGIC
+   LOCAL lBreak  := FALSE AS LOGIC
 	LOCAL dwFrom AS DWORD
 	LOCAL dwTo AS DWORD
 	LOCAL i AS DWORD
@@ -742,7 +742,7 @@ FUNCTION __DBSDBTOTAL( cFile, bKey, aFields, uCobFor, uCobWhile, nNext, nRec,  ;
 		BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
 	ENDIF
 
-	VoDbSelect( dwFrom, REF dwTo )
+	VoDbSelect( dwFrom, OUT dwTo )
 
 	n := Len( aFldNum )
 
@@ -1024,9 +1024,9 @@ FUNCTION __IsBlob( nField AS INT ) AS LOGIC
 	LOCAL lRetCode AS LOGIC
 	LOCAL uVal AS USUAL
 
-		IF VoDbFieldInfo( DBS_BLOB_TYPE, DWORD(nField), REF uVal )
-			lRetCode := ! IsNil( uVal )
-		ENDIF
+	IF VoDbFieldInfo( DBS_BLOB_TYPE, DWORD(nField), REF uVal )
+		lRetCode := ! IsNil( uVal )
+	ENDIF
 
 	RETURN lRetCode
 

@@ -2,22 +2,20 @@
 
 
 
-PARTIAL CLASS MultiMediaContainer INHERIT Control
-	PROTECT pBitmap AS PTR
+CLASS MultiMediaContainer INHERIT Control
+	PROTECT pBitmap AS IntPtr
 	PROTECT sMajorType AS STRING
 	PROTECT sMinorType AS STRING
 	PROTECT sFileName AS STRING
 	PROTECT wBasicType AS INT
-	PROTECT hwndMCI AS PTR
+	PROTECT hwndMCI AS IntPtr
 
 
     PROPERTY ControlType AS ControlType GET ControlType.Panel
 
 
-	//PP-030828 Strong typing
 	METHOD __ResizeMCIWnd() AS MultiMediaContainer STRICT 
 		//Todo Implement
-		//PP-030828 Strong typing
 		//LOCAL rc IS _winRECT
 
 		//GetClientRect(SELF:handle(), @rc)
@@ -26,7 +24,6 @@ PARTIAL CLASS MultiMediaContainer INHERIT Control
 
 	ASSIGN __Value(uNewVal AS USUAL)  STRICT 
 		//Todo Implement
-		//PP-030828 Strong typing
 		/*	LOCAL rc IS _winRECT
 		LOCAL ic1, ic2 AS DWORD
 

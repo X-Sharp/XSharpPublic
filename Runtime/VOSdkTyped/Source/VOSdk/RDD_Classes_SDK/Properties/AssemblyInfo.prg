@@ -5,5 +5,5 @@
 #using System.Runtime.InteropServices
 #using System.Security
 
-[ASSEMBLY: AssemblyTitleAttribute( "VO-Compatible RDD Classes Library" )]
-[ASSEMBLY: AssemblyDescriptionAttribute( "VO-Compatible RDD Classes" )]
+[ASSEMBLY: AssemblyTitleAttribute( "XSharp.VO.RDDClasses" )]
+[ASSEMBLY: AssemblyDescriptionAttribute( "XSharp Typed VO RDD Classes" )]

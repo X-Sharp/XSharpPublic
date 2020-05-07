@@ -4,14 +4,14 @@ PARTIAL CLASS DbServer
 
 METHOD RddInfo( kRDDInfoType, uRDDVal )
 	//SE-060601
-   LOCAL dwCurrentWorkArea AS DWORD
+   LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL oError AS USUAL
 
 	
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VoDbSelect( wWorkArea, REF dwCurrentWorkArea )
+		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 		IF ! VoDbRddInfo( kRDDInfoType, REF uRDDVal )
 			BREAK ErrorBuild( _VoDbErrInfoPtr() )
 		ENDIF
@@ -31,7 +31,7 @@ METHOD Recall( cbForBlock, cbWhileBlock, uScope )
 	LOCAL lRestOfFile AS LOGIC
 	LOCAL lRetCode AS LOGIC
 	LOCAL oError AS USUAL
-	LOCAL dwCurrentWorkArea AS DWORD
+	LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL nCurrRec AS LONGINT
 	LOCAL lFLock AS LOGIC
 	LOCAL uVoRet AS USUAL
@@ -40,7 +40,7 @@ METHOD Recall( cbForBlock, cbWhileBlock, uScope )
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VoDbSelect( wWorkArea, REF dwCurrentWorkArea )
+		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 		IF ! IsNil( cbForBlock ) .OR. ! IsNil( cbWhileBlock ) .OR. ! IsNil( uScope )
 			IF SELF:Notify( NOTIFYINTENTTOMOVE )
 				IF IsString( cbForBlock )
@@ -134,7 +134,7 @@ METHOD RecallAll()
 	LOCAL lRetCode AS LOGIC
 	LOCAL uValue AS USUAL
 	LOCAL cbKey AS USUAL
-	LOCAL dwCurrentWorkArea AS DWORD
+	LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL oError AS USUAL
 	LOCAL lSetDeleted AS LOGIC
 
@@ -142,7 +142,7 @@ METHOD RecallAll()
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VoDbSelect( wWorkArea, REF dwCurrentWorkArea )
+		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 		IF SELF:Notify( NOTIFYINTENTTOMOVE )
 			lSetDeleted := SetDeleted( FALSE )
 			IF lSelectionActive
@@ -203,14 +203,14 @@ METHOD RecallAll()
 
 METHOD RecordInfo( kRecInfoType, nRecordNumber, uRecVal )
 	//SE-060601
-   LOCAL dwCurrentWorkArea AS DWORD
+   LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL oError AS USUAL
 
 	
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VoDbSelect( wWorkArea, REF dwCurrentWorkArea )
+		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 		IF IsNil( nRecordNumber )
 			nRecordNumber := 0
 		ENDIF
@@ -238,7 +238,7 @@ METHOD Refresh() CLIPPER
 	LOCAL oError AS USUAL
 	LOCAL n AS DWORD
 	LOCAL uInfo AS USUAL
-	LOCAL dwCurrentWorkArea AS DWORD
+	LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL nRec AS LONGINT
 	LOCAL lRelease AS LOGIC
 
@@ -246,7 +246,7 @@ METHOD Refresh() CLIPPER
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VoDbSelect( wWorkArea, REF dwCurrentWorkArea )
+		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 		IF ! VoDbInfo( DBI_ISFLOCK, REF uInfo)
 			BREAK ErrorBuild( _VoDbErrInfoPtr( ) )
 		ENDIF
@@ -310,13 +310,13 @@ METHOD Refresh() CLIPPER
 METHOD Reindex()
 	LOCAL lRetCode AS LOGIC
 	LOCAL oError AS USUAL
-	LOCAL dwCurrentWorkArea AS DWORD
+	LOCAL dwCurrentWorkArea := 0 AS DWORD
 
 	
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VoDbSelect( wWorkArea, REF dwCurrentWorkArea )
+		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 		IF SELF:Notify( NOTIFYINTENTTOMOVE )
 			lRetCode := VoDbOrdListRebuild()
 			IF ! lRetCode
@@ -345,7 +345,7 @@ METHOD Reindex()
 
 METHOD Relation( nRelation )
 	//SE-060601
-    LOCAL dwCurrentWorkArea AS DWORD
+    LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL cRelation AS STRING
 	LOCAL oError AS USUAL
 
@@ -353,7 +353,7 @@ METHOD Relation( nRelation )
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VoDbSelect( wWorkArea, REF dwCurrentWorkArea )
+		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 		IF ! VoDbRelation( nRelation,  REF cRelation )
 			BREAK ErrorBuild( _VoDbErrInfoPtr() )
 		ENDIF
@@ -380,7 +380,7 @@ METHOD Replace( acbExpression, aFieldList, cbForBlock, cbWhileBlock, uScope )
 	//LOCAL iCount := 0 AS INT
 	LOCAL wExprCount AS DWORD
 	LOCAL wFieldCount AS DWORD
-	LOCAL dwCurrentWorkArea AS DWORD
+	LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL oError AS USUAL
 	LOCAL oHLTemp AS HyperLabel
 
@@ -388,7 +388,7 @@ METHOD Replace( acbExpression, aFieldList, cbForBlock, cbWhileBlock, uScope )
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VoDbSelect( wWorkArea, REF dwCurrentWorkArea )
+		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 		IF ! IsArray( acbExpression )
 			acbExpression := { acbExpression }
 		ENDIF
@@ -527,7 +527,7 @@ METHOD ResetNotification() AS LONG
 METHOD RLock( nRecordNumber ) AS LOGIC
 	LOCAL lRetCode AS LOGIC
 	LOCAL oError AS USUAL
-	LOCAL dwCurrentWorkArea AS DWORD
+	LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL nTries AS DWORD
 
 	
@@ -536,7 +536,7 @@ METHOD RLock( nRecordNumber ) AS LOGIC
 	nTries := SELF:nRetries
 
 	BEGIN SEQUENCE
-		VoDbSelect( wWorkArea, REF dwCurrentWorkArea )
+		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 		//RvdH 030926 Strong typing of __DbsRLock() caused problems
 		//with missing nRecordnumber (Bug # 12448)
 		//PP-040416 Issue 12766 nRecordNumber must be allowed to be NIL, __DBSRLock changed to accept USUAL
@@ -562,7 +562,7 @@ METHOD RLock( nRecordNumber ) AS LOGIC
 METHOD RLockVerify() AS LOGIC
 	LOCAL lRetCode AS LOGIC
 	LOCAL oError AS USUAL
-	LOCAL dwCurrentWorkArea AS DWORD
+	LOCAL dwCurrentWorkArea := 0 AS DWORD
 
 	
 
@@ -574,7 +574,7 @@ METHOD RLockVerify() AS LOGIC
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VoDbSelect( wWorkArea, REF dwCurrentWorkArea )
+		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 		lRetCode := SELF:__RLockVerify()
 		IF lRetCode
 			SELF:__OptimisticFlushNoLock()
@@ -595,7 +595,7 @@ METHOD RLockVerify() AS LOGIC
 METHOD Seek( uSearchExpr, lSoftSeek, lLast ) AS LOGIC CLIPPER
 	LOCAL lRetCode AS LOGIC
 	LOCAL oError AS USUAL
-	LOCAL dwCurrentWorkArea AS DWORD
+	LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL nTries AS DWORD
 
 	
@@ -604,7 +604,7 @@ METHOD Seek( uSearchExpr, lSoftSeek, lLast ) AS LOGIC CLIPPER
 	nTries := SELF:nRetries
     DEFAULT(REF lLast, FALSE)
 	BEGIN SEQUENCE
-		VoDbSelect( wWorkArea, REF dwCurrentWorkArea )
+		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 		IF SELF:Notify( NOTIFYINTENTTOMOVE )
 			IF lSelectionActive
 				IF uSearchExpr == uSelectionValue
@@ -650,8 +650,8 @@ METHOD Seek( uSearchExpr, lSoftSeek, lLast ) AS LOGIC CLIPPER
 
 METHOD SELECT()
 	// RvdH 060623 Added
-	LOCAL dwCurrentWorkArea AS DWORD
-	VoDbSelect( wWorkArea, REF dwCurrentWorkArea )
+	LOCAL dwCurrentWorkArea := 0 AS DWORD
+	VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 	RETURN dwCurrentWorkArea
 
 
@@ -704,7 +704,7 @@ METHOD SetDataField( nFieldPosition AS USUAL, oDataField AS DataField) AS LOGIC
 
 METHOD SetFilter( cbFilterBlock, cFilterText )
 	//SE-060601
-   LOCAL dwCurrentWorkArea AS DWORD
+   LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL lRetCode 			AS LOGIC
 	LOCAL oError 				AS USUAL
 	LOCAL lClearFilter		AS LOGIC
@@ -716,7 +716,7 @@ METHOD SetFilter( cbFilterBlock, cFilterText )
 	lErrorFlag := FALSE
 
 	BEGIN SEQUENCE
-		VoDbSelect( wWorkArea, REF dwCurrentWorkArea )
+		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 		lRetCode := TRUE
 		IF IsNil( cFilterText )  .AND. ! IsNil(cbFilterBlock)
 			cFilterText := "UNKNOWN"
@@ -784,7 +784,7 @@ METHOD SetIndex( oFSIndexFile )
 	LOCAL lRetCode          AS LOGIC
 	LOCAL cIndexFileName    AS STRING
 	LOCAL oError            AS USUAL
-	LOCAL dwCurrentWorkArea  AS DWORD
+	LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL nTries            AS DWORD
 
 
@@ -794,7 +794,7 @@ METHOD SetIndex( oFSIndexFile )
 	nTries := SELF:nRetries
 
 	BEGIN SEQUENCE
-		VoDbSelect( wWorkArea, REF dwCurrentWorkArea )
+		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 		IF SELF:Notify( NOTIFYINTENTTOMOVE )
 			IF IsNil(oFSIndexFile)
 				lRetCode := __DBSOrdListClear("", NIL, nTries)
@@ -831,7 +831,7 @@ METHOD SetOrder( uOrder, cIndexFileName )
 	// Does not change the current record
 	//
 	//SE-060601
-   LOCAL dwCurrentWorkArea AS DWORD
+   LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL lRetCode      AS LOGIC
 	LOCAL oError        AS USUAL
 	LOCAL pszStuff      AS STRING
@@ -843,7 +843,7 @@ METHOD SetOrder( uOrder, cIndexFileName )
       //RvdH 070925 Save pending changes
       SELF:__OptimisticFlush()
 
-		VoDbSelect( wWorkArea, REF dwCurrentWorkArea )
+		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 		IF IsObject(cIndexFileName) .and. __Usual.ToObject(cIndexFileName) IS FileSpec VAR oFs
 			cIndexFileName := oFs:FullPath
 		ELSEIF IsNil(cIndexFileName)
@@ -883,7 +883,7 @@ METHOD SetOrderCondition(   cFor,           ;
 	lNoOptimize)
 
    //SE-060601
-   LOCAL dwCurrentWorkArea AS DWORD
+   LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL lRetCode      AS LOGIC
 	LOCAL oError        AS USUAL
 	LOCAL cTemp         AS STRING
@@ -893,7 +893,7 @@ METHOD SetOrderCondition(   cFor,           ;
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-      VoDbSelect( wWorkArea, REF dwCurrentWorkArea )
+      VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 		IF !__CanEval(cbForBlock) 
 
 			IF IsString(cbForBlock)
@@ -950,7 +950,7 @@ METHOD SetRelation(oDBChild,uRelation,cRelation,lSelective)
 	// As always, the child workarea should have a controlling index that matches the expression
 	//
 	//SE-060601
-   LOCAL dwCurrentWorkArea AS DWORD
+   LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL lRetCode              AS LOGIC
 	LOCAL wFieldNo              AS DWORD
 	LOCAL wFieldCount           AS DWORD
@@ -998,7 +998,7 @@ METHOD SetRelation(oDBChild,uRelation,cRelation,lSelective)
 
 			Send(oDBChild,#__NotifyBufferFlush)
 
-         VoDbSelect( wWorkArea, REF dwCurrentWorkArea )
+         VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
          lRetCode := VoDbSetRelation( cChildAlias, cbRelationExpression, cRelationExpression )
          __DBSSetSelect( dwCurrentWorkArea )
 			IF ! lRetCode
@@ -1038,7 +1038,7 @@ METHOD SetSelectiveRelation(oDBChild,uRelation,cRelation)
 
 
 METHOD Skip( nRecordCount ) AS LOGIC
-	LOCAL dwCurrentWorkArea  AS DWORD
+	LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL iRecords          AS LONGINT
 	LOCAL i                 AS LONGINT
 	LOCAL nTries            AS DWORD
@@ -1051,7 +1051,7 @@ METHOD Skip( nRecordCount ) AS LOGIC
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
 		nTries := SELF:nRetries
-		VoDbSelect(SELF:wWorkArea, REF dwCurrentWorkArea)
+		VoDbSelect(SELF:wWorkArea, OUT dwCurrentWorkArea)
 		IF SELF:Notify( NOTIFYINTENTTOMOVE )
 			IF IsNil(nRecordCount)
 				iRecords := 1
@@ -1150,7 +1150,7 @@ METHOD Sort(oFSTarget,aFieldList,cbForBlock,cbWhileBlock,uScope)
 	LOCAL w                     AS DWORD
 	LOCAL lRetCode              AS LOGIC
 	LOCAL aFieldNames := { }    AS ARRAY
-	LOCAL dwCurrentWorkArea      AS DWORD
+	LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL oHLTemp               AS HyperLabel
 	LOCAL wLen                  AS DWORD
 	LOCAL lRestore					AS LOGIC
@@ -1161,7 +1161,7 @@ METHOD Sort(oFSTarget,aFieldList,cbForBlock,cbWhileBlock,uScope)
 	lRestore	:= DbSetRestoreWorkarea(TRUE)
 	lErrorFlag := FALSE
     BEGIN SEQUENCE
-	VoDbSelect( wWorkArea, REF dwCurrentWorkArea )
+	VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 	IF SELF:Notify( NOTIFYINTENTTOMOVE )
 		IF IsObject(oFSTarget) .and. __Usual.ToObject(oFSTarget) IS FileSpec VAR oFs
 			cTarget := oFs:FullPath
@@ -1277,14 +1277,14 @@ METHOD Sum(acbExpression,cbForBlock,cbWhileBlock,uScope)
 	LOCAL iCount := 0           AS INT
 	LOCAL wExprCount            AS DWORD
 	LOCAL oError                AS USUAL
-	LOCAL dwCurrentWorkArea      AS DWORD
+	LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL oHLTemp               AS HyperLabel
 
 	
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VoDbSelect( wWorkArea, REF dwCurrentWorkArea )
+		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 		IF !SELF:Notify( NOTIFYINTENTTOMOVE )
 			BREAK DbError{ SELF, #Sum, 999, VO_Sprintf(__CAVOSTR_DBFCLASS_INTENTTOMOVE)}
 		ENDIF
@@ -1424,7 +1424,7 @@ METHOD Total(oFSTarget,cbKeyField,aFieldList,cbForBlock,cbWhileBlock,uScope)
 	LOCAL lRetCode              AS LOGIC
 	LOCAL aFieldNames := { }    AS ARRAY
 	LOCAL oError                AS USUAL
-	LOCAL dwCurrentWorkArea      AS DWORD
+	LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL oHLTemp               AS HyperLabel
 	LOCAL lRestore					AS LOGIC
 	
@@ -1434,7 +1434,7 @@ METHOD Total(oFSTarget,cbKeyField,aFieldList,cbForBlock,cbWhileBlock,uScope)
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VoDbSelect( wWorkArea, REF dwCurrentWorkArea )
+		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 		IF SELF:Notify( NOTIFYINTENTTOMOVE )
 			IF IsObject(oFSTarget) .and. __Usual.ToObject(oFSTarget) IS FileSpec VAR oFs
 				cTarget := oFs:FullPath
@@ -1578,14 +1578,14 @@ METHOD Total(oFSTarget,cbKeyField,aFieldList,cbForBlock,cbWhileBlock,uScope)
 METHOD UnLock( nRecordNumber ) AS LOGIC CLIPPER
 	LOCAL lRetCode          AS LOGIC
 	LOCAL oError            AS USUAL
-	LOCAL dwCurrentWorkArea  AS DWORD
+	LOCAL dwCurrentWorkArea := 0 AS DWORD
 
 	
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
 
-		VoDbSelect( wWorkArea, REF dwCurrentWorkArea )
+		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 		IF ! (lRetCode := VoDbUnlock(nRecordNumber))
 			BREAK ErrorBuild(_VoDbErrInfoPtr())
 		ENDIF
@@ -1617,7 +1617,7 @@ METHOD Update(oDbServer,cbKey,lRandomFlag,cbReplace) AS LOGIC CLIPPER
 	LOCAL cAlias               AS STRING
 	LOCAL lRetCode             AS LOGIC
 	LOCAL oError               AS USUAL
-	LOCAL dwCurrentWorkArea    AS DWORD
+	LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL lRestore					AS LOGIC
 	
    //RvdH 070711 Make sure we restore the workarea
@@ -1629,7 +1629,7 @@ METHOD Update(oDbServer,cbKey,lRandomFlag,cbReplace) AS LOGIC CLIPPER
       //RvdH 070925 Save pending changes
       SELF:__OptimisticFlush()
 
-		VoDbSelect( wWorkArea, REF dwCurrentWorkArea )
+		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 		IF IsObject(oDbServer) .and. __Usual.ToObject(oDbServer) IS DbServer VAR oDb
 			cAlias := oDb:Alias
 		ELSE
@@ -1674,7 +1674,7 @@ METHOD Zap()
 	// Sends a NotifyFileChange message
 	//
 	//SE-060601
-   LOCAL dwCurrentWorkArea AS DWORD
+   LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL lRetCode              AS LOGIC
 	LOCAL oError                AS USUAL
 
@@ -1682,7 +1682,7 @@ METHOD Zap()
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-      VoDbSelect( wWorkArea, REF dwCurrentWorkArea )
+      VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 		lRetCode := VoDbZap()
 		__DBSSetSelect( dwCurrentWorkArea )
 		SELF:Notify( NOTIFYFILECHANGE )

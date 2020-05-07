@@ -70,9 +70,7 @@ CLASS DialogWindow INHERIT Window IMPLEMENTS ILastFocus
 		RETURN
 	
 	METHOD __RestoreLastFocus() AS VOID STRICT
-		LOCAL oLastFocus AS ILastFocus
-		IF oParent != NULL_OBJECT .and. typeof(ILastFocus):IsAssignableFrom(oParent:GetType())
-			oLastFocus := (ILastFocus) oParent
+		IF oParent != NULL_OBJECT .AND. oParent IS ILastFocus VAR oLastFocus
 			IF oLastFocus:LastFocus != NULL_OBJECT
 				oLastFocus:LastFocus:SetFocus()
 			ENDIF
@@ -226,7 +224,7 @@ CLASS DialogWindow INHERIT Window IMPLEMENTS ILastFocus
 		IF IsInstanceOfUsual(oOwner, #App)
 			oOwner := NIL
 		ENDIF
-		
+
 		IF !IsNil(oOwner) .AND. !IsInstanceOfUsual(oOwner, #Window) .AND. !IsInstanceOfUsual(oOwner, #ToolBar) .AND. !IsPtr(oOwner)
 			WCError{#Init,#DialogWindow,__WCSTypeError,oOwner,1}:@@Throw()
 		ENDIF
@@ -261,8 +259,8 @@ CLASS DialogWindow INHERIT Window IMPLEMENTS ILastFocus
 		LOCAL nStyle AS LONG
 		nStyle := SELF:GetStyle()
 		IF _AND(nStyle, WS_CHILD) =  WS_CHILD
-			IF oParent != NULL_OBJECT .and. typeof(ILastFocus):IsAssignableFrom(oParent:GetType())
-				((ILastFocus) oParent):LastFocus := oControl
+			IF oParent != NULL_OBJECT .AND. oParent IS ILastFocus VAR oLastFocus
+				oLastFocus:LastFocus := oControl
 			ENDIF
 		ENDIF
 		oLastFocus := oControl

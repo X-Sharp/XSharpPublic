@@ -1,5 +1,5 @@
 
-PARTIAL CLASS DrawObject INHERIT VObject
+CLASS DrawObject INHERIT VObject
 	PROTECT oPoint AS Point
 	PROTECT wROP AS LONGINT    	
 	PROTECT oWnd AS Window

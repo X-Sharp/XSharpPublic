@@ -1,6 +1,6 @@
 // PrinterEvents.prg
 /*
-PARTIAL CLASS PrinterErrorEvent INHERIT @@Event
+CLASS PrinterErrorEvent INHERIT @@Event
 //RvdH 061218 Declared properties for performance
 ACCESS ErrorType AS DWORD STRICT 
 
@@ -14,7 +14,7 @@ SUPER(_hWnd, _uMsg, _wParam, _lParam, _oWindow)
 RETURN 
 END CLASS
 
-PARTIAL CLASS PrinterExposeEvent INHERIT @@Event
+CLASS PrinterExposeEvent INHERIT @@Event
 //RvdH 061218 Declared properties for performance
 ACCESS ExposedArea AS OBJECT STRICT 
 

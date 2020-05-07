@@ -81,7 +81,7 @@ CLASS DataBrowser INHERIT XSharp.VO.Control
 		RETURN
 
 	[Obsolete];
-	METHOD __BeginEditField(hWin AS PTR, dwChar AS DWORD) AS VOID STRICT 
+	METHOD __BeginEditField(hWin AS IntPtr, dwChar AS DWORD) AS VOID STRICT 
 		RETURN
 
 	[Obsolete];
@@ -106,7 +106,7 @@ CLASS DataBrowser INHERIT XSharp.VO.Control
 		//(dwLastChar := dwNewLastChar)
 
 	[Obsolete];
-	METHOD __DrawCellData(hDC AS PTR, iX AS INT, iY AS INT, dwOptions AS DWORD, ptrRect AS PTR, ;
+	METHOD __DrawCellData(hDC AS IntPtr, iX AS INT, iY AS INT, dwOptions AS DWORD, ptrRect AS IntPtr, ;
 		pszData AS PSZ, dwLength AS DWORD) AS VOID STRICT 
 
 		RETURN
@@ -130,7 +130,7 @@ CLASS DataBrowser INHERIT XSharp.VO.Control
 		oGrid:CellDoubleClick              += OnCellDoubleClick
 		oGrid:VisibleChanged               += OnVisibleChanged
 		oGrid:HandleCreated                += DataBrowserHandleCreated	
-		oGrid:CellEnter					+= OnCellEnter
+		oGrid:CellEnter					   += OnCellEnter
 
 		//oC:CellPainting					+= OnCellPainting
 
@@ -153,8 +153,6 @@ CLASS DataBrowser INHERIT XSharp.VO.Control
 		oGrid:ColumnHeadersHeightSizeMode			:= DataGridViewColumnHeadersHeightSizeMode.DisableResizing
 		//oC:ColumnHeadersHeight					:= 12
 		oGrid:SelectionMode						:= DataGridViewSelectionMode.FullRowSelect
-		
-
 		
 		// Setup OUR vertical scrollbar. We do not use the standard vertical scroll bar
 		SELF:VScrollBar			:= VScrollBar{}
@@ -216,6 +214,12 @@ CLASS DataBrowser INHERIT XSharp.VO.Control
 		END
 		RETURN 
 		
+
+	#endregion
+	
+	#region Event Handlers
+
+
 	PRIVATE METHOD OnMouseWheel( sender AS OBJECT, e AS MouseEventArgs) AS VOID
 		LOCAL currentIndex	AS LONG
 		LOCAL ScrollLines	AS LONG
@@ -255,9 +259,6 @@ CLASS DataBrowser INHERIT XSharp.VO.Control
 			SELF:__NewFocusField(nIndex)
 		ENDIF
 		RETURN
-	#endregion
-	
-	#region Event Handlers
 
 	METHOD DataBrowserHandleCreated(o AS OBJECT, e AS EventArgs) AS VOID
 		IF SELF:__IsValid
@@ -391,18 +392,18 @@ CLASS DataBrowser INHERIT XSharp.VO.Control
 				e:Handled := TRUE
 			CASE e:Control 
 				e:Handled := TRUE
-				DO CASE
-				CASE e:KeyCode == Keys.Home
+				SWITCH e:KeyCode
+				CASE Keys.Home
 					SELF:oDataServer:GoTop()				
-				CASE e:KeyCode == Keys.PageUp
+				CASE Keys.PageUp
 					SELF:oDataServer:GoTop()				
-				CASE e:KeyCode == Keys.End
+				CASE Keys.End
 					SELF:oDataServer:GoBottom()					
-				CASE e:KeyCode == Keys.PageDown
+				CASE Keys.PageDown
 					SELF:oDataServer:GoBottom()					
 				OTHERWISE
 					e:Handled := FALSE
-				ENDCASE
+				END SWITCH
 			CASE e:KeyCode == Keys.Up
 				// Only skip when we have not seen the first of the records
 				// Otherwise we let the browser handle the skip
@@ -957,21 +958,21 @@ CLASS DataBrowser INHERIT XSharp.VO.Control
 		IF !SELF:__IsValid
 			RETURN
 		ENDIF
-		DO CASE 
-		CASE kStyle==ssNoSelection
+		SWITCH kStyle
+		CASE ssNoSelection
 			__DataGridView:MultiSelect := FALSE
 			__DataGridView:SelectionMode := DataGridViewSelectionMode.FullRowSelect
-		CASE kStyle==ssSingleSelection
+		CASE ssSingleSelection
 			__DataGridView:MultiSelect := FALSE
 			__DataGridView:SelectionMode := DataGridViewSelectionMode.FullRowSelect
-		CASE kStyle==ssExtendedSelection
+		CASE ssExtendedSelection
 			__DataGridView:MultiSelect := TRUE
 			__DataGridView:SelectionMode := DataGridViewSelectionMode.CellSelect
 
-		CASE kStyle==ssBlockSelection
+		CASE ssBlockSelection
 			__DataGridView:MultiSelect := TRUE
 			__DataGridView:SelectionMode := DataGridViewSelectionMode.CellSelect
-		ENDCASE
+		END SWITCH
 
 		RETURN
 
@@ -1056,41 +1057,38 @@ CLASS DataBrowser INHERIT XSharp.VO.Control
 		LOCAL sIndex AS SYMBOL
 		LOCAL dwType AS DWORD
 		LOCAL dwI, dwCount AS DWORD
-		LOCAL oDCol AS DataColumn
 
 		dwType := UsualType(uColumn)
-		DO CASE
-		CASE dwType == LONGINT
+		SWITCH dwType
+		CASE LONGINT
 			IF uColumn > 0 .AND. uColumn <= ALen(aColumn)
 				RETURN uColumn
 			ENDIF
 			RETURN 0
-		CASE dwType == SYMBOL .OR. dwType == STRING
+		CASE SYMBOL
+        CASE STRING
 			sIndex := IIF(dwType == SYMBOL, uColumn, String2Symbol(uColumn))
 			dwCount := ALen(aColumn)
 			FOR dwI := 1 UPTO dwCount
-				oDCol := aColumn[dwI]
+				VAR oDCol := (DataColumn) aColumn[dwI]
 				IF oDCol:NameSym == sIndex
 					RETURN dwI
 				ENDIF
 			NEXT //dwI
 			RETURN 0
-		CASE IsInstanceOfUsual(uColumn, #DataColumn)
-			oDCol := uColumn
-			dwCount := ALen(aColumn)
-			FOR dwI := 1 UPTO dwCount
-				IF oDCol = aColumn[dwI]
-					RETURN dwI
-				ENDIF
-			NEXT //dwI
-			RETURN 0
-
-		CASE (dwType == VOID)
-			RETURN 0
-
-		OTHERWISE
+      CASE VOID
+            RETURN 0
+      OTHERWISE
+		    IF ((OBJECT) uColumn) IS DataColumn VAR oDCol
+			    dwCount := ALen(aColumn)
+			    FOR dwI := 1 UPTO dwCount
+				    IF oDCol = aColumn[dwI]
+					    RETURN dwI
+				    ENDIF
+               NEXT //dwI
+            ENDIF
 			WCError{#__FindColumn,#DataBrowser,__WCSTypeError,uColumn,1}:@@Throw()
-		ENDCASE
+		END SWITCH
 
 		RETURN 0
 
@@ -1200,28 +1198,28 @@ CLASS DataBrowser INHERIT XSharp.VO.Control
 				SELF:__EndEditField(0)
 			ENDIF
 
-			DO CASE
+			SWITCH kNotify 
 			//CASE .not. __DataGridView:Visible
 			//	RETURN TRUE
-			CASE kNotify == GBNFY_INTENTTOMOVE
+			CASE GBNFY_INTENTTOMOVE
 				RETURN SELF:Validate()
-			CASE kNotify == GBNFY_RECORDCHANGE
+			CASE GBNFY_RECORDCHANGE
 				SELF:__RecordChange()
-			CASE kNotify == GBNFY_DOGOTOP 
-				SELF:__RecordChange()
-				SELF:__RefreshBuffer()
-			CASE kNotify == GBNFY_DOGOEND
+			CASE GBNFY_DOGOTOP 
 				SELF:__RecordChange()
 				SELF:__RefreshBuffer()
-			CASE kNotify == GBNFY_FIELDCHANGE
+			CASE GBNFY_DOGOEND
+				SELF:__RecordChange()
+				SELF:__RefreshBuffer()
+			CASE GBNFY_FIELDCHANGE
 				SELF:__FieldChange()
-			CASE kNotify == GBNFY_FILECHANGE
+			CASE GBNFY_FILECHANGE
 				SELF:__RefreshBuffer()
-			CASE kNotify == GBNFY_DONEWROW
+			CASE GBNFY_DONEWROW
 				SELF:__RefreshBuffer()
-			CASE kNotify == GBNFY_DODELETE
+			CASE GBNFY_DODELETE
 				SELF:__RecordDelete()
-			ENDCASE
+			END SWITCH
 			SELF:SetVScrollBar()
 		ELSE
 			IF kNotify == GBNFY_INTENTTOMOVE
@@ -1449,7 +1447,8 @@ CLASS DataBrowser INHERIT XSharp.VO.Control
 				oColumn:__UnLink(oDataServer)
 			ENDIF
 		NEXT
-		RETURN 
+		RETURN
+        
 	METHOD __Unlink(oDS := NIL AS USUAL) AS XSharp.VO.Control STRICT 
 		SELF:__UnLinkColumns()
 		IF oDataServer != NULL_OBJECT
@@ -1543,7 +1542,7 @@ CLASS DataBrowser INHERIT XSharp.VO.Control
 		RETURN NULL_OBJECT
 	
 
-	METHOD ChangeBackground ( oBrush, kWhere ) 
+	METHOD ChangeBackground ( oBrush AS USUAL, kWhere AS INT ) 
 		// Todo
 		LOCAL oNewBrush AS XSharp.VO.Brush
 		IF ! SELF:__IsValid 
@@ -1554,72 +1553,59 @@ CLASS DataBrowser INHERIT XSharp.VO.Control
 		ELSE
 			oNewBrush := oBrush
 		ENDIF
-		IF !IsNil(kWhere)
-			IF !IsLong(kWhere)
-				WCError{#ChangeBackground,#DataBrowser,__WCSTypeError,kWhere,2}:@@Throw()
-			ENDIF
-		ENDIF
 
-		DO CASE
-		CASE kWhere==gblCaption
+		SWITCH kWhere
+		CASE gblCaption
 			// Not supported
-		CASE kWhere==gblText
+            NOP
+		CASE gblText
 			SELF:__DataGridView:DefaultCellStyle:BackColor := oNewBrush
 			SELF:__DataGridView:BackGroundColor := oNewBrush
-		CASE kWhere==gblColCaption
+		CASE gblColCaption
 			SELF:__DataGridView:ColumnHeadersDefaultCellStyle:BackColor := oNewBrush
 
-		CASE kWhere==gblButton
+		CASE gblButton
 			// Not supported
-
-		CASE kWhere==gblColButton
+            NOP
+		CASE gblColButton
 			// Not supported
-
-		CASE kWhere==gblHiText
+            NOP
+		CASE gblHiText
 			SELF:__DataGridView:DefaultCellStyle:SelectionBackColor := oNewBrush
 
-		ENDCASE
+		END SWITCH
 
 		RETURN SELF
 
-	METHOD ChangeFont(oFont, kWhere) 
+	METHOD ChangeFont(oFont AS Font, kWhere AS INT) 
 		LOCAL oNewFont AS XSharp.VO.Font
 
 		IF ! SELF:__IsValid 
 			RETURN SELF
 		ENDIF
 
-		IF !IsInstanceOfUsual(oFont,#Font)
-			WCError{#ChangeFont,#DataBrowser,__WCSTypeError,oFont,1}:@@Throw()
-		ELSE
-			oNewFont := oFont
-		ENDIF
-		IF !IsNil(kWhere)
-			IF !IsLong(kWhere)
-				WCError{#ChangeFont,#DataBrowser,__WCSTypeError,kWhere,2}:@@Throw()
-			ENDIF
-		ENDIF
+		oNewFont := oFont
 
-		DO CASE
-		CASE (kWhere == gblCaption)
+		SWITCH (INT) kWhere
+		CASE gblCaption
 			// Not supported
-
-		CASE (kWhere == gblText)
+            NOP
+		CASE gblText
 			SELF:__DataGridView:DefaultCellStyle:Font := oNewFont
 			
-		CASE (kWhere == gblColCaption)
+		CASE gblColCaption
 			SELF:__DataGridView:ColumnHeadersDefaultCellStyle:Font := oNewFont
 
-		CASE (kWhere == gblButton) .OR.;
-			(kWhere == gblColButton) .OR.;
-			(kWhere == gblHiText)
+        CASE gblButton
+        CASE gblColButton
+        CASE gblHiText
 			SELF:__DataGridView:Font:= oNewFont
 
-		ENDCASE
+		END SWITCH
 
 		RETURN SELF
 
-	METHOD ChangeTextColor(oColor, kWhere) 
+	METHOD ChangeTextColor(oColor AS USUAL , kWhere AS INT) 
 		LOCAL oNewColor AS XSharp.VO.Color
 		LOCAL oOldColor AS XSharp.VO.Color
 		IF ! SELF:__IsValid 
@@ -1633,35 +1619,30 @@ CLASS DataBrowser INHERIT XSharp.VO.Control
 		ELSE
 			oNewColor := oColor
 		ENDIF
-		IF !IsNil(kWhere)
-			IF !IsLong(kWhere)
-				WCError{#ChangeTextColor,#DataBrowser,__WCSTypeError,kWhere,2}:@@Throw()
-			ENDIF
-		ENDIF
 
 
-		DO CASE
-		CASE kWhere==gblCaption
+		SWITCH kWhere
+		CASE gblCaption
 			// Not supported
 			oOldColor := SELF:__DataGridView:ForeColor
-		CASE kWhere==gblColCaption
+		CASE gblColCaption
 			oOldColor := SELF:__DataGridView:ColumnHeadersDefaultCellStyle:ForeColor
 			SELF:__DataGridView:ColumnHeadersDefaultCellStyle:ForeColor:= oNewColor
 
-		CASE kWhere==gblText
+		CASE gblText
 			oOldColor := SELF:__DataGridView:DefaultCellStyle:ForeColor
 			SELF:__DataGridView:DefaultCellStyle:ForeColor:= oNewColor
 
-		CASE kWhere==gblButton
+		CASE gblButton
 			// Not supported
 			oOldColor := SELF:__DataGridView:ForeColor
-		CASE kWhere==gblColButton
+		CASE gblColButton
 			// Not supported
 			oOldColor := SELF:__DataGridView:ForeColor
-		CASE kWhere==gblHiText
+		CASE gblHiText
 			oOldColor := SELF:__DataGridView:DefaultCellStyle:SelectionForeColor
 			SELF:__DataGridView:DefaultCellStyle:SelectionForeColor := oNewColor
-		ENDCASE
+		END SWITCH
 
 
 		RETURN oOldColor
@@ -1773,78 +1754,51 @@ CLASS DataBrowser INHERIT XSharp.VO.Control
 	ACCESS EditFont 
 		RETURN NULL_OBJECT
 
-	METHOD EnableBorder(kBorderType) 
+	METHOD EnableBorder(kBorderType AS INT) 
 		// Todo Check if the border looks as expected
-		IF !IsNil(kBorderType)
-			IF !IsLong(kBorderType)
-				WCError{#EnableBorder,#DataBrowser,__WCSTypeError,kBorderType,1}:@@Throw()
-			ENDIF
-		ENDIF
 		IF ! SELF:__IsValid 
 			RETURN SELF
 		ENDIF
 
-		DO CASE
-		CASE (kBorderType == BTSIZINGBORDER)
+		SWITCH kBorderType 
+		CASE BTSIZINGBORDER
 			__DataGridView:BorderStyle := BorderStyle.Fixed3D
-		CASE (kBorderType == BTNONSIZINGBORDER)
+		CASE BTNONSIZINGBORDER
 			__DataGridView:BorderStyle := BorderStyle.FixedSingle
-		CASE (kBorderType == BTNOBORDER)
+		CASE BTNOBORDER
 			__DataGridView:BorderStyle := BorderStyle.None
 		OTHERWISE
 			__DataGridView:BorderStyle := BorderStyle.Fixed3D
-		ENDCASE
+		END SWITCH
 
 		RETURN NIL
 
-	METHOD EnableColumnMove(lAllowMove) 
+	METHOD EnableColumnMove(lAllowMove:= TRUE AS LOGIC)  AS LOGIC
 		
-		DEFAULT lAllowMove TO  TRUE
-		IF !IsNil(lAllowMove)
-			IF !IsLogic(lAllowMove)
-				WCError{#EnableColumnMove,#DataBrowser,__WCSTypeError,lAllowMove,1}:@@Throw()
-			ENDIF
-		ENDIF
 		IF ! SELF:__IsValid 
-			RETURN SELF
+			RETURN FALSE
 		ENDIF
 
 		SELF:__DataGridView:AllowUserToOrderColumns := lAllowMove
 
-		RETURN SELF
+		RETURN TRUE
 
-	METHOD EnableColumnReSize(lAllowResize) 
-		DEFAULT lAllowResize TO  TRUE
-
-		IF !IsNil(lAllowResize)
-			IF !IsLogic(lAllowResize)
-				WCError{#EnableColumnReSize,#DataBrowser,__WCSTypeError,lAllowResize,1}:@@Throw()
-			ENDIF
-		ENDIF
+	METHOD EnableColumnReSize(lAllowResize:= TRUE AS LOGIC)  AS LOGIC
 		IF ! SELF:__IsValid 
-			RETURN SELF
+			RETURN FALSE
 		ENDIF
 
 		SELF:__DataGridView:AllowUserToResizeColumns := lAllowResize
 
-		RETURN SELF
+		RETURN TRUE
 
-	METHOD EnableColumnTitles(lEnable) 
+	METHOD EnableColumnTitles(lEnable := TRUE AS LOGIC)  AS LOGIC 
 		
-
-		IF !IsNil(lEnable)
-			IF !IsLogic(lEnable)
-				WCError{#EnableColumnTitles,#DataBrowser,__WCSTypeError,lEnable,1}:@@Throw()
-			ENDIF
-		ELSE
-			lEnable:=TRUE
-		ENDIF
-
 		IF lColumnTitles == lEnable
-			RETURN FALSE
+			RETURN TRUE
 		ENDIF
 		IF ! SELF:__IsValid 
-			RETURN SELF
+			RETURN FALSE
 		ENDIF
 		
 		SELF:SuspendUpdate()
@@ -1856,37 +1810,20 @@ CLASS DataBrowser INHERIT XSharp.VO.Control
 
 		RETURN TRUE
 
-	METHOD EnableGrid ( lShowGrid ) 
-		IF !IsNil(lShowGrid)
-			IF !IsLogic(lShowGrid)
-				WCError{#EnableGrid,#DataBrowser,__WCSTypeError,lShowGrid,1}:@@Throw()
-			ENDIF
-		ELSE
-			lShowGrid:=TRUE
-		ENDIF
+	METHOD EnableGrid ( lShowGrid := TRUE AS LOGIC)  AS LOGIC 
 		IF ! SELF:__IsValid 
-			RETURN SELF
+			RETURN FALSE
 		ENDIF
-
 		IF lShowGrid
 			SELF:__DataGridView:CellBorderStyle := DataGridViewCellBorderStyle.Single
 		ELSE
 			SELF:__DataGridView:CellBorderStyle := DataGridViewCellBorderStyle.None
 		ENDIF
+		RETURN TRUE
 
-		RETURN SELF
-
-	METHOD EnableHorizontalScroll ( lAllowScroll ) 
-		
-		IF !IsNil(lAllowScroll)
-			IF !IsLogic(lAllowScroll)
-				WCError{#EnableHorizontalScroll,#DataBrowser,__WCSTypeError,lAllowScroll,1}:@@Throw()
-			ENDIF
-		ELSE
-			lAllowScroll:=TRUE
-		ENDIF
+	METHOD EnableHorizontalScroll ( lAllowScroll := TRUE AS LOGIC)  AS LOGIC 		
 		IF ! SELF:__IsValid 
-			RETURN SELF
+			RETURN FALSE
 		ENDIF
 		
 		IF lAllowScroll
@@ -1894,36 +1831,20 @@ CLASS DataBrowser INHERIT XSharp.VO.Control
 		ELSE
 			__DataGridView:ScrollBars := ScrollBars.None
 		ENDIF
-		RETURN SELF
+		RETURN TRUE
 
-	METHOD EnableHorizontalSplit ( lShowSplit ) 
-		IF !IsNil(lShowSplit)
-			IF !IsLogic(lShowSplit)
-				WCError{#EnableHorizontalSplit,#DataBrowser,__WCSTypeError,lShowSplit,1}:@@Throw()
-			ENDIF
-		ELSE
-			lShowSplit:=TRUE
-		ENDIF
+	METHOD EnableHorizontalSplit ( lShowSplit := TRUE AS LOGIC)  AS LOGIC 
 		//Riz This was never implemented
+		RETURN FALSE
 
-		RETURN SELF
-
-	METHOD EnableVerticalScroll ( lAllowScroll ) 
+	METHOD EnableVerticalScroll ( lAllowScroll := TRUE AS LOGIC)  AS LOGIC 
 		
-
-		IF !IsNil(lAllowScroll)
-			IF !IsLogic(lAllowScroll)
-				WCError{#EnableHorizontalScroll,#DataBrowser,__WCSTypeError,lAllowScroll,1}:@@Throw()
-			ENDIF
-		ELSE
-			lAllowScroll:=TRUE
-		ENDIF
 		IF lAllowScroll
 			SELF:VScrollBar:Visible := TRUE
 		ELSE
 			SELF:VScrollBar:Visible := FALSE
 		ENDIF
-		RETURN SELF
+		RETURN TRUE
 
 	METHOD EnableVerticalSplit(lShowSplit, nMode) 
 		// Todo: Enable vertical split, using Frozen Columns ?
@@ -1962,7 +1883,7 @@ CLASS DataBrowser INHERIT XSharp.VO.Control
 	ACCESS Font  AS Font
 		RETURN SELF:__DataGridView:Font
 
-	ASSIGN Font(oFont AS Font) 
+	ASSIGN Font(oFont AS Font)  
 		SELF:ChangeFont(oFont, gblText)
 		RETURN 
 
@@ -2114,24 +2035,24 @@ CLASS DataBrowser INHERIT XSharp.VO.Control
 
 	METHOD Notify(kNotification, uDescription) 
 
-		DO CASE
-		CASE kNotification = NOTIFYCOMPLETION
+		SWITCH (INT) kNotification 
+		CASE NOTIFYCOMPLETION
 			SELF:__NotifyChanges(GBNFY_COMPLETION)
 			nOldRecordNum := oDataServer:RecNo
 			
-		CASE kNotification = NOTIFYINTENTTOMOVE
+		CASE NOTIFYINTENTTOMOVE
 			RETURN SELF:__NotifyChanges(GBNFY_INTENTTOMOVE)
-		CASE kNotification = NOTIFYFILECHANGE
+		CASE NOTIFYFILECHANGE
 			SELF:__RefreshData()
 			SELF:__NotifyChanges(GBNFY_FILECHANGE)
 			SELF:__RefreshData()
 			nOldRecordNum := oDataServer:RecNo
-		CASE kNotification = NOTIFYFIELDCHANGE
+		CASE NOTIFYFIELDCHANGE
 			SELF:__RefreshField(uDescription)
 			SELF:__NotifyChanges(GBNFY_FIELDCHANGE)
-		CASE kNotification = NOTIFYCLOSE
+		CASE NOTIFYCLOSE
 			SELF:__Unlink()
-		CASE kNotification = NOTIFYRECORDCHANGE
+		CASE NOTIFYRECORDCHANGE
 			SELF:__RefreshData()
 			IF nOldRecordNum != oDataServer:RecNo
 				SELF:__NotifyChanges(GBNFY_RECORDCHANGE)
@@ -2140,29 +2061,29 @@ CLASS DataBrowser INHERIT XSharp.VO.Control
 				SELF:__NotifyChanges(GBNFY_FIELDCHANGE)
 			ENDIF
 			nOldRecordNum := oDataServer:RecNo
-		CASE kNotification = NOTIFYGOBOTTOM
+		CASE NOTIFYGOBOTTOM
 			SELF:__RefreshData()
 			SELF:__NotifyChanges(GBNFY_DOGOEND)
 			//ASend(aColumn, #__Scatter)
 			SELF:__RefreshData()
 			nOldRecordNum := oDataServer:RecNo
-		CASE kNotification = NOTIFYGOTOP
+		CASE NOTIFYGOTOP
 			SELF:__RefreshData()
 			SELF:__NotifyChanges(GBNFY_DOGOTOP)
 			SELF:__RefreshData()
 			nOldRecordNum := oDataServer:RecNo
-		CASE kNotification = NOTIFYDELETE
+		CASE NOTIFYDELETE
 			SELF:__RefreshData()
 			SELF:__NotifyChanges(GBNFY_DODELETE)
 			SELF:__RefreshData()
 			nOldRecordNum := oDataServer:RecNo
-		CASE kNotification = NOTIFYAPPEND
+		CASE NOTIFYAPPEND
 			SELF:__RefreshData()
 			SELF:__NotifyChanges(GBNFY_DONEWROW)
 			SELF:__RefreshData()
 			SELF:__ValidateColumns()
 			nOldRecordNum := oDataServer:RecNo
-		END CASE
+		END SWITCH
 
 		RETURN NIL
 
@@ -2249,55 +2170,33 @@ CLASS DataBrowser INHERIT XSharp.VO.Control
 	ACCESS Server AS DataServer
 		RETURN SELF:oDataServer
 		
-	METHOD SetCaption(cText) 
-		IF IsSymbol(cText)
-			cCaption := Symbol2String(cText)
-		ELSEIF IsString(cText)
-			cCaption := cText
-		ELSEIF !IsNil(cText)
-			WCError{#SetCaption,#DataBrowser,__WCSTypeError,cText,1}:@@Throw()
-		ENDIF
+	METHOD SetCaption(cText AS STRING) AS LOGIC
 		IF SELF:__IsValid
 			SELF:SuspendUpdate()
 			SELF:__DataGridView:Text := cText
 			SELF:RestoreUpdate()
 		ENDIF
-		RETURN SELF
+		RETURN TRUE
 
-	METHOD SetColumn(oDataColumn, nColumnNumber) 
+	METHOD SetColumn(oDataColumn AS DataColumn, nColumnNumber AS LONG)  AS DataColumn
 		LOCAL oDC AS DataColumn
-		IF !IsInstanceOfUsual(oDataColumn,#DataColumn)
-			WCError{#SetColumn,#DataBrowser,__WCSTypeError,oDataColumn,1}:@@Throw()
-		ENDIF
-		IF !IsNil(nColumnNumber)
-			IF !IsLong(nColumnNumber)
-				WCError{#SetColumn,#DataBrowser,__WCSTypeError,nColumnNumber,2}:@@Throw()
-			ENDIF
-		ENDIF
-
 		oDC := SELF:GetColumn(nColumnNumber)
-
 		IF oDC!=NULL_OBJECT
 			SELF:SuspendUpdate()
 			SELF:RemoveColumn(oDC)
 			SELF:AddColumn(oDataColumn, nColumnNumber)
 			SELF:RestoreUpdate()
 		ENDIF
-
 		RETURN oDC
 
-	METHOD SetColumnFocus(oColumn) 
+	METHOD SetColumnFocus(oColumn AS DataColumn) 
 		LOCAL oDC	AS DataColumn
 		LOCAL iRow	:= -1 AS INT
 		IF SELF:__IsValid .and. SELF:__DataGridView:CurrentCell != NULL_OBJECT
 			iRow := SELF:__DataGridView:CurrentCell:RowIndex
 		ENDIF
-		IF !IsInstanceOfUsual(oColumn,#DataColumn)
-			WCError{#SetColumnFocus,#DataBrowser,__WCSTypeError,oColumn,1}:@@Throw()
-		ENDIF
-
 		oDC := oColumn
-		IF SELF:__IsValid .and. iRow >= 0 .and. iRow < SELF:__DataGridView:Rows:Count
+		IF SELF:__IsValid .AND. iRow >= 0 .AND. iRow < SELF:__DataGridView:Rows:Count
 			IF oDC:oDataGridColumn:Visible			
 				SELF:__DataGridView:CurrentCell := SELF:__DataGridView:Rows[iRow]:Cells[oDC:oDataGridColumn:Index]
 			ENDIF
@@ -2337,36 +2236,30 @@ CLASS DataBrowser INHERIT XSharp.VO.Control
 
 		RETURN NIL
 
-	METHOD SetStandardStyle(kStyle) 
-		IF !IsNil(kStyle)
-			IF !IsLong(kStyle)
-				WCError{#SetStandardStyle,#DataBrowser,__WCSTypeError,kStyle,1}:@@Throw()
-			ENDIF
-		ENDIF
+	METHOD SetStandardStyle(kStyle := gbsControl3d AS LONG)  AS LOGIC
 		IF ! SELF:__IsValid
-			RETURN SELF
+			RETURN FALSE
 		ENDIF
 		SELF:SuspendUpdate()
 
-		IF IsNil(kStyle)
-			kStyle:=gbsControl3d
-		ENDIF
 
-		DO CASE
-		CASE (kStyle == GBSREADONLY)
+		SWITCH kStyle
+		CASE GBSREADONLY
 			SELF:__DataGridView:ReadOnly := TRUE
 
-		CASE (kStyle == GBSEDIT)
+		CASE GBSEDIT
 			SELF:__DataGridView:ReadOnly := FALSE
-		CASE (kStyle == GBSCONTROL3D)
+		CASE GBSCONTROL3D
 			// Not implemented
-		CASE (kStyle == GBSCONTROL2D)
+            NOP
+		CASE GBSCONTROL2D
 			// Not implemented
-		ENDCASE
+            NOP
+		END SWITCH
 
 		SELF:RestoreUpdate()
 
-		RETURN SELF
+		RETURN TRUE
 
 	METHOD Show() AS VOID
 		IF oDataServer != NULL_OBJECT
@@ -2407,11 +2300,8 @@ CLASS DataBrowser INHERIT XSharp.VO.Control
 
 		RETURN SELF
 
-	METHOD Use(oServer) 
-		IF !IsNil(oServer)
-			IF !IsInstanceOfUsual(oServer,#DataServer)
-				WCError{#Use,#DataBrowser,__WCSTypeError,oServer,1}:@@Throw()
-			ENDIF
+	METHOD Use(oServer AS DataServer) AS LOGIC
+		IF oServer != NULL
 			IF oDataServer != oServer
 				IF oDataServer != NULL_OBJECT
 					SELF:__Unlink()
@@ -2438,7 +2328,7 @@ CLASS DataBrowser INHERIT XSharp.VO.Control
 
 		RETURN lLinked
 
-	METHOD Validate() 
+	METHOD Validate() AS LOGIC
 		
 		IF IsInstanceOf(SELF:Owner, #DataWindow)
 			RETURN ((DataWindow) SELF:Owner):__CheckRecordStatus()
@@ -2677,14 +2567,14 @@ CLASS DataColumn INHERIT VObject
 	ACCESS Alignment AS LONG
 		LOCAL IMPLIED nALignment := SELF:oDataGridColumn:CellTemplate:Style:Alignment
 		LOCAL iRet as LONG
-		DO CASE
-		CASE nALignment == DataGridViewContentAlignment.MiddleCenter
+		SWITCH nALignment
+		CASE DataGridViewContentAlignment.MiddleCenter
 			iRet := gbaAlignCenter
-		CASE nALignment == DataGridViewContentAlignment.MiddleLeft
+		CASE DataGridViewContentAlignment.MiddleLeft
 			iRet := gbaAlignLeft
-		CASE nALignment == DataGridViewContentAlignment.MiddleRight
+		CASE DataGridViewContentAlignment.MiddleRight
 			iRet := gbaAlignRight
-		ENDCASE
+		END SWITCH
 		RETURN iRet
 
 	ASSIGN Alignment (nNewAlign AS LONG) 
@@ -2692,18 +2582,18 @@ CLASS DataColumn INHERIT VObject
 
 		iAlign := nNewAlign
 
-		DO CASE
-		CASE iAlign==gbaAlignCenter
+		SWITCH iAlign
+		CASE gbaAlignCenter
 			SELF:oDataGridColumn:CellTemplate:Style:Alignment := DataGridViewContentAlignment.MiddleCenter
 			SELF:oDataGridColumn:HeaderCell:Style:Alignment := DataGridViewContentAlignment.MiddleCenter
-		CASE iAlign==gbaAlignLeft
+		CASE gbaAlignLeft
 			
 			SELF:oDataGridColumn:CellTemplate:Style:Alignment := DataGridViewContentAlignment.MiddleLeft
 			SELF:oDataGridColumn:HeaderCell:Style:Alignment := DataGridViewContentAlignment.MiddleLeft
-		CASE iAlign==gbaAlignRight
+		CASE gbaAlignRight
 			SELF:oDataGridColumn:CellTemplate:Style:Alignment := DataGridViewContentAlignment.MiddleRight
 			SELF:oDataGridColumn:HeaderCell:Style:Alignment := DataGridViewContentAlignment.MiddleRight
-		ENDCASE
+		END SWITCH
 
 		RETURN 
 
@@ -2775,7 +2665,6 @@ CLASS DataColumn INHERIT VObject
 		RETURN cCaption
 
 	ASSIGN Caption(cNewCaption AS STRING) 
-		
 		SELF:SetCaption(cNewCaption)
 		RETURN 
 
@@ -2791,80 +2680,64 @@ CLASS DataColumn INHERIT VObject
 	ASSIGN CellTextColor(oColor AS XSharp.VO.Color) 
 		SELF:oDataGridColumn:DefaultCellStyle:ForeColor := oColor
 
-	METHOD ChangeBackground(oBrush, kWhere) 
+	METHOD ChangeBackground(oBrush AS Brush, kWhere AS LONG) AS Brush
 		LOCAL oOldBrush AS XSharp.VO.Brush
 		LOCAL oOldCol AS XSharp.VO.Color
 		LOCAL oNewBrush AS XSharp.VO.Brush
 
-		IF !IsInstanceOfUsual(oBrush,#Brush)
-			WCError{#ChangeBackground,#DataColumn,__WCSTypeError,oBrush,1}:@@Throw()
-		ELSE
-			oNewBrush := oBrush
-		ENDIF
-		IF !IsNil(kWhere)
-			IF !IsLong(kWhere)
-				WCError{#ChangeBackground,#DataColumn,__WCSTypeError,kWhere,1}:@@Throw()
-			ENDIF
-		ENDIF
+		oNewBrush := oBrush
 
-		DO CASE
-		CASE kWhere==gblCaption .OR. kWhere==gblColCaption
+		SWITCH kWhere
+		CASE gblCaption
+        CASE gblColCaption
 			oOldCol := SELF:oDataGridColumn:HeaderCell:Style:BackColor
 			oOldBrush := XSharp.VO.Brush{oOldCol}
 			SELF:oDataGridColumn:HeaderCell:Style:BackColor := oNewBrush:Color
 
-		CASE kWhere==gblText
+		CASE gblText
 			oOldCol := SELF:oDataGridColumn:DefaultCellStyle:BackColor
 			oOldBrush := XSharp.VO.Brush{oOldCol}
 			SELF:oDataGridColumn:DefaultCellStyle:BackColor := oNewBrush:Color
 
-		CASE kWhere==gblButton .OR. kWhere==gblColButton
+		CASE gblButton
+        CASE gblColButton
 			// Not supported
-		ENDCASE
+            NOP
+		END SWITCH
 
 		RETURN oOldBrush
 
-	METHOD ChangeTextColor(oColor, kWhere) 
+	METHOD ChangeTextColor(oColor AS LONG, kWhere AS LONG) AS Color
+        RETURN SELF:ChangeTextColor(Color{oColor}, kWhere)
+
+	METHOD ChangeTextColor(oColor AS COLOR, kWhere AS LONG) AS Color
 		LOCAL oOldColor AS XSharp.VO.Color
 		LOCAL oNewColor AS XSharp.VO.Color
 
-		IF IsNumeric(oColor)
-			oNewColor := XSharp.VO.Color{oColor}
-		ELSEIF IsInstanceOfUsual(oColor,#Color)
-			oNewColor := oColor
-		ELSE
-			WCError{#ChangeTextColor,#DataColumn,__WCSTypeError,oColor,1}:@@Throw()
-		ENDIF
-		IF !IsNil(kWhere)
-			IF !IsLong(kWhere)
-				WCError{#ChangeTextColor,#DataColumn,__WCSTypeError,kWhere,2}:@@Throw()
-			ENDIF
-		ENDIF
-
-		DO CASE
-		CASE kWhere==gblCaption .OR. kWhere==gblColCaption
+		SWITCH kWhere
+		CASE gblCaption
+        CASE gblColCaption
 			oOldColor := SELF:oDataGridColumn:HeaderCell:Style:ForeColor
 			SELF:oDataGridColumn:HeaderCell:Style:ForeColor := oNewColor
 
-		CASE kWhere==gblText
+		CASE gblText
 			oOldColor := SELF:oDataGridColumn:DefaultCellStyle:ForeColor
 			SELF:oDataGridColumn:DefaultCellStyle:ForeColor := oNewColor			
 
-		CASE kWhere==gblButton .OR.	kWhere==gblColButton
+		CASE gblButton
+        CASE gblColButton
 			// Not supported
-		ENDCASE
+            NOP
+		END SWITCH
 		//SELF:__SetFldColor(NULL_OBJECT, iLoc, oNewColor:ColorRef)
 
 		RETURN oOldColor
 
-	METHOD ClearStatus() 
-		// DHer: 18/12/2008
+	METHOD ClearStatus() AS VOID
 		SELF:oHlStatus := NULL_OBJECT
+		RETURN
 
-		RETURN NIL
-
-	ACCESS DataField 
-		// DHer: 18/12/2008
+	ACCESS DataField AS SYMBOL
 		RETURN SELF:symDataField
 
 	METHOD Destroy() AS USUAL CLIPPER
@@ -2914,22 +2787,13 @@ CLASS DataColumn INHERIT VObject
 
 		RETURN SELF
 
-	METHOD EnableColumnMove(lAllowMove) 
-		Default(@lAllowMove, TRUE)
-		IF !IsLogic(lAllowMove)
-			WCError{#EnableColumnMove,#DataColumn,__WCSTypeError,lAllowMove,1}:@@Throw()
-		ENDIF
+	METHOD EnableColumnMove(lAllowMove := TRUE AS LOGIC) 
 
 		// Does not work
 		RETURN SELF
 
-	METHOD EnableColumnReSize(lAllowResize) 
+	METHOD EnableColumnReSize(lAllowResize:= TRUE AS LOGIC) 
 		
-		DEFAULT lAllowResize TO  TRUE
-
-		IF !IsLogic(lAllowResize)
-			WCError{#EnableColumnReSize,#DataColumn,__WCSTypeError,lAllowResize,1}:@@Throw()
-		ENDIF
 		IF lAllowResize
 			SELF:oDataGridColumn:Resizable := DataGridViewTriState.True
 		ELSE
@@ -3132,7 +2996,7 @@ CLASS DataColumn INHERIT VObject
 	ACCESS Owner as DataBrowser
 		RETURN oParent
 
-	METHOD PerformValidations() 
+	METHOD PerformValidations() AS LOGIC
 		// Perform validations for DataColumn against supplied parameter
 		// if it has a data spec, otherwise just return TRUE
 		
@@ -3146,71 +3010,44 @@ CLASS DataColumn INHERIT VObject
 
 		RETURN TRUE
 
-	ACCESS PixelWidth 
+	ACCESS PixelWidth AS LONG
 		RETURN SELF:oDataGridColumn:Width
 
 	ACCESS Server AS DataServer
 		RETURN oServer
 
-	METHOD SetCaption(cText, kAlignment) 
+	METHOD SetCaption(cText AS STRING, kAlignment:=gbaAlignCenter AS LONG) AS LOGIC
 		LOCAL iLines AS INT
-		LOCAL i AS INT
 		LOCAL iMaxWidth AS INT
-		LOCAL cTemp AS STRING
 
-		IF !IsNil(cText)
-			IF !IsString(cText)
-				WCError{#SetCaption,#DataColumn,__WCSTypeError,cText,1}:@@Throw()
-			ENDIF
-		ENDIF
-		IF !IsNil(kAlignment)
-			IF !IsLong(kAlignment)
-				WCError{#SetCaption,#DataColumn,__WCSTypeError,kAlignment,2}:@@Throw()
-			ENDIF
-		ELSE
-			kAlignment:=gbaAlignCenter
-		ENDIF
-
-
-		// calculate width based on caption
-		IF (NULL_STRING != cText)
-			iLines := INT(Occurs(_CHR(10), cText)) + 1
-			IF (iLines > 1) //If multiple lines
-				cTemp := cText //Find the longest line
-				DO WHILE TRUE
-					i := INT(_CAST, At(_CHR(10), cTemp))
-					IF (i > 0)
-						iMaxWidth := Max(i-1, iMaxWidth)
-						cTemp := SubStr(cTemp, i+1)
-					ELSE
-						iMaxWidth := Max(SLen(cTemp), iMaxWidth)
-						EXIT
-					ENDIF
-				ENDDO
-			ELSE
-				iMaxWidth := INT(_CAST, SLen(cText))
-			ENDIF
 			
+		// calculate width based on caption
+		IF Slen(cText) > 0
+            VAR aLines := cText:Split(<CHAR>{'\r', '\n'}, StringSplitOptions.RemoveEmptyEntries)
+            iLines := aLines:Length
+            FOREACH line AS STRING IN aLines
+				iMaxWidth := Max(SLen(line), iMaxWidth)
+			NEXT
 
 			// multi line titles are vertically aligned on the Top of the control by default
 			IF (iLines > 1)
-				DO CASE
-				CASE (kAlignment == GBAALIGNCENTER)
+				SWITCH kAlignment
+				CASE GBAALIGNCENTER
 					SELF:oDataGridColumn:HeaderCell:Style:Alignment := DataGridViewContentAlignment.TopCenter
-				CASE (kAlignment == GBAALIGNLEFT)
+				CASE GBAALIGNLEFT
 					SELF:oDataGridColumn:HeaderCell:Style:Alignment := DataGridViewContentAlignment.TopLeft
-				CASE (kAlignment == GBAALIGNRIGHT)
+				CASE GBAALIGNRIGHT
 					SELF:oDataGridColumn:HeaderCell:Style:Alignment := DataGridViewContentAlignment.TopRight
-				ENDCASE
+				END SWITCH
 			ELSE
-				DO CASE
-				CASE (kAlignment == GBAALIGNCENTER)
+				SWITCH kAlignment
+				CASE GBAALIGNCENTER
 					SELF:oDataGridColumn:HeaderCell:Style:Alignment := DataGridViewContentAlignment.MiddleCenter
-				CASE (kAlignment == GBAALIGNLEFT)
+				CASE GBAALIGNLEFT
 					SELF:oDataGridColumn:HeaderCell:Style:Alignment := DataGridViewContentAlignment.MiddleLeft
-				CASE (kAlignment == GBAALIGNRIGHT)
+				CASE GBAALIGNRIGHT
 					SELF:oDataGridColumn:HeaderCell:Style:Alignment := DataGridViewContentAlignment.MiddleRight
-				ENDCASE
+				END SWITCH
 			ENDIF
 
 			cCaption := cText
@@ -3228,7 +3065,7 @@ CLASS DataColumn INHERIT VObject
 		IF SELF:dwWidth != 0XFFFFFFFF
 			SELF:Width :=  (INT) dwWidth
 		ENDIF
-		RETURN SELF
+		RETURN TRUE
 
 	METHOD SetModified(lModified) 
 		IF !IsLogic(lModified)
@@ -3238,27 +3075,24 @@ CLASS DataColumn INHERIT VObject
 
 		RETURN SELF
 
-	METHOD SetStandardStyle(kStyle) 
-		
+	METHOD SetStandardStyle(kStyle AS LONG)  AS VOID
 
-		IF !IsLong(kStyle)
-			WCError{#SetStandardStyle,#DataColumn,__WCSTypeError,kStyle,1}:@@Throw()
-		ENDIF
-
-		DO CASE
-		CASE (kStyle == GBSREADONLY)
+		SWITCH kStyle
+		CASE GBSREADONLY
 			oDataGridColumn:ReadOnly := TRUE
 
-		CASE (kStyle == GBSEDIT)
+		CASE GBSEDIT
 			oDataGridColumn:ReadOnly := FALSE
 
-		CASE (kStyle == GBSCONTROL3D)
+		CASE GBSCONTROL3D
 			// Not implemented
-		CASE (kStyle == GBSCONTROL2D)
+            NOP
+		CASE GBSCONTROL2D
 			// Not implemented
-		ENDCASE
+            NOP
+		END SWITCH
 
-		RETURN SELF
+		RETURN 
 
 	METHOD SetValue(cNewValue AS STRING) 
 		IF !(cNewValue == cTextValue)

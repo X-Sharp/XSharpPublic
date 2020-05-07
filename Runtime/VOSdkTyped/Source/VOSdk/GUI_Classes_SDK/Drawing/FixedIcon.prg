@@ -1,6 +1,6 @@
 
 
-PARTIAL CLASS FixedIcon INHERIT FixedImage
+CLASS FixedIcon INHERIT FixedImage
 
 	METHOD __SetImage(uResID AS USUAL) AS OBJECT STRICT 
 		RETURN SELF:SetIcon(Icon{uResID})

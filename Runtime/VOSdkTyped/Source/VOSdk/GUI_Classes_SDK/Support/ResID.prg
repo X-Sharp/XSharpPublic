@@ -1,5 +1,5 @@
 
-PARTIAL CLASS ResourceID INHERIT VObject
+CLASS ResourceID INHERIT VObject
 	PROTECT hInst AS IntPtr
 	PROTECT nID AS INT
 	PROTECT sID AS STRING
@@ -13,8 +13,8 @@ PARTIAL CLASS ResourceID INHERIT VObject
 		ENDIF
 		RETURN	
 
-	METHOD Address() as PTR
-		LOCAL lpAddress AS PTR
+	METHOD Address() AS IntPtr
+		LOCAL lpAddress AS IntPtr
 
 		IF NULL_STRING != sID    
 			IF SELF:_lpAddress == NULL
@@ -24,7 +24,7 @@ PARTIAL CLASS ResourceID INHERIT VObject
 				lpAddress := SELF:_lpAddress
 			ENDIF
 		ELSE
-			lpAddress := PTR(_CAST, nID)
+			lpAddress := IntPtr{nID}
 		ENDIF
 
 		RETURN lpAddress

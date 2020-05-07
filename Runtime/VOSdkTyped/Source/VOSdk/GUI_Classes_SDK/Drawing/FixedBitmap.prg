@@ -1,5 +1,5 @@
 
-PARTIAL CLASS FixedBitmap INHERIT FixedImage
+CLASS FixedBitmap INHERIT FixedImage
 	PROTECT hInst AS IntPtr
 	
 	METHOD __SetImage(uResID AS USUAL) AS OBJECT STRICT 

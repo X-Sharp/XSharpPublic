@@ -17,7 +17,7 @@ FUNCTION __SetAppObject(oNewApp AS App) AS App STRICT
 FUNCTION GetObjectByHandle(hwnd AS IntPtr) AS OBJECT STRICT
 	RETURN WC.GetObjectByHandle(hwnd)
 
-DELEGATE TimerProcDelegate( hWnd AS PTR, uMsg AS DWORD, idEvent AS DWORD, dwTime AS DWORD ) AS VOID
+DELEGATE TimerProcDelegate( hWnd AS IntPtr, uMsg AS DWORD, idEvent AS DWORD, dwTime AS DWORD ) AS VOID
 
 PARTIAL STATIC CLASS WC
 
@@ -211,12 +211,8 @@ PARTIAL STATIC CLASS WC
 	STATIC METHOD GetControlByHandle(hWnd AS IntPtr) AS XSharp.VO.Control STRICT
 		LOCAL oC AS System.Windows.Forms.Control
 		oC := System.Windows.Forms.Control.FromHandle(hWnd)
-		IF oC != NULL_OBJECT
-			IF typeof(IVOControl):IsAssignableFrom(oC:GetType())
-				LOCAL oVOC AS IVOControl
-				oVOC := (IVOControl) (OBJECT) oC
-				RETURN oVOC:Control
-			ENDIF
+		IF oC IS IVOControl VAR oVOC
+    		RETURN oVOC:Control
 		ENDIF
 		RETURN NULL_OBJECT
 
@@ -352,14 +348,10 @@ PARTIAL STATIC CLASS WC
 		RETURN oControl:Origin
 
 	STATIC METHOD GetWindowByHandle(hWnd AS IntPtr) AS Window STRICT
-		LOCAL oF AS OBJECT
-		oF := System.Windows.Forms.Form.FromHandle(hWnd)
-		IF oF != NULL_OBJECT
-			IF typeof(IVOForm):IsAssignableFrom(oF:GetType())
-				LOCAL oVOF AS IVOForm
-				oVOF := (IVOForm) oF
-				RETURN oVOF:Window
-		ENDIF
+		LOCAL oForm AS OBJECT
+		oForm := System.Windows.Forms.Form.FromHandle(hWnd)
+		IF oForm IS IVOForm VAR oVOF
+			RETURN oVOF:Window
 		ENDIF
 		RETURN NULL_OBJECT
 
@@ -428,7 +420,7 @@ PARTIAL STATIC CLASS WC
 	//	RETURN
 
 	STATIC EXPORT MenuList := {} AS ARRAY
-	STATIC METHOD PaletteSize(pIH AS PTR) AS DWORD STRICT
+	STATIC METHOD PaletteSize(pIH AS IntPtr) AS DWORD STRICT
 		RETURN 0
 
 	//STATIC METHOD RegisterControl(oControl AS Control) AS VOID
@@ -466,8 +458,8 @@ PARTIAL STATIC CLASS WC
 		//RETURN
 
 
-	STATIC METHOD SetROP(hDC AS IntPtr, rop AS DWORD) AS PTR STRICT
-		LOCAL hLastRop AS PTR
+	STATIC METHOD SetROP(hDC AS IntPtr, rop AS DWORD) AS IntPtr STRICT
+		LOCAL hLastRop AS IntPtr
 
 
 		//hLastRop := GetROP2(hDC)
@@ -525,14 +517,14 @@ PARTIAL STATIC CLASS WC
 	//
 	//	RETURN
 
-	//STATIC METHOD GetCoordinateSystem() AS LOGIC
-	//	RETURN WC.CoordinateSystem
+	STATIC METHOD GetCoordinateSystem() AS LOGIC
+	    RETURN WC.CoordinateSystem
 
 	//STATIC METHOD NewControlsAvailable() AS LOGIC
 	//	RETURN (gpfnInitCommonControlsEx != NULL_PTR)
 
-	//STATIC METHOD SetCoordinateSystem(system AS LOGIC) AS LOGIC
-	//	RETURN WC.CoordinateSystem := system
+	STATIC METHOD SetCoordinateSystem(system AS LOGIC) AS LOGIC
+	    RETURN WC.CoordinateSystem := system
 
 	STATIC METHOD AppGetDialogWindow() AS OBJECT STRICT
 		LOCAL oRet AS OBJECT
@@ -583,7 +575,7 @@ PARTIAL STATIC CLASS WC
 
 	*/
 
-	STATIC METHOD StretchDibBlt(hdc AS PTR, x AS INT, y AS INT, dx AS INT, dy AS INT, hdib AS PTR) AS LOGIC STRICT
+	STATIC METHOD StretchDibBlt(hdc AS IntPtr, x AS INT, y AS INT, dx AS INT, dy AS INT, hdib AS IntPtr) AS LOGIC STRICT
 		//LOCAL pBuf AS PSZ
 		//LOCAL lRet AS LONGINT
 		//LOCAL lpbi AS _winBITMAPINFO
@@ -651,7 +643,7 @@ PARTIAL STATIC CLASS WC
 
 		RETURN
 	
-	STATIC METHOD TimerProc(hWnd AS PTR, uMsg AS DWORD, idEvent AS DWORD, dwTime AS DWORD) AS VOID
+	STATIC METHOD TimerProc(hWnd AS IntPtr, uMsg AS DWORD, idEvent AS DWORD, dwTime AS DWORD) AS VOID
 		IF (ErrorLevel() > ES_WHOCARES)
 			RETURN
 		ENDIF
@@ -696,8 +688,7 @@ FUNCTION GetFocusedObject() AS OBJECT STRICT
 FUNCTION IsCtl3dEnabled() AS LOGIC
 	RETURN TRUE
 
-FUNCTION SetClassStyle(hWnd AS PTR, dwSetStyle AS DWORD, lEnable := TRUE AS LOGIC) AS DWORD STRICT
-	//PP-031129
+FUNCTION SetClassStyle(hWnd AS IntPtr, dwSetStyle AS DWORD, lEnable := TRUE AS LOGIC) AS DWORD STRICT
 	LOCAL dwOldStyle AS LONG
 
 	IF (hWnd != NULL_PTR)

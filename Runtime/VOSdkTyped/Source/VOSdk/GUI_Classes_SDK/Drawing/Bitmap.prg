@@ -1,7 +1,7 @@
 
 
 
-PARTIAL CLASS Bitmap INHERIT VObject
+CLASS Bitmap INHERIT VObject
 	PROTECT oImage AS System.Drawing.Image
 
 

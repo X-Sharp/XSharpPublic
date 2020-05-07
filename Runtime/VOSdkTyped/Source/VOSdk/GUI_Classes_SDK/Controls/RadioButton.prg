@@ -1,5 +1,5 @@
 
-PARTIAL CLASS RadioButton INHERIT Button
+CLASS RadioButton INHERIT Button
 	PROTECT lSavedPressed AS LOGIC
 
     PROPERTY ControlType AS ControlType GET ControlType.RadioButton

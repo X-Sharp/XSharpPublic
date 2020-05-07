@@ -79,7 +79,7 @@ CONSTRUCTOR( oOwnerApp )
 	
 	SUPER( oOwnerApp )
 	
-   SELF:EnableDragDropClient()
+    SELF:EnableDragDropClient()
 
 	oSB := SELF:EnableStatusBar()
 	oSB:DisplayTime()

@@ -119,7 +119,7 @@ CLASS Button INHERIT TextControl
 
 END CLASS
 
-PARTIAL CLASS ButtonImageList INHERIT ImageList
+CLASS ButtonImageList INHERIT ImageList
 	PROTECTED _oImage AS Object
 
 	ACCESS Image AS OBJECT

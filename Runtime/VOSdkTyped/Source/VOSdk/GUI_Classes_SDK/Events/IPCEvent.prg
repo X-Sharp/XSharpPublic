@@ -1,7 +1,7 @@
 
 
 #include "VOWin32APILibrary.vh"
-PARTIAL CLASS IpcClientErrorEvent INHERIT @@Event
+CLASS IpcClientErrorEvent INHERIT @@Event
 
 ACCESS ErrorType 
 	
@@ -16,7 +16,7 @@ CONSTRUCTOR(nErrorType)
 	RETURN 
 END CLASS
 
-PARTIAL CLASS IpcDataRequestEvent inherit IpcEvent
+CLASS IpcDataRequestEvent inherit IpcEvent
 
 CONSTRUCTOR(wT, wF, hC, h1, h2, hD, dwD1, dwD2, oIpc) 
 	
@@ -26,7 +26,7 @@ CONSTRUCTOR(wT, wF, hC, h1, h2, hD, dwD1, dwD2, oIpc)
 RETURN 
 END CLASS
 
-PARTIAL CLASS IpcDataUpdateEvent inherit IpcEvent
+CLASS IpcDataUpdateEvent inherit IpcEvent
 	protect cData as string
 
 access AsString 
@@ -50,13 +50,13 @@ CONSTRUCTOR(wT, wF, hC, h1, h2, hD, dwD1, dwD2, oIpc)
 
 END CLASS
 
-PARTIAL CLASS IpcEvent INHERIT VObject
+CLASS IpcEvent INHERIT VObject
 	EXPORT dwType AS DWORD
 	EXPORT dwFmt AS DWORD
-	EXPORT hConv AS PTR
-	EXPORT hsz1 AS PTR
-	EXPORT hsz2 AS PTR
-	EXPORT hData AS PTR
+	EXPORT hConv AS IntPtr
+	EXPORT hsz1 AS IntPtr
+	EXPORT hsz2 AS IntPtr
+	EXPORT hData AS IntPtr
 	EXPORT dwData1 AS DWORD
 	EXPORT dwData2 AS DWORD
 	EXPORT oIPCObject AS OBJECT
@@ -164,7 +164,7 @@ ACCESS Topic
 
 END CLASS
 
-PARTIAL CLASS IpcExecuteRequestEvent INHERIT IpcEvent
+CLASS IpcExecuteRequestEvent INHERIT IpcEvent
 	PROTECT cCommand AS STRING
 
 ACCESS Command 
@@ -189,7 +189,7 @@ GLOBAL aDdeConv:={} AS ARRAY //Table of Conversation handles and IPC objects (Cl
 
 GLOBAL aDdeServer:={} AS ARRAY //Table of Servers objects and Server handles
 
-FUNCTION __WCAddIpcObjectToConv(hConv AS PTR, oIpc AS OBJECT) AS VOID
+FUNCTION __WCAddIpcObjectToConv(hConv AS IntPtr, oIpc AS OBJECT) AS VOID
    //SE-060526
 	LOCAL dwI, dwCount AS DWORD
 
@@ -206,7 +206,7 @@ FUNCTION __WCAddIpcObjectToConv(hConv AS PTR, oIpc AS OBJECT) AS VOID
 	AAdd(aDdeConv, {hConv, oIpc})
 
 	RETURN
- FUNCTION __WCAddServerToHsz(dwHsz AS PTR, oServer AS IpcServer) AS VOID
+ FUNCTION __WCAddServerToHsz(dwHsz AS IntPtr, oServer AS IpcServer) AS VOID
 	//SE-060526
 	LOCAL dwI, dwCount AS DWORD
 
@@ -223,7 +223,7 @@ FUNCTION __WCAddIpcObjectToConv(hConv AS PTR, oIpc AS OBJECT) AS VOID
 
 	RETURN
 
-FUNCTION __WCDelIpcObjectFromConv(hConv AS PTR) AS VOID
+FUNCTION __WCDelIpcObjectFromConv(hConv AS IntPtr) AS VOID
    //SE-060526
 	LOCAL dwI, dwCount AS DWORD
 
@@ -239,7 +239,7 @@ FUNCTION __WCDelIpcObjectFromConv(hConv AS PTR) AS VOID
 
 	RETURN
 
-FUNCTION __WCDelServerFromHsz(dwHsz AS PTR) AS VOID
+FUNCTION __WCDelServerFromHsz(dwHsz AS IntPtr) AS VOID
 	//SE-060526
 	LOCAL dwI, dwCount AS DWORD
 
@@ -255,7 +255,7 @@ FUNCTION __WCDelServerFromHsz(dwHsz AS PTR) AS VOID
 
 	RETURN
 
-FUNCTION __WCGetHConvFromConv(oIpc AS OBJECT) AS PTR
+FUNCTION __WCGetHConvFromConv(oIpc AS OBJECT) AS IntPtr
 	//SE-060526
 	LOCAL dwI, dwCount AS DWORD
 
@@ -270,7 +270,7 @@ FUNCTION __WCGetHConvFromConv(oIpc AS OBJECT) AS PTR
 	RETURN Null_Ptr
 
 
-FUNCTION __WCGetHszFromHsz(oIpc AS OBJECT) AS PTR
+FUNCTION __WCGetHszFromHsz(oIpc AS OBJECT) AS IntPtr
    //SE-060526
 	LOCAL dwI, dwCount AS DWORD
 
@@ -284,7 +284,7 @@ FUNCTION __WCGetHszFromHsz(oIpc AS OBJECT) AS PTR
 
 	RETURN Null_Ptr
 
-FUNCTION __WCGetIpcObjectFromConv(hConv AS PTR) AS OBJECT
+FUNCTION __WCGetIpcObjectFromConv(hConv AS IntPtr) AS OBJECT
    //SE-060526
 	LOCAL dwI, dwCount AS DWORD
 
@@ -298,7 +298,7 @@ FUNCTION __WCGetIpcObjectFromConv(hConv AS PTR) AS OBJECT
 
 	RETURN Null_OBJECT
 
-FUNCTION __WCGetServerFromHsz(dwHsz AS PTR) AS OBJECT
+FUNCTION __WCGetServerFromHsz(dwHsz AS IntPtr) AS OBJECT
    //SE-060526
 	LOCAL dwI, dwCount AS DWORD
 

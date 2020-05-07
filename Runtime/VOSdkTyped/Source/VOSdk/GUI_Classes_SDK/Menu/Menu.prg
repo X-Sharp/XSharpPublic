@@ -626,7 +626,7 @@ CLASS Menu INHERIT VObject
 	
 END CLASS
 
-//PARTIAL CLASS SystemMenu INHERIT Menu
+//CLASS SystemMenu INHERIT Menu
 
 //	METHOD Destroy() 
 		

@@ -434,7 +434,7 @@ CLASS __SplitView INHERIT Control
 END CLASS
 
 [Obsolete];
-PARTIAL CLASS SplitWindow INHERIT ChildAppWindow
+CLASS SplitWindow INHERIT ChildAppWindow
 	PROTECT oSplitView	AS __SplitView
 	PROTECT lInDestroy AS LOGIC
 

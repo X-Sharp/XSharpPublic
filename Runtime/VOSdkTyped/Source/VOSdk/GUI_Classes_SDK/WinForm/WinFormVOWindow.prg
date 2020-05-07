@@ -4,9 +4,9 @@
 // This probably is no longer needed
 
 
-CLASS Vulcan.WinFormVOWindow INHERIT System.Windows.Forms.Form
-    PRIVATE winFormVOWindowHost AS Vulcan.WinFormVOWindowHost
-    PROTECT currentFocusHandle AS PTR
+CLASS XSharp.VO.WinFormVOWindow INHERIT System.Windows.Forms.Form
+    PRIVATE winFormVOWindowHost AS XSharp.VO.WinFormVOWindowHost
+    PROTECT currentFocusHandle AS IntPtr
     STATIC PROTECT oApp AS App
     
     STATIC METHOD Initialize() AS VOID
@@ -42,7 +42,7 @@ CLASS Vulcan.WinFormVOWindow INHERIT System.Windows.Forms.Form
     ACCESS VOWindowHost AS WinFormVOWindowHost
         RETURN winFormVOWindowHost
         
-    ASSIGN VOWindowHost(new AS Vulcan.WinFormVOWindowHost)
+    ASSIGN VOWindowHost(new AS XSharp.VO.WinFormVOWindowHost)
         winFormVOWindowHost := new
         RETURN
         

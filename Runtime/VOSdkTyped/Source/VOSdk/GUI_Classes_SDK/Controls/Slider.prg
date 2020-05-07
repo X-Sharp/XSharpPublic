@@ -74,7 +74,7 @@ CLASS SelectionSlider INHERIT Slider
 
 END CLASS
 
-PARTIAL CLASS Slider INHERIT ScrollBar
+CLASS Slider INHERIT ScrollBar
 	PROTECT symTickAlignment AS SYMBOL
 
     PROPERTY Controltype AS ControlType GET ControlType.Slider

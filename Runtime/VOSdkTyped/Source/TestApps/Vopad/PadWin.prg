@@ -109,8 +109,6 @@ METHOD Cut()
 
 
 METHOD EditChange(oControlEvent) 
-	LOCAL oControl AS Control
-	oControl := IIf(oControlEvent == NULL_OBJECT, NULL_OBJECT, oControlEvent:Control)
 	SUPER:EditChange(oControlEvent)
 	//Put your changes here
 	SELF:lChange := TRUE
@@ -461,9 +459,9 @@ STATIC CLASS RichEditExtensions
 CLASS SearchBox INHERIT ComboBox
 	
 
-METHOD Dispatch(e AS Event) AS LONG
+METHOD Dispatch(e ) 
 	
-	IF e:uMSg == wM_KEYDOWN .or.  e:uMSg == wM_KEYUP
+	IF e:uMSg == wM_KEYDOWN .OR.  e:uMSg == wM_KEYUP
 		Tone(440,2)
 	ELSEIF e:uMSg == wM_CHAR
 		Tone(440,12)

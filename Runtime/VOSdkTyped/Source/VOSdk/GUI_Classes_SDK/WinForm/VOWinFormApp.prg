@@ -3,11 +3,11 @@
 // Standard subclass of App for Hybrid applications.
 // This probably is no longer needed
 
-#using System.Collections
+using System.Collections
 
 
 
-CLASS Vulcan.VOWinFormApp INHERIT App
+CLASS XSharp.VO.VOWinFormApp INHERIT App
 	PRIVATE winForms := Hashtable{} as Hashtable
 
 	METHOD RegisterWinForm(form AS System.Windows.Forms.Form) AS VOID

@@ -1,6 +1,6 @@
 
 
-PARTIAL CLASS DateRange INHERIT VObject
+CLASS DateRange INHERIT VObject
 	PROTECT dStartDate AS DATE
 	PROTECT dEndDate AS DATE
 
@@ -15,7 +15,7 @@ PARTIAL CLASS DateRange INHERIT VObject
 
 END CLASS
 
-PARTIAL CLASS MonthCalendar INHERIT TextControl
+CLASS MonthCalendar INHERIT TextControl
 
 	
 	ACCESS __Calendar AS VOMonthCalendar

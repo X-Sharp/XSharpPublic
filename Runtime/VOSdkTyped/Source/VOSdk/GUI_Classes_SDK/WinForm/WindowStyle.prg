@@ -5,10 +5,10 @@
 #USING System.Text
 INTERNAL CLASS WindowStyle
 
-	STATIC METHOD SetStyle(hWnd AS PTR, dwSetStyle AS DWORD, lEnable AS LOGIC) AS VOID
+	STATIC METHOD SetStyle(hWnd AS IntPtr, dwSetStyle AS DWORD, lEnable AS LOGIC) AS VOID
 		LOCAL dwStyle AS DWORD
 		
-		IF (hWnd != NULL_PTR)
+		IF (hWnd != IntPtr.Zero)
 			dwStyle := DWORD(_CAST, Win32.GetWindowLong(hWnd, GWL_STYLE))
 			
 			IF lEnable
@@ -23,10 +23,10 @@ INTERNAL CLASS WindowStyle
 		
 		RETURN 
 	
-	STATIC METHOD SetExStyle(hWnd AS PTR, dwSetStyle AS DWORD, lEnable AS LOGIC) AS VOID
+	STATIC METHOD SetExStyle(hWnd AS IntPtr, dwSetStyle AS DWORD, lEnable AS LOGIC) AS VOID
 		LOCAL dwStyle AS DWORD
 		
-		IF (hWnd != NULL_PTR)
+		IF (hWnd != IntPtr.Zero)
 			dwStyle := DWORD(_CAST, Win32.GetWindowLong(hWnd, GWL_EXSTYLE))
 			
 			IF lEnable
@@ -40,7 +40,7 @@ INTERNAL CLASS WindowStyle
 		
 		RETURN
 		
-	STATIC METHOD ClassName(hWnd AS PTR) AS STRING
+	STATIC METHOD ClassName(hWnd AS IntPtr) AS STRING
 	   LOCAL pszName 	AS StringBuilder
 		
 	   pszName := StringBuilder{128}

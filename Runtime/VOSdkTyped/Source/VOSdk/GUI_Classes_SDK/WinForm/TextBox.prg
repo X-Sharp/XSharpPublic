@@ -82,14 +82,12 @@ CLASS VOTextBox INHERIT System.Windows.Forms.TextBox IMPLEMENTS IVOControl, IVOC
 	PROTECT _lInPaint AS LOGIC
 	
 	METHOD OnWndProc(msg REF Message) AS VOID
-		LOCAL lDone := FALSE AS LOGIC
 		IF msg:Msg == WM_PASTE .AND. SELF:oEdit != NULL_OBJECT
 			IF IsInstanceOf(oEdit, #SingleLineEdit)
 				LOCAL oSle AS SingleLineEdit
 				oSle := (SingleLineEdit) oEdit
 				IF oSle:__EditString != NULL_OBJECT
 					oSle:Paste()
-					lDone := TRUE
 				ENDIF
 			ENDIF
 		ENDIF

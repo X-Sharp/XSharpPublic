@@ -27,7 +27,7 @@ METHOD Error( oError AS Error, symMethod :=  #Unknown AS SYMBOL ) AS VOID
 	oErr:MethodSelf := SELF    
     oErr:FuncSym := symMethod
 	Eval( ErrorBlock( ), oErr)
-	RETURN NIL
+	RETURN 
 
 
 ACCESS HelpContext AS STRING                           

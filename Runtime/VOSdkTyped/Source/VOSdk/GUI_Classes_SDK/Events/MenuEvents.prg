@@ -5,7 +5,7 @@
 
 #USING System.Diagnostics
 
-PARTIAL CLASS MenuEvent INHERIT @@Event IMPLEMENTS INamedEvent
+CLASS MenuEvent INHERIT @@Event IMPLEMENTS INamedEvent
 	PROTECT oMenu AS Menu
 	PROTECT nID AS LONG
 
@@ -59,20 +59,20 @@ PARTIAL CLASS MenuEvent INHERIT @@Event IMPLEMENTS INamedEvent
 END CLASS
 
 
-PARTIAL CLASS MenuCommandEvent INHERIT MenuEvent
+CLASS MenuCommandEvent INHERIT MenuEvent
 	[DebuggerStepThrough];
 	CONSTRUCTOR(uMenu, uWindow, uItem) 
 		SUPER(uMenu, uWindow, uItem) 
 
 END CLASS
-PARTIAL CLASS MenuSelectEvent INHERIT MenuEvent
+CLASS MenuSelectEvent INHERIT MenuEvent
 	[DebuggerStepThrough];
 	CONSTRUCTOR(uMenu AS USUAL, uWin AS USUAL, uID AS USUAL) STRICT
 		SUPER(uMenu, uWin, uID) 
 
 END CLASS
 
-PARTIAL CLASS MenuInitEvent INHERIT MenuEvent
+CLASS MenuInitEvent INHERIT MenuEvent
 	[DebuggerStepThrough];
 	CONSTRUCTOR(uMenu AS USUAL, uWin AS USUAL, uID AS USUAL) STRICT
 		SUPER(uMenu, uWin, uID) 

@@ -51,7 +51,7 @@ METHOD __AcceptSelectiveRelation( oDBParent AS DbServer, wParentWorkArea AS DWOR
 
 	cbSelectionParentExpression := cbSelection
 
-	VoDbSelect( wWorkArea, REF dwCurrentWorkArea )
+	VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 
 	cIndexExt := IndexExt( )
 
@@ -146,7 +146,7 @@ METHOD __DbServerEval( uBlock AS USUAL, uCobFor AS USUAL, uCobWhile AS USUAL, ;
    //				  The codeblocks may select another workarea
 	lRestore	:= DbSetRestoreWorkarea(TRUE)      
 
-	VoDbSelect( wWorkArea, REF dwCurrentWorkArea )
+	VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
@@ -318,7 +318,7 @@ METHOD __NotifyBufferFlush( ) AS VOID STRICT
 	
 
 	ASend( aRelationChildren, #__NotifyBufferFlush )
-	VoDbSelect( wWorkArea, REF dwCurrentWorkArea )
+	VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 	SELF:__OptimisticFlush( )
 	__DBSSetSelect( dwCurrentWorkArea  ) //SE-060527
 
@@ -608,7 +608,7 @@ METHOD __SetupLocks( )  AS VOID STRICT
 
 
 CONSTRUCTOR( oFile, lShareMode, lReadOnlyMode, xDriver, aRdd ) 
-	LOCAL dwCurrentWorkArea AS DWORD
+	LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL cFileName AS STRING
 	LOCAL w AS DWORD
 	LOCAL n AS DWORD

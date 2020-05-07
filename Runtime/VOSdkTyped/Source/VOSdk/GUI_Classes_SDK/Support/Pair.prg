@@ -4,7 +4,7 @@
 
 [DebuggerStepThrough];
 [DebuggerDisplay("{iInt1}, {iInt2}")];
-PARTIAL CLASS Pair INHERIT VObject
+CLASS Pair INHERIT VObject
 	PROTECT iInt1 AS INT
 	PROTECT iInt2 AS INT
 	CONSTRUCTOR() STRICT
@@ -40,7 +40,7 @@ END CLASS
 
 [DebuggerStepThrough];
 [DebuggerDisplay("Width: {Width}, Height: {Height}")];
-PARTIAL CLASS Dimension INHERIT Pair
+CLASS Dimension INHERIT Pair
 
 	CONSTRUCTOR() STRICT
 		SUPER()
@@ -72,7 +72,7 @@ END CLASS
 
 [DebuggerStepThrough];
 [DebuggerDisplay("X: {X}, Y: {Y}")];
-PARTIAL CLASS Point INHERIT Pair
+CLASS Point INHERIT Pair
 
 	CONSTRUCTOR() STRICT
 		SUPER()
@@ -160,7 +160,7 @@ END CLASS
 
 [DebuggerStepThrough];
 [DebuggerDisplay("Min: {Min}, Max: {Max}")];
-PARTIAL CLASS Range INHERIT Pair        
+CLASS Range INHERIT Pair        
 	CONSTRUCTOR(nMin, nMax) 
 		SUPER(nMin, nMax)
 		RETURN 
@@ -181,7 +181,7 @@ END CLASS
 
 [DebuggerStepThrough];
 [DebuggerDisplay("Start: {Start}, Finish: {Finish}")];
-PARTIAL CLASS Selection INHERIT Pair 
+CLASS Selection INHERIT Pair 
 
 	PROPERTY Start  AS LONGINT  GET iInt1 SET iInt1 := Value
 	PROPERTY Finish AS LONGINT  GET iInt2 SET iInt2 := Value

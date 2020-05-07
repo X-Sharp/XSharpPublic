@@ -5,7 +5,7 @@ CLASS DBSelectionIndex
 	PROTECT nSelect AS INT
 
 METHOD Eval( ) 
-	LOCAL nOldSelect AS DWORD
+	LOCAL nOldSelect := 0 AS DWORD
 	LOCAL xRet AS USUAL
 
 	VoDbSelect( DWORD(SELF:nSelect), REF nOldSelect )

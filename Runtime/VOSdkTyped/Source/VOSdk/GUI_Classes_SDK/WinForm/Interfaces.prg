@@ -7,8 +7,8 @@
 /// This interface is defined for all VO..Control classes 
 /// </summary>
 INTERFACE IVOControl
-	PROPERTY Control AS XSharp.VO.Control GET
-	PROPERTY ooProperties AS VOControlProperties GET
+	PROPERTY Control            AS XSharp.VO.Control GET
+	PROPERTY ControlProperties  AS VOControlProperties GET
 	METHOD SetVisualStyle AS VOID STRICT
 	METHOD SetOwner(Owner AS XSharp.VO.Control) AS VOID 
 
@@ -46,18 +46,15 @@ END INTERFACE
 /// This interface defines a couple of properties and methods for 'owners' of Controls, such as the window class
 /// </summary>
 INTERFACE IControlParent
-	METHOD __AddTool(oControl AS Control) AS LOGIC STRICT
+	PROPERTY __Handle AS IntPtr  GET
+	PROPERTY __Form AS VOForm GET
+
+    METHOD __AddTool(oControl AS Control) AS LOGIC STRICT
 	METHOD __ShowToolTip(oControl AS Control) AS VOID STRICT
 	METHOD __AddAlign(oControl AS IGuiObject, iType AS USUAL) AS LOGIC  STRICT
 	METHOD ControlFocusChange(oControlFocusChangeEvent AS  ControlFocusChangeEvent) AS USUAL STRICT
-	PROPERTY __Handle AS IntPtr  GET
-	PROPERTY __Form AS VOForm GET
 	METHOD __SetupDataControl(oDC AS Control) AS VOID
 	METHOD GetDlgItem(nID as LONG) as ResourceDialogItem
 END INTERFACE	
 
 
-
-INTERFACE IZoomFeatures
-    PROPERTY CurrentShellZoom AS LONG GET
-END INTERFACE

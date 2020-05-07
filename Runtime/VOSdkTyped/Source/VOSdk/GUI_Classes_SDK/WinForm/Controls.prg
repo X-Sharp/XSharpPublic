@@ -12,8 +12,11 @@
 CLASS VOButton INHERIT System.Windows.Forms.Button IMPLEMENTS IVOControl, IVOControlInitialize
 
 	#include "PropControl.vh"
-    PROPERTY Button AS XSharp.VO.Button GET (XSharp.VO.Button) SELF:oProperties:Control
-        
+
+    
+#region Properties
+    PROPERTY Button AS XSharp.VO.Button GET (XSharp.VO.Button) SELF:Control
+#endregion        
 
 	METHOD Initialize AS VOID STRICT
 		SELF:Margin := Padding{0,0,0,0}
@@ -110,8 +113,8 @@ CLASS VORadioButton INHERIT System.Windows.Forms.RadioButton IMPLEMENTS IVOContr
 		SELF:ForeColor := System.Drawing.Color.Black
 
 	PUBLIC METHOD myCheckedChanged(sender AS OBJECT, e AS EventArgs) AS VOID
-		IF SELF:ooProperties != NULL .AND. !lBlockCheckedChanged
-			SELF:ooProperties:OnClick(sender, e)
+		IF SELF:oProperties != NULL .AND. !lBlockCheckedChanged
+			SELF:oProperties:OnClick(sender, e)
 		ENDIF
 		RETURN
 
@@ -152,7 +155,7 @@ CLASS VOGroupBox INHERIT System.Windows.Forms.GroupBox IMPLEMENTS IVOControl, IV
 		SELF:Initialize()
 		SELF:SetVisualStyle()
 		
-	METHOD SetVisualStyle AS VOID STRICT
+	OVERRIDE METHOD SetVisualStyle AS VOID STRICT
 		IF oProperties != NULL_OBJECT
 			SELF:TabStop := (_AND(oProperties:Style, WS_TABSTOP) == WS_TABSTOP)
 		ENDIF
@@ -227,16 +230,16 @@ CLASS VOGroupBox INHERIT System.Windows.Forms.GroupBox IMPLEMENTS IVOControl, IV
         RETURN
 		
 	METHOD FindChildren(aControls AS System.Windows.Forms.Control[]) AS VOID STRICT
-		LOCAL oLB AS VOListBox
 		LOCAL lAdded AS LOGIC
+        LOCAL oLB := NULL AS VOListBox
 		IF ! lFound
 			LOCAL aNestedGroups AS List<VOGroupBox>
 			aNestedGroups := List<VOGroupBox>{}
 			FOREACH oChild AS System.Windows.Forms.Control IN aControls
 				IF oChild != SELF 
-					IF oChild:GetType() != typeof(VOFramePanel)
-						IF typeof(VOListBox):IsassignableFrom(oChild:GetType())
-							oLB := 	(VOListBox) oChild
+					IF ! (oChild IS VOFramePanel)
+						IF oChild IS VOListBox VAR oList
+                            oLB := oList
 							IF oLB:Items:Count == 0
 								oLB:Items:Add(ListBoxItemValue{"",0})
 								lAdded  := TRUE
@@ -245,8 +248,8 @@ CLASS VOGroupBox INHERIT System.Windows.Forms.GroupBox IMPLEMENTS IVOControl, IV
 							ENDIF
 						ENDIF
 						IF SELF:MoveNestedControl(oChild) 
-							IF TYPEOF(VOGroupBox):IsAssignableFrom(oChild:GetType())
-								aNestedGroups:Add((VOGroupBox) oChild)
+							IF oChild IS VOGroupBox VAR oGroup
+								aNestedGroups:Add(oGroup )
 							ENDIF
 						ENDIF
 						IF lAdded .and. oLB != NULL_OBJECT
@@ -269,11 +272,11 @@ CLASS VOGroupBox INHERIT System.Windows.Forms.GroupBox IMPLEMENTS IVOControl, IV
 			aChildren := System.Collections.Generic.List<IVOControl>{}
 		ENDIF
 		FOREACH oC AS System.Windows.Forms.Control IN SELF:Controls
-			IF TypeOf(IVoControl):isAssignableFrom(oC:GetType())
-				aChildren:add((IVoControl) (OBJECT) oC)
+			IF oC IS IVoControl VAR oVOC
+				aChildren:add(oVOC)
 			ENDIF
-			IF TypeOf(VOGroupBox):isAssignableFrom(oC:getType())
-				aChildren := ((VoGroupBox) oC):getAllChildren(aChildren)
+			IF oC IS VOGroupBox VAR oGroup
+				aChildren := oGroup:getAllChildren(aChildren)
 			ENDIF
 		NEXT
 		RETURN aChildren
@@ -471,7 +474,7 @@ CLASS VOStatusStrip INHERIT System.Windows.Forms.StatusStrip IMPLEMENTS IVOContr
 	
 END CLASS
 
-	CLASS VODateTimePicker  INHERIT System.Windows.Forms.DateTimePicker IMPLEMENTS IVOControl
+CLASS VODateTimePicker  INHERIT System.Windows.Forms.DateTimePicker IMPLEMENTS IVOControl
 	#include "PropControl.vh"
 	CONSTRUCTOR(Owner AS XSharp.VO.Control, dwStyle AS LONG, dwExStyle AS LONG)
 		oProperties := VOControlProperties{SELF, Owner, dwStyle, dwExStyle}
@@ -502,7 +505,6 @@ END CLASS
 
 	 
 END CLASS
-
 
 CLASS VOMonthCalendar  INHERIT System.Windows.Forms.MonthCalendar IMPLEMENTS IVOControl
 	#include "PropControl.vh"

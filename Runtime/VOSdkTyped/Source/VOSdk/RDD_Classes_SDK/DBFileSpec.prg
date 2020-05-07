@@ -604,7 +604,7 @@ ACCESS Delim AS STRING
 
 ASSIGN Delim( cDelimiter AS STRING) 
 	SELF:cDelim := cDelimiter
-	RETURN SELF:cDelim
+	RETURN 
 
 ACCESS FCount AS INT
 	RETURN SELF:nFCount
@@ -706,8 +706,8 @@ ASSIGN FullPath( cFullPath AS STRING)
 		SELF:cFSFileName := NULL_STRING
 		SELF:cFSExtension := NULL_STRING
 
-	ENDIF
-	RETURN SELF:__FullPathAcc()
+    ENDIF
+    RETURN 
 
 ACCESS HeaderSize AS LONG
 	RETURN SELF:nHeaderSize
@@ -822,8 +822,8 @@ ASSIGN MemFullPath( cFullPath AS STRING)
 		SELF:cMemFileExt := SubStr2( cFullPath, RAt2( ".", cFullPath ) )
 	ELSE
 		SELF:cMemFileName := cFullPath
-	ENDIF
-	RETURN SELF:__MemFullPath()
+    ENDIF
+	RETURN 
 
 ACCESS MemName AS STRING
 
@@ -1061,7 +1061,7 @@ ACCESS Recno AS LONG
 ASSIGN RecNo( nDWord   AS LONG) 
 
 	SELF:nRecord := nDWord
-	RETURN SELF:nRecord
+	RETURN 
 
 ACCESS Records  AS LONG
 
@@ -1069,7 +1069,7 @@ ACCESS Records  AS LONG
 
 ASSIGN Records( nDWord  AS LONG) 
 	SELF:nNext := nDWord
-	RETURN SELF:nNext
+	RETURN 
 
 ACCESS RecSize 
 
@@ -1190,7 +1190,7 @@ ASSIGN Rest( lLogic  AS LOGIC)
 		SELF:lRest := lLogic
 	ENDIF
 
-	RETURN SELF:lRest
+	RETURN 
 
 ACCESS RLockCount AS LONG
 
@@ -1215,6 +1215,6 @@ ASSIGN WhileBlock( cbCodeBlock  AS USUAL)
 		SELF:bWhileBlock := cbCodeBlock
 	ENDIF
 
-	RETURN SELF:bWhileBlock
+	RETURN 
 END CLASS
 

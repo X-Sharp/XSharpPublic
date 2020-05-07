@@ -25,7 +25,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 	PROTECT oOrigin AS Point
 	PROTECT oPen AS Pen
 	PROTECT oCursor AS XSharp.VO.Cursor
-	//PROTECT oDragDropClient AS DragDropClient
+	PROTECT oDragDropClient AS DragDropClient
 	//PROTECT oDragDropServer AS DragDropServer
 	PROTECT oToolBar AS ToolBar
 	
@@ -36,8 +36,8 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 	PROTECT DCBrushNeeded AS LOGIC
 	PROTECT DCFontInUse AS LOGIC
 	PROTECT DCFontNeeded AS LOGIC
-	PROTECT hDC AS PTR
-	PROTECT hDCPaint AS PTR
+	PROTECT hDC AS IntPtr
+	PROTECT hDCPaint AS IntPtr
 	
 	PROTECT oCurrentHelp AS HelpDisplay
 	PROTECT lHelpOn AS LOGIC
@@ -50,8 +50,8 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 	
 	//PROTECT lDragActive AS LOGIC
 	//PROTECT oDragImageList AS XSharp.VO.ImageList
-	PROTECT hDragSingleCursor AS PTR
-	PROTECT hDragMultipCursor AS PTR
+	PROTECT hDragSingleCursor AS IntPtr
+	PROTECT hDragMultipCursor AS IntPtr
 	PROTECT aAlignes			AS ARRAY
 	PROTECT aDelayedAlignes		AS ARRAY
 	PROTECT lDelayAlignment		as LOGIC
@@ -190,8 +190,8 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 				cMessage := oControl:HyperLabel:Description
 			ENDIF
 		ENDIF
-		IF typeof(VOPanel):Isassignablefrom(SELF:__Surface:GetType())
-			((VOPanel) SELF:__Surface):ShowToolTip(oControl:__Control, cMessage)
+		IF SELF:__Surface IS VOPanel VAR oPanel
+			oPanel:ShowToolTip(oControl:__Control, cMessage)
 		ENDIF
 
 	METHOD __AlignControl(	oCtl AS System.Windows.Forms.Control, nX AS LONG, nY AS LONG, nW AS LONG, nH AS LONG) AS VOID 
@@ -498,7 +498,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		RETURN FALSE
 	
 
-	METHOD __CreateSelfBitmap() AS PTR STRICT 
+	METHOD __CreateSelfBitmap() AS IntPtr STRICT 
 		// Todo
 		LOCAL hDIB AS PTR
 		//LOCAL hBitmap AS PTR
@@ -640,7 +640,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 	
 	
 
-	METHOD __GetDC() AS PTR STRICT 
+	METHOD __GetDC() AS IntPtr STRICT 
 		// Todo ?
 		//LOCAL hFont AS PTR
 		//LOCAL strucLogPen IS _WinLogPen
@@ -1597,17 +1597,18 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 
 		RETURN NIL
 
-	[Obsolete];
 	METHOD EnableDragDropClient(lEnable := TRUE AS LOGIC) AS VOID
-		//IF lEnable
-		//	IF (oDragDropClient == NULL_OBJECT)
-		//		oDragDropClient := DragDropClient{SELF}
-		//	ENDIF
-		//ELSEIF (oDragDropClient != NULL_OBJECT)
-		//	oDragDropClient:Destroy()
-		//	oDragDropClient := NULL_OBJECT
-		//ENDIF
-		
+        IF SELF:__IsValid
+            SELF:__Form:AllowDrop := lEnable
+            IF lEnable
+                SELF:oDragDropClient := DragDropClient{SELF}
+            ELSE
+                IF SELF:oDragDropClient != NULL_OBJECT
+                    SELF:oDragDropClient:Destroy()
+                    SELF:oDragDropClient:= NULL_OBJECT 
+                ENDIF
+            ENDIF
+        ENDIF
 		RETURN 
 	
 
@@ -1680,8 +1681,8 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		// Todo
 		
 		IF lEnable 
-			IF typeof(VOPanel):Isassignablefrom(SELF:__Surface:GetType())
-				((VOPanel) SELF:__Surface):EnableToolTips(lEnable)			
+			IF SELF:__Surface IS VOPanel VAR panel
+				panel:EnableToolTips(lEnable)			
 			ENDIF
 		ENDIF
 		RETURN 
@@ -1937,7 +1938,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		
 		SUPER()
 		IF oOwner != NULL_OBJECT
-			IF TYPEOF(System.Windows.Forms.Form):IsAssignableFrom(oOwner:GetType())
+			IF oOwner IS System.Windows.Forms.Form
 				oParent := __ForeignWindow{oOwner}
 			ELSE
 				oParent := oOwner
@@ -2856,7 +2857,7 @@ END CLASS
 
 
 
-PARTIAL CLASS __ForeignWindow INHERIT Window
+CLASS __ForeignWindow INHERIT Window
 	
 	CONSTRUCTOR(oWndSelf)
 		SUPER()

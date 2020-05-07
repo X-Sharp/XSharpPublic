@@ -1,12 +1,12 @@
 // The cursor class handles the Windows (textBox) Caret
 // This is not used in Vewa, so the class is empty
 
-PARTIAL CLASS Cursor INHERIT VObject
+CLASS Cursor INHERIT VObject
 END CLASS
 
 #ifdef NOTIMPLEMENTED
 
-PARTIAL CLASS Cursor INHERIT VObject
+CLASS Cursor INHERIT VObject
 	PROTECT oWnd     AS window
 	PROTECT oDim     AS Dimension
 	PROTECT oBitmap  AS Bitmap

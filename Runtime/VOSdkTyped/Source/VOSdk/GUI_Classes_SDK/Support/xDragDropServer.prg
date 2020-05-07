@@ -1,4 +1,4 @@
-PARTIAL CLASS DragDropServer INHERIT VObject
+CLASS DragDropServer INHERIT VObject
 	CONSTRUCTOR()
 		SUPER()
 END CLASS
@@ -8,7 +8,7 @@ END CLASS
 
 
 
-PARTIAL CLASS DragDropServer INHERIT VObject
+CLASS DragDropServer INHERIT VObject
 	PROTECT oParent AS Window
 	//Liuho01 05-15-96 for DragDraopServer
 	PROTECT hDragSingleCursor AS PTR

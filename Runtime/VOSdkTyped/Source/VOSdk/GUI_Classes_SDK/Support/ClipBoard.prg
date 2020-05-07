@@ -3,7 +3,7 @@
 
 #USING System.Collections.Specialized
 
-PARTIAL CLASS Clipboard INHERIT VObject
+CLASS Clipboard INHERIT VObject
 
 	METHOD Clear() AS VOID
 		System.Windows.Forms.Clipboard.Clear()

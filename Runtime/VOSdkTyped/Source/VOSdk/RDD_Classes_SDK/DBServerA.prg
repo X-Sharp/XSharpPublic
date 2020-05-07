@@ -13,13 +13,13 @@ ACCESS AliasSym AS SYMBOL
 
 ACCESS BoF AS LOGIC
 		//SE-060601
-		LOCAL dwCurrentWorkArea AS DWORD
+		LOCAL dwCurrentWorkArea := 0 AS DWORD
 		LOCAL lRetVal AS LOGIC
 		
 		IF lSelectionActive
 			RETURN siSelectionStatus == DBSELECTIONBOF .OR. siSelectionStatus == DBSELECTIONEMPTY
 		ENDIF
-		VoDbSelect( wWorkArea, REF dwCurrentWorkArea )
+		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 		lRetVal := VoDbBof()
 		__DBSSetSelect( dwCurrentWorkArea )
 		RETURN lRetVal
@@ -30,7 +30,7 @@ ACCESS ConcurrencyControl AS USUAL
 
 ASSIGN ConcurrencyControl( nMode AS USUAL) 
 	LOCAL newMode := nMode
-	LOCAL dwCurrentWorkArea  AS DWORD
+	LOCAL dwCurrentWorkArea  := 0 AS DWORD
 	LOCAL oError            AS USUAL
 	IF IsString(newMode)
 		newMode := String2Symbol(nMode)
@@ -56,7 +56,7 @@ ASSIGN ConcurrencyControl( nMode AS USUAL)
 		SELF:Error( oErrorInfo, #ConcurrencyControl )
 	ELSEIF newMode != SELF:nCCMode
 		BEGIN SEQUENCE
-			VoDbSelect( wWorkArea, REF dwCurrentWorkArea )
+			VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 			SELF:__ClearLocks()
 			SELF:nEffectiveCCMode := newMode
 			IF lReadOnly .OR. ! lShared
@@ -72,7 +72,7 @@ ASSIGN ConcurrencyControl( nMode AS USUAL)
 		END SEQUENCE
 	ENDIF
 	
-	RETURN SELF:nCCMode
+	RETURN 
 	
 
 ACCESS DBStruct  AS ARRAY
@@ -89,14 +89,14 @@ ACCESS DbStructure AS ARRAY
 
 ACCESS Deleted AS LOGIC
 	//SE-060601
-	LOCAL dwCurrentWorkArea AS DWORD
+	LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL uRetVal           AS USUAL
 	LOCAL oError            AS USUAL
 	
 	
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VoDbSelect( wWorkArea, REF dwCurrentWorkArea )
+		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 		uRetVal := VoDbDeleted()
 		
 	RECOVER USING oError
@@ -118,14 +118,14 @@ ACCESS Driver AS STRING
 
 ACCESS EoF AS LOGIC
 	//SE-060601
-	LOCAL dwCurrentWorkArea AS DWORD
+	LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL lRetVal AS LOGIC
 	
 	
 	IF lSelectionActive
 		RETURN siSelectionStatus == DBSELECTIONEOF .OR. siSelectionStatus == DBSELECTIONEMPTY
 	ENDIF
-	VoDbSelect( wWorkArea, REF dwCurrentWorkArea )
+	VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 	lRetVal := VoDbEof()
 	__DBSSetSelect( dwCurrentWorkArea )
 	RETURN lRetVal
@@ -162,13 +162,13 @@ ACCESS FileSpec AS FileSpec
 	
 
 ACCESS Filter AS USUAL
-	LOCAL dwCurrentWorkArea AS DWORD
+	LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL oError            AS USUAL
 	LOCAL uInfo             AS USUAL
 	
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VoDbSelect( wWorkArea, REF dwCurrentWorkArea )
+		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 		IF !VoDbInfo(DBI_DBFILTER, REF uInfo)
 			BREAK ErrorBuild(_VoDbErrInfoPtr())
 		ENDIF
@@ -208,7 +208,7 @@ ASSIGN ForBlock( cbForBlock  AS USUAL)
 
 ACCESS Found AS LOGIC
 	//SE-060601
-	LOCAL dwCurrentWorkArea AS DWORD
+	LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL oError            AS USUAL
 	LOCAL lRetCode          AS LOGIC
 	IF lSelectionActive
@@ -218,7 +218,7 @@ ACCESS Found AS LOGIC
 	
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VoDbSelect( wWorkArea, REF dwCurrentWorkArea )
+		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 		lRetCode:=VoDbFound()
 	RECOVER USING oError
 		oHLStatus := SELF:__GenerateStatusHL( oError )
@@ -234,14 +234,14 @@ ACCESS Found AS LOGIC
 
 ACCESS Header AS DWORD
 	//SE-060601
-	LOCAL dwCurrentWorkArea AS DWORD
+	LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL oError            AS USUAL
 	LOCAL uInfo             AS USUAL
 	
 	
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VoDbSelect( wWorkArea, REF dwCurrentWorkArea )
+		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 		IF ! VoDbInfo(DBI_GETHEADERSIZE, REF uInfo)
 			BREAK ErrorBuild(_VoDbErrInfoPtr())
 		ENDIF
@@ -257,14 +257,14 @@ ACCESS Header AS DWORD
 
 ACCESS IndexExt AS STRING
 	//SE-060601
-	LOCAL dwCurrentWorkArea AS DWORD
+	LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL oError            AS USUAL
 	LOCAL uOrdVal           AS USUAL
 	
 	
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VoDbSelect( wWorkArea, REF dwCurrentWorkArea )
+		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 		IF ! VoDbOrderInfo(DBOI_BAGEXT, "", NIL, REF uOrdVal)
 			BREAK ErrorBuild(_VoDbErrInfoPtr())
 		ENDIF
@@ -287,25 +287,25 @@ ACCESS IndexList AS ARRAY
 
 ACCESS LastRec AS LONG
 	//SE-060601
-	LOCAL dwCurrentWorkArea AS DWORD
+	LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL liRecno AS LONGINT
 	
 	
-	VoDbSelect( wWorkArea, REF dwCurrentWorkArea )
+	VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 	liRecno := VoDbLastRec()
 	__DBSSetSelect( dwCurrentWorkArea )
 	RETURN liRecno
 
 ACCESS Lupdate AS DATE
 	//SE-060601
-	LOCAL dwCurrentWorkArea AS DWORD
+	LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL oError            AS USUAL
 	LOCAL uInfo             AS USUAL
 	
 	
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VoDbSelect( wWorkArea, REF dwCurrentWorkArea )
+		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 		IF ! VoDbInfo(DBI_LASTUPDATE, REF uInfo)
 			BREAK ErrorBuild(_VoDbErrInfoPtr())
 		ENDIF
@@ -334,13 +334,13 @@ ACCESS OleExt AS STRING
 
 ACCESS OrderBottomScope AS USUAL
 	//SE-060601
-	LOCAL dwCurrentWorkArea AS DWORD
-	LOCAL uRetVal       AS USUAL
+	LOCAL dwCurrentWorkArea := 0 AS DWORD
+	LOCAL uRetVal := NIL AS USUAL
 	LOCAL oError        AS USUAL
 	
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VoDbSelect( wWorkArea, REF dwCurrentWorkArea )
+		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 		IF ! VoDbOrderInfo(DBOI_SCOPEBOTTOM, "", NIL, REF uRetVal)
 			BREAK ErrorBuild(_VoDbErrInfoPtr())
 		ENDIF
@@ -358,15 +358,15 @@ ACCESS OrderBottomScope AS USUAL
 ASSIGN OrderBottomScope(uValue  AS USUAL) 
 	//PP-040416 uRetVal was LOGIC, should be USUAL
 	//SE-060601
-	LOCAL dwCurrentWorkArea AS DWORD
-	//LOCAL uRetVal       AS USUAL
+	LOCAL dwCurrentWorkArea := 0 AS DWORD
+	//LOCAL uRetVal := NIL AS USUAL
 	LOCAL oError        AS USUAL
 	LOCAL n             AS DWORD
 	
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VoDbSelect( wWorkArea, REF dwCurrentWorkArea )
+		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 		//uRetVal := OrdScope(BottomScope,uValue)
 		n := DBOI_SCOPEBOTTOM
 		IF IsNil(uValue)
@@ -393,14 +393,14 @@ This conflicts with METHOD OrderKeyNo !!!
 
 ACCESS OrderKeyNo 
 	//SE-060601
-	LOCAL dwCurrentWorkArea AS DWORD
-	LOCAL uRetVal       AS USUAL
+	LOCAL dwCurrentWorkArea := 0 AS DWORD
+	LOCAL uRetVal := NIL AS USUAL
 	LOCAL oError        AS USUAL
 	
 	
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VoDbSelect( wWorkArea, REF dwCurrentWorkArea )
+		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 		//iRetVal := (OrdKeyNo()
 		IF ! VoDbOrderInfo(DBOI_POSITION, "", NIL, REF uRetVal)
 			BREAK ErrorBuild(_VoDbErrInfoPtr())
@@ -420,13 +420,13 @@ ACCESS OrderKeyNo
 	
 //	RvdH 070323 This does not set the keyno, but retrieves the KeyVal...
 // ASSIGN OrderKeyNo(uKeyValue) CLASS DbServer
-// 	LOCAL uRetVal       AS USUAL
+// 	LOCAL uRetVal := NIL AS USUAL
 // 	LOCAL oError        AS USUAL
 // 	LOCAL dwCurrentWorkArea  AS DWORD
 // 	
 // 	lErrorFlag := FALSE
 // 	BEGIN SEQUENCE
-// 		VoDbSelect( wWorkArea, REF dwCurrentWorkArea )
+// 		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 // 		IF !SELF:Notify( NOTIFYINTENTTOMOVE )
 // 			BREAK DbError{ SELF, #OrderKeyNo, 999, VO_SPrintF(__CAVOSTR_DBFCLASS_INTENTTOMOVE)}
 // 		ENDIF
@@ -459,14 +459,14 @@ ASSIGN OrderKeyNo(nKeyPos)
 
 ACCESS OrderKeyVal  AS USUAL
 	//SE-060601
-	LOCAL dwCurrentWorkArea AS DWORD
-	LOCAL uRetVal       AS USUAL
+	LOCAL dwCurrentWorkArea := 0 AS DWORD
+	LOCAL uRetVal := NIL AS USUAL
 	LOCAL oError        AS USUAL
 	
 	
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VoDbSelect( wWorkArea, REF dwCurrentWorkArea )
+		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 		//uRetVal := OrdKeyVal()
 		IF ! VoDbOrderInfo(DBOI_KEYVAL, "", NIL, REF uRetVal)
 			BREAK ErrorBuild(_VoDbErrInfoPtr())
@@ -484,14 +484,14 @@ ACCESS OrderKeyVal  AS USUAL
 
 ACCESS OrderTopScope  AS USUAL
 	//SE-060601
-	LOCAL dwCurrentWorkArea AS DWORD
-	LOCAL uRetVal       AS USUAL
+	LOCAL dwCurrentWorkArea := 0 AS DWORD
+	LOCAL uRetVal := NIL AS USUAL
 	LOCAL oError        AS USUAL
 	
 	
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VoDbSelect( wWorkArea, REF dwCurrentWorkArea )
+		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 		//uRetVal := DbOrderInfo(DBOI_Scopetop)
 		IF ! VoDbOrderInfo(DBOI_SCOPETOP, "", NIL, REF uRetVal)
 			BREAK ErrorBuild(_VoDbErrInfoPtr())
@@ -511,15 +511,15 @@ ACCESS OrderTopScope  AS USUAL
 ASSIGN OrderTopScope(uValue AS USUAL) 
 	//PP-040416 uRetVal was LOGIC, should be USUAL
 	//SE-060601
-	LOCAL dwCurrentWorkArea AS DWORD
-	//LOCAL uRetVal       AS USUAL
+	LOCAL dwCurrentWorkArea := 0 AS DWORD
+	//LOCAL uRetVal := NIL AS USUAL
 	LOCAL oError        AS USUAL
 	LOCAL n             AS DWORD
 	
 	
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VoDbSelect( wWorkArea, REF dwCurrentWorkArea )
+		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 		//uRetVal := OrdScope(TopScope,uValue)
 		n := DBOI_SCOPETOP
 		IF IsNil(uValue)
@@ -575,7 +575,7 @@ ACCESS RecCount  AS LONG
 	LOCAL nCurrentRecord            AS LONGINT
 	LOCAL siCurrentSelectionStatus  AS SHORTINT
 	LOCAL iRetVal                   AS INT
-	LOCAL dwCurrentWorkArea          AS DWORD
+	LOCAL dwCurrentWorkArea := 0    AS DWORD
 	LOCAL oError                    AS USUAL
 	
 	lErrorFlag := FALSE
@@ -584,7 +584,7 @@ ACCESS RecCount  AS LONG
 			IF siSelectionStatus == DBSELECTIONEMPTY
 				iRetVal := 0
 			ELSE
-				VoDbSelect( wWorkArea, REF dwCurrentWorkArea )
+				VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 				nCurrentRecord          := VoDbRecno( )
 				siCurrentSelectionStatus:= siSelectionStatus
 				iRetVal                 := SELF:Count( )
@@ -595,7 +595,7 @@ ACCESS RecCount  AS LONG
 				siSelectionStatus       := siCurrentSelectionStatus
 			ENDIF
 		ELSE
-			VoDbSelect( wWorkArea, REF dwCurrentWorkArea )
+			VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 			iRetVal := VoDbLastRec()
 			__DBSSetSelect( dwCurrentWorkArea )
 		ENDIF
@@ -611,13 +611,13 @@ ACCESS RecCount  AS LONG
 	
 
 ACCESS RecNo AS LONG
-	LOCAL dwCurrentWorkArea AS DWORD
+	LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL wRetCode      AS LONGINT
 	LOCAL oError        AS USUAL
 	
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VoDbSelect( wWorkArea, REF dwCurrentWorkArea )
+		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 		wRetCode := VoDbRecno()
 		__DBSSetSelect( dwCurrentWorkArea )
 	RECOVER USING oError
@@ -647,14 +647,14 @@ ASSIGN RecNo( nRecordNumber AS LONG)
 	
 
 ACCESS RecSize AS DWORD
-	LOCAL dwCurrentWorkArea AS DWORD
+	LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL oError        AS USUAL
 	LOCAL uVoVal        AS USUAL
 	
 	
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VoDbSelect( wWorkArea, REF dwCurrentWorkArea )
+		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 		IF ! VoDbRecordInfo(DBRI_RECSIZE, 0, REF uVoVal)
 			BREAK ErrorBuild(_VoDbErrInfoPtr())
 		ENDIF
@@ -685,24 +685,24 @@ ASSIGN RelationChildren(aNewChildren AS ARRAY)
 		lRelationsActive := TRUE
 	ENDIF
 
-RETURN SELF:aRelationChildren
+RETURN 
 
 ASSIGN Retries  (n AS DWORD) 
 	IF IsNumeric(n) .AND. n > 0
 		SELF:nRetries := n
 	ENDIF
-	RETURN SELF:nRetries
+	RETURN 
 	
 
 ACCESS RLockList AS ARRAY
-	LOCAL dwCurrentWorkArea AS DWORD
+	LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL oError            AS USUAL
 	LOCAL aLockList := { }  AS ARRAY
 	
 	
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VoDbSelect( wWorkArea, REF dwCurrentWorkArea )
+		VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 		aLockList := DbRLockList()
 		__DBSSetSelect( dwCurrentWorkArea )
 	RECOVER USING oError
@@ -761,20 +761,20 @@ ASSIGN Status(oHl AS HyperLabel)
 	SUPER:Status := oHl
 	SELF:lErrorFlag := TRUE
 
-RETURN SELF:oHLStatus
+    RETURN  
 
 ACCESS TableExt AS STRING
 	
     RETURN SELF:Info(DBI_TABLEEXT)
 
 ACCESS Used AS LOGIC
-	LOCAL dwCurrentWorkArea AS DWORD
+	LOCAL dwCurrentWorkArea := 0 AS DWORD
 	LOCAL lRetVal AS LOGIC
 	
 	IF SELF:wWorkArea == 0
 		RETURN FALSE
 	ENDIF
-	VoDbSelect( wWorkArea, REF dwCurrentWorkArea )
+	VoDbSelect( wWorkArea, OUT dwCurrentWorkArea )
 	lRetVal := Used()
 	__DBSSetSelect( dwCurrentWorkArea )
 	RETURN lRetVal

@@ -38,7 +38,6 @@ CLASS VOPanel INHERIT System.Windows.Forms.Panel
 		SELF:AllowDrop := TRUE
 		SELF:DragEnter += Panel_DragEnter
 		SELF:DragDrop += Panel_DragDrop
-		SELF:BackColor := System.Drawing.Color.White
 
 	CONSTRUCTOR(Owner AS XSharp.VO.Control, dwStyle AS LONG, dwExStyle AS LONG)
 		SUPER()
@@ -68,6 +67,8 @@ CLASS VOPanel INHERIT System.Windows.Forms.Panel
 		SELF:Margin         := Padding{0}
 		SELF:BorderStyle    := BorderStyle.None	
 		SELF:SuppressMovingControls := TRUE
+		SELF:BackColor      := System.Drawing.Color.White
+
 
 	PROTECTED METHOD RegisterEventHandlers() AS VOID STRICT
 		oToolTip := VOToolTip{}
@@ -151,11 +152,12 @@ CLASS VOPanel INHERIT System.Windows.Forms.Panel
 
 	METHOD Prepare() AS VOID STRICT
 		LOCAL aControls AS System.Windows.Forms.Control[]
-		LOCAL lSortGroups := SELF:_aGroups == NULL AS LOGIC // Was in lSortgroups-Blöcken passiert steuert, dass die Reihenfolge der Gruppen in der Controls-Collection des Panels nach der Position der unteren Kante der Gruppe sortiert ist
-		LOCAL oGroup AS VOGroupBox
+        // Was in lSortgroups-Blöcken passiert steuert, dass die Reihenfolge der Gruppen in der Controls-Collection des Panels
+        // nach der Position der unteren Kante der Gruppe sortiert ist
+		LOCAL lSortGroups := SELF:_aGroups == NULL AS LOGIC 
 		LOCAL nKey AS INT
 		IF lSortGroups
-			SELF:_aGroups := System.Collections.Generic.SortedList<INT,VOGroupBox>{}
+			SELF:_aGroups   := System.Collections.Generic.SortedList<INT,VOGroupBox>{}
 			SELF:_aRBGroups := System.Collections.Generic.SortedList<INT,VOGroupBox>{}
 		ENDIF
 		IF SELF:Controls:Count > 0 
@@ -163,27 +165,27 @@ CLASS VOPanel INHERIT System.Windows.Forms.Panel
 			aControls := System.Windows.Forms.Control[]{SELF:Controls:Count}
 			SELF:Controls:CopyTo(aControls,0)
 			FOREACH oC AS System.Windows.Forms.Control IN aControls
-				IF oC is VOGroupBox
-					oGroup := (VOGroupBox) oC
+				IF oC IS VOGroupBox VAR oGroup
 					IF ! SELF:SuppressMovingControls
 						oGroup:FindChildren()
 					ENDIF
-						IF lSortGroups
-							nKey := (oGroup:Location:Y + oGroup:Height)*10000 + oGroup:Location:X // untere kante berechnen (oben>unten , links > rechts)
-							DO WHILE SELF:_aGroups:ContainsKey(nKey)
-								nKey++
-							ENDDO
-							SELF:_aGroups:Add(nKey,oGroup)
+					IF lSortGroups
+                        // sort key is based on location
+						nKey := (oGroup:Location:Y + oGroup:Height)*10000 + oGroup:Location:X 
+						DO WHILE SELF:_aGroups:ContainsKey(nKey)
+							nKey++
+						ENDDO
+			    		SELF:_aGroups:Add(nKey,oGroup)
 					ENDIF
-				ELSEIF oc is VOPanel
-					((VOPanel) oC):Prepare()
+				ELSEIF oc IS VOPanel VAR  opanel
+					opanel:Prepare()
 				ELSEIF oc is System.Windows.Forms.TabControl
 					LOCAL oTab AS System.Windows.Forms.TabControl
 					oTab := (System.Windows.Forms.TabControl) oC
 					FOREACH oPage AS TabPage IN oTab:TabPages
 						FOREACH IMPLIED oC2 IN oPage:Controls
-							IF TypeOf(VOPanel):IsAssignableFrom(oC2:GetType())
-								((VOPanel) oC2):Prepare()
+							IF oC2 IS VOPanel VAR panel
+								panel:Prepare()
 							ENDIF						
 						NEXT
 					NEXT
@@ -200,39 +202,36 @@ CLASS VOPanel INHERIT System.Windows.Forms.Panel
 		RETURN
 
 	METHOD SortGroups() AS VOID STRICT
-		LOCAL oGroup AS VOGroupBox
 		LOCAL nKey AS INT
-		SELF:_aGroups := System.Collections.Generic.SortedList<INT,VOGroupBox>{}
-		SELF:_aRBGroups := System.Collections.Generic.SortedList<INT,VOGroupBox>{}
-		SELF:_aFramepanels := System.Collections.Generic.SortedList<INT,VOFramepanel>{}
+		SELF:_aGroups       := System.Collections.Generic.SortedList<INT,VOGroupBox>{}
+		SELF:_aRBGroups     := System.Collections.Generic.SortedList<INT,VOGroupBox>{}
+		SELF:_aFramepanels  := System.Collections.Generic.SortedList<INT,VOFramepanel>{}
 		FOREACH oC AS System.Windows.Forms.Control IN SELF:Controls
-			IF oc is VOGroupBox
-				oGroup := (VOGroupBox) oC
-					nKey := ((oGroup:Location:Y + oGroup:Height)*10000 + oGroup:Location:X)*(-1) // untere kante berechnen (oben>unten , links > rechts)
-					DO WHILE SELF:_aGroups:ContainsKey(nKey)
-						nKey++
-					ENDDO
-					SELF:_aGroups:Add(nKey,oGroup)
+			IF oc IS VOGroupBox VAR oGroup
+				nKey := ((oGroup:Location:Y + oGroup:Height)*10000 + oGroup:Location:X)*(-1) // untere kante berechnen (oben>unten , links > rechts)
+				DO WHILE SELF:_aGroups:ContainsKey(nKey)
+					nKey++
+				ENDDO
+				SELF:_aGroups:Add(nKey,oGroup)
 			ENDIF
-			IF oc is VOFramePanel
-				LOCAL oframe := (VOFramePanel) oC
-				nKey := ((oframe:Location:Y + oframe:Height)*10000 + oframe:Location:X)*(-1) // untere kante berechnen (oben>unten , links > rechts)
+			IF oc IS VOFramePanel VAR oFrame
+				nKey := ((oFrame:Location:Y + oFrame:Height)*10000 + oFrame:Location:X)*(-1) // untere kante berechnen (oben>unten , links > rechts)
 				DO WHILE SELF:_aFramepanels:ContainsKey(nKey)
 					nKey++
 				ENDDO
-				SELF:_aFramepanels:Add(nKey,oframe)
+				SELF:_aFramepanels:Add(nKey,oFrame)
 			ENDIF
 		NEXT
 		nKey := SELF:Controls:Count-1
-		FOREACH IMPLIED kvp IN SELF:_aGroups
+		FOREACH VAR kvp IN SELF:_aGroups
 			SELF:Controls:SetChildIndex(kvp:Value,nKey)
 			nKey--
 		NEXT
-		FOREACH IMPLIED kvp IN SELF:_aRBGroups
+		FOREACH VAR kvp IN SELF:_aRBGroups
 			SELF:Controls:SetChildIndex(kvp:Value,nKey)
 			nKey--
 		NEXT
-		FOREACH IMPLIED kvp IN SELF:_aFramepanels
+		FOREACH VAR kvp IN SELF:_aFramepanels
 			SELF:Controls:SetChildIndex(kvp:Value,nKey)
 			nKey--
 		NEXT
@@ -321,6 +320,12 @@ CLASS VOSurfacePanel INHERIT VOPanel
 		SUPER:Initialize()
 		SELF:TabIndex	:= 0
 		SELF:lShown := FALSE
+		SELF:AutoSizeMode := AutoSizeMode.GrowAndShrink
+		SELF:AutoSize     := TRUE
+#ifdef DEBUG
+        SELF:BackColor := System.Drawing.Color.Bisque
+        SELF:Text        := "SurfacePanel"
+#endif        
 		RETURN
 
 	PROTECTED METHOD OnVisibleChanged(e AS EventArgs) AS VOID
@@ -351,7 +356,11 @@ CLASS VOFramePanel INHERIT VOPanel
 		SUPER:Initialize()
 		SELF:TabIndex := 1
 		SELF:AutoScroll := TRUE						// Show scrollbars when surface is bigger than the backpanel
-		SELF:lShown := FALSE	
+		SELF:lShown := FALSE
+#ifdef DEBUG
+        SELF:BackColor   := System.Drawing.Color.Beige
+        SELF:Text        := "FramePanel"
+#endif        
 		RETURN
 
 	VIRTUAL PROTECTED PROPERTY CreateParams AS System.Windows.Forms.CreateParams 

@@ -4,7 +4,7 @@
 #define __WCFixedPitch 1
 #define __WCVariablePitch 2
 #USING System.Runtime.InteropServices
-PARTIAL CLASS Font INHERIT VObject
+CLASS Font INHERIT VObject
 	PROTECT oFont 			AS System.Drawing.Font
 	PROTECT oLogFont		AS Font.LOGFONT
 	PROTECT lStdFont 		AS LOGIC

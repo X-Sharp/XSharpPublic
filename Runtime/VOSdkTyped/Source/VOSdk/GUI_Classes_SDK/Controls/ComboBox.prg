@@ -102,14 +102,14 @@ CLASS ComboBox INHERIT ListBox
 
 	PRIVATE METHOD __SetComboStyle() AS VOID STRICT
 		IF SELF:__Combobox != NULL
-		DO CASE
-		CASE (liComboType == BOXSIMPLE)
+		SWITCH liComboType 
+		CASE BOXSIMPLE
 			SELF:__ComboBox:DropDownStyle := System.Windows.Forms.ComboBoxStyle.Simple
-		CASE (liComboType == BOXDROPDOWN)
+		CASE BOXDROPDOWN
 			SELF:__ComboBox:DropDownStyle := System.Windows.Forms.ComboBoxStyle.DropDown
 		OTHERWISE // CASE (liComboType == BOXDROPDOWNLIST)
 			SELF:__ComboBox:DropDownStyle := System.Windows.Forms.ComboBoxStyle.DropDownList
-		ENDCASE	
+		END SWITCH
 		SELF:__ComboBox:DropDownHeight := oSize:Height
 		ENDIF
 		RETURN
@@ -134,16 +134,16 @@ CLASS ComboBox INHERIT ListBox
 				SELF:SetStyle(_OR(WS_CLIPSIBLINGS,WS_CLIPCHILDREN), FALSE)
 				dwStyle := _OR(WS_BORDER, WS_VSCROLL)
 			ENDIF
-			DO CASE
-			CASE (liComboType == BOXSIMPLE)
+			SWITCH liComboType 
+			CASE BOXSIMPLE
 				SELF:SetStyle( CBS_SIMPLE, TRUE)
-			CASE (liComboType == BOXDROPDOWN)
+			CASE BOXDROPDOWN
 				SELF:SetStyle(CBS_DROPDOWN, TRUE)
-			CASE (liComboType == BOXDROPDOWNLIST)
+			CASE BOXDROPDOWNLIST
 				SELF:SetStyle(CBS_DROPDOWNLIST, TRUE)
 			OTHERWISE
 				WCError{#Init,#ComboBox,__WCSTypeError,liComboType,5}:@@Throw()
-			ENDCASE
+			END SWITCH
 		ELSE
 			// When created from resource, make sure that the DotNet combo has the property style
 			dwStyle := SELF:dwStyle
@@ -205,7 +205,7 @@ CLASS ComboBox INHERIT ListBox
 END CLASS
 
 /*
-PARTIAL CLASS ComboBoxEx INHERIT ComboBox
+CLASS ComboBoxEx INHERIT ComboBox
 PROTECT oImgList AS ImageList
 
 METHOD AddItem(cItem, nItemNumber, uRetValue, iImageIdx, iSelectedIdx, iOverlayIdx, iIndent) 
@@ -417,7 +417,7 @@ RETURN SELF
 
 END CLASS
 */
-//PARTIAL CLASS ComboBoxExItem INHERIT VObject
+//CLASS ComboBoxExItem INHERIT VObject
 //	//SE-060519
 //	EXPORT ItemIndex AS INT
 //	EXPORT ImageIndex AS INT

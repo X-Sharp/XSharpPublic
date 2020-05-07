@@ -4,7 +4,7 @@
 USING System.Reflection
 USING SWF := System.Windows.Forms
 
-PARTIAL CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
+CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
 	PROTECT oCtrl                AS SWF.Control
 	PROTECT oParent              AS IControlParent 
 	
@@ -217,16 +217,17 @@ PARTIAL CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
 			SELF:ValueChanged := FALSE
 		ELSEIF (SELF:Value == NIL) .AND. oFieldSpec != NULL_OBJECT
 			cFSValType := oFieldSpec:ValType
-			DO CASE
-			CASE (cFSValType == "C") .OR. (cFSValType == "M")
+			SWITCH cFSValType
+            CASE "C"
+            CASE "M"
 				SELF:Value := NULL_STRING
-			CASE cFSValType == "D"
+			CASE "D"
 				SELF:Value := NULL_DATE
-			CASE cFSValType == "N"
+			CASE "N"
 				SELF:Value := 0
-			CASE cFSValType == "L"
+			CASE "L"
 				SELF:Value := FALSE
-			ENDCASE //438@AJP001 END
+			END SWITCH
 		ENDIF
 		
 		RETURN SELF
@@ -341,7 +342,7 @@ PARTIAL CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
 	
 	METHOD Activate(oEvent ) 
 		// Also empty in GUI Classes
-		RETURN 
+		RETURN NIL
 
 	METHOD AddChild(oC AS OBJECT) AS VOID STRICT
 		IF SELF:__IsValid
@@ -1136,38 +1137,39 @@ PARTIAL CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
 		lStandard := TRUE
 		IF IsNumeric(iNewType)
 			iType := (DWORD) iNewType
-		ENDIF
-		DO CASE
-		CASE IsPtr(iNewType)
-			// No way
-			lStandard := FALSE
-		CASE iType ==  OA_PX_Y
-			oC:Anchor := SWF.AnchorStyles.Bottom
-		CASE iType == OA_X
-			oC:Anchor := SWF.AnchorStyles.Top | SWF.AnchorStyles.Right
-		CASE iType == OA_Y
-			oC:Anchor := SWF.AnchorStyles.Left | SWF.AnchorStyles.Bottom
-		CASE iType == OA_X_Y
-			oC:Anchor := SWF.AnchorStyles.Bottom | SWF.AnchorStyles.Right
-		CASE iType == OA_WIDTH
-			oC:Anchor := SWF.AnchorStyles.Top | SWF.AnchorStyles.Left | SWF.AnchorStyles.Right
-		CASE iType == OA_HEIGHT
-			oC:Anchor := SWF.AnchorStyles.Top | SWF.AnchorStyles.Left | SWF.AnchorStyles.Bottom
-		CASE iType == OA_WIDTH_HEIGHT
-			oC:Anchor := SWF.AnchorStyles.Top | SWF.AnchorStyles.Left | SWF.AnchorStyles.Bottom| SWF.AnchorStyles.Right
-		CASE iType == OA_FULL_SIZE
-			oC:Dock := SWF.DockStyle.Fill
-		CASE iType == OA_LEFT_AUTOSIZE
-			oC:Dock := SWF.DockStyle.Left
-		CASE iType == OA_RIGHT_AUTOSIZE
-			oC:Dock := SWF.DockStyle.Right
-		CASE iType == OA_TOP_AUTOSIZE
-			oC:Dock := SWF.DockStyle.Top
-		CASE iType == OA_BOTTOM_AUTOSIZE
-			oC:Dock := SWF.DockStyle.Bottom
-		OTHERWISE
-			lStandard := FALSE
-		ENDCASE
+        ENDIF
+        IF IsLong(iNewType)
+		    SWITCH iType
+		    CASE OA_PX_Y
+			    oC:Anchor := SWF.AnchorStyles.Bottom
+		    CASE OA_X
+			    oC:Anchor := SWF.AnchorStyles.Top | SWF.AnchorStyles.Right
+		    CASE OA_Y
+			    oC:Anchor := SWF.AnchorStyles.Left | SWF.AnchorStyles.Bottom
+		    CASE OA_X_Y
+			    oC:Anchor := SWF.AnchorStyles.Bottom | SWF.AnchorStyles.Right
+		    CASE OA_WIDTH
+			    oC:Anchor := SWF.AnchorStyles.Top | SWF.AnchorStyles.Left | SWF.AnchorStyles.Right
+		    CASE OA_HEIGHT
+			    oC:Anchor := SWF.AnchorStyles.Top | SWF.AnchorStyles.Left | SWF.AnchorStyles.Bottom
+		    CASE OA_WIDTH_HEIGHT
+			    oC:Anchor := SWF.AnchorStyles.Top | SWF.AnchorStyles.Left | SWF.AnchorStyles.Bottom| SWF.AnchorStyles.Right
+		    CASE OA_FULL_SIZE
+			    oC:Dock := SWF.DockStyle.Fill
+		    CASE OA_LEFT_AUTOSIZE
+			    oC:Dock := SWF.DockStyle.Left
+		    CASE OA_RIGHT_AUTOSIZE
+			    oC:Dock := SWF.DockStyle.Right
+		    CASE OA_TOP_AUTOSIZE
+			    oC:Dock := SWF.DockStyle.Top
+		    CASE OA_BOTTOM_AUTOSIZE
+			    oC:Dock := SWF.DockStyle.Bottom
+		    OTHERWISE
+			    lStandard := FALSE
+            END SWITCH
+         ELSE
+            lStandard := FALSE
+         ENDIF
 		RETURN lStandard
 	
 	ASSIGN OwnerAlignment(iNewType AS USUAL) 
@@ -1282,7 +1284,7 @@ PARTIAL CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
 			LOCAL iCtrl AS IVOControl
 			iCtrl := (IVOControl) (OBJECT) oCtrl			
 			liTemp := Win32.GetWindowLong(hWnd, GWL_EXSTYLE)
-			iCtrl:ooProperties:SetExStyle(kExStyle, lEnable)
+			iCtrl:ControlProperties:SetExStyle(kExStyle, lEnable)
 			IF lEnable
 				liTemp := _OR(kExStyle, liTemp)
 			ELSE
@@ -1324,7 +1326,7 @@ PARTIAL CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
 			LOCAL iCtrl AS IVOControl
 			iCtrl := (IVOControl) (OBJECT) oCtrl			
 			liTemp := Win32.GetWindowLong(SELF:hWnd,GWL_STYLE)				
-			iCtrl:ooProperties:SetStyle(kStyle, lEnable)
+			iCtrl:ControlProperties:SetStyle(kStyle, lEnable)
 			IF lEnable
 				liTemp := _OR(kStyle, liTemp)
 			ELSE

@@ -1,6 +1,6 @@
 
 
-PARTIAL CLASS ResourceFile INHERIT VObject
+CLASS ResourceFile INHERIT VObject
 	PROTECT hLib AS IntPtr
 
 METHOD Destroy() AS USUAL CLIPPER
@@ -11,7 +11,7 @@ METHOD Destroy() AS USUAL CLIPPER
 	hLib := IntPtr.Zero
 	RETURN SELF
 
-METHOD Handle() AS PTR STRICT
+METHOD Handle() AS IntPtr STRICT
 	RETURN hLib
 
 CONSTRUCTOR(sName AS STRING) 

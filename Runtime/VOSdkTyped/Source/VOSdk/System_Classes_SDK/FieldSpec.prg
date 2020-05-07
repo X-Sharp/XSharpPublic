@@ -427,7 +427,7 @@ METHOD SetType( uType AS USUAL, oHL := NULL AS HyperLabel) AS VOID
 	IF oHL != NULL_OBJECT
 		oHLType := oHL
 	ENDIF
-	RETURN NIL
+	RETURN 
 
 
 METHOD SetValidation( cb AS USUAL, oHL := NULL_OBJECT AS HyperLabel) AS VOID                  
@@ -517,7 +517,7 @@ ACCESS UsualType  AS DWORD
 METHOD Val( cString AS STRING) AS USUAL                          
 	// Converts a string to the appropriate data type
 
-	LOCAL xRet  AS USUAL
+	LOCAL xRet  := NIL AS USUAL
 	LOCAL cType AS STRING
 
 	IF lNumeric

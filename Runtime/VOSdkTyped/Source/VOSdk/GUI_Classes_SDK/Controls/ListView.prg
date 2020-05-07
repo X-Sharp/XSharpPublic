@@ -1082,7 +1082,7 @@ CLASS ListView INHERIT TextControl
 END CLASS
 
 [DebuggerDisplay("{NameSym}")];
-PARTIAL CLASS ListViewColumn INHERIT VObject
+CLASS ListViewColumn INHERIT VObject
 	PROTECT nWidth AS INT
 	PROTECT lExplicitFS AS LOGIC
 	PROTECT oFieldSpec AS FieldSpec
@@ -1221,7 +1221,7 @@ PARTIAL CLASS ListViewColumn INHERIT VObject
 END CLASS
 
 [DebuggerDisplay("Index: {Index}")];
-PARTIAL CLASS ListViewItem INHERIT VObject
+CLASS ListViewItem INHERIT VObject
 	PROTECT nSubItem AS INT
 	PROTECT nOverlayImage AS INT
 	PROTECT lDisabled AS LOGIC

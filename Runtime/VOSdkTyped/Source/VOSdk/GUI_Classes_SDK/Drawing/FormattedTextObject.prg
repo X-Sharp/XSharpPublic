@@ -1,5 +1,5 @@
 
-PARTIAL CLASS FormattedTextObject INHERIT TextObject
+CLASS FormattedTextObject INHERIT TextObject
 	PROTECT wTabSize:=8 AS LONGINT       //RvdH 070205 changed from WORD to LONG 
 
 

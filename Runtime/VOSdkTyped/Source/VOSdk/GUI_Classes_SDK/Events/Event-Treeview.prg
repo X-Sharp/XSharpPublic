@@ -6,7 +6,7 @@
 #USING System.Diagnostics
 
 
-PARTIAL CLASS TreeViewItemEvent INHERIT ControlNotifyEvent
+CLASS TreeViewItemEvent INHERIT ControlNotifyEvent
 	PROTECT oTvItem AS TreeViewItem
 	CONSTRUCTOR(oTreeView AS TreeView, oItem AS TreeViewItem) 
 		SUPER(oTreeview)
@@ -19,14 +19,14 @@ PARTIAL CLASS TreeViewItemEvent INHERIT ControlNotifyEvent
 
 END CLASS
 
-PARTIAL CLASS TreeViewDeleteEvent INHERIT TreeViewItemEvent
+CLASS TreeViewDeleteEvent INHERIT TreeViewItemEvent
 	
 	CONSTRUCTOR(oTreeView AS TreeView, oItem AS TreeViewItem) 
 		SUPER(oTreeView, oItem)
 
 END CLASS
 
-PARTIAL CLASS TreeViewDragEvent INHERIT TreeViewItemEvent
+CLASS TreeViewDragEvent INHERIT TreeViewItemEvent
 
 	CONSTRUCTOR(oTreeView AS TreeView, oItem AS TreeViewItem) 
 		SUPER(oTreeView, oItem)
@@ -55,7 +55,7 @@ PARTIAL CLASS TreeViewDragEvent INHERIT TreeViewItemEvent
 
 END CLASS
 
-PARTIAL CLASS TreeViewEditEvent INHERIT TreeViewItemEvent
+CLASS TreeViewEditEvent INHERIT TreeViewItemEvent
 	PROTECT cEditText AS STRING
 	PROTECT lBeginning   AS LOGIC
 
@@ -75,7 +75,7 @@ PARTIAL CLASS TreeViewEditEvent INHERIT TreeViewItemEvent
 
 END CLASS
 
-PARTIAL CLASS TreeViewExpandedEvent INHERIT TreeViewItemEvent
+CLASS TreeViewExpandedEvent INHERIT TreeViewItemEvent
 	PROTECT nAction AS System.Windows.Forms.TreeViewAction
 	
 	CONSTRUCTOR(oTreeView AS TreeView, oItem AS TreeViewItem, Action AS System.Windows.Forms.TreeViewAction) 
@@ -90,14 +90,14 @@ PARTIAL CLASS TreeViewExpandedEvent INHERIT TreeViewItemEvent
 
 END CLASS
 
-PARTIAL CLASS TreeViewExpandingEvent INHERIT TreeViewItemEvent
+CLASS TreeViewExpandingEvent INHERIT TreeViewItemEvent
 
 	CONSTRUCTOR(oTreeView AS TreeView, oItem AS TreeViewItem) 
 		SUPER(oTreeView, oItem)
 
 END CLASS
 
-PARTIAL CLASS TreeViewKeyEvent INHERIT ControlNotifyEvent
+CLASS TreeViewKeyEvent INHERIT ControlNotifyEvent
 	PROTECT nKeyCode AS LONG
 	CONSTRUCTOR(oTreeView AS TreeView, KeyCode AS LONG) 
 		SUPER(oTreeView)
@@ -109,7 +109,7 @@ PARTIAL CLASS TreeViewKeyEvent INHERIT ControlNotifyEvent
 
 END CLASS
 
-PARTIAL CLASS TreeViewMouseEvent INHERIT TreeViewItemEvent
+CLASS TreeViewMouseEvent INHERIT TreeViewItemEvent
 	PROTECT args AS System.Windows.Forms.TreeNodeMouseClickEventArgs
 	PROTECT oInfo AS System.Windows.Forms.TreeViewHitTestInfo
 	CONSTRUCTOR(oTreeView AS TreeView, oItem AS TreeViewItem, e AS  System.Windows.Forms.TreeNodeMouseClickEventArgs) 
@@ -176,7 +176,7 @@ PARTIAL CLASS TreeViewMouseEvent INHERIT TreeViewItemEvent
 
 END CLASS
 
-PARTIAL CLASS TreeViewSelectionEvent INHERIT TreeViewItemEvent
+CLASS TreeViewSelectionEvent INHERIT TreeViewItemEvent
 	PROTECT nAction AS System.Windows.Forms.TreeViewAction
 	PROTECT lChanging AS LOGIC
 	

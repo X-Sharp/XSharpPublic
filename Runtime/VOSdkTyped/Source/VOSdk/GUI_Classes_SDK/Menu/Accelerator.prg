@@ -33,7 +33,7 @@ CLASS AcceleratorKey
 END CLASS
 
 CLASS Accelerator INHERIT VObject
-	PROTECT hAccel  AS PTR
+	PROTECT hAccel  AS IntPtr
 	PROTECT aKeys	as List<AcceleratorKey>
 	
 	

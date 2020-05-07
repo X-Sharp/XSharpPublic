@@ -39,12 +39,12 @@ METHOD __SetupLocks( ) AS VOID STRICT
     CASE ccRepeatable
         nLastLock := SELF:RecNo
         // Do not free locks in case user has other locks
-        IF ! SELF:RLOCK( nLastLock )
+        IF ! SELF:RLock( nLastLock )
             nLastLock := 0
             oHLStatus := SELF:Status
         ENDIF
     CASE ccFile
-        IF ! SELF:FLOCK( )
+        IF ! SELF:FLock( )
             oHLStatus := SELF:Status
         ENDIF
     OTHERWISE

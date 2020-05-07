@@ -8,12 +8,12 @@ CLASS App INHERIT VObject
 	PROTECT liWindowCount AS LONGINT
 	PROTECT oDialogWnd AS VOPanel
 	PROTECT oHelpWnd AS VOForm
-	PROTECT hHelpAccel AS PTR
-	PROTECT hHelpCursor AS PTR
+	PROTECT hHelpAccel AS IntPtr
+	PROTECT hHelpCursor AS IntPtr
 	PROTECT oMsgFilter as MessageFilter
 
-	ACCESS __HelpCursor() AS PTR STRICT 
-		LOCAL hRet AS PTR
+	ACCESS __HelpCursor() AS IntPtr STRICT 
+		LOCAL hRet AS IntPtr
 		BEGIN LOCK WC.CSApp
 			hRet := hHelpCursor
 		END LOCK
@@ -110,11 +110,11 @@ CLASS App INHERIT VObject
 		Win32.WinExec(sCommand, SW_SHOWNORMAL)
 		RETURN NIL
 	
-	METHOD BeforeDispatch(hWnd AS PTR, uMsg AS DWORD, wParam AS DWORD, lParam AS LONG) AS LOGIC STRICT
+	METHOD BeforeDispatch(hWnd AS IntPtr, uMsg AS DWORD, wParam AS DWORD, lParam AS LONG) AS LOGIC STRICT
 		RETURN TRUE
 	
 	[Obsolete];
-	METHOD AfterDispatch(hWnd AS PTR, uMsg AS DWORD, wParam AS DWORD, lParam AS LONG) AS LOGIC STRICT
+	METHOD AfterDispatch(hWnd AS IntPtr, uMsg AS DWORD, wParam AS DWORD, lParam AS LONG) AS LOGIC STRICT
 		RETURN TRUE
 
 
@@ -124,7 +124,7 @@ CLASS App INHERIT VObject
 	METHOD SetDialogWindow(oSurface AS OBJECT) AS VOID 
 		IF oSurface == NULL_OBJECT
 			SELF:oDialogWnd := NULL_OBJECT
-		ELSEIF TYPEOF(VOPanel):isAssignableFrom(oSurface:GetType())
+		ELSEIF oSurface IS VOPanel
 			SELF:oDialogWnd := oSurface
 		ENDIF
 		RETURN 
@@ -183,7 +183,7 @@ FUNCTION ApplicationExec(kExecType)
 
 
 [Obsolete];
-FUNCTION SetAccelerator(hWnd AS PTR, hAccel AS PTR) AS LOGIC STRICT
+FUNCTION SetAccelerator(hWnd AS IntPtr, hAccel AS IntPtr) AS LOGIC STRICT
 	RETURN TRUE
 
 

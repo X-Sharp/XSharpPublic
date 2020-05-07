@@ -17,7 +17,7 @@ CLASS Printer INHERIT Window
 //   HIDDEN PrinterAbortProcDelegate AS __PrinterAbortProcDelegate
 //#endif
 	//PP-030828 Strong typing
-	METHOD __GetDC() AS PTR STRICT 
+	METHOD __GetDC() AS IntPtr STRICT 
 /*	//PP-030828 Strong typing
 	LOCAL hFont AS PTR
 	LOCAL oFont AS Font
@@ -420,7 +420,7 @@ END CLASS
 
 //	RETURN FALSE
 /*
-STATIC PARTIAL CLASS WC
+STATIC CLASS WC
 	STATIC PROTECTED aPrinterhDCPrinter AS ARRAY
 
 STATIC METHOD AddPrinterToArray(hDCPrinter AS PTR, oPrinter AS Printer) AS VOID

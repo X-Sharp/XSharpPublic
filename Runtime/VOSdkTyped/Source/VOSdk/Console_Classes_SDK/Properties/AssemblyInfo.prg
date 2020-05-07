@@ -5,6 +5,6 @@
 #using System.Runtime.InteropServices
 #using System.Security
 
-[assembly: AssemblyTitleAttribute( "VO-Compatible Console Classes Library" )]
-[assembly: AssemblyDescriptionAttribute( "VO-Compatible Console Classes" )]
+[assembly: AssemblyTitleAttribute( "XSharp.VO.ConsoleClasses" )]
+[assembly: AssemblyDescriptionAttribute( "XSharp Typed VO Console Classes" )]
 

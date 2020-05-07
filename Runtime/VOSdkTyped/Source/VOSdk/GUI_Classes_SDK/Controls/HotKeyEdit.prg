@@ -1,6 +1,6 @@
 
 
-PARTIAL CLASS HotKey INHERIT VObject
+CLASS HotKey INHERIT VObject
 	CONSTRUCTOR(bKey, lAlt, lCtl, lShift, lExt) 
 		SUPER()
 		IF IsNumeric(bKey)
@@ -28,7 +28,7 @@ PARTIAL CLASS HotKey INHERIT VObject
 
 END CLASS
 
-PARTIAL CLASS HotKeyEdit INHERIT TextControl
+CLASS HotKeyEdit INHERIT TextControl
 	PROTECT oHotKeyRule	AS HotKeyRule
     PROPERTY ControlType AS ControlType GET ControlType.Hotkey
 
@@ -156,7 +156,7 @@ PARTIAL CLASS HotKeyEdit INHERIT TextControl
 		RETURN 
 END CLASS
 
-PARTIAL CLASS HotKeyRule INHERIT VObject
+CLASS HotKeyRule INHERIT VObject
 
 
 	PROPERTY AltKeyInvalid           AS LOGIC AUTO

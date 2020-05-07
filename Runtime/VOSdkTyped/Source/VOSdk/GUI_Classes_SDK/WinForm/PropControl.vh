@@ -1,7 +1,7 @@
 // PropControl.vh
 	
 	PROTECTED oProperties AS VOControlProperties
-	PROPERTY ooProperties AS VOControlProperties GET oProperties
+	PROPERTY ControlProperties AS VOControlProperties GET oProperties
 	PROPERTY Control AS XSharp.VO.Control 
 		GET 
 			IF oProperties=NULL
@@ -22,7 +22,7 @@
 		ENDIF
 
 	METHOD SetOwner(Owner AS XSharp.VO.Control) AS VOID 
-		oProperties := VOControlProperties{SELF, Owner}		
+		oProperties              := VOControlProperties{SELF, Owner}		
 		oProperties:StyleChanged += SetVisualStyle	
 		IF SELF:TabStop
 			Owner:SetStyle(WS_TABSTOP, TRUE)
@@ -33,6 +33,6 @@
 
 	VIRTUAL PROTECT METHOD WndProc(m REF Message) AS VOID
 		SUPER:WndProc(REF m)
-        SELF:oProperties:Dispatch(REF m)
-        RETURN
+      SELF:oProperties:Dispatch(REF m)
+      RETURN
         

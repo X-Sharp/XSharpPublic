@@ -1772,12 +1772,25 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             var baseName = name.Substring(0, pos);
             var addition = name.Substring(pos + 1);
-            var lhs = SyntaxFactory.IdentifierName(SyntaxFactory.Identifier(baseName));
+            MemVarFieldInfo fieldInfo = findMemVar(baseName);
+            ExpressionSyntax lhs;
+            if (fieldInfo != null)
+            {
+                lhs = MakeMemVarField(fieldInfo);
+            }
+            else
+            {
+                lhs = SyntaxFactory.IdentifierName(SyntaxFactory.Identifier(baseName));
+            }
+            // & var..Method() is also allowed. 
+            if (string.IsNullOrEmpty(addition))
+            {
+                return lhs;
+            }
             var rhs = GenerateLiteral(addition);
             var expr = _syntaxFactory.BinaryExpression(SyntaxKind.AddExpression,
                 lhs, SyntaxFactory.MakeToken(SyntaxKind.PlusToken), rhs);
             return expr;
-
         }
 
 

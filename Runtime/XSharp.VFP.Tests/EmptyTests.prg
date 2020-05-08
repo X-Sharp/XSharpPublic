@@ -29,6 +29,6 @@ BEGIN NAMESPACE XSharp.VFP.Tests
             AddProperty(o, "BestLanguage","X#")
             Assert.True( (string) o:BestLanguage  == "X#")
             RemoveProperty(o, "BestLanguage")
-            Assert.True( (LOGIC) o:BestLanguage  == FALSE)
+            Assert.Throws( typeof(XSharp.Error), { => o:BestLanguage  == FALSE})
     END CLASS
 END NAMESPACE

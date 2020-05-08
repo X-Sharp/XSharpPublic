@@ -11,7 +11,9 @@ USING System.Reflection
 [STAThread];      
 FUNCTION Start() AS VOID
     TRY
-        testAppDelim()
+        TestIndexKey()
+        //TestDateTimeAndCurrency()
+        // testAppDelim()
         //testDelimWrite()
         //testUnique3()
         //BofAndScope()
@@ -190,6 +192,83 @@ FUNCTION Start() AS VOID
         ErrorDialog(e)
     END TRY
     RETURN
+
+FUNCTION TestDateTimeAndCurrency() AS VOID
+LOCAL dt AS DateTime
+LOCAL c AS CURRENCY
+ 
+dt := DateTime(2000,12,2)
+c := 12.45
+
+// ok, the FP and VO dialect show the same results
+? dt  // 02.12.2020 00:00:00
+? c   // 12,4500
+?
+// ok, the FP and VO dialect show the same results
+
+? XSharp.RuntimeState.Dialect
+? dt:GetType():ToString()  // System.DateTime
+? c:GetType():ToString()   // XSharp.__Currency 
+?
+? "Test DateTime:"
+TestUsual ( dt )
+?
+? "Test Currency:" 
+TestUsual ( c ) 
+?
+
+RETURN 
+
+FUNCTION TestIndexKey() AS VOID
+        
+    LOCAL aDbf AS ARRAY
+    LOCAL cDBF AS STRING
+    LOCAL aValues AS ARRAY
+    LOCAL i AS DWORD
+    
+    RddSetDefault("DBFCDX")
+    
+    DbCloseAll()
+    
+    cDBF := "c:\test\abc"
+    FErase(cDbf + ".cdx")
+    
+    RddSetDefault("DBFCDX")
+    
+    aValues := { 44 , 12, 34 , 21 }
+    aDbf := {{ "AGE" , "N" , 2 , 0 }}
+    
+    DbCreate( cDBF , aDbf)
+    DbUseArea(,"DBFCDX",cDBF,,FALSE)
+    FOR i := 1 UPTO ALen ( aValues )
+        DbAppend()
+        FieldPut(1,aValues [i])
+    NEXT
+    DbCreateIndex( cDbf, "age" )
+    DbGoTop()
+    
+    ? IndexKey() // EMPTY, should be "age"
+    
+    DbCloseArea() 
+           
+FUNCTION TestUsual ( u AS USUAL ) AS VOID 
+
+/*	
+ The VO dialect shows: 
+
+	XSharp.__Usual
+	XSharp.__Usual 
+	
+  while the FP dialect shows:
+  
+	System.DateTime
+ 	XSharp.__Currency
+
+*/
+
+? u:GetType():ToString()   
+
+RETURN 
 
 FUNCTION testAppDelim() AS VOID
 LOCAL cPfad, cSource, cDbf AS STRING
@@ -3682,7 +3761,7 @@ PROCEDURE CauseException()
 	LOCAL u AS USUAL
 	u := 1
 	? u + TRUE
-RETURN
+RETURN 
 
 FUNCTION TestSetDefault() AS VOID
     ? RddSetDefault(NULL_STRING)
@@ -4343,7 +4422,7 @@ PROCEDURE CheckOrder()
         ? "Wrong record count", nCount
     END IF
     
-RETURN 
+RETURN  
 
 FUNCTION TestVFPFiles() AS VOID
 LOCAL cDbf AS STRING

@@ -1,4 +1,4 @@
-﻿#using System.Windows.Forms
+#using System.Windows.Forms
 #using System.Drawing
 #using System.Collections.Generic
 #using System.Collections
@@ -519,13 +519,13 @@ RETURN
 					
 					cLine := e"\t"
 					cLine += "SELF:oTP" + oPageOptions:cName + " := " + oPageOptions:cName
-					cLine += "{SELF , " + (m - 1):ToString() + "}"
+					cLine += "{SELF , " + /*(m - 1):ToString()*/"0" + "}"
 					aTabPages:Add(cLine)
 					cLine := e"\t"
 					cLine += "SELF:" + oDesign:cPrefix + oDesign:Name + ":AppendTab(#" + oPageOptions:cName
 //					cLine += e" , \""  + oPageOptions:cCaption + e"\" , SELF:oTP" + oPageOptions:cName
 					cLine += " , "  + Funcs.TranslateCaption(oPageOptions:cCaption , TRUE) + " , SELF:oTP" + oPageOptions:cName
-					cLine += " , " + (m - 1):ToString() + ")"
+					cLine += " , " + /*(m - 1):ToString()*/"0" + ")"
 					aTabPages:Add(cLine)
 					IF oTabControl:SelectedIndex == m - 1
 						cLine := e"\t"

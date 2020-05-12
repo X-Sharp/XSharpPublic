@@ -523,7 +523,7 @@ ACCESS HyperLabel AS HyperLabel STRICT
    	       ENDIF
    			 IF IsInstanceOf(oObject,#Window)
    				 IF IsInstanceOf(oObject,#__DocApp) .OR.;
-   					 IsInstanceOf(oObject,#__WndApp) .OR.;
+   					 IsInstanceOf(oObject,#__WindApp) .OR.;
    		 	       IsInstanceOf(oObject,#__FormDialogWindow)
    		 	   	 oObject := oObject:Owner
    		 	    ENDIF

@@ -1728,7 +1728,8 @@ CLASS XSharp.CoreDb
         /// <include file="CoreComments.xml" path="Comments/LastError/*" />
         /// <note type="tip">VoDbSelect() and CoreDb.Select() are aliases</note></remarks>
         
-    STATIC METHOD Select(nNew AS DWORD,nOld REF DWORD ) AS LOGIC
+    STATIC METHOD Select(nNew AS DWORD,nOld OUT DWORD ) AS LOGIC
+        nOld := 0
         TRY
             VAR Workareas := RuntimeState.Workareas
             nOld := (DWORD) Workareas:CurrentWorkareaNO
@@ -1938,7 +1939,7 @@ CLASS XSharp.CoreDb
             // Could be FieldName / ACDB to indicate the sort method
             VAR parts := sortNames:Fields[nFld]:Split('/')
             IF parts:Length > 1
-                VAR part := parts[1]
+                VAR part := parts[1]    // second element !
                 IF part:IndexOf('A') > -1
                     info:Items[nFld]:Flags |= DbSortFlags.Default
                 ENDIF

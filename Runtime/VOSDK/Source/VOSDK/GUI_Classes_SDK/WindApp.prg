@@ -32,13 +32,15 @@ METHOD Dispatch(oEvent)
 	CASE WM_QUERYENDSESSION
 		oParent:EventReturnValue := oParent:QueryClose(oEvt)
 
-	OTHERWISE
-		IF ((uMsg == WM_MENUSELECT) .OR. (uMsg == WM_COMMAND)) .AND. ;
-			(IsInstanceOf(oParent, #__FORMFRAME) .AND. (IVarGet(oParent, #DATAWINDOW) != NULL_OBJECT))
-			IVarGet(oParent, #datawindow):Dispatch(oEvt)
-			oParent:EventReturnValue := IVarGet(oParent, #datawindow):EventReturnValue
-		ELSE
-			oParent:Dispatch(oEvt)
+    OTHERWISE
+        LOCAL oWnd AS Window
+		IF ((uMsg == WM_MENUSELECT) .OR. (uMsg == WM_COMMAND)) .AND. (oParent IS __FormFrame VAR oFF .AND. oFF:DataWindow != NULL_OBJECT)
+            oWnd := oFF:DataWindow
+            oWnd:Dispatch(oEvt)
+			oParent:EventReturnValue := oWnd:EventReturnValue
+        ELSE
+            oWnd := oParent
+			oWnd:Dispatch(oEvt)
 		ENDIF
 
 	END SWITCH

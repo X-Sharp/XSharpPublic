@@ -46,7 +46,7 @@ ASSIGN FileSpec(oFileSpec)
 
 CONSTRUCTOR(oOwner, xID, oPoint, oDimension, oFileSpec, kStyle, hInst) 
 
-	IF IsInstanceOfUsual(xID, #ResourceID)
+	IF xID IS ResourceID
 		SUPER(oOwner, xID, oPoint, oDimension, , kStyle, FALSE)
 	ELSE
 		SUPER(oOwner, xID, oPoint, oDimension, ANIMATE_CLASS, kStyle, FALSE)
@@ -56,7 +56,7 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension, oFileSpec, kStyle, hInst)
 		oFileSpec := FileSpec{oFileSpec}
 	ENDIF
 
-	IF IsInstanceOfUsual(oFileSpec, #FileSpec)
+	IF oFileSpec IS FileSpec
 		oAVIFileSpec := oFileSpec
 	ENDIF
 

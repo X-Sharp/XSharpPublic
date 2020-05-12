@@ -16,6 +16,7 @@ STATIC CLASS XSharp.VFP.SQLProperty
     CONST DispLogin          := "displogin" AS STRING
     CONST DispWarnings       := "dispwarnings" AS STRING
     CONST IdleTimeout        := "idletimeout" AS STRING
+    CONST NativeCommand      := "nativecommand" AS STRING
     CONST ODBChdbc           := "odbchdbc" AS STRING
     CONST ODBChstmt          := "odbchstmt" AS STRING
     CONST PacketSize         := "packetsize" AS STRING

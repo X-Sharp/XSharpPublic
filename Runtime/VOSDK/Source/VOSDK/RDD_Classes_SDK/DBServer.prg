@@ -53,7 +53,7 @@ METHOD __AcceptSelectiveRelation( oDBParent AS DbServer, wParentWorkArea AS DWOR
 
 	cbSelectionParentExpression := cbSelection
 
-	VODBSelect( wWorkArea, REF dwCurrentWorkArea )
+	VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
 
 	cIndexExt := IndexExt( )
 
@@ -168,7 +168,7 @@ METHOD __DbServerEval( uBlock AS USUAL, uCobFor AS USUAL, uCobWhile AS USUAL, ;
    //				  The codeblocks may select another workarea
 	lRestore	:= DbSetRestoreWorkarea(TRUE)      
 
-	VODBSelect( wWorkArea, REF dwCurrentWorkArea )
+	VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
@@ -353,7 +353,7 @@ METHOD __NotifyBufferFlush( ) AS VOID STRICT
 	#ENDIF
 
 	ASend( aRelationChildren, #__NotifyBufferFlush )
-	VODBSelect( wWorkArea, REF dwCurrentWorkArea )
+	VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
 	SELF:__OptimisticFlush( )
 	__DBSSetSelect( dwCurrentWorkArea  ) //SE-060527
 

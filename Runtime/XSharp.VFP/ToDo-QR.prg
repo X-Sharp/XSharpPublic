@@ -6,11 +6,7 @@
 
 
 /// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/quarter/*" />
 
-FUNCTION Quarter( uExpression , nMonth) AS LONG
-    THROW NotImplementedException{}
-    // RETURN 0
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/raiseevent/*" />
@@ -19,11 +15,7 @@ FUNCTION RaiseEvent( oEventSource, cEvent , _args) AS LOGIC
     THROW NotImplementedException{}
     // RETURN FALSE
 
-/// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/ratc/*" />
-FUNCTION RatC(cSearchExpression, cExpressionSearched , nOccurrence ) AS STRING
-    THROW NotImplementedException{}
-    // RETURN ""
+
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/refresh/*" />

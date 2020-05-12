@@ -136,11 +136,11 @@ BEGIN NAMESPACE XSharp.RDD
             
             OVERRIDE METHOD OrderInfo(nOrdinal AS DWORD , info AS DbOrderInfo ) AS OBJECT
                 LOCAL result AS LONG
-                LOCAL workOrder AS CdxTag
                 LOCAL isOk := FALSE AS LOGIC
                 
                 result := 0
-                workOrder := SELF:_indexList:FindOrder(info)
+                SELF:_indexList:FindOrder(info, OUT VAR workOrder)
+
                 IF workOrder == NULL .AND. info:IsEmpty
                     workOrder := SELF:CurrentOrder
                 ENDIF

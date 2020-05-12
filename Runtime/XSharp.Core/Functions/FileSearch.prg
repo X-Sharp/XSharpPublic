@@ -254,7 +254,7 @@ FUNCTION File(cFileSpec AS STRING) AS LOGIC
             IF Path.IsPathRooted(cFileSpec)
                 files := Directory.GetFiles( Path.GetDirectoryName( cFileSpec ), Path.GetFileName( cFileSpec ) )
                 IF files:Length > 0
-                    RuntimeState.LastFound := files[1]
+                    RuntimeState.LastFound := files[0]
                     RETURN TRUE
                 ELSE
                     // store the first path that we looked in even when the file is not found

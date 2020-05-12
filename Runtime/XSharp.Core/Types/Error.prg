@@ -169,7 +169,10 @@ BEGIN NAMESPACE XSharp
     ELSE
         SELF:Description := ex:Message
         SELF:Gencode     := EG_EXCEPTION
-        SELF:_StackTrace := ErrorStack( StackTrace{ex,TRUE}) + SELF:_StackTrace
+        VAR sStack       := ErrorStack( StackTrace{ex,TRUE})
+        IF !sStack:StartsWith("*EmptyCallStack*")
+            SELF:_StackTrace := sStack + SELF:_StackTrace
+        ENDIF
     ENDIF
     IF String.IsNullOrEmpty(SELF:StackTrace)
         SELF:StackTrace  := ErrorStack(2)

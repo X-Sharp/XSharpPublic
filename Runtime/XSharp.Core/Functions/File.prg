@@ -534,8 +534,8 @@ BEGIN NAMESPACE XSharp.IO
                  XSharp.IO.File.setStream(pFile, oMemoryStream:FileStream)
                  RETURN 
             ENDIF
-            THROW Error{"Could not convert stream, source stream is not a Memory Stream"}
-			//RETURN 
+            //THROW Error{"Could not convert stream, source stream is not a Memory Stream"}
+			RETURN 
 
 	END CLASS
 	

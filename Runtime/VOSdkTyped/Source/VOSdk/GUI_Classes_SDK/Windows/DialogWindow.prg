@@ -39,6 +39,7 @@ CLASS DialogWindow INHERIT Window IMPLEMENTS ILastFocus
 				oDlg:Owner := oShell:__Form
 			ENDIF
 			oDlg:ShowInTaskbar := FALSE
+            		oDlg:Text := SELF:Caption
 		ENDIF
 		SELF:oSurface := oDlg:Surface   
 		SELF:SetExStyle(WS_EX_APPWINDOW, FALSE)
@@ -165,9 +166,6 @@ CLASS DialogWindow INHERIT Window IMPLEMENTS ILastFocus
 			ENDIF 
 			SELF:oSurface:CleanUp()
 			// Surface is not disposed. We may want to access the controls on the surface
-			//SELF:oSurface:Dispose()
-			//GC.SuppressFinalize(SELF:oSurface)
-			//SELF:oSurface := NULL_OBJECT
 
 		ENDIF
 		SELF:oLastFocus := NULL_OBJECT
@@ -193,7 +191,8 @@ CLASS DialogWindow INHERIT Window IMPLEMENTS ILastFocus
 		Default(@iResult, 0)
 		nResult := iResult
 		IF SELF:__IsValid
-			SELF:oWnd:Owner := NULL // verhindert invalidieren des Owners und damit Flackerei
+            		// prevent owner invalidation and visual noise
+			SELF:oWnd:Owner := NULL 
 			SELF:oWnd:Close()
 		ENDIF
 		SELF:__RestoreLastFocus()		

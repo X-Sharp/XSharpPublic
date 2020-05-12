@@ -482,7 +482,7 @@ METHOD UnLock(oRecId AS OBJECT) AS LOGIC
 				IF isOK
 					SELF:_fLocked := FALSE
 				ENDIF
-			ENDIF
+            ENDIF
 		END LOCK
     ELSE
         //? CurrentThreadId, "UnLock nothing to do because not shared"
@@ -965,7 +965,7 @@ METHOD Create(info AS DbOpenInfo) AS LOGIC
 			SELF:_HeaderLength := SELF:_Header:HeaderLen
 			isOK := SELF:_writeFieldsHeader()
 			IF isOK 
-				SELF:_RecordLength := SELF:_Header:RecordLen
+				SELF:_RecordLength := SELF:_Header:RecordLen 
 				IF SELF:_HasMemo 
 					isOK := SELF:CreateMemFile( info )
 				ENDIF
@@ -1389,14 +1389,14 @@ VIRTUAL PROTECTED METHOD _writeRecord() AS LOGIC
 			recordPos := SELF:_HeaderLength + ( SELF:_RecNo - 1 ) * SELF:_RecordLength
 			isOK := ( FSeek3( SELF:_hFile, recordPos, FS_SET ) == recordPos )
 			IF isOK
-            // Write Record
+			   // Write Record
 				TRY
 					FWrite3( SELF:_hFile, SELF:_RecordBuffer, (DWORD)SELF:_RecordLength )
-                // Don't forget to Update Header
+			                // Don't forget to Update Header
 					SELF:_Header:isHot := TRUE
 					IF SELF:Shared 
 						SELF:_writeHeader()
-                        FFlush(SELF:_hFile, FALSE)
+                        			FFlush(SELF:_hFile, TRUE)
 					ENDIF
 				CATCH ex AS Exception
 					SELF:_dbfError( ex, ERDD.WRITE, XSharp.Gencode.EG_WRITE )

@@ -31,7 +31,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 buffer := _bag:AllocBuffer()
                 oLeaf  := CdxLeafPage{_bag, -1, buffer, SELF:KeyLength}
                 oLeaf:InitBlank(SELF)
-                oLeaf:Write() // will give it a pagenumber
+                oLeaf:Write() // will give it a pagenumber  
                 #ifdef TESTCDX
                     IF LOGGING
                         oLeaf:Debug("New Leaf", oLeaf:PageNoX)
@@ -175,8 +175,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 // if oPageR has no LeftPtr .and. also no RightPtr then the level may be removed ?
                 //Debug.Assert(pageR:HasLeft .or. pageR:HasRight)
             ENDIF
+            VAR result := CdxAction.DeleteFromParent(oPage)
             SELF:OrderBag:FreePage(oPage)
-            RETURN CdxAction.DeleteFromParent(oPage)
+            RETURN result
 
         PRIVATE METHOD DeleteFromParent(action AS CdxAction) AS CdxAction
             VAR oPage   := SELF:GetPage(action:PageNo) 
@@ -437,7 +438,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             #endif
             VAR lWasRoot := oOldRoot:IsRoot
             // Adjust new sibling
-            oNewSibling:LeftPtr := nNew
+            oNewSibling:LeftPtr := 0
             oNewSibling:Write()
             // swap page numbers for both pages
             oOldRoot:PageNo     := nNew
@@ -449,6 +450,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 oNewRoot:SetRoot()
             ENDIF
             oNewRoot:Write()
+            oNewSibling:LeftPtr := nNew
+            oNewSibling:Write()
             SELF:InsertOnTop(oNewRoot)
             RETURN CdxAction.Ok
             
@@ -473,7 +476,70 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL METHOD AddBranch(action AS CdxAction) AS CdxAction
             LOCAL oPageR AS CdxBranchPage
             LOCAL oPageL  AS CdxBranchPage
+//            LOCAL result AS CdxAction
             oPageL  := (CdxBranchPage) SELF:GetPage(action:PageNo)
+            // do not add a page when there is room on the next page
+//            IF oPageL:HasRight //.AND. action:Pos != -1
+//                oSibling := (CdxBranchPage) SELF:GetPage(oPageL:RightPtr)
+//                IF oSibling:NumKeys < oSibling:MaxKeys
+//                    IF (action:Pos == -1)   // Add 
+//                        result := oSibling:Insert(0, action:Recno, action:ChildPage, action:Key)
+//                        result := SELF:DoAction(result)
+//                        SELF:AdjustStack(oPageL, oSibling, 0)
+//                        RETURN result
+//                    ELSE
+//                        VAR LastNode := oPageL:LastNode
+//                        VAR recno := LastNode:Recno
+//                        VAR child := LastNode:ChildPageNo
+//                        VAR key   := LastNode:KeyBytes
+//                        // delete first so validation does not see double keys
+//                        result := oPageL:Delete(oPageL:NumKeys-1)
+//                        result := SELF:DoAction(result)
+//                        result := oSibling:Insert(0, recno, child, key)
+//                        result := SELF:DoAction(result)
+//                        result := oPageL:Insert(action:Pos, action:Recno, action:ChildPage, action:Key)
+//                        result := SELF:DoAction(result)
+//                        RETURN result
+//                    ENDIF
+//                    
+//                ENDIF
+//            ENDIF
+//            IF oPageL:HasLeft //.AND. action:Pos != -1
+//                oSibling := (CdxBranchPage) SELF:GetPage(oPageL:LeftPtr)
+//                IF oSibling:NumKeys < oSibling:MaxKeys
+//                    IF (action:Pos == -1)   // Add
+//                        // Move first item of oPageL to Left hand side
+//                        VAR leaf := oPageL:Leaves[0]
+//                        result := oPageL:Delete(0)
+//                        result := SELF:DoAction(result)
+//                        oSibling:Leaves:Add(leaf)
+//                        oSibling:Compress()
+//                        
+//
+//                        result := oPageR:Insert(0, action:Recno, action:ChildPage, action:Key)
+//                        DO WHILE result:Type != CdxActionType.Ok
+//                            result := SELF:DoAction(result)
+//                        ENDDO
+//                        SELF:AdjustStack(oPageL, oPageR, 0)
+//                        RETURN result
+//                    ELSE
+//                        VAR LastNode := oPageL:LastNode
+//                        VAR recno := LastNode:Recno
+//                        VAR child := LastNode:ChildPageNo
+//                        VAR key   := LastNode:KeyBytes
+//                        // delete first so validation does not see double keys
+//                        result := oPageL:Delete(oPageL:NumKeys-1)
+//                        result := SELF:DoAction(result)
+//                        result := oPageR:Insert(0, recno, child, key)
+//                        result := SELF:DoAction(result)
+//                        result := oPageL:Insert(action:Pos, action:Recno, action:ChildPage, action:Key)
+//                        result := SELF:DoAction(result)
+//                        RETURN result
+//                    ENDIF
+//                    
+//                ENDIF
+//            ENDIF            
+
             oPageR := SELF:NewBranchPage()
 
             #ifdef TESTCDX
@@ -518,7 +584,70 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 SELF:AdjustStack(oPageL, oPageR, oPageL:NumKeys)
                 
             ENDIF
+
+//            SELF:BalanceLevels()
+
             RETURN action
+
+//        METHOD BalanceLevels() AS VOID
+//            // This balances the branches
+//            // THis code is NOT complete. Only balances the bottom Branch level at this moment        
+//            // Only needed when we have 2 levels of branches above the leaves
+//            IF SELF:_stack:Count <= 2
+//                RETURN
+//            ENDIF
+//            LOCAL nCurrent := SELF:_stack:Count -2 AS LONG
+//            DO WHILE nCurrent > 0
+//                VAR aPages := List<CdxTreePage>{}
+//                LOCAL oPage  := (CdxBranchPage) SELF:_stack:Entries[nCurrent]:Page AS CdxBranchPage
+//                oPage := (CdxBranchPage) oPage:FirstPageOnLevel
+//                DO WHILE oPage != NULL
+//                    aPages:Add(oPage)
+//                    IF oPage:HasRight
+//                        oPage :=  (CdxBranchPage) SELF:GetPage(oPage:RightPtr)
+//                    ELSE
+//                        oPage := NULL
+//                    ENDIF
+//                ENDDO
+//                VAR aBranches := List<CdxBranch>{}
+//                LOCAL maxKeys AS INT
+//                FOREACH oCurrent AS CdxBranchPage IN aPages
+//                    aBranches:AddRange(oCurrent:Branches)
+//                    maxKeys := oCurrent:MaxKeys
+//                NEXT
+//                LOCAL nPagesNeeded := (aBranches:Count / maxKeys) +1 AS LONG
+//                LOCAL nPerPage     := aBranches:Count  / nPagesNeeded AS LONG
+//                FOREACH oCurrent AS CdxBranchPage IN aPages
+//                    oCurrent:NumKeys := 0
+//                NEXT
+//                FOREACH oCurrent AS CdxBranchPage IN aPages
+//                    FOR VAR nI := 1 TO nPerPage
+//                        VAR  oBranch := aBranches[0]
+//                        oCurrent:Add(oBranch:Recno, oBranch:ChildPage, oBranch:Key)
+//                        aBranches:RemoveAt(0)
+//                    NEXT
+//                    oCurrent:Write()
+//                    IF aBranches:Count < nPerPage .AND. oCurrent:MaxKeys - oCurrent:NumKeys > aBranches:Count
+//                        DO WHILE aBranches:Count > 0
+//                            VAR oBranch := aBranches[0] 
+//                            oCurrent:Add(oBranch:Recno, oBranch:ChildPage, oBranch:Key)
+//                            aBranches:RemoveAt(0)
+//                        ENDDO
+//                        oCurrent:Write()
+//                        EXIT
+//                    ENDIF
+//                NEXT
+//                FOR VAR nI := aPages:Count-1 DOWNTO 0
+//                    IF nI > 0 .AND. aPages[nI]:NumKeys == 0
+//                        aPages[nI-1]:RightPtr := 0
+//                        SELF:DeletePage(CdxAction.DeletePage(aPages[nI]))
+//                    ENDIF
+//                NEXT
+//                RETURN
+//           ENDDO
+//                
+//                
+
 
 
         INTERNAL METHOD AddKey(action AS CdxAction) AS CdxAction

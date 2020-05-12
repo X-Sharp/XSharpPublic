@@ -12,16 +12,16 @@
     <para styleclass="Body Text"><table styleclass="Default" rowcount="7" colcount="4">
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal">Dialect</para>
+          <para styleclass="Normal"><text style="font-weight:bold;">Dialect</text></para>
         </td>
         <td>
-          <para styleclass="Normal">Syntax</para>
+          <para styleclass="Normal"><text style="font-weight:bold;">Syntax</text></para>
         </td>
         <td>
-          <para styleclass="Normal">Classes </para>
+          <para styleclass="Normal"><text style="font-weight:bold;">Classes </text></para>
         </td>
         <td>
-          <para styleclass="Normal">Functions</para>
+          <para styleclass="Normal"><text style="font-weight:bold;">Functions</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">

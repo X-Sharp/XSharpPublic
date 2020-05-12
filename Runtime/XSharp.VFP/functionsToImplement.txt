@@ -98,7 +98,7 @@ DEFAULTEXT( )
 DESCENDING( )
 DIFFERENCE( )
 DisplayPath( )
-DMY( )
+DMY( )              // implemented
 DODEFAULT( )
 DRIVETYPE( )
 DROPOFFLINE( )
@@ -129,7 +129,7 @@ GETRESULTSET( )
 GETWORDCOUNT( ) // implemented
 GETWORDNUM( ) // implemented
 GETCURSORADAPTER( )
-GOMONTH( )
+GOMONTH(            // implemented
 ID( )
 IDXCOLLATE( )       // needs testing
 IMESTATUS( )
@@ -155,7 +155,7 @@ LOCK( )
 LOOKUP( )
 MAKETRANSACTABLE( )
 MDX( )              // needs testing
-MDY( )
+MDY( )              // implemented    
 MESSAGEBOX( )	    // implemented
 NDX( )              // needs testing
 NEWOBJECT( )
@@ -172,9 +172,9 @@ PROW( )
 PRTINFO( )
 PUTFILE( )
 PV( )
-QUARTER( )
+QUARTER( )              // implemented
 RAISEEVENT( )
-RATC( )
+RATC( )                 // implemented
 REFRESH( )
 RELATION( )             // needs testing
 REMOVEPROPERTY( )       // implemented
@@ -185,20 +185,20 @@ SCHEME( )
 SEEK( )
 SETFLDSTATE( )
 SETRESULTSET( )
-SQLCANCEL( )	// implemented
-SQLCOLUMNS( )	// implemented
-SQLCOMMIT( )	// implemented
-SQLCONNECT( )	// implemented
+SQLCANCEL( )	    // implemented
+SQLCOLUMNS( )	    // implemented
+SQLCOMMIT( )	    // implemented
+SQLCONNECT( )	    // implemented
 SQLDISCONNECT( )	// implemented
-SQLEXEC( )	// implemented
-SQLGETPROP( )	// implemented
+SQLEXEC( )	        // implemented
+SQLGETPROP( )	    // implemented
 SQLIDLEDISCONNECT( )
 SQLMORERESULTS( )	// implemented
-SQLPREPARE( )	// implemented
-SQLROLLBACK( )	// implemented
-SQLSETPROP( )	// implemented
+SQLPREPARE( )	    // implemented
+SQLROLLBACK( )	    // implemented
+SQLSETPROP( )	    // implemented
 SQLSTRINGCONNECT( )	// implemented
-SQLTABLES( )	// implemented
+SQLTABLES( )	    // implemented
 STRCONV( )
 STREXTRACT( )
 STRTOFILE( )
@@ -214,8 +214,8 @@ TEXTMERGE( )
 TTOC( )
 TXNLEVEL( )
 TXTWIDTH( )
-UNIQUE( )
+UNIQUE( )           // needs testing
 VARTYPE( )
-WEEK( )
+WEEK( )             // implemented
 XMLTOCURSOR( )
 XMLUPDATEGRAM( )

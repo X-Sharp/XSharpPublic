@@ -8,17 +8,19 @@ USING System
 USING XSharp.VFP
 USING XSharp.Data
 
-/// <include file="VFPDocs.xml" path="Runtimefunctions/sqlconnect/*" />
-/// <include file="VFPDocs.xml" path="Runtimefunctions/sqlconnectoverload/*" />
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlconnect/*" />
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlconnectoverload/*" />
 FUNCTION SqlConnect(nStatementHandle AS LONG) AS LONG
     LOCAL oStmt AS XSharp.VFP.SQLStatement
     oStmt := SQLSupport.FindStatement(nStatementHandle)
     IF oStmt == NULL_OBJECT
-        THROW Error{"Statement Handle ("+nStatementHandle:ToString()+") is invalid"}
+        VAR cMessage := String.Format(__VfpStr(VFPErrors.STATEMENT_HANDLE_INVALID), nStatementHandle)
+        THROW Error{cMessage}
     ENDIF
     // This should open a connection automatically since the previous connection as already validated
     IF ! oStmt:Connection:Shared
-        THROW Error{"Statement Handle ("+nStatementHandle:ToString()+") does not have a shared connection"}
+        VAR cMessage := String.Format(__VfpStr(VFPErrors.STATEMENT_HANDLE_NOTSHARED), nStatementHandle)
+        THROW Error{cMessage}
     ENDIF
     oStmt := XSharp.VFP.SQLStatement{oStmt:Connection}
     nStatementHandle := SQLSupport.AddStatement(oStmt)
@@ -26,7 +28,7 @@ FUNCTION SqlConnect(nStatementHandle AS LONG) AS LONG
     RETURN nStatementHandle
 
 
-/// <include file="VFPDocs.xml" path="Runtimefunctions/sqlconnect/*" />
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlconnect/*" />
 FUNCTION SqlConnect(cDataSourceName AS STRING, cUserID := NIL AS USUAL, cPassword := NIL AS USUAL, lShared := NIL AS USUAL) AS LONG
     LOCAL nHandle := -1 AS LONG
     LOCAL cSource AS STRING
@@ -42,13 +44,13 @@ FUNCTION SqlConnect(cDataSourceName AS STRING, cUserID := NIL AS USUAL, cPasswor
 
     
 
-/// <include file="VFPDocs.xml" path="Runtimefunctions/sqlstringconnect/*" /> 
-/// <include file="VFPDocs.xml" path="Runtimefunctions/sqlstringconnectoverload/*" />
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlstringconnect/*" /> 
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlstringconnectoverload/*" />
 FUNCTION SqlStringConnect( lShared AS LOGIC) AS LONG
     RETURN SqlStringConnect("", lShared)
   
 
-/// <include file="VFPDocs.xml" path="Runtimefunctions/sqlstringconnect/*" />
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlstringconnect/*" />
 FUNCTION SqlStringConnect( cConnectString AS STRING, lShared AS LOGIC) AS LONG
     LOCAL nHandle := -1 AS LONG
     LOCAL oStmt AS XSharp.VFP.SQLStatement
@@ -58,13 +60,13 @@ FUNCTION SqlStringConnect( cConnectString AS STRING, lShared AS LOGIC) AS LONG
     ENDIF
     RETURN nHandle
 
-/// <include file="VFPDocs.xml" path="Runtimefunctions/sqlstringconnect/*" />
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlstringconnect/*" />
 FUNCTION SqlStringConnect( cConnectString AS STRING) AS LONG
     RETURN SqlStringConnect(cConnectString, FALSE) 
 
 
 
-/// <include file="VFPDocs.xml" path="Runtimefunctions/sqlcancel/*" />
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlcancel/*" />
 FUNCTION SqlCancel( nStatementHandle AS LONG) AS LONG
     VAR oStmt := GetStatement(nStatementHandle)    
     IF oStmt != NULL
@@ -74,7 +76,7 @@ FUNCTION SqlCancel( nStatementHandle AS LONG) AS LONG
     RETURN -1
 
 
-/// <include file="VFPDocs.xml" path="Runtimefunctions/sqldisconnect/*" />
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqldisconnect/*" />
 FUNCTION SqlDisconnect( nStatementHandle AS LONG) AS LONG
     IF nStatementHandle > 0
         VAR oStmt := GetStatement(nStatementHandle)    
@@ -92,7 +94,7 @@ FUNCTION SqlDisconnect( nStatementHandle AS LONG) AS LONG
     ENDIF
     RETURN -1  
      
-/// <include file="VFPDocs.xml" path="Runtimefunctions/sqlexec/*" />
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlexec/*" />
 FUNCTION SqlExec( nStatementHandle AS LONG, cSQLCommand := "" AS STRING, cCursorName := "SQLRESULT" AS STRING, aCountInfo := NULL_ARRAY  AS ARRAY) AS LONG
     LOCAL aInfo AS ARRAY
     LOCAL prepared := FALSE AS LOGIC
@@ -100,7 +102,8 @@ FUNCTION SqlExec( nStatementHandle AS LONG, cSQLCommand := "" AS STRING, cCursor
     IF oStmt != NULL 
         IF String.IsNullOrEmpty(cSQLCommand)
             IF ! oStmt:Prepared .AND. ! oStmt:Asynchronous
-                THROW Error{"SQL Command parameter is required for non prepared SQL Statements"}
+                VAR cMessage := __VfpStr(VFPErrors.COMMAND_PARAMETER_REQUIRED)
+                THROW Error{cMessage}
             ENDIF
             prepared := TRUE
         ENDIF
@@ -122,14 +125,14 @@ FUNCTION SqlExec( nStatementHandle AS LONG, cSQLCommand := "" AS STRING, cCursor
     
 
 /// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/sqlidledisconnect/*" />
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlidledisconnect/*" />
 
 FUNCTION SqlIdleDisconnect( nStatementHandle AS LONG) AS LONG
     GetStatement(nStatementHandle)    
     THROW NotImplementedException{}
     // RETURN 0
 
-/// <include file="VFPDocs.xml" path="Runtimefunctions/sqlmoreresults/*" />
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlmoreresults/*" />
 FUNCTION SqlMoreResults( nStatementHandle AS LONG, cCursorName := NIL AS USUAL , aCountInfo := NIL AS USUAL) AS LONG
     VAR oStmt := GetStatement(nStatementHandle)    
     IF oStmt != NULL
@@ -146,12 +149,13 @@ FUNCTION SqlMoreResults( nStatementHandle AS LONG, cCursorName := NIL AS USUAL ,
     RETURN 0
         
 
-/// <include file="VFPDocs.xml" path="Runtimefunctions/sqlprepare/*" /> 
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlprepare/*" /> 
 FUNCTION SqlPrepare( nStatementHandle AS LONG, cSQLCommand AS STRING, cCursorName := "SQLRESULT" AS STRING) AS LONG
     VAR oStmt := GetStatement(nStatementHandle)    
     IF oStmt != NULL
         IF String.IsNullOrEmpty(cSQLCommand)
-            THROW Error{"The SQL Command parameter is mandatory"}
+            VAR cMessage := __VfpStr(VFPErrors.COMMAND_PARAMETER_REQUIRED)
+            THROW Error{cMessage}
         ENDIF
         VAR result := oStmt:Prepare(cSQLCommand, cCursorName)
         RETURN result
@@ -164,12 +168,12 @@ INTERNAL FUNCTION GetStatement(nStatementHandle AS LONG) AS XSharp.VFP.SQLStatem
 
 
 
-/// <include file="VFPDocs.xml" path="Runtimefunctions/sqlsetfactory/*" />
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlsetfactory/*" />
 
 FUNCTION SqlSetFactory() AS ISqlFactory
     RETURN SQLSupport.Factory
 
-/// <include file="VFPDocs.xml" path="Runtimefunctions/sqlsetfactory/*" />
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlsetfactory/*" />
 FUNCTION SqlSetFactory(cFactory AS STRING ) AS ISqlFactory
     LOCAL oResult := SQLSupport.Factory
     LOCAL oFactory  := NULL_OBJECT AS ISqlFactory
@@ -188,7 +192,7 @@ FUNCTION SqlSetFactory(cFactory AS STRING ) AS ISqlFactory
 
 
 
-/// <include file="VFPDocs.xml" path="Runtimefunctions/sqlsetfactory/*" />
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlsetfactory/*" />
 FUNCTION SqlSetFactory(oFactory AS ISqlFactory) AS ISqlFactory
     LOCAL oResult := SQLSupport.Factory
     IF oFactory != NULL 
@@ -196,7 +200,7 @@ FUNCTION SqlSetFactory(oFactory AS ISqlFactory) AS ISqlFactory
     ENDIF
     RETURN oResult
 
-STATIC FUNCTION CopyResults(aCountInfo AS ARRAY, aInfo AS ARRAY) AS VOID
+INTERNAL FUNCTION CopyResults(aCountInfo AS ARRAY, aInfo AS ARRAY) AS VOID
     ASize(aCountInfo, ALen(aInfo))
     IF ALen(aInfo) > 0
         ACopy(aInfo, aCountInfo)
@@ -204,7 +208,7 @@ STATIC FUNCTION CopyResults(aCountInfo AS ARRAY, aInfo AS ARRAY) AS VOID
 
 
 #region Transaction Support
-/// <include file="VFPDocs.xml" path="Runtimefunctions/sqlcommit/*" />
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlcommit/*" />
 FUNCTION SqlCommit( nStatementHandle AS LONG) AS LONG
     VAR oStmt := GetStatement(nStatementHandle)
     IF oStmt != NULL .AND. oStmt:Commit()
@@ -212,7 +216,7 @@ FUNCTION SqlCommit( nStatementHandle AS LONG) AS LONG
     ENDIF    
     RETURN 0
 
-/// <include file="VFPDocs.xml" path="Runtimefunctions/sqlrollback/*" />
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlrollback/*" />
 FUNCTION SqlRollBack( nStatementHandle AS LONG) AS LONG
     VAR oStmt := GetStatement(nStatementHandle)    
     IF oStmt != NULL .AND. oStmt:Rollback()
@@ -224,13 +228,13 @@ FUNCTION SqlRollBack( nStatementHandle AS LONG) AS LONG
 
 #region Properties
 
-/// <include file="VFPDocs.xml" path="Runtimefunctions/sqlgetprop/*" />
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlgetprop/*" />
 
 FUNCTION SqlGetProp( nStatementHandle AS LONG, cSetting AS STRING ) AS USUAL
     RETURN SQLSupport.GetSetProperty(nStatementHandle, cSetting,NULL)
 
 
-/// <include file="VFPDocs.xml" path="Runtimefunctions/sqlsetprop/*" />
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlsetprop/*" />
 FUNCTION SqlSetProp( nStatementHandle AS LONG, cSetting AS STRING, eExpression AS USUAL) AS LONG
     RETURN (INT) SQLSupport.GetSetProperty(nStatementHandle, cSetting,eExpression)
 
@@ -240,7 +244,7 @@ FUNCTION SqlSetProp( nStatementHandle AS LONG, cSetting AS STRING, eExpression A
 
 #region MetaData
 
-/// <include file="VFPDocs.xml" path="Runtimefunctions/sqltables/*" /> 
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqltables/*" /> 
 
 FUNCTION SqlTables( nStatementHandle AS LONG , cTableTypes:= "" AS STRING, cCursorName := "SQLRESULT" AS STRING) AS LONG
     VAR oStmt := GetStatement(nStatementHandle)    
@@ -250,13 +254,14 @@ FUNCTION SqlTables( nStatementHandle AS LONG , cTableTypes:= "" AS STRING, cCurs
     ENDIF
     RETURN -1
 
-/// <include file="VFPDocs.xml" path="Runtimefunctions/sqlcolumns/*" />
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlcolumns/*" />
 FUNCTION SqlColumns( nStatementHandle AS LONG, cTableName := "" AS STRING, cType:= "FOXPRO" AS STRING, cCursorName:= "SQLRESULT" AS STRING) AS USUAL
     VAR oStmt := GetStatement(nStatementHandle)    
     IF oStmt != NULL
        cType := cType:Trim():ToUpper()
        IF cType != "FOXPRO"  .AND. cType != "NATIVE"
-            THROW Error{"Incorrect value for cType. Expected 'FOXPRO' or 'NATIVE'. Default is 'FOXPRO'"}
+            VAR cMessage := __VfpStr(VFPErrors.SQLCOLUMNS_CTYPE)
+            THROW Error{cMessage}
        ENDIF
        oStmt:GetColumns(cTableName, cType, cCursorName)
        IF Used(cCursorName) .AND. RecCount(cCursorName) > 0
@@ -269,7 +274,7 @@ FUNCTION SqlColumns( nStatementHandle AS LONG, cTableName := "" AS STRING, cType
 
 
 
-/// <include file="VFPDocs.xml" path="Runtimefunctions/asqlhandles/*" />
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/asqlhandles/*" />
 FUNCTION ASqlHandles (ArrayName AS ARRAY, nStatementHandle := NIL AS USUAL) AS DWORD
     LOCAL aResult AS ARRAY
     IF IsNumeric(nStatementHandle)
@@ -291,10 +296,20 @@ FUNCTION ASqlHandles (ArrayName AS ARRAY, nStatementHandle := NIL AS USUAL) AS D
     ENDIF
     RETURN ALen(aResult)
     
-    
+
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/sqlparameters/*" />
+FUNCTION SqlParameters( nStatementHandle AS LONG, oParams AS OBJECT) AS LONG
+    VAR oStmt := GetStatement(nStatementHandle)    
+    IF oStmt != NULL
+        oStmt:ParamsObject := oParams
+    ENDIF
+    RETURN 0
+
 
 
 #endregion
+
+
 
 
 

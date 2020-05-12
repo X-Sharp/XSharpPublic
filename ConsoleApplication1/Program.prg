@@ -11,6 +11,10 @@ USING System.Drawing
 
 FUNCTION Start() AS VOID STRICT
 TRY
+    DbUseArea(TRUE,"DBFCDX","c:\cavo28SP3\Samples\Email\EMAIL.DBF")
+    ? DbSetOrder(2)
+    ? DbOrderInfo(DBOI_ORDERCOUNT)
+    DbCloseArea()
     //TestProviders()
     //TestProvidersStringConnect()
     //TestBatch()
@@ -21,12 +25,32 @@ TRY
     // testDataTable()
     //testHandles()
     //testAsynchronous()
-    testConnect()
+    //testConnect()
+    //testRddBrowse()
+    //testCopyTo()
+    //testDbSetOrder()
+    //testSqlParameters()
+    //testPG()
+    //testExec2()
+    //testFile()
     
 CATCH e AS Exception
     ? MessageBox(e:ToString(), MB_ICONSTOP+MB_OK,"An error has occurred")
 END TRY
 WAIT
+RETURN
+
+FUNCTION TestFile() AS VOID
+	? File("C:\temp\abc.def")	// T in X#
+	? File("C:\temp\???.def")	// F
+	? File("C:\temp\ab?.def")	// F
+	? File("C:\temp\*.def")		// F
+	? File("C:\temp\ab*.def")	// F
+
+	// those all return FALSE in VO
+	? File("C:\temp\ab*.*")	// F
+	? File("C:\temp\*.*")	// T
+	? File("C:\temp\*")	// T
 RETURN
 
 FUNCTION TestProviders() AS VOID STRICT
@@ -234,7 +258,7 @@ RETURN
 FUNCTION DataError(sender AS OBJECT, e AS DataGridViewDataErrorEventArgs) AS VOID
 LOCAL ex AS exception
 ex := e:Exception
-MessageBox(ex:Message,"Invalid data")
+MessageBox(ex:Message,,"Invalid data")
 RETURN 
 
 
@@ -328,4 +352,87 @@ END TRY
 WAIT
 
 RETURN
+
+
+
+FUNCTION testRddBrowse() AS VOID
+    DbUseArea(TRUE,"DBFNTX","c:\cavo28SP3\Samples\Gstutor\customer.dbf","Customer",TRUE,TRUE)
+    DbSetIndex("c:\cavo28SP3\Samples\Gstutor\CUSTNAME.NTX")
+    DbSetIndex("c:\cavo28SP3\Samples\Gstutor\CUSTNO.NTX")
+    DbSetOrder(1)
+    Browse()
+RETURN
+
+FUNCTION TestCopyTo AS VOID
+    SqlSetFactory("ODBC")
+    ? sqlSetprop(0, SqlProperty.ConnectTimeOut, 1) 
+    ? SqlSetProp(0, "Displ",DB_PROMPTCOMPLETE)
+    handle := SqlStringConnect("Dsn=Northwind;")
+    IF handle > 0
+        //SqlColumns(handle,"Orders","native")
+        SqlExec(handle, "Select * from orders","orders")
+        COPY TO C:\Temp\Temp
+    ENDIF
+
+FUNCTION testDbSetOrder() AS VOID
+    RddSetDefault("DBFNTX")
+    DbCreate("test",{{"Name","C",10,0}})
+    DbUseArea(TRUE, "DBFNTX", "test")
+    ? DbSetOrder("test")
+    ? RuntimeState.LastRddError:ToString()
+    DbCloseArea()
+    RETURN
+
+
+
+
+
+
+FUNCTION TestSqlParameters AS VOID
+    SqlSetFactory("ODBC")
+    ? sqlSetprop(0, SqlProperty.ConnectTimeOut, 1) 
+    ? SqlSetProp(0, "Displ",DB_PROMPTCOMPLETE)
+    //SQLSetFactory("SQL")
+    //LOCAL handle := SqlStringConnect("server=(LOCAL);trusted_connection=Yes;database=Northwind;")
+     SqlSetFactory("ODBC")
+     LOCAL handle := SqlStringConnect("Dsn=Northwind;")
+    IF handle > 0
+        // Declare local. Can be typed or untyped. A memvar would work as well.
+        LOCAL CustomerId = 'ALFKI'
+        // Create anonymous type. Has one property with the name CustomerId and value 'ALFKI'
+        VAR oParams := CLASS{CustomerId}
+        // Pass the parameters object to the backend
+        SqlParameters(handle, oParams)
+        // Execute a query with a parameter. We accept both a ? and a : as start of parameter name
+        ? SqlExec(handle, "Select * from orders where customerId = :CustomerId","orders")
+        ? SqlGetprop(handle, SqlProperty.NativeCommand)
+        Browse()
+
+ENDIF
+
+
+FUNCTION TestPg()
+     SqlSetFactory("ODBC")
+     LOCAL handle := SqlStringConnect("Dsn=PG;")
+    IF handle > 0
+        // Declare local. Can be typed or untyped. A memvar would work as well.
+        // Execute a query with a parameter. We accept both a ? and a : as start of parameter name
+        ? SqlExec(handle, "Select * from test","test")
+        COPY TO C:\Temp\Temp
+        Browse()
+
+ENDIF
+
+
+FUNCTION testExec2()
+     SqlSetFactory("ODBC")
+     LOCAL handle := SqlStringConnect("Dsn=Northwind;")
+    IF handle > 0
+         LOCAL aInfo := {} AS ARRAY
+        ? SqlExec(handle, "Select * from customers","test",aInfo)
+        ShowArray(aInfo)
+        ? SqlExec(handle, "Select * from categories","test",aInfo)
+        ShowArray(aInfo)
+ENDIF
+
 

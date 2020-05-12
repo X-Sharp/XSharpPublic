@@ -2268,12 +2268,12 @@
         ? AtLine("third", cBigString)&#0009;&#0009;&#0009;// 3
       </code>
     </example>
-    <seealso cref='O:XSharp.Core.Functions.At'>At</seealso>
-    <seealso cref='O:XSharp.Core.Functions.AtC'>AtC</seealso>
-    <seealso cref='O:XSharp.Core.Functions.ATCLine'>AtCLine</seealso>
-    <seealso cref='O:XSharp.Core.Functions.ATLine2'>AtLine2</seealso>
-    <seealso cref='O:XSharp.RT.Functions.StrTran'>StrTran</seealso>
-    <seealso cref='O:XSharp.RT.Functions.SubStr'>Substr</seealso>
+    <seealso cref='O:XSharp.Core.Functions.At'>At Function</seealso>
+    <seealso cref='O:XSharp.Core.Functions.AtC'>AtC Function</seealso>
+    <seealso cref='O:XSharp.Core.Functions.ATCLine'>AtCLine Function</seealso>
+    <seealso cref='O:XSharp.Core.Functions.ATLine2'>AtLine2 Function</seealso>
+    <seealso cref='O:XSharp.RT.Functions.StrTran'>StrTran Function</seealso>
+    <seealso cref='O:XSharp.RT.Functions.SubStr'>Substr Function</seealso>
   </atline>
   <atline2>
     <summary>

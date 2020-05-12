@@ -13,18 +13,23 @@ BEGIN NAMESPACE XSharp.RDD
     /// <summary>TSV RDD. For reading and writing tab delimited files.</summary>
     [DebuggerDisplay("TSV ({Alias,nq})")];
     CLASS TSV INHERIT CSV
+        /// <inheritdoc/>
+        OVERRIDE PROPERTY Driver AS STRING GET "TSV" 
         CONSTRUCTOR
             SUPER()
-            SELF:_Separator := Chr(9)
+            SELF:FieldSeparator := Chr(9)
             SELF:_lHasHeader := TRUE
     END CLASS
 
     /// <summary>CSV RDD. For reading and writing semicolon delimited files.</summary>
     [DebuggerDisplay("CSV ({Alias,nq})")];
     CLASS CSV INHERIT DELIM
+        /// <inheritdoc/>
+        OVERRIDE PROPERTY Driver AS STRING GET "CSV" 
+
         CONSTRUCTOR
             SUPER()
-            SELF:_Separator := ";"
+            SELF:FieldSeparator := ";"
             SELF:_lHasHeader := TRUE
     END CLASS
 
@@ -37,11 +42,11 @@ BEGIN NAMESPACE XSharp.RDD
         CONSTRUCTOR
             SUPER()
             _oSb := StringBuilder{}
-            SELF:_Delimiter := RuntimeState.StringDelimiter
-            SELF:_Separator := RuntimeState.FieldDelimiter
+            SELF:FieldSeparator  := RuntimeState.FieldDelimiter
+            SELF:StringDelimiter := RuntimeState.StringDelimiter
             SELF:_lHasHeader := FALSE
-
-        VIRTUAL PROPERTY Driver AS STRING GET "DELIM" 
+        /// <inheritdoc/>
+        OVERRIDE PROPERTY Driver AS STRING GET "DELIM" 
 
         PROTECTED METHOD _readRecord() AS LOGIC STRICT
             IF _BufferValid .Or. SELF:_EoF
@@ -49,17 +54,17 @@ BEGIN NAMESPACE XSharp.RDD
             endif
             var cLine    := FReadLine(SELF:_hFile, 4096)
             var inString := FALSE
-            var cDelim   := SELF:_Delimiter[0]
-            var cSep     := SELF:_Separator[0]
+            VAR cFieldDelim     := SELF:FieldSeparator[0]
+            VAR cStringDelim    := SELF:StringDelimiter[0]
             var nIndex   := 0
             var newField := FALSE
             local oValue as OBJECT
             _oSb:Clear()
             // now parse the line
             foreach var c in cLine
-                if c == cDelim
+                IF c == cStringDelim
                     inString := ! inString
-                elseif c == cSep .and. ! inString
+                ELSEIF c == cFieldDelim .AND. ! inString
                     newField := TRUE
                 else
                     _oSb:Append(c)
@@ -87,32 +92,33 @@ BEGIN NAMESPACE XSharp.RDD
             LOCAL hasDelimiter as LOGIC
             _oSb:Clear()
             nIndex := 0
-            hasDelimiter := ! String.IsNullOrEmpty(SELF:_Delimiter)
+            VAR stringDelimiter := SELF:StringDelimiter
+            hasDelimiter := ! String.IsNullOrEmpty(stringDelimiter)
             FOREACH var oField in SELF:_Fields
                 var oValue := SELF:_fieldData[nIndex]
                 VAR sValue := SELF:_getFieldString(oField, oValue)
-                if nIndex > 0
-                    _oSb:Append(SELF:_Separator)
-                endif
+                IF nIndex > 0
+                    _oSb:Append(SELF:FieldSeparator)
+                ENDIF
                 SWITCH oField:FieldType
                 CASE DbFieldType.Character   // C
                 CASE DbFieldType.VarChar     // 'V'
                 CASE DbFieldType.VarBinary   // 'Q'
-                    if hasDelimiter
-                        _oSb:Append(_Delimiter)
+                    IF hasDelimiter
+                        _oSb:Append(stringDelimiter)
                     endif
-                    _oSb:Append(sValue:Replace(_Delimiter,""))
-                    if hasDelimiter
-                        _oSb:Append(_Delimiter)
-                    endif
+                    _oSb:Append(sValue:Replace(stringDelimiter,""))
+                    IF hasDelimiter
+                        _oSb:Append(stringDelimiter)
+                    ENDIF
                 CASE DbFieldType.Number         // 'N'
                 CASE DbFieldType.Float          // 'F'
                 CASE DbFieldType.Double         // 'B'
                 CASE DbFieldType.Currency		// 'Y'
                 CASE DbFieldType.Integer        // 'I'
                     _oSb:Append(sValue:Trim())
-                Otherwise
-                    _oSb:Append(sValue:Replace(_Separator,""))
+                OTHERWISE
+                    _oSb:Append(sValue:Replace(stringDelimiter,""))
                 END SWITCH
                 nIndex += 1
             NEXT
@@ -152,8 +158,8 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             RETURN nCount
 
-
-    METHOD Create(info AS DbOpenInfo) AS LOGIC
+    /// <inheritdoc/>
+    OVERRIDE METHOD Create(info AS DbOpenInfo) AS LOGIC
         local lOk as LOGIC
         lOk := SUPER:Create(info)
         IF lOk .and. _lHasHeader
@@ -172,7 +178,9 @@ BEGIN NAMESPACE XSharp.RDD
             SELF:_WriteString(result)
         ENDIF
         RETURN lOk
-    METHOD GoTop() AS LOGIC
+        
+    /// <inheritdoc/>    
+    OVERRIDE METHOD GoTop() AS LOGIC
         local lOk as LOGIC
         lOk := SUPER:GoTop()
         IF lOk .and. SELF:_lHasHeader

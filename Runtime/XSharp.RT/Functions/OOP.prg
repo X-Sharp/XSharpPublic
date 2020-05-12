@@ -526,17 +526,26 @@ INTERNAL STATIC CLASS OOPHelpers
 		
 	STATIC METHOD IVarGet(oObject AS OBJECT, cIVar AS STRING, lSelf AS LOGIC) AS USUAL
 		LOCAL t AS Type
+        LOCAL result AS OBJECT
 		t := oObject:GetType()
 		//Todo: optimization
 		VAR fldInfo := FindField(t, cIVar, TRUE, lSelf)
         TRY
 		    IF fldInfo != NULL_OBJECT .AND. IsFieldVisible(fldInfo, lSelf)
-			    RETURN fldInfo:GetValue(oObject)
+                result := fldInfo:GetValue(oObject)
+                IF result == NULL .AND. fldInfo:FieldType == TYPEOF(STRING)
+                    result := String.Empty
+                ENDIF
+                RETURN result
 		    ENDIF
 		    VAR propInfo := FindProperty(t, cIVar, TRUE, lSelf) 
 		    IF propInfo != NULL_OBJECT .AND. propInfo:CanRead .AND. IsPropertyMethodVisible(propInfo:GetMethod, lSelf)
                 IF propInfo:GetIndexParameters():Length == 0
-			        RETURN propInfo:GetValue(oObject, NULL)
+			        result := propInfo:GetValue(oObject, NULL)
+                    IF result == NULL .AND. propInfo:PropertyType == TYPEOF(STRING)
+                        result := String.Empty
+                    ENDIF
+                    RETURN result
                 ELSE
                     RETURN NIL
                 ENDIF
@@ -548,8 +557,8 @@ INTERNAL STATIC CLASS OOPHelpers
             ENDIF
             THROW // rethrow exception
         END TRY
-		IF SendHelper(oObject, "NoIVarGet", <USUAL>{cIVar}, OUT VAR result)
-			RETURN result
+		IF SendHelper(oObject, "NoIVarGet", <USUAL>{cIVar}, OUT VAR oResult)
+			RETURN oResult
 		END IF
 		VAR oError := Error.VOError( EG_NOVARMETHOD, IIF( lSelf, __ENTITY__, __ENTITY__ ), NAMEOF(cIVar), 2, <OBJECT>{oObject, cIVar} )
         oError:Description := oError:Message+" '"+cIVar+"'"
@@ -631,6 +640,9 @@ INTERNAL STATIC CLASS OOPHelpers
                 ELSE
                     LOCAL oResult AS OBJECT
                     oResult := mi:Invoke(oObject, oArgs)
+                    IF oResult == NULL .AND. mi:ReturnType == TYPEOF(STRING)
+                        oResult := String.Empty
+                    ENDIF
                     result := oResult
                 ENDIF
             CATCH e as Exception

@@ -127,7 +127,7 @@ BEGIN NAMESPACE XSharp.IO
             RETURN
         /// <inheritdoc />
         PUBLIC OVERRIDE METHOD WriteByte(b AS BYTE ) AS VOID
-            SELF:smallBuff[1] := b
+            SELF:smallBuff[0] := b
             SELF:Write(SELF:smallBuff , 0 , 1)
         /// <inheritdoc />
         PUBLIC OVERRIDE METHOD Lock(position AS INT64, length AS INT64)  AS VOID

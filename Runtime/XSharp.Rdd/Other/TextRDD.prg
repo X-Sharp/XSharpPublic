@@ -23,7 +23,10 @@ BEGIN NAMESPACE XSharp.RDD
         PROTECT _numformat      AS NumberFormatInfo
         PROTECT _Buffer         AS BYTE[]
         PROTECT _Writing        as LOGIC
-        PROTECT _RecordSeparator as STRING
+        PROTECT _RecordSeparator AS STRING
+        INTERNAL PROPERTY FieldSeparator    AS STRING GET _Separator SET _Separator := VALUE
+        INTERNAL PROPERTY StringDelimiter   AS STRING GET _Delimiter SET _Delimiter := VALUE
+        INTERNAL PROPERTY RecordSeparator   AS STRING GET _RecordSeparator SET _RecordSeparator := VALUE
         
         STATIC PRIVATE  culture := CultureInfo.InvariantCulture AS CultureInfo
         PROTECT PROPERTY IsOpen AS LOGIC GET SELF:_hFile != F_ERROR
@@ -144,7 +147,7 @@ BEGIN NAMESPACE XSharp.RDD
                     // Skip column contents
                     NOP
             END SWITCH
-            return sValue
+            RETURN sValue
         
         Protected Method _WriteString(strValue as STRING) AS LOGIC
             if strValue:Length > SELF:_Buffer:Length
@@ -157,18 +160,19 @@ BEGIN NAMESPACE XSharp.RDD
         /// <inheritdoc />
         CONSTRUCTOR
             SUPER()                     
-            SELF:_hFile         := IntPtr.Zero
-            SELF:_TransRec 		:= TRUE
-            SELF:_RecordLength 	:= 0
-            SELF:_Delimiter		:= e"\""
-            SELF:_Separator		:= ","
-            SELF:_fieldData     := OBJECT[]{0}
+            SELF:_hFile          := IntPtr.Zero
+            SELF:_TransRec 		 := TRUE
+            SELF:_RecordLength 	 := 0
+            SELF:StringDelimiter := e"\""
+            SELF:FieldSeparator  := ","
+            SELF:RecordSeparator := RuntimeState.Eol
+            SELF:_fieldData      := OBJECT[]{0}
             SELF:_numformat := (NumberFormatInfo) culture:NumberFormat:Clone()
             SELF:_numformat:NumberDecimalSeparator := "."
             SELF:_Buffer        := Byte[]{512}
             SELF:_Writing       := FALSE
             SELF:_Separator     := ","
-            SELF:_RecordSeparator := RuntimeState.Eol
+            
             
             /// <inheritdoc />
         METHOD GoBottom() AS LOGIC
@@ -268,6 +272,7 @@ BEGIN NAMESPACE XSharp.RDD
             SELF:_Alias := SELF:_OpenInfo:Alias
             SELF:_Shared := SELF:_OpenInfo:Shared
             SELF:_ReadOnly := SELF:_OpenInfo:ReadOnly
+            
             //
             SELF:_hFile    := FCreate2( SELF:_FileName, FO_EXCLUSIVE)
             IF SELF:IsOpen
@@ -358,16 +363,16 @@ BEGIN NAMESPACE XSharp.RDD
                     return SELF:_hFile
                 CASE DBI_FULLPATH
                     return SELF:_FileName
-                case DBI_SETDELIMITER
-                    var result := SELF:_Delimiter
+                CASE DBI_SETDELIMITER                   // Field delimiter
+                    VAR result := SELF:FieldSeparator
                     IF oNewValue IS STRING
-                        SELF:_Delimiter := (STRING) oNewValue
+                        SELF:FieldSeparator := (STRING) oNewValue
                     ENDIF
                     RETURN result
                 case DBI_SEPARATOR
-                    var result := SELF:_Separator
+                    VAR result := SELF:RecordSeparator
                     IF oNewValue IS STRING
-                        SELF:_Separator := (STRING) oNewValue
+                        SELF:RecordSeparator := (STRING) oNewValue
                     ENDIF
                     RETURN result
                     

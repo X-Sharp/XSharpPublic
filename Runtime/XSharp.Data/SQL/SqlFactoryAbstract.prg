@@ -25,10 +25,18 @@ ABSTRACT CLASS XSharp.Data.AbstractSqlFactory IMPLEMENTS XSharp.Data.ISqlFactory
 
     PROTECTED oInstance AS System.Data.Common.DbProviderFactory
 
-    PROPERTY QuoteChar AS STRING GET ""
-    PROPERTY Name      AS STRING GET "AbstractFactory"
+    /// <inheritdoc />
+    VIRTUAL PROPERTY QuoteChar AS STRING GET ""
+    /// <inheritdoc />
+    VIRTUAL PROPERTY Name      AS STRING GET "AbstractFactory"
 
-    PROPERTY CanCreateDataSourceEnumerator AS LOGIC GET oInstance:CanCreateDataSourceEnumerator
+    /// <inheritdoc />
+    VIRTUAL PROPERTY ParameterPrefix AS CHAR GET '?'
+    /// <inheritdoc />
+    VIRTUAL PROPERTY ParameterNameInQuery AS LOGIC GET FALSE
+
+    /// <inheritdoc />
+    VIRTUAL PROPERTY CanCreateDataSourceEnumerator AS LOGIC GET oInstance:CanCreateDataSourceEnumerator
 
     
 
@@ -37,39 +45,39 @@ ABSTRACT CLASS XSharp.Data.AbstractSqlFactory IMPLEMENTS XSharp.Data.ISqlFactory
         oInstance := NULL
 
     /// <inheritdoc />
-    METHOD CreateConnection AS DbConnection
+    VIRTUAL METHOD CreateConnection AS DbConnection
         RETURN oInstance:CreateConnection()
         
     /// <inheritdoc />
-    METHOD CreateCommand    AS DbCommand
+    VIRTUAL METHOD CreateCommand    AS DbCommand
         RETURN oInstance:CreateCommand()
 
     /// <inheritdoc />
-    METHOD CreateCommandBuilder    AS DbCommandBuilder
+    VIRTUAL METHOD CreateCommandBuilder    AS DbCommandBuilder
         RETURN oInstance:CreateCommandBuilder()
 
     /// <inheritdoc />
-    METHOD CreateParameter  AS DbParameter
+    VIRTUAL METHOD CreateParameter  AS DbParameter
         RETURN oInstance:CreateParameter()
 
     /// <inheritdoc />
-    METHOD CreateDataAdapter    AS DbDataAdapter
+    VIRTUAL METHOD CreateDataAdapter    AS DbDataAdapter
         RETURN oInstance:CreateDataAdapter()
 
     /// <inheritdoc />
-    METHOD CreateConnectionStringBuilder AS DbConnectionStringBuilder
+    VIRTUAL METHOD CreateConnectionStringBuilder AS DbConnectionStringBuilder
         RETURN oInstance:CreateConnectionStringBuilder()
 
     /// <inheritdoc />
-    METHOD CreateDataSourceEnumerator() AS DbDataSourceEnumerator
+    VIRTUAL METHOD CreateDataSourceEnumerator() AS DbDataSourceEnumerator
         RETURN oInstance:CreateDataSourceEnumerator()
 
     /// <inheritdoc />
-    METHOD AfterConnect(oConnection AS DbConnection) AS VOID
+    VIRTUAL METHOD AfterConnect(oConnection AS DbConnection) AS VOID
         RETURN
 
     /// <inheritdoc />
-    METHOD BeforeConnect(cString AS STRING, cUser AS STRING, cPassword AS STRING) AS STRING
+    VIRTUAL METHOD BeforeConnect(cString AS STRING, cUser AS STRING, cPassword AS STRING) AS STRING
 	    IF !cString:Contains("=") .AND. ! String.IsNullOrEmpty(cString)
 			cString := "DSN="+cString+";" 
 		ENDIF
@@ -82,55 +90,57 @@ ABSTRACT CLASS XSharp.Data.AbstractSqlFactory IMPLEMENTS XSharp.Data.ISqlFactory
         RETURN cString
         
     /// <inheritdoc />
-    METHOD BeforeDisConnect(oConnection AS DbConnection) AS VOID
+    VIRTUAL METHOD BeforeDisConnect(oConnection AS DbConnection) AS VOID
         RETURN
 
     /// <inheritdoc />
-    METHOD AfterDisConnect(oConnection AS DbConnection) AS VOID
+    VIRTUAL METHOD AfterDisConnect(oConnection AS DbConnection) AS VOID
         RETURN
 
     /// <inheritdoc />
-    METHOD BeforeRollBack(oConnection AS DbTransaction) AS VOID
+    VIRTUAL METHOD BeforeRollBack(oConnection AS DbTransaction) AS VOID
         RETURN
 
     /// <inheritdoc />
-    METHOD AfterRollBack(oConnection AS DbTransaction) AS VOID
+    VIRTUAL METHOD AfterRollBack(oConnection AS DbTransaction) AS VOID
         RETURN
 
     /// <inheritdoc />
-    METHOD BeforeCommit(oConnection AS DbTransaction) AS VOID
+    VIRTUAL METHOD BeforeCommit(oConnection AS DbTransaction) AS VOID
         RETURN
 
     /// <inheritdoc />
-    METHOD AfterCommit(oConnection AS DbTransaction) AS VOID
+    VIRTUAL METHOD AfterCommit(oConnection AS DbTransaction) AS VOID
         RETURN
 
     /// <inheritdoc />
-    METHOD GetName(oConn AS DbConnection) AS STRING
+    VIRTUAL METHOD GetName(oConn AS DbConnection) AS STRING
         RETURN oConn:GetType():FullName
 
     /// <inheritdoc />
-    METHOD DriverConnect(hWindow AS IntPtr, uCompletion AS OBJECT, cConnectionString AS OBJECT) AS STRING
+    VIRTUAL METHOD DriverConnect(hWindow AS IntPtr, uCompletion AS OBJECT, cConnectionString AS OBJECT) AS STRING
         RETURN ""
 
     /// <inheritdoc />
-    METHOD EnhanceException(oEx AS System.Exception)  AS System.Exception
+    VIRTUAL METHOD EnhanceException(oEx AS System.Exception)  AS System.Exception
         RETURN oEx
 
     /// <inheritdoc />
-    METHOD HandleSpecialValue(oValue AS OBJECT, oFS AS OBJECT, lDateTimeAsDate AS LOGIC) AS OBJECT
+    VIRTUAL METHOD HandleSpecialValue(oValue AS OBJECT, oFS AS OBJECT, lDateTimeAsDate AS LOGIC) AS OBJECT
         RETURN oValue
 
     /// <inheritdoc />
-    METHOD TranslateStatement(cStatement AS STRING) AS STRING
+    VIRTUAL METHOD TranslateStatement(cStatement AS STRING) AS STRING
         RETURN cStatement
 
     /// <inheritdoc />
-    METHOD AfterOpen(oDataReader AS DbDataReader) AS DbDataReader
+    VIRTUAL METHOD AfterOpen(oDataReader AS DbDataReader) AS DbDataReader
         RETURN oDataReader
 
+    /// <inheritdoc />
     ABSTRACT METHOD GetMetaDataColumnValues(oRow AS DataRow) AS OBJECT[]
 
+    /// <inheritdoc />
     ABSTRACT METHOD GetMetaDataTableValues(oRow AS DataRow) AS OBJECT[]
 
 

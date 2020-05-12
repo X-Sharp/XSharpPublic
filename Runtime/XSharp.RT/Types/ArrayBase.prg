@@ -14,7 +14,9 @@ BEGIN NAMESPACE XSharp
 	/// This type has methods and properties that normally are never directly called from user code.
 	/// </summary>
 	PUBLIC CLASS __ArrayBase<T> IMPLEMENTS INamedIndexer, IEnumerable<T> WHERE T IS NEW()
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
 		INTERNAL _internalList AS List<T>
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
 		PRIVATE _islocked AS LOGIC
 		#region constructors
 		/// <summary>Create an empty array</summary>
@@ -66,13 +68,16 @@ BEGIN NAMESPACE XSharp
 
 		#region properties
 		/// <summary>Is the array empty.</summary>
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
 		PUBLIC PROPERTY IsEmpty AS LOGIC GET _internalList:Count == 0
 		/// <summary>Length of the array.</summary>
 		PUBLIC PROPERTY Length AS DWORD GET (DWORD) _internalList:Count
         /// <summary>Length of the array as integer.</summary>
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         PUBLIC PROPERTY Count AS INT GET _internalList:Count
 
         /// <summary>Returns the default value for array elements when arrays are resized or initialized.</summary>
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         PUBLIC VIRTUAL PROPERTY DefaultValue AS T GET T{}
 		#endregion
 

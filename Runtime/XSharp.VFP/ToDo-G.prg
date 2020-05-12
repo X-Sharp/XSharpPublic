@@ -95,9 +95,3 @@ FUNCTION GetResultSet( ) AS LONG
     // RETURN 0
     
 
-/// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/gomonth/*" />
-
-FUNCTION GoMonth( uExpression , nNumberOfMonths) AS USUAL
-    THROW NotImplementedException{}
-    // RETURN NIL

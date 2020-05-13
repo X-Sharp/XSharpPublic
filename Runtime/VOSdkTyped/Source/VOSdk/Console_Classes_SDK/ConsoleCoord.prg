@@ -1,0 +1,10 @@
+CLASS ConsoleCoord
+	EXPORT X AS INT
+	EXPORT Y AS INT
+
+CONSTRUCTOR( nX AS INT, nY AS INT) 
+	X := nX
+	Y := nY
+	RETURN 
+
+END CLASS

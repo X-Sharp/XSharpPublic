@@ -9,21 +9,13 @@
     <Name>XSharp.Data</Name>
     <Dialect>Core</Dialect>
     <OutputName>XSharp.Data</OutputName>
+    <CS>true</CS>
+    <VulcanCompatibleResources>True</VulcanCompatibleResources>
     <XSharpProjectversion>2.4.0.0</XSharpProjectversion>
     <IncludePaths>$(CommonInclude)</IncludePaths>
     <Nostandarddefs>true</Nostandarddefs>
     <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
-    <CS>true</CS>
-    <NamedArgs>False</NamedArgs>
     <StandardDefs />
-    <VO2>true</VO2>
-    <VO3>true</VO3>
-    <StartupObject />
-    <ApplicationIcon />
-    <VulcanCompatibleResources>False</VulcanCompatibleResources>
-    <NoWin32Manifest>False</NoWin32Manifest>
-    <Memvar>False</Memvar>
-    <Undeclared>False</Undeclared>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -61,7 +53,7 @@
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <UseSharedCompilation>true</UseSharedCompilation>
     <DisabledWarnings>171,553,1591</DisabledWarnings>
-    <DocumentationFile>XSharp.Core.Xml</DocumentationFile>
+    <DocumentationFile>XSharp.Data.Xml</DocumentationFile>
     <CommandLineOption>/noclipcall</CommandLineOption>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.targets" />

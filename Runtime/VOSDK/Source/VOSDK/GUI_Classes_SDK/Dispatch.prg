@@ -196,8 +196,8 @@ METHOD Dispatch(oEvent)
 			lFileDragging := FALSE
 			ReleaseCapture()
 		ENDIF
-        	IF IsInstanceOf(SELF, #__FormFrame) //SE-111104 for DataWindow
-			SELF:Owner:MouseButtonUp(MouseEvent{oEvt})
+        	IF SELF IS __FormFrame //SE-111104 for DataWindow
+			    SELF:Owner:MouseButtonUp(MouseEvent{oEvt})
 	        ELSE   
         	   SELF:MouseButtonUp(MouseEvent{oEvt})
 	        ENDIF   
@@ -284,12 +284,12 @@ METHOD Dispatch(oEvent)
 				dwHiWord := HiWord(oEvt:wParam)
 				
 				DO CASE
-				CASE IsInstanceOf(oChild,#Button)
+				CASE oChild IS Button
 					oTempEvent := ControlEvent{oEvt}
 					
 					SWITCH dwHiWord
 					CASE BN_CLICKED
-						IF IsInstanceOf(oChild, #PushButton)
+						IF oChild IS PushButton
 							
 							// force focus to button to update values
 							oChild:SetFocus(TRUE)
@@ -308,14 +308,14 @@ METHOD Dispatch(oEvent)
 						SELF:Default(oEvt)
 					END SWITCH
 					
-				CASE IsInstanceOf(oChild, #BaseListBox)
-					IF IsInstanceOf(oChild, #ComboBox)
+				CASE oChild IS BaseListBox
+					IF oChild IS ComboBox VAR combo
 						SWITCH dwHiWord 
 						CASE CBN_DBLCLK
 							SELF:ListBoxClick(ControlEvent{oEvt})
 						CASE CBN_EDITCHANGE
 							//PP-030923 Tell the combobox that an edit change occurred
-							oChild:__EditChange()
+							combo:__EditChange()
 							SELF:EditChange(ControlEvent{oEvt})
 							
 						CASE CBN_KILLFOCUS
@@ -337,7 +337,7 @@ METHOD Dispatch(oEvent)
 						END SWITCH
 					ENDIF
 					
-				CASE (IsInstanceOf(oChild,#Edit) .AND. !oChild:__NoNotify) .OR. IsInstanceOf(oChild,#IPAddress)
+				CASE (oChild IS Edit VAR oEdit .AND. !oEdit:__NoNotify) .OR. oChild IS IPAddress
 					dwHiWord:=HiWord(oEvt:wParam)
 					
 					SWITCH dwHiWord
@@ -350,8 +350,8 @@ METHOD Dispatch(oEvent)
                     CASE EN_SETFOCUS
 						SELF:EditFocusChange(EditFocusChangeEvent{oEvt})
 						// this is needed because the IPAddress control has nested edits, whose WM_SETFOCUS we don't get
-						IF IsInstanceOf(oChild,#IPAddress)
-							SendMessage(oChild:Handle(), IIF(dwHiWord==EN_SETFOCUS, WM_SETFOCUS, WM_KILLFOCUS), 0, 0)
+						IF oChild IS IPAddress VAR ip
+							SendMessage(ip:Handle(), IIF(dwHiWord==EN_SETFOCUS, WM_SETFOCUS, WM_KILLFOCUS), 0, 0)
 						ENDIF
 						//					RvdH 050816 Unreachable code
 						//					CASE dwHiWord == EN_KILLFOCUS .or. dwHiWord == EN_SETFOCUS
@@ -364,9 +364,9 @@ METHOD Dispatch(oEvent)
 						SELF:Default(oEvt)
 					END SWITCH
 					
-				CASE IsInstanceOf(oChild, #ToolBar)
-					oObject := oChild:Owner
-					IF IsInstanceOfUsual(oChild:Owner, #Window) .AND. !(IsInstanceOfUsual(oObject, #ShellWindow) .AND. (IVarGet(oObject, #ChildToolbarLocation) == TBL_SHELL))
+				CASE oChild IS ToolBar VAR oTb
+					oObject := oTb:Owner
+					IF IsInstanceOfUsual(oTb:Owner, #Window) .AND. !(IsInstanceOfUsual(oObject, #ShellWindow) .AND. (IVarGet(oObject, #ChildToolbarLocation) == TBL_SHELL))
 						SELF:__PreMenuCommand(MenuCommandEvent{oEvt}:__SetMenu(oObject))
 					ELSE
 						SELF:__PreMenuCommand(MenuCommandEvent{oEvt}:__SetMenu(SELF))
@@ -375,7 +375,7 @@ METHOD Dispatch(oEvent)
 					RETURN SELF:EventReturnValue
 					
 					//PP-031115 ACN_START/ACN_STOP were in ControlNotify - should be here as WM_COMMAND
-				CASE IsInstanceOf(oChild, #AnimationControl)
+				CASE oChild IS AnimationControl
 					oTempEvent := ControlEvent{oEvt}
 					
 					IF dwHiWord = ACN_START
@@ -425,7 +425,7 @@ METHOD Dispatch(oEvent)
 		// SetAccelerator(Null_Ptr, Null_Ptr)
 		// ReleaseCapture()
 	   __WCSelfPtrFree(ptrSelfPtr)
-			SetWindowLong(hwnd, DWL_USER, 0L)
+		SetWindowLong(hwnd, DWL_USER, 0L)
 		IF !InCollect()
 			UnregisterAxit(SELF)
 			ptrSelfPtr:=NULL_PTR
@@ -591,8 +591,8 @@ FUNCTION __Dispatch_DrawItem(oEvent AS @@event, oWindow AS OBJECT) AS LONGINT ST
 		oWindow:EventReturnValue := 1L
 		RETURN 1L
 	ENDIF
-	IF IsInstanceOf(oWindow, #Window)
-		oWindow:Default(oEvent)
+	IF oWindow IS Window VAR oWin
+		oWin:Default(oEvent)
 	ENDIF
 	RETURN 0L
 	
@@ -616,8 +616,8 @@ FUNCTION __Dispatch_MeasureItem(oEvent AS @@event, oWindow AS OBJECT) AS LONGINT
 		oWindow:EventReturnValue := 1L
 		RETURN 1l
 	ENDIF
-	IF IsInstanceOf(oWindow, #Window)
-		oWindow:Default(oEvent)
+	IF oWindow IS Window VAR oWin
+		oWin:Default(oEvent)
 	ENDIF
 	RETURN 0L
 	
@@ -635,7 +635,7 @@ FUNCTION __Dispatch_MenuChar(oEvent AS @@event, oWindow AS OBJECT) AS LONGINT ST
 		ENDIF
 	ENDIF
 	
-	IF IsInstanceOf(oWindow, #Window)
+	IF oWindow IS Window VAR oWin
 		oWindow:Default(oEvent)
 	ENDIF
 	

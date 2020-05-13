@@ -1,0 +1,296 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.Default.props" />
+  <Import Project="..\VOSDK.Targets" />
+  <!-- Please note that most important settings are read from VOSDK.Targets -->
+  <PropertyGroup>
+    <Dialect>Vulcan</Dialect>
+    <ProjectGuid>051D166B-3886-43FB-A3C6-6C6846EA6DF1</ProjectGuid>
+    <AssemblyName>XSharp.VO.GUIClasses</AssemblyName>
+    <Name>XSharp.VO.GUIClasses</Name>
+    <OutputName>XSharpGUIClasses</OutputName>
+    <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
+    <XSharpProjectversion>2.4.0.0</XSharpProjectversion>
+    <Includepaths>$(Solutiondir)Common</Includepaths>
+    <Nostandarddefs>false</Nostandarddefs>
+    <PlatformTarget>x86</PlatformTarget>
+    <LB>true</LB>
+    <unsafe>true</unsafe>
+    <CS>false</CS>
+    <NamedArgs>false</NamedArgs>
+    <InitLocals>false</InitLocals>
+    <RootNamespace>XSharp.VO</RootNamespace>
+    <NoWin32Manifest>False</NoWin32Manifest>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
+    <DocumentationFile>XSharpSystemClasses.Xml</DocumentationFile>
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.targets" />
+  <ItemGroup>
+    <Compile Include="..\..\SharedSource\SDKAssemblyinfo.prg">
+      <Link>SDKAssemblyinfo.prg</Link>
+    </Compile>
+    <Compile Include="Controls\AnimationControl.prg" />
+    <Compile Include="Controls\BaseListBox.prg" />
+    <Compile Include="Controls\Button.prg" />
+    <Compile Include="Controls\CheckBox.prg" />
+    <Compile Include="Controls\ComboBox.prg" />
+    <Compile Include="Controls\Control.prg" />
+    <Compile Include="Controls\CustomControl.prg" />
+    <Compile Include="Controls\DataBrowser.prg" />
+    <Compile Include="Controls\DataListView.prg" />
+    <Compile Include="Controls\DateTimePicker.prg" />
+    <Compile Include="Controls\Edit.prg" />
+    <Compile Include="Controls\FixedText.prg" />
+    <Compile Include="Controls\GroupBox.prg" />
+    <Compile Include="Controls\HotKeyEdit.prg" />
+    <Compile Include="Controls\HTMLControl.prg" />
+    <Compile Include="Controls\IPAddress.prg" />
+    <Compile Include="Controls\ListBox.prg" />
+    <Compile Include="Controls\ListView.prg" />
+    <Compile Include="Controls\MLE.prg" />
+    <Compile Include="Controls\MonthCalendar.prg" />
+    <Compile Include="Controls\ProgressBar.prg" />
+    <Compile Include="Controls\PushButton.prg" />
+    <Compile Include="Controls\RadioButton.prg" />
+    <Compile Include="Controls\RadioButtonGroup.prg" />
+    <Compile Include="Controls\RichTextEdit.prg" />
+    <Compile Include="Controls\ScrollBar.prg" />
+    <Compile Include="Controls\Slider.prg" />
+    <Compile Include="Controls\Spinner.prg" />
+    <Compile Include="Controls\StatusBar.prg" />
+    <Compile Include="Controls\SysLink.prg" />
+    <Compile Include="Controls\TabControl.prg" />
+    <Compile Include="Controls\TextControl.prg" />
+    <Compile Include="Controls\TreeView.prg" />
+    <Compile Include="Controls\WindowScrollBar.prg" />
+    <Compile Include="Controls\Hyperlink.prg" />
+    <Compile Include="Controls\MMContainer.prg" />
+    <Compile Include="Drawing\Bitmap.prg" />
+    <Compile Include="Drawing\BitmapObject.prg" />
+    <Compile Include="Drawing\BoundingBox.prg" />
+    <Compile Include="Drawing\Brush.prg" />
+    <Compile Include="Drawing\Color.prg" />
+    <Compile Include="Drawing\DrawObject.prg" />
+    <Compile Include="Drawing\EllipseObject.prg" />
+    <Compile Include="Drawing\FixedBitmap.prg" />
+    <Compile Include="Drawing\FixedIcon.prg" />
+    <Compile Include="Drawing\FixedImage.prg" />
+    <Compile Include="Drawing\Font.prg" />
+    <Compile Include="Drawing\FormattedTextObject.prg" />
+    <Compile Include="Drawing\Icon.prg" />
+    <Compile Include="Drawing\ImageList.prg" />
+    <Compile Include="Drawing\LineObject.prg" />
+    <Compile Include="Drawing\Pen.prg" />
+    <Compile Include="Drawing\PieObject.prg" />
+    <Compile Include="Drawing\Pointer.prg" />
+    <Compile Include="Drawing\RectangleObject.prg" />
+    <Compile Include="Drawing\ShapeObject.prg" />
+    <Compile Include="Drawing\TextObject.prg" />
+    <Compile Include="Drawing\Cursor.prg" />
+    <Compile Include="Events\ControlEvents.prg" />
+    <Compile Include="Events\Event-Listview.prg" />
+    <Compile Include="Events\Event-Printer.prg" />
+    <Compile Include="Events\Event-Treeview.prg" />
+    <Compile Include="Events\Event.prg" />
+    <Compile Include="Events\IPCEvent.prg" />
+    <Compile Include="Events\MenuEvents.prg" />
+    <Compile Include="Events\OleDragEvent.prg" />
+    <Compile Include="Events\PrinterEvents.prg" />
+    <Compile Include="GUILangDef.prg" />
+    <Compile Include="Menu\Accelerator.prg" />
+    <Compile Include="Menu\Menu.prg" />
+    <Compile Include="Menu\ToolBar.prg" />
+    <Compile Include="Ole\xOle Defines.prg" />
+    <Compile Include="Ole\xOleControl.prg" />
+    <Compile Include="Ole\xOleObject.prg" />
+    <Compile Include="Printing\Printer.prg" />
+    <Compile Include="Printing\PrintingDevice.prg" />
+    <Compile Include="Properties\AssemblyInfo.prg" />
+    <Compile Include="ResourceReader\ResourceMenu.prg" />
+    <Compile Include="Support\ClipBoard.prg" />
+    <Compile Include="Support\EventContext.prg" />
+    <Compile Include="Support\FormattedString.prg" />
+    <Compile Include="Support\HelpDisplay.prg" />
+    <Compile Include="Support\IPCTopic.prg" />
+    <Compile Include="Support\Pair.prg" />
+    <Compile Include="Support\ResFile.prg" />
+    <Compile Include="Support\ResID.prg" />
+    <Compile Include="Support\ResStr.prg" />
+    <Compile Include="Support\Temp.prg" />
+    <Compile Include="Support\WCError.prg" />
+    <Compile Include="Support\WCFunc.prg" />
+    <Compile Include="Support\WCStructures.prg" />
+    <Compile Include="Support\xDragDropClient.prg" />
+    <Compile Include="Support\xDragDropServer.prg" />
+    <Compile Include="Support\IPCClient.prg" />
+    <Compile Include="Support\IPCServer.prg" />
+    <Compile Include="Support\XP Theme Support.prg" />
+    <Compile Include="WCDefine.prg" />
+    <Compile Include="WCResource.prg" />
+    <Compile Include="Win32\Win32Defines.prg" />
+    <Compile Include="WinDefs.prg" />
+    <Compile Include="Windows\Application Window.prg" />
+    <Compile Include="Windows\ChildAppWindow.prg" />
+    <Compile Include="Windows\DataWindow.prg" />
+    <Compile Include="Windows\DialogWindow.prg" />
+    <Compile Include="Windows\Interfaces.prg" />
+    <Compile Include="Windows\ShellWindow.prg" />
+    <Compile Include="Windows\Split Window.prg" />
+    <Compile Include="Windows\TopAppWindow.prg" />
+    <Compile Include="Windows\Window.prg" />
+    <Compile Include="Windows\WindowExtensions.prg" />
+    <Compile Include="Windows\_Obsolete.prg" />
+    <Compile Include="WinForm\AppWinForms.prg" />
+    <Compile Include="WinForm\DataWinForm.prg" />
+    <Compile Include="WinForm\Forms.prg">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WinForm\HTMLEditControl.prg" />
+    <Compile Include="WinForm\TrayIcon.prg" />
+    <Compile Include="WinForm\Interfaces.prg" />
+    <Compile Include="WinForm\ListBox.prg" />
+    <Compile Include="WinForm\ListView.prg" />
+    <Compile Include="WinForm\TabControl.prg" />
+    <Compile Include="WinForm\TextBox.prg" />
+    <Compile Include="WinForm\DataGrid.prg" />
+    <Compile Include="WinForm\DialogForm.prg" />
+    <Compile Include="WinForm\Panels.prg" />
+    <Compile Include="WinForm\Properties.prg" />
+    <Compile Include="WinForm\Treeview.prg" />
+    <Compile Include="Windows\Application.prg" />
+    <Compile Include="Windows\ControlWindow.prg" />
+    <Compile Include="Windows\DataDialog.prg" />
+    <Compile Include="Windows\EditWindow.prg" />
+    <Compile Include="Windows\ModelessDialog.prg" />
+    <Compile Include="Windows\StandardDialog.prg" />
+    <Compile Include="Windows\TextBox.prg" />
+    <Compile Include="Windows\WindowEventHandlers.prg" />
+    <Compile Include="Windows\Dispatch.prg" />
+    <Compile Include="Windows\Explorer Window.prg" />
+    <Compile Include="ResourceReader\ResourceDialog.prg" />
+    <Compile Include="ResourceReader\ResourceDlgItem.prg" />
+    <Compile Include="ResourceReader\ResourceReader.prg" />
+    <Compile Include="WinForm\ChildWinForm.prg" />
+    <Compile Include="WinForm\Controls.prg" />
+    <Compile Include="WinForm\MenuToolbar.prg" />
+    <Compile Include="WinForm\VOWinFormApp.prg" />
+    <Compile Include="WinForm\WindowStyle.prg" />
+    <Compile Include="WinForm\WinFormVOWindow.prg">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WinForm\WinFormVOWindowHost.prg" />
+    <Compile Include="Win32.prg" />
+    <Compile Include="WinForm\_Factory.prg" />
+  </ItemGroup>
+  <ItemGroup>
+    <NativeResource Include="Resources\CurHand.rc" />
+    <NativeResource Include="Resources\CursorHelp.rc" />
+    <NativeResource Include="Resources\DragMultip.rc" />
+    <NativeResource Include="Resources\DragSingle.rc" />
+    <NativeResource Include="Resources\GeneralHelp.rc" />
+    <NativeResource Include="Resources\HelpCursor.rc" />
+    <NativeResource Include="Resources\IDB_DEFTOOLBAR.rc" />
+    <NativeResource Include="Resources\IDD_DEFDLG.rc" />
+    <NativeResource Include="Resources\IDD_DEFDLG2.rc" />
+    <NativeResource Include="Resources\IDI_DEFICON.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\HAND.CUR" />
+    <Content Include="Resources\MULTI.CUR" />
+    <Content Include="Resources\SINGLE.CUR" />
+    <Content Include="Resources\HELP.CUR" />
+    <Content Include="Resources\CAVOTB.BMP" />
+    <Content Include="Resources\WINS.ICO" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Drawing" />
+    <Folder Include="Controls" />
+    <Folder Include="Events" />
+    <Folder Include="Menu\" />
+    <Folder Include="Win32" />
+    <Folder Include="Printing" />
+    <Folder Include="Ole" />
+    <Folder Include="Support" />
+    <Folder Include="Windows" />
+    <Folder Include="Properties" />
+    <Folder Include="ResourceReader" />
+    <Folder Include="WinForm" />
+    <Folder Include="Resources\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+      <Name>System.Data</Name>
+      <AssemblyName>System.Data.dll</AssemblyName>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Name>System.Design</Name>
+      <AssemblyName>System.Design.dll</AssemblyName>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Name>System.Drawing</Name>
+      <AssemblyName>System.Drawing.dll</AssemblyName>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Windows.Forms">
+      <Name>System.Windows.Forms</Name>
+      <AssemblyName>System.Windows.Forms.dll</AssemblyName>
+    </Reference>
+    <Reference Include="XSharp.Core, Version=1.2.0.0, Culture=neutral, PublicKeyToken=null">
+      <Name>XSharp.Core</Name>
+      <AssemblyName>XSharp.Core.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+      <HintPath>..\..\XSharpRuntime\XSharp.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="XSharp.RT, Version=1.2.0.0, Culture=neutral, PublicKeyToken=null">
+      <Name>XSharp.RT</Name>
+      <AssemblyName>XSharp.RT.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+      <HintPath>..\..\XSharpRuntime\XSharp.RT.dll</HintPath>
+    </Reference>
+    <Reference Include="XSharp.VO, Version=1.2.0.0, Culture=neutral, PublicKeyToken=null">
+      <Name>XSharp.VO</Name>
+      <AssemblyName>XSharp.VO.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+      <HintPath>..\..\XSharpRuntime\XSharp.VO.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="WinForm\PropControl.vh" />
+    <None Include="_readme.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\System_Classes_SDK\XSharp.VO.SystemClasses.xsproj">
+      <Name>XSharp.VO.SystemClasses</Name>
+      <Project>{5ac3e55d-f2bd-45eb-9cc2-dd8bd36240ea}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <PreBuildEvent>
+    </PreBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <PreBuildEvent />
+    <PostBuildEvent />
+    <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
+  </PropertyGroup>
+  <ProjectExtensions>
+    <ProjectCapabilities>
+      <ProjectConfigurationsDeclaredAsItems />
+    </ProjectCapabilities>
+  </ProjectExtensions>
+</Project>

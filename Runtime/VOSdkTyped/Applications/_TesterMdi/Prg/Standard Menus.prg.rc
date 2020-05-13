@@ -1,0 +1,129 @@
+;// designer generated file, do not modify
+;// MENU EmptyShellMenu from C:\xSharp\SDK\Applications\_TesterMdi\Prg\Standard Menus.prg.rc
+#define IDM_EmptyShellMenu "EmptyShellMenu"
+#define IDA_EmptyShellMenu "EmptyShellMenu"
+#define IDM_EmptyShellMenu_File_ID 15001
+#define IDM_EmptyShellMenu_File_Open_ID 15002
+#define IDM_EmptyShellMenu_File_Print_Setup_ID 15004
+#define IDM_EmptyShellMenu_File_Exit_ID 15006
+#define IDM_EmptyShellMenu_Help_ID 15007
+#define IDM_EmptyShellMenu_Help_Index_ID 15008
+#define IDM_EmptyShellMenu_Help_Using_Help_ID 15009
+#define IDM_EmptyShellMenu_Help_About_ID 15011
+#define IDM_EmptyShellMenu_Help_dialogwindow1_ID 15012
+EmptyShellMenu MENU
+BEGIN
+	POPUP "&File"
+	BEGIN
+		MENUITEM "&Open...\tCtrl+O" , IDM_EmptyShellMenu_File_Open_ID
+		MENUITEM SEPARATOR
+		MENUITEM "P&rint Setup..." , IDM_EmptyShellMenu_File_Print_Setup_ID
+		MENUITEM SEPARATOR
+		MENUITEM "E&xit\tAlt+F4" , IDM_EmptyShellMenu_File_Exit_ID
+	END
+	POPUP "&Help"
+	BEGIN
+		MENUITEM "&Index\tF1" , IDM_EmptyShellMenu_Help_Index_ID
+		MENUITEM "&Using Help" , IDM_EmptyShellMenu_Help_Using_Help_ID
+		MENUITEM SEPARATOR
+		MENUITEM "&About..." , IDM_EmptyShellMenu_Help_About_ID
+		MENUITEM "dialogwindow1" , IDM_EmptyShellMenu_Help_dialogwindow1_ID
+	END
+END
+EmptyShellMenu_Accelerator ACCELERATORS
+BEGIN
+	79, IDM_EmptyShellMenu_File_Open_ID, CONTROL ,VIRTKEY
+	115, IDM_EmptyShellMenu_File_Exit_ID, ALT ,VIRTKEY
+	112, IDM_EmptyShellMenu_Help_Index_ID, VIRTKEY
+END
+;// MENU StandardShellMenu from C:\xSharp\SDK\Applications\_TesterMdi\Prg\Standard Menus.prg.rc
+#define IDM_StandardShellMenu "StandardShellMenu"
+#define IDA_StandardShellMenu "StandardShellMenu"
+#define IDM_StandardShellMenu_File_ID 15001
+#define IDM_StandardShellMenu_File_Open_ID 15002
+#define IDM_StandardShellMenu_File_Close_ID 15003
+#define IDM_StandardShellMenu_File_Print_ID 15005
+#define IDM_StandardShellMenu_File_Print_Setup_ID 15006
+#define IDM_StandardShellMenu_File_Exit_ID 15008
+#define IDM_StandardShellMenu_Edit_ID 15009
+#define IDM_StandardShellMenu_Edit_Cut_ID 15010
+#define IDM_StandardShellMenu_Edit_Copy_ID 15011
+#define IDM_StandardShellMenu_Edit_Paste_ID 15012
+#define IDM_StandardShellMenu_Edit_Insert_Record_ID 15014
+#define IDM_StandardShellMenu_Edit_Delete_Record_ID 15015
+#define IDM_StandardShellMenu_Edit_Go_To_Top_ID 15017
+#define IDM_StandardShellMenu_Edit_Previous_ID 15018
+#define IDM_StandardShellMenu_Edit_Next_ID 15019
+#define IDM_StandardShellMenu_Edit_Go_To_Bottom_ID 15020
+#define IDM_StandardShellMenu_View_ID 15021
+#define IDM_StandardShellMenu_View_Form_ID 15022
+#define IDM_StandardShellMenu_View_Table_ID 15023
+#define IDM_StandardShellMenu_Window_ID 15024
+#define IDM_StandardShellMenu_Window_Cascade_ID 15025
+#define IDM_StandardShellMenu_Window_Tile_ID 15026
+#define IDM_StandardShellMenu_Window_Close_All_ID 15027
+#define IDM_StandardShellMenu_Help_ID 15028
+#define IDM_StandardShellMenu_Help_Index_ID 15029
+#define IDM_StandardShellMenu_Help_Context_Help_ID 15030
+#define IDM_StandardShellMenu_Help_Using_Help_ID 15031
+#define IDM_StandardShellMenu_Help_About_ID 15033
+StandardShellMenu MENU
+BEGIN
+	POPUP "&File"
+	BEGIN
+		MENUITEM "&Open...\tCtrl+O" , IDM_StandardShellMenu_File_Open_ID
+		MENUITEM "&Close" , IDM_StandardShellMenu_File_Close_ID
+		MENUITEM SEPARATOR
+		MENUITEM "&Print" , IDM_StandardShellMenu_File_Print_ID
+		MENUITEM "P&rint Setup..." , IDM_StandardShellMenu_File_Print_Setup_ID
+		MENUITEM SEPARATOR
+		MENUITEM "E&xit\tAlt+F4" , IDM_StandardShellMenu_File_Exit_ID
+	END
+	POPUP "&Edit"
+	BEGIN
+		MENUITEM "Cu&t\tCtrl+X" , IDM_StandardShellMenu_Edit_Cut_ID
+		MENUITEM "&Copy\tCtrl+C" , IDM_StandardShellMenu_Edit_Copy_ID
+		MENUITEM "&Paste\tCtrl+V" , IDM_StandardShellMenu_Edit_Paste_ID
+		MENUITEM SEPARATOR
+		MENUITEM "&Insert Record" , IDM_StandardShellMenu_Edit_Insert_Record_ID
+		MENUITEM "&Delete Record" , IDM_StandardShellMenu_Edit_Delete_Record_ID
+		MENUITEM SEPARATOR
+		MENUITEM "G&o To Top\tCtrl+Home" , IDM_StandardShellMenu_Edit_Go_To_Top_ID
+		MENUITEM "Pre&vious" , IDM_StandardShellMenu_Edit_Previous_ID
+		MENUITEM "&Next" , IDM_StandardShellMenu_Edit_Next_ID
+		MENUITEM "Go To &Bottom\tCtrl+End" , IDM_StandardShellMenu_Edit_Go_To_Bottom_ID
+	END
+	POPUP "&View"
+	BEGIN
+		MENUITEM "&Form\tShift+F2" , IDM_StandardShellMenu_View_Form_ID
+		MENUITEM "&Table\tF2" , IDM_StandardShellMenu_View_Table_ID
+	END
+	POPUP "&Window"
+	BEGIN
+		MENUITEM "&Cascade" , IDM_StandardShellMenu_Window_Cascade_ID
+		MENUITEM "&Tile" , IDM_StandardShellMenu_Window_Tile_ID
+		MENUITEM "Close A&ll" , IDM_StandardShellMenu_Window_Close_All_ID
+	END
+	POPUP "&Help"
+	BEGIN
+		MENUITEM "&Index\tF1" , IDM_StandardShellMenu_Help_Index_ID
+		MENUITEM "&Context Help\tCtrl+F1" , IDM_StandardShellMenu_Help_Context_Help_ID
+		MENUITEM "&Using Help" , IDM_StandardShellMenu_Help_Using_Help_ID
+		MENUITEM SEPARATOR
+		MENUITEM "&About..." , IDM_StandardShellMenu_Help_About_ID
+	END
+END
+StandardShellMenu_Accelerator ACCELERATORS
+BEGIN
+	79, IDM_StandardShellMenu_File_Open_ID, CONTROL ,VIRTKEY
+	115, IDM_StandardShellMenu_File_Exit_ID, ALT ,VIRTKEY
+	88, IDM_StandardShellMenu_Edit_Cut_ID, CONTROL ,VIRTKEY
+	67, IDM_StandardShellMenu_Edit_Copy_ID, CONTROL ,VIRTKEY
+	86, IDM_StandardShellMenu_Edit_Paste_ID, CONTROL ,VIRTKEY
+	36, IDM_StandardShellMenu_Edit_Go_To_Top_ID, CONTROL ,VIRTKEY
+	35, IDM_StandardShellMenu_Edit_Go_To_Bottom_ID, CONTROL ,VIRTKEY
+	113, IDM_StandardShellMenu_View_Form_ID, SHIFT ,VIRTKEY
+	113, IDM_StandardShellMenu_View_Table_ID, VIRTKEY
+	112, IDM_StandardShellMenu_Help_Index_ID, VIRTKEY
+	112, IDM_StandardShellMenu_Help_Context_Help_ID, CONTROL ,VIRTKEY
+END

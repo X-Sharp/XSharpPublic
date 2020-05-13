@@ -157,7 +157,7 @@ METHOD __AutoCreateBrowser() AS DataWindow STRICT
 		Send(oGBrowse ,#__NOTIFYChanges, GBNFY_VIEWASFORM)
 	END CASE
 	
-	IF (lLinked .AND. IsInstanceOfUsual(oAttachedServer, #DataServer))
+	IF (lLinked .AND. oAttachedServer IS DataServer)
 		Send(oGBrowse, #Use, oAttachedServer)
 	ENDIF
 	
@@ -459,7 +459,7 @@ METHOD __DoValidate(oControl AS Control) AS DataWindow STRICT
 	LOCAL dwI, dwCount AS DWORD
 	LOCAL oRBG AS RadioButtonGroup
 	
-	IF IsInstanceOfUsual(oControl, #RadioButton)
+	IF oControl IS RadioButton
 		//SE-060526
 		dwCount := ALen(aRadioGroups)
 		FOR dwI := 1 UPTO dwCount
@@ -494,7 +494,30 @@ METHOD __DoValidate(oControl AS Control) AS DataWindow STRICT
 	ENDIF
 	
 	RETURN SELF
+
+
+METHOD __DoValidate(oColumn AS DataColumn) AS DataWindow STRICT 
+	//PP-030828 Strong typing
 	
+	IF oColumn:Modified
+		oColumn:__Update()
+		IF oColumn:ValueChanged
+			IF !oColumn:PerformValidations()
+				oHLStatus := oColumn:Status
+				SELF:__UpdateStatus()
+			ELSE
+				oHLStatus := oColumn:Status
+				SELF:StatusMessage(NULL_STRING, MessageError)
+				IF !IsNil(oAttachedServer)
+					oColumn:__Gather()
+				ENDIF
+			ENDIF
+			SELF:PreValidate()
+			oColumn:ValueChanged := TRUE
+		ENDIF
+	ENDIF
+	
+	RETURN SELF	
 
 METHOD __EnableHelpCursor(lEnabled AS LOGIC) AS Window STRICT 
 	//PP-030828 Strong typing
@@ -613,18 +636,18 @@ METHOD __HandleScrolling(oEvent AS OBJECT) AS DataWindow STRICT
     //PP-030828 Strong typing
     LOCAL oControl as OBJECT
     DO CASE
-    CASE IsInstanceOf(oEvent, #ScrollEvent)
+    CASE oEvent IS ScrollEvent
         oControl := oEvent:Scrollbar
-    CASE IsInstanceOf(oEvent, #SpinnerEvent)
+    CASE oEvent IS SpinnerEvent
         oControl := oEvent:Spinner
-    CASE IsInstanceOf(oEvent, #SliderEvent)
+    CASE oEvent IS SliderEvent
         oControl := oEvent:Slider
     ENDCASE
     
     IF (oControl != null_object)
         oControl:ThumbPosition := oEvent:Position
         oControl:Modified := true // assume its modified
-        self:__DoValidate(oControl)
+        SELF:__DoValidate((Control) oControl)
     ENDIF
     
     RETURN self
@@ -632,14 +655,12 @@ METHOD __HandleScrolling(oEvent AS OBJECT) AS DataWindow STRICT
 
 METHOD __RegisterFieldLinks(oDataServer AS DataServer) AS LOGIC STRICT 
 	//PP-030828 Strong typing
-	LOCAL oDC AS Control
-	LOCAL dwIndex, dwControls AS DWORD
+	LOCAL dwControls AS DWORD
 	LOCAL siDF AS SHORTINT
 	dwControls := ALen(aControls)
 	IF dwControls > 0
-		FOR dwIndex := 1 UPTO dwControls
-			IF IsInstanceOfUsual(aControls[dwIndex], #Control)
-				oDC := aControls[dwIndex]
+		FOREACH oObject AS OBJECT IN aControls
+            IF oObject IS Control VAR oDC 
 				siDF := oDataServer:FieldPos(oDC:NameSym)
 				IF siDF > 0 .AND. IsNil(oDC:Server) // Only one datafield per control
 					oDC:LinkDF(oDataServer, siDF) // Exit here, only one control per
@@ -689,7 +710,7 @@ METHOD __Scatter() AS DataWindow STRICT
 METHOD __SetupDataControl(oDC AS Control) AS DataWindow STRICT 
     //PP-030828 Strong typing
 
-    IF IsInstanceOfUsual(oDC, #RadioButtonGroup)
+    IF oDC IS RadioButtonGroup
         AAdd(aRadioGroups, oDC)
     ENDIF
     
@@ -839,13 +860,13 @@ METHOD __UpdateCurrent() AS DataWindow STRICT
 	LOCAL oColumn AS OBJECT
 	
     IF (sCurrentView == #FormView)
-		IF (IsInstanceOf(oDCCurrentControl, #Control) .AND. oDCCurrentControl:Modified)
-			SELF:__DoValidate(oDCCurrentControl)
+		IF oDCCurrentControl IS Control VAR oC .AND. oC:Modified
+			SELF:__DoValidate(oC)
 		ENDIF
 	ELSEIF (sCurrentView == #BrowseView) .AND. IsAccess(oGBrowse, #CurrentColumn)
 		oColumn := IVarGet(oGBrowse, #CurrentColumn)
-		IF (IsInstanceOfUsual(oColumn, #DataColumn) .AND. oColumn:Modified)
-			SELF:__DoValidate(oColumn)
+		IF oColumn IS DataColumn VAR oDC .AND. oDC:Modified
+			SELF:__DoValidate(oDC)
 		ENDIF
 	ENDIF
 	RETURN SELF
@@ -855,9 +876,7 @@ METHOD __UpdateStatus() AS LOGIC STRICT
 	//PP-030828 Strong typing
 	
 	IF oHLStatus != NULL_OBJECT
-		IF IsInstanceOfUsual(oHLStatus, #HyperLabel)
-			SELF:__StatusMessage(ResourceString{__WCSError2}:value + oHLStatus:Description, MESSAGEERROR)
-		ENDIF
+    	SELF:__StatusMessage(ResourceString{__WCSError2}:value + oHLStatus:Description, MESSAGEERROR)
 		RETURN FALSE
 	ENDIF
 	// No error
@@ -1009,7 +1028,7 @@ ASSIGN BrowserClass(symNewClass)
 
 METHOD ButtonClick(oControlEvent) 
 	LOCAL oButton AS Control
-	LOCAL oWindow AS Window
+	LOCAL oWindow AS DataWindow
 	LOCAL dwI, dwCount AS DWORD
 	LOCAL oRBG AS RadioButtonGroup
 	LOCAL aRadioGrps AS ARRAY
@@ -1018,16 +1037,16 @@ METHOD ButtonClick(oControlEvent)
 	
 	oButton := oControlEvent:Control
 	
-	IF IsInstanceOfUsual(oButton:Owner, #Window)
+	IF IsInstanceOfUsual(oButton:Owner, #DataWindow)
 		oWindow := oButton:Owner
 	ELSE
 		oWindow := SELF
 	ENDIF
-	IF IsInstanceOf(oButton, #Button)
+	IF oButton IS Button
 		oButton:Modified := TRUE // assume its modified
-		IF IsInstanceOf(oButton, #RadioButton)
+		IF oButton IS RadioButton
 			//SE-060526
-			aRadioGrps := IVarGet(oWindow, #__aRadioGroups)
+			aRadioGrps := oWindow:__aRadioGroups
 			dwCount := ALen(aRadioGrps)
 			FOR dwI := 1 UPTO dwCount
 				oRBG := aRadioGrps[dwI]
@@ -1037,10 +1056,10 @@ METHOD ButtonClick(oControlEvent)
 					EXIT
 				ENDIF
 			NEXT  // dwI
-		ELSEIF !IsInstanceOf(oButton, #CheckBox)
+		ELSEIF ! (oButton IS CheckBox)
 			lUnchanged := TRUE
-		ENDIF
-		Send(oWindow,#__DoValidate,oButton)
+        ENDIF
+		oWindow:__DoValidate(oButton)
 		oButton:ValueChanged := !lUnchanged
 	ENDIF
 	SUPER:ButtonClick(oControlEvent)
@@ -1320,7 +1339,7 @@ METHOD ControlFocusChange(oControlFocusChangeEvent)
 			WCAppSetDialogWindow(oSurface:Handle())
 			//PP-040410
 			IF ! oControl == NULL_OBJECT
-				IF IsInstanceOf(oControl, #RadioButton)
+				IF oControl IS RadioButton
 					//SE-060526
 					dwCount := ALen(aRadioGroups)
 					FOR dwI := 1 UPTO dwCount
@@ -1591,7 +1610,7 @@ METHOD Dispatch(oEvent)
 		PostQuitMessage(0)
 		RETURN (SELF:EventReturnValue := 0L)
 		
-	CASE (uMsg == WM_SIZE)  .AND. !IsInstanceOf(oParent, #ShellWindow)
+	CASE (uMsg == WM_SIZE)  .AND. !(oParent IS ShellWindow)
 		liRet := SUPER:Dispatch(oEvt)
 		SELF:__UpdateActiveObject()
 		RETURN liRet
@@ -1629,7 +1648,7 @@ METHOD EditChange(oControlEvent)
 	LOCAL oCE := oControlEvent AS ControlEvent
 	
 	oCurrentControl := oCE:Control
-	IF IsInstanceOfUsual(oCurrentControl, #ListBox) .OR. IsInstanceOfUsual(oCurrentControl, #IPAddress)
+	IF oCurrentControl IS ListBox .OR. oCurrentControl IS IPAddress
 		oCurrentControl:Modified := TRUE // mark it as modified
 	ENDIF
 	
@@ -1938,25 +1957,25 @@ CONSTRUCTOR(oOwner, oSource, nResourceID, nDialogStyle)
 
 	IF IsObject(oOwner)
 		oObject := oOwner
-		IF IsInstanceOf(oObject, #App)
+		IF oObject IS App
 			SUPER(NIL, FALSE)
 			lTopApp := TRUE
 			// lQuitOnClose := true
-		ELSEIF IsInstanceOf(oObject, #ShellWindow)
+		ELSEIF oObject IS ShellWindow
 			SUPER(oOwner, TRUE)
-		ELSEIF IsInstanceOf(oObject, #DataWindow) // .or. IsInstanceOf(oObject, #ToolBar)
+		ELSEIF oObject IS DataWindow // .or. IsInstanceOf(oObject, #ToolBar)
 			// Create sub form if wr're a regular DataWindow
 			DEFAULT(@nResourceID, 0)
 			lSubForm := ! SELF:IsDialog() //SE-120419 //!IsInstanceOf(SELF, #DataDialog)
     
 			SUPER(oOwner, FALSE, FALSE)
-		ELSEIF IsInstanceOf(oObject, #ChildAppWindow)
+		ELSEIF oObject IS ChildAppWindow
 			SUPER(oOwner)
-		ELSEIF IsInstanceOf(oObject, #TopAppWindow)
+		ELSEIF oObject IS TopAppWindow
 			SUPER(oOwner)
-		ELSEIF IsInstanceOf(oObject, #DialogWindow)
+		ELSEIF oObject IS DialogWindow
 			SUPER(oOwner, TRUE)
-		ELSEIF IsInstanceOf(oObject, #Window)
+		ELSEIF oObject IS Window
 			// <XXX> invalid owner - throw error
 			WCError{#Init,#DataWindow,__WCSTypeError,oOwner,1}:Throw()
 		ELSE
@@ -2065,7 +2084,7 @@ METHOD ListBoxClick(oControlEvent)
 	
 	
 	oListBox := oCE:Control
-	IF IsInstanceOf(oListBox, #ListBox)
+	IF oListBox IS ListBox
 		oListBox:Modified := TRUE // assume its modified
 		cOldValue := AsString(oListBox:Value)
 		SELF:__DoValidate(oListBox)
@@ -2083,12 +2102,12 @@ METHOD ListBoxSelect(oControlEvent)
 	
 	
 	oListBox := OBJECT(oCE:Control)
-	IF IsInstanceOf(oListBox, #ListBox)
-		oListBox:Modified := TRUE // assume its modified
-		oListBox:__SetText(IVarGet(oListBox,#CurrentItem))
-		cOldValue := AsString(oListBox:Value)
-		SELF:__DoValidate(oListBox)
-		oListBox:ValueChanged := !(cOldValue == AsString(oListBox:Value))
+	IF oListBox IS ListBox VAR oLB
+		oLB:Modified := TRUE // assume its modified
+		oLB:__SetText(oLB:CurrentItem)
+		cOldValue := AsString(oLB:Value)
+		SELF:__DoValidate(oLB)
+		oLB:ValueChanged := !(cOldValue == AsString(oLB:Value))
 	ENDIF
 	
 	SUPER:ListBoxSelect(oCE)
@@ -2238,7 +2257,7 @@ METHOD OLEInPlaceActivate()
 	//RvdH 030825 Method moved from Ole Classes
 	LOCAL oTB AS ToolBar
 	
-	IF IsInstanceOf(oParent, #ShellWindow)
+	IF oParent IS ShellWindow
 		oTB := oParent:ToolBar
 	ELSE
 		oTB := SELF:ToolBar
@@ -2256,7 +2275,7 @@ METHOD OLEInPlaceDeactivate()
 	//RvdH 030825 Method moved from Ole Classes
 	LOCAL oTB AS ToolBar
 	
-	IF IsInstanceOf(oParent, #ShellWindow)
+	IF oParent IS ShellWindow
 		oTB := oParent:ToolBar
 	ELSE
 		oTB := SELF:ToolBar
@@ -2776,8 +2795,8 @@ METHOD Undo()
 	
 	
 	IF (sCurrentView == #FormView)
-		IF IsInstanceOf(oDCCurrentControl, #Edit)
-			oDCCurrentControl:Undo()
+		IF oDCCurrentControl IS Edit VAR oEdit
+			oEdit:Undo()
 		ENDIF
 	ELSEIF (sCurrentView == #BrowseView)
 		IF (oGBrowse != NULL_OBJECT) .AND. IsMethod(oGBrowse, #Undo)
@@ -2969,11 +2988,11 @@ METHOD ViewAs(symViewType)
 			
 			// If there are some "normal" controls (not subforms) set focus, etc
 		ELSEIF ALen(aControls) > 0
-            		oControl := aControls[1] 
-            		oControl:SetFocus()
-            		IF IsInstanceOf(oControl, #SingleLineEdit) .AND. IsWindowEnabled(oControl:Handle())
-                		PostMessage(oControl:Handle(), EM_SETSEL, 0, -1)
-            		ENDIF
+            oControl := aControls[1] 
+            oControl:SetFocus()
+            IF oControl IS SingleLineEdit .AND. IsWindowEnabled(oControl:Handle())
+                PostMessage(oControl:Handle(), EM_SETSEL, 0, -1)
+            ENDIF
 		ENDIF
 		oFormFrame:ViewAs(FALSE) // view as form
 		sCurrentView := #FormView

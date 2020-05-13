@@ -16,7 +16,8 @@ BEGIN NAMESPACE XSharp.RDD
     [DebuggerDisplay("SDF ({Alias,nq})")];
     CLASS SDF INHERIT TEXTRDD  
         PROTECT buffer AS BYTE[]
-        VIRTUAL PROPERTY Driver AS STRING GET "SDF"
+        /// <inheritdoc />
+        OVERRIDE PROPERTY Driver AS STRING GET "SDF"
         
         
         PROTECTED METHOD _readRecord() AS LOGIC STRICT
@@ -87,7 +88,8 @@ BEGIN NAMESPACE XSharp.RDD
             FSeek3(SELF:_hFile, (LONG) dwPos, FS_SET)
             RETURN nCount
 
-        METHOD GoTop() AS LOGIC
+        /// <inheritdoc />
+        OVERRIDE METHOD GoTop() AS LOGIC
             IF SUPER:GoTop()
                 SELF:buffer := BYTE[]{SELF:_RecordLength+SELF:_RecordSeparator:Length}
                 RETURN TRUE

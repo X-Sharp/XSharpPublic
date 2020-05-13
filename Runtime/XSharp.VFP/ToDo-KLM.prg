@@ -58,13 +58,3 @@ FUNCTION MakeTransactable( uArea ) AS LOGIC
     // RETURN FALSE
     
 
-/// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/mdy/*" />
-
-FUNCTION Mdy( uExpression ) AS STRING
-    THROW NotImplementedException{}
-    // RETURN ""
-
-
-
-

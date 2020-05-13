@@ -95,9 +95,9 @@ DEFINE DBI_GETHEADERSIZE 	:= 	DbInfo.DBI_GETHEADERSIZE	// Numeric: Get header si
 /// <exclude />
 DEFINE DBI_LASTUPDATE 		:= 	DbInfo.DBI_LASTUPDATE 		// Date:    Last date RDD file updated 
 /// <exclude />
-DEFINE DBI_GETDELIMITER 	:= 	DbInfo.DBI_GETDELIMITER		// String:  Get default delimiter
+DEFINE DBI_GETDELIMITER 	:= 	DbInfo.DBI_GETDELIMITER		// String:  Get default FIELD delimiter
 /// <exclude />
-DEFINE DBI_SETDELIMITER 	:=  DbInfo.DBI_SETDELIMITER		// String:  Set default delimiter
+DEFINE DBI_SETDELIMITER 	:=  DbInfo.DBI_SETDELIMITER		// String:  Set default FIELD delimiter
 /// <exclude />
 DEFINE DBI_GETRECSIZE 		:= 	DbInfo.DBI_GETRECSIZE 		// Numeric: Get record size of the file
 /// <exclude />

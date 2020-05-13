@@ -15,7 +15,7 @@ FUNCTION CreateObject(cClassName, _args ) AS OBJECT CLIPPER
     // The pseudo function _ARGS() returns the Clipper arguments array
     RETURN CreateInstance(_ARGS())
 
-/// <include file="VFPDocs.xml" path="Runtimefunctions/createobjectex/*" />
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/createobjectex/*" />
 FUNCTION CreateObjectEx(cClsIdOrcProgId, cComputerName , cIID ) AS OBJECT CLIPPER
     // The pseudo function _ARGS() returns the Clipper arguments array
     RETURN CreateInstance(_ARGS())
@@ -82,3 +82,36 @@ function ICase(lCondition, eResult, lCondition2, eResult2, eOtherwiseResult) as 
     ENDIF
     // when they call this function with < 2 parameters then we have no idea what return type they expect...
     return NIL
+
+
+FUNCTION __VfpStr( resid AS DWORD ) AS STRING
+	// Strings are stored in a Managed resource with a name
+	// the name matches the enum names
+	// convert the id to the enum and get its name
+	LOCAL strId  AS STRING
+	LOCAL strMessage AS STRING
+	strId := Enum.GetName( TYPEOF(VFPErrors) , resid)
+	IF !String.IsNullOrEmpty(strId)
+			strMessage := XSharp.Messages.GetString( strId )
+			IF String.IsNullOrEmpty( strMessage )
+				strMessage := ": canot load string resource '" + strId + "'"
+		ENDIF
+	ELSE
+		strMessage := "Cannot find string for error number "+resid:ToString()
+	ENDIF
+	RETURN strMessage
+
+
+
+
+/// <include file="VFPDocs.xml" path="Runtimefunctions/vartype/*" />
+FUNCTION VarType( eExpression AS USUAL) AS STRING
+    RETURN VarType(eExpression, FALSE)
+
+
+/// <include file="VFPDocs.xml" path="Runtimefunctions/vartype/*" />
+FUNCTION VarType( eExpression AS USUAL, lNullDataType AS LOGIC) AS STRING
+    IF IsNil(eExpression) .AND. ! lNullDataType
+        RETURN "X"
+    ENDIF
+    RETURN ValType(eExpression)

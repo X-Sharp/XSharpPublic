@@ -27,6 +27,10 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
     PROTECT _oThread         AS Thread
     PROTECT _aQueryResult    AS ARRAY
     PROTECT _aResult         AS IList<IRdd>
+    PROTECT _aParams         AS IList<SQLParameter>
+    PROTECT _returnsRows     AS LOGIC
+    PROTECT _hasOutParams    AS LOGIC
+    PROTECT _lastException   AS System.Exception
     
     PROPERTY Connected          AS LOGIC GET Connection:State == System.Data.ConnectionState.Open
     PROPERTY Connection         AS SQLConnection GET _oConnection
@@ -41,6 +45,7 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
     PROPERTY DispWarnings       AS LOGIC AUTO GET SET
     PROPERTY Handle             AS LONG   AUTO GET SET
     PROPERTY IdleTimeout        AS LONG  AUTO GET SET
+    PROPERTY LastException      AS System.Exception GET _lastException
     PROPERTY ODBChdbc           AS DbConnection GET SELF:Connection:NetConnection
     PROPERTY ODBChstmt          AS DbCommand    GET _oNetCommand
     PROPERTY Password           AS STRING GET Connection:Password   
@@ -52,6 +57,8 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
     PROPERTY TransactionMode    AS LONG  AUTO GET SET
     PROPERTY UsesTransaction    AS LOGIC GET SELF:TransactionMode == DB_TRANSMANUAL
     PROPERTY WaitTime           AS LONG  AUTO GET SET
+
+    PROPERTY ParamsObject       AS OBJECT AUTO GET SET
 
 
     METHOD SetDefaults() AS VOID
@@ -91,7 +98,7 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
         FOREACH schemaRow AS DataRow IN oSchema:Rows
             VAR fieldInfo     := FromSchema(schemaRow, aFieldNames)
             fieldInfo:Ordinal := nFields
-            aStruct[nFields]  := {fieldInfo:Name, fieldInfo:FieldTypeStr, fieldInfo:Length, fieldInfo:Decimals, fieldInfo:ColumnName, fieldInfo}
+            aStruct[nFields]  := {fieldInfo:Name, fieldInfo:FieldTypeStr, fieldInfo:Length, fieldInfo:Decimals, fieldInfo:ColumnName, fieldInfo:Flags, fieldInfo}
             nFields++
         NEXT
         nFields := aStruct:Count
@@ -107,7 +114,7 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
 
         FOR VAR nI := 1 TO ALen(aStruct)
             LOCAL fieldInfo AS DbColumnInfo
-            fieldInfo := aStruct[nI, 6]
+            fieldInfo := aStruct[nI, 7]
             oRDD:FieldInfo(nI, DBS_COLUMNINFO, fieldInfo)
         NEXT
         RETURN oRDD
@@ -159,13 +166,12 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
     PRIVATE METHOD _CreateWorkarea(oSchema AS DataTable, oDataReader AS DbDataReader, cCursorName AS STRING) AS LOGIC
         LOCAL oRDD AS IRdd
         oRDD := SELF:CreateFile(oSchema, cCursorName)
-        SELF:_CopyFromReaderToRDD(oDataReader, oRDD)
+        SELF:_CopyFromReaderToRDD(oDataReader, oRDD) 
         RETURN TRUE
 
 
     PRIVATE METHOD _ReturnsRows(cCommand AS STRING) AS LOGIC
-        LOCAL cStmts := cCommand:Split(";":ToCharArray()) AS STRING[]
-        LOCAL aParts := cStmts[cStmts:Length]:Split(" ()":ToCharArray()) AS STRING[]
+        LOCAL aParts := cCommand:Split(" ()":ToCharArray()) AS STRING[]
         IF aParts:Length > 0
             LOCAL cWord := aParts[1]:ToLower() AS STRING
             SWITCH cWord
@@ -216,6 +222,7 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
             ENDIF
             SELF:_oNetCommand:Transaction := SELF:Connection:Transaction
         ENDIF
+        SELF:_lastException := NULL
         RETURN TRUE
 
 
@@ -274,6 +281,9 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
 
     PRIVATE METHOD _SaveResult(aInfo AS ARRAY) AS LONG
         CopyToInfo(_aQueryResult, aInfo)
+        IF SELF:_lastException != NULL
+            RETURN -1
+        ENDIF
         IF ALen(_aQueryResult) > 0
             RETURN (LONG) ALen(_aQueryResult)
         ENDIF
@@ -298,9 +308,67 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
             END SWITCH
         ENDIF
         RETURN 0
+
+    METHOD _CreateParameters() AS LOGIC
+        SELF:_oNetCommand:Parameters:Clear()
+        IF SELF:_aParams:Count == 0
+            RETURN TRUE
+        ENDIF
+        IF SELF:ParamsObject == NULL
+            // Parameters but no values
+            RETURN FALSE
+        ENDIF
+        SELF:_hasOutParams := FALSE
+        FOREACH oParam AS SQLParameter IN SELF:_aParams
+            LOCAL oDbParam AS DbParameter
+            oDbParam := SELF:Connection:Factory:CreateParameter()
+            oParam:DbParameter := oDbParam
+            oDbParam:ParameterName := oParam:Name
+            IF oParam:ByRef
+                oDbParam:Direction := ParameterDirection.InputOutput
+                SELF:_hasOutParams := TRUE
+            ELSE
+                oDbParam:Direction := ParameterDirection.Input
+            ENDIF
+            LOCAL oValue        AS OBJECT
+            IF SQLReflection.GetPropertyValue(SELF:ParamsObject,oParam:Name, OUT oValue)
+                IF oValue IS USUAL 
+                    VAR uType := typeof(USUAL)
+                    VAR mi    := uType:GetMethod("ToObject")
+                    oValue    := mi:Invoke(NULL,<OBJECT>{oValue})
+                ENDIF
+                oDbParam:Value         := oValue
+                IF oValue IS STRING .AND. oParam:ByRef 
+                    oDbParam:Size := 4096
+                ENDIF
+            ELSE
+                // Can't get value
+                RETURN FALSE
+            ENDIF
+            SELF:_oNetCommand:Parameters:Add(oDbParam)
+        NEXT
+        RETURN TRUE
+
+    METHOD _WriteOutParameters() AS LOGIC
+        IF SELF:_hasOutParams
+            FOREACH oParam AS SQLParameter IN SELF:_aParams
+                IF oParam:ByRef
+                    LOCAL oValue := oParam:DbParameter:Value AS OBJECT
+                    IF ! SQLReflection.SetPropertyValue(SELF:ParamsObject,oParam:Name, oValue)
+                        RETURN FALSE
+                    ENDIF
+                ENDIF
+            NEXT
+        ENDIF
+        RETURN TRUE
+
     METHOD Execute(cCommand AS STRING, cCursorName AS STRING, aInfo AS ARRAY) AS LONG
         SELF:BeginTransaction()
+        cCommand := SELF:ParseCommand(cCommand, SELF:Connection:Factory:ParameterPrefix, SELF:Connection:Factory:ParameterNameInQuery)
         SELF:_oNetCommand:CommandText := cCommand
+        IF ! SELF:_CreateParameters()
+           RETURN -1
+        ENDIF
         SELF:CursorName := cCursorName
         IF SELF:Asynchronous
             RETURN SELF:_AsyncExecuteResult(aInfo)
@@ -332,9 +400,10 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
 
 
     METHOD BackgroundWorker(o AS OBJECT) AS VOID STRICT
-        LOCAL aResults := List<IRdd>{}
+        LOCAL aResults := List<IRdd>{} AS List<IRdd>
         TRY
             VAR oDataReader := SELF:_oNetCommand:ExecuteReader()
+            SELF:_WriteOutParameters()
             LOCAL cursorNo := 0 AS LONG
             BEGIN LOCK SELF
                 SELF:_oLastDataReader := oDataReader
@@ -365,8 +434,10 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
                 ENDIF
             END LOCK
         CATCH e AS Exception
+            SELF:_lastException := e
             RuntimeState.LastRddError := Error{e}
             BEGIN LOCK SELF
+                SELF:_lastException := e
                 SELF:_CloseReader()
                 SELF:_aSyncState := AsyncState.Exception
                 IF SELF:_oThread:ThreadState == System.Threading.ThreadState.Running
@@ -402,7 +473,7 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
         ENDIF
         
     PRIVATE METHOD CopyToCursorAsync() AS VOID
-        IF SELF:_ReturnsRows(SELF:_oNetCommand:CommandText)
+        IF SELF:_returnsRows
             _aQueryResult := {}
             IF SELF:_aSyncState == AsyncState.Idle
                 BEGIN LOCK SELF
@@ -414,20 +485,26 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
             ENDIF
         ELSE
             VAR result := SELF:_oNetCommand:ExecuteNonQuery()
+            SELF:_WriteOutParameters()
             _aQueryResult := {{"", result}}
         ENDIF
 
     
     PRIVATE METHOD CopyToCursor() AS VOID
         TRY
+            SELF:_CloseReader()
+            SELF:_lastException := NULL
             IF SELF:_ReturnsRows(SELF:_oNetCommand:CommandText)
                 VAR oDataReader := SELF:_oNetCommand:ExecuteReader()
+                SELF:_WriteOutParameters()
                 CopyToCursor(oDataReader, 0)
             ELSE
                 VAR result := SELF:_oNetCommand:ExecuteNonQuery()
+                SELF:_WriteOutParameters()
                 _aQueryResult := {{"", result}}
             ENDIF
         CATCH e AS Exception
+            SELF:_lastException := e
             RuntimeState.LastRddError := Error{e}
             _aQueryResult := {{"", -1}}
         END TRY
@@ -726,9 +803,14 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
 			nLen := 20
             result := DbColumnInfo{columnName,"N",nLen ,0}
 			
-		CASE TypeCode.DateTime
-			cType   := "T"
+        CASE TypeCode.DateTime
+            VAR nPrec  := Convert.ToInt32(schemaRow:Item["NumericPrecision"])
 			nLen 	:= 8
+            IF nPrec <= 10
+			    cType   := "D"
+            ELSE
+			    cType   := "T"
+            ENDIF
             result  := DbColumnInfo{columnName,cType,nLen ,0}
 			
         CASE TypeCode.Object
@@ -820,6 +902,87 @@ INTERNAL CLASS XSharp.VFP.SQLStatement
         aFldNames:Add(cName)
     RETURN cName            
 
+    METHOD ParseCommand(cCommand AS STRING, cParamChar AS CHAR, lIncludeParameterNameInQuery AS LOGIC) AS STRING
+        LOCAL statements := List<STRING>{} AS List<STRING>
+        LOCAL aParams    := List<SQLParameter>{} AS List<SQLParameter>
+        LOCAL inString := FALSE AS LOGIC
+        LOCAL inParam  := FALSE AS LOGIC
+        LOCAL sb       := StringBuilder{cCommand:Length} AS StringBuilder
+        LOCAL sbParam  := StringBuilder{cCommand:Length} AS StringBuilder
+        LOCAL lParamByRef := FALSE AS LOGIC
+        FOREACH ch AS CHAR IN cCommand
+            SWITCH ch
+            CASE c'\''
+                inString := ! inString
+                sb:Append(ch)
+            CASE c';'
+                IF (! inString)
+                    IF inParam
+                        IF lIncludeParameterNameInQuery
+                            sb:Append(sbParam:ToString())
+                        ENDIF
+                        aParams:Add( SQLParameter{sbParam:ToString(), lParamByRef})
+                        inParam := FALSE
+                        sbParam:Clear()
+                    ENDIF
+                    statements:Add(sb:ToString())
+                    statements:Clear()
+                    LOOP
+                ENDIF
+                sb:Append(ch)
+            CASE c'@'
+                IF inParam
+                    IF sbParam:Length == 0
+                        lParamByRef := TRUE
+                    ENDIF
+                ELSE
+                    sb:Append(ch)    
+                ENDIF
+                
+            CASE c'?'
+            CASE c':'
+                inParam := TRUE
+                lParamByRef := FALSE
+                sb:Append(cParamChar)
+            OTHERWISE
+                IF inParam
+                    IF Char.IsLetterOrDigit(ch) .OR. ch == c'_'
+                        sbParam:Append(ch)
+                    ELSE
+                        IF lIncludeParameterNameInQuery
+                            sb:Append(sbParam:ToString())
+                        ENDIF
+                        aParams:Add( SQLParameter{sbParam:ToString(), lParamByRef})
+                        inParam     := FALSE
+                        sbParam:Clear()
+                    ENDIF
+                ELSE
+                    sb:Append(ch)
+                ENDIF
+            END SWITCH
+        NEXT
+        IF inParam
+            IF lIncludeParameterNameInQuery
+                sb:Append(sbParam:ToString())
+            ENDIF
+            aParams:Add( SQLParameter{sbParam:ToString(), lParamByRef})
+        ENDIF
+        statements:Add(sb:ToString())
+        SELF:_aParams := aParams
+        VAR result := ""
+        VAR returns := FALSE
+        FOREACH VAR stmt IN statements
+            IF result:Length > 0
+                result += ';'
+            ENDIF
+            result += stmt
+            returns := SELF:_ReturnsRows(stmt)
+        NEXT
+        _returnsRows := returns
+        RETURN result
+        
+
+
 
 END CLASS
 
@@ -834,5 +997,12 @@ INTERNAL ENUM XSharp.VFP.AsyncState
     MEMBER Exception    := 5
 END ENUM
     
-
+INTERNAL CLASS XSharp.VFP.SQLParameter
+    PROPERTY Name   AS STRING AUTO GET PRIVATE SET
+    PROPERTY ByRef  AS LOGIC  AUTO GET PRIVATE SET
+    PROPERTY DbParameter AS DbParameter AUTO GET SET
+    CONSTRUCTOR(cName AS STRING, lByRef AS LOGIC)
+        SELF:Name  := cName
+        SELF:ByRef := lByRef
+END CLASS
 

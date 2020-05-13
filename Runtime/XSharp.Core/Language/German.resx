@@ -2632,4 +2632,10 @@
     <value>Unverständliche Datentypen</value>
   </data>
   <!-- End of unused strings-->
+  <!-- FoxPro runtime-->
+  <data name="INVALID_DATE" xml:space="preserve">
+    <value>*Datum ungültig*</value>
+  </data>
+  <!-- End of FoxPro runtime-->
+
 </root>

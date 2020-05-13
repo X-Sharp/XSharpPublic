@@ -1,0 +1,99 @@
+Application = SDKCreator
+IDEVersion = 1.14
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = AnyCPU
+Language = XSharp
+Runtime = CLR4
+Dialect = Core
+Folder = %ProjectPath%\Applications\SDKCreator\
+PrgSubFolder = \Prg
+ResourcesSubFolder = \Resources
+Description = Just a simple x# application
+NameSpace = 
+Assembly = SDKCreator
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 6215E10F-97E8-4DE5-ABF5-2D3FECFE5B5C
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[SDKCreator FileGroups]
+[SDKCreator Files]
+File = %AppPath%\Prg\SDKCreator.prg
+FileGUID = BEB837BF-5344-4AA7-8196-2B773D3454A0
+FileType = Code
+[SDKCreator References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+[SDKCreator Resources]
+ResourceFile = External , C:\Test\VOSDK.resources
+ResourceFileGuid = 20E5C8DE-F9C8-4BB2-B7CF-B56440A60364
+Linked = 1
+Modified = 0
+[SDKCreator Native Resources]
+[SDKCreator License files]
+[SDKCreator General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+VO16=0
+LateBound=0
+Unsafe=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[SDKCreator Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = SDKCreator

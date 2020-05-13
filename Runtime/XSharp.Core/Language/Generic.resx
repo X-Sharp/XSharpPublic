@@ -2704,5 +2704,30 @@
     <value>Incomprehensible data types</value>
   </data>
   <!-- End of unused strings-->
+  <!-- FoxPro runtime-->
+  <data name="INVALID_DATE" xml:space="preserve">
+    <value>* invalid date*</value>
+  </data>
+  <data name="STATEMENT_HANDLE_INVALID" xml:space="preserve">
+    <value>Statement Handle {0} is invalid</value>
+  </data>
+  <data name="STATEMENT_HANDLE_NOTSHARED" xml:space="preserve">
+    <value>Statement Handle {0} does not have a shared connection</value>
+  </data>
+  <data name="COMMAND_PARAMETER_REQUIRED" xml:space="preserve">
+    <value>The SQL Command parameter is required</value>
+  </data>
+  <data name="SQLCOLUMNS_CTYPE" xml:space="preserve">
+    <value>Incorrect value for cType. Expected 'FOXPRO' or 'NATIVE'. Default is 'FOXPRO'</value>
+  </data>
+  <data name="PROPERTY_UNKNOWN" xml:space="preserve">
+    <value>Unknown property : '{0}', or the property name is not long enough to be distinctive</value>
+  </data>
+  <data name="INVALID_RANGE" xml:space="preserve">
+    <value>{0} param value is {1}, must be in the range {2}</value>
+  </data>
   
+  <!-- End of FoxPro runtime-->
+  
+
 </root>

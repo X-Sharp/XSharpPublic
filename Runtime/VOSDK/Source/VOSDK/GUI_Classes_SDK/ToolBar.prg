@@ -2,17 +2,15 @@
 CLASS __VOToolBarChild  INHERIT VObject
 	//RvdH 0702056 Added to replace Child Toolbar Subarray items
 	EXPORT NameSym 				AS SYMBOL
-	EXPORT Handle					AS PTR
-	EXPORT ImageList 				AS OBJECT
-	EXPORT HotImageList 			AS OBJECT
+	EXPORT Handle				AS PTR
+	EXPORT ImageList 			AS OBJECT
+	EXPORT HotImageList 		AS OBJECT
 	EXPORT DisabledImageList 	AS OBJECT
 
 CONSTRUCTOR() 
-    
     SUPER()
-
-
-RETURN 
+    RETURN
+    
 END CLASS
 
 CLASS __VOToolBarExtraBitmap INHERIT VObject                     
@@ -23,11 +21,9 @@ CLASS __VOToolBarExtraBitmap INHERIT VObject
 	EXPORT NameSym				AS SYMBOL
 
 CONSTRUCTOR() 
-    
     SUPER()
+    RETURN 
 
-
-RETURN 
 END CLASS
 
 CLASS __VOToolBarTipText	INHERIT VObject                                  
@@ -36,13 +32,10 @@ CLASS __VOToolBarTipText	INHERIT VObject
 	EXPORT MenuItemID	AS LONGINT
 	EXPORT TipText		AS STRING
 
-
 CONSTRUCTOR() 
-    
     SUPER()
+    RETURN 
 
-
-RETURN 
 END CLASS
 
 CLASS __VOToolBarUpdate  INHERIT VObject 

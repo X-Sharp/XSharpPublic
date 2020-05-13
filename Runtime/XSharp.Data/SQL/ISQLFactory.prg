@@ -22,6 +22,11 @@ INTERFACE XSharp.Data.ISqlFactory
 
     /// <summary>Does the factory support datasource enumeration.</summary>
     PROPERTY CanCreateDataSourceEnumerator AS LOGIC GET
+    /// <summary>Define the character with which parameters are prefixed in queries. For example '?' (ODBC, OLEDB) or '@' (SQLServer) </summary>
+    PROPERTY ParameterPrefix AS CHAR GET
+
+    /// <summary>Should the parameter name be included in the query. Defaults to FALSE for ODBC and OLEDB and TRUE for SQLServer </summary>
+    PROPERTY ParameterNameInQuery AS LOGIC GET
 
     /// <summary>Return the name of the factory.</summary>
     METHOD GetName(oConn AS DbConnection) AS STRING  
@@ -112,7 +117,10 @@ INTERFACE XSharp.Data.ISqlFactory
     /// <returns>The datareader as should be used by the SqlSelect class.</returns>
     METHOD AfterOpen(oDataReader AS DbDataReader) AS DbDataReader
 
+    /// <summary>Create an object array of column properties from the current datarow in the schema rowset</summary> 
     METHOD GetMetaDataColumnValues(oRow AS DataRow) AS OBJECT[]
+    
+    /// <summary>Create an object array of table properties from the current datarow in the schema rowset</summary>
     METHOD GetMetaDataTableValues(oRow AS DataRow) AS OBJECT[]
 
 END INTERFACE    

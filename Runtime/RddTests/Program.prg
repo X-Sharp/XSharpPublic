@@ -11,7 +11,7 @@ USING System.Reflection
 [STAThread];      
 FUNCTION Start() AS VOID
     TRY
-        testAppend()
+        testAppDelim()
         //testDelimWrite()
         //testUnique3()
         //BofAndScope()
@@ -191,6 +191,19 @@ FUNCTION Start() AS VOID
     END TRY
     RETURN
 
+FUNCTION testAppDelim() AS VOID
+LOCAL cPfad, cSource, cDbf AS STRING
+	LOCAL lOK := FALSE AS LOGIC
+	LOCAL oDB AS DbServer
+	cPfad:= "C:\Download\"
+	cSource:= "kv_lieferad.csv"
+	cDbf:= "kv_Lieferad.dbf"
+	oDB:= DbServer{cPfad+cDbf,FALSE}
+	oDB:Zap()
+?	lOK := oDB:AppendDelimited(cPfad+cSource,",")
+	? oDb:LastRec
+    oDb:Close()
+    
 FUNCTION TestAppend( ) AS VOID
 LOCAL i AS DWORD 
 LOCAL aFields AS ARRAY

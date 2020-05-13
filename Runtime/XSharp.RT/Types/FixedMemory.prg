@@ -187,24 +187,7 @@ INTERNAL STATIC UNSAFE CLASS XSharp.FixedMemory
                 VAR pMemBlockStart := _GetMemBlockStart (pMem)
                 IF pMemBlockStart:IsValid() 
                     VAR pMemBlockEnd   := _GetMemBlockEnd (pMem)
-                    IF pMemBlockEnd:IsValid()
-                        lValid := TRUE
-                    ENDIF
-                ENDIF
-            ENDIF
-        CATCH
-            lValid := FALSE
-        END TRY
-        RETURN lValid
-        
-    STATIC METHOD ValidateSize(pMem AS IntPtr, nSize AS DWORD) AS LOGIC
-        LOCAL lValid := FALSE	AS LOGIC
-        TRY
-            IF (pMem != IntPtr.Zero)
-                VAR pMemBlockStart := _GetMemBlockStart (pMem)
-                IF pMemBlockStart:IsValid() 
-                    VAR pMemBlockEnd   := _GetMemBlockEnd (pMem)
-                    IF pMemBlockEnd:IsValid() .AND. pMemBlockStart:dwSize == nSize
+                    IF pMemBlockEnd:IsValid() 
                         lValid := TRUE
                     ENDIF
                 ENDIF

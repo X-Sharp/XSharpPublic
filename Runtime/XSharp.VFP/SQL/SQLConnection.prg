@@ -234,22 +234,3 @@ END CLASS
 
 
 
-BEGIN NAMESPACE XSharp.Vfp
-    INTERNAL STATIC CLASS Win32
-        [DllImport("USER32.dll", CharSet := CharSet.Ansi)];
-        INTERNAL STATIC METHOD GetActiveWindow() AS IntPtr PASCAL
-        
-        [DllImport("USER32.dll", CharSet := CharSet.Ansi)];
-        INTERNAL STATIC METHOD GetDesktopWindow() AS IntPtr PASCAL
-
-        INTERNAL STATIC METHOD GetParentWindow() AS IntPtr
-            LOCAL hResult AS IntPtr
-            hResult := GetActiveWindow()
-            IF hResult == IntPtr.Zero
-                hResult := GetDesktopWindow()
-            ENDIF
-            RETURN hResult
-
-    END CLASS
-
-END NAMESPACE

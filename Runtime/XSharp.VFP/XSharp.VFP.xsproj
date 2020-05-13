@@ -13,7 +13,7 @@
     <Unsafe>true</Unsafe>
     <NS>true</NS>
     <VulcanCompatibleResources>True</VulcanCompatibleResources>
-    <XSharpProjectversion>2.0.5.0</XSharpProjectversion>
+    <XSharpProjectversion>2.4.0.0</XSharpProjectversion>
     <IncludePaths>$(CommonInclude)</IncludePaths>
     <Nostandarddefs>true</Nostandarddefs>
     <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
@@ -86,6 +86,7 @@
     <Compile Include="Classes\Custom.prg" />
     <Compile Include="Classes\Abstract.prg" />
     <Compile Include="ClassFunctions.prg" />
+    <Compile Include="BitFunctions.prg" />
     <Compile Include="Cursors\DbFunctions.prg" />
     <Compile Include="Cursors\CursorEnums.prg" />
     <Compile Include="Database\DatabaseEnums.prg" />
@@ -123,6 +124,7 @@
     <Compile Include="TextOutPut.prg" />
     <Compile Include="UIFunctions.prg" />
     <Compile Include="UI\AutoCloseMessageBox.prg" />
+    <Compile Include="Win32.prg" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Classes" />

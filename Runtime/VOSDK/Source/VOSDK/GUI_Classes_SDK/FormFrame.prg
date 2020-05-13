@@ -30,12 +30,10 @@ METHOD __DoValidate(oControl AS Control) AS __FormFrame STRICT
 	//PP-030828 Strong typing
 	LOCAL oDW AS OBJECT
 
-
-
 	IF !IsNil(oControl)
 		oDW := oControl:Owner
-		IF IsInstanceOf(oDW, #DataWindow)
-			oDW:__DoValidate(oControl)
+		IF oDW IS DataWindow VAR oDataWin
+			oDataWin:__DoValidate(oControl)
 		ENDIF
 	ENDIF
 

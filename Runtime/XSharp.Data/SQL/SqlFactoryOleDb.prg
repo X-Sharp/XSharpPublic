@@ -18,21 +18,27 @@ USING System.Runtime.InteropServices
 CLASS XSharp.Data.OleDbFactory INHERIT XSharp.Data.AbstractSqlFactory
 
     /// <inheritdoc />
-    PROPERTY QuoteChar AS STRING GET chr(34)
-    PROPERTY Name      AS STRING GET "OleDbFactory"
+
+    PRIVATE quotes AS STRING
+
+    OVERRIDE PROPERTY QuoteChar AS STRING GET quotes
+    /// <inheritdoc />
+    OVERRIDE PROPERTY Name      AS STRING GET "OleDbFactory"
     
     CONSTRUCTOR
         SUPER()
         oInstance := System.Data.OleDb.OleDbFactory.Instance
+        VAR oCmdBuilder := oInstance:CreateCommandBuilder()
+        quotes := oCmdBuilder:QuotePrefix+";"+oCmdBuilder:QuoteSuffix
 
     
 
     /// <inheritdoc />
-    METHOD GetName(oConn AS DbConnection) AS STRING
+    OVERRIDE METHOD GetName(oConn AS DbConnection) AS STRING
         RETURN "OleDb"
 
     /// <inheritdoc />
-    METHOD DriverConnect(hWindow AS IntPtr, uCompletion AS OBJECT, cConnectionString AS OBJECT) AS STRING
+    OVERRIDE METHOD DriverConnect(hWindow AS IntPtr, uCompletion AS OBJECT, cConnectionString AS OBJECT) AS STRING
         LOCAL cTemp AS STRING
         cTemp := System.IO.Path.GetTempFileName()
         FErase(cTemp)
@@ -61,7 +67,8 @@ CLASS XSharp.Data.OleDbFactory INHERIT XSharp.Data.AbstractSqlFactory
         
 
         
-    METHOD GetMetaDataColumnValues(oRow AS DataRow) AS OBJECT[]
+    /// <inheritdoc />
+    OVERRIDE METHOD GetMetaDataColumnValues(oRow AS DataRow) AS OBJECT[]
         VAR result := OBJECT[]{19}                         // 
         result[01] := oRow["TABLE_CATALOG"]                // aStruct[1] := {"TABLE_CAT","C:0",128,0}
         result[02] := oRow["TABLE_SCHEMA"]                 // aStruct[2] := {"TABLE_SCHE","C:0",128,0}
@@ -95,8 +102,8 @@ CLASS XSharp.Data.OleDbFactory INHERIT XSharp.Data.AbstractSqlFactory
         ENDIF  
         RETURN result       
 
-
-    METHOD GetMetaDataTableValues(oRow AS DataRow) AS OBJECT[]
+    /// <inheritdoc />
+    OVERRIDE METHOD GetMetaDataTableValues(oRow AS DataRow) AS OBJECT[]
         VAR result := OBJECT[]{5}
         result[1] := oRow["TABLE_CATALOG"]
         result[2] := oRow["TABLE_SCHEMA"]

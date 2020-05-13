@@ -14,12 +14,15 @@ FUNCTION AX_AXSLocking( ) AS LOGIC
     RETURN AX_RddHelper(_SET_AXSLOCKING, TRUE)
     
     /// <summary>Return and set the AXS locking status.</summary>
-    ///<returns>The previous Advantage Locking setting.</returns>
+    /// <returns>The previous Advantage Locking setting.</returns>
+    /// <param name="bMode">The new Advantage Locking setting.</param>
 FUNCTION AX_AXSLocking( bMode AS LOGIC) AS LOGIC 
     RETURN AX_RddHelper(_SET_AXSLOCKING, bMode, TRUE)
     
     /// <summary>Writes a BLOB contained in a memo field to a file.</summary>
     /// <returns>Returns True (.T.) if the BLOB is written to a file, returns False (.F.) if not.</returns>
+    /// <param name="cFileName">File name to write to.</param>
+    /// <param name="cFieldName">Field name to read from.</param>
 FUNCTION AX_BLOB2File( cFileName AS STRING, cFieldName AS STRING ) AS LOGIC 
     LOCAL hTable AS DWORD
     LOCAL ulRetCode AS DWORD
@@ -30,6 +33,8 @@ FUNCTION AX_BLOB2File( cFileName AS STRING, cFieldName AS STRING ) AS LOGIC
     
 /// <summary>Stores the contents of a file into a memo field.</summary>
 /// <returns>Returns True (.T.) if the file contents are copied into the memo field; returns False (.F.) if not.</returns>
+/// <param name="cFileName">File name to read from.</param>
+/// <param name="cFieldName">Field name to write to.</param>
 FUNCTION AX_File2BLOB( cFileName AS STRING, cFieldName AS STRING ) AS LOGIC 
     LOCAL hTable AS DWORD
     LOCAL ulRetCode AS DWORD
@@ -40,10 +45,9 @@ FUNCTION AX_File2BLOB( cFileName AS STRING, cFieldName AS STRING ) AS LOGIC
     /// <summary>Returns the Advantage Client Engine index handle that corresponds with the specified index in the current work area.
     /// The handle can be used to call any Advantage Client Engine API directly.</summary>
     /// <returns>An Advantage Client Engine index order handle or 0 if no index was found.</returns>
+    /// <param name="uIndexFile">filename or NIL</param>
+    /// <param name="uOrder">order name, number, or NIL</param>
 FUNCTION AX_GetAceIndexHandle( uIndexFile AS OBJECT, uOrder AS OBJECT) AS DWORD
-
-    // uIndexFile -- filename or NIL
-    // uOrder -- order name, number, or NIL
     LOCAL oRet := NULL AS OBJECT
     IF CoreDb.OrderInfo(DBOI_GET_ACE_INDEX_HANDLE, "", uOrder, REF oRet)
         IF oRet IS IntPtr VAR pHandle
@@ -55,8 +59,7 @@ FUNCTION AX_GetAceIndexHandle( uIndexFile AS OBJECT, uOrder AS OBJECT) AS DWORD
   /// <summary>Returns the Advantage Client Engine index handle that corresponds with the specified index in the current work area.
   /// The handle can be used to call any Advantage Client Engine API directly.</summary>
   /// <returns>An Advantage Client Engine index order handle or 0 if no index was found.</returns>
-
-Function GetAceIndexHandle() AS DWORD
+FUNCTION GetAceIndexHandle() AS DWORD
    return AX_GetAceIndexHandle(NULL_OBJECT, NULL_OBJECT)
     
     
@@ -73,7 +76,7 @@ FUNCTION AX_GetAceStmtHandle() AS DWORD
     RETURN 0
     
 /// <summary>Returns the table handle for the current workarea.  This handle can be used to call the Advantage Client Engine directly.</summary>
-/// <returns> Returns a 0 if there is a problem.</returns>
+/// <returns>Returns a 0 if there is a problem.</returns>
 FUNCTION AX_GetAceTableHandle() AS DWORD
     LOCAL oHandle := NULL AS OBJECT
     IF CoreDb.Info( DBI_GET_ACE_TABLE_HANDLE , REF oHandle)
@@ -83,14 +86,17 @@ FUNCTION AX_GetAceTableHandle() AS DWORD
     ENDIF
     RETURN 0
     
-/// <summary>Returns the table handle for the current workarea.  This handle can be used to call the Advantage Client Engine directly.</summary>
-/// <returns> Returns a 0 if there is a problem.</returns>
+/// <inheritdoc cref="M:XSharp.RDD.Functions.AX_GetAceTableHandle" />
 Function GetAceTableHandle() AS DWORD
    return AX_GetAceTableHandle()
 
 
-/// <summary>Return .T. if Advantage is loaded.</summary>
+/// <summary>Return .T. if Advantage is loaded on the specified location.</summary>
 /// <remarks>cFileName must start with a drive letter ("X:\") or a UNC path ("\\server\volume\path\")</remarks>
+/// <param name="cFileName">String containing drive letter or server name to check.
+/// If the application uses a server name as the parameter, it must include the share or
+/// volume name as well. For example, use "\\server\share" or "\\server\vol:"..</param>
+/// <seealso cref="O:XSharp.RDD.Functions.AdsIsServerLoaded">AdsIsServerLoaded Function</seealso>
 FUNCTION AX_IsServerLoaded( cFileName AS STRING ) AS LOGIC // 
     LOCAL usLoaded AS WORD
     usLoaded := 0
@@ -122,9 +128,21 @@ FUNCTION AX_SetCollation( strCollation AS STRING ) AS STRING
     RETURN (STRING) oldCollation
 
 /// <summary>Sets the connection handle for all successive table opens.</summary>
-PROCEDURE AX_SetConnectionHandle( lHandle AS DWORD ) 
-    CoreDb.RddInfo( _SET_CONNECTION_HANDLE, lHandle )
+/// <param name="nHandle">Connection handle that was returned by AdsConnect60</param>
+/// <seealso cref="O:XSharp.RDD.Functions.AdsConnect60">AdsConnect60 Function</seealso>
+/// <seealso cref='O:XSharp.RDD.Functions.AdsGetLastError'>AdsGetLastError FUNCTION</seealso>
+PROCEDURE AX_SetConnectionHandle( nHandle AS DWORD ) 
+    CoreDb.RddInfo( _SET_CONNECTION_HANDLE, nHandle )
     RETURN 
+
+/// <summary>Sets the connection handle for all successive table opens.</summary>
+/// <param name="ptrHandle">Connection handle that was returned by AdsConnect60</param>
+/// <seealso cref="O:XSharp.RDD.Functions.AdsConnect60">AdsConnect60 Function</seealso>
+/// <seealso cref='O:XSharp.RDD.Functions.AdsGetLastError'>AdsGetLastError FUNCTION</seealso>
+PROCEDURE AX_SetConnectionHandle( ptrHandle AS IntPtr ) 
+    CoreDb.RddInfo( _SET_CONNECTION_HANDLE, ptrHandle )
+    RETURN 
+
 
 /// <summary>Returns the Exact Key Position Flag.</summary>  
 FUNCTION AX_SetExactKeyPos( ) AS LOGIC
@@ -442,6 +460,7 @@ FUNCTION AdsContinue(hTable AS IntPtr , pbFound OUT WORD) AS DWORD
     
 
 /// <include file="ads.xml" path="functions/ads/*" />
+/// <seealso cref="O:XSharp.RDD.Functions.AX_SetConnectionHandle">AX_SetConnectionHandle Function</seealso>
 FUNCTION AdsConnect60(pucServerPath AS STRING , usServerTypes AS WORD, pucUserName AS STRING , pucPassword AS STRING , ulOptions AS DWORD, phConnect OUT IntPtr ) AS DWORD 
     RETURN ACE.AdsConnect60(pucServerPath, usServerTypes, pucUserName, pucPassword, ulOptions, OUT phConnect)
     

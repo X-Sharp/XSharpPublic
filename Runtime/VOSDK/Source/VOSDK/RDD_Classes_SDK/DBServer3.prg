@@ -18,7 +18,7 @@ METHOD GetArray( nMaxRows, uField1, uSearchValue )
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
+		VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
 		IF ! SELF:Notify( NOTIFYINTENTTOMOVE )
 			BREAK DbError{ SELF, #GetArray, 999, VO_Sprintf( __CAVOSTR_DBFCLASS_INTENTTOMOVE ) }
 		ENDIF
@@ -135,7 +135,7 @@ METHOD GetLocate ( )
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
+		VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
 		IF ! VODBInfo( DBI_GETSCOPE, REF uInfo )
 			BREAK ErrorBuild( _VODBErrInfoPtr( ) )
 		ENDIF
@@ -167,7 +167,7 @@ METHOD GetLookupTable( nMaxRows, uField1, uField2, uSearchValue )
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
+		VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
 		IF ! SELF:Notify( NOTIFYINTENTTOMOVE )
 			BREAK DbError{ SELF, #GetLookupTable, 999, VO_Sprintf( __CAVOSTR_DBFCLASS_INTENTTOMOVE ) }
 		ENDIF
@@ -294,7 +294,7 @@ METHOD GoBottom( )
 	nTries := SELF:nRetries
 
 	BEGIN SEQUENCE
-		VODBSelect( SELF:wWorkArea, REF dwCurrentWorkArea )
+		VODBSelect( SELF:wWorkArea, OUT dwCurrentWorkArea )
 		IF SELF:Notify( NOTIFYINTENTTOMOVE )
 			IF lSelectionActive
 				IF siSelectionStatus == DBSELECTIONEMPTY
@@ -369,7 +369,7 @@ METHOD GoTo( nRecordNumber )
 	nTries := SELF:nRetries
 
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
+		VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
 		IF SELF:Notify( NOTIFYINTENTTOMOVE )
 			nRecordNumber := INT( nRecordNumber )
 			IF lSelectionActive
@@ -449,7 +449,7 @@ METHOD GoTop( )
 	nTries     := SELF:nRetries
 
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
+		VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
 		IF SELF:Notify( NOTIFYINTENTTOMOVE )
 			IF lSelectionActive
 				IF siSelectionStatus == DBSELECTIONEMPTY
@@ -502,7 +502,7 @@ METHOD INDEXKEY( uOrder )
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
+		VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
 		IF ! VODBOrderInfo( DBOI_EXPRESSION, "", uOrder, REF uOrdVal )
 			BREAK ErrorBuild( _VODBErrInfoPtr( ) )
 		ENDIF
@@ -531,7 +531,7 @@ METHOD INDEXORD( )
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
+		VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
 		IF ! VODBOrderInfo( DBOI_NUMBER, "", NIL, REF uOrdVal )
 			BREAK ErrorBuild( _VODBErrInfoPtr( ) )
 		ENDIF
@@ -559,7 +559,7 @@ METHOD Info( kInfoType, uInfo )
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
+		VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
 		IF ! VODBInfo( kInfoType, REF uInfo)
 			BREAK ErrorBuild( _VODBErrInfoPtr( ) )
 		ENDIF
@@ -595,7 +595,7 @@ METHOD Join( oDBSource, oFSTarget, aFieldList, cbForBlock )
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
+		VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
 		IF SELF:Notify( NOTIFYINTENTTOMOVE )
 			IF IsObject(oDBSource) .and. __Usual.ToObject(oDBSource) IS DbServer VAR oDb
 				cSource := oDb:Alias
@@ -665,7 +665,7 @@ METHOD Locate( cbForBlock, cbWhileBlock, uScope )
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
+		VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
 		IF SELF:Notify( NOTIFYINTENTTOMOVE )
 			IF ! IsNil( cbForBlock ) .OR. ! IsNil( cbWhileBlock ) .OR. ! IsNil( uScope )
 				IF Empty( cbForBlock )
@@ -799,7 +799,7 @@ METHOD LockCurrentRecord( )
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
+		VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
 		lRetCode := VODBRLock( VODBRecno( ) )
 		IF !lRetCode
 			BREAK ErrorBuild( _VODBErrInfoPtr( ) )
@@ -834,7 +834,7 @@ METHOD LockSelection( )
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
+		VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
 		IF lSelectionActive
 			IF SELF:Notify( NOTIFYINTENTTOMOVE )
 				uCurrentRecord := VODBRecno( )
@@ -894,7 +894,7 @@ METHOD NoIVarGet( symFieldName )
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
+		VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
 		wPos:= FieldPosSym( symFieldName )
 		IF wPos > 0  .AND. nEffectiveCCMode == ccOptimistic .AND. lCCOptimisticRecChg .AND. ;
 			aCurrentBuffer[BUFFER_IS_CHANGED, wPos] .AND. ! aOriginalBuffer[BUFFER_IS_BLOB, wPos]
@@ -931,7 +931,7 @@ METHOD NoIVarPut( symFieldName, uValue )
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
+		VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
 		IF nEffectiveCCMode == ccOptimistic .AND. VODBRecno() <= VODBLastRec()
 			IF ! VODBRecordInfo( DBRI_LOCKED, 0, REF uIsRLock )
 				BREAK ErrorBuild( _VODBErrInfoPtr( ) )
@@ -983,7 +983,7 @@ METHOD Notify(	 kNotification,	 uDescription )
 	DO CASE
 	CASE kNotification <= NOTIFYCOMPLETION
 		IF siSuspendNotification == 0 .AND. nClients > 0
-			VODBSelect( wWorkArea, REF dwCurrentWorkArea )
+			VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
             FOREACH oClient AS USUAL IN aClients
                 Send(oClient,#Notify, kNotification, uDescription ) 
             NEXT
@@ -991,7 +991,7 @@ METHOD Notify(	 kNotification,	 uDescription )
 		ENDIF
 		
 	CASE kNotification == NOTIFYINTENTTOMOVE
-		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
+		VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
 		uRetValue := TRUE
 		IF siSuspendNotification == 0
 			IF nClients > 0
@@ -1024,7 +1024,7 @@ METHOD Notify(	 kNotification,	 uDescription )
 		VODBSetSelect( LONGINT(dwCurrentWorkArea ) )
 		
 	CASE kNotification <= NOTIFYFILECHANGE
-		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
+		VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
 		
 		SELF:__InitRecordBuf()
 		
@@ -1046,7 +1046,7 @@ METHOD Notify(	 kNotification,	 uDescription )
 		IF siSuspendNotification == 0
 			IF lSelectionActive
 				IF uDescription == NIL .OR. uDescription == DBSELECTIONNULL
-					VODBSelect( wSelectionWorkArea, REF dwCurrentWorkArea )
+					VODBSelect( wSelectionWorkArea, OUT dwCurrentWorkArea )
 					uSelectionValue := Eval( cbSelectionParentExpression )
 					VODBSetSelect( LONGINT( wWorkArea ) )
 					IF VODBEof( ) .OR. ! ( Eval( cbSelectionIndexingExpression ) = uSelectionValue )
@@ -1055,12 +1055,12 @@ METHOD Notify(	 kNotification,	 uDescription )
 						siSelectionStatus := DBSELECTIONNULL
 					ENDIF
 				ELSE
-					VODBSelect( wWorkArea, REF dwCurrentWorkArea )
+					VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
 					siSelectionStatus := DBSELECTIONEMPTY
 				ENDIF
 				
 			ELSEIF lCDXSelectionActive
-				VODBSelect( wSelectionWorkArea, REF dwCurrentWorkArea )
+				VODBSelect( wSelectionWorkArea, OUT dwCurrentWorkArea )
 				uVOVal := uVOVal2 := Eval( cbSelectionParentExpression )
 				VODBSetSelect( LONGINT(wWorkArea ) )
 				VODBOrderInfo( DBOI_SCOPETOP	 , "", NIL, REF uVOVal )
@@ -1070,7 +1070,7 @@ METHOD Notify(	 kNotification,	 uDescription )
 					BREAK ErrorBuild(_VODBErrInfoPtr())
 				ENDIF
 			ELSE
-				VODBSelect( wWorkArea, REF dwCurrentWorkArea )
+				VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
 			ENDIF
 			
 			SELF:__InitRecordBuf()
@@ -1098,8 +1098,8 @@ METHOD Notify(	 kNotification,	 uDescription )
 		IF lCDXSelectionActive
 			lCDXSelectionActive := FALSE       
 			//RvdH 070711 Select the correct workarea
-			//VODBSelect( wSelectionWorkArea, REF dwCurrentWorkArea )			
-			VODBSelect( wWorkArea, REF dwCurrentWorkArea )
+			//VODBSelect( wSelectionWorkArea, OUT dwCurrentWorkArea )			
+			VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
 			uVOVal := NIL
 			VODBOrderInfo( DBOI_SCOPETOPCLEAR, "", NIL, REF uVOVal )
 			uVOVal := NIL
@@ -1110,7 +1110,7 @@ METHOD Notify(	 kNotification,	 uDescription )
 	OTHERWISE        
 		SELF:__InitRecordBuf()
 		IF siSuspendNotification == 0
-			VODBSelect( wWorkArea, REF dwCurrentWorkArea )
+			VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
 			IF nClients > 0
                 FOREACH oClient AS USUAL IN aClients
                     Send(oClient, #Notify, kNotification )
@@ -1143,7 +1143,7 @@ METHOD OrderDescend( uOrder, oFSIndex, lNew )
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
+		VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
 		IF IsObject(oFSIndex) .and. __Usual.ToObject(oFSIndex) IS FileSpec VAR oFS
 			cTarget := oFS:FullPath
 		ELSE
@@ -1182,7 +1182,7 @@ METHOD OrderInfo( kOrderInfoType, oFSIndex, uOrder, uOrdVal )
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
+		VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
 		IF IsObject(oFSIndex) .and. __Usual.ToObject(oFSIndex) IS FileSpec VAR oFS
 			cTarget := oFS:FullPath
 		ELSE
@@ -1254,7 +1254,7 @@ METHOD OrderIsUnique( uOrder, oFSIndex )
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
+		VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
 		IF IsObject(oFSIndex) .and. __Usual.ToObject(oFSIndex) IS FileSpec VAR oFS
 			cTarget := oFS:FullPath
 		ELSE
@@ -1289,7 +1289,7 @@ METHOD OrderKeyAdd( uOrder, oFSIndex, uKeyValue )
 		DBFDebug("Entering "+__ENTITY__)
 	#ENDIF
 
-	VODBSelect( wWorkArea, REF dwCurrentWorkArea )
+	VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
@@ -1331,7 +1331,7 @@ METHOD OrderKeyCount( uOrder, oFSIndex )
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
+		VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
 		IF IsObject(oFSIndex) .and. __Usual.ToObject(oFSIndex) IS FileSpec VAR oFS
 			cTarget := oFS:FullPath
 		ELSE
@@ -1370,7 +1370,7 @@ METHOD OrderKeyDel( uOrder, oFSIndex )
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
+		VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
 		IF IsObject(oFSIndex) .and. __Usual.ToObject(oFSIndex) IS FileSpec VAR oFS
 			cTarget := oFS:FullPath
 		ELSE
@@ -1407,7 +1407,7 @@ METHOD OrderKeyGoTo( nKeyNo )
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
+		VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
 		IF SELF:Notify( NOTIFYINTENTTOMOVE )
 			IF IsNil( nKeyno )
 				nKeyno := 1
@@ -1459,7 +1459,7 @@ METHOD OrderKeyNo( uOrder, oFSIndex )
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
+		VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
 		IF IsObject(oFSIndex) .and. __Usual.ToObject(oFSIndex) IS FileSpec VAR oFS
 			cTarget := oFS:FullPath
 		ELSE
@@ -1519,7 +1519,7 @@ METHOD OrderScope( nScope, uValue )
 		//		n += 1
 		//	ENDIF
 		//ENDIF
-		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
+		VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
 		IF ! VODBOrderInfo( n, "", NIL, REF uValue )
 			BREAK ErrorBuild(_VODBErrInfoPtr())
 		ENDIF
@@ -1553,7 +1553,7 @@ METHOD OrderSkipUnique( nDirection )
 
 	lErrorFlag := FALSE
 	BEGIN SEQUENCE
-		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
+		VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
 		IF SELF:Notify( NOTIFYINTENTTOMOVE )
 			lRetCode := VODBOrderInfo( DBOI_SKIPUNIQUE, "", NIL, REF nDirection )
 			// RvdH 060629 __ProcessConcurrency needs a Logic and not a numeric !
@@ -1600,7 +1600,7 @@ METHOD Pack( )
 	BEGIN SEQUENCE
       //RvdH 070925 Save pending changes
       SELF:__OptimisticFlush()
-		VODBSelect( wWorkArea, REF dwCurrentWorkArea )
+		VODBSelect( wWorkArea, OUT dwCurrentWorkArea )
 		IF (lRetCode := VODBPack( ))
 			__DBSSetSelect( dwCurrentWorkArea )
 			SELF:Notify( NOTIFYFILECHANGE )

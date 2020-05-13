@@ -14,10 +14,12 @@ USING System.Threading
 // Class that holds the memvars for a certain level on the callstack
 [DebuggerDisplay("Level:{Depth}")];	
 INTERNAL CLASS XSharp.MemVarLevel                     
-	PROPERTY Variables AS Dictionary<STRING, XSharp.MemVar> AUTO    
+	PROPERTY Variables AS Dictionary<STRING, XSharp.MemVar> AUTO
+	PROPERTY Locals    AS Dictionary<STRING, CODEBLOCK>   AUTO
 	PROPERTY Depth AS INT AUTO GET PRIVATE SET
 	CONSTRUCTOR (nDepth AS INT)              
 		Variables   := Dictionary<STRING, XSharp.MemVar>{StringComparer.OrdinalIgnoreCase}
+		Locals      := NULL
 		Depth       := nDepth
 		RETURN
 
@@ -50,7 +52,30 @@ INTERNAL CLASS XSharp.MemVarLevel
 		Variables:Clear()	                 
 		
 	PROPERTY Count AS INT GET Variables:Count	
-		
+
+    // locals support
+    METHOD AddLocal(cName AS STRING, oCb AS CODEBLOCK) AS VOID
+        IF Locals == NULL
+            Locals := Dictionary<STRING, CODEBLOCK>{StringComparer.OrdinalIgnoreCase}
+        ENDIF
+        Locals[cName] := oCb    // overwrite variable if it already exists
+        RETURN
+        
+    METHOD RemoveLocal(cName AS STRING) AS LOGIC
+        IF Locals != NULL .AND. Locals:ContainsKey(cName)
+            Locals:Remove(cName)
+            RETURN TRUE
+        ENDIF
+        RETURN FALSE
+        
+    METHOD FindLocal(cName AS STRING, cb OUT CODEBLOCK) AS LOGIC
+        IF Locals != NULL .AND. Locals:ContainsKey(cName)
+            cb := Locals[cName]
+            RETURN TRUE
+        ENDIF
+        cb := NULL
+        RETURN FALSE
+
 END CLASS
 
 
@@ -122,7 +147,16 @@ PUBLIC CLASS XSharp.MemVar
 		ENDDO      
 		Depth --
 		RETURN TRUE
-		
+
+	STATIC METHOD GetHigherLevelLocal(name AS STRING, cb OUT CODEBLOCK) AS LOGIC
+		FOREACH VAR previous IN Privates    
+			IF previous!= Current .AND. previous:FindLocal(name, OUT cb)
+				RETURN TRUE
+			ENDIF   
+		NEXT
+		cb := NULL_CODEBLOCK
+		RETURN FALSE
+
 	
 	STATIC METHOD GetHigherLevelPrivate(name AS STRING) AS XSharp.MemVar
 		FOREACH VAR previous IN Privates    
@@ -132,13 +166,24 @@ PUBLIC CLASS XSharp.MemVar
 		NEXT		
 		RETURN NULL	
 
-    
+
+    STATIC METHOD LocalFind(name AS STRING, cb OUT CODEBLOCK) AS LOGIC
+        CheckCurrent()
+        IF Current:FindLocal(name, OUT cb)
+            RETURN TRUE
+        ENDIF
+        IF GetHigherLevelLocal(name, OUT cb)
+            RETURN TRUE
+        ENDIF
+        cb := NULL_CODEBLOCK
+        RETURN FALSE
+
 	STATIC METHOD PrivatePut(name AS STRING, uValue AS USUAL) AS LOGIC
-		CheckCurrent()      
-		IF Current:TryGetValue(name, OUT VAR oMemVar)
+        CheckCurrent()
+	IF Current:TryGetValue(name, OUT VAR oMemVar)
 			oMemVar:Value := uValue
 			RETURN TRUE			
-		ENDIF
+        ENDIF
         oMemVar := GetHigherLevelPrivate(name)
         IF oMemVar != NULL
         	oMemVar:Value := uValue
@@ -253,29 +298,45 @@ PUBLIC CLASS XSharp.MemVar
 				    Publics:Add(oMemVar )
 			    ENDIF
             END LOCK
-		ENDIF  
-    
+        ENDIF
+        
+	STATIC METHOD AddLocal(name AS STRING, cb AS CODEBLOCK) AS VOID
+		CheckCurrent() 
+		Current:AddLocal(name,cb)
 
-	STATIC METHOD Get(name AS STRING) AS USUAL 
+	STATIC METHOD RemoveLocal(name AS STRING) AS VOID
+		CheckCurrent() 
+		Current:RemoveLocal(name)
+
+
+	STATIC METHOD Get(cName AS STRING) AS USUAL
+        	// Local takes precedence over private
+        	IF LocalFind(cName, OUT VAR cb)
+            	RETURN Eval(cb)
+        	ENDIF
 		LOCAL oMemVar AS XSharp.MemVar
-		// privates take precedence over publics ?
-		oMemVar := PrivateFind(name)
+		// privates take precedence over publics
+		oMemVar := PrivateFind(cName)
 		IF oMemVar == NULL
-			oMemVar := PublicFind(name)
+			oMemVar := PublicFind(cName)
 		ENDIF            
 		IF oMemVar != NULL
 			RETURN oMemVar:Value
 		ENDIF
-        VAR err := Error.VOError(EG_NOVAR,"MemVarGet",nameof(name),1, <OBJECT>{name})
-        THROW err
+        	VAR err := Error.VOError(EG_NOVAR,"MemVarGet",nameof(cName),1, <OBJECT>{cName})
+        	THROW err
     
-	STATIC METHOD Put(name AS STRING, uValue AS USUAL) AS USUAL
+	STATIC METHOD Put(cName AS STRING, uValue AS USUAL) AS USUAL
+        	// Local takes precedence over private
+        	IF LocalFind(cName, OUT VAR cb)
+            		RETURN Eval(cb, uValue)
+        	ENDIF
 		LOCAL oMemVar AS XSharp.MemVar
 		// assign to existing memvar first
 		// privates take precedence over publics ?
-		oMemVar := PrivateFind(name)
+		oMemVar := PrivateFind(cName)
 		IF oMemVar == NULL
-			oMemVar := PublicFind(name)
+			oMemVar := PublicFind(cName)
 		ENDIF      		
 		IF oMemVar != NULL
             BEGIN LOCK oMemVar
@@ -284,13 +345,14 @@ PUBLIC CLASS XSharp.MemVar
 		ELSE
 			// memvar does not exist, then add it at the current level
 			CheckCurrent()
-			Current:Add(@@MemVar{name,uValue})
+			Current:Add(@@MemVar{cName,uValue})
 		ENDIF    
 		RETURN uValue
 
     
 	STATIC METHOD ClearAll() AS VOID
-		// Remove all public and private variables   
+        // clear does not remove locals
+        // Remove all public and private variables   
 		// Does not clear the privates stack levels
         BEGIN LOCK Publics
 		    Publics:Clear()
@@ -300,6 +362,7 @@ PUBLIC CLASS XSharp.MemVar
 		NEXT
 
     STATIC METHOD Clear(name AS STRING) AS LOGIC
+        // clear does not remove locals
 	    // assign nil to visible private. Does not really release the variable.		
 		VAR oMemVar := PrivateFind(name)
 		IF oMemVar == NULL

@@ -32,8 +32,8 @@ INTERNAL CLASS XSharp.VFP.AutoCloseMessageBox
         RETURN
         
     PRIVATE METHOD CloseMessageBoxWindow(dlgButtonId AS INT ) AS VOID
-        VAR hWndMsgBox := Win32Api.FindMessageBox(_caption)
-        Win32Api.SendCommandToDlgButton(hWndMsgBox, dlgButtonId)
+        VAR hWndMsgBox := Win32.FindMessageBox(_caption)
+        Win32.SendCommandToDlgButton(hWndMsgBox, dlgButtonId)
         RETURN
         
     PUBLIC STATIC METHOD Show(text AS STRING ,caption := "XSharp" AS STRING , timeout := 1000 AS INT,;
@@ -51,43 +51,6 @@ INTERNAL CLASS XSharp.VFP.AutoCloseMessageBox
             buttons, nIcon, nDefault, defaultResult}:_result
         
         
-END CLASS
-INTERNAL STATIC CLASS Win32Api
-	INTERNAL STATIC CLASS UnsafeNativeMethods
-		INTERNAL DELEGATE EnumChildProc(hWnd AS IntPtr , lParam AS IntPtr ) AS LOGIC
-
-        [DllImport("user32.dll", CharSet := CharSet.Auto, SetLastError := TRUE)] ;
-		INTERNAL STATIC EXTERN METHOD FindWindow(lpClassName AS STRING , lpWindowName AS STRING ) AS IntPtr
-
-        [DllImport("user32.dll")];
-		[RETURN:MarshalAs(UnmanagedType.Bool)];
-		INTERNAL STATIC EXTERN METHOD EnumChildWindows(hWndParent AS IntPtr , lpEnumFunc AS EnumChildProc , lParam AS IntPtr ) AS LOGIC
-
-        [DllImport("user32.dll")];
-		INTERNAL STATIC EXTERN METHOD GetDlgCtrlID(hWndCtrl AS IntPtr ) AS LONG
-
-        [DllImport("user32.dll", SetLastError := TRUE)];
-		[RETURN:MarshalAs(UnmanagedType.Bool)];
-		INTERNAL STATIC EXTERN METHOD PostMessage(hWnd AS IntPtr , Msg AS DWORD , wParam AS IntPtr , lParam AS IntPtr ) AS LOGIC
-	END CLASS
-
-	PUBLIC STATIC METHOD FindMessageBox(caption AS STRING ) AS IntPtr
-		RETURN UnsafeNativeMethods.FindWindow("#32770", caption)
-        
-    PRIVATE CONST WM_COMMAND  := 273U AS DWORD
-
-	PUBLIC STATIC METHOD SendCommandToDlgButton(hWnd AS IntPtr , dlgButtonId AS LONG ) AS VOID
-		IF hWnd != IntPtr.Zero
-			UnsafeNativeMethods.EnumChildWindows(hWnd, { handle , param => 
-				VAR dlgCtrlID := UnsafeNativeMethods.GetDlgCtrlID(handle)
-				IF dlgCtrlID == dlgButtonId
-					UnsafeNativeMethods.PostMessage(hWnd, WM_COMMAND, IntPtr{dlgCtrlID}, handle)
-				ENDIF
-				RETURN dlgCtrlID != dlgButtonId
-			}, IntPtr.Zero)
-		ENDIF
-
-
 END CLASS
 
 INTERNAL STATIC CLASS MessageBoxButtonsExtension

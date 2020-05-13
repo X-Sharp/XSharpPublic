@@ -76,8 +76,9 @@ FUNCTION __CavoStr( resid AS DWORD ) AS STRING
 	ENDIF
 	RETURN strMessage
 
+
 /// <exclude />
-INTERNAL CLASS Messages
+PUBLIC CLASS XSharp.Messages
 	STATIC PRIVATE _instance   AS Messages
 	STATIC PRIVATE _instanceName AS STRING
 	STATIC PRIVATE INITONLY _generic    AS Messages

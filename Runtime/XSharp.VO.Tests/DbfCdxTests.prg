@@ -3736,6 +3736,38 @@ RETURN
 			DbCloseArea()
 		END METHOD
 
+        [Fact, Trait("Category", "DBF")];
+		METHOD OrdSetFocus_test() AS VOID
+			LOCAL cDbf AS STRING
+			RddSetDefault("DBFCDX")
+			cDbf := "ORDSETFOCUS"
+			DbfTests.CreateDatabase(cDbf , { { "NUMFIELD" , "N" , 5 , 0 } } , { 2,1,3} )
+			DbCreateOrder("ORDER1", cDbf, "NUMFIELD")
+			DbCreateOrder("ORDER2", , "-NUMFIELD")
+			DbCloseArea()
+			DbUseArea(TRUE, "DBFCDX", cDbf)
+
+			Assert.Equal("ORDER1", (STRING)OrdSetFocus(0))
+			Assert.Equal("", (STRING)OrdSetFocus(0))
+			DbGoTop()
+			Assert.Equal(2, (INT)FieldGet(1))
+			
+			Assert.Equal("", (STRING)OrdSetFocus(1))
+			Assert.Equal("ORDER1", (STRING)OrdSetFocus(1))
+			DbGoTop()
+			Assert.Equal(1, (INT)FieldGet(1))
+			
+			Assert.Equal("ORDER1", (STRING)OrdSetFocus(2))
+			Assert.Equal("ORDER2", (STRING)OrdSetFocus(2))
+			DbGoTop()
+			Assert.Equal(3, (INT)FieldGet(1))
+			
+			Assert.Equal("ORDER2", (STRING)OrdSetFocus(3))
+			Assert.Equal("", (STRING)OrdSetFocus(3))
+			DbGoTop()
+			Assert.Equal(2, (INT)FieldGet(1))
+			
+			DbCloseArea()
 
 		STATIC PRIVATE METHOD GetTempFileName() AS STRING
            STATIC nCounter AS LONG

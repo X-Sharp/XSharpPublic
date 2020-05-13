@@ -400,7 +400,7 @@ BEGIN NAMESPACE XSharp.VFP
             RETURN .t. && SELF:cRawStr:Contains((STRING) tc2Check)
 
 
-    CONSTRUCTOR()
+    CONSTRUCTOR()  
          *self:GetWordCount := self:GetWordCountMeth
          *self:GetWordNum := self:GetWordNumMeth
          *self:IsDelimiter := Self:isVia1Char 
@@ -412,19 +412,19 @@ BEGIN NAMESPACE XSharp.VFP
 END NAMESPACE // XSharp.VFP
 
 
-/// <include file="VFPDocs.xml" path="Runtimefunctions/getwordcount/*" />
-STATIC FUNCTION GetDefaultHandler()  AS GetWordHandler
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/getwordcount/*" />
+INTERNAL FUNCTION GetDefaultWordHandler()  AS GetWordHandler
     LOCAL loSrch := GetWordHandler{} AS GetWordHandler
     loSrch:iMethod := 22    && Sidestepping check on cRawStr
     loSrch:SetActive()
     RETURN loSrch
 
-/// <include file="VFPDocs.xml" path="Runtimefunctions/getwordcount/*" />
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/getwordcount/*" />
 FUNCTION GetWordCount( cString AS STRING) AS LONG
-    LOCAL loSrch := GetDefaultHandler() AS GetWordHandler
+    LOCAL loSrch := GetDefaultWordHandler() AS GetWordHandler
     RETURN loSrch:oActiveObjc:GetWordCount( cString)
 
-/// <include file="VFPDocs.xml" path="Runtimefunctions/getwordcount/*" />
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/getwordcount/*" />
 FUNCTION GetWordCount( cString AS STRING, cDelimiters AS STRING) AS LONG
     LOCAL lnRefSwitch := 0 AS INT
     LOCAL lcTrack := "" AS STRING
@@ -446,12 +446,12 @@ INTERNAL FUNCTION GetWordCount( cString AS STRING, cDelimiters AS STRING, tnSwit
     lnReturn := loSrch:oActiveObjc:GetWordCount(cString)
     RETURN lnReturn
 
-/// <include file="VFPDocs.xml" path="Runtimefunctions/getwordnum/*" />
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/getwordnum/*" />
 FUNCTION GetWordNum( cString AS STRING, nIndex AS INT) AS STRING
-    LOCAL loSrch := GetDefaultHandler() AS GetWordHandler
+    LOCAL loSrch := GetDefaultWordHandler() AS GetWordHandler
     RETURN loSrch:oActiveObjc:GetWordNum( cString, nIndex)
 
-/// <include file="VFPDocs.xml" path="Runtimefunctions/getwordnum/*" />
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/getwordnum/*" />
 FUNCTION GetWordNum( cString AS STRING, nIndex AS INT, cDelimiters AS STRING) AS STRING
     *-- Checked: throws on .Null.
     LOCAL lnRefSwitch := 0 AS INT

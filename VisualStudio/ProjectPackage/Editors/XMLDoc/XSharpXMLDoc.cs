@@ -140,7 +140,8 @@ namespace XSharp.Project
             if (pars.Length > 0)
                 pars += ")";
 
-
+            if (pars.Contains("&"))
+                pars = pars.Replace("&", "@");
             return pars;
         }
         /// <summary>

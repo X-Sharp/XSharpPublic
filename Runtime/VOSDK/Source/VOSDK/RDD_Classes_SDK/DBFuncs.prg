@@ -1075,7 +1075,7 @@ FUNCTION __MakeErrObj( nTries ) AS USUAL  CLIPPER
 
 	RETURN oError     
 	
-FUNCTION DBFDebug( p1 := NULL_STRING AS STRING, p2 := NULL_STRING AS STRING, ;
+INTERNAL FUNCTION DBFDebug( p1 := NULL_STRING AS STRING, p2 := NULL_STRING AS STRING, ;
 	p3 := NULL_STRING AS STRING ,p4 := NULL_STRING AS STRING ) AS LOGIC
 /*		
 	LOCAL cMsg  AS STRING
@@ -1099,6 +1099,8 @@ FUNCTION DBFDebug( p1 := NULL_STRING AS STRING, p2 := NULL_STRING AS STRING, ;
 	_DebOut32( String2Psz(cMsg )) 
 */
 	RETURN TRUE
+
+/// <summary>Get/Set the flag that determines if DbServer operations restore the current workarea </summary>
 
 FUNCTION DbSetRestoreWorkarea(lEnable := NIL AS USUAL) AS LOGIC STRICT
 	//SE-060527
@@ -1228,11 +1230,18 @@ FUNCTION __CheckFieldType(uValue REF USUAL, aField AS ARRAY, uError REF USUAL) A
     RETURN lOk
 //RvdH 080613 Allow control over default Setting for Lockmode  
 STATIC GLOBAL sgLockMode := ccOptimistic AS DWORD
+
+/// <summary>Get/Set the default locking mode for the DbServer class</summary>
+/// <param name="dwLockMode">The new locking mode. The default = ccOptimistic</param>
+/// <returns>The previous locking mode</returns>
 FUNCTION DbSetDefaultLockMode(dwLockMode AS DWORD) AS DWORD PASCAL
     LOCAL dwOld AS DWORD
     dwOld := sgLockMode
     sgLockMode := dwLockMode
     RETURN dwOld
+    
+/// <summary>Get the default locking mode for the DbServer class</summary>
+/// <returns>The current locking mode</returns>
 FUNCTION DbGetDefaultLockMode() AS DWORD PASCAL
     RETURN sgLockMode
 

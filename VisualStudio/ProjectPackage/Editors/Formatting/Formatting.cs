@@ -1581,7 +1581,7 @@ namespace XSharp.Project
                 set
                 {
                     currentIndex = value;
-                    if (currentIndex < allTokens.Count)
+                    if (currentIndex < allTokens.Count && currentIndex >= 0)
                         currentPosition = allTokens[currentIndex].StartIndex;
                     else
                         currentPosition = -1;
@@ -1838,6 +1838,31 @@ namespace XSharp.Project
                 stopWatch.Start();
 #endif
                 //
+                FormattingContext context = null;
+                // Already been lexed ?
+                if (_buffer.Properties != null && _buffer.Properties.ContainsProperty(typeof(XSharpTokens)))
+                {
+                    XSharpTokens xTokens = null;
+                    xTokens = _buffer.Properties.GetProperty<XSharpTokens>(typeof(XSharpTokens));
+                    if (!(xTokens == null || xTokens.TokenStream == null || xTokens.SnapShot == null))
+                    {
+                        var tokens = xTokens.TokenStream.GetTokens();
+                        // Ok, we have some tokens
+                        if (tokens != null)
+                        {
+                            // And they are the right ones
+                            if (xTokens.SnapShot.Version == _buffer.CurrentSnapshot.Version)
+                            {
+                                // Ok, use it
+                                context = new FormattingContext(tokens, this.ParseOptions.Dialect);
+                            }
+                        }
+                    }
+                }
+                // No Tokens....Ok, do the lexing now
+                if (context == null)
+                    context = new FormattingContext(this, _buffer.CurrentSnapshot);
+                //
                 #region Get and Sort Regions
                 ITextSnapshot snapshot = _classifier.Snapshot;
                 SnapshotSpan Span = new SnapshotSpan(snapshot, 0, snapshot.Length);
@@ -1860,6 +1885,16 @@ namespace XSharp.Project
                         int startTokenType = -1;
                         if (tag is XsClassificationSpan)
                             startTokenType = (tag as XsClassificationSpan).startTokenType;
+                        if ( startTokenType == -1 )
+                        {
+                            // Ok, we miss the info during the parsing, but, we will try to get it here
+                            context.MoveTo(tag.Span.Start);
+                            IToken openKeyword = context.GetFirstToken(true);
+                            if (openKeyword != null)
+                            {
+                                startTokenType = openKeyword.Type;
+                            }
+                        }
                         regionStarts.Push(new RegionTag(tag.Span.Span, startTokenType));
                     }
                     else if (tag.ClassificationType.IsOfType(ColorizerConstants.XSharpRegionStopFormat))
@@ -1887,31 +1922,9 @@ namespace XSharp.Project
                 var editSession = _buffer.CreateEdit();
                 try
                 {
-                    FormattingContext context = null;
-                    // Already been lexed ?
-                    if (_buffer.Properties != null && _buffer.Properties.ContainsProperty(typeof(XSharpTokens)))
-                    {
-                        XSharpTokens xTokens = null;
-                        xTokens = _buffer.Properties.GetProperty<XSharpTokens>(typeof(XSharpTokens));
-                        if (!(xTokens == null || xTokens.TokenStream == null || xTokens.SnapShot == null))
-                        {
-                            var tokens = xTokens.TokenStream.GetTokens();
-                            // Ok, we have some tokens
-                            if (tokens != null)
-                            {
-                                // And they are the right ones
-                                if (xTokens.SnapShot.Version == _buffer.CurrentSnapshot.Version)
-                                {
-                                    // Ok, use it
-                                    context = new FormattingContext(tokens, this.ParseOptions.Dialect);
-                                }
-                            }
-                        }
-                    }
-                    // No Tokens....Ok, do the lexing now
-                    if (context == null)
-                        context = new FormattingContext(this, _buffer.CurrentSnapshot);
-                    //
+                    
+
+
                     var lines = _buffer.CurrentSnapshot.Lines;
                     int indentSize = 0;
                     bool inComment = false;

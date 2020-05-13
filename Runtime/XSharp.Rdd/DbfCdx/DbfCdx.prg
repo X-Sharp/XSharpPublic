@@ -136,11 +136,11 @@ BEGIN NAMESPACE XSharp.RDD
             
             OVERRIDE METHOD OrderInfo(nOrdinal AS DWORD , info AS DbOrderInfo ) AS OBJECT
                 LOCAL result AS LONG
-                LOCAL workOrder AS CdxTag
                 LOCAL isOk := FALSE AS LOGIC
                 
                 result := 0
-                workOrder := SELF:_indexList:FindOrder(info)
+                SELF:_indexList:FindOrder(info, OUT VAR workOrder)
+
                 IF workOrder == NULL .AND. info:IsEmpty
                     workOrder := SELF:CurrentOrder
                 ENDIF
@@ -288,14 +288,18 @@ BEGIN NAMESPACE XSharp.RDD
                 CASE DBOI_SCOPETOP
                 CASE DBOI_SCOPEBOTTOM
                     IF workOrder != NULL
+                        LOCAL oldValue as OBJECT
+                        IF nOrdinal == DBOI_SCOPETOP
+                            oldValue := workOrder:TopScope
+                        ELSEIF nOrdinal == DBOI_SCOPEBOTTOM
+                            oldValue := workOrder:BottomScope
+                        ELSE
+                            oldValue := NULL
+                        ENDIF
                         IF info:Result != NULL
                             workOrder:SetOrderScope(info:Result, (DbOrder_Info) nOrdinal)
                         ENDIF
-                        IF nOrdinal == DBOI_SCOPETOP
-                            info:Result := workOrder:TopScope
-                        ELSEIF nOrdinal == DBOI_SCOPEBOTTOM
-                            info:Result := workOrder:BottomScope
-                        ENDIF
+                        info:Result := oldValue
                     ELSE
                         info:Result := NULL
                     ENDIF

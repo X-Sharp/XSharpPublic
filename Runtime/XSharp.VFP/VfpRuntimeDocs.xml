@@ -12,6 +12,973 @@
       </code>
     </examples>
   </addbs>
+  <addproperty>
+    <summary>
+      Adds a new property to an object at run time.<br/>
+      You can use <b>AddProperty( )</b> to add properties and their values to valid X# objects,
+      including those created from X# classes, COM classes, and the <b>SCATTER...NAME</b> command.
+    </summary>
+    <param name="oObjectName">
+      Specifies the name of the object to which the property is added.<br/>
+      If oObjectName is not a valid object, X# generates the appropriate message.
+    </param>
+    <param name="cPropertyName">
+      Specifies the name of the new property to add to the object.<br/>
+      If the property with the name you specify does not exist, the property is created and added.
+    </param>
+    <param name="eNewValue">
+      Specifies the value to set for the new property.<br/>
+      If you omit eNewValue, and the property exists, X# leaves the value of the property unchanged.
+      If you omit eNewValue, and the property is new, X# sets the value of the new property to False (.F.).
+    </param>
+    <returns>
+      Logical data type. The following table describes the return values for <b>AddProperty( )</b> and the behavior
+      when you attempt to add a property that already exists for an object.
+      <list type="table">
+        <listheader>
+          <term>Return value</term>
+          <description>Description</description>
+        </listheader>
+        <item>
+          <term>True (.T.)</term>
+          <description>
+            When <b>AddProperty( ) </b><br/>
+            When the new property is an array property, and the array already exists, <b>AddProperty( )</b> redimensions the array with the dimensions
+            specified by cPropertyName. If you specify a value with eNewValue, all elements in the array are set to that value.
+            If you omit eNewValue, all array elements are set to False (.F.).<br/>
+            If the new property is not an array property, but the existing property is an array property.
+            The property remains an array property with the same dimensions. If you specify a value with eNewValue,
+            all elements in the array are set to that value. If you omit eNewValue, all array elements are set to False (.F.).<br/>
+            If the new property is not an array property, and the existing property is not an array property or is not a read-only X# native property.
+            If you specify a value with eNewValue, the existing property is set to that value. If you omit eNewValue, the existing property value remains unchanged.<br/>
+            If the specified property is already a member of the object but is marked as <b>Hidden</b> or <b>Protected</b>.
+            X# generates an error, "Property name is not found (Error 1734)", and the property is not set to the value passed to <b>AddProperty( )</b>.<br/>
+          </description>
+        </item>
+        <item>
+          <term>
+            False (.F.)
+          </term>
+          <description>
+            When <b>AddProperty( )</b> did not add the property successfully. <br/>
+            If the property is an array property, and the existing property is not an array property. The existing property remains unchanged.
+          </description>
+        </item>
+      </list>
+    </returns>
+    <remarks>
+      You can create property arrays using <b>AddProperty( )</b> for an object. When you do so, every element in the array is initialized with eNewValue,
+      if provided. Otherwise, the value of each property in the array is set to False (.F.). For more information about creating a property array for an object,
+      see the Examples section.<br/>
+      X# adds the new property as a <b>Public</b> property. You cannot specify the property as <b>Protected</b> or <b>Hidden</b>.<br/>
+      If the existing property is a read-only X# native property, such as the <b>BaseClass</b> property, X# generates an error, "Property name is read-only (Error 1743)".<br/>
+      If the property name is not valid, for example, the property name contains a space or other illegal characters, X# generates an error, "Incorrect property name (Error 1470)".<br/>
+      For object instances derived from native X# classes, <b>AddProperty( )</b> respects the visibility setting of the intrinsic <b>AddProperty</b> method.
+      If <b>AddProperty</b> is marked as <b>Hidden</b> or <b>Protected</b>, <b>ADDPROPERTY( )</b> does not create the new property and returns False (.F.).
+      If the <b>AddProperty</b> method is marked as <b>Public</b> (default), <b>ADDPROPERTY( )</b> creates the property and returns True (.T.).
+      This protects the original class design.<br/>
+      <note>This does not apply to COM objects created with X# OLEPUBLIC classes.</note>
+      <b>AddProperty( )</b> does not work when using the <b>For EACH</b> command with object references. However, you can use the <b>AddProperty</b> method instead.
+      <b>Example 1</b><br/>
+      The following example adds a new property to an object created with the <b>SCATTER</b> command.<br/>
+       <code language="X#">
+        Use customers
+        SCATTER NAME oCust
+        ADDPROPERTY(oCust,"MyProperty")
+      </code><br/>
+      <b>Example 2</b><br/>
+      The following example creates a property array for the object, codeoMyForm/code, and displays its contents, code1/code and code"Two"/code.
+       <code language="X#">
+        oMyForm = CreateObject('Form')
+        ADDPROPERTY(oMyForm, 'MyArray(2)', 1)
+        oMyForm.MyArray(2) = "Two"
+        Clear
+        ? oMyForm.MyArray(1)
+        ? oMyForm.MyArray(2)
+      </code>
+    </remarks>
+  </addproperty>
+  <asqlhandles>
+    <summary>
+      Stores numeric references to all active SQL connection statement handles in an array.
+    </summary>
+    <param name="ArrayName">
+      Specifies the array to store statement handle information in.
+      In contrary to VFP the array must exist when calling this function. If the array is not large enough to store the information,
+      X# increases the array size automatically. If the array is larger than necessary, X# truncates the array.
+    </param>
+    <param name="nStatementHandle">
+      Populates the array with statement handles that use the same shared connection, including nStatementHandle.
+    </param>
+    <returns>
+      Numeric. <b>ASQLHandles( )</b> returns the number of statement handles in use. If no statement handles are available,
+      <b>ASQLHandles( )</b> returns 0 and does not modify the array.
+    </returns>
+    <remarks>
+      You can use references to statement handles in other X# SQL functions, such as <b>SQLEXEC( )</b> and <b>SQLDISCONNECT( )</b>.
+      For more information, see SQLEXEC( ) Function and SQLDISCONNECT( ) Function.
+      You can create and return new statement handles using the <b>SQLCONNECT( )</b> and <b>SQLSTRINGCONNECT( )</b> functions.
+      For more information, see SQLCONNECT( ) Function and SQLSTRINGCONNECT( ) Function.
+    </remarks>
+  </asqlhandles>
+  <at>
+    <summary>Returns the beginning numeric position of the first occurrence of a character expression or memo field within another character expression or memo field, counting from the leftmost character.</summary>
+    <param name="cSearchExpression">Specifies the character expression that At( ) searches for in cExpressionSearched.</param>
+    <param name="cExpressionSearched">
+      Specifies the character expression cSearchExpression searches for.<br/>Both cSearchExpression and cExpressionSearched can be memo fields of any size.
+    </param>
+    <param name="nOccurrence">Specifies which occurrence (first, second, third, and so on) of cSearchExpression is searched for in cExpressionSearched. By default, At( ) searches for the first occurrence of cSearchExpression (nOccurrence = 1). Including nOccurrence lets you search for additional occurrences of cSearchExpression in cExpressionSearched. AT_C( ) returns 0 if nOccurrence is greater than the number of times cSearchExpression occurs in cExpressionSearched.</param>
+    <returns>Numeric</returns>
+    <remarks>
+      At( ) searches the second character expression for the first occurrence of the first character expression. It then returns an integer indicating the position of the first character in the character expression found. If the character expression isn't found, At( ) returns 0.<br/>
+      The search performed by At( ) is case-sensitive. To perform a search that isn't case-sensitive, use AtC( ).
+    </remarks>
+    <seealso cref="O:XSharp.VFP.Functions.AtC">AtC Function</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.At_C">At_C Function</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.AtCC">AtCC Function</seealso>
+
+  </at>
+  <at_c>
+    <summary>This is an alias for the At() function. X# works with unicode and the difference between single byte and multi byte characters does not exist in Unicode</summary>
+    <seealso cref="O:XSharp.VFP.Functions.At">At Function</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.AtC">AtC Function</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.AtCC">AtCC Function</seealso>
+  </at_c>
+  <atc>
+    <summary>Returns the beginning numeric position of the first occurrence of a character expression or memo field within another character expression or memo field, without regard for the case of these two expressions.</summary>
+    <param name="cSearchExpression">Specifies the character expression that AtC( ) searches for in cExpressionSearched.</param>
+    <param name="cExpressionSearched">
+      Specifies the character expression cSearchExpression searches for. <br/>
+      Both cSearchExpression and cExpressionSearched can be memo fields of any size.
+    </param>
+    <param name="nOccurrence">
+      Specifies which occurrence (first, second, third, and so on) of cSearchExpression is searched for in cExpressionSearched. <br/>
+      By default, AtcC( ) searches for the first occurrence of cSearchExpression (nOccurrence = 1). Including nOccurrence lets you search for additional occurrences of cSearchExpression in cExpressionSearched.
+    </param>
+    <returns>Numeric</returns>
+    <seealso cref="O:XSharp.VFP.Functions.At">At Function</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.At_C">At_C Function</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.AtCC">AtCC Function</seealso>
+  </atc>
+  <atcc>
+    <summary>This is an alias for the AtC() function. X# works with unicode and the difference between single byte and multi byte characters does not exist in Unicode</summary>
+    <seealso cref="O:XSharp.VFP.Functions.At">At Function</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.AtC">AtC Function</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.At_C">At_C Function</seealso>
+  </atcc>
+  <cdx>
+    <summary>
+      Returns the names of the open compound index (.cdx) file that has the specified index position number.
+    </summary>
+    <param name="nIndexNumber">
+      The tables in Remarks apply to a table with a structural compound index and one or more compound indexes
+    </param>
+    <param name="uArea">
+      Specifies the work area number or alias of a table whose open compound index file names you want CDX( ) to return.<br/>
+      If you omit this, names of compound index files are returned for the table in the currently selected work area.
+    </param>
+    <returns>
+      Character
+    </returns>
+    <remarks>
+      <list type="table">
+        <listheader>
+          <term>nIndexNumber</term>
+          <description>Description</description>
+        </listheader>
+        <item>
+          <term>1</term>
+          <description>Returns the name of the structural index file (which is always the same as the name of the table).</description>
+        </item>
+        <item>
+          <term>2</term>
+          <description>Returns the first compound index file name specified in the Index clause of Use or in Set Index.</description>
+        </item>
+        <item>
+          <term>3</term>
+          <description>
+            Returns the second compound index file name, if any, and so on.
+          </description>
+        </item>
+        <item>
+          <term>Greater than the number of open .cdx files</term>
+          <description>
+            Returns the empty string.
+          </description>
+        </item>
+      </list>
+      The following apply to a table with no structural compound index and one or more compound indexes:
+      <list type="table">
+        <listheader>
+          <term>nIndexNumber</term>
+          <description>Description</description>
+        </listheader>
+        <item>
+          <term>1</term>
+          <description></description>
+        </item>
+        <item>
+          <term>2</term>
+          <description>Returns the first compound index file name specified in the Index clause of Use or in Set Index.</description>
+        </item>
+        <item>
+          <term>Greater than the number of open .cdx files</term>
+          <description>
+            Returns the empty string.
+          </description>
+        </item>
+      </list>
+      The CDX( ) function is identical to the MDX( ) function.<br/>
+      A .cdx (compound) index consists of one physical file containing many index tags. Each index tag is an index order reference for the associated table.<br/>
+      There are two types of .cdx files: standard compound index (.cdx) and structural .cdx.
+      A standard compound index (.cdx) may have a different name from its associated table and can reside in a different directory from its associated table.
+      A table can have multiple compound index files. You open a compound index with the Index clause of Use or with Set Index.<br/>
+      A structural .cdx must have the same name as its associated table and reside in the same directory. A table can have only one structural index file.
+      Structural .cdx files are automatically opened and updated when the associated table is opened with Use.<br/>
+      CDX( ) ignores any .idx (Microsoft FoxBASE+ and FoxPro 1.0 compatible index) files specified in Use or Set Index.<br/>
+      Use TAG( ) to return individual tag names contained in a .cdx, and NDX( ) to return the name of open .idx files.<br/>
+      When Set FullPath is ON, CDX( ) returns the path and name of the .cdx. When Set FullPath is OFF, CDX( ) returns the drive and name of the .cdx.
+    </remarks>
+    <example>
+      <code language="X#">
+        Close Databases
+        Open Database (HOME(2) + 'data\testdata')
+        Use customer     &amp;&amp; Open customer table
+        Clear
+        For nCount = 1 TO TAGCOUNT( )
+        IF !EMPTY(TAG(nCount))  &amp;&amp; Checks for tags in the index
+        ? CDX(nCount)     &amp;&amp; Display structural index names
+        ELSE
+        EXIT  &amp;&amp; Exit the loop when no more tags are found
+        ENDIF
+        ENDFor
+      </code>
+    </example>
+  </cdx>
+  <chrtran>
+    <summary>
+      Replaces each character in a character expression that matches a character in a second character expression with the corresponding character in a third character expression.
+    </summary>
+    <param name="cSearchIn">
+
+      Specifies the expression in which <b>ChrTran()</b> replaces characters.
+
+    </param>
+    <param name="cSearchFor">
+
+      Specifies the expression containing the characters <b>ChrTran()</b> looks for in <paramref name='cSearchIn' />.
+
+    </param>
+    <param name="cReplaceWith">
+
+      Specifies the expression containing the replacement characters.
+      If a character in <paramref name='cSearchFor' /> is found in <paramref name='cSearchIn' />, the character in <paramref name='cSearchIn' /> is
+      replaced by a character from <paramref name='cReplaceWith' /> that's in the same position in <paramref name='cReplaceWith' />
+      as the respective character in <paramref name='cSearchFor' />.
+      If <paramref name='cReplaceWith' /> has fewer characters than <paramref name='cSearchFor' />, the additional
+      characters in <paramref name='cSearchIn' /> are deleted from <paramref name='cSearchIn' />.
+      If <paramref name='cReplaceWith' /> has more characters than <paramref name='cSearchFor' />, the additional characters in cReplacementExpression are ignored.
+    </param>
+    <returns>
+      Character
+    </returns>
+    <remarks>
+
+      The difference between <b>ChrTranC()</b> and <b>ChrTran()</b> can be ignored in X# because all characters are unicode,
+      so there is no distinction between single byte and double-byte characters.
+
+
+    </remarks>
+    <example>
+       <code language="X#">
+        ? ChrTran('ABCDEF', 'ACE', 'XYZ')  &amp;&amp; Displays XBYDZF
+        ? ChrTran('ABCD', 'ABC', 'YZ')  &amp;&amp; Displays YZD
+        ? ChrTran('ABCDEF', 'ACE', 'XYZQRST')  &amp;&amp; Displays XBYDZF
+      </code>
+    </example>
+    <seealso cref="O:XSharp.VFP.Functions.ChrTranC">ChrTranC Function</seealso>
+    <seealso cref='O:XSharp.RT.Functions.StrTran'>StrTran Function</seealso>
+  </chrtran>
+  <chrtranc>
+    <summary>
+      Replaces each character in a character expression that matches a character in a second character expression with the corresponding character in a third character expression.
+    </summary>
+    <param name="cSearchIn">
+      Specifies the expression in which <b>ChrTranC()</b> replaces characters.
+    </param>
+    <param name="cSearchFor">
+      Specifies the expression containing the characters <b>ChrTranC()</b> looks for in <paramref name='cSearchIn' />.
+    </param>
+    <param name="cReplaceWith">
+
+      Specifies the expression containing the replacement characters.
+      If a character in <paramref name='cSearchFor' /> is found in <paramref name='cSearchIn' />, the character in <paramref name='cSearchIn' /> is
+      replaced by a character from <paramref name='cReplaceWith' /> that's in the same position in <paramref name='cReplaceWith' />
+      as the respective character in <paramref name='cSearchFor' />.
+      If <paramref name='cReplaceWith' /> has fewer characters than <paramref name='cSearchFor' />, the additional
+      characters in <paramref name='cSearchIn' /> are deleted from <paramref name='cSearchIn' />.
+      If <paramref name='cReplaceWith' /> has more characters than <paramref name='cSearchFor' />, the additional characters in cReplacementExpression are ignored.
+    </param>
+    <returns>
+      Character
+    </returns>
+    <remarks>
+      The difference between <b>ChrTranC()</b> and <b>ChrTran()</b> can be ignored in X# because all characters are unicode,
+      so there is no distinction between single byte and double-byte characters.
+    </remarks>
+    <seealso cref="O:XSharp.VFP.Functions.ChrTran">ChrTran Function</seealso>
+    <seealso cref='O:XSharp.RT.Functions.StrTran'>StrTran Function</seealso>
+
+  </chrtranc>
+  <cpdbf>
+    <summary>
+      Returns the code page with which an open table has been marked.
+    </summary>
+    <param name="uArea">
+      Specifies the work area number or alias .
+      Include this to specify a table open in a work area other than the current work area.
+      CpDbf( ) returns 0 if a table isn't open in the work area you specify. If a table doesn't have the alias you specify with cTableAlias,
+      X# generates an error message.
+    </param>
+    <remarks>
+      Display Structure also displays the code page with which an open table has been marked.
+      For additional information on code pages and X#'s international support, see Code Pages Supported by X# and Developing International Applications.
+    </remarks>
+  </cpdbf>
+  <dmy>
+    <summary>
+      Returns a character expression in day-month-year format (for example, 31 May 1998) from a Date or DateTime expression. The month name isn't abbreviated.
+    </summary>
+    <param name="dExpression">
+      Specifies the Date expression from which <b>DMY( )</b> returns a character string in day-month-year format.
+    </param>
+    <param name="tExpression">
+      Specifies the DateTime expression from which <b>DMY( )</b> returns a character string in day-month-year format.
+    </param>
+    <returns>
+      Character
+    </returns>
+    <remarks>
+      If Set CENTURY is OFF, <b>DMY( )</b> returns a character string in a dd-Month-yy format (for example, 16 February 98).
+      If Set CENTURY is ON, the format is dd-Month-yyyy (for example, 16 February 1998).
+    </remarks>
+    <example>
+       <code language="X#">
+        Clear
+        Set CENTURY OFF
+        ? DMY(DATE( ))
+        Set CENTURY ON
+        ? DMY(DATE( ))
+      </code>
+    </example>
+    <seealso cref="O:XSharp.VFP.Functions.MDY">MDY() Function</seealso>
+  </dmy>
+
+  <createobjectex>
+    <summary>
+      Creates an instance of a registered COM object (such as a X# Automation server) on a remote computer.
+    </summary>
+    <param name="cComputerName">
+      Specifies the remote computer on which the COM object is instantiated.<br/>
+      If cComputerName is the empty string, the COM object is instantiated on the local computer or a redirected machine as specified in the registry.<br/>
+      cComputerName supports Universal Naming Convention (UNC) names such as "\\myserver" and "myserver," and Domain System Names (DNS) names.
+    </param>
+    <param name="cIID">
+      Specifies the Interface ID GUID of cCLSID | cPROGID when you create an early bound instance of the class.
+      If you pass an empty string as cIID X# attempts to access the default interface (IID) of cCLSID | cPROGID.
+    </param>
+    <returns>
+      Object
+    </returns>
+    <remarks>
+      CreateObjectEx( ) returns an object reference to the COM object if it is successfully instantiated.
+      CreateObjectEx( ) cannot be used to instantiate X# classes such as forms – use CreateObject( ) to instantiate X# classes.
+      Note that you can only abbreviate CreateObjectEx( ) to a minimum of 13 characters, distinguishing it from the CreateObject( ) function.<br/>
+      When you call certain COM classes with CreateObject( ) they return "No such interface supported" because they do not support an IDispatch interface.
+      Using the cIID parameter you can now access these classes in your applications.<br/><br/>
+      If you pass an empty string ("") as cIID X# attempts to to get the default interface (IID) of the specified CLSID or PROGID.<br/>
+      Because it supports early binding through cIID, CreateObjectEx( ) can help improve performance by avoiding much of the overhead of IDispatch calls.<br/>
+      CreateObjectEx( ) supports creation of new early-bound objects.
+      However, it is also possible that your X# component is passed an object that you want to call via early-binding.
+      You can use the GETINTERFACE( ) support on existing COM objects.<br/><br/>
+      For additional information about using X# to create Automation servers, see Sharing Information and Adding OLE.
+    </remarks>
+    <example>
+       <code language="X#">
+        x = CreateObjectEx("excel.application","",;
+        "{000208D5-0000-0000-C000-000000000046}")
+      </code>
+      The following is a valid function call for an excel application object. It will return the excel.application default interface.
+       <code language="X#">      x = CreateObjectEx("excel.application","","")</code>
+    </example>
+  </createobjectex>
+  <descending>
+    <summary>
+      Returns a logical value that indicates whether an index tag was created with the Descending keyword
+      or whether the Descending keyword was included in Use, Set Index, or Set Order.
+    </summary>
+    <param name="uIndex">
+      Specifies the name or index number of a compound index file with CDXFileName.
+      The compound index file you specify can be the structural compound index file automatically opened with the table or an independent compound index file.<br/>
+      Specifies which index tag or index file Descending( ) tests.
+      nIndexNumber is typically an integer that starts at 1 and is increased by 1 to return additional values for each index tag.<br/>
+      If nIndexNumber is 1, a value for the master single-entry .idx index file or master index tag (if one is present) is returned.<br/>
+      As nIndexNumber increases, values for each tag in the structural compound index (if one is present) are returned. <br/>
+      The values are returned for the tags in the order in which the tags were created in the structural compound index.
+      After values for all the tags in the structural compound index are returned, values for each tag in any open independent compound indexes are then returned.
+      The values are returned from the tags in the order in which the tags are created in the independent compound indexes.<br/>
+      The empty string is returned if nIndexNumber is greater than the total number of open,
+      single-entry .idx files and structural compound and independent compound index tags.
+    </param>
+    <param name="uArea">
+      Returns values for index files or tags open in a work area other than the current work area. This specifies the work area number or table alias.<br/>
+      If no table has the alias you specify, X# generates an error message.
+    </param>
+    <returns>
+      Logical
+    </returns>
+    <remarks>
+      You can order records in a table in descending order in two ways:<br/>
+      <list type="bullet">
+        <term>You can include the Descending keyword in the Index command to create a descending order index tag in a compound .cdx.</term>
+        <term>
+          You can include the Descending keyword in Use, Set Index or Set Order to specify a descending order
+          for the master index tag or the master single-entry index (.idx) file.
+        </term>
+      </list>
+
+      Descending( ) can determine if an index tag was created in descending order. Descending( ) returns true (.T.)
+      if the index tag you specify was created with the Descending keyword.<br/>
+      Descending( ) can also determine if the master index tag or master index file is in descending order. Descending( ) returns true (.T.)
+      if the Descending keyword was included in Use, Set Index, or Set Order for the master index tag or a single-entry index (.idx) file you specify.<br/>
+      If you don't include any of the optional arguments, Descending( ) returns a value for the master index tag or master index file.
+      If you don't include any of the optional arguments and a master index tag or .idx file isn't in effect
+      (for example, you've issued Set Order TO to place the table in physical record order), Descending( ) returns false (.F.).
+    </remarks>
+    <example>
+       <code language="X#">
+        Close Databases
+        Open Database (HOME(2) + 'Data\testdata')
+        Use Customer     &amp;&amp; Open customer table
+        Clear
+        For nCount = 1 TO TAGCOUNT( )
+        IF !EMPTY(TAG(nCount))  &amp;&amp; Checks for tags in the index
+        ? TAG(nCount) + ' Descending? ' &amp;&amp; Display tag name
+        ?? Descending(nCount)  &amp;&amp; Display descending status
+        ELSE
+        EXIT  &amp;&amp; Exit the loop when no more tags are found
+        ENDIF
+        ENDFor
+      </code>
+    </example>
+  </descending>
+  <dtot>
+    <summary>
+      Returns a DateTime value from a Date expression.
+    </summary>
+    <param name="dDateExpression">
+      Specifies the Date expression from which a DateTime value is returned.
+    </param>
+    <returns>
+      DateTime
+    </returns>
+    <remarks>
+      The format of the DateTime value DToT( ) returns depends on the current SET DATE and SET MARK settings. If a century isn't supplied, the twentieth century is assumed.
+      DToT( ) adds a default time of 12:00:00 AM (if SET HOURS is 12) or 00:00:00 (if SET HOURS is 24) to the date to produce a valid DateTime value.
+    </remarks>
+    <example>
+       <code language="X#">
+        SET HOURS TO 12
+        ? DToT({^2004-02-16}) &amp;&amp; Displays 02/16/2004 12:00:00 AM
+      </code>
+    </example>
+  </dtot>
+  <fldcount>
+    <summary>
+      This function is a synonym to FCount() Function.
+    </summary>
+    <seealso cref='M:XSharp.RT.Functions.FCount' />
+    <seealso cref='M:XSharp.RT.Functions.FCount(XSharp.__Usual)' />
+  </fldcount>
+  <field>
+    <summary>
+      Returns the name of a field, referenced by number, in a table.
+    </summary>
+    <param name="uField">
+      Specifies the name of a field. This is used primarily to retrieve the actual field caption as stored
+      in a database container (DBC) when used with the nFlags parameter.<br/>
+      If the field caption is an expression (=), the expression is evaluated. Otherwise, the actual string literal is returned.
+      If the expression cannot be evaluated at run time, an error is raised, and the actual field name is returned.<br/>
+      Or<br/>
+      Specifies the field number. If nFieldNumber is 1, the name of the first field in the table is returned;<br/>
+      if nFieldNumber is 2, the name of the second field is returned, and so on. The empty string is returned if nFieldNumber is greater than the number of fields.<br/>
+      Field names are returned in upper case.
+    </param>
+    <param name="uArea">
+      Specifies the work area of the table for which <b>Field( )</b> returns field names.
+      <b>Field( )</b> returns the empty string if a table is not open in the work area you specify.
+    </param>
+    <param name="cTableAlias">
+      Specifies the alias of the table for which <b>Field( )</b> returns field names.
+      X# generates an error message if you specify a table alias that does not exist.
+    </param>
+    <param name="nFlag">
+      Specifies whether the actual field name or field caption is returned.
+    </param>
+    <returns>
+      Character data type. If you omit the optional arguments, <b>Field( )</b> returns the names of the fields in the table open in the currently selected work area.
+    </returns>
+    <remarks>
+      You can use the <b>Select( )</b> function to determine the current work area for nWorkArea. You can use the <b>Alias( )</b> function to determine
+      the alias of the table in the current work area for cTableAlias. For more information, see Select( ) Function and Alias( ) Function.<br/>
+      <list type="table">
+        <listheader>
+          <term>nFlags</term>
+          <description>Value description</description>
+        </listheader>
+        <item>
+          <term>0</term>
+          <description>
+            Return actual field name.<br/>
+            <b>Field( )</b> preserves the case of the returned field name, as long as the table is stored in a DBC.
+          </description>
+        </item>
+        <item>
+          <term>1</term>
+          <description>Return field caption. If the field caption is an expression, return its evaluated value.</description>
+        </item>
+      </list>
+    </remarks>
+    <example>
+       <code language="X#">
+        Close Databases
+        Open Database (HOME(2) + 'Data\testdata')
+        Use customer  &amp;&amp; Opens Customer table
+        Clear
+        For gnCount = 1 TO FCOUNT( )  &amp;&amp; Loop for number of fields
+        ? Field(gnCount)  &amp;&amp; Display each field
+        Next
+        ?
+        ? 'Number of fields: ' + ALLTRIM(STR(gnCount -1))
+      </code>
+    </example>
+  </field>
+  <filter>
+    <summary>
+      Returns the table filter expression specified in Set Filter.
+    </summary>
+    <param name="uArea">
+      Specifies the work area of the table for which Filter( ) returns the filter expression.<br/>
+      Filter( ) returns the empty string if a table isn't open in the work area you specify.
+      Or<br/>
+      Specifies the alias of the table for which Filter( ) returns the filter expression.<br/>
+      X# generates an error message if you specify a table alias that doesn't exist.
+    </param>
+    <returns>
+      Character
+    </returns>
+    <remarks>
+      If you omit the optional arguments, Filter( ) returns the filter expression for the table open in the currently selected work area.
+      For more information about creating a filter, see Set Filter.
+    </remarks>
+    <example>
+       <code language="X#">
+        Close Databases
+        Open Database (HOME(2) + 'Data\testdata')
+        Use customer  &amp;&amp; Opens Customer table
+        Set TALK ON
+        Set Filter TO SUBSTR(cust_id,1) = 'B'
+        Clear
+        ? Filter( )  &amp;&amp; Display filter expression
+        STORE Filter('customer') TO gcOldFilter    &amp;&amp; Save filter expression
+        Set Filter TO country = 'USA'
+        ? Filter( )  &amp;&amp; Display filter expression
+        Set Filter TO &amp;gcOldFilter    &amp;&amp; Restore filter expression
+        ? Filter( )  &amp;&amp; Display filter expression
+        LIST Fields cust_id, contact  &amp;&amp; Demonstrate filter condition
+      </code>
+    </example>
+  </filter>
+  <for>
+    <summary>
+      Returns the index filter expression, in uppercase, of an open single-entry index (.idx) file or an index tag.
+    </summary>
+    <param name="nIndexNumber">
+      Specifies the index file or tag for which the filter expression is returned. <b>For( )</b> returns filter expressions in the following order
+      as nIndexNumber increases from 1 to the total number of open single-entry files and structural compound and independent compound index tags:<br/>
+      1. Filter expressions from single-entry index files (if any are open) are returned first. The order the single-entry index files are included in Use or
+      Set Index determines the order in which the filter expressions are returned.<br/>
+      2. Filter expressions for each tag in the structural compound index (if one is present) are returned next.
+      The filter expressions are returned from the tags in the order the tags are created in the structural index.<br/>
+      3. Filter expressions for each tag in any open independent compound indexes are returned last.
+      The filter expressions are returned from the tags in the order in which the tags are created in the independent compound indexes.<br/>
+      The empty string is returned if an index or index tag is created without a For clause or if nIndexNumber is greater than the total number of open
+      single-entry files and structural compound and independent compound index tags.
+    </param>
+    <param name="uArea">
+      Specifies the work area of the table for which <b>For( )</b> returns the index filter expressions.
+      <b>For( )</b> returns the empty string if a table isn't open in the work area you specify.<br/>
+      Or<br/>
+      Specifies the alias of the table for which <b>For( )</b> returns the index filter expressions.
+      X# generates an error message if you specify a table alias that doesn't exist.
+    </param>
+    <returns>
+      Character
+    </returns>
+    <remarks>
+      If you don't include any of the optional arguments, <b>For( )</b> returns the index filter expression for the master index file or index tag.
+      If a master index file or index tag isn't in effect (for example, you've issued <b>Set Order TO</b> to place the table in physical record order),
+      <b>For( )</b> returns the empty string.<br/>
+      You can create filtered indexes in X#. If you include the optional For lExpression clause in Index, the index file acts as a filter on the table.
+      Only records that match the filter expression lExpression are available for display and access.
+      Index keys are created in the index file for just those records matching the filter expression.<br/><br/>
+      <b>Use</b> and <b>Set Index</b> both support an index file name list that makes it possible for you to open multiple index files for a table.
+      Any combination of single-entry index file names, structural compound, or independent compound index file names can be included in the index file name list.
+      <b>For( )</b> is similar to SYS(2021) and is provided for compatibility with dBASE IV.
+    </remarks>
+  </for>
+  <forcepath>
+    <summary>
+      Returns a file name with a new path name substituted for the old one.
+    </summary>
+    <param name="cFileName">
+      Specifies the file name (with or without a path or extension), which will get a new path.
+    </param>
+    <param name="cPath">
+      Specifies the new path for cFileName.
+    </param>
+    <returns>
+      Character
+    </returns>
+  </forcepath>
+  <forceext>
+    <summary>
+      Returns a string with the old file name extension replaced by a new extension.
+    </summary>
+    <param name="cFileName">
+      Specifies the file name (with or without a path or extension), which will get a new extension.
+    </param>
+    <param name="cExtension">
+      Specifies the new extension (without a period) for cFileName.
+    </param>
+    <returns>
+      Character
+    </returns>
+  </forceext>
+  <getwordcount>
+    <summary>
+      Counts the words in a string.
+    </summary>
+    <param name="cString">
+
+      Specifies the string whose words will be counted.
+
+    </param>
+    <param name="cDelimiters">
+
+      Optional. Specifies one or more optional characters used to separate words in cString. The default delimiters are space, tab, carriage return, and line feed. Note that <b>GetWordCount( )</b> uses each of the characters in cDelimiters as individual delimiters, not the entire string as a single delimiter.
+    </param>
+    <returns>
+      Numeric
+    </returns>
+    <remarks>
+
+      <b>GetWordCount( )</b> by default assumes that words are delimited by spaces or tabs. If you specify another character as delimiter, this function ignores spaces and tabs and uses only the specified character.
+      If you use "AAA aaa, BBB bbb, CCC ccc." as the target string for <b>GetWordCount( ),</b> you can get all the following results.
+       <code language="X#">
+        cString = "AAA aaa, BBB bbb, CCC ccc."
+        ? GetWordCount(cString)               &amp;&amp; 6 - character groups, delimited by " "
+        ? GetWordCount(cString, ",")               &amp;&amp; 3 - character groups, delimited by ","
+        ? GetWordCount(cString, ".")               &amp;&amp; 1 - character group, delimited by "."
+      </code>
+    </remarks>
+  </getwordcount>
+  <getwordnum>
+    <summary>
+      Returns a specified word from a string.
+    </summary>
+    <param name="cString">
+
+      Specifies the string to be evaluated
+
+    </param>
+    <param name="nIndex">
+
+      Specifies the index position of the word to be returned. For example, if nIndex is 3, <b>GetWordNum( )</b> returns the third word (if cString contains three or more words).
+
+    </param>
+    <param name="cDelimiters">
+
+      Optional. Specifies one or more optional characters used to separate words in cString. The default delimiters are space, tab, carriage return, and line feed. Note that <b>GetWordNum( )</b> uses each of the characters in cDelimiters as individual delimiters, not the entire string as a single delimiter.
+    </param>
+    <returns>
+      Character
+    </returns>
+    <remarks>
+      Returns the word at the position specified by nIndex in the target string, cString. If cString contains fewer than nIndex words, <b>GetWordNum( )</b> returns an empty string.
+    </remarks>
+  </getwordnum>
+  <gomonth>
+    <param name="dExpression">
+      Specifies a date expression for which GoMonth( ) returns the date.
+    </param>
+    <param name="tExpression">
+      Specifies a date/time expression for which GoMonth( ) returns the date.
+    </param>
+    <param name="nNumberOfMonths">
+      Specifies the number of months from the date or date/time. If nNumberOfMonths is positive,
+      GoMonth( ) returns a date that is nNumberOfMonths months after the date or date/time.
+      If nNumberOfMonths is negative, GoMonth( ) returns a date that is nNumberOfMonths months before the date or date/time.
+      For example, -1 means -31 days.
+    </param>
+    <summary>
+      Returns the date that is a specified number of months before or after a given Date or Date/Time expression.
+    </summary>
+    <returns>
+      Date
+    </returns>
+    <remarks>
+      GoMonth( ) does not support dates earlier than 1753.
+    </remarks>
+    <example>
+       <code language="X#">
+        Set CENTURY ON
+        gdDeadLine = GoMonth({^1998-02-16}, 5)
+        Clear
+        ? gdDeadLine  &amp;&amp; Displays 07/16/1998
+        ? GoMonth({^1998-12-31}, 2)  &amp;&amp; Displays 02/28/1999
+        ? GoMonth({^1998-12-31}, -2)  &amp;&amp; Displays 10/31/1998
+      </code>
+    </example>
+    <seealso cref='O:XSharp.RT.Functions.CMonth'>CMonth( ) Function</seealso>
+    <seealso cref='O:XSharp.RT.Functions.Date'>Date( ) Function</seealso>
+    <seealso cref='O:XSharp.RT.Functions.Today'>Today( ) Function</seealso>
+    <seealso cref='O:XSharp.RT.Functions.Month'>Month( ) Function</seealso>
+
+  </gomonth>
+
+  <hour>
+    <summary>
+      Returns the hour portion from a DateTime expression.
+    </summary>
+    <param name="tExpression">
+      Specifies a DateTime expression from which Hour( ) returns the hour.
+    </param>
+    <returns>
+      Numeric
+    </returns>
+    <remarks>
+      Hour( ) returns a numeric value based on a 24 hour format, and is not affected by the current setting of SET HOURS. For example, if SET HOURS is 12 or 24, the following command returns 13:
+       <code language="X#">? Hour({^1998-02-16 1:00p})</code>
+    </remarks>
+    <example>
+       <code language="X#">
+        CLEAR
+        ? Hour(DateTime( ))
+        ? Hour({^1998-02-16 10:42a})  &amp;&amp; Displays 10
+      </code>
+    </example>
+  </hour>
+  <icase>
+    <summary>
+      Evaluates the results from a list of conditions (upto 100 pairs are supported).
+    </summary>
+    <param name="lCondition">
+      Specifies a condition as a logical expression to evaluate.<br/>
+      If lCondition evaluates to False (.F.), <b>ICase( )</b> continues to evaluate the next condition and returns the corresponding eResult for that
+      condition if it evaluates to True (.T.). <br/>
+      If lCondition evaluates to null (.NULL.), X# treats lCondition as if it evaluated to False (.F.).
+    </param>
+    <param name="eResult">Specifies a result to return if lCondition evaluates to True (.T.).</param>
+    <param name="lCondition2">
+      Specifies a condition as a logical expression to evaluate.<br/>
+      If lCondition2 evaluates to False (.F.), <b>ICase( )</b> continues to evaluate the next condition and returns the corresponding eResult for that
+      condition if it evaluates to True (.T.). <br/>
+      If lCondition evaluates to null (.NULL.), X# treats lCondition as if it evaluated to False (.F.).
+    </param>
+    <param name="eResult2">Specifies a result to return if lCondition2 evaluates to True (.T.).</param>
+    <param name="eOtherwiseResult">Contains the result returned if all conditions evaluate to False (.F.).</param>
+    <returns>
+      <b>ICase( )</b> returns the first eResult as soon as lCondition evaluates to True (.T.).
+      If all conditions evaluate to False (.F.), <b>ICase( )</b> returns eOtherwiseResult.
+      If eOtherwiseResult is omitted, and all conditions evaluate to False (.F.), <b>ICase( )</b> returns null (.NULL.).
+    </returns>
+    <remarks>
+      You must always pass a set of two parameters to <b>ICase( )</b>. <br/>
+      If you pass an odd number of parameters, the last parameter is treated as the return value for eOtherwiseResult.<br/>
+      You can pass up to 100 pairs of parameters for <b>ICase( )</b>.
+      If you use a long <b>ICase( )</b> expression in a filter expression, such as in a <b>FOR</b> or <b>WHERE</b> clause,
+      make sure that <b>Sys(3055)</b> is set to an appropriate complexity level to avoid generating an error. <br/>
+      For more information, see Sys(3055) - FOR and WHERE Clause Complexity.
+    </remarks>
+    <example>
+      The following example demonstrates different scenarios using <b>ICase( )</b> to evaluate expressions and returning certain values based on the results of those expressions.
+      The following line of code displays "First is true" because the first expression evaluates to True (.T.).
+       <code language="X#">? ICase(1+1=2,"First is true",1+1=3,"Second is false","None are true")</code>
+      The following line of code displays "Second is true" because the first expression evaluates to False (.F.), but the second expression evaluates to True (.T.).
+       <code language="X#">? ICase(1+2=2,"First is false",1+2=3,"Second is true","None are true")</code>
+      The following line of code displays "None are true", which is the last result specified, because the first and second expressions evaluate to False (.F.).
+       <code language="X#">? ICase(1+2=2,"First is false",1+1=3,"Second is false","None are true")</code>
+    </example>
+  </icase>
+  <idxcollate>
+    <summary>
+      Returns the collating sequence for an index or index tag.
+    </summary>
+    <param name="cCDXFileName">
+
+      Specifies the name of the compound index file. The compound index file you specify can be the structural compound index file automatically opened with the table or an independent compound index file.
+
+    </param>
+    <param name="nIndexNumber">
+
+      Specifies the index or index tag for which <b>IDXCOLLATE( )</b> returns the collating sequence. <b>IDXCOLLATE( )</b> returns the collating sequence for indexes and index tags in the following order as nIndexNumber increases from 1 to the total number of open index files and index tags:
+      Collating sequences for single-entry .idx index files (if any are open) are returned first. The order in which the single-entry index files are included in <b>Use</b> or <b>Set Index</b> determines how the collating sequences are returned.
+      Collation sequences for tags in the structural compound index (if one is present) are returned next. The collating sequences are returned for the tags in the order in which the tags are created in the structural compound index.
+      Collating sequences for tags in any open independent compound indexes are returned last. The collation sequences are returned for the tags in the order in which the tags are created in the independent compound indexes.
+      The empty string is returned if nIndexNumber is greater than the total number of open single-entry .idx files and structural compound and independent compound index tags.
+
+    </param>
+    <param name="nWorkArea">
+
+      Specifies the work area of the table for which <b>IDXCOLLATE( )</b> returns index file and index tag collating sequences.
+      <b>IDXCOLLATE( )</b> returns the empty string if a table isn't open in the work area you specify.
+
+    </param>
+    <param name="cTableAlias">
+
+      Specifies the alias of the table for which <b>IDXCOLLATE( )</b> returns index file and index tag collation sequences.
+      X# generates an error message if you specify a table alias that doesn't exist.
+    </param>
+    <returns>
+      Character
+    </returns>
+    <remarks>
+
+      <b>IDXCOLLATE( )</b> can be used to return the collating sequence for each tag in multiple-entry compound index files, allowing you to completely delete an index file and rebuild it correctly, using a series of <b>Set COLLATE</b> and <b>Index</b> commands.
+      Note that IDXCOLLATE( ) is not required for the proper functioning of <b>REIndex</b>, because the collation sequence information is present in existing indexes and index tags.
+      For additional information about X#'s international support, see Developing International Applications.
+    </remarks>
+    <example>
+       <code language="X#">
+        Close Databases
+        Open Database (HOME(2) + 'Data\testdata')
+        Use Customer     &amp;&amp; Open Customer table.
+        Clear
+        For nCount = 1 TO TAGCOUNT( )
+        IF !EMPTY(TAG(nCount))  &amp;&amp; Checks for tags in the index.
+        ? TAG(nCount) + ' '  &amp;&amp; Display tag name.
+        ?? IDXCOLLATE(nCount)  &amp;&amp; Display collation sequence.
+        ELSE
+        EXIT  &amp;&amp; Exit the loop when no more tags are found.
+        ENDIF
+        ENDFor
+      </code>
+    </example>
+  </idxcollate>
+
+  <iscolor>
+    <summary>
+      Determines whether a computer can display color.
+    </summary>
+    <returns>
+      IsColor( )Return Value
+      Logical
+    </returns>
+    <remarks>
+      IsColor( ) returns true (.T.) if the computer has color capability (whether or not a color monitor is actually being used).
+      If the computer doesn't provide color support, IsColor( ) returns false (.F.).
+    </remarks>
+  </iscolor>
+  <isflocked>
+    <summary>
+      Returns the table lock status.
+    </summary>
+    <param name="nWorkArea">
+
+      Specifies the work area number of the table for which the lock status is returned. If you omit cTableAlias and nWorkArea, the lock status is returned for the table open in the current work area.
+
+    </param>
+    <param name="cTableAlias">
+
+      Specifies the alias of the table for which the lock status is returned. An "Alias not found" error message is generated if you specify an alias of a table that isn't open.
+    </param>
+    <returns>
+      Logical
+    </returns>
+    <remarks>
+      ISFLOCKED( ) returns a logical true (.T.) if the table is locked; otherwise a logical false (.F.) is returned. ISFLOCKED( ) is similar to SYS(2011), but returns a logical value which does not require localization for international applications.
+      ISFLOCKED() only returns .T. at the workstation that applied the file lock.
+    </remarks>
+  </isflocked>
+
+  <ismouse>
+    <summary>
+      Returns true (.T.) if mouse hardware is present.
+    </summary>
+    <remarks>
+      IsMouse( )Remarks
+      IsMouse( ) returns true (.T.) if mouse hardware is present; otherwise it returns false (.F.).
+    </remarks>
+    <example>
+       <code language="X#">
+        CLEAR
+        ? 'Mouse hardware present? '
+        ?? IsMouse( )
+      </code>
+    </example>
+  </ismouse>
+  <isreadonly>
+    <summary>
+      Determines whether a table or database is opened read-only.
+    </summary>
+    <returns>
+      Logical
+    </returns>
+    <remarks>
+      ISREADONLY( ) returns true (.T.) if a table is opened read-only; otherwise, ISREADONLY( ) returns false (.F.).
+      You can open a table read-only by including the NOUPDATE option when opening the table with Use, by checking the Read Only check box when opening the table from the Open dialog box, or by assigning MS-DOS read-only attributes to the table.
+      You cannot pass a non-current database alias to the ISREADONLY( ) function. To ensure that a database is present, you can use code such as the following:
+       <code language="X#">!EMPTY(DBC())</code>
+      A cursor created with the Select – SQL command is always read-only.
+    </remarks>
+    <example>
+       <code language="X#">
+        Close Databases
+        Open Database (HOME(2) + 'data\testdata')
+        Use customer    NOUPDATE  &amp;&amp; Open customer table read-only
+        Clear
+        ? ISREADONLY('customer')  &amp;&amp; Returns .T.
+      </code>
+    </example>
+  </isreadonly>
+  <isrlocked>
+    <summary>
+      Returns the record lock status.
+    </summary>
+    <param name="nRecordNumber">
+
+      Specifies the number of the record for which the lock status is returned. If nRecordNumber is omitted, the record lock status is returned for the current record.
+
+    </param>
+    <param name="nWorkArea">
+
+      Specifies the work area number of the table for which the record lock status is returned. If you omit cTableAlias and nWorkArea, the record lock status is returned for the table open in the current work area.
+
+    </param>
+    <param name="cTableAlias">
+
+      Specifies the alias of the table for which the record lock status is returned.
+    </param>
+    <returns>
+      Logical
+    </returns>
+    <remarks>
+      ISRLOCKED( ) returns a logical true (.T.) if the record is locked by the current application; otherwise a logical false (.F.) is returned.
+      ISRLOCKED( ) only returns .T. in the data session that applied the record lock.
+    </remarks>
+  </isrlocked>
+
   <justcommon>
     <seealso cref='M:XSharp.VFP.Functions.AddBs(System.String)' />
     <seealso cref='M:XSharp.VFP.Functions.JustDrive(System.String)' />
@@ -35,7 +1002,6 @@
       </code>
     </example>
   </justcommon>
-
   <justdrive>
     <summary>Returns the drive letter from a complete path.</summary>
   </justdrive>
@@ -51,136 +1017,62 @@
   <juststem>
     <summary>Returns the stem name (the file name before the extension) from a complete path and file name.</summary>
   </juststem>
-  <at>
-    <summary>Returns the beginning numeric position of the first occurrence of a character expression or memo field within another character expression or memo field, counting from the leftmost character.</summary>
-    <param name="cSearchExpression">Specifies the character expression that At( ) searches for in cExpressionSearched.</param>
-    <param name="cExpressionSearched">Specifies the character expression cSearchExpression searches for.<br/>Both cSearchExpression and cExpressionSearched can be memo fields of any size.</param>
-    <param name="nOccurrence">Specifies which occurrence (first, second, third, and so on) of cSearchExpression is searched for in cExpressionSearched. By default, At( ) searches for the first occurrence of cSearchExpression (nOccurrence = 1). Including nOccurrence lets you search for additional occurrences of cSearchExpression in cExpressionSearched. AT_C( ) returns 0 if nOccurrence is greater than the number of times cSearchExpression occurs in cExpressionSearched.</param>
-    <returns>Numeric</returns>
-    <remarks>
-      At( ) searches the second character expression for the first occurrence of the first character expression. It then returns an integer indicating the position of the first character in the character expression found. If the character expression isn't found, At( ) returns 0.<br/>
-      The search performed by At( ) is case-sensitive. To perform a search that isn't case-sensitive, use AtC( ).
-    </remarks>
-  </at>
-  <at_c>
-    <summary>This is an alias for the At() function. X# works with unicode and the difference between single byte and multi byte characters does not exist in Unicode</summary>
-    <seealso cref="M:XSharp.VFP.Functions.At(System.String,System.String,System.UInt32)">At</seealso>
-  </at_c>
-  <atc>
-    <summary>Returns the beginning numeric position of the first occurrence of a character expression or memo field within another character expression or memo field, without regard for the case of these two expressions.</summary>
-    <param name="cSearchExpression">Specifies the character expression that AtC( ) searches for in cExpressionSearched.</param>
-    <param name="cExpressionSearched">Specifies the character expression cSearchExpression searches for. <br/>
-      Both cSearchExpression and cExpressionSearched can be memo fields of any size.</param>
-    <param name="nOccurrence">
-      Specifies which occurrence (first, second, third, and so on) of cSearchExpression is searched for in cExpressionSearched. <br/>
-      By default, AtcC( ) searches for the first occurrence of cSearchExpression (nOccurrence = 1). Including nOccurrence lets you search for additional occurrences of cSearchExpression in cExpressionSearched.</param>
-    <returns>Numeric</returns>
-  </atc>
-  <atcc>
-    <summary>This is an alias for the AtC() function. X# works with unicode and the difference between single byte and multi byte characters does not exist in Unicode</summary>
-    <seealso cref="M:XSharp.VFP.Functions.AtC(System.String,System.String,System.UInt32)">AtC</seealso>
-  </atcc>
-  <dtot>
+  <key>
     <summary>
-      Returns a DateTime value from a Date expression.
+      Returns the index key expression for an index tag or index file.
     </summary>
-    <param name="dDateExpression">
-      Specifies the Date expression from which a DateTime value is returned.
+    <param name="CDXFileName">
+
+      Specifies the name of a compound index file. KEY( ) returns the index key expressions of the .cdx file's index tag. The compound index file you specify can be the structural compound index file automatically opened with the table, or it can be an independent compound index file.
+
+    </param>
+    <param name="nIndexNumber">
+
+      Specifies which index key expression to return.
+      Use and Set Index both support an index file list that lets you open multiple indexes for a table. Any combination of single-entry .idx index files, structural compound index files, or independent compound index files can be included in the index file list.
+      The numeric expression nIndexNumber specifies which index expression to return from the open index files. KEY( ) returns index expressions from open index files in the following order as nIndexNumber increases from 1 to the total number of open single-entry .idx files and structural compound and independent compound index tags:
+      Index expressions from single-entry .idx index files (if any are open) are returned first. The order in which the single-entry index files are included in Use or Set Index determines how the index expressions are returned.
+      Index expressions for each tag in the structural compound index (if one is present) are returned next. The index expressions are returned from the tags in the order in which the tags are created in the structural compound index.
+      Index expressions for each tag in any open independent compound indexes are returned last. The index expressions are returned from the tags in the order in which the tags are created in the independent compound indexes.
+      The empty string is returned if nIndexNumber is greater than the total number of open single-entry .idx files and structural compound and independent compound index tags.
+
+    </param>
+    <param name="nWorkArea">
+
+      Specifies the work area number of the table whose index key expressions you want KEY( ) to return.
+      If a table isn't open in the work area you specify, KEY( ) returns the empty string.
+
+    </param>
+    <param name="cTableAlias">
+
+      Specifies the alias of the table whose index key expressions you want KEY( ) to return.
+      If no table has the alias you specify, X# generates an error message.
+      If you omit nWorkArea and cTableAlias, the index key expressions are returned for the table open in the current work area.
     </param>
     <returns>
-      DateTime
+      Character
     </returns>
     <remarks>
-      The format of the DateTime value DToT( ) returns depends on the current SET DATE and SET MARK settings. If a century isn't supplied, the twentieth century is assumed.
-      DToT( ) adds a default time of 12:00:00 AM (if SET HOURS is 12) or 00:00:00 (if SET HOURS is 24) to the date to produce a valid DateTime value.
+      An index key expression is specified when an index tag or index file is created with Index. The index key expression determines how a table is displayed and accessed when the index tag or index file is opened as the master controlling index tag or file.
+      For more information on creating index tags, index files, and index key expressions, see Index.
     </remarks>
     <example>
        <code language="X#">
-        SET HOURS TO 12
-        ? DToT({^2004-02-16}) &amp;&amp; Displays 02/16/2004 12:00:00 AM
+        Close Databases
+        Open Database (HOME(2) + 'Data\testdata')
+        Use Customer     &amp;&amp; Open customer table
+        Clear
+        For nCount = 1 TO TAGCOUNT( )
+        IF !EMPTY(TAG(nCount))  &amp;&amp; Checks for tags in the index
+        ? TAG(nCount) + ' '  &amp;&amp; Display tag name
+        ?? KEY(nCount)  &amp;&amp; Display index expression
+        ELSE
+        EXIT  &amp;&amp; Exit the loop when no more tags are found
+        ENDIF
+        ENDFor
       </code>
     </example>
-  </dtot>
-  <hour>
-    <summary>
-      Returns the hour portion from a DateTime expression.
-    </summary>
-    <param name="tExpression">
-      Specifies a DateTime expression from which Hour( ) returns the hour.
-    </param>
-    <returns>
-      Numeric
-    </returns>
-    <remarks>
-      Hour( ) returns a numeric value based on a 24 hour format, and is not affected by the current setting of SET HOURS. For example, if SET HOURS is 12 or 24, the following command returns 13:
-       <code language="X#">? Hour({^1998-02-16 1:00p})</code>
-    </remarks>
-    <example>
-       <code language="X#">
-        CLEAR
-        ? Hour(DateTime( ))
-        ? Hour({^1998-02-16 10:42a})  &amp;&amp; Displays 10
-      </code>
-    </example>
-  </hour>
-  <minute>
-    <summary>
-      Returns the minute portion from a DateTime expression.
-    </summary>
-    <param name="tExpression">
-      Specifies the DateTime expression from which the minute portion is returned.
-    </param>
-    <returns>
-      Numeric
-    </returns>
-    <example>
-       <code language="X#">
-        CLEAR
-        ? Minute(DateTime( ))
-        ? Minute({^1998-02-16 10:42a})  &amp;&amp; Displays 42
-      </code>
-    </example>
-  </minute>
-  <sec>
-    <summary>
-      Returns the seconds portion from a DateTime expression.
-    </summary>
-    <param name="tExpression">
-      Specifies the DateTime expression from which SEC( ) returns the second. If tExpression contains only a date and not a time, X# adds a default time of 12:00:00 AM (if SET HOURS is 12) or 00:00:00 (if SET HOURS is 24) to tExpression to produce a valid DateTime value.
-    </param>
-    <returns>
-      Numeric
-    </returns>
-    <example>
-       <code language="X#">
-        CLEAR
-        ? SEC(DateTime( ))
-        ? SEC({^2004-02-16 10:42:16AM})  &amp;&amp; Displays 16
-      </code>
-    </example>
-  </sec>
-  <ttod>
-    <summary>
-      Returns a Date value from a DateTime expression.
-    </summary>
-    <param name="tExpression">
-      Specifies a date and time expression from which TToD( ) returns a Date value. tExpression must evaluate to a valid DateTime. If tExpression contains only a time, X# adds the default date of 12/30/1899 to tExpression and returns this default date.
-    </param>
-    <returns>
-      Date
-    </returns>
-    <example>
-       <code language="X#">
-        STORE DateTime( ) TO gtDtime  &amp;&amp; Creates a Datetime type memory variable
-        CLEAR
-        ? "gtDtime is type: "
-        ?? Type('gtDtime')  &amp;&amp; Displays T, Datetime type value
-        gtDtime = TToD(gtDtime)     &amp;&amp;  Converts gtDtime to a date value
-        ? "gtDtime is now type: "
-        ?? Type('gtDtime')  &amp;&amp; Displays D, character type value
-      </code>
-    </example>
-  </ttod>
+  </key>
   <leftc>
     <summary>
       Returns a specified number of characters from a character expression, starting with the leftmost character.
@@ -237,6 +1129,554 @@
       This function is useful for manipulating double-byte character sets for languages such as Hiragana and Katakana.
     </remarks>
   </likec>
+  <mdx>
+    <summary>
+      Returns the name of the open .cdx compound index file that has the specified index position number.
+    </summary>
+    <param name="nIndexNumber">
+
+      Specifies which compound index file name to return. If the table has a structural compound index file and nIndexNumber is 1, the name of the structural compound index file (which is always the same as the name of the table) is returned. If nIndexNumber is 2, the name of the first compound index file specified with Use or Set Index is returned. If nIndexNumber is 3, the second compound index file name is returned, and so on. If nIndexNumber is greater than the number of open compound index files, an empty string is returned.
+      If the table doesn't have a structural compound index file and nIndexNumber is 1, the name of the first compound index file specified with Use or Set Index is returned. If nIndexNumber is 2, the second compound index file name is returned, and so on. If nIndexNumber is greater than the number of open compound index files, an empty string is returned.
+
+    </param>
+    <param name="nWorkArea">
+
+      Specifies the work area number for compound index files open in work areas other than the current one. If you omit this optional argument, names of compound index files are returned for the current work area.
+
+    </param>
+    <param name="cTableAlias">
+
+      Specifies the table alias for compound index files open in work areas other than the current one. If you omit this optional argument, names of compound index files are returned for the current work area.
+    </param>
+    <returns>
+      Character
+    </returns>
+    <remarks>
+      MDX( ) is identical to CDX( ).
+      Index files can be opened for a table with the Index clause of the Use command or with Set Index. A structural compound index file is automatically opened with its table. MDX( ) ignores any .idx index files specified with Use or with Set Index.
+      Use TAG( ) to return tag names from a compound index file; use NDX( ) to return the name of an open .idx index file.
+      In X# for Windows, when Set FullPath is ON, MDX( ) returns the path to the .cdx file with the .cdx file name. When Set FullPath is OFF, MDX( ) returns the drive the .cdx file resides on with the .cdx file name.
+    </remarks>
+  </mdx>
+  <mdy>
+    <summary>
+      Returns the specified date or datetime expression in month-day-year format with the name of the month spelled out.
+    </summary>
+    <param name="dExpression">
+      Specifies the date expression to return in month-day-year format.
+    </param>
+    <param name="tExpression">
+      Specifies the datetime expression to return in month-day-year format.
+    </param>
+    <returns>
+      Character
+    </returns>
+    <remarks>
+      If Set CENTURY is OFF, the character expression is returned in a month dd, yy format. If Set CENTURY is ON, the format is month dd, yyyy.
+    </remarks>
+    <example>
+       <code language="X#">
+        Set CENTURY OFF
+        Clear
+        ? Longdate({^1998-02-16})  &amp;&amp; Displays Monday, February 16, 98
+        Set CENTURY ON
+        ? Longdate({^1998-02-16})  &amp;&amp; Displays Monday, February 16, 1998
+        *** LongDate ***
+        FUNCTION longdate
+        PARAMETERS gdDate
+        RETURN CDOW(gdDate) + ', ' + MDY(gdDate)
+      </code>
+    </example>
+    <seealso cref="O:XSharp.VFP.Functions.DMY">DMY() Function</seealso>
+  </mdy>
+
+  <messagebox>
+    <summary>
+      Displays a user-defined dialog box.
+    </summary>
+    <param name="eMessageText">
+      Specifies the text that appears in the dialog box. You can also specify any other value instead of <paramref name="eMessageText" />.
+      The runtime will convert the value to a string before displaying it. 
+    </param>
+    <param name="nDialogBoxType">
+      Specifies the buttons and icons that appear in the dialog box, the default button when the dialog box is displayed, and the behavior of the dialog box.
+      See the table in the remarks section for more information.
+    </param>
+    <param name="cTitleBarText">
+      Specifies the text that appears in the title bar of the dialog box. If you omit <paramref name="cTitleBarText" />, the name of your program appears in the title bar.
+    </param>
+    <param name="nTimeOut">
+      Specifies the number of milliseconds X# displays <paramref name="eMessageText" /> without input from the keyboard or the mouse before clearing <paramref name="eMessageText" />. 
+      You can specify any valid timeout value. A value of less than 1 never times out until user enters input and behaves the same as omitting the nTimeout parameter.
+    </param>
+    <returns>
+      Numeric data type. <b>MessageBox( )</b> returns a value that indicates which button was chosen in the dialog box. 
+      The following table lists the values <b>MessageBox( )</b> returns for each button.
+      <list type="table">
+        <listheader>
+          <term>Value</term>
+          <term>Defined constant</term>
+          <description>Description</description>
+        </listheader>
+        <item>
+          <term>1 </term>
+          <description>IDOK</description>
+          <description>OK</description>
+        </item>
+        <item>
+          <term>2 </term>
+          <description>IDCANCEL</description>
+          <description>Cancel</description>
+        </item>
+        <item>
+          <term>3 </term>
+          <description>IDABORT</description>
+          <description>Abort</description>
+        </item>
+        <item>
+          <term>4 </term>
+          <description>IDRETRY</description>
+          <description>Retry</description>
+        </item>
+        <item>
+          <term>5 </term>
+          <description>IDIGNORE</description>
+          <description>Ignore</description>
+        </item>
+        <item>
+          <term>6 </term>
+          <description>IDYES</description>
+          <description>Yes</description>
+        </item>
+        <item>
+          <term>7 </term>
+          <description>IDNO</description>
+          <description>No</description>
+        </item>
+      </list>
+      In dialog boxes with a Cancel button, pressing Esc to exit the dialog box returns the same value (2) as choosing Cancel.
+      <b>MessageBox( )</b> returns a value of -1 when a timeout occurs.
+    </returns>
+    <remarks>
+      In the following tables, the dialog box button values 0 to 5 specify the buttons that appear in the dialog box.
+      The icon values 16, 32, 48, and 64 specify the icon that appears in the dialog box.
+      The default values 0, 256, and 512 specify which button in the dialog box is the default button.
+      The default button is selected when the dialog box is displayed.
+      Omitting nDialogBoxType is identical to specifying a value of 0 for nDialogBoxType.
+
+      <list type="table">
+        <listheader>
+          <term>Value</term>
+          <term>Defined constant</term>
+          <description>Description</description>
+        </listheader>
+        <item>
+          <term>0 </term>
+          <description>MB_OK</description>
+          <description> OK button only</description>
+        </item>
+        <item>
+          <term>1 </term>
+          <description>MB_OKCANCEL</description>
+          <description>OK and Cancel buttons</description>
+        </item>
+        <item>
+          <term>2 </term>
+          <description>MB_ABORTRETRYIGNORE</description>
+          <description>Abort, Retry, and Ignore buttons</description>
+        </item>
+        <item>
+          <term>3 </term>
+          <description>MB_YESNOCANCEL</description>
+          <description>Yes, No, and Cancel buttons</description>
+        </item>
+        <item>
+          <term>4 </term>
+          <description>MB_YESNO</description>
+          <description>Yes and No buttons</description>
+        </item>
+        <item>
+          <term>5 </term>
+          <description>MB_RETRYCANCEL</description>
+          <description>Retry and Cancel buttons</description>
+        </item>
+        <item>
+          <term>16 </term>
+          <description>MB_ICONSTOP</description>
+          <description>Stop sign</description>
+        </item>
+        <item>
+          <term>32 </term>
+          <description>MB_ICONQUESTION</description>
+          <description>Question mark</description>
+        </item>
+        <item>
+          <term>48 </term>
+          <description>MB_ICONEXCLAMATION</description>
+          <description>Exclamation point</description>
+        </item>
+        <item>
+          <term>64 </term>
+          <description>MB_ICONINFORMATION</description>
+          <description>Information (i) icon</description>
+        </item>
+        <item>
+          <term>0 </term>
+          <description>MB_DEFBUTTON1</description>
+          <description>First button</description>
+        </item>
+        <item>
+          <term>256 </term>
+          <description>MB_DEFBUTTON2</description>
+          <description>Second button</description>
+        </item>
+        <item>
+          <term>512 </term>
+          <description>MB_DEFBUTTON3</description>
+          <description>
+            Third button
+          </description>
+        </item>
+      </list>
+
+      nDialogBoxType can be the sum of up to three values, one value from each of the preceding tables. 
+      For example, if nDialogBoxType is 290 (2+32+256), the specified dialog box has the following characteristics: <br/>
+      
+      - Abort, Retry, and Ignore buttons.<br/>
+      - The message box displays the question mark icon.<br/>
+      - The second button, Retry, is the default.<br/>
+      <p/>
+      Using defined constants such as MB_ABORTRETRYIGNORE + MB_ICONQUESTION + MB_DEFBUTTON2 can be more readable than 2 + 32 + 256.
+      The question mark icon is no longer recommended, because it does not clearly represent a specific type of message and because 
+      the phrasing of a message as a question could apply to any message type. In addition, users could confuse the message symbol 
+      question mark with Help Information. Therefore, it is not recommended to use the question mark symbol in your message boxes. 
+      The system continues to support inclusion only for backwards compatibility.
+      <p/>
+      The <b>MessageBox( )</b> function has several overloads based on the parameter types that you pass. 
+      The first parameter is required and is always eMessageText. 
+      However, the optional second parameter can be nDialogBoxType if the type is <b>Numeric</b> or cTitleBarText if type is <b>Character</b>. 
+      The nTimeout parameter is always assumed for the second optional numeric parameter passed. Valid examples include:
+       <code language="X#">
+        MessageBox("HELLO","MyTitle",68,6000)
+        MessageBox("HELLO",68,"MyTitle",6000)
+        MessageBox("HELLO",68,6000)
+        MessageBox("HELLO",68,6000,"MyTitle")
+      </code>
+    </remarks>
+    <example>
+       <code language="X#">
+        eMessageTitle = 'My Application'
+        eMessageText = 'Record not found. Would you like to search again?'
+        nDialogType = 4 + 16 + 256
+        *  4 = Yes and No buttons
+        *  16 = Stop sign icon
+        *  256 = Second button is default
+        nAnswer = MessageBox(eMessageText, nDialogType, eMessageTitle)
+        DO CASE
+        CASE nAnswer = 6
+        WAIT WINDOW 'You chose Yes'
+        CASE nAnswer = 7
+        WAIT WINDOW 'You chose No'
+        ENDCASE
+      </code>
+    </example>
+  </messagebox>
+  <minute>
+    <summary>
+      Returns the minute portion from a DateTime expression.
+    </summary>
+    <param name="tExpression">
+      Specifies the DateTime expression from which the minute portion is returned.
+    </param>
+    <returns>
+      Numeric
+    </returns>
+    <example>
+       <code language="X#">
+        CLEAR
+        ? Minute(DateTime( ))
+        ? Minute({^1998-02-16 10:42a})  &amp;&amp; Displays 42
+      </code>
+    </example>
+  </minute>
+  <mton>
+    <summary>
+      Returns a Numeric value from a Currency expression.
+    </summary>
+    <param name="mExpression">
+
+      Specifies a Currency expression whose value MToN( ) returns. mExpression must evaluate to a valid Currency value or X# generates an error.
+      Currency values are created by placing a dollar sign ($) prefix immediately before a Numeric value.
+    </param>
+    <returns>
+      Numeric type. MToN( ) returns a value of Numeric type with four decimal places.
+    </returns>
+    <example>
+       <code language="X#">
+        STORE $24.95 TO gyMoney  &amp;&amp; Creates a currency type memory variable
+        CLEAR
+        ? "gyMoney is type: "
+        ?? Type('gyMoney')  &amp;&amp; Displays Y, currency type value
+        gyMoney = MToN(gyMoney)     &amp;&amp;  Converts gyMoney to a numeric value
+        ? "gyMoney is now type: "
+        ?? Type('gyMoney')  &amp;&amp; Displays N, numeric type value
+      </code>
+    </example>
+    <seealso cref='M:XSharp.VFP.Functions.NToM(XSharp.__Float)' />
+  </mton>
+  <ndx>
+    <summary>
+      Returns the name of an open index (.IDX) file for the current or specified table.
+    </summary>
+    <param name="nIndexNumber">
+
+      Specifies which .idx file name to return. Use and Set Index both support an index file list that makes it possible for you to open .idx files for a table. The order of the file names in this index file list determines which .idx file name NDX( ) returns. For example, if nIndexNumber is 1, NDX( ) returns the name of the first .idx file in the index file list; if nIndexNumber is 2, NDX( ) returns the second .idx file name, and so on. NDX( ) ignores names of compound index (.cdx) files in the index file list.
+      NDX( ) returns an empty string if nIndexNumber is greater than the number of .idx files in the index file list.
+
+    </param>
+    <param name="nWorkArea">
+
+      Specifies the work area number for .IDX files open in a work area other than the current one. NDX( ) returns an empty string if no table is open in the work area you specify. If you omit nWorkArea, NDX( ) returns the names of .idx files open with the table in the current work area.
+
+    </param>
+    <param name="cTableAlias">
+
+      Specifies the table alias for .idx files open in a work area other than the current one. If no table has the alias you include, X# generates an error message. If you omit cTableAlias, NDX( ) returns the names of .idx files open with the table in the current work area.
+    </param>
+    <returns>
+      Character
+    </returns>
+    <remarks>
+      The CDX( ) and MDX( ) functions can be used to return the names of open compound (.cdx) index files.
+      In X# for Windows, when Set FullPath is ON, NDX( ) returns the path to the .idx file with the .idx file name. When Set FullPath is OFF, NDX( ) returns the drive the .idx file resides on with the .idx file name.
+    </remarks>
+  </ndx>
+  <ntom>
+    <summary>
+      Returns a Currency value from a Numeric expression.
+    </summary>
+    <param name="nExpression">
+
+      Specifies a numeric expression whose Currency value NToM( ) returns. If nExpression has more than four decimal places, it is rounded to four decimal places. If nExpression has less than four decimals places, it is padded with zeros until four decimal places are created.
+    </param>
+    <returns>
+      Currency type. NToM( ) returns a value of Currency type with four decimal places.
+    </returns>
+    <example>
+       <code language="X#">
+        STORE 24.95 TO gnNumeric  &amp;&amp; Creates a numeric type memory variable
+        CLEAR
+        ? "gnNumeric is type: "
+        ?? Type('gnNumeric')  &amp;&amp; Displays N, numeric type value
+        gnNumeric= NToM(gnNumeric)     &amp;&amp;  Converts gnNumeric to a currency value
+        ? "gnNumeric is now type: "
+        ?? Type('gnNumeric')  &amp;&amp; Displays Y, currency type value
+      </code>
+    </example>
+    <seealso cref='M:XSharp.VFP.Functions.MToN(XSharp.__Currency)' />
+  </ntom>
+  <order>
+    <summary>
+      Returns the name of the controlling index file or tag for the current or specified table.
+    </summary>
+    <param name="nWorkArea">
+
+      Specifies the work area of a table whose controlling index file name or controlling tag name Order( ) returns.
+
+    </param>
+    <param name="cTableAlias">
+
+      Specifies a table alias whose controlling index file name or controlling tag name Order( ) returns.
+
+    </param>
+    <param name="nPath">
+
+      Specifies that the drive and directory are returned along with the single-entry or compound index file name. The numeric expression nPath can have any value.
+    </param>
+    <returns>
+      Character
+    </returns>
+    <remarks>
+      A table can have several index files open simultaneously. However, only one single-entry index file (the controlling index file) or tag from a compound index file (the controlling tag) controls the order in which the table is displayed or accessed. Certain commands, such as SEEK, use the controlling index file or controlling tag to search for records. This function returns the name of the controlling index file or controlling tag.
+      Use and Set Index both support opening more than one index with an index file list. A controlling index file or controlling tag can be designated in this index file list. Set Order can also be used to designate a controlling index or controlling tag.
+      By default, Order( ) returns the controlling index file name or controlling tag name for the current work area. Order( ) returns the empty string if an order has not been set (Set Order TO is issued or there is no controlling index file or tag).
+    </remarks>
+    <example>
+       <code language="X#">
+        Close Databases
+        Open Database (HOME(2) + 'Data\testdata')
+        Use customer Order cust_id &amp;&amp; Opens Customer table
+        ? Order( )  &amp;&amp; Displays CUST_ID
+        ? Order('customer', 1)  &amp;&amp; Displays CUSTOMER.CDX
+      </code>
+    </example>
+  </order>
+  <quarter>
+    <summary>
+      Returns the quarter of the year in which a date or datetime expression occurs.
+    </summary>
+    <param name="dExpression">
+      Specifies the <b>Date</b> expression for which you want <b>Quarter( )</b> to return a value.
+    </param>
+    <param name="tExpression">
+      Specifies the <b>DateTime</b> expression for which you want <b>Quarter( )</b> to return a value.
+    </param>
+    <param name="nMonth">
+      Specifies an optional starting month to the examined quarter. You can use this to specify quarters based on a fiscal rather than a calendar year.
+    </param>
+    <returns>
+      Numeric data type. <b>Quarter( )</b> returns the quarter of the year in which a date occurs, and the values can be 0, 1, 2, 3, or 4.
+      <b>Quarter( )</b> returns 0 if passed an empty <b>Date</b> or <b>DateTime</b> value, for example, <code> Quarter(NULL_DATE) </code>
+    </returns>
+    <seealso cref='O:XSharp.RT.Functions.CMonth'>CMonth( ) Function</seealso>
+    <seealso cref='O:XSharp.RT.Functions.Date'>Date( ) Function</seealso>
+    <seealso cref='O:XSharp.RT.Functions.Today'>Today( ) Function</seealso>
+    <seealso cref='O:XSharp.Core.Functions.DateTime'>DateTime( ) Function</seealso>
+    <seealso cref='O:XSharp.RT.Functions.Day'>Day( ) Function</seealso>
+    <seealso cref='O:XSharp.RT.Functions.Month'>Month( ) Function</seealso>
+    <seealso cref='O:XSharp.RT.Functions.Year'>Year( ) Function</seealso>
+  </quarter>
+  <rat>
+    <summary>
+      Returns the numeric position of the last occurrence of a character expression or memo field within another character expression or memo field.
+    </summary>
+    <param name="cSearchExpression">
+      Specifies the character expression that <b>RAt()</b> looks for in <paramref name='cExpressionSearched' />.
+    </param>
+    <param name="cExpressionSearched">
+      Specifies the character expression that <b>RAt()</b> searches.
+      The character expressions <paramref name='cSearchExpression' /> and <paramref name='cExpressionSearched' /> can be memo fields of any size.
+    </param>
+    <param name="nOccurrence">
+      Specifies which occurrence, starting from the right and moving left, of <paramref name='cSearchExpression' /> <b>RAt( )</b> searches for in <paramref name='cExpressionSearched' />.
+      By default, <b>RAt()</b> searches for the last occurrence of <paramref name='cSearchExpression' /> (nOccurrence equals 1).
+      If nOccurrence is 2, <b>RAt()</b> searches for the next to last occurrence, and so on.
+    </param>
+    <returns>
+      Numeric
+    </returns>
+    <remarks>
+      The difference between <b>RAtC()</b> and <b>RAt()</b> can be ignored in X# because all characters are unicode,
+      so there is no distinction between single byte and double-byte characters.
+    </remarks>
+    <seealso cref='O:XSharp.VFP.Functions.RAtC'>RatC Function</seealso>
+  </rat>
+  <ratc>
+    <summary>
+      Returns the numeric position of the last occurrence of a character expression or memo field within another character expression or memo field.
+    </summary>
+    <param name="cSearchExpression">
+      Specifies the character expression that <b>RAtC()</b> looks for in <paramref name='cExpressionSearched' />.
+    </param>
+    <param name="cExpressionSearched">
+      Specifies the character expression that <b>RAtC()</b> searches.
+      The character expressions <paramref name='cSearchExpression' /> and <paramref name='cExpressionSearched' /> can be memo fields of any size.
+    </param>
+    <param name="nOccurrence">
+      Specifies which occurrence, starting from the right and moving left, of <paramref name='cSearchExpression' /> <b>RAtC( )</b> searches for in <paramref name='cExpressionSearched' />.
+      By default, <b>RAtC()</b> searches for the last occurrence of <paramref name='cSearchExpression' /> (nOccurrence equals 1).
+      If nOccurrence is 2, <b>RAtC()</b> searches for the next to last occurrence, and so on.
+    </param>
+    <returns>
+      Numeric
+    </returns>
+    <remarks>
+      The difference between <b>RAtC()</b> and <b>RAt()</b> can be ignored in X# because all characters are unicode,
+      so there is no distinction between single byte and double-byte characters.
+    </remarks>
+    <seealso cref='O:XSharp.VFP.Functions.RAt'>RAt Function</seealso>
+  </ratc>
+  <relation>
+    <summary>
+      Returns a specified relational expression for a table that is open in a specific work area.
+    </summary>
+    <param name="nRelationNumber">
+
+      Specifies which relation is returned. For example, if nRelationNumber is 3, <b>RELATION( )</b> returns the relational expression for the third relation created.
+
+    </param>
+    <param name="nWorkArea">
+
+      Specifies the work area for a table open in another work area. If a table is not open in the specified work area, <b>RELATION( )</b> returns an empty string.
+
+    </param>
+    <param name="cTableAlias">
+
+      Specifies the table alias for a table open in another work area.
+    </param>
+    <returns>
+      Character
+    </returns>
+    <remarks>
+      By default, RELATION( ) returns relational expressions for a specified table. If you do not specify a work area or alias, RELATION( ) returns relational expressions for the table in the currently selected work area. If no relations exist, it returns an empty string. For additional information about creating relations between tables, see Set RELATION.
+      Display Status and LIST Status display relational expressions. Issue MODIFY Database to display the Database Designer. This enables you to view and modify relations between tables in the current open database. Issue Set to display the Data Session window. This enables you to view and modify relations between free tables.
+    </remarks>
+    <example>
+       <code language="X#">
+        Close Databases
+        Open Database (HOME(2) + 'Data\testdata')
+        Use customer IN 0 Order cust_id  &amp;&amp; Opens Customer table
+        Use employee IN 0 Order emp_id  &amp;&amp; Opens Customer table
+        Use orders IN  0 Order order_id  &amp;&amp; Opens Customer table
+        Select orders
+        Set RELATION TO emp_id Into employee
+        Set RELATION TO cust_id Into customer ADDITIVE
+        ? RELATION(1)  &amp;&amp; Displays CUST_ID
+        ? RELATION(2)  &amp;&amp; Displays EMP_ID
+        ? RELATION(3)  &amp;&amp; Displays empty string
+      </code>
+    </example>
+  </relation>
+  <removeproperty>
+    <summary>
+      Removes a property from an object at run time.
+    </summary>
+    <param name="oObjectName">
+
+      Specifies the name of the object from which to remove the property.
+
+    </param>
+    <param name="cPropertyName">
+
+      Specifies the name of the existing property to remove from the object. You can specify only a property name, not an event or method name.
+    </param>
+    <returns>
+      Logical data type. <b>REMOVEPROPERTY( )</b> returns True (.T.) if it successfully removes the property; otherwise, it returns False (.F.).
+    </returns>
+    <remarks>
+      You can use <b>REMOVEPROPERTY( )</b> to remove properties, but not methods or events. You can use <b>REMOVEPROPERTY( )</b> with object instances created from X# classes, COM classes, <b>SCATTER...NAME</b> command, <b>_VFP</b>, and <b>_SCREEN</b>.
+      Properties must be visibly <b>Public</b>, not <b>Hidden</b> or <b>Protected</b> and have been added to an instance of an object, typically using the <b>ADDPROPERTY( )</b> function, the <b>AddProperty</b> method, or <b>SCATTER...NAME</b> command, so that they can be removed using <b>REMOVEPROPERTY( )</b>.
+      You cannot remove a property if it is a member of the class definition used to create the instance of the object.
+
+      <b>REMOVEPROPERTY( )</b> function does not remove properties that are specific array elements. To remove an array, provide only the array name.
+
+      <b>Example 1</b>
+
+      The following example adds a new property to an object created with the <b>SCATTER</b> command and then removes it.
+       <code language="X#">
+        Use customers
+        SCATTER NAME oCust
+        ADDPROPERTY(oCust,"MyProperty")
+        REMOVEPROPERTY(oCust,"MyProperty")
+      </code>
+
+      <b>Example 2</b>
+
+      The following example creates a property array for the object, codeoMyForm/code, displays its contents, code1/code and code"Two"/code, and then removes it.
+       <code language="X#">
+        oMyForm = CreateObject('Form')
+        ADDPROPERTY(oMyForm, 'MyArray(2)', 1)
+        oMyForm.MyArray(2) = "Two"
+        Clear
+        ? oMyForm.MyArray(1)
+        ? oMyForm.MyArray(2)
+        REMOVEPROPERTY(oMyForm, 'MyArray')
+        RELEASE oMyForm
+        Clear
+      </code>
+    </remarks>
+  </removeproperty>
+
   <rightc>
     <summary>
       Returns the specified number of rightmost characters from a character string.
@@ -256,6 +1696,1000 @@
       This function is useful for manipulating double-byte character sets for languages such as Hiragana and Katakana.
     </remarks>
   </rightc>
+  <sec>
+    <summary>
+      Returns the seconds portion from a DateTime expression.
+    </summary>
+    <param name="tExpression">
+      Specifies the DateTime expression from which SEC( ) returns the second. If tExpression contains only a date and not a time, X# adds a default time of 12:00:00 AM (if SET HOURS is 12) or 00:00:00 (if SET HOURS is 24) to tExpression to produce a valid DateTime value.
+    </param>
+    <returns>
+      Numeric
+    </returns>
+    <example>
+       <code language="X#">
+        CLEAR
+        ? SEC(DateTime( ))
+        ? SEC({^2004-02-16 10:42:16AM})  &amp;&amp; Displays 16
+      </code>
+    </example>
+  </sec>
+  <sign>
+    <summary>
+      Returns a numeric value of 1, –1, or 0 if the specified numeric expression evaluates to a positive, negative, or 0 value.
+    </summary>
+    <param name="nExpression">
+
+      Specifies the numeric expression Sign( ) evaluates. Sign( ) returns 1 if nExpression evaluates to a positive number, –1 if nExpression evaluates to a negative number, and 0 if nExpression evaluates to 0.
+    </param>
+    <returns>
+      Numeric
+    </returns>
+    <example>
+       <code language="X#">
+        STORE 10 TO gnNum1
+        STORE -10 TO gnNum2
+        STORE 0 TO gnZero
+        CLEAR
+        ? Sign(gnNum1)  &amp;&amp; Displays 1
+        ? Sign(gnNum2)  &amp;&amp; Displays -1
+        ? Sign(gnZero)  &amp;&amp; Displays 0
+      </code>
+    </example>
+  </sign>
+  <sqlcancel>
+    <summary>
+      Requests cancellation of an executing SQL statement.
+    </summary>
+    <remarks>
+      <b>SqlCancel( )</b> cancels the execution of <b>SqlColumns( )</b>, <b>SqlExec( )</b>, <b>SqlMoreResults( )</b>, and <b>SqlTables( )</b> in asynchronous mode.
+      To establish asynchronous mode, use the <b>SqlSetProp( )</b> function.
+    </remarks>
+    <param name="nStatementHandle">
+      Specifies the active statement handle whose SQL statement is to be canceled.
+    </param>
+    <returns>
+      Numeric. <b>SqlCancel( )</b> returns 1 if the SQL statement is successfully canceled, – 1 if there is a connection level error, and – 2 if there is an environment level error.
+    </returns>
+    <example>
+       <code language="X#">
+        = SqlSetProp(gnHandle, 'asynchronous', .T.)   &amp;&amp; To stop SqlExec( )
+        = SqlExec(gnHandle, 'SELECT * FROM authors')
+        = SqlCancel(gnHandle)   &amp;&amp; Wrong select statement, cancel
+      </code>
+    </example>
+    <seealso cref="O:XSharp.VFP.Functions.SqlConnect">SqlConnect()</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.SqlStringConnect">SqlStringConnect()</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.SqlExec">SqlExec()</seealso>
+
+  </sqlcancel>
+  <sqlcolumns>
+    <summary>
+      Stores a list of column names and information about each column for the specified data source table to a X# cursor.
+    </summary>
+    <param name="nStatementHandle">
+      Specifies an active statement handle.
+    </param>
+    <param name="cTableName">
+      Specifies the name of the table from which the column names are returned. TableName can contain the wildcard characters ? and *.
+      The question mark (?) matches any single character and the asterisk (*) matches any number of characters.<br/>
+    </param>
+    <param name="cType">
+      This specifies the format for the column information in the result set. The value must be either "Foxpro" or "Native"<br/>
+      The Native format option stores column information for tables in the same format as the data source. The Foxpro format option stores the column information
+      in the same format as that used for the X# table or cursor that would be created if you imported the data source table into X#. If you omit Foxpro or Native,
+      the format option defaults to Foxpro.<br/>
+      The table in the remarks section shows the columns in the result set for the Foxpro format.
+    </param>
+    <param name="cCursorName">
+      Specifies the name of the X# cursor for the result set. If you do not include a cursor name, X# uses the default name SQLRESULT.
+    </param>
+    <returns>
+      Numeric or Logical. <b>SqlColumns( )</b> returns 1 if the cursor is successfully created, 0 if <b>SqlColumns( )</b> is still executing,
+      – 1 if a connection level error occurs, and – 2 if an environment level error occurs.
+    </returns>
+    <remarks>
+      <b>SqlColumns( )</b> is one of the four functions that you can execute either synchronously or asynchronously.
+      The Asynchronous setting of <b>SqlSetProp( )</b> determines if these functions execute synchronously or asynchronously. In asynchronous mode,
+      you must call <b>SqlColumns( )</b> repeatedly until a value other than false (.F.) (still executing) is returned.
+      <br/>
+      <list type="table">
+        <listheader>
+          <term>Column name</term>
+          <description>Description</description>
+        </listheader>
+        <item>
+          <term>Field_name</term>
+          <description>Column name</description>
+        </item>
+        <item>
+          <term>Field_type</term>
+          <description>Column data type</description>
+        </item>
+        <item>
+          <term>Field_len</term>
+          <descripition>Column length</descripition>
+        </item>
+        <item>
+          <term>Field_dec</term>
+          <description>Number of decimal places</description>
+        </item>
+      </list>
+      The columns in the result set for the Native format depend on the data source. If the table you specify with cTableName does not exist and the format is set
+      to Native, <b>SqlColumns( )</b> returns true (.T.) and creates an empty table or cursor. If the table you specify with cTableName does not exist and the
+      format is set to Foxpro, <b>SqlColumns( )</b> returns false (.F.).
+    </remarks>
+    <example>
+       <code language="X#">= SqlColumns(gnHandle, 'authors', 'Foxpro', 'MyCursor')</code>
+    </example>
+    <seealso cref="O:XSharp.VFP.Functions.SqlConnect">SqlConnect()</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.SqlStringConnect">SqlStringConnect()</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.SqlGetProp">SqlGetProp()</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.SqlSetProp">SqlSetProp()</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.SqlTables">SqlTables()</seealso>
+
+  </sqlcolumns>
+  <sqlcommit>
+    <summary>
+      Commits a transaction.
+    </summary>
+    <param name="nStatementHandle">
+      Specifies the statement handle to the data source returned by <b>SqlConnect( )</b>.
+    </param>
+    <returns>
+      Numeric. <b>SqlCommit( )</b> returns 1 if the transaction is successfully committed; otherwise, it returns -1. If <b>SqlCommit( )</b> returns -1, you can use
+      <b>AError( )</b> to determine why the transaction could not be committed.
+    </returns>
+    <remarks>
+      If manual transactions are in effect (the <b>SqlSetProp( )</b> Transactions property is set to Manual), you can send multiple updates to remote tables and
+      commit all the updates with <b>SqlCommit( )</b>.<br/>
+      Updates can be rolled back with <b>SqlRollBack( )</b>.
+    </remarks>
+    <example>
+       <code language="X#">
+        = SqlSetProp(gnHandle, 'Transactions', 2)  &amp;&amp; Manual transactions
+        = SqlExec(gnHandle, "Insert Into authors (au_id, au_lname);
+        VALUES ('aupoe', 'Poe')")  &amp;&amp; Modify the authors table
+        = SqlCommit(gnHandle)  &amp;&amp; Commit the changes
+      </code>
+    </example>
+    <seealso cref="O:XSharp.VFP.Functions.SqlConnect">SqlConnect()</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.SqlStringConnect">SqlStringConnect()</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.SqlSetProp">SqlSetProp()</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.SqlRollBack">SqlRollBack()</seealso>
+
+  </sqlcommit>
+  <sqlconnectoverload>
+    <overloads>
+      <summary>
+        There are 2 different overloads for the <b>SqlConnect( )</b> function.
+        You can either pass a datasource, userid and password, or pass the handle of an existing (shared) statement.
+      </summary>
+      <seealso cref="O:XSharp.VFP.Functions.SqlDisconnect">SqlDisconnect()</seealso>
+      <seealso cref="O:XSharp.VFP.Functions.SqlStringConnect">SqlStringConnect()</seealso>
+      <seealso cref="O:XSharp.VFP.Functions.SqlGetProp">SqlGetProp()</seealso>
+      <seealso cref="O:XSharp.VFP.Functions.SqlSetProp">SqlSetProp()</seealso>
+      <seealso cref="O:XSharp.VFP.Functions.SqlExec">SqlExec()</seealso>
+      <seealso cref="O:XSharp.VFP.Functions.SqlSetFactory">SqlSetFactory()</seealso>
+    </overloads>
+  </sqlconnectoverload>
+  <sqlconnect>
+    <summary>
+      Establishes a connection to a data source.
+    </summary>
+    <param name="nStatementHandle">
+      This specifies that a new statement handle be created for the underlying shared connection that is represented
+      by nStatementHandle. The new statement handle uses the settings provided from nStatementHandle instead of using the default settings.
+      You cannot create a new statement handle for a connection that is not shared.
+    </param>
+    <param name="cDataSourceName">
+      This specifies an ODBC Datasource name. For non ODBC connections we recomment you use <b>SqlStringConnect()</b> to connect.
+    </param>
+    <param name="cUserID">
+      Specifies the user identifier used to log on to the data source. This may be omitted if a userid/password is stored with the ODBC Datasource.
+    </param>
+    <param name="cPassword">
+      Specifies the password for gaining access to the data source. This may be omitted if a userid/password is stored with the ODBC Datasource.
+    </param>
+    <param name="lShared">
+      Specifies whether or not to create a shared connection.<br/>
+      False (.F.) - <b>SqlConnect( )</b> does not create a shared connection. (Default)<br/>
+      True (.T.) - <b>SqlConnect( )</b> creates a shared connection.
+    </param>
+    <returns>
+      Numeric data type. <b>SqlConnect( )</b> returns a positive nonzero numeric value as the statement handle if you successfully connect to the data source.
+      <b>SqlConnect( )</b> returns –1 if it cannot make the connection.<br/>
+      You should store this statement handle in a memory variable and use the variable in subsequent function calls that require a connection handle.
+    </returns>
+    <remarks>
+      The <b>SqlConnect( )</b> and <b>SqlStringConnect( )</b> functions return a numeric value as the statement handle rather than a connection handle.
+      You cannot obtain a connection handle directly. You can still set and get connection properties using the <b>SqlSetProp( )</b> and <b>SqlGetProp( )</b>
+      functions by passing the statement handle for that connection and the string, "Shared", as arguments. All other SQL functions use a statement handle
+      instead of a connection handle.<br/>
+      If you issue a statement such as codeSqlConnect(cConnectionName, .T.)/code, and a shared connection is already open with the same name, then the settings
+      for that connection do not change to the settings stored for that connection in the database container (DBC). However, the new statement handle will use
+      the statement settings from the DBC.<br/>
+      You must disable the Open Database Connectivity (ODBC) login dialog box to support SQL pass through with Microsoft Transaction Server.
+      To disable the ODBC login dialog box, use the statement codeSqlSetProp(nStatementHandle, 'DispLogin', 3)/code, where cStatementHandle is the statement
+      handle returned by <b>SqlConnect( )</b>. You can also disable the ODBC login dialog box in the Connection Designer.
+    </remarks>
+    <example>
+      <b>Example 1</b><br/>
+      The following example assumes that an ODBC data source called MyFoxSQLNT exists and is available. <b>SqlConnect( )</b> returns a numeric value,
+      which is stored to a variable named codegnConnHandle/code.<br/>
+      If you successfully connect to the data source, <b>SqlConnect( )</b> returns a positive number, a dialog box appears, and <b>SqlDisconnect( )</b> is called
+      to disconnect from the data source.<br/>
+      If you cannot connect to the data source, <b>SqlConnect( )</b> returns a negative number and displays a message.
+       <code language="X#">
+        STORE SqlConnect('MyFoxSQLNT', 'myUserID', 'myPassword') TO gnConnHandle
+        IF gnConnHandle &lt;= 0
+        = MessageBox('Cannot make connection', 16, 'SQL Connect Error')
+        ELSE
+        = MessageBox('Connection made', 48, 'SQL Connect Message')
+        = SqlDisconnect(gnHandle)
+        ENDIF
+      </code>
+      <b>Example 2</b><br/>
+      Each of the following examples create new shared connections. The Choose Data Source Dialog Box appears,
+      and <b>SqlConnect( )</b> creates the resulting connection as shared.
+       <code language="X#">
+        SqlConnect(.T.)
+        SqlConnect( myConnectionName, .T. )
+        SqlConnect( myDataSourceName, myUserID, myPassword, .T. )
+      </code>
+      <b>Example 3</b><br/>
+      Each of the following examples creates a new statement handle based on an existing shared connection.
+       <code language="X#">
+        SqlConnect( nStatementHandleValue )
+        SqlConnect( myConnectionName, .T. )
+      </code>
+    </example>
+    <seealso cref="O:XSharp.VFP.Functions.SqlDisconnect">SqlDisconnect()</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.SqlStringConnect">SqlStringConnect()</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.SqlGetProp">SqlGetProp()</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.SqlSetProp">SqlSetProp()</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.SqlExec">SqlExec()</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.SqlSetFactory">SqlSetFactory()</seealso>
+  </sqlconnect>
+  <sqldisconnect>
+    <summary>
+      Terminates a connection to a data source.
+    </summary>
+    <param name="nStatementHandle">
+      Specifies the statement handle to the data source returned by <b>SqlConnect( )</b>. <br/>
+      Specify 0 for nStatementHandle to terminate all active connections.
+    </param>
+    <returns>
+      Numeric. <b>SqlDisconnect( )</b> returns 1 if the connection is successfully terminated, – 1 if there is a connection level error,
+      and – 2 if there is an environment level error.
+    </returns>
+    <remarks>
+      <b>SqlDisconnect( )</b> terminates a connection to a data source. You must supply the statement handle that <b>SqlConnect( )</b> returned
+      when you established the connection.<br/>
+      If you execute <b>SqlDisconnect( )</b> within an asynchronous function sequence or during a transaction, <b>SqlDisconnect( )</b> generates an error.
+    </remarks>
+    <example>
+       <code language="X#">
+        STORE SqlConnect('MyFoxSQLNT', '&lt;userid&gt;', '&lt;password&gt;') TO gnHandle
+        IF gnHandle &lt;= 0
+        = MessageBox('Cannot make connection', 16, 'SQL Connect Error')
+        ELSE
+        = MessageBox('Connection made', 48, 'SQL Connect Message)
+        = SqlDisconnect(gnHandle)
+        ENDIF
+      </code>
+    </example>
+    <seealso cref="O:XSharp.VFP.Functions.SqlConnect">SqlConnect()</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.SqlStringConnect">SqlStringConnect()</seealso>
+
+  </sqldisconnect>
+  <sqlexec>
+    <summary>
+      Sends a SQL statement to the data source, where the statement is processed.
+    </summary>
+    <param name="nStatementHandle">
+      Specifies the statement handle to the data source returned by the <b>SqlConnect( )</b> function. For more information, see SqlConnect( ) Function.
+    </param>
+    <param name="cSQLCommand">
+      Specifies the SQL statement passed to the data source.<br/>
+      The SQL statement can contain a parameterized Where clause, which creates a parameterized view. You must define all parameters in the Where clause before
+      issuing <b>SqlExec( )</b>. For example, if the parameters are variables, the variables must be created and initialized before <b>SqlExec( )</b> is issued.
+      For more information about parameterized views, see How to: Create Parameterized Views.<br/>
+      You can include expressions in the SQL statement. X# evaluates all expressions in the SQL statement that you pass before sending them to the data source.
+      X# can evaluate memory variable names, function calls, and expressions enclosed in parentheses as parameter values.
+      <note type="tip">Parameterized queries are not yet supported in X#</note>
+    </param>
+    <param name="cCursorName">
+      Specifies the name of the X# cursor to which the result set is sent. If you don't include a cursor name, X# uses the default name SQLRESULT.<br/>
+      For multiple result sets, new cursor names are derived by appending an incremented number to the name of the first cursor.
+    </param>
+    <param name="aCountInfo">
+      Specifies an array to populate with row count information. The array is resized to hold all result sets.
+      The array has two columns: 1 – Alias, 2 –Count.
+    </param>
+    <returns>
+      Numeric data type. <b>SqlExec( )</b> returns the number of result sets if there is more than one. <b>SqlExec( )</b> returns 0 if it is still executing
+      and returns 1 when it has finished executing. <b>SqlExec( )</b> returns –1 if a connection level error occurs.
+    </returns>
+    <remarks>
+      If the SQL statement you want to pass is quite long, check to see if it exceeds the maximum length of a string literal in X#, which is 255 characters.
+      Longer strings will cause a "Command contains unrecognized phrase/keyword" error. However, you can pass long SQL statements if you break them up into several
+      concatenated literals. For example:
+       <code language="X#">
+        lnRetVal = SqlExec(lnHandle, "Select &lt;long list of fields&gt; " + ;
+        "From &lt;several tables&gt; " + ;
+        "Where &lt;complex filter expression&gt;")
+      </code>
+      If <b>SqlExec( )</b> is used to execute a SQL statement prepared with <b>SqlPrepare( )</b>, only the connection handle argument nStatementHandle is required.
+      The cSQLCommand and CursorName arguments should be omitted. For more information, see SqlPrepare( ) Function.<br/>
+      If the SQL statement generates one result set, <b>SqlExec( )</b> stores the result set to the specified X# cursor.
+      If the SQL statement generates two or more result sets, you can name each result set by setting the connection's BatchMode property to False (.F.)
+      using the SqlSetProp( ) function and changing the cursor name each time you call the SqlMoreResults( ) function. Otherwise, SqlExec( ) names each result
+      set by appending sequential numbers to the name of the first one.<br/>
+      <b>SqlExec( )</b> is one of the four functions that you can execute either synchronously or asynchronously.
+      The Asynchronous setting of <b>SqlSetProp( )</b> determines whether these functions execute synchronously or asynchronously.
+      In asynchronous mode, you must call <b>SqlExec( )</b> repeatedly until it returns a value other than 0 (still executing).
+      <list type="table">
+        <listheader>
+          <term>Column</term>
+          <description>Array contents</description>
+          <description>Data type</description>
+          <description>Description</description>
+        </listheader>
+        <item>
+          <term>Alias</term>
+          <description>0</description>
+          <description>Character</description>
+          <description>
+            Indicates that SQL command did not return any results. Either no records were returned or the SQL command failed before results could be returned.
+            (final <b>SqlMoreResults</b> call) or execution failed before any result could be processed. Can be only on the first row.
+            Count column for the row contains value -1.
+          </description>
+        </item>
+        <item>
+          <term></term>
+          <description>Non-empty uppercase string</description>
+          <description>Character</description>
+          <description>
+            Alias of the cursor – target for the record fetch operation. The Count column for the row contains the number of fetched records or -1 if fetch failed.
+            If Count is -1, cursor may not have been created. During asynchronous execution, the fetch process for a cursor can be split between multiple
+            SqlMoreResults or SqlExec calls; each call returns its own fetch count for the cursor.
+          </description>
+        </item>
+        <item>
+          <term></term>
+          <description>Character</description>
+          <description>Empty String</description>
+          <description>Indicates that the SQL command (Insert, UPDATE, or DELETE) did not return a result set.</description>
+        </item>
+        <item>
+          <term>Count</term>
+          <description>Number of affected or fetched records.</description>
+          <description>Integer</description>
+          <description>Indicates the number of affected records as returned by the ODBC SQLRowCount function. Returns -1 if the number of records is unavailable.</description>
+        </item>
+      </list>
+    </remarks>
+    <example>
+      The following example shows various ways to use <b>SqlExec( )</b> to execute ad-hoc queries and to call or create stored procedures:
+       <code language="X#">
+        Clear
+        LOCAL lnConn
+        LOCAL lnPercent AS Int  &amp;&amp; Input parameters must be typed.
+        LOCAL lnOutput
+        lnPercent = 50
+        lnOutput = 0
+        * Make connection, assuming a local trusted connection.
+        lnConn = SqlConnect('local')
+        IF m.lnConn &gt; 0  &amp;&amp; Success.
+        * Set the active database to PUBS.
+        SqlExec(m.lnConn, 'use pubs')
+        * Execute Select statement.
+        SqlExec(m.lnConn, 'Select * From authors', 'PubAuthors')
+        BROWSE
+
+        * Execute Insert statement, get value of identity field.
+        SqlExec(m.lnConn, "Insert Into JOBS (job_desc, min_lvl, max_lvl);
+        VALUES ('Developer',75,150)")
+        SqlExec(m.lnConn, "Select SCOPE_IDENTITY()", "job_id")
+        ? "ID for added Job is " + LTRIM(STR(job_id.exp))
+        * Execute DELETE statement. Get number of records affected.
+        SqlExec(m.lnConn, "DELETE From JOBS Where job_desc ='Developer'")
+        SqlExec(m.lnConn, "Select @@ROWCOUNT", 'rowcount')
+        ? rowcount.exp, "record(s) deleted"
+        * Call a stored procedure with no parameters.
+        SqlExec(m.lnConn, 'sp_who', 'activeusers')
+        BROWSE
+        * Execute stored procedure with an INPUT parameter.
+        SqlExec(m.lnConn, 'exec byroyalty ?lnPercent','HalfOffAuthors')
+
+        * Create temp stored procedure with OUTPUT parameter and call it.
+        SqlExec(m.lnConn, "Create PROCEDURE #MyProc @outparam int OUTPUT AS;
+        Select @outparam=100")
+        SqlExec(m.lnConn, "exec #myProc ?@lnOutput")
+        ? m.lnOutput
+
+        * Create a temp stored procedure with INPUT and OUTPUT parameters
+        * and call it.
+        SqlExec(m.lnConn, "Create PROCEDURE #MyProc2 " + ;
+        "@inputparam INT, " + ;
+        "@outparam int OUTPUT " + ;
+        "AS Set @outparam=@inputparam*10")
+        SqlExec(m.lnConn, "exec #myProc2 ?lnPercent, ?@lnOutput")
+        ? m.lnOutput
+        * Get version information.
+        SqlExec(m.lnConn, 'Select @@VERSION','SQLVersion1')
+        ? STRTRAN(SQLVersion1.Exp,CHR(0))
+        * Disconnect.
+        SqlDisconnect(m.lnConn)
+        ELSE
+        ? "Unable to connect to SQL Server"
+        ENDIF
+        RETURN
+      </code>
+    </example>
+    <seealso cref="O:XSharp.VFP.Functions.SqlPrepare">SqlPrepare()</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.SqlConnect">SqlConnect()</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.SqlStringConnect">SqlStringConnect()</seealso>
+
+  </sqlexec>
+  <sqlgetprop>
+    <summary>
+      Retrieves the current or default settings for an active connection.
+    </summary>
+    <param name="nStatementHandle">
+      Specifies the statement handle to the data source returned by SqlConnect( ).
+      If you specify 0 for nStatementHandle, SqlGetProp( ) returns the environment setting.
+    </param>
+    <param name="cSetting">
+      Specifies the setting. For a list of the settings you can specify, see SqlSetProp( ) Function.
+    </param>
+    <returns>
+      Character, Numeric, or Logical data type. SqlGetProp( ) returns the current or default settings for an active connection.
+      SqlGetProp( ) returns -1 if a connection level occurs and -2 if an environment level error occurs.
+    </returns>
+    <example>
+       <code language="X#">
+        Close ALL
+        Clear ALL
+        Clear
+        nHandle=SqlConnect()
+        IF nHandle &gt; 0
+        cSource= SqlGetProp(nHandle, "datasource")
+        =MessageBox("Current Data Source = "+cSource,0,"Connection Results")
+        ELSE
+        =MessageBox("Connection Error = " + ;
+        ALLTRIM(STR(nHandle)),0,"Connection Results")
+        ENDIF
+        =SqlDisconnect(nHandle)
+      </code>
+    </example>
+    <seealso cref="O:XSharp.VFP.Functions.SqlConnect">SqlConnect()</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.SqlStringConnect">SqlStringConnect()</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.SqlSetProp">SqlSetProp()</seealso>
+
+  </sqlgetprop>
+  <sqlidledisconnect>
+    <summary>
+      Allows a SQL pass-through connection or connections to be temporarily disconnected.
+    </summary>
+    <param name="nStatementHandle">
+      Specifies the statement handle of the connection to be temporarily disconnected.
+      Specify 0 for nStatementHandle to temporarily disconnect all active connections.
+    </param>
+    <returns>
+      Numeric. <br/>
+      1 is returned if SqlIdleDisconnect( ) successfully temporarily disconnects the SQL pass-through connection or connections.
+      -1 is returned if SqlIdleDisconnect( ) was unable to temporarily disconnect the SQL pass-through connection or connections.
+    </returns>
+    <remarks>
+      The function fails (returns -1) if the statement handle is busy or a connection is in manual commit mode.
+      The AError( ) Function can be used to obtain information about the cause of the error.<br/>
+      A temporarily disconnected connection is automatically restored as soon as it is needed to perform an operation; the original connection string is used.
+      The ODBC ODBChstmt property returns 0 if the statement handle is temporarily released and the ODBChdbc property returns 0 if the connection is temporarily
+      disconnected. A shared connection is temporarily disconnected as soon as all its statement handles are temporarily disconnected (released).
+    </remarks>
+  </sqlidledisconnect>
+  <sqlmoreresults>
+    <summary>
+      Copies another result set to a X# cursor if more result sets are available.
+    </summary>
+    <param name="nStatementHandle">
+      Specifies the statement handle to the data source returned by SqlConnect( ).
+    </param>
+    <param name="cCursorName">
+      Specifies the name of the X# cursor to which the result set is sent. If you do not include a cursor name, X# uses the default name SQLRESULT.<br/>
+      For multiple result sets, new cursor names are derived by appending an incremented number to the name of the first cursor.
+    </param>
+    <param name="">
+      Specifies the name of the array to populate with row count information. If the array doesn’t exist, it is created.
+      The array has two columns: 1 – Alias, 2 –Count.
+    </param>
+    <returns>
+      Numeric. SqlMoreResults( ) returns 0 if the SQL statement is still executing, returns 1 if it is finished executing, and returns 2 if no more data is found. In non-batch mode, SqlMoreResults( ) should be called after each successful SqlExec( ) call until SqlMoreResults( ) returns 2 (no more data found). The setting of the SqlSetProp( ) batch mode option determines whether SqlExec( ) executes a SQL statement in batch or non-batch mode.
+      SqlMoreResults( ) returns – 1 if a connection level error occurs, and returns – 2 if an environment level error occurs.
+    </returns>
+    <remarks>
+      SqlMoreResults( ) determines if more result sets are available from a SQL statement executed with SqlExec( ) in non-batch mode.
+      If more result sets are available, they are copied to a X# cursor, one set at a time.<br/>
+      SqlMoreResults( ) is one of the four functions that you can execute either synchronously or asynchronously.
+      The asynchronous setting of SqlSetProp( ) determines if these functions execute synchronously or asynchronously.
+      In asynchronous mode, you must call SqlMoreResults( ) repeatedly until it returns a value other than 0 (still executing).<br/>
+      <list type="table">
+        <listheader>
+          <term>Column</term>
+          <description>Array contents</description>
+          <description>Data type</description>
+          <description>Description</description>
+        </listheader>
+        <item>
+          <term>Alias</term>
+          <description>0</description>
+          <description>Character</description>
+          <description>
+            Indicates that SQL command did not return any results. Either no records were returned or the SQL command failed before results could be returned.
+            (final <b>SqlMoreResults</b> call) or execution failed before any result could be processed. Can be only on the first row.
+            Count column for the row contains value -1.
+          </description>
+        </item>
+        <item>
+          <term></term>
+          <description>Non-empty uppercase string</description>
+          <description>Character</description>
+          <description>
+            Alias of the cursor – target for the record fetch operation. The Count column for the row contains the number of fetched records or -1 if fetch failed.
+            If Count is -1, cursor may not have been created. During asynchronous execution, the fetch process for a cursor can be split between multiple
+            SqlMoreResults or SqlExec calls; each call returns its own fetch count for the cursor.
+          </description>
+        </item>
+        <item>
+          <term></term>
+          <description>Character</description>
+          <description>Empty String</description>
+          <description>Indicates that the SQL command (Insert, UPDATE, or DELETE) did not return a result set.</description>
+        </item>
+        <item>
+          <term>Count</term>
+          <description>Number of affected or fetched records.</description>
+          <description>Integer</description>
+          <description>Indicates the number of affected records as returned by the ODBC SQLRowCount function. Returns -1 if the number of records is unavailable.</description>
+        </item>
+      </list>
+    </remarks>
+    <example>
+       <code language="X#">
+        = SqlSetProp(gnHandle, 'BatchMode', .F.)  &amp;&amp; Individual result sets
+        = SqlExec(gnHandle, 'Select * From authors;
+        Select * From titles')
+        = SqlMoreRes(gnHandle)  &amp;&amp; First result set
+        = SqlMoreRes(gnHandle)  &amp;&amp; Second result set
+      </code>
+    </example>
+    <seealso cref="O:XSharp.VFP.Functions.SqlConnect">SqlConnect()</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.SqlStringConnect">SqlStringConnect()</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.SqlExec">SqlExec()</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.SqlGetProp">SqlGetProp()</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.SqlSetProp">SqlSetProp()</seealso>
+
+  </sqlmoreresults>
+  <sqlprepare>
+    <summary>
+      Prepares a SQL statement for remote execution by SqlExec( ).
+    </summary>
+    <param name="nStatementHandle">
+      Specifies the statement handle to the data source returned by SqlConnect( ).
+    </param>
+    <param name="cSQLCommand">
+      Specifies the SQL statement passed to the data source.<br/>
+      The SQL statement can contain a parameterized Where clause, which creates a parameterized view. All parameters in the Where clause must be defined before
+      SqlPrepare( ) is issued. For example, if the parameters are variables, the variables must be created and initialized before SqlPrepare( ) is issued.
+      <note type="tip">Parameterized queries are not yet supported in X#</note>
+    </param>
+    <param name="cCursorName">
+      Specifies the name of the X# cursor to which the result set is sent. If you don't include a cursor name, X# uses the default name SQLRESULT.<br/>
+      For multiple result sets, new cursor names are derived by appending an incremented number to the name of the first cursor.
+    </param>
+    <returns>
+      Numeric
+    </returns>
+    <remarks>
+      SqlPrepare( ) sends the SQL statement to the data source where it is compiled for faster execution. After the SQL statement is compiled,
+      it can be executed with SqlExec( ). If SqlExec( ) is used to execute a SQL statement prepared with SqlPrepare( ),
+      only the statement handle is required in SqlExec( ).
+    </remarks>
+    <example>
+       <code language="X#">
+        gcAuthor = 'Smith'
+        = SqlPrepare(gnHandle, 'Select * From authors;   Where au_lname = ?gcAuthor')
+        = SqlExec(gnHandle)
+        ...
+        gcAuthor = 'Jones'
+        = SqlExec(gnHandle)
+      </code>
+    </example>
+    <seealso cref="O:XSharp.VFP.Functions.SqlExec">SqlExec()</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.SqlConnect">SqlConnect()</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.SqlStringConnect">SqlStringConnect()</seealso>
+
+  </sqlprepare>
+  <sqlrollback>
+    <summary>
+      Cancels any changes made during the current transaction.
+    </summary>
+    <param name="nStatementHandle">
+      Specifies the statement handle to the data source returned by SqlConnect( ).
+    </param>
+    <returns>
+      Numeric. SqlRollBack( ) returns 1 if the transaction is successfully rolled back; otherwise, it returns -1.
+      If SqlRollBack( ) returns -1, you can use AError( ) to determine why the transaction could not be rolled back.
+    </returns>
+    <remarks>
+      If manual transactions are in effect (the SqlSetProp( ) transaction property is set to manual), you can send multiple updates to remote tables.
+      The updates can all be rolled back with SqlRollBack( ).<br/>
+      Updates can be committed with SqlCommit( ).
+    </remarks>
+    <example>
+       <code language="X#">
+        = SqlSetProp(gnHandle, 'Transactions', 2)  &amp;&amp; manual
+        = SqlExec(gnHandle, "Insert Into authors (au_id, au_lname);
+        VALUES ('aupoe', 'Poe')")
+        = SqlRollBack(gnHandle)
+      </code>
+    </example>
+    <seealso cref="O:XSharp.VFP.Functions.SqlConnect">SqlConnect()</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.SqlStringConnect">SqlStringConnect()</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.SqlSetProp">SqlSetProp()</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.SqlCommit">SqlCommit()</seealso>
+
+  </sqlrollback>
+  <sqlsetfactory>
+    <summary>
+      This function allows you to choose the Ado.Net provider that is used for the subsequent <b>SqlConnect()</b> or <b>SqlStringConnect()</b> calls.
+    </summary>
+    <param name="cFactory">This is the name of a built-in SQL Factory as a string. Valid values are at this moment: "ODBC", "OLEDB" and "SQLSERVER".</param>
+    <param name="oFactory">An object that implements ISqlFactory. This object is then used to create the connection, its commands etc.</param>
+    <returns>
+      The currently installed SqlFactory class.
+    </returns>
+    <seealso cref="T:XSharp.Data.ISqlFactory">ISqlFactory</seealso>
+    <seealso cref="O:XSharp.Data.Functions.SetSqlFactory">SetSqlFactory()</seealso>
+    <seealso cref="O:XSharp.Data.Functions.GetSqlFactory">GetSqlFactory()</seealso>
+
+  </sqlsetfactory>
+  <sqlsetprop>
+    <summary>
+      Specifies settings for an active connection. You can use SqlSetProp( ) to specify settings at the connection level.
+      To specify application default settings at the environment level, include 0 as the statement handle.
+    </summary>
+    <param name="nStatementHandle">
+      Specifies the statement handle to the data source returned by SqlConnect( ).
+    </param>
+    <param name="cSetting">
+      Specifies the setting. The table in the remarks section lists the values for cSetting.
+    </param>
+    <param name="eExpression">
+      Specifies the value for the setting you designate with cSetting. If you omit eExpression, the default value is restored for the setting.
+    </param>
+    <returns>
+      Numeric data type. SqlSetProp( ) returns 1 if it is successful.
+      Otherwise, it returns – 1 if a connection level error occurs or – 2 if an environment level error occurs.
+    </returns>
+    <remarks>
+      You can use SqlGetProp( ) to return the current value for a specified setting.<br/>
+      You must disable the Open Database Connectivity (ODBC) login dialog box to support SQL pass through with Microsoft Transaction Server.
+      To disable the ODBC login dialog box, use the statement codeSqlSetProp(cStatementHandle, 'DispLogin', 3)/code, where cStatementHandle is
+      the statement handle returned by <b>SqlConnect( )</b>. You can also disable the ODBC login dialog box in the Connection Designer.<br/>
+      The ConnectTimeOut option can be set only at the application level and has no equivalent at the connection level. You can set all other options at either the
+      connection or the application level. Each option set at the application level serves as a default value for subsequent connections.<br/>
+      <list type="table">
+        <listheader>
+          <item>Setting</item>
+          <description>Description</description>
+          <description>Read/Write</description>
+        </listheader>
+        <item>
+          <term>Asynchronous</term>
+          <description>Specifies whether result sets are returned synchronously (False (.F.), the default), or asynchronously (True (.T.)). </description>
+          <description>Read/write</description>
+        </item>
+        <item>
+          <term>BatchMode</term>
+          <description>
+            Specifies whether SqlExec( ) returns result sets all at once (True (.T.), the default),
+            or individually with SqlMoreResults( ) (False (.F.)).
+          </description>
+          <description>Read/write</description>
+        </item>
+        <item>
+          <term>ConnectBusy</term>
+          <description>Contains True (.T.) if a shared connection is busy; otherwise contains False (.F.).</description>
+          <description>Read-only</description>
+        </item>
+        <item>
+          <term>ConnectString</term>
+          <description>The login connection string.</description>
+          <description>Read-only</description>
+        </item>
+        <item>
+          <term>ConnectTimeOut</term>
+          <description>
+            Specifies the time to wait (in seconds) before returning a connection time-out error.
+            If you specify 0, the wait is indefinite and a time-out error is never returned. ConnectTimeOut can be 0 to 600. The default is 15.
+          </description>
+          <description>Read/write</description>
+        </item>
+        <item>
+          <term>DataSource</term>
+          <description>The name of the data source as defined in the ODBC.INI file for ODBC connections. </description>
+          <description>Read/write</description>
+        </item>
+        <item>
+          <term>DisconnectRollback</term>
+          <description>
+            Specifies if a pending transaction is committed or rolled back when SqlDisconnect( ) is called for the last connection handle.<br/>
+            The default is false (.F.), indicating that a pending transaction is committed when SqlDisconnect( ) is called for the last connection handle.<br/>
+            Specify true (.T.) to roll back a pending transaction when SqlDisconnect( ) is called for the last connection handle.<br/>
+            Connections with automatic transaction processing are not affected by this setting.
+          </description>
+          <description>Read/write</description>
+        </item>
+        <item>
+          <term>DispLogin</term>
+          <description>
+            Contains a numeric value that determines when the ODBC Login dialog box is displayed. DispLogin may assume the following values:<br/>
+            1 or DB_PROMPTCOMPLETE (from Foxpro.H).1 is the default.<br/>
+            2 or DB_PROMPTALWAYS (from Foxpro.H).<br/>
+            3 or DB_PROMPTNEVER (from Foxpro.H).<br/>
+            If 1 or DB_PROMPTCOMPLETE is specified, X# displays the ODBC Login dialog box only if any required information is missing.<br/>
+            If 2 or DB_PROMPTALWAYS is specified, the ODBC Login dialog box is always displayed, making it possible for you to change settings before connecting.<br/>
+            If 3 or DB_PROMPTNEVER is specified, the ODBC Login dialog box isn't displayed and X# generates an error if the required login information isn't available. Read/write.
+          </description>
+          <description>Read/write</description>
+        </item>
+        <item>
+          <term>DispWarnings</term>
+          <description>Specifies if error messages are displayed (True (.T.)) or are not displayed (False (.F.), the default).  </description>
+          <description>Read/write</description>
+        </item>
+        <item>
+          <term>IdleTimeout</term>
+          <description>
+            The idle timeout interval in minutes. Active connections are deactivated after the specified time interval.
+            The default value is 0 (wait indefinitely).
+          </description>
+          <description>Read/write</description>
+        </item>
+        <item>
+          <term>ODBChdbc</term>
+          <description>The internal Ado.Net DbConnection object.</description>
+          <description>Read-only</description>
+        </item>
+        <item>
+          <term>ODBChstmt</term>
+          <description>The internal Ado.Net DbCommand object.</description>
+          <description>Read-only</description>
+        </item>
+        <item>
+          <term>PacketSize</term>
+          <description>
+            The size of the network packet used by the connection. Adjusting this value can improve performance.
+            The default value is 4096 bytes (4K).<br/>
+            Changing this property does not work for all providers.
+          </description>
+          <description>Read/write</description>
+        </item>
+        <item>
+          <term>Password</term>
+          <description>The connection password. When you create a connection with the Login dialog then this password is not always available.</description>
+          <description>Read-only</description>
+        </item>
+        <item>
+          <term>QueryTimeOut</term>
+          <description>
+            Specifies the time to wait (in seconds) before returning a general time-out error. If you specify 0 (the default),
+            the wait is indefinite and a time-out error is never returned. QueryTimeOut can be 0 to 600.
+          </description>
+          <description>Read/write</description>
+        </item>
+        <item>
+          <term>Shared</term>
+          <description>Specifies whether the underlying connection is a shared connection (True (.T.)), or not (False (.F.)).</description>
+          <description>Read-only</description>
+        </item>
+        <item>
+          <term>Transactions</term>
+          <description>
+            Contains a numeric value that determines how the connection manages transactions on the remote table. Transactions may assume the following values:<br/>
+            1 or DB_TRANSAUTO (from Foxpro.H).1 is the default. Transaction processing for the remote table is automatically handled.<br/>
+            2 or DB_TRANSMANUAL (from Foxpro.H). Transaction processing is handled manually through SqlCommit( ) and SqlRollBack( ). <br/>
+          </description>
+          <description>Read/write</description>
+        </item>
+        <item>
+          <term>UserId</term>
+          <description>The user identification. When you create a connection with the Login dialog then this UserId is not always available.</description>
+          <description>Read-only</description>
+        </item>
+        <item>
+          <term>WaitTime</term>
+          <description>
+            The amount of time in milliseconds that elapses before X# checks if the SQL statement has completed executing.
+            The default is 100 milliseconds.
+          </description>
+          <description>Read/write</description>
+        </item>
+      </list>
+    </remarks>
+    <example>
+       <code language="X#">
+        Close ALL
+        Clear ALL
+        Clear
+        nHandle=SqlConnect()
+        IF nHandle &gt; 0
+        nSet=SqlSetProp(nHandle, "PacketSize", 2048 )
+        IF nSet &gt; 0
+        =MessageBox("PacketSize was set to 2048",0,"Connection Results")
+        ELSE
+        =MessageBox("Error setting PacketSize",0,"Connection Results")
+        ENDIF
+        ELSE
+        =MessageBox("No Connection",0,"Connection Results")
+        ENDIF
+        =SqlDisconnect(nHandle)
+      </code>
+    </example>
+    <seealso cref="O:XSharp.VFP.Functions.SqlConnect">SqlConnect()</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.SqlStringConnect">SqlStringConnect()</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.SqlGetProp">SqlGetProp()</seealso>
+
+  </sqlsetprop>
+  <sqlstringconnectoverload>
+    <overloads>
+      <summary>
+        There are 3 different overloads for the <b>SqlStringConnect( )</b> function. You can either pass a connection string ,
+        in which case the runtime tries to connect to the datasource with that string.
+        If you don't specify a connection string then a dialog will be shown where you can choose a connection.
+        The logic parameter indicates if the connection that you open will be shareable or not.
+      </summary>
+      <seealso cref="O:XSharp.VFP.Functions.SqlDisconnect">SqlDisconnect()</seealso>
+      <seealso cref="O:XSharp.VFP.Functions.SqlConnect">SqlConnect()</seealso>
+      <seealso cref="O:XSharp.VFP.Functions.SqlExec">SqlExec()</seealso>
+      <seealso cref="O:XSharp.VFP.Functions.SqlGetProp">SqlGetProp()</seealso>
+      <seealso cref="O:XSharp.VFP.Functions.SqlSetProp">SqlSetProp()</seealso>
+      <seealso cref="O:XSharp.VFP.Functions.SqlSetFactory">SqlSetFactory()</seealso>
+
+    </overloads>
+  </sqlstringconnectoverload>
+  <sqlstringconnect>
+    <summary>
+      Establishes a connection to a data source using a connection string.
+    </summary>
+    <param name="cConnectString">
+      This specifies the data source connection string required by the Ado.Net connection object.
+      X# passes the connection string to the Ado.Net DBConnect object. For more information about data source connection strings,
+      see your Ado.Net documentation.<br/>
+      You can also choose a data source from the Select Connection or Data Source Dialog Box, which appears when you
+      call <b>SqlStringConnect( )</b> with an empty connection string, or by passing the overload that only takes the lShared parameter.
+    </param>
+    <param name="lShared">
+      Specifies if the data source specified with cConnectString has a shared connection. True (.T.) = Shared, False (.F.) = Exclusive, this is the Default.
+    </param>
+    <param name="lShared">
+      Specifies if the data source that will be opened should be shared or not. True (.T.) = Shared, False (.F.) = Exclusive, this is the Default.
+    </param>
+    <returns>
+      Numeric data type. <b>SqlStringConnect( )</b> returns a positive nonzero numeric value as the statement handle if you successfully connect to the data source.
+      <b>SqlStringConnect( )</b> returns –1 if it cannot make the connection.<br/>
+      You should store this statement handle in a memory variable and use the variable in subsequent function calls that require a connection handle.
+    </returns>
+    <remarks>
+      The <b>SqlConnect( )</b> and <b>SqlStringConnect( )</b> functions return a numeric value as the statement handle rather than a connection handle.
+      You cannot obtain a connection handle directly. You can still set and get connection properties using the <b>SqlSetProp( )</b> and <b>SqlGetProp( )</b>
+      functions by passing the statement handle for that connection and the string, "Shared", as arguments. All other SQL functions use a statement
+      handle instead of a connection handle.<br/>
+      <b>SqlStringConnect( )</b> always creates a new connection when it successfully makes a connection.
+      However, setting the lShared parameter determines whether you can share the connection later. If you specify a connection as shareable
+      by setting lShared to True (.T.), you can share the connection later by calling <b>SqlConnect( )</b> and passing the numeric value of the connection handle
+      as the first parameter. For more information, see SqlConnect( ) Function.<br/>
+      You can use <b>SqlConnect( )</b> to obtain a new statement handle on a shared connection that was opened using <b>SqlStringConnect( )</b>.
+    </remarks>
+    <example>
+      <b>Example 1</b><br/>
+      The following example assumes that an ODBC data source called MyFoxSQLNT exists and is available. <b>SqlStringConnect( )</b> returns a numeric value, which is stored to a variable named codegnHandle/code.
+      If you successfully connect to the data source, <b>SqlStringConnect( )</b> returns a positive number, a dialog box appears, and <b>SqlDisconnect( )</b> is called to disconnect from the data source.
+      If you cannot connect to the data source, <b>SqlStringConnect( )</b> returns a negative number and displays a message.
+       <code language="X#">
+        STORE SqlStringConnect('dsn=MyFoxSQLNT;uid=myUserID;pwd=myPassword') TO gnConnHandle
+        IF gnConnHandle &lt; 0
+        = MessageBox('Cannot make connection', 16, 'SQL Connect Error')
+        ELSE
+        = MessageBox('Connection made', 48, 'SQL Connect Message')
+        = SqlDisconnect(gnHandle)
+        ENDIF
+      </code>
+
+      <b>Example 2</b><br/>
+      The following examples show how you can use the <b>SqlStringConnect( )</b> function without a Data Source Name (DSN).
+       <code language="X#">lcDSNLess="driver = SQL Server;server=&lt;servername&gt;;uid=&lt;userid&gt;;pwd=&lt;password&gt;"</code>
+      -or-
+       <code language="X#">lcDSNLess="driver = {SQL Server};server=&lt;servername&gt;;uid=&lt;userid&gt;;pwd=&lt;password&gt;" </code>
+      -or-
+       <code language="X#">
+        lcDSNLess="DRIVER = {SQL Server};" ;
+        + "SERVER=&lt;servername&gt;;" ;
+        + "UID=&lt;userid&gt;;" ;
+        + "PWD=&lt;password&gt;;" ;
+        + "Database=PUBS;" ;
+        + "WSID=&lt;machine name or userid&gt;;" ;
+        + "APP=MicroX(R) Sample App"
+        lnConnHandle=SqlStringConnect(m.lcDSNLess)
+      </code>
+      <b>Example 3</b><br/>
+      Each of the following examples creates a new shared connection. In the first statement, the Select Connection or Data Source Dialog Box appears and <b>SqlStringConnect( )</b> creates the resulting connection as shared.
+       <code language="X#">
+        SqlStringConnect(.T.)
+        SqlStringConnect('myConnectionString', .T.)
+      </code>
+    </example>
+    <seealso cref="O:XSharp.VFP.Functions.SqlDisconnect">SqlDisconnect()</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.SqlConnect">SqlConnect()</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.SqlExec">SqlExec()</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.SqlGetProp">SqlGetProp()</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.SqlSetProp">SqlSetProp()</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.SqlSetFactory">SqlSetFactory()</seealso>
+  </sqlstringconnect>
+  <sqltables>
+    <summary>
+      Stores the names of tables in a data source to a X# cursor.
+    </summary>
+    <param name="nStatementHandle">
+      Specifies the statement handle to the data source returned by SqlConnect( ).
+    </param>
+    <param name="cTableTypes">
+      Specifies one or more table types. Valid table types are 'Table,' 'View,' 'System Table,' or any valid data source-specific table type identifier.
+      If you include a list of table types, separate the table types with commas.<br/>
+      All table names in the data source are selected if you omit cTableTypes or if cTableTypes is the empty string.<br/>
+      The table type you specify must be delimited with single quotation marks. The following example demonstrates how to specify the 'View'
+      and 'System Table' table types as a string literal.<br/>
+       <code language="X#">? SqlTables(handle, "'View', 'System Table'", "mydbresult")</code>
+    </param>
+    <param name="cCursorName">
+      Specifies the name of the X# cursor to which the result set is sent. If you don't include a cursor name, X# uses the default name SQLRESULT.
+      The structure of the results depends on the internal SqlTables( ) function for the ODBC Handle.
+    </param>
+    <returns>
+      Numeric. SqlTables( ) returns 1 if the cursor is successfully created, 0 if SqlTables( ) is still executing, – 1 if a connection level error occurs,
+      and – 2 if an environment level error occurs.
+    </returns>
+    <remarks>
+      SqlTables( ) is one of the four functions that you can execute either synchronously or asynchronously.
+      The setting of the SqlSetProp( ) asynchronous option determines if these functions execute synchronously or asynchronously.
+      In asynchronous mode, you must call SqlTables( ) repeatedly until it returns a value other than False (.F.), meaning the function is still executing.
+    </remarks>
+    <example>
+       <code language="X#">
+        STORE SqlConnect('MyFoxSQLNT', '&lt;userid&gt;', '&lt;password&gt;') TO gnConnHandle
+        IF gnConnHandle &lt; 0
+        = MessageBox('Cannot make connection', 16, 'SQL Connect Error')
+        ELSE
+        = MessageBox('Connection made', 48, 'SQL Connect Message')
+        STORE SqlTables(gnConnHandle, 'Table', 'mycursor') TO nTables
+        IF nTables = 1
+        Select mycursor
+        LIST
+        ENDIF
+        ENDIF
+      </code>
+    </example>
+    <seealso cref="O:XSharp.VFP.Functions.SqlConnect">SqlConnect()</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.SqlStringConnect">SqlStringConnect()</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.SqlColumns">SqlColumns()</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.SqlGetProp">SqlGetProp()</seealso>
+    <seealso cref="O:XSharp.VFP.Functions.SqlSetProp">SqlSetProp()</seealso>
+
+  </sqltables>
+
   <stuffc>
     <summary>
       Returns a character string created by replacing a specified number of characters in a character expression with another character expression.
@@ -273,16 +2707,16 @@
     </param>
     <param name="cReplacement">
 
-      Specifies the replacement character expression. If cReplacement is the empty string, 
+      Specifies the replacement character expression. If cReplacement is the empty string,
       the number of characters specified by nCharactersReplaced are removed from cExpression.
     </param>
     <returns>
       Character
     </returns>
     <remarks>
-      StuffC( ) is designed for expressions containing double-byte characters. 
+      StuffC( ) is designed for expressions containing double-byte characters.
       If the expression contains only single-byte characters, StuffC( ) is equivalent to Stuff( ).<br/>
-      StuffC( ) returns a character string created by replacing a specified number of characters in a character expression 
+      StuffC( ) returns a character string created by replacing a specified number of characters in a character expression
       with another character expression. The character expressions can consist of any combination of single-byte and double-byte characters.<br/>
       This function is useful for manipulating double-byte character sets for languages such as Hiragana and Katakana.
     </remarks>
@@ -311,181 +2745,245 @@
       This function is useful for manipulating double-byte character sets for languages such as Hiragana and Katakana.
     </remarks>
   </substrc>
-  <fldcount>
+  <tag>
     <summary>
-      This function is a synonym to FCount() Function.
+      Returns a tag name from an open compound index (.cdx) file or the name of an open single-entry (.idx) index file.
     </summary>
-    <seealso cref='M:XSharp.RT.Functions.FCount' />
-    <seealso cref='M:XSharp.RT.Functions.FCount(XSharp.__Usual)' />
-  </fldcount>
-  <mton>
-    <summary>
-      Returns a Numeric value from a Currency expression.
-    </summary>
-    <param name="mExpression">
+    <param name="CDXFileName">
 
-      Specifies a Currency expression whose value MToN( ) returns. mExpression must evaluate to a valid Currency value or X# generates an error.
-      Currency values are created by placing a dollar sign ($) prefix immediately before a Numeric value.
+      Specifies the name of the .cdx file to return a tag name from.
+
+    </param>
+    <param name="nTagNumber">
+
+      Specifies a number corresponding to the order in which a tag was created in the compound index file.
+      For example, if nTagNumber is 1, <b>TAG( )</b> returns the name of the first tag created in the compound index file. If nTagNumber is 2, <b>TAG( )</b> returns the name of the second tag created, and so on. TAG( ) returns the empty string when nTagNumber exceeds the number of tag names.
+      If you omit CDXFileName, <b>TAG( )</b> returns compound index file tag names and single-entry index file names in a specific order as follows:
+      Names of single-entry index files are returned based on their order in the <b>Index</b> clause of <b>Use</b> or <b>Set Index</b>. For more information, see Use Command and Set Index Command.
+      Tag names from the structural compound index file (if one exists for the table) are returned.
+      Tag names from other open compound index files are returned, again in the order in which the tags were created in the compound index files and in the order in which the compound index files are specified in the <b>Index</b> clause for <b>Use</b> or <b>Set Index</b>.
+
+      nWorkArea| cTableAlias
+      Returns tag names and index file names from files open in another work area. nWorkArea specifies a work area number and cTableAlias specifies a table alias. By default, tag names and index file names are returned from files in the current work area.
     </param>
     <returns>
-      Numeric type. MToN( ) returns a value of Numeric type with four decimal places.
+      Character. <b>TAG( )</b> returns an index tag name as an uppercase character string.
     </returns>
+    <remarks>
+      Tags are index entries in compound index (.cdx) files created with the <b>Index</b> command. Single-entry index (.idx) files contain only one entry; therefore, <b>TAG( )</b> returns the file name for .idx files.
+      A structural compound index (.cdx) file opens with its table automatically. You can open non-structural .cdx files and .idx index files for a table using the <b>Index</b> clause in the <b>Use</b> command or using the <b>Set Index</b> command.
+    </remarks>
     <example>
-       <code language="X#">
-        STORE $24.95 TO gyMoney  &amp;&amp; Creates a currency type memory variable
-        CLEAR
-        ? "gyMoney is type: "
-        ?? Type('gyMoney')  &amp;&amp; Displays Y, currency type value
-        gyMoney = MToN(gyMoney)     &amp;&amp;  Converts gyMoney to a numeric value
-        ? "gyMoney is now type: "
-        ?? Type('gyMoney')  &amp;&amp; Displays N, numeric type value
+
+      <code language="X#">
+        Close Databases
+        Open Database (HOME(2) + 'Data\TestData')
+        Use Customer
+        Clear
+        For nCount = 1 TO TAGCOUNT()
+        ? TAG(CDX(1),nCount)
+        ENDFor
       </code>
     </example>
-    <seealso cref='M:XSharp.VFP.Functions.NToM(XSharp.__Float)' />
-  </mton>
-  <ntom>
+  </tag>
+  <tagcount>
     <summary>
-      Returns a Currency value from a Numeric expression.
+      Returns the number of .cdx compound index file tags and open .idx single-entry index files.
     </summary>
-    <param name="nExpression">
+    <param name="CDXFileName">
 
-      Specifies a numeric expression whose Currency value NToM( ) returns. If nExpression has more than four decimal places, it is rounded to four decimal places. If nExpression has less than four decimals places, it is padded with zeros until four decimal places are created.
+      Specifies the name of a compound index file for which TAGCOUNT( ) returns the number of tags. If CDXFileName does not exist for the current table, you must specify the nWorkarea or cTableAlias in which it does exist.
+      If you omit CDXFileName, TAGCOUNT( ) returns the number of tags in all .cdx compound index files and open .idx single-entry index files in the currently selected work area or alias.
+
     </param>
-    <returns>
-      Currency type. NToM( ) returns a value of Currency type with four decimal places.
-    </returns>
-    <example>
-       <code language="X#">
-        STORE 24.95 TO gnNumeric  &amp;&amp; Creates a numeric type memory variable
-        CLEAR
-        ? "gnNumeric is type: "
-        ?? Type('gnNumeric')  &amp;&amp; Displays N, numeric type value
-        gnNumeric= NToM(gnNumeric)     &amp;&amp;  Converts gnNumeric to a currency value
-        ? "gnNumeric is now type: "
-        ?? Type('gnNumeric')  &amp;&amp; Displays Y, currency type value
-      </code>
-    </example>
-    <seealso cref='M:XSharp.VFP.Functions.MToN(XSharp.__Currency)' />
-  </ntom>
-  <sign>
-    <summary>
-      Returns a numeric value of 1, –1, or 0 if the specified numeric expression evaluates to a positive, negative, or 0 value.
-    </summary>
-    <param name="nExpression">
+    <param name="nWorkarea">
 
-      Specifies the numeric expression Sign( ) evaluates. Sign( ) returns 1 if nExpression evaluates to a positive number, –1 if nExpression evaluates to a negative number, and 0 if nExpression evaluates to 0.
+      Specifies the work area of the table for which TAGCOUNT( ) returns the number of tags for the .cdx compound index file.
+
+    </param>
+    <param name="cTableAlias">
+
+      Specifies the alias of the table for which TAGCOUNT( ) returns the number of tags for the .cdx compound index file.
     </param>
     <returns>
       Numeric
     </returns>
+    <remarks>
+      Included for compatibility with dBASE.
+    </remarks>
+  </tagcount>
+  <tagno>
+    <summary>
+      Returns the index position for .cdx compound index file tags and open .idx single-entry index files.
+    </summary>
+    <param name="IndexName">
+
+      Specifies the name of a .cdx compound index file tag or an open .idx single-entry index file for which TAGNO( ) returns the index position.
+
+    </param>
+    <param name="CDXFileName">
+
+      Specifies the name of a .cdx compound index file containing the name of the tag you specify with IndexName.
+
+    </param>
+    <param name="nWorkArea">
+
+      Specifies the work area of the table for which TAGNO( ) returns the index position for .cdx compound index file tags and .idx single-entry index files.
+
+    </param>
+    <param name="cTableAlias">
+
+      Specifies the alias of the table for which TAGNO( ) returns the index position for .cdx compound index file tags and .idx single-entry index files.
+    </param>
+    <returns>
+      Numeric
+    </returns>
+    <remarks>
+      TAGNO( ) returns 0 if a master index is not set (the table is in natural record number order) and the optional parameters are omitted.
+      Included for compatibility with dBASE.
+    </remarks>
+  </tagno>
+
+  <ttod>
+    <summary>
+      Returns a Date value from a DateTime expression.
+    </summary>
+    <param name="tExpression">
+      Specifies a date and time expression from which TToD( ) returns a Date value. tExpression must evaluate to a valid DateTime. If tExpression contains only a time, X# adds the default date of 12/30/1899 to tExpression and returns this default date.
+    </param>
+    <returns>
+      Date
+    </returns>
     <example>
        <code language="X#">
-        STORE 10 TO gnNum1
-        STORE -10 TO gnNum2
-        STORE 0 TO gnZero
+        STORE DateTime( ) TO gtDtime  &amp;&amp; Creates a Datetime type memory variable
         CLEAR
-        ? Sign(gnNum1)  &amp;&amp; Displays 1
-        ? Sign(gnNum2)  &amp;&amp; Displays -1
-        ? Sign(gnZero)  &amp;&amp; Displays 0
+        ? "gtDtime is type: "
+        ?? Type('gtDtime')  &amp;&amp; Displays T, Datetime type value
+        gtDtime = TToD(gtDtime)     &amp;&amp;  Converts gtDtime to a date value
+        ? "gtDtime is now type: "
+        ?? Type('gtDtime')  &amp;&amp; Displays D, character type value
       </code>
     </example>
-  </sign>
-  <iscolor>
+  </ttod>
+  <unique>
     <summary>
-      Determines whether a computer can display color.
+      Included for compatibility with dBASE.
     </summary>
+  </unique>
+  <week>
+    <summary>
+      Returns a number representing the week of the year from a Date or DateTime expression.
+    </summary>
+    <param name="dExpression">Specifies the Date for which WEEK( ) returns the week of the year.</param>
+    <param name="tExpression">Specifies the DateTime expression for which WEEK( ) returns the week of the year.</param>
+    <param name="nFirstWeek">
+      Specifies how the first week should be calculated. Valid values are 1, 2 and 3.<br/>
+      The value 0 which can be set in the Options box in FoxPro is the same as the default value 1.
+      The remarks section has a list of all possible values.
+    </param>
+    <param name="nFirstDayOfWeek">
+      Specifies the first day of the week. Valid values are 1 (Sunday) - 7 (Saturday). <br/>
+      The value 0 which can be set in the Options box in FoxPro is the same as the default value 1.
+      The remarks section has a list of all possible values.
+    </param>
     <returns>
-      IsColor( )Return Value
-      Logical
+      Numeric type. <b>Week()</b> returns a number representing the week of the year.
     </returns>
     <remarks>
-      IsColor( ) returns true (.T.) if the computer has color capability (whether or not a color monitor is actually being used). 
-      If the computer doesn't provide color support, IsColor( ) returns false (.F.).
-    </remarks>
-  </iscolor>
-  <ismouse>
-    <summary>
-      Returns true (.T.) if mouse hardware is present.
-    </summary>
-    <remarks>
-      IsMouse( )Remarks
-      IsMouse( ) returns true (.T.) if mouse hardware is present; otherwise it returns false (.F.).
+      <p>
+        <b>Week()</b> returns a number from 1 to 53 that represents the week of the year.
+        For example, <b>Week()</b> returns 1 for the first week of the year, 2 for the second week of the year, and so on.
+        Note that a week can be split between years — the first week of the year can be in the current year and the previous year.
+      </p>
+      <p>
+        Possible values for <paramref name="nFirstweek"  /> are
+      </p>
+      <list type="table">
+        <listheader>
+          <term>nFirstweek</term>
+          <description>Description</description>
+        </listheader>
+        <item>
+          <term>0 and 1</term>
+          <description>
+            First week contains January 1st. This is the default when you omit <paramref name="nFirstweek"/>
+          </description>
+        </item>
+        <item>
+          <term>2</term>
+          <description>
+            The larger half (four days) of the first week is in the current year.
+          </description>
+        </item>
+        <item>
+          <term>3</term>
+          <description>
+            First week has seven days.
+          </description>
+        </item>
+      </list>
+
+      <p>
+        Possible values for <paramref name="nFirstDayOfWeek"  /> are
+      </p>
+
+      <list type="table">
+        <listheader>
+          <term>nFirstDayOfWeek</term>
+          <description>Description</description>
+        </listheader>
+        <item>
+          <term>0 and 1</term>
+          <description>
+            Sunday. This is the default when you omit <paramref name="nFirstDayOfWeek" />
+          </description>
+        </item>
+        <item>
+          <term>2</term>
+          <description>
+            Monday
+          </description>
+        </item>
+        <item>
+          <term>3</term>
+          <description>
+            Tuesday
+          </description>
+        </item>
+        <item>
+          <term>4</term>
+          <description>
+            Wednesday
+          </description>
+        </item>
+        <item>
+          <term>5</term>
+          <description>
+            Thursday
+          </description>
+        </item>
+        <item>
+          <term>6</term>
+          <description>
+            Friday
+          </description>
+        </item>
+        <item>
+          <term>7</term>
+          <description>
+            Saturday
+          </description>
+        </item>
+
+      </list>
     </remarks>
     <example>
        <code language="X#">
-        CLEAR
-        ? 'Mouse hardware present? '
-        ?? IsMouse( )
+        Clear
+        ? Week(Date( ))
+        ? Week({^1998-02-16})  &amp;&amp; Displays 8
       </code>
     </example>
-  </ismouse>
-  <forcepath>
-    <summary>
-      Returns a file name with a new path name substituted for the old one.
-    </summary>
-    <param name="cFileName">
-      Specifies the file name (with or without a path or extension), which will get a new path.
-    </param>
-    <param name="cPath">
-      Specifies the new path for cFileName.
-    </param>
-    <returns>
-      Character
-    </returns>
-  </forcepath>
-  <forceext>
-    <summary>
-      Returns a string with the old file name extension replaced by a new extension.
-    </summary>
-    <param name="cFileName">
-      Specifies the file name (with or without a path or extension), which will get a new extension.
-    </param>
-    <param name="cExtension">
-      Specifies the new extension (without a period) for cFileName.
-    </param>
-    <returns>
-      Character
-    </returns>
-  </forceext>
-  <icase>
-    <summary>
-      Evaluates the results from a list of conditions (upto 100 pairs are supported).
-    </summary>
-    <param name="lCondition">Specifies a condition as a logical expression to evaluate.<br/>
-      If lCondition evaluates to False (.F.), <b>ICase( )</b> continues to evaluate the next condition and returns the corresponding eResult for that 
-      condition if it evaluates to True (.T.). <br/>
-      If lCondition evaluates to null (.NULL.), X# treats lCondition as if it evaluated to False (.F.).
-    </param>
-    <param name="eResult">Specifies a result to return if lCondition evaluates to True (.T.).</param>
-    <param name="lCondition2">
-      Specifies a condition as a logical expression to evaluate.<br/>
-      If lCondition2 evaluates to False (.F.), <b>ICase( )</b> continues to evaluate the next condition and returns the corresponding eResult for that 
-      condition if it evaluates to True (.T.). <br/>
-      If lCondition evaluates to null (.NULL.), X# treats lCondition as if it evaluated to False (.F.).
-  </param>
-    <param name="eResult2">Specifies a result to return if lCondition2 evaluates to True (.T.).</param>
-    <param name="eOtherwiseResult">Contains the result returned if all conditions evaluate to False (.F.).</param>
-    <returns>
-      <b>ICase( )</b> returns the first eResult as soon as lCondition evaluates to True (.T.).
-      If all conditions evaluate to False (.F.), <b>ICase( )</b> returns eOtherwiseResult.
-      If eOtherwiseResult is omitted, and all conditions evaluate to False (.F.), <b>ICase( )</b> returns null (.NULL.).
-    </returns>
-    <remarks>
-      You must always pass a set of two parameters to <b>ICase( )</b>. <br/>
-      If you pass an odd number of parameters, the last parameter is treated as the return value for eOtherwiseResult.<br/>
-      You can pass up to 100 pairs of parameters for <b>ICase( )</b>.
-      If you use a long <b>ICase( )</b> expression in a filter expression, such as in a <b>FOR</b> or <b>WHERE</b> clause, 
-      make sure that <b>Sys(3055)</b> is set to an appropriate complexity level to avoid generating an error. <br/>
-      For more information, see Sys(3055) - FOR and WHERE Clause Complexity.
-    </remarks>
-    <example>
-      The following example demonstrates different scenarios using <b>ICase( )</b> to evaluate expressions and returning certain values based on the results of those expressions.
-      The following line of code displays "First is true" because the first expression evaluates to True (.T.).
-       <code language="X#">? ICase(1+1=2,"First is true",1+1=3,"Second is false","None are true")</code>
-      The following line of code displays "Second is true" because the first expression evaluates to False (.F.), but the second expression evaluates to True (.T.).
-       <code language="X#">? ICase(1+2=2,"First is false",1+2=3,"Second is true","None are true")</code>
-      The following line of code displays "None are true", which is the last result specified, because the first and second expressions evaluate to False (.F.).
-       <code language="X#">? ICase(1+2=2,"First is false",1+1=3,"Second is false","None are true")</code>
-    </example>
-  </icase>
+  </week>
 </Runtimefunctions>

@@ -192,6 +192,11 @@ namespace XSharp.Build
             set { base.Bag[nameof(FOX1)] = value; }
             get { return base.GetBoolParameterWithDefault(nameof(FOX1), false); }
         }
+        public Boolean FOX2
+        {
+            set { base.Bag[nameof(FOX2)] = value; }
+            get { return base.GetBoolParameterWithDefault(nameof(FOX2), false); }
+        }
 
         public String CompilerPath
         {
@@ -724,6 +729,7 @@ namespace XSharp.Build
             if (Dialect.ToLower() == "foxpro")
             {
                 commandline.AppendPlusOrMinusSwitch("/fox1", base.Bag, nameof(FOX1));
+                commandline.AppendPlusOrMinusSwitch("/fox2", base.Bag, nameof(FOX2));
             }
 
             // User-defined CommandLine Option (in order to support switches unknown at that time)

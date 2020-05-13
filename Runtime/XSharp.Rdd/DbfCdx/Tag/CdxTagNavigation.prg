@@ -173,7 +173,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 IF !SELF:_oRdd:_isValid
                     IF nToSkip < 0
                         recno := SELF:_locateKey(NULL, 0, SearchMode.Bottom,0)
-                        nToSkip++
+                        nToSkip ++
+                        SELF:_oRdd:_BoF := recno == 0
+                        SELF:_oRdd:_EoF := recno == 0
                     ELSE
                         recno := 0
                         nToSkip := 0
@@ -187,8 +189,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 IF orgToSkip != 0
                     IF SELF:HasScope
                         isBof := SELF:_oRdd:_BoF
-                        isEof := SELF:_oRdd:_EoF
-                        recno := SELF:_ScopeSkip(nToSkip)
+                        isEof := SELF:_oRdd:_EoF 
+                        var newrec := SELF:_ScopeSkip(nToSkip)
+                        if (newrec != -1) // -1  means that there was nothing todo
+                            recno := newrec
+                        endif
                         IF isBof != SELF:_oRdd:_BoF
                             changedBof := TRUE
                             isBof := SELF:_oRdd:_BoF
@@ -349,6 +354,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             IF SELF:HasTopScope
                 SELF:_ScopeSeek(DbOrder_Info.DBOI_SCOPETOP)
                 first := SELF:_findItemPos()
+                SELF:ClearStack()
             ENDIF
             IF last > first
                 RETURN last - first + 1
@@ -453,7 +459,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                         ENDIF
                     UNTIL !((recno != 0) .AND. (lNumKeys != 0))
                 ELSE
-                    recno := 0
+                    recno := -1
                 ENDIF
             ENDIF
             RETURN recno

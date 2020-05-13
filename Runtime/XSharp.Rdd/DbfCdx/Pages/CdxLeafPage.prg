@@ -175,7 +175,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             SELF:ClearRecordsAndKeys()
             VAR bits            := CdxHelpers.GetBits(SELF:KeyLength)
             // base dupCountMask, trailCountMNask, numbitsRecno and other info are based on keylength 
-            SELF:DataBytes      := (BYTE) IIF (bits > 12, 5, IIF( bits > 8, 4, 3))
+            SELF:DataBytes      := (BYTE) IIF (bits > 12, 5, IIF( bits > 8, 4, IIF(bits > 1, 3,2)))
             SELF:RecordBits     := (BYTE) ((SELF:DataBytes << 3) - (bits << 1))
             SELF:DuplicateBits  := SELF:TrailingBits  := bits
             SELF:TrailingMask   := SELF:DuplicateMask := (BYTE) (( 1 << bits  ) - 1)
@@ -199,6 +199,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 
         INTERNAL PROPERTY ValidLeaves AS LOGIC GET _leaves != NULL .AND. _leaves:Count == SELF:NumKeys
 #region ICdxKeyValue
+
         PUBLIC METHOD GetRecno(nPos AS Int32) AS Int32
             IF SELF:ValidLeaves
                 RETURN _leaves[nPos]:Recno
@@ -207,7 +208,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL nRecno    AS Int32
             System.Diagnostics.Debug.Assert(nPos >= 0 .AND. nPos < SELF:NumKeys)
             nOffSet     := CDXLEAF_HEADERLEN + nPos * SELF:DataBytes
-            nRecno      := _GetLong(nOffSet) 
+            IF SELF:RecordBits <= 16 
+                nRecno      := _GetWord(nOffSet)
+            ELSE
+                nRecno      := _GetLong(nOffSet)
+            ENDIF
             nRecno      := _AND( nRecno , SELF:RecnoMask)
             RETURN nRecno
 
@@ -260,7 +265,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 nLast := SELF:NumKeys-1
                 FOR VAR nI := 0 TO nLast
                     LOCAL iTemp AS WORD
-                    nRecno  := _GetLong(nOffSet)
+                    IF SELF:RecordBits <= 16
+                        nRecno  := _GetWord(nOffSet)
+                    ELSE
+                        nRecno  := _GetLong(nOffSet)
+                    ENDIF
                     nRecno  := _AND( nRecno , SELF:RecnoMask)
                     iTemp   := _GetWord(nOffSet + SELF:DataBytes - 2)
                     SELF:_getDupTrail(iTemp, OUT nDup, OUT nTrail)
@@ -377,6 +386,8 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             ENDCASE
             var totalBits       := SELF:RecordBits + bits + bits
             DO CASE
+            CASE totalBits    <= 16
+                SELF:DataBytes := 2
             CASE totalBits    <= 24
                 SELF:DataBytes := 3
             CASE totalBits    <= 32
@@ -420,9 +431,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 nDupCount := 0
             ELSE
                 VAR prevkey := _leaves[SELF:NumKeys-1]:Key
-                nDupCount   := _getDupCount(prevkey, key, nTrailCount)
+                nDupCount   := _getDupCount(prevkey, key, nTrailCount) 
             ENDIF
-            VAR nBytesNeeded := SELF:KeyLength - nDupCount - nTrailCount  + SELF:DataBytes 
+            LOCAL nBytesNeeded := SELF:KeyLength - nDupCount - nTrailCount  + SELF:DataBytes  AS WORD
             IF SELF:Freespace < nBytesNeeded 
                 //Debug( "triggers SplitLeaf", "Rec", recno)
                 SELF:Write()
@@ -488,24 +499,24 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 VAR prevLeaf := _leaves[_leaves:Count-1]
                 VAR prevkey := prevLeaf:Key
                 nDupCount := SELF:_getDupCount(prevkey, key,  nTrailCount)
-                leaf := CdxLeaf{recno, key, nDupCount, nTrailCount}
+                leaf := CdxLeaf{recno, key,  nDupCount, nTrailCount}
                 _leaves:Add(leaf)
 #ifdef TESTCDX
                 ValidateLeaves(prevLeaf, leaf)
 #endif
-                SELF:Freespace -= (nBytesNeeded-nDupCount)
+                SELF:Freespace := SELF:Freespace - (nBytesNeeded-nDupCount)
                 last := TRUE
             ELSEIF nPos == 0
                 nDupCount       := 0
-                SELF:Freespace  -= (nBytesNeeded-nDupCount)
+                SELF:Freespace  := SELF:Freespace - nBytesNeeded
                 leaf := CdxLeaf{recno, key,nDupCount,nTrailCount}
                 _leaves:Insert(nPos, leaf)
                 adjustNext      := TRUE
             ELSE // nPos > 0 .AND. nPos < _leaves:Count
                 VAR prevLeaf    := _leaves[nPos-1]
                 nDupCount       := SELF:_getDupCount(prevLeaf:Key, key,  nTrailCount)
-                SELF:Freespace  -= (nBytesNeeded-nDupCount)
-                leaf := CdxLeaf{recno, key,nDupCount,nTrailCount}
+                SELF:Freespace  := SELF:Freespace- (nBytesNeeded-nDupCount)
+                leaf := CdxLeaf{recno, key, nDupCount,nTrailCount}
 
                 _leaves:Insert(nPos, leaf)
 #ifdef TESTCDX
@@ -752,7 +763,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
 		        ELSE
 		            NOP // The dup and trail values are already stored in the leaves
                 ENDIF
-                VAR nBytesToCopy := SELF:KeyLength - nDup - nTrail
+                LOCAL nBytesToCopy := SELF:KeyLength - nDup - nTrail AS WORD
                 IF SELF:Freespace < (SELF:DataBytes + nBytesToCopy)
                     VAR action := CdxAction.SplitLeaf(SELF, -1, NULL, 0)
                     SELF:_leaves := list
@@ -776,14 +787,14 @@ BEGIN NAMESPACE XSharp.RDD.CDX
  
        PRIVATE METHOD _getTrailCount(data AS BYTE[]) AS BYTE
            LOCAL iLastTrail AS LONG
-           iLastTrail  := 0
+           iLastTrail  := data:Length
            FOR VAR i := data:Length -1 DOWNTO 0 
                 IF data[i] != TrailByte
-                    iLastTrail := i
                     EXIT
                 ENDIF
+                iLastTrail := i
            NEXT
-           RETURN (BYTE)  (data:Length - iLastTrail -1)
+           RETURN (BYTE)  (data:Length - iLastTrail)
 
         PRIVATE METHOD _getDupCount(prevdata AS BYTE[], data AS BYTE[], trailCount AS LONG) AS BYTE
            BEGIN UNCHECKED
@@ -826,9 +837,11 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                 liValue:longValue := recno
 	            _buffer[nOffset]   :=  liValue:b1
                 _buffer[nOffset+1] :=  liValue:b2  
-                _buffer[nOffset+2] :=  liValue:b3
-                IF SELF:DataBytes > 3
-                    _buffer[nOffset+3] :=  liValue:b4
+                IF SELF:DataBytes > 2
+                    _buffer[nOffset+2] :=  liValue:b3
+                    IF SELF:DataBytes > 3
+                        _buffer[nOffset+3] :=  liValue:b4
+                    ENDIF
                 ENDIF
                 nOffset := nOffset + SELF:DataBytes - 2
                 LOCAL wValue := _GetWord(nOffset) AS WORD

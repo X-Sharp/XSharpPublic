@@ -202,13 +202,15 @@ BEGIN NAMESPACE XSharp.RDD.NTX
         INTERNAL METHOD Dump(keyLen AS WORD) AS STRING
             VAR sb := System.Text.StringBuilder{}
             VAR item := NtxPageNode{keyLen,SELF}
-            sb:AppendLine(String.Format("Page {0}, # of keys: {1}", SELF:PageOffset, SELF:NodeCount))
+            
+            sb:AppendLine(String.Format("Page {0:X6}, # of keys: {1}", SELF:PageOffset, SELF:NodeCount))
             FOR VAR i := 0 TO SELF:NodeCount-1
                 item:Pos := i
-                sb:AppendLine(String.Format("Item {0,2}, Page {1,6} Record {2,4} : {3} ", i, item:PageNo, item:Recno, item:KeyText))
+                sb:AppendLine(String.Format("Item {0,2}, Page {1:X6} Record {2,4} : {3} ", i, item:PageNo, item:Recno, item:KeyText))
             NEXT
             item:Pos := SELF:NodeCount
-            sb:AppendLine(String.Format("Right page reference {0}", item:PageNo))
+            sb:AppendLine(String.Format("Right page reference {0:X6}", item:PageNo))
+            sb:AppendLine("")
             RETURN sb:ToString()
             
     END CLASS

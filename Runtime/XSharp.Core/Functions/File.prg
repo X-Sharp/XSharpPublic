@@ -38,7 +38,9 @@ USING System.Text
     /// <summary>FOpen() Open Mode: Open for writing</summary>
 	DEFINE FO_WRITE       := 1  
     /// <summary>FOpen() Open Mode: Open for reading or writing</summary>
-	DEFINE FO_READWRITE   := 2  
+	DEFINE FO_READWRITE   := 2
+    ///  <summary>FOpen() Open Mode: UnBuffered. Added to FO_READ, FO_WRITE and FO_READWRITE</summary>
+    DEFINE FO_UNBUFFERED  := 10
 	
 	// FOPEN() sharing modes (combine with open mode using +)
     /// <summary>FOpen() Sharing Mode: Compatibility mode (default)</summary>
@@ -111,53 +113,57 @@ BEGIN NAMESPACE XSharp.IO
 		PROPERTY FileAccess		AS FileAccess AUTO 
 		PROPERTY Attributes	    AS DWORD AUTO
 		PROPERTY FileShare		AS FileShare AUTO
+        PROPERTY UnBuffered     AS LOGIC AUTO
 		
 		CONSTRUCTOR(dwMode AS DWORD, dwAttribs AS DWORD)
 			// Wildcard
-			IF (DWORD)_AND(dwMode, FXO_WILD) == FXO_WILD
-				lWild := TRUE
+			IF _AND(dwMode, FXO_WILD) == (DWORD) FXO_WILD 
+				SELF:lWild := TRUE
 				dwMode := dwMode - FXO_WILD
 			ELSE
-				lWild := FALSE
+				SELF:lWild := FALSE
 			ENDIF
-			Attributes := dwAttribs
-			
+			SELF:Attributes := dwAttribs
+            VAR nMode := _AND(dwMode , 0x0F)    // Get lobyte
+            IF nMode >= FO_UNBUFFERED // check for Unbuffered / Buffered
+               SELF:UnBuffered := TRUE
+            ENDIF
 			// Access
-			FileAccess	:= FileAccess.Read
-			IF (DWORD)_AND(dwMode,FO_READWRITE) == FO_READWRITE
-				FileAccess	:= FileAccess.ReadWrite
-			ELSEIF (DWORD)_AND(dwMode,FO_WRITE) == FO_WRITE
-				FileAccess	:= FileAccess.Write
+			
+			IF _AND(dwMode,FO_READWRITE) == (DWORD) FO_READWRITE
+				SELF:FileAccess	:= FileAccess.ReadWrite
+			ELSEIF _AND(dwMode,FO_WRITE) == (DWORD) FO_WRITE
+				SELF:FileAccess	:= FileAccess.Write
+            ELSE
+                SELF:FileAccess	:= FileAccess.Read
 			ENDIF
 			// Create
-			FileMode := FileMode.Open
-			FileShare  := FileShare.ReadWrite
-			IF _AND(dwMode,FO_CREATE) == FO_CREATE
-				FileMode	:= FileMode.Create
-				FileAccess	:= FileAccess.ReadWrite
-                FileShare   := FileShare.None
+			SELF:FileMode := FileMode.Open
+			SELF:FileShare  := FileShare.ReadWrite
+			IF _AND(dwMode,FO_CREATE) == (DWORD) FO_CREATE
+				SELF:FileMode	:= FileMode.Create
+				SELF:FileAccess	:= FileAccess.ReadWrite
+                SELF:FileShare   := FileShare.None
                 RETURN
 			ENDIF
 			
 			LOCAL dwTempMode AS DWORD
-			dwTempMode := (DWORD)_OR(OF_SHARE_DENY_WRITE, OF_SHARE_DENY_READ, OF_SHARE_DENY_NONE)
-			dwTempMode := (DWORD)_AND(dwMode,dwTempMode)
+			dwTempMode := _OR(OF_SHARE_DENY_WRITE, OF_SHARE_DENY_READ, OF_SHARE_DENY_NONE)
+			dwTempMode := _AND(dwMode,dwTempMode)
 			
 			SWITCH dwTempMode 
 				CASE FO_DENYNONE
-					FileShare  := FileShare.ReadWrite
+				CASE FO_COMPAT
+					SELF:FileShare  := FileShare.ReadWrite
 				
 				CASE FO_DENYWRITE
-					FileShare  := FileShare.Read
+					SELF:FileShare  := FileShare.Read
 				
 				CASE FO_DENYREAD
-					FileShare  := FileShare.Write
+					SELF:FileShare  := FileShare.Write
 				
 				CASE FO_EXCLUSIVE
-					FileShare  := FileShare.None
-				
-				CASE FO_COMPAT
-					FileShare  := FileShare.ReadWrite
+					SELF:FileShare  := FileShare.None
 				
 			END SWITCH
 			RETURN
@@ -226,7 +232,11 @@ BEGIN NAMESPACE XSharp.IO
 			LOCAL oStream := NULL AS FileStream
 			TRY
                 ClearErrorState()
-                	oStream := XsFileStream.CreateFileStream(cFile, oMode:FileMode, oMode:FileAccess, oMode:FileShare, 16*1024,FileOptions.RandomAccess)
+                IF oMode:UnBuffered
+                    oStream := FileStream{cFile, oMode:FileMode, oMode:FileAccess, oMode:FileShare, 1,FileOptions.RandomAccess}
+                ELSE
+                    oStream := XsFileStream.CreateFileStream(cFile, oMode:FileMode, oMode:FileAccess, oMode:FileShare, 16*1024,FileOptions.RandomAccess)
+                ENDIF
  
 			CATCH e AS Exception
 				System.Diagnostics.Trace.WriteLine(e:Message)
@@ -606,8 +616,12 @@ FUNCTION FFLock64(ptrHandle AS IntPtr,offset AS INT64, length AS INT64) AS LOGIC
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fflush/*" />
 /// <include file="CoreComments.xml" path="Comments/File/*" />
 FUNCTION FFlush(ptrHandle AS IntPtr) AS LOGIC
-	RETURN XSharp.IO.File.Flush(ptrHandle, TRUE)
+	RETURN XSharp.IO.File.Flush(ptrHandle, FALSE)
 
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fflush/*" />
+/// <include file="CoreComments.xml" path="Comments/File/*" />
+FUNCTION FFlush(ptrHandle AS IntPtr, lCommit AS LOGIC) AS LOGIC
+	RETURN XSharp.IO.File.Flush(ptrHandle, lCommit)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ffunlock/*" />
 /// <inheritdoc cref="M:XSharp.Core.Functions.FFLock(System.IntPtr,System.UInt32,System.UInt32)" />"
@@ -1016,7 +1030,7 @@ INTERNAL FUNCTION Bytes2Line(aBytes AS BYTE[], nBuffLen REF INT) AS STRING
 /// When there is already a buffer allocated for the file handle, and this buffer is large enough then the existing buffer is returned.
 /// When the size requested exceeds the size of the allocated buffer, or when no buffer exists, then a new byte array will be allocated.
 /// </remarks>
-/// <seealso cref="M:XSharp.Core.Functions.FClose(System.IntPtr)" />
+/// <seealso cref="O:XSharp.Core.Functions.FClose" />
 
 FUNCTION FGetBuffer(hFile AS IntPtr, nSize AS INT) AS BYTE[]
     RETURN XSharp.IO.File.GetBuffer(hFile, nSize)
@@ -1028,7 +1042,7 @@ FUNCTION FGetBuffer(hFile AS IntPtr, nSize AS INT) AS BYTE[]
 /// The Lifetime management of the stream should be left to the X# Runtime <br/>
 /// If you want to close the stream, please use the FClose() function </note>
 /// </remarks>
-/// <seealso cref="M:XSharp.Core.Functions.FClose(System.IntPtr)" />
+/// <seealso cref="O:XSharp.Core.Functions.FClose" />
 FUNCTION FGetStream(pFile AS IntPtr) AS Stream
     RETURN XSharp.IO.File.findStream(pFile)
 
@@ -1040,7 +1054,7 @@ FUNCTION FGetStream(pFile AS IntPtr) AS Stream
 /// The Lifetime management of the stream should be left to the X# Runtime <br/>
 /// If you want to close the stream, please use the FClose() function </note>
 /// </remarks>
-/// <seealso cref="M:XSharp.Core.Functions.FClose(System.IntPtr)" />
+/// <seealso cref="O:XSharp.Core.Functions.FClose" />
 FUNCTION FSize(pFile AS IntPtr) AS INT64
    VAR oStream := XSharp.IO.File.findStream(pFile)
     IF oStream != NULL

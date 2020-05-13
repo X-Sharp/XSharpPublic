@@ -435,14 +435,14 @@ FUNCTION VoDbRSelect(wRelation AS DWORD) AS DWORD
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbselect/*" />
 /// <seealso cref="M:XSharp.CoreDb.Select(System.UInt32,System.UInt32@)"  />
-FUNCTION VoDbSelect(wNew AS DWORD,wOld REF USUAL) AS LOGIC
-    RETURN VoDb.Select(wNew, REF wOld)
+FUNCTION VoDbSelect(wNew AS DWORD,wOld OUT USUAL) AS LOGIC
+    RETURN VoDb.Select(wNew, OUT wOld)
     
     
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbselect/*" />
 /// <seealso cref="M:XSharp.CoreDb.Select(System.UInt32,System.UInt32@)"  />  
-FUNCTION VoDbSelect(wNew AS DWORD,wOld REF DWORD ) AS LOGIC
-  RETURN VoDb.Select(wNew, REF wOld)
+FUNCTION VoDbSelect(wNew AS DWORD,wOld OUT DWORD ) AS LOGIC
+  RETURN VoDb.Select(wNew, OUT wOld)
     
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbsetfilter/*" />
 /// <seealso cref="M:XSharp.CoreDb.SetFilter(XSharp.ICodeblock,System.String)"  />

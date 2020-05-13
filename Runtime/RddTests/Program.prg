@@ -11,16 +11,10 @@ USING System.Reflection
 [STAThread];      
 FUNCTION Start() AS VOID
     TRY
-        local a as array
-        local i as int
-        DbUseArea(TRUE, "DBFVFP", "c:\temp\FoxData\Northwind\customers.dbf")
-        ? CpDbf()
-        for i := 1 to TagCount()
-            ? i, "tag", Tag(,i), "for", @@For(i), "Key", Key(i), "Collate", IdxCollate(,i)
-        next
-        for i := 1 to FCOunt()
-            ? i, @@Field(i,,0), @@Field(i,,1)
-        next
+        testAppDelim()
+        //testDelimWrite()
+        //testUnique3()
+        //BofAndScope()
         //testPruntGrup()
         //TestMsg05()
         // TestWriteError()
@@ -197,6 +191,256 @@ FUNCTION Start() AS VOID
     END TRY
     RETURN
 
+FUNCTION testAppDelim() AS VOID
+LOCAL cPfad, cSource, cDbf AS STRING
+	LOCAL lOK := FALSE AS LOGIC
+	LOCAL oDB AS DbServer
+	cPfad:= "C:\Download\"
+	cSource:= "kv_lieferad.csv"
+	cDbf:= "kv_Lieferad.dbf"
+	oDB:= DbServer{cPfad+cDbf,FALSE}
+	oDB:Zap()
+?	lOK := oDB:AppendDelimited(cPfad+cSource,",")
+	? oDb:LastRec
+    oDb:Close()
+    
+FUNCTION TestAppend( ) AS VOID
+LOCAL i AS DWORD 
+LOCAL aFields AS ARRAY
+LOCAL cDbf, cPfad AS STRING  
+LOCAL f AS FLOAT 
+                     
+    RddSetDefault( "dbfcdx" )
+    
+
+	cPfad := "C:\TEST\"	
+
+	cDBF := cPfad + "Foo.dbf"
+
+
+	aFields := { { "LAST" , "C" , 10 , 0 } } 
+    
+	//SetExclusive ( TRUE )  
+    // 10000 in 0.5 secs	      
+    SetExclusive ( FALSE )   
+	// 10000 in 0.95 secs	 
+	
+	? DbCreate( cDBF , AFields) 
+	? DbUseArea( ,,cDBF )	
+
+	f := Seconds()
+		
+	FOR i := 1 UPTO 10000
+		DbAppend() 
+		FieldPut ( 1 , PadL ( i , 10 , "0" ) )
+						
+	NEXT 
+
+	? "Elapsed:" , Seconds() - f
+	
+	DbCloseArea()
+	
+RETURN 
+
+
+Function TestDelimWrite() as VOID
+    local f as float
+    SetExclusive(TRUE)
+    RddSetDefault("DBFNTX")
+    DbUseArea(TRUE,"DBFNTX", "c:\Test\TEST10K.DBF")
+    ? "Writing"
+    f := Seconds()
+    RuntimeState.Eof := FALSE
+    DbCopyDelim("C:\test\test10k.txt",'"')
+    ? "TXT", Seconds() - f
+    f := Seconds()
+    RuntimeState.DelimRDD := "CSV"
+    DbCopyDelim("C:\test\test10k.csv",'"')
+    ? "CSV",Seconds() - f
+    f := Seconds()
+    RuntimeState.DelimRDD := "TSV"
+    DbCopyDelim("C:\test\test10k.tsv",'"')
+    ? "TSV",Seconds() - f
+    f := Seconds()
+    DbCopySDF("C:\test\test10k.sdf")
+    ? "SDF", Seconds() - f
+    f := Seconds()
+    DbCopyStruct("c:\Test\TESTEmpty.DBF")
+    SetAnsi(TRUE)
+    DbUseArea(FALSE,"DBFNTX", "c:\Test\TESTEmpty.DBF","TEST",FALSE)
+    FConvertToMemoryStream(DbInfo(DBI_FILEHANDLE))
+    f := Seconds()
+    ? "Reading"
+    DbZap()
+    f := Seconds()
+    DbAppSdf("C:\test\test10k.sdf")
+    ? "SDF", Seconds() - f
+    DbZap()
+    RuntimeState.DelimRDD := "DELIM"
+    DbAppDelim("C:\test\test10k.txt",'"')
+    ? "TXT", Seconds() - f
+//    DbZap()
+//    f := Seconds()
+//    RuntimeState.DelimRDD := "CSV"
+//    DbAppDelim("C:\test\test10k.csv",'"')
+//    ? "CSV", Seconds() - f
+//    DbZap()
+//    f := Seconds()
+//    DbAppSdf("C:\test\test10k.sdf")
+//    ? "SDF", Seconds() - f
+    DbCloseAll()
+    RETURN
+Function ShowRec() as LOGIC
+    if Recno() % 1000 == 0
+        ?  "."
+    ENDIF
+    RETURN TRUE
+
+FUNCTION testUnique3() AS VOID
+	LOCAL cDbf AS STRING	
+	LOCAL aValues AS ARRAY
+	LOCAL i AS INT
+
+	RddSetDefault ( "DBFNTX" )
+	
+	cDbf := "C:\TEST\foo"
+	FErase ( cDbf + ".ntx" )
+	FErase ( cDbf + ".cdx" )
+	
+	aValues := { "g1" , "o5" , "g2", "g1" , "g8" , "g1"}
+	
+	? DbCreate( cDBF , { { "LAST" , "C" , 20 , 0 } })
+	? DbUseArea( ,,cDBF , , TRUE )  // open shared               
+	
+	FOR i := 1 UPTO ALen ( aValues )
+		DbAppend()
+		FieldPut ( 1 , aValues [ i ] )
+	NEXT
+	
+	DbCreateOrder ( "ORDER1" , cDbf , "upper(LAST)" , { || Upper ( _Field->LAST) } , TRUE) // Unique
+	? "DBOI_UNIQUE", DbOrderInfo(DBOI_UNIQUE) // TRUE, correct
+	
+	? "Records in UNIQUE order:" // shows all 6, should be 4 only
+	DbGoTop()
+	DO WHILE .not. Eof()
+		? RecNo(), FieldGet(1)
+		DbSkip()
+	END DO
+	DbCloseArea()
+
+	DbUseArea( ,,cDBF , , FALSE )    // open not shared
+	DbSetIndex(cDbf)
+	? "DBOI_UNIQUE", DbOrderInfo(DBOI_UNIQUE)  // TRUE, correct
+	? "Now pack or zap or reindex"
+
+	DbPack()
+//	DBZap()
+//	DbReindex()
+
+	? "DBOI_UNIQUE", DbOrderInfo(DBOI_UNIQUE)  // TRUE, correct
+	? "Records in UNIQUE order:" // now does not show any records, wrong
+	DbGoTop()
+	DO WHILE .not. Eof()
+		? RecNo(), FieldGet(1)
+		DbSkip()
+	END DO
+	DbCloseArea()
+
+	? "--------------------------"   
+	? "Close and reopen dbf + cdx"
+	? "--------------------------"
+
+	DbUseArea( ,,cDBF , , FALSE ) // FALSE, wrong
+	DbSetIndex(cDbf)
+	? "DBOI_UNIQUE", DbOrderInfo(DBOI_UNIQUE)
+	? "Records in UNIQUE order:" // again no records
+	DbGoTop()
+	DO WHILE .not. Eof()
+		? RecNo(), FieldGet(1)
+		DbSkip()
+	END DO
+	DbCloseArea()
+RETURN
+
+FUNCTION BofAndScope() AS VOID STRICT
+	LOCAL cDBF AS STRING 
+	RddSetDefault ( "DBFNTX" ) 
+
+	cDBF := "C:\test\mydbf" 
+	FErase(cDbf + ".dbf")
+	FErase(cDbf + ".cdx")
+	
+	DbCreate(cDbf, {{"CFIELD", "C" , 1, 0}})
+	DbUseArea(TRUE,, cDbf)
+	DbAppend();FieldPut(1 , "S")
+	DbAppend();FieldPut(1 , "S")
+	DbAppend();FieldPut(1 , "N")
+	DbAppend();FieldPut(1 , "N")
+	DbAppend();FieldPut(1 , "N")
+	DbAppend();FieldPut(1 , "S")
+	DbAppend();FieldPut(1 , "S")
+	DbCreateIndex(cDbf , "CFIELD")
+	DbCloseArea()
+	
+	
+	? DbUseArea( TRUE ,,cDBF )		
+	DbSetIndex(cDbf )
+	? OrdScope(TOPSCOPE, "S")
+	? OrdScope(BOTTOMSCOPE, "S")	
+	?
+	
+	DbGoTop() 
+	? "Performing DKSkip(+1) until EoF()"
+	DO WHILE ! Eof() 
+		? "recno", RecNo(), FieldGet(1)
+		DbSkip ( 1 ) 		
+	ENDDO   
+	
+	
+	? "Recno:" , RecNo() , "Eof:" , Eof() , "Bof:" , Bof()
+	
+	// activate the DBGoBOttom() and the bof() below
+	// behaves as expected after the DBSkip(-1)
+	
+	// DbGoBottom()  
+	
+	? 
+	? "Performing DKSkip(-1) until BoF()"
+	DO WHILE ! Bof()
+		DbSkip ( -1 ) 
+		? "recno", RecNo(), FieldGet(1)
+		? "Bof" , Bof() // TRUE after the first DBSkip ( -1 ) 
+	ENDDO 			
+	
+	? "Eof", Eof()
+	DbCloseArea()
+RETURN
+RETURN
+
+FUNCTION ScopeTestOldValue() AS VOID STRICT
+	LOCAL cDBF AS STRING 
+	RddSetDefault ( "DBFNTX" ) 
+
+	cDBF := "C:\test\mydbf" 
+	FErase(cDbf + ".dbf")
+	FErase(cDbf + ".cdx")
+	
+	DbCreate(cDbf, {{"CFIELD", "C" , 1, 0}})
+	DbUseArea(TRUE,, cDbf)
+	DbAppend();FieldPut(1 , "S")
+	DbAppend();FieldPut(1 , "S")
+	DbAppend();FieldPut(1 , "N")
+	DbCreateIndex(cDbf , "CFIELD")
+	DbCloseArea()
+	
+	DbUseArea( TRUE ,,cDBF )
+    DbSetIndex(cDbf)
+	? OrdScope(TOPSCOPE, "S")
+	? OrdScope(BOTTOMSCOPE, "S")
+	? OrdScope(TOPSCOPE, "N")
+	? OrdScope(BOTTOMSCOPE, "N")
+	DbCloseArea()
+RETURN
     FUNCTION    testPruntGrup AS VOID
     ? DbUseArea(,"DBFCDX","C:\test\PRINTGRP")
 ? DbCloseArea()
@@ -810,7 +1054,7 @@ FUNCTION DoWork( oParam AS OBJECT ) AS VOID
     nSleep                          := 10 //* nParam
     DbUseArea( TRUE, "DBFCDX", "c:\temp\test.dbf", "TEST", TRUE, FALSE )
     DbCargo(Error{})
-    FOR nI := 1 UPTO 100
+    FOR nI := 1 UPTO 1000
         nSleep                          := Rand(0) * 100
         System.Console.WriteLine( NTrim(nParam) + " -> " + NTrim(nI) + " Sleep: " + NTrim( nSleep ) )
         TEST->DbAppend()
@@ -897,9 +1141,9 @@ FUNCTION TestThreading() AS VOID
              TEST->DbCreateOrder( "ORDER1",, "Str(FIELD1,10)", {|| Str( _FIELD->FIELD1,10 ) }, FALSE )
             TEST->DbCommit( )
             TEST->DbCloseArea()
-            oThread1          := System.Threading.Thread{ DoWork }  
+            oThread1          := System.Threading.Thread{ DoWork2 }  
             oThread1:Start( 1 )
-            oThread2          := System.Threading.Thread{ DoWork}
+            oThread2          := System.Threading.Thread{ DoWork2}
             oThread2:Start( 2 )  
             oThread1:Join()
             oThread2:Join()

@@ -7,7 +7,7 @@ USING XSharp.RDD
 /// <remarks>The function DbDescend() tests if the order in the current work area is descending.
 /// Refer to DbSetDescend() for more information about reversing the navigational order. 
 /// </remarks>
-/// <seealso cref='M:XSharp.XPP.Functions.DbSetDescend(System.Boolean)' >DbSetDescend()</seealso>
+/// <seealso cref='O:XSharp.XPP.Functions.DbSetDescend' >DbSetDescend()</seealso>
 FUNCTION DbDescend() AS LOGIC
     RETURN OrdDescend()
 
@@ -18,7 +18,7 @@ FUNCTION DbDescend() AS LOGIC
 /// without the need to create a corresponding index. When TRUE is passed to the function, the order is reversed, i.e. all functions and
 /// commands that move the record pointer are inverted. DbGoTop() becomes DbGoBottom(), DbSkip(1) becomes DbSkip(-1), EOF becomes BOF() etc.
 /// <note type="tip"> Not all RDDs support switching the order at runtime </note></remarks>
-/// <seealso cref='M:XSharp.XPP.Functions.DbDescend' >DbDescend()</seealso>
+/// <seealso cref='O:XSharp.XPP.Functions.DbDescend' >DbDescend()</seealso>
 FUNCTION DbSetDescend(lNewDescend AS LOGIC) AS LOGIC
     LOCAL old := OrdDescend() AS LOGIC
     OrdDescend(NIL,NIL, lNewDescend)

@@ -9,15 +9,13 @@
     <Name>XSharp.Data</Name>
     <Dialect>Core</Dialect>
     <OutputName>XSharp.Data</OutputName>
-    <XSharpProjectversion>2.0.6.2</XSharpProjectversion>
+    <CS>true</CS>
+    <VulcanCompatibleResources>True</VulcanCompatibleResources>
+    <XSharpProjectversion>2.4.0.0</XSharpProjectversion>
     <IncludePaths>$(CommonInclude)</IncludePaths>
     <Nostandarddefs>true</Nostandarddefs>
     <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
-    <CS>true</CS>
-    <NamedArgs>true</NamedArgs>
     <StandardDefs />
-    <VO2>true</VO2>
-    <VO3>true</VO3>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -55,7 +53,7 @@
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <UseSharedCompilation>true</UseSharedCompilation>
     <DisabledWarnings>171,553,1591</DisabledWarnings>
-    <DocumentationFile>XSharp.Core.Xml</DocumentationFile>
+    <DocumentationFile>XSharp.Data.Xml</DocumentationFile>
     <CommandLineOption>/noclipcall</CommandLineOption>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.targets" />
@@ -64,12 +62,9 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Xml" />
-    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ISQLFactory.prg" />
+    <Compile Include="DbDataFunctions.prg" />
     <Compile Include="Properties\AssemblyInfo.prg">
       <SubType>Code</SubType>
     </Compile>
@@ -79,18 +74,33 @@
     <Compile Include="..\..\Common\constants.prg">
       <Link>Properties\constants.prg</Link>
     </Compile>
-    <Compile Include="SqlFactoryAbstract.prg" />
-    <Compile Include="SqlFactoryODBC.prg" />
-    <Compile Include="SqlFactorySQLServer.prg" />
+    <Compile Include="RDD\DbDataColumn.prg" />
+    <Compile Include="RDD\DbDataRow.prg" />
+    <Compile Include="RDD\DbDataSource.prg" />
+    <Compile Include="RDD\DbDataTable.prg" />
+    <Compile Include="RDD\DbField.prg" />
+    <Compile Include="RDD\DbRecord.prg" />
+    <Compile Include="SQL\ISQLFactory.prg" />
+    <Compile Include="SQL\SqlFactoryAbstract.prg" />
+    <Compile Include="SQL\SqlFactoryODBC.prg" />
+    <Compile Include="SQL\SqlFactoryOleDb.prg" />
+    <Compile Include="SQL\SqlFactorySQLServer.prg" />
     <Compile Include="Win32.prg" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="RDD" />
+    <Folder Include="SQL" />
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\XSharp.Core\XSharp.Core.xsproj">
       <Name>XSharp.Core</Name>
       <Project>{535dff14-efb7-43f5-a4e1-71c1c4280040}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\XSharp.RT\XSharp.RT.xsproj">
+      <Name>XSharp.RT</Name>
+      <Project>{ef8d2bf2-e81a-479a-ba4f-294c4c348b66}</Project>
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>

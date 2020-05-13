@@ -200,8 +200,24 @@ FUNCTION AsHexString(uValue AS USUAL) AS STRING
     ELSEIF uValue:IsNumeric
         IF uValue:IsInt64
             result := String.Format("{0:X16}", (INT64) uValue)
-        ELSE
+        ELSEIF uValue:IsLong
             result := String.Format("{0:X8}", (INT) uValue)
+        ELSEIF uValue:IsFloat
+            VAR flValue := (FLOAT) uValue
+            VAR r8Value := flValue:Value
+            IF r8Value >= System.Int32.MinValue .AND. r8Value <= System.Int32.MaxValue
+                result := String.Format("{0:X8}", (INT) uValue)
+            ELSEIF r8Value >= 0. .AND. r8Value <= System.UInt32.MaxValue
+                result := String.Format("{0:X8}", (DWORD) uValue)
+            ELSEIF r8Value >= System.Int64.MinValue .AND. r8Value <= System.Int64.MaxValue
+                result := String.Format("{0:X16}", (INT64) uValue)
+            ELSEIF r8Value >= 0. .AND. r8Value <= System.UInt64.MaxValue
+                result := String.Format("{0:X16}", (UINT64) uValue)
+            ELSE
+                result := "********"
+            ENDIF
+        ELSE
+            result := ""
         ENDIF
     ELSE
         result := ""
@@ -957,3 +973,4 @@ FUNCTION Bin2F(cFloat AS STRING) AS FLOAT
 FUNCTION F2Bin(fValue AS FLOAT) AS STRING
     RETURN Real82Bin(fValue:Value)+ e"\0\0" + W2Bin((WORD)fValue:Decimals)
     
+

@@ -77,11 +77,20 @@ namespace XSharp.Project.OptionsPages
         public override void LoadSettingsFromStorage()
         {
             base.LoadSettingsFromStorage();
-            SetDefaultCommitChars();
+            if (this.CommitChars != "<Empty>")
+            {
+                SetDefaultCommitChars();
+            }
+            else
+            {
+                this.CommitChars = "";
+            }
             SetCaseSync();
         }
         public override void SaveSettingsToStorage()
         {
+            if (this.CommitChars != null && this.CommitChars.Length == 0)
+                this.CommitChars = "<Empty>";
             SetDefaultCommitChars();
             base.SaveSettingsToStorage();
             SetCaseSync();

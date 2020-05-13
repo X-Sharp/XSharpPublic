@@ -12,7 +12,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>XSharp.VODesigners</RootNamespace>
     <AssemblyName>XSharp.VODesigners</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <Nologo>true</Nologo>
     <GenerateFullPaths>true</GenerateFullPaths>
     <Dialect>Vulcan</Dialect>
@@ -44,7 +44,7 @@
     <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
     <StartupObject />
     <ApplicationIcon />
-    <XSharpProjectversion>2.3.2.0</XSharpProjectversion>
+    <XSharpProjectversion>2.4.0.0</XSharpProjectversion>
     <Includepaths>$(Solutiondir)common</Includepaths>
     <Nostandarddefs>false</Nostandarddefs>
     <IntermediateOutputPath>$(SolutionDir)Binaries\obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
@@ -54,9 +54,6 @@
     <Memvar>False</Memvar>
     <Undeclared>False</Undeclared>
     <NoWin32Manifest>False</NoWin32Manifest>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -165,7 +162,6 @@
     <None Include="..\..\Common\BuildNumber.h">
       <Link>BuildNumber.h</Link>
     </None>
-    <None Include="packages.config" />
     <None Include="Templates\cavoded.tpl" />
     <None Include="Templates\cavofed.tpl" />
     <None Include="Templates\cavowed.inf" />
@@ -178,13 +174,9 @@
     </ProjectCapabilities>
   </ProjectExtensions>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <PreBuildEvent />
-    <PostBuildEvent />
     <RunPostBuildEvent />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <PreBuildEvent />
-    <PostBuildEvent />
     <RunPostBuildEvent />
   </PropertyGroup>
 </Project>

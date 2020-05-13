@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Comments>
-  <Ansi2Oem>
+  <ansi2oem>
     <span>
       <note type="warning">
         The Ansi2Oem() and Oem2Ansi() family of functions are compatibility functions. Do not use them unless you really have to.
@@ -13,7 +13,7 @@
         this will remain a E without umlaut.
       </note>
     </span>
-  </Ansi2Oem>
+  </ansi2oem>
   <StringCompare>
     <summary>
       Compare 2 strings. This function is used by the compiler for string comparisons.

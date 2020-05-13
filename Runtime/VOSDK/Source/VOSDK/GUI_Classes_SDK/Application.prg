@@ -122,7 +122,6 @@ METHOD Exec(kExecType, oObject)
 	LOCAL msg IS _winMSG
 	LOCAL lObject AS LOGIC
 	LOCAL retVal AS LOGIC
-	LOCAL o,w AS OBJECT
 	LOCAL DIM KbState[256] AS BYTE
 	LOCAL lResetKB AS LOGIC
 	LOCAL lTranslated AS LOGIC	//RvdH 050426
@@ -169,21 +168,21 @@ METHOD Exec(kExecType, oObject)
 			IF  !lTranslated
 				IF (hHelpAccel == NULL_PTR) .OR. (TranslateAccelerator(hHelpWnd, hHelpAccel, @msg) == 0)
 					IF (hAccel == NULL_PTR) .OR. (TranslateAccelerator(hAccelWnd, hAccel, @msg) == 0)
-						IF (msg:message == WM_KEYDOWN) .AND. ;
-								(IsInstanceOf((o := __WCGetWindowByHandle(GetParent(msg:hwnd))), #DialogWindow) .OR.;
-								IsInstanceOf((o := __WCGetWindowByHandle(GetParent(GetParent(msg:hwnd)))), #DialogWindow))
-							IF ((msg:wParam == VK_RETURN) .OR. (msg:wParam == VK_UP) .OR. (msg:wParam == VK_DOWN));
-									.AND. o:ClipperKeys .AND. !IsInstanceOf(w := __WCGetObjectByHandle(msg:hWnd), #PushButton) .AND. ;
-									!IsInstanceOf(w, #MultiLineEdit)
+                        LOCAL oDialog AS DialogWindow
+						IF msg:message == WM_KEYDOWN  .AND. __ParentIsDialogWindow(msg:hwnd, OUT oDialog)
+                            // Change keydown for Enter, Down or Up ?
+							IF __HandleClipperKeys(msg:wParam, msg:hWnd, oDialog)
 								IF (msg:wParam == VK_UP)
 									GetKeyboardState(@KbState)
 									KbState[VK_SHIFT+1] := _OR(KbState[VK_SHIFT+1], 0x80)
 									SetKeyboardState(@KbState)
 									lResetKB := TRUE
-								ENDIF
+                                ENDIF
+                                // Redirect key to VK_TAB
 								msg:wParam := VK_TAB
-							ENDIF
-							IsDialogMessage(o:Handle(), @msg)
+                            ENDIF
+                            // note IsDialogMessage not only checks but also processes the message
+							IsDialogMessage(oDialog:Handle(), @msg)
 							IF (lResetKB)
 								lResetKB := FALSE
 								KbState[VK_SHIFT+1] := _AND(KbState[VK_SHIFT+1], 0x7F)
@@ -371,10 +370,12 @@ FUNCTION ApplicationExec(kExecType)
 
 	RETURN NIL
 
+/// <exclude/>
 FUNCTION InitCommonControlsEx(lpicex AS PTR) AS LOGIC STRICT
 	//SYSTEM
 	RETURN FALSE
 
+/// <exclude/>
 FUNCTION SetAccelerator(hWnd AS PTR, hAccel AS PTR) AS LOGIC STRICT
 
 	IF (oApp != NULL_OBJECT)
@@ -400,3 +401,40 @@ FUNCTION Start()
 
 	RETURN NIL
 #endif
+
+
+INTERNAL FUNCTION __ParentIsDialogWindow(hWnd AS PTR, o OUT DialogWindow) AS LOGIC
+    LOCAL hParent AS IntPtr
+    LOCAL oTemp AS OBJECT
+    hParent := GetParent(hWnd)
+    oTemp :=  __WCGetWindowByHandle(hParent)
+    IF oTemp IS dialogWindow
+        o := (DialogWindow) oTemp
+        RETURN TRUE
+    ENDIF
+    hParent := GetParent(hParent)
+    oTemp :=  __WCGetWindowByHandle(hParent)
+    IF oTemp IS dialogWindow
+        o := (DialogWindow) oTemp
+        RETURN TRUE
+    ENDIF
+    o := NULL
+    RETURN FALSE
+
+INTERNAL FUNCTION __HandleClipperKeys( wParam AS DWORD, hWnd AS PTR, o AS DialogWindow) AS LOGIC
+    SWITCH wParam
+    CASE VK_RETURN
+    CASE VK_UP
+    CASE VK_DOWN
+        IF o:ClipperKeys
+            VAR control := __WCGetObjectByHandle(hWnd)
+            IF control IS Pushbutton
+                RETURN FALSE
+            ENDIF
+            IF control IS MultiLineEdit
+                RETURN FALSE
+            ENDIF
+            RETURN TRUE
+        ENDIF
+    END SWITCH
+    RETURN FALSE

@@ -62,9 +62,9 @@ BEGIN NAMESPACE XSharp.RDD
 		/// <summary>Current Record</summary>
 		PUBLIC _RecordBuffer	AS BYTE[]	
 		/// <summary>Field delimiter (for DELIM RDD)</summary>
-		PUBLIC _Delimiter	:= "" AS STRING	
-		/// <summary>Field separator (for DELIM RDD)</summary>
-		PUBLIC _Separator	:= ""  AS STRING	
+		PUBLIC _Delimiter	:= "," AS STRING	
+		/// <summary>String delimiter (for DELIM RDD)</summary>
+		PUBLIC _Separator	:= e"\""  AS STRING	        
 		/// <summary> Is the file opened ReadOnly ?</summary>
 		PUBLIC _ReadOnly		AS LOGIC	
 		/// <summary> Is the file opened Shared ?</summary>
@@ -520,11 +520,7 @@ BEGIN NAMESPACE XSharp.RDD
                 SELF:_Fields[ SELF:_currentField] := info 
 
                 // the alias could be an empty string !
-                IF !String.IsNullOrEmpty(info:Alias) 
-                    SELF:_fieldNames:Add(info:Alias:Trim(), SELF:_currentField)
-                ELSE
-                    SELF:_fieldNames:Add(info:Name:Trim(), SELF:_currentField)
-                ENDIF
+                SELF:_fieldNames:Add(info:Name:Trim(), SELF:_currentField)
                 SELF:_currentField++
                 SELF:_RecordLength += (WORD)info:Length
               ELSE
@@ -585,7 +581,7 @@ BEGIN NAMESPACE XSharp.RDD
                     VAR cVar := Chr( (BYTE) oFld:FieldType)
                     IF oFld:Flags != DBFFieldFlags.None
                         cVar += ":"
-                        cVar += IIF(oFld:Flags:HasFlag(DBFFieldFlags.Nullable),"N","")
+                        cVar += IIF(oFld:Flags:HasFlag(DBFFieldFlags.Nullable),"0","")
                         cVar += IIF(oFld:Flags:HasFlag(DBFFieldFlags.Binary),"B","")
                         cVar += IIF(oFld:Flags:HasFlag(DBFFieldFlags.AutoIncrement),"+","")
                         cVar += IIF(oFld:Flags:HasFlag(DBFFieldFlags.Compressed),"Z","")
@@ -625,6 +621,8 @@ BEGIN NAMESPACE XSharp.RDD
                     ELSE
                         RETURN oFld:Name
                     ENDIF
+                CASE DbFieldInfo.DBS_COLUMNINFO
+                    RETURN DbColumnInfo{oFld} {Ordinal := nFldPos}
                 CASE DbFieldInfo.DBS_FLAGS
                     RETURN oFld:Flags
                 CASE DbFieldInfo.DBS_STRUCT
@@ -1023,9 +1021,9 @@ BEGIN NAMESPACE XSharp.RDD
 					oResult := SELF:_ReadOnly
 				CASE DbInfo.DBI_GETDELIMITER
 					oResult := SELF:_Delimiter
-				CASE DbInfo.DBI_SEPARATOR
+				CASE DbInfo.DBI_SEPARATOR           // default FIELD delimiter
 					oResult := SELF:_Separator
-				CASE DbInfo.DBI_SETDELIMITER            
+				CASE DbInfo.DBI_SETDELIMITER        // default FIELD delimiter     
 					oResult := SELF:_Separator		
 					IF oNewValue != NULL .AND. oNewValue:GetType() == TYPEOF(STRING)
 						SELF:_Separator	:= (STRING) oNewValue

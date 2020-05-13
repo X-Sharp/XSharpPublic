@@ -8,6 +8,7 @@ USING System
 USING System.Collections.Generic
 USING System.Text
 USING System.Reflection
+USING System.Diagnostics
 BEGIN NAMESPACE XSharp
   /// <summary>XSharp Runtime base Error class</summary>
   CLASS Error INHERIT Exception
@@ -114,7 +115,9 @@ BEGIN NAMESPACE XSharp
 
     /// <summary>A value of any data type unused by the Error system.  It is provided as a user-definable slot, allowing arbitrary information to be attached to an Error object and retrieved later</summary>
     VIRTUAL PROPERTY Cargo              AS OBJECT AUTO
-    
+    /// <summary>Call stack from the moment where the error object was created</summary>
+    VIRTUAL PROPERTY Stack              AS STRING GET SELF:StackTrace SET SELF:StackTrace := Value
+
 	PRIVATE _StackTrace AS STRING
     VIRTUAL PROPERTY StackTrace         AS STRING
     	GET
@@ -133,7 +136,7 @@ BEGIN NAMESPACE XSharp
         SELF:FuncSym := ProcName(2)
         SELF:Args    := <OBJECT>{}
         IF String.IsNullOrEmpty(SELF:StackTrace)
-            SELF:_StackTrace  := System.Diagnostics.StackTrace{2,TRUE}:ToString()
+            SELF:_StackTrace  := ErrorStack(2)
         ENDIF
         RETURN
     
@@ -166,10 +169,13 @@ BEGIN NAMESPACE XSharp
     ELSE
         SELF:Description := ex:Message
         SELF:Gencode     := EG_EXCEPTION
-        SELF:_StackTrace := ex:StackTrace
+        VAR sStack       := ErrorStack( StackTrace{ex,TRUE})
+        IF !sStack:StartsWith("*EmptyCallStack*")
+            SELF:_StackTrace := sStack + SELF:_StackTrace
+        ENDIF
     ENDIF
     IF String.IsNullOrEmpty(SELF:StackTrace)
-        SELF:StackTrace  := System.Diagnostics.StackTrace{2,TRUE}:ToString()
+        SELF:StackTrace  := ErrorStack(2)
     ENDIF
 
     /// <summary>Create an Error Object with the Innner Exception and other parameters</summary>

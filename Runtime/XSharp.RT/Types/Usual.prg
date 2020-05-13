@@ -13,9 +13,10 @@ BEGIN NAMESPACE XSharp
     /// <summary>Internal type that implements the VO Compatible USUAL type.<br/>
     /// This type has many operators and implicit converters that normally are never directly called from user code.
     /// </summary>
-    [StructLayout(LayoutKind.Sequential, Pack := 4)];
+    //[DebuggerTypeProxy(TYPEOF(UsualDebugView))];
     [DebuggerDisplay("{Value,nq} ({_usualType})", Type := "USUAL")];
-    [DebuggerTypeProxy(TYPEOF(UsualDebugView))];
+    [AllowLateBinding];
+    [StructLayout(LayoutKind.Sequential, Pack := 4)];
     PUBLIC STRUCTURE __Usual IMPLEMENTS IConvertible, ;
         IComparable, ;
         IComparable<__Usual>, ;
@@ -24,12 +25,16 @@ BEGIN NAMESPACE XSharp
         IIndexer
         #region STATIC fields
         /// <exclude />
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         PUBLIC STATIC _NIL AS __Usual
         #endregion
 
         #region PRIVATE fields
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         PRIVATE INITONLY _flags    	AS UsualFlags	// type, byref, width, decimals
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         PRIVATE INITONLY _valueData	AS _UsualData		// for non GC data
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         PRIVATE INITONLY _refData  	AS OBJECT			// for GC data
         #endregion
 
@@ -306,68 +311,99 @@ BEGIN NAMESPACE XSharp
         #endregion
 
         #region properties
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         PRIVATE PROPERTY _isByRef		AS LOGIC	GET _flags:IsByRef
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         INTERNAL PROPERTY _usualType	AS __UsualType GET _flags:UsualType
 
         /// No checks for typeflag. These private properties should always be accessed after checking the correct type
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         PRIVATE PROPERTY _arrayValue    AS ARRAY			GET (ARRAY) _refData
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         PRIVATE PROPERTY _codeblockValue AS ICodeblock		GET (ICodeblock) _refData
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         PRIVATE PROPERTY _currencyValue	AS CURRENCY	    GET __Currency{ (System.Decimal) _refData}
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         PRIVATE PROPERTY _dateValue		AS DATE				GET _valueData:d
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         PRIVATE PROPERTY _dateTimeValue AS DateTime			GET _valueData:dt
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         PRIVATE PROPERTY _decimalValue	AS System.Decimal	GET (System.Decimal) _refData
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         PRIVATE PROPERTY _floatValue    AS FLOAT			GET FLOAT{ _valueData:r8, _width, _decimals}
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         PRIVATE PROPERTY _i64Value		AS INT64			GET _valueData:i64
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         PRIVATE PROPERTY _intValue		AS INT				GET _valueData:i
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         PRIVATE PROPERTY _logicValue	AS LOGIC			GET _valueData:l
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         PRIVATE PROPERTY _ptrValue		AS IntPtr			GET _valueData:p
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         PRIVATE PROPERTY _r8Value		AS REAL8			GET _valueData:r8
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         PRIVATE PROPERTY _stringValue   AS STRING			GET (STRING) _refData
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         PRIVATE PROPERTY _symValue		AS SYMBOL			GET _valueData:s
 
         // properties for floats
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         PRIVATE PROPERTY _width			AS SByte GET IIF(IsFloat, _flags:Width, 0)
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         PRIVATE PROPERTY _decimals		AS SByte GET IIF(IsFloat, _flags:Decimals,0)
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         PRIVATE PROPERTY _initialized   AS LOGIC
             // we cannot simply read the initialized flag from _flags
             // because a FLOAT with 0 decimals will also set initialized to false
             GET
                 SWITCH SELF:_flags:UsualType
                 CASE __UsualType.Void
-                    return false
+                    RETURN FALSE
                 CASE __UsualType.Logic
                     RETURN SELF:_flags:Initialized
                 CASE __UsualType.Object
                     RETURN SELF:_refData != NULL
                 OTHERWISE
-                    return TRUE
+                    RETURN TRUE
                 END SWITCH
             END GET
         END PROPERTY
         // Is .. ?
         /// <summary>This property returns TRUE when the USUAL is of type ARRAY </summary>
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         PUBLIC PROPERTY IsArray		AS LOGIC GET _usualType == __UsualType.Array
         /// <summary>This property returns TRUE when the USUAL is of type CODEBLOCK </summary>
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         PUBLIC PROPERTY IsCodeblock	AS LOGIC GET _usualType == __UsualType.Codeblock
         /// <summary>This property returns TRUE when the USUAL is of type Currency </summary>
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         PUBLIC PROPERTY IsCurrency	AS LOGIC GET _usualType == __UsualType.Currency
         /// <summary>This property returns TRUE when the USUAL is of type DATE </summary>
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         PUBLIC PROPERTY IsDate		AS LOGIC GET _usualType == __UsualType.Date
         /// <summary>This property returns TRUE when the USUAL is of type DateTime </summary>
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         PUBLIC PROPERTY IsDateTime	AS LOGIC GET _usualType == __UsualType.DateTime
         /// <summary>This property returns TRUE when the USUAL is of type Decimal </summary>
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         PUBLIC PROPERTY IsDecimal	AS LOGIC GET _usualType == __UsualType.Decimal
         /// <summary>This property returns TRUE when the USUAL is of type FLOAT </summary>
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         PUBLIC PROPERTY IsFloat		AS LOGIC GET _usualType == __UsualType.Float
         /// <summary>This property returns TRUE when the USUAL is of type Int64 </summary>
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         PUBLIC PROPERTY IsInt64		AS LOGIC GET _usualType == __UsualType.Int64
         /// <summary>This property returns TRUE when the USUAL is of type LOGIC </summary>
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         PUBLIC PROPERTY IsLogic		AS LOGIC GET _usualType == __UsualType.Logic
         /// <summary>This property returns TRUE when the USUAL is of type Long </summary>
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         PUBLIC PROPERTY IsLong		AS LOGIC GET _usualType == __UsualType.Long
         /// <summary>This property returns TRUE when the USUAL is of type LONG or INT64 </summary>
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         PUBLIC PROPERTY IsInteger	AS LOGIC GET _usualType == __UsualType.Long .OR. _usualType == __UsualType.Int64
         /// <summary>This property returns TRUE when the USUAL is of type FLOAT, Decimal or Currency</summary>
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         PUBLIC PROPERTY IsFractional AS LOGIC
             GET
                 SWITCH _usualType
@@ -383,6 +419,7 @@ BEGIN NAMESPACE XSharp
         /// <summary>This property returns the __UsualType of the USUAL </summary>
         PUBLIC PROPERTY Type		AS __UsualType GET _flags:UsualType
         /// <summary>This property returns TRUE when the USUAL is of type LONG, Int64, FLOAT or Decimal</summary>
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         PUBLIC PROPERTY IsNumeric AS LOGIC
             GET
                 SWITCH _usualType
@@ -399,16 +436,22 @@ BEGIN NAMESPACE XSharp
         END PROPERTY
 
         /// <summary>This property returns TRUE when the USUAL is of type Object</summary>
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         PUBLIC PROPERTY IsObject		AS LOGIC GET _usualType == __UsualType.Object
         /// <summary>This property returns TRUE when the USUAL is of type Ptr (IntPtr)</summary>
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         PUBLIC PROPERTY IsPtr			AS LOGIC GET _usualType == __UsualType.Ptr
         /// <summary>This property returns TRUE when the USUAL is of type Symbol</summary>
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         PUBLIC PROPERTY IsSymbol		AS LOGIC GET _usualType == __UsualType.Symbol
         /// <summary>This property returns TRUE when the USUAL is of type String</summary>
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         PUBLIC PROPERTY IsString		AS LOGIC GET _usualType == __UsualType.String
         /// <summary>This property returns TRUE when the USUAL is passed by reference (not implemented yet)</summary>
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         PUBLIC   PROPERTY IsByRef		AS LOGIC GET _isByRef
         /// <summary>This property returns TRUE when the USUAL is a reference type (Array, Decimal, Object, String)</summary>
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         PRIVATE PROPERTY IsReferenceType AS LOGIC
             GET
                 SWITCH _usualType
@@ -424,6 +467,7 @@ BEGIN NAMESPACE XSharp
             END GET
         END PROPERTY
         /// <summary>This property returns TRUE when the USUAL Empty. </summary>
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         INTERNAL PROPERTY IsEmpty AS LOGIC
             GET
                  IF !SELF:_initialized
@@ -452,6 +496,7 @@ BEGIN NAMESPACE XSharp
         END PROPERTY
 
         /// <summary>This property returns TRUE when the USUAL is NIL, or when the usual is a reference type and NULL or when the isual is a PTR type and IntPtr.Zero</summary>
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         INTERNAL PROPERTY IsNil AS LOGIC
             GET
                 RETURN SELF:_usualType == __UsualType.Void .OR. ;
@@ -1297,7 +1342,7 @@ BEGIN NAMESPACE XSharp
                     SWITCH rhs:_usualType
                     CASE __UsualType.Long		; RETURN lhs:_intValue + rhs:_intValue
                     CASE __UsualType.Int64		; RETURN lhs:_intValue + rhs:_i64Value
-                    CASE __UsualType.Float		; RETURN lhs:_intValue + rhs:_r8Value
+                    CASE __UsualType.Float		; RETURN FLOAT{(REAL8)lhs:_intValue + rhs:_r8Value, rhs:_width, rhs:_decimals}
                     CASE __UsualType.Currency	; RETURN lhs:_intValue + rhs:_currencyValue
                     CASE __UsualType.Decimal	; RETURN lhs:_intValue + rhs:_decimalValue
                     OTHERWISE					; NOP // error below
@@ -1307,7 +1352,7 @@ BEGIN NAMESPACE XSharp
                     SWITCH rhs:_usualType
                     CASE __UsualType.Long		; RETURN lhs:_i64Value + rhs:_intValue
                     CASE __UsualType.Int64		; RETURN lhs:_i64Value + rhs:_i64Value
-                    CASE __UsualType.Float		; RETURN lhs:_i64Value + rhs:_r8Value
+                    CASE __UsualType.Float		; RETURN FLOAT{(REAL8)lhs:_i64Value + rhs:_r8Value, rhs:_width, rhs:_decimals}
                     CASE __UsualType.Currency	; RETURN lhs:_i64Value + rhs:_currencyValue
                     CASE __UsualType.Decimal	; RETURN lhs:_i64Value + rhs:_decimalValue
                     OTHERWISE					; NOP // error below
@@ -1317,7 +1362,7 @@ BEGIN NAMESPACE XSharp
                     SWITCH rhs:_usualType
                     CASE __UsualType.Long		; RETURN FLOAT{lhs:_r8Value + rhs:_intValue, lhs:_width, lhs:_decimals}
                     CASE __UsualType.Int64		; RETURN FLOAT{lhs:_r8Value + rhs:_i64Value, lhs:_width, lhs:_decimals}
-                    CASE __UsualType.Float		; RETURN FLOAT{lhs:_r8Value + rhs:_r8Value, lhs:_width, lhs:_decimals}
+                    CASE __UsualType.Float		; RETURN FLOAT{lhs:_r8Value + rhs:_r8Value, Math.Max(lhs:_width, rhs:_width), Math.Max(lhs:_decimals,rhs:_decimals) }
                     CASE __UsualType.Currency	; RETURN FLOAT{lhs:_r8Value + rhs:_currencyValue, lhs:_width, lhs:_decimals}
                     CASE __UsualType.Decimal	; RETURN FLOAT{lhs:_r8Value + (REAL8) rhs:_decimalValue, lhs:_width, lhs:_decimals}
                     OTHERWISE					; NOP // error below
@@ -1388,7 +1433,7 @@ BEGIN NAMESPACE XSharp
                     SWITCH rhs:_usualType
                     CASE __UsualType.Long		; RETURN lhs:_intValue - rhs:_intValue
                     CASE __UsualType.Int64		; RETURN lhs:_intValue - rhs:_i64Value
-                    CASE __UsualType.Float		; RETURN lhs:_intValue - rhs:_r8Value
+                    CASE __UsualType.Float		; RETURN FLOAT{(REAL8)lhs:_intValue - rhs:_r8Value, rhs:_width, rhs:_decimals}
                     CASE __UsualType.Currency	; RETURN lhs:_intValue - rhs:_currencyValue
                     CASE __UsualType.Decimal	; RETURN lhs:_intValue - rhs:_decimalValue
                     OTHERWISE					; NOP // error below
@@ -1397,7 +1442,7 @@ BEGIN NAMESPACE XSharp
                     SWITCH rhs:_usualType
                     CASE __UsualType.Long		; RETURN lhs:_i64Value - rhs:_intValue
                     CASE __UsualType.Int64		; RETURN lhs:_i64Value - rhs:_i64Value
-                    CASE __UsualType.Float		; RETURN lhs:_i64Value - rhs:_r8Value
+                    CASE __UsualType.Float		; RETURN FLOAT{(REAL8)lhs:_i64Value - rhs:_r8Value, rhs:_width, rhs:_decimals}
                     CASE __UsualType.Currency	; RETURN lhs:_i64Value - rhs:_currencyValue
                     CASE __UsualType.Decimal	; RETURN lhs:_i64Value - rhs:_decimalValue
                     OTHERWISE					; NOP // error below
@@ -1406,7 +1451,7 @@ BEGIN NAMESPACE XSharp
                     SWITCH rhs:_usualType
                     CASE __UsualType.Long		; RETURN FLOAT{lhs:_r8Value - rhs:_intValue ,lhs:_width, lhs:_decimals}
                     CASE __UsualType.Int64		; RETURN FLOAT{lhs:_r8Value - rhs:_i64Value ,lhs:_width, lhs:_decimals}
-                    CASE __UsualType.Float		; RETURN FLOAT{lhs:_r8Value - rhs:_r8Value	,lhs:_width, lhs:_decimals}
+                    CASE __UsualType.Float		; RETURN FLOAT{lhs:_r8Value - rhs:_r8Value, Math.Max(lhs:_width, rhs:_width), Math.Max(lhs:_decimals,rhs:_decimals) }
                     CASE __UsualType.Currency	; RETURN FLOAT{lhs:_r8Value - rhs:_currencyValue,lhs:_width, lhs:_decimals}
                     CASE __UsualType.Decimal	; RETURN FLOAT{lhs:_r8Value - (REAL8) rhs:_decimalValue ,lhs:_width, lhs:_decimals}
                     OTHERWISE					; NOP // error below
@@ -2381,7 +2426,7 @@ BEGIN NAMESPACE XSharp
         /// <include file="RTComments.xml" path="Comments/Operator/*" />
         /// Note this generates error XS0553.
         /// However our compiler needs this one. Therefore disable XS0553
-        //[DebuggerStepThroughAttribute];
+        [DebuggerStepThroughAttribute];
         STATIC OPERATOR IMPLICIT(val AS OBJECT) AS __Usual
             RETURN __Usual{val}
 
@@ -2542,11 +2587,7 @@ BEGIN NAMESPACE XSharp
         [DebuggerStepThroughAttribute];
         STATIC METHOD ToObject(u AS __Usual) AS OBJECT
              IF !u:_initialized
-                IF RuntimeState.Dialect  == XSharpDialect.FoxPro
-                    RETURN FALSE
-                ELSE
-                    RETURN NULL
-                ENDIF
+                 RETURN NULL
              ENDIF
             SWITCH u:_usualType
             CASE __UsualType.Array		; RETURN u:_arrayValue
@@ -2687,9 +2728,9 @@ BEGIN NAMESPACE XSharp
                 SWITCH SELF:_usualType
                 CASE __UsualType.Array		; RETURN "A"
                 CASE __UsualType.Codeblock	; RETURN "B"
-                CASE __UsualType.Currency	; RETURN "N"
+                CASE __UsualType.Currency	; RETURN "Y"
                 CASE __UsualType.Date		; RETURN "D"
-                CASE __UsualType.DateTime	; RETURN "D"
+                CASE __UsualType.DateTime	; RETURN "T"
                 CASE __UsualType.Decimal	; RETURN "N"
                 CASE __UsualType.Float		; RETURN "N"
                 CASE __UsualType.Int64		; RETURN "N"
@@ -2768,7 +2809,7 @@ BEGIN NAMESPACE XSharp
                  RETURN  SELF:_arrayValue:__GetElement(index)
               ELSEIF SELF:IsString .and. RuntimeState.Dialect  == XSharpDialect.XPP .and. index:Length == 1
                     VAR s := SELF:_stringValue
-                    var i := index[1]
+                    VAR i := index[1]
                     IF i>= 0 .AND. i < s:Length
                         RETURN s:Substring(i, 1)
                     ENDIF
@@ -2782,7 +2823,7 @@ BEGIN NAMESPACE XSharp
                       RETURN props[pos]
                   ENDIF
               ENDIF
-              var message := typeof(IIndexedProperties):FullName + " ( actual type='" + SELF:ValType + "', dialect=" + RuntimeState.Dialect :ToString()+", index length=" + index:Length:ToString()+")"
+              VAR message := typeof(IIndexedProperties):FullName + " ( actual type='" + SELF:ValType + "', dialect=" + RuntimeState.Dialect :ToString()+", index length=" + index:Length:ToString()+")"
               THROW InvalidCastException{VO_Sprintf(VOErrors.USUALNOTINDEXED, message)}
             END GET
             SET

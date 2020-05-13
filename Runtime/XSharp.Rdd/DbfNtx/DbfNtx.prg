@@ -249,14 +249,18 @@ BEGIN NAMESPACE XSharp.RDD
             CASE DBOI_SCOPETOP
             CASE DBOI_SCOPEBOTTOM
                 IF workOrder != NULL
+                    LOCAL oldValue AS OBJECT
+                    IF nOrdinal == DBOI_SCOPETOP
+                        oldValue := workOrder:TopScope
+                    ELSEIF nOrdinal == DBOI_SCOPEBOTTOM
+                        oldValue := workOrder:BottomScope
+                    ELSE
+                        oldValue := NULL
+                    ENDIF
                     IF info:Result != NULL 
                         workOrder:SetOrderScope(info:Result, (DbOrder_Info) nOrdinal)
                     ENDIF
-                    IF nOrdinal == DBOI_SCOPETOP
-                        info:Result := workOrder:TopScope
-                    ELSEIF nOrdinal == DBOI_SCOPEBOTTOM
-                        info:Result := workOrder:BottomScope
-                    ENDIF
+                    info:Result := oldValue
                 ELSE
                     info:Result := NULL
                 ENDIF

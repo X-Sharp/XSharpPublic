@@ -57,7 +57,7 @@ INTERNAL STATIC CLASS XSharp.FileSearch
                     foundEntries:Add(file)
                 NEXT
     
-                IF (attributes & FA_DIRECTORY) == FA_DIRECTORY
+                IF (attributes & FA_DIRECTORY) == (DWORD) FA_DIRECTORY
                     LOCAL directories := oDirInfo:GetDirectories(cMask) AS FileSystemInfo[]
                     VAR selectedDirs := FROM DirectoryInfo IN directories WHERE (DirectoryInfo:Attributes & (FileAttributes) (attributes + FA_NORMAL) ) != 0 SELECT DirectoryInfo
                     FOREACH directory AS DirectoryInfo IN selectedDirs
@@ -254,7 +254,7 @@ FUNCTION File(cFileSpec AS STRING) AS LOGIC
             IF Path.IsPathRooted(cFileSpec)
                 files := Directory.GetFiles( Path.GetDirectoryName( cFileSpec ), Path.GetFileName( cFileSpec ) )
                 IF files:Length > 0
-                    RuntimeState.LastFound := files[1]
+                    RuntimeState.LastFound := files[0]
                     RETURN TRUE
                 ELSE
                     // store the first path that we looked in even when the file is not found

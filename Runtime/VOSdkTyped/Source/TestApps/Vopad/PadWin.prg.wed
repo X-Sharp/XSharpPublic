@@ -1,0 +1,142 @@
+DESIGNERSTART = VOWindowEditor,DIALOGWINDOW,oMarginDialog
+GUID=1B3E5991-B335-4550-9B03-1703ED42BE81
+  Name=oMarginDialog
+  Class=DIALOGWINDOW
+  Caption=Margins
+  Order=0
+  Left=10
+  Width=271
+  Top=10
+  Height=176
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=0
+  Styles=2160590980
+  Exstyles=257
+  Property=HyperLabel=,"Margins",,
+  Property=HyperLabel=#oMarginDialog,,,
+
+SUBCONTROLSSTART
+CONTROL=FIXEDTEXT
+GUID=C00208DE-0043-44E3-A728-826B2D75E5FA
+  Name=ftLM
+  Class=FIXEDTEXT
+  Caption=Left Margin
+  Order=1
+  Left=32
+  Width=80
+  Top=29
+  Height=20
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=Yes
+  Deleted=2
+  Styles=1073741824
+  Exstyles=0
+  Property=HyperLabel=,"Left Margin",,
+  Property=HyperLabel=#ftLM,,,
+
+CONTROL=FIXEDTEXT
+GUID=4B4EC398-98C7-49CB-B7FA-4CFBDCE82E04
+  Name=ftRM
+  Class=FIXEDTEXT
+  Caption=Right Margin
+  Order=2
+  Left=32
+  Width=80
+  Top=59
+  Height=20
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=Yes
+  Deleted=2
+  Styles=1073741824
+  Exstyles=0
+  Property=HyperLabel=,"Right Margin",,
+  Property=HyperLabel=#ftRM,,,
+
+CONTROL=SINGLELINEEDIT
+GUID=7C3E2184-F5AB-43FE-9E99-3155AE33D76C
+  Name=sleLM
+  Class=SINGLELINEEDIT
+  Caption=
+  Order=3
+  Left=150
+  Width=73
+  Top=29
+  Height=20
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1082196096
+  Exstyles=0
+  Property=HyperLabel=#sleLM,,,
+
+CONTROL=SINGLELINEEDIT
+GUID=36718C9A-3294-4FD9-A367-86CB7EF0D79D
+  Name=sleRM
+  Class=SINGLELINEEDIT
+  Caption=
+  Order=4
+  Left=150
+  Width=73
+  Top=59
+  Height=20
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1082196096
+  Exstyles=0
+  Property=HyperLabel=#sleRM,,,
+
+CONTROL=PUSHBUTTON
+GUID=D783D0AA-2247-41CA-96DA-C8DBD8A040BF
+  Name=pbOK
+  Class=PUSHBUTTON
+  Caption=OK
+  Order=5
+  Left=32
+  Width=80
+  Top=109
+  Height=20
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073807361
+  Exstyles=0
+  Property=HyperLabel=,"OK",,
+  Property=HyperLabel=#pbOK,,,
+
+CONTROL=PUSHBUTTON
+GUID=662D58E3-D8CF-4063-86D6-BEFA872B3667
+  Name=pbCancel
+  Class=PUSHBUTTON
+  Caption=Cancel
+  Order=6
+  Left=143
+  Width=80
+  Top=109
+  Height=20
+  Browseindex=-1
+  Browsesize=0
+  Subform=No
+  Nosave=No
+  Deleted=2
+  Styles=1073807360
+  Exstyles=0
+  Property=HyperLabel=,"Cancel",,
+  Property=HyperLabel=#pbCancel,,,
+
+SUBCONTROLSEND
+DESIGNEREND = oMarginDialog
+

@@ -1,0 +1,3 @@
+
+#include "VOWin32APILibrary.vh"
+DragSingle CURSOR "Resources\\SINGLE.CUR"

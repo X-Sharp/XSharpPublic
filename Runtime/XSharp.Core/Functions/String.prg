@@ -446,8 +446,8 @@ FUNCTION Occurs3(cSearch AS STRING,cTarget AS STRING,dwOffset AS DWORD) AS DWORD
 	RETURN count
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ansi2oem/*" />
-/// <remarks><include file="CoreComments.xml" path="Comments/Ansi2Oem/*" /></remarks>
-/// <seealso cref="M:XSharp.Core.Functions.Ansi2OemBuff(System.Byte[],System.Byte[],System.UInt32)" />
+/// <remarks><include file="CoreComments.xml" path="Comments/ansi2oem/*" /></remarks>
+/// <seealso cref="O:XSharp.Core.Functions.Ansi2OemBuff" />
 FUNCTION Ansi2Oem(cAnsiString AS STRING) AS STRING
 	LOCAL aBytes AS BYTE[]
 	LOCAL iLen	 AS INT
@@ -465,8 +465,8 @@ FUNCTION Ansi2Oem(bSource AS BYTE[]) AS BYTE[]
 	RETURN Ansi2Oem(bSource, bSource:Length)
 
 
-/// <param name="iLen">Length of the source array</param>
 /// <inheritdoc cref="M:XSharp.Core.Functions.Ansi2Oem(System.Byte[])" />
+/// <param name="iLen">Length of the source array</param>
 FUNCTION Ansi2Oem(bSource AS BYTE[], iLen AS INT) AS BYTE[]
 	LOCAL bDest AS BYTE[]
 	bDest := BYTE[]{iLen}
@@ -480,7 +480,8 @@ FUNCTION Ansi2Oem(bSource AS BYTE[], iLen AS INT) AS BYTE[]
 /// </overloads>
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ansi2oema/*" />
 /// <remarks><include file="CoreComments.xml" path="Comments/Ansi2Oem/*" /></remarks>
-/// <seealso cref="M:XSharp.Core.Functions.Ansi2OemBuff(System.Byte[],System.Byte[],System.UInt32)" />
+/// <seealso cref="O:XSharp.Core.Functions.Ansi2OemBuff" />
+/// <seealso cref="O:XSharp.RT.Functions.Ansi2OemBuff" />
 FUNCTION Ansi2OemA(cAnsiString REF STRING) AS STRING
 	LOCAL aBytes AS BYTE[]
 	LOCAL iLen	 AS INT
@@ -510,7 +511,7 @@ FUNCTION Ansi2OemA(bSource AS BYTE[]) AS VOID
 /// </overloads>
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/oem2ansi/*" />
 /// <remarks><include file="CoreComments.xml" path="Comments/Ansi2Oem/*" /></remarks>
-/// <seealso cref="M:XSharp.Core.Functions.Oem2AnsiBuff(System.Byte[],System.Byte[],System.UInt32)" />
+/// <seealso cref="O:XSharp.Core.Functions.Oem2AnsiBuff" />
 FUNCTION Oem2Ansi(cOemString AS STRING) AS STRING
 	LOCAL aBytes AS BYTE[]
 	LOCAL iLen	 AS INT
@@ -556,7 +557,7 @@ FUNCTION Oem2AnsiA(bSource AS BYTE[]) AS VOID
 /// <inheritdoc cref="M:XSharp.Core.Functions.Oem2Ansi(System.Byte[])" />
 /// <param name="iLen">The number of characters to convert</param>
 /// <returns>String converted to Ansi</returns>
-/// <seealso cref="M:XSharp.Core.Functions.Ansi2Oem(System.Byte[],System.Int32)" />
+/// <seealso cref="O:XSharp.Core.Functions.Ansi2Oem" />
 FUNCTION Oem2Ansi(bSource AS BYTE[], iLen AS INT) AS BYTE[]
 	LOCAL bDest AS BYTE[]
 	bDest := BYTE[]{iLen}
@@ -565,14 +566,14 @@ FUNCTION Oem2Ansi(bSource AS BYTE[], iLen AS INT) AS BYTE[]
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/oem2ansibuff/*" />
 /// <remarks><include file="CoreComments.xml" path="Comments/Ansi2Oem/*" /></remarks>
-/// <seealso cref="M:XSharp.Core.Functions.Ansi2OemBuff(System.Byte[],System.Byte[],System.UInt32)" />
+/// <seealso cref="O:XSharp.Core.Functions.Ansi2OemBuff" />
 FUNCTION Oem2AnsiBuff(pszTarget AS BYTE[],pszSource AS BYTE[],dwCount AS DWORD) AS BYTE[]
 	OemToCharBuffA(pszSource, pszTarget, dwCount)
 	RETURN pszTarget
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ansi2oembuff/*" />
 /// <remarks><include file="CoreComments.xml" path="Comments/Ansi2Oem/*" /></remarks>
-/// <seealso cref="M:XSharp.Core.Functions.Oem2AnsiBuff(System.Byte[],System.Byte[],System.UInt32)" />
+/// <seealso cref="O:XSharp.Core.Functions.Oem2AnsiBuff" />
 FUNCTION Ansi2OemBuff(pszTarget AS BYTE[],pszSource AS BYTE[],dwCount AS DWORD) AS BYTE[]
 	CharToOemBuffA(pszSource, pszTarget, dwCount)
 	RETURN pszTarget
@@ -936,8 +937,8 @@ FUNCTION IsAlNum(pszString AS STRING) AS LOGIC
 /// <summary>Determine if the leftmost character in a string is alphanumeric..</summary>
 /// <param name="cSource">The string to examine.</param>
 /// <returns>TRUE if the first character is either alphabetic or numeric otherwise FALSE.</returns>
-/// <seealso cref='M:XSharp.Core.Functions.IsAlNum(System.String)'>IsAlNum</seealso>
-/// <seealso cref='M:XSharp.Core.Functions.IsAlpha(System.String)'>IsAlpha</seealso>
+/// <seealso cref='O:XSharp.Core.Functions.IsAlNum'>IsAlNum</seealso>
+/// <seealso cref='O:XSharp.Core.Functions.IsAlpha'>IsAlpha</seealso>
 FUNCTION IsAlphaNum(cSource AS STRING) AS LOGIC
 	RETURN IsAlNum(cSource)
 
@@ -1014,7 +1015,7 @@ FUNCTION IsLower(pszString AS STRING) AS LOGIC
 /// <param name="sWildCard">The wildcard to use. '*' matches 0 or more characters until the next non-wildcard character, '?' matches any character, all other characters must match exactly.</param>
 /// <param name="sSource">The string to examine.</param>
 /// <remarks>This function is case sensitive. If you want to do a case insensitive compare, use Like()</remarks>
-/// <seealso cref='M:XSharp.Core.Functions.Like(System.String,System.String)'>Like</seealso>
+/// <seealso cref='O:XSharp.Core.Functions.Like'>Like</seealso>
 FUNCTION _Like(sWildCard AS STRING, sSource AS STRING) AS LOGIC
     LOCAL nWildLen AS LONG
     LOCAL nSourceLen AS LONG
@@ -1068,7 +1069,7 @@ FUNCTION _Like(sWildCard AS STRING, sSource AS STRING) AS LOGIC
 /// <param name="sSource">The string to examine.</param>
 /// <remarks>This function is case INsensitive in all dialects except FoxPro.
 /// If you want to do a case sensitive compare in these dialects, use _Like()</remarks>
-/// <seealso cref='M:XSharp.Core.Functions._Like(System.String,System.String)' >_Like</seealso>
+/// <seealso cref='O:XSharp.Core.Functions._Like' >_Like</seealso>
 FUNCTION Like(sWildCard AS STRING, sSource AS STRING) AS LOGIC
     IF XSharp.RuntimeState.Dialect == XSharpDialect.FoxPro
         RETURN _Like(sWildCard, sSource)

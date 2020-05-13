@@ -1,5 +1,5 @@
-﻿#using System.Text
-#using System.Collections
+﻿USING System.Text
+USING System.Collections.Generic
 
 
 //GLOBAL genenc := Encoding.ASCII AS Encoding
@@ -7,7 +7,7 @@ DEFINE ascenc := Encoding.Default AS Encoding
 DEFINE Chr09 := e"\t" AS STRING
 
 CLASS xARRAY
-	PROTECT aItems := ArrayList{} AS ArrayList
+	PROTECT aItems := List<OBJECT>{} AS List<OBJECT>
 CONSTRUCTOR()
 CONSTRUCTOR(u1 AS OBJECT)
 	SELF:aItems:Add(u1)
@@ -25,11 +25,13 @@ CONSTRUCTOR(u1 AS OBJECT,u2 AS OBJECT,u3 AS OBJECT,u4 AS OBJECT)
 	SELF:aItems:Add(u4)
 
 PROPERTY SELF[nIndex AS DWORD] AS OBJECT ;
-GET SELF:aItems[(INT)nIndex - 1] ;
-SET SELF:aItems[(INT)nIndex - 1] := VALUE
+    GET SELF:aItems[(INT) nIndex - 1] ;
+    SET SELF:aItems[(INT) nIndex - 1] := VALUE
+
 PROPERTY SELF[nIndex1 AS DWORD,nIndex2 AS DWORD] AS OBJECT ;
-GET ((xARRAY)(SELF:aItems[(INT)nIndex1 - 1]))[nIndex2] ;
-SET ((xARRAY)(SELF:aItems[(INT)nIndex1 - 1]))[nIndex2] := VALUE
+    GET ((xARRAY)(SELF:aItems[(INT)nIndex1 - 1]))[nIndex2] ;
+    SET ((xARRAY)(SELF:aItems[(INT)nIndex1 - 1]))[nIndex2] := VALUE
+
 METHOD ASize(nSize AS DWORD) AS xARRAY
 	IF nSize < SELF:aItems:Count
 		SELF:aItems:RemoveRange((INT)nSize, (INT)(SELF:aItems:Count - nSize))
@@ -39,6 +41,7 @@ METHOD ASize(nSize AS DWORD) AS xARRAY
 		END DO
 	END IF
 RETURN SELF
+
 METHOD AAdd(oItem AS OBJECT) AS xARRAY
 	SELF:aItems:Add(oItem)
 RETURN SELF
@@ -74,16 +77,22 @@ DEFINE xNIL := NULL AS OBJECT
 
 FUNCTION ASize(a AS xARRAY, nSize AS DWORD) AS xARRAY
 RETURN a:ASize(nSize)
+
 FUNCTION AAdd(a AS xARRAY, oItem AS OBJECT) AS xARRAY
 RETURN a:AAdd(oItem)
+
 FUNCTION ALen(a AS xARRAY) AS DWORD
 RETURN a:ALen()
+
 FUNCTION AKill(a AS xARRAY, nPos AS DWORD) AS xARRAY
 RETURN a:ATrueDel(nPos)
+
 FUNCTION ATrueIns(a AS xARRAY,nPos AS DWORD) AS xARRAY
 RETURN a:ATrueIns(nPos)
+
 FUNCTION ATail(a AS xARRAY) AS OBJECT
 RETURN a:ATail()
+
 FUNCTION ArrayCreate(len AS DWORD) AS xARRAY
 	LOCAL a AS xARRAY
 	a := xARRAY{}
@@ -108,27 +117,27 @@ FUNCTION Empty(o AS OBJECT) AS LOGIC
 //RETURN FALSE
 
 
-FUNCTION Left(c AS STRING , dwLen AS INT) AS STRING
-RETURN Left(c , (DWORD)dwLen)
-FUNCTION Left(c AS STRING , dwLen AS DWORD) AS STRING
-RETURN iif(dwLen >= c:Length , c , c:Substring(0 , (INT)dwLen ))
 
-FUNCTION Right(c AS STRING , dwLen AS INT) AS STRING
-RETURN Right(c , (DWORD)dwLen)
+FUNCTION Left(c AS STRING , dwLen AS DWORD) AS STRING
+    RETURN iif(dwLen >= c:Length , c , c:Substring(0 , (INT)dwLen ))
+
+
 FUNCTION Right(c AS STRING , dwLen AS DWORD) AS STRING
-RETURN IIF( dwLen >= c:Length , c , c:Substring(c:Length - (INT)dwLen , (INT)dwLen))
+    RETURN IIF( dwLen >= c:Length , c , c:Substring(c:Length - (INT)dwLen , (INT)dwLen))
 
 FUNCTION SLen(c AS STRING) AS DWORD
-RETURN (DWORD)c:Length
+    RETURN (DWORD)c:Length
 
 FUNCTION SubStr2(c AS STRING, wLen AS DWORD) AS STRING
 RETURN c:Substring((INT)wLen - 1)
 
 FUNCTION SubStr3(c AS STRING , iStart AS DWORD , wLen AS DWORD) AS STRING
-RETURN SubStr(c , (INT)iStart , (INT)wLen)
+RETURN _SubStr(c , (INT)iStart , (INT)wLen)
+
 FUNCTION SubStr(c AS STRING , iStart AS DWORD , wLen AS DWORD) AS STRING
-RETURN SubStr(c , (INT)iStart , (INT)wLen)
-FUNCTION SubStr(c AS STRING , iStart AS INT , wLen AS INT) AS STRING
+RETURN _SubStr(c , (INT)iStart , (INT)wLen)
+
+FUNCTION _SubStr(c AS STRING , iStart AS INT , wLen AS INT) AS STRING
 	IF iStart > c:Length
 		RETURN ""
 	ENDIF
@@ -139,6 +148,7 @@ RETURN c:Substring(iStart - 1 , Math.Min(c:Length - iStart + 1 , wLen))
 
 FUNCTION At(cSearch AS STRING , c AS STRING) AS DWORD
 RETURN (DWORD)c:IndexOf(cSearch) + 1
+
 FUNCTION RAt(cSearch AS STRING , c AS STRING) AS DWORD
 RETURN (DWORD)c:LastIndexOf(cSearch) + 1
 
@@ -147,6 +157,7 @@ RETURN System.Array.IndexOf(a, cSearch) + 1
 
 FUNCTION Upper(s AS STRING) AS STRING
 RETURN s:ToUpper()
+
 FUNCTION Lower(s AS STRING) AS STRING
 RETURN s:ToLower()
 

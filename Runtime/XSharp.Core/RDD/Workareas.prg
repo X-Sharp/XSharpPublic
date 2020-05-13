@@ -5,12 +5,14 @@
 //
 
 USING System.Collections.Generic
+USING System.Diagnostics
 
 BEGIN NAMESPACE XSharp.RDD
 /// <summary>Class that contains the list of open Workareas. Each thread will have its own list.</summary>
 CLASS Workareas
 	// Not static because every thread can have its own Workareas structure
 	#region Constants
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
 		PUBLIC CONST MaxWorkareas := 4096 AS DWORD
 	#endregion
     
@@ -31,7 +33,13 @@ CLASS Workareas
     STATIC METHOD _Add(oRDD AS IRdd, oWA AS Workareas) AS Guid
         VAR oGuid := Guid.NewGuid()
         BEGIN LOCK _AllRDDs
-            _AllRDDs.Add(oRDD, oWA)
+            IF _AllRDDs:ContainsKey(oRDD)
+                // this can happen when a RDD was created in a backgroundthread
+                // and is moved to the main thread for example
+                _AllRDDs[oRDD] := oWA
+            ELSE
+                _AllRDDs.Add(oRDD, oWA)
+            ENDIF
         END LOCK
         RETURN oGuid
 
@@ -64,6 +72,7 @@ CLASS Workareas
 	#region Fields
 	PRIVATE Aliases             AS Dictionary<STRING, DWORD>	// 1 based area numbers !
 	PRIVATE RDDs	            AS IRdd[]
+    [DebuggerBrowsable(DebuggerBrowsableState.Never)];
 	PRIVATE iCurrentWorkarea    AS DWORD
     PRIVATE WorkareaStack       AS Stack<DWORD>
 
@@ -105,7 +114,9 @@ CLASS Workareas
 				IF RDDs[nArea] != NULL
 					VAR oRdd := RDDs[nArea]
 					TRY
-						lResult := lResult .AND. oRdd:Close()
+                        IF ! oRdd:Close()
+						    lResult := FALSE
+                        ENDIF
 					CATCH e AS Exception
 						lResult := FALSE
 						RuntimeState.LastRddError  := e
@@ -170,10 +181,12 @@ CLASS Workareas
         
 	///<summary> Return 1 based Workarea Number for Alias or 0 when no found</summary>
 	PUBLIC METHOD FindAlias(sAlias AS STRING) AS DWORD
-		BEGIN LOCK RDDs 
-			IF Aliases:ContainsKey(sAlias)
-				RETURN Aliases[sAlias]
-			ENDIF 
+		BEGIN LOCK RDDs
+            IF !String.IsNullOrEmpty(sAlias)
+			    IF Aliases != NULL .AND. Aliases:ContainsKey(sAlias)
+				    RETURN Aliases[sAlias]
+			    ENDIF
+            ENDIF
 		END LOCK  
 		RETURN 0  
 

@@ -9,10 +9,11 @@ USING System
 USING System.Collections.Generic
 USING System.Text
 USING System.Diagnostics
-
+USING XSharp.Internal
 /// <summary>
 /// The FoxPro Empty class.
 /// </summary>
+[AllowLateBinding];
 [DebuggerTypeProxy(TYPEOF(EmptyDebugView))];
 CLASS XSharp.VFP.Empty
 
@@ -134,8 +135,10 @@ CLASS XSharp.VFP.Empty
     VIRTUAL METHOD NoIvarGet(cName AS STRING) AS USUAL STRICT
         IF _Properties:ContainsKey(cName)
             RETURN _Properties[cName]
+        ELSE
+            THROW PropertyNotFoundException{cName}
         ENDIF
-        RETURN NIL
+        
         
     #region Implementations
     PROTECTED METHOD _GetProperty(cName AS STRING) AS USUAL

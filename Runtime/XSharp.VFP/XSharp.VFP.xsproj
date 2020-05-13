@@ -13,7 +13,7 @@
     <Unsafe>true</Unsafe>
     <NS>true</NS>
     <VulcanCompatibleResources>True</VulcanCompatibleResources>
-    <XSharpProjectversion>2.0.5.0</XSharpProjectversion>
+    <XSharpProjectversion>2.4.0.0</XSharpProjectversion>
     <IncludePaths>$(CommonInclude)</IncludePaths>
     <Nostandarddefs>true</Nostandarddefs>
     <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
@@ -29,7 +29,7 @@
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <UseSharedCompilation>true</UseSharedCompilation>
-    <DisabledWarnings/>
+    <DisabledWarnings />
     <SignAssembly>true</SignAssembly>
     <DelaySign>false</DelaySign>
   </PropertyGroup>
@@ -43,7 +43,7 @@
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <UseSharedCompilation>true</UseSharedCompilation>
-    <DisabledWarnings/>
+    <DisabledWarnings />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -86,9 +86,19 @@
     <Compile Include="Classes\Custom.prg" />
     <Compile Include="Classes\Abstract.prg" />
     <Compile Include="ClassFunctions.prg" />
+    <Compile Include="BitFunctions.prg" />
+    <Compile Include="Cursors\DbFunctions.prg" />
+    <Compile Include="Cursors\CursorEnums.prg" />
+    <Compile Include="Database\DatabaseEnums.prg" />
+    <Compile Include="Defines.prg" />
     <Compile Include="GetWord.prg" />
     <Compile Include="NotSupported.prg" />
-    <Compile Include="ToDo-SQL.prg" />
+    <Compile Include="SQL\SQLReflection.prg" />
+    <Compile Include="SQL\SQLStatement.prg" />
+    <Compile Include="SQL\SQLEnums.prg" />
+    <Compile Include="SQL\SQLSupport.prg" />
+    <Compile Include="SQL\SQLConnection.prg" />
+    <Compile Include="SQL\SQLFunctions.prg" />
     <Compile Include="ToDo-TUVWX.prg" />
     <Compile Include="ToDo-S.prg" />
     <Compile Include="ToDo-QR.prg" />
@@ -97,7 +107,6 @@
     <Compile Include="MiscFunctions.prg" />
     <Compile Include="ToDo-HI.prg" />
     <Compile Include="ToDo-G.prg" />
-    <Compile Include="DbFunctions.prg" />
     <Compile Include="ToDo-EF.prg" />
     <Compile Include="DateFunctions.prg" />
     <Compile Include="ToDo-D.prg" />
@@ -113,9 +122,16 @@
     <Compile Include="StringFunctions.prg" />
     <Compile Include="SystemVariables.prg" />
     <Compile Include="TextOutPut.prg" />
+    <Compile Include="UIFunctions.prg" />
+    <Compile Include="UI\AutoCloseMessageBox.prg" />
+    <Compile Include="Win32.prg" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Classes" />
+    <Folder Include="Cursors" />
+    <Folder Include="Database" />
+    <Folder Include="UI" />
+    <Folder Include="SQL" />
     <Folder Include="Properties\" />
     <Folder Include="VFPFileStructures\" />
   </ItemGroup>
@@ -123,6 +139,11 @@
     <ProjectReference Include="..\XSharp.Core\XSharp.Core.xsproj">
       <Name>XSharp.Core</Name>
       <Project>{535dff14-efb7-43f5-a4e1-71c1c4280040}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\XSharp.Data\XSharp.Data.xsproj">
+      <Name>XSharp.Data</Name>
+      <Project>{db9ad987-ebd9-4f0c-8604-608a9028585c}</Project>
       <Private>True</Private>
     </ProjectReference>
     <ProjectReference Include="..\XSharp.RT\XSharp.RT.xsproj">

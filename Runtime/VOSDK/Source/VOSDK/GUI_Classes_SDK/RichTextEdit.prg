@@ -291,7 +291,7 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension, kStyle)
 	//PP-040508 Update S.Ebert
 	
 
-	LoadLibrary(PSZ(_CAST, "RICHED20.DLL"))
+	LoadLibrary(String2Psz("RICHED20.DLL"))
 
 	IF IsNil(kStyle) .OR. !IsLong(kStyle)
 		kStyle := _OR(ES_MULTILINE, ES_AUTOHSCROLL, ES_AUTOVSCROLL)
@@ -492,7 +492,7 @@ METHOD Print(oPrintingDevice, oRange)
 		strucPrintDlg:hPrintTemplate := NULL_PTR
 		strucPrintDlg:hSetupTemplate := NULL_PTR
 
-		IF !__LoadComDlgDLL() .OR. ! LOGIC(_CAST, PCALL(gpfnPrintDlg, @strucPrintDlg))
+		IF !PrintDlg( @strucPrintDlg)
 			RETURN FALSE
 		ENDIF
 

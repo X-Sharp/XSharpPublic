@@ -16,8 +16,8 @@ BEGIN NAMESPACE XSharp
     /// </summary>
     /// <seealso cref='T:XSharp.IIndexer' />
     /// <include file="RTComments.xml" path="Comments/ZeroBasedIndex/*" /> 
+    //[DebuggerTypeProxy(TYPEOF(ArrayDebugView))];
     [DebuggerDisplay("{DebuggerString(),nq}", Type := "ARRAY")] ;
-    [DebuggerTypeProxy(TYPEOF(ArrayDebugView))];
     PUBLIC SEALED CLASS __Array INHERIT __ArrayBase<USUAL> IMPLEMENTS IIndexer
 
         /// <inheritdoc />
@@ -146,6 +146,7 @@ BEGIN NAMESPACE XSharp
         END PROPERTY
 
         /// <summary>Returns the default value for array elements when arrays are resized or initialized. This is NIL.</summary>
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)];
         PUBLIC OVERRIDE PROPERTY DefaultValue AS USUAL GET NIL
 
         NEW INTERNAL METHOD Swap(position AS INT, element AS USUAL) AS USUAL

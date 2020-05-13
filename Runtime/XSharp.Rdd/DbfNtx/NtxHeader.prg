@@ -139,12 +139,12 @@ BEGIN NAMESPACE XSharp.RDD.NTX
 		    SET _SetString(NTXOFFSET_KEYEXPRESSION, NTXOFFSET_EXPRESSION_SIZE, value)
 			
 		INTERNAL PROPERTY Unique	AS LOGIC  ;
-		    GET Buffer[ NTXOFFSET_UNIQUE] != 0 ;
-		    SET Buffer[ NTXOFFSET_UNIQUE ] := (BYTE) IIF(value,1,0), isHot := TRUE
+		    GET _GetWord( NTXOFFSET_UNIQUE) != 0 ;
+		    SET _SetWord( NTXOFFSET_UNIQUE , (WORD) IIF(value,1,0)), isHot := TRUE
 
 		INTERNAL PROPERTY Descending	AS LOGIC  ;
-		    GET Buffer[ NTXOFFSET_DESCENDING] != 0 ;
-		    SET Buffer[ NTXOFFSET_DESCENDING ] := (BYTE) IIF(value,1,0), isHot := TRUE
+		    GET _GetWord( NTXOFFSET_DESCENDING) != 0 ;
+		    SET _SetWord( NTXOFFSET_DESCENDING, (WORD) IIF(value,1,0)), isHot := TRUE
 			
 		INTERNAL PROPERTY ForExpression	 AS STRING ;
 		    GET _GetString(NTXOFFSET_FOREXPRESSION, NTXOFFSET_EXPRESSION_SIZE ) ;
@@ -165,7 +165,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
 		PRIVATE CONST NTXOFFSET_HALFPAGE        := 20  AS WORD
 		PRIVATE CONST NTXOFFSET_KEYEXPRESSION   := 22  AS WORD
 		PRIVATE CONST NTXOFFSET_EXPRESSION_SIZE := 256 AS WORD
-		PRIVATE CONST NTXOFFSET_UNIQUE          := 258 AS WORD
+		PRIVATE CONST NTXOFFSET_UNIQUE          := 278 AS WORD
 		PRIVATE CONST NTXOFFSET_DESCENDING      := 280 AS WORD
 		PRIVATE CONST NTXOFFSET_FOREXPRESSION   := 282 AS WORD
 		PRIVATE CONST NTXOFFSET_ORDNAME         := 538 AS WORD
@@ -175,10 +175,11 @@ BEGIN NAMESPACE XSharp.RDD.NTX
             VAR sb := System.Text.StringBuilder{}
             sb:AppendLine( String.Format("NTX Header {0}", cText))
             sb:AppendLine( "----------------------------------------------")
-            sb:AppendLine( String.Format("Signature {0}, Version {1}, First page {2}, Unused Page {3}", SELF:Signature, SELF:IndexingVersion, SELF:FirstPageOffset, SELF:NextUnusedPageOffset))
+            sb:AppendLine( String.Format("Signature {0}, Version {1}, First page {2:X6}, Unused Page {3:X6}", SELF:Signature, SELF:IndexingVersion, SELF:FirstPageOffset, SELF:NextUnusedPageOffset))
             sb:AppendLine( String.Format("Item size {0}, Key Size {1}, Decimals {2}, Max Items {3}, HalfPage {4}", SELF:EntrySize, SELF:KeySize, SELF:KeyDecimals, SELF:MaxItem, SELF:HalfPage))
             sb:AppendLine( String.Format("Key Expression: {0}, Unique {1}, Descending {2}", SELF:KeyExpression, SELF:Unique, SELF:Descending))
-            sb:AppendLine( String.Format("For Expression: {0}, OrdName {1}", SELF:ForExpression, SELF:OrdName))
+            sb:AppendLine( String.Format("For Expression: {0}", SELF:ForExpression))
+            sb:AppendLine( String.Format("Order name    : {0}", SELF:OrdName))
             sb:AppendLine( "----------------------------------------------")
             RETURN sb:ToString()
 

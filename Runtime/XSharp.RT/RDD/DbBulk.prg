@@ -107,6 +107,7 @@ FUNCTION DbApp(cSourceFile, acFields, cbForCondition, cbWhileCondition,nNext, nR
 		
 		DbUseArea(TRUE, cDriver, cSourceFile, __UniqueAlias(cSourceFile), TRUE, TRUE,/*aStru*/,/*cDelim*/, acRDDs)
 		siFrom := VoDbGetSelect()
+        DbMoveToMemory()
 		
 		acFields := {}
 		
@@ -126,6 +127,7 @@ FUNCTION DbApp(cSourceFile, acFields, cbForCondition, cbWhileCondition,nNext, nR
 		ENDIF
 		
 		IF (siFrom > 0)
+            VoDbSetSelect((INT) siFrom)
 			VoDbCloseArea()
 		ENDIF
 		
@@ -148,7 +150,7 @@ FUNCTION DbApp(cSourceFile, acFields, cbForCondition, cbWhileCondition,nNext, nR
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbappdelim/*" />
-FUNCTION DbAppDelim(cSourceFile, cDelim, acFields, cbForCondition, cbWhileCondition, nNext,nRecord, lRest,aStruct)AS LOGIC CLIPPER
+FUNCTION DbAppDelim(cSourceFile, cDelim, acFields, cbForCondition, cbWhileCondition, nNext,nRecord, lRest,aStruct) AS LOGIC CLIPPER
 	
 	LOCAL siTo          AS DWORD
 	LOCAL siPos         AS DWORD
@@ -179,8 +181,11 @@ FUNCTION DbAppDelim(cSourceFile, cDelim, acFields, cbForCondition, cbWhileCondit
 		ENDIF
 		
 		lDbfAnsi := DbInfo(DBI_ISANSI)
+        IF cDelim:IsNil
+            cDelim := RuntimeState.StringDelimiter
+        END
 		
-		DbCreate(cSourceFile, aStruct, "DELIM", .T., __UniqueAlias(cSourceFile), cDelim, .T.)
+		DbCreate(cSourceFile, aStruct, RuntimeState.DelimRDD, .T., __UniqueAlias(cSourceFile), cDelim, .T.)
 		
 		IF ( !lAnsi .AND. lDbfAnsi)
 			SetAnsi(.T.)
@@ -294,11 +299,24 @@ FUNCTION DbCopy(cTargetFile, acFields, cbForCondition, cbWhileCondition, nNext, 
             IF aStruct:IsNil
                 aStruct := DbStruct()
             ENDIF
+            IF IsNil(acFields)
+                acFields := NULL_ARRAY
+            ENDIF
             aStruct := VoDb.FieldList(aStruct, acFields, NULL_ARRAY)
 			IF ( Empty(aStruct) )
 				THROW VoDb.ParamError(__FUNCTION__, ARRAY, 2)
 			ENDIF
-			
+			// Clear AutoInc flags, FoxPro does that too
+            FOR VAR nI := 1 TO ALen(aStruct)
+                LOCAL aField := aStruct[nI] AS ARRAY
+                LOCAL cType := aField[DBS_TYPE] AS STRING
+                IF cType:Length > 1
+                    IF cType:IndexOf("+") > 0
+                        aField[DBS_TYPE] := cType:Replace("+","")
+                    ENDIF
+                ENDIF
+            NEXT
+
 			DbCreate( cTargetFile, aStruct, cDriver,, __UniqueAlias(cTargetFile),,,acRDDs)
 			
 			IF ( !lAnsi ) .AND. ( DbInfo(DBI_ISANSI) )
@@ -306,7 +324,7 @@ FUNCTION DbCopy(cTargetFile, acFields, cbForCondition, cbWhileCondition, nNext, 
 			ENDIF
 			
 			DbUseArea(.T., cDriver, cTargetFile, __UniqueAlias(cTargetFile),,,,,acRDDs)
-			
+			DbMoveToMemory()
 			VoDbSelect(siFrom, REF siTo)
 			
 			lRetCode := DbTrans(siTo, aStruct, cbForCondition, cbWhileCondition, nNext, nRecord, lRest)
@@ -420,13 +438,17 @@ FUNCTION DbCopyDelim (cTargetFile, cDelim, acFields, cbForCondition, cbWhileCond
 		ENDIF
 		
 		lDbfAnsi := DbInfo(DBI_ISANSI)
-		
-		DbCreate(cTargetFile, aStruct, "DELIM", .T., __UniqueAlias(cTargetFile), cDelim)
+
+        IF cDelim:IsNil
+            cDelim := RuntimeState.StringDelimiter
+        END
+
+        // Note that by passing TRUE we are telling the backend to keep the file open
+		DbCreate(cTargetFile, aStruct, RuntimeState.DelimRDD, TRUE, __UniqueAlias(cTargetFile), cDelim)
 		
 		IF ( !lAnsi .AND. lDbfAnsi)
 			SetAnsi(.T.)
-		ENDIF
-		
+        ENDIF
 		VoDbSelect(siFrom, REF siTo)
 		
 		lRetCode := DbTrans(siTo, aStruct, cbForCondition, cbWhileCondition, nNext, nRecord, lRest)
@@ -901,7 +923,19 @@ FUNCTION DbUpdate(cAlias, cbKey, lRand, cbReplace) AS LOGIC CLIPPER
 	RETURN (lRetCode)
 
 
-
+FUNCTION DbMoveToMemory() AS LOGIC
+IF Used()
+    LOCAL hFile AS IntPtr
+    hFile := (IntPtr) DbInfo(DBI_FILEHANDLE)
+    FConvertToMemoryStream(hFile)
+    hFile := (IntPtr) DbInfo(DBI_MEMOHANDLE)
+    IF hFile != IntPtr.Zero
+        FConvertToMemoryStream(hFile)
+    ENDIF
+    RETURN TRUE
+ENDIF
+RETURN FALSE
+    
 
 
 

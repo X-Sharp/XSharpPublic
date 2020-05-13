@@ -2312,70 +2312,6 @@
       </code>
     </example>
   </chrsaw>
-  <chrtran>
-    <summary>
-      Replaces each character in a character expression that matches a character in a second character expression with the corresponding character in a third character expression.
-    </summary>
-    <param name="cSearchedExpression">
-
-      Specifies the expression in which <b>CHRTRAN( )</b> replaces characters.
-
-    </param>
-    <param name="cSearchExpression">
-
-      Specifies the expression containing the characters <b>CHRTRAN( )</b> looks for in cSearchedExpression.
-
-    </param>
-    <param name="cReplacementExpression">
-
-      Specifies the expression containing the replacement characters.
-      If a character in cSearchExpression is found in cSearchedExpression, the character in cSearchedExpression is replaced by a character from cReplacementExpression that's in the same position in cReplacementExpression as the respective character in cSearchExpression.
-      If cReplacementExpression has fewer characters than cSearchExpression, the additional characters in cSearchExpression are deleted from cSearchedExpression. If cReplacementExpression has more characters than cSearchExpression, the additional characters in cReplacementExpression are ignored.
-    </param>
-    <returns>
-      Character
-    </returns>
-    <remarks>
-
-      <b>CHRTRAN( )</b> translates the character expression cSearchedExpression using the translation expressions cSearchExpression and cReplacementExpression and returns the resulting character string.
-    </remarks>
-    <example>
-       <code language="X#">
-        ? CHRTRAN('ABCDEF', 'ACE', 'XYZ')  &amp;&amp; Displays XBYDZF
-        ? CHRTRAN('ABCD', 'ABC', 'YZ')  &amp;&amp; Displays YZD
-        ? CHRTRAN('ABCDEF', 'ACE', 'XYZQRST')  &amp;&amp; Displays XBYDZF
-      </code>
-    </example>
-  </chrtran>
-  <chrtranc>
-    <summary>
-      Replaces each character in a character expression that matches a character in a second character expression with the corresponding character in a third character expression.
-    </summary>
-    <param name="cSearched">
-
-      Specifies the expression in which <b>CHRTRANC( )</b> replaces characters.
-
-    </param>
-    <param name="cSearchFor">
-
-      Specifies the expression containing the characters <b>CHRTRANC( )</b> looks for in cSearched.
-
-    </param>
-    <param name="cReplacement">
-
-      Specifies the expression containing the replacement characters.
-      If a character in cSearchFor is found in cSearched, the character in cSearched is replaced by a character from cReplacement that's in the same position in cReplacement as the respective character in cSearchFor.
-      If cReplacement has fewer characters than cSearchFor, the additional characters in cSearchFor are deleted from cSearched. If cReplacement has more characters than cSearchFor, the additional characters in cReplacement
-    </param>
-    <returns>
-      Character
-    </returns>
-    <remarks>
-
-      <b>CHRTRANC( )</b> is designed to facilitate working with expressions that contain double-byte characters. Use <b>CHRTRANC( )</b> to replace single-byte characters with double-byte characters or double-byte characters with single-byte characters. If the expressions contains only single-byte characters, <b>CHRTRANC( )</b> is equivalent to <b>CHRTRAN( )</b> .
-      This function is useful for manipulating double-byte character sets for languages such as Hiragana and Katakana.
-    </remarks>
-  </chrtranc>
   <clearresultset>
     <summary>
       Clears the marker from a cursor marked by <b>SETRESULTSET( )</b> in the current data session.
@@ -2999,6 +2935,1233 @@
       </code>
     </example>
   </dbf>
+  <ddeaborttrans>
+    <summary>
+      Ends an asynchronous dynamic data exchange (DDE) transaction.
+    </summary>
+    <param name="nTransactionNumber">
+      Specifies the transaction number returned by <b>DDEExecute( )</b>, <b>DDEPoke( )</b>,
+      or <b>DDERequest( )</b> when the transaction is sent to the server application.
+    </param>
+    <returns>
+      Logical
+    </returns>
+    <remarks>
+      An asynchronous transaction allows X# program execution to continue without waiting for the server application to respond to a data request.<br/><br/>
+      <b>DDEExecute( )</b>, <b>DDEPoke( )</b>, and <b>DDERequest( )</b> wait for the period specified by <b>DDESetOption( )</b> for a server application to respond,
+      unless you specify a user-defined function to execute when the server application responds.
+      Specifying a user-defined function to execute in these functions creates an asynchronous transaction.<br/>
+      If <b>DDEAbortTrans( )</b> is called before the server has processed the request, the user-defined function will not be called for the transaction.<br/><br/>
+      <b>DDEAbortTrans( )</b> returns true (.T.) if the asynchronous transaction is successfully ended and returns false (.F.)
+      if the asynchronous transaction cannot be ended. Use <b>DDELastError( )</b> to determine why the transaction could not be ended.
+    </remarks>
+  </ddeaborttrans>
+  <ddeadvise>
+    <summary>
+      Creates a notify link or an automatic link used in a dynamic data exchange (DDE).
+    </summary>
+    <param name="nChannelNumber">
+      Specifies the channel number.
+    </param>
+    <param name="cItemName">
+      Specifies the item name. For example, Microsoft Excel uses row and column notation to refer to cells in a worksheet.
+      The item name R1C1 designates the cell in the first row and first column of the worksheet.
+    </param>
+    <param name="cUDFName">
+      Specifies the user-defined function that is executed when a notify link or an automatic link is established and the item cItemName is modified.
+      When the user-defined function is executed, it is passed the following six parameters in the order given below:
+      Channel Number
+      The channel number of the server application.
+      Action
+      ADVISE or TERMINATE.
+      The item name; for example, R1C1 for a Microsoft Excel worksheet cell.
+      Data
+      The new data (automatic link) or the empty string (notify link).
+      Format
+      The data format; for example, CF_TEXT.
+      Advise Status
+      The link type (0 = manual, 1 = notify, 2 = automatic).
+      The user-defined function should have six parameters in its LPARAMETER or PARAMETER statement to accept the values passed from the server application. If a notify link is established, the user-defined function is executed and the empty string is passed in the Data parameter. You can issue <b>DDERequest( )</b> later to retrieve the data. If an automatic link is established, the user-defined function is executed and the data is passed in the Data parameter.
+      The Action parameter contains ADVISE when the link is being updated by the server. The user-defined function is called, and the Action parameter contains TERMINATE when the link is closed by the client or server.
+      Any value returned by the user-defined function is ignored.
+
+    </param>
+    <param name="nLinkType">
+
+      Specifies the link type in the following way:
+      0
+      Manual
+      1
+      Notify
+      2
+      Automatic
+      You can turn off notification from the server application by specifying 0 for nLinkType. If the item changes, the user-defined function is not executed.
+    </param>
+    <returns>
+      Logical
+    </returns>
+    <remarks>
+
+      <b>DDEAdvise( )</b> is used to create a notify link or an automatic link to an item name in a server application. When a notify link is created with <b>DDEAdvise( )</b>, the server application notifies X# that the item name has been modified. If an automatic link is created, the server application notifies X# that the item name has been modified and passes the new data to X#.
+      Before you can create a link, you must establish a channel to the server application with <b>DDEInitiate( )</b>.
+      You can also use <b>DDEAdvise( )</b> to turn off notification from the server.
+      DDEAdvise( ) returns a true value (.T.) if it executes successfully; otherwise, it returns false (.F.).
+    </remarks>
+    <example>
+       <code language="X#">
+        PUBLIC mchannum
+        mchannum = DDEInitiate('Excel', 'Sheet1')
+        IF mchannum != -1
+        = DDEAdvise(mchannum, 'R1C1', 'newdata', 1)     &amp;&amp; Notify link
+        = DDEAdvise(mchannum, 'R1C2', 'newdata', 2)     &amp;&amp; Automatic link
+        WAIT WINDOW 'Enter data in first two cells in Excel.'
+        ENDIF
+        PROCEDURE newdata
+        PARAMETERS channel, action, item, data, format, advise
+        IF action = 'ADVISE'
+        DO CASE
+        CASE item = 'R1C1'   &amp;&amp; Notify link
+        newvalue = DDERequest(channel, item)
+        ? 'R1C1 notify link: ' + newvalue
+        CASE item = 'R1C2'   &amp;&amp; Automatic link
+        newvalue = data
+        ? 'R1C2 automatic link: ' + newvalue
+        ENDCASE
+        ELSE
+        IF action != "TERMINATE"
+        = DDETerminate(mchannum)
+        ENDIF
+        ENDIF
+      </code>
+    </example>
+  </ddeadvise>
+  <ddeenabled>
+    <summary>
+      Enables or disables dynamic data exchange (DDE) processing or returns the status of DDE processing.
+    </summary>
+    <param name="lExpression1">
+
+      Specify true (.T.) or false (.F.) to globally enable or disable DDE processing. <b>DDEEnabled( )</b> returns true (.T.) if DDE processing is successfully enabled or disabled; otherwise false (.F.) is returned.
+
+    </param>
+    <param name="nChannelNumber">
+
+      Specifies the channel number for the channel whose DDE processing status <b>DDEEnabled( )</b> returns. <b>DDEEnabled( )</b> returns true (.T.) if DDE processing is enabled for the specified channel and returns false (.F.) if DDE processing is disabled.
+
+    </param>
+    <param name="lExpression2">
+
+      To enable DDE processing for a specific channel, include the channel number (nChannelNumber) and specify true (.T.) for lExpression2. To disable DDE processing for a specific channel, include the channel number (nChannelNumber) and specify false (.F.) for lExpression2.
+    </param>
+    <returns>
+      Logical
+    </returns>
+    <remarks>
+      Using <b>DDEEnabled( )</b>, you can globally enable or disable processing. You can also enable or disable DDE processing for specific channels.
+
+      <b>DDEEnabled( )</b> can be used to protect critical code or disable links for short periods. When DDE processing is disabled, client requests are queued until DDE processing is enabled.
+      If <b>DDEEnabled( )</b> is issued without any of its optional arguments, the global DDE processing status is returned. <b>DDEEnabled( </b>) returns true (.T.) if DDE processing has been globally enabled and false (.F.) if DDE processing has been globally disabled.
+    </remarks>
+  </ddeenabled>
+  <ddeexecute>
+    <summary>
+      Sends a command to another application, using dynamic data exchange (DDE).
+    </summary>
+    <param name="nChannelNumber">
+
+      Specifies the channel number.
+
+    </param>
+    <param name="cCommand">
+
+      Specifies the command you want to send to the other application. The format of the command is determined by the application you are sending it to. Consult the application's documentation for the correct syntax.
+
+    </param>
+    <param name="cUDFName">
+
+      Allows asynchronous command execution requests. If you omit cUDFName, a client application waits for the period specified with <b>DDESetOption( )</b>. If you specify a user-defined function with cUDFName, client program execution continues immediately after the command execution request is made.
+      When the server application finishes executing the command, the user-defined function you specify with cUDFName is executed. The user-defined function is passed six parameters in the order shown in the following table.
+      Channel Number
+      The channel number of the server application.
+      Action
+      XACTCOMPLETE (successful execution).XACTFAIL (failed command execution).
+      Item
+      The item name; for example, R1C1 for a Microsoft Excel worksheet cell.
+      Data
+      The new data (REQUEST) or data passed (POKE or EXECUTED).
+      Format
+      The data format; for example, CF_TEXT.
+      Transaction Number
+      The transaction number returned by DDEExecute( ).
+      Use <b>DDEAbortTrans( )</b> to cancel an uncompleted transaction. If the transaction fails, you can use <b>DDELastError( )</b> to determine why it failed.
+      When you include cUDFName, <b>DDEExecute( )</b> does not return a logical value. Instead, a transaction number is returned; if an error occurs, –1 is returned.
+    </param>
+    <returns>
+      Logical
+    </returns>
+    <remarks>
+      The command sent with <b>DDEExecute( )</b> must be understood by the application. Before you can execute the command, you must establish a channel to the server application with <b>DDEInitiate( )</b>.
+      For example, Microsoft Excel has an extensive set of macro commands, including DDE commands that let you request data from X# from within Microsoft Excel. If you establish a channel to Microsoft Excel, you can then use <b>DDEExecute( )</b> to send macro commands to Excel from within X#.
+      If the receiving application successfully executes the command, <b>DDEExecute( )</b> returns true (.T.). If the receiving application cannot successfully execute the command or if the channel number you include is not valid, <b>DDEExecute( )</b> returns false (.F.). If the optional asynchronous user-defined function cUDFName is included, a transaction number is returned. If an error occurs, DDEExecute( ) returns –1.
+    </remarks>
+    <example>
+       <code language="X#">
+        gnChanNum = DDEInitiate('Excel', 'Sheet1')
+        IF gnChanNum != -1
+        glExecute = DDEExecute(gnChanNum, '[App.Maximize]')
+        IF glExecute != .F.
+        WAIT WINDOW 'EXCEL window has been zoomed out.'
+        ENDIF
+        = DDETerminate(gnChanNum)   &amp;&amp; Close the channel
+        ENDIF
+      </code>
+    </example>
+  </ddeexecute>
+  <ddeinitiate>
+    <summary>
+      Establishes a dynamic data exchange (DDE) channel between X# and another Microsoft Windows-based application.
+    </summary>
+    <param name="cServiceName">
+
+      Specifies the service name of the server application, which, in most cases, is the name of the executable file without its extension. The default service name for X# is X#. If you are establishing a channel to Microsoft Excel, cServiceName is Excel.
+
+    </param>
+    <param name="cTopicName">
+
+      Specifies the topic name. The topic is application-specific and must be understood by the application. For example, one topic supplied by most DDE servers is the System topic. See the application documentation for the service and topic names supported by the application.
+    </param>
+    <returns>
+      Numeric
+    </returns>
+    <remarks>
+
+      <b>DDEInitiate( ) </b>establishes a DDE channel between X# and a DDE server application. Once a channel is established, X# can request data from the server by referring to the channel in subsequent DDE functions. X# acts as the client, requesting data from the server application through the channel.
+      If the channel is successfully established, <b>DDEInitiate( )</b> returns the channel number. Channel numbers are non-negative, and the number of channels you can establish is limited only by your system resources.
+
+      <b>DDEInitiate( )</b> returns –1 if the channel cannot be established. If the server application is not open, X# asks if you would like to open it. If you choose Yes, X# attempts to open the application. (You can use <b>DDELastError( )</b> to determine why a channel cannot be established.)
+      To avoid being asked whether you want to open the application, set the <b>DDESetOption( )</b> SAFETY option. You can also use RUN with the /N option to start the application.
+      A channel can be closed with <b>DDETerminate( )</b>.
+    </remarks>
+    <example>
+       <code language="X#">
+        mchannum = DDEInitiate('Excel', 'Sheet1')
+        IF mchannum != -1
+        * Process client actions
+        = DDETerminate(mchannum)  &amp;&amp; Close the channel
+        ENDIF
+      </code>
+    </example>
+  </ddeinitiate>
+  <ddelasterror>
+    <summary>
+      Returns an error number for the last dynamic data exchange (DDE) function.
+    </summary>
+    <returns>
+      DDELastError( )Return Value
+      Numeric
+    </returns>
+    <remarks>
+      You can use <b>DDELastError( )</b> to help determine the cause of an error when a DDE function does not execute successfully.
+
+      <b>DDELastError( )</b> returns 0 if the last DDE function executed successfully. It returns a nonzero value if the last DDE function was unsuccessful. The following table lists the error numbers and their descriptions.
+      1
+      Service busy
+      2
+      Topic busy
+      3
+      Channel busy
+      4
+      No such service
+      5
+      No such topic
+      6
+      Bad channel
+      7
+      Insufficient memory
+      8
+      Acknowledge timeout
+      9
+      Request timeout
+      10
+      No DDEInitiate( )
+      11
+      Client attempted server transaction
+      12
+      Execute timeout
+      13
+      Bad parameter
+      14
+      Low memory
+      15
+      Memory error
+      16
+      Connect failure
+      17
+      Request failure
+      18
+      Poke timeout
+      19
+      Could not display message
+      20
+      Multiple synchronous transactions
+      21
+      Server died
+      22
+      Internal DDE error
+      23
+      Advise timeout
+      24
+      Invalid transaction identifier
+      25
+      Unknown
+    </remarks>
+  </ddelasterror>
+  <ddepoke>
+    <summary>
+      Sends data between client and server applications in a dynamic data exchange (DDE) conversation.
+    </summary>
+    <param name="nChannelNumber">
+
+      Specifies the channel number of the application data is sent to. If the channel number is a server channel, <b>DDEPoke( )</b> sends the data in response to a request or a previously established notify or automatic link.
+
+    </param>
+    <param name="cItemName">
+
+      Specifies the item name to which data is sent. The item name is application-specific and must be understood by the application. For example, Microsoft Excel supports R1C1 as a valid item name that refers to the first cell in a worksheet.
+
+    </param>
+    <param name="cDataSent">
+
+      Specifies the data sent to the item name specified with cItemName.
+
+    </param>
+    <param name="cDataFormat">
+
+      Specifies the format used to send the data. The default format is CF_TEXT. In this format, fields are delimited with tabs and records are delimited with a carriage return and a linefeed.
+
+    </param>
+    <param name="cUDFName">
+
+      Allows asynchronous data transfer. If cUDFName is omitted, a client waits for the period specified with <b>DDESetOption( )</b>. If you specify the name of a user-defined function with cUDFName, client program execution continues immediately after the request is made.
+      When the data is available from the server application, the user-defined function specified with cUDFName is executed. The user-defined function is passed six parameters in this order:
+      Channel Number
+      The channel number of the server application.
+      Action
+      XACTCOMPLETE (successful transaction).XACTFAIL (failed transaction).
+      Item
+      The item name; for example, R1C1 for a Microsoft Excel worksheet cell.
+      Data
+      The new data (REQUEST) or data passed (POKE or EXECUTED).
+      Format
+      The data format; for example, CF_TEXT.
+      Transaction Number
+      The transaction number returned by <b>DDEPoke( )</b>.
+      Use DDEAbortTrans( ) to cancel an uncompleted transaction. If the transaction fails, you can use DDELastError( ) to determine why it failed.
+      When you include cUDFName, DDEPoke( ) returns a transaction number if successful or –1 if an error occurs.
+    </param>
+    <returns>
+      Logical
+    </returns>
+    <remarks>
+
+      <b>DDEPoke( )</b> sends data as a character string to the item name in the application specified by the channel number.
+      If the data is successfully sent, <b>DDEPoke( )</b> returns true (.T.). If the data cannot be sent, <b>DDEPoke( )</b> returns false (.F.). If the asynchronous user-defined function cUDFName is included, <b>DDEPoke( )</b> returns a transaction number; if an error occurs, <b>DDEPoke( )</b> returns –1.
+    </remarks>
+  </ddepoke>
+  <dderequest>
+    <summary>
+      Requests data from a server application in a dynamic data exchange (DDE) conversation.
+    </summary>
+    <param name="nChannelNumber">
+
+      Specifies the channel number of the server application.
+
+    </param>
+    <param name="cItemName">
+
+      Specifies the item name. The item name is application-specific and must be understood by the application. For example, Microsoft Excel uses row and column notation to refer to cells in a worksheet. The item name R1C1 designates the cell in the first row and first column of the worksheet.
+
+    </param>
+    <param name="cDataFormat">
+
+      Specifies a format for the data requested. The default format is CF_TEXT. In this format, fields are delimited with tabs and records are delimited with a carriage return and a line feed.
+
+    </param>
+    <param name="cUDFName">
+
+      Allows an asynchronous data transfer. If you omit cUDFName, X# waits for the data from the server for the period specified with <b>DDESetOption( )</b>. If you specify the name of a user-defined function with cUDFName, X# continues program execution immediately after the request is made.
+      When the data is available from the server application, the user-defined function specified with cUDFName is executed. The user-defined function is passed six parameters in this order:
+      Channel Number
+      The channel number of the server application.
+      Action
+      XACTCOMPLETE (successful transaction).XACTFAIL (failed transaction).
+      Item
+      The item name; for example, R1C1 for a Microsoft Excel worksheet cell.
+      Data
+      The new data (REQUEST) or data passed (POKE or EXECUTED).
+      Format
+      The data format; for example, CF_TEXT.
+      Transaction Number
+      The transaction number returned by <b>DDERequest( )</b>.
+      Use <b>DDEAbortTrans( )</b> to cancel an uncompleted transaction. If the transaction fails, you can use <b>DDELastError( )</b> to determine why it failed.
+      When you include cUDFName, <b>DDERequest( )</b> returns a transaction number equal to or greater than 0 if successful, or –1 if an error occurs.
+    </param>
+    <returns>
+      Character
+    </returns>
+    <remarks>
+      Before you can request data using <b>DDERequest( )</b>, you must establish a channel to the server application with <b>DDEInitiate( )</b>.
+      If the request for data is successful, <b>DDERequest( )</b> returns the data as a character string. If the request fails, <b>DDERequest( )</b> returns an empty string and <b>DDELastError( )</b> returns a nonzero value. If you include the asynchronous user-defined function cUDFName, DDERequest( ) returns a transaction number if successful, or –1 if an error occurs.
+    </remarks>
+    <example>
+       <code language="X#">
+        mchannum = DDEInitiate('Excel', 'Sheet1')
+        IF mchannum != -1
+        mrequest = DDERequest(mchannum, 'R1C1')
+        IF !EMPTY(mrequest) AND DDELastError( ) = 0      &amp;&amp; Successful
+        WAIT WINDOW 'R1C1 contents: ' + mrequest
+        ENDIF
+        = DDETerminate(mchannum)            &amp;&amp; Close the channel
+        ENDIF
+      </code>
+    </example>
+  </dderequest>
+  <ddesetoption>
+    <summary>
+      Changes or returns dynamic data exchange (DDE) settings.
+    </summary>
+    <param name="cOption">
+
+      Specifies the setting options.
+      TIMEOUT
+      nTimeoutValue (number of milliseconds)
+      2000
+      The number of milliseconds DDE functions wait for the server application to respond; the current TIMEOUT value is returned if you omit nTimeoutValue.
+      SAFETY
+      lExpression(true (.T.) or false (.F.))
+      Specifies whether a dialog is displayed when you use <b>DDEInitiate( )</b> to establish a channel to a server application and the application does not respond; the current SAFETY setting is returned if you omit lExpression.
+
+    </param>
+    <param name="nTimeoutValue">
+
+      Specifies the timeout value.
+
+    </param>
+    <param name="lExpression">
+
+      Enables or disables dialog display.
+    </param>
+    <returns>
+      Logical or Numeric
+    </returns>
+    <remarks>
+      Use <b>DDESetOption( )</b> to change or return DDE settings. Two options, TIMEOUT and SAFETY, are available.
+    </remarks>
+  </ddesetoption>
+  <ddesetservice>
+    <summary>
+      Creates, releases, or modifies DDE service names and settings.
+    </summary>
+    <param name="cServiceName">
+
+      Specifies the service name to create, release, modify, or return information about.
+
+    </param>
+    <param name="cOption">
+
+      Specifies to create, release, or modify a service name or to return information about a service name. The following table lists the options you can specify with cOption, the default values for the options and a description of each option.
+      DEFINE
+      –
+      Creates a new service name.
+      RELEASE
+      Releases an existing service name.
+      ADVISE
+      .F.
+      Enables or disables client notification of changes to item names.
+      EXECUTE
+      Enables or disables command execution.
+      POKE
+      Enables or disables client pokes to the service.
+      REQUEST
+      .T.
+      Enables or disables requests to the service name.
+      FORMATS
+      CF_TEXT
+      Specifies supported data formats.
+      DEFINE
+      Creates a new service name. For example, the following command creates the service name codemyservice/code:
+       <code language="X#">glNewService = DDESetService('myservice', 'DEFINE')</code>
+      RELEASE
+      Releases an existing service name to free up system resources. When a service name is released, all of the service's topic names are also released.
+      The following command releases the service name created in the previous example:
+       <code language="X#">glRelease = DDESetService('myservice', 'RELEASE')</code>
+      To release the default X# service, issue this command:
+       <code language="X#">glRelFox = DDESetService('FoxPro', 'RELEASE')</code>
+      ADVISE
+      Specifies whether a client is notified when data changes in an item name or specifies to return the current advise status for a service name. Refer to <b>DDEAdvise( )</b> for additional information about advising clients.
+      To enable client notification, specify true (.T.) for lExpression. Specifying false (.F.) for lExpression disables client notification.
+      To return the current client notification status for the service name, omit lExpression. <b>DDESetService( )</b> returns true if client notification is enabled for the service name; it returns false if client notification is disabled.
+      EXECUTE
+      Allows you to enable or disable command execution requests to a service name or to determine the current execute status for a service name.
+      To enable client requests to execute a command, specify true (.T.) for lExpression. Specifying false (.F.) for lExpression disables client requests to execute a command. .F. is the default value.
+      To return the current command execution status for the service name, omit lExpression. <b>DDESetService( )</b> returns true if client command execution requests are enabled for the service name; otherwise, it returns false.
+      The following commands enable command execution and disable data requests from client applications for the service name codemyservice/code. The current command execution status for codemyservice/code is then displayed:
+       <code language="X#">
+        glExecute = DDESetService('myservice', 'EXECUTE', .T.)
+        glRequest = DDESetService('myservice', 'REQUEST', .F.)
+        ? DDESetService('myservice', 'EXECUTE')
+      </code>
+      POKE
+      Allows you to enable or disable poke requests to the service name. You can also determine the current poke status for a service name. Refer to <b>DDEPoke( )</b> for additional information about poking data to a server or a client.
+      To enable client poke requests, specify true (.T.) for lExpression. Specifying false (.F.) for lExpression disables client poke requests. .F. is the default value.
+      To return the current poke status for the service name, omit lExpression. <b>DDESetService( )</b> returns true if poke requests are enabled for a service name; it returns false if poke requests are disabled.
+      REQUEST
+      Use REQUEST to enable or disable client requests to a service name or to return the current request status for the service name.
+      To enable client requests to the service name, specify true (.T.) for lExpression. Specifying false (.F.) disables client requests to the service name. True (.T.) is the default value.
+      To return the current request status for a service name, omit lExpression. <b>DDESetService( )</b> returns true if client requests are enabled for the service name; it returns false if client requests are disabled.
+      The following commands disable requests from client applications to the service name codemyservice/code and display the current request status for codemyservice/code:
+       <code language="X#">
+        glRequest = DDESetService('myservice', 'REQUEST', .F.)
+        ? DDESetService('myservice', 'REQUEST')
+      </code>
+      FORMATS [ cDataFormat]
+      Specifies the data formats supported by the service name. Server requests for formats not specified with cDataFormat are rejected. When specifying data formats, include a list of the supported formats separated by commas. For example:
+       <code language="X#">=DDESetService('myservice', 'FORMATS', 'CF_TEXT, CF_SYLK')</code>
+      If you omit cDataFormat, only the CF_TEXT format is supported.
+    </param>
+    <param name="lExpression">
+
+      Specifies the state of the REQUEST, EXECUTE, POKE, or ADVISE options. Specify true (.T.) for lExpression to enable the option or false (.F.) to disable it.
+    </param>
+    <returns>
+      Logical
+    </returns>
+    <remarks>
+      X# can act as a dynamic data exchange (DDE) server to send data to client Microsoft Windows-based applications. <b>DDESetService( )</b> is used to create, release, or modify service names and settings in X#. Each service name can have a set of topic names created with <b>DDESetTopic( )</b>. Client applications request data from DDE topic names.
+
+      <b>DDESetService( )</b> returns true (.T.) if the service name is successfully created, released, or modified. If the service name cannot be created, released, or modified, <b>DDESetService( )</b> returns false (.F.).
+
+      <b>DDESetService( )</b> can also be used to return information about a service name. X# has the default service name FoxPro. The X# service name has one topic name called System. The following table lists all the item names supported by the System topic.
+      Topics
+      A list of available topic names
+      Formats
+      A list of supported formats
+      Status
+      Busy or Ready
+      SysItems
+      A list of item names
+      You can use DDESetTopic( ) to modify the FoxPro service name or to release it. For information about manipulating X# service names, see the DDESetTopic( ) options.
+    </remarks>
+  </ddesetservice>
+  <ddesettopic>
+    <summary>
+      Creates or releases a topic name from a service name in a dynamic data exchange (DDE) conversation.
+    </summary>
+    <param name="cServiceName">
+
+      Specifies the service name. Additional service names can be created with DDESetService( ).
+
+    </param>
+    <param name="cTopicName">
+
+      Specifies the topic name to create or release. If you include cUDFName, <b>DDESetTopic( )</b> creates the topic name cTopicName. If you omit cUDFName, the topic name cTopicName is released. If cTopicName is an empty string, the user-defined function specified with cUDFName is executed for any topic name that is not explicitly declared.
+
+    </param>
+    <param name="cUDFName">
+
+      Specifies the name of the user-defined function executed when a client application makes a request to the topic name. If you omit cUDFName, the topic name cTopicName is released from the service name.
+      When the user-defined function is executed, it is passed the following six parameters in the order given below:
+      Channel Number
+      The client channel number.
+      Action
+      ADVISE, EXECUTE, INITIATE, POKE, REQUEST, or TERMINATE.
+      Item
+      The item name; for example, R1C1 for a Microsoft Excel worksheet cell.
+      Data
+      Data from the client.
+      Format
+      The data format; for example, CF_TEXT.
+      Advise Status
+      The link type (0 = manual, 2 = notify or automatic).
+      The values of the Item, Data, and Advise Status parameters depend on the Action parameter. The following table lists the Action parameter values and the values contained in the Item, Data, and Advise Status parameters. A dash (–) indicates that the parameter value is the empty string.
+      Topic name
+      Item name
+      New data
+      New command
+      Link type
+      If the user-defined function successfully handles the client request, the user-defined function should return true (.T.). If the request cannot be handled or an error occurs, the user-defined function should return false (.F.). If false is returned when the Action parameter value is INITIATE, the client topic name request is rejected. If false is returned when the value is POKE, REQUEST, or EXECUTE, the request is ignored. If false is returned when the value is ADVISE, the client request for a notify or automatic link is rejected.
+    </param>
+    <returns>
+      Logical
+    </returns>
+    <remarks>
+      After a topic name is created, any client requests to the topic name cause X# to execute the user-defined function specified with cUDFName. The user-defined function is passed a set of parameters whose values are determined by the client request. The user-defined function return value is passed to the client with DDEPoke( ). The return value is a logical value indicating whether the topic name can provide the service requested by the client.
+
+      <b>DDESetTopic( )</b> returns true (.T.) if it successfully creates or releases the topic name. It returns false (.F.) if the topic name cannot be created or released. Use DDELastError( ) to determine why a topic name cannot be created or released.
+    </remarks>
+    <example>
+      The following example creates a basic sample server called codemyserver/code that supports X# command execution from a client application. The client application makes requests to codemyserver/code through the DO topic, and macro substitution is used to execute the client's command.
+       <code language="X#">
+        *** Set X# up as a DDE server ***
+        = DDESetService('myserver', 'DEFINE')
+        = DDESetService('myserver', 'EXECUTE', .T.)
+        = DDESetTopic('myserver', 'DO', 'DOTOPIC')
+        WAIT WINDOW 'Server portion service setup ... ' NOWAIT
+        *** Use X# as a DDE client ***
+        gnChannel = DDEInitiate('myserver','DO')
+        =DDEExecute(gnChannel, 'WAIT WINDOW "Command Executed ... "')
+        =DDETerminate(gnChannel)
+        PROCEDURE dotopic
+        PARAMETERS gnChannel, gcAction, gcItem, gData, gcFormat, gnAdvise
+        glResult = .F.
+        *** It's necessary to return .T. from an   ***
+        *** INITIATE action or no connection is made ***
+        IF gcAction = 'INITIATE'
+        glResult = .T.
+        ENDIF
+        IF gcAction = 'EXECUTE'
+        &amp;gData
+        glResult = .T.
+        ENDIF
+        IF gcAction = 'TERMINATE'
+        WAIT WINDOW 'Goodbye ... ' NOWAIT
+        glResult = .T.
+        ENDIF
+        RETURN glResult
+      </code>
+      After running this example program, you have set up X# service, which other applications can access. If you have Microsoft Excel, you can run the following Excel macro:
+       <code language="X#">
+        gnMyChan = INITIATE("myserver","DO")
+        =EXECUTE(MyChan,"WAIT WINDOW 'Hi, this is EXCEL speaking'")
+        =RETURN( )
+      </code>
+    </example>
+  </ddesettopic>
+  <ddeterminate>
+    <summary>
+      Closes a dynamic data exchange (DDE) channel established with <b>DDEInitiate( )</b>.
+    </summary>
+    <param name="nChannelNumber">
+
+      Specifies the channel number to close.
+
+    </param>
+    <param name="cServiceName">
+
+      Specifies the service name to close.
+    </param>
+    <returns>
+      Logical
+    </returns>
+    <remarks>
+      If the channel is successfully closed, <b>DDETerminate( )</b> returns true (.T.). If the channel cannot be closed, <b>DDETerminate( )</b> returns false (.F.).
+      Be sure to close channels as soon as they are no longer needed to conserve system resources.
+      All channels are automatically closed if you exit X# by choosing Exit from the File menu or by issuing QUIT in the Command window or from within a program.
+    </remarks>
+  </ddeterminate>
+  <ddeadvise>
+    <summary>
+      Creates a notify link or an automatic link used in a dynamic data exchange (DDE).
+    </summary>
+    <param name="nChannelNumber">
+      Specifies the channel number.
+    </param>
+    <param name="cItemName">
+      Specifies the item name. For example, Microsoft Excel uses row and column notation to refer to cells in a worksheet.
+      The item name R1C1 designates the cell in the first row and first column of the worksheet.
+    </param>
+    <param name="cUDFName">
+      Specifies the user-defined function that is executed when a notify link or an automatic link is established and the item cItemName is modified.
+      When the user-defined function is executed, it is passed the following six parameters in the order given below:
+      Channel Number
+      The channel number of the server application.
+      Action
+      ADVISE or TERMINATE.
+      The item name; for example, R1C1 for a Microsoft Excel worksheet cell.
+      Data
+      The new data (automatic link) or the empty string (notify link).
+      Format
+      The data format; for example, CF_TEXT.
+      Advise Status
+      The link type (0 = manual, 1 = notify, 2 = automatic).
+      The user-defined function should have six parameters in its LPARAMETER or PARAMETER statement to accept the values passed from the server application. If a notify link is established, the user-defined function is executed and the empty string is passed in the Data parameter. You can issue <b>DDERequest( )</b> later to retrieve the data. If an automatic link is established, the user-defined function is executed and the data is passed in the Data parameter.
+      The Action parameter contains ADVISE when the link is being updated by the server. The user-defined function is called, and the Action parameter contains TERMINATE when the link is closed by the client or server.
+      Any value returned by the user-defined function is ignored.
+
+    </param>
+    <param name="nLinkType">
+
+      Specifies the link type in the following way:
+      0
+      Manual
+      1
+      Notify
+      2
+      Automatic
+      You can turn off notification from the server application by specifying 0 for nLinkType. If the item changes, the user-defined function is not executed.
+    </param>
+    <returns>
+      Logical
+    </returns>
+    <remarks>
+
+      <b>DDEAdvise( )</b> is used to create a notify link or an automatic link to an item name in a server application. When a notify link is created with <b>DDEAdvise( )</b>, the server application notifies X# that the item name has been modified. If an automatic link is created, the server application notifies X# that the item name has been modified and passes the new data to X#.
+      Before you can create a link, you must establish a channel to the server application with <b>DDEInitiate( )</b>.
+      You can also use <b>DDEAdvise( )</b> to turn off notification from the server.
+      DDEAdvise( ) returns a true value (.T.) if it executes successfully; otherwise, it returns false (.F.).
+    </remarks>
+    <example>
+       <code language="X#">
+        PUBLIC mchannum
+        mchannum = DDEInitiate('Excel', 'Sheet1')
+        IF mchannum != -1
+        = DDEAdvise(mchannum, 'R1C1', 'newdata', 1)     &amp;&amp; Notify link
+        = DDEAdvise(mchannum, 'R1C2', 'newdata', 2)     &amp;&amp; Automatic link
+        WAIT WINDOW 'Enter data in first two cells in Excel.'
+        ENDIF
+        PROCEDURE newdata
+        PARAMETERS channel, action, item, data, format, advise
+        IF action = 'ADVISE'
+        DO CASE
+        CASE item = 'R1C1'   &amp;&amp; Notify link
+        newvalue = DDERequest(channel, item)
+        ? 'R1C1 notify link: ' + newvalue
+        CASE item = 'R1C2'   &amp;&amp; Automatic link
+        newvalue = data
+        ? 'R1C2 automatic link: ' + newvalue
+        ENDCASE
+        ELSE
+        IF action != "TERMINATE"
+        = DDETerminate(mchannum)
+        ENDIF
+        ENDIF
+      </code>
+    </example>
+  </ddeadvise>
+  <ddeenabled>
+    <summary>
+      Enables or disables dynamic data exchange (DDE) processing or returns the status of DDE processing.
+    </summary>
+    <param name="lExpression1">
+
+      Specify true (.T.) or false (.F.) to globally enable or disable DDE processing. <b>DDEEnabled( )</b> returns true (.T.) if DDE processing is successfully enabled or disabled; otherwise false (.F.) is returned.
+
+    </param>
+    <param name="nChannelNumber">
+
+      Specifies the channel number for the channel whose DDE processing status <b>DDEEnabled( )</b> returns. <b>DDEEnabled( )</b> returns true (.T.) if DDE processing is enabled for the specified channel and returns false (.F.) if DDE processing is disabled.
+
+    </param>
+    <param name="lExpression2">
+
+      To enable DDE processing for a specific channel, include the channel number (nChannelNumber) and specify true (.T.) for lExpression2. To disable DDE processing for a specific channel, include the channel number (nChannelNumber) and specify false (.F.) for lExpression2.
+    </param>
+    <returns>
+      Logical
+    </returns>
+    <remarks>
+      Using <b>DDEEnabled( )</b>, you can globally enable or disable processing. You can also enable or disable DDE processing for specific channels.
+
+      <b>DDEEnabled( )</b> can be used to protect critical code or disable links for short periods. When DDE processing is disabled, client requests are queued until DDE processing is enabled.
+      If <b>DDEEnabled( )</b> is issued without any of its optional arguments, the global DDE processing status is returned. <b>DDEEnabled( </b>) returns true (.T.) if DDE processing has been globally enabled and false (.F.) if DDE processing has been globally disabled.
+    </remarks>
+  </ddeenabled>
+  <ddeexecute>
+    <summary>
+      Sends a command to another application, using dynamic data exchange (DDE).
+    </summary>
+    <param name="nChannelNumber">
+
+      Specifies the channel number.
+
+    </param>
+    <param name="cCommand">
+
+      Specifies the command you want to send to the other application. The format of the command is determined by the application you are sending it to. Consult the application's documentation for the correct syntax.
+
+    </param>
+    <param name="cUDFName">
+
+      Allows asynchronous command execution requests. If you omit cUDFName, a client application waits for the period specified with <b>DDESetOption( )</b>. If you specify a user-defined function with cUDFName, client program execution continues immediately after the command execution request is made.
+      When the server application finishes executing the command, the user-defined function you specify with cUDFName is executed. The user-defined function is passed six parameters in the order shown in the following table.
+      Channel Number
+      The channel number of the server application.
+      Action
+      XACTCOMPLETE (successful execution).XACTFAIL (failed command execution).
+      Item
+      The item name; for example, R1C1 for a Microsoft Excel worksheet cell.
+      Data
+      The new data (REQUEST) or data passed (POKE or EXECUTED).
+      Format
+      The data format; for example, CF_TEXT.
+      Transaction Number
+      The transaction number returned by DDEExecute( ).
+      Use <b>DDEAbortTrans( )</b> to cancel an uncompleted transaction. If the transaction fails, you can use <b>DDELastError( )</b> to determine why it failed.
+      When you include cUDFName, <b>DDEExecute( )</b> does not return a logical value. Instead, a transaction number is returned; if an error occurs, –1 is returned.
+    </param>
+    <returns>
+      Logical
+    </returns>
+    <remarks>
+      The command sent with <b>DDEExecute( )</b> must be understood by the application. Before you can execute the command, you must establish a channel to the server application with <b>DDEInitiate( )</b>.
+      For example, Microsoft Excel has an extensive set of macro commands, including DDE commands that let you request data from X# from within Microsoft Excel. If you establish a channel to Microsoft Excel, you can then use <b>DDEExecute( )</b> to send macro commands to Excel from within X#.
+      If the receiving application successfully executes the command, <b>DDEExecute( )</b> returns true (.T.). If the receiving application cannot successfully execute the command or if the channel number you include is not valid, <b>DDEExecute( )</b> returns false (.F.). If the optional asynchronous user-defined function cUDFName is included, a transaction number is returned. If an error occurs, DDEExecute( ) returns –1.
+    </remarks>
+    <example>
+       <code language="X#">
+        gnChanNum = DDEInitiate('Excel', 'Sheet1')
+        IF gnChanNum != -1
+        glExecute = DDEExecute(gnChanNum, '[App.Maximize]')
+        IF glExecute != .F.
+        WAIT WINDOW 'EXCEL window has been zoomed out.'
+        ENDIF
+        = DDETerminate(gnChanNum)   &amp;&amp; Close the channel
+        ENDIF
+      </code>
+    </example>
+  </ddeexecute>
+  <ddeinitiate>
+    <summary>
+      Establishes a dynamic data exchange (DDE) channel between X# and another Microsoft Windows-based application.
+    </summary>
+    <param name="cServiceName">
+
+      Specifies the service name of the server application, which, in most cases, is the name of the executable file without its extension. The default service name for X# is X#. If you are establishing a channel to Microsoft Excel, cServiceName is Excel.
+
+    </param>
+    <param name="cTopicName">
+
+      Specifies the topic name. The topic is application-specific and must be understood by the application. For example, one topic supplied by most DDE servers is the System topic. See the application documentation for the service and topic names supported by the application.
+    </param>
+    <returns>
+      Numeric
+    </returns>
+    <remarks>
+
+      <b>DDEInitiate( ) </b>establishes a DDE channel between X# and a DDE server application. Once a channel is established, X# can request data from the server by referring to the channel in subsequent DDE functions. X# acts as the client, requesting data from the server application through the channel.
+      If the channel is successfully established, <b>DDEInitiate( )</b> returns the channel number. Channel numbers are non-negative, and the number of channels you can establish is limited only by your system resources.
+
+      <b>DDEInitiate( )</b> returns –1 if the channel cannot be established. If the server application is not open, X# asks if you would like to open it. If you choose Yes, X# attempts to open the application. (You can use <b>DDELastError( )</b> to determine why a channel cannot be established.)
+      To avoid being asked whether you want to open the application, set the <b>DDESetOption( )</b> SAFETY option. You can also use RUN with the /N option to start the application.
+      A channel can be closed with <b>DDETerminate( )</b>.
+    </remarks>
+    <example>
+       <code language="X#">
+        mchannum = DDEInitiate('Excel', 'Sheet1')
+        IF mchannum != -1
+        * Process client actions
+        = DDETerminate(mchannum)  &amp;&amp; Close the channel
+        ENDIF
+      </code>
+    </example>
+  </ddeinitiate>
+  <ddelasterror>
+    <summary>
+      Returns an error number for the last dynamic data exchange (DDE) function.
+    </summary>
+    <returns>
+      DDELastError( )Return Value
+      Numeric
+    </returns>
+    <remarks>
+      You can use <b>DDELastError( )</b> to help determine the cause of an error when a DDE function does not execute successfully.
+
+      <b>DDELastError( )</b> returns 0 if the last DDE function executed successfully. It returns a nonzero value if the last DDE function was unsuccessful. The following table lists the error numbers and their descriptions.
+      1
+      Service busy
+      2
+      Topic busy
+      3
+      Channel busy
+      4
+      No such service
+      5
+      No such topic
+      6
+      Bad channel
+      7
+      Insufficient memory
+      8
+      Acknowledge timeout
+      9
+      Request timeout
+      10
+      No DDEInitiate( )
+      11
+      Client attempted server transaction
+      12
+      Execute timeout
+      13
+      Bad parameter
+      14
+      Low memory
+      15
+      Memory error
+      16
+      Connect failure
+      17
+      Request failure
+      18
+      Poke timeout
+      19
+      Could not display message
+      20
+      Multiple synchronous transactions
+      21
+      Server died
+      22
+      Internal DDE error
+      23
+      Advise timeout
+      24
+      Invalid transaction identifier
+      25
+      Unknown
+    </remarks>
+  </ddelasterror>
+  <ddepoke>
+    <summary>
+      Sends data between client and server applications in a dynamic data exchange (DDE) conversation.
+    </summary>
+    <param name="nChannelNumber">
+
+      Specifies the channel number of the application data is sent to. If the channel number is a server channel, <b>DDEPoke( )</b> sends the data in response to a request or a previously established notify or automatic link.
+
+    </param>
+    <param name="cItemName">
+
+      Specifies the item name to which data is sent. The item name is application-specific and must be understood by the application. For example, Microsoft Excel supports R1C1 as a valid item name that refers to the first cell in a worksheet.
+
+    </param>
+    <param name="cDataSent">
+
+      Specifies the data sent to the item name specified with cItemName.
+
+    </param>
+    <param name="cDataFormat">
+
+      Specifies the format used to send the data. The default format is CF_TEXT. In this format, fields are delimited with tabs and records are delimited with a carriage return and a linefeed.
+
+    </param>
+    <param name="cUDFName">
+
+      Allows asynchronous data transfer. If cUDFName is omitted, a client waits for the period specified with <b>DDESetOption( )</b>. If you specify the name of a user-defined function with cUDFName, client program execution continues immediately after the request is made.
+      When the data is available from the server application, the user-defined function specified with cUDFName is executed. The user-defined function is passed six parameters in this order:
+      Channel Number
+      The channel number of the server application.
+      Action
+      XACTCOMPLETE (successful transaction).XACTFAIL (failed transaction).
+      Item
+      The item name; for example, R1C1 for a Microsoft Excel worksheet cell.
+      Data
+      The new data (REQUEST) or data passed (POKE or EXECUTED).
+      Format
+      The data format; for example, CF_TEXT.
+      Transaction Number
+      The transaction number returned by <b>DDEPoke( )</b>.
+      Use DDEAbortTrans( ) to cancel an uncompleted transaction. If the transaction fails, you can use DDELastError( ) to determine why it failed.
+      When you include cUDFName, DDEPoke( ) returns a transaction number if successful or –1 if an error occurs.
+    </param>
+    <returns>
+      Logical
+    </returns>
+    <remarks>
+
+      <b>DDEPoke( )</b> sends data as a character string to the item name in the application specified by the channel number.
+      If the data is successfully sent, <b>DDEPoke( )</b> returns true (.T.). If the data cannot be sent, <b>DDEPoke( )</b> returns false (.F.). If the asynchronous user-defined function cUDFName is included, <b>DDEPoke( )</b> returns a transaction number; if an error occurs, <b>DDEPoke( )</b> returns –1.
+    </remarks>
+  </ddepoke>
+  <dderequest>
+    <summary>
+      Requests data from a server application in a dynamic data exchange (DDE) conversation.
+    </summary>
+    <param name="nChannelNumber">
+
+      Specifies the channel number of the server application.
+
+    </param>
+    <param name="cItemName">
+
+      Specifies the item name. The item name is application-specific and must be understood by the application. For example, Microsoft Excel uses row and column notation to refer to cells in a worksheet. The item name R1C1 designates the cell in the first row and first column of the worksheet.
+
+    </param>
+    <param name="cDataFormat">
+
+      Specifies a format for the data requested. The default format is CF_TEXT. In this format, fields are delimited with tabs and records are delimited with a carriage return and a line feed.
+
+    </param>
+    <param name="cUDFName">
+
+      Allows an asynchronous data transfer. If you omit cUDFName, X# waits for the data from the server for the period specified with <b>DDESetOption( )</b>. If you specify the name of a user-defined function with cUDFName, X# continues program execution immediately after the request is made.
+      When the data is available from the server application, the user-defined function specified with cUDFName is executed. The user-defined function is passed six parameters in this order:
+      Channel Number
+      The channel number of the server application.
+      Action
+      XACTCOMPLETE (successful transaction).XACTFAIL (failed transaction).
+      Item
+      The item name; for example, R1C1 for a Microsoft Excel worksheet cell.
+      Data
+      The new data (REQUEST) or data passed (POKE or EXECUTED).
+      Format
+      The data format; for example, CF_TEXT.
+      Transaction Number
+      The transaction number returned by <b>DDERequest( )</b>.
+      Use <b>DDEAbortTrans( )</b> to cancel an uncompleted transaction. If the transaction fails, you can use <b>DDELastError( )</b> to determine why it failed.
+      When you include cUDFName, <b>DDERequest( )</b> returns a transaction number equal to or greater than 0 if successful, or –1 if an error occurs.
+    </param>
+    <returns>
+      Character
+    </returns>
+    <remarks>
+      Before you can request data using <b>DDERequest( )</b>, you must establish a channel to the server application with <b>DDEInitiate( )</b>.
+      If the request for data is successful, <b>DDERequest( )</b> returns the data as a character string. If the request fails, <b>DDERequest( )</b> returns an empty string and <b>DDELastError( )</b> returns a nonzero value. If you include the asynchronous user-defined function cUDFName, DDERequest( ) returns a transaction number if successful, or –1 if an error occurs.
+    </remarks>
+    <example>
+       <code language="X#">
+        mchannum = DDEInitiate('Excel', 'Sheet1')
+        IF mchannum != -1
+        mrequest = DDERequest(mchannum, 'R1C1')
+        IF !EMPTY(mrequest) AND DDELastError( ) = 0      &amp;&amp; Successful
+        WAIT WINDOW 'R1C1 contents: ' + mrequest
+        ENDIF
+        = DDETerminate(mchannum)            &amp;&amp; Close the channel
+        ENDIF
+      </code>
+    </example>
+  </dderequest>
+  <ddesetoption>
+    <summary>
+      Changes or returns dynamic data exchange (DDE) settings.
+    </summary>
+    <param name="cOption">
+
+      Specifies the setting options.
+      TIMEOUT
+      nTimeoutValue (number of milliseconds)
+      2000
+      The number of milliseconds DDE functions wait for the server application to respond; the current TIMEOUT value is returned if you omit nTimeoutValue.
+      SAFETY
+      lExpression(true (.T.) or false (.F.))
+      Specifies whether a dialog is displayed when you use <b>DDEInitiate( )</b> to establish a channel to a server application and the application does not respond; the current SAFETY setting is returned if you omit lExpression.
+
+    </param>
+    <param name="nTimeoutValue">
+
+      Specifies the timeout value.
+
+    </param>
+    <param name="lExpression">
+
+      Enables or disables dialog display.
+    </param>
+    <returns>
+      Logical or Numeric
+    </returns>
+    <remarks>
+      Use <b>DDESetOption( )</b> to change or return DDE settings. Two options, TIMEOUT and SAFETY, are available.
+    </remarks>
+  </ddesetoption>
+  <ddesetservice>
+    <summary>
+      Creates, releases, or modifies DDE service names and settings.
+    </summary>
+    <param name="cServiceName">
+
+      Specifies the service name to create, release, modify, or return information about.
+
+    </param>
+    <param name="cOption">
+
+      Specifies to create, release, or modify a service name or to return information about a service name. The following table lists the options you can specify with cOption, the default values for the options and a description of each option.
+      DEFINE
+      –
+      Creates a new service name.
+      RELEASE
+      Releases an existing service name.
+      ADVISE
+      .F.
+      Enables or disables client notification of changes to item names.
+      EXECUTE
+      Enables or disables command execution.
+      POKE
+      Enables or disables client pokes to the service.
+      REQUEST
+      .T.
+      Enables or disables requests to the service name.
+      FORMATS
+      CF_TEXT
+      Specifies supported data formats.
+      DEFINE
+      Creates a new service name. For example, the following command creates the service name codemyservice/code:
+       <code language="X#">glNewService = DDESetService('myservice', 'DEFINE')</code>
+      RELEASE
+      Releases an existing service name to free up system resources. When a service name is released, all of the service's topic names are also released.
+      The following command releases the service name created in the previous example:
+       <code language="X#">glRelease = DDESetService('myservice', 'RELEASE')</code>
+      To release the default X# service, issue this command:
+       <code language="X#">glRelFox = DDESetService('FoxPro', 'RELEASE')</code>
+      ADVISE
+      Specifies whether a client is notified when data changes in an item name or specifies to return the current advise status for a service name. Refer to <b>DDEAdvise( )</b> for additional information about advising clients.
+      To enable client notification, specify true (.T.) for lExpression. Specifying false (.F.) for lExpression disables client notification.
+      To return the current client notification status for the service name, omit lExpression. <b>DDESetService( )</b> returns true if client notification is enabled for the service name; it returns false if client notification is disabled.
+      EXECUTE
+      Allows you to enable or disable command execution requests to a service name or to determine the current execute status for a service name.
+      To enable client requests to execute a command, specify true (.T.) for lExpression. Specifying false (.F.) for lExpression disables client requests to execute a command. .F. is the default value.
+      To return the current command execution status for the service name, omit lExpression. <b>DDESetService( )</b> returns true if client command execution requests are enabled for the service name; otherwise, it returns false.
+      The following commands enable command execution and disable data requests from client applications for the service name codemyservice/code. The current command execution status for codemyservice/code is then displayed:
+       <code language="X#">
+        glExecute = DDESetService('myservice', 'EXECUTE', .T.)
+        glRequest = DDESetService('myservice', 'REQUEST', .F.)
+        ? DDESetService('myservice', 'EXECUTE')
+      </code>
+      POKE
+      Allows you to enable or disable poke requests to the service name. You can also determine the current poke status for a service name. Refer to <b>DDEPoke( )</b> for additional information about poking data to a server or a client.
+      To enable client poke requests, specify true (.T.) for lExpression. Specifying false (.F.) for lExpression disables client poke requests. .F. is the default value.
+      To return the current poke status for the service name, omit lExpression. <b>DDESetService( )</b> returns true if poke requests are enabled for a service name; it returns false if poke requests are disabled.
+      REQUEST
+      Use REQUEST to enable or disable client requests to a service name or to return the current request status for the service name.
+      To enable client requests to the service name, specify true (.T.) for lExpression. Specifying false (.F.) disables client requests to the service name. True (.T.) is the default value.
+      To return the current request status for a service name, omit lExpression. <b>DDESetService( )</b> returns true if client requests are enabled for the service name; it returns false if client requests are disabled.
+      The following commands disable requests from client applications to the service name codemyservice/code and display the current request status for codemyservice/code:
+       <code language="X#">
+        glRequest = DDESetService('myservice', 'REQUEST', .F.)
+        ? DDESetService('myservice', 'REQUEST')
+      </code>
+      FORMATS [ cDataFormat]
+      Specifies the data formats supported by the service name. Server requests for formats not specified with cDataFormat are rejected. When specifying data formats, include a list of the supported formats separated by commas. For example:
+       <code language="X#">=DDESetService('myservice', 'FORMATS', 'CF_TEXT, CF_SYLK')</code>
+      If you omit cDataFormat, only the CF_TEXT format is supported.
+    </param>
+    <param name="lExpression">
+
+      Specifies the state of the REQUEST, EXECUTE, POKE, or ADVISE options. Specify true (.T.) for lExpression to enable the option or false (.F.) to disable it.
+    </param>
+    <returns>
+      Logical
+    </returns>
+    <remarks>
+      X# can act as a dynamic data exchange (DDE) server to send data to client Microsoft Windows-based applications. <b>DDESetService( )</b> is used to create, release, or modify service names and settings in X#. Each service name can have a set of topic names created with <b>DDESetTopic( )</b>. Client applications request data from DDE topic names.
+
+      <b>DDESetService( )</b> returns true (.T.) if the service name is successfully created, released, or modified. If the service name cannot be created, released, or modified, <b>DDESetService( )</b> returns false (.F.).
+
+      <b>DDESetService( )</b> can also be used to return information about a service name. X# has the default service name FoxPro. The X# service name has one topic name called System. The following table lists all the item names supported by the System topic.
+      Topics
+      A list of available topic names
+      Formats
+      A list of supported formats
+      Status
+      Busy or Ready
+      SysItems
+      A list of item names
+      You can use DDESetTopic( ) to modify the FoxPro service name or to release it. For information about manipulating X# service names, see the DDESetTopic( ) options.
+    </remarks>
+  </ddesetservice>
+  <ddesettopic>
+    <summary>
+      Creates or releases a topic name from a service name in a dynamic data exchange (DDE) conversation.
+    </summary>
+    <param name="cServiceName">
+
+      Specifies the service name. Additional service names can be created with DDESetService( ).
+
+    </param>
+    <param name="cTopicName">
+
+      Specifies the topic name to create or release. If you include cUDFName, <b>DDESetTopic( )</b> creates the topic name cTopicName. If you omit cUDFName, the topic name cTopicName is released. If cTopicName is an empty string, the user-defined function specified with cUDFName is executed for any topic name that is not explicitly declared.
+
+    </param>
+    <param name="cUDFName">
+
+      Specifies the name of the user-defined function executed when a client application makes a request to the topic name. If you omit cUDFName, the topic name cTopicName is released from the service name.
+      When the user-defined function is executed, it is passed the following six parameters in the order given below:
+      Channel Number
+      The client channel number.
+      Action
+      ADVISE, EXECUTE, INITIATE, POKE, REQUEST, or TERMINATE.
+      Item
+      The item name; for example, R1C1 for a Microsoft Excel worksheet cell.
+      Data
+      Data from the client.
+      Format
+      The data format; for example, CF_TEXT.
+      Advise Status
+      The link type (0 = manual, 2 = notify or automatic).
+      The values of the Item, Data, and Advise Status parameters depend on the Action parameter. The following table lists the Action parameter values and the values contained in the Item, Data, and Advise Status parameters. A dash (–) indicates that the parameter value is the empty string.
+      Topic name
+      Item name
+      New data
+      New command
+      Link type
+      If the user-defined function successfully handles the client request, the user-defined function should return true (.T.). If the request cannot be handled or an error occurs, the user-defined function should return false (.F.). If false is returned when the Action parameter value is INITIATE, the client topic name request is rejected. If false is returned when the value is POKE, REQUEST, or EXECUTE, the request is ignored. If false is returned when the value is ADVISE, the client request for a notify or automatic link is rejected.
+    </param>
+    <returns>
+      Logical
+    </returns>
+    <remarks>
+      After a topic name is created, any client requests to the topic name cause X# to execute the user-defined function specified with cUDFName. The user-defined function is passed a set of parameters whose values are determined by the client request. The user-defined function return value is passed to the client with DDEPoke( ). The return value is a logical value indicating whether the topic name can provide the service requested by the client.
+
+      <b>DDESetTopic( )</b> returns true (.T.) if it successfully creates or releases the topic name. It returns false (.F.) if the topic name cannot be created or released. Use DDELastError( ) to determine why a topic name cannot be created or released.
+    </remarks>
+    <example>
+      The following example creates a basic sample server called codemyserver/code that supports X# command execution from a client application. The client application makes requests to codemyserver/code through the DO topic, and macro substitution is used to execute the client's command.
+       <code language="X#">
+        *** Set X# up as a DDE server ***
+        = DDESetService('myserver', 'DEFINE')
+        = DDESetService('myserver', 'EXECUTE', .T.)
+        = DDESetTopic('myserver', 'DO', 'DOTOPIC')
+        WAIT WINDOW 'Server portion service setup ... ' NOWAIT
+        *** Use X# as a DDE client ***
+        gnChannel = DDEInitiate('myserver','DO')
+        =DDEExecute(gnChannel, 'WAIT WINDOW "Command Executed ... "')
+        =DDETerminate(gnChannel)
+        PROCEDURE dotopic
+        PARAMETERS gnChannel, gcAction, gcItem, gData, gcFormat, gnAdvise
+        glResult = .F.
+        *** It's necessary to return .T. from an   ***
+        *** INITIATE action or no connection is made ***
+        IF gcAction = 'INITIATE'
+        glResult = .T.
+        ENDIF
+        IF gcAction = 'EXECUTE'
+        &amp;gData
+        glResult = .T.
+        ENDIF
+        IF gcAction = 'TERMINATE'
+        WAIT WINDOW 'Goodbye ... ' NOWAIT
+        glResult = .T.
+        ENDIF
+        RETURN glResult
+      </code>
+      After running this example program, you have set up X# service, which other applications can access. If you have Microsoft Excel, you can run the following Excel macro:
+       <code language="X#">
+        gnMyChan = INITIATE("myserver","DO")
+        =EXECUTE(MyChan,"WAIT WINDOW 'Hi, this is EXCEL speaking'")
+        =RETURN( )
+      </code>
+    </example>
+  </ddesettopic>
+  <ddeterminate>
+    <summary>
+      Closes a dynamic data exchange (DDE) channel established with <b>DDEInitiate( )</b>.
+    </summary>
+    <param name="nChannelNumber">
+
+      Specifies the channel number to close.
+
+    </param>
+    <param name="cServiceName">
+
+      Specifies the service name to close.
+    </param>
+    <returns>
+      Logical
+    </returns>
+    <remarks>
+      If the channel is successfully closed, <b>DDETerminate( )</b> returns true (.T.). If the channel cannot be closed, <b>DDETerminate( )</b> returns false (.F.).
+      Be sure to close channels as soon as they are no longer needed to conserve system resources.
+      All channels are automatically closed if you exit X# by choosing Exit from the File menu or by issuing QUIT in the Command window or from within a program.
+    </remarks>
+  </ddeterminate>
   <deleted>
     <summary>
       Returns a logical value that indicates whether the current record is marked for deletion.
@@ -4460,6 +5623,45 @@
       FWRITE( ) returns the number of bytes written to the file. If FWRITE( ) can't write to the file for any reason, 0 is returned.
     </remarks>
   </fwrite>
+  <getbar>
+    <summary>
+      Returns the number of an item on a menu defined with DEFINE POPUP or the X# system menu.
+    </summary>
+    <param name="MenuItemName">
+      Specifies the menu item.
+    </param>
+    <param name="nMenuPosition">
+      Specifies a position on the menu. nMenuPosition can range from 1 through the number of items within the menu.
+      1 corresponds to the first item on the menu, 2 to the second item, and so on.
+    </param>
+    <returns>
+      Numeric
+    </returns>
+    <remarks>
+      Use GETBAR( ) to determine which item occupies a specific position on a menu. This function is useful when items on a menu are added, removed, or rearranged. Use DEFINE BAR to add an item to a menu or RELEASE BAR to remove an item. The position of items in a menu can be changed if MOVER is included when the menu is created with DEFINE POPUP.
+    </remarks>
+    <example>
+       <code language="X#">
+        Clear
+        ON KEY LABEL CTRL+Z DO showorder
+        WAIT WINDOW "Press CTRL+Z to refresh." NOWAIT
+        DEFINE POPUP popDemo MOVER From 2,2
+        DEFINE BAR 1 OF popDemo PROMPT 'One'
+        DEFINE BAR 2 OF popDemo PROMPT 'Two'
+        DEFINE BAR 3 OF popDemo PROMPT 'Three'
+        DEFINE BAR 4 OF popDemo PROMPT 'Four'
+        DO showorder
+        ACTIVATE POPUP popDemo
+        PROCEDURE showorder
+        Clear
+        @ 3,12 SAY  '1 ' + PRMBAR('popDemo', GETBAR('popDemo',1))
+        @ 4,12 SAY  '2 ' + PRMBAR('popDemo', GETBAR('popDemo',2))
+        @ 5,12 SAY  '3 ' + PRMBAR('popDemo', GETBAR('popDemo',3))
+        @ 6,12 SAY  '4 ' + PRMBAR('popDemo', GETBAR('popDemo',4))
+        RETURN
+      </code>
+    </example>
+  </getbar>
   <getenv>
     <summary>
       Returns the contents of the specified MS-DOS environment variable.
@@ -8112,27 +9314,6 @@
       Character
     </returns>
   </space>
-  <sqlcancel>
-    <summary>
-      Requests cancellation of an executing SQL statement.
-
-      <b>SQLCANCEL( )</b> cancels the execution of <b>SQLCOLUMNS( )</b>, <b>SQLEXEC( )</b>, <b>SQLMORERESULTS( )</b>, and <b>SQLTABLES( )</b> in asynchronous mode. To establish asynchronous mode, use the <b>SQLSETPROP( )</b> function.
-    </summary>
-    <param name="nStatementHandle">
-
-      Specifies the active statement handle whose SQL statement is to be canceled.
-    </param>
-    <returns>
-      Numeric. <b>SQLCANCEL( )</b> returns 1 if the SQL statement is successfully canceled, – 1 if there is a connection level error, and – 2 if there is an environment level error.
-    </returns>
-    <example>
-       <code language="X#">
-        = SQLSETPROP(gnHandle, 'asynchronous', .T.)   &amp;&amp; To stop SQLEXEC( )
-        = SQLEXEC(gnHandle, 'SELECT * FROM authors')
-        = SQLCANCEL(gnHandle)   &amp;&amp; Wrong select statement, cancel
-      </code>
-    </example>
-  </sqlcancel>
   <sqrt>
     <summary>
       Returns the square root of the specified numeric expression.

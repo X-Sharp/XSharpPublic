@@ -1415,21 +1415,21 @@ CLASS XSharp.CoreDb
         strPreviousOrder := ""
         TRY
             LOCAL oRdd := CoreDb.CWA(__FUNCTION__) AS IRdd
+            LOCAL result AS OBJECT
             VAR info     := DbOrderInfo{}
+            strPreviousOrder := String.Empty
+            result := oRdd:OrderInfo(DBOI_NAME,info)
+            IF result IS STRING VAR cOrder
+                strPreviousOrder := cOrder
+            ENDIF
             cBagName     := cBagName?:Trim()
             info:BagName := cBagName
             info:Order   := oOrder
-            strPreviousOrder := String.Empty
-            VAR result := oRdd:OrderListFocus(info)
+            result := oRdd:OrderListFocus(info)
             IF HasEvents .AND. ! info:IsEmpty
-                info := DbOrderInfo{}
-                oRdd:OrderInfo(DBOI_NAME,info)
                 RAISE OrderChanged info:Result
             ENDIF
-            IF result .AND. info:Result IS STRING
-                strPreviousOrder := (STRING)info:Result
-            ENDIF
-            RETURN result
+            RETURN TRUE
         CATCH e AS Exception
             Fail(e)
         END TRY

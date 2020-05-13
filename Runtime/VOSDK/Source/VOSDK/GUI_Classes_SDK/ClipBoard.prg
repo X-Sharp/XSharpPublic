@@ -168,7 +168,7 @@ METHOD InsertRTF(cText)
 
 	// Get Clipboard format id for RTF.
 	IF dwId == 0
-		dwID := RegisterClipboardFormat(PSZ("Rich Text Format"))
+		dwID := RegisterClipboardFormat(String2Psz("Rich Text Format"))
 	ENDIF
 
 	IF IsString(cText) .and. dwId > 0
@@ -295,7 +295,7 @@ METHOD RetrieveRTF(nStringLength)
 	STATIC LOCAL dwId AS DWORD
 
 	IF dwId == 0
-		dwID := RegisterClipboardFormat(PSZ("Rich Text Format"))
+		dwID := RegisterClipboardFormat(String2Psz("Rich Text Format"))
 	ENDIF
 
 	IF !IsNil(nStringLength)

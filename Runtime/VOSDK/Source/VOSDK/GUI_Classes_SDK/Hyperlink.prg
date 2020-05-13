@@ -72,6 +72,7 @@ METHOD OpenLink()
 	RETURN SELF
 END CLASS
 
+/// <exclude/>
 FUNCTION ShellOpen(oWindow AS Window, cFile AS STRING) AS VOID STRICT
     //SE-080603
    LOCAL hWnd AS PTR 

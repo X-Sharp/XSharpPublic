@@ -20,12 +20,12 @@ END CLASS
 
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/addbs/*" />
-/// <seealso cref='M:XSharp.VFP.Functions.DefaultExt(System.String)' />
-/// <seealso cref='M:XSharp.VFP.Functions.JustDrive(System.String)' />
-/// <seealso cref='M:XSharp.VFP.Functions.JustExt(System.String)' />
-/// <seealso cref='M:XSharp.VFP.Functions.JustFName(System.String)' />
-/// <seealso cref='M:XSharp.VFP.Functions.JustPath(System.String)' />
-/// <seealso cref='M:XSharp.VFP.Functions.JustStem(System.String)' />
+/// <seealso cref='O:XSharp.VFP.Functions.DefaultExt' />
+/// <seealso cref='O:XSharp.VFP.Functions.JustDrive' />
+/// <seealso cref='O:XSharp.VFP.Functions.JustExt' />
+/// <seealso cref='O:XSharp.VFP.Functions.JustFName' />
+/// <seealso cref='O:XSharp.VFP.Functions.JustPath' />
+/// <seealso cref='O:XSharp.VFP.Functions.JustStem' />
 FUNCTION AddBs (cPath AS STRING) AS STRING
     IF String.IsNullOrEmpty(cPath)
         RETURN ""
@@ -171,3 +171,136 @@ FUNCTION StuffC( cExpression, nStartReplacement, nCharactersReplaced, cReplaceme
 FUNCTION SubStrC(cExpression, nStartPosition , nCharactersReturned ) AS STRING
     RETURN SubStr(cExpression, nStartPosition, nCharactersReturned)
 
+
+
+
+
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/ratc/*" />
+FUNCTION RAtC(cSearchExpression AS STRING , cExpressionSearched AS STRING , nOccurrence := 1 AS INT ) AS INT	
+	RETURN RAt(cSearchExpression , cExpressionSearched , nOccurrence )
+
+
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/rat/*" />
+FUNCTION RAt(cSearchExpression AS STRING , cExpressionSearched AS STRING , nOccurrence := 1 AS INT ) AS INT
+    LOCAL iPosition  AS INT
+    LOCAL i , dwPosition, dwOccurred AS INT
+    dwOccurred := 0
+ 	dwPosition := 0
+	IF ! String.IsNullOrEmpty(cExpressionSearched) .AND. ! String.IsNullOrEmpty(cSearchExpression) 		
+	
+		iPosition := cExpressionSearched:Length 
+
+		FOR i := 1 UPTO nOccurrence
+				
+     		IF ( iPosition := cExpressionSearched:LastIndexOf(cSearchExpression,iPosition,StringComparison.Ordinal) ) == -1 
+				EXIT 
+			ENDIF
+
+			dwOccurred++ 
+				
+
+			IF dwOccurred == nOccurrence
+				// Assign the found position before leaving the loop. 
+				dwPosition := iPosition + 1
+				EXIT 
+			ENDIF
+					
+			//  Doing always a   
+			//    
+			//  iPosition--
+			//    
+			//	, like the c# sources do, is not correct. 
+			//  That´s only necessary if the len of the search string 	
+			//  is 1.    
+
+			IF cSearchExpression:Length == 1 .AND. --iPosition < 0 
+				
+				// something like:  
+				//
+				// RAt("a","abracadabra", 12 )   
+				//
+				// ends up here. If you do not check the iPosition value 
+				// the next search loop would cause a exception.
+				//
+						 
+				EXIT
+			ENDIF
+		NEXT 
+	ENDIF 
+	RETURN dwPosition		
+							
+	
+
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/chrtranc/*" />
+FUNCTION ChrTranC( cSearchIn AS STRING , cSearchFor AS STRING, cReplaceWith  AS STRING ) AS STRING 
+	RETURN ChrTran( cSearchIn , cSearchFor , cReplaceWith )  
+
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/chrtran/*" />
+FUNCTION ChrTran( cSearchIn AS STRING , cSearchFor AS STRING, cReplaceWith  AS STRING ) AS STRING 
+    LOCAL cRetVal ,cReplaceChar AS STRING
+    LOCAL i AS INT  
+	cRetVal := "" 
+   
+	IF  cSearchIn != NULL  .AND. cSearchFor != NULL .AND. cReplaceWith != NULL	   
+
+		cRetVal := cSearchIn 
+	
+			
+		FOR i := 1 UPTO cSearchFor:Length
+
+			IF cReplaceWith:Length <= i-1
+				cReplaceChar := ""
+			ELSE
+				cReplaceChar := cReplaceWith[i-1]:ToString()
+			ENDIF 
+			
+		    cRetVal := cRetVal:Replace(cSearchFor[i-1]:ToString(), cReplaceChar )
+	//	    cRetVal := StrTran(cRetVal , cSearchFor[i-1]:ToString(), cReplaceChar , , SLen ( cRetVal ) )
+
+		NEXT           
+
+	ENDIF						
+	
+	RETURN cRetVal
+
+	
+
+
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/at/*" />
+FUNCTION At(cSearchExpression AS STRING, cExpressionSearched AS STRING, nOccurrence := 1 AS DWORD) AS DWORD
+	LOCAL position := 0 AS DWORD
+	IF ( cExpressionSearched != NULL .AND. cSearchExpression != NULL )
+		IF cExpressionSearched:Length != 0 .AND. cSearchExpression:Length != 0
+            DO WHILE nOccurrence  > 0
+                IF ( position := (DWORD) cExpressionSearched:IndexOf(cSearchExpression, (INT) position,StringComparison.Ordinal) + 1) == 0
+                    EXIT
+                ENDIF	
+                nOccurrence -= 1
+            ENDDO
+		END IF
+	ENDIF
+	RETURN position
+     
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/at_c/*" />
+FUNCTION At_C(cSearchExpression AS STRING, cExpressionSearched AS STRING, nOccurrence := 1 AS DWORD) AS DWORD
+	RETURN At(cSearchExpression, cExpressionSearched, nOccurrence)
+
+
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/atc/*" />
+FUNCTION AtC(cSearchExpression AS STRING, cExpressionSearched AS STRING, nOccurrence := 1 AS DWORD) AS DWORD
+	LOCAL position := 0 AS DWORD
+	IF ( cExpressionSearched != NULL .AND. cSearchExpression != NULL )
+		IF cExpressionSearched:Length != 0 .AND. cSearchExpression:Length != 0
+            DO WHILE nOccurrence  > 0
+                IF ( position := (DWORD) cExpressionSearched:IndexOf(cSearchExpression, (INT) position,StringComparison.OrdinalIgnoreCase) + 1) == 0
+                    EXIT
+                ENDIF	
+                nOccurrence -= 1
+            ENDDO
+		END IF
+	ENDIF
+	RETURN position
+
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/atcc/*" />
+FUNCTION AtCC(cSearchExpression AS STRING, cExpressionSearched AS STRING, nOccurrence := 1 AS DWORD) AS DWORD
+	RETURN AtC(cSearchExpression, cExpressionSearched, nOccurrence)

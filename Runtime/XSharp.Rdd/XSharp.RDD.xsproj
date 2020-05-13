@@ -14,7 +14,7 @@
     <INS>true</INS>
     <NamedArgs>true</NamedArgs>
     <VulcanCompatibleResources>False</VulcanCompatibleResources>
-    <XSharpProjectversion>2.0.5.0</XSharpProjectversion>
+    <XSharpProjectversion>2.4.0.0</XSharpProjectversion>
     <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
     <IncludePaths>$(CommonInclude)</IncludePaths>
     <Nostandarddefs>true</Nostandarddefs>
@@ -55,7 +55,7 @@
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <UseSharedCompilation>true</UseSharedCompilation>
-    <DisabledWarnings>9001;1591</DisabledWarnings>
+    <DisabledWarnings>9001;1591;1573</DisabledWarnings>
     <DocumentationFile>XSharp.Rdd.Xml</DocumentationFile>
     <CommandLineOption>/noclipcall</CommandLineOption>
   </PropertyGroup>
@@ -101,6 +101,9 @@
     <Compile Include="DbfCdx\Tag\CdxTagNavigation.prg" />
     <Compile Include="DbfCdx\Tag\CdxTagUpdate.prg" />
     <Compile Include="DbfCdx\VfpCollation.prg" />
+    <Compile Include="DbfDbt\DbfDbt.prg" />
+    <Compile Include="DbfDbt\DbtMemo.prg" />
+    <Compile Include="DbfFpt\DbfFpt.prg" />
     <Compile Include="DbfNtx\DbfNtx.prg" />
     <Compile Include="DbfNtx\Order\NtxOrderIO.prg" />
     <Compile Include="DbfNtx\Order\NtxOrder.prg" />
@@ -109,22 +112,24 @@
     <Compile Include="DbfNtx\Order\NtxOrderLock.prg" />
     <Compile Include="DbfNtx\Order\NtxOrderNavigate.prg" />
     <Compile Include="DbfNtx\Order\NtxOrderUpdate.prg" />
-    <Compile Include="Dbf\Headers.prg" />
+    <Compile Include="DbfVfp\DbfVfp.prg" />
+    <Compile Include="DbfVfp\DBFVFPSQL.prg" />
+    <Compile Include="Dbf\AbstractMemo.prg" />
     <Compile Include="Dbf\Structures.prg" />
     <Compile Include="Dbf\Functions.prg" />
-    <Compile Include="Dbf\DbfVfp.prg" />
     <Compile Include="Dbf\DBF.prg" />
     <Compile Include="Dbf\DbfBlob.prg" />
-    <Compile Include="Dbf\DbfDbt.prg" />
     <Compile Include="Dbf\DbfColumn.prg" />
-    <Compile Include="Dbf\DbfFpt.prg" />
     <Compile Include="Dbf\DbfMemo.prg" />
     <Compile Include="Dbf\DbfNsx.prg" />
     <Compile Include="Dbf\DbfSmt.prg" />
     <Compile Include="Dbf\Dbf_NotImplemented.prg" />
     <Compile Include="Dbf\DbMemo.prg" />
-    <Compile Include="Dbf\FptEnums.prg" />
     <Compile Include="Enums.prg" />
+    <Compile Include="DbfFpt\FptEnums.prg" />
+    <Compile Include="DbfFpt\FptHeaders.prg" />
+    <Compile Include="DbfFpt\FptMemo.prg" />
+    <Compile Include="DbfFpt\FptStructures.prg" />
     <Compile Include="Other\TextRDD.prg" />
     <Compile Include="Other\DELIM.prg" />
     <Compile Include="Other\SDF.prg" />
@@ -163,6 +168,9 @@
     <Folder Include="DbfNtx\" />
     <Folder Include="DbfNtx\Order" />
     <Folder Include="Dbf\" />
+    <Folder Include="DbfFpt" />
+    <Folder Include="DbfDbt" />
+    <Folder Include="DbfVfp" />
     <Folder Include="Other\" />
     <Folder Include="Properties\" />
     <Folder Include="VfpCollations\" />
@@ -184,6 +192,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Ads.xml" />
     <None Include="DbfCdx\CdxReadme.txt" />
     <None Include="DbfCdx\Todo.txt" />
     <None Include="DbfNtx\NtxFormat.txt" />

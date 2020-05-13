@@ -141,7 +141,7 @@ METHOD StartDrag(acFilesToDrag)
 			"Insufficient memory to drop(s)"}
 		oTB:Type := BUTTONOKAY
 		oTB:Show()
-		PCALL(gpfnDragFinish, hDrop) // release memory block
+		DragFinish( hDrop) // release memory block
 		RETURN FALSE
 	ENDIF
 
@@ -164,7 +164,7 @@ METHOD StartDrag(acFilesToDrag)
 	ENDDO
 
 	IF (hWndClient == NULL_PTR)
-		PCALL(gpfnDragFinish, hDrop)
+		DragFinish(hDrop)
 		RETURN FALSE
 	ENDIF
 	//PP-031006 Bug 98 This used to be SendMessage but Windows needs it to be Post to properly handle hDrop

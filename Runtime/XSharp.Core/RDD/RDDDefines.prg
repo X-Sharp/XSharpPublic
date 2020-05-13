@@ -6,7 +6,7 @@
 USING XSharp
 USING XSharp.RDD.Enums
 
-DEFINE _NULLFLAGS := "_NULLFLAGS" 
+DEFINE _NULLFLAGS := "_NullFlags" 
 
 // RecInfo defines
 /// <exclude />
@@ -51,6 +51,8 @@ DEFINE DBS_ALEN                 := 4  // XBase++ has this define
 /// <exclude />
 DEFINE DBS_CAPTION              := DbFieldInfo.DBS_CAPTION
 /// <exclude />
+DEFINE DBS_COLUMNINFO           := DbFieldInfo.DBS_COLUMNINFO
+/// <exclude />
 DEFINE DBS_ISNULL               := DbFieldInfo.DBS_ISNULL  
 /// <exclude />
 DEFINE DBS_COUNTER              := DbFieldInfo.DBS_COUNTER 
@@ -93,9 +95,9 @@ DEFINE DBI_GETHEADERSIZE 	:= 	DbInfo.DBI_GETHEADERSIZE	// Numeric: Get header si
 /// <exclude />
 DEFINE DBI_LASTUPDATE 		:= 	DbInfo.DBI_LASTUPDATE 		// Date:    Last date RDD file updated 
 /// <exclude />
-DEFINE DBI_GETDELIMITER 	:= 	DbInfo.DBI_GETDELIMITER		// String:  Get default delimiter
+DEFINE DBI_GETDELIMITER 	:= 	DbInfo.DBI_GETDELIMITER		// String:  Get default FIELD delimiter
 /// <exclude />
-DEFINE DBI_SETDELIMITER 	:=  DbInfo.DBI_SETDELIMITER		// String:  Set default delimiter
+DEFINE DBI_SETDELIMITER 	:=  DbInfo.DBI_SETDELIMITER		// String:  Set default FIELD delimiter
 /// <exclude />
 DEFINE DBI_GETRECSIZE 		:= 	DbInfo.DBI_GETRECSIZE 		// Numeric: Get record size of the file
 /// <exclude />

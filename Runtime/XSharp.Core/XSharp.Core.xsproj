@@ -28,7 +28,7 @@
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <UseSharedCompilation>true</UseSharedCompilation>
-	<DisabledWarnings />
+    <DisabledWarnings />
     <SignAssembly>true</SignAssembly>
     <DelaySign>false</DelaySign>
   </PropertyGroup>
@@ -42,7 +42,7 @@
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <UseSharedCompilation>true</UseSharedCompilation>
-	<DisabledWarnings />
+    <DisabledWarnings />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
     <EmitDebugInformation>true</EmitDebugInformation>
@@ -112,6 +112,7 @@
     <Compile Include="Properties\AssemblyInfo.prg" />
     <Compile Include="RDD\BaseIndex.prg" />
     <Compile Include="RDD\BaseMemo.prg" />
+    <Compile Include="RDD\DbColumnInfo.prg" />
     <Compile Include="RDD\DbFloat.prg" />
     <Compile Include="RDD\RDDNotifications.prg" />
     <Compile Include="RDD\RDDDefines.prg" />

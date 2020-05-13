@@ -46,6 +46,7 @@ namespace XSharp.Project
         internal const string VO16Caption = "Generate Clipper constructors";
         internal const string XPP1Caption = "Inherit from Abstract class";
         internal const string FOX1Caption = "Inherit from Custom class";
+        internal const string FOX2Caption = "Locals visible to macrocompiler.";
         internal const string VO1Description = "Allow Init() and Axit() as aliases for Constructor/Destructor (/vo1)";
         internal const string VO2Description = "Initialize strings to empty string (String.Empty) ( /vo2). Please note that in .NET a NULL_STRING is not the same as a string with length 0. When enabled this will initialize local string variables regardless of the setting of 'initialize locals' setting from the Language page.";
         internal const string VO3Description = "Add the virtual modifier to all methods by default (which is the normal Visual Objects behavior) (/vo3)";
@@ -64,6 +65,7 @@ namespace XSharp.Project
         internal const string VO16Description = "Automatically create clipper calling convention constructors for classes without constructor where the parent class has a Clipper Calling convention constructor.(/vo16)";
         internal const string XPP1Description = "All classes without parent class inherit from the XPP Abstract class.(/xpp1)";
         internal const string FOX1Description = "All classes are assumed to inherit from the Custom class. This also affects the way in which properties are processed by the compiler.(/fox1)";
+        internal const string FOX2Description = "Make local variables visible to the macro compiler. This may be needed for SQL queries with embedded parameters or the ampersand (&) operator. Use with care because this will generate quite some extra code.";
         internal const string CatCompatibility = "All dialects";
         internal const string CatNotCore = "Not in Core dialect";
         internal const string XPPCompatibility = "Xbase++ Compatibility";
@@ -91,6 +93,7 @@ namespace XSharp.Project
         private bool vo16;
         private bool xpp1;
         private bool fox1;
+        private bool fox2;
         #endregion Fields
 
         #region Constructors
@@ -228,17 +231,27 @@ namespace XSharp.Project
             set { this.fox1 = value; this.IsDirty = true; }
         }
 
+        [Category(FOXCompatibility), DisplayName(FOX2Caption), Description(FOX2Description)]
+        [ReadOnly(true)]
+        public bool FOX2
+        {
+            get { return this.fox2; }
+            set { this.fox2 = value; this.IsDirty = true; }
+        }
+
 
         #endregion
         #region Overriden Implementation
         private void EnableDialectOptions(string dialect)
         {
             SetFieldReadOnly(nameof(FOX1), true);
+            SetFieldReadOnly(nameof(FOX2), true);
             SetFieldReadOnly(nameof(XPP1), true);
             switch (dialect.ToLower())
             {
                 case "foxpro":
                     SetFieldReadOnly(nameof(FOX1), false);
+                    SetFieldReadOnly(nameof(FOX2), false);
                     break;
                 case "xpp":
                     SetFieldReadOnly(nameof(XPP1), false);
@@ -260,6 +273,7 @@ namespace XSharp.Project
                         else
                         {
                             fox1 = false;
+                            fox2 = false;
                         }
                         Grid.Refresh();
                         EnableDialectOptions(e.NewValue);
@@ -305,7 +319,8 @@ namespace XSharp.Project
             vo15 = getPrjLogic(nameof(VO15), true);
             vo16 = getPrjLogic(nameof(VO16), false);
 			xpp1 = getPrjLogic(nameof(XPP1), false);
-            fox1 = getPrjLogic(nameof(XPP1), false);
+            fox1 = getPrjLogic(nameof(FOX1), false);
+            fox2 = getPrjLogic(nameof(FOX2), false);
             EnableDialectOptions(this.ProjectMgr.GetProjectProperty("Dialect"));
         }
 
@@ -339,6 +354,7 @@ namespace XSharp.Project
             this.ProjectMgr.SetProjectProperty(nameof(VO16), this.vo16.ToString().ToLower());
 			this.ProjectMgr.SetProjectProperty(nameof(XPP1), this.xpp1.ToString().ToLower());
             this.ProjectMgr.SetProjectProperty(nameof(FOX1), this.fox1.ToString().ToLower());
+            this.ProjectMgr.SetProjectProperty(nameof(FOX2), this.fox2.ToString().ToLower());
 
             this.IsDirty = false;
             saving = false;

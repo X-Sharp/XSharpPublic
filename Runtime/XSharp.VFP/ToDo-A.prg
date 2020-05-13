@@ -24,8 +24,6 @@ FUNCTION ADBObjects(ArrayName, cSetting)
     THROW NotImplementedException{}
     //RETURN 0
 
-
-
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/aelement/*" />
 FUNCTION Aelement (ArrayName, nRowSubscript , nColumnSubscript)
@@ -69,11 +67,7 @@ FUNCTION ASessions (ArrayName)
     THROW NotImplementedException{}
     //RETURN 0
 
-/// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/asqlhandles/*" />
-FUNCTION ASqlHandles (ArrayName , nStatementHandle)
-    THROW NotImplementedException{}
-    //RETURN 0
+
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/astackinfo/*" />
@@ -101,44 +95,6 @@ FUNCTION AUsed (ArrayName , nDataSessionNumber , cTableName )
 
 
 
-/// <summary>-- todo --</summary>
-/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/at/*" />
-FUNCTION At(cSearchExpression AS STRING, cExpressionSearched AS STRING, nOccurrence := 1 AS DWORD) AS DWORD
-	LOCAL position := 0 AS DWORD
-	IF ( cExpressionSearched != NULL .AND. cSearchExpression != NULL )
-		IF cExpressionSearched:Length != 0 .AND. cSearchExpression:Length != 0
-            DO WHILE nOccurrence  > 0
-			    position := (DWORD) cExpressionSearched:IndexOf(cSearchExpression, (INT) position,StringComparison.Ordinal)
-                nOccurrence -= 1
-            ENDDO
-		END IF
-	ENDIF
-	RETURN position
-     
-/// <summary>-- todo --</summary>
-/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/at_c/*" />
-FUNCTION At_C(cSearchExpression AS STRING, cExpressionSearched AS STRING, nOccurrence := 1 AS DWORD) AS DWORD
-	RETURN At(cSearchExpression, cExpressionSearched, nOccurrence)
-
-
-/// <summary>-- todo --</summary>
-/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/atc/*" />
-FUNCTION AtC(cSearchExpression AS STRING, cExpressionSearched AS STRING, nOccurrence := 1 AS DWORD) AS DWORD
-	LOCAL position := 0 AS DWORD
-	IF ( cExpressionSearched != NULL .AND. cSearchExpression != NULL )
-		IF cExpressionSearched:Length != 0 .AND. cSearchExpression:Length != 0
-            DO WHILE nOccurrence  > 0
-			    position := (DWORD) cExpressionSearched:IndexOf(cSearchExpression, (INT) position,StringComparison.OrdinalIgnoreCase)
-                nOccurrence -= 1
-            ENDDO
-		END IF
-	ENDIF
-	RETURN position
-
-/// <summary>-- todo --</summary>
-/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/atcc/*" />
-FUNCTION AtCC(cSearchExpression AS STRING, cExpressionSearched AS STRING, nOccurrence := 1 AS DWORD) AS DWORD
-	RETURN AtC(cSearchExpression, cExpressionSearched, nOccurrence)
 
 
 

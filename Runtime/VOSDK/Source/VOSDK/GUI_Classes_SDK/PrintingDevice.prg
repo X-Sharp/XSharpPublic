@@ -1,3 +1,5 @@
+USING System.Runtime.InteropServices
+USING Microsoft.Win32
 CLASS PrintingDevice INHERIT VObject
 	PROTECT cDriver AS STRING
 	PROTECT cDevice AS STRING
@@ -8,7 +10,7 @@ CLASS PrintingDevice INHERIT VObject
 	PROTECT iSize AS INT
 
 	//PP-030828 Strong typing
-	METHOD __FillDevMode() AS LOGIC STRICT 
+METHOD __FillDevMode() AS LOGIC STRICT 
 	//PP-030828 Strong typing
 	
 
@@ -22,7 +24,7 @@ CLASS PrintingDevice INHERIT VObject
 		RETURN FALSE
 	ENDIF
 
-	iSize := PCALL(gpfnDocumentProperties, NULL_PTR, hPrinter, String2Psz(cDevice), NULL_PTR, NULL_PTR, 0)
+	iSize := Win32.DocumentProperties( NULL_PTR, hPrinter, cDevice, NULL_PTR, NULL_PTR, 0)
 
 	IF (iSize <= 0)
 		lValid := FALSE
@@ -31,7 +33,7 @@ CLASS PrintingDevice INHERIT VObject
 
 	pDevMode := MemAlloc(DWORD(iSize))
 
-	PCALL(gpfnDocumentProperties, NULL_PTR, hPrinter, String2Psz(cDevice), pDevMode, NULL_PTR, DM_COPY)
+	Win32.DocumentProperties(NULL_PTR, hPrinter, cDevice, pDevMode, NULL_PTR, DM_COPY)
 
 	RETURN TRUE
 
@@ -59,7 +61,7 @@ METHOD Destroy()
 	
 
 	IF (hPrinter != NULL_PTR)
-		PCALL(gpfnClosePrinter, hPrinter)
+		Win32.ClosePrinter( hPrinter)
 	ENDIF
 
 	IF (pDevMode != NULL_PTR)
@@ -102,8 +104,7 @@ METHOD DeviceCapabilities(wCapability)
 	// For all others capabalities it is the size of the buffer needed to hold the value.
 	// A second call is then required.
 
-	dwReturn := PCALL(gpfnDeviceCapabilities, String2Psz(cDevice), String2Psz(cPort), WORD(wCapability),;
-		NULL_PSZ, pDevMode)
+	dwReturn := Win32.DeviceCapabilities(cDevice, cPort, WORD(wCapability),NULL, pDevMode)
 
 	IF (dwReturn == 0xFFFFFFFF)					// unsupported capability
 		uReturn := dwReturn
@@ -117,8 +118,7 @@ METHOD DeviceCapabilities(wCapability)
 	ELSEIF (wCapability == DC_BINS) .OR. (wCapability == DC_PAPERS)
 		// array of words
 		pWord := MemAlloc(dwReturn* _SIZEOF(WORD))
-		PCALL(gpfnDeviceCapabilities, String2Psz(cDevice), String2Psz(cPort), WORD(wCapability),;
-			pWord, pDevMode)
+		Win32.DeviceCapabilities( cDevice, cPort, WORD(wCapability),pWord, pDevMode)
 
 		FOR i := 1 TO dwReturn
 			AAdd(aReturn, pWord[i])
@@ -152,8 +152,7 @@ METHOD DeviceCapabilities(wCapability)
 			// array of nElementSize byte "c" strings
 			dwTotal := dwReturn * nElementSize 
 			pByte := MemAlloc(dwTotal+1)
-			PCALL(gpfnDeviceCapabilities,String2Psz(cDevice), String2Psz(cPort), WORD(wCapability),;
-				pByte, pDevMode)
+			Win32.DeviceCapabilities(cDevice, cPort, WORD(wCapability),pByte, pDevMode)
 	
 			FOR i := 1 TO dwTotal STEP nElementSize   
 				// If the Element = nElementSize characters we have no 0 terminator !
@@ -173,8 +172,7 @@ METHOD DeviceCapabilities(wCapability)
 	ELSEIF wCapability == DC_ENUMRESOLUTIONS 
 		// array of pairs of long ints  
 		pLong := MemAlloc(dwReturn * 2 * _SIZEOF(LONGINT))
-		PCALL(gpfnDeviceCapabilities,String2Psz(cDevice), String2Psz(cPort), WORD(wCapability),;
-			pLong, pDevMode)
+		Win32.DeviceCapabilities(cDevice, cPort, WORD(wCapability),pLong, pDevMode)
 
 		FOR i := 1 TO dwReturn
 			AAdd(aReturn, { pLong[i*2-1], pLong[i*2]})
@@ -186,8 +184,7 @@ METHOD DeviceCapabilities(wCapability)
 	ELSEIF wCapability == DC_MEDIATYPES .OR. wCapability == DC_NUP 
 		// array of DWORDS
 		pDWord := MemAlloc(dwReturn * _SIZEOF(DWORD))
-		PCALL(gpfnDeviceCapabilities,String2Psz(cDevice), String2Psz(cPort), WORD(wCapability),;
-			pDWord, pDevMode)
+		Win32.DeviceCapabilities(cDevice, cPort, WORD(wCapability),pDWord, pDevMode)
 
 		FOR i := 1 TO dwReturn
 			AAdd(aReturn, pDWord[i])
@@ -200,8 +197,7 @@ METHOD DeviceCapabilities(wCapability)
 		// array of pairs of Longs
 		pLong  := MemAlloc(dwReturn*2 * _SIZEOF(LONGINT))
 
-		PCALL(gpfnDeviceCapabilities,String2Psz(cDevice), String2Psz(cPort), WORD(wCapability),;
-			pLong, pDevMode)
+		Win32.DeviceCapabilities(cDevice, cPort, WORD(wCapability),pLong, pDevMode)
 
 		FOR i := 1 TO dwReturn
 			AAdd(aReturn, { pLong[i*2-1], pLong[i*2]})
@@ -227,26 +223,25 @@ METHOD GetDevMode()
 	RETURN pDevMode
 
 CONSTRUCTOR(uName) 
-	LOCAL ptrTemp AS PTR
-	LOCAL cTemp AS STRING
-	LOCAL wTemp1 AS DWORD
-	LOCAL wTemp2 AS DWORD
-
-	
-
-	__LoadWinSpoolDLL()
+	LOCAL cTemp     AS STRING
 
 	SUPER()
 
 	
 
 	IF IsNil(uName)
-		ptrTemp := MemAlloc(256)
-        IF GetProfileString(String2Psz("windows"), String2Psz("Device"), String2Psz(_CHR(0)), ptrTemp, 256) == 0
-			RETURN
-		ENDIF
-		cTemp := Psz2String(ptrTemp)
-		MemFree(ptrTemp)
+        LOCAL oKey AS  RegistryKey
+        LOCAL cSKey AS STRING
+        oKey := Registry.CurrentUser:OpenSubKey( "SOFTWARE\Microsoft\Windows NT\CurrentVersion\Windows\SessionDefaultDevices") 
+        IF okey != NULL_OBJECT
+            FOREACH csubKeyName AS STRING IN okey:GetSubKeyNames()
+                cSKey := csubKeyName
+            NEXT
+            cTemp  := (STRING) Registry.GetValue("HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Windows\SessionDefaultDevices\" + cSKey ,"Device","")
+        ENDIF
+        IF Empty(cTemp)
+            cTemp := (STRING) Registry.GetValue("HKEY_CURRENT_USER\Software\Microsoft\Windows NT\CurrentVersion\Windows","Device","") 
+        ENDIF
 	ELSE
 		IF !IsString(uName)
 			WCError{#Init,#PrintingDevice,__WCSTypeError,uName,1}:Throw()
@@ -254,24 +249,16 @@ CONSTRUCTOR(uName)
 		cTemp:=uName
 	ENDIF
 
-	wTemp1 := At2(",", cTemp) //position of first comma
-
-	IF (wTemp1 != 0)
-		cDevice := SubStr3(cTemp, 1, wTemp1-1) //extract device
-		wTemp2 := At3(",", cTemp, wTemp1+1) //Position of second comma
-
-		IF (wTemp2 != 0)
-			cDriver := SubStr3(cTemp, wTemp1+1, wTemp2-wTemp1-1) //extract driver
-			wTemp1 := wTemp2
-			wTemp2 := SLen(cTemp)
-
-			IF (wTemp2 > wTemp1)
-				cPort := SubStr3(cTemp, wTemp1+1, wTemp2-wTemp1) //rest of string is port
-			ENDIF
-		ENDIF
-	ENDIF
-
-	lValid := PCALL(gpfnOpenPrinter, String2Psz(cDevice), PTR(_CAST, @hPrinter), NULL_PTR)
+    LOCAL sParts AS STRING[]
+    sParts := cTemp:Split(",":ToCharArray())
+    SELF:cDevice := sParts[1]
+    IF sParts:Length > 1
+        SELF:cDriver := sParts[2]
+    ENDIF
+    IF sParts:Length > 2
+        SELF:cPort := sParts[3]
+    ENDIF
+	lValid := Win32.OpenPrinter( SELF:cDevice, REF hPrinter, NULL_PTR)
 	isize := _SIZEOF(_winDEVMODE)
 
 	SELF:__FillDevMode()
@@ -412,7 +399,7 @@ METHOD SetUp()
 	pd:lpfnPrintHook := NULL_PTR
 	pd:lpPrintTemplateName := NULL_PTR
 
-	IF !__LoadComDlgDLL() .OR. !PCALL(gpfnPrintDlg, @pd)
+	IF !PrintDlg( @pd)
 		//PP-030505 Bug:122
 		lValid := FALSE
 		lRetVal := FALSE
@@ -456,7 +443,7 @@ METHOD UpdateDevMode()
 		RETURN FALSE
 	ENDIF
 
-	iRes := PCALL(gpfnDocumentProperties, NULL_PTR, hPrinter, String2Psz(cDevice), NULL_PTR, pDevMode, DM_MODIFY)
+	iRes := Win32.DocumentProperties(NULL_PTR, hPrinter, cDevice, NULL_PTR, pDevMode, DM_MODIFY)
 
 	RETURN (iRes >= 0)
 
@@ -464,58 +451,25 @@ METHOD UpdateDevMode()
 END CLASS
 
 FUNCTION __LoadWinSpoolDLL()
-	LOCAL hDll AS PTR
-	LOCAL rsFormat AS ResourceString
-
-	IF glWinSpoolDllLoaded
-		RETURN TRUE
-	ENDIF
-
-    hDll := LoadLibrary(String2Psz("WINSPOOL.DRV"))
-	IF (hDll == NULL_PTR)
-		rsFormat := ResourceString{__WCSLoadLibraryError}
-		WCError{#LoadSplitWindowDLL, #SplitWindow, VO_Sprintf(rsFormat:value, "WINSPOOL.DRV"),,,FALSE}:Throw()
-		RETURN FALSE
-	ENDIF
-
-    gpfnDocumentProperties  := GetProcAddress(hDll, String2Psz( "DocumentPropertiesA"))
-    gpfnOpenPrinter         := GetProcAddress(hDll, String2Psz( "OpenPrinterA"))
-    gpfnClosePrinter        := GetProcAddress(hDll, String2Psz( "ClosePrinter"))
-    gpfnDeviceCapabilities  := GetProcAddress(hDll, String2Psz( "DeviceCapabilitiesA"))
-
-	RETURN (glWinSpoolDllLoaded := TRUE)
+RETURN TRUE
 
 
-//STRUCT __LongArrayStruct
-//	MEMBER DIM aLong[1] AS LONG
 
-//STRUCT __WordArrayStruct
-//	MEMBER DIM aWord[1] AS WORD
+INTERNAL STATIC CLASS Win32
+    [DllImport("WinSpool.drv", SetLastError := TRUE, EntryPoint := "ClosePrinter", CharSet := CharSet.Ansi)];
+    STATIC EXTERN METHOD ClosePrinter(hPrinter AS PTR) AS LOGIC STRICT
 
-STATIC GLOBAL glWinSpoolDllLoaded := FALSE AS LOGIC
-STATIC GLOBAL gpfnClosePrinter AS TClosePrinter PTR
-STATIC GLOBAL gpfnDeviceCapabilities AS TDeviceCapabilities PTR
-
-STATIC GLOBAL gpfnDocumentProperties AS TDocumentProperties PTR
-STATIC GLOBAL gpfnOpenPrinter AS TOpenPrinter PTR
-STATIC FUNCTION TClosePrinter(hPrinter AS PTR) AS LOGIC STRICT
-	//SYSTEM
-	RETURN FALSE
-
-STATIC FUNCTION TDeviceCapabilities(lpszDevice AS PSZ, lpszPort AS PSZ, wCapability AS WORD, lpszOutput AS PTR,;   // 070625 changed param 4 type from PSZ to PTR
+    [DllImport("WinSpool.drv", SetLastError := TRUE, EntryPoint := "DeviceCapabilitiesA", CharSet := CharSet.Ansi)];
+    STATIC EXTERN METHOD DeviceCapabilities(lpszDevice AS STRING, lpszPort AS STRING, wCapability AS WORD, lpszOutput AS PTR,;   // 070625 changed param 4 type from PSZ to PTR
 	pDevMode AS PTR) AS DWORD STRICT
-	//SYSTEM
-	RETURN 0
 
-STATIC FUNCTION TDocumentProperties(hWnd AS PTR, pPrinter AS PTR, pDevicename AS PSZ, pDevModeOutput AS _winDEVMODE,;
+    [DllImport("WinSpool.drv", SetLastError := TRUE, EntryPoint := "DocumentPropertiesA", CharSet := CharSet.Ansi)];
+    STATIC EXTERN METHOD DocumentProperties(hWnd AS PTR, pPrinter AS PTR, pDevicename AS STRING, pDevModeOutput AS _winDEVMODE,;
 	pDevModeInput AS _winDEVMODE, fMode AS DWORD) AS LONGINT STRICT
-	//SYSTEM
-	RETURN 0
 
-STATIC FUNCTION TOpenPrinter(pPrinterName AS PSZ, phPrinter AS PTR, pDefault AS _winPRINTER_DEFAULTS) AS LOGIC STRICT
-	//SYSTEM
-	RETURN FALSE
-
+    [DllImport("WinSpool.drv", SetLastError := TRUE, EntryPoint := "OpenPrinterA", CharSet := CharSet.Ansi)];
+    STATIC EXTERN METHOD OpenPrinter(pPrinterName AS STRING, phPrinter REF PTR, pDefault AS _winPRINTER_DEFAULTS) AS LOGIC STRICT
+END CLASS
 
 
 #region defines

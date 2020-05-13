@@ -21,10 +21,10 @@ BEGIN NAMESPACE XSharp.RDD.Enums
 	END	 ENUM
 	
 	/// <summary>This enum specifies the various values that the RecordInfo method for the IRDD interface accepts.
-	/// <note type="tip">
-	/// These enums are also available as DEFINES and can therefore also be used without the "DbRecordInfo." prefix.
-	/// </note>
 	///</summary>
+    /// <remarks>
+    /// <note type="tip">These enums are also available as DEFINES and can therefore also be used without the "DbRecordInfo." prefix.</note>
+    /// </remarks>
 	ENUM DbRecordInfo
         /// <summary>Gets the deleted flag for the record.</summary>
 		MEMBER DBRI_DELETED 	:= 1
@@ -53,9 +53,9 @@ BEGIN NAMESPACE XSharp.RDD.Enums
 	
 	/// <summary>This enum specifies the various values that the FieldInfo method for the IRDD interface accepts.
 	///</summary>
-	/// <note type="tip">
-	/// These enums are also available as DEFINES and can therefore also be used without the "DbFieldInfo." prefix.
-	/// </note>
+    /// <remarks>
+    /// <note type="tip">These enums are also available as DEFINES and can therefore also be used without the "DbFieldInfo." prefix.</note>
+    /// </remarks>
 
 	ENUM DbFieldInfo
         /// <summary>Returns the name of the field.</summary>
@@ -79,6 +79,8 @@ BEGIN NAMESPACE XSharp.RDD.Enums
 
         /// <summary>Foxpro extension: Returns the field caption.</summary>
 		MEMBER DBS_CAPTION 		    := 14
+        /// <summary>SQL extension: Returns the object with the complete column information.</summary>
+		MEMBER DBS_COLUMNINFO       := 15
 
         /// <summary>Gets a BLOB value.</summary>
 		MEMBER DBS_BLOB_GET			:= 101
@@ -109,10 +111,10 @@ BEGIN NAMESPACE XSharp.RDD.Enums
 	END	 ENUM             
 	
 	/// <summary>This enum specifies the various values that the Info method for the IRDD interface accepts.
-	/// <note type="tip">
-	/// These enums are also available as DEFINES and can therefore also be used without the "DbInfo." prefix.
-	/// </note>
 	///</summary>
+    /// <remarks>
+    /// <note type="tip">These enums are also available as DEFINES and can therefore also be used without the "DbInfo." prefix.</note>
+    /// </remarks>
 
 	ENUM DbInfo
 		/// <summary>Logical: Is the RDD DBF based ?</summary>
@@ -123,9 +125,9 @@ BEGIN NAMESPACE XSharp.RDD.Enums
 		MEMBER DBI_GETHEADERSIZE	:= 3				
 		/// <summary>Date:    Last date RDD file updated  </summary> 
 		MEMBER DBI_LASTUPDATE		:= 4				
-		/// <summary>String:  Get default delimiter</summary> 
+		/// <summary>String:  Get default FIELD delimiter</summary> 
 		MEMBER DBI_GETDELIMITER		:= 5				
-		/// <summary>String:  Set default delimiter</summary> 
+		/// <summary>String:  Set default FIELD delimiter</summary> 
 		MEMBER DBI_SETDELIMITER		:= 6				
 		/// <summary>Numeric: Get record size </summary> 
 		MEMBER DBI_GETRECSIZE		:= 7				
@@ -381,12 +383,12 @@ BEGIN NAMESPACE XSharp.RDD.Enums
 	END	 ENUM
 	
 	/// <summary>This enum specifies the various values that the OrderInfo method for the IRDD interface accepts.
-	/// <note type="tip">
-	/// These enums are also available as DEFINES and can therefore also be used without the "DbOrderInfo." prefix.
-	/// </note>
 	///</summary>
     /// <seealso cref='M:XSharp.RT.Functions.DbOrderInfo(XSharp.__Usual,XSharp.__Usual,XSharp.__Usual,XSharp.__Usual)' >DbOrderInfo()</seealso>
-    /// <remarks>The types in the list of possible value are the types of the return value when you call DbOrderInfo() with this enum value.</remarks>
+    /// <remarks>The types in the list of possible value are the types of the return value when you call DbOrderInfo() with this enum value.
+    	/// <note type="tip">
+	/// These enums are also available as DEFINES and can therefore also be used without the "DbOrderInfo." prefix.
+	/// </note></remarks>
 	ENUM DbOrder_Info
         // These number match the defines for Vulcan
         // there are some differences between the various dialects unfortunately

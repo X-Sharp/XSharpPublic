@@ -58,18 +58,3 @@ FUNCTION MakeTransactable( uArea ) AS LOGIC
     // RETURN FALSE
     
 
-/// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/mdy/*" />
-
-FUNCTION Mdy( uExpression ) AS STRING
-    THROW NotImplementedException{}
-    // RETURN ""
-
-/// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/messagebox/*" />
-
-FUNCTION MessageBox( eMessageText , nDialogBoxType , cTitleBarText, nTimeout) AS LONG
-    THROW NotImplementedException{}
-    // RETURN 0
-
-

@@ -1,0 +1,551 @@
+DESIGNERSTART = VOMenu,,EmptyShellMenu
+GUID=CE3FE840-472C-4ABD-A6F6-61C450DE443F
+Name=EmptyShellMenu
+Toolbar=Flat Toolbar
+Show=Icon
+UseBands=No
+SUBCONTROLSSTART
+  
+  CONTROL=MENUITEM
+  GUID=EB3D154F-D4F3-4F0F-8A8C-74ED1B5C7CC0
+  EventName=File
+  Caption=&File
+  HelpContext=File
+  Enabled=Yes
+  Checked=No
+  ButtonPos=-1
+  MenuID=15001
+  SUBCONTROLSSTART
+    
+    CONTROL=MENUITEM
+    GUID=B2B5BDC5-206A-47B4-8A88-46FE855EE7E8
+    EventName=FileOpen
+    Caption=&Open...
+    Description=Open a file
+    HelpContext=File_Open
+    Accelerator=Ctrl+O
+    Enabled=Yes
+    Checked=No
+    ButtonBmp=Open
+    ButtonCaption=Open
+    ButtonToolTip=Open File
+    ButtonPos=1
+    MenuID=15002
+    
+    CONTROL=MENUITEM
+    GUID=8A815F7F-7D31-43BF-B05C-07A117F6C498
+    Caption=------------------------
+    Enabled=Yes
+    Checked=No
+    ButtonPos=-1
+    MenuID=15003
+    
+    CONTROL=MENUITEM
+    GUID=296A42F9-7688-48D0-B20C-A9A5809CF572
+    EventName=FilePrinterSetup
+    Caption=P&rint Setup...
+    Description=Setup printer options
+    HelpContext=File_Printer_Setup
+    Enabled=Yes
+    Checked=No
+    ButtonPos=-1
+    MenuID=15004
+    
+    CONTROL=MENUITEM
+    GUID=D33A3C9D-865E-4D31-9E2E-335CCB62F758
+    Caption=-------------------------
+    Enabled=Yes
+    Checked=No
+    ButtonPos=-1
+    MenuID=15005
+    
+    CONTROL=MENUITEM
+    GUID=B0CC4E61-E4EB-4641-A0A8-1EBCDDA77040
+    EventName=FileExit
+    Caption=E&xit
+    Description=End of application
+    HelpContext=File_Exit
+    Accelerator=Alt+F4
+    Enabled=Yes
+    Checked=No
+    ButtonPos=-1
+    MenuID=15006
+ 
+ SUBCONTROLSEND
+  
+  CONTROL=MENUITEM
+  GUID=52FB6CD2-5B5D-45B8-98E9-8A1EF356F5C7
+  EventName=Help
+  Caption=&Help
+  Enabled=Yes
+  Checked=No
+  ButtonPos=-1
+  MenuID=15007
+  SUBCONTROLSSTART
+    
+    CONTROL=MENUITEM
+    GUID=5F909571-0D15-4AF6-B858-B35338EC288D
+    EventName=HelpIndex
+    Caption=&Index
+    Description=Index of help
+    HelpContext=Help_Index
+    Accelerator=F1
+    Enabled=Yes
+    Checked=No
+    ButtonPos=-1
+    MenuID=15008
+    
+    CONTROL=MENUITEM
+    GUID=97ECF80C-9740-4012-B98B-C37845D6627B
+    EventName=HelpUsingHelp
+    Caption=&Using Help
+    Description=How to use help
+    HelpContext=Help_UsingHelp
+    Enabled=Yes
+    Checked=No
+    ButtonPos=-1
+    MenuID=15009
+    
+    CONTROL=MENUITEM
+    GUID=51077173-0225-4647-BCDC-43F5DC749890
+    Caption=-------------------------
+    Enabled=Yes
+    Checked=No
+    ButtonPos=-1
+    MenuID=15010
+    
+    CONTROL=MENUITEM
+    GUID=98320672-E68C-4B09-9682-964B7321AADA
+    EventName=HelpAbout
+    Caption=&About...
+    Description=About application
+    Enabled=Yes
+    Checked=No
+    ButtonBmp=Help
+    ButtonCaption=Help
+    ButtonToolTip=Help
+    ButtonPos=2
+    MenuID=15011
+    
+    CONTROL=MENUITEM
+    GUID=F9892BB5-7E7C-418C-BB1A-0CC34C78B319
+    EventName=showdial
+    Caption=dialogwindow1
+    Enabled=Yes
+    Checked=No
+    ButtonPos=0
+    MenuID=15012
+ 
+ SUBCONTROLSEND
+
+SUBCONTROLSEND
+DESIGNEREND = EmptyShellMenu
+
+
+DESIGNERSTART = VOMenu,VOMenu,StandardShellMenu
+GUID=0BB50E2D-D071-44B0-971F-4D4A6D47285D
+Name=StandardShellMenu
+Toolbar=Flat Toolbar
+Show=Icon
+UseBands=No
+SUBCONTROLSSTART
+  
+  CONTROL=MENUITEM
+  GUID=80FDA4EF-2A60-4412-B8CE-0D9B93B614CF
+  EventName=File
+  Caption=&File
+  HelpContext=File
+  Enabled=Yes
+  Checked=No
+  ButtonPos=-1
+  MenuID=15001
+  SUBCONTROLSSTART
+    
+    CONTROL=MENUITEM
+    GUID=98626BFD-9B36-4459-9D25-D178DE57DA31
+    EventName=FileOpen
+    Caption=&Open...
+    Description=Open a file
+    HelpContext=File_Open
+    Accelerator=Ctrl+O
+    Enabled=Yes
+    Checked=No
+    ButtonPos=-1
+    MenuID=15002
+    
+    CONTROL=MENUITEM
+    GUID=95EA1A52-6D15-4AF2-872A-6D0C131B2490
+    EventName=FileClose
+    Caption=&Close
+    Description=Close current child window
+    HelpContext=File_Close
+    Enabled=Yes
+    Checked=No
+    ButtonBmp=Close
+    ButtonCaption=Close
+    ButtonToolTip=Close File
+    ButtonPos=1
+    MenuID=15003
+    
+    CONTROL=MENUITEM
+    GUID=AC8639DF-9830-4666-9D35-A290A693B7F9
+    Caption=-------------------------
+    Enabled=Yes
+    Checked=No
+    ButtonPos=-1
+    MenuID=15004
+    
+    CONTROL=MENUITEM
+    GUID=C1CDA4A4-B344-4F67-B75B-C2C9403B0EC2
+    EventName=FilePrint
+    Caption=&Print
+    Description=Print the active window
+    Enabled=Yes
+    Checked=No
+    ButtonPos=-1
+    MenuID=15005
+    
+    CONTROL=MENUITEM
+    GUID=0116278A-9D5F-4CBE-879F-089AC04136A4
+    EventName=FilePrinterSetup
+    Caption=P&rint Setup...
+    Description=Setup printer options
+    HelpContext=File_Printer_Setup
+    Enabled=Yes
+    Checked=No
+    ButtonPos=-1
+    MenuID=15006
+    
+    CONTROL=MENUITEM
+    GUID=E97D0A6A-0917-4BF7-8C8A-97D8B57BEB8E
+    Caption=-------------------------
+    Enabled=Yes
+    Checked=No
+    ButtonPos=-1
+    MenuID=15007
+    
+    CONTROL=MENUITEM
+    GUID=4CE10129-0DC9-4C86-9E20-158E1B9C22FF
+    EventName=FileExit
+    Caption=E&xit
+    Description=End of application
+    HelpContext=File_Exit
+    Accelerator=Alt+F4
+    Enabled=Yes
+    Checked=No
+    ButtonPos=-1
+    MenuID=15008
+ 
+ SUBCONTROLSEND
+  
+  CONTROL=MENUITEM
+  GUID=FBD28257-049C-45BC-A813-C23E486A8C60
+  EventName=Edit
+  Caption=&Edit
+  Description=Edit information
+  HelpContext=Edit
+  Enabled=Yes
+  Checked=No
+  ButtonPos=-1
+  MenuID=15009
+  SUBCONTROLSSTART
+    
+    CONTROL=MENUITEM
+    GUID=1D7AB57D-181F-484B-9D7F-28CCC29ACE63
+    EventName=Cut
+    Caption=Cu&t
+    Description=Cut to clipboard
+    HelpContext=Cut
+    Accelerator=Ctrl+X
+    Enabled=Yes
+    Checked=No
+    ButtonBmp=Cut
+    ButtonCaption=Cut
+    ButtonToolTip=Cut
+    ButtonPos=3
+    MenuID=15010
+    
+    CONTROL=MENUITEM
+    GUID=B82AB2EC-E566-41C3-A637-41E4CD7CCC01
+    EventName=Copy
+    Caption=&Copy
+    Description=Copy to clipboard
+    HelpContext=Copy
+    Accelerator=Ctrl+C
+    Enabled=Yes
+    Checked=No
+    ButtonBmp=Copy
+    ButtonCaption=Copy
+    ButtonToolTip=Copy
+    ButtonPos=4
+    MenuID=15011
+    
+    CONTROL=MENUITEM
+    GUID=5164DC02-18CE-4B40-B000-D26E497FE1A5
+    EventName=Paste
+    Caption=&Paste
+    Description=Paste from clipboard
+    HelpContext=Paste
+    Accelerator=Ctrl+V
+    Enabled=Yes
+    Checked=No
+    ButtonBmp=Paste
+    ButtonCaption=Paste
+    ButtonToolTip=Paste
+    ButtonPos=5
+    MenuID=15012
+    
+    CONTROL=MENUITEM
+    GUID=F6F7FF4E-7310-4DC0-8F5D-61A8E17CEEF5
+    Caption=-------------------------
+    Enabled=Yes
+    Checked=No
+    ButtonPos=-1
+    MenuID=15013
+    
+    CONTROL=MENUITEM
+    GUID=AC5A4B43-E4DD-41D1-ADDA-051792094C99
+    EventName=Append
+    Caption=&Insert Record
+    Description=Insert a new record
+    HelpContext=Append
+    Enabled=Yes
+    Checked=No
+    ButtonPos=-1
+    MenuID=15014
+    
+    CONTROL=MENUITEM
+    GUID=9E78BD5F-F561-440A-AA81-9D8A4A832063
+    EventName=Delete
+    Caption=&Delete Record
+    Description=Delete this record
+    HelpContext=Delete
+    Enabled=Yes
+    Checked=No
+    ButtonPos=-1
+    MenuID=15015
+    
+    CONTROL=MENUITEM
+    GUID=26826C33-4A00-44E5-9C89-13C19C4797E6
+    Caption=-------------------------
+    Enabled=Yes
+    Checked=No
+    ButtonPos=-1
+    MenuID=15016
+    
+    CONTROL=MENUITEM
+    GUID=9260AE7D-9116-49D0-A837-9C80E2C10349
+    EventName=GoTop
+    Caption=G&o To Top
+    Description=Go to first record
+    HelpContext=GoTop
+    Accelerator=Ctrl+Home
+    Enabled=Yes
+    Checked=No
+    ButtonBmp=Start Record
+    ButtonCaption=Go Top
+    ButtonToolTip=Go Top
+    ButtonPos=7
+    MenuID=15017
+    
+    CONTROL=MENUITEM
+    GUID=8BB063D2-A131-470D-AB3D-905C341EB33C
+    EventName=SkipPrevious
+    Caption=Pre&vious
+    Description=Go to previous record
+    HelpContext=SkipPrevious
+    Enabled=Yes
+    Checked=No
+    ButtonBmp=Previous Record
+    ButtonCaption=Previous Record
+    ButtonToolTip=Previous Record
+    ButtonPos=8
+    MenuID=15018
+    
+    CONTROL=MENUITEM
+    GUID=6012D07D-2E24-406D-9141-F9DAA12BA0CE
+    EventName=SkipNext
+    Caption=&Next
+    Description=Go to next record
+    HelpContext=SkipNext
+    Enabled=Yes
+    Checked=No
+    ButtonBmp=Next Record
+    ButtonCaption=Next Record
+    ButtonToolTip=Next Record
+    ButtonPos=9
+    MenuID=15019
+    
+    CONTROL=MENUITEM
+    GUID=24D3061F-98DE-495C-8801-8CF926C2AADA
+    EventName=GoBottom
+    Caption=Go To &Bottom
+    Description=Go to last record
+    HelpContext=GoBottom
+    Accelerator=Ctrl+End
+    Enabled=Yes
+    Checked=No
+    ButtonBmp=End Record
+    ButtonCaption=Go Bottom
+    ButtonToolTip=Go Bottom
+    ButtonPos=10
+    MenuID=15020
+ 
+ SUBCONTROLSEND
+  
+  CONTROL=MENUITEM
+  GUID=54516019-AB1C-4211-B525-BED1AA6ABB28
+  EventName=View
+  Caption=&View
+  Enabled=Yes
+  Checked=No
+  ButtonPos=-1
+  MenuID=15021
+  SUBCONTROLSSTART
+    
+    CONTROL=MENUITEM
+    GUID=FB6ABA7B-6500-4D42-90E2-7EB2A82422CA
+    EventName=ViewForm
+    Caption=&Form
+    Description=View a single record as a form
+    HelpContext=ViewForm
+    Accelerator=Shift+F2
+    Enabled=Yes
+    Checked=No
+    ButtonBmp=View Form
+    ButtonCaption=Form View
+    ButtonToolTip=Form View
+    ButtonPos=12
+    MenuID=15022
+    
+    CONTROL=MENUITEM
+    GUID=7042083E-4194-436D-AEF2-3137C4A8CB31
+    EventName=ViewTable
+    Caption=&Table
+    Description=View several records in a table
+    HelpContext=ViewTable
+    Accelerator=F2
+    Enabled=Yes
+    Checked=No
+    ButtonBmp=View Table
+    ButtonCaption=Browse View
+    ButtonToolTip=Browse View
+    ButtonPos=13
+    MenuID=15023
+ 
+ SUBCONTROLSEND
+  
+  CONTROL=MENUITEM
+  GUID=F727D40D-A05D-40F7-81AF-6DFFBB87AE24
+  EventName=Window
+  Caption=&Window
+  Description=Arrange child windows
+  Enabled=Yes
+  Checked=No
+  ButtonPos=-1
+  MenuID=15024
+  SUBCONTROLSSTART
+    
+    CONTROL=MENUITEM
+    GUID=533F90DA-CFED-4095-98CA-9EB461382499
+    EventName=WindowCascade
+    Caption=&Cascade
+    Description=Arrange child windows in a cascade
+    HelpContext=WindowCascade
+    Enabled=Yes
+    Checked=No
+    ButtonPos=-1
+    MenuID=15025
+    
+    CONTROL=MENUITEM
+    GUID=4E0BE37F-9E55-4317-98A7-18540C64DED9
+    EventName=WindowTile
+    Caption=&Tile
+    Description=Arrange child windows tiled
+    HelpContext=WindowTile
+    Enabled=Yes
+    Checked=No
+    ButtonPos=-1
+    MenuID=15026
+    
+    CONTROL=MENUITEM
+    GUID=ED4AD791-C08F-4690-B26B-B7CD43CC7388
+    EventName=CloseAllChildren
+    Caption=Close A&ll
+    Description=Close all child windows
+    HelpContext=WindowCloseAll
+    Enabled=Yes
+    Checked=No
+    ButtonPos=-1
+    MenuID=15027
+ 
+ SUBCONTROLSEND
+  
+  CONTROL=MENUITEM
+  GUID=46D1D1FC-CF4A-479B-A137-AA85F8822AA5
+  EventName=Help
+  Caption=&Help
+  Enabled=Yes
+  Checked=No
+  ButtonPos=-1
+  MenuID=15028
+  SUBCONTROLSSTART
+    
+    CONTROL=MENUITEM
+    GUID=8BA113AC-8354-47A2-B38A-13DCA547E73F
+    EventName=HelpIndex
+    Caption=&Index
+    Description=Index of help
+    HelpContext=Help_Index
+    Accelerator=F1
+    Enabled=Yes
+    Checked=No
+    ButtonPos=-1
+    MenuID=15029
+    
+    CONTROL=MENUITEM
+    GUID=1FD4CDFF-0428-4EA4-9BB2-84B8B464D5B9
+    EventName=HelpContext
+    Caption=&Context Help
+    Description=Context sensitive help
+    HelpContext=Help_ContextHelp
+    Accelerator=Ctrl+F1
+    Enabled=Yes
+    Checked=No
+    ButtonPos=-1
+    MenuID=15030
+    
+    CONTROL=MENUITEM
+    GUID=2CD4CAFF-E57B-4523-9267-584EFA9AE05F
+    EventName=HelpUsingHelp
+    Caption=&Using Help
+    Description=How to use help
+    HelpContext=Help_UsingHelp
+    Enabled=Yes
+    Checked=No
+    ButtonPos=-1
+    MenuID=15031
+    
+    CONTROL=MENUITEM
+    GUID=822AA497-EB3F-469C-B8F6-2C71C058A6FF
+    Caption=-------------------------
+    Enabled=Yes
+    Checked=No
+    ButtonPos=-1
+    MenuID=15032
+    
+    CONTROL=MENUITEM
+    GUID=8593C07E-7C9C-4587-9DF3-D3A7C9C04F56
+    EventName=HelpAbout
+    Caption=&About...
+    Description=About application
+    Enabled=Yes
+    Checked=No
+    ButtonPos=-1
+    MenuID=15033
+ 
+ SUBCONTROLSEND
+
+SUBCONTROLSEND
+DESIGNEREND = StandardShellMenu
+

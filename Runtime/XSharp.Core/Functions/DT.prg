@@ -33,7 +33,7 @@ FUNCTION ElapTime(cStartTime AS STRING,cEndTime AS STRING) AS STRING
 	nStart := Secs(cStartTime)
 	nEnd   := Secs(cEndTime)
 	IF nStart > nEnd
-		nDiff := 86400 + nEnd - nStart
+		nDiff := 86400U + nEnd - nStart
 	ELSE
 		nDiff := nEnd - nStart
 	ENDIF
@@ -47,9 +47,8 @@ FUNCTION ConTime(dwHour AS DWORD,dwMinute AS DWORD,dwSeconds AS DWORD) AS STRING
 /// <summary>
 /// Return the timestring from a DateTime structure
 /// </summary>
-/// <param name="dt"></param>
-/// <returns>
-/// </returns>
+/// <param name="dt">DateTime values that needs to be converted</param>
+/// <returns>A (military) time that corresponds to the passed arguments in the format HH:MM:SS without AM/PM notation.</returns>
 FUNCTION ConTime(dt AS DateTime) AS STRING
 	RETURN _TimeString((DWORD) dt:Hour,(DWORD) dt:Minute,(DWORD) dt:Second, FALSE, "","")   
 

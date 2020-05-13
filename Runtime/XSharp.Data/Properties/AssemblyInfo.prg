@@ -15,6 +15,6 @@ using XSharp
 [assembly: AssemblyTitle("XSharp.Data")]
 [assembly: AssemblyDescription("XSharp Data DLL")]  
 // in the core dialect the next attributes are not included automatically
-[assembly: ClassLibrary("Functions","XSharp")]
+[assembly: ClassLibrary("XSharp.Data.Functions","XSharp")]
 [assembly: ImplicitNamespace("XSharp")]
 [assembly: CompilerVersionAttribute("X# "+__VERSION__ +" - dialect:"+__DIALECT__ )] 

@@ -57,7 +57,7 @@ AMEMBERS( )
 ANETRESOURCES( )
 APRINTERS( )
 ASESSIONS( )
-ASQLHANDLES( )
+ASQLHANDLES( )	// implemented
 ASTACKINFO( )
 ASUBSCRIPT( )
 AT_C( )
@@ -98,7 +98,7 @@ DEFAULTEXT( )
 DESCENDING( )
 DIFFERENCE( )
 DisplayPath( )
-DMY( )
+DMY( )              // implemented
 DODEFAULT( )
 DRIVETYPE( )
 DROPOFFLINE( )
@@ -129,7 +129,7 @@ GETRESULTSET( )
 GETWORDCOUNT( ) // implemented
 GETWORDNUM( ) // implemented
 GETCURSORADAPTER( )
-GOMONTH( )
+GOMONTH(            // implemented
 ID( )
 IDXCOLLATE( )       // needs testing
 IMESTATUS( )
@@ -155,8 +155,8 @@ LOCK( )
 LOOKUP( )
 MAKETRANSACTABLE( )
 MDX( )              // needs testing
-MDY( )
-MESSAGEBOX( )
+MDY( )              // implemented    
+MESSAGEBOX( )	    // implemented
 NDX( )              // needs testing
 NEWOBJECT( )
 NORMALIZE( )
@@ -172,9 +172,9 @@ PROW( )
 PRTINFO( )
 PUTFILE( )
 PV( )
-QUARTER( )
+QUARTER( )              // implemented
 RAISEEVENT( )
-RATC( )
+RATC( )                 // implemented
 REFRESH( )
 RELATION( )             // needs testing
 REMOVEPROPERTY( )       // implemented
@@ -182,25 +182,23 @@ REQUERY( )
 RGBSCHEME( )
 SAVEPICTURE( )
 SCHEME( )
-
 SEEK( )
-SELECT( )
 SETFLDSTATE( )
 SETRESULTSET( )
-SQLCANCEL( )
-SQLCOLUMNS( )
-SQLCOMMIT( )
-SQLCONNECT( )
-SQLDISCONNECT( )
-SQLEXEC( )
-SQLGETPROP( )
+SQLCANCEL( )	    // implemented
+SQLCOLUMNS( )	    // implemented
+SQLCOMMIT( )	    // implemented
+SQLCONNECT( )	    // implemented
+SQLDISCONNECT( )	// implemented
+SQLEXEC( )	        // implemented
+SQLGETPROP( )	    // implemented
 SQLIDLEDISCONNECT( )
-SQLMORERESULTS( )
-SQLPREPARE( )
-SQLROLLBACK( )
-SQLSETPROP( )
-SQLSTRINGCONNECT( )
-SQLTABLES( )
+SQLMORERESULTS( )	// implemented
+SQLPREPARE( )	    // implemented
+SQLROLLBACK( )	    // implemented
+SQLSETPROP( )	    // implemented
+SQLSTRINGCONNECT( )	// implemented
+SQLTABLES( )	    // implemented
 STRCONV( )
 STREXTRACT( )
 STRTOFILE( )
@@ -216,8 +214,8 @@ TEXTMERGE( )
 TTOC( )
 TXNLEVEL( )
 TXTWIDTH( )
-UNIQUE( )
+UNIQUE( )           // needs testing
 VARTYPE( )
-WEEK( )
+WEEK( )             // implemented
 XMLTOCURSOR( )
 XMLUPDATEGRAM( )

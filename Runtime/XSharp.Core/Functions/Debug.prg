@@ -7,7 +7,7 @@
 // Debug Output and Stack trace info etc.
 USING System.Reflection
 USING System.Diagnostics
-using System.Runtime.InteropServices
+USING System.Runtime.InteropServices
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/debout32/*" />
@@ -84,10 +84,41 @@ FUNCTION ProcName(wActivation AS INT) AS STRING
    
    RETURN name
 
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/errorstack/*" />
+FUNCTION ErrorStack(wActivation := 1 AS DWORD) AS STRING
+	LOCAL oStackTrace AS System.Diagnostics.StackTrace
+	oStackTrace := System.Diagnostics.StackTrace{TRUE}
+    RETURN ErrorStack(oStackTrace, wActivation)
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/errorstack/*" />
+FUNCTION ErrorStack(oStackTrace AS System.Diagnostics.StackTrace, wActivation := 1 AS DWORD) AS STRING
+	LOCAL cResult := "" AS STRING
+	IF wActivation + 1 <= oStackTrace:FrameCount - 1
+		FOR VAR i := wActivation + 1 UPTO (oStackTrace:FrameCount - 1)
+			VAR oFrame := oStackTrace:GetFrame((INT)i)
+			VAR oMethod := oFrame:GetMethod()
+			VAR cStackLine := oMethod:Name:ToUpper()
+			VAR oInnerType := oMethod:DeclaringType
+			DO WHILE ( oInnerType != NULL )
+				IF !( oInnerType:Name == "Functions" )
+					cStackLine := oInnerType:Name:ToUpper() + ":" + cStackLine
+				ENDIF
+				oInnerType := oInnerType:DeclaringType
+			ENDDO
+			cStackLine += " (Line: " + oFrame:GetFileLineNumber():ToString() + ")" + CRLF
+			cResult += cStackLine
+		NEXT
+	ELSE
+		cResult := "*EmptyCallStack*" + CRLF
+	ENDIF
+
+	RETURN cResult
+
+
+
+
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/altd/*" />
 /// <param name="nMode">This parameter is ignored in X#</param>
-/// <returns>
-/// </returns>
 /// <remarks>This function is inlined by the compiler </remarks>
 FUNCTION AltD() AS VOID
 	IF System.Diagnostics.Debugger.IsAttached

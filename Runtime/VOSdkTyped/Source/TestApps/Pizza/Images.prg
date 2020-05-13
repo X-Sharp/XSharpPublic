@@ -1,0 +1,72 @@
+CLASS BROCOLI INHERIT Bitmap
+CONSTRUCTOR() 
+	SUPER(ResourceID{"BROCOLI", _GetInst()})
+	return self
+
+END CLASS
+CLASS CHEESE INHERIT Bitmap
+CONSTRUCTOR() 
+	SUPER(ResourceID{"CHEESE", _GetInst()})
+	return self
+
+END CLASS
+CLASS EGGPLANT INHERIT Bitmap
+CONSTRUCTOR() 
+	SUPER(ResourceID{"EGGPLANT", _GetInst()})
+	return self
+
+END CLASS
+CLASS MARIOICON INHERIT Icon
+CONSTRUCTOR() 
+	SUPER(ResourceID{"MARIOICON", _GetInst()})
+	return self
+
+END CLASS
+CLASS MUSHROOM INHERIT Bitmap
+CONSTRUCTOR() 
+	SUPER(ResourceID{"MUSHROOM", _GetInst()})
+	return self
+
+END CLASS
+CLASS NOPIZZA INHERIT Bitmap
+CONSTRUCTOR() 
+	SUPER(ResourceID{"NOPIZZA", _GetInst()})
+
+END CLASS
+CLASS OLIVES INHERIT Bitmap
+CONSTRUCTOR() 
+	SUPER(ResourceID{"OLIVES", _GetInst()})
+	return self
+
+END CLASS
+CLASS ONION INHERIT Bitmap
+CONSTRUCTOR() 
+	SUPER(ResourceID{"ONION", _GetInst()})
+	return self
+
+END CLASS
+CLASS PEPPER INHERIT Bitmap
+CONSTRUCTOR() 
+	SUPER(ResourceID{"PEPPER", _GetInst()})
+	return self
+
+END CLASS
+CLASS PIZZA INHERIT Bitmap
+CONSTRUCTOR() 
+	SUPER(ResourceID{"PIZZA", _GetInst()})
+	return self
+
+END CLASS
+CLASS SALAMI INHERIT Bitmap
+CONSTRUCTOR() 
+	SUPER(ResourceID{"SALAMI", _GetInst()})
+	return self
+
+END CLASS
+CLASS TOMATO INHERIT Bitmap
+CONSTRUCTOR() 
+	SUPER(ResourceID{"TOMATO", _GetInst()})
+	return self
+
+
+END CLASS

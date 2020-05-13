@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.Default.props" />
+  <Import Project="..\VOSDK.Targets" />
+  <!-- Please note that most important settings are read from VOSDK.Targets -->
+  <PropertyGroup>
+    <ProjectGuid>5AC3E55D-F2BD-45EB-9CC2-DD8BD36240EA</ProjectGuid>
+    <AssemblyName>XSharp.VO.SystemClasses</AssemblyName>
+    <Name>XSharp.VO.SystemClasses</Name>
+    <OutputName>XSharpSystemClasses</OutputName>
+    <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
+    <XSharpProjectversion>2.4.0.0</XSharpProjectversion>
+    <Includepaths>$(Solutiondir)Common</Includepaths>
+    <Nostandarddefs>false</Nostandarddefs>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <VO4>false</VO4>
+    <VO6>false</VO6>
+    <VO7>false</VO7>
+    <VO8>false</VO8>
+    <VO9>false</VO9>
+    <VO10>false</VO10>
+    <VO14>false</VO14>
+    <NamedArgs>false</NamedArgs>
+    <Unsafe>false</Unsafe>
+    <InitLocals>false</InitLocals>
+    <RootNamespace>XSharp.VO</RootNamespace>
+    <NoWin32Manifest>False</NoWin32Manifest>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
+    <DocumentationFile>XSharpSystemClasses.Xml</DocumentationFile>
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.targets" />
+  <ItemGroup>
+    <Compile Include="..\..\SharedSource\SDKAssemblyinfo.prg">
+      <Link>SDKAssemblyinfo.prg</Link>
+    </Compile>
+    <Compile Include="Class Def.prg" />
+    <Compile Include="DataField.prg" />
+    <Compile Include="DataServer.prg" />
+    <Compile Include="DBError.prg" />
+    <Compile Include="FieldSpec.prg" />
+    <Compile Include="FileSpec.prg" />
+    <Compile Include="Hyperlabel.prg" />
+    <Compile Include="ObjCodeBlock.prg" />
+    <Compile Include="Properties\AssemblyInfo.prg" />
+    <Compile Include="SystemLangDef.prg" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\XSharp.Core\XSharp.Core.xsproj">
+      <Name>XSharp.Core</Name>
+      <Project>{535dff14-efb7-43f5-a4e1-71c1c4280040}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\XSharp.RT\XSharp.RT.xsproj">
+      <Name>XSharp.RT</Name>
+      <Project>{ef8d2bf2-e81a-479a-ba4f-294c4c348b66}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\XSharp.VO\XSharp.VO.xsproj">
+      <Name>XSharp.VO</Name>
+      <Project>{06099c3d-1697-4eb1-9f53-8a9a50b9eacd}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties" />
+  </ItemGroup>
+  <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->
+  <ProjectExtensions>
+    <ProjectCapabilities>
+      <ProjectConfigurationsDeclaredAsItems />
+    </ProjectCapabilities>
+  </ProjectExtensions>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <PreBuildEvent />
+    <PostBuildEvent />
+    <RunPostBuildEvent />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <PreBuildEvent />
+    <PostBuildEvent />
+    <RunPostBuildEvent />
+  </PropertyGroup>
+</Project>

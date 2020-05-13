@@ -50,26 +50,7 @@ FUNCTION TxtWidth( cExpression , cFontName, nFontSize , cFontStyle) AS FLOAT
     THROW NotImplementedException{}
     // RETURN 0
 
-/// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/unique/*" />
 
-FUNCTION Unique( ) AS LOGIC
-    THROW NotImplementedException{}
-    // RETURN FALSE
-
-/// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/savepicture/*" />
-
-FUNCTION VarType( eExpression , lNullDataType) AS STRING
-    THROW NotImplementedException{}
-    // RETURN ""
-
-/// <summary>-- todo --</summary>
-/// <include file="VFPDocs.xml" path="Runtimefunctions/week/*" />
-
-FUNCTION Week( dExpression , nFirstWeek , nFirstDayOfWeek) AS LONG
-    THROW NotImplementedException{}
-    // RETURN 0
 
 /// <summary>-- todo --</summary>
 /// <include file="VFPDocs.xml" path="Runtimefunctions/xmltocursor/*" />

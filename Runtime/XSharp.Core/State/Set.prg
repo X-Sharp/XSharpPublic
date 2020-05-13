@@ -141,7 +141,17 @@ FUNCTION SetDefault() AS STRING
 FUNCTION SetDefault(cPathSpec AS STRING) AS STRING
 	SetPathArray(NULL)
 	SETSTATE STRING Set.Default  cPathSpec
-	
+
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setdefaultdir/*" />
+FUNCTION SetDefaultDir() AS STRING
+	GETSTATE STRING Set.DefaultDir 
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setdefaultdir/*" />
+FUNCTION SetDefaultDir(cPathSpec AS STRING) AS STRING
+	SetPathArray(NULL)
+	SETSTATE STRING Set.DefaultDir  cPathSpec
+
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/setdeleted/*" />
 FUNCTION SetDeleted() AS LOGIC

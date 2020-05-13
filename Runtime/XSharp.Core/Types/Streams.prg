@@ -61,7 +61,7 @@ BEGIN NAMESPACE XSharp.IO
             hFile := SELF:SafeFileHandle:DangerousGetHandle()
             smallBuff := BYTE[]{1}
             RETURN
-
+        /// <inheritdoc />
         PUBLIC OVERRIDE METHOD Seek(offset AS INT64, origin AS SeekOrigin) AS INT64
             LOCAL result AS INT64
             LOCAL lOk AS LOGIC
@@ -70,13 +70,13 @@ BEGIN NAMESPACE XSharp.IO
                 RETURN result
             ENDIF
             THROW System.IO.IOException{"Error moving file pointer"}
-
+            /// <inheritdoc />
         PUBLIC OVERRIDE METHOD SetLength(length AS INT64 ) AS VOID
 			// warning: does not restore original file pos
             SELF:Seek(length, SeekOrigin.Begin)
             SetEndOfFile(hFile)
             RETURN
-
+        /// <inheritdoc />
         PUBLIC PROPERTY Length AS INT64
             GET
             
@@ -90,7 +90,7 @@ BEGIN NAMESPACE XSharp.IO
                 RETURN size
             END GET
         END PROPERTY
-
+        /// <inheritdoc />
         PUBLIC OVERRIDE METHOD Read(bytes AS BYTE[] , offset AS INT, count AS INT) AS INT
             LOCAL ret := FALSE AS LOGIC
             LOCAL bytesRead := 0 AS INT
@@ -106,7 +106,7 @@ BEGIN NAMESPACE XSharp.IO
                 RETURN -1
             ENDIF
             RETURN bytesRead
-
+        /// <inheritdoc />
         PUBLIC OVERRIDE METHOD Write(bytes AS BYTE[] , offset AS INT , count AS INT) AS VOID
             LOCAL ret := FALSE AS LOGIC
             LOCAL bytesWritten := 0 AS INT
@@ -125,11 +125,11 @@ BEGIN NAMESPACE XSharp.IO
                 THROW IOException{"Write: Not all bytes written to file"}
             ENDIF
             RETURN
-
+        /// <inheritdoc />
         PUBLIC OVERRIDE METHOD WriteByte(b AS BYTE ) AS VOID
-            SELF:smallBuff[1] := b
+            SELF:smallBuff[0] := b
             SELF:Write(SELF:smallBuff , 0 , 1)
-            
+        /// <inheritdoc />
         PUBLIC OVERRIDE METHOD Lock(position AS INT64, length AS INT64)  AS VOID
         
             LOCAL ret := FALSE AS LOGIC
@@ -138,7 +138,7 @@ BEGIN NAMESPACE XSharp.IO
                 THROW IOException{"Lock: File lock failed"}
             ENDIF
             RETURN 
-            
+        /// <inheritdoc />
         PUBLIC OVERRIDE METHOD Unlock( position AS INT64, length AS INT64)  AS VOID
             LOCAL ret := FALSE AS LOGIC
             ret := UnlockFile(SELF:hFile, (INT)position, (INT)(position >> 32), (INT)(length), (INT)(length >> 32))
@@ -146,51 +146,55 @@ BEGIN NAMESPACE XSharp.IO
                 THROW IOException{"Lock: File unlock failed"}
             ENDIF
             RETURN
-
+        /// <inheritdoc />
         PUBLIC OVERRIDE METHOD Flush(lCommit AS LOGIC) AS VOID
             IF lCommit
                 FlushFileBuffers(SELF:hFile)
             ENDIF
             RETURN
-
+            
+        /// <inheritdoc />
         PUBLIC OVERRIDE METHOD Flush() AS VOID
+            SELF:Flush(FALSE)
             RETURN
 
         #region External methods
+        /// <exclude />
         [DllImport("kernel32.dll", SetLastError := TRUE, EntryPoint := "ReadFile")];
         STATIC EXTERN METHOD ReadFile(hFile AS IntPtr, bytes AS BYTE[], numbytes AS INT, numbytesread OUT INT , mustbezero AS IntPtr) AS LOGIC
-
+        /// <exclude />
         [DllImport("kernel32.dll", SetLastError := TRUE, EntryPoint := "WriteFile")];
         STATIC EXTERN METHOD WriteFile(hFile AS IntPtr, bytes AS BYTE[], numbytes AS INT, numbyteswritten OUT INT , lpOverlapped AS INT) AS LOGIC
-
+        /// <exclude />
         [DllImport("kernel32.dll", SetLastError := TRUE, EntryPoint := "SetFilePointerEx")];
         STATIC EXTERN METHOD SetFilePointerEx(handle AS IntPtr, distance AS INT64 , newAddress OUT INT64, origin AS SeekOrigin ) AS LOGIC
-
+        /// <exclude />
         [DllImport("kernel32.dll", SetLastError := TRUE,EntryPoint := "LockFile")];
         STATIC EXTERN METHOD LockFile(hFile AS IntPtr , dwFileOffsetLow AS INT , dwFileOffsetHigh AS INT , nNumberOfBytesToLockLow AS INT , nNumberOfBytesToLockHigh AS INT ) AS LOGIC
-
+        /// <exclude />
         [DllImport("kernel32.dll", SetLastError := TRUE,EntryPoint := "UnlockFile")];
         STATIC EXTERN METHOD UnlockFile(hFile AS IntPtr , dwFileOffsetLow AS INT , dwFileOffsetHigh AS INT , nNumberOfBytesToLockLow AS INT , nNumberOfBytesToLockHigh AS INT ) AS LOGIC
-
+        /// <exclude />
         [DllImport("kernel32.dll", SetLastError := TRUE,EntryPoint := "FlushFileBuffers")];
         STATIC EXTERN METHOD FlushFileBuffers(hFile AS IntPtr ) AS LOGIC
-
+        /// <exclude />
         [DllImport("kernel32.dll", SetLastError := TRUE,EntryPoint := "SetEndOfFile")];
         STATIC EXTERN METHOD SetEndOfFile(hFile AS IntPtr ) AS LOGIC
-
+        /// <exclude />
         [DllImport("kernel32.dll", SetLastError := TRUE,EntryPoint := "GetFileSize")];
         STATIC EXTERN METHOD GetFileSize(hFile AS IntPtr , highSize OUT INT) AS DWORD
         #endregion
 
         #region Construct the filestream
+        /// <summary>Create a XsFileStream object on Windows and a normal FileStream object on other OS-es</summary>
         STATIC METHOD CreateFileStream (path AS STRING, mode AS FileMode, faccess AS FileAccess, share AS FileShare, bufferSize AS LONG, options AS FileOptions) AS FileStream
-            IF System.Environment.OSVersion:Platform == System.PlatformID.Win32NT
+            IF System.Environment.OSVersion:Platform == System.PlatformID.Win32NT .AND. share != FileShare.None
                 RETURN CreateXsFileStream(path, mode, faccess, share, bufferSize, options)
             ELSE
                 RETURN FileStream{path, mode, faccess, share, bufferSize, options}
             ENDIF
 
-        STATIC METHOD CreateXsFileStream (path AS STRING, mode AS FileMode, faccess AS FileAccess, share AS FileShare, bufferSize AS LONG, options AS FileOptions) AS FileStream
+        INTERNAL STATIC METHOD CreateXsFileStream (path AS STRING, mode AS FileMode, faccess AS FileAccess, share AS FileShare, bufferSize AS LONG, options AS FileOptions) AS FileStream
             RETURN XsFileStream{path, mode, faccess, share, bufferSize, options}
         #endregion
     END CLASS

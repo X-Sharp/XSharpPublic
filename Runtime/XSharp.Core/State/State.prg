@@ -6,6 +6,7 @@
 
 USING System.Collections.Generic
 USING System.Threading
+USING System.Diagnostics
 USING XSharp.RDD
 USING XSharp.RDD.Enums
 USING System.Runtime.CompilerServices
@@ -20,16 +21,19 @@ USING System.Runtime.CompilerServices
 
 CLASS XSharp.RuntimeState
 	// Static Fields
-	PRIVATE INITONLY STATIC initialState  AS RuntimeState 
+	PRIVATE INITONLY STATIC initialState  AS RuntimeState
+	PRIVATE INITONLY _thread AS Thread
+	PRIVATE STATIC _shutdown := FALSE AS LOGIC  // To prevent creating state when shutting down
 	// Static Methods and Constructor
-	private STATIC currentState := ThreadLocal<RuntimeState>{ {=>  initialState:Clone()},TRUE }  AS ThreadLocal<RuntimeState> 
+	PRIVATE STATIC currentState := ThreadLocal<RuntimeState>{ {=>  initialState:Clone()},TRUE }  AS ThreadLocal<RuntimeState> 
 	STATIC CONSTRUCTOR
 		initialState	:= RuntimeState{TRUE}
-		
+
 	/// <summary>Retrieve the runtime state for the current thread</summary>
 	PUBLIC STATIC METHOD GetInstance() AS RuntimeState
 		RETURN currentState:Value
 
+    [DebuggerBrowsable(DebuggerBrowsableState.Never)];
 	PRIVATE oSettings AS Dictionary<XSharp.Set, OBJECT>
     /// <summary>The dictionary that stores most of the settings in the runtime state. The key to the index is the number from the Set Enum</summary>
     /// <seealso cref="T:XSharp.Set" >Set Enum</seealso>
@@ -37,7 +41,7 @@ CLASS XSharp.RuntimeState
 
 	PRIVATE CONSTRUCTOR(initialize AS LOGIC)       
 		VAR oThread := Thread.CurrentThread
-		SELF:Name := "ThreadState for "+oThread:ManagedThreadId:ToString()
+        SELF:_thread := oThread
 		oSettings := Dictionary<XSharp.Set, OBJECT>{}
 		IF initialize
 			SELF:BreakLevel := 0
@@ -66,16 +70,18 @@ CLASS XSharp.RuntimeState
 		ENDIF
 		RETURN
     /// <exclude />
-	DESTRUCTOR()
-		// What do we need to clean ?
-		IF oSettings != NULL
-			oSettings:Clear()
-		ENDIF
+//	DESTRUCTOR()
+//		// What do we need to clean ?
+//        IF oSettings != NULL
+//			oSettings:Clear()
+//		ENDIF
+
 
     /// <summary>This method closes all open Workareas for all threads. It is automatically called ad shutdown.</summary>
     /// <remarks>It is usually better to manage the lifetime of your Workarea yourself in code, so don't trust on the runtime to close the Workareas.</remarks>
     STATIC METHOD CloseWorkareasForAllThreads() AS VOID
         TRY
+            _shutdown := TRUE   // prevent creating state when shutting down
             FOREACH VAR state IN currentState:Values
                 IF state:_Workareas != NULL
                     state:_Workareas:CloseAll()
@@ -86,6 +92,9 @@ CLASS XSharp.RuntimeState
         END TRY
 	PRIVATE METHOD Clone() AS RuntimeState
 		LOCAL oNew AS RuntimeState
+        IF Thread.CurrentThread == initialState:_thread .OR. _shutdown
+            RETURN initialState
+        ENDIF
 		oNew := RuntimeState{FALSE}		
 		BEGIN LOCK oSettings
 			// Copy all values from Current State to New state
@@ -97,7 +106,15 @@ CLASS XSharp.RuntimeState
 		
 	/// <summary>Retrieve state name</summary>
 	/// <returns>String value, such as "State for Thread 123"</returns>IDb
-	PUBLIC PROPERTY Name AS STRING AUTO
+	PUBLIC PROPERTY Name AS STRING
+    GET
+        IF SELF:_thread == NULL
+            RETURN "ThreadState for Unknown Thread"
+        ELSE
+            RETURN "ThreadState for Thread "+SELF:_thread:ManagedThreadId:ToString()
+        ENDIF
+    END GET
+    END PROPERTY
 	/// <summary>Current Break Level. Gets set by compiler generated code for BEGIN SEQUENCE .. END constructs.</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
 	PUBLIC PROPERTY BreakLevel AS INT AUTO
@@ -112,6 +129,10 @@ CLASS XSharp.RuntimeState
 	/// <returns>The current value, or a default value of type T.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)];
 	PUBLIC STATIC METHOD GetValue<T> (nSetting AS XSharp.Set) AS T
+        IF _shutdown
+            // There is no RuntimeState when shutting down            
+            RETURN DEFAULT(T)
+        ENDIF
 		RETURN currentState:Value:_GetThreadValue<T>(nSetting);
 
 	/// <summary>Set a value for the state of the current Thread.</summary>
@@ -121,6 +142,10 @@ CLASS XSharp.RuntimeState
 	/// <returns>The previous value, or a default value of type T when the setting was not yetr defined.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)];
 	PUBLIC STATIC METHOD SetValue<T> (nSetting AS XSharp.Set, oValue AS T) AS T
+        IF _shutdown
+            // Suppress updating RuntimeState when shutting down
+            RETURN oValue
+        ENDIF
 		RETURN currentState:Value:_SetThreadValue<T>(nSetting, oValue)
     [MethodImpl(MethodImplOptions.AggressiveInlining)];
 	PRIVATE METHOD _GetThreadValue<T> (nSetting AS XSharp.Set) AS T
@@ -331,6 +356,24 @@ CLASS XSharp.RuntimeState
     STATIC PROPERTY Deleted AS LOGIC ;
         GET GetValue<LOGIC>(Set.Deleted);
         SET SetValue<LOGIC>(Set.Deleted, value)
+
+	/// <summary>Name of the RDD uses for DELIM operations.</summary>
+    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
+    STATIC PROPERTY DelimRDD AS STRING ;
+        GET GetValue<STRING>(Set.DelimRDD);
+        SET SetValue<STRING>(Set.DelimRDD, value)
+
+	/// <summary>Field delimiters for DELIM operations.</summary>
+    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
+    STATIC PROPERTY FieldDelimiter AS STRING ;
+        GET GetValue<STRING>(Set.FieldDelimiter);
+        SET SetValue<STRING>(Set.FieldDelimiter, value)
+
+	/// <summary>String delimiters for DELIM operations.</summary>
+    /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
+    STATIC PROPERTY StringDelimiter AS STRING ;
+        GET GetValue<STRING>(Set.Delimiters);
+        SET SetValue<STRING>(Set.Delimiters, value)
 
 	/// <summary>The default number of digits for new FLOAT values that are created without explicit decimals</summary>
     /// <include file="CoreComments.xml" path="Comments/PerThread/*" />
@@ -727,6 +770,7 @@ CLASS XSharp.RuntimeState
     STATIC METHOD PopCurrentWorkarea() AS DWORD
         RETURN RuntimeState.Workareas:PopCurrentWorkarea()
 
+    [DebuggerBrowsable(DebuggerBrowsableState.Never)];
 	PRIVATE _collationTable AS BYTE[]
     /// <summary>Current collation table.</summary>
     

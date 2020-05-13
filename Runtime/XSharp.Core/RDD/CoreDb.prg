@@ -133,15 +133,19 @@ CLASS XSharp.CoreDb
         info:Destination := oDest
         IF CoreDb.BuildTrans( info, fldNames, oRdd, oDest )
             info:Flags |= DbTransInfoFlags.SameStructure
-            LOCAL oCanPutRec AS OBJECT
-            oCanPutRec := oRdd:Info(DbInfo.DBI_CANPUTREC, NULL)
-            IF oCanPutRec IS LOGIC .AND. (LOGIC) oCanPutRec 
-                info:Flags |= DbTransInfoFlags.CanPutRec
+            LOCAL oCanPutRecSource AS OBJECT
+            LOCAL oCanPutRecTarget AS OBJECT
+            oCanPutRecSource := oRdd:Info(DbInfo.DBI_CANPUTREC, NULL)
+            oCanPutRecTarget := oDest:Info(DbInfo.DBI_CANPUTREC, NULL)
+            IF oCanPutRecSource IS LOGIC .AND. oCanPutRecTarget IS LOGIC 
+                IF (LOGIC) oCanPutRecSource .and. (LOGIC) oCanPutRecTarget
+                    info:Flags |= DbTransInfoFlags.CanPutRec
+                ENDIF
             ENDIF
         ENDIF
         info:Scope:ForBlock     := uCobFor
         info:Scope:WhileBlock   := uCobWhile
-        IF nNext != NULL
+        IF nNext IS LONG
             TRY
                 info:Scope:NextCount := Convert.ToInt32(nNext)
             CATCH e AS Exception
@@ -151,7 +155,9 @@ CLASS XSharp.CoreDb
         ELSE
             info:Scope:NextCount := 0
         ENDIF
-        info:Scope:RecId := nRecno
+        IF nRecno IS LONG
+            info:Scope:RecId := nRecno
+        ENDIF
         info:Scope:Rest  := lRest     
         RETURN
         /// <exclude />   
@@ -1134,7 +1140,7 @@ CLASS XSharp.CoreDb
         scopeinfo:ForBlock := uCobFor
         scopeinfo:WhileBlock := uCobWhile
         scopeinfo:Rest:= lRest
-        scopeinfo:RecId := uRecId
+        scopeinfo:RecId := IIF(uRecId IS LONG, uRecId, NULL)
         scopeinfo:NextCount := nNext
         BEFOREMOVE 
         result := oRdd:SetScope(scopeinfo)
@@ -1722,7 +1728,8 @@ CLASS XSharp.CoreDb
         /// <include file="CoreComments.xml" path="Comments/LastError/*" />
         /// <note type="tip">VoDbSelect() and CoreDb.Select() are aliases</note></remarks>
         
-    STATIC METHOD Select(nNew AS DWORD,nOld REF DWORD ) AS LOGIC
+    STATIC METHOD Select(nNew AS DWORD,nOld OUT DWORD ) AS LOGIC
+        nOld := 0
         TRY
             VAR Workareas := RuntimeState.Workareas
             nOld := (DWORD) Workareas:CurrentWorkareaNO
@@ -1932,7 +1939,7 @@ CLASS XSharp.CoreDb
             // Could be FieldName / ACDB to indicate the sort method
             VAR parts := sortNames:Fields[nFld]:Split('/')
             IF parts:Length > 1
-                VAR part := parts[1]
+                VAR part := parts[1]    // second element !
                 IF part:IndexOf('A') > -1
                     info:Items[nFld]:Flags |= DbSortFlags.Default
                 ENDIF

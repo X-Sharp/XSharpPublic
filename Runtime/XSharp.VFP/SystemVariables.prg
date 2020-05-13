@@ -19,7 +19,7 @@ GLOBAL _PRETEXT   := "" AS STRING
 ///<summary>Contains the number of records processed by the most recently executed table command.</summary>
 GLOBAL _TALLY    := 0 AS LONG
 ///<summary>File handle for the output file for the TEXT .. ENDTEXT and \ and \\ commands.</summary>
-/// <seealso cref='M:XSharp.VFP.Functions.SetTextFile(System.String)' />
+/// <seealso cref='O:XSharp.VFP.Functions.SetTextFile' />
 GLOBAL _TEXT     := -1 AS INT64
 ///<summary>Contains a numeric value indicating the current trigger procedure nesting level.</summary>
 GLOBAL _TRIGGERLEVEL := 0 AS LONG

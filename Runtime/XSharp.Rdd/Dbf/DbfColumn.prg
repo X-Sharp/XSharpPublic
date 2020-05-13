@@ -19,6 +19,7 @@ BEGIN NAMESPACE XSharp.RDD
         INTERNAL OffSetInHeader := -1 as LONG
         INTERNAL RDD        AS XSharp.RDD.DBF
 
+        /// <summary>Create a DbfColumn class, used when creating files.</summary>
         STATIC METHOD Create(oInfo AS RddFieldInfo, oRDD AS XSharp.RDD.DBF) AS DbfColumn
             // Commented out types are Harbour specific
             SWITCH oInfo:FieldType
@@ -67,8 +68,8 @@ BEGIN NAMESPACE XSharp.RDD
                 RETURN DbfColumn{oInfo,oRDD}
             END SWITCH
 
-
-        STATIC METHOD Create(oField REF DbfField, oRDD AS XSharp.RDD.DBF, nHeaderOffSet as LONG) AS DbfColumn
+        /// <summary>Create a DbfColumn class, based on the definition in the DBF. Used when opening a file. </summary>
+        STATIC METHOD Create(oField REF DbfField, oRDD AS XSharp.RDD.DBF, nHeaderOffSet AS LONG) AS DbfColumn
             LOCAL oInfo AS RddFieldInfo
             LOCAL oColumn as DbfColumn
             oInfo        := RddFieldInfo{oField:Name, oField:Type, oField:Len, oField:Dec, oField:Offset, oField:Flags}
@@ -87,11 +88,13 @@ BEGIN NAMESPACE XSharp.RDD
             SELF:RDD        := oRDD
             RETURN
 
-
+       /// <summary>Initialize the buffer used for appends. Gets called once when a DBF is opened.</summary>
        VIRTUAL METHOD InitValue(buffer AS BYTE[]) AS VOID
             // this gets called to update the initialize the buffer for 'append blank'. Gets called once when a DBF is opened.
             RETURN
 
+       /// <summary>Update the buffer after appending. For example for AutoIncrement or TimeStamp columns.</summary>
+       /// <param name="buffer">Record buffer for the current record</param>
        VIRTUAL METHOD NewRecord(buffer AS BYTE[]) AS VOID
             // this gets called to update the appended record. Only used at this moment to set the AutoIncrement value
             // but can also be used to set a timestamp or rowversion later
@@ -101,12 +104,26 @@ BEGIN NAMESPACE XSharp.RDD
             // The default implementation returns the part of the buffer as a string
             RETURN SELF:RDD:_Encoding:GetString(buffer, SELF:Offset, SELF:Length)
 
+        /// <summary>Get the value from the buffer</summary>
+       /// <param name="buffer">Record buffer for the current record</param>
         VIRTUAL METHOD GetValue(buffer AS BYTE[]) AS OBJECT
             IF SELF:IsNull()
                 RETURN NULL
             ENDIF
             RETURN SELF:_GetString(buffer)
 
+        /// <summary>Handle NULL values.</summary>
+       /// <param name="buffer">Record buffer for the current record</param>
+        VIRTUAL METHOD HandleNullValue(buffer AS BYTE[]) AS LOGIC 
+            SELF:InitValue(buffer)                      
+            IF SELF:IsNullable
+                RETURN SELF:SetNullValue()
+            ENDIF
+            RETURN TRUE
+
+       /// <summary>Write the value to the buffer</summary>
+       /// <param name="buffer">Record buffer for the current record</param>
+       /// <param name="oValue">Value to write.</param>
         VIRTUAL METHOD PutValue(oValue AS OBJECT, buffer AS BYTE[]) AS LOGIC
             RETURN FALSE
 
@@ -132,6 +149,7 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             RETURN 
 
+        /// <summary>Get the default "empty" value, as you would get at EOF</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)];
         VIRTUAL METHOD EmptyValue() AS OBJECT
             RETURN String.Empty
@@ -219,7 +237,7 @@ BEGIN NAMESPACE XSharp.RDD
 			    SELF:Decimals       := 0
             ENDIF
             RETURN
-
+        /// <inheritdoc/>
        OVERRIDE METHOD InitValue(buffer AS BYTE[]) AS VOID
             IF SELF:IsVarLength 
                 buffer[SELF:Offset + SELF:Length-1] := 0
@@ -228,19 +246,18 @@ BEGIN NAMESPACE XSharp.RDD
                 System.Buffer.BlockCopy(str:ToCharArray(),0, buffer, SELF:Offset, SELF:Length)
             ENDIF
             RETURN
-
+       /// <inheritdoc/>
        OVERRIDE METHOD EmptyValue() AS OBJECT
            IF SELF:IsUnicode
                 RETURN STRING{ ' ', SELF:Length /2 }
            ENDIF
            RETURN STRING{ ' ', SELF:Length }
-
+        /// <inheritdoc/>
        OVERRIDE METHOD PutValue(oValue AS OBJECT, buffer AS BYTE[]) AS LOGIC
             LOCAL str AS STRING
-            IF SELF:IsNullable
-                IF oValue == NULL
-                    RETURN SELF:SetNullValue()
-                ENDIF
+            IF oValue == NULL
+                RETURN SELF:HandleNullValue(buffer)
+            ELSEIF SELF:IsNullable
                 SELF:ClearNullValue()
             ENDIF
             IF oValue IS CHAR
@@ -283,13 +300,13 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             RETURN TRUE
 
-
+        /// <inheritdoc/>
         OVERRIDE METHOD Validate() AS LOGIC
             IF SELF:Length == 0  .OR. SELF:Decimals > 0  .OR. SELF:Length > System.UInt16.MaxValue 
                 RETURN FALSE
             ENDIF
             RETURN TRUE
-
+        /// <inheritdoc/>
         OVERRIDE METHOD GetValue(buffer AS BYTE[]) AS OBJECT
             LOCAL result AS STRING
             IF SELF:IsNull()
@@ -332,7 +349,7 @@ BEGIN NAMESPACE XSharp.RDD
         CONSTRUCTOR(oInfo AS RddFieldInfo,oRDD AS XSharp.RDD.DBF)
             SUPER(oInfo,oRDD)
             RETURN
-
+        /// <inheritdoc/>
         OVERRIDE METHOD GetValue(buffer AS BYTE[]) AS OBJECT
             LOCAL result := NULL AS IDate
             IF SELF:IsNull()
@@ -355,12 +372,11 @@ BEGIN NAMESPACE XSharp.RDD
                 result := DbDate{0,0,0}
             ENDIF
             RETURN result
-
+        /// <inheritdoc/>
         OVERRIDE METHOD PutValue(oValue AS OBJECT, buffer AS BYTE[]) AS LOGIC
-            IF SELF:IsNullable
-                IF oValue == NULL
-                    RETURN SELF:SetNullValue()
-                ENDIF
+            IF oValue == NULL
+                RETURN SELF:HandleNullValue(buffer)
+            ELSEIF SELF:IsNullable
                 SELF:ClearNullValue()
             ENDIF
             IF oValue IS System.DateTime VAR dt
@@ -384,10 +400,11 @@ BEGIN NAMESPACE XSharp.RDD
             SELF:RDD:_dbfError(Subcodes.ERDD_DATATYPE, EG_DATATYPE)
             RETURN FALSE
 
+        /// <inheritdoc/>
 
         OVERRIDE METHOD EmptyValue() AS OBJECT
             RETURN DbDate{0,0,0}
-
+        /// <inheritdoc/>
         OVERRIDE METHOD Validate() AS LOGIC
             RETURN SUPER:Validate()
 
@@ -401,6 +418,7 @@ BEGIN NAMESPACE XSharp.RDD
             SUPER(oInfo,oRDD)
             RETURN
 
+        /// <inheritdoc/>
         OVERRIDE METHOD GetValue(buffer AS BYTE[]) AS OBJECT
             LOCAL result AS LOGIC
             IF SELF:IsNull()
@@ -416,12 +434,12 @@ BEGIN NAMESPACE XSharp.RDD
                 result := FALSE
             END SWITCH
             RETURN result
-
+            
+        /// <inheritdoc/>
        OVERRIDE METHOD PutValue(oValue AS OBJECT, buffer AS BYTE[]) AS LOGIC
-            IF SELF:IsNullable
-                IF oValue == NULL
-                    RETURN SELF:SetNullValue()
-                ENDIF
+            IF oValue == NULL
+                RETURN SELF:HandleNullValue(buffer)
+            ELSEIF SELF:IsNullable
                 SELF:ClearNullValue()
             ENDIF
             IF oValue IS LOGIC VAR logicValue
@@ -430,10 +448,10 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             SELF:RDD:_dbfError(Subcodes.ERDD_DATATYPE, EG_DATATYPE)
             RETURN FALSE
-
+        /// <inheritdoc/>
        OVERRIDE METHOD EmptyValue() AS OBJECT
             RETURN FALSE
-
+        /// <inheritdoc/>
        OVERRIDE METHOD Validate() AS LOGIC
             RETURN SUPER:Validate()
 
@@ -445,7 +463,7 @@ BEGIN NAMESPACE XSharp.RDD
     CONSTRUCTOR(oInfo AS RddFieldInfo,oRDD AS XSharp.RDD.DBF)
             SUPER(oInfo,oRDD)
             RETURN
-
+        /// <inheritdoc/>
     OVERRIDE METHOD GetValue(buffer AS BYTE[]) AS OBJECT
             LOCAL result AS IFloat
             LOCAL r8 AS REAL8
@@ -531,13 +549,12 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             result := DbFloat{r8, SELF:Length, SELF:Decimals}
             RETURN result
-
+        /// <inheritdoc/>
       OVERRIDE METHOD PutValue(oValue AS OBJECT, buffer AS BYTE[]) AS LOGIC
             LOCAL r8Value AS REAL8
-            IF SELF:IsNullable
-                IF oValue == NULL
-                    RETURN SELF:SetNullValue()
-                ENDIF
+            IF oValue == NULL
+                RETURN SELF:HandleNullValue(buffer)
+            ELSEIF SELF:IsNullable
                 SELF:ClearNullValue()
             ENDIF
             IF ! SELF:GetNumber(oValue, OUT r8Value)
@@ -560,10 +577,10 @@ BEGIN NAMESPACE XSharp.RDD
                 SELF:RDD:_dbfError(ERDD_DATAWIDTH, EG_DATAWIDTH)
             ENDIF
             RETURN TRUE
-
+        /// <inheritdoc/>
         OVERRIDE METHOD EmptyValue() AS OBJECT
             RETURN DbFloat{0.0, SELF:Length, SELF:Decimals}
-
+        /// <inheritdoc/>
        OVERRIDE METHOD Validate() AS LOGIC
            IF SELF:Length >= 1  .AND.  SELF:Length <= 255 
                 IF SELF:Decimals > 0 
@@ -587,7 +604,8 @@ BEGIN NAMESPACE XSharp.RDD
             SUPER(oInfo,oRDD)
             RETURN
 
-
+        /// <inheritdoc/>
+        /// <remarks>At this level this returns the memo block number.</remarks>
         OVERRIDE METHOD GetValue(buffer AS BYTE[]) AS OBJECT
             // Read the Memo Block Number
             LOCAL result AS LONG
@@ -600,17 +618,23 @@ BEGIN NAMESPACE XSharp.RDD
                 result := BuffToLong(buffer, SELF:Offset)
             ENDIF
             RETURN result
-
+        /// <inheritdoc/>
         OVERRIDE METHOD InitValue(buffer AS BYTE[]) AS VOID
             IF SELF:Length == 4
                 VAR data := BitConverter.GetBytes((LONG) 0)
                 Array.Copy(data, 0, buffer, SELF:Offset, SELF:Length)
             ENDIF
             RETURN
-
+        /// <inheritdoc/>
+        /// <remarks>At this level this writes the memo block number.</remarks>
         OVERRIDE METHOD PutValue(oValue AS OBJECT, buffer AS BYTE[]) AS LOGIC
             // oValue is the memo block number
             LOCAL intValue AS LONG
+            IF oValue == NULL
+                RETURN SELF:HandleNullValue(buffer)
+            ELSEIF SELF:IsNullable
+                SELF:ClearNullValue()
+            ENDIF
             IF ! SELF:GetNumber(oValue, OUT intValue)
                 SELF:RDD:_dbfError(Subcodes.ERDD_DATATYPE, EG_DATATYPE)
                 RETURN FALSE
@@ -628,10 +652,12 @@ BEGIN NAMESPACE XSharp.RDD
                 SELF:_PutString(buffer, strValue)
             ENDIF
             RETURN TRUE
-
+            
+        /// <inheritdoc/>
         OVERRIDE METHOD EmptyValue() AS OBJECT
             RETURN NULL
-
+            
+        /// <inheritdoc/>
        OVERRIDE METHOD Validate() AS LOGIC
             RETURN (SELF:Length == 10 .OR. SELF:Length == 4)  .AND.  SELF:Decimals == 0 
 
@@ -644,7 +670,7 @@ BEGIN NAMESPACE XSharp.RDD
         CONSTRUCTOR(oInfo AS RddFieldInfo,oRDD AS XSharp.RDD.DBF)
             SUPER(oInfo,oRDD)
             RETURN
-
+        /// <inheritdoc/>
         OVERRIDE METHOD GetValue(buffer AS BYTE[]) AS OBJECT
             LOCAL result AS LONG
             IF SELF:IsNull()
@@ -658,7 +684,8 @@ BEGIN NAMESPACE XSharp.RDD
                 result := 0
             ENDIF
             RETURN result
-
+            
+        /// <inheritdoc/>
         OVERRIDE METHOD InitValue(buffer AS BYTE[]) AS VOID
             IF SELF:Length == 4
                 VAR data := BitConverter.GetBytes((LONG) 0)
@@ -670,13 +697,12 @@ BEGIN NAMESPACE XSharp.RDD
 
             ENDIF
             RETURN
-
+        /// <inheritdoc/>
         OVERRIDE METHOD PutValue(oValue AS OBJECT, buffer AS BYTE[]) AS LOGIC
             LOCAL intValue AS LONG
-            IF SELF:IsNullable
-                IF oValue == NULL
-                    RETURN SELF:SetNullValue()
-                ENDIF
+            IF oValue == NULL
+                RETURN SELF:HandleNullValue(buffer)
+            ELSEIF SELF:IsNullable
                 SELF:ClearNullValue()
             ENDIF
             IF ! SELF:GetNumber(oValue, OUT intValue)
@@ -692,10 +718,10 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             RETURN TRUE
 
-
+        /// <inheritdoc/>
         OVERRIDE METHOD EmptyValue() AS OBJECT
             RETURN 0
-
+        /// <inheritdoc/>
        OVERRIDE METHOD Validate() AS LOGIC
             RETURN (SELF:Length == 4 .OR. SELF:Length == 2)  .AND.  SELF:Decimals == 0 
 
@@ -709,7 +735,7 @@ BEGIN NAMESPACE XSharp.RDD
         CONSTRUCTOR(oInfo AS RddFieldInfo,oRDD AS XSharp.RDD.DBF)
             SUPER(oInfo,oRDD)
             RETURN
-
+        /// <summary>Read the next autoincrement number from the dbf header </summary>
         VIRTUAL METHOD Read() AS LOGIC
             LOCAL oField  as DbfField
             oField := DbfField{}
@@ -720,8 +746,9 @@ BEGIN NAMESPACE XSharp.RDD
             SELF:IncrStep := oField:IncStep
             RETURN TRUE
 
+        /// <summary>Write the next autoincrement number to the dbf header </summary>
         VIRTUAL METHOD Write() AS LOGIC
-            LOCAL oField  as DbfField
+            LOCAL oField  AS DbfField
             oField := DbfField{}
             oField:initialize()
             oField:Encoding := SELF:RDD:_Encoding
@@ -731,7 +758,7 @@ BEGIN NAMESPACE XSharp.RDD
             SELF:RDD:_writeField(SELF:OffSetInHeader, oField)
             RETURN TRUE
 
-
+        /// <inheritdoc/>
         VIRTUAL METHOD NewRecord(buffer AS BYTE[]) AS VOID
             // when shared then read the header again to get the current values of the counter and incrstep
             // increment the counter and write to the header
@@ -757,7 +784,7 @@ BEGIN NAMESPACE XSharp.RDD
         CONSTRUCTOR(oInfo AS RddFieldInfo,oRDD AS XSharp.RDD.DBF)
             SUPER(oInfo,oRDD)
             RETURN
-
+        /// <inheritdoc/>
         OVERRIDE METHOD GetValue(buffer AS BYTE[]) AS OBJECT
             LOCAL result AS REAL8
             IF SELF:IsNull()
@@ -765,18 +792,17 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             result := BitConverter.ToDouble(buffer, SELF:Offset)
             RETURN DbFloat{result,-1,-1}
-
+        /// <inheritdoc/>
         OVERRIDE METHOD InitValue(buffer AS BYTE[]) AS VOID
             VAR data := BitConverter.GetBytes((REAL8) 0)
             Array.Copy(data, 0, buffer, SELF:Offset, SELF:Length)
             RETURN
-
+        /// <inheritdoc/>
         OVERRIDE METHOD PutValue(oValue AS OBJECT, buffer AS BYTE[]) AS LOGIC
             LOCAL r8Value AS REAL8
-            IF SELF:IsNullable
-                IF oValue == NULL
-                    RETURN SELF:SetNullValue()
-                ENDIF
+            IF oValue == NULL
+                RETURN SELF:HandleNullValue(buffer)
+            ELSEIF SELF:IsNullable
                 SELF:ClearNullValue()
             ENDIF
             IF ! SELF:GetNumber(oValue, OUT r8Value)
@@ -786,10 +812,10 @@ BEGIN NAMESPACE XSharp.RDD
             VAR data := BitConverter.GetBytes(r8Value)
             Array.Copy(data, 0, buffer, SELF:Offset, SELF:Length)
             RETURN TRUE
-
+        /// <inheritdoc/>
        OVERRIDE METHOD EmptyValue() AS OBJECT
             RETURN DbFloat{0,-1,-1}
-
+        /// <inheritdoc/>
         OVERRIDE METHOD Validate() AS LOGIC
             RETURN SELF:Length == 8
     END CLASS
@@ -800,7 +826,7 @@ BEGIN NAMESPACE XSharp.RDD
         CONSTRUCTOR(oInfo AS RddFieldInfo,oRDD AS XSharp.RDD.DBF)
             SUPER(oInfo,oRDD)
             RETURN
-
+        /// <inheritdoc/>
         OVERRIDE METHOD GetValue(buffer AS BYTE[]) AS OBJECT
             LOCAL tmp AS REAL8
             LOCAL result AS Decimal
@@ -811,14 +837,13 @@ BEGIN NAMESPACE XSharp.RDD
             result := (decimal) (tmp/ (10 ^ SELF:Decimals))
             RETURN result
 
-
+        /// <inheritdoc/>
         OVERRIDE METHOD PutValue(oValue AS OBJECT, buffer AS BYTE[]) AS LOGIC
             LOCAL currValue AS System.Decimal
             LOCAL i64Value AS System.Int64
-            IF SELF:IsNullable
-                IF oValue == NULL
-                    RETURN SELF:SetNullValue()
-                ENDIF
+            IF oValue == NULL
+                RETURN SELF:HandleNullValue(buffer)
+            ELSEIF SELF:IsNullable
                 SELF:ClearNullValue()
             ENDIF
             IF ! SELF:GetNumber(oValue, OUT currValue)
@@ -830,12 +855,18 @@ BEGIN NAMESPACE XSharp.RDD
             Array.Copy(data, 0, buffer, SELF:Offset, SELF:Length)
             RETURN TRUE
 
-
+        /// <inheritdoc/>
         OVERRIDE METHOD EmptyValue() AS OBJECT
             RETURN (Decimal) 0
-            
+        /// <inheritdoc/>
         OVERRIDE METHOD Validate() AS LOGIC
             RETURN SELF:Length == 8
+        /// <inheritdoc/>
+        OVERRIDE METHOD InitValue(buffer AS BYTE[]) AS VOID
+            VAR blank := BYTE[]{SELF:Length}
+            System.Array.Copy(blank, 0, buffer, SELF:Offset, SELF:Length)
+            RETURN
+
 
     END CLASS
 
@@ -873,7 +904,7 @@ BEGIN NAMESPACE XSharp.RDD
 		        year := cc - 4716
             ENDIF
             RETURN DateTime { (INT)year, (INT) month, (INT) day}
-
+        /// <inheritdoc/>
         OVERRIDE METHOD GetValue(buffer AS BYTE[]) AS OBJECT
             LOCAL result AS DateTime 
             IF SELF:IsNull()
@@ -888,6 +919,9 @@ BEGIN NAMESPACE XSharp.RDD
             // blank buffer ?
             IF julian == 0x20202020 .AND. milsecs == 0x20202020
                 RETURN result
+            ENDIF
+            IF milsecs > 0
+                milsecs += 1
             ENDIF
             result := SELF:_julianToDateTime(julian)
             result := result.AddSeconds( (Int32) Math.Round ( (REAL8) milsecs / 1000.0))
@@ -917,14 +951,13 @@ BEGIN NAMESPACE XSharp.RDD
 			    ijulian := ijulian + 2 - adj + adj / 4
 		    ENDIF
             RETURN ijulian
-            
+        /// <inheritdoc/>
         OVERRIDE METHOD PutValue(oValue AS OBJECT, buffer AS BYTE[]) AS LOGIC
             LOCAL empty AS LOGIC
             LOCAL dt AS DateTime
-            IF SELF:IsNullable
-                IF oValue == NULL
-                    RETURN SELF:SetNullValue()
-                ENDIF
+            IF oValue == NULL
+                RETURN SELF:HandleNullValue(buffer)
+            ELSEIF SELF:IsNullable
                 SELF:ClearNullValue()
             ENDIF
             IF oValue IS DateTime
@@ -939,9 +972,13 @@ BEGIN NAMESPACE XSharp.RDD
             ENDIF
             IF empty
                 SELF:InitValue(buffer)
+                SELF:SetNullValue()
             ELSE
                 VAR iJulian  := SELF:_dateTimeToJulian(dt)
                 VAR milisecs := 1000 * dt:Second + dt:Minute * 1000 * 60 + dt:Hour * 1000 * 60 * 60
+                IF milisecs > 0
+                    milisecs -= 1
+                ENDIF
                 VAR data := BitConverter.GetBytes(iJulian)
                 Array.Copy(data, 0, buffer, SELF:Offset, 4)
                 data := BitConverter.GetBytes(milisecs)
@@ -950,16 +987,16 @@ BEGIN NAMESPACE XSharp.RDD
 
             RETURN TRUE
 
-
+        /// <inheritdoc/>
         OVERRIDE METHOD InitValue(buffer AS BYTE[]) AS VOID
-            VAR data := BitConverter.GetBytes((LONG) 0)
+            VAR data := BitConverter.GetBytes((LONG) 0x20202020)
             Array.Copy(data, 0, buffer, SELF:Offset, 4)
             Array.Copy(data, 0, buffer, SELF:Offset+4, 4)
             RETURN
-
+        /// <inheritdoc/>
         OVERRIDE METHOD EmptyValue() AS OBJECT
             RETURN DateTime.MinValue
-
+        /// <inheritdoc/>
         OVERRIDE METHOD Validate() AS LOGIC
             RETURN SELF:Length == 8  .AND.  SELF:Decimals == 0 
 
@@ -974,27 +1011,30 @@ BEGIN NAMESPACE XSharp.RDD
             data    := BYTE[]{SELF:Length}
             bitArray:= System.Collections.BitArray{data}
             RETURN
-
+            
+        /// <inheritdoc/>
        OVERRIDE METHOD InitValue(buffer AS BYTE[]) AS VOID
             SELF:bitArray:SetAll(FALSE)
             SELF:PutValue(0, buffer)
             RETURN
-
+            
+        /// <inheritdoc/>
        OVERRIDE METHOD GetValue(buffer AS BYTE[]) AS OBJECT
             // Read the bits from the buffer, dummy return value
             System.Array.Copy(buffer, SELF:Offset, data, 0, SELF:Length)
             bitArray:= System.Collections.BitArray{data}
             RETURN NULL
-
+            
+        /// <inheritdoc/>
         OVERRIDE METHOD PutValue(oValue AS OBJECT, buffer AS BYTE[]) AS LOGIC
             // Write the bits to the buffer, ignore oValue
             SELF:bitArray:CopyTo(data, 0)
             System.Array.Copy(data, 0, buffer, SELF:Offset, SELF:Length)
             RETURN FALSE
-
+        /// <summary>Read a bit from the specified position</summary>
         METHOD GetBit(nPos AS LONG) AS LOGIC
             RETURN SELF:bitArray:Get(nPos)
-
+        /// <summary>Set a bit at the specified position</summary>
         METHOD SetBit(nPos AS LONG, lSet AS LOGIC) AS VOID
             SELF:bitArray:Set(nPos, lSet)
             RETURN

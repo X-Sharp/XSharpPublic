@@ -26,10 +26,10 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension, cText, lDataAware)
 	Default(@lDataAware, TRUE)
 	lResID := IsInstanceOfUsual(xID,#ResourceID)
 	IF !lResID
-		dwInfoSize := GetFileVersionInfoSize(PSZ("COMCTL32.DLL"), @dw)
+		dwInfoSize := GetFileVersionInfoSize(String2Psz("COMCTL32.DLL"), @dw)
 		pData := MemAlloc(dwInfoSize)
-		GetFileVersionInfo(PSZ("COMCTL32.DLL"), 0, dwInfoSize, pData)
-		VerQueryValue(pData, PSZ("\"), @pVI, @dw)
+		GetFileVersionInfo(String2Psz("COMCTL32.DLL"), 0, dwInfoSize, pData)
+		VerQueryValue(pData, String2Psz("\"), @pVI, @dw)
 		IF (HiWord(pVI:dwFileVersionMS) >= 6)
 			cClass := "SysLink"
 		ELSE

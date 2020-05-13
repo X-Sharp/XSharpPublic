@@ -18,8 +18,8 @@ BEGIN NAMESPACE XSharp
 	/// </summary>
 	/// <seealso cref="T:XSharp.IDate"/>
 	/// <seealso cref="T:XSharp.RDD.DbDate"/>
-	[DebuggerDisplay("{ToString(),nq}", Type := "DATE" )];
-	[DebuggerTypeProxy(TYPEOF(DateDebugView))];
+	//[DebuggerTypeProxy(TYPEOF(DateDebugView))];
+	[DebuggerDisplay("{ToDebugString(),nq}", Type := "DATE" )];
 	[StructLayout(LayoutKind.Explicit,Pack := 1)];
 	PUBLIC STRUCTURE __Date IMPLEMENTS System.IComparable, ;
 		System.IFormattable, ;
@@ -34,26 +34,35 @@ BEGIN NAMESPACE XSharp
 		// for date calculation we use the Value PROPERTY which returns a System.DateTime type
 		// Note that the Vulcan type uses a datetime which takes 8 bytes. We only use 4 bytes
 		#region fields
+            [DebuggerBrowsable(DebuggerBrowsableState.Never)];
 			[FieldOffset(00)] PRIVATE _ymd   AS System.Int32
+            [DebuggerBrowsable(DebuggerBrowsableState.Never)];
 			[FieldOffset(00)] PRIVATE _year  AS System.UInt16
+            [DebuggerBrowsable(DebuggerBrowsableState.Never)];
 			[FieldOffset(02)] PRIVATE _month AS System.Byte
+            [DebuggerBrowsable(DebuggerBrowsableState.Never)];
 			[FieldOffset(03)] PRIVATE _day   AS System.Byte
 		#endregion
 
 		#region STATIC fields
 			/// <exclude />
+            [DebuggerBrowsable(DebuggerBrowsableState.Never)];
 			STATIC INITONLY PUBLIC  _NULL_DATE AS DATE
 			/// <exclude />
+            [DebuggerBrowsable(DebuggerBrowsableState.Never)];
 			CONST  CLIPPER_MIN_DATE := 2415386U AS DWORD	// 1901-01-01
 			/// <exclude />
+            [DebuggerBrowsable(DebuggerBrowsableState.Never)];
 			CONST  CLIPPER_MAX_DATE := 4606840U AS DWORD	// 7900-12-31
 			/// <exclude />
+            [DebuggerBrowsable(DebuggerBrowsableState.Never)];
 			STATIC INITONLY _dtCalc AS DateTime
 
 		#endregion
 
 		#region datetime conversions
             /// <summary>Return DATE value as DateTime.</summary>
+            [DebuggerBrowsable(DebuggerBrowsableState.Never)];
 			PUBLIC PROPERTY Value AS System.DateTime
 				GET
 					IF (_ymd == 0)
@@ -469,7 +478,7 @@ BEGIN NAMESPACE XSharp
 				ELSEIF days:IsNumeric
 					 RETURN SELF:Subtract( -(REAL8) days)
 				ELSEIF days:IsDate
-					 RETURN SELF:Subtract( (Date) days)
+					 RETURN SELF:Subtract( (DATE) days)
 				ELSE
 					THROW Error.ArgumentError(__ENTITY__,NAMEOF(days), 1, "Incompatible argument for Date:Subtract()", {days})
 				ENDIF
@@ -582,7 +591,7 @@ BEGIN NAMESPACE XSharp
 				IF (_ymd == 0)
 					RETURN RuntimeState.NullDateString
 				ENDIF
-			RETURN DToC(SELF)
+			    RETURN DToC(SELF)
 			/// <inheritdoc />
 			METHOD ToString(provider AS System.IFormatProvider) AS STRING
 				IF (_ymd == 0)
@@ -601,13 +610,14 @@ BEGIN NAMESPACE XSharp
 					RETURN RuntimeState.NullDateString
 				ENDIF
 				IF (s == NULL)
-					s := XSharp.RuntimeState.GetValue<String>(Set.DateFormatNet)
+					s := XSharp.RuntimeState.GetValue<STRING>(Set.DateFormatNet)
 				ENDIF
 				RETURN SELF:Value:ToString(s, fp)
 		#endregion
 		#region properties
 
 			/// <inheritdoc />
+            [DebuggerBrowsable(DebuggerBrowsableState.Never)];
 			PROPERTY IsEmpty AS LOGIC
 				GET
 					RETURN _ymd == 0
@@ -620,21 +630,30 @@ BEGIN NAMESPACE XSharp
 			/// <inheritdoc />
 			PROPERTY Day	AS INT GET _day
 			// Next properties for easy access in right type
+            [DebuggerBrowsable(DebuggerBrowsableState.Never)];
 			INTERNAL PROPERTY DYear		AS DWORD GET _year
+            [DebuggerBrowsable(DebuggerBrowsableState.Never)];
 			INTERNAL PROPERTY DMonth	AS DWORD GET _month
+            [DebuggerBrowsable(DebuggerBrowsableState.Never)];
 			INTERNAL PROPERTY DDay		AS DWORD GET _day
 
-			INTERNAL CLASS DateDebugView
-				PRIVATE _value AS DATE
-				PUBLIC CONSTRUCTOR (d AS DATE)
-					_value := d
-
-				PUBLIC PROPERTY Year	AS INT GET _value:Year
-				PUBLIC PROPERTY Month	AS INT GET _value:Month
-				PUBLIC PROPERTY Day		AS INT GET _value:Day
-
-			END CLASS
-
+            INTERNAL METHOD ToDebugString() AS STRING
+				IF (_ymd == 0)
+					RETURN "NULL_DATE"
+                ENDIF
+                RETURN SELF:Value:ToShortDateString()
+                
+//			INTERNAL CLASS DateDebugView
+//				PRIVATE _value AS DATE
+//				PUBLIC CONSTRUCTOR (d AS DATE)
+//					_value := d
+//
+//				PUBLIC PROPERTY Year	AS INT GET _value:Year
+//				PUBLIC PROPERTY Month	AS INT GET _value:Month
+//				PUBLIC PROPERTY Day		AS INT GET _value:Day
+//
+//			END CLASS
+//
 		#endregion
 
 		#region STATIC Properties

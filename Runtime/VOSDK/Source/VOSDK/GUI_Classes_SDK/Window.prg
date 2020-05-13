@@ -159,9 +159,7 @@ PARTIAL CLASS Window INHERIT @@EventContext
         lRet := LOGIC(_CAST, SendMessage(hwndToolTip, TTM_ADDTOOL, 0, LONGINT(_CAST, @ti)))
         
         //RvdH 050415 Added handling for OleObjects & OleControls
-        IF IsInstanceOfUsual(oControl, #Combobox) ;
-            .OR. IsInstanceOfUsual(oControl, #IPAddress) ;
-            .OR. IsInstanceOfUsual(oControl, #OleObject)
+        IF oControl IS Combobox .OR. oControl IS IPAddress //.OR. oControl IS OleObject
         ti:uFlags := _OR(TTF_IDISHWND, TTF_SUBCLASS)
         hChild := GetWindow(oControl:Handle(), GW_CHILD)
         WHILE (hChild != NULL_PTR)
@@ -259,7 +257,13 @@ METHOD __AlignControls() AS Window STRICT
     
     DO WHILE dwI <= dwCount
     oResize := aAlignes[dwI][1]
-    hCtl    := oResize:HANDLE()
+    IF oResize IS Window VAR oWin
+        hCtl    := oWin:Handle()
+    ELSEIF oResize IS Control VAR oCtrl
+        hCtl    := oCtrl:Handle()
+    ELSE
+        hCtl    := oResize:Handle()
+    ENDIF
     uType   := aAlignes[dwI][2]
     dwType  := DWORD(_CAST, uType)
     IF IsWindow(hCtl)
@@ -327,15 +331,15 @@ METHOD __AlignControls() AS Window STRICT
                 ENDIF
             ENDIF   
             
-            IF IsInstanceOf(oResize, #Window)
-                IF IsInstanceOf(oResize, #__FormFrame)
-                    oResize:ChangeFormSize( Point{iCtlX, iCtlY}, Dimension{iCtlWidth, iCtlHeight}, TRUE)
+            IF oResize IS Window
+                IF oResize IS __FormFrame VAR oFF
+                    oFF:ChangeFormSize( Point{iCtlX, iCtlY}, Dimension{iCtlWidth, iCtlHeight}, TRUE)
                 ELSE
                     SetWindowPos(hCtl, NULL_PTR, iCtlX, iCtlY, iCtlWidth, iCtlHeight, uFlags)
                 ENDIF
-            ELSE
+            ELSE 
                 SetWindowPos(hCtl, NULL_PTR, iCtlX, iCtlY, iCtlWidth, iCtlHeight, uFlags)
-                IF IsWindowVisible(hCtl) .AND. ! IsInstanceOf(oResize, #GroupBox)
+                IF IsWindowVisible(hCtl) .AND. ! ( oResize IS GroupBox)
                     RedrawWindow(hCtl,NULL_PTR,NULL_PTR,_OR(RDW_INVALIDATE,RDW_NOERASE,RDW_UPDATENOW,RDW_FRAME))
                 ENDIF
             ENDIF
@@ -421,7 +425,7 @@ METHOD __CommandFromEvent(oEvent AS OBJECT) AS LOGIC STRICT
             Send(oWindow, symNameSym)
             RETURN TRUE
         ENDIF
-        IF IsInstanceOfUsual(oWindow:Owner, #Window)
+        IF ((OBJECT) oWindow:Owner) IS Window
             oWindow := oWindow:Owner
         ELSE
             EXIT
@@ -429,9 +433,9 @@ METHOD __CommandFromEvent(oEvent AS OBJECT) AS LOGIC STRICT
     ENDDO
     
     IF IsClassOf(symNameSym, #Window)
-        IF IsInstanceOf(SELF, #ChildAppWindow)
+        IF SELF IS ChildAppWindow
             oWindow:=SELF
-            DO WHILE IsInstanceOf(oWindow:Owner, #Window)
+            DO WHILE ((OBJECT) oWindow:Owner) IS Window
                 oWindow:=oWindow:Owner
             ENDDO
             o := CreateInstance(symNameSym, oWindow)
@@ -518,7 +522,7 @@ METHOD __DestroyChildren() AS VOID STRICT
     
     
     
-    IF IsInstanceOf(SELF, #SHELLWINDOW)
+    IF SELF IS ShellWindow
         hChild := GetWindow(SELF:Handle(4), GW_CHILD)
     ELSE
         hChild := GetWindow(SELF:Handle(), GW_CHILD)
@@ -529,14 +533,14 @@ METHOD __DestroyChildren() AS VOID STRICT
         
         //IF (cObj == NULL_OBJECT)
         //	cObj := __WCGetWindowByHandle(hChild) //Not a control, try windows
-        IF (IsInstanceOf(cObj, #__WindApp) .OR. IsInstanceOf(cObj, #__DocApp))
+        IF cObj IS __WindApp .OR. cObj IS __DocApp
             cObj := cObj:Owner
         ENDIF
         //ENDIF
         
         hchild := GetWindow(hchild, GW_HWNDNEXT)
         
-        IF (cObj != NULL_OBJECT) .AND. !IsInstanceOf(cObj, #Menu)
+        IF (cObj != NULL_OBJECT) .AND. ! ( cObj IS Menu)
             // Change for 2.5a. Watch for Problems!!!
             IF IsMethod(cObj, #Close)
                 cObj:Close()
@@ -811,7 +815,7 @@ METHOD __HandlePointer(oEvent AS @@Event, lHelp AS LOGIC, lClient AS LOGIC) AS W
                 oObject:=SELF
             ELSE
                 oObject :=__WCGetObjectByHandle(hHandle)
-                IF IsInstanceOf(oObject, #__FormDialogWindow)
+                IF oObject IS __FormDialogWindow 
                     oObject := oObject:Owner:DataWindow
                 ENDIF
             ENDIF
@@ -930,37 +934,34 @@ METHOD __ProcessHelp(oEvent AS @@Event) AS LOGIC STRICT
         
         IF oObject != NULL_OBJECT
             IF sHelpInfo:iContextType == HELPINFO_WINDOW
-                IF IsInstanceOf(oObject, #Control)
-                    oHL := oObject:Hyperlabel
+                IF oObject IS Control VAR oC
+                    oHL := oC:Hyperlabel
                     IF oHL != NULL_OBJECT .AND. oHL:HelpContext == NULL_STRING
-                        IF IsInstanceOf(oObject, #TabControl)
-                            oObject := oObject:CurrentPage
+                        IF oObject IS TabControl VAR oTab
+                            oObject := oTab:CurrentPage
                         ELSE
                             oObject := oObject:Owner
                         ENDIF
                     ENDIF
-                ENDIF
-                IF IsInstanceOf(oObject,#Window)
-                    IF IsInstanceOf(oObject,#__DocApp) .OR.;
-                        IsInstanceOf(oObject,#__WndApp) .OR.;
-                        IsInstanceOf(oObject,#__FormDialogWindow)
-                        oObject := oObject:Owner
+                ELSEIF oObject IS Window VAR oWindow
+                    IF oWindow IS __DocApp .OR. oWindow IS __WindApp .OR. oWindow IS __FormDialogWindow
+                        oWindow := oWindow:Owner
                     ENDIF
-                    IF IsInstanceOf(oObject,#__FormFrame)
-                        oObject := oObject:DataWindow
+                    IF oWindow IS __FormFrame VAR oFF
+                        oWindow := oFF:DataWindow
                     ENDIF
-                    oHL := oObject:Hyperlabel
+                    oHL := oWindow:Hyperlabel
                 ENDIF
             ELSE
-                IF IsInstanceOf(oObject, #Menu)
-                    oHL := oObject:HyperLabel(sHelpInfo:iCtrlId)
+                IF oObject IS Menu VAR oMenu
+                    oHL := oMenu:HyperLabel(sHelpInfo:iCtrlId)
                 ENDIF
             ENDIF
             
             IF oHL != NULL_OBJECT
                 cKEY := oHL:HelpContext
             ENDIF
-            IF cKey == NULL_STRING .AND. IsInstanceOf(oObject, #ShellWindow)
+            IF cKey == NULL_STRING .AND. oObject IS ShellWindow
                 cKey := "HelpContents"
             ENDIF
             
@@ -983,7 +984,7 @@ METHOD __ProcessHelpCursor(oWin AS OBJECT, wArea AS LONGINT) AS LOGIC STRICT
     hTemp:=oWin:Handle()
     // is it a window or child window
     // if hTemp==hWnd .or. !IsInstanceOf(oWin,#Printer)
-    IF IsInstanceOf(oWin, #Window) //hTemp==hWnd
+    IF oWin IS Window
         DO CASE
         CASE wArea==HTCAPTION
             liTemp := RegionCaption
@@ -1083,8 +1084,8 @@ METHOD __ProcessToolTip(oControlNotifyEvent AS OBJECT) AS VOID STRICT
     ENDIF
     strucToolTip := PTR(_CAST, lParam)
     ID           := strucToolTip:hdr:idFrom 
-    IF IsInstanceOf(oObject, #ToolBar)
-        cTipText  := oObject:GetTipText(ID, #MenuItemID)
+    IF oObject IS ToolBar VAR oTB
+        cTipText  := oTB:GetTipText(ID, #MenuItemID)
         IF SELF:Menu != NULL_OBJECT
             SELF:StatusMessage(SELF:Menu:Hyperlabel(ID))
         ENDIF
@@ -1306,7 +1307,7 @@ METHOD __UpdateTrayIcon(dwNIM,oTrayIcon,dwID,sToolTip)
         NID:szTip[dwTipLength] := 0
     ENDIF
     
-    RETURN PCALL(gpfnShell_NotifyIcon, DWORD(dwNIM), @NID)
+    RETURN Shell_NotifyIcon( DWORD(dwNIM), @NID)
     
     
 ACCESS Accelerator 
@@ -1493,12 +1494,15 @@ METHOD Center()
     // DHer: 18/12/2008
     LOCAL oOwner AS Window
     LOCAL oCanvas AS BoundingBox
-    IF IsInstanceOfUsual(oParent,#Window) 
+    LOCAL oDim, oSelfDim AS Dimension
+    oSelfDim  := SELF:Size
+    IF oParent IS Window
         oOwner   := oParent
         oCanvas  := oOwner:CanvasArea
-        SELF:Origin := Point{oCanvas:Size:Width/2-SELF:Size:Width/2,oCanvas:Size:Height/2-SELF:Size:Height/2}
+        oDim     := oCanvas:Size
+        SELF:Origin := Point{oDim:Width/2-oSelfDim:Width/2,oDim:Height/2-oSelfDim:Height/2}
     ELSE
-        SELF:Origin := Point{GetSystemMetrics(SM_CXSCREEN)/2-SELF:Size:Width/2,GetSystemMetrics(SM_CYSCREEN)/2-SELF:Size:Height/2}
+        SELF:Origin := Point{GetSystemMetrics(SM_CXSCREEN)/2-oSelfDim:Width/2,GetSystemMetrics(SM_CYSCREEN)/2-oSelfDim:Height/2}
     ENDIF
     
     RETURN NIL
@@ -1549,11 +1553,11 @@ METHOD ControlNotify(oControlNotifyEvent)
     lParam 	:= oEvt:lParam
     oControl :=__WCGetObjectByHandle(strucNotify:hwndFrom)
     
-    IF (IsInstanceOf(SELF, #__FormDialogWindow) .AND. IsInstanceOf(oParent, #__FormFrame))
-        oTargetWnd := IVarGet(oParent, #DataWindow)
+    IF SELF IS __FormDialogWindow .AND. oParent IS __FormFrame VAR oFF
+        oTargetWnd := oFF:DataWindow
         oTargetWnd:EventReturnValue := 0
-    ELSEIF (IsInstanceOf(SELF, #__FormFrame))
-        oTargetWnd := IVarGet(SELF, #DataWindow)
+    ELSEIF SELF IS __FormFrame VAR oFF2
+        oTargetWnd := oFF2:DataWindow
         oTargetWnd:EventReturnValue := 0
     ELSE
         oTargetWnd := SELF
@@ -1626,10 +1630,10 @@ CASE LVN_ITEMCHANGING
         
 CASE LVN_ITEMCHANGED
         //PP-031115
-        IF IsInstanceOfUsual(oControl, #DataListView)
-            Send(oControl, #__ItemChanged, oEvt)
+        IF oControl IS DataListView VAR oDLV
+            oDLV:__ItemChanged( oEvt)
         ENDIF
-        Send(oTargetWnd, #ListViewItemChanged, ListViewItemEvent{oEvt})
+        oTargetWnd:ListViewItemChanged( ListViewItemEvent{oEvt})
         
 CASE LVN_ODFINDITEM
         IF IsMethod(oControl,  #__FindItem)
@@ -1638,26 +1642,26 @@ CASE LVN_ODFINDITEM
         
 CASE NM_CLICK
 CASE NM_RCLICK
-        IF IsInstanceOf(oControl, #TreeView)
-            Send(oTargetWnd, #TreeViewMouseButtonDown, TreeViewMouseEvent{oEvt})
-        ELSEIF IsInstanceOf(oControl, #ListView)
-            Send(oTargetWnd, #ListViewMouseButtonDown, ListViewMouseEvent{oEvt})
-        ELSEIF IsInstanceOf(oControl, #SysLink)
-            Send(oTargetWnd, #SysLinkSelect, SysLinkSelectEvent{oEvt})
+        IF oControl IS TreeView
+            oTargetWnd:TreeViewMouseButtonDown( TreeViewMouseEvent{oEvt})
+        ELSEIF oControl IS ListView
+            oTargetWnd:ListViewMouseButtonDown( ListViewMouseEvent{oEvt})
+        ELSEIF oControl IS SysLink
+            oTargetWnd:SysLinkSelect( SysLinkSelectEvent{oEvt})
         ENDIF
         
 CASE NM_DBLCLK
 CASE NM_RDBLCLK
-        IF IsInstanceOf(oControl, #TreeView)
+        IF oControl IS TreeView
             oTargetWnd:TreeViewMouseButtonDoubleClick(TreeViewMouseEvent{oEvt})
-        ELSEIF IsInstanceOf(oControl, #ListView)
+        ELSEIF oControl IS ListView
             oTargetWnd:ListViewMouseButtonDoubleClick(ListViewMouseEvent{oEvt})
         ENDIF
         
 CASE TCN_SELCHANGE
-        IF IsInstanceOf(oControl, #TabControl)
+        IF oControl IS TabControl VAR oTab
             // !!! was in wrong order in 730 !!!
-            Send(oControl, #__FocusPage, TabCtrl_GetCurSel(oControl:Handle()))
+            oTab:__FocusPage( TabCtrl_GetCurSel(oControl:Handle()))
             oTargetWnd:TabSelect(oEvt)
         ENDIF
         
@@ -1825,7 +1829,7 @@ METHOD DeleteTrayIcon(dwID)
     NID:hWnd := SELF:handle()
     NID:uID := dwID
     
-    RETURN PCALL(gpfnShell_NotifyIcon, NIM_DELETE, @NID)
+    RETURN Shell_NotifyIcon( NIM_DELETE, @NID)
     
     
 METHOD Destroy() 
@@ -1839,7 +1843,7 @@ METHOD Destroy()
     
     IF (hWnd != NULL_PTR)
         EnableWindow(hwnd, FALSE)
-        IF !IsInstanceOf(SELF,#ControlWindow)
+        IF !(SELF IS ControlWindow)
             SELF:__DestroyChildren()
         ENDIF
         IF lTimerRegistered
@@ -1912,7 +1916,7 @@ METHOD Draw(oDrawObject)
     LOCAL aDraw AS ARRAY
     
     
-    IF (hWnd == NULL_PTR) .AND. !IsInstanceOf(SELF, #Printer)
+    IF (hWnd == NULL_PTR) .AND. ! (SELF IS Printer)
         RETURN SELF
     ENDIF
     
@@ -2209,17 +2213,17 @@ METHOD GetAllChildren()
     hChild := GetWindow(SELF:Handle(4), GW_CHILD)
     
     WHILE (hChild != NULL_PTR)
-    oChild :=__WCGetObjectByHandle(hChild)
-    IF (oChild != NULL_OBJECT)
-        IF IsInstanceOf(oChild, #__DocApp)
-            oChild := oChild:Owner
-        ELSEIF IsInstanceOf(oChild, #__WindApp) .AND. IsInstanceOf(oChild:Owner, #__FormFrame)
-            oChild := oChild:Owner:DataWindow
+        oChild :=__WCGetObjectByHandle(hChild)
+        IF (oChild != NULL_OBJECT)
+            IF  oChild IS __DocApp
+                oChild := oChild:Owner
+            ELSEIF oChild IS __WindApp .AND. IsInstanceOf(oChild:Owner, #__FormFrame)
+                oChild := oChild:Owner:DataWindow
+            ENDIF
+            AAdd(aRet, oChild)
         ENDIF
-        AAdd(aRet, oChild)
-    ENDIF
     
-    hChild := GetWindow(hChild, GW_HWNDNEXT)
+        hChild := GetWindow(hChild, GW_HWNDNEXT)
     END
     
     RETURN aRet
@@ -2537,7 +2541,7 @@ METHOD LineTo(oPoint)
     LOCAL aPT AS ARRAY
     
     
-    IF (hWnd != NULL_PTR) .OR. IsInstanceOf(SELF, #Printer)
+    IF (hWnd != NULL_PTR) .OR. SELF IS Printer
         DCPenNeeded := TRUE
         IF (SELF:__GetDC() != NULL_PTR)
             IF !IsArray(oPoint)
@@ -2742,8 +2746,8 @@ METHOD MonthCalSelectionChanged(_oMonthCalSelectionEvent)
         oMonthCal:SetFocus()
     ENDIF
     
-    IF IsInstanceOf(oMonthCal:Owner, #DataWindow)
-        oMonthCal:Owner:__DoValidate(oMonthCal)
+    IF ((OBJECT) oMonthCal:Owner) IS DataWindow VAR dw
+        dw:__DoValidate(oMonthCal)
     ENDIF
     
     RETURN SELF:Default(oMonthCalSelectionEvent)
@@ -2821,7 +2825,7 @@ METHOD Move(oMoveEvent)
     
 METHOD MoveTo(oPoint) 
     LOCAL winPoint IS _winPoint  // dcaton 070316 was _winsize
-    IF (hWnd != NULL_PTR) .OR. IsInstanceOf(SELF, #Printer)
+    IF (hWnd != NULL_PTR) .OR. SELF IS Printer
         DCPenNeeded := TRUE
         IF (SELF:__GetDC() != NULL_PTR)
             MoveToEx(hDC,oPoint:X,oPoint:Y, @winPoint)
@@ -2866,13 +2870,13 @@ ASSIGN OwnerAlignment(iNewVal)
     LOCAL oFormWindow  	AS OBJECT
     LOCAL oWindow			AS WINDOW
     oFormWindow := SELF:Owner
-    IF IsInstanceOf(SELF, #__FormFrame) //It's a SubDataWindow
+    IF SELF IS __FormFrame //It's a SubDataWindow
         oFormWindow := oFormWindow:Owner
         IF IsInstanceOf(oFormWindow, #DataWindow)
             oFormWindow := oFormWindow:__GetFormSurface()
         ENDIF
     ENDIF
-    IF IsInstanceOf(oFormWindow, #Window)  
+    IF oFormWindow IS Window
         oWindow := oFormWindow
         oWindow:__AddAlign(SELF, iNewVal)
     ENDIF
@@ -3357,7 +3361,7 @@ METHOD ShowBalloonTrayTip(oTrayIcon,dwID,sHeading,sToolTip,dwTimeOut,dwInfo)
     IF GetShellMajorVersion() >= 5
         nId:cbSize           := SizeOfNotifyIconData()
         nid:uTimeoutVersion:uTimeout := NOTIFYICON_VERSION
-        PCALL(gpfnShell_NotifyIcon, NIM_SETVERSION, @NID)
+        Shell_NotifyIcon( NIM_SETVERSION, @NID)
         
         nId:hWnd := SELF:handle()
         NID:uID := dwId
@@ -3388,7 +3392,7 @@ METHOD ShowBalloonTrayTip(oTrayIcon,dwID,sHeading,sToolTip,dwTimeOut,dwInfo)
             NID:szInfoTitle[64] := 0
         ENDIF
         
-        uReturn := PCALL(gpfnShell_NotifyIcon, NIM_MODIFY, @NID)
+        uReturn := Shell_NotifyIcon( NIM_MODIFY, @NID)
     ENDIF
     
     RETURN uReturn
@@ -3749,6 +3753,7 @@ ACCESS WindowArea
     RETURN BoundingBox{oPoint, oDimension}
     END CLASS
     
+/// <exclude/>
 _DLL FUNCTION AnimateWindow(HWND AS PTR, dwTime AS DWORD, dwFlags AS DWORD) AS LOGIC PASCAL:User32.AnimateWindow
 
 

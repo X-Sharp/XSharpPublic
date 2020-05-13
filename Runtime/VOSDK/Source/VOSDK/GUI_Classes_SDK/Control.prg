@@ -201,8 +201,8 @@ METHOD __Scatter() AS Control STRICT
 		ENDIF
 		oHLStatus := NULL_OBJECT
 		SELF:ValueChanged := FALSE
-	ELSEIF (SELF:Value == NIL) .AND. (IsInstanceOf(oFieldSpec, #FieldSpec))
-		cFSValType := oFieldSpec:ValType
+	ELSEIF SELF:Value == NIL .AND. oFieldSpec IS FieldSpec VAR oFs
+		cFSValType := oFs:ValType
 		DO CASE
 		CASE (cFSValType == "C") .OR. (cFSValType == "M")
 			SELF:Value := NULL_STRING
@@ -245,7 +245,7 @@ METHOD __SetColors(_hDC AS PTR) AS PTR STRICT
 		ELSEIF strucLogBrush:lbSTyle = BS_SOLID
 			SetBkColor(_hDC, strucLogBrush:lbColor)
 		ELSE
-			IF ! IsInstanceOf(SELF, #Edit) .AND. ! IsInstanceOf(SELF, #BaseListBox)
+			IF ! (SELF IS Edit) .AND. ! (SELF IS BaseListBox)
 				SetBkMode(_hdc, TRANSPARENT)
 			ENDIF
 			oControlBackground:__SetBrushOrg(_hdc, hwnd)
@@ -328,14 +328,14 @@ METHOD __Update() AS Control STRICT
 	IF SELF:Modified
 		cText := SELF:TextValue
 		uOldValue := uValue
-		IF IsInstanceOfUsual(oFieldSpec, #FieldSpec)
-			uValue := oFieldSpec:Val(cText)
+		IF oFieldSpec IS FieldSpec VAR oFs
+			uValue := oFs:Val(cText)
 			
 			// If theres a picture clause we need to reformat the data at this point
 			//RvdH 060608 optimized: Picture is a string
 			//IF ((!IsNil(oFieldSpec:Picture)) .AND. (!Empty(oFieldSpec:Picture)))
-			IF SLen(oFieldSpec:Picture) > 0
-				SELF:TextValue := oFieldSpec:Transform(uValue)
+			IF SLen(oFs:Picture) > 0
+				SELF:TextValue := oFs:Transform(uValue)
 			ENDIF
 		ELSE
 			uValue := cText
@@ -468,8 +468,8 @@ METHOD Create()
 			ENDIF
 			oDevPoint := __WCConvertPoint(oFormSurface, oDevPoint)
 			hOwner := oFormSurface:Handle()
-			IF IsInstanceOf(oFormSurface,#DataBrowser)
-				hOwner := IVarGet(oFormSurface, #__ContainerChildWnd)
+			IF oFormSurface IS DataBrowser VAR oBrow
+				hOwner := oBrow:__ContainerChildWnd
 			ENDIF
 			
 			hWnd:=CreateWindowEx(dwExStyle, String2Psz(cClassName), String2Psz(cWindowName), dwStyle,;
@@ -524,12 +524,12 @@ METHOD Destroy()
     
      
 	IF (hWnd != NULL_PTR)
-		IF !IsInstanceOf(SELF, #WindowScrollBar)
+		IF !(SELF IS WindowScrollBar)
 			IF lTimerRegistered
 				__WCUnregisterTimer(SELF)
 			ENDIF
-            IF lDataAware .AND. IsInstanceOf(oParent,#DataWindow)
-				Send(oParent,#__UnregisterDataControl, SELF)
+            IF lDataAware .AND. oParent IS DataWindow VAR oData
+				oData:__UnregisterDataControl( SELF)
 			ENDIF
 			__WCUnregisterControl(hWnd)
 			IF (__lpfnDefaultProc != NULL_PTR)
@@ -746,7 +746,7 @@ METHOD Dispatch(oEvent)
 			oParent:Drop(DragEvent{oEvt, SELF})
 		ENDIF
 		IF __LoadShellDll()
-			PCALL(gpfnDragFinish, PTR(_CAST, oEvt:wParam))
+			DragFinish( PTR(_CAST, oEvt:wParam))
 		ENDIF
 		RETURN 1L
 		
@@ -846,12 +846,14 @@ METHOD FocusChange(oFocusChangeEvent)
 	
 	
 	
-	IF IsInstanceOf(oParent,#DataWindow) .OR. IsInstanceOf(oParent,#DialogWindow)
-		//RETURN oParent:ControlFocusChange(__ObjectCastClassPtr(oFocusChangeEvent, __pCControlFocusChangeEvent))
-		RETURN oParent:ControlFocusChange(ControlFocusChangeEvent{oFocusChangeEvent})
-	ELSEIF IsInstanceOf(oParent, #__FormWindow) //It's a browser of a DataWindow
-		IF oFocusChangeEvent:GotFocus
-			oParent:DataWindow:LastFocus := SELF
+	IF oParent IS DataWindow VAR oData
+		RETURN oData:ControlFocusChange(ControlFocusChangeEvent{oFocusChangeEvent})
+	ELSEIF oParent IS DialogWindow VAR oDlg
+		RETURN oDlg:ControlFocusChange(ControlFocusChangeEvent{oFocusChangeEvent})
+    ELSEIF oParent IS __FormFrame VAR oFF //It's a browser of a DataWindow
+        LOCAL oFCE := oFocusChangeEvent AS FocusChangeEvent
+		IF oFCE:GotFocus
+			oFF:DataWindow:LastFocus := SELF
 		ENDIF
 	ENDIF
 	
@@ -948,7 +950,6 @@ ASSIGN HyperLabel(oNewHL)
 	
 
 CONSTRUCTOR(oOwner, xID, oPoint, oDimension, cRegClass, kStyle, lDataAware) 
-	LOCAL oDw AS DataWindow
 	SUPER()
 	
 	IF IsObject(oOwner)
@@ -959,8 +960,7 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension, cRegClass, kStyle, lDataAware)
 		WCError{#Init,#Control,__WCSTypeError,oOwner,1}:Throw()
 	ENDIF
 	
-	IF IsInstanceOf(oParent,#DataWindow) 
-		oDw 				:= oParent
+	IF oParent IS DataWindow VAR oDW
 		oFormSurface 	:= oDw:__GetFormSurface()
 	ELSE
 		oFormSurface 	:= oParent
@@ -978,7 +978,7 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension, cRegClass, kStyle, lDataAware)
 	
 	
 	
-	IF IsInstanceOf(oFormSurface,#DialogWindow) .AND. ;
+	IF oFormSurface IS DialogWindow .AND. ;
 			(IsInstanceOfUsual(xID,#ResourceID) .OR. (IsLong(xID) .AND.;
 			IsNil(oDimension) .AND. IsNil(oPoint)))
 		
@@ -1008,7 +1008,7 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension, cRegClass, kStyle, lDataAware)
 		IF !IsNil(oDimension)
 			SELF:Size := oDimension
 		ENDIF
-	ELSEIF (IsInstanceOf(oFormSurface,#Window) .OR. IsInstanceOf(oFormSurface,#Control)) .AND. IsLong(xID)
+	ELSEIF (oFormSurface IS Window .OR. oFormSurface IS Control) .AND. IsLong(xID)
 		IF !IsInstanceOfUsual(oPoint,#Point)
 			WCError{#Init,#Control,__WCSTypeError,oPoint,3}:Throw()
 		ENDIF
@@ -1020,7 +1020,7 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension, cRegClass, kStyle, lDataAware)
 			WCError{#Init,#Control,__WCSTypeError,cRegClass,5}:Throw()
 		ENDIF
 		
-		oSize 	:= Dimension{oDimension:Width, oDimension:Height}
+		oSize 	    := Dimension{oDimension:Width, oDimension:Height}
 		oOrigin 	:= Point{oPoint:x, oPoint:y}
 		wId 		:= xID
 		dwStyle 	:= WS_CHILD
@@ -1028,14 +1028,17 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension, cRegClass, kStyle, lDataAware)
 			dwStyle := _OR(dwStyle, DWORD(kStyle))
 		ENDIF
 		cClassName := cRegClass
-		
-		IF (cClassName == "Edit" .OR. cClassName == "ListBox" .OR. cClassName == "SysAnimate32" .OR.;
-				cClassName == "SysTreeView32" .OR. cClassName == "SysListView32" .OR. cClassName == "msctls_hotkey32")
+		SWITCH cClassName:ToLower()
+        CASE "edit"
+        CASE "listbox"
+        CASE "sysanimate32"
+        CASE "systreeview32"
+        CASE "syslistview32"
+        CASE "msctls_hotkey32"
 			dwExStyle := _OR(dwExStyle, DWORD(_CAST, WS_EX_CLIENTEDGE))
-		ENDIF
-		IF cClassName == "msctls_progress32"
+		CASE "msctls_progress32"
 			dwExStyle := _OR(dwExStyle, DWORD(_CAST, WS_EX_CLIENTEDGE), DWORD(_CAST, WS_EX_STATICEDGE))
-		ENDIF
+		END SWITCH
 	ELSE
 		WCError{#Init,#Control,__WCSTypeError}:Throw()
 	ENDIF
@@ -1045,11 +1048,10 @@ CONSTRUCTOR(oOwner, xID, oPoint, oDimension, cRegClass, kStyle, lDataAware)
 	ENDIF
 	
 	IF SELF:lDataAware .AND.;
-			!IsInstanceOf(SELF, #DataBrowser) .AND.;
+			!(SELF IS DataBrowser) .AND.;
 			IsMethod(oParent, #__SetUpDataControl)
 		oParent:__SetupDataControl(SELF)
-	ELSEIF IsInstanceOf(oParent, #DataWindow) 
-		oDw 	:= oParent
+	ELSEIF oParent IS DataWindow VAR oDW
 		oDw:__SetupNonDataControl(SELF)
 	ENDIF
 	
@@ -1066,21 +1068,18 @@ ACCESS IsDisabled AS LOGIC
 
 ACCESS IsEditable 
    LOCAL lEditable	AS LOGIC
-   LOCAL oEdit    AS Edit
 	// DHer: 18/12/2008
 	lEditable := FALSE
 	IF !SELF:lIsDestroyed
 		IF IsWindowVisible(SELF:Handle())
 			IF IsWindowEnabled(SELF:Handle())
-				IF IsInstanceOf(SELF,#EDIT) .OR. ;
-						IsInstanceOf(SELF,#BASELISTBOX) .OR. ;
-						IsInstanceOf(SELF,#MONTHCALENDAR) .OR. ;
-						IsInstanceOf(SELF,#DATETIMEPICKER) .OR. ;
-						IsInstanceOf(SELF,#IPADDRESS)
+				IF SELF IS EDIT .OR.  SELF IS BASELISTBOX .OR. ;
+						SELF IS MONTHCALENDAR .OR. ;
+						SELF IS DATETIMEPICKER .OR. ;
+						SELF IS IPADDRESS
 					lEditable := TRUE
 				ENDIF
-				IF IsInstanceOf(SELF,#EDIT)
-				   oEdit := (Edit) SELF
+				IF SELF IS EDIT VAR oEdit
 					IF oEdit:ReadOnly
 						lEditable := FALSE
 					ENDIF
@@ -1100,7 +1099,7 @@ METHOD IsExStyle( nStyle AS LONG) AS LOGIC
 
 METHOD IsReadOnly() 
 	//PP-030319 added method
-	RETURN IIF(IsInstanceOf(SELF,#Edit), (_AND(GetWindowLong(SELF:Handle(),GWL_STYLE),ES_READONLY)!=0), FALSE)
+	RETURN IIF(SELF IS Edit, (_AND(GetWindowLong(SELF:Handle(),GWL_STYLE),ES_READONLY)!=0), FALSE)
 	
 
 METHOD IsStyle( nStyle AS LONG ) AS LOGIC
@@ -1274,10 +1273,10 @@ ACCESS Owner
 	
 
 ASSIGN OwnerAlignment(iNewVal) 
-	IF !IsInstanceOf(oFormSurface, #Window) .OR. !IsInstanceOf(oParent, #Window)
+	IF !(oFormSurface IS Window) .OR. ! (oParent IS Window)
 		RETURN OA_NO
-	ELSEIF IsInstanceOf(oFormSurface, #Window)
-		oFormSurface:__AddAlign(SELF, iNewVal)
+	ELSEIF oFormSurface IS Window VAR oWin
+		oWin:__AddAlign(SELF, iNewVal)
 	ELSE
 		oParent:__AddAlign(SELF, iNewVal)
 	ENDIF
@@ -1291,9 +1290,9 @@ METHOD PerformValidations() CLIPPER
 	// if it has a data spec, otherwise just return true
 	
 	
-	IF IsInstanceOf(oFieldSpec, #FieldSpec)
-		IF !oFieldSpec:PerformValidations(uValue,SELF)
-			oHLStatus := oFieldSpec:Status
+	IF oFieldSpec IS FieldSpec VAR oFS
+		IF !oFS:PerformValidations(uValue,SELF)
+			oHLStatus := oFS:Status
 			RETURN FALSE
 			// elseif !oDataField:PerformValidations(uValue)
 			// oHLStatus:=oDataField:Status
@@ -1411,7 +1410,7 @@ METHOD SetFocus()
 	
 	IF SELF:ValidateControl()
 		// 2.5b was #DIALOG !
-		IF IsInstanceOf(oParent, #DIALOGWINDOW)
+		IF oParent IS DialogWindow
 			SendMessage(oParent:Handle(), WM_NEXTDLGCTL, DWORD(_CAST, SELF:Handle()), 1L)
 		ELSE
 			SetFocus(SELF:Handle())

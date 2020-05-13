@@ -1,19 +1,21 @@
 ﻿#using System.ComponentModel
-
+/// <summary>This class is used to host a VO GUI Window in a Windows Forms UI Hierarchy</summary>
 CLASS XSharp.WinFormVOWindowHost INHERIT Component
     PRIVATE components := NULL AS System.ComponentModel.IContainer
     PRIVATE window AS Window
     PRIVATE windowClassName AS STRING
     PRIVATE hostControl AS System.Windows.Forms.Control
     PRIVATE classNeedTranslateTabToArrow := <STRING>{CONTAINER_CLASS:ToUpper()} AS STRING[]
-    
+
+    /// <inheritdoc/>
     CONSTRUCTOR() STRICT
         SUPER()
 
         SELF:InitializeComponent()
 
         RETURN
-        
+
+    /// <inheritdoc/>
     CONSTRUCTOR(container AS IContainer) STRICT
         SUPER()
 
@@ -21,7 +23,7 @@ CLASS XSharp.WinFormVOWindowHost INHERIT Component
         SELF:InitializeComponent()
 
         RETURN
-
+    /// <summary>Create w WinFormVOHostwindow </summary>
     CONSTRUCTOR(VOWindow AS Window,host AS System.Windows.Forms.Control)
         SUPER()
 
@@ -35,6 +37,7 @@ CLASS XSharp.WinFormVOWindowHost INHERIT Component
         
         RETURN
         
+    /// <inheritdoc/>
     PROTECTED METHOD Dispose( disposing AS LOGIC ) AS VOID
         IF disposing && (components != NULL)
             SELF:Close()
@@ -91,31 +94,42 @@ CLASS XSharp.WinFormVOWindowHost INHERIT Component
         ENDIF
 
         RETURN
-        
-    ACCESS VOWindowClassName AS STRING
-        RETURN windowClassName
-        
-    ASSIGN VOWindowClassName(className AS STRING)
-        windowClassName := className
-        SELF:UpdateHost()
-        RETURN
-        
-    ACCESS VOWindow AS Window
-        RETURN window
-        
-    ASSIGN VOWindow(newWindow AS Window)
-        window := newWindow
-        SELF:UpdateHost()
-        RETURN
-        
-    ACCESS HostingControl AS System.Windows.Forms.Control
-        RETURN hostControl
+    /// <summary>Get/Set the class name of VO window that needs to be hosted</summary>
+    /// <remarks>You should either set the classname or the object. Not both </remarks>
+    PROPERTY VOWindowClassName AS STRING
+        GET 
+            RETURN windowClassName
+        END GET
+        SET 
+            windowClassName := value
+            SELF:UpdateHost()
+        END SET
+    END PROPERTY
+    /// <summary>Get/Set the object of VO window that needs to be hosted</summary>
+    /// <remarks>You should either set the classname or the object. Not both </remarks>
+    PROPERTY VOWindow AS Window
+        GET 
+            RETURN window
+        END GET
+        SET 
+            window := value
+            SELF:UpdateHost()
+        END SET
+    END PROPERTY
 
-    ASSIGN HostingControl(newControl AS System.Windows.Forms.Control)
-        hostControl := newControl
-        SELF:UpdateHost()
-        RETURN
 
+    /// <summary>The control that is used to host the VO Window</summary>    
+    PROPERTY HostingControl AS System.Windows.Forms.Control
+        GET
+            RETURN hostControl
+        END GET
+        SET 
+            hostControl := value
+            SELF:UpdateHost()
+        END SET
+    END PROPERTY
+
+    /// <summary>Is the VO Window a DataWindow ?</summary>    
     METHOD IsHostingDataWindow AS LOGIC
         LOCAL result AS LOGIC
         
@@ -125,6 +139,7 @@ CLASS XSharp.WinFormVOWindowHost INHERIT Component
         
         RETURN result
         
+    /// <summary>Resize VO window</summary>    
     METHOD AdjustVOWindow() AS VOID STRICT
         IF ! window == NULL
             LOCAL windowRect IS _winRect
@@ -143,6 +158,7 @@ CLASS XSharp.WinFormVOWindowHost INHERIT Component
         
         RETURN
         
+    /// <summary>Close the window</summary>
     METHOD Close() AS VOID STRICT
         IF ! window == NULL
             SendMessage(window:Handle(),WM_CLOSE,0,0)
@@ -150,6 +166,7 @@ CLASS XSharp.WinFormVOWindowHost INHERIT Component
         
         RETURN
 
+    /// <inheritdoc/>
     VIRTUAL METHOD ProcessDialogKey( keyData AS System.Windows.Forms.Keys ) AS LOGIC
         LOCAL keyProcessed := FALSE AS LOGIC
         LOCAL control AS OBJECT
@@ -232,18 +249,21 @@ CLASS XSharp.WinFormVOWindowHost INHERIT Component
         ENDIF
         
         RETURN keyProcessed
-
-    ACCESS ClassesNeedingTranslateTabToArrow AS STRING[]
+    /// <summary>Specify the class names that require special handling for TAB keys.</summary>
+    PROPERTY ClassesNeedingTranslateTabToArrow AS STRING[]
+    GET 
+    
         RETURN SELF:classNeedTranslateTabToArrow
-        
-    ASSIGN ClassesNeedingTranslateTabToArrow(a AS STRING[])
+    END GET
+    SET 
         LOCAL i AS INT
-        FOR i := 1 UPTO a:Length
-            a[i] := a[i]:ToUpper()
+        FOR i := 1 UPTO value:Length
+            value[i] := value[i]:ToUpper()
         NEXT
-        
-        SELF:classNeedTranslateTabToArrow := a
+        SELF:classNeedTranslateTabToArrow := value
         RETURN
+    END SET
+    END PROPERTY
 
     PRIVATE METHOD InClassList(c AS STRING)
         LOCAL i AS INT
@@ -258,7 +278,8 @@ CLASS XSharp.WinFormVOWindowHost INHERIT Component
         NEXT
         
         RETURN result
-        
+
+    /// <summary>Set focus to the form and the window that it hosts.</summary>
     METHOD Focus() AS VOID STRICT
         SELF:hostControl:Focus()
         SELF:window:SetFocus()

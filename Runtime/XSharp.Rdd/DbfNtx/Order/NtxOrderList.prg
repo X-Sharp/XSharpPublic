@@ -39,31 +39,45 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 
             INTERNAL METHOD Add(oi AS DbOrderInfo , filePath AS STRING ) AS LOGIC
                 LOCAL isOk AS LOGIC
-                LOCAL ntxIndex AS NtxOrder
+                LOCAL ntxIndex := NULL AS NtxOrder
                 //
                 isOk := FALSE
-                TRY
-                    IF SELF:_Orders:Count >= 16
-                        SELF:_oRdd:_dbfError(Subcodes.ERDD_NTXLIMIT, Gencode.EG_LIMIT,  filePath)
-                        isOk := FALSE
-                    ELSE
+                VAR cExt := System.IO.Path.GetExtension(filePath)
+                IF String.IsNullOrEmpty(cExt)
+                    filePath := System.IO.Path.ChangeExtension(filePath, NtxOrder.NTX_EXTENSION)
+                ENDIF
+                 IF File(filePath)
+                    filePath := FPathName()
+                    TRY
 
-                        ntxIndex := NtxOrder{SELF:_oRdd, filePath}
-                        SELF:_Orders:Add(ntxIndex)
-                        isOk := ntxIndex:Open(oi)
-                        IF isOk
-                            SELF:_focusNtx := SELF:_Orders:Count
-                            SELF:_currentOrder := ntxIndex
-                            oi:BagName := ntxIndex:FileName
+                        IF SELF:_Orders:Count >= 16
+                            SELF:_oRdd:_dbfError(Subcodes.ERDD_NTXLIMIT, Gencode.EG_LIMIT,  filePath)
+                            isOk := FALSE
+                        ELSE
+
+                            ntxIndex := NtxOrder{SELF:_oRdd, filePath}
+                            SELF:_Orders:Add(ntxIndex)
+                            isOk := ntxIndex:Open(oi)
+                            IF isOk
+                                SELF:_focusNtx := SELF:_Orders:Count
+                                SELF:_currentOrder := ntxIndex
+                                oi:BagName := ntxIndex:FileName
+                            ELSE
+                                SELF:_Orders:Remove(ntxIndex)
+                            ENDIF
                         ENDIF
-                    ENDIF
                     
-                CATCH //Exception
-                    isOk := FALSE
-                END TRY
-                IF !isOk
-                    SELF:_focusNtx := 0
-                    SELF:_currentOrder := NULL
+                    CATCH e AS Exception
+                        XSharp.RuntimeState.LastRddError := e
+                        isOk := FALSE
+                        IF ntxIndex != NULL .AND. SELF:_Orders:Contains(ntxIndex)
+                            SELF:_Orders:Remove(ntxIndex)
+                        ENDIF
+                    END TRY
+                    IF !isOk
+                        SELF:_focusNtx := 0
+                        SELF:_currentOrder := NULL
+                    ENDIF
                 ENDIF
                 RETURN isOk
                 
@@ -159,7 +173,7 @@ BEGIN NAMESPACE XSharp.RDD.NTX
                 SELF:_currentOrder := NULL
                 SELF:_focusNtx := SELF:FindOrder(oi)
                 isOk := FALSE
-                IF (SELF:_focusNtx >= 0)
+                IF (SELF:_focusNtx > 0)
                     isOk := SELF:_oRdd:GoCold()
                     IF currentOrder != NULL_OBJECT
                         currentOrder:SetOffLine()

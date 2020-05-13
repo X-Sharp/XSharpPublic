@@ -52,9 +52,21 @@ namespace XSharp.Project
         {
             XSharpProjectPackage.Instance.DisplayOutPutMessage("XSharp.QuickInfoSource :" + message);
         }
+
+        static bool skipFirst = true;
+
         public void AugmentQuickInfoSession(IQuickInfoSession session, IList<object> qiContent, out ITrackingSpan applicableToSpan)
         {
             applicableToSpan = null;
+            if (skipFirst)
+            {
+                skipFirst = false;
+                return;
+            }
+            else
+            {
+                skipFirst = true;
+            }
             if (XSharpProjectPackage.Instance.DebuggerIsRunning)
             {
                 return;
@@ -267,7 +279,7 @@ namespace XSharp.Project
                             description.Inlines.CopyTo(lastHelp, 0);
                             lastSpan = applicableToSpan;
                             lastVersion = currentSnapshot.Version.VersionNumber;
-                            WriteOutputMessage($"Found new help content: {lastHelp}");
+                            WriteOutputMessage($"Found new help content: {description.Text}");
                         }
                     }
                     return;

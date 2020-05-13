@@ -69,7 +69,7 @@ BEGIN NAMESPACE XSharp.RDD
 
         CONSTRUCTOR(loRdd AS IRdd)
             oRdd    := loRdd
-            RuntimeState.Workareas:RDDs[oRdd:Area] := SELF
+            RuntimeState.Workareas:SetArea(oRdd:Area, SELF)
             RETURN
             
             

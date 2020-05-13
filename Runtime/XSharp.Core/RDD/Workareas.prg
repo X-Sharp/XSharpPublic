@@ -71,8 +71,8 @@ CLASS Workareas
         RETURN FALSE
 
 	#region Fields
-	INTERNAL Aliases            AS Dictionary<STRING, DWORD>	// 1 based area numbers !
-	INTERNAL RDDs	            AS Dictionary<DWORD, IRdd>
+	PRIVATE Aliases            AS Dictionary<STRING, DWORD>	// 1 based area numbers !
+	PRIVATE RDDs	            AS Dictionary<DWORD, IRdd>
     [DebuggerBrowsable(DebuggerBrowsableState.Never)];
 	PRIVATE iCurrentWorkarea    AS DWORD
     PRIVATE WorkareaStack       AS Stack<DWORD>
@@ -244,13 +244,18 @@ CLASS Workareas
             VAR sAlias := oRDD:Alias
 			IF ! String.IsNullOrEmpty(sAlias)
 				sAlias := sAlias:ToUpperInvariant()
-			ENDIF			
+            ENDIF
+            IF Aliases:ContainsKey(sAlias) .AND. Aliases[sAlias] != nArea
+                RETURN FALSE
+            ENDIF
 			BEGIN LOCK RDDs
                 IF RDDs:ContainsKey(nArea) .AND. RDDs [nArea] != NULL
                     Workareas._Remove(RDDs [nArea])
                 ENDIF
-				RDDs[ nArea] 	:= oRDD 
-				Aliases:Add(sAlias, nArea)
+				RDDs[ nArea] 	:= oRDD
+                IF ! Aliases:ContainsKey(sAlias)
+				    Aliases:Add(sAlias, nArea)
+                ENDIF
                 SetCargo(nArea, NULL)
                 Workareas._Add(oRDD, SELF)
 			END LOCK

@@ -8,43 +8,46 @@ USING System.Collections.Generic
 USING System.Collections.Immutable
 USING System
 USING System.IO
+USING System.Reflection
+
+
 BEGIN NAMESPACE XSharpModel
-    /// <summary>
-    /// We have one SystemTypeController in memory : It will handle all references types for all projects
-    /// Assemblies are stored inside a List of AssemblyInfo
-    /// </summary>
+	/// <summary>
+		/// We have one SystemTypeController in memory : It will handle all references types for all projects
+		/// Assemblies are stored inside a List of AssemblyInfo
+	/// </summary>
 	CLASS SystemTypeController
 		#region fields
 		STATIC PRIVATE assemblies  	AS ConcurrentDictionary<STRING, XSharpModel.AssemblyInfo>
 		STATIC PRIVATE _mscorlib 	AS AssemblyInfo
 		#endregion
-
+		
 		STATIC CONSTRUCTOR
 			assemblies := ConcurrentDictionary<STRING, AssemblyInfo>{StringComparer.OrdinalIgnoreCase}
 			_mscorlib := NULL
 			RETURN
-
-		#region properties
-		// Properties
-		STATIC PROPERTY AssemblyFileNames AS ImmutableList<STRING>
-			GET
-				RETURN SystemTypeController.assemblies:Keys:ToImmutableList()
-			END GET
-		END PROPERTY
-		STATIC PROPERTY MsCorLib AS AssemblyInfo GET _mscorlib SET _mscorlib := VALUE
+			
+			#region properties
+			// Properties
+			STATIC PROPERTY AssemblyFileNames AS ImmutableList<STRING>
+				GET
+					RETURN SystemTypeController.assemblies:Keys:ToImmutableList()
+				END GET
+			END PROPERTY
+			STATIC PROPERTY MsCorLib AS AssemblyInfo GET _mscorlib SET _mscorlib := VALUE
 		#endregion
-
+		
 		// Methods
 		STATIC METHOD Clear() AS VOID
 			assemblies:Clear()
 			_mscorlib := NULL
-
+		
 		STATIC METHOD FindAssemblyByLocation(location AS STRING) AS STRING
 			IF assemblies:ContainsKey(location)
 				RETURN assemblies:Item[location]:FullName
 			ENDIF
 			RETURN NULL
-
+		
 		STATIC METHOD FindAssemblyByName(fullName AS STRING) AS STRING
 			FOREACH VAR item IN assemblies
 				VAR asm := item:Value
@@ -53,7 +56,7 @@ BEGIN NAMESPACE XSharpModel
 				ENDIF
 			NEXT
 			RETURN NULL
-
+		
 		STATIC METHOD FindAssemblyLocation(fullName AS STRING) AS STRING
 			LOCAL info AS AssemblyInfo
 			FOREACH VAR pair IN assemblies
@@ -63,7 +66,7 @@ BEGIN NAMESPACE XSharpModel
 				ENDIF
 			NEXT
 			RETURN NULL
-
+		
 		METHOD FindType(typeName AS STRING, usings AS IList<STRING>, assemblies AS IList<AssemblyInfo>) AS System.Type
 			LOCAL result := NULL AS System.Type
 			TRY
@@ -115,14 +118,14 @@ BEGIN NAMESPACE XSharpModel
 				ENDIF
 				// Also Check into the Functions Class for Globals/Defines/...
 				result := Lookup("Functions." + typeName, assemblies)
-            CATCH e AS Exception
-                XSolution.WriteException(e)
-                result := NULL
+			CATCH e AS Exception
+				XSolution.WriteException(e)
+				result := NULL
 			FINALLY
 				WriteOutputMessage("<-- FindType() "+typename+" " + IIF(result != NULL, result:FullName, "* not found *"))
 			END TRY
 			RETURN result
-
+			
 		METHOD GetNamespaces(assemblies AS IList<AssemblyInfo>) AS ImmutableList<STRING>
 			VAR list := List<STRING>{}
 			FOREACH VAR info IN assemblies
@@ -131,7 +134,7 @@ BEGIN NAMESPACE XSharpModel
 				NEXT
 			NEXT
 			RETURN list:ToImmutableList()
-
+			
 		STATIC METHOD LoadAssembly(cFileName AS STRING) AS AssemblyInfo
 			LOCAL info AS AssemblyInfo
 			LOCAL lastWriteTime AS System.DateTime
@@ -158,7 +161,7 @@ BEGIN NAMESPACE XSharpModel
 			ENDIF
 			WriteOutputMessage(">>-- LoadAssembly(string) "+cFileName)
 			RETURN info
-
+		
 		STATIC METHOD LoadAssembly(reference AS VsLangProj.Reference) AS AssemblyInfo
 			LOCAL path AS STRING
 			path := reference:Path
@@ -169,7 +172,7 @@ BEGIN NAMESPACE XSharpModel
 			VAR asm := LoadAssembly(path)
 			WriteOutputMessage(">>-- LoadAssembly(VsLangProj.Reference)")
 			RETURN asm
-
+		
 		STATIC METHOD Lookup(typeName AS STRING, theirassemblies AS IList<AssemblyInfo>) AS System.Type
 			LOCAL sType AS System.Type
 			sType := NULL
@@ -184,21 +187,21 @@ BEGIN NAMESPACE XSharpModel
 				ENDIF
 			NEXT
 			IF sType == NULL .AND. mscorlib != NULL
-                // check mscorlib
+				// check mscorlib
 				sType := mscorlib:GetType(typeName)
 			ENDIF
 			RETURN sType
-
+		
 		STATIC METHOD RemoveAssembly(cFileName AS STRING) AS VOID
 			LOCAL info AS AssemblyInfo
 			IF assemblies:ContainsKey(cFileName)
 				assemblies:TryRemove(cFileName, OUT info)
 			ENDIF
-
+		
 		STATIC METHOD UnloadUnusedAssemblies() AS VOID
 			LOCAL unused AS List<STRING>
 			unused := List<STRING>{}
-            // collect list of assemblies which are no longer in use
+			// collect list of assemblies which are no longer in use
 			FOREACH VAR asm IN assemblies
 				IF ! asm:Value:HasProjects
 					unused:Add(asm:Key)
@@ -208,14 +211,54 @@ BEGIN NAMESPACE XSharpModel
 				LOCAL info AS AssemblyInfo
 				assemblies:TryRemove(key, OUT info)
 			NEXT
-            // when no assemblies left, then unload mscorlib
+			// when no assemblies left, then unload mscorlib
 			IF assemblies:Count == 0
 				mscorlib := NULL
 			ENDIF
 			GC.Collect()
+		
 		STATIC METHOD WriteOutputMessage(message AS STRING) AS VOID
 			XSolution.WriteOutputMessage("XModel.Typecontroller "+message)
+		
+		STATIC METHOD LookForExtensions(typeName AS STRING, theirassemblies AS IList<AssemblyInfo>) AS List<MethodInfo>
+			// First Search for a system Type
+			LOCAL sType AS System.Type
+			LOCAL ext := List<MethodInfo>{} AS List<MethodInfo>
+			//
+			sType := Lookup( typeName, theirassemblies )
+			IF sType != NULL
+				ext := LookForExtensions( sType, theirassemblies )
+			ENDIF
+			RETURN ext
+		
+		STATIC METHOD LookForExtensions( systemType AS System.Type, theirassemblies AS IList<AssemblyInfo>) AS List<MethodInfo>
+			LOCAL sType AS System.Type
+			LOCAL ext := List<MethodInfo>{} AS List<MethodInfo>
+			//
+			sType := NULL
+			FOREACH VAR assembly IN theirassemblies
+				assembly:Refresh()
+				IF assembly:HasExtensions
+					FOREACH VAR extMet IN assembly:Extensions
+						LOCAL parms AS ParameterInfo[]
+						LOCAL name AS STRING
+						name := extMet:Name:ToLower()
+						parms := extMet:GetParameters()
+						IF ( parms:Length > 0 )
+							VAR p := parms[1]
+							// This doesn't work !?
+							// IF ( p.ParameterType == systemType )
+							// Ugly HACK
+							IF ( p.ParameterType.Name == systemType.Name )
+								ext:Add( extMet )
+							ENDIF
+						ENDIF
+					NEXT
+				ENDIF
+			NEXT
+			RETURN ext			
+		
 	END CLASS
-
+	
 END NAMESPACE
 

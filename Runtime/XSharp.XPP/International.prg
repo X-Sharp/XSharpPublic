@@ -43,7 +43,7 @@ FUNCTION SetCollationTable(nCollation, aTable) AS ARRAY
     ENDIF
     VAR nEnum := (XppCollations) liEnum
     LOCAL aBytes := XSharp.RuntimeState.CollationTable AS BYTE[]
-    IF liEnum != @@Set(Set.Collation) 
+    IF liEnum != XSharp.RuntimeState.GetValue<LONG>(Set.Collation)
         XSharp.RuntimeState.CollationTable := NULL
         XSharp.RuntimeState.CollationMode  := CollationMode.Windows
 //        IF nEnum == XppCollations.System
@@ -65,7 +65,7 @@ FUNCTION SetCollationTable(nCollation, aTable) AS ARRAY
                 aBytes := (BYTE[]) oProp:GetValue(NULL)
                 XSharp.RuntimeState.CollationTable := aBytes
                 XSharp.RuntimeState.CollationMode  := CollationMode.Xpp
-                @@Set(Set.Collation, liEnum)
+                XSharp.RuntimeState.SetValue(Set.Collation, liEnum)
             ENDIF
 //         ENDIF
     ENDIF

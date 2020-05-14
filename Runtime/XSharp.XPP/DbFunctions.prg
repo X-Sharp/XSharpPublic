@@ -38,7 +38,7 @@ FUNCTION DbCargo(xNewValue) AS USUAL
     LOCAL wa := XSharp.RuntimeState.Workareas AS Workareas
     nArea   := wa:CurrentWorkareaNO
     old     := wa:GetCargo(nArea) 
-    IF ! IsNil(xNewValue)
+    IF PCOUNT() != 0
         wa:SetCargo(nArea, xNewValue)
     ENDIF
     RETURN old

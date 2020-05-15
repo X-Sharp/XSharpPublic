@@ -12,6 +12,8 @@
     <XSharpProjectversion>2.4.1.0</XSharpProjectversion>
     <Includepaths>$(Solutiondir)Common</Includepaths>
     <Nostandarddefs>false</Nostandarddefs>
+    <vo9>false</vo9>
+    <vo10>false</vo10>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
   </PropertyGroup>

@@ -12,9 +12,9 @@
 	PROTECT cDomainName		AS STRING
 	EXPORT  oSocket			AS CSocket
 
-   PROTECT cUserName       AS STRING
-   PROTECT cPassWord       AS STRING
-   PROTECT wHostPort       AS WORD
+    PROTECT cUserName       AS STRING
+    PROTECT cPassWord       AS STRING
+    PROTECT wHostPort       AS WORD
 
 METHOD __SendLine(cData) 
 
@@ -28,14 +28,15 @@ METHOD __SendLine(cData)
 	RETURN TRUE
 
 DESTRUCTOR() 
+    SELF:Destroy()
 
+METHOD Destroy() AS VOID
 	IF SELF:lSocketOpen
 		SELF:Close()
 		SELF:lSocketOpen := .F. 
 	ENDIF
-
 	UnregisterAxit(SELF)
-	RETURN 
+    RETURN
 
 METHOD Close() 
 
@@ -44,9 +45,7 @@ METHOD Close()
 		SELF:lSocketOpen := .F. 
 		RETURN .T. 
 	ENDIF
-	IF ! InCollect()
-		UnregisterAxit(SELF)
-	ENDIF
+	UnregisterAxit(SELF)
 
 	RETURN .F. 
 
@@ -65,7 +64,7 @@ ASSIGN Error(n)
         SELF:nError := n
     ENDIF
 
-    RETURN SELF:nError
+    RETURN 
 
 
 ACCESS ErrorMsg 
@@ -91,8 +90,6 @@ CONSTRUCTOR(nPort, cServer)
 
 	SELF:RemotePort := nPort	//	the calling class (SMTP or POP) will set this
 	SELF:RemoteHost := cServer	// converts string server name to IP string - must exist
-   //RvdH 070407 RegisterAxit is moved to Open()
-	//RegisterAxit(SELF)
 
 	RETURN 
 
@@ -146,8 +143,7 @@ ASSIGN RemoteHost(cServer)
 		SELF:cHostAddress := CheckHostIP(cServer)
 	ENDIF
 
-	RETURN SELF:cHostAddress
-
+	RETURN 
 ACCESS RemotePort() 
     //
     // Returns the internet port to be used on the remote computer
@@ -162,7 +158,7 @@ ASSIGN RemotePort(wNew)
         SELF:wHostPort := wNew
     ENDIF
 
-	RETURN SELF:wHostPort
+	RETURN 
 
 
 ACCESS  ReplyCode() 
@@ -187,8 +183,6 @@ METHOD SendData(cData)
 	RETURN lRet
 
 METHOD SendRaw(cData) 
-   //SE-040625
-
 	SELF:nError := 0
 	
 	IF SELF:oSocket:SendRawText(cData)
@@ -222,7 +216,7 @@ ASSIGN Timeout(nNew)
 		SELF:oSocket:Timeout := nNew
 	ENDIF
 
-	RETURN SELF:oSocket:Timeout
+	RETURN 
 
 ACCESS TimeoutRetries() 
 	//
@@ -238,7 +232,7 @@ ASSIGN TimeoutRetries(nNew)
   SELF:oSocket:TimeOutRetries := nNew
  ENDIF
 
- RETURN SELF:oSocket:TimeoutRetries
+ RETURN 
 
 ACCESS UserName 
 	RETURN SELF:cUserName

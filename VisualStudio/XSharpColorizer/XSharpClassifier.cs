@@ -417,7 +417,10 @@ namespace XSharpColorizer
                                 oNext = oNext.oNext;
                             }
                         }
-                        //
+                        if (oNext != null && oNext.nOffSet > nEnd + 2)
+                        {
+                            nEnd = oNext.nOffSet - 2;
+                        }
                         int nParentEnd = nEnd;
                         if (oElement.oParent?.cName != XElement.GlobalName)
                         {

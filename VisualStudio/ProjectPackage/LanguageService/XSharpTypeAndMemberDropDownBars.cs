@@ -90,7 +90,12 @@ namespace XSharp.LanguageService
                 return false;
             }
             XElement selectedElement = file.FindMemberAtRow(line);
-            if (selectedElement == _lastSelected && selectedElement != null)
+            if (selectedElement.Range.StartLine > line+1)
+            {
+                // we may be before the first element. THen rebuild the list
+                selectedElement = null;
+            }
+            else if (selectedElement == _lastSelected && selectedElement != null)
             {
                 // Same element, no changes
                 return false;
@@ -106,6 +111,10 @@ namespace XSharp.LanguageService
             {
                 parentType = selectedElement as XType;
             }
+            else
+            {
+                parentType = file.GlobalType;
+            }
             bool newType = true;
             if (parentType != null && _lastType != null && parentType.FullName == _lastType.FullName)
             {
@@ -120,13 +129,16 @@ namespace XSharp.LanguageService
                 // locate item in members collection
                 selectedMember = -1;
                 selectedType = -1;
-                for (int i = 0; i < dropDownMembers.Count; i++)
+                if (selectedElement != null)
                 {
-                    var member = (XDropDownMember) dropDownMembers[i];
-                    if (member.Element.ComboPrototype == selectedElement.ComboPrototype)
+                    for (int i = 0; i < dropDownMembers.Count; i++)
                     {
-                        selectedMember = i;
-                        break;
+                        var member = (XDropDownMember)dropDownMembers[i];
+                        if (member.Element.ComboPrototype == selectedElement.ComboPrototype)
+                        {
+                            selectedMember = i;
+                            break;
+                        }
                     }
                 }
                 // find the parentType in the types combo

@@ -114,8 +114,11 @@
     <PackageReference Include="Microsoft.VisualStudio.Language.Intellisense">
       <Version>15.8.525</Version>
     </PackageReference>
+    <PackageReference Include="Newtonsoft.Json">
+      <Version>12.0.3</Version>
+    </PackageReference>
     <PackageReference Include="System.Collections.Immutable">
-      <Version>1.5.0</Version>
+      <Version>1.7.1</Version>
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

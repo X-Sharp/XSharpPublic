@@ -144,7 +144,6 @@ METHOD Directory (cFile, nFlags)
 
     DEFAULT(@cFile, "*.*")
 
-    //  UH 05/25/2000
     DEFAULT(@nFlags, _OR(INTERNET_FLAG_RELOAD , INTERNET_FLAG_RESYNCHRONIZE))
 
     IF SELF:hConnect = NULL_PTR
@@ -201,8 +200,6 @@ METHOD GetCurDir()
 
     lRet  := FtpGetCurrentDirectory(SELF:hConnect, @abTemp[1], @nSize)
       
-    //RvdH 070407 Restore not recreate statuscallback
-    //SELF:__SetStatus(SELF:hConnect)                
     InternetSetStatusCallback( SELF:hConnect, pSave )
 
 
@@ -236,7 +233,6 @@ METHOD GetFile(cRemoteFile, cNewFile, lFailIfExists, nFlags)
     ENDIF
 
     lRet := FtpGetFile(SELF:hConnect, cRemoteFile, cNewFile, lFailIfExists, FC_ARCHIVED, nFlags, SELF:__GetStatusContext())
-    // RvdH 081105 suggestion from D Herijgers
     IF !lRet
         SELF:nError := GetLastError()
         IF SELF:nError == ERROR_INTERNET_EXTENDED_ERROR
@@ -244,7 +240,6 @@ METHOD GetFile(cRemoteFile, cNewFile, lFailIfExists, nFlags)
         ENDIF
     ELSE
 
-        //  UH 02/27/2001
         SELF:SetResponseStatus()
     ENDIF
     RETURN lRet
@@ -263,9 +258,6 @@ CONSTRUCTOR (cCaption, n, lStat)
     SUPER(cCaption, n, lStat)
 
     SELF:AccessType := INTERNET_OPEN_TYPE_DIRECT
-
-    // RvdH 050302 Not needed. Is handled in cSession
-    // RegisterAxit(SELF)
 
     RETURN 
 
@@ -375,7 +367,6 @@ METHOD OpenFile(cRemoteFile, nAccess, nFlags)
 ASSIGN Proxy(cNew) 
 
     IF IsString(cNew)
-    	// UH 30/07/2001
     	IF SLen(cNew) > 0
 			IF AtC("=", cNew) == 0
 				cNew := "ftp=ftp://" + cNew
@@ -385,7 +376,7 @@ ASSIGN Proxy(cNew)
         SELF:cProxy := cNew
     ENDIF
 
-    RETURN SELF:cProxy
+    RETURN
 
 METHOD PutFile(cLocalFile, cRemoteFile, lFailIfExists, nFlags) 
 
@@ -400,7 +391,6 @@ METHOD PutFile(cLocalFile, cRemoteFile, lFailIfExists, nFlags)
         RETURN .F. 
     ENDIF
 
-    //  UH 10/28/2001
     //  Default(@nFlags, 0)
     nDefFlags := FTP_TRANSFER_TYPE_BINARY
     DEFAULT(@nFlags, nDefFlags)
@@ -424,7 +414,6 @@ METHOD PutFile(cLocalFile, cRemoteFile, lFailIfExists, nFlags)
     IF lFailIfExists
         pData := MemAlloc(_SIZEOF(_WINWIN32_FIND_DATA) )
 
-        //  UH 04/09/2001
         hFind := IFXFtpFindFirstFile(SELF:hConnect, cRemoteFile, pData, 0, 0)
 
         IF hFind = NULL_PTR
@@ -441,14 +430,12 @@ METHOD PutFile(cLocalFile, cRemoteFile, lFailIfExists, nFlags)
         SELF:nError := ERR_FILE_EXISTS
     ELSE
         lRet := FtpPutFile(SELF:hConnect, cLocalFile, cRemoteFile, nFlags, SELF:__GetStatusContext())
-        // RvdH 081105 suggestion from D Herijgers
         IF !lRet
             SELF:nError := GetLastError()
             IF SELF:nError == ERROR_INTERNET_EXTENDED_ERROR
                 SELF:SetResponseStatus()
             ENDIF
         ELSE
-            //  UH 02/27/2001
             SELF:SetResponseStatus()
         ENDIF
     ENDIF

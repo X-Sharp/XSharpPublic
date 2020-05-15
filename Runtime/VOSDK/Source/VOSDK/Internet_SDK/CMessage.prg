@@ -21,22 +21,14 @@ PARTIAL CLASS CMessage
 
 	PROTECT cSubject            AS STRING
 	PROTECT cBoundary			    AS STRING
-	//PROTECT cSubBoundary		    AS STRING //New 2.7
 	PROTECT cCargo              AS STRING
 	PROTECT cReplyTo            AS STRING
 	PROTECT nPriority			    AS INT
 	PROTECT cMessageID          AS STRING
 	PROTECT cReferences         AS STRING
-
 	PROTECT nError			 	    AS DWORD
-
-	PROTECT cCharSet				  AS STRING 	//RvdH 070125
-	#ifndef __VULCAN__
-   ~"ONLYEARLY+"
-   DECLARE METHOD __DecodeContent
-   DECLARE ACCESS AttachmentCount
-   ~"ONLYEARLY-"
-   #endif
+	PROTECT cCharSet				  AS STRING 	
+	
 METHOD __CheckAttachment(cMail, nPart)
     LOCAL dwPos      AS DWORD
     LOCAL dwNewBound	AS DWORD
@@ -68,7 +60,6 @@ METHOD __CheckAttachment(cMail, nPart)
 	ENDIF
 
 	IF SLen(cTemp) == 0
-    	// UH 09/06/1999
       //	RETURN .F.
 	   cTemp := "part" + NTrim(nPart) + IIF(dwNewBound > 0,".mim","")
    ENDIF
@@ -118,7 +109,6 @@ METHOD __DecodeContent(cValue AS STRING) AS STRING STRICT
    RETURN cValue
 
 METHOD  __GetMailTime(cDate)
-    //SE-040628
     LOCAL dDate AS DATE
     LOCAL cTime AS STRING
 
@@ -151,7 +141,7 @@ ASSIGN AttachmentFileList(xNew)
     ENDIF
 
     RETURN SELF:aFileList
-
+    
 ACCESS  AttachmentList()
     RETURN SELF:aAttachList
 
@@ -162,21 +152,21 @@ ASSIGN  AttachmentList(xNew)
         SELF:aAttachList := xNew
     ENDIF
 
-    RETURN SELF:aAttachList
+    RETURN 
 
 ACCESS Body
     RETURN SELF:cBody
 
 ASSIGN Body(cNew)
     IF IsString(cNew)
-       //SE-071017 no StrTran() needed for CEmail class
-       IF IsInstanceOf(SELF, #CEMail) //SE-071017
+       // no StrTran() needed for CEmail class
+       IF SELF IS CEMail
           SELF:cBody := cNew
        ELSE
           SELF:cBody := StrTran(cNew, DEFAULT_STOPDATA, MY_STOPDATA)
        ENDIF
     ENDIF
-    RETURN SELF:cBody
+    RETURN
 
 METHOD BodyExtract(c)
 
@@ -228,31 +218,30 @@ ACCESS BodyHtml
 ASSIGN BodyHtml(cNew)
 
     IF IsString(cNew)
-       //SE-071017 no StrTran() needed for CEmail class
-       IF IsInstanceOf(SELF, #CEMail)
+       // no StrTran() needed for CEmail class
+       IF SELF IS CEMail
           SELF:cBodyHtml := cNew
        ELSE
           SELF:cBodyHtml := StrTran(cNew, DEFAULT_STOPDATA, MY_STOPDATA)
        ENDIF
     ENDIF
 
-    RETURN SELF:cBodyHtml
+    RETURN 
 
 ACCESS Cargo
 	RETURN SELF:cCargo
 
 ASSIGN Cargo(uValue)
-	RETURN SELF:cCargo := uValue
+	SELF:cCargo := uValue
 
 ACCESS ContentType
 	RETURN SELF:cContentType
 
 ASSIGN ContentType(uValue)
-	RETURN SELF:cContentType := uValue
+	SELF:cContentType := uValue
 
 METHOD Decode(cMail)
-    //SE-040628
-	 // this is required for the NEWS class but is overridden for email
+	// this is required for the NEWS class but is overridden for email
     LOCAL lRet      AS LOGIC
     LOCAL lBoundary AS LOGIC
     LOCAL cBound    AS STRING
@@ -288,15 +277,10 @@ METHOD Decode(cMail)
     SELF:cBoundary := cBound
 
     IF (dwPos := At3(cBound, cMail, dwStop + 1)) > 0
-        //  UH 06/11/2001
-        //  UH 09/12/2000
-        //  lBoundary := .T.
         lRet := .T.
         SELF:cHeader := SubStr3(cMail, 1, dwPos - 1) + CRLF
         cTemp := SubStr2(cMail, dwPos + SLen(cBound))
     ELSE
-    	//	UH 10/01/1999
-      //	cTemp := cMail
 		cMail := StrTran(cMail, MY_STOPDATA, DEFAULT_STOPDATA)
 		cMail := StrTran(cMail, DEFAULT_STOPDATA, "")
       SELF:cHeader := cMail
@@ -356,7 +340,7 @@ ASSIGN Error(n)
         SELF:nError := n
     ENDIF
 
-    RETURN SELF:nError
+    RETURN 
 
 
 ACCESS ErrorMsg
@@ -382,11 +366,10 @@ ACCESS From
    RETURN __FormatAddress(SELF:cFromAddress, SELF:cFromName)
 
 ASSIGN From(cValue)
-   //SE-040717
    LOCAL cAddress AS STRING
    LOCAL cName    AS STRING
 
-	IF (cAddress := __ParseAddress(cValue, @cName)) == NULL_STRING
+	IF (cAddress := __ParseAddress(cValue,  OUT cName)) == NULL_STRING
 	   cName := NULL_STRING
    ENDIF
 
@@ -399,13 +382,13 @@ ACCESS FromAddress
 	RETURN SELF:cFromAddress
 
 ASSIGN FromAddress(uValue)
-	RETURN SELF:cFromAddress := uValue
+	SELF:cFromAddress := uValue
 
 ACCESS FromName
 	RETURN SELF:cFromName
 
 ASSIGN FromName(uValue)
-	RETURN SELF:cFromName := uValue
+	SELF:cFromName := uValue
 
 METHOD  GetAttachInfo (c, lNewsGroupMessage)
 
@@ -427,8 +410,6 @@ METHOD  GetAttachInfo (c, lNewsGroupMessage)
     n    := 1
 
     DO WHILE nPos > 0
-		  //RvdH 070417 CollectForced should not be needed. Let VO handle it.
-        //CollectForced()
 
         cTemp := SubStr3(cRest, 1, nPos-1)
         cRest := SubStr2(cRest, nPos + SLen(cBound))
@@ -449,7 +430,6 @@ METHOD  GetAttachInfo (c, lNewsGroupMessage)
         n++
     ENDDO
 
-	//	UH 10/13/1999
 	IF lNewsGroupMessage
     	IF ALen(SELF:aAttachList) > 0
 			SELF:cBody := SELF:cBody + SELF:FakeAttachmentList() + cRest
@@ -460,7 +440,6 @@ METHOD  GetAttachInfo (c, lNewsGroupMessage)
 
 
 METHOD GetHeaderInfo()
-    //SE-040717
     LOCAL cHeader AS STRING
 
     cHeader := SELF:MailHeader
@@ -483,7 +462,7 @@ ASSIGN HEADER(c)
     IF IsString(c)
        SELF:cHeader  := c
     ENDIF
-    RETURN SELF:cHeader
+    RETURN 
 
 
 CONSTRUCTOR()
@@ -500,7 +479,7 @@ ACCESS MailBody()
     RETURN SELF:cBody
 
 ASSIGN MailBody(cNew)
-    RETURN SELF:Body := cNew
+     SELF:Body := cNew
 
 ACCESS MailDate
     RETURN SELF:dDate
@@ -510,7 +489,7 @@ ACCESS MailHeader()
     RETURN SELF:cHeader
 
 ASSIGN MailHeader(cNew)
-    RETURN SELF:Header := cNew
+    SELF:Header := cNew
 
 ACCESS MailTime
     RETURN SELF:cTime
@@ -520,7 +499,7 @@ ACCESS MessageID
 	RETURN SELF:cMessageID
 
 ASSIGN MessageID(uValue)
-	RETURN SELF:cMessageID := uValue
+	SELF:cMessageID := uValue
 
 ACCESS Priority()
     RETURN SELF:nPriority
@@ -531,13 +510,13 @@ ASSIGN Priority(nNew)
         SELF:nPriority := nNew
     ENDIF
 
-    RETURN SELF:nPriority
+    RETURN 
 
 ACCESS References
 	RETURN SELF:cReferences
 
 ASSIGN References(uValue)
-	RETURN SELF:cReferences := uValue
+	SELF:cReferences := uValue
 
 ACCESS ReplyTo
 	RETURN SELF:cReplyTo
@@ -604,7 +583,7 @@ ACCESS Subject
 	RETURN SELF:cSubject
 
 ASSIGN Subject(uValue)
-	RETURN SELF:cSubject := uValue
+	SELF:cSubject := uValue
 
 ACCESS  TimeStamp
     RETURN SELF:cTimeStamp
@@ -614,6 +593,6 @@ ACCESS TransferEncoding
 	RETURN SELF:nTransferEncoding
 
 ASSIGN TransferEncoding(uValue)
-	RETURN SELF:nTransferEncoding := uValue
+	SELF:nTransferEncoding := uValue
 END CLASS
 

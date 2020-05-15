@@ -333,8 +333,7 @@ ASSIGN  MailBox         (xNew)
     ELSE
         SELF:cMailBox := xNew
     ENDIF
-    RETURN SELF:cMailBox
-
+    RETURN 
 
 METHOD  SendRemote      (cData)                         
     LOCAL lRet      AS LOGIC

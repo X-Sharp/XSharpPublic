@@ -15,6 +15,7 @@ USING System.Collections.Concurrent
 //USING Microsoft.VisualStudio
 //USING Microsoft.VisualStudio.Shell.Interop
 USING System.Diagnostics
+USING System.Reflection
 
 BEGIN NAMESPACE XSharpModel
     [DebuggerDisplay("{Name,nq}")];
@@ -623,6 +624,9 @@ BEGIN NAMESPACE XSharpModel
                 NEXT
             ENDIF
             RETURN xType
+			
+		METHOD GetExtensions( systemType AS System.Type ) AS List<MethodInfo>
+			RETURN SystemTypeController.LookForExtensions( systemType, SELF:_AssemblyReferences)
 
             PROPERTY ImplicitNamespaces as List<String>
                 GET

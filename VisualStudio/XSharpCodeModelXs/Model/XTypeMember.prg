@@ -14,57 +14,57 @@ BEGIN NAMESPACE XSharpModel
 		// Fields
 		PRIVATE _parameters AS List<XVariable>
 		PRIVATE _typeName AS STRING
-
+		
 		#region constructors
-
-			CONSTRUCTOR(name AS STRING, kind AS Kind, modifiers AS Modifiers, visibility AS Modifiers, span AS TextRange, position AS TextInterval, typeName AS STRING, isStatic AS LOGIC)
-				SUPER(name, kind, modifiers, visibility, span, position)
-				SELF:Parent := NULL
-				SELF:_parameters := List<XVariable>{}
-				SELF:_typeName := ""
-				SELF:_typeName := typeName
-				SELF:_isStatic := isStatic
-
-			STATIC METHOD create(oElement AS EntityObject, oInfo AS ParseResult, oFile AS XFile, oType AS XType, dialect AS XSharpDialect ) AS XTypeMember
-				LOCAL cName := oElement:cName AS STRING
-				LOCAL kind  := Etype2Kind(oElement:eType) AS Kind
-				LOCAL cType := oElement:cRetType AS STRING
-				LOCAL mods  := oElement:eModifiers:ToModifiers() AS Modifiers
-				LOCAL vis   := oElement:eAccessLevel:ToModifiers() AS Modifiers
-				LOCAL span   AS textRange
-				LOCAL intv   AS TextInterval
-				LOCAL isStat := oElement:lStatic AS LOGIC
-				mods &=  ~Modifiers.VisibilityMask	// remove lower 2 nibbles which contain visibility
-				CalculateRange(oElement, oInfo, OUT span, OUT intv)
-				LOCAL result := XTypeMember{cName, kind, mods, vis, span, intv, cType, isStat} AS XTypeMember
-				result:File := oFile
-				result:Dialect := dialect
-				IF oElement:aParams != NULL
-					FOREACH oParam AS EntityParamsObject IN oElement:aParams
-						LOCAL oVar AS XVariable
-						span := TextRange{oElement:nStartLine, oParam:nCol, oElement:nStartLine, oParam:nCol+oParam:cName:Length}
-						intv := TextInterval{oElement:nOffSet+oParam:nCol, oElement:nOffSet+oParam:nCol+oParam:cName:Length}
-						oVar := XVariable{result, oParam:cName, Kind.Local,  span, intv, oParam:cType, TRUE}
-						oVar:ParamType := oParam:nParamType
-						result:AddParameter(oVar)
-					NEXT
-                ENDIF
-                IF oElement:eType == EntityType._Define .or. oElement:eType == EntityType._EnumMember
-                    result:Value := oElement:cValue
-                ENDIF
-				RETURN result
-
-
+		
+		CONSTRUCTOR(name AS STRING, kind AS Kind, modifiers AS Modifiers, visibility AS Modifiers, span AS TextRange, position AS TextInterval, typeName AS STRING, isStatic AS LOGIC)
+			SUPER(name, kind, modifiers, visibility, span, position)
+			SELF:Parent := NULL
+			SELF:_parameters := List<XVariable>{}
+			SELF:_typeName := ""
+			SELF:_typeName := typeName
+			SELF:_isStatic := isStatic
+			
+		STATIC METHOD create(oElement AS EntityObject, oInfo AS ParseResult, oFile AS XFile, oType AS XType, dialect AS XSharpDialect ) AS XTypeMember
+			LOCAL cName := oElement:cName AS STRING
+			LOCAL kind  := Etype2Kind(oElement:eType) AS Kind
+			LOCAL cType := oElement:cRetType AS STRING
+			LOCAL mods  := oElement:eModifiers:ToModifiers() AS Modifiers
+			LOCAL vis   := oElement:eAccessLevel:ToModifiers() AS Modifiers
+			LOCAL span   AS textRange
+			LOCAL intv   AS TextInterval
+			LOCAL isStat := oElement:lStatic AS LOGIC
+			mods &=  ~Modifiers.VisibilityMask	// remove lower 2 nibbles which contain visibility
+			CalculateRange(oElement, oInfo, OUT span, OUT intv)
+			LOCAL result := XTypeMember{cName, kind, mods, vis, span, intv, cType, isStat} AS XTypeMember
+			result:File := oFile
+			result:Dialect := dialect
+			IF oElement:aParams != NULL
+				FOREACH oParam AS EntityParamsObject IN oElement:aParams
+					LOCAL oVar AS XVariable
+					span := TextRange{oElement:nStartLine, oParam:nCol, oElement:nStartLine, oParam:nCol+oParam:cName:Length}
+					intv := TextInterval{oElement:nOffSet+oParam:nCol, oElement:nOffSet+oParam:nCol+oParam:cName:Length}
+					oVar := XVariable{result, oParam:cName, Kind.Local,  span, intv, oParam:cType, TRUE}
+					oVar:ParamType := oParam:nParamType
+					result:AddParameter(oVar)
+				NEXT
+			ENDIF
+			IF oElement:eType == EntityType._Define .or. oElement:eType == EntityType._EnumMember
+				result:Value := oElement:cValue
+			ENDIF
+			RETURN result
+			
+			
 		#endregion
-
-
-
+		
+		
+		
 		METHOD AddParameter(oVar AS XVariable) AS VOID
 			oVar:Parent := SELF
 			oVar:File := SELF:File
 			_parameters:Add(oVar)
 			RETURN
-
+			
 		METHOD Namesake() AS List<XTypeMember>
 			VAR _namesake := List<XTypeMember>{}
 			IF (SELF:Parent != NULL)
@@ -76,8 +76,8 @@ BEGIN NAMESPACE XSharpModel
 				NEXT
 			ENDIF
 			RETURN _namesake
-		//
-		#region Properties
+			//
+			#region Properties
 		PROPERTY Description AS STRING
 			GET
 				VAR modVis := ""
@@ -97,7 +97,7 @@ BEGIN NAMESPACE XSharpModel
 				RETURN desc + SELF:Prototype
 			END GET
 		END PROPERTY
-
+		
 		PROPERTY FullName AS STRING
 			GET
 				//
@@ -108,18 +108,18 @@ BEGIN NAMESPACE XSharpModel
 				RETURN SUPER:Name
 			END GET
 		END PROPERTY
-
+		
 		PROPERTY HasParameters AS LOGIC GET SELF:Kind:HasParameters() .AND. SELF:_parameters:Count > 0
 		PROPERTY ParameterCount  AS INT GET SELF:_parameters:Count
-
+		
 		PROPERTY IsArray AS LOGIC
 			GET
 				RETURN SELF:_typeName:EndsWith("[]")
 			END GET
 		END PROPERTY
-
+		
 		NEW PROPERTY Parent AS XType GET (XType) SUPER:parent  SET SUPER:parent := VALUE
-
+		
 		PROPERTY ParameterList AS STRING
 			GET
 				VAR parameters := ""
@@ -135,7 +135,7 @@ BEGIN NAMESPACE XSharpModel
 				RETURN parameters
 			END GET
 		END PROPERTY
-
+		
 		PROPERTY ComboParameterList AS STRING
 			GET
 				VAR parameters := ""
@@ -153,13 +153,13 @@ BEGIN NAMESPACE XSharpModel
 				RETURN parameters
 			END GET
 		END PROPERTY
-
+		
 		PROPERTY Parameters AS IEnumerable<XVariable>
-		GET
-			RETURN SELF:_parameters
-		END GET
+			GET
+				RETURN SELF:_parameters
+			END GET
 		END PROPERTY
-
+		
 		PROPERTY Prototype AS STRING
 			GET
 				VAR vars := ""
@@ -170,10 +170,10 @@ BEGIN NAMESPACE XSharpModel
 					ELSE
 						vars := "(" + SELF:ParameterList + ")"
 					ENDIF 
-                ENDIF
-                IF SELF:Kind == Kind.VODefine .OR. SELF:Kind == Kind.EnumMember
-                    vars := " "+SELF:Value
-                ENDIF
+				ENDIF
+				IF SELF:Kind == Kind.VODefine .OR. SELF:Kind == Kind.EnumMember
+					vars := " "+SELF:Value
+				ENDIF
 				IF ( SELF:Kind == Kind.@@Constructor )
 					desc := SELF:Parent:FullName + vars
 				ELSE
@@ -186,7 +186,7 @@ BEGIN NAMESPACE XSharpModel
 				RETURN desc
 			END GET
 		END PROPERTY
-
+		
 		PROPERTY ComboPrototype AS STRING
 			GET
 				VAR vars := ""
@@ -204,17 +204,25 @@ BEGIN NAMESPACE XSharpModel
 					desc := SUPER:Name + vars
 				ENDIF
 				// Maybe we should check the Dialect ?
-			    IF SELF:Kind:HasReturnType( SELF:Dialect ) .AND. ! String.IsNullOrEmpty(SELF:TypeName)
+				IF SELF:Kind:HasReturnType( SELF:Dialect ) .AND. ! String.IsNullOrEmpty(SELF:TypeName)
 					desc := desc + AsKeyWord + SELF:TypeName
 				ENDIF
 				RETURN desc
 			END GET
 		END PROPERTY
-
-		PROPERTY TypeName AS STRING GET SELF:_typeName
-        PROPERTY Value    AS STRING AUTO
+		
+		PROPERTY TypeName AS STRING
+			GET 
+				IF ( SELF:Kind == Kind.@@Constructor )
+					RETURN SELF:Parent:FullName
+				ELSE
+					RETURN SELF:_typeName
+				ENDIF
+			END GET
+		END PROPERTY
+		PROPERTY Value    AS STRING AUTO
 		#endregion
 	END CLASS
-
+	
 END NAMESPACE
 

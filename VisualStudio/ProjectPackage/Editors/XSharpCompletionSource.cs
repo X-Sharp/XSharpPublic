@@ -916,6 +916,8 @@ namespace XSharpLanguage
             {
                 // Now add Members for System types
                 FillMembers(compList, cType.SType, minVisibility, staticOnly, startWith);
+                //
+                FillExtensions(compList, cType.SType, startWith);
             }
         }
 
@@ -998,57 +1000,9 @@ namespace XSharpLanguage
             }
             //
             bool hideAdvanced = _optionsPage.HideAdvancemembers;
-            foreach (var member in members.Where(x => nameStartsWith(x.Name, startWith)))
-            {
-                if (XSharpTokenTools.isGenerated(member))
-                    continue;
-                if (IsHiddenName(member.Name))
-                {
-                   continue;
-                }
-                try
-                {
-                    MemberAnalysis analysis = new MemberAnalysis(member);
-                    if (member is MethodInfo)
-                    {
-                        var mi = member as MethodInfo;
-                        if (mi.IsSpecialName)
-                            continue;
-
-                    }
-                    if ((analysis.IsInitialized) && (minVisibility <= analysis.Visibility))
-                    {
-                        if (analysis.Kind == Kind.Constructor)
-                            continue;
-                        if (analysis.IsStatic != staticOnly)
-                        {
-                            continue;
-                        }
-                        if (IsHiddenName(analysis.Name))
-                            continue;
-                        String toAdd = "";
-                        if ((analysis.Kind == Kind.Method))
-                        {
-                            toAdd = "(";
-                        }
-                        //
-                        StandardGlyphItem imgI = analysis.GlyphItem;
-                        if (analysis.IsStatic)
-                        {
-                            imgI = StandardGlyphItem.GlyphItemShortcut;
-                        }
-                        //
-                        ImageSource icon = _provider.GlyphService.GetGlyph(analysis.GlyphGroup, imgI);
-                        if (!compList.Add(new XSCompletion(analysis.Name, analysis.Name + toAdd, analysis.Description, icon, null, analysis.Kind,analysis.Value)))
-                            break;
-                    }
-                }
-                catch (Exception e)
-                {
-                    XSharpProjectPackage.Instance.DisplayOutPutMessage("FillMembers failed: ");
-                    XSharpProjectPackage.Instance.DisplayException(e);
-                }
-            }
+            BuildCompletionListInfo(compList, minVisibility, staticOnly, startWith, members);
+            // Is there any Extension Methods ?
+            FillExtensions(compList, sType, startWith);
             // fill members of parent class
             if (sType.BaseType != null)
             {
@@ -1080,13 +1034,86 @@ namespace XSharpLanguage
                 // Fill enum members
                 foreach (string name in sType.GetEnumNames())
                 {
-                    if (!compList.Add(new XSCompletion(name, name, "", icon, null, Kind.EnumMember,"")))
+                    if (!compList.Add(new XSCompletion(name, name, "", icon, null, Kind.EnumMember, "")))
                         break;
                 }
 
             }
         }
 
+        /// <summary>
+        /// Fill the CompletionList with MethodInfo
+        /// </summary>
+        /// <param name="compList"></param>
+        /// <param name="minVisibility"></param>
+        /// <param name="staticOnly"></param>
+        /// <param name="startWith"></param>
+        /// <param name="members"></param>
+        private void BuildCompletionListInfo(CompletionList compList, Modifiers minVisibility, bool staticOnly, string startWith, IEnumerable<MemberInfo> members)
+        {
+            foreach (var member in members.Where(x => nameStartsWith(x.Name, startWith)))
+            {
+                if (XSharpTokenTools.isGenerated(member))
+                    continue;
+                if (IsHiddenName(member.Name))
+                {
+                    continue;
+                }
+                try
+                {
+                    bool isExtension = member.IsDefined(typeof(ExtensionAttribute), false);
+                    MemberAnalysis analysis = new MemberAnalysis(member);
+                    if (member is MethodInfo)
+                    {
+                        var mi = member as MethodInfo;
+                        if (mi.IsSpecialName)
+                            continue;
+
+                    }
+                    if ((analysis.IsInitialized) && (minVisibility <= analysis.Visibility))
+                    {
+                        if (analysis.Kind == Kind.Constructor)
+                            continue;
+                        if (analysis.IsStatic != staticOnly)
+                        {
+                            continue;
+                        }
+                        if (IsHiddenName(analysis.Name))
+                            continue;
+                        String toAdd = "";
+                        if ((analysis.Kind == Kind.Method))
+                        {
+                            toAdd = "(";
+                        }
+                        //
+                        StandardGlyphItem imgI = analysis.GlyphItem;
+                        if (analysis.IsStatic)
+                        {
+                            imgI = StandardGlyphItem.GlyphItemShortcut;
+                        }
+                        // Remove the STATIC keyword in the Description
+                        if ( isExtension )
+                        {
+                            analysis.IsStatic = false;
+                        }
+                        ImageSource icon = _provider.GlyphService.GetGlyph(analysis.GlyphGroup, imgI);
+                        if (!compList.Add(new XSCompletion(analysis.Name, analysis.Name + toAdd, analysis.Description, icon, null, analysis.Kind, analysis.Value)))
+                            break;
+                    }
+                }
+                catch (Exception e)
+                {
+                    XSharpProjectPackage.Instance.DisplayOutPutMessage("BuildCompletionListInfo failed: ");
+                    XSharpProjectPackage.Instance.DisplayException(e);
+                }
+            }
+        }
+
+        private void FillExtensions(CompletionList compList, System.Type sType, String startWith)
+        {
+            var extensions = _file.Project.GetExtensions( sType);
+            BuildCompletionListInfo(compList, Modifiers.Public, true, startWith, extensions);
+        }
 
 
         public void Dispose()
@@ -1382,7 +1409,8 @@ namespace XSharpLanguage
 
         private void addParameters(MemberInfo member, ParameterInfo[] parameters)
         {
-
+            bool isExtension = member.IsDefined(typeof(ExtensionAttribute), false);
+            //
             if (parameters.Length == 1)
             {
                 try
@@ -1419,9 +1447,15 @@ namespace XSharpLanguage
                 }
 
             }
-
+            // Add Parameters
             foreach (ParameterInfo p in parameters)
             {
+                // In case of an Extension Method, "eat" the first parameter...
+                if ( isExtension )
+                {
+                    isExtension = false;
+                    continue;
+                }
                 this._parameters.Add(new ParamInfo(p));
             }
 
@@ -3156,15 +3190,20 @@ namespace XSharpLanguage
                                 {
                                     if (!String.IsNullOrEmpty(foundElement.GenericTypeName))
                                     {
+                                        var usings = new List<String>(file.Usings);
+                                        if ( !String.IsNullOrEmpty(currentNS) && !usings.Contains(currentNS))
+                                        {
+                                            usings.Add(currentNS);
+                                        }
                                         if (foundElement.GenericTypeName.Contains(','))
                                         {
                                             // Ok, this is might be wrong, but...
                                             String[] items = foundElement.GenericTypeName.Split(',');
                                             if (items.Length > 1)
-                                                cType = new CompletionType(items[1], file, file.Usings);
+                                                cType = new CompletionType(items[1], file, usings);
                                         }
                                         else
-                                            cType = new CompletionType(foundElement.GenericTypeName, file, file.Usings);
+                                            cType = new CompletionType(foundElement.GenericTypeName, file, usings);
                                     }
                                 }
                             }
@@ -4345,7 +4384,14 @@ namespace XSharpLanguage
         {
             this.foundElement = XSharpElement;
             if (XSharpElement != null)
+            {
                 this.isArray = XSharpElement.IsArray;
+                XVariable xvar = (XSharpElement as XVariable);
+                if ( xvar != null )
+                {
+                    this.isGeneric = xvar.TypeName.EndsWith(">");
+                }
+            }
         }
 
         public CompletionElement(MemberInfo SystemElement)

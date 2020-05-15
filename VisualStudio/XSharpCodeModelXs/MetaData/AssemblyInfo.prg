@@ -522,6 +522,9 @@ CLASS AssemblyInfo
 			END GET
 		END PROPERTY
 		PROPERTY Types              AS IDictionary<STRING, System.Type> GET SELF:_aTypes
+			
+		PROPERTY HasExtensions      AS LOGIC GET SELF:_HasExtensions
+		PROPERTY Extensions         AS List<MethodInfo> GET SELF:_aExtensions
 
 
 		STATIC METHOD WriteOutputMessage(message AS STRING) AS VOID

@@ -74,7 +74,7 @@ eos                 : EOS+
                     ;
 
                         // everything is handled in the error analysis and the treetransformation
-pragma                : P=PRAGMA (Tokens += .)*? EOS
+pragma                : P=PRAGMA (Tokens += ~EOS)*? EOS
                       ;
 
 

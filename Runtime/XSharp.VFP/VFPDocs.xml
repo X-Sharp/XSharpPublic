@@ -1537,7 +1537,7 @@
       </code>
     </example>
   </ceiling>
- 
+
   <compobj>
     <summary>
       Compares the properties of two objects and returns True (.T.) if their properties and property values are identical.
@@ -1616,7 +1616,7 @@
       For additional information on code pages and X#'s international support, see Code Pages Supported by X# and Developing International Applications.
     </remarks>
   </cpcurrent>
-  
+
   <createobject>
     <summary>
       Creates an object from a class definition or an Automation-enabled application.
@@ -3570,7 +3570,7 @@
       Character
     </returns>
   </defaultext>
-  
+
   <difference>
     <summary>
       Returns an integer, 0 through 4, which represents the relative phonetic difference between two character expressions.
@@ -3749,7 +3749,7 @@
        <code language="X#">?ExecScript("oForm=CreateObject('Form')"+CHR(13)+"?oForm.AutoCenter")</code>
     </example>
   </execscript>
-  
+
   <filetostr>
     <summary>
       Returns the contents of a file as a character string.
@@ -3774,7 +3774,7 @@
       </code>
     </example>
   </filetostr>
- 
+
   <fldlist>
     <summary>
       Included for compatibility with dBASE.
@@ -5382,7 +5382,7 @@
       Logical
     </returns>
     <remarks>
-      KeyMatch( ) searches an index tag or index file for a specific index key and returns true (.T.) if the index key is found; 
+      KeyMatch( ) searches an index tag or index file for a specific index key and returns true (.T.) if the index key is found;
       otherwise, KeyMatch( ) returns false (.F.). KeyMatch( ) can be used to prevent duplicate index keys.<br/>
       KeyMatch( ) returns the record pointer to the record on which it was originally positioned before KeyMatch( ) was issued.
     </remarks>
@@ -5395,14 +5395,14 @@
       Numeric
     </returns>
     <remarks>
-      Program lines are counted starting from the top of the program. Comment lines, continuation lines, 
-      and blank lines are included in the line number count. If a program is suspended during execution, 
-      LineNo( ) returns the number of the program line at which program execution was suspended. 
+      Program lines are counted starting from the top of the program. Comment lines, continuation lines,
+      and blank lines are included in the line number count. If a program is suspended during execution,
+      LineNo( ) returns the number of the program line at which program execution was suspended.
       LineNo( ) returns 0 if a program is canceled.<br/>
-      By default, line numbers are returned relative to the beginning of the main program. If a procedure is called, 
+      By default, line numbers are returned relative to the beginning of the main program. If a procedure is called,
       line numbering continues from the top of the calling program.<br/>
-      LineNo( ) is useful for debugging programs. You can set a breakpoint to stop program execution at a specific line number 
-      by opening the Breakpoints window, setting the Type to 'Break when expression is true' 
+      LineNo( ) is useful for debugging programs. You can set a breakpoint to stop program execution at a specific line number
+      by opening the Breakpoints window, setting the Type to 'Break when expression is true'
       and adding codeLineNo( ) = nExpression/code in the Expression textbox.
     </remarks>
     <example>
@@ -5423,179 +5423,408 @@
       Creates an object reference for a bitmap, icon, or Windows meta file.
     </summary>
     <param name="cFileName">
-
-      Specifies the image file on disk for which an object is created. br
-      brThe following image types are supported:/Pbr
-      <b>Supported Image Types</b>
-
-
-
-
-      Image Type Groups
-
-      Filename Extensions
-
-
-      bitmaps
-
-      .bmp, .jpg, .jpeg, .jpe, .jfif, .gif, .giff, .gfa
-      icons
-      .ico
-      windows metafiles
-      .wmf
-      windows enhanced metafiles
-      .emf
-      cursor
-      .cur
-
-      brThe following restrictions (tested with VFP 9 SP2 and OlePro32.dll Version 6.0.6002.18005) exist:/Pbr
-      <b>Known Limitations</b>
-      Restrictions &amp; Issues
-      Loading these <b>.tif</b> and <b>.png</b> formats will cause an OLE error.
-      Icons are allowed with sizes up to 128x128 and must not have more than 256 colors. Even if there is more than one icon stored in the icon file, always only the smallest icon gets displayed. The icon file may contain much more icons - even with more colors and larger sizes - as long as there is at least one that complies with the rules above, then no exception is thrown.
-      Cursor files must not have more than 1K of file size, otherwise an OLE error is generated. Cursor files containing 16 color cursors can be loaded flawlessly, but only monochrome output is supported. Loading an animated cursor (.ani) causes an OLE error to be raised.
-      <b>Null Picture Support</b>
-      If cFileName is omitted, the "null picture" is returned.br
-      You can include GetPict( ) as cFileName to display the Open dialog from which you can choose a bitmap file.
+      Specifies the image file on disk for which an object is created.<br/>
+      The supported images are listed in the remarks section
     </param>
     <returns>
       Object
-      <b>LOADPICTURE() function</b> returns a <b>Picture type COM object reference</b> that can be assigned to ActiveX controls and VFP’s Image object’s <b>PictureVal property</b>.
+      <b>LoadPicture() function</b> returns a <b>Picture type COM object reference</b> that can be assigned to ActiveX controls and VFP’s Image object’s <b>PictureVal property</b>.
       However, the real primary interface <b>iPicture</b> only can be retrieved using code like this:br
       &amp;nbsp;
-      <code language="X#">oIPicture = GETINTERFACE(LOADPICTURE(GetPict()), "iPicture")</code>
-
+      <code language="X#">oIPicture = GETINTERFACE(LoadPicture(GetPict()), "iPicture")</code>
     </returns>
     <remarks>
+      <b>Supported Image Types</b>
+      <list type="table">
+        <listheader>
+          <term>Image Type Groups</term>
+          <description>Filename Extensions</description>
+        </listheader>
+        <item>
+          <term> bitmaps</term>
+          <description>.bmp, .jpg, .jpeg, .jpe, .jfif, .gif, .giff, .gfa</description>
+        </item>
+        <item>
+          <term>icons</term>
+          <description>.ico</description>
+        </item>
+        <item>
+          <term>windows metafiles</term>
+          <description>.wmf</description>
+        </item>
+        <item>
+          <term>windows enhanced metafiles</term>
+          <description>.emf</description>
+        </item>
+        <item>
+          <term>cursor</term>
+          <description>.cur</description>
+        </item>
+      </list>
+      The following restrictions (tested with VFP 9 SP2 and OlePro32.dll Version 6.0.6002.18005) exist:<br/>
+      <b>Known Limitations</b>
+      <list type="table">
+        <listheader>
+          <term>Image Type Groups</term>
+          <description>Restrictions &amp; Issues</description>
+        </listheader>
+        <item>
+          <term>bitmaps</term>
+          <description>
+            Loading these <b>.tif</b> and <b>.png</b> formats will cause an OLE error.
+          </description>
+        </item>
+        <item>
+          <term>icons</term>
+          <description>
+            Icons are allowed with sizes up to 128x128 and must not have more than 256 colors. Even if there is more than one icon stored in the icon file,
+            always only the smallest icon gets displayed. The icon file may contain much more icons - even with more colors and larger sizes - as long as there is at least
+            one that complies with the rules above, then no exception is thrown.
+          </description>
+        </item>
+        <item>
+          <term>cursor</term>
+          <description>
+            Cursor files must not have more than 1K of file size, otherwise an OLE error is generated. Cursor files containing 16 color cursors can be loaded
+            flawlessly, but only monochrome output is supported. Loading an animated cursor (.ani) causes an OLE error to be raised.
+          </description>
+        </item>
+      </list>
+      <b>Null Picture Support</b>
+      If cFileName is omitted, the "null picture" is returned.
+      You can include GetPict( ) as cFileName to display the Open dialog from which you can choose a bitmap file.<br/><br/>
       Picture objects provide a language-neutral abstraction for bitmaps, icons, and metafiles.
       As with the standard font object, the system provides a standard implementation of the picture object.
       Its primary interfaces are <b>iPicture</b> and <b>iPictureDisp</b>.
       A picture object is created with <b>OleCreatePictureIndirect</b> and supports both the <b>iPicture</b> and the <b>iPictureDisp</b> interfaces.
       The OLE-provided picture object implements the complete semantics of the <b>iPicture</b> and <b>iPictureDisp</b> interfaces.
-      In other words, there’s no need to use another interface than <b>iPicture</b>!
-      <b>LOADPICTURE( ) Function</b> internally wraps the <b>OleCreatePictureIndirect() function</b> implemented in <b>OleAut32.dll</b>.
-      Thus, all you can read about that function (above and online) is also true for VFP’s <b>LOADPICTURE() function</b>.
-      <b>LOADPICTURE( ) Function</b> was added to VFP’s vocabulary to make it easier to load images with COM interfaces that many presentation properties of ActiveX controls require for their settings.
+      In other words, there’s no need to use another interface than <b>iPicture</b>!<br/>
+      <b>LoadPicture( ) Function</b> internally wraps the <b>OleCreatePictureIndirect() function</b> implemented in <b>OleAut32.dll</b>.
+      Thus, all you can read about that function (above and online) is also true for VFP’s <b>LoadPicture() function</b>.
+      <b>LoadPicture( ) Function</b> was added to VFP’s vocabulary to make it easier to load images with COM interfaces
+      that many presentation properties of ActiveX controls require for their settings.<br/>
       For example, the ActiveX Outline control has a <b>PictureOpen property</b> that requires a COM object image reference for its setting.
-      The COM object returned by <b>LOADPICTURE( ) Function</b> hides its primary interface <b>iPicture</b>.
-      In contrast to the reference returnd by <b>LOADPICTURE( ) Function</b>, the OLE-image’s primary <b>iPicture</b> interface is the only fully functional one.
+      The COM object returned by <b>LoadPicture( ) Function</b> hides its primary interface <b>iPicture</b>.
+      In contrast to the reference returnd by <b>LoadPicture( ) Function</b>, the OLE-image’s primary <b>iPicture</b> interface is the only fully functional one.
       In other words, only <b>iPitcure</b> can be used in VFP programms without generating any OLE errors.
-      Because <b>iPicture</b> is a superset of Picture it may be, better, it should be used everywhere instead of the one returnd by <b>LOADPICTURE( ) Function</b>!br
+      Because <b>iPicture</b> is a superset of Picture it may be, better, it should be used everywhere instead of the one returnd by <b>LoadPicture( ) Function</b>!<br/>
       Example #1 in the examples section below proves that it makes no difference which OLE image interface gets assigned to a <b>oIMAGE.PICTUREVAL property.</b>
-      The IID of the <b>iPicture</b> interface is defined as “{7BF80980-BF32-101A-8BBB-00AA00300CAB}”. br
-
+      The IID of the <b>iPicture</b> interface is defined as “{7BF80980-BF32-101A-8BBB-00AA00300CAB}”. <br/>
+      <br/>
       The following two lines of code both create a null picture OLE image object:
       <code language="X#">
-        oIPicture1 = GETINTERFACE(LOADPICTURE(), "iPicture")
+        oIPicture1 = GETINTERFACE(LoadPicture(), "iPicture")
         oIPicture2 = CreateObjectEx("StdPicture","","{7BF80980-BF32-101A-8BBB-00AA00300CAB}")
       </code>
-
-      The following table summarizes the PEMs <b>iPicture</b> interface./Pbr
-
-      <b>iPicture Interface Members</b>
-
-
-
-      PEM
-      Name
-      Used for
-      ValueType
-      Read/Writable
-
-
-      property
-      The <b>Attributes property</b> is said to hold the picture’s bit attributes. Actually, there are only two, which can be set alone, or additive. The following table lists both possible values:
-      The following table lists all possible values of the <b>iPicture.Type property</b>:
-      The most interesting method of the COM image object’s <b>iPicture interface</b> is <b>render()</b> which also works flawlessly only when called on the <b>iPicture interface</b>.
-      The following table summarises the parameters of the <b>render() method</b>:
-      The method returns standard values like E_FAIL, E_INVALIDARG and E_OUToFMEMORY, as well as S_OK, E_POINTER and CTL_E_INVALIDPROPERTYVALUE. These values are described on MSDN.
-      The render function has plenty of parameters. Some of them passing in pixel values, others HiMetric values.br
-      <b>Example #3</b> has some useful conversions as well as other supporting functions and definitions.br
-      To figure out how <b>render()</b> works try the VFP code below; type it in line by line into VFP’s command window:br
-      /P
-
-      Direct input into VFP’s command window
-
-      <code language="X#">
-        * locate an image with round about 100 x 100 pixels
-        goPic = LOADPICTURE(GetPict())
-        gIP = GETINTERFACE(m.goPic, "iPicture")
-        goForm = CreateObject("Form")
-        goForm.Show()
-        * declare access to the _client_area_ of a window
-        DECLARE Integer GetDC IN User32 integer HWnd
-        * hDC should be  0 (otherwise that's an error)!
-        hDC = GetDC(goForm.HWnd)
-        * render your image directly onto form's client area
-        gIP.Render(m.hDC,0,0,100,100,0,gIP.Height,gIP.Width,- gIP.Height,NULL)
-        * declare release function
-        DECLARE Integer ReleaseDC IN User32 integer HWnd, integer hDC
-        * next line should print 1 on the form's background >> "Okay"
-        ? ReleaseDC(m.goForm.HWnd, m.hDC)
-        * declare access to the _whole_ window
-        DECLARE Integer GetWindowDC IN User32 integer HWnd
-        * hDC now references form's caption an border areas as well!
-        hDC = GetWindowDC(goForm.HWnd)
-        * render out partially overwriting form's border and caption
-        gIP.Render(m.hDC,0,0,100,100,0,gIP.Height,gIP.Width,- gIP.Height,NULL)
-        * never forget to free an allocated device context
-        ? ReleaseDC(m.goForm.HWnd, m.hDC)
-      </code>
-
-      <b>iPicture.Render()</b> qualifies for painting on otherwise unreachable form regions, like the TitleBar or WindowBorders.
-      Another interesting application for direct rendering stems from the fact that no VFP object reference is necessary for painting.
-      The <b>render() method</b> solely uses a common windows handle. Thus, one can render on any known device context.br
-      If one encounters the so-called hourglass problem, working with a COM-based image can be the preferred workaround.
-      The hourglass mouse cursor gets displayed by the operation system during lengthy disk accesses.
-      Sometimes VFP does not reset the hourglass mouse cursor correctly.
-      Thus, the user still sees the “busy working” icon although VFP already is idle, as long she doesn’t touch the mouse.
-      Most often these disk accesses stem from refreshing pictures loaded into native Image-Objects using the <b>Image.Picture property</b>.
-      Storing a COM memory-based object to the Image-Object’s <b>.PictureVal property</b> instead, never causes any disk access.
-      Thus, no more hourglass mouse cursor will appear after a refresh!
-
-      <b>iPicture.Render()</b> does its work outside of - and unnoticed by – the VFP engine itself.
-      That’s why VFP has no idea of what was painted “between the lines”.
-      Each time VFP refreshes the form’s area (we’ve just rendered our picture onto), will clear out our image.
-      To make rendered output persistent measures have to be taken against VFP wiping it out!
-      There is another BUG one has to be aware of, when employing the hourglass workaround described above!br
-      To see what happens, try the following code:
-
-      <code language="X#">
-        LOCAL lnLoop, oComPic1, oComPic2
-        oComPic1 = LOADPICTURE(GetFile())
-        oComPic2 = LOADPICTURE(GetFile())
-        TRY
-        _Screen.Addobject("oImage","IMAGE")
-        CATCH
-        FINALLY
-        _Screen.oImage.Visible = .T.
-        ENDTRY
-        For lnLoop = 1 to 100
-        _Screen.oImage.PictureVal = m.oComPic1
-        _Screen.oImage.PictureVal = m.oComPic2
-        Next
-        *//
-        *\\ whereas the next loop will break somewhere down the road:
-        For lnLoop = 1 to 100
-        _Screen.oImage.PictureVal = m.oComPic1
-        _Screen.oImage.PictureVal = m.oComPic1
-        _Screen.oImage.PictureVal = m.oComPic1
-        _Screen.oImage.PictureVal = m.oComPic2
-        Next
-      </code>
-      One can see, that the first loop executes flawlessly, the second one breaks after only a few loops with a “Property value is invalid” error message!
-      This bug is hard to track and occurs only in cases when someone tries to assign the same COM-reference more than once in a row!
-      The workaround for this is to keep track which COM-reference is actually assigned to the Image’s PictureVal property.
-      Never ever then reassign the same reference a second time (overwriting the first one with a copy of itself)!
-      BTW: It doesn’t matter what interface you are using.
-      The error seems to stem from VFP’s Image class instance.
     </remarks>
-    <example>
-      The following example shows that both interfaces (<b>Picture</b> and <b>IPicture</b>) of a COM image instance can be assigned to VFP’s <b>Image.PictureVal property</b>:
+      <Interfacemembers>
+        The following table summarizes the PEMs <b>iPicture</b> interface.<br/>
+        <b>iPicture Interface Members</b>
+        <list type="table">
+          <listheader>
+            <term>PEM</term>
+            <description>Name</description>
+            <description>Used for</description>
+            <description>ValueType</description>
+            <description>Read/Writable</description>
+          </listheader>
+          <item>
+            <term>property</term>
+            <description>Attributes</description>
+            <description>The current set of the picture's bit attributes.</description>
+            <description>DWORD (int)</description>
+            <description>readonly</description>
+          </item>
+          <item>
+            <term>property</term>
+            <description>CurDC</description>
+            <description>The current device context into which this picture is selected.</description>
+            <description>HDC (long)</description>
+            <description>readonly</description>
+          </item>
+          <item>
+            <term>property</term>
+            <description>Handle</description>
+            <description>Handle to the picture managed within this picture object.</description>
+            <description>OLE_Handle (int)</description>
+            <description>readonly</description>
+          </item>
+          <item>
+            <term>property</term>
+            <description>Height</description>
+            <description>The current height of the picture in the picture object.</description>
+            <description>OLE_XSIZE_HIMETRIC (long)</description>
+            <description>readonly</description>
+          </item>
+          <item>
+            <term>property</term>
+            <description>hPal</description>
+            <description>The current palette of the picture (if any).</description>
+            <description>OLE_Handle (int)</description>
+            <description>read/writable</description>
+          </item>
+          <item>
+            <term>property</term>
+            <description>KeepOriginalFormat</description>
+            <description>The current value of the picture object's KeepOriginalFormat property.</description>
+            <description>Bool</description>
+            <description>read/writable</description>
+          </item>
+          <item>
+            <term>property</term>
+            <description>Type</description>
+            <description>The current type of the picture.</description>
+            <description>Short (int)</description>
+            <description>readonly</description>
+          </item>
+          <item>
+            <term>property</term>
+            <description>Width</description>
+            <description>The current width of the picture in the picture object.</description>
+            <description>OLE_XSIZE_HIMETRIC (long)</description>
+            <description>readonly</description>
+          </item>
+          <item>
+            <term>method</term>
+            <description>PictureChanged()</description>
+            <description>Notifies the picture object that its picture resource changed.</description>
+          </item>
+          <item>
+            <term>method</term>
+            <description>Render()</description>
+            <description>Draws the specified portion of the picture onto the specified device context, positioned at the specified location.</description>
+          </item>
+          <item>
+            <term>method</term>
+            <description>SaveAsFile()</description>
+            <description>Saves the picture's data into a stream in the same format that it would save itself into a file.</description>
+          </item>
+          <item>
+            <term>method</term>
+            <description>SelectPicture()</description>
+            <description>
+              Selects a bitmap picture into a given device context, returning the device context in which the picture was previously selected
+              as well as the picture's handle.
+            </description>
+          </item>
+        </list>
+        The <b>Attributes property</b> is said to hold the picture’s bit attributes. Actually, there are only two, which can be set alone, or additive.
+        The following table lists both possible values:<br/>
+        <b>iPicture.Attributes Enumeration</b>
+        <list type="table">
+          <listheader>
+            <term>Constant</term>
+            <descripiton>Description</descripiton>
+            <description>Value</description>
+          </listheader>
+          <item>
+            <term>PICTURE_SCALABLE</term>
+            <description>
+              The picture object is scalable, such that it can be redrawn with a different size than was used to create the picture originally.
+              Metafile-based pictures are considered scalable; icon and bitmap pictures, while they can be scaled, do not express this attribute because both involve bitmap
+              stretching instead of true scaling.
+            </description>
+            <description>1</description>
+          </item>
+          <item>
+            <term>PICTURE_TRANSPARENT</term>
+            <description>
+              The picture object contains an image that has transparent areas, such that drawing the picture will not necessarily fill in all the spaces in the rectangle
+              it occupies. Metafile and icon pictures have this attribute; bitmap pictures do not.
+            </description>
+            <description>2</description>
+          </item>
+        </list>
+        The following table lists all possible values of the <b>iPicture.Type property</b>:
+        <list type="table">
+          <listheader>
+            <term>Constant</term>
+            <descripiton>Description</descripiton>
+            <description>Value</description>
+          </listheader>
+          <item>
+            <term>PICTYPE_UNINITIALIZED</term>
+            <description>The picture object is currently uninitialized. This value is never be returned within VFP.</description>
+            <description>-1</description>
+          </item>
+          <item>
+            <term>PICTYPE_NONE</term>
+            <description>A new picture object is to be created without an initialized state. This value is returned from VFP if LoadPicture() is used without a parameter.</description>
+            <description>0</description>
+          </item>
+          <item>
+            <term>PICTYPE_BITMAP</term>
+            <description>The picture type is a bitmap.</description>
+            <description>1</description>
+          </item>
+          <item>
+            <term>PICTYPE_METAFILE</term>
+            <description>The picture type is a metafile.</description>
+            <description>2</description>
+          </item>
+          <item>
+            <term>PICTYPE_ICON</term>
+            <description>The picture type is an icon.</description>
+            <description>3</description>
+          </item>
+          <item>
+            <term>PICTYPE_ENHMETAFILE</term>
+            <description>The picture type is an enhanced metafile.</description>
+            <description>4</description>
+          </item>
+        </list>
+        The most interesting method of the COM image object’s <b>iPicture interface</b> is <b>render()</b> which also works flawlessly only when called on the <b>iPicture interface</b>.
+        The following table summarises the parameters of the <b>render() method</b>:
+        <list type="table">
+          <listheader>
+            <term>Parameter</term>
+            <descripiton>Used for</descripiton>
+            <description>Scale unit</description>
+          </listheader>
+          <item>
+            <term>hdc</term>
+            <description>A handle of the device context on which to render the image.</description>
+          </item>
+          <item>
+            <term>x</term>
+            <description>The horizontal coordinate in hdc at which to place the rendered image (X-position of upper left corner of output rectangle).</description>
+            <description>pixel</description>
+          </item>
+          <item>
+            <term>y</term>
+            <description>The vertical coordinate in hdc at which to place the rendered image (X-position of upper left corner of output rectangle).</description>
+            <description>pixel</description>
+          </item>
+          <item>
+            <term>cx</term>
+            <description>The horizontal dimension (width) of the destination rectangle (with of output rectangle).</description>
+            <description>pixel</description>
+          </item>
+          <item>
+            <term>cy</term>
+            <description>The vertical dimension (height) of the destination rectangle (height of output rectangle).</description>
+            <description>pixel</description>
+          </item>
+          <item>
+            <term>xSrc</term>
+            <description>The horizontal offset in the source picture from which to start copying.</description>
+            <description>HiMetric</description>
+          </item>
+          <item>
+            <term>ySrc</term>
+            <description>The vertical offset in the source picture from which to start copying.</description>
+            <description>HiMetric</description>
+          </item>
+          <item>
+            <term>cxSrc</term>
+            <description>The horizontal extent to copy from the source picture (width of image source’s clipping region AND direction of readout).</description>
+            <description>HiMetric</description>
+          </item>
+          <item>
+            <term>cySrc</term>
+            <description>The vertical extent to copy from the source picture (height of image source’s clipping region AND direction of readout).</description>
+            <description>HiMetric</description>
+          </item>
+          <item>
+            <term>lprcWBounds</term>
+            <description>
+              If hdc is a metafile device context, the lprcWBounds parameter points to a RECTL structure specifying the bounding rectangle in the underlying metafile.
+              The rectangle structure contains the window extent and window origin. These values are useful for drawing metafiles.
+              The rectangle indicated by lprcBounds is nested inside this lprcWBounds rectangle; they are in the same coordinate space.
+              If hdcDraw is not a metafile device context, lprcWBounds will be NULL. If hdcDraw is a metafile device context, lprcWBounds cannot be NULL!
+            </description>
+          </item>
+        </list>
+        The method returns standard values like E_FAIL, E_INVALIDARG and E_OUToFMEMORY, as well as S_OK, E_POINTER and CTL_E_INVALIDPROPERTYVALUE.
+        These values are described on MSDN.
+      </Interfacemembers>
+      <applications>
+        The render function has plenty of parameters. Some of them passing in pixel values, others HiMetric values.<br/>
+        <b>Example #3</b> has some useful conversions as well as other supporting functions and definitions.<br/>
+        To figure out how <b>render()</b> works try the VFP code below; type it in line by line into VFP’s command window:<br/>
+        Direct input into VFP’s command window
 
+        <code language="X#">
+          * locate an image with round about 100 x 100 pixels
+          goPic = LoadPicture(GetPict())
+          gIP = GETINTERFACE(m.goPic, "iPicture")
+          goForm = CreateObject("Form")
+          goForm.Show()
+          * declare access to the _client_area_ of a window
+          DECLARE Integer GetDC IN User32 integer HWnd
+          * hDC should be  0 (otherwise that's an error)!
+          hDC = GetDC(goForm.HWnd)
+          * render your image directly onto form's client area
+          gIP.Render(m.hDC,0,0,100,100,0,gIP.Height,gIP.Width,- gIP.Height,NULL)
+          * declare release function
+          DECLARE Integer ReleaseDC IN User32 integer HWnd, integer hDC
+          * next line should print 1 on the form's background >> "Okay"
+          ? ReleaseDC(m.goForm.HWnd, m.hDC)
+          * declare access to the _whole_ window
+          DECLARE Integer GetWindowDC IN User32 integer HWnd
+          * hDC now references form's caption an border areas as well!
+          hDC = GetWindowDC(goForm.HWnd)
+          * render out partially overwriting form's border and caption
+          gIP.Render(m.hDC,0,0,100,100,0,gIP.Height,gIP.Width,- gIP.Height,NULL)
+          * never forget to free an allocated device context
+          ? ReleaseDC(m.goForm.HWnd, m.hDC)
+        </code>
+
+        <b>iPicture.Render()</b> qualifies for painting on otherwise unreachable form regions, like the TitleBar or WindowBorders.
+        Another interesting application for direct rendering stems from the fact that no VFP object reference is necessary for painting.
+        The <b>render() method</b> solely uses a common windows handle. Thus, one can render on any known device context.br
+        If one encounters the so-called hourglass problem, working with a COM-based image can be the preferred workaround.
+        The hourglass mouse cursor gets displayed by the operation system during lengthy disk accesses.
+        Sometimes VFP does not reset the hourglass mouse cursor correctly.
+        Thus, the user still sees the “busy working” icon although VFP already is idle, as long she doesn’t touch the mouse.
+        Most often these disk accesses stem from refreshing pictures loaded into native Image-Objects using the <b>Image.Picture property</b>.
+        Storing a COM memory-based object to the Image-Object’s <b>.PictureVal property</b> instead, never causes any disk access.
+        Thus, no more hourglass mouse cursor will appear after a refresh!
+      </applications>
+      <drawback>
+        <b>iPicture.Render()</b> does its work outside of - and unnoticed by – the VFP engine itself.
+        That’s why VFP has no idea of what was painted “between the lines”.
+        Each time VFP refreshes the form’s area (we’ve just rendered our picture onto), will clear out our image.
+        To make rendered output persistent measures have to be taken against VFP wiping it out!
+        There is another BUG one has to be aware of, when employing the hourglass workaround described above!br
+        To see what happens, try the following code:
+
+        <code language="X#">
+          LOCAL lnLoop, oComPic1, oComPic2
+          oComPic1 = LoadPicture(GetFile())
+          oComPic2 = LoadPicture(GetFile())
+          TRY
+          _Screen.Addobject("oImage","IMAGE")
+          CATCH
+          FINALLY
+          _Screen.oImage.Visible = .T.
+          ENDTRY
+          For lnLoop = 1 to 100
+          _Screen.oImage.PictureVal = m.oComPic1
+          _Screen.oImage.PictureVal = m.oComPic2
+          Next
+          *//
+          *\\ whereas the next loop will break somewhere down the road:
+          For lnLoop = 1 to 100
+          _Screen.oImage.PictureVal = m.oComPic1
+          _Screen.oImage.PictureVal = m.oComPic1
+          _Screen.oImage.PictureVal = m.oComPic1
+          _Screen.oImage.PictureVal = m.oComPic2
+          Next
+        </code>
+        One can see, that the first loop executes flawlessly, the second one breaks after only a few loops with a “Property value is invalid” error message!
+        This bug is hard to track and occurs only in cases when someone tries to assign the same COM-reference more than once in a row!
+        The workaround for this is to keep track which COM-reference is actually assigned to the Image’s PictureVal property.
+        Never ever then reassign the same reference a second time (overwriting the first one with a copy of itself)!
+        BTW: It doesn’t matter what interface you are using.
+        The error seems to stem from VFP’s Image class instance.
+      </drawback>
+    <example>
+      The following example shows that both interfaces (<b>Picture</b> and <b>IPicture</b>) of a COM image 
+      instance can be assigned to VFP’s <b>Image.PictureVal property</b>:
       <code language="X#">
         PUBLIC goPic AS Object, goIPic AS Object
-        goPic = LOADPICTURE(GetPict())
+        goPic = LoadPicture(GetPict())
         goIPic = GETINTERFACE(m.goPic, "iPicture")
         _SCREEN.AddObject("oPic1","IMAGE")
         _SCREEN.AddObject("oPic2","IMAGE")
@@ -5619,9 +5848,8 @@
       The following example shows how to query the <b>iPicture interface</b> of a COM image instance.
       Intentionally, there are no Try…Catch…Endtry sections in this demo code, so that OLE errors may occur.
       You have to run the code snippet multiple times with different image types to see them.
-
       <code language="X#">
-        goPic = LOADPICTURE(GetPict())
+        goPic = LoadPicture(GetPict())
         IF VARTYPE(m.goPic) == "O"
         goIPic = GETINTERFACE(m.goPic, "iPicture")
         IF VARTYPE(m.goIPic) == "O"
@@ -5645,7 +5873,6 @@
         ENDIF
       </code>
       The following code is a collection of supporting functions and declarations that come in handy while programming OLE image objects.
-
       <code language="X#">
         * Supporting Functions &amp; DEFINEs
         #DEFINE INCH2MILLIMETER 25.4 &amp;&amp; 1 Inch = 25.4 millimeters
@@ -5735,23 +5962,28 @@
       Locates a file on disk and returns the file name with its path.
     </summary>
     <param name="cFileName">
-
-      Specifies the name of the file to locate. If cFileName includes only a file name, LOCFILE( ) searches the X# default directory or folder first. If the file is not found in the default directory or folder, the X# path is then searched. Use Set PATH to specify the X# path.
-      If cFileName includes a path and a file name, the specified location is searched. If the file cannot be found in the specified location, LOCFILE( ) searches the X# default directory or folder and then the X# path.
-      If the file is located, LOCFILE( ) returns the file name and path.
-
+      Specifies the name of the file to locate. If cFileName includes only a file name, LocFile( ) searches the X# default directory or folder first. 
+      If the file is not found in the default directory or folder, the X# path is then searched. Use Set PATH to specify the X# path.<br/>
+      If cFileName includes a path and a file name, the specified location is searched. If the file cannot be found in the specified location, 
+      LocFile( ) searches the X# default directory or folder and then the X# path.<br/>
+      If the file is located, LocFile( ) returns the file name and path.
     </param>
     <param name="cFileExtensions">
-
       Specifies file extensions for the file to locate. If the file name you specify with cFileName does not include an extension, X# applies the file extensions listed in cFileExtensions to the file name and searches for the file again.
       cFileExtensions also specifies the file name extensions of the files displayed in the Open dialog box when the file you specified cannot be located.
       cFileExtensions can take a variety of forms:
-      If cFileExtensions contains a single extension (for example, PRG), only files with that extension are displayed.
-      cFileExtensions can also contain wildcards (* and ?). All files with extensions that meet the wildcard criteria are displayed. For example, if cFileExtensions is ?X?, all files with the extension .fxp, .exe, or .txt are displayed.
-      In X# for Windows, cFileExtensions can contain a file description followed by a file extension or a list of file extensions separated with commas. The file description appears in the Files of Type list box. Separate the file description from the file extension or list of file extensions with a colon (:). Separate multiple file descriptions and their file extensions with a semicolon (;).
-      For example, if cFileExtensions is "Text:TXT" the file description "Text" appears in the Files of Type list box and all files with a .txt extension are displayed.
-      If cFileExtensions is "Tables:DBF; Files:TXT,BAK" the file descriptions "Tables" and "Files" appear in the Files of Type list box. When "Tables" is chosen from the Files of Type list box, all files with a .dbf extension are displayed. When "Files" is chosen from the Files of Type list box, all files with .txt and .bak extensions are displayed.
-
+      <list type="bullet">
+        <item>If cFileExtensions contains a single extension (for example, PRG), only files with that extension are displayed.</item>
+        <item>cFileExtensions can also contain wildcards (* and ?). All files with extensions that meet the wildcard criteria are displayed.
+        For example, if cFileExtensions is ?X?, all files with the extension .fxp, .exe, or .txt are displayed.</item>
+        <item>In X# for Windows, cFileExtensions can contain a file description followed by a file extension or a list of file extensions separated with commas. 
+        The file description appears in the Files of Type list box. Separate the file description from the file extension or list of 
+        file extensions with a colon (:). Separate multiple file descriptions and their file extensions with a semicolon (;).</item>
+      For example, if cFileExtensions is "Text:TXT" the file description "Text" appears in 
+      the Files of Type list box and all files with a .txt extension are displayed.<br/>
+      If cFileExtensions is "Tables:DBF; Files:TXT,BAK" the file descriptions "Tables" and "Files" appear in the Files of Type list box. 
+      When "Tables" is chosen from the Files of Type list box, all files with a .dbf extension are displayed. When "Files" is chosen from the Files of Type list 
+      box, all files with .txt and .bak extensions are displayed.
     </param>
     <param name="cFileNameCaption">
 
@@ -5763,7 +5995,7 @@
     </returns>
     <remarks>
       The Open dialog box is displayed if the file cannot be located in the default directory or folder, the X# path, or a specified location. The Open dialog box can be used to locate the file. When a file is chosen from the Open dialog box, the file name is returned with the file's path.
-      If you exit the Open dialog box by choosing Cancel, pressing Esc, or choosing Close from the Control menu, X# generates an error message and LOCFILE( ) does not return a value.
+      If you exit the Open dialog box by choosing Cancel, pressing Esc, or choosing Close from the Control menu, X# generates an error message and LocFile( ) does not return a value.
     </remarks>
   </locfile>
   <lock>
@@ -5866,9 +6098,9 @@
       To disable transactions for a free table, you must close the free table in all data sessions.
     </remarks>
   </maketransactable>
-  
-  
-  
+
+
+
   <newobject>
     <summary>
       Creates a new class or object directly from a visual class library (.vcx) file or program (.prg) file without opening the file.
@@ -6508,7 +6740,7 @@
       </code>
     </example>
   </pv>
- 
+
   <raiseevent>
     <summary>
       You can use <b>RAISEEVENT( )</b> to raise, or trigger, an event from a custom method. Though <b>RAISEEVENT( )</b> applies primarily to custom methods, you can use it for raising native events and methods.
@@ -6580,7 +6812,7 @@
       Calling the <b>REFRESH( )</b> function can result in a significant impact on performance because the function re-executes the query on which the view is based. Therefore, do not call this function more than necessary.
     </remarks>
   </refresh>
-  
+
   <requery>
     <summary>
       Retrieves data again for a SQL view.
@@ -6645,7 +6877,7 @@
       Logical
     </returns>
     <remarks>
-      Picture object references are typically created with LOADPICTURE( ). However, certain properties (such as the PictureOpen property for the OLE Outline control) use a default picture object reference, which can be used to create a bitmap file.
+      Picture object references are typically created with LoadPicture( ). However, certain properties (such as the PictureOpen property for the OLE Outline control) use a default picture object reference, which can be used to create a bitmap file.
     </remarks>
   </savepicture>
   <scheme>
@@ -7578,7 +7810,7 @@
       Character. <b>VARTYPE( )</b> returns a character representing the data type of the specified expression.
     </returns>
   </vartype>
-  
+
   <wvisible>
     <summary>
       Determines if the specified window has been activated and isn't hidden.

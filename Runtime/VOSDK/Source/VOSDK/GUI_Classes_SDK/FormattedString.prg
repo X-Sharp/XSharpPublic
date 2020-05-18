@@ -399,12 +399,12 @@ METHOD MatchesTemplChar(cTest AS STRING, cTemplChar AS STRING, lIgnoreBlank AS L
 	CASE cTemplChar == "!"
 		RETURN TRUE
 	CASE cTemplChar == "Y"
-		RETURN (At2(Upper(cTest), Psz2String(_GetStringDXAX(RT_MSG_YNSTRING))) > 0)
+		RETURN (At2(Upper(cTest), Psz2String(__CavoStr(RT_MSG_YNSTRING))) > 0)
 	CASE cTemplChar == "L"
 		cTest := Upper(cTest)               
-		cYesNo := Psz2String(_GetStringDXAX(RT_MSG_YNSTRING)) 
-		cTrue  := Psz2String(_GetStringDXAX(RT_MSG_SHORT_TRUE)) 
-		cFalse := Psz2String(_GetStringDXAX(RT_MSG_SHORT_FALSE)) 
+		cYesNo := Psz2String(__CavoStr(RT_MSG_YNSTRING)) 
+		cTrue  := Psz2String(__CavoStr(RT_MSG_SHORT_TRUE)) 
+		cFalse := Psz2String(__CavoStr(RT_MSG_SHORT_FALSE)) 
 		RETURN ((At2(cTest,cYesNo) >0) .OR. (cTest == cTrue) .OR. (cTest == cFalse))
 	CASE cTemplChar == "." .AND. cType == "N"
 		RETURN TRUE

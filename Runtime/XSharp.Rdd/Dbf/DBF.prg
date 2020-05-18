@@ -288,6 +288,7 @@ RETURN isOK
 
 
     // Append and Delete
+/// <inheritdoc />
 METHOD Append(lReleaseLock AS LOGIC) AS LOGIC
 	LOCAL isOK := FALSE AS LOGIC
 	IF SELF:IsOpen
@@ -352,7 +353,7 @@ PRIVATE METHOD _UpdateRecCount(nCount AS LONG) as LOGIC
 RETURN TRUE
 
 
-
+/// <inheritdoc />
 METHOD AppendLock( lockMode AS DbLockMode ) AS LOGIC
 	LOCAL isOK := FALSE AS LOGIC
 	BEGIN LOCK SELF
@@ -393,6 +394,7 @@ RETURN isOK
     // LockMethod.File      : Unlock all records and Lock the File
     // LockMethod.Exclusive : Unlock all records and lock the indicated record
     // LockMethod.Multiple  : Loc the indicated record
+    /// <inheritdoc />
 METHOD Lock( lockInfo REF DbLockInfo ) AS LOGIC
 	LOCAL isOK AS LOGIC
 	SELF:ForceRel()
@@ -409,6 +411,7 @@ METHOD Lock( lockInfo REF DbLockInfo ) AS LOGIC
 RETURN isOK
 
     // Place a lock on the Header. The "real" offset locked depends on the Lock Scheme, defined by the DBF Type
+    /// <inheritdoc />
 METHOD HeaderLock( lockMode AS DbLockMode ) AS LOGIC
     //
 	IF lockMode == DbLockMode.Lock 
@@ -446,6 +449,7 @@ METHOD HeaderLock( lockMode AS DbLockMode ) AS LOGIC
 
     // Unlock a indicated record number. If 0, Unlock ALL records
     // Then unlock the File if needed
+/// <inheritdoc />
 METHOD UnLock(oRecId AS OBJECT) AS LOGIC
 	LOCAL recordNbr AS LONG
 	LOCAL isOK AS LOGIC
@@ -675,6 +679,7 @@ RETURN isOK
 
 
     // Un Delete the curretn Record
+/// <inheritdoc />
 METHOD Recall() AS LOGIC
 	LOCAL isOK AS LOGIC
 	SELF:ForceRel()
@@ -691,6 +696,7 @@ METHOD Recall() AS LOGIC
 RETURN isOK
 
     // Mark the current record as DELETED
+/// <inheritdoc />
 METHOD Delete() AS LOGIC
 	LOCAL isOK AS LOGIC
 	SELF:ForceRel()
@@ -713,6 +719,7 @@ METHOD Delete() AS LOGIC
 RETURN isOK
 
     // Retrieve the raw content of a record
+/// <inheritdoc />
 METHOD GetRec() AS BYTE[]
 	LOCAL records := NULL AS BYTE[]
 	SELF:ForceRel()
@@ -727,6 +734,7 @@ METHOD GetRec() AS BYTE[]
 RETURN records
 
     // Put the content of a record as raw data
+/// <inheritdoc />
 METHOD PutRec(aRec AS BYTE[]) AS LOGIC
 	LOCAL isOK := FALSE AS LOGIC
     // First, Check the Size
@@ -745,6 +753,7 @@ METHOD PutRec(aRec AS BYTE[]) AS LOGIC
 RETURN isOK
 
     // Suppress all DELETED record
+/// <inheritdoc />
 METHOD Pack() AS LOGIC
 	LOCAL isOK AS LOGIC
 	IF ! SELF:IsOpen
@@ -804,6 +813,7 @@ RETURN isOK
 
 
     // Remove all records
+/// <inheritdoc />
 METHOD Zap() AS LOGIC
 	LOCAL isOK AS LOGIC
 	IF ! SELF:IsOpen
@@ -1226,6 +1236,7 @@ RETURN ret
 
 
     // Fields
+/// <inheritdoc />
 METHOD SetFieldExtent( fieldCount AS LONG ) AS LOGIC
 	SELF:_HasMemo := FALSE
 RETURN SUPER:SetFieldExtent(fieldCount)
@@ -1631,6 +1642,7 @@ METHOD Refresh() 			AS LOGIC
     //
 RETURN isOK	
     // Save any Pending Change
+    /// <inheritdoc />
 METHOD GoCold()			AS LOGIC
 	LOCAL ret AS LOGIC
     //
@@ -1646,6 +1658,7 @@ METHOD GoCold()			AS LOGIC
 RETURN ret
 
     // Indicate that the content of the current buffer needs to be saved
+    /// <inheritdoc />
 METHOD GoHot()			AS LOGIC
 	LOCAL ret AS LOGIC
     //
@@ -1667,7 +1680,9 @@ METHOD GoHot()			AS LOGIC
 	ENDIF
 RETURN ret
 
-PROPERTY IsHot AS LOGIC GET SELF:_Hot SET SELF:_Hot := value
+/// <summary>Is the current row </summary>
+PROPERTY IsHot AS LOGIC GET SELF:_Hot
+/// <summary>Is the current row a new record (the result of Append())</summary>
 PROPERTY IsNewRecord AS LOGIC GET SELF:_NewRecord
 	
 /// <inheritdoc />
@@ -1885,7 +1900,7 @@ RETURN isOK
 
 
     // Codeblock Support
-
+/// <inheritdoc />
 VIRTUAL METHOD Compile(sBlock AS STRING) AS ICodeblock
 	LOCAL result AS ICodeblock
 	result := SUPER:Compile(sBlock)
@@ -1898,6 +1913,7 @@ VIRTUAL METHOD Compile(sBlock AS STRING) AS ICodeblock
 	ENDIF
 RETURN result
 
+/// <inheritdoc />
 VIRTUAL METHOD EvalBlock( cbBlock AS ICodeblock ) AS OBJECT
 	LOCAL result := NULL AS OBJECT
 	TRY
@@ -2126,6 +2142,7 @@ VIRTUAL METHOD RecInfo(nOrdinal AS LONG, oRecID AS OBJECT, oNewValue AS OBJECT) 
 	ENDIF
 RETURN oResult
 
+/// <inheritdoc />
 METHOD Sort(info AS DbSortInfo) AS LOGIC
 	LOCAL recordNumber AS LONG
 	LOCAL trInfo AS DbTransInfo

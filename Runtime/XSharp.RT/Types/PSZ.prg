@@ -204,6 +204,22 @@ BEGIN NAMESPACE XSharp
 		#region OPERATOR methods
 			// binary
 			/// <include file="RTComments.xml" path="Comments/Operator/*" />
+            // Note that this does not allocate a new string but it returns the offset in the original string
+			OPERATOR +( lhs AS PSZ, rhs AS LONG ) AS PSZ
+                IF XSharp.RuntimeState.Dialect != XSharpDialect.Vulcan
+                    rhs+= 1
+                ENDIF
+				RETURN PSZ{@lhs:_value[rhs] }
+
+			/// <include file="RTComments.xml" path="Comments/Operator/*" />
+            // Note that this does not allocate a new string but it returns the offset in the original string
+			OPERATOR +( lhs AS PSZ, rhs AS DWORD ) AS PSZ
+                IF XSharp.RuntimeState.Dialect != XSharpDialect.Vulcan
+                    rhs+= 1
+                ENDIF
+				RETURN PSZ{@lhs:_value[(LONG) rhs] }
+
+			/// <include file="RTComments.xml" path="Comments/Operator/*" />
 			OPERATOR +( lhs AS PSZ, rhs AS PSZ ) AS PSZ
 				RETURN PSZ{ lhs:ToString() + rhs:ToString() }
 			

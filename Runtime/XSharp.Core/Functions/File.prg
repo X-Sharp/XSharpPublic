@@ -708,7 +708,7 @@ FUNCTION FReadText(ptrHandle AS IntPtr,cBufferVar REF STRING,dwBytes AS DWORD) A
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/fread/*" />  
 FUNCTION FRead(ptrHandle AS IntPtr,cBufferVar REF STRING,dwBytes AS DWORD) AS DWORD
-	RETURN (DWORD) XSharp.IO.File.Read(ptrHandle, OUT cBufferVar, (INT) dwBytes, XSharp.RuntimeState.Ansi)
+	RETURN (DWORD) XSharp.IO.File.Read(ptrHandle, OUT cBufferVar, (INT) dwBytes, TRUE)
 
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/freadtext3/*" />  

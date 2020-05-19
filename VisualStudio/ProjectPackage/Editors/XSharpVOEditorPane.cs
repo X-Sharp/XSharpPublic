@@ -19,7 +19,7 @@ using Microsoft.VisualStudio.Shell;
 using EnvDTE;
 using XSharp.VOEditors;
 using Microsoft.VisualStudio.Project;
-
+using XSharp.LanguageService;
 namespace XSharp.Project
 {
     /// <summary>

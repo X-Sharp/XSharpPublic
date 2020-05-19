@@ -98,7 +98,7 @@ namespace XSharp.Project
         public XSharpProjectNode(XSharpProjectPackage package)
         {
             this.package = package;
-            package.StartLanguageService();
+            //package.StartLanguageService();
             InitializeImageList();
 
             InitializeCATIDs();
@@ -1373,12 +1373,65 @@ namespace XSharp.Project
         #region IXSharpProject Interface
         protected IVsStatusbar statusBar;
 
+
+        int getKeywordCase()
+        {
+            // 0 : none; 1 : UPPER; 2 : lower; 3 : TitleCase
+            object kwcase = 1;
+            try
+            {
+                var key = Microsoft.Win32.Registry.CurrentUser;
+                var subkey = key.OpenSubKey(Constants.RegistryKey, true);
+                if (subkey == null)
+                {
+                    subkey = key.CreateSubKey(Constants.RegistryKey, true);
+                }
+                kwcase = subkey.GetValue("KeywordCase");
+                if (kwcase == null)
+                {
+                    subkey.SetValue("KeywordCase", 1);
+                    kwcase = 1;
+                }
+            }
+            catch
+            {
+                kwcase = 1;
+            }
+            SetCaseSync((int) kwcase);
+
+            return (int)kwcase;
+        }
+        void SetCaseSync(int kwcase)
+        {
+            // 0 : none; 1 : UPPER; 2 : lower; 3 : TitleCase
+            switch (kwcase)
+            {
+                case 1:
+                    CaseSync = (x) => x.ToUpper();
+                    break;
+                case 2:
+                    CaseSync = (x) => x.ToLower();
+                    break;
+                case 3:
+                    CaseSync = (x) => x.Length > 1 ? x.Substring(0, 1).ToUpper() + x.Substring(1).ToLower() : x.ToUpper();
+                    break;
+                case 0:
+                    CaseSync = (x) => x;
+                    break;
+            }
+        }
+
+        caseSync CaseSync;
+        delegate string caseSync(string original);
+
         public string SynchronizeKeywordCase(string code, string fileName)
         {
             var package = XSharp.Project.XSharpProjectPackage.Instance;
-            var optionsPage = package.GetIntellisenseOptionsPage();
-            if (optionsPage.KeywordCase == Project.KeywordCase.None)
-                return code;
+            var kwcase = getKeywordCase();
+            // 0 : none; 1 : UPPER; 2 : lower; 3 : TitleCase
+
+            if (kwcase == 0)
+            //    return code;
             // we also normalize the line endings
             code = code.Replace("\n", "");
             code = code.Replace("\r", "\r\n");
@@ -1401,7 +1454,7 @@ namespace XSharp.Project
             {
                 if (XSharpLexer.IsKeyword(token.Type))
                 {
-                    sb.Append(optionsPage.SyncKeyword(token.Text));
+                    sb.Append(CaseSync(token.Text));
                 }
                 else
                 {
@@ -1537,11 +1590,11 @@ namespace XSharp.Project
             }
         }
 
-        public bool DisableLexing => package.GetIntellisenseOptionsPage().DisableSyntaxColorization;
-        public bool DisableParsing => package.GetIntellisenseOptionsPage().DisableEntityParsing;
-        public bool DisableRegions => package.GetIntellisenseOptionsPage().DisableRegions;
+        public bool DisableLexing => false; // package.GetIntellisenseOptionsPage().DisableSyntaxColorization;
+        public bool DisableParsing => false; //package.GetIntellisenseOptionsPage().DisableEntityParsing;
+        public bool DisableRegions => false; //package.GetIntellisenseOptionsPage().DisableRegions;
 
-        public bool KeywordsUppercase => package.GetIntellisenseOptionsPage().KeywordCase == KeywordCase.Upper;
+        public bool KeywordsUppercase => false; //package.GetIntellisenseOptionsPage().KeywordCase == KeywordCase.Upper;
 
         #endregion
 

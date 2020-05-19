@@ -88,7 +88,7 @@ namespace XSharp.Project
                     int hr = rdt.GetDocumentInfo(docCookie, out flags, out readLocks, out writeLoks,
                                                  out documentMoniker, out hierarchy, out itemId, out unkDocData);
                     // check to see if this is one our files.
-                    VsTextViewCreationListener.IsOurSourceFile(documentMoniker);
+                    //VsTextViewCreationListener.IsOurSourceFile(documentMoniker);
                 }
             }
             return VSConstants.S_OK;

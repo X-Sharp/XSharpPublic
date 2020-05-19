@@ -8,12 +8,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using XSharp.LanguageService;
-namespace XSharp.Project
+
+namespace XSharp.LanguageService
 {
     public static class XSharpConstants
     {
-
 
         public const string LanguageName = "XSharp";
         internal const string LanguageServiceName = "XSharp Language Service";

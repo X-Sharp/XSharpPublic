@@ -6,8 +6,13 @@
 using Microsoft.VisualStudio.Debugger;
 using Microsoft.VisualStudio.Debugger.Clr;
 using Microsoft.VisualStudio.Debugger.Evaluation;
+using Microsoft.VisualStudio.Shell;
 using System;
 using System.Collections.Generic;
+
+[assembly: ProvideCodeBase(AssemblyName = "System.Collections.Immutable", CodeBase = "System.Collections.Immutable.dll", Culture = "neutral", PublicKeyToken = "b03f5f7f11d50a3a", Version = "1.2.5.0")]
+[assembly: ProvideCodeBase(AssemblyName = "System.Reflection.Metadata", CodeBase = "System.Reflection.Metadata.dll", Culture = "neutral", PublicKeyToken = "b03f5f7f11d50a3a", Version = "1.4.5.0")]
+
 
 namespace XSharpDebugger
 {

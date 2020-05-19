@@ -20,7 +20,6 @@ using System.ComponentModel;
 using System.ComponentModel.Design;
 using System.Globalization;
 using static XSharp.Project.XSharpConstants;
-using XSharp.Project.OptionsPages;
 using XSharp.VOEditors;
 using System.Threading;
 using System.Threading.Tasks;
@@ -60,10 +59,12 @@ $WINDIR$	The Windows folder.
 
 // The following lines ensure that the right versions of the various DLLs are loaded.
 // They will be included in the generated PkgDef folder for the project system
-[assembly: ProvideCodeBase(AssemblyName = "XSharp.CodeDom.XSharpCodeDomProvider", CodeBase = "XSharpCodeDomProvider.dll", Culture = "neutral", PublicKeyToken = "ed555a0467764586", Version = XSharp.Constants.Version)]
-[assembly: ProvideCodeBase(AssemblyName = "XSharp.VsParser", CodeBase = "XSharp.VsParser.dll", Culture = "neutral", PublicKeyToken = "ed555a0467764586", Version = XSharp.Constants.Version)]
-[assembly: ProvideCodeBase(AssemblyName = "XSharpColorizer", CodeBase = "XSharpColorizer.dll", Culture = "neutral", PublicKeyToken = "ed555a0467764586", Version = XSharp.Constants.Version)]
-[assembly: ProvideCodeBase(AssemblyName = "XSharpModel", CodeBase = "XSharpModel.dll", Culture = "neutral", PublicKeyToken = "ed555a0467764586", Version = XSharp.Constants.Version)]
+[assembly: ProvideCodeBase(AssemblyName = "XSharp.CodeDom.XSharpCodeDomProvider", CodeBase = "XSharpCodeDomProvider.dll", Culture = "neutral", PublicKeyToken = XSharp.Constants.PublicKey, Version = XSharp.Constants.Version)]
+[assembly: ProvideCodeBase(AssemblyName = "XSharp.VsParser", CodeBase = "XSharp.VsParser.dll", Culture = "neutral", PublicKeyToken = XSharp.Constants.PublicKey, Version = XSharp.Constants.Version)]
+[assembly: ProvideCodeBase(AssemblyName = "XSharpColorizer", CodeBase = "XSharpColorizer.dll", Culture = "neutral", PublicKeyToken = XSharp.Constants.PublicKey, Version = XSharp.Constants.Version)]
+[assembly: ProvideCodeBase(AssemblyName = "XSharpModel", CodeBase = "XSharpModel.dll", Culture = "neutral", PublicKeyToken = XSharp.Constants.PublicKey, Version = XSharp.Constants.Version)]
+[assembly: ProvideCodeBase(AssemblyName = "System.Collections.Immutable", CodeBase = "System.Collections.Immutable.dll", Culture = "neutral", PublicKeyToken = "b03f5f7f11d50a3a", Version = "1.2.5.0")]
+[assembly: ProvideCodeBase(AssemblyName = "System.Reflection.Metadata", CodeBase = "System.Reflection.Metadata.dll", Culture = "neutral", PublicKeyToken = "b03f5f7f11d50a3a", Version = "1.4.5.0")]
 namespace XSharp.Project
 {
 
@@ -101,63 +102,6 @@ namespace XSharp.Project
         LanguageName, ProjectFileMask, ProjectExtension, ProjectExtensions,
         @".NullPath", LanguageVsTemplate = "XSharp", NewProjectRequireNewFolderVsTemplate = false)]
 
-    [ProvideService(typeof(XSharpLanguageService), ServiceName = LanguageServiceName,IsAsyncQueryable =false)]//
-    [ProvideLanguageExtension(typeof(XSharpLanguageService), ".prg")]
-    [ProvideLanguageExtension(typeof(XSharpLanguageService), ".xs")]
-    [ProvideLanguageExtension(typeof(XSharpLanguageService), ".ppo")]
-    [ProvideLanguageExtension(typeof(XSharpLanguageService), ".vh")]
-    [ProvideLanguageExtension(typeof(XSharpLanguageService), ".xh")]
-    [ProvideLanguageExtension(typeof(XSharpLanguageService), ".ch")]
-    [ProvideLanguageService(typeof(XSharpLanguageService),
-                         LanguageName,
-                         1,                            // resource ID of localized language name
-                         AutoOutlining = true,
-                         CodeSense = true,             // Supports IntelliSense
-                         CodeSenseDelay = 1000,        // Delay to wait
-                         DefaultToInsertSpaces = true,
-                         DefaultToNonHotURLs = true,
-                         EnableAdvancedMembersOption = true,
-                         EnableAsyncCompletion = true, // Supports background parsing
-                         EnableCommenting = true,      // Supports commenting out code
-                         EnableLineNumbers = true,
-                         MatchBraces = true,
-                         MatchBracesAtCaret = true,
-                         MaxErrorMessages = 10,
-                         QuickInfo = true,
-                         RequestStockColors = false,   // Supplies custom colors
-                         ShowCompletion = true,
-                         ShowDropDownOptions = true,    // Supports NavigationBar
-                         ShowMatchingBrace = true,
-
-#if SMARTINDENT
-                         ShowSmartIndent = true,
-                         EnableFormatSelection = true,
-#else
-                         ShowSmartIndent = false,
-                         EnableFormatSelection = false,
-#endif
-                         HideAdvancedMembersByDefault = true,
-                         SingleCodeWindowOnly = false,
-                         ShowHotURLs = true,
-                         SupportCopyPasteOfHTML = true
-
-                 )]
-    [ProvideLanguageCodeExpansionAttribute(
-         typeof(XSharpLanguageService),
-         LanguageName,  // Name of language used as registry key.
-         1,         // Resource ID of localized name of language service.
-         LanguageName,  // language key used in snippet templates.
-         @"%InstallRoot%\Common7\IDE\Extensions\XSharp\Snippets\%LCID%\SnippetsIndex.xml",  // Path to snippets index
-         SearchPaths = @"%InstallRoot%\Common7\IDE\Extensions\XSharp\Snippets\%LCID%\Snippets;" +
-                  @"\%MyDocs%\Code Snippets\XSharp\My Code Snippets"
-         )]
-    [ProvideLanguageEditorOptionPageAttribute(
-                 typeof(IntellisenseOptionsPage),  // GUID of property page
-                 LanguageName,  // Language Name
-                 null,      // Page Category
-                 "Intellisense",// Page name
-                 "#201"         // Localized name of property page
-                 )]
 
      [ProvideProjectFactory(typeof(XSharpWPFProjectFactory),
         null,
@@ -204,17 +148,14 @@ namespace XSharp.Project
     [ProvideMenuResource("Menus.ctmenu", 1)]
     //[ProvideBindingPath]        // Tell VS to look in our path for assemblies
     public sealed class XSharpProjectPackage : AsyncProjectPackage, IOleComponent,
-        IVsShellPropertyEvents, IVsDebuggerEvents, XSharpModel.IOutputWindow
+        IVsDebuggerEvents, XSharpModel.IOutputWindow, IDebugLogger
     {
         private UIThread _uiThread;
         private uint m_componentID;
         private static XSharpProjectPackage instance;
         private XPackageSettings settings;
-        private uint shellCookie;
         private XSharpLibraryManager _libraryManager;
         private XSharpDocumentWatcher _documentWatcher;
-        private Microsoft.VisualStudio.Package.LanguageService _xsLangService;
-        private IVsTextManager4 _txtManager;
 
         // =========================================================================================
         // Properties
@@ -244,20 +185,9 @@ namespace XSharp.Project
                 }
             });
         }
-        IntellisenseOptionsPage _intellisensePage;
-        internal IntellisenseOptionsPage GetIntellisenseOptionsPage()
-        {
-            if (_intellisensePage == null)
-                _intellisensePage = (IntellisenseOptionsPage)GetDialogPage(typeof(IntellisenseOptionsPage));
-            return _intellisensePage;
-        }
 
-        internal IVsTextManager4 GetTextManager()
-        {
-            return this._txtManager;
-        }
 
-       // XSharpLanguageService _langService = null;
+
         #region Overridden Implementation
         /// <summary>
         /// Initialization of the package; this method is called right after the package is sited, so this is the place
@@ -274,7 +204,7 @@ namespace XSharp.Project
              XSharpModel.XSolution.OutputWindow = this;
              this.RegisterProjectFactory(new XSharpProjectFactory(this));
              this.settings = new XPackageSettings(this);
-             validateVulcanEditors();
+             //validateVulcanEditors();
              this.RegisterDebuggerEvents();
              // Indicate how to open the different source files : SourceCode or Designer ??
              this.RegisterEditorFactory(new XSharpEditorFactory(this));
@@ -303,13 +233,6 @@ namespace XSharp.Project
                 int hr = mgr.FRegisterComponent(this, crinfo, out m_componentID);
             }
             // Initialize Custom Menu Items
-            // register property changed event handler
-
-
-            var shell = await this.GetServiceAsync(typeof(SVsShell)) as IVsShell;
-            Assumes.Present(shell);
-
-            shell.AdviseShellPropertyChanges(this, out shellCookie);
             //
             // ObjectBrowser : Add the LibraryManager service as a Service provided by that container
             IServiceContainer container = this as IServiceContainer;
@@ -318,39 +241,21 @@ namespace XSharp.Project
             container.AddService(typeof(IXSharpLibraryManager), callback, true);
             this._documentWatcher = new XSharpDocumentWatcher(this);
 
-            _txtManager = await GetServiceAsync(typeof(SVsTextManager)) as IVsTextManager4;
 
             // determine version of VS
-            object vers;
-            shell.GetProperty((int)__VSSPROPID5.VSSPROPID_ReleaseVersion, out vers);
+            //object vers;
+            //shell.GetProperty((int)__VSSPROPID5.VSSPROPID_ReleaseVersion, out vers);
 
-            VsVersion = vers.ToString();
+            //VsVersion = vers.ToString();
         }
 
-        internal static string VsVersion;
+        //internal static string VsVersion;
         void initUITHread()
         {
             if (_uiThread == null)
             _uiThread = new UIThread();
         }
-        internal async void StartLanguageService()
-        {
-            if (_xsLangService == null)
-            {
-                IServiceContainer serviceContainer = this as IServiceContainer;
-                await JoinableTaskFactory.SwitchToMainThreadAsync();
-                if (serviceContainer.GetService(typeof(XSharpLanguageService))== null)
-                {
-                    XSharpLanguageService langService = new XSharpLanguageService(this);
-                    serviceContainer.AddService(typeof(XSharpLanguageService),
-                                                langService,
-                                                true);
-                }
-                _xsLangService =  GetService(typeof(XSharpLanguageService)) as Microsoft.VisualStudio.Package.LanguageService;
-            }
-
-        }
-        private object CreateLibraryService(IServiceContainer container, Type serviceType)
+         private object CreateLibraryService(IServiceContainer container, Type serviceType)
         {
             if (typeof(IXSharpLibraryManager) == serviceType)
             {
@@ -396,30 +301,30 @@ namespace XSharp.Project
             return Ok;
         }
 
-        private void validateVulcanEditors()
-        {
-            // check Vulcan Source code editor keys
-            bool Ok = true;
-            // Source editor
-            Ok = Ok && CheckKey(GuidStrings.guidVulcanSourceCodeEditor, "prg");
-            Ok = Ok && CheckKey(GuidStrings.guidVulcanSourceCodeEditor, "ppo");
-            Ok = Ok && CheckKey(GuidStrings.guidVulcanSourceCodeEditor, "vh");
-            Ok = Ok && CheckKey(GuidStrings.guidVulcanFormEditor, "vnfrm");
-            Ok = Ok && CheckKey(GuidStrings.guidVulcanMenuEditor, "vnmnu");
-            Ok = Ok && CheckKey(GuidStrings.guidVulcanDbEditor, "vndbs");
-            Ok = Ok && CheckKey(GuidStrings.guidVulcanFsEditor, "vnfs");
-            if (!Ok)
-            {
-                int result = 0;
-                Guid tempGuid = Guid.Empty;
-                IVsUIShell VsUiShell = GetService(typeof(SVsUIShell)) as IVsUIShell;
-                ErrorHandler.ThrowOnFailure(VsUiShell.ShowMessageBox(0, ref tempGuid, "File Associations",
-                    "The Vulcan file associations must be changed.\nPlease run setup again\n\n" +
-                    "Failure to do so may result in unexpected behavior inside Visual Studio",
-                    null, 0,
-                    OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST,
-                    OLEMSGICON.OLEMSGICON_CRITICAL, 0, out result));
-            }
+        //private void validateVulcanEditors()
+        //{
+        //    // check Vulcan Source code editor keys
+        //    bool Ok = true;
+        //    // Source editor
+        //    Ok = Ok && CheckKey(GuidStrings.guidVulcanSourceCodeEditor, "prg");
+        //    Ok = Ok && CheckKey(GuidStrings.guidVulcanSourceCodeEditor, "ppo");
+        //    Ok = Ok && CheckKey(GuidStrings.guidVulcanSourceCodeEditor, "vh");
+        //    Ok = Ok && CheckKey(GuidStrings.guidVulcanFormEditor, "vnfrm");
+        //    Ok = Ok && CheckKey(GuidStrings.guidVulcanMenuEditor, "vnmnu");
+        //    Ok = Ok && CheckKey(GuidStrings.guidVulcanDbEditor, "vndbs");
+        //    Ok = Ok && CheckKey(GuidStrings.guidVulcanFsEditor, "vnfs");
+        //    if (!Ok)
+        //    {
+        //        int result = 0;
+        //        Guid tempGuid = Guid.Empty;
+        //        IVsUIShell VsUiShell = GetService(typeof(SVsUIShell)) as IVsUIShell;
+        //        ErrorHandler.ThrowOnFailure(VsUiShell.ShowMessageBox(0, ref tempGuid, "File Associations",
+        //            "The Vulcan file associations must be changed.\nPlease run setup again\n\n" +
+        //            "Failure to do so may result in unexpected behavior inside Visual Studio",
+        //            null, 0,
+        //            OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST,
+        //            OLEMSGICON.OLEMSGICON_CRITICAL, 0, out result));
+        //    }
 
 
 
@@ -427,7 +332,7 @@ namespace XSharp.Project
 
 
 
-        }
+        //}
 
         /// <summary>
         /// Gets the settings stored in the registry for this package.
@@ -442,7 +347,7 @@ namespace XSharp.Project
             get { return "XSharp"; }
         }
 
-        internal int ShowMessageBox(string message)
+        public int ShowMessageBox(string message)
         {
             string title = string.Empty;
             OLEMSGICON icon = OLEMSGICON.OLEMSGICON_CRITICAL;
@@ -470,14 +375,6 @@ namespace XSharp.Project
         public int FDoIdle(uint grfidlef)
         {
             bool bPeriodic = (grfidlef & (uint)_OLEIDLEF.oleidlefPeriodic) != 0;
-            // Use typeof(TestLanguageService) because we need to
-            // reference the GUID for our language service.
-            //Microsoft.VisualStudio.Package.LanguageService service = GetService(typeof(XSharpLanguageService))
-            //                          as Microsoft.VisualStudio.Package.LanguageService;
-            if ( _xsLangService != null)
-            {
-                _xsLangService.OnIdle(bPeriodic);
-            }
             if (_libraryManager != null)
                 _libraryManager.OnIdle();
 
@@ -547,27 +444,14 @@ namespace XSharp.Project
         {
             initUITHread();
             _uiThread.MustBeCalledFromUIThread();
-            var shell = this.GetService(typeof(SVsShell)) as IVsShell;
-            if (shell != null)
-            {
-                shell.UnadviseShellPropertyChanges(shellCookie);
-                shellCookie = 0;
-            }
+            //var shell = this.GetService(typeof(SVsShell)) as IVsShell;
+            //if (shell != null)
+            //{
+            //    shell.UnadviseShellPropertyChanges(shellCookie);
+            //    shellCookie = 0;
+            //}
         }
 
-        public int OnShellPropertyChange(int propid, object var)
-        {
-            // A modal dialog has been opened. Editor Options ?
-            if (propid == (int)__VSSPROPID4.VSSPROPID_IsModal && var is Boolean)
-            {
-                // when modal window closes
-                if (!(Boolean) var)
-                {
-                    CommandFilter.InvalidateOptions();
-                }
-            }
-            return VSConstants.S_OK;
-        }
         #endregion
 
         #region IVSDebuggerEvents
@@ -611,12 +495,12 @@ namespace XSharp.Project
             modeArray[0] = dbgmodeNew;
             return VSConstants.S_OK;
         }
-        internal bool DebuggerIsRunning => modeArray[0] != DBGMODE.DBGMODE_Design;
+        public bool DebuggerIsRunning => modeArray[0] != DBGMODE.DBGMODE_Design;
         #endregion
 
         public void DisplayException(Exception ex)
         {
-            if (GetIntellisenseOptionsPage().EnableOutputPane)
+            //if (GetIntellisenseOptionsPage().EnableOutputPane)
             {
                 string space = "";
                 while (ex != null)
@@ -634,7 +518,7 @@ namespace XSharp.Project
 
         public void DisplayOutPutMessage(string message)
         {
-            if (GetIntellisenseOptionsPage().EnableOutputPane)
+            //if (GetIntellisenseOptionsPage().EnableOutputPane)
             {
                 XSharpOutputPane.DisplayOutPutMessage(message);
             }

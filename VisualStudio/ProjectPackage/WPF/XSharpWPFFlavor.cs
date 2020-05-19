@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.Shell.Flavor;
 using Microsoft.VisualStudio.Shell.Interop;
 
-
+using XSharp.LanguageService;
 namespace XSharp.Project.WPF
 {
     [ComVisible(true)]

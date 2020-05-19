@@ -6,23 +6,11 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-
-using System.Collections.Immutable;
 using Microsoft.CodeAnalysis.Text;
-using Roslyn.Utilities;
-
-
-using System.Diagnostics;
-using System.Threading;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Atn;
-using Antlr4.Runtime.Tree;
-using Antlr4.Runtime.Misc;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
-using XP = LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax;
 using System.Globalization;
@@ -46,14 +34,9 @@ namespace XSharp.Parser
         {
             foreach (var error in parseErrors)
             {
-#if REALPARSER
-                var loc = error.Node.GetLocation();
-                var file = error.Node.SourceFileName;
-                var ls = loc.GetLineSpan().Span;
-#else
+
                 string file= error.Node.SourceFileName;
                 var ls = new LinePositionSpan() { Line = error.Node.MappedLine, Column = error.Node.Position, FileName = error.Node.SourceFileName };
-#endif
                 var msg = ErrorFacts.GetMessage(error.Code, CultureInfo.CurrentCulture);
                 if (ErrorFacts.IsWarning(error.Code))
                 {
@@ -67,6 +50,38 @@ namespace XSharp.Parser
 
         }
 
+        private static bool LexerHelper(string sourceText, string fileName, CSharpParseOptions options,
+            List<ParseErrorData> parseErrors, out ITokenStream tokens, out BufferedTokenStream ppStream)
+        {
+            ppStream = null;
+            tokens = null;
+            var lexer = XSharpLexer.Create(sourceText, fileName, options);
+            lexer.Options = options;
+            BufferedTokenStream tokenStream = lexer.GetTokenStream();
+            tokenStream.Fill();
+            tokens = (ITokenStream)tokenStream;
+            GetLexerErrors(lexer, tokenStream, parseErrors);
+            // do we need to preprocess
+            #region Determine if we really need the preprocessor
+            var mustPreprocess = !options.MacroScript && (lexer.HasPreprocessorTokens || !options.NoStdDef);
+            #endregion
+            XSharpPreprocessor pp = null;
+            pp = new XSharpPreprocessor(lexer, tokenStream, options, fileName, Encoding.Unicode, SourceHashAlgorithm.None, parseErrors);
+            if (mustPreprocess)
+            {
+                var ppTokens = pp.PreProcess();
+                ppStream = new CommonTokenStream(new XSharpListTokenSource(lexer, ppTokens));
+            }
+            else
+            {
+                // No Standard Defs and no preprocessor tokens in the lexer
+                // so we bypass the preprocessor and use the lexer token stream
+                ppStream = new CommonTokenStream(new XSharpListTokenSource(lexer, tokenStream.GetTokens()));
+            }
+            ppStream.Fill();
+            return ppStream != null && tokens != null;
+        }
+
         public static bool Parse(string sourceText, string fileName, CSharpParseOptions options, IErrorListener listener,
             out ITokenStream tokens, out XSharpParser.SourceContext tree)
         {
@@ -75,45 +90,7 @@ namespace XSharp.Parser
             var parseErrors = ParseErrorData.NewBag();
             try
             {
-                var lexer = XSharpLexer.Create(sourceText, fileName, options);
-                lexer.Options = options;
-                BufferedTokenStream tokenStream = lexer.GetTokenStream();
-                tokenStream.Fill();
-                tokens = (ITokenStream)tokenStream;
-
-                GetLexerErrors(lexer, tokenStream, parseErrors);
-
-                // do we need to preprocess
-                #region Determine if we really need the preprocessor
-                bool mustPreprocess = true;
-                if (lexer.HasPreprocessorTokens || !options.NoStdDef)
-                {
-                    // no need to pre process in partial compilation 
-                    // if lexer does not contain UDCs, Messages or Includes
-                    mustPreprocess = lexer.MustBeProcessed;
-                }
-                else
-                {
-                    mustPreprocess = false;
-
-                }
-                #endregion
-                XSharpPreprocessor pp = null;
-                BufferedTokenStream ppStream = null;
-                pp = new XSharpPreprocessor(lexer, tokenStream, options, fileName, Encoding.Unicode, SourceHashAlgorithm.None, parseErrors);
-
-                if (mustPreprocess)
-                {
-                    var ppTokens = pp.PreProcess();
-                    ppStream = new CommonTokenStream(new XSharpListTokenSource(lexer, ppTokens));
-                }
-                else
-                {
-                    // No Standard Defs and no preprocessor tokens in the lexer
-                    // so we bypass the preprocessor and use the lexer token stream
-                    ppStream = new CommonTokenStream(new XSharpListTokenSource(lexer, tokenStream.GetTokens()));
-                }
-                ppStream.Fill();
+                LexerHelper(sourceText, fileName, options, parseErrors, out tokens, out var ppStream);
                 var parser = new XSharpParser(ppStream);
                 parser.Interpreter.tail_call_preserves_sll = false;     // default = true   Setting to FALSE will reduce memory used by parser
                 parser.Options = options;
@@ -158,36 +135,7 @@ namespace XSharp.Parser
             var parseErrors = ParseErrorData.NewBag();
             try
             {
-                var lexer = XSharpLexer.Create(sourceText, fileName, options);
-                lexer.Options = options;
-                var tokenStream = lexer.GetTokenStream();
-                tokenStream.Fill();
-                tokens = tokenStream; 
-                GetLexerErrors(lexer, tokenStream, parseErrors);
-                #region Determine if we need to preprocess
-                bool mustPreprocess = true;
-                if (options.NoStdDef)
-                {
-                    mustPreprocess = lexer.MustBeProcessed || lexer.HasPreprocessorTokens;
-                }
-               
-#endregion
-                XSharpPreprocessor pp = null;
-                BufferedTokenStream ppStream = null;
-                pp = new XSharpPreprocessor(lexer, tokenStream, options, fileName, Encoding.Unicode, SourceHashAlgorithm.None, parseErrors);
-
-                if (mustPreprocess)
-                {
-                    var ppTokens = pp.PreProcess();
-                    ppStream = new CommonTokenStream(new XSharpListTokenSource(lexer, ppTokens));
-                }
-                else
-                {
-                    // No Standard Defs and no preprocessor tokens in the lexer
-                    // so we bypass the preprocessor and use the lexer token stream
-                    ppStream = new CommonTokenStream(new XSharpListTokenSource(lexer, tokenStream.GetTokens()));
-                }
-                ppStream.Fill();
+                LexerHelper(sourceText, fileName, options, parseErrors, out tokens, out _);
             }
             catch (Exception)
             {

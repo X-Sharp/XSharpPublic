@@ -141,7 +141,7 @@ dllcallconv         : Cc=( CLIPPER | STRICT | PASCAL | THISCALL | FASTCALL | ASP
 // _DLL CONSTRUCTOR(oWinOwner,oRptOwner) :rp2DSN32.PtrDevice:Init
 // _DLL DESTRUCTOR :rp2DSN32.PtrDevice:Axit
 
-vodllmethod         : D=DLL T=(METHOD|ACCESS|ASSIGN|CONSTRUCTOR|DESTRUCTOR) .*? EOS
+vodllmethod         : D=DLL T=(METHOD|ACCESS|ASSIGN|CONSTRUCTOR|DESTRUCTOR) (~EOS)? EOS
                     ;
 
 
@@ -375,7 +375,7 @@ propertyAccessor    : Attributes=attributes? Modifiers=accessorModifiers?
                     ;
 
 classmember         : Member=method                                 #clsmethod
-                    | decl=declare                                  #clsdeclare
+                    | decl=vodeclare                                #clsdeclare
                     | Member=constructor                            #clsctor
                     | Member=destructor                             #clsdtor
                     | Member=classvars                              #clsvars
@@ -411,7 +411,7 @@ constructorchain    : (SELF | SUPER)
 constructorModifiers: ( Tokens+=( PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN | EXTERN | STATIC ) )+
                     ; // make sure all tokens are also in the IsModifier method inside XSharpLexerCode.cs
 
-declare             : DECLARE (ACCESS | ASSIGN | METHOD )  .*? eos
+vodeclare           : DECLARE (ACCESS | ASSIGN | METHOD )  (~EOS)? eos
                     ;
 
 destructor          : (Attributes=attributes)? (Modifiers=destructorModifiers)?

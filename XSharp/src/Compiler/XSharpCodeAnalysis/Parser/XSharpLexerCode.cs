@@ -1302,6 +1302,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             switch (iToken)
             {
                 case EOS:
+                case -1:
                 case NL:
                 case SEMI:
                 case UDCSEP:        // first keyword in UDC after '=>' is considered to be at start of line

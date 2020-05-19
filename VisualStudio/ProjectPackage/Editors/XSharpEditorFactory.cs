@@ -19,7 +19,7 @@ using IOleServiceProvider = Microsoft.VisualStudio.OLE.Interop.IServiceProvider;
 using System.ComponentModel.Design;
 using System.Diagnostics;
 using Microsoft.VisualStudio.Project;
-
+using XSharp.LanguageService;
 namespace XSharp.Project
 {
     /// <summary>
@@ -315,7 +315,6 @@ namespace XSharp.Project
             ErrorHandler.ThrowOnFailure(window.SetBuffer(textLines));
             ErrorHandler.ThrowOnFailure(window.SetBaseEditorCaption(null));
             ErrorHandler.ThrowOnFailure(window.GetEditorCaption(READONLYSTATUS.ROSTATUS_Unknown, out editorCaption));
-
             cmdUI = VSConstants.GUID_TextEditorFactory;
             return Marshal.GetIUnknownForObject(window);
         }

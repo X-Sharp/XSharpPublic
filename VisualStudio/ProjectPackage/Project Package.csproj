@@ -82,29 +82,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="CodeDomProvider\XSharpCodeDomHelper.cs" />
-    <Compile Include="Editors\BraceMatching\BraceMatching.cs" />
-    <Compile Include="Editors\Formatting\Formatting.cs" />
-    <Compile Include="Editors\HighlightWord\HighlightWord.cs" />
-    <Compile Include="Editors\LightBulb\CreateStubAction.cs" />
-    <Compile Include="Editors\LightBulb\CreateStubProvider.cs" />
-    <Compile Include="Editors\LightBulb\ImplementInterfaceAction.cs" />
-    <Compile Include="Editors\LightBulb\ImplementInterfaceProvider.cs" />
-    <Compile Include="Editors\Parameter Info\SignatureHelpSource.cs" />
-    <Compile Include="Editors\Parameter Info\SignatureHelpSourceProvider.cs" />
-    <Compile Include="Editors\PeekDefinition\XSharpResultSource.cs" />
-    <Compile Include="Editors\PeekDefinition\XSharpDefinitionPeekItem.cs" />
-    <Compile Include="Editors\PeekDefinition\XSharpPeekItemSource.cs" />
-    <Compile Include="Editors\PeekDefinition\XSharpPeekItemProvider.cs" />
-    <Compile Include="Editors\SmartIndent\SmartIndent.cs" />
-    <Compile Include="Editors\SmartIndent\SmartIndentProvider.cs" />
-    <Compile Include="Editors\XAMLCompletionSource.cs" />
-    <Compile Include="Editors\XSharpCompletionSource_Partial.cs" />
-    <Compile Include="Editors\XSharpErrorColorizer.cs" />
-    <Compile Include="Editors\XSharpQuickInfo.cs" />
-    <Compile Include="Editors\XMLDoc\XSharpXMLDoc.cs" />
     <Compile Include="ErrorList\ErrorListManager.cs" />
-    <Compile Include="LanguageService\ExpansionFunctions.cs" />
-    <Compile Include="LanguageService\XSharpViewFilter.cs" />
     <Compile Include="Library\HierarchyListener.cs" />
     <Compile Include="Library\Library.cs" />
     <Compile Include="Library\LibraryNode.cs" />
@@ -115,21 +93,6 @@
     <Compile Include="Library\XSharpLibraryProject.cs" />
     <Compile Include="Library\XSharpModuleId.cs" />
     <Compile Include="ModelScannerEvents.cs" />
-    <Compile Include="OptionsPages\IntellisenseOptionsControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="OptionsPages\IntellisenseOptionsControl.Designer.cs">
-      <DependentUpon>IntellisenseOptionsControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="OptionsPages\IntellisenseOptionsPage.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="OptionsPages\XSharpSpecialOptions.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="OptionsPages\XSharpSpecialOptions.Designer.cs">
-      <DependentUpon>XSharpSpecialOptions.cs</DependentUpon>
-    </Compile>
     <Compile Include="PropertyPages\XBuildEventsPropertyPage.cs" />
     <Compile Include="PropertyPages\XSharpDialectPropertyPage.cs" />
     <Compile Include="Wix\FolderBrowserTextBox.cs">
@@ -175,8 +138,6 @@
     <Compile Include="Wix\XColorUserControl.Designer.cs">
       <DependentUpon>XColorUserControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Editors\CommandFilter.cs" />
-    <Compile Include="Editors\XSharpCompletionSource.cs" />
     <Compile Include="ErrorList\ErrorListProvider.cs" />
     <Compile Include="ErrorList\ErrorListSinkManager.cs" />
     <Compile Include="ErrorList\ErrorMessageUtil.cs" />
@@ -185,7 +146,6 @@
     <Compile Include="ErrorList\IErrorListSinkManager.cs" />
     <Compile Include="ErrorList\ErrorsFactory.cs" />
     <Compile Include="ErrorList\ErrorsSnapshot.cs" />
-    <Compile Include="LanguageService\XSharpTypeAndMemberDropDownBars.cs" />
     <Compile Include="Wix\XPropertyPagePanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -214,9 +174,6 @@
     <Compile Include="Nodes\XSharpNodeProperties.cs" />
     <Compile Include="Editors\XSharpVOEditorPane.cs" />
     <Compile Include="Editors\Factories.cs" />
-    <Compile Include="LanguageService\PkgCmdID.cs" />
-    <Compile Include="LanguageService\XSharpLanguageService.cs" />
-    <Compile Include="LanguageService\XSharpSource.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Attributes\LocDisplayNameAttribute.cs" />
     <Compile Include="Attributes\ResourcesCategoryAttribute.cs" />
@@ -268,6 +225,10 @@
     </Content>
     <Content Include="Editors\Todo.txt" />
     <Content Include="Snippets\SnippetsIndex.xml" />
+    <Content Include="System.Collections.Immutable.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Content Include="Template.ico" />
     <ZipProject Include="Templates\Projects\Windows\WinFormApp\Form1.designer.prg" />
     <ZipItem Include="Templates\ProjectItems\Forms\UserControl\UserControl.designer.prg" />
@@ -410,7 +371,6 @@
     </ZipItem>
     <ZipItem Include="Templates\ProjectItems\WcfService\Service.prg">
     </ZipItem>
-    <Compile Include="Editors\VsTextViewCreationListener.cs" />
     <Compile Include="Wix\XHelperMethods.cs" />
     <Compile Include="Wix\XProjectMembers.cs" />
     <Compile Include="Nodes\XSharpProjectReferenceNode.cs" />
@@ -507,12 +467,6 @@
     <None Include="Snippets\Snippets\while.snippet" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="OptionsPages\IntellisenseOptionsControl.resx">
-      <DependentUpon>IntellisenseOptionsControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="OptionsPages\XSharpSpecialOptions.resx">
-      <DependentUpon>XSharpSpecialOptions.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Wix\FolderBrowserTextBox.resx">
       <DependentUpon>FolderBrowserTextBox.cs</DependentUpon>
     </EmbeddedResource>
@@ -627,7 +581,6 @@
     <ZipProject Include="Templates\Projects\Windows\WPFApplication\AssemblyInfo.prg" />
     <ZipProject Include="Templates\Projects\Windows\WPFApplication\WPFApplication.vstemplate" />
     <ZipProject Include="Templates\Projects\Windows\WPFApplication\WPFWindow1.xaml.prg" />
-    <Content Include="LanguageService\LanguageService.vsct" />
     <ZipItem Include="Templates\ProjectItems\WPF\WPFPage\WPFPage.vstemplate" />
     <ZipItem Include="Templates\ProjectItems\WPF\WPFUserControl\WPFUserControl.vstemplate">
     </ZipItem>
@@ -753,9 +706,11 @@
       <Project>{eed6843b-b727-4f08-aa32-ca0f48fdde3f}</Project>
       <Name>XSharpModelXs</Name>
     </ProjectReference>
-    <ProjectReference Include="..\XSharpColorizer\XSharpColorizer.csproj">
+    <ProjectReference Include="..\LanguageService\LanguageService.csproj">
       <Project>{ffa0338a-27ed-42ba-b801-ec5ad32a7395}</Project>
-      <Name>XSharpColorizer</Name>
+      <Name>LanguageService</Name>
+      <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3bPkgdefProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
+      <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
     </ProjectReference>
     <ProjectReference Include="..\XSharpVoEditors\XSharpVoEditors.xsproj">
       <Project>{7619db88-6286-4ef1-8273-2a08cc8ac70e}</Project>
@@ -792,9 +747,7 @@
       <SubType>Designer</SubType>
     </ZipItem>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Editors\LineSeparators\" />
-  </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <RunPostBuildEvent>Always</RunPostBuildEvent>
   </PropertyGroup>
@@ -828,6 +781,9 @@
     <PackageReference Include="Newtonsoft.Json">
       <Version>12.0.3</Version>
     </PackageReference>
+    <PackageReference Include="System.Collections.Immutable">
+      <Version>1.7.1</Version>
+    </PackageReference>
     <PackageReference Include="System.Design">
       <Version>4.0.0</Version>
     </PackageReference>
@@ -846,6 +802,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Binaries\Debug\Microsoft.Windows.Design.Host.dll</HintPath>
     </Reference>
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="XSharp.VSParser, Version=2.1.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586, processorArchitecture=MSIL">

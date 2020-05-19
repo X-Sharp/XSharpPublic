@@ -252,11 +252,11 @@ namespace XSharp.Project
         public void RegisterHierarchy(IVsHierarchy hierarchy, XProject Prj, XSharpProjectNode ProjectNode)
         {
             // No Hierarchy or... Hierarchy already registered ?
-            var optionsPage = XSharpProjectPackage.Instance.GetIntellisenseOptionsPage();
-            if (optionsPage.DisableClassViewObjectView)
-            {
-                return;
-            }
+            //var optionsPage = XSharpProjectPackage.Instance.GetIntellisenseOptionsPage();
+            //if (optionsPage.DisableClassViewObjectView)
+            //{
+            //    return;
+            //}
 
             if ((null == hierarchy) || hierarchies.ContainsKey(hierarchy))
             {

@@ -21,11 +21,14 @@ Includes support for Windows Form Editor, WPF Editor, VO Compatible form and men
     </Dependencies>
     <Assets>
         <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" />
-        <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" Path="|XSharpColorizer|" d:ProjectName="XSharpColorizer" />
         <Asset Type="Microsoft.VisualStudio.ItemTemplate" d:Source="Project" d:ProjectName="%CurrentProject%" d:TargetPath="|%CurrentProject%;TemplateProjectOutputGroup|" Path="ItemTemplates" d:VsixSubPath="ItemTemplates" />
         <Asset Type="Microsoft.VisualStudio.ProjectTemplate" d:Source="Project" d:ProjectName="%CurrentProject%" d:TargetPath="|%CurrentProject%;TemplateProjectOutputGroup|" Path="ProjectTemplates" d:VsixSubPath="ProjectTemplates" />
         <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%|" />
         <Asset d:Source="File" Path="Designers.pkgdef" Type="Microsoft.VisualStudio.VsPackage" TargetPath="|%CurrentProject%|"/>
+        <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="LanguageService" Path="|LanguageService;PkgdefProjectOutputGroup|" />
+        <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="LanguageService" Path="|LanguageService|" />
+        <Asset Type="Microsoft.VisualStudio.Assembly" d:Source="File" Path="System.Collections.Immutable.dll" AssemblyName="System.Collections.Immutable, Version=1.2.5.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+        <Asset Type="Microsoft.VisualStudio.Assembly" d:Source="File" Path="System.Reflection.Metadata.dll" AssemblyName="System.Reflection.Metadata, Version=1.4.5.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
     </Assets>
     <Content>
         <ProjectTemplate>ProjectTemplates</ProjectTemplate>

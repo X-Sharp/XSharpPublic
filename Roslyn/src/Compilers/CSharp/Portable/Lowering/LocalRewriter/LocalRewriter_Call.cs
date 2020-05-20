@@ -439,6 +439,14 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
 #if XSHARP
             }
+            else
+            {
+                var receiverNamedType = invokedAsExtensionMethod ?
+                                        ((MethodSymbol)methodOrIndexer).Parameters[0].Type as NamedTypeSymbol :
+                                        methodOrIndexer.ContainingType;
+
+                isComReceiver = (object)receiverNamedType != null && receiverNamedType.IsComImport;
+            }
 #endif
             // We have:
             // * a list of arguments, already converted to their proper types, 

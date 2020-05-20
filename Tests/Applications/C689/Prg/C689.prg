@@ -12,8 +12,7 @@ FUNCTION Start() AS VOID
 	s := i"{dData:yyyy-MM-dd}" // error XS0103
 	? s
 	xAssert(s == "2019-11-09")
-	
-	s := i"{dData:yyyy/MM/dd}"
+	s := i"{dData:yyyy\/MM\/dd}"
 	xAssert(s == "2019/11/09")
 RETURN
 

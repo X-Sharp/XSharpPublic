@@ -38,10 +38,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 Debug.Assert(destination == Compilation.CodeBlockType()|| conv.Exists);
             }
-            if (!syntax.XIsCodeBlock && !Compilation.Options.MacroScript && !syntax.XNode.IsAliasExpression())
-            {
-                Error(diagnostics, ErrorCode.ERR_CodeblockWithLambdaSyntax, syntax);
-            }
+            //if (!syntax.XIsCodeBlock && !Compilation.Options.MacroScript && !syntax.XNode.IsAliasExpression())
+            //{
+            //    Error(diagnostics, ErrorCode.ERR_CodeblockWithLambdaSyntax, syntax);
+            //}
 
             AnonymousTypeManager manager = this.Compilation.AnonymousTypeManager;
             var delegateSignature = new TypeSymbol[unboundLambda.ParameterCount + 1];

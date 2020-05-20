@@ -2,8 +2,8 @@
 // Copyright (c) XSharp B.V.  All Rights Reserved.
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
-//
-
+// 
+  
 using InternalSyntax = Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax;
 
 using Microsoft.CodeAnalysis.CSharp;
@@ -1270,16 +1270,17 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             else
                 return parent.isInInterface();
         }
-        internal static bool IsInLambda([NotNull] this RuleContext context)
+        
+        internal static bool IsInLambdaOrCodeBlock([NotNull] this RuleContext context)
         {
             var parent = context.Parent;
             if (parent == null)
                 return false;
             if (parent is XSharpParser.CodeblockContext cbc)
             {
-                return cbc.lambda != null;
+                return cbc.lambda != null || cbc.Or != null || cbc.P1 != null;
             }
-            return parent.IsInLambda();
+            return parent.IsInLambdaOrCodeBlock();
         }
         internal static bool isInClass([NotNull] this RuleContext context)
         {

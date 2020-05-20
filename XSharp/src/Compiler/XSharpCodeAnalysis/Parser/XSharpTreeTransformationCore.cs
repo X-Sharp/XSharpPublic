@@ -591,16 +591,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return r;
         }
 
-        protected SyntaxList<SyntaxToken> EmptyList()
-        {
-            // cannot cache this. SyntaxList<T> is a struct
-            SyntaxList<SyntaxToken> emptyList;
-            var rb = _pool.Allocate();
-            emptyList = rb.ToList<SyntaxToken>();
-            _pool.Free(rb);
-            return emptyList;
-        }
-
         protected SyntaxList<T> EmptyList<T>() where T : CSharpSyntaxNode
         {
             var rb = _pool.Allocate<T>();
@@ -3061,7 +3051,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         );
                     var add_ = _syntaxFactory.AccessorDeclaration(SyntaxKind.AddAccessorDeclaration,
                             attributeLists: EmptyList<AttributeListSyntax>(),
-                            modifiers: EmptyList(),
+                            modifiers: EmptyList<SyntaxToken>(),
                             keyword: SyntaxFactory.MakeToken(SyntaxKind.AddKeyword),
                             body: MakeBlock(
                                 MakeLock(GenerateSimpleName(evtFldName),
@@ -3075,7 +3065,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             semicolonToken: null);
                     var remove_ = _syntaxFactory.AccessorDeclaration(SyntaxKind.RemoveAccessorDeclaration,
                                     attributeLists: EmptyList<AttributeListSyntax>(),
-                                    modifiers: EmptyList(),
+                                    modifiers: EmptyList<SyntaxToken>(),
                                     keyword: SyntaxFactory.MakeToken(SyntaxKind.RemoveKeyword),
                                     body: MakeBlock(MakeLock(GenerateSimpleName(evtFldName),
                                             GenerateExpressionStatement(
@@ -3122,7 +3112,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 context.ExprList.SetSequencePoint();
                 context.Put(_syntaxFactory.AccessorDeclaration(context.Key.AccessorKind(),
                 attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
-                modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? EmptyList(),
+                modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? EmptyList<SyntaxToken>(),
                 keyword: context.Key.SyntaxKeyword(),
                 body: MakeBlock(context.ExprList?.GetList<StatementSyntax>() ?? EmptyList<StatementSyntax>()),
                 expressionBody: null,
@@ -3138,7 +3128,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.StmtBlk.SetSequencePoint();
             context.Put(_syntaxFactory.AccessorDeclaration(context.Key.AccessorKind(),
                 attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
-                modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? EmptyList(),
+                modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? EmptyList<SyntaxToken>(),
                 keyword: context.Key.SyntaxKeyword(),
                 body: context.StmtBlk.Get<BlockSyntax>(),
                 expressionBody: null,
@@ -3342,7 +3332,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         newaccessor.Key = new XSharpToken(XSharpLexer.GET, "GET");
                         var decl = _syntaxFactory.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration,
                             attributeLists: EmptyList<AttributeListSyntax>(),
-                            modifiers: EmptyList(),
+                            modifiers: EmptyList<SyntaxToken>(),
                             keyword: SyntaxFactory.Identifier("get"),
                             body: null,
                             expressionBody: null,
@@ -3358,9 +3348,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var accessorList = _syntaxFactory.AccessorList(SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
                         (context.Auto != null) ?
                             ((context._AutoAccessors?.Count ?? 0) > 0) ? MakeList<AccessorDeclarationSyntax>(context._AutoAccessors) :
-                            MakeList(_syntaxFactory.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration, EmptyList<AttributeListSyntax>(), EmptyList(),
+                            MakeList(_syntaxFactory.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration, EmptyList<AttributeListSyntax>(), EmptyList<SyntaxToken>(),
                                     SyntaxFactory.MakeToken(SyntaxKind.GetKeyword), null, null, SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)),
-                                _syntaxFactory.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration, EmptyList<AttributeListSyntax>(), EmptyList(),
+                                _syntaxFactory.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration, EmptyList<AttributeListSyntax>(), EmptyList<SyntaxToken>(),
                                     SyntaxFactory.MakeToken(SyntaxKind.SetKeyword), null, null, SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken))) :
                         ((context._LineAccessors?.Count ?? 0) > 0) ? MakeList<AccessorDeclarationSyntax>(context._LineAccessors) :
                         MakeList<AccessorDeclarationSyntax>(context._Accessors),
@@ -3494,7 +3484,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             context.Put(_syntaxFactory.AccessorDeclaration(context.Key.AccessorKind(),
                 attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
-                modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? EmptyList(),
+                modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? EmptyList<SyntaxToken>(),
                 keyword: context.Key.SyntaxKeyword(),
                 body: null,
                 expressionBody: null,
@@ -3528,7 +3518,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 context.Expr.SetSequencePoint();
             }
             var attList = context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>();
-            var mods = context.Modifiers?.GetList<SyntaxToken>() ?? EmptyList();
+            var mods = context.Modifiers?.GetList<SyntaxToken>() ?? EmptyList<SyntaxToken>();
             var key = context.Key.SyntaxKeyword();
             var kind = context.Key.AccessorKind();
             ArrowExpressionClauseSyntax expressionBody = null;
@@ -3748,7 +3738,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             context.Put(_syntaxFactory.AccessorDeclaration(context.Key.AccessorKind(),
                 attributeLists: attributes,
-                modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? EmptyList(),
+                modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? EmptyList<SyntaxToken>(),
                 keyword: context.Key.SyntaxKeyword(),
                 body: body,
                 expressionBody: null,
@@ -5103,6 +5093,24 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return _emptyParameterList;
         }
 
+        protected ParameterListSyntax MakeParameterList (IList<ParameterSyntax> parameters)
+        {
+            if (parameters == null || parameters.Count == 0)
+                return EmptyParameterList();
+            var @params = _pool.AllocateSeparated<ParameterSyntax>();
+            foreach (var param in parameters)
+            {
+                if (@params.Count > 0)
+                    @params.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
+                @params.Add(param);
+            }
+            var result = _syntaxFactory.ParameterList(
+                SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                @params,
+                SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
+            _pool.Free(@params);
+            return result;
+        }
 
         public override void EnterParameterList([NotNull] XP.ParameterListContext context)
         {
@@ -5170,7 +5178,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (context.Ellipsis != null)
             {
                 context.Put(_syntaxFactory.Parameter(
-                    EmptyList<AttributeListSyntax>(), EmptyList(), null, context.Ellipsis.SyntaxLiteralValue(_options), null));
+                    EmptyList<AttributeListSyntax>(),
+                    EmptyList<SyntaxToken>(),
+                    null,
+                    context.Ellipsis.SyntaxLiteralValue(_options), null));
                 return;
             }
             TypeSyntax type = _getParameterType(context);
@@ -5189,7 +5200,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             var par = _syntaxFactory.Parameter(
                 attributeLists: attributeList,
-                modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? EmptyList(),
+                modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? EmptyList<SyntaxToken>(),
                 type: type,
                 identifier: context.Id.Get<SyntaxToken>(),
                 @default: context.Default == null ? null : _syntaxFactory.EqualsValueClause(
@@ -5659,17 +5670,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 (context.Expression == null) ? null :
                 _syntaxFactory.EqualsValueClause(SyntaxFactory.MakeToken(SyntaxKind.EqualsToken), context.Expression.Get<ExpressionSyntax>()));
             variables.Add(variable);
-            var modifiers = _pool.Allocate();
             if (isConst)
                 context.AddError(new ParseErrorData(context, ErrorCode.ERR_ImplicitlyTypedVariableCannotBeConst));
             if (isStatic)
                 context.AddError(new ParseErrorData(context, ErrorCode.ERR_ImplicitlyTypedVariableCannotBeStatic));
             context.Put(_syntaxFactory.LocalDeclarationStatement(
-                modifiers.ToList<SyntaxToken>(),
+                EmptyList<SyntaxToken>(),
                 _syntaxFactory.VariableDeclaration(_impliedType, variables),
                 SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
             _pool.Free(variables);
-            _pool.Free(modifiers);
         }
 
  
@@ -8332,7 +8341,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 expr = _syntaxFactory.ImplicitArrayCreationExpression(SyntaxFactory.MakeToken(SyntaxKind.NewKeyword),
                     SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
-                    EmptyList(),
+                    EmptyList<SyntaxToken>(),
                     SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken),
                     initializer);
                 if (!isNestedArray(context))
@@ -8481,10 +8490,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitCodeblock([NotNull] XP.CodeblockContext context)
         {
             ParameterListSyntax paramList = context.LambdaParamList?.Get<ParameterListSyntax>() ?? EmptyParameterList();
+            bool updateparams = false;
             if (context.lambda == null &&
                 context.LambdaParamList?.ExplicitParams != null)
             {
-                paramList = paramList.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_CodeBlockWithTypeParameters));
+                //paramList = paramList.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_CodeBlockWithTypeParameters));
+                updateparams = true;
                 
             }
             if (context.lambda != null)
@@ -8525,12 +8536,71 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 context.SetSequencePoint(context.Start, context.Code.Start);
             }
+            var body = context.Code.Get<CSharpSyntaxNode>();
+
+            if (updateparams)
+            {
+                // we will have to remove the parameter types and rename the parameters
+                // and add typed variables in the body
+                var newstmts = new List<StatementSyntax>();
+                var newparams = new List<ParameterSyntax>();
+                for (int i = 0; i < paramList.Parameters.Count; i++)
+                {
+                    var param = paramList.Parameters[i];
+                    var id = param.Identifier.Text;
+                    var newid = XSharpSpecialNames.ClipperParamPrefix + "_"+id;
+                    var newparam = _syntaxFactory.Parameter(
+                        attributeLists: param.AttributeLists,
+                        modifiers: param.Modifiers,
+                        type: null, // codeblock parameters have no type !
+                        identifier: SyntaxFactory.MakeIdentifier(newid),
+                        param.@default);
+                    newparams.Add(newparam);
+                    var variables = _pool.AllocateSeparated<VariableDeclaratorSyntax>();
+                    var expr = _syntaxFactory.IdentifierName(newparam.Identifier);
+                    expr.XGenerated = true;
+                    var variable = _syntaxFactory.VariableDeclarator(param.Identifier, null,
+                        _syntaxFactory.EqualsValueClause(SyntaxFactory.MakeToken(SyntaxKind.EqualsToken), expr));
+                    variable.XGenerated = true;
+                    variables.Add(variable);
+                    var decl = _syntaxFactory.LocalDeclarationStatement(
+                        EmptyList<SyntaxToken>(),
+                        _syntaxFactory.VariableDeclaration(param.Type, variables),
+                        SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+                    decl.XGenerated = true;
+                    newstmts.Add(decl);
+                    _pool.Free(variables);
+                }
+                var @params = new List<ParameterSyntax>();
+                foreach (var param in newparams)
+                {
+                    @params.Add(param);
+                }
+                paramList = MakeParameterList(@params);
+
+                if (body is BlockSyntax block)
+                {
+                    foreach (var stmt in block.Statements)
+                    {
+                        newstmts.Add(stmt);
+                    }
+                    body = MakeBlock(newstmts);
+                }
+                else if (body is ExpressionSyntax expr)
+                {
+                    newstmts.Add(GenerateReturn(expr, true));
+                    body = MakeBlock(newstmts);
+
+
+                }
+            }
+
 
             var node = _syntaxFactory.ParenthesizedLambdaExpression(
                 asyncKeyword: null,
                 parameterList: paramList,
                 arrowToken: SyntaxFactory.MakeToken(SyntaxKind.EqualsGreaterThanToken),
-                body: context.Code.Get<CSharpSyntaxNode>()
+                body: body
                 );
             context.Put(node);
 
@@ -8538,27 +8608,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitCodeblockParamList([NotNull] XP.CodeblockParamListContext context)
         {
-            var @params = _pool.AllocateSeparated<ParameterSyntax>();
+            var @params = new List<ParameterSyntax>();
             foreach (var idCtx in context._Ids)
             {
-                if (@params.Count > 0)
-                    @params.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
-                SyntaxListBuilder<AttributeListSyntax> attributeLists = _pool.Allocate<AttributeListSyntax>();
-                SyntaxListBuilder modifiers = _pool.Allocate();
                 @params.Add(_syntaxFactory.Parameter(
-                    attributeLists: attributeLists,
-                    modifiers: modifiers.ToList<SyntaxToken>(),
-                    type: null, // TODO: (grammar) codeblock param type
+                    attributeLists: EmptyList<AttributeListSyntax>(),
+                    modifiers: EmptyList<SyntaxToken>(),
+                    type: null, // codeblock parameters have no type !
                     identifier: idCtx.Get<SyntaxToken>(),
                     @default: null));
-                _pool.Free(attributeLists);
-                _pool.Free(modifiers);
             }
-            context.Put(_syntaxFactory.ParameterList(
-                SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                @params,
-                SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken)));
-            _pool.Free(@params);
+
+            context.Put(MakeParameterList(@params));
         }
 
         public override void ExitCodeblockExprList([NotNull] XP.CodeblockExprListContext context)
@@ -8570,10 +8631,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         public override void ExitExplicitAnonymousFunctionParameter([NotNull] XP.ExplicitAnonymousFunctionParameterContext context)
         {
-            var attributeList = EmptyList<AttributeListSyntax>();
             var type = context.Type.Get<TypeSyntax>();
             var par = _syntaxFactory.Parameter(
-                attributeLists: attributeList,
+                attributeLists: EmptyList<AttributeListSyntax>(),
                 modifiers: context.Mod.GetList<SyntaxToken>() ,
                 type: type,
                 identifier: context.Id.Get<SyntaxToken>(),
@@ -8584,19 +8644,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
     
         public override void ExitExplicitAnonymousFunctionParamList([NotNull] XP.ExplicitAnonymousFunctionParamListContext context)
         {
-            var @params = _pool.AllocateSeparated<ParameterSyntax>();
+            var @params = new List<ParameterSyntax>();
             foreach (XP.ExplicitAnonymousFunctionParameterContext param in context._Params)
             {
-                if (@params.Count > 0)
-                    @params.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
-
                 @params.Add(param.Get<ParameterSyntax>());
             }
-            context.Put(_syntaxFactory.ParameterList(
-                SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                @params,
-                SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken)));
-            _pool.Free(@params);
+            context.Put(MakeParameterList(@params));
         }
 
 

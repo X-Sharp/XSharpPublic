@@ -391,8 +391,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // Creates an empty $AppExit method.
             // The contents will be created in the LocalRewriter
             // This will contain the code to clear globals
-            var stmts = _pool.Allocate<StatementSyntax>();
-            var body = MakeBlock(stmts);
+            var body = MakeBlock(EmptyList<StatementSyntax> ());
             var appId = SyntaxFactory.Identifier(XSharpSpecialNames.AppExit);
             var modifiers = TokenList(SyntaxKind.InternalKeyword, SyntaxKind.StaticKeyword);
 
@@ -400,22 +399,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 MakeCompilerGeneratedAttribute(), modifiers,
                 _voidType, null, appId, null, EmptyParameterList(),
                 null, body, null, SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
-            _pool.Free(stmts);
             appExit.XGenerated = true;
             return appExit;
         }
 
         private MethodDeclarationSyntax CreateRunInitProcs()
         {
-            var stmts = _pool.Allocate<StatementSyntax>();
-            var body = MakeBlock(stmts);
+            var body = MakeBlock(EmptyList<StatementSyntax>());
             var appId = SyntaxFactory.Identifier(ReservedNames.RunInitProcs);
             var modifiers = TokenList(SyntaxKind.PublicKeyword, SyntaxKind.StaticKeyword);
             var initProcs = _syntaxFactory.MethodDeclaration(
                 MakeCompilerGeneratedAttribute(), modifiers,
                 _voidType, null, appId, null, EmptyParameterList(),
                 null, body, null, SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
-            _pool.Free(stmts);
             initProcs.XGenerated = true;
             return initProcs;
 
@@ -2290,7 +2286,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitReturnStmt([NotNull] XP.ReturnStmtContext context)
         {
             context.SetSequencePoint(context.end);
-            if (context.IsInLambda())
+            if (context.IsInLambdaOrCodeBlock() )
             {
                 base.ExitReturnStmt(context);
                 return;
@@ -2633,11 +2629,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (hasPsz)
             {
 
-                var @params = _pool.AllocateSeparated<ParameterSyntax>();
+                var @params = new List<ParameterSyntax>();
                 for (int i = 0; i < parameters.Parameters.Count; i++)
                 {
-                    if (@params.Count > 0)
-                        @params.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
                     var p = parameters.Parameters[i];
                     if (p.Type != _pszType)
                     {
@@ -2655,11 +2649,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         @params.Add(newParam);
                     }
                 }
-                parameters = _syntaxFactory.ParameterList(
-                SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                @params,
-                SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
-                _pool.Free(@params);
+                parameters = MakeParameterList(@params);
             }
             return parameters;
         }
@@ -2689,10 +2679,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 SyntaxFactory.MakeToken(SyntaxKind.GreaterThanToken));
             _pool.Free(tparameters);
             var mods = TokenList(SyntaxKind.InternalKeyword, SyntaxKind.StaticKeyword);
-            var @params = _pool.AllocateSeparated<ParameterSyntax>();
-            @params.Add(_syntaxFactory.Parameter(null, null, _ptrType, p, null));
-            var pars = _syntaxFactory.ParameterList(SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken), @params, SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
-            _pool.Free(@params);
+            var @params = new List<ParameterSyntax>();
+            @params.Add(_syntaxFactory.Parameter(
+                EmptyList<AttributeListSyntax>(),
+                EmptyList<SyntaxToken>(),
+                _ptrType,
+                p,
+                null));
+            var pars = MakeParameterList(@params);
             var m = SyntaxFactory.MethodDeclaration(MakeCompilerGeneratedAttribute(), mods,
                 tname, /*explicitif*/null,
                 id, typeparams, pars,/* constraints*/null, block,/*exprbody*/null,
@@ -2721,23 +2715,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 return false;
             }
             // construct fake parameter list, all of type object
-            var @params = _pool.AllocateSeparated<ParameterSyntax>();
-            var atts = EmptyList<AttributeListSyntax>();
-            var mods = EmptyList<SyntaxToken>();
+            var @params = new List<ParameterSyntax>();
             for (int i = 1; i < context.ArgList._Args.Count; i++)
             {
                 var pname = SyntaxFactory.Identifier("$param" + i.ToString());
-                var param = _syntaxFactory.Parameter(atts, mods, _objectType, pname, null);
-                //param.XNode = context.ArgList._Args[i]; // link the parameter to the argument value
-                if (i > 1)
-                    @params.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
+                var param = _syntaxFactory.Parameter(EmptyList<AttributeListSyntax>(),
+                    EmptyList<SyntaxToken>(),
+                    _objectType,
+                    pname,
+                    null);
                 @params.Add(param);
             }
-            var paramList = _syntaxFactory.ParameterList(SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                                @params, SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
-            _pool.Free(@params);
+            var paramList = MakeParameterList(@params); 
             var id = SyntaxFactory.Identifier(name);
-            mods = TokenList(SyntaxKind.InternalKeyword);
+            var mods = TokenList(SyntaxKind.InternalKeyword);
             MemberDeclarationSyntax m = _syntaxFactory.DelegateDeclaration(
                MakeCompilerGeneratedAttribute(),
                mods,
@@ -3085,17 +3076,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         InitializeArrayTypes();
                         SyntaxListBuilder modifiers = _pool.Allocate();
                         modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.ParamsKeyword));
-                        var attrs = _pool.Allocate<AttributeListSyntax>();
                         var par = _syntaxFactory.Parameter(
                                         MakeCompilerGeneratedAttribute(),
                                         modifiers.ToList(),
                                         type: arrayOfUsual,
                                         identifier: SyntaxFactory.Identifier(XSharpSpecialNames.ClipperArgs),
                                         @default: null);
-                        _clipperParams = _syntaxFactory.ParameterList(SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                            MakeSeparatedList(par),
-                            SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
-                        _pool.Free(attrs);
+                        var pars = new List<ParameterSyntax>();
+                        pars.Add(par);
+                        _clipperParams = MakeParameterList(pars);
                         _pool.Free(modifiers);
                     }
                 }
@@ -3188,26 +3177,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 //    MakeDefault(_usualType));
 
                 var attrlist = MakeList(MakeAttributeList(null, attrs));
-                var @params = _pool.AllocateSeparated<ParameterSyntax>();
+                var @params = new List<ParameterSyntax>();
                 for (int i = 0; i < parameters.Parameters.Count; i++)
                 {
                     ParameterSyntax parm = parameters.Parameters[i];
                     var par = _syntaxFactory.Parameter(
                           attributeLists: attrlist,
-                          modifiers: null,
+                          modifiers: EmptyList<SyntaxToken>(),
                           type: _usualType,
                           identifier: parm.Identifier, @default: null);
                     //@default: defExpr);
-                    if (i > 0)
-                        @params.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
                     @params.Add(par);
                 }
-                parameters = _syntaxFactory.ParameterList(
-                        SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                        @params,
-                        SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
+                parameters = MakeParameterList(@params);
                 _pool.Free(attrs);
-                _pool.Free(@params);
             }
         }
         protected override void ImplementClipperAndPSZ(XP.IEntityWithBodyContext context,

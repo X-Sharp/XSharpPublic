@@ -565,7 +565,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 body.XGenerated = true;
             }
             var accessor = _syntaxFactory.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration,
-                    EmptyList<AttributeListSyntax>(), EmptyList(),
+                    EmptyList<AttributeListSyntax>(), EmptyList<SyntaxToken>(),
                     SyntaxFactory.MakeToken(SyntaxKind.GetKeyword),
                     body,
                     null,
@@ -580,7 +580,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 body.XGenerated = true;
             }
             accessor = _syntaxFactory.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration,
-                    EmptyList<AttributeListSyntax>(), EmptyList(),
+                    EmptyList<AttributeListSyntax>(), EmptyList<SyntaxToken>(),
                     SyntaxFactory.MakeToken(SyntaxKind.SetKeyword),
                     body,
                     null,

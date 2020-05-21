@@ -35237,8 +35237,8 @@ FileType = Code
 CopyToBin = 0
 [C323 - Problem converting to PTR References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
-ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.Core.dll,1,1
+ReferenceBrowse = C:\XSharp\DevRt\Binaries\Debug\XSharp.RT.dll,1,1
 [C323 - Problem converting to PTR Resources]
 [C323 - Problem converting to PTR Native Resources]
 [C323 - Problem converting to PTR License files]

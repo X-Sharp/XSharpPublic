@@ -45,6 +45,18 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
         private ConversionKind UnBoxXSharpType(ref BoundExpression rewrittenOperand, ConversionKind conversionKind, TypeSymbol rewrittenType)
         {
+
+            if (conversionKind == ConversionKind.Unboxing)
+            {
+                if (rewrittenType.IsPointerType() && rewrittenOperand.Type.IsObjectType() && _compilation.Options.Dialect.AllowPointerMagic())
+                {
+                    rewrittenOperand = new BoundConversion(rewrittenOperand.Syntax, rewrittenOperand,
+                                            Conversion.Unboxing, false, false, null, _compilation.GetSpecialType(SpecialType.System_IntPtr));
+                    conversionKind = ConversionKind.Identity;
+                }
+                return conversionKind;
+            }
+            // else it's boxing
             var nts = rewrittenOperand?.Type as NamedTypeSymbol;
 
             if (_compilation.Options.HasRuntime)
@@ -187,6 +199,11 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                     }
 
+                }
+                if (rewrittenOperand.Type.IsPointerType() && _compilation.Options.Dialect.AllowPointerMagic())
+                {
+                    rewrittenOperand = new BoundConversion(rewrittenOperand.Syntax, rewrittenOperand,
+                        Conversion.Identity, false, false, null, _compilation.GetSpecialType(SpecialType.System_IntPtr));
                 }
             }
             return conversionKind;

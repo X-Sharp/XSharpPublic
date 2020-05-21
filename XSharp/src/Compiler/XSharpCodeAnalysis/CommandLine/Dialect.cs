@@ -135,7 +135,23 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return true;
             }
         }
-        public static bool SupportsAddressOf(this XSharpDialect dialect)
+        public static bool AddressOfIsAlwaysByRef(this XSharpDialect dialect)
+        {
+            switch (dialect)
+            {
+                case XSharpDialect.Core:
+                case XSharpDialect.VO:
+                case XSharpDialect.Vulcan:
+                    return false;
+                case XSharpDialect.Harbour:
+                case XSharpDialect.XPP:
+                case XSharpDialect.FoxPro:
+                default:
+                    return true;
+            }
+        }
+
+        public static bool AllowPointerMagic(this XSharpDialect dialect)
         {
             switch (dialect)
             {
@@ -150,6 +166,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return false;
             }
         }
+
         public static bool AllowLateBindingForTypesWithTheAttribute(this XSharpDialect dialect)
         {
             switch (dialect)

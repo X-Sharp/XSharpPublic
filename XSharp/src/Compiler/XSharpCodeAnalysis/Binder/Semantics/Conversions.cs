@@ -187,6 +187,21 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     return Conversion.Identity;
                 }
+                if (destination.SpecialType == SpecialType.System_Object)
+                {
+                    return Conversion.Boxing;
+                }
+            }
+            else if (source.IsPointerType())
+            {
+                if (destination.SpecialType == SpecialType.System_Object)
+                {
+                    if (Compilation.Options.Dialect.AllowPointerMagic())
+                    {
+                        // not really boxing, but this is handled in UnBoxXSharpType where the pointer is converted to an IntPtr
+                        return Conversion.Boxing;
+                    }
+                }
             }
             // From Anything -> IntPtr
             if (dstType == SpecialType.System_IntPtr || dstType == SpecialType.System_UIntPtr)
@@ -214,7 +229,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             // otherwise implicit conversion
                             return Conversion.ImplicitNumeric;
                     }
-                    // Vulcan also allows to convert floating point types <-> integral types
+                    // VO/Vulcan also allows to convert floating point types <-> integral types
                     else if (srcType.IsIntegralType() || dstType.IsIntegralType())
                     {
                         return Conversion.ImplicitNumeric;
@@ -331,7 +346,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
 
                     // Allow PTR -> Integral when size matches
-                    if (source.IsVoidPointer())
+                    if (source.IsVoidPointer() && Compilation.Options.Dialect.AllowPointerMagic())
                     {
                         if (dstType.SizeInBytes() == 4 && Compilation.Options.Platform == Platform.X86)
                         {
@@ -363,8 +378,14 @@ namespace Microsoft.CodeAnalysis.CSharp
                         }
                         return Conversion.IntegerToPointer;
                     }
-                    if (source.IsPointerType() || source.IsVoidPointer() 
-                        || source.SpecialType == SpecialType.System_IntPtr || source.SpecialType == SpecialType.System_UIntPtr)
+                    if (source.IsPointerType() || source.IsVoidPointer() )
+                    {
+                        if (Compilation.Options.Dialect.AllowPointerMagic())
+                        {
+                            return Conversion.Identity;
+                        }
+                    }
+                    if (source.SpecialType == SpecialType.System_IntPtr || source.SpecialType == SpecialType.System_UIntPtr)
                     {
                         return Conversion.Identity;
                     }
@@ -382,7 +403,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (voConvert)
             {
                 // we need to convert BYTE(<p>) to dereferencing the <p>
-                // This is done else where in Binder.BindVulcanPointerDereference()
+                // This is done else where in Binder.BindVOPointerDereference()
                 // Integer conversions
                 if (srcType.IsNumericType() && dstType.IsNumericType() &&
                     srcType.IsIntegralType() == dstType.IsIntegralType())
@@ -399,7 +420,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 if (dstType == SpecialType.System_Decimal)
                     return Conversion.Boxing;
                 // Usual -> OBJECT. Get the object out of the Usual 
-                // Our special call will call in LocalWriter.UnBoxVOType will
+                // Our special call will call in UnBoxXSharpType will
                 // convert the Unbox operation to a call to __Usual.ToObject()
                 // This method will return the Contents of the usual as an object 
                 // and not the usual itself as an object
@@ -415,7 +436,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
                 else if (destination.IsPointerType())
                 {
-                    // Not really boxed, but we handle this in LocalRewriter.UnBoxXSharpType
+                    // not really boxing, but this is handled in UnBoxXSharpType 
                     return Conversion.Boxing;
                 }
             }
@@ -431,14 +452,19 @@ namespace Microsoft.CodeAnalysis.CSharp
                         return Conversion.ImplicitReference;
                     }
                     if (destination.IsPointerType() || destination.SpecialType == SpecialType.System_IntPtr)
-                        return Conversion.Identity;
+                    {
+                        if (Compilation.Options.Dialect.AllowPointerMagic())
+                        {
+                            return Conversion.Unboxing;
+                        }
+                    }
                 }
                 if (dstType == SpecialType.System_Object)
                 {
                     if (source.IsReferenceType)
+                    {
                         return Conversion.ImplicitReference;
-                    if (source.IsPointerType() || source.SpecialType == SpecialType.System_IntPtr)
-                        return Conversion.Identity;
+                    }
                 }
             }
             if (vo7)
@@ -450,7 +476,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
             }
             // Convert Integral type -> Ptr Type 
-            if (source.IsIntegralType() && destination.IsPointerType())
+            if (source.IsIntegralType() && destination.IsPointerType() && Compilation.Options.Dialect.AllowPointerMagic())
             {
                 if (Compilation.Options.Platform == Platform.X86 && srcType.SizeInBytes() <= 4)
                 {
@@ -465,7 +491,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             // When unsafe we always allow to cast void * to typed *
             // Is this OK ?
             // See ticket C425
-            if (source.IsVoidPointer() && destination.IsPointerType() && Compilation.Options.AllowUnsafe)
+            if (source.IsVoidPointer() && destination.IsPointerType() && Compilation.Options.AllowUnsafe && Compilation.Options.Dialect.AllowPointerMagic())
             {
                 return Conversion.Identity;
             }
@@ -524,7 +550,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     result = (ats.ElementType == Compilation.UsualType());
                 }
-
             }
             return result;
         }

@@ -7672,10 +7672,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var expr = context.Expr.Get<ExpressionSyntax>();
             if (expr is PrefixUnaryExpressionSyntax pues && pues.OperatorToken.Kind == SyntaxKind.AmpersandToken)
             {
-
-                bool allowAddressOf = _options.Dialect.SupportsAddressOf() ;
-
-                if (! allowAddressOf)
+                bool alwaysByRef = _options.Dialect.AddressOfIsAlwaysByRef() ;
+                if (alwaysByRef)
                 {
                     var xnode = pues.XNode as XP.PrefixExpressionContext;
                     if (xnode.Op.Type == XP.ADDROF)

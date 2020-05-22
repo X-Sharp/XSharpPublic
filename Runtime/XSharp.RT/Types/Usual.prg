@@ -22,7 +22,9 @@ BEGIN NAMESPACE XSharp
         IComparable<__Usual>, ;
         IEquatable<__Usual>, ;
         IIndexedProperties, ;
-        IIndexer
+        IIndexer, ;
+        IDisposable
+         
         #region STATIC fields
         /// <exclude />
         [DebuggerBrowsable(DebuggerBrowsableState.Never)];
@@ -670,6 +672,16 @@ BEGIN NAMESPACE XSharp
             RETURN CompareTo((__Usual) o)
             #endregion
 
+        #region implementation IDisposable
+        PUBLIC VIRTUAL METHOD IDisposable.Dispose() AS VOID
+            IF SELF:IsObject
+               LOCAL oValue AS OBJECT
+               oValue := SELF:_refData
+               IF oValue IS IDisposable VAR oDisp 
+                  oDisp:Dispose()
+               ENDIF
+            ENDIF
+        #endregion
         #region Comparison Operators
         /// <include file="RTComments.xml" path="Comments/Operator/*" />
         /// <include file="RTComments.xml" path="Comments/UsualCompare/*" />

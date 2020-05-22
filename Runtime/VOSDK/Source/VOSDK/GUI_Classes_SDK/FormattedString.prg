@@ -350,9 +350,6 @@ METHOD MatchesTemplChar( cTest AS STRING, _cTemplChar AS STRING, lIgnoreBlank AS
 		RETURN IsAlNum( cTest )
 	CASE c'9'
     CASE c'.'
-        IF cType == "N"
-            RETURN TRUE
-        ENDIF
 		RETURN IsDigit( cTest ) .OR. ( cType == "N" .AND. At2( cTest, " +-" ) > 0 )
 	CASE c'#'
 		RETURN IsDigit( cTest ) .OR. At2( cTest, " +-" ) > 0

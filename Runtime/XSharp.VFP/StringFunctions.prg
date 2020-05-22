@@ -317,6 +317,10 @@ FUNCTION LTrim(Expression AS STRING, Flags AS INT, TrimChars PARAMS STRING[]) AS
 FUNCTION RTrim(Expression AS STRING, Flags AS INT, TrimChars PARAMS STRING[]) AS STRING STRICT
 	RETURN Trim_helper(.F., .T., Expression, Flags, TrimChars)
 
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/trim/*" />
+FUNCTION Trim(Expression AS STRING, Flags AS INT, TrimChars PARAMS STRING[]) AS STRING STRICT
+	RETURN Trim_helper(.F., .T., Expression, Flags, TrimChars)
+
 STATIC FUNCTION Trim_helper(TrimLeft AS Boolean, TrimRight AS Boolean, Expression AS STRING, Flags AS INT, TrimChars PARAMS STRING[]) AS STRING STRICT
 
     LOCAL parmNdx AS INT

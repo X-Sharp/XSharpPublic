@@ -326,7 +326,7 @@ STATIC FUNCTION Trim_helper(TrimLeft AS Boolean, TrimRight AS Boolean, Expressio
     LOCAL parmNdx AS INT
     LOCAL Trimmed = .T. AS Boolean
     LOCAL LRTrimmed AS INT
-    LOCAL comparison = StringComparison.Ordinal
+    LOCAL comparison = StringComparison.Ordinal AS System.StringComparison
     LOCAL compared AS STRING
 
     IF Expression = NULL
@@ -334,7 +334,7 @@ STATIC FUNCTION Trim_helper(TrimLeft AS Boolean, TrimRight AS Boolean, Expressio
     END IF
 
     IF Flags = 1
-        comparison = StringComparison.OrdinalIgnoreCase
+         comparison = StringComparison.OrdinalIgnoreCase
     END IF
 
     DO WHILE Trimmed
@@ -342,14 +342,14 @@ STATIC FUNCTION Trim_helper(TrimLeft AS Boolean, TrimRight AS Boolean, Expressio
         Trimmed = .F.
 
         FOR parmNdx = 1 TO TrimChars:Length
-            
+ 
+            compared = TrimChars[parmNdx]
+
             IF TrimLeft
                 LRTrimmed = 0
  
-                compared = TrimChars[parmNdx]
-                DO WHILE Expression:StartsWith(compared, comparison)
-                    LRTrimmed = compared:Length
-                    compared = String.Concat(compared, TrimChars[parmNdx])
+                DO WHILE String.Compare(Expression, LRTrimmed, compared, 0, compared:Length, comparison) = 0
+                    LRTrimmed += compared:Length
                 END DO
                 IF LRTrimmed > 0
                     Expression = Expression:Substring(LRTrimmed)
@@ -358,15 +358,13 @@ STATIC FUNCTION Trim_helper(TrimLeft AS Boolean, TrimRight AS Boolean, Expressio
             END IF
 
             IF TrimRight
-                LRTrimmed = 0
+                LRTrimmed = Expression:Length - compared:Length
 
-                compared = TrimChars[parmNdx]
-                DO WHILE Expression:EndsWith(compared, comparison)
-                    LRTrimmed = compared:Length
-                    compared = String.Concat(compared, TrimChars[parmNdx])
+                DO WHILE LRTrimmed >= 0 AND String.Compare(Expression, LRTrimmed, compared, 0, compared:Length, comparison) = 0
+                    LRTrimmed -= compared:Length
                 END DO
-                IF LRTrimmed > 0
-                    Expression = Expression:Substring(0, Expression:Length - LRTrimmed)
+                IF LRTrimmed < (Expression:Length - compared:Length)
+                    Expression = Expression:Substring(0, LRTrimmed + compared:Length)
                     Trimmed = .T.
                 END IF
             END IF
@@ -376,4 +374,6 @@ STATIC FUNCTION Trim_helper(TrimLeft AS Boolean, TrimRight AS Boolean, Expressio
     END DO
 
     RETURN Expression
+
+END FUNCTION
 

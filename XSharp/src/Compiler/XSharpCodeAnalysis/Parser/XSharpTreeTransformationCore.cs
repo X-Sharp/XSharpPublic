@@ -8991,9 +8991,24 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 context.Put(context.ObjInit.Get<ExpressionSyntax>());
             else
                 context.Put(context.CollInit.Get<ExpressionSyntax>());
-
         }
         public override void ExitInitializervalue([NotNull] XP.InitializervalueContext context)
+        {
+            if (context.Expr != null)
+                context.Put(context.Expr.Get<ExpressionSyntax>());
+            else
+                context.Put(context.Init.Get<ExpressionSyntax>());
+        }
+        public override void ExitComplexInitExpr([NotNull] XP.ComplexInitExprContext context)
+        {
+            var collinit = _syntaxFactory.InitializerExpression(
+                SyntaxKind.ComplexElementInitializerExpression,
+                SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
+                MakeSeparatedList<ExpressionSyntax>(context._Members),
+                SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken));
+            context.Put(collinit);
+        }
+        public override void ExitInitializerMember([NotNull] XP.InitializerMemberContext context)
         {
             if (context.Expr != null)
                 context.Put(context.Expr.Get<ExpressionSyntax>());

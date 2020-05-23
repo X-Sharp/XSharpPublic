@@ -822,7 +822,14 @@ initializervalue    : Init=objectOrCollectioninitializer // Put this first to ma
                     | Expr=expression
                     ;
 
-collectioninitializer : LCURLY Members+=expression (COMMA Members+=expression)* RCURLY
+complexInitExpr     : LCURLY Members+=initializerMember (COMMA Members+=initializerMember)* RCURLY
+                    ;
+
+initializerMember   : Init=complexInitExpr
+                    | Expr=expression
+                    ;
+
+collectioninitializer : LCURLY Members+=initializerMember (COMMA Members+=initializerMember)* RCURLY
                       ;
 
 bracketedArgumentList : Args+=unnamedArgument (COMMA Args+=unnamedArgument)*

@@ -83,7 +83,7 @@ namespace XSharp.Parser
         }
 
         public static bool Parse(string sourceText, string fileName, CSharpParseOptions options, IErrorListener listener,
-            out ITokenStream tokens, out XSharpParser.SourceContext tree)
+            out ITokenStream tokens, out XSharpParserRuleContext tree)
         {
             tree = null;
             tokens = null;
@@ -112,7 +112,14 @@ namespace XSharp.Parser
                     parser.Reset();
                     try
                     {
-                        tree = parser.source();
+                        if (options.Dialect == XSharpDialect.FoxPro)
+                        {
+                            tree = parser.foxsource();
+                        }
+                        else
+                        {
+                            tree = parser.source();
+                        }
                     }
                     catch (Exception)
                     {

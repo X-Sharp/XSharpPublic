@@ -31,7 +31,16 @@ FUNCTION _SelectString(uWorkArea AS STRING) AS DWORD
 		VAR nAsc := Asc( Upper(uWorkArea) )
 		IF nAsc > 64 .AND. nAsc < 75
 			nSelect := nAsc - 64
-		ENDIF
+        ENDIF
+    ELSE
+    	//  ------ added KHR : FoxPro allowes SELECT 10 which becomes DbSelectArea("10")
+       // see https://github.com/X-Sharp/XSharpPublic/issues/236
+        LOCAL nTemp := Val( uWorkArea ) AS LONG
+   	    IF nTemp:ToString() == uWorkArea 
+   	        nSelect := (DWORD) nTemp
+    	ENDIF 
+
+        // -------------------
     ENDIF
         
     IF nSelect > 0 .OR. "0" == uWorkArea

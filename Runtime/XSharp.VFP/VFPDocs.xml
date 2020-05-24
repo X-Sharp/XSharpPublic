@@ -711,7 +711,7 @@
       </list>
       <br/>
       AStackInfo( ) populates an array with information about the entire calling stack.
-      It combines functionality of SYS(16) and PROGRAM( ) functions while adding new support for line numbers at each call stack level.
+      It combines functionality of SYS(16) and Program( ) functions while adding new support for line numbers at each call stack level.
       The value returned is the number of program levels or rows of the returned array.<br/>
       AStackInfo( ) only populates the 6th array element if source line contents are available, otherwise it will be left empty.<br/>
       AStackInfo( ) provides, in the 2nd and 4th elements respectively, the name of the current file and,
@@ -1486,22 +1486,22 @@
   </candidate>
   <capslock>
     <summary>
-      Returns the current mode of the CAPS LOCK key or sets the CAPS LOCK key mode on or off.
+      Returns the current mode of the CAPS Lock key or sets the CAPS Lock key mode on or off.
     </summary>
     <param name="lExpression">
-      Include to turn the CAPS LOCK key on or off. Capslock(.T.) turns CAPS LOCK on and Capslock(.F.) turns CAPS LOCK off.
-      A logical value is returned corresponding to the CAPS LOCK setting before Capslock(.T.) or Capslock(.F.) is issued.
+      Include to turn the CAPS Lock key on or off. Capslock(.T.) turns CAPS Lock on and Capslock(.F.) turns CAPS Lock off.
+      A logical value is returned corresponding to the CAPS Lock setting before Capslock(.T.) or Capslock(.F.) is issued.
     </param>
     <returns>
       Logical
     </returns>
     <remarks>
-      Issuing Capslock( ) with no argument returns true (.T.) if CAPS LOCK is on, or false (.F.) if CAPS LOCK is off.
+      Issuing Capslock( ) with no argument returns true (.T.) if CAPS Lock is on, or false (.F.) if CAPS Lock is off.
     </remarks>
     <example>
        <code language="X#">
         glOldLock = Capslock( )     &amp;&amp; Save original setting
-        Capslock(.T.)     &amp;&amp; Turn CAPS LOCK on
+        Capslock(.T.)     &amp;&amp; Turn CAPS Lock on
         *** Perform any number of statements ***
         Capslock(glOldLock)  &amp;&amp; Return to original setting
         *** or, toggle CapsLock to the opposite value and back ***
@@ -2040,8 +2040,8 @@
           <term>Prepared</term>
           <description>L</description>
           <description>
-            Contains True (.T.) if SQL statements are prepared for subsequent REQUERY( ) function calls. Otherwise, contains False (.F.). (Default).<br/>
-            REQUERY( ) is used to retrieve data again for a SQL view. See SqlPrepare( ) for additional information about preparing SQL statements. For views only.<br/>
+            Contains True (.T.) if SQL statements are prepared for subsequent Requery( ) function calls. Otherwise, contains False (.F.). (Default).<br/>
+            Requery( ) is used to retrieve data again for a SQL view. See SqlPrepare( ) for additional information about preparing SQL statements. For views only.<br/>
             Read/write.
           </description>
         </item>
@@ -2355,10 +2355,10 @@
             Use the Set DATASESSION Command to select a specific data session, and use the cTableAlias or nWorkArea parameter to specify a specific cursor.
             Use nWorkArea = 0 to change the initial refresh value for all newly opened cursors.
             Any cursors that are already open will not be affected by the new refresh setting.<br/>
-            Set REFRESH Command allows you to specify a global refresh value. By default, the CursorSetProp( ) Refresh setting is -2,
-            which indicates that the current global Set REFRESH value is used. The global Set REFRESH value is specified with its second parameter, nSeconds2.<br/>
-            You can set the CursorSetProp( ) Refresh setting to the same values as the nSeconds2 parameter in Set REFRESH.<br/>
-            <note name="Note">The CursorSetProp( ) Refresh setting will be ignored if the nSeconds2 parameter is currently set to zero in the Set REFRESH command.</note>
+            Set Refresh Command allows you to specify a global refresh value. By default, the CursorSetProp( ) Refresh setting is -2,
+            which indicates that the current global Set Refresh value is used. The global Set Refresh value is specified with its second parameter, nSeconds2.<br/>
+            You can set the CursorSetProp( ) Refresh setting to the same values as the nSeconds2 parameter in Set Refresh.<br/>
+            <note name="Note">The CursorSetProp( ) Refresh setting will be ignored if the nSeconds2 parameter is currently set to zero in the Set Refresh command.</note>
           </description>
         </item>
         <item>
@@ -2426,11 +2426,11 @@
        <code language="X#">CursorSetProp("AutoIncError", .T., 0) </code>
       The default session is used when opening a new private data session or cursor. The following example shows how you can set the cursor or table AutoIncError setting for each table by using the cTableAlias or nWorkArea parameter as the last parameter:
        <code language="X#">CursorSetProp("AutoIncError", .F. , cTableAlias | nWorkArea )</code>
-      The following example demonstrates how you can enable optimistic table buffering with <b>CursorSetProp( )</b>. <b>MULTILOCKS</b> is set to <b>ON</b>, a requirement for table buffering. The "Customer" table in the "testdata" database is opened, and <b>CursorSetProp( )</b> is used to set the buffering mode to optimistic table buffering (5). A message box is displayed showing the result of the operation.
+      The following example demonstrates how you can enable optimistic table buffering with <b>CursorSetProp( )</b>. <b>MultiLocks</b> is set to <b>ON</b>, a requirement for table buffering. The "Customer" table in the "testdata" database is opened, and <b>CursorSetProp( )</b> is used to set the buffering mode to optimistic table buffering (5). A message box is displayed showing the result of the operation.
        <code language="X#">
         Close Databases
         Clear
-        Set MULTILOCKS ON
+        Set MultiLocks ON
         Open Database (HOME(2) + 'data\testdata')
         Use Customer     &amp;&amp; Open Customer table.
         * Set buffering mode and store logical result
@@ -2698,12 +2698,12 @@
       Character, Currency, Date, DateTime, Double, Float, Logical, Numeric, or Memo
     </returns>
     <remarks>
-      The field values returned by CurVal( ) and OLDVAL( ) can be compared to determine if another user on a network changed the field values
-      while the fields were being edited. CurVal( ) and OLDVAL( ) can only return different values when optimistic row or table buffering is enabled.
+      The field values returned by CurVal( ) and OldVal( ) can be compared to determine if another user on a network changed the field values
+      while the fields were being edited. CurVal( ) and OldVal( ) can only return different values when optimistic row or table buffering is enabled.
       Optimistic row or table buffering is enabled with CursorSetProp( ).<br/>
-      If you are working with a view in a multiuser environment, the values returned by CurVal() might not be up to date unless you call the REFRESH() function first.
+      If you are working with a view in a multiuser environment, the values returned by CurVal() might not be up to date unless you call the Refresh() function first.
       Data returned by a view is buffered, and the CurVal() function reads values from the buffer.
-      However, if other users have changed data in the underlying tables for the view, the buffered data is not updated until the REFRESH() function is called.<br/>
+      However, if other users have changed data in the underlying tables for the view, the buffered data is not updated until the Refresh() function is called.<br/>
       CurVal( ) returns field values for the current record, and the return value data type is determined by the expression you specify with cExpression.<br/>
       The value is returned for the table or cursor open in the currently selected work area if CurVal( ) is issued without the optional cTableAlias or nWorkArea arguments.
     </remarks>
@@ -2714,15 +2714,15 @@
         Create Table mytable FREE (cDigit C(10))
         * Store original value
         Insert Into mytable (cDigit) VALUES ("One")
-        Set MULTILOCKS ON        &amp;&amp; Allow optimistic table buffering
+        Set MultiLocks ON        &amp;&amp; Allow optimistic table buffering
         = CursorSetProp("Buffering",5)   &amp;&amp; Optimistic table buffering on
         Replace cDigit WITH "Two"    &amp;&amp; New value
         ? "Current value: " + CurVal("cDigit", "mytable")
-        ? "Old value: " + OLDVAL("cDigit", "mytable")
+        ? "Old value: " + OldVal("cDigit", "mytable")
         = TableUPDATE(.T.)       &amp;&amp; Commit changes made to table
         ? "Table changes committed"
         ? "New current value: " + CurVal("cDigit", "mytable")
-        ? "New old value: " + OLDVAL("cDigit", "mytable")
+        ? "New old value: " + OldVal("cDigit", "mytable")
       </code>
     </example>
   </curval>
@@ -3325,8 +3325,8 @@
           <term>Prepared</term>
           <description>L</description>
           <description>
-            Contains True (.T.) if SQL statements are prepared for subsequent <b>REQUERY( )</b> function calls.
-            <b>REQUERY( )</b> is used to retrieve data again for a SQL view. See SqlPrepare( ) for additional information about preparing SQL statements.
+            Contains True (.T.) if SQL statements are prepared for subsequent <b>Requery( )</b> function calls.
+            <b>Requery( )</b> is used to retrieve data again for a SQL view. See SqlPrepare( ) for additional information about preparing SQL statements.
             The default is false (.F.).<br/>
             The rule text expression displayed when an error occurs when data is edited in a Browse or Edit window.<br/>
             Read/write.
@@ -4343,12 +4343,12 @@
       has a default value when any command is issued that adds a new record.
     </remarks>
     <examples>
-      The following example demonstrates how you can use GetFldState( ) to determine if the contents of a field have changed. MULTILOCKS is set to ON, a requirement for table buffering. The codecustomer/code table in the codetestdata/code database is opened, and CursorSetProp( ) is then used to set the buffering mode to optimistic table buffering (5).
-      GetFldState( ) is issued to display a value (1) corresponding to the unmodified state of the codecust_id/code field before it is modified. The codecust_id/code field is modified with Replace, and GetFldState( ) is issued again to display a value (2) corresponding to the modified state of the codecust_id/code field. TableREVERT( ) is used to return the table to its original state, and GetFldState( ) is issued again to display a value (1) corresponding to the original state of the codecust_id/code field.
+      The following example demonstrates how you can use GetFldState( ) to determine if the contents of a field have changed. MultiLocks is set to ON, a requirement for table buffering. The codecustomer/code table in the codetestdata/code database is opened, and CursorSetProp( ) is then used to set the buffering mode to optimistic table buffering (5).
+      GetFldState( ) is issued to display a value (1) corresponding to the unmodified state of the codecust_id/code field before it is modified. The codecust_id/code field is modified with Replace, and GetFldState( ) is issued again to display a value (2) corresponding to the modified state of the codecust_id/code field. TableRevert( ) is used to return the table to its original state, and GetFldState( ) is issued again to display a value (1) corresponding to the original state of the codecust_id/code field.
        <code language="X#">
         Close Databases
         Clear
-        Set MULTILOCKS ON         &amp;&amp; Allow table buffering
+        Set MultiLocks ON         &amp;&amp; Allow table buffering
         Open Database (HOME(2) + 'data\testdata')
         Use Customer             &amp;&amp; Open customer table
         =CursorSetProp("Buffering",5,"customer")  &amp;&amp; Enable table buffering
@@ -4360,7 +4360,7 @@
         nState=<b>GetFldState(</b>"cust_id"<b>)</b>
         DO DisplayState WITH nState, "After Replace"
         * Discard table changes and display state
-        = TableREVERT(.T.)        &amp;&amp; Discard all table changes
+        = TableRevert(.T.)        &amp;&amp; Discard all table changes
         nState=<b>GetFldState(</b>"cust_id"<b>)</b>
         DO DisplayState WITH nState, "After Revert"
         PROCEDURE DisplayState
@@ -4374,7 +4374,7 @@
       </code>
       The following example shows the difference in behavior between fields with and without default values.
        <code language="X#">
-        Set MULTILOCKS ON
+        Set MultiLocks ON
         Create Database example
         Create Table customer (cust_id C(6),state C(2) DEFAULT "FL")
         Close TableS
@@ -4581,7 +4581,7 @@
         Open Database (HOME(2) + 'data\testdata')
         Use Customer
         * Enable table buffering.
-        Set MULTILOCKS ON
+        Set MultiLocks ON
         =CursorSetProp("Buffering", 5, "customer")
         * Increase MAXORDAMT by 10% for customers in Mexico.
         UPDATE Customer Set MaxOrdAmt=MaxOrdAmt * 1.1 Where Country = "Mexico"
@@ -4594,7 +4594,7 @@
         * Process modified row here.
         ? Customer.Company, Customer.MaxOrdAmt
         IF Customer.MaxOrdAmt &gt; 8500
-        =TableREVERT(.F.)
+        =TableRevert(.F.)
         ENDIF
         ?? Customer.MaxOrdAmt
         * Get the next modified record from here.
@@ -4603,7 +4603,7 @@
         EXIT
         ENDIF
         ENDDO
-        =TableREVERT(.T.)  &amp;&amp; Restore sample data and discard all changes.
+        =TableRevert(.T.)  &amp;&amp; Restore sample data and discard all changes.
       </code>
     </example>
   </getnextmodified>
@@ -4758,7 +4758,7 @@
   </getprinter>
   <getresultset>
     <summary>
-      Retrieves the work area number of a cursor marked by <b>SetRESULTSet( )</b> in the current data session.
+      Retrieves the work area number of a cursor marked by <b>SetResultSet( )</b> in the current data session.
     </summary>
     <returns>
       GetResultSet( )Return Value<br/>
@@ -4945,7 +4945,7 @@
     </summary>
     <param name="eExpression">
 
-      Specifies the index key expression for which you want IndexSEEK( ) to search.
+      Specifies the index key expression for which you want IndexSeek( ) to search.
 
     </param>
     <param name="lMovePointer">
@@ -4983,11 +4983,11 @@
     </returns>
     <remarks>
 
-      <b>IndexSEEK( )</b> returns true (.T.) if a match is found; otherwise false (.F.) is returned. You can use <b>IndexSEEK( )</b> only with a table with an index order set, and you can search only for an index key. The match must be exact unless <b>Set EXACT</b> is set to OFF.
+      <b>IndexSeek( )</b> returns true (.T.) if a match is found; otherwise false (.F.) is returned. You can use <b>IndexSeek( )</b> only with a table with an index order set, and you can search only for an index key. The match must be exact unless <b>Set EXACT</b> is set to OFF.
 
-      <b>IndexSEEK( )</b> provides a fast way to search for records without moving the record pointer. Because the record pointer isn't moved, rules and triggers aren't executed. If <b>IndexSEEK( )</b> returns true (.T.) indicating that a matching record is found, you can execute <b>IndexSEEK( )</b> again with the second parameter lMovePointer set to true (.T.) to move to the matching record.
+      <b>IndexSeek( )</b> provides a fast way to search for records without moving the record pointer. Because the record pointer isn't moved, rules and triggers aren't executed. If <b>IndexSeek( )</b> returns true (.T.) indicating that a matching record is found, you can execute <b>IndexSeek( )</b> again with the second parameter lMovePointer set to true (.T.) to move to the matching record.
 
-      <b>IndexSEEK( )</b> returns false (.F.) when you are attempting to find a value in the most recently created record (created with <b>Insert Into</b> or <b>Append Blank</b>) until the record pointer is moved. You can execute a <b>GO BOTTOM</b> command to cause <b>IndexSEEK( )</b> to find the most recently created record.
+      <b>IndexSeek( )</b> returns false (.F.) when you are attempting to find a value in the most recently created record (created with <b>Insert Into</b> or <b>Append Blank</b>) until the record pointer is moved. You can execute a <b>GO BOTTOM</b> command to cause <b>IndexSeek( )</b> to find the most recently created record.
     </remarks>
   </indexseek>
   <inputbox>
@@ -5517,310 +5517,310 @@
         oIPicture2 = CreateObjectEx("StdPicture","","{7BF80980-BF32-101A-8BBB-00AA00300CAB}")
       </code>
     </remarks>
-      <Interfacemembers>
-        The following table summarizes the PEMs <b>iPicture</b> interface.<br/>
-        <b>iPicture Interface Members</b>
-        <list type="table">
-          <listheader>
-            <term>PEM</term>
-            <description>Name</description>
-            <description>Used for</description>
-            <description>ValueType</description>
-            <description>Read/Writable</description>
-          </listheader>
-          <item>
-            <term>property</term>
-            <description>Attributes</description>
-            <description>The current set of the picture's bit attributes.</description>
-            <description>DWORD (int)</description>
-            <description>readonly</description>
-          </item>
-          <item>
-            <term>property</term>
-            <description>CurDC</description>
-            <description>The current device context into which this picture is selected.</description>
-            <description>HDC (long)</description>
-            <description>readonly</description>
-          </item>
-          <item>
-            <term>property</term>
-            <description>Handle</description>
-            <description>Handle to the picture managed within this picture object.</description>
-            <description>OLE_Handle (int)</description>
-            <description>readonly</description>
-          </item>
-          <item>
-            <term>property</term>
-            <description>Height</description>
-            <description>The current height of the picture in the picture object.</description>
-            <description>OLE_XSIZE_HIMETRIC (long)</description>
-            <description>readonly</description>
-          </item>
-          <item>
-            <term>property</term>
-            <description>hPal</description>
-            <description>The current palette of the picture (if any).</description>
-            <description>OLE_Handle (int)</description>
-            <description>read/writable</description>
-          </item>
-          <item>
-            <term>property</term>
-            <description>KeepOriginalFormat</description>
-            <description>The current value of the picture object's KeepOriginalFormat property.</description>
-            <description>Bool</description>
-            <description>read/writable</description>
-          </item>
-          <item>
-            <term>property</term>
-            <description>Type</description>
-            <description>The current type of the picture.</description>
-            <description>Short (int)</description>
-            <description>readonly</description>
-          </item>
-          <item>
-            <term>property</term>
-            <description>Width</description>
-            <description>The current width of the picture in the picture object.</description>
-            <description>OLE_XSIZE_HIMETRIC (long)</description>
-            <description>readonly</description>
-          </item>
-          <item>
-            <term>method</term>
-            <description>PictureChanged()</description>
-            <description>Notifies the picture object that its picture resource changed.</description>
-          </item>
-          <item>
-            <term>method</term>
-            <description>Render()</description>
-            <description>Draws the specified portion of the picture onto the specified device context, positioned at the specified location.</description>
-          </item>
-          <item>
-            <term>method</term>
-            <description>SaveAsFile()</description>
-            <description>Saves the picture's data into a stream in the same format that it would save itself into a file.</description>
-          </item>
-          <item>
-            <term>method</term>
-            <description>SelectPicture()</description>
-            <description>
-              Selects a bitmap picture into a given device context, returning the device context in which the picture was previously selected
-              as well as the picture's handle.
-            </description>
-          </item>
-        </list>
-        The <b>Attributes property</b> is said to hold the picture’s bit attributes. Actually, there are only two, which can be set alone, or additive.
-        The following table lists both possible values:<br/>
-        <b>iPicture.Attributes Enumeration</b>
-        <list type="table">
-          <listheader>
-            <term>Constant</term>
-            <descripiton>Description</descripiton>
-            <description>Value</description>
-          </listheader>
-          <item>
-            <term>PICTURE_SCALABLE</term>
-            <description>
-              The picture object is scalable, such that it can be redrawn with a different size than was used to create the picture originally.
-              Metafile-based pictures are considered scalable; icon and bitmap pictures, while they can be scaled, do not express this attribute because both involve bitmap
-              stretching instead of true scaling.
-            </description>
-            <description>1</description>
-          </item>
-          <item>
-            <term>PICTURE_TRANSPARENT</term>
-            <description>
-              The picture object contains an image that has transparent areas, such that drawing the picture will not necessarily fill in all the spaces in the rectangle
-              it occupies. Metafile and icon pictures have this attribute; bitmap pictures do not.
-            </description>
-            <description>2</description>
-          </item>
-        </list>
-        The following table lists all possible values of the <b>iPicture.Type property</b>:
-        <list type="table">
-          <listheader>
-            <term>Constant</term>
-            <descripiton>Description</descripiton>
-            <description>Value</description>
-          </listheader>
-          <item>
-            <term>PICTYPE_UNINITIALIZED</term>
-            <description>The picture object is currently uninitialized. This value is never be returned within VFP.</description>
-            <description>-1</description>
-          </item>
-          <item>
-            <term>PICTYPE_NONE</term>
-            <description>A new picture object is to be created without an initialized state. This value is returned from VFP if LoadPicture() is used without a parameter.</description>
-            <description>0</description>
-          </item>
-          <item>
-            <term>PICTYPE_BITMAP</term>
-            <description>The picture type is a bitmap.</description>
-            <description>1</description>
-          </item>
-          <item>
-            <term>PICTYPE_METAFILE</term>
-            <description>The picture type is a metafile.</description>
-            <description>2</description>
-          </item>
-          <item>
-            <term>PICTYPE_ICON</term>
-            <description>The picture type is an icon.</description>
-            <description>3</description>
-          </item>
-          <item>
-            <term>PICTYPE_ENHMETAFILE</term>
-            <description>The picture type is an enhanced metafile.</description>
-            <description>4</description>
-          </item>
-        </list>
-        The most interesting method of the COM image object’s <b>iPicture interface</b> is <b>render()</b> which also works flawlessly only when called on the <b>iPicture interface</b>.
-        The following table summarises the parameters of the <b>render() method</b>:
-        <list type="table">
-          <listheader>
-            <term>Parameter</term>
-            <descripiton>Used for</descripiton>
-            <description>Scale unit</description>
-          </listheader>
-          <item>
-            <term>hdc</term>
-            <description>A handle of the device context on which to render the image.</description>
-          </item>
-          <item>
-            <term>x</term>
-            <description>The horizontal coordinate in hdc at which to place the rendered image (X-position of upper left corner of output rectangle).</description>
-            <description>pixel</description>
-          </item>
-          <item>
-            <term>y</term>
-            <description>The vertical coordinate in hdc at which to place the rendered image (X-position of upper left corner of output rectangle).</description>
-            <description>pixel</description>
-          </item>
-          <item>
-            <term>cx</term>
-            <description>The horizontal dimension (width) of the destination rectangle (with of output rectangle).</description>
-            <description>pixel</description>
-          </item>
-          <item>
-            <term>cy</term>
-            <description>The vertical dimension (height) of the destination rectangle (height of output rectangle).</description>
-            <description>pixel</description>
-          </item>
-          <item>
-            <term>xSrc</term>
-            <description>The horizontal offset in the source picture from which to start copying.</description>
-            <description>HiMetric</description>
-          </item>
-          <item>
-            <term>ySrc</term>
-            <description>The vertical offset in the source picture from which to start copying.</description>
-            <description>HiMetric</description>
-          </item>
-          <item>
-            <term>cxSrc</term>
-            <description>The horizontal extent to copy from the source picture (width of image source’s clipping region AND direction of readout).</description>
-            <description>HiMetric</description>
-          </item>
-          <item>
-            <term>cySrc</term>
-            <description>The vertical extent to copy from the source picture (height of image source’s clipping region AND direction of readout).</description>
-            <description>HiMetric</description>
-          </item>
-          <item>
-            <term>lprcWBounds</term>
-            <description>
-              If hdc is a metafile device context, the lprcWBounds parameter points to a RECTL structure specifying the bounding rectangle in the underlying metafile.
-              The rectangle structure contains the window extent and window origin. These values are useful for drawing metafiles.
-              The rectangle indicated by lprcBounds is nested inside this lprcWBounds rectangle; they are in the same coordinate space.
-              If hdcDraw is not a metafile device context, lprcWBounds will be NULL. If hdcDraw is a metafile device context, lprcWBounds cannot be NULL!
-            </description>
-          </item>
-        </list>
-        The method returns standard values like E_FAIL, E_INVALIDARG and E_OUToFMEMORY, as well as S_OK, E_POINTER and CTL_E_INVALIDPROPERTYVALUE.
-        These values are described on MSDN.
-      </Interfacemembers>
-      <applications>
-        The render function has plenty of parameters. Some of them passing in pixel values, others HiMetric values.<br/>
-        <b>Example #3</b> has some useful conversions as well as other supporting functions and definitions.<br/>
-        To figure out how <b>render()</b> works try the VFP code below; type it in line by line into VFP’s command window:<br/>
-        Direct input into VFP’s command window
+    <Interfacemembers>
+      The following table summarizes the PEMs <b>iPicture</b> interface.<br/>
+      <b>iPicture Interface Members</b>
+      <list type="table">
+        <listheader>
+          <term>PEM</term>
+          <description>Name</description>
+          <description>Used for</description>
+          <description>ValueType</description>
+          <description>Read/Writable</description>
+        </listheader>
+        <item>
+          <term>property</term>
+          <description>Attributes</description>
+          <description>The current set of the picture's bit attributes.</description>
+          <description>DWORD (int)</description>
+          <description>readonly</description>
+        </item>
+        <item>
+          <term>property</term>
+          <description>CurDC</description>
+          <description>The current device context into which this picture is selected.</description>
+          <description>HDC (long)</description>
+          <description>readonly</description>
+        </item>
+        <item>
+          <term>property</term>
+          <description>Handle</description>
+          <description>Handle to the picture managed within this picture object.</description>
+          <description>OLE_Handle (int)</description>
+          <description>readonly</description>
+        </item>
+        <item>
+          <term>property</term>
+          <description>Height</description>
+          <description>The current height of the picture in the picture object.</description>
+          <description>OLE_XSIZE_HIMETRIC (long)</description>
+          <description>readonly</description>
+        </item>
+        <item>
+          <term>property</term>
+          <description>hPal</description>
+          <description>The current palette of the picture (if any).</description>
+          <description>OLE_Handle (int)</description>
+          <description>read/writable</description>
+        </item>
+        <item>
+          <term>property</term>
+          <description>KeepOriginalFormat</description>
+          <description>The current value of the picture object's KeepOriginalFormat property.</description>
+          <description>Bool</description>
+          <description>read/writable</description>
+        </item>
+        <item>
+          <term>property</term>
+          <description>Type</description>
+          <description>The current type of the picture.</description>
+          <description>Short (int)</description>
+          <description>readonly</description>
+        </item>
+        <item>
+          <term>property</term>
+          <description>Width</description>
+          <description>The current width of the picture in the picture object.</description>
+          <description>OLE_XSIZE_HIMETRIC (long)</description>
+          <description>readonly</description>
+        </item>
+        <item>
+          <term>method</term>
+          <description>PictureChanged()</description>
+          <description>Notifies the picture object that its picture resource changed.</description>
+        </item>
+        <item>
+          <term>method</term>
+          <description>Render()</description>
+          <description>Draws the specified portion of the picture onto the specified device context, positioned at the specified location.</description>
+        </item>
+        <item>
+          <term>method</term>
+          <description>SaveAsFile()</description>
+          <description>Saves the picture's data into a stream in the same format that it would save itself into a file.</description>
+        </item>
+        <item>
+          <term>method</term>
+          <description>SelectPicture()</description>
+          <description>
+            Selects a bitmap picture into a given device context, returning the device context in which the picture was previously selected
+            as well as the picture's handle.
+          </description>
+        </item>
+      </list>
+      The <b>Attributes property</b> is said to hold the picture’s bit attributes. Actually, there are only two, which can be set alone, or additive.
+      The following table lists both possible values:<br/>
+      <b>iPicture.Attributes Enumeration</b>
+      <list type="table">
+        <listheader>
+          <term>Constant</term>
+          <descripiton>Description</descripiton>
+          <description>Value</description>
+        </listheader>
+        <item>
+          <term>PICTURE_SCALABLE</term>
+          <description>
+            The picture object is scalable, such that it can be redrawn with a different size than was used to create the picture originally.
+            Metafile-based pictures are considered scalable; icon and bitmap pictures, while they can be scaled, do not express this attribute because both involve bitmap
+            stretching instead of true scaling.
+          </description>
+          <description>1</description>
+        </item>
+        <item>
+          <term>PICTURE_TRANSPARENT</term>
+          <description>
+            The picture object contains an image that has transparent areas, such that drawing the picture will not necessarily fill in all the spaces in the rectangle
+            it occupies. Metafile and icon pictures have this attribute; bitmap pictures do not.
+          </description>
+          <description>2</description>
+        </item>
+      </list>
+      The following table lists all possible values of the <b>iPicture.Type property</b>:
+      <list type="table">
+        <listheader>
+          <term>Constant</term>
+          <descripiton>Description</descripiton>
+          <description>Value</description>
+        </listheader>
+        <item>
+          <term>PICTYPE_UNINITIALIZED</term>
+          <description>The picture object is currently uninitialized. This value is never be returned within VFP.</description>
+          <description>-1</description>
+        </item>
+        <item>
+          <term>PICTYPE_NONE</term>
+          <description>A new picture object is to be created without an initialized state. This value is returned from VFP if LoadPicture() is used without a parameter.</description>
+          <description>0</description>
+        </item>
+        <item>
+          <term>PICTYPE_BITMAP</term>
+          <description>The picture type is a bitmap.</description>
+          <description>1</description>
+        </item>
+        <item>
+          <term>PICTYPE_METAFILE</term>
+          <description>The picture type is a metafile.</description>
+          <description>2</description>
+        </item>
+        <item>
+          <term>PICTYPE_ICON</term>
+          <description>The picture type is an icon.</description>
+          <description>3</description>
+        </item>
+        <item>
+          <term>PICTYPE_ENHMETAFILE</term>
+          <description>The picture type is an enhanced metafile.</description>
+          <description>4</description>
+        </item>
+      </list>
+      The most interesting method of the COM image object’s <b>iPicture interface</b> is <b>render()</b> which also works flawlessly only when called on the <b>iPicture interface</b>.
+      The following table summarises the parameters of the <b>render() method</b>:
+      <list type="table">
+        <listheader>
+          <term>Parameter</term>
+          <descripiton>Used for</descripiton>
+          <description>Scale unit</description>
+        </listheader>
+        <item>
+          <term>hdc</term>
+          <description>A handle of the device context on which to render the image.</description>
+        </item>
+        <item>
+          <term>x</term>
+          <description>The horizontal coordinate in hdc at which to place the rendered image (X-position of upper left corner of output rectangle).</description>
+          <description>pixel</description>
+        </item>
+        <item>
+          <term>y</term>
+          <description>The vertical coordinate in hdc at which to place the rendered image (X-position of upper left corner of output rectangle).</description>
+          <description>pixel</description>
+        </item>
+        <item>
+          <term>cx</term>
+          <description>The horizontal dimension (width) of the destination rectangle (with of output rectangle).</description>
+          <description>pixel</description>
+        </item>
+        <item>
+          <term>cy</term>
+          <description>The vertical dimension (height) of the destination rectangle (height of output rectangle).</description>
+          <description>pixel</description>
+        </item>
+        <item>
+          <term>xSrc</term>
+          <description>The horizontal offset in the source picture from which to start copying.</description>
+          <description>HiMetric</description>
+        </item>
+        <item>
+          <term>ySrc</term>
+          <description>The vertical offset in the source picture from which to start copying.</description>
+          <description>HiMetric</description>
+        </item>
+        <item>
+          <term>cxSrc</term>
+          <description>The horizontal extent to copy from the source picture (width of image source’s clipping region AND direction of readout).</description>
+          <description>HiMetric</description>
+        </item>
+        <item>
+          <term>cySrc</term>
+          <description>The vertical extent to copy from the source picture (height of image source’s clipping region AND direction of readout).</description>
+          <description>HiMetric</description>
+        </item>
+        <item>
+          <term>lprcWBounds</term>
+          <description>
+            If hdc is a metafile device context, the lprcWBounds parameter points to a RECTL structure specifying the bounding rectangle in the underlying metafile.
+            The rectangle structure contains the window extent and window origin. These values are useful for drawing metafiles.
+            The rectangle indicated by lprcBounds is nested inside this lprcWBounds rectangle; they are in the same coordinate space.
+            If hdcDraw is not a metafile device context, lprcWBounds will be NULL. If hdcDraw is a metafile device context, lprcWBounds cannot be NULL!
+          </description>
+        </item>
+      </list>
+      The method returns standard values like E_FAIL, E_INVALIDARG and E_OUToFMEMORY, as well as S_OK, E_POINTER and CTL_E_INVALIDPROPERTYVALUE.
+      These values are described on MSDN.
+    </Interfacemembers>
+    <applications>
+      The render function has plenty of parameters. Some of them passing in pixel values, others HiMetric values.<br/>
+      <b>Example #3</b> has some useful conversions as well as other supporting functions and definitions.<br/>
+      To figure out how <b>render()</b> works try the VFP code below; type it in line by line into VFP’s command window:<br/>
+      Direct input into VFP’s command window
 
-        <code language="X#">
-          * locate an image with round about 100 x 100 pixels
-          goPic = LoadPicture(GetPict())
-          gIP = GETINTERFACE(m.goPic, "iPicture")
-          goForm = CreateObject("Form")
-          goForm.Show()
-          * declare access to the _client_area_ of a window
-          DECLARE Integer GetDC IN User32 integer HWnd
-          * hDC should be  0 (otherwise that's an error)!
-          hDC = GetDC(goForm.HWnd)
-          * render your image directly onto form's client area
-          gIP.Render(m.hDC,0,0,100,100,0,gIP.Height,gIP.Width,- gIP.Height,NULL)
-          * declare release function
-          DECLARE Integer ReleaseDC IN User32 integer HWnd, integer hDC
-          * next line should print 1 on the form's background >> "Okay"
-          ? ReleaseDC(m.goForm.HWnd, m.hDC)
-          * declare access to the _whole_ window
-          DECLARE Integer GetWindowDC IN User32 integer HWnd
-          * hDC now references form's caption an border areas as well!
-          hDC = GetWindowDC(goForm.HWnd)
-          * render out partially overwriting form's border and caption
-          gIP.Render(m.hDC,0,0,100,100,0,gIP.Height,gIP.Width,- gIP.Height,NULL)
-          * never forget to free an allocated device context
-          ? ReleaseDC(m.goForm.HWnd, m.hDC)
-        </code>
+      <code language="X#">
+        * locate an image with round about 100 x 100 pixels
+        goPic = LoadPicture(GetPict())
+        gIP = GETINTERFACE(m.goPic, "iPicture")
+        goForm = CreateObject("Form")
+        goForm.Show()
+        * declare access to the _client_area_ of a window
+        DECLARE Integer GetDC IN User32 integer HWnd
+        * hDC should be  0 (otherwise that's an error)!
+        hDC = GetDC(goForm.HWnd)
+        * render your image directly onto form's client area
+        gIP.Render(m.hDC,0,0,100,100,0,gIP.Height,gIP.Width,- gIP.Height,NULL)
+        * declare release function
+        DECLARE Integer ReleaseDC IN User32 integer HWnd, integer hDC
+        * next line should print 1 on the form's background >> "Okay"
+        ? ReleaseDC(m.goForm.HWnd, m.hDC)
+        * declare access to the _whole_ window
+        DECLARE Integer GetWindowDC IN User32 integer HWnd
+        * hDC now references form's caption an border areas as well!
+        hDC = GetWindowDC(goForm.HWnd)
+        * render out partially overwriting form's border and caption
+        gIP.Render(m.hDC,0,0,100,100,0,gIP.Height,gIP.Width,- gIP.Height,NULL)
+        * never forget to free an allocated device context
+        ? ReleaseDC(m.goForm.HWnd, m.hDC)
+      </code>
 
-        <b>iPicture.Render()</b> qualifies for painting on otherwise unreachable form regions, like the TitleBar or WindowBorders.
-        Another interesting application for direct rendering stems from the fact that no VFP object reference is necessary for painting.
-        The <b>render() method</b> solely uses a common windows handle. Thus, one can render on any known device context.br
-        If one encounters the so-called hourglass problem, working with a COM-based image can be the preferred workaround.
-        The hourglass mouse cursor gets displayed by the operation system during lengthy disk accesses.
-        Sometimes VFP does not reset the hourglass mouse cursor correctly.
-        Thus, the user still sees the “busy working” icon although VFP already is idle, as long she doesn’t touch the mouse.
-        Most often these disk accesses stem from refreshing pictures loaded into native Image-Objects using the <b>Image.Picture property</b>.
-        Storing a COM memory-based object to the Image-Object’s <b>.PictureVal property</b> instead, never causes any disk access.
-        Thus, no more hourglass mouse cursor will appear after a refresh!
-      </applications>
-      <drawback>
-        <b>iPicture.Render()</b> does its work outside of - and unnoticed by – the VFP engine itself.
-        That’s why VFP has no idea of what was painted “between the lines”.
-        Each time VFP refreshes the form’s area (we’ve just rendered our picture onto), will clear out our image.
-        To make rendered output persistent measures have to be taken against VFP wiping it out!
-        There is another BUG one has to be aware of, when employing the hourglass workaround described above!br
-        To see what happens, try the following code:
+      <b>iPicture.Render()</b> qualifies for painting on otherwise unreachable form regions, like the TitleBar or WindowBorders.
+      Another interesting application for direct rendering stems from the fact that no VFP object reference is necessary for painting.
+      The <b>render() method</b> solely uses a common windows handle. Thus, one can render on any known device context.br
+      If one encounters the so-called hourglass problem, working with a COM-based image can be the preferred workaround.
+      The hourglass mouse cursor gets displayed by the operation system during lengthy disk accesses.
+      Sometimes VFP does not reset the hourglass mouse cursor correctly.
+      Thus, the user still sees the “busy working” icon although VFP already is idle, as long she doesn’t touch the mouse.
+      Most often these disk accesses stem from refreshing pictures loaded into native Image-Objects using the <b>Image.Picture property</b>.
+      Storing a COM memory-based object to the Image-Object’s <b>.PictureVal property</b> instead, never causes any disk access.
+      Thus, no more hourglass mouse cursor will appear after a refresh!
+    </applications>
+    <drawback>
+      <b>iPicture.Render()</b> does its work outside of - and unnoticed by – the VFP engine itself.
+      That’s why VFP has no idea of what was painted “between the lines”.
+      Each time VFP refreshes the form’s area (we’ve just rendered our picture onto), will clear out our image.
+      To make rendered output persistent measures have to be taken against VFP wiping it out!
+      There is another BUG one has to be aware of, when employing the hourglass workaround described above!br
+      To see what happens, try the following code:
 
-        <code language="X#">
-          LOCAL lnLoop, oComPic1, oComPic2
-          oComPic1 = LoadPicture(GetFile())
-          oComPic2 = LoadPicture(GetFile())
-          TRY
-          _Screen.Addobject("oImage","IMAGE")
-          CATCH
-          FINALLY
-          _Screen.oImage.Visible = .T.
-          ENDTRY
-          For lnLoop = 1 to 100
-          _Screen.oImage.PictureVal = m.oComPic1
-          _Screen.oImage.PictureVal = m.oComPic2
-          Next
-          *//
-          *\\ whereas the next loop will break somewhere down the road:
-          For lnLoop = 1 to 100
-          _Screen.oImage.PictureVal = m.oComPic1
-          _Screen.oImage.PictureVal = m.oComPic1
-          _Screen.oImage.PictureVal = m.oComPic1
-          _Screen.oImage.PictureVal = m.oComPic2
-          Next
-        </code>
-        One can see, that the first loop executes flawlessly, the second one breaks after only a few loops with a “Property value is invalid” error message!
-        This bug is hard to track and occurs only in cases when someone tries to assign the same COM-reference more than once in a row!
-        The workaround for this is to keep track which COM-reference is actually assigned to the Image’s PictureVal property.
-        Never ever then reassign the same reference a second time (overwriting the first one with a copy of itself)!
-        BTW: It doesn’t matter what interface you are using.
-        The error seems to stem from VFP’s Image class instance.
-      </drawback>
+      <code language="X#">
+        LOCAL lnLoop, oComPic1, oComPic2
+        oComPic1 = LoadPicture(GetFile())
+        oComPic2 = LoadPicture(GetFile())
+        TRY
+        _Screen.Addobject("oImage","IMAGE")
+        CATCH
+        FINALLY
+        _Screen.oImage.Visible = .T.
+        ENDTRY
+        For lnLoop = 1 to 100
+        _Screen.oImage.PictureVal = m.oComPic1
+        _Screen.oImage.PictureVal = m.oComPic2
+        Next
+        *//
+        *\\ whereas the next loop will break somewhere down the road:
+        For lnLoop = 1 to 100
+        _Screen.oImage.PictureVal = m.oComPic1
+        _Screen.oImage.PictureVal = m.oComPic1
+        _Screen.oImage.PictureVal = m.oComPic1
+        _Screen.oImage.PictureVal = m.oComPic2
+        Next
+      </code>
+      One can see, that the first loop executes flawlessly, the second one breaks after only a few loops with a “Property value is invalid” error message!
+      This bug is hard to track and occurs only in cases when someone tries to assign the same COM-reference more than once in a row!
+      The workaround for this is to keep track which COM-reference is actually assigned to the Image’s PictureVal property.
+      Never ever then reassign the same reference a second time (overwriting the first one with a copy of itself)!
+      BTW: It doesn’t matter what interface you are using.
+      The error seems to stem from VFP’s Image class instance.
+    </drawback>
     <example>
-      The following example shows that both interfaces (<b>Picture</b> and <b>IPicture</b>) of a COM image 
+      The following example shows that both interfaces (<b>Picture</b> and <b>IPicture</b>) of a COM image
       instance can be assigned to VFP’s <b>Image.PictureVal property</b>:
       <code language="X#">
         PUBLIC goPic AS Object, goIPic AS Object
@@ -5962,40 +5962,52 @@
       Locates a file on disk and returns the file name with its path.
     </summary>
     <param name="cFileName">
-      Specifies the name of the file to locate. If cFileName includes only a file name, LocFile( ) searches the X# default directory or folder first. 
+      Specifies the name of the file to locate. If cFileName includes only a file name, LocFile( ) searches the X# default directory or folder first.
       If the file is not found in the default directory or folder, the X# path is then searched. Use Set PATH to specify the X# path.<br/>
-      If cFileName includes a path and a file name, the specified location is searched. If the file cannot be found in the specified location, 
+      If cFileName includes a path and a file name, the specified location is searched. If the file cannot be found in the specified location,
       LocFile( ) searches the X# default directory or folder and then the X# path.<br/>
       If the file is located, LocFile( ) returns the file name and path.
     </param>
     <param name="cFileExtensions">
-      Specifies file extensions for the file to locate. If the file name you specify with cFileName does not include an extension, X# applies the file extensions listed in cFileExtensions to the file name and searches for the file again.
-      cFileExtensions also specifies the file name extensions of the files displayed in the Open dialog box when the file you specified cannot be located.
+      Specifies file extensions for the file to locate. If the file name you specify with cFileName does not include an extension,
+      X# applies the file extensions listed in cFileExtensions to the file name and searches for the file again.<br/>
+      cFileExtensions also specifies the file name extensions of the files displayed in the Open dialog box
+      when the file you specified cannot be located.<br/>
       cFileExtensions can take a variety of forms:
       <list type="bullet">
         <item>If cFileExtensions contains a single extension (for example, PRG), only files with that extension are displayed.</item>
-        <item>cFileExtensions can also contain wildcards (* and ?). All files with extensions that meet the wildcard criteria are displayed.
-        For example, if cFileExtensions is ?X?, all files with the extension .fxp, .exe, or .txt are displayed.</item>
-        <item>In X# for Windows, cFileExtensions can contain a file description followed by a file extension or a list of file extensions separated with commas. 
-        The file description appears in the Files of Type list box. Separate the file description from the file extension or list of 
-        file extensions with a colon (:). Separate multiple file descriptions and their file extensions with a semicolon (;).</item>
-      For example, if cFileExtensions is "Text:TXT" the file description "Text" appears in 
+        <item>
+          cFileExtensions can also contain wildcards (* and ?). All files with extensions that meet the wildcard criteria are displayed.
+          For example, if cFileExtensions is ?X?, all files with the extension .fxp, .exe, or .txt are displayed.
+        </item>
+        <item>
+          In X# for Windows, cFileExtensions can contain a file description followed by a
+          file extension or a list of file extensions separated with commas.
+          The file description appears in the Files of Type list box. Separate the file description from the file extension or list of
+          file extensions with a colon (:). Separate multiple file descriptions and their file extensions with a semicolon (;).
+        </item>
+      </list>
+      For example, if cFileExtensions is "Text:TXT" the file description "Text" appears in
       the Files of Type list box and all files with a .txt extension are displayed.<br/>
-      If cFileExtensions is "Tables:DBF; Files:TXT,BAK" the file descriptions "Tables" and "Files" appear in the Files of Type list box. 
-      When "Tables" is chosen from the Files of Type list box, all files with a .dbf extension are displayed. When "Files" is chosen from the Files of Type list 
+      If cFileExtensions is "Tables:DBF; Files:TXT,BAK" the file descriptions "Tables" and "Files" appear in the Files of Type list box.
+      When "Tables" is chosen from the Files of Type list box, all files with a .dbf extension are displayed.
+      When "Files" is chosen from the Files of Type list
       box, all files with .txt and .bak extensions are displayed.
     </param>
     <param name="cFileNameCaption">
-
-      Specifies the text you want to use to prompt the user. The text appears to the left of the textbox in which you enter the file name. If omitted, "File name:" is displayed.
+      Specifies the text you want to use to prompt the user. The text appears to the left of the textbox in which you enter the file name.
+      If omitted, "File name:" is displayed.<br/>
       For a list of X# file extensions and corresponding creator types, see the File Extensions and File Types online topic.
     </param>
     <returns>
       Character
     </returns>
     <remarks>
-      The Open dialog box is displayed if the file cannot be located in the default directory or folder, the X# path, or a specified location. The Open dialog box can be used to locate the file. When a file is chosen from the Open dialog box, the file name is returned with the file's path.
-      If you exit the Open dialog box by choosing Cancel, pressing Esc, or choosing Close from the Control menu, X# generates an error message and LocFile( ) does not return a value.
+      The Open dialog box is displayed if the file cannot be located in the default directory or folder, the X# path, or a specified location.
+      The Open dialog box can be used to locate the file. When a file is chosen from the Open dialog box,
+      the file name is returned with the file's path.<br/>
+      If you exit the Open dialog box by choosing Cancel, pressing Esc, or choosing Close from the Control menu,
+      X# generates an error message and LocFile( ) does not return a value.
     </remarks>
   </locfile>
   <lock>
@@ -6003,32 +6015,54 @@
       Attempts to lock one or more records in a table.
     </summary>
     <param name="cRecordNumberList">
-
-      Specifies a list of one or more record numbers which you must include to attempt to lock multiple records. Set MULTILOCKS must be ON and you must include the work area or alias of the table for which you are attempting to place multiple record locks.
-      LOCK( ) attempts to lock all of the records you specify. The record numbers specified with cRecordNumberList are separated by commas. For example, to attempt record locks on the first four records in a table, cRecordNumberList must contain 1,2,3,4.
-      You can also lock multiple records by moving the record pointer to the record you would like to lock, issuing LOCK( ) or RLOCK( ) and then repeating these steps for each additional record.
-      In X#, you can specify 0 as a record number. Specifying 0 makes it possible for you to attempt to lock the table header.
-      Keep the table header locked for as short a time as possible because other users cannot add records to the table when the table header is locked.
-      Release the table header lock with UNLOCK RECORD 0, UNLOCK or UNLOCK ALL.
-      If all the records specified in cRecordNumbers are successfully locked, LOCK( ) returns true (.T.). If even one of the records specified with cRecordNumbers cannot be locked, LOCK( ) returns false (.F.) and none of the records are locked. However, any existing record locks remain in place. Multiple record locking is an additive process. Placing additional record locks does not release locks on other records.
-      The maximum number of records that can be locked in each work area is approximately 8,000. It is always faster to lock the entire table rather than even a small number of records.
+      Specifies a list of one or more record numbers which you must include to attempt to lock multiple records.
+      Set MultiLocks must be ON and you must include the work area or alias of the table for which you are attempting to place multiple record locks.
+      Lock( ) attempts to lock all of the records you specify. The record numbers specified with cRecordNumberList are separated by commas.
+      For example, to attempt record locks on the first four records in a table, cRecordNumberList must contain 1,2,3,4.<br/>
+      You can also lock multiple records by moving the record pointer to the record you would like to lock,
+      issuing Lock( ) or RLock( ) and then repeating these steps for each additional record.<br/>
+      In X#, you can specify 0 as a record number. Specifying 0 makes it possible for you to attempt to lock the table header.<br/>
+      <note name="Note">
+        Keep the table header locked for as short a time as possible because other users cannot add records
+        to the table when the table header is locked.
+      </note>
+      Release the table header lock with UNLock RECORD 0, UNLock or UNLock ALL.
+      If all the records specified in cRecordNumbers are successfully locked, Lock( ) returns true (.T.).
+      If even one of the records specified with cRecordNumbers cannot be locked, Lock( ) returns false (.F.) and none of the records are locked.
+      However, any existing record locks remain in place. Multiple record locking is an additive process. <br/>
+      Placing additional record locks does not release locks on other records.
+      The maximum number of records that can be locked in each work area is approximately 8,000.
+      It is always faster to lock the entire table rather than even a small number of records.
+    </param>
+    <param name="uArea">
+      Attempts a lock on the current record in a table open in a specific work area.
+      uArea specifies the work area number and the table alias.
+      If you do not specify a work area or table alias, Lock( ) attempts to lock the current record in the table in the current work area.
     </param>
     <returns>
       Logical
     </returns>
     <remarks>
-      LOCK( ) is identical to RLOCK( ).
-      Changes to explicitly locked records aren't saved until the record is unlocked or the record pointer is moved.
-      If the lock or locks are successfully placed, LOCK( ) returns true (.T.). Locked records are available for both read and write access to the user who placed the locks; they are available for read-only access to all other users on the network.
-      Executing LOCK( ) does not guarantee that the record lock or locks will be successfully placed. A record lock cannot be placed on a record already locked by another user or in a table locked by another user. If the record lock or locks cannot be placed for any reason, LOCK( ) returns false (.F.).
-      By default, LOCK( ) makes one attempt to lock a record. Use Set REPROCESS to automatically retry a record lock when the first attempt fails. Set REPROCESS determines the number of lock attempts or the length of time during which lock attempts are made when the initial lock attempt is unsuccessful. For more information, see Set REPROCESS.
-      Set MULTILOCKS determines whether you can lock multiple records in a table. If Set MULTILOCKS is OFF (the default), you can lock only a single record in a table. When Set MULTILOCKS is ON, you can lock multiple records in a table. For more information, see Set MULTILOCKS.
-
-      <b>Unlocking Records</b>   A table record can be unlocked only by the user who placed the lock. You can release record locks by issuing UNLOCK, closing the table, or exiting X#.
-      UNLOCK can be used to release record locks in the current work area, a specific work area, or in all work areas. For more information, see UNLOCK.
-      Switching Set MULTILOCKS from ON to OFF or from OFF to ON implicitly performs UNLOCK ALL — all record locks in all work areas are released.
-      Tables can be closed with Use, Clear ALL, or Close Databases.
-      For more information about record and file locking and sharing tables on a network, see Programming for Shared Access.
+      Lock( ) is identical to RLock( ).<br/>
+      Changes to explicitly locked records aren't saved until the record is unlocked or the record pointer is moved.<br/>
+      If the lock or locks are successfully placed, Lock( ) returns true (.T.). Locked records are available for both read and write access
+      to the user who placed the locks; they are available for read-only access to all other users on the network.
+      Executing Lock( ) does not guarantee that the record lock or locks will be successfully placed.
+      A record lock cannot be placed on a record already locked by another user or in a table locked by another user.
+      If the record lock or locks cannot be placed for any reason, Lock( ) returns false (.F.).<br/>
+      By default, Lock( ) makes one attempt to lock a record. Use Set REPROCESS to automatically retry a record lock when the first attempt fails.
+      Set REPROCESS determines the number of lock attempts or the length of time during which lock attempts are made when the initial lock attempt
+      is unsuccessful. For more information, see Set REPROCESS.<br/>
+      Set MultiLocks determines whether you can lock multiple records in a table. If Set MultiLocks is OFF (the default),
+      you can lock only a single record in a table. When Set MultiLocks is ON, you can lock multiple records in a table.
+      For more information, see Set MultiLocks.<br/><br/>
+      <b>Unlocking Records</b>   A table record can be unlocked only by the user who placed the lock.
+      You can release record locks by issuing UNLock, closing the table, or exiting X#.
+      UNLock can be used to release record locks in the current work area, a specific work area, or in all work areas.
+      For more information, see UNLock.<br/>
+      Switching Set MultiLocks from ON to OFF or from OFF to ON implicitly performs UNLock ALL — all record locks in all work areas are released.<br/>
+      Tables can be closed with Use, Clear ALL, or Close Databases.<br/>
+      For more information about record and file locking and sharing tables on a network, see Programming for Shared Access.<br/>
     </remarks>
     <example>
        <code language="X#">
@@ -6042,10 +6076,10 @@
         Use employee  &amp;&amp; Open Employee table
         Select 0
         Use customer  &amp;&amp; Open Customer table
-        ? LOCK('1,2,3,4', 'customer')  &amp;&amp; Lock 1st 4 records in customer
-        ? RLOCK(gcRecList, 'employee')  &amp;&amp; Lock 1st 4 records in employee
-        UNLOCK IN customer
-        UNLOCK IN employee
+        ? Lock('1,2,3,4', 'customer')  &amp;&amp; Lock 1st 4 records in customer
+        ? RLock(gcRecList, 'employee')  &amp;&amp; Lock 1st 4 records in employee
+        UNLock IN customer
+        UNLock IN employee
         Set EXCLUSIVE &amp;gcOldExc
       </code>
     </example>
@@ -6058,9 +6092,11 @@
       Character, Numeric, Currency, Float, Integer, Double, Date, DateTime, or Logical.
     </returns>
     <remarks>
-      If the search is successful, LOOKUP( ) moves the record pointer to the matching record and returns the contents of a specified field in the record.
-      If LOOKUP( ) does not find the search expression, it returns a blank value the same length and data type as ReturnField. The record pointer is positioned at the end of the file.
-      If you use LOOKUP( ) to search a parent table, record pointers in all related child tables are moved to the related records.
+      If the search is successful, LOOKUP( ) moves the record pointer to the matching record and
+      returns the contents of a specified field in the record.<br/>
+      If LOOKUP( ) does not find the search expression, it returns a blank value the same length and data type as ReturnField.
+      The record pointer is positioned at the end of the file.<br/>
+      If you use LOOKUP( ) to search a parent table, record pointers in all related child tables are moved to the related records.<br/>
       This function cannot be optimized with Rushmore Query Optimization.
     </remarks>
     <example>
@@ -6077,75 +6113,93 @@
     <summary>
       Allows a free table or free cursor to support transactions.
     </summary>
-    <param name="nWorkArea">
-
-      Specifies the work area of the table or cursor for which transactions will be supported.
-
-    </param>
-    <param name="cAlias">
-
+    <param name="uArea">
+      Specifies the work area of the table or cursor for which transactions will be supported.<br/>
+      Or<br/>
       Specifies the alias of the table or cursor for which transactions will be supported.
     </param>
     <returns>
-      Logical. Returns a logical true (.T.) if MakeTrancsactable( ) was able to make the free table or cursor support transactions, otherwise a logical false (.F.) is returned.
+      Logical. Returns a logical true (.T.) if MakeTrancsactable( ) was able to make the free table or cursor support transactions,
+      otherwise a logical false (.F.) is returned.
     </returns>
     <remarks>
-      A free table is a table that has not been added to a database with the ADD Table Command. A free cursor is a cursor that is created from a free table or with the Create CURSOR - SQL Command.
-      When MakeTrancsactable( ) is used to make a free table or free cursor support transactions, you can use the BEGIN TRANSACTIOn, END TRANSACTIOn, and ROLLBACK commands for the free table or free cursor. Use the IsTrancsactable( ) function to determine if a free table or free cursor supports transactions.
-      When MakeTrancsactable( ) is used to make a free table or free cursor support transactions, the free table or free cursor supports transactions in all work areas and data sessions in which it is opened. MakeTrancsactable( ) makes all open instances of a free table or free cursor support transactions, including those in other data sessions within a single instance of VFP.
-      If a free table that does not support transactions is open in more than one data session, the free table cannot be made to support transactions. However, you can open a free table that already supports transactions in additional data sessions.
-      If row buffering is enabled, then a table update is performed if the free table or free cursor has pending changes before the free table or free cursor is made to support transactions. You cannot use MakeTrancsactable( ) to enable transactions for a free table that has table buffering enabled.
+      A free table is a table that has not been added to a database with the ADD Table Command. A free cursor is a cursor that is created from a
+      free table or with the Create CURSOR - SQL Command.<br/>
+      When MakeTrancsactable( ) is used to make a free table or free cursor support transactions, you can use the BEGIN TRANSACTIOn,
+      END TRANSACTIOn, and ROLLBACK commands for the free table or free cursor. Use the IsTrancsactable( ) function to determine if a free
+      table or free cursor supports transactions.
+      <note name="Note">
+        When MakeTrancsactable( ) is used to make a free table or free cursor support transactions, the free table or free cursor supports
+        transactions in all work areas and data sessions in which it is opened. MakeTrancsactable( ) makes all open instances of a free table
+        or free cursor support transactions, including those in other data sessions within a single instance of X#.
+      </note>
+      If a free table that does not support transactions is open in more than one data session, the free table cannot be made to support transactions.
+      However, you can open a free table that already supports transactions in additional data sessions.<br/>
+      If row buffering is enabled, then a table update is performed if the free table or free cursor has pending changes before the free table
+      or free cursor is made to support transactions.
+      You cannot use MakeTrancsactable( ) to enable transactions for a free table that has table buffering enabled.<br/>
       To disable transactions for a free table, you must close the free table in all data sessions.
     </remarks>
   </maketransactable>
-
-
-
   <newobject>
     <summary>
       Creates a new class or object directly from a visual class library (.vcx) file or program (.prg) file without opening the file.
     </summary>
     <param name="cClassName">
-
       Specifies the class or object from which the new class or object is created.
-
     </param>
     <param name="cModule">
-
-      Specifies a .vcx file or X# program (.prg, .fxp, .mpr, .app, .exe, and so on) containing the class or object specified with cClassName. The default is a .vcx file. If you specify a program file, you must include an extension.
-      A class library can have an alias. To specify a class or object from a class library with an alias, include the class library alias followed by a period and the object name.
-      When possible, specify the compiled program name (.fxp) when a class is stored in a program file (.prg). This ensures that the class is loaded from the proper class definition file.
+      Specifies a .vcx file or X# program (.prg, .fxp, .mpr, .app, .exe, and so on) containing the class or object specified with cClassName.
+      The default is a .vcx file. If you specify a program file, you must include an extension.
+      <note name="Note">
+        A class library can have an alias. To specify a class or object from a class library with an alias,
+        include the class library alias followed by a period and the object name.<br/>
+        When possible, specify the compiled program name (.fxp) when a class is stored in a program file (.prg).
+        This ensures that the class is loaded from the proper class definition file.
+      </note>
       If cModule is omitted, or is the empty string or the null value, X# searches for the class or object in the following order:
-      X# base classes.
-      Classes in the current program.
-      Class libraries opened with Set CLASSLIB.
-      Classes in procedure files opened with Set PROCEDURE.
-      Classes in the X# program execution chain.
-      The OLE registry if Set OLEOBJECT is ON.
-
+      <list type="bullet">
+        <item>X# base classes.</item>
+        <item>Classes in the current program.</item>
+        <item>Class libraries opened with Set CLASSLIB.</item>
+        <item>Classes in procedure files opened with Set PROCEDURE.</item>
+        <item>Classes in the X# program execution chain.</item>
+        <item>The OLE registry if Set OLEOBJECT is ON.</item>
+      </list>
     </param>
     <param name="cInApplication">
-
-      Specifies the X# application (.exe or .app) containing the .vcx file you specify with cModule. You must include an extension for the application. CInApplication is ignored if cModule is omitted, or if cInApplication is the empty string or the null value.
-      If you want to use the cInApplication parameter, you must specify the name of .vcx file for cModule. You cannot pass the name of a .prg file or compiled program (.fxp).
-
+      Specifies the X# application (.exe or .app) containing the .vcx file you specify with cModule.
+      You must include an extension for the application. CInApplication is ignored if cModule is omitted,
+      or if cInApplication is the empty string or the null value.<br/>
+      If you want to use the cInApplication parameter, you must specify the name of .vcx file for cModule.
+      You cannot pass the name of a .prg file or compiled program (.fxp).
     </param>
     <param name="0">
-
-      Specifies that the class or object is instantiated without executing any of the event or method code in the class or object. This feature is not supported in runtime applications.
-      All child classes or objects of the parent class are also instantiated. The event or method code in the child class or object isn't executed.
-      This option is provides the ability to view the structure of a class or object (with the AMembers( ) Function, for example) without opening the class or object in the Class or Form Designer.
-      Note that code in the class or object should never be executed - code execution is not supported and can make X# unstable. You should never explicitly call an event or method, or set properties. Setting properties can call Access and Assign methods.
-
-      eParameter1, eParameter2, ...
+      Specifies that the class or object is instantiated without executing any of the event or method code in the class or object.
+      This feature is not supported in runtime applications.<br/>
+      All child classes or objects of the parent class are also instantiated. The event or method code in the child class or object isn't executed.<br/>
+      This option is provides the ability to view the structure of a class or object (with the AMembers( ) Function,
+      for example) without opening the class or object in the Class or Form Designer.<br/>
+      Note that code in the class or object should never be executed - code execution is not supported and can make X# unstable.
+      You should never explicitly call an event or method, or set properties. Setting properties can call Access and Assign methods.
+    </param>
+    <param name="eParameter1">
+      Specifies optional parameters that are passed to the Init event procedure for the class or object.
+    </param>
+    <param name="eParameter2">
       Specifies optional parameters that are passed to the Init event procedure for the class or object.
     </param>
     <returns>
       Object
     </returns>
     <remarks>
-      To assign the object reference returned by NEWOBJECT( ) to a variable or array element, use the equal sign (=) or STORE command. If an object assigned to a variable or array element is released, the variable or array element contains the null value. To remove the variable or array element from memory, use the RELEASE command.
-      For NEWOBJECT( ), X# performs an internal Set CLASSLIB or Set PROCEDURE for the second or third parameters using the ADDITIVE clause where the parameters are first used to determine the search order. If these parameters already exist in the Set CLASSLIB or Set PROCEDURE list, X# rearranges the order in the list so they come first. X# then locates all the classes, creates the object, and calls the Init events. Finally, X# restores the original Set CLASSLIB or Set PROCEDURE list if the installation did not change list.
+      To assign the object reference returned by NEWOBJECT( ) to a variable or array element, use the equal sign (=) or STORE command.
+      If an object assigned to a variable or array element is released, the variable or array element contains the null value.
+      To remove the variable or array element from memory, use the RELEASE command.<br/>
+      For NEWOBJECT( ), X# performs an internal Set CLASSLIB or Set PROCEDURE for the second or third parameters using the ADDITIVE clause
+      where the parameters are first used to determine the search order. If these parameters already exist in the Set CLASSLIB or Set PROCEDURE list,
+      X# rearranges the order in the list so they come first. X# then locates all the classes, creates the object, and calls the Init events.
+      Finally, X# restores the original Set CLASSLIB or Set PROCEDURE list if the installation did not change list.<br/>
       OLE objects are created with the following syntax for cClassName:
        <code language="X#">ApplicationName.Class</code>
       For example, to create a Microsoft Excel worksheet, which supports Automation, use the following syntax:
@@ -6154,30 +6208,38 @@
   </newobject>
   <normalize>
     <summary>
-      Converts an expression, supplied by a user, into the same form of the expression used internally by X#. You can use the normalized form of an expression to make more accurate comparisons with the expressions returned from X# commands or functions.
+      Converts an expression, supplied by a user, into the same form of the expression used internally by X#.
+      You can use the normalized form of an expression to make more accurate comparisons with the expressions returned from X# commands or functions.
     </summary>
     <param name="cExpression">
-
       Specifies the character expression to normalize.
     </param>
     <returns>
       Character
     </returns>
     <remarks>
-
-      <b>NORMALIZE( )</b> returns a character string from the character expression cExpression with the following changes. <b>NORMALIZE( )</b>:
-      Converts the character expression to uppercase. However, it does not change embedded strings. An example of an embedded string is "Hello" in the character expression "LEFT('Hello',1)".
-      Expands any abbreviated X# keywords in the character expression to their full length.
-      Converts to periods any -&gt; operators that separate aliases from field names.
-      Surrounds by periods the logical operators AND, OR and NOT: .AND. .OR. .NOT.
-      In filter expressions, removes any blank spaces between terms.
-      Checks the syntax of any X# commands or functions within the character expression, However, it does not evaluate the expression. If the syntax is incorrect, X# generates a syntax error. <b>NORMALIZE( )</b> does not look for any fields, tables, memory variables, user-defined functions, or other references in the character expression.
+      <b>Normalize( )</b> returns a character string from the character expression cExpression with the following changes. <b>Normalize( )</b>:
+      <list type="bullet">
+        <item>
+          Converts the character expression to uppercase. However, it does not change embedded strings.
+          An example of an embedded string is "Hello" in the character expression "LEFT('Hello',1)".
+        </item>
+        <item>Expands any abbreviated X# keywords in the character expression to their full length.</item>
+        <item>Converts to periods any -&gt; operators that separate aliases from field names.</item>
+        <item>Surrounds by periods the logical operators AND, OR and NOT: .AND. .OR. .NOT.</item>
+        <item>In filter expressions, removes any blank spaces between terms.</item>
+        <item>
+          Checks the syntax of any X# commands or functions within the character expression, however, it does not evaluate the expression.
+          If the syntax is incorrect, X# generates a syntax error. <b>Normalize( )</b> does not look for any fields, tables, memory variables,
+          user-defined functions, or other references in the character expression.
+        </item>
+      </list>
       For example, a user may enter an index expression such as the following in the Expression Builder:
        <code language="X#">UPPE(cust-&gt;lname) + UPPE(cust-&gt;fname)</code>
-      While this is a valid X# index key expression, it is difficult to compare this to the return values from a X# function like <b>KEY( )</b>. <b>NORMALIZE( )</b> returns the following character string for the expression above:
+      While this is a valid X# index key expression, it is difficult to compare this to the return values from a X# function like <b>KEY( )</b>. <b>Normalize( )</b> returns the following character string for the expression above:
        <code language="X#">UPPER(CUST.LNAME) + UPPER(CUST.FNAME)</code>
       You can easily compare this to the value returned by a function like <b>KEY( )</b>. This enables you to verify the existence of an index or index tag with the user-supplied index expression.
-      Also, you can use NORMALIZE to compare the results of <b>Set("Filter")</b> or <b>Filter( )</b>. For example, you could create the following filter expression:
+      Also, you can use Normalize to compare the results of <b>Set("Filter")</b> or <b>Filter( )</b>. For example, you could create the following filter expression:
        <code language="X#">
         STORE '"VIRGINIA" $ UPPER(state) AND NOT "MAINE" $ UPPER(state)' TO
         MyFilter
@@ -6188,36 +6250,34 @@
       </code>
       However, the value returned by <b>Set("Filter")</b> or <b>Filter( ) </b>will not exactly match the original filter.
        <code language="X#">? Set("Filter") == MyFilter  &amp;&amp; .F.</code>
-
       <b>Set("Filter")</b> or <b>Filter( )</b> return the following:
        <code language="X#">"VIRGINIA"$UPPER(STATE).AND..NOT."MAINE"$UPPER(STATE)</code>
       To ensure a correct comparison, use:
-       <code language="X#">? NORMALIZE(MyFilter) == Set("Filter")  &amp;&amp; .T."</code>
+       <code language="X#">? Normalize(MyFilter) == Set("Filter")  &amp;&amp; .T."</code>
     </remarks>
   </normalize>
   <numlock>
     <summary>
-      Returns the current mode of the NUM LOCK key or sets the mode of the NUM LOCK key on or off.
+      Returns the current mode of the Num Lock key or sets the mode of the Num Lock key on or off.
     </summary>
     <param name="lExpression">
-
-      Turns the NUM LOCK key on or off. If lExpression is true (.T.), the NUM LOCK key is turned on; if lExpression is false (.F.), the NUM LOCK key is turned off. NUMLOCK( ) returns a logical value corresponding to the NUM LOCK key setting before NUMLOCK(.T.) or NUMLOCK(.F.) is issued.
+      Turns the Num Lock key on or off. If lExpression is true (.T.), the Num Lock key is turned on; if lExpression is false (.F.), the Num Lock key is turned off. NumLock( ) returns a logical value corresponding to the Num Lock key setting before NumLock(.T.) or NumLock(.F.) is issued.
     </param>
     <returns>
       Logical
     </returns>
     <remarks>
-      NUMLOCK( ) returns true (.T.) if the NUM LOCK key is on (pressing a key on the numeric keypad returns a number), or false (.F.) if NUM LOCK is off (pressing a key on the numeric keypad moves the cursor).
+      NumLock( ) returns true (.T.) if the Num Lock key is on (pressing a key on the numeric keypad returns a number), or false (.F.) if Num Lock is off (pressing a key on the numeric keypad moves the cursor).
     </remarks>
     <example>
        <code language="X#">
-        gcOldLock = NUMLOCK( )  &amp;&amp; Save original setting
+        gcOldLock = NumLock( )  &amp;&amp; Save original setting
         WAIT WINDOW 'Press a key to turn Num Lock on'
-        = NUMLOCK(.T.)  &amp;&amp; Turn Num Lock on
+        = NumLock(.T.)  &amp;&amp; Turn Num Lock on
         WAIT WINDOW 'Press a key to turn Num Lock off'
-        = NUMLOCK(!NUMLOCK( ))  &amp;&amp; Toggle Num Lock to the opposite value
+        = NumLock(!NumLock( ))  &amp;&amp; Toggle Num Lock to the opposite value
         WAIT WINDOW 'Press a key to restore original Num Lock setting'
-        = NUMLOCK(gcOldLock)     &amp;&amp; Return to original setting
+        = NumLock(gcOldLock)     &amp;&amp; Return to original setting
       </code>
     </example>
   </numlock>
@@ -6245,30 +6305,30 @@
       Returns original field values for fields that have been modified but not updated.
     </summary>
     <param name="cExpression">
-
-      Specifies an expression whose original value <b>OLDVAL( )</b> returns from a table or a remote data source. cExpression is typically a field or an expression consisting of a set of fields from the table or remote data source.
-
+      Specifies an expression whose original value <b>OldVal( )</b> returns from a table or a remote data source.
+      cExpression is typically a field or an expression consisting of a set of fields from the table or remote data source.
     </param>
     <param name="cTableAlias">
-
       Specifies the alias of the table or cursor from which the original field values are returned.
-
     </param>
     <param name="nWorkArea">
-
       Specifies the work area of the table or cursor from which the original field values are returned.
     </param>
     <returns>
       Character, Currency, Date, DateTime, Double, Float, Integer, Logical, Numeric, or Memo
     </returns>
     <remarks>
-
-      <b>OLDVAL( )</b> returns original field values for records in a X# table or cursor that has row or table buffering enabled with <b>CursorSetProp( )</b>.
-      If a table in a database or a cursor has validation rules, <b>OLDVAL( )</b> does not require that row or table buffering be enabled in order to return original field values.
-      If the record pointer is moved to a different record when row buffering is enabled, or if <b>TableUPDATE( )</b> is issued to commit changes to the record, or there is some other action that causes an update, such as ending a transaction, the fields are updated and the original field values are no longer available.
-      The data type of the value <b>OLDVAL( )</b> returns is determined by the expression you specify with cExpression.
-      <b>OLDVAL( )</b> can return .NULL., even for a field declared as NOT NULL and with Set NULL OFF.
-      The original field values are returned for the table or cursor open in the currently selected work area if <b>OLDVAL( )</b> is issued without the optional cTableAlias or nWorkArea arguments.
+      <b>OldVal( )</b> returns original field values for records in a X# table or cursor that has
+      row or table buffering enabled with <b>CursorSetProp( )</b>.<br/>
+      If a table in a database or a cursor has validation rules, <b>OldVal( )</b> does not require that row or table buffering be enabled in
+      order to return original field values.<br/>
+      If the record pointer is moved to a different record when row buffering is enabled, or if <b>TableUPDATE( )</b> is issued to \
+      commit changes to the record, or there is some other action that causes an update, such as ending a transaction,
+      the fields are updated and the original field values are no longer available.<br/>
+      The data type of the value <b>OldVal( )</b> returns is determined by the expression you specify with cExpression.<br/>
+      <b>OldVal( )</b> can return .NULL., even for a field declared as NOT NULL and with Set NULL OFF.<br/>
+      The original field values are returned for the table or cursor open in the currently selected work area if <b>OldVal( )</b> is issued
+      without the optional cTableAlias or nWorkArea arguments.
     </remarks>
     <example>
        <code language="X#">
@@ -6280,7 +6340,7 @@
         * Insert initial value
         Insert Into employee (cLastName) VALUES ("Smith")
         * Enable and set table buffering
-        Set MULTILOCKS ON  &amp;&amp; Allow table buffering
+        Set MultiLocks ON  &amp;&amp; Allow table buffering
         =CursorSetProp("Buffering", 5, "employee" )  &amp;&amp; Enable table buffering
         * Display initial value
         =MessageBox("Original cLastName value: "+ cLastName, 0, "Results")
@@ -6288,7 +6348,7 @@
         Replace cLastName WITH "Jones"
         =MessageBox("Modified cLastName value: "+ cLastName, 0, "Results")
         * Store the old value of the field to cTemp variable and display results
-        cTemp=OLDVAL("cLastName", "employee")
+        cTemp=OldVal("cLastName", "employee")
         =MessageBox("Original cLastName value: "+ cTemp, 0, "Results")
         * Update table and display final value
         =TableUPDATE(.T.)
@@ -6299,30 +6359,25 @@
       </code>
     </example>
   </oldval>
-
   <payment>
     <summary>
       Returns the amount of each periodic payment on a fixed-interest loan.
     </summary>
     <param name="nPrincipal">
-
       Specifies the beginning principal of the loan.
-
     </param>
     <param name="nInterestRate">
-
-      Specifies the fixed interest rate per period. If monthly payments are made on the loan but the interest rate is annual, divide the annual interest rate by 12.
-
+      Specifies the fixed interest rate per period. If monthly payments are made on the loan but the interest rate is annual,
+      divide the annual interest rate by 12.
     </param>
     <param name="nPayments">
-
       Specifies the total number of payments to be made on the loan.
     </param>
     <returns>
       Numeric
     </returns>
     <remarks>
-      PAYMENT( ) assumes a constant periodic interest rate and assumes that payments are made at the end of each period.
+      Payment( ) assumes a constant periodic interest rate and assumes that payments are made at the end of each period.
     </remarks>
     <example>
        <code language="X#">
@@ -6330,7 +6385,7 @@
         STORE .105/12 TO gnInterest  &amp;&amp; 10.5% annual interest rate
         STORE (20*12) TO gnPayments     &amp;&amp; 20 years of monthly payments
         Clear
-        ? PAYMENT(gnPrincipal, gnInterest, gnPayments)  &amp;&amp; Displays 998.38
+        ? Payment(gnPrincipal, gnInterest, gnPayments)  &amp;&amp; Displays 998.38
       </code>
     </example>
   </payment>
@@ -6339,19 +6394,19 @@
       Returns the current column position of the printer's print head.
     </summary>
     <returns>
-      PCOL( )Return Value
+      PCol( )Return Value
       Numeric
     </returns>
     <remarks>
-      The value <b>PCOL( )</b> returns is relative to the current setting of the left printer margin. You can set the left margin with Set MARGIN or by storing a value to the system memory variable _PLOFFSet.
-
-      <b>PCOL( )</b> is especially useful for relative addressing of printed text.
-      You can use the $ operator in place of <b>PCOL( )</b>.
+      The value <b>PCol( )</b> returns is relative to the current setting of the left printer margin.
+      You can set the left margin with Set MARGIN or by storing a value to the system memory variable _PLOFFSet.<br/>
+      <b>PCol( )</b> is especially useful for relative addressing of printed text.<br/>
+      You can use the $ operator in place of <b>PCol( )</b>.
     </remarks>
     <example>
        <code language="X#">
         Clear
-        @ PROW( ), PCOL( )+12 SAY 'Contact person'
+        @ PROW( ), PCol( )+12 SAY 'Contact person'
         @ PROW( ), $+12 SAY 'Contact person'
       </code>
     </example>
@@ -6361,22 +6416,20 @@
       Returns true (.T.) if an index tag is a primary index tag; otherwise, returns false (.F.).
     </summary>
     <param name="nIndexNumber">
-
-      Specifies the number of the index tag for which PRIMARY( ) returns the primary status. PRIMARY( ) returns the primary status in the following order as nIndexNumber increases from 1 to the total number of structural compound and independent compound index tags.
-      Primary status for each tag in the structural compound index (if one is present) are returned first. The primary status is returned for the tags in the order the tags are created in the structural index.
-      Primary status for each tag in any open, independent compound indexes are returned next. The primary status is returned for the tags in the order in which the tags are created in the independent compound indexes.
-      If you omit nIndexNumber, PRIMARY( ) checks the master controlling index tag to see if it's a primary index tag. If there is no master controlling index tag, PRIMARY( ) returns false (.F.).
-
+      Specifies the number of the index tag for which Primary( ) returns the primary status. Primary( ) returns the primary status in
+      the following order as nIndexNumber increases from 1 to the total number of structural compound and independent compound index tags.<br/>
+      Primary status for each tag in the structural compound index (if one is present) are returned first.
+      The primary status is returned for the tags in the order the tags are created in the structural index.<br/>
+      Primary status for each tag in any open, independent compound indexes are returned next.
+      The primary status is returned for the tags in the order in which the tags are created in the independent compound indexes.<br/>
+      If you omit nIndexNumber, Primary( ) checks the master controlling index tag to see if it's a primary index tag.
+      If there is no master controlling index tag, Primary( ) returns false (.F.).
     </param>
-    <param name="nWorkArea">
-
-      Specifies the work area of the index tag specified with nIndexNumber.
-
-    </param>
-    <param name="cTableAlias">
-
-      Specifies the work area of the index tag specified with nIndexNumber.
-      If you omit nWorkArea and cTableAlias, PRIMARY( ) checks the index tag in the currently selected work area to see if it's a primary index tag.
+    <param name="uArea">
+      Specifies the work area of the index tag specified with nIndexNumber.<br/>
+      Or<br/>
+      Specifies the work area of the index tag specified with nIndexNumber.<br/>
+      If you omit uArea, Primary( ) checks the index tag in the currently selected work area to see if it's a primary index tag.
     </param>
     <returns>
       Logical
@@ -6390,7 +6443,7 @@
         For nCount = 1 TO TAGCOUNT( )
         IF !EMPTY(TAG(nCount))  &amp;&amp; Checks for tags in the index
         ? TAG(nCount)  &amp;&amp; Display tag name
-        ? PRIMARY(nCount)     &amp;&amp; Display primary status
+        ? Primary(nCount)     &amp;&amp; Display primary status
         ELSE
         EXIT  &amp;&amp; Exit the loop when no more tags are found
         ENDIF
@@ -6403,21 +6456,24 @@
       Returns the name of the program at a specified program level, the name of the currently executing program, the current program level, or the name of the program executing when an error occurred.
     </summary>
     <param name="nLevel">
-
-      Specifies the number of program levels to search for the program name. The nLevel parameter can range from 0 to the program nesting depth. For more information about program nesting levels, see maximum number of DO calls in X# System Capacities.
-      When nLevel is omitted, <b>PROGRAM( )</b> returns the name of the currently executing program. If you specify 0 or 1 for nLevel, <b>PROGRAM( )</b> returns the name of the master program, or the highest-level program.
-      If you specify –1 for nLevel, <b>PROGRAM( )</b> returns the current program level as a numeric value. However, using codePROGRAM(–1)/code in the Command window always returns zero (0).
-      If nLevel exceeds the program nesting depth, <b>PROGRAM( )</b> returns an empty string ("").
+      Specifies the number of program levels to search for the program name. The nLevel parameter can range from 0 to the program nesting depth.
+      For more information about program nesting levels, see maximum number of DO calls in X# System Capacities.<br/>
+      When nLevel is omitted, <b>Program( )</b> returns the name of the currently executing program. If you specify 0 or 1 for nLevel,
+      <b>Program( )</b> returns the name of the master program, or the highest-level program.<br/>
+      If you specify –1 for nLevel, <b>Program( )</b> returns the current program level as a numeric value.
+      However, using codeProgram(–1)/code in the Command window always returns zero (0).<br/>
+      If nLevel exceeds the program nesting depth, <b>Program( )</b> returns an empty string ("").
     </param>
     <returns>
-      Character or Numeric. <b>PROGRAM( )</b> returns a program name, the number of the current program level, or an empty string.
+      Character or Numeric. <b>Program( )</b> returns a program name, the number of the current program level, or an empty string.
     </returns>
     <remarks>
-      You can use <b>PROGRAM( )</b> to help your program recover from errors. The <b>PROGRAM( )</b> function is similar to SYS(16) - Executing Program File Name.
+      You can use <b>Program( )</b> to help your program recover from errors.
+      The <b>Program( )</b> function is similar to SYS(16) - Executing Program File Name.
     </remarks>
     <example>
        <code language="X#">
-        ON ERROR DO errhand WITH PROGRAM( )
+        ON ERROR DO errhand WITH Program( )
         *** The next line should generate an error ***
         Use nodatabase
         ON ERROR     &amp;&amp; Returns to system default error-handling routine
@@ -6432,18 +6488,16 @@
       Returns the current row number of the printer's print head.
     </summary>
     <returns>
-      PROW( )Return Value
       Numeric
     </returns>
     <remarks>
-      If you issue <b>EJECT</b>, X# resets <b>PROW( )</b> to 0.
-
-      <b>PROW( )</b> is especially useful for relative addressing of printed text.
+      If you issue <b>EJECT</b>, X# resets <b>PRow( )</b> to 0.<br/>
+      <b>PRow( )</b> is especially useful for relative addressing of printed text.
     </remarks>
     <example>
        <code language="X#">
-        @ PROW( ), PCOL( ) + 12 SAY 'Contact person'
-        @ PROW( ), $+12 SAY 'Contact person'
+        @ PRow( ), PCol( ) + 12 SAY 'Contact person'
+        @ PRow( ), $+12 SAY 'Contact person'
       </code>
     </example>
   </prow>
@@ -6452,211 +6506,433 @@
       Returns the current specified printer setting.
     </summary>
     <param name="nPrinterSetting">
-
-      Specifies which X# printer setting to return. The following table lists descriptions of the type of printer settings returned.
-      nPrinterSetting
-      1
-      PRT_ORIENTATION
-      Paper orientation
-      2
-      PRT_PAPERSIZE
-      Paper size
-      3
-      PRT_PAPERLENGTH
-      Paper length in .1 millimeter increments
-      4
-      PRT_PAPERWIDTH
-      Paper width in .1 millimeter increments
-      5
-      PRT_SCALE
-      Factor by which printer output is scaled
-      6
-      PRT_COPIES
-      Number of copies to print
-      7
-      PRT_DEFASOURCE
-      Default paper source
-      8
-      PRT_PRINTQUAL
-      A positive value that indicates the horizontal resolution in dots per inch (DPI) or a negative value that indicates the print quality.
-      9
-      PRT_COLOR
-      A value that indicates if a color printer rends color or monochrome output
-      10
-      PRT_DUPLEX
-      Duplex mode
-      11
-      PRT_YRESOLUTION
-      The vertical resolution in dots per inch (DPI). If not available, a value of -1 is returned.
-      12
-      PRT_TTOPTION
-      A value that indicates how TrueType® fonts are printed
-      13
-      PRT_COLLATE
-      A value that indicates if output is collated
-
+      Specifies which X# printer setting to return. The table in the remarks section lists descriptions of the type of printer settings returned.
     </param>
     <param name="cPrinterName">
-
       Specifies the name of the printer for which information is returned. If cPrinterName is omitted, information is returned for the default printer.
     </param>
     <returns>
-      Numeric data type. The following tables list values returned when specifying particular values for nPrinterSetting.
-      If nPrinterSetting is 1, <b>PRTINFO( )</b> returns the paper orientation as the following:
-      –1
-      Information not available
-      0
-      Portrait
-      1
-      Landscape
-      If nPrinterSetting is 2, <b>PRTINFO( )</b> returns the paper size as the following:
-      –1 or value other than listed
-      Information not available. Use nPrinterSetting = 3 and nPrinterSetting = 4 to return the paper size.
-      1
-      Letter, 8 1/2 x 11 in
-      2
-      Letter Small, 8 1/2 x 11 in
-      3
-      Tabloid, 11 x 17 in
-      4
-      Ledger, 17 x 11 in
-      5
-      Legal, 8 1/2 x 14 in
-      6
-      Statement, 5 1/2 x 8 1/2 in
-      7
-      Executive, 7 1/4 x 10 1/2 in
-      8
-      A3, 297 x 420 mm
-      9
-      A4, 210 x 297 mm
-      10
-      A4, Small 210 x 297 mm
-      11
-      A5, 148 x 210 mm
-      12
-      B4, 250 x 354 mm
-      13
-      B5, 182 x 257 mm
-      14
-      Folio, 8 1/2 x 13 in
-      15
-      Quarto, 215 x 275 mm
-      16
-      10 x 14 in
-      17
-      11 x 17 in
-      18
-      Note, 8 1/2 x 11 in
-      19
-      Envelope #9, 3 7/8 x 8 7/8 in
-      20
-      Envelope #10, 4 1/8 x 9 1/2 in
-      21
-      Envelope #11, 4 1/2 x 10 3/8 in
-      22
-      Envelope #12, 4 1/2 x 11 in
-      23
-      Envelope #14, 5 x 11 1/2 in
-      24
-      C size sheet
-      25
-      D size sheet
-      26
-      E size sheet
-      27
-      Envelope DL, 110 x 220 mm
-      28
-      Envelope C5, 162 x 229 mm
-      29
-      Envelope C3, 324 x 458 mm
-      30
-      Envelope C4, 229 x 324 mm
-      31
-      Envelope C6, 114 x 162 mm
-      32
-      Envelope C65, 114 x 229 mm
-      33
-      Envelope B4, 250 x 353 mm
-      34
-      Envelope B5, 176 x 250 mm
-      35
-      Envelope B6, 176 x 125 mm
-      36
-      Envelope, 110 x 230 mm
-      37
-      Envelope Monarch, 3 7/8 x 7.5 in
-      38
-      6 3/4 Envelope, 3 5/8 x 6 1/2 in
-      39
-      US Std Fanfold, 14 7/8 x 11 in
-      40
-      German Std Fanfold, 8 1/2 x 12 in
-      41
-      German Legal Fanfold, 8 1/2 x 13 in
-      If nPrinterSetting is 7, <b>PRTINFO( )</b> returns the default paper source as the following:
-      1
-      Upper bin
-      2
-      Lower bin
-      3
-      Middle bin
-      4
-      Manual feed
-      5
-      Envelope bin
-      6
-      Manual feed envelope
-      7
-      Automatic feed
-      8
-      Tractor feed
-      9
-      Small format
-      10
-      Large format
-      11
-      Large capacity
-      14
-      Cassette
-      15
-      Default input bin (automatically select)
-      If nPrinterSetting is 8 and <b>PRTINFO( )</b> returns a negative value, the return value indicates the print quality as the following:
-      –1
-      Draft
-      –2
-      Low
-      –3
-      Medium
-      –4
-      High
-      If nPrinterSetting is 9, <b>PRTINFO( )</b> returns a value indicating if a color printer renders color or monochrome output as the following:
-      1
-      Monochrome
-      2
-      Color
-      If nPrinterSetting is 10, <b>PRTINFO( )</b> returns the duplex mode as the following:
-      1
-      Simplex printing
-      2
-      Vertical duplex
-      3
-      Horizontal duplex
-      If nPrinterSetting is 12, <b>PRTINFO( )</b> returns a value that indicates how TrueType® fonts are printed as the following:
-      1
-      Print as bitmapped graphics
-      2
-      Download as soft fonts
-      3
-      Substitute device fonts
-      If nPrinterSetting is 13, <b>PRTINFO( )</b> returns a value that indicates if output is collated as the following:
-      0
-      No collation
-      1
-      Collated
+      Numeric data type. The following tables list values returned when specifying particular values for nPrinterSetting.<br/>
+      If nPrinterSetting is 1, <b>PrtInfo( )</b> returns the paper orientation as the following:
+      <list type="table">
+        <listheader>
+          <term>Return values</term>
+          <description>Paper orientation</description>
+        </listheader>
+        <item>
+          <term>-1</term>
+          <description>Information not available</description>
+        </item>
+        <item>
+          <term>0</term>
+          <description>Portrait</description>
+        </item>
+        <item>
+          <term>1</term>
+          <description>Landscape</description>
+        </item>
+      </list>
+      If nPrinterSetting is 2, <b>PrtInfo( )</b> returns the paper size as the following:
+      <list type="table">
+        <listheader>
+          <term>Return values</term>
+          <description>Paper Size</description>
+        </listheader>
+        <item>
+          <term>–1 or value other than listed</term>
+          <description>Information not available. Use nPrinterSetting = 3 and nPrinterSetting = 4 to return the paper size.</description>
+        </item>
+        <item>
+          <term>1</term>
+          <description>Letter, 8 1/2 x 11 in</description>
+        </item>
+        <item>
+          <term>2</term>
+          <description>Letter Small, 8 1/2 x 11 in</description>
+        </item>
+        <item>
+          <term>3</term>
+          <description>Tabloid, 11 x 17 in</description>
+        </item>
+        <item>
+          <term>4</term>
+          <description>Ledger, 17 x 11 in</description>
+        </item>
+        <item>
+          <term>5</term>
+          <description>Legal, 8 1/2 x 14 in</description>
+        </item>
+        <item>
+          <term>6</term>
+          <description>Statement, 5 1/2 x 8 1/2 in</description>
+        </item>
+        <item>
+          <term>7</term>
+          <description>Executive, 7 1/4 x 10 1/2 in</description>
+        </item>
+        <item>
+          <term>8</term>
+          <description>A3, 297 x 420 mm</description>
+        </item>
+        <item>
+          <term>9</term>
+          <description>A4, 210 x 297 mm</description>
+        </item>
+        <item>
+          <term>10</term>
+          <description>A4, Small 210 x 297 mm</description>
+        </item>
+        <item>
+          <term>11</term>
+          <description>A5, 148 x 210 mm</description>
+        </item>
+        <item>
+          <term>12</term>
+          <description>B4, 250 x 354 mm</description>
+        </item>
+        <item>
+          <term>13</term>
+          <description>B5, 182 x 257 mm</description>
+        </item>
+        <item>
+          <term>14</term>
+          <description>Folio, 8 1/2 x 13 in</description>
+        </item>
+        <item>
+          <term>15</term>
+          <description>Quarto, 215 x 275 mm</description>
+        </item>
+        <item>
+          <term>16</term>
+          <description>10 x 14 in</description>
+        </item>
+        <item>
+          <term>17</term>
+          <description>11 x 17 in</description>
+        </item>
+        <item>
+          <term>18</term>
+          <description>Note, 8 1/2 x 11 in</description>
+        </item>
+        <item>
+          <term>19</term>
+          <description>Envelope #9, 3 7/8 x 8 7/8 in</description>
+        </item>
+        <item>
+          <term>20</term>
+          <description>Envelope #10, 4 1/8 x 9 1/2 in</description>
+        </item>
+        <item>
+          <term>21</term>
+          <description>Envelope #11, 4 1/2 x 10 3/8 in</description>
+        </item>
+        <item>
+          <term>22</term>
+          <description>Envelope #12, 4 1/2 x 11 in</description>
+        </item>
+        <item>
+          <term>23</term>
+          <description>Envelope #14, 5 x 11 1/2 in</description>
+        </item>
+        <item>
+          <term>24</term>
+          <description>C size sheet</description>
+        </item>
+        <item>
+          <term>25</term>
+          <description>D size sheet</description>
+        </item>
+        <item>
+          <term>26</term>
+          <description>E size sheet</description>
+        </item>
+        <item>
+          <term>27</term>
+          <description>Envelope DL, 110 x 220 mm</description>
+        </item>
+        <item>
+          <term>28</term>
+          <description>Envelope C5, 162 x 229 mm</description>
+        </item>
+        <item>
+          <term>29</term>
+          <description>Envelope C3, 324 x 458 mm</description>
+        </item>
+        <item>
+          <term>30</term>
+          <description>Envelope C4, 229 x 324 mm</description>
+        </item>
+        <item>
+          <term>31</term>
+          <description>Envelope C6, 114 x 162 mm</description>
+        </item>
+        <item>
+          <term>32</term>
+          <description>Envelope C65, 114 x 229 mm</description>
+        </item>
+        <item>
+          <term>33</term>
+          <description>Envelope B4, 250 x 353 mm</description>
+        </item>
+        <item>
+          <term>34</term>
+          <description>Envelope B5, 176 x 250 mm</description>
+        </item>
+        <item>
+          <term>35</term>
+          <description>Envelope B6, 176 x 125 mm</description>
+        </item>
+        <item>
+          <term>36</term>
+          <description>Envelope, 110 x 230 mm</description>
+        </item>
+        <item>
+          <term>37</term>
+          <description>Envelope Monarch, 3 7/8 x 7.5 in</description>
+        </item>
+        <item>
+          <term>38</term>
+          <description>6 3/4 Envelope, 3 5/8 x 6 1/2 in</description>
+        </item>
+        <item>
+          <term>39</term>
+          <description>US Std Fanfold, 14 7/8 x 11 in</description>
+        </item>
+        <item>
+          <term>40</term>
+          <description>German Std Fanfold, 8 1/2 x 12 in</description>
+        </item>
+        <item>
+          <term>41</term>
+          <description>German Legal Fanfold, 8 1/2 x 13 in</description>
+        </item>
+      </list>
+      If nPrinterSetting is 7, <b>PrtInfo( )</b> returns the default paper source as the following:
+      <list type="table">
+        <listheader>
+          <term>Return values</term>
+          <description>Default paper source</description>
+        </listheader>
+        <item>
+          <term>1</term>
+          <description>Upper bin</description>
+        </item>
+        <item>
+          <term>2</term>
+          <description>Lower bin</description>
+        </item>
+        <item>
+          <term>3</term>
+          <description>Middle bin</description>
+        </item>
+        <item>
+          <term>4</term>
+          <description>Manual feed</description>
+        </item>
+        <item>
+          <term>5</term>
+          <description>Envelope bin</description>
+        </item>
+        <item>
+          <term>6</term>
+          <description>Manual feed envelope</description>
+        </item>
+        <item>
+          <term>7</term>
+          <description>Automatic feed</description>
+        </item>
+        <item>
+          <term>8</term>
+          <description>Tractor feed</description>
+        </item>
+        <item>
+          <term>9</term>
+          <description>Small format</description>
+        </item>
+        <item>
+          <term>10</term>
+          <description>Large format</description>
+        </item>
+        <item>
+          <term>11</term>
+          <description>Large capacity</description>
+        </item>
+        <item>
+          <term>14</term>
+          <description>Cassette</description>
+        </item>
+        <item>
+          <term>15</term>
+          <description>Default input bin (automatically select)</description>
+        </item>
+      </list>
+      If nPrinterSetting is 8 and <b>PrtInfo( )</b> returns a negative value, the return value indicates the print quality as the following:
+      <list type="table">
+        <listheader>
+          <term>Return values</term>
+          <description>Print quality</description>
+        </listheader>
+        <item>
+          <term>-1</term>
+          <description>Draft</description>
+        </item>
+        <item>
+          <term>–2</term>
+          <description>Low</description>
+        </item>
+        <item>
+          <term>–3</term>
+          <description>Medium</description>
+        </item>
+        <item>
+          <term>–4</term>
+          <description>High</description>
+        </item>
+      </list>
+      If nPrinterSetting is 9, <b>PrtInfo( )</b> returns a value indicating if a color printer renders color or monochrome output as the following:
+      <list type="table">
+        <listheader>
+          <term>Return values</term>
+          <description>Color of output</description>
+        </listheader>
+        <item>
+          <term>1</term>
+          <description>Monochrome</description>
+        </item>
+        <item>
+          <term>2</term>
+          <description>Color</description>
+        </item>
+      </list>
+      If nPrinterSetting is 10, <b>PrtInfo( )</b> returns the duplex mode as the following:
+      <list type="table">
+        <listheader>
+          <term>Return values</term>
+          <description>Duplex mode</description>
+        </listheader>
+        <item>
+          <term>1</term>
+          <description>Simplex printing</description>
+        </item>
+        <item>
+          <term>2</term>
+          <description>Vertical duplex</description>
+        </item>
+        <item>
+          <term>3</term>
+          <description>Horizontal duplex</description>
+        </item>
+      </list>
+      If nPrinterSetting is 12, <b>PrtInfo( )</b> returns a value that indicates how TrueType® fonts are printed as the following:
+
+      <list type="table">
+        <listheader>
+          <term>Return values</term>
+          <description>Printing of TrueType® fonts</description>
+        </listheader>
+        <item>
+          <term>1</term>
+          <description>Print as bitmapped graphics</description>
+        </item>
+        <item>
+          <term>2</term>
+          <description>Download as soft fonts</description>
+        </item>
+        <item>
+          <term>3</term>
+          <description>Substitute device fonts</description>
+        </item>
+      </list>
+      If nPrinterSetting is 13, <b>PrtInfo( )</b> returns a value that indicates if output is collated as the following:
+      <list type="table">
+        <listheader>
+          <term>Return values</term>
+          <description>Collation</description>
+        </listheader>
+        <item>
+          <term>0</term>
+          <description>No collation</description>
+        </item>
+        <item>
+          <term>1</term>
+          <description>Collated</description>
+        </item>
+      </list>
     </returns>
     <remarks>
       You can set X# printer settings in the printer Page Setup dialog box. For more information, see Page Setup Dialog Box.
+      <list type="table">
+        <listheader>
+          <term>nPrinterSetting</term>
+          <description>XSHARP.H</description>
+          <description>Setting returned</description>
+        </listheader>
+        <item>
+          <term>1</term>
+          <description>PRT_ORIENTATION</description>
+          <description>Paper orientation</description>
+        </item>
+        <item>
+          <term>2</term>
+          <description>PRT_PAPERSIZE</description>
+          <description>Paper size</description>
+        </item>
+        <item>
+          <term>3</term>
+          <description>PRT_PAPERLENGTH</description>
+          <description>Paper length in .1 millimeter increments</description>
+        </item>
+        <item>
+          <term>4</term>
+          <description>PRT_PAPERWIDTH</description>
+          <description>Paper width in .1 millimeter increments</description>
+        </item>
+        <item>
+          <term>5</term>
+          <description>PRT_SCALE</description>
+          <description>Factor by which printer output is scaled</description>
+        </item>
+        <item>
+          <term>6</term>
+          <description>PRT_COPIES</description>
+          <description>Number of copies to print</description>
+        </item>
+        <item>
+          <term>7</term>
+          <description>PRT_DEFASOURCE</description>
+          <description>Default paper source</description>
+        </item>
+        <item>
+          <term>8</term>
+          <description>PRT_PRINTQUAL</description>
+          <description>A positive value that indicates the horizontal resolution in dots per inch (DPI) or a negative value that indicates the print quality.</description>
+        </item>
+        <item>
+          <term>9</term>
+          <description>PRT_COLOR</description>
+          <description>A value that indicates if a color printer rends color or monochrome output</description>
+        </item>
+        <item>
+          <term>10</term>
+          <description>PRT_DUPLEX</description>
+          <description>Duplex mode</description>
+        </item>
+        <item>
+          <term>11</term>
+          <description>PRT_YRESOLUTION</description>
+          <description>The vertical resolution in dots per inch (DPI). If not available, a value of -1 is returned.</description>
+        </item>
+        <item>
+          <term>12</term>
+          <description>PRT_TTOPTION</description>
+          <description>A value that indicates how TrueType® fonts are printed</description>
+        </item>
+        <item>
+          <term>13</term>
+          <description>PRT_COLLATE</description>
+          <description>A value that indicates if output is collated</description>
+        </item>
+      </list>
     </remarks>
   </prtinfo>
   <putfile>
@@ -6664,39 +6940,55 @@
       Invokes the Save As dialog box and returns the file name you specify.
     </summary>
     <param name="cCustomText">
-
       Specifies custom text to appear in the Save As dialog box.
-
     </param>
     <param name="cFileName">
-
       Specifies the default file name displayed in the text box.
-
     </param>
     <param name="cFileExtensions">
-
-      Specifies file name extensions. Only file names with the specified extension are displayed in the scrollable list of the Save As dialog box when the All Files check box is cleared. The first extension in cFileExtensions is automatically appended to the file name entered if an extension isn't included with the file name. The cFileExtensions parameter cannot exceed 254 characters in length. For a list of X# file extensions and corresponding creator types, see the File Extensions and File Types online topic.
+      Specifies file name extensions. Only file names with the specified extension are displayed in the scrollable list of the
+      Save As dialog box when the All Files check box is cleared. The first extension in cFileExtensions is automatically appended to
+      the file name entered if an extension isn't included with the file name. The cFileExtensions parameter cannot exceed 254 characters in length.
+      For a list of X# file extensions and corresponding creator types, see the File Extensions and File Types online topic.<br/>
       The character expression cFileExtensions can take one of the following forms:
-      cFileExtensions can contain a single extension, such as PRG, and only file names with that extension are displayed.
-      cFileExtensions can contain a list of file name extensions separated by semicolons. For example, if you include PRG;FXP, X# displays all file names with the extensions .prg and .fxp.
-      If file names have the same root name but different extensions (for example, Customer.prg and Customer.fxp), X# displays only the file name with the extension that appears first in cFileExtensions.
-      cFileExtensions can contain a list of file name extensions separated by vertical bars, such as PRG|FXP. In such a case, X# displays all file names with listed extensions, even if the files have the same root name.
-      If cFileExtensions contains only a semicolon (;), X# displays all file names that don't have an extension.
-      If cFileExtensions is an empty string, X# displays the names of all files in the current directory or folder.
-      If cFileExtensions contains MS-DOS wildcards, such as the question mark (?) and asterisk (*), X# displays all file names with extensions that meet the wildcard criteria. For example, if cFileExtensions is ?X?, all file names with the extensions .fxp, .exe, .txt, and so on, are displayed.
+      <list type="bullet">
+        <term>cFileExtensions can contain a single extension, such as PRG, and only file names with that extension are displayed.</term>
+        <term>
+          cFileExtensions can contain a list of file name extensions separated by semicolons. For example, if you include PRG;FXP,
+          X# displays all file names with the extensions .prg and .fxp.
+        </term>
+        <term>
+          If file names have the same root name but different extensions (for example, Customer.prg and Customer.fxp),
+          X# displays only the file name with the extension that appears first in cFileExtensions.
+        </term>
+        <term>
+          cFileExtensions can contain a list of file name extensions separated by vertical bars, such as PRG|FXP. In such a case,
+          X# displays all file names with listed extensions, even if the files have the same root name.
+        </term>
+        <term>If cFileExtensions contains only a semicolon (;), X# displays all file names that don't have an extension.</term>
+        <term>If cFileExtensions is an empty string, X# displays the names of all files in the current directory or folder.</term>
+        <term>
+          If cFileExtensions contains MS-DOS wildcards, such as the question mark (?) and asterisk (*), X# displays all file names with
+          extensions that meet the wildcard criteria. For example, if cFileExtensions is ?X?, all file names with the extensions .fxp, .exe, .txt,
+          and so on, are displayed.
+        </term>
+      </list>
     </param>
     <returns>
       Character
     </returns>
     <remarks>
-      Use <b>PUTFILE( ) </b>to choose an existing file name or specify a new file name. <b>PUTFILE( )</b> returns the file name with its path. If you don't enter a file name, <b>PUTFILE( )</b> returns the default file name (specified with cFileName) and extension (specified by cFileExtensions). If you choose Cancel or press Esc, <b>PUTFILE( )</b> returns an empty string. You can use the file name that <b>PUTFILE( )</b> returns to name a file and save it to disk.
+      Use <b>PutFile( ) </b>to choose an existing file name or specify a new file name. <b>PutFile( )</b> returns the file name with its path.
+      If you don't enter a file name, <b>PutFile( )</b> returns the default file name (specified with cFileName) and extension
+      (specified by cFileExtensions). If you choose Cancel or press Esc, <b>PutFile( )</b> returns an empty string.
+      You can use the file name that <b>PutFile( )</b> returns to name a file and save it to disk.
     </remarks>
     <example>
        <code language="X#">
         gcTableName = GetFile('DBF', 'Open Table:')
         Use (gcTableName)
         gcDelimName = Alias( ) + '.DLM'
-        gcDelimFile = PUTFILE('Delimited file:', gcDelimName, 'DLM')
+        gcDelimFile = PutFile('Delimited file:', gcDelimName, 'DLM')
         IF EMPTY(gcDelimFile)  &amp;&amp; Esc pressed
         CANCEL
         ENDIF
@@ -6710,24 +7002,20 @@
       Returns the present value of an investment.
     </summary>
     <param name="nPayment">
-
-      Specifies the periodic payment amount. nPayment can evaluate to a positive or negative number. <b>PV( )</b> assumes that the payments are made at the end of each period.
-
+      Specifies the periodic payment amount. nPayment can evaluate to a positive or negative number.
+      <b>PV( )</b> assumes that the payments are made at the end of each period.
     </param>
     <param name="nInterestRate">
-
-      Specifies the periodic interest rate. If the interest rate of an investment is annual and the payments are made monthly, divide the annual interest rate by 12.
-
+      Specifies the periodic interest rate. If the interest rate of an investment is annual and the payments are made monthly,
+      divide the annual interest rate by 12.
     </param>
     <param name="nTotalPayments">
-
       Specifies the total number of payments.
     </param>
     <returns>
       Numeric
     </returns>
     <remarks>
-
       <b>PV( )</b> computes the present value of an investment based on a series of equal periodic payments at a constant periodic interest rate.
     </remarks>
     <example>
@@ -6740,98 +7028,89 @@
       </code>
     </example>
   </pv>
-
   <raiseevent>
     <summary>
-      You can use <b>RAISEEVENT( )</b> to raise, or trigger, an event from a custom method. Though <b>RAISEEVENT( )</b> applies primarily to custom methods, you can use it for raising native events and methods.
+      You can use <b>RaiseEvent( )</b> to raise, or trigger, an event from a custom method. Though <b>RaiseEvent( )</b> applies primarily to
+      custom methods, you can use it for raising native events and methods.
     </summary>
     <param name="oEventSource">
-
       Specifies the event source, which must be a valid X# object.
-
     </param>
     <param name="cEvent">
-
       Specifies the name of the event, method, or property you want to raise.
-
     </param>
     <param name="eParm1...">
-
       Specifies one or more parameters to pass if the method has parameters.
     </param>
     <returns>
-      Logical data type. <b>RAISEEVENT( )</b> always returns True (.T.).
+      Logical data type. <b>RaiseEvent( )</b> always returns True (.T.).
     </returns>
     <remarks>
-      X# automatically raises events for custom methods that are bound to objects using <b>BINDEVENT( )</b> if the methods are called directly. For example, the following code does not raise an event:
+      X# automatically raises events for custom methods that are bound to objects using <b>BINDEVENT( )</b> if the methods are called directly.
+      For example, the following code does not raise an event:
        <code language="X#">oForm.GetMyData(cData)</code>
       Instead, to raise an event for a custom method, you need to make the following call:
-       <code language="X#">RAISEEVENT( oForm, "GetMyData", cData )</code>
+       <code language="X#">RaiseEvent( oForm, "GetMyData", cData )</code>
       You can also change this behavior by using <b>BINDEVENT( )</b> with nFlags set to 2 or 3.
       The event you wish to raise must be marked <b>Public</b>, not <b>Hidden</b> or <b>Protected</b>.
-      If you use <b>RAISEEVENT( )</b> on a property, X# sets the property to itself. The following example sets the <b>Caption</b> property for <b>_SCREEN</b> to the current value for <b>Caption</b>:
-       <code language="X#">RAISEEVENT( _SCREEN, "Caption" )</code>
+      If you use <b>RaiseEvent( )</b> on a property, X# sets the property to itself.
+      The following example sets the <b>Caption</b> property for <b>_SCREEN</b> to the current value for <b>Caption</b>:
+       <code language="X#">RaiseEvent( _SCREEN, "Caption" )</code>
       Raising an event fails if you bind to an event, for example, using <b>BINDEVENT( )</b>, that has parameters that are passed by reference.
-      X# disregards recursive <b>RAISEEVENT( )</b><b> </b>calls to an event from within the same raised event.
+      X# disregards recursive <b>RaiseEvent( )</b><b> </b>calls to an event from within the same raised event.
     </remarks>
     <example>
-       <code language="X#">RAISEEVENT( Form1, "Activate" )</code>
+       <code language="X#">RaiseEvent( Form1, "Activate" )</code>
     </example>
   </raiseevent>
-
   <refresh>
     <summary>
       Refreshes data in an updatable SQL remote or local view, or <b>CursorAdapter</b> cursor.
     </summary>
     <param name="nRecords">
-
-      Specifies the number of records to refresh. If nRecords is 1 or you omit nRecords, only the current record is refreshed. If nRecords is 0, no records are refreshed.
-
+      Specifies the number of records to refresh. If nRecords is 1 or you omit nRecords, only the current record is refreshed. I
+      f nRecords is 0, no records are refreshed.
     </param>
     <param name="nRecordOffset">
-
-      Specifies the number of records before the current record where the refresh begins. For example, if the current record is record 10 and nRecordOffset is 4, record refresh begins with record 6. If nRecordOffset is 0 or you omit nRecordOffset, the refresh begins with the current record.
-
+      Specifies the number of records before the current record where the refresh begins.
+      For example, if the current record is record 10 and nRecordOffset is 4, record refresh begins with record 6.
+      If nRecordOffset is 0 or you omit nRecordOffset, the refresh begins with the current record.
     </param>
-    <param name="cTableAlias">
-
-      Specifies the alias of the cursor associated with a SQL remote or local view, or a <b>CursorAdapter</b> cursor where records are refreshed.
-
-    </param>
-    <param name="nWorkArea">
-
-      Specifies the work area of cursor where records are refreshed. If you omit nWorkArea and cTableAlias, records are refreshed in the currently selected work area.
+    <param name="uArea">
+      Specifies the alias of the cursor associated with a SQL remote or local view, or a <b>CursorAdapter</b> cursor where records are refreshed.<br/>
+      Or<br/>
+      Specifies the work area of cursor where records are refreshed. If you omit nWorkArea and cTableAlias,
+      records are refreshed in the currently selected work area.<br/>
     </param>
     <returns>
-      Numeric. <b>REFRESH( )</b> returns the number of records refreshed.
+      Numeric. <b>Refresh( )</b> returns the number of records refreshed.
     </returns>
     <remarks>
-      The records are refreshed with data from the tables that define the SQL view or <b>CursorAdapter</b>. Unless specified, records are refreshed in the SQL view or <b>CursorAdapter</b> cursor open in the currently selected work area.
-      <b>REFRESH( )</b> does not refresh content for buffered records; however, field values that are accessible for the record through the <b>CurVal( )</b> function are refreshed. For more information, see CurVal( ) Function.
-      Records must have unique primary keys. If a key for a record cannot be located in the base table, the corresponding record in the SQL view or <b>CursorAdapter</b> is marked for deletion.
-      Calling the <b>REFRESH( )</b> function can result in a significant impact on performance because the function re-executes the query on which the view is based. Therefore, do not call this function more than necessary.
+      The records are refreshed with data from the tables that define the SQL view or <b>CursorAdapter</b>. Unless specified,
+      records are refreshed in the SQL view or <b>CursorAdapter</b> cursor open in the currently selected work area.<br/>
+      <b>Refresh( )</b> does not refresh content for buffered records; however, field values that are accessible for the record
+      through the <b>CurVal( )</b> function are refreshed. For more information, see CurVal( ) Function.<br/>
+      Records must have unique primary keys. If a key for a record cannot be located in the base table,
+      the corresponding record in the SQL view or <b>CursorAdapter</b> is marked for deletion.<br/>
+      Calling the <b>Refresh( )</b> function can result in a significant impact on performance because the function re-executes the query on
+      which the view is based. Therefore, do not call this function more than necessary.
     </remarks>
   </refresh>
-
   <requery>
     <summary>
       Retrieves data again for a SQL view.
     </summary>
-    <param name="nWorkArea">
-
-      Specifies the work area in which the SQL view is open.
-
-    </param>
-    <param name="cTableAlias">
-
-      Specifies the alias of the SQL view. If you omit nWorkArea and cTableAlias, the data for the SQL view open in the currently selected work area is retrieved.
+    <param name="uArea">
+      Specifies the work area in which the SQL view is open.<br/>
+      Or<br/>
+      Specifies the alias of the SQL view. If you omit nWorkArea and cTableAlias,
+      the data for the SQL view open in the currently selected work area is retrieved.
     </param>
     <returns>
-      Numeric. <b>REQUERY( )</b> returns 1 if the data is successfully retrieved; otherwise, it returns 0.
+      Numeric. <b>Requery( )</b> returns 1 if the data is successfully retrieved; otherwise, it returns 0.
     </returns>
     <remarks>
-
-      <b>REQUERY( )</b> is typically used to refresh a SQL view when data has changed on the data source.
+      <b>Requery( )</b> is typically used to refresh a SQL view when data has changed on the data source.
     </remarks>
   </requery>
   <rgbscheme>
@@ -6839,24 +7118,23 @@
       Returns an RGB color pair or an RGB color pair list from a specified color scheme.
     </summary>
     <param name="nColorSchemeNumber">
-
-      Specifies the number of the color scheme for which you want a complete RGB color listing. RGBSCHEME( ) returns 10 RGB color pairs.
-
+      Specifies the number of the color scheme for which you want a complete RGB color listing. RGBScheme( ) returns 10 RGB color pairs.
     </param>
     <param name="nColorPairPosition">
-
-      Returns a single RGB color pair from a color scheme. nColorPairPosition specifies the position of the RGB color pair in the color scheme. For example, if nColorPairPosition is 4, the fourth RGB color pair is returned.
+      Returns a single RGB color pair from a color scheme. nColorPairPosition specifies the position of the RGB color pair in the color scheme.
+      For example, if nColorPairPosition is 4, the fourth RGB color pair is returned.
     </param>
     <returns>
       Character
     </returns>
     <remarks>
-      Use SCHEME( ) to return a traditional color pair or a color pair list from a color scheme. RGB color pairs use numeric values to specify colors. Traditional color pairs use letters to specify colors.
+      Use SCHEME( ) to return a traditional color pair or a color pair list from a color scheme. RGB color pairs use numeric values to specify colors.
+      Traditional color pairs use letters to specify colors.
     </remarks>
     <example>
        <code language="X#">
         Clear
-        ? RGBSCHEME(4,3)
+        ? RGBScheme(4,3)
       </code>
     </example>
   </rgbscheme>
@@ -6865,19 +7143,18 @@
       Creates a bitmap (.bmp) file from a picture object reference.
     </summary>
     <param name="oObjectReference">
-
       Specifies a picture object reference from which SAVEPICTURE( ) creates a bitmap file.
-
     </param>
     <param name="cFileName">
-
-      Specifies the name of the bitmap file that SAVEPICTURE( ) creates. If cFileName includes a path, the file is created in the directory specified in the path. If a file with the same name already exists, it is overwritten without warning, even if Set SAFETY is ON.
+      Specifies the name of the bitmap file that SAVEPICTURE( ) creates. If cFileName includes a path, the file is created in the directory specified
+      in the path. If a file with the same name already exists, it is overwritten without warning, even if Set SAFETY is ON.
     </param>
     <returns>
       Logical
     </returns>
     <remarks>
-      Picture object references are typically created with LoadPicture( ). However, certain properties (such as the PictureOpen property for the OLE Outline control) use a default picture object reference, which can be used to create a bitmap file.
+      Picture object references are typically created with LoadPicture( ). However, certain properties (such as the PictureOpen property for the OLE
+      Outline control) use a default picture object reference, which can be used to create a bitmap file.
     </remarks>
   </savepicture>
   <scheme>
@@ -6885,13 +7162,11 @@
       Returns a color pair list or a single color pair from a specified color scheme.
     </summary>
     <param name="nSchemeNumber">
-
       Specifies the number of the color scheme for which you want a complete color-pair list. SCHEME( ) returns ten color pairs.
-
     </param>
     <param name="nColorPairNumber">
-
-      Specifies the position of one color pair in the color scheme, and SCHEME( ) returns only this color pair. For example, if nColorPairNumber is 4, SCHEME( ) returns the fourth color pair from the color scheme.
+      Specifies the position of one color pair in the color scheme, and SCHEME( ) returns only this color pair. For example, if nColorPairNumber is 4,
+      SCHEME( ) returns the fourth color pair from the color scheme.
     </param>
     <returns>
       Character
@@ -6906,7 +7181,8 @@
     </summary>
     <returns>
       SECONDS( )Return Value
-      Numeric. <b>SECONDS( )</b> returns a numeric value in decimal format with a resolution of 1 millisecond. For versions of X# running on Windows NT 4.0 or later, <b>SECONDS( )</b> returns a resolution of 10 milliseconds.
+      Numeric. <b>SECONDS( )</b> returns a numeric value in decimal format with a resolution of 1 millisecond.
+      For versions of X# running on Windows NT 4.0 or later, <b>SECONDS( )</b> returns a resolution of 10 milliseconds.
     </returns>
     <example>
        <code language="X#">
@@ -6918,54 +7194,52 @@
   </seconds>
   <seek>
     <summary>
-      Searches an indexed table for the first occurrence of a record whose index key matches a specified expression. Issuing SEEK( ) is equivalent to issuing SEEK and FOUND( ) in succession.
+      Searches an indexed table for the first occurrence of a record whose index key matches a specified expression.
+      Issuing Seek( ) is equivalent to issuing Seek and FOUND( ) in succession.<br/>
       X# does not support seek operations for binary indexes.
     </summary>
     <param name="eExpression">
-
-      Specifies the index key expression for which you want SEEK( ) to search.
-
+      Specifies the index key expression for which you want Seek( ) to search.
     </param>
     <param name="nWorkArea">
-
-      Specifies the work area number of the table that is searched for the index key.
-
-    </param>
-    <param name="cTableAlias">
-
+      Specifies the work area number of the table that is searched for the index key.<br/>
+      Or<br/>
       Specifies the alias of the table that is searched.
-      If you omit nWorkArea and cTableAlias, the table in the currently selected work area is searched.
-
+      If you omit uArea, the table in the currently selected work area is searched.
     </param>
     <param name="nIndexNumber">
-
-      Specifies the number of the index file or tag that is used to search for the index key. nIndexNumber refers to the index files as they are listed in Use or Set Index. Open .idx files are numbered first in the order in which they appear in Use or Set Index. Tags in the structural .cdx file (if one exists) are then numbered in the order in which they were created. Finally, tags in any open independent .cdx files are numbered in the order in which they were created. For more information about index numbering, see Set Order Command.
-
+      Specifies the number of the index file or tag that is used to search for the index key.
+      nIndexNumber refers to the index files as they are listed in Use or Set Index. Open .idx files are numbered first in the order in
+      which they appear in Use or Set Index. Tags in the structural .cdx file (if one exists) are then numbered in the order in which they were
+      created. Finally, tags in any open independent .cdx files are numbered in the order in which they were created.
+      For more information about index numbering, see Set Order Command.
     </param>
     <param name="cIDXIndexFileName">
-
       Specifies an .idx file that is used to search for the index key.
-
     </param>
     <param name="cTagName">
-
-      Specifies a tag of a .cdx file that is used to search for the index key. The tag name can be from a structural .cdx file or any open independent .cdx file.
+      Specifies a tag of a .cdx file that is used to search for the index key.
+      The tag name can be from a structural .cdx file or any open independent .cdx file.
       The .idx file takes precedence if duplicate .idx file and tag names exist.
     </param>
     <returns>
-      Logical. SEEK( ) returns True (.T.) if a match is found and the record pointer moves to the matching record. Otherwise, SEEK( ) returns False (.F.) if a match is not found, and the record pointer moves to the end of the file if Set NEAR is OFF or to the closest matching record if Set NEAR is ON.
+      Logical. Seek( ) returns True (.T.) if a match is found and the record pointer moves to the matching record.
+      Otherwise, Seek( ) returns False (.F.) if a match is not found, and the record pointer moves to the end of the file if Set NEAR is OFF
+      or to the closest matching record if Set NEAR is ON.
     </returns>
     <remarks>
-      You can use SEEK( ) on a table with an index order set, or if an index order is not set on the table, set the controlling index with the 3rd parameter, nIndexNumber, cIDXIndexFileName, or cTagName. The match must be exact unless Set EXACT is set to OFF.
-      If you omit the nIndexNumber, IDXIndexFileName, and cTagName arguments, SEEK( ) uses the master controlling index or index tag to search for the index key.
-      The Set KEY setting is ignored if SEEK( ) uses a non-active index.
+      You can use Seek( ) on a table with an index order set, or if an index order is not set on the table, set the controlling index with the
+      3rd parameter, nIndexNumber, cIDXIndexFileName, or cTagName. The match must be exact unless Set EXACT is set to OFF.<br/>
+      If you omit the nIndexNumber, IDXIndexFileName, and cTagName arguments,
+      Seek( ) uses the master controlling index or index tag to search for the index key.<br/>
+      The Set KEY setting is ignored if Seek( ) uses a non-active index.
     </remarks>
     <example>
        <code language="X#">
         Close Databases
         Open Database (HOME(2) + 'Data\testdata')
         Use customer Order cust_id  &amp;&amp; Opens Customer table
-        ? SEEK('CHOPS')  &amp;&amp; Returns .T., record found
+        ? Seek('CHOPS')  &amp;&amp; Returns .T., record found
       </code>
     </example>
   </seek>
@@ -6973,15 +7247,15 @@
     <summary>
       Returns the number of the currently selected work area or the highest-numbered unused work area.
     </summary>
-    <param name="cTableAlias">
-
+    <param name="uSelect">
       Specifies the alias of the table for which Select( ) returns the work area.
     </param>
     <returns>
       Numeric
     </returns>
     <remarks>
-      Select( ) returns the number of the current work area if Set COMPATIBLE is set to OFF. If Set COMPATIBLE is set to ON, Select( ) returns the number of the unused work area with the highest number.
+      Select( ) returns the number of the current work area if Set COMPATIBLE is set to OFF. If Set COMPATIBLE is set to ON,
+      Select( ) returns the number of the unused work area with the highest number.
       A work area can be selected (activated) with Select.
     </remarks>
     <example>
@@ -7003,38 +7277,49 @@
       Assigns a field modification or deletion state value to a field or record in a table or cursor.
     </summary>
     <param name="nFieldstate">
-
-      Specifies a value for the field modification or deletion status. The following table lists the field modification or deletion state value and the corresponding modification or deletion status:
-      nFieldstate
-      1
-      Field has not been modified or deletion status has not changed.
-      2
-      Field has been modified or deletion status has changed.
-      3
-      Field in an appended record has not been modified or deletion status has not changed for the appended record.
-      4
-      Field in an appended record has been modified or deletion status has changed for the appended record.
-
+      Specifies a value for the field modification or deletion status.<br/>
+      The table in the remarks section lists the field modification or deletion state value and the corresponding modification or deletion status:
     </param>
-    <param name="cTableAlias">
-
-      Specifies the alias of the table or cursor in which the modification or deletion status is assigned.
-
-    </param>
-    <param name="nWorkArea">
-
-      Specifies the work area of the table or cursor in which the modification or deletion status is assigned. The field modification or deletion state value is assigned for the table or cursor open in the currently selected work area if SetFLDSTATE( ) is issued without the optional cTableAlias or nWorkArea arguments.
+    <param name="uArea">
+      Specifies the alias of the table or cursor in which the modification or deletion status is assigned.<br/>
+      Or<br/>
+      Specifies the work area of the table or cursor in which the modification or deletion status is assigned.
+      The field modification or deletion state value is assigned for the table or cursor open in the currently selected work area if SetFLDState( )
+      is issued without the optional cTableAlias or nWorkArea arguments.
     </param>
     <returns>
       Logical
     </returns>
     <remarks>
-      X# uses field state values to determine which fields in tables or cursors are updated. SetFLDSTATE( ) makes it possible for you to control which fields X# attempts to update, regardless of which fields have been modified in the table or cursor.
+      X# uses field state values to determine which fields in tables or cursors are updated. SetFLDState( ) makes it possible for you to control
+      which fields X# attempts to update, regardless of which fields have been modified in the table or cursor.<br/>
+      <list type="table">
+        <listheader>
+          <term>nFieldstate</term>
+          <description>Modification or deletion status</description>
+        </listheader>
+        <item>
+          <term>1</term>
+          <description>Field has not been modified or deletion status has not changed.</description>
+        </item>
+        <item>
+          <term>2</term>
+          <description>Field has been modified or deletion status has changed.</description>
+        </item>
+        <item>
+          <term>3</term>
+          <description>Field in an appended record has not been modified or deletion status has not changed for the appended record.</description>
+        </item>
+        <item>
+          <term>4</term>
+          <description>Field in an appended record has been modified or deletion status has changed for the appended record..</description>
+        </item>
+      </list>
     </remarks>
     <example>
        <code language="X#">
         Close Databases
-        Set MULTILOCKS ON  &amp;&amp; Must be on for table buffering
+        Set MultiLocks ON  &amp;&amp; Must be on for table buffering
         Set PATH TO (HOME(2) + 'Data\')     &amp;&amp; Sets path to database
         Open Database testdata  &amp;&amp; Open testdata database
         Use Customer     &amp;&amp; Open customer table
@@ -7043,38 +7328,43 @@
         ? GetFldState('cust_id')  &amp;&amp; Displays 1, not modified
         Replace cust_id    WITH '***'  &amp;&amp; Changes field contents
         ? GetFldState('cust_id')  &amp;&amp; Returns 2, field modified
-        = SetFLDSTATE('cust_id', 1)  &amp;&amp; Change the field status
+        = SetFLDState('cust_id', 1)  &amp;&amp; Change the field status
         ? GetFldState('cust_id')  &amp;&amp; Displays 1, not modified
-        = TableREVERT(.T.)  &amp;&amp; Discard all table changes
+        = TableRevert(.T.)  &amp;&amp; Discard all table changes
       </code>
     </example>
   </setfldstate>
   <setresultset>
     <summary>
-      Marks a cursor as a result set in the current data session.
-      Only one cursor per data session can be marked. When marking a new cursor, <b>SetRESULTSet( )</b> clears the marker from any previously marked cursor.
+      Marks a cursor as a result set in the current data session.<br/>
+      Only one cursor per data session can be marked. When marking a new cursor,
+      <b>SetResultSet( )</b> clears the marker from any previously marked cursor.
     </summary>
-    <param name="nWorkArea">
-
-      Specifies a work area number.
-
-    </param>
-    <param name="cTableAlias">
-
+    <param name="uArea">
+      Specifies a work area number.<br/>
+      Or<br/>
       Specifies the alias of the cursor you want to mark.
     </param>
     <returns>
-      Numeric. <b>SetRESULTSet( )</b> returns the number of the work area of the previously marked cursor in the current data session or zero (0) if no cursor is marked in the current data session.
+      Numeric. <b>SetResultSet( )</b> returns the number of the work area of the previously marked cursor in the current data session or zero (0)
+      if no cursor is marked in the current data session.
     </returns>
     <remarks>
-
-      <b>SetRESULTSet( )</b> is supported in X# and the X# OLE DB Provider. You can use <b>SetRESULTSet( )</b> in a database container (DBC) stored procedure or send it to the X# OLE DB Provider, assuming that the cursor has been previously opened by the OLE DB Provider. For example, suppose a previous command opens a cursor named MyCursor in the OLE DB Provider. The following line of code retrieves an ADO RecordSet for the cursor, MyCursor:
+      <b>SetResultSet( )</b> is supported in X# and the X# OLE DB Provider. You can use <b>SetResultSet( )</b> in a database container (DBC)
+      stored procedure or send it to the X# OLE DB Provider, assuming that the cursor has been previously opened by the OLE DB Provider.
+      For example, suppose a previous command opens a cursor named MyCursor in the OLE DB Provider. The following line of code retrieves an
+      ADO RecordSet for the cursor, MyCursor:
        <code language="X#">oRecordSet = oConn.Execute("SetResultSet('MyCursor')")</code>
-      By using <b>SetRESULTSet( )</b> to mark a cursor or table opened by the X# OLE DB Provider, you can retrieve a rowset created from the table or cursor from a database container (DBC) stored procedure. When the OLE DB Provider completes command execution, it creates a rowset from the marked cursor, if it exists, then clears the marker flag from the cursor.
-      In this scenario, the OLE DB Provider disregards all other return values. For example, if a stored procedure contains a <b>RETURN</b> Value statement and a marked cursor, the OLE DB Provider does not return the value. Instead, it returns the marked cursor as a rowset to the calling application. When the rowset closes, the cursor also closes.
-      However, even though the OLE DB Provider disregards all return values when a marked cursor exists, you can use <b>SetRESULTSet( )</b> with the <b>RETURN</b> command. For example:
-       <code language="X#">RETURN SetRESULTSet("MyCursor")</code>
-      This statement creates and returns a rowset from the marked cursor, not the return value from <b>SetRESULTSet( )</b>.
+      By using <b>SetResultSet( )</b> to mark a cursor or table opened by the X# OLE DB Provider, you can retrieve a rowset created from the
+      table or cursor from a database container (DBC) stored procedure. When the OLE DB Provider completes command execution, it creates a
+      rowset from the marked cursor, if it exists, then clears the marker flag from the cursor.
+      In this scenario, the OLE DB Provider disregards all other return values. For example, if a stored procedure contains a <b>RETURN</b> 
+      Value statement and a marked cursor, the OLE DB Provider does not return the value. Instead, it returns the marked cursor as a rowset
+      to the calling application. When the rowset closes, the cursor also closes.
+      However, even though the OLE DB Provider disregards all return values when a marked cursor exists, you can use <b>SetResultSet( )</b>
+      with the <b>RETURN</b> command. For example:
+       <code language="X#">RETURN SetResultSet("MyCursor")</code>
+      This statement creates and returns a rowset from the marked cursor, not the return value from <b>SetResultSet( )</b>.
     </remarks>
   </setresultset>
   <strconv>
@@ -7082,91 +7372,160 @@
       Converts character expressions between single-byte, double-byte, UNICODE, and locale-specific representations.
     </summary>
     <param name="cExpression">
-
       Specifies the character expression that STRCONV( ) converts.
-
     </param>
     <param name="nConversionSetting">
-
-      Specifies the type of conversion. The following table lists the values of nConversionSetting and the type of conversion performed.
-      1
-      Converts single-byte characters in cExpression to double-byte characters.
-      Supported for Locale ID only (specified with the nRegionalIdentifier or nRegionalIDType parameters).
-      2
-      Converts double-byte characters in cExpression to single-byte characters.
-      3
-      Converts double-byte Katakana characters in cExpression to double-byte Hiragana characters.
-      4
-      Converts double-byte Hiragana characters in cExpression to double-byte Katakana characters.
-      5
-      Converts double-byte characters to UNICODE (wide characters).
-      6
-      Converts UNICODE (wide characters) to double-byte characters.
-      7
-      Converts cExpression to locale-specific lowercase.
-      8
-      Converts cExpression to locale-specific uppercase.
-      9
-      Converts double-byte characters in cExpression to UTF-8
-      10
-      Converts Unicode characters in cExpression to UTF-8
-      11
-      Converts UTF-8 characters in cExpression to double-byte characters.
-      12
-      Converts UTF-8 characters in cExpression to UNICODE characters.
-      13
-      Converts single-byte characters in cExpression to encoded base64 binary.
-      14
-      Converts base64 encoded data in cExpression to original unencoded data.
-      15
-      Converts single-byte characters in cExpression to encoded hexBinary.
-      16
-      Converts single-byte characters in cExpression to decoded hexBinary.
-
+      Specifies the type of conversion.
+      The table in the remarks section lists the values of nConversionSetting and the type of conversion performed.
     </param>
     <param name="nRegionalIdentifier">
-
-      Specifies the Locale ID, code page, or FontCharSet value to use for the conversion. If nRegionalIDType is omitted, the Locale ID is used for the conversion. If nRegionalIdentifier is omitted, the system locale ID is used by default.
+      Specifies the Locale ID, code page, or FontCharSet value to use for the conversion. If nRegionalIDType is omitted,
+      the Locale ID is used for the conversion. If nRegionalIdentifier is omitted, the system locale ID is used by default.
       If nRegionalIdentifier is invalid or not supported on the machine, the error "Invalid locale ID" is generated.
-      1029
-      Czech
-      1031
-      German
-      1033
-      English (Default)
-      1034
-      Spanish
-      1036
-      French
-      1040
-      Italian
-      1045
-      Polish
-      1046
-      Portuguese (Brazil)
-      2070
-      Portuguese (Portugal)
-
+      <list type="table">
+        <listheader>
+          <term>nRegionalIdentifier </term>
+          <description>Language</description>
+        </listheader>
+        <item>
+          <term>1029</term>
+          <description>Czech</description>
+        </item>
+        <item>
+          <term>1031</term>
+          <description>German</description>
+        </item>
+        <item>
+          <term>1033</term>
+          <description>English (Default)</description>
+        </item>
+        <item>
+          <term>1034</term>
+          <description>Spanish</description>
+        </item>
+        <item>
+          <term>1036</term>
+          <description>French</description>
+        </item>
+        <item>
+          <term>1040</term>
+          <description>Italian</description>
+        </item>
+        <item>
+          <term>1045</term>
+          <description>Polish</description>
+        </item>
+        <item>
+          <term>1046</term>
+          <description>Portuguese (Brazil)</description>
+        </item>
+        <item>
+          <term>2070</term>
+          <description>Portuguese (Portugal)</description>
+        </item>
+      </list>
     </param>
     <param name="nRegionalIDType">
-
       Specifies if a Locale ID, code page, or FontCharSet is used for the conversion.
-      The nRegionalIdentifier parameter, described above, is used to specify the actual Locale ID, code page, or FontCharSet used for the conversion.
-      nRegionalIDType
-      0
-      (Default) Specifies that the nRegionalIdentifier parameter is a Locale ID value.
-      1
-      Specifies that nRegionalIdentifier is a code page value.
-      2
-      Specifies that nRegionalIdentifier is a FontCharSet value.
-
+      The nRegionalIdentifier parameter, described above, is used to specify the actual Locale ID, code page,or FontCharSet used for the conversion.
+      <list type="table">
+        <listheader>
+          <term>nRegionalIDType</term>
+          <description>Description</description>
+        </listheader>
+        <item>
+          <term>0</term>
+          <description>(Default) Specifies that the nRegionalIdentifier parameter is a Locale ID value.</description>
+        </item>
+        <item>
+          <term>1</term>
+          <description>Specifies that nRegionalIdentifier is a code page value.</description>
+        </item>
+        <item>
+          <term>2</term>
+          <description>Specifies that nRegionalIdentifier is a FontCharSet value.</description>
+        </item>
+      </list>
     </param>
     <returns>
       Character data type. STRCONV( ) returns the converted character expression.
     </returns>
     <remarks>
-      X# disregards invalid characters or incorrect length in base 64- and hexBinary- encoded strings.
+      X# disregards invalid characters or incorrect length in base 64- and hexBinary- encoded strings.<br/>
       This function is useful for manipulating double-byte character sets for languages such as Hiragana and Katakana.
+      <list type="table">
+        <listheader>
+          <term>nConversionSetting</term>
+          <description>Conversion</description>
+        </listheader>
+        <item>
+          <term>1</term>
+          <description>
+            Converts single-byte characters in cExpression to double-byte characters.<br/>
+            Supported for Locale ID only (specified with the nRegionalIdentifier or nRegionalIDType parameters).
+          </description>
+        </item>
+        <item>
+          <term>2</term>
+          <description>Converts double-byte characters in cExpression to single-byte characters.</description>
+        </item>
+        <item>
+          <term>3</term>
+          <description>Converts double-byte Katakana characters in cExpression to double-byte Hiragana characters.</description>
+        </item>
+        <item>
+          <term>4</term>
+          <description>Converts double-byte Hiragana characters in cExpression to double-byte Katakana characters.</description>
+        </item>
+        <item>
+          <term>5</term>
+          <description>Converts double-byte characters to UNICODE (wide characters).</description>
+        </item>
+        <item>
+          <term>6</term>
+          <description>Converts UNICODE (wide characters) to double-byte characters.</description>
+        </item>
+        <item>
+          <term>7</term>
+          <description>Converts cExpression to locale-specific lowercase.</description>
+        </item>
+        <item>
+          <term>8</term>
+          <description>Converts cExpression to locale-specific uppercase.</description>
+        </item>
+        <item>
+          <term>9</term>
+          <description>Converts double-byte characters in cExpression to UTF-8</description>
+        </item>
+        <item>
+          <term>10</term>
+          <description>Converts Unicode characters in cExpression to UTF-8</description>
+        </item>
+        <item>
+          <term>11</term>
+          <description>Converts UTF-8 characters in cExpression to double-byte characters.</description>
+        </item>
+        <item>
+          <term>12</term>
+          <description>Converts UTF-8 characters in cExpression to UNICODE characters.</description>
+        </item>
+        <item>
+          <term>13</term>
+          <description>Converts single-byte characters in cExpression to encoded base64 binary.</description>
+        </item>
+        <item>
+          <term>14</term>
+          <description>Converts base64 encoded data in cExpression to original unencoded data.</description>
+        </item>
+        <item>
+          <term>15</term>
+          <description>Converts single-byte characters in cExpression to encoded hexBinary.</description>
+        </item>
+        <item>
+          <term>16</term>
+          <description>Converts single-byte characters in cExpression to decoded hexBinary.</description>
+        </item>
+      </list>
     </remarks>
   </strconv>
   <strextract>
@@ -7174,41 +7533,54 @@
       Retrieves a string between two delimiters.
     </summary>
     <param name="cSearchExpression">
-
       Specifies the string to search.
-
     </param>
     <param name="cBeginDelim">
-
       Specifies the character that delimits the beginning of cSearchExpression.
-
     </param>
     <param name="cEndDelim">
-
       Specifies the character that delimits the end of cSearchExpression.
-
     </param>
     <param name="nOccurrence">
-
       Specifies at which occurrence of cBeginDelim in cSearchExpression to start the extraction.
-
     </param>
     <param name="nFlag">
-
-      Specify the type of controls placed on the search. The number you specify in nFlag provides a bit-value that determines options according to the following table:
-      0
-      1
-      Case-insensitive search
-      2
-      End delimiter not required. Specifies that a search, which finds no occurrence of cEndDelim, returns the contents of cSearchExpression from the cBeginDelim location.
-      4
-      Include the delimiters in the returned expression.
-      Character or Varbinary.br
-      The Result data type is derived by the first parameter data type.
+      Specify the type of controls placed on the search.
+      The number you specify in nFlag provides a bit-value that determines options according to the following table:
+      <list type="table">
+        <listheader>
+          <term>Bit</term>
+          <description>Value (additive)</description>
+          <description>Description</description>
+        </listheader>
+        <item>
+          <term>0</term>
+          <description>1</description>
+          <description>Case-insensitive search</description>
+        </item>
+        <item>
+          <term>1</term>
+          <description>2</description>
+          <description>
+            End delimiter not required. Specifies that a search, which finds no occurrence of cEndDelim,
+            returns the contents of cSearchExpression from the cBeginDelim location.
+          </description>
+        </item>
+        <item>
+          <term>2</term>
+          <description>4</description>
+          <description>Include the delimiters in the returned expression.</description>
+        </item>
+      </list>
+      <returns>
+        Character or Varbinary.br<br/>
+        The Result data type is derived by the first parameter data type.
+      </returns>
     </param>
     <remarks>
-      The default is a case sensitive search in which delimiters must be found (no nFlag value).
-      If cBeginDelim is an empty string, the search is conducted from the beginning of cSearchExpression to the first occurrence of cEndDelim. If cEndDelim is an empty string STREXTRACT( ) returns a string from nOccurrence of cBeginDelim to the end of cSearchExpression.
+      The default is a case sensitive search in which delimiters must be found (no nFlag value).<br/>
+      If cBeginDelim is an empty string, the search is conducted from the beginning of cSearchExpression to the first occurrence of cEndDelim.
+      If cEndDelim is an empty string StrExtract( ) returns a string from nOccurrence of cBeginDelim to the end of cSearchExpression.
     </remarks>
     <example>
        <code language="X#">
@@ -7221,7 +7593,7 @@
         PROCEDURE xmlproc(x as String, nLev as Integer)   as void
         LOCAL cTagName, cContents, mterm
         DO WHILE .t.
-        cTagName = STREXTRACT(x,"&lt;","&gt;")
+        cTagName = StrExtract(x,"&lt;","&gt;")
         IF LEN(cTagName) = 0   &amp;&amp; no tag found
         ??' ',x   &amp;&amp; print out raw string as contents
         EXIT
@@ -7232,11 +7604,11 @@
         mterm = "&lt;"+cTagName+"/&gt;"   &amp;&amp; "&lt;region/&gt;"
         ELSE
         mterm = "&lt;/"+cTagName+"&gt;"   &amp;&amp; "&lt;/region&gt;"
-        cContents = STREXTRACT(x,"&lt;"+cTagName+"&gt;", mterm,1,2)
+        cContents = StrExtract(x,"&lt;"+cTagName+"&gt;", mterm,1,2)
         ENDIF
         ?REPLICATE("  ",nLev),nLev+1,PADR(cTagName,20)
         xmlproc(cContents, nLev+1)
-        x = STREXTRACT(x, mterm)   &amp;&amp; get the rest of the xml
+        x = StrExtract(x, mterm)   &amp;&amp; get the rest of the xml
         ENDDO
       </code>
     </example>
@@ -7244,43 +7616,67 @@
   <strtofile>
     <summary>
       Writes the contents of a character string to a file.
-      STRTOFILE( ) does not write to hidden files when running X# on Windows 2000 and later.
+      StrToFile( ) does not write to hidden files when running X# on Windows 2000 and later.
     </summary>
     <param name="cExpression">
-
-      Specifies the character string that is written to the file. cExpression can be a literal character string, an expression that evaluates to a character string, or a character type variable, array element, or field.
-
+      Specifies the character string that is written to the file. cExpression can be a literal character string,
+      an expression that evaluates to a character string, or a character type variable, array element, or field.
     </param>
     <param name="cFileName">
-
-      Specifies the name of the file to which the character string is written. Include a path with the file name if the file is in a directory other than the current default directory. If the file you specify does not exist, X# automatically creates it.
-
-      lAdditive (for backward compatibility)
-      Specifies whether the character string is appended to the end of the file. If lAdditive is true (.T.), the character string is appended to the end of the file.
-      If lAdditive is false (.F.) (the default), the file is overwritten with the character string. You are asked if you want to overwrite an existing file if Set SAFETY is set to ON. If Set SAFETY is set to OFF, the file is overwritten without warning.
+      Specifies the name of the file to which the character string is written. Include a path with the file name if the file is in a directory
+      other than the current default directory. If the file you specify does not exist, X# automatically creates it.<br/>
+      lAdditive (for backward compatibility)<br/>
+      Specifies whether the character string is appended to the end of the file.
+      If lAdditive is true (.T.), the character string is appended to the end of the file.<br/>
+      If lAdditive is false (.F.) (the default), the file is overwritten with the character string.
+      You are asked if you want to overwrite an existing file if Set SAFETY is set to ON. If Set SAFETY is set to OFF,
+      the file is overwritten without warning.
     </param>
     <param name="nFlag">
-
-      Beginning with X# 7, you can use the nFlag parameter instead of lAdditive which enables you to also chose to write UTF-8 and Unicode Byte Order Marks. The following table describes the valid nFlag values.
-      0 (default)
-      0000
-      The file is overwritten with the character string (formerly lAdditive=.f.)
-      1
-      0001
-      The string is appended to the end of the file (formerly lAdditive=.t.).
-      2
-      0010
-      Write Unicode Byte Order Mark (BOM) FF FE at the beginning of file. cExpression is assumed to be UNICODE, therefore no translation is performed. The file is overwritten
-      4
-      0100
-      Write UTF-8 Byte Order Mark (BOM) EF BB BF at the beginning of file. cExpression is assumed to be UTF-8, therefore no translation is performed. The file is overwritten.
+      Beginning with X# 7, you can use the nFlag parameter instead of lAdditive which enables you to also chose to write UTF-8 and
+      Unicode Byte Order Marks. The table in the remarks section describes the valid nFlag values.
     </param>
     <returns>
       Numeric; the number of bytes written to the file.
     </returns>
     <remarks>
-      An nFlag value of 3 or 5 is not valid. You cannot attempt to write a new Byte Order Mark if nFlag bit 1, Additive, is set.
-      Unlike earlier versions of X#, STRTOFILE( ) opens a file in Shared rather than Exclusive mode. This is useful when multiple servers attempt to simultaneously write to the same file. Because of this change, you might not need to check for STRTOFILE( ) to return 0 (failure to open a file).
+      An nFlag value of 3 or 5 is not valid. You cannot attempt to write a new Byte Order Mark if nFlag bit 1, Additive, is set.<br/>
+      Unlike earlier versions of X#, StrToFile( ) opens a file in Shared rather than Exclusive mode.
+      This is useful when multiple servers attempt to simultaneously write to the same file. Because of this change,
+      you might not need to check for StrToFile( ) to return 0 (failure to open a file).
+      <list type="table">
+        <listheader>
+          <term>nFlag</term>
+          <description>Bit</description>
+          <description>Description</description>
+        </listheader>
+        <item>
+          <term>0 (default)</term>
+          <description>0000</description>
+          <description>The file is overwritten with the character string (formerly lAdditive=.f.)</description>
+        </item>
+        <item>
+          <term>1</term>
+          <description>0001</description>
+          <description>The string is appended to the end of the file (formerly lAdditive=.t.).</description>
+        </item>
+        <item>
+          <term>2</term>
+          <description>0010</description>
+          <description>
+            Write Unicode Byte Order Mark (BOM) FF FE at the beginning of file. cExpression is assumed to be UNICODE,
+            therefore no translation is performed. The file is overwritten
+          </description>
+        </item>
+        <item>
+          <term>4</term>
+          <description>0100</description>
+          <description>
+            Write UTF-8 Byte Order Mark (BOM) EF BB BF at the beginning of file. cExpression is assumed to be UTF-8,
+            therefore no translation is performed. The file is overwritten.
+          </description>
+        </item>
+      </list>
     </remarks>
   </strtofile>
   <sys>
@@ -7295,123 +7691,208 @@
       Returns the size of the operating system's screen elements.
     </summary>
     <param name="nScreenElement">
-
-      Specifies a screen element. The following table shows values for nScreenElement and the corresponding screen element:
-      1
-      Screen width
-      2
-      Screen height.
-      3
-      Width of sizable window frame
-      4
-      Height of sizable window frame
-      5
-      Width of scroll arrows on vertical scroll bar
-      6
-      Height of scroll arrows on vertical scroll bar
-      7
-      Width of scroll arrows on horizontal scroll bar
-      8
-      Height of scroll arrows on horizontal scroll bar
-      9
-      Height of window title
-      10
-      Width of non-sizable window frame
-      11
-      Height of non-sizable window frame
-      12
-      Width of DOUBLE or PANEL window frame
-      13
-      Height of DOUBLE or PANEL window frame
-      14
-      Scroll box width on horizontal scroll bar in text editing windows
-      15
-      Scroll box height on vertical scroll bar in text editing windows
-      16
-      Minimized window icon width
-      17
-      Minimized window icon height
-      18
-      Maximum insertion point width
-      19
-      Maximum insertion point height
-      20
-      Single-line menu bar height
-      21
-      Maximized window width
-      22
-      Maximized window height
-      23
-      Kanji window height
-      24
-      Minimum sizable window width
-      25
-      Minimum sizable window height
-      26
-      Minimum window width
-      27
-      Minimum window height
-      28
-      Window controls width
-      29
-      Window controls height
-      30
-      1 if mouse hardware present; otherwise 0
-      31
-      1 for Microsoft Windows debugging version; otherwise 0
-      32
-      1 if mouse buttons swapped; otherwise 0
-      33
-      Width of a button in a half-caption window's caption or title bar
-      34
-      Height of half-caption window caption area
+      Specifies a screen element. The table in the remarks section shows values for nScreenElement and the corresponding screen element:
     </param>
     <returns>
       Character
     </returns>
     <remarks>
-      SYSMETRIC( ) returns the size of screen elements. Screen elements include menus, windows, window controls, and the insertion point. Values are returned in pixels unless otherwise noted and can vary for different displays, display drivers, and video hardware. For further information on screen elements, refer to the GetSystemMetrics function in the MSDN Library at <b>http://msdn.microsoft.com/library</b>.
-      SYSMETRIC( ) enables you to determine the size of menus, windows, and window controls you create in X#. Windows and menus created with DEFINE WINDOW and DEFINE MENU use the same screen element sizes as the operating system's windows and menus.
+      SysMetric( ) returns the size of screen elements. Screen elements include menus, windows, window controls, and the insertion point.
+      Values are returned in pixels unless otherwise noted and can vary for different displays, display drivers, and video hardware.
+      For further information on screen elements, refer to the GetSystemMetrics function in the MSDN Library at <b>http://msdn.microsoft.com/library</b>.<br/>
+      SysMetric( ) enables you to determine the size of menus, windows, and window controls you create in X#.
+      Windows and menus created with DEFINE WINDOW and DEFINE MENU use the same screen element sizes as the operating system's windows and menus.
+      <list type="table">
+        <listheader>
+          <term>nScreenElement</term>
+          <description>Screen Element</description>
+        </listheader>
+        <item>
+          <term>1</term>
+          <description>Screen width</description>
+        </item>
+        <item>
+          <term>2</term>
+          <description>Screen height</description>
+        </item>
+        <item>
+          <term>3</term>
+          <description>Width of sizable window frame</description>
+        </item>
+        <item>
+          <term>4</term>
+          <description>Height of sizable window frame</description>
+        </item>
+        <item>
+          <term>5</term>
+          <description>>Width of scroll arrows on vertical scroll bar</description>
+        </item>
+        <item>
+          <term>6</term>
+          <description>Height of scroll arrows on vertical scroll bar</description>
+        </item>
+        <item>
+          <term>7</term>
+          <description>Width of scroll arrows on horizontal scroll bar</description>
+        </item>
+        <item>
+          <term>8</term>
+          <description>Height of scroll arrows on horizontal scroll bar</description>
+        </item>
+        <item>
+          <term>9</term>
+          <description>Height of window title</description>
+        </item>
+        <item>
+          <term>10</term>
+          <description>Width of non-sizable window frame</description>
+        </item>
+        <item>
+          <term>11</term>
+          <description>Height of non-sizable window frame</description>
+        </item>
+        <item>
+          <term>12</term>
+          <description>Width of DOUBLE or PANEL window frame</description>
+        </item>
+        <item>
+          <term>13</term>
+          <description>Height of DOUBLE or PANEL window frame</description>
+        </item>
+        <item>
+          <term>14</term>
+          <description>Scroll box width on horizontal scroll bar in text editing windows</description>
+        </item>
+        <item>
+          <term>15</term>
+          <description>Scroll box height on vertical scroll bar in text editing windows</description>
+        </item>
+        <item>
+          <term>16</term>
+          <description>Minimized window icon width</description>
+        </item>
+        <item>
+          <term>17</term>
+          <description>Minimized window icon height</description>
+        </item>
+        <item>
+          <term>18</term>
+          <description>Maximum insertion point width</description>
+        </item>
+        <item>
+          <term>19</term>
+          <description>Maximum insertion point height</description>
+        </item>
+        <item>
+          <term>20</term>
+          <description>Single-line menu bar height</description>
+        </item>
+        <item>
+          <term>21</term>
+          <description>Maximized window width</description>
+        </item>
+        <item>
+          <term>22</term>
+          <description>Maximized window height</description>
+        </item>
+        <item>
+          <term>23</term>
+          <description>Kanji window height</description>
+        </item>
+        <item>
+          <term>24</term>
+          <description>Minimum sizable window width</description>
+        </item>
+        <item>
+          <term>25</term>
+          <description>Minimum sizable window height</description>
+        </item>
+        <item>
+          <term>26</term>
+          <description>Minimum window width</description>
+        </item>
+        <item>
+          <term>27</term>
+          <description>Minimum window height</description>
+        </item>
+        <item>
+          <term>28</term>
+          <description>Window controls width</description>
+        </item>
+        <item>
+          <term>29</term>
+          <description>Window controls height</description>
+        </item>
+        <item>
+          <term>30</term>
+          <description>1 if mouse hardware present; otherwise 0</description>
+        </item>
+        <item>
+          <term>31</term>
+          <description>1 for Microsoft Windows debugging version; otherwise 0</description>
+        </item>
+        <item>
+          <term>32</term>
+          <description>1 if mouse buttons swapped; otherwise 0</description>
+        </item>
+        <item>
+          <term>33</term>
+          <description>Width of a button in a half-caption window's caption or title bar</description>
+        </item>
+        <item>
+          <term>34</term>
+          <description>Height of half-caption window caption area</description>
+        </item>
+      </list>
     </remarks>
   </sysmetric>
   <tablerevert>
     <summary>
-      Discards changes made to a buffered row or a buffered table or cursor and restores the OLDVAL( ) data for remote cursors and the current disk values for local tables and cursors.
-      On a network, the data currently on disk might differ from the data on the disk when the table was opened or the cursor was created. Other users on the network might have changed the data after the table was opened or the cursor was created.
+      Discards changes made to a buffered row or a buffered table or cursor and restores the OldVal( ) data for remote cursors and the current 
+      disk values for local tables and cursors.<br/>
+      On a network, the data currently on disk might differ from the data on the disk when the table was opened or the cursor was created. 
+      Other users on the network might have changed the data after the table was opened or the cursor was created.
     </summary>
     <param name="lAllRows">
-
       Determines whether all changes made to the table or cursor are discarded. The following table describes the values for lAllRows.
-      False (.F.)
-      If table buffering is enabled, only changes made to the current record in the table or cursor are discarded. (Default)
-      True (.T.)
-      If table buffering is enabled, changes made to all records are discarded in the table or cursor.
+      <list type="table">
+      <listheader>
+        <term>lAllRows</term>
+        <description>Description</description>
+      </listheader>
+      <item>
+        <term>False (.F.)</term>
+        <description>If table buffering is enabled, only changes made to the current record in the table or cursor are discarded. (Default)</description>
+      </item>
+      <item>
+        <term>True (.T.)</term>
+        <description>If table buffering is enabled, changes made to all records are discarded in the table or cursor.</description>
+      </item>
+    </list>      
       If row buffering is enabled, X# disregards the value of lAllRows, and changes made to the current record in the table or cursor are discarded.
-
     </param>
-    <param name="cTableAlias">
-
-      Specifies the alias of the table or cursor in which the changes are discarded.
-
-    </param>
-    <param name="nWorkArea">
-
+    <param name="uArea">
+      Specifies the alias of the table or cursor in which the changes are discarded.<br/>
+  Or<br/>
       Specifies the work area of the table or cursor in which the changes are discarded.
     </param>
     <returns>
-      Numeric data type. TableREVERT( ) returns the number of records for which changes were discarded.
+      Numeric data type. TableRevert( ) returns the number of records for which changes were discarded.
     </returns>
     <remarks>
-      TableREVERT( ) cannot discard changes made to a table or cursor that does not have row or table buffering enabled. If you issue TableREVERT( ) and row or table buffering is not enabled, X# generates an error message. Use CursorSetProp( ) to enable or disable row and table buffering.
-      Changes are discarded in the table or cursor open in the currently selected work area if TableREVERT( ) is issued without the optional cTableAlias or nWorkArea arguments.
-      TableREVERT( ) does not return the record pointer to its original position.
-      TableREVERT( ) operates on CursorAdapter objects in the same way as other buffered cursors.
-      In X# 9.0, you cannot issue the TableREVERT( ) function when a TableUPDATE( ) is in operation.
+      TableRevert( ) cannot discard changes made to a table or cursor that does not have row or table buffering enabled. 
+      If you issue TableRevert( ) and row or table buffering is not enabled, X# generates an error message. Use CursorSetProp( ) to enable or 
+      disable row and table buffering.<br/>
+      Changes are discarded in the table or cursor open in the currently selected work area if TableRevert( ) is issued without the optional 
+      cTableAlias or nWorkArea arguments.<br/>
+      TableRevert( ) does not return the record pointer to its original position.<br/>
+      TableRevert( ) operates on CursorAdapter objects in the same way as other buffered cursors.<br/>
+      In X# 9.0, you cannot issue the TableRevert( ) function when a TableUPDATE( ) is in operation.
     </remarks>
     <example>
        <code language="X#">
         Close Databases
-        Set MULTILOCKS ON  &amp;&amp; Must be on for table buffering
+        Set MultiLocks ON  &amp;&amp; Must be on for table buffering
         Set PATH TO (HOME(2) + 'data\')     &amp;&amp; Sets path to database
         Open Database testdata  &amp;&amp; Open testdata database
         Use Customer     &amp;&amp; Open customer table
@@ -7422,7 +7903,7 @@
         Replace cust_id    WITH '***'  &amp;&amp; Changes field contents
         ? 'New cust_id value: '
         ?? cust_id  &amp;&amp; Displays new cust_id value
-        = TableREVERT(.T.)  &amp;&amp; Discard all table changes
+        = TableRevert(.T.)  &amp;&amp; Discard all table changes
         ? 'Reverted cust_id value: '
         ?? cust_id  &amp;&amp; Displays reverted cust_id value
       </code>
@@ -7546,14 +8027,14 @@
       AfterDelete
 
       You can also modify data in the cursor. This functionality supports scenarios such as retrieving the autoincrement value from the base table and inserting it into the cursor. When this scenario occurs, the <b>CursorAdapter</b> object should automatically return to the record whose changes are about to be committed after the event has occurred and commit the changes.
-      In X# 9.0, you cannot issue the TableREVERT( ) Function when a TableUPDATE( ) is in operation.
+      In X# 9.0, you cannot issue the TableRevert( ) Function when a TableUPDATE( ) is in operation.
       Typically, the CursorAdapter object uses the transaction management functionality provided by the ADO or ODBC API's and X# closes transactions when the TableUPDATE( ) function completes successfully. However, if you want to send transaction management commands directly to the backend, you can set the UseTransactions property of the CursorAdaptor object to False (.F.) and the CursorAdapter does not use transactions to send Insert, Update, or Delete commands.
     </remarks>
     <example>
        <code language="X#">
         Close Databases
         Create Table employee (cLastName C(10))
-        Set MULTILOCKS ON  &amp;&amp; Must turn on for table buffering.
+        Set MultiLocks ON  &amp;&amp; Must turn on for table buffering.
         = CursorSetProp('Buffering', 5, 'employee' )  &amp;&amp; Enable table buffering.
         Insert Into employee (cLastName) VALUES ('Smith')
         Clear
@@ -7942,7 +8423,7 @@
     <summary>
       Mirrors changes made in a buffered table or cursor in an XML UpdateGram and returns a character string that contains the UpdateGram.
       An XML UpdateGram represents the before and after conditions of the changed portion of a X# table or cursor. Through additional processes, you can use an UpdateGram to commit these changes to the data represented by the XML UpdateGram document.
-      To use <b>XMLUPDATEGRAM( )</b>, you must use <b>Set MULTILOCKS ON</b> and enable table buffering.
+      To use <b>XMLUPDATEGRAM( )</b>, you must use <b>Set MultiLocks ON</b> and enable table buffering.
       Before calling <b>XMLUPDATEGRAM( )</b>, you should specify the key field list by calling <b>CursorSetProp( )</b> with the <b>KeyFieldList</b> property against existing cursors and tables. If you do not specify key fields, both the before and after representations contains all the fields in the table. If you specify one or more key fields, only those fields appear in the before section.
     </summary>
     <param name="cAliasList">
@@ -8009,7 +8490,7 @@
       SQL Server and Visual Studio support the DiffGram format for updating XML. However, SQL XML requires a mapping schema to support this format. Therefore, <b>XMLUPDATEGRAM( )</b> does not support this format.
       To avoid possible errors generated by <b>XMLUPDATEGRAM( )</b> on tables containing <b>Memo</b> or <b>General</b> fields, use the <b>CursorSetProp( )</b> function. The following example shows how to include memo data in an XML UpdateGram by setting the <b>KeyFieldList</b> property using <b>CursorSetProp( )</b>:
        <code language="X#">
-        Set MULTILOCKS ON
+        Set MultiLocks ON
         Create CURSOR Test (mField M, cField I AutoInc)
         Insert Into Test (mField) VALUES ("123456789")
         Insert Into Test (mField) VALUES ("23456789")
@@ -8018,7 +8499,7 @@
         CursorSetProp("Buffering",5)
         CursorSetProp("keyfieldlist",'cField')
         UPDATE Test Set mField = "XXXXXXX" Where cField &lt; 3
-        STRTOFILE(XMLUPDATEGRAM(),'xmlupdate.txt')
+        StrToFile(XMLUPDATEGRAM(),'xmlupdate.txt')
         MODIFY FILE xmlupdate.txt
         RETURN
       </code>

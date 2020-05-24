@@ -168,6 +168,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         internal SyntaxClassEntities GlobalClassEntities;
         internal Stack<SyntaxClassEntities> ClassEntities = new Stack<SyntaxClassEntities>();
         internal Stack<XP.IEntityContext> Entities = new Stack<XP.IEntityContext>();
+
+        private bool _inArrayCtorCall = false;
         #endregion
 
         #region Static Fields
@@ -7161,6 +7163,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.Put(expr);
             return true;
         }
+        public override void EnterCtorCall([NotNull] XP.CtorCallContext context)
+        {
+            _inArrayCtorCall = context.Type is XP.ArrayDatatypeContext;
+        }
         public override void ExitCtorCall([NotNull] XP.CtorCallContext context)
         {
             if (!(context.Type is XP.ArrayDatatypeContext))
@@ -7216,7 +7222,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 _pool.Free(sizes);
                 context.Put(_syntaxFactory.ArrayCreationExpression(SyntaxFactory.MakeToken(SyntaxKind.NewKeyword),
                     _syntaxFactory.ArrayType(type, MakeList(rankSpecifiers)),
-                    null));
+                    context.Init?.Get<InitializerExpressionSyntax>() ?? null));
             }
         }
 
@@ -8970,7 +8976,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitCollectioninitializer([NotNull] XP.CollectioninitializerContext context)
         {
             var collinit = _syntaxFactory.InitializerExpression(
-                SyntaxKind.CollectionInitializerExpression,
+                _inArrayCtorCall ? SyntaxKind.ArrayInitializerExpression : SyntaxKind.CollectionInitializerExpression,
                 SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
                 MakeSeparatedList<ExpressionSyntax>(context._Members),
                 SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken));
@@ -9002,7 +9008,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitComplexInitExpr([NotNull] XP.ComplexInitExprContext context)
         {
             var collinit = _syntaxFactory.InitializerExpression(
-                SyntaxKind.ComplexElementInitializerExpression,
+                _inArrayCtorCall ? SyntaxKind.ArrayInitializerExpression : SyntaxKind.ComplexElementInitializerExpression,
                 SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
                 MakeSeparatedList<ExpressionSyntax>(context._Members),
                 SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken));

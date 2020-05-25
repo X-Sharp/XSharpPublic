@@ -3769,6 +3769,26 @@ RETURN
 			
 			DbCloseArea()
 
+        [Fact, Trait("Category", "DBF")];
+		METHOD VoDbOrdSetFocus_test() AS VOID
+			LOCAL cDbf AS STRING
+			RddSetDefault("DBFCDX")
+			cDbf := "VODBORD"
+			DbfTests.CreateDatabase(cDbf , { { "NUMFIELD" , "N" , 5 , 0 } } )
+			DbUseArea(TRUE, "DBFCDX", cDbf)
+			DbCreateOrder("ORDER1", cDbf, "NUMFIELD")
+			DbCloseArea()
+			DbUseArea(TRUE, "DBFCDX", cDbf)
+
+			LOCAL cPrevious := "" AS STRING
+			Assert.False(VoDbOrdSetFocus("",123,REF cPrevious))
+			Assert.False(VoDbOrdSetFocus("","abc",REF cPrevious))
+			Assert.False(VoDbOrdSetFocus("abc","",REF cPrevious))
+			Assert.True(VoDbOrdSetFocus("",1,REF cPrevious))
+			Assert.True(VoDbOrdSetFocus("",1,REF cPrevious))
+			Assert.Equal("ORDER1", cPrevious)		
+			DbCloseArea()
+
 		STATIC PRIVATE METHOD GetTempFileName() AS STRING
            STATIC nCounter AS LONG
             ++nCounter

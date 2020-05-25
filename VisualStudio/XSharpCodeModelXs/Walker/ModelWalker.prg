@@ -16,9 +16,12 @@ USING System.Text
 USING System.Threading
 USING System.Threading.Tasks
 USING System.Collections.Concurrent
+USING XSharp.Parser
+USING LanguageService.CodeAnalysis
+USING LanguageService.CodeAnalysis.Text
 
 BEGIN NAMESPACE XSharpModel
-	CLASS ModelWalker
+	CLASS ModelWalker IMPLEMENTS VsParser.IErrorListener
 		// Fields
 		PRIVATE _projects := ConcurrentQueue<XProject>{} AS ConcurrentQueue<XProject>
 		PRIVATE _projectsForTypeResolution := ConcurrentQueue<XProject>{} AS ConcurrentQueue<XProject>
@@ -60,7 +63,7 @@ BEGIN NAMESPACE XSharpModel
 				ENDIF
 			END LOCK
 			WriteOutputMessage("<<-- AddProject()")
-
+        STATIC INSTANCE bOld := FALSE AS LOGIC
 		INTERNAL METHOD FileWalk(file AS XFile) AS VOID
             IF ! XSolution.Open
                 RETURN
@@ -70,10 +73,15 @@ BEGIN NAMESPACE XSharpModel
 				//
 				BEGIN USING VAR walker := SourceWalker{file}
 					TRY
-						//
-						VAR lines := System.IO.File.ReadAllLines(file:SourcePath)
-						VAR xTree := walker:Parse(lines, FALSE)
-						walker:BuildModel(xTree)
+						IF bOld
+						    VAR lines := System.IO.File.ReadAllLines(file:SourcePath)
+						    VAR xTree := walker:Parse(lines, FALSE)
+						    walker:BuildModel(xTree)
+//                        ELSE
+//                            VAR cSource := System.IO.File.ReadAllText(file:SourcePath)
+//                            VAR options := file:Project:ParseOptions
+//            			    XSharp.Parser.VsParser.ParseForEntities(cSource, file:SourcePath, options, SELF, OUT VAR _, OUT VAR context)
+                        ENDIF
 						file:LastWritten := lastWriteTime
 						IF file:Project != NULL
 							//
@@ -169,7 +177,7 @@ BEGIN NAMESPACE XSharpModel
 							EXIT
 						ENDIF
 						project:ProjectNode:SetStatusBarText(String.Format("Start scanning project {0}", project:Name))
-					END LOCK
+                    END LOCK
 					WriteOutputMessage("-->> Walker("+project.Name+")")
 					aFiles := project:SourceFiles:ToArray()
 					iProcessed := 0
@@ -262,6 +270,11 @@ BEGIN NAMESPACE XSharpModel
 
 		STATIC METHOD WriteOutputMessage(message AS STRING) AS VOID
 			XSolution.WriteOutputMessage("XModel.Walker "+message)
+
+			VIRTUAL METHOD ReportError(fileName AS STRING, span AS LinePositionSpan, errorCode AS STRING, message AS STRING, args AS OBJECT[]) AS VOID
+                RETURN
+			VIRTUAL METHOD ReportWarning(fileName AS STRING, span AS LinePositionSpan, errorCode AS STRING, message AS STRING, args AS OBJECT[]) AS VOID
+                RETURN
 
 	END CLASS
 

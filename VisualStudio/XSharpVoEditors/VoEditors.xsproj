@@ -9,7 +9,7 @@
     <RootNamespace>XSharp.VOEditors</RootNamespace>
     <AssemblyName>XSharpVoEditors</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <Name>XSharp.VoEditors</Name>
+    <Name>VoEditors</Name>
     <Nologo>true</Nologo>
     <GenerateFullPaths>true</GenerateFullPaths>
     <Dialect>Core</Dialect>
@@ -40,7 +40,7 @@
     <VO13>false</VO13>
     <VO14>false</VO14>
     <VO15>false</VO15>
-    <XSharpProjectversion>2.0.5.0</XSharpProjectversion>
+    <XSharpProjectversion>2.4.1.0</XSharpProjectversion>
     <Includepaths>$(SolutionDir)\Common</Includepaths>
     <Nostandarddefs>true</Nostandarddefs>
     <IntermediateOutputPath>$(SolutionDir)Binaries\obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
@@ -116,8 +116,8 @@
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CodeGenerator\XSharpCodeGenerator.xsproj">
-      <Name>XSharpCodeGenerator</Name>
+    <ProjectReference Include="..\CodeGenerator\CodeGenerator.xsproj">
+      <Name>CodeGenerator</Name>
       <Project>{b837ac3b-9c61-49e4-9f4f-c8ad1faf21cc}</Project>
       <Private>True</Private>
     </ProjectReference>
@@ -126,8 +126,8 @@
       <Project>{faac947e-0355-4f8d-adb9-c57b1c9357d2}</Project>
       <Private>True</Private>
     </ProjectReference>
-    <ProjectReference Include="..\XSharpCodeModelXs\XSharpModelXs.xsproj">
-      <Name>XSharpModelXs</Name>
+    <ProjectReference Include="..\XSharpCodeModelXs\CodeModel.xsproj">
+      <Name>CodeModel</Name>
       <Project>{eed6843b-b727-4f08-aa32-ca0f48fdde3f}</Project>
       <Private>True</Private>
     </ProjectReference>

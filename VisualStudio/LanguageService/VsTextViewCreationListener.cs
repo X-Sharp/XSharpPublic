@@ -71,21 +71,7 @@ namespace XSharp.LanguageService
                 if (langId == GuidStrings.guidLanguageService)          // is our language service active ?
                 {
                     string fileName = FilePathUtilities.GetFilePath(textlines);
-                    //if (!IsOurSourceFile(fileName))       // is this a file node from Vulcan ?
-                    //{
-                    //    // we always register the file in the classifier.
-                    //    if (textView.TextBuffer.Properties.ContainsProperty(typeof(XSharpModel.XFile)))
-                    //    {
-                    //        textView.TextBuffer.Properties.RemoveProperty(typeof(XSharpModel.XFile));
-                    //    }
-
-                    //    Guid guidVulcanLanguageService = GuidStrings.guidVulcanLanguageService;
-                    //    textlines.SetLanguageServiceID(guidVulcanLanguageService);
-                    //    return;
-                    //}
-                    //
-                    // Only capturing keystroke for OUR languageService... ???
-                    //
+                    
 
                     // Get XFile and assign it to the textbuffer
                     if (!textView.TextBuffer.Properties.ContainsProperty(typeof(XSharpModel.XFile)))
@@ -99,6 +85,7 @@ namespace XSharp.LanguageService
                     CommandFilter filter = new CommandFilter(textView, CompletionBroker, NavigatorService.GetTextStructureNavigator(textView.TextBuffer), SignatureHelpBroker, aggregator, this );
                     IOleCommandTarget next;
                     textViewAdapter.AddCommandFilter(filter, out next);
+                    
                     filter.Next = next;
                 }
             }

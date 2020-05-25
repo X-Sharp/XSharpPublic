@@ -1166,7 +1166,6 @@ namespace XSharp.LanguageService
             {
                 var package = XSharpLanguageService.Instance;
                 var optionsPage = package.GetIntellisenseOptionsPage();
-                var textManager = package.GetTextManager();
                 //
                 _alignDoCase = optionsPage.AlignDoCase;
                 _alignMethod = optionsPage.AlignMethod;
@@ -1175,13 +1174,16 @@ namespace XSharp.LanguageService
                 _noGotoDefinition = optionsPage.DisableGotoDefinition;
                 var languagePreferences = new LANGPREFERENCES3[1];
                 languagePreferences[0].guidLang = GuidStrings.guidLanguageService;
-                int result = 0;
-                var dispatcher = Dispatcher.CurrentDispatcher;
-                dispatcher.Invoke( () => result = textManager.GetUserPreferences4(pViewPrefs: null, pLangPrefs: languagePreferences, pColorPrefs: null));
-                if (result == VSConstants.S_OK)
+                if (!System.Threading.Thread.CurrentThread.IsBackground)
                 {
-                    _indentStyle = languagePreferences[0].IndentStyle;
-                    optionsPage.HideAdvancemembers = languagePreferences[0].fHideAdvancedAutoListMembers != 0;
+                    int result = 0;
+                    var textManager = package.GetTextManager();
+                    result = textManager.GetUserPreferences4(pViewPrefs: null, pLangPrefs: languagePreferences, pColorPrefs: null);
+                    if (result == VSConstants.S_OK)
+                    {
+                        _indentStyle = languagePreferences[0].IndentStyle;
+                        optionsPage.HideAdvancemembers = languagePreferences[0].fHideAdvancedAutoListMembers != 0;
+                    }
                 }
                 _tabSize = textView.Options.GetTabSize();
                 _indentSize = textView.Options.GetIndentSize();

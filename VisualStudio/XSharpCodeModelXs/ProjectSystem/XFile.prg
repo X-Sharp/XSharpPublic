@@ -166,7 +166,7 @@ BEGIN NAMESPACE XSharpModel
             ENDIF
 
         METHOD SetTypes(types AS IDictionary<STRING, XType>, usings AS IList<STRING>, ;
-        staticUsings AS IList<STRING>, aEntities AS IList<XElement>) AS VOID
+                staticUsings AS IList<STRING>, aEntities AS IList<XElement>) AS VOID
             IF SELF:HasCode
                 WriteOutputMessage("-->> SetTypes() "+ SELF:SourcePath)
                 BEGIN LOCK SELF

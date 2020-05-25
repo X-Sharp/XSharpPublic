@@ -83,7 +83,7 @@ BEGIN NAMESPACE XSharpModel
 			SELF:_errors := List<XError>{}
 			LOCAL stream := NULL AS ITokenStream
             TRY
-			XSharp.Parser.VsParser.Lex(cSource, SELF:_file:SourcePath, SELF:_file:Project:ProjectNode:ParseOptions, SELF, OUT stream)
+			XSharp.Parser.VsParser.Lex(cSource, SELF:_file:SourcePath, SELF:_file:Project:ParseOptions, SELF, OUT stream)
 			BEGIN LOCK SELF
 				SELF:_tokenStream := stream
 			END LOCK

@@ -198,6 +198,7 @@ namespace XSharp.LanguageService
                     //formatCaseForWholeBuffer();
                 }
             }
+            getEditorPreferences(textView);
         }
 
         private void Textbuffer_Changing(object sender, TextContentChangingEventArgs e)

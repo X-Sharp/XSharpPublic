@@ -283,7 +283,7 @@ BEGIN NAMESPACE MacroCompilerTest
 
         ReportMemory("initial")
         VAR mc := CreateMacroCompiler()
-
+        EvalMacro(mc, "{|| 0000.00.00 }" ,NULL_DATE)
         //ParseMacro(mc, e"{|a,b| +a[++b] += 100, a[2]}")
         //EvalMacro(mc, e"{|a,b| a[++b] += 100, a[2]}", {1,2,3}, 1)
         //EvalMacro(mc, e"{|a|A,1_000", 123)
@@ -396,6 +396,7 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, "2018.12.31 = 2018.1.1", Args(), FALSE, typeof(LOGIC))
         TestMacro(mc, "2018.12.31 != 2018.12.31", Args(), FALSE, typeof(LOGIC))
         TestMacro(mc, "2018.12.31 != 2018.1.1", Args(), TRUE, typeof(LOGIC))
+        TestMacro(mc, "0000.00.00 == NULL_DATE", Args(), TRUE, typeof(LOGIC))
         TestMacro(mc, "null", Args(), NULL, typeof(OBJECT))
         TestMacro(mc, "null_object", Args(), NULL_OBJECT, NULL)
         TestMacro(mc, "null_string", Args(), null_string, NULL)

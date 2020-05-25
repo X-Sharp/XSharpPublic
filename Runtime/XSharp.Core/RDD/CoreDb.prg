@@ -1425,11 +1425,11 @@ CLASS XSharp.CoreDb
             cBagName     := cBagName?:Trim()
             info:BagName := cBagName
             info:Order   := oOrder
-            result := oRdd:OrderListFocus(info)
+            VAR isOk := oRdd:OrderListFocus(info)
             IF HasEvents .AND. ! info:IsEmpty
                 RAISE OrderChanged info:Result
             ENDIF
-            RETURN TRUE
+            RETURN isOk 
         CATCH e AS Exception
             Fail(e)
         END TRY

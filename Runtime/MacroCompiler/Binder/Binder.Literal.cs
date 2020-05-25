@@ -214,6 +214,10 @@ namespace XSharp.MacroCompiler
                                 Int32.TryParse(args[1], out month) &&
                                 Int32.TryParse(args[2], out day))
                             {
+                                if (year == 0 || month == 0 || day == 0)
+                                {
+                                    return Constant.CreateDefault(Compilation.Get(NativeType.VODate));
+                                }
                                 if (Options.VODateConstants)
                                     return Constant.CreateVODate(year, month, day);
                                 else

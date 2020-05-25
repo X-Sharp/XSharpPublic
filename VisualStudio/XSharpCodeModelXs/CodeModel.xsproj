@@ -10,7 +10,7 @@
     <RootNamespace>XSharpCodeModel</RootNamespace>
     <AssemblyName>XSharpModel</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <Name>XSharpModelXs</Name>
+    <Name>CodeModel</Name>
     <Nologo>true</Nologo>
     <GenerateFullPaths>true</GenerateFullPaths>
     <Dialect>Core</Dialect>
@@ -659,7 +659,9 @@
     <Compile Include="Interfaces.prg" />
     <Compile Include="MetaData\AssemblyInfo.prg" />
     <Compile Include="MetaData\SystemTypeController.prg" />
+    <Compile Include="Model\XSignature.prg" />
     <Compile Include="Model\Enums.prg" />
+    <Compile Include="Model\XBlock.prg" />
     <Compile Include="Model\XElement.prg" />
     <Compile Include="Model\XType.prg" />
     <Compile Include="Model\XTypeMember.prg" />

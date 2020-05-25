@@ -1355,8 +1355,8 @@ namespace XSharp.Project
         private bool IsProjectFile(string fullPath)
         {
             string cExt = Path.GetExtension(fullPath);
-            return String.Equals(cExt, ".xsprj", StringComparison.OrdinalIgnoreCase)
-                || String.Equals(cExt, ".xsproj", StringComparison.OrdinalIgnoreCase);
+            return String.Equals(cExt, ".xsproj", StringComparison.OrdinalIgnoreCase)
+                || String.Equals(cExt, ".xsprj", StringComparison.OrdinalIgnoreCase);
         }
 
         /// <summary>

@@ -11,7 +11,7 @@ USING System.Linq
 USING LanguageService.CodeAnalysis.XSharp
 
 BEGIN NAMESPACE XSharpModel
-	[DebuggerDisplay("Kind, {Name,nq}")];
+	[DebuggerDisplay("{Kind}, {Name,nq}")];
 	CLASS XElement
 		// Fields
 		PRIVATE _File AS XFile
@@ -19,13 +19,20 @@ BEGIN NAMESPACE XSharpModel
 		PROTECTED _isStatic AS LOGIC
 		PROTECTED _isArray AS LOGIC
 		PRIVATE _Kind AS Kind
-		PRIVATE _Modifiers AS Modifiers
+		PROPERTY Modifiers AS Modifiers AUTO GET INTERNAL SET
 		PRIVATE _Name AS STRING
 		PRIVATE _parent AS XElement
 		PRIVATE _range AS TextRange
-		PRIVATE _Visibility AS Modifiers
+		PROPERTY Visibility AS Modifiers AUTO GET INTERNAL SET
 		STATIC PRIVATE _nKeywordCase := -1 AS INT
 		CONST PUBLIC GlobalName := "(Global Scope)" AS STRING
+        PRIVATE _typeName AS STRING
+        PRIVATE _isTyped     AS LOGIC
+        PRIVATE _attributes AS STRING
+        PRIVATE _singleLine  := FALSE AS LOGIC
+        PRIVATE _value  AS STRING
+        STATIC INITONLY PUBLIC VarType := "$VAR$" AS STRING
+        STATIC INITONLY PUBLIC UsualType := "USUAL" AS STRING
 		
 		// Methods
 		CONSTRUCTOR()
@@ -35,8 +42,8 @@ BEGIN NAMESPACE XSharpModel
 			SUPER()
 			SELF:_Name := name
 			SELF:_Kind := kind
-			SELF:_Modifiers := modifiers
-			SELF:_Visibility := visibility
+			SELF:Modifiers := modifiers
+			SELF:Visibility := visibility
 			SELF:_range := range
 			SELF:_interval := interval
 			SELF:_isStatic := FALSE
@@ -48,20 +55,22 @@ BEGIN NAMESPACE XSharpModel
 			VIRTUAL PROPERTY FullName AS STRING GET SELF:_Name
 			PROPERTY Kind AS Kind GET SELF:_Kind
 			PROPERTY Language AS STRING GET "XSharp"
-			PROPERTY Modifiers AS Modifiers GET SELF:_Modifiers
 			PROPERTY Name AS STRING GET SELF:_Name
-			PROPERTY Interval AS TextInterval GET SELF:_interval
 			PROPERTY IsStatic AS LOGIC GET _isStatic SET _isStatic := VALUE
 			PROPERTY FileUsings AS IList<STRING> GET SELF:_File:Usings
 			PROPERTY Parent AS XElement GET SELF:_parent SET SELF:_parent := VALUE
 			VIRTUAL PROPERTY ParentName AS STRING GET SELF:_parent?:FullName
 			VIRTUAL PROPERTY Prototype AS STRING GET SELF:Name
 			VIRTUAL PROPERTY ComboPrototype AS STRING GET SELF:Name
-			PROPERTY Range AS TextRange GET SELF:_range
-			PROPERTY Visibility AS Modifiers GET SELF:_Visibility
-			PROPERTY Dialect AS XSharpDialect AUTO
-			VIRTUAL PROPERTY IsArray AS LOGIC GET SELF:_isArray
-			
+			PROPERTY Range AS TextRange GET SELF:_range SET _range := value
+			PROPERTY Interval AS TextInterval GET SELF:_interval SET _interval := value
+			PROPERTY Dialect AS XSharpDialect AUTO      
+			VIRTUAL PROPERTY IsArray AS LOGIC GET SELF:_isArray SET SELF:_isArray := value
+			PROPERTY IsTyped AS LOGIC GET _isTyped
+			PROPERTY Attributes AS STRING GET SELF:_attributes SET _attributes := value
+            PROPERTY SingleLine        AS LOGIC GET SELF:_singleLine SET SELF:_singleLine:= value
+            PROPERTY Value             AS STRING GET SELF:_value    SET SELF:_value:= value
+
 			
 		#endregion
 		
@@ -391,6 +400,19 @@ BEGIN NAMESPACE XSharpModel
 			PROPERTY VisibilityKeyword			AS STRING GET IIF(KeywordsUpperCase, SELF:Visibility:ToString():ToUpper(), SELF:Visibility:ToString():ToLower()) + " "
 			PROPERTY KindKeyword				AS STRING GET IIF(KeywordsUpperCase, SELF:Kind:DisplayName():ToUpper(), SELF:Kind:DisplayName():ToLower()) + " "
 			
+        PROPERTY TypeName AS STRING
+            GET
+                IF IsTyped
+                    RETURN SELF:_typeName
+                ELSE
+                    RETURN UsualType
+                ENDIF
+            END GET
+            SET
+                SELF:_typeName := VALUE
+                _isTyped := ! String.IsNullOrEmpty(_typeName)
+            END SET
+        END PROPERTY
 			
 			#endregion
 	END CLASS

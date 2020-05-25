@@ -25,9 +25,15 @@ BEGIN NAMESPACE XSharpModel
 			SELF:_StartIndex := start
 			SELF:_StopIndex := stop
 		
-		
+		CONSTRUCTOR(startToken AS IToken, endToken AS IToken)
+			//
+			SELF:_StartIndex := startToken:StartIndex
+			SELF:_StopIndex  := endToken:StopIndex
+				
 		STATIC PROPERTY Empty AS TextInterval GET TextInterval{}
 
+        METHOD WithEnd (endToken AS IToken) AS TextInterval
+            RETURN TextInterval{SELF:_StartIndex, endToken:StopIndex}
 
 		METHOD IsEmpty() AS LOGIC
 			RETURN ((SELF:_StartIndex == 0) .AND. (SELF:_StopIndex == 0))

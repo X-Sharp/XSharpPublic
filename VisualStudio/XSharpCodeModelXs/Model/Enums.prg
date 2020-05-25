@@ -72,6 +72,7 @@ BEGIN NAMESPACE XSharpModel
 		MEMBER @@VOStruct
 		MEMBER @@VOGlobal
 		MEMBER @@Unknown
+        MEMBER @@Ignore
 	END ENUM
 
 	[Flags];
@@ -92,6 +93,11 @@ BEGIN NAMESPACE XSharpModel
 		MEMBER @@Static:=0x1000
 		MEMBER @@Unsafe:=0x2000
 		MEMBER @@Virtual:=0x4000
+        MEMBER @@Override:=0x4000
+        MEMBER @@External:=0x8000
+        MEMBER @@Const:=0x10000
+        MEMBER @@InitOnly:=0x20000
+        MEMBER @@Instance:=0x40000
 	END ENUM
 	ENUM XFileType AS LONG
 		MEMBER Unknown:=-1
@@ -113,10 +119,15 @@ BEGIN NAMESPACE XSharpModel
 	END ENUM
 
 	ENUM ParamType AS BYTE
-		MEMBER @@AS		:= 0
+		MEMBER @@As		:= 0
 		MEMBER @@Ref    := 1
 		MEMBER @@Out	:= 2
 		MEMBER @@Params := 3
-	END ENUM
+        MEMBER @@In  	:= 4
+    END ENUM
+
+
+ 
+
 END NAMESPACE
 

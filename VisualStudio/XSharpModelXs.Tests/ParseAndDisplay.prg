@@ -48,28 +48,6 @@ FUNCTION ParseAndDisplay(aLineCollection AS IList<STRING>, output AS ITestOutput
 		NEXT
 		//Console.ReadLine()
 	NEXT
-		//Console.ReadLine()
 
-		//? "Entities:"
-		//foreach oEntity as EntityObject in Parser:Entities
-		//? "Line:" , oEntity:nLine , "Name:" , oEntity:cName , "Type:" , oEntity:eType , "Return Type =", oEntity:cRetType
-		//next
-		//Console.ReadLine()
-		//? "Locals:"
-		//foreach oLocal as EntityObject in Parser:Locals
-		//? "Line:" , oLocal:nLine , "Name:" , oLocal:cName , "Type =", oLocal:cRetType
-		//next
-//
-		//Console.ReadLine()
-		/*
-		?
-		? "Directives, Block commands etc:"
-		FOREACH oLine AS LineObject IN Parser:LineObjects
-			IF oLine:eType == LineType.EndClass .or. oLine:eType == LineType.Return .or. oLine:eType == LineType.Define
-				//loop
-			END IF
-			? "Line:" , oLine:Line , "OffSet:", oLine:OffSet,  "Type:" , oLine:eType , ":" , oLine:cArgument
-		NEXT
-		*/
 	
 	RETURN	

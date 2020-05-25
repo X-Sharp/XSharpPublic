@@ -229,7 +229,7 @@ CLASS AssemblyInfo
 								File.Delete(cPdbCopy)
 							ENDIF
 							File.Move(cPdb, cPdbCopy)
-						ENDIF
+                        ENDIF
 						result := Assembly.Load(rawAssembly)
 						IF FailedAssemblies:ContainsKey(fileName)
 							FailedAssemblies:Remove(fileName)

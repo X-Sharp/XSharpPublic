@@ -18,23 +18,33 @@ BEGIN NAMESPACE XSharpModel
     /// </summary>
 	[DebuggerDisplay("{StartLine}.{StartColumn}-{EndLine}.{EndColumn}")];
 	STRUCTURE TextRange
-		INITONLY PRIVATE _EndColumn AS LONG
-		INITONLY PRIVATE _EndLine AS LONG
-		INITONLY PRIVATE _StartColumn AS LONG
-		INITONLY PRIVATE _StartLine AS LONG
+		PRIVATE INITONLY _EndColumn AS LONG
+		PRIVATE INITONLY _EndLine AS LONG
+		PRIVATE INITONLY _StartColumn AS LONG
+		PRIVATE INITONLY _StartLine AS LONG
 		
 		// Methods
 		//CONSTRUCTOR(context AS ParserRuleContext)
 		//SELF(context:Start:Line, context:Start:Column, context:Stop:Line, context:Stop:Column)
 		//
-		
+
+        CONSTRUCTOR(startToken AS IToken, endToken AS IToken)
+            SELF:_StartLine     := startToken:Line
+            SELF:_StartColumn   := startToken:Column
+            SELF:_EndLine       := endToken:Line
+            SELF:_EndColumn     := endToken:Column+endToken:Text:Length
+
 		CONSTRUCTOR(sl AS LONG, sc AS LONG, el AS LONG, ec AS LONG)
 			//
 			SELF:_StartLine := sl
 			SELF:_StartColumn := sc
 			SELF:_EndLine := el
 			SELF:_EndColumn := ec
-		
+
+        METHOD WithEnd(endToken AS IToken) AS TextRange
+            RETURN TextRange{_StartLine,_StartColumn,endToken:Line,endToken:Column+endToken:Text:Length}
+            
+
 		STATIC PROPERTY Empty AS TextRange GET TextRange{1, 1, 1, 1}
 		
         /// <summary>

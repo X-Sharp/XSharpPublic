@@ -496,7 +496,7 @@ METHOD __DoValidate(oControl AS Control) AS DataWindow STRICT
 	RETURN SELF
 
 
-METHOD __DoValidate(oColumn AS DataColumn) AS DataWindow STRICT 
+METHOD __DoValidateColumn(oColumn AS DataColumn) AS DataWindow STRICT 
 	//PP-030828 Strong typing
 	
 	IF oColumn:Modified
@@ -866,7 +866,7 @@ METHOD __UpdateCurrent() AS DataWindow STRICT
 	ELSEIF (sCurrentView == #BrowseView) .AND. IsAccess(oGBrowse, #CurrentColumn)
 		oColumn := IVarGet(oGBrowse, #CurrentColumn)
 		IF oColumn IS DataColumn VAR oDC .AND. oDC:Modified
-			SELF:__DoValidate(oDC)
+			SELF:__DoValidateColumn(oDC)
 		ENDIF
 	ENDIF
 	RETURN SELF

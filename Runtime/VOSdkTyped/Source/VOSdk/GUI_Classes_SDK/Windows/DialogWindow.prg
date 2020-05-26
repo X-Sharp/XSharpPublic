@@ -306,16 +306,15 @@ CLASS DialogWindow INHERIT Window IMPLEMENTS ILastFocus
 
 
 	
-	METHOD Show(kShowState) 
+	METHOD Show(kShowState := SHOWCENTERED AS LONG ) AS VOID
 		IF bModal
-			DEFAULT(@kShowState, SHOWCENTERED)
 			oWnd:StartPosition := SELF:__GetStartPosFromShowState(kShowState)
 			SELF:ShowModal(TRUE)
 		ELSE
 			SUPER:Show(kShowState)
 			//SELF:PostShowDialog()		// Is now called from the OnShown method on the Form
 		ENDIF
-		RETURN nResult
+		RETURN 
 	
 	METHOD ShowModal(lActive AS LOGIC) 
 		LOCAL oShell AS ShellWindow

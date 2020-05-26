@@ -33,9 +33,9 @@ CLASS ControlWindow INHERIT Window
 		ENDIF
 		RETURN 
 
-	METHOD Hide() 
+	METHOD Hide() AS VOID STRICT
 		oSurface:Hide()
-		RETURN SELF
+		RETURN 
 
 	ACCESS HyperLabel AS HyperLabel
 		RETURN oCtrl:HyperLabel
@@ -90,9 +90,9 @@ CLASS ControlWindow INHERIT Window
 		ENDIF
 		RETURN SELF
 
-	METHOD Show() CLIPPER
+	METHOD Show(nShowState AS LONG ) AS VOID
 		oSurface:Show()
-		RETURN SELF
+		RETURN 
 
 
 

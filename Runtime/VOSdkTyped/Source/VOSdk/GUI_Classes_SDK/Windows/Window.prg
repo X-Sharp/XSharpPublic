@@ -1853,12 +1853,12 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		RETURN NIL
 	
 
-	METHOD Hide() 
+	METHOD Hide() AS VOID STRICT
 		IF SELF:__IsValid 
 			oWnd:Visible := FALSE
 		ENDIF
 		
-		RETURN NIL
+		RETURN 
 	
 
 	METHOD HorizontalScroll(oScrollEvent) 
@@ -2566,8 +2566,10 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 	METHOD OnMdiChildActivated(s AS OBJECT, e AS EventArgs) AS VOID
 		SELF:Activate(@@Event{})
 
-	METHOD Show(kShowState) 
-		DEFAULT(@kShowState, SHOWNORMAL)
+    METHOD Show() AS VOID STRICT
+        SELF:Show(SHOWNORMAL)
+        
+	METHOD Show(kShowState AS LONG ) AS VOID STRICT
 		IF SELF:__IsValid
             oWnd:SuspendLayout()
 			IF (NULL_STRING != cCaption)
@@ -2627,7 +2629,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 			oWnd:Show()
 
 		ENDIF	
-		RETURN NIL
+		RETURN 
 
 	METHOD ShowBalloonTrayTip(oIcon,dwID,sHeading,sToolTip,dwTimeOut,dwInfo) 
 		DEFAULT(@dwID,1)

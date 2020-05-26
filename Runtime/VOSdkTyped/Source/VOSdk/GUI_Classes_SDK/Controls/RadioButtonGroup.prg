@@ -201,14 +201,14 @@ CLASS RadioButtonGroup INHERIT GroupBox
 
 		RETURN SELF
 
-	METHOD Hide()  
+	METHOD Hide()  AS VOID STRICT
 	//	FOREACH oItem AS RadioButton IN aButtons
 	//		oItem:Visible := FALSE
 	//	NEXT
 
 		SUPER:Hide()
 
-		RETURN SELF
+		RETURN 
 
 
 	METHOD SetFocus() AS VOID
@@ -220,7 +220,7 @@ CLASS RadioButtonGroup INHERIT GroupBox
 
 		RETURN 
 
-	METHOD Show()  AS VOID
+	METHOD Show()  AS VOID STRICT
 		SUPER:Show()
 	//	FOREACH oC AS System.Windows.Forms.Control IN SELF:oCtrl:Controls
 	//		oC:Visible := TRUE

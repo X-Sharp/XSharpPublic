@@ -34,8 +34,11 @@ INTERFACE IGuiObject
 	PROPERTY Caption	AS STRING GET SET
 	PROPERTY HyperLabel AS HyperLabel GET SET
 	PROPERTY NameSym	AS SYMBOL GET
-    PROPERTY __Handle   as IntPtr GET
+    PROPERTY __Handle   AS IntPtr GET
 	METHOD   Destroy()	AS USUAL CLIPPER
+    METHOD   Show()     AS VOID STRICT
+    METHOD   Hide()     AS VOID STRICT
+        
 END INTERFACE
 
 

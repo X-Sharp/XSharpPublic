@@ -459,12 +459,12 @@ CLASS TabControl INHERIT TextControl
 
 		RETURN NULL_STRING
 
-	METHOD Hide() 
+	METHOD Hide()  AS VOID STRICT
 		SUPER:Hide()
 		IF (oCurrentPage != NULL_OBJECT)
 			oCurrentPage:Hide()
 		ENDIF
-		RETURN NIL
+		RETURN 
 
 	ACCESS ImageList AS ImageList
 		RETURN oImageList
@@ -665,7 +665,7 @@ CLASS TabControl INHERIT TextControl
 	METHOD SetTipText(symTabName AS SYMBOL, cText AS STRING) 
 		RETURN SELF:AddTipText(symTabName, cText)
 
-	METHOD Show() AS VOID
+	METHOD Show() AS VOID STRICT
 		SUPER:Show()
 		IF (oCurrentPage != NULL_OBJECT)
 			oCurrentPage:Show()

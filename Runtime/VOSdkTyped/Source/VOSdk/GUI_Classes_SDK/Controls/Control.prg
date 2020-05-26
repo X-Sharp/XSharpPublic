@@ -784,11 +784,11 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
 		ENDIF
 		RETURN lBorder
 
-	METHOD Hide() 
+	METHOD Hide() AS VOID STRICT
 		IF SELF:__IsValid 
 			oCtrl:Visible := FALSE
 		ENDIF		
-		RETURN NIL
+		RETURN 
 	
 
 	METHOD HorizontalScroll(oScrollEvent ) 
@@ -1339,7 +1339,7 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
 		RETURN SELF
 	
 
-	METHOD Show() AS VOID 
+	METHOD Show( ) AS VOID STRICT
 		
 		IF (oCtrl == NULL_OBJECT)
 			SELF:Create()

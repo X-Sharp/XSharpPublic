@@ -10,7 +10,7 @@ USING System.Text
 USING System.IO
 USING System.Runtime.CompilerServices
 USING System.Diagnostics
-
+//#define TESTCDX
 BEGIN NAMESPACE XSharp.RDD.CDX
 
 	/// <summary>
@@ -102,7 +102,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         END PROPERTY
         INTERNAL PROPERTY PageRight AS CdxTreePage
             GET
-                IF HasRIght
+                IF HasRight
                     IF oPageRight == NULL .OR. oPageRight:PageNo != RightPtr
                         oPageRight := SELF:Tag:GetPage(SELF:RightPtr)
                     ENDIF
@@ -161,20 +161,19 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PROPERTY IsRoot AS LOGIC GET SELF:PageType:HasFlag(CdxPageType.Root)
 
 
-       INTERNAL METHOD AddRightSibling(oSibling AS CdxTreePage) AS VOID
-            System.Diagnostics.Debug.Assert(oSibling != NULL_OBJECT)
-            IF oSibling != NULL_OBJECT
+       INTERNAL METHOD AddRightSibling(oNewRight AS CdxTreePage) AS VOID
+            Debug.Assert(oNewRight != NULL_OBJECT)
+            IF oNewRight != NULL_OBJECT
                 LOCAL  oOldRight AS CdxTreePage
-                oSibling:LeftPtr  := SELF:PageNo
-                oSibling:RightPtr := SELF:RightPtr
+                oNewRight:LeftPtr  := SELF:PageNo
+                oNewRight:RightPtr := SELF:RightPtr
                 IF SELF:HasRight
                     oOldRight := SELF:_tag:GetPage(SELF:RightPtr)
                     Debug.Assert(oOldRight:LeftPtr == SELF:PageNo)
-                    Debug.Assert(oOldRight:PageNo == SELF:RightPtr)
-                    oOldRight:LeftPtr := oSibling:PageNo    
+                    oOldRight:LeftPtr := oNewRight:PageNo    
                     oOldRight:Write()
                 ENDIF
-                SELF:RightPtr     := oSibling:PageNo
+                SELF:RightPtr     := oNewRight:PageNo
                 SELF:Write()
             ELSE
                 NOP
@@ -183,21 +182,21 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         INTERNAL ABSTRACT METHOD FindKey(key AS BYTE[], recno AS LONG, length AS LONG) AS WORD
 #ifdef TESTCDX
         METHOD Debug(o PARAMS  OBJECT[] ) AS VOID
-           LOCAL count := o:Length AS INT
-           LOCAL x                 AS INT
-           LOCAL cProc             AS STRING
-           
-           cProc := Procname(1):ToLower():PadRight(30) 
-           Console.Write(cProc+" ")
-           Console.Write(SELF:PageNo:ToString("X8"))
-           Console.Write(" ")
-           FOR x := 0 UPTO count-1
-              Console.Write( o[x] )
-              IF x < count
-                 Console.Write( " " )
-              ENDIF
-           NEXT
-           Console.WriteLine()
+//           LOCAL count := o:Length AS INT
+//           LOCAL x                 AS INT
+//           LOCAL cProc             AS STRING
+//           
+//           cProc := ProcName(1):ToLower():PadRight(30) 
+//           Console.Write(cProc+" ")
+//           Console.Write(SELF:PageNo:ToString("X8"))
+//           Console.Write(" ")
+//           FOR x := 0 UPTO count-1
+//              Console.Write( o[x] )
+//              IF x < count
+//                 Console.Write( " " )
+//              ENDIF
+//           NEXT
+//           Console.WriteLine()
            RETURN
 #endif            
 	END CLASS

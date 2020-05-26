@@ -14,7 +14,7 @@
     <INS>true</INS>
     <NamedArgs>true</NamedArgs>
     <VulcanCompatibleResources>False</VulcanCompatibleResources>
-    <XSharpProjectversion>2.4.0.0</XSharpProjectversion>
+    <XSharpProjectversion>2.4.1.0</XSharpProjectversion>
     <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
     <IncludePaths>$(CommonInclude)</IncludePaths>
     <Nostandarddefs>true</Nostandarddefs>
@@ -100,6 +100,7 @@
     <Compile Include="DbfCdx\Tag\CdxTagLock.prg" />
     <Compile Include="DbfCdx\Tag\CdxTagNavigation.prg" />
     <Compile Include="DbfCdx\Tag\CdxTagUpdate.prg" />
+    <Compile Include="DbfCdx\Tag\CdxValidate.prg" />
     <Compile Include="DbfCdx\VfpCollation.prg" />
     <Compile Include="DbfDbt\DbfDbt.prg" />
     <Compile Include="DbfDbt\DbtMemo.prg" />

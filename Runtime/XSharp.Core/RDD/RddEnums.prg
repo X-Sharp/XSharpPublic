@@ -494,7 +494,7 @@ BEGIN NAMESPACE XSharp.RDD.Enums
 
 
 		// 65-99
-		/* Harbour extensions */
+		/* Harbour extensions , not all implemented yet*/
 		MEMBER DBOI_SKIPEVAL           := 200  /* skip while code block doesn't return TRUE */
 		MEMBER DBOI_SKIPEVALBACK       := 201  /* skip backward while code block doesn't return TRUE */
 		MEMBER DBOI_SKIPREGEX          := 202  /* skip while regular expression on index key doesn't return TRUE */
@@ -530,7 +530,13 @@ BEGIN NAMESPACE XSharp.RDD.Enums
 		MEMBER DBOI_INDEXTYPE          := 232  /* current index type */
 		MEMBER DBOI_RESETPOS           := 233  /* rest logical and raw positions */
 		MEMBER DBOI_INDEXPAGESIZE      := 234  /* get index page size */
-		
+
+		// XSharp extensions
+		/// <summary>Dump the current order to a text file in the folder of the index.</summary>
+		MEMBER DBOI_DUMP                := 300
+		/// <summary>Logic: Validate the current order. Errors are written to a text file in the folder of the index. Only supported by DBFCDX</summary>
+		MEMBER DBOI_VALIDATE            := 301
+        
 		MEMBER DBOI_USER 				:= 1000 
 		// Advantage
 		MEMBER DBOI_AXS_PERCENT_INDEXED  := 1805

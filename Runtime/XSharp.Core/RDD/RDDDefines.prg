@@ -485,6 +485,11 @@ DEFINE DBOI_INDEXPAGESIZE      := DbOrder_Info.DBOI_INDEXPAGESIZE      /* get in
 /// <exclude />
 DEFINE DBOI_USER 				:= DbOrder_Info.DBOI_USER
 
+/// <exclude />
+DEFINE DBOI_DUMP 			:= DbOrder_Info.DBOI_DUMP                
+/// <exclude />
+DEFINE DBOI_VALIDATE 			:= DbOrder_Info.DBOI_VALIDATE            
+        
 // Advantage extensions
 
 /// <exclude />

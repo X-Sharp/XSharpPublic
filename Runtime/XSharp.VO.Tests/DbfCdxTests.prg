@@ -3789,6 +3789,54 @@ RETURN
 			Assert.Equal("ORDER1", cPrevious)		
 			DbCloseArea()
 
+        [Fact, Trait("Category", "DBF")];
+		METHOD OrdScope_BoF_test() AS VOID
+			LOCAL cDbf AS STRING
+			RddSetDefault("DBFCDX")
+			cDbf := GetTempFileName()
+
+			DbfTests.CreateDatabase(cDbf , { { "LAST" , "C" , 20 , 0 } } , { "g6" , "o2", "g2" , "g1" , "g3" , "g5" , "A1" , "a2" } )
+			DbCreateOrder ( "ORDER1" , cDbf , "upper(LAST)" , { || Upper ( _Field->LAST) } )
+			DbCloseArea()
+
+			DbUseArea( ,,cDBF )
+			OrdScope(BOTTOMSCOPE, "G")
+			OrdScope(TOPSCOPE, "G")
+			
+			Assert.Equal(5, (INT)OrdKeyCount() )
+			
+			DbGoTop()            
+			
+			DbSkip( -1 )
+			Assert.True( Bof() )
+			DbSkip( -1 )
+			Assert.True( Bof() )
+			DbSkip( -1 )
+			Assert.True( Bof() )
+			DbSkip( -1 )
+			Assert.True( Bof() )
+			DbSkip( -1 )
+			Assert.True( Bof() )
+			DbSkip( -1 )
+			Assert.True( Bof() )
+		
+			DbGoBottom()            
+
+			DbSkip ( 1 )          
+			Assert.True( Eof() )
+			DbSkip ( 1 )          
+			Assert.True( Eof() )
+			DbSkip ( 1 )          
+			Assert.True( Eof() )
+			DbSkip ( 1 )          
+			Assert.True( Eof() )
+			DbSkip ( 1 )          
+			Assert.True( Eof() )
+			DbSkip ( 1 )          
+			Assert.True( Eof() )
+
+			DbCloseArea()
+
 		STATIC PRIVATE METHOD GetTempFileName() AS STRING
            STATIC nCounter AS LONG
             ++nCounter

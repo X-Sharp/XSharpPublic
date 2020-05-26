@@ -96,8 +96,8 @@ BEGIN NAMESPACE XSharp.VO.Tests
             Assert.Equal("Pyrgas", aDevs[1,"LastName"])
             Assert.Equal("Nikos", aDevs[2,"FirstName"])
             Assert.Equal("Kokkalis", aDevs[2,"LastName"])
-            Assert.ThrowsAny<ArgumentException>({ => aDevs[1,"First"] })
-            Assert.ThrowsAny<ArgumentException>({ => aDevs[3,"FirstName"] })
+            Assert.ThrowsAny<Error>({ => aDevs[1,"First"] })
+            Assert.ThrowsAny<Error>({ => aDevs[3,"FirstName"] })
             
         [Trait("Category", "ArrayBase")];
         [Fact]; 

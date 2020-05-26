@@ -971,11 +971,11 @@
       <b>AUsed( )</b> returns the number of rows in the array, which is identical to the number of tables open in the data session.<br/>
       <br/>
       <b>AUsed( )</b> creates a two-dimensional array and places the aliases of tables open for the data session in the first column of the array. The second column of the array contains the tables' corresponding work area numbers.<br/>
-      The table aliases are placed into the array in reverse order that they were opened in. For example, the first array element contains the alias of the last table opened, and the last array element contains the alias of the first table opened. This ordering is useful when using <b>TableUPDATE( )</b> on views that contain views. For example:<br/>
+      The table aliases are placed into the array in reverse order that they were opened in. For example, the first array element contains the alias of the last table opened, and the last array element contains the alias of the first table opened. This ordering is useful when using <b>TableUpdate( )</b> on views that contain views. For example:<br/>
        <code language="X#">
         For x = 1 TO AUsed(aTableAliases,1)
         IF CursorGetProp( "Buffering", aTableAliases(x) ) &gt; 1 &amp;&amp; Buffered
-        ? TableUPDATE( 0, .T., aTableAliases(x) )
+        ? TableUpdate( 0, .T., aTableAliases(x) )
         ENDIF
         Next
       </code>
@@ -2719,7 +2719,7 @@
         Replace cDigit WITH "Two"    &amp;&amp; New value
         ? "Current value: " + CurVal("cDigit", "mytable")
         ? "Old value: " + OldVal("cDigit", "mytable")
-        = TableUPDATE(.T.)       &amp;&amp; Commit changes made to table
+        = TableUpdate(.T.)       &amp;&amp; Commit changes made to table
         ? "Table changes committed"
         ? "New current value: " + CurVal("cDigit", "mytable")
         ? "New old value: " + OldVal("cDigit", "mytable")
@@ -6322,7 +6322,7 @@
       row or table buffering enabled with <b>CursorSetProp( )</b>.<br/>
       If a table in a database or a cursor has validation rules, <b>OldVal( )</b> does not require that row or table buffering be enabled in
       order to return original field values.<br/>
-      If the record pointer is moved to a different record when row buffering is enabled, or if <b>TableUPDATE( )</b> is issued to \
+      If the record pointer is moved to a different record when row buffering is enabled, or if <b>TableUpdate( )</b> is issued to \
       commit changes to the record, or there is some other action that causes an update, such as ending a transaction,
       the fields are updated and the original field values are no longer available.<br/>
       The data type of the value <b>OldVal( )</b> returns is determined by the expression you specify with cExpression.<br/>
@@ -6351,7 +6351,7 @@
         cTemp=OldVal("cLastName", "employee")
         =MessageBox("Original cLastName value: "+ cTemp, 0, "Results")
         * Update table and display final value
-        =TableUPDATE(.T.)
+        =TableUpdate(.T.)
         =MessageBox("Final cLastName value: "+ cLastName, 0, "Results")
         * Close and delete example table file
         Use
@@ -7848,46 +7848,46 @@
   </sysmetric>
   <tablerevert>
     <summary>
-      Discards changes made to a buffered row or a buffered table or cursor and restores the OldVal( ) data for remote cursors and the current 
+      Discards changes made to a buffered row or a buffered table or cursor and restores the OldVal( ) data for remote cursors and the current
       disk values for local tables and cursors.<br/>
-      On a network, the data currently on disk might differ from the data on the disk when the table was opened or the cursor was created. 
+      On a network, the data currently on disk might differ from the data on the disk when the table was opened or the cursor was created.
       Other users on the network might have changed the data after the table was opened or the cursor was created.
     </summary>
     <param name="lAllRows">
       Determines whether all changes made to the table or cursor are discarded. The following table describes the values for lAllRows.
       <list type="table">
-      <listheader>
-        <term>lAllRows</term>
-        <description>Description</description>
-      </listheader>
-      <item>
-        <term>False (.F.)</term>
-        <description>If table buffering is enabled, only changes made to the current record in the table or cursor are discarded. (Default)</description>
-      </item>
-      <item>
-        <term>True (.T.)</term>
-        <description>If table buffering is enabled, changes made to all records are discarded in the table or cursor.</description>
-      </item>
-    </list>      
+        <listheader>
+          <term>lAllRows</term>
+          <description>Description</description>
+        </listheader>
+        <item>
+          <term>False (.F.)</term>
+          <description>If table buffering is enabled, only changes made to the current record in the table or cursor are discarded. (Default)</description>
+        </item>
+        <item>
+          <term>True (.T.)</term>
+          <description>If table buffering is enabled, changes made to all records are discarded in the table or cursor.</description>
+        </item>
+      </list>
       If row buffering is enabled, X# disregards the value of lAllRows, and changes made to the current record in the table or cursor are discarded.
     </param>
     <param name="uArea">
       Specifies the alias of the table or cursor in which the changes are discarded.<br/>
-  Or<br/>
+      Or<br/>
       Specifies the work area of the table or cursor in which the changes are discarded.
     </param>
     <returns>
       Numeric data type. TableRevert( ) returns the number of records for which changes were discarded.
     </returns>
     <remarks>
-      TableRevert( ) cannot discard changes made to a table or cursor that does not have row or table buffering enabled. 
-      If you issue TableRevert( ) and row or table buffering is not enabled, X# generates an error message. Use CursorSetProp( ) to enable or 
+      TableRevert( ) cannot discard changes made to a table or cursor that does not have row or table buffering enabled.
+      If you issue TableRevert( ) and row or table buffering is not enabled, X# generates an error message. Use CursorSetProp( ) to enable or
       disable row and table buffering.<br/>
-      Changes are discarded in the table or cursor open in the currently selected work area if TableRevert( ) is issued without the optional 
+      Changes are discarded in the table or cursor open in the currently selected work area if TableRevert( ) is issued without the optional
       cTableAlias or nWorkArea arguments.<br/>
       TableRevert( ) does not return the record pointer to its original position.<br/>
       TableRevert( ) operates on CursorAdapter objects in the same way as other buffered cursors.<br/>
-      In X# 9.0, you cannot issue the TableRevert( ) function when a TableUPDATE( ) is in operation.
+      In X# 9.0, you cannot issue the TableRevert( ) function when a TableUpdate( ) is in operation.
     </remarks>
     <example>
        <code language="X#">
@@ -7914,121 +7914,193 @@
       Commits changes made to a buffered row, a buffered table, cursor, or cursor adapter.
     </summary>
     <param name="nRows">
-
       Specifies which changes made to the table or cursor should be committed.
-      X# enables Optimistic Row Buffering by default for those cursors associated with a <b>CursorAdapter</b> object.
-      The following table describes the values for nRows.
-      0
-      If row or table buffering is enabled, commit only the changes made to the current row in the cursor. (Default)
-      When working with <b>CursorAdapter</b> objects, X# executes the appropriate command in the InsertCmd, UpdateCmd, or DeleteCmd property for that row only.
-      1
-      If table buffering is enabled, commit changes made to all records to the table or cursor.
-      If row buffering is enabled, commit only changes made to the current record in the table or cursor.
-      When working with <b>CursorAdapter</b> objects, X# executes the appropriate commands in the <b>InsertCmd</b>, <b>UpdateCmd</b>, and <b>DeleteCmd</b> properties for each affected row.
-      Commit changes made to the table or cursor in the same manner as when nRows = 1. However, an error does not occur when a change cannot be committed. X# continues to process any remaining records in the table or cursor.
-      If cErrorArray is included, an array containing error information is created when an error occurs.
-      For compatibility with previous X# applications, the nRows parameter also accepts False (.F.) and True (.T.) instead of 0 and 1 respectively.
-      When specifying 0 or 1 for nRows, the record pointer remains on the record where changes could not be committed. To determine why the changes could not be committed, use the AError( ) function.
-      When working with <b>CursorAdapter</b> objects and specifying 1 or 2 for nRows, all changes made to the cursor in the following <b>CursorAdapter</b> events must be committed during the same call to <b>TableUPDATE( )</b> unless an error occurs:
-      <b>BeforeInsert</b>
-
-      <b>AfterInsert</b>
-      <b>BeforeDelete</b>
-      <b>AfterDelete</b>
-      <b>BeforeUpdate</b>
-      <b>AfterUpdate</b>
-      X# passes the values of nRows to the <b>CursorAdapter</b> BeforeCursorUpdate event.
-
+      <note name="Note">
+        X# enables Optimistic Row Buffering by default for those cursors associated with a <b>CursorAdapter</b> object.
+      </note>
+      The table in the remarks section describes the values for nRows.
     </param>
     <param name="lForce">
-
-      Determines whether X# overwrites changes made to the table or cursor by another user on a network.
-      The following table describes the values for lForce.
-      False (.F.)
-      Commits changes to the table or cursor, starting with the first record and continuing towards the end of the table or cursor. (Default)
-      True (.T.)
-      Overwrites any changes made to the table or cursor by another user on a network. The <b>Where</b> clause uses only key fields.
-      When working with <b>CursorAdapter</b> objects, X# passes the value of lForce to the following <b>CursorAdapter</b> events:
-      BeforeCursorUpdate
-
-      BeforeInsert
-      BeforeUpdate
-      BeforeDelete
-      AfterInsert
-      AfterUpdate
-      AfterDelete
-
+      Determines whether X# overwrites changes made to the table or cursor by another user on a network.<br/>
+      The table in the remarks section describes the values for lForce.
     </param>
-    <param name="cTableAlias">
-
-      Specifies the alias of the table or cursor in which the changes are committed. If you include a table or cursor alias, you must include the lForce argument.
-
-    </param>
-    <param name="nWorkArea">
-
-      Specifies the work area of the table or cursor in which the changes are committed. If you include a work area, you must include the lForce argument.
-
+    <param name="uArea">
+      Specifies the alias of the table or cursor in which the changes are committed. If you include a table or cursor alias,
+      you must include the lForce argument.<br/>
+      Or<br/>
+      Specifies the work area of the table or cursor in which the changes are committed. If you include a work area,
+      you must include the lForce argument.
     </param>
     <param name="cErrorArray">
-
-      Specifies the name of an array created when nRows = 2 and changes to a record cannot be committed. The array contains a single column containing the record numbers of the records for which changes could not be committed. If you include an array name, you must include either a table or cursor alias cTableAlias or a work area number nWorkArea.
-      If an error other than a simple commit error occurs while updating records, the first element of cErrorArray will contain –1, and you can then use <b>AError( )</b> to determine the why the changes could not be committed.
+      Specifies the name of an array created when nRows = 2 and changes to a record cannot be committed.
+      The array contains a single column containing the record numbers of the records for which changes could not be committed.
+      If you include an array name, you must include either a table or cursor alias uArea or a work area number.<br/>
+      <note name="Note">
+        If an error other than a simple commit error occurs while updating records, the first element of cErrorArray will contain –1,
+        and you can then use <b>AError( )</b> to determine the why the changes could not be committed.
+      </note>
       X# passes the value of cErrorArray, when it exists, to the <b>CursorAdapter</b> AfterCursorUpdate event.
     </param>
     <returns>
-      Logical data type. <b>TableUPDATE( )</b> returns True (.T.) if changes to all records are committed.
-      Otherwise, <b>TableUPDATE( )</b> returns False (.F.) indicating a failure. An ON ERROR routine isn't executed. The AError( ) function can be used to retrieve information about the cause of the failure.
-      <b>TableUPDATE( )</b> always returns True (.T.) when you are updating data, using Table Buffering, and updating the table or tables in the data source from multiple clients when setting <b>BatchUpdateCount</b> to a value greater than 1. Therefore, avoid setting <b>BatchUpdateCount</b> to a value greater than 1 in these scenarios.
-    </returns>
+      Logical data type. <b>TableUpdate( )</b> returns True (.T.) if changes to all records are committed.<br/>
+      Otherwise, <b>TableUpdate( )</b> returns False (.F.) indicating a failure. An ON ERROR routine isn't executed.
+      The AError( ) function can be used to retrieve information about the cause of the failure.<br/>
+      <note name="Note">
+        <b>TableUpdate( )</b> always returns True (.T.) when you are updating data, using Table Buffering,
+        and updating the table or tables in the data source from multiple clients when setting <b>BatchUpdateCount</b> to a value greater than 1.
+        </note>
+        Therefore, avoid setting <b>BatchUpdateCount</b> to a value greater than 1 in these scenarios.
+      </returns>
     <remarks>
-
-      <b>TableUPDATE( )</b> cannot commit changes made to a table or cursor that does not have row or table buffering enabled. If you issue <b>TableUPDATE( )</b> and row or table buffering is not enabled, X# generates an error message. However, <b>TableUPDATE( )</b> can still commit changes to a table or cursor that has validation rules. To enable or disable row and table buffering, use <b>CursorSetProp( )</b>.
-      Changes are committed to the table or cursor open in the currently selected work area if <b>TableUPDATE( )</b> is issued without the optional cTableAlias or nWorkArea arguments.
-      If table buffering is used and multiple records are updated, <b>TableUPDATE( )</b> moves the record pointer to the last record updated.
-      Calling <b>TableUPDATE( )</b> for a local table or view that does not use key fields generates a long <b>Where</b> clause to find the update row. The default number of fields supported in the <b>Where</b> clause is 40. If you receive the error SQL: Statement too long (Error 1812), you should either use a key field for the update or increase the complexity of the <b>Where</b> clause with SYS(3055). If you use the <b>SYS(3055)</b> function, increase its value to a number that is eight times the number of fields in the table as shown in the following example:
+      <b>TableUpdate( )</b> cannot commit changes made to a table or cursor that does not have row or table buffering enabled.
+      If you issue <b>TableUpdate( )</b> and row or table buffering is not enabled, X# generates an error message.
+      However, <b>TableUpdate( )</b> can still commit changes to a table or cursor that has validation rules.
+      To enable or disable row and table buffering, use <b>CursorSetProp( )</b>.<br/>
+      Changes are committed to the table or cursor open in the currently selected work area if <b>TableUpdate( )</b>
+      is issued without the optional uArea arguments.<br/>
+      If table buffering is used and multiple records are updated, <b>TableUpdate( )</b> moves the record pointer to the last record updated.<br/>
+      <note name="Note">
+        Calling <b>TableUpdate( )</b> for a local table or view that does not use key fields generates a long <b>Where</b> clause to find the update row.
+        The default number of fields supported in the <b>Where</b> clause is 40. If you receive the error SQL: Statement too long (Error 1812),
+        you should either use a key field for the update or increase the complexity of the <b>Where</b> clause with SYS(3055).
+        If you use the <b>SYS(3055)</b> function,
+        increase its value to a number that is eight times the number of fields in the table as shown in the following example:
+      </note>
        <code language="X#">SYS(3055, 8 * MIN(40, FCOUNT( ))</code>
-      When performing a batched <b>TableUPDATE( )</b> operation, due to the way that Open Database Connectivity (ODBC) behaves, X# is unable to detect conflicts when no error is generated by the server, yet nothing is updated, for example, no row matches the <b>Where</b> clause. This can occur when you use WhereType set to DB_KEYANDUPDATable, DB_KEYANDMODIFIED, or DB_KEYANDTIMESTAMP, and another user has changed one of the underlying values in the <b>Where</b> clause such that the row is not found by the update statement.
-
+      When performing a batched <b>TableUpdate( )</b> operation, due to the way that Open Database Connectivity (ODBC) behaves,
+      X# is unable to detect conflicts when no error is generated by the server, yet nothing is updated, for example,
+      no row matches the <b>Where</b> clause. This can occur when you use WhereType set to DB_KEYANDUPDATable, DB_KEYANDMODIFIED,
+      or DB_KEYANDTIMESTAMP, and another user has changed one of the underlying values in the <b>Where</b> clause such that the row is not
+      found by the update statement.<br/>
       <b>Interaction with CursorAdapter Objects</b>   The following behaviors apply when working with <b>CursorAdapter</b> objects:
+      <list type="bullet">
+        <term>
+          <b>TableUpdate( )</b> operates only on the cursor associated with the <b>CursorAdapter</b> object.
+        </term>
+        <term>
+          <b>TableUpdate( )</b> executes commands according to the data source type and those stored in the <b>CursorAdapter</b> <b>InsertCmd</b>,
+          <b>UpdateCmd</b>, or <b>DeleteCmd</b> properties against the current cursor row or rows as appropriate.
+        </term>
+        <term>
+          <b>TableUpdate( )</b> passes the value of codeGetFldState(1)/code to the following <b>CursorAdapter</b> events of each row affected:
+        </term>
+        <list type="bullet">
+          <term>BeforeInsert</term>
+          <term>BeforeUpdate</term>
+          <term>BeforeDelete</term>
+        </list>
+      </list>
+      For more information about <b>GetFldState( )</b>, see GetFldState( ) Function.<br/>
+      <list type="bullet">
+        <term>
+          The successful completion of <b>TableUpdate( )</b> resets the field states according to usual <b>TableUpdate( )</b><b> </b>behavior.
+        </term>
+        <term>
+          When table buffering is enabled, you can move away from the current record in the following <b>CursorAdapter</b> events:
+          <list type="bullet">
+            <term>BeforeInsert</term>
+            <term>AfterInsert</term>
+            <term>BeforeUpdate</term>
+            <term>AfterUpdate</term>
+            <term>BeforeDelete</term>
+            <term>AfterDelete</term>
+          </list>
+        </term>
+      </list>
+      You can also modify data in the cursor. This functionality supports scenarios such as retrieving the autoincrement value from the base
+      table and inserting it into the cursor. When this scenario occurs, the <b>CursorAdapter</b> object should automatically return to the
+      record whose changes are about to be committed after the event has occurred and commit the changes.<br/>
+      In X# 9.0, you cannot issue the TableRevert( ) Function when a TableUpdate( ) is in operation.<br/>
+      Typically, the CursorAdapter object uses the transaction management functionality provided by the ADO or ODBC API's and X# closes
+      transactions when the TableUpdate( ) function completes successfully. However, if you want to send transaction management commands directly
+      to the backend, you can set the UseTransactions property of the CursorAdaptor object to False (.F.) and the CursorAdapter does not use
+      transactions to send Insert, Update, or Delete commands.
+      <list type="table">
+        <listheader>
+          <term>nRows</term>
+          <description>Description</description>
+        </listheader>
+        <item>
+          <term>0</term>
+          <description>
+            If row or table buffering is enabled, commit only the changes made to the current row in the cursor. (Default)<br/>
+            When working with <b>CursorAdapter</b> objects, X# executes the appropriate command in the InsertCmd, UpdateCmd, or DeleteCmd property for that row only.
+          </description>
+        </item>
+        <item>
+          <term>1</term>
+          <description>
+            If table buffering is enabled, commit changes made to all records to the table or cursor.<br/>
+            If row buffering is enabled, commit only changes made to the current record in the table or cursor.<br/>
+            When working with <b>CursorAdapter</b> objects, X# executes the appropriate commands in the <b>InsertCmd</b>,
+            <b>UpdateCmd</b>, and <b>DeleteCmd</b> properties for each affected row.
+          </description>
+        </item>
+        <item>
+          <term>2</term>
+          <description>
+            Commit changes made to the table or cursor in the same manner as when nRows = 1.
+            However, an error does not occur when a change cannot be committed. X# continues to process any remaining records in the table or cursor.<br/>
+            If cErrorArray is included, an array containing error information is created when an error occurs.
+          </description>
+        </item>
+      </list>
+      For compatibility with previous X# applications, the nRows parameter also accepts False (.F.) and True (.T.) instead of 0 and 1 respectively.<br/>
+      When specifying 0 or 1 for nRows, the record pointer remains on the record where changes could not be committed.
+      To determine why the changes could not be committed, use the AError( ) function.<br/>
+      When working with <b>CursorAdapter</b> objects and specifying 1 or 2 for nRows, all changes made to the cursor in the following<br/>
+      <b>CursorAdapter</b> events must be committed during the same call to <b>TableUpdate( )</b> unless an error occurs:
+      <list type="bullet">
+        <term>
+          <b>BeforeInsert</b>
+        </term>
+        <term>
+          <b>AfterInsert</b>
+        </term>
+        <term>
+          <b>BeforeDelete</b>
+        </term>
+        <term>
+          <b>AfterDelete</b>
+        </term>
+        <term>
+          <b>BeforeUpdate</b>
+        </term>
+        <term>
+          <b>AfterUpdate</b>
+        </term>
+      </list>
+      X# passes the values of nRows to the <b>CursorAdapter</b> BeforeCursorUpdate event.<br/><br/>
 
-      <b>TableUPDATE( )</b> operates only on the cursor associated with the <b>CursorAdapter</b> object.
-
-      <b>TableUPDATE( )</b> executes commands according to the data source type and those stored in the <b>CursorAdapter</b> <b>InsertCmd</b>, <b>UpdateCmd</b>, or <b>DeleteCmd</b> properties against the current cursor row or rows as appropriate.
-
-      <b>TableUPDATE( )</b> passes the value of codeGetFldState(1)/code to the following <b>CursorAdapter</b> events of each row affected:
-
-      BeforeInsert
-
-
-      BeforeUpdate
-
-
-      BeforeDelete
-
-      For more information about <b>GetFldState( )</b>, see GetFldState( ) Function.
-      The successful completion of <b>TableUPDATE( )</b> resets the field states according to usual <b>TableUPDATE( )</b><b> </b>behavior.
-      When table buffering is enabled, you can move away from the current record in the following <b>CursorAdapter</b> events:
-
-      BeforeInsert
-
-
-      AfterInsert
-
-
-      BeforeUpdate
-
-
-      AfterUpdate
-
-
-      BeforeDelete
-
-
-      AfterDelete
-
-      You can also modify data in the cursor. This functionality supports scenarios such as retrieving the autoincrement value from the base table and inserting it into the cursor. When this scenario occurs, the <b>CursorAdapter</b> object should automatically return to the record whose changes are about to be committed after the event has occurred and commit the changes.
-      In X# 9.0, you cannot issue the TableRevert( ) Function when a TableUPDATE( ) is in operation.
-      Typically, the CursorAdapter object uses the transaction management functionality provided by the ADO or ODBC API's and X# closes transactions when the TableUPDATE( ) function completes successfully. However, if you want to send transaction management commands directly to the backend, you can set the UseTransactions property of the CursorAdaptor object to False (.F.) and the CursorAdapter does not use transactions to send Insert, Update, or Delete commands.
+      <list type="table">
+        <listheader>
+          <term>lForce</term>
+          <description>Description</description>
+        </listheader>
+        <item>
+          <term>False (.F.)</term>
+          <description>
+            Commits changes to the table or cursor, starting with the first record and continuing towards the end of the table or cursor.
+            (Default)
+          </description>
+        </item>
+        <item>
+          <term>True (.T.)</term>
+          <description>
+            Overwrites any changes made to the table or cursor by another user on a network. The <b>Where</b> clause uses only key fields.
+          </description>
+        </item>
+      </list>
+      When working with <b>CursorAdapter</b> objects, X# passes the value of lForce to the following <b>CursorAdapter</b> events:
+      <list type="bullet">
+        <term>BeforeCursorUpdate</term>
+        <term>BeforeInsert</term>
+        <term>BeforeUpdate</term>
+        <term>BeforeDelete</term>
+        <term>AfterInsert</term>
+        <term>AfterUpdate</term>
+        <term>AfterDelete</term>
+      </list>
     </remarks>
     <example>
        <code language="X#">
@@ -8043,7 +8115,7 @@
         Replace cLastName WITH 'Jones'
         ? 'New cLastName value: '
         ?? cLastName  &amp;&amp; Displays new cLastName value (Jones).
-        = TableUPDATE(.T.)  &amp;&amp; Commits changes.
+        = TableUpdate(.T.)  &amp;&amp; Commits changes.
         ? 'Updated cLastName value: '
         ?? cLastName  &amp;&amp; Displays current cLastName value (Jones).
       </code>
@@ -8054,11 +8126,13 @@
       Returns the alias of a table that is the target for a relation as specified in the Into clause of Set RELATION.
     </summary>
     <param name="nRelationshipNumber">
-
-      Specifies the number of a relationship. Include a number from 1 to the number of relationships out of the specified work area. The aliases of the target tables are returned (in no specific order) until nRelationshipNumber is greater than the number of relationships. When nRelationshipNumber is greater than the number of relationships, the empty string is returned.
-
-      nWorkArea| cTableAlias
-      Returns the alias of the target table in another work area. nWorkArea specifies a work area number and cTableAlias specifies a table alias. By default, the alias of the target table from the current work area is returned if you don't specify the work area or alias.
+      Specifies the number of a relationship. Include a number from 1 to the number of relationships out of the specified work area.
+      The aliases of the target tables are returned (in no specific order) until nRelationshipNumber is greater than the number of relationships.
+      When nRelationshipNumber is greater than the number of relationships, the empty string is returned.<br/>
+    </param>
+    <param name="uArea">
+      Returns the alias of the target table in another work area. uArea specifies a work area number and specifies a table alias.
+      By default, the alias of the target table from the current work area is returned if you don't specify the work area or alias.
     </param>
     <returns>
       Character
@@ -8081,29 +8155,22 @@
       Provides evaluation of a character expression.
     </summary>
     <param name="cExpression">
-
       Specifies the string expression to be evaluated.
-
     </param>
     <param name="lRecursive">
-
       Specifies whether to repeatedly iterate through all levels of delimiters in cExpression, evaluating until no text merge delimiters remain.
-
     </param>
     <param name="cLeftDelim">
-
       Specifies the left delimiter to use for the text merge search. cLeftDelim is limited to two characters.
-
     </param>
     <param name="cRightDelim">
-
       Specifies the right delimiter to use for the text merge search. cRightDelim is limited to two characters.
     </param>
     <returns>
       Character string. Represents the value of cExpression, the merged text.
     </returns>
     <remarks>
-      The cLeftDelim and cRightDelim parameters temporarily override any Set TEXTMERGE DELIMITERS values.
+      The cLeftDelim and cRightDelim parameters temporarily override any Set TEXTMERGE DELIMITERS values.<br/>
       The TEXTMERGE( ) function responds to current settings of Set TEXTMERGE SHOW | NOSHOW.
     </remarks>
     <example>
@@ -8134,22 +8201,33 @@
       Converts a <b>DateTime</b> expression to a <b>Character</b> value with the specified format.
     </summary>
     <param name="tExpression">
-
-      Specifies a <b>DateTime</b> expression to convert into a character string.
-      If tExpression contains only a time, X# adds the default date of 12/30/1899 to tExpression. If tExpression contains only a date, X# adds a default time of 12:00:00 AM (if Set HOURS is 12) or 00:00:00 (if Set HOURS is 24) to tExpression to produce a valid DateTime value.
-      1
-      Returns tExpression as a character string in a format suitable for indexing. The character string returned has a 14-character format, yyyymmddhhmmss, that is not affected by the <b>Set CENTURY</b>, the <b>Set HOURS</b>, or <b>Set SECONDS</b> commands. For more information, see Set CENTURY, Set HOURS, and Set SECONDS.
-      2
-      Returns tExpression as a character string containing only the time portion of tExpression.
-      To control whether to include the seconds of the time portion in the character string, set the <b>Set SECONDS</b> and <b>Set DATE</b> commands. The <b>Set HOURS</b> command determines if AM or PM is appended to the time portion returned.
-      For more information, see Set DATE and Set HOURS.
-      If <b>Set DATE</b> is set to <b>LONG</b> or <b>SHORT</b>, the format of the time setting in the Windows Control Panel determines the format of the character string.
-      3
+      Specifies a <b>DateTime</b> expression to convert into a character string.<br/>
+      If tExpression contains only a time, X# adds the default date of 12/30/1899 to tExpression. If tExpression contains only a date,
+      X# adds a default time of 12:00:00 AM (if Set HOURS is 12) or 00:00:00 (if Set HOURS is 24) to tExpression to produce a valid DateTime value.
+    </param>
+    <param name="1">
+      Returns tExpression as a character string in a format suitable for indexing. The character string returned has a 14-character format,
+      yyyymmddhhmmss, that is not affected by the <b>Set CENTURY</b>, the <b>Set HOURS</b>, or <b>Set SECONDS</b> commands.
+      For more information, see Set CENTURY, Set HOURS, and Set SECONDS.
+    </param>
+    <param name="2">
+      Returns tExpression as a character string containing only the time portion of tExpression.<br/>
+      To control whether to include the seconds of the time portion in the character string, set the <b>Set SECONDS</b> and <b>Set DATE</b> commands.
+      The <b>Set HOURS</b> command determines if AM or PM is appended to the time portion returned.<br/>
+      For more information, see Set DATE and Set HOURS.<br/>
+      <note name="Note">
+        If <b>Set DATE</b> is set to <b>LONG</b> or <b>SHORT</b>, the format of the time setting in the Windows Control Panel determines the 
+        format of the character string.
+      </note>
+    </param>
+    <param name="3">
       Returns tExpression as a character string with the XML DateTime format. The character string returned has a 19-character yyyy-mm-ddThh:mm:ss format that is not affected by the settings of the <b>Set CENTURY</b>, <b>Set HOURS</b>, or <b>Set SECONDS</b> commands.
     </param>
     <returns>
       Character. <b>TTOC( )</b> returns a <b>DateTime</b> expression as a character string.
-      When passing the value 1 or 3 as the second parameter, the character string returned does not include the AM or PM designations to indicate times before or after noon, respectively. Instead, the string uses a 24-hour clock, also known as military time. For example, the time 18:30:00 is equivalent to 06:30:00 PM.
+     <note name="Note">When passing the value 1 or 3 as the second parameter, the character string returned does not include the AM or PM designations to indicate 
+      times before or after noon, respectively. Instead, the string uses a 24-hour clock, also known as military time. 
+      For example, the time 18:30:00 is equivalent to 06:30:00 PM.</note>
     </returns>
     <remarks>
       If an invalid value is passed as the second parameter, <b>TTOC( )</b> handles the invalid value as if it was a value of 1.
@@ -8172,7 +8250,8 @@
       Numeric
     </returns>
     <remarks>
-      Use BEGIN TRANSACTION to create a transaction. Transactions are nested by issuing BEGIN TRANSACTION when another transaction is in progress. Transactions can be nested in this manner to five levels. Use TXNLEVEL( ) to determine the current transaction level.
+      Use BEGIN TRANSACTION to create a transaction. Transactions are nested by issuing BEGIN TRANSACTION when another transaction is in progress. 
+      Transactions can be nested in this manner to five levels. Use TXNLEVEL( ) to determine the current transaction level.<br/>
       TXNLEVEL( ) returns a value from 0 to 5. TXNLEVEL( ) returns 0 if a transaction is not in progress.
     </remarks>
     <example>
@@ -8198,23 +8277,19 @@
       Returns the length of a character expression with respect to the average character width for a font.
     </summary>
     <param name="cExpression">
-
-      Specifies a character expression for which TXTWIDTH( ) returns the length. If you include only cExpression, the length of the character expression is returned for the current font for the main X# window or the active output window. A non-proportional font always returns a value equal to the number of characters in cExpression.
-      Include the optional arguments cFontName, nFontSize and cFontStyle to determine the length of a character expression with a specific font, font point size, or font style.
-
+      Specifies a character expression for which TXTWIDTH( ) returns the length. If you include only cExpression, the length of the character 
+      expression is returned for the current font for the main X# window or the active output window. A non-proportional font always returns a 
+      value equal to the number of characters in cExpression.<br/>
+      Include the optional arguments cFontName, nFontSize and cFontStyle to determine the length of a character expression with a specific font, 
+      font point size, or font style.
     </param>
     <param name="cFontName">
-
       Specifies the name of the font. Include cFontName to return the length of a character expression with a specific font.
-
     </param>
     <param name="nFontSize">
-
       Specifies a number that corresponds to the point size of the font. Include nFontSize to return the length of a character expression with a specific point size.
-
     </param>
     <param name="cFontStyle">
-
       Specifies a special font style for the character expression. cFontStyle is a font style code specified by a character or a set of characters. The Normal font style is used if cFontStyle isn't included. Here are the characters for each font style:
       B
       Bold

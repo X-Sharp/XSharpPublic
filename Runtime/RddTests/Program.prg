@@ -7,11 +7,20 @@ USING System.IO
 USING System.Threading
 USING System.Reflection
 
+CLASS a
+END CLASS
+CLASS b
+END class
 
 [STAThread];      
 FUNCTION Start() AS VOID
     TRY
-        TestIndexKey()
+
+
+        TestChrisCorrupt2()
+        //TestChrisCorrupt()
+        //DumpKeesFiles()
+        //TestIndexKey()
         //TestDateTimeAndCurrency()
         // testAppDelim()
         //testDelimWrite()
@@ -193,6 +202,349 @@ FUNCTION Start() AS VOID
     END TRY
     RETURN
 
+GLOBAL CONST gnIterations := 50_000 AS INT
+
+USING System.Windows.Forms
+USING System.Threading
+
+GLOBAL gcPath := "c:\test\"
+
+FUNCTION TestChrisCorrupt2() AS VOID
+	DbfTest1.RunTest1()
+	DbfTest1.RunTest2()
+	DbfTest1.RunTest3()
+	DbfTest1.RunTest4()
+	DbfTest1.RunTest5()
+//	DbfTest1.RunTest6()
+RETURN
+
+
+CLASS DbfTest1
+	STATIC PROTECT nIterations AS DWORD
+	STATIC PROTECT lUseCommit AS LOGIC
+	STATIC PROTECT cDbf AS STRING
+	STATIC PROTECT nKeyLength AS DWORD
+	
+	STATIC METHOD RunTest1() AS VOID
+		? "Running test1"
+		cDbf := gcPath + __FUNCTION__
+		TRY
+			nKeyLength := 60
+			ResetFile()
+			nIterations := 100_000
+			lUseCommit := FALSE
+			Test()
+			CheckResults()
+		CATCH e AS Exception
+			MessageBox.Show(e:ToString(), "Error running test 1")
+		END TRY
+	RETURN
+
+	STATIC METHOD RunTest2() AS VOID
+		? "Running test2"
+		cDbf := gcPath + __FUNCTION__
+		TRY
+			nKeyLength := 1
+			ResetFile()
+			nIterations := 300
+			lUseCommit := TRUE
+			Test()
+			CheckResults()
+		CATCH e AS Exception
+			MessageBox.Show(e:ToString(), "Error running Test 2")
+		END TRY
+	RETURN
+
+	STATIC METHOD RunTest3() AS VOID
+		? "Running test3"
+		cDbf := gcPath + __FUNCTION__
+		TRY
+			ResetFile()
+			nIterations := 1_000
+			lUseCommit := TRUE
+			nKeyLength := 60
+			Test()
+			CheckResults()
+		CATCH e AS Exception
+			MessageBox.Show(e:ToString(), "Error running Test 3")
+		END TRY
+	RETURN
+
+	STATIC METHOD RunTest4() AS VOID
+		? "Running test4"
+		cDbf := gcPath + __FUNCTION__
+		TRY
+			nKeyLength := 60
+			ResetFile()
+			nIterations := 100_000
+			lUseCommit := TRUE
+			Test()
+			CheckResults()
+		CATCH e AS Exception
+			MessageBox.Show(e:ToString(), "Error running Test 4")
+		END TRY
+	RETURN
+
+	STATIC METHOD RunTest5() AS VOID
+		? "Running test5"
+		cDbf := gcPath + __FUNCTION__
+
+		nIterations := 100
+		lUseCommit := TRUE
+		nKeyLength := 60
+
+		TRY
+			ResetFile()
+			LOCAL aThreads AS Thread[]
+			aThreads := Thread[]{10}
+			FOR LOCAL n := 1 AS INT UPTO 10
+				aThreads[n] := Thread{Test}
+				Thread.Sleep(100)
+				aThreads[n]:Start()
+			NEXT
+			LOCAL lWait AS LOGIC
+			lWait := TRUE
+			DO WHILE lWait
+				Thread.Sleep(100)
+				lWait := FALSE
+				FOR LOCAL n := 1 AS INT UPTO 10
+					lWait := lWait .OR. aThreads[n]:IsAlive
+				NEXT
+			END DO
+			CheckResults()
+		CATCH e AS Exception
+			MessageBox.Show(e:ToString(), "Error running test 5")
+		END TRY
+	RETURN
+
+	STATIC METHOD RunTest6() AS VOID
+		? "Running test6"
+		cDbf := gcPath + __FUNCTION__
+
+		nIterations := 10_000
+		lUseCommit := TRUE
+		nKeyLength := 10
+
+		TRY
+			ResetFile()
+			LOCAL aThreads AS Thread[]
+			aThreads := Thread[]{10}
+			FOR LOCAL n := 1 AS INT UPTO 10
+				aThreads[n] := Thread{Test}
+                aThreads[n]:Name := "Thread "+n:ToString()
+				Thread.Sleep(100)
+				aThreads[n]:Start()
+			NEXT
+			LOCAL lWait AS LOGIC
+			lWait := TRUE
+			DO WHILE lWait
+				Thread.Sleep(100)
+				lWait := FALSE
+				FOR LOCAL n := 1 AS INT UPTO 10
+					lWait := lWait .OR. aThreads[n]:IsAlive
+				NEXT
+			END DO
+			CheckResults()
+		CATCH e AS Exception
+			MessageBox.Show(e:ToString(), "Error running test 6")
+		END TRY
+	RETURN
+
+	STATIC METHOD ResetFile() AS VOID
+		TRY
+			FErase(cDbf + ".dbf")
+			FErase(cDbf + ".cdx")
+		END TRY
+		DbCreate(cDbf, {{"FNUM" , "N" , 5 , 0},{"FSTR" , "C" , nKeyLength , 0}})
+		DbUseArea(,"DBFCDX",cDbf,,FALSE)
+		DbCreateIndex(cDbf, "FSTR + Str(FNUM,3,0)")
+		DbAppend()
+		FieldPut(1, 123)
+		FieldPut(2, "ABC")
+		DbAppend()
+		FieldPut(1, 456)
+		FieldPut(2, "DEF")
+		DbCloseArea()
+	RETURN
+
+	STATIC METHOD Test() AS VOID
+		LOCAL oRand AS Random
+		
+		oRand := Random{1}
+		DbUseArea(,"DBFCDX",cDbf,,TRUE)
+		TRY
+            ? ProcName(1), nIterations, "iterations"
+		FOR LOCAL n := 1 AS DWORD UPTO nIterations
+			IF n % 1000 == 0
+				? n, System.Threading.Thread.CurrentThread.Name
+			END IF
+			IF n % 31 == 0
+				DbAppend()
+			ELSE
+				DbGoto(oRand:@@Next() % (INT)LastRec() + 1)
+				IF .NOT. RLock()
+					LOOP
+				ENDIF
+			END IF
+			FieldPut(1, oRand:@@Next() % 100)
+			FieldPut(2, Replicate( Chr(n % 10 + 65) + Chr(n % 13 + 65) + Chr(n % 15 + 65) , nKeyLength ))
+			IF lUseCommit
+				DbCommit()
+			END IF
+			DbUnLock()
+//			IF n %100 == 0
+//                //DbOrderInfo(DBOI_DUMP)
+//                VAR oRes := DbOrderInfo(DBOI_VALIDATE)
+//                IF (OBJECT) oRes IS LOGIC VAR lRes .AND. !lRes
+//                    ? "Error after iteration ", n, "Record", Recno()
+//                    Altd()
+//                    EXIT
+//                ELSEIF ! ((OBJECT) oRes IS LOGIC)
+//                    ? "Error after iteration ", n, "result of DborderInfo is not logic"
+//                    Altd()
+//                    EXIT
+//                ENDIF
+//            ENDIF
+        NEXT
+        CATCH e AS Exception
+            ? e:ToString()
+            Console.Read()
+        END TRY
+		DbCloseArea()
+	RETURN
+
+	STATIC METHOD CheckResults() AS VOID
+		LOCAL cOld,cNew AS STRING
+		LOCAL nTotalErrors := 0 AS INT
+		LOCAL nRecords AS DWORD
+		cOld := ""
+		
+		DbUseArea(,"DBFCDX",cDbf,,FALSE)
+		nRecords := LastRec()
+		DbGoTop()
+		DO WHILE !Eof()
+			cNew := FieldGet(2) + Str(FieldGet(1),3,0)
+			IF cNew < cOld
+				? "Error at recno", RecNo(), "next and previous values:", cNew,cOld
+				nTotalErrors ++
+			END IF
+			cOld := cNew
+			DbSkip()
+		END DO
+		
+		DbCloseArea()
+		
+		? nTotalErrors, "errors, out of", nRecords, "records"
+		
+		IF nTotalErrors != 0
+			THROW Exception{"There were errors found whe validating index"}
+		END IF
+	RETURN
+
+END CLASS
+
+
+
+
+FUNCTION TestChrisCorrupt() AS VOID
+LOCAL cDbf AS STRING
+LOCAL hFile AS PTR
+LOCAL nInstance AS LONG            
+TRY
+nInstance := 0
+hFile := F_ERROR                         
+DO WHILE hFile == F_ERROR                                           
+	nInstance++
+	hFile := FCreate2("c:\test\test"+StrZero(nInstance,4,0)+".txt",FC_NORMAL)
+ENDDO		
+Console.Title := "testing instance "+nInstance:ToString()
+cDbf := "c:\test\letstest"
+IF nInstance == 1
+	FErase(cDbf + ".dbf")            
+	FErase(cDbf + ".cdx")
+	DbCreate(cDbf, {{"FNUM" , "N" , 5 , 0},{"FSTR" , "C" , 20 , 0}})
+	DbUseArea(,"DBFCDX",cDbf,,FALSE)
+	DbCreateIndex(cDbf, "FSTR + Str(FNUM,3,0)")
+	DbCloseArea()
+ENDIF
+
+DbUseArea(,"DBFCDX",cDbf,,TRUE)          
+? "running"
+IF LastRec() == 0        
+	DbAppend()
+	FieldPut(1, 123)
+	FieldPut(2, "ABC")
+	DbAppend()
+	FieldPut(1, 456)
+	FieldPut(2, "DEF")
+	DbUnLock()
+END IF
+
+FOR LOCAL n := 1 AS INT UPTO gnIterations       
+	IF (n % 100 == 0)
+		? n
+	ENDIF
+	IF n % 7 == 0
+		DbAppend()
+		FWriteLine(hFile, i"Appending record {Recno()}")
+	ELSE                                                                  
+//		DbGoto(oRand:@@Next() % (INT)LastRec() + 1)
+		DbGoto(n * 15 % (INT)LastRec() + 1)                              
+		FWriteLine(hFile, i"Updating record {Recno()}")
+		IF .NOT. RLock()
+			FWriteLine(hFile, i"Failed to lock record {Recno()}")
+			LOOP                             
+		ENDIF
+	END IF
+	FieldPut(1, n * 123 % 1000)
+	FieldPut(2, Chr(n % 10 + 65) + Chr(n % 13 + 65) + Chr(n % 15 + 65))
+	#warning try with and without DBCommit(), I get different results
+	// DbCommit()
+	DbUnLock()
+NEXT
+DbCloseArea()
+
+WAIT "Press enter to start check. make sure dbf is not updated by other process"
+	
+LOCAL cOld,cNew AS STRING
+LOCAL nTotalErrors := 0 AS INT
+cOld := ""
+
+IF nInstance == 1
+	DbUseArea(,"DBFCDX",cDbf,,FALSE)
+	DbGoTop()
+	IF OrdKeyCount() != RecCount()
+		VAR cLine := i"Error OrdKeyCount= {OrdKeyCount()} RecCount= {RecCount()}"
+		? cLine
+		FWriteLine(hFile, cLine)	
+	ENDIF	
+	DO WHILE !Eof()
+		cNew := FieldGet(2) + Str(FieldGet(1),3,0)
+		IF cNew < cOld
+			VAR cLine := I"Error at recno {RecNo()} next and previous values: {cNew} {cOld}"
+			? cLine
+			FWriteLine(hFile, cLine)
+			nTotalErrors ++
+		END IF
+		cOld := cNew
+		DbSkip()
+	END DO
+	DbOrderInfo(DBOI_USER+42)
+	DbCloseArea()
+	VAR cLine1 := i"{nTotalErrors} errors, out of {gnIterations} iterations"
+	? cLine1
+	? FWriteLine(hFile, cLine1)
+ENDIF
+
+
+CATCH e AS Exception                  
+	? e:ToString()
+	FWriteLine(hFile, e:ToString())
+	WAIT
+END TRY	
+
+FClose(hFile)
+
 FUNCTION TestDateTimeAndCurrency() AS VOID
 LOCAL dt AS DateTime
 LOCAL c AS CURRENCY
@@ -248,7 +600,6 @@ FUNCTION TestIndexKey() AS VOID
     DbGoTop()
     
     ? IndexKey() // EMPTY, should be "age"
-    
     DbCloseArea() 
            
 FUNCTION TestUsual ( u AS USUAL ) AS VOID 
@@ -6438,3 +6789,22 @@ FUNCTION IsRlocked() AS LOGIC // Helper func
     RETURN ascan ( DBRlocklist() , recno() ) > 0
 
 
+
+FUNCTION DumpDbfCdx(cFile AS STRING) AS VOID
+    ? "Dumping index info for ", cFile
+    RddSetDefault("DBFCDX")
+    DBUSEAREA(TRUE, "DBFCDX", cFile, "test", FALSE)
+    FOR VAR i := 1 TO DbOrderInfo(DBOI_ORDERCOUNT)
+        DbSetOrder(i)
+        VAR d = datetime.Now
+        ? OrdName(), OrdKeyCount(), RecCount()
+        LOCAL ts := DateTime.Now - d AS TimeSPan
+        ? ts:Milliseconds, ts:Seconds
+        DbOrderInfo(DBOI_USER+42)
+    NEXT
+    DbCloseArea()
+    RETURN
+
+FUNCTION DumpKeesFiles() AS STRING
+DumpDbfCdx("c:\download\KeesB\ORDERS.DBF")
+DumpDbfCdx("c:\download\KeesB\Seek_ORDERS.DBF")

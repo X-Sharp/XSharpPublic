@@ -23,6 +23,22 @@
     <NoWin32Manifest>False</NoWin32Manifest>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <OutputPath>bin\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
+    <Optimize>false</Optimize>
+    <UseSharedCompilation>true</UseSharedCompilation>
+    <DisabledWarnings>165, 168</DisabledWarnings>
+    <WarningLevel>4</WarningLevel>
+    <SignAssembly>true</SignAssembly>
+    <DelaySign>false</DelaySign>
+    <AssemblyOriginatorKeyFile />
+    <CommandLineOption />
+    <PPO>false</PPO>
+    <DefineConstants />
+    <PlatformTarget>x86</PlatformTarget>
+    <Prefer32Bit>False</Prefer32Bit>
+    <RegisterForComInterop>False</RegisterForComInterop>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
   </PropertyGroup>
@@ -62,6 +78,7 @@
     <Compile Include="Controls\ScrollBar.prg" />
     <Compile Include="Controls\Slider.prg" />
     <Compile Include="Controls\Spinner.prg" />
+    <Compile Include="Controls\SplitView.prg" />
     <Compile Include="Controls\StatusBar.prg" />
     <Compile Include="Controls\SysLink.prg" />
     <Compile Include="Controls\TabControl.prg" />
@@ -151,6 +168,7 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="WinForm\HTMLEditControl.prg" />
+    <Compile Include="WinForm\SplitContainer.prg" />
     <Compile Include="WinForm\TrayIcon.prg" />
     <Compile Include="WinForm\Interfaces.prg" />
     <Compile Include="WinForm\ListBox.prg" />

@@ -2261,7 +2261,7 @@ CLASS DataBrowser INHERIT XSharp.VO.Control
 
 		RETURN TRUE
 
-	METHOD Show() AS VOID
+	METHOD Show() AS VOID STRICT
 		IF oDataServer != NULL_OBJECT
 			IF !lIsShown
 				SELF:__BuildBuffer()

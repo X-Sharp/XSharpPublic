@@ -103,6 +103,10 @@ CLASS GuiFactory
 
         CASE ControlType.MonthCalendar
             oRes := VOMonthCalendar{owner, liStyle, liExStyle}
+
+        CASE ControlType.SplitContainer
+            oRes := VOSplitContainer{owner, liStyle, liExStyle}
+
         OTHERWISE
             THROW Exception{"Controltype "+type:ToString() +" not implemented"}
         END SWITCH
@@ -177,5 +181,6 @@ ENUM ControlType
     MEMBER DataListView
     MEMBER MonthCalendar
     MEMBER HyperLink
+    MEMBER SplitContainer
 END ENUM    
 

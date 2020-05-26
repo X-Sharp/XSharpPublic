@@ -255,12 +255,12 @@ CLASS AppWindow INHERIT Window
 		//Also empty in GUI Classes
 		RETURN NIL
 
-	METHOD Show(nShowState) 
+	METHOD Show(nShowState AS LONG ) AS VOID
 		IF oStatusBar != NULL_OBJECT
 			oStatusBar:Show()
 		ENDIF
 		SUPER:Show(nShowState)
-		RETURN NIL
+		RETURN 
 	
 	ACCESS StatusBar AS StatusBar
 		RETURN oStatusBar

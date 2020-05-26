@@ -697,7 +697,7 @@ CLASS StatusBar INHERIT Control
 		NEXT
 		RETURN uValue
 
-	METHOD Show()  AS VOID
+	METHOD Show()  AS VOID STRICT
 		SUPER:Show()
 		SELF:RefreshMemoryDisplay()
 		SELF:__UpdateKeyStates()

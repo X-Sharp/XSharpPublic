@@ -330,11 +330,17 @@ BEGIN NAMESPACE XSharp.RDD
                     ENDIF
                     
                 CASE DBOI_USER + 42
+                CASE DBOI_DUMP
                     // Dump Cdx to Txt file
                     IF workOrder != NULL
                         workOrder:_dump()
                     ENDIF
                     
+                CASE DBOI_VALIDATE
+                    // Validate integrity of the current Order
+                    IF workOrder != NULL
+                        info:Result := workOrder:_validate()
+                    ENDIF
                 OTHERWISE
                     SUPER:OrderInfo(nOrdinal, info)
                 END SWITCH

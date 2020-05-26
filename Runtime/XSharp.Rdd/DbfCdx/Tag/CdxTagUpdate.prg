@@ -276,9 +276,7 @@ BEGIN NAMESPACE XSharp.RDD.CDX
                     // when the last key of the parent was changed then
                     // we need to propagate that to the top
                     IF result:Type == CdxActionType.Ok
-                        IF nPos == oParent:NumKeys -1
-                            oGrandParent := (CdxBranchPage) SELF:Stack:GetParent(oParent)
-                        ENDIF
+                        oGrandParent := (CdxBranchPage) SELF:Stack:GetParent(oParent)
                     ENDIF
                 ELSE
                     // Should no longer happen since we now pass 2 pages
@@ -472,74 +470,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             oPage:Write()
             _rootPage := oPage:PageNo
             RETURN
-
         INTERNAL METHOD AddBranch(action AS CdxAction) AS CdxAction
             LOCAL oPageR AS CdxBranchPage
             LOCAL oPageL  AS CdxBranchPage
-//            LOCAL result AS CdxAction
             oPageL  := (CdxBranchPage) SELF:GetPage(action:PageNo)
-            // do not add a page when there is room on the next page
-//            IF oPageL:HasRight //.AND. action:Pos != -1
-//                oSibling := (CdxBranchPage) SELF:GetPage(oPageL:RightPtr)
-//                IF oSibling:NumKeys < oSibling:MaxKeys
-//                    IF (action:Pos == -1)   // Add 
-//                        result := oSibling:Insert(0, action:Recno, action:ChildPage, action:Key)
-//                        result := SELF:DoAction(result)
-//                        SELF:AdjustStack(oPageL, oSibling, 0)
-//                        RETURN result
-//                    ELSE
-//                        VAR LastNode := oPageL:LastNode
-//                        VAR recno := LastNode:Recno
-//                        VAR child := LastNode:ChildPageNo
-//                        VAR key   := LastNode:KeyBytes
-//                        // delete first so validation does not see double keys
-//                        result := oPageL:Delete(oPageL:NumKeys-1)
-//                        result := SELF:DoAction(result)
-//                        result := oSibling:Insert(0, recno, child, key)
-//                        result := SELF:DoAction(result)
-//                        result := oPageL:Insert(action:Pos, action:Recno, action:ChildPage, action:Key)
-//                        result := SELF:DoAction(result)
-//                        RETURN result
-//                    ENDIF
-//                    
-//                ENDIF
-//            ENDIF
-//            IF oPageL:HasLeft //.AND. action:Pos != -1
-//                oSibling := (CdxBranchPage) SELF:GetPage(oPageL:LeftPtr)
-//                IF oSibling:NumKeys < oSibling:MaxKeys
-//                    IF (action:Pos == -1)   // Add
-//                        // Move first item of oPageL to Left hand side
-//                        VAR leaf := oPageL:Leaves[0]
-//                        result := oPageL:Delete(0)
-//                        result := SELF:DoAction(result)
-//                        oSibling:Leaves:Add(leaf)
-//                        oSibling:Compress()
-//                        
-//
-//                        result := oPageR:Insert(0, action:Recno, action:ChildPage, action:Key)
-//                        DO WHILE result:Type != CdxActionType.Ok
-//                            result := SELF:DoAction(result)
-//                        ENDDO
-//                        SELF:AdjustStack(oPageL, oPageR, 0)
-//                        RETURN result
-//                    ELSE
-//                        VAR LastNode := oPageL:LastNode
-//                        VAR recno := LastNode:Recno
-//                        VAR child := LastNode:ChildPageNo
-//                        VAR key   := LastNode:KeyBytes
-//                        // delete first so validation does not see double keys
-//                        result := oPageL:Delete(oPageL:NumKeys-1)
-//                        result := SELF:DoAction(result)
-//                        result := oPageR:Insert(0, recno, child, key)
-//                        result := SELF:DoAction(result)
-//                        result := oPageL:Insert(action:Pos, action:Recno, action:ChildPage, action:Key)
-//                        result := SELF:DoAction(result)
-//                        RETURN result
-//                    ENDIF
-//                    
-//                ENDIF
-//            ENDIF            
-
+            // Todo: Optimization: do not add a page when there is room on the next page
+            // when we do we must also make sure that the stack is 'corrected'  
             oPageR := SELF:NewBranchPage()
 
             #ifdef TESTCDX

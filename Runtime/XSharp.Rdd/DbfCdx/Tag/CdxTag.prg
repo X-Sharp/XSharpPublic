@@ -368,12 +368,12 @@ BEGIN NAMESPACE XSharp.RDD.CDX
         PRIVATE METHOD _saveCurrentRecord( node AS CdxNode) AS VOID
             IF node:Recno == -1
                 NOP
-            ENDIF
+            ELSE
             IF SELF:_currentvalue:Recno != node:Recno .AND. ! SELF:RDD:EoF
                 SELF:_currentvalue:Recno := node:Recno
                 Array.Copy(node:KeyBytes, SELF:_currentvalue:Key, _keySize)
             ENDIF
-            
+            ENDIF
         STATIC PRIVATE Jan_1_1901 := DateTime{1901, 1, 1 } AS DateTime
         
         PRIVATE STATIC METHOD _toJulian(dt AS DateTime) AS LONG
@@ -389,10 +389,9 @@ BEGIN NAMESPACE XSharp.RDD.CDX
             LOCAL text AS STRING
             LOCAL typeCde AS TypeCode
             text := NULL
-            IF (toConvert ASTYPE IFloat) != NULL // Float Value ?
+            IF toConvert IS IFloat // Float Value ?
                 typeCde   := TypeCode.Double
-            ELSEIF (toConvert ASTYPE IDate) != NULL // Date Value
-                VAR valueDate := (IDate)toConvert
+            ELSEIF toConvert IS IDate VAR valueDate // Date Value
                 toConvert := DateTime{valueDate:Year, valueDate:Month, valueDate:Day}
                 typeCde   := TypeCode.DateTime
             ELSE

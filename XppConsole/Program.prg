@@ -13,7 +13,7 @@ FUNCTION MAIN(A,B,C) AS VOID clipper
     TRY
     ? XSharp.RuntimeState.Dialect:ToString() 
     LOCAL uTest := NIL as usual
-
+    SetCollationTable(2)
     SetDefault(@uTest, 123)
     ? uTest
 

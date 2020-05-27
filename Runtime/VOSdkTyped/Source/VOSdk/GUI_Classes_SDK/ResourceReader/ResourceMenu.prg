@@ -15,10 +15,10 @@
 
 
 CLASS ResourceMenu INHERIT ResourceReader
-	EXPORT MenuItems as List<ResourceMenuItem>
-	EXPORT IsValid		AS LOGIC
-	EXPORT HelpID		AS DWORD	
-	PROTECT nLevel	    as DWORD	
+	PROPERTY MenuItems  AS List<ResourceMenuItem>   AUTO
+	PROPERTY IsValid	AS LOGIC    AUTO
+	PROPERTY HelpID		AS DWORD	AUTO
+	PROTECT nLevel	    AS DWORD	
 	METHOD __LoadFromResource(hDLL as IntPtr, hResInfo as IntPtr) as LOGIC
 		LOCAL lpBuffer AS IntPtr
 		LOCAL uiResSize AS DWORD
@@ -214,11 +214,11 @@ INTERNAL VOSTRUCT NormalMenuItem ALIGN 2
 
 [DebuggerDisplay("ID: {ItemID}, Caption: {Caption}, Flags {Flags}")];
 CLASS ResourceMenuItem INHERIT ResourceReader
-	EXPORT Caption	as STRING
-	EXPORT HelpID	as DWORD
-	EXPORT ItemID	as LONG
-	EXPORT Flags	as LONG
-	EXPORT Type		as DWORD		
+	PROPERTY Caption	AS STRING AUTO
+	PROPERTY HelpID	    AS DWORD AUTO
+	PROPERTY ItemID	    AS LONG AUTO
+	PROPERTY Flags	    AS LONG AUTO
+	PROPERTY Type		AS DWORD AUTO	
 	PROPERTY IsPopup  as LOGIC GET _AND(Flags, M_POPUP) == M_POPUP
 	PROPERTY IsLast   as LOGIC GET _AND(Flags, M_ENDMENU) == M_ENDMENU
 	PROPERTY IsChecked as LOGIC GET _AND(Flags, M_CHECKED) == M_CHECKED

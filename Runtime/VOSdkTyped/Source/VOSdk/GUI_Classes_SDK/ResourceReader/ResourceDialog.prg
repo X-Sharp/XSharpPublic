@@ -5,34 +5,35 @@
 
 
 
+USING System.Collections.Generic
+USING System.Runtime.InteropServices
+USING System.Text
+USING System.Diagnostics
+USING System.Windows.Forms.VisualStyles
+USING System.Windows.Forms
 
-#USING System.Runtime.InteropServices
-#USING System.Text
-#USING System.Diagnostics
-#USING System.Windows.Forms.VisualStyles
-#USING System.Windows.Forms
 CLASS ResourceDialog INHERIT ResourceReader
-	EXPORT Caption		AS STRING
-	EXPORT FontName		AS STRING
-	EXPORT FontPitch	AS WORD
-	EXPORT FontWeight	AS WORD
-	EXPORT FontItalic   AS BYTE
-	EXPORT FontCharSet   AS BYTE
-	EXPORT ClassName	AS STRING
-	EXPORT MenuName		AS STRING
-	EXPORT ClassID		AS WORD
-	EXPORT MenuID		AS LONG
-	PROTECT oOwner		 AS OBJECT
-	PROTECT X            AS LONG		// Dialog box Units
-	PROTECT Y            AS LONG
-	PROTECT CX           AS LONG		// Dialog box Units
-	PROTECT CY           AS LONG		// Dialog box Units
-	EXPORT Style        AS INT
-	EXPORT ExStyle      AS INT
-	EXPORT ItemCnt		AS LONG
-	EXPORT HelpID		AS DWORD	
-	EXPORT Controls     AS System.Collections.Generic.List<ResourceDialogItem>
-	EXPORT IsValid		AS LOGIC
+	PROPERTY Caption		AS STRING   AUTO
+	PROPERTY FontName		AS STRING   AUTO
+	PROPERTY FontPitch	    AS WORD     AUTO
+	PROPERTY FontWeight	    AS WORD     AUTO
+	PROPERTY FontItalic     AS BYTE     AUTO
+	PROPERTY FontCharSet    AS BYTE     AUTO
+	PROPERTY ClassName	    AS STRING   AUTO
+	PROPERTY MenuName		AS STRING   AUTO
+	PROPERTY ClassID		AS WORD     AUTO
+	PROPERTY MenuID		    AS LONG     AUTO
+	PROPERTY oOwner		    AS OBJECT   AUTO
+	PROPERTY X              AS LONG		AUTO // Dialog box Units
+	PROPERTY Y              AS LONG     AUTO 
+	PROPERTY CX             AS LONG		AUTO // Dialog box Units
+	PROPERTY CY             AS LONG		AUTO // Dialog box Units
+	PROPERTY Style          AS INT      AUTO 
+	PROPERTY ExStyle        AS INT      AUTO 
+	PROPERTY ItemCnt		AS LONG     AUTO 
+	PROPERTY HelpID		    AS DWORD	AUTO 
+	PROPERTY Controls       AS List<ResourceDialogItem> AUTO
+	PROPERTY IsValid		AS LOGIC    AUTO
 
 #region Properties
 	ACCESS Size as System.Drawing.Size

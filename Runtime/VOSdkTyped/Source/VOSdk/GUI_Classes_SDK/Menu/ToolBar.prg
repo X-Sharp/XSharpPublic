@@ -1594,40 +1594,40 @@ CLASS ToolBar INHERIT Control
 
 
 	CLASS ToolBarChild  
-		EXPORT NameSym 				AS SYMBOL
-		EXPORT Handle				AS VOToolBar
-		EXPORT ImageList 			AS OBJECT
-		EXPORT HotImageList 		AS OBJECT
-		EXPORT DisabledImageList 	AS OBJECT
+		PROPERTY NameSym 			AS SYMBOL       AUTO
+		PROPERTY Handle				AS VOToolBar    AUTO
+		PROPERTY ImageList 			AS OBJECT       AUTO
+		PROPERTY HotImageList 		AS OBJECT       AUTO
+		PROPERTY DisabledImageList 	AS OBJECT       AUTO
 	END CLASS
 
 	CLASS ToolBarExtraBitmap 
-		EXPORT Bitmap				AS OBJECT
-		EXPORT ImageCount			AS LONGINT
-		EXPORT FirstImageIndex	AS LONGINT
-		EXPORT NameSym				AS SYMBOL
-	END CLASS
+		PROPERTY Bitmap				AS OBJECT       AUTO
+		PROPERTY ImageCount			AS LONGINT      AUTO
+		PROPERTY FirstImageIndex	    AS LONGINT      AUTO
+		PROPERTY NameSym				AS SYMBOL       AUTO
+	END CLASS                                       
 
 	CLASS ToolBarTipText	
-		EXPORT ButtonID 	AS LONGINT
-		EXPORT MenuItemID	AS LONGINT
-		EXPORT TipText		AS STRING
+		PROPERTY ButtonID 	AS LONGINT   AUTO
+		PROPERTY MenuItemID	AS LONGINT   AUTO
+		PROPERTY TipText	AS STRING    AUTO
 	END CLASS
 
 	CLASS ToolBarUpdate  
-		EXPORT symAction	 	AS SYMBOL
-		EXPORT nButtonID	 	AS LONGINT
-		EXPORT nMenuItemID 	    AS LONGINT
-		EXPORT nBeforeID	 	AS LONGINT
-		EXPORT oBitmap		 	AS OBJECT
-		EXPORT nPosition	 	AS DWORD
-		EXPORT cButtonText 	    AS STRING
-		EXPORT nImageCount 	    AS DWORD
-		EXPORT bState		 	AS BYTE
-		EXPORT bStyle		 	AS BYTE
-		EXPORT symToolBar 	    AS SYMBOL
-		EXPORT lFlat            AS LOGIC
-	END CLASS
+		PROPERTY symAction	 	AS SYMBOL       AUTO
+		PROPERTY nButtonID	 	AS LONGINT      AUTO
+		PROPERTY nMenuItemID 	AS LONGINT      AUTO
+		PROPERTY nBeforeID	 	AS LONGINT      AUTO
+		PROPERTY oBitmap		AS OBJECT       AUTO
+		PROPERTY nPosition	 	AS DWORD        AUTO
+		PROPERTY cButtonText 	AS STRING       AUTO
+		PROPERTY nImageCount 	AS DWORD        AUTO
+		PROPERTY bState		 	AS BYTE         AUTO
+		PROPERTY bStyle		 	AS BYTE         AUTO
+		PROPERTY symToolBar 	AS SYMBOL       AUTO
+		PROPERTY lFlat          AS LOGIC        AUTO
+	END CLASS                                   
 
 END CLASS
 

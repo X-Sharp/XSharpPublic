@@ -61,7 +61,7 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 	PROTECT oTrayIcon AS VOTrayIcon
 	
 	
-	EXPORT EventReturnValue AS LONGINT
+	PROPERTY EventReturnValue AS LONGINT AUTO
 
 	PROTECT oResourceDialog AS ResourceDialog	// Class that holds the decoded version of the Win32 resource
 	PROPERTY ResourceDialog AS ResourceDialog GET oResourceDialog

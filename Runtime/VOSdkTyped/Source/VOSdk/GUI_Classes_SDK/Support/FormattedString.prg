@@ -13,10 +13,10 @@ CLASS __FormattedString
 	PROTECT wThousSep AS DWORD		//RvdH 070205 changed from WORD to DWORD
 	PROTECT iDelStart AS INT
 	PROTECT iDelEnd AS INT
-	EXPORT iTemplLen AS INT
-	EXPORT lEndKey AS LOGIC
-	EXPORT wOverWrite AS OverwriteMode
-	EXPORT wScrMode AS ScrollMode
+	PROPERTY iTemplLen AS INT               AUTO
+	PROPERTY lEndKey AS LOGIC               AUTO
+	PROPERTY wOverWrite AS OverwriteMode    AUTO
+	PROPERTY wScrMode AS ScrollMode         AUTO
 
 	METHOD AsString() AS STRING STRICT 
 		RETURN sValue

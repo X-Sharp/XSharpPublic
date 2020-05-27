@@ -422,19 +422,19 @@ CLASS Font INHERIT VObject
 	
 	[StructLayout(LayoutKind.Sequential, CharSet:=System.Runtime.InteropServices.CharSet.Auto)];
 	PUBLIC class LOGFONT
-		EXPORT Height := 0         AS INT
-		EXPORT Width := 0          AS INT
-		EXPORT Escapement := 0     AS INT
-		EXPORT Orientation := 0    AS INT
-		EXPORT Weight := 0         AS INT
-		EXPORT Italic := 0         AS BYTE
-		EXPORT Underline := 0      AS BYTE
-		EXPORT StrikeOut := 0      AS BYTE
-		EXPORT CharSet := 0        AS BYTE
-		EXPORT OutPrecision := 0   AS BYTE
-		EXPORT ClipPrecision := 0  AS BYTE
-		EXPORT Quality := 0        AS BYTE
-		EXPORT PitchAndFamily := 0 AS BYTE
+		PUBLIC Height := 0         AS INT
+		PUBLIC Width := 0          AS INT
+		PUBLIC Escapement := 0     AS INT
+		PUBLIC Orientation := 0    AS INT
+		PUBLIC Weight := 0         AS INT
+		PUBLIC Italic := 0         AS BYTE
+		PUBLIC Underline := 0      AS BYTE
+		PUBLIC StrikeOut := 0      AS BYTE
+		PUBLIC CharSet := 0        AS BYTE
+		PUBLIC OutPrecision := 0   AS BYTE
+		PUBLIC ClipPrecision := 0  AS BYTE
+		PUBLIC Quality := 0        AS BYTE
+		PUBLIC PitchAndFamily := 0 AS BYTE
 		[MarshalAs(UnmanagedType.ByValTStr, SizeConst:=32)];
 		EXPORT FaceName := ""      AS STRING
 

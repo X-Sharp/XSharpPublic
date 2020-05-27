@@ -13,7 +13,7 @@ USING System.Runtime.ConstrainedExecution
 USING System.Runtime.InteropServices
 USING System.Collections.Generic
 USING XSharp.Data
-CLASS SqlConnection
+CLASS SQLConnection
 	#region IVars
 	// VO Compatible Ivars
 	PROTECT cServer        AS STRING
@@ -25,7 +25,7 @@ CLASS SqlConnection
 	PROTECT cVersion       AS STRING
 	PROTECT cConnectString AS STRING
 	PROTECT oErrInfo       AS SQLErrorInfo
-	PROTECT aStmts         AS List<SqlStatement>
+	PROTECT aStmts         AS List<SQLStatement>
 	// New properties
 	PROTECT cDataSourceName     AS STRING
 	PROTECT cDataSourceVersion  AS STRING
@@ -46,14 +46,14 @@ CLASS SqlConnection
 	STATIC PROTECT aInfoWord    AS List<INT>
 	STATIC PROTECT aInfoDWord   AS List<INT>
 	STATIC INTERNAL lConnErrMsg := TRUE    AS LOGIC   
-	STATIC INTERNAL oDefConnection AS SqlConnection 
+	STATIC INTERNAL oDefConnection AS SQLConnection 
 	
 	#endregion
 	
 	#region Constructors and Destructors
 	CONSTRUCTOR ( cConnStr, cUserID, cPassword )
         SELF:oFactory := XSharp.Data.Functions.GetSqlFactory()
-		aStmts := List<SqlStatement>{}
+		aStmts := List<SQLStatement>{}
 		oErrInfo := SQLErrorInfo{}
 		IF IsString( cUserID )
 			SELF:cUser := cUserID
@@ -62,13 +62,13 @@ CLASS SqlConnection
 			SELF:cAuthString := cPassword
 		ENDIF
 		IF IsString( cConnStr )
-			SELF:connect( cConnStr, cUser, cAuthString )
+			SELF:Connect( cConnStr, cUser, cAuthString )
 			SELF:_ParseConnectionString()
 		ENDIF
 	RETURN 
 	
 	DESTRUCTOR
-		SELF:DisConnect()
+		SELF:Disconnect()
 		IF SELF:oNetConn != NULL_OBJECT
 			SELF:oNetConn:Dispose()
 			SELF:oNetConn := NULL_OBJECT
@@ -190,7 +190,7 @@ CLASS SqlConnection
 			LOCAL oBuilder AS DbConnectionStringBuilder
 			oBuilder := Factory:CreateConnectionStringBuilder()
 			oBuilder:ConnectionString := cConnectString
-//			IF oBuilder IS MySQL.Data.MySqlClient.MySqlConnectionStringBuilder
+//			IF oBuilder IS MySQL.Data.MySqlClient.MySQLConnectionStringBuilder
 //				LOCAL oBuilder2 AS MySQL.Data.MySqlClient.MySQLConnectionStringBuilder
 //				oBuilder2 := (MySQL.Data.MySqlClient.MySQLConnectionStringBuilder) oBuilder
 //				oBuilder2:AllowLoadLocalInfile := TRUE		
@@ -226,7 +226,7 @@ CLASS SqlConnection
 				// A bug in MySql prevents the connections from being closed properly.
 				// To properly close the connection it has to be removed from the connection pool
 //				IF SELF:ProviderType == ProviderType.MySql
-//					MySql.Data.MySqlClient.MySqlConnection.ClearPool((MySql.Data.MySqlClient.MySqlConnection)SELF:NetConn)
+//					MySql.Data.MySqlClient.MySQLConnection.ClearPool((MySql.Data.MySqlClient.MySQLConnection)SELF:NetConn)
 //				ENDIF
                 oFactory:AfterDisConnect(SELF:NetConn)
 				lRet := TRUE
@@ -256,7 +256,7 @@ CLASS SqlConnection
             cConnStrIn := SELF:cConnectString
         ENDIF
 		cResult  := SELF:oFactory:DriverConnect(hWindow, nDriverCompletion, cConnStrIn)
-        IF ! empty(cResult)
+        IF ! Empty(cResult)
             SELF:cConnectString := cResult        
             LOCAL oBuilder AS DbConnectionStringBuilder
             oBuilder  := oFactory:CreateConnectionStringBuilder()
@@ -276,7 +276,7 @@ CLASS SqlConnection
                 cDriver := oBuilder["Driver"]:ToString()
             ENDIF
         ENDIF
-        IF !string.IsNullOrEmpty(cResult)
+        IF !String.IsNullOrEmpty(cResult)
             TRY
                 VAR oTempConn := SELF:oFactory:CreateConnection()
                 oTempConn:ConnectionString := cResult
@@ -318,7 +318,7 @@ CLASS SqlConnection
 			SELF:oErrInfo:ErrorFlag := FALSE
 			oTable := SELF:NetConn:GetSchema("MetadataCollections",NULL)
 			FOREACH oRow AS DataRow IN oTable:Rows
-				IF STRING.Compare( (STRING)oRow:Item["CollectionName"], cSchema, StringComparison.OrdinalIgnoreCase) == 0
+				IF String.Compare( (STRING)oRow:Item["CollectionName"], cSchema, StringComparison.OrdinalIgnoreCase) == 0
 					lFound := TRUE
 					nRestrictions := (INT) oRow:Item["NumberOfRestrictions"] 
 					EXIT
@@ -349,14 +349,14 @@ CLASS SqlConnection
 		END TRY
 		RETURN NULL
 	
-	METHOD GetSchema(cSchema AS STRING, aFilter AS STRING[]) AS SqlCatalogQuery
-		LOCAL oSqlCatalog AS SqlCatalogQuery
+	METHOD GetSchema(cSchema AS STRING, aFilter AS STRING[]) AS SQLCatalogQuery
+		LOCAL oSqlCatalog AS SQLCatalogQuery
 		LOCAL oTable AS DataTable
 		SELF:oErrInfo:ErrorFlag := FALSE
 		TRY
 			oTable := SELF:GetSchemaTable(cSchema, aFilter)
 			IF oTable != NULL .and. ! SELF:oErrInfo:ErrorFlag
-				oSqlCatalog  := SqlCatalogQuery{SELF}
+				oSqlCatalog  := SQLCatalogQuery{SELF}
 				oSqlCatalog:_Open(oTable)
 				oSqlCatalog:Execute()
 				RETURN oSqlCatalog
@@ -409,14 +409,14 @@ CLASS SqlConnection
 			RETURN
 		ENDIF
 		oBuilder:ConnectionString := SELF:cConnectString
-		IF STRING.IsNullOrEmpty(SELF:cUser)
+		IF String.IsNullOrEmpty(SELF:cUser)
 			IF oBuilder:ContainsKey("UID")
 				cUser := oBuilder["UID"]:ToString()
 			ELSEIF oBuilder:ContainsKey("User Id")
 				cUser := oBuilder["User ID"]:ToString()
 			ENDIF
 		ENDIF
-		IF STRING.IsNullOrEmpty(SELF:cAuthString)
+		IF String.IsNullOrEmpty(SELF:cAuthString)
 			IF oBuilder:ContainsKey("PWD")
 				cAuthString := oBuilder["PWD"]:ToString()
 			ELSEIF oBuilder:ContainsKey("Password")
@@ -454,14 +454,14 @@ CLASS SqlConnection
 		oTable:Dispose()
 		oBuilder := SELF:Factory:CreateConnectionStringBuilder()
 		oBuilder:ConnectionString := SELF:NetConn:ConnectionString
-		IF STRING.IsNullOrEmpty(SELF:cUser) 
+		IF String.IsNullOrEmpty(SELF:cUser) 
 			IF oBuilder:ContainsKey("UID")
 				SELF:cUser := oBuilder["UID"]:ToString()
 			ELSEIF oBuilder:ContainsKey("UserId")
 				SELF:cUser := oBuilder["UserId"]:ToString()
 			ENDIF
 		ENDIF
-		IF STRING.IsNullOrEmpty(SELF:cAuthString) 
+		IF String.IsNullOrEmpty(SELF:cAuthString) 
 			IF oBuilder:ContainsKey("PWD")
 				SELF:cAuthString := oBuilder["PWD"]:ToString()
 			ELSEIF oBuilder:ContainsKey("PASSWORD")
@@ -548,7 +548,7 @@ CLASS SqlConnection
 		    IF aInfoDWord:Contains( nInfoType ) 
 			    RETURN 0U
 		    ELSEIF aInfoString:Contains(  nInfoType ) 
-			    RETURN STRING.Empty
+			    RETURN String.Empty
 		    ELSEIF aInfoWord:Contains(  nInfoType ) 
 			    RETURN (WORD) 0
 			ENDIF
@@ -661,8 +661,8 @@ CLASS SqlConnection
 		SELF:oErrInfo:ReturnCode  := SQL_SUCCESS
 		RETURN oErrInfo
 	
-	METHOD __GetExtraStmt(cStmtText AS STRING) AS SqlStatement 
-		LOCAL oNewStmt AS SqlStatement
+	METHOD __GetExtraStmt(cStmtText AS STRING) AS SQLStatement 
+		LOCAL oNewStmt AS SQLStatement
 		oNewStmt := SQLStatement{ cStmtText, SELF}
 		RETURN oNewStmt
 	
@@ -716,7 +716,7 @@ CLASS SqlConnection
 			RETURN SELF:cConnectString 
 		END GET
 		SET 
-			SELF:DisConnect()
+			SELF:Disconnect()
 			SELF:cConnectString := value
 			SELF:_ParseConnectionString()
 		END SET
@@ -797,14 +797,14 @@ CLASS SqlConnection
 		LOCAL aSources  AS ARRAY
 		LOCAL oEnum     AS DbDataSourceEnumerator
 		LOCAL oTable    AS DataTable
-		LOCAL oConn     AS SqlConnection
-		oConn := SqlConnection{}
+		LOCAL oConn     AS SQLConnection
+		oConn := SQLConnection{}
 		aSources := {}
 		IF oConn:Factory:CanCreateDataSourceEnumerator
 			oEnum := oConn:Factory:CreateDataSourceEnumerator()
 			oTable := oEnum:GetDataSources()
 			FOREACH oR AS DataRow IN oTable:Rows
-				aadd(aSources, oR[0])
+				AAdd(aSources, oR[0])
 			NEXT
 		ELSE
 			LOCAL oKey AS Microsoft.Win32.RegistryKey
@@ -814,7 +814,7 @@ CLASS SqlConnection
             IF oKey != NULL
 			    aNames := oKey:GetValueNames()
 			    FOREACH IMPLIED sName IN aNames
-				    aadd(aSources, sName)
+				    AAdd(aSources, sName)
 			    NEXT
 			    oKey:Close()
             ENDIF
@@ -823,8 +823,8 @@ CLASS SqlConnection
             IF oKey != NULL
 			    aNames := oKey:GetValueNames()
 			    FOREACH IMPLIED sName IN aNames
-				    IF ascan(aSources, sName) == 0
-					    aadd(aSources, sName)
+				    IF AScan(aSources, sName) == 0
+					    AAdd(aSources, sName)
 				    ENDIF
                 NEXT
 			oKey:Close()
@@ -851,9 +851,9 @@ CLASS SqlConnection
 	*/
 	STATIC INTERNAL METHOD SetConnection( oNewConnection := NULL AS SQLConnection ) AS SQLConnection STRICT
 		LOCAL oDefConn      AS SQLConnection
-		oDefConn    := SqlConnection.oDefConnection
+		oDefConn    := SQLConnection.oDefConnection
 		IF oNewConnection != NULL
-			SqlConnection.oDefConnection := oNewConnection            
+			SQLConnection.oDefConnection := oNewConnection            
 		ENDIF
 		RETURN oDefConn
 	
@@ -1098,16 +1098,16 @@ FUNCTION SQLOpenConnection()  AS SQLConnection
 #endregion
 
 FUNCTION SQLSetConnection( oSQLConnection ) AS SQLConnection
-	RETURN SqlConnection.SetConnection(oSQLConnection)
+	RETURN SQLConnection.SetConnection(oSQLConnection)
 
 FUNCTION SQLGetDataSources() AS ARRAY
-	RETURN SqlConnection.GetODBCDataSources()
+	RETURN SQLConnection.GetODBCDataSources()
 
 
 FUNCTION SQLConnectErrorMsg( lValue ) AS LOGIC
 	DEFAULT( REF lValue, FALSE )
-	SqlConnection.lConnErrMsg := lValue
-	RETURN SqlConnection.lConnErrMsg
+	SQLConnection.lConnErrMsg := lValue
+	RETURN SQLConnection.lConnErrMsg
 
 
 

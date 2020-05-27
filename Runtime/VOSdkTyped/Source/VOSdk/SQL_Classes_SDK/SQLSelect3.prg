@@ -8,18 +8,18 @@
 USING System.Data.Common
 USING System.Data
 
-PARTIAL CLASS SqlSelect INHERIT DataServer
+PARTIAL CLASS SQLSelect INHERIT DataServer
 
-	METHOD FieldHyperLabel  ( uFieldPos ) 
+	METHOD FieldHyperLabel  ( uFieldPos AS USUAL) AS HyperLabel
 		LOCAL nIndex    AS DWORD
-		LOCAL oRet      AS OBJECT
+		LOCAL oRet      AS HyperLabel
 
 		nIndex := SELF:__GetColIndex( uFieldPos, TRUE )
 		IF ( nIndex = 0 .OR. nIndex > nNumCols )
 			oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__BADFLD ), #FieldHyperLabel )
 		ELSE
 			oStmt:ErrInfo:ErrorFlag := FALSE
-			oRet := ((SqlColumn)aSQLColumns[nIndex]):HyperLabel
+			oRet := ((SQLColumn)aSQLColumns[nIndex]):HyperLabel
 		ENDIF
 		RETURN oRet 
 
@@ -78,7 +78,7 @@ PARTIAL CLASS SqlSelect INHERIT DataServer
 		ENDIF
 		RETURN xRet
 
-	METHOD FieldName( uFieldID) 
+	METHOD FieldName( uFieldID AS USUAL ) AS STRING
 		LOCAL nIndex    AS DWORD
 		LOCAL cRet      AS STRING
 		nIndex := SELF:__GetColIndex( uFieldID, TRUE )
@@ -93,7 +93,7 @@ PARTIAL CLASS SqlSelect INHERIT DataServer
 		RETURN cRet
 
 
-	METHOD FieldPos( uFieldID ) 
+	METHOD FieldPos( uFieldID  AS USUAL)  AS DWORD STRICT
 		LOCAL nIndex    AS DWORD
 		LOCAL nRet      AS DWORD
 
@@ -106,7 +106,7 @@ PARTIAL CLASS SqlSelect INHERIT DataServer
 		ENDIF
 		RETURN (LONG)nRet
 
-	METHOD FIELDPUT( uFieldID , uValue ) AS USUAL CLIPPER
+	METHOD FieldPut( uFieldID AS USUAL , uValue AS USUAL) AS USUAL 
 
 		LOCAL wField AS INT
 		LOCAL oError AS Error
@@ -159,7 +159,7 @@ PARTIAL CLASS SqlSelect INHERIT DataServer
 		END TRY
 		RETURN uValue
 
-	METHOD FieldSpec( uFieldPos ) 
+	METHOD FieldSpec( uFieldPos AS USUAL)  AS FieldSpec
 		LOCAL nIndex AS DWORD
 		nIndex := SELF:__GetColIndex( uFieldPos, TRUE )
 		IF ( nIndex = 0 .OR. nIndex > SELF:FCount )
@@ -170,9 +170,9 @@ PARTIAL CLASS SqlSelect INHERIT DataServer
 		RETURN ((DataField) aDataFields[nIndex]):FieldSpec
 
 
-	METHOD FieldStatus( uFieldPos ) 
+	METHOD FieldStatus( uFieldPos AS USUAL) AS HyperLabel
 		LOCAL nIndex AS DWORD
-		LOCAL oRet   AS OBJECT
+		LOCAL oRet   AS HyperLabel
 		nIndex := SELF:__GetColIndex( uFieldPos, TRUE )
 		IF nIndex = 0 .OR. nIndex > nNumCols
 			oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__BADFLD ), #FieldStatus )
@@ -184,7 +184,7 @@ PARTIAL CLASS SqlSelect INHERIT DataServer
 		ENDIF
 		RETURN oRet
 
-	METHOD FieldSym( uFieldPos ) 
+	METHOD FieldSym( uFieldPos AS USUAL)  AS SYMBOL
 		LOCAL nIndex        AS DWORD
 		LOCAL symRet        AS SYMBOL
 		nIndex := SELF:__GetColIndex( uFieldPos, TRUE )
@@ -198,11 +198,11 @@ PARTIAL CLASS SqlSelect INHERIT DataServer
 		ENDIF
 		RETURN symRet
 
-	METHOD FieldValidate( uFieldPos , uValue  ) 
+	METHOD FieldValidate( uField AS USUAL, uValue AS USUAL) AS LOGIC
 		LOCAL nIndex    AS DWORD
 		LOCAL lRet      AS LOGIC
 
-		nIndex := SELF:__GetColIndex( uFieldPos, TRUE )
+		nIndex := SELF:__GetColIndex( uField, TRUE )
 		IF nIndex = 0 .OR. nIndex > nNumCols
 			oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__BADFLD ), #FieldValidate )
 		ELSE
@@ -271,7 +271,7 @@ PARTIAL CLASS SqlSelect INHERIT DataServer
 		LOCAL cVal AS STRING
 		LOCAL dVal AS DATE
 
-		cVal := SELF:GetTimestamp( uFieldPos )
+		cVal := SELF:GetTimeStamp( uFieldPos )
 		IF !IsNil( cVal )
 			dVal := CToDAnsi( SubStr3( cVal, 1, 12 ) )
 		ENDIF
@@ -330,20 +330,20 @@ PARTIAL CLASS SqlSelect INHERIT DataServer
 
 	METHOD GetTimeString( uFieldPos )
 		LOCAL cVal AS STRING
-		cVal := SELF:GetTimestamp( uFieldPos )
+		cVal := SELF:GetTimeStamp( uFieldPos )
 		IF Slen(cVal) > 0
 			cVal := Left( cVal, 12 )
 		ENDIF
 		RETURN cVal
 
-	METHOD GoBottom() 
+	METHOD GoBottom() AS LOGIC STRICT
 		LOCAL lOk AS LOGIC
 		SELF:lErrorFlag := FALSE
 		TRY
 			lOk := SELF:__PrepareForRecordMovement()
 			IF lOk
 				SELF:nCurrentRow := SELF:nRowCount -1
-				SELF:__CheckEof()
+				SELF:__CheckEOF()
 				SELF:Notify( NOTIFYGOBOTTOM )
 			ENDIF
 		CATCH e AS Exception
@@ -352,7 +352,7 @@ PARTIAL CLASS SqlSelect INHERIT DataServer
 		END TRY
 		RETURN lOk
 
-	METHOD GoTo( nNewRec) 
+	METHOD GoTo( nNewRec ) AS LOGIC 
 		LOCAL lOk AS LOGIC
 		SELF:lErrorFlag := FALSE
 		TRY
@@ -375,7 +375,7 @@ PARTIAL CLASS SqlSelect INHERIT DataServer
 		END  TRY
 		RETURN lOk
 
-	METHOD GoTop() 
+	METHOD GoTop() AS LOGIC STRICT
 		LOCAL lOk AS LOGIC
 		SELF:lErrorFlag := FALSE
 		TRY
@@ -383,7 +383,7 @@ PARTIAL CLASS SqlSelect INHERIT DataServer
 			IF lOk
 				// Move the recordset
 				SELF:nCurrentRow := 0
-				SELF:__CheckEof()
+				SELF:__CheckEOF()
 				SELF:Notify( NOTIFYGOTOP )
 			ENDIF
 		CATCH e AS Exception

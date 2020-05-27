@@ -11,9 +11,9 @@ USING System.Reflection
 USING System.Diagnostics
 
 [DebuggerDisplay( "SqlSelect {TableName,nq}" )] ;
-PARTIAL CLASS SqlSelect INHERIT DataServer 
-	PROTECT oStmt           AS SqlStatement   // Statement object
-	PROTECT oConn           AS SqlConnection
+PARTIAL CLASS SQLSelect INHERIT DataServer 
+	PROTECT oStmt           AS SQLStatement   // Statement object
+	PROTECT oConn           AS SQLConnection
 	PROTECT cCursor         AS STRING		// No longer used
 	PROTECT lCsrOpenFlag 	AS LOGIC		// Is the server Open
 	PROTECT lFetchFlag      AS LOGIC        // First Fetch has been performed
@@ -27,8 +27,8 @@ PARTIAL CLASS SqlSelect INHERIT DataServer
 	PROTECT cTableName      AS STRING
 	PROTECT nNotifyCount    AS INT
 	PROTECT lSuppressNotify AS LOGIC
-	PROTECT aSqlColumns       AS SqlColumn[]    // Array of SqlColumn objects
-	PROTECT aColumnAttributes AS SqlColumnAttributes[]   // Array of SQLColumnAttributes Objects.
+	PROTECT aSQLColumns       AS SQLColumn[]    // Array of SqlColumn objects
+	PROTECT aColumnAttributes AS SQLColumnAttributes[]   // Array of SQLColumnAttributes Objects.
 	PROTECT lNullAsBlank	  AS LOGIC		// Return Null values as Blank
 	PROTECT lTimeStampAsDate  AS LOGIC		// Should datetimes be handled as data ?
 	PROTECT aLastArgs         AS ARRAY
@@ -41,13 +41,13 @@ PARTIAL CLASS SqlSelect INHERIT DataServer
 	PROTECT lDeleteFlag     AS LOGIC
 	
 	// New .Net Properties
-	PROTECT oNetConn		AS IDBConnection // Connection
+	PROTECT oNetConn		AS IDbConnection // Connection
 	PROTECT oTable			AS DataTable	// Contents of resultset
 	PROTECT oSchema			AS DataTable	// Schema definition of resultset
     PROTECT oAdapter        AS DbDataAdapter  // Data Adapter for Insert/Update/Delete
 	PROTECT oCurrentRow		AS DataRow		// Current data row in result set. NULL when at EOF
 	
-	PROTECT oFieldHash      AS System.Collections.HashTable // Hashtable of Strings and Symbols and column positions
+	PROTECT oFieldHash      AS System.Collections.Hashtable // Hashtable of Strings and Symbols and column positions
 	PROTECT nCurrentRow		AS LONG			// Current row number, 0 based
 	PROTECT nSuspendNot     AS LONG			// Is used to keep track of the current notification state
 	PROTECT lErrorFlag      AS LOGIC		// Was there an error with the last operation
@@ -128,9 +128,9 @@ PARTIAL CLASS SqlSelect INHERIT DataServer
 				LOCAL cField AS STRING
 				LOCAL nDot AS DWORD
 				cField := Upper(uFieldID)
-				nDot := AT(".", cField)
+				nDot := At(".", cField)
 				IF nDot > 0
-					cField := Substr2(cField, nDot+1)
+					cField := SubStr2(cField, nDot+1)
 				ENDIF
 				IF (oFieldHash:ContainsKey(cField))
 					nPos := (DWORD) oFieldHash[cField]
@@ -169,7 +169,7 @@ PARTIAL CLASS SqlSelect INHERIT DataServer
 			oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__BADFLD ), #FieldName )
 		ELSE
 			oStmt:ErrInfo:ErrorFlag := FALSE
-			cRet := ((SqlColumn)aSqlColumns[nIndex]):ColName
+			cRet := ((SQLColumn)aSQLColumns[nIndex]):ColName
 		ENDIF
 		
 		RETURN cRet
@@ -189,23 +189,23 @@ PARTIAL CLASS SqlSelect INHERIT DataServer
 	
 	METHOD __InitColumnDesc() AS LOGIC STRICT
 		LOCAL oDF           AS DataField		// Datafield
-		LOCAL oHL           AS Hyperlabel		// Hyperlabel
+		LOCAL oHL           AS HyperLabel		// Hyperlabel
 		LOCAL aNames        AS ARRAY
 		LOCAL cFldName      AS STRING
-		LOCAL oCol          AS SqlColumn
+		LOCAL oCol          AS SQLColumn
 		LOCAL i             AS DWORD
 		LOCAL oColumns		AS DataColumnCollection
 		LOCAL oFS           AS FieldSpec		// Fieldspec
 		LOCAL oRow          AS DataRow
-		LOCAL ihelp AS INT16
+		LOCAL ihelp         AS SHORT
 		oColumns            := oTable:Columns
 		// Do not re-read the table definition with the # of columns has not changed
 		IF TRUE // SELF:nNumCols != oColumns:Count
 			SELF:nNumCols       := oColumns:Count
 			SELF:wFieldCount    := (DWORD) nNumCols
 			SELF:aDataFields    := ArrayNew(nNumCols )
-			SELF:aSqlColumns    := SqlColumn[]{nNumCols }
-			SELF:aColumnAttributes := SqlColumnAttributes[]{nNumCols }
+			SELF:aSQLColumns    := SQLColumn[]{nNumCols }
+			SELF:aColumnAttributes := SQLColumnAttributes[]{nNumCols }
 			SELF:oFieldHash	    := System.Collections.Hashtable{}
 			// aNames is used by FieldNameCheck to guarantee unicity of field names
 			aNames := {}
@@ -231,12 +231,12 @@ PARTIAL CLASS SqlSelect INHERIT DataServer
 						ELSE
 							ihelp := Convert.ToInt16(oRow["NumericScale"])
 						ENDIF
-						oCol := SqlColumn{oHL, oFS, (System.Type) oRow["DataType"], ihelp,  oColumn:AllowDBNull, oColumn:Ordinal, cFldName, cFldName}
+						oCol := SQLColumn{oHL, oFS, (System.Type) oRow["DataType"], ihelp,  oColumn:AllowDBNull, oColumn:Ordinal, cFldName, cFldName}
 						//oCol := SqlColumn{oHL, oFS, oT, iScale,  oColumn:AllowDBNull, oColumn:Ordinal, oColumn:ColumnName, oColumn:ColumnName}
 					ELSE
-						oCol := SqlColumn{oHL, oFS, oColumn:DataType, 0,  oColumn:AllowDBNull, oColumn:Ordinal, oColumn:ColumnName, cFldName}
+						oCol := SQLColumn{oHL, oFS, oColumn:DataType, 0,  oColumn:AllowDBNull, oColumn:Ordinal, oColumn:ColumnName, cFldName}
 					ENDIF
-					SELF:aSqlColumns[i] := oCol
+					SELF:aSQLColumns[i] := oCol
 					SELF:aDataFields[i] := oDF
 				CATCH e AS Exception 
 					oStmt:__GenerateSQLError( "Error reading structure: "+e:Message, #__InitColumnDesc )
@@ -280,13 +280,13 @@ PARTIAL CLASS SqlSelect INHERIT DataServer
 			cName := oTable:TableName
 		ENDIF
 		
-		IF STRING.IsNullOrEmpty(cName)
+		IF String.IsNullOrEmpty(cName)
 			LOCAL nPos AS DWORD
 			LOCAL cStmt AS STRING
-			cStmt := oStmt:SqlString
-			nPos := ATC(" FROM ", cStmt)
+			cStmt := oStmt:SQLString
+			nPos := AtC(" FROM ", cStmt)
 			IF nPos > 0
-				cName := Alltrim(Substr2(cStmt, nPos+6))
+				cName := AllTrim(SubStr2(cStmt, nPos+6))
 			ELSE
 				cName := oStmt:SQLString
 			ENDIF
@@ -302,7 +302,7 @@ PARTIAL CLASS SqlSelect INHERIT DataServer
 		SELF:lFetchFlag   := FALSE
 		
 		lRet := SELF:__InitColumnDesc()
-		SELF:__CheckEof()
+		SELF:__CheckEOF()
 		IF SELF:nNumCols = 0
 			lRet := FALSE
 		ENDIF
@@ -390,7 +390,7 @@ PARTIAL CLASS SqlSelect INHERIT DataServer
 		RETURN ""
 	
 	[Obsolete];
-	METHOD __GetUpdateStmt( nIndex AS DWORD, lAppend AS LOGIC) AS SqlStatement STRICT 
+	METHOD __GetUpdateStmt( nIndex AS DWORD, lAppend AS LOGIC) AS SQLStatement STRICT 
 		RETURN NULL
 	
 	[Obsolete];

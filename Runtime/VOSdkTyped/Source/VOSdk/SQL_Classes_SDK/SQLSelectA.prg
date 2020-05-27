@@ -9,12 +9,12 @@ USING System.Data.Common
 USING System.Data
 USING System.Collections.Generic
 
-PARTIAL CLASS SqlSelect INHERIT DataServer
+PARTIAL CLASS SQLSelect INHERIT DataServer
    PROPERTY AppendData AS ARRAY GET {}
    
    PROPERTY AppendFlag AS LOGIC GET SELF:lAppendFlag
    
-   PROPERTY BoF AS USUAL
+   PROPERTY BoF AS LOGIC
       GET
          IF SELF:lAppendFlag
             RETURN FALSE
@@ -23,7 +23,7 @@ PARTIAL CLASS SqlSelect INHERIT DataServer
       END GET
    END PROPERTY
 
-   PROPERTY Connection AS SqlConnection GET SELF:oConn
+   PROPERTY Connection AS SQLConnection GET SELF:oConn
    
    ACCESS CursorName AS STRING
       RETURN ""
@@ -32,7 +32,7 @@ PARTIAL CLASS SqlSelect INHERIT DataServer
       RETURN
       
       
-   PROPERTY DBStruct AS USUAL
+   PROPERTY DBStruct AS ARRAY
       GET
          LOCAL aStruct       AS ARRAY
          LOCAL nIndex        AS DWORD
@@ -65,7 +65,7 @@ PARTIAL CLASS SqlSelect INHERIT DataServer
    
    PROPERTY Deleted AS LOGIC GET FALSE
    
-   PROPERTY EoF AS USUAL
+   PROPERTY EoF AS LOGIC
       GET
          SELF:__ForceOpen()
          IF SELF:lAppendFlag
@@ -77,7 +77,7 @@ PARTIAL CLASS SqlSelect INHERIT DataServer
    
    PROPERTY ErrInfo AS Error GET SELF:oStmt:ErrInfo
    
-   PROPERTY FCount AS USUAL
+   PROPERTY FCount AS DWORD
       GET
          LOCAL nRet  AS DWORD
          IF ! SELF:__ForceOpen()
@@ -91,7 +91,7 @@ PARTIAL CLASS SqlSelect INHERIT DataServer
    
    PROPERTY FOUND () AS LOGIC GET !SELF:EoF
    
-   PROPERTY HyperLabel AS USUAL
+   PROPERTY HyperLabel AS HyperLabel
       GET
          SELF:__ForceOpen()
          RETURN SUPER:HyperLabel
@@ -134,9 +134,9 @@ PARTIAL CLASS SqlSelect INHERIT DataServer
       
       PROPERTY PrepFlag AS LOGIC GET SELF:oStmt:PrepFlag
       
-      PROPERTY RecCount AS USUAL GET SELF:LASTREC
+      PROPERTY RecCount AS LONG GET SELF:LastRec
       
-      PROPERTY RecNo AS USUAL
+      PROPERTY RecNo AS LONG
          GET
             IF ! SELF:__ForceOpen()
                RETURN 0
@@ -170,11 +170,11 @@ PARTIAL CLASS SqlSelect INHERIT DataServer
       END SET
    END PROPERTY
    
-   PROPERTY Statement AS SqlStatement GET SELF:oStmt
+   PROPERTY Statement AS SQLStatement GET SELF:oStmt
    
    PROPERTY StatementHandle AS DbCommand GET SELF:oStmt:StatementHandle
    
-   PROPERTY Status AS USUAL GET SELF:oStmt:Status
+   PROPERTY Status AS HyperLabel GET SELF:oStmt:Status
    
    PROPERTY TableName AS STRING GET SELF:cTableName
    

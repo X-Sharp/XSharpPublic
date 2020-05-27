@@ -29,7 +29,7 @@ PARTIAL CLASS SQLCatalogQuery INHERIT SQLSelect
     METHOD __GoCold AS LOGIC STRICT
         RETURN TRUE
     
-    METHOD Append() 
+    METHOD Append() AS LOGIC  CLIPPER
         RETURN FALSE
     
     METHOD Execute()  CLIPPER
@@ -43,14 +43,14 @@ PARTIAL CLASS SQLCatalogQuery INHERIT SQLSelect
     METHOD Prepare() 
         RETURN TRUE
     
-    PROTECTED METHOD _OpenTable(cCollectionName AS STRING, oSQLConnection AS SqlConnection, aFilters AS ARRAY) AS VOID
+    PROTECTED METHOD _OpenTable(cCollectionName AS STRING, oSQLConnection AS SQLConnection, aFilters AS ARRAY) AS VOID
         LOCAL aFilterArray AS STRING[]
         LOCAL lHasFilter AS LOGIC
         LOCAL nElement  AS DWORD
         LOCAL oTable AS DataTable
         cCollection := cCollectionName
-        aFilterArray := STRING[]{(INT) Alen(aFilters)}
-        FOR nElement := 1 TO alen(aFilters)
+        aFilterArray := STRING[]{(INT) ALen(aFilters)}
+        FOR nElement := 1 TO ALen(aFilters)
             IF ! Empty(aFilters[nElement])
                 aFilterArray[nElement] := (STRING) aFilters[nElement]
                 lHasFilter := TRUE

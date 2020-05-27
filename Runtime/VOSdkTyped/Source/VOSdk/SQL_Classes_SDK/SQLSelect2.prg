@@ -9,9 +9,9 @@
 USING System.Data.Common
 using System.Data
 
-PARTIAL CLASS SqlSelect INHERIT DataServer
+PARTIAL CLASS SQLSelect INHERIT DataServer
 
-	METHOD AddDateVal( uFieldPos, dDate )
+	METHOD AddDateVal( uFieldPos AS USUAL, dDate AS DATE) AS VOID
 		//  Adds time string to Timestamp field
 		LOCAL cVal  AS STRING
 		LOCAL cDate AS STRING
@@ -20,9 +20,9 @@ PARTIAL CLASS SqlSelect INHERIT DataServer
 			dDate := Today()
 		ENDIF
 
-		cVal := SELF:GetTimestamp( uFieldPos )
+		cVal := SELF:GetTimeStamp( uFieldPos )
 		IF IsNil( cVal )
-			RETURN NIL
+			RETURN 
 		ENDIF
 
 		cDate := DToCSQL( dDate )
@@ -32,9 +32,9 @@ PARTIAL CLASS SqlSelect INHERIT DataServer
 			cTime := SubStr2( cVal, 12 )
 		ENDIF
 		cVal := cDate + " " + cTime
-		RETURN SELF:SetTimeStamp( uFieldPos, cVal )
+		SELF:SetTimeStamp( uFieldPos, cVal )
 
-	METHOD AddTimeString( uFieldPos, cTime )
+	METHOD AddTimeString( uFieldPos AS USUAL, cTime AS STRING) AS VOID
 		//  Adds time string to Timestamp field
 		LOCAL cVal  AS STRING
 		LOCAL cDate AS STRING
@@ -46,9 +46,9 @@ PARTIAL CLASS SqlSelect INHERIT DataServer
 		IF At2( ".", cTime ) == 0
 			cTime := cTime + ".000000"
 		ENDIF
-		cVal := SELF:GetTimestamp( uFieldPos )
+		cVal := SELF:GetTimeStamp( uFieldPos )
 		IF IsNil( cVal )
-			RETURN NIL
+			RETURN 
 		ENDIF
 		IF SLen( cVal ) = 0
 			cDate := DToCSQL( Today() )
@@ -56,12 +56,12 @@ PARTIAL CLASS SqlSelect INHERIT DataServer
 			cDate := SubStr3( cVal, 1, 11 )
 		ENDIF
 		cVal := cDate + " " + cTime
-		RETURN SELF:SetTimeStamp( uFieldPos, cVal )
+		SELF:SetTimeStamp( uFieldPos, cVal )
 
 
 
 
-	METHOD Append() 
+	METHOD Append()  AS LOGIC 
 		LOCAL oRow AS DataRow
 		LOCAL lOk AS LOGIC
 		IF SELF:__PrepareForRecordMovement()
@@ -154,7 +154,7 @@ PARTIAL CLASS SqlSelect INHERIT DataServer
 	METHOD BindColumn( i )
 		RETURN TRUE
  
-	METHOD Close() 
+	METHOD Close() AS LOGIC CLIPPER
 		LOCAL lOk AS LOGIC
 		SELF:lErrorFlag := FALSE
 		TRY
@@ -241,13 +241,13 @@ PARTIAL CLASS SqlSelect INHERIT DataServer
 		SELF:aColumnAttributes[nIndex] := oSQLColAtt
 		RETURN oSQLColAtt
 
-	METHOD Commit() 
+	METHOD Commit() AS LOGIC CLIPPER
 		SELF:Update(TRUE)
 		RETURN SELF:oConn:Commit()
 
-	METHOD DataField( uFieldPos ) 
+	METHOD DataField( uFieldPos AS USUAL) AS DataField 
 		LOCAL nIndex        AS DWORD
-		LOCAL oRet          AS OBJECT
+		LOCAL oRet          AS DataField
 
 		nIndex := SELF:__GetColIndex( uFieldPos, TRUE )
 		IF nIndex = 0 .OR. nIndex > nNumCols
@@ -259,14 +259,14 @@ PARTIAL CLASS SqlSelect INHERIT DataServer
 		ENDIF
 		RETURN oRet
 
-	METHOD Delete() 
+	METHOD Delete() AS LOGIC CLIPPER
 		LOCAL lOk AS LOGIC
 		IF SELF:__PrepareForRecordMovement()
 			IF oCurrentRow != NULL
 				SELF:lChanges := TRUE
 				oTable:Rows:Remove(oCurrentRow)
 				nRowCount	:= oTable:Rows:Count-1
-				IF nCurrentRow >= nROwCount
+				IF nCurrentRow >= nRowCount
 					nCurrentRow := nRowCount-1
 				ENDIF
 				lOk := TRUE
@@ -315,7 +315,7 @@ METHOD Execute( uParam )
 
 	METHOD ExtendedFetch( nFetchType, nRow ) 
 		LOCAL lResult AS LOGIC
-		EnForceType(REF nFetchType, LONG)
+		EnforceType(REF nFetchType, LONG)
 		DEFAULT ( REF nRow, 0)
 		SWITCH (LONG) nFetchType 
 		CASE SQL_FETCH_LAST
@@ -329,7 +329,7 @@ METHOD Execute( uParam )
 		CASE SQL_FETCH_RELATIVE
 			lResult := SELF:Skip(nRow)
 		CASE SQL_FETCH_ABSOLUTE
-			lResult := SELF:Goto(nRow)
+			lResult := SELF:GoTo(nRow)
 		OTHERWISE
 			lResult := FALSE
 		END SWITCH
@@ -343,25 +343,25 @@ METHOD Execute( uParam )
 		ELSE
 			SELF:lFetchFlag := TRUE
 		ENDIF
-		RETURN !SELF:Eof
+		RETURN !SELF:EoF
 
 	METHOD FIELDGET( uFieldID  ) 
 		LOCAL uValue   AS USUAL
 		LOCAL cType    AS STRING
 		LOCAL wField   AS DWORD
 		LOCAL oFs      AS FieldSpec
-		LOCAL oCol     AS SqlColumn
+		LOCAL oCol     AS SQLColumn
 		wField	:= SELF:__GetColIndex(uFieldID, TRUE)
 		IF wField > 0 .AND. wField <= SELF:nNumCols
 			uValue  := SELF:GetData(uFieldID)
 			IF IsNil(uValue)  .AND. SELF:lNullAsBlank 
-				oCol    := SELF:aSqlColumns[wField]
+				oCol    := SELF:aSQLColumns[wField]
 				IF oCol != NULL_OBJECT
 					oFs		:= oCol:FieldSpec
 					cType	:= oFs:ValType
 					SWITCH cType
 					CASE "C"
-						uValue := STRING.Empty
+						uValue := String.Empty
 					CASE "N"
 						uValue := 0
 					CASE "L"
@@ -373,7 +373,7 @@ METHOD Execute( uParam )
 							uValue := DateTime{0}
 						ENDIF
 					CASE "M"
-						uValue := STRING.Empty
+						uValue := String.Empty
 					CASE "O"
 						uValue := NULL_OBJECT
 					END SWITCH
@@ -382,11 +382,11 @@ METHOD Execute( uParam )
 		ENDIF
 		RETURN uValue
 
-	METHOD FieldGetFormatted( uFieldPos ) 
+	METHOD FieldGetFormatted( uFieldPos AS USUAL ) STRICT
 		LOCAL nIndex    AS DWORD
 		LOCAL xRet      AS USUAL
 		LOCAL oFs      AS FieldSpec
-		LOCAL oCol     AS SqlColumn
+		LOCAL oCol     AS SQLColumn
 		nIndex := SELF:__GetColIndex( uFieldPos, TRUE )
 		IF nIndex = 0 .OR. nIndex > nNumCols
 			oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__BADFLD ), #FieldGetFormatted )
@@ -394,7 +394,7 @@ METHOD Execute( uParam )
 		ELSE
 			xRet := SELF:FIELDGET( nIndex )
 			oStmt:ErrInfo:ErrorFlag := FALSE
-			oCol := aSqlColumns[nIndex]
+			oCol := aSQLColumns[nIndex]
 			oFs  := oCol:FieldSpec
 			xRet := oFs:Transform( xRet )
 		ENDIF

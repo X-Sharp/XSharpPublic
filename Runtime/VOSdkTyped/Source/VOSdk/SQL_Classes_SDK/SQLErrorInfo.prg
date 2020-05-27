@@ -22,7 +22,7 @@ PARTIAL CLASS SQLErrorInfo  INHERIT Error
 			SUPER()
 		ELSE
 			SUPER((Exception) Ex)
-			oType := TypeOf(DBException)
+			oType := TypeOf(DbException)
 			IF oType:IsInstanceOfType(Ex)
 				SELF:_SetDbException(Ex)
 				SELF:ErrorFlag := TRUE
@@ -108,7 +108,7 @@ PARTIAL CLASS SQLErrorInfo  INHERIT Error
 		
 		IF IsInstanceOf( SELF:MethodSelf , #SqlStatement)
 			
-			oStmt		:= (SqlStatement) SELF:MethodSelf 		
+			oStmt		:= (SQLStatement) SELF:MethodSelf 		
 			oErr 		:= SELF
 			
 			WHILE oErr != NULL_OBJECT .and. (Val(oErr:SQLState) <> 0 .or. oErr:NativeError <> 0)

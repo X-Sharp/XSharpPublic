@@ -8,7 +8,7 @@
 USING System.Data.Common
 USING System.Data
 using System.Collections.Generic
-PARTIAL CLASS SqlSelect INHERIT DataServer
+PARTIAL CLASS SQLSelect INHERIT DataServer
 
 	CONSTRUCTOR( cSQLSelect, oSQLConnection )
 
@@ -39,7 +39,7 @@ PARTIAL CLASS SqlSelect INHERIT DataServer
 		RETURN SELF:FIELDGET(symVar)
 
 	METHOD NoIVarPut(symVar, uValue)
-		RETURN SELF:FIELDPUT(symVar, uValue)
+		RETURN SELF:FieldPut(symVar, uValue)
 
 	METHOD Notify( uNotification, uDescription )
 		LOCAL lRetValue AS LOGIC
@@ -56,7 +56,7 @@ PARTIAL CLASS SqlSelect INHERIT DataServer
 			// Make a clone, to prevent problems when a client unregisters itself
 			laClients := ACloneShallow(aClients)
 			IF kNotification <= NOTIFYCOMPLETION
-				FOREACH oClient AS OBJECT IN Aclone(laClients)
+				FOREACH oClient AS OBJECT IN AClone(laClients)
 					Send(oClient,#Notify, kNotification, uDescription )
 				NEXT
 
@@ -72,15 +72,15 @@ PARTIAL CLASS SqlSelect INHERIT DataServer
 				ENDDO
 				RETURN lRetValue
 			ELSEIF kNotification <= NOTIFYFILECHANGE
-				FOREACH oClient AS OBJECT IN Aclone(aClients)
+				FOREACH oClient AS OBJECT IN AClone(aClients)
 					Send(oClient,#Notify, kNotification, uDescription )
 				NEXT
 			ELSEIF kNotification = NOTIFYRELATIONCHANGE
-				FOREACH oClient AS OBJECT IN Aclone(aClients)
+				FOREACH oClient AS OBJECT IN AClone(aClients)
 					Send(oClient,#Notify, NOTIFYFILECHANGE )
 				NEXT
 			ELSEIF kNotification != NOTIFYCLEARRELATION
-				FOREACH oClient AS OBJECT IN Aclone(aClients)
+				FOREACH oClient AS OBJECT IN AClone(aClients)
 					Send(oClient,#Notify, kNotification, uDescription )
 				NEXT
 			ENDIF
@@ -138,18 +138,18 @@ PARTIAL CLASS SqlSelect INHERIT DataServer
 		SELF:GoTo( SELF:RecNo )
 		RETURN TRUE
 
-	METHOD ResetNotification() 
+	METHOD ResetNotification() AS LONG STRICT
 		--nNotifyCount
 		RETURN nNotifyCount
 
 	METHOD RLOCK(nRecno) 
 		RETURN TRUE
 
-	METHOD RLockVerify() 
+	METHOD RLockVerify() AS LOGIC STRICT
 		RETURN TRUE
 
-	METHOD Rollback() 
-		RETURN SELF:oStmt:Connection:RollBack()
+	METHOD Rollback() AS LOGIC STRICT
+		RETURN SELF:oStmt:Connection:Rollback()
 
 	METHOD SetColumnAttributes(uFieldPos, oColAttributes)
 		LOCAL nIndex    AS DWORD
@@ -169,7 +169,7 @@ PARTIAL CLASS SqlSelect INHERIT DataServer
 		ENDIF
 		RETURN lOk
 
-	METHOD SetDataField( nFieldPosition , oDataField ) 
+	METHOD SetDataField( nFieldPosition AS USUAL, oDataField AS DataField) AS LOGIC
 		// override method in DataServer class because it does not allow
 		// to change size/decimals for numeric columns
 		LOCAL lRetVal AS LOGIC
@@ -236,19 +236,19 @@ PARTIAL CLASS SqlSelect INHERIT DataServer
 		//RETURN oStmt:SetStatementOption( fOption, uValue, TRUE )
 		RETURN TRUE
 
-	METHOD SetTimeStamp( uFieldPos, cTimestamp )
+	METHOD SetTimeStamp( uFieldPos AS USUAL, cTimeStamp AS STRING) AS VOID
 		LOCAL nIndex AS DWORD
 		LOCAL oErr		AS Error
-		LOCAL oColumn   AS SqlColumn
+		LOCAL oColumn   AS SQLColumn
 		nIndex := SELF:__GetColIndex( uFieldPos, TRUE )
 
 		IF ( nIndex = 0 .OR. nIndex > nNumCols )
 			oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__BADFLD ), #SetTimeStamp )
 			oErr := oStmt:ErrInfo
 			oErr:ArgNum := 1
-			oErr:Args := {uFieldPos, cTimestamp}
+			oErr:Args := {uFieldPos, cTimeStamp}
 			SELF:Error( oErr )
-			RETURN NIL
+			RETURN 
 		ENDIF
 
 		oColumn := aSQLColumns[nIndex]
@@ -256,27 +256,27 @@ PARTIAL CLASS SqlSelect INHERIT DataServer
 			oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__BADFLD ), #SetTimeStamp  )
 			oErr := oStmt:ErrInfo
 			oErr:ArgNum := 1
-			oErr:Args := {uFieldPos, cTimestamp}
+			oErr:Args := {uFieldPos, cTimeStamp}
 			SELF:Error( oErr )
-			RETURN NIL
+			RETURN 
 		ENDIF
 
 		IF ! IsString(cTimeStamp )
 			oStmt:__GenerateSQLError( __CavoStr( __CAVOSTR_SQLCLASS__BADPAR ), #SetTimeStamp  )
 			oErr := oStmt:ErrInfo
 			oErr:ArgNum := 2
-			oErr:Args := {uFieldPos, cTimestamp}
+			oErr:Args := {uFieldPos, cTimeStamp}
 			SELF:Error( oErr )
-			RETURN NIL
+			RETURN 
 		ENDIF
 
 		LOCAL oDT AS DateTime
 		oDT := DateTime.Parse(cTimeStamp)
 		SELF:FieldPut(nIndex, oDT)
-		RETURN cTimestamp
+		RETURN 
 
 
-	METHOD Skip( nSkip ) AS USUAL CLIPPER
+	METHOD Skip( nSkip ) AS LOGIC CLIPPER
 		LOCAL lOk AS LOGIC
 		LOCAL nRow AS LONG
 		SELF:lErrorFlag := FALSE
@@ -305,7 +305,7 @@ PARTIAL CLASS SqlSelect INHERIT DataServer
 				IF lOk
 					// Not yet on a boundary
 					SELF:nCurrentRow := nRow + nSkip
-					SELF:__CheckEof()
+					SELF:__CheckEOF()
 					// Notify clients of record change
 					SELF:Notify( NOTIFYRECORDCHANGE ,nSkip)
 				ENDIF
@@ -316,14 +316,14 @@ PARTIAL CLASS SqlSelect INHERIT DataServer
 		END TRY
 		RETURN lOk
 
-	METHOD SuspendNotification() AS USUAL CLIPPER
+	METHOD SuspendNotification() AS LONG STRICT
 		SELF:nNotifyCount := SELF:nNotifyCount + 1
 		RETURN nNotifyCount
 
-	METHOD UnLock( nRecordNumber ) 
+	METHOD UnLock( nRecordNumber ) AS LOGIC CLIPPER 
 		RETURN TRUE
 
-	METHOD Update(lUpdateFlag) 
+	METHOD Update(lUpdateFlag) AS LOGIC CLIPPER
 		LOCAL lRet          AS LOGIC
 		IF ! IsLogic(lUpdateFlag)
 			lUpdateFlag := TRUE
@@ -331,7 +331,7 @@ PARTIAL CLASS SqlSelect INHERIT DataServer
 		IF lUpdateFlag
 			lRet := SELF:__GoCold()
 		ELSE
-			lRet := SELF:Rejectchanges()
+			lRet := SELF:RejectChanges()
 		ENDIF
 		SELF:lChanges := FALSE
 		RETURN lRet

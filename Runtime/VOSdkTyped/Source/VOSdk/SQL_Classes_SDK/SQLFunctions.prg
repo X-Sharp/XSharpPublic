@@ -155,7 +155,7 @@ FUNCTION _SLen( c AS STRING ) AS SHORTINT STRICT
 
 STATIC CLASS SqlFunctions
 /*
-	STATIC METHOD SqlObject2Usual(oValue AS OBJECT, oFS := NULL AS FieldSpec, lDateTimeAsDate := TRUE AS LOGIC) AS USUAL
+	STATIC METHOD SqlObject2Usual(oValue AS OBJECT, oFs := NULL AS FieldSpec, lDateTimeAsDate := TRUE AS LOGIC) AS USUAL
 	LOCAL uValue AS USUAL  
 	LOCAL oType  AS System.Type
 	LOCAL oTC    AS TypeCode
@@ -173,7 +173,7 @@ STATIC CLASS SqlFunctions
 		CASE oTC == TypeCode.Decimal
 			LOCAL oDec AS System.Decimal
 			oDec := (System.Decimal) oValue                
-			IF oFS != NULL .and. oFS:Decimals == 0
+			IF oFs != NULL .and. oFs:Decimals == 0
 				TRY
 					IF oDec > (System.Decimal) System.Int32.MaxValue .or. oDec < (System.Decimal) System.Int32.MinValue
 						LOCAL oInt64 AS System.Int64
@@ -189,7 +189,7 @@ STATIC CLASS SqlFunctions
 				END TRY
 			ELSE
 				fValue := (System.Double) oDec
-				IF oFS != NULL_OBJECT
+				IF oFs != NULL_OBJECT
 					fValue:Decimals := (int) oFs:Decimals
 				ENDIF
 				uValue := fValue
@@ -236,8 +236,8 @@ STATIC CLASS SqlFunctions
 		OTHERWISE
 			uValue := oValue
 		ENDCASE
-		IF oFS != NULL
-			IF oFS:ValType == "D" 
+		IF oFs != NULL
+			IF oFs:ValType == "D" 
 				IF ! IsDate(uValue)
 					LOCAL oDT AS DateTime
 					oDT := Convert.ToDateTime((OBJECT) uValue)
@@ -247,7 +247,7 @@ STATIC CLASS SqlFunctions
 						uValue := oDT:ToString("yyyy-MM-dd HH:mm:ss.fff")
 					ENDIF
 				ENDIF
-			ELSEIF oFS:ValType == "L"
+			ELSEIF oFs:ValType == "L"
 				IF IsNumeric(uValue)
 					uValue := uValue != 0  
 				ELSEIF IsString(uValue)
@@ -305,7 +305,7 @@ STATIC CLASS SqlFunctions
 
        
 	STATIC METHOD CreateError(nErrCode AS DWORD, cMessage AS STRING)
-		LOCAL oError AS ERROR
+		LOCAL oError AS Error
 		oError 				:= Error{}
 		oError:FuncSym      := ProcName(1)
 		oError:Description  := cMessage
@@ -315,7 +315,7 @@ STATIC CLASS SqlFunctions
 		RETURN oError
 	
 	STATIC METHOD CreateError(e AS Exception) AS Error
-		LOCAL oError AS ERROR
+		LOCAL oError AS Error
 		oError 				:= Error{e}
 		oError:FuncSym      := ProcName(1)
 		oError:Description  := e:Message
@@ -391,7 +391,7 @@ END CLASS
 
 FUNCTION DotNetType2VOType(oSchema AS DataTable, oColumn AS DataColumn, cFieldName AS STRING) AS FieldSpec 
 		LOCAL cName AS STRING
-		LOCAL oHL AS Hyperlabel
+		LOCAL oHL AS HyperLabel
 		LOCAL nLen, nDec AS LONG
 		LOCAL cType AS STRING
 		LOCAL oType	AS System.Type
@@ -413,13 +413,13 @@ FUNCTION DotNetType2VOType(oSchema AS DataTable, oColumn AS DataColumn, cFieldNa
 				nLen 	:= 10
 				cType := "M"
 			ENDIF
-			oFS	:= FieldSpec{oHL,cType,nLen ,0 }
+			oFs	:= FieldSpec{oHL,cType,nLen ,0 }
 			
 		CASE TypeCode.Boolean
 			cType 	:= "L"
 			nLen 		:= 1
-			oFS 		:= LogicFS{oHL}
-			oFS:Picture := "Y"
+			oFs 		:= LogicFS{oHL}
+			oFs:Picture := "Y"
 			
 			
 		CASE TypeCode.Double
@@ -474,45 +474,45 @@ FUNCTION DotNetType2VOType(oSchema AS DataTable, oColumn AS DataColumn, cFieldNa
 				nDec := 2
 				nLen := 10
 			ENDIF
-			oFS	:= NumberFS{oHL,nLen, nDec}
+			oFs	:= NumberFS{oHL,nLen, nDec}
 			
 		CASE TypeCode.Int32		// -2147483647 - 2147483648 (2^31)
 			nLen := 11
-			oFS	:= FieldSpec{oHL,"N",nLen,0}
+			oFs	:= FieldSpec{oHL,"N",nLen,0}
                 
 		CASE TypeCode.Int64		// - 9223372036854775807 - 9223372036854775808 (2^63)
 			nLen := 21
-			oFS	:= FieldSpec{oHL,"N",nLen,0}
+			oFs	:= FieldSpec{oHL,"N",nLen,0}
                 
 		CASE TypeCode.Int16	// -32767 - 32768 (2^15)
 			nLen := 6
-			oFS	:= FieldSpec{oHL,"N",nLen,0}
+			oFs	:= FieldSpec{oHL,"N",nLen,0}
                 
 		CASE TypeCode.Byte
 			nLen := 4         		// -128  - 127 (2^7)
-			oFS	:= FieldSpec{oHL,"N",nLen,0}
+			oFs	:= FieldSpec{oHL,"N",nLen,0}
                 
 		CASE TypeCode.SByte	// 0 - 255 	(2^8)
 			nLen := 3
-			oFS	:= FieldSpec{oHL,"N",nLen,0}
+			oFs	:= FieldSpec{oHL,"N",nLen,0}
                 
-		CASE TypeCode.Uint16	// 0 - 65535 (2^16)
+		CASE TypeCode.UInt16	// 0 - 65535 (2^16)
 			nLen := 5
-			oFS	:= FieldSpec{oHL,"N",nLen,0}
+			oFs	:= FieldSpec{oHL,"N",nLen,0}
                 
-		CASE TypeCode.Uint32		// 0 - 4294836225 (2^32)
+		CASE TypeCode.UInt32		// 0 - 4294836225 (2^32)
 			nLen := 10
-			oFS	:= FieldSpec{oHL,"N",nLen,0}
+			oFs	:= FieldSpec{oHL,"N",nLen,0}
                 
-		CASE TypeCode.Uint64	// 0 - 18445618199572250625 (2^64)
+		CASE TypeCode.UInt64	// 0 - 18445618199572250625 (2^64)
 			nLen := 20
-			oFS	:= FieldSpec{oHL,"N",nLen,0}
+			oFs	:= FieldSpec{oHL,"N",nLen,0}
 			
 		CASE TypeCode.DateTime
 				
 			cType   := "D"
 			nLen 	:= 8
-			oFS	    := DateFS{oHL}
+			oFs	    := DateFS{oHL}
 			
 		CASE TypeCode.Object
 			LOCAL lIsDate AS LOGIC
@@ -521,7 +521,7 @@ FUNCTION DotNetType2VOType(oSchema AS DataTable, oColumn AS DataColumn, cFieldNa
 			// check to see if the datatype has a dbType
 			oMems := oType:GetMethods(BindingFlags.Public|BindingFlags.Static)
 			FOREACH oMem AS MethodInfo IN oMems
-				IF oMem:ReturnType == TypeOf(System.DateTime)  .AND. STRING.Compare(oMem:Name, "op_Explicit", StringComparison.OrdinalIgnoreCase) == 0
+				IF oMem:ReturnType == TypeOf(System.DateTime)  .AND. String.Compare(oMem:Name, "op_Explicit", StringComparison.OrdinalIgnoreCase) == 0
 					lIsDate := TRUE
 					lFound  := TRUE
 					EXIT
@@ -536,22 +536,22 @@ FUNCTION DotNetType2VOType(oSchema AS DataTable, oColumn AS DataColumn, cFieldNa
 					
 				cType := "D"
 				nLen 	:= 8
-				oFS	:= DateFS{oHL}
+				oFs	:= DateFS{oHL}
 			ELSE
 				cType 	:= "C"
 				nLen 	:= 10
-				oFS		:= FieldSpec{oHL,"C",10,0} 
+				oFs		:= FieldSpec{oHL,"C",10,0} 
 			ENDIF
 			
 		OTHERWISE
 			cType := "C"
 			nLen 	:= oColumn:MaxLength
 			IF (nLen > 0)
-				oFS	:= FieldSpec{oHL,"C",nLen,0}
+				oFs	:= FieldSpec{oHL,"C",nLen,0}
 			ELSE
 				cType := "M"
-				oFS := oFS	:= FieldSpec{oHL,"M",10,0}
+				oFs := oFs	:= FieldSpec{oHL,"M",10,0}
 			ENDIF
 			
         END SWITCH
-		RETURN oFS
+		RETURN oFs

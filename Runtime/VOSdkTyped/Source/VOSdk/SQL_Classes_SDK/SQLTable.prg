@@ -126,10 +126,10 @@ PARTIAL CLASS SQLTable INHERIT SQLSelect
             // build seek where list...
             cWhereSeek := NULL_STRING
             cOrderSeek := NULL_STRING
-            IF !IsNil(symCol)
-                IF UsualType( symCol ) = ARRAY
-                    FOR nIndex := 1 TO ALen( symCol )
-                        symColumn := symCol[nIndex]
+            IF !IsNil(SELF:SymCol)
+                IF UsualType( SELF:SymCol ) = ARRAY
+                    FOR nIndex := 1 TO ALen( SELF:SymCol )
+                        symColumn := SELF:SymCol[nIndex]
                         
                         cWhereSeek += cWhereSep + cQuote + __GetSymString( symColumn) + cQuote + cOperator
                         cWhereSep  := " and "
@@ -140,8 +140,8 @@ PARTIAL CLASS SQLTable INHERIT SQLSelect
                     NEXT
                 ELSE
                     
-                    cWhereSeek := cQuote + __GetSymString( symCol ) + cQuote + cOperator
-                    cOrderSeek := cQuote + __GetSymString( symCol ) + cQuote
+                    cWhereSeek := cQuote + __GetSymString( SELF:SymCol ) + cQuote + cOperator
+                    cOrderSeek := cQuote + __GetSymString( SELF:SymCol ) + cQuote
                 ENDIF
             ENDIF
         ENDIF
@@ -343,7 +343,7 @@ PARTIAL CLASS SQLTable INHERIT SQLSelect
         IF lRelationsActive
             //  nRelation means clear all relations
             IF IsNil( nRelation )
-				FOREACH oChild AS DataServer IN Aclone(aRelationChildren)
+				FOREACH oChild AS DataServer IN AClone(aRelationChildren)
 					oChild:Notify(NOTIFYCLEARRELATION )
 				NEXT
                 lRelationsActive := FALSE
@@ -467,7 +467,7 @@ PARTIAL CLASS SQLTable INHERIT SQLSelect
                 SUPER:Notify( kNotification, uDescription )
                 IF lRelationsActive
                     // file changed, need to reset any child relations
-					FOREACH oChild AS DataServer IN Aclone(aRelationChildren)
+					FOREACH oChild AS DataServer IN AClone(aRelationChildren)
 		                oChild:Notify( NOTIFYRELATIONCHANGE )
 					NEXT
                 ENDIF
@@ -490,7 +490,7 @@ PARTIAL CLASS SQLTable INHERIT SQLSelect
                 
                 IF lRelationsActive
                     // pass it on to my children
-					FOREACH oChild AS DataServer IN Aclone(aRelationChildren)
+					FOREACH oChild AS DataServer IN AClone(aRelationChildren)
 		                oChild:Notify( NOTIFYRELATIONCHANGE )
 					NEXT
                 ENDIF
@@ -501,7 +501,7 @@ PARTIAL CLASS SQLTable INHERIT SQLSelect
             ELSE   // event I don't know about
                 SUPER:Notify( kNotification, uDescription )
                 IF lRelationsActive
-					FOREACH oChild AS DataServer IN Aclone(aRelationChildren)
+					FOREACH oChild AS DataServer IN AClone(aRelationChildren)
 		                oChild:Notify(  kNotification,uDescription )
 					NEXT
                 ENDIF
@@ -546,7 +546,7 @@ PARTIAL CLASS SQLTable INHERIT SQLSelect
         ENDIF
     
     
-    METHOD Seek( symColumn, uValue, lSoftSeek ) AS USUAL CLIPPER
+    METHOD Seek( symColumn, uValue, lSoftSeek ) AS LOGIC CLIPPER
         
         LOCAL aArgs                              AS ARRAY
         IF ! IsNil(lSoftSeek )
@@ -599,10 +599,10 @@ PARTIAL CLASS SQLTable INHERIT SQLSelect
             ENDIF
             lRelationsActive := TRUE
             
-            IF ! ((SqlTable) oChild):__AcceptSelectiveRelation( SELF, uRelation, cRelation )
+            IF ! ((SQLTable) oChild):__AcceptSelectiveRelation( SELF, uRelation, cRelation )
                 RETURN FALSE
             ENDIF
-            ((SqlTable) oChild):Notify( NOTIFYRELATIONCHANGE )
+            ((SQLTable) oChild):Notify( NOTIFYRELATIONCHANGE )
         ENDIF
         
         RETURN TRUE

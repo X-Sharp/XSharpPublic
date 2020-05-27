@@ -11,9 +11,9 @@ USING System.Runtime.InteropServices
 USING System.Diagnostics
 
 [DebuggerDisplay( "{SQLString}" )] ;
-CLASS SqlStatement
+CLASS SQLStatement
 #region VO compatible Ivars
-	PROTECT oConn           AS SqlConnection
+	PROTECT oConn           AS SQLConnection
 	PROTECT cStatement      AS STRING
 	PROTECT oErrInfo        AS SQLErrorInfo
 	PROTECT lPrepFlag       AS LOGIC
@@ -287,7 +287,7 @@ METHOD Prepare()
 	TRY
 		SELF:oNetCmd:CommandText := cStatement
 		SELF:oNetCmd:Prepare()
-		FOR nPar := 1 TO Alen(SELF:aParams)
+		FOR nPar := 1 TO ALen(SELF:aParams)
 			LOCAL oPar AS DbParameter
 			LOCAL oOurPar AS SqlParameter
 			oOurPar := aParams[nPar]
@@ -344,7 +344,7 @@ METHOD __AllocStmt() AS LOGIC STRICT
 		lRet := TRUE
 	ENDIF
 	CATCH e AS Exception
-		SELF:__GenerateSQLError( "Beim Ausführen eines SQL-Statements ist ein Fehler aufgetreten. " + chr(13) + chr(10)  + chr(13) + chr(10) + e:Message  + chr(13) + chr(10)  + chr(13) + chr(10) + e:Stacktrace, #AllocStmt, e )
+		SELF:__GenerateSQLError( "Beim Ausführen eines SQL-Statements ist ein Fehler aufgetreten. " + chr(13) + chr(10)  + chr(13) + chr(10) + e:Message  + chr(13) + chr(10)  + chr(13) + chr(10) + e:StackTrace, #AllocStmt, e )
 		lRet := FALSE
 	END TRY
 	RETURN lRet
@@ -380,7 +380,7 @@ METHOD __FreeStmt( nOption AS WORD) AS LOGIC STRICT
 			ENDIF
 			oErrInfo:ErrorFlag := FALSE
 			IF nOption = SQL_DROP
-				SELF:oConn:__UnRegisterStmt( SELF )
+				SELF:oConn:__UnregisterStmt( SELF )
 				//SELF:oNetCmd:Dispose()
 				SELF:oNetCmd:= NULL_OBJECT
 			ENDIF
@@ -394,7 +394,7 @@ METHOD __FreeStmt( nOption AS WORD) AS LOGIC STRICT
 	RETURN lRet
 
 METHOD __GenerateSQLError( cErrorString AS STRING, symMethod AS SYMBOL, e := NULL AS Exception) AS SQLErrorInfo STRICT
-	oErrInfo := SqlErrorInfo{SELF, symMethod, e}
+	oErrInfo := SQLErrorInfo{SELF, symMethod, e}
 	oErrInfo:ErrorMessage := __CavoStr( __CAVOSTR_SQLCLASS__ODBC_VO ) +      ;
 		Symbol2String( ClassName( SELF ) ) +   ;
 		":" + Symbol2String( symMethod ) +    ;
@@ -447,7 +447,7 @@ METHOD __SetParameters( aNewParams AS ARRAY) AS LOGIC STRICT
 			oParam:InternalParam := TRUE
 		ENDIF
 		SELF:aParams[nIndex] := oParam
-	   nRetCode := oParam:bind(SELF, nIndex)
+	    nRetCode := oParam:Bind(SELF, nIndex)
 
 		IF ( nRetCode != SQL_SUCCESS )
 			SELF:MakeErrorInfo(SELF, #SetParameters)
@@ -463,13 +463,13 @@ METHOD __SetScrollOptions( nConcType AS DWORD, nKeySet AS DWORD, lAsync AS LOGIC
 #endregion
 #region Properties
 
-PROPERTY Connection AS SqlConnection GET oConn
+PROPERTY Connection AS SQLConnection GET oConn
 
 
 [Obsolete];
 PROPERTY CursorType AS LONG GET 0
 
-PROPERTY ErrInfo AS SqlErrorInfo GET oErrInfo SET oErrInfo := VALUE
+PROPERTY ErrInfo AS SQLErrorInfo GET oErrInfo SET oErrInfo := VALUE
 
 PROPERTY HyperLabel AS HyperLabel
     GET

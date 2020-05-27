@@ -7024,18 +7024,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 resolvelater = true;
             }
+            ExpressionSyntax mcall;
             if (_options.HasRuntime)
             {
-                var mcall = GenerateMethodCall(_options.XSharpRuntime ? XSharpQualifiedFunctionNames.Chr : VulcanQualifiedFunctionNames.Chr, argList);
-                mcall.XIsChr = resolvelater;
-                context.Put(mcall);
+                mcall = GenerateMethodCall(_options.XSharpRuntime ? XSharpQualifiedFunctionNames.Chr : VulcanQualifiedFunctionNames.Chr, argList);
             }
             else
             {
-                var mcall = GenerateMethodCall(context.Expr.GetText(), argList);
-                mcall.XIsChr = resolvelater;
-                context.Put(mcall);
+                mcall = GenerateMethodCall(context.Expr.GetText(), argList);
             }
+            mcall.XIsChr = resolvelater;
+            context.Put(mcall);
             return true;
         }
 

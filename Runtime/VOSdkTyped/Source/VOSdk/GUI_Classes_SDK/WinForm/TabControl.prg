@@ -9,7 +9,7 @@
 
 CLASS VOTabControl INHERIT System.Windows.Forms.TabControl IMPLEMENTS IVOControl, IVOControlInitialize
 	#include "PropControl.vh"
-	EXPORT BounceFocus:= FALSE AS LOGIC
+	PROPERTY BounceFocus AS LOGIC AUTO := FALSE
     PROPERTY VOTab AS XSharp.VO.TabControl GET (XSharp.VO.TabControl) SELF:Control
 
 	METHOD Initialize AS VOID STRICT

@@ -7,11 +7,11 @@
 
 CLASS VOProperties
 	DELEGATE StyleChanged_Delegate() AS VOID
-	EXPORT Style AS LONG 
-	EXPORT ExStyle AS  LONG 
-	EXPORT NotStyle AS LONG
-	EXPORT NotExStyle AS LONG
-	EVENT StyleChanged AS StyleChanged_Delegate
+	PROPERTY Style AS LONG      AUTO 
+	PROPERTY ExStyle AS  LONG   AUTO 
+	PROPERTY NotStyle AS LONG   AUTO 
+	PROPERTY NotExStyle AS LONG AUTO 
+    EVENT StyleChanged AS StyleChanged_Delegate
 	EVENT ExStyleChanged AS StyleChanged_Delegate
 
 	CONSTRUCTOR() STRICT
@@ -89,9 +89,9 @@ END CLASS
 DELEGATE WndProc(msg REF Message) AS VOID
 
 CLASS VOControlProperties INHERIT VOProperties
-	EXPORT oWFC AS System.Windows.Forms.Control 
-	EXPORT Control AS XSharp.VO.Control 
-	EXPORT Window AS XSharp.VO.Window
+	PROPERTY oWFC AS System.Windows.Forms.Control  AUTO GET PRIVATE SET
+	PROPERTY Control AS XSharp.VO.Control AUTO GET PRIVATE SET
+	PROPERTY Window AS XSharp.VO.Window AUTO GET PRIVATE SET
 	PROTECT _lHandleDoubleClickThroughMouseUp AS LOGIC
 
     PUBLIC EVENT OnWndProc AS WndProc
@@ -317,8 +317,8 @@ END CLASS
 
 
 CLASS VOFormProperties INHERIT VOProperties
-	EXPORT Form AS System.Windows.Forms.Form
-	EXPORT Window AS XSharp.VO.Window
+	PROPERTY Form AS System.Windows.Forms.Form  AUTO
+	PROPERTY Window AS XSharp.VO.Window         AUTO
 	
 	CONSTRUCTOR(oForm AS System.Windows.Forms.Form, oWindow AS XSharp.VO.Window)
 		SUPER()

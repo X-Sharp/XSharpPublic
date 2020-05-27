@@ -46,7 +46,7 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
 	PROTECT lUseHLForToolTip     AS LOGIC
 	PROTECT oControlWindow		 AS ControlWindow
 	
-	EXPORT EventReturnValue      AS LONGINT
+	PROPERTY EventReturnValue      AS LONGINT AUTO
 
 	PROPERTY __IsValid		AS LOGIC GET oCtrl != NULL_OBJECT .and. ! oCtrl:IsDisposed
     PROPERTY ControlType    AS Controltype GET ControlType.Control

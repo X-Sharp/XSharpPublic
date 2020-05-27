@@ -126,7 +126,7 @@ END CLASS
 
 
 CLASS VOColumnHeader INHERIT System.Windows.Forms.ColumnHeader
-	EXPORT Column AS XSharp.VO.ListViewColumn
+	PROPERTY Column AS XSharp.VO.ListViewColumn AUTO
 	
 	METHOD LinkTo(oColumn AS XSharp.VO.ListViewColumn) AS VOID STRICT
 		SELF:Column := oColumn
@@ -143,7 +143,7 @@ END CLASS
 
 
 CLASS VOListViewItem INHERIT System.Windows.Forms.ListViewItem
-	EXPORT Item AS XSharp.VO.ListViewItem
+	PROPERTY Item AS XSharp.VO.ListViewItem AUTO 
 	
 	
 	METHOD LinkTo(oItem AS XSharp.VO.ListViewItem) AS VOID STRICT

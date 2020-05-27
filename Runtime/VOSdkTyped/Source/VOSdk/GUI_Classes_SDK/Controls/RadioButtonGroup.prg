@@ -211,7 +211,7 @@ CLASS RadioButtonGroup INHERIT GroupBox
 		RETURN 
 
 
-	METHOD SetFocus() AS VOID
+	METHOD SetFocus() AS VOID STRICT
 		LOCAL oRB AS RadioButton
 		IF wPressedButton != 0     
 			oRB := aButtons[wPressedButton] 

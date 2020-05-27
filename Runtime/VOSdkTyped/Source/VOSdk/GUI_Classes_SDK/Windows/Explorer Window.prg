@@ -63,10 +63,8 @@ CLASS ExplorerWindow INHERIT SplitWindow
 	PROTECT oTreeView	AS TreeView
 	PROTECT oListView	AS ListView
 
-	METHOD __FocusLV AS ExplorerWindow STRICT 
-	
-
-	oListView:SetFocus()
+METHOD __FocusLV AS ExplorerWindow STRICT 
+    oListView:SetFocus()
 	RETURN SELF
 
 METHOD __FocusTV AS ExplorerWindow STRICT 
@@ -129,9 +127,7 @@ CONSTRUCTOR(oOwner, lLabels, symTreeViewClassName, symListViewClassName)
 
 		// create the pane clients
 		oTreeView := CreateInstance(symTreeViewClassName, SELF, 1001, Point{}, Dimension{}, TVS_SHOWSELALWAYS)
-        oTreeView:BackGround := Brush{Color{0,128,0}}
 		oListView := CreateInstance(symListViewClassName, SELF, 1002, Point{}, Dimension{}, _OR(LVS_SHOWSELALWAYS, LVS_AUTOARRANGE))
-        oTreeView:BackGround := Brush{Color{128,0,0}}
 		// associate the clients with the respective panes
 		SELF:SetPaneClient(oTreeView, 1)
 		SELF:SetPaneClient(oListView, 2)

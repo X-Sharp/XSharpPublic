@@ -2500,11 +2500,11 @@ PARTIAL CLASS Window INHERIT @@EventContext IMPLEMENTS IGuiObject, IControlParen
 		RETURN dwExStyle
 	
 
-	METHOD SetFocus() 
-		IF SELF:__IsValid  .and. oWnd:Visible
+	METHOD SetFocus() AS VOID STRICT
+		IF SELF:__IsValid  .AND. oWnd:Visible
 			oWnd:Focus()
 		ENDIF
-		RETURN SELF
+		RETURN 
 	
 
 	METHOD SetHandle(oNewWnd AS VOForm) 

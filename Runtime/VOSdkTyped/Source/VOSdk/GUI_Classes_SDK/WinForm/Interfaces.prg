@@ -38,6 +38,7 @@ INTERFACE IGuiObject
 	METHOD   Destroy()	AS USUAL CLIPPER
     METHOD   Show()     AS VOID STRICT
     METHOD   Hide()     AS VOID STRICT
+    METHOD   SetFocus() AS VOID STRICT
         
 END INTERFACE
 

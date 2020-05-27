@@ -1,0 +1,89 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Designers>
+  <VOWindow Name="HelpAboutDialog">
+    <Window Name="HelpAboutDialog">
+      <Name>HelpAboutDialog</Name>
+      <Class>FORM:DIALOGWINDOW</Class>
+      <Caption>About Explorer Sample...</Caption>
+      <Order>0</Order>
+      <Left>5</Left>
+      <Top>5</Top>
+      <Width>309</Width>
+      <Height>137</Height>
+      <BrowseIndex>0</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>3233808516</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"About Explorer Sample..."</HyperLabel>
+        <HyperLabel>"HelpAboutDialog"</HyperLabel>
+      </ExProperties>
+    </Window>
+    <Control Name="Label1">
+      <Name>Label1</Name>
+      <Class>CONTROL:TEXTCONTROL:FIXEDTEXT</Class>
+      <Caption>CA-Visual Objects 2.5a</Caption>
+      <Order>1</Order>
+      <Left>11</Left>
+      <Top>11</Top>
+      <Width>280</Width>
+      <Height>20</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073741825</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"CA-Visual Objects 2.5a"</HyperLabel>
+        <HyperLabel>"Label1"</HyperLabel>
+      </ExProperties>
+    </Control>
+    <Control Name="Label2">
+      <Name>Label2</Name>
+      <Class>CONTROL:TEXTCONTROL:FIXEDTEXT</Class>
+      <Caption>Explorer Sample</Caption>
+      <Order>2</Order>
+      <Left>11</Left>
+      <Top>41</Top>
+      <Width>280</Width>
+      <Height>20</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073741825</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"Explorer Sample"</HyperLabel>
+        <HyperLabel>"Label2"</HyperLabel>
+      </ExProperties>
+    </Control>
+    <Control Name="EndDialog">
+      <Name>EndDialog</Name>
+      <Class>CONTROL:TEXTCONTROL:BUTTON:PUSHBUTTON</Class>
+      <Caption>OK</Caption>
+      <Order>3</Order>
+      <Left>111</Left>
+      <Top>81</Top>
+      <Width>80</Width>
+      <Height>22</Height>
+      <BrowseIndex>-1</BrowseIndex>
+      <BrowseSize>0</BrowseSize>
+      <SubForm>No</SubForm>
+      <NoSave>No</NoSave>
+      <Deleted>0</Deleted>
+      <Styles>1073807361</Styles>
+      <ExStyles>0</ExStyles>
+      <ExProperties>
+        <HyperLabel>,"OK"</HyperLabel>
+        <HyperLabel>"EndDialog"</HyperLabel>
+      </ExProperties>
+    </Control>
+  </VOWindow>
+</Designers>

@@ -84,11 +84,11 @@ CLASS ControlWindow INHERIT Window
 	METHOD Override() 
 		RETURN NIL
 
-	METHOD SetFocus() 
+	METHOD SetFocus() AS VOID STRICT
 		IF oCtrl:__IsValid
 			oCtrl:SetFocus()
 		ENDIF
-		RETURN SELF
+		RETURN 
 
 	METHOD Show(nShowState AS LONG ) AS VOID
 		oSurface:Show()

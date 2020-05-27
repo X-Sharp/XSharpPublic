@@ -4,13 +4,12 @@ STATIC DEFINE __WCMdiFirstChildID := 0x8001
 USING SWF := System.Windows.Forms
 
 CLASS ShellWindow INHERIT AppWindow
-	PROTECT oWndClient	AS SWF.MdiClient
+	PROTECT oWndClient	AS System.Windows.Forms.MdiClient
 	PROTECT lOpened		AS LOGIC
 	PROTECT lUsingChildMenu AS LOGIC
 	PROTECT oActualMenu	AS XSharp.VO.Menu
 	PROTECT oSavedTB	AS XSharp.VO.ToolBar
 	PROTECT iChildTBLoc AS INT
-	//PRIVATE oNMDI AS NativeMDIclient
 	
 	METHOD enableScrollBars(enable AS LOGIC) AS VOID
 	//SELF:oNMDI:hideScrollbars := !enable
@@ -31,10 +30,18 @@ CLASS ShellWindow INHERIT AppWindow
 		FOREACH oCtrl AS System.Windows.Forms.Control IN oShell:Controls
 			IF oCtrl:GetType() == typeof(System.Windows.Forms.MdiClient)
 				SELF:oWndClient := (System.Windows.Forms.MdiClient) oCtrl
-				//oNMDI := NativeMDIclient{(System.Windows.Forms.MdiClient)oCtrl}
+                SELF:oWndClient:ControlRemoved += OnMdiDeleted
 			ENDIF
-		NEXT
+        NEXT
+        
 		RETURN oShell
+
+    PRIVATE METHOD OnMdiDeleted(sender AS OBJECT, e AS System.Windows.Forms.ControlEventArgs) AS VOID
+        IF SELF:oWndClient:Controls:Count == 0
+            SELF:lUsingChildMenu := FALSE
+            SELF:Menu := SELF:oActualMenu
+        ENDIF
+        RETURN
 
 	ACCESS __Shell AS VOShellForm
 		RETURN (VOShellForm) __Form
@@ -46,26 +53,6 @@ CLASS ShellWindow INHERIT AppWindow
 	[Obsolete];
 	METHOD __AdjustClient() AS LOGIC STRICT 
 		RETURN TRUE
-	
-
-	//[Obsolete];
-	//METHOD __AssociateAccel(lSwitch AS LOGIC) AS Window STRICT 
-		// Todo
-		//LOCAL oWndChild AS PTR
-		//LOCAL oWindow AS OBJECT
-		
-		
-		
-		//oWndChild := PTR(_CAST, SendMessage(oWndClient, WM_MDIGETACTIVE, 0, 0))
-		//IF (oWndChild != NULL_PTR)
-		//	oWindow := __WCGetWindowByHandle(oWndChild)
-		//	IF (oWindow != NULL_OBJECT)
-		//		Send(oWindow, #__AssociateAccel, lSwitch)
-		//		RETURN SELF
-		//	ENDIF
-		//ENDIF
-		
-		//RETURN SUPER:__AssociateAccel(lSwitch)
 	
 
 	METHOD __RemoveChildToolBar() AS XSharp.VO.ToolBar STRICT 
@@ -316,10 +303,6 @@ CLASS ShellWindow INHERIT AppWindow
 		ENDIF			
 	
 
-	//METHOD HelpRequest(oHelpRequestEvent) 
-	//	SUPER:HelpRequest(oHelpRequestEvent)
-	//	RETURN NIL
-	
 	CONSTRUCTOR(oOwner) 
 		LOCAL oScreen AS System.Windows.Forms.Screen
 		SUPER(oOwner)
@@ -335,11 +318,10 @@ CLASS ShellWindow INHERIT AppWindow
 		nAuto := oNewMenu:GetAutoUpdate()
 		IF nAuto >= 0 .and. nAuto < oNewMenu:__Menu:MenuItems:Count
 			oNewMenu:__Menu:MenuItems[nAuto]:MdiList := TRUE
-		ENDIF
-		
+        ENDIF
+	    SELF:oActualMenu := oNewMenu
 		RETURN 
 	
-
 	METHOD OnOleStatusMessage(cMsgString) 
 		IF SELF:StatusBar != NULL_OBJECT
 			SELF:StatusBar:MenuText := cMsgString
@@ -347,12 +329,7 @@ CLASS ShellWindow INHERIT AppWindow
 		RETURN SELF
 	
 
-	METHOD Resize(oResizeEvent) 
-		// Toolbar is resized automatically		
-		RETURN SUPER:Resize(oResizeEvent)
-	
-
-	ASSIGN StatusBar(oNewBar As StatusBar) 
+	ASSIGN StatusBar(oNewBar AS StatusBar) 
 		SUPER:StatusBar := oNewBar
 		RETURN 
 	

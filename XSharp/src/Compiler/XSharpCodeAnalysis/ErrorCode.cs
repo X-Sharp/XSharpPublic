@@ -1717,6 +1717,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         WRN_IllegalPPOption = 9096,
         ERR_CaseDifference = 9097,
         WRN_UndeclaredMember = 9098,
+        ERR_PublicInit = 9099,
 
         // XPP dialect Error messages
         ERR_XPPMultipleInheritance = 9200,

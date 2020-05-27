@@ -319,6 +319,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         exp = GenerateMemVarPut(GenerateLiteral(name), context.Expression.Get<ExpressionSyntax>());
                         stmts.Add(GenerateExpressionStatement(exp));
                     }
+                    else if (context.ArraySub != null)
+                    {
+                        var args = new List<ArgumentSyntax>();
+                        foreach (var index in context.ArraySub._ArrayIndex)
+                        {
+                            args.Add(MakeArgument(index.Get<ExpressionSyntax>()));
+                        }
+                        var initializer = GenerateMethodCall(XSharpQualifiedFunctionNames.ArrayNew, MakeArgumentList(args.ToArray()), true);
+                        exp = GenerateMemVarPut(GenerateLiteral(name), initializer);
+                        stmts.Add(GenerateExpressionStatement(exp));
+
+                    }
                     else
                     {
                         // Assign FALSE to PUBLIC variables or TRUE when the name is CLIPPER
@@ -999,6 +1011,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             _memvars.Add(mv.Name, mv);
                             GlobalEntities.FileWidePublics.Add(mv);
                         }
+                        // Code generation for initialization is done in CreateInitFunction()
                     }
                 }
                 else
@@ -1087,12 +1100,28 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
                         var exp = GenerateMemVarDecl(varname, isprivate);
                         stmts.Add(GenerateExpressionStatement(exp));
+                        ExpressionSyntax initializer = null;
                         if (memvar.Expression != null)
                         {
-                            exp = GenerateMemVarPut(varname, memvar.Expression.Get<ExpressionSyntax>());
+                            initializer = memvar.Expression.Get<ExpressionSyntax>();
+                        }
+                        else if (memvar.ArraySub != null)
+                        {
+                            var args = new List<ArgumentSyntax>();
+                            foreach (var index in memvar.ArraySub._ArrayIndex)
+                            {
+                                args.Add(MakeArgument(index.Get<ExpressionSyntax>()));
+                            }
+                            initializer = GenerateMethodCall(XSharpQualifiedFunctionNames.ArrayNew, MakeArgumentList(args.ToArray()), true);
+                        }
+                        if (initializer != null)
+                        {
+                            exp = GenerateMemVarPut(varname, initializer);
+
                             var stmt = GenerateExpressionStatement(exp);
                             memvar.Put(stmt);
                             stmts.Add(stmt);
+
                         }
                         // no need to assign a default. The runtime takes care of that
                     }

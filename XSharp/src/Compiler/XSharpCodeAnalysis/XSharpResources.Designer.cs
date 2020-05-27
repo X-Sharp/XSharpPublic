@@ -8666,6 +8666,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Public declarations cannot have both an array specification and an initialization value..
+        /// </summary>
+        internal static string ERR_PublicInit {
+            get {
+                return ResourceManager.GetString("ERR_PublicInit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Error signing output with public key from container &apos;{0}&apos; -- {1}.
         /// </summary>
         internal static string ERR_PublicKeyContainerFailure {

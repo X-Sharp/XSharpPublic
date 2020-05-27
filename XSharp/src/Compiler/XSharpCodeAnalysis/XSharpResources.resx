@@ -5718,4 +5718,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="ERR_IllegalCombinationOfCommandLineOptions" xml:space="preserve">
     <value>Illegal combination of commandline options: {0}.</value>
   </data>
+  <data name="ERR_PublicInit" xml:space="preserve">
+    <value>Public declarations cannot have both an array specification and an initialization value.</value>
+  </data>
 </root>

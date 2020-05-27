@@ -662,13 +662,13 @@ xbasedecl           : T=(MEMVAR|PARAMETERS|LPARAMETERS)      // MEMVAR  Foo, Bar
                       Vars+=identifierName (COMMA Vars+=identifierName)*
                       end=eos
                     | T=(PRIVATE | PUBLIC) 
-                      XVars+=xbasevar (COMMA XVars+=xbasevar)*   // PRIVATE Foo := 123,  PUBLIC Bar
+                      XVars+=xbasevar (COMMA XVars+=xbasevar)*   // PRIVATE Foo := 123,  PUBLIC Bar, PUBLIC MyArray[5,2]
                       end=eos 
                     // FoxPro dimension statement
                     | T=(DIMENSION|DECLARE) DimVars += dimensionVar (COMMA DimVars+=dimensionVar)*    end=eos 
                     ;
 
-xbasevar            : (Amp=AMP)?  Id=identifierName (Op=assignoperator Expression=expression)?
+xbasevar            : (Amp=AMP)?  Id=identifierName (LBRKT ArraySub=arraysub RBRKT)? (Op=assignoperator Expression=expression)?
                     ;
 
 dimensionVar        : Id=identifierName  ( LBRKT ArraySub=arraysub RBRKT | LPAREN ArraySub=arraysub RPAREN ) (AS DataType=datatype)?

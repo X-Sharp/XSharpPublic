@@ -877,6 +877,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_DynamicVariablesNotAllowed));
             }
         }
+        public override void ExitXbasevar([NotNull] XSharpParser.XbasevarContext context)
+        {
+            if (context.Expression != null && context.ArraySub != null)
+            {
+                // can't have both an array specification and a initialization value
+                _parseErrors.Add(new ParseErrorData(context, ErrorCode.ERR_PublicInit));
+            }
+        }
+
         public override void ExitFilewidememvar([NotNull] XSharpParser.FilewidememvarContext context)
         {
             if (_options.Dialect == XSharpDialect.Core)

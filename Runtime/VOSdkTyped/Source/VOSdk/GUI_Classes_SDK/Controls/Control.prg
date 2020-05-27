@@ -1296,7 +1296,7 @@ CLASS Control INHERIT VObject IMPLEMENTS IGuiObject, ITimer
 		RETURN 
 	
 
-	METHOD SetFocus() AS VOID
+	METHOD SetFocus() AS VOID STRICT
 		
 		IF SELF:ValidateControl()
 			oCtrl:Focus()

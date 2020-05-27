@@ -161,12 +161,12 @@ CLASS SplitView INHERIT Control
             SELF:__SetPanelClient(SELF:__GetPanel(nI), SELF:_aPanes[nI-1])
         NEXT
         oMain:ResumeLayout(TRUE)
+        oMain:PerformLayout()
         RETURN
         
     PRIVATE METHOD _AddControl(nOrientation AS System.Windows.Forms.Orientation) AS VOSplitContainer
         VAR oCtrl := (VOSplitContainer) GuiFactory.Instance:CreateControl(SELF:ControlType, SELF, 0, 0)
         oCtrl:Orientation := nOrientation
-        oCtrl:Dock        := System.Windows.Forms.DockStyle.Fill
         oCtrl:SplitterMoved  += SplitterMoved
         oCtrl:SplitterMoving += SplitterMoving
         oCtrl:IsSplitterFixed := TRUE
@@ -195,7 +195,6 @@ CLASS SplitView INHERIT Control
 	METHOD Create() AS System.Windows.Forms.Control
 		VAR oMain := SUPER:Create()
         SELF:__AdjustSize()
-        oMain:Dock        := System.Windows.Forms.DockStyle.Fill
         RETURN oMain
 
 

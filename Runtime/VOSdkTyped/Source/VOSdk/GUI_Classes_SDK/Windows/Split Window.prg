@@ -3,35 +3,22 @@ USING SWF := System.Windows.Forms
 
 CLASS SplitWindow INHERIT ChildAppWindow
 	PROTECT oSplitView	AS SplitView
-	PROTECT lInDestroy AS LOGIC
 
-	METHOD __ResizeSplitView() AS VOID STRICT 
-		//Corrects a two pixel horizontal sizing mismatch.
-		//LOCAL rect   IS _WINRECT
-		//LOCAL yPoint AS INT
-		//LOCAL oTB    AS ToolBar
-		//LOCAL oSB    AS StatusBar
-
-		//IF oSplitView != NULL_OBJECT
-
-		//	GetClientRect(hWnd, @rect)
-
-		//	yPoint := 0
-
-		//	IF (oTB := SELF:ToolBar) != NULL_OBJECT
-		//		yPoint := oTB:Size:Height
-		//		rect:bottom -= yPoint
-		//	ENDIF
-
-		//	IF (oSB := SELF:StatusBar) != NULL_OBJECT
-		//		rect:bottom -= oSB:Size:Height
-		//	ENDIF
-
-		//	SetWindowPos(oSplitView:Handle(), 0, 0, yPoint, rect:right, rect:bottom, _OR(SWP_NOZORDER, SWP_NOACTIVATE))
-
-		//ENDIF
-
-		RETURN
+	METHOD __ResizeSplitView() AS VOID STRICT
+        VAR oc := oSplitView:__Control
+        IF SELF:IsVisible()
+            SELF:__Form:SuspendLayout()
+            IF SELF:ToolBar != NULL_OBJECT
+                VAR nTb := SELF:ToolBar:Size:Height
+                oc:Location := Point{0, nTb}
+                oc:Size     := Dimension{SELF:Size:Width, SELF:Size:Height - nTb}
+            ELSE
+                oc:Location := Point{0, 0}
+                oc:Size     := SELF:Size
+            ENDIF
+            SELF:__Form:ResumeLayout(TRUE)
+        ENDIF
+ 		RETURN
 
 
 	PROPERTY __SplitView AS SplitView GET oSplitView
@@ -43,19 +30,15 @@ CLASS SplitWindow INHERIT ChildAppWindow
 		RETURN NULL_OBJECT
 
 	ASSIGN Background(oBrush AS Brush) 
-		
 		oSplitView:Background := oBrush
+        RETURN
 
 	METHOD ChangeBackground(oBrush, kWhere) 
-		
 		oSplitView:ChangeBackground(oBrush, kWhere)
 		RETURN SELF
 
 	METHOD Destroy() AS USUAL CLIPPER
-		
-
 		// if not in garbage collection, destroy the split view control
-		lInDestroy := TRUE
 		IF oSplitView != NULL_OBJECT
 			oSplitView:Destroy()
 			oSplitView := NULL_OBJECT
@@ -64,39 +47,27 @@ CLASS SplitWindow INHERIT ChildAppWindow
 
 		RETURN SELF
 
-	METHOD Dispatch(oEvent) 
-		//LOCAL oEvt := oEvent AS @@Event
-		//LOCAL oPane AS OBJECT
-
-		//IF (oEvt:uMsg == WM_NCACTIVATE) .and. LOGIC(_CAST, oEvt:wParam)
-		//	InvalidateRect(hwnd, NULL_PTR, TRUE)
-		//ELSEIF (oEvt:uMsg == WM_SETFOCUS) .and. !lInDestroy .and. (oSplitView != NULL_OBJECT)
-		//	oPane := oSplitView:GetPaneClient(1)
-		//	IF (oPane != NULL_OBJECT) .and. IsWindow(oPane:Handle()) .and. !IsInstanceOf(oPane, #DialogWindow)
-		//		SetFocus(Send(oPane, #Handle))
-		//	ENDIF
-		//ENDIF
-
+	METHOD Dispatch(oEvent)
+        LOCAL oEvt := oEvent AS Event
+		IF (oEvt:uMsg == WM_SETFOCUS) .AND. oSplitView != NULL_OBJECT
+			VAR oPane := oSplitView:GetPaneClient(1)
+			IF (oPane != NULL_OBJECT) .AND.  ! (oPane IS DialogWindow)
+				oPane:SetFocus()
+			ENDIF
+		ENDIF
 		RETURN SUPER:Dispatch(oEvent)
 
-	METHOD EnableStatusBar(lEnable as Logic)  as StatusBar
-		
-
+	METHOD EnableStatusBar(lEnable AS LOGIC)  AS StatusBar
 		SUPER:EnableStatusBar(lEnable)
 		SELF:__ResizeSplitView()
-
 		RETURN SELF:StatusBar
 
 	METHOD GetAllChildren() AS ARRAY STRICT
-		//RvdH 060519 Added, so all pane clients are also returned
-		//SE-060520
 		LOCAL aChildren AS ARRAY
-
 		aChildren := SUPER:GetAllChildren()
 		IF oSplitView != NULL_OBJECT
 			aChildren := oSplitView:GetAllPaneClients(aChildren)
 		ENDIF
-
 		RETURN aChildren
 
 	METHOD GetPaneClient(nPane AS LONG)  AS OBJECT
@@ -108,7 +79,6 @@ CLASS SplitWindow INHERIT ChildAppWindow
 	METHOD HidePane(nPane AS LONG)  AS VOID
 		SELF:oSplitView:HidePane(nPane)
 		RETURN 
-
 
 	ACCESS HorizontalAlign AS LOGIC
 		RETURN oSplitView:HorizontalAlign
@@ -123,8 +93,6 @@ CLASS SplitWindow INHERIT ChildAppWindow
 		LOCAL oDimension	AS Dimension
 		LOCAL nOffsetTop	AS INT
 		LOCAL nOffsetBottom	AS INT
-
-		
 
 		IF IsObject(oOwner)
 			oObject := oOwner
@@ -170,7 +138,9 @@ CLASS SplitWindow INHERIT ChildAppWindow
 
 		oSplitView := SplitView{SELF, 1000, oPoint, oDimension, lHorizontalDrag, lVerticalDrag, kAlignment}
 		oSplitView:Show()
-
+        oSplitView:__Control:Anchor := System.Windows.Forms.AnchorStyles.Bottom+System.Windows.Forms.AnchorStyles.Left+System.Windows.Forms.AnchorStyles.Right+System.Windows.Forms.AnchorStyles.Top
+        oSplitView:__Control:Location := Point{0,0}
+        oSplitView:__Control:Size     := SELF:Size
 		RETURN 
 
 	ACCESS Layout AS Dimension
@@ -180,10 +150,7 @@ CLASS SplitWindow INHERIT ChildAppWindow
 		oSplitView:Layout := oDimension
 
 	METHOD Resize(oResizeEvent) 
-
 		SUPER:Resize(oResizeEvent)
-		SELF:__ResizeSplitView()
-
 		RETURN NIL
 
 	METHOD RestoreUpdate AS VOID
@@ -200,11 +167,8 @@ CLASS SplitWindow INHERIT ChildAppWindow
         SELF:Show(SW_NORMAL, -1)
         
 	METHOD Show(nShowState AS LONG, nPane AS LONG) AS VOID
-
 		SUPER:Show(nShowState)
-		SELF:__ResizeSplitView()
 	    oSplitView:ShowPane(nPane)
-
 		RETURN 
 
 	METHOD ShowPane(nPane AS LONG)  AS VOID
@@ -229,12 +193,11 @@ CLASS SplitWindow INHERIT ChildAppWindow
 
 	ASSIGN ToolBar(oNewToolBar as Toolbar) 
 		SUPER:Toolbar := oNewToolBar
-		SELF:__ResizeSplitView()
-
+        SELF:__ResizeSplitView()
 		RETURN 
 
-	METHOD ToolBarHeightChanged(oControlNotifyEvent) 
-		SELF:__ResizeSplitView()
+	METHOD ToolBarHeightChanged(oControlNotifyEvent)
+        SELF:__ResizeSplitView()
 		RETURN SELF
 
 	ACCESS VerticalAlign AS LOGIC

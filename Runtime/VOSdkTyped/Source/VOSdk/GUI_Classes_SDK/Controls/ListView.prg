@@ -1208,11 +1208,8 @@ CLASS ListViewColumn INHERIT VObject
 			oHeader:AutoResize(System.Windows.Forms.ColumnHeaderAutoResizeStyle.ColumnContent)
 		ELSE
 			IF nNewWidth > 0
-				IF SELF:Owner != NULL_OBJECT
-					oHeader:Width := ListView.ListView_GetStringWidth(SELF:Owner:Handle(), replicate("M", (DWORD) nNewWidth))
-				ELSE
-					oHeader:Width := nNewWidth
-				ENDIF
+				//oHeader:Width := nNewWidth *2
+                oHeader:AutoResize(System.Windows.Forms.ColumnHeaderAutoResizeStyle.ColumnContent)
 			ELSE
 				oHeader:Width := nNewWidth * -1
 			ENDIF
@@ -1415,7 +1412,6 @@ END CLASS
 #using System.Reflection
 CLASS ListViewItemComparer IMPLEMENTS IComparer
 	PROTECT oListView AS ListView
-	PROTECT oMethodInfo AS System.Reflection.MethodInfo
 	PROTECT symMethod AS SYMBOL	  
 	CONSTRUCTOR(oLv AS ListView)
 		oListView := oLv
@@ -1423,31 +1419,16 @@ CLASS ListViewItemComparer IMPLEMENTS IComparer
 	PUBLIC METHOD Compare(x AS OBJECT , y AS OBJECT ) AS INT
 		IF oListView:__SortRoutineName != NULL_SYMBOL
 			IF oListView:__SortRoutineName != symMethod 
-				SELF:GetMethodInfo()
-				IF oMethodInfo != NULL_OBJECT
+				IF IsMethod(oListView, oListView:__SortRoutineName)
 					symMethod := oListView:__SortRoutineName
 				ENDIF
 			ENDIF
-			IF oMethodInfo != NULL_OBJECT
-				LOCAL oPars AS OBJECT[]
-				oPars := OBJECT[]{2}
-				LOCAL oItem1 AS VOListViewItem
-				LOCAL oItem2 AS VOListViewItem
-				oItem1 := (VOListViewItem) x
-				oItem2 := (VOListViewItem) y
-				oPars[1] := oItem1:Item
-				oPars[2] := oItem2:Item
-				RETURN (INT) oMethodInfo:Invoke(oListView, oPars)
+			IF symMethod != NULL_SYMBOL
+				VAR oItem1 := (VOListViewItem) x
+				VAR oItem2 := (VOListViewItem) y
+                RETURN __InternalSend(oListview, symMethod, oItem1:Item, oItem2:Item)
 			ENDIF
 		ENDIF
 		RETURN 0
-    PROTECTED METHOD GetMethodInfo() AS VOID
-		LOCAL oType AS System.Type
-		LOCAL cMethod AS STRING
-		oMethodInfo := NULL_OBJECT
-		oType := oListView:GetType()
-		cMethod := oListView:__SortRoutineName:ToString()
-		oMethodInfo := oType:GetMethod(cMethod, BindingFlags.Instance+ BindingFlags.PUBLIC+BindingFlags.IgnoreCase)
-		RETURN 
 	
 END CLASS

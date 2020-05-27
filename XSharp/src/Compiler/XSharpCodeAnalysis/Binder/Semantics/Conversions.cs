@@ -455,7 +455,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                     {
                         if (Compilation.Options.Dialect.AllowPointerMagic())
                         {
-                            return Conversion.Unboxing;
+                            // not really boxing, but this is handled in UnBoxXSharpType 
+                            return Conversion.Boxing;
                         }
                     }
                 }

@@ -46,14 +46,11 @@ namespace Microsoft.CodeAnalysis.CSharp
         private ConversionKind UnBoxXSharpType(ref BoundExpression rewrittenOperand, ConversionKind conversionKind, TypeSymbol rewrittenType)
         {
 
-            if (conversionKind == ConversionKind.Unboxing)
+            if (rewrittenType.IsPointerType() && rewrittenOperand.Type.IsObjectType() && _compilation.Options.Dialect.AllowPointerMagic())
             {
-                if (rewrittenType.IsPointerType() && rewrittenOperand.Type.IsObjectType() && _compilation.Options.Dialect.AllowPointerMagic())
-                {
-                    rewrittenOperand = new BoundConversion(rewrittenOperand.Syntax, rewrittenOperand,
-                                            Conversion.Unboxing, false, false, null, _compilation.GetSpecialType(SpecialType.System_IntPtr));
-                    conversionKind = ConversionKind.Identity;
-                }
+                rewrittenOperand = new BoundConversion(rewrittenOperand.Syntax, rewrittenOperand,
+                                        Conversion.Unboxing, false, false, null, _compilation.GetSpecialType(SpecialType.System_IntPtr));
+                conversionKind = ConversionKind.Identity;
                 return conversionKind;
             }
             // else it's boxing

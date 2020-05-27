@@ -790,10 +790,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // Check to see if the name is a field or Memvar, registered with the FIELD or MemVar statement
             string Name = context.Name.GetText();
             ExpressionSyntax expr = context.Name.Get<NameSyntax>();
-            MemVarFieldInfo fieldInfo = findMemVar(Name);
-            if (fieldInfo != null)
+            if (! (context.Parent.Parent  is XP.MethodCallContext))
             {
-                expr = MakeMemVarField(fieldInfo);
+                MemVarFieldInfo fieldInfo = findMemVar(Name);
+                if (fieldInfo != null)
+                {
+                    expr = MakeMemVarField(fieldInfo);
+                }
             }
             context.Put(expr);
         }

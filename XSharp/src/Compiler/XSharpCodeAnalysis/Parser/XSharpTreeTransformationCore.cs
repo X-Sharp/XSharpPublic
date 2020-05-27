@@ -6997,6 +6997,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var arg = argList.Arguments[0];
             var exp = arg.Expression;
             var lit = exp.XNode.GetLiteralToken();
+            bool resolvelater = false;
             if (lit != null && (lit.Type == XP.INT_CONST || lit.Type == XP.HEX_CONST || lit.Type == XP.BIN_CONST))
             {
                 // get number and create a string literal value
@@ -7019,13 +7020,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     return true;
                 }
             }
+            else
+            {
+                resolvelater = true;
+            }
             if (_options.HasRuntime)
             {
-               context.Put(GenerateMethodCall(_options.XSharpRuntime ? XSharpQualifiedFunctionNames.Chr : VulcanQualifiedFunctionNames.Chr, argList));
+                var mcall = GenerateMethodCall(_options.XSharpRuntime ? XSharpQualifiedFunctionNames.Chr : VulcanQualifiedFunctionNames.Chr, argList);
+                mcall.XIsChr = resolvelater;
+                context.Put(mcall);
             }
             else
             {
-                context.Put(GenerateMethodCall(context.Expr.GetText(), argList));
+                var mcall = GenerateMethodCall(context.Expr.GetText(), argList);
+                mcall.XIsChr = resolvelater;
+                context.Put(mcall);
             }
             return true;
         }

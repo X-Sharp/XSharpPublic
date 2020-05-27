@@ -26,6 +26,49 @@ namespace Microsoft.CodeAnalysis.CSharp
     internal partial class Binder
     {
 
+        private BoundExpression BindXsInvocationExpression(
+            InvocationExpressionSyntax node,
+            DiagnosticBag diagnostics)
+        {
+            // Handle PCall() and Chr() in this special method
+            BoundExpression result;
+            if (TryBindNameofOperator(node, diagnostics, out result))
+            {
+                return result; // all of the binding is done by BindNameofOperator
+            }
+
+            // M(__arglist()) is legal, but M(__arglist(__arglist()) is not!
+            bool isArglist = node.Expression.Kind() == SyntaxKind.ArgListExpression;
+            AnalyzedArguments analyzedArguments = AnalyzedArguments.GetInstance();
+
+            BindArgumentsAndNames(node.ArgumentList, diagnostics, analyzedArguments, allowArglist: !isArglist);
+            BindPCall(node, diagnostics, analyzedArguments);
+
+            if (isArglist)
+            {
+                result = BindArgListOperator(node, diagnostics, analyzedArguments);
+            }
+            else
+            {
+                if (node.XIsChr && analyzedArguments.Arguments.Count == 1 && analyzedArguments.Arguments[0].ConstantValue != null)
+                {
+                    var value = analyzedArguments.Arguments[0].ConstantValue.Int32Value;
+                    var str = new string((char)value, 1);
+                    result = new BoundLiteral(node, ConstantValue.Create(str), Compilation.GetSpecialType(SpecialType.System_String));
+                }
+                else
+                {
+                    BoundExpression boundExpression = BindMethodGroup(node.Expression, invoked: true, indexed: false, diagnostics: diagnostics);
+                    boundExpression = CheckValue(boundExpression, BindValueKind.RValueOrMethodGroup, diagnostics);
+                    string name = boundExpression.Kind == BoundKind.MethodGroup ? GetName(node.Expression) : null;
+                    result = BindInvocationExpression(node, node.Expression, name, boundExpression, analyzedArguments, diagnostics);
+                }
+            }
+            analyzedArguments.Free();
+            return result;
+
+        }
+
         private void BindPCall(InvocationExpressionSyntax node, DiagnosticBag diagnostics, AnalyzedArguments analyzedArguments)
         {
             if (node.XPCall && node.Expression is GenericNameSyntax)

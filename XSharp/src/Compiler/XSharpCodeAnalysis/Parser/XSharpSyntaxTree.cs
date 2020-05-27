@@ -46,6 +46,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         XVoIsDim = 1 << 4,
         XDocComments = 1 << 5,
         XNeedsProcessing = 1 << 6,
+        XIsChr = 1 << 7,
     }
 
     internal abstract partial class CSharpSyntaxNode
@@ -77,6 +78,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             get => xflags.HasFlag(XNodeFlags.XVoIsDim);
             set => xflags = xflags.SetFlag(XNodeFlags.XVoIsDim, value);
+        }
+        public bool XIsChr
+        {
+            get => xflags.HasFlag(XNodeFlags.XIsChr);
+            set => xflags = xflags.SetFlag(XNodeFlags.XIsChr, value);
         }
     }
 
@@ -125,6 +131,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal bool XPCall => CsGreen.XPCall;
         internal bool XGenerated => CsGreen.XGenerated;
         internal bool XVoIsDim => CsGreen.XVoIsDim;
+        internal bool XIsChr => CsGreen.XIsChr;
 
     }
 }

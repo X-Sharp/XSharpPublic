@@ -140,7 +140,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             analyzedArguments.Free();
             return result;
         }
-
+#if !XSHARP
         /// <summary>
         /// Bind an expression as a method invocation.
         /// </summary>
@@ -158,16 +158,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             bool isArglist = node.Expression.Kind() == SyntaxKind.ArgListExpression;
             AnalyzedArguments analyzedArguments = AnalyzedArguments.GetInstance();
 
-#if XSHARP
-            BindArgumentsAndNames(node.ArgumentList, diagnostics, analyzedArguments, allowArglist: !isArglist);
-            BindPCall(node, diagnostics, analyzedArguments);
-#endif                        
 
             if (isArglist)
             {
-#if !XSHARP
                 BindArgumentsAndNames(node.ArgumentList, diagnostics, analyzedArguments, allowArglist: false);
-#endif
                 result = BindArgListOperator(node, diagnostics, analyzedArguments);
             }
             else
@@ -175,16 +169,14 @@ namespace Microsoft.CodeAnalysis.CSharp
                 BoundExpression boundExpression = BindMethodGroup(node.Expression, invoked: true, indexed: false, diagnostics: diagnostics);
                 boundExpression = CheckValue(boundExpression, BindValueKind.RValueOrMethodGroup, diagnostics);
                 string name = boundExpression.Kind == BoundKind.MethodGroup ? GetName(node.Expression) : null;
-#if !XSHARP
                 BindArgumentsAndNames(node.ArgumentList, diagnostics, analyzedArguments, allowArglist: true);
-#endif
                 result = BindInvocationExpression(node, node.Expression, name, boundExpression, analyzedArguments, diagnostics);
             }
 
             analyzedArguments.Free();
             return result;
         }
-
+#endif
         private BoundExpression BindArgListOperator(InvocationExpressionSyntax node, DiagnosticBag diagnostics, AnalyzedArguments analyzedArguments)
         {
             // We allow names, oddly enough; M(__arglist(x : 123)) is legal. We just ignore them.

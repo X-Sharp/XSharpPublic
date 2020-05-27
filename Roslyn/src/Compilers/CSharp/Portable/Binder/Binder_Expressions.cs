@@ -393,7 +393,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case SyntaxKind.BaseExpression:
                     return BindBase((BaseExpressionSyntax)node, diagnostics);
                 case SyntaxKind.InvocationExpression:
+#if XSHARP
+                    return BindXsInvocationExpression((InvocationExpressionSyntax)node, diagnostics);
+#else
                     return BindInvocationExpression((InvocationExpressionSyntax)node, diagnostics);
+#endif
                 case SyntaxKind.ArrayInitializerExpression:
                     return BindUnexpectedArrayInitializer((InitializerExpressionSyntax)node, diagnostics, ErrorCode.ERR_ArrayInitInBadPlace);
                 case SyntaxKind.ArrayCreationExpression:

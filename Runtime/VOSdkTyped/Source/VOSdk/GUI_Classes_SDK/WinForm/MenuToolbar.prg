@@ -52,7 +52,11 @@ CLASS VOMenu INHERIT System.Windows.Forms.MainMenu
 	METHOD AsContextMenu AS ContextMenu STRICT
 		RETURN ContextMenu{SELF:MenuItemArray}
 	
-	
+
+    PROTECTED METHOD ProcessCmdKey (msg REF System.Windows.Forms.Message , keyData AS System.Windows.Forms.Keys ) AS LOGIC
+        System.Diagnostics.Debug.WriteLine(keyData:ToString())
+        RETURN SUPER:ProcessCmdKey(REF msg, keyData)
+
 END CLASS
 
 CLASS VOMenuItem INHERIT MenuItem
@@ -79,7 +83,10 @@ CLASS VOMenuItem INHERIT MenuItem
 		item := VOMenuItem{}
 		item:CloneMenu(SELF)
 		item:MenuItemID := SELF:MenuItemID
+        item:Click += ItemClick
 		RETURN item
+    METHOD ItemClick (sender AS OBJECT, e AS EventArgs) AS VOID
+        RETURN
 
 	ACCESS MenuItemArray AS MenuItem[]
 		LOCAL oItems AS List<MenuItem>

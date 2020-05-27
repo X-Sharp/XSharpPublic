@@ -60,6 +60,12 @@ CLASS ChildAppWindow INHERIT AppWindow
 			NEXT
 		ENDIF
 		RETURN 
-		
+
+    METHOD Close(oEvent)
+        SUPER:Close()
+        oShell:Menu := oShell:__ActualMenu
+        RETURN SELF
+        
+
 END CLASS
 

@@ -3795,7 +3795,8 @@ RETURN
 			RddSetDefault("DBFCDX")
 			cDbf := GetTempFileName()
 
-			DbfTests.CreateDatabase(cDbf , { { "LAST" , "C" , 20 , 0 } } , { "g6" , "o2", "g2" , "g1" , "g3" , "g5" , "A1" , "a2" } )
+			DbfTests.CreateDatabase(cDbf , { { "LAST" , "C" , 20 , 0 } } , ;
+									{ "g6" , "o2", "g2" , "g1" , "g3" , "g5" , "A1" , "a2" , "p", "q" , "r" , "s" } )
 			DbCreateOrder ( "ORDER1" , cDbf , "upper(LAST)" , { || Upper ( _Field->LAST) } )
 			DbCloseArea()
 

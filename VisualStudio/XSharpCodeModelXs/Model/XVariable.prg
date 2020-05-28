@@ -7,24 +7,21 @@
 USING XSharpModel
 USING System.Diagnostics
 BEGIN NAMESPACE XSharpModel
-    [DebuggerDisplay("{Prototype,nq}")];
+    [DebuggerDisplay("{DebuggerDisplay(),nq}")];
     CLASS XVariable INHERIT XElement
         // Fields
         PRIVATE _isParameter AS LOGIC
-        PRIVATE _isTyped     AS LOGIC
-        PRIVATE _typeName AS STRING
-        STATIC INITONLY PUBLIC VarType := "$VAR$" AS STRING
-        STATIC INITONLY PUBLIC UsualType := "USUAL" AS STRING
         // Methods
         CONSTRUCTOR(parent AS XElement, name AS STRING, kind AS Kind,  ;
             span AS TextRange, position AS TextInterval, typeName AS STRING, isParameter := FALSE AS LOGIC)
             SUPER(name, kind, Modifiers.None, Modifiers.None, span, position)
-            SELF:_typeName      := typeName
+            SELF:TypeName       := typeName
             SELF:_isParameter   := isParameter
-            SELF:_isTyped       := !String.IsNullOrEmpty(typeName)
             SELF:VarDefinition  := NULL	// Not a VAR
             SUPER:Parent        := parent
-            SELF:File           := parent:File
+            IF parent != NULL
+                SELF:File           := parent:File
+            ENDIF
 
         // Properties
         PROPERTY Description AS STRING
@@ -39,15 +36,13 @@ BEGIN NAMESPACE XSharpModel
                     prefix := "LOCAL "
                 ENDIF
                 VAR result := prefix + SELF:Prototype
-                IF (_isTyped)
+                IF (SELF:IsTyped)
                     result += ParamTypeDesc + SELF:TypeName + IIF(SELF:IsArray,"[]","")
                 ENDIF
                 RETURN result
             END GET
         END PROPERTY
 
-        PROPERTY IsArray AS LOGIC AUTO
-        PROPERTY IsTyped AS LOGIC GET _isTyped
 		PROPERTY IsParameter AS LOGIC GET _isParameter
         PROPERTY ParamType AS ParamType AUTO
         PROPERTY Prototype AS STRING GET SUPER:Name
@@ -60,25 +55,12 @@ BEGIN NAMESPACE XSharpModel
                     RETURN OutKeyWord
                 CASE ParamType.Params
                     RETURN ParamsKeyWord
-                OTHERWISE
+                OTHERWISE // AS and IN
                     RETURN AsKeyWord
                 END SWITCH
             END GET
         END PROPERTY
 
-        PROPERTY TypeName AS STRING
-            GET
-                IF IsTyped
-                    RETURN SELF:_typeName
-                ELSE
-                    RETURN UsualType
-                ENDIF
-            END GET
-            SET
-                SELF:_typeName := VALUE
-                _isTyped := ! String.IsNullOrEmpty(_typeName)
-            END SET
-        END PROPERTY
 
         PROPERTY ShortTypeName AS STRING
             GET
@@ -92,6 +74,13 @@ BEGIN NAMESPACE XSharpModel
         END PROPERTY
 
         PROPERTY VarDefinition AS ParseContext AUTO
+
+        METHOD DebuggerDisplay() AS STRING
+            VAR result := SUPER:Name
+            IF SELF:IsTyped
+                result += paramTypeDesc+" "+SELF:TypeName
+            ENDIF
+            RETURN result
 
     END CLASS
 

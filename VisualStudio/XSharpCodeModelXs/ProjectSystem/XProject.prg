@@ -23,15 +23,16 @@ BEGIN NAMESPACE XSharpModel
         // Fields
         PRIVATE _AssemblyReferences						AS List<AssemblyInfo>
         PRIVATE _parseOptions := NULL					AS XSharpParseOptions
-        PRIVATE _projectNode							AS IXSharpProject
+        PRIVATE _projectNode							   AS IXSharpProject
         PRIVATE _projectOutputDLLs						AS ConcurrentDictionary<STRING, STRING>
         PRIVATE _ReferencedProjects						AS List<XProject>
         PRIVATE _StrangerProjects						AS List<EnvDTE.Project>
         PRIVATE _typeController							AS SystemTypeController
-        PRIVATE _unprocessedAssemblyReferences			AS ConcurrentDictionary<STRING, STRING>
-        PRIVATE _unprocessedProjectReferences			AS List<STRING>
+        PRIVATE _unprocessedAssemblyReferences		AS ConcurrentDictionary<STRING, STRING>
+        PRIVATE _unprocessedProjectReferences		AS List<STRING>
         PRIVATE _unprocessedStrangerProjectReferences	AS List<STRING>
-        PRIVATE _failedStrangerProjectReferences        AS List<STRING>
+        PRIVATE _failedStrangerProjectReferences   AS List<STRING>
+        PRIVATE _unprocessedFiles                  AS List<STRING>
         PRIVATE _mergedTypes							AS ConcurrentDictionary<STRING, XType>
         PUBLIC  FileWalkComplete						AS XProject.OnFileWalkComplete
         PRIVATE _OtherFilesDict							AS ConcurrentDictionary<STRING, XFile>
@@ -61,6 +62,7 @@ BEGIN NAMESPACE XSharpModel
             SELF:_unprocessedProjectReferences := List<STRING>{}
             SELF:_unprocessedStrangerProjectReferences := List<STRING>{}
             SELF:_failedStrangerProjectReferences := List<STRING>{}
+            SELF:_unprocessedFiles := List<STRING>{}
             SELF:_projectOutputDLLs := ConcurrentDictionary<STRING, STRING>{StringComparer.OrdinalIgnoreCase}
             SELF:_mergedTypes   := ConcurrentDictionary<STRING, XType>{StringComparer.OrdinalIgnoreCase}
             SELF:_ReferencedProjects := List<XProject>{}
@@ -420,9 +422,9 @@ BEGIN NAMESPACE XSharpModel
         #region 'Normal' Files
 
         METHOD AddFile(filePath AS STRING) AS LOGIC
-            IF ! String.IsNullOrEmpty(filePath)
-                RETURN SELF:AddFile(XFile{filePath})
-            ENDIF
+            BEGIN LOCK _unprocessedFiles
+               SELF:_unprocessedFiles:Add(filePath)
+            END LOCK
             RETURN FALSE
 
         METHOD AddFile(xFile AS XFile) AS LOGIC
@@ -656,6 +658,15 @@ BEGIN NAMESPACE XSharpModel
             NEXT
             SELF:_AssemblyReferences:Clear()
 
+        METHOD BuildFileList AS VOID
+            BEGIN LOCK SELF:_unprocessedFiles
+               FOREACH VAR file IN SELF:_unprocessedFiles
+                  SELF:AddFile(XFile{file})
+               NEXT
+               SELF:_unprocessedFiles:Clear()
+            END LOCK
+
+
         METHOD Walk() AS VOID
             WriteOutputMessage("Walk() ")
             ModelWalker.GetWalker():AddProject(SELF)
@@ -735,7 +746,12 @@ BEGIN NAMESPACE XSharpModel
             END GET
         END PROPERTY
 
-        PROPERTY SourceFiles AS List<XFile> GET SELF:_SourceFilesDict:Values:ToList()
+        PROPERTY SourceFiles AS List<XFile> 
+            GET 
+               SELF:BuildFileList()
+               RETURN SELF:_SourceFilesDict:Values:ToList()
+            END GET
+        END PROPERTY
 
         PROPERTY StrangerProjects AS IList<Project>
             GET

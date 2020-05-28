@@ -90,7 +90,8 @@ namespace XSharp.LanguageService
                 return false;
             }
             XElement selectedElement = file.FindMemberAtRow(line);
-            if (selectedElement.Range.StartLine > line + 1)
+
+            if (selectedElement != null && selectedElement.Range.StartLine > line )
             {
                 // we may be before the first element. THen rebuild the list
                 selectedElement = null;
@@ -363,10 +364,10 @@ namespace XSharp.LanguageService
             // where our TextRange is One-Based.
             // --> Make the move
             TextSpan ts = new TextSpan();
-            ts.iStartLine = tr.StartLine - 1;
-            ts.iStartIndex = tr.StartColumn - 1;
-            ts.iEndLine = tr.EndLine - 1;
-            ts.iEndIndex = tr.EndColumn - 1;
+            ts.iStartLine = tr.StartLine ;
+            ts.iStartIndex = tr.StartColumn ;
+            ts.iEndLine = tr.EndLine ;
+            ts.iEndIndex = tr.EndColumn ;
             // validate values
             if (ts.iStartLine < 0)
                 ts.iStartLine = 0;

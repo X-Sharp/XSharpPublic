@@ -26,6 +26,8 @@ BEGIN NAMESPACE XSharpModel
 			PRIVATE _prjNode AS IXSharpProject
 			PRIVATE _tokenStream AS ITokenStream
 			PRIVATE _info AS ParseResult
+         PRIVATE _entities AS IList<XElement>
+         PRIVATE _blocks   AS IList<XBlock>
 
 		#endregion
 		#region Properties
@@ -36,6 +38,10 @@ BEGIN NAMESPACE XSharpModel
 			PROPERTY TokenStream AS ITokenStream GET SELF:_tokenStream
 
 			PROPERTY StartPosition AS INT AUTO
+         PROPERTY ParseResult AS ParseResult GET _info
+
+         PROPERTY EntityList AS IList<XElement> GET _entities
+         PROPERTY BlockList  AS IList<XBlock>   GET _blocks
 
 
 		#endregion
@@ -83,7 +89,7 @@ BEGIN NAMESPACE XSharpModel
 			SELF:_errors := List<XError>{}
 			LOCAL stream := NULL AS ITokenStream
             TRY
-			XSharp.Parser.VsParser.Lex(cSource, SELF:_file:SourcePath, SELF:_file:Project:ProjectNode:ParseOptions, SELF, OUT stream)
+			XSharp.Parser.VsParser.Lex(cSource, SELF:_file:SourcePath, SELF:_file:Project:ParseOptions, SELF, OUT stream)
 			BEGIN LOCK SELF
 				SELF:_tokenStream := stream
 			END LOCK
@@ -108,9 +114,9 @@ BEGIN NAMESPACE XSharpModel
 			//var lines := createLines(cSource)
 			//return self:Parse(lines, lIncludeLocals)
 
-		METHOD Parse(lines AS IList<STRING> , lIncludeLocals AS LOGIC) AS ParseResult
-			WriteOutputMessage("-->> Parse() "+_file:FullPath+"(# lines " +lines:Count:ToString()+" locals "+lIncludeLocals:ToString()+" )")
-
+      METHOD ParseLines(lines AS IList<STRING> , lIncludeLocals AS LOGIC) AS VOID
+			WriteOutputMessage("-->> ParseLines() "+_file:FullPath+" locals "+lIncludeLocals:ToString()+" )")
+  
 			VAR oParser := XSharpModel.Parser{}
 			oParser:StartPosition := SELF:StartPosition
 			IF ( SELF:_prjNode != NULL )
@@ -120,14 +126,73 @@ BEGIN NAMESPACE XSharpModel
 			    VAR info := oParser:Parse(lines, lIncludeLocals)
 			    BEGIN LOCK SELF
 				    SELF:_info := info
+                _file:BuildTypes(info)
 			    END LOCK
             CATCH e AS Exception
                 WriteOutputMessage("Parse() Failed:")
                 WriteOutputMessage(e:Message)
             END TRY
-			WriteOutputMessage("<<-- Parse() "+_file:FullPath)
-			RETURN SELF:_info
+			WriteOutputMessage("<<-- ParseLines() "+_file:FullPath)
+         
 
+
+      METHOD ParseTokens(tokens AS ITokenStream , lIncludeRegions AS LOGIC, lIncludeLocals AS LOGIC) AS VOID
+
+         WriteOutputMessage("-->> ParseTokens() "+_file:FullPath+" locals "+lIncludeLocals:ToString()+" )")
+         TRY
+            VAR parserv2 := ParserV2{}
+            parserv2:Parse(tokens , _file, lIncludeRegions, lIncludeLocals)
+            SELF:_entities := parserv2:EntityList
+            SELF:_blocks   := parserv2:BlockList
+         CATCH e AS Exception
+               WriteOutputMessage("ParseTokens() Failed:")
+               WriteOutputMessage(e:Message)
+            
+         END TRY
+         WriteOutputMessage("<<-- ParseTokens() "+_file:FullPath)
+
+
+      METHOD ParseNew(lIncludeLocals AS LOGIC) AS VOID
+         WriteOutputMessage("-->> ParseNew() "+_file:FullPath+" locals "+lIncludeLocals:ToString()+" )")
+         LOCAL cSource AS STRING
+         TRY
+            cSource      := System.IO.File.ReadAllText(_file:FullPath)
+            VAR tokens   := SELF:Lex(cSource)
+            SELF:ParseTokens(tokens, FALSE, lIncludeLocals)
+         CATCH e AS Exception
+               WriteOutputMessage("ParseNew() Failed:")
+               WriteOutputMessage(e:Message)
+            
+         END TRY
+         WriteOutputMessage("<<-- ParseNew() "+_file:FullPath)
+         
+         
+         
+		METHOD ParseOld(lIncludeLocals AS LOGIC) AS VOID
+			WriteOutputMessage("-->> ParseOld() "+_file:FullPath+" locals "+lIncludeLocals:ToString()+" )")
+
+			VAR oParser := XSharpModel.Parser{}
+			oParser:StartPosition := SELF:StartPosition
+			IF ( SELF:_prjNode != NULL )
+				oParser:Dialect := SELF:_prjNode:ParseOptions:Dialect
+			ENDIF
+            TRY
+             VAR lines := System.IO.File.ReadAllLines(_file:FullPath)
+			    VAR info := oParser:Parse(lines, lIncludeLocals)
+			    BEGIN LOCK SELF
+				    SELF:_info := info
+                _file:BuildTypes(info)
+			    END LOCK
+            CATCH e AS Exception
+                WriteOutputMessage("ParseOld() Failed:")
+                WriteOutputMessage(e:Message)
+            END TRY
+			WriteOutputMessage("<<-- ParseOld() "+_file:FullPath)
+			RETURN 
+
+
+      METHOD ParseNew(oFile AS XFIle, lIncludeLocals AS LOGIC) AS VOID
+         RETURN
 
 		#region Errors
 			VIRTUAL METHOD ReportError(fileName AS STRING, span AS LinePositionSpan, errorCode AS STRING, message AS STRING, args AS OBJECT[]) AS VOID

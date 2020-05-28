@@ -123,7 +123,6 @@ BEGIN NAMESPACE XSharpModel
             RETURN nResult
 
         METHOD FindMemberAtRow(nLine AS LONG) AS XElement
-            nLine += 1
             RETURN SELF:FindMember(CompareByLine, nLine)
 
             ///
@@ -256,9 +255,8 @@ BEGIN NAMESPACE XSharpModel
                     IF ! SELF:Parsed
                         BEGIN USING VAR walker := SourceWalker{SELF}
                             TRY
-                                VAR lines := System.IO.File.ReadAllLines(SELF:SourcePath)
-                                VAR info := walker:Parse(lines, FALSE)
-                                BuildTypes(info)
+                                walker:ParseNew(FALSE)
+                                
                             CATCH exception AS System.Exception
                                 XSolution.WriteException(exception)
                             END TRY

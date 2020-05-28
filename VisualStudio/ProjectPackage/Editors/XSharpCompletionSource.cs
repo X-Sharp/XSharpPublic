@@ -4725,7 +4725,7 @@ namespace XSharpLanguage
                 lines.Add(snapshot.GetLineFromLineNumber(i).GetText());
             }
             walker.StartPosition = member.Interval.Start;
-            var info = walker.Parse(lines, true);
+            walker.ParseLines(lines, true);
             var locals = new List<XVariable>();
             // Add the normal locals for class members
             if (member.Kind.IsClassMember(dialect) && !member.Modifiers.HasFlag(Modifiers.Static))
@@ -4741,7 +4741,7 @@ namespace XSharpLanguage
             // add the locals found in the code.
             int nLineOffSet = member.Range.StartLine - 1;
             iCurrentLine += 1; // our ranges are 1 based
-            foreach (EntityObject local in info.Locals)
+            foreach (EntityObject local in walker.ParseResult.Locals)
             {
                 var line = local.nStartLine + nLineOffSet;
                 if (line <= iCurrentLine)

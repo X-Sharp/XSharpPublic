@@ -146,11 +146,13 @@
       <Link>Properties\constants.prg</Link>
     </Compile>
     <Compile Include="CompletionType.prg" />
-    <Compile Include="ExtensionMethods.prg" />
     <Compile Include="Interfaces.prg" />
     <Compile Include="MetaData\AssemblyInfo.prg" />
     <Compile Include="MetaData\SystemTypeController.prg" />
+    <Compile Include="Model\ExtensionMethods.prg" />
+    <Compile Include="Model\XSignature.prg" />
     <Compile Include="Model\Enums.prg" />
+    <Compile Include="Model\XBlock.prg" />
     <Compile Include="Model\XElement.prg" />
     <Compile Include="Model\XType.prg" />
     <Compile Include="Model\XTypeMember.prg" />

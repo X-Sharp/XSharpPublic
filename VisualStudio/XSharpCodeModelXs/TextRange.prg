@@ -27,14 +27,24 @@ BEGIN NAMESPACE XSharpModel
 		//CONSTRUCTOR(context AS ParserRuleContext)
 		//SELF(context:Start:Line, context:Start:Column, context:Stop:Line, context:Stop:Column)
 		//
-		
+
+        CONSTRUCTOR(startToken AS IToken, endToken AS IToken)
+            SELF:_StartLine     := startToken:Line-1
+            SELF:_StartColumn   := startToken:Column-1
+            SELF:_EndLine       := endToken:Line-1
+            SELF:_EndColumn     := endToken:Column+endToken:Text:Length-1
+
 		CONSTRUCTOR(sl AS LONG, sc AS LONG, el AS LONG, ec AS LONG)
 			//
 			SELF:_StartLine := sl
 			SELF:_StartColumn := sc
 			SELF:_EndLine := el
 			SELF:_EndColumn := ec
-		
+
+        METHOD WithEnd(endToken AS IToken) AS TextRange
+            RETURN TextRange{_StartLine,_StartColumn,endToken:Line-1,endToken:Column+endToken:Text:Length-1}
+            
+
 		STATIC PROPERTY Empty AS TextRange GET TextRange{1, 1, 1, 1}
 		
         /// <summary>

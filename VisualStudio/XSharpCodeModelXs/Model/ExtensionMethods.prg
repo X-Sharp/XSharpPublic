@@ -159,6 +159,7 @@ BEGIN NAMESPACE XSharpModel
 					RETURN TRUE
 			END SWITCH
 			RETURN FALSE
+         
 		STATIC METHOD HasBody( SELF elementKind AS Kind) AS LOGIC
 			SWITCH elementKind
 				CASE Kind.Function
@@ -174,6 +175,44 @@ BEGIN NAMESPACE XSharpModel
 					RETURN TRUE
 			END SWITCH
 			RETURN FALSE
+
+        STATIC METHOD HasChildren(SELF eKind AS Kind) AS LOGIC
+            SWITCH eKind
+            CASE Kind.Namespace
+            CASE Kind.Class
+            CASE Kind.Structure
+            CASE Kind.Interface
+            CASE Kind.Enum
+            CASE Kind.VOStruct
+            CASE Kind.Union
+                RETURN TRUE
+
+            CASE Kind.Constructor
+            CASE Kind.Destructor
+            CASE Kind.Method
+            CASE Kind.Access
+            CASE Kind.Assign
+            CASE Kind.Property
+            CASE Kind.Function
+            CASE Kind.Procedure
+            CASE Kind.Field
+            CASE Kind.Local
+            CASE Kind.Parameter
+            CASE Kind.Event
+            CASE Kind.Operator
+            CASE Kind.Delegate
+            CASE Kind.EnumMember
+            CASE Kind.Keyword
+            CASE Kind.Using
+            CASE Kind.VODefine
+            CASE Kind.VODLL
+            CASE Kind.VOGlobal
+            CASE Kind.Unknown
+            OTHERWISE
+                RETURN FALSE
+        END SWITCH                
+
+            
 		
 	// textspan extensions
 		//static method GetText( self snapshot as ITextSnapshot, span as TextSpan) as string
@@ -267,7 +306,6 @@ BEGIN NAMESPACE XSharpModel
 
 
 	END CLASS
-	
 END NAMESPACE 
 
 

@@ -9,7 +9,8 @@ USING System
 USING System.Collections.Generic
 USING System.Text
 
-FUNCTION CodeFile1( a AS INT, b AS STRING) AS INT
-	LOCAL localVar AS LOGIC
-	//
-    RETURN 0
+//FUNCTION CodeFile1( a AS INT, b AS STRING) AS INT
+//	LOCAL localVar AS LOGIC
+//	//
+//    RETURN 0
+//      

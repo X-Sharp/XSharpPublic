@@ -9,20 +9,21 @@ USING XSharpModel
 USING LanguageService.CodeAnalysis.XSharp
 
 BEGIN NAMESPACE XSharpModel
-	[DebuggerDisplay("{Prototype,nq}")];
+	[DebuggerDisplay("{Kind}, {Name,nq}")];
 	CLASS XTypeMember INHERIT XElement
 		// Fields
-		PRIVATE _parameters AS List<XVariable>
-		PRIVATE _typeName AS STRING
+		PRIVATE _parameters     AS List<XVariable>
+        PRIVATE _typeParameters AS List<STRING>
+        PRIVATE _constraints    AS List<STRING>
+        PRIVATE _callconv       AS STRING
 		
 		#region constructors
 		
-		CONSTRUCTOR(name AS STRING, kind AS Kind, modifiers AS Modifiers, visibility AS Modifiers, span AS TextRange, position AS TextInterval, typeName AS STRING, isStatic AS LOGIC)
+		CONSTRUCTOR(name AS STRING, kind AS Kind, modifiers AS Modifiers, visibility AS Modifiers, span AS TextRange, position AS TextInterval, typeName AS STRING, isStatic := FALSE AS LOGIC)
 			SUPER(name, kind, modifiers, visibility, span, position)
 			SELF:Parent := NULL
 			SELF:_parameters := List<XVariable>{}
-			SELF:_typeName := ""
-			SELF:_typeName := typeName
+			SELF:TypeName  := typeName
 			SELF:_isStatic := isStatic
 			
 		STATIC METHOD create(oElement AS EntityObject, oInfo AS ParseResult, oFile AS XFile, oType AS XType, dialect AS XSharpDialect ) AS XTypeMember
@@ -57,8 +58,30 @@ BEGIN NAMESPACE XSharpModel
 			
 		#endregion
 		
-		
-		
+
+        METHOD AddTypeParameter(name AS STRING) AS VOID
+            IF SELF:_typeParameters == NULL
+                SELF:_typeParameters := List<STRING>{}
+            ENDIF
+            SELF:_typeParameters:Add(name)
+            RETURN
+
+        METHOD AddConstraints(name AS STRING) AS VOID
+            IF SELF:_constraints == NULL
+                SELF:_constraints := List<STRING>{}
+            ENDIF
+            SELF:_constraints:Add(name)
+            RETURN
+
+
+        METHOD AddParameters( list AS ILIst<XVariable>) AS VOID
+            IF list != NULL
+                FOREACH VAR par IN list
+                    SELF:AddParameter(par)
+                NEXT
+            ENDIF
+            RETURN
+            
 		METHOD AddParameter(oVar AS XVariable) AS VOID
 			oVar:Parent := SELF
 			oVar:File := SELF:File
@@ -111,13 +134,11 @@ BEGIN NAMESPACE XSharpModel
 		
 		PROPERTY HasParameters AS LOGIC GET SELF:Kind:HasParameters() .AND. SELF:_parameters:Count > 0
 		PROPERTY ParameterCount  AS INT GET SELF:_parameters:Count
-		
-		PROPERTY IsArray AS LOGIC
-			GET
-				RETURN SELF:_typeName:EndsWith("[]")
-			END GET
-		END PROPERTY
-		
+
+        PROPERTY CallingConvention AS STRING GET SELF:_callconv SET SELF:_callconv := value
+        PROPERTY InitExit          AS STRING GET SELF:Value     SET SELF:Value:= value
+        PROPERTY SubType           AS STRING GET SELF:Value     SET SELF:Value:= value
+ 
 		NEW PROPERTY Parent AS XType GET (XType) SUPER:parent  SET SUPER:parent := VALUE
 		
 		PROPERTY ParameterList AS STRING
@@ -211,16 +232,6 @@ BEGIN NAMESPACE XSharpModel
 			END GET
 		END PROPERTY
 		
-		PROPERTY TypeName AS STRING
-			GET 
-				IF ( SELF:Kind == Kind.@@Constructor )
-					RETURN SELF:Parent:FullName
-				ELSE
-					RETURN SELF:_typeName
-				ENDIF
-			END GET
-		END PROPERTY
-		PROPERTY Value    AS STRING AUTO
 		#endregion
 	END CLASS
 	

@@ -37,7 +37,7 @@ namespace XSharp.Project
         {
             // Restart scanning. Was suspended on opening of project system
             // or closing of previous solution
-            XSharpModel.ModelWalker.Resume();
+            XSharpModel.ModelWalker.Start();
             return VSConstants.S_OK;
         }
 

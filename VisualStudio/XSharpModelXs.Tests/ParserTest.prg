@@ -26,7 +26,7 @@ BEGIN NAMESPACE XSharpModel.Tests
 			cFileName := "..\..\TestFiles\CodeFile1.prg"
 			//
 			VAR walker := SourceWalker{ XFile{ cFileName } }
-			Parse2( walker:Lex( System.IO.File.ReadAllText( cFileName )), output )
+			//Parse2( walker:Lex( System.IO.File.ReadAllText( cFileName )), output )
 
 
 	END CLASS

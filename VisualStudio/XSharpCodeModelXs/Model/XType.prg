@@ -18,18 +18,24 @@ BEGIN NAMESPACE XSharpModel
 	/// <summary>
 	/// Model for Namespace, Class, Interface, Structure, Enum
 	/// </summary>
-	[DebuggerDisplay("{FullName,nq}")];
+	[DebuggerDisplay("{Kind}, {Name,nq}")];
 	CLASS XType INHERIT XElement
 		PRIVATE _isPartial AS LOGIC
 		PRIVATE _members AS List<XTypeMember>
+        PRIVATE _children AS List<XType>
 		PRIVATE _nameSpace AS STRING
 		PRIVATE _parentName AS STRING
+        PRIVATE _interfaces AS List<STRING>
+        PRIVATE _typeParameters AS List<STRING>
+        PRIVATE _constraints    AS List<STRING>
+        
 
 		CONSTRUCTOR(name AS STRING, kind AS Kind, modifiers AS Modifiers, visibility AS Modifiers, ;
 		    span AS TextRange, position AS TextInterval, oFile AS XFile)
 			SUPER(name, kind, modifiers, visibility, span, position)
-
-			SELF:_members := List<XTypeMember>{}
+            SELF:_interfaces := List<STRING>{}
+			SELF:_members  := List<XTypeMember>{}
+            SELF:_children := List<XType>{}
 			SELF:_parentName := "System.Object"
 			SELF:_nameSpace := ""
 			IF modifiers:HasFlag(Modifiers.Static)
@@ -98,6 +104,17 @@ BEGIN NAMESPACE XSharpModel
 			RETURN oXType
 
 
+        METHOD AddInterface(sInterface AS STRING) AS VOID
+            SELF:_interfaces:Add(sInterface)
+            RETURN
+
+		METHOD AddChild(oChild AS xType) AS VOID
+			BEGIN LOCK SELF:_children
+				SELF:_children:Add(oChild)
+				oChild:Parent := SELF
+			END LOCK
+
+
 		METHOD AddMember(oMember AS XTypeMember) AS VOID
 			BEGIN LOCK SELF:_members
 				SELF:_members:Add(oMember)
@@ -111,6 +128,30 @@ BEGIN NAMESPACE XSharpModel
 					oMember:Parent := SELF
 				NEXT
 			END LOCK
+
+       METHOD AddTypeParameter(name AS STRING) AS VOID
+            IF SELF:_typeParameters == NULL
+                SELF:_typeParameters := List<STRING>{}
+            ENDIF
+            SELF:_typeParameters:Add(name)
+            RETURN
+
+        METHOD AddConstraints(name AS STRING) AS VOID
+            IF SELF:_constraints == NULL
+                SELF:_constraints := List<STRING>{}
+            ENDIF
+            SELF:_constraints:Add(name)
+            RETURN
+
+
+
+        PROPERTY Interfaces AS IList<STRING>
+        GET
+			BEGIN LOCK SELF:_interfaces
+				RETURN SELF:_interfaces:ToArray()
+			END LOCK
+        END GET
+        END PROPERTY
 
 		PROPERTY Members AS IList<XTypeMember>
 			GET
@@ -180,7 +221,7 @@ BEGIN NAMESPACE XSharpModel
 
 		PROPERTY Clone AS XType
 			GET
-				IF SELF:IsPartial
+				IF SELF:IsPartial .AND. SELF:File != NULL
 					RETURN SUPER:File:Project:Lookup(SELF:FullName, TRUE)
 				ENDIF
 				RETURN SELF
@@ -252,8 +293,10 @@ BEGIN NAMESPACE XSharpModel
 			globalType:IsStatic:=TRUE
 			RETURN globalType
 
-		STATIC METHOD IsGlobalType(type AS XType) AS LOGIC
+		STATIC METHOD IsGlobalType(type AS XElement) AS LOGIC
 			RETURN type:Name == XType.GlobalName
+
+        PROPERTY Children AS IList<XType> GET SELF:_children:ToArray()
 
 	END CLASS
 

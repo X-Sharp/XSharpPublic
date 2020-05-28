@@ -417,7 +417,10 @@ namespace XSharpColorizer
                                 oNext = oNext.oNext;
                             }
                         }
-                        //
+                        if (oNext != null && oNext.nOffSet > nEnd + 2)
+                        {
+                            nEnd = oNext.nOffSet - 2;
+                        }
                         int nParentEnd = nEnd;
                         if (oElement.oParent?.cName != XElement.GlobalName)
                         {
@@ -655,7 +658,7 @@ namespace XSharpColorizer
         }
 
 
-        private ClassificationSpan ClassifyToken(IToken token, IList<ClassificationSpan> regionTags, ITextSnapshot snapshot,IToken lastToken)
+        private ClassificationSpan ClassifyToken(IToken token, IList<ClassificationSpan> regionTags, ITextSnapshot snapshot, IToken lastToken)
         {
             var tokenType = token.Type;
             ClassificationSpan result = null;
@@ -1048,8 +1051,8 @@ namespace XSharpColorizer
                         continue;
                     }
 
-                    var span = ClassifyToken(token, regionTags, snapshot,lastToken);
-                    if ((span != null) )
+                    var span = ClassifyToken(token, regionTags, snapshot, lastToken);
+                    if ((span != null))
                     {
                         // don't forget the current one
                         newtags.Add(span);

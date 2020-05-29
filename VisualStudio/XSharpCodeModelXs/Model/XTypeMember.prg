@@ -25,7 +25,7 @@ BEGIN NAMESPACE XSharpModel
 			SELF:_parameters := List<XVariable>{}
 			SELF:TypeName  := typeName
 			SELF:_isStatic := isStatic
-			
+		/*	
 		STATIC METHOD create(oElement AS EntityObject, oInfo AS ParseResult, oFile AS XFile, oType AS XType, dialect AS XSharpDialect ) AS XTypeMember
 			LOCAL cName := oElement:cName AS STRING
 			LOCAL kind  := Etype2Kind(oElement:eType) AS Kind
@@ -54,7 +54,7 @@ BEGIN NAMESPACE XSharpModel
 				result:Value := oElement:cValue
 			ENDIF
 			RETURN result
-			
+		*/	
 			
 		#endregion
 		

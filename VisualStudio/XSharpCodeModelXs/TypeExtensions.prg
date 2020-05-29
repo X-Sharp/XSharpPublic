@@ -4,7 +4,7 @@
 // See License.txt in the project root for license information.
 //
 USING System.Collections.Generic
-USING System.Collections.Immutable
+USING System.Linq
 USING System
 BEGIN NAMESPACE XSharpModel
 
@@ -47,7 +47,6 @@ BEGIN NAMESPACE XSharpModel
             lookupTable:Add("XSharp.__Date", "DATE")
             lookupTable:Add("XSharp.__Float", "FLOAT")
             lookupTable:Add("XSharp.__WinBool", "LOGIC")
-            lookupTable := lookupTable:ToImmutableDictionary<STRING, STRING>(StringComparer.OrdinalIgnoreCase)
 
         STATIC METHOD GetSystemTypeName( SELF typename AS STRING, lXSharpNames AS LOGIC) AS STRING
             //

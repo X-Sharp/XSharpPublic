@@ -9,7 +9,6 @@ USING System
 USING System.Linq
 USING System.Diagnostics
 USING XSharpModel
-USING System.Collections.Immutable
 USING LanguageService.CodeAnalysis.XSharp
 USING STATIC XSharpModel.XFileTypeHelpers
 BEGIN NAMESPACE XSharpModel
@@ -190,7 +189,7 @@ BEGIN NAMESPACE XSharpModel
                 END LOCK
                 WriteOutputMessage(String.Format("<<-- SetTypes() {0} (Types: {1}, Entities: {2})", SELF:SourcePath, _typeList:Count, SELF:_entityList:Count))
             ENDIF
-
+        /*
         METHOD BuildTypes(oInfo AS ParseResult) AS VOID
             LOCAL aTypes	      AS Dictionary<STRING, XType>
             LOCAL aUsings		  AS List<STRING>
@@ -241,9 +240,9 @@ BEGIN NAMESPACE XSharpModel
                     aEntities:add ( (XElement) oElement:oCargo)
                 ENDIF
             NEXT
-            SELF:SetTypes(aTypes, aUsings, aUsingStatics, aEntities:ToImmutableArray())
+            SELF:SetTypes(aTypes, aUsings, aUsingStatics, aEntities:ToArray())
             RETURN
-
+      */
 
         METHOD WaitParsing() AS VOID
             //

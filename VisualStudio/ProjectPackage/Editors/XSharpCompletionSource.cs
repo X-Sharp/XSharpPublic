@@ -4,6 +4,7 @@
 // See License.txt in the project root for license information.
 //
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -3385,124 +3386,9 @@ namespace XSharpLanguage
                     if (element is XVariable)
                     {
                         XVariable xVar = element as XVariable;
-                        if (xVar.TypeName == XVariable.VarType)
+                        if (xVar.TypeName == XElement.VarType)
                         {
-                            // Variable is declared as VAR or IMPLIED
-                            // Let's try to resolve
-                            int searchAt = xVar.VarDefinition.LastMeaningPos;
-                            if (searchAt > -1)
-                            {
-                                if (xVar.VarDefinition.Status == WordStatus.Literal)
-                                {
-                                    switch (xVar.VarDefinition.SubStatus)
-                                    {
-                                        case WordSubStatus.LiteralInt:
-                                            xVar.TypeName = "INT";
-                                            break;
-                                        case WordSubStatus.LiteralDouble:
-                                            xVar.TypeName = "REAL8";
-                                            break;
-                                        case WordSubStatus.LiteralString:
-                                            xVar.TypeName = "STRING";
-                                            break;
-                                    }
-                                }
-                                else
-                                {
-                                    bool found = false;
-                                    int triggerPoint = searchAt - 1; // xVar.Interval.Start + searchAt - xVar.Range.StartColumn;
-                                    IToken _stopToken;
-                                    List<String> tokenList = XSharpTokenTools.GetTokenList(triggerPoint, xVar.Range.StartLine, snapshot, out _stopToken, false, xVar.File, false, member);
-                                    if (tokenList.Count > 0)
-                                    {
-                                        if (tokenList.Count == 1)
-                                        {
-                                            string token = tokenList[0].ToLower();
-                                            if ((token == "true") || (token == "false"))
-                                            {
-                                                xVar.TypeName = "LOGIC";
-                                                found = true;
-                                            }
-                                        }
-                                        else
-                                        {
-                                            // find assignment and trim "oObject = " or "oObject := " from the tokenlist
-                                            int pos = -1;
-                                            for (int i = 0; i < tokenList.Count; i++)
-                                            {
-                                                if (tokenList[i] == ":=" || tokenList[i] == "=") // assign operation
-                                                {
-                                                    pos = i;
-                                                    break;
-                                                }
-                                            }
-                                            if (pos >= 0)
-                                            {
-                                                for (int i = pos; i >= 0; i--)
-                                                {
-                                                    tokenList.RemoveAt(i);
-                                                }
-                                            }
-                                        }
-                                        if (!found)
-                                        {
-                                            // Try to Handle Inline Array initialization
-                                            if ((tokenList.Count == 3) && (tokenList[0] == "<") && (tokenList[2] == ">"))
-                                            {
-                                                // Remove the closing Chevron
-                                                tokenList.RemoveAt(2);
-                                                // Remove the opening Chevron
-                                                tokenList.RemoveAt(0);
-                                                // Add [] add the end of "what should be the type"
-                                                tokenList[0] += "[]";
-                                            }
-                                            //
-                                            cType = XSharpTokenTools.RetrieveType(xVar.File, tokenList, member, currentNS, null, out foundElement, snapshot, currentLine, dialect);
-                                            if (foundElement != null)
-                                            {
-                                                // Let's set the Std Type for this VAR
-                                                xVar.TypeName = foundElement.ReturnType.FullName;
-                                                // and now, correct it
-                                                if (foundElement.IsGeneric)
-                                                {
-                                                    if (xVar.VarDefinition.AfterIn)
-                                                    {
-                                                        // Get the underlying Enumerated Type
-                                                        CompletionType enumType = foundElement.EnumeratorType;
-                                                        if (!enumType.IsEmpty())
-                                                        {
-                                                            int numParam = 0;
-                                                            string genName = enumType.FullName;
-                                                            // Per default
-                                                            xVar.TypeName = foundElement.GenericTypeName;
-                                                            // Now, try to resolve T, or TKey, TValue, ...
-                                                            int index = genName.IndexOf('<');
-                                                            if (index != -1)
-                                                            {
-                                                                // Extract the Generic params
-                                                                genName = genName.Substring(index);
-                                                                String[] items = genName.Split(',');
-                                                                numParam = items.Length;
-                                                                // Compare with the value that we have
-                                                                items = foundElement.GenericTypeName.Split(',');
-                                                                if (numParam == items.Length)
-                                                                {
-                                                                    xVar.TypeName = enumType.FullName.Substring(0, index) + "<" + foundElement.GenericTypeName + ">";
-                                                                }
-                                                            }
-                                                        }
-                                                        else
-                                                        {
-
-                                                        }
-                                                        //   xVar.TypeName = foundElement.GenericTypeName;
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
+                            resolveVarType(xVar, member, ref cType,visibility,currentNS,snapshot, currentLine,dialect);
                         }
                         cType = new CompletionType((XVariable)element, currentNS);
                         foundElement = new CompletionElement(element);
@@ -3515,6 +3401,12 @@ namespace XSharpLanguage
                     }
                 }
             }
+            catch (Exception ex)
+            {
+                XSharpProjectPackage.Instance.DisplayOutPutMessage("FindIdentifier failed: ");
+                XSharpProjectPackage.Instance.DisplayException(ex);
+
+            }
             finally
             {
                 while (nestedSearches.Count > nestedLevel)
@@ -3523,6 +3415,196 @@ namespace XSharpLanguage
                 }
             }
             return foundElement;
+        }
+
+        private static void resolveVarType(XVariable xVar, XTypeMember member, ref CompletionType cType,
+            Modifiers visibility, string currentNS, ITextSnapshot snapshot, int currentLine, XSharpDialect dialect)
+        {
+            var tokens = xVar.Expression;
+            List<string> tokenList;
+            string expr;
+            CompletionElement foundElement = null;
+            bool resolved = false;
+            if (tokens?.Count == 0)
+            {
+                xVar.TypeName = "OBJECT";
+                return;
+            }
+            if (tokens.Count == 1)
+            {
+                resolved = true;
+                switch (tokens[0].Type)
+                {
+                    case XSharpLexer.STRING_CONST:
+                    case XSharpLexer.NULL_STRING:
+                        xVar.TypeName = "STRING";
+                        break;
+                    case XSharpLexer.INT_CONST:
+                        xVar.TypeName = "INT";
+                        break;
+                    case XSharpLexer.CHAR_CONST:
+                        xVar.TypeName = "CHAR";
+                        break;
+                    case XSharpLexer.REAL_CONST:
+                        xVar.TypeName = "REAL8";
+                        break;
+                    case XSharpLexer.SYMBOL_CONST:
+                        xVar.TypeName = "SYMBOL";
+                        break;
+                    case XSharpLexer.NULL_DATE:
+                    case XSharpLexer.DATE_CONST:
+                        xVar.TypeName = "DATE";
+                        break;
+                    case XSharpLexer.TRUE_CONST:
+                    case XSharpLexer.FALSE_CONST:
+                        xVar.TypeName = "LOGIC";
+                        break;
+                    case XSharpLexer.NIL:
+                        xVar.TypeName = "USUAL";
+                        break;
+                    case XSharpLexer.NULL:
+                        xVar.TypeName = "OBJECT";
+                        break;
+                    case XSharpLexer.NULL_PTR:
+                        xVar.TypeName = "IntPtr";
+                        break;
+                    default:
+                        resolved = false;
+                        break;
+
+                }
+                if (resolved)
+                    return;
+            }
+            if (tokens[0].Type == XSharpLexer.IN && tokens.Count > 1)
+            {
+                // foreach loop with IN <somevariable> or IN <list>
+                if (tokens.Count == 2)
+                {
+                    string collection = tokens[1].Text;
+                    foundElement = FindIdentifier(member, collection, ref cType,
+                                visibility, currentNS, snapshot, currentLine, dialect);
+                    if (foundElement != null)
+                    {
+                        xVar.TypeName = GetTypeFromFoundElement(foundElement);
+                        return;
+                    }
+                }
+
+                expr = BuildTokenString(tokens, 1);
+                if (!string.IsNullOrEmpty(expr))
+                {
+                    tokenList = new List<string> { expr };
+                    cType = RetrieveType(xVar.File, tokenList, member, currentNS, null, out foundElement, snapshot, currentLine, dialect);
+                    if (foundElement != null)
+                    {
+                        xVar.TypeName = GetTypeFromFoundElement(foundElement);
+                    }
+                }
+                return;
+            }
+            expr = BuildTokenString(tokens, 0);
+            tokenList = new List<string> { expr };
+            cType = RetrieveType(xVar.File, tokenList, member, currentNS, null, out foundElement, snapshot, currentLine, dialect);
+            if (foundElement != null)
+            {
+                xVar.TypeName = foundElement.ReturnType.FullName;
+            }
+            return;
+        }
+
+        private static string GetTypeFromFoundElement(CompletionElement foundElement)
+        {
+            // Let's set the Std Type for this VAR
+            if (foundElement.IsGeneric)
+            {
+                return foundElement.GenericTypeName;
+            }
+            else if (foundElement.IsArray)
+            {
+                return foundElement.ReturnType.FullName;
+            }
+            var type = foundElement.ReturnType;
+            if (type.SType != null)
+            {
+                foreach (var prop in type.SType.GetProperties())
+                {
+                    var pars = prop.GetIndexParameters();
+                    if (pars.Length == 1 )
+                    {
+                        if (pars[0].ParameterType == typeof(int))
+                        {
+                            return prop.PropertyType.FullName;
+                        }
+                    }
+                    
+                }
+            }
+                
+            return "object";
+        }
+
+        private static string BuildTokenString(IList<IToken> tokens, int start = 0)
+        {
+            var sb = new StringBuilder();
+            bool left = false, right = false;
+            int nested = 0;
+            bool done = false;
+            for (int i= start; i< tokens.Count && ! done; i++)
+            {
+                var t = tokens[i];
+                switch (t.Type)
+                {
+                    case XSharpLexer.LPAREN:
+                        left = true;
+                        nested++;
+                        break;
+                    case XSharpLexer.RPAREN:
+                        right = true;
+                        nested--;
+                        if (nested == 0)
+                            done = true;
+                        break;
+                    default:
+                        if (!left)
+                        {
+                            sb.Append(t.Text);
+                        }
+                        break;
+                }
+            }
+            if (left && right && sb.Length > 0)
+                return sb.ToString()+"()";
+            left = false;
+            right = false;
+            nested = 0;
+            done = false;
+            for (int i = start; i < tokens.Count && !done; i++)
+            {
+                var t = tokens[i];
+                switch (t.Type)
+                {
+                    case XSharpLexer.LCURLY:
+                        left = true;
+                        nested++;
+                        break;
+                    case XSharpLexer.RCURLY:
+                        right = true;
+                        nested--;
+                        if (nested == 0)
+                            done = true;
+                        break;
+                    default:
+                        if (!left)
+                        {
+                            sb.Append(t.Text);
+                        }
+                        break;
+                }
+            }
+            if (left && right && sb.Length > 0)
+                return sb.ToString()+"{}";
+            return "";
         }
 
         /// <summary>
@@ -4372,33 +4454,21 @@ namespace XSharpLanguage
     /// type searching.
     /// Used by Goto Definition, Parameter Info, ...
     /// </summary>
+    [DebuggerDisplay("{Name,nq} {ReturnType.FullName,nq}")]
     public class CompletionElement
     {
         object foundElement = null;
 
-        bool isArray;
-        bool isGeneric;
         string genTypeName;
 
         public CompletionElement(XElement XSharpElement)
         {
             this.foundElement = XSharpElement;
-            if (XSharpElement != null)
-            {
-                this.isArray = XSharpElement.IsArray;
-                XVariable xvar = (XSharpElement as XVariable);
-                if ( xvar != null )
-                {
-                    this.isGeneric = xvar.TypeName.EndsWith(">");
-                }
-            }
         }
 
         public CompletionElement(MemberInfo SystemElement)
         {
             this.foundElement = SystemElement;
-            if (SystemElement != null && SystemElement.Name.EndsWith(">"))
-                this.isGeneric = true;
         }
 
 
@@ -4429,6 +4499,18 @@ namespace XSharpLanguage
             }
         }
 
+
+        public string TypeName
+        {
+            get
+            {
+                var t = ReturnType;
+                var name = t.FullName;
+                if (t.IsArray)
+                    name += "[]";
+                return name;
+            }
+        }
         public CompletionType MemberOf
         {
             get
@@ -4465,7 +4547,6 @@ namespace XSharpLanguage
         {
             get
             {
-                this.isArray = false;
                 CompletionType cType = new CompletionType();
                 if (this.XSharpElement != null)
                 {
@@ -4476,30 +4557,14 @@ namespace XSharpLanguage
                         if (!String.IsNullOrEmpty(xt.TypeName))
                         {
                             string searchTypeName = xt.TypeName;
-                            if (searchTypeName.EndsWith("[]"))
-                            {
-                                searchTypeName = searchTypeName.Substring(0, searchTypeName.Length - 2);
-                                this.isArray = true;
-                            }
-                            else if (searchTypeName.EndsWith(">"))
-                                this.isGeneric = true;
-                            cType = new CompletionType(searchTypeName, xt.File, xt.FileUsings);
-                            cType.IsArray = this.isArray;
+                             cType = new CompletionType(searchTypeName, xt.File, xt.FileUsings);
                         }
                     }
                     else if (this.XSharpElement is XVariable)
                     {
                         XVariable xv = (XVariable)this.XSharpElement;
                         string searchTypeName = xv.TypeName;
-                        if (searchTypeName.EndsWith("[]"))
-                        {
-                            searchTypeName = searchTypeName.Substring(0, searchTypeName.Length - 2);
-                            this.isArray = true;
-                        }
-                        else if (searchTypeName.EndsWith(">"))
-                            this.isGeneric = true;
                         cType = new CompletionType(searchTypeName, xv.File, xv.FileUsings);
-                        cType.IsArray = this.isArray;
                     }
                     else if (this.XSharpElement is XType)
                     {
@@ -4529,9 +4594,6 @@ namespace XSharpLanguage
                     {
                         cType = new CompletionType((System.Type)this.SystemElement);
                     }
-                    if (!cType.IsEmpty())
-                        if (cType.FullName.EndsWith(">"))
-                            this.isGeneric = true;
                 }
                 return cType;
             }
@@ -4542,7 +4604,7 @@ namespace XSharpLanguage
             get
             {
                 String ret = "";
-                if (this.isGeneric)
+                if (this.IsGeneric)
                 {
                     if (this.genTypeName == null)
                     {
@@ -4566,8 +4628,6 @@ namespace XSharpLanguage
                                 searchTypeName = searchTypeName.Substring(0, searchTypeName.Length - 1);
                                 this.genTypeName = searchTypeName;
                                 ret = this.genTypeName;
-                                //String[] items = searchTypeName.Split(',');
-                                //ret = items[0];
                             }
                         }
                     }
@@ -4576,7 +4636,7 @@ namespace XSharpLanguage
                         ret = this.genTypeName;
                     }
                 }
-                return ret; // this.genTypeName;
+                return ret; 
             }
 
             set
@@ -4589,7 +4649,7 @@ namespace XSharpLanguage
         {
             get
             {
-                return this.isArray;
+                return this.TypeName.EndsWith("]");
             }
         }
 
@@ -4597,7 +4657,7 @@ namespace XSharpLanguage
         {
             get
             {
-                return this.isGeneric;
+                return this.TypeName.EndsWith(">");
             }
         }
 
@@ -4663,7 +4723,7 @@ namespace XSharpLanguage
     // Build a list of all Keywords
     internal static class XSharpTypes
     {
-        static ImmutableList<XType> _xTypes;
+        static IList<XType> _xTypes;
 
         static XSharpTypes()
         {
@@ -4680,10 +4740,10 @@ namespace XSharpLanguage
                 xTypes.Add(new XType(keyword.Key, Kind.Keyword, Modifiers.None, Modifiers.Public, TextRange.Empty, TextInterval.Empty, null));
             }
             //
-            _xTypes = xTypes.ToImmutableList();
+            _xTypes = xTypes.ToArray();
         }
 
-        internal static ImmutableList<XType> Get()
+        internal static IList<XType> Get()
         {
             return _xTypes;
         }
@@ -4718,46 +4778,17 @@ namespace XSharpLanguage
             iCurrentLine = Math.Min(snapshot.LineCount - 1, iCurrentLine);
             // create a walker with just the contents of the current member
             var walker = new SourceWalker(member.File);
-            var start = member.Range.StartLine - 1; // range = 1 based
-            var lines = new List<String>();
-            for (int i = start; i <= iCurrentLine; i++)
-            {
-                lines.Add(snapshot.GetLineFromLineNumber(i).GetText());
-            }
-            walker.StartPosition = member.Interval.Start;
-            walker.ParseLines(lines, true);
-            var locals = new List<XVariable>();
+            var locals = walker.ParseLocals(snapshot.GetText(), member.Range.StartLine, member.Range.EndLine);
             // Add the normal locals for class members
             if (member.Kind.IsClassMember(dialect) && !member.Modifiers.HasFlag(Modifiers.Static))
             {
                 var XVar = new XVariable(member, "SELF", Kind.Local, member.Range, member.Interval, member.ParentName, false);
+                XVar.File = walker.File;
                 locals.Add(XVar);
                 if (member?.Parent?.ParentName != null)
                 {
                     XVar = new XVariable(member, "SUPER", Kind.Local, member.Range, member.Interval, member.Parent.ParentName, false);
-                    locals.Add(XVar);
-                }
-            }
-            // add the locals found in the code.
-            int nLineOffSet = member.Range.StartLine - 1;
-            iCurrentLine += 1; // our ranges are 1 based
-            foreach (EntityObject local in walker.ParseResult.Locals)
-            {
-                var line = local.nStartLine + nLineOffSet;
-                if (line <= iCurrentLine)
-                {
-                    var range = new TextRange(line, local.nCol, line, local.nCol + local.cName.Length);
-                    var interval = new TextInterval(local.nPosition, local.nPosition + local.cName.Length);
-                    var XVar = new XVariable(member, local.cName, Kind.Local, range, interval, local.cRetType, false);
-                    XVar.File = member.File;
-                    if (local.cRetType == XVariable.VarType)
-                    {
-                        // We should have an indication where to find the Type Info
-                        if (local.Context != null)
-                        {
-                            XVar.VarDefinition = local.Context;
-                        }
-                    }
+                    XVar.File = walker.File;
                     locals.Add(XVar);
                 }
             }

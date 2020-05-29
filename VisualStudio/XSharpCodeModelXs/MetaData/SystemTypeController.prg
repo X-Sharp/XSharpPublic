@@ -5,7 +5,7 @@
 //
 USING System.Collections.Concurrent
 USING System.Collections.Generic
-USING System.Collections.Immutable
+USING System.Linq
 USING System
 USING System.IO
 USING System.Reflection
@@ -29,9 +29,9 @@ BEGIN NAMESPACE XSharpModel
 			
 			#region properties
 			// Properties
-			STATIC PROPERTY AssemblyFileNames AS ImmutableList<STRING>
+			STATIC PROPERTY AssemblyFileNames AS IList<STRING>
 				GET
-					RETURN SystemTypeController.assemblies:Keys:ToImmutableList()
+					RETURN SystemTypeController.assemblies:Keys:ToArray()
 				END GET
 			END PROPERTY
 			STATIC PROPERTY MsCorLib AS AssemblyInfo GET _mscorlib SET _mscorlib := VALUE
@@ -126,14 +126,14 @@ BEGIN NAMESPACE XSharpModel
 			END TRY
 			RETURN result
 			
-		METHOD GetNamespaces(assemblies AS IList<AssemblyInfo>) AS ImmutableList<STRING>
+		METHOD GetNamespaces(assemblies AS IList<AssemblyInfo>) AS IList<STRING>
 			VAR list := List<STRING>{}
 			FOREACH VAR info IN assemblies
 				FOREACH str AS STRING IN info:Namespaces
 					list:AddUnique( str)
 				NEXT
 			NEXT
-			RETURN list:ToImmutableList()
+			RETURN list:AsReadOnly()
 			
 		STATIC METHOD LoadAssembly(cFileName AS STRING) AS AssemblyInfo
 			LOCAL info AS AssemblyInfo

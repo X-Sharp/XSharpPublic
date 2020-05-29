@@ -61,7 +61,7 @@ BEGIN NAMESPACE XSharpModel
 			RETURN
 
 
-
+      /*
 		STATIC METHOD create(oFile AS XFile, oElement AS EntityObject, oInfo AS ParseResult, dialect AS XSharpDialect ) AS XType
 			LOCAL cName := oElement:cName AS STRING
 			LOCAL kind  := Etype2Kind(oElement:eType) AS Kind
@@ -104,7 +104,9 @@ BEGIN NAMESPACE XSharpModel
 			RETURN oXType
 
 
-        METHOD AddInterface(sInterface AS STRING) AS VOID
+       
+         */
+         METHOD AddInterface(sInterface AS STRING) AS VOID
             SELF:_interfaces:Add(sInterface)
             RETURN
 

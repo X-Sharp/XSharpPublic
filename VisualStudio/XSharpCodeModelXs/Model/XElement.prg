@@ -33,6 +33,7 @@ BEGIN NAMESPACE XSharpModel
         PRIVATE _value  AS STRING
         STATIC INITONLY PUBLIC VarType := "$VAR$" AS STRING
         STATIC INITONLY PUBLIC UsualType := "USUAL" AS STRING
+        STATIC INITONLY PUBLIC NoType := "$NOTYPE$" AS STRING
 		
 		// Methods
 		CONSTRUCTOR()
@@ -65,7 +66,7 @@ BEGIN NAMESPACE XSharpModel
 			PROPERTY Range AS TextRange                  GET SELF:_range SET _range := value
 			PROPERTY Interval AS TextInterval            GET SELF:_interval SET _interval := value
 			PROPERTY Dialect AS XSharpDialect AUTO      
-			VIRTUAL PROPERTY IsArray AS LOGIC            GET SELF:_isArray SET SELF:_isArray := value
+			PROPERTY IsArray AS LOGIC                    GET SELF:_isArray SET SELF:_isArray := value
 			PROPERTY IsTyped AS LOGIC                    GET _isTyped
 			PROPERTY Attributes AS STRING                GET SELF:_attributes SET _attributes := value
          PROPERTY SingleLine        AS LOGIC          GET SELF:_singleLine SET SELF:_singleLine:= value
@@ -107,7 +108,7 @@ BEGIN NAMESPACE XSharpModel
 			IF SELF:_File?:Project?:ProjectNode != NULL
 				SELF:_File:Project:ProjectNode:OpenElement(SELF:_File:SourcePath, SELF:Range:StartLine, (SELF:Range:StartColumn + 1))
 			ENDIF
-			
+		/*	
 		STATIC METHOD Etype2Kind(eType AS EntityType) AS Kind
 			SWITCH eType
 				CASE EntityType._Constructor
@@ -209,7 +210,7 @@ BEGIN NAMESPACE XSharpModel
 			span	 := TextRange{nLineStart, nColStart, nLineEnd, nColEnd}
 			interval := TextInterval{nPosStart, nPosEnd}
 			RETURN
-			
+		*/				
 			#region Complexer properties		
 			// Properties
 			VIRTUAL PROPERTY Description AS STRING
@@ -224,7 +225,7 @@ BEGIN NAMESPACE XSharpModel
 					RETURN desc
 				END GET
 			END PROPERTY
-			
+
 			
 			
 			/// <summary>

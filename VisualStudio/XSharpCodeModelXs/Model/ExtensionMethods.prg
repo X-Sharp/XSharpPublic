@@ -100,6 +100,18 @@ BEGIN NAMESPACE XSharpModel
 			END SWITCH
 			RETURN FALSE
 		
+      STATIC METHOD IsGlobalType(SELF elementKind AS Kind) AS LOGIC
+         SWITCH elementKind
+         CASE Kind.VOGlobal
+         CASE Kind.VODefine
+         CASE Kind.Function
+         CASE Kind.Procedure
+         CASE Kind.VODLL
+            RETURN TRUE
+         END SWITCH
+         RETURN FALSE
+         
+      
 		STATIC METHOD IsClassMember( SELF elementKind AS Kind, inDialect AS XSharpDialect ) AS LOGIC
 			SWITCH elementKind
 				CASE Kind.Constructor 
@@ -244,9 +256,10 @@ BEGIN NAMESPACE XSharpModel
 					ENDIF
 				ENDDO
 			NEXT
-			RETURN List:ToImmutableList() 
+			RETURN List:AsReadOnly() 
 		
 		// parser enums
+      /*
 		STATIC METHOD ToModifiers(SELF mod AS EntityModifiers) AS Modifiers
 		// FLags enum 
 		LOCAL result AS Modifiers
@@ -303,9 +316,10 @@ BEGIN NAMESPACE XSharpModel
 		ENDIF
 
 		RETURN result
-
+*/
 
 	END CLASS
 END NAMESPACE 
+
 
 

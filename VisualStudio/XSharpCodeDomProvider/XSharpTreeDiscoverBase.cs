@@ -16,7 +16,7 @@ using System.CodeDom;
 using System.Reflection;
 using Microsoft.VisualStudio.Shell.Design.Serialization.CodeDom;
 using System.Diagnostics;
-using System.Collections.Immutable;
+
 using XSharpModel;
 namespace XSharp.CodeDom
 {
@@ -26,7 +26,7 @@ namespace XSharp.CodeDom
         protected IProjectTypeHelper _projectNode;
         protected Dictionary<string, TypeXType> _types;    // type cache
         protected Dictionary<string, EnvDTE.CodeElement> _stypes;    // ENVDTE.CodeElement kind = type cache
-        protected IList<string> _usings;          // uses for type lookup
+        protected List<string> _usings;          // uses for type lookup
         protected IList<IToken> _tokens;          // used to find comments
 
         internal Dictionary<ParserRuleContext, List<XCodeMemberField>> FieldList { get; set; }
@@ -749,7 +749,7 @@ namespace XSharp.CodeDom
             {
                 return _types[typeName].Type;
             }
-            var type = _projectNode.ResolveType(typeName, _usings.ToImmutableArray());
+            var type = _projectNode.ResolveType(typeName, _usings.AsReadOnly());
             if (type != null)
             {
                 _types.Add(typeName, new TypeXType(type));
@@ -768,7 +768,7 @@ namespace XSharp.CodeDom
             {
                 usings = _usings;
             }
-            var type = _projectNode.ResolveXType(typeName, usings.ToImmutableArray());
+            var type = _projectNode.ResolveXType(typeName, usings.ToArray());
             if (type != null)
                 _types.Add(typeName, new TypeXType(type));
             return type;
@@ -780,7 +780,7 @@ namespace XSharp.CodeDom
             {
                 return _types[typeName].xType;
             }
-            var type = _projectNode.ResolveReferencedType(typeName, _usings.ToImmutableArray());
+            var type = _projectNode.ResolveReferencedType(typeName, _usings.ToArray());
             //
             if (type != null)
             {
@@ -800,7 +800,7 @@ namespace XSharp.CodeDom
             var parent = findType(xtype.ParentName);
             if (parent == null)
             {
-                parent = _projectNode.ResolveType(xtype.ParentName, xtype.FileUsings.ToImmutableArray());
+                parent = _projectNode.ResolveType(xtype.ParentName, xtype.FileUsings.ToArray());
             }
             if (parent != null)
                 return new TypeXType(parent);

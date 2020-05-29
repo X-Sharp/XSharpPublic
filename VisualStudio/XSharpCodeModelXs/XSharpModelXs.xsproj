@@ -103,13 +103,6 @@
     </Reference>
     <Reference Include="mscorlib" />
     <Reference Include="System" />
-    <Reference Include="System.Collections.Immutable, Version=1.2.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>System.Collections.Immutable</Name>
-      <AssemblyName>System.Collections.Immutable.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\..\packages\System.Collections.Immutable.1.5.0\lib\netstandard1.3\System.Collections.Immutable.dll</HintPath>
-    </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <Name>System.Drawing</Name>
@@ -166,8 +159,6 @@
     <Compile Include="TextRange.prg" />
     <Compile Include="TypeExtensions.prg" />
     <Compile Include="Walker\ModelWalker.prg" />
-    <Compile Include="Walker\Parser.prg" />
-    <Compile Include="Walker\ParseResult.prg" />
     <Compile Include="Walker\ParserV2.prg" />
     <Compile Include="Walker\SourceWalker.prg" />
     <Compile Include="XError.prg" />

@@ -6,24 +6,28 @@
 
 USING XSharpModel
 USING System.Diagnostics
+USING System.Collections.Generic
+USING LanguageService.SyntaxTree
+
 BEGIN NAMESPACE XSharpModel
     [DebuggerDisplay("{DebuggerDisplay(),nq}")];
     CLASS XVariable INHERIT XElement
         // Fields
         PRIVATE _isParameter AS LOGIC
+        
         // Methods
         CONSTRUCTOR(parent AS XElement, name AS STRING, kind AS Kind,  ;
             span AS TextRange, position AS TextInterval, typeName AS STRING, isParameter := FALSE AS LOGIC)
             SUPER(name, kind, Modifiers.None, Modifiers.None, span, position)
             SELF:TypeName       := typeName
             SELF:_isParameter   := isParameter
-            SELF:VarDefinition  := NULL	// Not a VAR
             SUPER:Parent        := parent
             IF parent != NULL
                 SELF:File           := parent:File
             ENDIF
 
         // Properties
+        PROPERTY Expression AS IList<IToken> AUTO GET INTERNAL SET
         PROPERTY Description AS STRING
             GET
                 //
@@ -73,7 +77,6 @@ BEGIN NAMESPACE XSharpModel
             END GET
         END PROPERTY
 
-        PROPERTY VarDefinition AS ParseContext AUTO
 
         METHOD DebuggerDisplay() AS STRING
             VAR result := SUPER:Name

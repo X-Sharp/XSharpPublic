@@ -19,12 +19,12 @@ CLASS AssemblyInfo
 		PRIVATE _fullName AS STRING
 		PRIVATE _globalClassName AS STRING
 		PRIVATE _HasExtensions AS LOGIC
-		PRIVATE _implicitNamespaces AS ImmutableList<STRING>
+		PRIVATE _implicitNamespaces AS List<STRING>
 		PRIVATE _LoadedTypes AS LOGIC
 		PRIVATE _Modified AS System.DateTime
 		PRIVATE _nameSpaces AS System.Collections.Hashtable
-		PRIVATE _nameSpaceTexts AS ImmutableList<STRING>
-		PRIVATE _projects AS ImmutableList<XProject>
+		PRIVATE _nameSpaceTexts AS List<STRING>
+		PRIVATE _projects AS List<XProject>
 		PRIVATE _reference AS VSLangProj.Reference
 		PRIVATE _zeroNamespace AS AssemblyInfo.NameSpaceContainer
 
@@ -63,7 +63,7 @@ CLASS AssemblyInfo
 			SUPER()
 			SELF:_fullName := ""
 			SELF:_assembly := NULL
-			SELF:_projects := ImmutableList<XProject>.Empty
+			SELF:_projects := List<XProject>{}
 			SELF:_clearInfo()
 
 		CONSTRUCTOR(reference AS VSLangProj.Reference)
@@ -81,15 +81,15 @@ CLASS AssemblyInfo
 			SELF:_aTypes := Dictionary<STRING, System.Type>{System.StringComparer.OrdinalIgnoreCase}
 			SELF:_aExtensions := List<MethodInfo>{}
 			SELF:_nameSpaces := System.Collections.Hashtable{System.StringComparer.OrdinalIgnoreCase}
-			SELF:_nameSpaceTexts := ImmutableList<STRING>.Empty
-			SELF:_implicitNamespaces := ImmutableList<STRING>.Empty
+			SELF:_nameSpaceTexts := List<STRING>{}
+			SELF:_implicitNamespaces := List<STRING>{}
 			SELF:_zeroNamespace := AssemblyInfo.NameSpaceContainer{"_"}
 			SELF:_LoadedTypes := FALSE
 			SELF:_HasExtensions := FALSE
 
 		METHOD AddProject(project AS XProject) AS VOID
 			IF ! SELF:_projects:Contains(project)
-				SELF:_projects := SELF:_projects:Add(project)
+				SELF:_projects:Add(project)
 			ENDIF
 
 		PRIVATE METHOD CurrentDomain_AssemblyResolve(sender AS OBJECT, args AS System.ResolveEventArgs) AS Assembly
@@ -293,7 +293,7 @@ CLASS AssemblyInfo
 		METHOD RemoveProject(project AS XProject) AS VOID
 			//
 			IF SELF:_projects:Contains(project)
-				SELF:_projects := SELF:_projects:Remove(project)
+				SELF:_projects:Remove(project)
 			ENDIF
 
 		METHOD Refresh() AS VOID
@@ -332,7 +332,7 @@ CLASS AssemblyInfo
 				fullName := ""
 				simpleName := ""
 				SELF:_nameSpaces:Clear()
-				_nameSpaceTexts := ImmutableList<STRING>.Empty
+				_nameSpaceTexts := List<STRING>{}
 				SELF:_zeroNamespace:Clear()
 				SELF:_globalClassName := ""
 				SELF:_HasExtensions := FALSE
@@ -353,7 +353,7 @@ CLASS AssemblyInfo
 									WriteOutputMessage("   ...Globals Classname found: "+_globalClassName )
 									VAR defaultNs := SELF:GetPropertySafe(type, custAttr, "defaultnamespace")
 									IF ! String.IsNullOrEmpty(defaultNs)
-										SELF:_implicitNamespaces := SELF:_implicitNamespaces:Add(defaultNs)
+										SELF:_implicitNamespaces:Add(defaultNs)
 										WriteOutputMessage("   ...implicit Namespace found: "+defaultNs)
 									ENDIF
 									found += 1
@@ -364,7 +364,7 @@ CLASS AssemblyInfo
 								CASE "xsharp.implicitnamespaceattribute"
 									VAR ns := SELF:GetPropertySafe(type, custAttr, "namespace")
 									IF ! String.IsNullOrEmpty(ns)
-										SELF:_implicitNamespaces := SELF:_implicitNamespaces:Add(ns)
+										SELF:_implicitNamespaces:Add(ns)
 										WriteOutputMessage("   ...implicit Namespace found: "+ns)
 									ENDIF
 									found += 4
@@ -451,7 +451,7 @@ CLASS AssemblyInfo
 											container := AssemblyInfo.NameSpaceContainer{nspace}
 											container:AddType(simpleName, SELF:GetTypeTypesFromType(type))
 											SELF:_nameSpaces:Add(nspace, container)
-											SELF:_nameSpaceTexts := SELF:_nameSpaceTexts:Add(nspace)
+											SELF:_nameSpaceTexts:Add(nspace)
 										ELSE
 											container := (AssemblyInfo.NameSpaceContainer)SELF:_nameSpaces[nspace]
 											container:AddType(simpleName, SELF:GetTypeTypesFromType(type))
@@ -459,7 +459,7 @@ CLASS AssemblyInfo
 										DO WHILE nspace:Contains(".")
 											nspace := nspace:Substring(0, nspace:LastIndexOf('.'))
 											IF ! SELF:_nameSpaceTexts:Contains(nspace)
-												SELF:_nameSpaceTexts := SELF:_nameSpaceTexts:Add(nspace)
+												SELF:_nameSpaceTexts:Add(nspace)
 											ENDIF
 										ENDDO
 									ENDIF
@@ -502,14 +502,14 @@ CLASS AssemblyInfo
             END TRY
             RETURN lExists
 
-        PROPERTY Exists             AS LOGIC GET _SafeExists(SELF:FileName)
+      PROPERTY Exists             AS LOGIC GET _SafeExists(SELF:FileName)
 		PROPERTY FileName           AS STRING AUTO
 		PROPERTY FullName           AS STRING GET SELF:_fullName
 		PROPERTY GlobalClassName    AS STRING GET SELF:_globalClassName
 		PROPERTY HasProjects        AS LOGIC GET SELF:_projects:Count > 0
 		PROPERTY ImplicitNamespaces AS IList<STRING> GET SELF:_implicitNamespaces
 		PROPERTY IsModifiedOnDisk   AS LOGIC GET SELF:LastWriteTime != SELF:Modified
-        PROPERTY LastWriteTime      AS DateTime GET IIF(SELF:Exists, File.GetLastWriteTime(SELF:FileName), DateTime.MinValue)
+      PROPERTY LastWriteTime      AS DateTime GET IIF(SELF:Exists, File.GetLastWriteTime(SELF:FileName), DateTime.MinValue)
 		PROPERTY Modified           AS DateTime GET IIF(SELF:Exists, SELF:_Modified, DateTime.MinValue) SET SELF:_Modified := VALUE
 		PROPERTY Namespaces         AS IList<STRING> GET SELF:_nameSpaceTexts
 		PROPERTY RuntimeVersion     AS STRING
@@ -524,7 +524,7 @@ CLASS AssemblyInfo
 		PROPERTY Types              AS IDictionary<STRING, System.Type> GET SELF:_aTypes
 			
 		PROPERTY HasExtensions      AS LOGIC GET SELF:_HasExtensions
-		PROPERTY Extensions         AS List<MethodInfo> GET SELF:_aExtensions
+		PROPERTY Extensions         AS IList<MethodInfo> GET SELF:_aExtensions:AsReadOnly()
 
 
 		STATIC METHOD WriteOutputMessage(message AS STRING) AS VOID

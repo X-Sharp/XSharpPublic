@@ -12,7 +12,7 @@ USING System.Diagnostics
 USING System
 USING System.Runtime.InteropServices
 BEGIN NAMESPACE XSharpModel
-	[DebuggerDisplay("{Start}-{Stop}")];
+	[DebuggerDisplay("{DebuggerDisplay(),nq}")];
 	STRUCTURE TextInterval
 		// Fields
 		PRIVATE INITONLY _StartIndex AS LONG
@@ -61,7 +61,13 @@ BEGIN NAMESPACE XSharpModel
 				RETURN true
 			ENDIF
 			RETURN  false
-		
+
+      METHOD DebuggerDisplay() AS STRING
+         RETURN SELF:ToString()
+         
+      OVERRIDE METHOD ToString() AS STRING
+         RETURN i"{Start}-{Stop}"
+
 	END STRUCTURE
 	
 END NAMESPACE 

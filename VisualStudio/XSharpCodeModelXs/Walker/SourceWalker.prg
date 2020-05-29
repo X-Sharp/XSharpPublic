@@ -10,7 +10,6 @@ USING System.Linq
 USING System.Text
 USING System.Threading.Tasks
 USING LanguageService.SyntaxTree
-USING System.Collections.Immutable
 USING LanguageService.CodeAnalysis
 USING LanguageService.CodeAnalysis.XSharp
 USING STATIC XSharp.Parser.VsParser
@@ -25,9 +24,10 @@ BEGIN NAMESPACE XSharpModel
 			//PRIVATE _gate AS OBJECT
 			PRIVATE _prjNode AS IXSharpProject
 			PRIVATE _tokenStream AS ITokenStream
-			PRIVATE _info AS ParseResult
+			//PRIVATE _info AS ParseResult
          PRIVATE _entities AS IList<XElement>
          PRIVATE _blocks   AS IList<XBlock>
+         PRIVATE _locals   AS IList<XVariable>
 
 		#endregion
 		#region Properties
@@ -38,11 +38,10 @@ BEGIN NAMESPACE XSharpModel
 			PROPERTY TokenStream AS ITokenStream GET SELF:_tokenStream
 
 			PROPERTY StartPosition AS INT AUTO
-         PROPERTY ParseResult AS ParseResult GET _info
 
          PROPERTY EntityList AS IList<XElement> GET _entities
          PROPERTY BlockList  AS IList<XBlock>   GET _blocks
-
+         PROPERTY File AS XFile GET _file
 
 		#endregion
 
@@ -58,7 +57,7 @@ BEGIN NAMESPACE XSharpModel
 			    sourcePath := SELF:_file:SourcePath
             ENDIF
 
-
+      /*
 		METHOD BuildModel(oInfo AS ParseResult) AS VOID
 			IF SELF:_prjNode != NULL .AND. SELF:_file:Project:Loaded
 				//
@@ -69,8 +68,9 @@ BEGIN NAMESPACE XSharpModel
 					XSolution.WriteException(exception)
 				END TRY
 			ENDIF
-
-		VIRTUAL METHOD Dispose() AS VOID
+      */
+      
+		VIRTUAL METHOD Dispose() AS VOID 
 			SELF:Dispose(TRUE)
 
 		PROTECTED VIRTUAL METHOD Dispose(disposing AS LOGIC) AS VOID
@@ -100,39 +100,15 @@ BEGIN NAMESPACE XSharpModel
 			WriteOutputMessage("<<-- Lex() "+_file:FullPath)
 			RETURN stream
 
-		PRIVATE METHOD createLines(cSource AS STRING) AS List<STRING>
-			VAR lines := List<STRING>{}
-			BEGIN USING VAR reader := StringReader{cSource}
-				LOCAL cLine AS STRING
-				DO WHILE (cLine := reader:ReadLine()) != NULL
-					lines.Add(cLine)
-				ENDDO
-			END USING
-			RETURN lines
-
-			//method Parse(cSource as string, lIncludeLocals as LOGIC) as ParseResult
-			//var lines := createLines(cSource)
-			//return self:Parse(lines, lIncludeLocals)
-
-      METHOD ParseLines(lines AS IList<STRING> , lIncludeLocals AS LOGIC) AS VOID
-			WriteOutputMessage("-->> ParseLines() "+_file:FullPath+" locals "+lIncludeLocals:ToString()+" )")
-  
-			VAR oParser := XSharpModel.Parser{}
-			oParser:StartPosition := SELF:StartPosition
-			IF ( SELF:_prjNode != NULL )
-				oParser:Dialect := SELF:_prjNode:ParseOptions:Dialect
-			ENDIF
-            TRY
-			    VAR info := oParser:Parse(lines, lIncludeLocals)
-			    BEGIN LOCK SELF
-				    SELF:_info := info
-                _file:BuildTypes(info)
-			    END LOCK
-            CATCH e AS Exception
-                WriteOutputMessage("Parse() Failed:")
-                WriteOutputMessage(e:Message)
-            END TRY
-			WriteOutputMessage("<<-- ParseLines() "+_file:FullPath)
+      METHOD ParseLocals(source AS STRING, startLine AS INT, endLine AS INT) AS List<XVariable>
+         SELF:ParseNew(source, TRUE)         
+         VAR result := List<XVariable>{}
+         FOREACH VAR xVar IN SELF:_locals
+            IF xVar:Range:StartLine >= startLine .AND. xVar:Range:StartLine <= endLine
+               result:Add(xVar)
+            ENDIF
+         NEXT
+         RETURN result
          
 
 
@@ -140,10 +116,12 @@ BEGIN NAMESPACE XSharpModel
 
          WriteOutputMessage("-->> ParseTokens() "+_file:FullPath+" locals "+lIncludeLocals:ToString()+" )")
          TRY
-            VAR parserv2 := ParserV2{}
-            parserv2:Parse(tokens , _file, lIncludeRegions, lIncludeLocals)
+            VAR parserv2 := ParserV2{_file}
+            parserv2:Parse(tokens , lIncludeRegions, lIncludeLocals)
             SELF:_entities := parserv2:EntityList
             SELF:_blocks   := parserv2:BlockList
+            SELF:_locals   := parserv2:Locals
+            
          CATCH e AS Exception
                WriteOutputMessage("ParseTokens() Failed:")
                WriteOutputMessage(e:Message)
@@ -153,10 +131,12 @@ BEGIN NAMESPACE XSharpModel
 
 
       METHOD ParseNew(lIncludeLocals AS LOGIC) AS VOID
+         VAR cSource      := System.IO.File.ReadAllText(_file:FullPath)
+         SELF:ParseNew(cSource, lIncludeLocals)
+
+      METHOD ParseNew(cSource AS STRING, lIncludeLocals AS LOGIC) AS VOID
          WriteOutputMessage("-->> ParseNew() "+_file:FullPath+" locals "+lIncludeLocals:ToString()+" )")
-         LOCAL cSource AS STRING
          TRY
-            cSource      := System.IO.File.ReadAllText(_file:FullPath)
             VAR tokens   := SELF:Lex(cSource)
             SELF:ParseTokens(tokens, FALSE, lIncludeLocals)
          CATCH e AS Exception
@@ -165,34 +145,6 @@ BEGIN NAMESPACE XSharpModel
             
          END TRY
          WriteOutputMessage("<<-- ParseNew() "+_file:FullPath)
-         
-         
-         
-		METHOD ParseOld(lIncludeLocals AS LOGIC) AS VOID
-			WriteOutputMessage("-->> ParseOld() "+_file:FullPath+" locals "+lIncludeLocals:ToString()+" )")
-
-			VAR oParser := XSharpModel.Parser{}
-			oParser:StartPosition := SELF:StartPosition
-			IF ( SELF:_prjNode != NULL )
-				oParser:Dialect := SELF:_prjNode:ParseOptions:Dialect
-			ENDIF
-            TRY
-             VAR lines := System.IO.File.ReadAllLines(_file:FullPath)
-			    VAR info := oParser:Parse(lines, lIncludeLocals)
-			    BEGIN LOCK SELF
-				    SELF:_info := info
-                _file:BuildTypes(info)
-			    END LOCK
-            CATCH e AS Exception
-                WriteOutputMessage("ParseOld() Failed:")
-                WriteOutputMessage(e:Message)
-            END TRY
-			WriteOutputMessage("<<-- ParseOld() "+_file:FullPath)
-			RETURN 
-
-
-      METHOD ParseNew(oFile AS XFIle, lIncludeLocals AS LOGIC) AS VOID
-         RETURN
 
 		#region Errors
 			VIRTUAL METHOD ReportError(fileName AS STRING, span AS LinePositionSpan, errorCode AS STRING, message AS STRING, args AS OBJECT[]) AS VOID
@@ -202,7 +154,7 @@ BEGIN NAMESPACE XSharpModel
 				SELF:_errors:Add(XWarning{fileName, span, errorCode, message, args})
             /*
 			PRIVATE METHOD ShowErrorsAsync(syntaxRoot AS SyntaxNode) AS VOID
-				LOCAL list AS System.Collections.Immutable.ImmutableList<XError>
+				LOCAL list AS List<XError>
 				LOCAL obj2 AS OBJECT
 				LOCAL sourcePath AS STRING
 				LOCAL span AS LinePositionSpan
@@ -212,7 +164,7 @@ BEGIN NAMESPACE XSharpModel
 				IF (SELF:_prjNode != NULL)
 					//
 					WriteOutputMessage("-->> ShowErrorsAsync() "+_file:FullPath)
-					list := System.Collections.Immutable.ImmutableList.ToImmutableList<XError>(SELF:_errors)
+					list := List<XError>(SELF:_errors)
 					obj2 := SELF:_gate
 					BEGIN LOCK obj2
 						//

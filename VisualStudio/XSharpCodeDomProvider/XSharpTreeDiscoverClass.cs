@@ -16,7 +16,7 @@ using System.CodeDom;
 using System.Reflection;
 using Microsoft.VisualStudio.Shell.Design.Serialization.CodeDom;
 using System.Diagnostics;
-using System.Collections.Immutable;
+
 using XSharpModel;
 using System.Collections;
 using System.IO;

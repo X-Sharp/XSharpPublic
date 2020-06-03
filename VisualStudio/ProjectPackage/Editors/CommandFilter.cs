@@ -284,7 +284,7 @@ namespace XSharp.Project
                     return;
                 CompletionType cType = null;
                 XSharpLanguage.CompletionElement foundElement = null;
-                XVariable element = null;
+                IXVariable element = null;
                 // Search in Parameters
                 if (currentMember.Parameters != null)
                 {
@@ -303,7 +303,7 @@ namespace XSharp.Project
                         if (currentMember.Parent != null)
                         {
                             // Context Type....
-                            cType = new CompletionType(currentMember.Parent.Clone);
+                            cType = new CompletionType(currentMember.Parent as IXType);
                             // We can have a Property/Field of the current CompletionType
                             if (!cType.IsEmpty())
                             {
@@ -759,7 +759,17 @@ namespace XSharp.Project
                 // Then, the corresponding Type/Element if possible
                 IToken stopToken;
                 //ITokenStream tokenStream;
-                List<String> tokenList = XSharpTokenTools.GetTokenList(caretPos, lineNumber, snapshot, out stopToken, true, file, false, member);
+
+                // We don't want to lex the buffer. So get the tokens from the last lex run
+                // and when these are too old, then simply bail out
+                var tokens = this.TextView.TextBuffer.GetTokens();
+                if (tokens != null)
+                {
+                    if (tokens.SnapShot.Version != snapshot.Version)
+                        return;
+                }
+
+                List<String> tokenList = XSharpTokenTools.GetTokenList(caretPos, lineNumber, tokens.TokenStream, out stopToken, true, file, false, member);
 
                 // LookUp for the BaseType, reading the TokenList (From left to right)
                 CompletionElement gotoElement;
@@ -777,19 +787,17 @@ namespace XSharp.Project
                     {
                         if (gotoElement.XSharpElement is XTypeMember)
                         {
-                            if (((XTypeMember)gotoElement.XSharpElement).Namesake().Count > 1)
+                            if (((XTypeMember)gotoElement.XSharpElement).GetOverloads().Length > 1)
                             {
                                 ObjectBrowserHelper.FindSymbols(gotoElement.XSharpElement.Name);
                                 return;
                             }
                         }
                         // Ok, find it ! Let's go ;)
-                        gotoElement.XSharpElement.OpenEditor();
-                        return;
-                    }
-                    else if (gotoElement.SystemElement != null)
-                    {
-                        //gotoObjectBrowser(gotoElement.SystemElement);
+                        if (gotoElement.IsSourceElement)
+                        {
+                            gotoElement.OpenSource();
+                        }
                         return;
                     }
                 }
@@ -803,7 +811,10 @@ namespace XSharp.Project
                 if ((gotoElement != null) && (gotoElement.XSharpElement != null))
                 {
                     // Ok, find it ! Let's go ;)
-                    gotoElement.XSharpElement.OpenEditor();
+                    if (gotoElement.IsSourceElement)
+                    {
+                        gotoElement.OpenSource();
+                    }
                 }
 
             }
@@ -1240,10 +1251,7 @@ namespace XSharp.Project
                 {
                     _signatureSession.Properties["Element"] = gotoElement.XSharpElement;
                 }
-                else if (gotoElement.SystemElement != null)
-                {
-                    _signatureSession.Properties["Element"] = gotoElement.SystemElement;
-                }
+               
                 _signatureSession.Properties["Line"] = startLineNumber;
                 _signatureSession.Properties["Start"] = ssp.Position;
                 _signatureSession.Properties["Length"] = TextView.Caret.Position.BufferPosition.Position - ssp.Position;

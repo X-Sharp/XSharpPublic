@@ -247,11 +247,11 @@ namespace XSharp.LanguageService
                         var vars = tm.GetLocals(buffer.CurrentSnapshot, iLine, file.Project.ParseOptions.Dialect);
                         foreach (var v in vars)
                         {
-                            locals.Add(v.Name, v);
+                            locals.Add(v.Name, (XVariable) v);
                         }
                         foreach (var p in tm.Parameters)
                         {
-                            locals.Add(p.Name, p);
+                            locals.Add(p.Name, (XVariable)p);
                         }
                     }
                     addtokens(buffer, iLine , list, file, locals);

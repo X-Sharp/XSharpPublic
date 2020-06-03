@@ -5,6 +5,8 @@
 //
 
 USING System
+USING LanguageService.CodeAnalysis.XSharp.SyntaxParser
+
 BEGIN NAMESPACE XSharpModel
 	INTERNAL ENUM ImageListKind AS Int32
 		MEMBER @@Class:=0
@@ -93,12 +95,13 @@ BEGIN NAMESPACE XSharpModel
 		MEMBER @@Static:=0x1000
 		MEMBER @@Unsafe:=0x2000
 		MEMBER @@Virtual:=0x4000
-        MEMBER @@Override:=0x4000
-        MEMBER @@External:=0x8000
-        MEMBER @@Const:=0x10000
-        MEMBER @@InitOnly:=0x20000
-        MEMBER @@Instance:=0x40000
-	END ENUM
+      MEMBER @@Override:=0x4000
+      MEMBER @@External:=0x8000
+      MEMBER @@Const:=0x10000
+      MEMBER @@InitOnly:=0x20000
+      MEMBER @@Instance:=0x40000
+   END ENUM
+   
 	ENUM XFileType AS LONG
 		MEMBER Unknown:=-1
 		MEMBER SourceCode:=0
@@ -123,10 +126,20 @@ BEGIN NAMESPACE XSharpModel
 		MEMBER @@Ref    := 1
 		MEMBER @@Out	:= 2
 		MEMBER @@Params := 3
-        MEMBER @@In  	:= 4
+      MEMBER @@In  	:= 4
     END ENUM
 
-
+   ENUM CallingConvention
+      MEMBER None          := 0
+      MEMBER @@Clipper     :=  XSharpLexer.CLIPPER 
+      MEMBER @@Strict      :=  XSharpLexer.STRICT  
+      MEMBER @@Pascal      :=  XSharpLexer.PASCAL  
+      MEMBER @@Aspen       :=  XSharpLexer.ASPEN   
+      MEMBER @@Wincall     :=  XSharpLexer.WINCALL 
+      MEMBER @@Callback    :=  XSharpLexer.CALLBACK
+      MEMBER @@Fastcall    :=  XSharpLexer.FASTCALL
+      MEMBER @@Thiscall    :=  XSharpLexer.THISCALL
+   END ENUM
  
 
 END NAMESPACE

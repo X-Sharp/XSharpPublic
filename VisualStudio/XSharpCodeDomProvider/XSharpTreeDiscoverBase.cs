@@ -114,7 +114,7 @@ namespace XSharp.CodeDom
             }
             else
             {
-                expr = new XCodeTypeReference(typeof(void));
+                expr = new XCodeTypeReference("System.Void");
             }
 
             if (sName.Contains("[") || sName.Contains(">"))
@@ -743,22 +743,8 @@ namespace XSharp.CodeDom
             return null;
         }
 
-        protected System.Type findType(string typeName)
-        {
-            if (_types.ContainsKey(typeName))
-            {
-                return _types[typeName].Type;
-            }
-            var type = _projectNode.ResolveType(typeName, _usings.AsReadOnly());
-            if (type != null)
-            {
-                _types.Add(typeName, new TypeXType(type));
-            }
-            return type;
 
-        }
-
-        protected XType findXType(string typeName, IList<string> usings = null)
+        protected IXType findXType(string typeName, IList<string> usings = null)
         {
             if (_types.ContainsKey(typeName))
             {
@@ -774,7 +760,7 @@ namespace XSharp.CodeDom
             return type;
         }
 
-        protected XType findReferencedType(string typeName)
+        protected IXType findReferencedType(string typeName)
         {
             if (_types.ContainsKey(typeName))
             {
@@ -788,19 +774,18 @@ namespace XSharp.CodeDom
             }
             return type;
         }
-        protected TypeXType findParentType(XType xtype)
+        protected TypeXType findParentType(IXType xtype)
         {
-            var result = findInCache(xtype.ParentName);
+            var result = findInCache(xtype.BaseType);
             if (result != null)
                 return result;
-
-            var xparent = findXType(xtype.ParentName, xtype.FileUsings);
+            var xparent = findXType(xtype.BaseType, xtype.FileUsings);
             if (xparent != null)
                 return new TypeXType(xparent);
-            var parent = findType(xtype.ParentName);
+            var parent = findXType(xtype.BaseType);
             if (parent == null)
             {
-                parent = _projectNode.ResolveType(xtype.ParentName, xtype.FileUsings.ToArray());
+                parent = _projectNode.ResolveXType(xtype.BaseType, xtype.FileUsings.ToArray());
             }
             if (parent != null)
                 return new TypeXType(parent);
@@ -824,7 +809,7 @@ namespace XSharp.CodeDom
                 }
                 else
                 {
-                    var type = findType(typeName);
+                    var type = findXType(typeName);
                     if (type != null)
                     {
                         txtype = new TypeXType(type);
@@ -887,7 +872,7 @@ namespace XSharp.CodeDom
                     var strType = nativeType.Token.Text;
                     return BuildTypeReference(strType);
             }
-            return new XCodeTypeReference(type);
+            return new XCodeTypeReference(type.FullName);
         }
 
         protected XCodeTypeReference BuildXBaseType(XSharpParser.XbaseTypeContext xbaseType)

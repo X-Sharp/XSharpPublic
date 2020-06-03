@@ -168,7 +168,7 @@ namespace XSharp.Project
 
                     if (gotoElement.XSharpElement != null)
                     {
-                        if (gotoElement.XSharpElement.Kind == XSharpModel.Kind.Constructor)
+                        if (gotoElement.XSharpElement.Kind == Kind.Constructor)
                         {
                             if (gotoElement.XSharpElement.Parent != null)
                             {
@@ -180,24 +180,24 @@ namespace XSharp.Project
 
                             }
                         }
-                        else if (gotoElement.XSharpElement is XSharpModel.XTypeMember)
+                        else if (gotoElement.XSharpElement is IXTypeMember)
                         {
-                            QuickInfoTypeMember qitm = new QuickInfoTypeMember((XSharpModel.XTypeMember)gotoElement.XSharpElement, kwFormat.ForegroundBrush, txtFormat.ForegroundBrush);
+                            QuickInfoTypeMember qitm = new QuickInfoTypeMember((IXTypeMember)gotoElement.XSharpElement, kwFormat.ForegroundBrush, txtFormat.ForegroundBrush);
                             var description = new TextBlock();
                             description.Inlines.AddRange(qitm.WPFDescription);
                             qiContent.Add(description);
                         }
-                        else if (gotoElement.XSharpElement is XSharpModel.XVariable)
+                        else if (gotoElement.XSharpElement is IXVariable)
                         {
-                            QuickInfoVariable qitm = new QuickInfoVariable((XSharpModel.XVariable)gotoElement.XSharpElement, kwFormat.ForegroundBrush, txtFormat.ForegroundBrush);
+                            QuickInfoVariable qitm = new QuickInfoVariable((IXVariable)gotoElement.XSharpElement, kwFormat.ForegroundBrush, txtFormat.ForegroundBrush);
                             var description = new TextBlock();
                             description.Inlines.AddRange(qitm.WPFDescription);
                             qiContent.Add(description);
 
                         }
-                        else if (gotoElement.XSharpElement is XSharpModel.XType)
+                        else if (gotoElement.XSharpElement is IXType)
                         {
-                            var xtype = gotoElement.XSharpElement as XType;
+                            var xtype = gotoElement.XSharpElement as IXType;
                             var qitm = new QuickInfoTypeAnalysis(xtype, kwFormat.ForegroundBrush, txtFormat.ForegroundBrush);
                             var description = new TextBlock();
                             description.Inlines.AddRange(qitm.WPFDescription);
@@ -213,51 +213,6 @@ namespace XSharp.Project
                             //
                             description.Inlines.Add(temp);
                             qiContent.Add(description);
-                        }
-
-                    }
-                    else if (gotoElement.SystemElement is TypeInfo)
-                    {
-                        var ti = gotoElement.SystemElement as TypeInfo;
-                        string xmldoc = XSharpXMLDocMember.GetTypeSummary(ti, member.File.Project);
-                        QuickInfoTypeAnalysis analysis = new QuickInfoTypeAnalysis(ti, kwFormat.ForegroundBrush, txtFormat.ForegroundBrush);
-                        var description = new TextBlock();
-                        description.Inlines.AddRange(analysis.WPFDescription);
-                        qiContent.Add(description);
-                        if (xmldoc != null)
-                            qiContent.Add(xmldoc);
-                    }
-                    else
-                    {
-                        // This works with System.MemberInfo AND
-                        QuickInfoMemberAnalysis analysis = null;
-                        if (gotoElement.SystemElement is MemberInfo)
-                        {
-                            string xmldoc = XSharpXMLDocMember.GetMemberSummary(gotoElement.SystemElement, member.File.Project);
-
-                            analysis = new QuickInfoMemberAnalysis(gotoElement.SystemElement, kwFormat.ForegroundBrush, txtFormat.ForegroundBrush);
-                            if (analysis.IsInitialized)
-                            {
-                                if ((analysis.Kind == XSharpModel.Kind.Constructor) && (cType != null) && (cType.SType != null))
-                                {
-                                    QuickInfoTypeAnalysis typeAnalysis;
-                                    typeAnalysis = new QuickInfoTypeAnalysis(cType.SType.GetTypeInfo(), kwFormat.ForegroundBrush, txtFormat.ForegroundBrush);
-                                    if (typeAnalysis.IsInitialized)
-                                    {
-                                        var description = new TextBlock();
-                                        description.Inlines.AddRange(typeAnalysis.WPFDescription);
-                                        qiContent.Add(description);
-                                    }
-                                }
-                                else
-                                {
-                                    var description = new TextBlock();
-                                    description.Inlines.AddRange(analysis.WPFDescription);
-                                    qiContent.Add(description);
-                                }
-                                if (xmldoc != null)
-                                    qiContent.Add(xmldoc);
-                            }
                         }
 
                     }
@@ -425,12 +380,7 @@ namespace XSharp.Project
             Brush kwBrush;
             Brush txtBrush;
 
-            internal QuickInfoTypeAnalysis(TypeInfo typeInfo, Brush kw, Brush txt) : base(typeInfo)
-            {
-                this.kwBrush = kw;
-                this.txtBrush = txt;
-            }
-            internal QuickInfoTypeAnalysis(XType type, Brush fg, Brush txt) : base(type)
+            internal QuickInfoTypeAnalysis(IXType type, Brush fg, Brush txt) : base(type)
             {
                 this.kwBrush = fg;
                 this.txtBrush = txt;
@@ -482,7 +432,7 @@ namespace XSharp.Project
             Brush kwBrush;
             Brush txtBrush;
 
-            internal QuickInfoMemberAnalysis(MemberInfo member, Brush kw, Brush txt) : base(member)
+            internal QuickInfoMemberAnalysis(IXTypeMember member, Brush kw, Brush txt) : base(member)
             {
                 this.kwBrush = kw;
                 this.txtBrush = txt;
@@ -550,7 +500,7 @@ namespace XSharp.Project
                             temp = new Run(var.Name + " ");
                             temp.Foreground = txtBrush;
                             vars.Add(temp);
-                            temp = new Run(var.Direction + " ");
+                            temp = new Run(var.ParamTypeDesc + " ");
                             temp.Foreground = this.kwBrush;
                             vars.Add(temp);
                             temp = new Run(var.TypeName);
@@ -600,7 +550,7 @@ namespace XSharp.Project
                 this.txtBrush = txt;
             }
 
-            internal void AddVarInfo(List<Inline> list, XVariable var)
+            internal void AddVarInfo(List<Inline> list, IXVariable var)
             {
                 Run temp;
                 temp = new Run(var.Name + " ");
@@ -624,9 +574,9 @@ namespace XSharp.Project
 
         internal class QuickInfoTypeMember : QuickInfoBase
         {
-            XSharpModel.XTypeMember typeMember;
+            IXTypeMember typeMember;
  
-            internal QuickInfoTypeMember(XSharpModel.XTypeMember tm, Brush kw, Brush txt) : base(kw,txt)
+            internal QuickInfoTypeMember(IXTypeMember tm, Brush kw, Brush txt) : base(kw,txt)
             {
                 this.typeMember = tm;
             }
@@ -638,7 +588,7 @@ namespace XSharp.Project
                     List<Inline> content = new List<Inline>();
 
                     Run temp;
-                    if (this.typeMember.Modifiers != XSharpModel.Modifiers.None)
+                    if (this.typeMember.Modifiers != Modifiers.None)
                     {
                         temp = new Run(_optionsPage.formatKeyword(this.typeMember.Modifiers) + " ");
                         temp.Foreground = this.kwBrush;
@@ -731,9 +681,9 @@ namespace XSharp.Project
 
         internal class QuickInfoVariable : QuickInfoBase
         {
-            XSharpModel.XVariable xVar;
+            IXVariable xVar;
 
-            internal QuickInfoVariable(XSharpModel.XVariable var, Brush kw, Brush txt) : base(kw,txt)
+            internal QuickInfoVariable(IXVariable var, Brush kw, Brush txt) : base(kw,txt)
             {
                 this.xVar = var;
             }

@@ -57,9 +57,9 @@ namespace XSharp.Project
                 }
                 XSharpModel.CompletionType cType = XSharpLanguage.XSharpTokenTools.RetrieveType(_file, tokenList, member, currentNS, stopToken, out gotoElement, snapshot, lineNumber, _file.Project.Dialect);
                 //
-                if ((gotoElement != null) && (gotoElement.XSharpElement != null))
+                if ((gotoElement != null) && (gotoElement.IsSourceElement))
                 {
-                    peekableItems.Add(new XSharpDefinitionPeekItem(gotoElement.XSharpElement, _peekResultFactory));
+                    peekableItems.Add(new XSharpDefinitionPeekItem(gotoElement.SourceElement, _peekResultFactory));
                 }
             }
             catch (Exception ex)

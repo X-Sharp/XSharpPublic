@@ -18,21 +18,22 @@ BEGIN NAMESPACE XSharpModel
    /// </summary>
    [DebuggerDisplay("{DebuggerDisplay(),nq}")];
    STRUCTURE TextRange
-      INITONLY PRIVATE _EndColumn AS LONG
+      // 0 based line numbers and columns
+      INITONLY PRIVATE _EndColumn AS LONG       
       INITONLY PRIVATE _EndLine AS LONG
       INITONLY PRIVATE _StartColumn AS LONG
       INITONLY PRIVATE _StartLine AS LONG
       
       // Methods
-      //CONSTRUCTOR(context AS ParserRuleContext)
-      //SELF(context:Start:Line, context:Start:Column, context:Stop:Line, context:Stop:Column)
+      CONSTRUCTOR(context AS ParserRuleContext)
+      SELF(context:Start:Line, context:Start:Column, context:Stop:Line, context:Stop:Column)
       //
       
       CONSTRUCTOR(startToken AS IToken, endToken AS IToken)
-         SELF:_StartLine     := startToken:Line-1
-         SELF:_StartColumn   := startToken:Column-1
-         SELF:_EndLine       := endToken:Line-1
-         SELF:_EndColumn     := endToken:Column+endToken:Text:Length-1
+         SELF:_StartLine     := startToken:Line -1
+         SELF:_StartColumn   := startToken:Column -1
+         SELF:_EndLine       := endToken:Line -1
+         SELF:_EndColumn     := endToken:Column+endToken:Text:Length -1
          
       CONSTRUCTOR(sl AS LONG, sc AS LONG, el AS LONG, ec AS LONG)
          //
@@ -42,10 +43,10 @@ BEGIN NAMESPACE XSharpModel
          SELF:_EndColumn := ec
          
       METHOD WithEnd(endToken AS IToken) AS TextRange
-         RETURN TextRange{_StartLine,_StartColumn,endToken:Line-1,endToken:Column+endToken:Text:Length-1}
+         RETURN TextRange{_StartLine,_StartColumn,endToken:Line-1,endToken:Column+endToken:Text:Length}
          
          
-      STATIC PROPERTY Empty AS TextRange GET TextRange{1, 1, 1, 1}
+      STATIC PROPERTY Empty AS TextRange GET TextRange{0, 0, 0, 0}
       
       /// <summary>
       /// 1 based Start Line

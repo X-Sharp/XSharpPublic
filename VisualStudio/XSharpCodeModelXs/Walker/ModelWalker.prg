@@ -130,7 +130,6 @@ BEGIN NAMESPACE XSharpModel
 					start := System.Threading.ThreadStart{ SELF, @Walker() }
 					SELF:_WalkerThread := System.Threading.Thread{start}
 					SELF:_WalkerThread:IsBackground := TRUE
-					SELF:_WalkerThread:Priority := System.Threading.ThreadPriority.Highest
 					SELF:_WalkerThread:Name := "ModelWalker"
 					SELF:_WalkerThread:Start()
 				CATCH exception AS System.Exception
@@ -168,16 +167,15 @@ BEGIN NAMESPACE XSharpModel
 					iProcessed := 0
 					parallelOptions := ParallelOptions{}
 					IF (System.Environment.ProcessorCount > 1)
-						parallelOptions:MaxDegreeOfParallelism := ((System.Environment.ProcessorCount * 3) / 4)
+						parallelOptions:MaxDegreeOfParallelism := (System.Environment.ProcessorCount*3)  /4
 					ENDIF
 					project:ProjectNode:SetStatusBarAnimation(TRUE, 0)
-                    TRY
-					    Parallel.ForEach(aFiles, walkOneFile)
-                    CATCH e as Exception
-
-                        WriteOutPutMessage("Parallel.Foreach failed")
-                        XSolution.WriteException(e)
-                    END TRY
+               TRY
+					    Parallel.ForEach(aFiles, parallelOptions, walkOneFile)
+               CATCH e as Exception
+                  WriteOutputMessage("Parallel.Foreach failed")
+                  XSolution.WriteException(e)
+               END TRY
 					BEGIN LOCK SELF
 						_projectsForTypeResolution:Enqueue(project)
 					END LOCK
@@ -258,10 +256,10 @@ BEGIN NAMESPACE XSharpModel
 		STATIC METHOD WriteOutputMessage(message AS STRING) AS VOID
 			XSolution.WriteOutputMessage("XModel.Walker "+message)
 
-		VIRTUAL METHOD ReportError(fileName AS STRING, span AS LinePositionSpan, errorCode AS STRING, message AS STRING, args AS OBJECT[]) AS VOID
+		METHOD ReportError(fileName AS STRING, span AS LinePositionSpan, errorCode AS STRING, message AS STRING, args AS OBJECT[]) AS VOID
                 RETURN
                   
-		VIRTUAL METHOD ReportWarning(fileName AS STRING, span AS LinePositionSpan, errorCode AS STRING, message AS STRING, args AS OBJECT[]) AS VOID
+		METHOD ReportWarning(fileName AS STRING, span AS LinePositionSpan, errorCode AS STRING, message AS STRING, args AS OBJECT[]) AS VOID
                 RETURN
 
 	END CLASS

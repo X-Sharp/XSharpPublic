@@ -121,10 +121,9 @@ namespace XSharp.Project.Editors.LightBulb
                     // classDef.Implement DOESN'T exist currently :(
                     string[] interfaces = { };
                     // Clr Types
-                    Type t = null;
                     // Our own types
                     XType ti = null;
-                    IList<String> Usings = file.Usings;
+                    IList<string> Usings = file.Usings;
                     // Search already implemented Members
                     bool FoundAll = true;
                     string FullName = "";
@@ -156,19 +155,6 @@ namespace XSharp.Project.Editors.LightBulb
                                             toAdd.Add(mbr);
                                         }
                                     }
-                                    FoundAll = (toAdd.Count == 0);
-                                }
-                            }
-                            else
-                            {
-                                t = temp.SType;
-                                if (t.IsInterface)
-                                {
-                                    FullName = t.FullName;
-                                    // Everything is here ?
-                                    FoundAll = true;
-                                    // Please create the array
-                                    toAdd = BuildMissingMembers(classDef, t.GetMembers());
                                     FoundAll = (toAdd.Count == 0);
                                 }
                             }

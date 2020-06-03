@@ -12,7 +12,7 @@ USING XSharpModel
 USING LanguageService.CodeAnalysis.XSharp
 USING STATIC XSharpModel.XFileTypeHelpers
 BEGIN NAMESPACE XSharpModel
-    DELEGATE FindMemberComparer (oElement AS XELement, nValue AS LONG ) AS LONG
+    DELEGATE FindMemberComparer (oElement AS XElement, nValue AS LONG ) AS LONG
 
     [DebuggerDisplay("{FullPath,nq}")];
     CLASS XFile
@@ -54,7 +54,7 @@ BEGIN NAMESPACE XSharpModel
             RETURN
 
 
-        METHOD FirstMember() AS XTypeMember
+        METHOD FirstMember() AS IXTypeMember
             IF (! SELF:HasCode)
                 RETURN NULL
             ENDIF
@@ -101,15 +101,15 @@ BEGIN NAMESPACE XSharpModel
             ENDIF
             RETURN oResult
 
-        PRIVATE METHOD CompareByLine(oElement AS XELement, nLine AS LONG) AS LONG
+        PRIVATE METHOD CompareByLine(oElement AS XElement, nLine AS LONG) AS LONG
             LOCAL nResult AS LONG
             LOCAL nStart, nEnd AS LONG
             nStart := oElement:Range:StartLine
             nEnd   := oElement:Range:EndLine
             IF oElement IS XType
                 VAR oType := oElement ASTYPE XType
-                IF oType:Members:Count > 0
-                    nEnd := oType:Members[0]:Range:StartLine-1
+                IF oType:Members:Count > 0 .and. oType:Members[0] is XTypeMember VAR xmember
+                    nEnd := xmember:Range:StartLine-1
                 ENDIF
             ENDIF
             IF nStart <= nLine .AND. nEnd>= nLine
@@ -128,15 +128,15 @@ BEGIN NAMESPACE XSharpModel
             /// <Summary>Find member in file based on 0 based position</Summary>
             ///
             ///
-        PRIVATE METHOD CompareByPosition(oElement AS XELement, nPos AS LONG) AS LONG
+        PRIVATE METHOD CompareByPosition(oElement AS XElement, nPos AS LONG) AS LONG
             LOCAL nResult AS LONG
             LOCAL nStart, nEnd AS LONG
             nStart := oElement:Interval:Start
             nEnd   := oElement:Interval:Stop
             IF oElement IS XType
                 VAR oType := oElement ASTYPE XType
-                IF oType:Members:Count > 0
-                    nEnd := oType:Members[0]:Interval:Start-2
+                IF oType:Members:Count > 0 .and. oType:Members[0] is XTypeMember VAR xmember
+                    nEnd := xmember:Interval:Start-2
                 ENDIF
             ENDIF
             IF nStart <= nPos .AND. nEnd >= nPos

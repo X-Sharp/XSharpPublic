@@ -14,7 +14,7 @@ BEGIN NAMESPACE XSharpModel
 		CONST PRIVATE OrphanedFiles := "(OrphanedFiles)" AS STRING
 		STATIC INITONLY PRIVATE xProjects := ConcurrentDictionary<STRING, XProject>{StringComparer.OrdinalIgnoreCase} AS ConcurrentDictionary<STRING, XProject>
 
-		PUBLIC STATIC OutputWindow AS IOutPutWindow
+		PUBLIC STATIC OutputWindow AS IOutputWindow
 		// Methods
 		STATIC CONSTRUCTOR
 			OutputWindow := ModelOutputWindow{}
@@ -38,7 +38,7 @@ BEGIN NAMESPACE XSharpModel
 
 
 		STATIC METHOD Add(project AS XProject) AS LOGIC
-			RETURN ADD(project:Name, project)
+			RETURN @@Add(project:Name, project)
 
 		STATIC METHOD Add(projectName AS STRING, project AS XProject) AS LOGIC
             XSolution.Open := TRUE
@@ -109,7 +109,7 @@ BEGIN NAMESPACE XSharpModel
 
 		STATIC METHOD Remove(project AS XProject) AS LOGIC
 			IF project != NULL
-				RETURN REMOVE(project:Name)
+				RETURN @@Remove(project:Name)
 			ENDIF
 			RETURN FALSE
 

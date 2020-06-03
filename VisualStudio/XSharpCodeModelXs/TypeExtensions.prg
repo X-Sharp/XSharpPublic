@@ -117,7 +117,7 @@ BEGIN NAMESPACE XSharpModel
                 FOREACH VAR genArg IN GenericTypeArguments
                     IF first
                         genericString += genArg:Name
-                        First := FALSE
+                        first := FALSE
                     ELSE
                         genericString += "," + genArg:Name
                     ENDIF

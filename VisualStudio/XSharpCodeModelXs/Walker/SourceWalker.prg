@@ -100,9 +100,9 @@ BEGIN NAMESPACE XSharpModel
 			WriteOutputMessage("<<-- Lex() "+_file:FullPath)
 			RETURN stream
 
-      METHOD ParseLocals(source AS STRING, startLine AS INT, endLine AS INT) AS List<XVariable>
+      METHOD ParseLocals(source AS STRING, startLine AS INT, endLine AS INT) AS List<IXVariable>
          SELF:ParseNew(source, TRUE)         
-         VAR result := List<XVariable>{}
+         VAR result := List<IXVariable>{}
          FOREACH VAR xVar IN SELF:_locals
             IF xVar:Range:StartLine >= startLine .AND. xVar:Range:StartLine <= endLine
                result:Add(xVar)

@@ -10,23 +10,23 @@ BEGIN NAMESPACE XSharpModel
 	CLASS XError
 		
 		// Methods
-		CONSTRUCTOR(path AS STRING, span AS LinePositionSpan, errCode AS STRING, message AS STRING, PARAMS AS OBJECT[]);SUPER()
+		CONSTRUCTOR(path AS STRING, span AS LinePositionSpan, errCode AS STRING, message AS STRING, Parameters AS OBJECT[]);SUPER()
 			//
 			SELF:Path := path
 			SELF:Span := span
 			SELF:ErrCode := errCode
 			SELF:Message := message
-			SELF:Params := PARAMS
+			SELF:Parameters := Parameters
 			SELF:Severity := DiagnosticSeverity.Error
 		
-		VIRTUAL METHOD ToString() AS STRING
-			RETURN String.Format(SELF:Message, SELF:Params)
+		METHOD ToString() AS STRING
+			RETURN String.Format(SELF:Message, SELF:Parameters)
 		
 		
 		// Properties
 		PROPERTY ErrCode AS STRING AUTO 
 		PROPERTY Message AS STRING AUTO 
-		PROPERTY PARAMS AS OBJECT[] AUTO 
+		PROPERTY Parameters AS OBJECT[] AUTO 
 		PROPERTY Path AS STRING AUTO 
 		PROPERTY Severity AS DiagnosticSeverity AUTO 
 		PROPERTY Span AS LinePositionSpan AUTO 

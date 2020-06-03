@@ -505,9 +505,7 @@ namespace XSharp.Project
         private IVsNavInfo buildNavInfo(XFile file, string typeName)
         {
             IVsNavInfo navInfo = null;
-            //
-            //= new XSharpNavInfo();
-            XSharpModel.CompletionType completion = new CompletionType(typeName, file, "");
+            CompletionType completion = new CompletionType(typeName, file, "");
             //
             //
             return navInfo;

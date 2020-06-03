@@ -1033,7 +1033,7 @@ namespace XSharp.Project
 
         private void ReferencesEvents_ReferenceAdded(Reference pReference)
         {
-            ProjectModel.AddAssemblyReference(pReference);
+            ProjectModel.AddAssemblyReference(pReference.Path);
             //
             ProjectModel.ResolveReferences();
         }
@@ -1192,7 +1192,7 @@ namespace XSharp.Project
                 else
                 {
                     // OAAssemblyReference or OACOMReference
-                    ProjectModel.AddAssemblyReference(reference);
+                    ProjectModel.AddAssemblyReference(reference.Path);
                 }
             }
         }
@@ -1611,22 +1611,26 @@ namespace XSharp.Project
             return bOk;
         }
         #region IProjectTypeHelper
-        public System.Type ResolveType(string name, IReadOnlyList<string> usings)
+        public IXType ResolveType(string name, IReadOnlyList<string> usings)
         {
             switch (name.ToLower())
             {
                 case "object":
                 case "system.object":
-                    return typeof(object);
+                    name = "System.Object";
+                    break;
                 case "void":
                 case "system.void":
-                    return typeof(void);
+                    name = "System.Void";
+                    break;
                 case "boolean":
                 case "system.boolean":
-                    return typeof(Boolean);
+                    name = "System.Boolean";
+                    break;
                 case "string":
                 case "system.string":
-                    return typeof(String);
+                    name = "System.String";
+                    break;
             }
             var model = this.ProjectModel;
             var myusings = new List<string>();

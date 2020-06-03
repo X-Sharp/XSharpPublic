@@ -10,92 +10,84 @@ USING System.Linq
 USING System.Text
 USING System.Threading.Tasks
 USING XSharpModel
+
 BEGIN NAMESPACE XSharpModel
 	[DebuggerDisplay("{FullName,nq}")];
 	CLASS CompletionType
 		// Fields
-		PRIVATE _file	 AS XFile
-		PRIVATE _stype	 AS System.Type
-		PRIVATE _xtype	 AS XType
+		PRIVATE _file	  AS XFile
+		PRIVATE _type	  AS IXType
 		PROPERTY IsArray AS LOGIC AUTO
+      
 
 		// Methods
 		CONSTRUCTOR()
 			SUPER()
-			SELF:_stype := NULL
-			SELF:_xtype := NULL
+			SELF:_type := NULL
 			SELF:_file := NULL
 
 
-		CONSTRUCTOR(sType AS System.Type)
+		CONSTRUCTOR(element AS IXElement, oFile as XFile)
 			SELF()
-			SELF:_stype := sType
-
-		CONSTRUCTOR(element AS XElement)
-			SELF()
-			LOCAL oMember AS XTypeMember
-			LOCAL parent AS XTypeMember
-			SELF:_file := element:file
-			IF element IS XType
-				SELF:_xtype := (XType)element
+    	   SELF:_file := oFile
+ 			IF element IS IXType VAR oType
+				SELF:_type := oType
+			ELSEIF element IS IXTypeMember VAR oMember
+				SELF:CheckType(oMember:TypeName, oMember:Parent:NameSpace)
+			ELSEIF element:Parent IS IXType VAR oParent
+			   SELF:_type := oParent
 			ELSE
-				IF element IS XTypeMember
-
-					oMember := (XTypeMember)(element)
-					SELF:CheckType(oMember:TypeName, oMember:file, oMember:Parent:NameSpace)
-				ELSE
-
-					IF element:Parent IS XType
-
-						SELF:_xtype := (XType)(element:Parent)
-					ELSE
-
-						parent := (XTypeMember)(element:Parent)
-						IF (parent != NULL)
-
-							SELF:CheckType(parent:TypeName, parent:file, parent:Parent:NameSpace)
-						ENDIF
-					ENDIF
+				VAR parent := (IXTypeMember)(element:Parent)
+				IF (parent != NULL)
+					SELF:CheckType(parent:TypeName, parent:Parent:NameSpace)
 				ENDIF
-			ENDIF
-
-		CONSTRUCTOR(xType AS XType)
+         ENDIF
+ 
+		CONSTRUCTOR(type AS IXType, oFile as XFile)
 			SELF()
-			SELF:_xtype := xType
-			SELF:_file  := xType:File
+			SELF:_type  := type
+         SELF:_file  := oFile         
 
-		CONSTRUCTOR(element AS XTypeMember)
+   	CONSTRUCTOR(type AS IXType)
+			SELF(type, null)
+         if type is XElement VAR xel
+            _file := xel:File
+         endif
+
+		CONSTRUCTOR(element AS IXTypeMember)
 			SELF()
-			SELF:_file := element:file
+         if element is XElement VAR xel
+			   SELF:_file := xel:File
+         ENDIF
 			IF element:Kind:HasReturnType()
-				SELF:CheckType(element:TypeName, element:file, element:Parent:NameSpace)
+				SELF:CheckType(element:TypeName, element:Parent:NameSpace)
 			ELSE
-				SELF:_xtype := (XType) element:Parent
+				SELF:_type := (IXType) element:Parent
 			ENDIF
 
-		CONSTRUCTOR(xvar AS XVariable, defaultNS AS STRING)
+		CONSTRUCTOR(xvar AS IXVariable, defaultNS AS STRING)
 			SELF()
-			LOCAL parent AS XTypeMember
-			parent := (XTypeMember)(xvar:Parent)
-			SELF:_file := xvar:file
+			LOCAL parent AS IXTypeMember
+			parent := (IXTypeMember)(xvar:Parent)
+         IF xvar is XElement var xel
+			   SELF:_file := xel:File
+         ENDIF
 			IF (parent != NULL)
-				//
 				IF (! String.IsNullOrEmpty(parent:Parent:NameSpace))
-
-					defaultNS := ((XType)parent:Parent):NameSpace
-				ENDIF
-				SELF:CheckType(xvar:TypeName, parent:file, defaultNS)
+					defaultNS := parent:Parent:NameSpace
+            ENDIF
+				SELF:CheckType(xvar:TypeName,  defaultNS)
 			ENDIF
 
 		CONSTRUCTOR(typeName AS STRING, xFile AS XFile, usings AS IList<STRING>)
 			SELF()
 			SELF:_file := xFile
-			SELF:CheckType(typeName, xFile, usings)
+			SELF:CheckType(typeName, usings)
 
 		CONSTRUCTOR(typeName AS STRING, xFile AS XFile, defaultNS AS STRING)
 			SELF()
 			SELF:_file := xFile
-			SELF:CheckType(typeName, xFile, defaultNS)
+			SELF:CheckType(typeName, defaultNS)
 
 		PRIVATE METHOD CheckProjectType(typeName AS STRING, xprj AS XProject, usings AS IList<STRING>) AS VOID
 			LOCAL xType AS XType
@@ -111,42 +103,40 @@ BEGIN NAMESPACE XSharpModel
 				NEXT
 			ENDIF
 			IF xType != NULL
-				SELF:_xtype := xType
+				SELF:_type := xType
 			ENDIF
 
 		PRIVATE METHOD CheckSystemType(typeName AS STRING, usings AS IList<STRING>) AS VOID
-			LOCAL sType AS System.Type
+			LOCAL sType AS XTypeRef
 			IF SELF:_file != NULL
-                VAR options := SELF:_file:Project:ParseOptions
-				typeName := typeName:GetSystemTypeName(options:XSharpRuntime)
-				sType := SELF:_file:Project:FindSystemType(typeName, usings)
+            VAR options := SELF:_file:Project:ParseOptions
+				typeName    := typeName:GetSystemTypeName(options:XSharpRuntime)
+				sType       := SELF:_file:Project:FindSystemType(typeName, usings)
 			ENDIF
 			IF sType != NULL
-				SELF:_stype := sType
+				SELF:_type := sType
 			ENDIF
 
-		PRIVATE METHOD CheckType(typeName AS STRING, xFile AS XFile, usings AS IList<STRING>) AS VOID
+		PRIVATE METHOD CheckType(typeName AS STRING, usings AS IList<STRING>) AS VOID
 			//
-			SELF:_file := xFile
-			LOCAL stype AS System.Type
 			//
 			IF typeName.EndsWith("[]")
 				typeName := typeName.Substring(0, typeName.Length - 2)
             IsArray := TRUE
 			ENDIF
 			// prevent lookup from simple types
-			stype := SimpleTypeToSystemType(typeName)
-			IF sType != NULL
-				_sType := sType
+			VAR stype := SimpleTypeToSystemType(typeName)
+			IF stype != NULL
+				_type := stype
 			ELSEIF SELF:_file?:Project != NULL
 				//
-				SELF:CheckProjectType(typeName, xFile:Project, usings)
+				SELF:CheckProjectType(typeName, SELF:_file:Project, usings)
 				IF ! SELF:IsInitialized
 
 					SELF:CheckSystemType(typeName, usings)
 					IF ! SELF:IsInitialized
 
-						FOREACH prj AS XProject IN xFile:Project:ReferencedProjects
+						FOREACH prj AS XProject IN SELF:_file:Project:ReferencedProjects
 							SELF:CheckProjectType(typeName, prj, usings)
 							IF SELF:IsInitialized
 								EXIT
@@ -156,106 +146,106 @@ BEGIN NAMESPACE XSharpModel
 				ENDIF
 			ENDIF
 
-		PRIVATE METHOD CheckType(typeName AS STRING, xFile AS XFile, defaultNS AS STRING) AS VOID
+		PRIVATE METHOD CheckType(typeName AS STRING, defaultNS AS STRING) AS VOID
 			LOCAL usings AS List<STRING>
-			usings := List<STRING>{xFile:Usings}
+			usings := List<STRING>{SELF:_file:Usings}
 			IF ! String.IsNullOrEmpty(defaultNS)
 				usings:Add(defaultNS)
 			ENDIF
-            FOREACH var ns in xFile:Project:ImplicitNamespaces
+            FOREACH var ns in SELF:_file:Project:ImplicitNamespaces
                 usings:AddUnique(ns)
             NEXT
             // For fully qualified typenames, search without usings first. That is usually faster
-            IF typename:Contains(".")
-                SELF:CheckType(typeName, xFile, List<STRING>{})
+            IF typeName:Contains(".")
+                SELF:CheckType(typeName, List<STRING>{})
             ENDIF
             IF ! SELF:IsInitialized
                 // Now check all usings
-			    SELF:CheckType(typeName, xFile, usings)
+			    SELF:CheckType(typeName, usings)
             ENDIF
 
-		INTERNAL METHOD SimpleTypeToSystemType(kw AS STRING) AS System.Type
+		INTERNAL METHOD SimpleTypeToSystemType(kw AS STRING) AS XTypeRef
 			LOCAL typeName AS STRING
-			LOCAL sType AS System.Type
+			LOCAL sType := NULL AS XTypeRef
 			//
 			IF (kw != NULL)
 				//
 				SWITCH kw:ToLowerInvariant()
 					CASE "object"
 					CASE "system.object"
-						typeName := "system.object"
+						typeName := "System.Object"
 
 					CASE "string"
 					CASE "system.string"
-						typeName := "system.string"
+						typeName := "System.String"
 
 					CASE "dword"
 					CASE "uint32"
 					CASE "system.uint32"
-						typeName := "system.uint32"
+						typeName := "System.UInt32"
 
 					CASE "int64"
 					CASE "system.int64"
-						typeName := "system.int64"
+						typeName := "System.Int64"
 
 					CASE "int16"
 					CASE "shortint"
 					CASE "short"
 					CASE "system.int16"
-						typeName := "system.uint16"
+						typeName := "system.Int16"
 
 					CASE "longint"
 					CASE "long"
 					CASE "int"
 					CASE "int32"
 					CASE "system.int32"
-						typeName := "system.int32"
+						typeName := "System.Int32"
 
 					CASE "void"
 					CASE "system.void"
-						typeName := "system.void"
+						typeName := "System.Void"
 
 					CASE "byte"
 					CASE "system.byte"
-						typeName := "system.byte"
+						typeName := "System.Byte"
 
 					CASE "word"
 					CASE "uint16"
 					CASE "system.uint16"
-						typeName := "system.uint16"
+						typeName := "System.UInt16"
 
 					CASE "char"
 					CASE "system.char"
-						typeName := "system.char"
+						typeName := "System.Char"
 
 					CASE "real4"
-						typeName :=  "system.single"
+						typeName :=  "System.Single"
 
 					CASE "real8"
-						typeName :=  "system.double"
+						typeName :=  "System.Double"
 
 					CASE "uint64"
 					CASE "system.uint64"
-						typeName := "system.uint64"
+						typeName := "system.UInt64"
 
 					CASE "logic"
 					CASE "system.boolean"
-						typeName := "system.boolean"
+						typeName := "System.Boolean"
 
 					CASE "sbyte"
 					CASE "system.sbyte"
-						typeName := "system.sbyte"
+						typeName := "System.SByte"
 
 
 					CASE "ptr"
-						typeName := "system.intptr"
-                    case "array"
-                    case "date"
-                    case "float"
-                    case "symbol"
-                    case "psz`"
-                    case "usual"
-                        typeName := kw
+						typeName := "System.IntPtr"
+               case "array"
+               case "date"
+               case "float"
+               case "symbol"
+               case "psz`"
+               case "usual"
+                   typeName := kw
 
 				END SWITCH
 
@@ -263,10 +253,11 @@ BEGIN NAMESPACE XSharpModel
 					RETURN NULL
 				ENDIF
 				//
+           
 				IF SELF:_file != NULL
 					VAR options := SELF:_file:Project:ParseOptions
-					typeName := typeName:GetSystemTypeName(options:XSharpRuntime)
-					sType := SELF:_file:Project:FindSystemType(typeName, List<STRING>{})
+					typeName    := typeName:GetSystemTypeName(options:XSharpRuntime)
+					sType       := SELF:_file:Project:FindSystemType(typeName, List<STRING>{})
 				ENDIF
 				//
 			ENDIF
@@ -277,47 +268,38 @@ BEGIN NAMESPACE XSharpModel
 
 		PROPERTY ElementType AS CompletionType AUTO
 
-		PROPERTY FullName AS STRING
-			GET
-				IF (SELF:_xtype != NULL)
-					RETURN SELF:_xtype:FullName
-				ENDIF
-				IF (SELF:_stype != NULL)
-					RETURN SELF:_stype:GetXSharpTypeName()
-				ENDIF
-				RETURN NULL
-			END GET
-		END PROPERTY
+		PROPERTY FullName AS STRING GET SELF:_type:FullName
 
-		PROPERTY IsInitialized AS LOGIC GET SELF:_stype != NULL .OR. SELF:_xtype != NULL
+		PROPERTY IsInitialized AS LOGIC GET SELF:_type != NULL 
 
 		PROPERTY ParentType AS CompletionType
 			GET
-				IF (SELF:_stype != NULL)
-					RETURN CompletionType{SELF:_stype:BaseType}
+				IF (SELF:_type != NULL)
+					RETURN CompletionType{SELF:_type:BaseType,_file, ""}
 				ENDIF
-				IF (SELF:_xtype != NULL)
-
-					IF (SELF:_xtype:Parent != NULL)
-
-						RETURN CompletionType{SELF:_xtype:Parent}
-					ENDIF
-					IF (SELF:_xtype:ParentName  !=NULL)
-
+				IF (SELF:_type != NULL)
+//
+//					IF (SELF:_type:Parent != NULL)
+//
+//						RETURN CompletionType{SELF:_type:Parent,_file}
+//					ENDIF
+//					IF (SELF:_type:ParentName  !=NULL)
+//
 						VAR defaultNS := ""
-						IF (! String.IsNullOrEmpty(SELF:_xtype:NameSpace))
+						IF (! String.IsNullOrEmpty(SELF:_type:NameSpace))
 
-							defaultNS := SELF:_xtype:NameSpace
+							defaultNS := SELF:_type:NameSpace
 						ENDIF
-						RETURN CompletionType{SELF:_xtype:ParentName, SELF:_xtype:File, defaultNS}
+						RETURN CompletionType{SELF:_type:BaseType, SELF:_file, defaultNS}
 					ENDIF
-				ENDIF
+//				ENDIF
 				RETURN CompletionType{"System.Object", NULL, ""}
 			END GET
 		END PROPERTY
 
-		PROPERTY SType AS System.Type GET SELF:_stype
-		PROPERTY XType AS XType GET SELF:_xtype
+		PROPERTY Type  AS IXType      GET SELF:_type
+		PROPERTY XType AS XType       GET SELF:_type ASTYPE XType
+      PROPERTY XTypeRef AS XTypeRef GET SELF:_type ASTYPE XTypeRef
 
 	END CLASS
 

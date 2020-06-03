@@ -354,7 +354,7 @@ CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
 	        ENDIF
 
         ELSEIF oType != NULL_OBJECT
-			FOREACH VAR oMember IN oType:Members
+			FOREACH VAR oMember IN oType:XMembers
 				IF string.Compare(oMember:Name, cName, TRUE) == 0
 					oMember:OpenEditor()
 					RETURN

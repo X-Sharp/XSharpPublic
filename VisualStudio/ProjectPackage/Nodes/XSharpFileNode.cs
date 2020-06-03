@@ -200,10 +200,10 @@ namespace XSharp.Project
                                 while (type.BaseType != null)
                                 {
                                     var bt = type.BaseType;
-                                    SubType = typeNameToSubtype(bt.Name);
+                                    SubType = typeNameToSubtype(bt);
                                     if (!String.IsNullOrEmpty(SubType))
                                         break;
-                                    type = bt;
+                                    type = mgr.ResolveType(SubType, usings); ;
                                 }
                             }
                             else

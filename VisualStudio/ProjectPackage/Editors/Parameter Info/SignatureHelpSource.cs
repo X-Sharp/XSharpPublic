@@ -204,8 +204,8 @@ namespace XSharp.Project
                     {
                         XSharpModel.XTypeMember xMember = elt as XSharpModel.XTypeMember;
                         signatures.Add(CreateSignature(m_textBuffer, null, xMember.Prototype, "", ApplicableToSpan, comma, xMember.Kind == XSharpModel.Kind.Constructor, file));
-                        List<XSharpModel.XTypeMember> namesake = xMember.Namesake();
-                        foreach (var member in namesake)
+                        var overloads = xMember.GetOverloads();
+                        foreach (var member in overloads)
                         {
                             signatures.Add(CreateSignature(m_textBuffer, null,member.Prototype, "", ApplicableToSpan, comma, member.Kind == XSharpModel.Kind.Constructor, file));
                         }
@@ -228,19 +228,6 @@ namespace XSharp.Project
                     //
                     m_textBuffer.Changed += new EventHandler<TextContentChangedEventArgs>(OnSubjectBufferChanged);
                 }
-                else if (elt is System.Reflection.MemberInfo)
-                {
-                    System.Reflection.MemberInfo element = elt as System.Reflection.MemberInfo;
-                    XSharpLanguage.MemberAnalysis analysis = new XSharpLanguage.MemberAnalysis(element);
-                    if (analysis.IsInitialized)
-                    {
-                        signatures.Add(CreateSignature(m_textBuffer, element, analysis.Prototype, "", ApplicableToSpan, comma, (element.MemberType == MemberTypes.Constructor), file));
-                        // Any other member with the same name in the current Type and in the Parent(s) ?
-                        SystemNameSake(element.DeclaringType, signatures, element.Name, analysis.Prototype, comma,file);
-                        //
-                        m_textBuffer.Changed += new EventHandler<TextContentChangedEventArgs>(OnSubjectBufferChanged);
-                    }
-                }
                 session.Dismissed += OnSignatureHelpSessionDismiss;
             }
             catch (Exception ex)
@@ -255,36 +242,7 @@ namespace XSharp.Project
         }
 
 
-        private void SystemNameSake(System.Type sType, IList<ISignature> signatures, String elementName, String elementPrototype, bool comma, XFile file)
-        {
-            XSharpProjectPackage.Instance.DisplayOutPutMessage("XSharpSignatureHelpSource.SystemNameSake()");
-            MemberInfo[] members;
-            // Get Public, Internal, Protected & Private Members, we also get Instance vars, Static members...all that WITHOUT inheritance
-            members = sType.GetMembers(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance
-                | BindingFlags.Static | BindingFlags.DeclaredOnly);
-            //
-            bool ctor = false;
-            foreach (var member in members.Where(x => nameEquals(x.Name, elementName)))
-            {
-                if (member.MemberType == MemberTypes.Constructor)
-                    ctor = true;
-                XSharpLanguage.MemberAnalysis analysis = new XSharpLanguage.MemberAnalysis(member);
-                if (analysis.IsInitialized)
-                {
-                    // But don't add the current one
-                    if (String.Compare(elementPrototype, analysis.Prototype, true) != 0)
-                    {
-                        signatures.Add(CreateSignature(m_textBuffer, member, analysis.Prototype, "", ApplicableToSpan, comma, ctor,file ));
-                    }
-                }
-            }
-            // fill members of parent class,but not for constructorsS
-            if (sType.BaseType != null && !ctor)
-            {
-                SystemNameSake(sType.BaseType, signatures, elementName, elementPrototype, comma,file);
-            }
-        }
-
+ 
 
         private XSharpSignature CreateSignature(ITextBuffer textBuffer, MemberInfo member, string methodSig, string methodDoc, ITrackingSpan span, bool comma, bool isCtor, XFile file )
         {

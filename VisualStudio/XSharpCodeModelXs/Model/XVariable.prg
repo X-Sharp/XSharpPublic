@@ -11,28 +11,24 @@ USING LanguageService.SyntaxTree
 
 BEGIN NAMESPACE XSharpModel
     [DebuggerDisplay("{DebuggerDisplay(),nq}")];
-    CLASS XVariable INHERIT XElement
-        // Fields
-        PRIVATE _isParameter AS LOGIC
+    CLASS XVariable INHERIT XElement IMPLEMENTS IXVariable
         
         // Methods
-        CONSTRUCTOR(parent AS XElement, name AS STRING, kind AS Kind,  ;
-            span AS TextRange, position AS TextInterval, typeName AS STRING, isParameter := FALSE AS LOGIC)
-            SUPER(name, kind, Modifiers.None, Modifiers.None, span, position)
+        CONSTRUCTOR(parent AS XElement, name AS STRING, span AS TextRange, position AS TextInterval, typeName AS STRING)
+            SUPER(name, Kind.Local, Modifiers.None, Modifiers.None, span, position)
             SELF:TypeName       := typeName
-            SELF:_isParameter   := isParameter
             SUPER:Parent        := parent
             IF parent != NULL
                 SELF:File           := parent:File
             ENDIF
 
         // Properties
-        PROPERTY Expression AS IList<IToken> AUTO GET INTERNAL SET
-        PROPERTY Description AS STRING
+        PROPERTY Expression   AS IList<IToken> AUTO GET INTERNAL SET
+        PROPERTY Description  AS STRING
             GET
                 //
                 LOCAL prefix AS STRING
-                IF (SELF:_isParameter)
+                IF (SELF:IsParameter)
                     //
                     prefix := "PARAMETER "
                 ELSE
@@ -47,20 +43,20 @@ BEGIN NAMESPACE XSharpModel
             END GET
         END PROPERTY
 
-		PROPERTY IsParameter AS LOGIC GET _isParameter
+		  PROPERTY IsParameter AS LOGIC GET FALSE
         PROPERTY ParamType AS ParamType AUTO
         PROPERTY Prototype AS STRING GET SUPER:Name
         PROPERTY ParamTypeDesc AS STRING
             GET
                 SWITCH ParamType
                 CASE ParamType.Ref
-                    RETURN RefKeyWord
+                    RETURN XLiterals.RefKeyWord
                 CASE ParamType.Out
-                    RETURN OutKeyWord
+                    RETURN XLiterals.OutKeyWord
                 CASE ParamType.Params
-                    RETURN ParamsKeyWord
+                    RETURN XLiterals.ParamsKeyWord
                 OTHERWISE // AS and IN
-                    RETURN AsKeyWord
+                    RETURN XLiterals.AsKeyWord
                 END SWITCH
             END GET
         END PROPERTY
@@ -71,7 +67,7 @@ BEGIN NAMESPACE XSharpModel
                 VAR cType := SELF:TypeName
                 VAR nPos := cType:LastIndexOf(".")
                 IF (nPos >= 0)
-                    cType := cType:SubString(nPos+1)
+                    cType := cType:Substring(nPos+1)
                 ENDIF
                 RETURN cType
             END GET
@@ -81,11 +77,20 @@ BEGIN NAMESPACE XSharpModel
         METHOD DebuggerDisplay() AS STRING
             VAR result := SUPER:Name
             IF SELF:IsTyped
-                result += paramTypeDesc+" "+SELF:TypeName
+                result += ParamTypeDesc+" "+SELF:TypeName
             ENDIF
             RETURN result
 
     END CLASS
+    CLASS XParameter INHERIT XVariable
+
+    CONSTRUCTOR(parent AS XElement, name AS STRING, span AS TextRange, position AS TextInterval, parameterType AS STRING)
+        SUPER(parent, name, span, position, parameterType)
+        SELF:Kind := Kind.Parameter
+    PROPERTY IsParameter AS LOGIC GET TRUE
+
+   END CLASS
+         
 
 END NAMESPACE
 

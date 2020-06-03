@@ -32,7 +32,7 @@ BEGIN NAMESPACE XSharpModel
 		PROPERTY DisableLexing AS LOGIC GET false
 		PROPERTY DisableParsing AS LOGIC GET false
 		PROPERTY KeywordsUppercase AS LOGIC GET TRUE
-        PROPERTY Dialect as XSHarpDialect GET XSharpDialect.Core
+        PROPERTY Dialect AS XSharpDialect GET XSharpDialect.Core
 	#endregion
         PRIVATE _parseOptions as XSharpParseOptions
 		CONSTRUCTOR()
@@ -40,63 +40,63 @@ BEGIN NAMESPACE XSharpModel
              options.Add("dialect:Core")
             _parseOptions   := XSharpParseOptions.FromVsValues(options)
 
-		VIRTUAL METHOD AddFileNode(strFileName AS STRING) AS VOID
+		METHOD AddFileNode(strFileName AS STRING) AS VOID
 			RETURN
 
-		VIRTUAL METHOD AddIntellisenseError(file AS STRING, line AS LONG, column AS LONG, Length AS LONG, errCode AS STRING, message AS STRING, sev AS DiagnosticSeverity) AS VOID
-			RETURN
-
-
-		VIRTUAL METHOD ClearIntellisenseErrors(file AS STRING) AS VOID
+		METHOD AddIntellisenseError(file AS STRING, line AS LONG, column AS LONG, Length AS LONG, errCode AS STRING, message AS STRING, sev AS DiagnosticSeverity) AS VOID
 			RETURN
 
 
-		VIRTUAL METHOD DeleteFileNode(strFileName AS STRING) AS VOID
+		METHOD ClearIntellisenseErrors(file AS STRING) AS VOID
 			RETURN
 
 
-		VIRTUAL METHOD DocumentGetText(file AS STRING, isOpen REF LOGIC) AS STRING
+		METHOD DeleteFileNode(strFileName AS STRING) AS VOID
+			RETURN
+
+
+		METHOD DocumentGetText(file AS STRING, isOpen REF LOGIC) AS STRING
 			//
 			isOpen := false
 			RETURN ""
 
-		VIRTUAL METHOD DocumentInsertLine(fileName AS STRING, line AS LONG, text AS STRING) AS LOGIC
+		METHOD DocumentInsertLine(fileName AS STRING, line AS LONG, text AS STRING) AS LOGIC
 			//
 			RETURN false
 
-		VIRTUAL METHOD DocumentSetText(fileName AS STRING, text AS STRING) AS LOGIC
+		METHOD DocumentSetText(fileName AS STRING, text AS STRING) AS LOGIC
 			//
 			RETURN false
 
-		VIRTUAL METHOD FindProject(sProject AS STRING) AS Project
+		METHOD FindProject(sProject AS STRING) AS Project
 			//
 			RETURN null
 
-		VIRTUAL METHOD GetIntellisenseErrorPos(fileName AS STRING) AS System.Collections.Generic.List<IXErrorPosition>
+		METHOD GetIntellisenseErrorPos(fileName AS STRING) AS System.Collections.Generic.List<IXErrorPosition>
 			RETURN List<IXErrorPosition>{}
 
-		VIRTUAL METHOD HasFileNode(strFileName AS STRING) AS LOGIC
+		METHOD HasFileNode(strFileName AS STRING) AS LOGIC
 			RETURN true
 
-		VIRTUAL METHOD IsDocumentOpen(file AS STRING) AS LOGIC
+		METHOD IsDocumentOpen(file AS STRING) AS LOGIC
 			RETURN true
 
-		VIRTUAL METHOD OpenElement(file AS STRING, line AS LONG, column AS LONG) AS VOID
+		METHOD OpenElement(file AS STRING, line AS LONG, column AS LONG) AS VOID
 			RETURN
 
 
-		VIRTUAL METHOD SetStatusBarAnimation(onoff AS LOGIC, id AS SHORT) AS VOID
+		METHOD SetStatusBarAnimation(onoff AS LOGIC, id AS SHORT) AS VOID
 			RETURN
 
 
-		VIRTUAL METHOD SetStatusBarText(message AS STRING) AS VOID
+		METHOD SetStatusBarText(message AS STRING) AS VOID
 			RETURN
 
 
-		VIRTUAL METHOD ShowIntellisenseErrors() AS VOID
+		METHOD ShowIntellisenseErrors() AS VOID
 			RETURN
 
-        VIRTUAL METHOD SynchronizeKeywordCase(code as STRING, fileName as STRING) AS STRING
+        METHOD SynchronizeKeywordCase(code AS STRING, fileName AS STRING) AS STRING
                 RETURN code
 
 

@@ -19,7 +19,7 @@
     <VulcanCompatibleResources>False</VulcanCompatibleResources>
     <TargetFrameworkProfile />
     <AZ>false</AZ>
-    <CS>false</CS>
+    <CS>true</CS>
     <LB>false</LB>
     <OVF>false</OVF>
     <Unsafe>false</Unsafe>
@@ -27,7 +27,7 @@
     <NS>false</NS>
     <VO1>false</VO1>
     <VO2>false</VO2>
-    <VO3>false</VO3>
+    <VO3>true</VO3>
     <VO4>false</VO4>
     <VO5>false</VO5>
     <VO6>false</VO6>
@@ -44,6 +44,14 @@
     <XSharpProjectversion>2.4.1.0</XSharpProjectversion>
     <Includepaths>$(SolutionDir)\Common</Includepaths>
     <Nostandarddefs>true</Nostandarddefs>
+    <NamedArgs>true</NamedArgs>
+    <StandardDefs />
+    <MemVar>false</MemVar>
+    <Undeclared>false</Undeclared>
+    <InitLocals>false</InitLocals>
+    <XPP1>false</XPP1>
+    <FOX1>false</FOX1>
+    <FOX2>false</FOX2>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
@@ -101,6 +109,13 @@
       <Private>True</Private>
       <HintPath>..\..\..\..\Program Files (x86)\Microsoft Visual Studio 14.0\VSSDK\VisualStudioIntegration\Common\Assemblies\v4.0\Microsoft.VisualStudio.Shell.14.0.dll</HintPath>
     </Reference>
+    <Reference Include="Mono.Cecil, Version=0.10.0.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e">
+      <Name>Mono.Cecil</Name>
+      <AssemblyName>Mono.Cecil.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+      <HintPath>..\..\External\Debug\Mono.Cecil.dll</HintPath>
+    </Reference>
     <Reference Include="mscorlib" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -141,9 +156,19 @@
     <Compile Include="CompletionType.prg" />
     <Compile Include="Interfaces.prg" />
     <Compile Include="MetaData\AssemblyInfo.prg" />
+    <Compile Include="MetaData\AssemblyReader.prg" />
     <Compile Include="MetaData\SystemTypeController.prg" />
+    <Compile Include="Model\XTypeSignature.prg" />
+    <Compile Include="Model\XTypeExtensions.prg" />
+    <Compile Include="Model\XTypeMemberExtensions.prg" />
+    <Compile Include="Model\Literals.prg" />
+    <Compile Include="Model\XAssembly.prg" />
+    <Compile Include="Model\XRefElement.prg" />
+    <Compile Include="Model\XTypeRefMember.prg" />
+    <Compile Include="Model\XTypeRef.prg" />
     <Compile Include="Model\ExtensionMethods.prg" />
-    <Compile Include="Model\XSignature.prg" />
+    <Compile Include="Model\Interfaces.prg" />
+    <Compile Include="Model\XMemberSignature.prg" />
     <Compile Include="Model\Enums.prg" />
     <Compile Include="Model\XBlock.prg" />
     <Compile Include="Model\XElement.prg" />

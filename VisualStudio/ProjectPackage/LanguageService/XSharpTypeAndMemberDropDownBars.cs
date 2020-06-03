@@ -103,7 +103,7 @@ namespace XSharp.LanguageService
             }
             // check if we are on the same type. When not then we need to reload the members.
             // Note that the first item in the members combo can also be a type (Classname)
-            XElement parentType = null;
+            IXElement parentType = null;
             if (selectedElement is XTypeMember)
             {
                 parentType = selectedElement.Parent;
@@ -182,7 +182,7 @@ namespace XSharp.LanguageService
             {
                 xList.Sort(delegate (XType elt1, XType elt2)
                 {
-                    return elt1.Name.CompareTo(elt2.Name);
+                    return elt1.FullName.CompareTo(elt2.FullName);
                 });
             }
             XType typeGlobal = null;
@@ -194,7 +194,7 @@ namespace XSharp.LanguageService
             if (selectedElement is XTypeMember)
             {
                 currentMember = selectedElement as XTypeMember;
-                currentType = ((XTypeMember)currentMember).Parent;
+                currentType = (XType) currentMember.Parent;
             }
             else if (selectedElement is XType)
             {
@@ -220,7 +220,7 @@ namespace XSharp.LanguageService
                 }
                 TextSpan sp = this.TextRangeToTextSpan(eltType.Range);
                 ft = DROPDOWNFONTATTR.FONTATTR_PLAIN;
-                string name = eltType.Name;
+                string name = eltType.FullName;
                 if (string.IsNullOrEmpty(name))
                 {
                     name = "?";
@@ -249,11 +249,11 @@ namespace XSharp.LanguageService
                         // retrieve members from other files ?
                         var fullType = file.Project.Lookup(currentType.FullName, true);
                         hasPartial = true;
-                        members.AddRange(fullType.Members);
+                        members.AddRange(fullType.XMembers);
                     }
                     else
                     {
-                        members.AddRange(currentType.Members);
+                        members.AddRange(currentType.XMembers);
                     }
                 }
                 else
@@ -269,7 +269,7 @@ namespace XSharp.LanguageService
                                 // load methods from other files
                                 var fullType = file.Project.Lookup(xType.FullName, true);
                                 hasPartial = true;
-                                foreach (var member in fullType.Members)
+                                foreach (var member in fullType.XMembers)
                                 {
                                     if (!members.Contains(member))
                                     {
@@ -325,7 +325,7 @@ namespace XSharp.LanguageService
                         string prototype = member.ComboPrototype;
                         if (!currentTypeOnly && member.Parent != null && member.Parent.Name != XElement.GlobalName)
                         {
-                            if (member.Modifiers.HasFlag(Modifiers.Static))
+                            if (member.Modifiers.HasFlag(Modifiers.Static) || member is XType)
                                 prototype = member.Parent.Name + "." + prototype;
                             else
                                 prototype = member.Parent.Name + ":" + prototype;
@@ -338,7 +338,7 @@ namespace XSharp.LanguageService
                         }
                         elt = new XDropDownMember(prototype, spM, member.Glyph, ft, member);
                         nSelect = dropDownMembers.Add(elt);
-                        if (member == currentMember)
+                        if (member.Range.ContainsInclusive(line,col))
                         {
                             nSelMbr = nSelect;
                         }

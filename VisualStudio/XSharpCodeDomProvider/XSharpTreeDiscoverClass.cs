@@ -35,7 +35,7 @@ namespace XSharp.CodeDom
             Type = null;
             TypeName = typeName;
         }
-        internal XMemberType(string name, MemberTypes memberType, bool inherited, System.Type type, string typeName)
+        internal XMemberType(string name, MemberTypes memberType, bool inherited, IXType type, string typeName)
         {
             Name = name;
             MemberType = memberType;
@@ -45,13 +45,13 @@ namespace XSharp.CodeDom
         }
 
         internal XMemberType(string name, MemberTypes memberType, bool inherited) :
-            this(name, memberType, inherited, typeof(void), "System.Void")
+            this(name, memberType, inherited, null, "System.Void")
         {
         }
 
         internal string Name { get; private set; }
         internal MemberTypes MemberType { get; private set; }
-        internal System.Type Type { get; private set; }
+        internal IXType Type { get; private set; }
         internal String TypeName { get; private set; }
         internal bool Inherited { get; private set; }
 
@@ -65,12 +65,10 @@ namespace XSharp.CodeDom
 
     internal class TypeXType
     {
-        internal System.Type Type { get; private set; }
-        internal XType xType { get; private set; }
+        internal IXType xType { get; private set; }
 
-        internal TypeXType(System.Type type) { Type = type; xType = null; }
-        internal TypeXType(XType xtype) { xType = xtype; Type = null; }
-        internal string FullName => Type != null ? Type.FullName : xType.FullName;
+        internal TypeXType(IXType xtype) { xType = xtype; }
+        internal string FullName => xType.FullName;
 
     }
 
@@ -78,7 +76,7 @@ namespace XSharp.CodeDom
     {
 
         private XCodeMemberMethod initComponent;
-        private IDictionary<string, System.Type> _locals;          // used to keep track of local vars
+        private IDictionary<string, IXType> _locals;          // used to keep track of local vars
 
         public XSharpClassDiscover(IProjectTypeHelper projectNode) : base(projectNode)
         {
@@ -92,7 +90,7 @@ namespace XSharp.CodeDom
             this.NamespaceStack = new Stack<XCodeNamespace>();
             // To store intermediate declarations
             this.LocalDecls = new Stack<XSharpParser.LocalvarContext>();
-            this._locals = new Dictionary<string, System.Type>(StringComparer.OrdinalIgnoreCase);
+            this._locals = new Dictionary<string, IXType>(StringComparer.OrdinalIgnoreCase);
             this._members = new Dictionary<string, XMemberType>(StringComparer.OrdinalIgnoreCase);
             //
             this.CurrentFile = "";
@@ -117,57 +115,12 @@ namespace XSharp.CodeDom
         }
         private bool hasClassMember(TypeXType baseType, string name, MemberTypes mtype)
         {
-            if (baseType != null)
-            {
-                if (baseType.Type != null)
-                    return hasClassMember(baseType.Type, name, mtype);
-                else if (baseType.xType != null)
-                    return hasClassMember(baseType.xType, name, mtype);
-            }
+            if (baseType != null && baseType.xType != null)
+                return hasClassMember(baseType.xType, name, mtype);
             return false;
         }
-        private bool hasClassMember(System.Type baseType, string name, MemberTypes mtype)
-        {
-            if (_members.ContainsKey(name))
-            {
-                return (_members[name].MemberType | mtype) != 0;
-            }
-            var mi = baseType.GetMember(name, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.IgnoreCase | BindingFlags.Instance);
-            if (mi != null)
-            {
-                foreach (var m in mi)
-                {
-                    System.Type t;
-                    switch (m.MemberType)
-                    {
-                        case MemberTypes.Field:
-                            t = ((FieldInfo)m).FieldType;
-                            addClassMember(new XMemberType(name, m.MemberType, true, t, t?.FullName));
-                            break;
-                        case MemberTypes.Property:
-                            t = ((PropertyInfo)m).PropertyType;
-                            addClassMember(new XMemberType(name, m.MemberType, true, t, t?.FullName));
-                            break;
-                        case MemberTypes.Method:
-                            t = ((MethodInfo)m).ReturnType;
-                            addClassMember(new XMemberType(name, m.MemberType, true, t, t?.FullName));
-                            break;
-                        case MemberTypes.Event:
-                            addClassMember(new XMemberType(name, m.MemberType, true, typeof(void), "Void"));
-                            break;
-                        case MemberTypes.Constructor:
-                            t = ((ConstructorInfo)m).DeclaringType;
-                            addClassMember(new XMemberType(name, m.MemberType, true, t, t?.FullName));
-                            break;
-                    }
-                    if ((m.MemberType | mtype) != 0)
-                        return true;
-                }
-            }
-            return false;
-        }
-
-        private bool hasClassMember(XType baseType, string name, MemberTypes mtype)
+ 
+        private bool hasClassMember(IXType baseType, string name, MemberTypes mtype)
         {
             if (_members.ContainsKey(name))
             {
@@ -176,13 +129,13 @@ namespace XSharp.CodeDom
                 return (_members[name].MemberType | mtype) != 0;
             }
             bool result = false;
-            XElement element = baseType.Members.Where(x => String.Equals(x.Name, name, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+            IXTypeMember element = baseType.Members.Where(x => string.Equals(x.Name, name, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
             if (element != null)
             {
-                System.Type t = typeof(void);
-                var tm = element as XTypeMember;
-                t = findType(tm?.TypeName);
-                var typeName = element.ParentName;
+                IXType t = null;
+                var tm = element as IXTypeMember;
+                t = findXType(tm.TypeName);
+                var typeName = element.TypeName;
                 switch (element.Kind)
                 {
                     case Kind.Field:
@@ -212,7 +165,7 @@ namespace XSharp.CodeDom
             else
             {
                 // not in our class, maybe in a parent class
-                var parentType = findTypeXType(baseType.ParentName);
+                var parentType = findTypeXType(baseType.FullName);
                 return hasClassMember(parentType, name, mtype);
             }
             return result;
@@ -328,7 +281,7 @@ namespace XSharp.CodeDom
         }
 
 
-        private System.Type getClassMemberType(string name, MemberTypes memberType)
+        private IXType getClassMemberType(string name, MemberTypes memberType)
         {
             if (_members.ContainsKey(name))
             {
@@ -656,7 +609,7 @@ namespace XSharp.CodeDom
                 foreach (var f in fields)
                 {
                     newClass.Members.Add(f);
-                    addClassMember(new XMemberType(f.Name, MemberTypes.Field, false, findType(f.Type.BaseType), f.Type.BaseType));
+                    addClassMember(new XMemberType(f.Name, MemberTypes.Field, false, findXType(f.Type.BaseType), f.Type.BaseType));
                 }
             }
             var token = context.Stop as XSharpToken;
@@ -754,7 +707,7 @@ namespace XSharp.CodeDom
             }
             //
             this.CurrentClass.Members.Add(newMethod);
-            this.addClassMember(new XMemberType(newMethod.Name, MemberTypes.Method, false, returnType.Type, returnType.Type?.FullName));
+            this.addClassMember(new XMemberType(newMethod.Name, MemberTypes.Method, false, returnType.XType.FullName));
 
         }
 
@@ -798,7 +751,7 @@ namespace XSharp.CodeDom
             }
             //
             this.CurrentClass.Members.Add(evt);
-            this.addClassMember(new XMemberType(evt.Name, MemberTypes.Event, false, typeof(void), "Void"));
+            this.addClassMember(new XMemberType(evt.Name, MemberTypes.Event, false, null, "Void"));
         }
 
         public override void EnterConstructor([NotNull] XSharpParser.ConstructorContext context)
@@ -971,7 +924,7 @@ namespace XSharp.CodeDom
             var name = local.Name.ToLower();
             if (!_locals.ContainsKey(name))
             {
-                _locals.Add(name, findType(localType.BaseType));
+                _locals.Add(name, findXType(localType.BaseType));
             }
             return local;
         }
@@ -1016,9 +969,9 @@ namespace XSharp.CodeDom
             }
             return expr;
         }
-        private System.Type findType(CodeExpression expr)
+        private IXType findType(CodeExpression expr)
         {
-            System.Type type;
+            IXType type;
             if (expr is CodeFieldReferenceExpression)
             {
                 var cfr = expr as CodeFieldReferenceExpression;
@@ -1030,8 +983,8 @@ namespace XSharp.CodeDom
                 if (type != null)
                 {
                     var f = type.GetField(cfr.FieldName);
-                    if (f != null)
-                        return f.FieldType;
+                    if (f.Length > 0)
+                        return findXType(f[0].TypeName);
                 }
             }
             if (expr is CodePropertyReferenceExpression)
@@ -1045,8 +998,8 @@ namespace XSharp.CodeDom
                 if (type != null)
                 {
                     var p = type.GetProperty(cpr.PropertyName);
-                    if (p != null)
-                        return p.PropertyType;
+                    if (p.Length > 0)
+                        return findXType(p[0].TypeName);
                 }
             }
             if (expr is CodeMethodInvokeExpression)
@@ -1061,8 +1014,8 @@ namespace XSharp.CodeDom
                 if (type != null)
                 {
                     var m = type.GetMethod(cmi.Method.MethodName);
-                    if (m != null)
-                        return m.ReturnType;
+                    if (m.Length > 0)
+                        return findXType(m[0].TypeName);
                 }
             }
             if (expr is CodeVariableReferenceExpression)
@@ -1074,9 +1027,9 @@ namespace XSharp.CodeDom
             return null;
         }
 
-        private CodeExpression buildTypeMemberExpression(System.Type type, string name)
+        private CodeExpression buildTypeMemberExpression(IXType type, string name)
         {
-            var l = new XCodeTypeReferenceExpression(type);
+            var l = new XCodeTypeReferenceExpression(type.FullName);
 
             if (type.GetFields().Where(f => String.Compare(f.Name, name, true) == 0).Count() > 0)
             {
@@ -1096,10 +1049,10 @@ namespace XSharp.CodeDom
             }
             return null;
         }
-        private CodeExpression buildXTypeMemberExpression(XType xtype, string name)
+        private CodeExpression buildXTypeMemberExpression(IXType xtype, string name)
         {
             var l = new XCodeTypeReferenceExpression(xtype.FullName);
-            XTypeMember m = null;
+            IXTypeMember m = null;
             m = xtype.Members.Where(e => String.Compare(e.Name, name, true) == 0 &&
                 (e.Kind == Kind.Field || e.Kind == Kind.EnumMember)).FirstOrDefault();
             if (m != null)
@@ -1136,40 +1089,36 @@ namespace XSharp.CodeDom
             memberType = null;
             while (txtype != null)
             {
-                System.Type type = txtype.Type;
-                XType xtype = txtype.xType;
+                IXType xtype = txtype.xType;
                 if (xtype != null)
                 {
                     var mi = xtype.GetMember(name);
-                    if (mi.Count == 0)
+                    if (mi.Count() == 0)
                     {
                         // Member not found !? MayBe in the parent, which can be a System.Type
                         txtype = findParentType(xtype);
                         continue;
                     }
                     //
-                    if (mi.Count > 0)
+                    if (mi.Count() > 0)
                     {
-                        XTypeMember m = mi[0];
+                        var m = mi[0];
+                        memberType = findTypeXType(m.TypeName);
                         switch (m.Kind)
                         {
                             case Kind.Field:
                                 expr = new XCodeFieldReferenceExpression(target, name);
-                                memberType = findTypeXType(m.TypeName);
                                 break;
                             case Kind.Access:
                             case Kind.Assign:
                             case Kind.Property:
                                 expr = new XCodePropertyReferenceExpression(target, name);
-                                memberType = findTypeXType(m.TypeName);
                                 break;
                             case Kind.Method:
                                 expr = new XCodeMethodReferenceExpression(target, name);
-                                memberType = findTypeXType(m.TypeName);
                                 break;
                             case Kind.Event:
                                 expr = new XCodeEventReferenceExpression(target, name);
-                                memberType = findTypeXType(m.TypeName);
                                 break;
                             default:
                                 break;
@@ -1177,29 +1126,26 @@ namespace XSharp.CodeDom
                     }
                 }
                 //
-                if (type != null)
+                if (xtype != null)
                 {
-                    var mi = type.GetMember(name);
+                    var mi = xtype.GetMember(name);
                     if (mi.Length > 0)
                     {
-                        MemberInfo m = mi[0];
-                        switch (m.MemberType)
+                        IXTypeMember m = mi[0];
+                        memberType = new TypeXType(findXType(m.TypeName));
+                        switch (m.Kind)
                         {
-                            case MemberTypes.Field:
+                            case Kind.Field:
                                 expr = new XCodeFieldReferenceExpression(target, name);
-                                memberType = new TypeXType(((FieldInfo)m).FieldType);
                                 break;
-                            case MemberTypes.Property:
+                            case Kind.Property:
                                 expr = new XCodePropertyReferenceExpression(target, name);
-                                memberType = new TypeXType(((PropertyInfo)m).PropertyType);
                                 break;
-                            case MemberTypes.Method:
+                            case Kind.Method:
                                 expr = new XCodeMethodReferenceExpression(target, name);
-                                memberType = new TypeXType(((MethodInfo)m).ReturnType);
                                 break;
-                            case MemberTypes.Event:
+                            case Kind.Event:
                                 expr = new XCodeEventReferenceExpression(target, name);
-                                memberType = new TypeXType(((EventInfo)m).EventHandlerType);
                                 break;
                             default:
                                 break;
@@ -1255,19 +1201,18 @@ namespace XSharp.CodeDom
         {
             var elements = new List<XSharpParser.AccessMemberContext>();
             string typeName;
-            System.Type type = null;
-            XType xtype = null;
+            IXType xtype = null;
             // if the top level element has a Dot it may be a type of a field of a type.
             if (amc.Op.Type == XSharpParser.DOT)
             {
                 // aa.bb.cc.dd
                 typeName = amc.Expr.GetCleanText();
                 var memberName = amc.Name.GetCleanText();
-                type = findType(typeName);
-                if (type != null)
+                xtype = findXType(typeName);
+                if (xtype != null)
                 {
 
-                    var result = buildTypeMemberExpression(type, memberName);
+                    var result = buildTypeMemberExpression(xtype, memberName);
                     if (result != null)
                         return result;
                 }
@@ -1282,11 +1227,6 @@ namespace XSharp.CodeDom
                     }
                 }
                 typeName = amc.GetCleanText();
-                type = findType(typeName);
-                if (type != null)
-                {
-                    return new XCodeTypeReferenceExpression(typeName);
-                }
                 xtype = findXType(typeName);
                 if (xtype != null)
                 {
@@ -1320,7 +1260,7 @@ namespace XSharp.CodeDom
             CodeExpression lhs = null;
             bool isSelf = false;
             amc = elements[0];    // Access Member
-            type = null;
+            xtype = null;
             switch (amc.Expr.Start.Type)
             {
                 case XSharpParser.SELF:
@@ -1335,15 +1275,15 @@ namespace XSharp.CodeDom
                     var pe = amc.Expr as XSharpParser.PrimaryExpressionContext;
                     var pec = pe.Expr as XSharpParser.ParenExpressionContext;
                     var exp = pec.Expr as XSharpParser.TypeCastContext;
-                    type = findType(exp.Type.GetCleanText());
+                    xtype = findXType(exp.Type.GetCleanText());
                     lhs = BuildExpression(pec.Expr, false);
-                    lhs = new CodeCastExpression(type, lhs);
+                    lhs = new CodeCastExpression(xtype.FullName, lhs);
                     break;
                 case XSharpParser.ID:
                     var lname = amc.Expr.GetCleanText();
                     if (this.isLocal(lname))
                     {
-                        type = _locals[lname];
+                        xtype = _locals[lname];
                         lhs = new XCodeVariableReferenceExpression(lname);
                     }
                     break;
@@ -1354,7 +1294,7 @@ namespace XSharp.CodeDom
             // expr should have a value here
             if (lhs != null)
             {
-                TypeXType txtype = new TypeXType(type);
+                TypeXType txtype = new TypeXType(xtype);
                 for (int i = 0; i < elements.Count; i++)
                 {
                     amc = elements[i];

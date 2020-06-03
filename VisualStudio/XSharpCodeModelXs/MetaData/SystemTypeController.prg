@@ -18,7 +18,7 @@ BEGIN NAMESPACE XSharpModel
 	/// </summary>
 	CLASS SystemTypeController
 		#region fields
-		STATIC PRIVATE assemblies  	AS ConcurrentDictionary<STRING, XSharpModel.AssemblyInfo>
+		STATIC PRIVATE assemblies  AS ConcurrentDictionary<STRING, XSharpModel.AssemblyInfo>
 		STATIC PRIVATE _mscorlib 	AS AssemblyInfo
 		#endregion
 		
@@ -34,7 +34,7 @@ BEGIN NAMESPACE XSharpModel
 					RETURN SystemTypeController.assemblies:Keys:ToArray()
 				END GET
 			END PROPERTY
-			STATIC PROPERTY MsCorLib AS AssemblyInfo GET _mscorlib SET _mscorlib := VALUE
+			STATIC PROPERTY mscorlib AS AssemblyInfo GET _mscorlib SET _mscorlib := VALUE
 		#endregion
 		
 		// Methods
@@ -67,10 +67,10 @@ BEGIN NAMESPACE XSharpModel
 			NEXT
 			RETURN NULL
 		
-		METHOD FindType(typeName AS STRING, usings AS IList<STRING>, assemblies AS IList<AssemblyInfo>) AS System.Type
-			LOCAL result := NULL AS System.Type
+		METHOD FindType(typeName AS STRING, usings AS IList<STRING>, assemblies AS IList<AssemblyInfo>) AS XTypeRef
+			LOCAL result := NULL AS XTypeRef
 			TRY
-				WriteOutputMessage("--> FindType() "+typename)
+				WriteOutputMessage("--> FindType() "+typeName)
 				IF typeName:EndsWith(">") .AND.  typeName:Contains("<") .AND. typeName:Length > 2
 					IF typeName:Length <= (typeName:Replace(">", ""):Length + 1)
 						VAR elements := typeName:Split("<,>":ToCharArray(), System.StringSplitOptions.RemoveEmptyEntries)
@@ -107,7 +107,7 @@ BEGIN NAMESPACE XSharpModel
 					FOREACH VAR asm IN assemblies
 						IF asm:ImplicitNamespaces != NULL
 							FOREACH strNs AS STRING IN asm:ImplicitNamespaces
-								VAR fullname := strNs + "." + typeName
+								VAR fullName := strNs + "." + typeName
 								result := Lookup(fullName, assemblies)
 								IF result != NULL
 									RETURN result
@@ -122,7 +122,7 @@ BEGIN NAMESPACE XSharpModel
 				XSolution.WriteException(e)
 				result := NULL
 			FINALLY
-				WriteOutputMessage("<-- FindType() "+typename+" " + IIF(result != NULL, result:FullName, "* not found *"))
+				WriteOutputMessage("<-- FindType() "+typeName+" " + IIF(result != NULL, result:FullName, "* not found *"))
 			END TRY
 			RETURN result
 			
@@ -162,23 +162,14 @@ BEGIN NAMESPACE XSharpModel
 			WriteOutputMessage(">>-- LoadAssembly(string) "+cFileName)
 			RETURN info
 		
-		STATIC METHOD LoadAssembly(reference AS VsLangProj.Reference) AS AssemblyInfo
-			LOCAL path AS STRING
-			path := reference:Path
-			WriteOutputMessage("<<-- LoadAssembly(VsLangProj.Reference)")
-			IF String.IsNullOrEmpty(path)
-				RETURN AssemblyInfo{reference}
-			ENDIF
-			VAR asm := LoadAssembly(path)
-			WriteOutputMessage(">>-- LoadAssembly(VsLangProj.Reference)")
-			RETURN asm
 		
-		STATIC METHOD Lookup(typeName AS STRING, theirassemblies AS IList<AssemblyInfo>) AS System.Type
-			LOCAL sType AS System.Type
+		STATIC METHOD Lookup(typeName AS STRING, theirassemblies AS IList<AssemblyInfo>) AS XTypeRef
+			LOCAL sType AS XTypeRef
 			sType := NULL
 			FOREACH VAR assembly IN theirassemblies
 				assembly:Refresh()
-				IF assembly:Types:TryGetValue(typeName, OUT sType) .AND. sType != NULL
+				IF assembly:Types:TryGetValue(typeName, OUT VAR type) .AND. type != NULL
+               sType := type
 					EXIT
 				ENDIF
 				sType := assembly:GetType(typeName)
@@ -191,7 +182,6 @@ BEGIN NAMESPACE XSharpModel
 				sType := mscorlib:GetType(typeName)
 			ENDIF
 			RETURN sType
-		
 		STATIC METHOD RemoveAssembly(cFileName AS STRING) AS VOID
 			LOCAL info AS AssemblyInfo
 			IF assemblies:ContainsKey(cFileName)
@@ -220,36 +210,30 @@ BEGIN NAMESPACE XSharpModel
 		STATIC METHOD WriteOutputMessage(message AS STRING) AS VOID
 			XSolution.WriteOutputMessage("XModel.Typecontroller "+message)
 		
-		STATIC METHOD LookForExtensions(typeName AS STRING, theirassemblies AS IList<AssemblyInfo>) AS List<MethodInfo>
+		STATIC METHOD LookForExtensions(typeName AS STRING, theirassemblies AS IList<AssemblyInfo>) AS List<IXTypeMember>
 			// First Search for a system Type
-			LOCAL sType AS System.Type
-			LOCAL ext := List<MethodInfo>{} AS List<MethodInfo>
-			//
-			sType := Lookup( typeName, theirassemblies )
-			IF sType != NULL
-				ext := LookForExtensions( sType, theirassemblies )
+			var ext := List<IXTypeMember>{} 
+			var type := Lookup( typeName, theirassemblies )
+			IF type != NULL
+				ext := LookForExtensions( type, theirassemblies )
 			ENDIF
 			RETURN ext
 		
-		STATIC METHOD LookForExtensions( systemType AS System.Type, theirassemblies AS IList<AssemblyInfo>) AS List<MethodInfo>
-			LOCAL sType AS System.Type
-			LOCAL ext := List<MethodInfo>{} AS List<MethodInfo>
-			//
-			sType := NULL
+		STATIC METHOD LookForExtensions( systemType AS IXType, theirassemblies AS IList<AssemblyInfo>) AS List<IXTypeMember>
+			var ext := List<IXTypeMember>{} 
 			FOREACH VAR assembly IN theirassemblies
 				assembly:Refresh()
 				IF assembly:HasExtensions
 					FOREACH VAR extMet IN assembly:Extensions
-						LOCAL parms AS ParameterInfo[]
 						LOCAL name AS STRING
 						name := extMet:Name:ToLower()
-						parms := extMet:GetParameters()
-						IF ( parms:Length > 0 )
+						var parms := extMet:Parameters
+						IF ( parms:Count > 0 )
 							VAR p := parms[1]
 							// This doesn't work !?
 							// IF ( p.ParameterType == systemType )
 							// Ugly HACK
-							IF ( p.ParameterType.Name == systemType.Name )
+							IF ( p.TypeName == systemType.Name )
 								ext:Add( extMet )
 							ENDIF
 						ENDIF

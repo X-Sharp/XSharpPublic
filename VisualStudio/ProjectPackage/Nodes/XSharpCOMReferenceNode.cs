@@ -243,7 +243,7 @@ namespace XSharp.Project
                     {
                         string path = base.Path;
                         tryLoad = true;
-                        assembly = XSharpModel.AssemblyInfo.LoadAssemblyFromFile(path);
+                        //assembly = XSharpModel.AssemblyInfo.LoadAssemblyFromFile(path);
                         assemblyPath = path;
                     }
                     catch (Exception)

@@ -1,25 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel.Composition;
-using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.Language.Intellisense;
 using Microsoft.VisualStudio.Text;
-using Microsoft.VisualStudio.Text.Editor;
-using Microsoft.VisualStudio.Utilities;
-using Microsoft.VisualStudio.Editor;
-using Microsoft.VisualStudio.Text.Operations;
-using Microsoft.VisualStudio;
-using Microsoft.VisualStudio.TextManager.Interop;
-using Microsoft.VisualStudio.OLE.Interop;
 using System.Reflection;
-using System.Linq;
-using System.Diagnostics;
 using XSharpModel;
 
 namespace XSharp.Project
 {
-    internal class XSharpParameter : IParameter
+    internal class XSharpVsParameter : IParameter
     {
         public string Documentation { get; private set; }
         public Span Locus { get; private set; }
@@ -28,7 +17,7 @@ namespace XSharp.Project
         public Span PrettyPrintedLocus { get; private set; }
 
 
-        public XSharpParameter(string documentation, Span locus, string name, ISignature signature)
+        public XSharpVsParameter(string documentation, Span locus, string name, ISignature signature)
         {
             Documentation = documentation;
             Locus = locus;
@@ -36,9 +25,7 @@ namespace XSharp.Project
             Signature = signature;
         }
     }
-
-
-    internal class XSharpSignature : ISignature
+    internal class XSharpVsSignature : ISignature
     {
         private ITextBuffer m_subjectBuffer;
         private IParameter m_currentParameter;
@@ -48,7 +35,7 @@ namespace XSharp.Project
         private ReadOnlyCollection<IParameter> m_parameters;
         private string m_printContent;
 
-        internal XSharpSignature(ITextBuffer subjectBuffer, string content, string doc, ReadOnlyCollection<IParameter> parameters)
+        internal XSharpVsSignature(ITextBuffer subjectBuffer, string content, string doc, ReadOnlyCollection<IParameter> parameters)
         {
             m_subjectBuffer = subjectBuffer;
             m_content = content;
@@ -196,14 +183,14 @@ namespace XSharp.Project
 
                 object elt = session.Properties["Element"];
                 m_session = session;
-                if (elt is XSharpModel.XElement)
+                if (elt is IXElement)
                 {
-                    XSharpModel.XElement element = elt as XSharpModel.XElement;
+                    IXMember element = elt as IXMember;
                     //
-                    if (elt is XSharpModel.XTypeMember)
+                    if (elt is IXMember)
                     {
-                        XSharpModel.XTypeMember xMember = elt as XSharpModel.XTypeMember;
-                        signatures.Add(CreateSignature(m_textBuffer, null, xMember.Prototype, "", ApplicableToSpan, comma, xMember.Kind == XSharpModel.Kind.Constructor, file));
+                        IXMember xMember = elt as IXMember;
+                        signatures.Add(CreateSignature(m_textBuffer, xMember, xMember.Prototype, "", ApplicableToSpan, comma, xMember.Kind == XSharpModel.Kind.Constructor, file));
                         var overloads = xMember.GetOverloads();
                         foreach (var member in overloads)
                         {
@@ -244,16 +231,18 @@ namespace XSharp.Project
 
  
 
-        private XSharpSignature CreateSignature(ITextBuffer textBuffer, MemberInfo member, string methodSig, string methodDoc, ITrackingSpan span, bool comma, bool isCtor, XFile file )
+        private XSharpVsSignature CreateSignature(ITextBuffer textBuffer, IXMember member, string methodSig, string methodDoc, ITrackingSpan span, bool comma, bool isCtor, XFile file )
         {
             var doc = methodDoc;
+            string returns;
+            string remarks;
             if (member != null)
             {
-                doc = XSharpXMLDocMember.GetMemberSummary(member, file.Project);
+                doc = XSharpXMLDocMember.GetMemberSummary(member, file.Project, out returns, out remarks);
             }
 
             XSharpProjectPackage.Instance.DisplayOutPutMessage("XSharpSignatureHelpSource.CreateSignature()");
-            XSharpSignature sig = new XSharpSignature(textBuffer, methodSig, doc, null);
+            var sig = new XSharpVsSignature(textBuffer, methodSig, doc, null);
             var names = new List<String>();
             var descriptions = new List<String>();
             if (member != null)
@@ -297,7 +286,7 @@ namespace XSharp.Project
                     // paramList.Add(new XSharpParameter("Documentation for the parameter.", locus, param, sig));
                     if (!string.IsNullOrEmpty(names[i - 1]))
                         param = names[i - 1];
-                    paramList.Add(new XSharpParameter(descriptions[i-1], locus, param, sig));
+                    paramList.Add(new XSharpVsParameter(descriptions[i-1], locus, param, sig));
                 }
             }
 
@@ -357,7 +346,6 @@ namespace XSharp.Project
         {
             //the number of commas in the string is the index of the current parameter
             string sigText = ApplicableToSpan.GetText(m_textBuffer.CurrentSnapshot);
-
             int currentIndex = 0;
             int commaCount = 0;
             while (currentIndex < sigText.Length)
@@ -380,13 +368,13 @@ namespace XSharp.Project
             //
             if (signatures.Count == 0)
             {
-                XSharpSignature sig = this.m_session.SelectedSignature as XSharpSignature;
+                var sig = this.m_session.SelectedSignature as XSharpVsSignature;
                 sig.CurrentParameter = null;
             }
             else
             {
                 this.m_session.SelectedSignature = signatures[0];
-                XSharpSignature sig = this.m_session.SelectedSignature as XSharpSignature;
+                var sig = this.m_session.SelectedSignature as XSharpVsSignature;
                 sig.CurrentParameter = signatures[0].Parameters[commaCount];
             }
         }

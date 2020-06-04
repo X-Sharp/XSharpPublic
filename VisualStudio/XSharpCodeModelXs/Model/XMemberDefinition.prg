@@ -13,7 +13,7 @@ USING LanguageService.CodeAnalysis.XSharp.SyntaxParser
 BEGIN NAMESPACE XSharpModel
 
    [DebuggerDisplay("{Kind}, {Name,nq}")];
-   CLASS XTypeMember          INHERIT XElement IMPLEMENTS IXTypeMember
+   CLASS XMemberDefinition INHERIT XEntityDefinition IMPLEMENTS IXMember
       // Fields
       PRIVATE _signature    AS XMemberSignature 
       PROPERTY InitExit     AS STRING AUTO
@@ -22,17 +22,17 @@ BEGIN NAMESPACE XSharpModel
       
       #region constructors
       
-      CONSTRUCTOR(name AS STRING, kind AS Kind, modifiers AS Modifiers, visibility AS Modifiers, ;
+      CONSTRUCTOR(name AS STRING, kind AS Kind, attributes AS Modifiers, ;
          span AS TextRange, position AS TextInterval, returnType AS STRING, isStatic := FALSE AS LOGIC)
-         SUPER(name, kind, modifiers, visibility, span, position)
+         SUPER(name, kind, attributes, span, position)
          SELF:Parent       := NULL
          SELF:TypeName     := returnType
          SELF:IsStatic     := isStatic
          SELF:_signature   := XMemberSignature{}
          
-      CONSTRUCTOR(sig as XMemberSignature, kind AS Kind, modifiers AS Modifiers, visibility AS Modifiers, ;
+      CONSTRUCTOR(sig as XMemberSignature, kind AS Kind, attributes AS Modifiers,  ;
          span AS TextRange, position AS TextInterval, isStatic := FALSE AS LOGIC)
-         SUPER(sig:Id, kind, modifiers, visibility, span, position)
+         SUPER(sig:Id, kind, attributes, span, position)
          SELF:Parent       := NULL
          SELF:TypeName     := sig:DataType
          SELF:IsStatic     := isStatic
@@ -40,7 +40,7 @@ BEGIN NAMESPACE XSharpModel
          #endregion
       
       
-      METHOD AddParameters( list AS IList<XVariable>) AS VOID
+      METHOD AddParameters( list AS IList<IXVariable>) AS VOID
          IF list != NULL
             FOREACH VAR par IN list
                SELF:AddParameter(par)
@@ -48,9 +48,11 @@ BEGIN NAMESPACE XSharpModel
          ENDIF
          RETURN
          
-      METHOD AddParameter(oVar AS XVariable) AS VOID
+      METHOD AddParameter(oVar AS IXVariable) AS VOID
          oVar:Parent := SELF
-         oVar:File   := SELF:File
+         IF oVar IS XVariable VAR xVar
+            xVar:File   := SELF:File
+         ENDIF
          _signature:Parameters:Add(oVar)
          RETURN
          
@@ -77,6 +79,7 @@ BEGIN NAMESPACE XSharpModel
          
       PROPERTY ParentType     AS IXType   GET SELF:Parent ASTYPE IXType
       PROPERTY IsExtension    AS LOGIC    GET _signature:IsExtension
+      PROPERTY XMLSignature   AS STRING GET SELF:GetXmlSignature()
       #endregion
    END CLASS
    

@@ -7,9 +7,6 @@ USING System.Collections.Generic
 USING System.Diagnostics
 USING XSharpModel
 USING System.Linq
-USING LanguageService.CodeAnalysis.XSharp
-USING LanguageService.SyntaxTree
-USING LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
 BEGIN NAMESPACE XSharpModel
    [DebuggerDisplay("{DebuggerDisplay(),nq}")];

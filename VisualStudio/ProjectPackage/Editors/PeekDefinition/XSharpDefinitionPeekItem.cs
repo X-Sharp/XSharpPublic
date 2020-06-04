@@ -1,15 +1,15 @@
 ﻿using System.Collections.Generic;
 using Microsoft.VisualStudio.Language.Intellisense;
-using Microsoft.VisualStudio.Text;
+using XSharpModel;
 
 namespace XSharp.Project
 {
     class XSharpDefinitionPeekItem : IPeekableItem
     {
         internal readonly IPeekResultFactory _peekResultFactory;
-        internal XSharpModel.XElement _gotoElement;
+        internal XSourceElement _gotoElement;
 
-        public XSharpDefinitionPeekItem(XSharpModel.XElement gotoElement, IPeekResultFactory peekResultFactory)
+        public XSharpDefinitionPeekItem(XSourceElement  gotoElement, IPeekResultFactory peekResultFactory)
         {
             _gotoElement = gotoElement;
             _peekResultFactory = peekResultFactory;

@@ -657,13 +657,20 @@ namespace XSharp.Project
             pulIndex = NullIndex;
             string nodeName;
             ErrorHandler.ThrowOnFailure(pNavInfoNode.get_Name(out nodeName));
-            for (int i = 0; i < children.Count; i++)
+            try
             {
-                if (0 == string.Compare(children[i].UniqueName, nodeName, StringComparison.OrdinalIgnoreCase))
+                for (int i = 0; i < children.Count; i++)
                 {
-                    pulIndex = (uint)i;
-                    return VSConstants.S_OK;
+                    if (0 == string.Compare(children[i].UniqueName, nodeName, StringComparison.OrdinalIgnoreCase))
+                    {
+                        pulIndex = (uint)i;
+                        return VSConstants.S_OK;
+                    }
                 }
+            }
+            catch (Exception)
+            {
+
             }
             return VSConstants.S_FALSE;
         }

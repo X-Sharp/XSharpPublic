@@ -47,7 +47,17 @@ BEGIN NAMESPACE XSharpModel
 				RETURN assemblies:Item[location]:FullName
 			ENDIF
 			RETURN NULL
-		
+
+		STATIC METHOD FindAssembly(fullName AS STRING) AS AssemblyInfo
+			FOREACH VAR item IN assemblies
+				VAR asm := item:Value
+				IF String.Compare(asm:FullName, fullName, StringComparison.OrdinalIgnoreCase) == 0
+					RETURN asm
+				ENDIF
+			NEXT
+			RETURN NULL
+
+
 		STATIC METHOD FindAssemblyByName(fullName AS STRING) AS STRING
 			FOREACH VAR item IN assemblies
 				VAR asm := item:Value
@@ -67,8 +77,26 @@ BEGIN NAMESPACE XSharpModel
 			NEXT
 			RETURN NULL
 		
-		METHOD FindType(typeName AS STRING, usings AS IList<STRING>, assemblies AS IList<AssemblyInfo>) AS XTypeRef
-			LOCAL result := NULL AS XTypeRef
+      STATIC METHOD FindType(typeName as STRING, assemblyName as STRING) AS XTypeReference
+         var assemblies := List<AssemblyInfo>{}
+         var asm := FindAssembly(assemblyName)
+         IF asm != null
+            assemblies:Add(asm)
+            FOREACH var name in asm:ReferencedAssemblies
+               var asm2 := FindAssembly(name)
+               if asm2 != null
+                  assemblies:Add(asm2)
+               endif
+            NEXT
+         ENDIF
+         IF assemblies:Count > 0
+            RETURN FindType(typeName, List<String>{}, assemblies)
+         ENDIF
+         return NULL
+
+
+		STATIC METHOD FindType(typeName AS STRING, usings AS IList<STRING>, assemblies AS IList<AssemblyInfo>) AS XTypeReference
+			LOCAL result := NULL AS XTypeReference
 			TRY
 				WriteOutputMessage("--> FindType() "+typeName)
 				IF typeName:EndsWith(">") .AND.  typeName:Contains("<") .AND. typeName:Length > 2
@@ -126,7 +154,7 @@ BEGIN NAMESPACE XSharpModel
 			END TRY
 			RETURN result
 			
-		METHOD GetNamespaces(assemblies AS IList<AssemblyInfo>) AS IList<STRING>
+		STATIC METHOD GetNamespaces(assemblies AS IList<AssemblyInfo>) AS IList<STRING>
 			VAR list := List<STRING>{}
 			FOREACH VAR info IN assemblies
 				FOREACH str AS STRING IN info:Namespaces
@@ -163,8 +191,8 @@ BEGIN NAMESPACE XSharpModel
 			RETURN info
 		
 		
-		STATIC METHOD Lookup(typeName AS STRING, theirassemblies AS IList<AssemblyInfo>) AS XTypeRef
-			LOCAL sType AS XTypeRef
+		STATIC METHOD Lookup(typeName AS STRING, theirassemblies AS IList<AssemblyInfo>) AS XTypeReference
+			LOCAL sType AS XTypeReference
 			sType := NULL
 			FOREACH VAR assembly IN theirassemblies
 				assembly:Refresh()
@@ -182,6 +210,7 @@ BEGIN NAMESPACE XSharpModel
 				sType := mscorlib:GetType(typeName)
 			ENDIF
 			RETURN sType
+         
 		STATIC METHOD RemoveAssembly(cFileName AS STRING) AS VOID
 			LOCAL info AS AssemblyInfo
 			IF assemblies:ContainsKey(cFileName)
@@ -210,30 +239,25 @@ BEGIN NAMESPACE XSharpModel
 		STATIC METHOD WriteOutputMessage(message AS STRING) AS VOID
 			XSolution.WriteOutputMessage("XModel.Typecontroller "+message)
 		
-		STATIC METHOD LookForExtensions(typeName AS STRING, theirassemblies AS IList<AssemblyInfo>) AS List<IXTypeMember>
+		STATIC METHOD LookForExtensions(typeName AS STRING, theirassemblies AS IList<AssemblyInfo>) AS List<IXMember>
 			// First Search for a system Type
-			var ext := List<IXTypeMember>{} 
+			var ext := List<IXMember>{} 
 			var type := Lookup( typeName, theirassemblies )
 			IF type != NULL
 				ext := LookForExtensions( type, theirassemblies )
 			ENDIF
 			RETURN ext
 		
-		STATIC METHOD LookForExtensions( systemType AS IXType, theirassemblies AS IList<AssemblyInfo>) AS List<IXTypeMember>
-			var ext := List<IXTypeMember>{} 
+		STATIC METHOD LookForExtensions( systemType AS IXType, theirassemblies AS IList<AssemblyInfo>) AS List<IXMember>
+			var ext := List<IXMember>{} 
 			FOREACH VAR assembly IN theirassemblies
 				assembly:Refresh()
 				IF assembly:HasExtensions
 					FOREACH VAR extMet IN assembly:Extensions
-						LOCAL name AS STRING
-						name := extMet:Name:ToLower()
-						var parms := extMet:Parameters
-						IF ( parms:Count > 0 )
-							VAR p := parms[1]
-							// This doesn't work !?
-							// IF ( p.ParameterType == systemType )
-							// Ugly HACK
-							IF ( p.TypeName == systemType.Name )
+						var parms := extMet:Parameters:ToArray()
+						IF ( parms:Length > 0 )
+							VAR p := parms[__ARRAYBASE__]
+                     if systemType:MatchesTypeName(p.TypeName)
 								ext:Add( extMet )
 							ENDIF
 						ENDIF

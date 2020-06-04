@@ -12,40 +12,33 @@ USING LanguageService.SyntaxTree
 BEGIN NAMESPACE XSharpModel
      // A variable is strictly speaking not an entity
     [DebuggerDisplay("{DebuggerDisplay(),nq}")];
-    CLASS XVariable INHERIT XEntityDefinition IMPLEMENTS IXVariable
+    CLASS XParameterReference INHERIT XElement IMPLEMENTS IXVariable
         
         // Methods
-        CONSTRUCTOR(parent AS XEntityDefinition, name AS STRING, span AS TextRange, position AS TextInterval, typeName AS STRING)
-            SUPER(name, Kind.Local, Modifiers.None, span, position)
-            SELF:TypeName       := typeName
-            SUPER:Parent        := parent
-            IF parent != NULL
-                SELF:File           := parent:File
-            ENDIF
+        CONSTRUCTOR(parent AS XMemberReference, name AS STRING, typeName AS STRING)
+            SUPER(name, Kind.Parameter, Modifiers.Public)
+            SELF:TypeName      := typeName
+            SELF:Parent        := parent
 
         // Properties
-        PROPERTY Expression   AS IList<IToken> AUTO GET INTERNAL SET
-        PROPERTY FullName     AS STRING GET SELF:TypeName
+        PROPERTY Expression   AS STRING AUTO
+        PROPERTY IsArray      AS LOGIC AUTO
+        PROPERTY Parent       AS IXEntity AUTO
+        PROPERTY TypeName     AS STRING AUTO
+        PROPERTY IsTyped      AS LOGIC GET TRUE
+        PROPERTY OriginalTypeName as STRING AUTO
         PROPERTY Description  AS STRING
             GET
                 //
                 LOCAL prefix AS STRING
-                IF (SELF:IsParameter)
-                    //
                     prefix := "PARAMETER "
-                ELSE
-                    //
-                    prefix := "LOCAL "
-                ENDIF
                 VAR result := prefix + SELF:Prototype
-                IF (SELF:IsTyped)
-                    result += ParamTypeDesc + SELF:TypeName + IIF(SELF:IsArray,"[]","")
-                ENDIF
+                result += ParamTypeDesc + SELF:TypeName + IIF(SELF:IsArray,"[]","")
                 RETURN result
             END GET
         END PROPERTY
 
-		  PROPERTY IsParameter AS LOGIC GET FALSE
+		  PROPERTY IsParameter AS LOGIC GET TRUE
         PROPERTY ParamType AS ParamType AUTO
         PROPERTY Prototype AS STRING GET SUPER:Name
         PROPERTY ParamTypeDesc AS STRING
@@ -77,21 +70,11 @@ BEGIN NAMESPACE XSharpModel
 
 
         METHOD DebuggerDisplay() AS STRING
-            VAR result := SUPER:Name
-            IF SELF:IsTyped
-                result += ParamTypeDesc+" "+SELF:TypeName
-            ENDIF
-            RETURN result
+            RETURN SELF:Name + " "+ParamTypeDesc+" "+SELF:TypeName
+            
+        METHOD ForceComplete() as VOID
 
     END CLASS
-    CLASS XParameter INHERIT XVariable
-
-    CONSTRUCTOR(parent AS XEntityDefinition, name AS STRING, span AS TextRange, position AS TextInterval, parameterType AS STRING)
-        SUPER(parent, name, span, position, parameterType)
-        SELF:Kind := Kind.Parameter
-    PROPERTY IsParameter AS LOGIC GET TRUE
-
-   END CLASS
          
 
 END NAMESPACE

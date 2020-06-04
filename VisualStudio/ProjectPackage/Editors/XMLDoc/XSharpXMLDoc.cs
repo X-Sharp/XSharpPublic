@@ -34,10 +34,10 @@ namespace XSharp.Project
             _XMLMemberIndexService = (IVsXMLMemberIndexService)XSharpProjectPackage.GetGlobalService(typeof(SVsXMLMemberIndexService));
         }
 
-        public static IVsXMLMemberIndex GetXmlDocFile(Assembly assembly, XProject project)
+        public static IVsXMLMemberIndex GetXmlDocFile(XAssembly assembly, XProject project)
         {
             IVsXMLMemberIndex index = null;
-            var location = assembly.Location;
+            var location = assembly.FileName;
             if (!string.IsNullOrWhiteSpace(location))
             {
                 if (!_memberIndexes.TryGetValue(location, out index))
@@ -97,45 +97,16 @@ namespace XSharp.Project
         /// </summary>
         /// <param name="parameters"></param>
         /// <returns></returns>
-        static private string getParameterNames(ParameterInfo[] parameters, MemberInfo member)
+        static private string getParameterNames(IList<XParameter> parameters, MemberInfo member)
         {
             var pars = "";
-            if (parameters.Length == 1)
-            {
-                if (parameters[0].ParameterType.FullName.EndsWith("Usual[]"))
-                {
-                    var atts = member.GetCustomAttributes(false);
-                    if (atts != null)
-                    {
-                        foreach (var custattr in atts)
-                        {
-                            if (custattr.ToString().EndsWith("ClipperCallingConventionAttribute"))
-                            {
-                                string[] names = (string[])custattr.GetType().GetProperty("ParameterNames").GetValue(custattr, null);
-                                var typeName = parameters[0].ParameterType.FullName.Replace("[]", "");
-                                foreach (var n in names)
-                                {
-                                    if (pars.Length > 0)
-                                        pars += ",";
-                                    else
-                                        pars = "(";
-                                    pars += typeName;
-                                }
-                                if (pars.Length > 0)
-                                    pars += ")";
-                                return pars;
-                            }
-                        }
-                    }
-                }
-            }
             foreach (var p in parameters)
             {
                 if (pars.Length > 0)
                     pars += ",";
                 else
                     pars = "(";
-                pars += p.ParameterType.FullName;
+                pars += p.TypeName;
             }
             if (pars.Length > 0)
                 pars += ")";
@@ -150,22 +121,31 @@ namespace XSharp.Project
         /// <param name="member"></param>
         /// <param name="project"></param>
         /// <returns></returns>
-        static public string GetTypeSummary(System.Type member, XProject project)
+        static public string GetTypeSummary(IXType type, XProject project, out string returns, out string remarks)
         {
             string summary = null;
-            Assembly declarationAssembly = null;
-            declarationAssembly = member.Assembly;
+            XAssembly declarationAssembly = null;
+            XTypeReference xtype;
+            returns = remarks = "";
+
+            if (type is XTypeReference)
+            {
+                xtype = (XTypeReference)type;
+                declarationAssembly = xtype.Assembly;
+
+            }
+            else
+                return "";
             var file = XSharpXMLDocTools.GetXmlDocFile(declarationAssembly, project);
             if (file == null)
                 return null;
-            string name = member.FullName;
-            string prefix = "T:";
-            if (!string.IsNullOrEmpty(name))
+            string sig = xtype.XMLSignature;
+            if (!string.IsNullOrEmpty(sig))
             {
                 uint id = 0;
                 string xml = "";
                 IVsXMLMemberData data = null;
-                var result = file.ParseMemberSignature(prefix + name, out id);
+                var result = file.ParseMemberSignature(sig, out id);
                 if (result >= 0 && id != 0)
                 {
                     result = file.GetMemberXML(id, out xml);
@@ -177,21 +157,26 @@ namespace XSharp.Project
                 if (result >= 0 && data != null)
                 {
                     result = data.GetSummaryText(out summary);
+                    result = data.GetReturnsText(out returns);
+                    result = data.GetRemarksText(out remarks);
                 }
-
             }
             return summary;
         }
 
-        static public string GetMemberSummary(MemberInfo member, XProject project)
+
+        static public string GetMemberSummary(IXMember member, XProject project, out string returns, out string remarks)
         {
             string summary = null;
-            Assembly declarationAssembly = null;
+            XAssembly declarationAssembly = null;
+            XMemberReference xmember;
+            returns = remarks = "";
             //
-            if (member is Type)
-                declarationAssembly = ((Type)member).Assembly;
-            else if (member.DeclaringType != null)
-                declarationAssembly = member.DeclaringType.Assembly;
+            if (member is XMemberReference)
+            {
+                xmember = (XMemberReference)member;
+                declarationAssembly = xmember.Assembly;
+            }
             else
                 return summary;
 
@@ -199,45 +184,15 @@ namespace XSharp.Project
             var file = XSharpXMLDocTools.GetXmlDocFile(declarationAssembly, project);
             if (file == null)
                 return null;
+            var sig = xmember.XMLSignature;
             try
             {
-                string prefix = "";
-                string name = "";
-                switch (member.MemberType)
-                {
-                    case MemberTypes.Field:
-                        prefix = "F:";
-                        name = member.Name;
-                        break;
-                    case MemberTypes.Property:
-                        prefix = "P:";
-                        name = member.Name;
-                        break;
-
-                    case MemberTypes.Method:
-                        prefix = "M:";
-                        name = member.Name;
-                        var mi = member as MethodInfo;
-                        name += getParameterNames(mi.GetParameters(), member);
-                        break;
-                    case MemberTypes.Constructor:
-                        prefix = "M:";
-                        name = "#ctor";
-                        var ci = member as ConstructorInfo;
-                        name += getParameterNames(ci.GetParameters(), member);
-                        break;
-
-                    case MemberTypes.Event:
-                        prefix = "E:";
-                        name = member.Name;
-                        break;
-                }
-                if (!string.IsNullOrEmpty(name))
+                if (!string.IsNullOrEmpty(sig))
                 {
                     uint id = 0;
                     string xml = "";
                     IVsXMLMemberData data = null;
-                    var result = file.ParseMemberSignature(prefix + member.DeclaringType.FullName + "." + name, out id);
+                    var result = file.ParseMemberSignature(sig, out id);
                     if (result >= 0 && id != 0)
                     {
                         result = file.GetMemberXML(id, out xml);
@@ -249,10 +204,10 @@ namespace XSharp.Project
                     if (result >= 0 && data != null)
                     {
                         result = data.GetSummaryText(out summary);
+                        result = data.GetRemarksText(out remarks);
+                        result = data.GetReturnsText(out returns);
                     }
                 }
-                if (string.IsNullOrWhiteSpace(summary) && member is ConstructorInfo)
-                    summary = GetTypeSummary(member.DeclaringType, project);
             }
             catch (Exception e)
             {
@@ -263,14 +218,16 @@ namespace XSharp.Project
             return summary;
         }
 
-        static public bool GetMemberParameters(MemberInfo member, XProject project,  IList<string> names, IList<string> descriptions)
+        static public bool GetMemberParameters(IXMember member, XProject project,  IList<string> names, IList<string> descriptions)
         {
-            Assembly declarationAssembly = null;
+            XAssembly declarationAssembly = null;
+            XMemberReference xmember;
             //
-            if (member is Type)
-                declarationAssembly = ((Type)member).Assembly;
-            else if (member.DeclaringType != null)
-                declarationAssembly = member.DeclaringType.Assembly;
+            if (member is XMemberReference)
+            {
+                xmember = (XMemberReference)member;
+                declarationAssembly = xmember.Assembly;
+            }
             else
                 return false;
 
@@ -280,31 +237,14 @@ namespace XSharp.Project
                 return false;
             try
             {
-                string prefix = "";
-                string name = "";
-                switch (member.MemberType)
-                {
-
-                    case MemberTypes.Method:
-                        prefix = "M:";
-                        name = member.Name;
-                        var mi = member as MethodInfo;
-                        name += getParameterNames(mi.GetParameters(), member);
-                        break;
-                    case MemberTypes.Constructor:
-                        prefix = "M:";
-                        name = "#ctor";
-                        var ci = member as ConstructorInfo;
-                        name += getParameterNames(ci.GetParameters(), member);
-                        break;
-                }
-                if (!string.IsNullOrEmpty(name))
+                var sig  = xmember.XMLSignature;
+                if (!string.IsNullOrEmpty(sig))
                 {
                     uint id = 0;
                     string xml = "";
                     int numparams = 0;
                     IVsXMLMemberData data = null;
-                    var result = file.ParseMemberSignature(prefix + member.DeclaringType.FullName + "." + name, out id);
+                    var result = file.ParseMemberSignature(sig, out id);
                     if (result >= 0 && id != 0)
                     {
                         result = file.GetMemberXML(id, out xml);

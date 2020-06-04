@@ -137,6 +137,15 @@ BEGIN NAMESPACE XSharpModel
 					RETURN TRUE
 			END SWITCH
 			RETURN FALSE
+         
+		STATIC METHOD IsProperty( SELF elementKind AS Kind) AS LOGIC
+			SWITCH elementKind
+				CASE Kind.Access 
+				CASE Kind.Assign
+				CASE Kind.Property
+					RETURN TRUE
+			END SWITCH
+			RETURN FALSE         
 		
 		STATIC METHOD IsType( SELF elementKind AS Kind) AS LOGIC
 			SWITCH elementKind
@@ -292,7 +301,7 @@ BEGIN NAMESPACE XSharpModel
       		PRIVATE STATIC METHOD GetImageListIndex(kind AS ImageListKind, overlay AS ImageListOverlay) AS LONG
 			         RETURN (LONG)((kind * ImageListKind.Unknown1) + (ImageListKind)(LONG)overlay  ) 
        
-
+     
             
 	END CLASS
 END NAMESPACE 

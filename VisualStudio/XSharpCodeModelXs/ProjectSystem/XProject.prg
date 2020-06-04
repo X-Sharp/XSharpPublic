@@ -27,17 +27,16 @@ BEGIN NAMESPACE XSharpModel
         PRIVATE _projectOutputDLLs						AS ConcurrentDictionary<STRING, STRING>
         PRIVATE _ReferencedProjects						AS List<XProject>
         PRIVATE _StrangerProjects						AS List<EnvDTE.Project>
-        PRIVATE _typeController							AS SystemTypeController
         PRIVATE _unprocessedAssemblyReferences		AS ConcurrentDictionary<STRING, STRING>
         PRIVATE _unprocessedProjectReferences		AS List<STRING>
         PRIVATE _unprocessedStrangerProjectReferences	AS List<STRING>
         PRIVATE _failedStrangerProjectReferences   AS List<STRING>
         PRIVATE _unprocessedFiles                  AS List<STRING>
-        PRIVATE _mergedTypes							   AS ConcurrentDictionary<STRING, XType>
+        PRIVATE _mergedTypes							   AS ConcurrentDictionary<STRING, XTypeDefinition>
         PRIVATE _OtherFilesDict							AS ConcurrentDictionary<STRING, XFile>
         PRIVATE _SourceFilesDict						   AS ConcurrentDictionary<STRING, XFile>
         PRIVATE _TypeDict								   AS ConcurrentDictionary<STRING, List<STRING>>
-        PRIVATE _ExternalTypeCache						AS ConcurrentDictionary<STRING, XTypeRef>
+        PRIVATE _ExternalTypeCache						AS ConcurrentDictionary<STRING, XTypeReference>
         PRIVATE _ImplicitNamespaces                AS List<STRING>
         PROPERTY FileWalkCompleted                 AS LOGIC AUTO
         PROPERTY Dialect                           AS XSharpDialect
@@ -65,15 +64,14 @@ BEGIN NAMESPACE XSharpModel
             SELF:_failedStrangerProjectReferences := List<STRING>{}
             SELF:_unprocessedFiles := List<STRING>{}
             SELF:_projectOutputDLLs := ConcurrentDictionary<STRING, STRING>{StringComparer.OrdinalIgnoreCase}
-            SELF:_mergedTypes   := ConcurrentDictionary<STRING, XType>{StringComparer.OrdinalIgnoreCase}
+            SELF:_mergedTypes   := ConcurrentDictionary<STRING, XTypeDefinition>{StringComparer.OrdinalIgnoreCase}
             SELF:_ReferencedProjects := List<XProject>{}
             SELF:_StrangerProjects := List<Project>{}
             SELF:_projectNode := project
             SELF:_SourceFilesDict := ConcurrentDictionary<STRING, XFile>{StringComparer.OrdinalIgnoreCase}
             SELF:_OtherFilesDict := ConcurrentDictionary<STRING, XFile>{StringComparer.OrdinalIgnoreCase}
-            SELF:_typeController := SystemTypeController{}
             SELF:_TypeDict := ConcurrentDictionary<STRING, List<STRING> > {StringComparer.OrdinalIgnoreCase}
-            SELF:_ExternalTypeCache := ConcurrentDictionary<STRING, XTypeRef> {StringComparer.OrdinalIgnoreCase}
+            SELF:_ExternalTypeCache := ConcurrentDictionary<STRING, XTypeReference> {StringComparer.OrdinalIgnoreCase}
             SELF:Loaded := TRUE
             SELF:FileWalkCompleted := FALSE
             IF ! XLiterals.Initialized
@@ -496,10 +494,10 @@ BEGIN NAMESPACE XSharpModel
             #endregion
 
         #region Lookup Types and Functions
-        METHOD FindFunction(name AS STRING) AS IXTypeMember
+        METHOD FindFunction(name AS STRING) AS IXMember
             WriteOutputMessage("FindFunction() "+name)
-            IF _TypeDict:ContainsKey(XType.GlobalName)
-                VAR fileNames := _TypeDict[XType.GlobalName]:ToArray()
+            IF _TypeDict:ContainsKey(XTypeDefinition.GlobalName)
+                VAR fileNames := _TypeDict[XTypeDefinition.GlobalName]:ToArray()
                 FOREACH sFile AS STRING IN fileNames
                     LOCAL file AS XFile
                     // It seems sometimes the Key has changed; may be after a reparse ?
@@ -507,7 +505,7 @@ BEGIN NAMESPACE XSharpModel
                     IF _SourceFilesDict:TryGetValue( sFile, REF file )
                         VAR members := file:GlobalType:Members
                         IF members != NULL
-                           var mem := members:Where ({ x=> x.Kind == Kind.Procedure .OR. x:Kind == Kind.Function .and. String.Compare(x:Name, name, TRUE) == 0 }):FirstOrDefault()
+                           var mem := members:Where ({ x=> (x.Kind == Kind.Procedure .OR. x:Kind == Kind.Function) .and. String.Compare(x:Name, name, TRUE) == 0 }):FirstOrDefault()
                            if mem != null
                               WriteOutputMessage("FindFunction()  found: "+mem:FullName)
                               return mem
@@ -519,10 +517,10 @@ BEGIN NAMESPACE XSharpModel
 
             RETURN NULL
 
-            METHOD FindGlobalOrDefine(name AS STRING) AS IXTypeMember
+            METHOD FindGlobalOrDefine(name AS STRING) AS IXMember
                 WriteOutputMessage("FindGlobalOrDefine() "+name)
-                IF _TypeDict:ContainsKey(XType.GlobalName)
-                    VAR fileNames := _TypeDict[XType.GlobalName]:ToArray()
+                IF _TypeDict:ContainsKey(XTypeDefinition.GlobalName)
+                    VAR fileNames := _TypeDict[XTypeDefinition.GlobalName]:ToArray()
                     FOREACH sFile AS STRING IN fileNames
                         LOCAL file AS XFile
                         // It seems sometimes the Key has changed; may be after a reparse ?
@@ -530,7 +528,7 @@ BEGIN NAMESPACE XSharpModel
                         IF _SourceFilesDict:TryGetValue( sFile, REF file )
                             VAR members := file:GlobalType:Members
                             IF members != NULL
-                                FOREACH oMember AS IXTypeMember IN members
+                                FOREACH oMember AS IXMember IN members
                                     IF (oMember:Kind == Kind.VOGlobal .OR. oMember:Kind == Kind.VODefine ) .AND. String.Compare(oMember:Name, name, TRUE) == 0
                                         WriteOutputMessage("FindGlobalOrDefine()  found: "+oMember:FullName)
                                         RETURN oMember
@@ -542,7 +540,7 @@ BEGIN NAMESPACE XSharpModel
                 ENDIF
 
             RETURN NULL
-        METHOD FindSystemType(name AS STRING, usings AS IList<STRING>) AS XTypeRef
+        METHOD FindSystemType(name AS STRING, usings AS IList<STRING>) AS XTypeReference
             WriteOutputMessage("FindSystemType() "+name)
             IF ! AssemblyInfo.DisableForeignProjectReferences
                 SELF:RefreshStrangerProjectDLLOutputFiles()
@@ -559,7 +557,7 @@ BEGIN NAMESPACE XSharpModel
                     RETURN _ExternalTypeCache[fullname]
                 ENDIF
             NEXT
-            VAR type := SELF:_typeController:FindType(name, usings, SELF:_AssemblyReferences)
+            VAR type := SystemTypeController.FindType(name, usings, SELF:_AssemblyReferences)
             IF type != NULL
                 WriteOutputMessage("FindSystemType() "+name+" found "+type:FullName)
                 IF !_ExternalTypeCache:ContainsKey(type:FullName)
@@ -569,11 +567,11 @@ BEGIN NAMESPACE XSharpModel
             RETURN type
 
         METHOD GetAssemblyNamespaces() AS IList<STRING>
-            RETURN SELF:_typeController:GetNamespaces(SELF:_AssemblyReferences)
+            RETURN SystemTypeController.GetNamespaces(SELF:_AssemblyReferences)
 
-        METHOD Lookup(typeName AS STRING, caseInvariant AS LOGIC) AS XType
-            LOCAL xType AS XType
-            LOCAL xTemp AS XType
+        METHOD Lookup(typeName AS STRING, caseInvariant AS LOGIC) AS XTypeDefinition
+            LOCAL xType AS XTypeDefinition
+            LOCAL xTemp AS XTypeDefinition
             WriteOutputMessage("Lookup() "+typeName)
             xType := SELF:LookupMergedType(typeName)
             IF xType != NULL
@@ -601,7 +599,7 @@ BEGIN NAMESPACE XSharpModel
                             IF xType != NULL
                                 xType := xType:Merge(xTemp)
                             ELSE
-                                xType := XType{xTemp}
+                                xType := XTypeDefinition{xTemp}
                             ENDIF
                         ENDIF
                     ENDIF
@@ -616,8 +614,8 @@ BEGIN NAMESPACE XSharpModel
             ENDIF
             RETURN xType
 
-        METHOD LookupReferenced(typeName AS STRING, caseInvariant AS LOGIC) AS XType
-            LOCAL xType AS XType
+        METHOD LookupReferenced(typeName AS STRING, caseInvariant AS LOGIC) AS XTypeDefinition
+            LOCAL xType AS XTypeDefinition
             xType := NULL
             IF ! AssemblyInfo.DisableXSharpProjectReferences
                 WriteOutputMessage("LookupReferenced() "+typeName)
@@ -634,7 +632,7 @@ BEGIN NAMESPACE XSharpModel
             ENDIF
             RETURN xType
 			
-		METHOD GetExtensions( systemType AS IXType ) AS List<IXTypeMember>
+		METHOD GetExtensions( systemType AS IXType ) AS List<IXMember>
 			RETURN SystemTypeController.LookForExtensions( systemType, SELF:_AssemblyReferences)
 
             PROPERTY ImplicitNamespaces as List<String>
@@ -709,14 +707,14 @@ BEGIN NAMESPACE XSharpModel
             END GET
         END PROPERTY
 
-        PROPERTY Namespaces AS IList<XType>
+        PROPERTY Namespaces AS IList<XTypeDefinition>
             GET
-                VAR types := List<XType>{}
+                VAR types := List<XTypeDefinition>{}
                 VAR fileArray := SELF:SourceFiles:ToArray()
                 FOREACH file AS XFile IN fileArray
                     IF file:TypeList != NULL
                         VAR values := file:TypeList:Values
-                        FOREACH elmt AS XType IN values
+                        FOREACH elmt AS XTypeDefinition IN values
                             IF elmt:Kind == Kind.Namespace
                                 IF types:Find( { x => x:Name:ToLowerInvariant() == elmt:Name:ToLowerInvariant() } ) == NULL
                                     types:Add(elmt)
@@ -769,9 +767,9 @@ BEGIN NAMESPACE XSharpModel
         #endregion
 
         #region Types
-        INTERNAL METHOD AddType(xType AS XType) AS VOID
+        INTERNAL METHOD AddType(xType AS XTypeDefinition) AS VOID
             // only add global types that have members
-            IF ! XType.IsGlobalType(xType) .OR. xType:Members:Count > 0
+            IF ! XTypeDefinition.IsGlobalType(xType) .OR. xType:Members:Count > 0
                 VAR typeName := xType:FullName
                 VAR fileName := xType:File:FullPath
                 IF xType:File:IsXaml
@@ -786,7 +784,7 @@ BEGIN NAMESPACE XSharpModel
             ENDIF
             RETURN
 
-        INTERNAL METHOD RemoveType(xType AS XType) AS VOID
+        INTERNAL METHOD RemoveType(xType AS XTypeDefinition) AS VOID
             VAR typeName := xType:FullName
             VAR fileName := xType:File:FullPath
             IF xType:File:IsXaml
@@ -807,8 +805,8 @@ BEGIN NAMESPACE XSharpModel
 
             #endregion
         #region Merged Types
-        INTERNAL METHOD AddMergedType(xType AS XType) AS VOID
-            IF xType:Name != XElement.GlobalName
+        INTERNAL METHOD AddMergedType(xType AS XTypeDefinition) AS VOID
+            IF xType:Name != XEntityDefinition.GlobalName
                 VAR name := xType:FullName
                 IF SELF:_mergedTypes:ContainsKey(name)
                     SELF:_mergedTypes:TryRemove(name, OUT VAR _)
@@ -818,14 +816,14 @@ BEGIN NAMESPACE XSharpModel
             RETURN
 
         INTERNAL METHOD RemoveMergedType(fullName AS STRING) AS VOID
-            IF fullName != XElement.GlobalName
+            IF fullName != XEntityDefinition.GlobalName
                 IF SELF:_mergedTypes:ContainsKey(fullName)
                     SELF:_mergedTypes:TryRemove(fullName, OUT VAR _)
                 ENDIF
             ENDIF
             RETURN
 
-        INTERNAL METHOD LookupMergedType(fullName AS STRING) AS XType
+        INTERNAL METHOD LookupMergedType(fullName AS STRING) AS XTypeDefinition
             IF _mergedTypes:ContainsKey(fullName)
                 WriteOutputMessage("LookupMergedType() found "+fullName)
                 RETURN _mergedTypes[fullName]

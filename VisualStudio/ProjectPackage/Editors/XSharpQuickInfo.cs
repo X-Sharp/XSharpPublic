@@ -131,8 +131,8 @@ namespace XSharp.Project
                 // Then, the corresponding Type/Element if possible
                 IToken stopToken;
                 //ITokenStream tokenStream;
-                XSharpModel.XTypeMember member = XSharpLanguage.XSharpTokenTools.FindMember(lineNumber, _file);
-                XSharpModel.XType currentNamespace = XSharpLanguage.XSharpTokenTools.FindNamespace(caretPos, _file);
+                XSharpModel.XMemberDefinition member = XSharpLanguage.XSharpTokenTools.FindMember(lineNumber, _file);
+                XSharpModel.XTypeDefinition currentNamespace = XSharpLanguage.XSharpTokenTools.FindNamespace(caretPos, _file);
                 // adjust caretpos, for other completions we need to stop before the caret. Now we include the caret
                 List<String> tokenList = XSharpLanguage.XSharpTokenTools.GetTokenList(caretPos + 1, lineNumber, tokens.TokenStream, out stopToken, true, _file, false, member);
                 // Check if we can get the member where we are
@@ -166,13 +166,13 @@ namespace XSharp.Project
                                                 extent.Span.Start, searchText.Length, SpanTrackingMode.EdgeInclusive
                         );
 
-                    if (gotoElement.XSharpElement != null)
+                    if (gotoElement.Result != null)
                     {
-                        if (gotoElement.XSharpElement.Kind == Kind.Constructor)
+                        if (gotoElement.Result.Kind == Kind.Constructor)
                         {
-                            if (gotoElement.XSharpElement.Parent != null)
+                            if (gotoElement.Result.Parent != null)
                             {
-                                var xtype = gotoElement.XSharpElement.Parent as XType;
+                                var xtype = gotoElement.Result.Parent as XTypeDefinition;
                                 var qitm = new QuickInfoTypeAnalysis(xtype, kwFormat.ForegroundBrush, txtFormat.ForegroundBrush);
                                 var description = new TextBlock();
                                 description.Inlines.AddRange(qitm.WPFDescription);
@@ -180,24 +180,24 @@ namespace XSharp.Project
 
                             }
                         }
-                        else if (gotoElement.XSharpElement is IXTypeMember)
+                        else if (gotoElement.Result is IXMember)
                         {
-                            QuickInfoTypeMember qitm = new QuickInfoTypeMember((IXTypeMember)gotoElement.XSharpElement, kwFormat.ForegroundBrush, txtFormat.ForegroundBrush);
+                            QuickInfoTypeMember qitm = new QuickInfoTypeMember((IXMember)gotoElement.Result, kwFormat.ForegroundBrush, txtFormat.ForegroundBrush);
                             var description = new TextBlock();
                             description.Inlines.AddRange(qitm.WPFDescription);
                             qiContent.Add(description);
                         }
-                        else if (gotoElement.XSharpElement is IXVariable)
+                        else if (gotoElement.Result is IXVariable)
                         {
-                            QuickInfoVariable qitm = new QuickInfoVariable((IXVariable)gotoElement.XSharpElement, kwFormat.ForegroundBrush, txtFormat.ForegroundBrush);
+                            QuickInfoVariable qitm = new QuickInfoVariable((IXVariable)gotoElement.Result, kwFormat.ForegroundBrush, txtFormat.ForegroundBrush);
                             var description = new TextBlock();
                             description.Inlines.AddRange(qitm.WPFDescription);
                             qiContent.Add(description);
 
                         }
-                        else if (gotoElement.XSharpElement is IXType)
+                        else if (gotoElement.Result is IXType)
                         {
-                            var xtype = gotoElement.XSharpElement as IXType;
+                            var xtype = gotoElement.Result as IXType;
                             var qitm = new QuickInfoTypeAnalysis(xtype, kwFormat.ForegroundBrush, txtFormat.ForegroundBrush);
                             var description = new TextBlock();
                             description.Inlines.AddRange(qitm.WPFDescription);
@@ -208,7 +208,7 @@ namespace XSharp.Project
                         {
                             var description = new TextBlock();
                             Run temp;
-                            temp = new Run(gotoElement.XSharpElement.Description);
+                            temp = new Run(gotoElement.Result.Description);
                             temp.Foreground = txtFormat.ForegroundBrush;
                             //
                             description.Inlines.Add(temp);
@@ -379,11 +379,13 @@ namespace XSharp.Project
         {
             Brush kwBrush;
             Brush txtBrush;
+            IXType _type;
 
             internal QuickInfoTypeAnalysis(IXType type, Brush fg, Brush txt) : base(type)
             {
                 this.kwBrush = fg;
                 this.txtBrush = txt;
+                _type = type;
             }
             public List<Inline> WPFDescription
             {
@@ -421,6 +423,34 @@ namespace XSharp.Project
                     temp.Foreground = txtBrush;
                     content.Add(temp);
                     //
+                    string returns;
+                    string remarks;
+                    var xmldesc = XSharpXMLDocMember.GetTypeSummary(this._type, null, out returns, out remarks);
+                    if (!String.IsNullOrEmpty(xmldesc))
+                    {
+                        temp = new Run("\r\r" + xmldesc);
+                        temp.Foreground = this.txtBrush;
+                        content.Add(temp);
+                        if (!string.IsNullOrEmpty(returns))
+                        {
+                            temp = new Run("\rReturns: ");
+                            temp.Foreground = this.kwBrush;
+                            content.Add(temp);
+                            temp = new Run(" " + returns);
+                            temp.Foreground = this.txtBrush;
+                            content.Add(temp);
+                        }
+                        if (!string.IsNullOrEmpty(remarks))
+                        {
+                            temp = new Run("\rRemarks:");
+                            temp.Foreground = this.kwBrush;
+                            content.Add(temp);
+                            temp = new Run(" " + remarks);
+                            temp.Foreground = this.txtBrush;
+                            content.Add(temp);
+                        }
+                    }
+
                     return content;
                 }
 
@@ -431,11 +461,12 @@ namespace XSharp.Project
         {
             Brush kwBrush;
             Brush txtBrush;
-
-            internal QuickInfoMemberAnalysis(IXTypeMember member, Brush kw, Brush txt) : base(member)
+            IXMember _member;
+            internal QuickInfoMemberAnalysis(IXMember member, Brush kw, Brush txt) : base(member)
             {
                 this.kwBrush = kw;
                 this.txtBrush = txt;
+                _member = member;
             }
 
             public List<Inline> WPFDescription
@@ -532,7 +563,6 @@ namespace XSharp.Project
                         temp.Foreground = this.txtBrush;
                         content.Add(temp);
                     }
-
                     //
                     return content;
                 }
@@ -574,9 +604,9 @@ namespace XSharp.Project
 
         internal class QuickInfoTypeMember : QuickInfoBase
         {
-            IXTypeMember typeMember;
+            IXMember typeMember;
  
-            internal QuickInfoTypeMember(IXTypeMember tm, Brush kw, Brush txt) : base(kw,txt)
+            internal QuickInfoTypeMember(IXMember tm, Brush kw, Brush txt) : base(kw,txt)
             {
                 this.typeMember = tm;
             }
@@ -597,13 +627,6 @@ namespace XSharp.Project
                     temp = new Run(_optionsPage.formatKeyword(this.typeMember.Visibility) + " ");
                     temp.Foreground = this.kwBrush;
                     content.Add(temp);
-                    //
-                    if ((this.typeMember.IsStatic) && ((this.typeMember.Kind != Kind.Function) && (this.typeMember.Kind != Kind.Procedure)))
-                    {
-                        temp = new Run(_optionsPage.Static() + " ");
-                        temp.Foreground = this.kwBrush;
-                        content.Add(temp);
-                    }
                     //
                     if (this.typeMember.Kind != XSharpModel.Kind.Field)
                     {
@@ -672,6 +695,34 @@ namespace XSharp.Project
                         temp.Foreground = this.txtBrush;
                         content.Add(temp);
                     }
+                    string returns;
+                    string remarks;
+                    var xmldesc = XSharpXMLDocMember.GetMemberSummary(this.typeMember, null, out returns, out remarks);
+                    if (!String.IsNullOrEmpty(xmldesc))
+                    {
+                        temp = new Run("\r\r" + xmldesc);
+                        temp.Foreground = this.txtBrush;
+                        content.Add(temp);
+                        if (!string.IsNullOrEmpty(returns))
+                        {
+                            temp = new Run("\rReturns: " );
+                            temp.Foreground = this.kwBrush;
+                            content.Add(temp);
+                            temp = new Run(" "+returns);
+                            temp.Foreground = this.txtBrush;
+                            content.Add(temp);
+                        }
+                        if (!string.IsNullOrEmpty(remarks))
+                        {
+                            temp = new Run("\rRemarks:" );
+                            temp.Foreground = this.kwBrush;
+                            content.Add(temp);
+                            temp = new Run(" " + remarks);
+                            temp.Foreground = this.txtBrush;
+                            content.Add(temp);
+                        }
+                    }
+
                     return content;
                 }
             }
@@ -719,11 +770,11 @@ namespace XSharp.Project
         /*
         internal class QuickInfoType
         {
-            XSharpModel.XType xtype;
+            XSharpModel.XTypeDefinition xtype;
             Brush kwBrush;
             Brush txtBrush;
 
-            internal QuickInfoType(XSharpModel.XType tm, Brush kw, Brush txt)
+            internal QuickInfoType(XSharpModel.XTypeDefinition tm, Brush kw, Brush txt)
             {
                 this.xtype = tm;
                 this.kwBrush = kw;

@@ -12,18 +12,18 @@ USING XSharpModel
 USING LanguageService.CodeAnalysis.XSharp
 USING STATIC XSharpModel.XFileTypeHelpers
 BEGIN NAMESPACE XSharpModel
-    DELEGATE FindMemberComparer (oElement AS XElement, nValue AS LONG ) AS LONG
+    DELEGATE FindMemberComparer (oElement AS XEntityDefinition, nValue AS LONG ) AS LONG
 
     [DebuggerDisplay("{FullPath,nq}")];
     CLASS XFile
         // Fields
-        PRIVATE _globalType		AS XType
+        PRIVATE _globalType	AS XTypeDefinition
         PRIVATE _lastWritten	AS System.DateTime
         PRIVATE _lock			AS OBJECT
         PRIVATE _parsed			AS LOGIC
         PRIVATE _type			AS XFileType
-        PRIVATE _typeList		AS ConcurrentDictionary<STRING, XType>
-        PRIVATE _entityList		AS List<XElement>
+        PRIVATE _typeList		AS ConcurrentDictionary<STRING, XTypeDefinition>
+        PRIVATE _entityList		AS List<XEntityDefinition>
         PRIVATE _usings			AS List<STRING>
         PRIVATE _usingStatics	AS List<STRING>
         PRIVATE filePath AS STRING
@@ -40,7 +40,7 @@ BEGIN NAMESPACE XSharpModel
             SELF:_lock := OBJECT{}
             SELF:_lastWritten := System.DateTime.MinValue
 
-        PROPERTY EntityList AS 	List<XElement> GET _entityList
+        PROPERTY EntityList AS 	List<XEntityDefinition> GET _entityList
         PROPERTY Dialect AS XSharpDialect GET _project:Dialect
 
 
@@ -54,7 +54,7 @@ BEGIN NAMESPACE XSharpModel
             RETURN
 
 
-        METHOD FirstMember() AS IXTypeMember
+        METHOD FirstMember() AS IXMember
             IF (! SELF:HasCode)
                 RETURN NULL
             ENDIF
@@ -70,9 +70,9 @@ BEGIN NAMESPACE XSharpModel
             ///
             ///
 
-        METHOD FindMember(oDel AS FindMemberComparer, nValue AS LONG) AS XElement
-            LOCAL oResult := NULL_OBJECT AS XElement
-            LOCAL oLast AS XElement
+        METHOD FindMember(oDel AS FindMemberComparer, nValue AS LONG) AS XEntityDefinition
+            LOCAL oResult := NULL_OBJECT AS XEntityDefinition
+            LOCAL oLast AS XEntityDefinition
             // perform binary search to speed up things
             VAR current := 0
             VAR bottom := 0
@@ -101,14 +101,14 @@ BEGIN NAMESPACE XSharpModel
             ENDIF
             RETURN oResult
 
-        PRIVATE METHOD CompareByLine(oElement AS XElement, nLine AS LONG) AS LONG
+        PRIVATE METHOD CompareByLine(oElement AS XEntityDefinition, nLine AS LONG) AS LONG
             LOCAL nResult AS LONG
             LOCAL nStart, nEnd AS LONG
             nStart := oElement:Range:StartLine
             nEnd   := oElement:Range:EndLine
-            IF oElement IS XType
-                VAR oType := oElement ASTYPE XType
-                IF oType:Members:Count > 0 .and. oType:Members[0] is XTypeMember VAR xmember
+            IF oElement IS XTypeDefinition
+                VAR oType := oElement ASTYPE XTypeDefinition
+                IF oType:Members:Count > 0 .and. oType:Members[0] is XMemberDefinition VAR xmember
                     nEnd := xmember:Range:StartLine-1
                 ENDIF
             ENDIF
@@ -121,21 +121,21 @@ BEGIN NAMESPACE XSharpModel
             ENDIF
             RETURN nResult
 
-        METHOD FindMemberAtRow(nLine AS LONG) AS XElement
+        METHOD FindMemberAtRow(nLine AS LONG) AS XEntityDefinition
             RETURN SELF:FindMember(CompareByLine, nLine)
 
             ///
             /// <Summary>Find member in file based on 0 based position</Summary>
             ///
             ///
-        PRIVATE METHOD CompareByPosition(oElement AS XElement, nPos AS LONG) AS LONG
+        PRIVATE METHOD CompareByPosition(oElement AS XEntityDefinition, nPos AS LONG) AS LONG
             LOCAL nResult AS LONG
             LOCAL nStart, nEnd AS LONG
             nStart := oElement:Interval:Start
             nEnd   := oElement:Interval:Stop
-            IF oElement IS XType
-                VAR oType := oElement ASTYPE XType
-                IF oType:Members:Count > 0 .and. oType:Members[0] is XTypeMember VAR xmember
+            IF oElement IS XTypeDefinition
+                VAR oType := oElement ASTYPE XTypeDefinition
+                IF oType:Members:Count > 0 .and. oType:Members[0] is XMemberDefinition VAR xmember
                     nEnd := xmember:Interval:Start-2
                 ENDIF
             ENDIF
@@ -148,23 +148,23 @@ BEGIN NAMESPACE XSharpModel
             ENDIF
             RETURN nResult
 
-        METHOD FindMemberAtPosition(nPos AS LONG) AS XElement
+        METHOD FindMemberAtPosition(nPos AS LONG) AS XEntityDefinition
             RETURN SELF:FindMember(CompareByPosition, nPos)
 
 
         METHOD InitTypeList() AS VOID
             SELF:_usings		:= List<STRING>{}
             SELF:_usingStatics	:= List<STRING>{}
-            SELF:_entityList    := List<XElement>{}
-            SELF:_typeList		:= ConcurrentDictionary<STRING, XType>{System.StringComparer.InvariantCultureIgnoreCase}
+            SELF:_entityList    := List<XEntityDefinition>{}
+            SELF:_typeList		:= ConcurrentDictionary<STRING, XTypeDefinition>{System.StringComparer.InvariantCultureIgnoreCase}
             SELF:AddDefaultUsings()
             IF SELF:HasCode
-                SELF:_globalType	:= XType.CreateGlobalType(SELF)
+                SELF:_globalType	:= XTypeDefinition.CreateGlobalType(SELF)
                 SELF:_typeList:TryAdd(SELF:_globalType:Name, SELF:_globalType)
             ENDIF
 
-        METHOD SetTypes(types AS IDictionary<STRING, XType>, usings AS IList<STRING>, ;
-        staticUsings AS IList<STRING>, aEntities AS IList<XElement>) AS VOID
+        METHOD SetTypes(types AS IDictionary<STRING, XTypeDefinition>, usings AS IList<STRING>, ;
+        staticUsings AS IList<STRING>, aEntities AS IList<XEntityDefinition>) AS VOID
             IF SELF:HasCode
                 WriteOutputMessage("-->> SetTypes() "+ SELF:SourcePath)
                 BEGIN LOCK SELF
@@ -174,9 +174,9 @@ BEGIN NAMESPACE XSharpModel
                     SELF:_typeList:Clear()
                     SELF:_usings:Clear()
                     SELF:_usingStatics:Clear()
-                    FOREACH type AS KeyValuePair<STRING, XType> IN types
+                    FOREACH type AS KeyValuePair<STRING, XTypeDefinition> IN types
                         SELF:_typeList:TryAdd(type:Key, type:Value)
-                        IF (XType.IsGlobalType(type:Value))
+                        IF (XTypeDefinition.IsGlobalType(type:Value))
                             SELF:_globalType := type:Value
                         ENDIF
                         SELF:Project:AddType(type:Value)
@@ -191,22 +191,22 @@ BEGIN NAMESPACE XSharpModel
             ENDIF
         /*
         METHOD BuildTypes(oInfo AS ParseResult) AS VOID
-            LOCAL aTypes	      AS Dictionary<STRING, XType>
+            LOCAL aTypes	      AS Dictionary<STRING, XTypeDefinition>
             LOCAL aUsings		  AS List<STRING>
             LOCAL aUsingStatics   AS List<STRING>
-            LOCAL oType		      AS XType
-            LOCAL aEntities		  AS List<XElement>
-            aTypes			:= Dictionary<STRING, XType>{}
+            LOCAL oType		      AS XTypeDefinition
+            LOCAL aEntities		  AS List<XEntityDefinition>
+            aTypes			:= Dictionary<STRING, XTypeDefinition>{}
             aUsings			:= List<STRING>{}
             aUsingStatics	:= List<STRING>{}
             FOREACH oElement AS EntityObject IN oInfo:Types
-                oType   := XType.create(SELF, oElement,oInfo,SELF:Dialect)
+                oType   := XTypeDefinition.create(SELF, oElement,oInfo,SELF:Dialect)
                 IF !aTypes:ContainsKey(oType:FullName)
                     aTypes:Add( oType:FullName, oType)
                 ELSE
                     // this should only happen if there are two PARTIAL CLASS parts in the same file
                     // now merge the second in the first
-                    LOCAL oType2 := aTypes[oType:FullName] AS XType
+                    LOCAL oType2 := aTypes[oType:FullName] AS XTypeDefinition
                     IF oType2:File == oType:File
                         oType2 := oType2:Merge(oType)
                         aTypes[oType:FullName] := oType2
@@ -216,7 +216,7 @@ BEGIN NAMESPACE XSharpModel
             NEXT
             // Now add NameSpaces
             FOREACH oNS AS NameSpaceObject IN oInfo:NameSpaces
-                oType := XType{ oNS:Name, Kind.Namespace, Modifiers.Public, Modifiers.Public, oNS:Span, oNS:Interval ,SELF}
+                oType := XTypeDefinition{ oNS:Name, Kind.Namespace, Modifiers.Public, Modifiers.Public, oNS:Span, oNS:Interval ,SELF}
                 IF !aTypes:ContainsKey(oType:FullName)
                     aTypes:Add( oType:FullName, oType)
                 ENDIF
@@ -237,7 +237,7 @@ BEGIN NAMESPACE XSharpModel
             aEntities := List<XELement>{}
             FOREACH oElement AS EntityObject IN oInfo:Entities
                 IF oElement:oCargo != NULL_OBJECT
-                    aEntities:add ( (XElement) oElement:oCargo)
+                    aEntities:add ( (XEntityDefinition) oElement:oCargo)
                 ENDIF
             NEXT
             SELF:SetTypes(aTypes, aUsings, aUsingStatics, aEntities:ToArray())
@@ -303,13 +303,11 @@ BEGIN NAMESPACE XSharpModel
                 ENDIF
                 BEGIN LOCK SELF:_lock
                     VAR hash := 0U
-                    FOREACH type AS XType IN SELF:TypeList:Values
-                        FOREACH xmem AS XTypeMember IN type:Members
-                            BEGIN UNCHECKED
-                                hash += (DWORD)xmem:Prototype:GetHashCode()
-                                hash += (DWORD) xmem:Range:StartLine
-                            END UNCHECKED
-                        NEXT
+                    FOREACH var entity in SELF:EntityList
+                        BEGIN UNCHECKED
+                           hash += (DWORD) entity:Prototype:GetHashCode()
+                           hash += (DWORD) entity:Range:StartLine
+                        END UNCHECKED
                     NEXT
                     RETURN hash
                 END LOCK
@@ -317,7 +315,7 @@ BEGIN NAMESPACE XSharpModel
         END PROPERTY
 
         PROPERTY FullPath AS STRING GET SELF:filePath SET SELF:filePath := VALUE
-        PROPERTY GlobalType AS XType GET SELF:_globalType
+        PROPERTY GlobalType AS XTypeDefinition GET SELF:_globalType
         PROPERTY HasCode AS LOGIC GET SELF:IsSource .OR. SELF:IsXaml .OR. SELF:IsHeader
         PROPERTY HasParseErrors AS LOGIC AUTO
         PROPERTY IsHeader AS LOGIC GET SELF:_type == XFileType.Header
@@ -361,7 +359,7 @@ BEGIN NAMESPACE XSharpModel
             END GET
         END PROPERTY
 
-        PROPERTY TypeList AS IDictionary<STRING, XType>
+        PROPERTY TypeList AS IDictionary<STRING, XTypeDefinition>
             GET
                 IF ! SELF:HasCode
                     RETURN NULL

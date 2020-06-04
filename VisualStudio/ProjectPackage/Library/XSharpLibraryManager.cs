@@ -486,9 +486,9 @@ namespace XSharp.Project
                 return;
             //
             // First search for NameSpaces
-            foreach (KeyValuePair<string, XType> pair in elements)
+            foreach (KeyValuePair<string, XTypeDefinition> pair in elements)
             {
-                XType xType = pair.Value;
+                XTypeDefinition xType = pair.Value;
                 if (xType.Kind == Kind.Namespace)
                 {
                     // Does that NameSpave already exist ?
@@ -520,19 +520,24 @@ namespace XSharp.Project
                     }
                 }
             }
-
             // Now, look for Classes
-            foreach (KeyValuePair<string, XType> pair in elements)
+            foreach (KeyValuePair<string, XTypeDefinition> pair in elements)
             {
-                XType xType = pair.Value;
+                XTypeDefinition xType = pair.Value;
                 // Is it a kind of Type ?
                 if ((xType.Kind.IsType()))
                 {
                     string nSpace = prjNode.DefaultNameSpace;
-                    if (!String.IsNullOrEmpty(xType.NameSpace))
-                        nSpace = xType.NameSpace;
+                    if (!String.IsNullOrEmpty(xType.Namespace))
+                        nSpace = xType.Namespace;
                     // Search for the corresponding NameSpace
                     LibraryNode nsNode = prjNode.SearchNameSpace(nSpace);
+                    if (nsNode == null)
+                    {
+
+                        nsNode = prjNode.SearchClass(nSpace);
+                    }
+
                     if (nsNode is XSharpLibraryNode)
                     {
                         XSharpLibraryNode xsNSNode = (XSharpLibraryNode)nsNode;
@@ -568,14 +573,14 @@ namespace XSharp.Project
             }
         }
 
-        private void CreateGlobalTree(LibraryNode current, XType scope, XSharpModuleId moduleId)
+        private void CreateGlobalTree(LibraryNode current, XTypeDefinition scope, XSharpModuleId moduleId)
         {
             if (null == scope)
             {
                 return;
             }
 
-            foreach (XTypeMember member in scope.Members)
+            foreach (XMemberDefinition member in scope.XMembers)
             {
                 XSharpLibraryNode newNode = new XSharpLibraryNode(member, "", moduleId.Hierarchy, moduleId.ItemID);
                 // Functions ?
@@ -591,14 +596,14 @@ namespace XSharp.Project
             }
         }
 
-        private void CreateMembersTree(LibraryNode current, XType scope, XSharpModuleId moduleId)
+        private void CreateMembersTree(LibraryNode current, XTypeDefinition scope, XSharpModuleId moduleId)
         {
             if (null == scope)
             {
                 return;
             }
 
-            foreach (XTypeMember member in scope.Members)
+            foreach (XMemberDefinition member in scope.Members)
             {
                 XSharpLibraryNode newNode = new XSharpLibraryNode(member, "", moduleId.Hierarchy, moduleId.ItemID);
 
@@ -799,12 +804,12 @@ namespace XSharp.Project
 
         public int OnAfterSave(uint docCookie)
         {
-            //string fileName = getFileNameFromCookie(docCookie);
-            //var xFile = XSolution.FindFile(fileName);
-            //if (xFile != null && xFile.HasCode)
-            //{
-            //    xFile.Project.WalkFile(xFile);
-            //}
+            string fileName = getFileNameFromCookie(docCookie);
+            var xFile = XSolution.FindFile(fileName);
+            if (xFile != null && xFile.HasCode)
+            {
+                xFile.Project.WalkFile(xFile);
+            }
             return VSConstants.S_OK;
         }
 

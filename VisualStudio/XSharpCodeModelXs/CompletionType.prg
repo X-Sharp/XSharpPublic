@@ -18,6 +18,7 @@ BEGIN NAMESPACE XSharpModel
 		PRIVATE _file	  AS XFile
 		PRIVATE _type	  AS IXType
 		PROPERTY IsArray AS LOGIC AUTO
+      PROPERTY InSource as LOGIC GET _type IS XSourceElement
       
 
 		// Methods
@@ -27,19 +28,19 @@ BEGIN NAMESPACE XSharpModel
 			SELF:_file := NULL
 
 
-		CONSTRUCTOR(element AS IXElement, oFile as XFile)
+		CONSTRUCTOR(element AS IXEntity, oFile as XFile)
 			SELF()
     	   SELF:_file := oFile
  			IF element IS IXType VAR oType
 				SELF:_type := oType
-			ELSEIF element IS IXTypeMember VAR oMember
-				SELF:CheckType(oMember:TypeName, oMember:Parent:NameSpace)
+			ELSEIF element IS IXMember VAR oMember
+				SELF:CheckType(oMember:TypeName, oMember:Parent:Namespace)
 			ELSEIF element:Parent IS IXType VAR oParent
 			   SELF:_type := oParent
 			ELSE
-				VAR parent := (IXTypeMember)(element:Parent)
+				VAR parent := (IXMember)(element:Parent)
 				IF (parent != NULL)
-					SELF:CheckType(parent:TypeName, parent:Parent:NameSpace)
+					SELF:CheckType(parent:TypeName, parent:Parent:Namespace)
 				ENDIF
          ENDIF
  
@@ -50,31 +51,37 @@ BEGIN NAMESPACE XSharpModel
 
    	CONSTRUCTOR(type AS IXType)
 			SELF(type, null)
-         if type is XElement VAR xel
+         if type is XSourceElement VAR xel
             _file := xel:File
          endif
 
-		CONSTRUCTOR(element AS IXTypeMember)
+		CONSTRUCTOR(element AS IXMember)
 			SELF()
-         if element is XElement VAR xel
+         if element is XSourceElement VAR xel
 			   SELF:_file := xel:File
          ENDIF
 			IF element:Kind:HasReturnType()
-				SELF:CheckType(element:TypeName, element:Parent:NameSpace)
+            if element is XMemberDefinition
+				   SELF:CheckType(element:TypeName, element:Parent:Namespace)
+            else
+               var entref  := (XMemberReference) element
+               var type    := SystemTypeController.FindType(entref:OriginalTypeName, entref:Assembly:FullName)
+               _type       := type
+            ENDIF
 			ELSE
 				SELF:_type := (IXType) element:Parent
 			ENDIF
 
 		CONSTRUCTOR(xvar AS IXVariable, defaultNS AS STRING)
 			SELF()
-			LOCAL parent AS IXTypeMember
-			parent := (IXTypeMember)(xvar:Parent)
-         IF xvar is XElement var xel
+			LOCAL parent AS IXMember
+			parent := (IXMember)(xvar:Parent)
+         IF xvar is XSourceElement var xel
 			   SELF:_file := xel:File
          ENDIF
 			IF (parent != NULL)
-				IF (! String.IsNullOrEmpty(parent:Parent:NameSpace))
-					defaultNS := parent:Parent:NameSpace
+				IF (! String.IsNullOrEmpty(parent:Parent:Namespace))
+					defaultNS := parent:Parent:Namespace
             ENDIF
 				SELF:CheckType(xvar:TypeName,  defaultNS)
 			ENDIF
@@ -90,7 +97,7 @@ BEGIN NAMESPACE XSharpModel
 			SELF:CheckType(typeName, defaultNS)
 
 		PRIVATE METHOD CheckProjectType(typeName AS STRING, xprj AS XProject, usings AS IList<STRING>) AS VOID
-			LOCAL xType AS XType
+			LOCAL xType AS XTypeDefinition
 			xType := xprj:Lookup(typeName, TRUE)
 			IF xType == NULL .AND. usings != NULL
 
@@ -107,7 +114,7 @@ BEGIN NAMESPACE XSharpModel
 			ENDIF
 
 		PRIVATE METHOD CheckSystemType(typeName AS STRING, usings AS IList<STRING>) AS VOID
-			LOCAL sType AS XTypeRef
+			LOCAL sType AS XTypeReference
 			IF SELF:_file != NULL
             VAR options := SELF:_file:Project:ParseOptions
 				typeName    := typeName:GetSystemTypeName(options:XSharpRuntime)
@@ -118,18 +125,15 @@ BEGIN NAMESPACE XSharpModel
 			ENDIF
 
 		PRIVATE METHOD CheckType(typeName AS STRING, usings AS IList<STRING>) AS VOID
-			//
-			//
 			IF typeName.EndsWith("[]")
 				typeName := typeName.Substring(0, typeName.Length - 2)
             IsArray := TRUE
 			ENDIF
 			// prevent lookup from simple types
-			VAR stype := SimpleTypeToSystemType(typeName)
-			IF stype != NULL
-				_type := stype
+			VAR type := SimpleTypeToSystemType(typeName)
+			IF type != NULL
+				_type := type
 			ELSEIF SELF:_file?:Project != NULL
-				//
 				SELF:CheckProjectType(typeName, SELF:_file:Project, usings)
 				IF ! SELF:IsInitialized
 
@@ -164,9 +168,9 @@ BEGIN NAMESPACE XSharpModel
 			    SELF:CheckType(typeName, usings)
             ENDIF
 
-		INTERNAL METHOD SimpleTypeToSystemType(kw AS STRING) AS XTypeRef
+		INTERNAL METHOD SimpleTypeToSystemType(kw AS STRING) AS XTypeReference
 			LOCAL typeName AS STRING
-			LOCAL sType := NULL AS XTypeRef
+			LOCAL sType := NULL AS XTypeReference
 			//
 			IF (kw != NULL)
 				//
@@ -252,16 +256,14 @@ BEGIN NAMESPACE XSharpModel
 				IF ( String.IsNullOrEmpty( typeName ) )
 					RETURN NULL
 				ENDIF
-				//
            
 				IF SELF:_file != NULL
 					VAR options := SELF:_file:Project:ParseOptions
 					typeName    := typeName:GetSystemTypeName(options:XSharpRuntime)
 					sType       := SELF:_file:Project:FindSystemType(typeName, List<STRING>{})
 				ENDIF
-				//
 			ENDIF
-			RETURN sType
+			RETURN sType 
 
 		// Properties
 		PROPERTY File AS XFile GET SELF:_file
@@ -278,28 +280,29 @@ BEGIN NAMESPACE XSharpModel
 					RETURN CompletionType{SELF:_type:BaseType,_file, ""}
 				ENDIF
 				IF (SELF:_type != NULL)
-//
-//					IF (SELF:_type:Parent != NULL)
-//
-//						RETURN CompletionType{SELF:_type:Parent,_file}
-//					ENDIF
-//					IF (SELF:_type:ParentName  !=NULL)
-//
-						VAR defaultNS := ""
-						IF (! String.IsNullOrEmpty(SELF:_type:NameSpace))
+					VAR defaultNS := ""
+					IF (! String.IsNullOrEmpty(SELF:_type:Namespace))
 
-							defaultNS := SELF:_type:NameSpace
-						ENDIF
-						RETURN CompletionType{SELF:_type:BaseType, SELF:_file, defaultNS}
+						defaultNS := SELF:_type:Namespace
 					ENDIF
-//				ENDIF
+					RETURN CompletionType{SELF:_type:BaseType, SELF:_file, defaultNS}
+				ENDIF
 				RETURN CompletionType{"System.Object", NULL, ""}
 			END GET
 		END PROPERTY
 
-		PROPERTY Type  AS IXType      GET SELF:_type
-		PROPERTY XType AS XType       GET SELF:_type ASTYPE XType
-      PROPERTY XTypeRef AS XTypeRef GET SELF:_type ASTYPE XTypeRef
+		PROPERTY Type     AS IXType            GET SELF:_type
+		PROPERTY XTypeDef AS XTypeDefinition   GET SELF:_type ASTYPE XTypeDefinition
+      PROPERTY XTypeRef AS XTypeReference    GET SELF:_type ASTYPE XTypeReference
+         
+      PROPERTY BaseType as STRING
+         GET
+            IF SELF:IsArray
+               RETURN "System.Array"
+            ENDIF
+            RETURN SELF:Type:BaseType
+         END GET
+      END PROPERTY
 
 	END CLASS
 

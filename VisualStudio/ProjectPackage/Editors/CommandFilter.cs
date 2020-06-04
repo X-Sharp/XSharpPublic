@@ -278,7 +278,7 @@ namespace XSharp.Project
                 if (identifier.StartsWith("@@"))
                     identifier = identifier.Substring(2);
                 var lineNumber = currentLine;
-                XTypeMember currentMember = XSharpTokenTools.FindMember(lineNumber, _file);
+                XMemberDefinition currentMember = XSharpTokenTools.FindMember(lineNumber, _file);
                 //
                 if (currentMember == null)
                     return;
@@ -320,7 +320,7 @@ namespace XSharp.Project
                 if (element != null)
                 {
                     cType = new CompletionType((XVariable)element, "");
-                    foundElement = new XSharpLanguage.CompletionElement(element);
+                    foundElement = new XSharpLanguage.CompletionElement((XVariable)element);
                 }
                 // got it !
                 if (foundElement != null)
@@ -753,8 +753,8 @@ namespace XSharp.Project
                 if (file == null)
                     return;
                 // Check if we can get the member where we are
-                XTypeMember member = XSharpTokenTools.FindMember(lineNumber, file);
-                XType currentNamespace = XSharpTokenTools.FindNamespace(caretPos, file);
+                XMemberDefinition member = XSharpTokenTools.FindMember(lineNumber, file);
+                XTypeDefinition currentNamespace = XSharpTokenTools.FindNamespace(caretPos, file);
 
                 // Then, the corresponding Type/Element if possible
                 IToken stopToken;
@@ -783,13 +783,13 @@ namespace XSharp.Project
                 //
                 if (gotoElement != null)
                 {
-                    if (gotoElement.XSharpElement != null)
+                    if (gotoElement.Result != null)
                     {
-                        if (gotoElement.XSharpElement is XTypeMember)
+                        if (gotoElement.Result is XMemberDefinition)
                         {
-                            if (((XTypeMember)gotoElement.XSharpElement).GetOverloads().Length > 1)
+                            if (((XMemberDefinition)gotoElement.Result).GetOverloads().Length > 1)
                             {
-                                ObjectBrowserHelper.FindSymbols(gotoElement.XSharpElement.Name);
+                                ObjectBrowserHelper.FindSymbols(gotoElement.Result.Name);
                                 return;
                             }
                         }
@@ -808,7 +808,7 @@ namespace XSharp.Project
                     tokenList.RemoveRange(0, tokenList.Count - 1);
                     cType = XSharpTokenTools.RetrieveType(file, tokenList, member, currentNS, stopToken, out gotoElement, snapshot, lineNumber, file.Project.Dialect);
                 }
-                if ((gotoElement != null) && (gotoElement.XSharpElement != null))
+                if ((gotoElement != null) && (gotoElement.Result != null))
                 {
                     // Ok, find it ! Let's go ;)
                     if (gotoElement.IsSourceElement)
@@ -1202,8 +1202,8 @@ namespace XSharp.Project
                 IToken stopToken;
                 // Check if we can get the member where we are
 
-                XTypeMember member = XSharpLanguage.XSharpTokenTools.FindMember(lineNumber, file);
-                XType currentNamespace = XSharpLanguage.XSharpTokenTools.FindNamespace(caretPos, file);
+                XMemberDefinition member = XSharpLanguage.XSharpTokenTools.FindMember(lineNumber, file);
+                XTypeDefinition currentNamespace = XSharpLanguage.XSharpTokenTools.FindNamespace(caretPos, file);
                 List<String> tokenList = XSharpLanguage.XSharpTokenTools.GetTokenList(caretPos, lineNumber, snapshot, out stopToken, true, file, false, member);
                 // LookUp for the BaseType, reading the TokenList (From left to right)
                 string currentNS = "";
@@ -1218,12 +1218,12 @@ namespace XSharp.Project
             if ((gotoElement != null) && (gotoElement.IsInitialized))
             {
                 // Not sure that this if() is still necessary ...
-                //if (gotoElement.XSharpElement?.Kind == Kind.Class)
+                //if (gotoElement.Result?.Kind == Kind.Class)
                 //{
-                //    XType xType = gotoElement.XSharpElement as XType;
+                //    XType xType = gotoElement.Result as XType;
                 //    if (xType != null)
                 //    {
-                //        foreach (XTypeMember mbr in xType.Members)
+                //        foreach (XMemberDefinition mbr in xType.Members)
                 //        {
                 //            if (string.Compare(mbr.Name, "constructor", true) == 0)
                 //            {
@@ -1247,9 +1247,9 @@ namespace XSharp.Project
                 }
 
                 _signatureSession.Dismissed += OnSignatureSessionDismiss;
-                if (gotoElement.XSharpElement != null)
+                if (gotoElement.Result != null)
                 {
-                    _signatureSession.Properties["Element"] = gotoElement.XSharpElement;
+                    _signatureSession.Properties["Element"] = gotoElement.Result;
                 }
                
                 _signatureSession.Properties["Line"] = startLineNumber;
@@ -1295,7 +1295,7 @@ namespace XSharp.Project
             int start = (int)_signatureSession.Properties["Start"];
             int pos = this.TextView.Caret.Position.BufferPosition.Position;
 
-            ((XSharpSignature)_signatureSession.SelectedSignature).ComputeCurrentParameter(pos - start - 1);
+            ((XSharpVsSignature)_signatureSession.SelectedSignature).ComputeCurrentParameter(pos - start - 1);
 
 
             return true;

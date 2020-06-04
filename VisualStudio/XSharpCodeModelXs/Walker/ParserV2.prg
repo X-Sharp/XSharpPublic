@@ -29,8 +29,8 @@ BEGIN NAMESPACE XSharpModel
       PRIVATE  _file         AS XFile
       PRIVATE  _usings       AS IList<STRING>
       PRIVATE  _staticusings AS IList<STRING>
-      PRIVATE  _EntityList    AS IList<XElement>
-      PRIVATE  _EntityStack   AS Stack<XElement>
+      PRIVATE  _EntityList    AS IList<XEntityDefinition>
+      PRIVATE  _EntityStack   AS Stack<XEntityDefinition>
       PRIVATE  _BlockList     AS IList<XBlock>
       PRIVATE  _BlockStack    AS Stack<XBlock>
       PRIVATE  _PPBlockStack  AS Stack<XBlock>
@@ -39,14 +39,13 @@ BEGIN NAMESPACE XSharpModel
       PRIVATE  _collectLocals AS LOGIC 
       PRIVATE  _collectBlocks AS LOGIC
 	   PRIVATE  _errors        AS IList<XError>
-      PRIVATE _globalType     AS XType
+      PRIVATE _globalType     AS XTypeDefinition
 
-      PRIVATE  _mods         AS Modifiers      // for the current entity
-      PRIVATE  _vis          AS Modifiers      // for the current entity
+      PRIVATE  _attributes   AS Modifiers      // for the current entity
       PRIVATE  _start        AS IToken
       
-      PRIVATE PROPERTY CurrentEntity      AS XElement GET IIF(_EntityStack:Count > 0, _EntityStack:Peek(), NULL_OBJECT)
-      PRIVATE PROPERTY CurrentType        AS XType    GET CurrentEntity ASTYPE XType
+      PRIVATE PROPERTY CurrentEntity      AS XEntityDefinition GET IIF(_EntityStack:Count > 0, _EntityStack:Peek(), NULL_OBJECT)
+      PRIVATE PROPERTY CurrentType        AS XTypeDefinition    GET CurrentEntity ASTYPE XTypeDefinition
       PRIVATE PROPERTY CurrentBlock       AS XBlock   GET IIF(_BlockStack:Count > 0, _BlockStack:Peek(), NULL_OBJECT)
       PRIVATE PROPERTY CurrentEntityKind  AS Kind     GET IIF(_EntityStack:Count > 0, CurrentEntity:Kind, Kind:Unknown)
       PRIVATE PROPERTY La1 AS INT GET SELF:La(1)
@@ -57,7 +56,7 @@ BEGIN NAMESPACE XSharpModel
       PRIVATE PROPERTY Lt3 AS IToken GET SELF:Lt(3)
       PRIVATE PROPERTY lastToken AS IToken GET _lastToken
       
-      PROPERTY EntityList AS IList<XElement>  GET _EntityList
+      PROPERTY EntityList AS IList<XEntityDefinition>  GET _EntityList
       PROPERTY BlockList  AS IList<XBlock>    GET _BlockList
       PROPERTY Locals     AS IList<XVariable> GET _locals
       
@@ -66,14 +65,14 @@ BEGIN NAMESPACE XSharpModel
          _errors        := List<XError>{}
          _usings        := List<STRING>{}
          _staticusings  := List<STRING>{}
-         _EntityList    := List<XElement>{}
-         _EntityStack   := Stack<XElement>{}
+         _EntityList    := List<XEntityDefinition>{}
+         _EntityStack   := Stack<XEntityDefinition>{}
          _BlockList     := List<XBlock>{}
          _BlockStack    := Stack<XBlock>{}
          _PPBlockStack  := Stack<XBlock>{}
          _file          := oFile
          _locals        := List<XVariable>{}
-         _globalType    := XType.CreateGlobalType(_file)
+         _globalType    := XTypeDefinition.CreateGlobalType(_file)
          _EntityStack:Push(_globalType)
 
       
@@ -93,8 +92,6 @@ BEGIN NAMESPACE XSharpModel
          RETURN 
     
       METHOD Parse( tokenStream AS ITokenStream, lBlocks AS LOGIC, lLocals AS LOGIC) AS VOID
-         LOCAL nMods  AS Modifiers
-         LOCAL nVis   AS Modifiers
          LOCAL aAttribs AS IList<IToken>
          _collectLocals := lLocals
          _collectBlocks := lBlocks
@@ -114,14 +111,8 @@ BEGIN NAMESPACE XSharpModel
             ENDIF
             aAttribs := ParseAttributes()
             VAR mods := ParseVisibilityAndModifiers()
-            nVis := _AND(mods, Modifiers.VisibilityMask)
-            IF nVis == Modifiers.None
-               nVis := Modifiers.Public
-            ENDIF
-            nMods := _AND(mods, ~Modifiers.VisibilityMask)
             IF IsStartOfEntity(OUT VAR entityKind, mods)
-               SELF:_mods  := nMods
-               SELF:_vis   := nVis
+               SELF:_attributes  := mods
                SELF:_start := first
                VAR entities := ParseEntity(entityKind)
                IF entities != NULL
@@ -132,7 +123,7 @@ BEGIN NAMESPACE XSharpModel
                      ENDIF
                      entity:File := _file
                      IF aAttribs?:Count > 0
-                        entity:Attributes := TokensAsString(aAttribs)
+                        entity:CustomAttributes := TokensAsString(aAttribs)
                      ENDIF
                      VAR lastEntity := _EntityList:LastOrDefault()
                      IF lastEntity != NULL
@@ -141,18 +132,18 @@ BEGIN NAMESPACE XSharpModel
                      ENDIF
                      _EntityList:Add(entity)
                   
-                     IF _EntityStack:Count > 0 .AND. (!CurrentEntityKind:HasChildren() .OR. !(CurrentEntity IS XType ) )
+                     IF _EntityStack:Count > 0 .AND. (!CurrentEntityKind:HasChildren() .OR. !(CurrentEntity IS XTypeDefinition ) )
                         _EntityStack:Pop()
                      ENDIF
-                     IF entityKind:IsGlobalType() .AND. entity IS XTypeMember VAR xGlobalMember
+                     IF entityKind:IsGlobalType() .AND. entity IS XMemberDefinition VAR xGlobalMember
                         SELF:_globalType:AddMember(xGlobalMember)
                      ELSE
-                        IF CurrentEntityKind:HasChildren() .AND. CurrentEntity IS XType VAR xEnt
-                           IF entity IS XTypeMember VAR xMember
+                        IF CurrentEntityKind:HasChildren() .AND. CurrentEntity IS XTypeDefinition VAR xEnt
+                           IF entity IS XMemberDefinition VAR xMember
                               xEnt:AddMember( xMember )
-                           ELSEIF entity IS XType VAR xChild .AND. ! XType.IsGlobalType(xEnt)
+                           ELSEIF entity IS XTypeDefinition VAR xChild .AND. ! XTypeDefinition.IsGlobalType(xEnt)
                               xEnt:AddChild( xChild )
-                              xChild:NameSpace := xEnt:FullName
+                              xChild:Namespace := xEnt:FullName
                            ENDIF
                         ENDIF
                      ENDIF
@@ -185,14 +176,14 @@ BEGIN NAMESPACE XSharpModel
                SELF:ParseStatement() 
             ENDIF
          ENDDO
-         VAR types := SELF:_EntityList:Where( {x => x IS XType})
-         VAR typelist := Dictionary<STRING, XType>{System.StringComparer.InvariantCultureIgnoreCase}
+         VAR types := SELF:_EntityList:Where( {x => x IS XTypeDefinition})
+         VAR typelist := Dictionary<STRING, XTypeDefinition>{System.StringComparer.InvariantCultureIgnoreCase}
          typelist:Add(_globalType:Name, _globalType)
-         FOREACH type AS XType IN types
-            IF ! typelist:ContainsKey(type:Name)
+         FOREACH type AS XTypeDefinition IN types
+            IF ! typelist:ContainsKey(type:FullName)
                type:File := _file
                IF type:Parent != NULL
-                  type:NameSpace := type:Parent:FullName
+                  type:Namespace := type:Parent:FullName
                ENDIF
               typelist:Add(type:FullName, type)
              ENDIF
@@ -417,13 +408,13 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
             ENDIF
          OTHERWISE
             IF IsId(La1) .AND. mods != Modifiers.None
-               LOCAL parent AS XType
-               IF CurrentEntity IS XType 
-                  parent := (XType) CurrentEntity
-               ELSEIF CurrentEntity != NULL .AND. CurrentEntity:Parent IS XType 
-                  parent := (XType) CurrentEntity:Parent 
+               LOCAL parent AS XTypeDefinition
+               IF CurrentEntity IS XTypeDefinition 
+                  parent := (XTypeDefinition) CurrentEntity
+               ELSEIF CurrentEntity != NULL .AND. CurrentEntity:Parent IS XTypeDefinition 
+                  parent := (XTypeDefinition) CurrentEntity:Parent 
                ENDIF
-               IF ! XType.IsGlobalType(parent) 
+               IF ! XTypeDefinition.IsGlobalType(parent) 
                   entityKind := Kind.Field
                ENDIF
             ENDIF               
@@ -553,9 +544,28 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
                         ENDIF
                         VAR range    := TextRange{start, lastToken}
                         VAR interval := TextInterval{start, lastToken}
-                        VAR xVar := XVariable{SELF:CurrentEntity, id, range, interval, XElement.VarType } {Expression := expr }
+                        VAR xVar := XVariable{SELF:CurrentEntity, id, range, interval, XEntityDefinition.VarType } {Expression := expr }
                         SELF:_locals:Add(xVar)
                      ENDIF
+                  ELSEIF SELF:IsId(La1) .and. La2 == XSharpLexer.AS
+                     VAR start := Lt1
+                     VAR id    := SELF:ParseIdentifier()
+                     VAR type  := SELF:ParseAsIsType()
+                     VAR range    := TextRange{start, lastToken}
+                     VAR interval := TextInterval{start, lastToken}
+                     VAR xVar := XVariable{SELF:CurrentEntity, id, range, interval, type } 
+                     SELF:_locals:Add(xVar)
+
+                  ELSEIF La1 == XSharpLexer.LOCAL .and. SELF:IsId(La2) .and. La3 == XSharpLexer.AS
+                     VAR start := Lt1
+                     Consume()
+                     VAR id    := SELF:ParseIdentifier()
+                     VAR type  := SELF:ParseAsIsType()
+                     VAR range    := TextRange{start, lastToken}
+                     VAR interval := TextInterval{start, lastToken}
+                     VAR xVar := XVariable{SELF:CurrentEntity, id, range, interval, type } 
+                     SELF:_locals:Add(xVar)
+                     
                   ENDIF
                   Consume()
                ENDDO
@@ -829,8 +839,8 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
          NEXT
          RETURN sb:ToString()
          
-      PRIVATE METHOD ParseEntity(entityKind AS Kind) AS IList<XElement>
-         LOCAL result AS IList<XElement>
+      PRIVATE METHOD ParseEntity(entityKind AS Kind) AS IList<XEntityDefinition>
+         LOCAL result AS IList<XEntityDefinition>
          SWITCH entityKind
          CASE Kind.Ignore
             ReadLine()
@@ -894,7 +904,7 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
          
          #region Main entities
          
-         PRIVATE METHOD ParseFuncProc() AS IList<XElement>
+         PRIVATE METHOD ParseFuncProc() AS IList<XEntityDefinition>
 /*
 funcproc      : (Attributes=attributes)? (Modifiers=funcprocModifiers)?   
               T=(FUNCTION|PROCEDURE) Sig=signature
@@ -924,11 +934,11 @@ funcproc      : (Attributes=attributes)? (Modifiers=funcprocModifiers)?
             VAR interval := TextInterval{_start, lastToken} 
             ReadLine()
             
-            VAR xmember := XTypeMember{sig, kind, _mods, _vis, range, interval, _mods:HasFlag(Modifiers.Static)}
+            VAR xmember := XMemberDefinition{sig, kind, _attributes, range, interval, _attributes:HasFlag(Modifiers.Static)}
             xmember:File := SELF:_file
-            RETURN List<XElement>{} {xmember}        
+            RETURN List<XEntityDefinition>{} {xmember}        
             
-         PRIVATE METHOD ParseNamespace() AS IList<XElement>
+         PRIVATE METHOD ParseNamespace() AS IList<XEntityDefinition>
 /*
 namespace_          : BEGIN NAMESPACE Name=name e=eos
                       (Entities+=entity)*
@@ -944,10 +954,10 @@ namespace_          : BEGIN NAMESPACE Name=name e=eos
             VAR range    := TextRange{_start, lastToken}
             VAR interval := TextInterval{_start, lastToken} 
             ReadLine()
-            VAR xtype := XType{id, Kind.Namespace, _mods, _vis, range, interval,_file}
-            RETURN List<XElement>{} {xtype}        
+            VAR xtype := XTypeDefinition{id, Kind.Namespace, _attributes, range, interval,_file}
+            RETURN List<XEntityDefinition>{} {xtype}        
             
-         PRIVATE METHOD ParseTypeDef() AS IList<XElement>
+         PRIVATE METHOD ParseTypeDef() AS IList<XEntityDefinition>
 /*
 interface_          : (Attributes=attributes)? (Modifiers=classModifiers)?            
                       I=INTERFACE (Namespace=nameDot)? Id=identifier                        
@@ -1022,7 +1032,7 @@ structure_          : (Attributes=attributes)? (Modifiers=classModifiers)?
             VAR interval := TextInterval{_start, lastToken} 
             ReadLine()
             
-            VAR xType := XType{id, kind, _mods, _vis, range, interval, _file}
+            VAR xType := XTypeDefinition{id, kind, _attributes, range, interval, _file}
             IF interfaces?:Count > 0
                FOREACH VAR sInterface IN interfaces
                   xType:AddInterface(sInterface)
@@ -1031,7 +1041,7 @@ structure_          : (Attributes=attributes)? (Modifiers=classModifiers)?
             IF ! String.IsNullOrEmpty(parentType)
                xType:BaseType := parentType
             ENDIF
-            xType:IsPartial := _mods:HasFlag(Modifiers.Partial)
+            xType:IsPartial := _attributes:HasFlag(Modifiers.Partial)
             IF constraints?:Count > 0
                FOREACH VAR constraint IN constraints
                   xType:AddConstraints(constraint)
@@ -1043,10 +1053,10 @@ structure_          : (Attributes=attributes)? (Modifiers=classModifiers)?
                NEXT
             ENDIF
             xType:Parent := SELF:CurrentEntity
-            RETURN List<XElement>{} {xType}
+            RETURN List<XEntityDefinition>{} {xType}
             
             
-         PRIVATE METHOD ParseDelegate() AS IList<XElement>
+         PRIVATE METHOD ParseDelegate() AS IList<XEntityDefinition>
 /*
 delegate_           : (Attributes=attributes)? (Modifiers=classModifiers)?
                       D=DELEGATE (Namespace=nameDot)? Id=identifier
@@ -1068,16 +1078,18 @@ delegate_           : (Attributes=attributes)? (Modifiers=classModifiers)?
             VAR sig      := SELF:ParseSignature()
             VAR range    := TextRange{_start, lastToken}
             VAR interval := TextInterval{_start, lastToken} 
-            VAR xtype    := XType{sig:Id, Kind.Delegate, _mods, _vis, range, interval,_file}{SingleLine := TRUE}
-            VAR xmember  := XTypeMember{sig, Kind.Delegate, _mods, _vis, ;
-                              range, interval,_mods:HasFlag(Modifiers.Static)} {SingleLine := TRUE}
+            VAR xtype    := XTypeDefinition{sig:Id, Kind.Delegate,_attributes, range, interval,_file}{SingleLine := TRUE}
+            xtype:TypeName := sig:DataType
+            VAR xmember  := XMemberDefinition{sig, Kind.Delegate, _attributes, ;
+                              range, interval,_attributes:HasFlag(Modifiers.Static)} {SingleLine := TRUE}
                               xtype:AddMember(xmember)
+            
             xmember:Parent := xtype
-            RETURN List<XElement>{} {xtype}
+            RETURN List<XEntityDefinition>{} {xtype}
             #endregion
             
          #region ClassMembers
-      PRIVATE METHOD ParseMethod(  ) AS IList<XElement>
+      PRIVATE METHOD ParseMethod(  ) AS IList<XEntityDefinition>
 /*
 // method rule used inside and outside class members rule 
 method              : (Attributes=attributes)? (Modifiers=memberModifiers)?
@@ -1112,11 +1124,11 @@ methodtype          : Token=(METHOD | ACCESS | ASSIGN )
          VAR interval := TextInterval{_start, lastToken} 
          ReadLine()
          
-         VAR xmember := XTypeMember{sig, kind, _mods, _vis, range, interval, _mods:HasFlag(Modifiers.Static)}
+         VAR xmember := XMemberDefinition{sig, kind, _attributes, range, interval, _attributes:HasFlag(Modifiers.Static)}
          xmember:Parent := SELF:CurrentType
-         RETURN List<XElement>{} {xmember}
+         RETURN List<XEntityDefinition>{} {xmember}
          
-      PRIVATE METHOD ParseProperty() AS IList<XElement>
+      PRIVATE METHOD ParseProperty() AS IList<XEntityDefinition>
             IF SELF:La1 == XSharpLexer.PROPERTY
                Consume()
             ELSE
@@ -1163,7 +1175,7 @@ propertyAccessor    : Attributes=attributes? Modifiers=accessorModifiers?
          ELSE
             id := ParseQualifiedName()
          ENDIF
-         VAR aParams := List<XVariable>{}
+         VAR aParams := List<IXVariable>{}
          IF Matches(XSharpLexer.LPAREN)
             aParams := ParseParameterList( FALSE, OUT VAR _)
          ELSEIF Matches(XSharpLexer.LBRKT)
@@ -1180,12 +1192,12 @@ propertyAccessor    : Attributes=attributes? Modifiers=accessorModifiers?
          VAR range    := TextRange{_start, lastToken}
          VAR interval := TextInterval{_start, lastToken} 
          ReadLine()
-         VAR xmember := XTypeMember{id, Kind.Property, _mods, _vis, range, interval,sType} {SingleLine := lSingleLine}
+         VAR xmember := XMemberDefinition{id, Kind.Property, _attributes, range, interval,sType} {SingleLine := lSingleLine}
          xmember:Parent := SELF:CurrentType
          xmember:AddParameters(aParams)
-         RETURN List<XElement>{} {xmember}
+         RETURN List<XEntityDefinition>{} {xmember}
          
-      PRIVATE METHOD ParseEvent() AS IList<XElement>
+      PRIVATE METHOD ParseEvent() AS IList<XEntityDefinition>
             IF SELF:La1 == XSharpLexer.EVENT
                Consume()
             ELSE
@@ -1225,11 +1237,11 @@ eventAccessor       : Attributes=attributes? Modifiers=accessorModifiers?
          VAR range    := TextRange{_start, lastToken}
          VAR interval := TextInterval{_start, lastToken} 
          ReadLine()
-         VAR xmember := XTypeMember{id, Kind.Event, _mods, _vis, range, interval,strType}  {SingleLine := lSingleLine}
+         VAR xmember := XMemberDefinition{id, Kind.Event, _attributes, range, interval,strType}  {SingleLine := lSingleLine}
          xmember:Parent := SELF:CurrentType
-         RETURN List<XElement>{} {xmember}
+         RETURN List<XEntityDefinition>{} {xmember}
          
-      PRIVATE METHOD ParseOperator() AS IList<XElement>
+      PRIVATE METHOD ParseOperator() AS IList<XEntityDefinition>
             IF SELF:La1 == XSharpLexer.OPERATOR
                Consume()
             ELSE
@@ -1277,13 +1289,13 @@ operator_           : Attributes=attributes? Modifiers=operatorModifiers?
          
          VAR id := t1:GetText()+ IIF(t2 != NULL, t2:GetText(),"")
          ReadLine()
-         VAR xmember := XTypeMember{id, Kind.Operator, _mods, _vis, range, interval,sType}
+         VAR xmember := XMemberDefinition{id, Kind.Operator, _attributes, range, interval,sType}
          xmember:Parent := SELF:CurrentType
          xmember:AddParameters(aParams)
-         RETURN List<XElement>{} {xmember}
+         RETURN List<XEntityDefinition>{} {xmember}
          
          
-      PRIVATE METHOD ParseConstructor() AS IList<XElement>
+      PRIVATE METHOD ParseConstructor() AS IList<XEntityDefinition>
       
 /*constructor         :  (Attributes=attributes)? (Modifiers=constructorModifiers)?
                       c1=CONSTRUCTOR (ParamList=parameterList)? (AS VOID)? // As Void is allowed but ignored
@@ -1308,12 +1320,12 @@ operator_           : Attributes=attributes? Modifiers=operatorModifiers?
          VAR range    := TextRange{_start, lastToken}
          VAR interval := TextInterval{_start, lastToken} 
          ReadLine()
-         VAR xmember := XTypeMember{id, Kind.Constructor, _mods, _vis,range, interval,""}
+         VAR xmember := XMemberDefinition{id, Kind.Constructor, _attributes, range, interval,""}
          xmember:Parent := SELF:CurrentType
          xmember:AddParameters(aParams)
-         RETURN List<XElement>{} {xmember}
+         RETURN List<XEntityDefinition>{} {xmember}
          
-      PRIVATE METHOD ParseDestructor() AS IList<XElement>
+      PRIVATE METHOD ParseDestructor() AS IList<XEntityDefinition>
 /*
 destructor          : (Attributes=attributes)? (Modifiers=destructorModifiers)?
                       d1=DESTRUCTOR (LPAREN RPAREN)? 
@@ -1339,11 +1351,11 @@ destructor          : (Attributes=attributes)? (Modifiers=destructorModifiers)?
          VAR range    := TextRange{_start, lastToken}
          VAR interval := TextInterval{_start, lastToken} 
          ReadLine()
-         VAR xmember := XTypeMember{id, Kind.Destructor, _mods, _vis, range, interval,"VOID"}
+         VAR xmember := XMemberDefinition{id, Kind.Destructor, _attributes, range, interval,"VOID"}
          xmember:Parent := SELF:CurrentType
-         RETURN List<XElement>{} {xmember}
+         RETURN List<XEntityDefinition>{} {xmember}
          
-      PRIVATE METHOD ParseClassVars() AS IList<XElement>
+      PRIVATE METHOD ParseClassVars() AS IList<XEntityDefinition>
 /*
 classvars           : (Attributes=attributes)? (Modifiers=classvarModifiers)?
                       Vars=classVarList
@@ -1359,7 +1371,7 @@ classvars           : (Attributes=attributes)? (Modifiers=classvarModifiers)?
          #endregion
          
       #region Enum
-      PRIVATE METHOD ParseEnum() AS IList<XElement>
+      PRIVATE METHOD ParseEnum() AS IList<XEntityDefinition>
 /*
 enum_               : (Attributes=attributes)? (Modifiers=classModifiers)?
                       E=ENUM (Namespace=nameDot)? Id=identifier ((AS|INHERIT) Type=datatype)? e=eos
@@ -1383,10 +1395,10 @@ enum_               : (Attributes=attributes)? (Modifiers=classModifiers)?
          ENDIF
          VAR range    := TextRange{_start, lastToken}
          VAR interval := TextInterval{_start, lastToken} 
-         VAR xType := XType{id, Kind.Enum, _mods, _vis, range, interval, _file} {BaseType := type}
-         RETURN List<XElement>{} {xType}
+         VAR xType := XTypeDefinition{id, Kind.Enum, _attributes, range, interval, _file} {BaseType := type}
+         RETURN List<XEntityDefinition>{} {xType}
          
-      PRIVATE METHOD ParseEnumMember() AS IList<XElement>
+      PRIVATE METHOD ParseEnumMember() AS IList<XEntityDefinition>
 /*
 enummember          : (Attributes=attributes)? MEMBER? Id=identifier (Op=assignoperator Expr=expression)? eos
                     ;
@@ -1406,14 +1418,14 @@ enummember          : (Attributes=attributes)? MEMBER? Id=identifier (Op=assigno
          ENDIF
          VAR range    := TextRange{_start, lastToken}
          VAR interval := TextInterval{_start, lastToken} 
-         VAR xMember := XTypeMember{id, Kind.EnumMember, _mods, _vis, range, interval, ""} {SingleLine := TRUE, @@Value := strValue}
+         VAR xMember := XMemberDefinition{id, Kind.EnumMember, _attributes, range, interval, ""} {SingleLine := TRUE, @@Value := strValue}
          xMember:File := SELF:_file
-         RETURN List<XElement>{} {xMember}
+         RETURN List<XEntityDefinition>{} {xMember}
          
          #endregion
          
       #region VO Global, Define, Struct, Union
-      PRIVATE METHOD ParseVOGlobals() AS IList<XElement>
+      PRIVATE METHOD ParseVOGlobals() AS IList<XEntityDefinition>
 /*
                     // [STATIC] GLOBAL [CONST] Identifier [:= Expression] [, Identifier2 [:= Expression2] ] [AS Type]
                     // STATIC          [CONST] Identifier [:= Expression] [, Identifier2 [:= Expression2] ] [AS Type]
@@ -1434,7 +1446,7 @@ voglobal            : (Attributes=attributes)? (Modifiers=funcprocModifiers)? Gl
          ReadLine()
          RETURN classvars
          
-      PRIVATE METHOD ParseVoDefine() AS IList<XElement>
+      PRIVATE METHOD ParseVoDefine() AS IList<XEntityDefinition>
 /*
 vodefine            : (Modifiers=funcprocModifiers)?
                       D=DEFINE Id=identifier Op=assignoperator Expr=expression (AS DataType=typeName)? end=EOS
@@ -1458,11 +1470,11 @@ vodefine            : (Modifiers=funcprocModifiers)?
          VAR interval := TextInterval{_start, lastToken} 
          ReadLine()
          
-         VAR xmember := XTypeMember{id, Kind.VODefine, _mods, _vis, range,interval, type} {SingleLine := TRUE, @@Value := strValue}
+         VAR xmember := XMemberDefinition{id, Kind.VODefine, _attributes, range,interval, type} {SingleLine := TRUE, @@Value := strValue}
          xmember:File := SELF:_file
-         RETURN List<XElement>{} {xmember}
+         RETURN List<XEntityDefinition>{} {xmember}
          
-      PRIVATE METHOD ParseVoStruct() AS IList<XElement>
+      PRIVATE METHOD ParseVoStruct() AS IList<XEntityDefinition>
 /*
 vostruct            : (Modifiers=votypeModifiers)?
                       V=VOSTRUCT (Namespace=nameDot)? Id=identifier (ALIGN Alignment=INT_CONST)? e=eos
@@ -1487,13 +1499,13 @@ vostruct            : (Modifiers=votypeModifiers)?
          VAR range    := TextRange{_start, lastToken}
          VAR interval := TextInterval{_start, lastToken} 
          ReadLine()
-         VAR xType := XType{id, Kind.VOStruct, _mods, _vis, range, interval,_file}
+         VAR xType := XTypeDefinition{id, Kind.VOStruct, _attributes, range, interval,_file}
          IF String.IsNullOrEmpty(sAlign)
             xType:AddInterface(sAlign)
          ENDIF
-         RETURN List<XElement>{} {xType}         
+         RETURN List<XEntityDefinition>{} {xType}         
          
-      PRIVATE METHOD ParseVOUnion() AS IList<XElement>
+      PRIVATE METHOD ParseVOUnion() AS IList<XEntityDefinition>
 /*
 vounion             : (Modifiers=votypeModifiers)?
                       U=UNION (Namespace=nameDot)? Id=identifier e=eos
@@ -1511,10 +1523,10 @@ vounion             : (Modifiers=votypeModifiers)?
          VAR range    := TextRange{_start, lastToken}
          VAR interval := TextInterval{_start, lastToken} 
          ReadLine()
-         VAR xtype := XType{id, Kind.Union, _mods, _vis, range, interval,_file}
-         RETURN List<XElement>{} {xtype}         
+         VAR xtype := XTypeDefinition{id, Kind.Union, _attributes, range, interval,_file}
+         RETURN List<XEntityDefinition>{} {xtype}         
          
-      PRIVATE METHOD ParseVODLL() AS IList<XElement>
+      PRIVATE METHOD ParseVODLL() AS IList<XEntityDefinition>
 /*
 
 vodll               : (Attributes=attributes)? (Modifiers=funcprocModifiers)? // Optional
@@ -1548,12 +1560,12 @@ vodll               : (Attributes=attributes)? (Modifiers=funcprocModifiers)? //
          VAR range    := TextRange{_start, lastToken}
          VAR interval := TextInterval{_start, lastToken} 
          ReadLine()
-         VAR xMember := XTypeMember{sig, Kind.VODLL, _mods, _vis, range, interval, _mods:HasFlag(Modifiers.Static)} {SubType := IIF(t:Type == XSharpLexer.FUNCTION, Kind.Function, Kind.Procedure)} 
+         VAR xMember := XMemberDefinition{sig, Kind.VODLL, _attributes, range, interval, _attributes:HasFlag(Modifiers.Static)} {SubType := IIF(t:Type == XSharpLexer.FUNCTION, Kind.Function, Kind.Procedure)} 
          xMember:File := SELF:_file
-         RETURN List<XElement>{} {xMember}         
+         RETURN List<XEntityDefinition>{} {xMember}         
          
          
-      PRIVATE METHOD ParseVoStructMember() AS IList<XElement>
+      PRIVATE METHOD ParseVoStructMember() AS IList<XEntityDefinition>
 /*
 vostructmember      : MEMBER Dim=DIM Id=identifier LBRKT ArraySub=arraysub RBRKT (As=(AS | IS) DataType=datatype)? eos
                     | MEMBER Id=identifier (As=(AS | IS) DataType=datatype)? eos
@@ -1583,22 +1595,22 @@ vostructmember      : MEMBER Dim=DIM Id=identifier LBRKT ArraySub=arraysub RBRKT
          IF isArray
             sType += "[]"
          ENDIF
-         VAR xMember := XTypeMember{id, Kind.Field, _mods, _vis, range, interval, sType} {SingleLine := TRUE, IsArray := isArray}
+         VAR xMember := XMemberDefinition{id, Kind.Field, _attributes, range, interval, sType} {SingleLine := TRUE, IsArray := isArray}
          xMember:File := SELF:_file
-         RETURN List<XElement>{} {xMember}         
+         RETURN List<XEntityDefinition>{} {xMember}         
          
          #endregion
          
          
-      PRIVATE METHOD ParseClassVarList(eKind AS Kind)   AS IList<XElement>
+      PRIVATE METHOD ParseClassVarList(eKind AS Kind)   AS IList<XEntityDefinition>
 /*
 
 classVarList        : Var+=classvar (COMMA Var+=classvar)* (As=(AS | IS) DataType=datatype)?
                     ;
 */         
-         LOCAL aVars  AS List<XElement>
+         LOCAL aVars  AS List<XEntityDefinition>
          LOCAL sType  AS STRING
-         aVars := List<XElement>{}
+         aVars := List<XEntityDefinition>{}
          aVars:Add(ParseClassVar(eKind))
          DO WHILE La1 == XSharpLexer.COMMA
             SELF:Consume()
@@ -1607,12 +1619,13 @@ classVarList        : Var+=classvar (COMMA Var+=classvar)* (As=(AS | IS) DataTyp
          sType := SELF:ParseAsIsType()
          FOREACH VAR element IN aVars
             element:TypeName := sType
+            element:Attributes := _attributes
          NEXT
          RETURN aVars            
          
          
          
-      PRIVATE METHOD ParseClassVar(eKind AS Kind) AS XElement
+      PRIVATE METHOD ParseClassVar(eKind AS Kind) AS XEntityDefinition
 /*
 
 classvar            : (Dim=DIM)? Id=identifier (LBRKT ArraySub=arraysub RBRKT)? (Op=assignoperator Initializer=expression)?
@@ -1637,7 +1650,7 @@ classvar            : (Dim=DIM)? Id=identifier (LBRKT ArraySub=arraysub RBRKT)? 
          endToken := SELF:lastToken
          VAR range    := TextRange{startToken, endToken}
          VAR interval := TextInterval{startToken, endToken}
-         VAR result   := XTypeMember{sId,eKind, Modifiers.None, Modifiers.None, range,interval,""}
+         VAR result   := XMemberDefinition{sId,eKind, Modifiers.None, range,interval,""}
          result:Value := sDefault
          IF isDim .OR. !String.IsNullOrEmpty(sBracket)
             result:IsArray := TRUE
@@ -1723,7 +1736,7 @@ signature             : Id=identifier
          
          
          
-      PRIVATE METHOD ParseParameterList(lBracketed AS LOGIC, isSelf OUT LOGIC) AS List<XVariable>
+      PRIVATE METHOD ParseParameterList(lBracketed AS LOGIC, isSelf OUT LOGIC) AS List<IXVariable>
          isSelf := FALSE 
          IF La1 != XSharpLexer.LPAREN .AND. ! lBracketed
             RETURN NULL
@@ -1732,7 +1745,7 @@ signature             : Id=identifier
             RETURN NULL
          ENDIF
          Consume()   // LParen
-         VAR aResult  := List<XVariable>{}
+         VAR aResult  := List<IXVariable>{}
          VAR start := Lt1
          LOCAL cond AS DelEndToken
          cond := { token => IIF (lBracketed, token == XSharpLexer.RBRKT, token == XSharpLexer.RPAREN ) }
@@ -1763,7 +1776,7 @@ signature             : Id=identifier
             VAR range    := TextRange{_start, lastToken}
             VAR interval := TextInterval{_start, lastToken}
             
-            variable := XParameter{NULL, sId, range,interval, sTypeName}
+            variable := XParameter{CurrentEntity, sId, range,interval, sTypeName}
             IF token != NULL
                SWITCH token:Type
                CASE XSharpLexer.AS

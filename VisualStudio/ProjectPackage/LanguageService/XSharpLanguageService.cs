@@ -240,10 +240,10 @@ namespace XSharp.LanguageService
                 Dictionary<string, XVariable> locals = null;
                 if (member != null)
                 {
-                    if (member is XTypeMember)
+                    if (member is XMemberDefinition)
                     {
                         locals = new Dictionary<string, XVariable>(StringComparer.OrdinalIgnoreCase);
-                        var tm = member as XTypeMember;
+                        var tm = member as XMemberDefinition;
                         var vars = tm.GetLocals(buffer.CurrentSnapshot, iLine, file.Project.ParseOptions.Dialect);
                         foreach (var v in vars)
                         {

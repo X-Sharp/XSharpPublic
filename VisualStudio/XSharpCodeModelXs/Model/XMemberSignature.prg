@@ -7,16 +7,13 @@ USING System.Collections.Generic
 USING System.Diagnostics
 USING XSharpModel
 USING System.Linq
-USING LanguageService.CodeAnalysis.XSharp
-USING LanguageService.SyntaxTree
-USING LanguageService.CodeAnalysis.XSharp.SyntaxParser
-
+ 
 BEGIN NAMESPACE XSharpModel
    [DebuggerDisplay("{DebuggerDisplay(),nq}")];
    CLASS XMemberSignature
       PROPERTY Id                       AS STRING               AUTO GET INTERNAL SET
       PROPERTY TypeParameters           AS List<STRING>         AUTO GET INTERNAL SET
-      PROPERTY Parameters               AS List<XVariable>      AUTO GET INTERNAL SET
+      PROPERTY Parameters               AS List<IXVariable>     AUTO GET INTERNAL SET
       PROPERTY TypeParameterContraints  AS List<STRING>         AUTO GET INTERNAL SET
       PROPERTY CallingConvention        AS CallingConvention    AUTO GET INTERNAL SET
       PROPERTY DataType                 AS STRING               AUTO GET INTERNAL SET
@@ -27,7 +24,7 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY ParameterList AS STRING
 			GET
 				VAR parameters := ""
-				FOREACH variable AS XVariable IN SELF:Parameters
+				FOREACH variable AS IXVariable IN SELF:Parameters
 					IF (parameters:Length > 0)
 						parameters := parameters + ", "
 					ENDIF
@@ -43,7 +40,7 @@ BEGIN NAMESPACE XSharpModel
 		PROPERTY ComboParameterList AS STRING
 			GET
 				VAR parameters := ""
-				FOREACH variable AS XVariable IN SELF:Parameters
+				FOREACH variable AS IXVariable IN SELF:Parameters
 					IF (parameters:Length > 0)
 						parameters := parameters + ", "
 					ENDIF
@@ -61,7 +58,7 @@ BEGIN NAMESPACE XSharpModel
 
         CONSTRUCTOR()
             SELF:TypeParameters             := List<STRING>{}
-            SELF:Parameters                 := List<XVariable>{}
+            SELF:Parameters                 := List<IXVariable>{}
             SELF:TypeParameterContraints    := List<STRING>{}
             SELF:CallingConvention          := CallingConvention.None
 

@@ -8,30 +8,15 @@ USING Mono.Cecil
 BEGIN NAMESPACE XSharpModel
 CLASS AssemblyReader
    PROTECT reader             AS AssemblyDefinition
-   PROTECT _fileName          AS STRING
-   PROTECT _types             AS IDictionary<STRING, XTypeRef>
-   PROTECT _namespaces        AS IList<STRING>
-   PROTECT _attributes        AS IList<String>
-   protect _extensionTypes    as IList<TypeDefinition>
-   protect _extensionMethods  as IList<MethodDefinition>
+   PROTECT _extensionMethods  AS List<MethodDefinition>
    
-   PROPERTY Types       as IDictionary<STRING, XTypeRef> GET _types
-   PROPERTY Namespaces  as IList<STRING> GET _namespaces
-   PROPERTY Attributes  AS IList<String> GET _attributes
-   PROPERTY Loaded      AS LOGIC   GET reader != NULL 
    CONSTRUCTOR (cFileName AS STRING)
-      SELF:_fileName          := cFileName
-      SELF:_types             := Dictionary<STRING, XTypeRef>{StringComparer.OrdinalIgnoreCase}
-      SELF:_namespaces        := List<STRING>{}
-      SELF:_attributes        := List<String>{}
-      SELF:_extensionMethods  := List<MethodDefinition>{}
-      SELF:_extensionTypes    := List<TypeDefinition>{}
       TRY
          IF File.Exists(cFileName)
             var resolver := AssemblyResolver{}
             resolver:AddSearchDirectory(System.IO.Path.GetDirectoryName(cFileName))
-            var @@params := ReaderParameters{}{AssemblyResolver := resolver}
-            reader       := AssemblyDefinition.ReadAssembly(cFileName, @@params)
+            var rdrparams := ReaderParameters{}{AssemblyResolver := resolver}
+            reader       := AssemblyDefinition.ReadAssembly(cFileName, rdrparams)
          ELSE
             SELF:reader  := NULL
          ENDIF
@@ -43,10 +28,17 @@ CLASS AssemblyReader
          reader:Dispose()
       endif
       
-      
-   METHOD Read AS XAssembly
+   METHOD Read(assembly as XAssembly) AS VOID
       IF SELF:reader != NULL
-         var result := XAssembly{_fileName}
+         _extensionMethods  := List<MethodDefinition>{}
+
+         assembly:FullName := reader:FullName
+         IF reader:MainModule:HasAssemblyReferences
+            FOREACH var refasm in reader:MainModule:AssemblyReferences
+               assembly:ReferencedAssemblies:Add(refasm:FullName)
+            NEXT
+         ENDIF
+         assembly:RuntimeVersion := reader:MainModule:RuntimeVersion
          FOREACH VAR module in reader:Modules
             FOREACH var type in module:Types
                VAR vis := _AND(type:Attributes, TypeAttributes.VisibilityMask )
@@ -54,12 +46,12 @@ CLASS AssemblyReader
                   VAR name := type:FullName
                   var ns := type:Namespace
                   IF  ns:Length > 0
-                     IF ! _namespaces:Contains(ns)
-                        _namespaces:Add(ns)
+                     IF ! assembly:Namespaces:Contains(ns)
+                        assembly:Namespaces:Add(ns)
                      ENDIF
                   ENDIF
-                  var typeref := XTypeRef{type, result}
-                  SELF:_types:Add(name, typeref)
+                  var typeref := XTypeReference{type, assembly}
+                  assembly:TypeList:Add(name, typeref)
                   
                   if SELF:HasExtensionMethods(type)
                      SELF:LoadExtensionMethods(type)
@@ -75,35 +67,33 @@ CLASS AssemblyReader
                if att:ConstructorArguments:Count >= 2
                   var arg1 := att:ConstructorArguments[0]:Value:ToString()
                   var arg2 := att:ConstructorArguments[1]:Value:ToString()
-					   result:FunctionsClass := arg1
+					   assembly:GlobalClassName := arg1
 					   IF ! String.IsNullOrEmpty(arg2)
-						   result:ImplicitNamespaces:Add(arg2)
+						   assembly:ImplicitNamespaces:Add(arg2)
                   ENDIF
-                  result:IsXSharp := TRUE
+                  assembly:IsXSharp := TRUE
                ENDIF
 				CASE "vulcan.vulcanimplicitnamespaceattribute"
 				CASE "xsharp.implicitnamespaceattribute"
 					if att:ConstructorArguments:Count >= 1
                   var ns := att:ConstructorArguments[0]:Value:ToString()
-						result:ImplicitNamespaces:Add(ns)
-                  result:IsXSharp := TRUE
+						assembly:ImplicitNamespaces:Add(ns)
+                  assembly:IsXSharp := TRUE
 					ENDIF
    			END SWITCH
          NEXT
-         result:TypeList         := SELF:_types
-         result:Namespaces       := SELF:_namespaces
          foreach var md in _extensionMethods
-            result:ExtensionMethods:Add( XTypeRefMember{md, result })
+            assembly:ExtensionMethods:Add( XMethodReference{md, assembly })
          next
-         RETURN result 
+         assembly:Loaded                 := TRUE
+         RETURN 
       ENDIF
-      RETURN NULL   
+      RETURN    
       
    PRIVATE METHOD HasExtensionMethods(typedef as TypeDefinition) AS LOGIC
       IF typedef:HasCustomAttributes
          foreach var custatt in typedef:CustomAttributes
             if custatt:AttributeType:FullName == "System.Runtime.CompilerServices.ExtensionAttribute"
-               self:_extensionTypes:Add(typedef)
                return true
             ENDIF
          NEXT

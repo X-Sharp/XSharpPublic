@@ -16,7 +16,6 @@ using System.ComponentModel;
 using XSharpModel;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading;
 namespace XSharpColorizer
 {
     /// <summary>
@@ -96,7 +95,7 @@ namespace XSharpColorizer
             //
             xtraKeywords = new List<string>();
             // Initialize our background workers
-            this._buffer.Changed += Buffer_Changed;
+            _buffer.Changed += Buffer_Changed;
             _bwClassify = new BackgroundWorker();
             _bwClassify.RunWorkerCompleted += ClassifyCompleted;
             _bwClassify.DoWork += DoClassify;
@@ -196,7 +195,7 @@ namespace XSharpColorizer
         {
             if (ClassificationChanged != null)
             {
-                System.Diagnostics.Trace.WriteLine("-->> XSharpClassifier.triggerRepaint()");
+                Trace.WriteLine("-->> XSharpClassifier.triggerRepaint()");
                 if (snapshot != null && _buffer?.CurrentSnapshot != null)
                 {
                     // tell the editor that we have new info
@@ -206,12 +205,12 @@ namespace XSharpColorizer
                                 new SnapshotSpan(snapshot, Span.FromBounds(0, snapshot.Length))));
                     }
                 }
-                System.Diagnostics.Trace.WriteLine("<<-- XSharpClassifier.triggerRepaint()");
+                Trace.WriteLine("<<-- XSharpClassifier.triggerRepaint()");
             }
         }
         private void ClassifyCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            System.Diagnostics.Trace.WriteLine("-->> XSharpClassifier.ClassifyCompleted()");
+            Trace.WriteLine("-->> XSharpClassifier.ClassifyCompleted()");
             try
             {
                 if (e.Cancelled)
@@ -250,9 +249,9 @@ namespace XSharpColorizer
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Trace.WriteLine("<<-- Exception :" + ex.Message);
+                Trace.WriteLine("<<-- Exception :" + ex.Message);
             }
-            System.Diagnostics.Trace.WriteLine("<<-- XSharpClassifier.ClassifyCompleted()");
+            Trace.WriteLine("<<-- XSharpClassifier.ClassifyCompleted()");
         }
 
         #endregion
@@ -262,7 +261,7 @@ namespace XSharpColorizer
         {
             if (disableEntityParsing)
                 return;
-            System.Diagnostics.Trace.WriteLine("-->> XSharpClassifier.BuildModelDoWork()");
+            Trace.WriteLine("-->> XSharpClassifier.BuildModelDoWork()");
             // Note this runs in the background
             // parse for positional keywords that change the colors
             // and get a reference to the tokenstream
@@ -282,7 +281,7 @@ namespace XSharpColorizer
                 DoRepaintRegions();
                 Debug("Ending model build  at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
             }
-            System.Diagnostics.Trace.WriteLine("<<-- XSharpClassifier.BuildModelDoWork()");
+            Trace.WriteLine("<<-- XSharpClassifier.BuildModelDoWork()");
         }
         #endregion
 
@@ -296,19 +295,19 @@ namespace XSharpColorizer
 
         }
 
-        public IList<ClassificationSpan> BuildRegionTags( IList<XElement> entities, IList<XBlock> blocks, ITextSnapshot snapshot, IClassificationType start, IClassificationType stop)
+        public IList<ClassificationSpan> BuildRegionTags( IList<XEntityDefinition> entities, IList<XBlock> blocks, ITextSnapshot snapshot, IClassificationType start, IClassificationType stop)
         {
             if (disableRegions)
             {
                 return new List<ClassificationSpan>();
             }
-            System.Diagnostics.Trace.WriteLine("-->> XSharpClassifier.BuildRegionTagsNew()");
+            Trace.WriteLine("-->> XSharpClassifier.BuildRegionTagsNew()");
             var regions = new List<ClassificationSpan>();
             foreach (var entity in entities)
             {
-                if (entity is XTypeMember )
+                if (entity is XMemberDefinition )
                 {
-                    var member = (XTypeMember)entity;
+                    var member = (XMemberDefinition)entity;
                     if (member.SingleLine)
                     {
                         continue;
@@ -342,7 +341,7 @@ namespace XSharpColorizer
                     }
                 }
             }
-            System.Diagnostics.Trace.WriteLine("<<-- XSharpClassifier.BuildRegionTags()");
+            Trace.WriteLine("<<-- XSharpClassifier.BuildRegionTags()");
             return regions;
         }
         private void AddRegionSpan(List<ClassificationSpan> regions, ITextSnapshot snapshot, int startPos, int endPos)
@@ -852,14 +851,14 @@ namespace XSharpColorizer
             {
                 newtags = _colorTags;
             }
-            System.Diagnostics.Trace.WriteLine("-->> XSharpClassifier.BuildColorClassifications()");
+            Trace.WriteLine("-->> XSharpClassifier.BuildColorClassifications()");
             lock (gate)
             {
                 _snapshot = snapshot;
                 _colorTags = newtags;
                 _lexerRegions = regionTags;
             }
-            System.Diagnostics.Trace.WriteLine("<<-- XSharpClassifier.BuildColorClassifications()");
+            Trace.WriteLine("<<-- XSharpClassifier.BuildColorClassifications()");
             Debug("End building Classifications at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
             triggerRepaint(snapshot);
         }
@@ -905,7 +904,7 @@ namespace XSharpColorizer
 
         public IList<ClassificationSpan> GetRegionTags()
         {
-            System.Diagnostics.Trace.WriteLine("-->> XSharpClassifier.GetRegionTags()");
+            Trace.WriteLine("-->> XSharpClassifier.GetRegionTags()");
             IList<ClassificationSpan> result;
             lock (gate)
             {
@@ -925,19 +924,19 @@ namespace XSharpColorizer
                     result = new List<ClassificationSpan>();
                 }
             }
-            System.Diagnostics.Trace.WriteLine("<<-- XSharpClassifier.GetRegionTags()");
+            Trace.WriteLine("<<-- XSharpClassifier.GetRegionTags()");
             return result;
         }
 
         public IList<ClassificationSpan> GetTags()
         {
-            System.Diagnostics.Trace.WriteLine("-->> XSharpClassifier.GetTags()");
+            Trace.WriteLine("-->> XSharpClassifier.GetTags()");
             IList<ClassificationSpan> ret;
             lock (gate)
             {
                 ret = _colorTags.Tags;
             }
-            System.Diagnostics.Trace.WriteLine("<<-- XSharpClassifier.GetTags()");
+            Trace.WriteLine("<<-- XSharpClassifier.GetTags()");
             return ret;
         }
 

@@ -10,7 +10,7 @@ BEGIN NAMESPACE XSharpModel
 
     STATIC CLASS TypeExtensions
         // Fields
-        STATIC PRIVATE lookupTable AS IDictionary<STRING, STRING>
+        STATIC INTERNAL lookupTable AS IDictionary<STRING, STRING>
 
         // Methods
         STATIC  CONSTRUCTOR()
@@ -127,6 +127,49 @@ BEGIN NAMESPACE XSharpModel
                 fullName := genTypeName + genericString
             ENDIF
             RETURN fullName+ suffix
+            
+    STATIC METHOD GetXSharpTypeName( SELF sysType AS Mono.Cecil.TypeReference) AS STRING
+            LOCAL fullName AS STRING
+            LOCAL suffix AS STRING
+            fullName := sysType:FullName
+            IF (fullName == NULL)
+                fullName := sysType:Name
+            ENDIF
+            suffix := ""
+            IF fullName:EndsWith("[]")
+                fullName := fullName:Substring(0, (fullName:Length - 2))
+                suffix := "[]"
+            ENDIF
+            IF fullName:EndsWith("&")
+                fullName := fullName:Substring(0, (fullName:Length - 1))
+                suffix := ""
+            ENDIF
+            IF (lookupTable:ContainsKey(fullName))
+                //
+                fullName := lookupTable:Item[fullName]
+            ENDIF
+            // Maybe it's a Raw format ?
+            LOCAL genMarker := fullName:IndexOf('`') AS INT
+            IF (genMarker > -1)
+                // First extract the type
+                LOCAL genTypeName := fullName:Substring(0, genMarker) AS STRING
+                VAR genericString := "<"
+                VAR GenericParameters := sysType:GenericParameters
+                LOCAL first := TRUE AS LOGIC
+                FOREACH VAR genArg IN GenericParameters
+                    IF first
+                        genericString += genArg:Name
+                        first := FALSE
+                    ELSE
+                        genericString += "," + genArg:Name
+                    ENDIF
+                NEXT
+                //
+                genericString += ">"
+                fullName := genTypeName + genericString
+            ENDIF
+            RETURN fullName+ suffix
+
 
 
     END CLASS

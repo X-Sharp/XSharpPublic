@@ -13,18 +13,9 @@ BEGIN NAMESPACE XSharpModel
    [DebuggerDisplay("{DisplayName,nq}")];
    CLASS AssemblyInfo
       // Fields
-      PRIVATE _aExtensions          AS IList<XTypeRefMember>
       PRIVATE _assembly             AS XAssembly
-      PRIVATE _aTypes               AS IDictionary<STRING, XTypeRef>
-      PRIVATE _fullName             AS STRING
-      PRIVATE _globalClassName      := "" AS STRING
-      PRIVATE _hasExtensions        AS LOGIC
-      PRIVATE _implicitNamespaces   AS IList<STRING>
       PRIVATE _modified             AS System.DateTime
-      PRIVATE _nameSpaces           AS System.Collections.Hashtable
-      PRIVATE _nameSpaceTexts       AS IList<STRING>
       PRIVATE _projects             AS List<XProject>
-      
       
       
       PUBLIC STATIC PROPERTY DisableAssemblyReferences AS LOGIC AUTO
@@ -40,10 +31,8 @@ BEGIN NAMESPACE XSharpModel
       // Methods
       CONSTRUCTOR()
          SUPER()
-         SELF:_fullName := ""
-         SELF:_assembly := NULL
          SELF:_projects := List<XProject>{}
-         SELF:_clearInfo()
+         SELF:_assembly := XAssembly{""}
          
          
       CONSTRUCTOR(_cFileName AS STRING, _dModified AS System.DateTime)
@@ -52,78 +41,46 @@ BEGIN NAMESPACE XSharpModel
          SELF:Modified := _dModified
          SELF:UpdateAssembly()
          
-      PRIVATE METHOD _clearInfo() AS VOID
-         SELF:_aTypes               := Dictionary<STRING, XTypeRef>{System.StringComparer.OrdinalIgnoreCase}
-         SELF:_aExtensions          := List<XTypeRefMember>{}
-         SELF:_nameSpaces           := System.Collections.Hashtable{System.StringComparer.OrdinalIgnoreCase}
-         SELF:_nameSpaceTexts       := List<STRING>{}
-         SELF:_implicitNamespaces   := List<STRING>{}
-         SELF:_hasExtensions        := FALSE
          
       METHOD AddProject(project AS XProject) AS VOID
          IF ! SELF:_projects:Contains(project)
             SELF:_projects:Add(project)
          ENDIF
          
-      METHOD GetType(name AS STRING) AS XTypeRef
+      METHOD GetType(name AS STRING, searched := NULL AS List<String>) AS XTypeReference
+         if (searched == NULL)
+            searched := List<String>{} {SELF:FullName}
+         ELSEIF searched:Contains(SELF:FullName)
+            RETURN NULL
+         ELSE
+            searched:Add(SELF:FullName)
+         ENDIF
          IF SELF:IsModifiedOnDisk
             SELF:LoadAssembly()
          ENDIF
-         IF SELF:_assembly != NULL .AND. SELF:_aTypes:Count == 0
+         IF SELF:_assembly != NULL .AND. SELF:Types:Count == 0
             SELF:UpdateAssembly()
          ENDIF
-         IF SELF:_aTypes:ContainsKey(name)
-            RETURN SELF:Types:Item[name]
+         IF SELF:Types:ContainsKey(name)
+            RETURN Types[name]
          ENDIF
+         // look in referenced assemblies. This also used to resolve base types for types
+         FOREACH var refasm in _assembly:ReferencedAssemblies
+            var asm := SystemTypeController.FindAssembly(refasm)
+            if asm != NULL
+               var type := asm:GetType(name,searched)
+               if type != NULL
+                  return type
+               endif
+            endif
+         NEXT
          RETURN NULL
-//         
-//      PRIVATE METHOD GetTypeTypesFromType(oType AS System.Type) AS AssemblyInfo.TypeTypes
-//         IF oType:IsValueType
-//            RETURN AssemblyInfo.TypeTypes.Structure
-//         ENDIF
-//         IF oType:IsInterface
-//            RETURN AssemblyInfo.TypeTypes.Interface
-//         ENDIF
-//         IF TYPEOF(System.Delegate):IsAssignableFrom(oType)
-//            RETURN AssemblyInfo.TypeTypes.Delegate
-//         ENDIF
-//         RETURN AssemblyInfo.TypeTypes.Class
-//         
-//      PRIVATE STATIC METHOD HasExtensionAttribute(memberInfo AS MemberInfo) AS LOGIC
-//         TRY
-//            VAR customAttributes := memberInfo:GetCustomAttributes(FALSE)
-//            FOREACH VAR custattr IN customAttributes
-//               IF custattr:ToString() == "System.Runtime.CompilerServices.ExtensionAttribute"
-//                  RETURN TRUE
-//               ENDIF
-//            NEXT
-//         CATCH
-//            // Failed to retrieve custom attributes
-//         END TRY
-//         RETURN FALSE
-         
+
+            
+        
       INTERNAL METHOD LoadTypesAndNamespaces() AS VOID
-         LOCAL reader as AssemblyReader
-         SELF:_clearInfo()
-         reader := AssemblyReader{SELF:FileName}
-         var result := reader:Read()
-         IF (result != NULL)
-            SELF:_assembly             := result
-            SELF:_aTypes               := _assembly:TypeList
-            SELF:_globalClassName      := _assembly:FunctionsClass
-            SELF:_nameSpaceTexts       := _assembly:Namespaces
-            SELF:_implicitNamespaces   := _assembly:ImplicitNamespaces
-            SELF:_aExtensions          := _assembly:ExtensionMethods
-            SELF:_hasExtensions        := _assembly:ExtensionMethods:Count > 0
-            WriteOutputMessage("   ...Types             found: "+_aTypes:Count:ToString() )
-            WriteOutputMessage("   ...Namespaces        found: "+_nameSpaceTexts:Count:ToString() )
-            WriteOutputMessage("   ...Extension methods found: "+_aExtensions:Count:ToString() )
-            WriteOutputMessage("   ...Implicit namespa. found: "+_implicitNamespaces:Count:ToString())
-            WriteOutputMessage("   ...Globals Classname found: "+_globalClassName )
-         ELSE
-            SELF:_assembly := XAssembly{SELF:FileName}
-         ENDIF
-         
+         SELF:_assembly := XAssembly{SELF:FileName}
+         SELF:_assembly:Read()
          
          
       INTERNAL METHOD LoadAssembly()  AS VOID
@@ -134,7 +91,6 @@ BEGIN NAMESPACE XSharpModel
          IF SELF:Exists
             SELF:LoadTypesAndNamespaces()
             
-            SELF:_fullName  := SELF:_assembly:FullName
             SELF:Modified   := SELF:LastWriteTime
             //				ENDIF
          ENDIF
@@ -164,6 +120,9 @@ BEGIN NAMESPACE XSharpModel
          RETURN ""
          
       INTERNAL METHOD UpdateAssembly() AS VOID
+         IF SELF:_assembly:Loaded
+            RETURN
+         ENDIF
          IF ! SELF:Exists
             WriteOutputMessage("****** AssemblyInfo.UpdateAssembly: assembly "+SELF:FileName +" does not exist")
             RETURN
@@ -200,29 +159,27 @@ BEGIN NAMESPACE XSharpModel
          END TRY
          RETURN lExists
          
-      PROPERTY Exists             AS LOGIC GET _SafeExists(SELF:FileName)
-      PROPERTY FileName           AS STRING AUTO
-      PROPERTY FullName           AS STRING GET SELF:_fullName
-      PROPERTY GlobalClassName    AS STRING GET SELF:_globalClassName
-      PROPERTY HasProjects        AS LOGIC GET SELF:_projects:Count > 0
-      PROPERTY ImplicitNamespaces AS IList<STRING> GET SELF:_implicitNamespaces
-      PROPERTY IsModifiedOnDisk   AS LOGIC GET SELF:LastWriteTime != SELF:Modified
-      PROPERTY LastWriteTime      AS DateTime GET IIF(SELF:Exists, File.GetLastWriteTime(SELF:FileName), DateTime.MinValue)
-      PROPERTY Modified           AS DateTime GET IIF(SELF:Exists, SELF:_modified, DateTime.MinValue) SET SELF:_modified := VALUE
-      PROPERTY Namespaces         AS IList<STRING> GET SELF:_nameSpaceTexts
-      PROPERTY RuntimeVersion     AS STRING
+      PROPERTY Exists               AS LOGIC GET _SafeExists(SELF:FileName)
+      PROPERTY FileName             AS STRING AUTO
+      PROPERTY FullName             AS STRING GET SELF:_assembly:FullName
+      PROPERTY GlobalClassName      AS STRING GET SELF:_assembly:GlobalClassName
+      PROPERTY HasProjects          AS LOGIC GET SELF:_projects:Count > 0
+      PROPERTY ImplicitNamespaces   AS IList<STRING>    GET SELF:_assembly:ImplicitNamespaces
+      PROPERTY IsModifiedOnDisk     AS LOGIC GET SELF:LastWriteTime != SELF:Modified
+      PROPERTY LastWriteTime        AS DateTime GET IIF(SELF:Exists, File.GetLastWriteTime(SELF:FileName), DateTime.MinValue)
+      PROPERTY Modified             AS DateTime GET IIF(SELF:Exists, SELF:_modified, DateTime.MinValue) SET SELF:_modified := VALUE
+      PROPERTY Namespaces           AS IList<STRING> GET SELF:_assembly:Namespaces
+      PROPERTY ReferencedAssemblies AS IList<STRING> GET SELF:_assembly:ReferencedAssemblies
+      PROPERTY RuntimeVersion       AS STRING
          GET
             SELF:UpdateAssembly()
-//            IF SELF:_assembly != NULL
-//               RETURN SELF:_assembly:ImageRuntimeVersion
-//            ENDIF
-            RETURN ""
+            RETURN SELF:_assembly:RuntimeVersion
          END GET
       END PROPERTY
-      PROPERTY Types              AS IDictionary<STRING, XTypeRef> GET SELF:_aTypes
+      PROPERTY Types              AS IDictionary<STRING, XTypeReference> GET _assembly:TypeList
       
-      PROPERTY HasExtensions      AS LOGIC GET SELF:_hasExtensions
-      PROPERTY Extensions         AS IList<XTypeRefMember> GET SELF:_aExtensions:ToArray()
+      PROPERTY HasExtensions      AS LOGIC GET SELF:_assembly:ExtensionMethods:Count > 0
+      PROPERTY Extensions         AS IList<XMemberReference> GET _assembly:ExtensionMethods
       
       
       STATIC METHOD WriteOutputMessage(message AS STRING) AS VOID

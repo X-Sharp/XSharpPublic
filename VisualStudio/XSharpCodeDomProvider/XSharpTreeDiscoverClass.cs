@@ -129,11 +129,11 @@ namespace XSharp.CodeDom
                 return (_members[name].MemberType | mtype) != 0;
             }
             bool result = false;
-            IXTypeMember element = baseType.Members.Where(x => string.Equals(x.Name, name, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+            IXMember element = baseType.Members.Where(x => string.Equals(x.Name, name, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
             if (element != null)
             {
                 IXType t = null;
-                var tm = element as IXTypeMember;
+                var tm = element as IXMember;
                 t = findXType(tm.TypeName);
                 var typeName = element.TypeName;
                 switch (element.Kind)
@@ -1052,8 +1052,7 @@ namespace XSharp.CodeDom
         private CodeExpression buildXTypeMemberExpression(IXType xtype, string name)
         {
             var l = new XCodeTypeReferenceExpression(xtype.FullName);
-            IXTypeMember m = null;
-            m = xtype.Members.Where(e => String.Compare(e.Name, name, true) == 0 &&
+            var m = xtype.Members.Where(e => String.Compare(e.Name, name, true) == 0 &&
                 (e.Kind == Kind.Field || e.Kind == Kind.EnumMember)).FirstOrDefault();
             if (m != null)
             {
@@ -1131,7 +1130,7 @@ namespace XSharp.CodeDom
                     var mi = xtype.GetMember(name);
                     if (mi.Length > 0)
                     {
-                        IXTypeMember m = mi[0];
+                        IXMember m = mi[0];
                         memberType = new TypeXType(findXType(m.TypeName));
                         switch (m.Kind)
                         {

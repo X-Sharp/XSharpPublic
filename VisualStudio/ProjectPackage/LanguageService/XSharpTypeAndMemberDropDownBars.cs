@@ -18,8 +18,8 @@ namespace XSharp.LanguageService
     public sealed class XSharpTypeAndMemberDropDownBars : TypeAndMemberDropdownBars
     {
         int lastLine = -1;
-        XElement _lastSelected;
-        XElement _lastType;
+        IXEntity _lastSelected;
+        IXEntity _lastType;
         ArrayList _members = null;
         XFile _file = null;
         uint _lastHashCode = 0;
@@ -89,7 +89,7 @@ namespace XSharp.LanguageService
             {
                 return false;
             }
-            XElement selectedElement = file.FindMemberAtRow(line);
+            XEntityDefinition selectedElement = file.FindMemberAtRow(line);
 
             if (selectedElement != null && selectedElement.Range.StartLine > line )
             {
@@ -103,14 +103,14 @@ namespace XSharp.LanguageService
             }
             // check if we are on the same type. When not then we need to reload the members.
             // Note that the first item in the members combo can also be a type (Classname)
-            IXElement parentType = null;
-            if (selectedElement is XTypeMember)
+            XTypeDefinition parentType = null;
+            if (selectedElement is XMemberDefinition)
             {
-                parentType = selectedElement.Parent;
+                parentType = (XTypeDefinition) selectedElement.Parent;
             }
-            else if (selectedElement is XType)
+            else if (selectedElement is XTypeDefinition)
             {
-                parentType = selectedElement as XType;
+                parentType = selectedElement as XTypeDefinition;
             }
             else
             {
@@ -148,7 +148,7 @@ namespace XSharp.LanguageService
                     for (int i = 0; i < dropDownTypes.Count; i++)
                     {
                         var member = (XDropDownMember)dropDownTypes[i];
-                        var type = member.Element as XType;
+                        var type = member.Element as XTypeDefinition;
                         if (type.FullName == parentType.FullName)
                         {
                             selectedType = i;
@@ -177,28 +177,28 @@ namespace XSharp.LanguageService
                 nSelType = 0;
             }
 
-            List<XType> xList = file.TypeList.Values.ToList<XType>();
+            List<XTypeDefinition> xList = file.TypeList.Values.ToList<XTypeDefinition>();
             if (sortItems)
             {
-                xList.Sort(delegate (XType elt1, XType elt2)
+                xList.Sort(delegate (XTypeDefinition elt1, XTypeDefinition elt2)
                 {
                     return elt1.FullName.CompareTo(elt2.FullName);
                 });
             }
-            XType typeGlobal = null;
+            XTypeDefinition typeGlobal = null;
             int nSelect = 0;
 
-            XElement currentMember = null;
-            XType currentType = null;
+            XMemberDefinition currentMember = null;
+            XTypeDefinition currentType = null;
 
-            if (selectedElement is XTypeMember)
+            if (selectedElement is XMemberDefinition)
             {
-                currentMember = selectedElement as XTypeMember;
-                currentType = (XType) currentMember.Parent;
+                currentMember = selectedElement as XMemberDefinition;
+                currentType = (XTypeDefinition) currentMember.Parent;
             }
-            else if (selectedElement is XType)
+            else if (selectedElement is XTypeDefinition)
             {
-                currentType = selectedElement as XType;
+                currentType = selectedElement as XTypeDefinition;
                 currentMember = null;
             }
             nSelect = 0;
@@ -209,12 +209,12 @@ namespace XSharp.LanguageService
             // then the next method/class is selected and displayed in GRAY
             // C# also includes members (for partial classes) that are defined in other source files
             // these are colored GRAY
-            foreach (XType eltType in xList)
+            foreach (XTypeDefinition eltType in xList)
             {
                 if (eltType.Kind == Kind.Namespace)
                     continue;
                 //
-                if (XType.IsGlobalType(eltType))
+                if (XTypeDefinition.IsGlobalType(eltType))
                 {
                     typeGlobal = eltType;
                 }
@@ -241,7 +241,7 @@ namespace XSharp.LanguageService
             if (currentType != null)    // should not happen since all files have a global type
             {
                 nSelMbr = 0;
-                var members = new List<XElement>();
+                var members = new List<XEntityDefinition>();
                 if (currentTypeOnly)
                 {
                     if (currentType != typeGlobal && currentType.IsPartial)
@@ -261,9 +261,9 @@ namespace XSharp.LanguageService
                     members.AddRange(file.EntityList.Where(member => includeFields || (member.Kind != Kind.Field && member.Kind != Kind.VODefine)));
                     foreach (var ent in file.EntityList)
                     {
-                        if (ent is XType)
+                        if (ent is XTypeDefinition)
                         {
-                            var xType = ent as XType;
+                            var xType = ent as XTypeDefinition;
                             if (xType.IsPartial)
                             {
                                 // load methods from other files
@@ -309,7 +309,7 @@ namespace XSharp.LanguageService
                         dropDownMembers.Add(elt);
                     }
                 }
-                foreach (XElement member in members)
+                foreach (XEntityDefinition member in members)
                 {
                     bool otherFile;
                     if (includeFields || (member.Kind != Kind.Field && member.Kind != Kind.VODefine))
@@ -323,9 +323,9 @@ namespace XSharp.LanguageService
                         }
 
                         string prototype = member.ComboPrototype;
-                        if (!currentTypeOnly && member.Parent != null && member.Parent.Name != XElement.GlobalName)
+                        if (!currentTypeOnly && member.Parent != null && member.Parent.Name != XEntityDefinition.GlobalName)
                         {
-                            if (member.Modifiers.HasFlag(Modifiers.Static) || member is XType)
+                            if (member.Modifiers.HasFlag(Modifiers.Static) || member is XTypeDefinition)
                                 prototype = member.Parent.Name + "." + prototype;
                             else
                                 prototype = member.Parent.Name + ":" + prototype;
@@ -384,13 +384,13 @@ namespace XSharp.LanguageService
     [DebuggerDisplay("{Element.Kind} {Label,nq}")]
     internal class XDropDownMember : DropDownMember
     {
-        internal XDropDownMember(string label, TextSpan span, int glyph, DROPDOWNFONTATTR fontAttribute, XElement element) :
+        internal XDropDownMember(string label, TextSpan span, int glyph, DROPDOWNFONTATTR fontAttribute, XEntityDefinition element) :
         base(label, span, glyph, fontAttribute)
         {
             Element = element;
 
         }
-        internal XElement Element { get; private set; }
+        internal XEntityDefinition Element { get; private set; }
     }
 }
 

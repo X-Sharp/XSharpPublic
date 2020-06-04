@@ -25,7 +25,7 @@ BEGIN NAMESPACE XSharpModel
 			PRIVATE _prjNode AS IXSharpProject
 			PRIVATE _tokenStream AS ITokenStream
 			//PRIVATE _info AS ParseResult
-         PRIVATE _entities AS IList<XElement>
+         PRIVATE _entities AS IList<XEntityDefinition>
          PRIVATE _blocks   AS IList<XBlock>
          PRIVATE _locals   AS IList<XVariable>
 
@@ -39,7 +39,7 @@ BEGIN NAMESPACE XSharpModel
 
 			PROPERTY StartPosition AS INT AUTO
 
-         PROPERTY EntityList AS IList<XElement> GET _entities
+         PROPERTY EntityList AS IList<XEntityDefinition> GET _entities
          PROPERTY BlockList  AS IList<XBlock>   GET _blocks
          PROPERTY File AS XFile GET _file
 

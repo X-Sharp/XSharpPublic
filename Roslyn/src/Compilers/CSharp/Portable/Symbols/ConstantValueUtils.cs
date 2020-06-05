@@ -128,6 +128,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                         boundValue = binder.BindValue(es, diagnostics, Binder.BindValueKind.RValue);
                         constantValue = boundValue.ConstantValue;
                     }
+
+                    if ((boundValue as BoundFieldAccess)?.FieldSymbol.Type.SpecialType == SpecialType.System_IntPtr && (boundValue as BoundFieldAccess)?.FieldSymbol.Name == "Zero")
+                    {
+                        constantValue = ConstantValue.Create(0);
+                    }
 #endif
 
                     var unconvertedConstantValue = unconvertedBoundValue.ConstantValue;

@@ -12,6 +12,8 @@ USING LanguageService.SyntaxTree
 BEGIN NAMESPACE XSharpModel
    // an entity in the source code
    CLASS XSourceElement INHERIT XElement
+      PROTECTED _id    := -1                AS Int64                         
+      PROPERTY Id   AS INT64                GET _id
       PROPERTY File AS XFile                AUTO 
       PROPERTY Range AS TextRange           AUTO
       PROPERTY Interval AS TextInterval     AUTO
@@ -29,7 +31,9 @@ BEGIN NAMESPACE XSharpModel
          IF SELF:File?:Project?:ProjectNode != NULL
             SELF:File:Project:ProjectNode:OpenElement(SELF:File:SourcePath, SELF:Range:StartLine+1, (SELF:Range:StartColumn ))
          ENDIF
-         
+
+      METHOD Save() AS VOID
+      METHOD Load() AS VOID
          
    END CLASS
 END NAMESPACE      

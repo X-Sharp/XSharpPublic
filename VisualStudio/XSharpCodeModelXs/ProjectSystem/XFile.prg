@@ -17,17 +17,19 @@ BEGIN NAMESPACE XSharpModel
     [DebuggerDisplay("{FullPath,nq}")];
     CLASS XFile
         // Fields
+        PRIVATE _id   := -1   AS Int64                         
+        PROPERTY Id           AS INT64                GET _id
         PRIVATE _globalType	AS XTypeDefinition
         PRIVATE _lastWritten	AS System.DateTime
         PRIVATE _lock			AS OBJECT
         PRIVATE _parsed			AS LOGIC
         PRIVATE _type			AS XFileType
         PRIVATE _typeList		AS ConcurrentDictionary<STRING, XTypeDefinition>
-        PRIVATE _entityList		AS List<XEntityDefinition>
+        PRIVATE _entityList	AS List<XEntityDefinition>
         PRIVATE _usings			AS List<STRING>
         PRIVATE _usingStatics	AS List<STRING>
-        PRIVATE filePath AS STRING
-        PRIVATE _project AS XProject
+        PRIVATE filePath      AS STRING
+        PRIVATE _project      AS XProject
 
         // Methods
         CONSTRUCTOR(fullPath AS STRING)

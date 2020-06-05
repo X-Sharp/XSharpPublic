@@ -10,17 +10,17 @@ BEGIN NAMESPACE XSharpModel
 	STATIC CLASS XSolution
 		// Fields
 		STATIC PRIVATE _orphanedFilesProject := NULL AS XProject
-        STATIC INTERNAL Open as LOGIC
+      STATIC INTERNAL Open as LOGIC
 		CONST PRIVATE OrphanedFiles := "(OrphanedFiles)" AS STRING
 		STATIC INITONLY PRIVATE xProjects := ConcurrentDictionary<STRING, XProject>{StringComparer.OrdinalIgnoreCase} AS ConcurrentDictionary<STRING, XProject>
 
 		PUBLIC STATIC OutputWindow AS IOutputWindow
 		// Methods
 		STATIC CONSTRUCTOR
-			OutputWindow := ModelOutputWindow{}
-            VAR x := XSolution.OrphanedFilesProject
-            OutputWindow:DisplayOutPutMessage("XSolution Loaded")
-            XSolution.Open := TRUE
+			OutputWindow := DummyOutputWindow{}
+         VAR x := XSolution.OrphanedFilesProject
+         OutputWindow:DisplayOutPutMessage("XSolution Loaded")
+         XSolution.Open := TRUE
 
 
 		STATIC METHOD WriteOutputMessage(message AS STRING) AS VOID
@@ -41,7 +41,7 @@ BEGIN NAMESPACE XSharpModel
 			RETURN @@Add(project:Name, project)
 
 		STATIC METHOD Add(projectName AS STRING, project AS XProject) AS LOGIC
-            XSolution.Open := TRUE
+         XSolution.Open := TRUE
 			WriteOutputMessage("XModel.Solution.Add() "+projectName)
 			IF xProjects:ContainsKey(projectName)
 				RETURN FALSE
@@ -50,12 +50,12 @@ BEGIN NAMESPACE XSharpModel
 
 		STATIC METHOD CloseAll() AS VOID
 			WriteOutputMessage("XModel.Solution.CloseAll()")
-            XSolution.Open := FALSE
-            ModelWalker.GetWalker():StopThread()
-            FOREACH var pair in xProjects
-                var project := (XProject) pair:Value
-                project:Loaded := FALSE
-            NEXT
+         XSolution.Open := FALSE
+         ModelWalker.GetWalker():StopThread()
+         FOREACH var pair in xProjects
+               var project := (XProject) pair:Value
+               project:Loaded := FALSE
+         NEXT
 			xProjects:Clear()
 			SystemTypeController.Clear()
 			IF _orphanedFilesProject != NULL .AND. xProjects:TryAdd("(OrphanedFiles)", _orphanedFilesProject)
@@ -138,7 +138,7 @@ BEGIN NAMESPACE XSharpModel
 
 	END CLASS
 
-	CLASS ModelOutputWindow IMPLEMENTS IOutputWindow
+	CLASS DummyOutputWindow IMPLEMENTS IOutputWindow
 		METHOD DisplayOutPutMessage(message AS STRING) AS VOID
 			System.Diagnostics.Debug.WriteLine(message)
 			RETURN

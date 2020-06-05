@@ -116,11 +116,11 @@ BEGIN NAMESPACE XSharpModel
 
          WriteOutputMessage("-->> ParseTokens() "+_file:FullPath+" locals "+lIncludeLocals:ToString()+" )")
          TRY
-            VAR parserv2 := ParserV2{_file}
-            parserv2:Parse(tokens , lIncludeRegions, lIncludeLocals)
-            SELF:_entities := parserv2:EntityList
-            SELF:_blocks   := parserv2:BlockList
-            SELF:_locals   := parserv2:Locals
+            VAR parser := XsParser{_file}
+            parser:Parse(tokens , lIncludeRegions, lIncludeLocals)
+            SELF:_entities := parser:EntityList
+            SELF:_blocks   := parser:BlockList
+            SELF:_locals   := parser:Locals
             
          CATCH e AS Exception
                WriteOutputMessage("ParseTokens() Failed:")

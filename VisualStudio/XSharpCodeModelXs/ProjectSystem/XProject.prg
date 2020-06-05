@@ -21,6 +21,8 @@ BEGIN NAMESPACE XSharpModel
     [DebuggerDisplay("{Name,nq}")];
     CLASS XProject
         // Fields
+        PROTECTED _id    := -1                AS Int64                         
+        PROPERTY Id   AS INT64                GET _id
         PRIVATE _AssemblyReferences						AS List<AssemblyInfo>
         PRIVATE _parseOptions := NULL					AS XSharpParseOptions
         PRIVATE _projectNode							   AS IXSharpProject
@@ -496,8 +498,8 @@ BEGIN NAMESPACE XSharpModel
         #region Lookup Types and Functions
         METHOD FindFunction(name AS STRING) AS IXMember
             WriteOutputMessage("FindFunction() "+name)
-            IF _TypeDict:ContainsKey(XTypeDefinition.GlobalName)
-                VAR fileNames := _TypeDict[XTypeDefinition.GlobalName]:ToArray()
+            IF _TypeDict:ContainsKey(XLiterals.GlobalName)
+                VAR fileNames := _TypeDict[XLiterals.GlobalName]:ToArray()
                 FOREACH sFile AS STRING IN fileNames
                     LOCAL file AS XFile
                     // It seems sometimes the Key has changed; may be after a reparse ?
@@ -519,8 +521,8 @@ BEGIN NAMESPACE XSharpModel
 
             METHOD FindGlobalOrDefine(name AS STRING) AS IXMember
                 WriteOutputMessage("FindGlobalOrDefine() "+name)
-                IF _TypeDict:ContainsKey(XTypeDefinition.GlobalName)
-                    VAR fileNames := _TypeDict[XTypeDefinition.GlobalName]:ToArray()
+                IF _TypeDict:ContainsKey(XLiterals.GlobalName)
+                    VAR fileNames := _TypeDict[XLiterals.GlobalName]:ToArray()
                     FOREACH sFile AS STRING IN fileNames
                         LOCAL file AS XFile
                         // It seems sometimes the Key has changed; may be after a reparse ?
@@ -806,7 +808,7 @@ BEGIN NAMESPACE XSharpModel
             #endregion
         #region Merged Types
         INTERNAL METHOD AddMergedType(xType AS XTypeDefinition) AS VOID
-            IF xType:Name != XEntityDefinition.GlobalName
+            IF xType:Name != XLiterals.GlobalName
                 VAR name := xType:FullName
                 IF SELF:_mergedTypes:ContainsKey(name)
                     SELF:_mergedTypes:TryRemove(name, OUT VAR _)
@@ -816,7 +818,7 @@ BEGIN NAMESPACE XSharpModel
             RETURN
 
         INTERNAL METHOD RemoveMergedType(fullName AS STRING) AS VOID
-            IF fullName != XEntityDefinition.GlobalName
+            IF fullName != XLiterals.GlobalName
                 IF SELF:_mergedTypes:ContainsKey(fullName)
                     SELF:_mergedTypes:TryRemove(fullName, OUT VAR _)
                 ENDIF

@@ -96,8 +96,11 @@ BEGIN NAMESPACE XSharpModel
                IF _typeDef:HasMethods
                   FOREACH var md in _typeDef:Methods
                      // filter 
+                     if md:IsPrivate
+                        loop
+                     endif
                      var kind := Kind.Method
-                     if md:Attributes:HasFlag(MethodAttributes.SpecialName)
+                     if md:IsRuntimeSpecialName
                         var name := md:Name
                         if name:StartsWith("set_")
                            loop
@@ -110,25 +113,42 @@ BEGIN NAMESPACE XSharpModel
                         endif
                      endif
                      var xmember := XMethodReference{md,SELF:Assembly}
-                     if xmember:Kind == Kind.Method
+                     if xmember:Kind == Kind.Method      // this could have changed from Method to Function
                         xmember:Kind := kind
                      endif
                      aMembers:Add(xmember)
+                     xmember:Parent := SELF
                   NEXT
                ENDIF
                IF _typeDef:HasProperties
                   FOREACH var pd in _typeDef:Properties
-                     aMembers:Add(XPropertyReference{pd,SELF:Assembly})
+                     if pd:GetMethod != null .and. pd:GetMethod:IsPrivate
+                        loop
+                     endif
+                     var xprop := XPropertyReference{pd,SELF:Assembly}
+                     aMembers:Add(xprop)
+                     xprop:Parent := SELF
                   NEXT
                ENDIF
                IF _typeDef:HasFields
                   FOREACH var fd in _typeDef:Fields
-                     aMembers:Add(XFieldReference{fd,SELF:Assembly})
+                     if fd:IsPrivate
+                        loop
+                     endif
+                     var xField := XFieldReference{fd,SELF:Assembly} 
+                     aMembers:Add(xField)
+                     xField:Parent := SELF
                   NEXT
                ENDIF
                IF _typeDef:HasEvents
                   FOREACH var ed in _typeDef:Events
-                     aMembers:Add(XEventReference{ed,SELF:Assembly})
+                    if ed:AddMethod != NULL .and. ed:AddMethod:IsPrivate
+                        loop
+                     endif
+                     var xEvent := XEventReference{ed,SELF:Assembly} 
+                     aMembers:Add(xEvent)
+                     xEvent:Parent := SELF
+                     
                   NEXT
                ENDIF
                
@@ -137,7 +157,7 @@ BEGIN NAMESPACE XSharpModel
                   _baseType := SystemTypeController.FindType(SELF:BaseType, SELF:Assembly:FullName)
                   if _baseType != NULL
                      _baseType:Resolve()
-                     var basemembers := _baseType:XMembers:Where( { m => m.Kind != Kind.Constructor })
+                     var basemembers := _baseType:XMembers:Where( { m => m.Kind != Kind.Constructor .and. m.Visibility != Modifiers.Private })
                      aMembers:AddRange( basemembers )
                   ENDIF
                ENDIF

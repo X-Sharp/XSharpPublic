@@ -20,7 +20,8 @@ BEGIN NAMESPACE XSharpModel
    
    STATIC METHOD GetFullName(SELF type as IXType) AS STRING
       IF ! String.IsNullOrEmpty(type:Namespace)
-         RETURN type:Namespace + "." + type:Name
+         var result := type:Namespace + "." + type:Name
+         return result            
       ENDIF
       RETURN type:Name
    

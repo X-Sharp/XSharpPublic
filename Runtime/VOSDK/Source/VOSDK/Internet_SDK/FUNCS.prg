@@ -666,7 +666,7 @@ FUNCTION	GetMailTimeStamp(lForceUK AS LOGIC)	AS	STRING STRICT
 
 	IF lForceUK
 		nTmp := DoW(d)
-		cRet := SubStr("SunMonTueWenThuFriSat",(3*nTmp)-2,3)
+		cRet := SubStr("SunMonTueWedThuFriSat",(3*nTmp)-2,3)
 	ELSE
 		cRet := SubStr3( CDoW(d), 1, 3)
 	ENDIF

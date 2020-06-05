@@ -110,6 +110,8 @@ namespace XSharp.Project
                 result = data.GetReturnsText(out returns);
                 result = data.GetRemarksText(out remarks);
             }
+            if (!string.IsNullOrEmpty(summary))
+                summary = summary.Replace(". ", ".\r");
             return summary;
         }
 
@@ -125,7 +127,8 @@ namespace XSharp.Project
         {
             string summary = null;
             returns = remarks = "";
-
+            if (type == null)
+                return "";
             if (type is XTypeDefinition)
             {
                 var xdef = (XTypeDefinition)type;
@@ -165,6 +168,9 @@ namespace XSharp.Project
         {
             string summary = null;
             returns = remarks = "";
+            if (member == null)
+                return "";
+
             //
             if (member is XMemberDefinition)
             {
@@ -231,6 +237,11 @@ namespace XSharp.Project
                 {
                     result = data.GetParamTextAt(i, out paramName, out paramDesc);
                     names.Add(paramName);
+                    if (!string.IsNullOrEmpty(paramDesc))
+                    {
+                        paramDesc = paramDesc.Replace(". ", ".\r");
+                    }
+
                     descriptions.Add(paramDesc);
                 }
             }
@@ -239,6 +250,9 @@ namespace XSharp.Project
         }
         static public bool GetMemberParameters(IXMember member, XProject project,  IList<string> names, IList<string> descriptions)
         {
+            if (member == null)
+                return false;
+
             if (member is XMemberDefinition)
             {
                 var xdef = (XMemberDefinition)member;

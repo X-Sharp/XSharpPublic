@@ -25,7 +25,7 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY Loaded               AS LOGIC AUTO
       CONSTRUCTOR (cFileName as STRING)
          FileName             := cFileName
-         TypeList             := Dictionary<STRING, XTypeReference>{}
+         TypeList             := Dictionary<STRING, XTypeReference>{StringComparer.OrdinalIgnoreCase}
          ImplicitNamespaces   := List<STRING>{}
          Namespaces           := List<STRING>{}
          ReferencedAssemblies := List<STRING>{}

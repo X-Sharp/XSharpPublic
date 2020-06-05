@@ -1392,6 +1392,8 @@ namespace XSharpLanguage
         internal TypeAnalysis(IXType typeInfo)
         {
             //
+            if (typeInfo == null)
+                return;
             this._name = typeInfo.FullName;
             this._kind = typeInfo.Kind;
             this._modifiers = typeInfo.Modifiers;

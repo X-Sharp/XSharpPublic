@@ -17,18 +17,7 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY Name        AS STRING       AUTO GET INTERNAL SET
       PROPERTY Attributes  AS Modifiers    AUTO GET INTERNAL SET
       PROPERTY Modifiers   AS Modifiers    GET _AND(Attributes, ~Modifiers.VisibilityMask)
-      PROPERTY Visibility  AS Modifiers    
-         GET 
-            var result := _AND(Attributes, Modifiers.VisibilityMask)
-            if result == Modifiers.None
-               Attributes |= Modifiers.Public
-               result := Modifiers.Public
-            endif
-            return result
-         END GET
-      END PROPERTY
-         
-
+      PROPERTY Visibility  AS Modifiers    GET _AND(Attributes, Modifiers.VisibilityMask)
       PROPERTY ModVis      AS STRING       
       GET 
             IF SELF:Attributes == Modifiers.None

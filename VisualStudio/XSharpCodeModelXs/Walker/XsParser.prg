@@ -115,6 +115,10 @@ BEGIN NAMESPACE XSharpModel
             ENDIF
             aAttribs := ParseAttributes()
             VAR mods := ParseVisibilityAndModifiers()
+            VAR vis  := _AND(mods, Modifiers.VisibilityMask)
+            IF vis == Modifiers.None
+               mods |= Modifiers.Public
+            ENDIF
             IF IsStartOfEntity(OUT VAR entityKind, mods)
                IF _hasXmlDoc
                   cXmlDoc := GetXmlDoc( (XSharpToken) first)

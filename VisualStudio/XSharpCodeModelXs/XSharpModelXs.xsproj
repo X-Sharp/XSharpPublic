@@ -164,7 +164,7 @@
     <Compile Include="Model\XTypeSignature.prg" />
     <Compile Include="Model\XTypeExtensions.prg" />
     <Compile Include="Model\XTypeMemberExtensions.prg" />
-    <Compile Include="Model\Literals.prg" />
+    <Compile Include="Model\XLiterals.prg" />
     <Compile Include="Model\XAssembly.prg" />
     <Compile Include="Model\XEntityReference.prg" />
     <Compile Include="Model\XMemberReference.prg" />
@@ -187,7 +187,7 @@
     <Compile Include="TextRange.prg" />
     <Compile Include="TypeExtensions.prg" />
     <Compile Include="Walker\ModelWalker.prg" />
-    <Compile Include="Walker\ParserV2.prg" />
+    <Compile Include="Walker\XsParser.prg" />
     <Compile Include="Walker\SourceWalker.prg" />
     <Compile Include="XError.prg" />
     <Compile Include="XFileTypeHelpers.prg" />

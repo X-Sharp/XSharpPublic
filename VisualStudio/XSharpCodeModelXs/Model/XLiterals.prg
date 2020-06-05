@@ -23,6 +23,10 @@ BEGIN NAMESPACE XSharpModel
 	STATIC PROPERTY RefKeyWord			AS STRING GET IIF(_nKeywordCase == 1, " REF ", " ref ")
 	STATIC PROPERTY OutKeyWord			AS STRING GET IIF(_nKeywordCase == 1, " OUT ", " out ")
 	STATIC PROPERTY ParamsKeyWord		AS STRING GET IIF(_nKeywordCase == 1, " PARAMS ", " params ")
+   CONST PUBLIC GlobalName := "(Global Scope)" AS STRING
+   CONST PUBLIC VarType := "$VAR$" AS STRING
+   CONST PUBLIC UsualType := "USUAL" AS STRING
+   CONST PUBLIC NoType := "$NOTYPE$" AS STRING
 
 	STATIC PROPERTY KeywordsUpperCase AS LOGIC
 		GET 

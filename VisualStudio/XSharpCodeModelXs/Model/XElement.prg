@@ -17,7 +17,17 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY Name        AS STRING       AUTO GET INTERNAL SET
       PROPERTY Attributes  AS Modifiers    AUTO GET INTERNAL SET
       PROPERTY Modifiers   AS Modifiers    GET _AND(Attributes, ~Modifiers.VisibilityMask)
-      PROPERTY Visibility  AS Modifiers    GET _AND(Attributes, Modifiers.VisibilityMask)
+      PROPERTY Visibility  AS Modifiers    
+         GET 
+            var result := _AND(Attributes, Modifiers.VisibilityMask)
+            if result == Modifiers.None
+               Attributes |= Modifiers.Public
+               result := Modifiers.Public
+            endif
+            return result
+         END GET
+      END PROPERTY
+         
 
       PROPERTY ModVis      AS STRING       
       GET 
@@ -37,10 +47,10 @@ BEGIN NAMESPACE XSharpModel
       CONSTRUCTOR(name AS STRING, kind AS Kind, attributes as Modifiers)
          SELF:Name       := name
          SELF:Kind       := kind
-         if (attributes == Modifiers.None)
-            attributes := Modifiers.Public
-         endif
          SELF:Attributes := attributes
+         if SELF:Visibility == Modifiers.None
+            attributes |= Modifiers.Public
+         endif
          
 
 

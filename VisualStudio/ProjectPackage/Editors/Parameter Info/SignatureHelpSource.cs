@@ -190,13 +190,21 @@ namespace XSharp.Project
                     if (elt is IXMember)
                     {
                         IXMember xMember = elt as IXMember;
-                        signatures.Add(CreateSignature(m_textBuffer, xMember, xMember.Prototype, "", ApplicableToSpan, comma, xMember.Kind == XSharpModel.Kind.Constructor, file));
+                        var names = new List<string>();
+                        var proto = xMember.Prototype;
+                        names.Add(proto);
+                        signatures.Add(CreateSignature(m_textBuffer, xMember, proto, "", ApplicableToSpan, comma, xMember.Kind == XSharpModel.Kind.Constructor, file));
                         var overloads = xMember.GetOverloads();
                         foreach (var member in overloads)
                         {
-                            signatures.Add(CreateSignature(m_textBuffer, null,member.Prototype, "", ApplicableToSpan, comma, member.Kind == XSharpModel.Kind.Constructor, file));
+                            // prevent duplicate prototypes in the list  (when a child has overriden a method)
+                            proto = member.Prototype;
+                            if (!names.Contains(proto))
+                            {
+                                signatures.Add(CreateSignature(m_textBuffer, member, proto, "", ApplicableToSpan, comma, member.Kind == XSharpModel.Kind.Constructor, file));
+                                names.Add(proto);
+                            }
                         }
-                        //
                     }
                     else
                     {

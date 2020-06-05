@@ -323,7 +323,7 @@ namespace XSharp.LanguageService
                         }
 
                         string prototype = member.ComboPrototype;
-                        if (!currentTypeOnly && member.Parent != null && member.Parent.Name != XEntityDefinition.GlobalName)
+                        if (!currentTypeOnly && member.Parent != null && member.Parent.Name != XLiterals.GlobalName)
                         {
                             if (member.Modifiers.HasFlag(Modifiers.Static) || member is XTypeDefinition)
                                 prototype = member.Parent.Name + "." + prototype;

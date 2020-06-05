@@ -247,7 +247,7 @@ BEGIN NAMESPACE XSharpModel
                case "date"
                case "float"
                case "symbol"
-               case "psz`"
+               case "psz"
                case "usual"
                    typeName := kw
 
@@ -270,7 +270,7 @@ BEGIN NAMESPACE XSharpModel
 
 		PROPERTY ElementType AS CompletionType AUTO
 
-		PROPERTY FullName AS STRING GET SELF:_type:FullName
+		PROPERTY FullName AS STRING GET SELF:_type?:FullName
 
 		PROPERTY IsInitialized AS LOGIC GET SELF:_type != NULL 
 

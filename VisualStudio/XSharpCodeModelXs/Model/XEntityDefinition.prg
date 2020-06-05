@@ -16,28 +16,24 @@ BEGIN NAMESPACE XSharpModel
    CLASS XEntityDefinition INHERIT XSourceElement IMPLEMENTS IXEntity
       #region Simple Properties
       
-      PROPERTY FullName AS STRING                  GET SELF:Name
-      PROPERTY Namespace  AS STRING                AUTO
+      PROPERTY FullName                AS STRING            GET SELF:Name
+      PROPERTY Namespace               AS STRING            AUTO
 
-      PROPERTY IsArray AS LOGIC                    AUTO
-      PROPERTY IsStatic AS LOGIC                   AUTO GET PROTECTED SET
+      PROPERTY IsArray                 AS LOGIC             AUTO
+      PROPERTY IsStatic                AS LOGIC             AUTO GET PROTECTED SET
       
-      PROPERTY Parent AS IXEntity                  AUTO
-      PROPERTY ParentName AS STRING                GET SELF:Parent?:FullName
-      PROPERTY ComboPrototype AS STRING            GET SELF:FullName 
-      PROPERTY Prototype AS STRING                 GET SELF:FullName
-      PROPERTY Dialect AS XSharpDialect            AUTO      
-      PROPERTY CustomAttributes  AS STRING                AUTO
-      PROPERTY SingleLine        AS LOGIC          AUTO
-      PROPERTY Value             AS STRING         AUTO 
-      
-      PRIVATE _typeName        AS STRING
+      PROPERTY Parent                  AS IXEntity          AUTO
+      PROPERTY ParentName              AS STRING            GET SELF:Parent?:FullName
+      PROPERTY ComboPrototype          AS STRING            GET SELF:FullName 
+      PROPERTY Prototype               AS STRING            GET SELF:FullName
+      PROPERTY Dialect                 AS XSharpDialect     AUTO      
+      PROPERTY CustomAttributes        AS STRING            AUTO
+      PROPERTY SingleLine              AS LOGIC             AUTO
+      PROPERTY Value                   AS STRING            AUTO 
+      PROPERTY XmlComments             AS STRING            AUTO
+      PRIVATE _typeName                AS STRING
       
       #endregion
-      CONST PUBLIC GlobalName := "(Global Scope)" AS STRING
-      STATIC INITONLY PUBLIC VarType := "$VAR$" AS STRING
-      STATIC INITONLY PUBLIC UsualType := "USUAL" AS STRING
-      STATIC INITONLY PUBLIC NoType := "$NOTYPE$" AS STRING
       
          
       CONSTRUCTOR(name AS STRING, kind AS Kind)
@@ -92,7 +88,7 @@ BEGIN NAMESPACE XSharpModel
                IF IsTyped
                   RETURN SELF:_typeName
                ELSE
-                  RETURN UsualType
+                  RETURN XLiterals.UsualType
                ENDIF
             END GET
             SET

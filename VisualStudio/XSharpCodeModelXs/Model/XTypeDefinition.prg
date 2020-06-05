@@ -166,13 +166,13 @@ BEGIN NAMESPACE XSharpModel
       
       
       STATIC METHOD CreateGlobalType(xfile AS XFile) AS XTypeDefinition
-         VAR globalType := XTypeDefinition{GlobalName, Kind.Class, Modifiers.Public, TextRange{0, 0, 0, 0}, TextInterval{}, xfile}
+         VAR globalType := XTypeDefinition{XLiterals.GlobalName, Kind.Namespace, Modifiers.Public, TextRange{0, 0, 0, 0}, TextInterval{}, xfile}
          globalType:IsPartial:=TRUE
          globalType:IsStatic:=TRUE
          RETURN globalType
       
       STATIC METHOD IsGlobalType(type AS IXEntity) AS LOGIC
-         RETURN type != NULL .AND. type is IXType .and. type:Name == XTypeDefinition.GlobalName
+         RETURN type != NULL .AND. type is IXType .and. type:Name == XLiterals.GlobalName
       
       PROPERTY Children   AS IList<IXType> 
          GET 

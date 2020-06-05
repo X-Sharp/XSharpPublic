@@ -455,7 +455,7 @@ namespace XSharpLanguage
                                     }
                                 }
                                 // Now Add Functions and Procedures
-                                BuildCompletionList(compList, _file.Project.Lookup(XTypeDefinition.GlobalName, true), Modifiers.Public, false, filterText);
+                                BuildCompletionList(compList, _file.Project.Lookup(XLiterals.GlobalName, true), Modifiers.Public, false, filterText);
                                 // and Add NameSpaces
                                 AddNamespaces(compList, _file.Project, filterText);
                                 // and Types
@@ -920,12 +920,26 @@ namespace XSharpLanguage
                 //
                 FillExtensions(compList, cType.XTypeRef, startWith);
             }
+            // if no elements found with the filter then try with shorter text
+            if (compList.Count == 0 && ! string.IsNullOrEmpty(startWith) && cType.Type.Members.Count > 0)
+            {
+                if (startWith.Length == 1)
+                {
+                    BuildCompletionList(compList, cType, minVisibility, staticOnly, "");
+                }
+                else
+                    {
+                    BuildCompletionList(compList, cType, minVisibility, staticOnly, startWith.Substring(0,startWith.Length-1));
+                    }
+            }
         }
 
 
         private bool nameStartsWith(string name, string startWith)
         {
             // prevent crash for members without a name.
+            if (startWith?.Length == 0)
+                return true;
             if (name != null)
                 return name.StartsWith(startWith, this._settingIgnoreCase, System.Globalization.CultureInfo.InvariantCulture);
             return false;
@@ -2926,7 +2940,7 @@ namespace XSharpLanguage
                         }
                         if (element == null)
                         {
-                            var type = member.File.Project.Lookup(XSharpModel.XTypeDefinition.GlobalName, true);
+                            var type = member.File.Project.Lookup(XSharpModel.XLiterals.GlobalName, true);
                             if (type != null)
                             {
                                 element = type.Members.Where(x => StringEquals(x.Name, name)).FirstOrDefault();
@@ -2945,7 +2959,7 @@ namespace XSharpLanguage
                     if (element is XVariable)
                     {
                         XVariable xVar = element as XVariable;
-                        if (xVar.TypeName == XEntityDefinition.VarType)
+                        if (xVar.TypeName == XLiterals.VarType)
                         {
                             resolveVarType(xVar, member, ref cType,visibility,currentNS,snapshot, currentLine,dialect);
                         }
@@ -4015,6 +4029,7 @@ namespace XSharpLanguage
         }
     }
 }
+
 
 
 

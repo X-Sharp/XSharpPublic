@@ -19,6 +19,13 @@ BEGIN NAMESPACE XSharpModel
          SELF:_propdef        := def
 			SELF:OriginalTypeName   := def:PropertyType:FullName
          SELF:TypeName        := SELF:Signature:DataType := def:PropertyType:GetXSharpTypeName()
+         if def:GetMethod != NULL
+            var xMethod := XMethodReference{def:GetMethod, asm}
+            SELF:Attributes := xMethod:Attributes
+         elseif def:SetMethod != null
+            var xMethod := XMethodReference{def:SetMethod, asm}
+            SELF:Attributes := xMethod:Attributes
+         endif
          
       OVERRIDE Method Resolve() AS VOID
          IF _propdef:HasParameters
@@ -93,6 +100,13 @@ BEGIN NAMESPACE XSharpModel
          SELF:_eventdef             := def
          SELF:OriginalTypeName      := def:EventType:FullName
          SELF:TypeName              := SELF:Signature:DataType    := def:EventType:GetXSharpTypeName()
+         if def:AddMethod != NULL
+            var xMethod := XMethodReference{def:AddMethod, asm}
+            SELF:Attributes := xMethod:Attributes
+         elseif def:RemoveMethod != null
+            var xMethod := XMethodReference{def:RemoveMethod, asm}
+            SELF:Attributes := xMethod:Attributes
+         endif
          
       OVERRIDE Method Resolve() AS VOID
          RETURN

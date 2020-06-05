@@ -75,7 +75,12 @@ BEGIN NAMESPACE XSharpModel
       STATIC METHOD GetOverloads(SELF tm as IXMember) AS IXMember[]
          var result := List<IXMember>{}
          IF tm:ParentType != NULL
-            result:AddRange(tm:ParentType:Members:Where({ m => m.Kind == tm.Kind .and. String.Compare(m.Name, tm.Name, StringComparison.OrdinalIgnoreCase) == 0 }))
+            foreach var xm in tm:ParentType:Members
+               if xm.Kind == tm.Kind .and. String.Equals(tm.Name, xm.Name, StringComparison.OrdinalIgnoreCase)
+                  result:Add(xm)
+               endif
+            next
+            
          ENDIF
          RETURN result:ToArray()         
 
@@ -106,11 +111,7 @@ BEGIN NAMESPACE XSharpModel
          END SWITCH
          var sb := StringBuilder{}
          sb:Append(prefix)
-         if !  String.IsNullOrEmpty(tm:DeclaringType)
-            sb:Append(tm:DeclaringType)
-         else
-            sb:Append(tm:ParentType:FullName)
-         endif   
+         sb:Append(tm:ParentType:FullName)
          sb:Append("."+name)
          IF tm:Parameters:Count > 0
             sb:Append( "(")

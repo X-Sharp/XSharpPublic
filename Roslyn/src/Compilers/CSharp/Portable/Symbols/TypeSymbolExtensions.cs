@@ -38,6 +38,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         {
             Debug.Assert((object)typeSymbol != null);
 
+#if XSHARP
+            if (typeSymbol.SpecialType == SpecialType.System_IntPtr) return true;
+#endif
             return typeSymbol.IsReferenceType || typeSymbol.IsEnumType() || typeSymbol.SpecialType.CanBeConst();
         }
 

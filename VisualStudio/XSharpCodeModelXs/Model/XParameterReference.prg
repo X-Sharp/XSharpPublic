@@ -21,7 +21,7 @@ BEGIN NAMESPACE XSharpModel
             SELF:Parent        := parent
 
         // Properties
-        PROPERTY Expression   AS STRING AUTO
+        PROPERTY Value        AS STRING AUTO
         PROPERTY IsArray      AS LOGIC AUTO
         PROPERTY Parent       AS IXEntity AUTO
         PROPERTY TypeName     AS STRING AUTO
@@ -73,6 +73,7 @@ BEGIN NAMESPACE XSharpModel
             RETURN SELF:Name + " "+ParamTypeDesc+" "+SELF:TypeName
             
         METHOD ForceComplete() as VOID
+
 
     END CLASS
          

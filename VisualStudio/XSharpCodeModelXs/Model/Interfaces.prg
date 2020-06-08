@@ -65,6 +65,7 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY ParamType      AS ParamType  GET   
       PROPERTY ShortTypeName  AS STRING GET
       PROPERTY ParamTypeDesc  AS STRING GET
+      PROPERTY Value          AS STRING GET
          
    END INTERFACE
 END NAMESPACE   

@@ -29,6 +29,9 @@ BEGIN NAMESPACE XSharpModel
 						parameters := parameters + ", "
 					ENDIF
 					parameters += variable:Name
+               IF !String.IsNullOrEmpty(variable:Value)
+                  parameters += " := "+variable:Value+" "
+               ENDIF
 					IF variable:IsTyped
 						parameters += variable:ParamTypeDesc + variable:TypeName
 					ENDIF

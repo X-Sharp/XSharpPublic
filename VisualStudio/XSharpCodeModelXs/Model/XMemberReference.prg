@@ -255,19 +255,77 @@ BEGIN NAMESPACE XSharpModel
                parType := ParamType.As
             ENDIF
             if oPar:HasCustomAttributes
-               FOREACH VAR oAttr in oPar:CustomAttributes
-                  
-               NEXT
+               defValue := SELF:DecodeCustomAttributes(oPar:CustomAttributes)
             ENDIF
             var parRef := XParameterReference {self, name, type}
             parRef:OriginalTypeName := oPar:ParameterType:FullName
             if defValue != NULL
-               parRef:Expression := defValue:ToString()
+               parRef:Value := defValue:ToString()
             ENDIF
             parRef:ParamType := parType
             SELF:_signature:Parameters:Add(parRef)
          NEXT
          RETURN
+
+      METHOD DecodeCustomAttributes( attributes as Mono.Collections.Generic.Collection<CustomAttribute>) AS STRING
+         local result as STRING
+         local done   as LOGIC
+         FOREACH var attr in attributes
+               SWITCH attr:AttributeType:FullName 
+               CASE "XSharp.Internal.DefaultParameterValueAttribute"
+               CASE "Vulcan.Internal.DefaultParameterValueAttribute"
+                  var arg1     := attr:ConstructorArguments[0]
+                  IF arg1:Value is CustomAttributeArgument VAR arg
+                     arg1 := arg
+                  ENDIF
+                  var arg2 := (Int32) attr:ConstructorArguments[1]:Value
+                  switch arg2
+                  case 1   // NIL
+                     result := "NIL"
+                  case 2   // Arg1 is date in ticks
+                     var ticks := (Int64)  arg1:Value
+                     var dt    := DateTime{ticks}
+                     result    := dt:ToString("yyyy.MM.dd")
+                  case 3   // Arg1 is Symbol , when NULL then NULL_SYMBOL
+                     var sym := (STRING)  arg1:Value
+                     if (sym == NULL)
+                        result := "NULL_SYMBOL"
+                     else
+                        result := "#" + sym:ToString()
+                     endif
+                  case 4   // Arg1 is PSZ, when NULL then NULL_SYMBOL
+                     var psz1 := (STRING)  arg1:Value
+                     if (psz1 == NULL)
+                        result := "NULL_PSZ"
+                     else
+                        result := psz1:ToString()
+                     endif
+                  case 5   // Arg1 is NULL_PTR
+                     var p := IntPtr{ (Int64) arg1:Value} 
+                     if (p == IntPtr.Zero)
+                        result := "NULL_PTR"
+                     ELSE
+                        result := "0x"+p:ToString("X")
+                     ENDIF
+                     
+                  case 0   // Normal .Net value
+                     var obj := arg1:Value
+                     if (obj != null)
+                        result := obj:ToString()
+                        if arg1:Type:FullName == "System.String"
+                           result := e"\""+result+e"\""
+                        endif
+                     endif
+                  end switch
+                  done := TRUE
+               END SWITCH    
+               if (done)
+                  EXIT
+               ENDIF
+               
+         NEXT
+         return result
+         
 
       METHOD AddTypeParameters(aPars as Mono.Collections.Generic.Collection<GenericParameter>) AS VOID
          RETURN

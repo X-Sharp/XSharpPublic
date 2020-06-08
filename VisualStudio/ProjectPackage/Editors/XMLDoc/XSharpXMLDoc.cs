@@ -112,6 +112,10 @@ namespace XSharp.Project
             }
             if (!string.IsNullOrEmpty(summary))
                 summary = summary.Replace(". ", ".\r");
+            if (!string.IsNullOrEmpty(returns))
+                returns = returns.Replace(". ", ".\r");
+            if (!string.IsNullOrEmpty(remarks))
+                remarks = remarks.Replace(". ", ".\r");
             return summary;
         }
 

@@ -166,13 +166,14 @@ BEGIN NAMESPACE XSharpModel
             ENDIF
 
         METHOD SetTypes(types AS IDictionary<STRING, XTypeDefinition>, usings AS IList<STRING>, ;
-        staticUsings AS IList<STRING>, aEntities AS IList<XEntityDefinition>) AS VOID
+            staticUsings AS IList<STRING>, aEntities AS IList<XEntityDefinition>) AS VOID
             IF SELF:HasCode
                 WriteOutputMessage("-->> SetTypes() "+ SELF:SourcePath)
                 BEGIN LOCK SELF
                     FOREACH VAR type IN _typeList
                         SELF:Project:RemoveType(type:Value)
                     NEXT
+                     
                     SELF:_typeList:Clear()
                     SELF:_usings:Clear()
                     SELF:_usingStatics:Clear()

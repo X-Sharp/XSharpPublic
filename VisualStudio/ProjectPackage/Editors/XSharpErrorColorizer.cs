@@ -5,9 +5,6 @@
 //
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.VisualStudio.Text.Formatting;
 using Microsoft.VisualStudio.Utilities;
 using System.ComponentModel.Composition;
@@ -18,7 +15,6 @@ using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Editor.OptionsExtensionMethods;
 using Microsoft.VisualStudio.Text;
 using XSharpModel;
-using Microsoft.VisualStudio.Text.Tagging;
 using XSharpColorizer;
 
 namespace XSharp.Project

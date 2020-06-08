@@ -1894,7 +1894,6 @@ namespace XSharp.Project
                             {
                                 startTokenType = openKeyword.Type;
                             }
-                            
                         }
                         regionStarts.Push(new RegionTag(tag.Span.Span, startTokenType));
                     }
@@ -1907,7 +1906,6 @@ namespace XSharp.Project
                             if (tag is XsClassificationSpan)
                                 endTokenType = (tag as XsClassificationSpan).endTokenType;
                             regions.Add(new Region(start2.TagSpan, tag.Span.Span, start2.TagType, endTokenType));
-
                         }
                     }
                 }

@@ -98,7 +98,14 @@ CLASS AssemblyReader
                FOREACH var child in type:NestedTypes
                   SELF:AddType(child,assembly)
                NEXT
-         ENDIF   
+         ENDIF  
+         var first := Char.ToUpper(name[0])
+         if assembly:TypeCatalog:ContainsKey(first)
+            assembly:TypeCatalog[first]:Add(name)
+         else
+            assembly:TypeCatalog:Add(first, List<String>{})
+            assembly:TypeCatalog[first]:Add(name)
+         endif
      ENDIF
      RETURN
    PRIVATE METHOD HasExtensionMethods(typedef as TypeDefinition) AS LOGIC

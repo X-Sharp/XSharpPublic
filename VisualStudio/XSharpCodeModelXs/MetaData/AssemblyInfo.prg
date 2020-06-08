@@ -177,6 +177,7 @@ BEGIN NAMESPACE XSharpModel
          END GET
       END PROPERTY
       PROPERTY Types              AS IDictionary<STRING, XTypeReference> GET _assembly:TypeList
+      PROPERTY TypeCatalog        AS IDictionary<CHAR, List<STRING> > GET _assembly:TypeCatalog
       
       PROPERTY HasExtensions      AS LOGIC GET SELF:_assembly:ExtensionMethods:Count > 0
       PROPERTY Extensions         AS IList<XMemberReference> GET _assembly:ExtensionMethods

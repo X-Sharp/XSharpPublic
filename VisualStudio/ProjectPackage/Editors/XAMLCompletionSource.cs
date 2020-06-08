@@ -6,24 +6,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Microsoft.VisualStudio.Language.Intellisense;
 using Microsoft.VisualStudio.Text;
 using System.ComponentModel.Composition;
 using Microsoft.VisualStudio.Utilities;
-using XSharpModel;
 using Microsoft.VisualStudio.Shell;
-using System.Windows.Media;
-using LanguageService.SyntaxTree;
-using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
-using System.Reflection;
-using Microsoft.VisualStudio;
-using LanguageService.CodeAnalysis.XSharp;
-using System.Diagnostics;
-using System.Collections.Immutable;
 using XSharpColorizer;
-using XSharp.Project.OptionsPages;
-using System.Runtime.CompilerServices;
 using XSharp.Project;
 
 namespace XSharpLanguage

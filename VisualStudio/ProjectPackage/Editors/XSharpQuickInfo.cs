@@ -12,8 +12,6 @@ using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Operations;
 using Microsoft.VisualStudio.Utilities;
 using LanguageService.SyntaxTree;
-using System.Reflection;
-using System.Diagnostics;
 using XSharpColorizer;
 using System.Windows.Documents;
 using System.Windows.Media;

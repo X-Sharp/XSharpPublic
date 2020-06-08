@@ -178,7 +178,8 @@ namespace XSharp.Project.Editors.BraceMatching
                             {
                                 var sourceWalker = new SourceWalker(xfile);
                                 string text = ssp.Snapshot.GetText();
-                                text = text.Substring(member.Interval.Start, member.Interval.Width); //FM#081219 #2 - We are in a 'member'. For brace matching we should only ever need to look to the end of this member
+                                var length = Math.Max(member.Interval.Width, text.Length - member.Interval.Start);
+                                text = text.Substring(member.Interval.Start, length); //FM#081219 #2 - We are in a 'member'. For brace matching we should only ever need to look to the end of this member
                                 offset = member.Interval.Start;
                                 Debug("Start sourceWalker.Lex: " + DateTime.Now.ToString("hh:mm:ss.fff"));
                                 var stream = (BufferedTokenStream)sourceWalker.Lex(text);

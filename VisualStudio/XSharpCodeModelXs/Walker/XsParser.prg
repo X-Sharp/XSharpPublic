@@ -853,6 +853,9 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
       PRIVATE METHOD TokensAsString(tokens AS IList<IToken>) AS STRING
          LOCAL sb AS StringBuilder
          LOCAL last := NULL AS IToken
+         if (tokens == null)
+            return ""
+         endif
          sb := StringBuilder{}
          
          FOREACH VAR t IN tokens
@@ -1823,7 +1826,9 @@ signature             : Id=identifier
                   variable:ParamType := ParamType.Params
                END SWITCH
             ENDIF
-            variable:Value := SELF:TokensAsString(defaultExpr)
+            if defaultExpr != null
+               variable:Value := SELF:TokensAsString(defaultExpr)
+            endif
             aResult:Add(variable)
             IF La1 == XSharpLexer.COMMA
                Consume()

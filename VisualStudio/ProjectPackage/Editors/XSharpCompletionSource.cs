@@ -441,6 +441,7 @@ namespace XSharpLanguage
                                 // TODO: add Interfaces only
                                 break;
                             default:
+
                                 if (member != null)
                                 {
                                     // Fill with the context ( Parameters and Locals )
@@ -456,6 +457,10 @@ namespace XSharpLanguage
                                 }
                                 // Now Add Functions and Procedures
                                 BuildCompletionList(compList, _file.Project.Lookup(XLiterals.GlobalName, true), Modifiers.Public, false, filterText);
+                                foreach (var project in _file.Project.ReferencedProjects)
+                                {
+                                    BuildCompletionList(compList, project.Lookup(XLiterals.GlobalName, true), Modifiers.Public, false, filterText);
+                                }
                                 // and Add NameSpaces
                                 AddNamespaces(compList, _file.Project, filterText);
                                 // and Types
@@ -597,26 +602,34 @@ namespace XSharpLanguage
             {
                 references.Add(SystemTypeController.mscorlib);
             }
+            if (startWith.Length == 0)
+                return;
             foreach (AssemblyInfo assemblyInfo in references)
             {
-                foreach (var typeInfo in assemblyInfo.Types.Where(ti => nameStartsWith(ti.Key, startWith)))
+                char first = char.ToUpper(startWith[0]);
+                if (!assemblyInfo.TypeCatalog.ContainsKey(first))
+                {
+                    continue;
+                }
+                foreach (var typeName in assemblyInfo.TypeCatalog[first].Where(name => nameStartsWith(name, startWith)))
                 {
                     //if (XSharpTokenTools.isGenerated(typeInfo.Value))
                     //    continue;
+                    var type = assemblyInfo.Types[typeName];
 
-                    TypeAnalysis typeAnalysis = new TypeAnalysis(typeInfo.Value);
-                    string realTypeName = typeAnalysis.Name;
+                    string realTypeName = typeName;
                     if (IsHiddenName(realTypeName))
                     {
                        continue;
                     }
-                        // Nested Type ?
+                    TypeAnalysis typeAnalysis = new TypeAnalysis(type);
+                    // Nested Type ?
                     if (realTypeName.Contains("+"))
                     {
                         realTypeName = realTypeName.Replace('+', '.');
                     }
                     // remove the start
-                    if (startLen > 0)
+                    if (startLen > 0 && realTypeName.Length > startLen)
                         realTypeName = realTypeName.Substring(startLen);
                     // Do we have another part file
                     dotPos = realTypeName.IndexOf('.');
@@ -687,26 +700,28 @@ namespace XSharpLanguage
             if (dotPos != -1)
                 startLen = dotPos + 1;
             //
-            foreach (XFile file in project.SourceFiles)
+
+            var first = Char.ToUpper(startWith[0]);
+            if (!project.TypeCatalog.ContainsKey(first))
             {
-                if (file.TypeList != null)
-                {
-                    foreach (XTypeDefinition typeInfo in file.TypeList.Values.Where(ti => nameStartsWith(ti.FullName, startWith)))
-                    {
-                        string realTypeName = typeInfo.FullName;
-                        // remove the start
-                        if (startLen > 0)
-                            realTypeName = realTypeName.Substring(startLen);
-                        // Do we have another part
-                        dotPos = realTypeName.IndexOf('.');
-                        // Then remove it
-                        if (dotPos > 0)
-                            realTypeName = realTypeName.Substring(0, dotPos);
-                        ImageSource icon = _provider.GlyphService.GetGlyph(typeInfo.getGlyphGroup(), typeInfo.getGlyphItem());
-                        if (!compList.Add(new XSCompletion(realTypeName, realTypeName, typeInfo.Prototype, icon, null, Kind.Class,"")))
-                            break;
-                    }
-                }
+                return;
+            }
+
+            foreach (var typeName in project.TypeList.Where(name => nameStartsWith(name, startWith)))
+            {
+                var typeInfo = project.Lookup(typeName, true);
+                string realTypeName = typeInfo.FullName;
+                // remove the start
+                if (startLen > 0)
+                    realTypeName = realTypeName.Substring(startLen);
+                // Do we have another part
+                dotPos = realTypeName.IndexOf('.');
+                // Then remove it
+                if (dotPos > 0)
+                    realTypeName = realTypeName.Substring(0, dotPos);
+                ImageSource icon = _provider.GlyphService.GetGlyph(typeInfo.getGlyphGroup(), typeInfo.getGlyphItem());
+                if (!compList.Add(new XSCompletion(realTypeName, realTypeName, typeInfo.Prototype, icon, null, Kind.Class,"")))
+                    break;
             }
         }
 
@@ -1979,6 +1994,10 @@ namespace XSharpLanguage
             {
                 //if ( list[((XSharpToken)nextToken).OriginalTokenIndex + 1].Type != XSharpLexer.EOS )
                 nextToken = list[((XSharpToken)nextToken).OriginalTokenIndex + 1];
+                while (nextToken.Channel != XSharpLexer.DefaultTokenChannel && nextToken.Type != XSharpLexer.EOS)
+                {
+                    nextToken = list[((XSharpToken)nextToken).OriginalTokenIndex + 1];
+                }
             }
             if (stopToken == null)
             {
@@ -2100,8 +2119,8 @@ namespace XSharpLanguage
                             break;
                         else if (XSharpLexer.IsKeyword(triggerToken.Type))
                         {
-                            token = null;
-                            triggerToken = null;
+                            //token = null;
+                            //triggerToken = null;
                             break;
                         }
                         else if (XSharpLexer.IsOperator(triggerToken.Type) && !inCtor)
@@ -2966,14 +2985,19 @@ namespace XSharpLanguage
                             resolveVarType(xVar, member, ref cType,visibility,currentNS,snapshot, currentLine,dialect);
                         }
                         cType = new CompletionType((XVariable)element, currentNS);
-                        foundElement = new CompletionElement((XVariable)element);
+                        foundElement = new CompletionElement(xVar);
                     }
-                    else
+                    else if (element is IXMember)
                     {
-                        // todo
-                        //cType = new CompletionType(element);
-                        //foundElement = new CompletionElement(element);
-
+                        var xMember = (IXMember)element;
+                        cType = new CompletionType(xMember);
+                        foundElement = new CompletionElement(xMember);
+                    }
+                    else if (element is IXType)
+                    {
+                        var xType = (IXType)element;
+                        cType = new CompletionType(xType);
+                        foundElement = new CompletionElement(xType);
                     }
                 }
             }

@@ -12,6 +12,7 @@ BEGIN NAMESPACE XSharpModel
 	CLASS XAssembly
       
       PROPERTY TypeList             AS IDictionary<STRING, XTypeReference> AUTO
+      PROPERTY TypeCatalog          AS IDictionary<Char, List<String> > AUTO
       PROPERTY ExtensionMethods     AS IList<XMemberReference> AUTO
       PROPERTY ImplicitNamespaces   AS IList<String> AUTO
       PROPERTY Namespaces           AS IList<String> AUTO
@@ -26,13 +27,14 @@ BEGIN NAMESPACE XSharpModel
       CONSTRUCTOR (cFileName as STRING)
          FileName             := cFileName
          TypeList             := Dictionary<STRING, XTypeReference>{StringComparer.OrdinalIgnoreCase}
+         TypeCatalog          := Dictionary<Char, List<String> > {}
          ImplicitNamespaces   := List<STRING>{}
          Namespaces           := List<STRING>{}
          ReferencedAssemblies := List<STRING>{}
          CustomAttributes     := List<STRING>{}
          GlobalClassName      := ""
          ExtensionMethods     := List<XMemberReference>{}
-
+ 
    METHOD Read() AS LOGIC
       var reader := AssemblyReader{FileName}
       reader:Read(SELF)

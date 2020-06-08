@@ -38,6 +38,7 @@ BEGIN NAMESPACE XSharpModel
         PRIVATE _OtherFilesDict							AS ConcurrentDictionary<STRING, XFile>
         PRIVATE _SourceFilesDict						   AS ConcurrentDictionary<STRING, XFile>
         PRIVATE _TypeDict								   AS ConcurrentDictionary<STRING, List<STRING>>
+        PRIVATE _TypeCatalog								AS ConcurrentDictionary<CHAR, List<STRING>>
         PRIVATE _ExternalTypeCache						AS ConcurrentDictionary<STRING, XTypeReference>
         PRIVATE _ImplicitNamespaces                AS List<STRING>
         PROPERTY FileWalkCompleted                 AS LOGIC AUTO
@@ -72,7 +73,8 @@ BEGIN NAMESPACE XSharpModel
             SELF:_projectNode := project
             SELF:_SourceFilesDict := ConcurrentDictionary<STRING, XFile>{StringComparer.OrdinalIgnoreCase}
             SELF:_OtherFilesDict := ConcurrentDictionary<STRING, XFile>{StringComparer.OrdinalIgnoreCase}
-            SELF:_TypeDict := ConcurrentDictionary<STRING, List<STRING> > {StringComparer.OrdinalIgnoreCase}
+            SELF:_TypeDict       := ConcurrentDictionary<STRING, List<STRING> > {StringComparer.OrdinalIgnoreCase}
+            SELF:_TypeCatalog    := ConcurrentDictionary<CHAR, List<STRING> > {}
             SELF:_ExternalTypeCache := ConcurrentDictionary<STRING, XTypeReference> {StringComparer.OrdinalIgnoreCase}
             SELF:Loaded := TRUE
             SELF:FileWalkCompleted := FALSE
@@ -765,7 +767,11 @@ BEGIN NAMESPACE XSharpModel
                 SELF:ResolveUnprocessedStrangerReferences()
                 RETURN SELF:_StrangerProjects:ToArray()
             END GET
-        END PROPERTY
+         END PROPERTY
+         
+        PROPERTY TypeCatalog as ConcurrentDictionary<CHAR, List<STRING>> GET _TypeCatalog
+        PROPERTY TypeList    as ICollection<String>       GET _TypeDict:Keys
+        
         #endregion
 
         #region Types
@@ -782,6 +788,15 @@ BEGIN NAMESPACE XSharpModel
                         SELF:_TypeDict[typeName] := List<STRING>{}
                     ENDIF
                     SELF:_TypeDict[typeName]:Add(fileName)
+                    typeName := typeName:ToUpper()
+                    var first := typeName[0]
+                    IF !self:_TypeCatalog:ContainsKey(first)
+                       self:_TypeCatalog:TryAdd(first, List<String>{})
+                    ENDIF
+                    IF (!SELF:_TypeCatalog[first]:Contains(typeName))
+                       SELF:_TypeCatalog[first]:Add(typeName)
+                    ENDIF
+                     
                 END LOCK
             ENDIF
             RETURN
@@ -798,9 +813,18 @@ BEGIN NAMESPACE XSharpModel
                         SELF:_TypeDict[typeName]:Remove(fileName)
                     ENDIF
                     IF SELF:_TypeDict[typeName]:Count == 0
+                        var first := Char.ToUpper(typeName[0])
+                        if self:_TypeCatalog:ContainsKey(first)
+                           IF (SELF:_TypeCatalog[first]:Contains(typeName))
+                              SELF:_TypeCatalog[first]:Remove(typeName)
+                           ENDIF
+                        ENDIF
+                        SELF:_TypeCatalog[first]:Remove(typeName)
                         SELF:_TypeDict:TryRemove(typeName, OUT VAR _)
+                        
                     ENDIF
-                  ENDIF
+                 ENDIF
+                  
             END LOCK
             SELF:RemoveMergedType(typeName)
             RETURN

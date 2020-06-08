@@ -340,7 +340,7 @@ namespace XSharp.Project
             var ss = new SnapshotSpan(line.Snapshot, line.Extent);
 
             var spans = _classifier.GetClassificationSpans(ss);
-            if (spans.Count > 0)
+            if (spans.Count > 0 && spans[0].Span.Snapshot.Version == line.Snapshot.Version)
             {
                 var type = spans[0].ClassificationType;
                 if (type.Classification.ToLower() == "comment")
@@ -670,6 +670,7 @@ namespace XSharp.Project
                                         break;
                                     case '(':
                                     case '{':
+                                        CancelSignatureSession();
                                         StartSignatureSession(false);
                                         break;
                                     case ')':

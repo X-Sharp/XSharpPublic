@@ -2803,10 +2803,10 @@ namespace XSharpLanguage
                     break;
                 }
                 currentToken = tokenList[currentPos];
-                if (currentToken == "." || currentToken == ":")
+                if (currentToken == "." || currentToken == ":" || currentToken == "::")
                 {
                     currentPos += 1;
-                    if (currentPos >= tokenList.Count)
+                    if (currentPos >= tokenList.Count || currentToken == "::")
                     {
                         break;
                     }

@@ -80,6 +80,8 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY ParentType     AS IXType   GET SELF:Parent ASTYPE IXType
       PROPERTY IsExtension    AS LOGIC    GET _signature:IsExtension
       PROPERTY XMLSignature   AS STRING GET SELF:GetXmlSignature()
+      PROPERTY OriginalTypeName  AS STRING GET SELF:TypeName
+         
       #endregion
    END CLASS
    

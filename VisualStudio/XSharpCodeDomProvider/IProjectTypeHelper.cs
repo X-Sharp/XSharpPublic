@@ -10,6 +10,7 @@ namespace XSharp.CodeDom
     {
         XSharpModel.XTypeDefinition ResolveXType(string name, IReadOnlyList<string> usings);
         XSharpModel.XTypeDefinition ResolveReferencedType(string name, IReadOnlyList<string> usings);
+        XSharpModel.IXType ResolveExternalType(string name, IReadOnlyList<string> usings);
 
         XSharpParseOptions ParseOptions { get; }
         string SynchronizeKeywordCase(string code, string fileName);

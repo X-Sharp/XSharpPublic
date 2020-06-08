@@ -3532,7 +3532,7 @@ namespace XSharpLanguage
                             if (type != null)
                             {
                                 var methods = type.GetMember(currentToken);
-                                if (methods.Count > 0)
+                                if (methods.Length > 0)
                                 {
                                     foundElement = new CompletionElement(methods[0]);
                                     return new CompletionType(type);
@@ -3588,7 +3588,7 @@ namespace XSharpLanguage
                             if (type != null)
                             {
                                 var methods = type.GetMember(currentToken);
-                                if (methods.Count > 0)
+                                if (methods.Length > 0)
                                 {
                                     foundElement = new CompletionElement(methods[0]);
                                     return new CompletionType(type);

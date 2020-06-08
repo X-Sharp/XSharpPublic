@@ -1894,6 +1894,7 @@ namespace XSharp.Project
                             {
                                 startTokenType = openKeyword.Type;
                             }
+                            
                         }
                         regionStarts.Push(new RegionTag(tag.Span.Span, startTokenType));
                     }
@@ -1906,6 +1907,7 @@ namespace XSharp.Project
                             if (tag is XsClassificationSpan)
                                 endTokenType = (tag as XsClassificationSpan).endTokenType;
                             regions.Add(new Region(start2.TagSpan, tag.Span.Span, start2.TagType, endTokenType));
+
                         }
                     }
                 }
@@ -2187,8 +2189,7 @@ namespace XSharp.Project
                     // Comment or Using region ?
                     switch (startTokenType)
                     {
-                        case XSharpLexer.ML_COMMENT:
-                        case XSharpLexer.SL_COMMENT:
+                        
                         case XSharpLexer.USING:
                         case XSharpLexer.PP_INCLUDE:
                         case XSharpLexer.PP_DEFINE:
@@ -2213,6 +2214,8 @@ namespace XSharp.Project
                                 continue;
                             break;
                         default:
+                            if (XSharpLexer.IsComment(startTokenType))
+                                continue;
                             break;
                     }
                     // We are between the opening Keyword and the closing Keyword

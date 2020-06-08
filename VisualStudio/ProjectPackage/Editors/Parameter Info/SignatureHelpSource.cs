@@ -54,8 +54,64 @@ namespace XSharp.Project
             EventHandler<CurrentParameterChangedEventArgs> tempHandler = this.CurrentParameterChanged;
             if (tempHandler != null)
             {
-                tempHandler(this, new CurrentParameterChangedEventArgs(prevCurrentParameter, newCurrentParameter));
+               tempHandler(this, new CurrentParameterChangedEventArgs(prevCurrentParameter, newCurrentParameter));
             }
+        }
+
+        internal static int CalculateCommaPosition(string sigText, int lastPos)
+        {
+            int commaCount = 0;
+            bool instring = false;
+            char endchar = '\0';
+            int currentPos = 0;
+            foreach (char ch in sigText)
+            {
+                if (currentPos > lastPos)
+                {
+                    break;
+                }
+                currentPos += 1;
+                switch (ch)
+                {
+                    case '\'':
+                        if (!instring)
+                        {
+                            instring = true;
+                            endchar = ch;
+                            continue;
+                        }
+                        break;
+                    case '"':
+                        if (!instring)
+                        {
+                            instring = true;
+                            endchar = ch;
+                            continue;
+                        }
+                        break;
+                    case '[':
+                        if (!instring)
+                        {
+                            instring = true;
+                            endchar = ']';
+                            continue;
+                        }
+                        break;
+                    case ',':
+                        if (!instring)
+                        {
+                            commaCount++;
+                        }
+
+                        break;
+                }
+                if (ch == endchar)
+                {
+                    instring = false;
+                    continue;
+                }
+            }
+            return commaCount;
         }
 
         internal void ComputeCurrentParameter(int atPosition = -1 )
@@ -70,31 +126,12 @@ namespace XSharp.Project
             string sigText = ApplicableToSpan.GetText(m_subjectBuffer.CurrentSnapshot);
             if ( atPosition == -1 )
                 atPosition = sigText.Length;
+            var commaCount = CalculateCommaPosition(sigText, atPosition);
 
-            int currentIndex = 0;
-            int commaCount = 0;
-            int maxPos = Math.Min(atPosition, sigText.Length);
-            //if (comma)
-            //    commaCount += 1;
-            while (currentIndex < maxPos)
-            {
-                int commaIndex = sigText.IndexOf(',', currentIndex);
-                if ((commaIndex == -1) || (commaIndex>maxPos))
-                {
-                    break;
-                }
-                commaCount++;
-                currentIndex = commaIndex + 1;
-            }
 
             if (commaCount < Parameters.Count)
             {
                 this.CurrentParameter = Parameters[commaCount];
-            }
-            else
-            {
-                //too many commas, so use the last parameter as the current one.
-                //this.CurrentParameter = Parameters[Parameters.Count - 1];
             }
         }
 
@@ -354,18 +391,9 @@ namespace XSharp.Project
         {
             //the number of commas in the string is the index of the current parameter
             string sigText = ApplicableToSpan.GetText(m_textBuffer.CurrentSnapshot);
-            int currentIndex = 0;
-            int commaCount = 0;
-            while (currentIndex < sigText.Length)
-            {
-                int commaIndex = sigText.IndexOf(',', currentIndex);
-                if (commaIndex == -1)
-                {
-                    break;
-                }
-                commaCount++;
-                currentIndex = commaIndex + 1;
-            }
+
+            var commaCount = XSharpVsSignature.CalculateCommaPosition(sigText,sigText.Length);
+
             //
             List<ISignature> signatures = new List<ISignature>();
             foreach (ISignature sig in this.m_session.Signatures)

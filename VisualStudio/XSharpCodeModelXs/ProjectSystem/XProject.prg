@@ -507,7 +507,7 @@ BEGIN NAMESPACE XSharpModel
                     IF _SourceFilesDict:TryGetValue( sFile, REF file )
                         VAR members := file:GlobalType:Members
                         IF members != NULL
-                           var mem := members:Where ({ x=> (x.Kind == Kind.Procedure .OR. x:Kind == Kind.Function) .and. String.Compare(x:Name, name, TRUE) == 0 }):FirstOrDefault()
+                           var mem := members:Where ({ x=> (x.Kind == Kind.Procedure .OR. x:Kind == Kind.Function) .and. String.Compare(x:Name, name, StringComparison.OrdinalIgnoreCase) == 0 }):FirstOrDefault()
                            if mem != null
                               WriteOutputMessage("FindFunction()  found: "+mem:FullName)
                               return mem

@@ -3531,7 +3531,7 @@ namespace XSharpLanguage
                             var type = asm.GetType(asm.GlobalClassName);
                             if (type != null)
                             {
-                                var methods = type.GetMember(currentToken);
+                                var methods = type.GetMethod(currentToken);
                                 if (methods.Length > 0)
                                 {
                                     foundElement = new CompletionElement(methods[0]);

@@ -145,7 +145,18 @@ BEGIN NAMESPACE XSharpModel
 				CASE Kind.Property
 					RETURN TRUE
 			END SWITCH
-			RETURN FALSE         
+			RETURN FALSE     
+         
+     
+		STATIC METHOD IsMethod( SELF elementKind AS Kind) AS LOGIC
+			SWITCH elementKind
+				CASE Kind.Method 
+				CASE Kind.Function
+				CASE Kind.Procedure
+					RETURN TRUE
+			END SWITCH
+			RETURN FALSE     
+         
 		
 		STATIC METHOD IsType( SELF elementKind AS Kind) AS LOGIC
 			SWITCH elementKind

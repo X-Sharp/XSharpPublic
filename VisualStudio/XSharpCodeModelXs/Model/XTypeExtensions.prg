@@ -26,7 +26,7 @@ BEGIN NAMESPACE XSharpModel
       RETURN type:Name
    
    STATIC METHOD GetMethods(SELF type as IXType) AS IXMember[]
-      return type:Members:Where( { m => m.Kind == Kind.Method }):ToArray()
+      return type:Members:Where( { m => m.Kind:IsMethod() }):ToArray()
 
    STATIC METHOD GetFields(SELF type as IXType) AS IXMember[]
       return type:Members:Where( { m => m.Kind:IsField()}):ToArray()
@@ -38,16 +38,16 @@ BEGIN NAMESPACE XSharpModel
       return type:Members:Where( { m => m.Kind:IsProperty()}):ToArray()
 
    STATIC METHOD GetMember(SELF type as IXType, strName as STRING) AS IXMember[]
-      return type:Members:Where( { m => m.Name == strName}):ToArray()
+      return type:Members:Where( { m => NameEquals(m.Name, strName)}):ToArray()
 
    STATIC METHOD GetMethod(SELF type as IXType, strName as STRING) AS IXMember[]
-      return type:Members:Where( { m => m.Name == strName .and. m.Kind == Kind.Method}):ToArray()
+      return type:Members:Where( { m => NameEquals(m.Name, strName) .and. m.Kind:IsMethod()}):ToArray()
 
    STATIC METHOD GetProperty(SELF type as IXType, strName as STRING) AS IXMember[]
-      return type:Members:Where( { m => m.Name == strName .and. m.Kind:IsProperty()}):ToArray()
+      return type:Members:Where( { m => NameEquals(m.Name, strName) .and. m.Kind:IsProperty()}):ToArray()
 
    STATIC METHOD GetField(SELF type as IXType, strName as STRING) AS IXMember[]
-      return type:Members:Where( { m => m.Name == strName .and. m.Kind:IsField() }):ToArray()
+      return type:Members:Where( { m => NameEquals(m.Name, strName) .and. m.Kind:IsField() }):ToArray()
 
    STATIC METHOD GetXmlSignature(SELF tm as IXType) AS STRING
          RETURN "T:"+tm:FullName
@@ -62,6 +62,9 @@ BEGIN NAMESPACE XSharpModel
          ENDIF
       NEXT      
       RETURN FALSE
+
+   STATIC METHOD NameEquals(n1 as string, n2 as string) as logic
+      return String.Compare(n1, n2, StringComparison.OrdinalIgnoreCase) == 0
 
 	END CLASS
 END NAMESPACE 

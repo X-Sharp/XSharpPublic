@@ -1776,6 +1776,7 @@ signature             : Id=identifier
          Consume()   // LParen
          VAR aResult  := List<IXVariable>{}
          VAR start := Lt1
+         local defaultExpr AS IList<IToken>
          LOCAL cond AS DelEndToken
          cond := { token => IIF (lBracketed, token == XSharpLexer.RBRKT, token == XSharpLexer.RPAREN ) }
          DO WHILE !cond(La1) .AND. ! Eos()
@@ -1791,6 +1792,8 @@ signature             : Id=identifier
             ENDIF
             IF IsAssignOp(La1)
                // parse default value
+               Consume() // := 
+               defaultExpr := ParseExpressionAsTokens()
             ENDIF
             
             VAR token := SELF:ConsumeAndGetAny(XSharpLexer.AS, XSharpLexer.IN, XSharpLexer.OUT, XSharpLexer.REF,XSharpLexer.PARAMS)
@@ -1820,6 +1823,7 @@ signature             : Id=identifier
                   variable:ParamType := ParamType.Params
                END SWITCH
             ENDIF
+            variable:Value := SELF:TokensAsString(defaultExpr)
             aResult:Add(variable)
             IF La1 == XSharpLexer.COMMA
                Consume()

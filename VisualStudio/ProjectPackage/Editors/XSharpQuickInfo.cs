@@ -586,6 +586,13 @@ namespace XSharp.Project
                 temp = new Run(var.Name + " ");
                 temp.Foreground = txtBrush;
                 list.Add(temp);
+                if (var.Value != null) // default value
+                {
+                    temp = new Run(" :=  "+var.Value +" ");
+                    temp.Foreground = txtBrush;
+                    list.Add(temp);
+
+                }
                 temp = new Run(_optionsPage.formatKeyword(var.ParamTypeDesc) + " ");
                 temp.Foreground = this.kwBrush;
                 list.Add(temp);

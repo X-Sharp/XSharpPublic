@@ -31,6 +31,18 @@ BEGIN NAMESPACE XSharp.VO.Tests
 			Assert.Equal(2016.03.13 ,CToD("03 13-2016"))
 			Assert.Equal(2016.03.13 ,CToD("03w13w2016"))
 			Assert.Equal(2016.03.13 ,CToD("03*13*2016"))
+
+			SetDateFormat("dd/mm/yyyy")
+			Assert.Equal(2016.12.05 ,CToD("5 12 2016"))
+			Assert.Equal(2016.12.05 ,CToD(" 5 12 2016"))
+			Assert.Equal(2016.12.05 ,CToD("   5 12 2016"))
+			Assert.Equal(2016.12.05 ,CToD("   5 12 2016   "))
+			Assert.Equal(2016.01.01 ,CToD("   1 1 2016   "))
+			Assert.True(CToD(Chr(9) + "5 12 2016") == NULL_DATE)
+			Assert.True(CToD("5  12 2016") == NULL_DATE)
+			Assert.True(CToD("5 12  2016") == NULL_DATE)
+			SetDateFormat("mm/dd/yyyy")	
+			
 		RETURN
 
  		

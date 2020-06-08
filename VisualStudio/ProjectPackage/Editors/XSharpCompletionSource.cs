@@ -3084,7 +3084,7 @@ namespace XSharpLanguage
             cType = RetrieveType(xVar.File, tokenList, member, currentNS, null, out foundElement, snapshot, currentLine, dialect);
             if (foundElement != null)
             {
-                xVar.TypeName = foundElement.ReturnType.FullName;
+                xVar.TypeName = cType.FullName;
             }
             return;
         }
@@ -3125,66 +3125,60 @@ namespace XSharpLanguage
 
         private static string BuildTokenString(IList<IToken> tokens, int start = 0)
         {
+            var res = getDelimitedTokens(tokens, start, XSharpLexer.LPAREN, XSharpLexer.RPAREN);
+            if (res.Length > 0)
+            {
+                return res + "()";
+            }
+            res = getDelimitedTokens(tokens, start, XSharpLexer.LCURLY, XSharpLexer.RCURLY);
+            if (res.Length > 0)
+            {
+                return res + "{}";
+            }
+            res = getDelimitedTokens(tokens, start, XSharpLexer.LBRKT, XSharpLexer.RBRKT);
+            if (res.Length > 0)
+            {
+                return res + "[]";
+            }
+            return "";
+        }
+
+        static string getDelimitedTokens(IList<IToken> tokens, int start, int leftToken, int rightToken)
+        {
             var sb = new StringBuilder();
             bool left = false, right = false;
             int nested = 0;
             bool done = false;
-            for (int i= start; i< tokens.Count && ! done; i++)
-            {
-                var t = tokens[i];
-                switch (t.Type)
-                {
-                    case XSharpLexer.LPAREN:
-                        left = true;
-                        nested++;
-                        break;
-                    case XSharpLexer.RPAREN:
-                        right = true;
-                        nested--;
-                        if (nested == 0)
-                            done = true;
-                        break;
-                    default:
-                        if (!left)
-                        {
-                            sb.Append(t.Text);
-                        }
-                        break;
-                }
-            }
-            if (left && right && sb.Length > 0)
-                return sb.ToString()+"()";
-            left = false;
-            right = false;
-            nested = 0;
-            done = false;
             for (int i = start; i < tokens.Count && !done; i++)
             {
                 var t = tokens[i];
-                switch (t.Type)
+                if (t.Type == leftToken)
                 {
-                    case XSharpLexer.LCURLY:
-                        left = true;
-                        nested++;
-                        break;
-                    case XSharpLexer.RCURLY:
-                        right = true;
-                        nested--;
-                        if (nested == 0)
-                            done = true;
-                        break;
-                    default:
-                        if (!left)
-                        {
-                            sb.Append(t.Text);
-                        }
-                        break;
+                    left = true;
+                    nested++;
+                }
+                else if (t.Type == rightToken)
+                {
+                    right = true;
+                    nested--;
+                    if (nested == 0)
+                        done = true;
+                }
+                else
+                {
+                    if (!left)
+                    {
+                        sb.Append(t.Text);
+                    }
                 }
             }
-            if (left && right && sb.Length > 0)
-                return sb.ToString()+"{}";
+            if (left && right)
+            {
+                return sb.ToString();
+            }
             return "";
         }
+
 
         /// <summary>
         /// Search for the Constructor in the corresponding Type,

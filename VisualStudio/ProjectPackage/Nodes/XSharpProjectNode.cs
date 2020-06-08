@@ -1688,8 +1688,16 @@ namespace XSharp.Project
             }
             return result;
         }
+        public IXType ResolveExternalType(string name, IReadOnlyList<string> usings)
+        {
+            var model = this.ProjectModel;
+            var myusings = new List<string>();
+            myusings.AddRange(usings);
+            myusings.AddUnique("System");
+            return model.FindSystemType(name, myusings);
+        }
 
-   
+
         #endregion
         #region IVsSingleFileGeneratorFactory
         IVsSingleFileGeneratorFactory factory = null;

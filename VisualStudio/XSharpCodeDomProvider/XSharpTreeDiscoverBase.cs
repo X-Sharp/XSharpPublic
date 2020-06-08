@@ -24,7 +24,7 @@ namespace XSharp.CodeDom
     {
 
         protected IProjectTypeHelper _projectNode;
-        protected Dictionary<string, TypeXType> _types;    // type cache
+        protected Dictionary<string, IXType> _types;    // type cache
         protected Dictionary<string, EnvDTE.CodeElement> _stypes;    // ENVDTE.CodeElement kind = type cache
         protected List<string> _usings;          // uses for type lookup
         protected IList<IToken> _tokens;          // used to find comments
@@ -47,7 +47,7 @@ namespace XSharp.CodeDom
         {
             FieldList = new Dictionary<ParserRuleContext, List<XCodeMemberField>>();
             _projectNode = projectNode;
-            this._types = new Dictionary<string, TypeXType>(StringComparer.OrdinalIgnoreCase);
+            this._types = new Dictionary<string, IXType>(StringComparer.OrdinalIgnoreCase);
             this._usings = new List<string>();
             this._stypes = new Dictionary<string, EnvDTE.CodeElement>(StringComparer.OrdinalIgnoreCase);
         }
@@ -188,7 +188,7 @@ namespace XSharp.CodeDom
             //}
             if (!sName.EndsWith(">"))
             {
-                var type = findTypeXType(sName);
+                var type = findType(sName);
                 if (type != null)
                 {
                    return new XCodeTypeReference(type);
@@ -721,7 +721,7 @@ namespace XSharp.CodeDom
 
         protected XCodeTypeReference BuildTypeReference(string name)
         {
-            var xtype = findTypeXType(name);
+            var xtype = findType(name);
             if (xtype != null)
             {
                 return new XCodeTypeReference(xtype);
@@ -734,7 +734,7 @@ namespace XSharp.CodeDom
 
         }
 
-        protected TypeXType findInCache(string typeName)
+        protected IXType findInCache(string typeName)
         {
             if (_types.ContainsKey(typeName))
             {
@@ -744,80 +744,56 @@ namespace XSharp.CodeDom
         }
 
 
-        protected IXType findXType(string typeName, IList<string> usings = null)
+        protected IXType findType(string typeName, IList<string> usings = null)
         {
             if (_types.ContainsKey(typeName))
             {
-                return _types[typeName].xType;
+                return _types[typeName];
             }
             if (usings == null)
             {
                 usings = _usings;
             }
-            var type = _projectNode.ResolveXType(typeName, usings.ToArray());
+            IXType type;
+            var myusings = usings.ToArray();
+            type = _projectNode.ResolveXType(typeName, myusings);
             if (type != null)
-                _types.Add(typeName, new TypeXType(type));
+            {
+                _types.Add(typeName, type);
+                return type;
+            }
+            type = _projectNode.ResolveReferencedType(typeName, myusings);
+            if (type != null)
+            {
+                _types.Add(typeName, type);
+                return type;
+            }
+            type = _projectNode.ResolveExternalType(typeName, myusings);
+            if (type != null)
+            {
+                _types.Add(typeName, type);
+            }
             return type;
         }
 
-        protected IXType findReferencedType(string typeName)
-        {
-            if (_types.ContainsKey(typeName))
-            {
-                return _types[typeName].xType;
-            }
-            var type = _projectNode.ResolveReferencedType(typeName, _usings.ToArray());
-            //
-            if (type != null)
-            {
-                _types.Add(typeName, new TypeXType(type));
-            }
-            return type;
-        }
-        protected TypeXType findParentType(IXType xtype)
+
+        protected IXType findParentType(IXType xtype)
         {
             var result = findInCache(xtype.BaseType);
             if (result != null)
                 return result;
-            var xparent = findXType(xtype.BaseType, xtype.FileUsings);
+            var xparent = findType(xtype.BaseType, xtype.FileUsings);
             if (xparent != null)
-                return new TypeXType(xparent);
-            var parent = findXType(xtype.BaseType);
+                return xparent;
+            var parent = findType(xtype.BaseType);
             if (parent == null)
             {
                 parent = _projectNode.ResolveXType(xtype.BaseType, xtype.FileUsings.ToArray());
             }
-            if (parent != null)
-                return new TypeXType(parent);
-            return null;
+            return parent;
 
         }
 
-        protected TypeXType findTypeXType(string typeName)
-        {
-            TypeXType txtype = findInCache(typeName);
-            if (txtype == null)
-            {
-                var xtype = findXType(typeName);
-                if (xtype == null)
-                {
-                    xtype = findReferencedType(typeName);
-                }
-                if (xtype != null)
-                {
-                    txtype = new TypeXType(xtype);
-                }
-                else
-                {
-                    var type = findXType(typeName);
-                    if (type != null)
-                    {
-                        txtype = new TypeXType(type);
-                    }
-                }
-            }
-            return txtype;
-        }
 
         protected XCodeTypeReference BuildNativeType(XSharpParser.NativeTypeContext nativeType)
         {

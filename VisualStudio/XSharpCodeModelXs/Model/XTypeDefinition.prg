@@ -83,6 +83,7 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY Interfaces  AS IList<STRING> GET _signature:Interfaces:ToArray()
       PROPERTY TypeParameters as IList<STRING> GET SELF:_signature:TypeParameters:ToArray()
       PROPERTY TypeParameterConstraints as IList<STRING> GET SELF:_signature:TypeParameterContraints:ToArray()
+      PROPERTY OriginalTypeName  AS STRING GET SELF:TypeName
 
       
       PROPERTY Members AS IList<IXMember>  

@@ -4,7 +4,7 @@ BEGIN NAMESPACE XSharpModel
    INTERFACE IXElement
       PROPERTY Name        as STRING GET
       PROPERTY Kind        as Kind   GET
-      PROPERTY TypeName    AS STRING GET
+      PROPERTY TypeName          AS STRING GET
       PROPERTY Parent      AS IXEntity GET SET
    END INTERFACE
       
@@ -33,6 +33,8 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY BaseType    AS STRING GET
       PROPERTY Interfaces  AS IList<STRING> GET   
       PROPERTY IsGeneric   AS LOGIC GET
+      PROPERTY OriginalTypeName  AS STRING GET 
+         
       METHOD   AddTypeParameter(name AS STRING) AS VOID
       METHOD   AddConstraints(name AS STRING) AS VOID
       
@@ -53,6 +55,7 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY DeclaringType  AS STRING GET  
       PROPERTY IsExtension    AS LOGIC GET
       PROPERTY XMLSignature   AS STRING GET   
+      PROPERTY OriginalTypeName  AS STRING GET
    END INTERFACE
    
    INTERFACE IXVariable   INHERIT IXElement

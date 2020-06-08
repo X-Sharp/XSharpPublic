@@ -198,15 +198,6 @@ BEGIN NAMESPACE XSharpModel
          END GET
       END PROPERTY
       
-      METHOD GetMember(elementName AS STRING) AS IList<XMemberReference>
-         VAR foundMembers := List<XMemberReference>{}
-         FOREACH x AS XMemberReference IN SELF:XMembers
-            IF nameEquals(x:Name, elementName)
-               foundMembers:Add(x)
-            ENDIF
-         NEXT
-         RETURN foundMembers
-         
       PRIVATE METHOD nameEquals(name AS STRING, compareWith AS STRING) AS LOGIC
          RETURN String.Compare(name, compareWith, StringComparison.OrdinalIgnoreCase) == 0
       
@@ -244,7 +235,7 @@ BEGIN NAMESPACE XSharpModel
 
       PROPERTY TypeParameters as IList<STRING> GET SELF:_signature:TypeParameters:ToArray()
       PROPERTY TypeParameterConstraints as IList<STRING> GET SELF:_signature:TypeParameterContraints:ToArray()
-      PROPERTY XMLSignature   AS STRING GET SELF:GetXmlSignature()
+      PROPERTY XMLSignature   AS STRING GET SELF:GetXmlSignature() 
       
    END CLASS
    

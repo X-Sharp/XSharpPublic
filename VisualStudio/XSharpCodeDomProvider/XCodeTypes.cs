@@ -16,18 +16,11 @@ namespace XSharp.CodeDom
     internal class XCodeTypeReference : CodeTypeReference
     {
 
-        internal IXType XType { get; set; }
         internal XCodeTypeReference(string typeName) : base(typeName)
         {
-            XType = null;
         }
         internal XCodeTypeReference(IXType type) : base(type.FullName)
         {
-            XType = type;
-        }
-        internal XCodeTypeReference(TypeXType type) : base(type.FullName)
-        {
-            XType = type.xType;
         }
     }
 

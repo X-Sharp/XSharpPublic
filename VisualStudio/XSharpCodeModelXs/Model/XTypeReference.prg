@@ -16,7 +16,7 @@ BEGIN NAMESPACE XSharpModel
    [DebuggerDisplay("{Kind} {FullName,nq}")];
    CLASS XTypeReference INHERIT XEntityReference IMPLEMENTS IXType
       PRIVATE _baseType       AS XTypeReference
-      PRIVATE _members        AS IList<XMemberReference>
+      PRIVATE _members        AS XSortedDictionary<STRING, XMemberReference>
       PRIVATE _children       AS IList<XTypeReference>
       PRIVATE _signature      AS XTypeSignature
       PRIVATE _typeDef        as TypeDefinition
@@ -24,11 +24,11 @@ BEGIN NAMESPACE XSharpModel
 
      CONSTRUCTOR(typedef as TypeDefinition, asm as XAssembly)
          SUPER(typedef:Name, GetKind(typedef), ConvertAttributes(typedef:Attributes), asm)  
-         SELF:_typeDef     := typedef
-         SELF:_members     := List<XMemberReference>{}
-         SELF:_children    := List<XTypeReference>{}
-         SELF:_signature   := XTypeSignature{"System.Object"}
-         SELF:Namespace    := typedef:Namespace
+         SELF:_typeDef        := typedef
+         SELF:_members        := XSortedDictionary<STRING, XMemberReference>{MemberNameComparer{}}
+         SELF:_children       := List<XTypeReference>{}
+         SELF:_signature      := XTypeSignature{"System.Object"}
+         SELF:Namespace       := typedef:Namespace
          IF typedef:BaseType != NULL
             SELF:BaseType     := typedef:BaseType:FullName
          ELSE
@@ -162,7 +162,12 @@ BEGIN NAMESPACE XSharpModel
                   ENDIF
                ENDIF
               BEGIN LOCK SELF
-                  SELF:_members := aMembers:ToArray()
+                  // now add to 
+                  self:_members:Clear()
+                  FOREACH var xmember in aMembers
+                     SELF:_members:Add(xmember:Name, xmember)
+                  NEXT
+                  SELF:_members:Sort()
               END LOCK
               // nested children ?
               IF _typeDef:HasNestedTypes
@@ -175,8 +180,8 @@ BEGIN NAMESPACE XSharpModel
                   END LOCK
                ENDIF
                IF _typeDef:HasInterfaces
-                  FOREACH VAR interface in _typeDef:Interfaces
-                     SELF:_signature:AddInterface(interface:InterfaceType:FullName)
+                  FOREACH VAR @@interface in _typeDef:Interfaces
+                     SELF:_signature:AddInterface(@@interface:InterfaceType:FullName)
                   NEXT
                ENDIF
                
@@ -184,17 +189,45 @@ BEGIN NAMESPACE XSharpModel
          ENDIF
          RETURN
       
+      
+      
+      METHOD GetMembers(elementName AS STRING) AS IList<IXMember>
+         VAR tempMembers := List<IXMember>{}
+         SELF:Resolve()
+         if ! String.IsNullOrEmpty(elementName)
+            SELF:_members:Sort()
+            var matching := SELF:_members:FindMatching(elementName)
+            tempMembers:AddRange(matching)      
+         ELSE
+            tempMembers:AddRange(SELF:XMembers)      
+         ENDIF
+         RETURN tempMembers
+         
+      METHOD GetMembers(elementName AS STRING, lExact as LOGIC) AS IList<IXMember>
+      LOCAL result as IList<IXMember>
+      IF lExact
+         result := List<IXMember>{}
+         FOREACH var xmember in SELF:GetMembers(elementName)
+            IF String.Compare(xmember:Name, elementName, StringComparison.OrdinalIgnoreCase) == 0
+               result:Add(xmember)
+            ENDIF
+         NEXT
+      ELSE
+         result := SELF:GetMembers(elementName)
+      ENDIF
+      RETURN result
+      
       PROPERTY Members AS IList<IXMember>  
          GET
             SELF:Resolve()
-            RETURN (IList<IXMember>) SELF:_members
+            RETURN (IList<IXMember>) SELF:_members:Values
          END GET
       END PROPERTY
       
       PROPERTY XMembers AS IList<XMemberReference>
          GET
             SELF:Resolve()
-            RETURN SELF:_members
+            RETURN SELF:_members:Values
          END GET
       END PROPERTY
       
@@ -236,6 +269,14 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY TypeParameters as IList<STRING> GET SELF:_signature:TypeParameters:ToArray()
       PROPERTY TypeParameterConstraints as IList<STRING> GET SELF:_signature:TypeParameterContraints:ToArray()
       PROPERTY XMLSignature   AS STRING GET SELF:GetXmlSignature() 
+      
+      PRIVATE CLASS MemberNameComparer IMPLEMENTS IComparer<STRING>
+      METHOD Compare(x as String, y as String) AS LONG
+         if x == NULL .or. y == NULL
+            return 0
+         endif
+         return String.Compare(x, 0, y, 0, y:Length, TRUE)
+   END CLASS
       
    END CLASS
    

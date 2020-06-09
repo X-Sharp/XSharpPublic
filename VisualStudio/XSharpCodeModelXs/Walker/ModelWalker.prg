@@ -203,6 +203,7 @@ BEGIN NAMESPACE XSharpModel
 					END LOCK
 					WriteOutputMessage("-->> Walker() Resolve types "+project:Name)
 					project:ResolveReferences()
+					project:MergePartialTypes()
 					WriteOutputMessage("<<-- Walker() Resolve types "+project:Name)
 				ENDDO
 

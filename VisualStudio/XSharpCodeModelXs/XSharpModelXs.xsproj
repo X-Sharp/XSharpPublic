@@ -154,6 +154,9 @@
       <Link>Properties\constants.prg</Link>
     </Compile>
     <Compile Include="CompletionType.prg" />
+    <Compile Include="Helpers\TextInterval.prg" />
+    <Compile Include="Helpers\TextRange.prg" />
+    <Compile Include="Helpers\XSortedDictionary.prg" />
     <Compile Include="Interfaces.prg" />
     <Compile Include="MetaData\AssemblyInfo.prg" />
     <Compile Include="MetaData\AssemblyReader.prg" />
@@ -183,8 +186,6 @@
     <Compile Include="ProjectSystem\XProject.prg" />
     <Compile Include="ProjectSystem\XSolution.prg" />
     <Compile Include="Properties\AssembyInfo.prg" />
-    <Compile Include="TextInterval.prg" />
-    <Compile Include="TextRange.prg" />
     <Compile Include="TypeExtensions.prg" />
     <Compile Include="Walker\ModelWalker.prg" />
     <Compile Include="Walker\XsParser.prg" />
@@ -195,6 +196,7 @@
   <ItemGroup>
     <Folder Include="Model\" />
     <Folder Include="MetaData" />
+    <Folder Include="Helpers" />
     <Folder Include="ProjectSystem\" />
     <Folder Include="Walker" />
     <Folder Include="Properties\" />

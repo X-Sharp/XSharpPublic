@@ -37,8 +37,7 @@ BEGIN NAMESPACE XSharpModel
         PRIVATE _mergedTypes							   AS ConcurrentDictionary<STRING, XTypeDefinition>
         PRIVATE _OtherFilesDict							AS ConcurrentDictionary<STRING, XFile>
         PRIVATE _SourceFilesDict						   AS ConcurrentDictionary<STRING, XFile>
-        PRIVATE _TypeDict								   AS ConcurrentDictionary<STRING, List<STRING>>
-        PRIVATE _TypeCatalog								AS ConcurrentDictionary<CHAR, List<STRING>>
+        PRIVATE _TypeDict								   AS XSortedDictionary<STRING, STRING>
         PRIVATE _ExternalTypeCache						AS ConcurrentDictionary<STRING, XTypeReference>
         PRIVATE _ImplicitNamespaces                AS List<STRING>
         PROPERTY FileWalkCompleted                 AS LOGIC AUTO
@@ -73,8 +72,7 @@ BEGIN NAMESPACE XSharpModel
             SELF:_projectNode := project
             SELF:_SourceFilesDict := ConcurrentDictionary<STRING, XFile>{StringComparer.OrdinalIgnoreCase}
             SELF:_OtherFilesDict := ConcurrentDictionary<STRING, XFile>{StringComparer.OrdinalIgnoreCase}
-            SELF:_TypeDict       := ConcurrentDictionary<STRING, List<STRING> > {StringComparer.OrdinalIgnoreCase}
-            SELF:_TypeCatalog    := ConcurrentDictionary<CHAR, List<STRING> > {}
+            SELF:_TypeDict       := XSortedDictionary<STRING, STRING > {StringComparer.OrdinalIgnoreCase}
             SELF:_ExternalTypeCache := ConcurrentDictionary<STRING, XTypeReference> {StringComparer.OrdinalIgnoreCase}
             SELF:Loaded := TRUE
             SELF:FileWalkCompleted := FALSE
@@ -194,7 +192,27 @@ BEGIN NAMESPACE XSharpModel
                     SELF:WriteOutputMessage(">>-- ResolveReferences()")
                 ENDIF
                 RETURN
-
+            
+            METHOD MergePartialTypes as VOID
+               TRY
+                  SELF:WriteOutputMessage("<<-- MergePartialTypes()")
+                  SELF:ProjectNode:SetStatusBarText(String.Format("Merging partial types for project {0}", SELF:Name))
+                  SELF:ProjectNode:SetStatusBarAnimation(TRUE, 0)
+                  FOREACH var element in SELF:_SourceFilesDict
+                     var file := element:Value 
+                     foreach var type in file:TypeList
+                        if type:Value:IsPartial
+                           IF !_mergedTypes:ContainsKey(type:Key)
+                              SELF:MergeType(type:Value:FullName,TRUE)
+                           ENDIF
+                        ENDIF
+                     NEXT
+                  NEXT
+                  
+               END TRY
+               SELF:ProjectNode:SetStatusBarAnimation(FALSE, 0)
+               SELF:ProjectNode:SetStatusBarText("")
+               SELF:WriteOutputMessage(">>-- MergePartialTypes()")
 
             METHOD UpdateAssemblyReference(fileName AS STRING) AS VOID
                 IF ! AssemblyInfo.DisableAssemblyReferences .AND. ! String.IsNullOrEmpty(fileName)
@@ -500,47 +518,35 @@ BEGIN NAMESPACE XSharpModel
         #region Lookup Types and Functions
         METHOD FindFunction(name AS STRING) AS IXMember
             WriteOutputMessage("FindFunction() "+name)
-            IF _TypeDict:ContainsKey(XLiterals.GlobalName)
-                VAR fileNames := _TypeDict[XLiterals.GlobalName]:ToArray()
-                FOREACH sFile AS STRING IN fileNames
-                    LOCAL file AS XFile
-                    // It seems sometimes the Key has changed; may be after a reparse ?
-                    // To just TRY to get the file
-                    IF _SourceFilesDict:TryGetValue( sFile, REF file )
-                        VAR members := file:GlobalType:Members
-                        IF members != NULL
-                           var mem := members:Where ({ x=> (x.Kind == Kind.Procedure .OR. x:Kind == Kind.Function) .and. String.Compare(x:Name, name, StringComparison.OrdinalIgnoreCase) == 0 }):FirstOrDefault()
-                           if mem != null
-                              WriteOutputMessage("FindFunction()  found: "+mem:FullName)
-                              return mem
-                           ENDIF
-                        ENDIF
-                    ENDIF
-                NEXT
+            var xType := SELF:LookupMergedType(XLiterals.GlobalName)
+            if xType == NULL
+               SELF:MergeType(XLiterals.GlobalName,TRUE)
+               xType := SELF:LookupMergedType(XLiterals.GlobalName)
             ENDIF
-
+            IF xType != NULL
+               var mem := xType:GetMembers(name,TRUE):Where (;
+                  { x=> (x.Kind == Kind.Procedure .OR. x:Kind == Kind.Function)   }):FirstOrDefault()
+               if mem != null
+                  WriteOutputMessage("FindFunction()  found: "+mem:FullName)
+                  return mem
+               ENDIF
+            ENDIF
             RETURN NULL
 
             METHOD FindGlobalOrDefine(name AS STRING) AS IXMember
                 WriteOutputMessage("FindGlobalOrDefine() "+name)
-                IF _TypeDict:ContainsKey(XLiterals.GlobalName)
-                    VAR fileNames := _TypeDict[XLiterals.GlobalName]:ToArray()
-                    FOREACH sFile AS STRING IN fileNames
-                        LOCAL file AS XFile
-                        // It seems sometimes the Key has changed; may be after a reparse ?
-                        // To just TRY to get the file
-                        IF _SourceFilesDict:TryGetValue( sFile, REF file )
-                            VAR members := file:GlobalType:Members
-                            IF members != NULL
-                                FOREACH oMember AS IXMember IN members
-                                    IF (oMember:Kind == Kind.VOGlobal .OR. oMember:Kind == Kind.VODefine ) .AND. String.Compare(oMember:Name, name, TRUE) == 0
-                                        WriteOutputMessage("FindGlobalOrDefine()  found: "+oMember:FullName)
-                                        RETURN oMember
-                                    ENDIF
-                                NEXT
-                            ENDIF
-                        ENDIF
-                    NEXT
+                var xType := SELF:LookupMergedType(XLiterals.GlobalName)
+                if xType == NULL
+                     SELF:MergeType(XLiterals.GlobalName,TRUE)
+                     xType := SELF:LookupMergedType(XLiterals.GlobalName)
+                ENDIF
+                if xType != NULL  
+                   var oMember := xType:GetMembers(name,TRUE):Where (;
+                     { x=> (x.Kind == Kind.VOGlobal .OR. x:Kind == Kind.VODefine)   }):FirstOrDefault()
+                     IF oMember != NULL
+                        WriteOutputMessage("FindGlobalOrDefine()  found: "+oMember:FullName)
+                        RETURN oMember
+                   ENDIF
                 ENDIF
 
             RETURN NULL
@@ -575,22 +581,19 @@ BEGIN NAMESPACE XSharpModel
 
         METHOD Lookup(typeName AS STRING, caseInvariant AS LOGIC) AS XTypeDefinition
             LOCAL xType AS XTypeDefinition
-            LOCAL xTemp AS XTypeDefinition
             WriteOutputMessage("Lookup() "+typeName)
             xType := SELF:LookupMergedType(typeName)
             IF xType != NULL
                 WriteOutputMessage("Lookup()  found: "+xType:FullName)
                 RETURN xType
             ENDIF
-            xTemp := NULL
             IF _TypeDict:ContainsKey(typeName)
                 VAR files := _TypeDict[typeName]:ToArray()
                 FOREACH sFile AS STRING IN files
-                    LOCAL file AS XFile
                     // It seems sometimes the Key has changed; may be after a reparse ?
                     // To just TRY to get the file
-                    IF _SourceFilesDict:TryGetValue( sFile, REF file )
-                        IF file:TypeList:TryGetValue(typeName, OUT xTemp ) .AND. xTemp  != NULL
+                    IF _SourceFilesDict:TryGetValue( sFile, OUT var file )
+                        IF file:TypeList:TryGetValue(typeName, OUT VAR xTemp ) .AND. xTemp  != NULL
                             IF (! caseInvariant .AND. ((xTemp:FullName != typeName) .AND. xTemp:Name != typeName))
                                 xTemp := NULL
                             ENDIF
@@ -618,6 +621,32 @@ BEGIN NAMESPACE XSharpModel
             ENDIF
             RETURN xType
 
+      METHOD MergeType(typeName as STRING, caseInvariant as LOGIC) AS VOID
+         IF !_TypeDict:ContainsKey(typeName)
+            RETURN
+         ENDIF
+         VAR files := _TypeDict[typeName]:ToArray()
+         LOCAL xType  as XTypeDefinition
+         FOREACH sFile AS STRING IN files
+            // It seems sometimes the Key has changed; may be after a reparse ?
+            // To just TRY to get the file
+            IF _SourceFilesDict:TryGetValue( sFile, OUT VAR file )
+               IF file:TypeList:TryGetValue(typeName, OUT VAR xTemp ) .AND. xTemp  != NULL
+                  IF ! xTemp:IsPartial
+                     WriteOutputMessage("Lookup()  found: "+xTemp:FullName + " in " + file:Name )
+                     RETURN
+                  ENDIF
+                  IF xType != NULL
+                     xType := xType:Merge(xTemp)
+                  ELSE
+                     xType := XTypeDefinition{xTemp}
+                  ENDIF
+               ENDIF
+            ENDIF
+         NEXT
+         SELF:AddMergedType(xType)
+         RETURN
+         
         METHOD LookupReferenced(typeName AS STRING, caseInvariant AS LOGIC) AS XTypeDefinition
             LOCAL xType AS XTypeDefinition
             xType := NULL
@@ -769,8 +798,7 @@ BEGIN NAMESPACE XSharpModel
             END GET
          END PROPERTY
          
-        PROPERTY TypeCatalog as ConcurrentDictionary<CHAR, List<STRING>> GET _TypeCatalog
-        PROPERTY TypeList    as ICollection<String>       GET _TypeDict:Keys
+        PROPERTY TypeDict    as XSortedDictionary<String,String>   GET _TypeDict
         
         #endregion
 
@@ -784,18 +812,7 @@ BEGIN NAMESPACE XSharpModel
                     fileName := xType:File:XamlCodeBehindFile
                 ENDIF
                 BEGIN LOCK _TypeDict
-                    IF !SELF:_TypeDict:ContainsKey(typeName)
-                        SELF:_TypeDict[typeName] := List<STRING>{}
-                    ENDIF
-                    SELF:_TypeDict[typeName]:Add(fileName)
-                    typeName := typeName:ToUpper()
-                    var first := typeName[0]
-                    IF !self:_TypeCatalog:ContainsKey(first)
-                       self:_TypeCatalog:TryAdd(first, List<String>{})
-                    ENDIF
-                    IF (!SELF:_TypeCatalog[first]:Contains(typeName))
-                       SELF:_TypeCatalog[first]:Add(typeName)
-                    ENDIF
+                    SELF:_TypeDict:Add(typeName, fileName)
                      
                 END LOCK
             ENDIF
@@ -813,15 +830,7 @@ BEGIN NAMESPACE XSharpModel
                         SELF:_TypeDict[typeName]:Remove(fileName)
                     ENDIF
                     IF SELF:_TypeDict[typeName]:Count == 0
-                        var first := Char.ToUpper(typeName[0])
-                        if self:_TypeCatalog:ContainsKey(first)
-                           IF (SELF:_TypeCatalog[first]:Contains(typeName))
-                              SELF:_TypeCatalog[first]:Remove(typeName)
-                           ENDIF
-                        ENDIF
-                        SELF:_TypeCatalog[first]:Remove(typeName)
-                        SELF:_TypeDict:TryRemove(typeName, OUT VAR _)
-                        
+                        SELF:_TypeDict:Remove(typeName)
                     ENDIF
                  ENDIF
                   
@@ -832,20 +841,16 @@ BEGIN NAMESPACE XSharpModel
             #endregion
         #region Merged Types
         INTERNAL METHOD AddMergedType(xType AS XTypeDefinition) AS VOID
-            IF xType:Name != XLiterals.GlobalName
-                VAR name := xType:FullName
-                IF SELF:_mergedTypes:ContainsKey(name)
-                    SELF:_mergedTypes:TryRemove(name, OUT VAR _)
-                ENDIF
-                SELF:_mergedTypes:TryAdd(name, xType)
+            VAR name := xType:FullName
+            IF SELF:_mergedTypes:ContainsKey(name)
+               SELF:_mergedTypes:TryRemove(name, OUT VAR _)
             ENDIF
+            SELF:_mergedTypes:TryAdd(name, xType)
             RETURN
 
         INTERNAL METHOD RemoveMergedType(fullName AS STRING) AS VOID
-            IF fullName != XLiterals.GlobalName
-                IF SELF:_mergedTypes:ContainsKey(fullName)
-                    SELF:_mergedTypes:TryRemove(fullName, OUT VAR _)
-                ENDIF
+            IF SELF:_mergedTypes:ContainsKey(fullName)
+               SELF:_mergedTypes:TryRemove(fullName, OUT VAR _)
             ENDIF
             RETURN
 

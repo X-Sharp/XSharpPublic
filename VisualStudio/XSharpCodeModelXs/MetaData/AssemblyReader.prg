@@ -90,7 +90,7 @@ CLASS AssemblyReader
          ENDIF
          var typeref := XTypeReference{type, assembly}
          assembly:TypeList:Add(name, typeref)
-                  
+         assembly:TypeList:Add(typeref:Name, typeref)         
          if SELF:HasExtensionMethods(type)
             SELF:LoadExtensionMethods(type)
          endif
@@ -99,13 +99,6 @@ CLASS AssemblyReader
                   SELF:AddType(child,assembly)
                NEXT
          ENDIF  
-         var first := Char.ToUpper(name[0])
-         if assembly:TypeCatalog:ContainsKey(first)
-            assembly:TypeCatalog[first]:Add(name)
-         else
-            assembly:TypeCatalog:Add(first, List<String>{})
-            assembly:TypeCatalog[first]:Add(name)
-         endif
      ENDIF
      RETURN
    PRIVATE METHOD HasExtensionMethods(typedef as TypeDefinition) AS LOGIC

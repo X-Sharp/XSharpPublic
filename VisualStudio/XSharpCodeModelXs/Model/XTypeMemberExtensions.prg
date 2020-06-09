@@ -75,17 +75,9 @@ BEGIN NAMESPACE XSharpModel
       STATIC METHOD GetOverloads(SELF tm as IXMember) AS IXMember[]
          var result := List<IXMember>{}
          IF tm:ParentType != NULL
-            foreach var xm in tm:ParentType:Members
-               if xm.Kind == tm.Kind .and. NameEquals(tm.Name, xm.Name)
-                  result:Add(xm)
-               endif
-            next
-            
+            result:AddRange(tm:ParentType:GetMembers(tm.Name, TRUE))
          ENDIF
          RETURN result:ToArray()         
-
-   STATIC METHOD NameEquals(n1 as string, n2 as string) as logic
-      return String.Compare(n1, n2, StringComparison.OrdinalIgnoreCase) == 0
 
       STATIC METHOD GetXmlSignature(SELF tm as IXMember) AS STRING
          local prefix as String

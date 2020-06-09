@@ -606,18 +606,12 @@ namespace XSharpLanguage
                 return;
             foreach (AssemblyInfo assemblyInfo in references)
             {
-                char first = char.ToUpper(startWith[0]);
-                if (!assemblyInfo.TypeCatalog.ContainsKey(first))
-                {
-                    continue;
-                }
-                foreach (var typeName in assemblyInfo.TypeCatalog[first].Where(name => nameStartsWith(name, startWith)))
+                foreach (var type in assemblyInfo.Types.FindMatching(startWith))
                 {
                     //if (XSharpTokenTools.isGenerated(typeInfo.Value))
                     //    continue;
-                    var type = assemblyInfo.Types[typeName];
 
-                    string realTypeName = typeName;
+                    string realTypeName = type.Name;
                     if (IsHiddenName(realTypeName))
                     {
                        continue;
@@ -701,13 +695,7 @@ namespace XSharpLanguage
                 startLen = dotPos + 1;
             //
 
-            var first = Char.ToUpper(startWith[0]);
-            if (!project.TypeCatalog.ContainsKey(first))
-            {
-                return;
-            }
-
-            foreach (var typeName in project.TypeList.Where(name => nameStartsWith(name, startWith)))
+            foreach (var typeName in project.TypeDict.FindMatching(startWith))
             {
                 var typeInfo = project.Lookup(typeName, true);
                 string realTypeName = typeInfo.FullName;
@@ -849,7 +837,7 @@ namespace XSharpLanguage
             if (currentMember.Kind.IsClassMember(_dialect))
             {
                 var classElement = currentMember.Parent as XTypeDefinition;
-                foreach (var member in classElement.Members.Where(m => m.Kind == Kind.Field && nameStartsWith(m.Name, startWith)))
+                foreach (var member in classElement.GetMembers(startWith).Where(m => m.Kind == Kind.Field ))
                 {
                     ImageSource icon = _provider.GlyphService.GetGlyph(member.getGlyphGroup(), member.getGlyphItem());
                     if (!compList.Add(new XSCompletion(member.Name, member.Name, member.Prototype, icon, null, Kind.Field,"")))
@@ -880,7 +868,7 @@ namespace XSharpLanguage
             IXType Owner = parent as IXType;
             //
             bool hideAdvanced = _optionsPage.HideAdvancemembers;
-            foreach (var elt in Owner.Members.Where(e => nameStartsWith(e.Name, startWith)))
+            foreach (var elt in Owner.GetMembers(startWith))
             {
                 if (elt.Kind == Kind.Constructor)
                     continue;
@@ -936,17 +924,6 @@ namespace XSharpLanguage
                 FillExtensions(compList, cType.XTypeRef, startWith);
             }
             // if no elements found with the filter then try with shorter text
-            if (compList.Count == 0 && ! string.IsNullOrEmpty(startWith) && cType.Type.Members.Count > 0)
-            {
-                if (startWith.Length == 1)
-                {
-                    BuildCompletionList(compList, cType, minVisibility, staticOnly, "");
-                }
-                else
-                    {
-                    BuildCompletionList(compList, cType, minVisibility, staticOnly, startWith.Substring(0,startWith.Length-1));
-                    }
-            }
         }
 
 
@@ -969,7 +946,7 @@ namespace XSharpLanguage
         private void FillMembers(CompletionList compList, IXType xType, Modifiers minVisibility, bool staticOnly, string startWith)
         {
             // Add Members for our Project Types
-            foreach (var elt in xType.Members.Where(x => nameStartsWith(x.Name, startWith)))
+            foreach (var elt in xType.GetMembers(startWith))
             {
                 bool add = true;
                 if (IsHiddenName(elt.Name))
@@ -2957,14 +2934,14 @@ namespace XSharpLanguage
                         // Find Defines and globals in this file
                         if (element == null && cType.IsEmpty() && member.File.GlobalType != null)
                         {
-                            element = member.File.GlobalType.Members.Where(x => StringEquals(x.Name, name)).FirstOrDefault();
+                            element = member.File.GlobalType.GetMembers(name, true).FirstOrDefault();
                         }
                         if (element == null)
                         {
                             var type = member.File.Project.Lookup(XSharpModel.XLiterals.GlobalName, true);
                             if (type != null)
                             {
-                                element = type.Members.Where(x => StringEquals(x.Name, name)).FirstOrDefault();
+                                element = type.GetMembers(name,true).FirstOrDefault();
                             }
                         }
                         if (element == null)
@@ -3377,7 +3354,7 @@ namespace XSharpLanguage
             foundElement = null;
             if (cType.Type != null)
             {
-                IXMember xMethod = cType.Type.Members.Where(x => x.Kind.IsClassMethod(dialect) && StringEquals(x.Name, currentToken)).FirstOrDefault();
+                IXMember xMethod = cType.Type.GetMembers(currentToken,true).Where(x => x.Kind.IsClassMethod(dialect) ).FirstOrDefault();
                 if ((xMethod != null) && staticOnly && !xMethod.IsStatic)
                 {
                     xMethod = null;
@@ -4031,7 +4008,12 @@ namespace XSharpLanguage
             iCurrentLine = Math.Min(snapshot.LineCount - 1, iCurrentLine);
             // create a walker with just the contents of the current member
             var walker = new SourceWalker(member.File);
-            var locals = walker.ParseLocals(snapshot.GetText(), member.Range.StartLine, member.Range.EndLine);
+            var start = member.Interval.Start;
+            var end = member.Interval.Width;
+            if (start + end > snapshot.Length)
+                end = snapshot.Length - start;
+            var memberSource = snapshot.GetText(start, end);
+            var locals = walker.ParseLocals(memberSource, member.Range.StartLine, member.Interval.Start);
             // Add the normal locals for class members
             if (member.Kind.IsClassMember(dialect) && !member.Modifiers.HasFlag(Modifiers.Static))
             {

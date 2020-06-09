@@ -196,8 +196,9 @@ BEGIN NAMESPACE XSharpModel
 			sType := NULL
 			FOREACH VAR assembly IN theirassemblies
 				assembly:Refresh()
-				IF assembly:Types:TryGetValue(typeName, OUT VAR type) .AND. type != NULL
-               sType := type
+            var matches := assembly:Types[typeName]
+				IF matches:Count > 0
+               sType := matches:First()
 					EXIT
 				ENDIF
 				sType := assembly:GetType(typeName)

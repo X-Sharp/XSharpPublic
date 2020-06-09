@@ -23,7 +23,7 @@ BEGIN NAMESPACE XSharpModel
       #region constructors
       
       CONSTRUCTOR(name AS STRING, kind AS Kind, attributes AS Modifiers, ;
-         span AS TextRange, position AS TextInterval, returnType AS STRING, isStatic := FALSE AS LOGIC)
+            span AS TextRange, position AS TextInterval, returnType AS STRING, isStatic := FALSE AS LOGIC)
          SUPER(name, kind, attributes, span, position)
          SELF:Parent       := NULL
          SELF:TypeName     := returnType
@@ -31,12 +31,15 @@ BEGIN NAMESPACE XSharpModel
          SELF:_signature   := XMemberSignature{}
          
       CONSTRUCTOR(sig as XMemberSignature, kind AS Kind, attributes AS Modifiers,  ;
-         span AS TextRange, position AS TextInterval, isStatic := FALSE AS LOGIC)
+            span AS TextRange, position AS TextInterval, isStatic := FALSE AS LOGIC)
          SUPER(sig:Id, kind, attributes, span, position)
          SELF:Parent       := NULL
          SELF:TypeName     := sig:DataType
          SELF:IsStatic     := isStatic
          SELF:_signature   := sig
+         FOREACH var par in sig:Parameters
+            par:Parent := SELF
+         NEXT         
          #endregion
       
       
@@ -54,6 +57,7 @@ BEGIN NAMESPACE XSharpModel
             xVar:File   := SELF:File
          ENDIF
          _signature:Parameters:Add(oVar)
+         oVar:Parent := SELF
          RETURN
          
          

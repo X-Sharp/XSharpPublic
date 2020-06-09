@@ -37,7 +37,8 @@ BEGIN NAMESPACE XSharpModel
          
       METHOD   AddTypeParameter(name AS STRING) AS VOID
       METHOD   AddConstraints(name AS STRING) AS VOID
-      
+      METHOD   GetMembers(elementName AS STRING) AS IList<IXMember>
+      METHOD   GetMembers(elementName AS STRING, lExact as LOGIC) AS IList<IXMember>
       PROPERTY TypeParameters  as IList<STRING> GET
       PROPERTY TypeParameterConstraints as IList<STRING> GET
       PROPERTY XMLSignature   AS STRING GET        

@@ -116,7 +116,8 @@ namespace XSharp.CodeDom
                 return (_members[name].MemberType | mtype) != 0;
             }
             bool result = false;
-            IXMember element = type.Members.Where(x => string.Equals(x.Name, name, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+            
+            IXMember element = type.GetMembers(name, true).FirstOrDefault();
             if (element != null)
             {
                 IXType t = null;
@@ -157,95 +158,7 @@ namespace XSharp.CodeDom
             }
             return result;
         }
-
-        //private bool hasClassMember(EnvDTE.CodeElement type, string name, MemberTypes mtype)
-        //{
-        //    if (_members.ContainsKey(name))
-        //    {
-        //        return _members[name].MemberType == mtype;
-        //    }
-        //    return searchExternalClassMember(type, name, mtype);
-        //}
-
-        //private bool searchExternalClassMember(EnvDTE.CodeElement type, string name, MemberTypes mtype)
-        //{
-        //    bool result = false;
-        //    //
-        //    if ((type.Kind == EnvDTE.vsCMElement.vsCMElementClass) ||
-        //        (type.Kind == EnvDTE.vsCMElement.vsCMElementEnum) ||
-        //        (type.Kind == EnvDTE.vsCMElement.vsCMElementStruct))
-        //    {
-
-        //        //
-        //        EnvDTE.CodeElements members = null;
-        //        EnvDTE.CodeElements bases = null; ;
-        //        if (type.Kind == EnvDTE.vsCMElement.vsCMElementClass)
-        //        {
-        //            EnvDTE.CodeClass envClass = (EnvDTE.CodeClass)type;
-        //            members = envClass.Members;
-        //            bases = envClass.Bases;
-        //        }
-        //        else if (type.Kind == EnvDTE.vsCMElement.vsCMElementEnum)
-        //        {
-        //            EnvDTE.CodeEnum envEnum = (EnvDTE.CodeEnum)type;
-        //            members = envEnum.Members;
-        //            bases = envEnum.Bases;
-        //        }
-        //        else if (type.Kind == EnvDTE.vsCMElement.vsCMElementStruct)
-        //        {
-        //            EnvDTE.CodeStruct envStruct = (EnvDTE.CodeStruct)type;
-        //            members = envStruct.Members;
-        //            bases = envStruct.Bases;
-        //        }
-        //        //
-        //        System.Type t = typeof(void);
-        //        foreach (EnvDTE.CodeElement member in members)
-        //        {
-        //            if (String.Equals(member.Name, name, StringComparison.OrdinalIgnoreCase))
-        //            {
-        //                switch (member.Kind)
-        //                {
-        //                    case EnvDTE.vsCMElement.vsCMElementEvent:
-        //                        result = true;
-        //                        addClassMember(new XMemberType(name, MemberTypes.Event, true, t, t?.FullName));
-        //                        break;
-        //                    case EnvDTE.vsCMElement.vsCMElementVariable:
-        //                        result = true;
-        //                        addClassMember(new XMemberType(name, MemberTypes.Field, true, t, t?.FullName));
-        //                        break;
-        //                    case EnvDTE.vsCMElement.vsCMElementFunction:
-        //                        result = true;
-        //                        addClassMember(new XMemberType(name, MemberTypes.Method, true, t, t?.FullName));
-        //                        break;
-        //                    case EnvDTE.vsCMElement.vsCMElementProperty:
-        //                        result = true;
-        //                        addClassMember(new XMemberType(name, MemberTypes.Property, true, t, t?.FullName));
-        //                        break;
-        //                }
-        //                if (result)
-        //                    break;
-        //            }
-        //        }
-        //        if (!result)
-        //        {
-        //            if (bases != null)
-        //            {
-        //                foreach (EnvDTE.CodeElement parent in bases)
-        //                {
-        //                    if (parent.Kind == EnvDTE.vsCMElement.vsCMElementClass)
-        //                    {
-        //                        //
-        //                        result = searchExternalClassMember(parent, name, mtype);
-        //                        if (result)
-        //                            break;
-        //                    }
-        //                }
-        //            }
-        //        }
-        //    }
-        //    return result;
-        //}
-
+    
         private bool findMemberInBaseTypes(string name, MemberTypes mtype)
         {
             foreach (XCodeTypeReference basetype in CurrentClass.BaseTypes)
@@ -256,13 +169,6 @@ namespace XSharp.CodeDom
                 {
                     return hasClassMember(baseType, name, mtype);
                 }
-                // External C#/VB/... Project
-                // EnvDTE.CodeElement baseSType;
-                //    baseSType = findStrangerType(typeName);
-                //    if (baseSType != null)
-                //    {
-                //        return hasClassMember(baseSType, name, mtype);
-                //    }
             }
             return false;
         }
@@ -1018,27 +924,26 @@ namespace XSharp.CodeDom
         private CodeExpression buildTypeMemberExpression(IXType xtype, string name)
         {
             var l = new XCodeTypeReferenceExpression(xtype.FullName);
-            var m = xtype.Members.Where(e => String.Compare(e.Name, name, true) == 0 &&
-                (e.Kind == Kind.Field || e.Kind == Kind.EnumMember)).FirstOrDefault();
+            var members = xtype.GetMembers(name, true);
+            var m = members.Where(e => (e.Kind == Kind.Field || e.Kind == Kind.EnumMember)).FirstOrDefault();
             if (m != null)
             {
                 var fld = new XCodeFieldReferenceExpression(l, name);
                 return fld;
             }
-            m = xtype.Members.Where(e => String.Compare(e.Name, name, true) == 0 &&
-                (e.Kind == Kind.Property || e.Kind == Kind.Access || e.Kind == Kind.Assign)).FirstOrDefault();
+            m = members.Where(e=> (e.Kind == Kind.Property || e.Kind == Kind.Access || e.Kind == Kind.Assign)).FirstOrDefault();
             if (m != null)
             {
                 var prop = new XCodePropertyReferenceExpression(l, name);
                 return prop;
             }
-            m = xtype.Members.Where(e => String.Compare(e.Name, name, true) == 0 && e.Kind == Kind.Method).FirstOrDefault();
+            m = members.Where(e => e.Kind == Kind.Method).FirstOrDefault();
             if (m != null)
             {
                 var met = new XCodeMethodReferenceExpression(l, name);
                 return met;
             }
-            m = xtype.Members.Where(e => String.Compare(e.Name, name, true) == 0 && e.Kind == Kind.Event).FirstOrDefault();
+            m = members.Where(e => e.Kind == Kind.Event).FirstOrDefault();
             if (m != null)
             {
                 var evt = new XCodeEventReferenceExpression(l, name);

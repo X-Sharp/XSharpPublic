@@ -11,8 +11,7 @@ BEGIN NAMESPACE XSharpModel
 	[DebuggerDisplay("{FullName,nq}")];
 	CLASS XAssembly
       
-      PROPERTY TypeList             AS IDictionary<STRING, XTypeReference> AUTO
-      PROPERTY TypeCatalog          AS IDictionary<Char, List<String> > AUTO
+      PROPERTY TypeList             AS XSortedDictionary<STRING, XTypeReference> AUTO
       PROPERTY ExtensionMethods     AS IList<XMemberReference> AUTO
       PROPERTY ImplicitNamespaces   AS IList<String> AUTO
       PROPERTY Namespaces           AS IList<String> AUTO
@@ -26,8 +25,7 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY Loaded               AS LOGIC AUTO
       CONSTRUCTOR (cFileName as STRING)
          FileName             := cFileName
-         TypeList             := Dictionary<STRING, XTypeReference>{StringComparer.OrdinalIgnoreCase}
-         TypeCatalog          := Dictionary<Char, List<String> > {}
+         TypeList             := XSortedDictionary<STRING, XTypeReference>{TypeNameComparer{}}
          ImplicitNamespaces   := List<STRING>{}
          Namespaces           := List<STRING>{}
          ReferencedAssemblies := List<STRING>{}
@@ -39,6 +37,14 @@ BEGIN NAMESPACE XSharpModel
       var reader := AssemblyReader{FileName}
       reader:Read(SELF)
       RETURN SELF:Loaded
+
+    PRIVATE CLASS TypeNameComparer IMPLEMENTS IComparer<STRING>
+      METHOD Compare(x as String, y as String) AS LONG
+         if x == NULL .or. y == NULL
+            return 0
+         endif
+         return String.Compare(x, 0, y, 0, y:Length, TRUE)
+   END CLASS
 
    END CLASS
 END NAMESPACE   

@@ -116,12 +116,14 @@ BEGIN NAMESPACE XSharpModel
             aAttribs := ParseAttributes()
             VAR mods := ParseVisibilityAndModifiers()
             VAR vis  := _AND(mods, Modifiers.VisibilityMask)
-            IF vis == Modifiers.None
-               mods |= Modifiers.Public
-            ENDIF
             IF IsStartOfEntity(OUT VAR entityKind, mods)
                IF _hasXmlDoc
                   cXmlDoc := GetXmlDoc( (XSharpToken) first)
+               ENDIF
+               // note: do not set this before the IsStartOfEntity check to make sure that 
+               // single identifiers on a line are not matched with the ClassVar rule
+               IF vis == Modifiers.None
+                  mods |= Modifiers.Public
                ENDIF
                SELF:_attributes  := mods
                SELF:_start := first
@@ -222,7 +224,9 @@ BEGIN NAMESPACE XSharpModel
             lastEntity:Range        := lastEntity:Range:WithEnd(lastToken)
             lastEntity:Interval     := lastEntity:Interval:WithEnd(lastToken)
          ENDIF
-         _file:SetTypes(typelist, _usings, _staticusings, SELF:_EntityList)
+         IF ! lLocals
+            _file:SetTypes(typelist, _usings, _staticusings, SELF:_EntityList)
+         ENDIF
          
       
       PRIVATE METHOD GetXmlDoc(startToken as XSharpToken) AS STRING
@@ -1778,11 +1782,11 @@ signature             : Id=identifier
          ENDIF
          Consume()   // LParen
          VAR aResult  := List<IXVariable>{}
-         VAR start := Lt1
          local defaultExpr AS IList<IToken>
          LOCAL cond AS DelEndToken
          cond := { token => IIF (lBracketed, token == XSharpLexer.RBRKT, token == XSharpLexer.RPAREN ) }
          DO WHILE !cond(La1) .AND. ! Eos()
+            VAR start := Lt1
             VAR atts := SELF:TokensAsString(ParseAttributes())
             VAR sId   := ""
             VAR sTypeName := ""
@@ -1808,8 +1812,8 @@ signature             : Id=identifier
             ENDIF
             LOCAL variable AS XVariable
             VAR endToken := SELF:lastToken
-            VAR range    := TextRange{_start, lastToken}
-            VAR interval := TextInterval{_start, lastToken}
+            VAR range    := TextRange{start, lastToken}
+            VAR interval := TextInterval{start, lastToken}
             
             variable := XParameter{CurrentEntity, sId, range,interval, sTypeName}
             IF token != NULL

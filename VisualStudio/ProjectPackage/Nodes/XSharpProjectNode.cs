@@ -1291,7 +1291,7 @@ namespace XSharp.Project
             }
             return list;
         }
-        public EnvDTE.Project FindProject(String sProject)
+        public EnvDTE.Project FindProject(string sProject)
         {
             foreach (var p in GetSolutionProjects())
             {

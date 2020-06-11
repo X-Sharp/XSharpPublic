@@ -40,7 +40,7 @@
     <VO14>false</VO14>
     <VO15>false</VO15>
     <VO16>false</VO16>
-    <XSharpProjectversion>2.0.5.0</XSharpProjectversion>
+    <XSharpProjectversion>2.4.1.0</XSharpProjectversion>
     <Includepaths>$(SolutionDir)Common</Includepaths>
     <Nostandarddefs>false</Nostandarddefs>
   </PropertyGroup>
@@ -98,6 +98,11 @@
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+      <Name>System.Xml</Name>
+      <AssemblyName>System.XML.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
     <Reference Include="XICOMMON, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
       <Name>XICOMMON</Name>
       <AssemblyName>XICOMMON.dll</AssemblyName>
@@ -127,6 +132,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Binaries.prg" />
     <Compile Include="Properties\AssemblyInfo.prg" />
     <Compile Include="UI.prg">
     </Compile>

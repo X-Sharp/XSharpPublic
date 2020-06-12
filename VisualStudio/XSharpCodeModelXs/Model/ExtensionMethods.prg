@@ -187,7 +187,8 @@ BEGIN NAMESPACE XSharpModel
 			END SWITCH
 			RETURN FALSE
 
-        STATIC METHOD HasChildren(SELF eKind AS Kind) AS LOGIC
+
+        STATIC METHOD HasMembers(SELF eKind AS Kind) AS LOGIC
             SWITCH eKind
             CASE Kind.Namespace
             CASE Kind.Class
@@ -197,31 +198,21 @@ BEGIN NAMESPACE XSharpModel
             CASE Kind.VOStruct
             CASE Kind.Union
                 RETURN TRUE
+            END SWITCH
+            RETURN FALSE
 
-            CASE Kind.Constructor
-            CASE Kind.Destructor
-            CASE Kind.Method
-            CASE Kind.Access
-            CASE Kind.Assign
-            CASE Kind.Property
-            CASE Kind.Function
-            CASE Kind.Procedure
-            CASE Kind.Field
-            CASE Kind.Local
-            CASE Kind.Parameter
-            CASE Kind.Event
-            CASE Kind.Operator
-            CASE Kind.Delegate
-            CASE Kind.EnumMember
-            CASE Kind.Keyword
-            CASE Kind.Using
-            CASE Kind.VODefine
-            CASE Kind.VODLL
-            CASE Kind.VOGlobal
-            CASE Kind.Unknown
-            OTHERWISE
+
+        STATIC METHOD HasChildren(SELF eKind AS Kind) AS LOGIC
+            SWITCH eKind
+            CASE Kind.Namespace
+            CASE Kind.Class
+            CASE Kind.Structure
+            CASE Kind.Interface
+            CASE Kind.Enum
+                RETURN TRUE
+            END SWITCH
                 RETURN FALSE
-        END SWITCH                
+                    
 
             
 		
@@ -255,16 +246,19 @@ BEGIN NAMESPACE XSharpModel
 				SWITCH kind
 					CASE Kind.Class
 						imgK := ImageListKind.Class
-					CASE  Kind.Constructor 
-					CASE Kind.Destructor 
-					CASE Kind.Method 
 					CASE Kind.Function 
 					CASE Kind.Procedure 
+						imgK := ImageListKind.Overload
+					CASE Kind.Constructor 
+					CASE Kind.Destructor 
+					CASE Kind.Method 
 						imgK := ImageListKind.Method
-				CASE Kind.Structure
-					CASE Kind.VOStruct 
 					CASE Kind.Union 
+   					imgK := ImageListKind.Union
+					CASE Kind.Structure
 						imgK := ImageListKind.Structure
+					CASE Kind.VOStruct 
+						imgK := ImageListKind.Type
 					CASE Kind.Access 
 					CASE Kind.Assign 
 					CASE Kind.Property 
@@ -272,7 +266,6 @@ BEGIN NAMESPACE XSharpModel
 					CASE Kind.Event
 						imgK := ImageListKind.Event
 					CASE Kind.Delegate
-						
 						imgK := ImageListKind.Delegate
 					CASE Kind.Operator
 						imgK := ImageListKind.Operator
@@ -281,7 +274,6 @@ BEGIN NAMESPACE XSharpModel
 					CASE Kind.Enum
 						imgK := ImageListKind.Enum
 					CASE Kind.EnumMember
-						
 						imgK := ImageListKind.EnumValue
 					CASE Kind.Interface
 						imgK := ImageListKind.Interface
@@ -294,7 +286,7 @@ BEGIN NAMESPACE XSharpModel
 					CASE Kind.Local 
 						imgK := ImageListKind.Local
 					END SWITCH
-				SWITCH visibility
+				   SWITCH visibility
 					CASE Modifiers.Public
 						imgO := ImageListOverlay.Public
 					CASE Modifiers.Protected
@@ -305,13 +297,9 @@ BEGIN NAMESPACE XSharpModel
 						imgO := ImageListOverlay.Internal
 					CASE Modifiers.ProtectedInternal
 						imgO := ImageListOverlay.ProtectedInternal
-							
 				END SWITCH
-				RETURN GetImageListIndex(imgK, imgO)
+				RETURN (LONG) imgK + (LONG)imgO  
       
-      		PRIVATE STATIC METHOD GetImageListIndex(kind AS ImageListKind, overlay AS ImageListOverlay) AS LONG
-			         RETURN (LONG)((kind * ImageListKind.Unknown1) + (ImageListKind)(LONG)overlay  ) 
-       
      
             
 	END CLASS

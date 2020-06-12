@@ -16,11 +16,9 @@ BEGIN NAMESPACE XSharpModel
 
     [DebuggerDisplay("{FullPath,nq}")];
     CLASS XFile
-        // Fields
-        PRIVATE _id   := -1   AS Int64                         
-        PROPERTY Id           AS INT64                GET _id
+        #region Fields
+        PROPERTY Id           AS INT64          AUTO      GET INTERNAL SET 
         PRIVATE _globalType	AS XTypeDefinition
-        PRIVATE _lastWritten	AS System.DateTime
         PRIVATE _lock			AS OBJECT
         PRIVATE _parsed			AS LOGIC
         PRIVATE _type			AS XFileType
@@ -28,19 +26,18 @@ BEGIN NAMESPACE XSharpModel
         PRIVATE _entityList	AS List<XEntityDefinition>
         PRIVATE _usings			AS List<STRING>
         PRIVATE _usingStatics	AS List<STRING>
-        PRIVATE filePath      AS STRING
         PRIVATE _project      AS XProject
-
+        #endregion
         // Methods
         CONSTRUCTOR(fullPath AS STRING)
             SUPER()
             //
-            SELF:filePath := fullPath
+            SELF:FullPath := fullPath
             SELF:_type := GetFileType(fullPath)
             SELF:InitTypeList()
             SELF:_parsed := ! SELF:HasCode
             SELF:_lock := OBJECT{}
-            SELF:_lastWritten := System.DateTime.MinValue
+            SELF:LastChanged := System.DateTime.MinValue
 
         PROPERTY EntityList AS 	List<XEntityDefinition> GET _entityList
         PROPERTY Dialect AS XSharpDialect GET _project:Dialect
@@ -168,7 +165,7 @@ BEGIN NAMESPACE XSharpModel
         METHOD SetTypes(types AS IDictionary<STRING, XTypeDefinition>, usings AS IList<STRING>, ;
             staticUsings AS IList<STRING>, aEntities AS IList<XEntityDefinition>) AS VOID
             IF SELF:HasCode
-                WriteOutputMessage("-->> SetTypes() "+ SELF:SourcePath)
+                //WriteOutputMessage("-->> SetTypes() "+ SELF:SourcePath)
                 BEGIN LOCK SELF
                     FOREACH VAR type IN _typeList
                         SELF:Project:RemoveType(type:Value)
@@ -190,68 +187,22 @@ BEGIN NAMESPACE XSharpModel
                     SELF:_entityList:Clear()
                     SELF:_entityList:AddRange(aEntities)
                 END LOCK
-                WriteOutputMessage(String.Format("<<-- SetTypes() {0} (Types: {1}, Entities: {2})", SELF:SourcePath, _typeList:Count, SELF:_entityList:Count))
+                //WriteOutputMessage(String.Format("<<-- SetTypes() {0} (Types: {1}, Entities: {2})", SELF:SourcePath, _typeList:Count, SELF:_entityList:Count))
             ENDIF
-        /*
-        METHOD BuildTypes(oInfo AS ParseResult) AS VOID
-            LOCAL aTypes	      AS Dictionary<STRING, XTypeDefinition>
-            LOCAL aUsings		  AS List<STRING>
-            LOCAL aUsingStatics   AS List<STRING>
-            LOCAL oType		      AS XTypeDefinition
-            LOCAL aEntities		  AS List<XEntityDefinition>
-            aTypes			:= Dictionary<STRING, XTypeDefinition>{}
-            aUsings			:= List<STRING>{}
-            aUsingStatics	:= List<STRING>{}
-            FOREACH oElement AS EntityObject IN oInfo:Types
-                oType   := XTypeDefinition.create(SELF, oElement,oInfo,SELF:Dialect)
-                IF !aTypes:ContainsKey(oType:FullName)
-                    aTypes:Add( oType:FullName, oType)
-                ELSE
-                    // this should only happen if there are two PARTIAL CLASS parts in the same file
-                    // now merge the second in the first
-                    LOCAL oType2 := aTypes[oType:FullName] AS XTypeDefinition
-                    IF oType2:File == oType:File
-                        oType2 := oType2:Merge(oType)
-                        aTypes[oType:FullName] := oType2
-                    ENDIF
-                ENDIF
-                SELF:Project:RemoveMergedType(oType:FullName)
-            NEXT
-            // Now add NameSpaces
-            FOREACH oNS AS NameSpaceObject IN oInfo:NameSpaces
-                oType := XTypeDefinition{ oNS:Name, Kind.Namespace, Modifiers.Public, Modifiers.Public, oNS:Span, oNS:Interval ,SELF}
-                IF !aTypes:ContainsKey(oType:FullName)
-                    aTypes:Add( oType:FullName, oType)
-                ENDIF
-            NEXT
-            //
-            FOREACH oLine AS LineObject IN oInfo:SpecialLines
-                IF oLine:eType == LineType.Using
-                    LOCAL cName AS STRING
-                    cName := oLine:cArgument
-                    IF cName:ToLower():StartsWith("static")
-                        aUsingStatics:Add(cName:Substring(6))
-                    ELSE
-                        aUsings:Add(cName)
-                    ENDIF
-                ENDIF
-            NEXT
-            // get our objects in file order from the oInfo:Entities list
-            aEntities := List<XELement>{}
-            FOREACH oElement AS EntityObject IN oInfo:Entities
-                IF oElement:oCargo != NULL_OBJECT
-                    aEntities:add ( (XEntityDefinition) oElement:oCargo)
-                ENDIF
-            NEXT
-            SELF:SetTypes(aTypes, aUsings, aUsingStatics, aEntities:ToArray())
-            RETURN
-      */
-
+      
+         
+        METHOD SaveToDatabase() AS VOID
+            XDatabase.Update(SELF)
+            IF ! SELF:Interactive
+               SELF:InitTypeList()
+            ENDIF
+            
+         
         METHOD WaitParsing() AS VOID
             //
             IF SELF:HasCode
 
-                WriteOutputMessage("-->> WaitParsing()")
+                //WriteOutputMessage("-->> WaitParsing()")
                 BEGIN LOCK SELF:_lock
 
                     IF ! SELF:Parsed
@@ -265,10 +216,13 @@ BEGIN NAMESPACE XSharpModel
                         END USING
                     ENDIF
                 END LOCK
-                WriteOutputMessage("<<-- WaitParsing()")
+                //WriteOutputMessage("<<-- WaitParsing()")
             ENDIF
+            
+       METHOD WriteOutputMessage(message AS STRING) AS VOID
+            XSolution.WriteOutputMessage("XModel.File "+message)
 
-
+      #region Properties
             // Properties
         PROPERTY AllUsingStatics AS IList<STRING>
             GET
@@ -277,7 +231,7 @@ BEGIN NAMESPACE XSharpModel
 
                     RETURN NULL
                 ENDIF
-                WriteOutputMessage("-->> AllUsingStatics")
+                //WriteOutputMessage("-->> AllUsingStatics")
                 VAR statics := List<STRING>{}
                 BEGIN LOCK SELF:_lock
 
@@ -294,7 +248,7 @@ BEGIN NAMESPACE XSharpModel
                         NEXT
                     ENDIF
                 END LOCK
-                WriteOutputMessage("<<-- AllUsingStatics")
+                //WriteOutputMessage("<<-- AllUsingStatics")
                 RETURN statics
             END GET
         END PROPERTY
@@ -317,25 +271,27 @@ BEGIN NAMESPACE XSharpModel
             END GET
         END PROPERTY
 
-        PROPERTY FullPath AS STRING GET SELF:filePath SET SELF:filePath := VALUE
-        PROPERTY GlobalType AS XTypeDefinition GET SELF:_globalType
-        PROPERTY HasCode AS LOGIC GET SELF:IsSource .OR. SELF:IsXaml .OR. SELF:IsHeader
-        PROPERTY HasParseErrors AS LOGIC AUTO
-        PROPERTY IsHeader AS LOGIC GET SELF:_type == XFileType.Header
-        PROPERTY IsSource AS LOGIC GET SELF:_type == XFileType.SourceCode
-        PROPERTY IsXaml AS LOGIC GET SELF:_type == XFileType.XAML
-        PROPERTY LastWritten AS System.DateTime GET SELF:_lastWritten SET SELF:_lastWritten := VALUE
-        PROPERTY Name AS STRING GET System.IO.Path.GetFileNameWithoutExtension(SELF:filePath)
+        PROPERTY FullPath           AS STRING AUTO GET INTERNAL SET 
+        PROPERTY GlobalType         AS XTypeDefinition GET SELF:_globalType
+        PROPERTY HasCode            AS LOGIC GET SELF:IsSource .OR. SELF:IsXaml .OR. SELF:IsHeader
+        PROPERTY HasParseErrors     AS LOGIC AUTO
+        PROPERTY Interactive        AS LOGIC AUTO 
+        PROPERTY IsHeader           AS LOGIC GET SELF:_type == XFileType.Header
+        PROPERTY IsSource           AS LOGIC GET SELF:_type == XFileType.SourceCode
+        PROPERTY IsXaml             AS LOGIC GET SELF:_type == XFileType.XAML
+        PROPERTY LastChanged        AS System.DateTime   AUTO GET INTERNAL SET 
+        PROPERTY Size               AS INT64              AUTO GET INTERNAL SET 
+        PROPERTY Name               AS STRING GET System.IO.Path.GetFileNameWithoutExtension(SELF:FullPath)
 
         PROPERTY Parsed AS LOGIC
             GET
-                WriteOutputMessage("-->> Parsed")
+                //WriteOutputMessage("-->> Parsed")
                 LOCAL flag AS LOGIC
                 BEGIN LOCK SELF:_lock
 
                     flag := SELF:_parsed
                 END LOCK
-                WriteOutputMessage("<<-- Parsed")
+                //WriteOutputMessage("<<-- Parsed")
                 RETURN flag
             END GET
         END PROPERTY
@@ -344,7 +300,7 @@ BEGIN NAMESPACE XSharpModel
             GET
                 IF SELF:_project == NULL
                     SELF:_project := XSolution.OrphanedFilesProject
-                    SELF:_project:AddFile(SELF:filePath)
+                    SELF:_project:AddFile(SELF:FullPath)
                 ENDIF
                 RETURN SELF:_project
             END GET
@@ -390,10 +346,8 @@ BEGIN NAMESPACE XSharpModel
         END PROPERTY
 
         PROPERTY XFileType AS XFileType GET SELF:_type
-
-        METHOD WriteOutputMessage(message AS STRING) AS VOID
-            XSolution.WriteOutputMessage("XModel.File "+message)
-
+      #endregion
+ 
     END CLASS
 
 END NAMESPACE

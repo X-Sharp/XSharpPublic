@@ -13,7 +13,7 @@ BEGIN NAMESPACE XSharpModel
    /// <summary>
       /// Model for Namespace, Class, Interface, Structure, Enum
    /// </summary>
-   [DebuggerDisplay("{Kind} {FullName,nq}")];
+   [DebuggerDisplay("{ToString(),nq}")];
    CLASS XTypeReference INHERIT XEntityReference IMPLEMENTS IXType
       PRIVATE _baseType       AS XTypeReference
       PRIVATE _members        AS XSortedDictionary<STRING, XMemberReference>
@@ -29,6 +29,10 @@ BEGIN NAMESPACE XSharpModel
          SELF:_children       := List<XTypeReference>{}
          SELF:_signature      := XTypeSignature{"System.Object"}
          SELF:Namespace       := typedef:Namespace
+         IF SELF:Namespace:Length == 0 .AND. typedef:DeclaringType != NULL
+            // nested type !
+            SELF:Namespace    := typedef:DeclaringType:FullName
+         ENDIF
          IF typedef:BaseType != NULL
             SELF:BaseType     := typedef:BaseType:FullName
          ELSE
@@ -268,6 +272,7 @@ BEGIN NAMESPACE XSharpModel
 
       PROPERTY TypeParameters as IList<STRING> GET SELF:_signature:TypeParameters:ToArray()
       PROPERTY TypeParameterConstraints as IList<STRING> GET SELF:_signature:TypeParameterContraints:ToArray()
+
       PROPERTY XMLSignature   AS STRING GET SELF:GetXmlSignature() 
       
       PRIVATE CLASS MemberNameComparer IMPLEMENTS IComparer<STRING>
@@ -276,7 +281,14 @@ BEGIN NAMESPACE XSharpModel
             return 0
          endif
          return String.Compare(x, 0, y, 0, y:Length, TRUE)
-   END CLASS
+      END CLASS
+      
+   METHOD ToString() AS STRING
+      var result := i"{Kind} {Name}"
+      if SELF:_signature != NULL .and. SELF:_signature:TypeParameters:Count > 0
+         result += self:_signature:ToString()
+      ENDIF
+      RETURN result      
       
    END CLASS
    

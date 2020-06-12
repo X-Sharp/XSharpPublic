@@ -5,22 +5,26 @@
 //
 USING System.Collections.Concurrent
 USING System.Collections.Generic
+USING System.IO
 USING System
 BEGIN NAMESPACE XSharpModel
 	STATIC CLASS XSolution
 		// Fields
 		STATIC PRIVATE _orphanedFilesProject := NULL AS XProject
-      STATIC INTERNAL Open as LOGIC
-		CONST PRIVATE OrphanedFiles := "(OrphanedFiles)" AS STRING
-		STATIC INITONLY PRIVATE xProjects := ConcurrentDictionary<STRING, XProject>{StringComparer.OrdinalIgnoreCase} AS ConcurrentDictionary<STRING, XProject>
+      STATIC PROPERTY IsOpen as LOGIC GET !String.IsNullOrEmpty(_fileName)
+		STATIC PRIVATE _projects AS ConcurrentDictionary<STRING, XProject>
+      STATIC PRIVATE _fileName   AS STRING
+      STATIC PRIVATE _sqldb      AS STRING
+      
+      PUBLIC STATIC PROPERTY FileName as STRING get _fileName
 
 		PUBLIC STATIC OutputWindow AS IOutputWindow
 		// Methods
 		STATIC CONSTRUCTOR
+         _projects := ConcurrentDictionary<STRING, XProject>{StringComparer.OrdinalIgnoreCase}
 			OutputWindow := DummyOutputWindow{}
-         VAR x := XSolution.OrphanedFilesProject
          OutputWindow:DisplayOutPutMessage("XSolution Loaded")
-         XSolution.Open := TRUE
+         CreateOrphanedFilesProject()
 
 
 		STATIC METHOD WriteOutputMessage(message AS STRING) AS VOID
@@ -36,33 +40,71 @@ BEGIN NAMESPACE XSharpModel
 			ENDDO
 			RETURN
 
+      STATIC METHOD Open(cFile as STRING) AS VOID
+         _fileName := cFile
+         var folder := Path.GetDirectoryName(_fileName)
+         folder     := Path.Combine(folder, ".vs")
+         IF ! Directory.Exists(folder)
+            Directory.CreateDirectory(folder)
+         ENDIF
+         folder    := Path.Combine(folder, Path.GetFileNameWithoutExtension(_fileName))
+         IF ! Directory.Exists(folder)
+            Directory.CreateDirectory(folder)
+         ENDIF
+         _sqldb    := Path.Combine(folder, "X#Model.xsdb")
+         XDatabase.CreateOrOpenDatabase(_sqldb)
+         var dbprojectList := XDatabase.GetProjectNames()
+         FOREACH var project in _projects:Values
+            XDatabase.Read(project)
+            FOREACH VAR dbproject  in dbprojectList
+               if String.Compare(dbproject, project:FileName, StringComparison.OrdinalIgnoreCase) == 0
+                  dbprojectList:Remove(dbproject)
+                  EXIT
+               ENDIF
+            NEXT
+         NEXT
+         if dbprojectList:Count > 0
+            FOREACH var dbproject in dbprojectList
+               XDatabase.DeleteProject(dbproject)
+            NEXT
+         endif
+         ModelWalker.Start()
+         
+            
 
 		STATIC METHOD Add(project AS XProject) AS LOGIC
 			RETURN @@Add(project:Name, project)
 
 		STATIC METHOD Add(projectName AS STRING, project AS XProject) AS LOGIC
-         XSolution.Open := TRUE
 			WriteOutputMessage("XModel.Solution.Add() "+projectName)
-			IF xProjects:ContainsKey(projectName)
+			IF _projects:ContainsKey(projectName)
 				RETURN FALSE
 			ENDIF
-			RETURN xProjects:TryAdd(projectName, project)
+			var lOk := _projects:TryAdd(projectName, project)
+         IF lOk .and. IsOpen
+            XDatabase.Read(project)
+         ENDIF
+         RETURN lOk
+         
 
-		STATIC METHOD CloseAll() AS VOID
-			WriteOutputMessage("XModel.Solution.CloseAll()")
-         XSolution.Open := FALSE
+		STATIC METHOD Close() AS VOID
+			WriteOutputMessage("XModel.Solution.CloseSolution()")
+         ModelWalker.Suspend()
          ModelWalker.GetWalker():StopThread()
-         FOREACH var pair in xProjects
+         XDatabase.CloseDatabase(_sqldb)
+         
+         FOREACH var pair in _projects
                var project := (XProject) pair:Value
                project:Loaded := FALSE
          NEXT
-			xProjects:Clear()
+			_projects:Clear()
 			SystemTypeController.Clear()
-			IF _orphanedFilesProject != NULL .AND. xProjects:TryAdd("(OrphanedFiles)", _orphanedFilesProject)
+			IF _orphanedFilesProject != NULL .AND. _projects:TryAdd(_orphanedFilesProject.Name, _orphanedFilesProject)
 				FOREACH VAR info IN _orphanedFilesProject:AssemblyReferences
 					SystemTypeController.LoadAssembly(info:FileName)
 				NEXT
-			ENDIF
+         ENDIF
+         _fileName  := NULL
 
 		STATIC METHOD FileClose(fileName AS STRING) AS VOID
 			IF FindFile(fileName):Project == _orphanedFilesProject
@@ -70,7 +112,7 @@ BEGIN NAMESPACE XSharpModel
 			ENDIF
 
 		STATIC METHOD FindFile(fileName AS STRING) AS XFile
-			FOREACH VAR project IN xProjects
+			FOREACH VAR project IN _projects
 				VAR file := project:Value:FindFullPath(fileName)
 				IF file != NULL
 					RETURN file
@@ -79,7 +121,7 @@ BEGIN NAMESPACE XSharpModel
 			RETURN NULL
 
 		STATIC METHOD FindFullPath(fullPath AS STRING) AS XFile
-			FOREACH VAR project IN xProjects
+			FOREACH VAR project IN _projects
 				VAR file := project:Value:FindFullPath(fullPath)
 				IF file != NULL
 					RETURN file
@@ -91,17 +133,17 @@ BEGIN NAMESPACE XSharpModel
 			LOCAL project AS XProject
 			projectFile := System.IO.Path.GetFileNameWithoutExtension(projectFile)
 			project := NULL
-			IF xProjects:TryGetValue(projectFile, OUT project) .AND. project != NULL
+			IF _projects:TryGetValue(projectFile, OUT project) .AND. project != NULL
 				RETURN project
 			ENDIF
 			RETURN NULL
 
 		STATIC METHOD Remove(projectName AS STRING) AS LOGIC
 			WriteOutputMessage("XModel.Solution.Remove() "+projectName)
-			IF xProjects:ContainsKey(projectName)
-				VAR project := xProjects:Item[projectName]
+			IF _projects:ContainsKey(projectName)
+				VAR project := _projects:Item[projectName]
 				project:UnLoad()
-				VAR result := xProjects:TryRemove(projectName, OUT project)
+				VAR result := _projects:TryRemove(projectName, OUT project)
 				SystemTypeController.UnloadUnusedAssemblies()
 				RETURN result
 			ENDIF
@@ -120,16 +162,20 @@ BEGIN NAMESPACE XSharpModel
 			ENDIF
 			RETURN
 
+      STATIC METHOD CreateOrphanedFilesProject() AS VOID
+         var prj := OrphanedFilesProject{}
+			_orphanedFilesProject := XProject{prj}
+			VAR projectNode := (OrphanedFilesProject)(_orphanedFilesProject:ProjectNode)
+			projectNode:Project := _orphanedFilesProject
+			IF _projects:TryAdd(prj:Name, _orphanedFilesProject)
+				projectNode:Project:AddAssemblyReference(TYPEOF(STRING):Assembly:Location)
+			ENDIF
+
 		// Properties
 		STATIC PROPERTY OrphanedFilesProject AS XProject
 			GET
 				IF _orphanedFilesProject == NULL
-					_orphanedFilesProject := XProject{OrphanedFilesProject{}}
-					VAR projectNode := (OrphanedFilesProject)(_orphanedFilesProject:ProjectNode)
-					projectNode:Project := _orphanedFilesProject
-					IF xProjects:TryAdd("(OrphanedFiles)", _orphanedFilesProject)
-						projectNode:Project:AddAssemblyReference(TYPEOF(STRING):Assembly:Location)
-					ENDIF
+					CreateOrphanedFilesProject()
 				ENDIF
 				RETURN _orphanedFilesProject
 			END GET

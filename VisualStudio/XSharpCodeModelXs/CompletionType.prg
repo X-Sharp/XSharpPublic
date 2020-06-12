@@ -18,7 +18,7 @@ BEGIN NAMESPACE XSharpModel
 		PRIVATE _file	  AS XFile
 		PRIVATE _type	  AS IXType
 		PROPERTY IsArray AS LOGIC AUTO
-      PROPERTY InSource as LOGIC GET _type IS XSourceElement
+		PROPERTY InSource as LOGIC GET _type IS XSourceElement
       
 
 		// Methods

@@ -13,7 +13,7 @@ BEGIN NAMESPACE XSharpModel
    /// <summary>
       /// Model for Namespace, Class, Interface, Structure, Enum
    /// </summary>
-   [DebuggerDisplay("{Kind}, {Name,nq}")];
+   [DebuggerDisplay("{ToString(),nq}")];
    CLASS XTypeDefinition INHERIT XEntityDefinition IMPLEMENTS IXType
       PRIVATE _isPartial      AS LOGIC
       PRIVATE _members        AS XSortedDictionary<String,XMemberDefinition>
@@ -25,7 +25,7 @@ BEGIN NAMESPACE XSharpModel
          SUPER(name, kind, attributes, span, position)
          SELF:_members     := XSortedDictionary<String,XMemberDefinition>{MemberNameComparer{}}
          SELF:_children    := List<XTypeDefinition>{}
-         SELF:_signature   := XTypeSignature{"System.Object"}
+         SELF:_signature   := XTypeSignature{""}
          SELF:Namespace    := ""
          IF attributes:HasFlag(Modifiers.Static)
             SELF:IsStatic := TRUE
@@ -81,13 +81,18 @@ BEGIN NAMESPACE XSharpModel
       METHOD AddConstraints(name AS STRING) AS VOID
          SELF:_signature:TypeParameterContraints:Add(name)
          
-         
-      PROPERTY Interfaces  AS IList<STRING> GET _signature:Interfaces:ToArray()
-      PROPERTY TypeParameters as IList<STRING> GET SELF:_signature:TypeParameters:ToArray()
+      PROPERTY Interfaces  AS IList<STRING>              GET SELF:_signature:Interfaces:ToArray()
+      PROPERTY InterfaceList AS STRING                   GET SELF:_signature:InterfaceList
+      PROPERTY TypeParameters as IList<STRING>           GET SELF:_signature:TypeParameters:ToArray()
+      PROPERTY TypeParametersList AS STRING              GET SELF:_signature:TypeParametersList
       PROPERTY TypeParameterConstraints as IList<STRING> GET SELF:_signature:TypeParameterContraints:ToArray()
+      PROPERTY TypeParameterConstraintsList AS STRING    GET SELF:_signature:TypeParameterConstraintsList
+         
       PROPERTY OriginalTypeName  AS STRING GET SELF:TypeName
 
-      
+      METHOD ClearMembers() AS VOID
+         SELF:_members:Clear()
+
       PROPERTY Members AS IList<IXMember>  
          GET
             
@@ -154,16 +159,12 @@ BEGIN NAMESPACE XSharpModel
                IF clone:Parent == NULL .AND. otherType:Parent != NULL
                   clone:Parent := otherType:Parent
                ELSE
-                  IF clone:BaseType == NULL .AND. otherType:BaseType != NULL
+                  IF String.IsNullOrEmpty(clone:BaseType) .AND. !String.IsNullOrEmpty(otherType:BaseType)
                      clone:BaseType := otherType:BaseType
                   ENDIF
                ENDIF
             ENDIF
          ENDIF
-         IF String.IsNullOrEmpty(clone:BaseType)
-            clone:BaseType := "System.Object"
-         ENDIF
-         
          RETURN clone
          
       /// <summary>
@@ -188,9 +189,8 @@ BEGIN NAMESPACE XSharpModel
       
       
       STATIC METHOD CreateGlobalType(xfile AS XFile) AS XTypeDefinition
-         VAR globalType := XTypeDefinition{XLiterals.GlobalName, Kind.Namespace, Modifiers.Public, TextRange{0, 0, 0, 0}, TextInterval{}, xfile}
+         VAR globalType := XTypeDefinition{XLiterals.GlobalName, Kind.Class, Modifiers.Public+Modifiers.Static, TextRange{0, 0, 0, 0}, TextInterval{}, xfile}
          globalType:IsPartial:=TRUE
-         globalType:IsStatic:=TRUE
          RETURN globalType
       
       STATIC METHOD IsGlobalType(type AS IXEntity) AS LOGIC
@@ -219,7 +219,21 @@ BEGIN NAMESPACE XSharpModel
             return 0
          endif
          return String.Compare(x, 0, y, 0, y:Length, TRUE)
-   END CLASS
+      END CLASS
+      
+   METHOD ToString() AS STRING
+      var result := i"{Kind} {Name}"
+      if SELF:_signature != NULL .and. SELF:_signature:TypeParameters:Count > 0
+         result += self:_signature:ToString()
+      ENDIF
+      RETURN result
+      
+   
+   STATIC PROPERTY DbSelectClause as STRING GET ""
+   
+   STATIC METHOD FromDb(aValues as object[]) AS XTypeDefinition
+      RETURN NULL
+       
 END CLASS
 
 END NAMESPACE

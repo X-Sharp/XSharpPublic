@@ -168,11 +168,11 @@ BEGIN NAMESPACE XSharpModel
 			LOCAL lastWriteTime AS System.DateTime
 			LOCAL key AS STRING
 			//
-			WriteOutputMessage("<<-- LoadAssembly(string) "+cFileName)
+			//WriteOutputMessage("<<-- LoadAssembly(string) "+cFileName)
 			lastWriteTime := File.GetLastWriteTime(cFileName)
 			IF assemblies:ContainsKey(cFileName)
 				info := assemblies:Item[cFileName]
-				WriteOutputMessage("     ... assembly "+cFileName+" found in cache")
+				//WriteOutputMessage("     ... assembly "+cFileName+" found in cache")
 			ELSE
 				info := AssemblyInfo{cFileName, System.DateTime.MinValue}
 				assemblies:TryAdd(cFileName, info)
@@ -183,11 +183,11 @@ BEGIN NAMESPACE XSharpModel
 			IF Path.GetFileName(cFileName):ToLower() == "system.dll"
 				key := Path.Combine(Path.GetDirectoryName(cFileName), "mscorlib.dll")
 				IF ! assemblies:ContainsKey(key) .AND. File.Exists(key)
-					WriteOutputMessage("LoadAssembly() load mscorlib from same location as system.DLL")
+					//WriteOutputMessage("LoadAssembly() load mscorlib from same location as system.DLL")
 					LoadAssembly(key)
 				ENDIF
 			ENDIF
-			WriteOutputMessage(">>-- LoadAssembly(string) "+cFileName)
+			//WriteOutputMessage(">>-- LoadAssembly(string) "+cFileName)
 			RETURN info
 		
 		

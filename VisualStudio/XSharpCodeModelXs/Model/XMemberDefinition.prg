@@ -12,13 +12,14 @@ USING LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
 BEGIN NAMESPACE XSharpModel
 
-   [DebuggerDisplay("{Kind}, {Name,nq}")];
+   [DebuggerDisplay("{ToString(),nq}")];
    CLASS XMemberDefinition INHERIT XEntityDefinition IMPLEMENTS IXMember
       // Fields
       PRIVATE _signature    AS XMemberSignature 
       PROPERTY InitExit     AS STRING AUTO
       PROPERTY SubType      AS Kind AUTO
       PROPERTY DeclaringType  AS STRING AUTO
+      PROPERTY ReturnType   AS STRING GET TypeName SET TypeName := value
       
       #region constructors
       
@@ -26,7 +27,7 @@ BEGIN NAMESPACE XSharpModel
             span AS TextRange, position AS TextInterval, returnType AS STRING, isStatic := FALSE AS LOGIC)
          SUPER(name, kind, attributes, span, position)
          SELF:Parent       := NULL
-         SELF:TypeName     := returnType
+         SELF:ReturnType   := returnType
          SELF:IsStatic     := isStatic
          SELF:_signature   := XMemberSignature{}
          
@@ -34,7 +35,7 @@ BEGIN NAMESPACE XSharpModel
             span AS TextRange, position AS TextInterval, isStatic := FALSE AS LOGIC)
          SUPER(sig:Id, kind, attributes, span, position)
          SELF:Parent       := NULL
-         SELF:TypeName     := sig:DataType
+         SELF:ReturnType   := sig:DataType
          SELF:IsStatic     := isStatic
          SELF:_signature   := sig
          FOREACH var par in sig:Parameters
@@ -84,8 +85,54 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY ParentType     AS IXType   GET SELF:Parent ASTYPE IXType
       PROPERTY IsExtension    AS LOGIC    GET _signature:IsExtension
       PROPERTY XMLSignature   AS STRING GET SELF:GetXmlSignature()
-      PROPERTY OriginalTypeName  AS STRING GET SELF:TypeName
+      PROPERTY OriginalTypeName  AS STRING               GET SELF:TypeName
+      PROPERTY TypeParameters as IList<STRING>           GET SELF:_signature:TypeParameters:ToArray()
+      PROPERTY TypeParametersList AS STRING              GET SELF:_signature:TypeParametersList
+      PROPERTY TypeParameterConstraints as IList<STRING> GET SELF:_signature:TypeParameterContraints:ToArray()
+      PROPERTY TypeParameterConstraintsList AS STRING    GET SELF:_signature:TypeParameterConstraintsList
          
+      METHOD ToString() AS STRING
+         var result := i"{Kind} {Name}"
+         if SELF:_signature != NULL .and. SELF:_signature:TypeParameters:Count > 0
+            result += self:_signature:ToString()
+         ENDIF
+         RETURN result
+
+
+      /*
+	         stmt  	:=  "Create Table Members ("
+	         stmt	   +=  " Id integer NOT NULL PRIMARY KEY, IdType integer NOT NULL , IdFile integer NOT NULL, "
+	         stmt	   +=  " Name text COLLATE NOCASE, Kind integer , Attributes integer , "
+	         stmt	   +=  " Value text, ReturnType text, StartLine integer , StartColumn integer ,  "
+	         stmt	   +=  " EndLine integer , EndColumn integer , Start integer , Stop integer , "
+	         stmt	   +=  " FOREIGN KEY (idType) REFERENCES Types (Id) ON DELETE CASCADE ON UPDATE CASCADE, " 
+	         stmt     +=  " FOREIGN KEY (idFile) REFERENCES Files (Id) ON DELETE CASCADE ON UPDATE CASCADE"
+	         stmt	   += ")"
+
+            stmt := "Create View TypeMembers as Select m.*, t.Name as TypeName, t.Namespace, t.BaseTypeName from members m join Types t on m.IdType = t.Id"
+
+            stmt := "Create View ProjectMembers as Select m.*, p.IdProject from TypeMembers m join ProjectFiles p on m.IdFile = p.IdFile"
+
+      */
+
+
+      STATIC PROPERTY DbSelectClause as STRING GET " SELECT Id, IdType, IdFile, Name, Kind, Attributes, Value, ReturnType,  "+;
+                                                   " StartLine, StartColumn, EndLine, EndColumn, Start, Stop " + ;
+                                                   " FROM ProjectMembers WHERE %whereclause%"
+
+      STATIC METHOD FromDb(aValues as object[]) AS XMemberDefinition
+//         var name       := XDatabase.DbToString(aValues[4])
+//         var kind       := (Kind)      XDatabase.DbToInt(aValues[5])
+//         var attributes := (Modifiers) XDatabase.DbToInt(aValues[6])
+//         var value      := XDatabase.DbToString(aValues[7])    // default value for fields
+//         var returntype := XDatabase.DbToString(aValues[8])
+//         var span       := TextRange{ XDatabase.DbToInt(aValues[9]), XDatabase.DbToInt(aValues[10]),XDatabase.DbToInt(aValues[11]),XDatabase.DbToInt(aValues[12])} 
+//         var position   := TextInterval{XDatabase.DbToInt(aValues[13]),XDatabase.DbToInt(aValues[14])}
+//         var xmember    := XMemberDefinition{name, kind, attributes, span, position, returntype, kind== Kind.Function .or. kind == Kind.Procedure}
+//         xmember:Id     := XDatabase.DbToInt(aValues[1])
+//         RETURN xmember
+         RETURN NULL
+
       #endregion
    END CLASS
    

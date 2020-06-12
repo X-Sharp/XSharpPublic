@@ -85,7 +85,7 @@ BEGIN NAMESPACE XSharpModel
 
 		METHOD Lex(cSource AS STRING) AS ITokenStream
 			LOCAL lOk := FALSE AS LOGIC
-			WriteOutputMessage("-->> Lex() "+_file:FullPath)
+			//WriteOutputMessage("-->> Lex() "+_file:FullPath)
 			SELF:_errors := List<XError>{}
 			LOCAL stream := NULL AS ITokenStream
             TRY
@@ -95,9 +95,10 @@ BEGIN NAMESPACE XSharpModel
 			END LOCK
             CATCH e AS Exception
                 WriteOutputMessage("Lex() Failed:")
-                WriteOutputMessage(e:Message)
+                WriteOutputMessage(_file:FullPath)                  
+                WriteOutputMessage(e:ToString())
             END TRY
-			WriteOutputMessage("<<-- Lex() "+_file:FullPath)
+			//WriteOutputMessage("<<-- Lex() "+_file:FullPath)
 			RETURN stream
 
       METHOD ParseLocals(source as STRING, startLine AS INT, startIndex AS INT) AS List<IXVariable>
@@ -116,7 +117,7 @@ BEGIN NAMESPACE XSharpModel
 
       METHOD ParseTokens(tokens AS ITokenStream , lIncludeRegions AS LOGIC, lIncludeLocals AS LOGIC) AS VOID
 
-         WriteOutputMessage("-->> ParseTokens() "+_file:FullPath+" locals "+lIncludeLocals:ToString()+" )")
+         //WriteOutputMessage("-->> ParseTokens() "+_file:FullPath+" locals "+lIncludeLocals:ToString()+" )")
          TRY
             VAR parser := XsParser{_file}
             parser:Parse(tokens , lIncludeRegions, lIncludeLocals)
@@ -126,10 +127,11 @@ BEGIN NAMESPACE XSharpModel
             
          CATCH e AS Exception
                WriteOutputMessage("ParseTokens() Failed:")
-               WriteOutputMessage(e:Message)
+               WriteOutputMessage(_file:FullPath)
+               WriteOutputMessage(e:ToString())
             
          END TRY
-         WriteOutputMessage("<<-- ParseTokens() "+_file:FullPath)
+         //WriteOutputMessage("<<-- ParseTokens() "+_file:FullPath)
 
 
       METHOD ParseNew(lIncludeLocals AS LOGIC) AS VOID
@@ -137,16 +139,17 @@ BEGIN NAMESPACE XSharpModel
          SELF:ParseNew(cSource, lIncludeLocals)
 
       METHOD ParseNew(cSource AS STRING, lIncludeLocals AS LOGIC) AS VOID
-         WriteOutputMessage("-->> ParseNew() "+_file:FullPath+" locals "+lIncludeLocals:ToString()+" )")
+         //WriteOutputMessage("-->> ParseNew() "+_file:FullPath+" locals "+lIncludeLocals:ToString()+" )")
          TRY
             VAR tokens   := SELF:Lex(cSource)
             SELF:ParseTokens(tokens, FALSE, lIncludeLocals)
          CATCH e AS Exception
-               WriteOutputMessage("ParseNew() Failed:")
-               WriteOutputMessage(e:Message)
+            WriteOutputMessage("ParseNew() Failed:")
+            WriteOutputMessage(_file:FullPath)
+            WriteOutputMessage(e:ToString())
             
          END TRY
-         WriteOutputMessage("<<-- ParseNew() "+_file:FullPath)
+         //WriteOutputMessage("<<-- ParseNew() "+_file:FullPath)
 
 		#region Errors
 			VIRTUAL METHOD ReportError(fileName AS STRING, span AS LinePositionSpan, errorCode AS STRING, message AS STRING, args AS OBJECT[]) AS VOID

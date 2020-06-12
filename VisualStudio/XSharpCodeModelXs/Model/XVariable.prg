@@ -24,28 +24,29 @@ BEGIN NAMESPACE XSharpModel
             ENDIF
 
         // Properties
+	
         PROPERTY Expression   AS IList<IToken> AUTO GET INTERNAL SET
+	
         PROPERTY FullName     AS STRING GET SELF:TypeName
+	
         PROPERTY Description  AS STRING
             GET
                 //
                 LOCAL prefix AS STRING
-                IF (SELF:IsParameter)
-                    //
+                IF SELF:IsParameter
                     prefix := "PARAMETER "
                 ELSE
-                    //
                     prefix := "LOCAL "
                 ENDIF
                 VAR result := prefix + SELF:Prototype
-                IF (SELF:IsTyped)
+                IF SELF:IsTyped
                     result += ParamTypeDesc + SELF:TypeName + IIF(SELF:IsArray,"[]","")
                 ENDIF
                 RETURN result
             END GET
         END PROPERTY
 
-		  PROPERTY IsParameter AS LOGIC GET FALSE
+        PROPERTY IsParameter AS LOGIC GET FALSE
         PROPERTY ParamType AS ParamType AUTO
         PROPERTY Prototype AS STRING GET SUPER:Name
         PROPERTY ParamTypeDesc AS STRING
@@ -86,10 +87,11 @@ BEGIN NAMESPACE XSharpModel
     END CLASS
     CLASS XParameter INHERIT XVariable
 
-    CONSTRUCTOR(parent AS XEntityDefinition, name AS STRING, span AS TextRange, position AS TextInterval, parameterType AS STRING)
-        SUPER(parent, name, span, position, parameterType)
-        SELF:Kind := Kind.Parameter
-    PROPERTY IsParameter AS LOGIC GET TRUE
+        CONSTRUCTOR(parent AS XEntityDefinition, name AS STRING, span AS TextRange, position AS TextInterval, parameterType AS STRING)
+            SUPER(parent, name, span, position, parameterType)
+            SELF:Kind := Kind.Parameter
+	    
+        PROPERTY IsParameter AS LOGIC GET TRUE
 
    END CLASS
          

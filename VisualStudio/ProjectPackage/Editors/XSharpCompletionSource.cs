@@ -689,28 +689,28 @@ namespace XSharpLanguage
         private void AddXSharpTypeNames(CompletionList compList, XProject project, string startWith)
         {
             //
-            int startLen = 0;
-            int dotPos = startWith.LastIndexOf('.');
-            if (dotPos != -1)
-                startLen = dotPos + 1;
+            //int startLen = 0;
+            //int dotPos = startWith.LastIndexOf('.');
+            //if (dotPos != -1)
+            //    startLen = dotPos + 1;
             //
 
-            foreach (var typeName in project.TypeDict.FindMatching(startWith))
-            {
-                var typeInfo = project.Lookup(typeName, true);
-                string realTypeName = typeInfo.FullName;
-                // remove the start
-                if (startLen > 0)
-                    realTypeName = realTypeName.Substring(startLen);
-                // Do we have another part
-                dotPos = realTypeName.IndexOf('.');
-                // Then remove it
-                if (dotPos > 0)
-                    realTypeName = realTypeName.Substring(0, dotPos);
-                ImageSource icon = _provider.GlyphService.GetGlyph(typeInfo.getGlyphGroup(), typeInfo.getGlyphItem());
-                if (!compList.Add(new XSCompletion(realTypeName, realTypeName, typeInfo.Prototype, icon, null, Kind.Class,"")))
-                    break;
-            }
+            //foreach (var typeName in project.TypeDict.FindMatching(startWith))
+            //{
+            //    var typeInfo = project.Lookup(typeName, true);
+            //    string realTypeName = typeInfo.FullName;
+            //    // remove the start
+            //    if (startLen > 0)
+            //        realTypeName = realTypeName.Substring(startLen);
+            //    // Do we have another part
+            //    dotPos = realTypeName.IndexOf('.');
+            //    // Then remove it
+            //    if (dotPos > 0)
+            //        realTypeName = realTypeName.Substring(0, dotPos);
+            //    ImageSource icon = _provider.GlyphService.GetGlyph(typeInfo.getGlyphGroup(), typeInfo.getGlyphItem());
+            //    if (!compList.Add(new XSCompletion(realTypeName, realTypeName, typeInfo.Prototype, icon, null, Kind.Class,"")))
+            //        break;
+            //}
         }
 
         private void AddXSharpTypesTypeNames(CompletionList compList, string startWith)

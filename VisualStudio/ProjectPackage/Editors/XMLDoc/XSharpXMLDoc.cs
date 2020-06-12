@@ -188,6 +188,9 @@ namespace XSharp.Project
                 return summary;
 
             }
+            if (!(member is XMemberReference))
+                return "";
+
             var xmember = (XMemberReference)member;
             var declarationAssembly = xmember.Assembly;
 
@@ -270,6 +273,9 @@ namespace XSharp.Project
                 return false;
 
             }
+            if (!(member is XMemberReference))
+                return false;
+
             var xmember = (XMemberReference)member;
             var declarationAssembly = xmember.Assembly;
             var file = XSharpXMLDocTools.GetXmlDocFile(declarationAssembly, project);

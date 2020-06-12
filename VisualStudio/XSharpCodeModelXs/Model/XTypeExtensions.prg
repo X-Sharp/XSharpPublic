@@ -7,66 +7,67 @@
 USING System
 USING System.Collections.Generic
 USING System.Linq
- 
+
 BEGIN NAMESPACE XSharpModel
-	
-	STATIC CLASS XTypeExtensions
-    STATIC METHOD GetDescription(SELF type as IXType) AS STRING
-     	VAR modVis := type:ModVis
-      IF  type:IsStatic
-         modVis += "STATIC "
-      ENDIF
-      RETURN modVis + type:Kind:ToString() + " " + type:Prototype
    
-   STATIC METHOD GetFullName(SELF type as IXType) AS STRING
-      IF ! String.IsNullOrEmpty(type:Namespace)
-         var result := type:Namespace + "." + type:Name
-         return result            
-      ENDIF
-      RETURN type:Name
-   
-   STATIC METHOD GetMethods(SELF type as IXType) AS IXMember[]
-      return type:Members:Where( { m => m.Kind:IsMethod() }):ToArray()
-
-   STATIC METHOD GetFields(SELF type as IXType) AS IXMember[]
-      return type:Members:Where( { m => m.Kind:IsField()}):ToArray()
-
-   STATIC METHOD GetEvents(SELF type as IXType) AS IXMember[]
-      return type:Members:Where( { m => m.Kind == Kind.Event}):ToArray()
-
-   STATIC METHOD GetProperties(SELF type as IXType) AS IXMember[]
-      return type:Members:Where( { m => m.Kind:IsProperty()}):ToArray()
-
-   STATIC METHOD GetMember(SELF type as IXType, strName as STRING) AS IXMember[]
-      return type:GetMembers(strName):ToArray()
-
-   STATIC METHOD GetMethod(SELF type as IXType, strName as STRING) AS IXMember[]
-      return type:GetMembers(strName):Where( { m=> m.Kind:IsMethod()}):ToArray()
-
-   STATIC METHOD GetProperty(SELF type as IXType, strName as STRING) AS IXMember[]
-      return type:GetMembers(strName):Where( { m=> m.Kind:IsProperty()}):ToArray()
-
-   STATIC METHOD GetField(SELF type as IXType, strName as STRING) AS IXMember[]
-      return type:GetMembers(strName):Where( { m=> m.Kind:IsField()}):ToArray()
-
-   STATIC METHOD GetXmlSignature(SELF tm as IXType) AS STRING
+   STATIC CLASS XTypeExtensions
+      STATIC METHOD GetDescription(SELF type as IXType) AS STRING
+         VAR modVis := type:ModVis
+         IF  type:IsStatic
+            modVis += "STATIC "
+         ENDIF
+         RETURN modVis + type:Kind:ToString() + " " + type:Prototype
+      
+      STATIC METHOD GetFullName(SELF type as IXType) AS STRING
+         IF ! String.IsNullOrEmpty(type:Namespace)
+            var result := type:Namespace + "." + type:Name
+            return result            
+         ENDIF
+         RETURN type:Name
+      
+      STATIC METHOD GetMethods(SELF type as IXType) AS IXMember[]
+         return type:Members:Where( { m => m.Kind:IsMethod() }):ToArray()
+         
+      STATIC METHOD GetFields(SELF type as IXType) AS IXMember[]
+         return type:Members:Where( { m => m.Kind:IsField()}):ToArray()
+         
+      STATIC METHOD GetEvents(SELF type as IXType) AS IXMember[]
+         return type:Members:Where( { m => m.Kind == Kind.Event}):ToArray()
+         
+      STATIC METHOD GetProperties(SELF type as IXType) AS IXMember[]
+         return type:Members:Where( { m => m.Kind:IsProperty()}):ToArray()
+         
+      STATIC METHOD GetMember(SELF type as IXType, strName as STRING) AS IXMember[]
+         return type:GetMembers(strName):ToArray()
+         
+      STATIC METHOD GetMethod(SELF type as IXType, strName as STRING) AS IXMember[]
+         return type:GetMembers(strName):Where( { m=> m.Kind:IsMethod()}):ToArray()
+         
+      STATIC METHOD GetProperty(SELF type as IXType, strName as STRING) AS IXMember[]
+         return type:GetMembers(strName):Where( { m=> m.Kind:IsProperty()}):ToArray()
+         
+      STATIC METHOD GetField(SELF type as IXType, strName as STRING) AS IXMember[]
+         return type:GetMembers(strName):Where( { m=> m.Kind:IsField()}):ToArray()
+         
+      STATIC METHOD GetXmlSignature(SELF tm as IXType) AS STRING
+         // todo: need to handle type parameters !
          RETURN "T:"+tm:FullName
-
-   STATIC METHOD MatchesTypeName(SELF tm as IXType, nameToMatch as STRING) AS LOGIC
-      IF tm:FullName == nameToMatch
-         return true
-      ENDIF
-      FOREACH var ifName in tm:Interfaces
-         IF ifName == nameToMatch
+         
+      STATIC METHOD MatchesTypeName(SELF tm as IXType, nameToMatch as STRING) AS LOGIC
+         IF tm:FullName == nameToMatch
             return true
          ENDIF
-      NEXT      
-      RETURN FALSE
-
-   STATIC METHOD NameEquals(n1 as string, n2 as string) as logic
-      return String.Compare(n1, n2, StringComparison.OrdinalIgnoreCase) == 0
-
-	END CLASS
+         FOREACH var ifName in tm:Interfaces
+            IF ifName == nameToMatch
+               return true
+            ENDIF
+         NEXT      
+         RETURN FALSE
+         
+      STATIC METHOD NameEquals(n1 as string, n2 as string) as logic
+         return String.Compare(n1, n2, StringComparison.OrdinalIgnoreCase) == 0
+         
+   END CLASS
 END NAMESPACE 
 
 

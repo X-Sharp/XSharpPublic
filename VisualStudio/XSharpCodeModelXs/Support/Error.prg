@@ -11,7 +11,6 @@ BEGIN NAMESPACE XSharpModel
 		
 		// Methods
 		CONSTRUCTOR(path AS STRING, span AS LinePositionSpan, errCode AS STRING, message AS STRING, Parameters AS OBJECT[]);SUPER()
-			//
 			SELF:Path := path
 			SELF:Span := span
 			SELF:ErrCode := errCode

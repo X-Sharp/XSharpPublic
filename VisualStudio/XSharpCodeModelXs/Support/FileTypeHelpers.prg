@@ -51,6 +51,9 @@ BEGIN NAMESPACE XSharpModel
 				CASE ".gif"
 				CASE ".png"
 					RETURN XFileType.Resource
+				CASE ".tpl"
+				CASE ".inf"
+					RETURN XFileType.Template
 
 			END SWITCH
 			RETURN XFileType.Unknown
@@ -72,7 +75,8 @@ BEGIN NAMESPACE XSharpModel
 				CASE XFileType.SourceCode
 				CASE XFileType.Header
 				CASE XFileType.NativeResource
-				CASE XFileType.Unknown
+            CASE XFileType.Unknown
+            CASE XFileType.Template
 					RETURN TRUE
 			END SWITCH
 			RETURN FALSE

@@ -195,7 +195,7 @@ BEGIN NAMESPACE XSharpModel
             
    END CLASS
 
-	[DebuggerDisplay("{Kind}, {Name,nq}")];
+   [DebuggerDisplay("{ToString(),nq}")];
 	CLASS XMemberReference     INHERIT XEntityReference IMPLEMENTS IXMember
 		// Fields
         PRIVATE   _signature    AS XMemberSignature 
@@ -357,7 +357,13 @@ BEGIN NAMESPACE XSharpModel
             RETURN _signature:ParameterList
          END GET
       END PROPERTY
-		
+
+      PROPERTY TypeParameters as IList<STRING>           GET SELF:_signature:TypeParameters:ToArray()
+      PROPERTY TypeParametersList AS STRING              GET SELF:_signature:TypeParametersList
+      PROPERTY TypeParameterConstraints as IList<STRING> GET SELF:_signature:TypeParameterContraints:ToArray()
+      PROPERTY TypeParameterConstraintsList AS STRING    GET SELF:_signature:TypeParameterConstraintsList
+
+
       PROPERTY ComboParameterList AS STRING	GET _signature:ComboParameterList
       PROPERTY Parameters         AS IList<IXVariable> 
          GET 
@@ -390,7 +396,14 @@ BEGIN NAMESPACE XSharpModel
             RETURN SELF:GetXmlSignature()
          END GET
       END PROPERTY
-      
+
+      METHOD ToString() AS STRING
+         var result := i"{Kind} {Name}"
+         if SELF:_signature != NULL .and. SELF:_signature:TypeParameters:Count > 0
+            result += self:_signature:ToString()
+         ENDIF
+         RETURN result
+
       
 		#endregion
 	END CLASS

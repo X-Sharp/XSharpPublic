@@ -82,13 +82,13 @@ CLASS AssemblyReader
          if name == "Control"
             NOP
          endif
-         var ns := type:Namespace
+         VAR typeref := XTypeReference{type, assembly}
+         VAR ns := typeref:Namespace
          IF  ns:Length > 0
             IF ! assembly:Namespaces:Contains(ns)
                assembly:Namespaces:Add(ns)
             ENDIF
          ENDIF
-         var typeref := XTypeReference{type, assembly}
          assembly:TypeList:Add(name, typeref)
          assembly:TypeList:Add(typeref:Name, typeref)         
          if SELF:HasExtensionMethods(type)

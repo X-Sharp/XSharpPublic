@@ -89,9 +89,8 @@ CLASS AssemblyReader
                assembly:Namespaces:Add(ns)
             ENDIF
          ENDIF
-         assembly:TypeList:Add(name, typeref)
-         assembly:TypeList:Add(typeref:Name, typeref)         
-         if SELF:HasExtensionMethods(type)
+         assembly:TypeList:Add(name, typeref)      // FullName
+         IF SELF:HasExtensionMethods(type)
             SELF:LoadExtensionMethods(type)
          endif
          if type:HasNestedTypes

@@ -456,10 +456,10 @@ namespace XSharpLanguage
                                     }
                                 }
                                 // Now Add Functions and Procedures
-                                BuildCompletionList(compList, _file.Project.Lookup(XLiterals.GlobalName, true), Modifiers.Public, false, filterText);
+                                BuildCompletionList(compList, _file.Project.Lookup(XLiterals.GlobalName), Modifiers.Public, false, filterText);
                                 foreach (var project in _file.Project.ReferencedProjects)
                                 {
-                                    BuildCompletionList(compList, project.Lookup(XLiterals.GlobalName, true), Modifiers.Public, false, filterText);
+                                    BuildCompletionList(compList, project.Lookup(XLiterals.GlobalName), Modifiers.Public, false, filterText);
                                 }
                                 // and Add NameSpaces
                                 AddNamespaces(compList, _file.Project, filterText);
@@ -560,22 +560,14 @@ namespace XSharpLanguage
                 {
                     BuildCompletionList(compList, new CompletionType(globalType), Modifiers.Public, true, filterText);
                 }
-                //
             }
-            //
         }
 
         private void AddTypeNames(CompletionList compList, XProject project, string startWith, HashSet<string> usings)
         {
-            AddTypeNames(compList, project, startWith);
-            foreach (string nspace in usings)
-            {
-                AddTypeNames(compList, project, nspace + "." + startWith);
-            }
-        }
-
-        private void AddTypeNames(CompletionList compList, XProject project, string startWith)
-        {
+            if (string.IsNullOrEmpty(startWith))
+                return;
+      
             // We are looking for NameSpaces, in References
             int startLen = 0;
             int dotPos = startWith.LastIndexOf('.');
@@ -587,57 +579,40 @@ namespace XSharpLanguage
             var sprjs = project.StrangerProjects;
             var prjs = project.ReferencedProjects;
 
-            // Check of MsCorlib is included
-            var references = project.AssemblyReferences.ToList();
-            bool hasCorLib = false; ;
-            foreach (var reference in references)
-            {
-                if (reference?.FileName != null && reference.FileName.EndsWith("mscorlib.dll", StringComparison.OrdinalIgnoreCase))
-                {
-                    hasCorLib = true;
-                    break;
-                }
-            }
-            if (!hasCorLib)
-            {
-                references.Add(SystemTypeController.mscorlib);
-            }
+
             if (startWith.Length == 0)
                 return;
-            foreach (AssemblyInfo assemblyInfo in references)
+            foreach (var type in project.FindSystemTypesByName(startWith, usings.ToArray()))
             {
-                foreach (var type in assemblyInfo.Types.FindMatching(startWith))
+                if (XSharpTokenTools.isGenerated(type))
+                   continue;
+
+                string realTypeName = type.Name;
+                if (IsHiddenName(realTypeName))
                 {
-                    //if (XSharpTokenTools.isGenerated(typeInfo.Value))
-                    //    continue;
-
-                    string realTypeName = type.Name;
-                    if (IsHiddenName(realTypeName))
-                    {
-                       continue;
-                    }
-                    TypeAnalysis typeAnalysis = new TypeAnalysis(type);
-                    // Nested Type ?
-                    if (realTypeName.Contains("+"))
-                    {
-                        realTypeName = realTypeName.Replace('+', '.');
-                    }
-                    // remove the start
-                    if (startLen > 0 && realTypeName.Length > startLen)
-                        realTypeName = realTypeName.Substring(startLen);
-                    // Do we have another part file
-                    dotPos = realTypeName.IndexOf('.');
-                    // Then remove it
-                    if (dotPos > 0)
-                        realTypeName = realTypeName.Substring(0, dotPos);
-                    if (IsHiddenName(realTypeName))
-                        continue;
-
-                    //
-                    ImageSource icon = _provider.GlyphService.GetGlyph(typeAnalysis.GlyphGroup, typeAnalysis.GlyphItem);
-                    if (!compList.Add(new XSCompletion(realTypeName, realTypeName, typeAnalysis.Prototype, icon, null, Kind.Class,"")))
-                        break;
+                    continue;
                 }
+                TypeAnalysis typeAnalysis = new TypeAnalysis(type);
+                // Nested Type ?
+                if (realTypeName.Contains("+"))
+                {
+                    realTypeName = realTypeName.Replace('+', '.');
+                }
+                // remove the start
+                if (startLen > 0 && realTypeName.Length > startLen)
+                    realTypeName = realTypeName.Substring(startLen);
+                // Do we have another part file
+                dotPos = realTypeName.IndexOf('.');
+                // Then remove it
+                if (dotPos > 0)
+                    realTypeName = realTypeName.Substring(0, dotPos);
+                if (IsHiddenName(realTypeName))
+                    continue;
+
+                //
+                ImageSource icon = _provider.GlyphService.GetGlyph(typeAnalysis.GlyphGroup, typeAnalysis.GlyphItem);
+                if (!compList.Add(new XSCompletion(realTypeName, realTypeName, typeAnalysis.Prototype, icon, null, Kind.Class,"")))
+                    break;
             }
             //
             // And our own Types
@@ -647,12 +622,7 @@ namespace XSharpLanguage
             {
                 AddXSharpTypeNames(compList, prj, startWith);
             }
-            //// And Stranger Projects
-            //var sprjs = project.StrangerProjects;
-            //foreach (var prj in sprjs)
-            //{
-            //    AddStrangerTypeNames(compList, prj, startWith);
-            //}
+ 
         }
 
         private bool IsHiddenName(string realTypeName)
@@ -997,8 +967,8 @@ namespace XSharpLanguage
         {
             foreach (var member in members.Where(x => nameStartsWith(x.Name, startWith)))
             {
-                //if (XSharpTokenTools.isGenerated(member))
-                //    continue;
+                if (XSharpTokenTools.isGenerated(member))
+                    continue;
                 if (IsHiddenName(member.Name))
                 {
                     continue;
@@ -1798,17 +1768,14 @@ namespace XSharpLanguage
     /// </summary>
     public static class XSharpTokenTools
     {
-        public static bool isGenerated(System.Type type)
+        public static bool isGenerated(IXType type)
         {
-            //var att = type.GetCustomAttribute(typeof(CompilerGeneratedAttribute));
-            //if (att != null)
-            //    return true;
             return type.Name.IndexOf("$", StringComparison.Ordinal) > -1;
         }
-        public static bool isGenerated(MemberInfo m)
+        public static bool isGenerated(IXMember m)
         {
-            var att = m.GetCustomAttribute(typeof(CompilerGeneratedAttribute));
-            return att != null;
+            return m.Name.IndexOf("$") > -1 || m.Name.StartsWith("<");
+
         }
 
         public static bool StringEquals(string lhs, string rhs)
@@ -2096,8 +2063,8 @@ namespace XSharpLanguage
                             break;
                         else if (XSharpLexer.IsKeyword(triggerToken.Type))
                         {
-                            //token = null;
-                            //triggerToken = null;
+                            token = null;
+                            triggerToken = null;
                             break;
                         }
                         else if (XSharpLexer.IsOperator(triggerToken.Type) && !inCtor)
@@ -2625,7 +2592,11 @@ namespace XSharpLanguage
                         {
                             SearchConstructorIn(cType, visibility, out foundElement);
                         }
-                        if (foundElement.Result == null && cType.XTypeDef != null)
+                        if (foundElement == null)
+                        {
+                            foundElement = new CompletionElement(cType.XTypeDef);
+                        }
+                        else if (foundElement.Result == null && cType.XTypeDef != null)
                         {
                             foundElement = new CompletionElement(cType.XTypeDef);
                         }
@@ -2881,11 +2852,8 @@ namespace XSharpLanguage
             }
             if (cType.IsEmpty())
             {
-                var type = xFile.Project.Lookup(currentToken, true);
-                if (type == null && !string.IsNullOrEmpty(currentNs))
-                {
-                    type = xFile.Project.Lookup(currentNs + "." + currentToken, true);
-                }
+                usings.Add(currentNs);
+                var type = xFile.Project.Lookup(currentToken, usings);
                 if (type != null)
                 {
                     cType = new CompletionType(type);
@@ -2938,7 +2906,7 @@ namespace XSharpLanguage
                         }
                         if (element == null)
                         {
-                            var type = member.File.Project.Lookup(XSharpModel.XLiterals.GlobalName, true);
+                            var type = member.File.Project.Lookup(XSharpModel.XLiterals.GlobalName);
                             if (type != null)
                             {
                                 element = type.GetMembers(name,true).FirstOrDefault();
@@ -3443,15 +3411,6 @@ namespace XSharpLanguage
                 foundElement = new CompletionElement(global);
                 return new CompletionType(global.ParentType);
             }
-            foreach (var project in xFile.Project.ReferencedProjects)
-            {
-                global = project.FindGlobalOrDefine(currentToken);
-                if (global != null)
-                {
-                    foundElement = new CompletionElement(global);
-                    return new CompletionType(global.ParentType);
-                }
-            }
             CompletionType cType = null;
             List<string> emptyUsings = new List<string>();
             foreach (AssemblyInfo asm in xFile.Project.AssemblyReferences)
@@ -3511,32 +3470,24 @@ namespace XSharpLanguage
             //
             if (xMethod == null)
             {
-                foreach (var project in xFile.Project.ReferencedProjects)
+                foreach (var asm in xFile.Project.AssemblyReferences)
                 {
-                    xMethod = project.FindFunction(currentToken);
-                    if (xMethod != null)
-                        break;
-                }
-                if (xMethod == null)
-                {
-                    foreach (var asm in xFile.Project.AssemblyReferences)
+                    if (!string.IsNullOrEmpty(asm.GlobalClassName))
                     {
-                        if (!string.IsNullOrEmpty(asm.GlobalClassName))
+                        var type = asm.GetType(asm.GlobalClassName);
+                        if (type != null)
                         {
-                            var type = asm.GetType(asm.GlobalClassName);
-                            if (type != null)
+                            var methods = type.GetMethod(currentToken);
+                            if (methods.Length > 0)
                             {
-                                var methods = type.GetMethod(currentToken);
-                                if (methods.Length > 0)
-                                {
-                                    foundElement = new CompletionElement(methods[0]);
-                                    return new CompletionType(type);
-                                }
+                                foundElement = new CompletionElement(methods[0]);
+                                return new CompletionType(type);
                             }
                         }
                     }
                 }
             }
+            
             foundElement = new CompletionElement(xMethod);
             if (xMethod?.Parent != null)
             {
@@ -3567,12 +3518,6 @@ namespace XSharpLanguage
             //
             if (xMethod == null)
             {
-                foreach (var project in xFile.Project.ReferencedProjects)
-                {
-                    xMethod = project.FindGlobalOrDefine(currentToken);
-                    if (xMethod != null)
-                        break;
-                }
                 if (xMethod == null)
                 {
                     foreach (var asm in xFile.Project.AssemblyReferences)

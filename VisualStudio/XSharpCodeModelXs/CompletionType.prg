@@ -98,24 +98,14 @@ BEGIN NAMESPACE XSharpModel
 
 		PRIVATE METHOD CheckProjectType(typeName AS STRING, xprj AS XProject, usings AS IList<STRING>) AS VOID
 			LOCAL xType AS XTypeDefinition
-			xType := xprj:Lookup(typeName, TRUE)
-			IF xType == NULL .AND. usings != NULL
-
-				FOREACH name AS STRING IN usings:Expanded()
-					VAR fqn := name + "." + typeName
-					xType := xprj:Lookup(fqn, TRUE)
-					IF (xType != NULL)
-						EXIT
-					ENDIF
-				NEXT
-			ENDIF
+			xType := xprj:Lookup(typeName, usings:Expanded())
 			IF xType != NULL
 				SELF:_type := xType
 			ENDIF
 
 		PRIVATE METHOD CheckSystemType(typeName AS STRING, usings AS IList<STRING>) AS VOID
 			LOCAL sType AS XTypeReference
-			IF SELF:_file != NULL
+			IF SELF:_file != NULL .AND. SELF:_file:Project != NULL
             VAR options := SELF:_file:Project:ParseOptions
 				typeName    := typeName:GetSystemTypeName(options:XSharpRuntime)
 				sType       := SELF:_file:Project:FindSystemType(typeName, usings)
@@ -136,37 +126,26 @@ BEGIN NAMESPACE XSharpModel
 			ELSEIF SELF:_file?:Project != NULL
 				SELF:CheckProjectType(typeName, SELF:_file:Project, usings)
 				IF ! SELF:IsInitialized
-
 					SELF:CheckSystemType(typeName, usings)
-					IF ! SELF:IsInitialized
-
-						FOREACH prj AS XProject IN SELF:_file:Project:ReferencedProjects
-							SELF:CheckProjectType(typeName, prj, usings)
-							IF SELF:IsInitialized
-								EXIT
-							ENDIF
-						NEXT
-					ENDIF
 				ENDIF
 			ENDIF
 
 		PRIVATE METHOD CheckType(typeName AS STRING, defaultNS AS STRING) AS VOID
 			LOCAL usings AS List<STRING>
-			usings := List<STRING>{SELF:_file:Usings}
+         usings := List<STRING>{}
+         IF SELF:_file != NULL
+			   usings:AddRange(SELF:_file:Usings)
+            IF SELF:_file?:Project != NULL
+               FOREACH VAR ns IN SELF:_file:Project:ImplicitNamespaces
+                   usings:AddUnique(ns)
+               NEXT
+            ENDIF
+         ENDIF
 			IF ! String.IsNullOrEmpty(defaultNS)
 				usings:Add(defaultNS)
 			ENDIF
-            FOREACH var ns in SELF:_file:Project:ImplicitNamespaces
-                usings:AddUnique(ns)
-            NEXT
-            // For fully qualified typenames, search without usings first. That is usually faster
-            IF typeName:Contains(".")
-                SELF:CheckType(typeName, List<STRING>{})
-            ENDIF
-            IF ! SELF:IsInitialized
-                // Now check all usings
-			    SELF:CheckType(typeName, usings)
-            ENDIF
+         // Now check all usings
+			SELF:CheckType(typeName, usings)
 
 		INTERNAL METHOD SimpleTypeToSystemType(kw AS STRING) AS XTypeReference
 			LOCAL typeName AS STRING
@@ -257,7 +236,7 @@ BEGIN NAMESPACE XSharpModel
 					RETURN NULL
 				ENDIF
            
-				IF SELF:_file != NULL
+				IF SELF:_file != NULL .AND. SELF:_file:Project != NULL
 					VAR options := SELF:_file:Project:ParseOptions
 					typeName    := typeName:GetSystemTypeName(options:XSharpRuntime)
 					sType       := SELF:_file:Project:FindSystemType(typeName, List<STRING>{})

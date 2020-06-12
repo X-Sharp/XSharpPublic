@@ -20,7 +20,7 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY SubType      AS Kind AUTO
       PROPERTY DeclaringType  AS STRING AUTO
       PROPERTY ReturnType   AS STRING GET TypeName SET TypeName := value
-      
+      PROPERTY SourceCode   AS STRING AUTO      
       #region constructors
       
       CONSTRUCTOR(name AS STRING, kind AS Kind, attributes AS Modifiers, ;

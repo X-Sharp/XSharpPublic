@@ -1642,21 +1642,9 @@ namespace XSharp.Project
         public XTypeDefinition ResolveXType(string name, IReadOnlyList<string> usings)
         {
             var model = this.ProjectModel;
-            //
-            XTypeDefinition result = model.Lookup(name, true);
+            XTypeDefinition result = model.Lookup(name, usings);
             if (result != null)
                 return result;
-            // try to find with explicit usings
-            if (usings != null)
-            {
-                foreach (var usingName in usings)
-                {
-                    var fullname = usingName + "." + name;
-                    result = model.Lookup(fullname, true);
-                    if (result != null)
-                        return result;
-                }
-            }
             return result;
         }
 
@@ -1665,27 +1653,13 @@ namespace XSharp.Project
         {
             var model = this.ProjectModel;
             //
-            XTypeDefinition result = model.LookupReferenced(name, true);
+            var tmpusings = new List<string>();
+            tmpusings.AddRange(usings);
+            tmpusings.AddRange(model.ImplicitNamespaces);
+            XTypeDefinition result = model.LookupReferenced(name, tmpusings);
             if (result != null)
                 return result;
-            // try to find with explicit usings
-            if (usings != null)
-            {
-                foreach (var usingName in usings)
-                {
-                    var fullname = usingName + "." + name;
-                    result = model.LookupReferenced(fullname, true);
-                    if (result != null)
-                        return result;
-                }
-            }
-            foreach (var usingName in model.ImplicitNamespaces)
-            {
-                var fullname = usingName + "." + name;
-                result = model.LookupReferenced(fullname, true);
-                if (result != null)
-                    return result;
-            }
+        
             return result;
         }
         public IXType ResolveExternalType(string name, IReadOnlyList<string> usings)

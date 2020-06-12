@@ -14,7 +14,7 @@ USING LanguageService.CodeAnalysis.XSharp
 USING System.Collections.Concurrent
 USING System.Diagnostics
 USING System.Reflection
-
+#pragma options ("az", ON)
 BEGIN NAMESPACE XSharpModel
    [DebuggerDisplay("{Name,nq}")];
    CLASS XProject
@@ -581,58 +581,85 @@ BEGIN NAMESPACE XSharpModel
          #endregion
          
       #region Lookup Types and Functions
-      METHOD FindFunction(name AS STRING) AS IXMember
+      METHOD FindFunction(name AS STRING, lRecursive := TRUE AS LOGIC) AS IXMember
          // we look in the project references and assembly references
-         // pass the list of ProjectIds and AssemblyIds to the databasse engine
-         var result := XDatabase.FindFunction(name, SELF:DependentProjectList, SELF:DependentAssemblyList, SELF:FunctionClasses)
-         VAR xres := result:FirstOrDefault()
-         IF xres != NULL
-            // XDbResult needs to be translated to XMember
-            // either we open the source file or we read the type from the Assembly
-//            mem :=
-//            RETURN mem
+         // pass the list of ProjectIds and AssemblyIds to the database engine
+         VAR projectIds    := SELF:Id:ToString()
+         IF lRecursive
+            projectIds    := SELF:DependentProjectList
          ENDIF
-//         return mem         
-         RETURN NULL                  
+         VAR result := XDatabase.FindFunction(name, projectIds)
+         RETURN GetGlobalMember(result)
+
+      METHOD FindGlobalOrDefine(name AS STRING, lRecursive := TRUE AS LOGIC) AS IXMember
+         // we look in the project references and assembly references
+         // pass the list of ProjectIds and AssemblyIds to the database engine
+         VAR projectIds    := SELF:Id:ToString()
+         IF lRecursive
+            projectIds    := SELF:DependentProjectList
+         ENDIF
+         VAR result := XDatabase.FindGlobalOrDefine(name, projectIds)
+         RETURN GetGlobalMember(result)
+
+      PRIVATE METHOD GetGlobalMember(result AS IList<XDbResult>) AS IXMember
+         IF result:Count > 0
+            // Get the source code and parse it into a member
+            // we know that it will be of the globals class
+            VAR element    := result:First()
+            VAR source     := element:SourceCode
+            VAR file       := XFile{element:FileName}
+            file:Project   := SELF
+            file:Virtual   := TRUE
+            VAR walker := SourceWalker{file}
+            walker:ParseNew(source, FALSE)
+            IF walker:EntityList:Count > 0
+               VAR xElement      := walker:EntityList:First()
+               IF xElement IS XMemberDefinition VAR xmember
+                  xmember:Range       := TextRange{element:StartLine, element:StartColumn, element:EndLine, element:EndColumn}
+                  xmember:Interval    := TextInterval{element:Start, element:Stop}
+                  xmember:XmlComments := element:XmlComments
+                  RETURN xmember
+               ENDIF
+            ENDIF
+         ENDIF
+         RETURN NULL    
          
-      
-//         WriteOutputMessage("FindFunction() "+name)
-//         var xType := SELF:LookupMergedType(XLiterals.GlobalName)
-//         if xType == NULL
-//            xType := SELF:LookupMergedType(XLiterals.GlobalName)
-//         ENDIF
-//         IF xType != NULL
-//            var mem := xType:GetMembers(name,TRUE):Where (;
-//            { x=> (x.Kind == Kind.Procedure .OR. x:Kind == Kind.Function)   }):FirstOrDefault()
-//            if mem != null
-//               WriteOutputMessage("FindFunction()  found: "+mem:FullName)
-//               return mem
-//            ENDIF
-//         ENDIF
+      METHOD FindSystemTypesByName(typeName AS STRING, usings AS IReadOnlyList<STRING>) AS IList<XTypeReference>
+         usings := AdjustUsings(REF typeName, usings)
+         VAR result := XDatabase.GetReferenceTypes(typeName, SELF:DependentAssemblyList )
+         result := FilterUsings(result,usings)
+         RETURN GetRefType(result)
          
-      METHOD FindGlobalOrDefine(name AS STRING) AS IXMember
-//         WriteOutputMessage("FindGlobalOrDefine() "+name)
-//         var xType := SELF:LookupMergedType(XLiterals.GlobalName)
-//         if xType == NULL
-//            SELF:MergeType(XLiterals.GlobalName,TRUE)
-//            xType := SELF:LookupMergedType(XLiterals.GlobalName)
-//         ENDIF
-//         if xType != NULL  
-//            var oMember := xType:GetMembers(name,TRUE):Where (;
-//            { x=> (x.Kind == Kind.VOGlobal .OR. x:Kind == Kind.VODefine)   }):FirstOrDefault()
-//            IF oMember != NULL
-//               WriteOutputMessage("FindGlobalOrDefine()  found: "+oMember:FullName)
-//               RETURN oMember
-//            ENDIF
-//         ENDIF
+
+
+      PRIVATE METHOD GetRefType(found AS IList<XDbResult>) AS IList<XTypeReference>
+         LOCAL IdAssembly := -1 AS INT64
+         LOCAL fullTypeName:= ""  AS STRING
+         VAR result := List<XTypeReference>{}
+         FOREACH VAR element IN found
+             // Skip types found in another project
+             fullTypeName := element:FullName
+             IdAssembly   := element:IdAssembly
+             VAR name    := element:TypeName
+             VAR idType  := element:IdType
+             FOREACH VAR asm IN SELF:AssemblyReferences
+                  IF asm:Id == IdAssembly
+                     IF asm:Types:ContainsKey(fullTypeName)
+                        result:Add(asm:Types[fullTypeName])
+                     ENDIF
+                     EXIT
+                  ENDIF
+             NEXT
+         NEXT
+         RETURN result
          
-         RETURN NULL
+         
       METHOD FindSystemType(name AS STRING, usings AS IList<STRING>) AS XTypeReference
          WriteOutputMessage("FindSystemType() "+name)
-//         IF ! AssemblyInfo.DisableForeignProjectReferences
-//            SELF:RefreshStrangerProjectDLLOutputFiles()
-//         ENDIF
-//         SELF:ResolveReferences()
+         IF ! AssemblyInfo.DisableForeignProjectReferences
+            SELF:RefreshStrangerProjectDLLOutputFiles()
+         ENDIF
+         SELF:ResolveReferences()
 //         IF _ExternalTypeCache:ContainsKey(name)
 //            WriteOutputMessage("FindSystemType() "+name+" found in cache")
 //            RETURN _ExternalTypeCache[name]
@@ -644,76 +671,175 @@ BEGIN NAMESPACE XSharpModel
 //               RETURN _ExternalTypeCache[fullname]
 //            ENDIF
 //         NEXT
-//         VAR type := SystemTypeController.FindType(name, usings, SELF:_AssemblyReferences)
-//         IF type != NULL
-//            WriteOutputMessage("FindSystemType() "+name+" found "+type:FullName)
+         VAR type := SystemTypeController.FindType(name, usings, SELF:_AssemblyReferences)
+         IF type != NULL
+            WriteOutputMessage("FindSystemType() "+name+" found "+type:FullName)
 //            IF !_ExternalTypeCache:ContainsKey(type:FullName)
 //               _ExternalTypeCache:TryAdd(type:FullName, type)
 //            ENDIF
-//         ENDIF
-//         RETURN type
-      RETURN NULL         
+         ENDIF
+         RETURN type
       METHOD GetAssemblyNamespaces() AS IList<STRING>
          RETURN SystemTypeController.GetNamespaces(SELF:_AssemblyReferences)
+
+
+      METHOD Lookup(typeName AS STRING) AS XTypeDefinition
+         VAR usings := List<STRING>{}
+         RETURN Lookup(typeName, usings)
+      
+      PRIVATE METHOD AdjustUsings(typeName REF STRING, usings AS IReadOnlyList<STRING>) AS IReadOnlyList<STRING>
+         VAR pos := typeName:LastIndexOf(".")
+         VAR myusings := List<STRING>{}
+         myusings:AddRange(usings)
+         IF pos > 0
+            VAR ns   := typeName:Substring(0,pos)
+            typeName := typeName:Substring(pos+1)
+            myusings:Add(ns)
+         ENDIF
+         RETURN myusings
+      
+      
+      PRIVATE _lastFound := NULL AS XTypeDefinition
+      PRIVATE _lastName  := NULL AS STRING
+      
+      METHOD Lookup(typeName AS STRING, usings AS IReadOnlyList<STRING>) AS XTypeDefinition
+         VAR originalName := typeName
+         IF originalName == _lastName
+            RETURN _lastFound
+         ENDIF
+         usings := AdjustUsings(REF typeName, usings)
+         VAR result := XDatabase.GetTypes(typeName, SELF:Id:ToString())
+         result := FilterUsings(result,usings)
+         _lastFound := GetType(result)
+         _lastName  := originalName
+         RETURN _lastFound
+
+      METHOD LookupReferenced(typeName AS STRING) AS XTypeDefinition
+      VAR usings := List<STRING>{}
+      RETURN LookupReferenced(typeName, usings)
          
-      METHOD Lookup(typeName AS STRING, caseInvariant AS LOGIC) AS XTypeDefinition
-//         LOCAL xType AS XTypeDefinition
-//         WriteOutputMessage("Lookup() "+typeName)
-//         xType := SELF:LookupMergedType(typeName)
-//         IF xType != NULL
-//            WriteOutputMessage("Lookup()  found: "+xType:FullName)
-//            RETURN xType
-//         ENDIF
-//         IF _TypeDict:ContainsKey(typeName)
-//            VAR files := _TypeDict[typeName]:ToArray()
-//            FOREACH sFile AS STRING IN files
-//               // It seems sometimes the Key has changed; may be after a reparse ?
-//               // To just TRY to get the file
-//               IF _SourceFilesDict:TryGetValue( sFile, OUT var file )
-//                  IF file:TypeList:TryGetValue(typeName, OUT VAR xTemp ) .AND. xTemp  != NULL
-//                     IF (! caseInvariant .AND. ((xTemp:FullName != typeName) .AND. xTemp:Name != typeName))
-//                        xTemp := NULL
-//                     ENDIF
-//                  ENDIF
-//                  IF xTemp != NULL
-//                     IF ! xTemp:IsPartial
-//                        WriteOutputMessage("Lookup()  found: "+xTemp:FullName + " in " + file:Name )
-//                        RETURN xTemp
-//                     ENDIF
-//                     IF xType != NULL
-//                        xType := xType:Merge(xTemp)
-//                     ELSE
-//                        xType := XTypeDefinition{xTemp}
-//                     ENDIF
-//                  ENDIF
-//               ENDIF
-//            NEXT
-//         ENDIF
-//         IF xType != NULL
-//            WriteOutputMessage("Lookup()  found: "+xType:FullName)
-//         ENDIF
-//         IF xType == NULL
-//            xType := SELF:LookupReferenced(typeName, caseInvariant)
-//         ENDIF
-//         RETURN xType
-         RETURN NULL       
-      METHOD LookupReferenced(typeName AS STRING, caseInvariant AS LOGIC) AS XTypeDefinition
-         LOCAL xType AS XTypeDefinition
-         xType := NULL
-         IF ! AssemblyInfo.DisableXSharpProjectReferences
-            WriteOutputMessage("LookupReferenced() "+typeName)
-            FOREACH project AS XProject IN SELF:ReferencedProjects
-               IF project == SELF
+      METHOD LookupReferenced(typeName AS STRING, usings AS IReadOnlyList<STRING>) AS XTypeDefinition
+         VAR originalName := typeName
+         IF originalName == _lastName
+            RETURN _lastFound
+         ENDIF
+         usings := AdjustUsings(REF typeName, usings)
+         VAR result := XDatabase.GetTypes(typeName, SELF:DependentProjectList)
+         result := FilterUsings(result,usings)
+         _lastFound := GetType(result)
+         _lastName  := originalName
+         RETURN _lastFound
+
+      METHOD FilterUsings(list AS IList<XDbResult> , usings AS IReadOnlyList<STRING>) AS IList<XDbResult>
+         VAR result := List<XDbResult>{}
+         FOREACH VAR element IN list
+            IF String.IsNullOrEmpty(element:Namespace)
+               result:Add(element)
+            ELSEIF usings:Contains(element:Namespace)
+               result:Add(element)
+            ELSE
+               NOP   // namespace does not match
+            ENDIF
+         NEXT
+         RETURN result
+         
+      PRIVATE METHOD GetType(found AS IList<XDbResult>) AS XTypeDefinition
+         VAR result := List<XTypeDefinition>{}
+         LOCAL idProject := -1 AS INT64
+         LOCAL fullTypeName:= ""  AS STRING
+         FOREACH VAR element IN found
+             // Skip types found in another project
+             IF idProject != -1 .AND. element:IdProject != idProject
                   LOOP
+             ENDIF
+             // skip types from different namespaces
+             IF fullTypeName:Length > 0 .AND. fullTypeName != element:Namespace+"."+element:TypeName
+                  LOOP
+             ENDIF
+             fullTypeName := element:Namespace+"."+element:TypeName
+             idProject   := element:IdProject  
+             VAR name    := element:TypeName
+             VAR idType  := element:IdType
+             
+             VAR members := XDatabase.GetMembers(idType):ToArray()
+             // now create a temporary source for the parser
+             VAR source  := GetTypeSource(element, members)
+             VAR file       := XFile{element:FileName}
+             file:Project   := SELF
+             file:Virtual   := TRUE
+             VAR walker := SourceWalker{file}
+             walker:ParseNew(source, FALSE)
+             IF walker:EntityList:Count > 0
+               VAR xElement      := walker:EntityList:First()
+               IF xElement IS XTypeDefinition VAR xtype
+                  xtype:Range       := TextRange{element:StartLine, element:StartColumn, element:EndLine, element:EndColumn}
+                  xtype:Interval    := TextInterval{element:Start, element:Stop}
+                  xtype:XmlComments := element:XmlComments
+                  VAR xmembers := xtype:XMembers:ToArray()
+                  IF xmembers:Length == members:Length
+                     LOCAL i AS INT
+                     FOR i := 0 TO members:Length-1
+                        VAR xmember := (XMemberDefinition) xmembers[i] 
+                        VAR melement := members[i]
+                        xmember:Range       := TextRange{melement:StartLine, melement:StartColumn, melement:EndLine, melement:EndColumn}
+                        xmember:Interval    := TextInterval{melement:Start, melement:Stop}
+                        IF xmember:Name == melement:MemberName
+                           xmember:XmlComments := melement:XmlComments
+                        ENDIF
+                     NEXT
+                  ENDIF
+                  result:Add(xtype)
                ENDIF
-               xType := project:Lookup(typeName, caseInvariant)
-               IF xType != NULL
-                  WriteOutputMessage(String.Format("LookupReferenced() found in {0}: {1} ", project:Name, xType:FullName))
-                  RETURN xType
+            ENDIF
+         NEXT
+         // note result is a collection, so zero based.
+         IF result:Count == 1
+            RETURN result[0]
+         ELSEIF result:Count == 0
+            RETURN NULL
+         ELSE // merge the types
+            VAR xType := result[0]
+            FOREACH VAR xOther IN result
+               IF xOther != xType 
+                  xType := xType:Merge(xOther)
                ENDIF
             NEXT
+            RETURN xType
          ENDIF
-         RETURN xType
+
+      PRIVATE METHOD GetTypeSource(element AS XDbResult, members AS IList<XDbResult>) AS STRING
+         VAR sb := StringBuilder{}
+         sb:AppendLine(element:SourceCode)
+         FOREACH VAR xmember IN members
+            sb:AppendLine(xmember:SourceCode)
+            SWITCH xmember:Kind
+            CASE Kind.Property
+               IF xmember:SourceCode:ToLower():Contains(" get") .OR. ;
+                  xmember:SourceCode:ToLower():Contains(" set") 
+                  // single line
+                  NOP
+               ELSE
+                  sb:AppendLine("END PROPERTY")
+               ENDIF
+            CASE Kind.Event
+               IF xmember:SourceCode:ToLower():Contains(" add") .OR. ;
+                  xmember:SourceCode:ToLower():Contains(" remove") 
+                  // single line
+                  NOP
+               ELSE
+                  sb:AppendLine("END EVENT")
+               ENDIF
+            END SWITCH
+         NEXT
+         SWITCH element:Kind
+         CASE Kind.Class
+            sb:AppendLine("END CLASS")
+         CASE Kind.Structure
+            sb:AppendLine("END STRUCTURE")
+         CASE Kind.Interface
+            sb:AppendLine("END INTERFACE")
+         END SWITCH         
+         RETURN sb:ToString()
          
       METHOD GetExtensions( systemType AS IXType ) AS List<IXMember>
          RETURN SystemTypeController.LookForExtensions( systemType, SELF:_AssemblyReferences)

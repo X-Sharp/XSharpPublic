@@ -58,7 +58,7 @@ BEGIN NAMESPACE XSharpModel
             ENDIF
             IF SELF:File != NULL .AND. parentName != "System.Object"
                
-               tmp := SELF:File:Project:Lookup(parentName, TRUE)
+               tmp := SELF:File:Project:Lookup(parentName, SELF:File:Usings:ToArray())
                IF tmp != NULL
                   
                   SELF:Parent := tmp

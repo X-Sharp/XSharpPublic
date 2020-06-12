@@ -119,6 +119,13 @@
     <Reference Include="mscorlib" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.SQLite, Version=1.0.113.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139">
+      <Name>System.Data.SQLite</Name>
+      <AssemblyName>System.Data.SQLite.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+      <HintPath>..\..\External\Debug\System.Data.SQLite.dll</HintPath>
+    </Reference>
     <Reference Include="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <Name>System.Drawing</Name>
       <AssemblyName>System.Drawing.dll</AssemblyName>
@@ -154,9 +161,14 @@
       <Link>Properties\constants.prg</Link>
     </Compile>
     <Compile Include="CompletionType.prg" />
-    <Compile Include="Helpers\TextInterval.prg" />
-    <Compile Include="Helpers\TextRange.prg" />
-    <Compile Include="Helpers\XSortedDictionary.prg" />
+    <Compile Include="Model\XDbResult.prg" />
+    <Compile Include="Model\XBaseSignature.prg" />
+    <Compile Include="Support\TextInterval.prg" />
+    <Compile Include="Support\TextRange.prg" />
+    <Compile Include="Support\TypeExtensions.prg" />
+    <Compile Include="Support\Error.prg" />
+    <Compile Include="Support\FileTypeHelpers.prg" />
+    <Compile Include="Support\XSortedDictionary.prg" />
     <Compile Include="Interfaces.prg" />
     <Compile Include="MetaData\AssemblyInfo.prg" />
     <Compile Include="MetaData\AssemblyReader.prg" />
@@ -186,17 +198,15 @@
     <Compile Include="ProjectSystem\XProject.prg" />
     <Compile Include="ProjectSystem\XSolution.prg" />
     <Compile Include="Properties\AssembyInfo.prg" />
-    <Compile Include="TypeExtensions.prg" />
+    <Compile Include="XDatabase.prg" />
     <Compile Include="Walker\ModelWalker.prg" />
     <Compile Include="Walker\XsParser.prg" />
     <Compile Include="Walker\SourceWalker.prg" />
-    <Compile Include="XError.prg" />
-    <Compile Include="XFileTypeHelpers.prg" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Model\" />
     <Folder Include="MetaData" />
-    <Folder Include="Helpers" />
+    <Folder Include="Support" />
     <Folder Include="ProjectSystem\" />
     <Folder Include="Walker" />
     <Folder Include="Properties\" />
@@ -204,6 +214,10 @@
   <ItemGroup>
     <None Include="..\..\Common\BuildNumber.h">
       <Link>BuildNumber.h</Link>
+    </None>
+    <None Include="..\..\External\Debug\SQLite.Interop.dll">
+      <Link>SQLite.Interop.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="packages.config" />
   </ItemGroup>

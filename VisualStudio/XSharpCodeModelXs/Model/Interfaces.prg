@@ -4,7 +4,7 @@ BEGIN NAMESPACE XSharpModel
    INTERFACE IXElement
       PROPERTY Name        as STRING GET
       PROPERTY Kind        as Kind   GET
-      PROPERTY TypeName          AS STRING GET
+      PROPERTY TypeName    AS STRING GET SET
       PROPERTY Parent      AS IXEntity GET SET
    END INTERFACE
       

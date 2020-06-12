@@ -91,6 +91,7 @@ namespace XSharp.Project
                         if (file != null)
                         {
                             textView.TextBuffer.Properties.AddProperty(typeof(XSharpModel.XFile), file);
+                            file.Interactive = true;
                         }
                     }
                     CommandFilter filter = new CommandFilter(textView, CompletionBroker, NavigatorService.GetTextStructureNavigator(textView.TextBuffer), SignatureHelpBroker, aggregator, this );

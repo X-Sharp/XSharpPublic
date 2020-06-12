@@ -19,7 +19,6 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY FullName AS STRING                  GET SELF:Name
       PROPERTY Namespace  AS STRING                AUTO
       
-      PROPERTY Parent AS IXEntity                  AUTO
       PROPERTY Prototype AS STRING                 GET SELF:Name
       PROPERTY IsArray  AS LOGIC                   AUTO GET PROTECTED SET 
       PROPERTY IsStatic  AS LOGIC                  GET FALSE

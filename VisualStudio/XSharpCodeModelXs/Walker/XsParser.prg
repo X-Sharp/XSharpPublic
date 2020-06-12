@@ -74,7 +74,8 @@ BEGIN NAMESPACE XSharpModel
          _PPBlockStack  := Stack<XBlock>{}
          _file          := oFile
          _locals        := List<XVariable>{}
-         _globalType    := XTypeDefinition.CreateGlobalType(_file)
+         _globalType    := _file:GlobalType
+         _globalType:ClearMembers()
          _EntityStack:Push(_globalType)
 
       
@@ -148,18 +149,21 @@ BEGIN NAMESPACE XSharpModel
                      ENDIF
                      _EntityList:Add(entity)
                   
-                     IF _EntityStack:Count > 0 .AND. (!CurrentEntityKind:HasChildren() .OR. !(CurrentEntity IS XTypeDefinition ) )
+                     IF _EntityStack:Count > 0 .AND. (!CurrentEntityKind:HasMembers() .OR. !(CurrentEntity IS XTypeDefinition ) )
                         _EntityStack:Pop()
                      ENDIF
                      IF entityKind:IsGlobalType() .AND. entity IS XMemberDefinition VAR xGlobalMember
                         SELF:_globalType:AddMember(xGlobalMember)
                      ELSE
-                        IF CurrentEntityKind:HasChildren() .AND. CurrentEntity IS XTypeDefinition VAR xEnt
+                        IF CurrentEntityKind:HasMembers() .AND. CurrentEntity IS XTypeDefinition VAR xEnt
                            IF entity IS XMemberDefinition VAR xMember
                               xEnt:AddMember( xMember )
-                           ELSEIF entity IS XTypeDefinition VAR xChild .AND. ! XTypeDefinition.IsGlobalType(xEnt)
-                              xEnt:AddChild( xChild )
-                              xChild:Namespace := xEnt:FullName
+                           ENDIF
+                        ENDIF
+                        IF CurrentEntityKind:HasChildren() .AND. CurrentEntity IS XTypeDefinition VAR xTypeDef
+                           IF entity IS XTypeDefinition VAR xChild .AND. ! XTypeDefinition.IsGlobalType(xTypeDef)
+                              xTypeDef:AddChild( xChild )
+                              xChild:Namespace := xTypeDef:FullName
                            ENDIF
                         ENDIF
                      ENDIF
@@ -195,7 +199,15 @@ BEGIN NAMESPACE XSharpModel
          VAR types := SELF:_EntityList:Where( {x => x IS XTypeDefinition})
          VAR typelist := Dictionary<STRING, XTypeDefinition>{System.StringComparer.InvariantCultureIgnoreCase}
          typelist:Add(_globalType:Name, _globalType)
+         local last  := NULL as XTypeDefinition
          FOREACH type AS XTypeDefinition IN types
+            IF last != NULL .and. last:Range:StartLine == last:Range:EndLine
+               // adjust the end of the type with the start of the current line
+               var newEndLine := type:Range:StartLine-1
+               var newEndPos  := type:Interval:Start -1
+               last:Range     := TextRange{last:Range:StartLine, last:Range:StartColumn, newEndLine, 0}
+               last:Interval  := TextInterval{last:Interval:Start, newEndPos}
+            ENDIF
             IF type:Parent != null .and. (type:Parent:Kind:IsType() .or. type:Parent:Kind == Kind.Namespace)
                if type:Parent == _globalType
                   type:Namespace := ""
@@ -213,12 +225,23 @@ BEGIN NAMESPACE XSharpModel
                   type:Namespace += "."+ns
                endif
             ENDIF
+            
             IF ! typelist:ContainsKey(type:FullName)
                type:File := _file
                
               typelist:Add(type:FullName, type)
-             ENDIF
+            ENDIF
+            last := type
          NEXT
+         IF last != NULL .and. last:Range:StartLine == last:Range:EndLine
+            // adjust the end of the type with the start of the current line
+            // find the last token in the stream
+            var index := _tokens.Count -1
+            var token := _tokens[index]
+            last:Range     := last:Range:WithEnd(token)
+            last:Interval  := last:Interval:WithEnd(token)
+         ENDIF
+            
          if SELF:_EntityList:Count > 0
             var lastEntity          := SELF:_EntityList:Last()
             lastEntity:Range        := lastEntity:Range:WithEnd(lastToken)
@@ -226,6 +249,7 @@ BEGIN NAMESPACE XSharpModel
          ENDIF
          IF ! lLocals
             _file:SetTypes(typelist, _usings, _staticusings, SELF:_EntityList)
+            _file:SaveToDatabase()
          ENDIF
          
       

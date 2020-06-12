@@ -13,7 +13,7 @@ BEGIN NAMESPACE XSharpModel
    // an entity in the source code
    CLASS XSourceElement INHERIT XElement
       PROTECTED _id    := -1                AS Int64                         
-      PROPERTY Id   AS INT64                GET _id
+      PROPERTY Id   AS INT64                GET _id INTERNAL SET _id := value
       PROPERTY File AS XFile                AUTO 
       PROPERTY Range AS TextRange           AUTO
       PROPERTY Interval AS TextInterval     AUTO

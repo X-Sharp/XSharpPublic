@@ -32,9 +32,10 @@ BEGIN NAMESPACE XSharpModel
 		PROPERTY DisableLexing AS LOGIC GET false
 		PROPERTY DisableParsing AS LOGIC GET false
 		PROPERTY KeywordsUppercase AS LOGIC GET TRUE
-        PROPERTY Dialect AS XSharpDialect GET XSharpDialect.Core
+		PROPERTY Dialect AS XSharpDialect GET XSharpDialect.Core
+		PROPERTY Name  as STRING GET "(OrphanedFiles)"
 	#endregion
-        PRIVATE _parseOptions as XSharpParseOptions
+      PRIVATE _parseOptions as XSharpParseOptions
 		CONSTRUCTOR()
             var options := List<String>{}
              options.Add("dialect:Core")

@@ -18,13 +18,13 @@ BEGIN NAMESPACE XSharpModel
 CLASS XSortedDictionary<T,U>   IMPLEMENTS IEnumerable<T>, IEnumerable
 	protected _list 		   as List<T>     
 	protected _dictionary   as Dictionary <T, IList<U> >
-   protected _valuelist    as List<U>     
+	protected _valuelist    as List<U>     
 	protected _sorted 		as LOGIC   
 	protected _comparer 	   as IComparer<T>
 	
 CONSTRUCTOR(comparer as IComparer<T>)
 	_list 			:= List<T>{}  
-   _valuelist     := List<U>{}  
+	_valuelist     := List<U>{}  
 	_dictionary    := Dictionary<T, IList<U> >{}
 	_sorted 		   := FALSE     
 	_comparer 		:= comparer
@@ -32,7 +32,7 @@ RETURN
 
 CONSTRUCTOR(capacity as int,comparer as IComparer<T>)
 	_list           := List<T>{capacity}
-   _valuelist      := List<U>{capacity}
+	_valuelist      := List<U>{capacity}
 	_dictionary     := Dictionary<T,IList<U> > {}
 	_sorted := FALSE
 	_comparer := comparer

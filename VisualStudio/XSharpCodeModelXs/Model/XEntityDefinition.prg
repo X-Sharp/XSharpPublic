@@ -22,7 +22,6 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY IsArray                 AS LOGIC             AUTO
       PROPERTY IsStatic                AS LOGIC             AUTO GET PROTECTED SET
       
-      PROPERTY Parent                  AS IXEntity          AUTO
       PROPERTY ParentName              AS STRING            GET SELF:Parent?:FullName
       PROPERTY ComboPrototype          AS STRING            GET SELF:FullName 
       PROPERTY Prototype               AS STRING            GET SELF:FullName
@@ -95,6 +94,8 @@ BEGIN NAMESPACE XSharpModel
                SELF:_typeName := VALUE
             END SET
          END PROPERTY
+         
+         
          
          #endregion
    END CLASS

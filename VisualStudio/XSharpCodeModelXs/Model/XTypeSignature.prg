@@ -9,50 +9,30 @@ USING XSharpModel
 USING System.Linq
 
 BEGIN NAMESPACE XSharpModel
-   [DebuggerDisplay("{DebuggerDisplay(),nq}")];
-   CLASS XTypeSignature
+   [DebuggerDisplay("{ToString(),nq}")];
+   CLASS XTypeSignature INHERIT XBaseSignature
       PROPERTY Interfaces               AS List<STRING>  AUTO GET INTERNAL SET
-      PROPERTY TypeParameters           AS List<STRING>  AUTO GET INTERNAL SET
-      PROPERTY TypeParameterContraints  AS List<STRING>  AUTO GET INTERNAL SET
       PROPERTY BaseType                 AS STRING        AUTO GET INTERNAL SET
-         
+      PROPERTY InterfaceList            AS STRING        GET ToList(SELF:Interfaces)
       
       CONSTRUCTOR(cBaseType AS STRING)
-         SELF:TypeParameters             := List<STRING>{}
-         SELF:TypeParameterContraints    := List<STRING>{}
+         SUPER()
          SELF:Interfaces                 := List<STRING>{}
          SELF:BaseType                   := cBaseType
          
-     METHOD AddInterface(sInterface AS STRING) AS VOID
+      METHOD AddInterface(sInterface AS STRING) AS VOID
          SELF:Interfaces:Add(sInterface)
          RETURN
-         
-     METHOD AddTypeParameter(name AS STRING) AS VOID
-         SELF:TypeParameters:Add(name)
-         RETURN
-         
-      METHOD AddConstraints(name AS STRING) AS VOID
-         SELF:TypeParameterContraints:Add(name)
-         RETURN
-          
-         
-      METHOD DebuggerDisplay() AS STRING
-         LOCAL res AS STRING
-         res := ""
-         IF SELF:TypeParameters:Count > 0
-            res += "<"
-            FOREACH VAR par IN SELF:TypeParameters
-               res += par +","
-            NEXT
-            res := res:Substring(0, res:Length-1)
-            res += ">"
+      
+      METHOD ToString() AS STRING
+         var result := Super:ToString()
+         if !String.IsNullOrEmpty(SELF:BaseType)
+            result += i" INHERIT {BaseType} "
          ENDIF
-         IF SELF:TypeParameterContraints:Count > 0
-            FOREACH VAR par IN SELF:TypeParameterContraints
-               res += " " + par
-            NEXT
-         ENDIF
-         RETURN res
-         
+         IF SELF:Interfaces:Count > 0
+            result += "IMPLEMENTS "+SELF:InterfaceList
+         endif
+         return result
+      
    END CLASS
 END NAMESPACE

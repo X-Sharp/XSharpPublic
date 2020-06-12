@@ -37,19 +37,21 @@ namespace XSharp.Project
         {
             // Restart scanning. Was suspended on opening of project system
             // or closing of previous solution
-            XSharpModel.ModelWalker.Start();
+            EnvDTE80.DTE2 dte = Microsoft.VisualStudio.Shell.Package.GetGlobalService(typeof(EnvDTE.DTE)) as EnvDTE80.DTE2;
+            EnvDTE80.Solution2 solution = dte.Solution as EnvDTE80.Solution2;
+            var solutionFile = solution.FullName;
+            XSharpModel.XSolution.Open(solutionFile);
             return VSConstants.S_OK;
         }
 
         public override int OnBeforeCloseSolution(object pUnkReserved)
         {
-            XSharpModel.ModelWalker.Suspend();
-            XSharpModel.XSolution.CloseAll();
+            XSharpModel.XSolution.Close();
             return VSConstants.S_OK;
         }
         public override int OnAfterCloseSolution(object reserved)
         {
-            XSharpModel.XSolution.CloseAll();
+            XSharpModel.XSolution.Close();
             return VSConstants.S_OK;
         }
         #endregion

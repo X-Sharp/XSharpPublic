@@ -47,15 +47,8 @@ BEGIN NAMESPACE XSharpModel
             SELF:_projects:Add(project)
          ENDIF
          
-      METHOD GetType(name AS STRING, searched := NULL AS List<String>) AS XTypeReference
-         if (searched == NULL)
-            searched := List<String>{} {SELF:FullName}
-         ELSEIF searched:Contains(SELF:FullName)
-            RETURN NULL
-         ELSE
-            searched:Add(SELF:FullName)
-         ENDIF
-         IF SELF:IsModifiedOnDisk
+      METHOD GetType(name AS STRING) AS XTypeReference
+          IF SELF:IsModifiedOnDisk
             SELF:LoadAssembly()
          ENDIF
          IF SELF:_assembly != NULL .AND. SELF:Types:Count == 0
@@ -64,16 +57,6 @@ BEGIN NAMESPACE XSharpModel
          IF SELF:Types:ContainsKey(name)
             RETURN Types[name]:First()
          ENDIF
-         // look in referenced assemblies. This also used to resolve base types for types
-         FOREACH var refasm in _assembly:ReferencedAssemblies
-            var asm := SystemTypeController.FindAssembly(refasm)
-            if asm != NULL
-               var type := asm:GetType(name,searched)
-               if type != NULL
-                  return type
-               endif
-            endif
-         NEXT
          RETURN NULL
 
             
@@ -84,7 +67,7 @@ BEGIN NAMESPACE XSharpModel
          
          
       INTERNAL METHOD LoadAssembly()  AS VOID
-         WriteOutputMessage("--> LoadAssembly : "+SELF:FileName)
+//         WriteOutputMessage("--> LoadAssembly : "+SELF:FileName)
 //         IF String.IsNullOrEmpty(SELF:FileName) .AND. SELF:_reference != NULL
 //            SELF:FileName := SELF:_reference:Path
 //         ENDIF
@@ -94,7 +77,7 @@ BEGIN NAMESPACE XSharpModel
             SELF:Modified   := SELF:LastWriteTime
             //				ENDIF
          ENDIF
-         WriteOutputMessage("<-- LoadAssembly : "+SELF:FileName)
+//         WriteOutputMessage("<-- LoadAssembly : "+SELF:FileName)
          
        METHOD RemoveProject(project AS XProject) AS VOID
          //
@@ -106,7 +89,7 @@ BEGIN NAMESPACE XSharpModel
          IF SELF:Exists
             VAR currentDT := SELF:LastWriteTime
             IF currentDT != SELF:Modified
-               WriteOutputMessage("AssemblyInfo.Refresh() Assembly was changed: "+SELF:FileName )
+               //WriteOutputMessage("AssemblyInfo.Refresh() Assembly was changed: "+SELF:FileName )
                SELF:UpdateAssembly()
             ENDIF
          ENDIF
@@ -124,17 +107,17 @@ BEGIN NAMESPACE XSharpModel
             RETURN
          ENDIF
          IF ! SELF:Exists
-            WriteOutputMessage("****** AssemblyInfo.UpdateAssembly: assembly "+SELF:FileName +" does not exist")
+            //WriteOutputMessage("****** AssemblyInfo.UpdateAssembly: assembly "+SELF:FileName +" does not exist")
             RETURN
          ENDIF
          TRY
-            WriteOutputMessage("-->AssemblyInfo.UpdateAssembly load types from assembly "+SELF:FileName )
+            //WriteOutputMessage("-->AssemblyInfo.UpdateAssembly load types from assembly "+SELF:FileName )
             SELF:LoadTypesAndNamespaces()
          CATCH e as Exception
             WriteOutputMessage(" *** Exception")
             WriteOutputMessage(e:ToString())
          FINALLY
-            WriteOutputMessage("<-- AssemblyInfo.UpdateAssembly load types from assembly "+SELF:FileName )
+            //WriteOutputMessage("<-- AssemblyInfo.UpdateAssembly load types from assembly "+SELF:FileName )
          END TRY
       // Properties
       PROPERTY DisplayName AS STRING
@@ -162,6 +145,7 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY Exists               AS LOGIC GET _SafeExists(SELF:FileName)
       PROPERTY FileName             AS STRING AUTO
       PROPERTY FullName             AS STRING GET SELF:_assembly:FullName
+      PROPERTY Id                   AS Int64  GET SELF:_assembly:Id
       PROPERTY GlobalClassName      AS STRING GET SELF:_assembly:GlobalClassName
       PROPERTY HasProjects          AS LOGIC GET SELF:_projects:Count > 0
       PROPERTY ImplicitNamespaces   AS IList<STRING>    GET SELF:_assembly:ImplicitNamespaces

@@ -46,7 +46,7 @@ namespace XSharp.Project
 
                 var lineNumber = triggerPoint.GetContainingLine().LineNumber;
                 var snapshot = _textBuffer.CurrentSnapshot;
-                List<String> tokenList = XSharpTokenTools.GetTokenList(triggerPoint.Position, lineNumber, snapshot, out stopToken, false, _file, false, member);
+                List<String> tokenList = XSharpTokenTools.GetTokenList(triggerPoint.Position, lineNumber, snapshot, out stopToken, true, _file, false, member);
                 // LookUp for the BaseType, reading the TokenList (From left to right)
                 CompletionElement gotoElement;
                 String currentNS = "";

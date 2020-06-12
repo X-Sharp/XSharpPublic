@@ -12,7 +12,7 @@ BEGIN NAMESPACE XSharpModel
 	[DebuggerDisplay("{FullName,nq}")];
 	CLASS XAssembly
       PROPERTY Id                   AS Int64 AUTO GET INTERNAL SET
-      PROPERTY TypeList             AS XSortedDictionary<STRING, XTypeReference> AUTO
+      PROPERTY TypeList             AS Dictionary<STRING, XTypeReference> AUTO
       PROPERTY ExtensionMethods     AS IList<XMemberReference> AUTO
       PROPERTY ImplicitNamespaces   AS IList<String> AUTO
       PROPERTY Namespaces           AS IList<String> AUTO
@@ -29,7 +29,7 @@ BEGIN NAMESPACE XSharpModel
       CONSTRUCTOR (cFileName as STRING)
          Id                   := -1
          FileName             := cFileName
-         TypeList             := XSortedDictionary<STRING, XTypeReference>{TypeNameComparer{}}
+         TypeList             := Dictionary<STRING, XTypeReference>{StringComparer.OrdinalIgnoreCase}
          ImplicitNamespaces   := List<STRING>{}
          Namespaces           := List<STRING>{}
          ReferencedAssemblies := List<STRING>{}
@@ -44,19 +44,13 @@ BEGIN NAMESPACE XSharpModel
       reader:Read(SELF)
       XDatabase:Read(SELF)
       var fi := FileInfo{FileName}
-      if SELF:Size != fi:Length .or. SELF:LastChanged != fi:LastWriteTime
+      IF SELF:Size != fi:Length .OR. SELF:LastChanged != fi:LastWriteTime
          XDatabase.Update(SELF)
       ENDIF
       
       RETURN SELF:Loaded
 
-    PRIVATE CLASS TypeNameComparer IMPLEMENTS IComparer<STRING>
-      METHOD Compare(x as String, y as String) AS LONG
-         if x == NULL .or. y == NULL
-            return 0
-         endif
-         return String.Compare(x, 0, y, 0, y:Length, TRUE)
-   END CLASS
+
 
    END CLASS
 END NAMESPACE   

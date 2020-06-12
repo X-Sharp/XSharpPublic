@@ -41,7 +41,7 @@ BEGIN NAMESPACE XSharpModel
 
         PROPERTY EntityList AS 	List<XEntityDefinition> GET _entityList
         PROPERTY Dialect AS XSharpDialect GET _project:Dialect
-
+        PROPERTY Virtual AS LOGIC AUTO
 
         METHOD AddDefaultUsings() AS void
             IF SELF:_usings:IndexOf("XSharp") == -1
@@ -192,11 +192,12 @@ BEGIN NAMESPACE XSharpModel
       
          
         METHOD SaveToDatabase() AS VOID
-            XDatabase.Update(SELF)
-            IF ! SELF:Interactive
-               SELF:InitTypeList()
-            ENDIF
-            
+            IF ! SELF:Virtual
+               XDatabase.Update(SELF)
+               IF ! SELF:Interactive
+                  SELF:InitTypeList()
+               ENDIF
+            ENDIF            
          
         METHOD WaitParsing() AS VOID
             //

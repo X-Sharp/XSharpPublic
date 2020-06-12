@@ -55,7 +55,7 @@ BEGIN NAMESPACE XSharpModel
             SELF:UpdateAssembly()
          ENDIF
          IF SELF:Types:ContainsKey(name)
-            RETURN Types[name]:First()
+            RETURN Types[name]
          ENDIF
          RETURN NULL
 
@@ -160,7 +160,7 @@ BEGIN NAMESPACE XSharpModel
             RETURN SELF:_assembly:RuntimeVersion
          END GET
       END PROPERTY
-      PROPERTY Types              AS XSortedDictionary<STRING, XTypeReference> GET _assembly:TypeList
+      PROPERTY Types              AS Dictionary<STRING, XTypeReference> GET _assembly:TypeList
       
       PROPERTY HasExtensions      AS LOGIC GET SELF:_assembly:ExtensionMethods:Count > 0
       PROPERTY Extensions         AS IList<XMemberReference> GET _assembly:ExtensionMethods

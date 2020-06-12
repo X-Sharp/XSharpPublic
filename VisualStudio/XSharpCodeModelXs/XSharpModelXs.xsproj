@@ -168,7 +168,6 @@
     <Compile Include="Support\TypeExtensions.prg" />
     <Compile Include="Support\Error.prg" />
     <Compile Include="Support\FileTypeHelpers.prg" />
-    <Compile Include="Support\XSortedDictionary.prg" />
     <Compile Include="Interfaces.prg" />
     <Compile Include="MetaData\AssemblyInfo.prg" />
     <Compile Include="MetaData\AssemblyReader.prg" />

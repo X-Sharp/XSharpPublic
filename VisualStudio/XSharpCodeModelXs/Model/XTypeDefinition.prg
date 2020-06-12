@@ -4,6 +4,7 @@
 // See License.txt in the project root for license information.
 //
 USING System
+USING System.Linq
 USING System.Collections.Generic
 USING LanguageService.CodeAnalysis.Text
 USING LanguageService.CodeAnalysis.XSharp
@@ -16,14 +17,15 @@ BEGIN NAMESPACE XSharpModel
    [DebuggerDisplay("{ToString(),nq}")];
    CLASS XTypeDefinition INHERIT XEntityDefinition IMPLEMENTS IXType
       PRIVATE _isPartial      AS LOGIC
-      PRIVATE _members        AS XSortedDictionary<String,XMemberDefinition>
+      PRIVATE _members        AS IList<XMemberDefinition>
       PRIVATE _children       AS List<XTypeDefinition>
       PRIVATE _signature      AS XTypeSignature
       PRIVATE _isClone        AS LOGIC
+      PROPERTY SourceCode     AS STRING AUTO      
       
       CONSTRUCTOR(name AS STRING, kind AS Kind, attributes AS Modifiers, span AS TextRange, position AS TextInterval, oFile AS XFile)
          SUPER(name, kind, attributes, span, position)
-         SELF:_members     := XSortedDictionary<String,XMemberDefinition>{MemberNameComparer{}}
+         SELF:_members     := List<XMemberDefinition>{}
          SELF:_children    := List<XTypeDefinition>{}
          SELF:_signature   := XTypeSignature{""}
          SELF:Namespace    := ""
@@ -58,7 +60,7 @@ BEGIN NAMESPACE XSharpModel
          
       METHOD AddMember(oMember AS XMemberDefinition) AS VOID
          BEGIN LOCK SELF:_members
-            SELF:_members:Add(oMember:Name, oMember)
+            SELF:_members:Add(oMember)
             oMember:Parent := SELF
              
          END LOCK
@@ -66,7 +68,7 @@ BEGIN NAMESPACE XSharpModel
       METHOD AddMembers(members AS IEnumerable<XMemberDefinition>) AS VOID
          BEGIN LOCK SELF:_members
             FOREACH VAR oMember IN members
-               SELF:_members:Add(oMember:Name, oMember)
+               SELF:_members:Add(oMember)
                oMember:Parent := SELF
             NEXT
          END LOCK
@@ -97,7 +99,7 @@ BEGIN NAMESPACE XSharpModel
          GET
             
             BEGIN LOCK SELF:_members
-               RETURN SELF:_members:Values
+               RETURN SELF:_members:ToArray()
             END LOCK
          END GET
       END PROPERTY
@@ -105,7 +107,7 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY XMembers AS IList<XMemberDefinition>
          GET
             BEGIN LOCK SELF:_members
-               RETURN SELF:_members:Values
+               RETURN SELF:_members
             END LOCK
          END GET
       END PROPERTY
@@ -113,27 +115,20 @@ BEGIN NAMESPACE XSharpModel
       METHOD GetMembers(elementName AS STRING) AS IList<IXMember>
          VAR tempMembers := List<IXMember>{}
          if ! String.IsNullOrEmpty(elementName)
-            SELF:_members:Sort()
-            var matching := SELF:_members:FindMatching(elementName)
-            tempMembers:AddRange(matching)
+            tempMembers:AddRange(SELF:XMembers:Where({ m => m.Name:StartsWith(elementName, StringComparison.OrdinalIgnoreCase)} ))
          ELSE
             tempMembers:AddRange(SELF:XMembers)      
          ENDIF
          RETURN tempMembers
 
       METHOD GetMembers(elementName AS STRING, lExact as LOGIC) AS IList<IXMember>
-         LOCAL result as IList<IXMember>
          IF lExact
-            result := List<IXMember>{}
-            FOREACH var xmember in SELF:GetMembers(elementName)
-               IF String.Compare(xmember:Name, elementName, StringComparison.OrdinalIgnoreCase) == 0
-                  result:Add(xmember)
-               ENDIF
-            NEXT
+            VAR result := List<IXMember>{}
+            result:AddRange(SELF:XMembers:Where ({ m => m.Name:Equals(elementName, StringComparison.OrdinalIgnoreCase)} ))
+            RETURN result
          ELSE
-            result := SELF:GetMembers(elementName)
+            RETURN SELF:GetMembers(elementName)
          ENDIF
-         RETURN result
 
       
       PROPERTY FullName  AS STRING   GET SELF:GetFullName()
@@ -175,7 +170,7 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY Clone AS XTypeDefinition
          GET
             IF SELF:IsPartial .AND. SELF:File != NULL
-               RETURN SUPER:File:Project:Lookup(SELF:FullName, TRUE)
+               RETURN SUPER:File:Project:Lookup(SELF:FullName, SELF:File:Usings:ToArray())
             ENDIF
             RETURN SELF
          END GET
@@ -213,12 +208,14 @@ BEGIN NAMESPACE XSharpModel
       END PROPERTY
       PROPERTY XMLSignature   AS STRING GET SELF:GetXmlSignature()
    
-   PRIVATE CLASS MemberNameComparer IMPLEMENTS IComparer<STRING>
-      METHOD Compare(x as String, y as String) AS LONG
+   PRIVATE CLASS MemberNameComparer IMPLEMENTS IEqualityComparer<STRING>
+      METHOD Equals(x AS STRING, y AS STRING) AS LOGIC
          if x == NULL .or. y == NULL
-            return 0
-         endif
-         return String.Compare(x, 0, y, 0, y:Length, TRUE)
+            RETURN TRUE
+         ENDIF
+         RETURN String.Compare(x, 0, y, 0, y:Length, TRUE) == 0
+      METHOD GetHashCode(x AS STRING) AS LONG
+         RETURN x:GetHashCode()
       END CLASS
       
    METHOD ToString() AS STRING

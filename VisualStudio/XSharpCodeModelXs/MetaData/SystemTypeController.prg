@@ -192,25 +192,21 @@ BEGIN NAMESPACE XSharpModel
 		
 		
 		STATIC METHOD Lookup(typeName AS STRING, theirassemblies AS IList<AssemblyInfo>) AS XTypeReference
-			LOCAL sType AS XTypeReference
-			sType := NULL
 			FOREACH VAR assembly IN theirassemblies
 				assembly:Refresh()
-            var matches := assembly:Types[typeName]
-				IF matches:Count > 0
-               sType := matches:First()
-					EXIT
+            IF assembly:Types:ContainsKey(typeName)
+               RETURN assembly:Types[typeName]
 				ENDIF
-				sType := assembly:GetType(typeName)
-				IF sType != NULL
-					EXIT
+				VAR type := assembly:GetType(typeName)
+				IF type != NULL
+               RETURN type
 				ENDIF
 			NEXT
-			IF sType == NULL .AND. mscorlib != NULL
+			IF mscorlib != NULL
 				// check mscorlib
-				sType := mscorlib:GetType(typeName)
-			ENDIF
-			RETURN sType
+				RETURN mscorlib:GetType(typeName)
+         ENDIF
+         RETURN NULL
          
 		STATIC METHOD RemoveAssembly(cFileName AS STRING) AS VOID
 			LOCAL info AS AssemblyInfo

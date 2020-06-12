@@ -342,11 +342,10 @@ CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
 			RETURN
 		END IF
 		// Find Method for this class
-	    VAR rootNs := oFile:Project:ProjectNode:RootNameSpace
-		oType := oProject:Lookup(cClass,TRUE)
-		IF oType == NULL_OBJECT
-			oType := oProject:Lookup(rootNs+"."+cClass,TRUE)
-		ENDIF
+	   VAR rootNs := oFile:Project:ProjectNode:RootNameSpace
+      VAR usings := List<STRING>{}
+      usings:Add(rootNs)
+		oType := oProject:Lookup(cClass,usings)
 		IF cName:ToUpper() == "CLASSDECLARATION"
 	        IF (oType != NULL_OBJECT)
 				oType:OpenEditor()

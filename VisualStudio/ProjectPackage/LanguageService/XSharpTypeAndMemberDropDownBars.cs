@@ -247,7 +247,9 @@ namespace XSharp.LanguageService
                     if (currentType != typeGlobal && currentType.IsPartial)
                     {
                         // retrieve members from other files ?
-                        var fullType = file.Project.Lookup(currentType.FullName, true);
+                        var usings = new List<string>();
+                        usings.Add(currentType.Namespace);
+                        var fullType = file.Project.Lookup(currentType.Name, usings);
                         hasPartial = true;
                         members.AddRange(fullType.XMembers);
                     }
@@ -267,7 +269,9 @@ namespace XSharp.LanguageService
                             if (xType.IsPartial)
                             {
                                 // load methods from other files
-                                var fullType = file.Project.Lookup(xType.FullName, true);
+                                var usings = new List<string>();
+                                usings.Add(xType.Namespace);
+                                var fullType = file.Project.Lookup(xType.Name, usings);
                                 hasPartial = true;
                                 foreach (var member in fullType.XMembers)
                                 {

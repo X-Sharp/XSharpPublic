@@ -13,7 +13,7 @@ USING System.Collections.Generic
 BEGIN NAMESPACE XSharpModel
    STATIC CLASS XDatabase
       STATIC PRIVATE oConn   AS SQLiteConnection     // In memory database !
-      PRIVATE CONST CurrentDbVersion := 0.1 AS System.Double
+      PRIVATE CONST CurrentDbVersion := 0.2 AS System.Double
       
       STATIC METHOD CreateOrOpenDatabase(cFileName AS STRING) AS VOID
          LOCAL lValid := FALSE AS LOGIC
@@ -101,8 +101,6 @@ BEGIN NAMESPACE XSharpModel
             cmd:ExecuteNonQuery()		
             cmd:CommandText := "Drop table if exists Members"
             cmd:ExecuteNonQuery()		
-            cmd:CommandText := "Drop table if exists Kinds"
-            cmd:ExecuteNonQuery()		
             cmd:CommandText := "Drop table if exists Assemblies"
             cmd:ExecuteNonQuery()		
             cmd:CommandText := "Drop table if exists ReferencedTypes"
@@ -156,9 +154,9 @@ BEGIN NAMESPACE XSharpModel
             
             stmt  	:=  "Create Table Types ("
             stmt	   +=  " Id integer NOT NULL PRIMARY KEY, idFile integer NOT NULL, Name text NOT NULL COLLATE NOCASE, Namespace text NOT NULL COLLATE NOCASE, "
-            stmt     +=  " Kind integer NOT NULL, IsPartial BOOLEAN, BaseTypeName text COLLATE NOCASE, Attributes integer NOT NULL, "
-            stmt     +=  " StartLine integer , StartColumn integer, EndLine integer , EndColumn integer,   "
-            stmt     +=  " Start integer , Stop integer,  "
+            stmt     +=  " Kind integer NOT NULL, BaseTypeName text COLLATE NOCASE, Attributes integer NOT NULL, "
+            stmt     +=  " StartLine integer , StartColumn integer, EndLine integer , EndColumn integer, Start integer , Stop integer,  "
+            stmt	   +=  " Sourcecode text , XmlComments text,"
             stmt     +=  " FOREIGN KEY (idFile) REFERENCES Files (Id) ON DELETE CASCADE ON UPDATE CASCADE"
             stmt	   += ")"
             
@@ -181,9 +179,8 @@ BEGIN NAMESPACE XSharpModel
             
             stmt  	:=  "Create Table Members ("
             stmt	   +=  " Id integer NOT NULL PRIMARY KEY, IdType integer NOT NULL , IdFile integer NOT NULL, "
-            stmt	   +=  " Name text COLLATE NOCASE, Kind integer , Attributes integer , "
-            stmt	   +=  " Value text, ReturnType text, StartLine integer , StartColumn integer ,  "
-            stmt	   +=  " EndLine integer , EndColumn integer , Start integer , Stop integer , "
+            stmt	   +=  " Name text COLLATE NOCASE, Kind integer, Attributes integer NOT NULL, StartLine integer , StartColumn integer ,  "
+            stmt	   +=  " EndLine integer , EndColumn integer , Start integer , Stop integer , Sourcecode text , XmlComments text,"
             stmt	   +=  " FOREIGN KEY (idType) REFERENCES Types (Id) ON DELETE CASCADE ON UPDATE CASCADE, " 
             stmt     +=  " FOREIGN KEY (idFile) REFERENCES Files (Id) ON DELETE CASCADE ON UPDATE CASCADE"
             stmt	   += ")"
@@ -209,25 +206,6 @@ BEGIN NAMESPACE XSharpModel
             cmd:ExecuteNonQuery()		
             
             #endregion
-            #region Table Kinds
-            
-            
-            stmt  	:= 	"Create Table Kinds ("
-            stmt	   += 	" Id integer NOT NULL PRIMARY KEY, Kind text not null "
-            stmt	   +=  ")"
-            cmd:CommandText := stmt
-            cmd:ExecuteNonQuery()		
-            cmd:Parameters:Clear()
-            cmd:Parameters:AddWithValue("$id",0)
-            cmd:Parameters:AddWithValue("$kind","")
-            cmd:CommandText := "INSERT INTO Kinds (Id, Kind) values ($id, $kind)"
-            
-            FOREACH VAR evalue IN Enum.GetValues(typeof(Kind))
-               cmd:Parameters[0]:Value := evalue
-               cmd:Parameters[1]:Value := Enum.GetName(typeof(Kind), evalue)
-               cmd:ExecuteNonQuery()		
-            NEXT
-            #endregion
             
             
             #region Table Assemblies
@@ -250,7 +228,7 @@ BEGIN NAMESPACE XSharpModel
             #region Table ReferencedTypes
             stmt  	:=  "Create Table ReferencedTypes ("
             stmt	   +=  " Id integer NOT NULL PRIMARY KEY, idAssembly integer NOT NULL, Name text NOT NULL COLLATE NOCASE, Namespace text NOT NULL COLLATE NOCASE, "
-            stmt     +=  " Kind integer NOT NULL, BaseTypeName text COLLATE NOCASE, Attributes integer NOT NULL, "
+            stmt     +=  " FullName text NOT NULL, Kind integer NOT NULL, BaseTypeName text COLLATE NOCASE, Attributes integer NOT NULL, "
             stmt     +=  " FOREIGN KEY (idAssembly) REFERENCES Assemblies (Id) ON DELETE CASCADE ON UPDATE CASCADE"
             stmt	   += ")"
             
@@ -264,15 +242,18 @@ BEGIN NAMESPACE XSharpModel
             stmt	:= "CREATE INDEX ReferencedTypes_BaseTypeName on ReferencedTypes (BaseTypeName) "
             cmd:CommandText := stmt
             cmd:ExecuteNonQuery()				
+
+            stmt	:= "CREATE INDEX ReferencedTypes_FullName on ReferencedTypes (FullName) "
+            cmd:CommandText := stmt
+            cmd:ExecuteNonQuery()				
             
             stmt	:= "CREATE INDEX ReferencedTypes_Kind on ReferencedTypes (Kind) "
             cmd:CommandText := stmt
             cmd:ExecuteNonQuery()		         
             #endregion
             
-            
             #region views
-            stmt := " CREATE VIEW ProjectFiles AS SELECT f.*, fp.IdProject, fp.IdFile, p.ProjectFileName " + ;
+            stmt := " CREATE VIEW ProjectFiles AS SELECT fp.IdFile, f.FileName, f.LastChanged, f.Size, fp.IdProject, p.ProjectFileName " + ;
                      " FROM Files f JOIN FilesPerProject fp ON f.Id = fp.IdFile JOIN Projects p ON fp.IdProject = P.Id"
             cmd:CommandText := stmt
             cmd:Parameters:Clear()
@@ -285,14 +266,14 @@ BEGIN NAMESPACE XSharpModel
             cmd:Parameters:Clear()
             cmd:ExecuteNonQuery()		
 
-            stmt := "CREATE VIEW ProjectTypes AS SELECT t.*, p.IdProject, p.ProjectFileName " +;
+            stmt := "CREATE VIEW ProjectTypes AS SELECT t.*, p.IdProject, p.FileName, p.ProjectFileName " +;
                      " FROM Types t  JOIN ProjectFiles p ON t.IdFile = p.IdFile "
             cmd:CommandText := stmt
             cmd:Parameters:Clear()
             cmd:ExecuteNonQuery()		
 
             
-            stmt := "CREATE VIEW ProjectMembers AS SELECT m.*, p.IdProject, p.ProjectFileName " +;
+            stmt := "CREATE VIEW ProjectMembers AS SELECT m.*, p.IdProject, p.FileName, p.ProjectFileName " +;
                      " FROM TypeMembers m  JOIN ProjectFiles p ON m.IdFile = p.IdFile "
             cmd:CommandText := stmt
             cmd:Parameters:Clear()
@@ -331,7 +312,7 @@ BEGIN NAMESPACE XSharpModel
                BEGIN USING VAR cmd  := SQLiteCommand{"SELECT 1", connection}
                   VAR stmt := "SELECT count(name) from sqlite_master WHERE type='table' AND name=$table"
                   cmd:CommandText := stmt
-                  VAR tables := <STRING> {"Projects","FilesPerProject","Files", "Types", "Members", "Db_Version","Assembly", "ReferenceType"}
+                  VAR tables := <STRING> {"Projects","FilesPerProject","Files", "Types", "Members", "Db_Version"}
                   FOREACH VAR table IN tables    
                      cmd:Parameters:Clear()
                      cmd:Parameters:AddWithValue("$table",table)
@@ -511,8 +492,8 @@ BEGIN NAMESPACE XSharpModel
             /*
             "Create Table Types ("
             " Id integer NOT NULL PRIMARY KEY, idFile integer NOT NULL, Name text NOT NULL COLLATE NOCASE, Namespace text NOT NULL COLLATE NOCASE, "
-            " Kind integer NOT NULL, IsPartial BOOLEAN, BaseTypeName text COLLATE NOCASE, Attributes integer NOT NULL, "
-            " Interfaces text , TypeParameters text, TypeConstraints text, "
+            " Kind integer NOT NULL, BaseTypeName text COLLATE NOCASE, Attributes integer NOT NULL, "
+            " Sourcecode text , XmlComments text"
             " StartLine integer , StartColumn integer, EndLine integer , EndColumn integer,   "
             " Start integer , Stop integer,  "
             " FOREIGN KEY (idFile) REFERENCES Files (Id) ON DELETE CASCADE ON UPDATE CASCADE"
@@ -523,19 +504,20 @@ BEGIN NAMESPACE XSharpModel
                   oCmd:ExecuteNonQuery()
                   oCmd:CommandText  := "DELETE FROM Types WHERE IdFile = "+oFile:Id:ToString()
                   oCmd:ExecuteNonQuery()
-                  oCmd:CommandText := "INSERT INTO Types (Name, IdFile, Namespace, Kind,  IsPartial,  BaseTypeName, " + ;
-                  " Attributes,  StartLine,  StartColumn,  EndLine,  EndColumn,  Start,  Stop) " +;
-                  "         VALUES ($name, $file, $namespace, $kind, $isPartial, $baseTypeName,  " +;
-                  "  $attributes, $startline, $startcolumn, $endline, $endcolumn, $start, $stop) ;" +;
-                  " SELECT last_insert_rowid()"
+                  oCmd:CommandText := "INSERT INTO Types (Name, IdFile, Namespace, Kind,  BaseTypeName, Attributes,  Sourcecode, XmlComments, " + ;
+                                       "                 StartLine,  StartColumn,  EndLine,  EndColumn,  Start,  Stop) " +;
+                                       " VALUES ($name, $file, $namespace, $kind, $baseTypeName,  $attributes, $sourcecode, $xmlcomments, " +;
+                                       "           $startline, $startcolumn, $endline, $endcolumn, $start, $stop) ;" +;
+                                       " SELECT last_insert_rowid()"
                   VAR pars := List<SQLiteParameter>{} { ;
                   oCmd:Parameters:AddWithValue("$name", ""),;
                   oCmd:Parameters:AddWithValue("$file", 0),;
                   oCmd:Parameters:AddWithValue("$namespace", ""),;
                   oCmd:Parameters:AddWithValue("$kind", 0),;
-                  oCmd:Parameters:AddWithValue("$isPartial", FALSE),;
                   oCmd:Parameters:AddWithValue("$baseTypeName", ""),;
                   oCmd:Parameters:AddWithValue("$attributes", 0),;
+                  oCmd:Parameters:AddWithValue("$sourcecode", ""),;
+                  oCmd:Parameters:AddWithValue("$xmlcomments", ""),;
                   oCmd:Parameters:AddWithValue("$startline", 0),;
                   oCmd:Parameters:AddWithValue("$startcolumn", 0),;
                   oCmd:Parameters:AddWithValue("$endline", 0),;
@@ -548,15 +530,16 @@ BEGIN NAMESPACE XSharpModel
                         pars[1]:Value := oFile:Id
                         pars[2]:Value := typedef:Namespace
                         pars[3]:Value := (INT) typedef:Kind
-                        pars[4]:Value := typedef:IsPartial
-                        pars[5]:Value := typedef:BaseType
-                        pars[6]:Value := (INT) typedef:Attributes
-                        pars[7]:Value := typedef:Range:StartLine
-                        pars[8]:Value := typedef:Range:StartColumn
-                        pars[9]:Value := typedef:Range:EndLine
-                        pars[10]:Value := typedef:Range:EndColumn
-                        pars[11]:Value := typedef:Interval:Start
-                        pars[12]:Value := typedef:Interval:Stop
+                        pars[4]:Value := typedef:BaseType
+                        pars[5]:Value := (INT) typedef:Attributes
+                        pars[6]:Value := typedef:SourceCode
+                        pars[7]:Value := typedef:XmlComments
+                        pars[8]:Value := typedef:Range:StartLine
+                        pars[9]:Value := typedef:Range:StartColumn
+                        pars[10]:Value := typedef:Range:EndLine
+                        pars[11]:Value := typedef:Range:EndColumn
+                        pars[12]:Value := typedef:Interval:Start
+                        pars[13]:Value := typedef:Interval:Stop
                         VAR id := (INT64) oCmd:ExecuteScalar()
                         typedef:Id := id
                      CATCH e AS Exception
@@ -569,17 +552,17 @@ BEGIN NAMESPACE XSharpModel
                   "Create Table Members ("
                   " Id integer NOT NULL PRIMARY KEY, IdType integer NOT NULL , IdFile integer NOT NULL, "
                   " Name text COLLATE NOCASE, Kind integer , Attributes integer , "
-                  " Value text, ReturnType text, Parameters text, StartLine integer , StartColumn integer ,  "
+                  " SourceCode text, XmlComments text, StartLine integer , StartColumn integer ,  "
                   " EndLine integer , EndColumn integer , Start integer , Stop integer , "
                   " FOREIGN KEY (idType) REFERENCES Types (Id) ON DELETE CASCADE ON UPDATE CASCADE, " 
                   " FOREIGN KEY (idFile) REFERENCES Files (Id) ON DELETE CASCADE ON UPDATE CASCADE"
                   ")"
                   */
-                  oCmd:CommandText := "INSERT INTO Members (idFile, idType, Name, Kind, Attributes,  " + ;
-                  " StartLine, StartColumn, EndLine, EndColumn, Start, Stop) " +;
-                  " VALUES ($file, $type, $name, $kind, $attributes,  " + ;
-                  " $startline, $startcolumn, $endline, $endcolumn, $start, $stop) ;" +;
-                  " SELECT last_insert_rowid()"
+                  oCmd:CommandText := "INSERT INTO Members (idFile, idType, Name, Kind, Attributes, Sourcecode , XMLComments, " + ;
+                                       " StartLine, StartColumn, EndLine, EndColumn, Start, Stop) " +;
+                                       " VALUES ($file, $type, $name, $kind, $attributes,$sourcecode, $xmlcomments," + ;
+                                       "           $startline, $startcolumn, $endline, $endcolumn, $start, $stop) ;" +;
+                                       " SELECT last_insert_rowid()"
                   oCmd:Parameters:Clear()
                   pars := List<SQLiteParameter>{} { ;
                   oCmd:Parameters:AddWithValue("$file", oFile:Id),;
@@ -592,7 +575,9 @@ BEGIN NAMESPACE XSharpModel
                   oCmd:Parameters:AddWithValue("$endline", 0),;
                   oCmd:Parameters:AddWithValue("$endcolumn", 0),;
                   oCmd:Parameters:AddWithValue("$start", 0),;
-                  oCmd:Parameters:AddWithValue("$stop", 0)}
+                  oCmd:Parameters:AddWithValue("$stop", 0),;
+                  oCmd:Parameters:AddWithValue("$sourcecode", ""),;
+                  oCmd:Parameters:AddWithValue("$xmlcomments", "")}
                   VAR list := List<XMemberDefinition>{}
                   FOREACH VAR typedef IN oFile:TypeList:Values
                      FOREACH VAR xmember IN typedef:XMembers
@@ -609,6 +594,8 @@ BEGIN NAMESPACE XSharpModel
                            pars[ 8]:Value := xmember:Range:EndColumn
                            pars[ 9]:Value := xmember:Interval:Start
                            pars[10]:Value := xmember:Interval:Stop
+                           pars[11]:Value := xmember:SourceCode
+                           pars[12]:Value := xmember:XmlComments
                            VAR id := (INT64) oCmd:ExecuteScalar()
                            xmember:Id := id
                         CATCH e AS Exception
@@ -674,16 +661,17 @@ BEGIN NAMESPACE XSharpModel
                // Updated TypeReferences
                //	   "Create Table ReferencedTypes ("
                //	   " Id integer NOT NULL PRIMARY KEY, idAssembly integer NOT NULL, Name text NOT NULL COLLATE NOCASE, Namespace text NOT NULL COLLATE NOCASE, "
-               //	   " Kind integer NOT NULL, BaseTypeName text COLLATE NOCASE, Attributes integer NOT NULL, "
+               //	   " FullName text NOT NULL COLLATE NOCASE, Kind integer NOT NULL, BaseTypeName text COLLATE NOCASE, Attributes integer NOT NULL, "
                //	   " FOREIGN KEY (idAssembly) REFERENCES Assemblies (Id) ON DELETE CASCADE ON UPDATE CASCADE"
                //	  ")"
-               oCmd:CommandText := "INSERT INTO ReferencedTypes (idAssembly, Name, Namespace, Kind, BaseTypeName, Attributes) " + ;
-               " values ($id, $name, $namespace, $kind, $basetypename, $attributes) "
+               oCmd:CommandText := "INSERT INTO ReferencedTypes (idAssembly, Name, Namespace, Kind, BaseTypeName, Attributes,FullName) " + ;
+               " values ($id, $name, $namespace, $kind, $basetypename, $attributes,$fullname) "
                oCmd:Parameters:Clear()
                VAR pars := List<SQLiteParameter>{} { ;
                oCmd:Parameters:AddWithValue("$id", 0),;
                oCmd:Parameters:AddWithValue("$name", ""),;
                oCmd:Parameters:AddWithValue("$namespace", ""),;
+               oCmd:Parameters:AddWithValue("$fullname", ""),;
                oCmd:Parameters:AddWithValue("$kind", 0),;
                oCmd:Parameters:AddWithValue("$basetypename", ""),;
                oCmd:Parameters:AddWithValue("$attributes",0)}
@@ -691,9 +679,10 @@ BEGIN NAMESPACE XSharpModel
                   pars[0]:Value := oAssembly:Id
                   pars[1]:Value := typeref:Name
                   pars[2]:Value := typeref:Namespace
-                  pars[3]:Value := (INT) typeref:Kind
-                  pars[4]:Value := typeref:BaseType
-                  pars[5]:Value := (INT) typeref:Attributes
+                  pars[3]:Value := typeref:FullName
+                  pars[4]:Value := (INT) typeref:Kind
+                  pars[5]:Value := typeref:BaseType
+                  pars[6]:Value := (INT) typeref:Attributes
                   oCmd:ExecuteNonQuery()
                NEXT
                
@@ -710,15 +699,12 @@ BEGIN NAMESPACE XSharpModel
          RETURN
       #endregion
       
-      STATIC METHOD FindFunction(sName AS STRING, sProjectIds AS STRING, sAssemblyIDs AS STRING, functionClasses AS List<STRING>) AS IList<XDbResult>
+      STATIC METHOD FindFunction(sName AS STRING, sProjectIds AS STRING) AS IList<XDbResult>
          // search class members in the Types list
-         VAR whereclause := "name = $name AND TypeName = $typename " + ;
-         " AND Kind in ($kind1, $kind2, $kind3) AND IdProject in ("+sProjectIds+")"
-         
          VAR result := List<XDbResult>{}
          BEGIN USING VAR oCmd := SQLiteCommand{"SELECT 1", oConn}
-            VAR stmt := XMemberDefinition.DbSelectClause
-            oCmd:CommandText := stmt:Replace("%whereclause%", whereclause)
+            oCmd:CommandText := "SELECT * FROM ProjectMembers WHERE name = $name AND TypeName = $typename " + ;
+               " AND Kind in ($kind1, $kind2, $kind3) AND IdProject in ("+sProjectIds+")"
             oCmd:Parameters:AddWithValue("$name", sName)
             oCmd:Parameters:AddWithValue("$kind1", (INT) Kind.Function)
             oCmd:Parameters:AddWithValue("$kind2", (INT) Kind.Procedure)
@@ -726,12 +712,130 @@ BEGIN NAMESPACE XSharpModel
             oCmd:Parameters:AddWithValue("$typename", XLiterals.GlobalName)
             BEGIN USING VAR rdr := oCmd:ExecuteReader()
                DO WHILE rdr:Read()
-                  // create XDbResult objects
+                  result:Add(CreateMemberInfo(rdr))
                ENDDO
             END USING
          END USING
          RETURN result
+         
+      STATIC METHOD FindGlobalOrDefine(sName AS STRING, sProjectIds AS STRING) AS IList<XDbResult>
+         // search class members in the Types list
+         VAR result := List<XDbResult>{}
+         BEGIN USING VAR oCmd := SQLiteCommand{"SELECT 1", oConn}
+            oCmd:CommandText := "SELECT * FROM ProjectMembers WHERE name = $name AND TypeName = $typename " + ;
+               " AND Kind in ($kind1, $kind2) AND IdProject in ("+sProjectIds+")"
+            oCmd:Parameters:AddWithValue("$name", sName)
+            oCmd:Parameters:AddWithValue("$kind1", (INT) Kind.VOGlobal)
+            oCmd:Parameters:AddWithValue("$kind2", (INT) Kind.VODefine)
+            oCmd:Parameters:AddWithValue("$typename", XLiterals.GlobalName)
+            BEGIN USING VAR rdr := oCmd:ExecuteReader()
+               DO WHILE rdr:Read()
+                  result:Add(CreateMemberInfo(rdr))
+               ENDDO
+            END USING
+         END USING
+         RETURN result      
       
+      STATIC METHOD GetTypes(sName AS STRING, sProjectIds AS STRING) AS IList<XDbResult>
+            VAR stmt := "Select * from ProjectTypes where name = $name AND IdProject in ("+sProjectIds+")"
+            VAR result := List<XDbResult>{}
+            BEGIN LOCK oConn
+               BEGIN USING VAR oCmd := SQLiteCommand{stmt, oConn}
+                  oCmd:Parameters:AddWithValue("$name", sName)
+                  BEGIN USING VAR rdr := oCmd:ExecuteReader()
+                     DO WHILE rdr:Read()
+                        result:Add(CreateTypeInfo(rdr))
+                     ENDDO
+                  END USING
+               END USING
+          END LOCK
+          RETURN result     
+            
+            
+    
+      STATIC METHOD GetReferenceTypes(sName AS STRING, sAssemblyIds AS STRING) AS IList<XDbResult>
+            VAR stmt := "Select * from AssemblyTypes where (name like $name or fullname like  $name) AND idAssembly in ("+sAssemblyIds+")"
+            VAR result := List<XDbResult>{}
+            BEGIN LOCK oConn
+               BEGIN USING VAR oCmd := SQLiteCommand{stmt, oConn}
+                  oCmd:Parameters:AddWithValue("$name", sName+"%")
+                  BEGIN USING VAR rdr := oCmd:ExecuteReader()
+                     DO WHILE rdr:Read()
+                        result:Add(CreateRefTypeInfo(rdr))
+                     ENDDO
+                  END USING
+               END USING
+          END LOCK
+          RETURN result         
+            
+      STATIC METHOD GetMembers(idType AS INT64) AS IList<XDbResult>
+            VAR stmt := "Select * from ProjectMembers where IdType ="+idType:ToString()
+            stmt     += " order by idFile, idType" 
+            VAR result := List<XDbResult>{}
+            BEGIN LOCK oConn
+               BEGIN USING VAR oCmd := SQLiteCommand{stmt, oConn}
+                  BEGIN USING VAR rdr := oCmd:ExecuteReader()
+                     DO WHILE rdr:Read()
+                        result:Add(CreateMemberInfo(rdr))
+                     ENDDO
+                  END USING
+               END USING
+          END LOCK
+          RETURN result  
+
+      STATIC METHOD CreateTypeInfo(rdr AS SQLiteDataReader) AS XDbResult
+            VAR res := XDbResult{}
+            res:TypeName     := DbToString(rdr["Name"])
+            res:Namespace    := DbToString(rdr["NameSpace"])
+            res:Kind         := (Kind) (INT64) rdr["Kind"]
+            res:Attributes   := (Modifiers) (INT64) rdr["Attributes"]
+            res:FileName     := DbToString(rdr["FileName"])
+            res:Project      := DbToString(rdr["ProjectFileName"])
+            res:StartLine    := DbToInt(rdr["StartLine"])
+            res:StartColumn  := DbToInt(rdr["StartColumn"])
+            res:EndLine      := DbToInt(rdr["EndLine"])
+            res:EndColumn    := DbToInt(rdr["EndColumn"])
+            res:Start        := DbToInt(rdr["Start"])
+            res:Stop         := DbToInt(rdr["Stop"])
+            res:SourceCode   := DbToString(rdr["SourceCode"])
+            res:XmlComments  := DbToString(rdr["XmlComments"])
+            res:IdType       := (INT64) rdr["Id"]
+            res:IdFile       := (INT64) rdr["IdFile"]
+            res:IdProject    := (INT64) rdr["IdProject"]
+            RETURN res
+
+      STATIC METHOD CreateRefTypeInfo(rdr AS SQLiteDataReader) AS XDbResult
+            VAR res := XDbResult{}
+            res:TypeName     := DbToString(rdr["Name"])
+            res:Namespace    := DbToString(rdr["NameSpace"])
+            res:Kind         := (Kind) (INT64) rdr["Kind"]
+            res:Attributes   := (Modifiers) (INT64) rdr["Attributes"]
+            res:FullName     := DbToString(rdr["FullName"])
+            res:Assembly     := DbToString(rdr["AssemblyFileName"])
+            res:IdType       := (INT64) rdr["Id"]
+            res:IdAssembly   := (INT64) rdr["IdAssembly"]
+            RETURN res
+
+      STATIC METHOD CreateMemberInfo(rdr AS SQLiteDataReader) AS XDbResult
+            VAR res := XDbResult{}
+            res:TypeName     := DbToString(rdr["TypeName"])
+            res:MemberName   := DbToString(rdr["Name"])
+            res:Kind         := (Kind) (INT64) rdr["Kind"]
+            res:Attributes   := (Modifiers) (INT64) rdr["Attributes"]
+            res:FileName     := DbToString(rdr["FileName"])
+            res:Project      := DbToString(rdr["ProjectFileName"])
+            res:StartLine    := DbToInt(rdr["StartLine"])
+            res:StartColumn  := DbToInt(rdr["StartColumn"])
+            res:EndLine      := DbToInt(rdr["EndLine"])
+            res:EndColumn    := DbToInt(rdr["EndColumn"])
+            res:Start        := DbToInt(rdr["Start"])
+            res:Stop         := DbToInt(rdr["Stop"])
+            res:SourceCode   := DbToString(rdr["SourceCode"])
+            res:XmlComments  := DbToString(rdr["XmlComments"])
+            res:IdType       := (INT64) rdr["IdType"]
+            res:IdFile       := (INT64) rdr["IdFile"]
+            res:IdProject    := (INT64) rdr["IdProject"] 
+            RETURN res
       STATIC METHOD DbToString(oValue AS OBJECT) AS STRING
          IF oValue == DBNull.Value
             RETURN ""

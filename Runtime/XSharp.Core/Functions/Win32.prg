@@ -6,7 +6,7 @@
 
 
 USING System.Runtime.InteropServices
-INTERNAL STATIC CLASS Win32
+INTERNAL STATIC CLASS XSharp.Win32
 	[DllImport("kernel32.dll", SetLastError := FALSE, EntryPoint := "GetOEMCP")];
 	EXTERN STATIC METHOD GetDosCodePage() AS LONG
 

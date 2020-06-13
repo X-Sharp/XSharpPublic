@@ -7,7 +7,7 @@ USING System.Text
 USING System.Globalization
 USING System.Collections.Generic
 
-INTERNAL STATIC CLASS ConversionHelpers
+INTERNAL STATIC CLASS XSharp.ConversionHelpers
     STATIC INTERNAL usCulture AS CultureInfo
     STATIC CONSTRUCTOR
         usCulture := CultureInfo{"en-US"}

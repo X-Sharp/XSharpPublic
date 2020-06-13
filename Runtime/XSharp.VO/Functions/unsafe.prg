@@ -87,7 +87,7 @@ INTERNAL _DLL FUNCTION GetStockObject( fnObject AS INT ) AS IntPtr PASCAL:GDI32.
 #define RASTERCAPS 38
 
 
-
+BEGIN NAMESPACE XSharp.VO
 INTERNAL VOSTRUCT RGBQUAD
     MEMBER rgbBlue     AS BYTE
     MEMBER rgbGreen    AS BYTE
@@ -466,7 +466,7 @@ INTERNAL CLASS VOBitmaps
             
 END CLASS
     
-    
+END NAMESPACE    
     
     
 #endregion

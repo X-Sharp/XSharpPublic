@@ -11,7 +11,7 @@
     <OutputName>XSharp.VO</OutputName>
     <CS>true</CS>
     <Unsafe>true</Unsafe>
-    <NS>true</NS>
+    <NS>false</NS>
     <VulcanCompatibleResources>True</VulcanCompatibleResources>
     <XSharpProjectversion>2.4.1.0</XSharpProjectversion>
     <IncludePaths>$(CommonInclude)</IncludePaths>

@@ -30,33 +30,59 @@ FUNCTION Set(nDefine, newValue) AS USUAL CLIPPER
     nSetting := nDefine
 
     IF PCount() > 1
+        // Some settings are not simply written but have side effects
+        // These are handled here
         SWITCH nSetting
         CASE Set.DateFormat 
             // Special handling, because we want to keep DateFormat, DateFormatNet and DateFormatEmpty in sync
-            RETURN SetDateFormat((STRING) newValue)
+            IF IsString(newValue)
+                RETURN SetDateFormat(newValue)
+            ENDIF
         CASE Set.CharSet 
             // Map SET_CHARSET to SetAnsi
-            RETURN SetAnsi(newValue == 0)  // Ansi = 0, Oem == 1
+            IF IsNumeric(newValue)
+                RETURN SetAnsi(newValue == 0)  // Ansi = 0, Oem == 1
+            ENDIF
         CASE Set.Ansi 
             // Map SET_CHARSET to SetAnsi
-            RETURN SetAnsi(newValue )  
+            IF IsLogic(newValue)
+                RETURN SetAnsi(newValue )
+            ENDIF
         CASE Set.Century
             // Keep date format in sync
-            RETURN SetCentury(newValue )  
+            IF IsString(newValue)
+                RETURN SetCentury(Upper(newValue) == "ON" )
+            ELSEIF IsLogic(newValue)
+                RETURN SetCentury(newValue)
+            ENDIF
         CASE Set.DateCountry
-            RETURN SetDateCountry(newValue )  
+            IF IsNumeric(newValue)
+                RETURN SetDateCountry(newValue )
+            ENDIF
         CASE Set.DecimalSep
-            RETURN SetDecimalSep(newValue)
+            IF IsNumeric(newValue)
+                RETURN SetDecimalSep(newValue)
+            ENDIF
         CASE Set.ThousandSep
-            RETURN SetThousandSep(newValue)
+            IF IsNumeric(newValue)
+                RETURN SetThousandSep(newValue)
+            ENDIF
         CASE Set.Epoch
-            RETURN SetEpoch(newValue)
+            IF IsNumeric(newValue)
+                RETURN SetEpoch(newValue)
+            ENDIF
         CASE Set.Collation
-            RETURN SetCollation(newValue)
+            IF IsString(newValue) .OR. IsSymbol(newValue)
+                RETURN SetCollation(newValue)
+            ENDIF
         CASE Set.NatDLL
-            RETURN SetNatDLL(newValue)
+            IF IsString(newValue) .OR. IsSymbol(newValue)
+                RETURN SetNatDLL(newValue)
+            ENDIF
         CASE Set.International
-            RETURN SetInternational(newValue)
+            IF IsString(newValue) .OR. IsSymbol(newValue)
+                RETURN SetInternational(newValue)
+            ENDIF
         END SWITCH 
     ENDIF
 

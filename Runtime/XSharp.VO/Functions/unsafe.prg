@@ -143,7 +143,7 @@ INTERNAL VOSTRUCT PALETTEENTRY
     MEMBER peBlue  AS BYTE
     MEMBER peFlags AS BYTE
         
-CLASS VOBitmaps
+INTERNAL CLASS VOBitmaps
     PROTECTED hDIBInfo AS IntPtr
     PROTECTED hDDBitmap AS IntPtr
     PROTECTED offBits AS WORD
@@ -471,7 +471,7 @@ END CLASS
     
 #endregion
 
-INTERNAL STATIC CLASS Win32
+INTERNAL STATIC CLASS XSharp.Win32
      CONST SW_SHOWNORMAL  := 1 AS LONG 
     [DllImport("kernel32.dll", CharSet := CharSet.Ansi )];
     STATIC INTERNAL METHOD WinExec(lpCmdLine AS STRING, uCmdShow AS DWORD) AS DWORD   

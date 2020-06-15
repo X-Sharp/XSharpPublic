@@ -691,7 +691,7 @@ BEGIN NAMESPACE XSharpModel
          VAR pos := typeName:LastIndexOf(".")
          VAR myusings := List<STRING>{}
          myusings:AddRange(usings)
-         IF pos > 0
+         IF pos > 0 .AND. ! typeName:EndsWith(".")
             VAR ns   := typeName:Substring(0,pos)
             typeName := typeName:Substring(pos+1)
             myusings:Add(ns)

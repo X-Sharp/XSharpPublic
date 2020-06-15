@@ -640,6 +640,9 @@ namespace XSharpLanguage
                 // property set
                 if (realTypeName.StartsWith("set_", StringComparison.Ordinal))
                     return true;
+                // operator
+                if (realTypeName.StartsWith("op_", StringComparison.Ordinal))
+                    return true;
             }
             // event remove
             if (realTypeName.Length > 7 && realTypeName.StartsWith("remove_", StringComparison.Ordinal))
@@ -934,9 +937,9 @@ namespace XSharpLanguage
                     default:
                         if (elt.IsStatic != staticOnly)
                             add = false;
-                        if (elt.Visibility < minVisibility)
+                        if (add && elt.Visibility < minVisibility)
                             add = false;
-                        if (IsHiddenName(elt.Name))
+                        if (add && IsHiddenName(elt.Name))
                             add = false;
                         break;
                 }
@@ -3648,6 +3651,8 @@ namespace XSharpLanguage
                     imgG = StandardGlyphGroup.GlyphGroupProperty;
                     break;
                 case Kind.Local:
+                case Kind.MemVar:
+                case Kind.DbField:
                 case Kind.Parameter:
                     imgG = StandardGlyphGroup.GlyphGroupVariable;
                     break;

@@ -33,11 +33,7 @@ BEGIN NAMESPACE XSharpModel
             GET
                 //
                 LOCAL prefix AS STRING
-                IF SELF:IsParameter
-                    prefix := "PARAMETER "
-                ELSE
-                    prefix := "LOCAL "
-                ENDIF
+                prefix := SELF:Kind:ToString():ToUpper() +" "
                 VAR result := prefix + SELF:Prototype
                 IF SELF:IsTyped
                     result += ParamTypeDesc + SELF:TypeName + IIF(SELF:IsArray,"[]","")
@@ -46,9 +42,22 @@ BEGIN NAMESPACE XSharpModel
             END GET
         END PROPERTY
 
+
+
         PROPERTY IsParameter AS LOGIC GET FALSE
         PROPERTY ParamType AS ParamType AUTO
-        PROPERTY Prototype AS STRING GET SUPER:Name
+        PROPERTY Prototype AS STRING 
+            GET 
+               VAR result := SUPER:Name
+               IF SELF:Kind == Kind.DbField
+                  IF !String.IsNullOrEmpty(SELF:Value)
+                     result := SELF:Value+"->"+result
+                  ENDIF
+                  result := "FIELD "+result
+               ENDIF
+               RETURN result
+            END GET
+        END PROPERTY
         PROPERTY ParamTypeDesc AS STRING
             GET
                 SWITCH ParamType

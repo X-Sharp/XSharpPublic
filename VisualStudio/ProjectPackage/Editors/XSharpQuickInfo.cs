@@ -581,10 +581,19 @@ namespace XSharp.Project
             internal void AddVarInfo(List<Inline> list, IXVariable var)
             {
                 Run temp;
-                temp = new Run(var.Name + " ");
+                var name = var.Name;
+                var hasValue = !string.IsNullOrEmpty(var.Value);
+                if (var.Kind == Kind.DbField)
+                {
+                    if (hasValue)
+                    {
+                        name = var.Value + "->" + name;
+                    }
+                }
+                temp = new Run(name + " ");
                 temp.Foreground = txtBrush;
                 list.Add(temp);
-                if (var.Value != null) // default value
+                if (hasValue && var.Kind != Kind.DbField) // default value
                 {
                     temp = new Run(" :=  "+var.Value +" ");
                     temp.Foreground = txtBrush;
@@ -751,7 +760,10 @@ namespace XSharp.Project
                     List<Inline> content = new List<Inline>();
 
                     Run temp;
-                    temp = new Run(_optionsPage.formatKeyword(xVar.Kind.ToString() + " "));
+                    var kind = xVar.Kind.ToString();
+                    if (xVar.Kind == Kind.DbField)
+                        kind = "Field";
+                    temp = new Run(_optionsPage.formatKeyword( kind + " "));
                     temp.Foreground = this.kwBrush;
                     content.Add(temp);
                     AddVarInfo(content, xVar);

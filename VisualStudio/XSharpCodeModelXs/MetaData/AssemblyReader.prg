@@ -161,6 +161,11 @@ CLASS AssemblyReader
                ENDIF
             NEXT
          NEXT
+         IF name:Name:ToLower():Contains("mscorlib")
+            VAR asm  := typeof(System.String):Assembly
+            VAR loc  := asm:Location
+            RETURN SELF:GetAssembly(loc, parameters)
+         ENDIF
          RETURN NULL
          
       PRIVATE METHOD GetAssembly(file AS string , parameters AS ReaderParameters ) AS AssemblyDefinition

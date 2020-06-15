@@ -13,8 +13,7 @@ USING LanguageService.CodeAnalysis
 USING LanguageService.CodeAnalysis.XSharp
 USING System.Collections.Concurrent
 USING System.Collections.Immutable
-//USING Microsoft.VisualStudio
-//USING Microsoft.VisualStudio.Shell.Interop
+
 USING System.Diagnostics
 
 BEGIN NAMESPACE XSharpModel

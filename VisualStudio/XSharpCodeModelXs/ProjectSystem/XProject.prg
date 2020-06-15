@@ -5,10 +5,10 @@
 //
 USING System
 USING System.Collections.Generic
+USING System.ComponentModel
 USING System.Linq
 USING System.Text
 USING System.Threading.Tasks
-USING EnvDTE
 USING LanguageService.CodeAnalysis
 USING LanguageService.CodeAnalysis.XSharp
 USING System.Collections.Concurrent
@@ -146,7 +146,7 @@ BEGIN NAMESPACE XSharpModel
          SELF:_unprocessedFiles := List<STRING>{}
          SELF:_projectOutputDLLs := ConcurrentDictionary<STRING, STRING>{StringComparer.OrdinalIgnoreCase}
          SELF:_ReferencedProjects := List<XProject>{}
-         SELF:_StrangerProjects := List<Project>{}
+         SELF:_StrangerProjects := List<EnvDTE.Project>{}
          SELF:_projectNode := project
          SELF:_SourceFilesDict := ConcurrentDictionary<STRING, XFile>{StringComparer.OrdinalIgnoreCase}
          SELF:_OtherFilesDict := ConcurrentDictionary<STRING, XFile>{StringComparer.OrdinalIgnoreCase}
@@ -392,18 +392,29 @@ BEGIN NAMESPACE XSharpModel
          END TRY
          RETURN p
          
-      PRIVATE METHOD GetStrangerOutputDLL(sProject AS STRING, p AS Project) AS STRING
+      PRIVATE METHOD IVarGet(oValue AS OBJECT, cProperty AS STRING) AS OBJECT
+       IF oValue == NULL
+            RETURN NULL
+       ENDIF
+       VAR props  := TypeDescriptor.GetProperties(oValue,FALSE)
+       VAR prop   := props[cProperty]
+       IF prop != NULL
+            RETURN prop:GetValue(oValue)
+       ENDIF
+       RETURN NULL         
+      
+      PRIVATE METHOD GetStrangerOutputDLL(sProject AS STRING, p AS EnvDTE.Project) AS STRING
          VAR outputFile := ""
          TRY
-            LOCAL propTypepropName := NULL AS EnvDTE.Property
             VAR propType := saveGetProperty(p:Properties, "OutputType")
             VAR propName := saveGetProperty(p:Properties, "AssemblyName")
             VAR propPath := saveGetProperty(p:ConfigurationManager:ActiveConfiguration:Properties, "OutputPath")
             IF propName != NULL .AND. propPath != NULL .AND. propType != NULL
-               VAR path    := (STRING) propPath:Value
-               VAR type    := (INT) propType:Value
-               outputFile	:= (STRING) propName:Value
-               IF type == 2 // __VSPROJOUTPUTTYPE.VSPROJ_OUTPUTTYPE_LIBRARY
+               
+               VAR path    := (STRING) IVarGet(propPath,"Value")
+               VAR type    := (INT)    IVarGet(propType,"Value")
+               outputFile	:= (STRING) IVarGet(propName, "Value")
+               IF type == 2 // __VSPROJOUTPUTTYPE.VSPROJ_OUTPUTTYPE_LIBRARY, in Microsoft.VisualStudio.Shell.Interop.11.0.dll
                   outputFile	+= ".dll"
                ELSE
                   outputFile	+= ".exe"
@@ -423,7 +434,7 @@ BEGIN NAMESPACE XSharpModel
          
       METHOD RemoveStrangerProjectReference(url AS STRING) AS LOGIC
          IF ! String.IsNullOrEmpty(url)
-            LOCAL prj AS Project
+            LOCAL prj AS EnvDTE.Project
             WriteOutputMessage("RemoveStrangerProjectReference() "+url)
             SELF:_clearTypeCache()
             IF SELF:_unprocessedStrangerProjectReferences:Contains(url)
@@ -472,7 +483,7 @@ BEGIN NAMESPACE XSharpModel
          
       PRIVATE METHOD ResolveUnprocessedStrangerReferences() AS VOID
          LOCAL existing AS List<STRING>
-         LOCAL p AS Project
+         LOCAL p AS EnvDTE.Project
          LOCAL outputFile AS STRING
          IF SELF:_unprocessedStrangerProjectReferences:Count > 0 .AND. ! AssemblyInfo.DisableForeignProjectReferences
             WriteOutputMessage("ResolveUnprocessedStrangerReferences()" +_unprocessedStrangerProjectReferences:Count:ToString())
@@ -950,7 +961,7 @@ BEGIN NAMESPACE XSharpModel
          END GET
       END PROPERTY
       
-      PROPERTY StrangerProjects AS IList<Project>
+      PROPERTY StrangerProjects AS IList<EnvDTE.Project>
          GET
             SELF:ResolveUnprocessedStrangerReferences()
             RETURN SELF:_StrangerProjects:ToArray()

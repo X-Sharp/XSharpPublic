@@ -25,12 +25,18 @@ BEGIN NAMESPACE XSharpModel
          elseif def:SetMethod != null
             var xMethod := XMethodReference{def:SetMethod, asm}
             SELF:Attributes := xMethod:Attributes
-         endif
+         ENDIF
+         IF _propdef:HasCustomAttributes
+            SELF:_custatts       := _propdef:CustomAttributes
+         ENDIF
          
       OVERRIDE Method Resolve() AS VOID
          IF _propdef:HasParameters
             SELF:AddParameters(_propdef:Parameters)
          ENDIF
+         SUPER:Resolve()
+         RETURN
+
       
          PROPERTY IsStatic AS LOGIC 
             GET 
@@ -73,7 +79,7 @@ BEGIN NAMESPACE XSharpModel
          IF attributes:HasFlag(FieldAttributes.Static)
             modifiers |= Modifiers.Static
          ENDIF         
-         return modifiers         
+          RETURN modifiers         
          
 		CONSTRUCTOR(def AS FieldDefinition, asm as XAssembly)
 			SUPER(def:Name, Kind.Field, ConvertAttributes(def:Attributes),  asm)
@@ -81,13 +87,17 @@ BEGIN NAMESPACE XSharpModel
          SELF:_fielddef       := def
          SELF:OriginalTypeName := def:FieldType:FullName
          SELF:TypeName        := SELF:Signature:DataType      := def:FieldType:GetXSharpTypeName()
-         if def:IsLiteral .and. def:Constant != NULL
+         IF def:IsLiteral .AND. def:Constant != NULL
             SELF:Value := def:Constant:ToString()
          endif
+         IF def:HasCustomAttributes
+            SELF:_custatts       := def:CustomAttributes
+         ENDIF
 
-      OVERRIDE Method Resolve() AS VOID
+      OVERRIDE METHOD Resolve() AS VOID
+         SUPER:Resolve()
          RETURN
-         PROPERTY IsStatic AS LOGIC GET _fielddef:IsStatic
+      PROPERTY IsStatic AS LOGIC GET _fielddef:IsStatic
 
    END CLASS
    
@@ -107,8 +117,12 @@ BEGIN NAMESPACE XSharpModel
             var xMethod := XMethodReference{def:RemoveMethod, asm}
             SELF:Attributes := xMethod:Attributes
          endif
-         
+         IF def:HasCustomAttributes
+            SELF:_custatts       := def:CustomAttributes
+         ENDIF
+        
       OVERRIDE Method Resolve() AS VOID
+         SUPER:Resolve()
          RETURN
    END CLASS  
    
@@ -167,9 +181,9 @@ BEGIN NAMESPACE XSharpModel
          SELF:OriginalTypeName   := def:ReturnType:FullName
          SELF:TypeName           := SELF:Signature:DataType := def:ReturnType:GetXSharpTypeName()
          SELF:_methoddef         := def
-         
          IF def:HasCustomAttributes
-            FOREACH var attr in def:CustomAttributes
+            SELF:_custatts       := def:CustomAttributes
+            FOREACH VAR attr IN def:CustomAttributes
                SWITCH attr:AttributeType:FullName 
                CASE "System.Runtime.CompilerServices.ExtensionAttribute"
                   SELF:Signature:IsExtension := TRUE
@@ -191,6 +205,10 @@ BEGIN NAMESPACE XSharpModel
             IF _methoddef:HasGenericParameters
                SELF:AddTypeParameters(_methoddef:GenericParameters)
             ENDIF
+            SUPER:Resolve()
+            RETURN
+
+            
          PROPERTY IsStatic AS LOGIC GET _methoddef:IsStatic
             
    END CLASS
@@ -200,9 +218,11 @@ BEGIN NAMESPACE XSharpModel
 		// Fields
         PRIVATE   _signature    AS XMemberSignature 
         PRIVATE   _resolved    AS LOGIC
+        PROTECTED _custatts    AS Mono.Collections.Generic.Collection<CustomAttribute>
         PROPERTY  SubType      AS Kind AUTO
         PROPERTY  DeclaringType  AS STRING AUTO            
         PROPERTY  Signature     AS XMemberSignature  GET _signature
+        
 
 		#region constructors
 		
@@ -210,12 +230,28 @@ BEGIN NAMESPACE XSharpModel
 			SUPER(name, kind, attributes,  asm)
          SELF:_signature      := XMemberSignature{}
          SELF:_resolved       := FALSE
+         SELF:_custatts       := NULL
          RETURN
       
 
       #endregion
 
-      VIRTUAL Method Resolve() AS VOID
+      VIRTUAL METHOD Resolve() AS VOID
+         IF SELF:_custatts != NULL
+            FOREACH VAR custatt IN SELF:_custatts
+               SWITCH custatt:AttributeType:FullName 
+               CASE "System.Diagnostics.DebuggerBrowsableAttribute"
+                  VAR cvalue := custatt:ConstructorArguments[0]
+                  IF cvalue:Type:FullName == typeof(DebuggerBrowsableState):FullName
+                     VAR state := (DebuggerBrowsableState) cvalue:Value
+                     IF state == DebuggerBrowsableState.Never
+                        // hide these 
+                        SELF:Attributes := _OR(SELF:Modifiers, Modifiers.Internal)
+                     ENDIF
+                  ENDIF
+               END SWITCH               
+            NEXT
+         ENDIF
          RETURN
          
       PRIVATE METHOD DoResolve() AS VOID

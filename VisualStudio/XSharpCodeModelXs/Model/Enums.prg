@@ -136,55 +136,65 @@ BEGIN NAMESPACE XSharpModel
    
    [Flags];
    ENUM Modifiers AS LONG
-      MEMBER @@None:=0
-      MEMBER @@Private:= 0x01
-      MEMBER @@Hidden:=  0x01
-      MEMBER @@ProtectedInternal:=0x02
-      MEMBER @@Internal:=0x04
-      MEMBER @@Protected:=0x08
-      MEMBER @@Public:=0x10
-      MEMBER @@Export:=0x10
-      MEMBER @@VisibilityMask := 0xFF
-      MEMBER @@Abstract:=0x100
-      MEMBER @@New:=0x200
-      MEMBER @@Partial:=0x400
-      MEMBER @@Sealed:=0x800
-      MEMBER @@Static:=0x1000
-      MEMBER @@Unsafe:=0x2000
-      MEMBER @@Virtual:=0x4000
-      MEMBER @@Override:=0x4000
-      MEMBER @@External:=0x8000
-      MEMBER @@Const:=0x10000
-      MEMBER @@InitOnly:=0x20000
-      MEMBER @@Instance:=0x40000
+      MEMBER @@None              := 0
+      MEMBER @@Private           := 1 << 0
+      MEMBER @@Hidden            := 1 << 0   // alias for Private
+      MEMBER @@ProtectedInternal := 1 << 1
+      MEMBER @@Internal          := 1 << 2
+      MEMBER @@Protected         := 1 << 3
+      MEMBER @@Public            := 1 << 4
+      MEMBER @@Export            := 1 << 4   // alias for Public
+      MEMBER @@VisibilityMask    := 0xFF
+      MEMBER @@Abstract          := 1 << 5
+      MEMBER @@New               := 1 << 6
+      MEMBER @@Partial           := 1 << 7
+      MEMBER @@Sealed            := 1 << 8
+      MEMBER @@Static            := 1 << 9
+      MEMBER @@Unsafe            := 1 << 10
+      MEMBER @@Virtual           := 1 << 11
+      MEMBER @@Override          := 1 << 11  // alias for Virtual
+      MEMBER @@External          := 1 << 12
+      MEMBER @@Const             := 1 << 13
+      MEMBER @@InitOnly          := 1 << 14
+      MEMBER @@Instance          := 1 << 15
+      MEMBER @@Volatile          := 1 << 16
+      MEMBER @@Async             := 1 << 17
+      //XPP Modifiers below
+      MEMBER @@Deferred          := 1 << 20            // Mapped to ABSTRACT
+      MEMBER @@Final             := 1 << 21            // Mapped to SEALED
+      MEMBER @@Freeze            := 1 << 22            // Not supported by the compiler
+      MEMBER @@Introduce         := 1 << 23            // Mapped to NEW
+      MEMBER @@Sync              := 1 << 24            // Implemented in the method body
+      MEMBER @@Class             := 1 << 25            // Mapped to STATIC
+      
    END ENUM
    
    ENUM XFileType AS LONG
-      MEMBER Unknown:=-1
-      MEMBER SourceCode:=0
+      MEMBER Unknown          :=-1
+      MEMBER SourceCode       :=0
       MEMBER PreprocessorOutput:=1
-      MEMBER Header:=2
-      MEMBER VOForm:=3
-      MEMBER VOMenu:=4
-      MEMBER VODBServer:=5
-      MEMBER VOIndex:=6
-      MEMBER VOOrder:=7
-      MEMBER VOFieldSpec:=8
-      MEMBER NativeResource:=9
-      MEMBER ManagedResource:=10
-      MEMBER XAML:=11
-      MEMBER Settings:=12
-      MEMBER License:=13
-      MEMBER Resource:= 14
-      MEMBER Template:= 15       // tpl and inf 
+      MEMBER Header           :=2
+      MEMBER VOForm           :=3
+      MEMBER VOMenu           :=4
+      MEMBER VODBServer       :=5
+      MEMBER VOIndex          :=6
+      MEMBER VOOrder          :=7
+      MEMBER VOFieldSpec      :=8
+      MEMBER NativeResource   :=9
+      MEMBER ManagedResource  :=10
+      MEMBER XAML             :=11
+      MEMBER Settings         :=12
+      MEMBER License          :=13
+      MEMBER Resource         := 14
+      MEMBER Template         := 15       // tpl and inf 
    END ENUM
    
    ENUM ParamType AS BYTE
-      MEMBER @@As		:= 0
-      MEMBER @@Ref    := 1
-      MEMBER @@Out	:= 2
-      MEMBER @@Params := 3
-      MEMBER @@In  	:= 4
+      MEMBER @@As		   := 0
+      MEMBER @@Ref      := 1
+      MEMBER @@Out	   := 2
+      MEMBER @@Params   := 3
+      MEMBER @@In  	   := 4
    END ENUM
    
    ENUM CallingConvention

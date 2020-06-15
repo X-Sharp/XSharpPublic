@@ -5,6 +5,124 @@
 //
 
 // Note that the comment blocks from the various rules have been copied from XSharp.g4 inside the compiler
+// Todo: XPP Class rules
+
+/*
+xppclass           :  (Attributes=attributes)?                                // NEW Optional Attributes
+                      (Modifiers=xppclassModifiers)?                          // [STATIC|FREEZE|FINAL] 
+                       C=CLASS (Namespace=nameDot)? Id=identifier               // CLASS <ClassName>
+                       (
+                          From=(FROM| SHARING) BaseTypes+=datatype (COMMA BaseTypes+=datatype)*  // [FROM <SuperClass,...>] ; 
+                       )?                                                                   // [SHARING <SuperClass,...>]
+                       (IMPLEMENTS Implements+=datatype (COMMA Implements+=datatype)*)? // NEW Implements
+                       // No type parameters and type parameter constraints
+                      e=eos
+                      (Members+=xppclassMember)*
+                      ENDCLASS 
+                      eos
+                    ;
+
+xppclassModifiers   : ( Tokens+=(STATIC | FREEZE | FINAL) )+
+                    ; // make sure all tokens are also in the IsModifier method inside XSharpLexerCode.cs
+
+xppclassMember      : Member=xppmethodvis                           #xppclsvisibility
+                    | Member=xppclassvars                           #xppclsvars
+                    | Member=xppinlineMethod                        #xppclsinlinemethod
+                    | Member=xppdeclareMethod                       #xppclsdeclaremethod
+                    | Member=xppproperty                            #xppclsproperty
+                    | Member=pragma                                 #xpppragma
+                    ;
+
+xppmethodvis        : Vis=xppvisibility COLON eos
+                    ;
+
+xppvisibility       : Token=(HIDDEN | PROTECTED | EXPORTED | INTERNAL | PUBLIC | PRIVATE )         
+                    ;
+
+xppdeclareMethod    : (Modifiers=xppdeclareModifiers)?                            // [DEFERRED |FINAL | INTRODUCE | OVERRIDE] [CLASS] 
+                      METHOD Methods+=identifier                                   // METHOD <MethodName,...> 
+                      (
+                        xppisin                                                   //  [IS <Name>] [IN <SuperClass>] 
+                        | (COMMA Methods+=identifier)*                             // or an optional comma seperated list of other names
+                      )
+                      eos
+                    ;
+
+
+xppisin             : IS Id=identifier (IN SuperClass=identifier)?                //  IS <Name> [IN <SuperClass>] 
+                    | IN SuperClass=identifier								                    //  IN <SuperClass> without IS clause
+                    ;
+
+                    
+
+xppdeclareModifiers : ( Tokens+=( DEFERRED | FINAL | INTRODUCE | OVERRIDE | CLASS | SYNC ) )+
+                    ; // make sure all tokens are also in the IsModifier method inside XSharpLexerCode.cs
+
+
+xppclassvars        : (Modifiers=xppmemberModifiers)?                             // [CLASS] 
+                      VAR Vars+=identifier                                        // VAR <VarName> 
+                      (
+                        Is=xppisin                                                // [IS <Name>] [IN <SuperClass>] 
+                        | ((COMMA Vars+=identifier)*                              // <,...> 
+                        (AS DataType=datatype)?  )                                // Optional data type
+
+                      )
+                      (Shared=SHARED)?                                            // [SHARED]
+                      (ReadOnly=READONLY)?                                        // [READONLY] 
+                      (Assignment=xppvarassignment)?                              // [ASSIGNMENT HIDDEN | PROTECTED | EXPORTED] 
+                      (Nosave= NOSAVE)?                                           // [NOSAVE] 
+                      eos
+                    ;
+
+
+xppvarassignment    : ASSIGNMENT xppvisibility                                    // [ASSIGNMENT HIDDEN | PROTECTED | EXPORTED] 
+                    ;
+
+xppproperty         : (Attributes=attributes)?                                    // NEW Optional Attributes
+                      (   Access=ACCESS Assign=ASSIGN?                            // ACCESS | ASSIGN  | ACCESS ASSIGN | ASSIGN ACCESS
+                        | Assign=ASSIGN Access=ACCESS?
+                      ) 
+                      Modifiers=xppmemberModifiers?                               // [CLASS]
+                      M=METHOD Id=identifier                                        // METHOD <MethodName>
+                      (VAR VarName=identifier)?                                   // [VAR <VarName>]
+                      (AS Type=datatype)?                                         // NEW Optional data type
+                      end=eos
+                    ;
+
+
+xppmethod           : (Attributes=attributes)?                              // NEW Optional Attributes
+                      (MethodType=(ACCESS|ASSIGN))?                         // Optional Access or Assign
+                      (Modifiers=xppmemberModifiers)?                       // [CLASS]
+                      M=METHOD (ClassId=identifier COLON)? Id=identifier    // [<ClassName>:] <MethodName>
+                      // no type parameters 
+                      (ParamList=parameterList)?                            // Optional Parameters
+                      (AS Type=datatype)?                                   // NEW Optional return type
+                      // no type constraints
+                      // no calling convention
+                      end=eos
+                      StmtBlk=statementBlock
+                      (END METHOD eos)?
+                    ;
+
+xppinlineMethod     : (Attributes=attributes)?                               // NEW Optional Attributes
+                      I=INLINE  
+                      (Modifiers=xppmemberModifiers)?                        // [CLASS]
+                      METHOD  Id=identifier                                  // METHOD <MethodName>
+                      // no type parameters 
+                      (ParamList=parameterList)?                            // Optional Parameters
+                      (AS Type=datatype)?                                   // NEW Optional return type
+                      // no type constraints
+                      // no calling convention
+                      end=eos
+                      StmtBlk=statementBlock
+                      (END METHOD eos)?
+                    ;
+
+xppmemberModifiers  : ( Tokens+=( CLASS | STATIC) )+
+                    ; // make sure all tokens are also in the IsModifier method inside XSharpLexerCode.cs
+
+
+*/
 
 USING System.Collections.Generic
 USING System.Collections
@@ -381,47 +499,65 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
          DO WHILE ! Eos()
             VAR done := FALSE
             SWITCH La1
-               // Visibility
-            CASE XSharpLexer.PUBLIC
-               result |= Modifiers.Public   
+               // Visibility Alphabetical
             CASE XSharpLexer.EXPORT
                result |= Modifiers.Public   
             CASE XSharpLexer.HIDDEN
                result |= Modifiers.Private
+            CASE XSharpLexer.INTERNAL
+               result |= Modifiers.Internal
             CASE XSharpLexer.PRIVATE
                result |= Modifiers.Private
             CASE XSharpLexer.PROTECTED
                result |= Modifiers.Protected
-            CASE XSharpLexer.INTERNAL
-               result |= Modifiers.Internal
-            // Real modifiers
-                  
+            CASE XSharpLexer.PUBLIC
+               result |= Modifiers.Public   
+
+            // Real modifiers Alphabetical
             CASE XSharpLexer.ABSTRACT
                result |= Modifiers.Abstract
+            CASE XSharpLexer.ASYNC
+               result |= Modifiers.Async
+            CASE XSharpLexer.CONST
+               result |= Modifiers.Const
             CASE XSharpLexer.EXTERN
-                  result |= Modifiers.External
-                  
-            CASE XSharpLexer.UNSAFE
-               result |= Modifiers.Unsafe
-            CASE XSharpLexer.STATIC
-               result |= Modifiers.Static
-            CASE XSharpLexer.PARTIAL
-               result |= Modifiers.Partial
+               result |= Modifiers.External
+            CASE XSharpLexer.INITONLY
+               result |= Modifiers.InitOnly
+            CASE XSharpLexer.INSTANCE
+               result |= Modifiers.Instance
+               result |= Modifiers.Protected
             CASE XSharpLexer.NEW
                result |= Modifiers.New
             CASE XSharpLexer.OVERRIDE
                result |= Modifiers.Override
-            CASE XSharpLexer.VIRTUAL
-               result |= Modifiers.Virtual
+            CASE XSharpLexer.PARTIAL
+               result |= Modifiers.Partial
             CASE XSharpLexer.SEALED
                result |= Modifiers.Sealed
-            CASE XSharpLexer.CONST
-               result |= Modifiers.Const
-            CASE XSharpLexer.INSTANCE
-                  result |= Modifiers.Instance
-               result |= Modifiers.Protected
-            CASE XSharpLexer.INITONLY
-               result |= Modifiers.InitOnly
+            CASE XSharpLexer.STATIC
+               result |= Modifiers.Static
+            CASE XSharpLexer.UNSAFE
+               result |= Modifiers.Unsafe
+            CASE XSharpLexer.VIRTUAL
+               result |= Modifiers.Virtual
+            CASE XSharpLexer.VOLATILE
+               result |= Modifiers.Volatile
+               
+            // XPP modifiers
+            CASE XSharpLexer.DEFERRED
+               result |= Modifiers.Deferred
+            CASE XSharpLexer.FINAL
+               result |= Modifiers.Final
+            CASE XSharpLexer.FREEZE
+               result |= Modifiers.Freeze
+            CASE XSharpLexer.INTRODUCE
+               result |= Modifiers.Introduce
+            CASE XSharpLexer.SYNC
+               result |= Modifiers.Sync
+//            CASE XSharpLexer.CLASS
+//               result |= Modifiers.Class
+//               
             OTHERWISE
                done := TRUE
             END SWITCH
@@ -503,7 +639,7 @@ attributeParam      : Name=identifierName Op=assignoperator Expr=expression     
             ENDIF
          CASE XSharpLexer.FIELD
             // field declaration only inside FoxPro class definition
-            IF InFoxClass
+            IF InFoxClass .AND. (CurrentEntity:Kind == Kind.Class .OR. CurrentEntity:Kind == Kind.Field)
                entityKind := Kind.Field
             ENDIF
          CASE XSharpLexer.IMPLEMENTS
@@ -2463,6 +2599,11 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
             RETURN
          ENDIF
          SWITCH La1
+         CASE XSharpLexer.FIELD
+            IF !SELF:ParseFieldStatement()
+               SELF:ReadLine()
+            ENDIF
+            
          CASE XSharpLexer.LOCAL
          CASE XSharpLexer.STATIC
          CASE XSharpLexer.VAR
@@ -2662,7 +2803,9 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
             ParseMemvarAllocationStatement()            
          CASE XSharpLexer.DIMENSION
          CASE XSharpLexer.DECLARE
-            ParseFoxProDim()            
+            ParseFoxProDim()        
+         CASE XSharpLexer.FIELD
+            ParseFieldStatement()
          END SWITCH
          RETURN TRUE
 
@@ -2783,6 +2926,41 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
          ENDIF
          SELF:_locals:Add(xVar)
 
+
+      PRIVATE METHOD ParseFieldStatement() AS LOGIC
+            /*
+               fielddecl          : FIELD Fields+=identifierName (COMMA Fields+=identifierName)* (IN Alias=identifierName)? end=eos
+                                  ;
+
+            */
+            VAR start := Lt1
+            IF ! Expect(XSharpLexer.FIELD)
+               RETURN FALSE
+            ENDIF
+            VAR Ids := List<STRING>{}
+            IF ! SELF:IsId(La1)
+               RETURN FALSE
+            ENDIF
+            Ids:Add(SELF:ParseIdentifier())
+            DO WHILE Expect(XSharpLexer.COMMA)
+               Ids:Add(SELF:ParseIdentifier())
+            ENDDO
+            VAR area := ""
+            IF Expect(XSharpLexer.IN)
+               area := ParseIdentifier()
+            ENDIF
+            SELF:GetSourceInfo(start, lastToken, OUT VAR range, OUT VAR interval, OUT VAR _)  
+            ReadLine()
+            FOREACH VAR id IN Ids
+               VAR xVar := XVariable{SELF:CurrentEntity, id, range, interval,XLiterals.UsualType} 
+               xVar.Kind := Kind.DbField
+               IF ! String.IsNullOrEmpty(area)
+                  xVar:Value := area
+               ENDIF
+               SELF:_locals:Add(xVar)
+            NEXT
+            RETURN TRUE
+         
 
       PRIVATE METHOD IsKeywordXs(token AS LONG) AS LOGIC
          SWITCH token

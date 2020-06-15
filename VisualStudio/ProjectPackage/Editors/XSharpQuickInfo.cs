@@ -751,19 +751,9 @@ namespace XSharp.Project
                     List<Inline> content = new List<Inline>();
 
                     Run temp;
-                    if (this.xVar.IsParameter)
-                    {
-                        temp = new Run(_optionsPage.Parameter() + " ");
-                        temp.Foreground = this.kwBrush;
-                        content.Add(temp);
-                    }
-                    else
-                    {
-                        temp = new Run(_optionsPage.Local() + " ");
-                        temp.Foreground = this.kwBrush;
-                        content.Add(temp);
-                    }
-                    //
+                    temp = new Run(_optionsPage.formatKeyword(xVar.Kind.ToString() + " "));
+                    temp.Foreground = this.kwBrush;
+                    content.Add(temp);
                     AddVarInfo(content, xVar);
                     return content;
                 }
@@ -868,10 +858,7 @@ namespace XSharp.Project
         } 
         internal static string As(this OptionsPages.IntellisenseOptionsPage page) => page.formatKeyword("AS ");
         internal static string Static(this OptionsPages.IntellisenseOptionsPage page) => page.formatKeyword("STATIC");
-        internal static string Local(this OptionsPages.IntellisenseOptionsPage page) => page.formatKeyword("LOCAL");
-        internal static string Parameter(this OptionsPages.IntellisenseOptionsPage page) => page.formatKeyword("PARAMETER");
-        internal static string Usual(this OptionsPages.IntellisenseOptionsPage page) => page.formatKeyword("USUAL");
-
+ 
     }
 }
 

@@ -130,6 +130,8 @@ BEGIN NAMESPACE XSharpModel
       MEMBER @@VOGlobal    :=  26
       MEMBER @@Unknown     :=  27
       MEMBER @@Ignore      :=  28
+      MEMBER @@MemVar      :=  29
+      MEMBER @@DbField     :=  30
    END ENUM                   
    
    [Flags];

@@ -181,7 +181,7 @@ BEGIN NAMESPACE XSharpModel
       PROPERTY Description       AS STRING GET SELF:GetDescription()
       PROPERTY IsPartial         AS LOGIC  GET SELF:_isPartial SET SELF:_isPartial := VALUE
       PROPERTY IsNested          AS LOGIC  GET SELF:Parent IS XTypeDefinition
-      
+      PROPERTY IsFoxClass        AS LOGIC AUTO
       
       STATIC METHOD CreateGlobalType(xfile AS XFile) AS XTypeDefinition
          VAR globalType := XTypeDefinition{XLiterals.GlobalName, Kind.Class, Modifiers.Public+Modifiers.Static, TextRange{0, 0, 0, 0}, TextInterval{}, xfile}

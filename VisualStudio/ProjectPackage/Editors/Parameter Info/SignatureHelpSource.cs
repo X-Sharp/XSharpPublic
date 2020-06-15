@@ -243,7 +243,7 @@ namespace XSharp.Project
                             }
                         }
                     }
-                    else
+                    else if (element != null)
                     {
                         // Type ??
                         signatures.Add(CreateSignature(m_textBuffer, null, element.Prototype, "", ApplicableToSpan, comma, false, file));

@@ -65,6 +65,8 @@ BEGIN NAMESPACE XSharpModel
 				CASE Kind.Field 
 				CASE Kind.Local 
 				CASE Kind.Parameter 
+				CASE Kind.MemVar
+				CASE Kind.DbField
 				CASE Kind.Operator 
 				CASE Kind.Delegate 
 				CASE Kind.VOGlobal 
@@ -284,6 +286,8 @@ BEGIN NAMESPACE XSharpModel
 						imgK := ImageListKind.Field
 					CASE Kind.Parameter 
 					CASE Kind.Local 
+					CASE Kind.MemVar
+					CASE Kind.DbField
 						imgK := ImageListKind.Local
 					END SWITCH
 				   SWITCH visibility

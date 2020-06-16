@@ -26,6 +26,7 @@ namespace XSharp.LanguageService
         bool lastIncludeFields = false;
         bool lastCurrentTypeOnly = false;
         IntellisenseOptionsPage _optionsPage;
+        XSharpLanguageService _lang;
 
         public XSharpTypeAndMemberDropDownBars(
             XSharpLanguageService lang,
@@ -33,6 +34,7 @@ namespace XSharp.LanguageService
             : base(lang)
         {
             var package = XSharp.Project.XSharpProjectPackage.Instance;
+            _lang = lang;
             _optionsPage = package.GetIntellisenseOptionsPage();
         }
         public override int OnItemChosen(int combo, int entry)
@@ -80,11 +82,9 @@ namespace XSharp.LanguageService
                 return false;
             }
             lastLine = line;
-
-            Source src = languageService.GetSource(textView);
-            string srcFile = src.GetFilePath();
-            //
-            XFile file = XSolution.FindFullPath(srcFile);
+            IVsTextLines buffer;
+            textView.GetBuffer(out buffer);
+            var file = _lang.getFile(buffer);
             if (file == null || file.TypeList == null)
             {
                 return false;

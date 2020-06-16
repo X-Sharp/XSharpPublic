@@ -197,7 +197,7 @@ namespace XSharp.LanguageService
             return VSConstants.E_FAIL;
         }
 
-        private XFile getFile(IVsTextBuffer pBuffer)
+        public XFile getFile(IVsTextBuffer pBuffer)
         {
             var buffer = _editorAdaptersFactoryService.GetDataBuffer(pBuffer);
             XFile file;

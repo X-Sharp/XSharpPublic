@@ -825,6 +825,30 @@ BEGIN NAMESPACE XSharpModel
             END TRY            
          END LOCK
          Log(i"GetTypes '{sName}' returns {result.Count} matches")
+         RETURN result   
+         
+      STATIC METHOD GetNamespaces(sProjectIds AS STRING) AS IList<XDbResult>
+         VAR stmt := "Select distinct Namespace from ProjectTypes where Namespace is not null and IdProject in ("+sProjectIds+")"
+         VAR result := List<XDbResult>{}
+         BEGIN LOCK oConn
+            TRY
+               BEGIN USING VAR oCmd := SQLiteCommand{stmt, oConn}
+                  BEGIN USING VAR rdr := oCmd:ExecuteReader()
+                     DO WHILE rdr:Read()
+                        VAR res := XDbResult{}
+                        res:Namespace    := DbToString(rdr[0])
+                        res:TypeName     := res:Namespace
+                        IF ! String.IsNullOrEmpty(res:Namespace)
+                           result:Add(res)
+                        ENDIF
+                     ENDDO
+                  END USING
+               END USING
+            CATCH e AS Exception
+               Log("Exception: "+e:ToString())
+            END TRY            
+         END LOCK
+         Log(i"GetNameSpaces returns {result.Count} matches")
          RETURN result     
          
          

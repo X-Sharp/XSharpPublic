@@ -51,20 +51,20 @@ namespace XSharp.Project
             XSharpProjectPackage.Instance.DisplayOutPutMessage("XSharp.QuickInfoSource :" + message);
         }
 
-        static bool skipFirst = true;
+        //static bool skipFirst = true;
 
         public void AugmentQuickInfoSession(IQuickInfoSession session, IList<object> qiContent, out ITrackingSpan applicableToSpan)
         {
             applicableToSpan = null;
-            if (skipFirst)
-            {
-                skipFirst = false;
-                return;
-            }
-            else
-            {
-                skipFirst = true;
-            }
+            //if (skipFirst)
+            //{
+            //    skipFirst = false;
+            //    return;
+            //}
+            //else
+            //{
+            //    skipFirst = true;
+            //}
             if (XSharpProjectPackage.Instance.DebuggerIsRunning)
             {
                 return;

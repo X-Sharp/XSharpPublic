@@ -3968,6 +3968,12 @@ namespace XSharpLanguage
             {
                 // assign the current member so we will have the proper Parent as well
                 local.Parent = member;
+                if (local is XSourceElement )
+                {
+                    ((XSourceElement)local).File = member.File;
+                }
+
+               
             }
             if (member.Kind.IsClassMember(dialect) && !member.Modifiers.HasFlag(Modifiers.Static))
             {

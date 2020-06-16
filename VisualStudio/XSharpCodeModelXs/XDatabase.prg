@@ -13,12 +13,14 @@ USING System.Collections.Generic
 BEGIN NAMESPACE XSharpModel
    STATIC CLASS XDatabase
       STATIC PRIVATE oConn   AS SQLiteConnection     // In memory database !
+      STATIC PRIVATE lastWritten := DateTime.MinValue AS DateTime
+      STATIC PRIVATE currentFile AS STRING
       PRIVATE CONST CurrentDbVersion := 0.2 AS System.Double
       
       STATIC METHOD CreateOrOpenDatabase(cFileName AS STRING) AS VOID
          LOCAL lValid := FALSE AS LOGIC
          LOCAL oDiskDb AS SQLiteConnection
-         
+         currentFile := cFileName
          IF System.IO.File.Exists(cFileName)
             oDiskDb := OpenFile(cFileName)
             IF ! ValidateSchema(oDiskDb)
@@ -79,12 +81,21 @@ BEGIN NAMESPACE XSharpModel
          VAR diskdb := OpenFile(cFile)
          oConn:BackupDatabase(diskdb, "main", "main", -1, NULL, 0)
          diskdb:Close()
+         lastWritten := DateTime.Now
          RETURN         
       
       STATIC METHOD RestoreFromDisk(oDiskDb AS SQLiteConnection, oConn AS SQLiteConnection) AS VOID
          oDiskDb:BackupDatabase(oConn, "main", "main", -1, NULL, 0)
+         lastWritten := DateTime.Now
          RETURN         
-         
+
+      STATIC METHOD CommitWhenNeeded() AS VOID
+         VAR ts := DateTime.Now - lastWritten
+         // Save to disk after 5 minutes
+         IF ts:Minutes > 5 .OR. ts:Hours > 0
+            SaveToDisk(oConn, currentFile )
+         ENDIF
+
       
       STATIC METHOD CreateSchema(connection AS SQLiteConnection) AS VOID
          BEGIN LOCK connection
@@ -376,6 +387,7 @@ BEGIN NAMESPACE XSharpModel
                ENDIF
             END USING 
          END LOCK
+         CommitWhenNeeded()
          RETURN
       
       STATIC METHOD DeleteProject(cFileName AS STRING) AS VOID
@@ -390,6 +402,7 @@ BEGIN NAMESPACE XSharpModel
                cmd:ExecuteNonQuery()
             END USING
          END LOCK
+         CommitWhenNeeded()
       #endregion        
       
       #region CRUD files
@@ -407,6 +420,7 @@ BEGIN NAMESPACE XSharpModel
                cmd:ExecuteNonQuery()
             END USING
          END LOCK
+         CommitWhenNeeded()
       
       STATIC METHOD Read(oFile AS XFile) AS VOID
          IF String.IsNullOrEmpty(oFile:FullPath)
@@ -470,6 +484,7 @@ BEGIN NAMESPACE XSharpModel
             
          END TRY
       END LOCK
+      CommitWhenNeeded()
       RETURN
       
       STATIC PRIVATE METHOD UpdateFileData(oFile AS XFile) AS VOID
@@ -502,6 +517,7 @@ BEGIN NAMESPACE XSharpModel
             UpdateFileContents(oFile)
          ENDIF
          UpdateFileData(oFile)
+         CommitWhenNeeded()
          RETURN
          
       
@@ -681,6 +697,7 @@ BEGIN NAMESPACE XSharpModel
          END TRY
          
       END LOCK
+      CommitWhenNeeded()
       RETURN
       
       STATIC METHOD Update(oAssembly AS XAssembly) AS VOID

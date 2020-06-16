@@ -3953,11 +3953,10 @@ namespace XSharpLanguage
         /// <returns></returns>
         internal static IList<IXVariable> GetLocals(this XMemberDefinition member, ITextSnapshot snapshot, int iCurrentLine, XSharpDialect dialect)
         {
-            //var sourceWalker = new SourceWalker(member.File);
-            // get the text of the member
             iCurrentLine = Math.Min(snapshot.LineCount - 1, iCurrentLine);
             // create a walker with just the contents of the current member
-            var walker = new SourceWalker(member.File);
+            // use a new file object so we will not destroy the types in the existing object
+            var walker = new SourceWalker( new XFile ( member.File.FullPath, member.File.Project));
             var start = member.Interval.Start;
             var end = member.Interval.Width;
             if (start + end > snapshot.Length)
@@ -3965,6 +3964,11 @@ namespace XSharpLanguage
             var memberSource = snapshot.GetText(start, end);
             var locals = walker.ParseLocals(memberSource, member.Range.StartLine, member.Interval.Start);
             // Add the normal locals for class members
+            foreach(var local in locals)
+            {
+                // assign the current member so we will have the proper Parent as well
+                local.Parent = member;
+            }
             if (member.Kind.IsClassMember(dialect) && !member.Modifiers.HasFlag(Modifiers.Static))
             {
                 var XVar = new XVariable(member, "SELF", member.Range, member.Interval, member.ParentName);

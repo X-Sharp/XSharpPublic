@@ -770,18 +770,20 @@ BEGIN NAMESPACE XSharpModel
          sb:AppendLine(element:SourceCode)
          FOREACH VAR xmember IN members
             sb:AppendLine(xmember:SourceCode)
+            VAR source := xmember:SourceCode:ToLower()
             SWITCH xmember:Kind
             CASE Kind.Property
-                  IF xmember:SourceCode:ToLower():Contains(" get") .OR. ;
-                     xmember:SourceCode:ToLower():Contains(" set") 
+                  IF source:Contains(" get") .OR. ;
+                     source:Contains(" set") .OR. ;
+                     source:Contains(" auto") 
                      // single line
                      NOP
                   ELSE
                      sb:AppendLine("END PROPERTY")
                ENDIF
             CASE Kind.Event
-                  IF xmember:SourceCode:ToLower():Contains(" add") .OR. ;
-                     xmember:SourceCode:ToLower():Contains(" remove") 
+                  IF source:Contains(" add") .OR. ;
+                     source:Contains(" remove") 
                      // single line
                      NOP
                   ELSE

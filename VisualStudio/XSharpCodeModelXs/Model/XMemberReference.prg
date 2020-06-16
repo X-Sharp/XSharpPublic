@@ -39,19 +39,6 @@ BEGIN NAMESPACE XSharpModel
          ENDIF
          SELF:_propdef := NULL
          RETURN
-
-      
-         PROPERTY IsStatic AS LOGIC 
-            GET 
-               if _propdef:GetMethod != NULL
-                  return _propdef:GetMethod:IsStatic
-               endif
-               if _propdef:SetMethod != NULL
-                  return _propdef:SetMethod:IsStatic
-               endif
-               return false
-            END GET
-         END PROPERTY
    END CLASS
 
    CLASS XFieldReference INHERIT XMemberReference
@@ -101,7 +88,6 @@ BEGIN NAMESPACE XSharpModel
          SUPER:Resolve()
          SELF:_fielddef := NULL
          RETURN
-      PROPERTY IsStatic AS LOGIC GET _fielddef:IsStatic
 
    END CLASS
    
@@ -214,10 +200,9 @@ BEGIN NAMESPACE XSharpModel
                SUPER:Resolve()
             ENDIF
             SELF:_methoddef := NULL
+            
             RETURN
 
-            
-         PROPERTY IsStatic AS LOGIC GET _methoddef:IsStatic
             
    END CLASS
 
@@ -382,6 +367,8 @@ BEGIN NAMESPACE XSharpModel
 		
 		PROPERTY FullName AS STRING GET SELF:GetFullName()
 		
+      PROPERTY IsStatic AS LOGIC GET SELF:Modifiers:HasFlag(Modifiers.Static)
+      
 		PROPERTY HasParameters     AS LOGIC 
          GET 
             SELF:DoResolve()

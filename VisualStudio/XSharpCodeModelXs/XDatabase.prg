@@ -7,6 +7,7 @@
 USING System.Data.SQLite
 USING System.IO
 USING System.Data
+USING System.Linq
 USING System.Data.Common
 USING System.Collections.Generic
 
@@ -559,7 +560,9 @@ BEGIN NAMESPACE XSharpModel
                   oCmd:Parameters:AddWithValue("$endcolumn", 0),;
                   oCmd:Parameters:AddWithValue("$start", 0),;
                   oCmd:Parameters:AddWithValue("$stop", 0)}
-                  FOREACH VAR typedef IN oFile:TypeList:Values
+                  VAR types := oFile:TypeList:Values:Where({ t=> t.Kind != Kind.Namespace .AND. ;
+                                    t:Name != XLiterals.GlobalName .OR. t:Members:Count > 0 })
+                  FOREACH VAR typedef IN types
                      TRY
                         pars[0]:Value := typedef:Name
                         pars[1]:Value := oFile:Id
@@ -613,8 +616,7 @@ BEGIN NAMESPACE XSharpModel
                oCmd:Parameters:AddWithValue("$stop", 0),;
                oCmd:Parameters:AddWithValue("$sourcecode", ""),;
                oCmd:Parameters:AddWithValue("$xmlcomments", "")}
-               VAR list := List<XMemberDefinition>{}
-               FOREACH VAR typedef IN oFile:TypeList:Values
+               FOREACH VAR typedef IN types
                   FOREACH VAR xmember IN typedef:XMembers
                      TRY
                         // file is constant

@@ -108,7 +108,7 @@ BEGIN NAMESPACE XSharpModel
 			IF SELF:_file != NULL .AND. SELF:_file:Project != NULL
             VAR options := SELF:_file:Project:ParseOptions
 				typeName    := typeName:GetSystemTypeName(options:XSharpRuntime)
-				sType       := SELF:_file:Project:FindSystemType(typeName, usings)
+				sType       := SELF:_file:Project:FindSystemType(typeName, usings:ToArray())
 			ENDIF
 			IF sType != NULL
 				SELF:_type := sType

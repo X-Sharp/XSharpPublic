@@ -187,7 +187,6 @@ BEGIN NAMESPACE XSharpModel
                ENDIF
                
               SELF:_initialized := TRUE
-              SELF:_typeDef := NULL
          ENDIF
          RETURN
       

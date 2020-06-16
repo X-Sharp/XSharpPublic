@@ -328,9 +328,9 @@ BEGIN NAMESPACE XSharpModel
          VAR types := SELF:_EntityList:Where( {x => x IS XTypeDefinition})
          VAR typelist := Dictionary<STRING, XTypeDefinition>{System.StringComparer.InvariantCultureIgnoreCase}
          typelist:Add(_globalType:Name, _globalType)
-         local last  := NULL as XTypeDefinition
+         LOCAL last  := NULL AS XTypeDefinition
          FOREACH type AS XTypeDefinition IN types
-            IF last != NULL .and. last:Range:StartLine == last:Range:EndLine
+            IF last != NULL .AND. last:Range:StartLine == last:Range:EndLine
                // adjust the end of the type with the start of the current line
                var newEndLine := type:Range:StartLine-1
                VAR newEndPos  := type:Interval:Start -1
@@ -1907,7 +1907,7 @@ enum_               : (Attributes=attributes)? (Modifiers=classModifiers)?
             RETURN NULL
          ENDIF
 
-         VAR id := ParseIdentifier()
+         VAR id := ParseQualifiedName()
          VAR type := ""
          IF Matches(XSharpLexer.AS)
             type := SELF:ParseAsIsType()
@@ -1937,7 +1937,8 @@ enummember          : (Attributes=attributes)? MEMBER? Id=identifier (Op=assigno
          ENDIF
          SELF:GetSourceInfo(_start, lastToken, OUT VAR range, OUT VAR interval, OUT VAR source)  
          ReadLine()
-         VAR xMember := XMemberDefinition{id, Kind.EnumMember, _attributes, range, interval, ""} {SingleLine := TRUE, @@Value := strValue}
+         VAR type := CurrentType:Name
+         VAR xMember := XMemberDefinition{id, Kind.EnumMember, _attributes, range, interval, type} {SingleLine := TRUE, @@Value := strValue}
          xMember:File := SELF:_file
          xMember:SourceCode := source          
          RETURN <XEntityDefinition>{xMember}
